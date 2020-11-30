@@ -2,8 +2,8 @@ import { Component, EventEmitter, Input, OnInit, Output, ViewContainerRef } from
 import { MatDialog } from '@angular/material/dialog';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { SaveStatusDialogComponent } from '../../eav-material-controls/dialogs/save-status-dialog/save-status-dialog.component';
-import { SaveStatusDialogData } from '../../eav-material-controls/dialogs/save-status-dialog/save-status-dialog.models';
+import { PublishStatusDialogComponent } from '../../eav-material-controls/dialogs/publish-status-dialog/publish-status-dialog.component';
+import { PublishStatusDialogData } from '../../eav-material-controls/dialogs/publish-status-dialog/publish-status-dialog.models';
 import { LanguageService } from '../../shared/store/ngrx-data/language.service';
 import { PublishStatusService } from '../../shared/store/ngrx-data/publish-status.service';
 import { FormHeaderTemplateVars } from './multi-item-edit-form-header.models';
@@ -48,12 +48,12 @@ export class MultiItemEditFormHeaderComponent implements OnInit {
     this.closeDialog.emit();
   }
 
-  openSaveStatusDialog() {
-    const dialogData: SaveStatusDialogData = {
+  openPublishStatusDialog() {
+    const dialogData: PublishStatusDialogData = {
       formId: this.formId,
     };
-    this.dialog.open(SaveStatusDialogComponent, {
-      panelClass: 'c-save-status-dialog',
+    this.dialog.open(PublishStatusDialogComponent, {
+      panelClass: 'c-publish-status-dialog',
       autoFocus: false,
       width: '350px',
       viewContainerRef: this.viewContainerRef,

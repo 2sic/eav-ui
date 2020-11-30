@@ -12,11 +12,11 @@
     </app-language-switcher>
   </div>
 
-  <button mat-button class="header__publish-button" (click)="openSaveStatusDialog()"
-    [matTooltip]="'SaveMode.' + data.publishMode + '.Tip' | translate">
+  <button mat-button class="header__publish-button" (click)="openPublishStatusDialog()"
+    [matTooltip]="'PublishStatus.' + data.publishMode + '.Tip' | translate">
     <span class="header__publish-mode">
-      {{ 'SaveMode.Label' | translate }}
-      <b>{{ ('SaveMode.' + data.publishMode | translate: '').toUpperCase() }}</b>
+      {{ 'PublishStatus.Label' | translate }}
+      <b>{{ ('PublishStatus.' + data.publishMode | translate).toUpperCase() }}</b>
     </span>
   </button>
 </mat-card>

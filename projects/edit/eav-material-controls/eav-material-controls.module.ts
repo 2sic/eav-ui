@@ -38,7 +38,7 @@ import { AdamAttachWrapperComponent } from './adam/adam-attach-wrapper/adam-atta
 import { AdamBrowserComponent } from './adam/adam-browser/adam-browser.component';
 import { AdamHintComponent } from './adam/adam-hint/adam-hint.component';
 import { DropzoneWrapperComponent } from './adam/dropzone-wrapper/dropzone-wrapper.component';
-import { SaveStatusDialogComponent } from './dialogs/save-status-dialog/save-status-dialog.component';
+import { PublishStatusDialogComponent } from './dialogs/publish-status-dialog/publish-status-dialog.component';
 import { SnackBarSaveErrorsComponent } from './dialogs/snack-bar-save-errors/snack-bar-save-errors.component';
 import { SnackBarUnsavedChangesComponent } from './dialogs/snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
 import { BooleanDefaultComponent } from './input-types/boolean/boolean-default/boolean-default.component';
@@ -105,7 +105,7 @@ import { LocalizationWrapperComponent } from './wrappers/localization-wrapper/lo
     ChangeAnchorTargetDirective,
     HiddenWrapperComponent,
     DnnBridgeComponent,
-    SaveStatusDialogComponent,
+    PublishStatusDialogComponent,
     ExpandableWrapperComponent,
     SnackBarUnsavedChangesComponent,
     SnackBarSaveErrorsComponent,
@@ -177,7 +177,7 @@ import { LocalizationWrapperComponent } from './wrappers/localization-wrapper/lo
     DnnBridgeComponent,
     HyperlinkLibraryComponent,
     NumberDefaultComponent,
-    SaveStatusDialogComponent,
+    PublishStatusDialogComponent,
     SnackBarUnsavedChangesComponent,
     SnackBarSaveErrorsComponent,
     StringDefaultComponent,

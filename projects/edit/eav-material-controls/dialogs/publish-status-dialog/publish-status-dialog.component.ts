@@ -5,20 +5,20 @@ import { map } from 'rxjs/operators';
 import { EavService } from '../../..';
 import { PublishMode, PublishModeConstants } from '../../../shared/models/eav/publish-mode.models';
 import { PublishStatusService } from '../../../shared/store/ngrx-data/publish-status.service';
-import { SaveStatusDialogData, SaveStatusDialogTemplateVars } from './save-status-dialog.models';
+import { PublishStatusDialogData, PublishStatusDialogTemplateVars } from './publish-status-dialog.models';
 
 @Component({
-  selector: 'app-save-status-dialog',
-  templateUrl: './save-status-dialog.component.html',
-  styleUrls: ['./save-status-dialog.component.scss'],
+  selector: 'app-publish-status-dialog',
+  templateUrl: './publish-status-dialog.component.html',
+  styleUrls: ['./publish-status-dialog.component.scss'],
 })
-export class SaveStatusDialogComponent implements OnInit {
+export class PublishStatusDialogComponent implements OnInit {
   publishModes = PublishModeConstants;
-  templateVars$: Observable<SaveStatusDialogTemplateVars>;
+  templateVars$: Observable<PublishStatusDialogTemplateVars>;
 
   constructor(
-    private dialogRef: MatDialogRef<SaveStatusDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) private dialogData: SaveStatusDialogData,
+    private dialogRef: MatDialogRef<PublishStatusDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) private dialogData: PublishStatusDialogData,
     private publishStatusService: PublishStatusService,
     private eavService: EavService,
   ) {
@@ -33,7 +33,7 @@ export class SaveStatusDialogComponent implements OnInit {
     const publishMode$ = this.publishStatusService.getPublishMode$(this.dialogData.formId);
     this.templateVars$ = combineLatest([publishMode$]).pipe(
       map(([publishMode]) => {
-        const templateVars: SaveStatusDialogTemplateVars = {
+        const templateVars: PublishStatusDialogTemplateVars = {
           publishMode,
         };
         return templateVars;

@@ -205,7 +205,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
         DraftShouldBranch: formData.DraftShouldBranch,
         IsPublished: formData.IsPublished,
       };
-      this.publishStatusService.loadPublishStatus(publishStatus);
+      this.publishStatusService.setPublishStatus(publishStatus);
 
       this.eavConfigLoaded$.next(true);
       const isoLangCode = this.eavService.eavConfig.lang.split('-')[0];

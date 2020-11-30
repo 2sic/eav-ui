@@ -8,7 +8,7 @@
       "History.Tip": "Änderungen / Vorversionen"
     }
   },
-  "SaveMode": {
+  "PublishStatus": {
     "Label": "Status:",
     "show": "anzeigen",
     "show.Tip": "Änderungen sind öffentlich",

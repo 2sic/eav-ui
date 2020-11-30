@@ -12,7 +12,7 @@ export class PublishStatusService extends EntityCollectionServiceBase<PublishSta
     super('PublishStatus', serviceElementsFactory);
   }
 
-  public loadPublishStatus(publishStatus: PublishStatus): void {
+  public setPublishStatus(publishStatus: PublishStatus): void {
     this.upsertOneInCache(publishStatus);
   }
 
@@ -26,20 +26,24 @@ export class PublishStatusService extends EntityCollectionServiceBase<PublishSta
       DraftShouldBranch: publishMode === PublishModeConstants.Branch,
       IsPublished: publishMode === PublishModeConstants.Show,
     };
-    this.upsertOneInCache(publishStatus);
+    this.setPublishStatus(publishStatus);
   }
 
-  public getPublishMode$(formId: number): Observable<PublishMode> {
+  private getPublishStatus$(formId: number): Observable<PublishStatus> {
     return this.entities$.pipe(
       map(publishStatuses => publishStatuses.find(publishStatus => publishStatus.formId === formId)),
       distinctUntilChanged(),
+    );
+  }
+
+  public getPublishMode$(formId: number): Observable<PublishMode> {
+    return this.getPublishStatus$(formId).pipe(
       map(publishStatus => {
         const publishMode: PublishMode = publishStatus.DraftShouldBranch
           ? PublishModeConstants.Branch
           : publishStatus.IsPublished ? PublishModeConstants.Show : PublishModeConstants.Hide;
         return publishMode;
       }),
-      distinctUntilChanged(),
     );
   }
 

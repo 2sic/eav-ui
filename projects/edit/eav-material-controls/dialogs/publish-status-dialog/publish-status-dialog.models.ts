@@ -1,9 +1,9 @@
 import { PublishMode } from '../../../shared/models/eav/publish-mode.models';
 
-export interface SaveStatusDialogData {
+export interface PublishStatusDialogData {
   formId: number;
 }
 
-export interface SaveStatusDialogTemplateVars {
+export interface PublishStatusDialogTemplateVars {
   publishMode: PublishMode;
 }
