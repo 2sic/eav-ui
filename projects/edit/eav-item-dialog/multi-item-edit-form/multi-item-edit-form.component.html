@@ -6,7 +6,6 @@
   enableHistory: enableHistory$ | async,
   formsAreValid: formsAreValid$ | async,
   allControlsAreDisabled: allControlsAreDisabled$ | async,
-  publishMode: publishMode$ | async,
   reduceSaveButton: reduceSaveButton$ | async,
   debugEnabled: debugEnabled$ | async,
   debugInfoIsOpen: debugInfoIsOpen$ | async,
@@ -19,8 +18,7 @@
     <div mat-dialog-actions class="form-header-container" [ngClass]="{ 'u-display-none': data.hideHeader }">
       <app-multi-item-edit-form-header class="multi-item-edit-form-header" [formId]="formId" [isCopy]="data.isCopy"
         [formsAreValid]="data.formsAreValid" [allControlsAreDisabled]="data.allControlsAreDisabled"
-        [isParentDialog]="isParentDialog" [publishMode]="data.publishMode" (closeDialog)="closeDialog()"
-        (setPublishMode)="setPublishMode($event)">
+        [isParentDialog]="isParentDialog" (closeDialog)="closeDialog()">
       </app-multi-item-edit-form-header>
     </div>
     <div style="position: relative">

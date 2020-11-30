@@ -19,11 +19,9 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
     super('Item', serviceElementsFactory);
   }
 
-  loadItems(items: JsonItem1[]) {
-    for (const jsonItem1 of items) {
-      const item = Item.create(jsonItem1);
-      this.upsertOneInCache(item);
-    }
+  loadItems(jsonItems: JsonItem1[]) {
+    const items = jsonItems.map(jsonItem => Item.create(jsonItem));
+    this.upsertManyInCache(items);
   }
 
   updateItemId(itemData: SaveResult) {

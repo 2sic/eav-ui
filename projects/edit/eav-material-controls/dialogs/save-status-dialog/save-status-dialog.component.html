@@ -1,4 +1,4 @@
-<mat-card>
+<mat-card *ngIf="templateVars$ | async as data">
   <div class="mat-card__header">
     <div class="mat-card__title">{{ 'SaveMode.Dialog.Title' | translate }}</div>
     <div class="mat-card__description">{{ 'SaveMode.Dialog.Intro' | translate }}</div>
@@ -6,19 +6,22 @@
 
   <mat-nav-list toggle>
 
-    <mat-list-item (click)="setMode(Modes.Show)" [ngClass]="{ 'mat-list-item-focus': publishMode === Modes.Show }">
+    <mat-list-item (click)="setPublishMode(publishModes.Show)"
+      [ngClass]="{ 'mat-list-item-focus': data.publishMode === publishModes.Show }">
       <mat-icon matListIcon color="accent">visibility</mat-icon>
       <div matLine class="mat-list-item__title">{{ 'SaveMode.Dialog.Show.Title' | translate }}</div>
       <div matLine class="mat-list-item__body">{{ 'SaveMode.Dialog.Show.Body' | translate }}</div>
     </mat-list-item>
 
-    <mat-list-item (click)="setMode(Modes.Hide)" [ngClass]="{ 'mat-list-item-focus': publishMode === Modes.Hide }">
+    <mat-list-item (click)="setPublishMode(publishModes.Hide)"
+      [ngClass]="{ 'mat-list-item-focus': data.publishMode === publishModes.Hide }">
       <mat-icon matListIcon color="accent">visibility_off</mat-icon>
       <div matLine class="mat-list-item__title">{{ 'SaveMode.Dialog.Hide.Title' | translate }}</div>
       <div matLine class="mat-list-item__body">{{ 'SaveMode.Dialog.Hide.Body' | translate }}</div>
     </mat-list-item>
 
-    <mat-list-item (click)="setMode(Modes.Branch)" [ngClass]="{ 'mat-list-item-focus': publishMode === Modes.Branch }">
+    <mat-list-item (click)="setPublishMode(publishModes.Branch)"
+      [ngClass]="{ 'mat-list-item-focus': data.publishMode === publishModes.Branch }">
       <mat-icon matListIcon color="accent" svgIcon="draft-branch"></mat-icon>
       <div matLine class="mat-list-item__title">{{ 'SaveMode.Dialog.Branch.Title' | translate }}</div>
       <div matLine class="mat-list-item__body">{{ 'SaveMode.Dialog.Branch.Body' | translate }}</div>

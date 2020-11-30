@@ -2,11 +2,11 @@ import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { HttpClient } from '@angular/common/http';
 import { Injectable, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Observable, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { FormDisabledSet, FormValueSet } from '../../../edit-types';
 import { keyPartOfPage, keyPortalRoot, keyPublishing } from '../../../ng-dialogs/src/app/shared/constants/session.constants';
 import { Context } from '../../../ng-dialogs/src/app/shared/services/context';
-import { EavFormData, EditDialogContext } from '../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.models';
+import { EavFormData, EditDialogContext, SaveEavFormData } from '../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.models';
 import { EavConfig } from '../models/eav-config';
 import { Item } from '../models/eav/item';
 import { SaveResult } from '../models/eav/save-result.model';
@@ -68,9 +68,9 @@ export class EavService implements OnDestroy {
   }
 
   fetchFormData(items: string) {
-    return this.http.post(this.dnnContext.$2sxc.http.apiUrl(webApiEditRoot + 'load'), items, {
+    return this.http.post<EavFormData>(this.dnnContext.$2sxc.http.apiUrl(webApiEditRoot + 'load'), items, {
       params: { appId: this.context.appId.toString() }
-    }) as Observable<EavFormData>;
+    });
   }
 
   saveItem(item: Item) {
@@ -85,10 +85,10 @@ export class EavService implements OnDestroy {
     this.store.dispatch(new itemActions.SaveItemAttributesValuesErrorAction(error));
   }
 
-  saveFormData(body: string) {
-    return this.http.post(this.dnnContext.$2sxc.http.apiUrl(webApiEditRoot + 'save'), body, {
+  saveFormData(result: SaveEavFormData) {
+    return this.http.post<SaveResult>(this.dnnContext.$2sxc.http.apiUrl(webApiEditRoot + 'save'), result, {
       params: { appId: this.eavConfig.appId.toString(), partOfPage: this.eavConfig.partOfPage }
-    }) as Observable<SaveResult>;
+    });
   }
 
   private getVersioningOptions(partOfPage: boolean, publishing: string): VersioningOptions {

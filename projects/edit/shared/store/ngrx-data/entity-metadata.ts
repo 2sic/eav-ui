@@ -1,4 +1,7 @@
 import { EntityMetadataMap } from '@ngrx/data';
+import { ContentType, EavEntity, InputType, Item, Language } from '../../models/eav';
+import { LanguageInstance } from '../../models/eav/language-instance';
+import { PublishStatus } from '../../models/eav/publish-status';
 
 export const entityMetadata: EntityMetadataMap = {
   Item: {
@@ -20,10 +23,14 @@ export const entityMetadata: EntityMetadataMap = {
   InputType: {
     selectId: InputTypeSelectId,
   },
+  PublishStatus: {
+    selectId: PublishStatusSelectId,
+  },
 };
 
 export const pluralNames = {
   Feature: 'Features', // example
+  PublishStatus: 'PublishStatuses',
 };
 
 export const entityConfig = {
@@ -31,26 +38,30 @@ export const entityConfig = {
   pluralNames,
 };
 
-export function itemSelectId<T extends { entity: any }>(entity: T) {
-  return entity === null ? undefined : entity.entity.guid;
+export function itemSelectId(item: Item): string {
+  return item == null ? undefined : item.entity.guid;
 }
 
-export function languageSelectId<T extends { key: any }>(entity: T) {
-  return entity === null ? undefined : entity.key;
+export function languageSelectId(language: Language): string {
+  return language == null ? undefined : language.key;
 }
 
-export function languageInstanceSelectId<T extends { formId: any }>(entity: T) {
-  return entity === null ? undefined : entity.formId;
+export function languageInstanceSelectId(languageInstance: LanguageInstance): number {
+  return languageInstance == null ? undefined : languageInstance.formId;
 }
 
-export function contentTypeSelectId<T extends { contentType: any }>(entity: T) {
-  return entity === null ? undefined : entity.contentType.id;
+export function contentTypeSelectId(contentType: ContentType): string {
+  return contentType == null ? undefined : contentType.contentType.id;
 }
 
-export function contentTypeItemSelectId<T extends { guid: any }>(entity: T) {
-  return entity === null ? undefined : entity.guid;
+export function contentTypeItemSelectId(contentTypeItem: EavEntity): string {
+  return contentTypeItem == null ? undefined : contentTypeItem.guid;
 }
 
-export function InputTypeSelectId<T extends { Type: any }>(entity: T) {
-  return entity === null ? undefined : entity.Type;
+export function InputTypeSelectId(inputType: InputType): string {
+  return inputType == null ? undefined : inputType.Type;
+}
+
+export function PublishStatusSelectId(publishStatus: PublishStatus): number {
+  return publishStatus == null ? undefined : publishStatus.formId;
 }

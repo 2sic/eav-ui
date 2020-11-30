@@ -91,11 +91,11 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   /** Observe is item form is saved */
-  formSaveObservable() {
+  formSaveObservable(): Observable<fromItems.SaveItemAttributesValuesAction> {
     return this.actions$.pipe(
       ofType(fromItems.SAVE_ITEM_ATTRIBUTES_VALUES),
       filter<fromItems.SaveItemAttributesValuesAction>(action => this.item.entity.guid === action.item.entity.guid),
-    ) as Observable<Action>;
+    );
   }
 
   /** Update NGRX/store on form value change */

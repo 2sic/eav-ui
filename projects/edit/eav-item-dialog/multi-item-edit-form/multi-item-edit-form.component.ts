@@ -1,10 +1,9 @@
 // tslint:disable-next-line:max-line-length
-import { AfterViewChecked, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { AfterViewChecked, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { Actions, ofType } from '@ngrx/effects';
-import { Action } from '@ngrx/store';
 import { TranslateService } from '@ngx-translate/core';
 import 'reflect-metadata';
 import { BehaviorSubject, fromEvent, merge, Observable, of, Subscription, zip } from 'rxjs';
@@ -19,6 +18,7 @@ import { ValidationMessagesService } from '../../eav-material-controls/validator
 import { EditParams } from '../../edit-matcher.models';
 import { Item, Language } from '../../shared/models/eav';
 import { FieldErrorMessage } from '../../shared/models/eav/field-error-message';
+import { PublishStatus } from '../../shared/models/eav/publish-status';
 import { JsonItem1 } from '../../shared/models/json-format-v1';
 import { EavService } from '../../shared/services/eav.service';
 import { EditRoutingService } from '../../shared/services/edit-routing.service';
@@ -32,15 +32,15 @@ import { InputTypeService } from '../../shared/store/ngrx-data/input-type.servic
 import { ItemService } from '../../shared/store/ngrx-data/item.service';
 import { LanguageInstanceService } from '../../shared/store/ngrx-data/language-instance.service';
 import { LanguageService } from '../../shared/store/ngrx-data/language.service';
+import { PublishStatusService } from '../../shared/store/ngrx-data/publish-status.service';
 import { ItemEditFormComponent } from '../item-edit-form/item-edit-form.component';
-import { PublishMode, PublishModeConstants } from './multi-item-edit-form.constants';
 import { calculateIsParentDialog, sortLanguages } from './multi-item-edit-form.helpers';
+import { SaveEavFormData } from './multi-item-edit-form.models';
 
 @Component({
   selector: 'app-multi-item-edit-form',
   templateUrl: './multi-item-edit-form.component.html',
   styleUrls: ['./multi-item-edit-form.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewChecked {
   @ViewChildren(ItemEditFormComponent) private itemEditFormRefs: QueryList<ItemEditFormComponent>;
@@ -54,7 +54,6 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
   allControlsAreDisabled$ = new BehaviorSubject(true);
   items$: Observable<Item[]>;
 
-  publishMode$ = new BehaviorSubject<PublishMode>('hide');
   reduceSaveButton$ = new BehaviorSubject(false);
   hideHeader$ = this.languageInstanceService.getHideHeader(this.formId);
   debugEnabled$ = this.globalConfigService.getDebugEnabled().pipe(
@@ -70,7 +69,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
 
   private formErrors: { [key: string]: string }[] = [];
   private formsAreDirty: { [key: string]: boolean } = {};
-  private formSaveAllObservables$: Observable<Action>[] = [];
+  private formSaveAllObservables$: Observable<fromItems.SaveItemAttributesValuesAction>[] = [];
   private createMode = false;
   private formIsSaved = false;
   private subscriptions: Subscription[] = [];
@@ -94,6 +93,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
     private loadIconsService: LoadIconsService,
     private route: ActivatedRoute,
     private editRoutingService: EditRoutingService,
+    private publishStatusService: PublishStatusService,
   ) {
     this.editRoutingService.init(this.route, this.formId, this.dialogRef);
     this.loadIconsService.load();
@@ -116,10 +116,10 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
     this.debugInfoIsOpen$.complete();
     this.formsAreValid$.complete();
     this.allControlsAreDisabled$.complete();
-    this.publishMode$.complete();
     this.eavConfigLoaded$.complete();
     this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
     this.languageInstanceService.removeLanguageInstance(this.formId);
+    this.publishStatusService.removePublishStatus(this.formId);
     this.editRoutingService.ngOnDestroy();
 
     if (this.isParentDialog) {
@@ -131,6 +131,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
       this.featureService.clearCache();
       this.contentTypeItemService.clearCache();
       this.contentTypeService.clearCache();
+      this.publishStatusService.clearCache();
     }
   }
 
@@ -141,14 +142,6 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
     } else {
       this.dialogRef.close(this.createMode ? saveResult : undefined);
     }
-  }
-
-  setPublishMode(publishMode: PublishMode) {
-    // if publish mode is prohibited, revert to default
-    if (this.eavService.eavConfig.versioningOptions[publishMode] == null) {
-      publishMode = Object.keys(this.eavService.eavConfig.versioningOptions)[0] as PublishMode;
-    }
-    this.publishMode$.next(publishMode);
   }
 
   trackByFn(index: number, item: Item) {
@@ -180,11 +173,11 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
             fieldErrors.push({ field: key, message: formError[key] });
           });
         });
-        const data: SaveErrorsSnackData = {
+        const snackData: SaveErrorsSnackData = {
           fieldErrors,
         };
         this.snackBar.openFromComponent(SnackBarSaveErrorsComponent, {
-          data,
+          data: snackData,
           duration: 5000,
         });
       }
@@ -206,8 +199,14 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
       this.contentTypeItemService.addContentTypeItems(formData.ContentTypeItems);
       this.contentTypeService.addContentTypes(formData.ContentTypes);
       this.featureService.loadFeatures(formData.Features);
-
       this.eavService.setEavConfig(formData.Context);
+      const publishStatus: PublishStatus = {
+        formId: this.formId,
+        DraftShouldBranch: formData.DraftShouldBranch,
+        IsPublished: formData.IsPublished,
+      };
+      this.publishStatusService.loadPublishStatus(publishStatus);
+
       this.eavConfigLoaded$.next(true);
       const isoLangCode = this.eavService.eavConfig.lang.split('-')[0];
       this.translate.use(isoLangCode);
@@ -218,13 +217,13 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
         const sortedLanguages = sortLanguages(this.eavService.eavConfig.langPri, eavLangs);
         this.languageService.loadLanguages(sortedLanguages);
       }
-      this.languageInstanceService.addLanguageInstance(this.formId, this.eavService.eavConfig.lang,
-        this.eavService.eavConfig.langPri, this.eavService.eavConfig.lang, false);
-
-      const publishMode: PublishMode = formData.DraftShouldBranch
-        ? PublishModeConstants.Branch
-        : formData.IsPublished ? PublishModeConstants.Show : PublishModeConstants.Hide;
-      this.setPublishMode(publishMode);
+      this.languageInstanceService.addLanguageInstance(
+        this.formId,
+        this.eavService.eavConfig.lang,
+        this.eavService.eavConfig.langPri,
+        this.eavService.eavConfig.lang,
+        false,
+      );
 
       // if current language !== default language check whether default language has value in all items
       if (this.eavService.eavConfig.lang !== this.eavService.eavConfig.langPri) {
@@ -440,26 +439,24 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
     this.subscriptions.push(
       zip(...this.formSaveAllObservables$)
         .pipe(
-          switchMap((actions: fromItems.SaveItemAttributesValuesAction[]) => {
-            angularConsoleLog('ZIP ACTIONS ITEM: ', JsonItem1.create(actions[0].item));
-            const allItems: JsonItem1[] = [];
-            actions.forEach(action => {
-              const item = JsonItem1.create(action.item);
+          switchMap(actions => {
+            const items = actions
+              .map(action => JsonItem1.create(action.item))
               // do not try to save item which doesn't have any fields, nothing could have changed about it
-              if (Object.keys(item.Entity.Attributes).length > 0) {
-                allItems.push(item);
-              }
-            });
-            const body = {
-              Items: allItems,
-              IsPublished: this.publishMode$.value === PublishModeConstants.Show,
-              DraftShouldBranch: this.publishMode$.value === PublishModeConstants.Branch,
+              .filter(item => Object.keys(item.Entity.Attributes).length > 0);
+            const publishStatus = this.publishStatusService.getPublishStatus(this.formId);
+
+            const saveFormData: SaveEavFormData = {
+              Items: items,
+              IsPublished: publishStatus.IsPublished,
+              DraftShouldBranch: publishStatus.DraftShouldBranch,
             };
-            return this.eavService.saveFormData(JSON.stringify(body)).pipe(
-              map(data => {
-                this.eavService.saveItemSuccess(data);
+            angularConsoleLog('SAVE FORM DATA: ', saveFormData);
+            return this.eavService.saveFormData(saveFormData).pipe(
+              tap(result => {
+                angularConsoleLog('SAVE WORKED');
+                this.eavService.saveItemSuccess(result);
               }),
-              tap(data => angularConsoleLog('working'))
             );
           }),
           catchError(err => of(this.eavService.saveItemError(err)))
@@ -470,11 +467,11 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
 
   /** Open snackbar when snack bar not saved */
   private snackBarYouHaveUnsavedChanges() {
-    const data: UnsavedChangesSnackData = {
+    const snackData: UnsavedChangesSnackData = {
       save: false,
     };
     const snackBarRef = this.snackBar.openFromComponent(SnackBarUnsavedChangesComponent, {
-      data,
+      data: snackData,
       duration: 5000,
     });
 

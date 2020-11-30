@@ -1,4 +1,3 @@
-import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 import { JsonItem1 } from '../json-format-v1/json-item1';
 import { EavEntity } from './eav-entity';
 import { EavHeader } from './eav-header';
@@ -14,7 +13,6 @@ export class Item {
 
   /** Create new Eav Item from json typed JsonItem1 */
   public static create(item: JsonItem1): Item {
-    angularConsoleLog('create item.Entity:', item.Entity);
     return new Item(
       // EavHeader.create(item.Header),
       item.Header,

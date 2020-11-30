@@ -2,14 +2,17 @@ import { DialogContextApp, DialogContextLanguage, DialogContextSite, DialogConte
 import { InputType } from '../../shared/models/eav';
 import { Entity1, JsonContentType1, JsonItem1 } from '../../shared/models/json-format-v1';
 
-export interface EavFormData {
+export interface EavPublishMode {
+  DraftShouldBranch: boolean;
+  IsPublished: boolean;
+}
+
+export interface EavFormData extends EavPublishMode {
   ContentTypeItems: Entity1[];
   ContentTypes: JsonContentType1[];
   Context: EditDialogContext;
-  DraftShouldBranch: boolean;
   Features: any[];
   InputTypes: InputType[];
-  IsPublished: boolean;
   Items: JsonItem1[];
 }
 
@@ -18,4 +21,8 @@ export interface EditDialogContext {
   Language: DialogContextLanguage;
   Site: DialogContextSite;
   System: DialogContextSystem;
+}
+
+export interface SaveEavFormData extends EavPublishMode {
+  Items: JsonItem1[];
 }
