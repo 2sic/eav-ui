@@ -4,17 +4,21 @@ import { Injectable } from '@angular/core';
 import { webApiAppFile, webApiAppFileCreate, webApiAppFilesAll } from 'projects/edit';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { keyIsShared } from '../../shared/constants/session.constants';
 import { Context } from '../../shared/services/context';
 import { SourceView } from '../models/source-view.model';
 
 @Injectable()
 export class SourceService {
+
+  private isShared = sessionStorage.getItem(keyIsShared);
+
   constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
 
   /** Key is templateId or path */
   get(key: number | string) {
     return this.http.get(this.dnnContext.$2sxc.http.apiUrl(webApiAppFile), {
-      params: { appId: this.context.appId.toString(), ...this.templateIdOrPath(key) }
+      params: { appId: this.context.appId.toString(), global: this.isShared, ...this.templateIdOrPath(key) }
     }).pipe(
       map((view: SourceView) => {
         if (view.Type.toLowerCase() === 'auto') {
@@ -38,19 +42,19 @@ export class SourceService {
   /** Key is templateId or path */
   save(key: number | string, view: SourceView) {
     return this.http.post(this.dnnContext.$2sxc.http.apiUrl(webApiAppFile), view, {
-      params: { appId: this.context.appId.toString(), ...this.templateIdOrPath(key) },
+      params: { appId: this.context.appId.toString(), global: this.isShared, ...this.templateIdOrPath(key) },
     }) as Observable<boolean>;
   }
 
   getTemplates() {
     return this.http.get(this.dnnContext.$2sxc.http.apiUrl(webApiAppFilesAll), {
-      params: { appId: this.context.appId.toString(), global: 'false', withSubfolders: 'true' },
+      params: { appId: this.context.appId.toString(), global: this.isShared, withSubfolders: 'true' },
     }) as Observable<string[]>;
   }
 
   createTemplate(name: string) {
     return this.http.post(this.dnnContext.$2sxc.http.apiUrl(webApiAppFileCreate), {}, {
-      params: { appId: this.context.appId.toString(), global: 'false', path: name },
+      params: { appId: this.context.appId.toString(), global: this.isShared, path: name },
     }) as Observable<boolean>;
   }
 

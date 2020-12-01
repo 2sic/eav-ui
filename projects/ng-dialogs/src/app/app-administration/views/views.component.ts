@@ -243,7 +243,7 @@ export class ViewsComponent implements OnInit, OnDestroy {
   }
 
   private openCode(view: View) {
-    this.dialogService.openCodeFile(view.TemplatePath);
+    this.dialogService.openCodeFile(view.TemplatePath, view.IsShared);
   }
 
   private openPermissions(view: View) {

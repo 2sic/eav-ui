@@ -21,3 +21,6 @@ export const keyApi = prefix + 'api';
 
 /** Url which opened the dialog. Used for debugging */
 export const keyUrl = prefix + 'url';
+
+/** This is used by file editor to determine if it's editing shared files or of that portal only */
+export const keyIsShared = prefix + 'isshared';

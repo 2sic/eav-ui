@@ -13,8 +13,12 @@ export class View {
   Permissions: PermissionsCount;
   PresentationType: ViewEntity;
   TemplatePath: string;
+
   /** How often this is used in ContentBlocks */
   Used: number;
+
+  /** if it's stored in a shared location - usually the 0 Portal in DNN */
+  IsShared: boolean;
   ViewNameInUrl: string;
 }
 

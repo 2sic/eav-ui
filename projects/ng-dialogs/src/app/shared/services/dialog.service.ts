@@ -9,13 +9,14 @@ import { Context } from './context';
 export class DialogService {
   constructor(private context: Context) { }
 
-  openCodeFile(path: string) {
+  openCodeFile(path: string, isShared: boolean = false) {
     const dialog = DialogTypeConstants.Develop;
     const form: EditForm = {
       items: [{ Path: path }]
     };
     const url = this.sharedUrlRoot() +
       this.buildHashParam(keyDialog, dialog) +
+      this.buildHashParam('isshared', isShared.toString()) +
       this.buildHashParam(keyItems, JSON.stringify(form.items)) +
       (sessionStorage.getItem(keyDebug) ? this.buildHashParam(keyDebug) : '') +
       '';

@@ -12,7 +12,7 @@ export class WebApisService {
 
   getAll() {
     return this.http.get<string[]>(this.dnnContext.$2sxc.http.apiUrl(webApiAppFilesAll), {
-      params: { appId: this.context.appId.toString(), path: '', mask: '*Controller.cs', withSubfolders: 'true' },
+      params: { appId: this.context.appId.toString(), global: 'false', path: '', mask: '*Controller.cs', withSubfolders: 'true' },
     }).pipe(
       map(paths => {
         const webApis: WebApi[] = paths.map(path => {
