@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { DialogTypeConstants } from '../constants/dialog-types.constants';
 // tslint:disable-next-line:max-line-length
-import { keyAppId, keyContentBlockId, keyDebug, keyDialog, keyItems, keyModuleId, keyPartOfPage, keyPipelineId, keyPortalRoot, keyRequestToken, keyTabId, keyUrl, keyZoneId, prefix } from '../constants/session.constants';
+import { keyAppId, keyContentBlockId, keyDebug, keyDialog, keyItems, keyModuleId, keyPartOfPage, keyPipelineId, keyRequestToken, keyTabId, keyUrl, keyZoneId, prefix } from '../constants/session.constants';
 import { EditForm } from '../models/edit-form.model';
 import { Context } from './context';
 
@@ -23,7 +23,6 @@ export class DialogService {
       this.buildHashParam(keyTabId, this.context.tabId.toString()) +
       this.buildHashParam(keyModuleId, this.context.moduleId.toString()) +
       this.buildHashParam(keyContentBlockId, this.context.contentBlockId.toString()) +
-      this.buildHashParam(keyPortalRoot) +
       this.buildHashParam(keyPartOfPage) +
       this.buildHashParam(keyRequestToken) +
       this.buildHashParam(keyDialog, dialog) +
@@ -49,7 +48,6 @@ export class DialogService {
       this.buildHashParam(keyTabId, this.context.tabId.toString()) +
       this.buildHashParam(keyModuleId, this.context.moduleId.toString()) +
       this.buildHashParam(keyContentBlockId, this.context.contentBlockId.toString()) +
-      this.buildHashParam(keyPortalRoot) +
       this.buildHashParam(keyPartOfPage) +
       this.buildHashParam(keyRequestToken) +
       this.buildHashParam(keyDialog, dialog) +
