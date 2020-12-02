@@ -14,4 +14,10 @@ export interface EavConfig {
   tabId: string;
   systemRoot: string;
   versioningOptions: VersioningOptions;
+  formId: number;
+  isParentDialog: boolean;
+  itemGuids: string[];
+  createMode: boolean;
+  isCopy: boolean;
+  enableHistory: boolean;
 }

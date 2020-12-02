@@ -1,14 +1,13 @@
 <mat-card class="header" *ngIf="templateVars$ | async as data">
   <button mat-icon-button class="header__exit-button" (click)="close()"
-    [matTooltip]="(isParentDialog ? 'Form.Buttons.Exit.Tip' : 'Form.Buttons.Return.Tip') | translate">
-    <mat-icon>{{ isParentDialog ? 'clear' : 'arrow_back' }}</mat-icon>
+    [matTooltip]="(eavConfig.isParentDialog ? 'Form.Buttons.Exit.Tip' : 'Form.Buttons.Return.Tip') | translate">
+    <mat-icon>{{ eavConfig.isParentDialog ? 'clear' : 'arrow_back' }}</mat-icon>
   </button>
 
-  <div *ngIf="isCopy" class="header__copy">{{ 'ItemCard.CopyHint' | translate }}</div>
+  <div *ngIf="eavConfig.isCopy" class="header__copy">{{ 'ItemCard.CopyHint' | translate }}</div>
 
   <div class="header__langs">
-    <app-language-switcher *ngIf="data.hasLanguages" [formId]="formId"
-      [disabled]="!formsAreValid && !allControlsAreDisabled">
+    <app-language-switcher *ngIf="data.hasLanguages" [disabled]="!formsAreValid && !allControlsAreDisabled">
     </app-language-switcher>
   </div>
 

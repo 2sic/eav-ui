@@ -2,6 +2,7 @@ import { AfterViewInit, ChangeDetectionStrategy, Component, EventEmitter, Input,
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { skip } from 'rxjs/operators';
+import { EavService } from '../../..';
 import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 import { BuildFieldsService } from '../../../eav-item-dialog/item-edit-form/build-fields.service';
 import { FormValues } from '../../../eav-item-dialog/item-edit-form/item-edit-form.models';
@@ -21,7 +22,6 @@ import { FormValueChange } from './eav-form.models';
 export class EavFormComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() rootConfig: FieldConfigSet;
   @Input() fieldConfigs: FieldConfigSet[];
-  @Input() private formId: number;
   @Input() private entityGuid: string;
   @Output() private formSubmit = new EventEmitter<void>();
   @Output() private formValueChange = new EventEmitter<FormValueChange>();
@@ -35,11 +35,12 @@ export class EavFormComponent implements OnInit, AfterViewInit, OnDestroy {
     private languageInstanceService: LanguageInstanceService,
     private fieldsSettingsService: FieldsSettingsService,
     private buildFieldsService: BuildFieldsService,
+    private eavService: EavService,
   ) { }
 
   ngOnInit() {
     this.createControlsInFormGroup(this.fieldConfigs);
-    this.formulaInstance.init(this.formId, this.form, this.entityGuid, this.fieldConfigs);
+    this.formulaInstance.init(this.eavService.eavConfig.formId, this.form, this.entityGuid, this.fieldConfigs);
   }
 
   ngAfterViewInit() {
@@ -56,7 +57,7 @@ export class EavFormComponent implements OnInit, AfterViewInit, OnDestroy {
     );
 
     this.subscription.add(
-      this.languageInstanceService.getCurrentLanguage(this.formId).pipe(skip(1)).subscribe(currentLang => {
+      this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId).pipe(skip(1)).subscribe(currentLang => {
         // run formulas when language is changed and fields are translated
         this.formulaInstance.runFormulasAfterFieldsTranslated();
       })

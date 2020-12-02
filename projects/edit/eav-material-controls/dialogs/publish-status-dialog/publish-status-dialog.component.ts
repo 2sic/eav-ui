@@ -1,11 +1,11 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Component, OnInit } from '@angular/core';
+import { MatDialogRef } from '@angular/material/dialog';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { EavService } from '../../..';
 import { PublishMode, PublishModeConstants } from '../../../shared/models/eav/publish-mode.models';
 import { PublishStatusService } from '../../../shared/store/ngrx-data/publish-status.service';
-import { PublishStatusDialogData, PublishStatusDialogTemplateVars } from './publish-status-dialog.models';
+import { PublishStatusDialogTemplateVars } from './publish-status-dialog.models';
 
 @Component({
   selector: 'app-publish-status-dialog',
@@ -18,7 +18,6 @@ export class PublishStatusDialogComponent implements OnInit {
 
   constructor(
     private dialogRef: MatDialogRef<PublishStatusDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) private dialogData: PublishStatusDialogData,
     private publishStatusService: PublishStatusService,
     private eavService: EavService,
   ) {
@@ -30,7 +29,7 @@ export class PublishStatusDialogComponent implements OnInit {
   }
 
   ngOnInit() {
-    const publishMode$ = this.publishStatusService.getPublishMode$(this.dialogData.formId);
+    const publishMode$ = this.publishStatusService.getPublishMode$(this.eavService.eavConfig.formId);
     this.templateVars$ = combineLatest([publishMode$]).pipe(
       map(([publishMode]) => {
         const templateVars: PublishStatusDialogTemplateVars = {
@@ -42,7 +41,7 @@ export class PublishStatusDialogComponent implements OnInit {
   }
 
   setPublishMode(publishMode: PublishMode) {
-    this.publishStatusService.setPublishMode(publishMode, this.dialogData.formId, this.eavService);
+    this.publishStatusService.setPublishMode(publishMode, this.eavService.eavConfig.formId, this.eavService);
     this.closeDialog();
   }
 

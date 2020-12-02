@@ -47,7 +47,15 @@ export class EavService implements OnDestroy {
   }
 
   /** Create EavConfiguration from sessionStorage */
-  setEavConfig(editDialogContext: EditDialogContext) {
+  setEavConfig(
+    editDialogContext: EditDialogContext,
+    formId: number,
+    isParentDialog: boolean,
+    itemGuids: string[],
+    createMode: boolean,
+    isCopy: boolean,
+    enableHistory: boolean,
+  ) {
     this.eavConfig = {
       zoneId: this.context.zoneId.toString(),
       appId: this.context.appId.toString(),
@@ -64,6 +72,12 @@ export class EavService implements OnDestroy {
         sessionStorage.getItem(keyPartOfPage) === 'true',
         sessionStorage.getItem(keyPublishing),
       ),
+      formId,
+      isParentDialog,
+      itemGuids,
+      createMode,
+      isCopy,
+      enableHistory,
     };
   }
 

@@ -6,7 +6,7 @@ import { distinctUntilChanged, filter, map, pairwise, startWith } from 'rxjs/ope
 import { ItemHistoryResult } from '../../../ng-dialogs/src/app/item-history/models/item-history-result.model';
 import { convertFormToUrl } from '../../../ng-dialogs/src/app/shared/helpers/url-prep.helper';
 import { EditForm } from '../../../ng-dialogs/src/app/shared/models/edit-form.model';
-import { MultiItemEditFormComponent } from '../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.component';
+import { EditEntryComponent } from '../../edit-entry/edit-entry.component';
 import { EditParams } from '../../edit-matcher.models';
 import { LanguageInstanceService } from '../store/ngrx-data/language-instance.service';
 import { calculatePathFromRoot } from './edit-routing.helpers';
@@ -17,7 +17,7 @@ export class EditRoutingService implements OnDestroy {
   private route: ActivatedRoute;
   private subscription: Subscription;
   private childFormResult$: Subject<ChildFormResult>;
-  private dialogRef: MatDialogRef<MultiItemEditFormComponent>;
+  private dialogRef: MatDialogRef<EditEntryComponent>;
 
   constructor(private router: Router, private languageInstanceService: LanguageInstanceService) { }
 
@@ -27,7 +27,7 @@ export class EditRoutingService implements OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  init(route: ActivatedRoute, formId: number, dialogRef: MatDialogRef<MultiItemEditFormComponent>) {
+  init(route: ActivatedRoute, formId: number, dialogRef: MatDialogRef<EditEntryComponent>) {
     this.route = route;
     this.dialogRef = dialogRef;
     this.subscription = new Subscription();

@@ -1,6 +1,5 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { Actions, ofType } from '@ngrx/effects';
-import { Action } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import { filter, take } from 'rxjs/operators';
 import { EavFormComponent } from '../../eav-dynamic-form/components/eav-form/eav-form.component';
@@ -22,13 +21,10 @@ import { BuildFieldsService } from './build-fields.service';
   templateUrl: './item-edit-form.component.html',
   styleUrls: ['./item-edit-form.component.scss'],
   providers: [BuildFieldsService, FieldsSettingsService],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
   @ViewChild(EavFormComponent) form: EavFormComponent;
   @Input() item: Item;
-  @Input() formId: number;
-  @Input() private enableHistory: boolean;
   @Output() private itemFormValueChange = new EventEmitter<void>();
 
   rootConfig: FieldConfigSet;
@@ -50,13 +46,13 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
 
   ngOnInit() {
     this.subscription.add(
-      this.languageInstanceService.getDefaultLanguage(this.formId).subscribe(defaultLang => {
+      this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId).subscribe(defaultLang => {
         this.defaultLanguage = defaultLang;
       })
     );
 
     this.subscription.add(
-      this.languageInstanceService.getCurrentLanguage(this.formId).subscribe(currentLang => {
+      this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId).subscribe(currentLang => {
         this.currentLanguage = currentLang;
         this.setFormValues();
       })
@@ -68,10 +64,10 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
       const allConfigs = this.buildFieldsService.buildFieldConfigs(
         contentType,
         this.item,
-        this.formId,
+        this.eavService.eavConfig.formId,
         this.currentLanguage,
         this.defaultLanguage,
-        this.enableHistory,
+        this.eavService.eavConfig.enableHistory,
         this.fieldsSettingsService,
       );
       this.rootConfig = allConfigs[0];
@@ -146,7 +142,7 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
     }
     // important to be after patchValue
     this.eavService.formValueChange$.next({
-      formId: this.formId,
+      formId: this.eavService.eavConfig.formId,
       entityGuid: this.item.entity.guid,
       entityValues: formValues,
     });

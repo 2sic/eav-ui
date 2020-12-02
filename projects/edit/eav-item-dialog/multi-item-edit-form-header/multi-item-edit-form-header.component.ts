@@ -2,8 +2,9 @@ import { Component, EventEmitter, Input, OnInit, Output, ViewContainerRef } from
 import { MatDialog } from '@angular/material/dialog';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { EavService } from '../..';
 import { PublishStatusDialogComponent } from '../../eav-material-controls/dialogs/publish-status-dialog/publish-status-dialog.component';
-import { PublishStatusDialogData } from '../../eav-material-controls/dialogs/publish-status-dialog/publish-status-dialog.models';
+import { EavConfig } from '../../shared/models/eav-config';
 import { LanguageService } from '../../shared/store/ngrx-data/language.service';
 import { PublishStatusService } from '../../shared/store/ngrx-data/publish-status.service';
 import { FormHeaderTemplateVars } from './multi-item-edit-form-header.models';
@@ -14,13 +15,11 @@ import { FormHeaderTemplateVars } from './multi-item-edit-form-header.models';
   styleUrls: ['./multi-item-edit-form-header.component.scss'],
 })
 export class MultiItemEditFormHeaderComponent implements OnInit {
-  @Input() formId: number;
-  @Input() isCopy: boolean;
   @Input() formsAreValid: boolean;
   @Input() allControlsAreDisabled: boolean;
-  @Input() isParentDialog: boolean;
   @Output() private closeDialog = new EventEmitter<null>();
 
+  eavConfig: EavConfig;
   templateVars$: Observable<FormHeaderTemplateVars>;
 
   constructor(
@@ -28,11 +27,13 @@ export class MultiItemEditFormHeaderComponent implements OnInit {
     private viewContainerRef: ViewContainerRef,
     private languageService: LanguageService,
     private publishStatusService: PublishStatusService,
+    private eavService: EavService,
   ) { }
 
   ngOnInit() {
+    this.eavConfig = this.eavService.eavConfig;
     const hasLanguages$ = this.languageService.entities$.pipe(map(languages => languages.length > 0));
-    const publishMode$ = this.publishStatusService.getPublishMode$(this.formId);
+    const publishMode$ = this.publishStatusService.getPublishMode$(this.eavConfig.formId);
     this.templateVars$ = combineLatest([hasLanguages$, publishMode$]).pipe(
       map(([hasLanguages, publishMode]) => {
         const templateVars: FormHeaderTemplateVars = {
@@ -49,15 +50,11 @@ export class MultiItemEditFormHeaderComponent implements OnInit {
   }
 
   openPublishStatusDialog() {
-    const dialogData: PublishStatusDialogData = {
-      formId: this.formId,
-    };
     this.dialog.open(PublishStatusDialogComponent, {
       panelClass: 'c-publish-status-dialog',
       autoFocus: false,
       width: '350px',
       viewContainerRef: this.viewContainerRef,
-      data: dialogData,
     });
   }
 }
