@@ -1,12 +1,9 @@
-<ng-container *ngIf="{
-  disabled: disabled$ | async,
-  showValidation: showValidation$ | async
-} as data">
+<ng-container *ngIf="templateVars$ | async as data">
 
   <mat-form-field [formGroup]="group" appearance="standard" color="accent" class="textarea-field">
-    <textarea matInput [formControlName]="config.field.name" [rows]="rowCount$ | async"
-      [placeholder]="placeholder$ | async" [required]="required$ | async"></textarea>
-    <mat-label>{{ label$ | async }}</mat-label>
+    <textarea matInput [formControlName]="config.field.name" [rows]="data.rowCount" [placeholder]="data.placeholder"
+      [required]="data.required"></textarea>
+    <mat-label>{{ data.label }}</mat-label>
   </mat-form-field>
 
   <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>

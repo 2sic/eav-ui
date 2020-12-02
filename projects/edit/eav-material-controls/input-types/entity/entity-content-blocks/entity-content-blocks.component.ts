@@ -1,5 +1,5 @@
 
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
@@ -15,7 +15,6 @@ import { EntityContentBlocksLogic } from './entity-content-blocks-logic';
   selector: 'entity-content-blocks',
   templateUrl: '../entity-default/entity-default.component.html',
   styleUrls: ['../entity-default/entity-default.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 @InputType({})
 export class EntityContentBlockComponent extends EntityDefaultComponent implements OnInit, OnDestroy {

@@ -1,4 +1,4 @@
-<mat-card class="header" *ngIf="templateVars$ | async as data">
+<mat-card *ngIf="templateVars$ | async as data" class="header">
   <button mat-icon-button class="header__exit-button" (click)="close()"
     [matTooltip]="(eavConfig.isParentDialog ? 'Form.Buttons.Exit.Tip' : 'Form.Buttons.Return.Tip') | translate">
     <mat-icon>{{ eavConfig.isParentDialog ? 'clear' : 'arrow_back' }}</mat-icon>

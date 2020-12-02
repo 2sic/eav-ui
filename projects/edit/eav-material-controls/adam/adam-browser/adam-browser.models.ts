@@ -1,4 +1,12 @@
-import { AdamConfig } from '../../../../edit-types';
+import { AdamConfig, AdamItem } from '../../../../edit-types';
+
+export interface AdamBrowserTemplateVars {
+  adamConfig: AdamConfig;
+  expanded: boolean;
+  items: AdamItem[];
+  value: string;
+  disabled: boolean;
+}
 
 export class AdamConfigInstance implements AdamConfig {
   //#region Field settings

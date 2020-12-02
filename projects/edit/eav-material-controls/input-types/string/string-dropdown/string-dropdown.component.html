@@ -1,13 +1,4 @@
-<ng-container *ngIf="{
-  required: required$ | async,
-  placeholder: placeholder$ | async,
-  label: label$ | async,
-  disabled: disabled$ | async,
-  enableTextEntry: enableTextEntry$ | async,
-  dropdownOptions: dropdownOptions$ | async,
-  freeTextMode: freeTextMode$ | async,
-  showValidation: showValidation$ | async
-} as data">
+<ng-container *ngIf="templateVars$ | async as data">
 
   <mat-form-field [formGroup]="group" appearance="standard" color="accent">
 

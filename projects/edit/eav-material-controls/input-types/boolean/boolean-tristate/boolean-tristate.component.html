@@ -1,17 +1,10 @@
-<ng-container *ngIf="{
-  value: value$ | async,
-  showValidation: showValidation$ | async
-} as data">
+<div *ngIf="templateVars$ | async as data" [formGroup]="group">
+  <mat-slide-toggle [disabled]="data.disabled" [checked]="data.value" (toggleChange)="toggle()" [ngClass]="{
+    'toggle-false': data.value === false,
+    'toggle-null': data.value === null
+  }">
+    {{ data.label }}
+  </mat-slide-toggle>
 
-  <div [formGroup]="group">
-    <mat-slide-toggle [disabled]="disabled$ | async" [checked]="data.value" (toggleChange)="toggle()" [ngClass]="{
-      'toggle-false': data.value === false,
-      'toggle-null': data.value === null
-    }">
-      {{ label$ | async }}
-    </mat-slide-toggle>
-
-    <app-field-helper-text [config]="config" [group]="group" disableError="true"></app-field-helper-text>
-  </div>
-
-</ng-container>
+  <app-field-helper-text [config]="config" [group]="group" disableError="true"></app-field-helper-text>
+</div>

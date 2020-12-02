@@ -1,11 +1,4 @@
-<ng-container *ngIf="{
-  useTimePicker: useTimePicker$ | async,
-  placeholder: placeholder$ | async,
-  required: required$ | async,
-  disabled: disabled$ | async,
-  label: label$ | async,
-  showValidation: showValidation$ | async
-} as data">
+<ng-container *ngIf="templateVars$ | async as data">
 
   <mat-form-field [formGroup]="group" appearance="standard" color="accent" *ngIf="!data.useTimePicker">
     <input matInput [formControlName]="config.field.name" [matDatepicker]="picker" [placeholder]="data.placeholder"
@@ -26,4 +19,5 @@
   </mat-form-field>
 
   <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
+
 </ng-container>

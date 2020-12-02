@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { FieldMaskService } from '../../../../../shared/field-mask.service';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
@@ -8,20 +9,21 @@ import { EavService } from '../../../../shared/services/eav.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { BaseComponent } from '../../base/base.component';
 import { templateTypes } from './string-template-picker.constants';
+import { StringTemplatePickerTemplateVars } from './string-template-picker.models';
 
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'string-template-picker',
   templateUrl: './string-template-picker.component.html',
   styleUrls: ['./string-template-picker.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 @InputType({
   wrapper: [WrappersConstants.LocalizationWrapper],
 })
 export class StringTemplatePickerComponent extends BaseComponent<string> implements OnInit, OnDestroy {
-  templateOptions$ = new BehaviorSubject<string[]>([]);
+  templateVars$: Observable<StringTemplatePickerTemplateVars>;
 
+  private templateOptions$: BehaviorSubject<string[]>;
   private typeWatcher: FieldMaskService;
   private locationWatcher: FieldMaskService;
   private activeSpec = templateTypes.Token;
@@ -36,12 +38,26 @@ export class StringTemplatePickerComponent extends BaseComponent<string> impleme
 
   ngOnInit() {
     super.ngOnInit();
+    this.templateOptions$ = new BehaviorSubject<string[]>([]);
     // set change-watchers to the other values
     this.typeWatcher = new FieldMaskService('[Type]', this.group.controls, this.setFileConfig.bind(this), null);
     this.locationWatcher = new FieldMaskService('[Location]', this.group.controls, this.onLocationChange.bind(this), null);
 
     this.setFileConfig(this.typeWatcher.resolve() || 'Token'); // use token setting as default, till the UI tells us otherwise
     this.onLocationChange(this.locationWatcher.resolve() || null); // set initial file list
+
+    this.templateVars$ = combineLatest([this.label$, this.required$, this.templateOptions$, this.disabled$, this.showValidation$]).pipe(
+      map(([label, required, templateOptions, disabled, showValidation]) => {
+        const templateVars: StringTemplatePickerTemplateVars = {
+          label,
+          required,
+          templateOptions,
+          disabled,
+          showValidation,
+        };
+        return templateVars;
+      }),
+    );
   }
 
   ngOnDestroy() {

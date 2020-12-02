@@ -1,5 +1,6 @@
-<mat-card fxLayout="column" fxLayoutAlign="center start" *ngIf="templateVars$ | async as data"
+<mat-card *ngIf="templateVars$ | async as data" fxLayout="column" fxLayoutAlign="center start"
   [ngClass]="{ 'debug-enabled': showDebugInfo }">
+
   <div class="debug-buttons-container" fxLayout="row" fxLayoutAlign="space-between center">
     <button mat-icon-button [matTooltip]="'General.Buttons.Debug' | translate" (click)="toggleDebugInfo()">
       <mat-icon>offline_bolt</mat-icon>
@@ -10,6 +11,7 @@
       <mat-icon>offline_bolt</mat-icon>
     </button>
   </div>
+
   <div *ngIf="showDebugInfo" class="debug-info-container">
     <textarea readonly class="debug-dump">{{ data.items | json }}</textarea>
   </div>

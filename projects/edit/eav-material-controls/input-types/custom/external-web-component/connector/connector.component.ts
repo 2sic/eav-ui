@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Input, NgZone, OnDestroy, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, NgZone, OnDestroy, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { angularConsoleLog } from '../../../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
@@ -15,13 +15,12 @@ import { ConnectorHelper } from './connector.helper';
   selector: 'app-connector',
   templateUrl: './connector.component.html',
   styleUrls: ['./connector.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ConnectorComponent implements AfterViewInit, OnDestroy {
-  @ViewChild('customElContainer') customElContainerRef: ElementRef;
+  @ViewChild('customElContainer') private customElContainerRef: ElementRef;
 
-  @Input() config: FieldConfigSet;
-  @Input() group: FormGroup;
+  @Input() private config: FieldConfigSet;
+  @Input() private group: FormGroup;
 
   private connectorCreator: ConnectorHelper;
 

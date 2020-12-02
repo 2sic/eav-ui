@@ -141,8 +141,6 @@ export class EavFieldDirective implements OnInit {
 
   /** Read component type by selector with ComponentFactoryResolver */
   private readComponentType(selector: string): Type<any> {
-    // const factories = Array.from((this.resolver as any)._factories.values());
-    // const componentType = (factories.find((x: any) => x.selector === selector) as any).componentType;
     const componentType = this.components[selector];
     if (componentType === undefined) {
       console.error(`Missing component class for: ${selector}`);

@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
+import { map, take } from 'rxjs/operators';
 import { angularConsoleLog } from '../../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { InputType as InputTypeModel } from '../../../../shared/models/eav';
@@ -10,18 +10,19 @@ import { ScriptsLoaderService } from '../../../../shared/services/scripts-loader
 import { InputTypeService } from '../../../../shared/store/ngrx-data/input-type.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { BaseComponent } from '../../base/base.component';
+import { ExternalWebComponentTemplateVars } from './external-web-component.models';
 
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'external-web-component',
   templateUrl: './external-web-component.component.html',
   styleUrls: ['./external-web-component.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 @InputType({})
 export class ExternalWebComponentComponent extends BaseComponent<string> implements OnInit, OnDestroy {
-  loading$ = new BehaviorSubject(true);
-  isExpanded$: Observable<boolean>;
+  templateVars$: Observable<ExternalWebComponentTemplateVars>;
+
+  private loading$: BehaviorSubject<boolean>;
 
   constructor(
     eavService: EavService,
@@ -35,7 +36,20 @@ export class ExternalWebComponentComponent extends BaseComponent<string> impleme
 
   ngOnInit() {
     super.ngOnInit();
-    this.isExpanded$ = this.editRoutingService.isExpanded(this.config.field.index, this.config.entity.entityGuid);
+    this.loading$ = new BehaviorSubject(true);
+    const isExpanded$ = this.editRoutingService.isExpanded(this.config.field.index, this.config.entity.entityGuid);
+
+    this.templateVars$ = combineLatest([this.loading$, isExpanded$, this.disabled$, this.showValidation$]).pipe(
+      map(([loading, isExpanded, disabled, showValidation]) => {
+        const templateVars: ExternalWebComponentTemplateVars = {
+          loading,
+          isExpanded,
+          disabled,
+          showValidation,
+        };
+        return templateVars;
+      }),
+    );
     this.loadAssets();
   }
 

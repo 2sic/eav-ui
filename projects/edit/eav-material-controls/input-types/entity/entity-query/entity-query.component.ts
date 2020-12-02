@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { FieldMaskService } from '../../../../../shared/field-mask.service';
@@ -18,7 +18,6 @@ import { QueryEntity } from './entity-query.models';
   selector: 'entity-query',
   templateUrl: '../entity-default/entity-default.component.html',
   styleUrls: ['../entity-default/entity-default.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 @InputType({})
 export class EntityQueryComponent extends EntityDefaultComponent implements OnInit, OnDestroy {

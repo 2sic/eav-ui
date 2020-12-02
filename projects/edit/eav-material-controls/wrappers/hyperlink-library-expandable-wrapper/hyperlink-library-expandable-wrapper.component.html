@@ -27,15 +27,7 @@
 </div>
 
 <!-- preview -->
-<div class="c-ew__preview-holder" *ngIf="{
-  value: value$ | async,
-  label: label$ | async,
-  required: required$ | async,
-  invalid: invalid$ | async,
-  items: (adamItems$ | async).slice(0, 9),
-  itemsNumber: (adamItems$ | async).length,
-  showValidation: showValidation$ | async
-} as data">
+<div class="c-ew__preview-holder" *ngIf="templateVars$ | async as data">
   <mat-label class="c-ew__preview-label c-ew__color--primary" [ngClass]="{
     'mat-caption' : data.itemsNumber > 0,
     'mat-empty' : data.itemsNumber === 0,

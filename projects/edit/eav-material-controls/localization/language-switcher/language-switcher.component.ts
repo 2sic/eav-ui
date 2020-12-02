@@ -1,12 +1,13 @@
 import { AfterViewInit, Component, ElementRef, Input, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { Observable } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { EavService } from '../../..';
 import { Language } from '../../../shared/models/eav';
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
 import { LanguageService } from '../../../shared/store/ngrx-data/language.service';
 import { CenterSelectedHelper } from './center-selected.helper';
-import { getLanguageButtons, LanguageButton } from './language-switcher.helpers';
+import { getLanguageButtons } from './language-switcher.helpers';
+import { LanguageSwitcherTemplateVars } from './language-switcher.models';
 import { MouseScrollHelper } from './mouse-scroll.helper';
 import { ShowShadowsHelper } from './show-shadows.helper';
 
@@ -21,8 +22,7 @@ export class LanguageSwitcherComponent implements OnInit, AfterViewInit, OnDestr
   @ViewChild('rightShadow') private rightShadowRef: ElementRef;
   @Input() disabled: boolean;
 
-  languageButtons$: Observable<LanguageButton[]>;
-  currentLanguage$: Observable<string>;
+  templateVars$: Observable<LanguageSwitcherTemplateVars>;
 
   private centerSelectedHelper: CenterSelectedHelper;
   private mouseScrollHelper: MouseScrollHelper;
@@ -36,8 +36,18 @@ export class LanguageSwitcherComponent implements OnInit, AfterViewInit, OnDestr
   ) { }
 
   ngOnInit() {
-    this.languageButtons$ = this.languageService.entities$.pipe(map(langs => getLanguageButtons(langs)));
-    this.currentLanguage$ = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
+    const currentLanguage$ = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
+    const languageButtons$ = this.languageService.entities$.pipe(map(langs => getLanguageButtons(langs)));
+
+    this.templateVars$ = combineLatest([currentLanguage$, languageButtons$]).pipe(
+      map(([currentLanguage, languageButtons]) => {
+        const templateVars: LanguageSwitcherTemplateVars = {
+          currentLanguage,
+          languageButtons,
+        };
+        return templateVars;
+      }),
+    );
   }
 
   ngAfterViewInit() {

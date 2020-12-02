@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
@@ -17,7 +17,6 @@ import { StringDropdownQueryLogic } from './string-dropdown-query-logic';
   selector: 'string-dropdown-query',
   templateUrl: '../../entity/entity-default/entity-default.component.html',
   styleUrls: ['../../entity/entity-default/entity-default.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 @InputType({})
 export class StringDropdownQueryComponent extends EntityQueryComponent implements OnInit, OnDestroy {

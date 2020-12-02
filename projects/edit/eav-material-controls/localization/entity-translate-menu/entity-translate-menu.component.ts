@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -12,7 +12,6 @@ import { EntityTranslateMenuTemplateVars } from './entity-translate-menu.models'
   selector: 'app-entity-translate-menu',
   templateUrl: './entity-translate-menu.component.html',
   styleUrls: ['./entity-translate-menu.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EntityTranslateMenuComponent implements OnInit {
   @Input() private config: FieldConfigSet;
@@ -30,7 +29,14 @@ export class EntityTranslateMenuComponent implements OnInit {
     const currentLanguage$ = this.languageInstanceService.getCurrentLanguage(this.config.form.formId);
     const defaultLanguage$ = this.languageInstanceService.getDefaultLanguage(this.config.form.formId);
     this.templateVars$ = combineLatest([slotIsEmpty$, currentLanguage$, defaultLanguage$]).pipe(
-      map(([slotIsEmpty, currentLanguage, defaultLanguage]) => ({ slotIsEmpty, currentLanguage, defaultLanguage })),
+      map(([slotIsEmpty, currentLanguage, defaultLanguage]) => {
+        const templateVars: EntityTranslateMenuTemplateVars = {
+          slotIsEmpty,
+          currentLanguage,
+          defaultLanguage,
+        };
+        return templateVars;
+      }),
     );
   }
 

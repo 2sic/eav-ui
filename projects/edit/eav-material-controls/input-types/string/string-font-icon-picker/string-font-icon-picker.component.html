@@ -1,16 +1,10 @@
-<ng-container *ngIf="{
-  value: value$ | async,
-  filteredIcons: filteredIcons$ | async,
-  disabled: disabled$ | async,
-  previewCss: previewCss$ | async,
-  showValidation: showValidation$ | async
-} as data">
+<ng-container *ngIf="templateVars$ | async as data">
 
   <mat-form-field [formGroup]="group" appearance="standard" color="accent">
     <div class="icon-option">
       <i *ngIf="data.value" class="icon-preview {{ data.previewCss }} {{ data.value }}"></i>
-      <input matInput [formControlName]="config.field.name" [placeholder]="placeholder$ | async"
-        [required]="required$ | async" [matAutocomplete]="auto">
+      <input matInput [formControlName]="config.field.name" [placeholder]="data.placeholder" [required]="data.required"
+        [matAutocomplete]="auto">
     </div>
 
     <mat-autocomplete #auto="matAutocomplete">
@@ -25,7 +19,7 @@
       </cdk-virtual-scroll-viewport>
     </mat-autocomplete>
 
-    <mat-label>{{ label$ | async }}</mat-label>
+    <mat-label>{{ data.label }}</mat-label>
   </mat-form-field>
 
   <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>

@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { FieldMaskService } from '../../../../../shared/field-mask.service';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
@@ -8,18 +9,20 @@ import { EavService } from '../../../../shared/services/eav.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { BaseComponent } from '../../base/base.component';
 import { StringUrlPathLogic } from './string-url-path-logic';
+import { StringUrlPathTemplateVars } from './string-url-path.models';
 
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'string-url-path',
   templateUrl: './string-url-path.component.html',
   styleUrls: ['./string-url-path.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 @InputType({
   wrapper: [WrappersConstants.LocalizationWrapper],
 })
 export class StringUrlPathComponent extends BaseComponent<string> implements OnInit, OnDestroy {
+  templateVars$: Observable<StringUrlPathTemplateVars>;
+
   private autoGenerateMask: string;
   private allowSlashes: boolean;
   private fieldMaskService: FieldMaskService;
@@ -41,8 +44,12 @@ export class StringUrlPathComponent extends BaseComponent<string> implements OnI
           this.fieldMaskService.destroy();
           this.fieldMaskService = null;
         }
-        this.fieldMaskService = new FieldMaskService(this.autoGenerateMask, this.group.controls,
-          this.onSourcesChanged.bind(this), this.preClean);
+        this.fieldMaskService = new FieldMaskService(
+          this.autoGenerateMask,
+          this.group.controls,
+          this.onSourcesChanged.bind(this),
+          this.preClean,
+        );
       })
     );
 
@@ -54,6 +61,19 @@ export class StringUrlPathComponent extends BaseComponent<string> implements OnI
       this.control.valueChanges.subscribe(value => {
         this.clean(false);
       })
+    );
+
+    this.templateVars$ = combineLatest([this.label$, this.placeholder$, this.required$, this.disabled$, this.showValidation$]).pipe(
+      map(([label, placeholder, required, disabled, showValidation]) => {
+        const templateVars: StringUrlPathTemplateVars = {
+          label,
+          placeholder,
+          required,
+          disabled,
+          showValidation,
+        };
+        return templateVars;
+      }),
     );
   }
 

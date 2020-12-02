@@ -1,6 +1,7 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Observable } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { ContentExpandAnimation } from '../../../shared/animations/content-expand-animation';
@@ -14,21 +15,22 @@ import { InputTypeService } from '../../../shared/store/ngrx-data/input-type.ser
 import { BaseComponent } from '../../input-types/base/base.component';
 import { ConnectorHelper } from '../../input-types/custom/external-web-component/connector/connector.helper';
 import { ValidationMessagesService } from '../../validators/validation-messages-service';
+import { ExpandableWrapperTemplateVars } from './expandable-wrapper.models';
 
 @Component({
   selector: 'app-expandable-wrapper',
   templateUrl: './expandable-wrapper.component.html',
   styleUrls: ['./expandable-wrapper.component.scss'],
   animations: [ContentExpandAnimation],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ExpandableWrapperComponent extends BaseComponent<string> implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
-  @ViewChild('previewContainer') previewContainerRef: ElementRef;
-  @ViewChild('backdrop') backdropRef: ElementRef;
-  @ViewChild('dialog') dialogRef: ElementRef;
+  @ViewChild('previewContainer') private previewContainerRef: ElementRef;
+  @ViewChild('backdrop') private backdropRef: ElementRef;
+  @ViewChild('dialog') private dialogRef: ElementRef;
 
   open$: Observable<boolean>;
+  templateVars$: Observable<ExpandableWrapperTemplateVars>;
 
   private connectorCreator: ConnectorHelper;
   private dropzoneDraggingHelper: DropzoneDraggingHelper;
@@ -50,6 +52,27 @@ export class ExpandableWrapperComponent extends BaseComponent<string> implements
   ngOnInit() {
     super.ngOnInit();
     this.open$ = this.editRoutingService.isExpanded(this.config.field.index, this.config.entity.entityGuid);
+
+    this.templateVars$ = combineLatest([
+      combineLatest([this.value$, this.label$, this.required$, this.invalid$, this.config.field.focused$]),
+      combineLatest([this.disabled$, this.showValidation$]),
+    ]).pipe(
+      map(([
+        [value, label, required, invalid, focused],
+        [disabled, showValidation],
+      ]) => {
+        const templateVars: ExpandableWrapperTemplateVars = {
+          value,
+          label,
+          required,
+          invalid,
+          focused,
+          disabled,
+          showValidation,
+        };
+        return templateVars;
+      }),
+    );
   }
 
   ngAfterViewInit() {

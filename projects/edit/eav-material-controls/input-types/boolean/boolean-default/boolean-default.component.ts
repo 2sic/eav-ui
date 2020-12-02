@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
@@ -6,18 +7,19 @@ import { EavService } from '../../../../shared/services/eav.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { BaseComponent } from '../../base/base.component';
 import { BooleanDefaultLogic } from './boolean-default-logic';
+import { BooleanDefaultTemplateVars } from './boolean-default.models';
 
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'boolean-default',
   templateUrl: './boolean-default.component.html',
   styleUrls: ['./boolean-default.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 @InputType({
   wrapper: [WrappersConstants.LocalizationWrapper],
 })
 export class BooleanDefaultComponent extends BaseComponent<boolean> implements OnInit, OnDestroy {
+  templateVars$: Observable<BooleanDefaultTemplateVars>;
 
   constructor(eavService: EavService, validationMessagesService: ValidationMessagesService) {
     super(eavService, validationMessagesService);
@@ -27,6 +29,17 @@ export class BooleanDefaultComponent extends BaseComponent<boolean> implements O
     super.ngOnInit();
     const settingsLogic = new BooleanDefaultLogic();
     this.label$ = settingsLogic.update(this.settings$, this.value$).pipe(map(settings => settings._label));
+
+    this.templateVars$ = combineLatest([this.label$, this.disabled$, this.showValidation$]).pipe(
+      map(([label, disabled, showValidation]) => {
+        const templateVars: BooleanDefaultTemplateVars = {
+          label,
+          disabled,
+          showValidation,
+        };
+        return templateVars;
+      }),
+    );
   }
 
   ngOnDestroy() {

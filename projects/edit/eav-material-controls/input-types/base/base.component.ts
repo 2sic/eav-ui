@@ -35,7 +35,10 @@ export class BaseComponent<T> implements Field, OnInit, OnDestroy {
     this.placeholder$ = this.settings$.pipe(map(settings => settings.Placeholder));
     this.required$ = this.settings$.pipe(map(settings => ValidationHelper.isRequired(settings)));
     this.invalid$ = this.control.statusChanges.pipe(map(status => status === 'INVALID'), startWith(this.control.invalid));
-    this.showValidation$ = this.validationMessagesService.showValidation$.pipe(filter(control => control === this.control));
+    this.showValidation$ = this.validationMessagesService.showValidation$.pipe(
+      filter(control => control === this.control),
+      startWith(this.control),
+    );
     // doesn't work because controls are sometimes updated without emitting change (e.g. on language change)
     // this.value$ = this.control.valueChanges.pipe(
     //   startWith(this.control.value)

@@ -1,6 +1,6 @@
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
@@ -20,18 +20,19 @@ import { ReorderIndexes } from '../entity-default-list/entity-default-list.model
 import { EntityDefaultSearchComponent } from '../entity-default-search/entity-default-search.component';
 import { EntityDefaultLogic } from './entity-default-logic';
 import { calculateSelectedEntities } from './entity-default.helpers';
-import { DeleteEntityProps, SelectedEntity } from './entity-default.models';
+import { DeleteEntityProps, EntityTemplateVars, SelectedEntity } from './entity-default.models';
 
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'entity-default',
   templateUrl: './entity-default.component.html',
   styleUrls: ['./entity-default.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 @InputType({})
 export class EntityDefaultComponent extends BaseComponent<string | string[]> implements OnInit, OnDestroy {
   @ViewChild(EntityDefaultSearchComponent) private entitySearchComponent: EntityDefaultSearchComponent;
+
+  templateVars$: Observable<EntityTemplateVars>;
 
   useQuery = false;
   contentTypeMask: FieldMaskService;
@@ -92,6 +93,7 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
     }
 
     this.refreshOnChildClosed();
+    this.buildTemplateVars();
   }
 
   ngOnDestroy() {
@@ -102,6 +104,37 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
     this.config.entityCache$.complete();
     this.contentTypeMask.destroy();
     super.ngOnDestroy();
+  }
+
+  buildTemplateVars() {
+    this.templateVars$ = combineLatest([
+      combineLatest([this.label$, this.placeholder$, this.required$, this.invalid$, this.freeTextMode$, this.settings$]),
+      combineLatest([this.selectedEntities$, this.config.entityCache$, this.disableAddNew$, this.isExpanded$, this.error$]),
+      combineLatest([this.disabled$, this.showValidation$]),
+    ]).pipe(
+      map(([
+        [label, placeholder, required, invalid, freeTextMode, settings],
+        [selectedEntities, availableEntities, disableAddNew, isExpanded, error],
+        [disabled, showValidation],
+      ]) => {
+        const templateVars: EntityTemplateVars = {
+          label,
+          placeholder,
+          required,
+          invalid,
+          freeTextMode,
+          settings,
+          selectedEntities,
+          availableEntities,
+          disableAddNew,
+          isExpanded,
+          error,
+          disabled,
+          showValidation,
+        };
+        return templateVars;
+      }),
+    );
   }
 
   toggleFreeTextMode() {

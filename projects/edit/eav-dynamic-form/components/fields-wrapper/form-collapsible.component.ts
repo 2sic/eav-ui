@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, Observable } from 'rxjs';
@@ -9,12 +9,12 @@ import { ItemService } from '../../../shared/store/ngrx-data/item.service';
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
 import { FieldConfigSet } from '../../model/field-config';
 import { FormCollapsibleLogic } from './form-collapsible-logic';
+import { FormCollapsibleTemplateVars } from './form-collapsible.models';
 
 @Component({
   selector: 'app-form-collapsible',
   templateUrl: './form-collapsible.component.html',
   styleUrls: ['./form-collapsible.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FormCollapsibleComponent implements OnInit {
   @Input() config: FieldConfigSet;
@@ -22,15 +22,7 @@ export class FormCollapsibleComponent implements OnInit {
   @Input() group: FormGroup;
 
   collapse = false;
-  templateVars$: Observable<{
-    currentLanguage: string;
-    defaultLanguage: string;
-    header: EavHeader;
-    itemTitle: string;
-    slotCanBeEmpty: boolean;
-    slotIsEmpty: boolean;
-    editInstructions: string;
-  }>;
+  templateVars$: Observable<FormCollapsibleTemplateVars>;
 
   constructor(
     private languageInstanceService: LanguageInstanceService,
@@ -54,15 +46,18 @@ export class FormCollapsibleComponent implements OnInit {
       header$,
       settings$,
     ]).pipe(
-      map(([currentLanguage, defaultLanguage, header, settings]) => ({
-        currentLanguage,
-        defaultLanguage,
-        header,
-        itemTitle: settings._itemTitle,
-        slotCanBeEmpty: settings._slotCanBeEmpty,
-        slotIsEmpty: settings._slotIsEmpty,
-        editInstructions: settings.EditInstructions,
-      })),
+      map(([currentLanguage, defaultLanguage, header, settings]) => {
+        const templateVars: FormCollapsibleTemplateVars = {
+          currentLanguage,
+          defaultLanguage,
+          header,
+          itemTitle: settings._itemTitle,
+          slotCanBeEmpty: settings._slotCanBeEmpty,
+          slotIsEmpty: settings._slotIsEmpty,
+          editInstructions: settings.EditInstructions,
+        };
+        return templateVars;
+      }),
     );
   }
 

@@ -1,19 +1,12 @@
-<ng-container *ngIf="{
-  rowCount: rowCount$ | async,
-  label: label$ | async,
-  placeholder: placeholder$ | async,
-  required: required$ | async,
-  disabled: disabled$ | async,
-  showValidation: showValidation$ | async
-} as data">
+<ng-container *ngIf="templateVars$ | async as data">
 
   <mat-form-field [formGroup]="group" appearance="standard" color="accent" [ngClass]="{
     'textarea-field': data.rowCount > 1
   }">
-    <input matInput *ngIf="data.rowCount <= 1" [formControlName]="config.field.name" [placeholder]="data.placeholder"
+    <input *ngIf="data.rowCount <= 1" matInput [formControlName]="config.field.name" [placeholder]="data.placeholder"
       [required]="data.required">
 
-    <textarea matInput *ngIf="data.rowCount > 1" [formControlName]="config.field.name" [rows]="data.rowCount"
+    <textarea *ngIf="data.rowCount > 1" matInput [formControlName]="config.field.name" [rows]="data.rowCount"
       [placeholder]="data.placeholder" [required]="data.required">
     </textarea>
 

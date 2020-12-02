@@ -1,15 +1,15 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { ValidationMessagesService } from '../../validators/validation-messages-service';
+import { FieldHelperTextTemplateVars } from './field-helper-text.models';
 
 @Component({
   selector: 'app-field-helper-text',
   templateUrl: './field-helper-text.component.html',
   styleUrls: ['./field-helper-text.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FieldHelperTextComponent implements OnInit {
   @Input() config: FieldConfigSet;
@@ -18,16 +18,26 @@ export class FieldHelperTextComponent implements OnInit {
   @Input() hyperlinkDefaultWrapperFix = false;
 
   isFullText = false;
-  description$: Observable<string>;
-  invalid$: Observable<boolean>;
   control: AbstractControl;
+  templateVars$: Observable<FieldHelperTextTemplateVars>;
 
   constructor(private validationMessagesService: ValidationMessagesService) { }
 
   ngOnInit() {
     this.control = this.group.controls[this.config.field.name];
-    this.invalid$ = this.control.statusChanges.pipe(map(status => status === 'INVALID'), startWith(this.control.invalid));
-    this.description$ = this.config.field.settings$.pipe(map(settings => settings.Notes));
+    const invalid$ = this.control.statusChanges.pipe(map(status => status === 'INVALID'), startWith(this.control.invalid));
+    const description$ = this.config.field.settings$.pipe(map(settings => settings.Notes));
+
+    this.templateVars$ = combineLatest([invalid$, description$, this.config.field.settings$]).pipe(
+      map(([invalid, description, settings]) => {
+        const templateVars: FieldHelperTextTemplateVars = {
+          invalid,
+          description,
+          settings,
+        };
+        return templateVars;
+      }),
+    );
   }
 
   /** Don't toggle if clicked on an anchor tag or it's children */

@@ -2,7 +2,6 @@ import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { Observable } from 'rxjs';
 import { DnnBridgeComponent } from '../../eav-material-controls/input-types/dnn-bridge/dnn-bridge.component';
 import { DnnBridgeConnectorParams, DnnBridgeDialogData, DnnBridgeType } from '../../eav-material-controls/input-types/dnn-bridge/dnn-bridge.models';
 import { EavService } from './eav.service';
@@ -32,7 +31,7 @@ export class DnnBridgeService {
   }
 
   getUrlOfId(url: string, contentType: string, guid: string, field: string) {
-    return this.http.get(this.dnnContext.$2sxc.http.apiUrl('dnn/Hyperlink/ResolveHyperlink'), {
+    return this.http.get<string>(this.dnnContext.$2sxc.http.apiUrl('dnn/Hyperlink/ResolveHyperlink'), {
       params: {
         hyperlink: url,
         ...(guid && { guid }),
@@ -40,6 +39,6 @@ export class DnnBridgeService {
         ...(field && { field }),
         appid: this.eavService.eavConfig.appId.toString(),
       }
-    }) as Observable<string>;
+    });
   }
 }

@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AdamItem, AdamPostResponse } from '../../../../../edit-types';
 import { FieldSettings } from '../../../../../edit-types';
@@ -13,31 +13,22 @@ import { ValidationMessagesService } from '../../../validators/validation-messag
 import { BaseComponent } from '../../base/base.component';
 import { DnnBridgeConnectorParams, PagePickerResult } from '../../dnn-bridge/dnn-bridge.models';
 import { HyperlinkDefaultLogic } from './hyperlink-default-logic';
-import { Preview } from './hyperlink-default.models';
+import { HyperlinkDefaultTemplateVars, Preview } from './hyperlink-default.models';
 
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'hyperlink-default',
   templateUrl: './hyperlink-default.component.html',
   styleUrls: ['./hyperlink-default.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 @InputType({
   wrapper: [WrappersConstants.DropzoneWrapper, WrappersConstants.LocalizationWrapper,
   WrappersConstants.HyperlinkDefaultExpandableWrapper, WrappersConstants.AdamAttachWrapper],
 })
 export class HyperlinkDefaultComponent extends BaseComponent<string> implements OnInit, OnDestroy {
-  buttons$: Observable<string>;
-  open$: Observable<boolean>;
-  preview$ = new BehaviorSubject<Preview>({
-    url: '',
-    thumbnailUrl: '',
-    thumbnailPreviewUrl: '',
-    floatingText: '',
-    isImage: false,
-    isKnownType: false,
-    icon: '',
-  });
+  templateVars$: Observable<HyperlinkDefaultTemplateVars>;
+
+  private preview$: BehaviorSubject<Preview>;
 
   constructor(
     eavService: EavService,
@@ -51,6 +42,15 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
 
   ngOnInit() {
     super.ngOnInit();
+    this.preview$ = new BehaviorSubject<Preview>({
+      url: '',
+      thumbnailUrl: '',
+      thumbnailPreviewUrl: '',
+      floatingText: '',
+      isImage: false,
+      isKnownType: false,
+      icon: '',
+    });
     this.settings$ = new BehaviorSubject<FieldSettings>(null);
     const settingsLogic = new HyperlinkDefaultLogic();
     this.subscription.add(
@@ -58,8 +58,8 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
         this.settings$.next(settings);
       })
     );
-    this.buttons$ = this.settings$.pipe(map(settings => settings.Buttons));
-    this.open$ = this.editRoutingService.isExpanded(this.config.field.index, this.config.entity.entityGuid);
+    const buttons$ = this.settings$.pipe(map(settings => settings.Buttons));
+    const open$ = this.editRoutingService.isExpanded(this.config.field.index, this.config.entity.entityGuid);
     this.subscription.add(
       this.settings$.subscribe(settings => {
         this.attachAdam(settings);
@@ -69,6 +69,30 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
       this.value$.subscribe(value => {
         this.setLink(value);
       })
+    );
+
+    this.templateVars$ = combineLatest([
+      combineLatest([open$, buttons$, this.settings$, this.value$, this.preview$, this.label$]),
+      combineLatest([this.placeholder$, this.required$, this.disabled$, this.showValidation$]),
+    ]).pipe(
+      map(([
+        [open, buttons, settings, value, preview, label],
+        [placeholder, required, disabled, showValidation],
+      ]) => {
+        const templateVars: HyperlinkDefaultTemplateVars = {
+          open,
+          buttons,
+          settings,
+          value,
+          preview,
+          label,
+          placeholder,
+          required,
+          disabled,
+          showValidation,
+        };
+        return templateVars;
+      }),
     );
   }
 

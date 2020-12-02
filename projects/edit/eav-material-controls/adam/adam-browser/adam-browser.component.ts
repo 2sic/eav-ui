@@ -1,8 +1,8 @@
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import { distinctUntilChanged, filter, map, startWith } from 'rxjs/operators';
 import { AdamConfig, AdamItem, DropzoneConfigExt } from '../../../../edit-types';
 import { eavConstants } from '../../../../ng-dialogs/src/app/shared/constants/eav.constants';
@@ -15,28 +15,27 @@ import { EditRoutingService } from '../../../shared/services/edit-routing.servic
 import { FileTypeService } from '../../../shared/services/file-type.service';
 import { FeatureService } from '../../../shared/store/ngrx-data/feature.service';
 import { AdamService } from '../adam.service';
-import { AdamConfigInstance } from './adam-browser.models';
+import { AdamBrowserTemplateVars, AdamConfigInstance } from './adam-browser.models';
 
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'adam-browser',
   templateUrl: './adam-browser.component.html',
   styleUrls: ['./adam-browser.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     trigger('adamShowAnimate', [
       state('closed', style({
         height: '0',
-        overflow: 'hidden'
+        overflow: 'hidden',
       })),
       state('open', style({
         height: '*',
-        overflow: 'hidden'
+        overflow: 'hidden',
       })),
       transition('closed => open', [
         animate('300ms cubic-bezier(0.4, 0.0, 0.2, 1)'),
-      ])
-    ])
+      ]),
+    ]),
   ]
 })
 export class AdamBrowserComponent implements OnInit, OnDestroy {
@@ -44,13 +43,11 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
   @Input() group: FormGroup;
   @Output() openUpload = new EventEmitter<null>();
 
-  value$: Observable<string>;
-  disabled$: Observable<boolean>;
-  expanded$: Observable<boolean>;
-  adamConfig$ = new BehaviorSubject<AdamConfig>(null);
-  items$ = new BehaviorSubject<AdamItem[]>([]);
+  templateVars$: Observable<AdamBrowserTemplateVars>;
   pasteClipboardImage: boolean;
 
+  private adamConfig$: BehaviorSubject<AdamConfig>;
+  private items$: BehaviorSubject<AdamItem[]>;
   private control: AbstractControl;
   private url: string;
   private subscription = new Subscription();
@@ -67,6 +64,8 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.control = this.group.controls[this.config.field.name];
+    this.adamConfig$ = new BehaviorSubject<AdamConfig>(null);
+    this.items$ = new BehaviorSubject<AdamItem[]>([]);
     this.refreshOnChildClosed();
     const contentType = this.config.entity.header.ContentTypeName;
     const entityGuid = this.config.entity.header.Guid;
@@ -103,20 +102,33 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
         this.fetchItems();
       })
     );
-    this.expanded$ = this.editRoutingService.isExpanded(this.config.field.index, this.config.entity.entityGuid);
-    this.value$ = this.eavService.formValueChange$.pipe(
+    const expanded$ = this.editRoutingService.isExpanded(this.config.field.index, this.config.entity.entityGuid);
+    const value$ = this.eavService.formValueChange$.pipe(
       filter(formSet => (formSet.formId === this.config.form.formId) && (formSet.entityGuid === this.config.entity.entityGuid)),
-      map(formSet => this.control.value),
+      map(() => this.control.value),
       startWith(this.control.value),
       distinctUntilChanged(),
     );
-    this.disabled$ = this.eavService.formDisabledChange$.asObservable().pipe(
+    const disabled$ = this.eavService.formDisabledChange$.asObservable().pipe(
       filter(formDisabledSet => (formDisabledSet.formId === this.config.form.formId)
         && (formDisabledSet.entityGuid === this.config.entity.entityGuid)
       ),
-      map(formSet => this.control.disabled),
+      map(() => this.control.disabled),
       startWith(this.control.disabled),
       distinctUntilChanged(),
+    );
+
+    this.templateVars$ = combineLatest([this.adamConfig$, expanded$, this.items$, value$, disabled$]).pipe(
+      map(([adamConfig, expanded, items, value, disabled]) => {
+        const templateVars: AdamBrowserTemplateVars = {
+          adamConfig,
+          expanded,
+          items,
+          value,
+          disabled,
+        };
+        return templateVars;
+      }),
     );
   }
 

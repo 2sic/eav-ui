@@ -1,5 +1,5 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { AfterViewInit, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { FieldSettings } from '../../../../edit-types';
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
@@ -14,32 +14,24 @@ import { DnnBridgeConnectorParams, PagePickerResult } from '../../input-types/dn
 import { Preview } from '../../input-types/hyperlink/hyperlink-default/hyperlink-default.models';
 import { ValidationMessagesService } from '../../validators/validation-messages-service';
 import { HyperlinkDefaultExpandableWrapperLogic } from './hyperlink-default-expandable-wrapper-logic';
+import { HyperlinkDefaultExpandableTemplateVars } from './hyperlink-default-expandable-wrapper.models';
 
 @Component({
   selector: 'app-hyperlink-default-expandable-wrapper',
   templateUrl: './hyperlink-default-expandable-wrapper.component.html',
   styleUrls: ['./hyperlink-default-expandable-wrapper.component.scss'],
   animations: [ContentExpandAnimation],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 // tslint:disable-next-line:max-line-length
 export class HyperlinkDefaultExpandableWrapperComponent extends BaseComponent<string> implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
-  @ViewChild('backdrop') backdropRef: ElementRef;
-  @ViewChild('dialog') dialogRef: ElementRef;
+  @ViewChild('backdrop') private backdropRef: ElementRef;
+  @ViewChild('dialog') private dialogRef: ElementRef;
 
   open$: Observable<boolean>;
-  adamButton$: Observable<boolean>;
-  pageButton$: Observable<boolean>;
-  preview$ = new BehaviorSubject<Preview>({
-    url: '',
-    thumbnailUrl: '',
-    thumbnailPreviewUrl: '',
-    floatingText: '',
-    isImage: false,
-    isKnownType: false,
-    icon: '',
-  });
+  templateVars$: Observable<HyperlinkDefaultExpandableTemplateVars>;
+
+  private preview$: BehaviorSubject<Preview>;
   private dropzoneDraggingHelper: DropzoneDraggingHelper;
 
   constructor(
@@ -55,6 +47,15 @@ export class HyperlinkDefaultExpandableWrapperComponent extends BaseComponent<st
 
   ngOnInit() {
     super.ngOnInit();
+    this.preview$ = new BehaviorSubject<Preview>({
+      url: '',
+      thumbnailUrl: '',
+      thumbnailPreviewUrl: '',
+      floatingText: '',
+      isImage: false,
+      isKnownType: false,
+      icon: '',
+    });
     this.subscription.add(
       this.value$.subscribe(value => {
         this.setLink(value);
@@ -68,8 +69,32 @@ export class HyperlinkDefaultExpandableWrapperComponent extends BaseComponent<st
         this.settings$.next(settings);
       })
     );
-    this.adamButton$ = this.settings$.pipe(map(settings => settings.Buttons?.includes('adam')));
-    this.pageButton$ = this.settings$.pipe(map(settings => settings.Buttons?.includes('page')));
+    const adamButton$ = this.settings$.pipe(map(settings => settings.Buttons?.includes('adam')));
+    const pageButton$ = this.settings$.pipe(map(settings => settings.Buttons?.includes('page')));
+
+    this.templateVars$ = combineLatest([
+      combineLatest([this.value$, this.preview$, this.label$, this.placeholder$, this.invalid$, this.required$]),
+      combineLatest([adamButton$, pageButton$, this.disabled$, this.showValidation$]),
+    ]).pipe(
+      map(([
+        [value, preview, label, placeholder, invalid, required],
+        [adamButton, pageButton, disabled, showValidation],
+      ]) => {
+        const templateVars: HyperlinkDefaultExpandableTemplateVars = {
+          value,
+          preview,
+          label,
+          placeholder,
+          invalid,
+          required,
+          adamButton,
+          pageButton,
+          disabled,
+          showValidation,
+        };
+        return templateVars;
+      }),
+    );
   }
 
   ngAfterViewInit() {

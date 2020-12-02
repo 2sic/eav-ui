@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
@@ -9,22 +9,21 @@ import { ValidationMessagesService } from '../../../validators/validation-messag
 import { BaseComponent } from '../../base/base.component';
 import { StringFontIconPickerLogic } from './string-font-icon-picker-logic';
 import { findAllIconsInCss } from './string-font-icon-picker.helpers';
-import { IconOption } from './string-font-icon-picker.models';
+import { IconOption, StringFontIconPickerTemplateVars } from './string-font-icon-picker.models';
 
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'string-font-icon-picker',
   templateUrl: './string-font-icon-picker.component.html',
   styleUrls: ['./string-font-icon-picker.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 @InputType({
   wrapper: [WrappersConstants.LocalizationWrapper],
 })
 export class StringFontIconPickerComponent extends BaseComponent<string> implements OnInit, OnDestroy {
-  iconOptions$ = new BehaviorSubject<IconOption[]>([]);
-  filteredIcons$: Observable<IconOption[]>;
-  previewCss$: Observable<string>;
+  templateVars$: Observable<StringFontIconPickerTemplateVars>;
+
+  private iconOptions$: BehaviorSubject<IconOption[]>;
 
   constructor(
     eavService: EavService,
@@ -36,6 +35,7 @@ export class StringFontIconPickerComponent extends BaseComponent<string> impleme
 
   ngOnInit() {
     super.ngOnInit();
+    this.iconOptions$ = new BehaviorSubject<IconOption[]>([]);
     const settingsLogic = new StringFontIconPickerLogic();
     this.subscription.add(
       this.settings$.pipe(map(settings => settingsLogic.init(settings))).subscribe(settings => {
@@ -49,14 +49,36 @@ export class StringFontIconPickerComponent extends BaseComponent<string> impleme
         });
       })
     );
-    this.previewCss$ = this.settings$.pipe(map(settings => settings.PreviewCss));
-    this.filteredIcons$ = combineLatest([this.value$, this.iconOptions$]).pipe(
+    const previewCss$ = this.settings$.pipe(map(settings => settings.PreviewCss));
+    const filteredIcons$ = combineLatest([this.value$, this.iconOptions$]).pipe(
       map(([search, iconList]) => {
         // if we have a filter param, use it, otherwise don't filter
         const filtered = search
           ? iconList.filter(icon => icon.search?.includes(search.toLowerCase()) ?? false)
           : iconList;
         return filtered;
+      }),
+    );
+
+    this.templateVars$ = combineLatest([
+      combineLatest([this.value$, filteredIcons$, previewCss$, this.label$, this.placeholder$, this.required$]),
+      combineLatest([this.disabled$, this.showValidation$]),
+    ]).pipe(
+      map(([
+        [value, filteredIcons, previewCss, label, placeholder, required],
+        [disabled, showValidation],
+      ]) => {
+        const templateVars: StringFontIconPickerTemplateVars = {
+          value,
+          filteredIcons,
+          previewCss,
+          label,
+          placeholder,
+          required,
+          disabled,
+          showValidation,
+        };
+        return templateVars;
       }),
     );
   }

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
@@ -7,23 +7,21 @@ import { EavService } from '../../../../shared/services/eav.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { BaseComponent } from '../../base/base.component';
 import { StringDropdownLogic } from './string-dropdown-logic';
-import { DropdownOption } from './string-dropdown.models';
+import { StringDropdownTemplateVars } from './string-dropdown.models';
 
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'string-dropdown',
   templateUrl: './string-dropdown.component.html',
   styleUrls: ['./string-dropdown.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 @InputType({
   wrapper: [WrappersConstants.LocalizationWrapper],
 })
 export class StringDropdownComponent extends BaseComponent<string> implements OnInit, OnDestroy {
-  enableTextEntry$: Observable<boolean>;
-  dropdownOptions$: Observable<DropdownOption[]>;
-  freeTextMode$: Observable<boolean>;
-  private toggleFreeText$ = new BehaviorSubject(false);
+  templateVars$: Observable<StringDropdownTemplateVars>;
+
+  private toggleFreeText$: BehaviorSubject<boolean>;
 
   constructor(eavService: EavService, validationMessagesService: ValidationMessagesService) {
     super(eavService, validationMessagesService);
@@ -31,15 +29,39 @@ export class StringDropdownComponent extends BaseComponent<string> implements On
 
   ngOnInit() {
     super.ngOnInit();
+    this.toggleFreeText$ = new BehaviorSubject(false);
+
     const settingsLogic = new StringDropdownLogic();
     const fixedSettings$ = settingsLogic.update(this.settings$, this.value$);
-    this.enableTextEntry$ = fixedSettings$.pipe(map(settings => settings.EnableTextEntry));
-    this.dropdownOptions$ = fixedSettings$.pipe(map(settings => settings._options));
+    const enableTextEntry$ = fixedSettings$.pipe(map(settings => settings.EnableTextEntry));
+    const dropdownOptions$ = fixedSettings$.pipe(map(settings => settings._options));
 
-    this.freeTextMode$ = combineLatest([this.enableTextEntry$, this.toggleFreeText$]).pipe(
+    const freeTextMode$ = combineLatest([enableTextEntry$, this.toggleFreeText$]).pipe(
       map(([enableTextEntry, freeTextMode]) => {
         if (!enableTextEntry) { return false; }
         return freeTextMode;
+      }),
+    );
+
+    this.templateVars$ = combineLatest([
+      combineLatest([this.label$, this.placeholder$, this.required$, enableTextEntry$, dropdownOptions$, freeTextMode$]),
+      combineLatest([this.disabled$, this.showValidation$]),
+    ]).pipe(
+      map(([
+        [label, placeholder, required, enableTextEntry, dropdownOptions, freeTextMode],
+        [disabled, showValidation],
+      ]) => {
+        const templateVars: StringDropdownTemplateVars = {
+          label,
+          placeholder,
+          required,
+          enableTextEntry,
+          dropdownOptions,
+          freeTextMode,
+          disabled,
+          showValidation,
+        };
+        return templateVars;
       }),
     );
   }

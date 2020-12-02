@@ -36,8 +36,8 @@ export class EntityService {
   }
 
   delete(contentType: string, entityId: string, force: boolean) {
-    return this.http.delete(this.dnnContext.$2sxc.http.apiUrl(webApiEntityRoot + 'delete'), {
+    return this.http.delete<null>(this.dnnContext.$2sxc.http.apiUrl(webApiEntityRoot + 'delete'), {
       params: { contentType, id: entityId, appId: this.eavService.eavConfig.appId.toString(), force: force.toString() },
-    }) as Observable<null>;
+    });
   }
 }
