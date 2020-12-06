@@ -11,7 +11,7 @@ import { SourceView } from '../models/source-view.model';
 @Injectable()
 export class SourceService {
 
-  private isShared = sessionStorage.getItem(keyIsShared);
+  private isShared = sessionStorage.getItem(keyIsShared) ?? false.toString();
 
   constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
 
