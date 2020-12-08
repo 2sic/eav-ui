@@ -28,12 +28,16 @@ export function convertFormToUrl(form: EditForm) {
       const addItem = item as AddItem;
       formUrl += 'new:' + addItem.ContentTypeName;
 
+      // new v11.11 - support Singleton
+      const createForSuffix = (mdFor: EavFor) => ':' + mdFor.Target
+        + (mdFor.Singleton ? ':' + mdFor.Singleton.toString().toLowerCase() : '');
+
       if (addItem.For?.String) {
-        formUrl += '&for:s~' + paramEncode(addItem.For.String) + ':' + addItem.For.Target;
+        formUrl += '&for:s~' + paramEncode(addItem.For.String) + createForSuffix(addItem.For);
       } else if (addItem.For?.Number) {
-        formUrl += '&for:n~' + addItem.For.Number + ':' + addItem.For.Target;
+        formUrl += '&for:n~' + addItem.For.Number + createForSuffix(addItem.For);
       } else if (addItem.For?.Guid) {
-        formUrl += '&for:g~' + addItem.For.Guid + ':' + addItem.For.Target;
+        formUrl += '&for:g~' + addItem.For.Guid + createForSuffix(addItem.For);
       } else if (addItem.Metadata) {
         let keyType: string;
         switch (addItem.Metadata.keyType.toLocaleLowerCase()) {
@@ -125,8 +129,9 @@ export function convertUrlToForm(formUrl: string) {
           // Add Item For
           addItem.For = {} as EavFor;
           const forParams = option.split(':');
-          const forType = forParams[1].split('~')[0];
-          const forValue = forParams[1].split('~')[1];
+          const forIntro = forParams[1].split('~');
+          const forType = forIntro[0];
+          const forValue = forIntro[1];
           const forTarget = forParams[2];
 
           switch (forType) {
@@ -139,6 +144,10 @@ export function convertUrlToForm(formUrl: string) {
             case 'g':
               addItem.For.Guid = forValue;
               break;
+          }
+          // new v11.11 - Singleton Metadata
+          if (forParams.length > 3) {
+            addItem.For.Singleton = forParams[3] === 'true';
           }
           addItem.For.Target = forTarget;
         } else if (option.startsWith('prefill:')) {
