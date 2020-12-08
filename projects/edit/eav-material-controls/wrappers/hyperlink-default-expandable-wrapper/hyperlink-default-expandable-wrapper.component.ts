@@ -13,6 +13,8 @@ import { DnnBridgeConnectorParams, PagePickerResult } from '../../input-types/dn
 import { Preview } from '../../input-types/hyperlink/hyperlink-default/hyperlink-default.models';
 import { ValidationMessagesService } from '../../validators/validation-messages-service';
 
+// TODO: warning: the two files are almost identical: hyperlink-default.component and hyperlink-default-expandable-wrapper.component
+
 @Component({
   selector: 'app-hyperlink-default-expandable-wrapper',
   templateUrl: './hyperlink-default-expandable-wrapper.component.html',
