@@ -196,7 +196,9 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
       eavConstants.metadata.entity.type.toString()
     ), 10);
     if (!targetType) { return alert('No target type entered. Cancelled'); }
-    if (!validTargetTypes.includes(targetType)) { return alert('Invalid target type. Cancelled'); }
+    if (!validTargetTypes.includes(targetType)) {
+      alert(`Warning: you entered an unknown target type. This may work or may not. Please be sure you know what you're doing.`);
+    }
 
     const key = prompt('What key do you want?');
     if (!key) { return alert('No key entered. Cancelled'); }
@@ -220,6 +222,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
       target = eavConstants.metadata[metaKey].target;
       break;
     }
+    target ??= targetType?.toString();  // if not a known type, just use the number
 
     const form: EditForm = {
       items: [{
