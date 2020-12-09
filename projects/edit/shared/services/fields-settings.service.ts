@@ -1,6 +1,4 @@
 import { Injectable } from '@angular/core';
-import { ValidatorFn } from '@angular/forms';
-import isEmpty from 'lodash-es/isEmpty';
 import { BehaviorSubject } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { EavService } from '.';
@@ -11,7 +9,7 @@ import { FieldHelper } from '../../eav-item-dialog/item-edit-form/field-helper';
 import { ValidationHelper } from '../../eav-material-controls/validators/validation-helper';
 import { InputFieldHelper } from '../helpers/input-field-helper';
 import { LocalizationHelper } from '../helpers/localization-helper';
-import { EavAttributes, InputType, Item, Language } from '../models/eav';
+import { EavAttributes, InputType, Item } from '../models/eav';
 import { AttributeDef } from '../models/eav/attribute-def';
 import { FormulaFieldSettings } from '../models/formula.models';
 import { CalculatedInputType } from '../models/input-field-models';
@@ -19,7 +17,6 @@ import { ContentTypeService } from '../store/ngrx-data/content-type.service';
 import { InputTypeService } from '../store/ngrx-data/input-type.service';
 import { ItemService } from '../store/ngrx-data/item.service';
 import { LanguageInstanceService } from '../store/ngrx-data/language-instance.service';
-import { LanguageService } from '../store/ngrx-data/language.service';
 
 @Injectable()
 export class FieldsSettingsService {
@@ -36,7 +33,6 @@ export class FieldsSettingsService {
     defaultLanguage: string,
     item: Item,
     inputTypeService: InputTypeService,
-    languageService: LanguageService,
     itemService: ItemService,
     formId: number,
     languageInstanceService: LanguageInstanceService,
@@ -94,24 +90,9 @@ export class FieldsSettingsService {
         settings$: new BehaviorSubject(settingsTranslated),
       } as FieldConfigGroup;
     } else {
-      const validationList: ValidatorFn[] = ValidationHelper.getValidations(settingsTranslated);
-      const required: boolean = ValidationHelper.isRequired(settingsTranslated);
-      let initialValue = LocalizationHelper.translate(
-        currentLanguage,
-        defaultLanguage,
-        item.entity.attributes[name],
-        null,
-      );
-      // set default value if needed
-      if (isEmpty(initialValue) && typeof initialValue !== typeof true && typeof initialValue !== typeof 1 && initialValue !== '') {
-        let languages: Language[] = [];
-        languageService.entities$.pipe(take(1)).subscribe(langs => {
-          languages = langs;
-        });
-        initialValue = itemService.setDefaultValue(
-          item, attribute, calculatedInputType.inputType, settingsTranslated, languages, currentLanguage, defaultLanguage,
-        );
-      }
+      const validationList = ValidationHelper.getValidations(settingsTranslated);
+      const required = ValidationHelper.isRequired(settingsTranslated);
+      const initialValue = LocalizationHelper.translate(currentLanguage, defaultLanguage, item.entity.attributes[name], null);
       const disabled = settingsTranslated.Disabled;
 
       fieldConfig = {

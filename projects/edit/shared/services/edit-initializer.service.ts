@@ -2,14 +2,18 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { BehaviorSubject } from 'rxjs';
+import isEmpty from 'lodash-es/isEmpty';
+import { BehaviorSubject, combineLatest } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { EavService } from '..';
+import { InputTypeConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { convertUrlToForm } from '../../../ng-dialogs/src/app/shared/helpers/url-prep.helper';
 import { calculateIsParentDialog, sortLanguages } from '../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.helpers';
 import { EavFormData } from '../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.models';
 import { EditParams } from '../../edit-matcher.models';
 import { FieldLogicManager } from '../../field-logic/field-logic-manager';
+import { InputFieldHelper } from '../helpers/input-field-helper';
+import { LocalizationHelper } from '../helpers/localization-helper';
 import { Language } from '../models/eav';
 import { PublishStatus } from '../models/eav/publish-status';
 import { ContentTypeItemService } from '../store/ngrx-data/content-type-item.service';
@@ -49,6 +53,7 @@ export class EditInitializerService implements OnDestroy {
     const editItems = JSON.stringify(form.items);
     this.eavService.fetchFormData(editItems).subscribe(formData => {
       this.saveFormData(formData);
+      this.fixMissingData();
       this.createFieldConfigs();
       this.loaded$.next(true);
     });
@@ -114,6 +119,38 @@ export class EditInitializerService implements OnDestroy {
         this.snackBar.open(message, null, { duration: 5000 });
       }
     }
+  }
+
+  private fixMissingData() {
+    // fix missing default values
+    const items$ = this.itemService.selectItems(this.eavService.eavConfig.itemGuids);
+    const currentLanguage$ = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
+    const defaultLanguage$ = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
+    const languages$ = this.languageService.entities$;
+    const contentTypes$ = this.contentTypeService.entities$;
+    combineLatest([items$, currentLanguage$, defaultLanguage$, languages$, contentTypes$])
+      .pipe(take(1))
+      .subscribe(([items, currentLanguage, defaultLanguage, languages, contentTypes]) => {
+        for (const item of items) {
+          const contentTypeId = InputFieldHelper.getContentTypeId(item);
+          const contentType = contentTypes.find(c => c.contentType.id === contentTypeId);
+
+          for (const attributeDef of contentType.contentType.attributes) {
+            const calculatedInputType = InputFieldHelper.calculateInputType(attributeDef, this.inputTypeService);
+            const inputType = calculatedInputType.inputType;
+            if (inputType === InputTypeConstants.EmptyDefault) { continue; }
+
+            const attributeValues = item.entity.attributes[attributeDef.name];
+            const value = LocalizationHelper.translate(currentLanguage, defaultLanguage, attributeValues, null);
+            // set default value if needed
+            const valueIsEmpty = isEmpty(value) && typeof value !== 'boolean' && typeof value !== 'number' && value !== '';
+            if (!valueIsEmpty) { continue; }
+
+            const fieldSettings = LocalizationHelper.translateSettings(attributeDef.settings, currentLanguage, defaultLanguage);
+            this.itemService.setDefaultValue(item, attributeDef, inputType, fieldSettings, languages, currentLanguage, defaultLanguage);
+          }
+        }
+      });
   }
 
   private createFieldConfigs(): void {

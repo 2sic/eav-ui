@@ -13,7 +13,6 @@ import { ContentTypeService } from '../../shared/store/ngrx-data/content-type.se
 import { InputTypeService } from '../../shared/store/ngrx-data/input-type.service';
 import { ItemService } from '../../shared/store/ngrx-data/item.service';
 import { LanguageInstanceService } from '../../shared/store/ngrx-data/language-instance.service';
-import { LanguageService } from '../../shared/store/ngrx-data/language.service';
 
 @Injectable()
 export class BuildFieldsService {
@@ -27,7 +26,6 @@ export class BuildFieldsService {
   constructor(
     private itemService: ItemService,
     private inputTypeService: InputTypeService,
-    private languageService: LanguageService,
     private languageInstanceService: LanguageInstanceService,
     private contentTypeService: ContentTypeService,
     private eavService: EavService,
@@ -118,7 +116,6 @@ export class BuildFieldsService {
       this.defaultLanguage,
       this.item,
       this.inputTypeService,
-      this.languageService,
       this.itemService,
       this.formId,
       this.languageInstanceService,
