@@ -8,7 +8,6 @@ import { Context } from '../ng-dialogs/src/app/shared/services/context';
 import { SharedComponentsModule } from '../ng-dialogs/src/app/shared/shared-components.module';
 import { EavItemDialogModule } from './eav-item-dialog/eav-item-dialog.module';
 import { AdamService } from './eav-material-controls/adam/adam.service';
-import { SanitizeService } from './eav-material-controls/adam/sanitize.service';
 import { EditRoutingModule } from './edit-routing.module';
 import { DnnBridgeService } from './shared/services/dnn-bridge.service';
 import { EavService } from './shared/services/eav.service';
@@ -49,7 +48,6 @@ export function createTranslateLoader(http: HttpClient) {
     DnnBridgeService,
     EntityService,
     QueryService,
-    SanitizeService,
   ],
 })
 export class EditModule { }

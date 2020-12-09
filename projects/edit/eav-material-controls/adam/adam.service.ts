@@ -4,11 +4,11 @@ import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { AdamConfig, AdamItem, AdamPostResponse } from '../../../edit-types';
 import { EavService } from '../../shared/services/eav.service';
-import { SanitizeService } from './sanitize.service';
+import { SanitizeHelper } from './sanitize.service';
 
 @Injectable()
 export class AdamService {
-  constructor(private http: HttpClient, private sanitizeSvc: SanitizeService, private eavService: EavService) { }
+  constructor(private http: HttpClient, private eavService: EavService) { }
 
   getAll(url: string, config: AdamConfig) {
     return this.http.get<AdamItem[]>(url + '/items', {
@@ -43,7 +43,7 @@ export class AdamService {
     return this.http.post<AdamItem[]>(url + '/folder', {}, {
       params: {
         subfolder: config.subfolder,
-        newFolder: this.sanitizeSvc.sanitizeName(newfolder),
+        newFolder: SanitizeHelper.sanitizeName(newfolder),
         usePortalRoot: config.usePortalRoot.toString(),
         appId: this.eavService.eavConfig.appId.toString(),
       }
@@ -57,7 +57,7 @@ export class AdamService {
         isFolder: item.IsFolder.toString(),
         id: item.Id.toString(),
         usePortalRoot: config.usePortalRoot.toString(),
-        newName: this.sanitizeSvc.sanitizeName(newName),
+        newName: SanitizeHelper.sanitizeName(newName),
         appId: this.eavService.eavConfig.appId.toString(),
       }
     });

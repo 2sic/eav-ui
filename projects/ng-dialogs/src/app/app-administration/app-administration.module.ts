@@ -19,7 +19,6 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { EcoFabSpeedDialModule } from '@ecodev/fab-speed-dial';
-import { SanitizeService } from '../../../../edit/eav-material-controls/adam/sanitize.service';
 import { AppsListService } from '../apps-management/services/apps-list.service';
 import { ContentExportService } from '../content-export/services/content-export.service';
 import { ContentItemsService } from '../content-items/services/content-items.service';
@@ -146,7 +145,6 @@ import { WebApiComponent } from './web-api/web-api.component';
     ExportAppService,
     ExportAppPartsService,
     ImportAppPartsService,
-    SanitizeService,
     DialogService,
     AppsListService,
   ]

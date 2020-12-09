@@ -1,11 +1,8 @@
-import { Injectable } from '@angular/core';
-
-@Injectable()
-export class SanitizeService {
+export class SanitizeHelper {
 
   constructor() { }
 
-  private removeFromStart(sanitized: string, charToRemove: string) {
+  private static removeFromStart(sanitized: string, charToRemove: string): string {
     // check for undefined
     if (!sanitized) { return sanitized; }
 
@@ -15,7 +12,7 @@ export class SanitizeService {
     return sanitized;
   }
 
-  private removeFromEnd(sanitized: string, charToRemove: string) {
+  private static removeFromEnd(sanitized: string, charToRemove: string): string {
     // check for undefined
     if (!sanitized) { return sanitized; }
 
@@ -25,7 +22,7 @@ export class SanitizeService {
     return sanitized;
   }
 
-  private cleanBadPath = (sanitized: string) => {
+  private static cleanBadPath(sanitized: string): string {
     // check for undefined
     if (!sanitized) { return sanitized; }
 
@@ -44,7 +41,7 @@ export class SanitizeService {
   }
 
   // sanitize path
-  public sanitizePath(sanitized: string) {
+  public static sanitizePath(sanitized: string): string {
     // check for undefined
     if (!sanitized) { return sanitized; }
 
@@ -67,7 +64,7 @@ export class SanitizeService {
   }
 
   // sanitize file or folder name
-  public sanitizeName(sanitized: string) {
+  public static sanitizeName(sanitized: string) {
     // check for undefined
     if (!sanitized) { return sanitized; }
 
@@ -75,8 +72,6 @@ export class SanitizeService {
     // slashes are not valid in file or folder name
     const replacement = '_';
     const illegalRe = /\//g;
-    return this.sanitizePath(sanitized)
-      .replace(illegalRe, replacement);
+    return this.sanitizePath(sanitized).replace(illegalRe, replacement);
   }
-
 }

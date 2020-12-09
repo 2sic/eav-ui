@@ -11,7 +11,6 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { SanitizeService } from '../../../../edit/eav-material-controls/adam/sanitize.service';
 import { Context } from '../shared/services/context';
 import { DialogService } from '../shared/services/dialog.service';
 import { SharedComponentsModule } from '../shared/shared-components.module';
@@ -75,7 +74,6 @@ export function translateLoaderFactory(http: HttpClient) {
     SourceService,
     DialogService,
     SnippetsService,
-    SanitizeService,
     TranslateService,
   ]
 })

@@ -2,7 +2,7 @@ import { AllCommunityModules, GridOptions } from '@ag-grid-community/all-modules
 import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BehaviorSubject } from 'rxjs';
-import { SanitizeService } from '../../../../../edit/eav-material-controls/adam/sanitize.service';
+import { SanitizeHelper } from '../../../../../edit/eav-material-controls/adam/sanitize.service';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { defaultControllerName } from '../../shared/constants/file-names.constants';
 import { DialogService } from '../../shared/services/dialog.service';
@@ -46,12 +46,7 @@ export class WebApiComponent implements OnInit, OnDestroy {
     ],
   };
 
-  constructor(
-    private webApisService: WebApisService,
-    private sanitizeService: SanitizeService,
-    private snackBar: MatSnackBar,
-    private dialogService: DialogService,
-  ) { }
+  constructor(private webApisService: WebApisService, private snackBar: MatSnackBar, private dialogService: DialogService) { }
 
   ngOnInit() {
     this.fetchWebApis();
@@ -65,7 +60,7 @@ export class WebApiComponent implements OnInit, OnDestroy {
     let name = prompt('Controller name:', defaultControllerName);
     if (name === null || name.length === 0) { return; }
 
-    name = this.sanitizeService.sanitizePath(name);
+    name = SanitizeHelper.sanitizePath(name);
     name = name.replace(/\s/g, ''); // remove all whitespaces
     // find name without extension
     let nameLower = name.toLocaleLowerCase();
