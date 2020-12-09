@@ -57,6 +57,7 @@ export class FormulaInstanceService implements OnDestroy {
   }
 
   runSettingsFormulas() {
+    return;
     angularConsoleLog('Run settings formulas');
     let eavAttributes: EavAttributes;
     this.itemService.selectItemAttributes(this.entityGuid).pipe(take(1)).subscribe(eavAttrs => {
@@ -83,6 +84,7 @@ export class FormulaInstanceService implements OnDestroy {
   }
 
   runValueFormulas() {
+    return;
     angularConsoleLog('Run value formulas');
     const formulas = this.findFieldFormulas('value', true);
     if (formulas == null) { return; }
