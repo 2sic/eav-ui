@@ -12,7 +12,6 @@ import { SanitizeService } from './eav-material-controls/adam/sanitize.service';
 import { EditRoutingModule } from './edit-routing.module';
 import { DnnBridgeService } from './shared/services/dnn-bridge.service';
 import { EavService } from './shared/services/eav.service';
-import { EditRoutingService } from './shared/services/edit-routing.service';
 import { EntityService } from './shared/services/entity.service';
 import { QueryService } from './shared/services/query.service';
 
@@ -51,7 +50,6 @@ export function createTranslateLoader(http: HttpClient) {
     EntityService,
     QueryService,
     SanitizeService,
-    EditRoutingService,
   ],
 })
 export class EditModule { }

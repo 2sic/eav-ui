@@ -1,7 +1,6 @@
 import { AfterViewChecked, Component, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute } from '@angular/router';
 import { Actions, ofType } from '@ngrx/effects';
 import { TranslateService } from '@ngx-translate/core';
 import 'reflect-metadata';
@@ -37,6 +36,7 @@ import { MultiEditFormTemplateVars, SaveEavFormData } from './multi-item-edit-fo
   selector: 'app-multi-item-edit-form',
   templateUrl: './multi-item-edit-form.component.html',
   styleUrls: ['./multi-item-edit-form.component.scss'],
+  providers: [EditRoutingService],
 })
 export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewChecked {
   @ViewChildren(ItemEditFormComponent) private itemEditFormRefs: QueryList<ItemEditFormComponent>;
@@ -69,7 +69,6 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
     private translate: TranslateService,
     private validationMessagesService: ValidationMessagesService,
     private loadIconsService: LoadIconsService,
-    private route: ActivatedRoute,
     private editRoutingService: EditRoutingService,
     private publishStatusService: PublishStatusService,
   ) { }
@@ -84,7 +83,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
     this.formSaveAllObservables$ = [];
     this.formIsSaved = false;
     this.subscriptions = [];
-    this.editRoutingService.init(this.route, this.eavService.eavConfig.formId, this.dialogRef);
+    this.editRoutingService.init();
     this.loadIconsService.load();
     // spm TODO: added a small delay to calculate fields a bit later than languages to make form opening feel smoother.
     // Remove if calculating fields gets faster
@@ -136,7 +135,6 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
     this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
     this.languageInstanceService.removeLanguageInstance(this.eavService.eavConfig.formId);
     this.publishStatusService.removePublishStatus(this.eavService.eavConfig.formId);
-    this.editRoutingService.ngOnDestroy();
 
     if (this.eavService.eavConfig.isParentDialog) {
       // clear the rest of the store

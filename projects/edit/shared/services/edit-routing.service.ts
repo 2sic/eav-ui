@@ -3,6 +3,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Subject, Subscription } from 'rxjs';
 import { distinctUntilChanged, filter, map, pairwise, startWith } from 'rxjs/operators';
+import { EavService } from '.';
 import { ItemHistoryResult } from '../../../ng-dialogs/src/app/item-history/models/item-history-result.model';
 import { convertFormToUrl } from '../../../ng-dialogs/src/app/shared/helpers/url-prep.helper';
 import { EditForm } from '../../../ng-dialogs/src/app/shared/models/edit-form.model';
@@ -14,25 +15,26 @@ import { ChildFormResult, NavigateFormResult } from './edit-routing.models';
 
 @Injectable()
 export class EditRoutingService implements OnDestroy {
-  private route: ActivatedRoute;
   private subscription: Subscription;
   private childFormResult$: Subject<ChildFormResult>;
-  private dialogRef: MatDialogRef<EditEntryComponent>;
 
-  constructor(private router: Router, private languageInstanceService: LanguageInstanceService) { }
+  constructor(
+    private dialogRef: MatDialogRef<EditEntryComponent>,
+    private route: ActivatedRoute,
+    private router: Router,
+    private languageInstanceService: LanguageInstanceService,
+    private eavService: EavService,
+  ) { }
 
-  // spm TODO: ngOnDestroy only fires in services provided in component
   ngOnDestroy() {
     this.childFormResult$.complete();
     this.subscription.unsubscribe();
   }
 
-  init(route: ActivatedRoute, formId: number, dialogRef: MatDialogRef<EditEntryComponent>) {
-    this.route = route;
-    this.dialogRef = dialogRef;
+  init() {
     this.subscription = new Subscription();
     this.childFormResult$ = new Subject<ChildFormResult>();
-    this.initHideHeader(formId);
+    this.initHideHeader();
     this.initChildFormResult();
     this.refreshOnChildVersionsClosed();
   }
@@ -97,15 +99,15 @@ export class EditRoutingService implements OnDestroy {
   }
 
   /** Update hideHeader for the form. Fix for safari and mobile browsers */
-  private initHideHeader(formId: number) {
+  private initHideHeader() {
     this.subscription.add(
       this.route.params
         .pipe(
           map((params: EditParams) => params.detailsEntityGuid != null && params.detailsFieldId != null),
-          distinctUntilChanged()
+          distinctUntilChanged(),
         )
         .subscribe(hasDetails => {
-          this.languageInstanceService.updateHideHeader(formId, hasDetails);
+          this.languageInstanceService.updateHideHeader(this.eavService.eavConfig.formId, hasDetails);
         })
     );
   }
