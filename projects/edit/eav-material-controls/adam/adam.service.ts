@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { AdamConfig, AdamItem, AdamPostResponse } from '../../../edit-types';
 import { EavService } from '../../shared/services/eav.service';
-import { SanitizeHelper } from './sanitize.service';
+import { SanitizeHelper } from './sanitize.helper';
 
 @Injectable()
 export class AdamService {

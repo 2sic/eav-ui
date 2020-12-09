@@ -2,7 +2,7 @@ import { AllCommunityModules, GridOptions } from '@ag-grid-community/all-modules
 import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BehaviorSubject } from 'rxjs';
-import { SanitizeHelper } from '../../../../../edit/eav-material-controls/adam/sanitize.service';
+import { SanitizeHelper } from '../../../../../edit/eav-material-controls/adam/sanitize.helper';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { defaultControllerName } from '../../shared/constants/file-names.constants';
 import { DialogService } from '../../shared/services/dialog.service';
