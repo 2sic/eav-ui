@@ -15,8 +15,7 @@ import { FormHeaderTemplateVars } from './multi-item-edit-form-header.models';
   styleUrls: ['./multi-item-edit-form-header.component.scss'],
 })
 export class MultiItemEditFormHeaderComponent implements OnInit {
-  @Input() formsAreValid: boolean;
-  @Input() allControlsAreDisabled: boolean;
+  @Input() disabled: boolean;
   @Output() private closeDialog = new EventEmitter<null>();
 
   eavConfig: EavConfig;

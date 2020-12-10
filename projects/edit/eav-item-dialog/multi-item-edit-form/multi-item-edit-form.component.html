@@ -1,8 +1,8 @@
 <div *ngIf="templateVars$ | async as data" style="position: relative" mat-dialog-container appToggleDebug>
 
   <div mat-dialog-actions class="form-header-container" [ngClass]="{ 'u-display-none': data.hideHeader }">
-    <app-multi-item-edit-form-header class="multi-item-edit-form-header" [formsAreValid]="data.formsAreValid"
-      [allControlsAreDisabled]="data.allControlsAreDisabled" (closeDialog)="closeDialog()">
+    <app-multi-item-edit-form-header class="multi-item-edit-form-header"
+      [disabled]="!data.formsAreValid && !data.allControlsAreDisabled" (closeDialog)="closeDialog()">
     </app-multi-item-edit-form-header>
   </div>
 

@@ -13,10 +13,10 @@ import { EditEntryTemplateVars } from './edit-entry.models';
 export class EditEntryComponent implements OnInit {
   templateVars$: Observable<EditEntryTemplateVars>;
 
-  constructor(private editService: EditInitializerService) { }
+  constructor(private editInitializerService: EditInitializerService) { }
 
   ngOnInit() {
-    this.templateVars$ = combineLatest([this.editService.loaded$]).pipe(
+    this.templateVars$ = combineLatest([this.editInitializerService.loaded$]).pipe(
       map(([loaded]) => {
         const templateVars: EditEntryTemplateVars = {
           loaded,
@@ -24,6 +24,6 @@ export class EditEntryComponent implements OnInit {
         return templateVars;
       }),
     );
-    this.editService.fetchFormData();
+    this.editInitializerService.fetchFormData();
   }
 }
