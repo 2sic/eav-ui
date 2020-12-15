@@ -15,7 +15,7 @@ import { ValidationMessagesService } from '../../validators/validation-messages-
 export class HiddenWrapperComponent extends BaseComponent<any> implements FieldWrapper, OnInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
 
-  visibleInEditUI$: Observable<boolean>;
+  hidden$: Observable<boolean>;
 
   constructor(eavService: EavService, validationMessagesService: ValidationMessagesService) {
     super(eavService, validationMessagesService);
@@ -23,7 +23,7 @@ export class HiddenWrapperComponent extends BaseComponent<any> implements FieldW
 
   ngOnInit() {
     super.ngOnInit();
-    this.visibleInEditUI$ = this.settings$.pipe(map(settings => (settings.VisibleInEditUI === false) ? false : true));
+    this.hidden$ = this.settings$.pipe(map(settings => settings.VisibleInEditUI != null ? !settings.VisibleInEditUI : false));
   }
 
   ngOnDestroy() {

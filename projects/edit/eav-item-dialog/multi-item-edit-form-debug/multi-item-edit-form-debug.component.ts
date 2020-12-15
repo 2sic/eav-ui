@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { Item } from '../../shared/models/eav';
+import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { combineLatest } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { ItemService } from '../../shared/store/ngrx-data/item.service';
 
 declare const sxcVersion: string;
@@ -9,27 +9,23 @@ declare const sxcVersion: string;
   selector: 'app-multi-item-edit-form-debug',
   templateUrl: './multi-item-edit-form-debug.component.html',
   styleUrls: ['./multi-item-edit-form-debug.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MultiItemEditFormDebugComponent implements OnInit, OnDestroy {
-  @Output() debugInfoOpened = new EventEmitter<boolean>();
+export class MultiItemEditFormDebugComponent implements OnInit {
+  @Output() private debugInfoOpened = new EventEmitter<boolean>();
 
-  sxcVer = sxcVersion.substring(0, sxcVersion.lastIndexOf('\.'));
-  showDebugInfo$ = new BehaviorSubject(false);
-  items$: Observable<Item[]>;
+  sxcVer = sxcVersion.substring(0, sxcVersion.lastIndexOf('.'));
+  showDebugInfo = false;
+
+  private items$ = this.itemService.selectAllItems();
+  templateVars$ = combineLatest([this.items$]).pipe(map(([items]) => ({ items })));
 
   constructor(private itemService: ItemService) { }
 
-  ngOnInit() {
-    this.items$ = this.itemService.selectAllItems();
-  }
-
-  ngOnDestroy() {
-    this.showDebugInfo$.complete();
-  }
+  ngOnInit() { }
 
   toggleDebugInfo() {
-    this.showDebugInfo$.next(!this.showDebugInfo$.value);
-    this.debugInfoOpened.emit(this.showDebugInfo$.value);
+    this.showDebugInfo = !this.showDebugInfo;
+    this.debugInfoOpened.emit(this.showDebugInfo);
   }
 }

@@ -7,6 +7,7 @@ import { filter, map, pairwise, startWith } from 'rxjs/operators';
 import { ImportAppDialogData } from '../../import-app/import-app-dialog.config';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
+import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { AppsListActionsComponent } from '../ag-grid-components/apps-list-actions/apps-list-actions.component';
 import { AppsListActionsParams } from '../ag-grid-components/apps-list-actions/apps-list-actions.models';
@@ -36,7 +37,10 @@ export class AppsListComponent implements OnInit, OnDestroy {
     columnDefs: [
       {
         headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
-        cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter', valueGetter: this.idValueGetter,
+        cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter',
+        cellRendererParams: {
+          tooltipGetter: (paramsData: App) => `ID: ${paramsData.Id}\nGUID: ${paramsData.Guid}`,
+        } as IdFieldParams,
       },
       {
         headerName: 'Show', field: 'IsHidden', width: 70, headerClass: 'dense', cellClass: 'icons no-outline', sortable: true,
@@ -133,11 +137,6 @@ export class AppsListComponent implements OnInit, OnDestroy {
     this.appsListService.getAll().subscribe(apps => {
       this.apps$.next(apps);
     });
-  }
-
-  private idValueGetter(params: ValueGetterParams) {
-    const app: App = params.data;
-    return `ID: ${app.Id}\nGUID: ${app.Guid}`;
   }
 
   private showValueGetter(params: ValueGetterParams) {

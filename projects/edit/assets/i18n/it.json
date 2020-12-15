@@ -4,7 +4,8 @@
       "Save": "SAVE (CTRL + S)",
       "Save.Tip": "save and close (CTRL + S saves and doesn't close)",
       "Exit.Tip": "exit - if something changed, you will be asked to save",
-      "Return.Tip": "return to previous dialog"
+      "Return.Tip": "return to previous dialog",
+      "History.Tip": "history / previous versions"
     }
   },
   "SaveMode": {

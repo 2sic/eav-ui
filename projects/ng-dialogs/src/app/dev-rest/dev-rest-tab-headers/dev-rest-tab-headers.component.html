@@ -1,0 +1,87 @@
+<h2>HTTP Headers, Security and Context</h2>
+<!-- Background about Context -->
+<p>
+  HTTP headers and url-parameters are used for <strong>Security</strong> and <strong>Context</strong>.
+  We'll explain the <em>Security</em> part further below, and start with <em>Context</em>.
+  When you work with WebApi endpoints, there are two distinct scenarios:
+</p>
+<h3>Using WebApi with Context</h3>
+<p>
+    In this case the endpoint knows what <strong>Page</strong> and what <strong>module</strong> the request is for.
+    This <strong>Context</strong> is then used to <em>auto-detect</em> the app (so you can use <code>/auto/</code> in the url).
+    <br>
+    It can also be used for for security checks - so you can set <strong>Permissions</strong>
+    like <code>Allow READ If the user may see the module</code>.
+</p>
+<app-info-box type="tip">
+  TIP: In the case of <strong>Queries</strong> the <strong>Context</strong> can also provide parameters which were configured in the module.
+</app-info-box>
+
+<h3>Using WebApi without Context</h3>
+<p>
+  If the <strong>Context</strong> is not known, the endpoint cannot <em>auto-detect</em> the the app, so instead of <code>/auto/</code>
+  you must supply the correct app-name in the url, in this case <code>{{ data.folder }}</code>.
+  <br>
+  You also must specify more specific <strong>Permissions</strong> like <code>Allow READ if user is in group Members</code> or
+  <code>Allow READ for all ANONYMOUS users</code>.
+</p>
+
+<app-info-box type="info" title="Site & Language are <em>not</em> part of the Context.">
+  Technically the context needs more information than we just talked about, like what <strong>Site</strong> are we on and what
+  <strong>Language</strong> is being used. This information is already in the URL. So the root (before any <code>/api/</code>)
+  paths already contains that information.
+</app-info-box>
+
+<!-- Defining the Context -->
+<h2>How to get the Context</h2>
+<h3>How the Context is Defined</h3>
+<p>
+  The context always requires a <code>PageId</code> (in DNN it is hisorically called the <code>TabId</code>) and the <code>ModuleId</code>.
+  This lets the system look up the configuration for this module and figure out everything else.
+</p>
+
+<h3>Supplying Context in HTTP Headers (default)</h3>
+<p>
+  The standard behavior is to include the Context information in hidden <strong>HTTP headers</strong>.
+  This requires a bit more JavaScript code to attach the headers, but most of the APIs like the <code>$2sxc</code>
+  will do this automatically when used from within a 2sxc-App.
+  These are the context headers provided by $2sxc:
+</p>
+<ul>
+  <li>
+    <code>PageId</code> - this is the page we're on (number). <em>this header is new in v11.11</em>
+  </li>
+  <li>
+    <s><code>TabId</code></s> - <em>obsolete</em> this is also the page id (number). <em>just but for backward compatibility</em>
+  </li>
+  <li>
+    <code>ModuleId</code> - this is the module id (number)
+  </li>
+  <li>
+    <code>ContentBlockId</code> - this in an internal ID for working in inner-content (number). You will usually not care about this.
+  </li>
+</ul>
+
+<h3>Supplying Context as URL Parameters <code>?PageId=...</code></h3>
+<p>
+  The headers above (<code>PageId</code>, <code>ModuleId</code>) can also be added to the URL and will have the same effect.
+</p>
+
+<!-- Security -->
+<h2>Security Headers</h2>
+<p>
+  In addition to context headers, a request can also include <strong>Security</strong> headers:
+</p>
+<ol>
+  <li>
+    <code>RequestVerificationToken</code> - this is a crypto key to prove that the request originated from the
+    same site. It's only included in POST/PUT/DELETE but not GET requests.
+  </li>
+</ol>
+<p>
+  These are only used on <code>PUT</code>, <code>POST</code>, <code>DELETE</code> etc. but not on <code>GET</code> requests.
+</p>
+<app-info-box type="tip">
+  This header is only usefull to verify that the request came from a real DNN page.
+  The 2sxc-api <code>$2sxc</code> will add this automatically for you, so you don't need to do anything if you use that.
+</app-info-box>

@@ -24,14 +24,22 @@
         </span>
       </div>
     </div>
+
     <mat-slide-toggle fxLayoutAlign="start center" *ngIf="data.slotCanBeEmpty" (change)="toggleSlotIsEmpty()"
       [checked]="!data.slotIsEmpty" [disabled]="data.currentLanguage !== data.defaultLanguage"
       [matTooltip]="(!data.slotIsEmpty ? 'ItemCard.SlotUsedTrue' : 'ItemCard.SlotUsedFalse') | translate"
       [matTooltipDisabled]="data.currentLanguage !== data.defaultLanguage">
     </mat-slide-toggle>
-    <app-translate-group-menu *ngIf="fieldConfig.isParentGroup" fxLayoutAlign="end center" [config]="config"
-      [group]="group">
-    </app-translate-group-menu>
+
+    <ng-container *ngIf="fieldConfig.isParentGroup">
+      <button mat-icon-button [matTooltip]="'Form.Buttons.History.Tip' | translate" *ngIf="config.form.enableHistory"
+        (click)="openHistory()">
+        <mat-icon>history</mat-icon>
+      </button>
+
+      <app-translate-group-menu fxLayoutAlign="end center" [config]="config" [group]="group">
+      </app-translate-group-menu>
+    </ng-container>
   </div>
 
   <mat-card-content [ngStyle]="{ 'display': (collapse$ | async) ? 'none' : 'block' }"

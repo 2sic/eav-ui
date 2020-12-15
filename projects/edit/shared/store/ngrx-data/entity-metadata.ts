@@ -14,6 +14,9 @@ export const entityMetadata: EntityMetadataMap = {
   ContentType: {
     selectId: contentTypeSelectId,
   },
+  ContentTypeItem: {
+    selectId: contentTypeItemSelectId,
+  },
   InputType: {
     selectId: InputTypeSelectId,
   },
@@ -42,6 +45,10 @@ export function languageInstanceSelectId<T extends { formId: any }>(entity: T) {
 
 export function contentTypeSelectId<T extends { contentType: any }>(entity: T) {
   return entity === null ? undefined : entity.contentType.id;
+}
+
+export function contentTypeItemSelectId<T extends { guid: any }>(entity: T) {
+  return entity === null ? undefined : entity.guid;
 }
 
 export function InputTypeSelectId<T extends { Type: any }>(entity: T) {

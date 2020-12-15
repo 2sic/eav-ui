@@ -11,7 +11,7 @@
   <router-outlet></router-outlet>
 
   <!-- spm NOTE: we use mat-tab-group because mat-tab-nav-bar doesn't have animations and doesn't look pretty -->
-  <mat-tab-group dynamicHeight color="accent" (selectedTabChange)="changeTab($event)"
+  <mat-tab-group class="mat-tab-group-max-height" dynamicHeight color="accent" (selectedTabChange)="changeTab($event)"
     [selectedIndex]="tabIndex$ | async">
     <mat-tab>
       <div *matTabLabel class="mat-tab-label-box" matTooltip="Apps">

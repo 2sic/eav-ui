@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { UrlHelper } from '../../../edit/shared/helpers/url-helper';
 import { DialogTypeConstants } from './shared/constants/dialog-types.constants';
 // tslint:disable-next-line:max-line-length
-import { keyApi, keyAppId, keyContentType, keyDialog, keyItems, keyPipelineId, keyPortalRoot, keyRequestToken, keyTabId, keyUrl, keyZoneId, prefix } from './shared/constants/session.constants';
+import { keyApi, keyAppId, keyContentType, keyDialog, keyItems, keyPipelineId, keyRequestToken, keyTabId, keyUrl, keyZoneId, prefix } from './shared/constants/session.constants';
 import { convertFormToUrl } from './shared/helpers/url-prep.helper';
 import { EditForm, EditItem, GroupItem } from './shared/models/edit-form.model';
 
@@ -63,6 +63,10 @@ export function paramsInitFactory(injector: Injector) {
           const formUrl = convertFormToUrl(form);
           router.navigate([`${zoneId}/${appId}/edit/${formUrl}`]);
           break;
+        case DialogTypeConstants.ItemHistory:
+          const historyItems: EditItem[] = JSON.parse(items);
+          router.navigate([`${zoneId}/${appId}/versions/${historyItems[0].EntityId}`]);
+          break;
         case DialogTypeConstants.Develop:
           router.navigate([`${zoneId}/${appId}/code`]);
           break;
@@ -108,7 +112,6 @@ function loadEnvironment() {
   $2sxc.env.load({
     page: parseInt(sessionStorage.getItem(keyTabId), 10),
     rvt: sessionStorage.getItem(keyRequestToken),
-    root: sessionStorage.getItem(keyPortalRoot),
     api: sessionStorage.getItem(keyApi),
   } as any as JsInfo);
 }

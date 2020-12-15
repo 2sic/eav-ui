@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { FieldConfigGroup, FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
@@ -39,6 +40,8 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
     private itemService: ItemService,
     private languageInstanceService: LanguageInstanceService,
     private contentTypeService: ContentTypeService,
+    private router: Router,
+    private route: ActivatedRoute,
   ) { }
 
   ngOnInit() {
@@ -112,6 +115,10 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
     });
     const newHeader: EavHeader = { ...header, Group: { ...header.Group, SlotIsEmpty: !header.Group.SlotIsEmpty } };
     this.itemService.updateItemHeader(this.config.entity.entityId, this.config.entity.entityGuid, newHeader);
+  }
+
+  openHistory() {
+    this.router.navigate([`versions/${this.config.entity.entityId}`], { relativeTo: this.route });
   }
 
   private translateAllConfiguration(currentLanguage: string, defaultLanguage: string) {

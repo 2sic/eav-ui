@@ -1,31 +1,57 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
+import { skip } from 'rxjs/operators';
 import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
+import { FormValues } from '../../../eav-item-dialog/item-edit-form/item-edit-form.models';
+import { FormulaInstanceService } from '../../../shared/services/formula-instance.service';
+import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
 import { FieldConfigGroup, FieldConfigSet } from '../../model/field-config';
+import { FormValueChange } from './eav-form.models';
 
 @Component({
   selector: 'app-eav-form',
   templateUrl: './eav-form.component.html',
   styleUrls: ['./eav-form.component.scss'],
+  providers: [FormulaInstanceService],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class EavFormComponent implements OnInit, OnDestroy {
+export class EavFormComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() config: FieldConfigSet[] = [];
+  @Input() private formId: number;
+  @Input() private entityGuid: string;
   @Output() private formSubmit = new EventEmitter<void>();
-  @Output() private formValueChange = new EventEmitter<any>();
+  @Output() private formValueChange = new EventEmitter<FormValueChange>();
 
   form: FormGroup = new FormGroup({});
   private subscription = new Subscription();
 
-  constructor(private formBuilder: FormBuilder) { }
+  constructor(
+    private formBuilder: FormBuilder,
+    private formulaInstance: FormulaInstanceService,
+    private languageInstanceService: LanguageInstanceService,
+  ) { }
 
   ngOnInit() {
     this.createControlsInFormGroup(this.config);
+    this.formulaInstance.init(this.formId, this.form, this.entityGuid, this.config);
+  }
+
+  ngAfterViewInit() {
+    // run formulas when form is created
+    this.formulaInstance.runSettingsFormulas();
+    this.formulaInstance.runValueFormulas();
 
     this.subscription.add(
-      this.form.valueChanges.subscribe(val => {
-        this.formValueChange.emit(val);
+      this.form.valueChanges.subscribe((formValues: FormValues) => {
+        this.formValueChange.emit({ formValues, formulaInstance: this.formulaInstance });
+      })
+    );
+
+    this.subscription.add(
+      this.languageInstanceService.getCurrentLanguage(this.formId).pipe(skip(1)).subscribe(currentLang => {
+        // run formulas when language is changed and fields are translated
+        this.formulaInstance.runFormulasAfterFieldsTranslated();
       })
     );
   }

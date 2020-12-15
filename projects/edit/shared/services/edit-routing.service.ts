@@ -1,18 +1,23 @@
 import { Injectable, OnDestroy } from '@angular/core';
+import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Subject, Subscription } from 'rxjs';
 import { distinctUntilChanged, filter, map, pairwise, startWith } from 'rxjs/operators';
+import { ItemHistoryResult } from '../../../ng-dialogs/src/app/item-history/models/item-history-result.model';
 import { convertFormToUrl } from '../../../ng-dialogs/src/app/shared/helpers/url-prep.helper';
 import { EditForm } from '../../../ng-dialogs/src/app/shared/models/edit-form.model';
+import { MultiItemEditFormComponent } from '../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.component';
 import { EditParams } from '../../edit-matcher.models';
 import { LanguageInstanceService } from '../store/ngrx-data/language-instance.service';
-import { ChildFormResult } from './edit-routing.models';
+import { calculatePathFromRoot } from './edit-routing.helpers';
+import { ChildFormResult, NavigateFormResult } from './edit-routing.models';
 
 @Injectable()
 export class EditRoutingService implements OnDestroy {
   private route: ActivatedRoute;
-  private subscription = new Subscription();
-  private childFormResult$ = new Subject<ChildFormResult>();
+  private subscription: Subscription;
+  private childFormResult$: Subject<ChildFormResult>;
+  private dialogRef: MatDialogRef<MultiItemEditFormComponent>;
 
   constructor(private router: Router, private languageInstanceService: LanguageInstanceService) { }
 
@@ -22,10 +27,14 @@ export class EditRoutingService implements OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  init(route: ActivatedRoute, formId: number) {
+  init(route: ActivatedRoute, formId: number, dialogRef: MatDialogRef<MultiItemEditFormComponent>) {
     this.route = route;
+    this.dialogRef = dialogRef;
+    this.subscription = new Subscription();
+    this.childFormResult$ = new Subject<ChildFormResult>();
     this.initHideHeader(formId);
     this.initChildFormResult();
+    this.refreshOnChildVersionsClosed();
   }
 
   /** Tells if field with this index should be expanded */
@@ -58,7 +67,7 @@ export class EditRoutingService implements OnDestroy {
     const oldEditUrl = `edit/${params.items}` + (oldHasDetails ? `/details/${params.detailsEntityGuid}/${params.detailsFieldId}` : '');
     const newEditUrl = `edit/${params.items}` + (expand ? `/details/${entityGuid}/${fieldId}` : '');
 
-    const currentUrl = this.calculatePathFromRoot();
+    const currentUrl = calculatePathFromRoot(this.route);
     const lastIndex = currentUrl.lastIndexOf(oldEditUrl);
     if (lastIndex <= 0) { return; }
     const newUrl = currentUrl.substring(0, lastIndex) + currentUrl.substring(lastIndex).replace(oldEditUrl, newEditUrl);
@@ -80,7 +89,7 @@ export class EditRoutingService implements OnDestroy {
     const oldEditUrl = `edit/${params.items}`;
     const newEditUrl = `edit/${params.items}/update/${entityGuid}/${fieldId}/edit/${formUrl}`;
 
-    const currentUrl = this.calculatePathFromRoot();
+    const currentUrl = calculatePathFromRoot(this.route);
     const lastIndex = currentUrl.lastIndexOf(oldEditUrl);
     if (lastIndex <= 0) { return; }
     const newUrl = currentUrl.substring(0, lastIndex) + currentUrl.substring(lastIndex).replace(oldEditUrl, newEditUrl);
@@ -135,7 +144,7 @@ export class EditRoutingService implements OnDestroy {
         const oldEditUrl = `edit/${params.items}/update/${params.updateEntityGuid}/${params.updateFieldId}`;
         const newEditUrl = `edit/${params.items}`;
 
-        const currentUrl = this.calculatePathFromRoot();
+        const currentUrl = calculatePathFromRoot(this.route);
         const lastIndex = currentUrl.lastIndexOf(oldEditUrl);
         if (lastIndex <= 0) { return; }
         const newUrl = currentUrl.substring(0, lastIndex) + currentUrl.substring(lastIndex).replace(oldEditUrl, newEditUrl);
@@ -144,19 +153,35 @@ export class EditRoutingService implements OnDestroy {
     );
   }
 
-  private calculatePathFromRoot() {
-    let lastChild = this.route;
-    while (lastChild.firstChild) {
-      lastChild = lastChild.firstChild;
-    }
-    let pathFromRoot = '';
-    for (const path of lastChild.snapshot.pathFromRoot) {
-      if (path.url.length <= 0) { continue; }
-      for (const urlSegment of path.url) {
-        if (!urlSegment.path) { continue; }
-        pathFromRoot += '/' + urlSegment.path;
-      }
-    }
-    return pathFromRoot;
+  private refreshOnChildVersionsClosed() {
+    this.subscription.add(
+      this.router.events.pipe(
+        filter(event => event instanceof NavigationEnd),
+        startWith(!!this.route.snapshot.firstChild),
+        map(() => !!this.route.snapshot.firstChild),
+        pairwise(),
+        filter(([hadChild, hasChild]) => hadChild && !hasChild),
+        map(() => {
+          const navigation = this.router.getCurrentNavigation();
+          const versionsResult = navigation.extras?.state as ItemHistoryResult;
+          return versionsResult;
+        }),
+        filter(versionsResult => versionsResult?.refreshEdit != null),
+      ).subscribe(result => {
+        if (!result.refreshEdit) { return; }
+        const params = this.route.snapshot.params as EditParams;
+        const oldEditUrl = `edit/${params.items}`;
+        const newEditUrl = `edit/refresh/${params.items}`;
+
+        const currentUrl = calculatePathFromRoot(this.route);
+        const lastIndex = currentUrl.lastIndexOf(oldEditUrl);
+        if (lastIndex <= 0) { return; }
+        const newUrl = currentUrl.substring(0, lastIndex) + currentUrl.substring(lastIndex).replace(oldEditUrl, newEditUrl);
+        const navRes: NavigateFormResult = {
+          navigateUrl: newUrl,
+        };
+        this.dialogRef.close(navRes);
+      })
+    );
   }
 }

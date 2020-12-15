@@ -4,7 +4,8 @@
       "Save": "GRAVAR (CTRL + S)",
       "Save.Tip": "gravar e fechar (CTRL + S grava mas não fecha)",
       "Exit.Tip": "sair - se alguma coisa foi alterada, vai-lhe ser questionado se quer gravar",
-      "Return.Tip": "voltar ao formulário anterior"
+      "Return.Tip": "voltar ao formulário anterior",
+      "History.Tip": "history / previous versions"
     }
   },
   "SaveMode": {

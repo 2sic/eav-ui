@@ -25,6 +25,7 @@ import { EditRoutingService } from '../../shared/services/edit-routing.service';
 import { GlobalConfigService } from '../../shared/services/global-configuration.service';
 import { LoadIconsService } from '../../shared/services/load-icons.service';
 import * as fromItems from '../../shared/store/actions/item.actions';
+import { ContentTypeItemService } from '../../shared/store/ngrx-data/content-type-item.service';
 import { ContentTypeService } from '../../shared/store/ngrx-data/content-type.service';
 import { FeatureService } from '../../shared/store/ngrx-data/feature.service';
 import { InputTypeService } from '../../shared/store/ngrx-data/input-type.service';
@@ -48,6 +49,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
   isParentDialog = calculateIsParentDialog(this.route);
   formId = Math.floor(Math.random() * 99999);
   isCopy$ = new BehaviorSubject(false);
+  enableHistory$ = new BehaviorSubject(false);
   formsAreValid$ = new BehaviorSubject(false);
   allControlsAreDisabled$ = new BehaviorSubject(true);
   items$: Observable<Item[]>;
@@ -77,6 +79,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
     private dialogRef: MatDialogRef<MultiItemEditFormComponent>,
     private actions$: Actions,
     private changeDetectorRef: ChangeDetectorRef,
+    private contentTypeItemService: ContentTypeItemService,
     private contentTypeService: ContentTypeService,
     private globalConfigService: GlobalConfigService,
     private eavService: EavService,
@@ -92,7 +95,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
     private route: ActivatedRoute,
     private editRoutingService: EditRoutingService,
   ) {
-    this.editRoutingService.init(this.route, this.formId);
+    this.editRoutingService.init(this.route, this.formId, this.dialogRef);
     this.loadIconsService.load();
   }
 
@@ -108,6 +111,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
 
   ngOnDestroy() {
     this.isCopy$.complete();
+    this.enableHistory$.complete();
     this.reduceSaveButton$.complete();
     this.debugInfoIsOpen$.complete();
     this.formsAreValid$.complete();
@@ -116,6 +120,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
     this.eavConfigLoaded$.complete();
     this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
     this.languageInstanceService.removeLanguageInstance(this.formId);
+    this.editRoutingService.ngOnDestroy();
 
     if (this.isParentDialog) {
       // clear the rest of the store
@@ -124,6 +129,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
       this.itemService.clearCache();
       this.inputTypeService.clearCache();
       this.featureService.clearCache();
+      this.contentTypeItemService.clearCache();
       this.contentTypeService.clearCache();
     }
   }
@@ -197,6 +203,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
       this.itemService.loadItems(formData.Items);
       // we assume that input type and content type data won't change between loading parent and child forms
       this.inputTypeService.addInputTypes(formData.InputTypes);
+      this.contentTypeItemService.addContentTypeItems(formData.ContentTypeItems);
       this.contentTypeService.addContentTypes(formData.ContentTypes);
       this.featureService.loadFeatures(formData.Features);
 
@@ -246,6 +253,8 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
             this.isCopy$.next(true);
           }
         }
+        const enableHistory = !this.createMode && this.route.snapshot.data.history !== false;
+        this.enableHistory$.next(enableHistory);
       });
 
       this.languageChangeSubscribe();
@@ -461,7 +470,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
   }
 
   /** Open snackbar when snack bar not saved */
-  public snackBarYouHaveUnsavedChanges() {
+  private snackBarYouHaveUnsavedChanges() {
     const data: UnsavedChangesSnackData = {
       save: false,
     };
@@ -479,5 +488,4 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
       }
     });
   }
-
 }

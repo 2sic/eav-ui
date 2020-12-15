@@ -1,0 +1,26 @@
+.history-tables {
+  .table-row {
+    border-bottom: 1px solid rgba($editUI-foreground-color, 0.12);
+  }
+
+  .row-main__type {
+    color: rgba($editUI-foreground-color, 0.4);
+  }
+
+  .history-new {
+    color: #0d904f;
+  }
+
+  .history-deleted {
+    color: map_get($mat-eav-item-dialog-error, 300);
+
+    &__value {
+      font-size: 12px;
+      text-decoration: line-through;
+    }
+  }
+
+  .history-changed {
+    color: map_get($mat-eav-item-dialog-secondary, 500);
+  }
+}

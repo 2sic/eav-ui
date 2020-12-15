@@ -1,7 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { edit } from '../../../../edit/edit.matcher';
-import { contentImportDialog } from '../content-import/content-import-dialog.config';
+import { edit, refreshEdit } from '../../../../edit/edit.matcher';
+import { GoToDevRest } from '../dev-rest';
+import { GoToPermissions } from '../permissions/go-to-permissions';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
 import { EmptyRouteComponent } from '../shared/components/empty-route/empty-route.component';
 import { appAdministrationDialog } from './app-administration-nav/app-administration-dialog.config';
@@ -35,6 +36,10 @@ const appAdministrationRoutes: Routes = [
             loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule)
           },
           {
+            matcher: refreshEdit,
+            loadChildren: () => import('../../../../edit/refresh-edit.module').then(m => m.RefreshEditModule)
+          },
+          {
             path: ':scope/add',
             component: DialogEntryComponent,
             data: { dialog: editContentTypeDialog, title: 'Add Content Type' },
@@ -44,6 +49,7 @@ const appAdministrationRoutes: Routes = [
             component: DialogEntryComponent,
             data: { dialog: editContentTypeDialog, title: 'Edit Content Type' },
           },
+          GoToDevRest.route,
           {
             path: 'fields/:contentTypeStaticName',
             loadChildren: () => import('../content-type-fields/content-type-fields.module').then(m => m.ContentTypeFieldsModule),
@@ -59,11 +65,7 @@ const appAdministrationRoutes: Routes = [
             loadChildren: () => import('../content-import/content-import.module').then(m => m.ContentImportModule),
             data: { title: 'Import Items' },
           },
-          {
-            path: 'permissions/:type/:keyType/:key',
-            loadChildren: () => import('../permissions/permissions.module').then(m => m.PermissionsModule),
-            data: { title: 'Permission' },
-          },
+          GoToPermissions.route,
         ],
         data: { title: 'App Data' },
       },
@@ -77,13 +79,10 @@ const appAdministrationRoutes: Routes = [
           {
             matcher: edit,
             loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule),
-            data: { title: 'Edit Query Name and Description' },
+            data: { title: 'Edit Query Name and Description', history: false },
           },
-          {
-            path: 'permissions/:type/:keyType/:key',
-            loadChildren: () => import('../permissions/permissions.module').then(m => m.PermissionsModule),
-            data: { title: 'Query Permissions' },
-          },
+          { ...GoToPermissions.route, data: { title: 'Query Permissions' }},
+          GoToDevRest.route,
         ],
         data: { title: 'App Queries' },
       },
@@ -101,14 +100,18 @@ const appAdministrationRoutes: Routes = [
             data: { title: 'Edit View' },
           },
           {
-            path: 'permissions/:type/:keyType/:key',
-            loadChildren: () => import('../permissions/permissions.module').then(m => m.PermissionsModule),
-            data: { title: 'View Permissions' },
+            matcher: refreshEdit,
+            loadChildren: () => import('../../../../edit/refresh-edit.module').then(m => m.RefreshEditModule)
           },
+          { ...GoToPermissions.route, data: { title: 'View Permissions' }},
         ],
         data: { title: 'App Views' },
       },
-      { path: 'web-api', component: EmptyRouteComponent, data: { title: 'App WebApi' }, },
+      {
+        path: 'web-api', component: EmptyRouteComponent, data: { title: 'App WebApi' }, children: [
+          GoToDevRest.route,
+        ],
+      },
       {
         path: 'app', component: EmptyRouteComponent, children: [
           {
@@ -117,15 +120,15 @@ const appAdministrationRoutes: Routes = [
             data: { title: 'Edit App Properties' },
           },
           {
+            matcher: refreshEdit,
+            loadChildren: () => import('../../../../edit/refresh-edit.module').then(m => m.RefreshEditModule)
+          },
+          {
             path: 'fields/:contentTypeStaticName',
             loadChildren: () => import('../content-type-fields/content-type-fields.module').then(m => m.ContentTypeFieldsModule),
             data: { title: 'Edit Fields of App Settings & Resources' },
           },
-          {
-            path: 'permissions/:type/:keyType/:key',
-            loadChildren: () => import('../permissions/permissions.module').then(m => m.PermissionsModule),
-            data: { title: 'App Permission' },
-          },
+          { ...GoToPermissions.route, data: { title: 'App Permissions' }},
           { path: 'export', component: DialogEntryComponent, data: { dialog: exportAppDialog, title: 'Export App' } },
           { path: 'export/parts', component: DialogEntryComponent, data: { dialog: exportAppPartsDialog, title: 'Export App Parts' } },
           { path: 'import/parts', component: DialogEntryComponent, data: { dialog: importAppPartsDialog, title: 'Import App Parts' } },

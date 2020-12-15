@@ -109,3 +109,29 @@
     </mat-card-content>
   </mat-card>
 </div>
+
+
+
+<!-- experimental -->
+<div class="cards-box">
+  <mat-card class="mat-elevation-z2">
+    <mat-card-header>
+      <mat-card-title>Experimental: App State Versioning</mat-card-title>
+      <div class="actions-box">
+        <mat-icon>history_toggle_off</mat-icon>
+      </div>
+    </mat-card-header>
+    <mat-card-content>
+      Reset all app data to the state stored in the .data/app.xml.
+      <button mat-button matTooltip="Save State to app.xml for github versioning" (click)="exportAppXml()">
+        <mat-icon>save_alt</mat-icon>
+        <span> Save state</span>
+      </button>
+      <button mat-button matTooltip="Reset App" (click)="resetApp()">
+        <mat-icon>restore</mat-icon>
+        <span> Restore state</span>
+      </button>
+    </mat-card-content>
+  </mat-card>
+
+</div>

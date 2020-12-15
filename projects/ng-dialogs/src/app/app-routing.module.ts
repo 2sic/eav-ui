@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { editRoot } from '../../../edit/edit.matcher';
+import { editRoot, refreshEditRoot } from '../../../edit/edit.matcher';
 
 const appRoutes: Routes = [
   {
@@ -49,9 +49,17 @@ const appRoutes: Routes = [
     data: { title: 'Fields' },
   },
   {
+    path: ':zoneId/:appId/versions/:itemId',
+    loadChildren: () => import('./item-history/item-history.module').then(m => m.ItemHistoryModule),
+  },
+  {
     matcher: editRoot,
     loadChildren: () => import('../../../edit/edit.module').then(m => m.EditModule),
     data: { title: 'Edit Item' },
+  },
+  {
+    matcher: refreshEditRoot,
+    loadChildren: () => import('../../../edit/refresh-edit.module').then(m => m.RefreshEditModule)
   },
   // routes below are not linked directly from the initializer and are used for testing
   // to make sure each module contains enough data to be self sustainable

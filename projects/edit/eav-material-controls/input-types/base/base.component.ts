@@ -10,6 +10,7 @@ import { ValidationHelper } from '../../validators/validation-helper';
 import { ValidationMessagesService } from '../../validators/validation-messages-service';
 
 @Directive()
+// tslint:disable-next-line:directive-class-suffix
 export class BaseComponent<T> implements Field, OnInit, OnDestroy {
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;

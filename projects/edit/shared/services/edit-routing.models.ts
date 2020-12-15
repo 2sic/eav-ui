@@ -6,3 +6,7 @@ export interface ChildFormResult {
     [guid: string]: number;
   };
 }
+
+export interface NavigateFormResult {
+  navigateUrl: string;
+}

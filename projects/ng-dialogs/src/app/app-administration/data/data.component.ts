@@ -1,4 +1,4 @@
-import { AllCommunityModules, CellClassParams, CellClickedEvent, GridOptions, ValueGetterParams } from '@ag-grid-community/all-modules';
+import { AllCommunityModules, CellClassParams, CellClickedEvent, GridOptions } from '@ag-grid-community/all-modules';
 import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
@@ -7,7 +7,10 @@ import { filter, map, pairwise, startWith, take } from 'rxjs/operators';
 import { GlobalConfigService } from '../../../../../edit/shared/services/global-configuration.service';
 import { ContentExportService } from '../../content-export/services/content-export.service';
 import { ContentImportDialogData } from '../../content-import/content-import-dialog.config';
+import { GoToDevRest } from '../../dev-rest/go-to-dev-rest';
+import { GoToPermissions } from '../../permissions/go-to-permissions';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
+import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { eavConstants, EavScopeOption } from '../../shared/constants/eav.constants';
 import { toString } from '../../shared/helpers/file-to-base64.helper';
@@ -48,7 +51,10 @@ export class DataComponent implements OnInit, OnDestroy {
     columnDefs: [
       {
         headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
-        cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter', valueGetter: this.idValueGetter,
+        cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter',
+        cellRendererParams: {
+          tooltipGetter: (paramsData: ContentType) => `ID: ${paramsData.Id}\nGUID: ${paramsData.StaticName}`,
+        } as IdFieldParams,
       },
       {
         headerName: 'Content Type', field: 'Label', flex: 3, minWidth: 250, cellClass: 'primary-action highlight', sort: 'asc',
@@ -77,6 +83,7 @@ export class DataComponent implements OnInit, OnDestroy {
           onCreateOrEditMetadata: this.createOrEditMetadata.bind(this),
           onOpenPermissions: this.openPermissions.bind(this),
           onEdit: this.editContentType.bind(this),
+          onOpenRestApi: this.openRestApi.bind(this),
           onTypeExport: this.exportType.bind(this),
           onOpenDataExport: this.openDataExport.bind(this),
           onOpenDataImport: this.openDataImport.bind(this),
@@ -193,11 +200,6 @@ export class DataComponent implements OnInit, OnDestroy {
     this.fetchContentTypes();
   }
 
-  private idValueGetter(params: ValueGetterParams) {
-    const contentType: ContentType = params.data;
-    return `ID: ${contentType.Id}\nGUID: ${contentType.StaticName}`;
-  }
-
   private enablePermissionsGetter() {
     return this.enablePermissions;
   }
@@ -245,6 +247,10 @@ export class DataComponent implements OnInit, OnDestroy {
     this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.firstChild });
   }
 
+  private openRestApi(contentType: ContentType) {
+    this.router.navigate([GoToDevRest.goToData(contentType)], { relativeTo: this.route.firstChild });
+  }
+
   private exportType(contentType: ContentType) {
     this.contentExportService.exportJson(contentType.StaticName);
   }
@@ -259,10 +265,7 @@ export class DataComponent implements OnInit, OnDestroy {
   }
 
   private openPermissions(contentType: ContentType) {
-    this.router.navigate(
-      [`permissions/${eavConstants.metadata.entity.type}/${eavConstants.keyTypes.guid}/${contentType.StaticName}`],
-      { relativeTo: this.route.firstChild }
-    );
+    this.router.navigate([GoToPermissions.goEntity(contentType.StaticName)], { relativeTo: this.route.firstChild });
   }
 
   private deleteContentType(contentType: ContentType) {

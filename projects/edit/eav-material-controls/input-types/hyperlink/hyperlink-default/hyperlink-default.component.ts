@@ -14,6 +14,8 @@ import { BaseComponent } from '../../base/base.component';
 import { DnnBridgeConnectorParams, PagePickerResult } from '../../dnn-bridge/dnn-bridge.models';
 import { Preview } from './hyperlink-default.models';
 
+// TODO: warning: the two files are almost identical: hyperlink-default.component and hyperlink-default-expandable-wrapper.component
+
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'hyperlink-default',

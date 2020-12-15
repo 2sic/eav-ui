@@ -1,9 +1,7 @@
 import { DnnInterceptor } from '@2sic.com/dnn-sxc-angular';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { Context } from '../ng-dialogs/src/app/shared/services/context';
 import { SharedComponentsModule } from '../ng-dialogs/src/app/shared/shared-components.module';
 import { EavItemDialogModule } from './eav-item-dialog/eav-item-dialog.module';
@@ -15,30 +13,28 @@ import { EavService } from './shared/services/eav.service';
 import { EditRoutingService } from './shared/services/edit-routing.service';
 import { EntityService } from './shared/services/entity.service';
 import { QueryService } from './shared/services/query.service';
+import { buildTranslateConfiguration, TranslateLoaderWithErrorHandling } from '../ng-dialogs/src/app/shared/translation';
+import { HttpClient } from '@angular/common/http';
 
 declare const sxcVersion: string;
 
-export function createTranslateLoader(http: HttpClient) {
-  return new TranslateHttpLoader(http, './i18n/', `.js?${sxcVersion}`);
+// AoT requires an exported function for factories
+// at least according to https://github.com/ngx-translate/http-loader
+export function translateLoaderFactoryEdit(http: HttpClient): TranslateLoader {
+  return new TranslateLoaderWithErrorHandling(http, './i18n/', `.js?${sxcVersion}`);
 }
 
 @NgModule({
   declarations: [
+  ],
+  entryComponents: [
   ],
   imports: [
     EditRoutingModule,
     SharedComponentsModule,
     CommonModule,
     EavItemDialogModule,
-    TranslateModule.forChild({
-      loader: {
-        provide: TranslateLoader,
-        useFactory: (createTranslateLoader),
-        deps: [HttpClient]
-      },
-      defaultLanguage: 'en',
-      isolate: true,
-    })
+    TranslateModule.forChild(buildTranslateConfiguration(translateLoaderFactoryEdit))
   ],
   providers: [
     Context,

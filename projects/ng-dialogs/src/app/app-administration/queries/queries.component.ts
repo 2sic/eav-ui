@@ -1,18 +1,21 @@
-import { AllCommunityModules, CellClickedEvent, GridOptions, ValueGetterParams } from '@ag-grid-community/all-modules';
+import { AllCommunityModules, CellClickedEvent, GridOptions } from '@ag-grid-community/all-modules';
 import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { filter, map, pairwise, startWith } from 'rxjs/operators';
 import { ContentExportService } from '../../content-export/services/content-export.service';
+import { GoToDevRest } from '../../dev-rest/go-to-dev-rest';
+import { GoToPermissions } from '../../permissions/go-to-permissions';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
+import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { EditForm } from '../../shared/models/edit-form.model';
 import { DialogService } from '../../shared/services/dialog.service';
+import { QueriesActionsParams, QueryActions } from '../ag-grid-components/queries-actions/queries-actions';
 import { QueriesActionsComponent } from '../ag-grid-components/queries-actions/queries-actions.component';
-import { QueriesActionsParams } from '../ag-grid-components/queries-actions/queries-actions.models';
 import { Query } from '../models/query.model';
 import { PipelinesService } from '../services/pipelines.service';
 import { ImportQueryDialogData } from '../sub-dialogs/import-query/import-query-dialog.config';
@@ -37,7 +40,10 @@ export class QueriesComponent implements OnInit, OnDestroy {
     columnDefs: [
       {
         headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
-        cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter', valueGetter: this.idValueGetter,
+        cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter',
+        cellRendererParams: {
+          tooltipGetter: (paramsData: Query) => `ID: ${paramsData.Id}\nGUID: ${paramsData.Guid}`,
+        } as IdFieldParams,
       },
       {
         headerName: 'Name', field: 'Name', flex: 2, minWidth: 250, cellClass: 'primary-action highlight', sortable: true,
@@ -50,12 +56,8 @@ export class QueriesComponent implements OnInit, OnDestroy {
       {
         width: 120, cellClass: 'secondary-action no-padding', pinned: 'right',
         cellRenderer: 'queriesActionsComponent', cellRendererParams: {
-          enablePermissionsGetter: this.enablePermissionsGetter.bind(this),
-          onEditQuery: this.editQuery.bind(this),
-          onCloneQuery: this.cloneQuery.bind(this),
-          onOpenPermissions: this.openPermissions.bind(this),
-          onExportQuery: this.exportQuery.bind(this),
-          onDelete: this.deleteQuery.bind(this),
+          getEnablePermissions: this.enablePermissionsGetter.bind(this),
+          do: this.doMenuAction.bind(this),
         } as QueriesActionsParams,
       },
     ],
@@ -93,6 +95,23 @@ export class QueriesComponent implements OnInit, OnDestroy {
     this.router.navigate(['import'], { relativeTo: this.route.firstChild, state: dialogData });
   }
 
+  /**
+   * Experiment by 2dm 2020-11-20 - trying to reduce the ceremony around menus
+   * Once this works, we would then remove all the 3-line functions below, as they
+   * would just be added here (if that's the only place they are used)
+   */
+  private doMenuAction(action: QueryActions, query: Query) {
+    switch (action) {
+      case QueryActions.Edit: return this.editQuery(query);
+      case QueryActions.Rest:
+        return this.router.navigate([GoToDevRest.goToQuery(query)], { relativeTo: this.route.firstChild });
+      case QueryActions.Clone: return this.cloneQuery(query);
+      case QueryActions.Permissions: return this.openPermissions(query);
+      case QueryActions.Export: return this.exportQuery(query);
+      case QueryActions.Delete: return this.deleteQuery(query);
+    }
+  }
+
   editQuery(query: Query) {
     const form: EditForm = {
       items: [
@@ -106,11 +125,6 @@ export class QueriesComponent implements OnInit, OnDestroy {
     };
     const formUrl = convertFormToUrl(form);
     this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.firstChild });
-  }
-
-  private idValueGetter(params: ValueGetterParams) {
-    const query: Query = params.data;
-    return `ID: ${query.Id}\nGUID: ${query.Guid}`;
   }
 
   private enablePermissionsGetter() {
@@ -131,10 +145,7 @@ export class QueriesComponent implements OnInit, OnDestroy {
   }
 
   private openPermissions(query: Query) {
-    this.router.navigate(
-      [`permissions/${eavConstants.metadata.entity.type}/${eavConstants.keyTypes.guid}/${query.Guid}`],
-      { relativeTo: this.route.firstChild }
-    );
+    this.router.navigate([GoToPermissions.goEntity(query.Guid)], { relativeTo: this.route.firstChild });
   }
 
   private exportQuery(query: Query) {

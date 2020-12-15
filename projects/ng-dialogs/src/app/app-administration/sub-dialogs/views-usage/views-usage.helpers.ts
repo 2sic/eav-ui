@@ -12,7 +12,7 @@ export function buildData(viewUsage: ViewUsage) {
     for (const module of block.Modules) {
       data.push({
         Block: { Id: block.Id, Guid: block.Guid },
-        Module: { Id: module.Id, ModuleId: module.ModuleId, Title: module.Title },
+        Module: module,
         PageId: module.Page.Id,
         Name: module.Page.Name,
         Url: module.Page.Url,

@@ -26,4 +26,9 @@ export class WebApiActionsComponent implements ICellRendererAngularComp {
     const api: WebApi = this.params.data;
     this.params.onOpenCode(api);
   }
+
+  openRestApi() {
+    const api: WebApi = this.params.data;
+    this.params.onOpenRestApi(api);
+  }
 }

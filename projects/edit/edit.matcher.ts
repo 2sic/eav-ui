@@ -25,6 +25,22 @@ export function editRoot(url: UrlSegment[]): UrlMatchResult {
   return match;
 }
 
+/** ':zoneId/:appId/edit/refresh/:items' */
+export function refreshEditRoot(url: UrlSegment[]): UrlMatchResult {
+  if (url.length < 5) { return null; }
+  if (url[2].path !== 'edit' || url[3].path !== 'refresh') { return null; }
+  const posParams: EditPosParams = {
+    zoneId: url[0],
+    appId: url[1],
+    items: url[4],
+  };
+  const match: UrlMatchResult = {
+    consumed: url.slice(0, 5),
+    posParams: posParams as any
+  };
+  return match;
+}
+
 /**
  * 'edit/:items'
  * 'edit/:items/details/:detailsEntityGuid/:detailsFieldId'
@@ -42,6 +58,20 @@ export function edit(url: UrlSegment[]): UrlMatchResult {
   };
   const match: UrlMatchResult = {
     consumed: url.slice(0, (hasDetails || hasUpdate) ? 5 : 2),
+    posParams: posParams as any
+  };
+  return match;
+}
+
+/** 'edit/refresh/:items' */
+export function refreshEdit(url: UrlSegment[]): UrlMatchResult {
+  if (url.length < 3) { return null; }
+  if (url[0].path !== 'edit' || url[1].path !== 'refresh') { return null; }
+  const posParams: EditPosParams = {
+    items: url[2],
+  };
+  const match: UrlMatchResult = {
+    consumed: url.slice(0, 3),
     posParams: posParams as any
   };
   return match;

@@ -4,7 +4,8 @@
       "Save": "Speichern (CTRL + S)",
       "Save.Tip": "speichern und schliessen - mit CTRL + S nur speichern",
       "Exit.Tip": "verlassen - bei Änderungen wird zum Speichern aufgefordert",
-      "Return.Tip": "zurück zum vorherigen Dialog"
+      "Return.Tip": "zurück zum vorherigen Dialog",
+      "History.Tip": "Änderungen / Vorversionen"
     }
   },
   "SaveMode": {

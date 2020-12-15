@@ -9,7 +9,7 @@ export function blockIdValueGetter(params: ValueGetterParams) {
 export function moduleIdValueGetter(params: ValueGetterParams) {
   const data: ViewUsageData = params.data;
   if (data.Module == null) { return; }
-  return `ID: ${data.Module.Id}\nGUID: ${data.Module.ModuleId}\nTitle: ${data.Module.Title}`;
+  return `ID: ${data.Module.Id}\nUsageId: ${data.Module.UsageId}\nTitle: ${data.Module.Title}`;
 }
 
 export function moduleIdClassGetter(params: CellClassParams) {

@@ -1,4 +1,3 @@
-
 import { take } from 'rxjs/operators';
 import { FieldSettings } from '../../../edit-types';
 import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
@@ -15,7 +14,7 @@ export class LocalizationHelper {
    */
   public static translate(currentLanguage: string, defaultLanguage: string, attributeValues: EavValues<any>, defaultValue: any): any {
     if (attributeValues) {
-      const translation: EavValue<any> = this.getValueTranslation(attributeValues, currentLanguage, defaultValue);
+      const translation: EavValue<any> = this.getValueTranslation(attributeValues, currentLanguage, defaultLanguage);
       // if translation exist then return translation
       if (translation) {
         return translation.value;
@@ -303,4 +302,37 @@ export class LocalizationHelper {
     });
     return settingsTranslated as FieldSettings;
   }
+
+  /**
+   * Find best value in priority order:
+   * 1. value for current language
+   * 2. value for all languages
+   * 3. value for default language
+   * 4. first value
+   *
+   * Similar to LocalizationHelper.translate(), but returns whole value object.
+   */
+  // public static getBestValue(eavValues: EavValues<any>, lang: string, defaultLang: string): EavValue<any> {
+  //   let bestDimensions = [lang, `~${lang}`];
+  //   let bestValue = this.findValueForDimensions(eavValues, bestDimensions);
+  //   if (bestValue != null) { return bestValue; }
+
+  //   bestDimensions = ['*'];
+  //   bestValue = this.findValueForDimensions(eavValues, bestDimensions);
+  //   if (bestValue != null) { return bestValue; }
+
+  //   bestDimensions = [defaultLang, `~${defaultLang}`];
+  //   bestValue = this.findValueForDimensions(eavValues, bestDimensions);
+  //   if (bestValue != null) { return bestValue; }
+
+  //   bestValue = eavValues.values[0];
+  //   return bestValue;
+  // }
+
+  // private static findValueForDimensions(eavValues: EavValues<any>, dimensions: string[]): EavValue<any> {
+  //   const value = eavValues.values.find(
+  //     eavValue => !!eavValue.dimensions.find(dimension => dimensions.includes(dimension.value)),
+  //   );
+  //   return value;
+  // }
 }

@@ -41,4 +41,5 @@ export interface ItemConfig {
 export interface FormConfig {
   /** Unique id to be able to separate settings for each form instance, e.g. current language */
   formId: number;
+  enableHistory: boolean;
 }

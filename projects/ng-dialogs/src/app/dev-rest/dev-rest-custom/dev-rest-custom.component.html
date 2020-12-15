@@ -1,0 +1,15 @@
+<ng-container *ngIf="templateVars$ | async as data">
+  <div mat-dialog-title>
+    <div class="dialog-title-box">
+      <div>Using REST with {{ data.webApi?.name }}</div>
+      <button mat-icon-button matTooltip="Close dialog" (click)="closeDialog()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <router-outlet></router-outlet>
+
+  <!-- Template below this line -->
+
+</ng-container>

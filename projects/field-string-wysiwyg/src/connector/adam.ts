@@ -2,11 +2,13 @@ import { Adam, AdamItem, AdamPostResponse } from '../../../edit-types';
 
 export function attachAdam(editor: any, adam: Adam) {
   adam.onItemClick = (item) => {
-    insertContent(item, editor, adam);
+    const imageMode = adam.getConfig().showImagesOnly && item.Type === 'image';
+    insertContent(item, editor, imageMode);
   };
 
   adam.onItemUpload = (item) => {
-    insertContent(item, editor, adam);
+    const imageMode = item.Type === 'image';
+    insertContent(item, editor, imageMode);
   };
 
   if (adam.getConfig() == null) {
@@ -14,8 +16,7 @@ export function attachAdam(editor: any, adam: Adam) {
   }
 }
 
-function insertContent(item: AdamItem | AdamPostResponse, editor: any, adam: Adam) {
-  const imageMode = adam.getConfig().showImagesOnly;
+function insertContent(item: AdamItem | AdamPostResponse, editor: any, imageMode: boolean) {
   const selected = editor.selection.getContent();
 
   let fileName = item.Name;

@@ -1,0 +1,6 @@
+<p class="icon-box {{ type }}">
+  <mat-icon>{{ getIcon() }}</mat-icon>
+  <strong *ngIf="title" [innerHTML]="title"></strong>
+  <br *ngIf="title">
+  <ng-content></ng-content>
+</p>

@@ -5,8 +5,10 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { filter, map, pairwise, startWith } from 'rxjs/operators';
+import { GoToPermissions } from '../../permissions/go-to-permissions';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
+import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
@@ -49,7 +51,10 @@ export class ViewsComponent implements OnInit, OnDestroy {
     columnDefs: [
       {
         headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
-        cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter', valueGetter: this.idValueGetter,
+        cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter',
+        cellRendererParams: {
+          tooltipGetter: (paramsData: View) => `ID: ${paramsData.Id}\nGUID: ${paramsData.Guid}`,
+        } as IdFieldParams,
       },
       {
         headerName: 'Show', field: 'IsHidden', width: 70, headerClass: 'dense', cellClass: 'no-outline', cellRenderer: 'viewsShowComponent',
@@ -193,11 +198,6 @@ export class ViewsComponent implements OnInit, OnDestroy {
     this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.firstChild });
   }
 
-  private idValueGetter(params: ValueGetterParams) {
-    const view: View = params.data;
-    return `ID: ${view.Id}\nGUID: ${view.Guid}`;
-  }
-
   private showValueGetter(params: ValueGetterParams) {
     const view: View = params.data;
     return !view.IsHidden;
@@ -243,14 +243,11 @@ export class ViewsComponent implements OnInit, OnDestroy {
   }
 
   private openCode(view: View) {
-    this.dialogService.openCodeFile(view.TemplatePath);
+    this.dialogService.openCodeFile(view.TemplatePath, view.IsShared);
   }
 
   private openPermissions(view: View) {
-    this.router.navigate(
-      [`permissions/${eavConstants.metadata.entity.type}/${eavConstants.keyTypes.guid}/${view.Guid}`],
-      { relativeTo: this.route.firstChild }
-    );
+    this.router.navigate([GoToPermissions.goEntity(view.Guid)], { relativeTo: this.route.firstChild });
   }
 
   private cloneView(view: View) {

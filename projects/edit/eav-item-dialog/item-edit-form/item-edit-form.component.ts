@@ -4,6 +4,7 @@ import { Action } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { EavFormComponent } from '../../eav-dynamic-form/components/eav-form/eav-form.component';
+import { FormValueChange } from '../../eav-dynamic-form/components/eav-form/eav-form.models';
 import { FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
 import { InputFieldHelper } from '../../shared/helpers/input-field-helper';
 import { LocalizationHelper } from '../../shared/helpers/localization-helper';
@@ -24,10 +25,12 @@ import { BuildFieldsService } from './build-fields.service';
 export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
   @ViewChild(EavFormComponent) form: EavFormComponent;
   @Input() item: Item;
-  @Input() private formId: number;
+  @Input() formId: number;
+  @Input() private enableHistory: boolean;
   @Output() private itemFormValueChange = new EventEmitter<void>();
 
   contentType$: Observable<ContentType>;
+  /** spm WARNING: Do not subscribe to this twice or form will break. Items' attributes in store will get messed up */
   itemFields$: Observable<FieldConfigSet[]>;
   currentLanguage: string;
 
@@ -66,6 +69,7 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
       this.formId,
       this.currentLanguage,
       this.defaultLanguage,
+      this.enableHistory,
     );
   }
 
@@ -89,19 +93,13 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
     ) as Observable<Action>;
   }
 
-  /**
-   * Update NGRX/store on form value change
-   * @param values key:value list of fields from form
-   */
-  formValueChange(values: { [key: string]: any }) {
-    this.itemService.updateItemAttributesValues(
-      this.item.entity.id,
-      values,
-      this.currentLanguage,
-      this.defaultLanguage,
-      this.item.entity.guid,
-    );
+  /** Update NGRX/store on form value change */
+  formValueChange(change: FormValueChange) {
+    this.itemService.updateItemAttributesValues(this.item.entity.guid, change.formValues, this.currentLanguage, this.defaultLanguage);
 
+    // run formulas when form value is changed
+    change.formulaInstance.runSettingsFormulas();
+    change.formulaInstance.runValueFormulas();
     this.itemFormValueChange.emit();
   }
 

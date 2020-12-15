@@ -4,7 +4,7 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable, Subject } from 'rxjs';
 import { FormDisabledSet, FormValueSet } from '../../../edit-types';
-import { keyPartOfPage, keyPortalRoot, keyPublishing } from '../../../ng-dialogs/src/app/shared/constants/session.constants';
+import { keyPartOfPage, keyPublishing } from '../../../ng-dialogs/src/app/shared/constants/session.constants';
 import { Context } from '../../../ng-dialogs/src/app/shared/services/context';
 import { EavFormData, EditDialogContext } from '../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.models';
 import { EavConfig } from '../models/eav-config';
@@ -57,7 +57,7 @@ export class EavService implements OnDestroy {
       langs: editDialogContext.Language.All,
       moduleId: this.context.moduleId.toString(),
       partOfPage: sessionStorage.getItem(keyPartOfPage),
-      portalRoot: sessionStorage.getItem(keyPortalRoot),
+      portalRoot: editDialogContext.Site.Url,
       tabId: this.context.tabId.toString(),
       systemRoot: window.location.pathname.split('/dist/')[0] + '/',
       versioningOptions: this.getVersioningOptions(

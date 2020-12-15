@@ -3,6 +3,7 @@ import { EntityCollectionServiceBase, EntityCollectionServiceElementsFactory } f
 import { distinctUntilChanged, map, take } from 'rxjs/operators';
 import { FieldSettings } from '../../../../edit-types';
 import { DataTypeConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/data-type.constants';
+import { FormValue, FormValues } from '../../../eav-item-dialog/item-edit-form/item-edit-form.models';
 import { InputFieldHelper } from '../../helpers/input-field-helper';
 import { LocalizationHelper } from '../../helpers/localization-helper';
 import { ContentType, EavDimensions, EavHeader, EavValue, EavValues, Item, Language } from '../../models/eav';
@@ -21,7 +22,7 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
   loadItems(items: JsonItem1[]) {
     items.forEach(jsonItem1 => {
       const item = Item.create(jsonItem1);
-      this.addOneToCache(item);
+      this.upsertOneInCache(item);
     });
   }
 
@@ -48,17 +49,16 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
     this.updateOneInCache(newItem);
   }
 
-  addAttributeValue(entityId: number, attributeKey: string, newValue: any, languageKey: string,
-    isReadOnly: boolean, guid: string, type: string) {
-    const newLanguageValue = isReadOnly ? `~${languageKey}` : languageKey;
-    const newEavValue = new EavValue(newValue, [new EavDimensions(newLanguageValue)]);
-    this.addItemAttributeValue(entityId, newEavValue, attributeKey, guid, type);
+  addAttributeValue(entityGuid: string, attribute: string, newValue: FormValue, lang: string, isReadOnly: boolean, fieldType: string) {
+    const newValueDimension = isReadOnly ? `~${lang}` : lang;
+    const newEavValue = new EavValue(newValue, [new EavDimensions(newValueDimension)]);
+    this.addItemAttributeValue(entityGuid, attribute, newEavValue, fieldType);
   }
 
-  addItemAttributeValue(entityId: number, newEavAttributeValue: EavValue<any>, attributeKey: string, guid: string, type: string) {
+  private addItemAttributeValue(entityGuid: string, attribute: string, newEavValue: EavValue<any>, fieldType: string) {
     let oldItem: Item;
     this.entities$.pipe(take(1)).subscribe(items => {
-      oldItem = items.find(item => item.entity.id === 0 ? item.entity.guid === guid : item.entity.id === entityId);
+      oldItem = items.find(item => item.entity.guid === entityGuid);
     });
     if (!oldItem) { return; }
 
@@ -66,17 +66,23 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
       ...oldItem,
       entity: {
         ...oldItem.entity,
-        attributes: LocalizationHelper.addAttributeValue(oldItem.entity.attributes, newEavAttributeValue, attributeKey, type)
+        attributes: LocalizationHelper.addAttributeValue(oldItem.entity.attributes, newEavValue, attribute, fieldType),
       }
     };
     this.updateOneInCache(newItem);
   }
 
-  updateItemAttributeValue(entityId: number, attributeKey: string, newEavAttributeValue: string,
-    existingDimensionValue: string, defaultLanguage: string, isReadOnly: boolean, guid: string) {
+  updateItemAttributeValue(
+    entityGuid: string,
+    attribute: string,
+    newValue: string,
+    lang: string,
+    defaultLang: string,
+    isReadOnly: boolean,
+  ) {
     let oldItem: Item;
     this.entities$.pipe(take(1)).subscribe(items => {
-      oldItem = items.find(item => item.entity.id === 0 ? item.entity.guid === guid : item.entity.id === entityId);
+      oldItem = items.find(item => item.entity.guid === entityGuid);
     });
     if (!oldItem) { return; }
 
@@ -84,18 +90,16 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
       ...oldItem,
       entity: {
         ...oldItem.entity,
-        attributes: LocalizationHelper.updateAttributeValue(oldItem.entity.attributes, attributeKey,
-          newEavAttributeValue, existingDimensionValue, defaultLanguage, isReadOnly)
+        attributes: LocalizationHelper.updateAttributeValue(oldItem.entity.attributes, attribute, newValue, lang, defaultLang, isReadOnly),
       }
     };
     this.updateOneInCache(newItem);
   }
 
-  updateItemAttributesValues(entityId: number, updateValues: { [key: string]: any },
-    languageKey: string, defaultLanguage: string, guid: string) {
+  updateItemAttributesValues(entityGuid: string, newValues: FormValues, lang: string, defaultLang: string) {
     let oldItem: Item;
     this.entities$.pipe(take(1)).subscribe(items => {
-      oldItem = items.find(item => item.entity.id === 0 ? item.entity.guid === guid : item.entity.id === entityId);
+      oldItem = items.find(item => item.entity.guid === entityGuid);
     });
     if (!oldItem) { return; }
 
@@ -103,7 +107,7 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
       ...oldItem,
       entity: {
         ...oldItem.entity,
-        attributes: LocalizationHelper.updateAttributesValues(oldItem.entity.attributes, updateValues, languageKey, defaultLanguage)
+        attributes: LocalizationHelper.updateAttributesValues(oldItem.entity.attributes, newValues, lang, defaultLang),
       }
     };
     this.updateOneInCache(newItem);
@@ -165,13 +169,10 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
     this.updateOneInCache(newItem);
   }
 
-  selectAttributesByEntityId(entityId: number, guid: string) {
+  selectAttributesByEntityGuid(guid: string) {
     return this.entities$.pipe(
-      map(items => {
-        const item = items.find(itm => itm.entity.id === 0 ? itm.entity.guid === guid : itm.entity.id === entityId);
-        return item ? item.entity.attributes : null;
-      }),
-      distinctUntilChanged()
+      map(items => items.find(item => item.entity.guid === guid)?.entity.attributes),
+      distinctUntilChanged(),
     );
   }
 
@@ -264,28 +265,31 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
   }
 
   /** Set default value and add that attribute in store */
-  setDefaultValue(item: Item, attribute: AttributeDef, inputType: string, settingsTranslated: FieldSettings,
-    languages: Language[], currentLanguage: string, defaultLanguage: string) {
+  setDefaultValue(
+    item: Item,
+    attribute: AttributeDef,
+    inputType: string,
+    settingsTranslated: FieldSettings,
+    langs: Language[],
+    lang: string,
+    defaultLang: string,
+  ) {
     const defaultValue = InputFieldHelper.parseDefaultValue(attribute.name, inputType, settingsTranslated, item.header);
-
     const exists = item.entity.attributes.hasOwnProperty(attribute.name);
     if (!exists) {
-      if (languages.length === 0) {
-        this.addAttributeValue(item.entity.id, attribute.name,
-          defaultValue, '*', false, item.entity.guid, attribute.type);
+      if (langs.length === 0) {
+        this.addAttributeValue(item.entity.guid, attribute.name, defaultValue, '*', false, attribute.type);
       } else {
-        this.addAttributeValue(item.entity.id, attribute.name,
-          defaultValue, currentLanguage, false, item.entity.guid, attribute.type);
+        this.addAttributeValue(item.entity.guid, attribute.name, defaultValue, lang, false, attribute.type);
       }
     } else {
-      if (languages.length === 0) {
-        this.updateItemAttributeValue(item.entity.id, attribute.name,
-          defaultValue, '*', defaultLanguage, false, item.entity.guid);
+      if (langs.length === 0) {
+        this.updateItemAttributeValue(item.entity.guid, attribute.name, defaultValue, '*', defaultLang, false);
       } else {
-        this.updateItemAttributeValue(item.entity.id, attribute.name,
-          defaultValue, currentLanguage, defaultLanguage, false, item.entity.guid);
+        this.updateItemAttributeValue(item.entity.guid, attribute.name, defaultValue, lang, defaultLang, false);
       }
     }
     return defaultValue;
   }
+
 }
