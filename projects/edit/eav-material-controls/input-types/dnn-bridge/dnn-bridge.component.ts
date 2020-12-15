@@ -41,10 +41,11 @@ export class DnnBridgeComponent implements OnInit {
 
   iframeLoaded(event: Event) {
     const iframe = event.target as HTMLIFrameElement;
-    const w: any = iframe.contentWindow || iframe;
-    if (!w.connectBridge) {
-      return alert(`Can't connect to the dialog - you are probably running a new DNN(v.8 +) and didn't activate the old Telerik components. Please install these in the host > extensions to get this to work`);
-    }
+    const w = iframe.contentWindow || iframe as any;
+    // spm 2020-12-15 DNN 9.8.0 with Telerik controls removed loads iframe 2 times.
+    // First load is missing data and only second load is correct.
+    // https://github.com/dnnsoftware/Dnn.Platform/releases/tag/v9.8.0
+    if (w == null || w.connectBridge == null) { return; }
     w.connectBridge(this.dialogData.connector);
   }
 
