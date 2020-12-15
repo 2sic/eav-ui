@@ -1,8 +1,11 @@
+import star from '!raw-loader!./assets/star-24px.svg';
 // tslint:disable-next-line:max-line-length
 import { AllCommunityModules, CellClickedEvent, FilterChangedEvent, GridApi, GridOptions, GridReadyEvent, RowDragEvent, SortChangedEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
+import { MatIconRegistry } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { BehaviorSubject, forkJoin, Subscription } from 'rxjs';
 import { filter, map, mergeMap, pairwise, share, startWith } from 'rxjs/operators';
@@ -74,7 +77,7 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
         sortable: true, filter: 'agTextColumnFilter',
       },
       {
-        width: 120, cellClass: 'secondary-action no-padding', cellRenderer: 'contentTypeFieldsActionsComponent', pinned: 'right',
+        width: 80, cellClass: 'secondary-action no-padding', cellRenderer: 'contentTypeFieldsActionsComponent', pinned: 'right',
         cellRendererParams: {
           onRename: this.rename.bind(this),
           onDelete: this.delete.bind(this),
@@ -98,7 +101,11 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
     private contentTypesService: ContentTypesService,
     private contentTypesFieldsService: ContentTypesFieldsService,
     private snackBar: MatSnackBar,
-  ) { }
+    private matIconRegistry: MatIconRegistry,
+    private domSanitizer: DomSanitizer,
+  ) {
+    this.matIconRegistry.addSvgIconLiteral('star', this.domSanitizer.bypassSecurityTrustHtml(star));
+  }
 
   ngOnInit() {
     this.fetchFields();

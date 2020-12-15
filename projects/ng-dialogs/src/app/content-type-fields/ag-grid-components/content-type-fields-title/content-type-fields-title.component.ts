@@ -9,11 +9,10 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ContentTypeFieldsTitleComponent implements ICellRendererAngularComp {
-  icon: string;
+  isTitle: boolean;
 
   agInit(params: ICellRendererParams) {
-    const value: boolean = params.value;
-    this.icon = value ? 'star' : 'star_border';
+    this.isTitle = params.value;
   }
 
   refresh(params?: any): boolean {
