@@ -32,6 +32,7 @@ import { InputTypeService } from '../../shared/store/ngrx-data/input-type.servic
 import { ItemService } from '../../shared/store/ngrx-data/item.service';
 import { LanguageInstanceService } from '../../shared/store/ngrx-data/language-instance.service';
 import { LanguageService } from '../../shared/store/ngrx-data/language.service';
+import { PrefetchService } from '../../shared/store/ngrx-data/prefetch.service';
 import { ItemEditFormComponent } from '../item-edit-form/item-edit-form.component';
 import { PublishMode, PublishModeConstants } from './multi-item-edit-form.constants';
 import { calculateIsParentDialog, sortLanguages } from './multi-item-edit-form.helpers';
@@ -94,6 +95,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
     private loadIconsService: LoadIconsService,
     private route: ActivatedRoute,
     private editRoutingService: EditRoutingService,
+    private formPrefetchService: PrefetchService,
   ) {
     this.editRoutingService.init(this.route, this.formId, this.dialogRef);
     this.loadIconsService.load();
@@ -131,6 +133,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
       this.featureService.clearCache();
       this.contentTypeItemService.clearCache();
       this.contentTypeService.clearCache();
+      this.formPrefetchService.clearCache();
     }
   }
 
@@ -206,6 +209,9 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
       this.contentTypeItemService.addContentTypeItems(formData.ContentTypeItems);
       this.contentTypeService.addContentTypes(formData.ContentTypes);
       this.featureService.loadFeatures(formData.Features);
+      const itemGuids = formData.Items.map(item => item.Entity.Guid);
+      const prefetchGuid = itemGuids.join();
+      this.formPrefetchService.loadPrefetch(formData.Prefetch, prefetchGuid);
 
       this.eavService.setEavConfig(formData.Context);
       this.eavConfigLoaded$.next(true);
