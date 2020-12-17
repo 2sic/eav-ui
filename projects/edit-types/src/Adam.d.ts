@@ -20,9 +20,4 @@ export interface Adam {
   onItemUpload(item: AdamPostResponse): void;
   /** Forces items refresh */
   refresh(): void;
-  /**
-   * Forces URL calculation on a file.
-   * A file usually has URL when fetched from the backend, but it will be missing if it was just uploaded
-   */
-  addFullPath(item: AdamItem | AdamPostResponse): void;
 }

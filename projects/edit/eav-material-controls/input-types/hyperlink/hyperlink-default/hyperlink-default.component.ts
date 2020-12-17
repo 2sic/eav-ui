@@ -167,7 +167,8 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
   private setValue(item: AdamItem | AdamPostResponse) {
     const usePath = this.settings$.value.ServerResourceMapping === 'url';
     if (usePath) {
-      this.control.patchValue(item.FullPath);
+      const imageOrFileUrl = (item as AdamItem).Url != null ? (item as AdamItem).Url : (item as AdamPostResponse).Path;
+      this.control.patchValue(imageOrFileUrl);
     } else {
       this.control.patchValue(`file:${item.Id}`);
     }

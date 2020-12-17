@@ -110,8 +110,7 @@
               <div class="adam-short-label">{{ item.Name }}</div>
             </div>
             <div *ngIf="item.Type === 'image'" class="dz-image adam-browse-background-image">
-              <img data-dz-thumbnail="" [alt]="item.Id + ':' + item.Name"
-                [src]="item.FullPath + '?w=120&h=120&mode=crop'">
+              <img data-dz-thumbnail="" [alt]="item.Id + ':' + item.Name" [src]="item.ThumbnailUrl">
             </div>
 
             <div class="dz-details file-type-{{ item.Type }}">
@@ -133,7 +132,7 @@
                 title="#{{ item.Id }} - {{ item._displaySize }} KB">
                 <span>#{{ item.Id }} - {{ item._displaySize }} KB</span>
               </div>
-              <a class="adam-link-button" target="_blank" [href]="item.FullPath" appClickStopPropagation>
+              <a class="adam-link-button" target="_blank" [href]="item.Url" appClickStopPropagation>
                 <mat-icon [matTooltip]="'Fields.Hyperlink.AdamFileManager.Show' | translate">open_in_new</mat-icon>
               </a>
             </div>
