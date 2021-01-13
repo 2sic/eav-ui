@@ -10,7 +10,10 @@ export const keyDialog = prefix + 'dialog';
 export const keyContentType = prefix + 'contentType';
 export const keyItems = prefix + 'items';
 export const keyPartOfPage = prefix + 'partOfPage';
-export const keyPortalRoot = prefix + 'portalroot';
+// 2020-12-01 2dm - not in url any more in 2sxc 11.10.02+, remove this
+// Keep in this comment in till January 2021 in case something breaks
+// the commit where this was added contains all the changes related to this
+// export const keyPortalRoot = prefix + 'portalroot';
 export const keyPublishing = prefix + 'publishing';
 export const keyFilters = prefix + 'filters';
 export const keyPipelineId = prefix + 'pipelineId';
@@ -18,3 +21,6 @@ export const keyApi = prefix + 'api';
 
 /** Url which opened the dialog. Used for debugging */
 export const keyUrl = prefix + 'url';
+
+/** This is used by file editor to determine if it's editing shared files or of that portal only */
+export const keyIsShared = prefix + 'isshared';

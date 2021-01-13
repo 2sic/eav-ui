@@ -95,7 +95,6 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
           this.fetchItems();
         });
       },
-      addFullPath: (item) => { this.adamService.addFullPath(item); }
     };
     this.subscription.add(
       this.adamConfig$.subscribe(adamConfig => {

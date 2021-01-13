@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { UrlHelper } from '../../../edit/shared/helpers/url-helper';
 import { DialogTypeConstants } from './shared/constants/dialog-types.constants';
 // tslint:disable-next-line:max-line-length
-import { keyApi, keyAppId, keyContentType, keyDialog, keyItems, keyPipelineId, keyPortalRoot, keyRequestToken, keyTabId, keyUrl, keyZoneId, prefix } from './shared/constants/session.constants';
+import { keyApi, keyAppId, keyContentType, keyDialog, keyItems, keyPipelineId, keyRequestToken, keyTabId, keyUrl, keyZoneId, prefix } from './shared/constants/session.constants';
 import { convertFormToUrl } from './shared/helpers/url-prep.helper';
 import { EditForm, EditItem, GroupItem } from './shared/models/edit-form.model';
 
@@ -112,7 +112,6 @@ function loadEnvironment() {
   $2sxc.env.load({
     page: parseInt(sessionStorage.getItem(keyTabId), 10),
     rvt: sessionStorage.getItem(keyRequestToken),
-    root: sessionStorage.getItem(keyPortalRoot),
     api: sessionStorage.getItem(keyApi),
   } as any as JsInfo);
 }

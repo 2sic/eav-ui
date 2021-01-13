@@ -9,11 +9,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Context } from '../shared/services/context';
 import { DialogService } from '../shared/services/dialog.service';
 import { SharedComponentsModule } from '../shared/shared-components.module';
+import { buildTranslateConfiguration, TranslateLoaderWithErrorHandling } from '../shared/translation';
 import { AceEditorComponent } from './ace-editor/ace-editor.component';
 import { CodeEditorRoutingModule } from './code-editor-routing.module';
 import { CodeEditorComponent } from './code-editor.component';
@@ -27,9 +27,12 @@ import { SourceService } from './services/source.service';
 
 declare const sxcVersion: string;
 
-export function translateLoaderFactory(http: HttpClient) {
-  return new TranslateHttpLoader(http, './i18n/code-editor.', `.js?${sxcVersion}`);
+// AoT requires an exported function for factories
+// at least according to https://github.com/ngx-translate/http-loader
+export function translateLoaderFactoryCode(http: HttpClient) {
+  return new TranslateLoaderWithErrorHandling(http, './i18n/code-editor.', `.js?${sxcVersion}`);
 }
+
 
 @NgModule({
   declarations: [
@@ -59,15 +62,7 @@ export function translateLoaderFactory(http: HttpClient) {
     FormsModule,
     MatSelectModule,
     MatRippleModule,
-    TranslateModule.forChild({
-      loader: {
-        provide: TranslateLoader,
-        useFactory: (translateLoaderFactory),
-        deps: [HttpClient],
-      },
-      defaultLanguage: 'en',
-      isolate: true,
-    }),
+    TranslateModule.forChild(buildTranslateConfiguration(translateLoaderFactoryCode)),
   ],
   providers: [
     Context,

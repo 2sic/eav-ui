@@ -26,6 +26,9 @@ export const entityMetadata: EntityMetadataMap = {
   PublishStatus: {
     selectId: PublishStatusSelectId,
   },
+  Prefetch: {
+    selectId: prefetchSelectId,
+  },
 };
 
 export const pluralNames = {
@@ -64,4 +67,8 @@ export function InputTypeSelectId(inputType: InputType): string {
 
 export function PublishStatusSelectId(publishStatus: PublishStatus): number {
   return publishStatus == null ? undefined : publishStatus.formId;
+}
+
+export function prefetchSelectId<T extends { _guid: any }>(entity: T) {
+  return entity === null ? undefined : entity._guid;
 }

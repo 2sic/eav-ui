@@ -28,6 +28,7 @@ import { InputTypeService } from '../../shared/store/ngrx-data/input-type.servic
 import { ItemService } from '../../shared/store/ngrx-data/item.service';
 import { LanguageInstanceService } from '../../shared/store/ngrx-data/language-instance.service';
 import { LanguageService } from '../../shared/store/ngrx-data/language.service';
+import { PrefetchService } from '../../shared/store/ngrx-data/prefetch.service';
 import { PublishStatusService } from '../../shared/store/ngrx-data/publish-status.service';
 import { ItemEditFormComponent } from '../item-edit-form/item-edit-form.component';
 import { MultiEditFormTemplateVars, SaveEavFormData } from './multi-item-edit-form.models';
@@ -71,6 +72,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
     private loadIconsService: LoadIconsService,
     private editRoutingService: EditRoutingService,
     private publishStatusService: PublishStatusService,
+    private formPrefetchService: PrefetchService,
   ) { }
 
   ngOnInit() {
@@ -146,6 +148,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
       this.contentTypeItemService.clearCache();
       this.contentTypeService.clearCache();
       this.publishStatusService.clearCache();
+      this.formPrefetchService.clearCache();
     }
   }
 

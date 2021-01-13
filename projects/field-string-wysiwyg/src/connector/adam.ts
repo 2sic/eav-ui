@@ -25,9 +25,10 @@ function insertContent(item: AdamItem | AdamPostResponse, editor: any, imageMode
     fileName = fileName.substring(0, extIndex);
   }
 
+  const imageOrFileUrl = (item as AdamItem).Url != null ? (item as AdamItem).Url : (item as AdamPostResponse).Path;
   const content = imageMode
-    ? `${selected}<img src="${item.FullPath}" alt="${fileName}">`
-    : `<a href="${item.FullPath}">${selected || fileName}</a>`;
+    ? `${selected}<img src="${imageOrFileUrl}" alt="${fileName}">`
+    : `<a href="${imageOrFileUrl}">${selected || fileName}</a>`;
 
   editor.insertContent(content);
 }

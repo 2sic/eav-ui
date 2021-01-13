@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ContentItemsService } from '../../content-items/services/content-items.service';
+import { GoToPermissions } from '../../permissions/go-to-permissions';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { EditForm } from '../../shared/models/edit-form.model';
@@ -52,10 +53,7 @@ export class AppConfigurationComponent implements OnInit {
   }
 
   openPermissions() {
-    this.router.navigate(
-      [`permissions/${eavConstants.metadata.app.type}/${eavConstants.keyTypes.number}/${this.context.appId}`],
-      { relativeTo: this.route.firstChild }
-    );
+    this.router.navigate([GoToPermissions.goApp(this.context.appId)], { relativeTo: this.route.firstChild });
   }
 
   exportApp() {

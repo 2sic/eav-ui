@@ -30,10 +30,10 @@ export class DnnBridgeService {
     return dialogRef;
   }
 
-  getUrlOfId(url: string, contentType: string, guid: string, field: string) {
-    return this.http.get<string>(this.dnnContext.$2sxc.http.apiUrl('dnn/Hyperlink/ResolveHyperlink'), {
+  getUrlOfId(link: string, contentType: string, guid: string, field: string) {
+    return this.http.get<string>(this.dnnContext.$2sxc.http.apiUrl('cms/edit/lookupLink'), {
       params: {
-        hyperlink: url,
+        link,
         ...(guid && { guid }),
         ...(contentType && { contentType }),
         ...(field && { field }),

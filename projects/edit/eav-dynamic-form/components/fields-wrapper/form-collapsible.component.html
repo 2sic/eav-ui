@@ -18,8 +18,8 @@
       [matTooltipDisabled]="data.currentLanguage !== data.defaultLanguage">
     </mat-slide-toggle>
 
-    <button mat-icon-button [matTooltip]="'Form.Buttons.History.Tip' | translate" *ngIf="config.form.enableHistory"
-      (click)="openHistory()">
+    <button mat-icon-button type="button" [matTooltip]="'Form.Buttons.History.Tip' | translate"
+      *ngIf="config.form.enableHistory" (click)="openHistory()">
       <mat-icon>history</mat-icon>
     </button>
 

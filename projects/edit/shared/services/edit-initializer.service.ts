@@ -23,6 +23,7 @@ import { InputTypeService } from '../store/ngrx-data/input-type.service';
 import { ItemService } from '../store/ngrx-data/item.service';
 import { LanguageInstanceService } from '../store/ngrx-data/language-instance.service';
 import { LanguageService } from '../store/ngrx-data/language.service';
+import { PrefetchService } from '../store/ngrx-data/prefetch.service';
 import { PublishStatusService } from '../store/ngrx-data/publish-status.service';
 
 @Injectable()
@@ -42,6 +43,7 @@ export class EditInitializerService implements OnDestroy {
     private languageService: LanguageService,
     private languageInstanceService: LanguageInstanceService,
     private snackBar: MatSnackBar,
+    private formPrefetchService: PrefetchService,
   ) { }
 
   ngOnDestroy(): void {
@@ -80,6 +82,8 @@ export class EditInitializerService implements OnDestroy {
     this.contentTypeItemService.addContentTypeItems(formData.ContentTypeItems);
     this.contentTypeService.addContentTypes(formData.ContentTypes);
     this.featureService.loadFeatures(formData.Features);
+    const prefetchGuid = itemGuids.join();
+    this.formPrefetchService.loadPrefetch(formData.Prefetch, prefetchGuid);
     this.eavService.setEavConfig(formData.Context, formId, isParentDialog, itemGuids, createMode, isCopy, enableHistory);
     const publishStatus: PublishStatus = {
       formId,

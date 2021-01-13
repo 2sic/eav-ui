@@ -60,8 +60,7 @@
               <div class="adam-short-label mat-caption">{{ item.Name }}</div>
             </div>
             <div *ngIf="item.Type === 'image'" class="adam-browse-background-image">
-              <img data-dz-thumbnail="" alt="{{ item.Id }}:{{ item.Name }}"
-                src="{{ item.FullPath }}?w=78&h=78&mode=crop">
+              <img data-dz-thumbnail="" alt="{{ item.Id }}:{{ item.Name }}" [src]="item.ThumbnailUrl">
             </div>
           </div>
         </ng-container>

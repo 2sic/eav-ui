@@ -81,7 +81,6 @@ export class DropzoneWrapperComponent extends BaseComponent<any> implements Fiel
     const response: AdamPostResponse = args[1]; // Gets the server response as second argument.
     if (response.Success) {
       if (this.config.adam) {
-        this.config.adam.addFullPath(response);
         this.config.adam.onItemUpload(response);
         this.config.adam.refresh();
       } else {
