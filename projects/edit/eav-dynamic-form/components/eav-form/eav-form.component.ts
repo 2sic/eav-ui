@@ -23,7 +23,6 @@ export class EavFormComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() rootConfig: FieldConfigSet;
   @Input() fieldConfigs: FieldConfigSet[];
   @Input() private entityGuid: string;
-  @Output() private formSubmit = new EventEmitter<void>();
   @Output() private formValueChange = new EventEmitter<FormValueChange>();
 
   form: FormGroup = new FormGroup({});
@@ -67,12 +66,6 @@ export class EavFormComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnDestroy() {
     this.buildFieldsService.stopTranslations(this.fieldConfigs);
     this.subscription.unsubscribe();
-  }
-
-  submitOutside() {
-    angularConsoleLog('form save');
-    // Use this to emit value out
-    this.formSubmit.emit();
   }
 
   /**

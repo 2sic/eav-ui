@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
-import { Actions, ofType } from '@ngrx/effects';
-import { Observable, Subscription } from 'rxjs';
-import { filter, take } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
+import { take } from 'rxjs/operators';
 import { EavFormComponent } from '../../eav-dynamic-form/components/eav-form/eav-form.component';
 import { FormValueChange } from '../../eav-dynamic-form/components/eav-form/eav-form.models';
 import { FieldConfigGroup, FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
@@ -10,7 +9,6 @@ import { LocalizationHelper } from '../../shared/helpers/localization-helper';
 import { Item } from '../../shared/models/eav';
 import { EavService } from '../../shared/services/eav.service';
 import { FieldsSettingsService } from '../../shared/services/fields-settings.service';
-import * as fromItems from '../../shared/store/actions/item.actions';
 import { ContentTypeService } from '../../shared/store/ngrx-data/content-type.service';
 import { ItemService } from '../../shared/store/ngrx-data/item.service';
 import { LanguageInstanceService } from '../../shared/store/ngrx-data/language-instance.service';
@@ -39,7 +37,6 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
     private itemService: ItemService,
     private contentTypeService: ContentTypeService,
     private eavService: EavService,
-    private actions$: Actions,
     private buildFieldsService: BuildFieldsService,
     private fieldsSettingsService: FieldsSettingsService,
   ) { }
@@ -86,14 +83,6 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  /** Observe is item form is saved */
-  formSaveObservable(): Observable<fromItems.SaveItemAttributesValuesAction> {
-    return this.actions$.pipe(
-      ofType(fromItems.SAVE_ITEM_ATTRIBUTES_VALUES),
-      filter<fromItems.SaveItemAttributesValuesAction>(action => this.item.entity.guid === action.item.entity.guid),
-    );
-  }
-
   /** Update NGRX/store on form value change */
   formValueChange(change: FormValueChange) {
     this.itemService.updateItemAttributesValues(this.item.entity.guid, change.formValues, this.currentLanguage, this.defaultLanguage);
@@ -102,12 +91,6 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
     change.formulaInstance.runSettingsFormulas();
     change.formulaInstance.runValueFormulas();
     this.itemFormValueChange.emit();
-  }
-
-  submit() {
-    if (this.form.form.valid || this.checkAreAllControlsDisabled() || (this.item.header.Group && this.item.header.Group.SlotCanBeEmpty)) {
-      this.eavService.saveItem(this.item);
-    }
   }
 
   checkAreAllControlsDisabled() {

@@ -1,11 +1,10 @@
 import { AfterViewChecked, Component, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Actions, ofType } from '@ngrx/effects';
 import { TranslateService } from '@ngx-translate/core';
 import 'reflect-metadata';
-import { BehaviorSubject, combineLatest, fromEvent, Observable, of, Subscription, zip } from 'rxjs';
-import { catchError, delay, filter, map, startWith, switchMap, tap } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, fromEvent, Observable, Subscription } from 'rxjs';
+import { delay, filter, map, startWith, tap } from 'rxjs/operators';
 import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 import { SnackBarSaveErrorsComponent } from '../../eav-material-controls/dialogs/snack-bar-save-errors/snack-bar-save-errors.component';
 import { SaveErrorsSnackData } from '../../eav-material-controls/dialogs/snack-bar-save-errors/snack-bar-save-errors.models';
@@ -20,7 +19,6 @@ import { EavService } from '../../shared/services/eav.service';
 import { EditRoutingService } from '../../shared/services/edit-routing.service';
 import { GlobalConfigService } from '../../shared/services/global-configuration.service';
 import { LoadIconsService } from '../../shared/services/load-icons.service';
-import * as fromItems from '../../shared/store/actions/item.actions';
 import { ContentTypeItemService } from '../../shared/store/ngrx-data/content-type-item.service';
 import { ContentTypeService } from '../../shared/store/ngrx-data/content-type.service';
 import { FeatureService } from '../../shared/store/ngrx-data/feature.service';
@@ -50,13 +48,12 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
   private debugInfoIsOpen$: BehaviorSubject<boolean>;
   private formErrors: { [key: string]: string }[];
   private formsAreDirty: { [key: string]: boolean };
-  private formSaveAllObservables$: Observable<fromItems.SaveItemAttributesValuesAction>[];
+  private initialFormsStateChecked: boolean;
   private formIsSaved: boolean;
   private subscriptions: Subscription[];
 
   constructor(
     private dialogRef: MatDialogRef<EditEntryComponent>,
-    private actions$: Actions,
     private contentTypeItemService: ContentTypeItemService,
     private contentTypeService: ContentTypeService,
     private globalConfigService: GlobalConfigService,
@@ -82,7 +79,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
     this.debugInfoIsOpen$ = new BehaviorSubject(false);
     this.formErrors = [];
     this.formsAreDirty = {};
-    this.formSaveAllObservables$ = [];
+    this.initialFormsStateChecked = false;
     this.formIsSaved = false;
     this.subscriptions = [];
     this.editRoutingService.init();
@@ -120,13 +117,14 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
     );
     this.languageChangeSubscribe();
     this.dialogBackdropClickSubscribe();
-    this.saveFormMessagesSubscribe();
     this.formSetValueChangeSubscribe();
     setTimeout(() => { this.reduceSaveButton$.next(true); }, 5000);
   }
 
   ngAfterViewChecked() {
-    this.attachAllSaveFormObservables();
+    if (!this.initialFormsStateChecked) {
+      this.checkFormsState();
+    }
   }
 
   ngOnDestroy() {
@@ -176,12 +174,45 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
     // start gathering submit data with a timeout to let custom components which run outside Angular zone to save their values
     setTimeout(() => {
       if (this.formsAreValid$.value || this.allControlsAreDisabled$.value) {
-        this.itemEditFormRefs.forEach(itemEditFormComponent => {
-          itemEditFormComponent.form.submitOutside();
-        });
-        angularConsoleLog('saveAll', close);
+        const items = this.itemEditFormRefs
+          .map(itemEditFormComponent => {
+            const isValid = itemEditFormComponent.form.form.valid
+              || itemEditFormComponent.checkAreAllControlsDisabled()
+              || (itemEditFormComponent.item.header.Group && itemEditFormComponent.item.header.Group.SlotCanBeEmpty);
+            return isValid ? itemEditFormComponent.item : null;
+          })
+          .filter(item => item != null)
+          .map(item => JsonItem1.create(item))
+          // do not try to save item which doesn't have any fields, nothing could have changed about it
+          .filter(item => Object.keys(item.Entity.Attributes).length > 0);
+        const publishStatus = this.publishStatusService.getPublishStatus(this.eavService.eavConfig.formId);
+
+        const saveFormData: SaveEavFormData = {
+          Items: items,
+          IsPublished: publishStatus.IsPublished,
+          DraftShouldBranch: publishStatus.DraftShouldBranch,
+        };
+        angularConsoleLog('SAVE FORM DATA: ', saveFormData);
         this.snackBar.open(this.translate.instant('Message.Saving'), null, { duration: 2000 });
-        if (close) { this.formIsSaved = true; }
+
+        this.eavService.saveFormData(saveFormData).subscribe({
+          next: result => {
+            angularConsoleLog('saveAll', close);
+            if (close) { this.formIsSaved = true; }
+
+            this.itemService.updateItemId(result);
+            angularConsoleLog('success END: ', result);
+            this.snackBar.open(this.translate.instant('Message.Saved'), null, { duration: 2000 });
+            this.dialogRef.disableClose = false;
+            if (this.formIsSaved) {
+              this.closeDialog(result);
+            }
+          },
+          error: err => {
+            angularConsoleLog('error END', err);
+            this.snackBar.open('Error', null, { duration: 2000 });
+          },
+        });
       } else {
         this.calculateAllValidationMessages();
         const fieldErrors: FieldErrorMessage[] = [];
@@ -241,35 +272,6 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
     });
   }
 
-  /**
-   * Display form messages on form success or form error.
-   * Imortant: this is subscribed to an all open dialogs, a forms are distinguished by this.formIsSaved variable.
-   * TODO: need to distinguished form by forms data
-   */
-  private saveFormMessagesSubscribe() {
-    this.subscriptions.push(
-      this.actions$.pipe(
-        ofType<fromItems.SaveItemAttributesValuesSuccessAction>(fromItems.SAVE_ITEM_ATTRIBUTES_VALUES_SUCCESS),
-      ).subscribe(action => {
-        this.itemService.updateItemId(action.data);
-        angularConsoleLog('success END: ', action.data);
-        this.snackBar.open(this.translate.instant('Message.Saved'), null, { duration: 2000 });
-        this.dialogRef.disableClose = false;
-        if (this.formIsSaved) {
-          this.closeDialog(action.data);
-        }
-      }),
-    );
-    this.subscriptions.push(
-      this.actions$.pipe(
-        ofType<fromItems.SaveItemAttributesValuesErrorAction>(fromItems.SAVE_ITEM_ATTRIBUTES_VALUES_ERROR),
-      ).subscribe(action => {
-        angularConsoleLog('error END', action.error);
-        this.snackBar.open('Error', null, { duration: 2000 });
-      }),
-    );
-  }
-
   private formSetValueChangeSubscribe() {
     this.subscriptions.push(
       this.eavService.formValueChange$.pipe(
@@ -308,6 +310,10 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
       if (this.allControlsAreDisabled$.value !== allControlsAreDisabled) {
         this.allControlsAreDisabled$.next(allControlsAreDisabled);
       }
+
+      if (!this.initialFormsStateChecked) {
+        this.initialFormsStateChecked = true;
+      }
     }
     this.dialogRef.disableClose = this.areFormsDirtyAnyLanguage();
   }
@@ -332,56 +338,6 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
       if (!itemEditFormComponent.form.form.invalid) { return; }
       this.formErrors.push(this.validationMessagesService.validateForm(itemEditFormComponent.form.form, false));
     });
-  }
-
-  /**
-   * Attach all save form observables from child itemEditFormComponent and
-   * subscribe to all observables with one subscribe (observable zip function).
-   * It also initially checks the status of the form (invalid, dirty ...)
-   */
-  private attachAllSaveFormObservables() {
-    if (this.formSaveAllObservables$.length === 0) {
-      this.itemEditFormRefs?.forEach(itemEditFormComponent => {
-        this.formSaveAllObservables$.push(itemEditFormComponent.formSaveObservable());
-      });
-
-      // only called once when a formSaveAllObservables array is filled
-      if (this.formSaveAllObservables$.length > 0) {
-        this.saveFormSubscribe();
-        this.checkFormsState();
-      }
-    }
-  }
-
-  /** With zip function look all forms submit observables and when all finish save all data */
-  private saveFormSubscribe() {
-    this.subscriptions.push(
-      zip(...this.formSaveAllObservables$)
-        .pipe(
-          switchMap(actions => {
-            const items = actions
-              .map(action => JsonItem1.create(action.item))
-              // do not try to save item which doesn't have any fields, nothing could have changed about it
-              .filter(item => Object.keys(item.Entity.Attributes).length > 0);
-            const publishStatus = this.publishStatusService.getPublishStatus(this.eavService.eavConfig.formId);
-
-            const saveFormData: SaveEavFormData = {
-              Items: items,
-              IsPublished: publishStatus.IsPublished,
-              DraftShouldBranch: publishStatus.DraftShouldBranch,
-            };
-            angularConsoleLog('SAVE FORM DATA: ', saveFormData);
-            return this.eavService.saveFormData(saveFormData).pipe(
-              tap(result => {
-                angularConsoleLog('SAVE WORKED');
-                this.eavService.saveItemSuccess(result);
-              }),
-            );
-          }),
-          catchError(err => of(this.eavService.saveItemError(err)))
-        )
-        .subscribe()
-    );
   }
 
   /** Open snackbar when snack bar not saved */

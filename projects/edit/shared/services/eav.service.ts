@@ -1,18 +1,14 @@
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { HttpClient } from '@angular/common/http';
 import { Injectable, OnDestroy } from '@angular/core';
-import { Store } from '@ngrx/store';
 import { Subject } from 'rxjs';
 import { FormDisabledSet, FormValueSet } from '../../../edit-types';
 import { keyPartOfPage, keyPublishing } from '../../../ng-dialogs/src/app/shared/constants/session.constants';
 import { Context } from '../../../ng-dialogs/src/app/shared/services/context';
 import { EavFormData, EditDialogContext, SaveEavFormData } from '../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.models';
 import { EavConfig } from '../models/eav-config';
-import { Item } from '../models/eav/item';
 import { SaveResult } from '../models/eav/save-result.model';
 import { VersioningOptions } from '../models/eav/versioning-options';
-import * as fromStore from '../store';
-import * as itemActions from '../store/actions/item.actions';
 
 export const webApiEditRoot = 'cms/edit/';
 
@@ -33,7 +29,6 @@ export class EavService implements OnDestroy {
 
   constructor(
     private http: HttpClient,
-    private store: Store<fromStore.EavState>,
     private dnnContext: DnnContext,
     /** Used to fetch form data and fill up eavConfig. Do not use anywhere else */
     private context: Context,
@@ -85,18 +80,6 @@ export class EavService implements OnDestroy {
     return this.http.post<EavFormData>(this.dnnContext.$2sxc.http.apiUrl(webApiEditRoot + 'load'), items, {
       params: { appId: this.context.appId.toString() }
     });
-  }
-
-  saveItem(item: Item) {
-    this.store.dispatch(new itemActions.SaveItemAttributesValuesAction(item));
-  }
-
-  saveItemSuccess(data: SaveResult) {
-    this.store.dispatch(new itemActions.SaveItemAttributesValuesSuccessAction(data));
-  }
-
-  saveItemError(error: any) {
-    this.store.dispatch(new itemActions.SaveItemAttributesValuesErrorAction(error));
   }
 
   saveFormData(result: SaveEavFormData) {
