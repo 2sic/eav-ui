@@ -50,7 +50,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
   private formsAreDirty: { [key: string]: boolean };
   private initialFormsStateChecked: boolean;
   private formIsSaved: boolean;
-  private subscriptions: Subscription[];
+  private subscription: Subscription;
 
   constructor(
     private dialogRef: MatDialogRef<EditEntryComponent>,
@@ -81,7 +81,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
     this.formsAreDirty = {};
     this.initialFormsStateChecked = false;
     this.formIsSaved = false;
-    this.subscriptions = [];
+    this.subscription = new Subscription();
     this.editRoutingService.init();
     this.loadIconsService.load();
     // spm TODO: added a small delay to calculate fields a bit later than languages to make form opening feel smoother.
@@ -132,7 +132,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
     this.debugInfoIsOpen$.complete();
     this.formsAreValid$.complete();
     this.allControlsAreDisabled$.complete();
-    this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
+    this.subscription.unsubscribe();
     this.languageInstanceService.removeLanguageInstance(this.eavService.eavConfig.formId);
     this.publishStatusService.removePublishStatus(this.eavService.eavConfig.formId);
 
@@ -237,15 +237,15 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
   }
 
   private languageChangeSubscribe() {
-    this.subscriptions.push(
+    this.subscription.add(
       this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId).subscribe(language => {
         this.formErrors = []; // on current language change reset form errors
-      }),
+      })
     );
   }
 
   private dialogBackdropClickSubscribe() {
-    this.subscriptions.push(
+    this.subscription.add(
       fromEvent<BeforeUnloadEvent>(window, 'beforeunload').subscribe(event => {
         if (!this.dialogRef.disableClose) { return; }
         event.preventDefault();
@@ -273,7 +273,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
   }
 
   private formSetValueChangeSubscribe() {
-    this.subscriptions.push(
+    this.subscription.add(
       this.eavService.formValueChange$.pipe(
         filter(formSet => formSet.formId === this.eavService.eavConfig.formId)
       ).subscribe(formSet => {
