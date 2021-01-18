@@ -1,10 +1,11 @@
 import { PermissionsCount } from '../../app-administration/models/permissions-count.model';
+import { InputType } from './input-type.model';
 
 export class Field {
   AttributeId: number;
   Id: number;
   InputType: string;
-  InputTypeConfig: FieldInputTypeConfig;
+  InputTypeConfig: InputType;
   IsTitle: boolean;
   Metadata: FieldMetadata;
   Permissions: PermissionsCount;
@@ -22,16 +23,6 @@ export class FieldMetadata {
 
 export class FieldMetadataKey {
   [key: string]: any;
-}
-
-export class FieldInputTypeConfig {
-  Type: string;
-  Label: string;
-  Description: string;
-  Assets: string;
-  DisableI18n: boolean;
-  AngularAssets: string;
-  UseAdam: boolean;
 }
 
 export class FieldInputTypeOption {

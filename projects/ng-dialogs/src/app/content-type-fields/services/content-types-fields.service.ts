@@ -6,7 +6,8 @@ import { map } from 'rxjs/operators';
 import { ContentType } from '../../app-administration/models/content-type.model';
 import { webApiTypeRoot } from '../../app-administration/services/content-types.service';
 import { Context } from '../../shared/services/context';
-import { Field, FieldInputTypeConfig, FieldInputTypeOption } from '../models/field.model';
+import { Field, FieldInputTypeOption } from '../models/field.model';
+import { InputType } from '../models/input-type.model';
 
 export const webApiFieldsRoot = 'admin/field/';
 export const webApiFieldsAll = webApiFieldsRoot + 'all';
@@ -29,7 +30,7 @@ export class ContentTypesFieldsService {
     return this.http
       .get(this.apiUrl(webApiFieldsRoot + 'InputTypes'), { params: { appid: this.context.appId.toString() } })
       .pipe(
-        map((inputConfigs: FieldInputTypeConfig[]) => {
+        map((inputConfigs: InputType[]) => {
           const inputTypeOptions = inputConfigs.map(config => {
             const option: FieldInputTypeOption = {
               dataType: config.Type.substring(0, config.Type.indexOf('-')),
