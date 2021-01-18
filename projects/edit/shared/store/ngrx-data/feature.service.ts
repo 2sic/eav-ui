@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { EntityCollectionServiceBase, EntityCollectionServiceElementsFactory } from '@ngrx/data';
 import { take } from 'rxjs/operators';
-import { Feature } from '../../models/feature/feature';
+import { Feature } from '../../../../ng-dialogs/src/app/apps-management/models/feature.model';
 
 @Injectable({ providedIn: 'root' })
 export class FeatureService extends EntityCollectionServiceBase<Feature> {
@@ -9,9 +9,8 @@ export class FeatureService extends EntityCollectionServiceBase<Feature> {
     super('Feature', serviceElementsFactory);
   }
 
-  loadFeatures(features: any[]) {
-    const featureList: Feature[] = Feature.createFeatureArray(features);
-    this.addAllToCache(featureList);
+  loadFeatures(features: Feature[]) {
+    this.addAllToCache(features);
   }
 
   isFeatureEnabled(guid: string) {

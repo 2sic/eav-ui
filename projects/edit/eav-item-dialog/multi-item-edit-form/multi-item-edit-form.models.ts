@@ -1,3 +1,4 @@
+import { Feature } from '../../../ng-dialogs/src/app/apps-management/models/feature.model';
 import { DialogContextApp, DialogContextLanguage, DialogContextSite, DialogContextSystem } from '../../../ng-dialogs/src/app/shared/models/dialog-context.models';
 import { InputType, Item } from '../../shared/models/eav';
 import { EntityInfo } from '../../shared/models/eav/entity-info';
@@ -12,7 +13,7 @@ export interface EavFormData extends EavPublishStatus {
   ContentTypeItems: Entity1[];
   ContentTypes: JsonContentType1[];
   Context: EditDialogContext;
-  Features: any[];
+  Features: Feature[];
   InputTypes: InputType[];
   Items: JsonItem1[];
   Prefetch: Prefetch;
