@@ -30,15 +30,15 @@ export class FormCollapsibleLogic {
   private getContentTypeTitle(currentLanguage: string, defaultLanguage: string, contentType: ContentType): string {
     let label: string;
     try {
-      const type = contentType.metadata
+      const type = contentType.Metadata
         // xx ContentType is a historic bug and should be fixed when JSONs are rechecked
         .find(metadata => metadata.type.name === 'ContentType' || metadata.type.name === 'xx ContentType');
       if (!!type) {
         label = LocalizationHelper.getValueOrDefault(type.attributes.Label, currentLanguage, defaultLanguage)?.value;
       }
-      label = label || contentType.name;
+      label = label || contentType.Name;
     } catch (error) {
-      label = contentType.name;
+      label = contentType.Name;
     }
     return label;
   }

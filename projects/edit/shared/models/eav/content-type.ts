@@ -4,13 +4,13 @@ import { EavAttributes } from './eav-attributes';
 import { EavEntity } from './eav-entity';
 
 export class ContentType {
-  attributes: AttributeDef[];
-  description: string;
-  id: string;
-  metadata: EavEntity[];
-  name: string;
-  scope: string;
-  settings: EavAttributes;
+  Attributes: AttributeDef[];
+  Description: string;
+  Id: string;
+  Metadata: EavEntity[];
+  Name: string;
+  Scope: string;
+  Settings: EavAttributes;
 
   constructor(
     id: string,
@@ -21,13 +21,13 @@ export class ContentType {
     metadata: EavEntity[],
     settings: EavAttributes,
   ) {
-    this.id = id;
-    this.name = name;
-    this.scope = scope;
-    this.description = description;
-    this.attributes = attributes;
-    this.metadata = metadata;
-    this.settings = settings;
+    this.Id = id;
+    this.Name = name;
+    this.Scope = scope;
+    this.Description = description;
+    this.Attributes = attributes;
+    this.Metadata = metadata;
+    this.Settings = settings;
   }
 
   /** Create ContentType from json typed ContentType1 */

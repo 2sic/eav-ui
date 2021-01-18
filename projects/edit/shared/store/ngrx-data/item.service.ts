@@ -247,7 +247,7 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
       });
 
       const attributesValues = Object.keys(item.entity.attributes).map(attributeKey => {
-        const attributeDef = contentType.attributes.find(attr => attr.name === attributeKey);
+        const attributeDef = contentType.Attributes.find(attr => attr.name === attributeKey);
         const calculatedInputType = InputFieldHelper.calculateInputType(attributeDef, inputTypeService);
         const disableI18n = LocalizationHelper.isI18nDisabled(inputTypeService, calculatedInputType, attributeDef.settings);
         return {
@@ -256,7 +256,7 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
         };
       });
 
-      if (attributesValues.length < contentType.attributes.filter(cType => cType.type !== DataTypeConstants.Empty).length) {
+      if (attributesValues.length < contentType.Attributes.filter(attr => attr.type !== DataTypeConstants.Empty).length) {
         return false;
       }
 

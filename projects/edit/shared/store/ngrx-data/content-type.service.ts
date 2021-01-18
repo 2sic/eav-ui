@@ -19,7 +19,7 @@ export class ContentTypeService extends EntityCollectionServiceBase<ContentType>
   /** Get content type observable from the store */
   getContentTypeById(id: string) {
     return this.entities$.pipe(
-      map(contentTypes => contentTypes.find(contentType => contentType.id === id))
+      map(contentTypes => contentTypes.find(contentType => contentType.Id === id))
       // maybe add distinctUntilChanged()
     );
   }
