@@ -1,4 +1,4 @@
-import { ContentType1 } from '../json-format-v1/content-type-def1';
+import { ContentType1 } from '../json-format-v1';
 import { AttributeDef } from './attribute-def';
 import { EavAttributes } from './eav-attributes';
 import { EavEntity } from './eav-entity';
