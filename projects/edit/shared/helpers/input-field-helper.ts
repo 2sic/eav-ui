@@ -6,7 +6,7 @@ import { FieldConfigGroup, FieldConfigSet } from '../../eav-dynamic-form/model/f
 import { WrappersConstants } from '../constants/wrappers.constants';
 import { EavHeader, InputType, Item } from '../models/eav';
 import { AttributeDef } from '../models/eav/attribute-def';
-import { CalculatedInputType } from '../models/input-field-models';
+import { CalculatedInputType } from '../models/eav/calculated-input-type';
 import { InputTypeService } from '../store/ngrx-data/input-type.service';
 
 export class InputFieldHelper {

@@ -6,7 +6,7 @@ import { FieldConfigGroup, FieldConfigSet, FormConfig, ItemConfig } from '../../
 import { InputFieldHelper } from '../../shared/helpers/input-field-helper';
 import { ContentType, EavAttributes, Item } from '../../shared/models/eav';
 import { AttributeDef } from '../../shared/models/eav/attribute-def';
-import { CalculatedInputType } from '../../shared/models/input-field-models';
+import { CalculatedInputType } from '../../shared/models/eav/calculated-input-type';
 import { FieldsSettingsService } from '../../shared/services/fields-settings.service';
 import { FormulaInstanceService } from '../../shared/services/formula-instance.service';
 import { ContentTypeService } from '../../shared/store/ngrx-data/content-type.service';
