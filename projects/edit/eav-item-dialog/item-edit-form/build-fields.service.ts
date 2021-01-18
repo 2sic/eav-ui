@@ -47,7 +47,7 @@ export class BuildFieldsService {
     this.enableHistory = enableHistory;
     this.fieldsSettingsService = fieldsSettingsService;
 
-    const contentTypeSettings = contentType.contentType.settings;
+    const contentTypeSettings = contentType.settings;
     const entity: ItemConfig = {
       entityId: this.item.entity.id,
       entityGuid: this.item.entity.guid,
@@ -68,7 +68,7 @@ export class BuildFieldsService {
     let currentFieldGroup = parentFieldGroup;
 
     // loop through contentType attributes
-    contentType.contentType.attributes.forEach((attribute, index) => {
+    contentType.attributes.forEach((attribute, index) => {
       try {
         // if input type is empty-default create new field group and than continue to add fields to that group
         const calculatedInputType: CalculatedInputType = InputFieldHelper.calculateInputType(attribute, this.inputTypeService);

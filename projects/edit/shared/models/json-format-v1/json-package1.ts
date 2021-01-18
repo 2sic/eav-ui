@@ -1,13 +1,13 @@
-// import { ContentTypeDef1 } from './content-type-def1';
+// import { ContentType1 } from './content-type-def1';
 // import { Entity1 } from './entity1';
 // import { JsonHeader1 } from './json-header1';
 
 // export class JsonPackage1 {
 //     _: JsonHeader1;
-//     ContentType?: ContentTypeDef1;
+//     ContentType?: ContentType1;
 //     // EntityType?: Entity1;
 
-//     constructor(_: JsonHeader1, ContentType?: ContentTypeDef1) {
+//     constructor(_: JsonHeader1, ContentType?: ContentType1) {
 //         this._ = _;
 //         this.ContentType = ContentType;
 //     }

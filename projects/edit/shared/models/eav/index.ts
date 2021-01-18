@@ -5,7 +5,7 @@ export { Item } from './item';
 export { EavValue } from './eav-value';
 export { EavValues } from './eav-values';
 export { EavDimensions } from './eav-dimensions';
-export { ContentType } from './content-type';
+export { ContentType } from './content-type-def';
 export { EavHeader } from './eav-header';
 export { Language } from './language';
 export { InputType } from '../../../../ng-dialogs/src/app/content-type-fields/models/input-type.model';

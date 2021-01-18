@@ -54,7 +54,7 @@ export function languageInstanceSelectId(languageInstance: LanguageInstance): nu
 }
 
 export function contentTypeSelectId(contentType: ContentType): string {
-  return contentType == null ? undefined : contentType.contentType.id;
+  return contentType == null ? undefined : contentType.id;
 }
 
 export function contentTypeItemSelectId(contentTypeItem: EavEntity): string {

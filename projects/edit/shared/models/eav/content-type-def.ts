@@ -1,15 +1,15 @@
-import { ContentTypeDef1 } from '../json-format-v1/content-type-def1';
+import { ContentType1 } from '../json-format-v1/content-type-def1';
 import { AttributeDef } from './attribute-def';
 import { EavAttributes } from './eav-attributes';
 import { EavEntity } from './eav-entity';
 
-export class ContentTypeDef {
+export class ContentType {
+  attributes: AttributeDef[];
+  description: string;
   id: string;
+  metadata: EavEntity[];
   name: string;
   scope: string;
-  description: string;
-  attributes: AttributeDef[];
-  metadata: EavEntity[];
   settings: EavAttributes;
 
   constructor(
@@ -30,12 +30,12 @@ export class ContentTypeDef {
     this.settings = settings;
   }
 
-  /** Create ContentTypeDef from json typed ContentType1 */
-  public static create(item: ContentTypeDef1): ContentTypeDef {
+  /** Create ContentType from json typed ContentType1 */
+  public static create(item: ContentType1): ContentType {
     const attributeDefArray = AttributeDef.createArray(item.Attributes);
     const metaDataArray = EavEntity.createArray(item.Metadata);
     const settings = EavAttributes.getFromEavEntityArray(metaDataArray);
 
-    return new ContentTypeDef(item.Id, item.Name, item.Scope, item.Description, attributeDefArray, metaDataArray, settings);
+    return new ContentType(item.Id, item.Name, item.Scope, item.Description, attributeDefArray, metaDataArray, settings);
   }
 }

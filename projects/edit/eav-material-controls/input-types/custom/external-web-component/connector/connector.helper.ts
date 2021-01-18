@@ -90,7 +90,7 @@ export class ConnectorHelper {
   private calculateExperimentalProps() {
     let allInputTypeNames: InputTypeName[];
     this.contentTypeService.getContentTypeById(this.config.entity.contentTypeId).pipe(take(1)).subscribe(data => {
-      allInputTypeNames = InputFieldHelper.calculateInputTypes(data.contentType.attributes, this.inputTypeService);
+      allInputTypeNames = InputFieldHelper.calculateInputTypes(data.attributes, this.inputTypeService);
     });
 
     const experimentalProps: ExperimentalProps = {

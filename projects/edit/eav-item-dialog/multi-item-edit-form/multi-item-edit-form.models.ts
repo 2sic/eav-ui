@@ -3,7 +3,7 @@ import { Feature } from '../../../ng-dialogs/src/app/apps-management/models/feat
 import { DialogContextApp, DialogContextLanguage, DialogContextSite, DialogContextSystem } from '../../../ng-dialogs/src/app/shared/models/dialog-context.models';
 import { InputType, Item } from '../../shared/models/eav';
 import { EntityInfo } from '../../shared/models/eav/entity-info';
-import { Entity1, JsonContentType1, JsonItem1 } from '../../shared/models/json-format-v1';
+import { ContentType1, Entity1, JsonItem1 } from '../../shared/models/json-format-v1';
 
 export interface EavPublishStatus {
   DraftShouldBranch: boolean;
@@ -12,7 +12,7 @@ export interface EavPublishStatus {
 
 export interface EavFormData extends EavPublishStatus {
   ContentTypeItems: Entity1[];
-  ContentTypes: JsonContentType1[];
+  ContentTypes: ContentType1[];
   Context: EditDialogContext;
   Features: Feature[];
   InputTypes: InputType[];

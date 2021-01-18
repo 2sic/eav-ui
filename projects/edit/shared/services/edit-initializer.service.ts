@@ -137,9 +137,9 @@ export class EditInitializerService implements OnDestroy {
       .subscribe(([items, currentLanguage, defaultLanguage, languages, contentTypes]) => {
         for (const item of items) {
           const contentTypeId = InputFieldHelper.getContentTypeId(item);
-          const contentType = contentTypes.find(c => c.contentType.id === contentTypeId);
+          const contentType = contentTypes.find(c => c.id === contentTypeId);
 
-          for (const attributeDef of contentType.contentType.attributes) {
+          for (const attributeDef of contentType.attributes) {
             const calculatedInputType = InputFieldHelper.calculateInputType(attributeDef, this.inputTypeService);
             const inputType = calculatedInputType.inputType;
             if (inputType === InputTypeConstants.EmptyDefault) { continue; }
