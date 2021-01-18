@@ -1,3 +1,4 @@
+import { AdamItem } from '../../../edit-types';
 import { Feature } from '../../../ng-dialogs/src/app/apps-management/models/feature.model';
 import { DialogContextApp, DialogContextLanguage, DialogContextSite, DialogContextSystem } from '../../../ng-dialogs/src/app/shared/models/dialog-context.models';
 import { InputType, Item } from '../../shared/models/eav';
@@ -41,9 +42,16 @@ export interface MultiEditFormTemplateVars {
 }
 
 export interface Prefetch {
+  Adam: PrefetchAdam;
   Entities: EntityInfo[];
   Links: PrefetchLinks;
+
+  /** NgRx store helper */
   _guid?: string;
+}
+
+export interface PrefetchAdam {
+  [key: string]: AdamItem;
 }
 
 export interface PrefetchLinks {
