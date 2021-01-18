@@ -31,7 +31,7 @@ export class EavEntity {
     this.attributes = attributes;
     this.owner = owner;
     this.metadata = metadata;
-    if (For) { this.For = For; }
+    this.For = For;
   }
 
   /** Create new Eav Entity from typed json Entity1 */
@@ -41,7 +41,6 @@ export class EavEntity {
     }
     const eavAttributes = EavAttributes.create(item.Attributes);
     const eavMetaData = this.createArray(item.Metadata);
-    const eavFor: EavFor = item.For ? new EavFor(item.For) : null;
 
     return new EavEntity(
       item.Id,
@@ -51,7 +50,7 @@ export class EavEntity {
       eavAttributes,
       item.Owner,
       eavMetaData,
-      eavFor
+      item.For,
     );
   }
 

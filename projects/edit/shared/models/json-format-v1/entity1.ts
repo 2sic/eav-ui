@@ -1,6 +1,5 @@
-import { EavEntity } from '../eav';
+import { EavEntity, EavFor } from '../eav';
 import { Attributes1 } from './attributes1';
-import { For1 } from './for1';
 import { Type1 } from './type1';
 
 export class Entity1 {
@@ -11,7 +10,7 @@ export class Entity1 {
   Attributes: Attributes1<any>;
   Owner: string;
   Metadata: Entity1[];
-  For?: For1;
+  For?: EavFor;
 
   constructor(
     Id: number,
@@ -21,7 +20,7 @@ export class Entity1 {
     Attributes: Attributes1<any>,
     Owner: string,
     Metadata: Entity1[],
-    For?: For1,
+    For?: EavFor,
   ) {
     this.Id = Id;
     this.Version = Version;
@@ -30,13 +29,12 @@ export class Entity1 {
     this.Attributes = Attributes;
     this.Owner = Owner;
     this.Metadata = Metadata;
-    if (For) { this.For = For; }
+    this.For = For;
   }
 
   public static create(entity: EavEntity): Entity1 {
     const attributes1 = Attributes1.create(entity.attributes);
     const metaData1 = this.createArray(entity.metadata);
-    const for1 = entity.For ? new For1(entity.For) : null;
 
     return new Entity1(
       entity.id,
@@ -46,7 +44,7 @@ export class Entity1 {
       attributes1,
       entity.owner,
       metaData1,
-      for1,
+      entity.For,
     );
   }
 

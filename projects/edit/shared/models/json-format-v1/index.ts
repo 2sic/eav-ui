@@ -7,4 +7,3 @@ export { JsonItem1 } from './json-item1';
 // export { JsonHeader1 } from './json-header1';
 export { Attribute1 } from './attribute1';
 export { Type1 } from './type1';
-export { For1 } from './for1';
