@@ -24,6 +24,7 @@ export class AddItem {
 
 export class GroupItem {
   Group: GroupItemGroup;
+  Prefill?: { [key: string]: string };
 }
 
 export class GroupItemGroup {

@@ -145,7 +145,8 @@ export class InputFieldHelper {
           defaultValue = defaultValue.replace(/[\{\}]/g, '\"');
         }
         if (defaultValue.indexOf(',') !== -1 && defaultValue.indexOf('[') === -1) { // list but no array, add brackets
-          defaultValue = '[' + defaultValue + ']';
+          const guids = defaultValue.split(',').map(guid => guid.trim());
+          defaultValue = JSON.stringify(guids);
         }
         return (defaultValue.indexOf('[') === 0) // possibility 2) an array with guid strings
           ? JSON.parse(defaultValue) // if it's a string containing an array

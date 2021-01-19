@@ -36,6 +36,10 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
 
   useQuery = false;
   contentTypeMask: FieldMaskService;
+
+  /** New in 11.11.03 - Prefill feature to add prefill to new entities */
+  prefillMask: FieldMaskService;
+
   error$ = new BehaviorSubject('');
   freeTextMode$ = new BehaviorSubject(false);
   disableAddNew$ = new BehaviorSubject(true);
@@ -83,6 +87,18 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
           null,
           this.eavService.eavConfig,
         );
+
+        // new in 11.11.03 - similar to contentTypeMask
+        // not exactly sure what each piece does, must ask SPM to finalize
+        this.prefillMask?.destroy();
+        this.prefillMask = new FieldMaskService(
+          settings.Prefill,
+          this.group.controls,
+          !this.useQuery ? this.fetchAvailableEntities.bind(this) : this.updateAddNew.bind(this),
+          null,
+          this.eavService.eavConfig,
+        );
+
       })
     );
 
@@ -103,6 +119,7 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
     this.disableAddNew$.complete();
     this.config.entityCache$.complete();
     this.contentTypeMask.destroy();
+    this.prefillMask?.destroy();
     super.ngOnDestroy();
   }
 
@@ -176,8 +193,10 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
     let form: EditForm;
     if (entityGuid == null) {
       const contentTypeName = this.contentTypeMask.resolve();
+
+      const prefill = this.getPrefill();
       form = {
-        items: [{ ContentTypeName: contentTypeName }],
+        items: [{ ContentTypeName: contentTypeName, Prefill: prefill }],
       };
     } else {
       const entity = this.config.entityCache$.value.find(e => e.Value === entityGuid);
@@ -186,6 +205,31 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
       };
     }
     this.editRoutingService.open(this.config.field.index, this.config.entity.entityGuid, form);
+  }
+
+  /**
+   * Will create a prefill object (if configured) which is based on a field-mask.
+   * This allows create-entity to use add prefills.
+   * ATM just normal values (text/number) or placeholders like [Title] work.
+   * In future we may add more features like dates etc.
+   * new 11.11.03
+   */
+  private getPrefill(): Record<string, string> {
+    // still very experimental, and to avoid errors try to catch any mistakes
+    try {
+      const prefill = this.prefillMask.resolve();
+      if(!prefill || !prefill.trim()) return null;
+      const result: Record<string, string> = {};
+      prefill.split('\n').forEach(line => {
+        const parts = line.split('=');
+        if(parts.length === 2 && parts[0] && parts[1])
+          result[parts[0]] = parts[1];
+      });
+      return result;
+    } catch {
+      console.error('Error in getting Prefill for new entity. Will skip prefill.')
+      return null;
+    }
   }
 
   deleteEntity(props: DeleteEntityProps) {
