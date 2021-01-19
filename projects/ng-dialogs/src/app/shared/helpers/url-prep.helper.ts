@@ -211,6 +211,7 @@ function paramEncode(text: string) {
   text = text.replace(/\:/g, '%3A');
   text = text.replace(/\&/g, '%26');
   text = text.replace(/\~/g, '%7E');
+  text = text.replace(/\,/g, '%2C');
   return text;
 }
 
@@ -220,5 +221,6 @@ function paramDecode(text: string) {
   text = text.replace(/%3A/g, ':');
   text = text.replace(/%26/g, '&');
   text = text.replace(/%7E/g, '~');
+  text = text.replace(/%2C/g, ',');
   return text;
 }
