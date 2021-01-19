@@ -75,6 +75,12 @@ export function convertFormToUrl(form: EditForm) {
       // Group Item
       const groupItem = item as GroupItem;
       formUrl += 'group:' + groupItem.Group.Guid + ':' + groupItem.Group.Index + ':' + groupItem.Group.Part + ':' + groupItem.Group.Add;
+      if (groupItem.Prefill) {
+        const keys = Object.keys(groupItem.Prefill);
+        for (const key of keys) {
+          formUrl += '&prefill:' + key + '~' + paramEncode(groupItem.Prefill[key].toString());
+        }
+      }
     }
   }
 
@@ -168,15 +174,30 @@ export function convertUrlToForm(formUrl: string) {
       form.items.push(addItem);
     } else if (item.startsWith('group:')) {
       // Group Item
-      const groupParams = item.split(':');
-      const groupItem: GroupItem = {
-        Group: {
-          Guid: groupParams[1],
-          Index: parseInt(groupParams[2], 10),
-          Part: groupParams[3],
-          Add: groupParams[4] === 'true',
+      const groupItem = {} as GroupItem;
+      const options = item.split('&');
+
+      for (const option of options) {
+        if (option.startsWith('group:')) {
+          // Group Item Group
+          const groupParams = option.split(':');
+          groupItem.Group = {
+            Guid: groupParams[1],
+            Index: parseInt(groupParams[2], 10),
+            Part: groupParams[3],
+            Add: groupParams[4] === 'true',
+          };
+        } else if (option.startsWith('prefill:')) {
+          // Group Item Prefill
+          if (groupItem.Prefill == null) {
+            groupItem.Prefill = {};
+          }
+          const prefillParams = option.split(':');
+          const key = prefillParams[1].split('~')[0];
+          const value = paramDecode(prefillParams[1].split('~')[1]);
+          groupItem.Prefill[key] = value;
         }
-      };
+      }
       form.items.push(groupItem);
     }
   }
