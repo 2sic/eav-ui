@@ -12,7 +12,9 @@ export class DropzoneConfigInstance implements DropzoneConfigExt {
   errorReset: number = null;
   cancelReset: number = null;
   /** In MB. Upload will also be stopped on the server if file is larger than allowed */
-  maxFilesize = 10000;
+  maxFilesize = 20000;
+  /** In milliseconds */
+  timeout = 1800000;
   paramName = 'uploadfile';
   maxThumbnailFilesize = 10;
   dictDefaultMessage = '';
