@@ -1,6 +1,4 @@
-export class FieldErrorMessage {
-  constructor(
-    public field: string,
-    public message: string,
-  ) { }
+export interface FieldErrorMessage {
+  field: string;
+  message: string;
 }

@@ -1,7 +1,7 @@
 import { EavEntity, EavFor } from '.';
 import { EavGroupAssignment } from './eav-group-assignment';
 
-export class EavHeader {
+export interface EavHeader {
   Add: boolean;
   ContentTypeName: string;
   DuplicateEntity: number;

@@ -1,9 +1,7 @@
-export class LanguageInstance {
-  constructor(
-    public formId: number,
-    public currentLanguage: string,
-    public defaultLanguage: string,
-    public uiLanguage: string,
-    public hideHeader: boolean,
-  ) { }
+export interface LanguageInstance {
+  formId: number;
+  currentLanguage: string;
+  defaultLanguage: string;
+  uiLanguage: string;
+  hideHeader: boolean;
 }

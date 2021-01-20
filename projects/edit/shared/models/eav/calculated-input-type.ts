@@ -1,4 +1,4 @@
-export class CalculatedInputType {
+export interface CalculatedInputType {
   inputType: string;
   isExternal: boolean;
 }
