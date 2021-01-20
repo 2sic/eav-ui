@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { FieldMaskService } from '../../../../../shared/field-mask.service';
-import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
+import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { AssetsService } from '../../../../shared/services/assets.service';
 import { EavService } from '../../../../shared/services/eav.service';
@@ -17,8 +17,8 @@ import { StringTemplatePickerTemplateVars } from './string-template-picker.model
   templateUrl: './string-template-picker.component.html',
   styleUrls: ['./string-template-picker.component.scss'],
 })
-@InputType({
-  wrapper: [WrappersConstants.LocalizationWrapper],
+@ComponentMetadata({
+  wrappers: [WrappersConstants.LocalizationWrapper],
 })
 export class StringTemplatePickerComponent extends BaseComponent<string> implements OnInit, OnDestroy {
   templateVars$: Observable<StringTemplatePickerTemplateVars>;

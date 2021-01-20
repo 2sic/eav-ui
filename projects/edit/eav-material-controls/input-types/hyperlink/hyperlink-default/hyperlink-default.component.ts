@@ -3,7 +3,7 @@ import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AdamItem, AdamPostResponse } from '../../../../../edit-types';
 import { FieldSettings } from '../../../../../edit-types';
-import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
+import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { PrefetchLinks } from '../../../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.models';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { DnnBridgeService } from '../../../../shared/services/dnn-bridge.service';
@@ -25,9 +25,13 @@ import { HyperlinkDefaultTemplateVars, Preview } from './hyperlink-default.model
   templateUrl: './hyperlink-default.component.html',
   styleUrls: ['./hyperlink-default.component.scss'],
 })
-@InputType({
-  wrapper: [WrappersConstants.DropzoneWrapper, WrappersConstants.LocalizationWrapper,
-  WrappersConstants.HyperlinkDefaultExpandableWrapper, WrappersConstants.AdamAttachWrapper],
+@ComponentMetadata({
+  wrappers: [
+    WrappersConstants.DropzoneWrapper,
+    WrappersConstants.LocalizationWrapper,
+    WrappersConstants.HyperlinkDefaultExpandableWrapper,
+    WrappersConstants.AdamAttachWrapper,
+  ],
 })
 export class HyperlinkDefaultComponent extends BaseComponent<string> implements OnInit, OnDestroy {
   templateVars$: Observable<HyperlinkDefaultTemplateVars>;

@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
+import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { EavService } from '../../../../shared/services/eav.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
@@ -15,8 +15,8 @@ import { StringDefaultTemplateVars } from './string-default.models';
   templateUrl: './string-default.component.html',
   styleUrls: ['./string-default.component.scss'],
 })
-@InputType({
-  wrapper: [WrappersConstants.LocalizationWrapper],
+@ComponentMetadata({
+  wrappers: [WrappersConstants.LocalizationWrapper],
 })
 export class StringDefaultComponent extends BaseComponent<string> implements OnInit, OnDestroy {
   templateVars$: Observable<StringDefaultTemplateVars>;

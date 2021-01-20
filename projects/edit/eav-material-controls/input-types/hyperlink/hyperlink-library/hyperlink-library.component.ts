@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { FieldSettings } from '../../../../../edit-types';
-import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
+import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { EavService } from '../../../../shared/services/eav.service';
 import { CustomValidators } from '../../../validators/custom-validators';
@@ -16,9 +16,13 @@ import { AdamControl } from './hyperlink-library.models';
   styleUrls: ['./hyperlink-library.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-@InputType({
-  wrapper: [WrappersConstants.DropzoneWrapper, WrappersConstants.LocalizationWrapper,
-  WrappersConstants.HyperlinkLibraryExpandableWrapper, WrappersConstants.AdamAttachWrapper],
+@ComponentMetadata({
+  wrappers: [
+    WrappersConstants.DropzoneWrapper,
+    WrappersConstants.LocalizationWrapper,
+    WrappersConstants.HyperlinkLibraryExpandableWrapper,
+    WrappersConstants.AdamAttachWrapper,
+  ],
 })
 export class HyperlinkLibraryComponent extends BaseComponent<null> implements OnInit, OnDestroy {
   /** Requires more handling that normal subscriptions */

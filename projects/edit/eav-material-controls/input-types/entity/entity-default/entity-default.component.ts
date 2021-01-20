@@ -8,7 +8,7 @@ import { map } from 'rxjs/operators';
 import { FieldSettings } from '../../../../../edit-types';
 import { EditForm } from '../../../../../ng-dialogs/src/app/shared/models/edit-form.model';
 import { FieldMaskService } from '../../../../../shared/field-mask.service';
-import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
+import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { Helper } from '../../../../shared/helpers/helper';
 import { EntityInfo } from '../../../../shared/models';
 import { EavService } from '../../../../shared/services/eav.service';
@@ -28,7 +28,7 @@ import { DeleteEntityProps, EntityTemplateVars, SelectedEntity } from './entity-
   templateUrl: './entity-default.component.html',
   styleUrls: ['./entity-default.component.scss'],
 })
-@InputType({})
+@ComponentMetadata({})
 export class EntityDefaultComponent extends BaseComponent<string | string[]> implements OnInit, OnDestroy {
   @ViewChild(EntityDefaultSearchComponent) private entitySearchComponent: EntityDefaultSearchComponent;
 

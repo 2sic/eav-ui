@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { FieldMaskService } from '../../../../../shared/field-mask.service';
-import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
+import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { EntityInfo } from '../../../../shared/models';
 import { EavService } from '../../../../shared/services/eav.service';
 import { EditRoutingService } from '../../../../shared/services/edit-routing.service';
@@ -19,7 +19,7 @@ import { QueryEntity } from './entity-query.models';
   templateUrl: '../entity-default/entity-default.component.html',
   styleUrls: ['../entity-default/entity-default.component.scss'],
 })
-@InputType({})
+@ComponentMetadata({})
 export class EntityQueryComponent extends EntityDefaultComponent implements OnInit, OnDestroy {
   useQuery = true;
   settingsLogic = new EntityQueryLogic();

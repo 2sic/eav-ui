@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
+import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { EavService } from '../../../../shared/services/eav.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
@@ -15,8 +15,8 @@ import { BooleanTristateTemplateVars } from './boolean-tristate.models';
   templateUrl: './boolean-tristate.component.html',
   styleUrls: ['./boolean-tristate.component.scss'],
 })
-@InputType({
-  wrapper: [WrappersConstants.LocalizationWrapper],
+@ComponentMetadata({
+  wrappers: [WrappersConstants.LocalizationWrapper],
 })
 export class BooleanTristateComponent extends BaseComponent<boolean | ''> implements OnInit, OnDestroy {
   templateVars$: Observable<BooleanTristateTemplateVars>;

@@ -3,7 +3,7 @@ import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { InputType } from '../../../../../ng-dialogs/src/app/content-type-fields/models/input-type.model';
 import { angularConsoleLog } from '../../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
-import { InputType as InputTypeDecorator } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
+import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { EavService } from '../../../../shared/services/eav.service';
 import { EditRoutingService } from '../../../../shared/services/edit-routing.service';
 import { ScriptsLoaderService } from '../../../../shared/services/scripts-loader.service';
@@ -18,7 +18,7 @@ import { ExternalWebComponentTemplateVars } from './external-web-component.model
   templateUrl: './external-web-component.component.html',
   styleUrls: ['./external-web-component.component.scss'],
 })
-@InputTypeDecorator({})
+@ComponentMetadata({})
 export class ExternalWebComponentComponent extends BaseComponent<string> implements OnInit, OnDestroy {
   templateVars$: Observable<ExternalWebComponentTemplateVars>;
 

@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
+import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { EavService } from '../../../../shared/services/eav.service';
 import { ScriptsLoaderService } from '../../../../shared/services/scripts-loader.service';
@@ -17,8 +17,8 @@ import { IconOption, StringFontIconPickerTemplateVars } from './string-font-icon
   templateUrl: './string-font-icon-picker.component.html',
   styleUrls: ['./string-font-icon-picker.component.scss'],
 })
-@InputType({
-  wrapper: [WrappersConstants.LocalizationWrapper],
+@ComponentMetadata({
+  wrappers: [WrappersConstants.LocalizationWrapper],
 })
 export class StringFontIconPickerComponent extends BaseComponent<string> implements OnInit, OnDestroy {
   templateVars$: Observable<StringFontIconPickerTemplateVars>;

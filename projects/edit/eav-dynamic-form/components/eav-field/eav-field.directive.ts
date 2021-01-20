@@ -31,6 +31,8 @@ import { HiddenWrapperComponent } from '../../../eav-material-controls/wrappers/
 import { HyperlinkDefaultExpandableWrapperComponent } from '../../../eav-material-controls/wrappers/hyperlink-default-expandable-wrapper/hyperlink-default-expandable-wrapper.component';
 import { HyperlinkLibraryExpandableWrapperComponent } from '../../../eav-material-controls/wrappers/hyperlink-library-expandable-wrapper/hyperlink-library-expandable-wrapper.component';
 import { LocalizationWrapperComponent } from '../../../eav-material-controls/wrappers/localization-wrapper/localization-wrapper.component';
+import { componentMetadataKey } from '../../../shared/constants/component-metadata.constants';
+import { ComponentMetadataModel } from '../../../shared/models';
 import { FieldConfigGroup, FieldConfigSet } from '../../model/field-config';
 import { FieldWrapper } from '../../model/field-wrapper';
 
@@ -118,25 +120,23 @@ export class EavFieldDirective implements OnInit {
       componentType = this.readComponentType(fieldConfig.field.inputType);
     }
 
-    // if inputTypeAnnotations of componentType exist then create component
-    const inputTypeAnnotations = Reflect.getMetadata('inputTypeAnnotations', componentType);
-    if (inputTypeAnnotations) {
-      if (inputTypeAnnotations.wrapper) {
-        container = this.createComponentWrappers(container, fieldConfig, inputTypeAnnotations.wrapper);
-      }
+    // create component only if componentMetadata exist
+    const componentMetadata: ComponentMetadataModel = Reflect.getMetadata(componentMetadataKey, componentType);
+    if (componentMetadata == null) { return; }
 
-      const factory = this.resolver.resolveComponentFactory(componentType);
-      const ref = container.createComponent(factory);
-
-      Object.assign(ref.instance, {
-        group: this.group,
-        config: fieldConfig
-      });
-
-      return ref;
+    if (componentMetadata.wrappers) {
+      container = this.createComponentWrappers(container, fieldConfig, componentMetadata.wrappers);
     }
 
-    return null;
+    const factory = this.resolver.resolveComponentFactory(componentType);
+    const ref = container.createComponent(factory);
+
+    Object.assign(ref.instance, {
+      group: this.group,
+      config: fieldConfig
+    });
+
+    return ref;
   }
 
   /** Read component type by selector with ComponentFactoryResolver */
