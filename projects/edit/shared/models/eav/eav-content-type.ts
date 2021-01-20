@@ -1,10 +1,10 @@
 import { ContentType1 } from '../json-format-v1';
-import { AttributeDef } from './attribute-def';
+import { EavAttributeDef } from './eav-attribute-def';
 import { EavAttributes } from './eav-attributes';
 import { EavEntity } from './eav-entity';
 
 export class EavContentType {
-  Attributes: AttributeDef[];
+  Attributes: EavAttributeDef[];
   Description: string;
   Id: string;
   Metadata: EavEntity[];
@@ -17,7 +17,7 @@ export class EavContentType {
     name: string,
     scope: string,
     description: string,
-    attributes: AttributeDef[],
+    attributes: EavAttributeDef[],
     metadata: EavEntity[],
     settings: EavAttributes,
   ) {
@@ -32,7 +32,7 @@ export class EavContentType {
 
   /** Create ContentType from json typed ContentType1 */
   public static create(item: ContentType1): EavContentType {
-    const attributeDefArray = AttributeDef.createArray(item.Attributes);
+    const attributeDefArray = EavAttributeDef.createArray(item.Attributes);
     const metaDataArray = EavEntity.createArray(item.Metadata);
     const settings = EavAttributes.getFromEavEntityArray(metaDataArray);
 

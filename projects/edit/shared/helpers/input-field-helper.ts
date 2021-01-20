@@ -6,7 +6,7 @@ import { InputType } from '../../../ng-dialogs/src/app/content-type-fields/model
 import { FieldConfigGroup, FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
 import { WrappersConstants } from '../constants/wrappers.constants';
 import { CalculatedInputType } from '../models';
-import { AttributeDef, EavHeader, EavItem } from '../models/eav';
+import { EavAttributeDef, EavHeader, EavItem } from '../models/eav';
 import { InputTypeService } from '../store/ngrx-data/input-type.service';
 
 export class InputFieldHelper {
@@ -46,11 +46,11 @@ export class InputFieldHelper {
     return item.Entity.Type ? item.Entity.Type.Id : item.Header.ContentTypeName;
   }
 
-  static getFieldLabel(attribute: AttributeDef, settingsTranslated: FieldSettings): string {
+  static getFieldLabel(attribute: EavAttributeDef, settingsTranslated: FieldSettings): string {
     return settingsTranslated && settingsTranslated.Name || attribute.name;
   }
 
-  static calculateInputTypes(attributesList: AttributeDef[], inputTypeService: InputTypeService): InputTypeName[] {
+  static calculateInputTypes(attributesList: EavAttributeDef[], inputTypeService: InputTypeService): InputTypeName[] {
     const typesList: InputTypeName[] = [];
     attributesList.forEach((attribute, index) => {
       const calculatedInputType = this.calculateInputType(attribute, inputTypeService);
@@ -59,7 +59,7 @@ export class InputFieldHelper {
     return typesList;
   }
 
-  static calculateInputType(attribute: AttributeDef, inputTypeService: InputTypeService): CalculatedInputType {
+  static calculateInputType(attribute: EavAttributeDef, inputTypeService: InputTypeService): CalculatedInputType {
     const inputTypeName = attribute.inputType;
     let inputType: InputType;
     inputTypeService.getInputTypeById(inputTypeName).pipe(take(1)).subscribe(type => {

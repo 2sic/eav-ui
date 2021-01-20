@@ -1,4 +1,4 @@
-export * from './attribute-def';
+export * from './eav-attribute-def';
 export * from './eav-attributes';
 export * from './eav-content-type';
 export * from './eav-dimensions';

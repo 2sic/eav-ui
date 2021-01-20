@@ -2,7 +2,7 @@ import { AttributeDef1 } from '../json-format-v1/attribute-def1';
 import { EavAttributes } from './eav-attributes';
 import { EavEntity } from './eav-entity';
 
-export class AttributeDef {
+export class EavAttributeDef {
   name: string;
   type: string;
   inputType: string;
@@ -20,18 +20,18 @@ export class AttributeDef {
   }
 
   /** Create new AttributeDef from json typed AttributeDef1 */
-  public static create(item: AttributeDef1): AttributeDef {
+  public static create(item: AttributeDef1): EavAttributeDef {
     const metaDataArray = EavEntity.createArray(item.Metadata);
     const settings = EavAttributes.getFromEavEntityArray(metaDataArray);
-    return new AttributeDef(item.Name, item.Type, item.InputType, item.IsTitle, metaDataArray, settings);
+    return new EavAttributeDef(item.Name, item.Type, item.InputType, item.IsTitle, metaDataArray, settings);
   }
 
   /** Create new AttributeDef[] from json typed AttributeDef1[] */
-  public static createArray(attributeDef1Array: AttributeDef1[]): AttributeDef[] {
-    const attributeDefArray: AttributeDef[] = [];
+  public static createArray(attributeDef1Array: AttributeDef1[]): EavAttributeDef[] {
+    const attributeDefArray: EavAttributeDef[] = [];
     if (attributeDef1Array !== undefined) {
       attributeDef1Array.forEach(attributeDef1 => {
-        attributeDefArray.push(AttributeDef.create(attributeDef1));
+        attributeDefArray.push(EavAttributeDef.create(attributeDef1));
       });
     }
     return attributeDefArray;
