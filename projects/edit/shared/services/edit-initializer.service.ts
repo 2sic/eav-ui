@@ -83,7 +83,9 @@ export class EditInitializerService implements OnDestroy {
     this.contentTypeService.addContentTypes(formData.ContentTypes);
     this.featureService.loadFeatures(formData.Features);
     const prefetchGuid = itemGuids.join();
-    this.formPrefetchService.loadPrefetch(formData.Prefetch, prefetchGuid);
+    if (formData.Prefetch != null) {
+      this.formPrefetchService.loadPrefetch(formData.Prefetch, prefetchGuid);
+    }
     this.eavService.setEavConfig(formData.Context, formId, isParentDialog, itemGuids, createMode, isCopy, enableHistory);
     const publishStatus: PublishStatus = {
       formId,
