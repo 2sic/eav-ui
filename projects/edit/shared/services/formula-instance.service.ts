@@ -6,8 +6,8 @@ import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/an
 import { FieldConfigGroup, FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
 import { FormValues } from '../../eav-item-dialog/item-edit-form/item-edit-form.models';
 import { LocalizationHelper } from '../helpers/localization-helper';
+import { CalcFields, FieldFormulas, FieldsFormulaSettings, FormulaType, LanguageChangeCheckedFields } from '../models';
 import { EavAttributes } from '../models/eav';
-import { CalcFields, FieldFormulas, FieldsFormulaSettings, FormulaType, LanguageChangeCheckedFields } from '../models/formula.models';
 import { ContentTypeItemService } from '../store/ngrx-data/content-type-item.service';
 import { FormulaContext, FormulaFunction } from '../store/ngrx-data/item.models';
 import { ItemService } from '../store/ngrx-data/item.service';

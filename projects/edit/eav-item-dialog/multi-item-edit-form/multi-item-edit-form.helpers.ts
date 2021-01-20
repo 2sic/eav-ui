@@ -1,5 +1,5 @@
 import { ActivatedRoute } from '@angular/router';
-import { Language } from '../../shared/models/eav';
+import { Language } from '../../shared/models';
 
 export function calculateIsParentDialog(route: ActivatedRoute) {
   let editDialogCount = 0;

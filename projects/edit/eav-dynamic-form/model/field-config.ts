@@ -2,8 +2,8 @@ import { ValidatorFn } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { Adam, Dropzone, FieldConfig, FieldSettings } from '../../../edit-types';
 import { FieldHelper } from '../../eav-item-dialog/item-edit-form/field-helper';
+import { EntityInfo } from '../../shared/models';
 import { EavAttributes, EavHeader } from '../../shared/models/eav';
-import { EntityInfo } from '../../shared/models/eav/entity-info';
 
 // spm split these interfaces into separate files
 export interface FieldConfigSet {

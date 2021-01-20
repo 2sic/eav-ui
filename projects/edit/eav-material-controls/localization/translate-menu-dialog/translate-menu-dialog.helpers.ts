@@ -1,7 +1,8 @@
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { TranslationLinkConstants } from '../../../shared/constants/translation-link.constants';
 import { LocalizationHelper } from '../../../shared/helpers/localization-helper';
-import { EavAttributes, Language } from '../../../shared/models/eav';
+import { Language } from '../../../shared/models';
+import { EavAttributes } from '../../../shared/models/eav';
 import { I18nKeyConstants } from './translate-menu-dialog.constants';
 import { TranslateMenuDialogTemplateLanguage } from './translate-menu-dialog.models';
 

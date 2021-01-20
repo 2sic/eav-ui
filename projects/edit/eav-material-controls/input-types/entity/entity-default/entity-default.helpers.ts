@@ -1,6 +1,6 @@
 import { TranslateService } from '@ngx-translate/core';
 import { Helper } from '../../../../shared/helpers/helper';
-import { EntityInfo } from '../../../../shared/models/eav/entity-info';
+import { EntityInfo } from '../../../../shared/models';
 import { SelectedEntity } from './entity-default.models';
 
 export function calculateSelectedEntities(

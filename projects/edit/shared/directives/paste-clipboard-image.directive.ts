@@ -3,7 +3,7 @@ import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/an
 import { ElementEventListener } from '../../../shared/element-event-listener.model';
 import { FeaturesGuidsConstants } from '../../../shared/features-guids.constants';
 import { FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
-import { PasteClipboardImageEventDetail } from '../models/adam/paste-clipboard-image';
+import { PasteClipboardImageEventDetail } from '../models';
 import { FeatureService } from '../store/ngrx-data/feature.service';
 
 @Directive({ selector: '[appPasteClipboardImage]' })

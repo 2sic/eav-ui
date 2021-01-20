@@ -5,7 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { FieldSettings } from '../../../../../edit-types';
 import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
-import { EntityInfo } from '../../../../shared/models/eav/entity-info';
+import { EntityInfo } from '../../../../shared/models';
 import { GlobalConfigService } from '../../../../shared/services/global-configuration.service';
 import { SelectedEntity } from '../entity-default/entity-default.models';
 

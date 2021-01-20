@@ -6,9 +6,8 @@ import { DataTypeConstants } from '../../../../ng-dialogs/src/app/content-type-f
 import { FormValue, FormValues } from '../../../eav-item-dialog/item-edit-form/item-edit-form.models';
 import { InputFieldHelper } from '../../helpers/input-field-helper';
 import { LocalizationHelper } from '../../helpers/localization-helper';
-import { ContentType, EavDimensions, EavHeader, EavValue, Item, Language } from '../../models/eav';
-import { AttributeDef } from '../../models/eav/attribute-def';
-import { SaveResult } from '../../models/eav/save-result.model';
+import { Language, SaveResult } from '../../models';
+import { AttributeDef, ContentType, EavDimensions, EavHeader, EavValue, Item } from '../../models/eav';
 import { JsonItem1 } from '../../models/json-format-v1';
 import { ContentTypeService } from './content-type.service';
 import { InputTypeService } from './input-type.service';

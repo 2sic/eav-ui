@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { EntityCollectionServiceBase, EntityCollectionServiceElementsFactory } from '@ngrx/data';
 import { map } from 'rxjs/operators';
-import { InputType } from '../../models/eav';
+import { InputType } from '../../../../ng-dialogs/src/app/content-type-fields/models/input-type.model';
 
 @Injectable({ providedIn: 'root' })
 export class InputTypeService extends EntityCollectionServiceBase<InputType> {

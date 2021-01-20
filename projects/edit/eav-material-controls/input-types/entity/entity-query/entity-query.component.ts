@@ -3,7 +3,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { FieldMaskService } from '../../../../../shared/field-mask.service';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
-import { EntityInfo } from '../../../../shared/models/eav/entity-info';
+import { EntityInfo } from '../../../../shared/models';
 import { EavService } from '../../../../shared/services/eav.service';
 import { EditRoutingService } from '../../../../shared/services/edit-routing.service';
 import { EntityService } from '../../../../shared/services/entity.service';

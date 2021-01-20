@@ -1,9 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map, take } from 'rxjs/operators';
+import { InputType } from '../../../../../ng-dialogs/src/app/content-type-fields/models/input-type.model';
 import { angularConsoleLog } from '../../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
-import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
-import { InputType as InputTypeModel } from '../../../../shared/models/eav';
+import { InputType as InputTypeDecorator } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { EavService } from '../../../../shared/services/eav.service';
 import { EditRoutingService } from '../../../../shared/services/edit-routing.service';
 import { ScriptsLoaderService } from '../../../../shared/services/scripts-loader.service';
@@ -18,7 +18,7 @@ import { ExternalWebComponentTemplateVars } from './external-web-component.model
   templateUrl: './external-web-component.component.html',
   styleUrls: ['./external-web-component.component.scss'],
 })
-@InputType({})
+@InputTypeDecorator({})
 export class ExternalWebComponentComponent extends BaseComponent<string> implements OnInit, OnDestroy {
   templateVars$: Observable<ExternalWebComponentTemplateVars>;
 
@@ -59,7 +59,7 @@ export class ExternalWebComponentComponent extends BaseComponent<string> impleme
   }
 
   private loadAssets() {
-    let inputType: InputTypeModel;
+    let inputType: InputType;
     this.inputTypeService.getInputTypeById(this.config.field.inputType).pipe(take(1)).subscribe(type => {
       inputType = type;
     });

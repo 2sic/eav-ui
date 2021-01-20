@@ -2,7 +2,7 @@ import { Directive, ElementRef, OnDestroy, OnInit } from '@angular/core';
 import { fromEvent, merge, Subscription } from 'rxjs';
 import { delay, filter, map, pairwise, take } from 'rxjs/operators';
 import { EavService } from '../..';
-import { Language } from '../../shared/models/eav';
+import { Language } from '../../shared/models';
 import { LanguageInstanceService } from '../../shared/store/ngrx-data/language-instance.service';
 import { LanguageService } from '../../shared/store/ngrx-data/language.service';
 

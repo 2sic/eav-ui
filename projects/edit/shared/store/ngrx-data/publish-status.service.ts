@@ -3,8 +3,7 @@ import { EntityCollectionServiceBase, EntityCollectionServiceElementsFactory } f
 import { Observable } from 'rxjs';
 import { distinctUntilChanged, map, take } from 'rxjs/operators';
 import { EavService } from '../..';
-import { PublishMode, PublishModeConstants } from '../../models/eav/publish-mode.models';
-import { PublishStatus } from '../../models/eav/publish-status';
+import { PublishMode, PublishModeConstants, PublishStatus } from '../../models';
 
 @Injectable({ providedIn: 'root' })
 export class PublishStatusService extends EntityCollectionServiceBase<PublishStatus> {

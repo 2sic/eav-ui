@@ -12,8 +12,8 @@ import { SnackBarUnsavedChangesComponent } from '../../eav-material-controls/dia
 import { UnsavedChangesSnackData } from '../../eav-material-controls/dialogs/snack-bar-unsaved-changes/snack-bar-unsaved-changes.models';
 import { ValidationMessagesService } from '../../eav-material-controls/validators/validation-messages-service';
 import { EditEntryComponent } from '../../edit-entry/edit-entry.component';
+import { FieldErrorMessage } from '../../shared/models';
 import { Item } from '../../shared/models/eav';
-import { FieldErrorMessage } from '../../shared/models/eav/field-error-message';
 import { JsonItem1 } from '../../shared/models/json-format-v1';
 import { EavService } from '../../shared/services/eav.service';
 import { EditRoutingService } from '../../shared/services/edit-routing.service';

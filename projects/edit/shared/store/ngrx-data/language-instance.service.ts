@@ -3,7 +3,7 @@ import { EntityCollectionServiceBase, EntityCollectionServiceElementsFactory } f
 import { Subject } from 'rxjs';
 import { distinctUntilChanged, filter, map } from 'rxjs/operators';
 import { TranslationLink } from '../../constants/translation-link.constants';
-import { LanguageInstance } from '../../models/eav/language-instance';
+import { LanguageInstance } from '../../models';
 
 export interface TranslateManyProps {
   formId: number;

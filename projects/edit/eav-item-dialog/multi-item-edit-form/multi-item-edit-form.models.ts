@@ -1,8 +1,9 @@
 import { AdamItem } from '../../../edit-types';
 import { Feature } from '../../../ng-dialogs/src/app/apps-management/models/feature.model';
+import { InputType } from '../../../ng-dialogs/src/app/content-type-fields/models/input-type.model';
 import { DialogContextApp, DialogContextLanguage, DialogContextSite, DialogContextSystem } from '../../../ng-dialogs/src/app/shared/models/dialog-context.models';
-import { InputType, Item } from '../../shared/models/eav';
-import { EntityInfo } from '../../shared/models/eav/entity-info';
+import { EntityInfo } from '../../shared/models';
+import { Item } from '../../shared/models/eav';
 import { ContentType1, Entity1, JsonItem1 } from '../../shared/models/json-format-v1';
 
 export interface EavPublishStatus {

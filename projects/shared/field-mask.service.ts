@@ -1,6 +1,6 @@
 import { AbstractControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { EavConfig } from '../edit/shared/models/eav-config';
+import { EavConfig } from '../edit/shared/models';
 
 /**
  * Create a new FieldMaskService instance and access result with resolve

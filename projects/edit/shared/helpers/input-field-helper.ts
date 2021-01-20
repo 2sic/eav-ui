@@ -2,11 +2,11 @@ import { take } from 'rxjs/operators';
 import { FieldSettings, InputTypeName } from '../../../edit-types';
 import { DataTypeConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/data-type.constants';
 import { InputTypeConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
+import { InputType } from '../../../ng-dialogs/src/app/content-type-fields/models/input-type.model';
 import { FieldConfigGroup, FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
 import { WrappersConstants } from '../constants/wrappers.constants';
-import { EavHeader, InputType, Item } from '../models/eav';
-import { AttributeDef } from '../models/eav/attribute-def';
-import { CalculatedInputType } from '../models/eav/calculated-input-type';
+import { CalculatedInputType } from '../models';
+import { AttributeDef, EavHeader, Item } from '../models/eav';
 import { InputTypeService } from '../store/ngrx-data/input-type.service';
 
 export class InputFieldHelper {

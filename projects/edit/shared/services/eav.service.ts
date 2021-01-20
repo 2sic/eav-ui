@@ -6,9 +6,7 @@ import { FormDisabledSet, FormValueSet } from '../../../edit-types';
 import { keyPartOfPage, keyPublishing } from '../../../ng-dialogs/src/app/shared/constants/session.constants';
 import { Context } from '../../../ng-dialogs/src/app/shared/services/context';
 import { EavFormData, EditDialogContext, SaveEavFormData } from '../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.models';
-import { EavConfig } from '../models/eav-config';
-import { SaveResult } from '../models/eav/save-result.model';
-import { VersioningOptions } from '../models/eav/versioning-options';
+import { EavConfig, SaveResult, VersioningOptions } from '../models';
 
 export const webApiEditRoot = 'cms/edit/';
 

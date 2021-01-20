@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { EntityCollectionServiceBase, EntityCollectionServiceElementsFactory } from '@ngrx/data';
-import { Language } from '../../models/eav';
+import { Language } from '../../models';
 
 @Injectable({ providedIn: 'root' })
 export class LanguageService extends EntityCollectionServiceBase<Language> {

@@ -1,4 +1,4 @@
-import { Language } from '../../../shared/models/eav';
+import { Language } from '../../../shared/models';
 
 export interface LanguageButton extends Language {
   buttonText: string;

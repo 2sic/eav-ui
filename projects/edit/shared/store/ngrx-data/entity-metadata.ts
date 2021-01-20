@@ -1,8 +1,8 @@
 import { EntityMetadataMap } from '@ngrx/data';
+import { InputType } from '../../../../ng-dialogs/src/app/content-type-fields/models/input-type.model';
 import { Prefetch } from '../../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.models';
-import { ContentType, EavEntity, InputType, Item, Language } from '../../models/eav';
-import { LanguageInstance } from '../../models/eav/language-instance';
-import { PublishStatus } from '../../models/eav/publish-status';
+import { Language, LanguageInstance, PublishStatus } from '../../models';
+import { ContentType, EavEntity, Item } from '../../models/eav';
 
 export const entityMetadata: EntityMetadataMap = {
   Item: {

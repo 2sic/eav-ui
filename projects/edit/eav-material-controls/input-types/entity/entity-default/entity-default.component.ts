@@ -10,7 +10,7 @@ import { EditForm } from '../../../../../ng-dialogs/src/app/shared/models/edit-f
 import { FieldMaskService } from '../../../../../shared/field-mask.service';
 import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
 import { Helper } from '../../../../shared/helpers/helper';
-import { EntityInfo } from '../../../../shared/models/eav/entity-info';
+import { EntityInfo } from '../../../../shared/models';
 import { EavService } from '../../../../shared/services/eav.service';
 import { EditRoutingService } from '../../../../shared/services/edit-routing.service';
 import { EntityService } from '../../../../shared/services/entity.service';
@@ -218,16 +218,17 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
     // still very experimental, and to avoid errors try to catch any mistakes
     try {
       const prefill = this.prefillMask.resolve();
-      if(!prefill || !prefill.trim()) return null;
+      if (!prefill || !prefill.trim()) { return null; }
       const result: Record<string, string> = {};
       prefill.split('\n').forEach(line => {
         const parts = line.split('=');
-        if(parts.length === 2 && parts[0] && parts[1])
+        if (parts.length === 2 && parts[0] && parts[1]) {
           result[parts[0]] = parts[1];
+        }
       });
       return result;
     } catch {
-      console.error('Error in getting Prefill for new entity. Will skip prefill.')
+      console.error('Error in getting Prefill for new entity. Will skip prefill.');
       return null;
     }
   }

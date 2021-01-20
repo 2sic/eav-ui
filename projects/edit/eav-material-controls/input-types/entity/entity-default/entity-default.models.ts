@@ -1,5 +1,5 @@
 import { FieldSettings } from '../../../../../edit-types';
-import { EntityInfo } from '../../../../shared/models/eav/entity-info';
+import { EntityInfo } from '../../../../shared/models';
 import { BaseFieldTemplateVars } from '../../base/base-field-template-vars.model';
 
 export interface SelectedEntity {

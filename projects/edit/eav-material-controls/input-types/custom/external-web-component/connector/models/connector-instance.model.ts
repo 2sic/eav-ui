@@ -3,7 +3,7 @@ import { Connector, ConnectorData, ExperimentalProps, FieldConfig } from '../../
 import { ConnectorDialog } from '../../../../../../../edit-types/src/ConnectorDialog';
 import { loadScripts } from '../../../../../../../ng-dialogs/src/app/shared/helpers/load-scripts.helper';
 import { UrlHelper } from '../../../../../../shared/helpers/url-helper';
-import { EavConfig } from '../../../../../../shared/models/eav-config';
+import { EavConfig } from '../../../../../../shared/models';
 
 declare const sxcVersion: string;
 

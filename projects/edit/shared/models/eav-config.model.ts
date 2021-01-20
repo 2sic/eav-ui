@@ -1,5 +1,5 @@
 import { DialogContextAllLangs } from '../../../ng-dialogs/src/app/shared/models/dialog-context.models';
-import { VersioningOptions } from './eav/versioning-options';
+import { VersioningOptions } from './versioning-options.model';
 
 export interface EavConfig {
   zoneId: string;
