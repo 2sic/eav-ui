@@ -1,5 +1,5 @@
-import { Item } from '../../shared/models/eav';
+import { EavItem } from '../../shared/models/eav';
 
 export interface FormDebugTemplateVars {
-  items: Item[];
+  items: EavItem[];
 }

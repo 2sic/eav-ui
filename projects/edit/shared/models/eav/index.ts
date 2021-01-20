@@ -9,4 +9,4 @@ export * from './eav-header';
 export * from './eav-type';
 export * from './eav-value';
 export * from './eav-values';
-export * from './item';
+export * from './eav-item';

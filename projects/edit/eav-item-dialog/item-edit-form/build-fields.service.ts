@@ -5,7 +5,7 @@ import { InputTypeConstants } from '../../../ng-dialogs/src/app/content-type-fie
 import { FieldConfigGroup, FieldConfigSet, FormConfig, ItemConfig } from '../../eav-dynamic-form/model/field-config';
 import { InputFieldHelper } from '../../shared/helpers/input-field-helper';
 import { CalculatedInputType } from '../../shared/models';
-import { AttributeDef, ContentType, EavAttributes, Item } from '../../shared/models/eav';
+import { AttributeDef, ContentType, EavAttributes, EavItem } from '../../shared/models/eav';
 import { FieldsSettingsService } from '../../shared/services/fields-settings.service';
 import { FormulaInstanceService } from '../../shared/services/formula-instance.service';
 import { ContentTypeService } from '../../shared/store/ngrx-data/content-type.service';
@@ -15,7 +15,7 @@ import { LanguageInstanceService } from '../../shared/store/ngrx-data/language-i
 
 @Injectable()
 export class BuildFieldsService {
-  private item: Item;
+  private item: EavItem;
   private formId: number;
   private currentLanguage: string;
   private defaultLanguage: string;
@@ -32,7 +32,7 @@ export class BuildFieldsService {
 
   public buildFieldConfigs(
     contentType: ContentType,
-    item: Item,
+    item: EavItem,
     formId: number,
     currentLanguage: string,
     defaultLanguage: string,

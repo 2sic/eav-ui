@@ -6,7 +6,7 @@ import { FormValueChange } from '../../eav-dynamic-form/components/eav-form/eav-
 import { FieldConfigGroup, FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
 import { InputFieldHelper } from '../../shared/helpers/input-field-helper';
 import { LocalizationHelper } from '../../shared/helpers/localization-helper';
-import { Item } from '../../shared/models/eav';
+import { EavItem } from '../../shared/models/eav';
 import { EavService } from '../../shared/services/eav.service';
 import { FieldsSettingsService } from '../../shared/services/fields-settings.service';
 import { ContentTypeService } from '../../shared/store/ngrx-data/content-type.service';
@@ -22,7 +22,7 @@ import { BuildFieldsService } from './build-fields.service';
 })
 export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
   @ViewChild(EavFormComponent) form: EavFormComponent;
-  @Input() item: Item;
+  @Input() item: EavItem;
   @Output() private itemFormValueChange = new EventEmitter<void>();
 
   rootConfig: FieldConfigSet;

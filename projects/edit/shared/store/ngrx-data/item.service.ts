@@ -7,26 +7,26 @@ import { FormValue, FormValues } from '../../../eav-item-dialog/item-edit-form/i
 import { InputFieldHelper } from '../../helpers/input-field-helper';
 import { LocalizationHelper } from '../../helpers/localization-helper';
 import { Language, SaveResult } from '../../models';
-import { AttributeDef, ContentType, EavDimensions, EavHeader, EavValue, Item } from '../../models/eav';
+import { AttributeDef, ContentType, EavDimensions, EavHeader, EavItem, EavValue } from '../../models/eav';
 import { JsonItem1 } from '../../models/json-format-v1';
 import { ContentTypeService } from './content-type.service';
 import { InputTypeService } from './input-type.service';
 
 @Injectable({ providedIn: 'root' })
-export class ItemService extends EntityCollectionServiceBase<Item> {
+export class ItemService extends EntityCollectionServiceBase<EavItem> {
   constructor(serviceElementsFactory: EntityCollectionServiceElementsFactory) {
     super('Item', serviceElementsFactory);
   }
 
   loadItems(jsonItems: JsonItem1[]) {
-    const items = jsonItems.map(jsonItem => Item.create(jsonItem));
+    const items = jsonItems.map(jsonItem => EavItem.create(jsonItem));
     this.upsertManyInCache(items);
   }
 
   updateItemId(itemData: SaveResult) {
     const entityGuid = Object.keys(itemData)[0];
     const entityId = itemData[entityGuid];
-    let oldItem: Item;
+    let oldItem: EavItem;
     this.entities$.pipe(take(1)).subscribe(items => {
       oldItem = items.find(item => item.Entity.Guid === entityGuid);
     });
@@ -57,7 +57,7 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
     const newValueDimension = isReadOnly ? `~${language}` : language;
     const newEavValue = new EavValue(newValue, [new EavDimensions(newValueDimension)]);
 
-    let oldItem: Item;
+    let oldItem: EavItem;
     this.entities$.pipe(take(1)).subscribe(items => {
       oldItem = items.find(item => item.Entity.Guid === entityGuid);
     });
@@ -81,7 +81,7 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
     defaultLanguage: string,
     isReadOnly: boolean,
   ) {
-    let oldItem: Item;
+    let oldItem: EavItem;
     this.entities$.pipe(take(1)).subscribe(items => {
       oldItem = items.find(item => item.Entity.Guid === entityGuid);
     });
@@ -100,7 +100,7 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
   }
 
   updateItemAttributesValues(entityGuid: string, newValues: FormValues, language: string, defaultLanguage: string) {
-    let oldItem: Item;
+    let oldItem: EavItem;
     this.entities$.pipe(take(1)).subscribe(items => {
       oldItem = items.find(item => item.Entity.Guid === entityGuid);
     });
@@ -128,7 +128,7 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
     defaultLanguage: string,
     isReadOnly: boolean,
   ) {
-    let oldItem: Item;
+    let oldItem: EavItem;
     this.entities$.pipe(take(1)).subscribe(items => {
       oldItem = items.find(item => item.Entity.Guid === entityGuid);
     });
@@ -147,7 +147,7 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
   }
 
   removeItemAttributeDimension(entityGuid: string, attributeKey: string, language: string) {
-    let oldItem: Item;
+    let oldItem: EavItem;
     this.entities$.pipe(take(1)).subscribe(items => {
       oldItem = items.find(item => item.Entity.Guid === entityGuid);
     });
@@ -164,7 +164,7 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
   }
 
   updateItemHeader(entityGuid: string, header: EavHeader) {
-    let oldItem: Item;
+    let oldItem: EavItem;
     this.entities$.pipe(take(1)).subscribe(items => {
       oldItem = items.find(item => item.Entity.Guid === entityGuid);
     });
@@ -230,7 +230,7 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
     inputTypeService: InputTypeService,
     contentTypeService: ContentTypeService,
   ) {
-    let filteredItems: Item[];
+    let filteredItems: EavItem[];
     this.entities$.pipe(
       map(items => items.filter(item => entityGuids.includes(item.Entity.Guid))),
       take(1),
@@ -273,7 +273,7 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
   }
 
   setDefaultValue(
-    item: Item,
+    item: EavItem,
     attributeDef: AttributeDef,
     inputType: string,
     settings: FieldSettings,

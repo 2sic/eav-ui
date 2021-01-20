@@ -13,7 +13,7 @@ import { UnsavedChangesSnackData } from '../../eav-material-controls/dialogs/sna
 import { ValidationMessagesService } from '../../eav-material-controls/validators/validation-messages-service';
 import { EditEntryComponent } from '../../edit-entry/edit-entry.component';
 import { FieldErrorMessage } from '../../shared/models';
-import { Item } from '../../shared/models/eav';
+import { EavItem } from '../../shared/models/eav';
 import { JsonItem1 } from '../../shared/models/json-format-v1';
 import { EavService } from '../../shared/services/eav.service';
 import { EditRoutingService } from '../../shared/services/edit-routing.service';
@@ -159,7 +159,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
     }
   }
 
-  trackByFn(index: number, item: Item) {
+  trackByFn(index: number, item: EavItem) {
     return item.Entity.Id === 0 ? item.Entity.Guid : item.Entity.Id;
   }
 

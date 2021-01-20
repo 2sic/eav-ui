@@ -6,7 +6,7 @@ import { InputType } from '../../../ng-dialogs/src/app/content-type-fields/model
 import { FieldConfigGroup, FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
 import { WrappersConstants } from '../constants/wrappers.constants';
 import { CalculatedInputType } from '../models';
-import { AttributeDef, EavHeader, Item } from '../models/eav';
+import { AttributeDef, EavHeader, EavItem } from '../models/eav';
 import { InputTypeService } from '../store/ngrx-data/input-type.service';
 
 export class InputFieldHelper {
@@ -42,7 +42,7 @@ export class InputFieldHelper {
     return type;
   }
 
-  static getContentTypeId(item: Item): string {
+  static getContentTypeId(item: EavItem): string {
     return item.Entity.Type ? item.Entity.Type.Id : item.Header.ContentTypeName;
   }
 
