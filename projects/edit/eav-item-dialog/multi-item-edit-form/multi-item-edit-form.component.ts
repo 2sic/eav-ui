@@ -211,7 +211,9 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
       this.featureService.loadFeatures(formData.Features);
       const itemGuids = formData.Items.map(item => item.Entity.Guid);
       const prefetchGuid = itemGuids.join();
-      this.formPrefetchService.loadPrefetch(formData.Prefetch, prefetchGuid);
+      if (formData.Prefetch != null) {
+        this.formPrefetchService.loadPrefetch(formData.Prefetch, prefetchGuid);
+      }
 
       this.eavService.setEavConfig(formData.Context);
       this.eavConfigLoaded$.next(true);
