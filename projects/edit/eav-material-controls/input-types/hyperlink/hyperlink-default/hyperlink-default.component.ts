@@ -3,7 +3,7 @@ import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AdamItem, AdamPostResponse } from '../../../../../edit-types';
 import { FieldSettings } from '../../../../../edit-types';
-import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
+import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
 import { PrefetchLinks } from '../../../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.models';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { DnnBridgeService } from '../../../../shared/services/dnn-bridge.service';

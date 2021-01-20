@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { FieldMaskService } from '../../../../../shared/field-mask.service';
-import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
+import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { Helper } from '../../../../shared/helpers/helper';
 import { EavService } from '../../../../shared/services/eav.service';

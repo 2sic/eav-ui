@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { FieldSettings } from '../../../../../edit-types';
-import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
+import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { EavService } from '../../../../shared/services/eav.service';
 import { CustomValidators } from '../../../validators/custom-validators';

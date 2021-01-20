@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { FieldMaskService } from '../../../../../shared/field-mask.service';
-import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
+import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
 import { EntityInfo } from '../../../../shared/models';
 import { EavService } from '../../../../shared/services/eav.service';
 import { EditRoutingService } from '../../../../shared/services/edit-routing.service';
