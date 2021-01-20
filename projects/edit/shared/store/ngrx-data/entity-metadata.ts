@@ -43,7 +43,7 @@ export const entityConfig = {
 };
 
 export function itemSelectId(item: Item): string {
-  return item?.entity?.guid;
+  return item?.Entity?.guid;
 }
 
 export function languageSelectId(language: Language): string {

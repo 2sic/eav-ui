@@ -49,10 +49,10 @@ export class BuildFieldsService {
 
     const contentTypeSettings = contentType.Settings;
     const entity: ItemConfig = {
-      entityId: this.item.entity.id,
-      entityGuid: this.item.entity.guid,
+      entityId: this.item.Entity.id,
+      entityGuid: this.item.Entity.guid,
       contentTypeId: InputFieldHelper.getContentTypeId(this.item),
-      header: this.item.header,
+      header: this.item.Header,
     };
     const form: FormConfig = {
       formId: this.formId,

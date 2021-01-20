@@ -160,7 +160,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
   }
 
   trackByFn(index: number, item: Item) {
-    return item.entity.id === 0 ? item.entity.guid : item.entity.id;
+    return item.Entity.id === 0 ? item.Entity.guid : item.Entity.id;
   }
 
   formValueChange() {
@@ -178,7 +178,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
           .map(itemEditFormComponent => {
             const isValid = itemEditFormComponent.form.form.valid
               || itemEditFormComponent.checkAreAllControlsDisabled()
-              || (itemEditFormComponent.item.header.Group && itemEditFormComponent.item.header.Group.SlotCanBeEmpty);
+              || (itemEditFormComponent.item.Header.Group && itemEditFormComponent.item.Header.Group.SlotCanBeEmpty);
             return isValid ? itemEditFormComponent.item : null;
           })
           .filter(item => item != null)
@@ -291,7 +291,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
       this.itemEditFormRefs.forEach(itemEditFormComponent => {
         if (
           itemEditFormComponent.form.form.invalid === true
-          && (!itemEditFormComponent.item.header.Group || itemEditFormComponent.item.header.Group.SlotCanBeEmpty === false)
+          && (!itemEditFormComponent.item.Header.Group || itemEditFormComponent.item.Header.Group.SlotCanBeEmpty === false)
         ) {
           formsAreValid = false;
         }

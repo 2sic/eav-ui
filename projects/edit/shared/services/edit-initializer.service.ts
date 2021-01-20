@@ -72,8 +72,8 @@ export class EditInitializerService implements OnDestroy {
     let isCopy: boolean;
     let enableHistory: boolean;
     items$.pipe(take(1)).subscribe(items => {
-      createMode = items?.[0].entity.id === 0;
-      isCopy = items?.[0].header.DuplicateEntity != null;
+      createMode = items?.[0].Entity.id === 0;
+      isCopy = items?.[0].Header.DuplicateEntity != null;
       enableHistory = !createMode && this.route.snapshot.data.history !== false;
     });
 
@@ -146,7 +146,7 @@ export class EditInitializerService implements OnDestroy {
             const inputType = calculatedInputType.inputType;
             if (inputType === InputTypeConstants.EmptyDefault) { continue; }
 
-            const attributeValues = item.entity.attributes[attributeDef.name];
+            const attributeValues = item.Entity.attributes[attributeDef.name];
             const value = LocalizationHelper.translate(currentLanguage, defaultLanguage, attributeValues, null);
             // set default value if needed
             const valueIsEmpty = isEmpty(value) && typeof value !== 'boolean' && typeof value !== 'number' && value !== '';

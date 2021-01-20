@@ -1,22 +1,16 @@
-import { JsonItem1 } from '../json-format-v1/json-item1';
-import { EavEntity } from './eav-entity';
-import { EavHeader } from './eav-header';
+import { EavEntity, EavHeader } from '.';
+import { JsonItem1 } from '../json-format-v1';
 
 export class Item {
-  header: EavHeader;
-  entity: EavEntity;
+  constructor(
+    public Entity: EavEntity,
+    public Header: EavHeader,
+  ) { }
 
-  constructor(header: EavHeader, entity: EavEntity) {
-    this.header = header;
-    this.entity = entity;
-  }
-
-  /** Create new Eav Item from json typed JsonItem1 */
   public static create(item: JsonItem1): Item {
     return new Item(
-      // EavHeader.create(item.Header),
+      EavEntity.create(item.Entity),
       item.Header,
-      EavEntity.create(item.Entity)
     );
   }
 }

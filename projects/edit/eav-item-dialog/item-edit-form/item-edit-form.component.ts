@@ -85,7 +85,7 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
 
   /** Update NGRX/store on form value change */
   formValueChange(change: FormValueChange) {
-    this.itemService.updateItemAttributesValues(this.item.entity.guid, change.formValues, this.currentLanguage, this.defaultLanguage);
+    this.itemService.updateItemAttributesValues(this.item.Entity.guid, change.formValues, this.currentLanguage, this.defaultLanguage);
 
     // run formulas when form value is changed
     change.formulaInstance.runSettingsFormulas();
@@ -109,11 +109,11 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
     if (!this.form) { return; }
 
     const formValues: { [name: string]: any } = {};
-    Object.keys(this.item.entity.attributes).forEach(attributeKey => {
+    Object.keys(this.item.Entity.attributes).forEach(attributeKey => {
       formValues[attributeKey] = LocalizationHelper.translate(
         this.currentLanguage,
         this.defaultLanguage,
-        this.item.entity.attributes[attributeKey],
+        this.item.Entity.attributes[attributeKey],
         null,
       );
     });
@@ -126,7 +126,7 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
     // important to be after patchValue
     this.eavService.formValueChange$.next({
       formId: this.eavService.eavConfig.formId,
-      entityGuid: this.item.entity.guid,
+      entityGuid: this.item.Entity.guid,
       entityValues: formValues,
     });
   }
