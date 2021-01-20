@@ -3,4 +3,3 @@ export { AttributeDef1 } from './attribute-def1';
 export { Entity1 } from './entity1';
 export { JsonItem1 } from './json-item1';
 export { Attribute1 } from './attribute1';
-export { Type1 } from './type1';

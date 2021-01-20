@@ -1,12 +1,12 @@
 import { EavEntity, EavFor } from '../eav';
+import { EavType } from '../eav/eav-type';
 import { Attributes1 } from './attributes1';
-import { Type1 } from './type1';
 
 export class Entity1 {
   Id: number;
   Version: number;
   Guid: string;
-  Type: Type1;
+  Type: EavType;
   Attributes: Attributes1<any>;
   Owner: string;
   Metadata: Entity1[];
@@ -16,7 +16,7 @@ export class Entity1 {
     Id: number,
     Version: number,
     Guid: string,
-    Type: Type1,
+    Type: EavType,
     Attributes: Attributes1<any>,
     Owner: string,
     Metadata: Entity1[],
@@ -40,7 +40,7 @@ export class Entity1 {
       entity.id,
       entity.version,
       entity.guid,
-      new Type1(entity.type.id, entity.type.name),
+      entity.type,
       attributes1,
       entity.owner,
       metaData1,

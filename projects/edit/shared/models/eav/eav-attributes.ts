@@ -33,7 +33,7 @@ export class EavAttributes {
     if (metadataArray !== undefined) {
       // First read all metadata settings witch are not @All
       metadataArray.forEach(mdItem => {
-        if (mdItem.type.id !== '@All') {
+        if (mdItem.type.Id !== '@All') {
           Object.keys(mdItem.attributes).forEach(attributeKey => {
             mergedSettings[attributeKey] = Object.assign({}, mdItem.attributes[attributeKey]);
           });
@@ -41,7 +41,7 @@ export class EavAttributes {
       });
       // Read @All metadata settings last (to rewrite attribute if attribute with same name exist)
       metadataArray.forEach(mdItem => {
-        if (mdItem.type.id === '@All') {
+        if (mdItem.type.Id === '@All') {
           Object.keys(mdItem.attributes).forEach(attributeKey => {
             // Add @All.Property value, but skip if both empty and already exists
             // So don't overwrite existing values with empty

@@ -46,7 +46,7 @@ export class EavEntity {
       item.Id,
       item.Version,
       item.Guid,
-      new EavType(item.Type.Id, item.Type.Name),
+      item.Type,
       eavAttributes,
       item.Owner,
       eavMetaData,
