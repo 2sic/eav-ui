@@ -33,23 +33,23 @@ export class EavAttributes {
     if (metadataArray !== undefined) {
       // First read all metadata settings witch are not @All
       metadataArray.forEach(mdItem => {
-        if (mdItem.type.Id !== '@All') {
-          Object.keys(mdItem.attributes).forEach(attributeKey => {
-            mergedSettings[attributeKey] = Object.assign({}, mdItem.attributes[attributeKey]);
+        if (mdItem.Type.Id !== '@All') {
+          Object.keys(mdItem.Attributes).forEach(attributeKey => {
+            mergedSettings[attributeKey] = Object.assign({}, mdItem.Attributes[attributeKey]);
           });
         }
       });
       // Read @All metadata settings last (to rewrite attribute if attribute with same name exist)
       metadataArray.forEach(mdItem => {
-        if (mdItem.type.Id === '@All') {
-          Object.keys(mdItem.attributes).forEach(attributeKey => {
+        if (mdItem.Type.Id === '@All') {
+          Object.keys(mdItem.Attributes).forEach(attributeKey => {
             // Add @All.Property value, but skip if both empty and already exists
             // So don't overwrite existing values with empty
-            const newIsEmpty = mdItem.attributes[attributeKey].values[0].value === '';
+            const newIsEmpty = mdItem.Attributes[attributeKey].values[0].value === '';
             const previousExists = mergedSettings[attributeKey];
             const skip = newIsEmpty && previousExists;
             if (!skip) {
-              mergedSettings[attributeKey] = Object.assign({}, mdItem.attributes[attributeKey]);
+              mergedSettings[attributeKey] = Object.assign({}, mdItem.Attributes[attributeKey]);
             }
           });
         }

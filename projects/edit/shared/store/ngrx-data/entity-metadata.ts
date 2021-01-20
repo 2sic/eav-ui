@@ -43,7 +43,7 @@ export const entityConfig = {
 };
 
 export function itemSelectId(item: Item): string {
-  return item?.Entity?.guid;
+  return item?.Entity?.Guid;
 }
 
 export function languageSelectId(language: Language): string {
@@ -59,7 +59,7 @@ export function contentTypeSelectId(contentType: ContentType): string {
 }
 
 export function contentTypeItemSelectId(contentTypeItem: EavEntity): string {
-  return contentTypeItem?.guid;
+  return contentTypeItem?.Guid;
 }
 
 export function inputTypeSelectId(inputType: InputType): string {

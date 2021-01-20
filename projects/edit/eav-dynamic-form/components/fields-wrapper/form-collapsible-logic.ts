@@ -32,9 +32,9 @@ export class FormCollapsibleLogic {
     try {
       const type = contentType.Metadata
         // xx ContentType is a historic bug and should be fixed when JSONs are rechecked
-        .find(metadata => metadata.type.Name === 'ContentType' || metadata.type.Name === 'xx ContentType');
+        .find(metadata => metadata.Type.Name === 'ContentType' || metadata.Type.Name === 'xx ContentType');
       if (!!type) {
-        label = LocalizationHelper.getValueOrDefault(type.attributes.Label, currentLanguage, defaultLanguage)?.value;
+        label = LocalizationHelper.getValueOrDefault(type.Attributes.Label, currentLanguage, defaultLanguage)?.value;
       }
       label = label || contentType.Name;
     } catch (error) {

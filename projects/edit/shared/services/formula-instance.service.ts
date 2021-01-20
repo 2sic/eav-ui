@@ -235,10 +235,10 @@ export class FormulaInstanceService implements OnDestroy {
     for (const [fieldName, calcItemGuids] of Object.entries(calcFields)) {
       for (const calcItemGuid of calcItemGuids) {
         this.contentTypeItemService.getContentTypeItemByGuid(calcItemGuid).pipe(take(1)).subscribe(calcItem => {
-          const target: string = LocalizationHelper.translate(this.lang, this.defaultLang, calcItem.attributes.Target, null);
+          const target: string = LocalizationHelper.translate(this.lang, this.defaultLang, calcItem.Attributes.Target, null);
           if (target !== type) { return; }
 
-          const formula: string = LocalizationHelper.translate(this.lang, this.defaultLang, calcItem.attributes.Formula, null);
+          const formula: string = LocalizationHelper.translate(this.lang, this.defaultLang, calcItem.Attributes.Formula, null);
           if (!formula) { return; }
 
           const formulaFn = this.buildFormulaFunction(formula);

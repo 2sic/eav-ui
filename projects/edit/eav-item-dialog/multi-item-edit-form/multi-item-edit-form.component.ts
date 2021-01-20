@@ -160,7 +160,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
   }
 
   trackByFn(index: number, item: Item) {
-    return item.Entity.id === 0 ? item.Entity.guid : item.Entity.id;
+    return item.Entity.Id === 0 ? item.Entity.Guid : item.Entity.Id;
   }
 
   formValueChange() {

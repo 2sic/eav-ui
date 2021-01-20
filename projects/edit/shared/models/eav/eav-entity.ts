@@ -1,71 +1,43 @@
-import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
-import { Entity1 } from '../json-format-v1/entity1';
-import { EavAttributes } from './eav-attributes';
-import { EavFor } from './eav-for';
-import { EavType } from './eav-type';
+import { EavAttributes, EavFor, EavType } from '.';
+import { Entity1 } from '../json-format-v1';
 
 export class EavEntity {
-  id: number;
-  version: number;
-  guid: string;
-  type: EavType;
-  attributes: EavAttributes;
-  owner: string;
-  metadata: EavEntity[];
-  For?: EavFor;
-
   constructor(
-    id: number,
-    version: number,
-    guid: string,
-    type: EavType,
-    attributes: EavAttributes,
-    owner: string,
-    metadata: EavEntity[],
-    For?: EavFor,
-  ) {
-    this.id = id;
-    this.version = version;
-    this.guid = guid;
-    this.type = type;
-    this.attributes = attributes;
-    this.owner = owner;
-    this.metadata = metadata;
-    this.For = For;
-  }
+    public Attributes: EavAttributes,
+    public Guid: string,
+    public Id: number,
+    public Owner: string,
+    public Type: EavType,
+    public Version: number,
+    public For?: EavFor,
+    public Metadata?: EavEntity[],
+  ) { }
 
-  /** Create new Eav Entity from typed json Entity1 */
   public static create(item: Entity1): EavEntity {
     if (!item) {
-      return new EavEntity(0, 1, '00000000-0000-0000-0000-000000000000', null, new EavAttributes(), '', null);
+      return new EavEntity(new EavAttributes(), '00000000-0000-0000-0000-000000000000', 0, '', null, 1, null, null);
     }
     const eavAttributes = EavAttributes.create(item.Attributes);
     const eavMetaData = this.createArray(item.Metadata);
 
     return new EavEntity(
-      item.Id,
-      item.Version,
-      item.Guid,
-      item.Type,
       eavAttributes,
+      item.Guid,
+      item.Id,
       item.Owner,
-      eavMetaData,
+      item.Type,
+      item.Version,
       item.For,
+      eavMetaData,
     );
   }
 
-  /** Create new MetaData Entity Array from json typed metadataArray Entity1[] */
   public static createArray(entity1Array: Entity1[]): EavEntity[] {
     if (!entity1Array) { return null; }
     const eavMetaDataArray: EavEntity[] = new Array<EavEntity>();
-    angularConsoleLog('entity1Array:', entity1Array);
-    try {
-      entity1Array.forEach(entity1 => {
-        eavMetaDataArray.push(EavEntity.create(entity1));
-      });
-    } catch (error) {
-      console.error('Metadata failed to be build. Error:', error);
-    }
+    entity1Array.forEach(entity1 => {
+      eavMetaDataArray.push(EavEntity.create(entity1));
+    });
     return eavMetaDataArray;
   }
 }

@@ -43,7 +43,7 @@ export class InputFieldHelper {
   }
 
   static getContentTypeId(item: Item): string {
-    return item.Entity.type ? item.Entity.type.Id : item.Header.ContentTypeName;
+    return item.Entity.Type ? item.Entity.Type.Id : item.Header.ContentTypeName;
   }
 
   static getFieldLabel(attribute: AttributeDef, settingsTranslated: FieldSettings): string {

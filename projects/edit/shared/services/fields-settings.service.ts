@@ -64,7 +64,7 @@ export class FieldsSettingsService {
     const isLastInGroup = false; // calculated later in calculateFieldPositionInGroup
     const fieldHelper = new FieldHelper(
       name,
-      item.Entity.guid,
+      item.Entity.Guid,
       formId,
       isParentGroup,
       itemService,
@@ -92,7 +92,7 @@ export class FieldsSettingsService {
     } else {
       const validationList = ValidationHelper.getValidations(settingsTranslated);
       const required = ValidationHelper.isRequired(settingsTranslated);
-      const initialValue = LocalizationHelper.translate(currentLanguage, defaultLanguage, item.Entity.attributes[name], null);
+      const initialValue = LocalizationHelper.translate(currentLanguage, defaultLanguage, item.Entity.Attributes[name], null);
       const disabled = settingsTranslated.Disabled;
 
       fieldConfig = {

@@ -21,7 +21,7 @@ export class ContentTypeItemService extends EntityCollectionServiceBase<EavEntit
   /** Get content type item observable from the store */
   getContentTypeItemByGuid(guid: string) {
     return this.entities$.pipe(
-      map(contentTypeItems => contentTypeItems.find(contentTypeItem => contentTypeItem.guid === guid))
+      map(contentTypeItems => contentTypeItems.find(contentTypeItem => contentTypeItem.Guid === guid))
       // maybe add distinctUntilChanged()
     );
   }

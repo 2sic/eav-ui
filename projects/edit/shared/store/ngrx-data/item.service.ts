@@ -29,9 +29,9 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
     const entityId = itemData[entityGuid];
     let oldItem: Item;
     this.entities$.pipe(take(1)).subscribe(items => {
-      oldItem = items.find(item => item.Entity.guid === entityGuid);
+      oldItem = items.find(item => item.Entity.Guid === entityGuid);
     });
-    if (!oldItem || (oldItem.Header.EntityId !== 0 && oldItem.Entity.id !== 0)) { return; }
+    if (!oldItem || (oldItem.Header.EntityId !== 0 && oldItem.Entity.Id !== 0)) { return; }
 
     const newItem = {
       ...oldItem,
@@ -60,7 +60,7 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
 
     let oldItem: Item;
     this.entities$.pipe(take(1)).subscribe(items => {
-      oldItem = items.find(item => item.Entity.guid === entityGuid);
+      oldItem = items.find(item => item.Entity.Guid === entityGuid);
     });
     if (!oldItem) { return; }
 
@@ -68,7 +68,7 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
       ...oldItem,
       entity: {
         ...oldItem.Entity,
-        attributes: LocalizationHelper.addAttributeValue(oldItem.Entity.attributes, newEavValue, attributeKey, attributeType),
+        attributes: LocalizationHelper.addAttributeValue(oldItem.Entity.Attributes, newEavValue, attributeKey, attributeType),
       }
     };
     this.updateOneInCache(newItem);
@@ -84,7 +84,7 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
   ) {
     let oldItem: Item;
     this.entities$.pipe(take(1)).subscribe(items => {
-      oldItem = items.find(item => item.Entity.guid === entityGuid);
+      oldItem = items.find(item => item.Entity.Guid === entityGuid);
     });
     if (!oldItem) { return; }
 
@@ -93,7 +93,7 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
       entity: {
         ...oldItem.Entity,
         attributes: LocalizationHelper.updateAttributeValue(
-          oldItem.Entity.attributes, attributeKey, newValue, language, defaultLanguage, isReadOnly,
+          oldItem.Entity.Attributes, attributeKey, newValue, language, defaultLanguage, isReadOnly,
         ),
       }
     };
@@ -103,7 +103,7 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
   updateItemAttributesValues(entityGuid: string, newValues: FormValues, language: string, defaultLanguage: string) {
     let oldItem: Item;
     this.entities$.pipe(take(1)).subscribe(items => {
-      oldItem = items.find(item => item.Entity.guid === entityGuid);
+      oldItem = items.find(item => item.Entity.Guid === entityGuid);
     });
     if (!oldItem) { return; }
 
@@ -111,7 +111,7 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
       ...oldItem,
       entity: {
         ...oldItem.Entity,
-        attributes: LocalizationHelper.updateAttributesValues(oldItem.Entity.attributes, newValues, language, defaultLanguage),
+        attributes: LocalizationHelper.updateAttributesValues(oldItem.Entity.Attributes, newValues, language, defaultLanguage),
       }
     };
     this.updateOneInCache(newItem);
@@ -131,7 +131,7 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
   ) {
     let oldItem: Item;
     this.entities$.pipe(take(1)).subscribe(items => {
-      oldItem = items.find(item => item.Entity.guid === entityGuid);
+      oldItem = items.find(item => item.Entity.Guid === entityGuid);
     });
     if (!oldItem) { return; }
 
@@ -140,7 +140,7 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
       entity: {
         ...oldItem.Entity,
         attributes: LocalizationHelper.addAttributeDimension(
-          oldItem.Entity.attributes, attributeKey, language, shareWithLanguage, defaultLanguage, isReadOnly,
+          oldItem.Entity.Attributes, attributeKey, language, shareWithLanguage, defaultLanguage, isReadOnly,
         ),
       }
     };
@@ -150,7 +150,7 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
   removeItemAttributeDimension(entityGuid: string, attributeKey: string, language: string) {
     let oldItem: Item;
     this.entities$.pipe(take(1)).subscribe(items => {
-      oldItem = items.find(item => item.Entity.guid === entityGuid);
+      oldItem = items.find(item => item.Entity.Guid === entityGuid);
     });
     if (!oldItem) { return; }
 
@@ -158,7 +158,7 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
       ...oldItem,
       entity: {
         ...oldItem.Entity,
-        attributes: LocalizationHelper.removeAttributeDimension(oldItem.Entity.attributes, attributeKey, language)
+        attributes: LocalizationHelper.removeAttributeDimension(oldItem.Entity.Attributes, attributeKey, language)
       }
     };
     this.updateOneInCache(newItem);
@@ -167,7 +167,7 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
   updateItemHeader(entityGuid: string, header: EavHeader) {
     let oldItem: Item;
     this.entities$.pipe(take(1)).subscribe(items => {
-      oldItem = items.find(item => item.Entity.guid === entityGuid);
+      oldItem = items.find(item => item.Entity.Guid === entityGuid);
     });
     if (!oldItem) { return; }
 
@@ -182,7 +182,7 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
 
   selectItemAttributes(entityGuid: string) {
     return this.entities$.pipe(
-      map(items => items.find(item => item.Entity.guid === entityGuid)?.Entity.attributes),
+      map(items => items.find(item => item.Entity.Guid === entityGuid)?.Entity.Attributes),
       distinctUntilChanged(),
     );
   }
@@ -193,21 +193,21 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
 
   selectItem(entityGuid: string) {
     return this.entities$.pipe(
-      map(items => items.find(item => item.Entity.guid === entityGuid)),
+      map(items => items.find(item => item.Entity.Guid === entityGuid)),
       distinctUntilChanged(),
     );
   }
 
   selectItemHeader(entityGuid: string) {
     return this.entities$.pipe(
-      map(items => items.find(item => item.Entity.guid === entityGuid)?.Header),
+      map(items => items.find(item => item.Entity.Guid === entityGuid)?.Header),
       distinctUntilChanged(),
     );
   }
 
   selectItems(entityGuids: string[]) {
     return this.entities$.pipe(
-      map(items => items.filter(item => entityGuids.includes(item.Entity.guid))),
+      map(items => items.filter(item => entityGuids.includes(item.Entity.Guid))),
       distinctUntilChanged((oldList, newList) => {
         let isEqual = true;
         if (oldList.length !== newList.length) {
@@ -233,7 +233,7 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
   ) {
     let filteredItems: Item[];
     this.entities$.pipe(
-      map(items => items.filter(item => entityGuids.includes(item.Entity.guid))),
+      map(items => items.filter(item => entityGuids.includes(item.Entity.Guid))),
       take(1),
     ).subscribe(items => {
       filteredItems = items;
@@ -246,12 +246,12 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
         contentType = type;
       });
 
-      const attributesValues = Object.keys(item.Entity.attributes).map(attributeKey => {
+      const attributesValues = Object.keys(item.Entity.Attributes).map(attributeKey => {
         const attributeDef = contentType.Attributes.find(attr => attr.name === attributeKey);
         const calculatedInputType = InputFieldHelper.calculateInputType(attributeDef, inputTypeService);
         const disableI18n = LocalizationHelper.isI18nDisabled(inputTypeService, calculatedInputType, attributeDef.settings);
         return {
-          values: item.Entity.attributes[attributeKey],
+          values: item.Entity.Attributes[attributeKey],
           disableI18n,
         };
       });
@@ -283,18 +283,18 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
     defaultLanguage: string,
   ) {
     const defaultValue = InputFieldHelper.parseDefaultValue(attributeDef.name, inputType, settings, item.Header);
-    const exists = item.Entity.attributes.hasOwnProperty(attributeDef.name);
+    const exists = item.Entity.Attributes.hasOwnProperty(attributeDef.name);
     if (!exists) {
       if (languages.length === 0) {
-        this.addItemAttributeValue(item.Entity.guid, attributeDef.name, defaultValue, '*', false, attributeDef.type);
+        this.addItemAttributeValue(item.Entity.Guid, attributeDef.name, defaultValue, '*', false, attributeDef.type);
       } else {
-        this.addItemAttributeValue(item.Entity.guid, attributeDef.name, defaultValue, language, false, attributeDef.type);
+        this.addItemAttributeValue(item.Entity.Guid, attributeDef.name, defaultValue, language, false, attributeDef.type);
       }
     } else {
       if (languages.length === 0) {
-        this.updateItemAttributeValue(item.Entity.guid, attributeDef.name, defaultValue, '*', defaultLanguage, false);
+        this.updateItemAttributeValue(item.Entity.Guid, attributeDef.name, defaultValue, '*', defaultLanguage, false);
       } else {
-        this.updateItemAttributeValue(item.Entity.guid, attributeDef.name, defaultValue, language, defaultLanguage, false);
+        this.updateItemAttributeValue(item.Entity.Guid, attributeDef.name, defaultValue, language, defaultLanguage, false);
       }
     }
     return defaultValue;
