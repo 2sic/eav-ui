@@ -3,7 +3,7 @@ import { AttributeDef } from './attribute-def';
 import { EavAttributes } from './eav-attributes';
 import { EavEntity } from './eav-entity';
 
-export class ContentType {
+export class EavContentType {
   Attributes: AttributeDef[];
   Description: string;
   Id: string;
@@ -31,11 +31,11 @@ export class ContentType {
   }
 
   /** Create ContentType from json typed ContentType1 */
-  public static create(item: ContentType1): ContentType {
+  public static create(item: ContentType1): EavContentType {
     const attributeDefArray = AttributeDef.createArray(item.Attributes);
     const metaDataArray = EavEntity.createArray(item.Metadata);
     const settings = EavAttributes.getFromEavEntityArray(metaDataArray);
 
-    return new ContentType(item.Id, item.Name, item.Scope, item.Description, attributeDefArray, metaDataArray, settings);
+    return new EavContentType(item.Id, item.Name, item.Scope, item.Description, attributeDefArray, metaDataArray, settings);
   }
 }

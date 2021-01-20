@@ -2,7 +2,7 @@ import { combineLatest, Observable } from 'rxjs';
 import { map, share } from 'rxjs/operators';
 import { FieldSettings } from '../../../../edit-types';
 import { LocalizationHelper } from '../../../shared/helpers/localization-helper';
-import { ContentType, EavHeader } from '../../../shared/models/eav';
+import { EavContentType, EavHeader } from '../../../shared/models/eav';
 
 export class FormCollapsibleLogic {
   constructor() { }
@@ -12,7 +12,7 @@ export class FormCollapsibleLogic {
     currentLanguage$: Observable<string>,
     defaultLanguage$: Observable<string>,
     header$: Observable<EavHeader>,
-    contentType$: Observable<ContentType>,
+    contentType$: Observable<EavContentType>,
   ): Observable<FieldSettings> {
     return combineLatest([settings$, currentLanguage$, defaultLanguage$, header$, contentType$]).pipe(
       map(([settings, currentLanguage, defaultLanguage, header, contentType]) => {
@@ -27,7 +27,7 @@ export class FormCollapsibleLogic {
     );
   }
 
-  private getContentTypeTitle(currentLanguage: string, defaultLanguage: string, contentType: ContentType): string {
+  private getContentTypeTitle(currentLanguage: string, defaultLanguage: string, contentType: EavContentType): string {
     let label: string;
     try {
       const type = contentType.Metadata

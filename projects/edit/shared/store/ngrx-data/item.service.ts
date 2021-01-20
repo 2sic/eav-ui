@@ -7,7 +7,7 @@ import { FormValue, FormValues } from '../../../eav-item-dialog/item-edit-form/i
 import { InputFieldHelper } from '../../helpers/input-field-helper';
 import { LocalizationHelper } from '../../helpers/localization-helper';
 import { Language, SaveResult } from '../../models';
-import { AttributeDef, ContentType, EavDimensions, EavHeader, EavItem, EavValue } from '../../models/eav';
+import { AttributeDef, EavContentType, EavDimensions, EavHeader, EavItem, EavValue } from '../../models/eav';
 import { JsonItem1 } from '../../models/json-format-v1';
 import { ContentTypeService } from './content-type.service';
 import { InputTypeService } from './input-type.service';
@@ -240,7 +240,7 @@ export class ItemService extends EntityCollectionServiceBase<EavItem> {
 
     for (const item of filteredItems) {
       const contentTypeId = InputFieldHelper.getContentTypeId(item);
-      let contentType: ContentType;
+      let contentType: EavContentType;
       contentTypeService.getContentTypeById(contentTypeId).pipe(take(1)).subscribe(type => {
         contentType = type;
       });

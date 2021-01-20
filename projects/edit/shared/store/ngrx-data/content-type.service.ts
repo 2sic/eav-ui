@@ -1,18 +1,18 @@
 import { Injectable } from '@angular/core';
 import { EntityCollectionServiceBase, EntityCollectionServiceElementsFactory } from '@ngrx/data';
 import { map } from 'rxjs/operators';
-import { ContentType } from '../../models/eav';
+import { EavContentType } from '../../models/eav';
 import { ContentType1 } from '../../models/json-format-v1';
 
 @Injectable({ providedIn: 'root' })
-export class ContentTypeService extends EntityCollectionServiceBase<ContentType> {
+export class ContentTypeService extends EntityCollectionServiceBase<EavContentType> {
   constructor(serviceElementsFactory: EntityCollectionServiceElementsFactory) {
     super('ContentType', serviceElementsFactory);
   }
 
   /** Add new content types to the store */
   addContentTypes(rawContentTypes: ContentType1[]) {
-    const builtContentTypes = rawContentTypes.map(rawCT => ContentType.create(rawCT));
+    const builtContentTypes = rawContentTypes.map(rawCT => EavContentType.create(rawCT));
     this.addManyToCache(builtContentTypes);
   }
 

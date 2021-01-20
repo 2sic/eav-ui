@@ -2,7 +2,7 @@ import { EntityMetadataMap } from '@ngrx/data';
 import { InputType } from '../../../../ng-dialogs/src/app/content-type-fields/models/input-type.model';
 import { Prefetch } from '../../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.models';
 import { Language, LanguageInstance, PublishStatus } from '../../models';
-import { ContentType, EavEntity, EavItem } from '../../models/eav';
+import { EavContentType, EavEntity, EavItem } from '../../models/eav';
 
 export const entityMetadata: EntityMetadataMap = {
   Item: {
@@ -54,7 +54,7 @@ export function languageInstanceSelectId(languageInstance: LanguageInstance): nu
   return languageInstance?.formId;
 }
 
-export function contentTypeSelectId(contentType: ContentType): string {
+export function contentTypeSelectId(contentType: EavContentType): string {
   return contentType?.Id;
 }
 
