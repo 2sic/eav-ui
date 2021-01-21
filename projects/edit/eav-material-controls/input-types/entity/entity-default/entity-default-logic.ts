@@ -4,7 +4,7 @@ export class EntityDefaultLogic {
   constructor() { }
 
   init(settings: FieldSettings): FieldSettings {
-    const fixedSettings = { ...settings };
+    const fixedSettings: FieldSettings = { ...settings };
     if (fixedSettings.EntityType == null) { fixedSettings.EntityType = ''; }
     if (fixedSettings.AllowMultiValue == null) { fixedSettings.AllowMultiValue = false; }
     if (fixedSettings.EnableEdit == null) { fixedSettings.EnableEdit = true; }

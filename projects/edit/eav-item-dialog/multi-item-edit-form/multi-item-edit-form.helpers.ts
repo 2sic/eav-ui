@@ -31,11 +31,8 @@ export function sortLanguages(primaryLangKey: string, languages: Language[]) {
   sameLangs.sort(alphabetCompare);
   otherLangs.sort(alphabetCompare);
 
-  if (!primaryLang) {
-    return [...sameLangs, ...otherLangs];
-  } else {
-    return [primaryLang, ...sameLangs, ...otherLangs];
-  }
+  const allLangsSorted: Language[] = !primaryLang ? [...sameLangs, ...otherLangs] : [primaryLang, ...sameLangs, ...otherLangs];
+  return allLangsSorted;
 }
 
 function alphabetCompare(a: Language, b: Language) {

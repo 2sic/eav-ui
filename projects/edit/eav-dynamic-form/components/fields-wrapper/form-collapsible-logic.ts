@@ -16,7 +16,7 @@ export class FormCollapsibleLogic {
   ): Observable<FieldSettings> {
     return combineLatest([settings$, currentLanguage$, defaultLanguage$, header$, contentType$]).pipe(
       map(([settings, currentLanguage, defaultLanguage, header, contentType]) => {
-        const fixedSettings = { ...settings };
+        const fixedSettings: FieldSettings = { ...settings };
         if (fixedSettings.EditInstructions == null) { fixedSettings.EditInstructions = ''; }
         fixedSettings._itemTitle = this.getContentTypeTitle(currentLanguage, defaultLanguage, contentType);
         fixedSettings._slotCanBeEmpty = header?.Group?.SlotCanBeEmpty || false;

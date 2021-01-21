@@ -9,7 +9,7 @@ export class StringDropdownLogic {
   update(settings$: Observable<FieldSettings>, value$: Observable<string>): Observable<FieldSettings> {
     return combineLatest([settings$, value$]).pipe(
       map(([settings, value]) => {
-        const fixedSettings = { ...settings };
+        const fixedSettings: FieldSettings = { ...settings };
         fixedSettings.EnableTextEntry ||= false;
         fixedSettings._options = calculateDropdownOptions(value, fixedSettings.DropdownValues);
         return fixedSettings;

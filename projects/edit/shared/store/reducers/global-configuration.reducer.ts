@@ -12,8 +12,14 @@ export const initialState: GlobalConfigurationState = {
 
 const globalConfigurationReducer = createReducer(
   initialState,
-  on(GlobalConfigurationActions.loadDebugEnabled, (state, { debugEnabled }) => ({ ...state, debugEnabled })),
-  on(GlobalConfigurationActions.toggleDebugEnabled, (state) => ({ ...state, debugEnabled: !state.debugEnabled })),
+  on(GlobalConfigurationActions.loadDebugEnabled, (oldState, { debugEnabled }) => {
+    const newState: GlobalConfigurationState = { ...oldState, debugEnabled };
+    return newState;
+  }),
+  on(GlobalConfigurationActions.toggleDebugEnabled, (oldState) => {
+    const newState: GlobalConfigurationState = { ...oldState, debugEnabled: !oldState.debugEnabled };
+    return newState;
+  }),
 );
 
 export function reducer(state: GlobalConfigurationState | undefined, action: Action) {

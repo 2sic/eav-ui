@@ -4,7 +4,7 @@ export class HyperlinkDefaultExpandableWrapperLogic {
   constructor() { }
 
   init(settings: FieldSettings): FieldSettings {
-    const fixedSettings = { ...settings };
+    const fixedSettings: FieldSettings = { ...settings };
     fixedSettings.FileFilter ||= '';
     fixedSettings.Paths ||= '';
     return fixedSettings;

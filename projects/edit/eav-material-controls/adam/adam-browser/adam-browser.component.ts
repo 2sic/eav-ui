@@ -275,7 +275,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
   }
 
   private toggle(usePortalRoot: boolean, showImagesOnly: boolean) {
-    const newConfig = { ...this.adamConfig$.value, ...{ usePortalRoot, showImagesOnly } };
+    const newConfig: AdamConfig = { ...this.adamConfig$.value, ...{ usePortalRoot, showImagesOnly } };
     if (JSON.stringify(newConfig) === JSON.stringify(this.adamConfig$.value)) {
       newConfig.autoLoad = !newConfig.autoLoad;
     } else if (!newConfig.autoLoad) {

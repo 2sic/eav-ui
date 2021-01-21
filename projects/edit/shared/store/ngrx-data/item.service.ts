@@ -32,15 +32,15 @@ export class ItemService extends EntityCollectionServiceBase<EavItem> {
     });
     if (!oldItem || (oldItem.Header.EntityId !== 0 && oldItem.Entity.Id !== 0)) { return; }
 
-    const newItem = {
+    const newItem: EavItem = {
       ...oldItem,
-      header: {
+      Header: {
         ...oldItem.Header,
-        entityId
+        EntityId: entityId,
       },
-      entity: {
+      Entity: {
         ...oldItem.Entity,
-        id: entityId
+        Id: entityId,
       }
     };
     this.updateOneInCache(newItem);
@@ -63,11 +63,11 @@ export class ItemService extends EntityCollectionServiceBase<EavItem> {
     });
     if (!oldItem) { return; }
 
-    const newItem = {
+    const newItem: EavItem = {
       ...oldItem,
-      entity: {
+      Entity: {
         ...oldItem.Entity,
-        attributes: LocalizationHelper.addAttributeValue(oldItem.Entity.Attributes, newEavValue, attributeKey, attributeType),
+        Attributes: LocalizationHelper.addAttributeValue(oldItem.Entity.Attributes, newEavValue, attributeKey, attributeType),
       }
     };
     this.updateOneInCache(newItem);
@@ -87,11 +87,11 @@ export class ItemService extends EntityCollectionServiceBase<EavItem> {
     });
     if (!oldItem) { return; }
 
-    const newItem = {
+    const newItem: EavItem = {
       ...oldItem,
-      entity: {
+      Entity: {
         ...oldItem.Entity,
-        attributes: LocalizationHelper.updateAttributeValue(
+        Attributes: LocalizationHelper.updateAttributeValue(
           oldItem.Entity.Attributes, attributeKey, newValue, language, defaultLanguage, isReadOnly,
         ),
       }
@@ -106,11 +106,11 @@ export class ItemService extends EntityCollectionServiceBase<EavItem> {
     });
     if (!oldItem) { return; }
 
-    const newItem = {
+    const newItem: EavItem = {
       ...oldItem,
-      entity: {
+      Entity: {
         ...oldItem.Entity,
-        attributes: LocalizationHelper.updateAttributesValues(oldItem.Entity.Attributes, newValues, language, defaultLanguage),
+        Attributes: LocalizationHelper.updateAttributesValues(oldItem.Entity.Attributes, newValues, language, defaultLanguage),
       }
     };
     this.updateOneInCache(newItem);
@@ -134,11 +134,11 @@ export class ItemService extends EntityCollectionServiceBase<EavItem> {
     });
     if (!oldItem) { return; }
 
-    const newItem = {
+    const newItem: EavItem = {
       ...oldItem,
-      entity: {
+      Entity: {
         ...oldItem.Entity,
-        attributes: LocalizationHelper.addAttributeDimension(
+        Attributes: LocalizationHelper.addAttributeDimension(
           oldItem.Entity.Attributes, attributeKey, language, shareWithLanguage, defaultLanguage, isReadOnly,
         ),
       }
@@ -153,11 +153,11 @@ export class ItemService extends EntityCollectionServiceBase<EavItem> {
     });
     if (!oldItem) { return; }
 
-    const newItem = {
+    const newItem: EavItem = {
       ...oldItem,
-      entity: {
+      Entity: {
         ...oldItem.Entity,
-        attributes: LocalizationHelper.removeAttributeDimension(oldItem.Entity.Attributes, attributeKey, language)
+        Attributes: LocalizationHelper.removeAttributeDimension(oldItem.Entity.Attributes, attributeKey, language)
       }
     };
     this.updateOneInCache(newItem);
@@ -170,9 +170,9 @@ export class ItemService extends EntityCollectionServiceBase<EavItem> {
     });
     if (!oldItem) { return; }
 
-    const newItem = {
+    const newItem: EavItem = {
       ...oldItem,
-      header: {
+      Header: {
         ...header
       }
     };

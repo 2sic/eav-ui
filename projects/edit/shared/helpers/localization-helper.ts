@@ -108,16 +108,20 @@ export class LocalizationHelper {
       Object.keys(allAttributes).forEach(key => {
         // const eavValueList: EavValue<any>[] = [];
         if (key === attributeKey) {
-          eavAttributes[key] = { ...attribute };
+          const attributeCopy: EavValues<any> = { ...attribute };
+          eavAttributes[key] = attributeCopy;
         } else {
-          eavAttributes[key] = { ...allAttributes[key] };
+          const attributeCopy: EavValues<any> = { ...allAttributes[key] };
+          eavAttributes[key] = attributeCopy;
         }
       });
       if (!allAttributes[attributeKey]) {
-        eavAttributes[attributeKey] = { ...attribute };
+        const attributeCopy: EavValues<any> = { ...attribute };
+        eavAttributes[attributeKey] = attributeCopy;
       }
     } else {
-      eavAttributes[attributeKey] = { ...attribute };
+      const attributeCopy: EavValues<any> = { ...attribute };
+      eavAttributes[attributeKey] = attributeCopy;
     }
     return eavAttributes;
   }
@@ -137,9 +141,9 @@ export class LocalizationHelper {
 
         // if valueWithLanguageExist update value for languageKey
         if (valueWithLanguageExist) {
-          eavAttributes[attributeKey] = {
+          const newValues: EavValues<any> = {
             ...allAttributes[attributeKey], Values: allAttributes[attributeKey].Values.map(eavValue => {
-              return eavValue.Dimensions.find(d => d.value === languageKey
+              const newValue: EavValue<any> = eavValue.Dimensions.find(d => d.value === languageKey
                 || d.value === `~${languageKey}`
                 || (languageKey === defaultLanguage && d.value === '*'))
                 // Update value for languageKey
@@ -148,25 +152,29 @@ export class LocalizationHelper {
                   Value: newItemValue,
                 }
                 : eavValue;
+              return newValue;
             })
           };
+          eavAttributes[attributeKey] = newValues;
         } else { // else add new value with dimension languageKey
           angularConsoleLog('saveAttributeValues add values ', newItemValue);
           const newEavValue = new EavValue(newItemValue, [new EavDimensions(languageKey)]);
-          eavAttributes[attributeKey] = {
+          const newAttribute: EavValues<any> = {
             ...allAttributes[attributeKey],
             Values: [...allAttributes[attributeKey].Values, newEavValue]
           };
+          eavAttributes[attributeKey] = newAttribute;
         }
       } else { // else copy item attributes
-        eavAttributes[attributeKey] = { ...allAttributes[attributeKey] };
+        const attributeCopy: EavValues<any> = { ...allAttributes[attributeKey] };
+        eavAttributes[attributeKey] = attributeCopy;
       }
     });
     return eavAttributes;
   }
 
   /** update attribute value, and change language readonly state if needed */
-  public static updateAttributeValue(allAttributes: EavAttributes, attributeKey: string, newValue: any, existingLanguageKey: string,
+  public static updateAttributeValue(allAttributes: EavAttributes, attributeKey: string, updateValue: any, existingLanguageKey: string,
     defaultLanguage: string, isReadOnly: boolean): EavAttributes {
     // copy attributes from item
     let eavAttributes: EavAttributes = new EavAttributes();
@@ -178,7 +186,7 @@ export class LocalizationHelper {
 
     const attribute: EavValues<any> = {
       ...allAttributes[attributeKey], Values: allAttributes[attributeKey].Values.map(eavValue => {
-        return eavValue.Dimensions.find(d => d.value === existingLanguageKey
+        const newValue: EavValue<any> = eavValue.Dimensions.find(d => d.value === existingLanguageKey
           || d.value === `~${existingLanguageKey}`
           || (existingLanguageKey === defaultLanguage && d.value === '*')
         )
@@ -186,17 +194,19 @@ export class LocalizationHelper {
           ? {
             ...eavValue,
             // update value
-            Value: newValue,
+            Value: updateValue,
             // update languageKey with newLanguageValue
             Dimensions: eavValue.Dimensions.map(dimension => {
-              return (dimension.value === existingLanguageKey
+              const newDimensions: EavDimensions<any> = (dimension.value === existingLanguageKey
                 || dimension.value === `~${existingLanguageKey}`
                 || (existingLanguageKey === defaultLanguage && dimension.value === '*'))
                 ? { value: newLanguageValue }
                 : dimension;
+              return newDimensions;
             })
           }
           : eavValue;
+        return newValue;
       })
     };
     eavAttributes = this.updateAttribute(allAttributes, attribute, attributeKey);
@@ -235,7 +245,7 @@ export class LocalizationHelper {
 
     const attribute: EavValues<any> = {
       ...allAttributes[attributeKey], Values: allAttributes[attributeKey].Values.map(eavValue => {
-        return eavValue.Dimensions.find(d => d.value === existingDimensionValue
+        const newValue: EavValue<any> = eavValue.Dimensions.find(d => d.value === existingDimensionValue
           || (existingDimensionValue === defaultLanguage && d.value === '*'))
           // Update dimension for current language
           ? {
@@ -244,6 +254,7 @@ export class LocalizationHelper {
             Dimensions: eavValue.Dimensions.concat({ value: newLanguageValue })
           }
           : eavValue;
+        return newValue;
       })
     };
     eavAttributes = this.updateAttribute(allAttributes, attribute, attributeKey);
@@ -261,14 +272,15 @@ export class LocalizationHelper {
     let attribute: EavValues<any> = null;
 
     if (!value) {
-      return { ...allAttributes };
+      const attributesCopy: EavAttributes = { ...allAttributes };
+      return attributesCopy;
     }
 
     // if more dimensions exist delete only dimension
     if (value.Dimensions.length > 1) {
       attribute = {
         ...allAttributes[attributeKey], Values: allAttributes[attributeKey].Values.map(eavValue => {
-          return eavValue.Dimensions.find(d => d.value === languageKey || d.value === `~${languageKey}`)
+          const newValue: EavValue<any> = eavValue.Dimensions.find(d => d.value === languageKey || d.value === `~${languageKey}`)
             ? {
               ...eavValue,
               // delete only dimension
@@ -277,6 +289,7 @@ export class LocalizationHelper {
               )
             }
             : eavValue;
+          return newValue;
         })
       };
     }

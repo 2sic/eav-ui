@@ -30,7 +30,8 @@ export class EavAttributes {
       metadataArray.forEach(mdItem => {
         if (mdItem.Type.Id !== '@All') {
           Object.keys(mdItem.Attributes).forEach(attributeKey => {
-            mergedSettings[attributeKey] = Object.assign({}, mdItem.Attributes[attributeKey]);
+            const attributeCopy: EavValues<any> = { ...mdItem.Attributes[attributeKey] };
+            mergedSettings[attributeKey] = attributeCopy;
           });
         }
       });
@@ -44,7 +45,8 @@ export class EavAttributes {
             const previousExists = mergedSettings[attributeKey];
             const skip = newIsEmpty && previousExists;
             if (!skip) {
-              mergedSettings[attributeKey] = Object.assign({}, mdItem.Attributes[attributeKey]);
+              const attributeCopy: EavValues<any> = { ...mdItem.Attributes[attributeKey] };
+              mergedSettings[attributeKey] = attributeCopy;
             }
           });
         }

@@ -8,7 +8,7 @@ export class BooleanDefaultLogic {
   update(settings$: Observable<FieldSettings>, value$: Observable<boolean>): Observable<FieldSettings> {
     return combineLatest([settings$, value$]).pipe(
       map(([settings, value]) => {
-        const fixedSettings = { ...settings };
+        const fixedSettings: FieldSettings = { ...settings };
         fixedSettings._label = this.calculateLabel(value, fixedSettings);
         return fixedSettings;
       }),

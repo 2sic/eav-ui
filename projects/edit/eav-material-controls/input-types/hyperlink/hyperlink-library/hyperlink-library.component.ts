@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { ValidatorFn } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { FieldSettings } from '../../../../../edit-types';
 import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
@@ -66,7 +67,7 @@ export class HyperlinkLibraryComponent extends BaseComponent<null> implements On
       return;
     }
 
-    const validators = [
+    const validators: ValidatorFn[] = [
       ...this.config.field.validation,
       CustomValidators.validateAdam(),
     ];

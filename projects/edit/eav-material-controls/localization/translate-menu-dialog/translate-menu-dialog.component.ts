@@ -49,7 +49,8 @@ export class TranslateMenuDialogComponent implements OnInit, OnDestroy {
         getTemplateLanguages(this.dialogData.config, currentLanguage, defaultLanguage, languages, attributes)),
     );
 
-    this.translationState$ = new BehaviorSubject({ ...this.dialogData.config.field.fieldHelper.translationState$.value });
+    const translationStateCopy: TranslationState = { ...this.dialogData.config.field.fieldHelper.translationState$.value };
+    this.translationState$ = new BehaviorSubject(translationStateCopy);
 
     this.templateVars$ = combineLatest([defaultLanguage$, languages$, this.translationState$]).pipe(
       map(([defaultLanguage, languages, translationState]) => {
@@ -79,7 +80,8 @@ export class TranslateMenuDialogComponent implements OnInit, OnDestroy {
   }
 
   setLanguage(language: string): void {
-    this.translationState$.next({ ...this.translationState$.value, language });
+    const newTranslationState: TranslationState = { ...this.translationState$.value, language };
+    this.translationState$.next(newTranslationState);
   }
 
   save(): void {
