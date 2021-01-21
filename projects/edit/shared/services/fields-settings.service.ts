@@ -44,15 +44,15 @@ export class FieldsSettingsService {
     const isEmptyInputType = (calculatedInputType.inputType === InputTypeConstants.EmptyDefault);
 
     if (attribute) {
-      settingsTranslated = LocalizationHelper.translateSettings(attribute.settings, currentLanguage, defaultLanguage);
-      fullSettings = attribute.settings;
+      settingsTranslated = LocalizationHelper.translateSettings(attribute.Settings, currentLanguage, defaultLanguage);
+      fullSettings = attribute.Settings;
     } else if (isEmptyInputType && contentTypeSettings) {
       settingsTranslated = LocalizationHelper.translateSettings(contentTypeSettings, currentLanguage, defaultLanguage);
       fullSettings = contentTypeSettings;
     }
 
     // these settings are recalculated in translate-group-menu translateAllConfiguration
-    const name = attribute ? attribute.name : 'Edit Item';
+    const name = attribute ? attribute.Name : 'Edit Item';
     const label = attribute ? InputFieldHelper.getFieldLabel(attribute, settingsTranslated) : 'Edit Item';
     let inputTypeSettings: InputType;
     const disableI18n = LocalizationHelper.isI18nDisabled(inputTypeService, calculatedInputType, fullSettings);
@@ -109,7 +109,7 @@ export class FieldsSettingsService {
         label,
         placeholder: settingsTranslated.Placeholder, // other fields specific
         inputType: calculatedInputType.inputType,
-        type: attribute.type, // other fields specific
+        type: attribute.Type, // other fields specific
         required, // other fields specific
         disabled, // other fields specific
         settings$: new BehaviorSubject(settingsTranslated),

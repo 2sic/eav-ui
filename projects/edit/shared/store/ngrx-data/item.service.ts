@@ -246,16 +246,16 @@ export class ItemService extends EntityCollectionServiceBase<EavItem> {
       });
 
       const attributesValues = Object.keys(item.Entity.Attributes).map(attributeKey => {
-        const attributeDef = contentType.Attributes.find(attr => attr.name === attributeKey);
+        const attributeDef = contentType.Attributes.find(attr => attr.Name === attributeKey);
         const calculatedInputType = InputFieldHelper.calculateInputType(attributeDef, inputTypeService);
-        const disableI18n = LocalizationHelper.isI18nDisabled(inputTypeService, calculatedInputType, attributeDef.settings);
+        const disableI18n = LocalizationHelper.isI18nDisabled(inputTypeService, calculatedInputType, attributeDef.Settings);
         return {
           values: item.Entity.Attributes[attributeKey],
           disableI18n,
         };
       });
 
-      if (attributesValues.length < contentType.Attributes.filter(attr => attr.type !== DataTypeConstants.Empty).length) {
+      if (attributesValues.length < contentType.Attributes.filter(attr => attr.Type !== DataTypeConstants.Empty).length) {
         return false;
       }
 
@@ -281,19 +281,19 @@ export class ItemService extends EntityCollectionServiceBase<EavItem> {
     language: string,
     defaultLanguage: string,
   ) {
-    const defaultValue = InputFieldHelper.parseDefaultValue(attributeDef.name, inputType, settings, item.Header);
-    const exists = item.Entity.Attributes.hasOwnProperty(attributeDef.name);
+    const defaultValue = InputFieldHelper.parseDefaultValue(attributeDef.Name, inputType, settings, item.Header);
+    const exists = item.Entity.Attributes.hasOwnProperty(attributeDef.Name);
     if (!exists) {
       if (languages.length === 0) {
-        this.addItemAttributeValue(item.Entity.Guid, attributeDef.name, defaultValue, '*', false, attributeDef.type);
+        this.addItemAttributeValue(item.Entity.Guid, attributeDef.Name, defaultValue, '*', false, attributeDef.Type);
       } else {
-        this.addItemAttributeValue(item.Entity.Guid, attributeDef.name, defaultValue, language, false, attributeDef.type);
+        this.addItemAttributeValue(item.Entity.Guid, attributeDef.Name, defaultValue, language, false, attributeDef.Type);
       }
     } else {
       if (languages.length === 0) {
-        this.updateItemAttributeValue(item.Entity.Guid, attributeDef.name, defaultValue, '*', defaultLanguage, false);
+        this.updateItemAttributeValue(item.Entity.Guid, attributeDef.Name, defaultValue, '*', defaultLanguage, false);
       } else {
-        this.updateItemAttributeValue(item.Entity.Guid, attributeDef.name, defaultValue, language, defaultLanguage, false);
+        this.updateItemAttributeValue(item.Entity.Guid, attributeDef.Name, defaultValue, language, defaultLanguage, false);
       }
     }
     return defaultValue;

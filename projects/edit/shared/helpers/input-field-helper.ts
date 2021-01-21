@@ -47,20 +47,20 @@ export class InputFieldHelper {
   }
 
   static getFieldLabel(attribute: EavAttributeDef, settingsTranslated: FieldSettings): string {
-    return settingsTranslated && settingsTranslated.Name || attribute.name;
+    return settingsTranslated && settingsTranslated.Name || attribute.Name;
   }
 
   static calculateInputTypes(attributesList: EavAttributeDef[], inputTypeService: InputTypeService): InputTypeName[] {
     const typesList: InputTypeName[] = [];
     attributesList.forEach((attribute, index) => {
       const calculatedInputType = this.calculateInputType(attribute, inputTypeService);
-      typesList.push({ name: attribute.name, inputType: calculatedInputType.inputType });
+      typesList.push({ name: attribute.Name, inputType: calculatedInputType.inputType });
     });
     return typesList;
   }
 
   static calculateInputType(attribute: EavAttributeDef, inputTypeService: InputTypeService): CalculatedInputType {
-    const inputTypeName = attribute.inputType;
+    const inputTypeName = attribute.InputType;
     let inputType: InputType;
     inputTypeService.getInputTypeById(inputTypeName).pipe(take(1)).subscribe(type => {
       inputType = type;
