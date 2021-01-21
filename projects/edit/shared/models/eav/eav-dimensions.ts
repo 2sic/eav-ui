@@ -1,12 +1,7 @@
-import { EavAttributes } from '.';
-import { EavValues } from './eav-values';
+import { EavAttributes, EavValues } from '.';
 
 export class EavDimensions<T> {
-  value: T;
-
-  constructor(value: T) {
-    this.value = value;
-  }
+  constructor(public Value: T) { }
 
   /** Get attribute dimensions for current language */
   public static getEavAttributeDimensionsForLanguage(
@@ -15,7 +10,7 @@ export class EavDimensions<T> {
     currentLanguage: string,
   ): EavDimensions<any>[] {
     const eavAttribute: EavValues<any> = attribute[attributeKey];
-    const dimensions = eavAttribute.Values.map(eavValue => eavValue.Dimensions.find(d => d.value === currentLanguage));
+    const dimensions = eavAttribute.Values.map(eavValue => eavValue.Dimensions.find(d => d.Value === currentLanguage));
     return dimensions;
   }
 }

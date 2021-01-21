@@ -329,19 +329,19 @@ export class FieldHelper {
     } else if (LocalizationHelper.isEditableTranslationExist(values, currentLanguage, defaultLanguage)) {
       const editableElements: EavDimensions<string>[] = LocalizationHelper
         .getValueTranslation(values, currentLanguage, defaultLanguage)
-        .Dimensions.filter(dimension => dimension.value !== currentLanguage);
+        .Dimensions.filter(dimension => dimension.Value !== currentLanguage);
 
       if (editableElements.length > 0) {
-        this.setTranslationState(TranslationLinkConstants.LinkReadWrite, editableElements[0].value);
+        this.setTranslationState(TranslationLinkConstants.LinkReadWrite, editableElements[0].Value);
       } else {
         this.setTranslationState(TranslationLinkConstants.Translate, '');
       }
     } else if (LocalizationHelper.isReadonlyTranslationExist(values, currentLanguage)) {
       const readOnlyElements: EavDimensions<string>[] = LocalizationHelper
         .getValueTranslation(values, currentLanguage, defaultLanguage)
-        .Dimensions.filter(dimension => dimension.value !== currentLanguage);
+        .Dimensions.filter(dimension => dimension.Value !== currentLanguage);
 
-      this.setTranslationState(TranslationLinkConstants.LinkReadOnly, readOnlyElements[0].value);
+      this.setTranslationState(TranslationLinkConstants.LinkReadOnly, readOnlyElements[0].Value);
     } else {
       this.setTranslationState(TranslationLinkConstants.DontTranslate, '');
     }
@@ -389,7 +389,7 @@ export class FieldHelper {
 
     if (editableTranslationExists || readonlyTranslationExists) {
       let dimensions: string[] = LocalizationHelper.getValueTranslation(values, currentLanguage, defaultLanguage)
-        .Dimensions.map(dimension => dimension.value);
+        .Dimensions.map(dimension => dimension.Value);
 
       dimensions = dimensions.filter(dimension => !dimension.includes(currentLanguage));
 

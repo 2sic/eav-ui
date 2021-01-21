@@ -1,5 +1,4 @@
-import { EavEntity, EavFor } from '.';
-import { EavGroupAssignment } from './eav-group-assignment';
+import { EavEntity, EavFor, EavGroupAssignment } from '.';
 
 export interface EavHeader {
   Add: boolean;
