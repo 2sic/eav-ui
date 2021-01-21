@@ -15,7 +15,7 @@ export class EavDimensions<T> {
     currentLanguage: string,
   ): EavDimensions<any>[] {
     const eavAttribute: EavValues<any> = attribute[attributeKey];
-    const dimensions = eavAttribute.values.map(eavValue => eavValue.dimensions.find(d => d.value === currentLanguage));
+    const dimensions = eavAttribute.Values.map(eavValue => eavValue.dimensions.find(d => d.value === currentLanguage));
     return dimensions;
   }
 }

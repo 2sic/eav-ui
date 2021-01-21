@@ -1,13 +1,9 @@
-import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
-import { Attributes1 } from '../json-format-v1/attributes1';
-import { EavEntity } from './eav-entity';
-import { EavValue } from './eav-value';
-import { EavValues } from './eav-values';
+import { EavEntity, EavValues } from '.';
+import { Attributes1 } from '../json-format-v1';
 
 export class EavAttributes {
   [key: string]: EavValues<any>;
 
-  /** Create Eav Attributes from json typed Attributes1 */
   public static create<T>(attributes1: Attributes1<T>): EavAttributes {
     const newEavAtribute: EavAttributes = new EavAttributes();
 
@@ -20,7 +16,6 @@ export class EavAttributes {
         newEavAtribute[attribute1Key] = EavValues.create<T>(attribute1[attribute1Key], attributes1Key);
       });
     });
-    angularConsoleLog('created attributes: ', newEavAtribute);
     return newEavAtribute;
   }
 
@@ -45,7 +40,7 @@ export class EavAttributes {
           Object.keys(mdItem.Attributes).forEach(attributeKey => {
             // Add @All.Property value, but skip if both empty and already exists
             // So don't overwrite existing values with empty
-            const newIsEmpty = mdItem.Attributes[attributeKey].values[0].value === '';
+            const newIsEmpty = mdItem.Attributes[attributeKey].Values[0].value === '';
             const previousExists = mergedSettings[attributeKey];
             const skip = newIsEmpty && previousExists;
             if (!skip) {
@@ -56,14 +51,5 @@ export class EavAttributes {
       });
     }
     return mergedSettings;
-  }
-
-  /** Create EavAtributes from dictionary */
-  public static createFromDictionary = (value: { [key: string]: any }): EavAttributes => {
-    const eavAttributes: EavAttributes = new EavAttributes();
-    Object.keys(value).forEach(valueKey => {
-      eavAttributes[valueKey] = new EavValues([new EavValue(value[valueKey], [])], 'String');
-    });
-    return eavAttributes;
   }
 }
