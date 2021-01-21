@@ -34,7 +34,7 @@ export class FormCollapsibleLogic {
         // xx ContentType is a historic bug and should be fixed when JSONs are rechecked
         .find(metadata => metadata.Type.Name === 'ContentType' || metadata.Type.Name === 'xx ContentType');
       if (!!type) {
-        label = LocalizationHelper.getValueOrDefault(type.Attributes.Label, currentLanguage, defaultLanguage)?.value;
+        label = LocalizationHelper.getValueOrDefault(type.Attributes.Label, currentLanguage, defaultLanguage)?.Value;
       }
       label = label || contentType.Name;
     } catch (error) {

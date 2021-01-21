@@ -16,18 +16,18 @@ export class LocalizationHelper {
       const translation: EavValue<any> = this.getValueTranslation(attributeValues, currentLanguage, defaultLanguage);
       // if translation exist then return translation
       if (translation) {
-        return translation.value;
+        return translation.Value;
         // return translations[0].value;
       } else {
         const translationDefault: EavValue<any> = this.getValueTranslation(attributeValues,
           defaultLanguage, defaultLanguage);
         // if default language translation exist then return translation
         if (translationDefault) {
-          return translationDefault.value;
+          return translationDefault.Value;
         } else {
           // else get first value
           // TODO: maybe return value with *
-          return attributeValues.Values[0] ? attributeValues.Values[0].value : null;
+          return attributeValues.Values[0] ? attributeValues.Values[0].Value : null;
         }
       }
     } else {
@@ -47,7 +47,7 @@ export class LocalizationHelper {
   public static getValueTranslation(allAttributesValues: EavValues<any>, languageKey: string,
     defaultLanguage: string): EavValue<any> {
     return allAttributesValues.Values.find(eavValue =>
-      eavValue.dimensions.find(d => d.value === languageKey
+      eavValue.Dimensions.find(d => d.value === languageKey
         || d.value === `~${languageKey}`
         || (languageKey === defaultLanguage && d.value === '*')) !== undefined);
   }
@@ -55,7 +55,7 @@ export class LocalizationHelper {
   public static isEditableOrReadonlyTranslationExist(allAttributesValues: EavValues<any>, languageKey: string,
     defaultLanguage: string): boolean {
     return allAttributesValues ? allAttributesValues.Values.filter(c =>
-      c.dimensions.find(d =>
+      c.Dimensions.find(d =>
         d.value === languageKey
         || d.value === `~${languageKey}`
         || (languageKey === defaultLanguage && d.value === '*'))).length > 0 : false;
@@ -64,28 +64,28 @@ export class LocalizationHelper {
   /** Language is editable if langageKey exist or on default language * exist */
   public static isEditableTranslationExist(allAttributesValues: EavValues<any>, languageKey: string, defaultLanguage: string): boolean {
     return allAttributesValues ? allAttributesValues.Values.filter(eavValue =>
-      eavValue.dimensions.find(d => (d.value === languageKey)
+      eavValue.Dimensions.find(d => (d.value === languageKey)
         || (languageKey === defaultLanguage && d.value === '*'))).length > 0 : false;
   }
 
   public static isReadonlyTranslationExist(allAttributesValues: EavValues<any>, languageKey: string): boolean {
     return allAttributesValues ? allAttributesValues.Values.filter(eavValue =>
-      eavValue.dimensions.find(d => d.value === `~${languageKey}`)).length > 0 : false;
+      eavValue.Dimensions.find(d => d.value === `~${languageKey}`)).length > 0 : false;
   }
 
   public static translationExistsInDefault(allAttributesValues: EavValues<any>, defaultLanguage: string): boolean {
     return allAttributesValues ? allAttributesValues.Values.filter(eavValue =>
-      eavValue.dimensions.find(d => d.value === defaultLanguage || d.value === '*')).length > 0 : false;
+      eavValue.Dimensions.find(d => d.value === defaultLanguage || d.value === '*')).length > 0 : false;
   }
 
   public static translationExistsInDefaultStrict(allAttributesValues: EavValues<any>, defaultLanguage: string,
     disableI18n: boolean): boolean {
     if (disableI18n) {
       return allAttributesValues ? allAttributesValues.Values.filter(eavValue =>
-        eavValue.dimensions.find(d => d.value === defaultLanguage || d.value === '*')).length > 0 : false;
+        eavValue.Dimensions.find(d => d.value === defaultLanguage || d.value === '*')).length > 0 : false;
     } else {
       return allAttributesValues ? allAttributesValues.Values.filter(eavValue =>
-        eavValue.dimensions.find(d => d.value === defaultLanguage)).length > 0 : false;
+        eavValue.Dimensions.find(d => d.value === defaultLanguage)).length > 0 : false;
     }
   }
 
@@ -94,7 +94,7 @@ export class LocalizationHelper {
     inputTypeService.getInputTypeById(calculatedInputType.inputType).pipe(take(1)).subscribe(type => {
       if (type?.DisableI18n === true) { disableI18n = true; }
     });
-    const disableTranslationSetting = !!fullSettings.DisableTranslation?.Values.find(value => value.value === true);
+    const disableTranslationSetting = !!fullSettings.DisableTranslation?.Values.find(value => value.Value === true);
     if (disableTranslationSetting) {
       disableI18n = true;
     }
@@ -139,13 +139,13 @@ export class LocalizationHelper {
         if (valueWithLanguageExist) {
           eavAttributes[attributeKey] = {
             ...allAttributes[attributeKey], Values: allAttributes[attributeKey].Values.map(eavValue => {
-              return eavValue.dimensions.find(d => d.value === languageKey
+              return eavValue.Dimensions.find(d => d.value === languageKey
                 || d.value === `~${languageKey}`
                 || (languageKey === defaultLanguage && d.value === '*'))
                 // Update value for languageKey
                 ? {
                   ...eavValue,
-                  value: newItemValue,
+                  Value: newItemValue,
                 }
                 : eavValue;
             })
@@ -178,7 +178,7 @@ export class LocalizationHelper {
 
     const attribute: EavValues<any> = {
       ...allAttributes[attributeKey], Values: allAttributes[attributeKey].Values.map(eavValue => {
-        return eavValue.dimensions.find(d => d.value === existingLanguageKey
+        return eavValue.Dimensions.find(d => d.value === existingLanguageKey
           || d.value === `~${existingLanguageKey}`
           || (existingLanguageKey === defaultLanguage && d.value === '*')
         )
@@ -186,9 +186,9 @@ export class LocalizationHelper {
           ? {
             ...eavValue,
             // update value
-            value: newValue,
+            Value: newValue,
             // update languageKey with newLanguageValue
-            dimensions: eavValue.dimensions.map(dimension => {
+            Dimensions: eavValue.Dimensions.map(dimension => {
               return (dimension.value === existingLanguageKey
                 || dimension.value === `~${existingLanguageKey}`
                 || (existingLanguageKey === defaultLanguage && dimension.value === '*'))
@@ -235,13 +235,13 @@ export class LocalizationHelper {
 
     const attribute: EavValues<any> = {
       ...allAttributes[attributeKey], Values: allAttributes[attributeKey].Values.map(eavValue => {
-        return eavValue.dimensions.find(d => d.value === existingDimensionValue
+        return eavValue.Dimensions.find(d => d.value === existingDimensionValue
           || (existingDimensionValue === defaultLanguage && d.value === '*'))
           // Update dimension for current language
           ? {
             ...eavValue,
             // if languageKey already exist
-            dimensions: eavValue.dimensions.concat({ value: newLanguageValue })
+            Dimensions: eavValue.Dimensions.concat({ value: newLanguageValue })
           }
           : eavValue;
       })
@@ -256,7 +256,7 @@ export class LocalizationHelper {
     // copy attributes from item
     let eavAttributes: EavAttributes = new EavAttributes();
     const value: EavValue<any> = allAttributes[attributeKey].Values.find(eavValue =>
-      eavValue.dimensions.find(d => d.value === languageKey
+      eavValue.Dimensions.find(d => d.value === languageKey
         || d.value === `~${languageKey}`) !== undefined);
     let attribute: EavValues<any> = null;
 
@@ -265,14 +265,14 @@ export class LocalizationHelper {
     }
 
     // if more dimensions exist delete only dimension
-    if (value.dimensions.length > 1) {
+    if (value.Dimensions.length > 1) {
       attribute = {
         ...allAttributes[attributeKey], Values: allAttributes[attributeKey].Values.map(eavValue => {
-          return eavValue.dimensions.find(d => d.value === languageKey || d.value === `~${languageKey}`)
+          return eavValue.Dimensions.find(d => d.value === languageKey || d.value === `~${languageKey}`)
             ? {
               ...eavValue,
               // delete only dimension
-              dimensions: eavValue.dimensions.filter(dimension =>
+              Dimensions: eavValue.Dimensions.filter(dimension =>
                 (dimension.value !== languageKey && dimension.value !== `~${languageKey}`)
               )
             }
@@ -281,11 +281,11 @@ export class LocalizationHelper {
       };
     }
     // if only one dimension exists delete value and dimension
-    if (value.dimensions.length === 1) {
+    if (value.Dimensions.length === 1) {
       attribute = {
         // delete dimension and value
         ...allAttributes[attributeKey], Values: allAttributes[attributeKey].Values.filter(eavValue => {
-          return eavValue.dimensions.find(d => d.value !== languageKey && d.value !== `~${languageKey}`);
+          return eavValue.Dimensions.find(d => d.value !== languageKey && d.value !== `~${languageKey}`);
         })
       };
     }

@@ -1,16 +1,12 @@
-import { Value1 } from '../json-format-v1/value1';
-import { EavDimensions } from './eav-dimensions';
+import { EavDimensions } from '.';
+import { Value1 } from '../json-format-v1';
 
 export class EavValue<T> {
-  value: T;
-  dimensions: EavDimensions<T>[];
+  constructor(
+    public Value: T,
+    public Dimensions: EavDimensions<T>[],
+  ) { }
 
-  constructor(value: T, dimensions: EavDimensions<T>[]) {
-    this.value = value;
-    this.dimensions = dimensions;
-  }
-
-  /** Create Eav Value from typed json Value1 */
   public static create<T>(value1: Value1<T>): EavValue<T>[] {
     const newEavValueArray: EavValue<T>[] = [];
 

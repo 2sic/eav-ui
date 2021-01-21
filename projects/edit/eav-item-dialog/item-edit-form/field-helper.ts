@@ -172,7 +172,7 @@ export class FieldHelper {
     if (defaultValue) {
       const attributeDef = this.contentType$.value.Attributes.find(attr => attr.name === this.fieldName);
       this.itemService.addItemAttributeValue(
-        this.entityGuid, this.fieldName, defaultValue.value, currentLanguage, false, attributeDef.type,
+        this.entityGuid, this.fieldName, defaultValue.Value, currentLanguage, false, attributeDef.type,
       );
     } else {
       angularConsoleLog(`${currentLanguage}: Cant copy value from ${defaultLanguage} because that value does not exist.`);
@@ -212,13 +212,13 @@ export class FieldHelper {
       if (valueAlreadyExists) {
         // Copy attribute value where language is languageKey to value where language is current language
         this.itemService.updateItemAttributeValue(
-          this.entityGuid, this.fieldName, attributeValueTranslation.value, currentLanguage, defaultLanguage, false,
+          this.entityGuid, this.fieldName, attributeValueTranslation.Value, currentLanguage, defaultLanguage, false,
         );
       } else {
         // Copy attribute value where language is languageKey to new attribute with current language
         const attributeDef = this.contentType$.value.Attributes.find(attr => attr.name === this.fieldName);
         this.itemService.addItemAttributeValue(
-          this.entityGuid, this.fieldName, attributeValueTranslation.value, currentLanguage, false, attributeDef.type,
+          this.entityGuid, this.fieldName, attributeValueTranslation.Value, currentLanguage, false, attributeDef.type,
         );
       }
     } else {
@@ -329,7 +329,7 @@ export class FieldHelper {
     } else if (LocalizationHelper.isEditableTranslationExist(values, currentLanguage, defaultLanguage)) {
       const editableElements: EavDimensions<string>[] = LocalizationHelper
         .getValueTranslation(values, currentLanguage, defaultLanguage)
-        .dimensions.filter(dimension => dimension.value !== currentLanguage);
+        .Dimensions.filter(dimension => dimension.value !== currentLanguage);
 
       if (editableElements.length > 0) {
         this.setTranslationState(TranslationLinkConstants.LinkReadWrite, editableElements[0].value);
@@ -339,7 +339,7 @@ export class FieldHelper {
     } else if (LocalizationHelper.isReadonlyTranslationExist(values, currentLanguage)) {
       const readOnlyElements: EavDimensions<string>[] = LocalizationHelper
         .getValueTranslation(values, currentLanguage, defaultLanguage)
-        .dimensions.filter(dimension => dimension.value !== currentLanguage);
+        .Dimensions.filter(dimension => dimension.value !== currentLanguage);
 
       this.setTranslationState(TranslationLinkConstants.LinkReadOnly, readOnlyElements[0].value);
     } else {
@@ -389,7 +389,7 @@ export class FieldHelper {
 
     if (editableTranslationExists || readonlyTranslationExists) {
       let dimensions: string[] = LocalizationHelper.getValueTranslation(values, currentLanguage, defaultLanguage)
-        .dimensions.map(dimension => dimension.value);
+        .Dimensions.map(dimension => dimension.value);
 
       dimensions = dimensions.filter(dimension => !dimension.includes(currentLanguage));
 

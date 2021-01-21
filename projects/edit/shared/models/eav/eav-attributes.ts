@@ -40,7 +40,7 @@ export class EavAttributes {
           Object.keys(mdItem.Attributes).forEach(attributeKey => {
             // Add @All.Property value, but skip if both empty and already exists
             // So don't overwrite existing values with empty
-            const newIsEmpty = mdItem.Attributes[attributeKey].Values[0].value === '';
+            const newIsEmpty = mdItem.Attributes[attributeKey].Values[0].Value === '';
             const previousExists = mergedSettings[attributeKey];
             const skip = newIsEmpty && previousExists;
             if (!skip) {
