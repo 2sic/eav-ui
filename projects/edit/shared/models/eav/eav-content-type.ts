@@ -13,7 +13,7 @@ export class EavContentType {
   ) { }
 
   public static create(item: ContentType1): EavContentType {
-    const attributeDefArray = EavAttributeDef.createArray(item.Attributes);
+    const attributeDefArray = EavAttributeDef.convertMany(item.Attributes);
     const metadataArray = EavEntity.createArray(item.Metadata);
     const settings = EavAttributes.getFromEavEntityArray(metadataArray);
 
