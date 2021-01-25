@@ -69,8 +69,7 @@ export class DefaultPaste {
         return;
       }
 
-      adam.addFullPath(response);
-      success(response.FullPath);
+      success(response.Path);
       adam.refresh();
     }).catch(error => {
       webpackConsoleLog('TinyMCE upload error:', error);

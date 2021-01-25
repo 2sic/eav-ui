@@ -20,6 +20,9 @@ export const entityMetadata: EntityMetadataMap = {
   InputType: {
     selectId: InputTypeSelectId,
   },
+  Prefetch: {
+    selectId: prefetchSelectId,
+  },
 };
 
 export const pluralNames = {
@@ -53,4 +56,8 @@ export function contentTypeItemSelectId<T extends { guid: any }>(entity: T) {
 
 export function InputTypeSelectId<T extends { Type: any }>(entity: T) {
   return entity === null ? undefined : entity.Type;
+}
+
+export function prefetchSelectId<T extends { _guid: any }>(entity: T) {
+  return entity === null ? undefined : entity._guid;
 }

@@ -1,8 +1,4 @@
 <div class="actions-component">
-  <div class="like-button highlight" matRipple matTooltip="Rename" (click)="rename()">
-    <mat-icon>settings</mat-icon>
-  </div>
-
   <div class="like-button highlight" matRipple matTooltip="Permissions" *ngIf="enablePermissions"
     (click)="openPermissions()">
     <mat-icon [matBadge]="field.Permissions.Count" matBadgePosition="after" matBadgeColor="accent" matBadgeSize="small"
@@ -21,6 +17,11 @@
 </div>
 
 <mat-menu #menu="matMenu" class="grid-more-menu">
+  <button mat-menu-item (click)="rename()">
+    <mat-icon>text_fields</mat-icon>
+    <span>Rename</span>
+  </button>
+
   <button mat-menu-item [disabled]="field.IsTitle" (click)="deleteField()">
     <mat-icon>delete</mat-icon>
     <span>Delete</span>

@@ -61,9 +61,11 @@ export class DropzoneWrapperComponent extends BaseComponent<any> implements Fiel
   }
 
   ngAfterViewInit() {
-    this.config.dropzone.setConfig({
-      previewsContainer: '.field-' + this.config.field.index + ' .dropzone-previews',
-      clickable: '.field-' + this.config.field.index + ' .invisible-clickable',
+    setTimeout(() => {
+      this.config.dropzone.setConfig({
+        previewsContainer: '.field-' + this.config.field.index + ' .dropzone-previews',
+        clickable: '.field-' + this.config.field.index + ' .invisible-clickable',
+      });
     });
   }
 
@@ -81,7 +83,6 @@ export class DropzoneWrapperComponent extends BaseComponent<any> implements Fiel
     const response: AdamPostResponse = args[1]; // Gets the server response as second argument.
     if (response.Success) {
       if (this.config.adam) {
-        this.config.adam.addFullPath(response);
         this.config.adam.onItemUpload(response);
         this.config.adam.refresh();
       } else {

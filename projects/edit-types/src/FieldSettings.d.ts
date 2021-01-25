@@ -121,6 +121,9 @@ interface Entity extends All {
   EnableAddExisting: boolean;
   EnableRemove: boolean;
   EnableDelete: boolean;
+
+  /** Prefill values / mask - new in 11.11.03 */
+  Prefill: string;
 }
 
 /** @entity-query */
