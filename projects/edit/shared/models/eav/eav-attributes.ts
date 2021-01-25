@@ -4,7 +4,7 @@ import { Attributes1 } from '../json-format-v1';
 export class EavAttributes {
   [key: string]: EavValues<any>;
 
-  public static create<T>(attributes1: Attributes1<T>): EavAttributes {
+  public static create(attributes1: Attributes1): EavAttributes {
     const newEavAtribute: EavAttributes = new EavAttributes();
 
     // Loop trough attributes types - String, Boolean ...
@@ -13,7 +13,7 @@ export class EavAttributes {
       // Loop trough attribute - Description, Name ...
       Object.keys(attribute1).forEach(attribute1Key => {
         // Creates new EavValue for specified type
-        newEavAtribute[attribute1Key] = EavValues.create<T>(attribute1[attribute1Key], attributes1Key);
+        newEavAtribute[attribute1Key] = EavValues.create(attribute1[attribute1Key], attributes1Key);
       });
     });
     return newEavAtribute;

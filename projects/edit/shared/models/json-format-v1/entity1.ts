@@ -3,7 +3,7 @@ import { EavEntity, EavFor, EavType } from '../eav';
 
 export class Entity1 {
   constructor(
-    public Attributes: Attributes1<any>,
+    public Attributes: Attributes1,
     public Guid: string,
     public Id: number,
     public Owner: string,
