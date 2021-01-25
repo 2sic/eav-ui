@@ -2,7 +2,7 @@ import { take } from 'rxjs/operators';
 import { FieldSettings } from '../../../edit-types';
 import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 import { CalculatedInputType } from '../models';
-import { EavAttributes, EavDimensions, EavValue, EavValues } from '../models/eav';
+import { EavAttributes, EavDimension, EavValue, EavValues } from '../models/eav';
 import { InputTypeService } from '../store/ngrx-data/input-type.service';
 
 export class LocalizationHelper {
@@ -158,7 +158,7 @@ export class LocalizationHelper {
           eavAttributes[attributeKey] = newValues;
         } else { // else add new value with dimension languageKey
           angularConsoleLog('saveAttributeValues add values ', newItemValue);
-          const newEavValue = new EavValue(newItemValue, [new EavDimensions(languageKey)]);
+          const newEavValue = new EavValue(newItemValue, [new EavDimension(languageKey)]);
           const newAttribute: EavValues<any> = {
             ...allAttributes[attributeKey],
             Values: [...allAttributes[attributeKey].Values, newEavValue]
@@ -197,7 +197,7 @@ export class LocalizationHelper {
             Value: updateValue,
             // update languageKey with newLanguageValue
             Dimensions: eavValue.Dimensions.map(dimension => {
-              const newDimensions: EavDimensions<any> = (dimension.Value === existingLanguageKey
+              const newDimensions: EavDimension = (dimension.Value === existingLanguageKey
                 || dimension.Value === `~${existingLanguageKey}`
                 || (existingLanguageKey === defaultLanguage && dimension.Value === '*'))
                 ? { Value: newLanguageValue }

@@ -7,7 +7,7 @@ import { FormValue, FormValues } from '../../../eav-item-dialog/item-edit-form/i
 import { InputFieldHelper } from '../../helpers/input-field-helper';
 import { LocalizationHelper } from '../../helpers/localization-helper';
 import { Language, SaveResult } from '../../models';
-import { EavAttributeDef, EavContentType, EavDimensions, EavHeader, EavItem, EavValue } from '../../models/eav';
+import { EavAttributeDef, EavContentType, EavDimension, EavHeader, EavItem, EavValue } from '../../models/eav';
 import { JsonItem1 } from '../../models/json-format-v1';
 import { ContentTypeService } from './content-type.service';
 import { InputTypeService } from './input-type.service';
@@ -55,7 +55,7 @@ export class ItemService extends EntityCollectionServiceBase<EavItem> {
     attributeType: string,
   ) {
     const newValueDimension = isReadOnly ? `~${language}` : language;
-    const newEavValue = new EavValue(newValue, [new EavDimensions(newValueDimension)]);
+    const newEavValue = new EavValue(newValue, [new EavDimension(newValueDimension)]);
 
     let oldItem: EavItem;
     this.entities$.pipe(take(1)).subscribe(items => {

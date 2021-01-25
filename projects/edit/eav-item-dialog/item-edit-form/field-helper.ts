@@ -8,7 +8,7 @@ import { TranslationState } from '../../eav-material-controls/localization/trans
 import { TranslationLinkConstants } from '../../shared/constants/translation-link.constants';
 import { InputFieldHelper } from '../../shared/helpers/input-field-helper';
 import { LocalizationHelper } from '../../shared/helpers/localization-helper';
-import { EavAttributes, EavContentType, EavDimensions, EavItem } from '../../shared/models/eav';
+import { EavAttributes, EavContentType, EavDimension, EavItem } from '../../shared/models/eav';
 import { EavService } from '../../shared/services/eav.service';
 import { FieldsSettingsService } from '../../shared/services/fields-settings.service';
 import { FormulaInstanceService } from '../../shared/services/formula-instance.service';
@@ -327,7 +327,7 @@ export class FieldHelper {
     } else if (this.isTranslateDisabled()) {
       this.setTranslationState(TranslationLinkConstants.DontTranslate, '');
     } else if (LocalizationHelper.isEditableTranslationExist(values, currentLanguage, defaultLanguage)) {
-      const editableElements: EavDimensions<string>[] = LocalizationHelper
+      const editableElements: EavDimension[] = LocalizationHelper
         .getValueTranslation(values, currentLanguage, defaultLanguage)
         .Dimensions.filter(dimension => dimension.Value !== currentLanguage);
 
@@ -337,7 +337,7 @@ export class FieldHelper {
         this.setTranslationState(TranslationLinkConstants.Translate, '');
       }
     } else if (LocalizationHelper.isReadonlyTranslationExist(values, currentLanguage)) {
-      const readOnlyElements: EavDimensions<string>[] = LocalizationHelper
+      const readOnlyElements: EavDimension[] = LocalizationHelper
         .getValueTranslation(values, currentLanguage, defaultLanguage)
         .Dimensions.filter(dimension => dimension.Value !== currentLanguage);
 
