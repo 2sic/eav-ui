@@ -19,7 +19,7 @@ export class ItemService extends EntityCollectionServiceBase<EavItem> {
   }
 
   loadItems(items1: Item1[]) {
-    const items = items1.map(item1 => EavItem.create(item1));
+    const items = items1.map(item1 => EavItem.convert(item1));
     this.upsertManyInCache(items);
   }
 
