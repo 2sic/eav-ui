@@ -11,9 +11,9 @@ export class ContentTypeService extends EntityCollectionServiceBase<EavContentTy
   }
 
   /** Add new content types to the store */
-  addContentTypes(rawContentTypes: ContentType1[]) {
-    const builtContentTypes = rawContentTypes.map(rawCT => EavContentType.create(rawCT));
-    this.addManyToCache(builtContentTypes);
+  addContentTypes(contentTypes1: ContentType1[]) {
+    const contentTypes = contentTypes1.map(contentType1 => EavContentType.convert(contentType1));
+    this.addManyToCache(contentTypes);
   }
 
   /** Get content type observable from the store */
