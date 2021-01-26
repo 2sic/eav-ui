@@ -2,42 +2,52 @@ import { EavAttributes, EavFor, EavType } from '.';
 import { Entity1 } from '../json-format-v1';
 
 export class EavEntity {
-  constructor(
-    public Attributes: EavAttributes,
-    public Guid: string,
-    public Id: number,
-    public Owner: string,
-    public Type: EavType,
-    public Version: number,
-    public For?: EavFor,
-    public Metadata?: EavEntity[],
-  ) { }
+  public Attributes: EavAttributes;
+  public Guid: string;
+  public Id: number;
+  public Owner: string;
+  public Type: EavType;
+  public Version: number;
+  public For?: EavFor;
+  public Metadata?: EavEntity[];
 
-  public static create(item: Entity1): EavEntity {
-    if (!item) {
-      return new EavEntity({}, '00000000-0000-0000-0000-000000000000', 0, '', null, 1, null, null);
+  public static convertOne(entity1: Entity1): EavEntity {
+    // spm 2021.01.26. is empty entity ever used?
+    if (entity1 == null) {
+      const defaultEntity: EavEntity = {
+        Attributes: {},
+        Guid: '00000000-0000-0000-0000-000000000000',
+        Id: 0,
+        Owner: '',
+        Type: null,
+        Version: 1,
+        For: null,
+        Metadata: null,
+      };
+      return defaultEntity;
     }
-    const eavAttributes = EavAttributes.convert(item.Attributes);
-    const eavMetaData = this.createArray(item.Metadata);
 
-    return new EavEntity(
-      eavAttributes,
-      item.Guid,
-      item.Id,
-      item.Owner,
-      item.Type,
-      item.Version,
-      item.For,
-      eavMetaData,
-    );
+    const attributes = EavAttributes.convert(entity1.Attributes);
+    const metadata = this.convertMany(entity1.Metadata);
+
+    const entity: EavEntity = {
+      Attributes: attributes,
+      Guid: entity1.Guid,
+      Id: entity1.Id,
+      Owner: entity1.Owner,
+      Type: entity1.Type,
+      Version: entity1.Version,
+      For: entity1.For,
+      Metadata: metadata,
+    };
+    return entity;
   }
 
-  public static createArray(entity1Array: Entity1[]): EavEntity[] {
-    if (!entity1Array) { return null; }
-    const eavMetaDataArray: EavEntity[] = new Array<EavEntity>();
-    entity1Array.forEach(entity1 => {
-      eavMetaDataArray.push(EavEntity.create(entity1));
-    });
-    return eavMetaDataArray;
+  public static convertMany(entities1: Entity1[]): EavEntity[] {
+    // spm 2021.01.26. why return null and not undefined?
+    if (entities1 == null) { return null; }
+
+    const entities = entities1.map(entity1 => EavEntity.convertOne(entity1));
+    return entities;
   }
 }

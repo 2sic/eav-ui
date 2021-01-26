@@ -12,7 +12,7 @@ export class EavContentType {
 
   public static convert(contentType1: ContentType1): EavContentType {
     const attributeDefs = EavAttributeDef.convertMany(contentType1.Attributes);
-    const metadata = EavEntity.createArray(contentType1.Metadata);
+    const metadata = EavEntity.convertMany(contentType1.Metadata);
     const settings = EavAttributes.mergeSettings(metadata);
 
     const contentType: EavContentType = {

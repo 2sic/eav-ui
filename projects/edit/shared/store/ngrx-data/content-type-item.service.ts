@@ -13,7 +13,7 @@ export class ContentTypeItemService extends EntityCollectionServiceBase<EavEntit
   /** Add new content type items to the store */
   addContentTypeItems(rawContentTypeItems: Entity1[]) {
     rawContentTypeItems.forEach(rawContentTypeItem => {
-      const contentTypeItem = EavEntity.create(rawContentTypeItem);
+      const contentTypeItem = EavEntity.convertOne(rawContentTypeItem);
       this.upsertOneInCache(contentTypeItem);
     });
   }

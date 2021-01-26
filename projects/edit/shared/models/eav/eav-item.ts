@@ -5,6 +5,6 @@ export class EavItem {
   constructor(public Entity: EavEntity, public Header: EavHeader) { }
 
   public static create(item: JsonItem1): EavItem {
-    return new EavItem(EavEntity.create(item.Entity), item.Header);
+    return new EavItem(EavEntity.convertOne(item.Entity), item.Header);
   }
 }
