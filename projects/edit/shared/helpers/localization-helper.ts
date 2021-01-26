@@ -158,7 +158,7 @@ export class LocalizationHelper {
           eavAttributes[attributeKey] = newValues;
         } else { // else add new value with dimension languageKey
           angularConsoleLog('saveAttributeValues add values ', newItemValue);
-          const newEavValue = new EavValue(newItemValue, [new EavDimension(languageKey)]);
+          const newEavValue = new EavValue(newItemValue, [EavDimension.create(languageKey)]);
           const newAttribute: EavValues<any> = {
             ...allAttributes[attributeKey],
             Values: [...allAttributes[attributeKey].Values, newEavValue]

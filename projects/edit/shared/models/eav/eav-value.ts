@@ -10,7 +10,7 @@ export class EavValue<T> {
     Object.keys(value1).forEach(value1Key => {
       const dimensions: EavDimension[] = [];
       value1Key.split(',').forEach((language: any) => {
-        dimensions.push(new EavDimension(language));
+        dimensions.push(EavDimension.create(language));
       });
       newEavValueArray.push(new EavValue(value1[value1Key], dimensions));
     });
