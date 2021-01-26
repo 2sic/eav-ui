@@ -2,56 +2,49 @@ import { EavEntity, EavValues } from '.';
 import { Attributes1 } from '../json-format-v1';
 
 export class EavAttributes {
-  [key: string]: EavValues<any>;
+  [attributeName: string]: EavValues<any>;
 
-  public static create(attributes1: Attributes1): EavAttributes {
-    const newEavAtribute: EavAttributes = new EavAttributes();
+  public static convert(attributes1: Attributes1): EavAttributes {
+    const atributes: EavAttributes = {};
 
-    // Loop trough attributes types - String, Boolean ...
-    Object.keys(attributes1).forEach(attributes1Key => {
-      const attribute1 = attributes1[attributes1Key];
-      // Loop trough attribute - Description, Name ...
-      Object.keys(attribute1).forEach(attribute1Key => {
-        // Creates new EavValue for specified type
-        newEavAtribute[attribute1Key] = EavValues.create(attribute1[attribute1Key], attributes1Key);
-      });
-    });
-    return newEavAtribute;
+    // loop attribute types - String, Boolean, ...
+    for (const [type1, attribute1] of Object.entries(attributes1)) {
+      // loop attribute names - Description, Name, ...
+      for (const [name1, value1] of Object.entries(attribute1)) {
+        atributes[name1] = EavValues.create(value1, type1);
+      }
+    }
+    return atributes;
   }
 
-  /**
-   * Get all attributes (dictionary) from attributs in EavEntity array (all attributs from each entity in array).
-   * Example: Settings from metadata array
-   */
-  public static getFromEavEntityArray(metadataArray: EavEntity[]): EavAttributes {
-    const mergedSettings: EavAttributes = new EavAttributes();
-    if (metadataArray !== undefined) {
-      // First read all metadata settings witch are not @All
-      metadataArray.forEach(mdItem => {
-        if (mdItem.Type.Id !== '@All') {
-          Object.keys(mdItem.Attributes).forEach(attributeKey => {
-            const attributeCopy: EavValues<any> = { ...mdItem.Attributes[attributeKey] };
-            mergedSettings[attributeKey] = attributeCopy;
-          });
-        }
-      });
-      // Read @All metadata settings last (to rewrite attribute if attribute with same name exist)
-      metadataArray.forEach(mdItem => {
-        if (mdItem.Type.Id === '@All') {
-          Object.keys(mdItem.Attributes).forEach(attributeKey => {
-            // Add @All.Property value, but skip if both empty and already exists
-            // So don't overwrite existing values with empty
-            const newIsEmpty = mdItem.Attributes[attributeKey].Values[0].Value === '';
-            const previousExists = mergedSettings[attributeKey];
-            const skip = newIsEmpty && previousExists;
-            if (!skip) {
-              const attributeCopy: EavValues<any> = { ...mdItem.Attributes[attributeKey] };
-              mergedSettings[attributeKey] = attributeCopy;
-            }
-          });
-        }
-      });
+  public static mergeSettings(metadataItems: EavEntity[]): EavAttributes {
+    if (metadataItems == null) { return {}; }
+
+    const merged: EavAttributes = {};
+    // copy metadata settings which are not @All
+    for (const item of metadataItems) {
+      if (item.Type.Id === '@All') { continue; }
+
+      for (const [name, value] of Object.entries(item.Attributes)) {
+        const copy: EavValues<any> = { ...value };
+        merged[name] = copy;
+      }
     }
-    return mergedSettings;
+
+    // copy @All metadata settings, overwriting previous settings
+    for (const item of metadataItems) {
+      if (item.Type.Id !== '@All') { continue; }
+
+      for (const [name, value] of Object.entries(item.Attributes)) {
+        // do not overwrite previous settings if @All is empty
+        const exists = merged[name] != null;
+        const emptyAll = value.Values[0].Value === '';
+        if (exists && emptyAll) { continue; }
+
+        const copy: EavValues<any> = { ...value };
+        merged[name] = copy;
+      }
+    }
+    return merged;
   }
 }

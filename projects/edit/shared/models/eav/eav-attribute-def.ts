@@ -11,7 +11,7 @@ export class EavAttributeDef {
 
   public static convertOne(attributeDef1: AttributeDef1): EavAttributeDef {
     const metadata = EavEntity.createArray(attributeDef1.Metadata);
-    const settings = EavAttributes.getFromEavEntityArray(metadata);
+    const settings = EavAttributes.mergeSettings(metadata);
 
     const attributeDef: EavAttributeDef = {
       InputType: attributeDef1.InputType,

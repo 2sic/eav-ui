@@ -103,7 +103,7 @@ export class LocalizationHelper {
 
   public static updateAttribute(allAttributes: EavAttributes, attribute: EavValues<any>, attributeKey: string) {
     // copy attributes from item
-    const eavAttributes: EavAttributes = new EavAttributes();
+    const eavAttributes: EavAttributes = {};
     if (Object.keys(allAttributes).length > 0) {
       Object.keys(allAttributes).forEach(key => {
         // const eavValueList: EavValue<any>[] = [];
@@ -130,7 +130,7 @@ export class LocalizationHelper {
   public static updateAttributesValues(allAttributes: EavAttributes, updateValues: { [key: string]: any }, languageKey: string,
     defaultLanguage: string): EavAttributes {
     // copy attributes from item
-    const eavAttributes: EavAttributes = new EavAttributes();
+    const eavAttributes: EavAttributes = {};
     Object.keys(allAttributes).forEach(attributeKey => {
       const newItemValue = updateValues[attributeKey];
       // if new value exist update attribute for languageKey
@@ -177,7 +177,7 @@ export class LocalizationHelper {
   public static updateAttributeValue(allAttributes: EavAttributes, attributeKey: string, updateValue: any, existingLanguageKey: string,
     defaultLanguage: string, isReadOnly: boolean): EavAttributes {
     // copy attributes from item
-    let eavAttributes: EavAttributes = new EavAttributes();
+    let eavAttributes: EavAttributes = {};
     let newLanguageValue = existingLanguageKey;
 
     if (isReadOnly) {
@@ -216,7 +216,7 @@ export class LocalizationHelper {
   public static addAttributeValue(allAttributes: EavAttributes, attributeValue: EavValue<any>, attributeKey: string,
     attributeType: string): EavAttributes {
     // copy attributes from item
-    let eavAttributes: EavAttributes = new EavAttributes();
+    let eavAttributes: EavAttributes = {};
     const attribute: EavValues<any> =
       Object.keys(allAttributes).length === 0
         || !allAttributes[attributeKey] ?
@@ -236,7 +236,7 @@ export class LocalizationHelper {
   public static addAttributeDimension(allAttributes: EavAttributes, attributeKey: string, newDimensionValue: any,
     existingDimensionValue: string, defaultLanguage: string, isReadOnly: boolean): EavAttributes {
     // copy attributes from item
-    let eavAttributes: EavAttributes = new EavAttributes();
+    let eavAttributes: EavAttributes = {};
     let newLanguageValue = newDimensionValue;
 
     if (isReadOnly) {
@@ -265,7 +265,7 @@ export class LocalizationHelper {
   public static removeAttributeDimension(allAttributes: EavAttributes, attributeKey: string, languageKey: string): EavAttributes {
     angularConsoleLog('removeAttributeDimension: ', allAttributes);
     // copy attributes from item
-    let eavAttributes: EavAttributes = new EavAttributes();
+    let eavAttributes: EavAttributes = {};
     const value: EavValue<any> = allAttributes[attributeKey].Values.find(eavValue =>
       eavValue.Dimensions.find(d => d.Value === languageKey
         || d.Value === `~${languageKey}`) !== undefined);

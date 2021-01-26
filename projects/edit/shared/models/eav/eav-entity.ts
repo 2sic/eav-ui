@@ -15,9 +15,9 @@ export class EavEntity {
 
   public static create(item: Entity1): EavEntity {
     if (!item) {
-      return new EavEntity(new EavAttributes(), '00000000-0000-0000-0000-000000000000', 0, '', null, 1, null, null);
+      return new EavEntity({}, '00000000-0000-0000-0000-000000000000', 0, '', null, 1, null, null);
     }
-    const eavAttributes = EavAttributes.create(item.Attributes);
+    const eavAttributes = EavAttributes.convert(item.Attributes);
     const eavMetaData = this.createArray(item.Metadata);
 
     return new EavEntity(

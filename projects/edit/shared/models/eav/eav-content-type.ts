@@ -15,7 +15,7 @@ export class EavContentType {
   public static create(item: ContentType1): EavContentType {
     const attributeDefArray = EavAttributeDef.convertMany(item.Attributes);
     const metadataArray = EavEntity.createArray(item.Metadata);
-    const settings = EavAttributes.getFromEavEntityArray(metadataArray);
+    const settings = EavAttributes.mergeSettings(metadataArray);
 
     return new EavContentType(attributeDefArray, item.Description, item.Id, metadataArray, item.Name, item.Scope, settings);
   }
