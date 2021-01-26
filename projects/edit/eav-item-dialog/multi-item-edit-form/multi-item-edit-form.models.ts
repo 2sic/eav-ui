@@ -4,7 +4,7 @@ import { InputType } from '../../../ng-dialogs/src/app/content-type-fields/model
 import { DialogContextApp, DialogContextLanguage, DialogContextSite, DialogContextSystem } from '../../../ng-dialogs/src/app/shared/models/dialog-context.models';
 import { EntityInfo } from '../../shared/models';
 import { EavItem } from '../../shared/models/eav';
-import { ContentType1, Entity1, JsonItem1 } from '../../shared/models/json-format-v1';
+import { ContentType1, Entity1, Item1 } from '../../shared/models/json-format-v1';
 
 export interface EavPublishStatus {
   DraftShouldBranch: boolean;
@@ -17,7 +17,7 @@ export interface EavFormData extends EavPublishStatus {
   Context: EditDialogContext;
   Features: Feature[];
   InputTypes: InputType[];
-  Items: JsonItem1[];
+  Items: Item1[];
   Prefetch: Prefetch;
 }
 
@@ -29,7 +29,7 @@ export interface EditDialogContext {
 }
 
 export interface SaveEavFormData extends EavPublishStatus {
-  Items: JsonItem1[];
+  Items: Item1[];
 }
 
 export interface MultiEditFormTemplateVars {

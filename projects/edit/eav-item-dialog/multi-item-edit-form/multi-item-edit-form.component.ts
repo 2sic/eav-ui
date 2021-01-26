@@ -14,7 +14,7 @@ import { ValidationMessagesService } from '../../eav-material-controls/validator
 import { EditEntryComponent } from '../../edit-entry/edit-entry.component';
 import { FieldErrorMessage } from '../../shared/models';
 import { EavItem } from '../../shared/models/eav';
-import { JsonItem1 } from '../../shared/models/json-format-v1';
+import { Item1 } from '../../shared/models/json-format-v1';
 import { EavService } from '../../shared/services/eav.service';
 import { EditRoutingService } from '../../shared/services/edit-routing.service';
 import { GlobalConfigService } from '../../shared/services/global-configuration.service';
@@ -182,7 +182,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
             return isValid ? itemEditFormComponent.item : null;
           })
           .filter(item => item != null)
-          .map(item => JsonItem1.create(item))
+          .map(item => Item1.create(item))
           // do not try to save item which doesn't have any fields, nothing could have changed about it
           .filter(item => Object.keys(item.Entity.Attributes).length > 0);
         const publishStatus = this.publishStatusService.getPublishStatus(this.eavService.eavConfig.formId);

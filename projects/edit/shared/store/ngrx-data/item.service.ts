@@ -8,7 +8,7 @@ import { InputFieldHelper } from '../../helpers/input-field-helper';
 import { LocalizationHelper } from '../../helpers/localization-helper';
 import { Language, SaveResult } from '../../models';
 import { EavAttributeDef, EavContentType, EavDimension, EavHeader, EavItem, EavValue } from '../../models/eav';
-import { JsonItem1 } from '../../models/json-format-v1';
+import { Item1 } from '../../models/json-format-v1';
 import { ContentTypeService } from './content-type.service';
 import { InputTypeService } from './input-type.service';
 
@@ -18,8 +18,8 @@ export class ItemService extends EntityCollectionServiceBase<EavItem> {
     super('Item', serviceElementsFactory);
   }
 
-  loadItems(jsonItems: JsonItem1[]) {
-    const items = jsonItems.map(jsonItem => EavItem.create(jsonItem));
+  loadItems(items1: Item1[]) {
+    const items = items1.map(item1 => EavItem.create(item1));
     this.upsertManyInCache(items);
   }
 
