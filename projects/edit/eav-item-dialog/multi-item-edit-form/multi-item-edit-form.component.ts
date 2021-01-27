@@ -182,7 +182,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
             return isValid ? itemEditFormComponent.item : null;
           })
           .filter(item => item != null)
-          .map(item => Item1.create(item))
+          .map(item => Item1.convert(item))
           // do not try to save item which doesn't have any fields, nothing could have changed about it
           .filter(item => Object.keys(item.Entity.Attributes).length > 0);
         const publishStatus = this.publishStatusService.getPublishStatus(this.eavService.eavConfig.formId);
