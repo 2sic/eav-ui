@@ -61,9 +61,11 @@ export class DropzoneWrapperComponent extends BaseComponent<any> implements Fiel
   }
 
   ngAfterViewInit() {
-    this.config.dropzone.setConfig({
-      previewsContainer: '.field-' + this.config.field.index + ' .dropzone-previews',
-      clickable: '.field-' + this.config.field.index + ' .invisible-clickable',
+    setTimeout(() => {
+      this.config.dropzone.setConfig({
+        previewsContainer: '.field-' + this.config.field.index + ' .dropzone-previews',
+        clickable: '.field-' + this.config.field.index + ' .invisible-clickable',
+      });
     });
   }
 
