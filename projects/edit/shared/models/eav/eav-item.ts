@@ -6,8 +6,10 @@ export class EavItem {
   public Header: EavHeader;
 
   public static convert(item1: Item1): EavItem {
+    const entity = EavEntity.convertOne(item1.Entity);
+
     const item: EavItem = {
-      Entity: EavEntity.convertOne(item1.Entity),
+      Entity: entity,
       Header: item1.Header,
     };
     return item;

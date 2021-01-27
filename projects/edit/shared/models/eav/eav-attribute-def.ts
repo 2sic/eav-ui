@@ -9,7 +9,7 @@ export class EavAttributeDef {
   public Settings: EavAttributes;
   public Type: string;
 
-  public static convertOne(attributeDef1: AttributeDef1): EavAttributeDef {
+  private static convertOne(attributeDef1: AttributeDef1): EavAttributeDef {
     const metadata = EavEntity.convertMany(attributeDef1.Metadata);
     const settings = EavAttributes.mergeSettings(metadata);
 

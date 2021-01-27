@@ -6,10 +6,12 @@ export class EavValues<T> {
   public Type: string;
 
   public static convert<T>(value1: Value1<T>, type: string): EavValues<T> {
-    const values: EavValues<T> = {
-      Values: EavValue.convert(value1),
+    const values = EavValue.convert(value1);
+
+    const eavValues: EavValues<T> = {
+      Values: values,
       Type: type,
     };
-    return values;
+    return eavValues;
   }
 }

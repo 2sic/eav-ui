@@ -44,7 +44,6 @@ export class EavEntity {
   }
 
   public static convertMany(entities1: Entity1[]): EavEntity[] {
-    // spm 2021.01.26. why return null and not undefined?
     if (entities1 == null) { return null; }
 
     const entities = entities1.map(entity1 => EavEntity.convertOne(entity1));

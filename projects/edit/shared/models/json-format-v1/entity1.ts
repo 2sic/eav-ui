@@ -28,7 +28,7 @@ export class Entity1 {
     return entity1;
   }
 
-  public static convertMany(entities: EavEntity[]): Entity1[] {
+  private static convertMany(entities: EavEntity[]): Entity1[] {
     if (entities == null) { return null; }
 
     const entities1 = entities.map(entity => Entity1.convertOne(entity));
