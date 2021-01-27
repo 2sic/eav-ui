@@ -12,7 +12,7 @@ export class Attributes1 {
       if (attributes1[type] == null) {
         attributes1[type] = {};
       }
-      attributes1[type][name] = Value1.create(values);
+      attributes1[type][name] = Value1.convert(values);
     }
     return attributes1;
   }
