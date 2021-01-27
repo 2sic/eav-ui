@@ -14,7 +14,7 @@ export class Entity1 {
   ) { }
 
   public static create(entity: EavEntity): Entity1 {
-    const attributes1 = Attributes1.create(entity.Attributes);
+    const attributes1 = Attributes1.convert(entity.Attributes);
     const metaData1 = this.createArray(entity.Metadata);
 
     return new Entity1(attributes1, entity.Guid, entity.Id, entity.Owner, entity.Type, entity.Version, entity.For, metaData1);

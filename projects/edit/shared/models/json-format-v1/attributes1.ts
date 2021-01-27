@@ -4,14 +4,16 @@ import { EavAttributes } from '../eav';
 export class Attributes1 {
   [attributeType: string]: Attribute1<any>;
 
-  public static create(eavAttributes: EavAttributes): Attributes1 {
-    const newAttribute1: Attributes1 = new Attributes1();
+  public static convert(attributes: EavAttributes): Attributes1 {
+    const attributes1: Attributes1 = {};
 
-    Object.keys(eavAttributes).forEach(eavAttributeKey => {
-      const type = eavAttributes[eavAttributeKey].Type;
-      if (!newAttribute1[type]) { newAttribute1[type] = {}; }
-      newAttribute1[type][eavAttributeKey] = Value1.create(eavAttributes[eavAttributeKey]);
-    });
-    return newAttribute1;
+    for (const [name, values] of Object.entries(attributes)) {
+      const type = values.Type;
+      if (attributes1[type] == null) {
+        attributes1[type] = {};
+      }
+      attributes1[type][name] = Value1.create(values);
+    }
+    return attributes1;
   }
 }
