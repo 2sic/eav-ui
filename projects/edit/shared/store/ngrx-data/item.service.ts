@@ -55,7 +55,7 @@ export class ItemService extends EntityCollectionServiceBase<EavItem> {
     attributeType: string,
   ) {
     const newValueDimension = isReadOnly ? `~${language}` : language;
-    const newEavValue = new EavValue(newValue, [EavDimension.create(newValueDimension)]);
+    const newEavValue = EavValue.create(newValue, [EavDimension.create(newValueDimension)]);
 
     let oldItem: EavItem;
     this.entities$.pipe(take(1)).subscribe(items => {

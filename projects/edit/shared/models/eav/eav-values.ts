@@ -7,7 +7,7 @@ export class EavValues<T> {
 
   public static convert<T>(value1: Value1<T>, type: string): EavValues<T> {
     const values: EavValues<T> = {
-      Values: EavValue.create(value1),
+      Values: EavValue.convert(value1),
       Type: type,
     };
     return values;
