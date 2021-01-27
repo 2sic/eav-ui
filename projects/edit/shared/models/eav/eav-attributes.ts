@@ -11,7 +11,7 @@ export class EavAttributes {
     for (const [type1, attribute1] of Object.entries(attributes1)) {
       // loop attribute names - Description, Name, ...
       for (const [name1, value1] of Object.entries(attribute1)) {
-        atributes[name1] = EavValues.create(value1, type1);
+        atributes[name1] = EavValues.convert(value1, type1);
       }
     }
     return atributes;
