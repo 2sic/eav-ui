@@ -170,10 +170,8 @@ export class FieldHelper {
     this.itemService.removeItemAttributeDimension(this.entityGuid, this.fieldName, currentLanguage);
     const defaultValue = LocalizationHelper.getValueTranslation(values, defaultLanguage, defaultLanguage);
     if (defaultValue) {
-      const attributeDef = this.contentType$.value.Attributes.find(attr => attr.Name === this.fieldName);
-      this.itemService.addItemAttributeValue(
-        this.entityGuid, this.fieldName, defaultValue.Value, currentLanguage, false, attributeDef.Type,
-      );
+      const attribute = this.contentType$.value.Attributes.find(a => a.Name === this.fieldName);
+      this.itemService.addItemAttributeValue(this.entityGuid, this.fieldName, defaultValue.Value, currentLanguage, false, attribute.Type);
     } else {
       angularConsoleLog(`${currentLanguage}: Cant copy value from ${defaultLanguage} because that value does not exist.`);
     }
@@ -216,9 +214,9 @@ export class FieldHelper {
         );
       } else {
         // Copy attribute value where language is languageKey to new attribute with current language
-        const attributeDef = this.contentType$.value.Attributes.find(attr => attr.Name === this.fieldName);
+        const attribute = this.contentType$.value.Attributes.find(a => a.Name === this.fieldName);
         this.itemService.addItemAttributeValue(
-          this.entityGuid, this.fieldName, attributeValueTranslation.Value, currentLanguage, false, attributeDef.Type,
+          this.entityGuid, this.fieldName, attributeValueTranslation.Value, currentLanguage, false, attribute.Type,
         );
       }
     } else {
@@ -358,12 +356,12 @@ export class FieldHelper {
     const defaultLanguage = this.defaultLanguage$.value;
     if (!LocalizationHelper.translationExistsInDefault(values, defaultLanguage)) { return true; }
 
-    const attributeDef = this.contentType$.value.Attributes.find(attr => attr.Name === this.fieldName);
+    const attribute = this.contentType$.value.Attributes.find(a => a.Name === this.fieldName);
     // since it's not defined it's not disabled. Happens when creating a new metadata entity, like settings for a field
-    if (attributeDef == null) { return false; }
+    if (attribute == null) { return false; }
 
-    const calculatedInputType = InputFieldHelper.calculateInputType(attributeDef, this.inputTypeService);
-    const disableI18n = LocalizationHelper.isI18nDisabled(this.inputTypeService, calculatedInputType, attributeDef.Settings);
+    const calculatedInputType = InputFieldHelper.calculateInputType(attribute, this.inputTypeService);
+    const disableI18n = LocalizationHelper.isI18nDisabled(this.inputTypeService, calculatedInputType, attribute.Settings);
     return disableI18n;
   }
 

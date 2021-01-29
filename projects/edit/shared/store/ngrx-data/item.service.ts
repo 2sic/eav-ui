@@ -246,16 +246,16 @@ export class ItemService extends EntityCollectionServiceBase<EavItem> {
       });
 
       const attributesValues = Object.keys(item.Entity.Attributes).map(attributeKey => {
-        const attributeDef = contentType.Attributes.find(attr => attr.Name === attributeKey);
-        const calculatedInputType = InputFieldHelper.calculateInputType(attributeDef, inputTypeService);
-        const disableI18n = LocalizationHelper.isI18nDisabled(inputTypeService, calculatedInputType, attributeDef.Settings);
+        const attribute = contentType.Attributes.find(a => a.Name === attributeKey);
+        const calculatedInputType = InputFieldHelper.calculateInputType(attribute, inputTypeService);
+        const disableI18n = LocalizationHelper.isI18nDisabled(inputTypeService, calculatedInputType, attribute.Settings);
         return {
           values: item.Entity.Attributes[attributeKey],
           disableI18n,
         };
       });
 
-      if (attributesValues.length < contentType.Attributes.filter(attr => attr.Type !== DataTypeConstants.Empty).length) {
+      if (attributesValues.length < contentType.Attributes.filter(a => a.Type !== DataTypeConstants.Empty).length) {
         return false;
       }
 

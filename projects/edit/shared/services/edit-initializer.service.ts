@@ -140,19 +140,19 @@ export class EditInitializerService implements OnDestroy {
           const contentTypeId = InputFieldHelper.getContentTypeId(item);
           const contentType = contentTypes.find(c => c.Id === contentTypeId);
 
-          for (const attributeDef of contentType.Attributes) {
-            const calculatedInputType = InputFieldHelper.calculateInputType(attributeDef, this.inputTypeService);
+          for (const attribute of contentType.Attributes) {
+            const calculatedInputType = InputFieldHelper.calculateInputType(attribute, this.inputTypeService);
             const inputType = calculatedInputType.inputType;
             if (inputType === InputTypeConstants.EmptyDefault) { continue; }
 
-            const attributeValues = item.Entity.Attributes[attributeDef.Name];
+            const attributeValues = item.Entity.Attributes[attribute.Name];
             const value = LocalizationHelper.translate(currentLanguage, defaultLanguage, attributeValues, null);
             // set default value if needed
             const valueIsEmpty = isEmpty(value) && typeof value !== 'boolean' && typeof value !== 'number' && value !== '';
             if (!valueIsEmpty) { continue; }
 
-            const fieldSettings = LocalizationHelper.translateSettings(attributeDef.Settings, currentLanguage, defaultLanguage);
-            this.itemService.setDefaultValue(item, attributeDef, inputType, fieldSettings, languages, currentLanguage, defaultLanguage);
+            const fieldSettings = LocalizationHelper.translateSettings(attribute.Settings, currentLanguage, defaultLanguage);
+            this.itemService.setDefaultValue(item, attribute, inputType, fieldSettings, languages, currentLanguage, defaultLanguage);
           }
         }
       });
