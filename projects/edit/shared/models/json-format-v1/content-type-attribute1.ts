@@ -1,6 +1,6 @@
 import { Entity1 } from '.';
 
-export interface AttributeDef1 {
+export interface ContentTypeAttribute1 {
   InputType: string;
   IsTitle: boolean;
   Metadata: Entity1[];
