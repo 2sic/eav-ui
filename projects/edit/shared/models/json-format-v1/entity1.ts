@@ -1,8 +1,8 @@
-import { Attributes1 } from '.';
+import { EntityAttributes1 } from '.';
 import { EavEntity, EavFor, EavType } from '../eav';
 
 export class Entity1 {
-  public Attributes: Attributes1;
+  public Attributes: EntityAttributes1;
   public Guid: string;
   public Id: number;
   public Owner: string;
@@ -12,7 +12,7 @@ export class Entity1 {
   public Metadata?: Entity1[];
 
   public static convertOne(entity: EavEntity): Entity1 {
-    const attributes1 = Attributes1.convert(entity.Attributes);
+    const attributes1 = EntityAttributes1.convert(entity.Attributes);
     const metadata1 = this.convertMany(entity.Metadata);
 
     const entity1: Entity1 = {

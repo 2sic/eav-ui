@@ -1,10 +1,10 @@
 import { EavEntity, EavValues } from '.';
-import { Attributes1 } from '../json-format-v1';
+import { EntityAttributes1 } from '../json-format-v1';
 
 export class EavAttributes {
   [attributeName: string]: EavValues<any>;
 
-  public static convert(attributes1: Attributes1): EavAttributes {
+  public static convert(attributes1: EntityAttributes1): EavAttributes {
     const atributes: EavAttributes = {};
 
     // loop attribute types - String, Boolean, ...
