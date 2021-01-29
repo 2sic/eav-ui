@@ -2,7 +2,7 @@ import { take } from 'rxjs/operators';
 import { FieldSettings } from '../../../edit-types';
 import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 import { CalculatedInputType } from '../models';
-import { EavAttributes, EavDimension, EavValue, EavValues } from '../models/eav';
+import { EavDimension, EavEntityAttributes, EavValue, EavValues } from '../models/eav';
 import { InputTypeService } from '../store/ngrx-data/input-type.service';
 
 export class LocalizationHelper {
@@ -89,7 +89,8 @@ export class LocalizationHelper {
     }
   }
 
-  public static isI18nDisabled(inputTypeService: InputTypeService, calculatedInputType: CalculatedInputType, fullSettings: EavAttributes) {
+  public static isI18nDisabled(inputTypeService: InputTypeService, calculatedInputType: CalculatedInputType,
+    fullSettings: EavEntityAttributes) {
     let disableI18n = false;
     inputTypeService.getInputTypeById(calculatedInputType.inputType).pipe(take(1)).subscribe(type => {
       if (type?.DisableI18n === true) { disableI18n = true; }
@@ -101,9 +102,9 @@ export class LocalizationHelper {
     return disableI18n;
   }
 
-  public static updateAttribute(allAttributes: EavAttributes, attribute: EavValues<any>, attributeKey: string) {
+  public static updateAttribute(allAttributes: EavEntityAttributes, attribute: EavValues<any>, attributeKey: string) {
     // copy attributes from item
-    const eavAttributes: EavAttributes = {};
+    const eavAttributes: EavEntityAttributes = {};
     if (Object.keys(allAttributes).length > 0) {
       Object.keys(allAttributes).forEach(key => {
         // const eavValueList: EavValue<any>[] = [];
@@ -127,10 +128,10 @@ export class LocalizationHelper {
   }
 
   /** Update value for languageKey */
-  public static updateAttributesValues(allAttributes: EavAttributes, updateValues: { [key: string]: any }, languageKey: string,
-    defaultLanguage: string): EavAttributes {
+  public static updateAttributesValues(allAttributes: EavEntityAttributes, updateValues: { [key: string]: any }, languageKey: string,
+    defaultLanguage: string): EavEntityAttributes {
     // copy attributes from item
-    const eavAttributes: EavAttributes = {};
+    const eavAttributes: EavEntityAttributes = {};
     Object.keys(allAttributes).forEach(attributeKey => {
       const newItemValue = updateValues[attributeKey];
       // if new value exist update attribute for languageKey
@@ -174,10 +175,10 @@ export class LocalizationHelper {
   }
 
   /** update attribute value, and change language readonly state if needed */
-  public static updateAttributeValue(allAttributes: EavAttributes, attributeKey: string, updateValue: any, existingLanguageKey: string,
-    defaultLanguage: string, isReadOnly: boolean): EavAttributes {
+  public static updateAttributeValue(allAttributes: EavEntityAttributes, attributeKey: string, updateValue: any,
+    existingLanguageKey: string, defaultLanguage: string, isReadOnly: boolean): EavEntityAttributes {
     // copy attributes from item
-    let eavAttributes: EavAttributes = {};
+    let eavAttributes: EavEntityAttributes = {};
     let newLanguageValue = existingLanguageKey;
 
     if (isReadOnly) {
@@ -213,10 +214,10 @@ export class LocalizationHelper {
     return eavAttributes;
   }
 
-  public static addAttributeValue(allAttributes: EavAttributes, attributeValue: EavValue<any>, attributeKey: string,
-    attributeType: string): EavAttributes {
+  public static addAttributeValue(allAttributes: EavEntityAttributes, attributeValue: EavValue<any>, attributeKey: string,
+    attributeType: string): EavEntityAttributes {
     // copy attributes from item
-    let eavAttributes: EavAttributes = {};
+    let eavAttributes: EavEntityAttributes = {};
     const attribute: EavValues<any> =
       Object.keys(allAttributes).length === 0
         || !allAttributes[attributeKey] ?
@@ -233,10 +234,10 @@ export class LocalizationHelper {
   }
 
   /** Add dimension to value with existing dimension */
-  public static addAttributeDimension(allAttributes: EavAttributes, attributeKey: string, newDimensionValue: any,
-    existingDimensionValue: string, defaultLanguage: string, isReadOnly: boolean): EavAttributes {
+  public static addAttributeDimension(allAttributes: EavEntityAttributes, attributeKey: string, newDimensionValue: any,
+    existingDimensionValue: string, defaultLanguage: string, isReadOnly: boolean): EavEntityAttributes {
     // copy attributes from item
-    let eavAttributes: EavAttributes = {};
+    let eavAttributes: EavEntityAttributes = {};
     let newLanguageValue = newDimensionValue;
 
     if (isReadOnly) {
@@ -262,17 +263,18 @@ export class LocalizationHelper {
   }
 
   /** Remove language. If more dimensions (languages) exist, delete only dimension, else delete value and dimension */
-  public static removeAttributeDimension(allAttributes: EavAttributes, attributeKey: string, languageKey: string): EavAttributes {
+  public static removeAttributeDimension(allAttributes: EavEntityAttributes, attributeKey: string,
+    languageKey: string): EavEntityAttributes {
     angularConsoleLog('removeAttributeDimension: ', allAttributes);
     // copy attributes from item
-    let eavAttributes: EavAttributes = {};
+    let eavAttributes: EavEntityAttributes = {};
     const value: EavValue<any> = allAttributes[attributeKey].Values.find(eavValue =>
       eavValue.Dimensions.find(d => d.Value === languageKey
         || d.Value === `~${languageKey}`) !== undefined);
     let attribute: EavValues<any> = null;
 
     if (!value) {
-      const attributesCopy: EavAttributes = { ...allAttributes };
+      const attributesCopy: EavEntityAttributes = { ...allAttributes };
       return attributesCopy;
     }
 
@@ -306,7 +308,7 @@ export class LocalizationHelper {
     return eavAttributes;
   }
 
-  public static translateSettings(settings: EavAttributes, currentLanguage: string, defaultLanguage: string): FieldSettings {
+  public static translateSettings(settings: EavEntityAttributes, currentLanguage: string, defaultLanguage: string): FieldSettings {
     const settingsTranslated: { [key: string]: any } = {};
     Object.keys(settings).forEach(attributesKey => {
       settingsTranslated[attributesKey] = LocalizationHelper.translate(currentLanguage,

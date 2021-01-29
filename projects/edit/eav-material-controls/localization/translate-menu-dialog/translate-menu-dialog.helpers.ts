@@ -2,7 +2,7 @@ import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { TranslationLinkConstants } from '../../../shared/constants/translation-link.constants';
 import { LocalizationHelper } from '../../../shared/helpers/localization-helper';
 import { Language } from '../../../shared/models';
-import { EavAttributes } from '../../../shared/models/eav';
+import { EavEntityAttributes } from '../../../shared/models/eav';
 import { I18nKeyConstants } from './translate-menu-dialog.constants';
 import { TranslateMenuDialogTemplateLanguage } from './translate-menu-dialog.models';
 
@@ -11,7 +11,7 @@ export function getTemplateLanguages(
   currentLanguage: string,
   defaultLanguage: string,
   languages: Language[],
-  attributes: EavAttributes,
+  attributes: EavEntityAttributes,
 ): TranslateMenuDialogTemplateLanguage[] {
   const templateLanguages = languages
     .filter(language => language.key !== currentLanguage)

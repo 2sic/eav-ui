@@ -3,7 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 import { Adam, Dropzone, FieldConfig, FieldSettings } from '../../../edit-types';
 import { FieldHelper } from '../../eav-item-dialog/item-edit-form/field-helper';
 import { EntityInfo } from '../../shared/models';
-import { EavAttributes, EavHeader } from '../../shared/models/eav';
+import { EavEntityAttributes, EavHeader } from '../../shared/models/eav';
 
 // spm split these interfaces into separate files
 export interface FieldConfigSet {
@@ -18,7 +18,7 @@ export interface FieldConfigSet {
 export interface FieldConfigAngular extends FieldConfig {
   initialValue: any;
   validation: ValidatorFn[];
-  fullSettings: EavAttributes;
+  fullSettings: EavEntityAttributes;
   wrappers: string[];
   focused$: BehaviorSubject<boolean>;
   isExternal: boolean;

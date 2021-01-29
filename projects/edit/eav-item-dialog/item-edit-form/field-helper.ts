@@ -8,7 +8,7 @@ import { TranslationState } from '../../eav-material-controls/localization/trans
 import { TranslationLinkConstants } from '../../shared/constants/translation-link.constants';
 import { InputFieldHelper } from '../../shared/helpers/input-field-helper';
 import { LocalizationHelper } from '../../shared/helpers/localization-helper';
-import { EavAttributes, EavContentType, EavDimension, EavItem } from '../../shared/models/eav';
+import { EavContentType, EavDimension, EavEntityAttributes, EavItem } from '../../shared/models/eav';
 import { EavService } from '../../shared/services/eav.service';
 import { FieldsSettingsService } from '../../shared/services/fields-settings.service';
 import { FormulaInstanceService } from '../../shared/services/formula-instance.service';
@@ -27,7 +27,7 @@ export class FieldHelper {
   private currentLanguage$ = new BehaviorSubject<string>(null);
   private defaultLanguage$ = new BehaviorSubject<string>(null);
   private item$ = new BehaviorSubject<EavItem>(null);
-  private attributes$ = new BehaviorSubject<EavAttributes>(null);
+  private attributes$ = new BehaviorSubject<EavEntityAttributes>(null);
   private contentType$ = new BehaviorSubject<EavContentType>(null);
   private subscription = new Subscription();
   private translationsSubscription: Subscription;

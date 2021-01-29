@@ -7,7 +7,7 @@ import { FieldConfigGroup, FieldConfigSet } from '../../eav-dynamic-form/model/f
 import { FormValues } from '../../eav-item-dialog/item-edit-form/item-edit-form.models';
 import { LocalizationHelper } from '../helpers/localization-helper';
 import { CalcFields, FieldFormulas, FieldsFormulaSettings, FormulaType, LanguageChangeCheckedFields } from '../models';
-import { EavAttributes } from '../models/eav';
+import { EavEntityAttributes } from '../models/eav';
 import { ContentTypeItemService } from '../store/ngrx-data/content-type-item.service';
 import { FormulaContext, FormulaFunction } from '../store/ngrx-data/item.models';
 import { ItemService } from '../store/ngrx-data/item.service';
@@ -59,7 +59,7 @@ export class FormulaInstanceService implements OnDestroy {
   runSettingsFormulas() {
     return;
     angularConsoleLog('Run settings formulas');
-    let eavAttributes: EavAttributes;
+    let eavAttributes: EavEntityAttributes;
     this.itemService.selectItemAttributes(this.entityGuid).pipe(take(1)).subscribe(eavAttrs => {
       eavAttributes = eavAttrs;
     });
@@ -89,7 +89,7 @@ export class FormulaInstanceService implements OnDestroy {
     const formulas = this.findFieldFormulas('value', true);
     if (formulas == null) { return; }
 
-    let eavAttributes: EavAttributes;
+    let eavAttributes: EavEntityAttributes;
     this.itemService.selectItemAttributes(this.entityGuid).pipe(take(1)).subscribe(eavAttrs => {
       eavAttributes = eavAttrs;
     });
@@ -182,7 +182,7 @@ export class FormulaInstanceService implements OnDestroy {
 
   /** Runs formulas on language change after field configurations were translated */
   runFormulasAfterFieldsTranslated() {
-    let eavAttributes: EavAttributes;
+    let eavAttributes: EavEntityAttributes;
     this.itemService.selectItemAttributes(this.entityGuid).pipe(take(1)).subscribe(eavAttrs => {
       eavAttributes = eavAttrs;
     });
@@ -266,7 +266,7 @@ export class FormulaInstanceService implements OnDestroy {
     return formulaFn;
   }
 
-  private getFormValues(attributes: EavAttributes) {
+  private getFormValues(attributes: EavEntityAttributes) {
     const formValues: FormValues = {};
 
     for (const [name, attribute] of Object.entries(attributes)) {

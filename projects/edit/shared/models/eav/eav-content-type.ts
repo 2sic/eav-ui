@@ -1,4 +1,4 @@
-import { EavAttributes, EavContentTypeAttribute, EavEntity } from '.';
+import { EavContentTypeAttribute, EavEntity, EavEntityAttributes } from '.';
 import { ContentType1 } from '../json-format-v1';
 
 export class EavContentType {
@@ -8,12 +8,12 @@ export class EavContentType {
   public Metadata: EavEntity[];
   public Name: string;
   public Scope: string;
-  public Settings: EavAttributes;
+  public Settings: EavEntityAttributes;
 
   public static convert(contentType1: ContentType1): EavContentType {
     const attributes = EavContentTypeAttribute.convertMany(contentType1.Attributes);
     const metadata = EavEntity.convertMany(contentType1.Metadata);
-    const settings = EavAttributes.mergeSettings(metadata);
+    const settings = EavEntityAttributes.mergeSettings(metadata);
 
     const contentType: EavContentType = {
       Attributes: attributes,

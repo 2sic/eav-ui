@@ -11,7 +11,7 @@ import { ValidationHelper } from '../../eav-material-controls/validators/validat
 import { InputFieldHelper } from '../helpers/input-field-helper';
 import { LocalizationHelper } from '../helpers/localization-helper';
 import { CalculatedInputType, FormulaFieldSettings } from '../models';
-import { EavAttributes, EavContentTypeAttribute, EavItem } from '../models/eav';
+import { EavContentTypeAttribute, EavEntityAttributes, EavItem } from '../models/eav';
 import { ContentTypeService } from '../store/ngrx-data/content-type.service';
 import { InputTypeService } from '../store/ngrx-data/input-type.service';
 import { ItemService } from '../store/ngrx-data/item.service';
@@ -26,7 +26,7 @@ export class FieldsSettingsService {
     attribute: EavContentTypeAttribute,
     index: number,
     calculatedInputType: CalculatedInputType,
-    contentTypeSettings: EavAttributes,
+    contentTypeSettings: EavEntityAttributes,
     isParentGroup: boolean,
     currentLanguage: string,
     defaultLanguage: string,
@@ -40,7 +40,7 @@ export class FieldsSettingsService {
   ): FieldConfigAngular {
     let fieldConfig: FieldConfigAngular;
     let settingsTranslated: FieldSettings;
-    let fullSettings: EavAttributes;
+    let fullSettings: EavEntityAttributes;
     const isEmptyInputType = (calculatedInputType.inputType === InputTypeConstants.EmptyDefault);
 
     if (attribute) {

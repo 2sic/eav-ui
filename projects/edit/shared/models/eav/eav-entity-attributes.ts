@@ -1,11 +1,11 @@
 import { EavEntity, EavValues } from '.';
 import { EntityAttributes1 } from '../json-format-v1';
 
-export class EavAttributes {
+export class EavEntityAttributes {
   [attributeName: string]: EavValues<any>;
 
-  public static convert(attributes1: EntityAttributes1): EavAttributes {
-    const atributes: EavAttributes = {};
+  public static convert(attributes1: EntityAttributes1): EavEntityAttributes {
+    const atributes: EavEntityAttributes = {};
 
     // loop attribute types - String, Boolean, ...
     for (const [type1, attribute1] of Object.entries(attributes1)) {
@@ -17,10 +17,10 @@ export class EavAttributes {
     return atributes;
   }
 
-  public static mergeSettings(metadataItems: EavEntity[]): EavAttributes {
+  public static mergeSettings(metadataItems: EavEntity[]): EavEntityAttributes {
     if (metadataItems == null) { return {}; }
 
-    const merged: EavAttributes = {};
+    const merged: EavEntityAttributes = {};
     // copy metadata settings which are not @All
     for (const item of metadataItems) {
       if (item.Type.Id === '@All') { continue; }

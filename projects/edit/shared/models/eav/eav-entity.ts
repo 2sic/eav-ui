@@ -1,8 +1,8 @@
-import { EavAttributes, EavFor, EavType } from '.';
+import { EavEntityAttributes, EavFor, EavType } from '.';
 import { Entity1 } from '../json-format-v1';
 
 export class EavEntity {
-  public Attributes: EavAttributes;
+  public Attributes: EavEntityAttributes;
   public Guid: string;
   public Id: number;
   public Owner: string;
@@ -27,7 +27,7 @@ export class EavEntity {
       return defaultEntity;
     }
 
-    const attributes = EavAttributes.convert(entity1.Attributes);
+    const attributes = EavEntityAttributes.convert(entity1.Attributes);
     const metadata = this.convertMany(entity1.Metadata);
 
     const entity: EavEntity = {
