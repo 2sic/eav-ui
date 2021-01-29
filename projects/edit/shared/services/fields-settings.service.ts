@@ -11,7 +11,7 @@ import { ValidationHelper } from '../../eav-material-controls/validators/validat
 import { InputFieldHelper } from '../helpers/input-field-helper';
 import { LocalizationHelper } from '../helpers/localization-helper';
 import { CalculatedInputType, FormulaFieldSettings } from '../models';
-import { EavAttributeDef, EavAttributes, EavItem } from '../models/eav';
+import { EavAttributes, EavContentTypeAttribute, EavItem } from '../models/eav';
 import { ContentTypeService } from '../store/ngrx-data/content-type.service';
 import { InputTypeService } from '../store/ngrx-data/input-type.service';
 import { ItemService } from '../store/ngrx-data/item.service';
@@ -23,7 +23,7 @@ export class FieldsSettingsService {
   constructor() { }
 
   public buildFieldConfig(
-    attribute: EavAttributeDef,
+    attribute: EavContentTypeAttribute,
     index: number,
     calculatedInputType: CalculatedInputType,
     contentTypeSettings: EavAttributes,

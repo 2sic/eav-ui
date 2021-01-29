@@ -7,7 +7,7 @@ import { FormValue, FormValues } from '../../../eav-item-dialog/item-edit-form/i
 import { InputFieldHelper } from '../../helpers/input-field-helper';
 import { LocalizationHelper } from '../../helpers/localization-helper';
 import { Language, SaveResult } from '../../models';
-import { EavAttributeDef, EavContentType, EavDimension, EavHeader, EavItem, EavValue } from '../../models/eav';
+import { EavContentType, EavContentTypeAttribute, EavDimension, EavHeader, EavItem, EavValue } from '../../models/eav';
 import { Item1 } from '../../models/json-format-v1';
 import { ContentTypeService } from './content-type.service';
 import { InputTypeService } from './input-type.service';
@@ -274,26 +274,26 @@ export class ItemService extends EntityCollectionServiceBase<EavItem> {
 
   setDefaultValue(
     item: EavItem,
-    attributeDef: EavAttributeDef,
+    attribute: EavContentTypeAttribute,
     inputType: string,
     settings: FieldSettings,
     languages: Language[],
     language: string,
     defaultLanguage: string,
   ) {
-    const defaultValue = InputFieldHelper.parseDefaultValue(attributeDef.Name, inputType, settings, item.Header);
-    const exists = item.Entity.Attributes.hasOwnProperty(attributeDef.Name);
+    const defaultValue = InputFieldHelper.parseDefaultValue(attribute.Name, inputType, settings, item.Header);
+    const exists = item.Entity.Attributes.hasOwnProperty(attribute.Name);
     if (!exists) {
       if (languages.length === 0) {
-        this.addItemAttributeValue(item.Entity.Guid, attributeDef.Name, defaultValue, '*', false, attributeDef.Type);
+        this.addItemAttributeValue(item.Entity.Guid, attribute.Name, defaultValue, '*', false, attribute.Type);
       } else {
-        this.addItemAttributeValue(item.Entity.Guid, attributeDef.Name, defaultValue, language, false, attributeDef.Type);
+        this.addItemAttributeValue(item.Entity.Guid, attribute.Name, defaultValue, language, false, attribute.Type);
       }
     } else {
       if (languages.length === 0) {
-        this.updateItemAttributeValue(item.Entity.Guid, attributeDef.Name, defaultValue, '*', defaultLanguage, false);
+        this.updateItemAttributeValue(item.Entity.Guid, attribute.Name, defaultValue, '*', defaultLanguage, false);
       } else {
-        this.updateItemAttributeValue(item.Entity.Guid, attributeDef.Name, defaultValue, language, defaultLanguage, false);
+        this.updateItemAttributeValue(item.Entity.Guid, attribute.Name, defaultValue, language, defaultLanguage, false);
       }
     }
     return defaultValue;
