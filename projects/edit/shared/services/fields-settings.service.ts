@@ -154,15 +154,4 @@ export class FieldsSettingsService {
     fieldConfig.required = ValidationHelper.isRequired(fieldSettings);
     fieldConfig.settings$.next(fieldSettings); // must run after validations are recalculated
   }
-
-  /** Translate first group (content type) settings and validation */
-  public translateContentTypeSettings(config: FieldConfigSet, currentLanguage: string, defaultLanguage: string): void {
-    const fieldSettings = LocalizationHelper.translateSettings(config.field.fullSettings, currentLanguage, defaultLanguage);
-    config.field.settings = fieldSettings;
-    config.field.label = fieldSettings.Name;
-    config.field.placeholder = fieldSettings.Placeholder;
-    config.field.validation = ValidationHelper.getValidations(fieldSettings);
-    config.field.required = ValidationHelper.isRequired(fieldSettings);
-    config.field.settings$.next(fieldSettings); // must run after validations are recalculated
-  }
 }

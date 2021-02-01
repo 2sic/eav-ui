@@ -168,17 +168,6 @@ interface Boolean extends All {
   _label: string;
 }
 
-/** Properties of main collapsible in the form */
-interface ContentTypeSettings {
-  EditInstructions: string;
-}
-
-interface FormCollapsibleSettings {
-  _itemTitle: string;
-  _slotCanBeEmpty: boolean;
-  _slotIsEmpty: boolean;
-}
-
 export interface FieldSettings
   extends StringDefault,
   StringDropdown,
@@ -195,6 +184,4 @@ export interface FieldSettings
   DateTime,
   CustomJsonEditor,
   CustomGps,
-  Boolean,
-  ContentTypeSettings,
-  FormCollapsibleSettings { }
+  Boolean { }

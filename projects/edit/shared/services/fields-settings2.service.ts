@@ -5,35 +5,48 @@ import { EavService } from '.';
 import { FieldSettings } from '../../../edit-types';
 import { InputFieldHelper } from '../helpers/input-field-helper';
 import { LocalizationHelper } from '../helpers/localization-helper';
-import { EavEntity, EavItem } from '../models/eav';
+import { ContentTypeSettings } from '../models';
+import { EavContentType, EavEntity, EavItem } from '../models/eav';
 import { ContentTypeService } from '../store/ngrx-data/content-type.service';
+import { ItemService } from '../store/ngrx-data/item.service';
 import { LanguageInstanceService } from '../store/ngrx-data/language-instance.service';
 
 @Injectable()
 export class FieldsSettings2Service implements OnDestroy {
-  private contentTypeSettings$: Observable<FieldSettings>;
+  private contentTypeSettings$: Observable<ContentTypeSettings>;
   private fieldsSettings$: Observable<FieldSettings[]>;
 
   constructor(
     private contentTypeService: ContentTypeService,
     private languageInstanceService: LanguageInstanceService,
     private eavService: EavService,
+    private itemService: ItemService,
   ) { }
 
   ngOnDestroy(): void {
   }
 
   public init(item: EavItem): void {
-    // subscribe to store and build default configs
     const contentTypeId = InputFieldHelper.getContentTypeId(item);
     const contentType$ = this.contentTypeService.getContentTypeById(contentTypeId);
+    const header$ = this.itemService.selectItemHeader(item.Entity.Guid);
     const formId = this.eavService.eavConfig.formId;
     const currentLanguage$ = this.languageInstanceService.getCurrentLanguage(formId);
     const defaultLanguage$ = this.languageInstanceService.getDefaultLanguage(formId);
 
-    this.contentTypeSettings$ = combineLatest([contentType$, currentLanguage$, defaultLanguage$]).pipe(
-      map(([contentType, currentLanguage, defaultLanguage]) => {
-        const contentTypeSettings = this.mergeSettings(contentType.Metadata, currentLanguage, defaultLanguage);
+    this.contentTypeSettings$ = combineLatest([contentType$, header$, currentLanguage$, defaultLanguage$]).pipe(
+      map(([contentType, header, currentLanguage, defaultLanguage]) => {
+        const contentTypeSettings = this.mergeSettings<ContentTypeSettings>(contentType.Metadata, currentLanguage, defaultLanguage);
+        contentTypeSettings.Description ??= '';
+        contentTypeSettings.EditInstructions ??= '';
+        contentTypeSettings.Label ??= '';
+        contentTypeSettings.ListInstructions ??= '';
+        contentTypeSettings.Notes ??= '';
+        contentTypeSettings.Icon ??= '';
+        contentTypeSettings.Link ??= '';
+        contentTypeSettings._itemTitle = this.getContentTypeTitle(contentType, currentLanguage, defaultLanguage);
+        contentTypeSettings._slotCanBeEmpty = header?.Group?.SlotCanBeEmpty ?? false;
+        contentTypeSettings._slotIsEmpty = header?.Group?.SlotIsEmpty ?? false;
         return contentTypeSettings;
       }),
     );
@@ -41,7 +54,7 @@ export class FieldsSettings2Service implements OnDestroy {
     this.fieldsSettings$ = combineLatest([contentType$, currentLanguage$, defaultLanguage$]).pipe(
       map(([contentType, currentLanguage, defaultLanguage]) => {
         const fieldSettings = contentType.Attributes.map(attribute =>
-          this.mergeSettings(attribute.Metadata, currentLanguage, defaultLanguage));
+          this.mergeSettings<FieldSettings>(attribute.Metadata, currentLanguage, defaultLanguage));
         return fieldSettings;
       }),
     );
@@ -57,8 +70,8 @@ export class FieldsSettings2Service implements OnDestroy {
     );
   }
 
-  private mergeSettings(metadataItems: EavEntity[], currentLanguage: string, defaultLanguage: string): FieldSettings {
-    if (metadataItems == null) { return {} as FieldSettings; }
+  private mergeSettings<T>(metadataItems: EavEntity[], currentLanguage: string, defaultLanguage: string): T {
+    if (metadataItems == null) { return {} as T; }
 
     const merged: { [attributeName: string]: any } = {};
     // copy metadata settings which are not @All
@@ -86,6 +99,22 @@ export class FieldsSettings2Service implements OnDestroy {
       }
     }
 
-    return merged as FieldSettings;
+    return merged as T;
+  }
+
+  private getContentTypeTitle(contentType: EavContentType, currentLanguage: string, defaultLanguage: string): string {
+    let label: string;
+    try {
+      const type = contentType.Metadata
+        // xx ContentType is a historic bug and should be fixed when JSONs are rechecked
+        .find(metadata => metadata.Type.Name === 'ContentType' || metadata.Type.Name === 'xx ContentType');
+      if (!!type) {
+        label = LocalizationHelper.getValueOrDefault(type.Attributes.Label, currentLanguage, defaultLanguage)?.Value;
+      }
+      label = label || contentType.Name;
+    } catch (error) {
+      label = contentType.Name;
+    }
+    return label;
   }
 }

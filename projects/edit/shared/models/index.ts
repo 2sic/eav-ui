@@ -1,5 +1,6 @@
 export * from './calculated-input-type.model';
 export * from './component-metadata.model';
+export * from './content-type-settings.model';
 export * from './eav-config.model';
 export * from './entity-info.model';
 export * from './field-error-message.model';
