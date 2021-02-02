@@ -1,8 +1,9 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { combineLatest, Observable } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { EavService } from '.';
 import { FieldSettings } from '../../../edit-types';
+import { FieldLogicManager } from '../../field-logic/field-logic-manager';
 import { InputFieldHelper } from '../helpers/input-field-helper';
 import { LocalizationHelper } from '../helpers/localization-helper';
 import { ContentTypeSettings } from '../models';
@@ -13,8 +14,9 @@ import { LanguageInstanceService } from '../store/ngrx-data/language-instance.se
 
 @Injectable()
 export class FieldsSettings2Service implements OnDestroy {
-  private contentTypeSettings$: Observable<ContentTypeSettings>;
-  private fieldsSettings$: Observable<FieldSettings[]>;
+  private contentTypeSettings$: BehaviorSubject<ContentTypeSettings>;
+  private fieldsSettings$: BehaviorSubject<FieldSettings[]>;
+  private subscription: Subscription;
 
   constructor(
     private contentTypeService: ContentTypeService,
@@ -24,9 +26,14 @@ export class FieldsSettings2Service implements OnDestroy {
   ) { }
 
   ngOnDestroy(): void {
+    this.contentTypeSettings$?.complete();
+    this.fieldsSettings$?.complete();
+    this.subscription?.unsubscribe();
   }
 
   public init(item: EavItem): void {
+    this.subscription = new Subscription();
+
     const contentTypeId = InputFieldHelper.getContentTypeId(item);
     const contentType$ = this.contentTypeService.getContentTypeById(contentTypeId);
     const header$ = this.itemService.selectItemHeader(item.Entity.Guid);
@@ -34,40 +41,66 @@ export class FieldsSettings2Service implements OnDestroy {
     const currentLanguage$ = this.languageInstanceService.getCurrentLanguage(formId);
     const defaultLanguage$ = this.languageInstanceService.getDefaultLanguage(formId);
 
-    this.contentTypeSettings$ = combineLatest([contentType$, header$, currentLanguage$, defaultLanguage$]).pipe(
-      map(([contentType, header, currentLanguage, defaultLanguage]) => {
-        const contentTypeSettings = this.mergeSettings<ContentTypeSettings>(contentType.Metadata, currentLanguage, defaultLanguage);
-        contentTypeSettings.Description ??= '';
-        contentTypeSettings.EditInstructions ??= '';
-        contentTypeSettings.Label ??= '';
-        contentTypeSettings.ListInstructions ??= '';
-        contentTypeSettings.Notes ??= '';
-        contentTypeSettings.Icon ??= '';
-        contentTypeSettings.Link ??= '';
-        contentTypeSettings._itemTitle = this.getContentTypeTitle(contentType, currentLanguage, defaultLanguage);
-        contentTypeSettings._slotCanBeEmpty = header?.Group?.SlotCanBeEmpty ?? false;
-        contentTypeSettings._slotIsEmpty = header?.Group?.SlotIsEmpty ?? false;
-        return contentTypeSettings;
-      }),
+    this.subscription.add(
+      combineLatest([contentType$, header$, currentLanguage$, defaultLanguage$]).pipe(
+        map(([contentType, header, currentLanguage, defaultLanguage]) => {
+          const contentTypeSettings = this.mergeSettings<ContentTypeSettings>(contentType.Metadata, currentLanguage, defaultLanguage);
+          contentTypeSettings.Description ??= '';
+          contentTypeSettings.EditInstructions ??= '';
+          contentTypeSettings.Label ??= '';
+          contentTypeSettings.ListInstructions ??= '';
+          contentTypeSettings.Notes ??= '';
+          contentTypeSettings.Icon ??= '';
+          contentTypeSettings.Link ??= '';
+          contentTypeSettings._itemTitle = this.getContentTypeTitle(contentType, currentLanguage, defaultLanguage);
+          contentTypeSettings._slotCanBeEmpty = header?.Group?.SlotCanBeEmpty ?? false;
+          contentTypeSettings._slotIsEmpty = header?.Group?.SlotIsEmpty ?? false;
+          return contentTypeSettings;
+        }),
+      ).subscribe(contentTypeSettings => {
+        if (this.contentTypeSettings$ == null) {
+          this.contentTypeSettings$ = new BehaviorSubject(contentTypeSettings);
+        } else {
+          this.contentTypeSettings$.next(contentTypeSettings);
+        }
+      })
     );
 
-    this.fieldsSettings$ = combineLatest([contentType$, currentLanguage$, defaultLanguage$]).pipe(
-      map(([contentType, currentLanguage, defaultLanguage]) => {
-        const fieldSettings = contentType.Attributes.map(attribute => {
-          const merged = this.mergeSettings<FieldSettings>(attribute.Metadata, currentLanguage, defaultLanguage);
-          // TODO: Apply field settings logics here
-          return merged;
-        });
-        return fieldSettings;
-      }),
+    this.subscription.add(
+      combineLatest([contentType$, currentLanguage$, defaultLanguage$]).pipe(
+        map(([contentType, currentLanguage, defaultLanguage]) => {
+          const fieldsSettings = contentType.Attributes.map(attribute => {
+            const merged = this.mergeSettings<FieldSettings>(attribute.Metadata, currentLanguage, defaultLanguage);
+            // update @All settings
+            merged.Name ??= '';
+            merged.Placeholder ??= '';
+            merged.Notes ??= '';
+            merged.VisibleInEditUI ??= true;
+            merged.Required ??= false;
+            merged.Disabled ??= false;
+            merged.DisableTranslation ??= false;
+            // update default values with specific FieldLogic
+            const logic = FieldLogicManager.singleton().get(attribute.InputType);
+            const fixed = logic?.init(merged) ?? merged;
+            return fixed;
+          });
+          return fieldsSettings;
+        }),
+      ).subscribe(fieldsSettings => {
+        if (this.fieldsSettings$ == null) {
+          this.fieldsSettings$ = new BehaviorSubject(fieldsSettings);
+        } else {
+          this.fieldsSettings$.next(fieldsSettings);
+        }
+      })
     );
   }
 
-  public getContentTypeSettings() {
-    return this.contentTypeSettings$;
+  public getContentTypeSettings$(): Observable<ContentTypeSettings> {
+    return this.contentTypeSettings$.asObservable();
   }
 
-  public getFieldSettings(fieldName: string): Observable<FieldSettings> {
+  public getFieldSettings$(fieldName: string): Observable<FieldSettings> {
     return this.fieldsSettings$.pipe(
       map(fieldsSettings => fieldsSettings.find(f => f.Name === fieldName)),
     );

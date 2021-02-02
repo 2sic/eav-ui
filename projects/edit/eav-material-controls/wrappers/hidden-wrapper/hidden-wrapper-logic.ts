@@ -9,3 +9,5 @@ export class HiddenWrapperLogic {
     return fixedSettings;
   }
 }
+
+// doesn't need special logic in new settings

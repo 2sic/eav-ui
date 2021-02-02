@@ -1,4 +1,5 @@
 import { FieldSettings } from '../../../../../edit-types';
+import { InputTypeConstants } from '../../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { FieldLogicBase } from '../../../../field-logic/field-logic-base';
 import { FieldLogicManager } from '../../../../field-logic/field-logic-manager';
 
@@ -12,12 +13,12 @@ export class StringDefaultLogic {
   }
 }
 
-export class StringDefaultLogicNew extends FieldLogicBase {
+export class StringDefaultLogic2 extends FieldLogicBase {
   name: string;
 
   constructor() {
     super();
-    this.name = 'string-default';
+    this.name = InputTypeConstants.StringDefault;
     FieldLogicManager.singleton().add(this);
   }
 
@@ -28,4 +29,4 @@ export class StringDefaultLogicNew extends FieldLogicBase {
   }
 }
 
-const any = new StringDefaultLogicNew();
+const any = new StringDefaultLogic2();

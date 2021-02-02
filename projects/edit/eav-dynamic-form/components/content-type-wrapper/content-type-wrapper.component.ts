@@ -35,7 +35,7 @@ export class ContentTypeWrapperComponent implements OnInit {
     const currentLanguage$ = this.languageInstanceService.getCurrentLanguage(this.config.form.formId);
     const defaultLanguage$ = this.languageInstanceService.getDefaultLanguage(this.config.form.formId);
     const header$ = this.itemService.selectItemHeader(this.config.entity.entityGuid);
-    const settings$ = this.fieldsSettings2Service.getContentTypeSettings();
+    const settings$ = this.fieldsSettings2Service.getContentTypeSettings$();
 
     this.templateVars$ = combineLatest([
       currentLanguage$,

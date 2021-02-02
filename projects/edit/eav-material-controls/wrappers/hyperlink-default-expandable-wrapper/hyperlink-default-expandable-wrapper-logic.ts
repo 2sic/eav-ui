@@ -10,3 +10,5 @@ export class HyperlinkDefaultExpandableWrapperLogic {
     return fixedSettings;
   }
 }
+
+// doesn't need special logic in new settings
