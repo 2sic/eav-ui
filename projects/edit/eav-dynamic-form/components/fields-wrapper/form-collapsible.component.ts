@@ -8,20 +8,20 @@ import { FieldsSettings2Service } from '../../../shared/services/fields-settings
 import { ItemService } from '../../../shared/store/ngrx-data/item.service';
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
 import { FieldConfigSet } from '../../model/field-config';
-import { FormCollapsibleTemplateVars } from './form-collapsible.models';
+import { ContentTypeTemplateVars } from './form-collapsible.models';
 
 @Component({
-  selector: 'app-form-collapsible',
+  selector: 'app-content-type-wrapper',
   templateUrl: './form-collapsible.component.html',
   styleUrls: ['./form-collapsible.component.scss'],
 })
-export class FormCollapsibleComponent implements OnInit {
+export class ContentTypeWrapperComponent implements OnInit {
   @Input() config: FieldConfigSet;
   @Input() fieldConfigs: FieldConfigSet[];
   @Input() group: FormGroup;
 
   collapse = false;
-  templateVars$: Observable<FormCollapsibleTemplateVars>;
+  templateVars$: Observable<ContentTypeTemplateVars>;
 
   constructor(
     private languageInstanceService: LanguageInstanceService,
@@ -44,7 +44,7 @@ export class FormCollapsibleComponent implements OnInit {
       settings$,
     ]).pipe(
       map(([currentLanguage, defaultLanguage, header, settings]) => {
-        const templateVars: FormCollapsibleTemplateVars = {
+        const templateVars: ContentTypeTemplateVars = {
           currentLanguage,
           defaultLanguage,
           header,

@@ -1,6 +1,6 @@
 import { EavHeader } from '../../../shared/models/eav';
 
-export interface FormCollapsibleTemplateVars {
+export interface ContentTypeTemplateVars {
   currentLanguage: string;
   defaultLanguage: string;
   header: EavHeader;

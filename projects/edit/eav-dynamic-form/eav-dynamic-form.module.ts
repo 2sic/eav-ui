@@ -18,7 +18,7 @@ import { SharedComponentsModule } from '../../ng-dialogs/src/app/shared/shared-c
 import { EavMaterialControlsModule } from '../eav-material-controls/eav-material-controls.module';
 import { EavFieldDirective } from './components/eav-field/eav-field.directive';
 import { EavFormComponent } from './components/eav-form/eav-form.component';
-import { FormCollapsibleComponent } from './components/fields-wrapper/form-collapsible.component';
+import { ContentTypeWrapperComponent } from './components/fields-wrapper/form-collapsible.component';
 
 @NgModule({
   imports: [
@@ -43,7 +43,7 @@ import { FormCollapsibleComponent } from './components/fields-wrapper/form-colla
   declarations: [
     EavFieldDirective,
     EavFormComponent,
-    FormCollapsibleComponent,
+    ContentTypeWrapperComponent,
   ],
   exports: [
     EavFormComponent,
