@@ -53,8 +53,11 @@ export class FieldsSettings2Service implements OnDestroy {
 
     this.fieldsSettings$ = combineLatest([contentType$, currentLanguage$, defaultLanguage$]).pipe(
       map(([contentType, currentLanguage, defaultLanguage]) => {
-        const fieldSettings = contentType.Attributes.map(attribute =>
-          this.mergeSettings<FieldSettings>(attribute.Metadata, currentLanguage, defaultLanguage));
+        const fieldSettings = contentType.Attributes.map(attribute => {
+          const merged = this.mergeSettings<FieldSettings>(attribute.Metadata, currentLanguage, defaultLanguage);
+          // TODO: Apply field settings logics here
+          return merged;
+        });
         return fieldSettings;
       }),
     );

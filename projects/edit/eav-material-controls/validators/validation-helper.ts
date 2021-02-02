@@ -5,46 +5,45 @@ import { CustomValidators } from './custom-validators';
 
 export class ValidationHelper {
 
-  public static getValidations(settings: FieldSettings): ValidatorFn[] {
-    // important - a hidden field dont have validations and is not required
-    const visibleInEditUI = (settings.VisibleInEditUI === false) ? false : true;
-    return visibleInEditUI ? ValidationHelper.setDefaultValidations(settings) : [];
-  }
-
   public static isRequired(settings: FieldSettings): boolean {
-    const visibleInEditUI = (settings.VisibleInEditUI === false) ? false : true;
-    return (settings.Required && visibleInEditUI) ? settings.Required : false;
+    // hidden field can't be required
+    const visible = settings.VisibleInEditUI ?? true;
+    if (!visible) { return false; }
+
+    const required = settings.Required ?? false;
+    return required;
   }
 
-  private static setDefaultValidations(settings: FieldSettings): ValidatorFn[] {
-    const validation: ValidatorFn[] = [];
-    const required = settings.Required ? settings.Required : false;
-    const isHyperlinkLibrary = settings.InputType === InputTypeConstants.HyperlinkLibrary;
+  public static getValidators(settings: FieldSettings): ValidatorFn[] {
+    // hidden field can't have validators
+    const visible = settings.VisibleInEditUI ?? true;
+    if (!visible) { return []; }
+
+    const validators: ValidatorFn[] = [];
 
     // hyperlink-library field will set custom required validator
+    const required = settings.Required ?? false;
+    const isHyperlinkLibrary = settings.InputType === InputTypeConstants.HyperlinkLibrary;
     if (required && !isHyperlinkLibrary) {
-      validation.push(Validators.required);
+      validators.push(Validators.required);
     }
 
-    const pattern = settings.ValidationRegExJavaScript ? settings.ValidationRegExJavaScript : '';
-    if (pattern) {
-      validation.push(Validators.pattern(pattern));
+    if (settings.ValidationRegExJavaScript) {
+      validators.push(Validators.pattern(settings.ValidationRegExJavaScript));
     }
 
     if (settings.Decimals) {
-      validation.push(CustomValidators.validateDecimals(settings.Decimals));
+      validators.push(CustomValidators.validateDecimals(settings.Decimals));
     }
 
-    const max = settings.Max ? settings.Max : 0;
-    if (max > 0) {
-      validation.push(Validators.max(max));
+    if (settings.Max > 0) {
+      validators.push(Validators.max(settings.Max));
     }
 
-    const min = settings.Min ? settings.Min : 0;
-    if (min > 0) {
-      validation.push(Validators.min(min));
+    if (settings.Min > 0) {
+      validators.push(Validators.min(settings.Min));
     }
 
-    return validation;
+    return validators;
   }
 }

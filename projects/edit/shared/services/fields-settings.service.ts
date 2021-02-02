@@ -89,14 +89,14 @@ export class FieldsSettingsService {
         settings$: new BehaviorSubject(settingsTranslated),
       } as FieldConfigGroup;
     } else {
-      const validationList = ValidationHelper.getValidations(settingsTranslated);
+      const validation = ValidationHelper.getValidators(settingsTranslated);
       const required = ValidationHelper.isRequired(settingsTranslated);
       const initialValue = LocalizationHelper.translate(currentLanguage, defaultLanguage, item.Entity.Attributes[name], null);
       const disabled = settingsTranslated.Disabled;
 
       fieldConfig = {
         initialValue, // other fields specific
-        validation: validationList, // other fields specific
+        validation, // other fields specific
         settings: settingsTranslated,
         fullSettings,
         wrappers,
@@ -139,7 +139,7 @@ export class FieldsSettingsService {
     config.field.settings = fieldSettings;
     config.field.label = fieldSettings.Name;
     config.field.placeholder = fieldSettings.Placeholder;
-    config.field.validation = ValidationHelper.getValidations(fieldSettings);
+    config.field.validation = ValidationHelper.getValidators(fieldSettings);
     config.field.required = ValidationHelper.isRequired(fieldSettings);
     config.field.settings$.next(fieldSettings); // must run after validations are recalculated
   }
@@ -150,7 +150,7 @@ export class FieldsSettingsService {
     fieldConfig.settings = fieldSettings;
     fieldConfig.label = fieldSettings.Name;
     fieldConfig.placeholder = fieldSettings.Placeholder;
-    fieldConfig.validation = ValidationHelper.getValidations(fieldSettings);
+    fieldConfig.validation = ValidationHelper.getValidators(fieldSettings);
     fieldConfig.required = ValidationHelper.isRequired(fieldSettings);
     fieldConfig.settings$.next(fieldSettings); // must run after validations are recalculated
   }

@@ -22,7 +22,7 @@ export class StringDefaultLogicNew extends FieldLogicBase {
   }
 
   init(settings: FieldSettings): FieldSettings {
-    const fixedSettings = { ...settings };
+    const fixedSettings: FieldSettings = { ...settings };
     fixedSettings.RowCount ||= 1;
     return fixedSettings;
   }
