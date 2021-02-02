@@ -8,12 +8,12 @@ import { FieldsSettings2Service } from '../../../shared/services/fields-settings
 import { ItemService } from '../../../shared/store/ngrx-data/item.service';
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
 import { FieldConfigSet } from '../../model/field-config';
-import { ContentTypeTemplateVars } from './form-collapsible.models';
+import { ContentTypeTemplateVars } from './content-type-wrapper.models';
 
 @Component({
   selector: 'app-content-type-wrapper',
-  templateUrl: './form-collapsible.component.html',
-  styleUrls: ['./form-collapsible.component.scss'],
+  templateUrl: './content-type-wrapper.component.html',
+  styleUrls: ['./content-type-wrapper.component.scss'],
 })
 export class ContentTypeWrapperComponent implements OnInit {
   @Input() config: FieldConfigSet;

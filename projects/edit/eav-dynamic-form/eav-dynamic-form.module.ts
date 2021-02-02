@@ -16,9 +16,9 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
 import { SharedComponentsModule } from '../../ng-dialogs/src/app/shared/shared-components.module';
 import { EavMaterialControlsModule } from '../eav-material-controls/eav-material-controls.module';
+import { ContentTypeWrapperComponent } from './components/content-type-wrapper/content-type-wrapper.component';
 import { EavFieldDirective } from './components/eav-field/eav-field.directive';
 import { EavFormComponent } from './components/eav-form/eav-form.component';
-import { ContentTypeWrapperComponent } from './components/fields-wrapper/form-collapsible.component';
 
 @NgModule({
   imports: [
