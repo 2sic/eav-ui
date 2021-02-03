@@ -103,8 +103,10 @@ export class FieldsSettings2Service implements OnDestroy {
   public getFieldSettings$(fieldName: string): Observable<FieldSettings> {
     return this.fieldsSettings$.pipe(
       map(fieldsSettings => fieldsSettings.find(f => f.Name === fieldName)),
-      // TODO: smart distinctUntilChanged function
-      distinctUntilChanged(),
+      distinctUntilChanged((oldSettings, newSettings) => {
+        const equal = testEqual(oldSettings, newSettings);
+        return equal;
+      }),
       share(),
     );
   }
@@ -156,4 +158,21 @@ export class FieldsSettings2Service implements OnDestroy {
     }
     return label;
   }
+}
+
+function testEqual(x: FieldSettings, y: FieldSettings) {
+  const obj1 = x as { [key: string]: any };
+  const obj2 = y as { [key: string]: any };
+
+  const keys1 = Object.keys(obj1);
+  const keys2 = Object.keys(obj2);
+  if (keys1.length !== keys2.length) { return false; }
+
+  const equal = keys1.every(key1 => {
+    if (obj2[key1] == null) { return false; }
+
+    return obj1[key1] === obj2[key1];
+  });
+
+  return equal;
 }
