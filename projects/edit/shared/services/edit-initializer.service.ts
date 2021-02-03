@@ -11,7 +11,6 @@ import { convertUrlToForm } from '../../../ng-dialogs/src/app/shared/helpers/url
 import { calculateIsParentDialog, sortLanguages } from '../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.helpers';
 import { EavFormData } from '../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.models';
 import { EditParams } from '../../edit-matcher.models';
-import { FieldLogicManager } from '../../field-logic/field-logic-manager';
 import { InputFieldHelper } from '../helpers/input-field-helper';
 import { LocalizationHelper } from '../helpers/localization-helper';
 import { Language, PublishStatus } from '../models';
@@ -55,7 +54,6 @@ export class EditInitializerService implements OnDestroy {
     this.eavService.fetchFormData(editItems).subscribe(formData => {
       this.saveFormData(formData);
       this.fixMissingData();
-      this.createFieldConfigs();
       this.loaded$.next(true);
     });
   }
@@ -156,11 +154,5 @@ export class EditInitializerService implements OnDestroy {
           }
         }
       });
-  }
-
-  private createFieldConfigs(): void {
-    const manager = FieldLogicManager.singleton();
-    const stringDefaultLogic = manager.get('string-default');
-    stringDefaultLogic.init({} as any);
   }
 }

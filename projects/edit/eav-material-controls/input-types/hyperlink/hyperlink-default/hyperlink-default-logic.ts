@@ -24,7 +24,7 @@ export class HyperlinkDefaultLogic2 extends FieldLogicBase {
     FieldLogicManager.singleton().add(this);
   }
 
-  init(settings: FieldSettings): FieldSettings {
+  update(settings: FieldSettings, value: string): FieldSettings {
     const fixedSettings: FieldSettings = { ...settings };
     fixedSettings.Buttons ||= 'adam,more';
     fixedSettings.FileFilter ??= '';

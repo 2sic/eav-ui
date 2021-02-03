@@ -9,6 +9,7 @@ export class InputTypeConstants {
     public static readonly StringWysiwyg = 'string-wysiwyg';
     // Boolean
     public static readonly BooleanDefault = 'boolean-default';
+    public static readonly BooleanTristate = 'boolean-tristate';
     // DateTime
     public static readonly DatetimeDefault = 'datetime-default';
     // Empty

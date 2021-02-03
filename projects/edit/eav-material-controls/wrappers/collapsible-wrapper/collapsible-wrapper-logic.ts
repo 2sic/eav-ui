@@ -24,7 +24,7 @@ export class EmptyDefaultLogic2 extends FieldLogicBase {
     FieldLogicManager.singleton().add(this);
   }
 
-  init(settings: FieldSettings): FieldSettings {
+  update(settings: FieldSettings, value: undefined): FieldSettings {
     const fixedSettings: FieldSettings = { ...settings };
     fixedSettings.VisibleInEditUI ??= true;
     fixedSettings.DefaultCollapsed ??= false;

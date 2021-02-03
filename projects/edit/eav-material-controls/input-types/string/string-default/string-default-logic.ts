@@ -22,7 +22,7 @@ export class StringDefaultLogic2 extends FieldLogicBase {
     FieldLogicManager.singleton().add(this);
   }
 
-  init(settings: FieldSettings): FieldSettings {
+  update(settings: FieldSettings, value: string): FieldSettings {
     const fixedSettings: FieldSettings = { ...settings };
     fixedSettings.RowCount ||= 1;
     return fixedSettings;

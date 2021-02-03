@@ -1,6 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { distinctUntilChanged, map, share } from 'rxjs/operators';
 import { EavService } from '.';
 import { FieldSettings } from '../../../edit-types';
 import { FieldLogicManager } from '../../field-logic/field-logic-manager';
@@ -25,7 +25,7 @@ export class FieldsSettings2Service implements OnDestroy {
     private itemService: ItemService,
   ) { }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     this.contentTypeSettings$?.complete();
     this.fieldsSettings$?.complete();
     this.subscription?.unsubscribe();
@@ -33,6 +33,8 @@ export class FieldsSettings2Service implements OnDestroy {
 
   public init(item: EavItem): void {
     this.subscription = new Subscription();
+    this.contentTypeSettings$ = new BehaviorSubject<ContentTypeSettings>(null);
+    this.fieldsSettings$ = new BehaviorSubject<FieldSettings[]>([]);
 
     const contentTypeId = InputFieldHelper.getContentTypeId(item);
     const contentType$ = this.contentTypeService.getContentTypeById(contentTypeId);
@@ -44,32 +46,34 @@ export class FieldsSettings2Service implements OnDestroy {
     this.subscription.add(
       combineLatest([contentType$, header$, currentLanguage$, defaultLanguage$]).pipe(
         map(([contentType, header, currentLanguage, defaultLanguage]) => {
-          const contentTypeSettings = this.mergeSettings<ContentTypeSettings>(contentType.Metadata, currentLanguage, defaultLanguage);
-          contentTypeSettings.Description ??= '';
-          contentTypeSettings.EditInstructions ??= '';
-          contentTypeSettings.Label ??= '';
-          contentTypeSettings.ListInstructions ??= '';
-          contentTypeSettings.Notes ??= '';
-          contentTypeSettings.Icon ??= '';
-          contentTypeSettings.Link ??= '';
-          contentTypeSettings._itemTitle = this.getContentTypeTitle(contentType, currentLanguage, defaultLanguage);
-          contentTypeSettings._slotCanBeEmpty = header?.Group?.SlotCanBeEmpty ?? false;
-          contentTypeSettings._slotIsEmpty = header?.Group?.SlotIsEmpty ?? false;
-          return contentTypeSettings;
+          const ctSettings = this.mergeSettings<ContentTypeSettings>(contentType.Metadata, currentLanguage, defaultLanguage);
+          ctSettings.Description ??= '';
+          ctSettings.EditInstructions ??= '';
+          ctSettings.Label ??= '';
+          ctSettings.ListInstructions ??= '';
+          ctSettings.Notes ??= '';
+          ctSettings.Icon ??= '';
+          ctSettings.Link ??= '';
+          ctSettings._itemTitle = this.getContentTypeTitle(contentType, currentLanguage, defaultLanguage);
+          ctSettings._slotCanBeEmpty = header?.Group?.SlotCanBeEmpty ?? false;
+          ctSettings._slotIsEmpty = header?.Group?.SlotIsEmpty ?? false;
+          return ctSettings;
         }),
-      ).subscribe(contentTypeSettings => {
-        if (this.contentTypeSettings$ == null) {
-          this.contentTypeSettings$ = new BehaviorSubject(contentTypeSettings);
-        } else {
-          this.contentTypeSettings$.next(contentTypeSettings);
-        }
+      ).subscribe(ctSettings => {
+        this.contentTypeSettings$.next(ctSettings);
       })
     );
 
+    const itemAttributes$ = this.itemService.selectItemAttributes(item.Entity.Guid);
     this.subscription.add(
-      combineLatest([contentType$, currentLanguage$, defaultLanguage$]).pipe(
-        map(([contentType, currentLanguage, defaultLanguage]) => {
-          const fieldsSettings = contentType.Attributes.map(attribute => {
+      combineLatest([contentType$, currentLanguage$, defaultLanguage$, itemAttributes$]).pipe(
+        map(([contentType, currentLanguage, defaultLanguage, itemAttributes]) => {
+          const itemValues: { [attributeName: string]: any } = {};
+          for (const [name, values] of Object.entries(itemAttributes)) {
+            itemValues[name] = LocalizationHelper.translate(currentLanguage, defaultLanguage, values, null);
+          }
+
+          const settings = contentType.Attributes.map(attribute => {
             const merged = this.mergeSettings<FieldSettings>(attribute.Metadata, currentLanguage, defaultLanguage);
             // update @All settings
             merged.Name ??= '';
@@ -79,19 +83,15 @@ export class FieldsSettings2Service implements OnDestroy {
             merged.Required ??= false;
             merged.Disabled ??= false;
             merged.DisableTranslation ??= false;
-            // update default values with specific FieldLogic
+            // update settings with respective FieldLogics
             const logic = FieldLogicManager.singleton().get(attribute.InputType);
-            const fixed = logic?.init(merged) ?? merged;
+            const fixed = logic?.update(merged, itemValues[attribute.Name]) ?? merged;
             return fixed;
           });
-          return fieldsSettings;
+          return settings;
         }),
-      ).subscribe(fieldsSettings => {
-        if (this.fieldsSettings$ == null) {
-          this.fieldsSettings$ = new BehaviorSubject(fieldsSettings);
-        } else {
-          this.fieldsSettings$.next(fieldsSettings);
-        }
+      ).subscribe(settings => {
+        this.fieldsSettings$.next(settings);
       })
     );
   }
@@ -103,6 +103,9 @@ export class FieldsSettings2Service implements OnDestroy {
   public getFieldSettings$(fieldName: string): Observable<FieldSettings> {
     return this.fieldsSettings$.pipe(
       map(fieldsSettings => fieldsSettings.find(f => f.Name === fieldName)),
+      // TODO: smart distinctUntilChanged function
+      distinctUntilChanged(),
+      share(),
     );
   }
 

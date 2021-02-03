@@ -27,9 +27,9 @@ export class EntityQueryLogic2 extends FieldLogicBase {
     FieldLogicManager.singleton().add(this);
   }
 
-  init(settings: FieldSettings): FieldSettings {
+  update(settings: FieldSettings, value: string[]): FieldSettings {
     const entityDefaultLogic = FieldLogicManager.singleton().get(InputTypeConstants.EntityDefault);
-    const fixedSettings = entityDefaultLogic.init(settings);
+    const fixedSettings = entityDefaultLogic.update(settings, value);
     fixedSettings.Query ??= '';
     fixedSettings.StreamName ||= 'Default';
     fixedSettings.UrlParameters ??= '';
