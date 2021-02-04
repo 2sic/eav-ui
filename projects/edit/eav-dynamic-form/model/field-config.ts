@@ -24,7 +24,6 @@ export interface FieldConfigAngular extends FieldConfig {
   isExternal: boolean;
   disableI18n: boolean;
   isLastInGroup: boolean;
-  settings$: BehaviorSubject<FieldSettings>;
   fieldHelper: FieldHelper;
 }
 

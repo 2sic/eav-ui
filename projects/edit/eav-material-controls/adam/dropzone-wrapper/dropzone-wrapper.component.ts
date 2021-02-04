@@ -7,6 +7,7 @@ import { AdamPostResponse, DropzoneConfigExt } from '../../../../edit-types';
 import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { EavService } from '../../../shared/services/eav.service';
+import { FieldsSettings2Service } from '../../../shared/services/fields-settings2.service';
 import { BaseComponent } from '../../input-types/base/base.component';
 import { ValidationMessagesService } from '../../validators/validation-messages-service';
 import { DropzoneConfigInstance } from './dropzone-wrapper.models';
@@ -27,10 +28,11 @@ export class DropzoneWrapperComponent extends BaseComponent<any> implements Fiel
   constructor(
     eavService: EavService,
     validationMessagesService: ValidationMessagesService,
+    fieldsSettings2Service: FieldsSettings2Service,
     private dnnContext: DnnContext,
     private zone: NgZone,
   ) {
-    super(eavService, validationMessagesService);
+    super(eavService, validationMessagesService, fieldsSettings2Service);
   }
 
   ngOnInit() {

@@ -223,7 +223,8 @@ export class FormulaInstanceService implements OnDestroy {
           const disabled = this.form.controls[fieldConfig.field.name].disabled;
           if (disabled) { continue; }
         }
-        const calcs = fieldConfig.field.settings$.value.Calculations;
+        // const calcs = fieldConfig.field.settings$.value.Calculations;
+        const calcs: string[] = [];
         if (calcs == null || !calcs.length) { continue; }
         calcFields[fieldConfig.field.name] = calcs;
       }

@@ -3,6 +3,7 @@ import { AbstractControl, FormGroup } from '@angular/forms';
 import { combineLatest, Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
+import { FieldsSettings2Service } from '../../../shared/services/fields-settings2.service';
 import { ValidationMessagesService } from '../../validators/validation-messages-service';
 import { FieldHelperTextTemplateVars } from './field-helper-text.models';
 
@@ -21,14 +22,16 @@ export class FieldHelperTextComponent implements OnInit {
   control: AbstractControl;
   templateVars$: Observable<FieldHelperTextTemplateVars>;
 
-  constructor(private validationMessagesService: ValidationMessagesService) { }
+  constructor(private validationMessagesService: ValidationMessagesService, private fieldsSettings2Service: FieldsSettings2Service) { }
 
   ngOnInit() {
     this.control = this.group.controls[this.config.field.name];
     const invalid$ = this.control.statusChanges.pipe(map(status => status === 'INVALID'), startWith(this.control.invalid));
-    const description$ = this.config.field.settings$.pipe(map(settings => settings.Notes));
 
-    this.templateVars$ = combineLatest([invalid$, description$, this.config.field.settings$]).pipe(
+    const settings$ = this.fieldsSettings2Service.getFieldSettings$(this.config.field.name);
+    const description$ = settings$.pipe(map(settings => settings.Notes));
+
+    this.templateVars$ = combineLatest([invalid$, description$, settings$]).pipe(
       map(([invalid, description, settings]) => {
         const templateVars: FieldHelperTextTemplateVars = {
           invalid,

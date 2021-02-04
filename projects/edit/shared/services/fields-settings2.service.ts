@@ -3,6 +3,7 @@ import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import { distinctUntilChanged, map, share } from 'rxjs/operators';
 import { EavService } from '.';
 import { FieldSettings } from '../../../edit-types';
+import { ValidationHelper } from '../../eav-material-controls/validators/validation-helper';
 import { FieldLogicManager } from '../../field-logic/field-logic-manager';
 import { InputFieldHelper } from '../helpers/input-field-helper';
 import { LocalizationHelper } from '../helpers/localization-helper';
@@ -84,6 +85,8 @@ export class FieldsSettings2Service implements OnDestroy {
             merged.Disabled ??= false;
             merged.DisableTranslation ??= false;
             merged._fieldName = attribute.Name;
+            // special fixes
+            merged.Required = ValidationHelper.isRequired(merged);
             // update settings with respective FieldLogics
             const logic = FieldLogicManager.singleton().get(attribute.InputType);
             const fixed = logic?.update(merged, itemValues[attribute.Name]) ?? merged;
@@ -108,7 +111,6 @@ export class FieldsSettings2Service implements OnDestroy {
         const equal = testEqual(oldSettings, newSettings);
         return equal;
       }),
-      share(),
     );
   }
 

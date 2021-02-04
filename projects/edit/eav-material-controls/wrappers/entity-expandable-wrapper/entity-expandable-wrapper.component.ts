@@ -6,6 +6,7 @@ import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { ContentExpandAnimation } from '../../../shared/animations/content-expand-animation';
 import { EavService } from '../../../shared/services/eav.service';
 import { EditRoutingService } from '../../../shared/services/edit-routing.service';
+import { FieldsSettings2Service } from '../../../shared/services/fields-settings2.service';
 import { BaseComponent } from '../../input-types/base/base.component';
 import { calculateSelectedEntities } from '../../input-types/entity/entity-default/entity-default.helpers';
 import { SelectedEntity } from '../../input-types/entity/entity-default/entity-default.models';
@@ -30,10 +31,11 @@ export class EntityExpandableWrapperComponent extends BaseComponent<string | str
   constructor(
     eavService: EavService,
     validationMessagesService: ValidationMessagesService,
+    fieldsSettings2Service: FieldsSettings2Service,
     private translate: TranslateService,
     private editRoutingService: EditRoutingService,
   ) {
-    super(eavService, validationMessagesService);
+    super(eavService, validationMessagesService, fieldsSettings2Service);
   }
 
   ngOnInit() {

@@ -30,24 +30,20 @@ export class BaseComponent<T> implements Field, OnInit, OnDestroy {
   constructor(
     public eavService: EavService,
     public validationMessagesService: ValidationMessagesService,
-    private fieldsSettings2Service?: FieldsSettings2Service,
+    private fieldsSettings2Service: FieldsSettings2Service,
   ) { }
 
   ngOnInit() {
     this.control = this.group.controls[this.config.field.name];
-    if (this.fieldsSettings2Service == null) {
-      this.settings$ = this.config.field.settings$;
-    } else {
-      this.settings$ = new BehaviorSubject<FieldSettings>(null);
-      this.subscription.add(
-        this.fieldsSettings2Service.getFieldSettings$(this.config.field.name).subscribe(settings => {
-          this.settings$.next(settings);
-        })
-      );
-    }
+    this.settings$ = new BehaviorSubject<FieldSettings>(null);
+    this.subscription.add(
+      this.fieldsSettings2Service.getFieldSettings$(this.config.field.name).subscribe(settings => {
+        this.settings$.next(settings);
+      })
+    );
     this.label$ = this.settings$.pipe(map(settings => settings.Name));
     this.placeholder$ = this.settings$.pipe(map(settings => settings.Placeholder));
-    this.required$ = this.settings$.pipe(map(settings => ValidationHelper.isRequired(settings)));
+    this.required$ = this.settings$.pipe(map(settings => settings.Required));
     this.invalid$ = this.control.statusChanges.pipe(map(status => status === 'INVALID'), startWith(this.control.invalid));
     this.showValidation$ = this.validationMessagesService.showValidation$.pipe(
       filter(control => control === this.control),

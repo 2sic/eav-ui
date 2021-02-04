@@ -86,7 +86,6 @@ export class FieldsSettingsService {
         name,
         label,
         inputType: calculatedInputType.inputType,
-        settings$: new BehaviorSubject(settingsTranslated),
       } as FieldConfigGroup;
     } else {
       const validation = ValidationHelper.getValidators(settingsTranslated);
@@ -112,7 +111,6 @@ export class FieldsSettingsService {
         type: attribute.Type, // other fields specific
         required, // other fields specific
         disabled, // other fields specific
-        settings$: new BehaviorSubject(settingsTranslated),
         fieldHelper,
       };
     }
@@ -141,17 +139,6 @@ export class FieldsSettingsService {
     config.field.placeholder = fieldSettings.Placeholder;
     config.field.validation = ValidationHelper.getValidators(fieldSettings);
     config.field.required = ValidationHelper.isRequired(fieldSettings);
-    config.field.settings$.next(fieldSettings); // must run after validations are recalculated
-  }
-
-  /** Translate group (empty field) settings and validation */
-  public translateGroupSettingsAndValidation(fieldConfig: FieldConfigGroup, currentLanguage: string, defaultLanguage: string): void {
-    const fieldSettings = LocalizationHelper.translateSettings(fieldConfig.fullSettings, currentLanguage, defaultLanguage);
-    fieldConfig.settings = fieldSettings;
-    fieldConfig.label = fieldSettings.Name;
-    fieldConfig.placeholder = fieldSettings.Placeholder;
-    fieldConfig.validation = ValidationHelper.getValidators(fieldSettings);
-    fieldConfig.required = ValidationHelper.isRequired(fieldSettings);
-    fieldConfig.settings$.next(fieldSettings); // must run after validations are recalculated
+    // config.field.settings$.next(fieldSettings); // must run after validations are recalculated
   }
 }
