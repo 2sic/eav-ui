@@ -4,6 +4,7 @@ import { map } from 'rxjs/operators';
 import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { EavService } from '../../../../shared/services/eav.service';
+import { FieldsSettings2Service } from '../../../../shared/services/fields-settings2.service';
 import { ScriptsLoaderService } from '../../../../shared/services/scripts-loader.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { BaseComponent } from '../../base/base.component';
@@ -28,17 +29,18 @@ export class StringFontIconPickerComponent extends BaseComponent<string> impleme
   constructor(
     eavService: EavService,
     validationMessagesService: ValidationMessagesService,
+    fieldsSettings2Service: FieldsSettings2Service,
     private scriptsLoaderService: ScriptsLoaderService,
   ) {
-    super(eavService, validationMessagesService);
+    super(eavService, validationMessagesService, fieldsSettings2Service);
+    StringFontIconPickerLogic.importMe();
   }
 
   ngOnInit() {
     super.ngOnInit();
     this.iconOptions$ = new BehaviorSubject<IconOption[]>([]);
-    const settingsLogic = new StringFontIconPickerLogic();
     this.subscription.add(
-      this.settings$.pipe(map(settings => settingsLogic.init(settings))).subscribe(settings => {
+      this.settings$.subscribe(settings => {
         const files = settings.Files;
         const cssPrefix = settings.CssPrefix;
         const showPrefix = settings.ShowPrefix;

@@ -1,26 +1,9 @@
 import { FieldSettings } from '../../../../../edit-types';
 import { InputTypeConstants } from '../../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { FieldLogicBase } from '../../../../field-logic/field-logic-base';
-import { FieldLogicManager } from '../../../../field-logic/field-logic-manager';
 
-export class StringDefaultLogic {
-  constructor() { }
-
-  init(settings: FieldSettings): FieldSettings {
-    const fixedSettings: FieldSettings = { ...settings };
-    fixedSettings.RowCount ||= 1;
-    return fixedSettings;
-  }
-}
-
-export class StringDefaultLogic2 extends FieldLogicBase {
-  name: string;
-
-  constructor() {
-    super();
-    this.name = InputTypeConstants.StringDefault;
-    FieldLogicManager.singleton().add(this);
-  }
+export class StringDefaultLogic extends FieldLogicBase {
+  name = InputTypeConstants.StringDefault;
 
   update(settings: FieldSettings, value: string): FieldSettings {
     const fixedSettings: FieldSettings = { ...settings };
@@ -29,4 +12,4 @@ export class StringDefaultLogic2 extends FieldLogicBase {
   }
 }
 
-const any = new StringDefaultLogic2();
+FieldLogicBase.add(StringDefaultLogic);

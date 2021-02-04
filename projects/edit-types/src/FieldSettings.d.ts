@@ -2,6 +2,7 @@ import { DropdownOption } from "../../edit/eav-material-controls/input-types/str
 
 /** @All */
 interface All {
+  /** Used as a label */
   Name: string;
   InputType: string;
   DefaultValue: string;
@@ -17,6 +18,8 @@ interface All {
   Calculations: string[];
   /** @deprecated */
   CustomJavaScript: string;
+  /** Real name of the field */
+  _fieldName: string;
 }
 
 /** @String */

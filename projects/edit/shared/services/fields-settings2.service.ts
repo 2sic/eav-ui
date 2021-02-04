@@ -83,6 +83,7 @@ export class FieldsSettings2Service implements OnDestroy {
             merged.Required ??= false;
             merged.Disabled ??= false;
             merged.DisableTranslation ??= false;
+            merged._fieldName = attribute.Name;
             // update settings with respective FieldLogics
             const logic = FieldLogicManager.singleton().get(attribute.InputType);
             const fixed = logic?.update(merged, itemValues[attribute.Name]) ?? merged;
@@ -102,7 +103,7 @@ export class FieldsSettings2Service implements OnDestroy {
 
   public getFieldSettings$(fieldName: string): Observable<FieldSettings> {
     return this.fieldsSettings$.pipe(
-      map(fieldsSettings => fieldsSettings.find(f => f.Name === fieldName)),
+      map(fieldsSettings => fieldsSettings.find(f => f._fieldName === fieldName)),
       distinctUntilChanged((oldSettings, newSettings) => {
         const equal = testEqual(oldSettings, newSettings);
         return equal;

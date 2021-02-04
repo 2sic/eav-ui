@@ -4,6 +4,7 @@ import { map } from 'rxjs/operators';
 import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { EavService } from '../../../../shared/services/eav.service';
+import { FieldsSettings2Service } from '../../../../shared/services/fields-settings2.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { BaseComponent } from '../../base/base.component';
 import { StringDefaultLogic } from './string-default-logic';
@@ -21,14 +22,18 @@ import { StringDefaultTemplateVars } from './string-default.models';
 export class StringDefaultComponent extends BaseComponent<string> implements OnInit, OnDestroy {
   templateVars$: Observable<StringDefaultTemplateVars>;
 
-  constructor(eavService: EavService, validationMessagesService: ValidationMessagesService) {
-    super(eavService, validationMessagesService);
+  constructor(
+    eavService: EavService,
+    validationMessagesService: ValidationMessagesService,
+    fieldsSettings2Service: FieldsSettings2Service,
+  ) {
+    super(eavService, validationMessagesService, fieldsSettings2Service);
+    StringDefaultLogic.importMe();
   }
 
   ngOnInit() {
     super.ngOnInit();
-    const settingsLogic = new StringDefaultLogic();
-    const rowCount$ = this.settings$.pipe(map(settings => settingsLogic.init(settings).RowCount));
+    const rowCount$ = this.settings$.pipe(map(settings => settings.RowCount));
 
     this.templateVars$ = combineLatest([
       combineLatest([rowCount$, this.label$, this.placeholder$, this.required$]),

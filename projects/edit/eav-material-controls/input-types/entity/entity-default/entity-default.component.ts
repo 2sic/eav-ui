@@ -5,7 +5,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { FieldSettings } from '../../../../../edit-types';
 import { EditForm } from '../../../../../ng-dialogs/src/app/shared/models/edit-form.model';
 import { FieldMaskService } from '../../../../../shared/field-mask.service';
 import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
@@ -14,6 +13,7 @@ import { EntityInfo } from '../../../../shared/models';
 import { EavService } from '../../../../shared/services/eav.service';
 import { EditRoutingService } from '../../../../shared/services/edit-routing.service';
 import { EntityService } from '../../../../shared/services/entity.service';
+import { FieldsSettings2Service } from '../../../../shared/services/fields-settings2.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { BaseComponent } from '../../base/base.component';
 import { ReorderIndexes } from '../entity-default-list/entity-default-list.models';
@@ -45,29 +45,24 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
   disableAddNew$ = new BehaviorSubject(true);
   isExpanded$: Observable<boolean>;
   selectedEntities$: Observable<SelectedEntity[]>;
-  settingsLogic = new EntityDefaultLogic();
 
   constructor(
     eavService: EavService,
     validationMessagesService: ValidationMessagesService,
+    fieldsSettings2Service: FieldsSettings2Service,
     private entityService: EntityService,
     public translate: TranslateService,
     private editRoutingService: EditRoutingService,
     private snackBar: MatSnackBar,
   ) {
-    super(eavService, validationMessagesService);
+    super(eavService, validationMessagesService, fieldsSettings2Service);
+    EntityDefaultLogic.importMe();
   }
 
   ngOnInit() {
     super.ngOnInit();
     this.config.entityCache$ = new BehaviorSubject<EntityInfo[]>([]);
 
-    this.settings$ = new BehaviorSubject<FieldSettings>(null);
-    this.subscription.add(
-      this.config.field.settings$.pipe(map(settings => this.settingsLogic.init(settings))).subscribe(settings => {
-        this.settings$.next(settings);
-      })
-    );
     this.selectedEntities$ = combineLatest([this.value$, this.settings$, this.config.entityCache$]).pipe(
       map(([fieldValue, settings, availableEntities]) => {
         const selected = calculateSelectedEntities(fieldValue, settings.Separator, availableEntities, this.translate);
@@ -113,7 +108,6 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
   }
 
   ngOnDestroy() {
-    this.settings$.complete();
     this.error$.complete();
     this.freeTextMode$.complete();
     this.disableAddNew$.complete();

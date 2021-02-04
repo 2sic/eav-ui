@@ -4,6 +4,7 @@ import { map } from 'rxjs/operators';
 import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { EavService } from '../../../../shared/services/eav.service';
+import { FieldsSettings2Service } from '../../../../shared/services/fields-settings2.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { BaseComponent } from '../../base/base.component';
 import { CustomJsonEditorLogic } from './custom-json-editor-logic';
@@ -22,14 +23,18 @@ import { CustomJsonEditorTemplateVars } from './custom-json-editor.models';
 export class CustomJsonEditorComponent extends BaseComponent<string> implements OnInit, OnDestroy {
   templateVars$: Observable<CustomJsonEditorTemplateVars>;
 
-  constructor(eavService: EavService, validationMessagesService: ValidationMessagesService) {
-    super(eavService, validationMessagesService);
+  constructor(
+    eavService: EavService,
+    validationMessagesService: ValidationMessagesService,
+    fieldsSettings2Service: FieldsSettings2Service,
+  ) {
+    super(eavService, validationMessagesService, fieldsSettings2Service);
+    CustomJsonEditorLogic.importMe();
   }
 
   ngOnInit() {
     super.ngOnInit();
-    const settingsLogic = new CustomJsonEditorLogic();
-    const rowCount$ = this.settings$.pipe(map(settings => settingsLogic.init(settings).Rows));
+    const rowCount$ = this.settings$.pipe(map(settings => settings.Rows));
 
     this.templateVars$ = combineLatest([
       combineLatest([rowCount$, this.placeholder$, this.required$, this.label$]),

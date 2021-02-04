@@ -9,6 +9,7 @@ import { WrappersConstants } from '../../../../shared/constants/wrappers.constan
 import { DnnBridgeService } from '../../../../shared/services/dnn-bridge.service';
 import { EavService } from '../../../../shared/services/eav.service';
 import { EditRoutingService } from '../../../../shared/services/edit-routing.service';
+import { FieldsSettings2Service } from '../../../../shared/services/fields-settings2.service';
 import { FileTypeService } from '../../../../shared/services/file-type.service';
 import { PrefetchService } from '../../../../shared/store/ngrx-data/prefetch.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
@@ -44,12 +45,14 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
   constructor(
     eavService: EavService,
     validationMessagesService: ValidationMessagesService,
+    fieldsSettings2Service: FieldsSettings2Service,
     private fileTypeService: FileTypeService,
     private dnnBridgeService: DnnBridgeService,
     private editRoutingService: EditRoutingService,
     private prefetchService: PrefetchService,
   ) {
-    super(eavService, validationMessagesService);
+    super(eavService, validationMessagesService, fieldsSettings2Service);
+    HyperlinkDefaultLogic.importMe();
   }
 
   ngOnInit() {
@@ -66,13 +69,6 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
     this.subscription.add(
       this.prefetchService.getPrefetchedLinks().subscribe(links => {
         this.prefetchLinks = links;
-      })
-    );
-    this.settings$ = new BehaviorSubject<FieldSettings>(null);
-    const settingsLogic = new HyperlinkDefaultLogic();
-    this.subscription.add(
-      this.config.field.settings$.pipe(map(settings => settingsLogic.init(settings))).subscribe(settings => {
-        this.settings$.next(settings);
       })
     );
     const buttons$ = this.settings$.pipe(map(settings => settings.Buttons));
@@ -114,7 +110,6 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
   }
 
   ngOnDestroy() {
-    this.settings$.complete();
     this.preview$.complete();
     super.ngOnDestroy();
   }

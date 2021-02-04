@@ -6,6 +6,7 @@ import { FieldSettings } from '../../../../edit-types';
 import { Field } from '../../../eav-dynamic-form/model/field';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { EavService } from '../../../shared/services/eav.service';
+import { FieldsSettings2Service } from '../../../shared/services/fields-settings2.service';
 import { ValidationHelper } from '../../validators/validation-helper';
 import { ValidationMessagesService } from '../../validators/validation-messages-service';
 
@@ -26,11 +27,24 @@ export class BaseComponent<T> implements Field, OnInit, OnDestroy {
   showValidation$: Observable<AbstractControl>;
   subscription = new Subscription();
 
-  constructor(public eavService: EavService, public validationMessagesService: ValidationMessagesService) { }
+  constructor(
+    public eavService: EavService,
+    public validationMessagesService: ValidationMessagesService,
+    private fieldsSettings2Service?: FieldsSettings2Service,
+  ) { }
 
   ngOnInit() {
     this.control = this.group.controls[this.config.field.name];
-    this.settings$ = this.config.field.settings$;
+    if (this.fieldsSettings2Service == null) {
+      this.settings$ = this.config.field.settings$;
+    } else {
+      this.settings$ = new BehaviorSubject<FieldSettings>(null);
+      this.subscription.add(
+        this.fieldsSettings2Service.getFieldSettings$(this.config.field.name).subscribe(settings => {
+          this.settings$.next(settings);
+        })
+      );
+    }
     this.label$ = this.settings$.pipe(map(settings => settings.Name));
     this.placeholder$ = this.settings$.pipe(map(settings => settings.Placeholder));
     this.required$ = this.settings$.pipe(map(settings => ValidationHelper.isRequired(settings)));

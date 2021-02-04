@@ -4,6 +4,7 @@ import { map } from 'rxjs/operators';
 import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { EavService } from '../../../../shared/services/eav.service';
+import { FieldsSettings2Service } from '../../../../shared/services/fields-settings2.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { BaseComponent } from '../../base/base.component';
 import { BooleanDefaultLogic } from './boolean-default-logic';
@@ -21,14 +22,18 @@ import { BooleanDefaultTemplateVars } from './boolean-default.models';
 export class BooleanDefaultComponent extends BaseComponent<boolean> implements OnInit, OnDestroy {
   templateVars$: Observable<BooleanDefaultTemplateVars>;
 
-  constructor(eavService: EavService, validationMessagesService: ValidationMessagesService) {
-    super(eavService, validationMessagesService);
+  constructor(
+    eavService: EavService,
+    validationMessagesService: ValidationMessagesService,
+    fieldsSettings2Service: FieldsSettings2Service,
+  ) {
+    super(eavService, validationMessagesService, fieldsSettings2Service);
+    BooleanDefaultLogic.importMe();
   }
 
   ngOnInit() {
     super.ngOnInit();
-    const settingsLogic = new BooleanDefaultLogic();
-    this.label$ = settingsLogic.update(this.settings$, this.value$).pipe(map(settings => settings._label));
+    this.label$ = this.settings$.pipe(map(settings => settings._label));
 
     this.templateVars$ = combineLatest([this.label$, this.disabled$, this.showValidation$]).pipe(
       map(([label, disabled, showValidation]) => {

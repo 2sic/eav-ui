@@ -1,7 +1,6 @@
 import { AfterViewInit, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { FieldSettings } from '../../../../edit-types';
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { PrefetchLinks } from '../../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.models';
 import { ContentExpandAnimation } from '../../../shared/animations/content-expand-animation';
@@ -9,13 +8,13 @@ import { DnnBridgeService } from '../../../shared/services/dnn-bridge.service';
 import { DropzoneDraggingHelper } from '../../../shared/services/dropzone-dragging.helper';
 import { EavService } from '../../../shared/services/eav.service';
 import { EditRoutingService } from '../../../shared/services/edit-routing.service';
+import { FieldsSettings2Service } from '../../../shared/services/fields-settings2.service';
 import { FileTypeService } from '../../../shared/services/file-type.service';
 import { PrefetchService } from '../../../shared/store/ngrx-data/prefetch.service';
 import { BaseComponent } from '../../input-types/base/base.component';
 import { DnnBridgeConnectorParams, PagePickerResult } from '../../input-types/dnn-bridge/dnn-bridge.models';
 import { Preview } from '../../input-types/hyperlink/hyperlink-default/hyperlink-default.models';
 import { ValidationMessagesService } from '../../validators/validation-messages-service';
-import { HyperlinkDefaultExpandableWrapperLogic } from './hyperlink-default-expandable-wrapper-logic';
 import { HyperlinkDefaultExpandableTemplateVars } from './hyperlink-default-expandable-wrapper.models';
 
 // TODO: warning: the two files are almost identical: hyperlink-default.component and hyperlink-default-expandable-wrapper.component
@@ -43,13 +42,14 @@ export class HyperlinkDefaultExpandableWrapperComponent extends BaseComponent<st
   constructor(
     eavService: EavService,
     validationMessagesService: ValidationMessagesService,
+    fieldsSettings2Service: FieldsSettings2Service,
     private fileTypeService: FileTypeService,
     private dnnBridgeService: DnnBridgeService,
     private zone: NgZone,
     private editRoutingService: EditRoutingService,
     private prefetchService: PrefetchService,
   ) {
-    super(eavService, validationMessagesService);
+    super(eavService, validationMessagesService, fieldsSettings2Service);
   }
 
   ngOnInit() {
@@ -74,13 +74,6 @@ export class HyperlinkDefaultExpandableWrapperComponent extends BaseComponent<st
       })
     );
     this.open$ = this.editRoutingService.isExpanded(this.config.field.index, this.config.entity.entityGuid);
-    this.settings$ = new BehaviorSubject<FieldSettings>(null);
-    const settingsLogic = new HyperlinkDefaultExpandableWrapperLogic();
-    this.subscription.add(
-      this.config.field.settings$.pipe(map(settings => settingsLogic.init(settings))).subscribe(settings => {
-        this.settings$.next(settings);
-      })
-    );
     const adamButton$ = this.settings$.pipe(map(settings => settings.Buttons?.includes('adam')));
     const pageButton$ = this.settings$.pipe(map(settings => settings.Buttons?.includes('page')));
 

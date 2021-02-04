@@ -4,6 +4,7 @@ import { map } from 'rxjs/operators';
 import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { EavService } from '../../../../shared/services/eav.service';
+import { FieldsSettings2Service } from '../../../../shared/services/fields-settings2.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { BaseComponent } from '../../base/base.component';
 import { BooleanTristateLogic } from './boolean-tristate-logic';
@@ -21,15 +22,19 @@ import { BooleanTristateTemplateVars } from './boolean-tristate.models';
 export class BooleanTristateComponent extends BaseComponent<boolean | ''> implements OnInit, OnDestroy {
   templateVars$: Observable<BooleanTristateTemplateVars>;
 
-  constructor(eavService: EavService, validationMessagesService: ValidationMessagesService) {
-    super(eavService, validationMessagesService);
+  constructor(
+    eavService: EavService,
+    validationMessagesService: ValidationMessagesService,
+    fieldsSettings2Service: FieldsSettings2Service,
+  ) {
+    super(eavService, validationMessagesService, fieldsSettings2Service);
+    BooleanTristateLogic.importMe();
   }
 
   ngOnInit() {
     super.ngOnInit();
     this.value$ = this.value$.pipe(map(value => (value === '') ? null : value));
-    const settingsLogic = new BooleanTristateLogic();
-    this.label$ = settingsLogic.update(this.settings$, this.value$).pipe(map(settings => settings._label));
+    this.label$ = this.settings$.pipe(map(settings => settings._label));
 
     this.templateVars$ = combineLatest([this.value$, this.label$, this.disabled$, this.showValidation$]).pipe(
       map(([value, label, disabled, showValidation]) => {

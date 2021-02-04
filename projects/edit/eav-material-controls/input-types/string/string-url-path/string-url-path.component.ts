@@ -6,6 +6,7 @@ import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/compo
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { Helper } from '../../../../shared/helpers/helper';
 import { EavService } from '../../../../shared/services/eav.service';
+import { FieldsSettings2Service } from '../../../../shared/services/fields-settings2.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { BaseComponent } from '../../base/base.component';
 import { StringUrlPathLogic } from './string-url-path-logic';
@@ -29,15 +30,20 @@ export class StringUrlPathComponent extends BaseComponent<string> implements OnI
   /** Blocks external update if field was changed manually and doesn't match external updates. WARNING: Doesn't work on language change */
   private lastAutoCopy = '';
 
-  constructor(eavService: EavService, validationMessagesService: ValidationMessagesService) {
-    super(eavService, validationMessagesService);
+  constructor(
+    eavService: EavService,
+    validationMessagesService: ValidationMessagesService,
+    fieldsSettings2Service: FieldsSettings2Service,
+  ) {
+    super(eavService, validationMessagesService, fieldsSettings2Service);
+    StringUrlPathLogic.importMe();
   }
 
   ngOnInit() {
     super.ngOnInit();
-    const settingsLogic = new StringUrlPathLogic();
+
     this.subscription.add(
-      this.settings$.pipe(map(settings => settingsLogic.init(settings))).subscribe(settings => {
+      this.settings$.subscribe(settings => {
         this.autoGenerateMask = settings.AutoGenerateMask;
         this.allowSlashes = settings.AllowSlashes;
         if (this.fieldMaskService != null) {

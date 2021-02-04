@@ -6,8 +6,9 @@ import { FieldSettings } from '../../../../edit-types';
 import { FieldConfigGroup, FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { FieldsSettingsService } from '../../../shared/services/fields-settings.service';
+import { FieldsSettings2Service } from '../../../shared/services/fields-settings2.service';
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
-import { CollapsibleWrapperLogic } from './collapsible-wrapper-logic';
+import { EmptyDefaultLogic } from './collapsible-wrapper-logic';
 
 @Component({
   selector: 'app-collapsible-wrapper',
@@ -32,14 +33,17 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
   constructor(
     private languageInstanceService: LanguageInstanceService,
     private fieldsSettingsService: FieldsSettingsService,
-  ) { }
+    private fieldsSettings2Service: FieldsSettings2Service,
+  ) {
+    EmptyDefaultLogic.importMe();
+  }
 
   ngOnInit() {
     this.fieldConfig = this.config.field as FieldConfigGroup;
 
-    const settingsLogic = new CollapsibleWrapperLogic();
+    const settings$ = this.fieldsSettings2Service.getFieldSettings$(this.fieldConfig.name);
     this.subscription.add(
-      this.fieldConfig.settings$.pipe(map(settings => settingsLogic.init(settings))).subscribe(settings => {
+      settings$.subscribe(settings => {
         this.settings$.next(settings);
       })
     );
