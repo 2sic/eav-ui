@@ -124,7 +124,10 @@ export class HyperlinkDefaultExpandableWrapperComponent extends BaseComponent<st
   }
 
   private fetchLink(value: string) {
-    if (!value) { return; }
+    if (!value) {
+      this.setLink(value, false);
+      return;
+    }
 
     const isFileOrPage = this.isFileOrPage(value);
     if (!isFileOrPage) {

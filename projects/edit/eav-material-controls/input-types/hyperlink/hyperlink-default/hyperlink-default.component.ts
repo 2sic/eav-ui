@@ -99,7 +99,10 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
   }
 
   private fetchLink(value: string) {
-    if (!value) { return; }
+    if (!value) {
+      this.setLink(value, false);
+      return;
+    }
 
     const isFileOrPage = this.isFileOrPage(value);
     if (!isFileOrPage) {
