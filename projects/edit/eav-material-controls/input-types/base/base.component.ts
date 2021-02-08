@@ -7,7 +7,6 @@ import { Field } from '../../../eav-dynamic-form/model/field';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { EavService } from '../../../shared/services/eav.service';
 import { FieldsSettings2Service } from '../../../shared/services/fields-settings2.service';
-import { ValidationHelper } from '../../validators/validation-helper';
 import { ValidationMessagesService } from '../../validators/validation-messages-service';
 
 @Directive()

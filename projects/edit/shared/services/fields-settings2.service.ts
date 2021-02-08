@@ -9,14 +9,17 @@ import { InputFieldHelper } from '../helpers/input-field-helper';
 import { LocalizationHelper } from '../helpers/localization-helper';
 import { ContentTypeSettings } from '../models';
 import { EavContentType, EavEntity, EavItem } from '../models/eav';
+import { FieldValue } from '../models/field-value.model';
+import { FieldsProps } from '../models/fields-configs.model';
 import { ContentTypeService } from '../store/ngrx-data/content-type.service';
+import { InputTypeService } from '../store/ngrx-data/input-type.service';
 import { ItemService } from '../store/ngrx-data/item.service';
 import { LanguageInstanceService } from '../store/ngrx-data/language-instance.service';
 
 @Injectable()
 export class FieldsSettings2Service implements OnDestroy {
   private contentTypeSettings$: BehaviorSubject<ContentTypeSettings>;
-  private fieldsSettings$: BehaviorSubject<FieldSettings[]>;
+  private fieldsProps$: BehaviorSubject<FieldsProps>;
   private subscription: Subscription;
 
   constructor(
@@ -24,18 +27,19 @@ export class FieldsSettings2Service implements OnDestroy {
     private languageInstanceService: LanguageInstanceService,
     private eavService: EavService,
     private itemService: ItemService,
+    private inputTypeService: InputTypeService,
   ) { }
 
   public ngOnDestroy(): void {
     this.contentTypeSettings$?.complete();
-    this.fieldsSettings$?.complete();
+    this.fieldsProps$?.complete();
     this.subscription?.unsubscribe();
   }
 
   public init(item: EavItem): void {
     this.subscription = new Subscription();
     this.contentTypeSettings$ = new BehaviorSubject<ContentTypeSettings>(null);
-    this.fieldsSettings$ = new BehaviorSubject<FieldSettings[]>([]);
+    this.fieldsProps$ = new BehaviorSubject<FieldsProps>(null);
 
     const contentTypeId = InputFieldHelper.getContentTypeId(item);
     const contentType$ = this.contentTypeService.getContentTypeById(contentTypeId);
@@ -66,15 +70,18 @@ export class FieldsSettings2Service implements OnDestroy {
     );
 
     const itemAttributes$ = this.itemService.selectItemAttributes(item.Entity.Guid);
+    const inputTypes$ = this.inputTypeService.getAllInputTypes$();
     this.subscription.add(
-      combineLatest([contentType$, currentLanguage$, defaultLanguage$, itemAttributes$]).pipe(
-        map(([contentType, currentLanguage, defaultLanguage, itemAttributes]) => {
-          const itemValues: { [attributeName: string]: any } = {};
-          for (const [name, values] of Object.entries(itemAttributes)) {
-            itemValues[name] = LocalizationHelper.translate(currentLanguage, defaultLanguage, values, null);
-          }
+      combineLatest([contentType$, currentLanguage$, defaultLanguage$, itemAttributes$, inputTypes$]).pipe(
+        map(([contentType, currentLanguage, defaultLanguage, itemAttributes, inputTypes]) => {
+          const fieldsProps: FieldsProps = {};
+          for (const attribute of contentType.Attributes) {
+            const attributeValues = itemAttributes[attribute.Name];
+            // empty-default value is null
+            const value = LocalizationHelper.translate(currentLanguage, defaultLanguage, attributeValues, null);
+            // TODO: if null, create dummy inputType with sensible default values for custom fields
+            const inputType = inputTypes.find(i => i.Type === attribute.InputType);
 
-          const settings = contentType.Attributes.map(attribute => {
             const merged = this.mergeSettings<FieldSettings>(attribute.Metadata, currentLanguage, defaultLanguage);
             // update @All settings
             merged.Name ??= '';
@@ -84,18 +91,28 @@ export class FieldsSettings2Service implements OnDestroy {
             merged.Required ??= false;
             merged.Disabled ??= false;
             merged.DisableTranslation ??= false;
-            merged._fieldName = attribute.Name;
             // special fixes
             merged.Required = ValidationHelper.isRequired(merged);
+            merged.DisableTranslation = this.findDisableTranslation(attribute.Metadata);
             // update settings with respective FieldLogics
             const logic = FieldLogicManager.singleton().get(attribute.InputType);
-            const fixed = logic?.update(merged, itemValues[attribute.Name]) ?? merged;
-            return fixed;
-          });
-          return settings;
+            const fixed = logic?.update(merged, value) ?? merged;
+
+            const validators = ValidationHelper.getValidators(fixed);
+            const calculatedInputType = InputFieldHelper.calculateInputType2(attribute, inputTypes);
+            const wrappers = InputFieldHelper.setWrappers2(fixed, calculatedInputType);
+
+            fieldsProps[attribute.Name] = {
+              inputType,
+              settings: fixed,
+              validators,
+              wrappers,
+            };
+          }
+          return fieldsProps;
         }),
-      ).subscribe(settings => {
-        this.fieldsSettings$.next(settings);
+      ).subscribe(fieldsProps => {
+        this.fieldsProps$.next(fieldsProps);
       })
     );
   }
@@ -105,10 +122,10 @@ export class FieldsSettings2Service implements OnDestroy {
   }
 
   public getFieldSettings$(fieldName: string): Observable<FieldSettings> {
-    return this.fieldsSettings$.pipe(
-      map(fieldsSettings => fieldsSettings.find(f => f._fieldName === fieldName)),
+    return this.fieldsProps$.pipe(
+      map(fieldsSettings => fieldsSettings[fieldName].settings),
       distinctUntilChanged((oldSettings, newSettings) => {
-        const equal = testEqual(oldSettings, newSettings);
+        const equal = isEqualObj(oldSettings, newSettings);
         return equal;
       }),
     );
@@ -146,6 +163,26 @@ export class FieldsSettings2Service implements OnDestroy {
     return merged as T;
   }
 
+  /** Find if DisableTranslation is true in any setting and in any language */
+  private findDisableTranslation(metadataItems: EavEntity[]) {
+    if (metadataItems == null) { return false; }
+
+    // find DisableTranslation in @All, @String, @string-default, etc...
+    for (const item of metadataItems) {
+      const eavValues = item.Attributes['DisableTranslation'];
+      if (eavValues == null) { continue; }
+
+      // if true in any language, it is true for all cases
+      for (const eavValue of eavValues.Values) {
+        if (eavValue.Value === true) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
   private getContentTypeTitle(contentType: EavContentType, currentLanguage: string, defaultLanguage: string): string {
     let label: string;
     try {
@@ -163,7 +200,7 @@ export class FieldsSettings2Service implements OnDestroy {
   }
 }
 
-function testEqual(x: FieldSettings, y: FieldSettings) {
+function isEqualObj(x: FieldSettings, y: FieldSettings) {
   const obj1 = x as { [key: string]: any };
   const obj2 = y as { [key: string]: any };
 

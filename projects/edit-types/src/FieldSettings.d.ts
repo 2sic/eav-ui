@@ -18,8 +18,6 @@ interface All {
   Calculations: string[];
   /** @deprecated */
   CustomJavaScript: string;
-  /** Real name of the field */
-  _fieldName: string;
 }
 
 /** @String */

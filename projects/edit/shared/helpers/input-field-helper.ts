@@ -71,6 +71,15 @@ export class InputFieldHelper {
     };
   }
 
+  static calculateInputType2(attribute: EavContentTypeAttribute, inputTypes: InputType[]): CalculatedInputType {
+    const inputType = inputTypes.find(i => i.Type === attribute.InputType);
+    const calculated: CalculatedInputType = {
+      inputType: attribute.InputType,
+      isExternal: inputType ? !!inputType.AngularAssets : false,
+    };
+    return calculated;
+  }
+
   static setWrappers(calculatedInputType: CalculatedInputType, settingsTranslated: FieldSettings, inputTypeSettings: InputType) {
     // empty inputtype wrappers
     const inputType = calculatedInputType.inputType;
@@ -96,6 +105,46 @@ export class InputFieldHelper {
         wrappers.push(WrappersConstants.CollapsibleFieldWrapper);
       }
       if (allowMultiValue || inputType === InputTypeConstants.EntityContentBlocks) {
+        wrappers.push(WrappersConstants.EntityExpandableWrapper);
+      }
+    }
+
+    if (isExternal) {
+      wrappers.push(
+        WrappersConstants.DropzoneWrapper,
+        WrappersConstants.LocalizationWrapper,
+        WrappersConstants.ExpandableWrapper,
+        WrappersConstants.AdamAttachWrapper,
+      );
+    }
+
+    return wrappers;
+  }
+
+  static setWrappers2(settings: FieldSettings, calculatedInputType: CalculatedInputType) {
+    const type = calculatedInputType.inputType;
+    const isExternal = calculatedInputType.isExternal;
+
+    // empty inputtype wrappers
+    const isEmptyInputType = (type === InputTypeConstants.EmptyDefault || type === DataTypeConstants.Empty);
+    if (isEmptyInputType) { return [WrappersConstants.CollapsibleWrapper]; }
+
+    // default wrappers
+    const wrappers = [WrappersConstants.HiddenWrapper];
+
+    // entity-default wrappers
+    const isEntityType = (type === InputTypeConstants.EntityDefault)
+      || (type === InputTypeConstants.StringDropdownQuery)
+      || (type === InputTypeConstants.EntityQuery)
+      || (type === InputTypeConstants.EntityContentBlocks);
+
+    if (isEntityType) {
+      wrappers.push(WrappersConstants.LocalizationWrapper);
+      const allowMultiValue = settings.AllowMultiValue ?? false;
+      if (type === InputTypeConstants.EntityContentBlocks) {
+        wrappers.push(WrappersConstants.CollapsibleFieldWrapper);
+      }
+      if (allowMultiValue || type === InputTypeConstants.EntityContentBlocks) {
         wrappers.push(WrappersConstants.EntityExpandableWrapper);
       }
     }
