@@ -176,7 +176,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
       if (this.formsAreValid$.value || this.allControlsAreDisabled$.value) {
         const items = this.itemEditFormRefs
           .map(itemEditFormComponent => {
-            const isValid = itemEditFormComponent.form.form.valid
+            const isValid = itemEditFormComponent.eavFormRef.form.valid
               || itemEditFormComponent.checkAreAllControlsDisabled()
               || (itemEditFormComponent.item.Header.Group && itemEditFormComponent.item.Header.Group.SlotCanBeEmpty);
             return isValid ? itemEditFormComponent.item : null;
@@ -290,12 +290,12 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
 
       this.itemEditFormRefs.forEach(itemEditFormComponent => {
         if (
-          itemEditFormComponent.form.form.invalid === true
+          itemEditFormComponent.eavFormRef.form.invalid === true
           && (!itemEditFormComponent.item.Header.Group || itemEditFormComponent.item.Header.Group.SlotCanBeEmpty === false)
         ) {
           formsAreValid = false;
         }
-        if (itemEditFormComponent.form.form.dirty) {
+        if (itemEditFormComponent.eavFormRef.form.dirty) {
           this.formsAreDirty[itemEditFormComponent.currentLanguage] = true;
         }
         if (!itemEditFormComponent.checkAreAllControlsDisabled()) {
@@ -335,8 +335,8 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
   private calculateAllValidationMessages() {
     this.formErrors = [];
     this.itemEditFormRefs?.forEach(itemEditFormComponent => {
-      if (!itemEditFormComponent.form.form.invalid) { return; }
-      this.formErrors.push(this.validationMessagesService.validateForm(itemEditFormComponent.form.form, false));
+      if (!itemEditFormComponent.eavFormRef.form.invalid) { return; }
+      this.formErrors.push(this.validationMessagesService.validateForm(itemEditFormComponent.eavFormRef.form, false));
     });
   }
 

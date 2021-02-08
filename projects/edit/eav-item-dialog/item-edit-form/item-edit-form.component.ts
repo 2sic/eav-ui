@@ -22,7 +22,7 @@ import { BuildFieldsService } from './build-fields.service';
   providers: [BuildFieldsService, FieldsSettingsService, FieldsSettings2Service],
 })
 export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
-  @ViewChild(EavFormComponent) form: EavFormComponent;
+  @ViewChild(EavFormComponent) eavFormRef: EavFormComponent;
   @Input() item: EavItem;
   @Output() private itemFormValueChange = new EventEmitter<void>();
 
@@ -98,9 +98,9 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
 
   checkAreAllControlsDisabled() {
     let allDisabled = true;
-    const controlKeys = Object.keys(this.form.form.controls);
+    const controlKeys = Object.keys(this.eavFormRef.form.controls);
     for (const key of controlKeys) {
-      if (!this.form.form.controls[key].disabled) {
+      if (!this.eavFormRef.form.controls[key].disabled) {
         allDisabled = false;
         break;
       }
@@ -109,7 +109,7 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   private setFormValues() {
-    if (!this.form) { return; }
+    if (!this.eavFormRef) { return; }
 
     const formValues: { [name: string]: any } = {};
     Object.keys(this.item.Entity.Attributes).forEach(attributeKey => {
@@ -122,9 +122,9 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
     });
 
     // spm true only on language change?
-    if (this.form.valueIsChanged(formValues)) {
+    if (this.eavFormRef.valueIsChanged(formValues)) {
       // set new values to form
-      this.form.patchValue(formValues, false);
+      this.eavFormRef.patchValue(formValues, false);
     }
     // important to be after patchValue
     this.eavService.formValueChange$.next({
