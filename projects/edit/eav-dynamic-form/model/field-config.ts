@@ -1,6 +1,6 @@
 import { ValidatorFn } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
-import { Adam, Dropzone, FieldConfig, FieldSettings } from '../../../edit-types';
+import { Adam, Dropzone, FieldConfig } from '../../../edit-types';
 import { FieldHelper } from '../../eav-item-dialog/item-edit-form/field-helper';
 import { EntityInfo } from '../../shared/models';
 import { EavEntityAttributes, EavHeader } from '../../shared/models/eav';

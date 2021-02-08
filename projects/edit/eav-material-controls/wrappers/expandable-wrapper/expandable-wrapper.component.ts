@@ -92,6 +92,7 @@ export class ExpandableWrapperComponent extends BaseComponent<string> implements
       this.featureService,
       this.editRoutingService,
       this.dnnBridgeService,
+      this.fieldsSettings2Service,
       this.zone,
     );
 

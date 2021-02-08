@@ -6,6 +6,7 @@ import { FieldConfigSet } from '../../../../../eav-dynamic-form/model/field-conf
 import { DnnBridgeService } from '../../../../../shared/services/dnn-bridge.service';
 import { EavService } from '../../../../../shared/services/eav.service';
 import { EditRoutingService } from '../../../../../shared/services/edit-routing.service';
+import { FieldsSettings2Service } from '../../../../../shared/services/fields-settings2.service';
 import { ContentTypeService } from '../../../../../shared/store/ngrx-data/content-type.service';
 import { FeatureService } from '../../../../../shared/store/ngrx-data/feature.service';
 import { InputTypeService } from '../../../../../shared/store/ngrx-data/input-type.service';
@@ -32,6 +33,7 @@ export class ConnectorComponent implements AfterViewInit, OnDestroy {
     private featureService: FeatureService,
     private editRoutingService: EditRoutingService,
     private dnnBridgeService: DnnBridgeService,
+    private fieldsSettings2Service: FieldsSettings2Service,
     private zone: NgZone,
   ) { }
 
@@ -50,6 +52,7 @@ export class ConnectorComponent implements AfterViewInit, OnDestroy {
       this.featureService,
       this.editRoutingService,
       this.dnnBridgeService,
+      this.fieldsSettings2Service,
       this.zone,
     );
   }

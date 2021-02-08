@@ -3,12 +3,14 @@ import { AbstractControl, FormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { distinctUntilChanged, filter, map, startWith, take } from 'rxjs/operators';
-import { EavCustomInputField, ExperimentalProps, InputTypeName } from '../../../../../../edit-types';
+import { EavCustomInputField, ExperimentalProps, FieldSettings, InputTypeName } from '../../../../../../edit-types';
 import { FieldConfigSet } from '../../../../../eav-dynamic-form/model/field-config';
 import { InputFieldHelper } from '../../../../../shared/helpers/input-field-helper';
+import { FieldValue } from '../../../../../shared/models/field-value.model';
 import { DnnBridgeService } from '../../../../../shared/services/dnn-bridge.service';
 import { EavService } from '../../../../../shared/services/eav.service';
 import { EditRoutingService } from '../../../../../shared/services/edit-routing.service';
+import { FieldsSettings2Service } from '../../../../../shared/services/fields-settings2.service';
 import { ContentTypeService } from '../../../../../shared/store/ngrx-data/content-type.service';
 import { FeatureService } from '../../../../../shared/store/ngrx-data/feature.service';
 import { InputTypeService } from '../../../../../shared/store/ngrx-data/input-type.service';
@@ -17,7 +19,8 @@ import { ConnectorHost, ConnectorInstance } from './models/connector-instance.mo
 export class ConnectorHelper {
   private control: AbstractControl;
   private customEl: EavCustomInputField<any>;
-  private value$ = new BehaviorSubject<any>(null);
+  private value$ = new BehaviorSubject<FieldValue>(null);
+  private settings$ = new BehaviorSubject<FieldSettings>(null);
   private subscription = new Subscription();
 
   constructor(
@@ -32,6 +35,7 @@ export class ConnectorHelper {
     private featureService: FeatureService,
     private editRoutingService: EditRoutingService,
     private dnnBridgeService: DnnBridgeService,
+    private fieldsSettings2Service: FieldsSettings2Service,
     private zone: NgZone,
   ) {
     this.control = this.group.controls[this.config.field.name];
@@ -47,6 +51,12 @@ export class ConnectorHelper {
       })
     );
 
+    this.subscription.add(
+      this.fieldsSettings2Service.getFieldSettings$(this.config.field.name).subscribe(settings => {
+        this.settings$.next(settings);
+      })
+    );
+
     this.customEl = document.createElement(this.customElName) as any;
     this.customEl.connector = this.buildConnector();
     this.customElContainerRef.nativeElement.appendChild(this.customEl);
@@ -55,6 +65,7 @@ export class ConnectorHelper {
   destroy() {
     this.subscription.unsubscribe();
     this.value$.complete();
+    this.settings$.complete();
     this.customEl?.parentNode.removeChild(this.customEl);
     this.customEl = null;
   }
@@ -68,6 +79,11 @@ export class ConnectorHelper {
       this.config.field,
       experimental,
       this.eavService.eavConfig,
+    );
+    this.subscription.add(
+      this.settings$.subscribe(settings => {
+        connector.field.settings = settings;
+      })
     );
     return connector;
   }

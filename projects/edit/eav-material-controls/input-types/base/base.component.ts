@@ -30,7 +30,7 @@ export class BaseComponent<T> implements Field, OnInit, OnDestroy {
   constructor(
     public eavService: EavService,
     public validationMessagesService: ValidationMessagesService,
-    private fieldsSettings2Service: FieldsSettings2Service,
+    public fieldsSettings2Service: FieldsSettings2Service,
   ) { }
 
   ngOnInit() {
