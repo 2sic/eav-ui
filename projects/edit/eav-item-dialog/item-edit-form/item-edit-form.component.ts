@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
+import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 import { EavFormComponent } from '../../eav-dynamic-form/components/eav-form/eav-form.component';
 import { FormValueChange } from '../../eav-dynamic-form/components/eav-form/eav-form.models';
 import { FieldConfigGroup, FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
@@ -14,6 +15,7 @@ import { ContentTypeService } from '../../shared/store/ngrx-data/content-type.se
 import { ItemService } from '../../shared/store/ngrx-data/item.service';
 import { LanguageInstanceService } from '../../shared/store/ngrx-data/language-instance.service';
 import { BuildFieldsService } from './build-fields.service';
+import { FormValues } from './item-edit-form.models';
 
 @Component({
   selector: 'app-item-edit-form',
@@ -96,35 +98,16 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
     this.itemFormValueChange.emit();
   }
 
-  checkAreAllControlsDisabled() {
-    let allDisabled = true;
-    const controlKeys = Object.keys(this.eavFormRef.form.controls);
-    for (const key of controlKeys) {
-      if (!this.eavFormRef.form.controls[key].disabled) {
-        allDisabled = false;
-        break;
-      }
-    }
-    return allDisabled;
-  }
-
   private setFormValues() {
     if (!this.eavFormRef) { return; }
 
-    const formValues: { [name: string]: any } = {};
-    Object.keys(this.item.Entity.Attributes).forEach(attributeKey => {
-      formValues[attributeKey] = LocalizationHelper.translate(
-        this.currentLanguage,
-        this.defaultLanguage,
-        this.item.Entity.Attributes[attributeKey],
-        null,
-      );
-    });
+    const formValues: FormValues = {};
+    for (const [name, values] of Object.entries(this.item.Entity.Attributes)) {
+      formValues[name] = LocalizationHelper.translate(this.currentLanguage, this.defaultLanguage, values, null);
+    }
 
-    // spm true only on language change?
-    if (this.eavFormRef.valueIsChanged(formValues)) {
-      // set new values to form
-      this.eavFormRef.patchValue(formValues, false);
+    if (this.valueIsChanged(formValues, this.eavFormRef.form.value)) {
+      this.eavFormRef.form.patchValue(formValues, { emitEvent: false });
     }
     // important to be after patchValue
     this.eavService.formValueChange$.next({
@@ -132,6 +115,23 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
       entityGuid: this.item.Entity.Guid,
       entityValues: formValues,
     });
+  }
+
+  /** Check if value in form changed */
+  private valueIsChanged(newValues: FormValues, oldValues: FormValues) {
+    let valueIsChanged = false;
+
+    // always true if values are not simple types
+    // e.g. if form has a single entity field which stores value as an array, this check won't work
+    for (const name of Object.keys(newValues)) {
+      if (newValues[name] !== oldValues[name]) {
+        valueIsChanged = true;
+        break;
+      }
+    }
+
+    angularConsoleLog('VALUECHANGED:', valueIsChanged, 'VALUES:', newValues, 'FORM VALUES:', oldValues);
+    return valueIsChanged;
   }
 
   private destroyFieldConfigs(fieldConfigs: FieldConfigSet[]) {

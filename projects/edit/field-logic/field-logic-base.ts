@@ -1,5 +1,5 @@
 import { FieldSettings } from '../../edit-types';
-import { FieldValue } from '../shared/models/field-value.model';
+import { FieldValue } from '../eav-item-dialog/item-edit-form/item-edit-form.models';
 import { FieldLogicManager } from './field-logic-manager';
 
 type LogicConstructor = new (...args: any[]) => FieldLogicBase;

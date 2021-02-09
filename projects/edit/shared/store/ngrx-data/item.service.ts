@@ -3,7 +3,7 @@ import { EntityCollectionServiceBase, EntityCollectionServiceElementsFactory } f
 import { distinctUntilChanged, map, take } from 'rxjs/operators';
 import { FieldSettings } from '../../../../edit-types';
 import { DataTypeConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/data-type.constants';
-import { FormValue, FormValues } from '../../../eav-item-dialog/item-edit-form/item-edit-form.models';
+import { FieldValue, FormValues } from '../../../eav-item-dialog/item-edit-form/item-edit-form.models';
 import { InputFieldHelper } from '../../helpers/input-field-helper';
 import { LocalizationHelper } from '../../helpers/localization-helper';
 import { Language, SaveResult } from '../../models';
@@ -49,7 +49,7 @@ export class ItemService extends EntityCollectionServiceBase<EavItem> {
   addItemAttributeValue(
     entityGuid: string,
     attributeKey: string,
-    newValue: FormValue,
+    newValue: FieldValue,
     language: string,
     isReadOnly: boolean,
     attributeType: string,

@@ -3,7 +3,6 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { skip } from 'rxjs/operators';
 import { EavService } from '../../..';
-import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 import { BuildFieldsService } from '../../../eav-item-dialog/item-edit-form/build-fields.service';
 import { FormValues } from '../../../eav-item-dialog/item-edit-form/item-edit-form.models';
 import { FieldsSettingsService } from '../../../shared/services/fields-settings.service';
@@ -66,33 +65,6 @@ export class EavFormComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnDestroy() {
     this.buildFieldsService.stopTranslations(this.fieldConfigs);
     this.subscription.unsubscribe();
-  }
-
-  /**
-   * Patch values to formGroup. It accepts an object with control names as keys and will do it's best to
-   * match the values to the correct controls in the group.
-   * If emitEvent is true, this change will cause a valueChanges event on the FormGroup to be emitted.
-   * This defaults to true (as it falls through to updateValueAndValidity)
-   */
-  patchValue(values: { [key: string]: any }, emitEvent: boolean) {
-    this.form.patchValue(values, { emitEvent });
-  }
-
-  /** Check if value in form changed */
-  valueIsChanged(values: { [key: string]: any }) {
-    let valueIsChanged = false;
-
-    const valueKeys = Object.keys(values);
-    for (const valueKey of valueKeys) {
-      if (values[valueKey] !== this.form.value[valueKey]) {
-        valueIsChanged = true;
-        break;
-      }
-    }
-
-    // spm isn't this always true? Something could be wrong here
-    angularConsoleLog('VALUECHANGED:', valueIsChanged, 'VALUES:', values, 'FORM VALUES:', this.form.value);
-    return valueIsChanged;
   }
 
   /** Create form from configuration */

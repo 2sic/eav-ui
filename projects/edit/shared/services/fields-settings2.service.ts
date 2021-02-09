@@ -9,7 +9,6 @@ import { InputFieldHelper } from '../helpers/input-field-helper';
 import { LocalizationHelper } from '../helpers/localization-helper';
 import { ContentTypeSettings } from '../models';
 import { EavContentType, EavEntity, EavItem } from '../models/eav';
-import { FieldValue } from '../models/field-value.model';
 import { FieldsProps } from '../models/fields-configs.model';
 import { ContentTypeService } from '../store/ngrx-data/content-type.service';
 import { InputTypeService } from '../store/ngrx-data/input-type.service';
@@ -125,7 +124,7 @@ export class FieldsSettings2Service implements OnDestroy {
     return this.fieldsProps$.pipe(
       map(fieldsSettings => fieldsSettings[fieldName].settings),
       distinctUntilChanged((oldSettings, newSettings) => {
-        const equal = isEqualObj(oldSettings, newSettings);
+        const equal = settingsEqual(oldSettings, newSettings);
         return equal;
       }),
     );
@@ -200,7 +199,7 @@ export class FieldsSettings2Service implements OnDestroy {
   }
 }
 
-function isEqualObj(x: FieldSettings, y: FieldSettings) {
+function settingsEqual(x: FieldSettings, y: FieldSettings) {
   const obj1 = x as { [key: string]: any };
   const obj2 = y as { [key: string]: any };
 

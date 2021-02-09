@@ -1,4 +1,4 @@
-import { FormValue, FormValues } from '../../../eav-item-dialog/item-edit-form/item-edit-form.models';
+import { FieldValue, FormValues } from '../../../eav-item-dialog/item-edit-form/item-edit-form.models';
 
 export interface FormulaContext {
   data: FormulaCtxData;
@@ -6,8 +6,8 @@ export interface FormulaContext {
 
 export interface FormulaCtxData {
   name: string;
-  value: string;
+  value: FieldValue;
   form: FormValues;
 }
 
-export type FormulaFunction = (context: FormulaContext) => FormValue;
+export type FormulaFunction = (context: FormulaContext) => FieldValue;

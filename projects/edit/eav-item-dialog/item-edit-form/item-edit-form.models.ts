@@ -1,5 +1,5 @@
 export interface FormValues {
-  [fieldName: string]: FormValue;
+  [fieldName: string]: FieldValue;
 }
 
-export type FormValue = any;
+export type FieldValue = string | boolean | number | string[];

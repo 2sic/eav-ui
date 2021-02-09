@@ -175,11 +175,11 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
     setTimeout(() => {
       if (this.formsAreValid$.value || this.allControlsAreDisabled$.value) {
         const items = this.itemEditFormRefs
-          .map(itemEditFormComponent => {
-            const isValid = itemEditFormComponent.eavFormRef.form.valid
-              || itemEditFormComponent.checkAreAllControlsDisabled()
-              || (itemEditFormComponent.item.Header.Group && itemEditFormComponent.item.Header.Group.SlotCanBeEmpty);
-            return isValid ? itemEditFormComponent.item : null;
+          .map(itemEditFormRef => {
+            const isValid = itemEditFormRef.eavFormRef.form.valid
+              || this.checkAreAllControlsDisabled(itemEditFormRef)
+              || (itemEditFormRef.item.Header.Group && itemEditFormRef.item.Header.Group.SlotCanBeEmpty);
+            return isValid ? itemEditFormRef.item : null;
           })
           .filter(item => item != null)
           .map(item => Item1.convert(item))
@@ -288,17 +288,17 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
       let allControlsAreDisabled = true;
       this.formsAreDirty[this.itemEditFormRefs.first.currentLanguage] = false;
 
-      this.itemEditFormRefs.forEach(itemEditFormComponent => {
+      this.itemEditFormRefs.forEach(itemEditFormRef => {
         if (
-          itemEditFormComponent.eavFormRef.form.invalid === true
-          && (!itemEditFormComponent.item.Header.Group || itemEditFormComponent.item.Header.Group.SlotCanBeEmpty === false)
+          itemEditFormRef.eavFormRef.form.invalid === true
+          && (!itemEditFormRef.item.Header.Group || itemEditFormRef.item.Header.Group.SlotCanBeEmpty === false)
         ) {
           formsAreValid = false;
         }
-        if (itemEditFormComponent.eavFormRef.form.dirty) {
-          this.formsAreDirty[itemEditFormComponent.currentLanguage] = true;
+        if (itemEditFormRef.eavFormRef.form.dirty) {
+          this.formsAreDirty[itemEditFormRef.currentLanguage] = true;
         }
-        if (!itemEditFormComponent.checkAreAllControlsDisabled()) {
+        if (!this.checkAreAllControlsDisabled(itemEditFormRef)) {
           allControlsAreDisabled = false;
         }
       });
@@ -318,12 +318,22 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
     this.dialogRef.disableClose = this.areFormsDirtyAnyLanguage();
   }
 
+  private checkAreAllControlsDisabled(itemEditFormRef: ItemEditFormComponent) {
+    let allDisabled = true;
+    for (const control of Object.values(itemEditFormRef.eavFormRef.form.controls)) {
+      if (!control.disabled) {
+        allDisabled = false;
+        break;
+      }
+    }
+    return allDisabled;
+  }
+
   /** Determine is from is dirty on any language. If any form is dirty we need to ask to save */
   private areFormsDirtyAnyLanguage() {
     let isDirty = false;
-    const langKeys = Object.keys(this.formsAreDirty);
-    for (const langKey of langKeys) {
-      if (this.formsAreDirty[langKey] === true) {
+    for (const formDirty of Object.values(this.formsAreDirty)) {
+      if (formDirty === true) {
         isDirty = true;
         break;
       }
@@ -334,9 +344,9 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
   /** Fill in all error validation messages from all forms */
   private calculateAllValidationMessages() {
     this.formErrors = [];
-    this.itemEditFormRefs?.forEach(itemEditFormComponent => {
-      if (!itemEditFormComponent.eavFormRef.form.invalid) { return; }
-      this.formErrors.push(this.validationMessagesService.validateForm(itemEditFormComponent.eavFormRef.form, false));
+    this.itemEditFormRefs?.forEach(itemEditFormRef => {
+      if (!itemEditFormRef.eavFormRef.form.invalid) { return; }
+      this.formErrors.push(this.validationMessagesService.validateForm(itemEditFormRef.eavFormRef.form, false));
     });
   }
 
