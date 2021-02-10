@@ -43,7 +43,10 @@ export class BaseComponent<T> implements Field, OnInit, OnDestroy {
     this.label$ = this.settings$.pipe(map(settings => settings.Name));
     this.placeholder$ = this.settings$.pipe(map(settings => settings.Placeholder));
     this.required$ = this.settings$.pipe(map(settings => settings.Required));
-    this.invalid$ = this.control.statusChanges.pipe(map(status => status === 'INVALID'), startWith(this.control.invalid));
+    this.invalid$ = this.control.statusChanges.pipe(
+      map(() => this.control.invalid),
+      startWith(this.control.invalid),
+    );
     this.showValidation$ = this.validationMessagesService.showValidation$.pipe(
       filter(control => control === this.control),
       startWith(this.control),

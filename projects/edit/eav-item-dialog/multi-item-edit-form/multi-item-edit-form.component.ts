@@ -1,10 +1,10 @@
-import { AfterViewChecked, Component, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { Component, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import 'reflect-metadata';
 import { BehaviorSubject, combineLatest, fromEvent, Observable, Subscription } from 'rxjs';
-import { delay, filter, map, startWith, tap } from 'rxjs/operators';
+import { delay, map, startWith, tap } from 'rxjs/operators';
 import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 import { SnackBarSaveErrorsComponent } from '../../eav-material-controls/dialogs/snack-bar-save-errors/snack-bar-save-errors.component';
 import { SaveErrorsSnackData } from '../../eav-material-controls/dialogs/snack-bar-save-errors/snack-bar-save-errors.models';
@@ -12,11 +12,13 @@ import { SnackBarUnsavedChangesComponent } from '../../eav-material-controls/dia
 import { UnsavedChangesSnackData } from '../../eav-material-controls/dialogs/snack-bar-unsaved-changes/snack-bar-unsaved-changes.models';
 import { ValidationMessagesService } from '../../eav-material-controls/validators/validation-messages-service';
 import { EditEntryComponent } from '../../edit-entry/edit-entry.component';
-import { FieldErrorMessage } from '../../shared/models';
+import { FieldErrorMessage, SaveResult } from '../../shared/models';
 import { EavItem } from '../../shared/models/eav';
 import { Item1 } from '../../shared/models/json-format-v1';
+import { ObjectModel } from '../../shared/models/object.model';
 import { EavService } from '../../shared/services/eav.service';
 import { EditRoutingService } from '../../shared/services/edit-routing.service';
+import { FormsStateService } from '../../shared/services/forms-state.service';
 import { GlobalConfigService } from '../../shared/services/global-configuration.service';
 import { LoadIconsService } from '../../shared/services/load-icons.service';
 import { ContentTypeItemService } from '../../shared/store/ngrx-data/content-type-item.service';
@@ -35,22 +37,17 @@ import { MultiEditFormTemplateVars, SaveEavFormData } from './multi-item-edit-fo
   selector: 'app-multi-item-edit-form',
   templateUrl: './multi-item-edit-form.component.html',
   styleUrls: ['./multi-item-edit-form.component.scss'],
-  providers: [EditRoutingService],
+  providers: [EditRoutingService, FormsStateService],
 })
-export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewChecked {
+export class MultiItemEditFormComponent implements OnInit, OnDestroy {
   @ViewChildren(ItemEditFormComponent) private itemEditFormRefs: QueryList<ItemEditFormComponent>;
 
   templateVars$: Observable<MultiEditFormTemplateVars>;
 
-  private formsAreValid$: BehaviorSubject<boolean>;
-  private allControlsAreDisabled$: BehaviorSubject<boolean>;
   private reduceSaveButton$: BehaviorSubject<boolean>;
   private debugInfoIsOpen$: BehaviorSubject<boolean>;
-  private formErrors: { [key: string]: string }[];
-  private formsAreDirty: { [key: string]: boolean };
-  private initialFormsStateChecked: boolean;
-  private formIsSaved: boolean;
   private subscription: Subscription;
+  private saveResult: SaveResult;
 
   constructor(
     private dialogRef: MatDialogRef<EditEntryComponent>,
@@ -70,24 +67,23 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
     private editRoutingService: EditRoutingService,
     private publishStatusService: PublishStatusService,
     private formPrefetchService: PrefetchService,
-  ) { }
+    private formsStateService: FormsStateService,
+  ) {
+    this.dialogRef.disableClose = true;
+  }
 
   ngOnInit() {
-    this.formsAreValid$ = new BehaviorSubject(false);
-    this.allControlsAreDisabled$ = new BehaviorSubject(true);
     this.reduceSaveButton$ = new BehaviorSubject(false);
     this.debugInfoIsOpen$ = new BehaviorSubject(false);
-    this.formErrors = [];
-    this.formsAreDirty = {};
-    this.initialFormsStateChecked = false;
-    this.formIsSaved = false;
     this.subscription = new Subscription();
     this.editRoutingService.init();
     this.loadIconsService.load();
+    this.formsStateService.init();
     // spm TODO: added a small delay to calculate fields a bit later than languages to make form opening feel smoother.
     // Remove if calculating fields gets faster
     const items$ = this.itemService.selectItems(this.eavService.eavConfig.itemGuids).pipe(delay(0));
     const hideHeader$ = this.languageInstanceService.getHideHeader(this.eavService.eavConfig.formId);
+    const formsValid$ = this.formsStateService.formsValid$;
     const debugEnabled$ = this.globalConfigService.getDebugEnabled().pipe(
       tap(debugEnabled => {
         if (this.debugInfoIsOpen$.value && !debugEnabled) {
@@ -96,17 +92,16 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
       })
     );
     this.templateVars$ = combineLatest([
-      combineLatest([items$.pipe(startWith([])), this.formsAreValid$, this.allControlsAreDisabled$, this.reduceSaveButton$]),
+      combineLatest([items$.pipe(startWith([])), formsValid$, this.reduceSaveButton$]),
       combineLatest([debugEnabled$, this.debugInfoIsOpen$, hideHeader$]),
     ]).pipe(
       map(([
-        [items, formsAreValid, allControlsAreDisabled, reduceSaveButton],
+        [items, formsValid, reduceSaveButton],
         [debugEnabled, debugInfoIsOpen, hideHeader],
       ]) => {
         const templateVars: MultiEditFormTemplateVars = {
           items,
-          formsAreValid,
-          allControlsAreDisabled,
+          formsValid,
           reduceSaveButton,
           debugEnabled,
           debugInfoIsOpen,
@@ -115,23 +110,13 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
         return templateVars;
       }),
     );
-    this.languageChangeSubscribe();
     this.dialogBackdropClickSubscribe();
-    this.formSetValueChangeSubscribe();
     setTimeout(() => { this.reduceSaveButton$.next(true); }, 5000);
-  }
-
-  ngAfterViewChecked() {
-    if (!this.initialFormsStateChecked) {
-      this.checkFormsState();
-    }
   }
 
   ngOnDestroy() {
     this.reduceSaveButton$.complete();
     this.debugInfoIsOpen$.complete();
-    this.formsAreValid$.complete();
-    this.allControlsAreDisabled$.complete();
     this.subscription.unsubscribe();
     this.languageInstanceService.removeLanguageInstance(this.eavService.eavConfig.formId);
     this.publishStatusService.removePublishStatus(this.eavService.eavConfig.formId);
@@ -150,22 +135,18 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
     }
   }
 
-  /** Close form dialog or if close is disabled show a message */
-  closeDialog(saveResult?: any) {
-    if (this.dialogRef.disableClose) {
+  closeDialog(forceClose?: boolean) {
+    if (forceClose) {
+      this.dialogRef.close(this.eavService.eavConfig.createMode ? this.saveResult : undefined);
+    } else if (this.formsStateService.formsDirty$.value) {
       this.snackBarYouHaveUnsavedChanges();
     } else {
-      this.dialogRef.close(this.eavService.eavConfig.createMode ? saveResult : undefined);
+      this.dialogRef.close(this.eavService.eavConfig.createMode ? this.saveResult : undefined);
     }
   }
 
   trackByFn(index: number, item: EavItem) {
-    return item.Entity.Id === 0 ? item.Entity.Guid : item.Entity.Id;
-  }
-
-  formValueChange() {
-    this.checkFormsState();
-    this.formErrors = [];
+    return item.Entity.Guid;
   }
 
   /** Save all forms */
@@ -173,11 +154,10 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
     this.eavService.forceConnectorSave$.next();
     // start gathering submit data with a timeout to let custom components which run outside Angular zone to save their values
     setTimeout(() => {
-      if (this.formsAreValid$.value || this.allControlsAreDisabled$.value) {
+      if (this.formsStateService.formsValid$.value) {
         const items = this.itemEditFormRefs
           .map(itemEditFormRef => {
-            const isValid = itemEditFormRef.eavFormRef.form.valid
-              || this.checkAreAllControlsDisabled(itemEditFormRef)
+            const isValid = !itemEditFormRef.eavFormRef.form.invalid
               || (itemEditFormRef.item.Header.Group && itemEditFormRef.item.Header.Group.SlotCanBeEmpty);
             return isValid ? itemEditFormRef.item : null;
           })
@@ -192,31 +172,33 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
           IsPublished: publishStatus.IsPublished,
           DraftShouldBranch: publishStatus.DraftShouldBranch,
         };
-        angularConsoleLog('SAVE FORM DATA: ', saveFormData);
+        angularConsoleLog('SAVE FORM DATA:', saveFormData);
         this.snackBar.open(this.translate.instant('Message.Saving'), null, { duration: 2000 });
 
         this.eavService.saveFormData(saveFormData).subscribe({
           next: result => {
-            angularConsoleLog('saveAll', close);
-            if (close) { this.formIsSaved = true; }
-
+            angularConsoleLog('SAVED!, result:', result, 'close:', close);
             this.itemService.updateItemId(result);
-            angularConsoleLog('success END: ', result);
             this.snackBar.open(this.translate.instant('Message.Saved'), null, { duration: 2000 });
-            this.dialogRef.disableClose = false;
-            if (this.formIsSaved) {
-              this.closeDialog(result);
+            this.formsStateService.formsDirty$.next(false);
+            this.saveResult = result;
+            if (close) {
+              this.closeDialog();
             }
           },
           error: err => {
-            angularConsoleLog('error END', err);
+            angularConsoleLog('SAVE FAILED:', err);
             this.snackBar.open('Error', null, { duration: 2000 });
           },
         });
       } else {
-        this.calculateAllValidationMessages();
+        const formErrors: ObjectModel<string>[] = [];
+        this.itemEditFormRefs?.forEach(itemEditFormRef => {
+          if (!itemEditFormRef.eavFormRef.form.invalid) { return; }
+          formErrors.push(this.validationMessagesService.validateForm(itemEditFormRef.eavFormRef.form, false));
+        });
         const fieldErrors: FieldErrorMessage[] = [];
-        this.formErrors.forEach(formError => {
+        formErrors.forEach(formError => {
           Object.keys(formError).forEach(key => {
             fieldErrors.push({ field: key, message: formError[key] });
           });
@@ -236,18 +218,10 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
     this.debugInfoIsOpen$.next(opened);
   }
 
-  private languageChangeSubscribe() {
-    this.subscription.add(
-      this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId).subscribe(language => {
-        this.formErrors = []; // on current language change reset form errors
-      })
-    );
-  }
-
   private dialogBackdropClickSubscribe() {
     this.subscription.add(
       fromEvent<BeforeUnloadEvent>(window, 'beforeunload').subscribe(event => {
-        if (!this.dialogRef.disableClose) { return; }
+        if (!this.formsStateService.formsDirty$.value) { return; }
         event.preventDefault();
         event.returnValue = ''; // fix for Chrome
         this.snackBarYouHaveUnsavedChanges();
@@ -272,85 +246,6 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
     });
   }
 
-  private formSetValueChangeSubscribe() {
-    this.subscription.add(
-      this.eavService.formValueChange$.pipe(
-        filter(formSet => formSet.formId === this.eavService.eavConfig.formId)
-      ).subscribe(formSet => {
-        this.checkFormsState();
-      })
-    );
-  }
-
-  private checkFormsState() {
-    if (this.itemEditFormRefs?.length > 0 && this.itemEditFormRefs?.first.currentLanguage) {
-      let formsAreValid = true;
-      let allControlsAreDisabled = true;
-      this.formsAreDirty[this.itemEditFormRefs.first.currentLanguage] = false;
-
-      this.itemEditFormRefs.forEach(itemEditFormRef => {
-        if (
-          itemEditFormRef.eavFormRef.form.invalid === true
-          && (!itemEditFormRef.item.Header.Group || itemEditFormRef.item.Header.Group.SlotCanBeEmpty === false)
-        ) {
-          formsAreValid = false;
-        }
-        if (itemEditFormRef.eavFormRef.form.dirty) {
-          this.formsAreDirty[itemEditFormRef.currentLanguage] = true;
-        }
-        if (!this.checkAreAllControlsDisabled(itemEditFormRef)) {
-          allControlsAreDisabled = false;
-        }
-      });
-
-      if (this.formsAreValid$.value !== formsAreValid) {
-        this.formsAreValid$.next(formsAreValid);
-      }
-
-      if (this.allControlsAreDisabled$.value !== allControlsAreDisabled) {
-        this.allControlsAreDisabled$.next(allControlsAreDisabled);
-      }
-
-      if (!this.initialFormsStateChecked) {
-        this.initialFormsStateChecked = true;
-      }
-    }
-    this.dialogRef.disableClose = this.areFormsDirtyAnyLanguage();
-  }
-
-  private checkAreAllControlsDisabled(itemEditFormRef: ItemEditFormComponent) {
-    let allDisabled = true;
-    for (const control of Object.values(itemEditFormRef.eavFormRef.form.controls)) {
-      if (!control.disabled) {
-        allDisabled = false;
-        break;
-      }
-    }
-    return allDisabled;
-  }
-
-  /** Determine is from is dirty on any language. If any form is dirty we need to ask to save */
-  private areFormsDirtyAnyLanguage() {
-    let isDirty = false;
-    for (const formDirty of Object.values(this.formsAreDirty)) {
-      if (formDirty === true) {
-        isDirty = true;
-        break;
-      }
-    }
-    return isDirty;
-  }
-
-  /** Fill in all error validation messages from all forms */
-  private calculateAllValidationMessages() {
-    this.formErrors = [];
-    this.itemEditFormRefs?.forEach(itemEditFormRef => {
-      if (!itemEditFormRef.eavFormRef.form.invalid) { return; }
-      this.formErrors.push(this.validationMessagesService.validateForm(itemEditFormRef.eavFormRef.form, false));
-    });
-  }
-
-  /** Open snackbar when snack bar not saved */
   private snackBarYouHaveUnsavedChanges() {
     const snackData: UnsavedChangesSnackData = {
       save: false,
@@ -364,8 +259,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy, AfterViewC
       if (snackBarRef.containerInstance.snackBarConfig.data.save) {
         this.saveAll(true);
       } else {
-        this.dialogRef.disableClose = false;
-        this.closeDialog();
+        this.closeDialog(true);
       }
     });
   }

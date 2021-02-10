@@ -26,7 +26,10 @@ export class FieldHelperTextComponent implements OnInit {
 
   ngOnInit() {
     this.control = this.group.controls[this.config.field.name];
-    const invalid$ = this.control.statusChanges.pipe(map(status => status === 'INVALID'), startWith(this.control.invalid));
+    const invalid$ = this.control.statusChanges.pipe(
+      map(() => this.control.invalid),
+      startWith(this.control.invalid),
+    );
 
     const settings$ = this.fieldsSettings2Service.getFieldSettings$(this.config.field.name);
     const description$ = settings$.pipe(map(settings => settings.Notes));

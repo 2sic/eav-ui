@@ -34,8 +34,7 @@ export interface SaveEavFormData extends EavPublishStatus {
 
 export interface MultiEditFormTemplateVars {
   items: EavItem[];
-  formsAreValid: boolean;
-  allControlsAreDisabled: boolean;
+  formsValid: boolean;
   reduceSaveButton: boolean;
   debugEnabled: boolean;
   debugInfoIsOpen: boolean;

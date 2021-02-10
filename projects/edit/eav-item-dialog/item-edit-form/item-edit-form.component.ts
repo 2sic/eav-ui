@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
@@ -26,12 +26,11 @@ import { FormValues } from './item-edit-form.models';
 export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
   @ViewChild(EavFormComponent) eavFormRef: EavFormComponent;
   @Input() item: EavItem;
-  @Output() private itemFormValueChange = new EventEmitter<void>();
 
   rootConfig: FieldConfigSet;
   fieldConfigs: FieldConfigSet[];
-  currentLanguage: string;
 
+  private currentLanguage: string;
   private defaultLanguage: string;
   private subscription = new Subscription();
 
@@ -95,7 +94,6 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
     // run formulas when form value is changed
     change.formulaInstance.runSettingsFormulas();
     change.formulaInstance.runValueFormulas();
-    this.itemFormValueChange.emit();
   }
 
   private setFormValues() {

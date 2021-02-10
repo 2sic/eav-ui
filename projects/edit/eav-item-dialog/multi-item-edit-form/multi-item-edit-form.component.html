@@ -1,8 +1,8 @@
 <div *ngIf="templateVars$ | async as data" style="position: relative" mat-dialog-container appToggleDebug>
 
   <div mat-dialog-actions class="form-header-container" [ngClass]="{ 'u-display-none': data.hideHeader }">
-    <app-multi-item-edit-form-header class="multi-item-edit-form-header"
-      [disabled]="!data.formsAreValid && !data.allControlsAreDisabled" (closeDialog)="closeDialog()">
+    <app-multi-item-edit-form-header class="multi-item-edit-form-header" [disabled]="!data.formsValid"
+      (closeDialog)="closeDialog()">
     </app-multi-item-edit-form-header>
   </div>
 
@@ -16,7 +16,7 @@
         <div class="mdc-layout-grid__inner">
           <div class="mdc-layout-grid__cell--span-12" appFormSlide>
             <div *ngFor="let item of data.items; trackBy: trackByFn">
-              <app-item-edit-form [item]="item" (itemFormValueChange)="formValueChange()"></app-item-edit-form>
+              <app-item-edit-form [item]="item"></app-item-edit-form>
             </div>
           </div>
         </div>
@@ -27,7 +27,7 @@
           <button mat-fab class="mat-elevation-z24" [matTooltip]="'Form.Buttons.Save.Tip' | translate" [ngClass]="{
             'mat-fab--compact' : data.reduceSaveButton,
             'mat-fab--extended' : !data.reduceSaveButton,
-            'mat-fab--disabled' : !data.formsAreValid && !data.allControlsAreDisabled
+            'mat-fab--disabled' : !data.formsValid
           }" (click)="saveAll(true)">
             <mat-icon>done</mat-icon>
             {{ data.reduceSaveButton ? '' : ('Form.Buttons.Save' | translate).toUpperCase() }}
