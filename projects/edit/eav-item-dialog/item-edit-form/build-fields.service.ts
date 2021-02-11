@@ -48,7 +48,6 @@ export class BuildFieldsService {
       entityId: this.item.Entity.Id,
       entityGuid: this.item.Entity.Guid,
       contentTypeId: InputFieldHelper.getContentTypeId(this.item),
-      header: this.item.Header,
     };
 
     // build first empty

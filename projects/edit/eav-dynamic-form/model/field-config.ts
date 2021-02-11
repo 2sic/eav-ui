@@ -3,7 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 import { Adam, Dropzone, FieldConfig } from '../../../edit-types';
 import { FieldHelper } from '../../eav-item-dialog/item-edit-form/field-helper';
 import { EntityInfo } from '../../shared/models';
-import { EavEntityAttributes, EavHeader } from '../../shared/models/eav';
+import { EavEntityAttributes } from '../../shared/models/eav';
 
 // spm split these interfaces into separate files
 export interface FieldConfigSet {
@@ -35,5 +35,4 @@ export interface ItemConfig {
   entityId: number;
   entityGuid: string;
   contentTypeId: string;
-  header: EavHeader;
 }

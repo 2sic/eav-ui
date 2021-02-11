@@ -149,8 +149,8 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
     }
 
     // handle short-ID links like file:17
-    const contentType = this.config.entity.header.ContentTypeName;
-    const entityGuid = this.config.entity.header.Guid;
+    const contentType = this.config.entity.contentTypeId;
+    const entityGuid = this.config.entity.entityGuid;
     const field = this.config.field.name;
     this.dnnBridgeService.getUrlOfId(value, contentType, entityGuid, field).subscribe(path => {
       if (!path) { return; }

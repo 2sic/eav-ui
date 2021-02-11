@@ -67,8 +67,8 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
     this.adamConfig$ = new BehaviorSubject<AdamConfig>(null);
     this.items$ = new BehaviorSubject<AdamItem[]>([]);
     this.refreshOnChildClosed();
-    const contentType = this.config.entity.header.ContentTypeName;
-    const entityGuid = this.config.entity.header.Guid;
+    const contentType = this.config.entity.contentTypeId;
+    const entityGuid = this.config.entity.entityGuid;
     const field = this.config.field.name;
     this.url = this.dnnContext.$2sxc.http.apiUrl(`app-content/${contentType}/${entityGuid}/${field}`);
     this.pasteClipboardImage = this.featureService.isFeatureEnabled(FeaturesGuidsConstants.PasteImageFromClipboard);
