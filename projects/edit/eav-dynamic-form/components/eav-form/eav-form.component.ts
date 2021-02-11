@@ -26,8 +26,8 @@ export class EavFormComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() private entityGuid: string;
   @Output() private formValueChange = new EventEmitter<FormValueChange>();
 
-  form: FormGroup = new FormGroup({});
-  private subscription = new Subscription();
+  form: FormGroup;
+  private subscription: Subscription;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -41,6 +41,8 @@ export class EavFormComponent implements OnInit, AfterViewInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+    this.form = new FormGroup({});
+    this.subscription = new Subscription();
     this.createControlsInFormGroup(this.fieldConfigs);
 
     const formValid$ = this.form.statusChanges.pipe(

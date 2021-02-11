@@ -2,88 +2,66 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
+import { ObjectModel } from '../../shared/models/object.model';
 
 @Injectable()
 export class ValidationMessagesService implements OnDestroy {
   /** Fires on field validation touch to display validation messages */
   showValidation$ = new Subject<AbstractControl>();
 
+  private validationMessages: ObjectModel<(config: FieldConfigSet) => string> = {
+    required: (config: FieldConfigSet) => {
+      return config ? 'ValidationMessage.Required' : `ValidationMessage.RequiredShort`; // short version in toaster
+    },
+    min: (config: FieldConfigSet) => {
+      return config ? `ValidationMessage.Min` : `ValidationMessage.NotValid`;
+    },
+    max: (config: FieldConfigSet) => {
+      return config ? `ValidationMessage.Max` : `ValidationMessage.NotValid`;
+    },
+    pattern: (config: FieldConfigSet) => {
+      return config ? `ValidationMessage.Pattern` : `ValidationMessage.NotValid`;
+    },
+    decimals: (config: FieldConfigSet) => {
+      return config ? `ValidationMessage.Decimals` : `ValidationMessage.NotValid`;
+    },
+  };
+
   constructor() { }
 
   // spm TODO: ngOnDestroy only fires in services provided in component
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.showValidation$.complete();
   }
 
-  /** return list of error messages */
-  public validationMessages(): any {
-    const messages = {
-      required: (config: FieldConfigSet) => {
-        return config ? 'ValidationMessage.Required' : `ValidationMessage.RequiredShort`; // short version in toaster
-      },
-      min: (config: FieldConfigSet) => {
-        return config ? `ValidationMessage.Min` : `ValidationMessage.NotValid`;
-      },
-      max: (config: FieldConfigSet) => {
-        return config ? `ValidationMessage.Max` : `ValidationMessage.NotValid`;
-      },
-      pattern: (config: FieldConfigSet) => {
-        return config ? `ValidationMessage.Pattern` : `ValidationMessage.NotValid`;
-      },
-      decimals: (config: FieldConfigSet) => {
-        return config ? `ValidationMessage.Decimals` : `ValidationMessage.NotValid`;
-      },
-    };
+  /** Marks controls as touched to show errors beneath controls and collects error messages */
+  validateForm(form: FormGroup): ObjectModel<string> {
+    const errors: ObjectModel<string> = {};
+    for (const [controlKey, control] of Object.entries(form.controls)) {
+      control.markAsTouched({ onlySelf: true });
+      this.showValidation$.next(control);
 
-    return messages;
-  }
+      if (!control.invalid) { continue; }
 
-  /**
-   * Validate form instance
-   * check_dirty true will only emit errors if the field is touched
-   * check_dirty false will check all fields independent of
-   * being touched or not. Use this as the last check before submitting
-   */
-  public validateForm(formToValidate: FormGroup, checkDirty?: boolean): any {
-    const form = formToValidate;
-    const formErrors: { [key: string]: any } = {};
-    Object.keys(form.controls).forEach(key => {
-      // for (const control in form.controls) {
-      const control = form.controls[key];
-      if (control) {
-        // const control = form.get(field);
-        const messages = this.validationMessages();
-        if (control && control.invalid) {
-          if (!checkDirty || (control.dirty || control.touched)) {
-            Object.keys(control.errors).forEach(keyError => {
-              formErrors[key] = formErrors[key] || messages[keyError](undefined);
-            });
-          }
-          // this displays an error message on an invalid control
-          control.markAsTouched({ onlySelf: true });
-          this.showValidation$.next(control);
-        }
-      }
-    });
-
-    return formErrors;
-  }
-
-  /** get validation error for control */
-  public getErrorMessage(control: AbstractControl, config: FieldConfigSet, touched?: boolean): string {
-    let formError = '';
-    if (control) {
-      const messages = this.validationMessages();
-      if (control && control.invalid) {
-        if ((control.dirty || control.touched) || touched) {
-          Object.keys(control.errors).forEach(key => {
-            if (messages[key]) {
-              formError = messages[key](config);
-            }
-          });
-        }
+      for (const errorKey of Object.keys(control.errors)) {
+        errors[controlKey] = this.validationMessages[errorKey]?.(undefined);
+        if (errors[controlKey]) { break; }
       }
     }
-    return formError;
+    return errors;
+  }
+
+  /** Calculates error message */
+  getErrorMessage(control: AbstractControl, config: FieldConfigSet): string {
+    let error = '';
+    if (!control.invalid) { return error; }
+    if (!control.dirty && !control.touched) { return error; }
+
+    for (const errorKey of Object.keys(control.errors)) {
+      error = this.validationMessages[errorKey]?.(config);
+      if (error) { break; }
+    }
+
+    return error;
   }
 }

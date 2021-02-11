@@ -20,7 +20,7 @@ export class ContentTypeWrapperComponent implements OnInit {
   @Input() fieldConfigs: FieldConfigSet[];
   @Input() group: FormGroup;
 
-  collapse = false;
+  collapse: boolean;
   templateVars$: Observable<ContentTypeTemplateVars>;
 
   constructor(
@@ -32,6 +32,7 @@ export class ContentTypeWrapperComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.collapse = false;
     const currentLanguage$ = this.languageInstanceService.getCurrentLanguage(this.config.form.formId);
     const defaultLanguage$ = this.languageInstanceService.getDefaultLanguage(this.config.form.formId);
     const header$ = this.itemService.selectItemHeader(this.config.entity.entityGuid);

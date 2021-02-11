@@ -29,6 +29,10 @@ export class FormsStateService implements OnDestroy {
     }
   }
 
+  getFormValid(entityGuid: string) {
+    return this.formsValid[entityGuid];
+  }
+
   setFormValid(entityGuid: string, isValid: boolean) {
     this.formsValid[entityGuid] = isValid;
 

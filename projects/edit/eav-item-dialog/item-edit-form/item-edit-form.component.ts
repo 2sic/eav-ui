@@ -32,7 +32,7 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
 
   private currentLanguage: string;
   private defaultLanguage: string;
-  private subscription = new Subscription();
+  private subscription: Subscription;
 
   constructor(
     private languageInstanceService: LanguageInstanceService,
@@ -45,6 +45,7 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
   ) { }
 
   ngOnInit() {
+    this.subscription = new Subscription();
     this.fieldsSettings2Service.init(this.item);
     this.subscription.add(
       this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId).subscribe(defaultLang => {

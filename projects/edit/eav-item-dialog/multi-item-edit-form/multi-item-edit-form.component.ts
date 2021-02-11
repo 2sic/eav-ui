@@ -157,14 +157,18 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy {
       if (this.formsStateService.formsValid$.value) {
         const items = this.itemEditFormRefs
           .map(itemEditFormRef => {
-            const isValid = !itemEditFormRef.eavFormRef.form.invalid
-              || (itemEditFormRef.item.Header.Group && itemEditFormRef.item.Header.Group.SlotCanBeEmpty);
-            return isValid ? itemEditFormRef.item : null;
+            const eavItem = itemEditFormRef.item;
+            const isValid = this.formsStateService.getFormValid(eavItem.Entity.Guid);
+            if (!isValid) { return; }
+
+            // do not try to save item which doesn't have any fields, nothing could have changed about it
+            const hasAttributes = Object.keys(eavItem.Entity.Attributes).length > 0;
+            if (!hasAttributes) { return; }
+
+            const item = Item1.convert(eavItem);
+            return item;
           })
-          .filter(item => item != null)
-          .map(item => Item1.convert(item))
-          // do not try to save item which doesn't have any fields, nothing could have changed about it
-          .filter(item => Object.keys(item.Entity.Attributes).length > 0);
+          .filter(item => item != null);
         const publishStatus = this.publishStatusService.getPublishStatus(this.eavService.eavConfig.formId);
 
         const saveFormData: SaveEavFormData = {
@@ -192,11 +196,14 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy {
           },
         });
       } else {
+        if (this.itemEditFormRefs == null) { return; }
+
         const formErrors: ObjectModel<string>[] = [];
-        this.itemEditFormRefs?.forEach(itemEditFormRef => {
+        this.itemEditFormRefs.forEach(itemEditFormRef => {
           if (!itemEditFormRef.eavFormRef.form.invalid) { return; }
-          formErrors.push(this.validationMessagesService.validateForm(itemEditFormRef.eavFormRef.form, false));
+          formErrors.push(this.validationMessagesService.validateForm(itemEditFormRef.eavFormRef.form));
         });
+
         const fieldErrors: FieldErrorMessage[] = [];
         formErrors.forEach(formError => {
           Object.keys(formError).forEach(key => {
