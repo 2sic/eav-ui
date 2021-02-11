@@ -3,7 +3,7 @@ import { Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 import { EavFormComponent } from '../../eav-dynamic-form/components/eav-form/eav-form.component';
-import { FieldConfigGroup, FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
+import { FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
 import { InputFieldHelper } from '../../shared/helpers/input-field-helper';
 import { LocalizationHelper } from '../../shared/helpers/localization-helper';
 import { EavItem } from '../../shared/models/eav';
@@ -61,16 +61,9 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
     // create input fields from content type
     const contentTypeId = InputFieldHelper.getContentTypeId(this.item);
     this.contentTypeService.getContentTypeById(contentTypeId).pipe(take(1)).subscribe(contentType => {
-      const allConfigs = this.buildFieldsService.buildFieldConfigs(
-        contentType,
-        this.item,
-        this.eavService.eavConfig.formId,
-        this.currentLanguage,
-        this.defaultLanguage,
-        this.fieldsSettingsService,
+      this.fieldConfigs = this.buildFieldsService.buildFieldConfigs(
+        contentType, this.item, this.eavService.eavConfig.formId, this.currentLanguage, this.defaultLanguage, this.fieldsSettingsService,
       );
-      const rootConfig = allConfigs[0];
-      this.fieldConfigs = (rootConfig.field as FieldConfigGroup).fieldGroup;
     });
   }
 
@@ -131,7 +124,7 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
       config.field.focused$?.complete();
       config.field.fieldHelper?.destroy();
 
-      const group = (config.field as FieldConfigGroup).fieldGroup;
+      const group = config.field._fieldGroup;
       if (!group) { return; }
       this.destroyFieldConfigs(group);
     }

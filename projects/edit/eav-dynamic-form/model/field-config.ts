@@ -5,7 +5,6 @@ import { FieldHelper } from '../../eav-item-dialog/item-edit-form/field-helper';
 import { EntityInfo } from '../../shared/models';
 import { EavEntityAttributes } from '../../shared/models/eav';
 
-// spm split these interfaces into separate files
 export interface FieldConfigSet {
   field: FieldConfigAngular;
   entity: ItemConfig;
@@ -24,11 +23,8 @@ export interface FieldConfigAngular extends FieldConfig {
   disableI18n: boolean;
   isLastInGroup: boolean;
   fieldHelper: FieldHelper;
-}
-
-export interface FieldConfigGroup extends FieldConfigAngular {
-  isParentGroup: boolean;
-  fieldGroup: FieldConfigSet[];
+  /** If field has this property, it is an empty-default field */
+  _fieldGroup: FieldConfigSet[];
 }
 
 export interface ItemConfig {

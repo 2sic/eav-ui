@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { EavService } from '../..';
 import { InputTypeConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
-import { FieldConfigGroup, FieldConfigSet, ItemConfig } from '../../eav-dynamic-form/model/field-config';
+import { FieldConfigAngular, FieldConfigSet, ItemConfig } from '../../eav-dynamic-form/model/field-config';
 import { InputFieldHelper } from '../../shared/helpers/input-field-helper';
 import { CalculatedInputType } from '../../shared/models';
 import { EavContentType, EavContentTypeAttribute, EavEntityAttributes, EavItem } from '../../shared/models/eav';
@@ -66,13 +66,13 @@ export class BuildFieldsService {
         if (isEmptyInputType) {
           // group-fields (empty)
           currentFieldGroup = this.buildFieldConfig(attribute, index, calculatedInputType, contentTypeSettings, false, entity);
-          const field = parentFieldGroup.field as FieldConfigGroup;
-          field.fieldGroup.push(currentFieldGroup);
+          const field = parentFieldGroup.field;
+          field._fieldGroup.push(currentFieldGroup);
         } else {
           // all other fields (not group empty)
           const fieldConfigSet = this.buildFieldConfig(attribute, index, calculatedInputType, contentTypeSettings, null, entity);
-          const field = currentFieldGroup.field as FieldConfigGroup;
-          field.fieldGroup.push(fieldConfigSet);
+          const field = currentFieldGroup.field;
+          field._fieldGroup.push(fieldConfigSet);
         }
       } catch (error) {
         console.error(`loadContentTypeFormFields(...) - error loading attribut ${index}`, attribute);
@@ -80,11 +80,11 @@ export class BuildFieldsService {
       }
     });
     try {
-      this.calculateFieldPositionInGroup(parentFieldGroup.field as FieldConfigGroup);
+      this.calculateFieldPositionInGroup(parentFieldGroup.field);
     } catch (error) {
       console.error(`Error calculating last field in each group: ${error}`);
     }
-    return [parentFieldGroup];
+    return parentFieldGroup.field._fieldGroup;
   }
 
   private buildFieldConfig(
@@ -119,31 +119,27 @@ export class BuildFieldsService {
     return fieldConfigSet;
   }
 
-  private calculateFieldPositionInGroup(fieldConfig: FieldConfigGroup): void {
-    if (!fieldConfig.fieldGroup) { return; }
+  private calculateFieldPositionInGroup(fieldConfig: FieldConfigAngular): void {
+    if (!fieldConfig._fieldGroup) { return; }
 
-    const childFieldsCount = fieldConfig.fieldGroup.length;
+    const childFieldsCount = fieldConfig._fieldGroup.length;
     if (childFieldsCount === 0) { return; }
 
-    const lastChildConfig = fieldConfig.fieldGroup[childFieldsCount - 1];
+    const lastChildConfig = fieldConfig._fieldGroup[childFieldsCount - 1];
     if (lastChildConfig.field.inputType !== InputTypeConstants.EmptyDefault) {
       lastChildConfig.field.isLastInGroup = true;
     }
 
-    fieldConfig.fieldGroup.forEach(childFieldConfig => {
-      this.calculateFieldPositionInGroup(childFieldConfig.field as FieldConfigGroup);
+    fieldConfig._fieldGroup.forEach(childFieldConfig => {
+      this.calculateFieldPositionInGroup(childFieldConfig.field);
     });
   }
 
-  public startTranslations(
-    fieldConfigs: FieldConfigSet[],
-    form: FormGroup,
-    fieldsSettingsService: FieldsSettingsService,
-  ): void {
+  public startTranslations(fieldConfigs: FieldConfigSet[], form: FormGroup, fieldsSettingsService: FieldsSettingsService): void {
     for (const config of fieldConfigs) {
-      const field = config.field as FieldConfigGroup;
-      if (field.fieldGroup) {
-        this.startTranslations(field.fieldGroup, form, fieldsSettingsService);
+      const field = config.field;
+      if (field._fieldGroup) {
+        this.startTranslations(field._fieldGroup, form, fieldsSettingsService);
       } else {
         config.field.fieldHelper?.startTranslations(config, form, fieldsSettingsService);
       }
@@ -152,9 +148,9 @@ export class BuildFieldsService {
 
   public stopTranslations(fieldConfigs: FieldConfigSet[]): void {
     for (const config of fieldConfigs) {
-      const field = config.field as FieldConfigGroup;
-      if (field.fieldGroup) {
-        this.stopTranslations(field.fieldGroup);
+      const field = config.field;
+      if (field._fieldGroup) {
+        this.stopTranslations(field._fieldGroup);
       } else {
         config.field.fieldHelper?.stopTranslations();
       }

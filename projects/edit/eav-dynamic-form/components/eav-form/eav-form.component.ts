@@ -8,7 +8,7 @@ import { FormValues } from '../../../eav-item-dialog/item-edit-form/item-edit-fo
 import { FieldsSettingsService } from '../../../shared/services/fields-settings.service';
 import { FormsStateService } from '../../../shared/services/forms-state.service';
 import { ItemService } from '../../../shared/store/ngrx-data/item.service';
-import { FieldConfigGroup, FieldConfigSet } from '../../model/field-config';
+import { FieldConfigSet } from '../../model/field-config';
 
 @Component({
   selector: 'app-eav-form',
@@ -86,9 +86,9 @@ export class EavFormComponent implements OnInit, AfterViewInit, OnDestroy {
   private createControlsInFormGroup(fieldConfigs: FieldConfigSet[]) {
     try {
       fieldConfigs.forEach(fieldConfig => {
-        const field = fieldConfig.field as FieldConfigGroup;
-        if (field.fieldGroup) {
-          this.createControlsInFormGroup(field.fieldGroup);
+        const field = fieldConfig.field;
+        if (field._fieldGroup) {
+          this.createControlsInFormGroup(field._fieldGroup);
         } else {
           this.form.addControl(fieldConfig.field.name, this.createControl(fieldConfig));
         }

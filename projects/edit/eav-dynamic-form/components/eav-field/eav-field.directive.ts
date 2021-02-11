@@ -33,7 +33,7 @@ import { LocalizationWrapperComponent } from '../../../eav-material-controls/wra
 import { componentMetadataKey } from '../../../shared/constants/component-metadata.constants';
 import { ComponentMetadataModel } from '../../../shared/models';
 import { Field } from '../../model/field';
-import { FieldConfigGroup, FieldConfigSet } from '../../model/field-config';
+import { FieldConfigSet } from '../../model/field-config';
 import { FieldWrapper } from '../../model/field-wrapper';
 
 @Directive({ selector: '[appEavField]' })
@@ -86,8 +86,8 @@ export class EavFieldDirective implements OnInit {
 
   /** Create all child fields and groups from fieldConfig in container */
   private createFieldOrGroup(container: ViewContainerRef, fieldConfig: FieldConfigSet) {
-    const field = fieldConfig.field as FieldConfigGroup;
-    if (field.fieldGroup) {
+    const field = fieldConfig.field;
+    if (field._fieldGroup) {
       this.createGroupComponents(container, fieldConfig);
     } else {
       this.createComponent(container, fieldConfig);
@@ -99,8 +99,8 @@ export class EavFieldDirective implements OnInit {
     if (fieldConfig.field.wrappers) {
       container = this.createComponentWrappers(container, fieldConfig, fieldConfig.field.wrappers);
     }
-    const field = fieldConfig.field as FieldConfigGroup;
-    field.fieldGroup.forEach(controlConfiguration => {
+    const field = fieldConfig.field;
+    field._fieldGroup.forEach(controlConfiguration => {
       this.createFieldOrGroup(container, controlConfiguration);
     });
   }

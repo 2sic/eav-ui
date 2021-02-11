@@ -3,7 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { FieldSettings } from '../../../../edit-types';
-import { FieldConfigGroup, FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
+import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { FieldsSettings2Service } from '../../../shared/services/fields-settings2.service';
 import { EmptyDefaultLogic } from './collapsible-wrapper-logic';
@@ -19,7 +19,6 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
 
-  fieldConfig: FieldConfigGroup;
   visibleInEditUI$: Observable<boolean>;
   collapse: boolean;
   label$: Observable<string>;
@@ -33,9 +32,7 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
   }
 
   ngOnInit() {
-    this.fieldConfig = this.config.field as FieldConfigGroup;
-
-    const settings$ = this.fieldsSettings2Service.getFieldSettings$(this.fieldConfig.name);
+    const settings$ = this.fieldsSettings2Service.getFieldSettings$(this.config.field.name);
     this.subscription.add(
       settings$.subscribe(settings => {
         this.settings$.next(settings);

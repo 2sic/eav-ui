@@ -3,44 +3,12 @@ import { FieldSettings, InputTypeName } from '../../../edit-types';
 import { DataTypeConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/data-type.constants';
 import { InputTypeConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { InputType } from '../../../ng-dialogs/src/app/content-type-fields/models/input-type.model';
-import { FieldConfigGroup, FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
 import { WrappersConstants } from '../constants/wrappers.constants';
 import { CalculatedInputType } from '../models';
 import { EavContentTypeAttribute, EavHeader, EavItem } from '../models/eav';
 import { InputTypeService } from '../store/ngrx-data/input-type.service';
 
 export class InputFieldHelper {
-  /** This is attribute type (not attribute inputType) */
-  static getFieldType(config: FieldConfigSet, attributeKey: string): string {
-    if (config.field.type) {
-      return config.field.type;
-    } else {
-      const field = config.field as FieldConfigGroup;
-      return this.getFieldTypeFromFieldGroup(field.fieldGroup, attributeKey);
-    }
-  }
-
-  /**
-   * Loop through fieldGroup configuration recursively to get type.
-   * Form group configuration have configuration from all child fields
-   */
-  static getFieldTypeFromFieldGroup(fieldGroup: FieldConfigSet[], attributeKey: string) {
-    let type;
-    fieldGroup.forEach(config => {
-      const field = config.field as FieldConfigGroup;
-      if (field.fieldGroup) {
-        const typeFromFieldGroup = this.getFieldTypeFromFieldGroup(field.fieldGroup, attributeKey);
-        if (typeFromFieldGroup) {
-          type = typeFromFieldGroup;
-        }
-      } else {
-        if (config.field.name === attributeKey) {
-          type = config.field.type;
-        }
-      }
-    });
-    return type;
-  }
 
   static getContentTypeId(item: EavItem): string {
     return item.Entity.Type ? item.Entity.Type.Id : item.Header.ContentTypeName;

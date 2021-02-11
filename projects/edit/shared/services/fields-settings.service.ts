@@ -5,7 +5,7 @@ import { EavService } from '.';
 import { FieldSettings } from '../../../edit-types';
 import { InputTypeConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { InputType } from '../../../ng-dialogs/src/app/content-type-fields/models/input-type.model';
-import { FieldConfigAngular, FieldConfigGroup, FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
+import { FieldConfigAngular, FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
 import { FieldHelper } from '../../eav-item-dialog/item-edit-form/field-helper';
 import { ValidationHelper } from '../../eav-material-controls/validators/validation-helper';
 import { InputFieldHelper } from '../helpers/input-field-helper';
@@ -75,8 +75,7 @@ export class FieldsSettingsService {
 
     if (isEmptyInputType) {
       fieldConfig = {
-        isParentGroup, // empty specific
-        fieldGroup: [], // empty specific
+        _fieldGroup: [], // empty specific
         settings: settingsTranslated,
         fullSettings,
         wrappers,
@@ -86,7 +85,7 @@ export class FieldsSettingsService {
         name,
         label,
         inputType: calculatedInputType.inputType,
-      } as FieldConfigGroup;
+      } as FieldConfigAngular;
     } else {
       const validation = ValidationHelper.getValidators(settingsTranslated);
       const required = ValidationHelper.isRequired(settingsTranslated);
@@ -94,6 +93,7 @@ export class FieldsSettingsService {
       const disabled = settingsTranslated.Disabled;
 
       fieldConfig = {
+        _fieldGroup: null,
         initialValue, // other fields specific
         validation, // other fields specific
         settings: settingsTranslated,
