@@ -3,7 +3,6 @@ import { Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 import { EavFormComponent } from '../../eav-dynamic-form/components/eav-form/eav-form.component';
-import { FormValueChange } from '../../eav-dynamic-form/components/eav-form/eav-form.models';
 import { FieldConfigGroup, FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
 import { InputFieldHelper } from '../../shared/helpers/input-field-helper';
 import { LocalizationHelper } from '../../shared/helpers/localization-helper';
@@ -87,12 +86,8 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   /** Update NGRX/store on form value change */
-  formValueChange(change: FormValueChange) {
-    this.itemService.updateItemAttributesValues(this.item.Entity.Guid, change.formValues, this.currentLanguage, this.defaultLanguage);
-
-    // run formulas when form value is changed
-    change.formulaInstance.runSettingsFormulas();
-    change.formulaInstance.runValueFormulas();
+  formValueChange(formValues: FormValues) {
+    this.itemService.updateItemAttributesValues(this.item.Entity.Guid, formValues, this.currentLanguage, this.defaultLanguage);
   }
 
   private setFormValues() {

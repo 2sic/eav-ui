@@ -7,7 +7,6 @@ import { InputFieldHelper } from '../../shared/helpers/input-field-helper';
 import { CalculatedInputType } from '../../shared/models';
 import { EavContentType, EavContentTypeAttribute, EavEntityAttributes, EavItem } from '../../shared/models/eav';
 import { FieldsSettingsService } from '../../shared/services/fields-settings.service';
-import { FormulaInstanceService } from '../../shared/services/formula-instance.service';
 import { ContentTypeService } from '../../shared/store/ngrx-data/content-type.service';
 import { InputTypeService } from '../../shared/store/ngrx-data/input-type.service';
 import { ItemService } from '../../shared/store/ngrx-data/item.service';
@@ -139,15 +138,14 @@ export class BuildFieldsService {
   public startTranslations(
     fieldConfigs: FieldConfigSet[],
     form: FormGroup,
-    formulaInstance: FormulaInstanceService,
     fieldsSettingsService: FieldsSettingsService,
   ): void {
     for (const config of fieldConfigs) {
       const field = config.field as FieldConfigGroup;
       if (field.fieldGroup) {
-        this.startTranslations(field.fieldGroup, form, formulaInstance, fieldsSettingsService);
+        this.startTranslations(field.fieldGroup, form, fieldsSettingsService);
       } else {
-        config.field.fieldHelper?.startTranslations(config, form, formulaInstance, fieldsSettingsService);
+        config.field.fieldHelper?.startTranslations(config, form, fieldsSettingsService);
       }
     }
   }

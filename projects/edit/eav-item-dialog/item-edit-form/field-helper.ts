@@ -11,7 +11,6 @@ import { LocalizationHelper } from '../../shared/helpers/localization-helper';
 import { EavContentType, EavDimension, EavEntityAttributes, EavItem } from '../../shared/models/eav';
 import { EavService } from '../../shared/services/eav.service';
 import { FieldsSettingsService } from '../../shared/services/fields-settings.service';
-import { FormulaInstanceService } from '../../shared/services/formula-instance.service';
 import { ContentTypeService } from '../../shared/store/ngrx-data/content-type.service';
 import { InputTypeService } from '../../shared/store/ngrx-data/input-type.service';
 import { ItemService } from '../../shared/store/ngrx-data/item.service';
@@ -82,7 +81,6 @@ export class FieldHelper {
   startTranslations(
     config: FieldConfigSet,
     form: FormGroup,
-    formulaInstance: FormulaInstanceService,
     fieldsSettingsService: FieldsSettingsService,
   ): void {
     this.translationsSubscription = new Subscription();
@@ -98,10 +96,10 @@ export class FieldHelper {
       this.languageInstanceService.getTranslateMany(this.formId, this.entityGuid).subscribe(props => {
         switch (props.translationLink) {
           case TranslationLinkConstants.Translate:
-            this.translate(formulaInstance);
+            this.translate();
             break;
           case TranslationLinkConstants.DontTranslate:
-            this.dontTranslate(formulaInstance);
+            this.dontTranslate();
             break;
         }
       })
@@ -112,7 +110,6 @@ export class FieldHelper {
         const defaultLanguage = this.defaultLanguage$.value;
         fieldsSettingsService.translateSettingsAndValidation(config, currentLanguage, defaultLanguage);
         this.refreshControlConfig(config, form);
-        formulaInstance.fieldTranslated(this.fieldName);
       })
     );
     // onDefaultLanguageChanged
@@ -123,20 +120,9 @@ export class FieldHelper {
         this.refreshControlConfig(config, form);
       })
     );
-    // onFormulaSettingsChanged
-    this.translationsSubscription.add(
-      formulaInstance.getSettings(this.fieldName).pipe(
-        filter(formulaSettings => formulaSettings != null),
-      ).subscribe(formulaSettings => {
-        const currentLanguage = this.currentLanguage$.value;
-        const defaultLanguage = this.defaultLanguage$.value;
-        fieldsSettingsService.translateSettingsAndValidation(config, currentLanguage, defaultLanguage, formulaSettings);
-        this.refreshControlConfig(config, form);
-      })
-    );
     // onSlotIsEmptyChanged
     this.translationsSubscription.add(
-      this.slotIsEmpty$.subscribe(slotIsEmpty => {
+      this.slotIsEmpty$.subscribe(() => {
         this.setControlDisable(config, form);
       })
     );
@@ -160,7 +146,7 @@ export class FieldHelper {
     this.subscription.unsubscribe();
   }
 
-  translate(formulaInstance: FormulaInstanceService): void {
+  translate(): void {
     if (this.isTranslateDisabled()) { return; }
 
     const values = this.attributes$.value[this.fieldName];
@@ -177,24 +163,18 @@ export class FieldHelper {
     }
 
     this.languageInstanceService.checkField({ entityGuid: this.entityGuid, fieldName: this.fieldName });
-    // run value formulas when field is translated
-    formulaInstance.runSettingsFormulas();
-    formulaInstance.runValueFormulas();
   }
 
-  dontTranslate(formulaInstance: FormulaInstanceService): void {
+  dontTranslate(): void {
     if (this.isTranslateDisabled()) { return; }
 
     const currentLanguage = this.currentLanguage$.value;
     this.itemService.removeItemAttributeDimension(this.entityGuid, this.fieldName, currentLanguage);
 
     this.languageInstanceService.checkField({ entityGuid: this.entityGuid, fieldName: this.fieldName });
-    // run value formulas when field is translated
-    formulaInstance.runSettingsFormulas();
-    formulaInstance.runValueFormulas();
   }
 
-  copyFrom(formulaInstance: FormulaInstanceService, copyFromLanguageKey: string): void {
+  copyFrom(copyFromLanguageKey: string): void {
     if (this.isTranslateDisabled()) { return; }
 
     const values = this.attributes$.value[this.fieldName];
@@ -224,12 +204,9 @@ export class FieldHelper {
     }
 
     this.languageInstanceService.checkField({ entityGuid: this.entityGuid, fieldName: this.fieldName });
-    // run value formulas when field is translated
-    formulaInstance.runSettingsFormulas();
-    formulaInstance.runValueFormulas();
   }
 
-  linkReadOnly(formulaInstance: FormulaInstanceService, linkWithLanguageKey: string): void {
+  linkReadOnly(linkWithLanguageKey: string): void {
     if (this.isTranslateDisabled()) { return; }
 
     const currentLanguage = this.currentLanguage$.value;
@@ -241,12 +218,9 @@ export class FieldHelper {
     );
 
     this.languageInstanceService.checkField({ entityGuid: this.entityGuid, fieldName: this.fieldName });
-    // run value formulas when field is translated
-    formulaInstance.runSettingsFormulas();
-    formulaInstance.runValueFormulas();
   }
 
-  linkReadWrite(formulaInstance: FormulaInstanceService, linkWithLanguageKey: string) {
+  linkReadWrite(linkWithLanguageKey: string) {
     if (this.isTranslateDisabled()) { return; }
 
     const currentLanguage = this.currentLanguage$.value;
@@ -258,9 +232,6 @@ export class FieldHelper {
     );
 
     this.languageInstanceService.checkField({ entityGuid: this.entityGuid, fieldName: this.fieldName });
-    // run value formulas when field is translated
-    formulaInstance.runSettingsFormulas();
-    formulaInstance.runValueFormulas();
   }
 
   private refreshControlConfig(config: FieldConfigSet, form: FormGroup): void {

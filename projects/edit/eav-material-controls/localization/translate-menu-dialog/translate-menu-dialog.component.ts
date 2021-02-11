@@ -4,7 +4,6 @@ import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { EavService } from '../../..';
 import { TranslationLinkConstants } from '../../../shared/constants/translation-link.constants';
-import { FormulaInstanceService } from '../../../shared/services/formula-instance.service';
 import { ItemService } from '../../../shared/store/ngrx-data/item.service';
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
 import { LanguageService } from '../../../shared/store/ngrx-data/language.service';
@@ -32,7 +31,6 @@ export class TranslateMenuDialogComponent implements OnInit, OnDestroy {
     private languageService: LanguageService,
     private languageInstanceService: LanguageInstanceService,
     private itemService: ItemService,
-    private formulaInstance: FormulaInstanceService,
     private eavService: EavService,
   ) {
     this.dialogRef.keydownEvents().subscribe(event => {
@@ -98,19 +96,19 @@ export class TranslateMenuDialogComponent implements OnInit, OnDestroy {
 
     switch (newState.linkType) {
       case TranslationLinkConstants.Translate:
-        this.dialogData.config.field.fieldHelper.translate(this.formulaInstance);
+        this.dialogData.config.field.fieldHelper.translate();
         break;
       case TranslationLinkConstants.DontTranslate:
-        this.dialogData.config.field.fieldHelper.dontTranslate(this.formulaInstance);
+        this.dialogData.config.field.fieldHelper.dontTranslate();
         break;
       case TranslationLinkConstants.LinkReadOnly:
-        this.dialogData.config.field.fieldHelper.linkReadOnly(this.formulaInstance, newState.language);
+        this.dialogData.config.field.fieldHelper.linkReadOnly(newState.language);
         break;
       case TranslationLinkConstants.LinkReadWrite:
-        this.dialogData.config.field.fieldHelper.linkReadWrite(this.formulaInstance, newState.language);
+        this.dialogData.config.field.fieldHelper.linkReadWrite(newState.language);
         break;
       case TranslationLinkConstants.LinkCopyFrom:
-        this.dialogData.config.field.fieldHelper.copyFrom(this.formulaInstance, newState.language);
+        this.dialogData.config.field.fieldHelper.copyFrom(newState.language);
         break;
       default:
         break;

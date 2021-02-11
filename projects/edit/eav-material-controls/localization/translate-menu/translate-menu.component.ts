@@ -6,7 +6,6 @@ import { distinctUntilChanged, filter, map, startWith } from 'rxjs/operators';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { TranslationLinkConstants } from '../../../shared/constants/translation-link.constants';
 import { EavService } from '../../../shared/services/eav.service';
-import { FormulaInstanceService } from '../../../shared/services/formula-instance.service';
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
 import { TranslateMenuDialogComponent } from '../translate-menu-dialog/translate-menu-dialog.component';
 import { TranslateMenuDialogData } from '../translate-menu-dialog/translate-menu-dialog.models';
@@ -30,7 +29,6 @@ export class TranslateMenuComponent implements OnInit {
     private viewContainerRef: ViewContainerRef,
     private languageInstanceService: LanguageInstanceService,
     private eavService: EavService,
-    private formulaInstance: FormulaInstanceService,
   ) { }
 
   ngOnInit(): void {
@@ -75,11 +73,11 @@ export class TranslateMenuComponent implements OnInit {
   }
 
   translate(): void {
-    this.config.field.fieldHelper.translate(this.formulaInstance);
+    this.config.field.fieldHelper.translate();
   }
 
   dontTranslate(): void {
-    this.config.field.fieldHelper.dontTranslate(this.formulaInstance);
+    this.config.field.fieldHelper.dontTranslate();
   }
 
   openTranslateMenuDialog(): void {
