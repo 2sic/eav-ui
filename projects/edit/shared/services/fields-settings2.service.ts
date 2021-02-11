@@ -59,8 +59,8 @@ export class FieldsSettings2Service implements OnDestroy {
           ctSettings.Icon ??= '';
           ctSettings.Link ??= '';
           ctSettings._itemTitle = this.getContentTypeTitle(contentType, currentLanguage, defaultLanguage);
-          ctSettings._slotCanBeEmpty = header?.Group?.SlotCanBeEmpty ?? false;
-          ctSettings._slotIsEmpty = header?.Group?.SlotIsEmpty ?? false;
+          ctSettings._slotCanBeEmpty = header.Group?.SlotCanBeEmpty ?? false;
+          ctSettings._slotIsEmpty = header.Group?.SlotIsEmpty ?? false;
           return ctSettings;
         }),
       ).subscribe(ctSettings => {

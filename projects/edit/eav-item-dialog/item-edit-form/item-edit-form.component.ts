@@ -27,7 +27,6 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
   @ViewChild(EavFormComponent) eavFormRef: EavFormComponent;
   @Input() item: EavItem;
 
-  rootConfig: FieldConfigSet;
   fieldConfigs: FieldConfigSet[];
 
   private currentLanguage: string;
@@ -72,8 +71,8 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
         this.eavService.eavConfig.enableHistory,
         this.fieldsSettingsService,
       );
-      this.rootConfig = allConfigs[0];
-      this.fieldConfigs = (this.rootConfig.field as FieldConfigGroup).fieldGroup;
+      const rootConfig = allConfigs[0];
+      this.fieldConfigs = (rootConfig.field as FieldConfigGroup).fieldGroup;
     });
   }
 

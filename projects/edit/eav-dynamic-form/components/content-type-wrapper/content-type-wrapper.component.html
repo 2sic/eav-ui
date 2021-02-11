@@ -19,11 +19,11 @@
     </mat-slide-toggle>
 
     <button mat-icon-button type="button" [matTooltip]="'Form.Buttons.History.Tip' | translate"
-      *ngIf="config.form.enableHistory" (click)="openHistory()">
+      *ngIf="eavService.eavConfig.enableHistory" (click)="openHistory()">
       <mat-icon>history</mat-icon>
     </button>
 
-    <app-entity-translate-menu fxLayoutAlign="end center" [config]="config" [group]="group">
+    <app-entity-translate-menu fxLayoutAlign="end center" [entityGuid]="entityGuid">
     </app-entity-translate-menu>
   </div>
 

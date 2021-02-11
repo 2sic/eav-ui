@@ -3,6 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { EavService } from '../../../shared';
 import { EavHeader } from '../../../shared/models/eav';
 import { FieldsSettings2Service } from '../../../shared/services/fields-settings2.service';
 import { ItemService } from '../../../shared/store/ngrx-data/item.service';
@@ -16,7 +17,8 @@ import { ContentTypeTemplateVars } from './content-type-wrapper.models';
   styleUrls: ['./content-type-wrapper.component.scss'],
 })
 export class ContentTypeWrapperComponent implements OnInit {
-  @Input() config: FieldConfigSet;
+  @Input() entityGuid: string;
+  @Input() private entityId: string;
   @Input() fieldConfigs: FieldConfigSet[];
   @Input() group: FormGroup;
 
@@ -29,13 +31,14 @@ export class ContentTypeWrapperComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private fieldsSettings2Service: FieldsSettings2Service,
+    public eavService: EavService,
   ) { }
 
   ngOnInit() {
     this.collapse = false;
-    const currentLanguage$ = this.languageInstanceService.getCurrentLanguage(this.config.form.formId);
-    const defaultLanguage$ = this.languageInstanceService.getDefaultLanguage(this.config.form.formId);
-    const header$ = this.itemService.selectItemHeader(this.config.entity.entityGuid);
+    const currentLanguage$ = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
+    const defaultLanguage$ = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
+    const header$ = this.itemService.selectItemHeader(this.entityGuid);
     const settings$ = this.fieldsSettings2Service.getContentTypeSettings$();
 
     this.templateVars$ = combineLatest([
@@ -65,10 +68,10 @@ export class ContentTypeWrapperComponent implements OnInit {
 
   toggleSlotIsEmpty(oldHeader: EavHeader) {
     const newHeader: EavHeader = { ...oldHeader, Group: { ...oldHeader.Group, SlotIsEmpty: !oldHeader.Group.SlotIsEmpty } };
-    this.itemService.updateItemHeader(this.config.entity.entityGuid, newHeader);
+    this.itemService.updateItemHeader(this.entityGuid, newHeader);
   }
 
   openHistory() {
-    this.router.navigate([`versions/${this.config.entity.entityId}`], { relativeTo: this.route });
+    this.router.navigate([`versions/${this.entityId}`], { relativeTo: this.route });
   }
 }
