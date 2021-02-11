@@ -34,13 +34,13 @@ export class TranslateMenuComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    const currentLanguage$ = this.languageInstanceService.getCurrentLanguage(this.config.form.formId);
-    const defaultLanguage$ = this.languageInstanceService.getDefaultLanguage(this.config.form.formId);
+    const currentLanguage$ = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
+    const defaultLanguage$ = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
     const translationState$ = this.config.field.fieldHelper.translationState$;
 
     const control = this.group.controls[this.config.field.name];
     const disabled$ = this.eavService.formDisabledChange$.pipe(
-      filter(formSet => formSet.formId === this.config.form.formId && formSet.entityGuid === this.config.entity.entityGuid),
+      filter(formSet => formSet.formId === this.eavService.eavConfig.formId && formSet.entityGuid === this.config.entity.entityGuid),
       map(() => control.disabled),
       startWith(control.disabled),
       distinctUntilChanged(),

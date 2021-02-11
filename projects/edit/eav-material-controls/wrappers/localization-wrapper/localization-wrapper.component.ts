@@ -38,12 +38,12 @@ export class LocalizationWrapperComponent extends BaseComponent<any> implements 
   ngOnInit() {
     super.ngOnInit();
     this.subscription.add(
-      this.languageInstanceService.getCurrentLanguage(this.config.form.formId).subscribe(currentLanguage => {
+      this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId).subscribe(currentLanguage => {
         this.currentLanguage$.next(currentLanguage);
       })
     );
     this.subscription.add(
-      this.languageInstanceService.getDefaultLanguage(this.config.form.formId).subscribe(defaultLanguage => {
+      this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId).subscribe(defaultLanguage => {
         this.defaultLanguage$.next(defaultLanguage);
       })
     );

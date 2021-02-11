@@ -9,7 +9,6 @@ import { EavEntityAttributes, EavHeader } from '../../shared/models/eav';
 export interface FieldConfigSet {
   field: FieldConfigAngular;
   entity: ItemConfig;
-  form: FormConfig;
   dropzone?: Dropzone;
   adam?: Adam;
   entityCache$?: BehaviorSubject<EntityInfo[]>;
@@ -37,10 +36,4 @@ export interface ItemConfig {
   entityGuid: string;
   contentTypeId: string;
   header: EavHeader;
-}
-
-export interface FormConfig {
-  /** Unique id to be able to separate settings for each form instance, e.g. current language */
-  formId: number;
-  enableHistory: boolean;
 }

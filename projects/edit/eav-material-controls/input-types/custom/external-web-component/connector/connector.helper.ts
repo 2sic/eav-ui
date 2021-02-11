@@ -42,8 +42,8 @@ export class ConnectorHelper {
 
     this.subscription.add(
       this.eavService.formValueChange$.pipe(
-        filter(formSet => (formSet.formId === this.config.form.formId) && (formSet.entityGuid === this.config.entity.entityGuid)),
-        map(formSet => this.control.value),
+        filter(formSet => (formSet.formId === this.eavService.eavConfig.formId) && (formSet.entityGuid === this.config.entity.entityGuid)),
+        map(() => this.control.value),
         startWith(this.control.value),
         distinctUntilChanged(),
       ).subscribe(newValue => {

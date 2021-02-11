@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { EavService } from '../..';
 import { InputTypeConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
-import { FieldConfigGroup, FieldConfigSet, FormConfig, ItemConfig } from '../../eav-dynamic-form/model/field-config';
+import { FieldConfigGroup, FieldConfigSet, ItemConfig } from '../../eav-dynamic-form/model/field-config';
 import { InputFieldHelper } from '../../shared/helpers/input-field-helper';
 import { CalculatedInputType } from '../../shared/models';
 import { EavContentType, EavContentTypeAttribute, EavEntityAttributes, EavItem } from '../../shared/models/eav';
@@ -19,7 +19,6 @@ export class BuildFieldsService {
   private formId: number;
   private currentLanguage: string;
   private defaultLanguage: string;
-  private enableHistory: boolean;
   private fieldsSettingsService: FieldsSettingsService;
 
   constructor(
@@ -36,14 +35,12 @@ export class BuildFieldsService {
     formId: number,
     currentLanguage: string,
     defaultLanguage: string,
-    enableHistory: boolean,
     fieldsSettingsService: FieldsSettingsService,
   ): FieldConfigSet[] {
     this.item = item;
     this.formId = formId;
     this.currentLanguage = currentLanguage;
     this.defaultLanguage = defaultLanguage;
-    this.enableHistory = enableHistory;
     this.fieldsSettingsService = fieldsSettingsService;
 
     const contentTypeSettings = contentType.Settings;
@@ -53,17 +50,13 @@ export class BuildFieldsService {
       contentTypeId: InputFieldHelper.getContentTypeId(this.item),
       header: this.item.Header,
     };
-    const form: FormConfig = {
-      formId: this.formId,
-      enableHistory: this.enableHistory,
-    };
 
     // build first empty
     const parentType: CalculatedInputType = {
       inputType: InputTypeConstants.EmptyDefault,
       isExternal: false,
     };
-    const parentFieldGroup = this.buildFieldConfig(null, null, parentType, contentTypeSettings, true, entity, form);
+    const parentFieldGroup = this.buildFieldConfig(null, null, parentType, contentTypeSettings, true, entity);
     let currentFieldGroup = parentFieldGroup;
 
     // loop through contentType attributes
@@ -74,12 +67,12 @@ export class BuildFieldsService {
         const isEmptyInputType = (calculatedInputType.inputType === InputTypeConstants.EmptyDefault);
         if (isEmptyInputType) {
           // group-fields (empty)
-          currentFieldGroup = this.buildFieldConfig(attribute, index, calculatedInputType, contentTypeSettings, false, entity, form);
+          currentFieldGroup = this.buildFieldConfig(attribute, index, calculatedInputType, contentTypeSettings, false, entity);
           const field = parentFieldGroup.field as FieldConfigGroup;
           field.fieldGroup.push(currentFieldGroup);
         } else {
           // all other fields (not group empty)
-          const fieldConfigSet = this.buildFieldConfig(attribute, index, calculatedInputType, contentTypeSettings, null, entity, form);
+          const fieldConfigSet = this.buildFieldConfig(attribute, index, calculatedInputType, contentTypeSettings, null, entity);
           const field = currentFieldGroup.field as FieldConfigGroup;
           field.fieldGroup.push(fieldConfigSet);
         }
@@ -103,7 +96,6 @@ export class BuildFieldsService {
     contentTypeSettings: EavEntityAttributes,
     isParentGroup: boolean,
     entity: ItemConfig,
-    form: FormConfig,
   ): FieldConfigSet {
     const field = this.fieldsSettingsService.buildFieldConfig(
       attribute,
@@ -125,7 +117,6 @@ export class BuildFieldsService {
     const fieldConfigSet: FieldConfigSet = {
       field,
       entity,
-      form,
     };
     return fieldConfigSet;
   }

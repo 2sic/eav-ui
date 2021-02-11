@@ -103,14 +103,14 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
     );
     const expanded$ = this.editRoutingService.isExpanded(this.config.field.index, this.config.entity.entityGuid);
     const value$ = this.eavService.formValueChange$.pipe(
-      filter(formSet => (formSet.formId === this.config.form.formId) && (formSet.entityGuid === this.config.entity.entityGuid)),
+      filter(formSet => (formSet.formId === this.eavService.eavConfig.formId) && (formSet.entityGuid === this.config.entity.entityGuid)),
       map(() => this.control.value),
       startWith(this.control.value),
       distinctUntilChanged(),
     );
     const disabled$ = this.eavService.formDisabledChange$.asObservable().pipe(
-      filter(formDisabledSet => (formDisabledSet.formId === this.config.form.formId)
-        && (formDisabledSet.entityGuid === this.config.entity.entityGuid)
+      filter(formSet => (formSet.formId === this.eavService.eavConfig.formId)
+        && (formSet.entityGuid === this.config.entity.entityGuid)
       ),
       map(() => this.control.disabled),
       startWith(this.control.disabled),

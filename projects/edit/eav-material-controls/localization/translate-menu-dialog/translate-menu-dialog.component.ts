@@ -2,6 +2,7 @@ import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { EavService } from '../../..';
 import { TranslationLinkConstants } from '../../../shared/constants/translation-link.constants';
 import { FormulaInstanceService } from '../../../shared/services/formula-instance.service';
 import { ItemService } from '../../../shared/store/ngrx-data/item.service';
@@ -32,6 +33,7 @@ export class TranslateMenuDialogComponent implements OnInit, OnDestroy {
     private languageInstanceService: LanguageInstanceService,
     private itemService: ItemService,
     private formulaInstance: FormulaInstanceService,
+    private eavService: EavService,
   ) {
     this.dialogRef.keydownEvents().subscribe(event => {
       const CTRL_S = event.keyCode === 83 && (navigator.platform.match('Mac') ? event.metaKey : event.ctrlKey);
@@ -41,8 +43,8 @@ export class TranslateMenuDialogComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    const currentLanguage$ = this.languageInstanceService.getCurrentLanguage(this.dialogData.config.form.formId);
-    const defaultLanguage$ = this.languageInstanceService.getDefaultLanguage(this.dialogData.config.form.formId);
+    const currentLanguage$ = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
+    const defaultLanguage$ = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
     const attributes$ = this.itemService.selectItemAttributes(this.dialogData.config.entity.entityGuid);
     const languages$ = combineLatest([this.languageService.entities$, currentLanguage$, defaultLanguage$, attributes$]).pipe(
       map(([languages, currentLanguage, defaultLanguage, attributes]) =>

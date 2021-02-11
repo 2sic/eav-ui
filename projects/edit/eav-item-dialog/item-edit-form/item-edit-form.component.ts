@@ -68,7 +68,6 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
         this.eavService.eavConfig.formId,
         this.currentLanguage,
         this.defaultLanguage,
-        this.eavService.eavConfig.enableHistory,
         this.fieldsSettingsService,
       );
       const rootConfig = allConfigs[0];
