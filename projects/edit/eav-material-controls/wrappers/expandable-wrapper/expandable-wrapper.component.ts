@@ -9,7 +9,7 @@ import { DnnBridgeService } from '../../../shared/services/dnn-bridge.service';
 import { DropzoneDraggingHelper } from '../../../shared/services/dropzone-dragging.helper';
 import { EavService } from '../../../shared/services/eav.service';
 import { EditRoutingService } from '../../../shared/services/edit-routing.service';
-import { FieldsSettings2Service } from '../../../shared/services/fields-settings2.service';
+import { FieldsSettings2NewService } from '../../../shared/services/fields-settings2new.service';
 import { ContentTypeService } from '../../../shared/store/ngrx-data/content-type.service';
 import { FeatureService } from '../../../shared/store/ngrx-data/feature.service';
 import { InputTypeService } from '../../../shared/store/ngrx-data/input-type.service';
@@ -39,7 +39,7 @@ export class ExpandableWrapperComponent extends BaseComponent<string> implements
   constructor(
     eavService: EavService,
     validationMessagesService: ValidationMessagesService,
-    fieldsSettings2Service: FieldsSettings2Service,
+    fieldsSettings2NewService: FieldsSettings2NewService,
     private translateService: TranslateService,
     private contentTypeService: ContentTypeService,
     private inputTypeService: InputTypeService,
@@ -48,7 +48,7 @@ export class ExpandableWrapperComponent extends BaseComponent<string> implements
     private dnnBridgeService: DnnBridgeService,
     private zone: NgZone,
   ) {
-    super(eavService, validationMessagesService, fieldsSettings2Service);
+    super(eavService, validationMessagesService, fieldsSettings2NewService);
   }
 
   ngOnInit() {
@@ -92,7 +92,7 @@ export class ExpandableWrapperComponent extends BaseComponent<string> implements
       this.featureService,
       this.editRoutingService,
       this.dnnBridgeService,
-      this.fieldsSettings2Service,
+      this.fieldsSettings2NewService,
       this.zone,
     );
 

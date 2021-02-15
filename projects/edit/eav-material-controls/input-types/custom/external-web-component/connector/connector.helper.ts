@@ -10,7 +10,7 @@ import { InputFieldHelper } from '../../../../../shared/helpers/input-field-help
 import { DnnBridgeService } from '../../../../../shared/services/dnn-bridge.service';
 import { EavService } from '../../../../../shared/services/eav.service';
 import { EditRoutingService } from '../../../../../shared/services/edit-routing.service';
-import { FieldsSettings2Service } from '../../../../../shared/services/fields-settings2.service';
+import { FieldsSettings2NewService } from '../../../../../shared/services/fields-settings2new.service';
 import { ContentTypeService } from '../../../../../shared/store/ngrx-data/content-type.service';
 import { FeatureService } from '../../../../../shared/store/ngrx-data/feature.service';
 import { InputTypeService } from '../../../../../shared/store/ngrx-data/input-type.service';
@@ -35,7 +35,7 @@ export class ConnectorHelper {
     private featureService: FeatureService,
     private editRoutingService: EditRoutingService,
     private dnnBridgeService: DnnBridgeService,
-    private fieldsSettings2Service: FieldsSettings2Service,
+    private fieldsSettings2NewService: FieldsSettings2NewService,
     private zone: NgZone,
   ) {
     this.control = this.group.controls[this.config.field.name];
@@ -52,7 +52,7 @@ export class ConnectorHelper {
     );
 
     this.subscription.add(
-      this.fieldsSettings2Service.getFieldSettings$(this.config.field.name).subscribe(settings => {
+      this.fieldsSettings2NewService.getFieldSettings$(this.config.field.name).subscribe(settings => {
         this.settings$.next(settings);
       })
     );

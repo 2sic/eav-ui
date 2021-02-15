@@ -39,7 +39,7 @@ export class InputFieldHelper {
     };
   }
 
-  static calculateInputType2(attribute: EavContentTypeAttribute, inputTypes: InputType[]): CalculatedInputType {
+  static calculateInputType2New(attribute: EavContentTypeAttribute, inputTypes: InputType[]): CalculatedInputType {
     const inputType = inputTypes.find(i => i.Type === attribute.InputType);
     const calculated: CalculatedInputType = {
       inputType: attribute.InputType,
@@ -89,7 +89,7 @@ export class InputFieldHelper {
     return wrappers;
   }
 
-  static setWrappers2(settings: FieldSettings, calculatedInputType: CalculatedInputType) {
+  static setWrappers2New(settings: FieldSettings, calculatedInputType: CalculatedInputType) {
     const type = calculatedInputType.inputType;
     const isExternal = calculatedInputType.isExternal;
 

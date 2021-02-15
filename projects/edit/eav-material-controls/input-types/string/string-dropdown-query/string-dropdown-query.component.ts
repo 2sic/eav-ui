@@ -6,7 +6,7 @@ import { EntityInfo } from '../../../../shared/models';
 import { EavService } from '../../../../shared/services/eav.service';
 import { EditRoutingService } from '../../../../shared/services/edit-routing.service';
 import { EntityService } from '../../../../shared/services/entity.service';
-import { FieldsSettings2Service } from '../../../../shared/services/fields-settings2.service';
+import { FieldsSettings2NewService } from '../../../../shared/services/fields-settings2new.service';
 import { QueryService } from '../../../../shared/services/query.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { EntityQueryComponent } from '../../entity/entity-query/entity-query.component';
@@ -25,7 +25,7 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
   constructor(
     eavService: EavService,
     validationMessagesService: ValidationMessagesService,
-    fieldsSettings2Service: FieldsSettings2Service,
+    fieldsSettings2NewService: FieldsSettings2NewService,
     entityService: EntityService,
     translate: TranslateService,
     editRoutingService: EditRoutingService,
@@ -33,7 +33,8 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
     queryService: QueryService,
   ) {
     super(
-      eavService, validationMessagesService, fieldsSettings2Service, entityService, translate, editRoutingService, snackBar, queryService,
+      eavService, validationMessagesService, fieldsSettings2NewService,
+      entityService, translate, editRoutingService, snackBar, queryService,
     );
     StringDropdownQueryLogic.importMe();
   }

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/
 import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { EavService } from '../../../../shared/services/eav.service';
-import { FieldsSettings2Service } from '../../../../shared/services/fields-settings2.service';
+import { FieldsSettings2NewService } from '../../../../shared/services/fields-settings2new.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { BaseComponent } from '../../base/base.component';
 
@@ -21,9 +21,9 @@ export class CustomDefaultComponent extends BaseComponent<null> implements OnIni
   constructor(
     eavService: EavService,
     validationMessagesService: ValidationMessagesService,
-    fieldsSettings2Service: FieldsSettings2Service,
+    fieldsSettings2NewService: FieldsSettings2NewService,
   ) {
-    super(eavService, validationMessagesService, fieldsSettings2Service);
+    super(eavService, validationMessagesService, fieldsSettings2NewService);
   }
 
   ngOnInit() {

@@ -3,7 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { EavService } from '../../../shared/services/eav.service';
 import { EditRoutingService } from '../../../shared/services/edit-routing.service';
-import { FieldsSettings2Service } from '../../../shared/services/fields-settings2.service';
+import { FieldsSettings2NewService } from '../../../shared/services/fields-settings2new.service';
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
 import { BaseComponent } from '../../input-types/base/base.component';
 import { TranslateMenuComponent } from '../../localization/translate-menu/translate-menu.component';
@@ -28,11 +28,11 @@ export class LocalizationWrapperComponent extends BaseComponent<any> implements 
   constructor(
     eavService: EavService,
     validationMessagesService: ValidationMessagesService,
-    fieldsSettings2Service: FieldsSettings2Service,
+    fieldsSettings2NewService: FieldsSettings2NewService,
     private languageInstanceService: LanguageInstanceService,
     private editRoutingService: EditRoutingService,
   ) {
-    super(eavService, validationMessagesService, fieldsSettings2Service);
+    super(eavService, validationMessagesService, fieldsSettings2NewService);
   }
 
   ngOnInit() {

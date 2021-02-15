@@ -3,7 +3,7 @@ import { AbstractControl, FormGroup } from '@angular/forms';
 import { combineLatest, Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
-import { FieldsSettings2Service } from '../../../shared/services/fields-settings2.service';
+import { FieldsSettings2NewService } from '../../../shared/services/fields-settings2new.service';
 import { ValidationMessagesService } from '../../validators/validation-messages-service';
 import { FieldHelperTextTemplateVars } from './field-helper-text.models';
 
@@ -22,7 +22,10 @@ export class FieldHelperTextComponent implements OnInit {
   control: AbstractControl;
   templateVars$: Observable<FieldHelperTextTemplateVars>;
 
-  constructor(private validationMessagesService: ValidationMessagesService, private fieldsSettings2Service: FieldsSettings2Service) { }
+  constructor(
+    private validationMessagesService: ValidationMessagesService,
+    private fieldsSettings2NewService: FieldsSettings2NewService,
+  ) { }
 
   ngOnInit() {
     this.control = this.group.controls[this.config.field.name];
@@ -31,7 +34,7 @@ export class FieldHelperTextComponent implements OnInit {
       startWith(this.control.invalid),
     );
 
-    const settings$ = this.fieldsSettings2Service.getFieldSettings$(this.config.field.name);
+    const settings$ = this.fieldsSettings2NewService.getFieldSettings$(this.config.field.name);
     const description$ = settings$.pipe(map(settings => settings.Notes));
 
     this.templateVars$ = combineLatest([invalid$, description$, settings$]).pipe(

@@ -13,7 +13,7 @@ import { EntityInfo } from '../../../../shared/models';
 import { EavService } from '../../../../shared/services/eav.service';
 import { EditRoutingService } from '../../../../shared/services/edit-routing.service';
 import { EntityService } from '../../../../shared/services/entity.service';
-import { FieldsSettings2Service } from '../../../../shared/services/fields-settings2.service';
+import { FieldsSettings2NewService } from '../../../../shared/services/fields-settings2new.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { BaseComponent } from '../../base/base.component';
 import { ReorderIndexes } from '../entity-default-list/entity-default-list.models';
@@ -49,13 +49,13 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
   constructor(
     eavService: EavService,
     validationMessagesService: ValidationMessagesService,
-    fieldsSettings2Service: FieldsSettings2Service,
+    fieldsSettings2NewService: FieldsSettings2NewService,
     private entityService: EntityService,
     public translate: TranslateService,
     private editRoutingService: EditRoutingService,
     private snackBar: MatSnackBar,
   ) {
-    super(eavService, validationMessagesService, fieldsSettings2Service);
+    super(eavService, validationMessagesService, fieldsSettings2NewService);
     EntityDefaultLogic.importMe();
   }
 

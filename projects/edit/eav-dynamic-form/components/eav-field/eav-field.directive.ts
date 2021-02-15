@@ -34,7 +34,7 @@ import { LocalizationWrapperComponent } from '../../../eav-material-controls/wra
 import { componentMetadataKey } from '../../../shared/constants/component-metadata.constants';
 import { ComponentMetadataModel } from '../../../shared/models';
 import { FieldProps } from '../../../shared/models/fields-configs.model';
-import { FieldsSettings2Service } from '../../../shared/services/fields-settings2.service';
+import { FieldsSettings2NewService } from '../../../shared/services/fields-settings2new.service';
 import { Field } from '../../model/field';
 import { FieldConfigSet } from '../../model/field-config';
 import { FieldWrapper } from '../../model/field-wrapper';
@@ -79,14 +79,14 @@ export class EavFieldDirective implements OnInit {
   constructor(
     private resolver: ComponentFactoryResolver,
     private container: ViewContainerRef,
-    private fieldsSettings2Service: FieldsSettings2Service,
+    private fieldsSettings2NewService: FieldsSettings2NewService,
   ) { }
 
   ngOnInit() {
     // clear container
     this.container.clear();
 
-    this.fieldsSettings2Service.getAllFieldsSettings$().pipe(take(1)).subscribe(fieldsProps => {
+    this.fieldsSettings2NewService.getAllFieldsSettings$().pipe(take(1)).subscribe(fieldsProps => {
       let container = this.container;
       for (const [fieldName, fieldProps] of Object.entries(fieldsProps)) {
         const oldConfig = this.findOldConfig(fieldName, this.fieldConfigs);

@@ -7,7 +7,7 @@ import { InputTypeConstants } from '../../../../ng-dialogs/src/app/content-type-
 import { BuildFieldsService } from '../../../eav-item-dialog/item-edit-form/build-fields.service';
 import { FormValues } from '../../../eav-item-dialog/item-edit-form/item-edit-form.models';
 import { FieldsSettingsService } from '../../../shared/services/fields-settings.service';
-import { FieldsSettings2Service } from '../../../shared/services/fields-settings2.service';
+import { FieldsSettings2NewService } from '../../../shared/services/fields-settings2new.service';
 import { FormsStateService } from '../../../shared/services/forms-state.service';
 import { ItemService } from '../../../shared/store/ngrx-data/item.service';
 import { FieldConfigSet } from '../../model/field-config';
@@ -34,14 +34,14 @@ export class EavFormComponent implements OnInit, AfterViewInit, OnDestroy {
     private eavService: EavService,
     private formsStateService: FormsStateService,
     private itemService: ItemService,
-    private fieldsSettings2Service: FieldsSettings2Service,
+    private fieldsSettings2NewService: FieldsSettings2NewService,
   ) { }
 
   ngOnInit() {
     this.form = new FormGroup({});
     this.subscription = new Subscription();
     this.subscription.add(
-      this.fieldsSettings2Service.getAllFieldsSettings$().subscribe(fieldsProps => {
+      this.fieldsSettings2NewService.getAllFieldsSettings$().subscribe(fieldsProps => {
         // 1. create missing controls
         for (const [fieldName, fieldProps] of Object.entries(fieldsProps)) {
           if (fieldProps.calculatedInputType.inputType === InputTypeConstants.EmptyDefault) { continue; }

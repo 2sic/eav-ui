@@ -16,7 +16,7 @@ import { ItemService } from '../store/ngrx-data/item.service';
 import { LanguageInstanceService } from '../store/ngrx-data/language-instance.service';
 
 @Injectable()
-export class FieldsSettings2Service implements OnDestroy {
+export class FieldsSettings2NewService implements OnDestroy {
   private contentTypeSettings$: BehaviorSubject<ContentTypeSettings>;
   private fieldsProps$: BehaviorSubject<FieldsProps>;
   private subscription: Subscription;
@@ -97,8 +97,8 @@ export class FieldsSettings2Service implements OnDestroy {
             const fixed = logic?.update(merged, value) ?? merged;
 
             const validators = ValidationHelper.getValidators(fixed);
-            const calculatedInputType = InputFieldHelper.calculateInputType2(attribute, inputTypes);
-            const wrappers = InputFieldHelper.setWrappers2(fixed, calculatedInputType);
+            const calculatedInputType = InputFieldHelper.calculateInputType2New(attribute, inputTypes);
+            const wrappers = InputFieldHelper.setWrappers2New(fixed, calculatedInputType);
 
             fieldsProps[attribute.Name] = {
               inputType,

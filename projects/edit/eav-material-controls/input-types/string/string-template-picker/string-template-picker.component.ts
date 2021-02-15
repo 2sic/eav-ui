@@ -6,7 +6,7 @@ import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/compo
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { AssetsService } from '../../../../shared/services/assets.service';
 import { EavService } from '../../../../shared/services/eav.service';
-import { FieldsSettings2Service } from '../../../../shared/services/fields-settings2.service';
+import { FieldsSettings2NewService } from '../../../../shared/services/fields-settings2new.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { BaseComponent } from '../../base/base.component';
 import { templateTypes } from './string-template-picker.constants';
@@ -36,10 +36,10 @@ export class StringTemplatePickerComponent extends BaseComponent<string> impleme
   constructor(
     eavService: EavService,
     validationMessagesService: ValidationMessagesService,
-    fieldsSettings2Service: FieldsSettings2Service,
+    fieldsSettings2NewService: FieldsSettings2NewService,
     private assetsService: AssetsService,
   ) {
-    super(eavService, validationMessagesService, fieldsSettings2Service);
+    super(eavService, validationMessagesService, fieldsSettings2NewService);
   }
 
   ngOnInit() {
