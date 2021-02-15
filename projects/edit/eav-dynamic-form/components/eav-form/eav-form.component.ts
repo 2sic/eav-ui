@@ -3,9 +3,11 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { combineLatest, Subscription } from 'rxjs';
 import { distinctUntilChanged, filter, map, startWith } from 'rxjs/operators';
 import { EavService } from '../../..';
+import { InputTypeConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { BuildFieldsService } from '../../../eav-item-dialog/item-edit-form/build-fields.service';
 import { FormValues } from '../../../eav-item-dialog/item-edit-form/item-edit-form.models';
 import { FieldsSettingsService } from '../../../shared/services/fields-settings.service';
+import { FieldsSettings2Service } from '../../../shared/services/fields-settings2.service';
 import { FormsStateService } from '../../../shared/services/forms-state.service';
 import { ItemService } from '../../../shared/store/ngrx-data/item.service';
 import { FieldConfigSet } from '../../model/field-config';
@@ -32,12 +34,53 @@ export class EavFormComponent implements OnInit, AfterViewInit, OnDestroy {
     private eavService: EavService,
     private formsStateService: FormsStateService,
     private itemService: ItemService,
+    private fieldsSettings2Service: FieldsSettings2Service,
   ) { }
 
   ngOnInit() {
     this.form = new FormGroup({});
     this.subscription = new Subscription();
-    this.createControlsInFormGroup(this.fieldConfigs);
+    this.subscription.add(
+      this.fieldsSettings2Service.getAllFieldsSettings$().subscribe(fieldsProps => {
+        // 1. create missing controls
+        for (const [fieldName, fieldProps] of Object.entries(fieldsProps)) {
+          if (fieldProps.settings.InputType === InputTypeConstants.EmptyDefault) { continue; }
+          const control = this.form.controls[fieldName];
+          if (control != null) { continue; }
+
+          const value = fieldProps.value;
+          const disabled = fieldProps.settings.Disabled;
+          const validation = fieldProps.validators;
+          const newControl = this.formBuilder.control({ disabled, value }, validation);
+          this.form.addControl(fieldName, newControl);
+        }
+
+        // // 2. sync values
+        // const changedValues: ObjectModel<FieldValue> = {};
+        // for (const [fieldName, fieldProps] of Object.entries(fieldsProps)) {
+        //   const control = this.form.controls[fieldName];
+        //   const value = fieldProps.value;
+        //   if (control.value === value) { continue; }
+
+        //   changedValues[fieldName] = value;
+        // }
+        // if (Object.keys(changedValues).length > 0) {
+        //   debugger;
+        //   this.form.patchValue(changedValues);
+        // }
+
+        // // 3. sync disabled
+        // for (const [fieldName, fieldProps] of Object.entries(fieldsProps)) {
+        //   const control = this.form.controls[fieldName];
+        //   const disabled = fieldProps.settings.Disabled;
+        //   if (control.disabled === disabled) { continue; }
+
+        //   control.disable();
+        // }
+
+        // TODO: 4. sync validators
+      })
+    );
 
     const formValid$ = this.form.statusChanges.pipe(
       map(() => !this.form.invalid),
@@ -80,34 +123,5 @@ export class EavFormComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnDestroy() {
     this.buildFieldsService.stopTranslations(this.fieldConfigs);
     this.subscription.unsubscribe();
-  }
-
-  /** Create form from configuration */
-  private createControlsInFormGroup(fieldConfigs: FieldConfigSet[]) {
-    try {
-      fieldConfigs.forEach(fieldConfig => {
-        const field = fieldConfig.field;
-        if (field._fieldGroup) {
-          this.createControlsInFormGroup(field._fieldGroup);
-        } else {
-          this.form.addControl(fieldConfig.field.name, this.createControl(fieldConfig));
-        }
-      });
-      return this.form;
-    } catch (error) {
-      console.error(`Error creating form controls: ${error}\nFieldConfig: ${fieldConfigs}`);
-      throw error;
-    }
-  }
-
-  /** Create form control */
-  private createControl(fieldConfig: FieldConfigSet) {
-    try {
-      const { disabled, validation, initialValue } = fieldConfig.field;
-      return this.formBuilder.control({ disabled, value: initialValue }, validation);
-    } catch (error) {
-      console.error(`Error creating form control: ${error}\nConfig: ${fieldConfig}`);
-      throw error;
-    }
   }
 }

@@ -106,6 +106,13 @@ export class ItemService extends EntityCollectionServiceBase<EavItem> {
     });
     if (!oldItem) { return; }
 
+    const changed = Object.entries(oldItem.Entity.Attributes).some(([name, values]) => {
+      const oldValue = LocalizationHelper.translate(language, defaultLanguage, values, null);
+      const newValue = newValues[name];
+      return oldValue !== newValue;
+    });
+    if (!changed) { return; }
+
     const newItem: EavItem = {
       ...oldItem,
       Entity: {

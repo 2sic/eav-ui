@@ -29,13 +29,13 @@ export class FieldsSettings2Service implements OnDestroy {
     private inputTypeService: InputTypeService,
   ) { }
 
-  public ngOnDestroy(): void {
+  ngOnDestroy(): void {
     this.contentTypeSettings$?.complete();
     this.fieldsProps$?.complete();
     this.subscription?.unsubscribe();
   }
 
-  public init(item: EavItem): void {
+  init(item: EavItem): void {
     this.subscription = new Subscription();
     this.contentTypeSettings$ = new BehaviorSubject<ContentTypeSettings>(null);
     this.fieldsProps$ = new BehaviorSubject<FieldsProps>(null);
@@ -77,7 +77,7 @@ export class FieldsSettings2Service implements OnDestroy {
             const attributeValues = itemAttributes[attribute.Name];
             // empty-default value is null
             const value = LocalizationHelper.translate(currentLanguage, defaultLanguage, attributeValues, null);
-            // TODO: if null, create dummy inputType with sensible default values for custom fields
+            // custom-default inputType is null
             const inputType = inputTypes.find(i => i.Type === attribute.InputType);
 
             const merged = this.mergeSettings<FieldSettings>(attribute.Metadata, currentLanguage, defaultLanguage);
@@ -104,6 +104,7 @@ export class FieldsSettings2Service implements OnDestroy {
               inputType,
               settings: fixed,
               validators,
+              value,
               wrappers,
             };
           }
@@ -115,11 +116,15 @@ export class FieldsSettings2Service implements OnDestroy {
     );
   }
 
-  public getContentTypeSettings$(): Observable<ContentTypeSettings> {
+  getContentTypeSettings$(): Observable<ContentTypeSettings> {
     return this.contentTypeSettings$.asObservable();
   }
 
-  public getFieldSettings$(fieldName: string): Observable<FieldSettings> {
+  getAllFieldsSettings$(): Observable<FieldsProps> {
+    return this.fieldsProps$.asObservable();
+  }
+
+  getFieldSettings$(fieldName: string): Observable<FieldSettings> {
     return this.fieldsProps$.pipe(
       map(fieldsSettings => fieldsSettings[fieldName].settings),
       distinctUntilChanged((oldSettings, newSettings) => {
