@@ -2,6 +2,7 @@ import { ValidatorFn } from '@angular/forms';
 import { FieldSettings } from '../../../edit-types';
 import { InputType } from '../../../ng-dialogs/src/app/content-type-fields/models/input-type.model';
 import { FieldValue } from '../../eav-item-dialog/item-edit-form/item-edit-form.models';
+import { CalculatedInputType } from './calculated-input-type.model';
 
 export interface FieldsProps {
   [attributeName: string]: FieldProps;
@@ -15,4 +16,5 @@ export interface FieldProps {
   /** empty-default value is null */
   value: FieldValue;
   wrappers: string[];
+  calculatedInputType: CalculatedInputType;
 }

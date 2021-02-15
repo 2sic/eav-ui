@@ -106,6 +106,7 @@ export class FieldsSettings2Service implements OnDestroy {
               validators,
               value,
               wrappers,
+              calculatedInputType,
             };
           }
           return fieldsProps;

@@ -44,7 +44,7 @@ export class EavFormComponent implements OnInit, AfterViewInit, OnDestroy {
       this.fieldsSettings2Service.getAllFieldsSettings$().subscribe(fieldsProps => {
         // 1. create missing controls
         for (const [fieldName, fieldProps] of Object.entries(fieldsProps)) {
-          if (fieldProps.settings.InputType === InputTypeConstants.EmptyDefault) { continue; }
+          if (fieldProps.calculatedInputType.inputType === InputTypeConstants.EmptyDefault) { continue; }
           const control = this.form.controls[fieldName];
           if (control != null) { continue; }
 

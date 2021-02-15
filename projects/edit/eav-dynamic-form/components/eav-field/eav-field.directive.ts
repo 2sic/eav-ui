@@ -1,5 +1,6 @@
 import { ComponentFactoryResolver, ComponentRef, Directive, Input, OnInit, Type, ViewContainerRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { take } from 'rxjs/operators';
 import { InputTypeConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { AdamAttachWrapperComponent } from '../../../eav-material-controls/adam/adam-attach-wrapper/adam-attach-wrapper.component';
 import { DropzoneWrapperComponent } from '../../../eav-material-controls/adam/dropzone-wrapper/dropzone-wrapper.component';
@@ -32,6 +33,8 @@ import { HyperlinkLibraryExpandableWrapperComponent } from '../../../eav-materia
 import { LocalizationWrapperComponent } from '../../../eav-material-controls/wrappers/localization-wrapper/localization-wrapper.component';
 import { componentMetadataKey } from '../../../shared/constants/component-metadata.constants';
 import { ComponentMetadataModel } from '../../../shared/models';
+import { FieldProps } from '../../../shared/models/fields-configs.model';
+import { FieldsSettings2Service } from '../../../shared/services/fields-settings2.service';
 import { Field } from '../../model/field';
 import { FieldConfigSet } from '../../model/field-config';
 import { FieldWrapper } from '../../model/field-wrapper';
@@ -73,54 +76,55 @@ export class EavFieldDirective implements OnInit {
     'string-url-path': StringUrlPathComponent,
   };
 
-  constructor(private resolver: ComponentFactoryResolver, private container: ViewContainerRef) { }
+  constructor(
+    private resolver: ComponentFactoryResolver,
+    private container: ViewContainerRef,
+    private fieldsSettings2Service: FieldsSettings2Service,
+  ) { }
 
   ngOnInit() {
-    // Clear container
+    // clear container
     this.container.clear();
 
-    this.fieldConfigs.forEach(fieldConfig => {
-      this.createFieldOrGroup(this.container, fieldConfig);
+    this.fieldsSettings2Service.getAllFieldsSettings$().pipe(take(1)).subscribe(fieldsProps => {
+      let container = this.container;
+      for (const [fieldName, fieldProps] of Object.entries(fieldsProps)) {
+        const oldConfig = this.findOldConfig(fieldName, this.fieldConfigs);
+        if (fieldProps.calculatedInputType.inputType === InputTypeConstants.EmptyDefault) {
+          container = this.container;
+          container = this.createGroup(container, fieldProps, oldConfig);
+          continue;
+        } else {
+          this.createComponent(container, fieldProps, oldConfig);
+        }
+      }
     });
-  }
-
-  /** Create all child fields and groups from fieldConfig in container */
-  private createFieldOrGroup(container: ViewContainerRef, fieldConfig: FieldConfigSet) {
-    const field = fieldConfig.field;
-    if (field._fieldGroup) {
-      this.createGroupComponents(container, fieldConfig);
-    } else {
-      this.createComponent(container, fieldConfig);
-    }
   }
 
   /** Create group components with group wrappers in container */
-  private createGroupComponents(container: ViewContainerRef, fieldConfig: FieldConfigSet) {
-    if (fieldConfig.field.wrappers) {
-      container = this.createComponentWrappers(container, fieldConfig, fieldConfig.field.wrappers);
+  private createGroup(container: ViewContainerRef, fieldProps: FieldProps, oldConfig: FieldConfigSet) {
+    if (fieldProps.wrappers) {
+      container = this.createWrappers(container, fieldProps, fieldProps.wrappers, oldConfig);
     }
-    const field = fieldConfig.field;
-    field._fieldGroup.forEach(controlConfiguration => {
-      this.createFieldOrGroup(container, controlConfiguration);
-    });
+    return container;
   }
 
   /** Create component and component wrappers if component exist */
-  private createComponent(container: ViewContainerRef, fieldConfig: FieldConfigSet): ComponentRef<any> {
-    if (fieldConfig.field.wrappers) {
-      container = this.createComponentWrappers(container, fieldConfig, fieldConfig.field.wrappers);
+  private createComponent(container: ViewContainerRef, fieldProps: FieldProps, oldConfig: FieldConfigSet): ComponentRef<any> {
+    if (fieldProps.wrappers) {
+      container = this.createWrappers(container, fieldProps, fieldProps.wrappers, oldConfig);
     }
 
-    const componentType = fieldConfig.field.isExternal
+    const componentType = fieldProps.calculatedInputType.isExternal
       ? this.readComponentType(InputTypeConstants.ExternalWebComponent)
-      : this.readComponentType(fieldConfig.field.inputType);
+      : this.readComponentType(fieldProps.calculatedInputType.inputType);
 
     // create component only if componentMetadata exist
     const componentMetadata: ComponentMetadataModel = Reflect.getMetadata(componentMetadataKey, componentType);
     if (componentMetadata == null) { return; }
 
     if (componentMetadata.wrappers) {
-      container = this.createComponentWrappers(container, fieldConfig, componentMetadata.wrappers);
+      container = this.createWrappers(container, fieldProps, componentMetadata.wrappers, oldConfig);
     }
 
     const factory = this.resolver.resolveComponentFactory<Field>(componentType);
@@ -128,10 +132,37 @@ export class EavFieldDirective implements OnInit {
 
     Object.assign<Field, Field>(ref.instance, {
       group: this.group,
-      config: fieldConfig
+      config: oldConfig
     });
 
     return ref;
+  }
+
+  /** Create wrappers in container */
+  private createWrappers(
+    container: ViewContainerRef,
+    fieldProps: FieldProps,
+    wrappers: string[],
+    oldConfig: FieldConfigSet,
+  ): ViewContainerRef {
+    for (const wrapper of wrappers) {
+      container = this.createWrapper(container, fieldProps, wrapper, oldConfig);
+    }
+    return container;
+  }
+
+  /** Create wrapper in container */
+  private createWrapper(container: ViewContainerRef, fieldProps: FieldProps, wrapper: string, oldConfig: FieldConfigSet): ViewContainerRef {
+    const componentType = this.readComponentType(wrapper);
+    const componentFactory = this.resolver.resolveComponentFactory<FieldWrapper>(componentType);
+    const ref = container.createComponent(componentFactory);
+
+    Object.assign<FieldWrapper, Partial<FieldWrapper>>(ref.instance, {
+      group: this.group,
+      config: oldConfig
+    });
+
+    return ref.instance.fieldComponent;
   }
 
   /** Read component type by selector with ComponentFactoryResolver */
@@ -144,25 +175,15 @@ export class EavFieldDirective implements OnInit {
     return componentType;
   }
 
-  /** Create wrappers in container */
-  private createComponentWrappers(container: ViewContainerRef, fieldConfig: FieldConfigSet, wrappers: string[]): ViewContainerRef {
-    wrappers.forEach(wrapperName => {
-      container = this.createWrapper(container, fieldConfig, wrapperName);
-    });
-    return container;
-  }
-
-  /** Create wrapper in container */
-  private createWrapper(container: ViewContainerRef, fieldConfig: FieldConfigSet, wrapper: string): ViewContainerRef {
-    const componentType = this.readComponentType(wrapper);
-    const componentFactory = this.resolver.resolveComponentFactory<FieldWrapper>(componentType);
-    const ref = container.createComponent(componentFactory);
-
-    Object.assign<FieldWrapper, Partial<FieldWrapper>>(ref.instance, {
-      group: this.group,
-      config: fieldConfig
-    });
-
-    return ref.instance.fieldComponent;
+  private findOldConfig(fieldName: string, fieldConfigs: FieldConfigSet[]): FieldConfigSet {
+    for (const config of fieldConfigs) {
+      if (config.field.name === fieldName) {
+        return config;
+      } else if (config.field._fieldGroup) {
+        const found = this.findOldConfig(fieldName, config.field._fieldGroup);
+        if (!found) { continue; }
+        return found;
+      }
+    }
   }
 }

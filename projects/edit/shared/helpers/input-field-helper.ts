@@ -94,8 +94,7 @@ export class InputFieldHelper {
     const isExternal = calculatedInputType.isExternal;
 
     // empty inputtype wrappers
-    const isEmptyInputType = (type === InputTypeConstants.EmptyDefault || type === DataTypeConstants.Empty);
-    if (isEmptyInputType) { return [WrappersConstants.CollapsibleWrapper]; }
+    if (type === InputTypeConstants.EmptyDefault) { return [WrappersConstants.CollapsibleWrapper]; }
 
     // default wrappers
     const wrappers = [WrappersConstants.HiddenWrapper];
