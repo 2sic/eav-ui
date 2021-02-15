@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import { DnnBridgeComponent } from '../../eav-material-controls/input-types/dnn-bridge/dnn-bridge.component';
 import { DnnBridgeConnectorParams, DnnBridgeDialogData, DnnBridgeType } from '../../eav-material-controls/input-types/dnn-bridge/dnn-bridge.models';
 import { EavService } from './eav.service';
+import { AdamItem } from '../../../edit-types/src/AdamItem';
 
 @Injectable()
 export class DnnBridgeService {
@@ -42,4 +43,26 @@ export class DnnBridgeService {
       }
     }) as Observable<string>;
   }
+
+
+  /**
+   * New implementation returning richer object
+   * The new object has
+   * - Adam - a rich ADAM item with preview etc. (is null if the link was not able to resolve)
+   * - Value - just a string, in case the original link was not an ADAM or permissions didn't allow resolving
+   */
+  // TODO: SPM - pls update all code use to work with this from now on,
+  // then info @2dm so we can drop the old method in the backend
+  getLinkInfo(link: string, contentType: string, guid: string, field: string) {
+    return this.http.get(this.dnnContext.$2sxc.http.apiUrl('cms/edit/linkInfo'), {
+      params: {
+        link,
+        ...(guid && { guid }),
+        ...(contentType && { contentType }),
+        ...(field && { field }),
+        appid: this.eavService.eavConfig.appId.toString(),
+      }
+    }) as Observable<{ Adam: AdamItem, Value: string }>;
+  }
+
 }
