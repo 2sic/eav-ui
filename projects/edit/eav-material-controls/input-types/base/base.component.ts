@@ -59,13 +59,13 @@ export class BaseComponent<T> implements Field, OnInit, OnDestroy {
     //   startWith(this.control.status)
     // );
     this.value$ = this.eavService.formValueChange$.pipe(
-      filter(formSet => formSet.formId === this.eavService.eavConfig.formId && formSet.entityGuid === this.config.entity.entityGuid),
+      filter(formSet => formSet.formId === this.eavService.eavConfig.formId && formSet.entityGuid === this.config.entityGuid),
       map(() => this.control.value),
       startWith(this.control.value),
       distinctUntilChanged(),
     );
     this.disabled$ = this.eavService.formDisabledChange$.pipe(
-      filter(formSet => formSet.formId === this.eavService.eavConfig.formId && formSet.entityGuid === this.config.entity.entityGuid),
+      filter(formSet => formSet.formId === this.eavService.eavConfig.formId && formSet.entityGuid === this.config.entityGuid),
       map(() => this.control.disabled),
       startWith(this.control.disabled),
       distinctUntilChanged(),

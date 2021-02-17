@@ -42,7 +42,7 @@ export class HyperlinkLibraryExpandableWrapperComponent extends BaseComponent<nu
 
   ngOnInit() {
     super.ngOnInit();
-    this.open$ = this.editRoutingService.isExpanded(this.config.field.index, this.config.entity.entityGuid);
+    this.open$ = this.editRoutingService.isExpanded(this.config.field.index, this.config.entityGuid);
     this.adamItems$ = new BehaviorSubject<AdamItem[]>([]);
 
     this.templateVars$ = combineLatest([
@@ -95,10 +95,10 @@ export class HyperlinkLibraryExpandableWrapperComponent extends BaseComponent<nu
 
   expandDialog() {
     if (this.config.field.disabled) { return; }
-    this.editRoutingService.expand(true, this.config.field.index, this.config.entity.entityGuid);
+    this.editRoutingService.expand(true, this.config.field.index, this.config.entityGuid);
   }
 
   closeDialog() {
-    this.editRoutingService.expand(false, this.config.field.index, this.config.entity.entityGuid);
+    this.editRoutingService.expand(false, this.config.field.index, this.config.entityGuid);
   }
 }

@@ -7,9 +7,8 @@ import { ValidationHelper } from '../../eav-material-controls/validators/validat
 import { FieldLogicManager } from '../../field-logic/field-logic-manager';
 import { InputFieldHelper } from '../helpers/input-field-helper';
 import { LocalizationHelper } from '../helpers/localization-helper';
-import { ContentTypeSettings } from '../models';
+import { ContentTypeSettings, FieldsProps } from '../models';
 import { EavContentType, EavEntity, EavItem } from '../models/eav';
-import { FieldsProps } from '../models/fields-configs.model';
 import { ContentTypeService } from '../store/ngrx-data/content-type.service';
 import { InputTypeService } from '../store/ngrx-data/input-type.service';
 import { ItemService } from '../store/ngrx-data/item.service';
@@ -107,6 +106,15 @@ export class FieldsSettings2NewService implements OnDestroy {
               value,
               wrappers,
               calculatedInputType,
+              constants: {
+                contentTypeId,
+                entityGuid: item.Entity.Guid,
+                entityId: item.Entity.Id,
+                fieldName: attribute.Name,
+                index: contentType.Attributes.indexOf(attribute),
+                inputType: calculatedInputType.inputType,
+                isExternal: calculatedInputType.isExternal,
+              }
             };
           }
           return fieldsProps;
@@ -121,7 +129,7 @@ export class FieldsSettings2NewService implements OnDestroy {
     return this.contentTypeSettings$.asObservable();
   }
 
-  getAllFieldsSettings$(): Observable<FieldsProps> {
+  getFieldsProps$(): Observable<FieldsProps> {
     return this.fieldsProps$.asObservable();
   }
 

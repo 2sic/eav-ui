@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { EavService } from '../..';
 import { InputTypeConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
-import { FieldConfigAngular, FieldConfigSet, ItemConfig } from '../../eav-dynamic-form/model/field-config';
+import { FieldConfigAngular, FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
 import { InputFieldHelper } from '../../shared/helpers/input-field-helper';
 import { CalculatedInputType } from '../../shared/models';
 import { EavContentType, EavContentTypeAttribute, EavEntityAttributes, EavItem } from '../../shared/models/eav';
@@ -43,18 +43,13 @@ export class BuildFieldsService {
     this.fieldsSettingsService = fieldsSettingsService;
 
     const contentTypeSettings = contentType.Settings;
-    const entity: ItemConfig = {
-      entityId: this.item.Entity.Id,
-      entityGuid: this.item.Entity.Guid,
-      contentTypeId: InputFieldHelper.getContentTypeId(this.item),
-    };
 
     // build first empty
     const parentType: CalculatedInputType = {
       inputType: InputTypeConstants.EmptyDefault,
       isExternal: false,
     };
-    const parentFieldGroup = this.buildFieldConfig(null, null, parentType, contentTypeSettings, true, entity);
+    const parentFieldGroup = this.buildFieldConfig(null, null, parentType, contentTypeSettings, true);
     let currentFieldGroup = parentFieldGroup;
 
     // loop through contentType attributes
@@ -65,12 +60,12 @@ export class BuildFieldsService {
         const isEmptyInputType = (calculatedInputType.inputType === InputTypeConstants.EmptyDefault);
         if (isEmptyInputType) {
           // group-fields (empty)
-          currentFieldGroup = this.buildFieldConfig(attribute, index, calculatedInputType, contentTypeSettings, false, entity);
+          currentFieldGroup = this.buildFieldConfig(attribute, index, calculatedInputType, contentTypeSettings, false);
           const field = parentFieldGroup.field;
           field._fieldGroup.push(currentFieldGroup);
         } else {
           // all other fields (not group empty)
-          const fieldConfigSet = this.buildFieldConfig(attribute, index, calculatedInputType, contentTypeSettings, null, entity);
+          const fieldConfigSet = this.buildFieldConfig(attribute, index, calculatedInputType, contentTypeSettings, null);
           const field = currentFieldGroup.field;
           field._fieldGroup.push(fieldConfigSet);
         }
@@ -93,7 +88,6 @@ export class BuildFieldsService {
     calculatedInputType: CalculatedInputType,
     contentTypeSettings: EavEntityAttributes,
     isParentGroup: boolean,
-    entity: ItemConfig,
   ): FieldConfigSet {
     const field = this.fieldsSettingsService.buildFieldConfig(
       attribute,
@@ -114,7 +108,6 @@ export class BuildFieldsService {
 
     const fieldConfigSet: FieldConfigSet = {
       field,
-      entity,
     };
     return fieldConfigSet;
   }

@@ -53,7 +53,7 @@ export class ExpandableWrapperComponent extends BaseComponent<string> implements
 
   ngOnInit() {
     super.ngOnInit();
-    this.open$ = this.editRoutingService.isExpanded(this.config.field.index, this.config.entity.entityGuid);
+    this.open$ = this.editRoutingService.isExpanded(this.config.field.index, this.config.entityGuid);
 
     this.templateVars$ = combineLatest([
       combineLatest([this.value$, this.label$, this.required$, this.invalid$, this.config.field.focused$]),
@@ -109,11 +109,11 @@ export class ExpandableWrapperComponent extends BaseComponent<string> implements
   }
 
   expandDialog() {
-    this.editRoutingService.expand(true, this.config.field.index, this.config.entity.entityGuid);
+    this.editRoutingService.expand(true, this.config.field.index, this.config.entityGuid);
   }
 
   closeDialog() {
-    this.editRoutingService.expand(false, this.config.field.index, this.config.entity.entityGuid);
+    this.editRoutingService.expand(false, this.config.field.index, this.config.entityGuid);
   }
 
   calculateBottomPixels() {

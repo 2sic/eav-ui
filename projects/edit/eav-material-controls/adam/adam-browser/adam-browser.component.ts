@@ -67,8 +67,8 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
     this.adamConfig$ = new BehaviorSubject<AdamConfig>(null);
     this.items$ = new BehaviorSubject<AdamItem[]>([]);
     this.refreshOnChildClosed();
-    const contentType = this.config.entity.contentTypeId;
-    const entityGuid = this.config.entity.entityGuid;
+    const contentType = this.config.contentTypeId;
+    const entityGuid = this.config.entityGuid;
     const field = this.config.field.name;
     this.url = this.dnnContext.$2sxc.http.apiUrl(`app-content/${contentType}/${entityGuid}/${field}`);
     this.pasteClipboardImage = this.featureService.isFeatureEnabled(FeaturesGuidsConstants.PasteImageFromClipboard);
@@ -101,16 +101,16 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
         this.fetchItems();
       })
     );
-    const expanded$ = this.editRoutingService.isExpanded(this.config.field.index, this.config.entity.entityGuid);
+    const expanded$ = this.editRoutingService.isExpanded(this.config.field.index, this.config.entityGuid);
     const value$ = this.eavService.formValueChange$.pipe(
-      filter(formSet => (formSet.formId === this.eavService.eavConfig.formId) && (formSet.entityGuid === this.config.entity.entityGuid)),
+      filter(formSet => (formSet.formId === this.eavService.eavConfig.formId) && (formSet.entityGuid === this.config.entityGuid)),
       map(() => this.control.value),
       startWith(this.control.value),
       distinctUntilChanged(),
     );
     const disabled$ = this.eavService.formDisabledChange$.asObservable().pipe(
       filter(formSet => (formSet.formId === this.eavService.eavConfig.formId)
-        && (formSet.entityGuid === this.config.entity.entityGuid)
+        && (formSet.entityGuid === this.config.entityGuid)
       ),
       map(() => this.control.disabled),
       startWith(this.control.disabled),
@@ -173,7 +173,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
           : { EntityId: adamItem.MetadataId }
       ],
     };
-    this.editRoutingService.open(this.config.field.index, this.config.entity.entityGuid, form);
+    this.editRoutingService.open(this.config.field.index, this.config.entityGuid, form);
   }
 
   goUp() {

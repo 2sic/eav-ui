@@ -38,7 +38,7 @@ export class TranslateMenuComponent implements OnInit {
 
     const control = this.group.controls[this.config.field.name];
     const disabled$ = this.eavService.formDisabledChange$.pipe(
-      filter(formSet => formSet.formId === this.eavService.eavConfig.formId && formSet.entityGuid === this.config.entity.entityGuid),
+      filter(formSet => formSet.formId === this.eavService.eavConfig.formId && formSet.entityGuid === this.config.entityGuid),
       map(() => control.disabled),
       startWith(control.disabled),
       distinctUntilChanged(),

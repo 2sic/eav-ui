@@ -1,6 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { ObjectModel } from '../models/object.model';
+import { ObjectModel } from '../models';
 import { EavService } from './eav.service';
 
 @Injectable()

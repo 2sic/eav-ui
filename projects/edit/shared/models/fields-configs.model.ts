@@ -17,4 +17,15 @@ export interface FieldProps {
   value: FieldValue;
   wrappers: string[];
   calculatedInputType: CalculatedInputType;
+  constants: FieldConstants;
+}
+
+export interface FieldConstants {
+  contentTypeId?: string;
+  entityGuid?: string;
+  entityId?: number;
+  fieldName?: string;
+  index?: number;
+  inputType?: string;
+  isExternal?: boolean;
 }

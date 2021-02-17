@@ -2,7 +2,7 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
-import { ObjectModel } from '../../shared/models/object.model';
+import { ObjectModel } from '../../shared/models';
 
 @Injectable()
 export class ValidationMessagesService implements OnDestroy {

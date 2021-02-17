@@ -42,7 +42,7 @@ export class ConnectorHelper {
 
     this.subscription.add(
       this.eavService.formValueChange$.pipe(
-        filter(formSet => (formSet.formId === this.eavService.eavConfig.formId) && (formSet.entityGuid === this.config.entity.entityGuid)),
+        filter(formSet => (formSet.formId === this.eavService.eavConfig.formId) && (formSet.entityGuid === this.config.entityGuid)),
         map(() => this.control.value),
         startWith(this.control.value),
         distinctUntilChanged(),
@@ -96,7 +96,7 @@ export class ConnectorHelper {
       },
       expand: (expand, componentTag) => {
         this.zone.run(() => {
-          this.editRoutingService.expand(expand, this.config.field.index, this.config.entity.entityGuid, componentTag);
+          this.editRoutingService.expand(expand, this.config.field.index, this.config.entityGuid, componentTag);
         });
       },
     };
@@ -105,16 +105,16 @@ export class ConnectorHelper {
 
   private calculateExperimentalProps() {
     let allInputTypeNames: InputTypeName[];
-    this.contentTypeService.getContentTypeById(this.config.entity.contentTypeId).pipe(take(1)).subscribe(contentType => {
+    this.contentTypeService.getContentTypeById(this.config.contentTypeId).pipe(take(1)).subscribe(contentType => {
       allInputTypeNames = InputFieldHelper.calculateInputTypes(contentType.Attributes, this.inputTypeService);
     });
 
     const experimentalProps: ExperimentalProps = {
-      entityGuid: this.config.entity.entityGuid,
+      entityGuid: this.config.entityGuid,
       allInputTypeNames,
       formGroup: this.group,
       translateService: this.translateService,
-      isExpanded$: this.editRoutingService.isExpanded(this.config.field.index, this.config.entity.entityGuid),
+      isExpanded$: this.editRoutingService.isExpanded(this.config.field.index, this.config.entityGuid),
       dropzone: this.config.dropzone,
       adam: this.config.adam,
       updateField: (name, value) => {
@@ -139,8 +139,8 @@ export class ConnectorHelper {
     if (!value) { return; }
 
     // handle short-ID links like file:17
-    const contentType = this.config.entity.contentTypeId;
-    const entityGuid = this.config.entity.entityGuid;
+    const contentType = this.config.contentTypeId;
+    const entityGuid = this.config.entityGuid;
     const field = this.config.field.name;
     this.dnnBridgeService.getUrlOfId(value, contentType, entityGuid, field).subscribe(path => {
       if (!path) { return; }

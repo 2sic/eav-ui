@@ -48,7 +48,7 @@ export class LocalizationWrapperComponent extends BaseComponent<any> implements 
       })
     );
     this.subscription.add(
-      this.editRoutingService.isExpanded(this.config.field.index, this.config.entity.entityGuid).subscribe(isExpanded => {
+      this.editRoutingService.isExpanded(this.config.field.index, this.config.entityGuid).subscribe(isExpanded => {
         this.isExpanded$.next(isExpanded);
       })
     );

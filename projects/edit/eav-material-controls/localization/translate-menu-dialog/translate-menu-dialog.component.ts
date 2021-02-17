@@ -43,7 +43,7 @@ export class TranslateMenuDialogComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     const currentLanguage$ = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
     const defaultLanguage$ = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
-    const attributes$ = this.itemService.selectItemAttributes(this.dialogData.config.entity.entityGuid);
+    const attributes$ = this.itemService.selectItemAttributes(this.dialogData.config.entityGuid);
     const languages$ = combineLatest([this.languageService.entities$, currentLanguage$, defaultLanguage$, attributes$]).pipe(
       map(([languages, currentLanguage, defaultLanguage, attributes]) =>
         getTemplateLanguages(this.dialogData.config, currentLanguage, defaultLanguage, languages, attributes)),

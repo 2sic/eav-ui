@@ -70,7 +70,7 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
       }),
     );
 
-    this.isExpanded$ = this.editRoutingService.isExpanded(this.config.field.index, this.config.entity.entityGuid);
+    this.isExpanded$ = this.editRoutingService.isExpanded(this.config.field.index, this.config.entityGuid);
 
     this.subscription.add(
       this.settings$.subscribe(settings => {
@@ -198,7 +198,7 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
         items: [{ EntityId: entity.Id }],
       };
     }
-    this.editRoutingService.open(this.config.field.index, this.config.entity.entityGuid, form);
+    this.editRoutingService.open(this.config.field.index, this.config.entityGuid, form);
   }
 
   /**
@@ -263,7 +263,7 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
       })
     );
     this.subscription.add(
-      this.editRoutingService.childFormResult(this.config.field.index, this.config.entity.entityGuid).subscribe(result => {
+      this.editRoutingService.childFormResult(this.config.field.index, this.config.entityGuid).subscribe(result => {
         const newItemGuid = Object.keys(result)[0];
         this.addSelected(newItemGuid);
       })
