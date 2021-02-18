@@ -3,7 +3,7 @@ import { AbstractControl, FormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { distinctUntilChanged, filter, map, startWith, take } from 'rxjs/operators';
-import { EavCustomInputField, ExperimentalProps, FieldSettings, InputTypeName } from '../../../../../../edit-types';
+import { EavCustomInputField, ExperimentalProps, FieldConfig, FieldSettings, InputTypeName } from '../../../../../../edit-types';
 import { FieldConfigSet } from '../../../../../eav-dynamic-form/model/field-config';
 import { FieldValue } from '../../../../../eav-item-dialog/item-edit-form/item-edit-form.models';
 import { InputFieldHelper } from '../../../../../shared/helpers/input-field-helper';
@@ -73,16 +73,25 @@ export class ConnectorHelper {
   private buildConnector() {
     const connectorHost = this.calculateRegularProps();
     const experimental = this.calculateExperimentalProps();
-    const connector = new ConnectorInstance<any>(
-      connectorHost,
-      this.value$.asObservable(),
-      this.config.field,
-      experimental,
-      this.eavService.eavConfig,
-    );
+    const fieldConfig: FieldConfig = {
+      name: this.config.fieldName,
+      index: this.config.index,
+      label: this.settings$.value.Name,
+      placeholder: this.settings$.value.Placeholder,
+      inputType: this.config.inputType,
+      type: this.config.type,
+      required: this.settings$.value.Required,
+      disabled: this.config.initialDisabled,
+      settings: this.settings$.value,
+    };
+    const value$ = this.value$.asObservable();
+    const connector = new ConnectorInstance<any>(connectorHost, value$, fieldConfig, experimental, this.eavService.eavConfig);
     this.subscription.add(
       this.settings$.subscribe(settings => {
         connector.field.settings = settings;
+        connector.field.label = settings.Name;
+        connector.field.placeholder = settings.Placeholder;
+        connector.field.required = settings.Required;
       })
     );
     return connector;

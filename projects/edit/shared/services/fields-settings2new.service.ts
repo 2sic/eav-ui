@@ -111,16 +111,17 @@ export class FieldsSettings2NewService implements OnDestroy {
               wrappers,
               calculatedInputType,
               constants: {
+                angularAssets: inputType?.AngularAssets,
                 contentTypeId,
                 entityGuid: item.Entity.Guid,
                 entityId: item.Entity.Id,
                 fieldName: attribute.Name,
                 index: contentType.Attributes.indexOf(attribute),
+                initialDisabled,
                 inputType: calculatedInputType.inputType,
                 isExternal: calculatedInputType.isExternal,
                 isLastInGroup: this.findIsLastInGroup(contentType, attribute),
-                angularAssets: inputType?.AngularAssets,
-                initialDisabled,
+                type: attribute.Type,
               }
             };
           }

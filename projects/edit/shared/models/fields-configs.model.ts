@@ -18,14 +18,15 @@ export interface FieldProps {
 }
 
 export interface FieldConstants {
+  angularAssets?: string;
   contentTypeId?: string;
   entityGuid?: string;
   entityId?: number;
   fieldName?: string;
   index?: number;
+  initialDisabled?: boolean;
   inputType?: string;
   isExternal?: boolean;
   isLastInGroup?: boolean;
-  angularAssets?: string;
-  initialDisabled?: boolean;
+  type?: string;
 }
