@@ -12,7 +12,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { EavService, EntityService } from 'projects/edit';
+import { EntityService } from 'projects/edit';
 import { HelpPopupComponent, SelectorWithHelpComponent } from '.';
 import { PipelinesService } from '../app-administration/services';
 import { AppDialogConfigService } from '../app-administration/services/app-dialog-config.service';
@@ -83,7 +83,6 @@ import { InfoBoxComponent } from './info-box/info-box.component';
     MetadataService,
     EntitiesService,
     EntityService,
-    EavService,
     PipelinesService,
   ]
 })
