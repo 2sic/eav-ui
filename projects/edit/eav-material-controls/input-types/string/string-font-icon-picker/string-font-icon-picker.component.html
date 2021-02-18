@@ -3,7 +3,7 @@
   <mat-form-field [formGroup]="group" appearance="standard" color="accent">
     <div class="icon-option">
       <i *ngIf="data.value" class="icon-preview {{ data.previewCss }} {{ data.value }}"></i>
-      <input matInput [formControlName]="config.field.name" [placeholder]="data.placeholder" [required]="data.required"
+      <input matInput [formControlName]="config.fieldName" [placeholder]="data.placeholder" [required]="data.required"
         [matAutocomplete]="auto">
     </div>
 

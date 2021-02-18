@@ -54,13 +54,6 @@ export class FieldsSettingsService {
     // these settings are recalculated in translate-group-menu translateAllConfiguration
     const name = attribute ? attribute.Name : 'Edit Item';
     const label = attribute ? InputFieldHelper.getFieldLabel(attribute, settingsTranslated) : 'Edit Item';
-    let inputTypeSettings: InputType;
-    const disableI18n = LocalizationHelper.isI18nDisabled(inputTypeService, calculatedInputType, fullSettings);
-    inputTypeService.getInputTypeById(calculatedInputType.inputType).pipe(take(1)).subscribe(type => {
-      inputTypeSettings = type;
-    });
-    const wrappers = InputFieldHelper.setWrappers(calculatedInputType, settingsTranslated, inputTypeSettings);
-    const isLastInGroup = false; // calculated later in calculateFieldPositionInGroup
     const fieldHelper = new FieldHelper(
       name,
       item.Entity.Guid,
@@ -78,31 +71,19 @@ export class FieldsSettingsService {
         _fieldGroup: [], // empty specific
         settings: settingsTranslated,
         fullSettings,
-        wrappers,
-        isExternal: calculatedInputType.isExternal,
-        disableI18n,
-        isLastInGroup,
         name,
         label,
         inputType: calculatedInputType.inputType,
       } as FieldConfigAngular;
     } else {
-      const validation = ValidationHelper.getValidators(settingsTranslated);
       const required = ValidationHelper.isRequired(settingsTranslated);
-      const initialValue = LocalizationHelper.translate(currentLanguage, defaultLanguage, item.Entity.Attributes[name], null);
       const disabled = settingsTranslated.Disabled;
 
       fieldConfig = {
         _fieldGroup: null,
-        initialValue, // other fields specific
-        validation, // other fields specific
         settings: settingsTranslated,
         fullSettings,
-        wrappers,
         focused$: new BehaviorSubject(false),
-        isExternal: calculatedInputType.isExternal,
-        disableI18n,
-        isLastInGroup,
         name,
         index, // other fields specific
         label,
@@ -137,7 +118,7 @@ export class FieldsSettingsService {
     config.field.settings = fieldSettings;
     config.field.label = fieldSettings.Name;
     config.field.placeholder = fieldSettings.Placeholder;
-    config.field.validation = ValidationHelper.getValidators(fieldSettings);
+    // config.field.validation = ValidationHelper.getValidators(fieldSettings);
     config.field.required = ValidationHelper.isRequired(fieldSettings);
     // config.field.settings$.next(fieldSettings); // must run after validations are recalculated
   }

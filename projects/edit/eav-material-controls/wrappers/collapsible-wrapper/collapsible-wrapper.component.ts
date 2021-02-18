@@ -32,7 +32,7 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
   }
 
   ngOnInit() {
-    const settings$ = this.fieldsSettings2NewService.getFieldSettings$(this.config.field.name);
+    const settings$ = this.fieldsSettings2NewService.getFieldSettings$(this.config.fieldName);
     this.subscription.add(
       settings$.subscribe(settings => {
         this.settings$.next(settings);

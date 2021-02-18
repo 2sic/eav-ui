@@ -1,7 +1,7 @@
 <ng-container *ngIf="templateVars$ | async as data">
 
   <mat-form-field [formGroup]="group" appearance="standard" color="accent" *ngIf="!data.useTimePicker">
-    <input matInput [formControlName]="config.field.name" [matDatepicker]="picker" [placeholder]="data.placeholder"
+    <input matInput [formControlName]="config.fieldName" [matDatepicker]="picker" [placeholder]="data.placeholder"
       [required]="data.required">
     <mat-datepicker-toggle matSuffix [for]="picker" [matTooltip]="'Fields.DateTime.Open' | translate">
     </mat-datepicker-toggle>
@@ -10,7 +10,7 @@
   </mat-form-field>
 
   <mat-form-field [formGroup]="group" appearance="standard" color="accent" *ngIf="data.useTimePicker">
-    <input matInput [formControlName]="config.field.name" [ngxMatDatetimePicker]="picker"
+    <input matInput [formControlName]="config.fieldName" [ngxMatDatetimePicker]="picker"
       [placeholder]="data.placeholder" [required]="data.required">
     <mat-datepicker-toggle matSuffix [for]="picker" [matTooltip]="'Fields.DateTime.Open' | translate">
     </mat-datepicker-toggle>

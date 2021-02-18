@@ -1,14 +1,17 @@
 import { Injectable, OnDestroy } from '@angular/core';
+import { ValidatorFn } from '@angular/forms';
 import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { EavService } from '.';
 import { FieldSettings } from '../../../edit-types';
+import { InputTypeConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
+import { InputType } from '../../../ng-dialogs/src/app/content-type-fields/models/input-type.model';
 import { ValidationHelper } from '../../eav-material-controls/validators/validation-helper';
 import { FieldLogicManager } from '../../field-logic/field-logic-manager';
 import { InputFieldHelper } from '../helpers/input-field-helper';
 import { LocalizationHelper } from '../helpers/localization-helper';
 import { ContentTypeSettings, FieldsProps } from '../models';
-import { EavContentType, EavEntity, EavItem } from '../models/eav';
+import { EavContentType, EavContentTypeAttribute, EavEntity, EavItem } from '../models/eav';
 import { ContentTypeService } from '../store/ngrx-data/content-type.service';
 import { InputTypeService } from '../store/ngrx-data/input-type.service';
 import { ItemService } from '../store/ngrx-data/item.service';
@@ -90,17 +93,18 @@ export class FieldsSettings2NewService implements OnDestroy {
             merged.DisableTranslation ??= false;
             // special fixes
             merged.Required = ValidationHelper.isRequired(merged);
-            merged.DisableTranslation = this.findDisableTranslation(attribute.Metadata);
+            merged.DisableTranslation = this.findDisableTranslation(attribute.Metadata, inputType);
             // update settings with respective FieldLogics
             const logic = FieldLogicManager.singleton().get(attribute.InputType);
             const fixed = logic?.update(merged, value) ?? merged;
 
-            const validators = ValidationHelper.getValidators(fixed);
+            const validators = ValidationHelper.getValidators(fixed, attribute);
             const calculatedInputType = InputFieldHelper.calculateInputType2New(attribute, inputTypes);
             const wrappers = InputFieldHelper.setWrappers2New(fixed, calculatedInputType);
+            const initialSettings = this.mergeSettings<FieldSettings>(attribute.Metadata, this.eavService.eavConfig.lang, defaultLanguage);
+            const initialDisabled = initialSettings.Disabled ?? false;
 
             fieldsProps[attribute.Name] = {
-              inputType,
               settings: fixed,
               validators,
               value,
@@ -114,6 +118,9 @@ export class FieldsSettings2NewService implements OnDestroy {
                 index: contentType.Attributes.indexOf(attribute),
                 inputType: calculatedInputType.inputType,
                 isExternal: calculatedInputType.isExternal,
+                isLastInGroup: this.findIsLastInGroup(contentType, attribute),
+                angularAssets: inputType?.AngularAssets,
+                initialDisabled,
               }
             };
           }
@@ -138,6 +145,16 @@ export class FieldsSettings2NewService implements OnDestroy {
       map(fieldsSettings => fieldsSettings[fieldName].settings),
       distinctUntilChanged((oldSettings, newSettings) => {
         const equal = settingsEqual(oldSettings, newSettings);
+        return equal;
+      }),
+    );
+  }
+
+  getFieldValidation$(fieldName: string): Observable<ValidatorFn[]> {
+    return this.fieldsProps$.pipe(
+      map(fieldsSettings => fieldsSettings[fieldName].validators),
+      distinctUntilChanged((oldValidators, newValidators) => {
+        const equal = validatorsEqual(oldValidators, newValidators);
         return equal;
       }),
     );
@@ -176,7 +193,8 @@ export class FieldsSettings2NewService implements OnDestroy {
   }
 
   /** Find if DisableTranslation is true in any setting and in any language */
-  private findDisableTranslation(metadataItems: EavEntity[]) {
+  private findDisableTranslation(metadataItems: EavEntity[], inputType: InputType) {
+    if (inputType?.DisableI18n) { return true; }
     if (metadataItems == null) { return false; }
 
     // find DisableTranslation in @All, @String, @string-default, etc...
@@ -210,6 +228,20 @@ export class FieldsSettings2NewService implements OnDestroy {
     }
     return label;
   }
+
+  private findIsLastInGroup(contentType: EavContentType, attribute: EavContentTypeAttribute): boolean {
+    const index = contentType.Attributes.indexOf(attribute);
+    if (contentType.Attributes[index + 1] == null) { return true; }
+
+    const indexOfFirstEmpty = contentType.Attributes.findIndex(a => a.InputType === InputTypeConstants.EmptyDefault);
+    if (index < indexOfFirstEmpty) { return false; }
+
+    const isNotEmpty = attribute.InputType !== InputTypeConstants.EmptyDefault;
+    const nextIsEmpty = contentType.Attributes[index + 1].InputType === InputTypeConstants.EmptyDefault;
+    if (isNotEmpty && nextIsEmpty) { return true; }
+
+    return false;
+  }
 }
 
 function settingsEqual(x: FieldSettings, y: FieldSettings) {
@@ -224,6 +256,18 @@ function settingsEqual(x: FieldSettings, y: FieldSettings) {
     if (obj2[key1] == null) { return false; }
 
     return obj1[key1] === obj2[key1];
+  });
+
+  return equal;
+}
+
+function validatorsEqual(x: ValidatorFn[], y: ValidatorFn[]) {
+  if (x.length !== y.length) { return false; }
+
+  const equal = x.every((validator, index) => {
+    if (y[index] == null) { return false; }
+
+    return x[index] === y[index];
   });
 
   return equal;

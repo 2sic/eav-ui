@@ -6,7 +6,7 @@
         {{ data.infoMessageLabel ? (data.infoMessageLabel | translate:{ languages: data.infoMessage }) : '' }}
       </div>
       <button mat-icon-button [matMenuTriggerFor]="menu"
-        [disabled]="config.field.disableI18n || data.defaultLanguageMissingValue">
+        [disabled]="data.disableTranslation || data.defaultLanguageMissingValue">
         <mat-icon class="translate-icon">translate</mat-icon>
       </button>
     </div>

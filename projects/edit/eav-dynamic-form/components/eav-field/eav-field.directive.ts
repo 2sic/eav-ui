@@ -89,11 +89,10 @@ export class EavFieldDirective implements OnInit {
       let container = this.container;
       for (const [fieldName, fieldProps] of Object.entries(fieldsProps)) {
         const oldConfig = this.findOldConfig(fieldName, this.fieldConfigs);
-        this.add2New(oldConfig, fieldProps);
+        Object.assign(oldConfig, fieldProps.constants);
         if (fieldProps.calculatedInputType.inputType === InputTypeConstants.EmptyDefault) {
           container = this.container;
           container = this.createGroup(container, fieldProps, oldConfig);
-          continue;
         } else {
           this.createComponent(container, fieldProps, oldConfig);
         }
@@ -180,15 +179,5 @@ export class EavFieldDirective implements OnInit {
         return found;
       }
     }
-  }
-
-  private add2New(config: FieldConfigSet, fieldProps: FieldProps): void {
-    config.contentTypeId = fieldProps.constants.contentTypeId;
-    config.entityGuid = fieldProps.constants.entityGuid;
-    config.entityId = fieldProps.constants.entityId;
-    config.fieldName = fieldProps.constants.fieldName;
-    config.index = fieldProps.constants.index;
-    config.inputType = fieldProps.constants.inputType;
-    config.isExternal = fieldProps.constants.isExternal;
   }
 }

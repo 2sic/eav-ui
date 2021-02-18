@@ -2,7 +2,7 @@
 
   <div class="picker-wrapper">
     <mat-form-field [formGroup]="group" appearance="standard" color="accent">
-      <mat-select [formControlName]="config.field.name" [required]="data.required">
+      <mat-select [formControlName]="config.fieldName" [required]="data.required">
         <mat-option value="">(no file selected)</mat-option>
         <mat-option *ngFor="let file of data.templateOptions" [value]="file">
           {{ file }}

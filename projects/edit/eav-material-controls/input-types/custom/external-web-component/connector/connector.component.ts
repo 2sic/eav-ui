@@ -38,7 +38,7 @@ export class ConnectorComponent implements AfterViewInit, OnDestroy {
   ) { }
 
   ngAfterViewInit() {
-    const componentTag = history?.state?.componentTag || `field-${this.config.field.inputType}-dialog`;
+    const componentTag = history?.state?.componentTag || `field-${this.config.inputType}-dialog`;
     angularConsoleLog('Connector created for:', componentTag);
     this.connectorCreator = new ConnectorHelper(
       this.config,

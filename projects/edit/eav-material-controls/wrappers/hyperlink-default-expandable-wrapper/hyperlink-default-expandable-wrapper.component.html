@@ -29,7 +29,7 @@
 <div class="c-hyperlink-default-field-preview" *ngIf="templateVars$ | async as data">
   <div class="c-ew__preview" fxLayout="row" fxLayoutAlign="start start" [ngClass]="{
     'c-ew__preview--disabled': data.disabled,
-    'c-ew__preview--last-in-group': config.field.isLastInGroup
+    'c-ew__preview--last-in-group': config.isLastInGroup
   }">
     <!-- image / icon -->
     <div class="thumbnail-before-input" [matTooltip]="'Fields.Hyperlink.Default.Fullscreen' | translate"

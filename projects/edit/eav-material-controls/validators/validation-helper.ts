@@ -1,6 +1,7 @@
 import { ValidatorFn, Validators } from '@angular/forms';
 import { FieldSettings } from '../../../edit-types';
 import { InputTypeConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
+import { EavContentTypeAttribute } from '../../shared/models/eav';
 import { CustomValidators } from './custom-validators';
 
 export class ValidationHelper {
@@ -14,7 +15,7 @@ export class ValidationHelper {
     return required;
   }
 
-  public static getValidators(settings: FieldSettings): ValidatorFn[] {
+  public static getValidators(settings: FieldSettings, attribute: EavContentTypeAttribute): ValidatorFn[] {
     // hidden field can't have validators
     const visible = settings.VisibleInEditUI ?? true;
     if (!visible) { return []; }
@@ -23,7 +24,7 @@ export class ValidationHelper {
 
     // hyperlink-library field will set custom required validator
     const required = settings.Required ?? false;
-    const isHyperlinkLibrary = settings.InputType === InputTypeConstants.HyperlinkLibrary;
+    const isHyperlinkLibrary = attribute.InputType === InputTypeConstants.HyperlinkLibrary;
     if (required && !isHyperlinkLibrary) {
       validators.push(Validators.required);
     }

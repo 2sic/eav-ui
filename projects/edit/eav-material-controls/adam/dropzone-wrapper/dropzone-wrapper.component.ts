@@ -65,8 +65,8 @@ export class DropzoneWrapperComponent extends BaseComponent<any> implements Fiel
   ngAfterViewInit() {
     setTimeout(() => {
       this.config.dropzone.setConfig({
-        previewsContainer: '.field-' + this.config.field.index + ' .dropzone-previews',
-        clickable: '.field-' + this.config.field.index + ' .invisible-clickable',
+        previewsContainer: '.field-' + this.config.index + ' .dropzone-previews',
+        clickable: '.field-' + this.config.index + ' .invisible-clickable',
       });
     });
   }
@@ -99,10 +99,10 @@ export class DropzoneWrapperComponent extends BaseComponent<any> implements Fiel
   private setConfig(config: Partial<DropzoneConfigExt>) {
     const contentType = this.config.contentTypeId;
     const entityGuid = this.config.entityGuid;
-    const field = this.config.field.name;
+    const field = this.config.fieldName;
     const appId = this.eavService.eavConfig.appId;
 
-    const startDisabled = this.config.field.isExternal;
+    const startDisabled = this.config.isExternal;
     const url = this.dnnContext.$2sxc.http.apiUrl(`app-content/${contentType}/${entityGuid}/${field}?subfolder=&usePortalRoot=false&appId=${appId}`);
     const headers = this.dnnContext.sxc.webApi.headers();
 

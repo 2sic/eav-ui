@@ -8,6 +8,7 @@ export interface TranslateMenuTemplateVars {
   defaultLanguage: string;
   translationState: TranslationState;
   translationStateClass: string;
+  disableTranslation: boolean;
   disabled: boolean;
   defaultLanguageMissingValue: boolean;
   infoMessage: string;

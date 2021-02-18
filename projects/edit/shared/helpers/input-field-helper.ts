@@ -48,47 +48,6 @@ export class InputFieldHelper {
     return calculated;
   }
 
-  static setWrappers(calculatedInputType: CalculatedInputType, settingsTranslated: FieldSettings, inputTypeSettings: InputType) {
-    // empty inputtype wrappers
-    const inputType = calculatedInputType.inputType;
-    const isExternal = calculatedInputType.isExternal;
-
-    const isEmptyInputType = (inputType === InputTypeConstants.EmptyDefault)
-      || (inputType === DataTypeConstants.Empty);
-    if (isEmptyInputType) {
-      return [WrappersConstants.CollapsibleWrapper];
-    }
-    // default wrappers
-    const wrappers: string[] = [WrappersConstants.HiddenWrapper];
-    // entity-default wrappers
-    const isEntityType = (inputType === InputTypeConstants.EntityDefault)
-      || (inputType === InputTypeConstants.StringDropdownQuery)
-      || (inputType === InputTypeConstants.EntityQuery)
-      || (inputType === InputTypeConstants.EntityContentBlocks);
-
-    if (isEntityType) {
-      wrappers.push(WrappersConstants.LocalizationWrapper);
-      const allowMultiValue = settingsTranslated.AllowMultiValue || false;
-      if (inputType === InputTypeConstants.EntityContentBlocks) {
-        wrappers.push(WrappersConstants.CollapsibleFieldWrapper);
-      }
-      if (allowMultiValue || inputType === InputTypeConstants.EntityContentBlocks) {
-        wrappers.push(WrappersConstants.EntityExpandableWrapper);
-      }
-    }
-
-    if (isExternal) {
-      wrappers.push(
-        WrappersConstants.DropzoneWrapper,
-        WrappersConstants.LocalizationWrapper,
-        WrappersConstants.ExpandableWrapper,
-        WrappersConstants.AdamAttachWrapper,
-      );
-    }
-
-    return wrappers;
-  }
-
   static setWrappers2New(settings: FieldSettings, calculatedInputType: CalculatedInputType) {
     const type = calculatedInputType.inputType;
     const isExternal = calculatedInputType.isExternal;

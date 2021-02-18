@@ -6,6 +6,7 @@ import { distinctUntilChanged, filter, map, startWith } from 'rxjs/operators';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { TranslationLinkConstants } from '../../../shared/constants/translation-link.constants';
 import { EavService } from '../../../shared/services/eav.service';
+import { FieldsSettings2NewService } from '../../../shared/services/fields-settings2new.service';
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
 import { TranslateMenuDialogComponent } from '../translate-menu-dialog/translate-menu-dialog.component';
 import { TranslateMenuDialogData } from '../translate-menu-dialog/translate-menu-dialog.models';
@@ -29,14 +30,18 @@ export class TranslateMenuComponent implements OnInit {
     private viewContainerRef: ViewContainerRef,
     private languageInstanceService: LanguageInstanceService,
     private eavService: EavService,
+    private fieldsSettings2NewService: FieldsSettings2NewService,
   ) { }
 
   ngOnInit(): void {
     const currentLanguage$ = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
     const defaultLanguage$ = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
     const translationState$ = this.config.field.fieldHelper.translationState$;
+    const disableTranslation$ = this.fieldsSettings2NewService.getFieldSettings$(this.config.fieldName).pipe(
+      map(settings => settings.DisableTranslation),
+    );
 
-    const control = this.group.controls[this.config.field.name];
+    const control = this.group.controls[this.config.fieldName];
     const disabled$ = this.eavService.formDisabledChange$.pipe(
       filter(formSet => formSet.formId === this.eavService.eavConfig.formId && formSet.entityGuid === this.config.entityGuid),
       map(() => control.disabled),
@@ -48,12 +53,12 @@ export class TranslateMenuComponent implements OnInit {
     const infoMessageLabel$ = this.config.field.fieldHelper.translationInfoMessageLabel$;
 
     this.templateVars$ = combineLatest([
-      combineLatest([currentLanguage$, defaultLanguage$, translationState$]),
+      combineLatest([currentLanguage$, defaultLanguage$, translationState$, disableTranslation$]),
       combineLatest([disabled$, defaultLanguageMissingValue$, infoMessage$, infoMessageLabel$]),
     ]).pipe(
       map(
         ([
-          [currentLanguage, defaultLanguage, translationState],
+          [currentLanguage, defaultLanguage, translationState, disableTranslation],
           [disabled, defaultLanguageMissingValue, infoMessage, infoMessageLabel],
         ]) => {
           const templateVars: TranslateMenuTemplateVars = {
@@ -61,6 +66,7 @@ export class TranslateMenuComponent implements OnInit {
             defaultLanguage,
             translationState,
             translationStateClass: TranslateMenuHelpers.getTranslationStateClass(translationState.linkType),
+            disableTranslation,
             disabled,
             defaultLanguageMissingValue,
             infoMessage,

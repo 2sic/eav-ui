@@ -3,10 +3,10 @@
   <mat-form-field [formGroup]="group" appearance="standard" color="accent" [ngClass]="{
     'textarea-field': data.rowCount > 1
   }">
-    <input *ngIf="data.rowCount <= 1" matInput [formControlName]="config.field.name" [placeholder]="data.placeholder"
+    <input *ngIf="data.rowCount <= 1" matInput [formControlName]="config.fieldName" [placeholder]="data.placeholder"
       [required]="data.required">
 
-    <textarea *ngIf="data.rowCount > 1" matInput [formControlName]="config.field.name" [rows]="data.rowCount"
+    <textarea *ngIf="data.rowCount > 1" matInput [formControlName]="config.fieldName" [rows]="data.rowCount"
       [placeholder]="data.placeholder" [required]="data.required">
     </textarea>
 

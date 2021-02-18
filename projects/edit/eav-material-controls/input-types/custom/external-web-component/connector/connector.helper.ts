@@ -38,7 +38,7 @@ export class ConnectorHelper {
     private fieldsSettings2NewService: FieldsSettings2NewService,
     private zone: NgZone,
   ) {
-    this.control = this.group.controls[this.config.field.name];
+    this.control = this.group.controls[this.config.fieldName];
 
     this.subscription.add(
       this.eavService.formValueChange$.pipe(
@@ -52,7 +52,7 @@ export class ConnectorHelper {
     );
 
     this.subscription.add(
-      this.fieldsSettings2NewService.getFieldSettings$(this.config.field.name).subscribe(settings => {
+      this.fieldsSettings2NewService.getFieldSettings$(this.config.fieldName).subscribe(settings => {
         this.settings$.next(settings);
       })
     );
@@ -96,7 +96,7 @@ export class ConnectorHelper {
       },
       expand: (expand, componentTag) => {
         this.zone.run(() => {
-          this.editRoutingService.expand(expand, this.config.field.index, this.config.entityGuid, componentTag);
+          this.editRoutingService.expand(expand, this.config.index, this.config.entityGuid, componentTag);
         });
       },
     };
@@ -114,7 +114,7 @@ export class ConnectorHelper {
       allInputTypeNames,
       formGroup: this.group,
       translateService: this.translateService,
-      isExpanded$: this.editRoutingService.isExpanded(this.config.field.index, this.config.entityGuid),
+      isExpanded$: this.editRoutingService.isExpanded(this.config.index, this.config.entityGuid),
       dropzone: this.config.dropzone,
       adam: this.config.adam,
       updateField: (name, value) => {
@@ -141,7 +141,7 @@ export class ConnectorHelper {
     // handle short-ID links like file:17
     const contentType = this.config.contentTypeId;
     const entityGuid = this.config.entityGuid;
-    const field = this.config.field.name;
+    const field = this.config.fieldName;
     this.dnnBridgeService.getUrlOfId(value, contentType, entityGuid, field).subscribe(path => {
       if (!path) { return; }
       callback(path);

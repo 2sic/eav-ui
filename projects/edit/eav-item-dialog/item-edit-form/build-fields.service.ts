@@ -74,11 +74,6 @@ export class BuildFieldsService {
         throw error;
       }
     });
-    try {
-      this.calculateFieldPositionInGroup(parentFieldGroup.field);
-    } catch (error) {
-      console.error(`Error calculating last field in each group: ${error}`);
-    }
     return parentFieldGroup.field._fieldGroup;
   }
 
@@ -110,22 +105,6 @@ export class BuildFieldsService {
       field,
     };
     return fieldConfigSet;
-  }
-
-  private calculateFieldPositionInGroup(fieldConfig: FieldConfigAngular): void {
-    if (!fieldConfig._fieldGroup) { return; }
-
-    const childFieldsCount = fieldConfig._fieldGroup.length;
-    if (childFieldsCount === 0) { return; }
-
-    const lastChildConfig = fieldConfig._fieldGroup[childFieldsCount - 1];
-    if (lastChildConfig.field.inputType !== InputTypeConstants.EmptyDefault) {
-      lastChildConfig.field.isLastInGroup = true;
-    }
-
-    fieldConfig._fieldGroup.forEach(childFieldConfig => {
-      this.calculateFieldPositionInGroup(childFieldConfig.field);
-    });
   }
 
   public startTranslations(fieldConfigs: FieldConfigSet[], form: FormGroup, fieldsSettingsService: FieldsSettingsService): void {

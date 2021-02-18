@@ -1,7 +1,7 @@
 <ng-container *ngIf="templateVars$ | async as data">
 
   <mat-form-field [formGroup]="group" appearance="standard" color="accent">
-    <input matInput [formControlName]="config.field.name" (blur)="clean(true)" [placeholder]="data.placeholder"
+    <input matInput [formControlName]="config.fieldName" (blur)="clean(true)" [placeholder]="data.placeholder"
       [required]="data.required">
     <mat-label>{{ data.label }}</mat-label>
   </mat-form-field>

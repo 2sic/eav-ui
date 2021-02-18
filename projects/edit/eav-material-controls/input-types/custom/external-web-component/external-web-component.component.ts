@@ -1,14 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { map, take } from 'rxjs/operators';
-import { InputType } from '../../../../../ng-dialogs/src/app/content-type-fields/models/input-type.model';
+import { map } from 'rxjs/operators';
 import { angularConsoleLog } from '../../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
 import { EavService } from '../../../../shared/services/eav.service';
 import { EditRoutingService } from '../../../../shared/services/edit-routing.service';
 import { FieldsSettings2NewService } from '../../../../shared/services/fields-settings2new.service';
 import { ScriptsLoaderService } from '../../../../shared/services/scripts-loader.service';
-import { InputTypeService } from '../../../../shared/store/ngrx-data/input-type.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { BaseComponent } from '../../base/base.component';
 import { ExternalWebComponentTemplateVars } from './external-web-component.models';
@@ -29,7 +27,6 @@ export class ExternalWebComponentComponent extends BaseComponent<string> impleme
     eavService: EavService,
     validationMessagesService: ValidationMessagesService,
     fieldsSettings2NewService: FieldsSettings2NewService,
-    private inputTypeService: InputTypeService,
     private scriptsLoaderService: ScriptsLoaderService,
     private editRoutingService: EditRoutingService,
   ) {
@@ -39,7 +36,7 @@ export class ExternalWebComponentComponent extends BaseComponent<string> impleme
   ngOnInit() {
     super.ngOnInit();
     this.loading$ = new BehaviorSubject(true);
-    const isExpanded$ = this.editRoutingService.isExpanded(this.config.field.index, this.config.entityGuid);
+    const isExpanded$ = this.editRoutingService.isExpanded(this.config.index, this.config.entityGuid);
 
     this.templateVars$ = combineLatest([this.loading$, isExpanded$, this.disabled$, this.showValidation$]).pipe(
       map(([loading, isExpanded, disabled, showValidation]) => {
@@ -61,18 +58,13 @@ export class ExternalWebComponentComponent extends BaseComponent<string> impleme
   }
 
   private loadAssets() {
-    let inputType: InputType;
-    this.inputTypeService.getInputTypeById(this.config.field.inputType).pipe(take(1)).subscribe(type => {
-      inputType = type;
-    });
-
-    const assets = inputType.AngularAssets.split('\n');
+    const assets = this.config.angularAssets.split('\n');
     if (assets.length === 0) { return; }
     this.scriptsLoaderService.load(assets, this.assetsLoaded.bind(this));
   }
 
   private assetsLoaded() {
-    angularConsoleLog('ExternalWebcomponentComponent', this.config.field.name, 'loaded');
+    angularConsoleLog('ExternalWebcomponentComponent', this.config.fieldName, 'loaded');
     this.loading$.next(false);
   }
 }

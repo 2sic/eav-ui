@@ -40,7 +40,7 @@ export class EntityExpandableWrapperComponent extends BaseComponent<string | str
 
   ngOnInit() {
     super.ngOnInit();
-    this.dialogIsOpen$ = this.editRoutingService.isExpanded(this.config.field.index, this.config.entityGuid);
+    this.dialogIsOpen$ = this.editRoutingService.isExpanded(this.config.index, this.config.entityGuid);
     this.selectedEntities$ = new BehaviorSubject([]);
 
     this.templateVars$ = combineLatest([
@@ -92,11 +92,11 @@ export class EntityExpandableWrapperComponent extends BaseComponent<string | str
   }
 
   expandDialog() {
-    if (this.config.field.disabled) { return; }
-    this.editRoutingService.expand(true, this.config.field.index, this.config.entityGuid);
+    if (this.config.initialDisabled) { return; }
+    this.editRoutingService.expand(true, this.config.index, this.config.entityGuid);
   }
 
   closeDialog() {
-    this.editRoutingService.expand(false, this.config.field.index, this.config.entityGuid);
+    this.editRoutingService.expand(false, this.config.index, this.config.entityGuid);
   }
 }

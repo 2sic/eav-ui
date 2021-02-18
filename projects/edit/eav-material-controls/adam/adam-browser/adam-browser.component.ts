@@ -63,13 +63,13 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.control = this.group.controls[this.config.field.name];
+    this.control = this.group.controls[this.config.fieldName];
     this.adamConfig$ = new BehaviorSubject<AdamConfig>(null);
     this.items$ = new BehaviorSubject<AdamItem[]>([]);
     this.refreshOnChildClosed();
     const contentType = this.config.contentTypeId;
     const entityGuid = this.config.entityGuid;
-    const field = this.config.field.name;
+    const field = this.config.fieldName;
     this.url = this.dnnContext.$2sxc.http.apiUrl(`app-content/${contentType}/${entityGuid}/${field}`);
     this.pasteClipboardImage = this.featureService.isFeatureEnabled(FeaturesGuidsConstants.PasteImageFromClipboard);
 
@@ -101,7 +101,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
         this.fetchItems();
       })
     );
-    const expanded$ = this.editRoutingService.isExpanded(this.config.field.index, this.config.entityGuid);
+    const expanded$ = this.editRoutingService.isExpanded(this.config.index, this.config.entityGuid);
     const value$ = this.eavService.formValueChange$.pipe(
       filter(formSet => (formSet.formId === this.eavService.eavConfig.formId) && (formSet.entityGuid === this.config.entityGuid)),
       map(() => this.control.value),
@@ -173,7 +173,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
           : { EntityId: adamItem.MetadataId }
       ],
     };
-    this.editRoutingService.open(this.config.field.index, this.config.entityGuid, form);
+    this.editRoutingService.open(this.config.index, this.config.entityGuid, form);
   }
 
   goUp() {
@@ -290,7 +290,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
 
   private setConfig(config: Partial<AdamConfig>) {
     // set new values and use old ones where new value is not provided
-    const startDisabled = this.config.field.isExternal;
+    const startDisabled = this.config.isExternal;
     const oldConfig = (this.adamConfig$.value != null) ? this.adamConfig$.value : new AdamConfigInstance(startDisabled);
     const newConfig = new AdamConfigInstance(startDisabled);
     const newConfigKeys = Object.keys(newConfig);

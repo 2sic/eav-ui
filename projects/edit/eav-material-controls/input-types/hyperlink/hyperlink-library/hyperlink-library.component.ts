@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { ValidatorFn } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { combineLatest, Subscription } from 'rxjs';
 import { FieldSettings } from '../../../../../edit-types';
 import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
@@ -40,10 +40,11 @@ export class HyperlinkLibraryComponent extends BaseComponent<null> implements On
 
   ngOnInit() {
     super.ngOnInit();
+    const validators$ = this.fieldsSettings2NewService.getFieldValidation$(this.config.fieldName);
     this.subscription.add(
-      this.settings$.subscribe(settings => {
+      combineLatest([this.settings$, validators$]).subscribe(([settings, validators]) => {
         this.attachAdam(settings);
-        this.attachAdamValidator(settings.Required);
+        this.attachAdamValidator(settings.Required, validators);
       })
     );
   }
@@ -65,22 +66,21 @@ export class HyperlinkLibraryComponent extends BaseComponent<null> implements On
     });
   }
 
-  private attachAdamValidator(required: boolean) {
+  private attachAdamValidator(required: boolean, validators: ValidatorFn[]) {
     if (!required) {
       this.adamValidation?.unsubscribe();
-      this.control.setValidators(this.config.field.validation);
+      this.control.setValidators(validators);
       return;
     }
 
-    const validators: ValidatorFn[] = [
-      ...this.config.field.validation,
+    const newValidators: ValidatorFn[] = [
+      ...validators,
       CustomValidators.validateAdam(),
     ];
-    this.control.setValidators(validators);
+    this.control.setValidators(newValidators);
     this.adamValidation = this.config.adam.items$.subscribe(items => {
       (this.control as AdamControl).adamItems = items.length;
-      // onlySelf doesn't update form being valid for some reason
-      this.control.updateValueAndValidity(/*{ onlySelf: true }*/);
+      this.control.updateValueAndValidity();
     });
   }
 }

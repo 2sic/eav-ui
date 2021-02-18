@@ -2,14 +2,14 @@
 
   <mat-form-field [formGroup]="group" appearance="standard" color="accent">
 
-    <mat-select *ngIf="!data.freeTextMode" [formControlName]="config.field.name" [required]="data.required"
+    <mat-select *ngIf="!data.freeTextMode" [formControlName]="config.fieldName" [required]="data.required"
       [placeholder]="data.placeholder">
       <mat-option *ngFor="let option of data.dropdownOptions" [value]="option.value">
         {{ option.label }}
       </mat-option>
     </mat-select>
 
-    <input matInput *ngIf="data.freeTextMode" [formControlName]="config.field.name" [required]="data.required"
+    <input matInput *ngIf="data.freeTextMode" [formControlName]="config.fieldName" [required]="data.required"
       [placeholder]="data.placeholder">
 
     <button matSuffix mat-icon-button *ngIf="data.enableTextEntry" [disabled]="data.disabled" appClickStopPropagation

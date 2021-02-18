@@ -30,7 +30,7 @@ export class AdamAttachWrapperComponent extends BaseComponent<any> implements Fi
 
   ngOnInit() {
     super.ngOnInit();
-    this.fullscreenAdam = this.config.field.inputType === InputTypeConstants.HyperlinkLibrary;
+    this.fullscreenAdam = this.config.inputType === InputTypeConstants.HyperlinkLibrary;
   }
 
   ngAfterViewInit() {

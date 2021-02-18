@@ -33,10 +33,10 @@ export class BaseComponent<T> implements Field, OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.control = this.group.controls[this.config.field.name];
+    this.control = this.group.controls[this.config.fieldName];
     this.settings$ = new BehaviorSubject<FieldSettings>(null);
     this.subscription.add(
-      this.fieldsSettings2NewService.getFieldSettings$(this.config.field.name).subscribe(settings => {
+      this.fieldsSettings2NewService.getFieldSettings$(this.config.fieldName).subscribe(settings => {
         this.settings$.next(settings);
       })
     );

@@ -16,7 +16,7 @@ export function getTemplateLanguages(
   const templateLanguages = languages
     .filter(language => language.key !== currentLanguage)
     .map(language => {
-      const values = attributes[config.field.name];
+      const values = attributes[config.fieldName];
       const noTranslation = !LocalizationHelper.isEditableTranslationExist(values, language.key, defaultLanguage);
       const templateLanguage: TranslateMenuDialogTemplateLanguage = {
         key: language.key,

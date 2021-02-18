@@ -72,7 +72,7 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
       })
     );
     const buttons$ = this.settings$.pipe(map(settings => settings.Buttons));
-    const open$ = this.editRoutingService.isExpanded(this.config.field.index, this.config.entityGuid);
+    const open$ = this.editRoutingService.isExpanded(this.config.index, this.config.entityGuid);
     this.subscription.add(
       this.settings$.subscribe(settings => {
         this.attachAdam(settings);
@@ -151,7 +151,7 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
     // handle short-ID links like file:17
     const contentType = this.config.contentTypeId;
     const entityGuid = this.config.entityGuid;
-    const field = this.config.field.name;
+    const field = this.config.fieldName;
     this.dnnBridgeService.getUrlOfId(value, contentType, entityGuid, field).subscribe(path => {
       if (!path) { return; }
       this.fetchCache[value] = path;

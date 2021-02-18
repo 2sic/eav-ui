@@ -28,13 +28,13 @@ export class FieldHelperTextComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.control = this.group.controls[this.config.field.name];
+    this.control = this.group.controls[this.config.fieldName];
     const invalid$ = this.control.statusChanges.pipe(
       map(() => this.control.invalid),
       startWith(this.control.invalid),
     );
 
-    const settings$ = this.fieldsSettings2NewService.getFieldSettings$(this.config.field.name);
+    const settings$ = this.fieldsSettings2NewService.getFieldSettings$(this.config.fieldName);
     const description$ = settings$.pipe(map(settings => settings.Notes));
 
     this.templateVars$ = combineLatest([invalid$, description$, settings$]).pipe(

@@ -53,7 +53,7 @@ export class ExpandableWrapperComponent extends BaseComponent<string> implements
 
   ngOnInit() {
     super.ngOnInit();
-    this.open$ = this.editRoutingService.isExpanded(this.config.field.index, this.config.entityGuid);
+    this.open$ = this.editRoutingService.isExpanded(this.config.index, this.config.entityGuid);
 
     this.templateVars$ = combineLatest([
       combineLatest([this.value$, this.label$, this.required$, this.invalid$, this.config.field.focused$]),
@@ -78,7 +78,7 @@ export class ExpandableWrapperComponent extends BaseComponent<string> implements
   }
 
   ngAfterViewInit() {
-    const componentTag = `field-${this.config.field.inputType}`;
+    const componentTag = `field-${this.config.inputType}`;
     angularConsoleLog('ExpandableWrapper created for:', componentTag);
     this.connectorCreator = new ConnectorHelper(
       this.config,
@@ -109,11 +109,11 @@ export class ExpandableWrapperComponent extends BaseComponent<string> implements
   }
 
   expandDialog() {
-    this.editRoutingService.expand(true, this.config.field.index, this.config.entityGuid);
+    this.editRoutingService.expand(true, this.config.index, this.config.entityGuid);
   }
 
   closeDialog() {
-    this.editRoutingService.expand(false, this.config.field.index, this.config.entityGuid);
+    this.editRoutingService.expand(false, this.config.index, this.config.entityGuid);
   }
 
   calculateBottomPixels() {

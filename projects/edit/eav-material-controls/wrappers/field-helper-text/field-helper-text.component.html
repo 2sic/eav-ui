@@ -1,8 +1,8 @@
 <div *ngIf="templateVars$ | async as data" class="c-fht__container" [ngClass]="{
   'c-fht__container--no-hint': !data.description && !(data.invalid && !disableError),
-  'c-fht__container--last': config.field.isLastInGroup,
-  'c-fht__container--last--no-hint': config.field.isLastInGroup && !data.description && !(data.invalid && !disableError),
-  'c-fht__container--hyperlink-default-wrapper-fix': hyperlinkDefaultWrapperFix && !config.field.isLastInGroup
+  'c-fht__container--last': config.isLastInGroup,
+  'c-fht__container--last--no-hint': config.isLastInGroup && !data.description && !(data.invalid && !disableError),
+  'c-fht__container--hyperlink-default-wrapper-fix': hyperlinkDefaultWrapperFix && !config.isLastInGroup
 }">
   <mat-hint *ngIf="data.description" class="mat-caption" (click)="toggleHint($event)"
     [ngClass]="control.disabled ? 'c-fht__container-hint--disabled' : 'c-fht__container-hint'" align="start"
