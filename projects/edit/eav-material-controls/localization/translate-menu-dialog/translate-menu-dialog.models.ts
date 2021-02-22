@@ -3,6 +3,7 @@ import { TranslationState } from '../translate-menu/translate-menu.models';
 
 export interface TranslateMenuDialogData {
   config: FieldConfigSet;
+  translationState: TranslationState;
 }
 
 export interface TranslateMenuDialogTemplateLanguage {

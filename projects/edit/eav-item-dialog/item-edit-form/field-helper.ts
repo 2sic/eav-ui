@@ -3,12 +3,12 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 import { FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
-import { TranslateMenuHelpers } from '../../eav-material-controls/localization/translate-menu/translate-menu.helpers';
-import { TranslationState } from '../../eav-material-controls/localization/translate-menu/translate-menu.models';
+// import { TranslateMenuHelpers } from '../../eav-material-controls/localization/translate-menu/translate-menu.helpers';
+// import { TranslationState } from '../../eav-material-controls/localization/translate-menu/translate-menu.models';
 import { TranslationLinkConstants } from '../../shared/constants/translation-link.constants';
 import { InputFieldHelper } from '../../shared/helpers/input-field-helper';
 import { LocalizationHelper } from '../../shared/helpers/localization-helper';
-import { EavContentType, EavDimension, EavEntityAttributes, EavItem } from '../../shared/models/eav';
+import { EavContentType, /*EavDimension,*/ EavEntityAttributes, EavItem } from '../../shared/models/eav';
 import { EavService } from '../../shared/services/eav.service';
 import { FieldsSettingsService } from '../../shared/services/fields-settings.service';
 import { ContentTypeService } from '../../shared/store/ngrx-data/content-type.service';
@@ -17,10 +17,10 @@ import { ItemService } from '../../shared/store/ngrx-data/item.service';
 import { LanguageInstanceService } from '../../shared/store/ngrx-data/language-instance.service';
 
 export class FieldHelper {
-  defaultLanguageMissingValue$ = new BehaviorSubject(false);
-  translationState$ = new BehaviorSubject<TranslationState>({ linkType: '', language: '' });
-  translationInfoMessage$ = new BehaviorSubject<string>('');
-  translationInfoMessageLabel$ = new BehaviorSubject<string>('');
+  // defaultLanguageMissingValue$ = new BehaviorSubject(false);
+  // translationState$ = new BehaviorSubject<TranslationState>({ linkType: '', language: '' });
+  // translationInfoMessage$ = new BehaviorSubject<string>('');
+  // translationInfoMessageLabel$ = new BehaviorSubject<string>('');
 
   private slotIsEmpty$ = new BehaviorSubject(false);
   private currentLanguage$ = new BehaviorSubject<string>(null);
@@ -134,10 +134,10 @@ export class FieldHelper {
 
   destroy(): void {
     this.slotIsEmpty$.complete();
-    this.defaultLanguageMissingValue$.complete();
-    this.translationState$.complete();
-    this.translationInfoMessage$.complete();
-    this.translationInfoMessageLabel$.complete();
+    // this.defaultLanguageMissingValue$.complete();
+    // this.translationState$.complete();
+    // this.translationInfoMessage$.complete();
+    // this.translationInfoMessageLabel$.complete();
     this.currentLanguage$.complete();
     this.defaultLanguage$.complete();
     this.item$.complete();
@@ -211,7 +211,7 @@ export class FieldHelper {
 
     const currentLanguage = this.currentLanguage$.value;
     const defaultLanguage = this.defaultLanguage$.value;
-    this.setTranslationState(TranslationLinkConstants.LinkReadOnly, linkWithLanguageKey);
+    // this.setTranslationState(TranslationLinkConstants.LinkReadOnly, linkWithLanguageKey);
     this.itemService.removeItemAttributeDimension(this.entityGuid, this.fieldName, currentLanguage);
     this.itemService.addItemAttributeDimension(
       this.entityGuid, this.fieldName, currentLanguage, linkWithLanguageKey, defaultLanguage, true,
@@ -225,7 +225,7 @@ export class FieldHelper {
 
     const currentLanguage = this.currentLanguage$.value;
     const defaultLanguage = this.defaultLanguage$.value;
-    this.setTranslationState(TranslationLinkConstants.LinkReadWrite, linkWithLanguageKey);
+    // this.setTranslationState(TranslationLinkConstants.LinkReadWrite, linkWithLanguageKey);
     this.itemService.removeItemAttributeDimension(this.entityGuid, this.fieldName, currentLanguage);
     this.itemService.addItemAttributeDimension(
       this.entityGuid, this.fieldName, currentLanguage, linkWithLanguageKey, defaultLanguage, false,
@@ -236,8 +236,8 @@ export class FieldHelper {
 
   private refreshControlConfig(config: FieldConfigSet, form: FormGroup): void {
     this.setControlDisable(config, form);
-    this.readTranslationState();
-    this.setTranslationInfoMessage();
+    // this.readTranslationState();
+    // this.setTranslationInfoMessage();
   }
 
   private setControlDisable(config: FieldConfigSet, form: FormGroup): void {
@@ -280,46 +280,46 @@ export class FieldHelper {
       }
       this.eavService.formDisabledChange$.next({ formId: this.formId, entityGuid: this.entityGuid });
     }
-    if (this.defaultLanguageMissingValue$.value !== defaultLanguageMissingValue) {
-      this.defaultLanguageMissingValue$.next(defaultLanguageMissingValue);
-    }
+    // if (this.defaultLanguageMissingValue$.value !== defaultLanguageMissingValue) {
+    //   this.defaultLanguageMissingValue$.next(defaultLanguageMissingValue);
+    // }
   }
 
-  private readTranslationState(): void {
-    const values = this.attributes$.value[this.fieldName];
-    const currentLanguage = this.currentLanguage$.value;
-    const defaultLanguage = this.defaultLanguage$.value;
+  // private readTranslationState(): void {
+  //   const values = this.attributes$.value[this.fieldName];
+  //   const currentLanguage = this.currentLanguage$.value;
+  //   const defaultLanguage = this.defaultLanguage$.value;
 
-    // Determine is control disabled or enabled and info message
-    if (!LocalizationHelper.translationExistsInDefault(values, defaultLanguage)) {
-      this.setTranslationState(TranslationLinkConstants.MissingDefaultLangValue, '');
-    } else if (this.isTranslateDisabled()) {
-      this.setTranslationState(TranslationLinkConstants.DontTranslate, '');
-    } else if (LocalizationHelper.isEditableTranslationExist(values, currentLanguage, defaultLanguage)) {
-      const editableElements: EavDimension[] = LocalizationHelper
-        .getValueTranslation(values, currentLanguage, defaultLanguage)
-        .Dimensions.filter(dimension => dimension.Value !== currentLanguage);
+  //   // Determine is control disabled or enabled and info message
+  //   if (!LocalizationHelper.translationExistsInDefault(values, defaultLanguage)) {
+  //     this.setTranslationState(TranslationLinkConstants.MissingDefaultLangValue, '');
+  //   } else if (this.isTranslateDisabled()) {
+  //     this.setTranslationState(TranslationLinkConstants.DontTranslate, '');
+  //   } else if (LocalizationHelper.isEditableTranslationExist(values, currentLanguage, defaultLanguage)) {
+  //     const editableElements: EavDimension[] = LocalizationHelper
+  //       .getValueTranslation(values, currentLanguage, defaultLanguage)
+  //       .Dimensions.filter(dimension => dimension.Value !== currentLanguage);
 
-      if (editableElements.length > 0) {
-        this.setTranslationState(TranslationLinkConstants.LinkReadWrite, editableElements[0].Value);
-      } else {
-        this.setTranslationState(TranslationLinkConstants.Translate, '');
-      }
-    } else if (LocalizationHelper.isReadonlyTranslationExist(values, currentLanguage)) {
-      const readOnlyElements: EavDimension[] = LocalizationHelper
-        .getValueTranslation(values, currentLanguage, defaultLanguage)
-        .Dimensions.filter(dimension => dimension.Value !== currentLanguage);
+  //     if (editableElements.length > 0) {
+  //       this.setTranslationState(TranslationLinkConstants.LinkReadWrite, editableElements[0].Value);
+  //     } else {
+  //       this.setTranslationState(TranslationLinkConstants.Translate, '');
+  //     }
+  //   } else if (LocalizationHelper.isReadonlyTranslationExist(values, currentLanguage)) {
+  //     const readOnlyElements: EavDimension[] = LocalizationHelper
+  //       .getValueTranslation(values, currentLanguage, defaultLanguage)
+  //       .Dimensions.filter(dimension => dimension.Value !== currentLanguage);
 
-      this.setTranslationState(TranslationLinkConstants.LinkReadOnly, readOnlyElements[0].Value);
-    } else {
-      this.setTranslationState(TranslationLinkConstants.DontTranslate, '');
-    }
-  }
+  //     this.setTranslationState(TranslationLinkConstants.LinkReadOnly, readOnlyElements[0].Value);
+  //   } else {
+  //     this.setTranslationState(TranslationLinkConstants.DontTranslate, '');
+  //   }
+  // }
 
-  private setTranslationState(linkType: string, language: string): void {
-    const newTranslationState: TranslationState = { linkType, language };
-    this.translationState$.next(newTranslationState);
-  }
+  // private setTranslationState(linkType: string, language: string): void {
+  //   const newTranslationState: TranslationState = { linkType, language };
+  //   this.translationState$.next(newTranslationState);
+  // }
 
   /** Fetch inputType definition to check if input field of this type shouldn't be translated */
   private isTranslateDisabled(): boolean {
@@ -336,48 +336,48 @@ export class FieldHelper {
     return disableI18n;
   }
 
-  /** Set info message */
-  private setTranslationInfoMessage(): void {
-    const values = this.attributes$.value[this.fieldName];
-    const currentLanguage = this.currentLanguage$.value;
-    const defaultLanguage = this.defaultLanguage$.value;
+  // /** Set info message */
+  // private setTranslationInfoMessage(): void {
+  //   const values = this.attributes$.value[this.fieldName];
+  //   const currentLanguage = this.currentLanguage$.value;
+  //   const defaultLanguage = this.defaultLanguage$.value;
 
-    // determine whether control is disabled or enabled and info message
-    if (this.isTranslateDisabled()) {
-      this.translationInfoMessage$.next('');
-      this.translationInfoMessageLabel$.next('LangMenu.InAllLanguages');
-      return;
-    } else if (!LocalizationHelper.translationExistsInDefault(values, defaultLanguage)) {
-      this.translationInfoMessage$.next(defaultLanguage);
-      this.translationInfoMessageLabel$.next('LangMenu.MissingDefaultLangValue');
-      return;
-    }
+  //   // determine whether control is disabled or enabled and info message
+  //   if (this.isTranslateDisabled()) {
+  //     this.translationInfoMessage$.next('');
+  //     this.translationInfoMessageLabel$.next('LangMenu.InAllLanguages');
+  //     return;
+  //   } else if (!LocalizationHelper.translationExistsInDefault(values, defaultLanguage)) {
+  //     this.translationInfoMessage$.next(defaultLanguage);
+  //     this.translationInfoMessageLabel$.next('LangMenu.MissingDefaultLangValue');
+  //     return;
+  //   }
 
-    const editableTranslationExists = LocalizationHelper.isEditableTranslationExist(values, currentLanguage, defaultLanguage);
-    const readonlyTranslationExists = LocalizationHelper.isReadonlyTranslationExist(values, currentLanguage);
+  //   const editableTranslationExists = LocalizationHelper.isEditableTranslationExist(values, currentLanguage, defaultLanguage);
+  //   const readonlyTranslationExists = LocalizationHelper.isReadonlyTranslationExist(values, currentLanguage);
 
-    if (editableTranslationExists || readonlyTranslationExists) {
-      let dimensions: string[] = LocalizationHelper.getValueTranslation(values, currentLanguage, defaultLanguage)
-        .Dimensions.map(dimension => dimension.Value);
+  //   if (editableTranslationExists || readonlyTranslationExists) {
+  //     let dimensions: string[] = LocalizationHelper.getValueTranslation(values, currentLanguage, defaultLanguage)
+  //       .Dimensions.map(dimension => dimension.Value);
 
-      dimensions = dimensions.filter(dimension => !dimension.includes(currentLanguage));
+  //     dimensions = dimensions.filter(dimension => !dimension.includes(currentLanguage));
 
-      const isShared = dimensions.length > 0;
-      if (isShared) {
-        this.translationInfoMessage$.next(TranslateMenuHelpers.calculateSharedInfoMessage(dimensions, currentLanguage));
+  //     const isShared = dimensions.length > 0;
+  //     if (isShared) {
+  //       this.translationInfoMessage$.next(TranslateMenuHelpers.calculateSharedInfoMessage(dimensions, currentLanguage));
 
-        if (editableTranslationExists) {
-          this.translationInfoMessageLabel$.next('LangMenu.In');
-        } else if (readonlyTranslationExists) {
-          this.translationInfoMessageLabel$.next('LangMenu.From');
-        }
-      } else {
-        this.translationInfoMessage$.next('');
-        this.translationInfoMessageLabel$.next('');
-      }
-    } else {
-      this.translationInfoMessage$.next('');
-      this.translationInfoMessageLabel$.next('LangMenu.UseDefault');
-    }
-  }
+  //       if (editableTranslationExists) {
+  //         this.translationInfoMessageLabel$.next('LangMenu.In');
+  //       } else if (readonlyTranslationExists) {
+  //         this.translationInfoMessageLabel$.next('LangMenu.From');
+  //       }
+  //     } else {
+  //       this.translationInfoMessage$.next('');
+  //       this.translationInfoMessageLabel$.next('');
+  //     }
+  //   } else {
+  //     this.translationInfoMessage$.next('');
+  //     this.translationInfoMessageLabel$.next('LangMenu.UseDefault');
+  //   }
+  // }
 }

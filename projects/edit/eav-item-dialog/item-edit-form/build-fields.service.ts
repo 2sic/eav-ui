@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { EavService } from '../..';
 import { InputTypeConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
-import { FieldConfigAngular, FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
+import { FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
 import { InputFieldHelper } from '../../shared/helpers/input-field-helper';
 import { CalculatedInputType } from '../../shared/models';
 import { EavContentType, EavContentTypeAttribute, EavEntityAttributes, EavItem } from '../../shared/models/eav';

@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { take } from 'rxjs/operators';
 import { EavService } from '.';
 import { FieldSettings } from '../../../edit-types';
 import { InputTypeConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
-import { InputType } from '../../../ng-dialogs/src/app/content-type-fields/models/input-type.model';
 import { FieldConfigAngular, FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
 import { FieldHelper } from '../../eav-item-dialog/item-edit-form/field-helper';
 import { ValidationHelper } from '../../eav-material-controls/validators/validation-helper';

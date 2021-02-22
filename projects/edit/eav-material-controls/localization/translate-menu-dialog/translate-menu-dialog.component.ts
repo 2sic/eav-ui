@@ -23,7 +23,7 @@ export class TranslateMenuDialogComponent implements OnInit, OnDestroy {
   templateVars$: Observable<TranslateMenuDialogTemplateVars>;
 
   private translationState$: BehaviorSubject<TranslationState>;
-  private noLanguageRequired = [TranslationLinkConstants.Translate, TranslationLinkConstants.DontTranslate];
+  private noLanguageRequired: string[];
 
   constructor(
     private dialogRef: MatDialogRef<TranslateMenuDialogComponent>,
@@ -41,6 +41,9 @@ export class TranslateMenuDialogComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.translationState$ = new BehaviorSubject(this.dialogData.translationState);
+    this.noLanguageRequired = [TranslationLinkConstants.Translate, TranslationLinkConstants.DontTranslate];
+
     const currentLanguage$ = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
     const defaultLanguage$ = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
     const attributes$ = this.itemService.selectItemAttributes(this.dialogData.config.entityGuid);
@@ -48,9 +51,6 @@ export class TranslateMenuDialogComponent implements OnInit, OnDestroy {
       map(([languages, currentLanguage, defaultLanguage, attributes]) =>
         getTemplateLanguages(this.dialogData.config, currentLanguage, defaultLanguage, languages, attributes)),
     );
-
-    const translationStateCopy: TranslationState = { ...this.dialogData.config.field.fieldHelper.translationState$.value };
-    this.translationState$ = new BehaviorSubject(translationStateCopy);
 
     this.templateVars$ = combineLatest([defaultLanguage$, languages$, this.translationState$]).pipe(
       map(([defaultLanguage, languages, translationState]) => {
@@ -86,7 +86,7 @@ export class TranslateMenuDialogComponent implements OnInit, OnDestroy {
 
   save(): void {
     const newState = this.translationState$.value;
-    const oldState = this.dialogData.config.field.fieldHelper.translationState$.value;
+    const oldState = this.dialogData.translationState;
 
     const isEqual = oldState.linkType === newState.linkType && oldState.language === newState.language;
     if (isEqual) {

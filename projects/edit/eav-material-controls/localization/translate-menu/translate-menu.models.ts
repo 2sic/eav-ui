@@ -1,3 +1,5 @@
+import { TranslationState2New } from '../../../shared/models';
+
 export interface TranslationState {
   linkType: string;
   language: string;
@@ -6,11 +8,8 @@ export interface TranslationState {
 export interface TranslateMenuTemplateVars {
   currentLanguage: string;
   defaultLanguage: string;
-  translationState: TranslationState;
+  translationState: TranslationState2New;
   translationStateClass: string;
   disableTranslation: boolean;
   disabled: boolean;
-  defaultLanguageMissingValue: boolean;
-  infoMessage: string;
-  infoMessageLabel: string;
 }

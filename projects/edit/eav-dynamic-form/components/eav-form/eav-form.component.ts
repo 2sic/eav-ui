@@ -58,6 +58,7 @@ export class EavFormComponent implements OnInit, AfterViewInit, OnDestroy {
         // // 2. sync values
         // const changedValues: ObjectModel<FieldValue> = {};
         // for (const [fieldName, fieldProps] of Object.entries(fieldsProps)) {
+        //   if (fieldProps.calculatedInputType.inputType === InputTypeConstants.EmptyDefault) { continue; }
         //   const control = this.form.controls[fieldName];
         //   const value = fieldProps.value;
         //   if (control.value === value) { continue; }
@@ -65,12 +66,12 @@ export class EavFormComponent implements OnInit, AfterViewInit, OnDestroy {
         //   changedValues[fieldName] = value;
         // }
         // if (Object.keys(changedValues).length > 0) {
-        //   debugger;
         //   this.form.patchValue(changedValues);
         // }
 
         // // 3. sync disabled
         // for (const [fieldName, fieldProps] of Object.entries(fieldsProps)) {
+        //   if (fieldProps.calculatedInputType.inputType === InputTypeConstants.EmptyDefault) { continue; }
         //   const control = this.form.controls[fieldName];
         //   const disabled = fieldProps.settings.Disabled;
         //   if (control.disabled === disabled) { continue; }

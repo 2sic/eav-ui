@@ -6,12 +6,15 @@ import { EavService } from '.';
 import { FieldSettings } from '../../../edit-types';
 import { InputTypeConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { InputType } from '../../../ng-dialogs/src/app/content-type-fields/models/input-type.model';
+import { TranslateMenuHelpers } from '../../eav-material-controls/localization/translate-menu/translate-menu.helpers';
+import { TranslationState } from '../../eav-material-controls/localization/translate-menu/translate-menu.models';
 import { ValidationHelper } from '../../eav-material-controls/validators/validation-helper';
 import { FieldLogicManager } from '../../field-logic/field-logic-manager';
+import { TranslationLinkConstants } from '../constants/translation-link.constants';
 import { InputFieldHelper } from '../helpers/input-field-helper';
 import { LocalizationHelper } from '../helpers/localization-helper';
-import { ContentTypeSettings, FieldsProps } from '../models';
-import { EavContentType, EavContentTypeAttribute, EavEntity, EavItem } from '../models/eav';
+import { ContentTypeSettings, FieldsProps, TranslationState2New } from '../models';
+import { EavContentType, EavContentTypeAttribute, EavEntity, EavItem, EavValues } from '../models/eav';
 import { ContentTypeService } from '../store/ngrx-data/content-type.service';
 import { InputTypeService } from '../store/ngrx-data/input-type.service';
 import { ItemService } from '../store/ngrx-data/item.service';
@@ -70,10 +73,11 @@ export class FieldsSettings2NewService implements OnDestroy {
     );
 
     const itemAttributes$ = this.itemService.selectItemAttributes(item.Entity.Guid);
+    const itemHeader$ = this.itemService.selectItemHeader(item.Entity.Guid);
     const inputTypes$ = this.inputTypeService.getAllInputTypes$();
     this.subscription.add(
-      combineLatest([contentType$, currentLanguage$, defaultLanguage$, itemAttributes$, inputTypes$]).pipe(
-        map(([contentType, currentLanguage, defaultLanguage, itemAttributes, inputTypes]) => {
+      combineLatest([contentType$, currentLanguage$, defaultLanguage$, itemAttributes$, itemHeader$, inputTypes$]).pipe(
+        map(([contentType, currentLanguage, defaultLanguage, itemAttributes, itemHeader, inputTypes]) => {
           const fieldsProps: FieldsProps = {};
           for (const attribute of contentType.Attributes) {
             const attributeValues = itemAttributes[attribute.Name];
@@ -94,6 +98,10 @@ export class FieldsSettings2NewService implements OnDestroy {
             // special fixes
             merged.Required = ValidationHelper.isRequired(merged);
             merged.DisableTranslation = this.findDisableTranslation(attribute.Metadata, inputType);
+            merged.Disabled = (itemHeader.Group?.SlotCanBeEmpty && itemHeader.Group?.SlotIsEmpty) || merged.Disabled;
+            merged.Disabled =
+              getDisabledBecauseTranslations(attributeValues, merged.DisableTranslation, currentLanguage, defaultLanguage) ||
+              merged.Disabled;
             // update settings with respective FieldLogics
             const logic = FieldLogicManager.singleton().get(attribute.InputType);
             const fixed = logic?.update(merged, value) ?? merged;
@@ -103,12 +111,9 @@ export class FieldsSettings2NewService implements OnDestroy {
             const wrappers = InputFieldHelper.setWrappers2New(fixed, calculatedInputType);
             const initialSettings = this.mergeSettings<FieldSettings>(attribute.Metadata, this.eavService.eavConfig.lang, defaultLanguage);
             const initialDisabled = initialSettings.Disabled ?? false;
+            const fieldTranslation = getTranslationState2New(attributeValues, fixed.DisableTranslation, currentLanguage, defaultLanguage);
 
             fieldsProps[attribute.Name] = {
-              settings: fixed,
-              validators,
-              value,
-              wrappers,
               calculatedInputType,
               constants: {
                 angularAssets: inputType?.AngularAssets,
@@ -122,7 +127,12 @@ export class FieldsSettings2NewService implements OnDestroy {
                 isExternal: calculatedInputType.isExternal,
                 isLastInGroup: this.findIsLastInGroup(contentType, attribute),
                 type: attribute.Type,
-              }
+              },
+              settings: fixed,
+              translationState: fieldTranslation,
+              validators,
+              value,
+              wrappers,
             };
           }
           return fieldsProps;
@@ -156,6 +166,16 @@ export class FieldsSettings2NewService implements OnDestroy {
       map(fieldsSettings => fieldsSettings[fieldName].validators),
       distinctUntilChanged((oldValidators, newValidators) => {
         const equal = validatorsEqual(oldValidators, newValidators);
+        return equal;
+      }),
+    );
+  }
+
+  getTranslationState$(fieldName: string): Observable<TranslationState2New> {
+    return this.fieldsProps$.pipe(
+      map(fieldsSettings => fieldsSettings[fieldName].translationState),
+      distinctUntilChanged((oldTranslationState, newTranslationState) => {
+        const equal = translationStateEqual(oldTranslationState, newTranslationState);
         return equal;
       }),
     );
@@ -272,4 +292,133 @@ function validatorsEqual(x: ValidatorFn[], y: ValidatorFn[]) {
   });
 
   return equal;
+}
+
+function translationStateEqual(x: TranslationState2New, y: TranslationState2New) {
+  const obj1 = x as { [key: string]: any };
+  const obj2 = y as { [key: string]: any };
+
+  const keys1 = Object.keys(obj1);
+  const keys2 = Object.keys(obj2);
+  if (keys1.length !== keys2.length) { return false; }
+
+  const equal = keys1.every(key1 => {
+    if (obj2[key1] == null) { return false; }
+
+    return obj1[key1] === obj2[key1];
+  });
+
+  return equal;
+}
+
+function getDisabledBecauseTranslations(
+  attributeValues: EavValues<any>,
+  disableTranslation: boolean,
+  currentLanguage: string,
+  defaultLanguage: string,
+): boolean {
+  if (currentLanguage === defaultLanguage) { return false; }
+  if (!LocalizationHelper.translationExistsInDefault(attributeValues, defaultLanguage)) { return true; }
+  if (disableTranslation) { return true; }
+  if (LocalizationHelper.isEditableTranslationExist(attributeValues, currentLanguage, defaultLanguage)) { return false; }
+  if (LocalizationHelper.isReadonlyTranslationExist(attributeValues, currentLanguage)) { return true; }
+  return true;
+}
+
+function getTranslationState2New(
+  attributeValues: EavValues<any>,
+  disableTranslation: boolean,
+  currentLanguage: string,
+  defaultLanguage: string,
+): TranslationState2New {
+  let infoLabel: string;
+  let infoMessage: string;
+  const defaultLanguageMissingValue = !LocalizationHelper.translationExistsInDefault(attributeValues, defaultLanguage);
+
+  if (disableTranslation) {
+    infoLabel = 'LangMenu.InAllLanguages';
+    infoMessage = '';
+  } else if (defaultLanguageMissingValue) {
+    infoLabel = 'LangMenu.MissingDefaultLangValue';
+    infoMessage = defaultLanguage;
+  } else {
+    const editableTranslationExists = LocalizationHelper.isEditableTranslationExist(attributeValues, currentLanguage, defaultLanguage);
+    const readonlyTranslationExists = LocalizationHelper.isReadonlyTranslationExist(attributeValues, currentLanguage);
+
+    if (editableTranslationExists || readonlyTranslationExists) {
+      const dimensions = LocalizationHelper.getValueTranslation(attributeValues, currentLanguage, defaultLanguage)
+        .Dimensions.map(dimension => dimension.Value)
+        .filter(dimension => !dimension.includes(currentLanguage));
+
+      const isShared = dimensions.length > 0;
+      if (isShared) {
+        if (editableTranslationExists) {
+          infoLabel = 'LangMenu.In';
+        } else if (readonlyTranslationExists) {
+          infoLabel = 'LangMenu.From';
+        }
+        infoMessage = TranslateMenuHelpers.calculateSharedInfoMessage(dimensions, currentLanguage);
+      } else {
+        infoLabel = '';
+        infoMessage = '';
+      }
+    } else {
+      infoLabel = 'LangMenu.UseDefault';
+      infoMessage = '';
+    }
+  }
+  const state = getTranslationState(attributeValues, disableTranslation, currentLanguage, defaultLanguage);
+  const translationState: TranslationState2New = {
+    defaultLanguageMissingValue,
+    infoLabel,
+    infoMessage,
+    language: state.language,
+    linkType: state.linkType,
+  };
+  return translationState;
+}
+
+function getTranslationState(
+  attributeValues: EavValues<any>,
+  disableTranslation: boolean,
+  currentLanguage: string,
+  defaultLanguage: string,
+): TranslationState {
+  let language: string;
+  let linkType: string;
+
+  // Determine is control disabled or enabled and info message
+  if (!LocalizationHelper.translationExistsInDefault(attributeValues, defaultLanguage)) {
+    language = '';
+    linkType = TranslationLinkConstants.MissingDefaultLangValue;
+  } else if (disableTranslation) {
+    language = '';
+    linkType = TranslationLinkConstants.DontTranslate;
+  } else if (LocalizationHelper.isEditableTranslationExist(attributeValues, currentLanguage, defaultLanguage)) {
+    const editableElements = LocalizationHelper.getValueTranslation(attributeValues, currentLanguage, defaultLanguage)
+      .Dimensions.filter(dimension => dimension.Value !== currentLanguage);
+
+    if (editableElements.length > 0) {
+      language = editableElements[0].Value;
+      linkType = TranslationLinkConstants.LinkReadWrite;
+    } else {
+      language = '';
+      linkType = TranslationLinkConstants.Translate;
+    }
+  } else if (LocalizationHelper.isReadonlyTranslationExist(attributeValues, currentLanguage)) {
+    const readOnlyElements = LocalizationHelper.getValueTranslation(attributeValues, currentLanguage, defaultLanguage)
+      .Dimensions.filter(dimension => dimension.Value !== currentLanguage);
+
+    language = readOnlyElements[0].Value;
+    linkType = TranslationLinkConstants.LinkReadOnly;
+  } else {
+    language = '';
+    linkType = TranslationLinkConstants.DontTranslate;
+  }
+
+  const translationState: TranslationState = {
+    language,
+    linkType,
+  };
+  return translationState;
 }
