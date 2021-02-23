@@ -1,8 +1,7 @@
 import { BehaviorSubject } from 'rxjs';
-import { Adam, Dropzone, FieldConfig } from '../../../edit-types';
+import { Adam, Dropzone } from '../../../edit-types';
 import { FieldHelper } from '../../eav-item-dialog/item-edit-form/field-helper';
 import { EntityInfo, FieldConstants } from '../../shared/models';
-import { EavEntityAttributes } from '../../shared/models/eav';
 
 export interface FieldConfigSet extends FieldConstants {
   field: FieldConfigAngular;
@@ -11,8 +10,8 @@ export interface FieldConfigSet extends FieldConstants {
   entityCache$?: BehaviorSubject<EntityInfo[]>;
 }
 
-export interface FieldConfigAngular extends FieldConfig {
-  fullSettings: EavEntityAttributes;
+export interface FieldConfigAngular {
+  name: string;
   focused$: BehaviorSubject<boolean>;
   fieldHelper: FieldHelper;
   /** If field has this property, it is an empty-default field */

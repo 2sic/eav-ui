@@ -69,15 +69,20 @@ export class EavFormComponent implements OnInit, AfterViewInit, OnDestroy {
         //   this.form.patchValue(changedValues);
         // }
 
-        // // 3. sync disabled
-        // for (const [fieldName, fieldProps] of Object.entries(fieldsProps)) {
-        //   if (fieldProps.calculatedInputType.inputType === InputTypeConstants.EmptyDefault) { continue; }
-        //   const control = this.form.controls[fieldName];
-        //   const disabled = fieldProps.settings.Disabled;
-        //   if (control.disabled === disabled) { continue; }
+        // 3. sync disabled
+        for (const [fieldName, fieldProps] of Object.entries(fieldsProps)) {
+          if (fieldProps.calculatedInputType.inputType === InputTypeConstants.EmptyDefault) { continue; }
+          const control = this.form.controls[fieldName];
+          const disabled = fieldProps.settings.Disabled;
+          if (disabled === control.disabled) { continue; }
 
-        //   control.disable();
-        // }
+          if (disabled) {
+            control.disable({ emitEvent: false });
+          } else {
+            control.enable({ emitEvent: false });
+          }
+          this.eavService.formDisabledChange$.next({ formId: this.eavService.eavConfig.formId, entityGuid: this.entityGuid });
+        }
 
         // TODO: 4. sync validators
       })
@@ -112,7 +117,7 @@ export class EavFormComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-    this.buildFieldsService.startTranslations(this.fieldConfigs, this.form, this.fieldsSettingsService);
+    this.buildFieldsService.startTranslations(this.fieldConfigs);
 
     this.subscription.add(
       this.form.valueChanges.subscribe((formValues: FormValues) => {

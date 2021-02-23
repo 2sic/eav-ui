@@ -19,7 +19,6 @@ export interface CheckFieldProps {
 @Injectable({ providedIn: 'root' })
 export class LanguageInstanceService extends EntityCollectionServiceBase<LanguageInstance> implements OnDestroy {
   private translateMany$ = new Subject<TranslateManyProps>();
-  private checkField$ = new Subject<CheckFieldProps>();
 
   constructor(serviceElementsFactory: EntityCollectionServiceElementsFactory) {
     super('LanguageInstance', serviceElementsFactory);
@@ -83,15 +82,5 @@ export class LanguageInstanceService extends EntityCollectionServiceBase<Languag
   /** Translate all fields in entity + change check for the same entity in other forms */
   getTranslateMany(formId: number, entityGuid: string) {
     return this.translateMany$.pipe(filter(props => props.formId === formId && props.entityGuid === entityGuid));
-  }
-
-  /** Translate all fields in entity + change check for the same entity in other forms */
-  checkField(props: CheckFieldProps) {
-    this.checkField$.next(props);
-  }
-
-  /** Translate all fields in entity + change check for the same entity in other forms */
-  getCheckField(entityGuid: string, fieldName: string) {
-    return this.checkField$.pipe(filter(props => props.entityGuid === entityGuid && props.fieldName === fieldName));
   }
 }

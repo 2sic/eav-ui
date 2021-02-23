@@ -62,7 +62,7 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
     const contentTypeId = InputFieldHelper.getContentTypeId(this.item);
     this.contentTypeService.getContentTypeById(contentTypeId).pipe(take(1)).subscribe(contentType => {
       this.fieldConfigs = this.buildFieldsService.buildFieldConfigs(
-        contentType, this.item, this.eavService.eavConfig.formId, this.currentLanguage, this.defaultLanguage, this.fieldsSettingsService,
+        contentType, this.item, this.eavService.eavConfig.formId, this.fieldsSettingsService,
       );
     });
   }
