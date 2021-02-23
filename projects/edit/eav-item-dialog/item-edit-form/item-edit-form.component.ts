@@ -8,7 +8,6 @@ import { InputFieldHelper } from '../../shared/helpers/input-field-helper';
 import { LocalizationHelper } from '../../shared/helpers/localization-helper';
 import { EavItem } from '../../shared/models/eav';
 import { EavService } from '../../shared/services/eav.service';
-import { FieldsSettingsService } from '../../shared/services/fields-settings.service';
 import { FieldsSettings2NewService } from '../../shared/services/fields-settings2new.service';
 import { ContentTypeService } from '../../shared/store/ngrx-data/content-type.service';
 import { ItemService } from '../../shared/store/ngrx-data/item.service';
@@ -20,7 +19,7 @@ import { FormValues } from './item-edit-form.models';
   selector: 'app-item-edit-form',
   templateUrl: './item-edit-form.component.html',
   styleUrls: ['./item-edit-form.component.scss'],
-  providers: [BuildFieldsService, FieldsSettingsService, FieldsSettings2NewService],
+  providers: [BuildFieldsService, FieldsSettings2NewService],
 })
 export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
   @ViewChild(EavFormComponent) eavFormRef: EavFormComponent;
@@ -38,7 +37,6 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
     private contentTypeService: ContentTypeService,
     private eavService: EavService,
     private buildFieldsService: BuildFieldsService,
-    private fieldsSettingsService: FieldsSettingsService,
     private fieldsSettings2NewService: FieldsSettings2NewService,
   ) { }
 
@@ -61,9 +59,7 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
     // create input fields from content type
     const contentTypeId = InputFieldHelper.getContentTypeId(this.item);
     this.contentTypeService.getContentTypeById(contentTypeId).pipe(take(1)).subscribe(contentType => {
-      this.fieldConfigs = this.buildFieldsService.buildFieldConfigs(
-        contentType, this.item, this.eavService.eavConfig.formId, this.fieldsSettingsService,
-      );
+      this.fieldConfigs = this.buildFieldsService.buildFieldConfigs(contentType, this.item, this.eavService.eavConfig.formId);
     });
   }
 
@@ -121,12 +117,11 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
 
   private destroyFieldConfigs(fieldConfigs: FieldConfigSet[]) {
     for (const config of fieldConfigs) {
-      config.field.focused$?.complete();
-      config.field.fieldHelper?.destroy();
+      config.focused$?.complete();
+      config.fieldHelper?.destroy();
 
-      const group = config.field._fieldGroup;
-      if (!group) { return; }
-      this.destroyFieldConfigs(group);
+      if (!config._fieldGroup) { return; }
+      this.destroyFieldConfigs(config._fieldGroup);
     }
   }
 }

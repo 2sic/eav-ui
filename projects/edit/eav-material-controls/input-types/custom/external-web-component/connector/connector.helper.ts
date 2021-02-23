@@ -131,7 +131,7 @@ export class ConnectorHelper {
       },
       isFeatureEnabled: (guid) => this.featureService.isFeatureEnabled(guid),
       setFocused: (focused) => {
-        this.zone.run(() => { this.config.field.focused$.next(focused); });
+        this.zone.run(() => { this.config.focused$.next(focused); });
       },
       openPagePicker: (params, callback) => {
         this.zone.run(() => { this.dnnBridgeService.open('pagepicker', params, callback); });

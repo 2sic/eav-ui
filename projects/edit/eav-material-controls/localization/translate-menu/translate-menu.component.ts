@@ -66,11 +66,11 @@ export class TranslateMenuComponent implements OnInit {
   }
 
   translate(): void {
-    this.config.field.fieldHelper.translate();
+    this.config.fieldHelper.translate();
   }
 
   dontTranslate(): void {
-    this.config.field.fieldHelper.dontTranslate();
+    this.config.fieldHelper.dontTranslate();
   }
 
   openTranslateMenuDialog(translationState: TranslationState2New): void {

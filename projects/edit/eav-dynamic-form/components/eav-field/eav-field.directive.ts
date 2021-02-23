@@ -171,10 +171,10 @@ export class EavFieldDirective implements OnInit {
 
   private findOldConfig(fieldName: string, fieldConfigs: FieldConfigSet[]): FieldConfigSet {
     for (const config of fieldConfigs) {
-      if (config.field.name === fieldName) {
+      if (config.name === fieldName) {
         return config;
-      } else if (config.field._fieldGroup) {
-        const found = this.findOldConfig(fieldName, config.field._fieldGroup);
+      } else if (config._fieldGroup) {
+        const found = this.findOldConfig(fieldName, config._fieldGroup);
         if (!found) { continue; }
         return found;
       }

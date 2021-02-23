@@ -6,7 +6,6 @@ import { EavService } from '../../..';
 import { InputTypeConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { BuildFieldsService } from '../../../eav-item-dialog/item-edit-form/build-fields.service';
 import { FormValues } from '../../../eav-item-dialog/item-edit-form/item-edit-form.models';
-import { FieldsSettingsService } from '../../../shared/services/fields-settings.service';
 import { FieldsSettings2NewService } from '../../../shared/services/fields-settings2new.service';
 import { FormsStateService } from '../../../shared/services/forms-state.service';
 import { ItemService } from '../../../shared/store/ngrx-data/item.service';
@@ -29,7 +28,6 @@ export class EavFormComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(
     private formBuilder: FormBuilder,
-    private fieldsSettingsService: FieldsSettingsService,
     private buildFieldsService: BuildFieldsService,
     private eavService: EavService,
     private formsStateService: FormsStateService,

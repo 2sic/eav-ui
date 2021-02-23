@@ -96,19 +96,19 @@ export class TranslateMenuDialogComponent implements OnInit, OnDestroy {
 
     switch (newState.linkType) {
       case TranslationLinkConstants.Translate:
-        this.dialogData.config.field.fieldHelper.translate();
+        this.dialogData.config.fieldHelper.translate();
         break;
       case TranslationLinkConstants.DontTranslate:
-        this.dialogData.config.field.fieldHelper.dontTranslate();
+        this.dialogData.config.fieldHelper.dontTranslate();
         break;
       case TranslationLinkConstants.LinkReadOnly:
-        this.dialogData.config.field.fieldHelper.linkReadOnly(newState.language);
+        this.dialogData.config.fieldHelper.linkReadOnly(newState.language);
         break;
       case TranslationLinkConstants.LinkReadWrite:
-        this.dialogData.config.field.fieldHelper.linkReadWrite(newState.language);
+        this.dialogData.config.fieldHelper.linkReadWrite(newState.language);
         break;
       case TranslationLinkConstants.LinkCopyFrom:
-        this.dialogData.config.field.fieldHelper.copyFrom(newState.language);
+        this.dialogData.config.fieldHelper.copyFrom(newState.language);
         break;
       default:
         break;

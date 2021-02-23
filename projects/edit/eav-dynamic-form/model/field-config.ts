@@ -4,16 +4,12 @@ import { FieldHelper } from '../../eav-item-dialog/item-edit-form/field-helper';
 import { EntityInfo, FieldConstants } from '../../shared/models';
 
 export interface FieldConfigSet extends FieldConstants {
-  field: FieldConfigAngular;
-  dropzone?: Dropzone;
-  adam?: Adam;
-  entityCache$?: BehaviorSubject<EntityInfo[]>;
-}
-
-export interface FieldConfigAngular {
   name: string;
-  focused$: BehaviorSubject<boolean>;
-  fieldHelper: FieldHelper;
+  adam?: Adam;
+  dropzone?: Dropzone;
+  entityCache$?: BehaviorSubject<EntityInfo[]>;
   /** If field has this property, it is an empty-default field */
-  _fieldGroup: FieldConfigSet[];
+  _fieldGroup?: FieldConfigSet[];
+  fieldHelper?: FieldHelper;
+  focused$?: BehaviorSubject<boolean>;
 }
