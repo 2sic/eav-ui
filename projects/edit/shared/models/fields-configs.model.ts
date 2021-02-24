@@ -34,7 +34,6 @@ export interface FieldConstants {
 }
 
 export interface TranslationState2New extends TranslationState {
-  defaultLanguageMissingValue: boolean;
   infoLabel: string;
   infoMessage: string;
 }

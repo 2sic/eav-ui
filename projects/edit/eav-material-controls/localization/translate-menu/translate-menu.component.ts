@@ -8,6 +8,7 @@ import { TranslationLinkConstants } from '../../../shared/constants/translation-
 import { TranslationState2New } from '../../../shared/models';
 import { EavService } from '../../../shared/services/eav.service';
 import { FieldsSettings2NewService } from '../../../shared/services/fields-settings2new.service';
+import { FieldsTranslateService } from '../../../shared/services/fields-translate.service';
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
 import { TranslateMenuDialogComponent } from '../translate-menu-dialog/translate-menu-dialog.component';
 import { TranslateMenuDialogData } from '../translate-menu-dialog/translate-menu-dialog.models';
@@ -32,6 +33,7 @@ export class TranslateMenuComponent implements OnInit {
     private languageInstanceService: LanguageInstanceService,
     private eavService: EavService,
     private fieldsSettings2NewService: FieldsSettings2NewService,
+    private fieldsTranslateService: FieldsTranslateService,
   ) { }
 
   ngOnInit(): void {
@@ -66,11 +68,11 @@ export class TranslateMenuComponent implements OnInit {
   }
 
   translate(): void {
-    this.config.fieldHelper.translate();
+    this.fieldsTranslateService.translate(this.config.name);
   }
 
   dontTranslate(): void {
-    this.config.fieldHelper.dontTranslate();
+    this.fieldsTranslateService.dontTranslate(this.config.name);
   }
 
   openTranslateMenuDialog(translationState: TranslationState2New): void {

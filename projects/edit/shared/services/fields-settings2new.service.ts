@@ -97,8 +97,10 @@ export class FieldsSettings2NewService implements OnDestroy {
             merged.DisableTranslation ??= false;
             // special fixes
             merged.Required = ValidationHelper.isRequired(merged);
-            merged.DisableTranslation = this.findDisableTranslation(attribute.Metadata, inputType);
-            merged.Disabled = (itemHeader.Group?.SlotCanBeEmpty && itemHeader.Group?.SlotIsEmpty) || merged.Disabled;
+            const slotIsEmpty = itemHeader.Group?.SlotCanBeEmpty && itemHeader.Group?.SlotIsEmpty;
+            merged.DisableTranslation = this.findDisableTranslation(inputType, attributeValues, defaultLanguage, attribute.Metadata);
+            merged.DisableTranslation = slotIsEmpty || merged.DisableTranslation;
+            merged.Disabled = slotIsEmpty || merged.Disabled;
             merged.Disabled =
               getDisabledBecauseTranslations(attributeValues, merged.DisableTranslation, currentLanguage, defaultLanguage) ||
               merged.Disabled;
@@ -214,8 +216,14 @@ export class FieldsSettings2NewService implements OnDestroy {
   }
 
   /** Find if DisableTranslation is true in any setting and in any language */
-  private findDisableTranslation(metadataItems: EavEntity[], inputType: InputType) {
+  private findDisableTranslation(
+    inputType: InputType,
+    attributeValues: EavValues<any>,
+    defaultLanguage: string,
+    metadataItems: EavEntity[],
+  ): boolean {
     if (inputType?.DisableI18n) { return true; }
+    if (!LocalizationHelper.translationExistsInDefault(attributeValues, defaultLanguage)) { return true; }
     if (metadataItems == null) { return false; }
 
     // find DisableTranslation in @All, @String, @string-default, etc...
@@ -333,12 +341,11 @@ function getTranslationState2New(
 ): TranslationState2New {
   let infoLabel: string;
   let infoMessage: string;
-  const defaultLanguageMissingValue = !LocalizationHelper.translationExistsInDefault(attributeValues, defaultLanguage);
 
   if (disableTranslation) {
     infoLabel = 'LangMenu.InAllLanguages';
     infoMessage = '';
-  } else if (defaultLanguageMissingValue) {
+  } else if (!LocalizationHelper.translationExistsInDefault(attributeValues, defaultLanguage)) {
     infoLabel = 'LangMenu.MissingDefaultLangValue';
     infoMessage = defaultLanguage;
   } else {
@@ -369,7 +376,6 @@ function getTranslationState2New(
   }
   const state = getTranslationState(attributeValues, disableTranslation, currentLanguage, defaultLanguage);
   const translationState: TranslationState2New = {
-    defaultLanguageMissingValue,
     infoLabel,
     infoMessage,
     language: state.language,

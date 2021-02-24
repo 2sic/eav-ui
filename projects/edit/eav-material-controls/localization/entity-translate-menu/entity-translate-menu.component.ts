@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { EavService } from '../../..';
-import { TranslationLink, TranslationLinkConstants } from '../../../shared/constants/translation-link.constants';
+import { FieldsTranslateService } from '../../../shared/services/fields-translate.service';
 import { ItemService } from '../../../shared/store/ngrx-data/item.service';
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
 import { EntityTranslateMenuTemplateVars } from './entity-translate-menu.models';
@@ -15,13 +15,13 @@ import { EntityTranslateMenuTemplateVars } from './entity-translate-menu.models'
 export class EntityTranslateMenuComponent implements OnInit {
   @Input() private entityGuid: string;
 
-  translationLinkConstants = TranslationLinkConstants;
   templateVars$: Observable<EntityTranslateMenuTemplateVars>;
 
   constructor(
     private languageInstanceService: LanguageInstanceService,
     private itemService: ItemService,
     private eavService: EavService,
+    private fieldsTranslateService: FieldsTranslateService,
   ) { }
 
   ngOnInit() {
@@ -42,11 +42,11 @@ export class EntityTranslateMenuComponent implements OnInit {
     );
   }
 
-  translateMany(translationLink: TranslationLink) {
-    this.languageInstanceService.translateMany({
-      formId: this.eavService.eavConfig.formId,
-      entityGuid: this.entityGuid,
-      translationLink,
-    });
+  translateMany() {
+    this.fieldsTranslateService.translateMany();
+  }
+
+  dontTranslateMany() {
+    this.fieldsTranslateService.dontTranslateMany();
   }
 }

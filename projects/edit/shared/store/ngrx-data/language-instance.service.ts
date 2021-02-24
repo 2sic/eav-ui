@@ -1,31 +1,12 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { EntityCollectionServiceBase, EntityCollectionServiceElementsFactory } from '@ngrx/data';
-import { Subject } from 'rxjs';
-import { distinctUntilChanged, filter, map } from 'rxjs/operators';
-import { TranslationLink } from '../../constants/translation-link.constants';
+import { distinctUntilChanged, map } from 'rxjs/operators';
 import { LanguageInstance } from '../../models';
 
-export interface TranslateManyProps {
-  formId: number;
-  entityGuid: string;
-  translationLink: TranslationLink;
-}
-
-export interface CheckFieldProps {
-  entityGuid: string;
-  fieldName: string;
-}
-
 @Injectable({ providedIn: 'root' })
-export class LanguageInstanceService extends EntityCollectionServiceBase<LanguageInstance> implements OnDestroy {
-  private translateMany$ = new Subject<TranslateManyProps>();
-
+export class LanguageInstanceService extends EntityCollectionServiceBase<LanguageInstance> {
   constructor(serviceElementsFactory: EntityCollectionServiceElementsFactory) {
     super('LanguageInstance', serviceElementsFactory);
-  }
-
-  ngOnDestroy() {
-    this.translateMany$.complete();
   }
 
   /** Add language instance to ngrx-data */
@@ -72,15 +53,5 @@ export class LanguageInstanceService extends EntityCollectionServiceBase<Languag
 
   removeLanguageInstance(formId: number) {
     this.removeOneFromCache(formId);
-  }
-
-  /** Translate all fields in entity + change check for the same entity in other forms */
-  translateMany(props: TranslateManyProps) {
-    this.translateMany$.next(props);
-  }
-
-  /** Translate all fields in entity + change check for the same entity in other forms */
-  getTranslateMany(formId: number, entityGuid: string) {
-    return this.translateMany$.pipe(filter(props => props.formId === formId && props.entityGuid === entityGuid));
   }
 }

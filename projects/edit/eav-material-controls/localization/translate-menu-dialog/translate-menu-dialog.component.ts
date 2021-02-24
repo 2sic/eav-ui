@@ -4,6 +4,7 @@ import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { EavService } from '../../..';
 import { TranslationLinkConstants } from '../../../shared/constants/translation-link.constants';
+import { FieldsTranslateService } from '../../../shared/services/fields-translate.service';
 import { ItemService } from '../../../shared/store/ngrx-data/item.service';
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
 import { LanguageService } from '../../../shared/store/ngrx-data/language.service';
@@ -32,6 +33,7 @@ export class TranslateMenuDialogComponent implements OnInit, OnDestroy {
     private languageInstanceService: LanguageInstanceService,
     private itemService: ItemService,
     private eavService: EavService,
+    private fieldsTranslateService: FieldsTranslateService,
   ) {
     this.dialogRef.keydownEvents().subscribe(event => {
       const CTRL_S = event.keyCode === 83 && (navigator.platform.match('Mac') ? event.metaKey : event.ctrlKey);
@@ -96,19 +98,19 @@ export class TranslateMenuDialogComponent implements OnInit, OnDestroy {
 
     switch (newState.linkType) {
       case TranslationLinkConstants.Translate:
-        this.dialogData.config.fieldHelper.translate();
+        this.fieldsTranslateService.translate(this.dialogData.config.name);
         break;
       case TranslationLinkConstants.DontTranslate:
-        this.dialogData.config.fieldHelper.dontTranslate();
+        this.fieldsTranslateService.dontTranslate(this.dialogData.config.name);
         break;
       case TranslationLinkConstants.LinkReadOnly:
-        this.dialogData.config.fieldHelper.linkReadOnly(newState.language);
+        this.fieldsTranslateService.linkReadOnly(this.dialogData.config.name, newState.language);
         break;
       case TranslationLinkConstants.LinkReadWrite:
-        this.dialogData.config.fieldHelper.linkReadWrite(newState.language);
+        this.fieldsTranslateService.linkReadWrite(this.dialogData.config.name, newState.language);
         break;
       case TranslationLinkConstants.LinkCopyFrom:
-        this.dialogData.config.fieldHelper.copyFrom(newState.language);
+        this.fieldsTranslateService.copyFrom(this.dialogData.config.name, newState.language);
         break;
       default:
         break;

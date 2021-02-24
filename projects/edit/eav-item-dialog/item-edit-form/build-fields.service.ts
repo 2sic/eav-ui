@@ -4,29 +4,14 @@ import { InputTypeConstants } from '../../../ng-dialogs/src/app/content-type-fie
 import { FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
 import { InputFieldHelper } from '../../shared/helpers/input-field-helper';
 import { CalculatedInputType } from '../../shared/models';
-import { EavContentType, EavContentTypeAttribute, EavItem } from '../../shared/models/eav';
-import { ContentTypeService } from '../../shared/store/ngrx-data/content-type.service';
+import { EavContentType, EavContentTypeAttribute } from '../../shared/models/eav';
 import { InputTypeService } from '../../shared/store/ngrx-data/input-type.service';
-import { ItemService } from '../../shared/store/ngrx-data/item.service';
-import { LanguageInstanceService } from '../../shared/store/ngrx-data/language-instance.service';
-import { FieldHelper } from './field-helper';
 
 @Injectable()
 export class BuildFieldsService {
-  private item: EavItem;
-  private formId: number;
+  constructor(private inputTypeService: InputTypeService) { }
 
-  constructor(
-    private itemService: ItemService,
-    private inputTypeService: InputTypeService,
-    private languageInstanceService: LanguageInstanceService,
-    private contentTypeService: ContentTypeService,
-  ) { }
-
-  public buildFieldConfigs(contentType: EavContentType, item: EavItem, formId: number): FieldConfigSet[] {
-    this.item = item;
-    this.formId = formId;
-
+  public buildFieldConfigs(contentType: EavContentType): FieldConfigSet[] {
     // build first empty
     const parentType: CalculatedInputType = {
       inputType: InputTypeConstants.EmptyDefault,
@@ -68,43 +53,11 @@ export class BuildFieldsService {
       };
       return fieldConfigSet;
     } else {
-      const contentTypeId = InputFieldHelper.getContentTypeId(this.item);
-      const fieldHelper = new FieldHelper(
-        attribute.Name,
-        this.item.Entity.Guid,
-        this.formId,
-        contentTypeId,
-        this.itemService,
-        this.languageInstanceService,
-        this.contentTypeService,
-        this.inputTypeService,
-      );
       const fieldConfigSet: FieldConfigSet = {
         name,
-        fieldHelper,
         focused$: new BehaviorSubject(false),
       };
       return fieldConfigSet;
-    }
-  }
-
-  public startTranslations(fieldConfigs: FieldConfigSet[]): void {
-    for (const config of fieldConfigs) {
-      if (config._fieldGroup) {
-        this.startTranslations(config._fieldGroup);
-      } else {
-        config.fieldHelper?.startTranslations();
-      }
-    }
-  }
-
-  public stopTranslations(fieldConfigs: FieldConfigSet[]): void {
-    for (const config of fieldConfigs) {
-      if (config._fieldGroup) {
-        this.stopTranslations(config._fieldGroup);
-      } else {
-        config.fieldHelper?.stopTranslations();
-      }
     }
   }
 }

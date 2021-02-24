@@ -4,7 +4,6 @@ import { combineLatest, Subscription } from 'rxjs';
 import { distinctUntilChanged, filter, map, startWith } from 'rxjs/operators';
 import { EavService } from '../../..';
 import { InputTypeConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
-import { BuildFieldsService } from '../../../eav-item-dialog/item-edit-form/build-fields.service';
 import { FormValues } from '../../../eav-item-dialog/item-edit-form/item-edit-form.models';
 import { FieldsSettings2NewService } from '../../../shared/services/fields-settings2new.service';
 import { FormsStateService } from '../../../shared/services/forms-state.service';
@@ -28,7 +27,6 @@ export class EavFormComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(
     private formBuilder: FormBuilder,
-    private buildFieldsService: BuildFieldsService,
     private eavService: EavService,
     private formsStateService: FormsStateService,
     private itemService: ItemService,
@@ -115,8 +113,6 @@ export class EavFormComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-    this.buildFieldsService.startTranslations(this.fieldConfigs);
-
     this.subscription.add(
       this.form.valueChanges.subscribe((formValues: FormValues) => {
         this.formValueChange.emit(formValues);
@@ -125,7 +121,6 @@ export class EavFormComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.buildFieldsService.stopTranslations(this.fieldConfigs);
     this.subscription.unsubscribe();
   }
 }
