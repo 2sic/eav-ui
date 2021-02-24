@@ -65,24 +65,33 @@ export class FieldsTranslateService implements OnDestroy {
     );
   }
 
-  translate(fieldName: string): void {
-    if (this.fieldsProps[fieldName].settings.DisableTranslation) { return; }
+  translate(fieldName: string, isTransaction = false, transactionItem?: EavItem): EavItem {
+    if (this.isTranslationDisabled(fieldName)) { return; }
+
+    transactionItem = this.itemService.removeItemAttributeDimension(
+      this.entityGuid, fieldName, this.currentLanguage, true, transactionItem,
+    );
 
     const values = this.attributes[fieldName];
-    this.itemService.removeItemAttributeDimension(this.entityGuid, fieldName, this.currentLanguage);
     const defaultValue = LocalizationHelper.getValueTranslation(values, this.defaultLanguage, this.defaultLanguage);
     const attribute = this.contentType.Attributes.find(a => a.Name === fieldName);
-    this.itemService.addItemAttributeValue(this.entityGuid, fieldName, defaultValue.Value, this.currentLanguage, false, attribute.Type);
+    transactionItem = this.itemService.addItemAttributeValue(
+      this.entityGuid, fieldName, defaultValue.Value, this.currentLanguage, false, attribute.Type, isTransaction, transactionItem,
+    );
+    return transactionItem;
   }
 
-  dontTranslate(fieldName: string): void {
-    if (this.fieldsProps[fieldName].settings.DisableTranslation) { return; }
+  dontTranslate(fieldName: string, isTransaction = false, transactionItem?: EavItem): EavItem {
+    if (this.isTranslationDisabled(fieldName)) { return; }
 
-    this.itemService.removeItemAttributeDimension(this.entityGuid, fieldName, this.currentLanguage);
+    transactionItem = this.itemService.removeItemAttributeDimension(
+      this.entityGuid, fieldName, this.currentLanguage, isTransaction, transactionItem,
+    );
+    return transactionItem;
   }
 
   copyFrom(fieldName: string, copyFromLanguageKey: string): void {
-    if (this.fieldsProps[fieldName].settings.DisableTranslation) { return; }
+    if (this.isTranslationDisabled(fieldName)) { return; }
 
     const values = this.attributes[fieldName];
     const attributeValueTranslation = LocalizationHelper.getValueTranslation(values, copyFromLanguageKey, this.defaultLanguage);
@@ -109,32 +118,46 @@ export class FieldsTranslateService implements OnDestroy {
   }
 
   linkReadOnly(fieldName: string, linkWithLanguageKey: string): void {
-    if (this.fieldsProps[fieldName].settings.DisableTranslation) { return; }
+    if (this.isTranslationDisabled(fieldName)) { return; }
 
-    this.itemService.removeItemAttributeDimension(this.entityGuid, fieldName, this.currentLanguage);
+    const transactionItem = this.itemService.removeItemAttributeDimension(this.entityGuid, fieldName, this.currentLanguage, true);
     this.itemService.addItemAttributeDimension(
-      this.entityGuid, fieldName, this.currentLanguage, linkWithLanguageKey, this.defaultLanguage, true,
+      this.entityGuid, fieldName, this.currentLanguage, linkWithLanguageKey, this.defaultLanguage, true, transactionItem,
     );
   }
 
   linkReadWrite(fieldName: string, linkWithLanguageKey: string): void {
-    if (this.fieldsProps[fieldName].settings.DisableTranslation) { return; }
+    if (this.isTranslationDisabled(fieldName)) { return; }
 
-    this.itemService.removeItemAttributeDimension(this.entityGuid, fieldName, this.currentLanguage);
+    const transactionItem = this.itemService.removeItemAttributeDimension(this.entityGuid, fieldName, this.currentLanguage, true);
     this.itemService.addItemAttributeDimension(
-      this.entityGuid, fieldName, this.currentLanguage, linkWithLanguageKey, this.defaultLanguage, false,
+      this.entityGuid, fieldName, this.currentLanguage, linkWithLanguageKey, this.defaultLanguage, false, transactionItem,
     );
   }
 
   translateMany(): void {
-    for (const fieldName of Object.keys(this.attributes)) {
-      this.translate(fieldName);
+    const translateable = Object.keys(this.attributes).filter(fieldName => !this.isTranslationDisabled(fieldName));
+
+    let transactionItem: EavItem;
+    for (const fieldName of translateable) {
+      // will finish the transaction when last field is being translated
+      const isTransaction = fieldName !== translateable[translateable.length - 1];
+      transactionItem = this.translate(fieldName, isTransaction, transactionItem);
     }
   }
 
   dontTranslateMany(): void {
-    for (const fieldName of Object.keys(this.attributes)) {
-      this.dontTranslate(fieldName);
+    const translateable = Object.keys(this.attributes).filter(fieldName => !this.isTranslationDisabled(fieldName));
+
+    let transactionItem: EavItem;
+    for (const fieldName of translateable) {
+      // will finish the transaction when last field is being translated
+      const isTransaction = fieldName !== translateable[translateable.length - 1];
+      transactionItem = this.dontTranslate(fieldName, isTransaction, transactionItem);
     }
+  }
+
+  private isTranslationDisabled(fieldName: string) {
+    return this.fieldsProps[fieldName].settings.DisableTranslation;
   }
 }
