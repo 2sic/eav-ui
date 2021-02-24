@@ -8,7 +8,6 @@ import { FormValues } from '../../../eav-item-dialog/item-edit-form/item-edit-fo
 import { FieldsSettings2NewService } from '../../../shared/services/fields-settings2new.service';
 import { FormsStateService } from '../../../shared/services/forms-state.service';
 import { ItemService } from '../../../shared/store/ngrx-data/item.service';
-import { FieldConfigSet } from '../../model/field-config';
 
 @Component({
   selector: 'app-eav-form',
@@ -19,7 +18,6 @@ import { FieldConfigSet } from '../../model/field-config';
 export class EavFormComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() entityGuid: string;
   @Input() entityId: string;
-  @Input() fieldConfigs: FieldConfigSet[];
   @Output() private formValueChange = new EventEmitter<FormValues>();
 
   form: FormGroup;

@@ -8,7 +8,6 @@ import { EavHeader } from '../../../shared/models/eav';
 import { FieldsSettings2NewService } from '../../../shared/services/fields-settings2new.service';
 import { ItemService } from '../../../shared/store/ngrx-data/item.service';
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
-import { FieldConfigSet } from '../../model/field-config';
 import { ContentTypeTemplateVars } from './content-type-wrapper.models';
 
 @Component({
@@ -19,7 +18,6 @@ import { ContentTypeTemplateVars } from './content-type-wrapper.models';
 export class ContentTypeWrapperComponent implements OnInit {
   @Input() entityGuid: string;
   @Input() private entityId: string;
-  @Input() fieldConfigs: FieldConfigSet[];
   @Input() group: FormGroup;
 
   collapse: boolean;

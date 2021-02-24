@@ -1,5 +1,6 @@
-import { ComponentFactoryResolver, ComponentRef, Directive, Input, OnInit, Type, ViewContainerRef } from '@angular/core';
+import { ComponentFactoryResolver, ComponentRef, Directive, Input, OnDestroy, OnInit, Type, ViewContainerRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { BehaviorSubject } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { InputTypeConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { AdamAttachWrapperComponent } from '../../../eav-material-controls/adam/adam-attach-wrapper/adam-attach-wrapper.component';
@@ -39,9 +40,9 @@ import { FieldConfigSet } from '../../model/field-config';
 import { FieldWrapper } from '../../model/field-wrapper';
 
 @Directive({ selector: '[appEavField]' })
-export class EavFieldDirective implements OnInit {
-  @Input() private fieldConfigs: FieldConfigSet[];
+export class EavFieldDirective implements OnInit, OnDestroy {
   @Input() private group: FormGroup;
+  private fieldConfigs: FieldConfigSet[] = [];
 
   private components: { [key: string]: Type<any> } = {
     'app-adam-attach-wrapper': AdamAttachWrapperComponent,
@@ -88,16 +89,27 @@ export class EavFieldDirective implements OnInit {
     this.fieldsSettings2NewService.getFieldsProps$().pipe(take(1)).subscribe(fieldsProps => {
       let container = this.container;
       for (const [fieldName, fieldProps] of Object.entries(fieldsProps)) {
-        const oldConfig = this.findOldConfig(fieldName, this.fieldConfigs);
-        Object.assign(oldConfig, fieldProps.constants);
+        const fieldConfig: FieldConfigSet = {
+          ...fieldProps.constants,
+          name: fieldName,
+          focused$: new BehaviorSubject(false),
+        };
+        this.fieldConfigs.push(fieldConfig);
+
         if (fieldProps.calculatedInputType.inputType === InputTypeConstants.EmptyDefault) {
           container = this.container;
-          container = this.createGroup(container, fieldProps, oldConfig);
+          container = this.createGroup(container, fieldProps, fieldConfig);
         } else {
-          this.createComponent(container, fieldProps, oldConfig);
+          this.createComponent(container, fieldProps, fieldConfig);
         }
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    for (const fieldConfig of this.fieldConfigs) {
+      fieldConfig.focused$.complete();
+    }
   }
 
   /** Create group components with group wrappers in container */
@@ -167,17 +179,5 @@ export class EavFieldDirective implements OnInit {
       return CustomDefaultComponent;
     }
     return componentType;
-  }
-
-  private findOldConfig(fieldName: string, fieldConfigs: FieldConfigSet[]): FieldConfigSet {
-    for (const config of fieldConfigs) {
-      if (config.name === fieldName) {
-        return config;
-      } else if (config._fieldGroup) {
-        const found = this.findOldConfig(fieldName, config._fieldGroup);
-        if (!found) { continue; }
-        return found;
-      }
-    }
   }
 }

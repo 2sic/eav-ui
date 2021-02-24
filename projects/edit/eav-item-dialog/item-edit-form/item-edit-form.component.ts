@@ -1,32 +1,25 @@
 import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { take } from 'rxjs/operators';
 import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 import { EavFormComponent } from '../../eav-dynamic-form/components/eav-form/eav-form.component';
-import { FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
-import { InputFieldHelper } from '../../shared/helpers/input-field-helper';
 import { LocalizationHelper } from '../../shared/helpers/localization-helper';
 import { EavItem } from '../../shared/models/eav';
 import { EavService } from '../../shared/services/eav.service';
 import { FieldsSettings2NewService } from '../../shared/services/fields-settings2new.service';
 import { FieldsTranslateService } from '../../shared/services/fields-translate.service';
-import { ContentTypeService } from '../../shared/store/ngrx-data/content-type.service';
 import { ItemService } from '../../shared/store/ngrx-data/item.service';
 import { LanguageInstanceService } from '../../shared/store/ngrx-data/language-instance.service';
-import { BuildFieldsService } from './build-fields.service';
 import { FormValues } from './item-edit-form.models';
 
 @Component({
   selector: 'app-item-edit-form',
   templateUrl: './item-edit-form.component.html',
   styleUrls: ['./item-edit-form.component.scss'],
-  providers: [BuildFieldsService, FieldsSettings2NewService, FieldsTranslateService],
+  providers: [FieldsSettings2NewService, FieldsTranslateService],
 })
 export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
   @ViewChild(EavFormComponent) eavFormRef: EavFormComponent;
   @Input() item: EavItem;
-
-  fieldConfigs: FieldConfigSet[];
 
   private currentLanguage: string;
   private defaultLanguage: string;
@@ -35,9 +28,7 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
   constructor(
     private languageInstanceService: LanguageInstanceService,
     private itemService: ItemService,
-    private contentTypeService: ContentTypeService,
     private eavService: EavService,
-    private buildFieldsService: BuildFieldsService,
     private fieldsSettings2NewService: FieldsSettings2NewService,
     private fieldsTranslateService: FieldsTranslateService,
   ) { }
@@ -58,16 +49,9 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
         this.setFormValues();
       })
     );
-
-    // create input fields from content type
-    const contentTypeId = InputFieldHelper.getContentTypeId(this.item);
-    this.contentTypeService.getContentTypeById(contentTypeId).pipe(take(1)).subscribe(contentType => {
-      this.fieldConfigs = this.buildFieldsService.buildFieldConfigs(contentType);
-    });
   }
 
   ngOnDestroy() {
-    this.destroyFieldConfigs(this.fieldConfigs);
     this.subscription.unsubscribe();
   }
 
@@ -116,14 +100,5 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
 
     angularConsoleLog('VALUECHANGED:', valueIsChanged, 'VALUES:', newValues, 'FORM VALUES:', oldValues);
     return valueIsChanged;
-  }
-
-  private destroyFieldConfigs(fieldConfigs: FieldConfigSet[]) {
-    for (const config of fieldConfigs) {
-      config.focused$?.complete();
-
-      if (!config._fieldGroup) { return; }
-      this.destroyFieldConfigs(config._fieldGroup);
-    }
   }
 }
