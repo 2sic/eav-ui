@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { combineLatest, Subscription } from 'rxjs';
 import { distinctUntilChanged, filter, map, startWith } from 'rxjs/operators';
@@ -15,7 +15,7 @@ import { ItemService } from '../../../shared/store/ngrx-data/item.service';
   styleUrls: ['./eav-form.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class EavFormComponent implements OnInit, AfterViewInit, OnDestroy {
+export class EavFormComponent implements OnInit, OnDestroy {
   @Input() entityGuid: string;
   @Input() entityId: string;
   @Output() private formValueChange = new EventEmitter<FormValues>();
@@ -108,9 +108,7 @@ export class EavFormComponent implements OnInit, AfterViewInit, OnDestroy {
         this.formsStateService.setFormDirty(this.entityGuid, isDirty);
       })
     );
-  }
 
-  ngAfterViewInit() {
     this.subscription.add(
       this.form.valueChanges.subscribe((formValues: FormValues) => {
         this.formValueChange.emit(formValues);

@@ -102,29 +102,34 @@ export class LocalizationHelper {
     return disableI18n;
   }
 
-  public static updateAttribute(allAttributes: EavEntityAttributes, attribute: EavValues<any>, attributeKey: string) {
-    // copy attributes from item
-    const eavAttributes: EavEntityAttributes = {};
-    if (Object.keys(allAttributes).length > 0) {
-      Object.keys(allAttributes).forEach(key => {
-        // const eavValueList: EavValue<any>[] = [];
-        if (key === attributeKey) {
-          const attributeCopy: EavValues<any> = { ...attribute };
-          eavAttributes[key] = attributeCopy;
-        } else {
-          const attributeCopy: EavValues<any> = { ...allAttributes[key] };
-          eavAttributes[key] = attributeCopy;
-        }
-      });
-      if (!allAttributes[attributeKey]) {
-        const attributeCopy: EavValues<any> = { ...attribute };
-        eavAttributes[attributeKey] = attributeCopy;
-      }
-    } else {
+  /** Copy attributes from item */
+  private static updateAttribute(
+    oldAttributes: EavEntityAttributes,
+    attributeKey: string,
+    attribute: EavValues<any>,
+  ): EavEntityAttributes {
+    const newAttributes: EavEntityAttributes = {};
+    if (Object.keys(oldAttributes).length === 0) {
       const attributeCopy: EavValues<any> = { ...attribute };
-      eavAttributes[attributeKey] = attributeCopy;
+      newAttributes[attributeKey] = attributeCopy;
+      return newAttributes;
     }
-    return eavAttributes;
+
+    for (const key of Object.keys(oldAttributes)) {
+      if (key === attributeKey) {
+        const attributeCopy: EavValues<any> = { ...attribute };
+        newAttributes[key] = attributeCopy;
+      } else {
+        const attributeCopy: EavValues<any> = { ...oldAttributes[key] };
+        newAttributes[key] = attributeCopy;
+      }
+    }
+
+    if (oldAttributes[attributeKey] == null) {
+      const attributeCopy: EavValues<any> = { ...attribute };
+      newAttributes[attributeKey] = attributeCopy;
+    }
+    return newAttributes;
   }
 
   /** Update value for languageKey */
@@ -210,7 +215,7 @@ export class LocalizationHelper {
         return newValue;
       })
     };
-    eavAttributes = this.updateAttribute(allAttributes, attribute, attributeKey);
+    eavAttributes = this.updateAttribute(allAttributes, attributeKey, attribute);
     return eavAttributes;
   }
 
@@ -229,7 +234,7 @@ export class LocalizationHelper {
           // Add attribute
           ...allAttributes[attributeKey], Values: [...allAttributes[attributeKey].Values, attributeValue], Type: attributeType
         };
-    eavAttributes = this.updateAttribute(allAttributes, attribute, attributeKey);
+    eavAttributes = this.updateAttribute(allAttributes, attributeKey, attribute);
     return eavAttributes;
   }
 
@@ -258,63 +263,63 @@ export class LocalizationHelper {
         return newValue;
       })
     };
-    eavAttributes = this.updateAttribute(allAttributes, attribute, attributeKey);
+    eavAttributes = this.updateAttribute(allAttributes, attributeKey, attribute);
     return eavAttributes;
   }
 
-  /** Remove language. If more dimensions (languages) exist, delete only dimension, else delete value and dimension */
-  public static removeAttributeDimension(allAttributes: EavEntityAttributes, attributeKey: string,
-    languageKey: string): EavEntityAttributes {
-    angularConsoleLog('removeAttributeDimension: ', allAttributes);
-    // copy attributes from item
-    let eavAttributes: EavEntityAttributes = {};
-    const value: EavValue<any> = allAttributes[attributeKey].Values.find(eavValue =>
-      eavValue.Dimensions.find(d => d.Value === languageKey
-        || d.Value === `~${languageKey}`) !== undefined);
-    let attribute: EavValues<any> = null;
+  /** Removes dimension (language) from attribute. If multiple dimensions exist, delete only dimension, else delete value and dimension */
+  public static removeAttributeDimension(attributes: EavEntityAttributes, attributeKey: string, language: string): EavEntityAttributes {
+    const oldAttributes = attributes;
+    const validDimensions = [language, `~${language}`];
 
+    const value = oldAttributes[attributeKey].Values.find(eavValue => {
+      const dimensionExists = eavValue.Dimensions.some(dimension => validDimensions.includes(dimension.Value));
+      return dimensionExists;
+    });
+
+    // given dimension doesn't exist for this attribute so no change is needed
     if (!value) {
-      const attributesCopy: EavEntityAttributes = { ...allAttributes };
+      const attributesCopy: EavEntityAttributes = { ...oldAttributes };
       return attributesCopy;
     }
 
-    // if more dimensions exist delete only dimension
+    let newAttribute: EavValues<any>;
     if (value.Dimensions.length > 1) {
-      attribute = {
-        ...allAttributes[attributeKey], Values: allAttributes[attributeKey].Values.map(eavValue => {
-          const newValue: EavValue<any> = eavValue.Dimensions.find(d => d.Value === languageKey || d.Value === `~${languageKey}`)
-            ? {
-              ...eavValue,
-              // delete only dimension
-              Dimensions: eavValue.Dimensions.filter(dimension =>
-                (dimension.Value !== languageKey && dimension.Value !== `~${languageKey}`)
-              )
-            }
-            : eavValue;
+      // if multiple dimensions exist delete only dimension
+      newAttribute = {
+        ...oldAttributes[attributeKey],
+        Values: oldAttributes[attributeKey].Values.map(eavValue => {
+          const dimensionExists = eavValue.Dimensions.some(dimension => validDimensions.includes(dimension.Value));
+          if (!dimensionExists) { return eavValue; }
+
+          const newValue: EavValue<any> = {
+            ...eavValue,
+            Dimensions: eavValue.Dimensions.filter(dimension => !validDimensions.includes(dimension.Value)),
+          };
           return newValue;
         })
       };
-    }
-    // if only one dimension exists delete value and dimension
-    if (value.Dimensions.length === 1) {
-      attribute = {
-        // delete dimension and value
-        ...allAttributes[attributeKey], Values: allAttributes[attributeKey].Values.filter(eavValue => {
-          return eavValue.Dimensions.find(d => d.Value !== languageKey && d.Value !== `~${languageKey}`);
+    } else if (value.Dimensions.length === 1) {
+      // if only one dimension exists delete value and dimension
+      newAttribute = {
+        ...oldAttributes[attributeKey],
+        Values: oldAttributes[attributeKey].Values.filter(eavValue => {
+          const dimensionExists = eavValue.Dimensions.some(dimension => validDimensions.includes(dimension.Value));
+          return !dimensionExists;
         })
       };
     }
-    eavAttributes = this.updateAttribute(allAttributes, attribute, attributeKey);
-    return eavAttributes;
+
+    const newAttributes = this.updateAttribute(oldAttributes, attributeKey, newAttribute);
+    return newAttributes;
   }
 
   public static translateSettings(settings: EavEntityAttributes, currentLanguage: string, defaultLanguage: string): FieldSettings {
-    const settingsTranslated: { [key: string]: any } = {};
-    Object.keys(settings).forEach(attributesKey => {
-      settingsTranslated[attributesKey] = LocalizationHelper.translate(currentLanguage,
-        defaultLanguage, settings[attributesKey], false);
-    });
-    return settingsTranslated as FieldSettings;
+    const translated: { [key: string]: any } = {};
+    for (const key of Object.keys(settings)) {
+      translated[key] = LocalizationHelper.translate(currentLanguage, defaultLanguage, settings[key], false);
+    }
+    return translated as FieldSettings;
   }
 
   /**

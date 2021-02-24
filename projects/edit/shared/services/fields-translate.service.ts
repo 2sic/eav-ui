@@ -117,7 +117,7 @@ export class FieldsTranslateService implements OnDestroy {
     );
   }
 
-  linkReadWrite(fieldName: string, linkWithLanguageKey: string) {
+  linkReadWrite(fieldName: string, linkWithLanguageKey: string): void {
     if (this.fieldsProps[fieldName].settings.DisableTranslation) { return; }
 
     this.itemService.removeItemAttributeDimension(this.entityGuid, fieldName, this.currentLanguage);

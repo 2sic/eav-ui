@@ -153,7 +153,7 @@ export class ItemService extends EntityCollectionServiceBase<EavItem> {
     this.updateOneInCache(newItem);
   }
 
-  removeItemAttributeDimension(entityGuid: string, attributeKey: string, language: string) {
+  removeItemAttributeDimension(entityGuid: string, attributeName: string, language: string): void {
     let oldItem: EavItem;
     this.entities$.pipe(take(1)).subscribe(items => {
       oldItem = items.find(item => item.Entity.Guid === entityGuid);
@@ -164,7 +164,7 @@ export class ItemService extends EntityCollectionServiceBase<EavItem> {
       ...oldItem,
       Entity: {
         ...oldItem.Entity,
-        Attributes: LocalizationHelper.removeAttributeDimension(oldItem.Entity.Attributes, attributeKey, language)
+        Attributes: LocalizationHelper.removeAttributeDimension(oldItem.Entity.Attributes, attributeName, language),
       }
     };
     this.updateOneInCache(newItem);
