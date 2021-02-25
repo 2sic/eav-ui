@@ -20,6 +20,7 @@ export class BaseComponent<T> implements Field, OnInit, OnDestroy {
   label$: Observable<string>;
   placeholder$: Observable<string>;
   value$: Observable<T>;
+  disabled: boolean;
   disabled$: Observable<boolean>;
   required$: Observable<boolean>;
   invalid$: Observable<boolean>;
@@ -69,6 +70,11 @@ export class BaseComponent<T> implements Field, OnInit, OnDestroy {
       map(() => this.control.disabled),
       startWith(this.control.disabled),
       distinctUntilChanged(),
+    );
+    this.subscription.add(
+      this.disabled$.subscribe(disabled => {
+        this.disabled = disabled;
+      })
     );
   }
 

@@ -72,7 +72,7 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
       })
     );
     const buttons$ = this.settings$.pipe(map(settings => settings.Buttons));
-    const open$ = this.editRoutingService.isExpanded(this.config.index, this.config.entityGuid);
+    const open$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
     this.subscription.add(
       this.settings$.subscribe(settings => {
         this.attachAdam(settings);

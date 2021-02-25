@@ -42,6 +42,14 @@ export class EditRoutingService implements OnDestroy {
   /** Tells if field with this index should be expanded */
   isExpanded(fieldId: number, entityGuid: string) {
     const fieldIndex = fieldId.toString();
+    const params = this.route.snapshot.params as EditParams;
+    const isExpanded = params.detailsEntityGuid === entityGuid && params.detailsFieldId === fieldIndex;
+    return isExpanded;
+  }
+
+  /** Tells if field with this index should be expanded */
+  isExpanded$(fieldId: number, entityGuid: string) {
+    const fieldIndex = fieldId.toString();
     return this.route.params.pipe(
       map((params: EditParams) => params.detailsEntityGuid === entityGuid && params.detailsFieldId === fieldIndex),
       distinctUntilChanged()

@@ -40,7 +40,7 @@ export class EntityExpandableWrapperComponent extends BaseComponent<string | str
 
   ngOnInit() {
     super.ngOnInit();
-    this.dialogIsOpen$ = this.editRoutingService.isExpanded(this.config.index, this.config.entityGuid);
+    this.dialogIsOpen$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
     this.selectedEntities$ = new BehaviorSubject([]);
 
     this.templateVars$ = combineLatest([

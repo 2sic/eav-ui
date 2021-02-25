@@ -73,7 +73,7 @@ export class HyperlinkDefaultExpandableWrapperComponent extends BaseComponent<st
         this.fetchLink(value);
       })
     );
-    this.open$ = this.editRoutingService.isExpanded(this.config.index, this.config.entityGuid);
+    this.open$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
     const adamButton$ = this.settings$.pipe(map(settings => settings.Buttons?.includes('adam')));
     const pageButton$ = this.settings$.pipe(map(settings => settings.Buttons?.includes('page')));
 

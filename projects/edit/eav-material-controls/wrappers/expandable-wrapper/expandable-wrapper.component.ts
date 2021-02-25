@@ -53,7 +53,7 @@ export class ExpandableWrapperComponent extends BaseComponent<string> implements
 
   ngOnInit() {
     super.ngOnInit();
-    this.open$ = this.editRoutingService.isExpanded(this.config.index, this.config.entityGuid);
+    this.open$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
 
     this.templateVars$ = combineLatest([
       combineLatest([this.value$, this.label$, this.required$, this.invalid$, this.config.focused$]),

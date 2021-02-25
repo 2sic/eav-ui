@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { EavService } from '../../../shared/services/eav.service';
 import { EditRoutingService } from '../../../shared/services/edit-routing.service';
@@ -22,9 +22,6 @@ export class LocalizationWrapperComponent extends BaseComponent<any> implements 
   currentLanguage$: Observable<string>;
   defaultLanguage$: Observable<string>;
 
-  private isDisabled$ = new BehaviorSubject<boolean>(null);
-  private isExpanded$ = new BehaviorSubject<boolean>(null);
-
   constructor(
     eavService: EavService,
     validationMessagesService: ValidationMessagesService,
@@ -39,21 +36,9 @@ export class LocalizationWrapperComponent extends BaseComponent<any> implements 
     super.ngOnInit();
     this.currentLanguage$ = this.languageInstanceService.getCurrentLanguage$(this.eavService.eavConfig.formId);
     this.defaultLanguage$ = this.languageInstanceService.getDefaultLanguage$(this.eavService.eavConfig.formId);
-    this.subscription.add(
-      this.editRoutingService.isExpanded(this.config.index, this.config.entityGuid).subscribe(isExpanded => {
-        this.isExpanded$.next(isExpanded);
-      })
-    );
-    this.subscription.add(
-      this.disabled$.subscribe(disabled => {
-        this.isDisabled$.next(disabled);
-      })
-    );
   }
 
   ngOnDestroy() {
-    this.isDisabled$.complete();
-    this.isExpanded$.complete();
     super.ngOnDestroy();
   }
 
@@ -61,8 +46,9 @@ export class LocalizationWrapperComponent extends BaseComponent<any> implements 
     const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
     const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
     if (currentLanguage === defaultLanguage) { return; }
-    if (!this.isDisabled$.value) { return; }
-    if (this.isExpanded$.value) { return; }
+    if (!this.disabled) { return; }
+    const isExpanded = this.editRoutingService.isExpanded(this.config.index, this.config.entityGuid);
+    if (isExpanded) { return; }
 
     this.translateMenu.translate();
   }

@@ -42,7 +42,7 @@ export class HyperlinkLibraryExpandableWrapperComponent extends BaseComponent<nu
 
   ngOnInit() {
     super.ngOnInit();
-    this.open$ = this.editRoutingService.isExpanded(this.config.index, this.config.entityGuid);
+    this.open$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
     this.adamItems$ = new BehaviorSubject<AdamItem[]>([]);
 
     this.templateVars$ = combineLatest([

@@ -123,7 +123,7 @@ export class ConnectorHelper {
       allInputTypeNames,
       formGroup: this.group,
       translateService: this.translateService,
-      isExpanded$: this.editRoutingService.isExpanded(this.config.index, this.config.entityGuid),
+      isExpanded$: this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid),
       dropzone: this.config.dropzone,
       adam: this.config.adam,
       updateField: (name, value) => {

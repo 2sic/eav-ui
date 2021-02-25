@@ -70,7 +70,7 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
       }),
     );
 
-    this.isExpanded$ = this.editRoutingService.isExpanded(this.config.index, this.config.entityGuid);
+    this.isExpanded$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
 
     this.subscription.add(
       this.settings$.subscribe(settings => {
