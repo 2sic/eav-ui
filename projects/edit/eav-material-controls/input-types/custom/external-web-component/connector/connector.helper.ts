@@ -2,8 +2,8 @@ import { ElementRef, NgZone } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { distinctUntilChanged, filter, map, startWith, take } from 'rxjs/operators';
-import { EavCustomInputField, ExperimentalProps, FieldConfig, FieldSettings, InputTypeName } from '../../../../../../edit-types';
+import { distinctUntilChanged, filter, map, startWith } from 'rxjs/operators';
+import { EavCustomInputField, ExperimentalProps, FieldConfig, FieldSettings } from '../../../../../../edit-types';
 import { FieldConfigSet } from '../../../../../eav-dynamic-form/model/field-config';
 import { FieldValue } from '../../../../../eav-item-dialog/item-edit-form/item-edit-form.models';
 import { InputFieldHelper } from '../../../../../shared/helpers/input-field-helper';
@@ -113,10 +113,8 @@ export class ConnectorHelper {
   }
 
   private calculateExperimentalProps() {
-    let allInputTypeNames: InputTypeName[];
-    this.contentTypeService.getContentTypeById(this.config.contentTypeId).pipe(take(1)).subscribe(contentType => {
-      allInputTypeNames = InputFieldHelper.calculateInputTypes(contentType.Attributes, this.inputTypeService);
-    });
+    const contentType = this.contentTypeService.getContentType(this.config.contentTypeId);
+    const allInputTypeNames = InputFieldHelper.calculateInputTypes(contentType.Attributes, this.inputTypeService);
 
     const experimentalProps: ExperimentalProps = {
       entityGuid: this.config.entityGuid,

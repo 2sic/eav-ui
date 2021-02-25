@@ -4,7 +4,7 @@ import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/an
 import { InputFieldHelper } from '../helpers/input-field-helper';
 import { LocalizationHelper } from '../helpers/localization-helper';
 import { FieldsProps } from '../models';
-import { EavContentType, EavEntityAttributes, EavItem } from '../models/eav';
+import { EavEntityAttributes, EavItem } from '../models/eav';
 import { ContentTypeService } from '../store/ngrx-data/content-type.service';
 import { ItemService } from '../store/ngrx-data/item.service';
 import { LanguageInstanceService } from '../store/ngrx-data/language-instance.service';
@@ -14,8 +14,8 @@ import { FieldsSettings2NewService } from './fields-settings2new.service';
 @Injectable()
 export class FieldsTranslateService implements OnDestroy {
   private entityGuid: string;
+  private contentTypeId: string;
   private attributes: EavEntityAttributes;
-  private contentType: EavContentType;
   private fieldsProps: FieldsProps;
   private subscription: Subscription;
 
@@ -33,17 +33,12 @@ export class FieldsTranslateService implements OnDestroy {
 
   init(item: EavItem): void {
     this.entityGuid = item.Entity.Guid;
+    this.contentTypeId = InputFieldHelper.getContentTypeId(item);
 
     this.subscription = new Subscription();
     this.subscription.add(
       this.itemService.selectItemAttributes(this.entityGuid).subscribe(attributes => {
         this.attributes = attributes;
-      })
-    );
-    const contentTypeId = InputFieldHelper.getContentTypeId(item);
-    this.subscription.add(
-      this.contentTypeService.getContentTypeById(contentTypeId).subscribe(contentType => {
-        this.contentType = contentType;
       })
     );
     this.subscription.add(
@@ -62,7 +57,8 @@ export class FieldsTranslateService implements OnDestroy {
 
     const values = this.attributes[fieldName];
     const defaultValue = LocalizationHelper.getValueTranslation(values, defaultLanguage, defaultLanguage);
-    const attribute = this.contentType.Attributes.find(a => a.Name === fieldName);
+    const contentType = this.contentTypeService.getContentType(this.contentTypeId);
+    const attribute = contentType.Attributes.find(a => a.Name === fieldName);
     transactionItem = this.itemService.addItemAttributeValue(
       this.entityGuid, fieldName, defaultValue.Value, currentLanguage, false, attribute.Type, isTransaction, transactionItem,
     );
@@ -98,7 +94,8 @@ export class FieldsTranslateService implements OnDestroy {
         );
       } else {
         // Copy attribute value where language is languageKey to new attribute with current language
-        const attribute = this.contentType.Attributes.find(a => a.Name === fieldName);
+        const contentType = this.contentTypeService.getContentType(this.contentTypeId);
+        const attribute = contentType.Attributes.find(a => a.Name === fieldName);
         this.itemService.addItemAttributeValue(
           this.entityGuid, fieldName, attributeValueTranslation.Value, currentLanguage, false, attribute.Type,
         );

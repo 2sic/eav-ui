@@ -127,29 +127,27 @@ export class EditInitializerService implements OnDestroy {
   private fixMissingData() {
     // fix missing default values
     const items$ = this.itemService.selectItems(this.eavService.eavConfig.itemGuids);
-    const contentTypes$ = this.contentTypeService.entities$;
-    combineLatest([items$, contentTypes$])
+    combineLatest([items$])
       .pipe(take(1))
-      .subscribe(([items, contentTypes]) => {
-        const languages = this.languageService.getLanguages();
-        const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
-        const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
-
+      .subscribe(([items]) => {
         for (const item of items) {
           const contentTypeId = InputFieldHelper.getContentTypeId(item);
-          const contentType = contentTypes.find(c => c.Id === contentTypeId);
+          const contentType = this.contentTypeService.getContentType(contentTypeId);
 
           for (const attribute of contentType.Attributes) {
             const calculatedInputType = InputFieldHelper.calculateInputType(attribute, this.inputTypeService);
             const inputType = calculatedInputType.inputType;
             if (inputType === InputTypeConstants.EmptyDefault) { continue; }
 
+            const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
+            const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
             const attributeValues = item.Entity.Attributes[attribute.Name];
             const value = LocalizationHelper.translate(currentLanguage, defaultLanguage, attributeValues, null);
             // set default value if needed
             const valueIsEmpty = isEmpty(value) && typeof value !== 'boolean' && typeof value !== 'number' && value !== '';
             if (!valueIsEmpty) { continue; }
 
+            const languages = this.languageService.getLanguages();
             const fieldSettings = LocalizationHelper.translateSettings(attribute.Settings, currentLanguage, defaultLanguage);
             this.itemService.setDefaultValue(item, attribute, inputType, fieldSettings, languages, currentLanguage, defaultLanguage);
           }
