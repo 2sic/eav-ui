@@ -3,7 +3,6 @@ import { Subscription } from 'rxjs';
 import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 import { InputFieldHelper } from '../helpers/input-field-helper';
 import { LocalizationHelper } from '../helpers/localization-helper';
-import { FieldsProps } from '../models';
 import { EavEntityAttributes, EavItem } from '../models/eav';
 import { ContentTypeService } from '../store/ngrx-data/content-type.service';
 import { ItemService } from '../store/ngrx-data/item.service';
@@ -16,7 +15,6 @@ export class FieldsTranslateService implements OnDestroy {
   private entityGuid: string;
   private contentTypeId: string;
   private attributes: EavEntityAttributes;
-  private fieldsProps: FieldsProps;
   private subscription: Subscription;
 
   constructor(
@@ -39,11 +37,6 @@ export class FieldsTranslateService implements OnDestroy {
     this.subscription.add(
       this.itemService.selectItemAttributes(this.entityGuid).subscribe(attributes => {
         this.attributes = attributes;
-      })
-    );
-    this.subscription.add(
-      this.fieldsSettings2NewService.getFieldsProps$().subscribe(fieldsProps => {
-        this.fieldsProps = fieldsProps;
       })
     );
   }
@@ -150,6 +143,7 @@ export class FieldsTranslateService implements OnDestroy {
   }
 
   private isTranslationDisabled(fieldName: string) {
-    return this.fieldsProps[fieldName].settings.DisableTranslation;
+    const fieldsProps = this.fieldsSettings2NewService.getFieldsProps();
+    return fieldsProps[fieldName].settings.DisableTranslation;
   }
 }

@@ -149,6 +149,10 @@ export class FieldsSettings2NewService implements OnDestroy {
     return this.contentTypeSettings$.asObservable();
   }
 
+  getFieldsProps(): FieldsProps {
+    return this.fieldsProps$.value;
+  }
+
   getFieldsProps$(): Observable<FieldsProps> {
     return this.fieldsProps$.asObservable();
   }

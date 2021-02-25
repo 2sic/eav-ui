@@ -1,7 +1,6 @@
 import { ComponentFactoryResolver, ComponentRef, Directive, Input, OnDestroy, OnInit, Type, ViewContainerRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
-import { take } from 'rxjs/operators';
 import { InputTypeConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { AdamAttachWrapperComponent } from '../../../eav-material-controls/adam/adam-attach-wrapper/adam-attach-wrapper.component';
 import { DropzoneWrapperComponent } from '../../../eav-material-controls/adam/dropzone-wrapper/dropzone-wrapper.component';
@@ -86,24 +85,23 @@ export class EavFieldDirective implements OnInit, OnDestroy {
     // clear container
     this.container.clear();
 
-    this.fieldsSettings2NewService.getFieldsProps$().pipe(take(1)).subscribe(fieldsProps => {
-      let container = this.container;
-      for (const [fieldName, fieldProps] of Object.entries(fieldsProps)) {
-        const fieldConfig: FieldConfigSet = {
-          ...fieldProps.constants,
-          name: fieldName,
-          focused$: new BehaviorSubject(false),
-        };
-        this.fieldConfigs.push(fieldConfig);
+    let container = this.container;
+    const fieldsProps = this.fieldsSettings2NewService.getFieldsProps();
+    for (const [fieldName, fieldProps] of Object.entries(fieldsProps)) {
+      const fieldConfig: FieldConfigSet = {
+        ...fieldProps.constants,
+        name: fieldName,
+        focused$: new BehaviorSubject(false),
+      };
+      this.fieldConfigs.push(fieldConfig);
 
-        if (fieldProps.calculatedInputType.inputType === InputTypeConstants.EmptyDefault) {
-          container = this.container;
-          container = this.createGroup(container, fieldProps, fieldConfig);
-        } else {
-          this.createComponent(container, fieldProps, fieldConfig);
-        }
+      if (fieldProps.calculatedInputType.inputType === InputTypeConstants.EmptyDefault) {
+        container = this.container;
+        container = this.createGroup(container, fieldProps, fieldConfig);
+      } else {
+        this.createComponent(container, fieldProps, fieldConfig);
       }
-    });
+    }
   }
 
   ngOnDestroy(): void {
@@ -113,17 +111,17 @@ export class EavFieldDirective implements OnInit, OnDestroy {
   }
 
   /** Create group components with group wrappers in container */
-  private createGroup(container: ViewContainerRef, fieldProps: FieldProps, oldConfig: FieldConfigSet): ViewContainerRef {
+  private createGroup(container: ViewContainerRef, fieldProps: FieldProps, fieldConfig: FieldConfigSet): ViewContainerRef {
     if (fieldProps.wrappers) {
-      container = this.createWrappers(container, fieldProps.wrappers, oldConfig);
+      container = this.createWrappers(container, fieldProps.wrappers, fieldConfig);
     }
     return container;
   }
 
   /** Create component and component wrappers if component exist */
-  private createComponent(container: ViewContainerRef, fieldProps: FieldProps, oldConfig: FieldConfigSet): ComponentRef<Field> {
+  private createComponent(container: ViewContainerRef, fieldProps: FieldProps, fieldConfig: FieldConfigSet): ComponentRef<Field> {
     if (fieldProps.wrappers) {
-      container = this.createWrappers(container, fieldProps.wrappers, oldConfig);
+      container = this.createWrappers(container, fieldProps.wrappers, fieldConfig);
     }
 
     const componentType = fieldProps.calculatedInputType.isExternal
@@ -135,14 +133,14 @@ export class EavFieldDirective implements OnInit, OnDestroy {
     if (componentMetadata == null) { return; }
 
     if (componentMetadata.wrappers) {
-      container = this.createWrappers(container, componentMetadata.wrappers, oldConfig);
+      container = this.createWrappers(container, componentMetadata.wrappers, fieldConfig);
     }
 
     const factory = this.resolver.resolveComponentFactory<Field>(componentType);
     const ref = container.createComponent(factory);
 
     Object.assign<Field, Field>(ref.instance, {
-      config: oldConfig,
+      config: fieldConfig,
       group: this.group,
     });
 
@@ -150,21 +148,21 @@ export class EavFieldDirective implements OnInit, OnDestroy {
   }
 
   /** Create wrappers in container */
-  private createWrappers(container: ViewContainerRef, wrappers: string[], oldConfig: FieldConfigSet): ViewContainerRef {
+  private createWrappers(container: ViewContainerRef, wrappers: string[], fieldConfig: FieldConfigSet): ViewContainerRef {
     for (const wrapper of wrappers) {
-      container = this.createWrapper(container, wrapper, oldConfig);
+      container = this.createWrapper(container, wrapper, fieldConfig);
     }
     return container;
   }
 
   /** Create wrapper in container */
-  private createWrapper(container: ViewContainerRef, wrapper: string, oldConfig: FieldConfigSet): ViewContainerRef {
+  private createWrapper(container: ViewContainerRef, wrapper: string, fieldConfig: FieldConfigSet): ViewContainerRef {
     const componentType = this.readComponentType(wrapper);
     const componentFactory = this.resolver.resolveComponentFactory<FieldWrapper>(componentType);
     const ref = container.createComponent(componentFactory);
 
     Object.assign<FieldWrapper, Partial<FieldWrapper>>(ref.instance, {
-      config: oldConfig,
+      config: fieldConfig,
       group: this.group,
     });
 
