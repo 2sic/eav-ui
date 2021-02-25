@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { EavService } from '../../../shared/services/eav.service';
 import { EditRoutingService } from '../../../shared/services/edit-routing.service';
@@ -19,8 +19,8 @@ export class LocalizationWrapperComponent extends BaseComponent<any> implements 
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild(TranslateMenuComponent) private translateMenu: TranslateMenuComponent;
 
-  currentLanguage$ = new BehaviorSubject<string>(null);
-  defaultLanguage$ = new BehaviorSubject<string>(null);
+  currentLanguage$: Observable<string>;
+  defaultLanguage$: Observable<string>;
 
   private isDisabled$ = new BehaviorSubject<boolean>(null);
   private isExpanded$ = new BehaviorSubject<boolean>(null);
@@ -37,16 +37,8 @@ export class LocalizationWrapperComponent extends BaseComponent<any> implements 
 
   ngOnInit() {
     super.ngOnInit();
-    this.subscription.add(
-      this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId).subscribe(currentLanguage => {
-        this.currentLanguage$.next(currentLanguage);
-      })
-    );
-    this.subscription.add(
-      this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId).subscribe(defaultLanguage => {
-        this.defaultLanguage$.next(defaultLanguage);
-      })
-    );
+    this.currentLanguage$ = this.languageInstanceService.getCurrentLanguage$(this.eavService.eavConfig.formId);
+    this.defaultLanguage$ = this.languageInstanceService.getDefaultLanguage$(this.eavService.eavConfig.formId);
     this.subscription.add(
       this.editRoutingService.isExpanded(this.config.index, this.config.entityGuid).subscribe(isExpanded => {
         this.isExpanded$.next(isExpanded);
@@ -60,15 +52,15 @@ export class LocalizationWrapperComponent extends BaseComponent<any> implements 
   }
 
   ngOnDestroy() {
-    this.currentLanguage$.complete();
-    this.defaultLanguage$.complete();
     this.isDisabled$.complete();
     this.isExpanded$.complete();
     super.ngOnDestroy();
   }
 
   translate() {
-    if (this.currentLanguage$.value === this.defaultLanguage$.value) { return; }
+    const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
+    const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
+    if (currentLanguage === defaultLanguage) { return; }
     if (!this.isDisabled$.value) { return; }
     if (this.isExpanded$.value) { return; }
 

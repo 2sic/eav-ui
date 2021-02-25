@@ -28,8 +28,8 @@ export class EntityTranslateMenuComponent implements OnInit {
     const slotIsEmpty$ = this.itemService.selectItemHeader(this.entityGuid).pipe(
       map(header => !header.Group?.SlotCanBeEmpty ? false : header.Group.SlotIsEmpty),
     );
-    const currentLanguage$ = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
-    const defaultLanguage$ = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
+    const currentLanguage$ = this.languageInstanceService.getCurrentLanguage$(this.eavService.eavConfig.formId);
+    const defaultLanguage$ = this.languageInstanceService.getDefaultLanguage$(this.eavService.eavConfig.formId);
     this.templateVars$ = combineLatest([slotIsEmpty$, currentLanguage$, defaultLanguage$]).pipe(
       map(([slotIsEmpty, currentLanguage, defaultLanguage]) => {
         const templateVars: EntityTranslateMenuTemplateVars = {

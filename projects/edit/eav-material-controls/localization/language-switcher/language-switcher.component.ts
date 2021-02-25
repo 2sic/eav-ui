@@ -36,8 +36,8 @@ export class LanguageSwitcherComponent implements OnInit, AfterViewInit, OnDestr
   ) { }
 
   ngOnInit() {
-    const currentLanguage$ = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
-    const languageButtons$ = this.languageService.entities$.pipe(map(langs => getLanguageButtons(langs)));
+    const currentLanguage$ = this.languageInstanceService.getCurrentLanguage$(this.eavService.eavConfig.formId);
+    const languageButtons$ = this.languageService.getLanguages$().pipe(map(langs => getLanguageButtons(langs)));
 
     this.templateVars$ = combineLatest([currentLanguage$, languageButtons$]).pipe(
       map(([currentLanguage, languageButtons]) => {
@@ -76,7 +76,7 @@ export class LanguageSwitcherComponent implements OnInit, AfterViewInit, OnDestr
     this.centerSelectedHelper.lngButtonClick(event);
 
     if (!this.centerSelectedHelper.stopClickIfMouseMoved()) {
-      this.languageInstanceService.updateCurrentLanguage(this.eavService.eavConfig.formId, language.key);
+      this.languageInstanceService.setCurrentLanguage(this.eavService.eavConfig.formId, language.key);
     }
   }
 

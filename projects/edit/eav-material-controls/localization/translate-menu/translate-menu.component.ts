@@ -37,8 +37,8 @@ export class TranslateMenuComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    const currentLanguage$ = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
-    const defaultLanguage$ = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
+    const currentLanguage$ = this.languageInstanceService.getCurrentLanguage$(this.eavService.eavConfig.formId);
+    const defaultLanguage$ = this.languageInstanceService.getDefaultLanguage$(this.eavService.eavConfig.formId);
     const translationState$ = this.fieldsSettings2NewService.getTranslationState$(this.config.fieldName);
     const disableTranslation$ = this.fieldsSettings2NewService.getFieldSettings$(this.config.fieldName).pipe(
       map(settings => settings.DisableTranslation),

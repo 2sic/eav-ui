@@ -81,7 +81,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy {
     // spm TODO: added a small delay to calculate fields a bit later than languages to make form opening feel smoother.
     // Remove if calculating fields gets faster
     const items$ = this.itemService.selectItems(this.eavService.eavConfig.itemGuids).pipe(delay(0));
-    const hideHeader$ = this.languageInstanceService.getHideHeader(this.eavService.eavConfig.formId);
+    const hideHeader$ = this.languageInstanceService.getHideHeader$(this.eavService.eavConfig.formId);
     const formsValid$ = this.formsStateService.formsValid$;
     const debugEnabled$ = this.globalConfigService.getDebugEnabled().pipe(
       tap(debugEnabled => {

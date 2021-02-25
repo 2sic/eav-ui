@@ -28,7 +28,7 @@ export class MultiItemEditFormHeaderComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    const hasLanguages$ = this.languageService.entities$.pipe(map(languages => languages.length > 0));
+    const hasLanguages$ = this.languageService.getLanguages$().pipe(map(languages => languages.length > 0));
     const publishMode$ = this.publishStatusService.getPublishMode$(this.eavService.eavConfig.formId);
     this.templateVars$ = combineLatest([hasLanguages$, publishMode$]).pipe(
       map(([hasLanguages, publishMode]) => {

@@ -117,7 +117,7 @@ export class EditInitializerService implements OnDestroy {
         this.contentTypeService,
       );
       if (!valuesExistInDefaultLanguage) {
-        this.languageInstanceService.updateCurrentLanguage(formId, this.eavService.eavConfig.langPri);
+        this.languageInstanceService.setCurrentLanguage(formId, this.eavService.eavConfig.langPri);
         const message = this.translate.instant('Message.SwitchedLanguageToDefault', { language: this.eavService.eavConfig.langPri });
         this.snackBar.open(message, null, { duration: 5000 });
       }
@@ -127,13 +127,14 @@ export class EditInitializerService implements OnDestroy {
   private fixMissingData() {
     // fix missing default values
     const items$ = this.itemService.selectItems(this.eavService.eavConfig.itemGuids);
-    const currentLanguage$ = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
-    const defaultLanguage$ = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
-    const languages$ = this.languageService.entities$;
     const contentTypes$ = this.contentTypeService.entities$;
-    combineLatest([items$, currentLanguage$, defaultLanguage$, languages$, contentTypes$])
+    combineLatest([items$, contentTypes$])
       .pipe(take(1))
-      .subscribe(([items, currentLanguage, defaultLanguage, languages, contentTypes]) => {
+      .subscribe(([items, contentTypes]) => {
+        const languages = this.languageService.getLanguages();
+        const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
+        const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
+
         for (const item of items) {
           const contentTypeId = InputFieldHelper.getContentTypeId(item);
           const contentType = contentTypes.find(c => c.Id === contentTypeId);

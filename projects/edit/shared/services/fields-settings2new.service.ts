@@ -48,8 +48,8 @@ export class FieldsSettings2NewService implements OnDestroy {
     const contentTypeId = InputFieldHelper.getContentTypeId(item);
     const contentType$ = this.contentTypeService.getContentTypeById(contentTypeId);
     const header$ = this.itemService.selectItemHeader(item.Entity.Guid);
-    const currentLanguage$ = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
-    const defaultLanguage$ = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
+    const currentLanguage$ = this.languageInstanceService.getCurrentLanguage$(this.eavService.eavConfig.formId);
+    const defaultLanguage$ = this.languageInstanceService.getDefaultLanguage$(this.eavService.eavConfig.formId);
 
     this.subscription.add(
       combineLatest([contentType$, header$, currentLanguage$, defaultLanguage$]).pipe(

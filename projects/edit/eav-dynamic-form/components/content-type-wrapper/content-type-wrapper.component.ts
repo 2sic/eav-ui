@@ -34,8 +34,8 @@ export class ContentTypeWrapperComponent implements OnInit {
 
   ngOnInit() {
     this.collapse = false;
-    const currentLanguage$ = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
-    const defaultLanguage$ = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
+    const currentLanguage$ = this.languageInstanceService.getCurrentLanguage$(this.eavService.eavConfig.formId);
+    const defaultLanguage$ = this.languageInstanceService.getDefaultLanguage$(this.eavService.eavConfig.formId);
     const header$ = this.itemService.selectItemHeader(this.entityGuid);
     const settings$ = this.fieldsSettings2NewService.getContentTypeSettings$();
 

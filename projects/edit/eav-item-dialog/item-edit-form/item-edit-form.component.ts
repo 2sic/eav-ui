@@ -21,8 +21,6 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
   @ViewChild(EavFormComponent) eavFormRef: EavFormComponent;
   @Input() item: EavItem;
 
-  private currentLanguage: string;
-  private defaultLanguage: string;
   private subscription: Subscription;
 
   constructor(
@@ -37,15 +35,9 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
     this.subscription = new Subscription();
     this.fieldsSettings2NewService.init(this.item);
     this.fieldsTranslateService.init(this.item);
-    this.subscription.add(
-      this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId).subscribe(defaultLang => {
-        this.defaultLanguage = defaultLang;
-      })
-    );
 
     this.subscription.add(
-      this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId).subscribe(currentLang => {
-        this.currentLanguage = currentLang;
+      this.languageInstanceService.getCurrentLanguage$(this.eavService.eavConfig.formId).subscribe(() => {
         this.setFormValues();
       })
     );
@@ -61,17 +53,21 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  /** Update NGRX/store on form value change */
   formValueChange(formValues: FormValues) {
-    this.itemService.updateItemAttributesValues(this.item.Entity.Guid, formValues, this.currentLanguage, this.defaultLanguage);
+    const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
+    const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
+    this.itemService.updateItemAttributesValues(this.item.Entity.Guid, formValues, currentLanguage, defaultLanguage);
   }
 
   private setFormValues() {
     if (!this.eavFormRef) { return; }
 
+    const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
+    const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
+
     const formValues: FormValues = {};
     for (const [name, values] of Object.entries(this.item.Entity.Attributes)) {
-      formValues[name] = LocalizationHelper.translate(this.currentLanguage, this.defaultLanguage, values, null);
+      formValues[name] = LocalizationHelper.translate(currentLanguage, defaultLanguage, values, null);
     }
 
     if (this.valueIsChanged(formValues, this.eavFormRef.form.value)) {
@@ -87,18 +83,10 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
 
   /** Check if value in form changed */
   private valueIsChanged(newValues: FormValues, oldValues: FormValues) {
-    let valueIsChanged = false;
-
     // always true if values are not simple types
     // e.g. if form has a single entity field which stores value as an array, this check won't work
-    for (const name of Object.keys(newValues)) {
-      if (newValues[name] !== oldValues[name]) {
-        valueIsChanged = true;
-        break;
-      }
-    }
-
-    angularConsoleLog('VALUECHANGED:', valueIsChanged, 'VALUES:', newValues, 'FORM VALUES:', oldValues);
+    const valueIsChanged = Object.keys(newValues).some(key => newValues[key] !== oldValues[key]);
+    angularConsoleLog('VALUECHANGED:', valueIsChanged, 'NEW VALUES:', newValues, 'FORM VALUES:', oldValues);
     return valueIsChanged;
   }
 }
