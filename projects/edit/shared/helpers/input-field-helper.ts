@@ -1,45 +1,28 @@
-import { take } from 'rxjs/operators';
 import { FieldSettings, InputTypeName } from '../../../edit-types';
-import { DataTypeConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/data-type.constants';
 import { InputTypeConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { InputType } from '../../../ng-dialogs/src/app/content-type-fields/models/input-type.model';
 import { WrappersConstants } from '../constants/wrappers.constants';
 import { CalculatedInputType } from '../models';
 import { EavContentTypeAttribute, EavHeader, EavItem } from '../models/eav';
-import { InputTypeService } from '../store/ngrx-data/input-type.service';
 
 export class InputFieldHelper {
 
   static getContentTypeId(item: EavItem): string {
-    return item.Entity.Type ? item.Entity.Type.Id : item.Header.ContentTypeName;
+    return item.Entity.Type?.Id ?? item.Header.ContentTypeName;
   }
 
-  static getFieldLabel(attribute: EavContentTypeAttribute, settingsTranslated: FieldSettings): string {
-    return settingsTranslated && settingsTranslated.Name || attribute.Name;
-  }
-
-  static calculateInputTypes(attributes: EavContentTypeAttribute[], inputTypeService: InputTypeService): InputTypeName[] {
-    const typesList: InputTypeName[] = [];
-    attributes.forEach(attribute => {
-      const calculatedInputType = this.calculateInputType(attribute, inputTypeService);
-      typesList.push({ name: attribute.Name, inputType: calculatedInputType.inputType });
+  static getInputTypeNames(attributes: EavContentTypeAttribute[], inputTypes: InputType[]): InputTypeName[] {
+    return attributes.map(attribute => {
+      const calculatedInputType = this.calculateInputType(attribute, inputTypes);
+      const inputTypeName: InputTypeName = {
+        name: attribute.Name,
+        inputType: calculatedInputType.inputType,
+      };
+      return inputTypeName;
     });
-    return typesList;
   }
 
-  static calculateInputType(attribute: EavContentTypeAttribute, inputTypeService: InputTypeService): CalculatedInputType {
-    const inputTypeName = attribute.InputType;
-    let inputType: InputType;
-    inputTypeService.getInputTypeById(inputTypeName).pipe(take(1)).subscribe(type => {
-      inputType = type;
-    });
-    return {
-      inputType: inputTypeName,
-      isExternal: inputType ? !!inputType.AngularAssets : false,
-    };
-  }
-
-  static calculateInputType2New(attribute: EavContentTypeAttribute, inputTypes: InputType[]): CalculatedInputType {
+  static calculateInputType(attribute: EavContentTypeAttribute, inputTypes: InputType[]): CalculatedInputType {
     const inputType = inputTypes.find(i => i.Type === attribute.InputType);
     const calculated: CalculatedInputType = {
       inputType: attribute.InputType,
@@ -48,29 +31,29 @@ export class InputFieldHelper {
     return calculated;
   }
 
-  static setWrappers2New(settings: FieldSettings, calculatedInputType: CalculatedInputType) {
-    const type = calculatedInputType.inputType;
+  static getWrappers(settings: FieldSettings, calculatedInputType: CalculatedInputType) {
+    const inputType = calculatedInputType.inputType;
     const isExternal = calculatedInputType.isExternal;
 
     // empty inputtype wrappers
-    if (type === InputTypeConstants.EmptyDefault) { return [WrappersConstants.CollapsibleWrapper]; }
+    if (inputType === InputTypeConstants.EmptyDefault) { return [WrappersConstants.CollapsibleWrapper]; }
 
     // default wrappers
     const wrappers = [WrappersConstants.HiddenWrapper];
 
     // entity-default wrappers
-    const isEntityType = (type === InputTypeConstants.EntityDefault)
-      || (type === InputTypeConstants.StringDropdownQuery)
-      || (type === InputTypeConstants.EntityQuery)
-      || (type === InputTypeConstants.EntityContentBlocks);
+    const isEntityType = (inputType === InputTypeConstants.EntityDefault)
+      || (inputType === InputTypeConstants.StringDropdownQuery)
+      || (inputType === InputTypeConstants.EntityQuery)
+      || (inputType === InputTypeConstants.EntityContentBlocks);
 
     if (isEntityType) {
       wrappers.push(WrappersConstants.LocalizationWrapper);
       const allowMultiValue = settings.AllowMultiValue ?? false;
-      if (type === InputTypeConstants.EntityContentBlocks) {
+      if (inputType === InputTypeConstants.EntityContentBlocks) {
         wrappers.push(WrappersConstants.CollapsibleFieldWrapper);
       }
-      if (allowMultiValue || type === InputTypeConstants.EntityContentBlocks) {
+      if (allowMultiValue || inputType === InputTypeConstants.EntityContentBlocks) {
         wrappers.push(WrappersConstants.EntityExpandableWrapper);
       }
     }

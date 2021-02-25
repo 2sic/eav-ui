@@ -74,7 +74,7 @@ export class FieldsSettings2NewService implements OnDestroy {
 
     const itemAttributes$ = this.itemService.selectItemAttributes(item.Entity.Guid);
     const itemHeader$ = this.itemService.selectItemHeader(item.Entity.Guid);
-    const inputTypes$ = this.inputTypeService.getAllInputTypes$();
+    const inputTypes$ = this.inputTypeService.getInputTypes$();
     this.subscription.add(
       combineLatest([contentType$, currentLanguage$, defaultLanguage$, itemAttributes$, itemHeader$, inputTypes$]).pipe(
         map(([contentType, currentLanguage, defaultLanguage, itemAttributes, itemHeader, inputTypes]) => {
@@ -109,8 +109,8 @@ export class FieldsSettings2NewService implements OnDestroy {
             const fixed = logic?.update(merged, value) ?? merged;
 
             const validators = ValidationHelper.getValidators(fixed, attribute);
-            const calculatedInputType = InputFieldHelper.calculateInputType2New(attribute, inputTypes);
-            const wrappers = InputFieldHelper.setWrappers2New(fixed, calculatedInputType);
+            const calculatedInputType = InputFieldHelper.calculateInputType(attribute, inputTypes);
+            const wrappers = InputFieldHelper.getWrappers(fixed, calculatedInputType);
             const initialSettings = this.mergeSettings<FieldSettings>(attribute.Metadata, this.eavService.eavConfig.lang, defaultLanguage);
             const initialDisabled = initialSettings.Disabled ?? false;
             const fieldTranslation = getTranslationState2New(attributeValues, fixed.DisableTranslation, currentLanguage, defaultLanguage);

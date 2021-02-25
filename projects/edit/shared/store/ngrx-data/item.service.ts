@@ -252,7 +252,8 @@ export class ItemService extends EntityCollectionServiceBase<EavItem> {
 
       const attributesValues = Object.keys(item.Entity.Attributes).map(attributeKey => {
         const attribute = contentType.Attributes.find(a => a.Name === attributeKey);
-        const calculatedInputType = InputFieldHelper.calculateInputType(attribute, inputTypeService);
+        const inputTypes = inputTypeService.getInputTypes();
+        const calculatedInputType = InputFieldHelper.calculateInputType(attribute, inputTypes);
         const disableI18n = LocalizationHelper.isI18nDisabled(inputTypeService, calculatedInputType, attribute.Settings);
         return {
           values: item.Entity.Attributes[attributeKey],

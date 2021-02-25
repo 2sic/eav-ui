@@ -114,7 +114,8 @@ export class ConnectorHelper {
 
   private calculateExperimentalProps() {
     const contentType = this.contentTypeService.getContentType(this.config.contentTypeId);
-    const allInputTypeNames = InputFieldHelper.calculateInputTypes(contentType.Attributes, this.inputTypeService);
+    const inputTypes = this.inputTypeService.getInputTypes();
+    const allInputTypeNames = InputFieldHelper.getInputTypeNames(contentType.Attributes, inputTypes);
 
     const experimentalProps: ExperimentalProps = {
       entityGuid: this.config.entityGuid,

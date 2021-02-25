@@ -1,4 +1,3 @@
-import { take } from 'rxjs/operators';
 import { FieldSettings } from '../../../edit-types';
 import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 import { CalculatedInputType } from '../models';
@@ -89,17 +88,18 @@ export class LocalizationHelper {
     }
   }
 
-  public static isI18nDisabled(inputTypeService: InputTypeService, calculatedInputType: CalculatedInputType,
-    fullSettings: EavEntityAttributes) {
-    let disableI18n = false;
-    inputTypeService.getInputTypeById(calculatedInputType.inputType).pipe(take(1)).subscribe(type => {
-      if (type?.DisableI18n === true) { disableI18n = true; }
-    });
+  public static isI18nDisabled(
+    inputTypeService: InputTypeService,
+    calculatedInputType: CalculatedInputType,
+    fullSettings: EavEntityAttributes,
+  ): boolean {
+    const inputType = inputTypeService.getInputType(calculatedInputType.inputType);
+    if (inputType?.DisableI18n === true) { return true; }
+
     const disableTranslationSetting = !!fullSettings.DisableTranslation?.Values.find(value => value.Value === true);
-    if (disableTranslationSetting) {
-      disableI18n = true;
-    }
-    return disableI18n;
+    if (disableTranslationSetting) { return true; }
+
+    return false;
   }
 
   /** Copy attributes from item */
