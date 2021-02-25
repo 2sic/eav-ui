@@ -38,8 +38,6 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
   templateVars$: Observable<HyperlinkDefaultTemplateVars>;
 
   private preview$: BehaviorSubject<Preview>;
-
-  private prefetchLinks: PrefetchLinks = {};
   private fetchCache: PrefetchLinks = {};
 
   constructor(
@@ -66,11 +64,6 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
       isKnownType: false,
       icon: '',
     });
-    this.subscription.add(
-      this.prefetchService.getPrefetchedLinks().subscribe(links => {
-        this.prefetchLinks = links;
-      })
-    );
     const buttons$ = this.settings$.pipe(map(settings => settings.Buttons));
     const open$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
     this.subscription.add(
@@ -218,7 +211,8 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
   private findInCache(value: string): string {
     const cleanValue = value.trim().toLocaleLowerCase();
 
-    for (const [linkKey, linkValue] of Object.entries(this.prefetchLinks)) {
+    const prefetchLinks = this.prefetchService.getPrefetchLinks();
+    for (const [linkKey, linkValue] of Object.entries(prefetchLinks)) {
       const cleanKey = linkKey.trim().toLocaleLowerCase();
       if (cleanKey !== cleanValue) { continue; }
       return linkValue;

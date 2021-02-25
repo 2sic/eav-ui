@@ -36,7 +36,6 @@ export class HyperlinkDefaultExpandableWrapperComponent extends BaseComponent<st
 
   private preview$: BehaviorSubject<Preview>;
   private dropzoneDraggingHelper: DropzoneDraggingHelper;
-  private prefetchLinks: PrefetchLinks = {};
   private fetchCache: PrefetchLinks = {};
 
   constructor(
@@ -63,11 +62,6 @@ export class HyperlinkDefaultExpandableWrapperComponent extends BaseComponent<st
       isKnownType: false,
       icon: '',
     });
-    this.subscription.add(
-      this.prefetchService.getPrefetchedLinks().subscribe(links => {
-        this.prefetchLinks = links;
-      })
-    );
     this.subscription.add(
       this.value$.subscribe(value => {
         this.fetchLink(value);
@@ -214,7 +208,8 @@ export class HyperlinkDefaultExpandableWrapperComponent extends BaseComponent<st
   private findInCache(value: string): string {
     const cleanValue = value.trim().toLocaleLowerCase();
 
-    for (const [linkKey, linkValue] of Object.entries(this.prefetchLinks)) {
+    const prefetchLinks = this.prefetchService.getPrefetchLinks();
+    for (const [linkKey, linkValue] of Object.entries(prefetchLinks)) {
       const cleanKey = linkKey.trim().toLocaleLowerCase();
       if (cleanKey !== cleanValue) { continue; }
       return linkValue;
