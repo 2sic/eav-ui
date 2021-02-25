@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { EavService } from '../../../shared/services/eav.service';
-import { FieldsSettings2NewService } from '../../../shared/services/fields-settings2new.service';
+import { FieldsSettingsService } from '../../../shared/services/fields-settings.service';
 import { BaseComponent } from '../../input-types/base/base.component';
 import { ValidationMessagesService } from '../../validators/validation-messages-service';
 
@@ -19,9 +19,9 @@ export class CollapsibleFieldWrapperComponent extends BaseComponent<string[]> im
   constructor(
     eavService: EavService,
     validationMessagesService: ValidationMessagesService,
-    fieldsSettings2NewService: FieldsSettings2NewService,
+    fieldsSettingsService: FieldsSettingsService,
   ) {
-    super(eavService, validationMessagesService, fieldsSettings2NewService);
+    super(eavService, validationMessagesService, fieldsSettingsService);
   }
 
   ngOnInit() {

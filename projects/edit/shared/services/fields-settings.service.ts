@@ -13,7 +13,7 @@ import { FieldLogicManager } from '../../field-logic/field-logic-manager';
 import { TranslationLinkConstants } from '../constants/translation-link.constants';
 import { InputFieldHelper } from '../helpers/input-field-helper';
 import { LocalizationHelper } from '../helpers/localization-helper';
-import { ContentTypeSettings, FieldsProps, TranslationState2New } from '../models';
+import { ContentTypeSettings, FieldsProps, TranslationStateFull } from '../models';
 import { EavContentType, EavContentTypeAttribute, EavEntity, EavItem, EavValues } from '../models/eav';
 import { ContentTypeService } from '../store/ngrx-data/content-type.service';
 import { InputTypeService } from '../store/ngrx-data/input-type.service';
@@ -21,7 +21,7 @@ import { ItemService } from '../store/ngrx-data/item.service';
 import { LanguageInstanceService } from '../store/ngrx-data/language-instance.service';
 
 @Injectable()
-export class FieldsSettings2NewService implements OnDestroy {
+export class FieldsSettingsService implements OnDestroy {
   private contentTypeSettings$: BehaviorSubject<ContentTypeSettings>;
   private fieldsProps$: BehaviorSubject<FieldsProps>;
   private subscription: Subscription;
@@ -177,7 +177,7 @@ export class FieldsSettings2NewService implements OnDestroy {
     );
   }
 
-  getTranslationState$(fieldName: string): Observable<TranslationState2New> {
+  getTranslationState$(fieldName: string): Observable<TranslationStateFull> {
     return this.fieldsProps$.pipe(
       map(fieldsSettings => fieldsSettings[fieldName].translationState),
       distinctUntilChanged((oldTranslationState, newTranslationState) => {
@@ -306,7 +306,7 @@ function validatorsEqual(x: ValidatorFn[], y: ValidatorFn[]) {
   return equal;
 }
 
-function translationStateEqual(x: TranslationState2New, y: TranslationState2New) {
+function translationStateEqual(x: TranslationStateFull, y: TranslationStateFull) {
   const obj1 = x as { [key: string]: any };
   const obj2 = y as { [key: string]: any };
 
@@ -342,7 +342,7 @@ function getTranslationState2New(
   disableTranslation: boolean,
   currentLanguage: string,
   defaultLanguage: string,
-): TranslationState2New {
+): TranslationStateFull {
   let infoLabel: string;
   let infoMessage: string;
 
@@ -379,7 +379,7 @@ function getTranslationState2New(
     }
   }
   const state = getTranslationState(attributeValues, disableTranslation, currentLanguage, defaultLanguage);
-  const translationState: TranslationState2New = {
+  const translationState: TranslationStateFull = {
     infoLabel,
     infoMessage,
     language: state.language,

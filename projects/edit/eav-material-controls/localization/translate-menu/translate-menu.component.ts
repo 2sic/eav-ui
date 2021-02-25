@@ -5,9 +5,9 @@ import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, filter, map, startWith } from 'rxjs/operators';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { TranslationLinkConstants } from '../../../shared/constants/translation-link.constants';
-import { TranslationState2New } from '../../../shared/models';
+import { TranslationStateFull } from '../../../shared/models';
 import { EavService } from '../../../shared/services/eav.service';
-import { FieldsSettings2NewService } from '../../../shared/services/fields-settings2new.service';
+import { FieldsSettingsService } from '../../../shared/services/fields-settings.service';
 import { FieldsTranslateService } from '../../../shared/services/fields-translate.service';
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
 import { TranslateMenuDialogComponent } from '../translate-menu-dialog/translate-menu-dialog.component';
@@ -32,15 +32,15 @@ export class TranslateMenuComponent implements OnInit {
     private viewContainerRef: ViewContainerRef,
     private languageInstanceService: LanguageInstanceService,
     private eavService: EavService,
-    private fieldsSettings2NewService: FieldsSettings2NewService,
+    private fieldsSettingsService: FieldsSettingsService,
     private fieldsTranslateService: FieldsTranslateService,
   ) { }
 
   ngOnInit(): void {
     const currentLanguage$ = this.languageInstanceService.getCurrentLanguage$(this.eavService.eavConfig.formId);
     const defaultLanguage$ = this.languageInstanceService.getDefaultLanguage$(this.eavService.eavConfig.formId);
-    const translationState$ = this.fieldsSettings2NewService.getTranslationState$(this.config.fieldName);
-    const disableTranslation$ = this.fieldsSettings2NewService.getFieldSettings$(this.config.fieldName).pipe(
+    const translationState$ = this.fieldsSettingsService.getTranslationState$(this.config.fieldName);
+    const disableTranslation$ = this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).pipe(
       map(settings => settings.DisableTranslation),
     );
 
@@ -75,7 +75,7 @@ export class TranslateMenuComponent implements OnInit {
     this.fieldsTranslateService.dontTranslate(this.config.name);
   }
 
-  openTranslateMenuDialog(translationState: TranslationState2New): void {
+  openTranslateMenuDialog(translationState: TranslationStateFull): void {
     const dialogData: TranslateMenuDialogData = {
       config: this.config,
       translationState: {

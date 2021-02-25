@@ -5,7 +5,7 @@ import { EavFormComponent } from '../../eav-dynamic-form/components/eav-form/eav
 import { LocalizationHelper } from '../../shared/helpers/localization-helper';
 import { EavItem } from '../../shared/models/eav';
 import { EavService } from '../../shared/services/eav.service';
-import { FieldsSettings2NewService } from '../../shared/services/fields-settings2new.service';
+import { FieldsSettingsService } from '../../shared/services/fields-settings.service';
 import { FieldsTranslateService } from '../../shared/services/fields-translate.service';
 import { ItemService } from '../../shared/store/ngrx-data/item.service';
 import { LanguageInstanceService } from '../../shared/store/ngrx-data/language-instance.service';
@@ -15,7 +15,7 @@ import { FormValues } from './item-edit-form.models';
   selector: 'app-item-edit-form',
   templateUrl: './item-edit-form.component.html',
   styleUrls: ['./item-edit-form.component.scss'],
-  providers: [FieldsSettings2NewService, FieldsTranslateService],
+  providers: [FieldsSettingsService, FieldsTranslateService],
 })
 export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
   @ViewChild(EavFormComponent) eavFormRef: EavFormComponent;
@@ -27,13 +27,13 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
     private languageInstanceService: LanguageInstanceService,
     private itemService: ItemService,
     private eavService: EavService,
-    private fieldsSettings2NewService: FieldsSettings2NewService,
+    private fieldsSettingsService: FieldsSettingsService,
     private fieldsTranslateService: FieldsTranslateService,
   ) { }
 
   ngOnInit() {
     this.subscription = new Subscription();
-    this.fieldsSettings2NewService.init(this.item);
+    this.fieldsSettingsService.init(this.item);
     this.fieldsTranslateService.init(this.item);
 
     this.subscription.add(

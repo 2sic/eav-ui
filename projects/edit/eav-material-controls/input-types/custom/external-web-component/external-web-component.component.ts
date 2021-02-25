@@ -5,7 +5,7 @@ import { angularConsoleLog } from '../../../../../ng-dialogs/src/app/shared/help
 import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
 import { EavService } from '../../../../shared/services/eav.service';
 import { EditRoutingService } from '../../../../shared/services/edit-routing.service';
-import { FieldsSettings2NewService } from '../../../../shared/services/fields-settings2new.service';
+import { FieldsSettingsService } from '../../../../shared/services/fields-settings.service';
 import { ScriptsLoaderService } from '../../../../shared/services/scripts-loader.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { BaseComponent } from '../../base/base.component';
@@ -26,11 +26,11 @@ export class ExternalWebComponentComponent extends BaseComponent<string> impleme
   constructor(
     eavService: EavService,
     validationMessagesService: ValidationMessagesService,
-    fieldsSettings2NewService: FieldsSettings2NewService,
+    fieldsSettingsService: FieldsSettingsService,
     private scriptsLoaderService: ScriptsLoaderService,
     private editRoutingService: EditRoutingService,
   ) {
-    super(eavService, validationMessagesService, fieldsSettings2NewService);
+    super(eavService, validationMessagesService, fieldsSettingsService);
   }
 
   ngOnInit() {

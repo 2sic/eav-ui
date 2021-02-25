@@ -8,7 +8,7 @@ import { ContentTypeService } from '../store/ngrx-data/content-type.service';
 import { ItemService } from '../store/ngrx-data/item.service';
 import { LanguageInstanceService } from '../store/ngrx-data/language-instance.service';
 import { EavService } from './eav.service';
-import { FieldsSettings2NewService } from './fields-settings2new.service';
+import { FieldsSettingsService } from './fields-settings.service';
 
 @Injectable()
 export class FieldsTranslateService implements OnDestroy {
@@ -22,7 +22,7 @@ export class FieldsTranslateService implements OnDestroy {
     private languageInstanceService: LanguageInstanceService,
     private eavService: EavService,
     private contentTypeService: ContentTypeService,
-    private fieldsSettings2NewService: FieldsSettings2NewService,
+    private fieldsSettingsService: FieldsSettingsService,
   ) { }
 
   ngOnDestroy(): void {
@@ -143,7 +143,7 @@ export class FieldsTranslateService implements OnDestroy {
   }
 
   private isTranslationDisabled(fieldName: string) {
-    const fieldsProps = this.fieldsSettings2NewService.getFieldsProps();
+    const fieldsProps = this.fieldsSettingsService.getFieldsProps();
     return fieldsProps[fieldName].settings.DisableTranslation;
   }
 }

@@ -5,7 +5,7 @@ import { distinctUntilChanged, filter, map, startWith } from 'rxjs/operators';
 import { EavService } from '../../..';
 import { InputTypeConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { FormValues } from '../../../eav-item-dialog/item-edit-form/item-edit-form.models';
-import { FieldsSettings2NewService } from '../../../shared/services/fields-settings2new.service';
+import { FieldsSettingsService } from '../../../shared/services/fields-settings.service';
 import { FormsStateService } from '../../../shared/services/forms-state.service';
 import { ItemService } from '../../../shared/store/ngrx-data/item.service';
 
@@ -28,14 +28,14 @@ export class EavFormComponent implements OnInit, OnDestroy {
     private eavService: EavService,
     private formsStateService: FormsStateService,
     private itemService: ItemService,
-    private fieldsSettings2NewService: FieldsSettings2NewService,
+    private fieldsSettingsService: FieldsSettingsService,
   ) { }
 
   ngOnInit() {
     this.form = new FormGroup({});
     this.subscription = new Subscription();
     this.subscription.add(
-      this.fieldsSettings2NewService.getFieldsProps$().subscribe(fieldsProps => {
+      this.fieldsSettingsService.getFieldsProps$().subscribe(fieldsProps => {
         // 1. create missing controls
         for (const [fieldName, fieldProps] of Object.entries(fieldsProps)) {
           if (fieldProps.calculatedInputType.inputType === InputTypeConstants.EmptyDefault) { continue; }

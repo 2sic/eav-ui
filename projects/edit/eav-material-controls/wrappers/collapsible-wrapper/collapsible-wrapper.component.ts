@@ -5,7 +5,7 @@ import { map } from 'rxjs/operators';
 import { FieldSettings } from '../../../../edit-types';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
-import { FieldsSettings2NewService } from '../../../shared/services/fields-settings2new.service';
+import { FieldsSettingsService } from '../../../shared/services/fields-settings.service';
 import { EmptyDefaultLogic } from './collapsible-wrapper-logic';
 
 @Component({
@@ -27,12 +27,12 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
   private settings$ = new BehaviorSubject<FieldSettings>(null);
   private subscription = new Subscription();
 
-  constructor(private fieldsSettings2NewService: FieldsSettings2NewService) {
+  constructor(private fieldsSettingsService: FieldsSettingsService) {
     EmptyDefaultLogic.importMe();
   }
 
   ngOnInit() {
-    const settings$ = this.fieldsSettings2NewService.getFieldSettings$(this.config.fieldName);
+    const settings$ = this.fieldsSettingsService.getFieldSettings$(this.config.fieldName);
     this.subscription.add(
       settings$.subscribe(settings => {
         this.settings$.next(settings);

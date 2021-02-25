@@ -6,7 +6,7 @@ import { FieldSettings } from '../../../../edit-types';
 import { Field } from '../../../eav-dynamic-form/model/field';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { EavService } from '../../../shared/services/eav.service';
-import { FieldsSettings2NewService } from '../../../shared/services/fields-settings2new.service';
+import { FieldsSettingsService } from '../../../shared/services/fields-settings.service';
 import { ValidationMessagesService } from '../../validators/validation-messages-service';
 
 @Directive()
@@ -30,14 +30,14 @@ export class BaseComponent<T> implements Field, OnInit, OnDestroy {
   constructor(
     public eavService: EavService,
     public validationMessagesService: ValidationMessagesService,
-    public fieldsSettings2NewService: FieldsSettings2NewService,
+    public fieldsSettingsService: FieldsSettingsService,
   ) { }
 
   ngOnInit() {
     this.control = this.group.controls[this.config.fieldName];
     this.settings$ = new BehaviorSubject<FieldSettings>(null);
     this.subscription.add(
-      this.fieldsSettings2NewService.getFieldSettings$(this.config.fieldName).subscribe(settings => {
+      this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).subscribe(settings => {
         this.settings$.next(settings);
       })
     );

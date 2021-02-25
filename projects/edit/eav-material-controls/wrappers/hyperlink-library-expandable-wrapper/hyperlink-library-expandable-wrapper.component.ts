@@ -7,7 +7,7 @@ import { ContentExpandAnimation } from '../../../shared/animations/content-expan
 import { DropzoneDraggingHelper } from '../../../shared/services/dropzone-dragging.helper';
 import { EavService } from '../../../shared/services/eav.service';
 import { EditRoutingService } from '../../../shared/services/edit-routing.service';
-import { FieldsSettings2NewService } from '../../../shared/services/fields-settings2new.service';
+import { FieldsSettingsService } from '../../../shared/services/fields-settings.service';
 import { BaseComponent } from '../../input-types/base/base.component';
 import { ValidationMessagesService } from '../../validators/validation-messages-service';
 import { HyperlinkLibraryExpandableTemplateVars } from './hyperlink-library-expandable-wrapper.models';
@@ -33,11 +33,11 @@ export class HyperlinkLibraryExpandableWrapperComponent extends BaseComponent<nu
   constructor(
     eavService: EavService,
     validationMessagesService: ValidationMessagesService,
-    fieldsSettings2NewService: FieldsSettings2NewService,
+    fieldsSettingsService: FieldsSettingsService,
     private zone: NgZone,
     private editRoutingService: EditRoutingService,
   ) {
-    super(eavService, validationMessagesService, fieldsSettings2NewService);
+    super(eavService, validationMessagesService, fieldsSettingsService);
   }
 
   ngOnInit() {

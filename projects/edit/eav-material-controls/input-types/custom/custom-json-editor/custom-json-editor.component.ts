@@ -4,7 +4,7 @@ import { map } from 'rxjs/operators';
 import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { EavService } from '../../../../shared/services/eav.service';
-import { FieldsSettings2NewService } from '../../../../shared/services/fields-settings2new.service';
+import { FieldsSettingsService } from '../../../../shared/services/fields-settings.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { BaseComponent } from '../../base/base.component';
 import { CustomJsonEditorLogic } from './custom-json-editor-logic';
@@ -26,9 +26,9 @@ export class CustomJsonEditorComponent extends BaseComponent<string> implements 
   constructor(
     eavService: EavService,
     validationMessagesService: ValidationMessagesService,
-    fieldsSettings2NewService: FieldsSettings2NewService,
+    fieldsSettingsService: FieldsSettingsService,
   ) {
-    super(eavService, validationMessagesService, fieldsSettings2NewService);
+    super(eavService, validationMessagesService, fieldsSettingsService);
     CustomJsonEditorLogic.importMe();
   }
 

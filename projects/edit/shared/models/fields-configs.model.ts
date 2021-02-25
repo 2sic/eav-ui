@@ -12,7 +12,7 @@ export interface FieldProps {
   calculatedInputType: CalculatedInputType;
   constants: FieldConstants;
   settings: FieldSettings;
-  translationState: TranslationState2New;
+  translationState: TranslationStateFull;
   validators: ValidatorFn[];
   /** empty-default value is null */
   value: FieldValue;
@@ -33,7 +33,7 @@ export interface FieldConstants {
   type?: string;
 }
 
-export interface TranslationState2New extends TranslationState {
+export interface TranslationStateFull extends TranslationState {
   infoLabel: string;
   infoMessage: string;
 }

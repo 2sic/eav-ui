@@ -9,7 +9,7 @@ import { WrappersConstants } from '../../../../shared/constants/wrappers.constan
 import { DnnBridgeService } from '../../../../shared/services/dnn-bridge.service';
 import { EavService } from '../../../../shared/services/eav.service';
 import { EditRoutingService } from '../../../../shared/services/edit-routing.service';
-import { FieldsSettings2NewService } from '../../../../shared/services/fields-settings2new.service';
+import { FieldsSettingsService } from '../../../../shared/services/fields-settings.service';
 import { FileTypeService } from '../../../../shared/services/file-type.service';
 import { PrefetchService } from '../../../../shared/store/ngrx-data/prefetch.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
@@ -43,13 +43,13 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
   constructor(
     eavService: EavService,
     validationMessagesService: ValidationMessagesService,
-    fieldsSettings2NewService: FieldsSettings2NewService,
+    fieldsSettingsService: FieldsSettingsService,
     private fileTypeService: FileTypeService,
     private dnnBridgeService: DnnBridgeService,
     private editRoutingService: EditRoutingService,
     private prefetchService: PrefetchService,
   ) {
-    super(eavService, validationMessagesService, fieldsSettings2NewService);
+    super(eavService, validationMessagesService, fieldsSettingsService);
     HyperlinkDefaultLogic.importMe();
   }
 

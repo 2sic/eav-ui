@@ -7,7 +7,7 @@ import { EntityInfo } from '../../../../shared/models';
 import { EavService } from '../../../../shared/services/eav.service';
 import { EditRoutingService } from '../../../../shared/services/edit-routing.service';
 import { EntityService } from '../../../../shared/services/entity.service';
-import { FieldsSettings2NewService } from '../../../../shared/services/fields-settings2new.service';
+import { FieldsSettingsService } from '../../../../shared/services/fields-settings.service';
 import { QueryService } from '../../../../shared/services/query.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { EntityDefaultComponent } from '../entity-default/entity-default.component';
@@ -28,14 +28,14 @@ export class EntityQueryComponent extends EntityDefaultComponent implements OnIn
   constructor(
     eavService: EavService,
     validationMessagesService: ValidationMessagesService,
-    fieldsSettings2NewService: FieldsSettings2NewService,
+    fieldsSettingsService: FieldsSettingsService,
     entityService: EntityService,
     translate: TranslateService,
     editRoutingService: EditRoutingService,
     snackBar: MatSnackBar,
     private queryService: QueryService,
   ) {
-    super(eavService, validationMessagesService, fieldsSettings2NewService, entityService, translate, editRoutingService, snackBar);
+    super(eavService, validationMessagesService, fieldsSettingsService, entityService, translate, editRoutingService, snackBar);
     EntityQueryLogic.importMe();
   }
 

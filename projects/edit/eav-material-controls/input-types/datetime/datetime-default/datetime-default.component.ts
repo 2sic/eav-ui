@@ -7,7 +7,7 @@ import { map } from 'rxjs/operators';
 import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { EavService } from '../../../../shared/services/eav.service';
-import { FieldsSettings2NewService } from '../../../../shared/services/fields-settings2new.service';
+import { FieldsSettingsService } from '../../../../shared/services/fields-settings.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { BaseComponent } from '../../base/base.component';
 import { DatetimeDefaultTemplateVars } from './datetime-default.models';
@@ -27,12 +27,12 @@ export class DatetimeDefaultComponent extends BaseComponent<string> implements O
   constructor(
     eavService: EavService,
     validationMessagesService: ValidationMessagesService,
-    fieldsSettings2NewService: FieldsSettings2NewService,
+    fieldsSettingsService: FieldsSettingsService,
     private translate: TranslateService,
     private dateAdapter: DateAdapter<any>,
     private ngxDateTimeAdapter: NgxMatDateAdapter<any>,
   ) {
-    super(eavService, validationMessagesService, fieldsSettings2NewService);
+    super(eavService, validationMessagesService, fieldsSettingsService);
     const currentLang = this.translate.currentLang;
     this.dateAdapter.setLocale(currentLang);
     this.ngxDateTimeAdapter.setLocale(currentLang);

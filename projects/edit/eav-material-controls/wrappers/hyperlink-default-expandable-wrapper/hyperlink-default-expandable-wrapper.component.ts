@@ -8,7 +8,7 @@ import { DnnBridgeService } from '../../../shared/services/dnn-bridge.service';
 import { DropzoneDraggingHelper } from '../../../shared/services/dropzone-dragging.helper';
 import { EavService } from '../../../shared/services/eav.service';
 import { EditRoutingService } from '../../../shared/services/edit-routing.service';
-import { FieldsSettings2NewService } from '../../../shared/services/fields-settings2new.service';
+import { FieldsSettingsService } from '../../../shared/services/fields-settings.service';
 import { FileTypeService } from '../../../shared/services/file-type.service';
 import { PrefetchService } from '../../../shared/store/ngrx-data/prefetch.service';
 import { BaseComponent } from '../../input-types/base/base.component';
@@ -41,14 +41,14 @@ export class HyperlinkDefaultExpandableWrapperComponent extends BaseComponent<st
   constructor(
     eavService: EavService,
     validationMessagesService: ValidationMessagesService,
-    fieldsSettings2NewService: FieldsSettings2NewService,
+    fieldsSettingsService: FieldsSettingsService,
     private fileTypeService: FileTypeService,
     private dnnBridgeService: DnnBridgeService,
     private zone: NgZone,
     private editRoutingService: EditRoutingService,
     private prefetchService: PrefetchService,
   ) {
-    super(eavService, validationMessagesService, fieldsSettings2NewService);
+    super(eavService, validationMessagesService, fieldsSettingsService);
   }
 
   ngOnInit() {

@@ -5,7 +5,7 @@ import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { EavService } from '../../../shared';
 import { EavHeader } from '../../../shared/models/eav';
-import { FieldsSettings2NewService } from '../../../shared/services/fields-settings2new.service';
+import { FieldsSettingsService } from '../../../shared/services/fields-settings.service';
 import { ItemService } from '../../../shared/store/ngrx-data/item.service';
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
 import { ContentTypeTemplateVars } from './content-type-wrapper.models';
@@ -28,7 +28,7 @@ export class ContentTypeWrapperComponent implements OnInit {
     private itemService: ItemService,
     private router: Router,
     private route: ActivatedRoute,
-    private fieldsSettings2NewService: FieldsSettings2NewService,
+    private fieldsSettingsService: FieldsSettingsService,
     public eavService: EavService,
   ) { }
 
@@ -37,7 +37,7 @@ export class ContentTypeWrapperComponent implements OnInit {
     const currentLanguage$ = this.languageInstanceService.getCurrentLanguage$(this.eavService.eavConfig.formId);
     const defaultLanguage$ = this.languageInstanceService.getDefaultLanguage$(this.eavService.eavConfig.formId);
     const header$ = this.itemService.selectItemHeader(this.entityGuid);
-    const settings$ = this.fieldsSettings2NewService.getContentTypeSettings$();
+    const settings$ = this.fieldsSettingsService.getContentTypeSettings$();
 
     this.templateVars$ = combineLatest([
       currentLanguage$,

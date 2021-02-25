@@ -5,7 +5,7 @@ import { FieldSettings } from '../../../../../edit-types';
 import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { EavService } from '../../../../shared/services/eav.service';
-import { FieldsSettings2NewService } from '../../../../shared/services/fields-settings2new.service';
+import { FieldsSettingsService } from '../../../../shared/services/fields-settings.service';
 import { CustomValidators } from '../../../validators/custom-validators';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { BaseComponent } from '../../base/base.component';
@@ -33,14 +33,14 @@ export class HyperlinkLibraryComponent extends BaseComponent<null> implements On
   constructor(
     eavService: EavService,
     validationMessagesService: ValidationMessagesService,
-    fieldsSettings2NewService: FieldsSettings2NewService,
+    fieldsSettingsService: FieldsSettingsService,
   ) {
-    super(eavService, validationMessagesService, fieldsSettings2NewService);
+    super(eavService, validationMessagesService, fieldsSettingsService);
   }
 
   ngOnInit() {
     super.ngOnInit();
-    const validators$ = this.fieldsSettings2NewService.getFieldValidation$(this.config.fieldName);
+    const validators$ = this.fieldsSettingsService.getFieldValidation$(this.config.fieldName);
     this.subscription.add(
       combineLatest([this.settings$, validators$]).subscribe(([settings, validators]) => {
         this.attachAdam(settings);
