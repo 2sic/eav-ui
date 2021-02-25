@@ -2,9 +2,6 @@ import { Injectable } from '@angular/core';
 
 @Injectable()
 export class FileTypeService {
-
-  constructor() { }
-
   private defaultIcon = 'file';
   private checkImgRegEx = /(?:([^:\/?#]+):)?(?:\/\/([^\/?#]*))?([^?#]*\.(?:jpg|jpeg|gif|png))(?:\?([^#]*))?(?:#(.*))?/i;
   private customExtensions: { [key: string]: string } = {
@@ -33,6 +30,8 @@ export class FileTypeService {
   private matExtensions: { [key: string]: string } = {
     vcf: 'person',
   };
+
+  constructor() { }
 
   getExtension(filename: string) {
     return filename.substr(filename.lastIndexOf('.') + 1).toLowerCase();

@@ -1,7 +1,7 @@
 export class I18nKeyConstants {
-  public static readonly NoTranslate = 'NoTranslate';
-  public static readonly FromPrimary = 'FromPrimary';
-  public static readonly FromOther = 'FromOther';
-  public static readonly LinkReadOnly = 'LinkReadOnly';
-  public static readonly LinkShared = 'LinkShared';
+  static readonly NoTranslate = 'NoTranslate';
+  static readonly FromPrimary = 'FromPrimary';
+  static readonly FromOther = 'FromOther';
+  static readonly LinkReadOnly = 'LinkReadOnly';
+  static readonly LinkShared = 'LinkShared';
 }

@@ -23,7 +23,7 @@ export class ScriptsLoaderService {
   constructor(private eavService: EavService) { }
 
   /** Loads CSS and JS files in order (CSS first) and calls callback function when finished */
-  public load(scripts: string[], callback: () => any) {
+  load(scripts: string[], callback: () => any) {
     const sortedFiles = this.sortByType(scripts);
     this.insertToDom(sortedFiles, callback, 0); // async, called again and again after each script is loaded
   }

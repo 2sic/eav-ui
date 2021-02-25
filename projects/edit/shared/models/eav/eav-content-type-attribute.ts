@@ -2,12 +2,12 @@ import { EavEntity, EavEntityAttributes } from '.';
 import { ContentTypeAttribute1 } from '../json-format-v1';
 
 export class EavContentTypeAttribute {
-  public InputType: string;
-  public IsTitle: boolean;
-  public Metadata: EavEntity[];
-  public Name: string;
-  public Settings: EavEntityAttributes;
-  public Type: string;
+  InputType: string;
+  IsTitle: boolean;
+  Metadata: EavEntity[];
+  Name: string;
+  Settings: EavEntityAttributes;
+  Type: string;
 
   private static convertOne(attribute1: ContentTypeAttribute1): EavContentTypeAttribute {
     const metadata = EavEntity.convertMany(attribute1.Metadata);
@@ -24,7 +24,7 @@ export class EavContentTypeAttribute {
     return attribute;
   }
 
-  public static convertMany(attributes1: ContentTypeAttribute1[]): EavContentTypeAttribute[] {
+  static convertMany(attributes1: ContentTypeAttribute1[]): EavContentTypeAttribute[] {
     if (attributes1 == null) { return []; }
 
     const attributes = attributes1.map(attribute1 => EavContentTypeAttribute.convertOne(attribute1));

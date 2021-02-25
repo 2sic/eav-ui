@@ -2,16 +2,16 @@ import { EavEntityAttributes, EavFor, EavType } from '.';
 import { Entity1 } from '../json-format-v1';
 
 export class EavEntity {
-  public Attributes: EavEntityAttributes;
-  public Guid: string;
-  public Id: number;
-  public Owner: string;
-  public Type: EavType;
-  public Version: number;
-  public For?: EavFor;
-  public Metadata?: EavEntity[];
+  Attributes: EavEntityAttributes;
+  Guid: string;
+  Id: number;
+  Owner: string;
+  Type: EavType;
+  Version: number;
+  For?: EavFor;
+  Metadata?: EavEntity[];
 
-  public static convertOne(entity1: Entity1): EavEntity {
+  static convertOne(entity1: Entity1): EavEntity {
     // spm 2021.01.26. is empty entity ever used?
     if (entity1 == null) {
       const defaultEntity: EavEntity = {
@@ -43,7 +43,7 @@ export class EavEntity {
     return entity;
   }
 
-  public static convertMany(entities1: Entity1[]): EavEntity[] {
+  static convertMany(entities1: Entity1[]): EavEntity[] {
     if (entities1 == null) { return null; }
 
     const entities = entities1.map(entity1 => EavEntity.convertOne(entity1));

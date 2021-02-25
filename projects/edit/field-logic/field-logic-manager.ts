@@ -11,7 +11,7 @@ export class FieldLogicManager {
 
   private constructor() { }
 
-  public static singleton(): FieldLogicManager {
+  static singleton(): FieldLogicManager {
     const eavWindow = window as EavWindow;
     if (eavWindow.eavFieldLogicManager == null) {
       eavWindow.eavFieldLogicManager = new FieldLogicManager();
@@ -20,12 +20,12 @@ export class FieldLogicManager {
   }
 
   /** Add settings logic */
-  public add(logic: FieldLogicBase): void {
+  add(logic: FieldLogicBase): void {
     this.logics[logic.name] = logic;
   }
 
   /** Get settings logic for input type */
-  public get(inputTypeName: string): FieldLogicBase {
+  get(inputTypeName: string): FieldLogicBase {
     return this.logics[inputTypeName] ?? null;
   }
 }

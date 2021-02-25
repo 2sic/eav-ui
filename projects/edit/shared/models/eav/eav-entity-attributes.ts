@@ -4,7 +4,7 @@ import { EntityAttributes1 } from '../json-format-v1';
 export class EavEntityAttributes {
   [attributeName: string]: EavValues<any>;
 
-  public static convert(attributes1: EntityAttributes1): EavEntityAttributes {
+  static convert(attributes1: EntityAttributes1): EavEntityAttributes {
     const atributes: EavEntityAttributes = {};
 
     // loop attribute types - String, Boolean, ...
@@ -17,7 +17,7 @@ export class EavEntityAttributes {
     return atributes;
   }
 
-  public static mergeSettings(metadataItems: EavEntity[]): EavEntityAttributes {
+  static mergeSettings(metadataItems: EavEntity[]): EavEntityAttributes {
     if (metadataItems == null) { return {}; }
 
     const merged: EavEntityAttributes = {};

@@ -5,7 +5,7 @@ import { FieldLogicBase } from '../../../../field-logic/field-logic-base';
 export class BooleanTristateLogic extends FieldLogicBase {
   name = InputTypeConstants.BooleanTristate;
 
-  public update(settings: FieldSettings, value: boolean | ''): FieldSettings {
+  update(settings: FieldSettings, value: boolean | ''): FieldSettings {
     const fixedSettings: FieldSettings = { ...settings };
     fixedSettings._label = this.calculateLabel(value, fixedSettings);
     return fixedSettings;

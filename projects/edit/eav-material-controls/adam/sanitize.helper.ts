@@ -1,7 +1,5 @@
 export class SanitizeHelper {
 
-  constructor() { }
-
   private static removeFromStart(sanitized: string, charToRemove: string): string {
     // check for undefined
     if (!sanitized) { return sanitized; }
@@ -41,7 +39,7 @@ export class SanitizeHelper {
   }
 
   // sanitize path
-  public static sanitizePath(sanitized: string): string {
+  static sanitizePath(sanitized: string): string {
     // check for undefined
     if (!sanitized) { return sanitized; }
 
@@ -64,7 +62,7 @@ export class SanitizeHelper {
   }
 
   // sanitize file or folder name
-  public static sanitizeName(sanitized: string) {
+  static sanitizeName(sanitized: string): string {
     // check for undefined
     if (!sanitized) { return sanitized; }
 

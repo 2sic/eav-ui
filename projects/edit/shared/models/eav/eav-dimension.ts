@@ -1,7 +1,7 @@
 export class EavDimension {
-  public Value: string;
+  Value: string;
 
-  public static create(value: string): EavDimension {
+  static create(value: string): EavDimension {
     const dimension: EavDimension = {
       Value: value,
     };

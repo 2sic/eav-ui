@@ -3,7 +3,7 @@ import { EavValues } from '../eav';
 export class Value1<T> {
   [languages: string]: T;
 
-  public static convert<T>(eavValues: EavValues<T>): Value1<T> {
+  static convert<T>(eavValues: EavValues<T>): Value1<T> {
     const value1: Value1<T> = {};
     for (const value of eavValues.Values) {
       const dimensions = value.Dimensions.map(dimension => dimension.Value).join();

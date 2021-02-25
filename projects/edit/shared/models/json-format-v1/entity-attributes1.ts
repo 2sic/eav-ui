@@ -4,7 +4,7 @@ import { EavEntityAttributes } from '../eav';
 export class EntityAttributes1 {
   [attributeType: string]: EntityAttribute1<any>;
 
-  public static convert(attributes: EavEntityAttributes): EntityAttributes1 {
+  static convert(attributes: EavEntityAttributes): EntityAttributes1 {
     const attributes1: EntityAttributes1 = {};
 
     for (const [name, values] of Object.entries(attributes)) {

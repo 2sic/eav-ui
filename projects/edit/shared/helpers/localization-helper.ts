@@ -10,7 +10,7 @@ export class LocalizationHelper {
    * if not exist return default language translation,
    * if default language also not exist return first value
    */
-  public static translate(currentLanguage: string, defaultLanguage: string, attributeValues: EavValues<any>, defaultValue: any): any {
+  static translate(currentLanguage: string, defaultLanguage: string, attributeValues: EavValues<any>, defaultValue: any): any {
     if (attributeValues) {
       const translation: EavValue<any> = this.getValueTranslation(attributeValues, currentLanguage, defaultLanguage);
       // if translation exist then return translation
@@ -34,8 +34,7 @@ export class LocalizationHelper {
     }
   }
 
-  public static getValueOrDefault(allAttributesValues: EavValues<any>, languageKey: string,
-    defaultLanguage: string): EavValue<any> {
+  static getValueOrDefault(allAttributesValues: EavValues<any>, languageKey: string, defaultLanguage: string): EavValue<any> {
     let translation = LocalizationHelper.getValueTranslation(allAttributesValues, languageKey, defaultLanguage);
     if (translation === null || translation === undefined) {
       translation = LocalizationHelper.getValueTranslation(allAttributesValues, defaultLanguage, defaultLanguage);
@@ -43,16 +42,14 @@ export class LocalizationHelper {
     return translation;
   }
 
-  public static getValueTranslation(allAttributesValues: EavValues<any>, languageKey: string,
-    defaultLanguage: string): EavValue<any> {
+  static getValueTranslation(allAttributesValues: EavValues<any>, languageKey: string, defaultLanguage: string): EavValue<any> {
     return allAttributesValues.Values.find(eavValue =>
       eavValue.Dimensions.find(d => d.Value === languageKey
         || d.Value === `~${languageKey}`
         || (languageKey === defaultLanguage && d.Value === '*')) !== undefined);
   }
 
-  public static isEditableOrReadonlyTranslationExist(allAttributesValues: EavValues<any>, languageKey: string,
-    defaultLanguage: string): boolean {
+  static isEditableOrReadonlyTranslationExist(allAttributesValues: EavValues<any>, languageKey: string, defaultLanguage: string): boolean {
     return allAttributesValues ? allAttributesValues.Values.filter(c =>
       c.Dimensions.find(d =>
         d.Value === languageKey
@@ -61,24 +58,23 @@ export class LocalizationHelper {
   }
 
   /** Language is editable if langageKey exist or on default language * exist */
-  public static isEditableTranslationExist(allAttributesValues: EavValues<any>, languageKey: string, defaultLanguage: string): boolean {
+  static isEditableTranslationExist(allAttributesValues: EavValues<any>, languageKey: string, defaultLanguage: string): boolean {
     return allAttributesValues ? allAttributesValues.Values.filter(eavValue =>
       eavValue.Dimensions.find(d => (d.Value === languageKey)
         || (languageKey === defaultLanguage && d.Value === '*'))).length > 0 : false;
   }
 
-  public static isReadonlyTranslationExist(allAttributesValues: EavValues<any>, languageKey: string): boolean {
+  static isReadonlyTranslationExist(allAttributesValues: EavValues<any>, languageKey: string): boolean {
     return allAttributesValues ? allAttributesValues.Values.filter(eavValue =>
       eavValue.Dimensions.find(d => d.Value === `~${languageKey}`)).length > 0 : false;
   }
 
-  public static translationExistsInDefault(allAttributesValues: EavValues<any>, defaultLanguage: string): boolean {
+  static translationExistsInDefault(allAttributesValues: EavValues<any>, defaultLanguage: string): boolean {
     return allAttributesValues ? allAttributesValues.Values.filter(eavValue =>
       eavValue.Dimensions.find(d => d.Value === defaultLanguage || d.Value === '*')).length > 0 : false;
   }
 
-  public static translationExistsInDefaultStrict(allAttributesValues: EavValues<any>, defaultLanguage: string,
-    disableI18n: boolean): boolean {
+  static translationExistsInDefaultStrict(allAttributesValues: EavValues<any>, defaultLanguage: string, disableI18n: boolean): boolean {
     if (disableI18n) {
       return allAttributesValues ? allAttributesValues.Values.filter(eavValue =>
         eavValue.Dimensions.find(d => d.Value === defaultLanguage || d.Value === '*')).length > 0 : false;
@@ -88,7 +84,7 @@ export class LocalizationHelper {
     }
   }
 
-  public static isI18nDisabled(
+  static isI18nDisabled(
     inputTypeService: InputTypeService,
     calculatedInputType: CalculatedInputType,
     fullSettings: EavEntityAttributes,
@@ -133,8 +129,12 @@ export class LocalizationHelper {
   }
 
   /** Update value for languageKey */
-  public static updateAttributesValues(allAttributes: EavEntityAttributes, updateValues: { [key: string]: any }, languageKey: string,
-    defaultLanguage: string): EavEntityAttributes {
+  static updateAttributesValues(
+    allAttributes: EavEntityAttributes,
+    updateValues: { [key: string]: any },
+    languageKey: string,
+    defaultLanguage: string,
+  ): EavEntityAttributes {
     // copy attributes from item
     const eavAttributes: EavEntityAttributes = {};
     Object.keys(allAttributes).forEach(attributeKey => {
@@ -180,8 +180,14 @@ export class LocalizationHelper {
   }
 
   /** update attribute value, and change language readonly state if needed */
-  public static updateAttributeValue(allAttributes: EavEntityAttributes, attributeKey: string, updateValue: any,
-    existingLanguageKey: string, defaultLanguage: string, isReadOnly: boolean): EavEntityAttributes {
+  static updateAttributeValue(
+    allAttributes: EavEntityAttributes,
+    attributeKey: string,
+    updateValue: any,
+    existingLanguageKey: string,
+    defaultLanguage: string,
+    isReadOnly: boolean,
+  ): EavEntityAttributes {
     // copy attributes from item
     let eavAttributes: EavEntityAttributes = {};
     let newLanguageValue = existingLanguageKey;
@@ -219,8 +225,12 @@ export class LocalizationHelper {
     return eavAttributes;
   }
 
-  public static addAttributeValue(allAttributes: EavEntityAttributes, attributeValue: EavValue<any>, attributeKey: string,
-    attributeType: string): EavEntityAttributes {
+  static addAttributeValue(
+    allAttributes: EavEntityAttributes,
+    attributeValue: EavValue<any>,
+    attributeKey: string,
+    attributeType: string,
+  ): EavEntityAttributes {
     // copy attributes from item
     let eavAttributes: EavEntityAttributes = {};
     const attribute: EavValues<any> =
@@ -239,8 +249,14 @@ export class LocalizationHelper {
   }
 
   /** Add dimension to value with existing dimension */
-  public static addAttributeDimension(allAttributes: EavEntityAttributes, attributeKey: string, newDimensionValue: any,
-    existingDimensionValue: string, defaultLanguage: string, isReadOnly: boolean): EavEntityAttributes {
+  static addAttributeDimension(
+    allAttributes: EavEntityAttributes,
+    attributeKey: string,
+    newDimensionValue: any,
+    existingDimensionValue: string,
+    defaultLanguage: string,
+    isReadOnly: boolean,
+  ): EavEntityAttributes {
     // copy attributes from item
     let eavAttributes: EavEntityAttributes = {};
     let newLanguageValue = newDimensionValue;
@@ -268,7 +284,7 @@ export class LocalizationHelper {
   }
 
   /** Removes dimension (language) from attribute. If multiple dimensions exist, delete only dimension, else delete value and dimension */
-  public static removeAttributeDimension(attributes: EavEntityAttributes, attributeKey: string, language: string): EavEntityAttributes {
+  static removeAttributeDimension(attributes: EavEntityAttributes, attributeKey: string, language: string): EavEntityAttributes {
     const oldAttributes = attributes;
     const validDimensions = [language, `~${language}`];
 
@@ -314,7 +330,7 @@ export class LocalizationHelper {
     return newAttributes;
   }
 
-  public static translateSettings(settings: EavEntityAttributes, currentLanguage: string, defaultLanguage: string): FieldSettings {
+  static translateSettings(settings: EavEntityAttributes, currentLanguage: string, defaultLanguage: string): FieldSettings {
     const translated: { [key: string]: any } = {};
     for (const key of Object.keys(settings)) {
       translated[key] = LocalizationHelper.translate(currentLanguage, defaultLanguage, settings[key], false);
@@ -331,7 +347,7 @@ export class LocalizationHelper {
    *
    * Similar to LocalizationHelper.translate(), but returns whole value object.
    */
-  // public static getBestValue(eavValues: EavValues<any>, lang: string, defaultLang: string): EavValue<any> {
+  // static getBestValue(eavValues: EavValues<any>, lang: string, defaultLang: string): EavValue<any> {
   //   let bestDimensions = [lang, `~${lang}`];
   //   let bestValue = this.findValueForDimensions(eavValues, bestDimensions);
   //   if (bestValue != null) { return bestValue; }

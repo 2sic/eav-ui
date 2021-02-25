@@ -2,7 +2,7 @@ import { TranslationLinkConstants } from '../../../shared/constants/translation-
 
 export class TranslateMenuHelpers {
 
-  public static getTranslationStateClass(linkType: string) {
+  static getTranslationStateClass(linkType: string) {
     switch (linkType) {
       case TranslationLinkConstants.MissingDefaultLangValue:
         return 'localization-missing-default-lang-value';
@@ -20,7 +20,7 @@ export class TranslateMenuHelpers {
     }
   }
 
-  public static calculateSharedInfoMessage(dimensions: string[], currentLanguage: string): string {
+  static calculateSharedInfoMessage(dimensions: string[], currentLanguage: string): string {
     dimensions = TranslateMenuHelpers.calculateShortDimensions(dimensions, currentLanguage);
     const result = TranslateMenuHelpers.calculateEditAndReadDimensions(dimensions);
     const editableDimensions = result.editableDimensions;
@@ -90,5 +90,4 @@ export class TranslateMenuHelpers {
       readOnlyDimensions
     };
   }
-
 }

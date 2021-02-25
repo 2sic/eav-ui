@@ -2,16 +2,16 @@ import { EntityAttributes1 } from '.';
 import { EavEntity, EavFor, EavType } from '../eav';
 
 export class Entity1 {
-  public Attributes: EntityAttributes1;
-  public Guid: string;
-  public Id: number;
-  public Owner: string;
-  public Type: EavType;
-  public Version: number;
-  public For?: EavFor;
-  public Metadata?: Entity1[];
+  Attributes: EntityAttributes1;
+  Guid: string;
+  Id: number;
+  Owner: string;
+  Type: EavType;
+  Version: number;
+  For?: EavFor;
+  Metadata?: Entity1[];
 
-  public static convertOne(entity: EavEntity): Entity1 {
+  static convertOne(entity: EavEntity): Entity1 {
     const attributes1 = EntityAttributes1.convert(entity.Attributes);
     const metadata1 = this.convertMany(entity.Metadata);
 

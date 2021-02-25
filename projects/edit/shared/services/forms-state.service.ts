@@ -5,8 +5,8 @@ import { EavService } from './eav.service';
 
 @Injectable()
 export class FormsStateService implements OnDestroy {
-  public formsValid$: BehaviorSubject<boolean>;
-  public formsDirty$: BehaviorSubject<boolean>;
+  formsValid$: BehaviorSubject<boolean>;
+  formsDirty$: BehaviorSubject<boolean>;
 
   private formsValid: ObjectModel<boolean>;
   private formsDirty: ObjectModel<boolean>;
