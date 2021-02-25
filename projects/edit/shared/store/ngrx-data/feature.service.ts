@@ -1,26 +1,27 @@
 import { Injectable } from '@angular/core';
 import { EntityCollectionServiceBase, EntityCollectionServiceElementsFactory } from '@ngrx/data';
-import { take } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
 import { Feature } from '../../../../ng-dialogs/src/app/apps-management/models/feature.model';
 
 @Injectable({ providedIn: 'root' })
 export class FeatureService extends EntityCollectionServiceBase<Feature> {
+  private features$: BehaviorSubject<Feature[]>;
+
   constructor(serviceElementsFactory: EntityCollectionServiceElementsFactory) {
     super('Feature', serviceElementsFactory);
+
+    this.features$ = new BehaviorSubject<Feature[]>([]);
+    // doesn't need to be completed because store services are singletons that lives as long as the browser tab is open
+    this.entities$.subscribe(features => {
+      this.features$.next(features);
+    });
   }
 
-  loadFeatures(features: Feature[]) {
+  loadFeatures(features: Feature[]): void {
     this.addAllToCache(features);
   }
 
-  isFeatureEnabled(guid: string) {
-    let isEnabled = false;
-    this.entities$.pipe(take(1)).subscribe(features => {
-      const feature = features.find(ftr => ftr.id === guid);
-      if (feature != null) {
-        isEnabled = feature.enabled;
-      }
-    });
-    return isEnabled;
+  isFeatureEnabled(guid: string): boolean {
+    return this.features$.value.find(feature => feature.id === guid)?.enabled ?? false;
   }
 }
