@@ -1,8 +1,8 @@
 import { AfterViewInit, Component, ElementRef, Input, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { EavService } from '../../..';
 import { Language } from '../../../shared/models';
+import { EavService } from '../../../shared/services';
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
 import { LanguageService } from '../../../shared/store/ngrx-data/language.service';
 import { CenterSelectedHelper } from './center-selected.helper';

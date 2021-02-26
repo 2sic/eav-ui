@@ -4,9 +4,7 @@ import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/an
 import { EavFormComponent } from '../../eav-dynamic-form/components/eav-form/eav-form.component';
 import { LocalizationHelpers } from '../../shared/helpers';
 import { EavItem } from '../../shared/models/eav';
-import { EavService } from '../../shared/services/eav.service';
-import { FieldsSettingsService } from '../../shared/services/fields-settings.service';
-import { FieldsTranslateService } from '../../shared/services/fields-translate.service';
+import { EavService, FieldsSettingsService, FieldsTranslateService } from '../../shared/services';
 import { ItemService } from '../../shared/store/ngrx-data/item.service';
 import { LanguageInstanceService } from '../../shared/store/ngrx-data/language-instance.service';
 import { FormValues } from './item-edit-form.models';

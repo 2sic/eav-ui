@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 import { FieldSettings } from '../../../../../edit-types';
 import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 import { EntityInfo } from '../../../../shared/models';
-import { GlobalConfigService } from '../../../../shared/services/global-configuration.service';
+import { GlobalConfigService } from '../../../../shared/services';
 import { SelectedEntity } from '../entity-default/entity-default.models';
 
 @Component({

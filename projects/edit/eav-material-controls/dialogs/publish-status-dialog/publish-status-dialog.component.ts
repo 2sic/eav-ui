@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { EavService } from '../../..';
 import { PublishMode, PublishModeConstants } from '../../../shared/models';
+import { EavService } from '../../../shared/services';
 import { PublishStatusService } from '../../../shared/store/ngrx-data/publish-status.service';
 import { PublishStatusDialogTemplateVars } from './publish-status-dialog.models';
 

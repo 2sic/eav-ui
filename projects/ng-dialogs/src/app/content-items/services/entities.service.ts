@@ -1,8 +1,8 @@
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { webApiEntityRoot } from 'projects/edit';
 import { Observable } from 'rxjs';
+import { webApiEntityRoot } from '../../../../../edit/shared/services';
 import { Context } from '../../shared/services/context';
 
 @Injectable()

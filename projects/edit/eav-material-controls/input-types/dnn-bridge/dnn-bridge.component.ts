@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { EavService } from '../../../shared/services/eav.service';
+import { EavService } from '../../../shared/services';
 import { DnnBridgeDialogData } from './dnn-bridge.models';
 
 @Component({
@@ -12,10 +12,7 @@ import { DnnBridgeDialogData } from './dnn-bridge.models';
 export class DnnBridgeComponent implements OnInit {
   iframeSrc: string;
 
-  constructor(
-    @Inject(MAT_DIALOG_DATA) private dialogData: DnnBridgeDialogData,
-    private eavService: EavService,
-  ) { }
+  constructor(@Inject(MAT_DIALOG_DATA) private dialogData: DnnBridgeDialogData, private eavService: EavService) { }
 
   ngOnInit() {
     const connector = this.dialogData.connector;
@@ -48,5 +45,4 @@ export class DnnBridgeComponent implements OnInit {
     if (w == null || w.connectBridge == null) { return; }
     w.connectBridge(this.dialogData.connector);
   }
-
 }

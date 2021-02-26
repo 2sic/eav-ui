@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { EntityCollectionServiceBase, EntityCollectionServiceElementsFactory } from '@ngrx/data';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
-import { EavService } from '../..';
 import { PublishMode, PublishModeConstants, PublishStatus } from '../../models';
+import { EavService } from '../../services';
 
 @Injectable({ providedIn: 'root' })
 export class PublishStatusService extends EntityCollectionServiceBase<PublishStatus> {

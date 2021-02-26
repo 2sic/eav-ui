@@ -33,7 +33,7 @@ import { HyperlinkLibraryExpandableWrapperComponent } from '../../../eav-materia
 import { LocalizationWrapperComponent } from '../../../eav-material-controls/wrappers/localization-wrapper/localization-wrapper.component';
 import { componentMetadataKey } from '../../../shared/constants';
 import { ComponentMetadataModel, FieldProps } from '../../../shared/models';
-import { FieldsSettingsService } from '../../../shared/services/fields-settings.service';
+import { FieldsSettingsService } from '../../../shared/services';
 import { Field } from '../../model/field';
 import { FieldConfigSet } from '../../model/field-config';
 import { FieldWrapper } from '../../model/field-wrapper';

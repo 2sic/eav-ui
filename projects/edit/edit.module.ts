@@ -9,10 +9,7 @@ import { buildTranslateConfiguration, TranslateLoaderWithErrorHandling } from '.
 import { EavItemDialogModule } from './eav-item-dialog/eav-item-dialog.module';
 import { AdamService } from './eav-material-controls/adam/adam.service';
 import { EditRoutingModule } from './edit-routing.module';
-import { DnnBridgeService } from './shared/services/dnn-bridge.service';
-import { EavService } from './shared/services/eav.service';
-import { EntityService } from './shared/services/entity.service';
-import { QueryService } from './shared/services/query.service';
+import { DnnBridgeService, EavService, EntityService, QueryService } from './shared/services';
 
 declare const sxcVersion: string;
 

@@ -2,10 +2,10 @@ import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { ChangeDetectionStrategy, Component, HostBinding, OnDestroy } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
-import { EntityService } from 'projects/edit';
 import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import { filter, map, share, switchMap } from 'rxjs/operators';
 import { AllScenarios, generateApiCalls, Scenario } from '..';
+import { EntityService } from '../../../../../edit/shared/services';
 import { AppDialogConfigService } from '../../app-administration/services/app-dialog-config.service';
 import { ContentTypesService } from '../../app-administration/services/content-types.service';
 import { PermissionsService } from '../../permissions/services/permissions.service';
@@ -71,7 +71,7 @@ export class DevRestDataComponent implements OnDestroy {
       fireOnStartAndWhenSubDialogCloses(this.router, this.route),
       route.paramMap.pipe(map(pm => pm.get(GoToDevRest.paramTypeName))),
     ]).pipe(
-      switchMap(([_, typeName])  => {
+      switchMap(([_, typeName]) => {
         // TODO: 2dm - something looks wrong here, we're getting Entity-metadata for content-type!
         return permissionsService.getAll(eavConstants.metadata.entity.type, eavConstants.keyTypes.guid, typeName);
       }),

@@ -9,10 +9,7 @@ import { EditForm } from '../../../../../ng-dialogs/src/app/shared/models/edit-f
 import { FieldMaskService } from '../../../../../shared/field-mask.service';
 import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
 import { EntityInfo } from '../../../../shared/models';
-import { EavService } from '../../../../shared/services/eav.service';
-import { EditRoutingService } from '../../../../shared/services/edit-routing.service';
-import { EntityService } from '../../../../shared/services/entity.service';
-import { FieldsSettingsService } from '../../../../shared/services/fields-settings.service';
+import { EavService, EditRoutingService, EntityService, FieldsSettingsService } from '../../../../shared/services';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { BaseComponent } from '../../base/base.component';
 import { ReorderIndexes } from '../entity-default-list/entity-default-list.models';

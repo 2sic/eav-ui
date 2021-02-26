@@ -5,7 +5,7 @@ import { map } from 'rxjs/operators';
 import { FieldSettings } from '../../../../edit-types';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
-import { FieldsSettingsService } from '../../../shared/services/fields-settings.service';
+import { FieldsSettingsService } from '../../../shared/services';
 import { EmptyDefaultLogic } from './collapsible-wrapper-logic';
 
 @Component({

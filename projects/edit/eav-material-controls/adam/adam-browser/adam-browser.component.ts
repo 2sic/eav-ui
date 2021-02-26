@@ -10,9 +10,7 @@ import { EditForm } from '../../../../ng-dialogs/src/app/shared/models/edit-form
 import { FeaturesGuidsConstants } from '../../../../shared/features-guids.constants';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { UrlHelpers } from '../../../shared/helpers';
-import { EavService } from '../../../shared/services/eav.service';
-import { EditRoutingService } from '../../../shared/services/edit-routing.service';
-import { FileTypeService } from '../../../shared/services/file-type.service';
+import { EavService, EditRoutingService, FileTypeService } from '../../../shared/services';
 import { FeatureService } from '../../../shared/store/ngrx-data/feature.service';
 import { AdamService } from '../adam.service';
 import { AdamBrowserTemplateVars, AdamConfigInstance } from './adam-browser.models';

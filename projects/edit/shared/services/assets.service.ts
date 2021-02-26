@@ -1,7 +1,7 @@
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { EavService } from './eav.service';
+import { EavService } from '.';
 
 const webApiAppFilesRoot = 'admin/appfiles/';
 export const webApiAppFilesAll = webApiAppFilesRoot + 'all';

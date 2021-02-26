@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { from, Observable } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
-import { webApiEntityRoot } from '../../../../../edit/shared/services/entity.service';
+import { webApiEntityRoot } from '../../../../../edit/shared/services';
 import { toBase64 } from '../../shared/helpers/file-to-base64.helper';
 import { Context } from '../../shared/services/context';
 import { ContentImport, EvaluateContentResult, ImportContentRequest, ImportContentResult } from '../models/content-import.model';

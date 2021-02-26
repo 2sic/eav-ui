@@ -1,10 +1,9 @@
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { webApiEntityList } from 'projects/edit';
 import { from, Observable } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
-import { webApiEntityRoot } from '../../../../../edit/shared/services/entity.service';
+import { webApiEntityList, webApiEntityRoot } from '../../../../../edit/shared/services';
 import { Field } from '../../content-type-fields/models/field.model';
 import { webApiFieldsAll } from '../../content-type-fields/services/content-types-fields.service';
 import { toBase64 } from '../../shared/helpers/file-to-base64.helper';

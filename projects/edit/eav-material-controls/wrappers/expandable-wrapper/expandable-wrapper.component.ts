@@ -6,10 +6,7 @@ import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { ContentExpandAnimation } from '../../../shared/animations';
 import { DropzoneDraggingHelper } from '../../../shared/helpers';
-import { DnnBridgeService } from '../../../shared/services/dnn-bridge.service';
-import { EavService } from '../../../shared/services/eav.service';
-import { EditRoutingService } from '../../../shared/services/edit-routing.service';
-import { FieldsSettingsService } from '../../../shared/services/fields-settings.service';
+import { DnnBridgeService, EavService, EditRoutingService, FieldsSettingsService } from '../../../shared/services';
 import { ContentTypeService } from '../../../shared/store/ngrx-data/content-type.service';
 import { FeatureService } from '../../../shared/store/ngrx-data/feature.service';
 import { InputTypeService } from '../../../shared/store/ngrx-data/input-type.service';

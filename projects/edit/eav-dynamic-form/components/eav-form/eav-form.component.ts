@@ -2,11 +2,9 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnI
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { combineLatest, Subscription } from 'rxjs';
 import { distinctUntilChanged, filter, map, startWith } from 'rxjs/operators';
-import { EavService } from '../../..';
 import { InputTypeConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { FormValues } from '../../../eav-item-dialog/item-edit-form/item-edit-form.models';
-import { FieldsSettingsService } from '../../../shared/services/fields-settings.service';
-import { FormsStateService } from '../../../shared/services/forms-state.service';
+import { EavService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
 import { ItemService } from '../../../shared/store/ngrx-data/item.service';
 
 @Component({

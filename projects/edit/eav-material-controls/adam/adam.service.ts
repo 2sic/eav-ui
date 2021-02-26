@@ -2,7 +2,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AdamConfig, AdamItem } from '../../../edit-types';
-import { EavService } from '../../shared/services/eav.service';
+import { EavService } from '../../shared/services';
 import { SanitizeHelper } from './sanitize.helper';
 
 @Injectable()

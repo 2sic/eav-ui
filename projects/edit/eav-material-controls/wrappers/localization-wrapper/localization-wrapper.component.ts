@@ -1,9 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { Observable } from 'rxjs';
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
-import { EavService } from '../../../shared/services/eav.service';
-import { EditRoutingService } from '../../../shared/services/edit-routing.service';
-import { FieldsSettingsService } from '../../../shared/services/fields-settings.service';
+import { EavService, EditRoutingService, FieldsSettingsService } from '../../../shared/services';
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
 import { BaseComponent } from '../../input-types/base/base.component';
 import { TranslateMenuComponent } from '../../localization/translate-menu/translate-menu.component';

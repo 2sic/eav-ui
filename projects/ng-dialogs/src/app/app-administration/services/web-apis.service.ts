@@ -1,8 +1,8 @@
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { webApiAppFileCreate, webApiAppFilesAll } from 'projects/edit';
 import { map } from 'rxjs/operators';
+import { webApiAppFileCreate, webApiAppFilesAll } from '../../../../../edit/shared/services';
 import { Context } from '../../shared/services/context';
 import { WebApi } from '../models/web-api.model';
 

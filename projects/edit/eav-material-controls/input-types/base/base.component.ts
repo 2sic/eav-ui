@@ -5,8 +5,7 @@ import { distinctUntilChanged, filter, map, startWith } from 'rxjs/operators';
 import { FieldSettings } from '../../../../edit-types';
 import { Field } from '../../../eav-dynamic-form/model/field';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
-import { EavService } from '../../../shared/services/eav.service';
-import { FieldsSettingsService } from '../../../shared/services/fields-settings.service';
+import { EavService, FieldsSettingsService } from '../../../shared/services';
 import { ValidationMessagesService } from '../../validators/validation-messages-service';
 
 @Directive()

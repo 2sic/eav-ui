@@ -1,16 +1,15 @@
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { webApiAppFile, webApiAppFileCreate, webApiAppFilesAll } from 'projects/edit';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { webApiAppFile, webApiAppFileCreate, webApiAppFilesAll } from '../../../../../edit/shared/services';
 import { keyIsShared } from '../../shared/constants/session.constants';
 import { Context } from '../../shared/services/context';
 import { SourceView } from '../models/source-view.model';
 
 @Injectable()
 export class SourceService {
-
   private isShared = sessionStorage.getItem(keyIsShared) ?? false.toString();
 
   constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }

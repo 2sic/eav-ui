@@ -21,7 +21,7 @@ import { SharedComponentsModule } from '../../ng-dialogs/src/app/shared/shared-c
 import { EavDynamicFormModule } from '../eav-dynamic-form/eav-dynamic-form.module';
 import { EavMaterialControlsModule } from '../eav-material-controls/eav-material-controls.module';
 import { EditEntryComponent } from '../edit-entry/edit-entry.component';
-import { LoadIconsService } from '../shared/services/load-icons.service';
+import { LoadIconsService } from '../shared/services';
 import { ItemEditFormComponent } from './item-edit-form/item-edit-form.component';
 import { MultiItemEditFormDebugComponent } from './multi-item-edit-form-debug/multi-item-edit-form-debug.component';
 import { MultiItemEditFormHeaderComponent } from './multi-item-edit-form-header/multi-item-edit-form-header.component';
