@@ -15,7 +15,6 @@ import { ItemService } from '../../../shared/store/ngrx-data';
 })
 export class EavFormComponent implements OnInit, OnDestroy {
   @Input() entityGuid: string;
-  @Input() entityId: string;
   @Output() private formValueChange = new EventEmitter<FormValues>();
 
   form: FormGroup;

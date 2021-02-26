@@ -15,7 +15,6 @@ import { ContentTypeTemplateVars } from './content-type-wrapper.models';
 })
 export class ContentTypeWrapperComponent implements OnInit {
   @Input() entityGuid: string;
-  @Input() private entityId: string;
   @Input() group: FormGroup;
 
   collapse: boolean;
@@ -68,6 +67,7 @@ export class ContentTypeWrapperComponent implements OnInit {
   }
 
   openHistory() {
-    this.router.navigate([`versions/${this.entityId}`], { relativeTo: this.route });
+    const item = this.itemService.getItem(this.entityGuid);
+    this.router.navigate([`versions/${item.Entity.Guid}`], { relativeTo: this.route });
   }
 }

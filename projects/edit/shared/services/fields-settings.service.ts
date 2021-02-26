@@ -8,7 +8,6 @@ import { ValidationHelper } from '../../eav-material-controls/validators/validat
 import { FieldLogicManager } from '../../field-logic/field-logic-manager';
 import { FieldsSettingsHelpers, InputFieldHelpers, LocalizationHelpers } from '../helpers';
 import { ContentTypeSettings, FieldsProps, TranslationState } from '../models';
-import { EavItem } from '../models/eav';
 import { ContentTypeService, InputTypeService, ItemService, LanguageInstanceService } from '../store/ngrx-data';
 
 @Injectable()
@@ -31,14 +30,15 @@ export class FieldsSettingsService implements OnDestroy {
     this.subscription?.unsubscribe();
   }
 
-  init(item: EavItem): void {
+  init(entityGuid: string): void {
     this.subscription = new Subscription();
     this.contentTypeSettings$ = new BehaviorSubject<ContentTypeSettings>(null);
     this.fieldsProps$ = new BehaviorSubject<FieldsProps>(null);
 
+    const item = this.itemService.getItem(entityGuid);
     const contentTypeId = InputFieldHelpers.getContentTypeId(item);
     const contentType$ = this.contentTypeService.getContentType$(contentTypeId);
-    const itemHeader$ = this.itemService.getItemHeader$(item.Entity.Guid);
+    const itemHeader$ = this.itemService.getItemHeader$(entityGuid);
     const currentLanguage$ = this.languageInstanceService.getCurrentLanguage$(this.eavService.eavConfig.formId);
     const defaultLanguage$ = this.languageInstanceService.getDefaultLanguage$(this.eavService.eavConfig.formId);
 
@@ -65,7 +65,7 @@ export class FieldsSettingsService implements OnDestroy {
       })
     );
 
-    const itemAttributes$ = this.itemService.getItemAttributes$(item.Entity.Guid);
+    const itemAttributes$ = this.itemService.getItemAttributes$(entityGuid);
     const inputTypes$ = this.inputTypeService.getInputTypes$();
     this.subscription.add(
       combineLatest([contentType$, currentLanguage$, defaultLanguage$, itemAttributes$, itemHeader$, inputTypes$]).pipe(
@@ -118,8 +118,7 @@ export class FieldsSettingsService implements OnDestroy {
               constants: {
                 angularAssets: inputType?.AngularAssets,
                 contentTypeId,
-                entityGuid: item.Entity.Guid,
-                entityId: item.Entity.Id,
+                entityGuid,
                 fieldName: attribute.Name,
                 index: contentType.Attributes.indexOf(attribute),
                 initialDisabled,

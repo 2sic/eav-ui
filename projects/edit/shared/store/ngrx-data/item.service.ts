@@ -190,6 +190,10 @@ export class ItemService extends EntityCollectionServiceBase<EavItem> {
     );
   }
 
+  getItem(entityGuid: string): EavItem {
+    return this.items$.value.find(item => item.Entity.Guid === entityGuid);
+  }
+
   getItem$(entityGuid: string): Observable<EavItem> {
     return this.items$.pipe(
       map(items => items.find(item => item.Entity.Guid === entityGuid)),

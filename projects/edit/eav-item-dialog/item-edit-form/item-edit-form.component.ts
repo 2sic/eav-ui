@@ -30,8 +30,8 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
 
   ngOnInit() {
     this.subscription = new Subscription();
-    this.fieldsSettingsService.init(this.item);
-    this.fieldsTranslateService.init(this.item);
+    this.fieldsSettingsService.init(this.item.Entity.Guid);
+    this.fieldsTranslateService.init(this.item.Entity.Guid);
 
     this.subscription.add(
       this.languageInstanceService.getCurrentLanguage$(this.eavService.eavConfig.formId).subscribe(() => {

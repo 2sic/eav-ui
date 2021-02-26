@@ -18,8 +18,9 @@ export class FieldsTranslateService {
     private fieldsSettingsService: FieldsSettingsService,
   ) { }
 
-  init(item: EavItem): void {
-    this.entityGuid = item.Entity.Guid;
+  init(entityGuid: string): void {
+    this.entityGuid = entityGuid;
+    const item = this.itemService.getItem(entityGuid);
     this.contentTypeId = InputFieldHelpers.getContentTypeId(item);
   }
 
