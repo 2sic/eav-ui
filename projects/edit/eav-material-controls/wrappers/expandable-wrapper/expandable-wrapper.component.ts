@@ -4,7 +4,7 @@ import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
-import { ContentExpandAnimation } from '../../../shared/animations/content-expand-animation';
+import { ContentExpandAnimation } from '../../../shared/animations';
 import { DnnBridgeService } from '../../../shared/services/dnn-bridge.service';
 import { DropzoneDraggingHelper } from '../../../shared/services/dropzone-dragging.helper';
 import { EavService } from '../../../shared/services/eav.service';

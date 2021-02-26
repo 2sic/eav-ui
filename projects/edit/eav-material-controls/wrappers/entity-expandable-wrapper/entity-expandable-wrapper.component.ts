@@ -3,7 +3,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
-import { ContentExpandAnimation } from '../../../shared/animations/content-expand-animation';
+import { ContentExpandAnimation } from '../../../shared/animations';
 import { EavService } from '../../../shared/services/eav.service';
 import { EditRoutingService } from '../../../shared/services/edit-routing.service';
 import { FieldsSettingsService } from '../../../shared/services/fields-settings.service';

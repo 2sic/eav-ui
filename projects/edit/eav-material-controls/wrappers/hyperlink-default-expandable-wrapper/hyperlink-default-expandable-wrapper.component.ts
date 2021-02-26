@@ -3,7 +3,7 @@ import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { PrefetchLinks } from '../../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.models';
-import { ContentExpandAnimation } from '../../../shared/animations/content-expand-animation';
+import { ContentExpandAnimation } from '../../../shared/animations';
 import { DnnBridgeService } from '../../../shared/services/dnn-bridge.service';
 import { DropzoneDraggingHelper } from '../../../shared/services/dropzone-dragging.helper';
 import { EavService } from '../../../shared/services/eav.service';
