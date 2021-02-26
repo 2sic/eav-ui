@@ -8,7 +8,6 @@ import { map } from 'rxjs/operators';
 import { EditForm } from '../../../../../ng-dialogs/src/app/shared/models/edit-form.model';
 import { FieldMaskService } from '../../../../../shared/field-mask.service';
 import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
-import { Helper } from '../../../../shared/helpers/helper';
 import { EntityInfo } from '../../../../shared/models';
 import { EavService } from '../../../../shared/services/eav.service';
 import { EditRoutingService } from '../../../../shared/services/edit-routing.service';
@@ -19,7 +18,7 @@ import { BaseComponent } from '../../base/base.component';
 import { ReorderIndexes } from '../entity-default-list/entity-default-list.models';
 import { EntityDefaultSearchComponent } from '../entity-default-search/entity-default-search.component';
 import { EntityDefaultLogic } from './entity-default-logic';
-import { calculateSelectedEntities } from './entity-default.helpers';
+import { calculateSelectedEntities, convertArrayToString, convertValueToArray } from './entity-default.helpers';
 import { DeleteEntityProps, EntityTemplateVars, SelectedEntity } from './entity-default.models';
 
 @Component({
@@ -272,7 +271,7 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
 
   private updateValue(action: 'add' | 'delete' | 'reorder', value: string | number | ReorderIndexes) {
     const valueArray: string[] = (typeof this.control.value === 'string')
-      ? Helper.convertValueToArray(this.control.value, this.settings$.value.Separator)
+      ? convertValueToArray(this.control.value, this.settings$.value.Separator)
       : [...this.control.value];
 
     switch (action) {
@@ -291,7 +290,7 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
     }
 
     if (typeof this.control.value === 'string') {
-      const valueString = Helper.convertArrayToString(valueArray, this.settings$.value.Separator);
+      const valueString = convertArrayToString(valueArray, this.settings$.value.Separator);
       this.control.patchValue(valueString);
     } else {
       this.control.patchValue(valueArray);

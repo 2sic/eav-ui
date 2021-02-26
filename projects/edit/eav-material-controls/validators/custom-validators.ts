@@ -1,5 +1,5 @@
 import { FormControl, ValidationErrors, ValidatorFn } from '@angular/forms';
-import { Helper } from '../../shared/helpers/helper';
+import { UrlHelper } from '../../shared/helpers/url-helper';
 import { AdamControl } from '../input-types/hyperlink/hyperlink-library/hyperlink-library.models';
 
 export class CustomValidators {
@@ -7,7 +7,7 @@ export class CustomValidators {
   /** Validate url chars */
   static onlySimpleUrlChars(allowPath: boolean, trimEnd: boolean): ValidationErrors {
     return (control: FormControl): { [key: string]: any } => {
-      const cleanInputValue = Helper.stripNonUrlCharacters(control.value, allowPath, trimEnd);
+      const cleanInputValue = UrlHelper.stripNonUrlCharacters(control.value, allowPath, trimEnd);
       return (cleanInputValue === control.value) ? null : { onlySimpleUrlChars: true };
     };
   }
