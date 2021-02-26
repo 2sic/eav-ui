@@ -73,10 +73,9 @@ export class FieldsSettingsHelpers {
   static getContentTypeTitle(contentType: EavContentType, currentLanguage: string, defaultLanguage: string): string {
     let label: string;
     try {
-      const type = contentType.Metadata
-        // xx ContentType is a historic bug and should be fixed when JSONs are rechecked
-        .find(metadata => metadata.Type.Name === 'ContentType' || metadata.Type.Name === 'xx ContentType');
-      if (!!type) {
+      // xx ContentType is a historic bug and should be fixed when JSONs are rechecked
+      const type = contentType.Metadata.find(metadata => metadata.Type.Name === 'ContentType' || metadata.Type.Name === 'xx ContentType');
+      if (type) {
         label = LocalizationHelpers.getValueOrDefault(type.Attributes.Label, currentLanguage, defaultLanguage)?.Value;
       }
       label = label || contentType.Name;

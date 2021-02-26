@@ -14,32 +14,21 @@ export class LocalizationHelpers {
    * if default language also not exist return first value
    */
   static translate(currentLanguage: string, defaultLanguage: string, attributeValues: EavValues<any>, defaultValue: any): any {
-    if (attributeValues) {
-      const translation: EavValue<any> = this.getValueTranslation(attributeValues, currentLanguage, defaultLanguage);
-      // if translation exist then return translation
-      if (translation) {
-        return translation.Value;
-        // return translations[0].value;
-      } else {
-        const translationDefault: EavValue<any> = this.getValueTranslation(attributeValues,
-          defaultLanguage, defaultLanguage);
-        // if default language translation exist then return translation
-        if (translationDefault) {
-          return translationDefault.Value;
-        } else {
-          // else get first value
-          // TODO: maybe return value with *
-          return attributeValues.Values[0] ? attributeValues.Values[0].Value : null;
-        }
-      }
-    } else {
-      return defaultValue;
-    }
+    if (!attributeValues) { return defaultValue; }
+
+    const translation: EavValue<any> = this.getValueTranslation(attributeValues, currentLanguage, defaultLanguage);
+    if (translation) { return translation.Value; }
+
+    const translationDefault: EavValue<any> = this.getValueTranslation(attributeValues, defaultLanguage, defaultLanguage);
+    if (translationDefault) { return translationDefault.Value; }
+
+    // TODO: maybe return value with *
+    return attributeValues.Values[0]?.Value ?? null;
   }
 
   static getValueOrDefault(allAttributesValues: EavValues<any>, languageKey: string, defaultLanguage: string): EavValue<any> {
     let translation = LocalizationHelpers.getValueTranslation(allAttributesValues, languageKey, defaultLanguage);
-    if (translation === null || translation === undefined) {
+    if (translation == null) {
       translation = LocalizationHelpers.getValueTranslation(allAttributesValues, defaultLanguage, defaultLanguage);
     }
     return translation;
