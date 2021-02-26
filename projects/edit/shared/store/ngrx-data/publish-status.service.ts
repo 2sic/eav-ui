@@ -13,7 +13,7 @@ export class PublishStatusService extends EntityCollectionServiceBase<PublishSta
     super('PublishStatus', serviceElementsFactory);
 
     this.publishStatuses$ = new BehaviorSubject<PublishStatus[]>([]);
-    // doesn't need to be completed because store services are singletons that lives as long as the browser tab is open
+    // doesn't need to be completed because store services are singletons that live as long as the browser tab is open
     this.entities$.subscribe(publishStatuses => {
       this.publishStatuses$.next(publishStatuses);
     });

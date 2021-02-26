@@ -11,7 +11,7 @@ export class LanguageService extends EntityCollectionServiceBase<Language> {
     super('Language', serviceElementsFactory);
 
     this.languages$ = new BehaviorSubject<Language[]>([]);
-    // doesn't need to be completed because store services are singletons that lives as long as the browser tab is open
+    // doesn't need to be completed because store services are singletons that live as long as the browser tab is open
     this.entities$.subscribe(languages => {
       this.languages$.next(languages);
     });

@@ -21,13 +21,9 @@ export class GlobalConfigService {
       debugEnabled = enabled;
     });
     if (debugEnabled) {
-      this.snackBar.open('debug mode enabled', null, {
-        duration: 3000,
-      });
+      this.snackBar.open('debug mode enabled', null, { duration: 3000 });
     } else {
-      this.snackBar.open('debug mode disabled', null, {
-        duration: 3000,
-      });
+      this.snackBar.open('debug mode disabled', null, { duration: 3000 });
     }
   }
 

@@ -3,7 +3,7 @@ import { GlobalConfigurationState } from '../reducers/global-configuration.reduc
 
 export const loadDebugEnabled = createAction(
   '[GlobalConfiguration] LOAD_DEBUG_ENABLED',
-  props<GlobalConfigurationState>()
+  props<GlobalConfigurationState>(),
 );
 
 export const toggleDebugEnabled = createAction('[GlobalConfiguration] TOGGLE_DEBUG_ENABLED');

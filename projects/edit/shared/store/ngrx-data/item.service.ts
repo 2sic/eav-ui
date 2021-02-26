@@ -17,7 +17,7 @@ export class ItemService extends EntityCollectionServiceBase<EavItem> {
     super('Item', serviceElementsFactory);
 
     this.items$ = new BehaviorSubject<EavItem[]>([]);
-    // doesn't need to be completed because store services are singletons that lives as long as the browser tab is open
+    // doesn't need to be completed because store services are singletons that live as long as the browser tab is open
     this.entities$.subscribe(items => {
       this.items$.next(items);
     });

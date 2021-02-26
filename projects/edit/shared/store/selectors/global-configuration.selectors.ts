@@ -6,5 +6,5 @@ export const selectGlobalConfiguration = (state: EavState) => state.globalConfig
 
 export const selectDebugEnabled = createSelector(
   selectGlobalConfiguration,
-  (state: GlobalConfigurationState) => state.debugEnabled
+  (state: GlobalConfigurationState) => state.debugEnabled,
 );

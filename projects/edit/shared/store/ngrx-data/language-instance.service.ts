@@ -12,7 +12,7 @@ export class LanguageInstanceService extends EntityCollectionServiceBase<Languag
     super('LanguageInstance', serviceElementsFactory);
 
     this.languageInstances$ = new BehaviorSubject<LanguageInstance[]>([]);
-    // doesn't need to be completed because store services are singletons that lives as long as the browser tab is open
+    // doesn't need to be completed because store services are singletons that live as long as the browser tab is open
     this.entities$.subscribe(languageInstances => {
       this.languageInstances$.next(languageInstances);
     });

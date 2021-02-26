@@ -11,7 +11,7 @@ export class FeatureService extends EntityCollectionServiceBase<Feature> {
     super('Feature', serviceElementsFactory);
 
     this.features$ = new BehaviorSubject<Feature[]>([]);
-    // doesn't need to be completed because store services are singletons that lives as long as the browser tab is open
+    // doesn't need to be completed because store services are singletons that live as long as the browser tab is open
     this.entities$.subscribe(features => {
       this.features$.next(features);
     });

@@ -11,7 +11,7 @@ export class PrefetchService extends EntityCollectionServiceBase<Prefetch> {
     super('Prefetch', serviceElementsFactory);
 
     this.prefetches$ = new BehaviorSubject<Prefetch[]>([]);
-    // doesn't need to be completed because store services are singletons that lives as long as the browser tab is open
+    // doesn't need to be completed because store services are singletons that live as long as the browser tab is open
     this.entities$.subscribe(prefetches => {
       this.prefetches$.next(prefetches);
     });

@@ -12,7 +12,7 @@ export class ContentTypeItemService extends EntityCollectionServiceBase<EavEntit
     super('ContentTypeItem', serviceElementsFactory);
 
     this.contentTypeItems$ = new BehaviorSubject<EavEntity[]>([]);
-    // doesn't need to be completed because store services are singletons that lives as long as the browser tab is open
+    // doesn't need to be completed because store services are singletons that live as long as the browser tab is open
     this.entities$.subscribe(contentTypeItems => {
       this.contentTypeItems$.next(contentTypeItems);
     });
