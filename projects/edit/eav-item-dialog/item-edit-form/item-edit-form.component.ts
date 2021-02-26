@@ -5,8 +5,7 @@ import { EavFormComponent } from '../../eav-dynamic-form/components/eav-form/eav
 import { LocalizationHelpers } from '../../shared/helpers';
 import { EavItem } from '../../shared/models/eav';
 import { EavService, FieldsSettingsService, FieldsTranslateService } from '../../shared/services';
-import { ItemService } from '../../shared/store/ngrx-data/item.service';
-import { LanguageInstanceService } from '../../shared/store/ngrx-data/language-instance.service';
+import { ItemService, LanguageInstanceService } from '../../shared/store/ngrx-data';
 import { FormValues } from './item-edit-form.models';
 
 @Component({

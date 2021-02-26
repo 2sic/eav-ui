@@ -11,7 +11,7 @@ import { FeaturesGuidsConstants } from '../../../../shared/features-guids.consta
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { UrlHelpers } from '../../../shared/helpers';
 import { EavService, EditRoutingService, FileTypeService } from '../../../shared/services';
-import { FeatureService } from '../../../shared/store/ngrx-data/feature.service';
+import { FeatureService } from '../../../shared/store/ngrx-data';
 import { AdamService } from '../adam.service';
 import { AdamBrowserTemplateVars, AdamConfigInstance } from './adam-browser.models';
 

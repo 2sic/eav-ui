@@ -12,15 +12,8 @@ import { EavFormData } from '../../eav-item-dialog/multi-item-edit-form/multi-it
 import { EditParams } from '../../edit-matcher.models';
 import { InputFieldHelpers, LocalizationHelpers } from '../helpers';
 import { Language, PublishStatus } from '../models';
-import { ContentTypeItemService } from '../store/ngrx-data/content-type-item.service';
-import { ContentTypeService } from '../store/ngrx-data/content-type.service';
-import { FeatureService } from '../store/ngrx-data/feature.service';
-import { InputTypeService } from '../store/ngrx-data/input-type.service';
-import { ItemService } from '../store/ngrx-data/item.service';
-import { LanguageInstanceService } from '../store/ngrx-data/language-instance.service';
-import { LanguageService } from '../store/ngrx-data/language.service';
-import { PrefetchService } from '../store/ngrx-data/prefetch.service';
-import { PublishStatusService } from '../store/ngrx-data/publish-status.service';
+// tslint:disable-next-line:max-line-length
+import { ContentTypeItemService, ContentTypeService, FeatureService, InputTypeService, ItemService, LanguageInstanceService, LanguageService, PrefetchService, PublishStatusService } from '../store/ngrx-data';
 
 @Injectable()
 export class EditInitializerService implements OnDestroy {

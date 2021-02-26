@@ -5,7 +5,7 @@ import { distinctUntilChanged, filter, map, startWith } from 'rxjs/operators';
 import { InputTypeConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { FormValues } from '../../../eav-item-dialog/item-edit-form/item-edit-form.models';
 import { EavService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
-import { ItemService } from '../../../shared/store/ngrx-data/item.service';
+import { ItemService } from '../../../shared/store/ngrx-data';
 
 @Component({
   selector: 'app-eav-form',

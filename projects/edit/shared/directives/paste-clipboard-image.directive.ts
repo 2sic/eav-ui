@@ -4,7 +4,7 @@ import { ElementEventListener } from '../../../shared/element-event-listener.mod
 import { FeaturesGuidsConstants } from '../../../shared/features-guids.constants';
 import { FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
 import { PasteClipboardImageEventDetail } from '../models';
-import { FeatureService } from '../store/ngrx-data/feature.service';
+import { FeatureService } from '../store/ngrx-data';
 
 @Directive({ selector: '[appPasteClipboardImage]' })
 export class PasteClipboardImageDirective implements OnInit, OnDestroy {

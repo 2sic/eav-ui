@@ -1,7 +1,7 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ItemService } from '../../shared/store/ngrx-data/item.service';
+import { ItemService } from '../../shared/store/ngrx-data';
 import { FormDebugTemplateVars } from './multi-item-edit-form-debug.models';
 
 declare const sxcVersion: string;

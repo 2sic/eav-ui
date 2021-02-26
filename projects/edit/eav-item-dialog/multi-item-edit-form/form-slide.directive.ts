@@ -2,8 +2,7 @@ import { Directive, ElementRef, OnDestroy, OnInit } from '@angular/core';
 import { fromEvent, merge, Subscription } from 'rxjs';
 import { delay, filter, map, pairwise } from 'rxjs/operators';
 import { EavService } from '../../shared/services';
-import { LanguageInstanceService } from '../../shared/store/ngrx-data/language-instance.service';
-import { LanguageService } from '../../shared/store/ngrx-data/language.service';
+import { LanguageInstanceService, LanguageService } from '../../shared/store/ngrx-data';
 
 @Directive({ selector: '[appFormSlide]' })
 export class FormSlideDirective implements OnInit, OnDestroy {

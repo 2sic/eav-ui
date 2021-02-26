@@ -16,15 +16,8 @@ import { FieldErrorMessage, ObjectModel, SaveResult } from '../../shared/models'
 import { EavItem } from '../../shared/models/eav';
 import { Item1 } from '../../shared/models/json-format-v1';
 import { EavService, EditRoutingService, FormsStateService, GlobalConfigService, LoadIconsService } from '../../shared/services';
-import { ContentTypeItemService } from '../../shared/store/ngrx-data/content-type-item.service';
-import { ContentTypeService } from '../../shared/store/ngrx-data/content-type.service';
-import { FeatureService } from '../../shared/store/ngrx-data/feature.service';
-import { InputTypeService } from '../../shared/store/ngrx-data/input-type.service';
-import { ItemService } from '../../shared/store/ngrx-data/item.service';
-import { LanguageInstanceService } from '../../shared/store/ngrx-data/language-instance.service';
-import { LanguageService } from '../../shared/store/ngrx-data/language.service';
-import { PrefetchService } from '../../shared/store/ngrx-data/prefetch.service';
-import { PublishStatusService } from '../../shared/store/ngrx-data/publish-status.service';
+// tslint:disable-next-line:max-line-length
+import { ContentTypeItemService, ContentTypeService, FeatureService, InputTypeService, ItemService, LanguageInstanceService, LanguageService, PrefetchService, PublishStatusService } from '../../shared/store/ngrx-data';
 import { ItemEditFormComponent } from '../item-edit-form/item-edit-form.component';
 import { MultiEditFormTemplateVars, SaveEavFormData } from './multi-item-edit-form.models';
 

@@ -11,7 +11,7 @@ import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { TranslateModule } from '@ngx-translate/core';
 import { metaReducers, reducers } from '../../../edit/shared/store';
-import { entityConfig } from '../../../edit/shared/store/ngrx-data/entity-metadata';
+import { entityConfig } from '../../../edit/shared/store/ngrx-data';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { paramsInitFactory } from './params-init.factory';

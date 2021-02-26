@@ -4,7 +4,7 @@ import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { PublishMode, PublishModeConstants } from '../../../shared/models';
 import { EavService } from '../../../shared/services';
-import { PublishStatusService } from '../../../shared/store/ngrx-data/publish-status.service';
+import { PublishStatusService } from '../../../shared/store/ngrx-data';
 import { PublishStatusDialogTemplateVars } from './publish-status-dialog.models';
 
 @Component({

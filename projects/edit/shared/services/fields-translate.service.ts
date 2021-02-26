@@ -3,9 +3,7 @@ import { EavService, FieldsSettingsService } from '.';
 import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 import { InputFieldHelpers, LocalizationHelpers } from '../helpers';
 import { EavItem } from '../models/eav';
-import { ContentTypeService } from '../store/ngrx-data/content-type.service';
-import { ItemService } from '../store/ngrx-data/item.service';
-import { LanguageInstanceService } from '../store/ngrx-data/language-instance.service';
+import { ContentTypeService, ItemService, LanguageInstanceService } from '../store/ngrx-data';
 
 @Injectable()
 export class FieldsTranslateService {

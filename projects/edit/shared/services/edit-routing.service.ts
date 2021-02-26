@@ -11,7 +11,7 @@ import { EditEntryComponent } from '../../edit-entry/edit-entry.component';
 import { EditParams } from '../../edit-matcher.models';
 import { UrlHelpers } from '../helpers';
 import { ChildFormResult, NavigateFormResult } from '../models';
-import { LanguageInstanceService } from '../store/ngrx-data/language-instance.service';
+import { LanguageInstanceService } from '../store/ngrx-data';
 
 @Injectable()
 export class EditRoutingService implements OnDestroy {

@@ -7,7 +7,7 @@ import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { TranslationLinkConstants } from '../../../shared/constants';
 import { TranslationState } from '../../../shared/models';
 import { EavService, FieldsSettingsService, FieldsTranslateService } from '../../../shared/services';
-import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
+import { LanguageInstanceService } from '../../../shared/store/ngrx-data';
 import { TranslateMenuDialogComponent } from '../translate-menu-dialog/translate-menu-dialog.component';
 import { TranslateMenuDialogData } from '../translate-menu-dialog/translate-menu-dialog.models';
 import { TranslateMenuHelpers } from './translate-menu.helpers';

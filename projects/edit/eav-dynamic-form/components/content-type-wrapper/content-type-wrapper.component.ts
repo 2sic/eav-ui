@@ -5,8 +5,7 @@ import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { EavHeader } from '../../../shared/models/eav';
 import { EavService, FieldsSettingsService } from '../../../shared/services';
-import { ItemService } from '../../../shared/store/ngrx-data/item.service';
-import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
+import { ItemService, LanguageInstanceService } from '../../../shared/store/ngrx-data';
 import { ContentTypeTemplateVars } from './content-type-wrapper.models';
 
 @Component({

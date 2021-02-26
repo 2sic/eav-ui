@@ -4,8 +4,7 @@ import { DataTypeConstants } from '../../../ng-dialogs/src/app/content-type-fiel
 import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 import { CalculatedInputType } from '../models';
 import { EavDimension, EavEntityAttributes, EavItem, EavValue, EavValues } from '../models/eav';
-import { ContentTypeService } from '../store/ngrx-data/content-type.service';
-import { InputTypeService } from '../store/ngrx-data/input-type.service';
+import { ContentTypeService, InputTypeService } from '../store/ngrx-data';
 
 export class LocalizationHelpers {
   /**

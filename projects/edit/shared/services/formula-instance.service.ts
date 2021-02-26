@@ -1,17 +1,16 @@
 // import { Injectable, OnDestroy } from '@angular/core';
 // import { FormGroup } from '@angular/forms';
 // import { Subject, Subscription } from 'rxjs';
-// import { map, take } from 'rxjs/operators';
+// import { map } from 'rxjs/operators';
+// import { take } from 'rxjs/operators';
 // import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
-// import { FieldConfigGroup, FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
+// import { FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
 // import { FormValues } from '../../eav-item-dialog/item-edit-form/item-edit-form.models';
-// import { LocalizationHelper } from '../helpers/localization-helper';
-// import { CalcFields, FieldFormulas, FieldsFormulaSettings, FormulaType, LanguageChangeCheckedFields } from '../models';
+// import { LocalizationHelpers } from '../helpers';
+// tslint:disable-next-line:max-line-length
+// import { CalcFields, FieldFormulas, FieldsFormulaSettings, FormulaContext, FormulaFunction, FormulaType, LanguageChangeCheckedFields } from '../models';
 // import { EavEntityAttributes } from '../models/eav';
-// import { ContentTypeItemService } from '../store/ngrx-data/content-type-item.service';
-// import { FormulaContext, FormulaFunction } from '../store/ngrx-data/item.models';
-// import { ItemService } from '../store/ngrx-data/item.service';
-// import { LanguageInstanceService } from '../store/ngrx-data/language-instance.service';
+// import { ContentTypeItemService, ItemService, LanguageInstanceService } from '../store/ngrx-data';
 
 // @Injectable()
 // export class FormulaInstanceService implements OnDestroy {
@@ -44,13 +43,13 @@
 //     this.subscription = new Subscription();
 
 //     this.subscription.add(
-//       this.languageInstanceService.getDefaultLanguage(formId).subscribe(defaultLang => {
+//       this.languageInstanceService.getDefaultLanguage$(formId).subscribe(defaultLang => {
 //         this.defaultLang = defaultLang;
 //       })
 //     );
 
 //     this.subscription.add(
-//       this.languageInstanceService.getCurrentLanguage(formId).subscribe(currentLang => {
+//       this.languageInstanceService.getCurrentLanguage$(formId).subscribe(currentLang => {
 //         this.lang = currentLang;
 //       })
 //     );
@@ -60,7 +59,7 @@
 //     return;
 //     angularConsoleLog('Run settings formulas');
 //     let eavAttributes: EavEntityAttributes;
-//     this.itemService.selectItemAttributes(this.entityGuid).pipe(take(1)).subscribe(eavAttrs => {
+//     this.itemService.getItemAttributes$(this.entityGuid).pipe(take(1)).subscribe(eavAttrs => {
 //       eavAttributes = eavAttrs;
 //     });
 //     const formValues = this.getFormValues(eavAttributes);
@@ -90,7 +89,7 @@
 //     if (formulas == null) { return; }
 
 //     let eavAttributes: EavEntityAttributes;
-//     this.itemService.selectItemAttributes(this.entityGuid).pipe(take(1)).subscribe(eavAttrs => {
+//     this.itemService.getItemAttributes$(this.entityGuid).pipe(take(1)).subscribe(eavAttrs => {
 //       eavAttributes = eavAttrs;
 //     });
 
@@ -183,7 +182,7 @@
 //   /** Runs formulas on language change after field configurations were translated */
 //   runFormulasAfterFieldsTranslated() {
 //     let eavAttributes: EavEntityAttributes;
-//     this.itemService.selectItemAttributes(this.entityGuid).pipe(take(1)).subscribe(eavAttrs => {
+//     this.itemService.getItemAttributes$(this.entityGuid).pipe(take(1)).subscribe(eavAttrs => {
 //       eavAttributes = eavAttrs;
 //     });
 //     this.languageChangeCheckedFields = {};
@@ -236,10 +235,10 @@
 //     for (const [fieldName, calcItemGuids] of Object.entries(calcFields)) {
 //       for (const calcItemGuid of calcItemGuids) {
 //         this.contentTypeItemService.getContentTypeItemByGuid(calcItemGuid).pipe(take(1)).subscribe(calcItem => {
-//           const target: string = LocalizationHelper.translate(this.lang, this.defaultLang, calcItem.Attributes.Target, null);
+//           const target: string = LocalizationHelpers.translate(this.lang, this.defaultLang, calcItem.Attributes.Target, null);
 //           if (target !== type) { return; }
 
-//           const formula: string = LocalizationHelper.translate(this.lang, this.defaultLang, calcItem.Attributes.Formula, null);
+//           const formula: string = LocalizationHelpers.translate(this.lang, this.defaultLang, calcItem.Attributes.Formula, null);
 //           if (!formula) { return; }
 
 //           const formulaFn = this.buildFormulaFunction(formula);
@@ -271,7 +270,7 @@
 //     const formValues: FormValues = {};
 
 //     for (const [name, attribute] of Object.entries(attributes)) {
-//       formValues[name] = LocalizationHelper.translate(this.lang, this.defaultLang, attribute, null);
+//       formValues[name] = LocalizationHelpers.translate(this.lang, this.defaultLang, attribute, null);
 //     }
 
 //     return formValues;

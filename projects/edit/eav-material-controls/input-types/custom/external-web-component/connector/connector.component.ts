@@ -4,9 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { angularConsoleLog } from '../../../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 import { FieldConfigSet } from '../../../../../eav-dynamic-form/model/field-config';
 import { DnnBridgeService, EavService, EditRoutingService, FieldsSettingsService } from '../../../../../shared/services';
-import { ContentTypeService } from '../../../../../shared/store/ngrx-data/content-type.service';
-import { FeatureService } from '../../../../../shared/store/ngrx-data/feature.service';
-import { InputTypeService } from '../../../../../shared/store/ngrx-data/input-type.service';
+import { ContentTypeService, FeatureService, InputTypeService } from '../../../../../shared/store/ngrx-data';
 import { ConnectorHelper } from './connector.helper';
 
 @Component({

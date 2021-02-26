@@ -9,10 +9,7 @@ import { FieldLogicManager } from '../../field-logic/field-logic-manager';
 import { FieldsSettingsHelpers, InputFieldHelpers, LocalizationHelpers } from '../helpers';
 import { ContentTypeSettings, FieldsProps, TranslationState } from '../models';
 import { EavItem } from '../models/eav';
-import { ContentTypeService } from '../store/ngrx-data/content-type.service';
-import { InputTypeService } from '../store/ngrx-data/input-type.service';
-import { ItemService } from '../store/ngrx-data/item.service';
-import { LanguageInstanceService } from '../store/ngrx-data/language-instance.service';
+import { ContentTypeService, InputTypeService, ItemService, LanguageInstanceService } from '../store/ngrx-data';
 
 @Injectable()
 export class FieldsSettingsService implements OnDestroy {

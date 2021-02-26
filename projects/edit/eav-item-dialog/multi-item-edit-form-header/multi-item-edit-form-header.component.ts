@@ -4,8 +4,7 @@ import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { PublishStatusDialogComponent } from '../../eav-material-controls/dialogs/publish-status-dialog/publish-status-dialog.component';
 import { EavService } from '../../shared/services';
-import { LanguageService } from '../../shared/store/ngrx-data/language.service';
-import { PublishStatusService } from '../../shared/store/ngrx-data/publish-status.service';
+import { LanguageService, PublishStatusService } from '../../shared/store/ngrx-data';
 import { FormHeaderTemplateVars } from './multi-item-edit-form-header.models';
 
 @Component({

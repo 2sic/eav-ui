@@ -8,9 +8,7 @@ import { FieldConfigSet } from '../../../../../eav-dynamic-form/model/field-conf
 import { FieldValue } from '../../../../../eav-item-dialog/item-edit-form/item-edit-form.models';
 import { InputFieldHelpers } from '../../../../../shared/helpers';
 import { DnnBridgeService, EavService, EditRoutingService, FieldsSettingsService } from '../../../../../shared/services';
-import { ContentTypeService } from '../../../../../shared/store/ngrx-data/content-type.service';
-import { FeatureService } from '../../../../../shared/store/ngrx-data/feature.service';
-import { InputTypeService } from '../../../../../shared/store/ngrx-data/input-type.service';
+import { ContentTypeService, FeatureService, InputTypeService } from '../../../../../shared/store/ngrx-data';
 import { ConnectorHost, ConnectorInstance } from './models/connector-instance.model';
 
 export class ConnectorHelper {
