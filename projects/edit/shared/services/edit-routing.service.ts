@@ -3,15 +3,14 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Subject, Subscription } from 'rxjs';
 import { distinctUntilChanged, filter, map, pairwise, startWith } from 'rxjs/operators';
-import { EavService } from '.';
+import { ChildFormResult, EavService, NavigateFormResult } from '.';
 import { ItemHistoryResult } from '../../../ng-dialogs/src/app/item-history/models/item-history-result.model';
 import { convertFormToUrl } from '../../../ng-dialogs/src/app/shared/helpers/url-prep.helper';
 import { EditForm } from '../../../ng-dialogs/src/app/shared/models/edit-form.model';
 import { EditEntryComponent } from '../../edit-entry/edit-entry.component';
 import { EditParams } from '../../edit-matcher.models';
+import { UrlHelpers } from '../helpers';
 import { LanguageInstanceService } from '../store/ngrx-data/language-instance.service';
-import { calculatePathFromRoot } from './edit-routing.helpers';
-import { ChildFormResult, NavigateFormResult } from './edit-routing.models';
 
 @Injectable()
 export class EditRoutingService implements OnDestroy {
@@ -77,7 +76,7 @@ export class EditRoutingService implements OnDestroy {
     const oldEditUrl = `edit/${params.items}` + (oldHasDetails ? `/details/${params.detailsEntityGuid}/${params.detailsFieldId}` : '');
     const newEditUrl = `edit/${params.items}` + (expand ? `/details/${entityGuid}/${fieldId}` : '');
 
-    const currentUrl = calculatePathFromRoot(this.route);
+    const currentUrl = UrlHelpers.calculatePathFromRoot(this.route);
     const lastIndex = currentUrl.lastIndexOf(oldEditUrl);
     if (lastIndex <= 0) { return; }
     const newUrl = currentUrl.substring(0, lastIndex) + currentUrl.substring(lastIndex).replace(oldEditUrl, newEditUrl);
@@ -99,7 +98,7 @@ export class EditRoutingService implements OnDestroy {
     const oldEditUrl = `edit/${params.items}`;
     const newEditUrl = `edit/${params.items}/update/${entityGuid}/${fieldId}/edit/${formUrl}`;
 
-    const currentUrl = calculatePathFromRoot(this.route);
+    const currentUrl = UrlHelpers.calculatePathFromRoot(this.route);
     const lastIndex = currentUrl.lastIndexOf(oldEditUrl);
     if (lastIndex <= 0) { return; }
     const newUrl = currentUrl.substring(0, lastIndex) + currentUrl.substring(lastIndex).replace(oldEditUrl, newEditUrl);
@@ -154,7 +153,7 @@ export class EditRoutingService implements OnDestroy {
         const oldEditUrl = `edit/${params.items}/update/${params.updateEntityGuid}/${params.updateFieldId}`;
         const newEditUrl = `edit/${params.items}`;
 
-        const currentUrl = calculatePathFromRoot(this.route);
+        const currentUrl = UrlHelpers.calculatePathFromRoot(this.route);
         const lastIndex = currentUrl.lastIndexOf(oldEditUrl);
         if (lastIndex <= 0) { return; }
         const newUrl = currentUrl.substring(0, lastIndex) + currentUrl.substring(lastIndex).replace(oldEditUrl, newEditUrl);
@@ -183,7 +182,7 @@ export class EditRoutingService implements OnDestroy {
         const oldEditUrl = `edit/${params.items}`;
         const newEditUrl = `edit/refresh/${params.items}`;
 
-        const currentUrl = calculatePathFromRoot(this.route);
+        const currentUrl = UrlHelpers.calculatePathFromRoot(this.route);
         const lastIndex = currentUrl.lastIndexOf(oldEditUrl);
         if (lastIndex <= 0) { return; }
         const newUrl = currentUrl.substring(0, lastIndex) + currentUrl.substring(lastIndex).replace(oldEditUrl, newEditUrl);

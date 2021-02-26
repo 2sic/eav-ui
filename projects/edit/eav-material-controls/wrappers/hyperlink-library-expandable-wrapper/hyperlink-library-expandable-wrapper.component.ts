@@ -4,7 +4,7 @@ import { map } from 'rxjs/operators';
 import { AdamItem } from '../../../../edit-types';
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { ContentExpandAnimation } from '../../../shared/animations';
-import { DropzoneDraggingHelper } from '../../../shared/services/dropzone-dragging.helper';
+import { DropzoneDraggingHelper } from '../../../shared/helpers';
 import { EavService } from '../../../shared/services/eav.service';
 import { EditRoutingService } from '../../../shared/services/edit-routing.service';
 import { FieldsSettingsService } from '../../../shared/services/fields-settings.service';

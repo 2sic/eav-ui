@@ -1,7 +1,5 @@
-
 export * from './assets.service';
 export * from './dnn-bridge.service';
-export * from './dropzone-dragging.helper';
 export * from './eav.service';
 export * from './edit-routing.models';
 export * from './edit-routing.service';

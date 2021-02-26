@@ -1,3 +1,4 @@
+import { ActivatedRoute } from '@angular/router';
 import { EavConfig } from '../models';
 
 export class UrlHelpers {
@@ -140,5 +141,21 @@ export class UrlHelpers {
     if (result.endsWith('/')) { result = result.substring(0, result.length - 1); }
 
     return result;
+  }
+
+  static calculatePathFromRoot(route: ActivatedRoute) {
+    let lastChild = route;
+    while (lastChild.firstChild) {
+      lastChild = lastChild.firstChild;
+    }
+    let pathFromRoot = '';
+    for (const path of lastChild.snapshot.pathFromRoot) {
+      if (path.url.length <= 0) { continue; }
+      for (const urlSegment of path.url) {
+        if (!urlSegment.path) { continue; }
+        pathFromRoot += '/' + urlSegment.path;
+      }
+    }
+    return pathFromRoot;
   }
 }
