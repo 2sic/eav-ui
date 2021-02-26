@@ -5,8 +5,8 @@ import { distinctUntilChanged, map, take } from 'rxjs/operators';
 import { FieldSettings } from '../../../../edit-types';
 import { DataTypeConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/data-type.constants';
 import { FieldValue, FormValues } from '../../../eav-item-dialog/item-edit-form/item-edit-form.models';
-import { InputFieldHelper } from '../../helpers/input-field.helper';
-import { LocalizationHelper } from '../../helpers/localization.helper';
+import { InputFieldHelpers } from '../../helpers/input-field.helpers';
+import { LocalizationHelpers } from '../../helpers/localization.helpers';
 import { Language, SaveResult } from '../../models';
 import { EavContentTypeAttribute, EavDimension, EavEntityAttributes, EavHeader, EavItem, EavValue } from '../../models/eav';
 import { Item1 } from '../../models/json-format-v1';
@@ -65,7 +65,7 @@ export class ItemService extends EntityCollectionServiceBase<EavItem> {
       ...oldItem,
       Entity: {
         ...oldItem.Entity,
-        Attributes: LocalizationHelper.addAttributeValue(oldItem.Entity.Attributes, newEavValue, attributeKey, attributeType),
+        Attributes: LocalizationHelpers.addAttributeValue(oldItem.Entity.Attributes, newEavValue, attributeKey, attributeType),
       }
     };
 
@@ -91,7 +91,7 @@ export class ItemService extends EntityCollectionServiceBase<EavItem> {
       ...oldItem,
       Entity: {
         ...oldItem.Entity,
-        Attributes: LocalizationHelper.updateAttributeValue(
+        Attributes: LocalizationHelpers.updateAttributeValue(
           oldItem.Entity.Attributes, attributeKey, newValue, currentLanguage, defaultLanguage, isReadOnly,
         ),
       }
@@ -107,7 +107,7 @@ export class ItemService extends EntityCollectionServiceBase<EavItem> {
     if (!oldItem) { return; }
 
     const changed = Object.entries(oldItem.Entity.Attributes).some(([name, values]) => {
-      const oldValue = LocalizationHelper.translate(currentLanguage, defaultLanguage, values, null);
+      const oldValue = LocalizationHelpers.translate(currentLanguage, defaultLanguage, values, null);
       const newValue = newValues[name];
       return oldValue !== newValue;
     });
@@ -117,7 +117,7 @@ export class ItemService extends EntityCollectionServiceBase<EavItem> {
       ...oldItem,
       Entity: {
         ...oldItem.Entity,
-        Attributes: LocalizationHelper.updateAttributesValues(oldItem.Entity.Attributes, newValues, currentLanguage, defaultLanguage),
+        Attributes: LocalizationHelpers.updateAttributesValues(oldItem.Entity.Attributes, newValues, currentLanguage, defaultLanguage),
       }
     };
     this.updateOneInCache(newItem);
@@ -142,7 +142,7 @@ export class ItemService extends EntityCollectionServiceBase<EavItem> {
       ...oldItem,
       Entity: {
         ...oldItem.Entity,
-        Attributes: LocalizationHelper.addAttributeDimension(
+        Attributes: LocalizationHelpers.addAttributeDimension(
           oldItem.Entity.Attributes, attributeKey, currentLanguage, shareWithLanguage, defaultLanguage, isReadOnly,
         ),
       }
@@ -163,7 +163,7 @@ export class ItemService extends EntityCollectionServiceBase<EavItem> {
       ...oldItem,
       Entity: {
         ...oldItem.Entity,
-        Attributes: LocalizationHelper.removeAttributeDimension(oldItem.Entity.Attributes, attributeKey, currentLanguage),
+        Attributes: LocalizationHelpers.removeAttributeDimension(oldItem.Entity.Attributes, attributeKey, currentLanguage),
       }
     };
 
@@ -247,14 +247,14 @@ export class ItemService extends EntityCollectionServiceBase<EavItem> {
     });
 
     for (const item of filteredItems) {
-      const contentTypeId = InputFieldHelper.getContentTypeId(item);
+      const contentTypeId = InputFieldHelpers.getContentTypeId(item);
       const contentType = contentTypeService.getContentType(contentTypeId);
 
       const attributesValues = Object.keys(item.Entity.Attributes).map(attributeKey => {
         const attribute = contentType.Attributes.find(a => a.Name === attributeKey);
         const inputTypes = inputTypeService.getInputTypes();
-        const calculatedInputType = InputFieldHelper.calculateInputType(attribute, inputTypes);
-        const disableI18n = LocalizationHelper.isI18nDisabled(inputTypeService, calculatedInputType, attribute.Settings);
+        const calculatedInputType = InputFieldHelpers.calculateInputType(attribute, inputTypes);
+        const disableI18n = LocalizationHelpers.isI18nDisabled(inputTypeService, calculatedInputType, attribute.Settings);
         return {
           values: item.Entity.Attributes[attributeKey],
           disableI18n,
@@ -266,7 +266,7 @@ export class ItemService extends EntityCollectionServiceBase<EavItem> {
       }
 
       for (const attributeValues of attributesValues) {
-        const translationExistsInDefault = LocalizationHelper.translationExistsInDefaultStrict(
+        const translationExistsInDefault = LocalizationHelpers.translationExistsInDefaultStrict(
           attributeValues.values, defaultLanguage, attributeValues.disableI18n,
         );
         if (!translationExistsInDefault) {
@@ -287,7 +287,7 @@ export class ItemService extends EntityCollectionServiceBase<EavItem> {
     currentLanguage: string,
     defaultLanguage: string,
   ): FieldValue {
-    const defaultValue = InputFieldHelper.parseDefaultValue(attribute.Name, inputType, settings, item.Header);
+    const defaultValue = InputFieldHelpers.parseDefaultValue(attribute.Name, inputType, settings, item.Header);
     const exists = item.Entity.Attributes.hasOwnProperty(attribute.Name);
     if (!exists) {
       if (languages.length === 0) {

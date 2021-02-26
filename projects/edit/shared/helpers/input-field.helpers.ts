@@ -5,7 +5,7 @@ import { WrappersConstants } from '../constants/wrappers.constants';
 import { CalculatedInputType } from '../models';
 import { EavContentTypeAttribute, EavHeader, EavItem } from '../models/eav';
 
-export class InputFieldHelper {
+export class InputFieldHelpers {
 
   static getContentTypeId(item: EavItem): string {
     return item.Entity.Type?.Id ?? item.Header.ContentTypeName;

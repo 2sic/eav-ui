@@ -2,7 +2,7 @@ import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChil
 import { Subscription } from 'rxjs';
 import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 import { EavFormComponent } from '../../eav-dynamic-form/components/eav-form/eav-form.component';
-import { LocalizationHelper } from '../../shared/helpers/localization.helper';
+import { LocalizationHelpers } from '../../shared/helpers/localization.helpers';
 import { EavItem } from '../../shared/models/eav';
 import { EavService } from '../../shared/services/eav.service';
 import { FieldsSettingsService } from '../../shared/services/fields-settings.service';
@@ -67,7 +67,7 @@ export class ItemEditFormComponent implements OnInit, OnDestroy, OnChanges {
 
     const formValues: FormValues = {};
     for (const [name, values] of Object.entries(this.item.Entity.Attributes)) {
-      formValues[name] = LocalizationHelper.translate(currentLanguage, defaultLanguage, values, null);
+      formValues[name] = LocalizationHelpers.translate(currentLanguage, defaultLanguage, values, null);
     }
 
     if (this.valueIsChanged(formValues, this.eavFormRef.form.value)) {

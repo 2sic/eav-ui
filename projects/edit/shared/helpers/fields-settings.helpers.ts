@@ -7,7 +7,7 @@ import { TranslationStateCore } from '../../eav-material-controls/localization/t
 import { TranslationLinkConstants } from '../constants/translation-link.constants';
 import { TranslationState } from '../models';
 import { EavContentType, EavContentTypeAttribute, EavEntity, EavValues } from '../models/eav';
-import { LocalizationHelper } from './localization.helper';
+import { LocalizationHelpers } from './localization.helpers';
 
 export class FieldsSettingsHelpers {
 
@@ -20,7 +20,7 @@ export class FieldsSettingsHelpers {
       if (item.Type.Id === '@All') { continue; }
 
       for (const [name, values] of Object.entries(item.Attributes)) {
-        const value = LocalizationHelper.translate(currentLanguage, defaultLanguage, values, null);
+        const value = LocalizationHelpers.translate(currentLanguage, defaultLanguage, values, null);
         merged[name] = value;
       }
     }
@@ -30,7 +30,7 @@ export class FieldsSettingsHelpers {
       if (item.Type.Id !== '@All') { continue; }
 
       for (const [name, values] of Object.entries(item.Attributes)) {
-        const value = LocalizationHelper.translate(currentLanguage, defaultLanguage, values, null);
+        const value = LocalizationHelpers.translate(currentLanguage, defaultLanguage, values, null);
         // do not overwrite previous settings if @All is empty
         const exists = merged[name] != null;
         const emptyAll = value == null || value === '';
@@ -51,7 +51,7 @@ export class FieldsSettingsHelpers {
     metadataItems: EavEntity[],
   ): boolean {
     if (inputType?.DisableI18n) { return true; }
-    if (!LocalizationHelper.translationExistsInDefault(attributeValues, defaultLanguage)) { return true; }
+    if (!LocalizationHelpers.translationExistsInDefault(attributeValues, defaultLanguage)) { return true; }
     if (metadataItems == null) { return false; }
 
     // find DisableTranslation in @All, @String, @string-default, etc...
@@ -77,7 +77,7 @@ export class FieldsSettingsHelpers {
         // xx ContentType is a historic bug and should be fixed when JSONs are rechecked
         .find(metadata => metadata.Type.Name === 'ContentType' || metadata.Type.Name === 'xx ContentType');
       if (!!type) {
-        label = LocalizationHelper.getValueOrDefault(type.Attributes.Label, currentLanguage, defaultLanguage)?.Value;
+        label = LocalizationHelpers.getValueOrDefault(type.Attributes.Label, currentLanguage, defaultLanguage)?.Value;
       }
       label = label || contentType.Name;
     } catch (error) {
@@ -153,10 +153,10 @@ export class FieldsSettingsHelpers {
     defaultLanguage: string,
   ): boolean {
     if (currentLanguage === defaultLanguage) { return false; }
-    if (!LocalizationHelper.translationExistsInDefault(attributeValues, defaultLanguage)) { return true; }
+    if (!LocalizationHelpers.translationExistsInDefault(attributeValues, defaultLanguage)) { return true; }
     if (disableTranslation) { return true; }
-    if (LocalizationHelper.isEditableTranslationExist(attributeValues, currentLanguage, defaultLanguage)) { return false; }
-    if (LocalizationHelper.isReadonlyTranslationExist(attributeValues, currentLanguage)) { return true; }
+    if (LocalizationHelpers.isEditableTranslationExist(attributeValues, currentLanguage, defaultLanguage)) { return false; }
+    if (LocalizationHelpers.isReadonlyTranslationExist(attributeValues, currentLanguage)) { return true; }
     return true;
   }
 
@@ -172,15 +172,15 @@ export class FieldsSettingsHelpers {
     if (disableTranslation) {
       infoLabel = 'LangMenu.InAllLanguages';
       infoMessage = '';
-    } else if (!LocalizationHelper.translationExistsInDefault(attributeValues, defaultLanguage)) {
+    } else if (!LocalizationHelpers.translationExistsInDefault(attributeValues, defaultLanguage)) {
       infoLabel = 'LangMenu.MissingDefaultLangValue';
       infoMessage = defaultLanguage;
     } else {
-      const editableTranslationExists = LocalizationHelper.isEditableTranslationExist(attributeValues, currentLanguage, defaultLanguage);
-      const readonlyTranslationExists = LocalizationHelper.isReadonlyTranslationExist(attributeValues, currentLanguage);
+      const editableTranslationExists = LocalizationHelpers.isEditableTranslationExist(attributeValues, currentLanguage, defaultLanguage);
+      const readonlyTranslationExists = LocalizationHelpers.isReadonlyTranslationExist(attributeValues, currentLanguage);
 
       if (editableTranslationExists || readonlyTranslationExists) {
-        const dimensions = LocalizationHelper.getValueTranslation(attributeValues, currentLanguage, defaultLanguage)
+        const dimensions = LocalizationHelpers.getValueTranslation(attributeValues, currentLanguage, defaultLanguage)
           .Dimensions.map(dimension => dimension.Value)
           .filter(dimension => !dimension.includes(currentLanguage));
 
@@ -221,14 +221,14 @@ export class FieldsSettingsHelpers {
     let linkType: string;
 
     // Determine is control disabled or enabled and info message
-    if (!LocalizationHelper.translationExistsInDefault(attributeValues, defaultLanguage)) {
+    if (!LocalizationHelpers.translationExistsInDefault(attributeValues, defaultLanguage)) {
       language = '';
       linkType = TranslationLinkConstants.MissingDefaultLangValue;
     } else if (disableTranslation) {
       language = '';
       linkType = TranslationLinkConstants.DontTranslate;
-    } else if (LocalizationHelper.isEditableTranslationExist(attributeValues, currentLanguage, defaultLanguage)) {
-      const editableElements = LocalizationHelper.getValueTranslation(attributeValues, currentLanguage, defaultLanguage)
+    } else if (LocalizationHelpers.isEditableTranslationExist(attributeValues, currentLanguage, defaultLanguage)) {
+      const editableElements = LocalizationHelpers.getValueTranslation(attributeValues, currentLanguage, defaultLanguage)
         .Dimensions.filter(dimension => dimension.Value !== currentLanguage);
 
       if (editableElements.length > 0) {
@@ -238,8 +238,8 @@ export class FieldsSettingsHelpers {
         language = '';
         linkType = TranslationLinkConstants.Translate;
       }
-    } else if (LocalizationHelper.isReadonlyTranslationExist(attributeValues, currentLanguage)) {
-      const readOnlyElements = LocalizationHelper.getValueTranslation(attributeValues, currentLanguage, defaultLanguage)
+    } else if (LocalizationHelpers.isReadonlyTranslationExist(attributeValues, currentLanguage)) {
+      const readOnlyElements = LocalizationHelpers.getValueTranslation(attributeValues, currentLanguage, defaultLanguage)
         .Dimensions.filter(dimension => dimension.Value !== currentLanguage);
 
       language = readOnlyElements[0].Value;

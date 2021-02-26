@@ -1,8 +1,8 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
-import { InputFieldHelper } from '../helpers/input-field.helper';
-import { LocalizationHelper } from '../helpers/localization.helper';
+import { InputFieldHelpers } from '../helpers/input-field.helpers';
+import { LocalizationHelpers } from '../helpers/localization.helpers';
 import { EavEntityAttributes, EavItem } from '../models/eav';
 import { ContentTypeService } from '../store/ngrx-data/content-type.service';
 import { ItemService } from '../store/ngrx-data/item.service';
@@ -31,7 +31,7 @@ export class FieldsTranslateService implements OnDestroy {
 
   init(item: EavItem): void {
     this.entityGuid = item.Entity.Guid;
-    this.contentTypeId = InputFieldHelper.getContentTypeId(item);
+    this.contentTypeId = InputFieldHelpers.getContentTypeId(item);
 
     this.subscription = new Subscription();
     this.subscription.add(
@@ -49,7 +49,7 @@ export class FieldsTranslateService implements OnDestroy {
     transactionItem = this.itemService.removeItemAttributeDimension(this.entityGuid, fieldName, currentLanguage, true, transactionItem);
 
     const values = this.attributes[fieldName];
-    const defaultValue = LocalizationHelper.getValueTranslation(values, defaultLanguage, defaultLanguage);
+    const defaultValue = LocalizationHelpers.getValueTranslation(values, defaultLanguage, defaultLanguage);
     const contentType = this.contentTypeService.getContentType(this.contentTypeId);
     const attribute = contentType.Attributes.find(a => a.Name === fieldName);
     transactionItem = this.itemService.addItemAttributeValue(
@@ -74,10 +74,10 @@ export class FieldsTranslateService implements OnDestroy {
     const values = this.attributes[fieldName];
     const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
     const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
-    const attributeValueTranslation = LocalizationHelper.getValueTranslation(values, copyFromLanguageKey, defaultLanguage);
+    const attributeValueTranslation = LocalizationHelpers.getValueTranslation(values, copyFromLanguageKey, defaultLanguage);
     if (attributeValueTranslation) {
       const valueAlreadyExists = values
-        ? LocalizationHelper.isEditableOrReadonlyTranslationExist(values, currentLanguage, defaultLanguage)
+        ? LocalizationHelpers.isEditableOrReadonlyTranslationExist(values, currentLanguage, defaultLanguage)
         : false;
 
       if (valueAlreadyExists) {

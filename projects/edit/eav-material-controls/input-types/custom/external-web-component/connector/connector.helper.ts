@@ -6,7 +6,7 @@ import { distinctUntilChanged, filter, map, startWith } from 'rxjs/operators';
 import { EavCustomInputField, ExperimentalProps, FieldConfig, FieldSettings } from '../../../../../../edit-types';
 import { FieldConfigSet } from '../../../../../eav-dynamic-form/model/field-config';
 import { FieldValue } from '../../../../../eav-item-dialog/item-edit-form/item-edit-form.models';
-import { InputFieldHelper } from '../../../../../shared/helpers/input-field.helper';
+import { InputFieldHelpers } from '../../../../../shared/helpers/input-field.helpers';
 import { DnnBridgeService } from '../../../../../shared/services/dnn-bridge.service';
 import { EavService } from '../../../../../shared/services/eav.service';
 import { EditRoutingService } from '../../../../../shared/services/edit-routing.service';
@@ -115,7 +115,7 @@ export class ConnectorHelper {
   private calculateExperimentalProps() {
     const contentType = this.contentTypeService.getContentType(this.config.contentTypeId);
     const inputTypes = this.inputTypeService.getInputTypes();
-    const allInputTypeNames = InputFieldHelper.getInputTypeNames(contentType.Attributes, inputTypes);
+    const allInputTypeNames = InputFieldHelpers.getInputTypeNames(contentType.Attributes, inputTypes);
 
     const experimentalProps: ExperimentalProps = {
       entityGuid: this.config.entityGuid,

@@ -2,7 +2,7 @@ import { Observable } from 'rxjs';
 import { Connector, ConnectorData, ExperimentalProps, FieldConfig } from '../../../../../../../edit-types';
 import { ConnectorDialog } from '../../../../../../../edit-types/src/ConnectorDialog';
 import { loadScripts } from '../../../../../../../ng-dialogs/src/app/shared/helpers/load-scripts.helper';
-import { UrlHelper } from '../../../../../../shared/helpers/url.helper';
+import { UrlHelpers } from '../../../../../../shared/helpers/url.helpers';
 import { EavConfig } from '../../../../../../shared/models';
 
 declare const sxcVersion: string;
@@ -51,9 +51,9 @@ export class ConnectorInstance<T> implements Connector<T> {
   }
 
   resolveTokens(src: string, eavConfig: EavConfig) {
-    src = src.replace(/\[System:Path\]/i, UrlHelper.getUrlPrefix('system', eavConfig))
-      .replace(/\[Zone:Path\]/i, UrlHelper.getUrlPrefix('zone', eavConfig))
-      .replace(/\[App:Path\]/i, UrlHelper.getUrlPrefix('app', eavConfig));
+    src = src.replace(/\[System:Path\]/i, UrlHelpers.getUrlPrefix('system', eavConfig))
+      .replace(/\[Zone:Path\]/i, UrlHelpers.getUrlPrefix('zone', eavConfig))
+      .replace(/\[App:Path\]/i, UrlHelpers.getUrlPrefix('app', eavConfig));
     if (!src.includes('?')) {
       src = `${src}?sxcver=${sxcVersion}`;
     }

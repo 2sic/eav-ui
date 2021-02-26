@@ -9,7 +9,7 @@ import { eavConstants } from '../../../../ng-dialogs/src/app/shared/constants/ea
 import { EditForm } from '../../../../ng-dialogs/src/app/shared/models/edit-form.model';
 import { FeaturesGuidsConstants } from '../../../../shared/features-guids.constants';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
-import { UrlHelper } from '../../../shared/helpers/url.helper';
+import { UrlHelpers } from '../../../shared/helpers/url.helpers';
 import { EavService } from '../../../shared/services/eav.service';
 import { EditRoutingService } from '../../../shared/services/edit-routing.service';
 import { FileTypeService } from '../../../shared/services/file-type.service';
@@ -335,14 +335,14 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
     // fix dropzone
     const oldDzConfig = this.config.dropzone.getConfig();
     const newDzConfig: Partial<DropzoneConfigExt> = {};
-    const dzUrlParams = UrlHelper.getUrlParams(oldDzConfig.url as string);
+    const dzUrlParams = UrlHelpers.getUrlParams(oldDzConfig.url as string);
     const dzSubfolder = dzUrlParams.subfolder || '';
     const dzUsePortalRoot = dzUrlParams.usePortalRoot;
     const fixUploadUrl = dzSubfolder !== newConfig.subfolder || dzUsePortalRoot !== newConfig.usePortalRoot.toString();
     if (fixUploadUrl) {
       let newUrl = oldDzConfig.url as string;
-      newUrl = UrlHelper.replaceUrlParam(newUrl, 'subfolder', newConfig.subfolder);
-      newUrl = UrlHelper.replaceUrlParam(newUrl, 'usePortalRoot', newConfig.usePortalRoot.toString());
+      newUrl = UrlHelpers.replaceUrlParam(newUrl, 'subfolder', newConfig.subfolder);
+      newUrl = UrlHelpers.replaceUrlParam(newUrl, 'usePortalRoot', newConfig.usePortalRoot.toString());
       newDzConfig.url = newUrl;
     }
     const uploadDisabled = !newConfig.allowEdit

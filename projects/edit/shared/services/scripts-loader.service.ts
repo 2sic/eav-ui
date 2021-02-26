@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { UrlHelper } from '../helpers/url.helper';
+import { UrlHelpers } from '../helpers/url.helpers';
 import { EavService } from './eav.service';
 
 declare const sxcVersion: string;
@@ -98,8 +98,8 @@ export class ScriptsLoaderService {
   }
 
   private resolveSpecialPaths(url: string) {
-    return url.replace(/\[System:Path\]/i, UrlHelper.getUrlPrefix('system', this.eavService.eavConfig))
-      .replace(/\[Zone:Path\]/i, UrlHelper.getUrlPrefix('zone', this.eavService.eavConfig))
-      .replace(/\[App:Path\]/i, UrlHelper.getUrlPrefix('app', this.eavService.eavConfig));
+    return url.replace(/\[System:Path\]/i, UrlHelpers.getUrlPrefix('system', this.eavService.eavConfig))
+      .replace(/\[Zone:Path\]/i, UrlHelpers.getUrlPrefix('zone', this.eavService.eavConfig))
+      .replace(/\[App:Path\]/i, UrlHelpers.getUrlPrefix('app', this.eavService.eavConfig));
   }
 }

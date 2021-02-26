@@ -11,8 +11,8 @@ import { convertUrlToForm } from '../../../ng-dialogs/src/app/shared/helpers/url
 import { calculateIsParentDialog, sortLanguages } from '../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.helpers';
 import { EavFormData } from '../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.models';
 import { EditParams } from '../../edit-matcher.models';
-import { InputFieldHelper } from '../helpers/input-field.helper';
-import { LocalizationHelper } from '../helpers/localization.helper';
+import { InputFieldHelpers } from '../helpers/input-field.helpers';
+import { LocalizationHelpers } from '../helpers/localization.helpers';
 import { Language, PublishStatus } from '../models';
 import { ContentTypeItemService } from '../store/ngrx-data/content-type-item.service';
 import { ContentTypeService } from '../store/ngrx-data/content-type.service';
@@ -131,25 +131,25 @@ export class EditInitializerService implements OnDestroy {
       .pipe(take(1))
       .subscribe(([items]) => {
         for (const item of items) {
-          const contentTypeId = InputFieldHelper.getContentTypeId(item);
+          const contentTypeId = InputFieldHelpers.getContentTypeId(item);
           const contentType = this.contentTypeService.getContentType(contentTypeId);
 
           for (const attribute of contentType.Attributes) {
             const inputTypes = this.inputTypeService.getInputTypes();
-            const calculatedInputType = InputFieldHelper.calculateInputType(attribute, inputTypes);
+            const calculatedInputType = InputFieldHelpers.calculateInputType(attribute, inputTypes);
             const inputType = calculatedInputType.inputType;
             if (inputType === InputTypeConstants.EmptyDefault) { continue; }
 
             const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
             const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
             const attributeValues = item.Entity.Attributes[attribute.Name];
-            const value = LocalizationHelper.translate(currentLanguage, defaultLanguage, attributeValues, null);
+            const value = LocalizationHelpers.translate(currentLanguage, defaultLanguage, attributeValues, null);
             // set default value if needed
             const valueIsEmpty = isEmpty(value) && typeof value !== 'boolean' && typeof value !== 'number' && value !== '';
             if (!valueIsEmpty) { continue; }
 
             const languages = this.languageService.getLanguages();
-            const fieldSettings = LocalizationHelper.translateSettings(attribute.Settings, currentLanguage, defaultLanguage);
+            const fieldSettings = LocalizationHelpers.translateSettings(attribute.Settings, currentLanguage, defaultLanguage);
             this.itemService.setDefaultValue(item, attribute, inputType, fieldSettings, languages, currentLanguage, defaultLanguage);
           }
         }

@@ -7,8 +7,8 @@ import { FieldSettings } from '../../../edit-types';
 import { ValidationHelper } from '../../eav-material-controls/validators/validation-helper';
 import { FieldLogicManager } from '../../field-logic/field-logic-manager';
 import { FieldsSettingsHelpers } from '../helpers/fields-settings.helpers';
-import { InputFieldHelper } from '../helpers/input-field.helper';
-import { LocalizationHelper } from '../helpers/localization.helper';
+import { InputFieldHelpers } from '../helpers/input-field.helpers';
+import { LocalizationHelpers } from '../helpers/localization.helpers';
 import { ContentTypeSettings, FieldsProps, TranslationState } from '../models';
 import { EavItem } from '../models/eav';
 import { ContentTypeService } from '../store/ngrx-data/content-type.service';
@@ -41,7 +41,7 @@ export class FieldsSettingsService implements OnDestroy {
     this.contentTypeSettings$ = new BehaviorSubject<ContentTypeSettings>(null);
     this.fieldsProps$ = new BehaviorSubject<FieldsProps>(null);
 
-    const contentTypeId = InputFieldHelper.getContentTypeId(item);
+    const contentTypeId = InputFieldHelpers.getContentTypeId(item);
     const contentType$ = this.contentTypeService.getContentType$(contentTypeId);
     const header$ = this.itemService.selectItemHeader(item.Entity.Guid);
     const currentLanguage$ = this.languageInstanceService.getCurrentLanguage$(this.eavService.eavConfig.formId);
@@ -80,7 +80,7 @@ export class FieldsSettingsService implements OnDestroy {
           for (const attribute of contentType.Attributes) {
             const attributeValues = itemAttributes[attribute.Name];
             // empty-default value is null
-            const value = LocalizationHelper.translate(currentLanguage, defaultLanguage, attributeValues, null);
+            const value = LocalizationHelpers.translate(currentLanguage, defaultLanguage, attributeValues, null);
             // custom-default inputType is null
             const inputType = inputTypes.find(i => i.Type === attribute.InputType);
 
@@ -109,8 +109,8 @@ export class FieldsSettingsService implements OnDestroy {
             const fixed = logic?.update(merged, value) ?? merged;
 
             const validators = ValidationHelper.getValidators(fixed, attribute);
-            const calculatedInputType = InputFieldHelper.calculateInputType(attribute, inputTypes);
-            const wrappers = InputFieldHelper.getWrappers(fixed, calculatedInputType);
+            const calculatedInputType = InputFieldHelpers.calculateInputType(attribute, inputTypes);
+            const wrappers = InputFieldHelpers.getWrappers(fixed, calculatedInputType);
             const initialSettings = FieldsSettingsHelpers.mergeSettings<FieldSettings>(
               attribute.Metadata, this.eavService.eavConfig.lang, defaultLanguage,
             );

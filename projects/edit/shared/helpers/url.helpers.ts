@@ -1,6 +1,6 @@
 import { EavConfig } from '../models';
 
-export class UrlHelper {
+export class UrlHelpers {
 
   static stripNonUrlCharacters(controlValue: string, allowPath: boolean, trimEnd: boolean) {
     if (!controlValue) { return ''; }

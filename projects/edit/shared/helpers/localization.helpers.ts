@@ -4,7 +4,7 @@ import { CalculatedInputType } from '../models';
 import { EavDimension, EavEntityAttributes, EavValue, EavValues } from '../models/eav';
 import { InputTypeService } from '../store/ngrx-data/input-type.service';
 
-export class LocalizationHelper {
+export class LocalizationHelpers {
   /**
    * Get translated value for currentLanguage,
    * if not exist return default language translation,
@@ -35,9 +35,9 @@ export class LocalizationHelper {
   }
 
   static getValueOrDefault(allAttributesValues: EavValues<any>, languageKey: string, defaultLanguage: string): EavValue<any> {
-    let translation = LocalizationHelper.getValueTranslation(allAttributesValues, languageKey, defaultLanguage);
+    let translation = LocalizationHelpers.getValueTranslation(allAttributesValues, languageKey, defaultLanguage);
     if (translation === null || translation === undefined) {
-      translation = LocalizationHelper.getValueTranslation(allAttributesValues, defaultLanguage, defaultLanguage);
+      translation = LocalizationHelpers.getValueTranslation(allAttributesValues, defaultLanguage, defaultLanguage);
     }
     return translation;
   }
@@ -333,7 +333,7 @@ export class LocalizationHelper {
   static translateSettings(settings: EavEntityAttributes, currentLanguage: string, defaultLanguage: string): FieldSettings {
     const translated: { [key: string]: any } = {};
     for (const key of Object.keys(settings)) {
-      translated[key] = LocalizationHelper.translate(currentLanguage, defaultLanguage, settings[key], false);
+      translated[key] = LocalizationHelpers.translate(currentLanguage, defaultLanguage, settings[key], false);
     }
     return translated as FieldSettings;
   }

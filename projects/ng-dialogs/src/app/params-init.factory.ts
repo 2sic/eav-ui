@@ -1,7 +1,7 @@
 import { JsInfo, SxcRoot } from '@2sic.com/2sxc-typings';
 import { Injector } from '@angular/core';
 import { Router } from '@angular/router';
-import { UrlHelper } from '../../../edit/shared/helpers/url.helper';
+import { UrlHelpers } from '../../../edit/shared/helpers/url.helpers';
 import { DialogTypeConstants } from './shared/constants/dialog-types.constants';
 // tslint:disable-next-line:max-line-length
 import { keyApi, keyAppId, keyContentType, keyDialog, keyItems, keyPipelineId, keyRequestToken, keyTabId, keyUrl, keyZoneId, prefix } from './shared/constants/session.constants';
@@ -26,7 +26,7 @@ export function paramsInitFactory(injector: Injector) {
 
       // save params
       const urlHash = window.location.hash.substring(1); // substring removes first # char
-      const queryParametersFromUrl = UrlHelper.readQueryStringParameters(urlHash);
+      const queryParametersFromUrl = UrlHelpers.readQueryStringParameters(urlHash);
       const paramKeys = Object.keys(queryParametersFromUrl);
       for (const key of paramKeys) {
         const value = queryParametersFromUrl[key];

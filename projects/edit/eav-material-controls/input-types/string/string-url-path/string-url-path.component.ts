@@ -4,7 +4,7 @@ import { map } from 'rxjs/operators';
 import { FieldMaskService } from '../../../../../shared/field-mask.service';
 import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
-import { UrlHelper } from '../../../../shared/helpers/url.helper';
+import { UrlHelpers } from '../../../../shared/helpers/url.helpers';
 import { EavService } from '../../../../shared/services/eav.service';
 import { FieldsSettingsService } from '../../../../shared/services/fields-settings.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
@@ -92,7 +92,7 @@ export class StringUrlPathComponent extends BaseComponent<string> implements OnI
     // don't do anything if the current field is not empty and doesn't have the last copy of the stripped value
     if (value && value !== this.lastAutoCopy) { return; }
 
-    const cleaned = UrlHelper.stripNonUrlCharacters(newValue, this.allowSlashes, true);
+    const cleaned = UrlHelpers.stripNonUrlCharacters(newValue, this.allowSlashes, true);
     if (!cleaned) { return; }
     this.lastAutoCopy = cleaned;
     if (value === cleaned) { return; }
@@ -105,7 +105,7 @@ export class StringUrlPathComponent extends BaseComponent<string> implements OnI
 
   clean(trimEnd: boolean) {
     const value = this.control.value;
-    const cleaned = UrlHelper.stripNonUrlCharacters(value, this.allowSlashes, trimEnd);
+    const cleaned = UrlHelpers.stripNonUrlCharacters(value, this.allowSlashes, trimEnd);
     if (value === cleaned) { return; }
     this.control.patchValue(cleaned);
   }
