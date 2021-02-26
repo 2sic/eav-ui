@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { UrlHelpers } from '../helpers/url.helpers';
+import { UrlHelpers } from '../helpers';
 import { EavService } from './eav.service';
 
 declare const sxcVersion: string;

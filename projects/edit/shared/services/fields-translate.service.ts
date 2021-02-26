@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
-import { InputFieldHelpers } from '../helpers/input-field.helpers';
-import { LocalizationHelpers } from '../helpers/localization.helpers';
+import { InputFieldHelpers, LocalizationHelpers } from '../helpers';
 import { EavItem } from '../models/eav';
 import { ContentTypeService } from '../store/ngrx-data/content-type.service';
 import { ItemService } from '../store/ngrx-data/item.service';

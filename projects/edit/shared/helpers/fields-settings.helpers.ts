@@ -1,4 +1,5 @@
 import { ValidatorFn } from '@angular/forms';
+import { LocalizationHelpers } from '.';
 import { FieldSettings } from '../../../edit-types';
 import { InputTypeConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { InputType } from '../../../ng-dialogs/src/app/content-type-fields/models/input-type.model';
@@ -7,7 +8,6 @@ import { TranslationStateCore } from '../../eav-material-controls/localization/t
 import { TranslationLinkConstants } from '../constants';
 import { TranslationState } from '../models';
 import { EavContentType, EavContentTypeAttribute, EavEntity, EavValues } from '../models/eav';
-import { LocalizationHelpers } from './localization.helpers';
 
 export class FieldsSettingsHelpers {
 

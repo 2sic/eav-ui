@@ -9,7 +9,7 @@ import { eavConstants } from '../../../../ng-dialogs/src/app/shared/constants/ea
 import { EditForm } from '../../../../ng-dialogs/src/app/shared/models/edit-form.model';
 import { FeaturesGuidsConstants } from '../../../../shared/features-guids.constants';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
-import { UrlHelpers } from '../../../shared/helpers/url.helpers';
+import { UrlHelpers } from '../../../shared/helpers';
 import { EavService } from '../../../shared/services/eav.service';
 import { EditRoutingService } from '../../../shared/services/edit-routing.service';
 import { FileTypeService } from '../../../shared/services/file-type.service';

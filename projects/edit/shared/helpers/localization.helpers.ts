@@ -1,3 +1,4 @@
+import { InputFieldHelpers } from '.';
 import { FieldSettings } from '../../../edit-types';
 import { DataTypeConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/data-type.constants';
 import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
@@ -5,7 +6,6 @@ import { CalculatedInputType } from '../models';
 import { EavDimension, EavEntityAttributes, EavItem, EavValue, EavValues } from '../models/eav';
 import { ContentTypeService } from '../store/ngrx-data/content-type.service';
 import { InputTypeService } from '../store/ngrx-data/input-type.service';
-import { InputFieldHelpers } from './input-field.helpers';
 
 export class LocalizationHelpers {
   /**

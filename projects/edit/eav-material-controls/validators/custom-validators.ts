@@ -1,5 +1,5 @@
 import { FormControl, ValidationErrors, ValidatorFn } from '@angular/forms';
-import { UrlHelpers } from '../../shared/helpers/url.helpers';
+import { UrlHelpers } from '../../shared/helpers';
 import { AdamControl } from '../input-types/hyperlink/hyperlink-library/hyperlink-library.models';
 
 export class CustomValidators {

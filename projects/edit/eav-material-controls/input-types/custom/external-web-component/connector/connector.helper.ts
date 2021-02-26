@@ -6,7 +6,7 @@ import { distinctUntilChanged, filter, map, startWith } from 'rxjs/operators';
 import { EavCustomInputField, ExperimentalProps, FieldConfig, FieldSettings } from '../../../../../../edit-types';
 import { FieldConfigSet } from '../../../../../eav-dynamic-form/model/field-config';
 import { FieldValue } from '../../../../../eav-item-dialog/item-edit-form/item-edit-form.models';
-import { InputFieldHelpers } from '../../../../../shared/helpers/input-field.helpers';
+import { InputFieldHelpers } from '../../../../../shared/helpers';
 import { DnnBridgeService } from '../../../../../shared/services/dnn-bridge.service';
 import { EavService } from '../../../../../shared/services/eav.service';
 import { EditRoutingService } from '../../../../../shared/services/edit-routing.service';

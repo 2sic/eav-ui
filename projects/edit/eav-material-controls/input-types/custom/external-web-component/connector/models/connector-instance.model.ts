@@ -2,7 +2,7 @@ import { Observable } from 'rxjs';
 import { Connector, ConnectorData, ExperimentalProps, FieldConfig } from '../../../../../../../edit-types';
 import { ConnectorDialog } from '../../../../../../../edit-types/src/ConnectorDialog';
 import { loadScripts } from '../../../../../../../ng-dialogs/src/app/shared/helpers/load-scripts.helper';
-import { UrlHelpers } from '../../../../../../shared/helpers/url.helpers';
+import { UrlHelpers } from '../../../../../../shared/helpers';
 import { EavConfig } from '../../../../../../shared/models';
 
 declare const sxcVersion: string;
