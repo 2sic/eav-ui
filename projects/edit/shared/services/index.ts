@@ -1,7 +1,6 @@
 export * from './assets.service';
 export * from './dnn-bridge.service';
 export * from './eav.service';
-export * from './edit-routing.models';
 export * from './edit-routing.service';
 export * from './entity.service';
 export * from './file-type.service';
