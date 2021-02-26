@@ -1,7 +1,7 @@
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { from, Observable } from 'rxjs';
+import { from } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
 import { webApiEntityRoot } from '../../../../../edit/shared/services';
 import { toBase64 } from '../../shared/helpers/file-to-base64.helper';
@@ -23,9 +23,7 @@ export class ContentImportService {
           ResourcesReferences: formValues.resourcesReferences,
           ClearEntities: formValues.clearEntities,
         };
-        return (
-          this.http.post(this.dnnContext.$2sxc.http.apiUrl(webApiEntityRoot + 'XmlPreview'), requestData)
-        ) as Observable<EvaluateContentResult>;
+        return this.http.post<EvaluateContentResult>(this.dnnContext.$2sxc.http.apiUrl(webApiEntityRoot + 'XmlPreview'), requestData);
       })
     );
   }
@@ -41,9 +39,7 @@ export class ContentImportService {
           ResourcesReferences: formValues.resourcesReferences,
           ClearEntities: formValues.clearEntities,
         };
-        return (
-          this.http.post(this.dnnContext.$2sxc.http.apiUrl(webApiEntityRoot + 'XmlUpload'), requestData)
-        ) as Observable<ImportContentResult>;
+        return this.http.post<ImportContentResult>(this.dnnContext.$2sxc.http.apiUrl(webApiEntityRoot + 'XmlUpload'), requestData);
       })
     );
   }

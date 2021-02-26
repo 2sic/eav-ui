@@ -1,7 +1,7 @@
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { from, Observable } from 'rxjs';
+import { from } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
 import { webApiEntityList, webApiEntityRoot } from '../../../../../edit/shared/services';
 import { Field } from '../../content-type-fields/models/field.model';
@@ -15,24 +15,24 @@ export class ContentItemsService {
   constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
 
   getAll(contentTypeStaticName: string) {
-    return this.http.get(this.dnnContext.$2sxc.http.apiUrl(webApiEntityList), {
+    return this.http.get<ContentItem[]>(this.dnnContext.$2sxc.http.apiUrl(webApiEntityList), {
       params: { appId: this.context.appId.toString(), contentType: contentTypeStaticName }
-    }) as Observable<ContentItem[]>;
+    });
   }
 
   getColumns(contentTypeStaticName: string) {
-    return this.http.get(this.dnnContext.$2sxc.http.apiUrl(webApiFieldsAll), {
+    return this.http.get<Field[]>(this.dnnContext.$2sxc.http.apiUrl(webApiFieldsAll), {
       params: { appId: this.context.appId.toString(), staticName: contentTypeStaticName }
-    }) as Observable<Field[]>;
+    });
   }
 
   importItem(file: File) {
     return from(toBase64(file)).pipe(
       mergeMap(fileBase64 => {
-        return this.http.post(this.dnnContext.$2sxc.http.apiUrl(webApiEntityRoot + 'upload'), {
+        return this.http.post<boolean>(this.dnnContext.$2sxc.http.apiUrl(webApiEntityRoot + 'upload'), {
           AppId: this.context.appId.toString(),
           ContentBase64: fileBase64,
-        }) as Observable<boolean>;
+        });
       })
     );
   }

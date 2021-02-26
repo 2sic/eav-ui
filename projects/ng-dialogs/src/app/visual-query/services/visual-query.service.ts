@@ -146,7 +146,7 @@ export class VisualQueryService implements OnDestroy {
     const key = pipelineDataSource.EntityGuid;
 
     // Query for existing Entity
-    this.metadataService.getMetadata(typeId, keyType, key, contentTypeName).subscribe((metadata: DataSourceMetadata[]) => {
+    this.metadataService.getMetadata<DataSourceMetadata[]>(typeId, keyType, key, contentTypeName).subscribe(metadata => {
       // Edit existing Entity
       if (metadata.length) {
         const form: EditForm = {

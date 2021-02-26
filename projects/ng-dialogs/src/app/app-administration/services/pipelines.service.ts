@@ -1,7 +1,7 @@
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { from, Observable } from 'rxjs';
+import { from } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
 import { webApiEntityList } from '../../../../../edit/shared/services';
 import { toBase64 } from '../../shared/helpers/file-to-base64.helper';
@@ -22,31 +22,31 @@ export class PipelinesService {
   constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
 
   getAll(contentType: string) {
-    return this.http.get(this.dnnContext.$2sxc.http.apiUrl(webApiEntityList), {
+    return this.http.get<Query[]>(this.dnnContext.$2sxc.http.apiUrl(webApiEntityList), {
       params: { appId: this.context.appId.toString(), contentType }
-    }) as Observable<Query[]>;
+    });
   }
 
   importQuery(file: File) {
     return from(toBase64(file)).pipe(
       mergeMap(fileBase64 => {
-        return this.http.post(this.dnnContext.$2sxc.http.apiUrl(webApiQueryImport), {
+        return this.http.post<boolean>(this.dnnContext.$2sxc.http.apiUrl(webApiQueryImport), {
           AppId: this.context.appId.toString(),
           ContentBase64: fileBase64,
-        }) as Observable<boolean>;
+        });
       })
     );
   }
 
   clonePipeline(id: number) {
-    return this.http.get(this.dnnContext.$2sxc.http.apiUrl(webApiQueryClone), {
+    return this.http.get<null>(this.dnnContext.$2sxc.http.apiUrl(webApiQueryClone), {
       params: { Id: id.toString(), appId: this.context.appId.toString() }
-    }) as Observable<null>;
+    });
   }
 
   delete(id: number) {
-    return this.http.delete(this.dnnContext.$2sxc.http.apiUrl(webApiQueryDelete), {
+    return this.http.delete<boolean>(this.dnnContext.$2sxc.http.apiUrl(webApiQueryDelete), {
       params: { appId: this.context.appId.toString(), Id: id.toString() },
-    }) as Observable<boolean>;
+    });
   }
 }
