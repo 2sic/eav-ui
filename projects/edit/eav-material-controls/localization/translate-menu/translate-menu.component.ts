@@ -5,7 +5,7 @@ import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, filter, map, startWith } from 'rxjs/operators';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { TranslationLinkConstants } from '../../../shared/constants/translation-link.constants';
-import { TranslationStateFull } from '../../../shared/models';
+import { TranslationState } from '../../../shared/models';
 import { EavService } from '../../../shared/services/eav.service';
 import { FieldsSettingsService } from '../../../shared/services/fields-settings.service';
 import { FieldsTranslateService } from '../../../shared/services/fields-translate.service';
@@ -75,7 +75,7 @@ export class TranslateMenuComponent implements OnInit {
     this.fieldsTranslateService.dontTranslate(this.config.name);
   }
 
-  openTranslateMenuDialog(translationState: TranslationStateFull): void {
+  openTranslateMenuDialog(translationState: TranslationState): void {
     const dialogData: TranslateMenuDialogData = {
       config: this.config,
       translationState: {

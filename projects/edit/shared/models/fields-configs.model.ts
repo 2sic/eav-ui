@@ -1,7 +1,7 @@
 import { ValidatorFn } from '@angular/forms';
 import { FieldSettings } from '../../../edit-types';
 import { FieldValue } from '../../eav-item-dialog/item-edit-form/item-edit-form.models';
-import { TranslationState } from '../../eav-material-controls/localization/translate-menu/translate-menu.models';
+import { TranslationStateCore } from '../../eav-material-controls/localization/translate-menu/translate-menu.models';
 import { CalculatedInputType } from './calculated-input-type.model';
 
 export interface FieldsProps {
@@ -12,7 +12,7 @@ export interface FieldProps {
   calculatedInputType: CalculatedInputType;
   constants: FieldConstants;
   settings: FieldSettings;
-  translationState: TranslationStateFull;
+  translationState: TranslationState;
   validators: ValidatorFn[];
   /** empty-default value is null */
   value: FieldValue;
@@ -33,7 +33,7 @@ export interface FieldConstants {
   type?: string;
 }
 
-export interface TranslationStateFull extends TranslationState {
+export interface TranslationState extends TranslationStateCore {
   infoLabel: string;
   infoMessage: string;
 }

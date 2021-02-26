@@ -8,7 +8,7 @@ import { FieldsTranslateService } from '../../../shared/services/fields-translat
 import { ItemService } from '../../../shared/store/ngrx-data/item.service';
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
 import { LanguageService } from '../../../shared/store/ngrx-data/language.service';
-import { TranslationState } from '../translate-menu/translate-menu.models';
+import { TranslationStateCore } from '../translate-menu/translate-menu.models';
 import { I18nKeyConstants } from './translate-menu-dialog.constants';
 import { findI18nKey, getTemplateLanguages } from './translate-menu-dialog.helpers';
 import { TranslateMenuDialogData, TranslateMenuDialogTemplateVars } from './translate-menu-dialog.models';
@@ -23,7 +23,7 @@ export class TranslateMenuDialogComponent implements OnInit, OnDestroy {
   i18nKeys = I18nKeyConstants;
   templateVars$: Observable<TranslateMenuDialogTemplateVars>;
 
-  private translationState$: BehaviorSubject<TranslationState>;
+  private translationState$: BehaviorSubject<TranslationStateCore>;
   private noLanguageRequired: string[];
 
   constructor(
@@ -74,7 +74,7 @@ export class TranslateMenuDialogComponent implements OnInit, OnDestroy {
   }
 
   setLinkType(linkType: string): void {
-    const newTranslationState: TranslationState = {
+    const newTranslationState: TranslationStateCore = {
       linkType,
       language: this.noLanguageRequired.includes(linkType) ? '' : this.translationState$.value.language,
     };
@@ -82,7 +82,7 @@ export class TranslateMenuDialogComponent implements OnInit, OnDestroy {
   }
 
   setLanguage(language: string): void {
-    const newTranslationState: TranslationState = { ...this.translationState$.value, language };
+    const newTranslationState: TranslationStateCore = { ...this.translationState$.value, language };
     this.translationState$.next(newTranslationState);
   }
 

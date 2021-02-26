@@ -7,13 +7,13 @@ import { FieldSettings } from '../../../edit-types';
 import { InputTypeConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { InputType } from '../../../ng-dialogs/src/app/content-type-fields/models/input-type.model';
 import { TranslateMenuHelpers } from '../../eav-material-controls/localization/translate-menu/translate-menu.helpers';
-import { TranslationState } from '../../eav-material-controls/localization/translate-menu/translate-menu.models';
+import { TranslationStateCore } from '../../eav-material-controls/localization/translate-menu/translate-menu.models';
 import { ValidationHelper } from '../../eav-material-controls/validators/validation-helper';
 import { FieldLogicManager } from '../../field-logic/field-logic-manager';
 import { TranslationLinkConstants } from '../constants/translation-link.constants';
 import { InputFieldHelper } from '../helpers/input-field-helper';
 import { LocalizationHelper } from '../helpers/localization-helper';
-import { ContentTypeSettings, FieldsProps, TranslationStateFull } from '../models';
+import { ContentTypeSettings, FieldsProps, TranslationState } from '../models';
 import { EavContentType, EavContentTypeAttribute, EavEntity, EavItem, EavValues } from '../models/eav';
 import { ContentTypeService } from '../store/ngrx-data/content-type.service';
 import { InputTypeService } from '../store/ngrx-data/input-type.service';
@@ -177,7 +177,7 @@ export class FieldsSettingsService implements OnDestroy {
     );
   }
 
-  getTranslationState$(fieldName: string): Observable<TranslationStateFull> {
+  getTranslationState$(fieldName: string): Observable<TranslationState> {
     return this.fieldsProps$.pipe(
       map(fieldsSettings => fieldsSettings[fieldName].translationState),
       distinctUntilChanged((oldTranslationState, newTranslationState) => {
@@ -306,7 +306,7 @@ function validatorsEqual(x: ValidatorFn[], y: ValidatorFn[]) {
   return equal;
 }
 
-function translationStateEqual(x: TranslationStateFull, y: TranslationStateFull) {
+function translationStateEqual(x: TranslationState, y: TranslationState) {
   const obj1 = x as { [key: string]: any };
   const obj2 = y as { [key: string]: any };
 
@@ -342,7 +342,7 @@ function getTranslationState2New(
   disableTranslation: boolean,
   currentLanguage: string,
   defaultLanguage: string,
-): TranslationStateFull {
+): TranslationState {
   let infoLabel: string;
   let infoMessage: string;
 
@@ -379,7 +379,7 @@ function getTranslationState2New(
     }
   }
   const state = getTranslationState(attributeValues, disableTranslation, currentLanguage, defaultLanguage);
-  const translationState: TranslationStateFull = {
+  const translationState: TranslationState = {
     infoLabel,
     infoMessage,
     language: state.language,
@@ -393,7 +393,7 @@ function getTranslationState(
   disableTranslation: boolean,
   currentLanguage: string,
   defaultLanguage: string,
-): TranslationState {
+): TranslationStateCore {
   let language: string;
   let linkType: string;
 
@@ -426,7 +426,7 @@ function getTranslationState(
     linkType = TranslationLinkConstants.DontTranslate;
   }
 
-  const translationState: TranslationState = {
+  const translationState: TranslationStateCore = {
     language,
     linkType,
   };

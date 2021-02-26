@@ -1,9 +1,9 @@
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
-import { TranslationState } from '../translate-menu/translate-menu.models';
+import { TranslationStateCore } from '../translate-menu/translate-menu.models';
 
 export interface TranslateMenuDialogData {
   config: FieldConfigSet;
-  translationState: TranslationState;
+  translationState: TranslationStateCore;
 }
 
 export interface TranslateMenuDialogTemplateLanguage {
@@ -14,7 +14,7 @@ export interface TranslateMenuDialogTemplateLanguage {
 export interface TranslateMenuDialogTemplateVars {
   defaultLanguage: string;
   languages: TranslateMenuDialogTemplateLanguage[];
-  translationState: TranslationState;
+  translationState: TranslationStateCore;
   showLanguageSelection: boolean;
   i18nRoot: string;
   submitDisabled: boolean;
