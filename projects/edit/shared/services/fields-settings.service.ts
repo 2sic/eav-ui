@@ -43,13 +43,13 @@ export class FieldsSettingsService implements OnDestroy {
 
     const contentTypeId = InputFieldHelpers.getContentTypeId(item);
     const contentType$ = this.contentTypeService.getContentType$(contentTypeId);
-    const header$ = this.itemService.selectItemHeader(item.Entity.Guid);
+    const itemHeader$ = this.itemService.getItemHeader$(item.Entity.Guid);
     const currentLanguage$ = this.languageInstanceService.getCurrentLanguage$(this.eavService.eavConfig.formId);
     const defaultLanguage$ = this.languageInstanceService.getDefaultLanguage$(this.eavService.eavConfig.formId);
 
     this.subscription.add(
-      combineLatest([contentType$, header$, currentLanguage$, defaultLanguage$]).pipe(
-        map(([contentType, header, currentLanguage, defaultLanguage]) => {
+      combineLatest([contentType$, itemHeader$, currentLanguage$, defaultLanguage$]).pipe(
+        map(([contentType, itemHeader, currentLanguage, defaultLanguage]) => {
           const ctSettings = FieldsSettingsHelpers.mergeSettings<ContentTypeSettings>(
             contentType.Metadata, currentLanguage, defaultLanguage,
           );
@@ -61,8 +61,8 @@ export class FieldsSettingsService implements OnDestroy {
           ctSettings.Icon ??= '';
           ctSettings.Link ??= '';
           ctSettings._itemTitle = FieldsSettingsHelpers.getContentTypeTitle(contentType, currentLanguage, defaultLanguage);
-          ctSettings._slotCanBeEmpty = header.Group?.SlotCanBeEmpty ?? false;
-          ctSettings._slotIsEmpty = header.Group?.SlotIsEmpty ?? false;
+          ctSettings._slotCanBeEmpty = itemHeader.Group?.SlotCanBeEmpty ?? false;
+          ctSettings._slotIsEmpty = itemHeader.Group?.SlotIsEmpty ?? false;
           return ctSettings;
         }),
       ).subscribe(ctSettings => {
@@ -70,8 +70,7 @@ export class FieldsSettingsService implements OnDestroy {
       })
     );
 
-    const itemAttributes$ = this.itemService.selectItemAttributes(item.Entity.Guid);
-    const itemHeader$ = this.itemService.selectItemHeader(item.Entity.Guid);
+    const itemAttributes$ = this.itemService.getItemAttributes$(item.Entity.Guid);
     const inputTypes$ = this.inputTypeService.getInputTypes$();
     this.subscription.add(
       combineLatest([contentType$, currentLanguage$, defaultLanguage$, itemAttributes$, itemHeader$, inputTypes$]).pipe(

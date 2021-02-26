@@ -87,7 +87,7 @@ export class EavFormComponent implements OnInit, OnDestroy {
       startWith(!this.form.invalid),
       distinctUntilChanged(),
     );
-    const itemHeader$ = this.itemService.selectItemHeader(this.entityGuid);
+    const itemHeader$ = this.itemService.getItemHeader$(this.entityGuid);
     this.subscription.add(
       combineLatest([formValid$, itemHeader$]).pipe(
         map(([formValid, itemHeader]) => {

@@ -1,9 +1,8 @@
-import { Injectable, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Injectable } from '@angular/core';
 import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 import { InputFieldHelpers } from '../helpers/input-field.helpers';
 import { LocalizationHelpers } from '../helpers/localization.helpers';
-import { EavEntityAttributes, EavItem } from '../models/eav';
+import { EavItem } from '../models/eav';
 import { ContentTypeService } from '../store/ngrx-data/content-type.service';
 import { ItemService } from '../store/ngrx-data/item.service';
 import { LanguageInstanceService } from '../store/ngrx-data/language-instance.service';
@@ -11,11 +10,9 @@ import { EavService } from './eav.service';
 import { FieldsSettingsService } from './fields-settings.service';
 
 @Injectable()
-export class FieldsTranslateService implements OnDestroy {
+export class FieldsTranslateService {
   private entityGuid: string;
   private contentTypeId: string;
-  private attributes: EavEntityAttributes;
-  private subscription: Subscription;
 
   constructor(
     private itemService: ItemService,
@@ -25,20 +22,9 @@ export class FieldsTranslateService implements OnDestroy {
     private fieldsSettingsService: FieldsSettingsService,
   ) { }
 
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
-  }
-
   init(item: EavItem): void {
     this.entityGuid = item.Entity.Guid;
     this.contentTypeId = InputFieldHelpers.getContentTypeId(item);
-
-    this.subscription = new Subscription();
-    this.subscription.add(
-      this.itemService.selectItemAttributes(this.entityGuid).subscribe(attributes => {
-        this.attributes = attributes;
-      })
-    );
   }
 
   translate(fieldName: string, isTransaction = false, transactionItem?: EavItem): EavItem {
@@ -48,12 +34,13 @@ export class FieldsTranslateService implements OnDestroy {
 
     transactionItem = this.itemService.removeItemAttributeDimension(this.entityGuid, fieldName, currentLanguage, true, transactionItem);
 
-    const values = this.attributes[fieldName];
+    const attributes = this.itemService.getItemAttributes(this.entityGuid);
+    const values = attributes[fieldName];
     const defaultValue = LocalizationHelpers.getValueTranslation(values, defaultLanguage, defaultLanguage);
     const contentType = this.contentTypeService.getContentType(this.contentTypeId);
-    const attribute = contentType.Attributes.find(a => a.Name === fieldName);
+    const ctAttribute = contentType.Attributes.find(a => a.Name === fieldName);
     transactionItem = this.itemService.addItemAttributeValue(
-      this.entityGuid, fieldName, defaultValue.Value, currentLanguage, false, attribute.Type, isTransaction, transactionItem,
+      this.entityGuid, fieldName, defaultValue.Value, currentLanguage, false, ctAttribute.Type, isTransaction, transactionItem,
     );
     return transactionItem;
   }
@@ -71,7 +58,8 @@ export class FieldsTranslateService implements OnDestroy {
   copyFrom(fieldName: string, copyFromLanguageKey: string): void {
     if (this.isTranslationDisabled(fieldName)) { return; }
 
-    const values = this.attributes[fieldName];
+    const attributes = this.itemService.getItemAttributes(this.entityGuid);
+    const values = attributes[fieldName];
     const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
     const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
     const attributeValueTranslation = LocalizationHelpers.getValueTranslation(values, copyFromLanguageKey, defaultLanguage);
@@ -88,9 +76,9 @@ export class FieldsTranslateService implements OnDestroy {
       } else {
         // Copy attribute value where language is languageKey to new attribute with current language
         const contentType = this.contentTypeService.getContentType(this.contentTypeId);
-        const attribute = contentType.Attributes.find(a => a.Name === fieldName);
+        const ctAttribute = contentType.Attributes.find(a => a.Name === fieldName);
         this.itemService.addItemAttributeValue(
-          this.entityGuid, fieldName, attributeValueTranslation.Value, currentLanguage, false, attribute.Type,
+          this.entityGuid, fieldName, attributeValueTranslation.Value, currentLanguage, false, ctAttribute.Type,
         );
       }
     } else {
@@ -121,7 +109,8 @@ export class FieldsTranslateService implements OnDestroy {
   }
 
   translateMany(): void {
-    const translateable = Object.keys(this.attributes).filter(fieldName => !this.isTranslationDisabled(fieldName));
+    const attributes = this.itemService.getItemAttributes(this.entityGuid);
+    const translateable = Object.keys(attributes).filter(fieldName => !this.isTranslationDisabled(fieldName));
 
     let transactionItem: EavItem;
     for (const fieldName of translateable) {
@@ -132,7 +121,8 @@ export class FieldsTranslateService implements OnDestroy {
   }
 
   dontTranslateMany(): void {
-    const translateable = Object.keys(this.attributes).filter(fieldName => !this.isTranslationDisabled(fieldName));
+    const attributes = this.itemService.getItemAttributes(this.entityGuid);
+    const translateable = Object.keys(attributes).filter(fieldName => !this.isTranslationDisabled(fieldName));
 
     let transactionItem: EavItem;
     for (const fieldName of translateable) {

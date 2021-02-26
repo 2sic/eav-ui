@@ -23,6 +23,7 @@ export class EavService implements OnDestroy {
   /** Temporary solution to circumvent disabled not being emitted on language change. Fix language change!  */
   formDisabledChange$ = new Subject<FormDisabledSet>();
 
+  /** WARNING! These are constants that form was loaded with. They do not change while form is running */
   eavConfig: EavConfig;
 
   constructor(

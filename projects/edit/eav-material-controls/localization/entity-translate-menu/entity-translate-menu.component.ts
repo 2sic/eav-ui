@@ -25,7 +25,7 @@ export class EntityTranslateMenuComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    const slotIsEmpty$ = this.itemService.selectItemHeader(this.entityGuid).pipe(
+    const slotIsEmpty$ = this.itemService.getItemHeader$(this.entityGuid).pipe(
       map(header => !header.Group?.SlotCanBeEmpty ? false : header.Group.SlotIsEmpty),
     );
     const currentLanguage$ = this.languageInstanceService.getCurrentLanguage$(this.eavService.eavConfig.formId);

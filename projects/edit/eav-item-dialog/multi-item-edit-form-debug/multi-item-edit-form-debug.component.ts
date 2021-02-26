@@ -21,7 +21,7 @@ export class MultiItemEditFormDebugComponent implements OnInit {
   constructor(private itemService: ItemService) { }
 
   ngOnInit() {
-    const items$ = this.itemService.selectAllItems();
+    const items$ = this.itemService.getItems$();
     this.templateVars$ = combineLatest([items$]).pipe(
       map(([items]) => {
         const templateVars: FormDebugTemplateVars = {
