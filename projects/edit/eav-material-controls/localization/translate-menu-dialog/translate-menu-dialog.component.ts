@@ -3,7 +3,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { EavService } from '../../..';
-import { TranslationLinkConstants } from '../../../shared/constants/translation-link.constants';
+import { TranslationLinkConstants } from '../../../shared/constants';
 import { FieldsTranslateService } from '../../../shared/services/fields-translate.service';
 import { ItemService } from '../../../shared/store/ngrx-data/item.service';
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';

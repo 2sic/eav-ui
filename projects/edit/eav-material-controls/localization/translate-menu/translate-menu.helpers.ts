@@ -1,4 +1,4 @@
-import { TranslationLinkConstants } from '../../../shared/constants/translation-link.constants';
+import { TranslationLinkConstants } from '../../../shared/constants';
 
 export class TranslateMenuHelpers {
 

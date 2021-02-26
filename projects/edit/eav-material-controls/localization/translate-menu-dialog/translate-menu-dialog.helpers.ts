@@ -1,5 +1,5 @@
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
-import { TranslationLinkConstants } from '../../../shared/constants/translation-link.constants';
+import { TranslationLinkConstants } from '../../../shared/constants';
 import { LocalizationHelpers } from '../../../shared/helpers/localization.helpers';
 import { Language } from '../../../shared/models';
 import { EavEntityAttributes } from '../../../shared/models/eav';

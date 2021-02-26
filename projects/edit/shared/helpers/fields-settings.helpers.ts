@@ -4,7 +4,7 @@ import { InputTypeConstants } from '../../../ng-dialogs/src/app/content-type-fie
 import { InputType } from '../../../ng-dialogs/src/app/content-type-fields/models/input-type.model';
 import { TranslateMenuHelpers } from '../../eav-material-controls/localization/translate-menu/translate-menu.helpers';
 import { TranslationStateCore } from '../../eav-material-controls/localization/translate-menu/translate-menu.models';
-import { TranslationLinkConstants } from '../constants/translation-link.constants';
+import { TranslationLinkConstants } from '../constants';
 import { TranslationState } from '../models';
 import { EavContentType, EavContentTypeAttribute, EavEntity, EavValues } from '../models/eav';
 import { LocalizationHelpers } from './localization.helpers';

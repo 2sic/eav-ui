@@ -31,7 +31,7 @@ import { HiddenWrapperComponent } from '../../../eav-material-controls/wrappers/
 import { HyperlinkDefaultExpandableWrapperComponent } from '../../../eav-material-controls/wrappers/hyperlink-default-expandable-wrapper/hyperlink-default-expandable-wrapper.component';
 import { HyperlinkLibraryExpandableWrapperComponent } from '../../../eav-material-controls/wrappers/hyperlink-library-expandable-wrapper/hyperlink-library-expandable-wrapper.component';
 import { LocalizationWrapperComponent } from '../../../eav-material-controls/wrappers/localization-wrapper/localization-wrapper.component';
-import { componentMetadataKey } from '../../../shared/constants/component-metadata.constants';
+import { componentMetadataKey } from '../../../shared/constants';
 import { ComponentMetadataModel, FieldProps } from '../../../shared/models';
 import { FieldsSettingsService } from '../../../shared/services/fields-settings.service';
 import { Field } from '../../model/field';

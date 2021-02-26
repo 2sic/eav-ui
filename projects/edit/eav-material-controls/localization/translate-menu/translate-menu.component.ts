@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, filter, map, startWith } from 'rxjs/operators';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
-import { TranslationLinkConstants } from '../../../shared/constants/translation-link.constants';
+import { TranslationLinkConstants } from '../../../shared/constants';
 import { TranslationState } from '../../../shared/models';
 import { EavService } from '../../../shared/services/eav.service';
 import { FieldsSettingsService } from '../../../shared/services/fields-settings.service';
