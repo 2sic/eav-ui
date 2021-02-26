@@ -11,8 +11,8 @@ import { TranslationStateCore } from '../../eav-material-controls/localization/t
 import { ValidationHelper } from '../../eav-material-controls/validators/validation-helper';
 import { FieldLogicManager } from '../../field-logic/field-logic-manager';
 import { TranslationLinkConstants } from '../constants/translation-link.constants';
-import { InputFieldHelper } from '../helpers/input-field-helper';
-import { LocalizationHelper } from '../helpers/localization-helper';
+import { InputFieldHelper } from '../helpers/input-field.helper';
+import { LocalizationHelper } from '../helpers/localization.helper';
 import { ContentTypeSettings, FieldsProps, TranslationState } from '../models';
 import { EavContentType, EavContentTypeAttribute, EavEntity, EavItem, EavValues } from '../models/eav';
 import { ContentTypeService } from '../store/ngrx-data/content-type.service';

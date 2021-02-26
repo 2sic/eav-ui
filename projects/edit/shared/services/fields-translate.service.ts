@@ -1,8 +1,8 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
-import { InputFieldHelper } from '../helpers/input-field-helper';
-import { LocalizationHelper } from '../helpers/localization-helper';
+import { InputFieldHelper } from '../helpers/input-field.helper';
+import { LocalizationHelper } from '../helpers/localization.helper';
 import { EavEntityAttributes, EavItem } from '../models/eav';
 import { ContentTypeService } from '../store/ngrx-data/content-type.service';
 import { ItemService } from '../store/ngrx-data/item.service';

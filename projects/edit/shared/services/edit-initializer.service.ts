@@ -11,8 +11,8 @@ import { convertUrlToForm } from '../../../ng-dialogs/src/app/shared/helpers/url
 import { calculateIsParentDialog, sortLanguages } from '../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.helpers';
 import { EavFormData } from '../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.models';
 import { EditParams } from '../../edit-matcher.models';
-import { InputFieldHelper } from '../helpers/input-field-helper';
-import { LocalizationHelper } from '../helpers/localization-helper';
+import { InputFieldHelper } from '../helpers/input-field.helper';
+import { LocalizationHelper } from '../helpers/localization.helper';
 import { Language, PublishStatus } from '../models';
 import { ContentTypeItemService } from '../store/ngrx-data/content-type-item.service';
 import { ContentTypeService } from '../store/ngrx-data/content-type.service';

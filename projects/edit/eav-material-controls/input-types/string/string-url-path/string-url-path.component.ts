@@ -4,7 +4,7 @@ import { map } from 'rxjs/operators';
 import { FieldMaskService } from '../../../../../shared/field-mask.service';
 import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
-import { UrlHelper } from '../../../../shared/helpers/url-helper';
+import { UrlHelper } from '../../../../shared/helpers/url.helper';
 import { EavService } from '../../../../shared/services/eav.service';
 import { FieldsSettingsService } from '../../../../shared/services/fields-settings.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
