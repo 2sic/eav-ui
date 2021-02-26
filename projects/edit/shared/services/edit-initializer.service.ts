@@ -108,8 +108,9 @@ export class EditInitializerService implements OnDestroy {
     const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
     if (currentLanguage === defaultLanguage) { return; }
 
+    const items = this.itemService.getItems(this.eavService.eavConfig.itemGuids);
     const valuesExistInDefaultLanguage = LocalizationHelpers.valuesExistInDefaultLanguage(
-      this.eavService.eavConfig.itemGuids, defaultLanguage, this.itemService, this.inputTypeService, this.contentTypeService,
+      items, defaultLanguage, this.inputTypeService, this.contentTypeService,
     );
     if (!valuesExistInDefaultLanguage) {
       this.languageInstanceService.setCurrentLanguage(this.eavService.eavConfig.formId, defaultLanguage);

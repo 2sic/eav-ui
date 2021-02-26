@@ -3,15 +3,12 @@ import { EntityCollectionServiceBase, EntityCollectionServiceElementsFactory } f
 import { BehaviorSubject, Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { FieldSettings } from '../../../../edit-types';
-import { DataTypeConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/data-type.constants';
 import { FieldValue, FormValues } from '../../../eav-item-dialog/item-edit-form/item-edit-form.models';
 import { InputFieldHelpers } from '../../helpers/input-field.helpers';
 import { LocalizationHelpers } from '../../helpers/localization.helpers';
 import { Language, SaveResult } from '../../models';
 import { EavContentTypeAttribute, EavDimension, EavEntityAttributes, EavHeader, EavItem, EavValue } from '../../models/eav';
 import { Item1 } from '../../models/json-format-v1';
-import { ContentTypeService } from './content-type.service';
-import { InputTypeService } from './input-type.service';
 
 @Injectable({ providedIn: 'root' })
 export class ItemService extends EntityCollectionServiceBase<EavItem> {
