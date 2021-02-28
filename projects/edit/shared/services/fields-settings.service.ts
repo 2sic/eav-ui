@@ -88,6 +88,7 @@ export class FieldsSettingsService implements OnDestroy {
             merged.Disabled ??= false;
             merged.DisableTranslation ??= false;
             // special fixes
+            merged.Name = merged.Name || attribute.Name;
             merged.Required = ValidationHelper.isRequired(merged);
             const slotIsEmpty = itemHeader.Group?.SlotCanBeEmpty && itemHeader.Group?.SlotIsEmpty;
             merged.DisableTranslation = FieldsSettingsHelpers.findDisableTranslation(
