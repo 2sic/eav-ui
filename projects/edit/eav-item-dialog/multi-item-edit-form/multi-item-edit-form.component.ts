@@ -3,7 +3,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import 'reflect-metadata';
-import { BehaviorSubject, combineLatest, fromEvent, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, combineLatest, fromEvent, Observable, of, Subscription } from 'rxjs';
 import { delay, map, startWith, tap } from 'rxjs/operators';
 import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 import { SnackBarSaveErrorsComponent } from '../../eav-material-controls/dialogs/snack-bar-save-errors/snack-bar-save-errors.component';
@@ -32,7 +32,6 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy {
 
   templateVars$: Observable<MultiEditFormTemplateVars>;
 
-  private reduceSaveButton$: BehaviorSubject<boolean>;
   private debugInfoIsOpen$: BehaviorSubject<boolean>;
   private subscription: Subscription;
   private saveResult: SaveResult;
@@ -61,15 +60,15 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.reduceSaveButton$ = new BehaviorSubject(false);
     this.debugInfoIsOpen$ = new BehaviorSubject(false);
     this.subscription = new Subscription();
     this.editRoutingService.init();
     this.loadIconsService.load();
     this.formsStateService.init();
-    // spm TODO: added a small delay to calculate fields a bit later than languages to make form opening feel smoother.
-    // Remove if calculating fields gets faster
-    const items$ = this.itemService.getItems$(this.eavService.eavConfig.itemGuids).pipe(delay(0));
+    /** Small delay to make form opening feel smoother. */
+    const delayForm$ = of(false).pipe(delay(0), startWith(true));
+    const reduceSaveButton$ = of(true).pipe(delay(5000), startWith(false));
+    const items$ = this.itemService.getItems$(this.eavService.eavConfig.itemGuids);
     const hideHeader$ = this.languageInstanceService.getHideHeader$(this.eavService.eavConfig.formId);
     const formsValid$ = this.formsStateService.formsValid$;
     const debugEnabled$ = this.globalConfigService.getDebugEnabled().pipe(
@@ -80,16 +79,17 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy {
       })
     );
     this.templateVars$ = combineLatest([
-      combineLatest([items$.pipe(startWith([])), formsValid$, this.reduceSaveButton$]),
+      combineLatest([items$, formsValid$, delayForm$, reduceSaveButton$]),
       combineLatest([debugEnabled$, this.debugInfoIsOpen$, hideHeader$]),
     ]).pipe(
       map(([
-        [items, formsValid, reduceSaveButton],
+        [items, formsValid, delayForm, reduceSaveButton],
         [debugEnabled, debugInfoIsOpen, hideHeader],
       ]) => {
         const templateVars: MultiEditFormTemplateVars = {
           items,
           formsValid,
+          delayForm,
           reduceSaveButton,
           debugEnabled,
           debugInfoIsOpen,
@@ -99,11 +99,9 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy {
       }),
     );
     this.dialogBackdropClickSubscribe();
-    setTimeout(() => { this.reduceSaveButton$.next(true); }, 5000);
   }
 
   ngOnDestroy() {
-    this.reduceSaveButton$.complete();
     this.debugInfoIsOpen$.complete();
     this.subscription.unsubscribe();
     this.languageInstanceService.removeLanguageInstance(this.eavService.eavConfig.formId);
@@ -145,7 +143,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy {
       if (this.formsStateService.formsValid$.value) {
         const items = this.itemEditFormRefs
           .map(itemEditFormRef => {
-            const eavItem = itemEditFormRef.item;
+            const eavItem = this.itemService.getItem(itemEditFormRef.entityGuid);
             const isValid = this.formsStateService.getFormValid(eavItem.Entity.Guid);
             if (!isValid) { return; }
 

@@ -14,9 +14,9 @@
     }">
       <div class="mdc-layout-grid">
         <div class="mdc-layout-grid__inner">
-          <div class="mdc-layout-grid__cell--span-12" appFormSlide>
+          <div class="mdc-layout-grid__cell--span-12" appFormSlide *ngIf="!data.delayForm">
             <div *ngFor="let item of data.items; trackBy: trackByFn">
-              <app-item-edit-form [item]="item"></app-item-edit-form>
+              <app-item-edit-form [entityGuid]="item.Entity.Guid"></app-item-edit-form>
             </div>
           </div>
         </div>
