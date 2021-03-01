@@ -7,6 +7,7 @@ import { FieldSettings } from '../../../edit-types';
 import { ValidationHelper } from '../../eav-material-controls/validators/validation-helper';
 import { FieldLogicManager } from '../../field-logic/field-logic-manager';
 import { FieldsSettingsHelpers, InputFieldHelpers, LocalizationHelpers } from '../helpers';
+import { GeneralHelpers } from '../helpers/general.helpers';
 import { ContentTypeSettings, FieldsProps, TranslationState } from '../models';
 import { ContentTypeService, InputTypeService, ItemService, LanguageInstanceService } from '../store/ngrx-data';
 
@@ -159,7 +160,7 @@ export class FieldsSettingsService implements OnDestroy {
     return this.fieldsProps$.pipe(
       map(fieldsSettings => fieldsSettings[fieldName].settings),
       distinctUntilChanged((oldSettings, newSettings) => {
-        const equal = FieldsSettingsHelpers.settingsEqual(oldSettings, newSettings);
+        const equal = GeneralHelpers.objectsEqual(oldSettings, newSettings);
         return equal;
       }),
     );
@@ -169,7 +170,7 @@ export class FieldsSettingsService implements OnDestroy {
     return this.fieldsProps$.pipe(
       map(fieldsSettings => fieldsSettings[fieldName].validators),
       distinctUntilChanged((oldValidators, newValidators) => {
-        const equal = FieldsSettingsHelpers.validatorsEqual(oldValidators, newValidators);
+        const equal = GeneralHelpers.arraysEqual(oldValidators, newValidators);
         return equal;
       }),
     );
@@ -178,8 +179,8 @@ export class FieldsSettingsService implements OnDestroy {
   getTranslationState$(fieldName: string): Observable<TranslationState> {
     return this.fieldsProps$.pipe(
       map(fieldsSettings => fieldsSettings[fieldName].translationState),
-      distinctUntilChanged((oldTranslationState, newTranslationState) => {
-        const equal = FieldsSettingsHelpers.translationStateEqual(oldTranslationState, newTranslationState);
+      distinctUntilChanged((oldState, newState) => {
+        const equal = GeneralHelpers.objectsEqual(oldState, newState);
         return equal;
       }),
     );

@@ -99,52 +99,6 @@ export class FieldsSettingsHelpers {
     return false;
   }
 
-  static settingsEqual(x: FieldSettings, y: FieldSettings) {
-    const obj1 = x as { [key: string]: any };
-    const obj2 = y as { [key: string]: any };
-
-    const keys1 = Object.keys(obj1);
-    const keys2 = Object.keys(obj2);
-    if (keys1.length !== keys2.length) { return false; }
-
-    const equal = keys1.every(key1 => {
-      if (obj2[key1] == null) { return false; }
-
-      return obj1[key1] === obj2[key1];
-    });
-
-    return equal;
-  }
-
-  static validatorsEqual(x: ValidatorFn[], y: ValidatorFn[]) {
-    if (x.length !== y.length) { return false; }
-
-    const equal = x.every((validator, index) => {
-      if (y[index] == null) { return false; }
-
-      return x[index] === y[index];
-    });
-
-    return equal;
-  }
-
-  static translationStateEqual(x: TranslationState, y: TranslationState) {
-    const obj1 = x as { [key: string]: any };
-    const obj2 = y as { [key: string]: any };
-
-    const keys1 = Object.keys(obj1);
-    const keys2 = Object.keys(obj2);
-    if (keys1.length !== keys2.length) { return false; }
-
-    const equal = keys1.every(key1 => {
-      if (obj2[key1] == null) { return false; }
-
-      return obj1[key1] === obj2[key1];
-    });
-
-    return equal;
-  }
-
   static getDisabledBecauseTranslations(
     attributeValues: EavValues<any>,
     disableTranslation: boolean,
