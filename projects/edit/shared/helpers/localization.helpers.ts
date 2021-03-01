@@ -2,6 +2,7 @@ import { InputFieldHelpers } from '.';
 import { FieldSettings } from '../../../edit-types';
 import { DataTypeConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/data-type.constants';
 import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
+import { FormValues } from '../../eav-item-dialog/item-edit-form/item-edit-form.models';
 import { CalculatedInputType } from '../models';
 import { EavDimension, EavEntityAttributes, EavItem, EavValue, EavValues } from '../models/eav';
 import { ContentTypeService, InputTypeService } from '../store/ngrx-data';
@@ -119,10 +120,10 @@ export class LocalizationHelpers {
     return newAttributes;
   }
 
-  /** Update value for languageKey */
+  /** Update values for languageKey */
   static updateAttributesValues(
     allAttributes: EavEntityAttributes,
-    updateValues: { [key: string]: any },
+    updateValues: FormValues,
     languageKey: string,
     defaultLanguage: string,
   ): EavEntityAttributes {

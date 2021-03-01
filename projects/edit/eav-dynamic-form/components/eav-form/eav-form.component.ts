@@ -4,6 +4,7 @@ import { combineLatest, Subscription } from 'rxjs';
 import { distinctUntilChanged, filter, map, startWith } from 'rxjs/operators';
 import { InputTypeConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { FormValues } from '../../../eav-item-dialog/item-edit-form/item-edit-form.models';
+import { GeneralHelpers } from '../../../shared/helpers/general.helpers';
 import { EavService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
 import { ItemService } from '../../../shared/store/ngrx-data';
 
@@ -46,23 +47,29 @@ export class EavFormComponent implements OnInit, OnDestroy {
           this.form.addControl(fieldName, newControl);
         }
 
-        // // 2. sync values
-        // const changedValues: ObjectModel<FieldValue> = {};
-        // for (const [fieldName, fieldProps] of Object.entries(fieldsProps)) {
-        //   if (fieldProps.calculatedInputType.inputType === InputTypeConstants.EmptyDefault) { continue; }
-        //   const control = this.form.controls[fieldName];
-        //   const value = fieldProps.value;
-        //   if (control.value === value) { continue; }
+        // 2. sync values
+        const oldValues: FormValues = this.form.getRawValue();
+        const newValues: FormValues = {};
+        for (const [fieldName, fieldProps] of Object.entries(fieldsProps)) {
+          if (!this.form.controls.hasOwnProperty(fieldName)) { continue; }
+          newValues[fieldName] = fieldProps.value;
+        }
 
-        //   changedValues[fieldName] = value;
-        // }
-        // if (Object.keys(changedValues).length > 0) {
-        //   this.form.patchValue(changedValues);
-        // }
+        const changes = GeneralHelpers.getFormChanges(oldValues, newValues);
+        if (changes != null) {
+          this.form.patchValue(changes);
+        }
+
+        // important to be after patchValue
+        this.eavService.formValueChange$.next({
+          formId: this.eavService.eavConfig.formId,
+          entityGuid: this.entityGuid,
+          entityValues: newValues,
+        });
 
         // 3. sync disabled
         for (const [fieldName, fieldProps] of Object.entries(fieldsProps)) {
-          if (fieldProps.calculatedInputType.inputType === InputTypeConstants.EmptyDefault) { continue; }
+          if (!this.form.controls.hasOwnProperty(fieldName)) { continue; }
           const control = this.form.controls[fieldName];
           const disabled = fieldProps.settings.Disabled;
           if (disabled === control.disabled) { continue; }
@@ -107,8 +114,8 @@ export class EavFormComponent implements OnInit, OnDestroy {
     );
 
     this.subscription.add(
-      this.form.valueChanges.subscribe((formValues: FormValues) => {
-        this.formValueChange.emit(formValues);
+      this.form.valueChanges.subscribe(() => {
+        this.formValueChange.emit(this.form.getRawValue());
       })
     );
   }

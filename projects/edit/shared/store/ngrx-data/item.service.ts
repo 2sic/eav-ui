@@ -5,6 +5,7 @@ import { distinctUntilChanged, map } from 'rxjs/operators';
 import { FieldSettings } from '../../../../edit-types';
 import { FieldValue, FormValues } from '../../../eav-item-dialog/item-edit-form/item-edit-form.models';
 import { InputFieldHelpers, LocalizationHelpers } from '../../helpers';
+import { GeneralHelpers } from '../../helpers/general.helpers';
 import { Language, SaveResult } from '../../models';
 import { EavContentTypeAttribute, EavDimension, EavEntityAttributes, EavHeader, EavItem, EavValue } from '../../models/eav';
 import { Item1 } from '../../models/json-format-v1';
@@ -101,18 +102,19 @@ export class ItemService extends EntityCollectionServiceBase<EavItem> {
     const oldItem = this.items$.value.find(item => item.Entity.Guid === entityGuid);
     if (!oldItem) { return; }
 
-    const changed = Object.entries(oldItem.Entity.Attributes).some(([name, values]) => {
-      const oldValue = LocalizationHelpers.translate(currentLanguage, defaultLanguage, values, null);
-      const newValue = newValues[name];
-      return oldValue !== newValue;
-    });
-    if (!changed) { return; }
+    const oldValues: FormValues = {};
+    for (const [name, values] of Object.entries(oldItem.Entity.Attributes)) {
+      if (!newValues.hasOwnProperty(name)) { continue; }
+      oldValues[name] = LocalizationHelpers.translate(currentLanguage, defaultLanguage, values, null);
+    }
+    const changes = GeneralHelpers.getFormChanges(oldValues, newValues);
+    if (changes == null) { return; }
 
     const newItem: EavItem = {
       ...oldItem,
       Entity: {
         ...oldItem.Entity,
-        Attributes: LocalizationHelpers.updateAttributesValues(oldItem.Entity.Attributes, newValues, currentLanguage, defaultLanguage),
+        Attributes: LocalizationHelpers.updateAttributesValues(oldItem.Entity.Attributes, changes, currentLanguage, defaultLanguage),
       }
     };
     this.updateOneInCache(newItem);
