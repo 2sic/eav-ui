@@ -152,7 +152,6 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
     editor.on('undo', this.saveValue.bind(this));
     editor.on('redo', this.saveValue.bind(this));
     this.reconfigure?.configureEditor?.(editor);
-    this.subscriptions.push(this.connector.data.forceConnectorSave$.subscribe(this.saveValue.bind(this)));
   }
 
   private saveValue() {

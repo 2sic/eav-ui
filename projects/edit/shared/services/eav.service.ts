@@ -12,12 +12,6 @@ export const webApiEditRoot = 'cms/edit/';
 
 @Injectable()
 export class EavService implements OnDestroy {
-  /**
-   * Tells subscribed custom components that they should submit their values,
-   * e.g. form is going to be saved and we don't want to miss any values.
-   * Custom components run outside Angular zone and we have to wait for their values to update.
-   */
-  forceConnectorSave$ = new Subject<null>();
   /** Temporary solution to circumvent value not being emitted on language change. Fix language change!  */
   formValueChange$ = new Subject<FormValueSet>();
   /** Temporary solution to circumvent disabled not being emitted on language change. Fix language change!  */
@@ -35,7 +29,6 @@ export class EavService implements OnDestroy {
 
   // spm TODO: ngOnDestroy only fires in services provided in component
   ngOnDestroy() {
-    this.forceConnectorSave$.complete();
     this.formValueChange$.complete();
     this.formDisabledChange$.complete();
   }

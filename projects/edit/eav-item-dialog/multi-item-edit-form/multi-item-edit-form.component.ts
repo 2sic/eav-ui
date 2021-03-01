@@ -137,74 +137,70 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy {
 
   /** Save all forms */
   saveAll(close: boolean) {
-    this.eavService.forceConnectorSave$.next();
-    // start gathering submit data with a timeout to let custom components which run outside Angular zone to save their values
-    setTimeout(() => {
-      if (this.formsStateService.formsValid$.value) {
-        const items = this.itemEditFormRefs
-          .map(itemEditFormRef => {
-            const eavItem = this.itemService.getItem(itemEditFormRef.entityGuid);
-            const isValid = this.formsStateService.getFormValid(eavItem.Entity.Guid);
-            if (!isValid) { return; }
+    if (this.formsStateService.formsValid$.value) {
+      const items = this.itemEditFormRefs
+        .map(itemEditFormRef => {
+          const eavItem = this.itemService.getItem(itemEditFormRef.entityGuid);
+          const isValid = this.formsStateService.getFormValid(eavItem.Entity.Guid);
+          if (!isValid) { return; }
 
-            // do not try to save item which doesn't have any fields, nothing could have changed about it
-            const hasAttributes = Object.keys(eavItem.Entity.Attributes).length > 0;
-            if (!hasAttributes) { return; }
+          // do not try to save item which doesn't have any fields, nothing could have changed about it
+          const hasAttributes = Object.keys(eavItem.Entity.Attributes).length > 0;
+          if (!hasAttributes) { return; }
 
-            const item = Item1.convert(eavItem);
-            return item;
-          })
-          .filter(item => item != null);
-        const publishStatus = this.publishStatusService.getPublishStatus(this.eavService.eavConfig.formId);
+          const item = Item1.convert(eavItem);
+          return item;
+        })
+        .filter(item => item != null);
+      const publishStatus = this.publishStatusService.getPublishStatus(this.eavService.eavConfig.formId);
 
-        const saveFormData: SaveEavFormData = {
-          Items: items,
-          IsPublished: publishStatus.IsPublished,
-          DraftShouldBranch: publishStatus.DraftShouldBranch,
-        };
-        angularConsoleLog('SAVE FORM DATA:', saveFormData);
-        this.snackBar.open(this.translate.instant('Message.Saving'), null, { duration: 2000 });
+      const saveFormData: SaveEavFormData = {
+        Items: items,
+        IsPublished: publishStatus.IsPublished,
+        DraftShouldBranch: publishStatus.DraftShouldBranch,
+      };
+      angularConsoleLog('SAVE FORM DATA:', saveFormData);
+      this.snackBar.open(this.translate.instant('Message.Saving'), null, { duration: 2000 });
 
-        this.eavService.saveFormData(saveFormData).subscribe({
-          next: result => {
-            angularConsoleLog('SAVED!, result:', result, 'close:', close);
-            this.itemService.updateItemId(result);
-            this.snackBar.open(this.translate.instant('Message.Saved'), null, { duration: 2000 });
-            this.formsStateService.formsDirty$.next(false);
-            this.saveResult = result;
-            if (close) {
-              this.closeDialog();
-            }
-          },
-          error: err => {
-            angularConsoleLog('SAVE FAILED:', err);
-            this.snackBar.open('Error', null, { duration: 2000 });
-          },
+      this.eavService.saveFormData(saveFormData).subscribe({
+        next: result => {
+          angularConsoleLog('SAVED!, result:', result, 'close:', close);
+          this.itemService.updateItemId(result);
+          this.snackBar.open(this.translate.instant('Message.Saved'), null, { duration: 2000 });
+          this.formsStateService.formsDirty$.next(false);
+          this.saveResult = result;
+          if (close) {
+            this.closeDialog();
+          }
+        },
+        error: err => {
+          angularConsoleLog('SAVE FAILED:', err);
+          this.snackBar.open('Error', null, { duration: 2000 });
+        },
+      });
+    } else {
+      if (this.itemEditFormRefs == null) { return; }
+
+      const formErrors: ObjectModel<string>[] = [];
+      this.itemEditFormRefs.forEach(itemEditFormRef => {
+        if (!itemEditFormRef.eavFormRef.form.invalid) { return; }
+        formErrors.push(this.validationMessagesService.validateForm(itemEditFormRef.eavFormRef.form));
+      });
+
+      const fieldErrors: FieldErrorMessage[] = [];
+      formErrors.forEach(formError => {
+        Object.keys(formError).forEach(key => {
+          fieldErrors.push({ field: key, message: formError[key] });
         });
-      } else {
-        if (this.itemEditFormRefs == null) { return; }
-
-        const formErrors: ObjectModel<string>[] = [];
-        this.itemEditFormRefs.forEach(itemEditFormRef => {
-          if (!itemEditFormRef.eavFormRef.form.invalid) { return; }
-          formErrors.push(this.validationMessagesService.validateForm(itemEditFormRef.eavFormRef.form));
-        });
-
-        const fieldErrors: FieldErrorMessage[] = [];
-        formErrors.forEach(formError => {
-          Object.keys(formError).forEach(key => {
-            fieldErrors.push({ field: key, message: formError[key] });
-          });
-        });
-        const snackData: SaveErrorsSnackData = {
-          fieldErrors,
-        };
-        this.snackBar.openFromComponent(SnackBarSaveErrorsComponent, {
-          data: snackData,
-          duration: 5000,
-        });
-      }
-    }, 100);
+      });
+      const snackData: SaveErrorsSnackData = {
+        fieldErrors,
+      };
+      this.snackBar.openFromComponent(SnackBarSaveErrorsComponent, {
+        data: snackData,
+        duration: 5000,
+      });
+    }
   }
 
   debugInfoOpened(opened: boolean) {

@@ -1,6 +1,6 @@
 import { } from 'google-maps';
 import { Subscription } from 'rxjs';
-import { Connector, ConnectorData, EavCustomInputField } from '../../../edit-types';
+import { Connector, EavCustomInputField } from '../../../edit-types';
 import { ElementEventListener } from '../../../shared/element-event-listener.model';
 import { FieldMaskService } from '../../../shared/field-mask.service';
 import { webpackConsoleLog } from '../../../shared/webpack-console-log.helper';
@@ -96,9 +96,6 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
     );
 
     this.marker.addListener('dragend', this.onMarkerDragend.bind(this));
-    this.subscription.add(
-      (this.connector.data as ConnectorData<string>).forceConnectorSave$.subscribe(onLatLngInputChangeBound),
-    );
   }
 
   private updateHtml(latLng: google.maps.LatLngLiteral) {

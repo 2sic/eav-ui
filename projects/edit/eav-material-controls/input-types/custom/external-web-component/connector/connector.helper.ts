@@ -94,7 +94,6 @@ export class ConnectorHelper {
 
   private calculateRegularProps() {
     const connectorHost: ConnectorHost<any> = {
-      forceConnectorSave$: this.eavService.forceConnectorSave$,
       update: (value) => {
         this.zone.run(() => { this.updateControl(this.control, value); });
       },
