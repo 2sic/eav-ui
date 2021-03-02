@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { combineLatest, Subscription } from 'rxjs';
 import { distinctUntilChanged, filter, map, startWith } from 'rxjs/operators';
@@ -6,7 +6,7 @@ import { InputTypeConstants } from '../../../../ng-dialogs/src/app/content-type-
 import { FormValues } from '../../../eav-item-dialog/item-edit-form/item-edit-form.models';
 import { GeneralHelpers } from '../../../shared/helpers/general.helpers';
 import { EavService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
-import { ItemService } from '../../../shared/store/ngrx-data';
+import { ItemService, LanguageInstanceService } from '../../../shared/store/ngrx-data';
 
 @Component({
   selector: 'app-eav-form',
@@ -16,7 +16,6 @@ import { ItemService } from '../../../shared/store/ngrx-data';
 })
 export class EavFormComponent implements OnInit, OnDestroy {
   @Input() entityGuid: string;
-  @Output() private formValueChange = new EventEmitter<FormValues>();
 
   form: FormGroup;
   private subscription: Subscription;
@@ -27,6 +26,7 @@ export class EavFormComponent implements OnInit, OnDestroy {
     private formsStateService: FormsStateService,
     private itemService: ItemService,
     private fieldsSettingsService: FieldsSettingsService,
+    private languageInstanceService: LanguageInstanceService,
   ) { }
 
   ngOnInit() {
@@ -115,7 +115,10 @@ export class EavFormComponent implements OnInit, OnDestroy {
 
     this.subscription.add(
       this.form.valueChanges.subscribe(() => {
-        this.formValueChange.emit(this.form.getRawValue());
+        const formValues = this.form.getRawValue();
+        const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
+        const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
+        this.itemService.updateItemAttributesValues(this.entityGuid, formValues, currentLanguage, defaultLanguage);
       })
     );
   }
