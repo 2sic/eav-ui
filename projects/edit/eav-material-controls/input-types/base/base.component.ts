@@ -52,15 +52,10 @@ export class BaseComponent<T> implements Field, OnInit, OnDestroy {
       startWith(this.control),
     );
     // doesn't work because controls are sometimes updated without emitting change (e.g. on language change)
-    // this.value$ = this.control.valueChanges.pipe(
-    //   startWith(this.control.value)
-    // );
     // this.status$ = this.control.statusChanges.pipe(
     //   startWith(this.control.status)
     // );
-    this.value$ = this.eavService.formValueChange$.pipe(
-      filter(formSet => formSet.formId === this.eavService.eavConfig.formId && formSet.entityGuid === this.config.entityGuid),
-      map(() => this.control.value),
+    this.value$ = this.control.valueChanges.pipe(
       startWith(this.control.value),
       distinctUntilChanged(),
     );

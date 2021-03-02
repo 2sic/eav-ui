@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { combineLatest, Subscription } from 'rxjs';
-import { distinctUntilChanged, filter, map, startWith } from 'rxjs/operators';
+import { distinctUntilChanged, map, startWith } from 'rxjs/operators';
 import { InputTypeConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { FormValues } from '../../../eav-item-dialog/item-edit-form/item-edit-form.models';
 import { GeneralHelpers } from '../../../shared/helpers/general.helpers';
@@ -60,13 +60,6 @@ export class EavFormComponent implements OnInit, OnDestroy {
           this.form.patchValue(changes);
         }
 
-        // important to be after patchValue
-        this.eavService.formValueChange$.next({
-          formId: this.eavService.eavConfig.formId,
-          entityGuid: this.entityGuid,
-          entityValues: newValues,
-        });
-
         // 3. sync disabled
         for (const [fieldName, fieldProps] of Object.entries(fieldsProps)) {
           if (!this.form.controls.hasOwnProperty(fieldName)) { continue; }
@@ -104,9 +97,9 @@ export class EavFormComponent implements OnInit, OnDestroy {
       })
     );
     this.subscription.add(
-      this.eavService.formValueChange$.pipe(
-        filter(formSet => formSet.formId === this.eavService.eavConfig.formId),
+      this.form.valueChanges.pipe(
         map(() => this.form.dirty),
+        startWith(this.form.dirty),
         // distinctUntilChanged(), // cant have distinctUntilChanged because dirty state is not reset on form save
       ).subscribe(isDirty => {
         this.formsStateService.setFormDirty(this.entityGuid, isDirty);

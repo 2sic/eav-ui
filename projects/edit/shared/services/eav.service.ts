@@ -2,7 +2,7 @@ import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { HttpClient } from '@angular/common/http';
 import { Injectable, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
-import { FormDisabledSet, FormValueSet } from '../../../edit-types';
+import { FormDisabledSet } from '../../../edit-types';
 import { keyPartOfPage, keyPublishing } from '../../../ng-dialogs/src/app/shared/constants/session.constants';
 import { Context } from '../../../ng-dialogs/src/app/shared/services/context';
 import { EavFormData, EditDialogContext, SaveEavFormData } from '../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.models';
@@ -12,8 +12,6 @@ export const webApiEditRoot = 'cms/edit/';
 
 @Injectable()
 export class EavService implements OnDestroy {
-  /** Temporary solution to circumvent value not being emitted on language change. Fix language change!  */
-  formValueChange$ = new Subject<FormValueSet>();
   /** Temporary solution to circumvent disabled not being emitted on language change. Fix language change!  */
   formDisabledChange$ = new Subject<FormDisabledSet>();
 
@@ -29,7 +27,6 @@ export class EavService implements OnDestroy {
 
   // spm TODO: ngOnDestroy only fires in services provided in component
   ngOnDestroy() {
-    this.formValueChange$.complete();
     this.formDisabledChange$.complete();
   }
 

@@ -2,7 +2,7 @@ import { ElementRef, NgZone } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { distinctUntilChanged, filter, map, startWith } from 'rxjs/operators';
+import { distinctUntilChanged, startWith } from 'rxjs/operators';
 import { EavCustomInputField, ExperimentalProps, FieldConfig, FieldSettings } from '../../../../../../edit-types';
 import { FieldConfigSet } from '../../../../../eav-dynamic-form/model/field-config';
 import { FieldValue } from '../../../../../eav-item-dialog/item-edit-form/item-edit-form.models';
@@ -36,9 +36,7 @@ export class ConnectorHelper {
     this.control = this.group.controls[this.config.fieldName];
 
     this.subscription.add(
-      this.eavService.formValueChange$.pipe(
-        filter(formSet => (formSet.formId === this.eavService.eavConfig.formId) && (formSet.entityGuid === this.config.entityGuid)),
-        map(() => this.control.value),
+      this.control.valueChanges.pipe(
         startWith(this.control.value),
         distinctUntilChanged(),
       ).subscribe(newValue => {
