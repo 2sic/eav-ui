@@ -7,7 +7,8 @@ import { ObjectModel } from '../../shared/models';
 @Injectable()
 export class ValidationMessagesService implements OnDestroy {
   /** Fires on field validation touch to display validation messages */
-  showValidation$ = new Subject<AbstractControl>();
+  refreshTouched$ = new Subject<AbstractControl>();
+  refreshDirty$ = new Subject<AbstractControl>();
 
   private validationMessages: ObjectModel<(config: FieldConfigSet) => string> = {
     required: (config: FieldConfigSet) => {
@@ -31,15 +32,15 @@ export class ValidationMessagesService implements OnDestroy {
 
   // spm TODO: ngOnDestroy only fires in services provided in component
   ngOnDestroy(): void {
-    this.showValidation$.complete();
+    this.refreshTouched$.complete();
+    this.refreshDirty$.complete();
   }
 
   /** Marks controls as touched to show errors beneath controls and collects error messages */
   validateForm(form: FormGroup): ObjectModel<string> {
     const errors: ObjectModel<string> = {};
     for (const [controlKey, control] of Object.entries(form.controls)) {
-      control.markAsTouched({ onlySelf: true });
-      this.showValidation$.next(control);
+      this.markAsTouched(control);
 
       if (!control.invalid) { continue; }
 
@@ -49,6 +50,18 @@ export class ValidationMessagesService implements OnDestroy {
       }
     }
     return errors;
+  }
+
+  markAsTouched(control: AbstractControl): void {
+    if (control.touched) { return; }
+    control.markAsTouched();
+    this.refreshTouched$.next(control);
+  }
+
+  markAsDirty(control: AbstractControl): void {
+    if (control.dirty) { return; }
+    control.markAsDirty();
+    this.refreshDirty$.next(control);
   }
 
   /** Calculates error message */

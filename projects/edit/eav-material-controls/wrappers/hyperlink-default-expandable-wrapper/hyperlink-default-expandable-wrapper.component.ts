@@ -69,11 +69,11 @@ export class HyperlinkDefaultExpandableWrapperComponent extends BaseComponent<st
 
     this.templateVars$ = combineLatest([
       combineLatest([this.value$, this.preview$, this.label$, this.placeholder$, this.invalid$, this.required$]),
-      combineLatest([adamButton$, pageButton$, this.disabled$, this.showValidation$]),
+      combineLatest([adamButton$, pageButton$, this.disabled$, this.touched$]),
     ]).pipe(
       map(([
         [value, preview, label, placeholder, invalid, required],
-        [adamButton, pageButton, disabled, showValidation],
+        [adamButton, pageButton, disabled, touched],
       ]) => {
         const templateVars: HyperlinkDefaultExpandableTemplateVars = {
           value,
@@ -85,7 +85,7 @@ export class HyperlinkDefaultExpandableWrapperComponent extends BaseComponent<st
           adamButton,
           pageButton,
           disabled,
-          showValidation,
+          touched,
         };
         return templateVars;
       }),
@@ -107,6 +107,10 @@ export class HyperlinkDefaultExpandableWrapperComponent extends BaseComponent<st
 
   calculateBottomPixels() {
     return window.innerWidth > 600 ? '100px' : '50px';
+  }
+
+  markAsTouched() {
+    this.validationMessagesService.markAsTouched(this.control);
   }
 
   setValue(event: Event) {

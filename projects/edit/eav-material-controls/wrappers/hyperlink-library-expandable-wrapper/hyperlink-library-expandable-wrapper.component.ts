@@ -45,11 +45,11 @@ export class HyperlinkLibraryExpandableWrapperComponent extends BaseComponent<nu
 
     this.templateVars$ = combineLatest([
       combineLatest([this.value$, this.label$, this.required$, this.invalid$, this.adamItems$]),
-      combineLatest([this.disabled$, this.showValidation$]),
+      combineLatest([this.disabled$, this.touched$]),
     ]).pipe(
       map(([
         [value, label, required, invalid, items],
-        [disabled, showValidation],
+        [disabled, touched],
       ]) => {
         const templateVars: HyperlinkLibraryExpandableTemplateVars = {
           value,
@@ -59,7 +59,7 @@ export class HyperlinkLibraryExpandableWrapperComponent extends BaseComponent<nu
           items: items.slice(0, 9),
           itemsNumber: items.length,
           disabled,
-          showValidation,
+          touched,
         };
         return templateVars;
       }),

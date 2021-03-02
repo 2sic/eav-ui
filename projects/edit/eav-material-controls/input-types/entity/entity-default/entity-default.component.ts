@@ -117,12 +117,12 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
     this.templateVars$ = combineLatest([
       combineLatest([this.label$, this.placeholder$, this.required$, this.invalid$, this.freeTextMode$, this.settings$]),
       combineLatest([this.selectedEntities$, this.config.entityCache$, this.disableAddNew$, this.isExpanded$, this.error$]),
-      combineLatest([this.disabled$, this.showValidation$]),
+      combineLatest([this.disabled$, this.touched$]),
     ]).pipe(
       map(([
         [label, placeholder, required, invalid, freeTextMode, settings],
         [selectedEntities, availableEntities, disableAddNew, isExpanded, error],
-        [disabled, showValidation],
+        [disabled, touched],
       ]) => {
         const templateVars: EntityTemplateVars = {
           label,
@@ -137,7 +137,7 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
           isExpanded,
           error,
           disabled,
-          showValidation,
+          touched,
         };
         return templateVars;
       }),

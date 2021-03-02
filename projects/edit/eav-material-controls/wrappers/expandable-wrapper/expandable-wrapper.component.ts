@@ -52,11 +52,11 @@ export class ExpandableWrapperComponent extends BaseComponent<string> implements
 
     this.templateVars$ = combineLatest([
       combineLatest([this.value$, this.label$, this.required$, this.invalid$, this.config.focused$]),
-      combineLatest([this.disabled$, this.showValidation$]),
+      combineLatest([this.disabled$, this.dirty$, this.touched$]),
     ]).pipe(
       map(([
         [value, label, required, invalid, focused],
-        [disabled, showValidation],
+        [disabled, dirty, touched],
       ]) => {
         const templateVars: ExpandableWrapperTemplateVars = {
           value,
@@ -65,7 +65,8 @@ export class ExpandableWrapperComponent extends BaseComponent<string> implements
           invalid,
           focused,
           disabled,
-          showValidation,
+          dirty,
+          touched,
         };
         return templateVars;
       }),
@@ -88,6 +89,7 @@ export class ExpandableWrapperComponent extends BaseComponent<string> implements
       this.editRoutingService,
       this.dnnBridgeService,
       this.fieldsSettingsService,
+      this.validationMessagesService,
       this.zone,
     );
 

@@ -1,8 +1,6 @@
-import { AbstractControl } from '@angular/forms';
-
 /** Template vars required in all fields */
 export interface BaseFieldTemplateVars {
   disabled: boolean;
   /** Required to update DOM on validation change */
-  showValidation: AbstractControl;
+  touched: boolean;
 }

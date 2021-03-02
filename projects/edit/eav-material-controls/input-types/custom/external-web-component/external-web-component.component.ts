@@ -35,13 +35,13 @@ export class ExternalWebComponentComponent extends BaseComponent<string> impleme
     this.loading$ = new BehaviorSubject(true);
     const isExpanded$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
 
-    this.templateVars$ = combineLatest([this.loading$, isExpanded$, this.disabled$, this.showValidation$]).pipe(
-      map(([loading, isExpanded, disabled, showValidation]) => {
+    this.templateVars$ = combineLatest([this.loading$, isExpanded$, this.disabled$, this.touched$]).pipe(
+      map(([loading, isExpanded, disabled, touched]) => {
         const templateVars: ExternalWebComponentTemplateVars = {
           loading,
           isExpanded,
           disabled,
-          showValidation,
+          touched,
         };
         return templateVars;
       }),

@@ -35,11 +35,11 @@ export class NumberDefaultComponent extends BaseComponent<number> implements OnI
 
     this.templateVars$ = combineLatest([
       combineLatest([this.label$, this.placeholder$, this.required$, min$, max$]),
-      combineLatest([this.disabled$, this.showValidation$]),
+      combineLatest([this.disabled$, this.touched$]),
     ]).pipe(
       map(([
         [label, placeholder, required, min, max],
-        [disabled, showValidation],
+        [disabled, touched],
       ]) => {
         const templateVars: NumberDefaultTemplateVars = {
           label,
@@ -48,7 +48,7 @@ export class NumberDefaultComponent extends BaseComponent<number> implements OnI
           min,
           max,
           disabled,
-          showValidation,
+          touched,
         };
         return templateVars;
       }),

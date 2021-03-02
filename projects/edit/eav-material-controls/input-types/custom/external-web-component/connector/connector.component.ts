@@ -5,6 +5,7 @@ import { angularConsoleLog } from '../../../../../../ng-dialogs/src/app/shared/h
 import { FieldConfigSet } from '../../../../../eav-dynamic-form/model/field-config';
 import { DnnBridgeService, EavService, EditRoutingService, FieldsSettingsService } from '../../../../../shared/services';
 import { ContentTypeService, FeatureService, InputTypeService } from '../../../../../shared/store/ngrx-data';
+import { ValidationMessagesService } from '../../../../validators/validation-messages-service';
 import { ConnectorHelper } from './connector.helper';
 
 @Component({
@@ -29,6 +30,7 @@ export class ConnectorComponent implements AfterViewInit, OnDestroy {
     private editRoutingService: EditRoutingService,
     private dnnBridgeService: DnnBridgeService,
     private fieldsSettingsService: FieldsSettingsService,
+    private validationMessagesService: ValidationMessagesService,
     private zone: NgZone,
   ) { }
 
@@ -48,6 +50,7 @@ export class ConnectorComponent implements AfterViewInit, OnDestroy {
       this.editRoutingService,
       this.dnnBridgeService,
       this.fieldsSettingsService,
+      this.validationMessagesService,
       this.zone,
     );
   }

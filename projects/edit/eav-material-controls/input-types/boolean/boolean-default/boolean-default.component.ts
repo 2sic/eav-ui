@@ -34,12 +34,12 @@ export class BooleanDefaultComponent extends BaseComponent<boolean> implements O
     super.ngOnInit();
     this.label$ = this.settings$.pipe(map(settings => settings._label));
 
-    this.templateVars$ = combineLatest([this.label$, this.disabled$, this.showValidation$]).pipe(
-      map(([label, disabled, showValidation]) => {
+    this.templateVars$ = combineLatest([this.label$, this.disabled$, this.touched$]).pipe(
+      map(([label, disabled, touched]) => {
         const templateVars: BooleanDefaultTemplateVars = {
           label,
           disabled,
-          showValidation,
+          touched,
         };
         return templateVars;
       }),

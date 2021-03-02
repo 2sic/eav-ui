@@ -1,6 +1,6 @@
 import { Directive, Input, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import { distinctUntilChanged, filter, map, startWith } from 'rxjs/operators';
 import { FieldSettings } from '../../../../edit-types';
 import { Field } from '../../../eav-dynamic-form/model/field';
@@ -22,7 +22,9 @@ export class BaseComponent<T> implements Field, OnInit, OnDestroy {
   disabled$: BehaviorSubject<boolean>;
   required$: Observable<boolean>;
   invalid$: Observable<boolean>;
-  showValidation$: Observable<AbstractControl>;
+  /** Required for validation messages */
+  touched$: Observable<boolean>;
+  dirty$: Observable<boolean>;
   subscription: Subscription;
 
   constructor(
@@ -50,10 +52,23 @@ export class BaseComponent<T> implements Field, OnInit, OnDestroy {
       startWith(this.control.invalid),
       distinctUntilChanged(),
     );
-    this.showValidation$ = this.validationMessagesService.showValidation$.pipe(
-      filter(control => control === this.control),
-      startWith(this.control),
-      // distinctUntilChanged(), // can't use that here. Maybe find a different way of firing validation messages
+    this.touched$ = combineLatest([
+      this.control.valueChanges.pipe(startWith(this.control.value)),
+      this.control.statusChanges.pipe(startWith(this.control.status)),
+      this.validationMessagesService.refreshTouched$.pipe(filter(control => control === this.control)),
+    ]).pipe(
+      map(() => this.control.touched),
+      startWith(this.control.touched),
+      distinctUntilChanged(),
+    );
+    this.dirty$ = combineLatest([
+      this.control.valueChanges.pipe(startWith(this.control.value)),
+      this.control.statusChanges.pipe(startWith(this.control.status)),
+      this.validationMessagesService.refreshDirty$.pipe(filter(control => control === this.control)),
+    ]).pipe(
+      map(() => this.control.dirty),
+      startWith(this.control.dirty),
+      distinctUntilChanged(),
     );
     this.value$ = this.control.valueChanges.pipe(
       startWith(this.control.value),

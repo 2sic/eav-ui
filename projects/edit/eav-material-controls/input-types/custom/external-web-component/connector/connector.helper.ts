@@ -8,6 +8,7 @@ import { FieldConfigSet } from '../../../../../eav-dynamic-form/model/field-conf
 import { InputFieldHelpers } from '../../../../../shared/helpers';
 import { DnnBridgeService, EavService, EditRoutingService, FieldsSettingsService } from '../../../../../shared/services';
 import { ContentTypeService, FeatureService, InputTypeService } from '../../../../../shared/store/ngrx-data';
+import { ValidationMessagesService } from '../../../../validators/validation-messages-service';
 import { ConnectorHost, ConnectorInstance } from './models/connector-instance.model';
 
 export class ConnectorHelper {
@@ -28,6 +29,7 @@ export class ConnectorHelper {
     private editRoutingService: EditRoutingService,
     private dnnBridgeService: DnnBridgeService,
     private fieldsSettingsService: FieldsSettingsService,
+    private validationMessagesService: ValidationMessagesService,
     private zone: NgZone,
   ) {
     this.control = this.group.controls[this.config.fieldName];
@@ -136,7 +138,7 @@ export class ConnectorHelper {
     if (control == null || control.disabled) { return; }
 
     if (control.value !== value) { control.patchValue(value); }
-    if (!control.dirty) { control.markAsDirty(); }
-    if (!control.touched) { control.markAsTouched(); }
+    this.validationMessagesService.markAsTouched(control);
+    this.validationMessagesService.markAsDirty(control);
   }
 }

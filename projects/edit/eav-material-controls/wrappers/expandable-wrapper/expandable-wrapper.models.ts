@@ -6,4 +6,5 @@ export interface ExpandableWrapperTemplateVars extends BaseFieldTemplateVars {
   required: boolean;
   invalid: boolean;
   focused: boolean;
+  dirty: boolean;
 }

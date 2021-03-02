@@ -37,11 +37,11 @@ export class CustomJsonEditorComponent extends BaseComponent<string> implements 
 
     this.templateVars$ = combineLatest([
       combineLatest([rowCount$, this.placeholder$, this.required$, this.label$]),
-      combineLatest([this.disabled$, this.showValidation$]),
+      combineLatest([this.disabled$, this.touched$]),
     ]).pipe(
       map(([
         [rowCount, placeholder, required, label],
-        [disabled, showValidation],
+        [disabled, touched],
       ]) => {
         const templateVars: CustomJsonEditorTemplateVars = {
           rowCount,
@@ -49,7 +49,7 @@ export class CustomJsonEditorComponent extends BaseComponent<string> implements 
           required,
           label,
           disabled,
-          showValidation,
+          touched,
         };
         return templateVars;
       }),

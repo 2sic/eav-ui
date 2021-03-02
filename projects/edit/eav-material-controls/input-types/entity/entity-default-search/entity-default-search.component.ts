@@ -7,6 +7,7 @@ import { FieldSettings } from '../../../../../edit-types';
 import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 import { EntityInfo } from '../../../../shared/models';
 import { GlobalConfigService } from '../../../../shared/services';
+import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { SelectedEntity } from '../entity-default/entity-default.models';
 
 @Component({
@@ -41,7 +42,11 @@ export class EntityDefaultSearchComponent implements OnInit, OnChanges {
   filteredEntities: EntityInfo[] = [];
   debugEnabled$: Observable<boolean>;
 
-  constructor(private translate: TranslateService, private globalConfigService: GlobalConfigService) { }
+  constructor(
+    private translate: TranslateService,
+    private globalConfigService: GlobalConfigService,
+    private validationMessagesService: ValidationMessagesService,
+  ) { }
 
   ngOnInit() {
     this.debugEnabled$ = this.globalConfigService.getDebugEnabled();
@@ -53,6 +58,10 @@ export class EntityDefaultSearchComponent implements OnInit, OnChanges {
       const filter = this.autocompleteRef?.nativeElement.value || '';
       this.filterSelectionList(filter);
     }
+  }
+
+  markAsTouched() {
+    this.validationMessagesService.markAsTouched(this.control);
   }
 
   getPlaceholder() {

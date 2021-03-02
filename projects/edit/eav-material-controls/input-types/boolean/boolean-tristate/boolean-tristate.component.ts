@@ -35,13 +35,13 @@ export class BooleanTristateComponent extends BaseComponent<boolean | ''> implem
     this.value$ = this.value$.pipe(map(value => (value === '') ? null : value));
     this.label$ = this.settings$.pipe(map(settings => settings._label));
 
-    this.templateVars$ = combineLatest([this.value$, this.label$, this.disabled$, this.showValidation$]).pipe(
-      map(([value, label, disabled, showValidation]) => {
+    this.templateVars$ = combineLatest([this.value$, this.label$, this.disabled$, this.touched$]).pipe(
+      map(([value, label, disabled, touched]) => {
         const templateVars: BooleanTristateTemplateVars = {
           value,
           label,
           disabled,
-          showValidation,
+          touched,
         };
         return templateVars;
       }),

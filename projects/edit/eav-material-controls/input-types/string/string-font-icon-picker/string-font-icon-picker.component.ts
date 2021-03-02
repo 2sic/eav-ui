@@ -62,11 +62,11 @@ export class StringFontIconPickerComponent extends BaseComponent<string> impleme
 
     this.templateVars$ = combineLatest([
       combineLatest([this.value$, filteredIcons$, previewCss$, this.label$, this.placeholder$, this.required$]),
-      combineLatest([this.disabled$, this.showValidation$]),
+      combineLatest([this.disabled$, this.touched$]),
     ]).pipe(
       map(([
         [value, filteredIcons, previewCss, label, placeholder, required],
-        [disabled, showValidation],
+        [disabled, touched],
       ]) => {
         const templateVars: StringFontIconPickerTemplateVars = {
           value,
@@ -76,7 +76,7 @@ export class StringFontIconPickerComponent extends BaseComponent<string> impleme
           placeholder,
           required,
           disabled,
-          showValidation,
+          touched,
         };
         return templateVars;
       }),

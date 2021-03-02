@@ -43,11 +43,11 @@ export class EntityExpandableWrapperComponent extends BaseComponent<string | str
 
     this.templateVars$ = combineLatest([
       combineLatest([this.label$, this.required$, this.invalid$, this.selectedEntities$]),
-      combineLatest([this.disabled$, this.showValidation$]),
+      combineLatest([this.disabled$, this.touched$]),
     ]).pipe(
       map(([
         [label, required, invalid, selectedEntities],
-        [disabled, showValidation],
+        [disabled, touched],
       ]) => {
         const templateVars: EntityExpandableTemplateVars = {
           label,
@@ -56,7 +56,7 @@ export class EntityExpandableWrapperComponent extends BaseComponent<string | str
           selectedEntities: selectedEntities?.slice(0, 9) || [],
           entitiesNumber: selectedEntities?.length || 0,
           disabled,
-          showValidation,
+          touched,
         };
         return templateVars;
       }),

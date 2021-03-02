@@ -32,15 +32,15 @@
   <mat-label class="c-ew__preview-label" [ngClass]="{
     'mat-caption' : data.entitiesNumber,
     'mat-empty' : !data.entitiesNumber,
-    'mat-error' : data.invalid && control.touched && !config.initialDisabled,
-    'color__primary' : !(data.invalid && control.touched) && !config.initialDisabled,
+    'mat-error' : data.invalid && data.touched && !config.initialDisabled,
+    'color__primary' : !(data.invalid && data.touched) && !config.initialDisabled,
     'color__label-disabled' : config.initialDisabled
   }">
     {{ data.label }} {{ data.required ? '*': '' }}
   </mat-label>
   <div matRipple [matRippleAnimation]="{ enterDuration: 360 }" class="c-ew__preview mat-ripple" (click)="expandDialog()"
     [ngClass]="{
-      'c-ew__preview--invalid' : data.invalid && control.touched,
+      'c-ew__preview--invalid' : data.invalid && data.touched,
       'c-ew__preview--disabled': config.initialDisabled
     }">
     <div [ngClass]="data.entitiesNumber ? 'c-ew__preview-container' : 'c-ew__preview-container--empty'">

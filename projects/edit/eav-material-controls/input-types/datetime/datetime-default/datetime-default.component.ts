@@ -43,11 +43,11 @@ export class DatetimeDefaultComponent extends BaseComponent<string> implements O
 
     this.templateVars$ = combineLatest([
       combineLatest([useTimePicker$, this.placeholder$, this.required$, this.label$]),
-      combineLatest([this.disabled$, this.showValidation$]),
+      combineLatest([this.disabled$, this.touched$]),
     ]).pipe(
       map(([
         [useTimePicker, placeholder, required, label],
-        [disabled, showValidation],
+        [disabled, touched],
       ]) => {
         const templateVars: DatetimeDefaultTemplateVars = {
           useTimePicker,
@@ -55,7 +55,7 @@ export class DatetimeDefaultComponent extends BaseComponent<string> implements O
           required,
           label,
           disabled,
-          showValidation,
+          touched,
         };
         return templateVars;
       }),

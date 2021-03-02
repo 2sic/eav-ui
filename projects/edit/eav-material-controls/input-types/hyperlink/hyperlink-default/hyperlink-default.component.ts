@@ -75,11 +75,11 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
 
     this.templateVars$ = combineLatest([
       combineLatest([open$, buttons$, this.settings$, this.value$, this.preview$, this.label$]),
-      combineLatest([this.placeholder$, this.required$, this.disabled$, this.showValidation$]),
+      combineLatest([this.placeholder$, this.required$, this.disabled$, this.touched$]),
     ]).pipe(
       map(([
         [open, buttons, settings, value, preview, label],
-        [placeholder, required, disabled, showValidation],
+        [placeholder, required, disabled, touched],
       ]) => {
         const templateVars: HyperlinkDefaultTemplateVars = {
           open,
@@ -91,7 +91,7 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
           placeholder,
           required,
           disabled,
-          showValidation,
+          touched,
         };
         return templateVars;
       }),

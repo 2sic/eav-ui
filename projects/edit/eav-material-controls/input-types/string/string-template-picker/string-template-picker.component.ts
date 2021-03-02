@@ -50,14 +50,14 @@ export class StringTemplatePickerComponent extends BaseComponent<string> impleme
     this.setFileConfig(this.typeWatcher.resolve() || 'Token'); // use token setting as default, till the UI tells us otherwise
     this.onLocationChange(this.locationWatcher.resolve() || null); // set initial file list
 
-    this.templateVars$ = combineLatest([this.label$, this.required$, this.templateOptions$, this.disabled$, this.showValidation$]).pipe(
-      map(([label, required, templateOptions, disabled, showValidation]) => {
+    this.templateVars$ = combineLatest([this.label$, this.required$, this.templateOptions$, this.disabled$, this.touched$]).pipe(
+      map(([label, required, templateOptions, disabled, touched]) => {
         const templateVars: StringTemplatePickerTemplateVars = {
           label,
           required,
           templateOptions,
           disabled,
-          showValidation,
+          touched,
         };
         return templateVars;
       }),

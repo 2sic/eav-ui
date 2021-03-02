@@ -51,11 +51,11 @@
       <!-- input -->
       <div class="hyperlink-input-link-wrapper">
         <mat-form-field appearance="standard" color="accent" [ngClass]="{
-          'mat-form-field-invalid': data.invalid && control.touched
+          'mat-form-field-invalid': data.invalid && data.touched
         }">
           <input matInput [matTooltip]="'Fields.Hyperlink.Default.Tooltip' | translate" matTooltipPosition="above"
             [placeholder]="data.placeholder" (change)="setValue($event)" [disabled]="data.disabled"
-            (blur)="control.markAsTouched()" [value]="data.value" (keyup)="setValue($event)" appPasteClipboardImage
+            (blur)="markAsTouched()" [value]="data.value" (keyup)="setValue($event)" appPasteClipboardImage
             [config]="config" [elementType]="'input'">
           <div matSuffix fxLayoutAlign="center center" *ngIf="data.adamButton || data.pageButton">
             <div class="c-ew__preview-suffix-text" fxHide fxShow.gt-xs [ngClass]="{
@@ -74,7 +74,7 @@
               <mat-icon svgIcon="sitemap"></mat-icon>
             </button>
           </div>
-          <mat-label [ngClass]="{ 'mat-error' : data.invalid && control.touched }">
+          <mat-label [ngClass]="{ 'mat-error' : data.invalid && data.touched }">
             {{ data.label }}
             {{ data.required ? '*': '' }}
           </mat-label>

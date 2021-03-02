@@ -36,11 +36,11 @@ export class StringDefaultComponent extends BaseComponent<string> implements OnI
 
     this.templateVars$ = combineLatest([
       combineLatest([rowCount$, this.label$, this.placeholder$, this.required$]),
-      combineLatest([this.disabled$, this.showValidation$]),
+      combineLatest([this.disabled$, this.touched$]),
     ]).pipe(
       map(([
         [rowCount, label, placeholder, required],
-        [disabled, showValidation],
+        [disabled, touched],
       ]) => {
         const templateVars: StringDefaultTemplateVars = {
           rowCount,
@@ -48,7 +48,7 @@ export class StringDefaultComponent extends BaseComponent<string> implements OnI
           placeholder,
           required,
           disabled,
-          showValidation,
+          touched,
         };
         return templateVars;
       }),
