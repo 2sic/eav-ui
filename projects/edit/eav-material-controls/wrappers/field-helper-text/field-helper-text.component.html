@@ -5,8 +5,8 @@
   'c-fht__container--hyperlink-default-wrapper-fix': hyperlinkDefaultWrapperFix && !config.isLastInGroup
 }">
   <mat-hint *ngIf="data.description" class="mat-caption" (click)="toggleHint($event)"
-    [ngClass]="control.disabled ? 'c-fht__container-hint--disabled' : 'c-fht__container-hint'" align="start"
-    fxLayout="row" fxLayoutAlign="start start">
+    [ngClass]="data.disabled ? 'c-fht__container-hint--disabled' : 'c-fht__container-hint'" align="start" fxLayout="row"
+    fxLayoutAlign="start start">
     <span class="notes-container" [ngClass]="{ 'c-fht__container-hint--ellipsis': !isFullText }" appChangeAnchorTarget
       [innerHtml]="data.description | safeHtml">
     </span>

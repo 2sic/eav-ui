@@ -1,8 +1,6 @@
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { HttpClient } from '@angular/common/http';
-import { Injectable, OnDestroy } from '@angular/core';
-import { Subject } from 'rxjs';
-import { FormDisabledSet } from '../../../edit-types';
+import { Injectable } from '@angular/core';
 import { keyPartOfPage, keyPublishing } from '../../../ng-dialogs/src/app/shared/constants/session.constants';
 import { Context } from '../../../ng-dialogs/src/app/shared/services/context';
 import { EavFormData, EditDialogContext, SaveEavFormData } from '../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.models';
@@ -11,10 +9,7 @@ import { EavConfig, SaveResult, VersioningOptions } from '../models';
 export const webApiEditRoot = 'cms/edit/';
 
 @Injectable()
-export class EavService implements OnDestroy {
-  /** Temporary solution to circumvent disabled not being emitted on language change. Fix language change!  */
-  formDisabledChange$ = new Subject<FormDisabledSet>();
-
+export class EavService {
   /** WARNING! These are constants that form was loaded with. They do not change while form is running */
   eavConfig: EavConfig;
 
@@ -24,11 +19,6 @@ export class EavService implements OnDestroy {
     /** Used to fetch form data and fill up eavConfig. Do not use anywhere else */
     private context: Context,
   ) { }
-
-  // spm TODO: ngOnDestroy only fires in services provided in component
-  ngOnDestroy() {
-    this.formDisabledChange$.complete();
-  }
 
   /** Create EavConfiguration from sessionStorage */
   setEavConfig(

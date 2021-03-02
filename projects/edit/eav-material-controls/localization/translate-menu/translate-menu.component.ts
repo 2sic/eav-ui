@@ -2,7 +2,7 @@ import { Component, Input, OnInit, ViewContainerRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { combineLatest, Observable } from 'rxjs';
-import { distinctUntilChanged, filter, map, startWith } from 'rxjs/operators';
+import { distinctUntilChanged, map, startWith } from 'rxjs/operators';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { TranslationLinkConstants } from '../../../shared/constants';
 import { TranslationState } from '../../../shared/models';
@@ -43,8 +43,7 @@ export class TranslateMenuComponent implements OnInit {
     );
 
     const control = this.group.controls[this.config.fieldName];
-    const disabled$ = this.eavService.formDisabledChange$.pipe(
-      filter(formSet => formSet.formId === this.eavService.eavConfig.formId && formSet.entityGuid === this.config.entityGuid),
+    const disabled$ = control.valueChanges.pipe(
       map(() => control.disabled),
       startWith(control.disabled),
       distinctUntilChanged(),

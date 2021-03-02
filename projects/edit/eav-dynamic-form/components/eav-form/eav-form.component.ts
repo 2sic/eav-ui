@@ -67,12 +67,12 @@ export class EavFormComponent implements OnInit, OnDestroy {
           const disabled = fieldProps.settings.Disabled;
           if (disabled === control.disabled) { continue; }
 
+          // WARNING!!! Fires valueChange event for every single control
           if (disabled) {
-            control.disable({ emitEvent: false });
+            control.disable();
           } else {
-            control.enable({ emitEvent: false });
+            control.enable();
           }
-          this.eavService.formDisabledChange$.next({ formId: this.eavService.eavConfig.formId, entityGuid: this.entityGuid });
         }
 
         // TODO: 4. sync validators

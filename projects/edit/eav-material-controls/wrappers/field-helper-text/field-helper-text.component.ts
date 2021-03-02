@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { combineLatest, Observable } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
+import { distinctUntilChanged, map, startWith } from 'rxjs/operators';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { FieldsSettingsService } from '../../../shared/services';
 import { ValidationMessagesService } from '../../validators/validation-messages-service';
@@ -26,18 +26,25 @@ export class FieldHelperTextComponent implements OnInit {
 
   ngOnInit() {
     this.control = this.group.controls[this.config.fieldName];
+
     const invalid$ = this.control.statusChanges.pipe(
       map(() => this.control.invalid),
       startWith(this.control.invalid),
+      distinctUntilChanged(),
     );
-
+    const disabled$ = this.control.valueChanges.pipe(
+      map(() => this.control.disabled),
+      startWith(this.control.disabled),
+      distinctUntilChanged(),
+    );
     const settings$ = this.fieldsSettingsService.getFieldSettings$(this.config.fieldName);
     const description$ = settings$.pipe(map(settings => settings.Notes));
 
-    this.templateVars$ = combineLatest([invalid$, description$, settings$]).pipe(
-      map(([invalid, description, settings]) => {
+    this.templateVars$ = combineLatest([invalid$, disabled$, description$, settings$]).pipe(
+      map(([invalid, disabled, description, settings]) => {
         const templateVars: FieldHelperTextTemplateVars = {
           invalid,
+          disabled,
           description,
           settings,
         };

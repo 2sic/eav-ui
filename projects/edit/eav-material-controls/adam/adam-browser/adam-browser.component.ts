@@ -3,14 +3,14 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
-import { distinctUntilChanged, filter, map, startWith } from 'rxjs/operators';
+import { distinctUntilChanged, map, startWith } from 'rxjs/operators';
 import { AdamConfig, AdamItem, DropzoneConfigExt } from '../../../../edit-types';
 import { eavConstants } from '../../../../ng-dialogs/src/app/shared/constants/eav.constants';
 import { EditForm } from '../../../../ng-dialogs/src/app/shared/models/edit-form.model';
 import { FeaturesGuidsConstants } from '../../../../shared/features-guids.constants';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { UrlHelpers } from '../../../shared/helpers';
-import { EavService, EditRoutingService, FileTypeService } from '../../../shared/services';
+import { EditRoutingService, FileTypeService } from '../../../shared/services';
 import { FeatureService } from '../../../shared/store/ngrx-data';
 import { AdamService } from '../adam.service';
 import { AdamBrowserTemplateVars, AdamConfigInstance } from './adam-browser.models';
@@ -55,7 +55,6 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
     private fileTypeService: FileTypeService,
     private featureService: FeatureService,
     private dnnContext: DnnContext,
-    private eavService: EavService,
     private editRoutingService: EditRoutingService,
     private zone: NgZone,
   ) { }
@@ -95,7 +94,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
       },
     };
     this.subscription.add(
-      this.adamConfig$.subscribe(adamConfig => {
+      this.adamConfig$.subscribe(() => {
         this.fetchItems();
       })
     );
@@ -104,10 +103,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
       startWith(this.control.value),
       distinctUntilChanged(),
     );
-    const disabled$ = this.eavService.formDisabledChange$.asObservable().pipe(
-      filter(formSet => (formSet.formId === this.eavService.eavConfig.formId)
-        && (formSet.entityGuid === this.config.entityGuid)
-      ),
+    const disabled$ = this.control.valueChanges.pipe(
       map(() => this.control.disabled),
       startWith(this.control.disabled),
       distinctUntilChanged(),
