@@ -1,11 +1,10 @@
 import { ElementRef, NgZone } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { distinctUntilChanged, startWith } from 'rxjs/operators';
-import { EavCustomInputField, ExperimentalProps, FieldConfig, FieldSettings } from '../../../../../../edit-types';
+import { EavCustomInputField, ExperimentalProps, FieldConfig } from '../../../../../../edit-types';
 import { FieldConfigSet } from '../../../../../eav-dynamic-form/model/field-config';
-import { FieldValue } from '../../../../../eav-item-dialog/item-edit-form/item-edit-form.models';
 import { InputFieldHelpers } from '../../../../../shared/helpers';
 import { DnnBridgeService, EavService, EditRoutingService, FieldsSettingsService } from '../../../../../shared/services';
 import { ContentTypeService, FeatureService, InputTypeService } from '../../../../../shared/store/ngrx-data';
@@ -14,8 +13,6 @@ import { ConnectorHost, ConnectorInstance } from './models/connector-instance.mo
 export class ConnectorHelper {
   private control: AbstractControl;
   private customEl: EavCustomInputField<any>;
-  private value$ = new BehaviorSubject<FieldValue>(null);
-  private settings$ = new BehaviorSubject<FieldSettings>(null);
   private subscription = new Subscription();
 
   constructor(
@@ -35,21 +32,6 @@ export class ConnectorHelper {
   ) {
     this.control = this.group.controls[this.config.fieldName];
 
-    this.subscription.add(
-      this.control.valueChanges.pipe(
-        startWith(this.control.value),
-        distinctUntilChanged(),
-      ).subscribe(newValue => {
-        this.value$.next(newValue);
-      })
-    );
-
-    this.subscription.add(
-      this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).subscribe(settings => {
-        this.settings$.next(settings);
-      })
-    );
-
     this.customEl = document.createElement(this.customElName) as any;
     this.customEl.connector = this.buildConnector();
     this.customElContainerRef.nativeElement.appendChild(this.customEl);
@@ -57,8 +39,6 @@ export class ConnectorHelper {
 
   destroy() {
     this.subscription.unsubscribe();
-    this.value$.complete();
-    this.settings$.complete();
     this.customEl?.parentNode.removeChild(this.customEl);
     this.customEl = null;
   }
@@ -66,21 +46,25 @@ export class ConnectorHelper {
   private buildConnector() {
     const connectorHost = this.calculateRegularProps();
     const experimental = this.calculateExperimentalProps();
+    const fieldSettings = this.fieldsSettingsService.getFieldSettings(this.config.fieldName);
     const fieldConfig: FieldConfig = {
       name: this.config.fieldName,
       index: this.config.index,
-      label: this.settings$.value.Name,
-      placeholder: this.settings$.value.Placeholder,
+      label: fieldSettings.Name,
+      placeholder: fieldSettings.Placeholder,
       inputType: this.config.inputType,
       type: this.config.type,
-      required: this.settings$.value.Required,
+      required: fieldSettings.Required,
       disabled: this.config.initialDisabled,
-      settings: this.settings$.value,
+      settings: fieldSettings,
     };
-    const value$ = this.value$.asObservable();
+    const value$ = this.control.valueChanges.pipe(
+      startWith(this.control.value),
+      distinctUntilChanged(),
+    );
     const connector = new ConnectorInstance<any>(connectorHost, value$, fieldConfig, experimental, this.eavService.eavConfig);
     this.subscription.add(
-      this.settings$.subscribe(settings => {
+      this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).subscribe(settings => {
         connector.field.settings = settings;
         connector.field.label = settings.Name;
         connector.field.placeholder = settings.Placeholder;

@@ -156,6 +156,10 @@ export class FieldsSettingsService implements OnDestroy {
     return this.fieldsProps$.asObservable();
   }
 
+  getFieldSettings(fieldName: string): FieldSettings {
+    return this.fieldsProps$.value[fieldName].settings;
+  }
+
   getFieldSettings$(fieldName: string): Observable<FieldSettings> {
     return this.fieldsProps$.pipe(
       map(fieldsSettings => fieldsSettings[fieldName].settings),
