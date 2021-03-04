@@ -15,9 +15,9 @@ import { EditEntryComponent } from '../../edit-entry/edit-entry.component';
 import { FieldErrorMessage, ObjectModel, SaveResult } from '../../shared/models';
 import { EavItem } from '../../shared/models/eav';
 import { Item1 } from '../../shared/models/json-format-v1';
-import { EavService, EditRoutingService, FormsStateService, GlobalConfigService, LoadIconsService } from '../../shared/services';
+import { EavService, EditRoutingService, FormsStateService, LoadIconsService } from '../../shared/services';
 // tslint:disable-next-line:max-line-length
-import { ContentTypeItemService, ContentTypeService, FeatureService, InputTypeService, ItemService, LanguageInstanceService, LanguageService, PrefetchService, PublishStatusService } from '../../shared/store/ngrx-data';
+import { ContentTypeItemService, ContentTypeService, FeatureService, GlobalConfigService, InputTypeService, ItemService, LanguageInstanceService, LanguageService, PrefetchService, PublishStatusService } from '../../shared/store/ngrx-data';
 import { ItemEditFormComponent } from '../item-edit-form/item-edit-form.component';
 import { MultiEditFormTemplateVars, SaveEavFormData } from './multi-item-edit-form.models';
 
@@ -71,7 +71,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy {
     const items$ = this.itemService.getItems$(this.eavService.eavConfig.itemGuids);
     const hideHeader$ = this.languageInstanceService.getHideHeader$(this.eavService.eavConfig.formId);
     const formsValid$ = this.formsStateService.formsValid$;
-    const debugEnabled$ = this.globalConfigService.getDebugEnabled().pipe(
+    const debugEnabled$ = this.globalConfigService.getDebugEnabled$().pipe(
       tap(debugEnabled => {
         if (this.debugInfoIsOpen$.value && !debugEnabled) {
           this.debugInfoIsOpen$.next(false);

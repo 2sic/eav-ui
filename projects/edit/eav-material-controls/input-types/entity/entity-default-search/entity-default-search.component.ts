@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 import { FieldSettings } from '../../../../../edit-types';
 import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
 import { EntityInfo } from '../../../../shared/models';
-import { GlobalConfigService } from '../../../../shared/services';
+import { GlobalConfigService } from '../../../../shared/store/ngrx-data';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { SelectedEntity } from '../entity-default/entity-default.models';
 
@@ -49,7 +49,7 @@ export class EntityDefaultSearchComponent implements OnInit, OnChanges {
   ) { }
 
   ngOnInit() {
-    this.debugEnabled$ = this.globalConfigService.getDebugEnabled();
+    this.debugEnabled$ = this.globalConfigService.getDebugEnabled$();
   }
 
   ngOnChanges(changes: SimpleChanges) {

@@ -4,7 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { BehaviorSubject, from, Subscription } from 'rxjs';
 import { filter, map, pairwise, startWith, take } from 'rxjs/operators';
-import { GlobalConfigService } from '../../../../../edit/shared/services';
+import { GlobalConfigService } from '../../../../../edit/shared/store/ngrx-data';
 import { ContentExportService } from '../../content-export/services/content-export.service';
 import { ContentImportDialogData } from '../../content-import/content-import-dialog.config';
 import { GoToDevRest } from '../../dev-rest/go-to-dev-rest';
@@ -37,7 +37,7 @@ export class DataComponent implements OnInit, OnDestroy {
   scope = eavConstants.scopes.default.value;
   defaultScope = eavConstants.scopes.default.value;
   scopeOptions$ = new BehaviorSubject<EavScopeOption[]>([]);
-  debugEnabled$ = this.globalConfigService.getDebugEnabled();
+  debugEnabled$ = this.globalConfigService.getDebugEnabled$();
 
   modules = AllCommunityModules;
   gridOptions: GridOptions = {

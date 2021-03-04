@@ -7,6 +7,7 @@ export * from './entity-info.model';
 export * from './field-error-message.model';
 export * from './fields-configs.model';
 export * from './formula.models';
+export * from './global-config.model';
 export * from './language-instance.model';
 export * from './language.model';
 export * from './object.model';

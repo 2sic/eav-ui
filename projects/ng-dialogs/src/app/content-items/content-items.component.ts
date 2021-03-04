@@ -6,7 +6,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { filter, map, pairwise, startWith, take } from 'rxjs/operators';
-import { GlobalConfigService } from '../../../../edit/shared/services';
+import { GlobalConfigService } from '../../../../edit/shared/store/ngrx-data';
 import { ContentType } from '../app-administration/models/content-type.model';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { ContentExportService } from '../content-export/services/content-export.service';
@@ -44,7 +44,7 @@ import { EntitiesService } from './services/entities.service';
 export class ContentItemsComponent implements OnInit, OnDestroy {
   contentType$ = new BehaviorSubject<ContentType>(null);
   items$ = new BehaviorSubject<ContentItem[]>(null);
-  debugEnabled$ = this.globalConfigService.getDebugEnabled();
+  debugEnabled$ = this.globalConfigService.getDebugEnabled$();
 
   modules = AllCommunityModules;
   gridOptions: GridOptions = {

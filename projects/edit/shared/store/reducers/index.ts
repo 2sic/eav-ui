@@ -1,17 +1,15 @@
 import { ActionReducer, ActionReducerMap, MetaReducer, } from '@ngrx/store';
 import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 import { environment } from '../../../../ng-dialogs/src/environments/environment';
-import * as fromGlobalConfiguration from './global-configuration.reducer';
 
+// tslint:disable-next-line:no-empty-interface
 export interface EavState {
-  globalConfiguration: fromGlobalConfiguration.GlobalConfigurationState;
 }
 
 /** Console log all actions */
 export function logger(reducer: ActionReducer<EavState>): ActionReducer<EavState> {
   return (state: EavState, action: any): EavState => {
-    angularConsoleLog('[STORE] state', state);
-    angularConsoleLog('[STORE] action', action);
+    angularConsoleLog('[STORE] state:', state, 'action:', action);
     return reducer(state, action);
   };
 }
@@ -26,5 +24,4 @@ export const metaReducers: MetaReducer<any>[] = !environment.production
   : [];
 
 export const reducers: ActionReducerMap<EavState> = {
-  globalConfiguration: fromGlobalConfiguration.reducer,
 };

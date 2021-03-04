@@ -5,6 +5,7 @@ import { Language, LanguageInstance, PublishStatus } from '../../models';
 import { EavContentType, EavEntity, EavItem } from '../../models/eav';
 
 export const entityMetadata: EntityMetadataMap = {
+  GlobalConfig: {},
   Item: {
     selectId: itemSelectId,
   },
