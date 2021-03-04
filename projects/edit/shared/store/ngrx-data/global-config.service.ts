@@ -1,15 +1,14 @@
 import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { EntityCollectionServiceBase, EntityCollectionServiceElementsFactory } from '@ngrx/data';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { EntityCollectionServiceElementsFactory } from '@ngrx/data';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { keyDebug } from '../../../../ng-dialogs/src/app/shared/constants/session.constants';
 import { GlobalConfig } from '../../models';
+import { BaseDataService } from './base-data.service';
 
 @Injectable({ providedIn: 'root' })
-export class GlobalConfigService extends EntityCollectionServiceBase<GlobalConfig> {
-  private globalConfig$: BehaviorSubject<GlobalConfig>;
-
+export class GlobalConfigService extends BaseDataService<GlobalConfig> {
   constructor(serviceElementsFactory: EntityCollectionServiceElementsFactory, private snackBar: MatSnackBar) {
     super('GlobalConfig', serviceElementsFactory);
 
@@ -18,19 +17,14 @@ export class GlobalConfigService extends EntityCollectionServiceBase<GlobalConfi
       debugEnabled: sessionStorage.getItem(keyDebug) === 'true',
     };
     this.addOneToCache(initial);
-    this.globalConfig$ = new BehaviorSubject<GlobalConfig>(initial);
-    // doesn't need to be completed because store services are singletons that live as long as the browser tab is open
-    this.entities$.subscribe(globalConfigs => {
-      this.globalConfig$.next(globalConfigs[0]);
-    });
   }
 
   getDebugEnabled$(): Observable<boolean> {
-    return this.globalConfig$.pipe(map(config => config.debugEnabled));
+    return this.cache$.pipe(map(configs => configs[0].debugEnabled));
   }
 
   toggleDebugEnabled(): void {
-    const oldConfig = this.globalConfig$.value;
+    const oldConfig = this.cache$.value[0];
     const newConfig: GlobalConfig = {
       ...oldConfig,
       debugEnabled: !oldConfig.debugEnabled,

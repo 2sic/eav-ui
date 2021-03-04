@@ -1,22 +1,15 @@
 import { Injectable } from '@angular/core';
-import { EntityCollectionServiceBase, EntityCollectionServiceElementsFactory } from '@ngrx/data';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { EntityCollectionServiceElementsFactory } from '@ngrx/data';
+import { Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { EavContentType } from '../../models/eav';
 import { ContentType1 } from '../../models/json-format-v1';
+import { BaseDataService } from './base-data.service';
 
 @Injectable({ providedIn: 'root' })
-export class ContentTypeService extends EntityCollectionServiceBase<EavContentType> {
-  private contentTypes$: BehaviorSubject<EavContentType[]>;
-
+export class ContentTypeService extends BaseDataService<EavContentType> {
   constructor(serviceElementsFactory: EntityCollectionServiceElementsFactory) {
     super('ContentType', serviceElementsFactory);
-
-    this.contentTypes$ = new BehaviorSubject<EavContentType[]>([]);
-    // doesn't need to be completed because store services are singletons that live as long as the browser tab is open
-    this.entities$.subscribe(contentTypes => {
-      this.contentTypes$.next(contentTypes);
-    });
   }
 
   addContentTypes(contentTypes1: ContentType1[]): void {
@@ -25,11 +18,11 @@ export class ContentTypeService extends EntityCollectionServiceBase<EavContentTy
   }
 
   getContentType(id: string): EavContentType {
-    return this.contentTypes$.value.find(contentType => contentType.Id === id);
+    return this.cache$.value.find(contentType => contentType.Id === id);
   }
 
   getContentType$(id: string): Observable<EavContentType> {
-    return this.contentTypes$.pipe(
+    return this.cache$.pipe(
       map(contentTypes => contentTypes.find(contentType => contentType.Id === id)),
       distinctUntilChanged(),
     );

@@ -1,3 +1,4 @@
+export * from './base-data.service';
 export * from './content-type-item.service';
 export * from './content-type.service';
 export * from './entity-metadata';

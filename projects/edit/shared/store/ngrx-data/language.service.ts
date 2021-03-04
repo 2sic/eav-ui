@@ -1,20 +1,13 @@
 import { Injectable } from '@angular/core';
-import { EntityCollectionServiceBase, EntityCollectionServiceElementsFactory } from '@ngrx/data';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { EntityCollectionServiceElementsFactory } from '@ngrx/data';
+import { Observable } from 'rxjs';
+import { BaseDataService } from '.';
 import { Language } from '../../models';
 
 @Injectable({ providedIn: 'root' })
-export class LanguageService extends EntityCollectionServiceBase<Language> {
-  private languages$: BehaviorSubject<Language[]>;
-
+export class LanguageService extends BaseDataService<Language> {
   constructor(serviceElementsFactory: EntityCollectionServiceElementsFactory) {
     super('Language', serviceElementsFactory);
-
-    this.languages$ = new BehaviorSubject<Language[]>([]);
-    // doesn't need to be completed because store services are singletons that live as long as the browser tab is open
-    this.entities$.subscribe(languages => {
-      this.languages$.next(languages);
-    });
   }
 
   loadLanguages(languages: Language[]): void {
@@ -22,10 +15,10 @@ export class LanguageService extends EntityCollectionServiceBase<Language> {
   }
 
   getLanguages(): Language[] {
-    return this.languages$.value;
+    return this.cache$.value;
   }
 
   getLanguages$(): Observable<Language[]> {
-    return this.languages$.asObservable();
+    return this.cache$.asObservable();
   }
 }

@@ -1,20 +1,13 @@
 import { Injectable } from '@angular/core';
-import { EntityCollectionServiceBase, EntityCollectionServiceElementsFactory } from '@ngrx/data';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { EntityCollectionServiceElementsFactory } from '@ngrx/data';
+import { Observable } from 'rxjs';
 import { InputType } from '../../../../ng-dialogs/src/app/content-type-fields/models/input-type.model';
+import { BaseDataService } from './base-data.service';
 
 @Injectable({ providedIn: 'root' })
-export class InputTypeService extends EntityCollectionServiceBase<InputType> {
-  private inputTypes$: BehaviorSubject<InputType[]>;
-
+export class InputTypeService extends BaseDataService<InputType> {
   constructor(serviceElementsFactory: EntityCollectionServiceElementsFactory) {
     super('InputType', serviceElementsFactory);
-
-    this.inputTypes$ = new BehaviorSubject<InputType[]>([]);
-    // doesn't need to be completed because store services are singletons that live as long as the browser tab is open
-    this.entities$.subscribe(inputTypes => {
-      this.inputTypes$.next(inputTypes);
-    });
   }
 
   addInputTypes(inputTypes: InputType[]): void {
@@ -22,14 +15,14 @@ export class InputTypeService extends EntityCollectionServiceBase<InputType> {
   }
 
   getInputType(type: string): InputType {
-    return this.inputTypes$.value.find(inputType => inputType.Type === type);
+    return this.cache$.value.find(inputType => inputType.Type === type);
   }
 
   getInputTypes(): InputType[] {
-    return this.inputTypes$.value;
+    return this.cache$.value;
   }
 
   getInputTypes$(): Observable<InputType[]> {
-    return this.inputTypes$.asObservable();
+    return this.cache$.asObservable();
   }
 }

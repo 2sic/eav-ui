@@ -1,21 +1,14 @@
 import { Injectable } from '@angular/core';
-import { EntityCollectionServiceBase, EntityCollectionServiceElementsFactory } from '@ngrx/data';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { EntityCollectionServiceElementsFactory } from '@ngrx/data';
+import { Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { LanguageInstance } from '../../models';
+import { BaseDataService } from './base-data.service';
 
 @Injectable({ providedIn: 'root' })
-export class LanguageInstanceService extends EntityCollectionServiceBase<LanguageInstance> {
-  private languageInstances$: BehaviorSubject<LanguageInstance[]>;
-
+export class LanguageInstanceService extends BaseDataService<LanguageInstance> {
   constructor(serviceElementsFactory: EntityCollectionServiceElementsFactory) {
     super('LanguageInstance', serviceElementsFactory);
-
-    this.languageInstances$ = new BehaviorSubject<LanguageInstance[]>([]);
-    // doesn't need to be completed because store services are singletons that live as long as the browser tab is open
-    this.entities$.subscribe(languageInstances => {
-      this.languageInstances$.next(languageInstances);
-    });
   }
 
   addLanguageInstance(formId: number, currentLanguage: string, defaultLanguage: string, uiLanguage: string, hideHeader: boolean): void {
@@ -33,31 +26,31 @@ export class LanguageInstanceService extends EntityCollectionServiceBase<Languag
   }
 
   getCurrentLanguage(formId: number): string {
-    return this.languageInstances$.value.find(instance => instance.formId === formId)?.currentLanguage;
+    return this.cache$.value.find(languageInstance => languageInstance.formId === formId)?.currentLanguage;
   }
 
   getCurrentLanguage$(formId: number): Observable<string> {
-    return this.languageInstances$.pipe(
-      map(languageInstances => languageInstances.find(langInstance => langInstance.formId === formId)?.currentLanguage),
+    return this.cache$.pipe(
+      map(languageInstances => languageInstances.find(languageInstance => languageInstance.formId === formId)?.currentLanguage),
       distinctUntilChanged(),
     );
   }
 
   getDefaultLanguage(formId: number): string {
-    return this.languageInstances$.value.find(instance => instance.formId === formId)?.defaultLanguage;
+    return this.cache$.value.find(languageInstance => languageInstance.formId === formId)?.defaultLanguage;
   }
 
   getDefaultLanguage$(formId: number): Observable<string> {
-    return this.languageInstances$.pipe(
-      map(languageInstances => languageInstances.find(langInstance => langInstance.formId === formId)?.defaultLanguage),
+    return this.cache$.pipe(
+      map(languageInstances => languageInstances.find(languageInstance => languageInstance.formId === formId)?.defaultLanguage),
       distinctUntilChanged(),
     );
   }
 
   /** Get hideHeader for the form. Fix for safari and mobile browsers */
   getHideHeader$(formId: number): Observable<boolean> {
-    return this.languageInstances$.pipe(
-      map(languageInstances => languageInstances.find(langInstance => langInstance.formId === formId)?.hideHeader),
+    return this.cache$.pipe(
+      map(languageInstances => languageInstances.find(languageInstance => languageInstance.formId === formId)?.hideHeader),
       distinctUntilChanged(),
     );
   }

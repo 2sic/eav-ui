@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { EntityCollectionServiceBase, EntityCollectionServiceElementsFactory } from '@ngrx/data';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { EntityCollectionServiceElementsFactory } from '@ngrx/data';
+import { Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { FieldSettings } from '../../../../edit-types';
 import { FieldValue, FormValues } from '../../../eav-item-dialog/item-edit-form/item-edit-form.models';
@@ -9,19 +9,12 @@ import { GeneralHelpers } from '../../helpers/general.helpers';
 import { Language, SaveResult } from '../../models';
 import { EavContentTypeAttribute, EavDimension, EavEntityAttributes, EavHeader, EavItem, EavValue } from '../../models/eav';
 import { Item1 } from '../../models/json-format-v1';
+import { BaseDataService } from './base-data.service';
 
 @Injectable({ providedIn: 'root' })
-export class ItemService extends EntityCollectionServiceBase<EavItem> {
-  private items$: BehaviorSubject<EavItem[]>;
-
+export class ItemService extends BaseDataService<EavItem> {
   constructor(serviceElementsFactory: EntityCollectionServiceElementsFactory) {
     super('Item', serviceElementsFactory);
-
-    this.items$ = new BehaviorSubject<EavItem[]>([]);
-    // doesn't need to be completed because store services are singletons that live as long as the browser tab is open
-    this.entities$.subscribe(items => {
-      this.items$.next(items);
-    });
   }
 
   loadItems(items1: Item1[]): void {
@@ -32,7 +25,7 @@ export class ItemService extends EntityCollectionServiceBase<EavItem> {
   updateItemId(itemData: SaveResult): void {
     const entityGuid = Object.keys(itemData)[0];
     const entityId = itemData[entityGuid];
-    const oldItem = this.items$.value.find(item => item.Entity.Guid === entityGuid);
+    const oldItem = this.cache$.value.find(item => item.Entity.Guid === entityGuid);
     if (!oldItem || (oldItem.Header.EntityId !== 0 && oldItem.Entity.Id !== 0)) { return; }
 
     const newItem: EavItem = {
@@ -61,7 +54,7 @@ export class ItemService extends EntityCollectionServiceBase<EavItem> {
   ): EavItem {
     const newValueDimension = isReadOnly ? `~${currentLanguage}` : currentLanguage;
     const newEavValue = EavValue.create(newValue, [EavDimension.create(newValueDimension)]);
-    const oldItem = transactionItem ?? this.items$.value.find(item => item.Entity.Guid === entityGuid);
+    const oldItem = transactionItem ?? this.cache$.value.find(item => item.Entity.Guid === entityGuid);
 
     const newItem: EavItem = {
       ...oldItem,
@@ -83,7 +76,7 @@ export class ItemService extends EntityCollectionServiceBase<EavItem> {
     defaultLanguage: string,
     isReadOnly: boolean,
   ): void {
-    const oldItem = this.items$.value.find(item => item.Entity.Guid === entityGuid);
+    const oldItem = this.cache$.value.find(item => item.Entity.Guid === entityGuid);
     if (!oldItem) { return; }
 
     const newItem: EavItem = {
@@ -99,7 +92,7 @@ export class ItemService extends EntityCollectionServiceBase<EavItem> {
   }
 
   updateItemAttributesValues(entityGuid: string, newValues: FormValues, currentLanguage: string, defaultLanguage: string): void {
-    const oldItem = this.items$.value.find(item => item.Entity.Guid === entityGuid);
+    const oldItem = this.cache$.value.find(item => item.Entity.Guid === entityGuid);
     if (!oldItem) { return; }
 
     const oldValues: FormValues = {};
@@ -133,7 +126,7 @@ export class ItemService extends EntityCollectionServiceBase<EavItem> {
     isReadOnly: boolean,
     transactionItem?: EavItem,
   ): void {
-    const oldItem = transactionItem ?? this.items$.value.find(item => item.Entity.Guid === entityGuid);
+    const oldItem = transactionItem ?? this.cache$.value.find(item => item.Entity.Guid === entityGuid);
 
     const newItem: EavItem = {
       ...oldItem,
@@ -154,7 +147,7 @@ export class ItemService extends EntityCollectionServiceBase<EavItem> {
     isTransaction = false,
     transactionItem?: EavItem,
   ): EavItem {
-    const oldItem = transactionItem ?? this.items$.value.find(item => item.Entity.Guid === entityGuid);
+    const oldItem = transactionItem ?? this.cache$.value.find(item => item.Entity.Guid === entityGuid);
 
     const newItem: EavItem = {
       ...oldItem,
@@ -169,7 +162,7 @@ export class ItemService extends EntityCollectionServiceBase<EavItem> {
   }
 
   updateItemHeader(entityGuid: string, header: EavHeader): void {
-    const oldItem = this.items$.value.find(item => item.Entity.Guid === entityGuid);
+    const oldItem = this.cache$.value.find(item => item.Entity.Guid === entityGuid);
     if (!oldItem) { return; }
 
     const newItem: EavItem = {
@@ -182,44 +175,44 @@ export class ItemService extends EntityCollectionServiceBase<EavItem> {
   }
 
   getItemAttributes(entityGuid: string): EavEntityAttributes {
-    return this.items$.value.find(item => item.Entity.Guid === entityGuid)?.Entity.Attributes;
+    return this.cache$.value.find(item => item.Entity.Guid === entityGuid)?.Entity.Attributes;
   }
 
   getItemAttributes$(entityGuid: string): Observable<EavEntityAttributes> {
-    return this.items$.pipe(
+    return this.cache$.pipe(
       map(items => items.find(item => item.Entity.Guid === entityGuid)?.Entity.Attributes),
       distinctUntilChanged(),
     );
   }
 
   getItem(entityGuid: string): EavItem {
-    return this.items$.value.find(item => item.Entity.Guid === entityGuid);
+    return this.cache$.value.find(item => item.Entity.Guid === entityGuid);
   }
 
   getItem$(entityGuid: string): Observable<EavItem> {
-    return this.items$.pipe(
+    return this.cache$.pipe(
       map(items => items.find(item => item.Entity.Guid === entityGuid)),
       distinctUntilChanged(),
     );
   }
 
   getItemHeader$(entityGuid: string): Observable<EavHeader> {
-    return this.items$.pipe(
+    return this.cache$.pipe(
       map(items => items.find(item => item.Entity.Guid === entityGuid)?.Header),
       distinctUntilChanged(),
     );
   }
 
   getItems(entityGuids?: string[]): EavItem[] {
-    if (entityGuids == null) { return this.items$.value; }
+    if (entityGuids == null) { return this.cache$.value; }
 
-    return this.items$.value.filter(item => entityGuids.includes(item.Entity.Guid));
+    return this.cache$.value.filter(item => entityGuids.includes(item.Entity.Guid));
   }
 
   getItems$(entityGuids?: string[]): Observable<EavItem[]> {
-    if (entityGuids == null) { return this.items$.asObservable(); }
+    if (entityGuids == null) { return this.cache$.asObservable(); }
 
-    return this.items$.pipe(
+    return this.cache$.pipe(
       map(items => items.filter(item => entityGuids.includes(item.Entity.Guid))),
       distinctUntilChanged((oldList, newList) => {
         if (oldList.length !== newList.length) { return false; }

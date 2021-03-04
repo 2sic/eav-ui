@@ -1,22 +1,15 @@
 import { Injectable } from '@angular/core';
-import { EntityCollectionServiceBase, EntityCollectionServiceElementsFactory } from '@ngrx/data';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { EntityCollectionServiceElementsFactory } from '@ngrx/data';
+import { Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { PublishMode, PublishModeConstants, PublishStatus } from '../../models';
 import { EavService } from '../../services';
+import { BaseDataService } from './base-data.service';
 
 @Injectable({ providedIn: 'root' })
-export class PublishStatusService extends EntityCollectionServiceBase<PublishStatus> {
-  private publishStatuses$: BehaviorSubject<PublishStatus[]>;
-
+export class PublishStatusService extends BaseDataService<PublishStatus> {
   constructor(serviceElementsFactory: EntityCollectionServiceElementsFactory) {
     super('PublishStatus', serviceElementsFactory);
-
-    this.publishStatuses$ = new BehaviorSubject<PublishStatus[]>([]);
-    // doesn't need to be completed because store services are singletons that live as long as the browser tab is open
-    this.entities$.subscribe(publishStatuses => {
-      this.publishStatuses$.next(publishStatuses);
-    });
   }
 
   setPublishStatus(publishStatus: PublishStatus): void {
@@ -28,12 +21,11 @@ export class PublishStatusService extends EntityCollectionServiceBase<PublishSta
   }
 
   getPublishStatus(formId: number): PublishStatus {
-    const publishStatus = this.publishStatuses$.value.find(status => status.formId === formId);
-    return publishStatus;
+    return this.cache$.value.find(publishStatus => publishStatus.formId === formId);
   }
 
   private getPublishStatus$(formId: number): Observable<PublishStatus> {
-    return this.publishStatuses$.pipe(
+    return this.cache$.pipe(
       map(publishStatuses => publishStatuses.find(publishStatus => publishStatus.formId === formId)),
       distinctUntilChanged(),
     );
