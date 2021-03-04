@@ -2,15 +2,16 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import isEmpty from 'lodash-es/isEmpty';
 import { BehaviorSubject } from 'rxjs';
 import { EavService } from '.';
+import { FieldSettings } from '../../../edit-types';
 import { InputTypeConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { convertUrlToForm } from '../../../ng-dialogs/src/app/shared/helpers/url-prep.helper';
 import { calculateIsParentDialog, sortLanguages } from '../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.helpers';
 import { EavFormData } from '../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.models';
 import { EditParams } from '../../edit-matcher.models';
-import { InputFieldHelpers, LocalizationHelpers } from '../helpers';
+import { BestValueModes } from '../constants/localization.constants';
+import { FieldsSettingsHelpers, InputFieldHelpers, LocalizationHelpers } from '../helpers';
 import { Language, PublishStatus } from '../models';
 // tslint:disable-next-line:max-line-length
 import { ContentTypeItemService, ContentTypeService, FeatureService, InputTypeService, ItemService, LanguageInstanceService, LanguageService, PrefetchService, PublishStatusService } from '../store/ngrx-data';
@@ -94,47 +95,60 @@ export class EditInitializerService implements OnDestroy {
     this.publishStatusService.setPublishStatus(publishStatus);
   }
 
-  /** If current language !== default language check whether all attributes in all items have value in default language */
+  /** Check whether all attributes in all items have value in default language. If some value is missing, switch language to default */
   private fixDefaultLanguageValues() {
     const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
     const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
     if (currentLanguage === defaultLanguage) { return; }
 
     const items = this.itemService.getItems(this.eavService.eavConfig.itemGuids);
-    const valuesExistInDefaultLanguage = LocalizationHelpers.valuesExistInDefaultLanguage(
-      items, defaultLanguage, this.inputTypeService, this.contentTypeService,
-    );
-    if (!valuesExistInDefaultLanguage) {
-      this.languageInstanceService.setCurrentLanguage(this.eavService.eavConfig.formId, defaultLanguage);
-      const message = this.translate.instant('Message.SwitchedLanguageToDefault', { language: defaultLanguage });
-      this.snackBar.open(message, null, { duration: 5000 });
+    const inputTypes = this.inputTypeService.getInputTypes();
+    for (const item of items) {
+      const contentTypeId = InputFieldHelpers.getContentTypeId(item);
+      const contentType = this.contentTypeService.getContentType(contentTypeId);
+
+      for (const ctAttribute of contentType.Attributes) {
+        const calculatedInputType = InputFieldHelpers.calculateInputType(ctAttribute, inputTypes);
+        if (calculatedInputType.inputType === InputTypeConstants.EmptyDefault) { continue; }
+
+        const attributeValues = item.Entity.Attributes[ctAttribute.Name];
+        const value = LocalizationHelpers.getBestValue(attributeValues, defaultLanguage, defaultLanguage, BestValueModes.Strict);
+        if (value !== undefined) { continue; }
+
+        this.languageInstanceService.setCurrentLanguage(this.eavService.eavConfig.formId, defaultLanguage);
+        const message = this.translate.instant('Message.SwitchedLanguageToDefault', { language: defaultLanguage });
+        this.snackBar.open(message, null, { duration: 5000 });
+      }
     }
   }
 
+  /** Set default values where they are missing */
   private fixCurrentLanguageValues() {
     const items = this.itemService.getItems(this.eavService.eavConfig.itemGuids);
+    const inputTypes = this.inputTypeService.getInputTypes();
+    const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
+    const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
+    const languages = this.languageService.getLanguages();
 
     for (const item of items) {
       const contentTypeId = InputFieldHelpers.getContentTypeId(item);
       const contentType = this.contentTypeService.getContentType(contentTypeId);
 
-      for (const attribute of contentType.Attributes) {
-        const inputTypes = this.inputTypeService.getInputTypes();
-        const calculatedInputType = InputFieldHelpers.calculateInputType(attribute, inputTypes);
+      for (const ctAttribute of contentType.Attributes) {
+        const calculatedInputType = InputFieldHelpers.calculateInputType(ctAttribute, inputTypes);
         const inputType = calculatedInputType.inputType;
         if (inputType === InputTypeConstants.EmptyDefault) { continue; }
 
-        const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
-        const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
-        const attributeValues = item.Entity.Attributes[attribute.Name];
-        const value = LocalizationHelpers.translate(currentLanguage, defaultLanguage, attributeValues, null);
-        // set default value if needed
-        const valueIsEmpty = isEmpty(value) && typeof value !== 'boolean' && typeof value !== 'number' && value !== '';
+        const attributeValues = item.Entity.Attributes[ctAttribute.Name];
+        const value = LocalizationHelpers.getBestValue(attributeValues, currentLanguage, defaultLanguage, BestValueModes.Default);
+
+        // entity fields for empty items prefilled on the backend with []
+        // so I can never know if entity field is brand new, or just emptied out by the user
+        const valueIsEmpty = value === undefined || (Array.isArray(value) && value.length === 0 && this.eavService.eavConfig.createMode);
         if (!valueIsEmpty) { continue; }
 
-        const languages = this.languageService.getLanguages();
-        const fieldSettings = LocalizationHelpers.translateSettings(attribute.Settings, currentLanguage, defaultLanguage);
-        this.itemService.setDefaultValue(item, attribute, inputType, fieldSettings, languages, currentLanguage, defaultLanguage);
+        const merged = FieldsSettingsHelpers.mergeSettings<FieldSettings>(ctAttribute.Metadata, currentLanguage, defaultLanguage);
+        this.itemService.setDefaultValue(item, ctAttribute, inputType, merged, languages, currentLanguage, defaultLanguage);
       }
     }
   }

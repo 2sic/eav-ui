@@ -1,6 +1,7 @@
 import { FieldSettings, InputTypeName } from '../../../edit-types';
 import { InputTypeConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { InputType } from '../../../ng-dialogs/src/app/content-type-fields/models/input-type.model';
+import { FieldValue } from '../../eav-item-dialog/item-edit-form/item-edit-form.models';
 import { WrappersConstants } from '../constants/wrappers.constants';
 import { CalculatedInputType } from '../models';
 import { EavContentTypeAttribute, EavHeader, EavItem } from '../models/eav';
@@ -70,7 +71,7 @@ export class InputFieldHelpers {
     return wrappers;
   }
 
-  static parseDefaultValue(attributeKey: string, inputType: string, settings: FieldSettings, header: EavHeader): any {
+  static parseDefaultValue(attributeKey: string, inputType: string, settings: FieldSettings, header: EavHeader): FieldValue {
     let defaultValue = settings.DefaultValue;
 
     if (header.Prefill && header.Prefill[attributeKey]) {
@@ -82,9 +83,13 @@ export class InputFieldHelpers {
         return defaultValue != null
           ? defaultValue.toLowerCase() === 'true'
           : false;
+      case InputTypeConstants.BooleanTristate:
+        return defaultValue != null
+          ? defaultValue.toLowerCase() === 'true'
+          : null;
       case InputTypeConstants.DatetimeDefault:
         return defaultValue != null && defaultValue !== ''
-          ? new Date(defaultValue)
+          ? new Date(defaultValue).toJSON()
           : null;
       case InputTypeConstants.NumberDefault:
         return defaultValue != null && defaultValue !== ''
@@ -93,24 +98,21 @@ export class InputFieldHelpers {
       case InputTypeConstants.EntityDefault:
       case InputTypeConstants.EntityQuery:
       case InputTypeConstants.EntityContentBlocks:
-        if (!(defaultValue != null && defaultValue !== '')) {
-          return []; // no default value
-        }
-        // 3 possibilities
-        if (defaultValue.constructor === Array) { return defaultValue; }  // possibility 1) an array
-        // for possibility 2 & 3, do some variation checking
-        if (defaultValue.indexOf('{') > -1) { // string has { } characters, we must switch them to quotes
+        if (defaultValue == null || defaultValue === '') { return []; }
+        // string has { } characters, we must switch them to quotes
+        if (defaultValue.includes('{')) {
           defaultValue = defaultValue.replace(/[\{\}]/g, '\"');
         }
-        if (defaultValue.indexOf(',') !== -1 && defaultValue.indexOf('[') === -1) { // list but no array, add brackets
+        // list but no array, add brackets
+        if (defaultValue.includes(',') && !defaultValue.includes('[')) {
           const guids = defaultValue.split(',').map(guid => guid.trim());
           defaultValue = JSON.stringify(guids);
         }
-        return (defaultValue.indexOf('[') === 0) // possibility 2) an array with guid strings
+        return defaultValue.startsWith('[') // an array with guid strings
           ? JSON.parse(defaultValue) // if it's a string containing an array
-          : [defaultValue.replace(/"/g, '')]; //  possibility 3) just a guid string, but might have quotes
+          : [defaultValue.replace(/"/g, '')]; // just a guid string, but might have quotes
       default:
-        return defaultValue ? defaultValue : '';
+        return defaultValue ?? '';
     }
   }
 }

@@ -1,11 +1,7 @@
-import { InputFieldHelpers } from '.';
-import { FieldSettings } from '../../../edit-types';
-import { DataTypeConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/data-type.constants';
 import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
-import { FormValues } from '../../eav-item-dialog/item-edit-form/item-edit-form.models';
-import { CalculatedInputType } from '../models';
-import { EavDimension, EavEntityAttributes, EavItem, EavValue, EavValues } from '../models/eav';
-import { ContentTypeService, InputTypeService } from '../store/ngrx-data';
+import { FieldValue, FormValues } from '../../eav-item-dialog/item-edit-form/item-edit-form.models';
+import { BestValueMode, BestValueModes } from '../constants/localization.constants';
+import { EavDimension, EavEntityAttributes, EavValue, EavValues } from '../models/eav';
 
 export class LocalizationHelpers {
   /**
@@ -64,30 +60,6 @@ export class LocalizationHelpers {
   static translationExistsInDefault(allAttributesValues: EavValues<any>, defaultLanguage: string): boolean {
     return allAttributesValues ? allAttributesValues.Values.filter(eavValue =>
       eavValue.Dimensions.find(d => d.Value === defaultLanguage || d.Value === '*')).length > 0 : false;
-  }
-
-  static translationExistsInDefaultStrict(allAttributesValues: EavValues<any>, defaultLanguage: string, disableI18n: boolean): boolean {
-    if (disableI18n) {
-      return allAttributesValues ? allAttributesValues.Values.filter(eavValue =>
-        eavValue.Dimensions.find(d => d.Value === defaultLanguage || d.Value === '*')).length > 0 : false;
-    } else {
-      return allAttributesValues ? allAttributesValues.Values.filter(eavValue =>
-        eavValue.Dimensions.find(d => d.Value === defaultLanguage)).length > 0 : false;
-    }
-  }
-
-  static isI18nDisabled(
-    inputTypeService: InputTypeService,
-    calculatedInputType: CalculatedInputType,
-    fullSettings: EavEntityAttributes,
-  ): boolean {
-    const inputType = inputTypeService.getInputType(calculatedInputType.inputType);
-    if (inputType?.DisableI18n === true) { return true; }
-
-    const disableTranslationSetting = !!fullSettings.DisableTranslation?.Values.find(value => value.Value === true);
-    if (disableTranslationSetting) { return true; }
-
-    return false;
   }
 
   /** Copy attributes from item */
@@ -322,77 +294,47 @@ export class LocalizationHelpers {
     return newAttributes;
   }
 
-  static translateSettings(settings: EavEntityAttributes, currentLanguage: string, defaultLanguage: string): FieldSettings {
-    const translated: { [key: string]: any } = {};
-    for (const key of Object.keys(settings)) {
-      translated[key] = LocalizationHelpers.translate(currentLanguage, defaultLanguage, settings[key], false);
-    }
-    return translated as FieldSettings;
-  }
-
-  static valuesExistInDefaultLanguage(
-    items: EavItem[],
-    defaultLanguage: string,
-    inputTypeService: InputTypeService,
-    contentTypeService: ContentTypeService,
-  ): boolean {
-    const inputTypes = inputTypeService.getInputTypes();
-
-    for (const item of items) {
-      const contentTypeId = InputFieldHelpers.getContentTypeId(item);
-      const contentType = contentTypeService.getContentType(contentTypeId);
-
-      const attributesValues = Object.keys(item.Entity.Attributes).map(attributeKey => {
-        const ctAttribute = contentType.Attributes.find(a => a.Name === attributeKey);
-        const calculatedInputType = InputFieldHelpers.calculateInputType(ctAttribute, inputTypes);
-        const disableI18n = LocalizationHelpers.isI18nDisabled(inputTypeService, calculatedInputType, ctAttribute.Settings);
-        return { values: item.Entity.Attributes[attributeKey], disableI18n };
-      });
-
-      const nonEmpty = contentType.Attributes.filter(a => a.Type !== DataTypeConstants.Empty);
-      if (attributesValues.length < nonEmpty.length) { return false; }
-
-      for (const attributeValues of attributesValues) {
-        const translationExistsInDefault = LocalizationHelpers.translationExistsInDefaultStrict(
-          attributeValues.values, defaultLanguage, attributeValues.disableI18n,
-        );
-        if (!translationExistsInDefault) { return false; }
-      }
-    }
-
-    return true;
-  }
-
   /**
-   * Find best value in priority order:
+   * Default mode priority:
    * 1. value for current language
    * 2. value for all languages
    * 3. value for default language
    * 4. first value
    *
-   * Similar to LocalizationHelper.translate(), but returns whole value object.
+   * Strict mode priority:
+   * 1. value for current language
+   * 2. value for all languages
+   * 3. value for default language
+   *
+   * Very strict mode priority:
+   * 1. value for current language
+   * 2. value for all languages
    */
-  // static getBestValue(eavValues: EavValues<any>, lang: string, defaultLang: string): EavValue<any> {
-  //   let bestDimensions = [lang, `~${lang}`];
-  //   let bestValue = this.findValueForDimensions(eavValues, bestDimensions);
-  //   if (bestValue != null) { return bestValue; }
+  static getBestValue(eavValues: EavValues<any>, currentLanguage: string, defaultLanguage: string, mode: BestValueMode): FieldValue {
+    if (eavValues == null) { return; }
 
-  //   bestDimensions = ['*'];
-  //   bestValue = this.findValueForDimensions(eavValues, bestDimensions);
-  //   if (bestValue != null) { return bestValue; }
+    let bestDimensions = [currentLanguage, `~${currentLanguage}`];
+    let bestValue = this.findValueForDimensions(eavValues, bestDimensions);
+    if (bestValue !== undefined) { return bestValue; }
 
-  //   bestDimensions = [defaultLang, `~${defaultLang}`];
-  //   bestValue = this.findValueForDimensions(eavValues, bestDimensions);
-  //   if (bestValue != null) { return bestValue; }
+    bestDimensions = ['*'];
+    bestValue = this.findValueForDimensions(eavValues, bestDimensions);
+    if (bestValue !== undefined) { return bestValue; }
 
-  //   bestValue = eavValues.values[0];
-  //   return bestValue;
-  // }
+    if (mode === BestValueModes.Strict) { return; }
 
-  // private static findValueForDimensions(eavValues: EavValues<any>, dimensions: string[]): EavValue<any> {
-  //   const value = eavValues.values.find(
-  //     eavValue => !!eavValue.dimensions.find(dimension => dimensions.includes(dimension.value)),
-  //   );
-  //   return value;
-  // }
+    bestDimensions = [defaultLanguage, `~${defaultLanguage}`];
+    bestValue = this.findValueForDimensions(eavValues, bestDimensions);
+    if (bestValue !== undefined) { return bestValue; }
+
+    bestValue = eavValues.Values[0]?.Value;
+    return bestValue;
+  }
+
+  private static findValueForDimensions(eavValues: EavValues<any>, dimensions: string[]): FieldValue {
+    const value = eavValues.Values.find(
+      eavValue => !!eavValue.Dimensions.find(dimension => dimensions.includes(dimension.Value)),
+    )?.Value;
+    return value;
+  }
 }

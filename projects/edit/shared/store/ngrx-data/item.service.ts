@@ -78,7 +78,7 @@ export class ItemService extends EntityCollectionServiceBase<EavItem> {
   updateItemAttributeValue(
     entityGuid: string,
     attributeKey: string,
-    newValue: string,
+    newValue: FieldValue,
     currentLanguage: string,
     defaultLanguage: string,
     isReadOnly: boolean,
@@ -235,28 +235,27 @@ export class ItemService extends EntityCollectionServiceBase<EavItem> {
 
   setDefaultValue(
     item: EavItem,
-    attribute: EavContentTypeAttribute,
+    ctAttribute: EavContentTypeAttribute,
     inputType: string,
     settings: FieldSettings,
     languages: Language[],
     currentLanguage: string,
     defaultLanguage: string,
-  ): FieldValue {
-    const defaultValue = InputFieldHelpers.parseDefaultValue(attribute.Name, inputType, settings, item.Header);
-    const exists = item.Entity.Attributes.hasOwnProperty(attribute.Name);
+  ): void {
+    const defaultValue = InputFieldHelpers.parseDefaultValue(ctAttribute.Name, inputType, settings, item.Header);
+    const exists = item.Entity.Attributes.hasOwnProperty(ctAttribute.Name);
     if (!exists) {
       if (languages.length === 0) {
-        this.addItemAttributeValue(item.Entity.Guid, attribute.Name, defaultValue, '*', false, attribute.Type, false, null);
+        this.addItemAttributeValue(item.Entity.Guid, ctAttribute.Name, defaultValue, '*', false, ctAttribute.Type, false, null);
       } else {
-        this.addItemAttributeValue(item.Entity.Guid, attribute.Name, defaultValue, currentLanguage, false, attribute.Type, false, null);
+        this.addItemAttributeValue(item.Entity.Guid, ctAttribute.Name, defaultValue, currentLanguage, false, ctAttribute.Type, false, null);
       }
     } else {
       if (languages.length === 0) {
-        this.updateItemAttributeValue(item.Entity.Guid, attribute.Name, defaultValue, '*', defaultLanguage, false);
+        this.updateItemAttributeValue(item.Entity.Guid, ctAttribute.Name, defaultValue, '*', defaultLanguage, false);
       } else {
-        this.updateItemAttributeValue(item.Entity.Guid, attribute.Name, defaultValue, currentLanguage, defaultLanguage, false);
+        this.updateItemAttributeValue(item.Entity.Guid, ctAttribute.Name, defaultValue, currentLanguage, defaultLanguage, false);
       }
     }
-    return defaultValue;
   }
 }
