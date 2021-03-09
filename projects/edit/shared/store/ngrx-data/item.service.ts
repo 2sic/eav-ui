@@ -3,7 +3,9 @@ import { EntityCollectionServiceElementsFactory } from '@ngrx/data';
 import { Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { FieldSettings } from '../../../../edit-types';
+import { InputType } from '../../../../ng-dialogs/src/app/content-type-fields/models/input-type.model';
 import { FieldValue, FormValues } from '../../../eav-item-dialog/item-edit-form/item-edit-form.models';
+import { BestValueModes } from '../../constants/localization.constants';
 import { InputFieldHelpers, LocalizationHelpers } from '../../helpers';
 import { GeneralHelpers } from '../../helpers/general.helpers';
 import { Language, SaveResult } from '../../models';
@@ -229,25 +231,31 @@ export class ItemService extends BaseDataService<EavItem> {
   setDefaultValue(
     item: EavItem,
     ctAttribute: EavContentTypeAttribute,
-    inputType: string,
+    inputType: InputType,
     settings: FieldSettings,
     languages: Language[],
-    currentLanguage: string,
     defaultLanguage: string,
   ): void {
     const defaultValue = InputFieldHelpers.parseDefaultValue(ctAttribute.Name, inputType, settings, item.Header);
-    const exists = item.Entity.Attributes.hasOwnProperty(ctAttribute.Name);
-    if (!exists) {
-      if (languages.length === 0) {
-        this.addItemAttributeValue(item.Entity.Guid, ctAttribute.Name, defaultValue, '*', false, ctAttribute.Type, false, null);
+
+    const defaultLanguageValue = LocalizationHelpers.getBestValue(
+      item.Entity.Attributes[ctAttribute.Name],
+      defaultLanguage,
+      defaultLanguage,
+      BestValueModes.Strict,
+    );
+    if (defaultLanguageValue === undefined) {
+      if (languages.length === 0 || inputType?.DisableI18n) {
+        this.addItemAttributeValue(item.Entity.Guid, ctAttribute.Name, defaultValue, '*', false, ctAttribute.Type);
       } else {
-        this.addItemAttributeValue(item.Entity.Guid, ctAttribute.Name, defaultValue, currentLanguage, false, ctAttribute.Type, false, null);
+        this.addItemAttributeValue(item.Entity.Guid, ctAttribute.Name, defaultValue, defaultLanguage, false, ctAttribute.Type);
       }
     } else {
-      if (languages.length === 0) {
+      // most likely used only for entity fields because we can never know if they were cleaned out or brand new
+      if (languages.length === 0 || inputType?.DisableI18n) {
         this.updateItemAttributeValue(item.Entity.Guid, ctAttribute.Name, defaultValue, '*', defaultLanguage, false);
       } else {
-        this.updateItemAttributeValue(item.Entity.Guid, ctAttribute.Name, defaultValue, currentLanguage, defaultLanguage, false);
+        this.updateItemAttributeValue(item.Entity.Guid, ctAttribute.Name, defaultValue, defaultLanguage, defaultLanguage, false);
       }
     }
   }

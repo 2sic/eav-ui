@@ -5,6 +5,7 @@ import { FieldValue } from '../../eav-item-dialog/item-edit-form/item-edit-form.
 import { WrappersConstants } from '../constants/wrappers.constants';
 import { CalculatedInputType } from '../models';
 import { EavContentTypeAttribute, EavHeader, EavItem } from '../models/eav';
+import { EavService } from '../services';
 
 export class InputFieldHelpers {
 
@@ -71,20 +72,20 @@ export class InputFieldHelpers {
     return wrappers;
   }
 
-  static parseDefaultValue(attributeKey: string, inputType: string, settings: FieldSettings, header: EavHeader): FieldValue {
+  static parseDefaultValue(attributeKey: string, inputType: InputType, settings: FieldSettings, header: EavHeader): FieldValue {
     let defaultValue = settings.DefaultValue;
 
-    if (header.Prefill && header.Prefill[attributeKey]) {
+    if (header.Prefill?.[attributeKey]) {
       defaultValue = header.Prefill[attributeKey];
     }
 
-    switch (inputType) {
+    switch (inputType?.Type) {
       case InputTypeConstants.BooleanDefault:
         return defaultValue != null
           ? defaultValue.toLowerCase() === 'true'
           : false;
       case InputTypeConstants.BooleanTristate:
-        return defaultValue != null
+        return defaultValue != null && defaultValue !== ''
           ? defaultValue.toLowerCase() === 'true'
           : null;
       case InputTypeConstants.DatetimeDefault:
@@ -114,5 +115,14 @@ export class InputFieldHelpers {
       default:
         return defaultValue ?? '';
     }
+  }
+
+  /**
+   * Entity fields for empty items are prefilled on the backend with []
+   * so I can never know if entity field is brand new, or just emptied out by the user
+   */
+  static isValueEmpty(value: FieldValue, eavService: EavService) {
+    const emptyEntityField = Array.isArray(value) && value.length === 0 && eavService.eavConfig.createMode;
+    return value === undefined || emptyEntityField;
   }
 }

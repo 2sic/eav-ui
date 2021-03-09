@@ -45,8 +45,7 @@ export class EditInitializerService implements OnDestroy {
     const editItems = JSON.stringify(form.items);
     this.eavService.fetchFormData(editItems).subscribe(formData => {
       this.saveFormData(formData);
-      this.fixDefaultLanguageValues();
-      this.fixCurrentLanguageValues();
+      this.setMissingValues();
       this.loaded$.next(true);
     });
   }
@@ -95,61 +94,67 @@ export class EditInitializerService implements OnDestroy {
     this.publishStatusService.setPublishStatus(publishStatus);
   }
 
-  /** Check whether all attributes in all items have value in default language. If some value is missing, switch language to default */
-  private fixDefaultLanguageValues() {
-    const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
-    const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
-    if (currentLanguage === defaultLanguage) { return; }
-
+  private setMissingValues(): void {
     const items = this.itemService.getItems(this.eavService.eavConfig.itemGuids);
     const inputTypes = this.inputTypeService.getInputTypes();
+    const languages = this.languageService.getLanguages();
+    const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
+    let switchToDefault = false;
+
     for (const item of items) {
       const contentTypeId = InputFieldHelpers.getContentTypeId(item);
       const contentType = this.contentTypeService.getContentType(contentTypeId);
 
       for (const ctAttribute of contentType.Attributes) {
-        const calculatedInputType = InputFieldHelpers.calculateInputType(ctAttribute, inputTypes);
-        if (calculatedInputType.inputType === InputTypeConstants.EmptyDefault) { continue; }
+        const inputType = inputTypes.find(i => i.Type === ctAttribute.InputType);
+        // 'custom-default' doesn't have inputType
+        if (inputType?.Type === InputTypeConstants.EmptyDefault) { continue; }
 
         const attributeValues = item.Entity.Attributes[ctAttribute.Name];
-        const value = LocalizationHelpers.getBestValue(attributeValues, defaultLanguage, defaultLanguage, BestValueModes.Strict);
-        if (value !== undefined) { continue; }
+        const fieldSettings = FieldsSettingsHelpers.mergeSettings<FieldSettings>(ctAttribute.Metadata, defaultLanguage, defaultLanguage);
 
-        this.languageInstanceService.setCurrentLanguage(this.eavService.eavConfig.formId, defaultLanguage);
-        const message = this.translate.instant('Message.SwitchedLanguageToDefault', { language: defaultLanguage });
-        this.snackBar.open(message, null, { duration: 5000 });
+        if (languages.length === 0) {
+          const firstValue = LocalizationHelpers.getBestValue(attributeValues, '*', '*', BestValueModes.Default);
+          if (InputFieldHelpers.isValueEmpty(firstValue, this.eavService)) {
+            this.itemService.setDefaultValue(item, ctAttribute, inputType, fieldSettings, languages, defaultLanguage);
+          }
+        } else {
+          const noLanguageValue = LocalizationHelpers.getBestValue(attributeValues, '*', '*', BestValueModes.Strict);
+          if (!inputType?.DisableI18n && noLanguageValue !== undefined) {
+            // move * value to defaultLanguage
+            const transactionItem = this.itemService.removeItemAttributeDimension(item.Entity.Guid, ctAttribute.Name, '*', true);
+            this.itemService.addItemAttributeValue(
+              item.Entity.Guid,
+              ctAttribute.Name,
+              noLanguageValue,
+              defaultLanguage,
+              false,
+              ctAttribute.Type,
+              false,
+              transactionItem,
+            );
+            continue;
+          }
+
+          const defaultLanguageValue = LocalizationHelpers.getBestValue(
+            attributeValues,
+            defaultLanguage,
+            defaultLanguage,
+            BestValueModes.Strict,
+          );
+          if (InputFieldHelpers.isValueEmpty(defaultLanguageValue, this.eavService)) {
+            this.itemService.setDefaultValue(item, ctAttribute, inputType, fieldSettings, languages, defaultLanguage);
+            switchToDefault = true;
+          }
+        }
       }
     }
-  }
 
-  /** Set default values where they are missing */
-  private fixCurrentLanguageValues() {
-    const items = this.itemService.getItems(this.eavService.eavConfig.itemGuids);
-    const inputTypes = this.inputTypeService.getInputTypes();
     const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
-    const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
-    const languages = this.languageService.getLanguages();
-
-    for (const item of items) {
-      const contentTypeId = InputFieldHelpers.getContentTypeId(item);
-      const contentType = this.contentTypeService.getContentType(contentTypeId);
-
-      for (const ctAttribute of contentType.Attributes) {
-        const calculatedInputType = InputFieldHelpers.calculateInputType(ctAttribute, inputTypes);
-        const inputType = calculatedInputType.inputType;
-        if (inputType === InputTypeConstants.EmptyDefault) { continue; }
-
-        const attributeValues = item.Entity.Attributes[ctAttribute.Name];
-        const value = LocalizationHelpers.getBestValue(attributeValues, currentLanguage, defaultLanguage, BestValueModes.Default);
-
-        // entity fields for empty items prefilled on the backend with []
-        // so I can never know if entity field is brand new, or just emptied out by the user
-        const valueIsEmpty = value === undefined || (Array.isArray(value) && value.length === 0 && this.eavService.eavConfig.createMode);
-        if (!valueIsEmpty) { continue; }
-
-        const merged = FieldsSettingsHelpers.mergeSettings<FieldSettings>(ctAttribute.Metadata, currentLanguage, defaultLanguage);
-        this.itemService.setDefaultValue(item, ctAttribute, inputType, merged, languages, currentLanguage, defaultLanguage);
-      }
+    if (switchToDefault && currentLanguage !== defaultLanguage) {
+      this.languageInstanceService.setCurrentLanguage(this.eavService.eavConfig.formId, defaultLanguage);
+      const message = this.translate.instant('Message.SwitchedLanguageToDefault', { language: defaultLanguage });
+      this.snackBar.open(message, null, { duration: 5000 });
     }
   }
 }
