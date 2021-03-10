@@ -109,9 +109,10 @@ export function paramsInitFactory(injector: Injector) {
 }
 
 function loadEnvironment() {
-  $2sxc.env.load({
+  const jsInfo: Partial<JsInfo> = {
     page: parseInt(sessionStorage.getItem(keyTabId), 10),
     rvt: sessionStorage.getItem(keyRequestToken),
     api: sessionStorage.getItem(keyApi),
-  } as any as JsInfo);
+  };
+  $2sxc.env.load(jsInfo as JsInfo);
 }
