@@ -4,7 +4,7 @@ import { Connector, EavCustomInputField } from '../../../edit-types';
 import { ElementEventListener } from '../../../shared/element-event-listener.model';
 import { FieldMaskService } from '../../../shared/field-mask.service';
 import { webpackConsoleLog } from '../../../shared/webpack-console-log.helper';
-import { defaultCoordinates, mapsParameters } from '../shared/constants';
+import { defaultCoordinates, mapsApiUrl } from '../shared/constants';
 import { buildTemplate, parseLatLng, stringifyLatLng } from '../shared/helpers';
 import * as styles from './main.css';
 import * as template from './main.html';
@@ -21,7 +21,7 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
   lngFieldName: string;
   lngInput: HTMLInputElement;
   map: google.maps.Map;
-  mapApiUrl = mapsParameters.mapApiUrl;
+  mapApiUrl = mapsApiUrl(); // mapsParameters.mapApiUrl;
   mapContainer: HTMLDivElement;
   marker: google.maps.Marker;
   private subscription: Subscription;
