@@ -4,10 +4,10 @@ import { UrlHelpers } from '../helpers';
 
 declare const sxcVersion: string;
 
-export const FileTypeConstants = {
-  CSS: '.css',
-  JS: '.js',
-};
+export enum FileTypeConstants {
+  CSS = '.css',
+  JS = '.js',
+}
 
 export interface LoadFile {
   path: string;

@@ -1,7 +1,7 @@
-export class I18nKeyConstants {
-  static readonly NoTranslate = 'NoTranslate';
-  static readonly FromPrimary = 'FromPrimary';
-  static readonly FromOther = 'FromOther';
-  static readonly LinkReadOnly = 'LinkReadOnly';
-  static readonly LinkShared = 'LinkShared';
+export enum I18nKeyConstants {
+  NoTranslate = 'NoTranslate',
+  FromPrimary = 'FromPrimary',
+  FromOther = 'FromOther',
+  LinkReadOnly = 'LinkReadOnly',
+  LinkShared = 'LinkShared',
 }

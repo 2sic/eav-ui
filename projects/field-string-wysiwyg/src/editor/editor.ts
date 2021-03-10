@@ -1,7 +1,7 @@
 import { Subscription } from 'rxjs';
 import { Connector, EavCustomInputField } from '../../../edit-types';
 import { WysiwygReconfigure } from '../../../edit-types/src/WysiwygReconfigure';
-import { FeaturesGuidsConstants } from '../../../edit/shared/constants';
+import { FeaturesConstants } from '../../../edit/shared/constants';
 import { webpackConsoleLog } from '../../../shared/webpack-console-log.helper';
 import { TinyMceButtons } from '../config/buttons';
 import { TinyMceConfigurator } from '../config/tinymce-configurator';
@@ -70,7 +70,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   private tinyMceScriptLoaded() {
     webpackConsoleLog(`${wysiwygEditorTag} tinyMceScriptLoaded called`);
     this.configurator = new TinyMceConfigurator(tinymce, this.connector, this.reconfigure);
-    this.pasteClipboardImage = this.connector._experimental.isFeatureEnabled(FeaturesGuidsConstants.PasteImageFromClipboard);
+    this.pasteClipboardImage = this.connector._experimental.isFeatureEnabled(FeaturesConstants.PasteImageFromClipboard);
     const tinyOptions = this.configurator.buildOptions(
       this.containerClass, this.toolbarContainerClass, this.mode === 'inline', this.tinyMceSetup.bind(this)
     );

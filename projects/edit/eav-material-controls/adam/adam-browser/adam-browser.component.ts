@@ -8,7 +8,7 @@ import { AdamConfig, AdamItem, DropzoneConfigExt } from '../../../../edit-types'
 import { eavConstants } from '../../../../ng-dialogs/src/app/shared/constants/eav.constants';
 import { EditForm } from '../../../../ng-dialogs/src/app/shared/models/edit-form.model';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
-import { FeaturesGuidsConstants } from '../../../shared/constants';
+import { FeaturesConstants } from '../../../shared/constants';
 import { UrlHelpers } from '../../../shared/helpers';
 import { EditRoutingService, FileTypeService } from '../../../shared/services';
 import { FeatureService } from '../../../shared/store/ngrx-data';
@@ -68,7 +68,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
     const entityGuid = this.config.entityGuid;
     const field = this.config.fieldName;
     this.url = this.dnnContext.$2sxc.http.apiUrl(`app-content/${contentType}/${entityGuid}/${field}`);
-    this.pasteClipboardImage = this.featureService.isFeatureEnabled(FeaturesGuidsConstants.PasteImageFromClipboard);
+    this.pasteClipboardImage = this.featureService.isFeatureEnabled(FeaturesConstants.PasteImageFromClipboard);
 
     // run inside zone to detect changes when called from custom components
     this.config.adam = {

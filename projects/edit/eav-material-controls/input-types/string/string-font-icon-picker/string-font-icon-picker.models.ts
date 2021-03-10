@@ -1,6 +1,6 @@
 import { BaseFieldTemplateVars } from '../../base/base-field-template-vars.model';
 
-export class IconOption {
+export interface IconOption {
   rule: CSSRule;
   class: string;
   /** Prepared search (usually the class in lower case) */
@@ -9,7 +9,7 @@ export class IconOption {
   label: string;
 }
 
-export class LoadedIcons {
+export interface LoadedIcons {
   [key: string]: boolean;
 }
 
