@@ -3,6 +3,7 @@ export * from './component-metadata.model';
 export * from './content-type-settings.model';
 export * from './eav-config.model';
 export * from './edit-routing.models';
+export * from './element-event-listener.model';
 export * from './entity-info.model';
 export * from './field-error-message.model';
 export * from './fields-configs.model';

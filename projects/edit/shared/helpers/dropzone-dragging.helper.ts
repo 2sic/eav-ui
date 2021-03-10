@@ -1,5 +1,5 @@
 import { NgZone } from '@angular/core';
-import { ElementEventListener } from '../../../shared/element-event-listener.model';
+import { ElementEventListener } from '../models';
 declare const draggingClass: string;
 declare const windowBodyTimeouts: number[];
 

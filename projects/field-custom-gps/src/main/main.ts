@@ -1,7 +1,7 @@
 import { } from 'google-maps';
 import { Subscription } from 'rxjs';
 import { Connector, EavCustomInputField } from '../../../edit-types';
-import { ElementEventListener } from '../../../shared/element-event-listener.model';
+import { ElementEventListener } from '../../../edit/shared/models';
 import { FieldMaskService } from '../../../shared/field-mask.service';
 import { webpackConsoleLog } from '../../../shared/webpack-console-log.helper';
 import { defaultCoordinates, mapsApiUrl } from '../shared/constants';

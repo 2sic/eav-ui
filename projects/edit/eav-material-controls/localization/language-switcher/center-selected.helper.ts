@@ -1,5 +1,5 @@
 import { NgZone } from '@angular/core';
-import { ElementEventListener } from '../../../../shared/element-event-listener.model';
+import { ElementEventListener } from '../../../shared/models';
 
 export class CenterSelectedHelper {
   private positionX: number;
