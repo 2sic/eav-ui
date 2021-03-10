@@ -18,7 +18,7 @@ import { IdFieldParams } from '../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
 import { eavConstants, EavKeyTypeKey, EavMetadataKey } from '../shared/constants/eav.constants';
 import { keyFilters } from '../shared/constants/session.constants';
-import { consoleLogAngular } from '../shared/helpers/angular-console-log.helper';
+import { consoleLogAngular } from '../shared/helpers/console-log-angular.helper';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 import { EditForm } from '../shared/models/edit-form.model';
 import { ContentItemsActionsComponent } from './ag-grid-components/content-items-actions/content-items-actions.component';

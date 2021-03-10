@@ -1,4 +1,4 @@
-import { consoleLogAngular } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
+import { consoleLogAngular } from '../../../ng-dialogs/src/app/shared/helpers/console-log-angular.helper';
 import { FieldValue, FormValues } from '../../eav-item-dialog/item-edit-form/item-edit-form.models';
 import { BestValueMode, BestValueModes } from '../constants/localization.constants';
 import { EavDimension, EavEntityAttributes, EavValue, EavValues } from '../models/eav';

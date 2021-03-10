@@ -1,7 +1,7 @@
 import { Injectable, Optional, SkipSelf } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { keyAppId, keyContentBlockId, keyModuleId, keyRequestToken, keyTabId, keyZoneId, prefix } from '../constants/session.constants';
-import { consoleLogAngular } from '../helpers/angular-console-log.helper';
+import { consoleLogAngular } from '../helpers/console-log-angular.helper';
 
 /** The context provides information */
 @Injectable()

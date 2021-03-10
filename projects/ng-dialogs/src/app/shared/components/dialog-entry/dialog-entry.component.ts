@@ -3,7 +3,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { take } from 'rxjs/operators';
 import { NavigateFormResult } from '../../../../../../edit/shared/models';
-import { consoleLogAngular } from '../../helpers/angular-console-log.helper';
+import { consoleLogAngular } from '../../helpers/console-log-angular.helper';
 import { DialogConfig } from '../../models/dialog-config.model';
 import { Context } from '../../services/context';
 

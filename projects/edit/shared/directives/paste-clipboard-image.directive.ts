@@ -1,5 +1,5 @@
 import { Directive, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
-import { consoleLogAngular } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
+import { consoleLogAngular } from '../../../ng-dialogs/src/app/shared/helpers/console-log-angular.helper';
 import { FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
 import { FeaturesConstants } from '../constants';
 import { PasteClipboardImageEventDetail } from '../models';

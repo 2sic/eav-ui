@@ -1,5 +1,5 @@
 import { ActionReducer, ActionReducerMap, MetaReducer, } from '@ngrx/store';
-import { consoleLogAngular } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
+import { consoleLogAngular } from '../../../../ng-dialogs/src/app/shared/helpers/console-log-angular.helper';
 import { environment } from '../../../../ng-dialogs/src/environments/environment';
 
 // tslint:disable-next-line:no-empty-interface
