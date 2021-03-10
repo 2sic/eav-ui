@@ -1,6 +1,7 @@
 import { environment } from '../../../environments/environment';
 
-export function angularConsoleLog(message?: any, ...optionalParams: any[]) {
+/** Console log that doesn't show in Angular production mode */
+export function consoleLogAngular(message?: any, ...optionalParams: any[]) {
   if (environment.production) { return; }
 
   console.groupCollapsed(message, ...optionalParams);

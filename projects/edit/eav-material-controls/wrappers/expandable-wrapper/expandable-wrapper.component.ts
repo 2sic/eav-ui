@@ -2,7 +2,7 @@ import { AfterViewInit, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewCh
 import { TranslateService } from '@ngx-translate/core';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
+import { consoleLogAngular } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { ContentExpandAnimation } from '../../../shared/animations';
 import { DropzoneDraggingHelper } from '../../../shared/helpers';
@@ -75,7 +75,7 @@ export class ExpandableWrapperComponent extends BaseComponent<string> implements
 
   ngAfterViewInit() {
     const componentTag = `field-${this.config.inputType}`;
-    angularConsoleLog('ExpandableWrapper created for:', componentTag);
+    consoleLogAngular('ExpandableWrapper created for:', componentTag);
     this.connectorCreator = new ConnectorHelper(
       this.config,
       this.group,
@@ -99,7 +99,7 @@ export class ExpandableWrapperComponent extends BaseComponent<string> implements
   }
 
   ngOnDestroy() {
-    angularConsoleLog('ExpandableWrapper destroyed');
+    consoleLogAngular('ExpandableWrapper destroyed');
     this.connectorCreator.destroy();
     this.dropzoneDraggingHelper.detach();
     super.ngOnDestroy();

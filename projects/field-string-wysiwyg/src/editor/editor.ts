@@ -2,7 +2,7 @@ import { Subscription } from 'rxjs';
 import { Connector, EavCustomInputField } from '../../../edit-types';
 import { WysiwygReconfigure } from '../../../edit-types/src/WysiwygReconfigure';
 import { FeaturesConstants } from '../../../edit/shared/constants';
-import { webpackConsoleLog } from '../../../shared/webpack-console-log.helper';
+import { consoleLogWebpack } from '../../../ng-dialogs/src/app/shared/helpers/webpack-console-log.helper';
 import { TinyMceButtons } from '../config/buttons';
 import { TinyMceConfigurator } from '../config/tinymce-configurator';
 import { TinyMceTranslations } from '../config/translations';
@@ -39,14 +39,14 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
 
   constructor() {
     super();
-    webpackConsoleLog(`${wysiwygEditorTag} constructor called`);
+    consoleLogWebpack(`${wysiwygEditorTag} constructor called`);
     this.instanceId = `${Math.floor(Math.random() * 99999)}`;
     this.containerClass = `tinymce-container-${this.instanceId}`;
     this.toolbarContainerClass = `tinymce-toolbar-container-${this.instanceId}`;
   }
 
   connectedCallback() {
-    webpackConsoleLog(`${wysiwygEditorTag} connectedCallback called`);
+    consoleLogWebpack(`${wysiwygEditorTag} connectedCallback called`);
     this.innerHTML = buildTemplate(template.default, styles.default + skinOverrides.default);
     this.querySelector('.tinymce-container').classList.add(this.containerClass);
     this.querySelector('.tinymce-toolbar-container').classList.add(this.toolbarContainerClass);
@@ -68,7 +68,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   }
 
   private tinyMceScriptLoaded() {
-    webpackConsoleLog(`${wysiwygEditorTag} tinyMceScriptLoaded called`);
+    consoleLogWebpack(`${wysiwygEditorTag} tinyMceScriptLoaded called`);
     this.configurator = new TinyMceConfigurator(tinymce, this.connector, this.reconfigure);
     this.pasteClipboardImage = this.connector._experimental.isFeatureEnabled(FeaturesConstants.PasteImageFromClipboard);
     const tinyOptions = this.configurator.buildOptions(
@@ -88,7 +88,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   private tinyMceSetup(editor: any) {
     this.editor = editor;
     editor.on('init', (_event: any) => {
-      webpackConsoleLog(`${wysiwygEditorTag} TinyMCE initialized`, editor);
+      consoleLogWebpack(`${wysiwygEditorTag} TinyMCE initialized`, editor);
       this.reconfigure?.editorOnInit?.(editor);
       TinyMceButtons.registerAll(this, editor, this.connector._experimental.adam);
       // tslint:disable:curly
@@ -118,13 +118,13 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
 
     // called after tinymce editor is removed
     editor.on('remove', (_event: any) => {
-      webpackConsoleLog(`${wysiwygEditorTag} TinyMCE removed`, _event);
+      consoleLogWebpack(`${wysiwygEditorTag} TinyMCE removed`, _event);
       this.clearData();
     });
 
     editor.on('focus', (_event: any) => {
       this.classList.add('focused');
-      webpackConsoleLog(`${wysiwygEditorTag} TinyMCE focused`, _event);
+      consoleLogWebpack(`${wysiwygEditorTag} TinyMCE focused`, _event);
       if (!this.reconfigure?.disableAdam) attachAdam(editor, this.connector._experimental.adam);
       if (this.pasteClipboardImage) {
         // When tiny is in focus, let it handle image uploads by removing image types from accepted files in dropzone.
@@ -138,7 +138,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
 
     editor.on('blur', (_event: any) => {
       this.classList.remove('focused');
-      webpackConsoleLog(`${wysiwygEditorTag} TinyMCE blurred`, _event);
+      consoleLogWebpack(`${wysiwygEditorTag} TinyMCE blurred`, _event);
       if (this.pasteClipboardImage) {
         // Dropzone will handle image uploads again
         this.connector._experimental.dropzone.setConfig({ acceptedFiles: '' });
@@ -180,7 +180,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   }
 
   disconnectedCallback() {
-    webpackConsoleLog(`${wysiwygEditorTag} disconnectedCallback called`);
+    consoleLogWebpack(`${wysiwygEditorTag} disconnectedCallback called`);
     this.clearData();
   }
 }

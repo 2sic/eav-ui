@@ -1,6 +1,6 @@
 import { Connector, EavCustomInputField } from '../../../edit-types';
 import { ElementEventListener } from '../../../edit/shared/models';
-import { webpackConsoleLog } from '../../../shared/webpack-console-log.helper';
+import { consoleLogWebpack } from '../../../ng-dialogs/src/app/shared/helpers/webpack-console-log.helper';
 import { defaultCoordinates } from '../shared/constants';
 import { buildTemplate, customGpsIcons, parseLatLng } from '../shared/helpers';
 import * as styles from './preview.css';
@@ -15,11 +15,11 @@ class FieldCustomGps extends HTMLElement implements EavCustomInputField<string> 
 
   constructor() {
     super();
-    webpackConsoleLog('FieldCustomGps constructor called');
+    consoleLogWebpack('FieldCustomGps constructor called');
   }
 
   connectedCallback() {
-    webpackConsoleLog('FieldCustomGps connectedCallback called');
+    consoleLogWebpack('FieldCustomGps connectedCallback called');
     this.innerHTML = buildTemplate(template.default, styles.default);
     const mapIconContainer = this.querySelector('#map-icon-container');
     mapIconContainer.innerHTML = customGpsIcons.mapMarker;
@@ -58,7 +58,7 @@ class FieldCustomGps extends HTMLElement implements EavCustomInputField<string> 
   }
 
   disconnectedCallback() {
-    webpackConsoleLog('FieldCustomGps disconnectedCallback called');
+    consoleLogWebpack('FieldCustomGps disconnectedCallback called');
     this.eventListeners.forEach(evListener => {
       evListener.element.removeEventListener(evListener.type, evListener.listener);
     });

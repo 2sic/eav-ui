@@ -1,5 +1,5 @@
 import { Adam, AdamPostResponse, Dropzone } from '../../../../edit-types';
-import { webpackConsoleLog } from '../../../../shared/webpack-console-log.helper';
+import { consoleLogWebpack } from '../../../../ng-dialogs/src/app/shared/helpers/webpack-console-log.helper';
 
 export class DefaultPaste {
 
@@ -17,7 +17,7 @@ export class DefaultPaste {
     paste_remove_spans: true,
     paste_remove_styles: true,
     paste_preprocess(e: any, args: any) {
-      webpackConsoleLog('paste preprocess', e, args);
+      consoleLogWebpack('paste preprocess', e, args);
     },
     paste_postprocess(plugin: any, args: any) {
       try {
@@ -48,7 +48,7 @@ export class DefaultPaste {
   }
 
   private static imagesUploadHandler(blobInfo: any, success: (imgPath: string) => any, failure: () => any, dropzone: Dropzone, adam: Adam) {
-    webpackConsoleLog('TinyMCE upload');
+    consoleLogWebpack('TinyMCE upload');
 
     const formData = new FormData();
     formData.append('file', blobInfo.blob(), blobInfo.filename());
@@ -63,7 +63,7 @@ export class DefaultPaste {
     }).then(response =>
       response.json()
     ).then((response: AdamPostResponse) => {
-      webpackConsoleLog('TinyMCE upload data', response);
+      consoleLogWebpack('TinyMCE upload data', response);
       if (!response.Success) {
         alert(`Upload failed because: ${response.Error}`);
         return;
@@ -72,7 +72,7 @@ export class DefaultPaste {
       success(response.Path);
       adam.refresh();
     }).catch(error => {
-      webpackConsoleLog('TinyMCE upload error:', error);
+      consoleLogWebpack('TinyMCE upload error:', error);
     });
 
   }

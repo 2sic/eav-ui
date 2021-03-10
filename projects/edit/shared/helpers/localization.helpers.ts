@@ -1,4 +1,4 @@
-import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
+import { consoleLogAngular } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 import { FieldValue, FormValues } from '../../eav-item-dialog/item-edit-form/item-edit-form.models';
 import { BestValueMode, BestValueModes } from '../constants/localization.constants';
 import { EavDimension, EavEntityAttributes, EavValue, EavValues } from '../models/eav';
@@ -127,7 +127,7 @@ export class LocalizationHelpers {
           };
           eavAttributes[attributeKey] = newValues;
         } else { // else add new value with dimension languageKey
-          angularConsoleLog('saveAttributeValues add values ', newItemValue);
+          consoleLogAngular('saveAttributeValues add values ', newItemValue);
           const newEavValue = EavValue.create(newItemValue, [EavDimension.create(languageKey)]);
           const newAttribute: EavValues<any> = {
             ...allAttributes[attributeKey],

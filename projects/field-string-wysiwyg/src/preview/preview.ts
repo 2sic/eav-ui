@@ -1,7 +1,7 @@
 import { Subscription } from 'rxjs';
 import { Connector, EavCustomInputField } from '../../../edit-types';
 import { ElementEventListener } from '../../../edit/shared/models';
-import { webpackConsoleLog } from '../../../shared/webpack-console-log.helper';
+import { consoleLogWebpack } from '../../../ng-dialogs/src/app/shared/helpers/webpack-console-log.helper';
 import { buildTemplate } from '../shared/helpers';
 import * as styles from './preview.css';
 import * as template from './preview.html';
@@ -15,11 +15,11 @@ export class FieldStringWysiwygPreview extends HTMLElement implements EavCustomI
 
   constructor() {
     super();
-    webpackConsoleLog(`${wysiwygPreviewTag} constructor called`);
+    consoleLogWebpack(`${wysiwygPreviewTag} constructor called`);
   }
 
   connectedCallback() {
-    webpackConsoleLog(`${wysiwygPreviewTag} connectedCallback called`);
+    consoleLogWebpack(`${wysiwygPreviewTag} connectedCallback called`);
     this.innerHTML = buildTemplate(template.default, styles.default);
     const previewContainer: HTMLDivElement = this.querySelector('.wysiwyg-preview');
     if (this.connector.field.disabled) {
@@ -39,7 +39,7 @@ export class FieldStringWysiwygPreview extends HTMLElement implements EavCustomI
   }
 
   disconnectedCallback() {
-    webpackConsoleLog(`${wysiwygPreviewTag} disconnectedCallback called`);
+    consoleLogWebpack(`${wysiwygPreviewTag} disconnectedCallback called`);
     this.eventListeners.forEach(listener => {
       listener.element.removeEventListener(listener.type, listener.listener);
     });

@@ -1,6 +1,6 @@
 import { Adam } from '../../../edit-types';
 import { DnnBridgeConnectorParams, PagePickerResult } from '../../../edit/eav-material-controls/input-types/dnn-bridge/dnn-bridge.models';
-import { webpackConsoleLog } from '../../../shared/webpack-console-log.helper';
+import { consoleLogWebpack } from '../../../ng-dialogs/src/app/shared/helpers/webpack-console-log.helper';
 import { FieldStringWysiwygEditor, wysiwygEditorTag } from '../editor/editor';
 import { loadCustomIcons } from '../editor/load-icons.helper';
 import { Guid } from '../shared/guid';
@@ -34,7 +34,7 @@ export class TinyMceButtons {
 
     TinyMceButtons.headingButtons(editor);
 
-    webpackConsoleLog('buttons', editor.ui.registry.getAll());
+    consoleLogWebpack('buttons', editor.ui.registry.getAll());
     TinyMceButtons.headingsGroup(editor);
 
     TinyMceButtons.contentBlock(editor);

@@ -1,5 +1,5 @@
 import { Directive, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
-import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
+import { consoleLogAngular } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 import { FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
 import { FeaturesConstants } from '../constants';
 import { PasteClipboardImageEventDetail } from '../models';
@@ -44,7 +44,7 @@ export class PasteClipboardImageDirective implements OnInit, OnDestroy {
   }
 
   private handleImage(event: CustomEvent) {
-    angularConsoleLog('PASTE IMAGE', 'event:', event);
+    consoleLogAngular('PASTE IMAGE', 'event:', event);
     // todo: convert png to jpg to reduce file size
     const image = this.getFile(event.detail as PasteClipboardImageEventDetail);
     this.config.dropzone.uploadFile(image);

@@ -18,7 +18,7 @@ import { IdFieldParams } from '../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
 import { eavConstants, EavKeyTypeKey, EavMetadataKey } from '../shared/constants/eav.constants';
 import { keyFilters } from '../shared/constants/session.constants';
-import { angularConsoleLog } from '../shared/helpers/angular-console-log.helper';
+import { consoleLogAngular } from '../shared/helpers/angular-console-log.helper';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 import { EditForm } from '../shared/models/edit-form.model';
 import { ContentItemsActionsComponent } from './ag-grid-components/content-items-actions/content-items-actions.component';
@@ -129,7 +129,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   private setColumnDefs(columnDefs: ColDef[], filterModel: AgGridFilterModel) {
     this.gridApi$.value.setColumnDefs(columnDefs);
     if (filterModel) {
-      angularConsoleLog('Will try to apply filter:', filterModel);
+      consoleLogAngular('Will try to apply filter:', filterModel);
       this.gridApi$.value.setFilterModel(filterModel);
     }
   }

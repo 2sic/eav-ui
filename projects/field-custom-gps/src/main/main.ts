@@ -2,8 +2,8 @@ import { } from 'google-maps';
 import { Subscription } from 'rxjs';
 import { Connector, EavCustomInputField } from '../../../edit-types';
 import { ElementEventListener } from '../../../edit/shared/models';
+import { consoleLogWebpack } from '../../../ng-dialogs/src/app/shared/helpers/webpack-console-log.helper';
 import { FieldMaskService } from '../../../shared/field-mask.service';
-import { webpackConsoleLog } from '../../../shared/webpack-console-log.helper';
 import { defaultCoordinates, mapsApiUrl } from '../shared/constants';
 import { buildTemplate, parseLatLng, stringifyLatLng } from '../shared/helpers';
 import * as styles from './main.css';
@@ -28,14 +28,14 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
 
   constructor() {
     super();
-    webpackConsoleLog('FieldCustomGpsDialog constructor called');
+    consoleLogWebpack('FieldCustomGpsDialog constructor called');
     this.fieldInitialized = false;
     this.eventListeners = [];
     this.subscription = new Subscription();
   }
 
   connectedCallback() {
-    webpackConsoleLog('FieldCustomGpsDialog connectedCallback called');
+    consoleLogWebpack('FieldCustomGpsDialog connectedCallback called');
     // spm prevents connectedCallback from being called more than once. Don't know if it's necessary
     // https://html.spec.whatwg.org/multipage/custom-elements.html#custom-element-conformance
     if (this.fieldInitialized) { return; }
@@ -59,7 +59,7 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
 
     const addressMask = this.connector.field.settings.AddressMask || this.connector.field.settings['Address Mask'];
     this.addressMaskService = new FieldMaskService(addressMask, this.connector._experimental.formGroup.controls, null, null);
-    webpackConsoleLog('FieldCustomGpsDialog addressMask:', addressMask);
+    consoleLogWebpack('FieldCustomGpsDialog addressMask:', addressMask);
     if (addressMask) {
       addressMaskContainer.classList.remove('hidden');
       formattedAddressContainer.innerText = this.addressMaskService.resolve();
@@ -69,7 +69,7 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
   }
 
   private mapScriptLoaded() {
-    webpackConsoleLog('FieldCustomGpsDialog mapScriptLoaded called');
+    consoleLogWebpack('FieldCustomGpsDialog mapScriptLoaded called');
     this.map = new google.maps.Map(this.mapContainer, { zoom: 15, center: defaultCoordinates, gestureHandling: 'greedy' });
     this.marker = new google.maps.Marker({ position: defaultCoordinates, map: this.map, draggable: true });
     this.geocoder = new google.maps.Geocoder();
@@ -116,7 +116,7 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
   }
 
   private onLatLngInputChange() {
-    webpackConsoleLog('FieldCustomGpsDialog input changed');
+    consoleLogWebpack('FieldCustomGpsDialog input changed');
     const latLng: google.maps.LatLngLiteral = {
       lat: this.latInput.value.length > 0 ? parseFloat(this.latInput.value) : null,
       lng: this.lngInput.value.length > 0 ? parseFloat(this.lngInput.value) : null,
@@ -126,7 +126,7 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
   }
 
   private autoSelect() {
-    webpackConsoleLog('FieldCustomGpsDialog geocoder called');
+    consoleLogWebpack('FieldCustomGpsDialog geocoder called');
     const address = this.addressMaskService.resolve();
     this.geocoder.geocode({
       address,
@@ -146,7 +146,7 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
   }
 
   private onMarkerDragend(event: google.maps.MouseEvent) {
-    webpackConsoleLog('FieldCustomGpsDialog marker changed');
+    consoleLogWebpack('FieldCustomGpsDialog marker changed');
     const latLng: google.maps.LatLngLiteral = {
       lat: event.latLng.lat(),
       lng: event.latLng.lng(),
@@ -156,7 +156,7 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
   }
 
   disconnectedCallback() {
-    webpackConsoleLog('FieldCustomGpsDialog disconnectedCallback called');
+    consoleLogWebpack('FieldCustomGpsDialog disconnectedCallback called');
     if (!!(window as any).google) {
       google.maps.event.clearInstanceListeners(this.marker);
       google.maps.event.clearInstanceListeners(this.map);

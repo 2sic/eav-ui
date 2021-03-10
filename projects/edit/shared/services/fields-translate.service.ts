@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { EavService, FieldsSettingsService } from '.';
-import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
+import { consoleLogAngular } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 import { InputFieldHelpers, LocalizationHelpers } from '../helpers';
 import { EavItem } from '../models/eav';
 import { ContentTypeService, ItemService, LanguageInstanceService } from '../store/ngrx-data';
@@ -79,7 +79,7 @@ export class FieldsTranslateService {
         );
       }
     } else {
-      angularConsoleLog(`${currentLanguage}: Cant copy value from ${copyFromLanguageKey} because that value does not exist.`);
+      consoleLogAngular(`${currentLanguage}: Cant copy value from ${copyFromLanguageKey} because that value does not exist.`);
     }
   }
 

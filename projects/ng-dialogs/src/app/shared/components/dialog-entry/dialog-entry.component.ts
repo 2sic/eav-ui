@@ -3,7 +3,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { take } from 'rxjs/operators';
 import { NavigateFormResult } from '../../../../../../edit/shared/models';
-import { angularConsoleLog } from '../../helpers/angular-console-log.helper';
+import { consoleLogAngular } from '../../helpers/angular-console-log.helper';
 import { DialogConfig } from '../../models/dialog-config.model';
 import { Context } from '../../services/context';
 
@@ -34,7 +34,7 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
     if (dialogConfig == null) {
       throw new Error(`Could not find config for dialog. Did you forget to add DialogConfig to route data?`);
     }
-    angularConsoleLog('Open dialog:', dialogConfig.name, 'Context id:', this.context.id, 'Context:', this.context);
+    consoleLogAngular('Open dialog:', dialogConfig.name, 'Context id:', this.context.id, 'Context:', this.context);
 
     dialogConfig.getComponent().then(component => {
       if (dialogConfig.initContext) {
@@ -59,7 +59,7 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
       });
 
       this.dialogRef.afterClosed().pipe(take(1)).subscribe((data: any) => {
-        angularConsoleLog('Dialog was closed:', dialogConfig.name, 'Data:', data);
+        consoleLogAngular('Dialog was closed:', dialogConfig.name, 'Data:', data);
 
         const navRes = data as NavigateFormResult;
         if (navRes?.navigateUrl != null) {

@@ -1,6 +1,6 @@
 import { Connector, EavCustomInputField } from '../../../edit-types';
 import { WysiwygReconfigure } from '../../../edit-types/src/WysiwygReconfigure';
-import { webpackConsoleLog } from '../../../shared/webpack-console-log.helper';
+import { consoleLogWebpack } from '../../../ng-dialogs/src/app/shared/helpers/webpack-console-log.helper';
 import { FieldStringWysiwygEditor, wysiwygEditorTag } from '../editor/editor';
 import { FieldStringWysiwygPreview, wysiwygPreviewTag } from '../preview/preview';
 import * as styles from './field-string-wysiwyg.css';
@@ -15,11 +15,11 @@ class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<stri
 
   constructor() {
     super();
-    webpackConsoleLog(`${wysiwygTag} constructor called`);
+    consoleLogWebpack(`${wysiwygTag} constructor called`);
   }
 
   connectedCallback() {
-    webpackConsoleLog(`${wysiwygTag} connectedCallback called`);
+    consoleLogWebpack(`${wysiwygTag} connectedCallback called`);
     this.innerHTML = `<style>${styles.default}</style>`;
     this.classList.add('wysiwyg-switcher');
 
@@ -57,7 +57,7 @@ class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<stri
   }
 
   disconnectedCallback() {
-    webpackConsoleLog(`${wysiwygTag} disconnectedCallback called`);
+    consoleLogWebpack(`${wysiwygTag} disconnectedCallback called`);
   }
 }
 

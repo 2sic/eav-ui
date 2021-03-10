@@ -1,7 +1,7 @@
 import { Injectable, Optional, SkipSelf } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
 import { keyAppId, keyContentBlockId, keyModuleId, keyRequestToken, keyTabId, keyZoneId, prefix } from '../constants/session.constants';
-import { angularConsoleLog } from '../helpers/angular-console-log.helper';
+import { consoleLogAngular } from '../helpers/angular-console-log.helper';
 
 /** The context provides information */
 @Injectable()
@@ -62,7 +62,7 @@ export class Context {
     const globalWindow = window as any;
     if (!globalWindow.contextId) { globalWindow.contextId = 0; }
     this.id = globalWindow.contextId++;
-    angularConsoleLog('Context.constructor', this);
+    consoleLogAngular('Context.constructor', this);
   }
 
   /**
@@ -73,7 +73,7 @@ export class Context {
     this.routeSnapshot = route && route.snapshot;
     this.clearCachedValues();
     this.ready = route != null;
-    angularConsoleLog('Context.init', this, route);
+    consoleLogAngular('Context.init', this, route);
   }
 
   initRoot() {
@@ -92,7 +92,7 @@ export class Context {
     this._appId = this.sessionNumber(keyAppId);
 
     this.ready = true;
-    angularConsoleLog('Context.initRoot', this);
+    consoleLogAngular('Context.initRoot', this);
   }
 
   private sessionNumber(name: string): number {

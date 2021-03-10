@@ -5,7 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import 'reflect-metadata';
 import { BehaviorSubject, combineLatest, fromEvent, Observable, of, Subscription } from 'rxjs';
 import { delay, map, startWith, tap } from 'rxjs/operators';
-import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
+import { consoleLogAngular } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 import { SnackBarSaveErrorsComponent } from '../../eav-material-controls/dialogs/snack-bar-save-errors/snack-bar-save-errors.component';
 import { SaveErrorsSnackData } from '../../eav-material-controls/dialogs/snack-bar-save-errors/snack-bar-save-errors.models';
 import { SnackBarUnsavedChangesComponent } from '../../eav-material-controls/dialogs/snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
@@ -159,12 +159,12 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy {
         IsPublished: publishStatus.IsPublished,
         DraftShouldBranch: publishStatus.DraftShouldBranch,
       };
-      angularConsoleLog('SAVE FORM DATA:', saveFormData);
+      consoleLogAngular('SAVE FORM DATA:', saveFormData);
       this.snackBar.open(this.translate.instant('Message.Saving'), null, { duration: 2000 });
 
       this.eavService.saveFormData(saveFormData).subscribe({
         next: result => {
-          angularConsoleLog('SAVED!, result:', result, 'close:', close);
+          consoleLogAngular('SAVED!, result:', result, 'close:', close);
           this.itemService.updateItemId(result);
           this.snackBar.open(this.translate.instant('Message.Saved'), null, { duration: 2000 });
           this.formsStateService.formsDirty$.next(false);
@@ -174,7 +174,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy {
           }
         },
         error: err => {
-          angularConsoleLog('SAVE FAILED:', err);
+          consoleLogAngular('SAVE FAILED:', err);
           this.snackBar.open('Error', null, { duration: 2000 });
         },
       });

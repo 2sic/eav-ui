@@ -4,7 +4,7 @@ import { DropzoneDirective } from 'ngx-dropzone-wrapper';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AdamPostResponse, DropzoneConfigExt } from '../../../../edit-types';
-import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
+import { consoleLogAngular } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { EavService, FieldsSettingsService } from '../../../shared/services';
 import { BaseComponent } from '../../input-types/base/base.component';
@@ -76,7 +76,7 @@ export class DropzoneWrapperComponent extends BaseComponent<any> implements Fiel
   }
 
   onUploadError(args: any) {
-    angularConsoleLog('Dropzone upload error. Args:', args);
+    consoleLogAngular('Dropzone upload error. Args:', args);
     this.dropzoneRef.reset();
   }
 

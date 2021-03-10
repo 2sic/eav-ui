@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { angularConsoleLog } from '../../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
+import { consoleLogAngular } from '../../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
 import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
 import { EavService, EditRoutingService, FieldsSettingsService, ScriptsLoaderService } from '../../../../shared/services';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
@@ -61,7 +61,7 @@ export class ExternalWebComponentComponent extends BaseComponent<string> impleme
   }
 
   private assetsLoaded() {
-    angularConsoleLog('ExternalWebcomponentComponent', this.config.fieldName, 'loaded');
+    consoleLogAngular('ExternalWebcomponentComponent', this.config.fieldName, 'loaded');
     this.loading$.next(false);
   }
 }

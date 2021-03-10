@@ -1,6 +1,7 @@
 declare const __PRODUCTION__: boolean; // set by the definePlugin with string-replace
 
-export function webpackConsoleLog(message?: any, ...optionalParams: any[]) {
+/** Console log that doesn't show in Webpack production mode */
+export function consoleLogWebpack(message?: any, ...optionalParams: any[]) {
   if (__PRODUCTION__) { return; }
 
   console.groupCollapsed(message, ...optionalParams);
