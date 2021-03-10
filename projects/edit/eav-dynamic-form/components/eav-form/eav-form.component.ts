@@ -4,7 +4,7 @@ import { combineLatest, Subscription } from 'rxjs';
 import { distinctUntilChanged, map, startWith } from 'rxjs/operators';
 import { InputTypeConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { FormValues } from '../../../eav-item-dialog/item-edit-form/item-edit-form.models';
-import { GeneralHelpers } from '../../../shared/helpers/general.helpers';
+import { GeneralHelpers } from '../../../shared/helpers';
 import { EavService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
 import { ItemService, LanguageInstanceService } from '../../../shared/store/ngrx-data';
 

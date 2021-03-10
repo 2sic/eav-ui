@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
-import { FieldMaskService } from '../../../../../shared/field-mask.service';
 import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
+import { FieldMask } from '../../../../shared/helpers';
 import { EntityInfo } from '../../../../shared/models';
 import { EavService, EditRoutingService, EntityService, FieldsSettingsService, QueryService } from '../../../../shared/services';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
@@ -19,7 +19,7 @@ import { QueryEntity } from './entity-query.models';
 @ComponentMetadata({})
 export class EntityQueryComponent extends EntityDefaultComponent implements OnInit, OnDestroy {
   useQuery = true;
-  private paramsMask: FieldMaskService;
+  private paramsMask: FieldMask;
 
   constructor(
     eavService: EavService,
@@ -41,7 +41,7 @@ export class EntityQueryComponent extends EntityDefaultComponent implements OnIn
     this.subscription.add(
       this.settings$.subscribe(settings => {
         this.paramsMask?.destroy();
-        this.paramsMask = new FieldMaskService(
+        this.paramsMask = new FieldMask(
           settings.UrlParameters,
           this.group.controls,
           this.fetchAvailableEntities.bind(this),

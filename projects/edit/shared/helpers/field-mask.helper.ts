@@ -1,18 +1,18 @@
 import { AbstractControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { EavConfig } from '../edit/shared/models';
+import { EavConfig } from '../models';
 
 /**
- * Create a new FieldMaskService instance and access result with resolve
+ * Create a new FieldMask instance and access result with resolve
  * @example
- * const mask = new FieldMaskService("[FirstName]", formGroup.controls);
+ * const mask = new FieldMask("[FirstName]", formGroup.controls);
  * const maskValue = mask.resolve();
  *
  * @param mask a string like "[FirstName] [LastName]"
  * @param model usually FormGroup controls, passed into here
  * @param overloadPreCleanValues a function which will "scrub" the found field-values
  */
-export class FieldMaskService {
+export class FieldMask {
   private mask: string;
   private model: { [key: string]: AbstractControl; };
   private fields: string[] = [];

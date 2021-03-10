@@ -1,9 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { FieldMaskService } from '../../../../../shared/field-mask.service';
 import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
+import { FieldMask } from '../../../../shared/helpers';
 import { AssetsService, EavService, FieldsSettingsService } from '../../../../shared/services';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { BaseComponent } from '../../base/base.component';
@@ -23,8 +23,8 @@ export class StringTemplatePickerComponent extends BaseComponent<string> impleme
   templateVars$: Observable<StringTemplatePickerTemplateVars>;
 
   private templateOptions$: BehaviorSubject<string[]>;
-  private typeWatcher: FieldMaskService;
-  private locationWatcher: FieldMaskService;
+  private typeMask: FieldMask;
+  private locationMask: FieldMask;
   private activeSpec = templateTypes.Token;
   private templates: string[] = [];
   private global = false;
@@ -44,11 +44,11 @@ export class StringTemplatePickerComponent extends BaseComponent<string> impleme
     super.ngOnInit();
     this.templateOptions$ = new BehaviorSubject<string[]>([]);
     // set change-watchers to the other values
-    this.typeWatcher = new FieldMaskService('[Type]', this.group.controls, this.setFileConfig.bind(this), null);
-    this.locationWatcher = new FieldMaskService('[Location]', this.group.controls, this.onLocationChange.bind(this), null);
+    this.typeMask = new FieldMask('[Type]', this.group.controls, this.setFileConfig.bind(this), null);
+    this.locationMask = new FieldMask('[Location]', this.group.controls, this.onLocationChange.bind(this), null);
 
-    this.setFileConfig(this.typeWatcher.resolve() || 'Token'); // use token setting as default, till the UI tells us otherwise
-    this.onLocationChange(this.locationWatcher.resolve() || null); // set initial file list
+    this.setFileConfig(this.typeMask.resolve() || 'Token'); // use token setting as default, till the UI tells us otherwise
+    this.onLocationChange(this.locationMask.resolve() || null); // set initial file list
 
     this.templateVars$ = combineLatest([this.label$, this.required$, this.templateOptions$, this.disabled$, this.touched$]).pipe(
       map(([label, required, templateOptions, disabled, touched]) => {
@@ -66,8 +66,8 @@ export class StringTemplatePickerComponent extends BaseComponent<string> impleme
 
   ngOnDestroy() {
     this.templateOptions$.complete();
-    this.typeWatcher.destroy();
-    this.locationWatcher.destroy();
+    this.typeMask.destroy();
+    this.locationMask.destroy();
     super.ngOnDestroy();
   }
 

@@ -6,8 +6,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { EditForm } from '../../../../../ng-dialogs/src/app/shared/models/edit-form.model';
-import { FieldMaskService } from '../../../../../shared/field-mask.service';
 import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
+import { FieldMask } from '../../../../shared/helpers';
 import { EntityInfo } from '../../../../shared/models';
 import { EavService, EditRoutingService, EntityService, FieldsSettingsService } from '../../../../shared/services';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
@@ -31,10 +31,10 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
   templateVars$: Observable<EntityTemplateVars>;
 
   useQuery = false;
-  contentTypeMask: FieldMaskService;
+  contentTypeMask: FieldMask;
 
   /** New in 11.11.03 - Prefill feature to add prefill to new entities */
-  prefillMask: FieldMaskService;
+  prefillMask: FieldMask;
 
   error$ = new BehaviorSubject('');
   freeTextMode$ = new BehaviorSubject(false);
@@ -71,7 +71,7 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
     this.subscription.add(
       this.settings$.subscribe(settings => {
         this.contentTypeMask?.destroy();
-        this.contentTypeMask = new FieldMaskService(
+        this.contentTypeMask = new FieldMask(
           settings.EntityType,
           this.group.controls,
           !this.useQuery ? this.fetchAvailableEntities.bind(this) : this.updateAddNew.bind(this),
@@ -82,7 +82,7 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
         // new in 11.11.03 - similar to contentTypeMask
         // not exactly sure what each piece does, must ask SPM to finalize
         this.prefillMask?.destroy();
-        this.prefillMask = new FieldMaskService(
+        this.prefillMask = new FieldMask(
           settings.Prefill,
           this.group.controls,
           !this.useQuery ? this.fetchAvailableEntities.bind(this) : this.updateAddNew.bind(this),

@@ -6,8 +6,7 @@ import { EavService } from '.';
 import { FieldSettings } from '../../../edit-types';
 import { ValidationHelper } from '../../eav-material-controls/validators/validation-helper';
 import { FieldLogicManager } from '../../field-logic/field-logic-manager';
-import { FieldsSettingsHelpers, InputFieldHelpers, LocalizationHelpers } from '../helpers';
-import { GeneralHelpers } from '../helpers/general.helpers';
+import { FieldsSettingsHelpers, GeneralHelpers, InputFieldHelpers, LocalizationHelpers } from '../helpers';
 import { ContentTypeSettings, FieldsProps, TranslationState } from '../models';
 import { ContentTypeService, InputTypeService, ItemService, LanguageInstanceService } from '../store/ngrx-data';
 

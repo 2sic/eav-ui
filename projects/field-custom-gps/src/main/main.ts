@@ -1,9 +1,9 @@
 import { } from 'google-maps';
 import { Subscription } from 'rxjs';
 import { Connector, EavCustomInputField } from '../../../edit-types';
+import { FieldMask } from '../../../edit/shared/helpers/field-mask.helper';
 import { ElementEventListener } from '../../../edit/shared/models';
 import { consoleLogWebpack } from '../../../ng-dialogs/src/app/shared/helpers/console-log-webpack.helper';
-import { FieldMaskService } from '../../../shared/field-mask.service';
 import { defaultCoordinates, mapsApiUrl } from '../shared/constants';
 import { buildTemplate, parseLatLng, stringifyLatLng } from '../shared/helpers';
 import * as styles from './main.css';
@@ -13,7 +13,7 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
   connector: Connector<string>;
   eventListeners: ElementEventListener[];
   fieldInitialized: boolean;
-  addressMaskService: FieldMaskService;
+  addressMask: FieldMask;
   geocoder: google.maps.Geocoder;
   iconSearch: HTMLAnchorElement;
   latFieldName: string;
@@ -21,7 +21,7 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
   lngFieldName: string;
   lngInput: HTMLInputElement;
   map: google.maps.Map;
-  mapApiUrl = mapsApiUrl(); // mapsParameters.mapApiUrl;
+  mapApiUrl = mapsApiUrl();
   mapContainer: HTMLDivElement;
   marker: google.maps.Marker;
   private subscription: Subscription;
@@ -57,12 +57,12 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
       this.lngFieldName = this.connector.field.settings.LongField;
     }
 
-    const addressMask = this.connector.field.settings.AddressMask || this.connector.field.settings['Address Mask'];
-    this.addressMaskService = new FieldMaskService(addressMask, this.connector._experimental.formGroup.controls, null, null);
-    consoleLogWebpack('FieldCustomGpsDialog addressMask:', addressMask);
-    if (addressMask) {
+    const addressMaskSetting = this.connector.field.settings.AddressMask || this.connector.field.settings['Address Mask'];
+    this.addressMask = new FieldMask(addressMaskSetting, this.connector._experimental.formGroup.controls, null, null);
+    consoleLogWebpack('FieldCustomGpsDialog addressMask:', addressMaskSetting);
+    if (addressMaskSetting) {
       addressMaskContainer.classList.remove('hidden');
-      formattedAddressContainer.innerText = this.addressMaskService.resolve();
+      formattedAddressContainer.innerText = this.addressMask.resolve();
     }
 
     this.connector.loadScript('google', this.mapApiUrl, () => { this.mapScriptLoaded(); });
@@ -127,7 +127,7 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
 
   private autoSelect() {
     consoleLogWebpack('FieldCustomGpsDialog geocoder called');
-    const address = this.addressMaskService.resolve();
+    const address = this.addressMask.resolve();
     this.geocoder.geocode({
       address,
     }, (results, status) => {

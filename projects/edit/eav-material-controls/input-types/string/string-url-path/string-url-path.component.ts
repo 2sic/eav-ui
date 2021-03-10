@@ -1,10 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { FieldMaskService } from '../../../../../shared/field-mask.service';
 import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
-import { UrlHelpers } from '../../../../shared/helpers';
+import { FieldMask, UrlHelpers } from '../../../../shared/helpers';
 import { EavService, FieldsSettingsService } from '../../../../shared/services';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { BaseComponent } from '../../base/base.component';
@@ -25,7 +24,7 @@ export class StringUrlPathComponent extends BaseComponent<string> implements OnI
 
   private autoGenerateMask: string;
   private allowSlashes: boolean;
-  private fieldMaskService: FieldMaskService;
+  private fieldMask: FieldMask;
   /** Blocks external update if field was changed manually and doesn't match external updates. WARNING: Doesn't work on language change */
   private lastAutoCopy = '';
 
@@ -45,11 +44,11 @@ export class StringUrlPathComponent extends BaseComponent<string> implements OnI
       this.settings$.subscribe(settings => {
         this.autoGenerateMask = settings.AutoGenerateMask;
         this.allowSlashes = settings.AllowSlashes;
-        if (this.fieldMaskService != null) {
-          this.fieldMaskService.destroy();
-          this.fieldMaskService = null;
+        if (this.fieldMask != null) {
+          this.fieldMask.destroy();
+          this.fieldMask = null;
         }
-        this.fieldMaskService = new FieldMaskService(
+        this.fieldMask = new FieldMask(
           this.autoGenerateMask,
           this.group.controls,
           this.onSourcesChanged.bind(this),
@@ -59,7 +58,7 @@ export class StringUrlPathComponent extends BaseComponent<string> implements OnI
     );
 
     // set initial value
-    this.onSourcesChanged(this.fieldMaskService.resolve());
+    this.onSourcesChanged(this.fieldMask.resolve());
 
     // clean on value change
     this.subscription.add(
