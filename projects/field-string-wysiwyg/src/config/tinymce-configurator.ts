@@ -1,6 +1,6 @@
 import { Connector } from '../../../edit-types';
 import { WysiwygReconfigure } from '../../../edit-types/src/WysiwygReconfigure';
-import { FeaturesGuidsConstants as FeatGuids } from '../../../shared/features-guids.constants';
+import { FeaturesGuidsConstants } from '../../../edit/shared/constants';
 import * as contentStyle from '../editor/tinymce-content.css';
 import { DefaultOptions, DefaultPaste, DefaultPlugins } from './defaults';
 import { AddOnSettings } from './defaults/add-on-settings';
@@ -90,10 +90,10 @@ export class TinyMceConfigurator {
     // TODO: SPM - unsure if this actually does anything, as we already add all i18n?
     options = { ...options, ...TinyMceTranslations.getLanguageOptions(this.language) };
 
-    if (exp.isFeatureEnabled(FeatGuids.PasteWithFormatting))
+    if (exp.isFeatureEnabled(FeaturesGuidsConstants.PasteWithFormatting))
       options = { ...options, ...DefaultPaste.formattedText };
 
-    if (exp.isFeatureEnabled(FeatGuids.PasteImageFromClipboard))
+    if (exp.isFeatureEnabled(FeaturesGuidsConstants.PasteImageFromClipboard))
       options = { ...options, ...DefaultPaste.images(dropzone, adam) };
 
     if (this.reconfigure?.configureOptions) {

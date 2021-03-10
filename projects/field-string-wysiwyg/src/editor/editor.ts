@@ -1,7 +1,7 @@
 import { Subscription } from 'rxjs';
 import { Connector, EavCustomInputField } from '../../../edit-types';
 import { WysiwygReconfigure } from '../../../edit-types/src/WysiwygReconfigure';
-import { FeaturesGuidsConstants } from '../../../shared/features-guids.constants';
+import { FeaturesGuidsConstants } from '../../../edit/shared/constants';
 import { webpackConsoleLog } from '../../../shared/webpack-console-log.helper';
 import { TinyMceButtons } from '../config/buttons';
 import { TinyMceConfigurator } from '../config/tinymce-configurator';
