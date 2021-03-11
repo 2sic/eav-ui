@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { EavService } from '.';
+import { AdamItem } from '../../../edit-types';
 import { DnnBridgeComponent } from '../../eav-material-controls/input-types/dnn-bridge/dnn-bridge.component';
 import { DnnBridgeConnectorParams, DnnBridgeDialogData, DnnBridgeType } from '../../eav-material-controls/input-types/dnn-bridge/dnn-bridge.models';
 
@@ -32,6 +33,26 @@ export class DnnBridgeService {
 
   getUrlOfId(link: string, contentType: string, guid: string, field: string) {
     return this.http.get<string>(this.dnnContext.$2sxc.http.apiUrl('cms/edit/lookupLink'), {
+      params: {
+        link,
+        ...(guid && { guid }),
+        ...(contentType && { contentType }),
+        ...(field && { field }),
+        appid: this.eavService.eavConfig.appId.toString(),
+      }
+    });
+  }
+
+  /**
+   * New implementation returning richer object
+   * The new object has
+   * - Adam - a rich ADAM item with preview etc. (is null if the link was not able to resolve)
+   * - Value - just a string, in case the original link was not an ADAM or permissions didn't allow resolving
+   */
+  // TODO: SPM - pls update all code use to work with this from now on,
+  // then info @2dm so we can drop the old method in the backend
+  getLinkInfo(link: string, contentType: string, guid: string, field: string) {
+    return this.http.get<{ Adam: AdamItem, Value: string }>(this.dnnContext.$2sxc.http.apiUrl('cms/edit/linkInfo'), {
       params: {
         link,
         ...(guid && { guid }),
