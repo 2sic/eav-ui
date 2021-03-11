@@ -19,8 +19,7 @@ export class AssetsService {
   }
 
   create(path: string, global: boolean) {
-    return this.http.post<boolean>(
-      this.dnnContext.$2sxc.http.apiUrl(webApiAppFileCreate), {}, {
+    return this.http.post<boolean>(this.dnnContext.$2sxc.http.apiUrl(webApiAppFileCreate), {}, {
       params: { appId: this.eavService.eavConfig.appId.toString(), global: global.toString(), path }
     });
   }

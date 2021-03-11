@@ -141,7 +141,7 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
     const contentType = this.config.contentTypeId;
     const entityGuid = this.config.entityGuid;
     const field = this.config.fieldName;
-    this.dnnBridgeService.getUrlOfId(value, contentType, entityGuid, field).subscribe(path => {
+    this.dnnBridgeService.getLinkInfo(value, contentType, entityGuid, field).subscribe(path => {
       if (!path) { return; }
       this.fetchCache[value] = path;
       const isResolved = !this.isFileOrPage(path);
