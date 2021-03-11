@@ -1,5 +1,5 @@
 import { Adam, AdamPostResponse, Dropzone } from '../../../../edit-types';
-import { consoleLogWebpack } from '../../../../ng-dialogs/src/app/shared/helpers/console-log-webpack.helper';
+import { consoleLogWebpack } from '../../../../field-custom-gps/src/shared/console-log-webpack.helper';
 
 export class DefaultPaste {
 
