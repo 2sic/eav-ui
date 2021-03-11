@@ -7,7 +7,7 @@ import { map } from 'rxjs/operators';
 import { EavService } from '.';
 import { DnnBridgeComponent } from '../../eav-material-controls/input-types/dnn-bridge/dnn-bridge.component';
 import { DnnBridgeConnectorParams, DnnBridgeDialogData, DnnBridgeType } from '../../eav-material-controls/input-types/dnn-bridge/dnn-bridge.models';
-import { AdamLinkInfo } from '../models';
+import { LinkInfo } from '../models';
 
 @Injectable()
 export class DnnBridgeService {
@@ -34,7 +34,7 @@ export class DnnBridgeService {
   }
 
   getLinkInfo(link: string, contentType: string, guid: string, field: string): Observable<string> {
-    return this.http.get<AdamLinkInfo>(this.dnnContext.$2sxc.http.apiUrl('cms/edit/linkInfo'), {
+    return this.http.get<LinkInfo>(this.dnnContext.$2sxc.http.apiUrl('cms/edit/linkInfo'), {
       params: {
         link,
         ...(guid && { guid }),

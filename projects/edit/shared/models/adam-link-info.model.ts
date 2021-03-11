@@ -1,8 +1,8 @@
 import { AdamItem } from '../../../edit-types';
 
-export interface AdamLinkInfo {
-  /** Rich ADAM item with preview etc. (is null if the link was not able to resolve) */
-  Adam: AdamItem;
-  /** Just a string, in case the original link was not an ADAM or permissions didn't allow resolving */
+export interface LinkInfo {
+  /** Null if URL doesn't resolve to ADAM file (is page, external url or blocked by permissions) */
+  Adam?: AdamItem;
+  /** Resolved or original URL */
   Value: string;
 }
