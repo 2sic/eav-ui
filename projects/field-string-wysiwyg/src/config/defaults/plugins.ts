@@ -1,6 +1,4 @@
-/**
- * The default plugins we're activating on TinyMce
- */
+/** The default plugins we're activating on TinyMce */
 export const DefaultPlugins = [
   'code', // allow view / edit source
   // 'contextmenu', // right-click menu for things like insert, etc. spm built into tinymce core in v5

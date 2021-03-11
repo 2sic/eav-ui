@@ -1,10 +1,8 @@
 import { Adam } from '../../../edit-types';
 import { DnnBridgeConnectorParams, PagePickerResult } from '../../../edit/eav-material-controls/input-types/dnn-bridge/dnn-bridge.models';
-import { consoleLogWebpack } from '../../../ng-dialogs/src/app/shared/helpers/console-log-webpack.helper';
 import { FieldStringWysiwygEditor, wysiwygEditorTag } from '../editor/editor';
 import { loadCustomIcons } from '../editor/load-icons.helper';
 import { Guid } from '../shared/guid';
-// tslint:disable: curly
 
 /** Register all kinds of buttons on TinyMce */
 export class TinyMceButtons {
@@ -12,7 +10,7 @@ export class TinyMceButtons {
   static registerAll(fieldStringWysiwyg: FieldStringWysiwygEditor, editor: any, adam: Adam) {
     const instSettings = fieldStringWysiwyg.configurator.addOnSettings;
 
-    if (!instSettings.enabled) return;
+    if (!instSettings.enabled) { return; }
 
     registerTinyMceFormats(editor, instSettings.imgSizes);
 
@@ -34,7 +32,6 @@ export class TinyMceButtons {
 
     TinyMceButtons.headingButtons(editor);
 
-    consoleLogWebpack('buttons', editor.ui.registry.getAll());
     TinyMceButtons.headingsGroup(editor);
 
     TinyMceButtons.contentBlock(editor);
@@ -80,7 +77,6 @@ export class TinyMceButtons {
   }
 
   /** Button groups for links (simple and pro) with web-link, page-link, unlink, anchor */
-  // TODO: SPM this should be typed, and then it should be .adam.toggle
   static linksGroups(editor: any, fieldStringWysiwyg: FieldStringWysiwygEditor) {
     const linkButton = editor.ui.registry.getAll().buttons.link;
     const linkgroupItems = [
@@ -172,7 +168,7 @@ export class TinyMceButtons {
             icon: 'custom-image-dnn',
             value: (api: any) => { adam.toggle(true, true); },
           },
-          // note: all these use i18n from tinyMce standard
+          // note: all these use i18n from TinyMCE standard
           {
             ...imageButton,
             type: 'choiceitem',
@@ -316,10 +312,8 @@ export class TinyMceButtons {
   static headingButtons(editor: any) {
     // h1, h2, etc. buttons, inspired by http://blog.ionelmc.ro/2013/10/17/tinymce-formatting-toolbar-buttons/
     // note that the complex array is needed because auto-translate only happens if the string is identical
-    /*
-      custom p, H1-H6 only for the toolbar listpreview menu
-      [name, buttonCommand, tooltip, text, icon]
-    */
+    // custom p, H1-H6 only for the toolbar listpreview menu
+    // [name, buttonCommand, tooltip, text, icon]
     const isGerman = editor.settings.language === 'de';
     [['pre', 'Preformatted', 'Preformatted'],
     ['cp', 'p', 'Paragraph', 'Paragraph', 'custom-paragraph'],

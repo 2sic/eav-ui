@@ -1,4 +1,3 @@
-
 export class TinyMceToolbars {
 
   static build(contentBlocksEnabled: boolean, inlineMode: boolean, buttonSource: string, buttonAdvanced: string) {

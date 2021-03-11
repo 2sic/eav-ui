@@ -1,6 +1,4 @@
-// /**
-//  * Configuration to create a TinyMCE
-//  */
+// /** Configuration to create a TinyMCE */
 // export interface InitialConfig {
 //   // containerClass: string;
 //   // fixedToolbarClass: string;
@@ -13,7 +11,7 @@
 //   // imagesUploadUrl: string;
 //   // uploadHeaders: any;
 
-//   /** form inline mode (without expandable). Not to be confused with tinymce inline */
+//   /** Form inline mode (without expandable). Not to be confused with TinyMCE inline */
 //   // inlineMode: boolean;
 //   // buttonSource: string;
 //   // buttonAdvanced: string;

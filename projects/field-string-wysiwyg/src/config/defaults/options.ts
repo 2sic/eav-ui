@@ -1,5 +1,3 @@
-import { DefaultPlugins } from './plugins';
-
 export const DefaultOptions = {
   skin: 'oxide',
   theme: 'silver',

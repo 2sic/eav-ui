@@ -1,8 +1,7 @@
 // import { InitialConfig } from '../config/initial-config';
 // import { TinyMceTranslations } from '../config/translations';
-// import { DefaultPaste } from '../config/defaults/paste';
 // import { TinyMceToolbars } from '../config/toolbars';
-// import { DefaultOptions } from '../config/defaults/options';
+// import { DefaultOptions, DefaultPaste } from '../config/defaults';
 
 // export function getTinyOptions(config: InitialConfig) {
 

@@ -81,18 +81,14 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
     tinymce.init(tinyOptions);
   }
 
-  /**
-   * This will initialized an instance of an editor.
-   * Everything else is kind of global.
-   */
+  /** This will initialized an instance of an editor. Everything else is kind of global. */
   private tinyMceSetup(editor: any) {
     this.editor = editor;
     editor.on('init', (_event: any) => {
       consoleLogWebpack(`${wysiwygEditorTag} TinyMCE initialized`, editor);
       this.reconfigure?.editorOnInit?.(editor);
       TinyMceButtons.registerAll(this, editor, this.connector._experimental.adam);
-      // tslint:disable:curly
-      if (!this.reconfigure?.disableAdam) attachAdam(editor, this.connector._experimental.adam);
+      if (!this.reconfigure?.disableAdam) { attachAdam(editor, this.connector._experimental.adam); }
       this.observer = fixMenuPositions(this);
       // Shared subscriptions
       this.subscriptions.push(
@@ -125,7 +121,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
     editor.on('focus', (_event: any) => {
       this.classList.add('focused');
       consoleLogWebpack(`${wysiwygEditorTag} TinyMCE focused`, _event);
-      if (!this.reconfigure?.disableAdam) attachAdam(editor, this.connector._experimental.adam);
+      if (!this.reconfigure?.disableAdam) { attachAdam(editor, this.connector._experimental.adam); }
       if (this.pasteClipboardImage) {
         // When tiny is in focus, let it handle image uploads by removing image types from accepted files in dropzone.
         // Files will be handled by dropzone

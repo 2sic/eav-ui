@@ -33,7 +33,6 @@ export function translateLoaderFactoryCode(http: HttpClient) {
   return new TranslateLoaderWithErrorHandling(http, './i18n/code-editor.', `.js?${sxcVersion}`);
 }
 
-
 @NgModule({
   declarations: [
     CodeEditorComponent,

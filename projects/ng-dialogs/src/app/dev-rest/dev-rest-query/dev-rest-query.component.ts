@@ -3,7 +3,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, Observable, Subscription } from 'rxjs';
 import { map, share, switchMap } from 'rxjs/operators';
-import { GoToDevRest, fireOnStartAndWhenSubDialogCloses } from '..';
+import { fireOnStartAndWhenSubDialogCloses, GoToDevRest } from '..';
 import { PipelinesService } from '../../app-administration/services';
 import { PermissionsService } from '../../permissions/services/permissions.service';
 import { eavConstants } from '../../shared/constants/eav.constants';
@@ -30,7 +30,7 @@ export class DevRestQueryComponent implements OnDestroy {
     permissionsService: PermissionsService,
   ) {
 
-    // Build Query Stream
+    // build Query Stream
     const query$ = combineLatest([
       route.paramMap.pipe(map(pm => pm.get(GoToDevRest.paramQuery))),
       pipelinesService.getAll(eavConstants.contentTypes.query).pipe(share()),
@@ -39,19 +39,18 @@ export class DevRestQueryComponent implements OnDestroy {
       share()
     );
 
-    // Build Permissions Stream
-    // This is triggered on start and everything a sub-dialog closes
+    // build Permissions Stream. This is triggered on start and everything a sub-dialog closes
     const permissions$ = combineLatest([
       fireOnStartAndWhenSubDialogCloses(this.router, this.route),
       route.paramMap.pipe(map(pm => pm.get(GoToDevRest.paramQuery))),
     ]).pipe(
-      switchMap(([_, queryName])  => {
+      switchMap(([_, queryName]) => {
         return permissionsService.getAll(eavConstants.metadata.entity.type, eavConstants.keyTypes.guid, queryName);
       }),
       share()
     );
 
-    // Build variables for template
+    // build variables for template
     this.templateVars$ = combineLatest([query$, permissions$]).pipe(
       map(([query, permissions]) => ({ query, permissions })),
     );
