@@ -1,4 +1,4 @@
-export * from './adam-link-info.model';
+export * from './link-info.model';
 export * from './calculated-input-type.model';
 export * from './component-metadata.model';
 export * from './content-type-settings.model';
