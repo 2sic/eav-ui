@@ -9,17 +9,23 @@ import * as template from './preview.html';
 export const wysiwygPreviewTag = 'field-string-wysiwyg-preview';
 
 export class FieldStringWysiwygPreview extends HTMLElement implements EavCustomInputField<string> {
+  fieldInitialized: boolean;
   connector: Connector<string>;
+
   private subscription = new Subscription();
   private eventListeners: ElementEventListener[] = [];
 
   constructor() {
     super();
     consoleLogWebpack(`${wysiwygPreviewTag} constructor called`);
+    this.fieldInitialized = false;
   }
 
   connectedCallback() {
+    if (this.fieldInitialized) { return; }
+    this.fieldInitialized = true;
     consoleLogWebpack(`${wysiwygPreviewTag} connectedCallback called`);
+
     this.innerHTML = buildTemplate(template.default, styles.default);
     const previewContainer: HTMLDivElement = this.querySelector('.wysiwyg-preview');
     if (this.connector.field.disabled) {
@@ -49,7 +55,6 @@ export class FieldStringWysiwygPreview extends HTMLElement implements EavCustomI
   }
 }
 
-// only register the tag, if it has not been registered before
 if (!customElements.get(wysiwygPreviewTag)) {
   customElements.define(wysiwygPreviewTag, FieldStringWysiwygPreview);
 }

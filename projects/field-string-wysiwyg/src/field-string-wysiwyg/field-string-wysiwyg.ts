@@ -9,6 +9,7 @@ const wysiwygTag = 'field-string-wysiwyg';
 
 /** Acts like a switcher that decides whether to load preview or the editor  */
 class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<string> {
+  fieldInitialized: boolean;
   connector: Connector<string>;
   mode?: 'edit' | 'preview';
   reconfigure?: WysiwygReconfigure;
@@ -16,10 +17,14 @@ class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<stri
   constructor() {
     super();
     consoleLogWebpack(`${wysiwygTag} constructor called`);
+    this.fieldInitialized = false;
   }
 
   connectedCallback() {
+    if (this.fieldInitialized) { return; }
+    this.fieldInitialized = true;
     consoleLogWebpack(`${wysiwygTag} connectedCallback called`);
+
     this.innerHTML = `<style>${styles.default}</style>`;
     this.classList.add('wysiwyg-switcher');
 
@@ -61,7 +66,6 @@ class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<stri
   }
 }
 
-// only register the tag, if it has not been registered before
 if (!customElements.get(wysiwygTag)) {
   customElements.define(wysiwygTag, FieldStringWysiwyg);
 }

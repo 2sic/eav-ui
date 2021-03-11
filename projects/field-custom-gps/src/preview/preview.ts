@@ -6,7 +6,10 @@ import { buildTemplate, customGpsIcons, parseLatLng } from '../shared/helpers';
 import * as styles from './preview.css';
 import * as template from './preview.html';
 
+const gpsTag = 'field-custom-gps';
+
 class FieldCustomGps extends HTMLElement implements EavCustomInputField<string> {
+  fieldInitialized: boolean;
   connector: Connector<string>;
   latContainer: HTMLSpanElement;
   lngContainer: HTMLSpanElement;
@@ -15,11 +18,15 @@ class FieldCustomGps extends HTMLElement implements EavCustomInputField<string> 
 
   constructor() {
     super();
-    consoleLogWebpack('FieldCustomGps constructor called');
+    consoleLogWebpack(`${gpsTag} constructor called`);
+    this.fieldInitialized = false;
   }
 
   connectedCallback() {
-    consoleLogWebpack('FieldCustomGps connectedCallback called');
+    if (this.fieldInitialized) { return; }
+    this.fieldInitialized = true;
+    consoleLogWebpack(`${gpsTag} connectedCallback called`);
+
     this.innerHTML = buildTemplate(template.default, styles.default);
     const mapIconContainer = this.querySelector('#map-icon-container');
     mapIconContainer.innerHTML = customGpsIcons.mapMarker;
@@ -58,7 +65,7 @@ class FieldCustomGps extends HTMLElement implements EavCustomInputField<string> 
   }
 
   disconnectedCallback() {
-    consoleLogWebpack('FieldCustomGps disconnectedCallback called');
+    consoleLogWebpack(`${gpsTag} disconnectedCallback called`);
     this.eventListeners.forEach(evListener => {
       evListener.element.removeEventListener(evListener.type, evListener.listener);
     });
@@ -66,4 +73,6 @@ class FieldCustomGps extends HTMLElement implements EavCustomInputField<string> 
   }
 }
 
-customElements.define('field-custom-gps', FieldCustomGps);
+if (!customElements.get(gpsTag)) {
+  customElements.define(gpsTag, FieldCustomGps);
+}

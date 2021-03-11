@@ -20,9 +20,13 @@ const tinyMceBaseUrl = 'https://cdnjs.cloudflare.com/ajax/libs/tinymce/5.1.6';
 const translationBaseUrl = '../../system/field-string-wysiwyg';
 
 export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomInputField<string> {
+  fieldInitialized: boolean;
   connector: Connector<string>;
   mode?: 'inline' | 'normal';
   reconfigure?: WysiwygReconfigure;
+  /** Responsible for configuring tinymce */
+  configurator: TinyMceConfigurator;
+
   private instanceId: string;
   private containerClass: string;
   private toolbarContainerClass: string;
@@ -34,19 +38,20 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   private dialogIsOpen: boolean;
   private observer: MutationObserver;
 
-  /** The object that's responsible for configuring tinymce */
-  public configurator: TinyMceConfigurator;
-
   constructor() {
     super();
     consoleLogWebpack(`${wysiwygEditorTag} constructor called`);
+    this.fieldInitialized = false;
     this.instanceId = `${Math.floor(Math.random() * 99999)}`;
     this.containerClass = `tinymce-container-${this.instanceId}`;
     this.toolbarContainerClass = `tinymce-toolbar-container-${this.instanceId}`;
   }
 
   connectedCallback() {
+    if (this.fieldInitialized) { return; }
+    this.fieldInitialized = true;
     consoleLogWebpack(`${wysiwygEditorTag} connectedCallback called`);
+
     this.innerHTML = buildTemplate(template.default, styles.default + skinOverrides.default);
     this.querySelector('.tinymce-container').classList.add(this.containerClass);
     this.querySelector('.tinymce-toolbar-container').classList.add(this.toolbarContainerClass);
@@ -181,7 +186,6 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   }
 }
 
-// only register the tag, if it has not been registered before
 if (!customElements.get(wysiwygEditorTag)) {
   customElements.define(wysiwygEditorTag, FieldStringWysiwygEditor);
 }
