@@ -75,11 +75,12 @@ export class EditInitializerService implements OnDestroy {
     const currentLanguage = this.eavService.eavConfig.lang;
     const defaultLanguage = this.eavService.eavConfig.langPri;
     const languages = this.eavService.eavConfig.langs;
-    // Load language data only for parent dialog to not overwrite languages when opening child dialogs
-    if (isParentDialog) {
-      const isoLangCode = currentLanguage.split('-')[0];
-      this.translate.use(isoLangCode);
+    // WARNING! TranslateService is a new instance for every form and language must be set for every one of them
+    const isoLangCode = currentLanguage.split('-')[0];
+    this.translate.use(isoLangCode);
 
+    // load language data only for parent dialog to not overwrite languages when opening child dialogs
+    if (isParentDialog) {
       const eavLangs: Language[] = Object.entries(languages).map(([key, name]) => ({ key, name }));
       const sortedLanguages = sortLanguages(defaultLanguage, eavLangs);
       this.languageService.loadLanguages(sortedLanguages);
