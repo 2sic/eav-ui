@@ -68,6 +68,6 @@ export class ContentTypeWrapperComponent implements OnInit {
 
   openHistory() {
     const item = this.itemService.getItem(this.entityGuid);
-    this.router.navigate([`versions/${item.Entity.Guid}`], { relativeTo: this.route });
+    this.router.navigate([`versions/${item.Entity.Id}`], { relativeTo: this.route });
   }
 }
