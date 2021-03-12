@@ -8,7 +8,7 @@ import { filter, map, pairwise, startWith } from 'rxjs/operators';
 import { IdFieldComponent } from '../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
-import { eavConstants, EavMetadataKey } from '../shared/constants/eav.constants';
+import { eavConstants } from '../shared/constants/eav.constants';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 import { EditForm } from '../shared/models/edit-form.model';
 import { PermissionsActionsComponent } from './ag-grid-components/permissions-actions/permissions-actions.component';
@@ -101,13 +101,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   editPermission(params: CellClickedEvent) {
     let form: EditForm;
     if (params == null) {
-      let target: string;
-      const keys = Object.keys(eavConstants.metadata) as EavMetadataKey[];
-      for (const key of keys) {
-        if (eavConstants.metadata[key].type !== this.targetType) { continue; }
-        target = eavConstants.metadata[key].target;
-        break;
-      }
+      const target = Object.values(eavConstants.metadata).find(metaValue => metaValue.type === this.targetType)?.target;
       form = {
         items: [{
           ContentTypeName: eavConstants.contentTypes.permissions,

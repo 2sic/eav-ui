@@ -1,5 +1,5 @@
 import { EavFor } from '../../../../../edit/shared/models/eav';
-import { eavConstants, EavMetadataKey } from '../constants/eav.constants';
+import { eavConstants } from '../constants/eav.constants';
 import { AddItem, EditForm, EditItem, GroupItem, InnerItem } from '../models/edit-form.model';
 
 export function convertFormToUrl(form: EditForm) {
@@ -14,9 +14,8 @@ export function convertFormToUrl(form: EditForm) {
       formUrl += 'inner:' + innerItem.EntityId + ':' + innerItem.Field
         + ':' + innerItem.Parent + ':' + innerItem.Add + ':' + innerItem.Index;
       if (innerItem.Prefill) {
-        const keys = Object.keys(innerItem.Prefill);
-        for (const key of keys) {
-          formUrl += '&prefill:' + key + '~' + paramEncode(innerItem.Prefill[key].toString());
+        for (const [key, prefill] of Object.entries(innerItem.Prefill)) {
+          formUrl += '&prefill:' + key + '~' + paramEncode(prefill.toString());
         }
       }
     } else if ((item as EditItem).EntityId) {
@@ -51,20 +50,13 @@ export function convertFormToUrl(form: EditForm) {
             keyType = 'g';
             break;
         }
-        let target: string;
-        const metadataKeys = Object.keys(eavConstants.metadata) as EavMetadataKey[];
-        for (const metaKey of metadataKeys) {
-          if (addItem.Metadata.targetType !== eavConstants.metadata[metaKey].type) { continue; }
-          target = eavConstants.metadata[metaKey].target;
-          break;
-        }
+        const target = Object.values(eavConstants.metadata).find(metaValue => metaValue.type === addItem.Metadata.targetType)?.target;
         formUrl += '&for:' + keyType + '~' + paramEncode(addItem.Metadata.key) + ':' + target;
       }
 
       if (addItem.Prefill) {
-        const keys = Object.keys(addItem.Prefill);
-        for (const key of keys) {
-          formUrl += '&prefill:' + key + '~' + paramEncode(addItem.Prefill[key].toString());
+        for (const [key, prefill] of Object.values(addItem.Prefill)) {
+          formUrl += '&prefill:' + key + '~' + paramEncode(prefill.toString());
         }
       }
 
@@ -76,9 +68,8 @@ export function convertFormToUrl(form: EditForm) {
       const groupItem = item as GroupItem;
       formUrl += 'group:' + groupItem.Group.Guid + ':' + groupItem.Group.Index + ':' + groupItem.Group.Part + ':' + groupItem.Group.Add;
       if (groupItem.Prefill) {
-        const keys = Object.keys(groupItem.Prefill);
-        for (const key of keys) {
-          formUrl += '&prefill:' + key + '~' + paramEncode(groupItem.Prefill[key].toString());
+        for (const [key, prefill] of Object.values(groupItem.Prefill)) {
+          formUrl += '&prefill:' + key + '~' + paramEncode(prefill.toString());
         }
       }
     }

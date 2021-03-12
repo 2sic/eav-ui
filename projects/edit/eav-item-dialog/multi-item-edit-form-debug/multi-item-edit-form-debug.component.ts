@@ -1,10 +1,11 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { EavWindow } from '../../../ng-dialogs/src/app/shared/models/eav-window.model';
 import { ItemService } from '../../shared/store/ngrx-data';
 import { FormDebugTemplateVars } from './multi-item-edit-form-debug.models';
 
-declare const sxcVersion: string;
+declare const window: EavWindow;
 
 @Component({
   selector: 'app-multi-item-edit-form-debug',
@@ -14,7 +15,7 @@ declare const sxcVersion: string;
 export class MultiItemEditFormDebugComponent implements OnInit {
   @Output() private debugInfoOpened = new EventEmitter<boolean>();
 
-  sxcVer = sxcVersion.substring(0, sxcVersion.lastIndexOf('.'));
+  sxcVer = window.sxcVersion.substring(0, window.sxcVersion.lastIndexOf('.'));
   showDebugInfo = false;
   templateVars$: Observable<FormDebugTemplateVars>;
 

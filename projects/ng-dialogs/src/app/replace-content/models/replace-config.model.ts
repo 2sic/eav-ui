@@ -5,5 +5,5 @@ export class ReplaceConfig {
 }
 
 export class ReplaceConfigItems {
-  [key: number]: string;
+  [key: string]: string;
 }

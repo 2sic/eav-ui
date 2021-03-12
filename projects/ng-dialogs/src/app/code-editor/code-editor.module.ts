@@ -10,6 +10,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { EavWindow } from '../shared/models/eav-window.model';
 import { Context } from '../shared/services/context';
 import { DialogService } from '../shared/services/dialog.service';
 import { SharedComponentsModule } from '../shared/shared-components.module';
@@ -25,12 +26,12 @@ import { SortItemsPipe } from './code-templates/order-items.pipe';
 import { SnippetsService } from './services/snippets.service';
 import { SourceService } from './services/source.service';
 
-declare const sxcVersion: string;
+declare const window: EavWindow;
 
 // AoT requires an exported function for factories
 // at least according to https://github.com/ngx-translate/http-loader
 export function translateLoaderFactoryCode(http: HttpClient) {
-  return new TranslateLoaderWithErrorHandling(http, './i18n/code-editor.', `.js?${sxcVersion}`);
+  return new TranslateLoaderWithErrorHandling(http, './i18n/code-editor.', `.js?${window.sxcVersion}`);
 }
 
 @NgModule({

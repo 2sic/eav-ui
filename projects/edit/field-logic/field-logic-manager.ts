@@ -1,10 +1,7 @@
+import { EavWindow } from '../../ng-dialogs/src/app/shared/models/eav-window.model';
 import { FieldLogicBase } from './field-logic-base';
 
-interface EavProps {
-  eavFieldLogicManager: FieldLogicManager;
-}
-
-type EavWindow = typeof window & EavProps;
+declare const window: EavWindow;
 
 export class FieldLogicManager {
   private logics: { [key: string]: FieldLogicBase } = {};
@@ -12,11 +9,10 @@ export class FieldLogicManager {
   private constructor() { }
 
   static singleton(): FieldLogicManager {
-    const eavWindow = window as EavWindow;
-    if (eavWindow.eavFieldLogicManager == null) {
-      eavWindow.eavFieldLogicManager = new FieldLogicManager();
+    if (window.eavFieldLogicManager == null) {
+      window.eavFieldLogicManager = new FieldLogicManager();
     }
-    return eavWindow.eavFieldLogicManager;
+    return window.eavFieldLogicManager;
   }
 
   /** Add settings logic */

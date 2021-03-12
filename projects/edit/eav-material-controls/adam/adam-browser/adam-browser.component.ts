@@ -285,9 +285,9 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
     const startDisabled = this.config.isExternal;
     const oldConfig = (this.adamConfig$.value != null) ? this.adamConfig$.value : new AdamConfigInstance(startDisabled);
     const newConfig = new AdamConfigInstance(startDisabled);
-    const newConfigKeys = Object.keys(newConfig);
-    for (const key of newConfigKeys) {
-      (newConfig as any)[key] = ((config as any)[key] != null) ? (config as any)[key] : (oldConfig as any)[key];
+
+    for (const key of Object.keys(newConfig)) {
+      (newConfig as any)[key] = (config as any)[key] ?? (oldConfig as any)[key];
     }
 
     // fixes

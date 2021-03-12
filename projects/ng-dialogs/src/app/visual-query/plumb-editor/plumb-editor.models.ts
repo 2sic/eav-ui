@@ -1,5 +1,7 @@
 import { PipelineDataSource } from '../models/pipeline.model';
 
+export type PlumbType = any;
+
 export interface PlumbEditorTemplateModel {
   pipelineDataSources: PipelineDataSource[];
   typeInfos: TypeInfos;

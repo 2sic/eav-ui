@@ -79,13 +79,13 @@ export class ReplaceContentComponent implements OnInit, OnDestroy {
 
   private getConfig() {
     this.contentGroupService.getItems(this.item$.value).subscribe(replaceConfig => {
-      const options: ReplaceOption[] = [];
-      const itemKeys = Object.keys(replaceConfig.Items);
-      for (const key of itemKeys) {
-        const nKey = parseInt(key, 10);
-        const itemName = replaceConfig.Items[nKey];
-        options.push({ label: `${itemName} (${nKey})`, value: nKey });
-      }
+      const options = Object.entries(replaceConfig.Items).map(([itemId, itemName]) => {
+        const option: ReplaceOption = {
+          label: `${itemName} (${itemId})`,
+          value: parseInt(itemId, 10),
+        };
+        return option;
+      });
       this.options$.next(options);
       // don't set the ID if dialog should be in add-mode
       if (!this.item$.value.id && !this.item$.value.add) {

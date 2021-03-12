@@ -1,4 +1,4 @@
-import { JsInfo, SxcRoot } from '@2sic.com/2sxc-typings';
+import { JsInfo } from '@2sic.com/2sxc-typings';
 import { Injector } from '@angular/core';
 import { Router } from '@angular/router';
 import { UrlHelpers } from '../../../edit/shared/helpers/url.helpers';
@@ -6,11 +6,12 @@ import { DialogTypeConstants } from './shared/constants/dialog-types.constants';
 // tslint:disable-next-line:max-line-length
 import { keyApi, keyAppId, keyContentType, keyDialog, keyItems, keyPipelineId, keyRequestToken, keyTabId, keyUrl, keyZoneId, prefix } from './shared/constants/session.constants';
 import { convertFormToUrl } from './shared/helpers/url-prep.helper';
+import { EavWindow } from './shared/models/eav-window.model';
 import { EditForm, EditItem, GroupItem } from './shared/models/edit-form.model';
 
-declare const $2sxc: SxcRoot;
+declare const window: EavWindow;
 
-export function paramsInitFactory(injector: Injector) {
+export function paramsInitFactory(injector: Injector): () => void {
   return () => {
     console.log('Setting parameters config and clearing route');
     const eavKeys = Object.keys(sessionStorage).filter(key => key.startsWith(prefix));
@@ -27,11 +28,10 @@ export function paramsInitFactory(injector: Injector) {
       // save params
       const urlHash = window.location.hash.substring(1); // substring removes first # char
       const queryParametersFromUrl = UrlHelpers.readQueryStringParameters(urlHash);
-      const paramKeys = Object.keys(queryParametersFromUrl);
-      for (const key of paramKeys) {
-        const value = queryParametersFromUrl[key];
-        if (value == null) { continue; }
-        sessionStorage.setItem(prefix + key, value);
+
+      for (const [paramKey, paramValue] of Object.entries(queryParametersFromUrl)) {
+        if (paramValue == null) { continue; }
+        sessionStorage.setItem(prefix + paramKey, paramValue);
       }
 
       // redirect
@@ -93,7 +93,7 @@ export function paramsInitFactory(injector: Injector) {
         default:
           alert(`Cannot open unknown dialog "${dialog}"`);
           try {
-            (window.parent as any).$2sxc.totalPopup.close();
+            window.parent.$2sxc.totalPopup.close();
           } catch (error) { }
       }
     } else if (eavKeys.length === 0) {
@@ -114,5 +114,5 @@ function loadEnvironment() {
     rvt: sessionStorage.getItem(keyRequestToken),
     api: sessionStorage.getItem(keyApi),
   };
-  $2sxc.env.load(jsInfo as JsInfo);
+  window.$2sxc.env.load(jsInfo as JsInfo);
 }

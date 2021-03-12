@@ -34,7 +34,7 @@ export class ConnectorHelper {
   ) {
     this.control = this.group.controls[this.config.fieldName];
 
-    this.customEl = document.createElement(this.customElName) as any;
+    this.customEl = document.createElement(this.customElName) as EavCustomInputField<any>;
     this.customEl.connector = this.buildConnector();
     this.customElContainerRef.nativeElement.appendChild(this.customEl);
   }

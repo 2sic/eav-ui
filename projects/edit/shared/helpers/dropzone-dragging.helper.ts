@@ -1,7 +1,8 @@
 import { NgZone } from '@angular/core';
+import { EavWindow } from '../../../ng-dialogs/src/app/shared/models/eav-window.model';
 import { ElementEventListener } from '../models';
-declare const draggingClass: string;
-declare const windowBodyTimeouts: number[];
+
+declare const window: EavWindow;
 
 export class DropzoneDraggingHelper {
   private eventListeners: ElementEventListener[] = [];
@@ -20,11 +21,11 @@ export class DropzoneDraggingHelper {
       );
 
       function dragoverListener() {
-        clearTimeouts(windowBodyTimeouts); // clear timeouts from global array of timeouts which clear draggingClass from body
-        document.body.classList.add(draggingClass);
+        clearTimeouts(window.windowBodyTimeouts); // clear timeouts from global array of timeouts which clear draggingClass from body
+        document.body.classList.add(window.draggingClass);
       }
       function dropListener() {
-        document.body.classList.remove(draggingClass);
+        document.body.classList.remove(window.draggingClass);
       }
       function clearTimeouts(timeoutsArray: number[]) {
         for (const timeout of timeoutsArray) {

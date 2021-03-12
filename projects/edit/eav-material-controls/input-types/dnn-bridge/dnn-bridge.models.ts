@@ -20,3 +20,7 @@ export interface PagePickerResult {
   id: string;
   name: string;
 }
+
+export type DnnBridgeIframe = (typeof window | HTMLIFrameElement) & {
+  connectBridge(connector: DnnBridgeConnector): void;
+};

@@ -12,8 +12,8 @@ export class FieldStringWysiwygPreview extends HTMLElement implements EavCustomI
   fieldInitialized: boolean;
   connector: Connector<string>;
 
-  private subscription = new Subscription();
-  private eventListeners: ElementEventListener[] = [];
+  private subscription: Subscription;
+  private eventListeners: ElementEventListener[];
 
   constructor() {
     super();
@@ -25,6 +25,9 @@ export class FieldStringWysiwygPreview extends HTMLElement implements EavCustomI
     if (this.fieldInitialized) { return; }
     this.fieldInitialized = true;
     consoleLogWebpack(`${wysiwygPreviewTag} connectedCallback called`);
+
+    this.subscription = new Subscription();
+    this.eventListeners = [];
 
     this.innerHTML = buildTemplate(template.default, styles.default);
     const previewContainer: HTMLDivElement = this.querySelector('.wysiwyg-preview');
@@ -49,9 +52,7 @@ export class FieldStringWysiwygPreview extends HTMLElement implements EavCustomI
     this.eventListeners.forEach(listener => {
       listener.element.removeEventListener(listener.type, listener.listener);
     });
-    this.eventListeners = null;
     this.subscription.unsubscribe();
-    this.subscription = null;
   }
 }
 

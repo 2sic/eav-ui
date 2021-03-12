@@ -1,10 +1,12 @@
+import { EavWindow } from '../../shared/models/eav-window.model';
 import { DataSource } from '../models/data-sources.model';
 import { PipelineResult } from '../models/pipeline-result.model';
 import { PipelineDataSource, PipelineModel, StreamWire, VisualDesignerData } from '../models/pipeline.model';
+import { PlumbType } from './plumb-editor.models';
+
+declare const window: EavWindow;
 
 export const dataSrcIdPrefix = 'dataSource_';
-type PlumbType = any;
-declare const jsPlumb: PlumbType;
 
 export class Plumber {
   private instance: PlumbType;
@@ -36,7 +38,7 @@ export class Plumber {
     /** Workaround for multiple dblClick listeners */
     private plumbInits: number,
   ) {
-    this.instance = jsPlumb.getInstance(this.getInstanceDefaults(this.jsPlumbRoot));
+    this.instance = window.jsPlumb.getInstance(this.getInstanceDefaults(this.jsPlumbRoot));
     this.instance.batch(() => {
       this.initDomDataSources();
       this.initWirings();

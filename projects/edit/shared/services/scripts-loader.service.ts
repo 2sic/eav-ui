@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { EavService } from '.';
+import { EavWindow } from '../../../ng-dialogs/src/app/shared/models/eav-window.model';
 import { UrlHelpers } from '../helpers';
 
-declare const sxcVersion: string;
+declare const window: EavWindow;
 
 export enum FileTypeConstants {
   CSS = '.css',
@@ -56,7 +57,7 @@ export class ScriptsLoaderService {
       callback();
       return;
     }
-    file.path = file.path + '?sxcver=' + sxcVersion; // break cache
+    file.path = file.path + '?sxcver=' + window.sxcVersion; // break cache
 
     const existing = this.loadedFiles.find(loadedFile => loadedFile.path === file.path);
     if (existing) {

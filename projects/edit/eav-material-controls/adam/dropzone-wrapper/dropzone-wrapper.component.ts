@@ -110,9 +110,8 @@ export class DropzoneWrapperComponent extends BaseComponent<any> implements Fiel
       : new DropzoneConfigInstance(startDisabled, url, headers);
     const newConfig = new DropzoneConfigInstance(startDisabled, url, headers);
 
-    const newConfigKeys = Object.keys(newConfig);
-    for (const key of newConfigKeys) {
-      (newConfig as any)[key] = ((config as any)[key] != null) ? (config as any)[key] : (oldConfig as any)[key];
+    for (const key of Object.keys(newConfig)) {
+      (newConfig as any)[key] = (config as any)[key] ?? (oldConfig as any)[key];
     }
 
     // fixes
@@ -130,9 +129,9 @@ export class DropzoneWrapperComponent extends BaseComponent<any> implements Fiel
     this.dropzoneConfig$.next(newConfig);
   }
 
-  private uploadFile(file: File) {
+  private uploadFile(file: File & { upload?: { chunked: boolean; }; }) {
     const dropzone = this.dropzoneRef.dropzone();
-    (file as any).upload = { chunked: dropzone.defaultOptions.chunking };
+    file.upload = { chunked: dropzone.defaultOptions.chunking };
     dropzone.processFile(file);
   }
 

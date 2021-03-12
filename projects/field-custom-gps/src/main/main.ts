@@ -23,7 +23,7 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
   lngFieldName: string;
   lngInput: HTMLInputElement;
   map: google.maps.Map;
-  mapApiUrl = mapsApiUrl();
+  mapApiUrl: string;
   mapContainer: HTMLDivElement;
   marker: google.maps.Marker;
 
@@ -33,14 +33,16 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
     super();
     consoleLogWebpack(`${gpsDialogTag} constructor called`);
     this.fieldInitialized = false;
-    this.eventListeners = [];
-    this.subscription = new Subscription();
   }
 
   connectedCallback() {
     if (this.fieldInitialized) { return; }
     this.fieldInitialized = true;
     consoleLogWebpack(`${gpsDialogTag} connectedCallback called`);
+
+    this.eventListeners = [];
+    this.subscription = new Subscription();
+    this.mapApiUrl = mapsApiUrl();
 
     this.innerHTML = buildTemplate(template.default, styles.default);
     this.latInput = this.querySelector('#lat');
@@ -158,10 +160,8 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
 
   disconnectedCallback() {
     consoleLogWebpack(`${gpsDialogTag} disconnectedCallback called`);
-    if (!!(window as any).google) {
-      google.maps.event.clearInstanceListeners(this.marker);
-      google.maps.event.clearInstanceListeners(this.map);
-    }
+    google?.maps.event.clearInstanceListeners(this.marker);
+    google?.maps.event.clearInstanceListeners(this.map);
 
     this.eventListeners.forEach(eventListener => {
       const element = eventListener.element;
@@ -170,7 +170,6 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
       element.removeEventListener(type, listener);
     });
     this.subscription.unsubscribe();
-    this.subscription = null;
   }
 }
 

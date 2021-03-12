@@ -1,11 +1,11 @@
-import { SxcRoot } from '@2sic.com/2sxc-typings';
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BehaviorSubject } from 'rxjs';
+import { EavWindow } from '../../shared/models/eav-window.model';
 import { SxcInsightsService } from '../services/sxc-insights.service';
 
-declare const $2sxc: SxcRoot;
+declare const window: EavWindow;
 
 @Component({
   selector: 'app-sxc-insights',
@@ -28,7 +28,7 @@ export class SxcInsightsComponent implements OnInit, OnDestroy {
   }
 
   openInsights() {
-    window.open($2sxc.http.apiUrl('sys/insights/help'), '_blank');
+    window.open(window.$2sxc.http.apiUrl('sys/insights/help'), '_blank');
   }
 
   activatePageLog(form: NgForm) {
