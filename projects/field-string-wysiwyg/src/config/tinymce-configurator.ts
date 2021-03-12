@@ -2,6 +2,7 @@ import { Connector } from '../../../edit-types';
 import { WysiwygReconfigure } from '../../../edit-types/src/WysiwygReconfigure';
 import { FeaturesConstants } from '../../../edit/shared/constants';
 import * as contentStyle from '../editor/tinymce-content.css';
+import { TinyType } from '../shared/models';
 import { DefaultAddOnSettings, DefaultOptions, DefaultPaste, DefaultPlugins } from './defaults';
 import { TinyMceToolbars } from './toolbars';
 import { TinyMceTranslations } from './translations';
@@ -16,7 +17,7 @@ export class TinyMceConfigurator {
   /** Standard constructor */
   constructor(
     /** TinyMCE editorManager - in charge of buttons, i18n etc. */
-    public editorManager: any,
+    public editorManager: TinyType,
     private connector: Connector<any>,
     /** Reconfiguration object - which can optionally change/extend/enhance stuff */
     private reconfigure: WysiwygReconfigure,
@@ -56,7 +57,7 @@ export class TinyMceConfigurator {
   }
 
   /** Construct TinyMce options */
-  buildOptions(containerClass: string, fixedToolbarClass: string, inlineMode: boolean, setup: (editor: any) => any) {
+  buildOptions(containerClass: string, fixedToolbarClass: string, inlineMode: boolean, setup: (editor: TinyType) => void) {
     const connector = this.connector;
     const exp = connector._experimental;
     const buttonSource = connector.field.settings.ButtonSource;

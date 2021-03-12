@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import { distinctUntilChanged, startWith } from 'rxjs/operators';
 import { EavCustomInputField, ExperimentalProps, FieldConfig } from '../../../../../../edit-types';
 import { FieldConfigSet } from '../../../../../eav-dynamic-form/model/field-config';
+import { FieldValue } from '../../../../../eav-item-dialog/item-edit-form/item-edit-form.models';
 import { InputFieldHelpers } from '../../../../../shared/helpers';
 import { DnnBridgeService, EavService, EditRoutingService, FieldsSettingsService } from '../../../../../shared/services';
 import { ContentTypeService, FeatureService, InputTypeService } from '../../../../../shared/store/ngrx-data';
@@ -134,7 +135,7 @@ export class ConnectorHelper {
     });
   }
 
-  private updateControl(control: AbstractControl, value: any) {
+  private updateControl(control: AbstractControl, value: FieldValue) {
     if (control == null || control.disabled) { return; }
 
     if (control.value !== value) { control.patchValue(value); }

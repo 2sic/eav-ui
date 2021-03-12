@@ -5,6 +5,7 @@ import { InputTypeName } from './InputTypeName';
 import { Dropzone } from './Dropzone';
 import { Adam } from './Adam';
 import { DnnBridgeConnectorParams } from '../../edit/eav-material-controls/input-types/dnn-bridge/dnn-bridge.models';
+import { FieldValue } from '../../edit/eav-item-dialog/item-edit-form/item-edit-form.models';
 
 export interface ExperimentalProps {
   entityGuid: string;
@@ -15,7 +16,7 @@ export interface ExperimentalProps {
   dropzone: Dropzone;
   adam: Adam;
 
-  updateField(name: string, value: any): void;
+  updateField(name: string, value: FieldValue): void;
   setFocused(focused: boolean): void;
   isFeatureEnabled(guid: string): boolean;
   openPagePicker(params: DnnBridgeConnectorParams, callback: (value: any) => void): void;

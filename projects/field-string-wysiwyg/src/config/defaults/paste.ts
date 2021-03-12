@@ -1,5 +1,6 @@
 import { Adam, AdamPostResponse, Dropzone } from '../../../../edit-types';
 import { consoleLogWebpack } from '../../../../field-custom-gps/src/shared/console-log-webpack.helper';
+import { TinyType } from '../../shared/models';
 
 export class DefaultPaste {
 
@@ -16,10 +17,10 @@ export class DefaultPaste {
     paste_convert_headers_to_strong: false,
     paste_remove_spans: true,
     paste_remove_styles: true,
-    paste_preprocess(e: any, args: any) {
+    paste_preprocess(e: TinyType, args: TinyType) {
       consoleLogWebpack('paste preprocess', e, args);
     },
-    paste_postprocess(plugin: any, args: any) {
+    paste_postprocess(plugin: TinyType, args: TinyType) {
       try {
         const anchors = args.node.getElementsByTagName('a');
         for (const anchor of anchors) {
@@ -41,13 +42,19 @@ export class DefaultPaste {
       paste_data_images: true,
       paste_filter_drop: false,
       paste_block_drop: false,
-      images_upload_handler: (blobInfo: any, success: (imgPath: string) => any, failure: () => any) => {
+      images_upload_handler: (blobInfo: TinyType, success: (imgPath: string) => any, failure: () => any) => {
         DefaultPaste.imagesUploadHandler(blobInfo, success, failure, dropzone, adam);
       },
     };
   }
 
-  private static imagesUploadHandler(blobInfo: any, success: (imgPath: string) => any, failure: () => any, dropzone: Dropzone, adam: Adam) {
+  private static imagesUploadHandler(
+    blobInfo: TinyType,
+    success: (imgPath: string) => any,
+    failure: () => any,
+    dropzone: Dropzone,
+    adam: Adam,
+  ) {
     consoleLogWebpack('TinyMCE upload');
 
     const formData = new FormData();

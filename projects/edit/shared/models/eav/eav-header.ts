@@ -1,4 +1,5 @@
 import { EavEntity, EavFor, EavGroupAssignment } from '.';
+import { ObjectModel } from '..';
 
 export interface EavHeader {
   Add: boolean;
@@ -10,6 +11,6 @@ export interface EavHeader {
   Guid: string;
   Index: number;
   Metadata: EavEntity[];
-  Prefill: { [key: string]: any };
+  Prefill: ObjectModel<any>;
   Title: string;
 }

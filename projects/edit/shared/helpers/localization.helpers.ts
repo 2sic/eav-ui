@@ -147,7 +147,7 @@ export class LocalizationHelpers {
   static updateAttributeValue(
     allAttributes: EavEntityAttributes,
     attributeKey: string,
-    updateValue: any,
+    updateValue: FieldValue,
     existingLanguageKey: string,
     defaultLanguage: string,
     isReadOnly: boolean,
@@ -216,7 +216,7 @@ export class LocalizationHelpers {
   static addAttributeDimension(
     allAttributes: EavEntityAttributes,
     attributeKey: string,
-    newDimensionValue: any,
+    newDimensionValue: string,
     existingDimensionValue: string,
     defaultLanguage: string,
     isReadOnly: boolean,

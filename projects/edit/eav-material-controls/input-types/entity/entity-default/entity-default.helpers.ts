@@ -32,24 +32,20 @@ export function calculateSelectedEntities(
   return selectedEntities;
 }
 
-/** convert string value in string array if a value is type string */
-export function convertValueToArray(value: any, separator: string): string[] {
+/** Convert string value in string array if a value is type string */
+export function convertValueToArray(value: string | string[], separator: string): string[] {
   if (!value) { return []; }
 
-  if (value instanceof Array) {
-    return value;
-  } else {
-    return (value as string).split(separator);
-  }
+  if (Array.isArray(value)) { return value; }
+
+  return (value).split(separator);
 }
 
-/** convert string array value in string value if a value is type array */
-export function convertArrayToString(value: any, separator: string): string {
+/** Convert string array value in string value if a value is type array */
+export function convertArrayToString(value: string | string[], separator: string): string {
   if (!value) { return ''; }
 
-  if (value instanceof Array) {
-    return value.join(separator);
-  } else {
-    return value as string;
-  }
+  if (Array.isArray(value)) { return value.join(separator); }
+
+  return value;
 }

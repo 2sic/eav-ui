@@ -1,3 +1,4 @@
+import { ObjectModel } from '../../../../../edit/shared/models';
 import { PermissionsCount } from '../../app-administration/models/permissions-count.model';
 import { InputType } from './input-type.model';
 
@@ -15,14 +16,10 @@ export class Field {
 }
 
 export class FieldMetadata {
-  All: FieldMetadataKey;
-  [key: string]: FieldMetadataKey;
+  All: ObjectModel<any>;
+  [key: string]: ObjectModel<any>;
   /** Merged metadata from other keys */
-  merged: FieldMetadataKey;
-}
-
-export class FieldMetadataKey {
-  [key: string]: any;
+  merged: ObjectModel<any>;
 }
 
 export class FieldInputTypeOption {

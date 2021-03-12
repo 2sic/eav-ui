@@ -1,4 +1,5 @@
 import { TranslateService } from '@ngx-translate/core';
+import { TinyType } from '../shared/models';
 
 export class TinyMceTranslations {
   // default language
@@ -25,9 +26,9 @@ export class TinyMceTranslations {
   }
 
   /** Add translations to TinyMCE. Call after TinyMCE is initialized */
-  static addTranslations(language: string, translateService: TranslateService, editorManager: any) {
+  static addTranslations(language: string, translateService: TranslateService, editorManager: TinyType) {
     const keys = [];
-    const mceTranslations: any = {};
+    const mceTranslations: TinyType = {};
 
     // find all relevant keys by querying the primary language
     const all = translateService.translations[TinyMceTranslations.defaultLanguage];

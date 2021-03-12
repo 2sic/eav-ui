@@ -9,6 +9,7 @@ import { TinyMceConfigurator } from '../config/tinymce-configurator';
 import { TinyMceTranslations } from '../config/translations';
 import { attachAdam } from '../connector/adam';
 import { buildTemplate } from '../shared/helpers';
+import { TinyType } from '../shared/models';
 import * as styles from './editor.css';
 import * as template from './editor.html';
 import { fixMenuPositions } from './fix-menu-positions.helper';
@@ -34,7 +35,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   private subscriptions: Subscription[] = [];
   private editorContent: string; // saves editor content to prevent slow update when first using editor
   private pasteClipboardImage: boolean;
-  private editor: any;
+  private editor: TinyType;
   private firstInit: boolean;
   private dialogIsOpen: boolean;
   private observer: MutationObserver;
@@ -78,7 +79,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
     this.configurator = new TinyMceConfigurator(window.tinymce, this.connector, this.reconfigure);
     this.pasteClipboardImage = this.connector._experimental.isFeatureEnabled(FeaturesConstants.PasteImageFromClipboard);
     const tinyOptions = this.configurator.buildOptions(
-      this.containerClass, this.toolbarContainerClass, this.mode === 'inline', this.tinyMceSetup.bind(this)
+      this.containerClass, this.toolbarContainerClass, this.mode === 'inline', this.tinyMceSetup.bind(this),
     );
     this.firstInit = true;
     if (window.tinymce.baseURL !== tinyMceBaseUrl) { window.tinymce.baseURL = tinyMceBaseUrl; }
@@ -88,9 +89,9 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   }
 
   /** This will initialized an instance of an editor. Everything else is kind of global. */
-  private tinyMceSetup(editor: any) {
+  private tinyMceSetup(editor: TinyType) {
     this.editor = editor;
-    editor.on('init', (_event: any) => {
+    editor.on('init', (_event: TinyType) => {
       consoleLogWebpack(`${wysiwygEditorTag} TinyMCE initialized`, editor);
       this.reconfigure?.editorOnInit?.(editor);
       TinyMceButtons.registerAll(this, editor, this.connector._experimental.adam);
@@ -119,12 +120,12 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
     });
 
     // called after tinymce editor is removed
-    editor.on('remove', (_event: any) => {
+    editor.on('remove', (_event: TinyType) => {
       consoleLogWebpack(`${wysiwygEditorTag} TinyMCE removed`, _event);
       this.clearData();
     });
 
-    editor.on('focus', (_event: any) => {
+    editor.on('focus', (_event: TinyType) => {
       this.classList.add('focused');
       consoleLogWebpack(`${wysiwygEditorTag} TinyMCE focused`, _event);
       if (!this.reconfigure?.disableAdam) { attachAdam(editor, this.connector._experimental.adam); }
@@ -138,7 +139,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
       }
     });
 
-    editor.on('blur', (_event: any) => {
+    editor.on('blur', (_event: TinyType) => {
       this.classList.remove('focused');
       consoleLogWebpack(`${wysiwygEditorTag} TinyMCE blurred`, _event);
       if (this.pasteClipboardImage) {

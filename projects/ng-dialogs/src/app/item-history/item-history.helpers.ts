@@ -131,16 +131,8 @@ function calcChangeType(currentValue: any, previousValue: any, sortObjectKeys = 
   return change;
 }
 
-function sortKeysAlphabetically(obj: object) {
+function sortKeysAlphabetically(obj: { [key: string]: any }): { [key: string]: any } {
   if (typeof obj !== 'object') { return obj; }
 
-  return Object.keys(obj)
-    .sort()
-    .reduce(
-      (acc, key) => ({
-        ...acc,
-        [key]: (obj as any)[key],
-      }),
-      {},
-    );
+  return Object.keys(obj).sort().reduce((acc, key) => ({ ...acc, [key]: obj[key] }), {});
 }

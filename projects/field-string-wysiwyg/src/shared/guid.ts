@@ -34,7 +34,7 @@ export class Guid {
   // Private array of chars to use
   private static CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
 
-  public static uuid(len?: any, radix?: any) {
+  public static uuid(len?: number, radix?: number) {
     // tslint:disable
     var chars = Guid.CHARS, uuid = [], i;
     radix = radix || chars.length;
