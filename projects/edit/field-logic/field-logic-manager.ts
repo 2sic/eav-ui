@@ -1,10 +1,11 @@
+import { Dictionary } from '../../ng-dialogs/src/app/shared/models/dictionary.model';
 import { EavWindow } from '../../ng-dialogs/src/app/shared/models/eav-window.model';
 import { FieldLogicBase } from './field-logic-base';
 
 declare const window: EavWindow;
 
 export class FieldLogicManager {
-  private logics: { [key: string]: FieldLogicBase } = {};
+  private logics: Dictionary<FieldLogicBase> = {};
 
   private constructor() { }
 

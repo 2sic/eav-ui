@@ -9,10 +9,6 @@ export interface IconOption {
   label: string;
 }
 
-export interface LoadedIcons {
-  [key: string]: boolean;
-}
-
 export interface StringFontIconPickerTemplateVars extends BaseFieldTemplateVars {
   value: string;
   filteredIcons: IconOption[];

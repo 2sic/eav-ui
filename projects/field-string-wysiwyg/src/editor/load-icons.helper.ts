@@ -22,9 +22,10 @@ import * as file from '../../../edit/assets/icons/font-awesome/file.svg';
 import * as sitemap from '../../../edit/assets/icons/font-awesome/sitemap.svg';
 import * as school from '../../../edit/assets/icons/google-material/baseline-school-24px.svg';
 import * as paragraph from '../../../edit/assets/icons/tinymce/paragraph.svg';
+import { Dictionary } from '../../../ng-dialogs/src/app/shared/models/dictionary.model';
 import { TinyType } from '../shared/models';
 
-const customTinyMceIcons: { [key: string]: string } = {
+const customTinyMceIcons: Dictionary<string> = {
   'custom-anchor': anchor.default,
   'custom-content-block': contentBlock.default,
   'custom-file': file.default,
