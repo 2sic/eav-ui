@@ -8,22 +8,36 @@ export interface AdamItem {
   Name: string;
   ParentId: number;
   Path: string;
-  /** Only available on files, not folders */
+  /**
+   * Only available on files, not folders
+   */
   PreviewUrl?: string;
   ReferenceId: string;
   Size: number;
-  /** Only available on files, not folders */
+  /**
+   * Only available on files, not folders
+   */
   ThumbnailUrl?: string;
   Type: string;
-  /** Only available on files, not folders */
+  /**
+   * Only available on files, not folders
+   */
   Url?: string;
 
-  /** Template helper */
+  /**
+   * Template helper
+   */
   _metadataContentType?: string;
-  /** Template helper */
+  /**
+   * Template helper
+   */
   _icon?: string;
-  /** Template helper */
+  /**
+   * Template helper
+   */
   _isMaterialIcon?: boolean;
-  /** Template helper */
+  /**
+   * Template helper
+   */
   _displaySize?: string;
 }

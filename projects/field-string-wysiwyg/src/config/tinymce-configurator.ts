@@ -1,5 +1,5 @@
 import { Connector } from '../../../edit-types';
-import { WysiwygReconfigure } from '../../../edit-types/src/WysiwygReconfigure';
+import { WysiwygReconfigure } from '../../../edit-types';
 import { FeaturesConstants } from '../../../edit/shared/constants';
 import * as contentStyle from '../editor/tinymce-content.css';
 import { TinyType } from '../shared/models';

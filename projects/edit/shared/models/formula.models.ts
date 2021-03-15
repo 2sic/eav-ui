@@ -1,4 +1,5 @@
-import { FieldValue, FormValues } from '../../eav-item-dialog/item-edit-form/item-edit-form.models';
+import { FieldValue } from '../../../edit-types';
+import { FormValues } from '../../eav-item-dialog/item-edit-form/item-edit-form.models';
 
 export interface FormulaContext {
   data: FormulaCtxData;

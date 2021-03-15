@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 import { Connector, ConnectorData, ExperimentalProps, FieldConfig } from '../../../../../../../edit-types';
-import { ConnectorDialog } from '../../../../../../../edit-types/src/ConnectorDialog';
+import { ConnectorDialog } from '../../../../../../../edit-types';
 import { loadScripts } from '../../../../../../../ng-dialogs/src/app/shared/helpers/load-scripts.helper';
 import { EavWindow } from '../../../../../../../ng-dialogs/src/app/shared/models/eav-window.model';
 import { UrlHelpers } from '../../../../../../shared/helpers';
@@ -11,7 +11,7 @@ declare const window: EavWindow;
 export class ConnectorInstance<T = any> implements Connector<T> {
   field$: Observable<FieldConfig>;
   data: ConnectorData<T>;
-  dialog: ConnectorDialog<T>;
+  dialog: ConnectorDialog;
   loadScript: (...args: any[]) => void;
 
   constructor(
@@ -88,7 +88,7 @@ export class ConnectorDataInstance<T> implements ConnectorData<T> {
   }
 }
 
-export class ConnectorDialogInstance<T> implements ConnectorDialog<T> {
+export class ConnectorDialogInstance<T> implements ConnectorDialog {
   open: (componentTag?: string) => void;
   close: () => void;
 

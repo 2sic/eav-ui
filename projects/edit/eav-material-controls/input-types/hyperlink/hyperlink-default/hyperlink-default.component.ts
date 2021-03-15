@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { AdamItem, AdamPostResponse } from '../../../../../edit-types';
+import { AdamItem, AdamPostResponse, DnnBridgeConnectorParams } from '../../../../../edit-types';
 import { FieldSettings } from '../../../../../edit-types';
 import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
 import { PrefetchLinks } from '../../../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.models';
@@ -10,7 +10,7 @@ import { DnnBridgeService, EavService, EditRoutingService, FieldsSettingsService
 import { PrefetchService } from '../../../../shared/store/ngrx-data';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { BaseComponent } from '../../base/base.component';
-import { DnnBridgeConnectorParams, PagePickerResult } from '../../dnn-bridge/dnn-bridge.models';
+import { PagePickerResult } from '../../dnn-bridge/dnn-bridge.models';
 import { HyperlinkDefaultLogic } from './hyperlink-default-logic';
 import { HyperlinkDefaultTemplateVars, Preview } from './hyperlink-default.models';
 

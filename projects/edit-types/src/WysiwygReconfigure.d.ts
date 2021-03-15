@@ -1,40 +1,36 @@
-import { TinyType } from '../../field-string-wysiwyg/src/shared/models';
 import { AddOnSettings } from './AddOnSettings';
 
-
 export interface WysiwygReconfigure {
-
+  /**
+   * Just booleans to disable various features
+   */
+  disablePagePicker?: boolean;
+  /**
+   * Just booleans to disable various features
+   */
+  disableAdam?: boolean;
   /**
    * Very early call to configure the editorManager of tinyMCE
    */
-  initManager?(editorManager: TinyType): void;
-
+  initManager?(editorManager: any): void;
   /**
    * Add translations to the editor manager - fairly early in the lifecycle
    */
-  addTranslations?(editorManager: TinyType, currentLanguage: string): void;
-
+  addTranslations?(editorManager: any, currentLanguage: string): void;
   /**
    * Configure
    */
   configureAddOns(addOnSettings: AddOnSettings): AddOnSettings;
-
   /**
    * Review / modify the options after they have been completely initialized and expanded
    */
-  configureOptions?(options: TinyType): TinyType;
-
+  configureOptions?(options: any): any;
   /**
-   * called when the editor was created, but before we added events etc.
+   * Called when the editor was created, but before we added events etc.
    */
-  editorOnInit?(editor: TinyType): void;
-
+  editorOnInit?(editor: any): void;
   /**
-   * called after the form has prepared the editor
+   * Called after the form has prepared the editor
    */
-  configureEditor?(editor: TinyType): void;
-
-  // Just booleans to disable various features
-  disablePagePicker?: boolean;
-  disableAdam?: boolean;
+  configureEditor?(editor: any): void;
 }

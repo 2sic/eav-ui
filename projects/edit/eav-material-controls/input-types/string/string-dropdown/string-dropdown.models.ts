@@ -1,9 +1,5 @@
+import { DropdownOption } from '../../../../../edit-types';
 import { BaseFieldTemplateVars } from '../../base/base-field-template-vars.model';
-
-export interface DropdownOption {
-  label: string;
-  value: string;
-}
 
 export interface StringDropdownTemplateVars extends BaseFieldTemplateVars {
   label: string;

@@ -1,7 +1,6 @@
-import { FieldSettings, InputTypeName } from '../../../edit-types';
+import { FieldSettings, FieldValue, InputTypeName } from '../../../edit-types';
 import { InputTypeConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { InputType } from '../../../ng-dialogs/src/app/content-type-fields/models/input-type.model';
-import { FieldValue } from '../../eav-item-dialog/item-edit-form/item-edit-form.models';
 import { WrappersConstants } from '../constants/wrappers.constants';
 import { CalculatedInputType } from '../models';
 import { EavContentTypeAttribute, EavHeader, EavItem } from '../models/eav';
