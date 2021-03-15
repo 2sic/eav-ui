@@ -18,7 +18,7 @@ declare const window: EavWindow;
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DialogEntryComponent implements OnInit, OnDestroy {
-  private dialogData: Dictionary<any>;
+  private dialogData: Dictionary;
   private dialogRef: MatDialogRef<any>;
 
   constructor(

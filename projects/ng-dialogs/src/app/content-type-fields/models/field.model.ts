@@ -16,10 +16,10 @@ export class Field {
 }
 
 export class FieldMetadata {
-  All: Dictionary<any>;
-  [key: string]: Dictionary<any>;
+  All: Dictionary;
+  [key: string]: Dictionary;
   /** Merged metadata from other keys */
-  merged: Dictionary<any>;
+  merged: Dictionary;
 }
 
 export class FieldInputTypeOption {

@@ -39,7 +39,7 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
   modules = AllCommunityModules;
   gridOptions: GridOptions = {
     ...defaultGridOptions,
-    getRowClass(params: any) {
+    getRowClass(params) {
       const field: Field = params.data;
       return field.InputType === InputTypeConstants.EmptyDefault ? 'group-row' : '';
     },

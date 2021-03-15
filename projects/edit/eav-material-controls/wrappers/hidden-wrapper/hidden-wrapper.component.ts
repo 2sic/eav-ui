@@ -12,7 +12,7 @@ import { ValidationMessagesService } from '../../validators/validation-messages-
   styleUrls: ['./hidden-wrapper.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class HiddenWrapperComponent extends BaseComponent<any> implements FieldWrapper, OnInit, OnDestroy {
+export class HiddenWrapperComponent extends BaseComponent implements FieldWrapper, OnInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
 
   hidden$: Observable<boolean>;

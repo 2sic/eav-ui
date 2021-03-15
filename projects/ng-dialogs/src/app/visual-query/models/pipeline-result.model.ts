@@ -25,7 +25,7 @@ export interface PipelineResultSources {
 }
 
 export interface PipelineResultSourceValue {
-  Configuration: Dictionary<any>;
+  Configuration: Dictionary;
   Error: boolean;
   Guid: string;
   Type: string;

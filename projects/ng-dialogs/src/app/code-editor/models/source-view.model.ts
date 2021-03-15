@@ -10,7 +10,7 @@ export class SourceView {
   IsSafe: boolean;
   LocationScope: string;
   Name: string;
-  Streams: Dictionary<any>;
+  Streams: Dictionary;
   Type: string;
   TypeContent: string;
   TypeContentPresentation: string;

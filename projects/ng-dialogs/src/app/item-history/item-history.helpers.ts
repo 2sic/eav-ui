@@ -132,7 +132,7 @@ function calcChangeType(currentValue: any, previousValue: any, sortObjectKeys = 
   return change;
 }
 
-function sortKeysAlphabetically(obj: Dictionary<any>): Dictionary<any> {
+function sortKeysAlphabetically(obj: Dictionary): Dictionary {
   if (typeof obj !== 'object') { return obj; }
 
   return Object.keys(obj).sort().reduce((acc, key) => ({ ...acc, [key]: obj[key] }), {});

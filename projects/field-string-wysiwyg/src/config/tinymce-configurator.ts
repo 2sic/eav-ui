@@ -18,7 +18,7 @@ export class TinyMceConfigurator {
   constructor(
     /** TinyMCE editorManager - in charge of buttons, i18n etc. */
     public editorManager: TinyType,
-    private connector: Connector<any>,
+    private connector: Connector<string>,
     /** Reconfiguration object - which can optionally change/extend/enhance stuff */
     private reconfigure: WysiwygReconfigure,
   ) {

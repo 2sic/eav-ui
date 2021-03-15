@@ -13,7 +13,7 @@ export class FieldsSettingsHelpers {
   static mergeSettings<T>(metadataItems: EavEntity[], currentLanguage: string, defaultLanguage: string): T {
     if (metadataItems == null) { return {} as T; }
 
-    const merged: Dictionary<any> = {};
+    const merged: Dictionary = {};
     // copy metadata settings which are not @All
     for (const item of metadataItems) {
       if (item.Type.Id === '@All') { continue; }

@@ -4,8 +4,8 @@ import { FormValues } from '../../eav-item-dialog/item-edit-form/item-edit-form.
 export class GeneralHelpers {
 
   static objectsEqual<T>(x: T, y: T): boolean {
-    const obj1 = x as Dictionary<any>;
-    const obj2 = y as Dictionary<any>;
+    const obj1 = x as Dictionary;
+    const obj2 = y as Dictionary;
 
     const keys1 = Object.keys(obj1);
     const keys2 = Object.keys(obj2);

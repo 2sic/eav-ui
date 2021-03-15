@@ -11,6 +11,6 @@ export interface EavHeader {
   Guid: string;
   Index: number;
   Metadata: EavEntity[];
-  Prefill: Dictionary<any>;
+  Prefill: Dictionary;
   Title: string;
 }

@@ -1,4 +1,4 @@
-import { ActionReducer, ActionReducerMap, MetaReducer, } from '@ngrx/store';
+import { Action, ActionReducer, ActionReducerMap, MetaReducer, } from '@ngrx/store';
 import { consoleLogAngular } from '../../../../ng-dialogs/src/app/shared/helpers/console-log-angular.helper';
 import { environment } from '../../../../ng-dialogs/src/environments/environment';
 
@@ -8,7 +8,7 @@ export interface EavState {
 
 /** Console log all actions */
 export function logger(reducer: ActionReducer<EavState>): ActionReducer<EavState> {
-  return (state: EavState, action: any): EavState => {
+  return (state: EavState, action: Action): EavState => {
     consoleLogAngular('[STORE] state:', state, 'action:', action);
     return reducer(state, action);
   };
@@ -19,7 +19,7 @@ export function logger(reducer: ActionReducer<EavState>): ActionReducer<EavState
  * the root meta-reducer. To add more meta-reducers, provide an array of meta-reducers
  * that will be composed to form the root meta-reducer.
  */
-export const metaReducers: MetaReducer<any>[] = !environment.production
+export const metaReducers: MetaReducer[] = !environment.production
   ? [logger]
   : [];
 

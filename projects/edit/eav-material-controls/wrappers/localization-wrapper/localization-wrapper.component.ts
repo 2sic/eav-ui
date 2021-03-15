@@ -13,7 +13,7 @@ import { ValidationMessagesService } from '../../validators/validation-messages-
   styleUrls: ['./localization-wrapper.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class LocalizationWrapperComponent extends BaseComponent<any> implements FieldWrapper, OnInit, OnDestroy {
+export class LocalizationWrapperComponent extends BaseComponent implements FieldWrapper, OnInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild(TranslateMenuComponent) private translateMenu: TranslateMenuComponent;
 

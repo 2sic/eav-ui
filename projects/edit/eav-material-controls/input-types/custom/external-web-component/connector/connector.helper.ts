@@ -14,7 +14,7 @@ import { ConnectorHost, ConnectorInstance } from './models/connector-instance.mo
 
 export class ConnectorHelper {
   private control: AbstractControl;
-  private customEl: EavCustomInputField<any>;
+  private customEl: EavCustomInputField;
   private subscription = new Subscription();
 
   constructor(
@@ -35,7 +35,7 @@ export class ConnectorHelper {
   ) {
     this.control = this.group.controls[this.config.fieldName];
 
-    this.customEl = document.createElement(this.customElName) as EavCustomInputField<any>;
+    this.customEl = document.createElement(this.customElName) as EavCustomInputField;
     this.customEl.connector = this.buildConnector();
     this.customElContainerRef.nativeElement.appendChild(this.customEl);
   }
@@ -65,7 +65,7 @@ export class ConnectorHelper {
       startWith(this.control.value),
       distinctUntilChanged(),
     );
-    const connector = new ConnectorInstance<any>(connectorHost, value$, fieldConfig, experimental, this.eavService.eavConfig);
+    const connector = new ConnectorInstance(connectorHost, value$, fieldConfig, experimental, this.eavService.eavConfig);
     this.subscription.add(
       this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).subscribe(settings => {
         connector.field.settings = settings;
@@ -78,7 +78,7 @@ export class ConnectorHelper {
   }
 
   private calculateRegularProps() {
-    const connectorHost: ConnectorHost<any> = {
+    const connectorHost: ConnectorHost = {
       update: (value) => {
         this.zone.run(() => { this.updateControl(this.control, value); });
       },

@@ -8,7 +8,7 @@ import { EavConfig } from '../../../../../../shared/models';
 
 declare const window: EavWindow;
 
-export class ConnectorInstance<T> implements Connector<T> {
+export class ConnectorInstance<T = any> implements Connector<T> {
   field$: Observable<FieldConfig>;
   data: ConnectorData<T>;
   dialog: ConnectorDialog<T>;
@@ -25,9 +25,9 @@ export class ConnectorInstance<T> implements Connector<T> {
     this.dialog = new ConnectorDialogInstance<T>(_connectorHost);
 
     this.loadScript = (
-      testOrScripts: string | (() => any) | { test: string | (() => any); src: string }[],
-      srcOrCallback: string | (() => any),
-      callback?: () => any,
+      testOrScripts: string | (() => boolean) | { test: string | (() => boolean); src: string }[],
+      srcOrCallback: string | (() => void),
+      callback?: () => void,
     ) => {
       // one script (3 parameters: global or test, script url and a callback)
       if (
@@ -99,7 +99,7 @@ export class ConnectorDialogInstance<T> implements ConnectorDialog<T> {
 }
 
 /** Props and methods available to the connector to communicate with the host */
-export interface ConnectorHost<T> {
+export interface ConnectorHost<T = any> {
   update: (value: T) => void;
   expand: (expand: boolean, componentTag?: string) => void;
 }

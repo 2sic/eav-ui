@@ -311,7 +311,7 @@ export class TinyMceButtons {
 
   /** Headings Buttons */
   static headingButtons(editor: TinyType) {
-    // h1, h2, etc. buttons, inspired by http://blog.ionelmc.ro/2013/10/17/tinymce-formatting-toolbar-buttons/
+    // h1, h2, etc. buttons, inspired by https://blog.ionelmc.ro/2013/10/17/tinymce-formatting-toolbar-buttons/
     // note that the complex array is needed because auto-translate only happens if the string is identical
     // custom p, H1-H6 only for the toolbar listpreview menu
     // [name, buttonCommand, tooltip, text, icon]

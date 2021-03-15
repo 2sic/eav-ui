@@ -17,7 +17,7 @@ import { DropzoneConfigInstance, DropzoneType } from './dropzone-wrapper.models'
   styleUrls: ['./dropzone-wrapper.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DropzoneWrapperComponent extends BaseComponent<any> implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
+export class DropzoneWrapperComponent extends BaseComponent implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild(DropzoneDirective) dropzoneRef: DropzoneDirective;
 

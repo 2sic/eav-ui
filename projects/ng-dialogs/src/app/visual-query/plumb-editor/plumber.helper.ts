@@ -27,7 +27,7 @@ export class Plumber {
     '#76608a', '#a0522d',
   ];
   private maxCols = this.lineColors.length - 1;
-  private uuidColorMap: Dictionary<any> = {};
+  private uuidColorMap: Dictionary = {};
   private bulkDelete = false;
 
   constructor(

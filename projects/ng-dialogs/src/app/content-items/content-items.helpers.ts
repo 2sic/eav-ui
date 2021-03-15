@@ -12,7 +12,7 @@ export function buildFilterModel(urlFilters: string) {
     urlFilters = atob(urlFilters);
   }
 
-  let parsed: Dictionary<any>;
+  let parsed: Dictionary;
   try {
     parsed = JSON.parse(urlFilters);
   } catch (error) {

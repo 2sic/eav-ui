@@ -31,7 +31,7 @@ export class EntityDefaultListComponent {
     return item.value;
   }
 
-  drop(event: CdkDragDrop<any[]>) {
+  drop(event: CdkDragDrop<SelectedEntity[]>) {
     moveItemInArray(this.selectedEntities, event.previousIndex, event.currentIndex);
     const reorderIndexes: ReorderIndexes = {
       previousIndex: event.previousIndex,
