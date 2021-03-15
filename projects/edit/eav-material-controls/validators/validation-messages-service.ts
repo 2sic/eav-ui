@@ -1,7 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { Subject } from 'rxjs';
-import { ObjectModel } from '../../../ng-dialogs/src/app/shared/models/dictionary.model';
+import { Dictionary } from '../../../ng-dialogs/src/app/shared/models/dictionary.model';
 import { FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
 
 @Injectable()
@@ -10,7 +10,7 @@ export class ValidationMessagesService implements OnDestroy {
   refreshTouched$ = new Subject<AbstractControl>();
   refreshDirty$ = new Subject<AbstractControl>();
 
-  private validationMessages: ObjectModel<(config: FieldConfigSet) => string> = {
+  private validationMessages: Dictionary<(config: FieldConfigSet) => string> = {
     required: (config: FieldConfigSet) => {
       return config ? 'ValidationMessage.Required' : `ValidationMessage.RequiredShort`; // short version in toaster
     },
@@ -37,8 +37,8 @@ export class ValidationMessagesService implements OnDestroy {
   }
 
   /** Marks controls as touched to show errors beneath controls and collects error messages */
-  validateForm(form: FormGroup): ObjectModel<string> {
-    const errors: ObjectModel<string> = {};
+  validateForm(form: FormGroup): Dictionary<string> {
+    const errors: Dictionary<string> = {};
     for (const [controlKey, control] of Object.entries(form.controls)) {
       this.markAsTouched(control);
 

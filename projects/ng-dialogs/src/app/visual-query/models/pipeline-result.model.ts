@@ -1,4 +1,4 @@
-import { ObjectModel } from '../../shared/models/dictionary.model';
+import { Dictionary } from '../../shared/models/dictionary.model';
 
 export interface PipelineResult {
   Query: PipelineResultQuery;
@@ -25,7 +25,7 @@ export interface PipelineResultSources {
 }
 
 export interface PipelineResultSourceValue {
-  Configuration: ObjectModel<any>;
+  Configuration: Dictionary<any>;
   Error: boolean;
   Guid: string;
   Type: string;

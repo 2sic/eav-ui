@@ -1,5 +1,5 @@
 import { FormControl, ValidationErrors, ValidatorFn } from '@angular/forms';
-import { ObjectModel } from '../../../ng-dialogs/src/app/shared/models/dictionary.model';
+import { Dictionary } from '../../../ng-dialogs/src/app/shared/models/dictionary.model';
 import { UrlHelpers } from '../../shared/helpers';
 import { AdamControl } from '../input-types/hyperlink/hyperlink-library/hyperlink-library.models';
 
@@ -7,7 +7,7 @@ export class CustomValidators {
 
   /** Validate url chars */
   static onlySimpleUrlChars(allowPath: boolean, trimEnd: boolean): ValidationErrors {
-    return (control: FormControl): ObjectModel<boolean> => {
+    return (control: FormControl): Dictionary<boolean> => {
       const cleanInputValue = UrlHelpers.stripNonUrlCharacters(control.value, allowPath, trimEnd);
       return (cleanInputValue === control.value) ? null : { onlySimpleUrlChars: true };
     };
@@ -15,7 +15,7 @@ export class CustomValidators {
 
   // create a static method for your validation
   static validateDecimals(decimals: number): ValidatorFn {
-    return (control: FormControl): ObjectModel<boolean> => {
+    return (control: FormControl): Dictionary<boolean> => {
       // first check if the control has a value
       if (control.value) {
         // match the control value against the regular expression
@@ -29,7 +29,7 @@ export class CustomValidators {
   }
 
   static validateAdam(): ValidatorFn {
-    return (control: FormControl & AdamControl): ObjectModel<boolean> => {
+    return (control: FormControl & AdamControl): Dictionary<boolean> => {
       if (control.adamItems == null) { return { required: true }; }
 
       if (control.adamItems === 0) {

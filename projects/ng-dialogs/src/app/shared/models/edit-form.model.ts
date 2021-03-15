@@ -1,5 +1,5 @@
 import { EavFor } from '../../../../../edit/shared/models/eav';
-import { ObjectModel } from './dictionary.model';
+import { Dictionary } from './dictionary.model';
 
 /** Type for edit form. To add new item send newItem and to edit existing item send editItems */
 export class EditForm {
@@ -18,14 +18,14 @@ export class AddItem {
   /** @deprecated 2sxc 9 Metadata object */
   Metadata?: LegacyMetadata;
   /** Prefill form with data */
-  Prefill?: ObjectModel<string>;
+  Prefill?: Dictionary<string>;
   /** Prefill form with data from another entity */
   DuplicateEntity?: number;
 }
 
 export class GroupItem {
   Group: GroupItemGroup;
-  Prefill?: ObjectModel<string>;
+  Prefill?: Dictionary<string>;
 }
 
 export class GroupItemGroup {
@@ -41,7 +41,7 @@ export class InnerItem {
   Field: string;
   Index: number;
   Parent: string;
-  Prefill?: ObjectModel<string>;
+  Prefill?: Dictionary<string>;
 }
 
 export class SourceItem {

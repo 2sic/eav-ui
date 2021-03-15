@@ -1,5 +1,5 @@
 import { PermissionsCount } from '../../app-administration/models/permissions-count.model';
-import { ObjectModel } from '../../shared/models/dictionary.model';
+import { Dictionary } from '../../shared/models/dictionary.model';
 import { InputType } from './input-type.model';
 
 export class Field {
@@ -16,10 +16,10 @@ export class Field {
 }
 
 export class FieldMetadata {
-  All: ObjectModel<any>;
-  [key: string]: ObjectModel<any>;
+  All: Dictionary<any>;
+  [key: string]: Dictionary<any>;
   /** Merged metadata from other keys */
-  merged: ObjectModel<any>;
+  merged: Dictionary<any>;
 }
 
 export class FieldInputTypeOption {

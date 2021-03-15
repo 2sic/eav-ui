@@ -1,4 +1,4 @@
-import { ObjectModel } from '../../shared/models/dictionary.model';
+import { Dictionary } from '../../shared/models/dictionary.model';
 
 export class SourceView {
   AppId: number;
@@ -10,7 +10,7 @@ export class SourceView {
   IsSafe: boolean;
   LocationScope: string;
   Name: string;
-  Streams: ObjectModel<any>;
+  Streams: Dictionary<any>;
   Type: string;
   TypeContent: string;
   TypeContentPresentation: string;

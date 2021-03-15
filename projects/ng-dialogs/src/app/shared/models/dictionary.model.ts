@@ -1,3 +1,3 @@
-export interface ObjectModel<T> {
+export interface Dictionary<T> {
   [key: string]: T;
 }

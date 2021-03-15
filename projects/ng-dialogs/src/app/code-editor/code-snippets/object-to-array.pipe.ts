@@ -1,9 +1,9 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { ObjectModel } from '../../shared/models/dictionary.model';
+import { Dictionary } from '../../shared/models/dictionary.model';
 
 @Pipe({ name: 'objectToArray' })
 export class ObjectToArrayPipe implements PipeTransform {
-  transform(obj: ObjectModel<any> | ObjectModel<any>[]): ObjectModel<any>[] {
+  transform(obj: Dictionary<any> | Dictionary<any>[]): Dictionary<any>[] {
 
     if (Array.isArray(obj)) { return obj; }
 

@@ -1,11 +1,11 @@
-import { ObjectModel } from '../../../ng-dialogs/src/app/shared/models/dictionary.model';
+import { Dictionary } from '../../../ng-dialogs/src/app/shared/models/dictionary.model';
 import { FormValues } from '../../eav-item-dialog/item-edit-form/item-edit-form.models';
 
 export class GeneralHelpers {
 
   static objectsEqual<T>(x: T, y: T): boolean {
-    const obj1 = x as ObjectModel<any>;
-    const obj2 = y as ObjectModel<any>;
+    const obj1 = x as Dictionary<any>;
+    const obj2 = y as Dictionary<any>;
 
     const keys1 = Object.keys(obj1);
     const keys2 = Object.keys(obj2);
