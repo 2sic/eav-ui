@@ -1,4 +1,4 @@
-import { ObjectModel } from '../shared/models/object.model';
+import { ObjectModel } from '../shared/models/dictionary.model';
 import { CompareWith } from './models/compare-with.model';
 import { HistoryAttribute, HistoryAttributeValue, HistoryItem } from './models/history-item.model';
 import { Version, VersionEntityAttributeValues, VersionJsonParsed } from './models/version.model';

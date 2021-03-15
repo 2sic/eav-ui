@@ -1,7 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { Subject } from 'rxjs';
-import { ObjectModel } from '../../../ng-dialogs/src/app/shared/models/object.model';
+import { ObjectModel } from '../../../ng-dialogs/src/app/shared/models/dictionary.model';
 import { FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
 
 @Injectable()

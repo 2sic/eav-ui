@@ -5,8 +5,8 @@ import { take } from 'rxjs/operators';
 import { NavigateFormResult } from '../../../../../../edit/shared/models';
 import { consoleLogAngular } from '../../helpers/console-log-angular.helper';
 import { DialogConfig } from '../../models/dialog-config.model';
+import { ObjectModel } from '../../models/dictionary.model';
 import { EavWindow } from '../../models/eav-window.model';
-import { ObjectModel } from '../../models/object.model';
 import { Context } from '../../services/context';
 
 declare const window: EavWindow;

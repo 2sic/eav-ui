@@ -3,7 +3,7 @@ import { FieldLogicManager } from '../../../../../edit/field-logic/field-logic-m
 import { TinyType } from '../../../../../field-string-wysiwyg/src/shared/models';
 import { Ace } from '../../code-editor/ace-editor/ace.model';
 import { PlumbType } from '../../visual-query/plumb-editor/plumb-editor.models';
-import { ObjectModel } from './object.model';
+import { ObjectModel } from './dictionary.model';
 
 interface EavWindowProps {
   ace: Ace;

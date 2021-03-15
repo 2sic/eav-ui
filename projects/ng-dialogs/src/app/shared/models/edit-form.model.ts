@@ -1,5 +1,5 @@
 import { EavFor } from '../../../../../edit/shared/models/eav';
-import { ObjectModel } from './object.model';
+import { ObjectModel } from './dictionary.model';
 
 /** Type for edit form. To add new item send newItem and to edit existing item send editItems */
 export class EditForm {

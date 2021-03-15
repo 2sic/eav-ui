@@ -1,5 +1,5 @@
 import { EavEntity, EavFor, EavGroupAssignment } from '.';
-import { ObjectModel } from '../../../../ng-dialogs/src/app/shared/models/object.model';
+import { ObjectModel } from '../../../../ng-dialogs/src/app/shared/models/dictionary.model';
 
 export interface EavHeader {
   Add: boolean;

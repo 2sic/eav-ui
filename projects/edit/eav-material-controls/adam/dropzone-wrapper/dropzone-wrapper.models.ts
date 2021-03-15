@@ -1,5 +1,5 @@
 import { DropzoneConfigExt } from '../../../../edit-types';
-import { ObjectModel } from '../../../../ng-dialogs/src/app/shared/models/object.model';
+import { ObjectModel } from '../../../../ng-dialogs/src/app/shared/models/dictionary.model';
 
 export type DropzoneType = any;
 

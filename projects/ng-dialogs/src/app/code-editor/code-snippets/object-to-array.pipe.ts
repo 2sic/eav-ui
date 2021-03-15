@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { ObjectModel } from '../../shared/models/object.model';
+import { ObjectModel } from '../../shared/models/dictionary.model';
 
 @Pipe({ name: 'objectToArray' })
 export class ObjectToArrayPipe implements PipeTransform {

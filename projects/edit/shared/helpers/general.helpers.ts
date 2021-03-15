@@ -1,4 +1,4 @@
-import { ObjectModel } from '../../../ng-dialogs/src/app/shared/models/object.model';
+import { ObjectModel } from '../../../ng-dialogs/src/app/shared/models/dictionary.model';
 import { FormValues } from '../../eav-item-dialog/item-edit-form/item-edit-form.models';
 
 export class GeneralHelpers {

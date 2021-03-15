@@ -1,5 +1,5 @@
 import { FormControl, ValidationErrors, ValidatorFn } from '@angular/forms';
-import { ObjectModel } from '../../../ng-dialogs/src/app/shared/models/object.model';
+import { ObjectModel } from '../../../ng-dialogs/src/app/shared/models/dictionary.model';
 import { UrlHelpers } from '../../shared/helpers';
 import { AdamControl } from '../input-types/hyperlink/hyperlink-library/hyperlink-library.models';
 

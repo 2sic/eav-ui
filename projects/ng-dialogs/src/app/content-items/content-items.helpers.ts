@@ -1,6 +1,6 @@
 import { NumberFilterModel, TextFilterModel } from '@ag-grid-community/all-modules';
 import { BooleanFilterModel } from '../shared/components/boolean-filter/boolean-filter.model';
-import { ObjectModel } from '../shared/models/object.model';
+import { ObjectModel } from '../shared/models/dictionary.model';
 import { PubMetaFilterModel } from './ag-grid-components/pub-meta-filter/pub-meta-filter.model';
 import { AgGridFilterModel } from './models/ag-grid-filter.model';
 

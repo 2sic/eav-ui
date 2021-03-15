@@ -1,4 +1,4 @@
-import { ObjectModel } from '../../shared/models/object.model';
+import { ObjectModel } from '../../shared/models/dictionary.model';
 
 export interface PipelineResult {
   Query: PipelineResultQuery;

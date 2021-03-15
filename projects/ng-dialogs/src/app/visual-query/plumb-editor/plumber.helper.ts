@@ -1,5 +1,5 @@
+import { ObjectModel } from '../../shared/models/dictionary.model';
 import { EavWindow } from '../../shared/models/eav-window.model';
-import { ObjectModel } from '../../shared/models/object.model';
 import { DataSource } from '../models/data-sources.model';
 import { PipelineResult } from '../models/pipeline-result.model';
 import { PipelineDataSource, PipelineModel, StreamWire, VisualDesignerData } from '../models/pipeline.model';
