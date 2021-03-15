@@ -1,9 +1,9 @@
 import { SxcRoot } from '@2sic.com/2sxc-typings';
 import { FieldLogicManager } from '../../../../../edit/field-logic/field-logic-manager';
-import { ObjectModel } from '../../../../../edit/shared/models';
 import { TinyType } from '../../../../../field-string-wysiwyg/src/shared/models';
 import { Ace } from '../../code-editor/ace-editor/ace.model';
 import { PlumbType } from '../../visual-query/plumb-editor/plumb-editor.models';
+import { ObjectModel } from './object.model';
 
 interface EavWindowProps {
   ace: Ace;

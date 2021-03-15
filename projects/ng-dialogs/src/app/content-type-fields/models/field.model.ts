@@ -1,5 +1,5 @@
-import { ObjectModel } from '../../../../../edit/shared/models';
 import { PermissionsCount } from '../../app-administration/models/permissions-count.model';
+import { ObjectModel } from '../../shared/models/object.model';
 import { InputType } from './input-type.model';
 
 export class Field {

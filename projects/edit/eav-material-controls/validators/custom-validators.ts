@@ -1,6 +1,6 @@
 import { FormControl, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { ObjectModel } from '../../../ng-dialogs/src/app/shared/models/object.model';
 import { UrlHelpers } from '../../shared/helpers';
-import { ObjectModel } from '../../shared/models';
 import { AdamControl } from '../input-types/hyperlink/hyperlink-library/hyperlink-library.models';
 
 export class CustomValidators {

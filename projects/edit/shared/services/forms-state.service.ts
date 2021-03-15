@@ -1,7 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { EavService } from '.';
-import { ObjectModel } from '../models';
+import { ObjectModel } from '../../../ng-dialogs/src/app/shared/models/object.model';
 
 @Injectable()
 export class FormsStateService implements OnDestroy {
