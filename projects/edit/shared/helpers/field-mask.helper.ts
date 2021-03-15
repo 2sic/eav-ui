@@ -24,7 +24,7 @@ export class FieldMask {
   constructor(
     mask: string,
     model: { [key: string]: AbstractControl; },
-    private changeEvent: (newValue: string) => any,
+    private changeEvent: (newValue: string) => void,
     overloadPreCleanValues: (key: string, value: string) => string,
     private eavConfig?: EavConfig,
   ) {

@@ -24,7 +24,7 @@ export class ScriptsLoaderService {
   constructor(private eavService: EavService) { }
 
   /** Loads CSS and JS files in order (CSS first) and calls callback function when finished */
-  load(scripts: string[], callback: () => any) {
+  load(scripts: string[], callback: () => void) {
     const sortedFiles = this.sortByType(scripts);
     this.insertToDom(sortedFiles, callback, 0); // async, called again and again after each script is loaded
   }
@@ -50,7 +50,7 @@ export class ScriptsLoaderService {
     return cssFiles.concat(jsFiles);
   }
 
-  private insertToDom(files: LoadFile[], callback: () => any, increment: number) {
+  private insertToDom(files: LoadFile[], callback: () => void, increment: number) {
     const file = files[increment];
     increment++;
     if (!file) {

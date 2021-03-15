@@ -6,6 +6,7 @@ import { NavigateFormResult } from '../../../../../../edit/shared/models';
 import { consoleLogAngular } from '../../helpers/console-log-angular.helper';
 import { DialogConfig } from '../../models/dialog-config.model';
 import { EavWindow } from '../../models/eav-window.model';
+import { ObjectModel } from '../../models/object.model';
 import { Context } from '../../services/context';
 
 declare const window: EavWindow;
@@ -17,7 +18,7 @@ declare const window: EavWindow;
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DialogEntryComponent implements OnInit, OnDestroy {
-  private dialogData: { [key: string]: any; };
+  private dialogData: ObjectModel<any>;
   private dialogRef: MatDialogRef<any>;
 
   constructor(

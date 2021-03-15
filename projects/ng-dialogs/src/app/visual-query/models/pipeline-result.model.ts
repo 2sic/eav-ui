@@ -1,3 +1,5 @@
+import { ObjectModel } from '../../shared/models/object.model';
+
 export interface PipelineResult {
   Query: PipelineResultQuery;
   QueryTimer: PipelineResultTimer;
@@ -23,7 +25,7 @@ export interface PipelineResultSources {
 }
 
 export interface PipelineResultSourceValue {
-  Configuration: { [key: string]: any };
+  Configuration: ObjectModel<any>;
   Error: boolean;
   Guid: string;
   Type: string;

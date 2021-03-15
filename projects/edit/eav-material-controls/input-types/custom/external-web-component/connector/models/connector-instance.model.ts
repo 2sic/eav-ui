@@ -27,7 +27,7 @@ export class ConnectorInstance<T> implements Connector<T> {
     this.loadScript = (
       testOrScripts: string | (() => any) | { test: string | (() => any); src: string }[],
       srcOrCallback: string | (() => any),
-      callback?: () => any
+      callback?: () => any,
     ) => {
       // one script (3 parameters: global or test, script url and a callback)
       if (

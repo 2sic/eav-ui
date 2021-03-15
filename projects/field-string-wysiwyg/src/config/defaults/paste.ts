@@ -42,7 +42,7 @@ export class DefaultPaste {
       paste_data_images: true,
       paste_filter_drop: false,
       paste_block_drop: false,
-      images_upload_handler: (blobInfo: TinyType, success: (imgPath: string) => any, failure: () => any) => {
+      images_upload_handler: (blobInfo: TinyType, success: (imgPath: string) => void, failure: () => void) => {
         DefaultPaste.imagesUploadHandler(blobInfo, success, failure, dropzone, adam);
       },
     };
@@ -50,8 +50,8 @@ export class DefaultPaste {
 
   private static imagesUploadHandler(
     blobInfo: TinyType,
-    success: (imgPath: string) => any,
-    failure: () => any,
+    success: (imgPath: string) => void,
+    failure: () => void,
     dropzone: Dropzone,
     adam: Adam,
   ) {

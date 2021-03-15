@@ -1,6 +1,7 @@
 import { LocalizationHelpers } from '.';
 import { InputTypeConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { InputType } from '../../../ng-dialogs/src/app/content-type-fields/models/input-type.model';
+import { ObjectModel } from '../../../ng-dialogs/src/app/shared/models/object.model';
 import { TranslateMenuHelpers } from '../../eav-material-controls/localization/translate-menu/translate-menu.helpers';
 import { TranslationStateCore } from '../../eav-material-controls/localization/translate-menu/translate-menu.models';
 import { TranslationLinkConstants } from '../constants';
@@ -12,7 +13,7 @@ export class FieldsSettingsHelpers {
   static mergeSettings<T>(metadataItems: EavEntity[], currentLanguage: string, defaultLanguage: string): T {
     if (metadataItems == null) { return {} as T; }
 
-    const merged: { [attributeName: string]: any } = {};
+    const merged: ObjectModel<any> = {};
     // copy metadata settings which are not @All
     for (const item of metadataItems) {
       if (item.Type.Id === '@All') { continue; }

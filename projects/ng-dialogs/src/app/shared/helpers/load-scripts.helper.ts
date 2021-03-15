@@ -2,7 +2,7 @@ import { WindowObject } from '../models/eav-window.model';
 
 declare const window: WindowObject;
 
-export function loadScripts(scriptObjects: ScriptObject[], callback: () => any, iteration = 0) {
+export function loadScripts(scriptObjects: ScriptObject[], callback: () => void, iteration = 0) {
   const isLast = scriptObjects.length === iteration + 1;
   const newCallback = isLast ? callback : loadScripts.bind(this, scriptObjects, callback, iteration + 1);
   const scrObj = scriptObjects[iteration];

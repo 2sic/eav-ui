@@ -2,6 +2,7 @@ import { ComponentFactoryResolver, ComponentRef, Directive, Input, OnDestroy, On
 import { FormGroup } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { InputTypeConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
+import { ObjectModel } from '../../../../ng-dialogs/src/app/shared/models/object.model';
 import { AdamAttachWrapperComponent } from '../../../eav-material-controls/adam/adam-attach-wrapper/adam-attach-wrapper.component';
 import { DropzoneWrapperComponent } from '../../../eav-material-controls/adam/dropzone-wrapper/dropzone-wrapper.component';
 import { BooleanDefaultComponent } from '../../../eav-material-controls/input-types/boolean/boolean-default/boolean-default.component';
@@ -43,7 +44,7 @@ export class EavFieldDirective implements OnInit, OnDestroy {
   @Input() private group: FormGroup;
   private fieldConfigs: FieldConfigSet[] = [];
 
-  private components: { [key: string]: Type<any> } = {
+  private components: ObjectModel<Type<any>> = {
     'app-adam-attach-wrapper': AdamAttachWrapperComponent,
     'app-collapsible-field-wrapper': CollapsibleFieldWrapperComponent,
     'app-collapsible-wrapper': CollapsibleWrapperComponent,

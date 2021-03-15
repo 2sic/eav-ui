@@ -1,10 +1,13 @@
 import { DropzoneConfigExt } from '../../../../edit-types';
+import { ObjectModel } from '../../../../ng-dialogs/src/app/shared/models/object.model';
+
+export type DropzoneType = any;
 
 export class DropzoneConfigInstance implements DropzoneConfigExt {
   /** Subfolder and UsePortalRoot are updated from AdamBrowser */
   disabled: boolean;
   url: string;
-  headers: any;
+  headers: ObjectModel<string>;
   acceptedFiles: string = null;
   maxFiles = 1000;
   parallelUploads = 1000;
@@ -26,7 +29,7 @@ export class DropzoneConfigInstance implements DropzoneConfigExt {
    */
   clickable = '.dropzone-previews';
 
-  constructor(disabled: boolean, url: string, headers: any) {
+  constructor(disabled: boolean, url: string, headers: ObjectModel<string>) {
     this.disabled = disabled;
     this.url = url;
     this.headers = headers;

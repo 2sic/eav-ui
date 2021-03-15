@@ -1,4 +1,5 @@
 import { EavWindow } from '../../shared/models/eav-window.model';
+import { ObjectModel } from '../../shared/models/object.model';
 import { DataSource } from '../models/data-sources.model';
 import { PipelineResult } from '../models/pipeline-result.model';
 import { PipelineDataSource, PipelineModel, StreamWire, VisualDesignerData } from '../models/pipeline.model';
@@ -26,7 +27,7 @@ export class Plumber {
     '#76608a', '#a0522d',
   ];
   private maxCols = this.lineColors.length - 1;
-  private uuidColorMap: { [key: string]: any } = {};
+  private uuidColorMap: ObjectModel<any> = {};
   private bulkDelete = false;
 
   constructor(

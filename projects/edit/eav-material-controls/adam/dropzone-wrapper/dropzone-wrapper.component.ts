@@ -9,7 +9,7 @@ import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { EavService, FieldsSettingsService } from '../../../shared/services';
 import { BaseComponent } from '../../input-types/base/base.component';
 import { ValidationMessagesService } from '../../validators/validation-messages-service';
-import { DropzoneConfigInstance } from './dropzone-wrapper.models';
+import { DropzoneConfigInstance, DropzoneType } from './dropzone-wrapper.models';
 
 @Component({
   selector: 'app-dropzone-wrapper',
@@ -75,12 +75,12 @@ export class DropzoneWrapperComponent extends BaseComponent<any> implements Fiel
     super.ngOnDestroy();
   }
 
-  onUploadError(args: any) {
+  onUploadError(args: DropzoneType) {
     consoleLogAngular('Dropzone upload error. Args:', args);
     this.dropzoneRef.reset();
   }
 
-  onUploadSuccess(args: any) {
+  onUploadSuccess(args: DropzoneType) {
     const response: AdamPostResponse = args[1]; // Gets the server response as second argument.
     if (response.Success) {
       if (this.config.adam) {

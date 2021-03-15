@@ -1,3 +1,5 @@
+import { ObjectModel } from '../../shared/models/object.model';
+
 export class SourceView {
   AppId: number;
   Code: string;
@@ -8,14 +10,10 @@ export class SourceView {
   IsSafe: boolean;
   LocationScope: string;
   Name: string;
-  Streams: SourceViewStreams;
+  Streams: ObjectModel<any>;
   Type: string;
   TypeContent: string;
   TypeContentPresentation: string;
   TypeList: string;
   TypeListPresentation: string;
-}
-
-export class SourceViewStreams {
-  [key: string]: any;
 }

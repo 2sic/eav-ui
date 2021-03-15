@@ -1,5 +1,6 @@
 import { NumberFilterModel, TextFilterModel } from '@ag-grid-community/all-modules';
 import { BooleanFilterModel } from '../shared/components/boolean-filter/boolean-filter.model';
+import { ObjectModel } from '../shared/models/object.model';
 import { PubMetaFilterModel } from './ag-grid-components/pub-meta-filter/pub-meta-filter.model';
 import { AgGridFilterModel } from './models/ag-grid-filter.model';
 
@@ -11,7 +12,7 @@ export function buildFilterModel(urlFilters: string) {
     urlFilters = atob(urlFilters);
   }
 
-  let parsed: { [key: string]: any };
+  let parsed: ObjectModel<any>;
   try {
     parsed = JSON.parse(urlFilters);
   } catch (error) {

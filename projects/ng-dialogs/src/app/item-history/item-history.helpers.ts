@@ -1,3 +1,4 @@
+import { ObjectModel } from '../shared/models/object.model';
 import { CompareWith } from './models/compare-with.model';
 import { HistoryAttribute, HistoryAttributeValue, HistoryItem } from './models/history-item.model';
 import { Version, VersionEntityAttributeValues, VersionJsonParsed } from './models/version.model';
@@ -131,7 +132,7 @@ function calcChangeType(currentValue: any, previousValue: any, sortObjectKeys = 
   return change;
 }
 
-function sortKeysAlphabetically(obj: { [key: string]: any }): { [key: string]: any } {
+function sortKeysAlphabetically(obj: ObjectModel<any>): ObjectModel<any> {
   if (typeof obj !== 'object') { return obj; }
 
   return Object.keys(obj).sort().reduce((acc, key) => ({ ...acc, [key]: obj[key] }), {});
