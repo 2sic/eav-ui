@@ -14,7 +14,7 @@ export class AdamService {
       params: {
         subfolder: config.subfolder,
         usePortalRoot: config.usePortalRoot.toString(),
-        appId: this.eavService.eavConfig.appId.toString(),
+        appId: this.eavService.eavConfig.appId,
       }
     });
   }
@@ -25,7 +25,7 @@ export class AdamService {
         subfolder: config.subfolder,
         newFolder: SanitizeHelper.sanitizeName(newfolder),
         usePortalRoot: config.usePortalRoot.toString(),
-        appId: this.eavService.eavConfig.appId.toString(),
+        appId: this.eavService.eavConfig.appId,
       }
     });
   }
@@ -38,7 +38,7 @@ export class AdamService {
         id: item.Id.toString(),
         usePortalRoot: config.usePortalRoot.toString(),
         newName: SanitizeHelper.sanitizeName(newName),
-        appId: this.eavService.eavConfig.appId.toString(),
+        appId: this.eavService.eavConfig.appId,
       }
     });
   }
@@ -50,7 +50,7 @@ export class AdamService {
         isFolder: item.IsFolder.toString(),
         id: item.Id.toString(),
         usePortalRoot: config.usePortalRoot.toString(),
-        appId: this.eavService.eavConfig.appId.toString(),
+        appId: this.eavService.eavConfig.appId,
       }
     });
   }

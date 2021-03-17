@@ -63,7 +63,7 @@ export class EavService {
 
   saveFormData(result: SaveEavFormData) {
     return this.http.post<SaveResult>(this.dnnContext.$2sxc.http.apiUrl(webApiEditRoot + 'save'), result, {
-      params: { appId: this.eavConfig.appId.toString(), partOfPage: this.eavConfig.partOfPage }
+      params: { appId: this.eavConfig.appId, partOfPage: this.eavConfig.partOfPage }
     });
   }
 

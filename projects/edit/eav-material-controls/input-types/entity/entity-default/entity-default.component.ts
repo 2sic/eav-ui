@@ -243,7 +243,7 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
         this.snackBar.dismiss();
         if (!confirm(this.translate.instant('Data.Delete.Question', { title, id }))) { return; }
         this.snackBar.open('Deleting...');
-        this.entityService.delete(contentType, id, true).subscribe(res2 => {
+        this.entityService.delete(contentType, id, true).subscribe(() => {
           this.snackBar.open('Deleted', null, { duration: 2000 });
           this.removeSelected(props.index);
           this.fetchAvailableEntities();

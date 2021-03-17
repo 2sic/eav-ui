@@ -41,7 +41,7 @@ export class DnnBridgeService {
         ...(guid && { guid }),
         ...(contentType && { contentType }),
         ...(field && { field }),
-        appid: this.eavService.eavConfig.appId.toString(),
+        appid: this.eavService.eavConfig.appId,
       }
     }).pipe(
       map(adamLinkInfo => adamLinkInfo.Value),

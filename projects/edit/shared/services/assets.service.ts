@@ -14,13 +14,13 @@ export class AssetsService {
 
   getAll(global: boolean) {
     return this.http.get<string[]>(this.dnnContext.$2sxc.http.apiUrl(webApiAppFilesAll), {
-      params: { appId: this.eavService.eavConfig.appId.toString(), global: global.toString(), withSubfolders: 'true' },
+      params: { appId: this.eavService.eavConfig.appId, global: global.toString(), withSubfolders: 'true' },
     });
   }
 
   create(path: string, global: boolean) {
     return this.http.post<boolean>(this.dnnContext.$2sxc.http.apiUrl(webApiAppFileCreate), {}, {
-      params: { appId: this.eavService.eavConfig.appId.toString(), global: global.toString(), path }
+      params: { appId: this.eavService.eavConfig.appId, global: global.toString(), path }
     });
   }
 }
