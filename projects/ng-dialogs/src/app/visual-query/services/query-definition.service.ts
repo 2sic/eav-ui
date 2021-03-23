@@ -12,11 +12,9 @@ export class QueryDefinitionService {
   constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
 
   fetchPipeline(pipelineEntityId: number) {
-    const pipelineModel$ = this.http.get<PipelineModel>(this.dnnContext.$2sxc.http.apiUrl(webApiQueryGet), {
+    return this.http.get<PipelineModel>(this.dnnContext.$2sxc.http.apiUrl(webApiQueryGet), {
       params: { appId: this.context.appId.toString(), id: pipelineEntityId.toString() }
-    });
-
-    return pipelineModel$.pipe(
+    }).pipe(
       map(pipelineModel => {
         // if pipeline is new, populate it with default model
         if (!pipelineModel.DataSources.length) {
@@ -66,10 +64,7 @@ export class QueryDefinitionService {
   }
 
   fetchDataSources() {
-    const dataSources$ = this.http.get<DataSource[]>(
-      this.dnnContext.$2sxc.http.apiUrl(webApiQueryDataSources)
-    );
-    return dataSources$.pipe(
+    return this.http.get<DataSource[]>(this.dnnContext.$2sxc.http.apiUrl(webApiQueryDataSources)).pipe(
       map(dataSources => {
         const outDs = eavConstants.pipelineDesigner.outDataSource;
         const outDsConst: DataSource = {
