@@ -183,6 +183,8 @@ export class Plumber {
       // Ensure In-Endpoint exist
       if (!this.instance.getEndpoint(fromUuid)) {
         const domDataSource: HTMLElement = this.jsPlumbRoot.querySelector('#' + sourceElementId);
+        if (!domDataSource) { return; }
+
         const guid: string = domDataSource.id.replace(dataSrcIdPrefix, '');
         const pipelineDataSource = this.pipelineModel.DataSources.find(pipeDataSource => pipeDataSource.EntityGuid === guid);
         this.addEndpoint(domDataSource, wire.Out, false, pipelineDataSource);
@@ -191,6 +193,8 @@ export class Plumber {
       // Ensure Out-Endpoint exist
       if (!this.instance.getEndpoint(toUuid)) {
         const domDataSource: HTMLElement = this.jsPlumbRoot.querySelector('#' + targetElementId);
+        if (!domDataSource) { return; }
+
         const guid: string = domDataSource.id.replace(dataSrcIdPrefix, '');
         const pipelineDataSource = this.pipelineModel.DataSources.find(pipeDataSource => pipeDataSource.EntityGuid === guid);
         this.addEndpoint(domDataSource, wire.In, true, pipelineDataSource);

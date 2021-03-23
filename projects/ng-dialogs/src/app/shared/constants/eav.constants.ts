@@ -61,15 +61,18 @@ export const eavConstants = {
       dataSources: [
         {
           entityGuid: 'unsaved1',
-          partAssemblyAndType: 'ToSic.Eav.DataSources.Caches.ICache, ToSic.Eav.DataSources',
+          name: 'AppRoot',
+          partAssemblyAndType: 'ToSic.Eav.DataSources.IAppRoot, ToSic.Eav.DataSources',
           visualDesignerData: { Top: 440, Left: 440 }
         }, {
           entityGuid: 'unsaved2',
+          name: 'PublishingFilter',
           partAssemblyAndType: 'ToSic.Eav.DataSources.PublishingFilter, ToSic.Eav.DataSources',
           visualDesignerData: { Top: 300, Left: 440 }
         }, {
           entityGuid: 'unsaved3',
-          partAssemblyAndType: 'ToSic.SexyContent.DataSources.ModuleDataSource, ToSic.SexyContent',
+          name: 'CmsBlock',
+          partAssemblyAndType: 'ToSic.Sxc.DataSources.CmsBlock, ToSic.Sxc',
           visualDesignerData: { Top: 170, Left: 440 }
         }
       ],
