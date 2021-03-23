@@ -61,7 +61,7 @@ export class QueryDefinitionService {
     }
 
     for (const pipelineDataSource of pipelineDataSources) {
-      pipelineDataSource.VisualDesignerData = pipelineDataSource.VisualDesignerData || { Top: 50, Left: 50 };
+      pipelineDataSource.VisualDesignerData ??= { Top: 50, Left: 50 };
     }
   }
 
@@ -113,16 +113,15 @@ export class QueryDefinitionService {
   savePipeline(pipelineModel: PipelineModel) {
     const pipeline = pipelineModel.Pipeline;
     const dataSources = pipelineModel.DataSources;
-    const pipelineModel$ = this.http.post<PipelineModel>(
+
+    return this.http.post<PipelineModel>(
       this.dnnContext.$2sxc.http.apiUrl(webApiQuerySave),
       { pipeline, dataSources },
       { params: { appId: this.context.appId.toString(), Id: pipeline.EntityId.toString() } }
-    );
-
-    return pipelineModel$.pipe(
-      map(pipeModel => {
-        this.fixPipelineDataSources(pipeModel.DataSources);
-        return pipeModel;
+    ).pipe(
+      map(newPipelineModel => {
+        this.fixPipelineDataSources(newPipelineModel.DataSources);
+        return newPipelineModel;
       }),
     );
   }
