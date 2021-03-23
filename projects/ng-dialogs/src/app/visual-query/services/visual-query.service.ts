@@ -84,7 +84,7 @@ export class VisualQueryService implements OnDestroy {
       Description: '',
       EntityGuid: 'unsaved' + (pipelineModel.DataSources.length + 1),
       EntityId: undefined,
-      Name: this.queryDefinitionService.typeNameFilter(dataSource.PartAssemblyAndType, 'className'),
+      Name: dataSource.Name,
       PartAssemblyAndType: dataSource.PartAssemblyAndType,
       VisualDesignerData: { Top: 100, Left: 100 },
     };
@@ -137,10 +137,9 @@ export class VisualQueryService implements OnDestroy {
   editDataSource(pipelineDataSource: PipelineDataSource) {
     const dataSource = this.dataSources$.value.find(ds => ds.PartAssemblyAndType === pipelineDataSource.PartAssemblyAndType);
 
-    const contentTypeName = dataSource?.ContentType
-      ? dataSource.ContentType
-      : '|Config ' + this.queryDefinitionService.typeNameFilter(pipelineDataSource.PartAssemblyAndType, 'classFullName');
-
+    // const contentTypeName = dataSource?.ContentType
+    //   ?? '|Config ' + this.queryDefinitionService.typeNameFilter(pipelineDataSource.PartAssemblyAndType, 'classFullName');
+    const contentTypeName = dataSource.ContentType;
     const typeId = eavConstants.metadata.entity.type;
     const keyType = eavConstants.keyTypes.guid;
     const key = pipelineDataSource.EntityGuid;

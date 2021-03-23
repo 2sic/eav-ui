@@ -33,7 +33,7 @@
       <br />
 
       <div class="typename" [title]="dataSource.PartAssemblyAndType">
-        Type: {{ typeNameFilter(dataSource.PartAssemblyAndType, 'className') }}
+        Type: {{ getTypeName(dataSource.PartAssemblyAndType) }}
       </div>
 
       <div class="add-endpoint" title="Drag a new Out-Connection"

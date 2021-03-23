@@ -114,9 +114,12 @@ export class PlumbEditorComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  typeNameFilter(input: string, format: string) {
-    const filtered = this.queryDefinitionService.typeNameFilter(input, format);
-    return filtered;
+  getTypeName(partAssemblyAndType: string) {
+    if (!partAssemblyAndType.includes('.')) {
+      // partAssemblyAndType is guid
+      return partAssemblyAndType.substring(0, 10) + '…';
+    }
+    return this.queryDefinitionService.typeNameFilter(partAssemblyAndType, 'className');
   }
 
   remove(pipelineDataSource: PipelineDataSource) {

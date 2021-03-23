@@ -31,9 +31,6 @@ export class QueryDefinitionService {
   private buildDefaultModel(pipelineModel: PipelineModel) {
     const templateDataSources = eavConstants.pipelineDesigner.defaultPipeline.dataSources;
     for (const templateDS of templateDataSources) {
-      templateDS.entityGuid ||= 'unsaved' + (pipelineModel.DataSources.length + 1);
-      templateDS.name ||= this.typeNameFilter(templateDS.partAssemblyAndType, 'className');
-      templateDS.visualDesignerData ??= { Top: 100, Left: 100 };
       const pipelineDataSource: PipelineDataSource = {
         Description: '',
         EntityGuid: templateDS.entityGuid,
