@@ -2,8 +2,8 @@ import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { DataSource } from '../models/data-sources.model';
-import { SortedDataSources } from '../models/data-sources.model';
+import { eavConstants } from '../../shared/constants/eav.constants';
+import { DataSource, SortedDataSources } from '../models/data-sources.model';
 import { VisualQueryService } from '../services/visual-query.service';
 import { filterAndSortDataSources, toggleInArray } from './add-explorer.helpers';
 
@@ -17,21 +17,14 @@ export class AddExplorerComponent implements OnInit, OnDestroy {
   sorted$: Observable<SortedDataSources>;
   toggledItems: string[] = [];
 
-  private difficulties = {
-    default: 100,
-    advanced: 200,
-  };
+  private difficulties = eavConstants.pipelineDesigner.dataSourceDifficulties;
   private difficulty$ = new BehaviorSubject(this.difficulties.default);
 
   constructor(private visualQueryService: VisualQueryService) { }
 
   ngOnInit() {
     this.sorted$ = combineLatest([this.visualQueryService.dataSources$, this.difficulty$]).pipe(
-      map(([dataSources, difficulty]) => {
-        if (dataSources == null) { return; }
-        const sorted = filterAndSortDataSources(dataSources, difficulty);
-        return sorted;
-      }),
+      map(([dataSources, difficulty]) => filterAndSortDataSources(dataSources, difficulty)),
     );
   }
 
@@ -51,5 +44,4 @@ export class AddExplorerComponent implements OnInit, OnDestroy {
   toggleItem(item: string) {
     toggleInArray(item, this.toggledItems);
   }
-
 }

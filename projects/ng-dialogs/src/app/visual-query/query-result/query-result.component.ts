@@ -17,7 +17,7 @@ export class QueryResultComponent implements OnInit {
   sources: PipelineResultSources;
   streams: PipelineResultStream[];
 
-  constructor(@Inject(MAT_DIALOG_DATA) public dialogData: QueryResultDialogData, private dialogRef: MatDialogRef<QueryResultComponent>) { }
+  constructor(@Inject(MAT_DIALOG_DATA) private dialogData: QueryResultDialogData, private dialogRef: MatDialogRef<QueryResultComponent>) { }
 
   ngOnInit() {
     this.testParameters = this.dialogData.testParameters;

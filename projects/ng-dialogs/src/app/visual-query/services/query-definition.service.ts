@@ -72,7 +72,7 @@ export class QueryDefinitionService {
         const outDs = eavConstants.pipelineDesigner.outDataSource;
         const outDsConst: DataSource = {
           ContentType: undefined,
-          Difficulty: 100,
+          Difficulty: eavConstants.pipelineDesigner.dataSourceDifficulties.default,
           DynamicOut: false,
           EnableConfig: undefined,
           HelpLink: undefined,

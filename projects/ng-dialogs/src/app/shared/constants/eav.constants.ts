@@ -50,6 +50,10 @@ export const eavConstants = {
   },
 
   pipelineDesigner: {
+    dataSourceDifficulties: {
+      default: 100,
+      advanced: 200,
+    },
     outDataSource: {
       Description: 'The template/script which will show this data',
       EntityGuid: 'Out',
