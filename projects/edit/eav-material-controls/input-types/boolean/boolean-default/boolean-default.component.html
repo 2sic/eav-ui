@@ -1,4 +1,4 @@
 <div *ngIf="templateVars$ | async as data" [formGroup]="group">
   <mat-slide-toggle [formControlName]="config.fieldName">{{ data.label }}</mat-slide-toggle>
-  <app-field-helper-text [config]="config" [group]="group" disableError="true"></app-field-helper-text>
+  <app-field-helper-text [config]="config" [group]="group" [disableError]="true"></app-field-helper-text>
 </div>

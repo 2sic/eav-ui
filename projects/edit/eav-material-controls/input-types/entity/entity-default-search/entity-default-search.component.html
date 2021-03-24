@@ -8,7 +8,7 @@
         }">
           <input matInput #autocomplete [placeholder]="getPlaceholder()" [matAutocomplete]="auto"
             [disabled]="disabled || !settings.EnableAddExisting" (blur)="markAsTouched()"
-            (input)="filterSelectionList($event.target.value)">
+            (input)="filterSelectionList($event)">
           <button mat-icon-button matSuffix [disabled]="disabled || !settings.EnableAddExisting"
             *ngIf="!settings.EnableTextEntry">
             <mat-icon>arrow_drop_down</mat-icon>

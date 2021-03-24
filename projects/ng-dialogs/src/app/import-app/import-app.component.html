@@ -39,7 +39,7 @@
   <div class="dialog-component-actions">
     <ng-container *ngIf="!data.importResult?.Success">
       <button mat-raised-button (click)="closeDialog()">Cancel</button>
-      <button mat-raised-button color="accent" [disabled]="!data.importFile || data.isImporting || data.importResult"
+      <button mat-raised-button color="accent" [disabled]="!data.importFile || data.isImporting || !!data.importResult"
         (click)="importApp()">
         Import
       </button>

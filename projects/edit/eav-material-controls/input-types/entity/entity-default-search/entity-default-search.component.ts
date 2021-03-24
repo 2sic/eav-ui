@@ -79,7 +79,8 @@ export class EntityDefaultSearchComponent implements OnInit, OnChanges {
     this.toggleFreeTextMode.emit();
   }
 
-  filterSelectionList(filter: string) {
+  filterSelectionList(event: Event | string) {
+    const filter = typeof event === 'string' ? event : ((event as InputEvent).target as HTMLInputElement).value;
     if (filter === '') {
       this.filteredEntities = this.availableEntities;
       return;

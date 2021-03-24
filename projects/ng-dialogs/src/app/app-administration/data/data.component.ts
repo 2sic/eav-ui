@@ -122,7 +122,7 @@ export class DataComponent implements OnInit, OnDestroy {
     switch (ext) {
       case 'xml':
         from(toString(files[0])).pipe(take(1)).subscribe(fileString => {
-          const contentTypeName = fileString.split('<Entity Type="')[1].split('"')[0];
+          const contentTypeName = fileString.split('<Entity Type="')[1]?.split('"')[0];
           const contentType = this.contentTypes$.value.find(ct => ct.Name === contentTypeName);
           if (contentType == null) {
             const message = `Cannot find Content Type named '${contentTypeName}'. Please open Content Type Import dialog manually.`;

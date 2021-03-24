@@ -10,7 +10,7 @@ import { calculateViewType } from '../../views/views.helpers';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ViewsTypeComponent implements ICellRendererAngularComp {
-  value: boolean;
+  value: string;
   icon: string;
 
   agInit(params: ICellRendererParams) {

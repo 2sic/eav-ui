@@ -93,7 +93,7 @@
           <div *ngIf="!data.evaluationResult.Success" class="dialog-component-content fancy-scrollbar-light">
             <p class="evaluation__title">Try to import file '{{ formValues.file.name }}'</p>
             <ul class="evaluation__content">
-              <li *ngFor="let error of data.evaluationResult.Detail">
+              <li *ngFor="let error of data.evaluationResult.Errors">
                 <div>{{ errors[error.ErrorCode] }}</div>
                 <div *ngIf="error.ErrorDetail"><i>Details: {{ error.ErrorDetail }}</i></div>
                 <div *ngIf="error.LineNumber"><i>Line-no: {{ error.LineNumber }}</i></div>
