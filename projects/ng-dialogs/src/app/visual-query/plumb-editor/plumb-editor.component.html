@@ -42,7 +42,7 @@
       </div>
 
       <mat-icon class="delete eav-icon-cancel" title="Delete" appMousedownStopPropagation
-        *ngIf="templateModel.allowEdit" (click)="remove(dataSource)">
+        *ngIf="templateModel.allowEdit && !isOutDataSource(dataSource)" (click)="remove(dataSource)">
         delete
       </mat-icon>
 

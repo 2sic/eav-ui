@@ -45,16 +45,18 @@ export class QueryDefinitionService {
   }
 
   private fixPipelineDataSources(pipelineDataSources: PipelineDataSource[]) {
-    const outDataSourceExists = pipelineDataSources.some(pipelineDS => pipelineDS.EntityGuid === 'Out');
+    const outDataSourceExists = pipelineDataSources.some(
+      pipelineDS => pipelineDS.EntityGuid === eavConstants.pipelineDesigner.outDataSource.EntityGuid
+    );
     if (!outDataSourceExists) {
       const outDs = eavConstants.pipelineDesigner.outDataSource;
       const outDsConst: PipelineDataSource = {
-        Description: outDs.description,
-        EntityGuid: 'Out',
+        Description: outDs.Description,
+        EntityGuid: outDs.EntityGuid,
         EntityId: undefined,
-        Name: outDs.name,
-        PartAssemblyAndType: outDs.className,
-        VisualDesignerData: outDs.visualDesignerData,
+        Name: outDs.Name,
+        PartAssemblyAndType: outDs.PartAssemblyAndType,
+        VisualDesignerData: outDs.VisualDesignerData,
       };
       pipelineDataSources.push(outDsConst);
     }
@@ -75,13 +77,12 @@ export class QueryDefinitionService {
           EnableConfig: undefined,
           HelpLink: undefined,
           Icon: undefined,
-          In: outDs.in,
-          Name: outDs.name || outDs.className,
+          In: outDs.In,
+          Name: outDs.Name,
           Out: undefined,
-          PartAssemblyAndType: outDs.className,
-          PrimaryType: 'Target',
+          PartAssemblyAndType: outDs.PartAssemblyAndType,
+          PrimaryType: outDs.PrimaryType,
           UiHint: undefined,
-          allowNew: false,
         };
         dataSources.push(outDsConst);
         return dataSources;
@@ -89,7 +90,7 @@ export class QueryDefinitionService {
     );
   }
 
-  typeNameFilter(input: string, format: string) {
+  typeNameFilter(input: string, format: 'className' | 'classFullName') {
     const globalParts = input.split(', ');
 
     switch (format) {
@@ -100,9 +101,9 @@ export class QueryDefinitionService {
         const classFullNameParts = globalParts[0].split('.');
         const className = classFullNameParts[classFullNameParts.length - 1];
         return className;
+      default:
+        return input;
     }
-
-    return input;
   }
 
   /** Save the current query and reload entire definition as returned from server */

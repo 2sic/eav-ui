@@ -1,3 +1,4 @@
+import { eavConstants } from '../../shared/constants/eav.constants';
 import { Dictionary } from '../../shared/models/dictionary.model';
 import { EavWindow } from '../../shared/models/eav-window.model';
 import { DataSource } from '../models/data-sources.model';
@@ -215,7 +216,11 @@ export class Plumber {
     const uuid = domDataSource.id + (isIn ? '_in_' : '_out_') + name;
     const model = isIn ? this.buildTargetEndpoint() : this.buildSourceEndpoint();
     // Endpoints on Out-DataSource must be always enabled
-    const params = { uuid, enabled: this.pipelineModel.Pipeline.AllowEdit || pipelineDataSource.EntityGuid === 'Out' };
+    const params = {
+      uuid,
+      enabled: this.pipelineModel.Pipeline.AllowEdit
+        || pipelineDataSource.EntityGuid === eavConstants.pipelineDesigner.outDataSource.EntityGuid
+    };
 
     const endPoint: PlumbType = this.instance.addEndpoint(domDataSource, model, params);
     endPoint.getOverlay('endpointLabel').setLabel(name);

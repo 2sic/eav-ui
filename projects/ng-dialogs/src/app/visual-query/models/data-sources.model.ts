@@ -11,7 +11,6 @@ export interface DataSource {
   PartAssemblyAndType: string;
   PrimaryType: string;
   UiHint: string;
-  allowNew?: boolean;
 }
 
 export interface SortedDataSources {

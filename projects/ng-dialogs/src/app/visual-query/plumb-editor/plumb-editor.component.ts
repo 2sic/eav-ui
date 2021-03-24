@@ -2,6 +2,7 @@
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { eavConstants } from '../../shared/constants/eav.constants';
 import { loadScripts } from '../../shared/helpers/load-scripts.helper';
 import { PipelineDataSource, VisualDesignerData } from '../models/pipeline.model';
 import { QueryDefinitionService } from '../services/query-definition.service';
@@ -120,6 +121,10 @@ export class PlumbEditorComponent implements OnInit, AfterViewInit, OnDestroy {
       return partAssemblyAndType.substring(0, 10) + '…';
     }
     return this.queryDefinitionService.typeNameFilter(partAssemblyAndType, 'className');
+  }
+
+  isOutDataSource(pipelineDataSource: PipelineDataSource) {
+    return pipelineDataSource.PartAssemblyAndType === eavConstants.pipelineDesigner.outDataSource.PartAssemblyAndType;
   }
 
   remove(pipelineDataSource: PipelineDataSource) {

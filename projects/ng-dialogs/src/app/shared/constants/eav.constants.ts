@@ -51,26 +51,28 @@ export const eavConstants = {
 
   pipelineDesigner: {
     outDataSource: {
-      className: 'SexyContentTemplate',
-      in: ['ListContent', 'Default'],
-      name: '2sxc Target (View or API)',
-      description: 'The template/script which will show this data',
-      visualDesignerData: { Top: 20, Left: 200, Width: 700 }
+      Description: 'The template/script which will show this data',
+      EntityGuid: 'Out',
+      In: ['ListContent', 'Default'],
+      Name: '2sxc Target (View or API)',
+      PartAssemblyAndType: 'SexyContentTemplate',
+      PrimaryType: 'Target',
+      VisualDesignerData: { Top: 20, Left: 200, Width: 700 },
     },
     defaultPipeline: {
       dataSources: [
         {
           EntityGuid: 'unsaved1',
           PartAssemblyAndType: 'ToSic.Eav.DataSources.IAppRoot, ToSic.Eav.DataSources',
-          VisualDesignerData: { Top: 440, Left: 440 }
+          VisualDesignerData: { Top: 440, Left: 440 },
         }, {
           EntityGuid: 'unsaved2',
           PartAssemblyAndType: 'ToSic.Eav.DataSources.PublishingFilter, ToSic.Eav.DataSources',
-          VisualDesignerData: { Top: 300, Left: 440 }
+          VisualDesignerData: { Top: 300, Left: 440 },
         }, {
           EntityGuid: 'unsaved3',
           PartAssemblyAndType: 'ToSic.Sxc.DataSources.CmsBlock, ToSic.Sxc',
-          VisualDesignerData: { Top: 170, Left: 440 }
+          VisualDesignerData: { Top: 170, Left: 440 },
         }
       ],
       streamWiring: [
@@ -79,8 +81,8 @@ export const eavConstants = {
         { From: 'unsaved1', Out: 'Published', To: 'unsaved2', In: 'Published' },
         { From: 'unsaved2', Out: 'Default', To: 'unsaved3', In: 'Default' },
         { From: 'unsaved3', Out: 'ListContent', To: 'Out', In: 'ListContent' },
-        { From: 'unsaved3', Out: 'Default', To: 'Out', In: 'Default' }
-      ]
+        { From: 'unsaved3', Out: 'Default', To: 'Out', In: 'Default' },
+      ],
     },
     testParameters: '[Demo:Demo]=true',
   },
