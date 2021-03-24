@@ -60,20 +60,17 @@ export const eavConstants = {
     defaultPipeline: {
       dataSources: [
         {
-          entityGuid: 'unsaved1',
-          name: 'AppRoot',
-          partAssemblyAndType: 'ToSic.Eav.DataSources.IAppRoot, ToSic.Eav.DataSources',
-          visualDesignerData: { Top: 440, Left: 440 }
+          EntityGuid: 'unsaved1',
+          PartAssemblyAndType: 'ToSic.Eav.DataSources.IAppRoot, ToSic.Eav.DataSources',
+          VisualDesignerData: { Top: 440, Left: 440 }
         }, {
-          entityGuid: 'unsaved2',
-          name: 'PublishingFilter',
-          partAssemblyAndType: 'ToSic.Eav.DataSources.PublishingFilter, ToSic.Eav.DataSources',
-          visualDesignerData: { Top: 300, Left: 440 }
+          EntityGuid: 'unsaved2',
+          PartAssemblyAndType: 'ToSic.Eav.DataSources.PublishingFilter, ToSic.Eav.DataSources',
+          VisualDesignerData: { Top: 300, Left: 440 }
         }, {
-          entityGuid: 'unsaved3',
-          name: 'CmsBlock',
-          partAssemblyAndType: 'ToSic.Sxc.DataSources.CmsBlock, ToSic.Sxc',
-          visualDesignerData: { Top: 170, Left: 440 }
+          EntityGuid: 'unsaved3',
+          PartAssemblyAndType: 'ToSic.Sxc.DataSources.CmsBlock, ToSic.Sxc',
+          VisualDesignerData: { Top: 170, Left: 440 }
         }
       ],
       streamWiring: [

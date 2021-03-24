@@ -11,14 +11,14 @@ import { DataSource, PipelineDataSource, PipelineModel, PipelineResult } from '.
 export class QueryDefinitionService {
   constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
 
-  fetchPipeline(pipelineEntityId: number) {
+  fetchPipeline(pipelineEntityId: number, dataSources: DataSource[]) {
     return this.http.get<PipelineModel>(this.dnnContext.$2sxc.http.apiUrl(webApiQueryGet), {
       params: { appId: this.context.appId.toString(), id: pipelineEntityId.toString() }
     }).pipe(
       map(pipelineModel => {
         // if pipeline is new, populate it with default model
         if (!pipelineModel.DataSources.length) {
-          this.buildDefaultModel(pipelineModel);
+          this.buildDefaultModel(pipelineModel, dataSources);
         }
         this.fixPipelineDataSources(pipelineModel.DataSources);
         return pipelineModel;
@@ -26,16 +26,17 @@ export class QueryDefinitionService {
     );
   }
 
-  private buildDefaultModel(pipelineModel: PipelineModel) {
+  private buildDefaultModel(pipelineModel: PipelineModel, dataSources: DataSource[]) {
     const templateDataSources = eavConstants.pipelineDesigner.defaultPipeline.dataSources;
     for (const templateDS of templateDataSources) {
+      const dataSource = dataSources.find(ds => ds.PartAssemblyAndType === templateDS.PartAssemblyAndType);
       const pipelineDataSource: PipelineDataSource = {
         Description: '',
-        EntityGuid: templateDS.entityGuid,
+        EntityGuid: templateDS.EntityGuid,
         EntityId: undefined,
-        Name: templateDS.name,
-        PartAssemblyAndType: templateDS.partAssemblyAndType,
-        VisualDesignerData: templateDS.visualDesignerData,
+        Name: dataSource.Name,
+        PartAssemblyAndType: templateDS.PartAssemblyAndType,
+        VisualDesignerData: templateDS.VisualDesignerData,
       };
       pipelineModel.DataSources.push(pipelineDataSource);
     }

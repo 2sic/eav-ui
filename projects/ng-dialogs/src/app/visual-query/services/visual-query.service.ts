@@ -50,8 +50,7 @@ export class VisualQueryService implements OnDestroy {
   }
 
   init() {
-    this.fetchPipeline();
-    this.fetchDataSources();
+    this.fetchDataSources(() => this.fetchPipeline());
     this.attachKeyboardSave();
     this.refreshOnChildClosed();
   }
@@ -227,7 +226,7 @@ export class VisualQueryService implements OnDestroy {
     if (reloadingSnackBar) {
       this.snackBar.open('Reloading query, please wait...');
     }
-    this.queryDefinitionService.fetchPipeline(this.pipelineId).subscribe(pipelineModel => {
+    this.queryDefinitionService.fetchPipeline(this.pipelineId, this.dataSources$.value).subscribe(pipelineModel => {
       if (reloadingSnackBar) {
         this.snackBar.open('Query reloaded', null, { duration: 2000 });
       }
@@ -236,9 +235,10 @@ export class VisualQueryService implements OnDestroy {
     });
   }
 
-  private fetchDataSources() {
+  private fetchDataSources(callback?: () => void) {
     this.queryDefinitionService.fetchDataSources().subscribe(dataSources => {
       this.dataSources$.next(dataSources);
+      callback();
     });
   }
 
