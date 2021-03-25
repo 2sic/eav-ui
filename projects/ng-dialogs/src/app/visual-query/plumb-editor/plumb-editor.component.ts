@@ -116,7 +116,7 @@ export class PlumbEditorComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   getTypeName(partAssemblyAndType: string) {
-    if (!partAssemblyAndType.includes('.')) {
+    if (partAssemblyAndType.length === 36 && (partAssemblyAndType.split('-').length - 1) === 4) {
       // partAssemblyAndType is guid
       return partAssemblyAndType.substring(0, 10) + '…';
     }

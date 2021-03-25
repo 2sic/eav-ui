@@ -23,12 +23,13 @@ export function calculateTypeInfos(pipelineDataSources: PipelineDataSource[], da
     const dataSource = dataSources.find(ds => ds.PartAssemblyAndType === pipelineDataSource.PartAssemblyAndType);
     if (dataSource) {
       typeInfo = { ...(dataSource.PrimaryType ? guiTypes[dataSource.PrimaryType] : guiTypes.Unknown) };
-      if (dataSource.Icon) { typeInfo.icon = dataSource.Icon; }
-      if (dataSource.DynamicOut) { typeInfo.dynamicOut = true; }
-      if (dataSource.HelpLink) { typeInfo.helpLink = dataSource.HelpLink; }
-      if (dataSource.EnableConfig) { typeInfo.config = dataSource.EnableConfig; }
+      if (dataSource.Icon != null) { typeInfo.icon = dataSource.Icon; }
+      if (dataSource.DynamicOut != null) { typeInfo.dynamicOut = dataSource.DynamicOut; }
+      if (dataSource.HelpLink != null) { typeInfo.helpLink = dataSource.HelpLink; }
+      if (dataSource.EnableConfig != null) { typeInfo.config = dataSource.EnableConfig; }
+      if (dataSource.UiHint != null) { typeInfo.notes = dataSource.UiHint; }
     }
-    if (!typeInfo) { typeInfo = guiTypes.Unknown; }
+    if (!typeInfo) { typeInfo = { ...guiTypes.Unknown }; }
     typeInfos[pipelineDataSource.EntityGuid] = typeInfo;
   }
 
