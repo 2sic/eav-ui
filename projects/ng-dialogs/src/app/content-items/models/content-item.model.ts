@@ -18,8 +18,8 @@ export class ContentItem {
 }
 
 export class ContentItemMetadata {
-  TargetType: number;
-  KeyNumber: number;
-  KeyGuid: string;
-  KeyString: string;
+  Target: number;
+  Number: number;
+  Guid: string;
+  String: string;
 }

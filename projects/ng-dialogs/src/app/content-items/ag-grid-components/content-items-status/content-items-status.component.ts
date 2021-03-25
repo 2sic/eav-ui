@@ -20,10 +20,10 @@ export class ContentItemsStatusComponent implements ICellRendererAngularComp {
     const item: ContentItem = params.data;
     if (item.For) {
       this.metadataTooltip = 'Metadata'
-        + `\nType: ${item.For.TargetType}`
-        + (item.For.KeyNumber ? `\nNumber: ${item.For.KeyNumber}` : '')
-        + (item.For.KeyString ? `\nString: ${item.For.KeyString}` : '')
-        + (item.For.KeyGuid ? `\nGuid: ${item.For.KeyGuid}` : '');
+        + `\nType: ${item.For.Target}`
+        + (item.For.Number ? `\nNumber: ${item.For.Number}` : '')
+        + (item.For.String ? `\nString: ${item.For.String}` : '')
+        + (item.For.Guid ? `\nGuid: ${item.For.Guid}` : '');
     }
   }
 
