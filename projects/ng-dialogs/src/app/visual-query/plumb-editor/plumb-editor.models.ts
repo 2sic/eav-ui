@@ -13,12 +13,12 @@ export interface TypeInfos {
 }
 
 export interface TypeInfo {
-  config?: boolean;
-  dynamicOut?: boolean;
-  helpLink?: string;
-  icon: string;
-  name: string;
-  notes: string;
+  EnableConfig?: boolean;
+  DynamicOut?: boolean;
+  HelpLink?: string;
+  Icon: string;
+  Name: string;
+  UiHint: string;
 }
 
 export interface GuiTypes {
@@ -26,7 +26,7 @@ export interface GuiTypes {
 }
 
 export interface GuiType {
-  icon: string;
-  name: string;
-  notes: string;
+  Icon: string;
+  Name: string;
+  UiHint: string;
 }

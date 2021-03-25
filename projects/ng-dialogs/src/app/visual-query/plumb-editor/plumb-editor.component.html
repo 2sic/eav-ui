@@ -9,13 +9,13 @@
       }">
 
       <div class="configure" title="Configure data source" appMousedownStopPropagation
-        *ngIf="templateModel.allowEdit && templateModel.typeInfos[dataSource.EntityGuid].config"
+        *ngIf="templateModel.allowEdit && templateModel.typeInfos[dataSource.EntityGuid].EnableConfig"
         (click)="configureDataSource(dataSource)">
         <mat-icon class="eav-icon-settings">settings</mat-icon>
       </div>
 
-      <mat-icon class="type-info" [title]="templateModel.typeInfos[dataSource.EntityGuid].notes">
-        {{ templateModel.typeInfos[dataSource.EntityGuid].icon }}
+      <mat-icon class="type-info" [title]="templateModel.typeInfos[dataSource.EntityGuid].UiHint">
+        {{ templateModel.typeInfos[dataSource.EntityGuid].Icon }}
       </mat-icon>
 
       <div class="name noselect" title="Click to edit name" appMousedownStopPropagation
@@ -37,7 +37,7 @@
       </div>
 
       <div class="add-endpoint" title="Drag a new Out-Connection"
-        *ngIf="templateModel.allowEdit && templateModel.typeInfos[dataSource.EntityGuid].dynamicOut">
+        *ngIf="templateModel.allowEdit && templateModel.typeInfos[dataSource.EntityGuid].DynamicOut">
         <mat-icon class="new-connection eav-icon-up-dir">arrow_drop_up</mat-icon>
       </div>
 
@@ -47,8 +47,8 @@
       </mat-icon>
 
       <a class="help eav-icon-help-circled" title="Help for this data source"
-        [href]="templateModel.typeInfos[dataSource.EntityGuid].helpLink" target="_blank" appMousedownStopPropagation
-        *ngIf="templateModel.typeInfos[dataSource.EntityGuid].helpLink">
+        [href]="templateModel.typeInfos[dataSource.EntityGuid].HelpLink" target="_blank" appMousedownStopPropagation
+        *ngIf="templateModel.typeInfos[dataSource.EntityGuid].HelpLink">
         <mat-icon>help_outline</mat-icon>
       </a>
     </div>
