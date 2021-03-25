@@ -1,9 +1,11 @@
+import { KeyValue } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { DataSource, SortedDataSources } from '../models/data-sources.model';
+import { guiTypes } from '../plumb-editor/plumb-editor.helpers';
 import { VisualQueryService } from '../services/visual-query.service';
 import { filterAndSortDataSources, toggleInArray } from './add-explorer.helpers';
 
@@ -16,6 +18,7 @@ import { filterAndSortDataSources, toggleInArray } from './add-explorer.helpers'
 export class AddExplorerComponent implements OnInit, OnDestroy {
   sorted$: Observable<SortedDataSources>;
   toggledItems: string[] = [];
+  guiTypes = guiTypes;
 
   private difficulties = eavConstants.pipelineDesigner.dataSourceDifficulties;
   private difficulty$ = new BehaviorSubject(this.difficulties.default);
@@ -43,5 +46,13 @@ export class AddExplorerComponent implements OnInit, OnDestroy {
 
   toggleItem(item: string) {
     toggleInArray(item, this.toggledItems);
+  }
+
+  trackGroups(index: number, type: KeyValue<string, DataSource[]>) {
+    return type.key;
+  }
+
+  trackDataSources(index: number, dataSource: DataSource) {
+    return dataSource.PartAssemblyAndType;
   }
 }

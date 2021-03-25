@@ -7,7 +7,7 @@ export const guiTypes: GuiTypes = {
   Filter: { name: 'Filter', icon: 'filter_list', notes: 'Filter data - usually returning less items than came in' },
   Logic: { name: 'Logic', icon: 'share', notes: 'Logic operations - usually choosing between different streams' },
   Lookup: { name: 'Lookup', icon: 'search', notes: 'Lookup operation - usually looking for other data based on a criteria' },
-  Modify: { name: 'Modify', icon: 'star_half', notes: 'Modify data - usually changing, adding or removing values' },
+  Modify: { name: 'Modify', icon: 'edit_attributes', notes: 'Modify data - usually changing, adding or removing values' },
   Security: { name: 'Security', icon: 'account_circle', notes: 'Security - usually limit what the user sees based on his identity' },
   Sort: { name: 'Sort', icon: 'sort', notes: 'Sort the items' },
   Source: { name: 'Source', icon: 'cloud_upload', notes: 'Source of new data - usually SQL, CSV or similar' },
