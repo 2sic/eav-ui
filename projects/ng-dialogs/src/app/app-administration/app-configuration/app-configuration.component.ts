@@ -27,9 +27,8 @@ export class AppConfigurationComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private context: Context,
-    // 2020-11-10 2dm experimental
     private exportAppService: ExportAppService,
-    private importer: ImportAppPartsService,
+    private importAppPartsService: ImportAppPartsService,
     private snackBar: MatSnackBar,
   ) { }
 
@@ -69,30 +68,26 @@ export class AppConfigurationComponent implements OnInit {
   }
 
   exportAppXml() {
-    // this.isExporting$.next(true);
+    this.snackBar.open('Exporting...');
     this.exportAppService.exportForVersionControl(true, false).subscribe({
-      next: res => {
-        // this.isExporting$.next(false);
-        alert('Done - please check your \'.data\' folder');
+      next: result => {
+        this.snackBar.open('Export done. Please check your \'.data\' folder', null, { duration: 3000 });
       },
       error: (error: HttpErrorResponse) => {
-        // this.isExporting$.next(false);
+        this.snackBar.open('Export failed. Please check console for more information', null, { duration: 3000 });
       },
     });
   }
 
-  // experimental
+  /** Experimental */
   resetApp() {
-    if (!confirm('Are you sure? All changes since then will be lost')) { return; }
-    this.importer.resetApp().subscribe({
+    if (!confirm('Are you sure? All changes since last xml export will be lost')) { return; }
+    this.snackBar.open('Resetting...');
+    this.importAppPartsService.resetApp().subscribe({
       next: result => {
-        // this.isImporting$.next(false);
-        // this.importResult$.next(result);
         this.snackBar.open('Reset worked!', null, { duration: 3000 });
       },
       error: (error: HttpErrorResponse) => {
-        // this.isImporting$.next(false);
-        // this.importResult$.next(null);
         this.snackBar.open('Reset failed. Please check console for more information', null, { duration: 3000 });
       },
     });

@@ -19,10 +19,10 @@ export class ImportAppPartsService {
     });
   }
 
-  /** Reset the app back to the state it was in the last xml export */
+  /** Reset the App back to the state it was in the last xml export */
   resetApp() {
-    const ctx = this.context;
-    const url = this.dnnContext.$2sxc.http.apiUrl(webApiAppRoot + `Reset?zoneid=${ctx.zoneId}&appid=${ctx.appId}`);
-    return this.http.post<ImportAppResult>(url, {});
+    return this.http.post<ImportAppResult>(this.dnnContext.$2sxc.http.apiUrl(webApiAppRoot + 'Reset'), {}, {
+      params: { appId: this.context.appId.toString(), zoneId: this.context.zoneId.toString() }
+    });
   }
 }

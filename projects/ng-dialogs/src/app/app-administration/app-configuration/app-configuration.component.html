@@ -123,11 +123,11 @@
     </mat-card-header>
     <mat-card-content>
       Reset all app data to the state stored in the .data/app.xml.
-      <button mat-button matTooltip="Save State to app.xml for github versioning" (click)="exportAppXml()">
+      <button mat-button matTooltip="Save App State to app.xml for Github versioning" (click)="exportAppXml()">
         <mat-icon>save_alt</mat-icon>
         <span> Save state</span>
       </button>
-      <button mat-button matTooltip="Reset App" (click)="resetApp()">
+      <button mat-button matTooltip="Reset App state to state saved in app.xml" (click)="resetApp()">
         <mat-icon>restore</mat-icon>
         <span> Restore state</span>
       </button>

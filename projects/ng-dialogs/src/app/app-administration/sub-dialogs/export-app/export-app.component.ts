@@ -1,5 +1,4 @@
-import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, HostBinding, NgZone, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -23,7 +22,7 @@ export class ExportAppComponent implements OnInit, OnDestroy {
     map(([appInfo, isExporting]) => ({ appInfo, isExporting })),
   );
 
-  constructor(private dialogRef: MatDialogRef<ExportAppComponent>, private exportAppService: ExportAppService, private zone: NgZone) { }
+  constructor(private dialogRef: MatDialogRef<ExportAppComponent>, private exportAppService: ExportAppService) { }
 
   ngOnInit() {
     this.exportAppService.getAppInfo().subscribe(appInfo => {
@@ -44,18 +43,5 @@ export class ExportAppComponent implements OnInit, OnDestroy {
     this.isExporting$.next(true);
     this.exportAppService.exportApp(this.includeContentGroups, this.resetAppGuid);
     this.isExporting$.next(false);
-  }
-
-  exportGit() {
-    this.isExporting$.next(true);
-    this.exportAppService.exportForVersionControl(this.includeContentGroups, this.resetAppGuid).subscribe({
-      next: res => {
-        this.isExporting$.next(false);
-        alert('Done - please check your \'.data\' folder');
-      },
-      error: (error: HttpErrorResponse) => {
-        this.isExporting$.next(false);
-      },
-    });
   }
 }
