@@ -368,7 +368,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     const item: ContentItem = params.data;
     const published: PubMeta = {
       published: item.IsPublished,
-      metadata: !!item.Metadata,
+      metadata: !!item.For,
     };
     return published;
   }
