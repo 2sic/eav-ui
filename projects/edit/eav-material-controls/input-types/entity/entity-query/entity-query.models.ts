@@ -1,5 +1,5 @@
 export interface QueryStreams {
-  [key: string]: QueryEntity[];
+  [stream: string]: QueryEntity[];
 }
 
 export interface QueryEntity {

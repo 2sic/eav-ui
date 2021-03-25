@@ -38,7 +38,7 @@ export function convertValueToArray(value: string | string[], separator: string)
 
   if (Array.isArray(value)) { return value; }
 
-  return (value).split(separator);
+  return value.split(separator);
 }
 
 /** Convert string array value in string value if a value is type array */

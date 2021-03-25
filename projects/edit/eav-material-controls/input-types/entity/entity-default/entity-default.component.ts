@@ -4,7 +4,7 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { distinctUntilChanged, map } from 'rxjs/operators';
 import { EditForm } from '../../../../../ng-dialogs/src/app/shared/models/edit-form.model';
 import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
 import { FieldMask } from '../../../../shared/helpers';
@@ -32,9 +32,6 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
 
   useQuery = false;
   contentTypeMask: FieldMask;
-
-  /** New in 11.11.03 - Prefill feature to add prefill to new entities */
-  prefillMask: FieldMask;
 
   error$ = new BehaviorSubject('');
   freeTextMode$ = new BehaviorSubject(false);
@@ -69,27 +66,19 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
     this.isExpanded$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
 
     this.subscription.add(
-      this.settings$.subscribe(settings => {
+      this.settings$.pipe(
+        map(settings => settings.EntityType),
+        distinctUntilChanged(),
+      ).subscribe(entityType => {
         this.contentTypeMask?.destroy();
         this.contentTypeMask = new FieldMask(
-          settings.EntityType,
+          entityType,
           this.group.controls,
+          // for EntityQuery, fetchAvailableEntities runs only in onInit. For EntityDefault it runs on every contentTypeMask update
           !this.useQuery ? this.fetchAvailableEntities.bind(this) : this.updateAddNew.bind(this),
           null,
           this.eavService.eavConfig,
         );
-
-        // new in 11.11.03 - similar to contentTypeMask
-        // not exactly sure what each piece does, must ask SPM to finalize
-        this.prefillMask?.destroy();
-        this.prefillMask = new FieldMask(
-          settings.Prefill,
-          this.group.controls,
-          !this.useQuery ? this.fetchAvailableEntities.bind(this) : this.updateAddNew.bind(this),
-          null,
-          this.eavService.eavConfig,
-        );
-
       })
     );
 
@@ -109,7 +98,6 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
     this.disableAddNew$.complete();
     this.config.entityCache$.complete();
     this.contentTypeMask.destroy();
-    this.prefillMask?.destroy();
     super.ngOnDestroy();
   }
 
@@ -153,11 +141,9 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
     this.updateAddNew();
     const contentTypeName = this.contentTypeMask.resolve();
     const enableAddExisting = this.settings$.value.EnableAddExisting;
-    // spm TODO: Should this work like this?
-    // check if we should get all or only the selected ones...
-    // if we can't add, then we only need one...
-    const filterText = enableAddExisting ? null : this.control.value;
-    this.entityService.getAvailableEntities(filterText, contentTypeName).subscribe(items => {
+    const filterText: string[] = enableAddExisting ? null : this.control.value;
+
+    this.entityService.getAvailableEntities(contentTypeName, filterText).subscribe(items => {
       this.config.entityCache$.next(items);
     });
   }
@@ -207,7 +193,9 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
   private getPrefill(): Record<string, string> {
     // still very experimental, and to avoid errors try to catch any mistakes
     try {
-      const prefill = this.prefillMask.resolve();
+      const prefillMask = new FieldMask(this.settings$.value.Prefill, this.group.controls, null, null, this.eavService.eavConfig);
+      const prefill = prefillMask.resolve();
+      prefillMask.destroy();
       if (!prefill || !prefill.trim()) { return null; }
       const result: Record<string, string> = {};
       prefill.split('\n').forEach(line => {
@@ -225,7 +213,7 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
 
   deleteEntity(props: DeleteEntityProps) {
     const entity = this.config.entityCache$.value.find(e => e.Value === props.entityGuid);
-    const id = entity.Id.toString();
+    const id = entity.Id;
     const title = entity.Text;
     const contentType = this.contentTypeMask.resolve();
 

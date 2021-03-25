@@ -93,10 +93,13 @@ export class DevRestDataComponent implements OnDestroy {
 
     // Get an item of this type for building urls
     const itemOfThisType$ = entityService.reactiveEntities(
-      contentType$.pipe(filter(ct => !!ct), map(ct => ({ contentTypeName: ct.StaticName, filter: '' })))
+      contentType$.pipe(
+        filter(ct => !!ct),
+        map(ct => ({ contentTypeName: ct.StaticName })),
+      ),
     ).pipe(
       map(list => list.length ? list[0] : null),
-      filter(i => !!i)
+      filter(i => !!i),
     );
 
     // Prepare everything for use in the template
