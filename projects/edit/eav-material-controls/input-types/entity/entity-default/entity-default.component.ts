@@ -56,11 +56,9 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
     super.ngOnInit();
     this.config.entityCache$ = new BehaviorSubject<EntityInfo[]>([]);
 
-    this.selectedEntities$ = combineLatest([this.value$, this.settings$, this.config.entityCache$]).pipe(
-      map(([fieldValue, settings, availableEntities]) => {
-        const selected = calculateSelectedEntities(fieldValue, settings.Separator, availableEntities, this.translate);
-        return selected;
-      }),
+    const separator$ = this.settings$.pipe(map(settings => settings.Separator), distinctUntilChanged());
+    this.selectedEntities$ = combineLatest([this.value$, separator$, this.config.entityCache$]).pipe(
+      map(([value, separator, entityCache]) => calculateSelectedEntities(value, separator, entityCache, this.translate)),
     );
 
     this.isExpanded$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
@@ -141,9 +139,9 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
     this.updateAddNew();
     const contentTypeName = this.contentTypeMask.resolve();
     const enableAddExisting = this.settings$.value.EnableAddExisting;
-    const filterText: string[] = enableAddExisting ? null : this.control.value;
+    const filter: string[] = enableAddExisting ? null : this.control.value;
 
-    this.entityService.getAvailableEntities(contentTypeName, filterText).subscribe(items => {
+    this.entityService.getAvailableEntities(contentTypeName, filter).subscribe(items => {
       this.config.entityCache$.next(items);
     });
   }

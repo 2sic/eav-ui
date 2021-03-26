@@ -18,7 +18,7 @@ export interface EavFormData extends EavPublishStatus {
   Features: Feature[];
   InputTypes: InputType[];
   Items: Item1[];
-  Prefetch: Prefetch;
+  Prefetch?: Prefetch;
 }
 
 export interface EditDialogContext {
