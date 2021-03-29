@@ -96,11 +96,13 @@ export class Plumber {
       const toUuid = targetElementId + '_in_' + stream.TargetIn;
 
       const sEndp: PlumbType = this.instance.getEndpoint(fromUuid);
-      sEndp?.connections?.forEach((connection: PlumbType) => {
-        if (connection.endpoints[1].getUuid() !== toUuid) { return; }
-
-        connection.setLabel({ label: stream.Count.toString(), cssClass: 'streamEntitiesCount' });
-      });
+      sEndp?.connections
+        ?.filter((connection: PlumbType) => connection.endpoints[1].getUuid() === toUuid)
+        ?.forEach((connection: PlumbType) => {
+          const label = !stream.Error ? stream.Count.toString() : '';
+          const cssClass = !stream.Error ? 'streamEntitiesCount' : 'streamEntitiesCountError';
+          connection.setLabel({ label, cssClass });
+        });
     });
   }
 
