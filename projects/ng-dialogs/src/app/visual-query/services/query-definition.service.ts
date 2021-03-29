@@ -123,15 +123,21 @@ export class QueryDefinitionService {
     );
   }
 
-  runPipeline(id: number) {
+  /**
+   * `top` - fetch first X items
+   */
+  runPipeline(id: number, top: number) {
     return this.http.get<PipelineResult>(this.dnnContext.$2sxc.http.apiUrl(webApiQueryRun), {
-      params: { appId: this.context.appId.toString(), id: id.toString() }
+      params: { appId: this.context.appId.toString(), id: id.toString(), top: top.toString() }
     });
   }
 
-  debugStream(id: number, source: string, sourceOut: string) {
+  /**
+   * `top` - fetch first X items
+   */
+  debugStream(id: number, source: string, sourceOut: string, top: number) {
     return this.http.get<PipelineResult>(this.dnnContext.$2sxc.http.apiUrl(webApiQueryDebugStream), {
-      params: { appId: this.context.appId.toString(), id: id.toString(), from: source, out: sourceOut }
+      params: { appId: this.context.appId.toString(), id: id.toString(), from: source, out: sourceOut, top: top.toString() }
     });
   }
 }

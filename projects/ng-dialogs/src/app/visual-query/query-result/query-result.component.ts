@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DebugStreamInfo, PipelineResultQuery, PipelineResultSources, PipelineResultStream } from '../models';
+import { VisualQueryService } from '../services/visual-query.service';
 import { QueryResultDialogData } from './query-result.models';
 
 @Component({
@@ -13,17 +14,25 @@ export class QueryResultComponent implements OnInit {
   testParameters: string;
   timeUsed: number;
   ticksUsed: number;
+  top: number;
+  optionsForTop: number[];
   result: PipelineResultQuery;
   debugStream: DebugStreamInfo;
   sources: PipelineResultSources;
   streams: PipelineResultStream[];
 
-  constructor(@Inject(MAT_DIALOG_DATA) private dialogData: QueryResultDialogData, private dialogRef: MatDialogRef<QueryResultComponent>) { }
+  constructor(
+    @Inject(MAT_DIALOG_DATA) private dialogData: QueryResultDialogData,
+    private dialogRef: MatDialogRef<QueryResultComponent>,
+    private visualQueryService: VisualQueryService,
+  ) { }
 
   ngOnInit() {
     this.testParameters = this.dialogData.testParameters;
     this.timeUsed = this.dialogData.result.QueryTimer.Milliseconds;
     this.ticksUsed = this.dialogData.result.QueryTimer.Ticks;
+    this.top = this.dialogData.top;
+    this.optionsForTop = [25, 100, 1000, 0];
     this.result = this.dialogData.result.Query;
     this.debugStream = this.dialogData.debugStream;
     this.sources = this.dialogData.result.Sources;
@@ -32,5 +41,17 @@ export class QueryResultComponent implements OnInit {
 
   closeDialog() {
     this.dialogRef.close();
+  }
+
+  show(top: number) {
+    if (top === this.top) { return; }
+
+    if (this.debugStream) {
+      this.visualQueryService.debugStream(this.debugStream.original, top);
+    } else {
+      this.visualQueryService.runPipeline(top);
+    }
+
+    this.closeDialog();
   }
 }

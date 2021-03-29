@@ -179,34 +179,6 @@ export class VisualQueryService implements OnDestroy {
     });
   }
 
-  debugStream(stream: PipelineResultStream) {
-    if (stream.Error) {
-      this.showStreamErrorResult(stream);
-      return;
-    }
-
-    if (stream.Count === 0) { return; }
-
-    this.snackBar.open('Running stream...');
-    const pipelineId = this.pipelineModel$.value.Pipeline.EntityId;
-    this.queryDefinitionService.debugStream(pipelineId, stream.Source, stream.SourceOut).subscribe({
-      next: streamResult => {
-        this.snackBar.open('Stream worked', null, { duration: 2000 });
-        const pipelineDataSource = this.pipelineModel$.value.DataSources.find(ds => ds.EntityGuid === stream.Source);
-        const debugStream: DebugStreamInfo = {
-          name: stream.SourceOut,
-          source: stream.Source,
-          sourceName: pipelineDataSource.Name,
-        };
-        this.showQueryResult(streamResult, debugStream);
-        console.warn(streamResult);
-      },
-      error: (error: HttpErrorResponse) => {
-        this.snackBar.open('Stream failed', null, { duration: 2000 });
-      },
-    });
-  }
-
   private savePipeline(callback?: () => void) {
     this.snackBar.open('Saving...');
     this.queryDefinitionService.savePipeline(this.pipelineModel$.value).subscribe({
@@ -221,18 +193,47 @@ export class VisualQueryService implements OnDestroy {
     });
   }
 
-  private runPipeline() {
+  runPipeline(top = 0) {
     this.snackBar.open('Running query...');
-    this.queryDefinitionService.runPipeline(this.pipelineModel$.value.Pipeline.EntityId).subscribe({
+    this.queryDefinitionService.runPipeline(this.pipelineModel$.value.Pipeline.EntityId, top).subscribe({
       next: pipelineResult => {
         this.snackBar.open('Query worked', null, { duration: 2000 });
-        this.showQueryResult(pipelineResult);
+        this.showQueryResult(pipelineResult, top);
         console.warn(pipelineResult);
         setTimeout(() => { this.putEntityCountOnConnections$.next(pipelineResult); });
       },
       error: (error: HttpErrorResponse) => {
         this.snackBar.open('Query failed', null, { duration: 2000 });
       }
+    });
+  }
+
+  debugStream(stream: PipelineResultStream, top = 25) {
+    if (stream.Error) {
+      this.showStreamErrorResult(stream);
+      return;
+    }
+
+    if (stream.Count === 0) { return; }
+
+    this.snackBar.open('Running stream...');
+    const pipelineId = this.pipelineModel$.value.Pipeline.EntityId;
+    this.queryDefinitionService.debugStream(pipelineId, stream.Source, stream.SourceOut, top).subscribe({
+      next: streamResult => {
+        this.snackBar.open('Stream worked', null, { duration: 2000 });
+        const pipelineDataSource = this.pipelineModel$.value.DataSources.find(ds => ds.EntityGuid === stream.Source);
+        const debugStream: DebugStreamInfo = {
+          name: stream.SourceOut,
+          source: stream.Source,
+          sourceName: pipelineDataSource.Name,
+          original: stream,
+        };
+        this.showQueryResult(streamResult, top, debugStream);
+        console.warn(streamResult);
+      },
+      error: (error: HttpErrorResponse) => {
+        this.snackBar.open('Stream failed', null, { duration: 2000 });
+      },
     });
   }
 
@@ -249,11 +250,12 @@ export class VisualQueryService implements OnDestroy {
     });
   }
 
-  private showQueryResult(result: PipelineResult, debugStream?: DebugStreamInfo) {
+  private showQueryResult(result: PipelineResult, top: number, debugStream?: DebugStreamInfo) {
     const dialogData: QueryResultDialogData = {
       testParameters: this.pipelineModel$.value.Pipeline.TestParameters,
       result,
       debugStream,
+      top,
     };
     this.dialog.open(QueryResultComponent, {
       data: dialogData,

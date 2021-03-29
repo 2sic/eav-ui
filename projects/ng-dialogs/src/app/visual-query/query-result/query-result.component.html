@@ -32,6 +32,17 @@
 <div mat-dialog-title>
   <div class="dialog-title-box">Query Results</div>
 </div>
+<p class="description">
+  <ng-container *ngIf="top === 0">Showing All results</ng-container>
+  <ng-container *ngIf="top !== 0">Showing top {{ top }} results</ng-container>
+</p>
+<p class="description">
+  <button mat-button *ngFor="let option of optionsForTop" (click)="show(option)">
+    Show
+    <ng-container *ngIf="option === 0">All</ng-container>
+    <ng-container *ngIf="option !== 0">{{ option }}</ng-container>
+  </button>
+</p>
 <pre>
   {{ result | json }}
 </pre>
