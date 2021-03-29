@@ -23,7 +23,7 @@
 <p class="description">
   Executed in {{ timeUsed }}ms ({{ ticksUsed }} ticks)
 </p>
-<ul class="description">
+<ul *ngIf="testParameters?.length" class="description">
   <li *ngFor="let param of testParameters?.split('\n')">{{ param }}</li>
 </ul>
 
