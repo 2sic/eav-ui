@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Context } from '../../shared/services/context';
-import { PipelineModel } from '../models/pipeline.model';
+import { PipelineModel } from '../models';
 import { VisualQueryService } from '../services/visual-query.service';
 import { calculateWarnings } from './run-explorer.helpers';
 

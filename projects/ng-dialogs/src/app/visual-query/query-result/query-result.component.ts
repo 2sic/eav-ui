@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { DebugStreamInfo } from '../models';
-import { PipelineResultQuery, PipelineResultSources, PipelineResultStream } from '../models/pipeline-result.model';
+import { DebugStreamInfo, PipelineResultQuery, PipelineResultSources, PipelineResultStream } from '../models';
 import { QueryResultDialogData } from './query-result.models';
 
 @Component({

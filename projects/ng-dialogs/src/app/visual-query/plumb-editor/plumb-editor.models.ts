@@ -1,4 +1,4 @@
-import { PipelineDataSource } from '../models/pipeline.model';
+import { PipelineDataSource } from '../models';
 
 export type PlumbType = any;
 

@@ -1,5 +1,4 @@
-import { DataSource } from '../models/data-sources.model';
-import { PipelineDataSource } from '../models/pipeline.model';
+import { DataSource, PipelineDataSource } from '../models';
 import { GuiTypes, TypeInfo, TypeInfos } from './plumb-editor.models';
 
 export const guiTypes: GuiTypes = {
