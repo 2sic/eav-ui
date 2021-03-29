@@ -123,18 +123,14 @@ export class QueryDefinitionService {
     );
   }
 
-  /**
-   * `top` - fetch first X items
-   */
+  /** `top` - fetch first X items */
   runPipeline(id: number, top: number) {
     return this.http.get<PipelineResult>(this.dnnContext.$2sxc.http.apiUrl(webApiQueryRun), {
       params: { appId: this.context.appId.toString(), id: id.toString(), top: top.toString() }
     });
   }
 
-  /**
-   * `top` - fetch first X items
-   */
+  /** `top` - fetch first X items */
   debugStream(id: number, source: string, sourceOut: string, top: number) {
     return this.http.get<PipelineResult>(this.dnnContext.$2sxc.http.apiUrl(webApiQueryDebugStream), {
       params: { appId: this.context.appId.toString(), id: id.toString(), from: source, out: sourceOut, top: top.toString() }

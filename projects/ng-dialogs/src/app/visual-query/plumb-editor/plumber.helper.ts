@@ -104,8 +104,9 @@ export class Plumber {
             label,
             cssClass,
             events: {
-              click: () => {
+              click: (labelOverlay: PlumbType) => {
                 if (!this.pipelineModel.Pipeline.AllowEdit) { return; }
+                if (this.ignoreMultipleClicks(labelOverlay)) { return; }
                 this.onDebugStream(stream);
               },
             },
@@ -273,14 +274,7 @@ export class Plumber {
           events: {
             dblclick: (labelOverlay: PlumbType) => {
               if (!this.pipelineModel.Pipeline.AllowEdit) { return; }
-
-              // spm NOTE: workaround for multiple dblclick listeners
-              if (labelOverlay.dblClickCounter == null || labelOverlay.dblClickCounter >= this.plumbInits) {
-                labelOverlay.dblClickCounter = 1;
-              } else {
-                labelOverlay.dblClickCounter++;
-              }
-              if (labelOverlay.dblClickCounter > 1) { return; }
+              if (this.ignoreMultipleClicks(labelOverlay)) { return; }
 
               const newLabel = prompt('Rename stream', labelOverlay.label);
               if (!newLabel) { return; }
@@ -338,4 +332,13 @@ export class Plumber {
     });
   }
 
+  /** Workaround for multiple click listeners */
+  private ignoreMultipleClicks(target: PlumbType) {
+    if (target.dblClickCounter == null || target.dblClickCounter >= this.plumbInits) {
+      target.dblClickCounter = 1;
+    } else {
+      target.dblClickCounter++;
+    }
+    return target.dblClickCounter > 1;
+  }
 }
