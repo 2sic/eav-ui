@@ -1,0 +1,14 @@
+<div mat-dialog-title>
+  <div class="dialog-title-box">
+    <div>Stream Error Results</div>
+    <button mat-icon-button matTooltip="Close dialog" (click)="closeDialog()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+</div>
+
+<br />
+
+<pre>
+  {{ errorData | json }}
+</pre>

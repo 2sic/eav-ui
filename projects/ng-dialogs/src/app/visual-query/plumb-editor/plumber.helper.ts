@@ -2,7 +2,7 @@ import { eavConstants } from '../../shared/constants/eav.constants';
 import { Dictionary } from '../../shared/models/dictionary.model';
 import { EavWindow } from '../../shared/models/eav-window.model';
 import { DataSource } from '../models/data-sources.model';
-import { PipelineResult } from '../models/pipeline-result.model';
+import { PipelineResult, PipelineResultStream } from '../models/pipeline-result.model';
 import { PipelineDataSource, PipelineModel, StreamWire, VisualDesignerData } from '../models/pipeline.model';
 import { PlumbType } from './plumb-editor.models';
 
@@ -37,6 +37,7 @@ export class Plumber {
     private dataSources: DataSource[],
     private onConnectionsChanged: () => void,
     private onDragend: (pipelineDataSourceGuid: string, position: VisualDesignerData) => void,
+    private onDebugStream: (stream: PipelineResultStream) => void,
     /** Workaround for multiple dblClick listeners */
     private plumbInits: number,
   ) {
@@ -101,7 +102,16 @@ export class Plumber {
         ?.forEach((connection: PlumbType) => {
           const label = !stream.Error ? stream.Count.toString() : '';
           const cssClass = !stream.Error ? 'streamEntitiesCount' : 'streamEntitiesCountError';
-          connection.setLabel({ label, cssClass });
+          connection.setLabel({
+            label,
+            cssClass,
+            events: {
+              click: () => {
+                if (!this.pipelineModel.Pipeline.AllowEdit) { return; }
+                this.onDebugStream(stream);
+              },
+            },
+          });
         });
     });
   }
@@ -278,8 +288,8 @@ export class Plumber {
               if (!newLabel) { return; }
               labelOverlay.setLabel(newLabel);
               setTimeout(() => { this.onConnectionsChanged(); });
-            }
-          }
+            },
+          },
         }
       ]
     ];

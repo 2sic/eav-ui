@@ -1,6 +1,11 @@
 <div mat-dialog-title>
   <div class="dialog-title-box">
-    <div>Query Results</div>
+    <div>
+      Query Results
+      <ng-container *ngIf="debugStream">
+        for Stream: "{{ debugStream.name }}" on Source: "{{ debugStream.sourceName }}"
+      </ng-container>
+    </div>
     <button mat-icon-button matTooltip="Close dialog" (click)="closeDialog()">
       <mat-icon>close</mat-icon>
     </button>
@@ -51,7 +56,8 @@
     <td>
       <ol>
         <li *ngFor="let config of source.value.Configuration | keyvalue">
-          <b>{{ config.key }}</b>=<em>{{ config.value }}</em></li>
+          <b>{{ config.key }}</b>=<em>{{ config.value }}</em>
+        </li>
       </ol>
     </td>
     <td>{{ source.value.Error }}</td>

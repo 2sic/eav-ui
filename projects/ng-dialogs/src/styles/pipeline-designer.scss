@@ -219,7 +219,7 @@
     opacity: 1;
   }
 
-  .streamEntitiesCount {
+  @mixin streamEntitiesCountLabel() {
     cursor: pointer;
     background: #93ceff;
     color: black;
@@ -228,20 +228,24 @@
     opacity: 0.8;
     min-width: 25px;
     text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .streamEntitiesCount {
+    @include streamEntitiesCountLabel();
+
+    &:hover::after {
+      @include materialIcon("find_in_page", 18px);
+    }
   }
 
   .streamEntitiesCountError {
-    cursor: pointer;
-    background: #93ceff;
-    color: black;
-    padding: 2px;
-    border-radius: 25px;
-    opacity: 0.8;
-    min-width: 25px;
-    text-align: center;
+    @include streamEntitiesCountLabel();
     width: 32px;
 
-    &::before {
+    &::after {
       @include materialIcon("warning", 18px);
     }
   }

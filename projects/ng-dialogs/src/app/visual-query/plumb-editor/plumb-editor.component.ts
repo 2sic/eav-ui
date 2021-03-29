@@ -4,6 +4,7 @@ import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { loadScripts } from '../../shared/helpers/load-scripts.helper';
+import { PipelineResultStream } from '../models';
 import { PipelineDataSource, VisualDesignerData } from '../models/pipeline.model';
 import { QueryDefinitionService } from '../services/query-definition.service';
 import { VisualQueryService } from '../services/visual-query.service';
@@ -84,6 +85,7 @@ export class PlumbEditorComponent implements OnInit, AfterViewInit, OnDestroy {
           this.visualQueryService.dataSources$.value,
           this.onConnectionsChanged.bind(this),
           this.onDragend.bind(this),
+          this.onDebugStream.bind(this),
           ++this.plumbInits,
         );
       })
@@ -104,6 +106,10 @@ export class PlumbEditorComponent implements OnInit, AfterViewInit, OnDestroy {
 
   onDragend(pipelineDataSourceGuid: string, position: VisualDesignerData) {
     this.visualQueryService.changeDataSourcePosition(pipelineDataSourceGuid, position);
+  }
+
+  onDebugStream(stream: PipelineResultStream) {
+    this.visualQueryService.debugStream(stream);
   }
 
   configureDataSource(dataSource: PipelineDataSource) {

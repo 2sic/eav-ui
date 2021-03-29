@@ -15,6 +15,7 @@ import { PlumbEditorComponent } from './plumb-editor/plumb-editor.component';
 import { QueryResultComponent } from './query-result/query-result.component';
 import { RunExplorerComponent } from './run-explorer/run-explorer.component';
 import { QueryDefinitionService } from './services/query-definition.service';
+import { StreamErrorResultComponent } from './stream-error-result/stream-error-result.component';
 import { VisualQueryRoutingModule } from './visual-query-routing.module';
 import { VisualQueryComponent } from './visual-query.component';
 
@@ -25,6 +26,7 @@ import { VisualQueryComponent } from './visual-query.component';
     AddExplorerComponent,
     PlumbEditorComponent,
     QueryResultComponent,
+    StreamErrorResultComponent,
   ],
   entryComponents: [
     VisualQueryComponent,
@@ -32,6 +34,7 @@ import { VisualQueryComponent } from './visual-query.component';
     AddExplorerComponent,
     PlumbEditorComponent,
     QueryResultComponent,
+    StreamErrorResultComponent,
   ],
   imports: [
     CommonModule,
@@ -49,6 +52,6 @@ import { VisualQueryComponent } from './visual-query.component';
     QueryDefinitionService,
     MetadataService,
     ContentTypesService,
-  ]
+  ],
 })
 export class VisualQueryModule { }

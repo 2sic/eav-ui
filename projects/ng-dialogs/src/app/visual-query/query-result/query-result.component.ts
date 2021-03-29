@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { DebugStreamInfo } from '../models';
 import { PipelineResultQuery, PipelineResultSources, PipelineResultStream } from '../models/pipeline-result.model';
 import { QueryResultDialogData } from './query-result.models';
 
@@ -14,6 +15,7 @@ export class QueryResultComponent implements OnInit {
   timeUsed: number;
   ticksUsed: number;
   result: PipelineResultQuery;
+  debugStream: DebugStreamInfo;
   sources: PipelineResultSources;
   streams: PipelineResultStream[];
 
@@ -24,6 +26,7 @@ export class QueryResultComponent implements OnInit {
     this.timeUsed = this.dialogData.result.QueryTimer.Milliseconds;
     this.ticksUsed = this.dialogData.result.QueryTimer.Ticks;
     this.result = this.dialogData.result.Query;
+    this.debugStream = this.dialogData.debugStream;
     this.sources = this.dialogData.result.Sources;
     this.streams = this.dialogData.result.Streams;
   }

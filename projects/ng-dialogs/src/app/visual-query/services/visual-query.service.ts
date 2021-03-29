@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectorRef, Injectable, NgZone, OnDestroy, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -11,11 +12,14 @@ import { MetadataService } from '../../permissions/services/metadata.service';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { EditForm } from '../../shared/models/edit-form.model';
+import { DebugStreamInfo } from '../models';
 import { DataSource, DataSourceMetadata } from '../models/data-sources.model';
-import { PipelineResult } from '../models/pipeline-result.model';
+import { PipelineResult, PipelineResultStream } from '../models/pipeline-result.model';
 import { PipelineDataSource, PipelineModel, StreamWire, VisualDesignerData } from '../models/pipeline.model';
 import { QueryResultComponent } from '../query-result/query-result.component';
 import { QueryResultDialogData } from '../query-result/query-result.models';
+import { StreamErrorResultComponent } from '../stream-error-result/stream-error-result.component';
+import { StreamErrorResultDialogData } from '../stream-error-result/stream-error-result.models';
 import { QueryDefinitionService } from './query-definition.service';
 
 @Injectable()
@@ -143,9 +147,9 @@ export class VisualQueryService implements OnDestroy {
     const keyType = eavConstants.keyTypes.guid;
     const key = pipelineDataSource.EntityGuid;
 
-    // Query for existing Entity
+    // query for existing Entity
     this.metadataService.getMetadata<DataSourceMetadata[]>(typeId, keyType, key, contentTypeName).subscribe(metadata => {
-      // Edit existing Entity
+      // edit existing Entity
       if (metadata.length) {
         const form: EditForm = {
           items: [{ EntityId: metadata[0].Id }],
@@ -170,10 +174,38 @@ export class VisualQueryService implements OnDestroy {
           const formUrl = convertFormToUrl(form);
           this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
         },
-        error: error => {
+        error: (error: HttpErrorResponse) => {
           alert('Server reports error - this usually means that this data-source doesn\'t have any configuration');
         }
       });
+    });
+  }
+
+  debugStream(stream: PipelineResultStream) {
+    if (stream.Error) {
+      this.showStreamErrorResult(stream);
+      return;
+    }
+
+    if (stream.Count === 0) { return; }
+
+    this.snackBar.open('Running stream...');
+    const pipelineId = this.pipelineModel$.value.Pipeline.EntityId;
+    this.queryDefinitionService.debugStream(pipelineId, stream.Source, stream.SourceOut).subscribe({
+      next: streamResult => {
+        this.snackBar.open('Stream worked', null, { duration: 2000 });
+        const pipelineDataSource = this.pipelineModel$.value.DataSources.find(ds => ds.EntityGuid === stream.Source);
+        const debugStream: DebugStreamInfo = {
+          name: stream.SourceOut,
+          source: stream.Source,
+          sourceName: pipelineDataSource.Name,
+        };
+        this.showQueryResult(streamResult, debugStream);
+        console.warn(streamResult);
+      },
+      error: (error: HttpErrorResponse) => {
+        this.snackBar.open('Stream failed', null, { duration: 2000 });
+      },
     });
   }
 
@@ -185,7 +217,7 @@ export class VisualQueryService implements OnDestroy {
         this.pipelineModel$.next(pipelineModel);
         if (callback != null) { callback(); }
       },
-      error: error => {
+      error: (error: HttpErrorResponse) => {
         this.snackBar.open('Save Pipeline failed', null, { duration: 2000 });
       }
     });
@@ -196,27 +228,11 @@ export class VisualQueryService implements OnDestroy {
     this.queryDefinitionService.runPipeline(this.pipelineModel$.value.Pipeline.EntityId).subscribe({
       next: pipelineResult => {
         this.snackBar.open('Query worked', null, { duration: 2000 });
-        // open modal with the results
-        const dialogData: QueryResultDialogData = {
-          testParameters: this.pipelineModel$.value.Pipeline.TestParameters,
-          result: pipelineResult,
-        };
-        this.dialog.open(QueryResultComponent, {
-          data: dialogData,
-          backdropClass: 'dialog-backdrop',
-          panelClass: ['dialog-panel', `dialog-panel-medium`, 'no-scrollbar'],
-          viewContainerRef: this.viewContainerRef,
-          autoFocus: false,
-          closeOnNavigation: false,
-          // spm NOTE: used to force align-items: flex-start; on cdk-global-overlay-wrapper.
-          // Real top margin is overwritten in css e.g. dialog-panel-large
-          position: { top: '0' },
-        });
-        this.changeDetectorRef.markForCheck();
+        this.showQueryResult(pipelineResult);
         console.warn(pipelineResult);
         setTimeout(() => { this.putEntityCountOnConnections$.next(pipelineResult); });
       },
-      error: error => {
+      error: (error: HttpErrorResponse) => {
         this.snackBar.open('Query failed', null, { duration: 2000 });
       }
     });
@@ -233,6 +249,44 @@ export class VisualQueryService implements OnDestroy {
       this.pipelineModel$.next(pipelineModel);
       this.titleService.setTitle(`${pipelineModel.Pipeline.Name} - Visual Query`);
     });
+  }
+
+  private showQueryResult(result: PipelineResult, debugStream?: DebugStreamInfo) {
+    const dialogData: QueryResultDialogData = {
+      testParameters: this.pipelineModel$.value.Pipeline.TestParameters,
+      result,
+      debugStream,
+    };
+    this.dialog.open(QueryResultComponent, {
+      data: dialogData,
+      backdropClass: 'dialog-backdrop',
+      panelClass: ['dialog-panel', `dialog-panel-medium`, 'no-scrollbar'],
+      viewContainerRef: this.viewContainerRef,
+      autoFocus: false,
+      closeOnNavigation: false,
+      // spm NOTE: used to force align-items: flex-start; on cdk-global-overlay-wrapper.
+      // Real top margin is overwritten in css e.g. dialog-panel-large
+      position: { top: '0' },
+    });
+    this.changeDetectorRef.markForCheck();
+  }
+
+  private showStreamErrorResult(stream: PipelineResultStream) {
+    const dialogData: StreamErrorResultDialogData = {
+      errorData: stream.ErrorData,
+    };
+    this.dialog.open(StreamErrorResultComponent, {
+      data: dialogData,
+      backdropClass: 'dialog-backdrop',
+      panelClass: ['dialog-panel', `dialog-panel-medium`, 'no-scrollbar'],
+      viewContainerRef: this.viewContainerRef,
+      autoFocus: false,
+      closeOnNavigation: false,
+      // spm NOTE: used to force align-items: flex-start; on cdk-global-overlay-wrapper.
+      // Real top margin is overwritten in css e.g. dialog-panel-large
+      position: { top: '0' },
+    });
+    this.changeDetectorRef.markForCheck();
   }
 
   private fetchDataSources(callback?: () => void) {
