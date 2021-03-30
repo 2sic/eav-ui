@@ -252,7 +252,6 @@ export class VisualQueryService implements OnDestroy {
 
   private showQueryResult(result: PipelineResult, top: number, debugStream?: DebugStreamInfo) {
     const dialogData: QueryResultDialogData = {
-      testParameters: this.pipelineModel$.value.Pipeline.TestParameters,
       result,
       debugStream,
       top,

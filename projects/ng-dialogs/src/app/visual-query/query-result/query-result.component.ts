@@ -11,7 +11,7 @@ import { QueryResultDialogData } from './query-result.models';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class QueryResultComponent implements OnInit {
-  testParameters: string;
+  parameters: string[];
   timeUsed: number;
   ticksUsed: number;
   top: number;
@@ -28,7 +28,10 @@ export class QueryResultComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.testParameters = this.dialogData.testParameters;
+    const pipeline = this.visualQueryService.pipelineModel$.value.Pipeline;
+    const params = (pipeline.Params?.split('\n') ?? []).filter(el => !!el);
+    const testParams = (pipeline.TestParameters?.split('\n') ?? []).filter(el => !!el);
+    this.parameters = [].concat(params, testParams);
     this.timeUsed = this.dialogData.result.QueryTimer.Milliseconds;
     this.ticksUsed = this.dialogData.result.QueryTimer.Ticks;
     this.top = this.dialogData.top;

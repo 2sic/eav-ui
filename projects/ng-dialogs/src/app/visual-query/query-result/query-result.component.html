@@ -35,14 +35,14 @@
     <pre>{{ result | json }}</pre>
   </mat-tab>
 
-  <mat-tab *ngIf="testParameters?.length">
+  <mat-tab *ngIf="parameters?.length">
     <div *matTabLabel class="mat-tab-label-box" matTooltip="Parameters">
       <span>Parameters</span>
     </div>
 
     <br />
     <ul class="description">
-      <li *ngFor="let param of testParameters?.split('\n')">{{ param }}</li>
+      <li *ngFor="let param of parameters">{{ param }}</li>
     </ul>
   </mat-tab>
 
