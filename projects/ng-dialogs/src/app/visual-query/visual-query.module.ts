@@ -5,6 +5,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { MetadataService } from '../permissions/services/metadata.service';
@@ -46,6 +47,7 @@ import { VisualQueryComponent } from './visual-query.component';
     MatSlideToggleModule,
     MatSnackBarModule,
     MatDialogModule,
+    MatTabsModule,
   ],
   providers: [
     Context,
