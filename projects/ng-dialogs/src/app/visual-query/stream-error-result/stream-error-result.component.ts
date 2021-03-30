@@ -1,7 +1,10 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { EavWindow } from '../../shared/models/eav-window.model';
 import { StreamErrorData } from '../models';
 import { StreamErrorResultDialogData } from './stream-error-result.models';
+
+declare const window: EavWindow;
 
 @Component({
   selector: 'app-stream-error-result',
@@ -23,5 +26,9 @@ export class StreamErrorResultComponent implements OnInit {
 
   closeDialog() {
     this.dialogRef.close();
+  }
+
+  openInsights() {
+    window.open(window.$2sxc.http.apiUrl('sys/insights/logs?key=web-api'), '_blank');
   }
 }

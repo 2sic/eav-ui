@@ -9,6 +9,11 @@
 
 <br />
 
-<pre>
-  {{ errorData | json }}
-</pre>
+<pre>{{ errorData | json }}</pre>
+
+<div>
+  <button mat-button matTooltip="Open 2sxc Insights" (click)="openInsights()">
+    <mat-icon>speed</mat-icon>
+    <span>Insights</span>
+  </button>
+</div>
