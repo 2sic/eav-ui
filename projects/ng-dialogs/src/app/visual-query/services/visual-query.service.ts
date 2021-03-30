@@ -200,6 +200,8 @@ export class VisualQueryService implements OnDestroy {
         this.snackBar.open('Query worked', null, { duration: 2000 });
         this.showQueryResult(pipelineResult, top);
         console.warn(pipelineResult);
+        // push cloned pipelineModel to reset jsPlumb
+        this.pipelineModel$.next(cloneDeep(this.pipelineModel$.value));
         setTimeout(() => { this.putEntityCountOnConnections$.next(pipelineResult); });
       },
       error: (error: HttpErrorResponse) => {
