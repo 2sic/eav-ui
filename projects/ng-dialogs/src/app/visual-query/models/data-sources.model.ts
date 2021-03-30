@@ -1,6 +1,7 @@
 export interface DataSource {
   ContentType: string;
   Difficulty: number;
+  DynamicIn: boolean;
   DynamicOut: boolean;
   EnableConfig: boolean;
   HelpLink: string;

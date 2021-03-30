@@ -14,6 +14,7 @@ export interface TypeInfos {
 
 export interface TypeInfo {
   EnableConfig?: boolean;
+  DynamicIn?: boolean;
   DynamicOut?: boolean;
   HelpLink?: string;
   Icon: string;

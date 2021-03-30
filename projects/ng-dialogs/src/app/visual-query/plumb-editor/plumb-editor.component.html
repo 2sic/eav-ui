@@ -11,7 +11,7 @@
       <div class="configure" title="Configure data source" appMousedownStopPropagation
         *ngIf="templateModel.allowEdit && templateModel.typeInfos[dataSource.EntityGuid].EnableConfig"
         (click)="configureDataSource(dataSource)">
-        <mat-icon class="eav-icon-settings">settings</mat-icon>
+        <mat-icon>settings</mat-icon>
       </div>
 
       <mat-icon class="type-info" [title]="templateModel.typeInfos[dataSource.EntityGuid].UiHint">
@@ -21,14 +21,14 @@
       <div class="name noselect" title="Click to edit name" appMousedownStopPropagation
         (click)="templateModel.allowEdit && editName(dataSource)">
         <span>{{ dataSource.Name || '(no name)' }}</span>
-        <mat-icon class="show-hover-inline eav-icon-pencil">edit</mat-icon>
+        <mat-icon class="show-hover-inline">edit</mat-icon>
       </div>
       <br />
 
       <div class="description noselect" title="Click to edit description" appMousedownStopPropagation
         (click)="templateModel.allowEdit && editDescription(dataSource)">
         <span>{{ dataSource.Description }}</span>
-        <mat-icon class="show-hover-inline eav-icon-pencil">edit</mat-icon>
+        <mat-icon class="show-hover-inline">edit</mat-icon>
       </div>
       <br />
 
@@ -38,17 +38,21 @@
 
       <div class="add-endpoint" title="Drag a new Out-Connection"
         *ngIf="templateModel.allowEdit && templateModel.typeInfos[dataSource.EntityGuid].DynamicOut">
-        <mat-icon class="new-connection eav-icon-up-dir">arrow_drop_up</mat-icon>
+        <mat-icon class="new-connection">arrow_drop_up</mat-icon>
       </div>
 
-      <mat-icon class="delete eav-icon-cancel" title="Delete" appMousedownStopPropagation
+      <mat-icon class="delete" title="Delete" appMousedownStopPropagation
         *ngIf="templateModel.allowEdit && !isOutDataSource(dataSource)" (click)="remove(dataSource)">
         delete
       </mat-icon>
 
-      <a class="help eav-icon-help-circled" title="Help for this data source"
-        [href]="templateModel.typeInfos[dataSource.EntityGuid].HelpLink" target="_blank" appMousedownStopPropagation
-        *ngIf="templateModel.typeInfos[dataSource.EntityGuid].HelpLink">
+      <mat-icon class="many-in" title="This data source supports multiple In-Connections"
+        *ngIf="templateModel.allowEdit && templateModel.typeInfos[dataSource.EntityGuid].DynamicIn">
+        arrow_drop_up
+      </mat-icon>
+
+      <a class="help" title="Help for this data source" [href]="templateModel.typeInfos[dataSource.EntityGuid].HelpLink"
+        target="_blank" appMousedownStopPropagation *ngIf="templateModel.typeInfos[dataSource.EntityGuid].HelpLink">
         <mat-icon>help_outline</mat-icon>
       </a>
     </div>

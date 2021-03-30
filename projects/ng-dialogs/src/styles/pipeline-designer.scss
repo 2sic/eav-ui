@@ -116,6 +116,17 @@
     top: 32px;
   }
 
+  .dataSource .many-in {
+    display: none;
+    position: absolute;
+    color: orange;
+    right: 2;
+    top: 33px;
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
+  }
+
   .dataSource .help {
     display: none;
     position: absolute;
@@ -150,6 +161,7 @@
   /* show all hidden elements */
   .dataSource:hover .configure,
   .dataSource:hover .delete,
+  .dataSource:hover .many-in,
   .dataSource:hover .help,
   .dataSource:hover .typename,
   .dataSource:hover .add-endpoint {
