@@ -31,7 +31,6 @@ export class PlumbEditorComponent implements OnInit, AfterViewInit, OnDestroy {
   private plumber: Plumber;
   private scriptLoaded$ = new BehaviorSubject(false);
   private subscription = new Subscription();
-  private plumbInits = 0;
 
   constructor(
     private visualQueryService: VisualQueryService,
@@ -85,7 +84,6 @@ export class PlumbEditorComponent implements OnInit, AfterViewInit, OnDestroy {
           this.onConnectionsChanged.bind(this),
           this.onDragend.bind(this),
           this.onDebugStream.bind(this),
-          ++this.plumbInits,
         );
       })
     );

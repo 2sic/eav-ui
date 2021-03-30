@@ -36,8 +36,6 @@ export class Plumber {
     private onConnectionsChanged: () => void,
     private onDragend: (pipelineDataSourceGuid: string, position: VisualDesignerData) => void,
     private onDebugStream: (stream: PipelineResultStream) => void,
-    /** Workaround for multiple dblClick listeners */
-    private plumbInits: number,
   ) {
     this.instance = window.jsPlumb.getInstance(this.getInstanceDefaults(this.jsPlumbRoot));
     this.instance.batch(() => {
@@ -52,6 +50,7 @@ export class Plumber {
 
   destroy() {
     this.instance.reset();
+    this.instance.unbindContainer();
   }
 
   removeEndpointsOnDataSource(pipelineDataSourceGuid: string) {
@@ -106,7 +105,6 @@ export class Plumber {
             events: {
               click: (labelOverlay: PlumbType) => {
                 if (!this.pipelineModel.Pipeline.AllowEdit) { return; }
-                if (this.ignoreMultipleClicks(labelOverlay)) { return; }
                 this.onDebugStream(stream);
               },
             },
@@ -274,7 +272,6 @@ export class Plumber {
           events: {
             dblclick: (labelOverlay: PlumbType) => {
               if (!this.pipelineModel.Pipeline.AllowEdit) { return; }
-              if (this.ignoreMultipleClicks(labelOverlay)) { return; }
 
               const newLabel = prompt('Rename stream', labelOverlay.label);
               if (!newLabel) { return; }
@@ -330,15 +327,5 @@ export class Plumber {
       }
       setTimeout(() => { this.onConnectionsChanged(); });
     });
-  }
-
-  /** Workaround for multiple click listeners */
-  private ignoreMultipleClicks(target: PlumbType) {
-    if (target.dblClickCounter == null || target.dblClickCounter >= this.plumbInits) {
-      target.dblClickCounter = 1;
-    } else {
-      target.dblClickCounter++;
-    }
-    return target.dblClickCounter > 1;
   }
 }
