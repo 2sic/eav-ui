@@ -193,7 +193,7 @@ export class VisualQueryService implements OnDestroy {
     });
   }
 
-  runPipeline(top = 0) {
+  runPipeline(top = 25) {
     this.snackBar.open('Running query...');
     this.queryDefinitionService.runPipeline(this.pipelineModel$.value.Pipeline.EntityId, top).subscribe({
       next: pipelineResult => {
