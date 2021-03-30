@@ -47,7 +47,7 @@ export class QueriesComponent implements OnInit, OnDestroy {
       },
       {
         headerName: 'Name', field: 'Name', flex: 2, minWidth: 250, cellClass: 'primary-action highlight', sortable: true,
-        filter: 'agTextColumnFilter', onCellClicked: this.openVisualQueryDesigner.bind(this),
+        sort: 'asc', filter: 'agTextColumnFilter', onCellClicked: this.openVisualQueryDesigner.bind(this),
       },
       {
         headerName: 'Description', field: 'Description', flex: 2, minWidth: 250, cellClass: 'no-outline', sortable: true,

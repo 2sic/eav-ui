@@ -32,7 +32,7 @@ export class WebApiComponent implements OnInit, OnDestroy {
     columnDefs: [
       {
         headerName: 'Folder', field: 'folder', flex: 2, minWidth: 250, cellClass: 'no-outline',
-        sortable: true, filter: 'agTextColumnFilter',
+        sortable: true, sort: 'asc', filter: 'agTextColumnFilter',
       },
       {
         headerName: 'Name', field: 'name', flex: 2, minWidth: 250, cellClass: 'no-outline',
