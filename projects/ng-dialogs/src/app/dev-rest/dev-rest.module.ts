@@ -13,7 +13,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { HelpPopupComponent, SelectorWithHelpComponent } from '.';
-import { EntityService } from '../../../../edit/shared/services';
+import { EavService, EntityService } from '../../../../edit/shared/services';
 import { PipelinesService } from '../app-administration/services';
 import { AppDialogConfigService } from '../app-administration/services/app-dialog-config.service';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
@@ -84,6 +84,7 @@ import { InfoBoxComponent } from './info-box/info-box.component';
     EntitiesService,
     EntityService,
     PipelinesService,
+    EavService,
   ]
 })
 export class DevRestModule { }
