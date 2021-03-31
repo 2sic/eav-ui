@@ -8,24 +8,24 @@
         'min-width': dataSource.VisualDesignerData.Width ? dataSource.VisualDesignerData.Width + 'px' : null
       }">
 
-      <div class="configure" title="Configure data source" appMousedownStopPropagation
+      <mat-icon class="configure" title="Configure data source" appMousedownStopPropagation
         *ngIf="templateModel.allowEdit && templateModel.typeInfos[dataSource.EntityGuid].EnableConfig"
         (click)="configureDataSource(dataSource)">
-        <mat-icon>settings</mat-icon>
-      </div>
+        settings
+      </mat-icon>
 
       <mat-icon class="type-info" [title]="templateModel.typeInfos[dataSource.EntityGuid].UiHint">
         {{ templateModel.typeInfos[dataSource.EntityGuid].Icon }}
       </mat-icon>
 
-      <div class="name noselect" title="Click to edit name" appMousedownStopPropagation
+      <div class="name" title="Click to edit name" appMousedownStopPropagation
         (click)="templateModel.allowEdit && editName(dataSource)">
         <span>{{ dataSource.Name || '(no name)' }}</span>
         <mat-icon class="show-hover-inline">edit</mat-icon>
       </div>
       <br />
 
-      <div class="description noselect" title="Click to edit description" appMousedownStopPropagation
+      <div class="description" title="Click to edit description" appMousedownStopPropagation
         (click)="templateModel.allowEdit && editDescription(dataSource)">
         <span>{{ dataSource.Description }}</span>
         <mat-icon class="show-hover-inline">edit</mat-icon>
@@ -36,10 +36,10 @@
         Type: {{ getTypeName(dataSource.PartAssemblyAndType) }}
       </div>
 
-      <div class="add-endpoint" title="Drag a new Out-Connection"
+      <mat-icon class="add-endpoint" title="Drag a new Out-Connection"
         *ngIf="templateModel.allowEdit && templateModel.typeInfos[dataSource.EntityGuid].DynamicOut">
-        <mat-icon class="new-connection">arrow_drop_up</mat-icon>
-      </div>
+        arrow_drop_up
+      </mat-icon>
 
       <mat-icon class="delete" title="Delete" appMousedownStopPropagation
         *ngIf="templateModel.allowEdit && !isOutDataSource(dataSource)" (click)="remove(dataSource)">
@@ -51,10 +51,11 @@
         arrow_drop_up
       </mat-icon>
 
-      <a class="help" title="Help for this data source" [href]="templateModel.typeInfos[dataSource.EntityGuid].HelpLink"
-        target="_blank" appMousedownStopPropagation *ngIf="templateModel.typeInfos[dataSource.EntityGuid].HelpLink">
-        <mat-icon>help_outline</mat-icon>
-      </a>
+      <mat-icon class="help" title="Help for this data source" appMousedownStopPropagation
+        *ngIf="templateModel.typeInfos[dataSource.EntityGuid].HelpLink"
+        (click)="openHelp(templateModel.typeInfos[dataSource.EntityGuid].HelpLink)">
+        help_outline
+      </mat-icon>
     </div>
   </ng-container>
 </div>

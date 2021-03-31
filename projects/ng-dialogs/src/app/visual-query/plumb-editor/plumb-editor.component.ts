@@ -139,6 +139,10 @@ export class PlumbEditorComponent implements OnInit, AfterViewInit, OnDestroy {
     this.visualQueryService.removeDataSource(pipelineDataSource.EntityGuid, connections, streamsOut);
   }
 
+  openHelp(url: string) {
+    window.open(url, '_blank');
+  }
+
   editName(dataSource: PipelineDataSource) {
     const newName = prompt('Rename data source', dataSource.Name)?.trim();
     if (newName == null || newName === '') { return; }

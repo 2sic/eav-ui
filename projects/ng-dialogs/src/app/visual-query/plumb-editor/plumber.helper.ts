@@ -176,7 +176,7 @@ export class Plumber {
       }
 
       if (dataSource.DynamicOut) {
-        this.instance.makeSource(domDataSource, this.buildSourceEndpoint(), { filter: '.add-endpoint .new-connection' });
+        this.instance.makeSource(domDataSource, this.buildSourceEndpoint(), { filter: '.add-endpoint' });
       }
     }
   }
@@ -265,10 +265,9 @@ export class Plumber {
       [
         'Label', {
           id: 'endpointLabel',
-          // location: [0.5, isSource ? -0.5 : 1.5],
           location: [0.5, isSource ? 0 : 1],
           label: 'Default',
-          cssClass: 'noselect ' + (isSource ? 'endpointSourceLabel' : 'endpointTargetLabel'),
+          cssClass: isSource ? 'endpointSourceLabel' : 'endpointTargetLabel',
           events: {
             dblclick: (labelOverlay: PlumbType) => {
               if (!this.pipelineModel.Pipeline.AllowEdit) { return; }

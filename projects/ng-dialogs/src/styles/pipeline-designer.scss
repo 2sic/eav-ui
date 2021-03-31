@@ -1,4 +1,8 @@
 @import "./material-icon.styles.scss";
+@import "../../../edit/assets/styles/variables";
+
+$data-source-color: #eeeeef;
+$icon-size: 22px;
 
 #pipeline-root {
   width: 100%;
@@ -12,15 +16,9 @@
   }
 
   .mat-icon {
-    font-size: 16px;
-    width: 16px;
-    height: 16px;
-  }
-
-  .new-connection {
-    font-size: 32px;
-    width: 32px;
-    height: 32px;
+    font-size: $icon-size;
+    width: $icon-size;
+    height: $icon-size;
   }
 
   .dataSource .description .mat-icon,
@@ -60,11 +58,12 @@
     text-align: center;
     z-index: 20;
     position: absolute;
-    background-color: #eeeeef;
+    background-color: $data-source-color;
     color: black;
     font-family: helvetica;
     padding: 0.5em;
     font-size: 0.9em;
+    user-select: none;
   }
 
   .dataSource:hover {
@@ -80,9 +79,11 @@
   .dataSource .description {
     cursor: text !important;
     display: inline-block;
-    max-width: 215px;
+    max-width: 180px;
     max-height: 16px;
     overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 
   .dataSource .name {
@@ -111,16 +112,31 @@
   .dataSource .delete {
     display: none;
     position: absolute;
-    color: #aaaaaa;
     right: 0;
-    top: 32px;
+    top: 14px;
+  }
+
+  .dataSource .add-endpoint {
+    position: absolute;
+    top: -15px;
+    right: -8px;
+    cursor: pointer;
+    color: orange;
+    display: none;
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
+  }
+
+  .dataSource .add-endpoint:hover {
+    color: #D98D00;
   }
 
   .dataSource .many-in {
     display: none;
     position: absolute;
     color: orange;
-    right: 2;
+    right: -8px;
     top: 33px;
     font-size: 32px;
     width: 32px;
@@ -130,24 +146,22 @@
   .dataSource .help {
     display: none;
     position: absolute;
-    color: #aaaaaa;
-    left: 0;
-    top: 32px;
+    left: 52px;
+    top: 14px;
   }
 
   .dataSource .configure {
     display: none;
     position: absolute;
-    top: 0;
-    left: 0;
+    top: 14px;
+    left: 28px;
+    color: $accent-color;
   }
 
   .dataSource .type-info {
     position: absolute;
-    top: 10px;
-    left: 0;
-    padding: 3px;
-    font-size: large;
+    top: 14px;
+    left: 3px;
   }
 
   .dataSource .show-hover-inline {
@@ -167,6 +181,15 @@
   .dataSource:hover .add-endpoint {
     cursor: pointer !important;
     display: block;
+  }
+
+  /* outline inner icons */
+  .dataSource:hover .configure,
+  .dataSource:hover .delete,
+  .dataSource:hover .help {
+    background-color: $data-source-color;
+    border-radius: 50%;
+    border: 1px solid $data-source-color;
   }
 
 
@@ -218,7 +241,7 @@
     color: #444;
     opacity: 0.8;
     filter: alpha(opacity=80);
-    cursor: pointer;
+    user-select: none;
   }
 
   .endpointSourceLabel.jtk-hover,
@@ -260,32 +283,6 @@
     &::after {
       @include materialIcon("warning", 18px);
     }
-  }
-
-  .add-endpoint {
-    position: absolute;
-    top: -15px;
-    right: 5px;
-    width: 1em;
-    height: 1em;
-    cursor: pointer;
-    font-size: large;
-    color: orange;
-    display: none
-  }
-
-  .add-endpoint:hover {
-    color: #D98D00;
-  }
-
-  .noselect {
-    cursor: default;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
   }
 
 }
