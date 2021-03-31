@@ -8,15 +8,30 @@
         'min-width': dataSource.VisualDesignerData.Width ? dataSource.VisualDesignerData.Width + 'px' : null
       }">
 
-      <mat-icon class="configure" title="Configure data source" appMousedownStopPropagation
-        *ngIf="templateModel.allowEdit && templateModel.typeInfos[dataSource.EntityGuid].EnableConfig"
-        (click)="configureDataSource(dataSource)">
-        settings
-      </mat-icon>
+      <div class="actions left">
+        <mat-icon class="type-info" [title]="templateModel.typeInfos[dataSource.EntityGuid].UiHint">
+          {{ templateModel.typeInfos[dataSource.EntityGuid].Icon }}
+        </mat-icon>
 
-      <mat-icon class="type-info" [title]="templateModel.typeInfos[dataSource.EntityGuid].UiHint">
-        {{ templateModel.typeInfos[dataSource.EntityGuid].Icon }}
-      </mat-icon>
+        <mat-icon class="configure" title="Configure data source" appMousedownStopPropagation
+          *ngIf="templateModel.allowEdit && templateModel.typeInfos[dataSource.EntityGuid].EnableConfig"
+          (click)="configureDataSource(dataSource)">
+          settings
+        </mat-icon>
+
+        <mat-icon class="help" title="Help for this data source" appMousedownStopPropagation
+          *ngIf="templateModel.typeInfos[dataSource.EntityGuid].HelpLink"
+          (click)="openHelp(templateModel.typeInfos[dataSource.EntityGuid].HelpLink)">
+          help_outline
+        </mat-icon>
+      </div>
+
+      <div class="actions right">
+        <mat-icon class="delete" title="Delete" appMousedownStopPropagation
+          *ngIf="templateModel.allowEdit && !isOutDataSource(dataSource)" (click)="remove(dataSource)">
+          delete
+        </mat-icon>
+      </div>
 
       <div class="name" title="Click to edit name" appMousedownStopPropagation
         (click)="templateModel.allowEdit && editName(dataSource)">
@@ -41,20 +56,9 @@
         arrow_drop_up
       </mat-icon>
 
-      <mat-icon class="delete" title="Delete" appMousedownStopPropagation
-        *ngIf="templateModel.allowEdit && !isOutDataSource(dataSource)" (click)="remove(dataSource)">
-        delete
-      </mat-icon>
-
       <mat-icon class="many-in" title="This data source supports multiple In-Connections"
         *ngIf="templateModel.allowEdit && templateModel.typeInfos[dataSource.EntityGuid].DynamicIn">
         arrow_drop_up
-      </mat-icon>
-
-      <mat-icon class="help" title="Help for this data source" appMousedownStopPropagation
-        *ngIf="templateModel.typeInfos[dataSource.EntityGuid].HelpLink"
-        (click)="openHelp(templateModel.typeInfos[dataSource.EntityGuid].HelpLink)">
-        help_outline
       </mat-icon>
     </div>
   </ng-container>

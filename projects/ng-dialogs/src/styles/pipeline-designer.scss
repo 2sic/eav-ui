@@ -2,6 +2,7 @@
 @import "../../../edit/assets/styles/variables";
 
 $data-source-color: #eeeeef;
+$data-source-padding: 0.5em;
 $icon-size: 22px;
 
 #pipeline-root {
@@ -28,21 +29,6 @@ $icon-size: 22px;
     height: 12px;
   }
 
-  .actions {
-    width: 215px;
-    position: fixed;
-    right: 0;
-  }
-
-  .actions * {
-    margin: 4px 0 4px 0;
-  }
-
-  .actions .panel-heading {
-    height: 45px;
-    margin: 0;
-  }
-
   .dataSource {
     height: 50px;
     transition: box-shadow 0.15s ease-in 0s;
@@ -61,7 +47,7 @@ $icon-size: 22px;
     background-color: $data-source-color;
     color: black;
     font-family: helvetica;
-    padding: 0.5em;
+    padding: $data-source-padding;
     font-size: 0.9em;
     user-select: none;
   }
@@ -109,13 +95,6 @@ $icon-size: 22px;
     display: none;
   }
 
-  .dataSource .delete {
-    display: none;
-    position: absolute;
-    right: 0;
-    top: 14px;
-  }
-
   .dataSource .add-endpoint {
     position: absolute;
     top: -15px;
@@ -143,25 +122,37 @@ $icon-size: 22px;
     height: 32px;
   }
 
-  .dataSource .help {
-    display: none;
+  .dataSource .actions {
     position: absolute;
-    left: 52px;
-    top: 14px;
+    display: flex;
+    top: 12px;
   }
+
+  .dataSource .actions.left {
+    left: 5px;
+  }
+
+  .dataSource .actions.right {
+    right: 0;
+  }
+
+  .dataSource .actions .mat-icon:not(:first-of-type) {
+    margin-left: 2px;
+  }
+
+  .dataSource .type-info {}
 
   .dataSource .configure {
     display: none;
-    position: absolute;
-    top: 14px;
-    left: 28px;
     color: $accent-color;
   }
 
-  .dataSource .type-info {
-    position: absolute;
-    top: 14px;
-    left: 3px;
+  .dataSource .help {
+    display: none;
+  }
+
+  .dataSource .delete {
+    display: none;
   }
 
   .dataSource .show-hover-inline {
@@ -192,7 +183,6 @@ $icon-size: 22px;
     border: 1px solid $data-source-color;
   }
 
-
   .sourceEndpoint:after,
   .targetEndpoint:after {
     @include materialIcon("arrow_drop_up", 32px);
@@ -209,7 +199,6 @@ $icon-size: 22px;
   .targetEndpoint.jtk-hover {
     z-index: 101;
   }
-
 
   /* The endpoint needs a round radius, because otherwise the hover won't look good '*/
   .jtk-endpoint {
