@@ -48,8 +48,7 @@
           <mat-icon style="color: red">warning</mat-icon>
         </div>
         <ol class="values">
-          <li *ngFor="let warning of warnings">
-            {{ warning }}
+          <li *ngFor="let warning of warnings" [innerHTML]="warning">
           </li>
         </ol>
       </div>
