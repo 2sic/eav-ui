@@ -67,7 +67,7 @@ export const eavConstants = {
       dataSources: [
         // disable for https://github.com/2sic/2sxc/issues/2388 - remove in a few iterations ca. 2021-05
         // {
-        //   EntityGuid: 'unsaved1',
+        //   EntityGuid: 'unsaved3',
         //   PartAssemblyAndType: 'ToSic.Eav.DataSources.IAppRoot, ToSic.Eav.DataSources',
         //   VisualDesignerData: { Top: 440, Left: 440 },
         // }, {
@@ -76,19 +76,19 @@ export const eavConstants = {
         //   VisualDesignerData: { Top: 300, Left: 440 },
         // },
         {
-          EntityGuid: 'unsaved3',
+          EntityGuid: 'unsaved1',
           PartAssemblyAndType: 'ToSic.Sxc.DataSources.CmsBlock, ToSic.Sxc',
           VisualDesignerData: { Top: 170, Left: 440 },
         }
       ],
       streamWiring: [
         // disable for https://github.com/2sic/2sxc/issues/2388 - remove in a few iterations ca. 2021-05
-        // { From: 'unsaved1', Out: 'Default', To: 'unsaved2', In: 'Default' },
-        // { From: 'unsaved1', Out: 'Drafts', To: 'unsaved2', In: 'Drafts' },
-        // { From: 'unsaved1', Out: 'Published', To: 'unsaved2', In: 'Published' },
-        // { From: 'unsaved2', Out: 'Default', To: 'unsaved3', In: 'Default' },
-        { From: 'unsaved3', Out: 'Header', To: 'Out', In: 'Header' },
-        { From: 'unsaved3', Out: 'Default', To: 'Out', In: 'Default' },
+        // { From: 'unsaved3', Out: 'Default', To: 'unsaved2', In: 'Default' },
+        // { From: 'unsaved3', Out: 'Drafts', To: 'unsaved2', In: 'Drafts' },
+        // { From: 'unsaved3', Out: 'Published', To: 'unsaved2', In: 'Published' },
+        // { From: 'unsaved2', Out: 'Default', To: 'unsaved1', In: 'Default' },
+        { From: 'unsaved1', Out: 'Header', To: 'Out', In: 'Header' },
+        { From: 'unsaved1', Out: 'Default', To: 'Out', In: 'Default' },
       ],
     },
     testParameters: '[Demo:Demo]=true',
