@@ -161,7 +161,7 @@ export class Plumber {
 
       // Add Out-Endpoints from Definition
       dataSource.Out?.forEach(name => {
-        this.addEndpoint(domDataSource, name, false, pipelineDataSource);
+        this.addEndpoint(domDataSource, buildStreamInfo(name).name, false, pipelineDataSource);
       });
 
       // Add In-Endpoints from Definition
