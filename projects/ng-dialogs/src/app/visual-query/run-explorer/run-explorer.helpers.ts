@@ -30,20 +30,40 @@ export function calculateWarnings(pipelineModel: PipelineModel, context: Context
       }
     }
 
-    // Check if the syntax on test-parameters is off
+    // Check if the syntax on TEST-Paremeters is off
     // It should contain [...]=...
     // But it's easy to forget the [ and ] brackets
-    const correctSyntaxRegEx = /^\[[a-zA-Z]+:[a-zA-Z]+\]=(.*)$/gmi;
+    const testParamsSyntax = /^\[[a-zA-Z]+:[a-zA-Z0-9]+\]=(.*)$/gmi;
     if(testLines.length) {
       testLines.forEach(line => {
         // only check lines which have something
         if(line?.trim().length > 0 ?? false) {
-          const lineMatch = correctSyntaxRegEx.exec(line);
+          const lineMatch = testParamsSyntax.exec(line);
           if(lineMatch == null)
-            warnings.push(`A Test Parameter seems wrong: <br>
+            warnings.push(`A <em>Test Parameter</em> seems wrong: <br>
             <code>${line}</code> <br>
-            - it should use the syntax <br>
+            It should use the syntax: <br>
             <code>[source:key]=value</code>`);
+        }
+      });
+    }
+
+    // Check if the syntax on Query-Params is off
+    // It should contain [...]=...
+    // But it's easy to forget the [ and ] brackets
+    const paramsSyntax = /^[a-zA-Z0-9]+=(.*)$/gmi;
+    if(queryLines.length) {
+      queryLines.forEach(line => {
+        // only check lines which have something
+        if(line?.trim().length > 0 ?? false) {
+          const lineMatch = paramsSyntax.exec(line);
+          if(lineMatch == null)
+            warnings.push(`A <em>Query Parameter</em> seems wrong: <br>
+            <code>${line}</code> <br>
+            It should use the syntax: <br>
+            <code>key=value</code> <br>
+            or resolve to a token like <br>
+            <code>key=[source:key]</code>`);
         }
       });
     }
