@@ -2,6 +2,7 @@ import { eavConstants } from '../../shared/constants/eav.constants';
 import { Dictionary } from '../../shared/models/dictionary.model';
 import { EavWindow } from '../../shared/models/eav-window.model';
 import { DataSource, PipelineDataSource, PipelineModel, PipelineResult, PipelineResultStream, StreamWire, VisualDesignerData } from '../models';
+import { buildStreamInfo } from './plumb-editor.helpers';
 import { PlumbType } from './plumb-editor.models';
 
 declare const window: EavWindow;
@@ -163,9 +164,9 @@ export class Plumber {
         this.addEndpoint(domDataSource, name, false, pipelineDataSource);
       });
 
-      // Add Out-Endpoints from Definition
+      // Add In-Endpoints from Definition
       dataSource.In?.forEach(name => {
-        this.addEndpoint(domDataSource, name, true, pipelineDataSource);
+        this.addEndpoint(domDataSource, buildStreamInfo(name).name, true, pipelineDataSource);
       });
 
       // Make DataSource a Target for new Endpoints (if .In is an Array)
@@ -294,9 +295,9 @@ export class Plumber {
         pipelineDS => pipelineDS.EntityGuid === domDataSource.id.replace(dataSrcIdPrefix, '')
       );
       const dataSource = this.dataSources.find(ds => ds.PartAssemblyAndType === pipelineDataSource.PartAssemblyAndType);
-      const fixedEndpoints = dataSource.In;
       const label: string = info.targetEndpoint.getOverlay('endpointLabel').label;
-      if (fixedEndpoints.includes(label)) {
+      const isRequiredIn = dataSource.In.some(name => buildStreamInfo(name).name === label);
+      if (isRequiredIn) {
         setTimeout(() => { this.onConnectionsChanged(); });
         return;
       }

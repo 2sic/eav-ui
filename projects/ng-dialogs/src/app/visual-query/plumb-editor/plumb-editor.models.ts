@@ -31,3 +31,8 @@ export interface GuiType {
   Name: string;
   UiHint: string;
 }
+
+export interface StreamInfo {
+  name: string;
+  required: boolean;
+}
