@@ -125,6 +125,7 @@ $icon-size: 22px;
   .dataSource .actions {
     position: absolute;
     display: flex;
+    align-items: center;
     top: 12px;
   }
 
@@ -175,9 +176,10 @@ $icon-size: 22px;
   }
 
   /* outline inner icons */
-  .dataSource:hover .configure,
-  .dataSource:hover .delete,
-  .dataSource:hover .help {
+  .dataSource .type-info,
+  .dataSource .configure,
+  .dataSource .delete,
+  .dataSource .help {
     background-color: $data-source-color;
     border-radius: 50%;
     border: 1px solid $data-source-color;
