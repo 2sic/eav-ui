@@ -32,7 +32,7 @@ export interface GuiType {
   UiHint: string;
 }
 
-export interface StreamInfo {
+export interface EndpointInfo {
   name: string;
   required: boolean;
 }

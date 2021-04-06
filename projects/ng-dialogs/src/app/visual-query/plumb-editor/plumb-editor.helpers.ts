@@ -1,5 +1,5 @@
 import { DataSource, PipelineDataSource } from '../models';
-import { GuiTypes, StreamInfo, TypeInfo, TypeInfos } from './plumb-editor.models';
+import { GuiTypes, TypeInfo, TypeInfos } from './plumb-editor.models';
 
 export const guiTypes: GuiTypes = {
   Cache: { Name: 'Cache', Icon: 'history', UiHint: 'Caching of data' },
@@ -34,14 +34,4 @@ export function calculateTypeInfos(pipelineDataSources: PipelineDataSource[], da
   }
 
   return typeInfos;
-}
-
-export function buildStreamInfo(streamName: string): StreamInfo {
-  const trimmed = streamName.trim();
-  const isRequired = streamName.endsWith('*');
-  const streamInfo: StreamInfo = {
-    name: !isRequired ? trimmed : trimmed.substring(0, trimmed.length - 1),
-    required: isRequired,
-  };
-  return streamInfo;
 }

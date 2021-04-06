@@ -185,9 +185,19 @@ $icon-size: 22px;
     border: 1px solid $data-source-color;
   }
 
-  .sourceEndpoint:after,
-  .targetEndpoint:after {
-    @include materialIcon("arrow_drop_up", 32px);
+  .sourceEndpoint,
+  .targetEndpoint {
+    &.dynamic {
+      color: orange;
+    }
+
+    &.required {
+      color: red;
+    }
+
+    &::after {
+      @include materialIcon("arrow_drop_up", 32px);
+    }
   }
 
   .jtk-endpoint,
@@ -250,7 +260,7 @@ $icon-size: 22px;
     }
   }
 
-  @mixin streamEntitiesCountLabel() {
+  .streamEntitiesCount {
     cursor: pointer;
     background: #93ceff;
     color: black;
@@ -262,22 +272,17 @@ $icon-size: 22px;
     display: flex;
     align-items: center;
     justify-content: center;
-  }
 
-  .streamEntitiesCount {
-    @include streamEntitiesCountLabel();
-
-    &:hover::after {
+    &:not(.streamEntitiesError):hover::after {
       @include materialIcon("find_in_page", 18px);
     }
-  }
 
-  .streamEntitiesCountError {
-    @include streamEntitiesCountLabel();
-    width: 32px;
+    &.streamEntitiesError {
+      width: 32px;
 
-    &::after {
-      @include materialIcon("warning", 18px);
+      &::after {
+        @include materialIcon("warning", 18px);
+      }
     }
   }
 
