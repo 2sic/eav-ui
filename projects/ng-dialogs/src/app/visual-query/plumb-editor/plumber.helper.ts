@@ -269,7 +269,7 @@ export class Plumber {
           label: 'Default',
           cssClass: isSource ? 'endpointSourceLabel' : 'endpointTargetLabel',
           events: {
-            dblclick: (labelOverlay: PlumbType) => {
+            click: (labelOverlay: PlumbType) => {
               if (!this.pipelineModel.Pipeline.AllowEdit) { return; }
 
               const newLabel = prompt('Rename stream', labelOverlay.label);
