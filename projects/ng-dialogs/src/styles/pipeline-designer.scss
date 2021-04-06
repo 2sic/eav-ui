@@ -24,9 +24,9 @@ $icon-size: 22px;
 
   .dataSource .description .mat-icon,
   .dataSource .name .mat-icon {
-    font-size: 12px;
-    width: 12px;
-    height: 12px;
+    font-size: 11px;
+    width: 11px;
+    height: 11px;
   }
 
   .dataSource {
@@ -243,6 +243,11 @@ $icon-size: 22px;
     border: 1px solid white;
     z-index: 100;
     opacity: 1;
+
+    &::after {
+      @include materialIcon("edit", 11px);
+      margin-left: 2px;
+    }
   }
 
   @mixin streamEntitiesCountLabel() {
