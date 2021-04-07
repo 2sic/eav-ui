@@ -13,6 +13,7 @@ const webApiQueryImport = webApiQueryRoot + 'import';
 const webApiQueryClone = webApiQueryRoot + 'Clone';
 const webApiQueryDelete = webApiQueryRoot + 'Delete';
 export const webApiQueryRun = webApiQueryRoot + 'Run';
+export const webApiQueryDebugStream = webApiQueryRoot + 'DebugStream';
 export const webApiQuerySave = webApiQueryRoot + 'Save';
 export const webApiQueryGet = webApiQueryRoot + 'Get';
 export const webApiQueryDataSources = webApiQueryRoot + 'DataSources';

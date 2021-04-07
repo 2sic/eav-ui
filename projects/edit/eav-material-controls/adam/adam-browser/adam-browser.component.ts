@@ -233,9 +233,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
     if (!adamConfig.autoLoad) { return; }
     this.adamService.getAll(this.url, adamConfig).subscribe(items => {
       const filteredItems: AdamItem[] = [];
-      const allowedFileTypes = adamConfig.fileFilter
-        ? adamConfig.fileFilter.split(',').map(extension => extension.replace('*', '').trim())
-        : [];
+      const extensionsFilter = this.getExtensionsFilter(adamConfig.fileFilter);
 
       for (const item of items) {
         if (item.Name === '.') { // is root
@@ -248,9 +246,9 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
         if (item.Name === '2sxc' || item.Name === 'adam') { continue; }
         if (!item.IsFolder && adamConfig.showImagesOnly && item.Type !== 'image') { continue; }
         if (item.IsFolder && adamConfig.maxDepthReached) { continue; }
-        if (allowedFileTypes.length > 0) {
-          const extension = item.Name.substring(item.Name.lastIndexOf('.'));
-          if (!allowedFileTypes.includes(extension)) { continue; }
+        if (extensionsFilter.length > 0) {
+          const extension = item.Name.substring(item.Name.lastIndexOf('.') + 1).toLocaleLowerCase();
+          if (!extensionsFilter.includes(extension)) { continue; }
         }
 
         item._metadataContentType = this.getMetadataContentType(item);
@@ -349,6 +347,23 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
     if (Object.keys(newDzConfig).length > 0) {
       this.config.dropzone.setConfig(newDzConfig);
     }
+  }
+
+  private getExtensionsFilter(fileFilter: string) {
+    if (!fileFilter) { return []; }
+
+    const extensions = fileFilter.split(',').map(extension => {
+      extension = extension.trim();
+
+      if (extension.startsWith('*.')) {
+        extension = extension.replace('*.', '');
+      } else if (extension.startsWith('*')) {
+        extension = extension.replace('*', '');
+      }
+
+      return extension.toLocaleLowerCase();
+    });
+    return extensions;
   }
 
   private refreshOnChildClosed() {

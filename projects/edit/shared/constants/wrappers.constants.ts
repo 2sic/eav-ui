@@ -8,7 +8,6 @@ export enum WrappersConstants {
   ExpandableWrapper = 'app-expandable-wrapper',
   AdamAttachWrapper = 'app-adam-attach-wrapper',
   // Entity specific
-  CollapsibleFieldWrapper = 'app-collapsible-field-wrapper',
   EntityExpandableWrapper = 'app-entity-expandable-wrapper',
   // Hyperlink specific
   HyperlinkDefaultExpandableWrapper = 'app-hyperlink-default-expandable-wrapper',

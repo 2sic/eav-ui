@@ -37,7 +37,7 @@ export class EnableLanguagesComponent implements OnInit, OnDestroy {
       },
       {
         headerName: 'Name', field: 'Culture', flex: 2, minWidth: 250, cellClass: 'primary-action highlight no-outline', sortable: true,
-        filter: 'agTextColumnFilter', onCellClicked: this.handleNameClicked.bind(this),
+        sort: 'asc', filter: 'agTextColumnFilter', onCellClicked: this.handleNameClicked.bind(this),
       },
       {
         headerName: 'Status', field: 'IsEnabled', width: 72, headerClass: 'dense', cellClass: 'no-padding no-outline',

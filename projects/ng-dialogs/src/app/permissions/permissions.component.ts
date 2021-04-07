@@ -42,7 +42,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
       },
       {
         headerName: 'Name', field: 'Title', flex: 2, minWidth: 250, cellClass: 'primary-action highlight',
-        sortable: true, filter: 'agTextColumnFilter', onCellClicked: this.editPermission.bind(this),
+        sortable: true, sort: 'asc', filter: 'agTextColumnFilter', onCellClicked: this.editPermission.bind(this),
       },
       {
         headerName: 'Identity', field: 'Identity', flex: 2, minWidth: 250, cellClass: 'no-outline', sortable: true,

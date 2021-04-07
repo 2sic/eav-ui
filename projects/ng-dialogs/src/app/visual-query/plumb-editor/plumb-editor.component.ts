@@ -4,7 +4,7 @@ import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { loadScripts } from '../../shared/helpers/load-scripts.helper';
-import { PipelineDataSource, VisualDesignerData } from '../models/pipeline.model';
+import { PipelineDataSource, PipelineResultStream, VisualDesignerData } from '../models';
 import { QueryDefinitionService } from '../services/query-definition.service';
 import { VisualQueryService } from '../services/visual-query.service';
 import { calculateTypeInfos } from './plumb-editor.helpers';
@@ -31,7 +31,6 @@ export class PlumbEditorComponent implements OnInit, AfterViewInit, OnDestroy {
   private plumber: Plumber;
   private scriptLoaded$ = new BehaviorSubject(false);
   private subscription = new Subscription();
-  private plumbInits = 0;
 
   constructor(
     private visualQueryService: VisualQueryService,
@@ -84,7 +83,7 @@ export class PlumbEditorComponent implements OnInit, AfterViewInit, OnDestroy {
           this.visualQueryService.dataSources$.value,
           this.onConnectionsChanged.bind(this),
           this.onDragend.bind(this),
-          ++this.plumbInits,
+          this.onDebugStream.bind(this),
         );
       })
     );
@@ -104,6 +103,10 @@ export class PlumbEditorComponent implements OnInit, AfterViewInit, OnDestroy {
 
   onDragend(pipelineDataSourceGuid: string, position: VisualDesignerData) {
     this.visualQueryService.changeDataSourcePosition(pipelineDataSourceGuid, position);
+  }
+
+  onDebugStream(stream: PipelineResultStream) {
+    this.visualQueryService.debugStream(stream);
   }
 
   configureDataSource(dataSource: PipelineDataSource) {
@@ -134,6 +137,10 @@ export class PlumbEditorComponent implements OnInit, AfterViewInit, OnDestroy {
     const connections = this.plumber.getAllConnections();
     const streamsOut = this.plumber.getStreamsOut();
     this.visualQueryService.removeDataSource(pipelineDataSource.EntityGuid, connections, streamsOut);
+  }
+
+  openHelp(url: string) {
+    window.open(url, '_blank');
   }
 
   editName(dataSource: PipelineDataSource) {

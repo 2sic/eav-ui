@@ -1,3 +1,5 @@
+$accent-color: #0085F4;
+
 $edit-ui-dialog-width: 100vw;
 $edit-ui-dialog-max-width: 800px;
 
@@ -41,13 +43,13 @@ $edit-ui-selected-option: rgba(#000000, 0.04);
 // Field borders
 $field-border-color--initial: rgba(0, 0, 0, 0.2);
 $field-border-color--hover: rgba(0, 0, 0, 0.4);
-$field-border-color--focus: #0085F4;
+$field-border-color--focus: $accent-color;
 $field-border-color--disabled:rgba(0, 0, 0, 0.2);
 $field-border-color--invalid:#B00030;
 
 // Dropzone
-$dropzone-background: rgba(#0087f4, 0.44);
-$dropzone-active-background: rgba(#0087f4, 0.88);
+$dropzone-background: rgba($accent-color, 0.44);
+$dropzone-active-background: rgba($accent-color, 0.88);
 
 // helper text
 $helper-text-padding: 0.54166667em 0 13px 0;

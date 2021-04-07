@@ -15,7 +15,6 @@ export class Query {
   Title: string;
   _Permissions: PermissionsCount;
   _RepositoryId: number;
-  _Title: string;
   _Used: number;
   _Uses: number;
 }

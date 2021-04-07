@@ -5,7 +5,7 @@ export class ContentItem {
   IsPublished: boolean;
   _Title: string;
   Title: string;
-  Metadata?: ContentItemMetadata;
+  For?: ContentItemMetadata;
 
   /** How often this is being used by other entities (parents) */
   _Used: number;
@@ -18,8 +18,8 @@ export class ContentItem {
 }
 
 export class ContentItemMetadata {
-  TargetType: number;
-  KeyNumber: number;
-  KeyGuid: string;
-  KeyString: string;
+  Target: number;
+  Number: number;
+  Guid: string;
+  String: string;
 }

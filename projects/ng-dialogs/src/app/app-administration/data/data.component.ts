@@ -57,8 +57,8 @@ export class DataComponent implements OnInit, OnDestroy {
         } as IdFieldParams,
       },
       {
-        headerName: 'Content Type', field: 'Label', flex: 3, minWidth: 250, cellClass: 'primary-action highlight', sort: 'asc',
-        sortable: true, filter: 'agTextColumnFilter', onCellClicked: this.showContentItems.bind(this),
+        headerName: 'Content Type', field: 'Label', flex: 3, minWidth: 250, cellClass: 'primary-action highlight', sortable: true,
+        sort: 'asc', filter: 'agTextColumnFilter', onCellClicked: this.showContentItems.bind(this),
       },
       {
         headerName: 'Items', field: 'Items', width: 102, headerClass: 'dense', cellClass: 'secondary-action no-padding',

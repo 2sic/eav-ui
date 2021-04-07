@@ -1,14 +1,16 @@
 import { ChangeDetectionStrategy, Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { BehaviorSubject, combineLatest, Subscription } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import { filter, map, pairwise, startWith } from 'rxjs/operators';
 import { ContentGroupAdd } from '../manage-content-list/models/content-group.model';
 import { ContentGroupService } from '../manage-content-list/services/content-group.service';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 import { EditForm } from '../shared/models/edit-form.model';
 import { ReplaceOption } from './models/replace-option.model';
+import { ReplaceContentTemplateVars } from './replace-content.models';
 
 @Component({
   selector: 'app-replace-content',
@@ -19,20 +21,16 @@ import { ReplaceOption } from './models/replace-option.model';
 export class ReplaceContentComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
-  private item$ = new BehaviorSubject<ContentGroupAdd>({
-    id: null,
-    guid: this.route.snapshot.paramMap.get('guid'),
-    part: this.route.snapshot.paramMap.get('part'),
-    index: parseInt(this.route.snapshot.paramMap.get('index'), 10),
-    add: !!this.route.snapshot.queryParamMap.get('add'),
-  });
-  private options$ = new BehaviorSubject<ReplaceOption[]>(null);
-  templateVars$ = combineLatest([this.item$, this.options$]).pipe(
-    map(([item, options]) => ({ item, options })),
-  );
+  templateVars$: Observable<ReplaceContentTemplateVars>;
 
+  private guid: string;
+  private part: string;
+  private index: number;
+  private add: boolean;
+  private filterText$: BehaviorSubject<string>;
+  private options$: BehaviorSubject<ReplaceOption[]>;
   private contentTypeName: string;
-  private subscription = new Subscription();
+  private subscription: Subscription;
 
   constructor(
     private dialogRef: MatDialogRef<ReplaceContentComponent>,
@@ -43,12 +41,36 @@ export class ReplaceContentComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.getConfig();
+    this.guid = this.route.snapshot.paramMap.get('guid');
+    this.part = this.route.snapshot.paramMap.get('part');
+    this.index = parseInt(this.route.snapshot.paramMap.get('index'), 10);
+    this.add = !!this.route.snapshot.queryParamMap.get('add');
+
+    this.subscription = new Subscription();
+    this.filterText$ = new BehaviorSubject('');
+    this.options$ = new BehaviorSubject([]);
+
+    const filteredOptions$ = combineLatest([this.filterText$, this.options$]).pipe(
+      map(([filterText, options]) => options.filter(option => option.label.includes(filterText)).map(option => option.label)),
+    );
+    this.templateVars$ = combineLatest([this.filterText$, filteredOptions$]).pipe(
+      map(([filterText, filteredOptions]) => {
+        const templateVars: ReplaceContentTemplateVars = {
+          filterText,
+          filteredOptions,
+          isAddMode: this.add,
+          isMatch: filteredOptions.includes(filterText),
+        };
+        return templateVars;
+      }),
+    );
+
+    this.fetchConfig(false, null);
     this.refreshOnChildClosed();
   }
 
   ngOnDestroy() {
-    this.item$.complete();
+    this.filterText$.complete();
     this.options$.complete();
     this.subscription.unsubscribe();
   }
@@ -57,43 +79,51 @@ export class ReplaceContentComponent implements OnInit, OnDestroy {
     this.dialogRef.close();
   }
 
-  selectedChanged(id: number) {
-    this.item$.next({ ...this.item$.value, id });
+  setFilter(filterText: string) {
+    this.filterText$.next(filterText);
   }
 
-  save() {
-    this.snackBar.open('Saving...');
-    this.contentGroupService.saveItem(this.item$.value).subscribe(() => {
-      this.snackBar.open('Saved', null, { duration: 2000 });
-      this.closeDialog();
-    });
+  select(event: MatAutocompleteSelectedEvent) {
+    this.filterText$.next(event.option.value);
   }
 
   copySelected() {
+    const contentGroup = this.buildContentGroup();
     const form: EditForm = {
-      items: [{ ContentTypeName: this.contentTypeName, DuplicateEntity: this.item$.value.id }],
+      items: [{ ContentTypeName: this.contentTypeName, DuplicateEntity: contentGroup.id }],
     };
     const formUrl = convertFormToUrl(form);
     this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
   }
 
-  private getConfig() {
-    this.contentGroupService.getItems(this.item$.value).subscribe(replaceConfig => {
+  save() {
+    this.snackBar.open('Saving...');
+    const contentGroup = this.buildContentGroup();
+    this.contentGroupService.saveItem(contentGroup).subscribe(() => {
+      this.snackBar.open('Saved', null, { duration: 2000 });
+      this.closeDialog();
+    });
+  }
+
+  private fetchConfig(isRefresh: boolean, cloneId: number) {
+    const contentGroup = this.buildContentGroup();
+    this.contentGroupService.getItems(contentGroup).subscribe(replaceConfig => {
       const options = Object.entries(replaceConfig.Items).map(([itemId, itemName]) => {
         const option: ReplaceOption = {
+          id: parseInt(itemId, 10),
           label: `${itemName} (${itemId})`,
-          value: parseInt(itemId, 10),
         };
         return option;
       });
       this.options$.next(options);
-      // don't set the ID if dialog should be in add-mode
-      if (!this.item$.value.id && !this.item$.value.add) {
-        this.item$.next({ ...this.item$.value, id: replaceConfig.SelectedId });
+
+      // don't set selected option if dialog should be in add-mode and don't change selected option on refresh unless it's cloneId
+      if ((!contentGroup.add && !isRefresh) || cloneId != null) {
+        const newId = !isRefresh ? replaceConfig.SelectedId : cloneId;
+        const newFilter = this.options$.value.find(option => option.id === newId)?.label || '';
+        this.filterText$.next(newFilter);
       }
-      if (!this.contentTypeName) {
-        this.contentTypeName = replaceConfig.ContentTypeName;
-      }
+      this.contentTypeName = replaceConfig.ContentTypeName;
     });
   }
 
@@ -106,15 +136,24 @@ export class ReplaceContentComponent implements OnInit, OnDestroy {
         pairwise(),
         filter(([hadChild, hasChild]) => hadChild && !hasChild),
       ).subscribe(() => {
-        this.getConfig();
         const navigation = this.router.getCurrentNavigation();
         const editResult = navigation.extras?.state;
-        if (editResult) {
-          const id = editResult[Object.keys(editResult)[0]];
-          this.item$.next({ ...this.item$.value, id });
-        }
+        const cloneId: number = editResult?.[Object.keys(editResult)[0]];
+        this.fetchConfig(true, cloneId);
       })
     );
   }
 
+  private buildContentGroup() {
+    const id = this.options$.value.find(option => option.label === this.filterText$.value)?.id ?? null;
+
+    const contentGroup: ContentGroupAdd = {
+      id,
+      guid: this.guid,
+      part: this.part,
+      index: this.index,
+      add: this.add,
+    };
+    return contentGroup;
+  }
 }

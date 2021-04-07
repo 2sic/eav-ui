@@ -1,5 +1,4 @@
-import { DataSource } from '../models/data-sources.model';
-import { PipelineDataSource } from '../models/pipeline.model';
+import { DataSource, PipelineDataSource } from '../models';
 import { GuiTypes, TypeInfo, TypeInfos } from './plumb-editor.models';
 
 export const guiTypes: GuiTypes = {
@@ -24,6 +23,7 @@ export function calculateTypeInfos(pipelineDataSources: PipelineDataSource[], da
     if (dataSource) {
       typeInfo = { ...(dataSource.PrimaryType ? guiTypes[dataSource.PrimaryType] : guiTypes.Unknown) };
       if (dataSource.Icon != null) { typeInfo.Icon = dataSource.Icon; }
+      if (dataSource.DynamicIn != null) { typeInfo.DynamicIn = dataSource.DynamicIn; }
       if (dataSource.DynamicOut != null) { typeInfo.DynamicOut = dataSource.DynamicOut; }
       if (dataSource.HelpLink != null) { typeInfo.HelpLink = dataSource.HelpLink; }
       if (dataSource.EnableConfig != null) { typeInfo.EnableConfig = dataSource.EnableConfig; }

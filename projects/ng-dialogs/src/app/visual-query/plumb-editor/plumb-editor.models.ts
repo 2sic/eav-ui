@@ -1,4 +1,4 @@
-import { PipelineDataSource } from '../models/pipeline.model';
+import { PipelineDataSource } from '../models';
 
 export type PlumbType = any;
 
@@ -14,6 +14,7 @@ export interface TypeInfos {
 
 export interface TypeInfo {
   EnableConfig?: boolean;
+  DynamicIn?: boolean;
   DynamicOut?: boolean;
   HelpLink?: string;
   Icon: string;
@@ -29,4 +30,9 @@ export interface GuiType {
   Icon: string;
   Name: string;
   UiHint: string;
+}
+
+export interface EndpointInfo {
+  name: string;
+  required: boolean;
 }

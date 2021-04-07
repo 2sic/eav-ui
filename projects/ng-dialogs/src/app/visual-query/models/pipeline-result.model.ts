@@ -34,8 +34,23 @@ export interface PipelineResultSourceValue {
 export interface PipelineResultStream {
   Count: number;
   Error: boolean;
+  ErrorData: StreamErrorData;
   Source: string;
   SourceOut: string;
   Target: string;
   TargetIn: string;
+}
+
+export interface StreamErrorData {
+  Created: string;
+  DebugNotes: string;
+  Error: string;
+  Id: number;
+  Message: string;
+  Modified: string;
+  SourceGuid: string;
+  SourceLabel: string;
+  SourceName: string;
+  SourceStream: string;
+  Title: string;
 }

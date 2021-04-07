@@ -1,33 +1,38 @@
-<ng-container *ngIf="(templateVars$ | async) as data">
+<ng-container *ngIf="templateVars$ | async as data">
 
   <div mat-dialog-title>
-    <div class="dialog-title-box">{{ data.item.add ? 'Add Existing Item' : 'Replace Content Item' }}</div>
+    <div class="dialog-title-box">{{ data.isAddMode ? 'Add Existing Item' : 'Replace Content Item' }}</div>
   </div>
 
   <router-outlet></router-outlet>
 
   <p class="dialog-description">
     {{
-      data.item.add
-      ? 'Select a content-item to add to this list.'
-      : 'By replacing a content-item you can make other content appear in the slot of the original content.'
+    data.isAddMode
+    ? 'Select a content-item to add to this list.'
+    : 'By replacing a content-item you can make other content appear in the slot of the original content.'
     }}
   </p>
 
   <div class="options-box">
     <mat-form-field class="options-box__field" appearance="standard" color="accent">
       <mat-label>Choose item</mat-label>
-      <mat-select [ngModel]="data.item.id" name="Language" (ngModelChange)="selectedChanged($event)">
-        <mat-option *ngFor="let option of data.options" [value]="option.value">{{ option.label }}</mat-option>
-      </mat-select>
+      <input matInput [matAutocomplete]="auto" [ngModel]="data.filterText" (ngModelChange)="setFilter($event)">
+      <mat-autocomplete #auto="matAutocomplete" (optionSelected)="select($event)">
+        <cdk-virtual-scroll-viewport itemSize="48" minBufferPx="500" maxBufferPx="1000"
+          [style.height.px]="data.filteredOptions.length < 6 ? data.filteredOptions.length * 48 : 240">
+          <mat-option *cdkVirtualFor="let option of data.filteredOptions" [value]="option">{{ option }}</mat-option>
+        </cdk-virtual-scroll-viewport>
+      </mat-autocomplete>
     </mat-form-field>
-    <button mat-icon-button class="options-box__copy" matTooltip="Copy" (click)="copySelected()">
+    <button mat-icon-button class="options-box__copy" matTooltip="Copy" [disabled]="!data.isMatch"
+      (click)="copySelected()">
       <mat-icon>file_copy</mat-icon>
     </button>
   </div>
 
   <div class="dialog-component-actions">
     <button mat-raised-button (click)="closeDialog()">Cancel</button>
-    <button mat-raised-button color="accent" [disabled]="!data.item.id" (click)="save()">Save</button>
+    <button mat-raised-button color="accent" [disabled]="!data.isMatch" (click)="save()">Save</button>
   </div>
 </ng-container>

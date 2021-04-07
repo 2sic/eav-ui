@@ -4,7 +4,7 @@ import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { eavConstants } from '../../shared/constants/eav.constants';
-import { DataSource, SortedDataSources } from '../models/data-sources.model';
+import { DataSource, SortedDataSources } from '../models';
 import { guiTypes } from '../plumb-editor/plumb-editor.helpers';
 import { VisualQueryService } from '../services/visual-query.service';
 import { filterAndSortDataSources, toggleInArray } from './add-explorer.helpers';

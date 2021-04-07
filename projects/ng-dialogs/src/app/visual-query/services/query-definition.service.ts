@@ -2,7 +2,7 @@ import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
-import { webApiQueryDataSources, webApiQueryGet, webApiQueryRun, webApiQuerySave } from '../../app-administration/services';
+import { webApiQueryDataSources, webApiQueryDebugStream, webApiQueryGet, webApiQueryRun, webApiQuerySave } from '../../app-administration/services';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { Context } from '../../shared/services/context';
 import { DataSource, PipelineDataSource, PipelineModel, PipelineResult } from '../models';
@@ -73,6 +73,7 @@ export class QueryDefinitionService {
         const outDsConst: DataSource = {
           ContentType: undefined,
           Difficulty: eavConstants.pipelineDesigner.dataSourceDifficulties.default,
+          DynamicIn: true,
           DynamicOut: false,
           EnableConfig: undefined,
           HelpLink: undefined,
@@ -123,9 +124,17 @@ export class QueryDefinitionService {
     );
   }
 
-  runPipeline(id: number) {
+  /** `top` - fetch first X items */
+  runPipeline(id: number, top: number) {
     return this.http.get<PipelineResult>(this.dnnContext.$2sxc.http.apiUrl(webApiQueryRun), {
-      params: { appId: this.context.appId.toString(), id: id.toString() }
+      params: { appId: this.context.appId.toString(), id: id.toString(), top: top.toString() }
+    });
+  }
+
+  /** `top` - fetch first X items */
+  debugStream(id: number, source: string, sourceOut: string, top: number) {
+    return this.http.get<PipelineResult>(this.dnnContext.$2sxc.http.apiUrl(webApiQueryDebugStream), {
+      params: { appId: this.context.appId.toString(), id: id.toString(), from: source, out: sourceOut, top: top.toString() }
     });
   }
 }
