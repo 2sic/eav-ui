@@ -27,7 +27,7 @@ export function calculateWarnings(pipelineModel: PipelineModel, context: Context
           <code>${param}</code> <br>
           It should use the syntax: <br>
           <code>key=value</code> <br>
-          or resolve to a token like <br>
+          or resolve to a token like: <br>
           <code>key=[source:key]</code>
         `);
       }
@@ -55,7 +55,7 @@ export function calculateWarnings(pipelineModel: PipelineModel, context: Context
       // This is because in the old days, the ModuleId wasn't auto-filled, so people had to add it as a test value.
       // Now it's not necessary any more
       const midRegex = /^\[module:moduleid\]=([0-9]*)$/gmi;
-      const midMatch = midRegex.exec(testParams.join('\n')); // capture the ModuleId
+      const midMatch = midRegex.exec(param); // capture the ModuleId
       if (midMatch) {
         const testMid = midMatch[1];
         const urlMid = context.moduleId.toString();
