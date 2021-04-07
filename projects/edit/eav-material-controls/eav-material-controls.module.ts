@@ -67,7 +67,6 @@ import { TranslateMenuDialogComponent } from './localization/translate-menu-dial
 import { TranslateMenuComponent } from './localization/translate-menu/translate-menu.component';
 import { ValidationMessagesService } from './validators/validation-messages-service';
 import { CollapsibleWrapperComponent } from './wrappers';
-import { CollapsibleFieldWrapperComponent } from './wrappers/collapsible-field-wrapper/collapsible-field-wrapper.component';
 import { EntityExpandableWrapperComponent } from './wrappers/entity-expandable-wrapper/entity-expandable-wrapper.component';
 import { ExpandableWrapperComponent } from './wrappers/expandable-wrapper/expandable-wrapper.component';
 import { FieldHelperTextComponent } from './wrappers/field-helper-text/field-helper-text.component';
@@ -118,7 +117,6 @@ import { LocalizationWrapperComponent } from './wrappers/localization-wrapper/lo
     DropzoneWrapperComponent,
     HyperlinkLibraryExpandableWrapperComponent,
     EntityContentBlockComponent,
-    CollapsibleFieldWrapperComponent,
     ExternalWebComponentComponent,
     ConnectorComponent,
     CustomDefaultComponent,
@@ -188,7 +186,6 @@ import { LocalizationWrapperComponent } from './wrappers/localization-wrapper/lo
     DropzoneWrapperComponent,
     HyperlinkLibraryExpandableWrapperComponent,
     EntityContentBlockComponent,
-    CollapsibleFieldWrapperComponent,
     ExternalWebComponentComponent,
     ConnectorComponent,
     CustomDefaultComponent,

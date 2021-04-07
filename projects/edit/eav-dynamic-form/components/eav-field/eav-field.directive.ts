@@ -25,7 +25,6 @@ import { StringFontIconPickerComponent } from '../../../eav-material-controls/in
 import { StringTemplatePickerComponent } from '../../../eav-material-controls/input-types/string/string-template-picker/string-template-picker.component';
 import { StringUrlPathComponent } from '../../../eav-material-controls/input-types/string/string-url-path/string-url-path.component';
 import { CollapsibleWrapperComponent } from '../../../eav-material-controls/wrappers';
-import { CollapsibleFieldWrapperComponent } from '../../../eav-material-controls/wrappers/collapsible-field-wrapper/collapsible-field-wrapper.component';
 import { EntityExpandableWrapperComponent } from '../../../eav-material-controls/wrappers/entity-expandable-wrapper/entity-expandable-wrapper.component';
 import { ExpandableWrapperComponent } from '../../../eav-material-controls/wrappers/expandable-wrapper/expandable-wrapper.component';
 import { HiddenWrapperComponent } from '../../../eav-material-controls/wrappers/hidden-wrapper/hidden-wrapper.component';
@@ -46,7 +45,6 @@ export class EavFieldDirective implements OnInit, OnDestroy {
 
   private components: Dictionary<Type<any>> = {
     'app-adam-attach-wrapper': AdamAttachWrapperComponent,
-    'app-collapsible-field-wrapper': CollapsibleFieldWrapperComponent,
     'app-collapsible-wrapper': CollapsibleWrapperComponent,
     'app-dropzone-wrapper': DropzoneWrapperComponent,
     'app-localization-wrapper': LocalizationWrapperComponent,
