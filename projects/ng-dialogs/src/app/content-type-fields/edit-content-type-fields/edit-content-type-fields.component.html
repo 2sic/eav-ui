@@ -23,7 +23,7 @@
       <div class="edit-input">
         <mat-form-field appearance="standard" color="accent">
           <mat-label>Data Type</mat-label>
-          <mat-select (selectionChange)="resetInputType(i); calculateInputTypeOptions(i); calculateHints(i)"
+          <mat-select (selectionChange)="calculateInputTypeOptions(i); resetInputType(i); calculateHints(i)"
             [(ngModel)]="field.Type" [name]="'Type' + i" [disabled]="editMode">
             <mat-select-trigger>
               <mat-icon class="type-icon">{{ findIcon(field.Type) }}</mat-icon>
