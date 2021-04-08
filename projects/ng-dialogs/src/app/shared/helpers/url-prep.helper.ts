@@ -55,7 +55,7 @@ export function convertFormToUrl(form: EditForm) {
       }
 
       if (addItem.Prefill) {
-        for (const [key, prefill] of Object.values(addItem.Prefill)) {
+        for (const [key, prefill] of Object.entries(addItem.Prefill)) {
           formUrl += '&prefill:' + key + '~' + paramEncode(prefill.toString());
         }
       }
