@@ -9,7 +9,18 @@ export class QueryService {
   constructor(private http: HttpClient, private dnnContext: DnnContext, private context: Context) { }
 
   getAvailableEntities(queryUrl: string, includeGuid: boolean, params: string) {
-    const allParams = `includeGuid=${includeGuid}` + `&appId=${this.context.appId}` + (params ? `&${params}` : '');
-    return this.http.get<QueryStreams>(this.dnnContext.$2sxc.http.apiUrl(`app/auto/query/${queryUrl}?${allParams}`));
+    debugger;
+    // Check if any params we should auto-add are already set (like in a query which has these params set in the configuration)
+    const hasParams = !!params;
+    const paramsLower = params?.toLocaleLowerCase() ?? '';
+    const hasAppId = paramsLower.includes('appid=') ?? false;
+    const hasGuid = paramsLower.includes('includeguid=') ?? false;
+    const allParams =
+      (hasGuid ? '' : `&includeGuid=${includeGuid}`)
+      + (hasAppId ? '' : `&appId=${this.context.appId}`)
+      + (hasParams ? `&${params}` : '');
+    // trim initial & because it will always start with an & and it should't
+    const urlParams = allParams.substring(1);
+    return this.http.get<QueryStreams>(this.dnnContext.$2sxc.http.apiUrl(`app/auto/query/${queryUrl}?${urlParams}`));
   }
 }
