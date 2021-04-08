@@ -9,7 +9,6 @@ export class QueryService {
   constructor(private http: HttpClient, private dnnContext: DnnContext, private context: Context) { }
 
   getAvailableEntities(queryUrl: string, includeGuid: boolean, params: string) {
-    debugger;
     // Check if any params we should auto-add are already set (like in a query which has these params set in the configuration)
     const hasParams = !!params;
     const paramsLower = params?.toLocaleLowerCase() ?? '';
