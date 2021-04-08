@@ -12,6 +12,8 @@ export const guiTypes: GuiTypes = {
   Source: { Name: 'Source', Icon: 'cloud_upload', UiHint: 'Source of new data - usually SQL, CSV or similar' },
   Target: { Name: 'Target', Icon: 'adjust', UiHint: 'Target - usually just a destination of data' },
   Unknown: { Name: 'Unknown', Icon: 'fiber_manual_record', UiHint: 'Unknown type' },
+  Debug: { Name: 'Debug', Icon: 'bug_report', UiHint: 'Debugging Tools'},
+  System: { Name: 'System', Icon: 'military_tech', UiHint: 'System Data' },
 };
 
 export function calculateTypeInfos(pipelineDataSources: PipelineDataSource[], dataSources: DataSource[]) {
