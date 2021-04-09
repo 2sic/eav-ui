@@ -68,7 +68,7 @@ export function convertFormToUrl(form: EditForm) {
       const groupItem = item as GroupItem;
       formUrl += 'group:' + groupItem.Group.Guid + ':' + groupItem.Group.Index + ':' + groupItem.Group.Part + ':' + groupItem.Group.Add;
       if (groupItem.Prefill) {
-        for (const [key, prefill] of Object.values(groupItem.Prefill)) {
+        for (const [key, prefill] of Object.entries(groupItem.Prefill)) {
           formUrl += '&prefill:' + key + '~' + paramEncode(prefill.toString());
         }
       }
