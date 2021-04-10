@@ -2,10 +2,10 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { GoToPermissions } from '../permissions/go-to-permissions';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
-import { DevRestCustomComponent } from './dev-rest-custom/dev-rest-custom.component';
-import { DevRestDataComponent } from './dev-rest-data/dev-rest-data.component';
+import { DevRestCustomComponent } from './custom/custom.component';
+import { DevRestDataComponent } from './data/data.component';
 import { devRestDialog } from './dev-rest-dialog.config';
-import { DevRestQueryComponent } from './dev-rest-query/dev-rest-query.component';
+import { DevRestQueryComponent } from './query/query.component';
 import { GoToDevRest } from './go-to-dev-rest';
 
 const routes: Routes = [

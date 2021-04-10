@@ -10,7 +10,7 @@ import { PermissionsService } from '../../permissions';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { Context } from '../../shared/services/context';
 import { DevRestBase } from '../dev-rest-base.component';
-import { DevRestQueryTemplateVars } from './dev-rest-query-template-vars';
+import { DevRestQueryTemplateVars } from './query-template-vars';
 
 const pathToQuery = 'app/{appname}/query/{queryname}';
 
@@ -22,7 +22,7 @@ const pathToQuery = 'app/{appname}/query/{queryname}';
 
 @Component({
   selector: 'app-dev-rest-query',
-  templateUrl: './dev-rest-query.component.html',
+  templateUrl: './query.component.html',
   styleUrls: ['../dev-rest-all.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

@@ -7,7 +7,7 @@ import { defaultGridOptions } from '../../shared/constants/default-grid-options.
 
 @Component({
   selector: 'app-dev-rest-tab-permissions',
-  templateUrl: './dev-rest-tab-permissions.component.html',
+  templateUrl: './tab-permissions.component.html',
 })
 export class DevRestTabPermissionsComponent implements OnInit {
 

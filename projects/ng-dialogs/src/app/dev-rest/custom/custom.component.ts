@@ -5,11 +5,11 @@ import { combineLatest, Observable, Subject, Subscription } from 'rxjs';
 import { filter, map, pairwise, startWith } from 'rxjs/operators';
 import { WebApi } from '../../app-administration/models/web-api.model';
 import { WebApisService } from '../../app-administration/services/web-apis.service';
-import { DevRestCustomTemplateVars } from './dev-rest-custom-template-vars';
+import { DevRestCustomTemplateVars } from './custom-template-vars';
 
 @Component({
   selector: 'app-dev-rest-custom',
-  templateUrl: './dev-rest-custom.component.html',
+  templateUrl: './custom.component.html',
   styleUrls: ['../dev-rest-all.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

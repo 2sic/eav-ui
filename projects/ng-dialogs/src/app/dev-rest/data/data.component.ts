@@ -11,13 +11,13 @@ import { PermissionsService } from '../../permissions';
 import { Context } from '../../shared/services/context';
 import { DevRestBase } from '../dev-rest-base.component';
 import { GoToDevRest } from '../go-to-dev-rest';
-import { DevRestDataTemplateVars } from './dev-rest-data-template-vars';
+import { DevRestDataTemplateVars } from './data-template-vars';
 
 const pathToContent = 'app/{appname}/content/{typename}';
 
 @Component({
   selector: 'app-dev-rest-data',
-  templateUrl: './dev-rest-data.component.html',
+  templateUrl: './data.component.html',
   styleUrls: ['../dev-rest-all.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   // we need preserve whitespace - otherwise spaces are missing in some conditional HTML

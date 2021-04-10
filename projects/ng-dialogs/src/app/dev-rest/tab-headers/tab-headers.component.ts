@@ -3,7 +3,7 @@ import { DevRestBaseTemplateVars } from '..';
 
 @Component({
   selector: 'app-dev-rest-tab-headers',
-  templateUrl: './dev-rest-tab-headers.component.html',
+  templateUrl: './tab-headers.component.html',
 })
 export class DevRestHttpHeadersComponent implements OnInit {
 
