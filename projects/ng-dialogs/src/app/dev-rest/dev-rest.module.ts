@@ -25,6 +25,7 @@ import { SharedComponentsModule } from '../shared/shared-components.module';
 import { DevRestCustomComponent } from './dev-rest-custom/dev-rest-custom.component';
 import { DevRestDataComponent } from './dev-rest-data/dev-rest-data.component';
 import { DevRestEntryComponent } from './dev-rest-entry/dev-rest-entry.component';
+import { DevRestQueryIntroductionComponent } from './dev-rest-query/introduction/introduction.component';
 import { DevRestQueryComponent } from './dev-rest-query/dev-rest-query.component';
 import { DevRestRoutingModule } from './dev-rest-routing.module';
 import { DevRestTabExamplesComponent } from './dev-rest-tab-examples/dev-rest-tab-examples.component';
@@ -49,6 +50,9 @@ import { InfoBoxComponent } from './info-box/info-box.component';
     DevRestQueryComponent,
     DevRestEntryComponent,
     DevRestCustomComponent,
+
+    // Query
+    DevRestQueryIntroductionComponent,
   ],
   entryComponents: [
     DevRestDataComponent,

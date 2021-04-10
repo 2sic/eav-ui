@@ -1,4 +1,7 @@
 
+export * from './dev-rest-base.component';
+export * from './dev-rest-base-template-vars';
+
 export * from './go-to-dev-rest';
 
 export * from './scenarios';

@@ -1,7 +1,7 @@
 <ng-container *ngIf="templateVars$ | async as data">
   <div mat-dialog-title>
     <div class="dialog-title-box">
-      <div>Using REST with {{ data.contentType?.Name }}</div>
+      <div>Using REST with Data of <code>{{ data.name }}</code></div>
       <button mat-icon-button matTooltip="Close dialog" (click)="closeDialog()">
         <mat-icon>close</mat-icon>
       </button>
@@ -34,7 +34,7 @@
         <span>{{ data.scenario.useVirtual ? 'Virtual' : 'Absolute' }} REST URLs</span>
       </div>
 
-      <app-dev-rest-tab-examples [data]="data"></app-dev-rest-tab-examples>
+      <app-dev-rest-tab-examples-intro [data]="data"></app-dev-rest-tab-examples-intro>
 
       <!-- REST Tab showing the urls and code snippets -->
       <app-dev-rest-urls-and-code [data]="data"></app-dev-rest-urls-and-code>

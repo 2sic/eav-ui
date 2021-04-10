@@ -1,7 +1,6 @@
 import { Query } from '../../app-administration/models/query.model';
-import { Permission } from '../../permissions/models/permission.model';
+import { DevRestBaseTemplateVars } from '../dev-rest-base-template-vars';
 
-export interface DevRestQueryTemplateVars {
+export interface DevRestQueryTemplateVars extends DevRestBaseTemplateVars {
   query: Query;
-  permissions: Permission[];
 }
