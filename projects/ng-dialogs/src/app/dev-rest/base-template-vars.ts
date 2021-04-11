@@ -1,5 +1,4 @@
 import { ApiCall, Scenario } from '.';
-import { ContentType } from '../app-administration/models';
 import { Permission } from '../permissions/models/permission.model';
 
 
@@ -8,7 +7,7 @@ export interface DevRestBaseTemplateVars {
   name: string;
   currentScenario: Scenario;
   root: string;
-  // itemId: number;
+  itemId?: number;
   // itemGuid: string;
   apiCalls: ApiCall[];
   folder: string;

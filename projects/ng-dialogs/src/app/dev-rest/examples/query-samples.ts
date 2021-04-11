@@ -4,25 +4,31 @@ import { Context } from '../../shared/services/context';
 // tslint:disable: curly
 
 
-export function generateQueryCalls($2sxc: SxcRoot, scenario: Scenario, context: Context, root: string, id: number, streamNames: string) {
+export function generateQueryCalls($2sxc: SxcRoot, scenario: Scenario, context: Context, root: string, id: number,
+  streamNames: string, urlParams: string ) {
   const virtual = root[0] !== '/' && !root.startsWith('http');
-  // root = root + '/';
-  // const withId = root + id;
-  const contextParams = virtual ? `?PageId=${context.tabId}&ModuleId=${context.moduleId}` : '';
+
+  // if urlParams exist and it doesn't starts with a ?, add that
+  if(urlParams && urlParams.length && urlParams[0] != '?')
+    urlParams = '?' + urlParams;
+
+  const contextParams = virtual
+    ? `${urlParams}${urlParams ? '&' : '?'}PageId=${context.tabId}&ModuleId=${context.moduleId}`
+    : '';
   const directUrl = $2sxc.http.apiUrl(root) + contextParams;
   // const directWId = $2sxc.http.apiUrl(withId) + contextParams;
-  var pathWithStream = root + '/' + (streamNames ?? 'Default');
+  const pathWithParams = root + urlParams;
+  const pathWithStream = `${root}/${streamNames ?? 'Default'}${urlParams}`;
+
 
   return [
-    new ApiCall(virtual, 'GET', root, 'read all query streams', 'Read list of all items', true,
-      snippetsGet(scenario, root, context), directUrl),
+    new ApiCall(virtual, 'GET', pathWithParams, 'read all query streams', 'Read list of all items', true,
+      snippetsGet(scenario, pathWithParams, context), directUrl),
 
     new ApiCall(virtual, 'GET', pathWithStream, 'read only Stream Default', 'Read list of all items', true,
-      snippetsGet(scenario, root, context), directUrl),
+      snippetsGet(scenario, pathWithStream, context), directUrl),
 
     // #todoquery 2dm
-    // 1. Sample with stream name
-    // 1. sample with stream names (plural)
     // 1. later sample with IDs
     // 1. later maybe sample with guids, but not certain because it's kind of an unexpected opening
   ];

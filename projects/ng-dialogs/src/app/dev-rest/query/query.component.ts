@@ -2,7 +2,7 @@ import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { ChangeDetectionStrategy, Component, HostBinding, OnDestroy } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
-import { combineLatest, Observable } from 'rxjs';
+import { combineLatest, Observable, BehaviorSubject } from 'rxjs';
 import { map, share } from 'rxjs/operators';
 import { generateQueryCalls, GoToDevRest } from '..';
 import { AppDialogConfigService, PipelinesService } from '../../app-administration/services';
@@ -15,8 +15,7 @@ import { DevRestQueryTemplateVars } from './query-template-vars';
 const pathToQuery = 'app/{appname}/query/{queryname}';
 
 // #todoquery SPM
-// 1. help get the urlParams and streamNames to be reactive with very little overhead
-//    --> after this 2dm will update the samples to use these streams
+// 1. help get the urlParams and streamNames fields to look correct
 // 1. link to this from VisualQuery designer
 //    1. create a new area (like the run/add tabs with the code-button)
 //    1. There create a new button "Use in REST APIs" to open this dilog
@@ -32,9 +31,11 @@ export class DevRestQueryComponent extends DevRestBase implements OnDestroy {
 
   templateVars$: Observable<DevRestQueryTemplateVars>;
 
-  urlParams = '';
+  /** Test values for url params */
+  urlParams$ = new BehaviorSubject<string>('');
 
-  streamNames = 'Default';
+  /** Test values for stream names */
+  streamNames$ = new BehaviorSubject<string>('Default');
 
   constructor(
     appDialogConfigService: AppDialogConfigService,
@@ -75,13 +76,21 @@ export class DevRestQueryComponent extends DevRestBase implements OnDestroy {
     this.templateVars$ = combineLatest([
       combineLatest([query$, this.scenario$, this.permissions$]),
       combineLatest([root$, /* itemOfThisType$, */ this.dialogSettings$]),
+      combineLatest([this.streamNames$, this.urlParams$])
     ]).pipe(
-      map(([[query, scenario, permissions], [root, diag]]) => ({
+      map(([[query, scenario, permissions], [root, diag], [streamNames, urlParams]]) => ({
         ...this.buildBaseTemplateVars(query.Name, query.Guid, diag, permissions, root, scenario),
         query,
-        apiCalls: generateQueryCalls(dnnContext.$2sxc, scenario, context, root, 0 /* #todoquery */, this.streamNames ),
+        apiCalls: generateQueryCalls(dnnContext.$2sxc, scenario, context, root, 0 /* #todoquery */, streamNames, urlParams),
       })),
     );
+  }
+
+  updateStreams(event: Event) {
+    this.streamNames$.next((event.target as HTMLInputElement).value);
+  }
+  updateParams(event: Event) {
+    this.urlParams$.next((event.target as HTMLInputElement).value);
   }
 
 }
