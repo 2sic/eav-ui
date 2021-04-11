@@ -35,9 +35,7 @@ export class DevRestTabPermissionsComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  // todo: only works for content-types atm, not query #todoquery
   openPermissions() {
-    const contentTypeStaticName = this.route.snapshot.paramMap.get(GoToDevRest.paramTypeName);
-    this.router.navigate([GoToPermissions.goContentType(contentTypeStaticName)], { relativeTo: this.route });
+    this.router.navigate([GoToPermissions.goContentType(this.data.permissionTarget)], { relativeTo: this.route });
   }
 }

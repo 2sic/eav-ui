@@ -1,28 +1,7 @@
 <p>
-  All data can be used in JavaScript, SPAs or anywhere with the REST API
-  (see <a href="https://docs.2sxc.org/specs/web-api/intro.html" target="_blank">docs</a>).
-  Use this for things like:
+  To learn more about queries you may want to read these <a href="https://docs.2sxc.org/index.html" target="_blank">docs</a>:
 </p>
 <ul>
-  <li>Creating SPAs in DNN/2sxc</li>
-  <li>Getting data for mobile apps</li>
-  <li>Sharing data to other platforms</li>
-  <li>Using DNN/2sxc as a headless CMS</li>
+  <li><a href="https://docs.2sxc.org/basics/query/index.html" target="_blank">Queries in 2sxc</a></li>
+  <li><a href="https://docs.2sxc.org/web-api/query-rest-web-api.html" target="_blank">Query REST API</a></li>
 </ul>
-<p>
-  Just set off HTTP <code>GET</code> requests or similar
-  to the endpoint like <code>{{ data.root }}</code>. You can find the full list with example code
-  in the next tabs.
-  Make sure you also read about permissions and HTTP headers.
-</p>
-<h3>Scenarios</h3>
-<ng-container *ngFor="let scenario of scenarios">
-  <h4>Scenario: {{ scenario.name }}</h4>
-  <p>
-    {{ scenario.description }}
-  </p>
-  <p *ngIf="scenario.notes">
-    <em>
-      {{ scenario.notes }}
-    </em>
-  </p>

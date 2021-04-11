@@ -4,27 +4,31 @@ import { Context } from '../../shared/services/context';
 // tslint:disable: curly
 
 
-export function generateQueryCalls($2sxc: SxcRoot, scenario: Scenario, context: Context, root: string, id: number) {
+export function generateQueryCalls($2sxc: SxcRoot, scenario: Scenario, context: Context, root: string, id: number, streamNames: string) {
   const virtual = root[0] !== '/' && !root.startsWith('http');
-  root = root + '/';
-  const withId = root + id;
+  // root = root + '/';
+  // const withId = root + id;
   const contextParams = virtual ? `?PageId=${context.tabId}&ModuleId=${context.moduleId}` : '';
   const directUrl = $2sxc.http.apiUrl(root) + contextParams;
-  const directWId = $2sxc.http.apiUrl(withId) + contextParams;
+  // const directWId = $2sxc.http.apiUrl(withId) + contextParams;
+  var pathWithStream = root + '/' + (streamNames ?? 'Default');
 
   return [
-    new ApiCall(virtual, 'GET', root, 'read all', 'Read list of all items', true, snippetsGet(scenario, root, context),
-      directUrl),
+    new ApiCall(virtual, 'GET', root, 'read all query streams', 'Read list of all items', true,
+      snippetsGet(scenario, root, context), directUrl),
 
-    // #todoquery
+    new ApiCall(virtual, 'GET', pathWithStream, 'read only Stream Default', 'Read list of all items', true,
+      snippetsGet(scenario, root, context), directUrl),
+
+    // #todoquery 2dm
     // 1. Sample with stream name
     // 1. sample with stream names (plural)
-    // 1. sample with IDs
-    // 1. maybe sample with guids, but not certain because it's kind of an unexpected opening
+    // 1. later sample with IDs
+    // 1. later maybe sample with guids, but not certain because it's kind of an unexpected opening
   ];
 }
 
-function snippetsGet(scenario: Scenario, path: string, context: Context): CodeSample[] {
+function snippetsGet(scenario: Scenario, path: string, context: Context, streamNames?: string): CodeSample[] {
   const moduleId = context.moduleId;
   const virtual = path[0] !== '/';
   const list: CodeSample[] = [];

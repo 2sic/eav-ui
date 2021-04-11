@@ -70,7 +70,7 @@ export class DevRestBase implements OnDestroy {
       : (scenario.inSameSite ? '' : domainPrefix) + this.dnnContext.$2sxc.http.apiUrl(root);
   }
 
-  buildBaseTemplateVars(name: string, diag: DialogSettings, permissions: Permission[], root: string, scenario: Scenario): DevRestBaseTemplateVars {
+  buildBaseTemplateVars(name: string, identity: string, diag: DialogSettings, permissions: Permission[], root: string, scenario: Scenario): DevRestBaseTemplateVars {
     return {
       apiCalls: null,
       name,
@@ -81,6 +81,7 @@ export class DevRestBase implements OnDestroy {
       scenario,
       permissions,
       permissionsHasAnonymous: permissions.filter(p => p.Condition.indexOf('.Anonymous') > 0).length > 0,
+      permissionTarget: identity,
     }
   }
 

@@ -34,25 +34,33 @@ import { DevRestTabIntroductionComponent } from './tab-introduction/tab-introduc
 import { DevRestTabPermissionsComponent } from './tab-permissions/tab-permissions.component';
 import { DevRestUrlsAndCodeComponent } from './dev-rest-urls-and-code/dev-rest-urls-and-code.component';
 import { InfoBoxComponent } from './info-box/info-box.component';
+import { MatInputModule } from '@angular/material/input';
+import { FormsModule } from '@angular/forms';
+import { DevRestDataIntroductionComponent } from './data/introduction/introduction.component';
 
 @NgModule({
   declarations: [
+    DevRestEntryComponent,
+
     InfoBoxComponent,
-    DevRestTabExamplesComponent,
     DevRestUrlsAndCodeComponent,
-    DevRestDataComponent,
     SelectorWithHelpComponent,
     HelpPopupComponent,
     DevRestHttpHeadersComponent,
     DevRestTabPermissionsComponent,
     DevRestTabIntroductionComponent,
     DevRestTabExamplesComponent,
-    DevRestQueryComponent,
-    DevRestEntryComponent,
-    DevRestCustomComponent,
+
+    // Data
+    DevRestDataComponent,
+    DevRestDataIntroductionComponent,
 
     // Query
+    DevRestQueryComponent,
     DevRestQueryIntroductionComponent,
+
+    // Custom WebAPIs
+    DevRestCustomComponent,
   ],
   entryComponents: [
     DevRestDataComponent,
@@ -66,11 +74,13 @@ import { InfoBoxComponent } from './info-box/info-box.component';
     CommonModule,
     DevRestRoutingModule,
     SharedComponentsModule,
+    FormsModule,
     MatDialogModule,
     MatButtonModule,
     MatTooltipModule,
     MatSnackBarModule,
     MatFormFieldModule,
+    MatInputModule,
     MatSelectModule,
     MatTabsModule,
     MatListModule,

@@ -16,5 +16,5 @@ export interface DevRestBaseTemplateVars {
   scenario: Scenario;
   permissions: Permission[];
   permissionsHasAnonymous: boolean;
-  // permissionTarget: string;
+  permissionTarget: string;
 }

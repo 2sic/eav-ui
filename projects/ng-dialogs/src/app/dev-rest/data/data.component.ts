@@ -88,18 +88,11 @@ export class DevRestDataComponent extends DevRestBase implements OnDestroy {
       combineLatest([root$, itemOfThisType$, this.dialogSettings$]),
     ]).pipe(
       map(([[contentType, scenario, permissions], [root, item, diag]]) => ({
-        ...this.buildBaseTemplateVars(contentType.Name, diag, permissions, root, scenario),
+        ...this.buildBaseTemplateVars(contentType.Name, contentType.StaticName, diag, permissions, root, scenario),
         contentType,
-        // currentScenario: scenario,
-        // root,
         itemId: item.Id,
         itemGuid: item.Value,
         apiCalls: generateApiCalls(dnnContext.$2sxc, scenario, context, root, item.Id),
-        // folder: encodeURI(diag.Context.App.Folder),
-        // moduleId: context.moduleId,
-        // scenario,
-        // permissions,
-        // permissionsHasAnonymous: permissions.filter(p => p.Condition.indexOf('.Anonymous') > 0).length > 0,
       })),
     );
 

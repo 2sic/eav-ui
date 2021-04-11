@@ -14,11 +14,12 @@ import { DevRestQueryTemplateVars } from './query-template-vars';
 
 const pathToQuery = 'app/{appname}/query/{queryname}';
 
-// #todoquery
-// - get permissions to work
-// - samples in code
-// - help-link to docs (in query and data)
-// - link to this from VisualQuery designer
+// #todoquery SPM
+// 1. help get the urlParams and streamNames to be reactive with very little overhead
+//    --> after this 2dm will update the samples to use these streams
+// 1. link to this from VisualQuery designer
+//    1. create a new area (like the run/add tabs with the code-button)
+//    1. There create a new button "Use in REST APIs" to open this dilog
 
 @Component({
   selector: 'app-dev-rest-query',
@@ -30,6 +31,10 @@ export class DevRestQueryComponent extends DevRestBase implements OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
   templateVars$: Observable<DevRestQueryTemplateVars>;
+
+  urlParams = '';
+
+  streamNames = 'Default';
 
   constructor(
     appDialogConfigService: AppDialogConfigService,
@@ -72,9 +77,9 @@ export class DevRestQueryComponent extends DevRestBase implements OnDestroy {
       combineLatest([root$, /* itemOfThisType$, */ this.dialogSettings$]),
     ]).pipe(
       map(([[query, scenario, permissions], [root, diag]]) => ({
-        ...this.buildBaseTemplateVars(query.Name, diag, permissions, root, scenario),
+        ...this.buildBaseTemplateVars(query.Name, query.Guid, diag, permissions, root, scenario),
         query,
-        apiCalls: generateQueryCalls(dnnContext.$2sxc, scenario, context, root, 0 /* #todoquery */ ),
+        apiCalls: generateQueryCalls(dnnContext.$2sxc, scenario, context, root, 0 /* #todoquery */, this.streamNames ),
       })),
     );
   }
