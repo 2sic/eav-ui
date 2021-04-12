@@ -1,10 +1,11 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { combineLatest, Observable } from 'rxjs';
+import { distinctUntilChanged, map } from 'rxjs/operators';
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { ContentExpandAnimation } from '../../../shared/animations';
 import { EavService, EditRoutingService, FieldsSettingsService } from '../../../shared/services';
+import { EntityCacheService } from '../../../shared/store/ngrx-data';
 import { BaseComponent } from '../../input-types/base/base.component';
 import { calculateSelectedEntities } from '../../input-types/entity/entity-default/entity-default.helpers';
 import { SelectedEntity } from '../../input-types/entity/entity-default/entity-default.models';
@@ -17,14 +18,11 @@ import { EntityExpandableTemplateVars } from './entity-expandable-wrapper.models
   styleUrls: ['./entity-expandable-wrapper.component.scss'],
   animations: [ContentExpandAnimation],
 })
-// tslint:disable-next-line:max-line-length
-export class EntityExpandableWrapperComponent extends BaseComponent<string | string[]> implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
+export class EntityExpandableWrapperComponent extends BaseComponent<string | string[]> implements FieldWrapper, OnInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
 
   dialogIsOpen$: Observable<boolean>;
   templateVars$: Observable<EntityExpandableTemplateVars>;
-
-  private selectedEntities$: BehaviorSubject<SelectedEntity[]>;
 
   constructor(
     eavService: EavService,
@@ -32,6 +30,7 @@ export class EntityExpandableWrapperComponent extends BaseComponent<string | str
     fieldsSettingsService: FieldsSettingsService,
     private translate: TranslateService,
     private editRoutingService: EditRoutingService,
+    private entityCacheService: EntityCacheService,
   ) {
     super(eavService, validationMessagesService, fieldsSettingsService);
   }
@@ -39,10 +38,14 @@ export class EntityExpandableWrapperComponent extends BaseComponent<string | str
   ngOnInit() {
     super.ngOnInit();
     this.dialogIsOpen$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
-    this.selectedEntities$ = new BehaviorSubject([]);
+
+    const separator$ = this.settings$.pipe(map(settings => settings.Separator), distinctUntilChanged());
+    const selectedEntities$ = combineLatest([this.value$, separator$, this.entityCacheService.getEntities$()]).pipe(
+      map(([value, separator, entityCache]) => calculateSelectedEntities(value, separator, entityCache, this.translate)),
+    );
 
     this.templateVars$ = combineLatest([
-      combineLatest([this.label$, this.required$, this.invalid$, this.selectedEntities$]),
+      combineLatest([this.label$, this.required$, this.invalid$, selectedEntities$]),
       combineLatest([this.disabled$, this.touched$]),
     ]).pipe(
       map(([
@@ -63,21 +66,7 @@ export class EntityExpandableWrapperComponent extends BaseComponent<string | str
     );
   }
 
-  ngAfterViewInit() {
-    this.subscription.add(
-      combineLatest([this.value$, this.settings$, this.config.entityCache$]).pipe(
-        map(([fieldValue, settings, availableEntities]) => {
-          const selected = calculateSelectedEntities(fieldValue, settings.Separator, availableEntities, this.translate);
-          return selected;
-        }),
-      ).subscribe(selected => {
-        this.selectedEntities$.next(selected);
-      })
-    );
-  }
-
   ngOnDestroy() {
-    this.selectedEntities$.complete();
     super.ngOnDestroy();
   }
 

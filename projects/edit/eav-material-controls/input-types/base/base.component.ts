@@ -43,9 +43,9 @@ export class BaseComponent<T = any> implements Field, OnInit, OnDestroy {
         this.settings$.next(settings);
       })
     );
-    this.label$ = this.settings$.pipe(map(settings => settings.Name));
-    this.placeholder$ = this.settings$.pipe(map(settings => settings.Placeholder));
-    this.required$ = this.settings$.pipe(map(settings => settings.Required));
+    this.label$ = this.settings$.pipe(map(settings => settings.Name), distinctUntilChanged());
+    this.placeholder$ = this.settings$.pipe(map(settings => settings.Placeholder), distinctUntilChanged());
+    this.required$ = this.settings$.pipe(map(settings => settings.Required), distinctUntilChanged());
 
     this.invalid$ = this.control.statusChanges.pipe(
       map(() => this.control.invalid),

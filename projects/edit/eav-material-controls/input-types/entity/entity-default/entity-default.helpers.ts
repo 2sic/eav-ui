@@ -5,13 +5,13 @@ import { SelectedEntity } from './entity-default.models';
 export function calculateSelectedEntities(
   fieldValue: string | string[],
   separator: string,
-  availableEntities: EntityInfo[],
+  entityCache: EntityInfo[],
   translate: TranslateService,
 ) {
   // name is guid or freetext
   const names = typeof fieldValue === 'string' ? convertValueToArray(fieldValue, separator) : fieldValue;
   const selectedEntities = names.map(name => {
-    const entity = availableEntities.find(e => e.Value === name);
+    const entity = entityCache.find(e => e.Value === name);
     let label: string;
     if (name == null) {
       label = 'empty slot';

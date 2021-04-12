@@ -215,15 +215,7 @@ export class ItemService extends BaseDataService<EavItem> {
 
     return this.cache$.pipe(
       map(items => items.filter(item => entityGuids.includes(item.Entity.Guid))),
-      distinctUntilChanged((oldList, newList) => {
-        if (oldList.length !== newList.length) { return false; }
-
-        for (let i = 0; i < oldList.length; i++) {
-          if (oldList[i] === newList[i]) { continue; }
-          return false;
-        }
-        return true;
-      }),
+      distinctUntilChanged(GeneralHelpers.arraysEqual),
     );
   }
 

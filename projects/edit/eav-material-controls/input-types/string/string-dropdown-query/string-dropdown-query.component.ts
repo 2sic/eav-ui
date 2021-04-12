@@ -1,9 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
+import { combineLatest } from 'rxjs';
+import { distinctUntilChanged, map } from 'rxjs/operators';
 import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
 import { EntityInfo } from '../../../../shared/models';
 import { EavService, EditRoutingService, EntityService, FieldsSettingsService, QueryService } from '../../../../shared/services';
+import { EntityCacheService } from '../../../../shared/store/ngrx-data';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { EntityQueryComponent } from '../../entity/entity-query/entity-query.component';
 import { QueryEntity } from '../../entity/entity-query/entity-query.models';
@@ -26,24 +29,43 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
     translate: TranslateService,
     editRoutingService: EditRoutingService,
     snackBar: MatSnackBar,
+    entityCacheService: EntityCacheService,
     queryService: QueryService,
   ) {
     super(
-      eavService, validationMessagesService, fieldsSettingsService, entityService, translate, editRoutingService, snackBar, queryService,
+      eavService,
+      validationMessagesService,
+      fieldsSettingsService,
+      entityService,
+      translate,
+      editRoutingService,
+      snackBar,
+      entityCacheService,
+      queryService,
     );
     StringDropdownQueryLogic.importMe();
+    this.isStringQuery = true;
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     super.ngOnInit();
+
+    this.subscription.add(
+      combineLatest([
+        this.settings$.pipe(map(settings => settings.Value), distinctUntilChanged()),
+        this.settings$.pipe(map(settings => settings.Label), distinctUntilChanged()),
+      ]).subscribe(() => {
+        this.availableEntities$.next(null);
+      })
+    );
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     super.ngOnDestroy();
   }
 
-  /** Override function in superclass */
-  queryEntityMapping(entity: QueryEntity) {
+  /** WARNING! Overrides function in superclass */
+  queryEntityMapping(entity: QueryEntity): EntityInfo {
     const settings = this.settings$.value;
     const entityInfo: EntityInfo = {
       Id: entity.Id,
