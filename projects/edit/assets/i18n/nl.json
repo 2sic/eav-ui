@@ -36,6 +36,9 @@
   "Message": {
     "Saved": "opgeslagen",
     "Saving": "opslaan...",
+    "Deleted": "deleted",
+    "Deleting": "deleting...",
+    "DeleteError": "delete failed. Please check console for more information",
     "DebugEnabled": "debug mode enabled",
     "DebugDisabled": "debug mode disabled",
     "SwitchedLanguageToDefault": "We have switched language to default {{language}} because it's missing some or all values",
@@ -118,7 +121,9 @@
       "DragMove": "drag om de lijst te herordenen",
       "Edit": "bewerk dit item",
       "Remove": "verwijder van lijst",
-      "Delete": "delete"
+      "Delete": "delete",
+      "Loading": "loading...",
+      "Search": "search"
     },
     "EntityQuery": {
       "QueryNoItems": "No items found",

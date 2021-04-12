@@ -36,6 +36,9 @@
   "Message": {
     "Saved": "збережено",
     "Saving": "зберігаємо...",
+    "Deleted": "deleted",
+    "Deleting": "deleting...",
+    "DeleteError": "delete failed. Please check console for more information",
     "DebugEnabled": "debug mode enabled",
     "DebugDisabled": "debug mode disabled",
     "SwitchedLanguageToDefault": "We have switched language to default {{language}} because it's missing some or all values",
@@ -118,7 +121,9 @@
       "DragMove": "перетягніть для того щоб змінити порядок у списку",
       "Edit": "редагувати цей елемент",
       "Remove": "видалити зі списку",
-      "Delete": "delete"
+      "Delete": "delete",
+      "Loading": "loading...",
+      "Search": "search"
     },
     "EntityQuery": {
       "QueryNoItems": "No items found",

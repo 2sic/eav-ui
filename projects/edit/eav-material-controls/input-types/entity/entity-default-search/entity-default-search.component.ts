@@ -70,12 +70,10 @@ export class EntityDefaultSearchComponent implements OnInit, OnChanges {
 
   getPlaceholder(): string {
     if (this.availableEntities == null) {
-      // TODO: i18n
-      return 'loading...';
+      return this.translate.instant('Fields.Entity.Loading');
     }
     if (this.availableEntities.length > 0) {
-      // TODO: i18n
-      return 'search';
+      return this.translate.instant('Fields.Entity.Search');
     }
     if (this.error) {
       return this.error;

@@ -233,25 +233,25 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
     const confirmed = confirm(this.translate.instant('Data.Delete.Question', { title, id }));
     if (!confirmed) { return; }
 
-    this.snackBar.open('Deleting...');
+    this.snackBar.open(this.translate.instant('Message.Deleting'));
     this.entityService.delete(contentType, id, false).subscribe({
       next: () => {
-        this.snackBar.open('Deleted', null, { duration: 2000 }); // TODO: i81n
+        this.snackBar.open(this.translate.instant('Message.Deleted'), null, { duration: 2000 });
         this.removeSelected(props.index);
         this.fetchEntities(true);
       },
       error: (error1: HttpErrorResponse) => {
         this.snackBar.dismiss();
         if (!confirm(this.translate.instant('Data.Delete.Question', { title, id }))) { return; }
-        this.snackBar.open('Deleting...'); // TODO: i81n
+        this.snackBar.open(this.translate.instant('Message.Deleting'));
         this.entityService.delete(contentType, id, true).subscribe({
           next: () => {
-            this.snackBar.open('Deleted', null, { duration: 2000 }); // TODO: i81n
+            this.snackBar.open(this.translate.instant('Message.Deleted'), null, { duration: 2000 });
             this.removeSelected(props.index);
             this.fetchEntities(true);
           },
           error: (error2: HttpErrorResponse) => {
-            this.snackBar.open('Delete failed', null, { duration: 2000 }); // TODO: i81n
+            this.snackBar.open(this.translate.instant('Message.DeleteError'), null, { duration: 2000 });
           }
         });
       }

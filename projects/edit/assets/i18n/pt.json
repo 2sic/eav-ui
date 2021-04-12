@@ -36,6 +36,9 @@
   "Message": {
     "Saved": "gravado",
     "Saving": "a gravar...",
+    "Deleted": "deleted",
+    "Deleting": "deleting...",
+    "DeleteError": "delete failed. Please check console for more information",
     "DebugEnabled": "modo de depuração ativado",
     "DebugDisabled": "modo de depuração desativado",
     "SwitchedLanguageToDefault": "Alterámos a língua para a padrão {{language}} a atual tem alguns ou todos os valores em falta",
@@ -118,7 +121,9 @@
       "DragMove": "arraste para reordernar a lista",
       "Edit": "editar este item",
       "Remove": "remover da lista",
-      "Delete": "apagar"
+      "Delete": "apagar",
+      "Loading": "loading...",
+      "Search": "search"
     },
     "EntityQuery": {
       "QueryNoItems": "Não foram encontrados items",

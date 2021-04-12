@@ -36,6 +36,9 @@
   "Message": {
     "Saved": "guardado",
     "Saving": "guardando...",
+    "Deleted": "deleted",
+    "Deleting": "deleting...",
+    "DeleteError": "delete failed. Please check console for more information",
     "DebugEnabled": "debug mode enabled",
     "DebugDisabled": "debug mode disabled",
     "SwitchedLanguageToDefault": "We have switched language to default {{language}} because it's missing some or all values",
@@ -118,7 +121,9 @@
       "DragMove": "arrastre para reordenar la lista",
       "Edit": "edite este elemento",
       "Remove": "quitar de la lista",
-      "Delete": "delete"
+      "Delete": "delete",
+      "Loading": "loading...",
+      "Search": "search"
     },
     "EntityQuery": {
       "QueryNoItems": "No items found",
