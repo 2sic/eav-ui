@@ -1,18 +1,17 @@
 import { AllCommunityModules, GridOptions } from '@ag-grid-community/all-modules';
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DevRestDataTemplateVars, GoToDevRest } from '..';
+import { DevRestBaseTemplateVars, DevRestDataTemplateVars, GoToDevRest } from '..';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 
 @Component({
   selector: 'app-dev-rest-tab-permissions',
-  templateUrl: './dev-rest-tab-permissions.component.html',
-  styleUrls: ['./dev-rest-tab-permissions.component.scss']
+  templateUrl: './tab-permissions.component.html',
 })
 export class DevRestTabPermissionsComponent implements OnInit {
 
-  @Input() data: DevRestDataTemplateVars;
+  @Input() data: DevRestBaseTemplateVars;
 
   /** AgGrid modules */
   modules = AllCommunityModules;
@@ -37,7 +36,6 @@ export class DevRestTabPermissionsComponent implements OnInit {
   }
 
   openPermissions() {
-    const contentTypeStaticName = this.route.snapshot.paramMap.get(GoToDevRest.paramTypeName);
-    this.router.navigate([GoToPermissions.goContentType(contentTypeStaticName)], { relativeTo: this.route });
+    this.router.navigate([GoToPermissions.goContentType(this.data.permissionTarget)], { relativeTo: this.route });
   }
 }

@@ -22,32 +22,44 @@ import { MetadataService } from '../permissions/services/metadata.service';
 import { PermissionsService } from '../permissions/services/permissions.service';
 import { Context } from '../shared/services/context';
 import { SharedComponentsModule } from '../shared/shared-components.module';
-import { DevRestCustomComponent } from './dev-rest-custom/dev-rest-custom.component';
-import { DevRestDataComponent } from './dev-rest-data/dev-rest-data.component';
-import { DevRestEntryComponent } from './dev-rest-entry/dev-rest-entry.component';
-import { DevRestQueryComponent } from './dev-rest-query/dev-rest-query.component';
+import { DevRestCustomComponent } from './custom/custom.component';
+import { DevRestDataComponent } from './data/data.component';
+import { DevRestEntryComponent } from './entry/entry.component';
+import { DevRestQueryIntroductionComponent } from './query/introduction/introduction.component';
+import { DevRestQueryComponent } from './query/query.component';
 import { DevRestRoutingModule } from './dev-rest-routing.module';
-import { DevRestTabExamplesComponent } from './dev-rest-tab-examples/dev-rest-tab-examples.component';
-import { DevRestHttpHeadersComponent } from './dev-rest-tab-headers/dev-rest-tab-headers.component';
-import { DevRestTabIntroductionComponent } from './dev-rest-tab-introduction/dev-rest-tab-introduction.component';
-import { DevRestTabPermissionsComponent } from './dev-rest-tab-permissions/dev-rest-tab-permissions.component';
+import { DevRestTabExamplesComponent } from './tab-examples/tab-examples.component';
+import { DevRestHttpHeadersComponent } from './tab-headers/tab-headers.component';
+import { DevRestTabIntroductionComponent } from './tab-introduction/tab-introduction.component';
+import { DevRestTabPermissionsComponent } from './tab-permissions/tab-permissions.component';
 import { DevRestUrlsAndCodeComponent } from './dev-rest-urls-and-code/dev-rest-urls-and-code.component';
 import { InfoBoxComponent } from './info-box/info-box.component';
+import { MatInputModule } from '@angular/material/input';
+import { FormsModule } from '@angular/forms';
+import { DevRestDataIntroductionComponent } from './data/introduction/introduction.component';
 
 @NgModule({
   declarations: [
+    DevRestEntryComponent,
+
     InfoBoxComponent,
-    DevRestTabExamplesComponent,
     DevRestUrlsAndCodeComponent,
-    DevRestDataComponent,
     SelectorWithHelpComponent,
     HelpPopupComponent,
     DevRestHttpHeadersComponent,
     DevRestTabPermissionsComponent,
     DevRestTabIntroductionComponent,
     DevRestTabExamplesComponent,
+
+    // Data
+    DevRestDataComponent,
+    DevRestDataIntroductionComponent,
+
+    // Query
     DevRestQueryComponent,
-    DevRestEntryComponent,
+    DevRestQueryIntroductionComponent,
+
+    // Custom WebAPIs
     DevRestCustomComponent,
   ],
   entryComponents: [
@@ -62,11 +74,13 @@ import { InfoBoxComponent } from './info-box/info-box.component';
     CommonModule,
     DevRestRoutingModule,
     SharedComponentsModule,
+    FormsModule,
     MatDialogModule,
     MatButtonModule,
     MatTooltipModule,
     MatSnackBarModule,
     MatFormFieldModule,
+    MatInputModule,
     MatSelectModule,
     MatTabsModule,
     MatListModule,

@@ -1,7 +1,7 @@
 
 <h3>Permissions ({{ data.permissions.length }})</h3>
 <p>
-  This content-type ({{ data.contentType.Name }}) has {{ data.permissions.length }} permissions
+  This target <code>{{ data.name }}</code> has {{ data.permissions.length }} permissions
   configured.
   <button mat-icon-button matTooltip="Open permissions" (click)="openPermissions()">
     <mat-icon [matBadge]="data.permissions.length" matBadgePosition="after" matBadgeColor="accent"

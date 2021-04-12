@@ -1,7 +1,7 @@
 <ng-container *ngIf="templateVars$ | async as data">
   <div mat-dialog-title>
     <div class="dialog-title-box">
-      <div>Using REST with {{ data.contentType?.Name }}</div>
+      <div>Using REST with Query <code>{{ data.name }}</code></div>
       <button mat-icon-button matTooltip="Close dialog" (click)="closeDialog()">
         <mat-icon>close</mat-icon>
       </button>
@@ -9,6 +9,8 @@
   </div>
 
   <router-outlet></router-outlet>
+
+  <!-- Template below this line -->
 
   <app-selector-with-help label="Choose Scenario" [items]="scenarios" [value]="data.scenario.key"
     (valueChange)="changeScenario($event)">
@@ -23,6 +25,9 @@
         <mat-icon>emoji_objects</mat-icon>
         <span>Introduction</span>
       </div>
+
+      <app-dev-query-introduction [data]="data"></app-dev-query-introduction>
+
       <app-dev-rest-tab-introduction [data]="data"></app-dev-rest-tab-introduction>
     </mat-tab>
 
@@ -34,7 +39,20 @@
         <span>{{ data.scenario.useVirtual ? 'Virtual' : 'Absolute' }} REST URLs</span>
       </div>
 
-      <app-dev-rest-tab-examples [data]="data"></app-dev-rest-tab-examples>
+      <app-dev-rest-tab-examples-intro [data]="data"></app-dev-rest-tab-examples-intro>
+
+      <!-- todo more variations -->
+      <!-- Demo Url Parameters: <input type="text" placeholder="" > -->
+      <mat-form-field>
+        <mat-label>Stream Name(s) to Limit, comma-separated</mat-label>
+        <input matInput placeholder="Default" [value]="streamNames$.value" (input)="updateStreams($event)">
+      </mat-form-field>
+      &nbsp;
+      <mat-form-field>
+        <mat-label>Additional Url Parameters</mat-label>
+        <input matInput placeholder="?id=27" [value]="urlParams$.value" (input)="updateParams($event)">
+      </mat-form-field>
+      &nbsp;
 
       <!-- REST Tab showing the urls and code snippets -->
       <app-dev-rest-urls-and-code [data]="data"></app-dev-rest-urls-and-code>
@@ -59,4 +77,6 @@
       <app-dev-rest-tab-headers [data]="data"></app-dev-rest-tab-headers>
     </mat-tab>
   </mat-tab-group>
+
+
 </ng-container>

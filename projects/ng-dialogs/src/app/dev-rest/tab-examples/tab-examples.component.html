@@ -6,7 +6,7 @@
     $2sxc(<em>id-or-htmlnode</em>).webApi.get(...)
   </a>
   or if you use
-  <a href="https://https://www.npmjs.com/package/@2sic.com/dnn-sxc-angular" target="_blank">
+  <a href="https://r.2sxc.org/js-angular" target="_blank">
     dnn-sxc-angular (npm package)
   </a>
   (which also passes url-resolving through $2sxc).
@@ -25,9 +25,11 @@
 
 <p>
   The examples below use real values to make it easier to get started.
-  The values used are the current content-type <code>{{ data.contentType.Name }}</code>,
+  The values used are the current content-type <code>{{ data.name }}</code>,
   the current Module ID <code>{{ data.moduleId }}</code>
   and the folder of the current App folder <code>{{ data.folder }}</code> (where needed).
+  <ng-container *ngIf="data.itemId">
   The code also looked up an item of this type and will use it's ID <code>{{ data.itemId }}</code> in the
   examples.
+</ng-container>
 </p>

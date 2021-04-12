@@ -1,29 +1,40 @@
 import { SxcRoot } from '@2sic.com/2sxc-typings';
-import { ApiCall, CodeSample, hint$2sxc, Scenario, warningExternal, warningSimpleSampleOnly } from '..';
+import { ApiCall, CodeSample, hint$2sxc, Scenario, warningExternal } from '..';
 import { Context } from '../../shared/services/context';
 // tslint:disable: curly
 
 
-export function generateApiCalls($2sxc: SxcRoot, scenario: Scenario, context: Context, root: string, id: number) {
+export function generateQueryCalls($2sxc: SxcRoot, scenario: Scenario, context: Context, root: string, id: number,
+  streamNames: string, urlParams: string ) {
   const virtual = root[0] !== '/' && !root.startsWith('http');
-  root = root + '/';
-  const withId = root + id;
-  const contextParams = virtual ? `?PageId=${context.tabId}&ModuleId=${context.moduleId}` : '';
+
+  // if urlParams exist and it doesn't starts with a ?, add that
+  if(urlParams && urlParams.length && urlParams[0] != '?')
+    urlParams = '?' + urlParams;
+
+  const contextParams = virtual
+    ? `${urlParams}${urlParams ? '&' : '?'}PageId=${context.tabId}&ModuleId=${context.moduleId}`
+    : '';
   const directUrl = $2sxc.http.apiUrl(root) + contextParams;
-  const directWId = $2sxc.http.apiUrl(withId) + contextParams;
+  // const directWId = $2sxc.http.apiUrl(withId) + contextParams;
+  const pathWithParams = root + urlParams;
+  const pathWithStream = `${root}/${streamNames ?? 'Default'}${urlParams}`;
+
 
   return [
-    new ApiCall(virtual, 'GET', root, 'read all', 'Read list of all items', true, snippetsGet(scenario, root, context),
-      directUrl),
-    new ApiCall(virtual, 'GET', withId, 'read one', 'Read a single item #' + id, true, snippetsGet(scenario, withId, context),
-      directWId),
-    new ApiCall(virtual, 'POST', root, 'create', 'Create an item', false, snippetsCreate(scenario, root, context.moduleId)),
-    new ApiCall(virtual, 'POST', withId, 'update', 'Update the item #' + id, false, snippetsUpdate(scenario, withId, context.moduleId)),
-    new ApiCall(virtual, 'DELETE', withId, 'delete', 'Delete item #' + id, false, snippetsDelete(scenario, withId, context.moduleId)),
+    new ApiCall(virtual, 'GET', pathWithParams, 'read all query streams', 'Read list of all items', true,
+      snippetsGet(scenario, pathWithParams, context), directUrl),
+
+    new ApiCall(virtual, 'GET', pathWithStream, 'read only Stream Default', 'Read list of all items', true,
+      snippetsGet(scenario, pathWithStream, context), directUrl),
+
+    // #todoquery 2dm
+    // 1. later sample with IDs
+    // 1. later maybe sample with guids, but not certain because it's kind of an unexpected opening
   ];
 }
 
-function snippetsGet(scenario: Scenario, path: string, context: Context): CodeSample[] {
+function snippetsGet(scenario: Scenario, path: string, context: Context, streamNames?: string): CodeSample[] {
   const moduleId = context.moduleId;
   const virtual = path[0] !== '/';
   const list: CodeSample[] = [];
@@ -124,80 +135,4 @@ $.ajax('${pathWithContext}').then(data => {
   return list;
 }
 
-/** Snippets for basic Post-Create */
-function snippetsCreate(scenario: Scenario, path: string, moduleId: number): CodeSample[] {
-  const showWarning = !scenario.inSameContext;
-  return [
-    new CodeSample('Basic Example',
-      `This example uses the ModuleId to get the context information.
-To see other ways to get the context and headers, check out the GET examples.
-Note that this snippet doesn't use real names of properties to add.`,
-      `// get the sxc-controller for this module
-var sxc = $2sxc(${moduleId});
 
-// The object we'll send to get created. It's just a simple object with properties
-var newThing = {
-  property1: 17,
-  property2: 'Some Text',
-  // related items like tags can be assigned with IDs
-  // which you would usually get from somewhere first
-  propertyPointingToOtherIds: [74,50203],
-};
-
-// now create it and get the id back
-sxc.webApi.post('${path}', newThing)
-  .then(data => {
-    console.log('Got this ID information: ', data)
-  });`,
-      false,
-      showWarning ? [warningSimpleSampleOnly] : []),
-  ];
-}
-
-/** Snippets for basic Post-Update */
-function snippetsUpdate(scenario: Scenario, path: string, moduleId: number): CodeSample[] {
-  const showWarning = !scenario.inSameContext;
-  return [
-    new CodeSample('Basic Example',
-      `This example uses the ModuleId to get the context information.
-To see other ways to get the context and headers, check out the GET examples.
-Note that this snippet doesn't use real names of properties to add.`,
-      `// get the sxc-controller for this module
-var sxc = $2sxc(${moduleId});
-
-// The object we'll send to update the data. It's just a simple object with properties
-var updateProperty1And2 = {
-  property1: 2742,
-  property2: 'Changed Text',
-};
-
-// now update the item
-sxc.webApi.post('${path}', updateProperty1And2)
-  .then(data => {
-    console.log('Update completed', data)
-  });`,
-      false,
-      showWarning ? [warningSimpleSampleOnly] : []),
-  ];
-}
-
-/** Snippets for basic Post-Update */
-function snippetsDelete(scenario: Scenario, path: string, moduleId: number): CodeSample[] {
-  const showWarning = !scenario.inSameContext;
-  return [
-    new CodeSample('Basic Example',
-      `This example uses the ModuleId to get the context information.
-To see other ways to get the context and headers, check out the GET examples.
-Note that this snippet doesn't use real names of properties to add.`,
-      `// get the sxc-controller for this module
-var sxc = $2sxc(${moduleId});
-
-// delete the item
-sxc.webApi.delete('${path}')
-  .then(data => {
-    console.log('Delete completed', data)
-  });`,
-      false,
-      showWarning ? [warningSimpleSampleOnly] : []),
-  ];
-}
