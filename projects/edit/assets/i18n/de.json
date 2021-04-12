@@ -35,13 +35,13 @@
   },
   "Message": {
     "Saved": "gespeichert",
-    "Saving": "saving...",
-    "Deleted": "deleted",
-    "Deleting": "deleting...",
-    "DeleteError": "delete failed. Please check console for more information",
+    "Saving": "speichern...",
+    "Deleted": "gelöscht",
+    "Deleting": "löschen...",
+    "DeleteError": "Löschen hat versagt. Bitte genauen Grund aus der Konsole entnehmen. ",
     "DebugEnabled": "debug aktiviert",
     "DebugDisabled": "debug deaktiviert",
-    "SwitchedLanguageToDefault": "We have switched language to default {{language}} because it's missing some or all values",
+    "SwitchedLanguageToDefault": "Es fehlen Werte in der Primärsprache, deshalb wurde auf die Standardsprache {{language}} umgestellt.",
     "CantSwitchLanguage": "Sprachwechsel erst möglich wenn alle Pflichtfelder in der aktuellen Sprache befüllt sind"
   },
   "LangMenu": {
@@ -122,8 +122,8 @@
       "Edit": "Element bearbeiten",
       "Remove": "Aus Liste entfernen",
       "Delete": "Löschen",
-      "Loading": "loading...",
-      "Search": "search"
+      "Loading": "lädt...",
+      "Search": "suchen"
     },
     "EntityQuery": {
       "QueryNoItems": "Keine Elemente gefunden",
