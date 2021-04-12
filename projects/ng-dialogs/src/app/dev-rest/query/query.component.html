@@ -43,16 +43,17 @@
 
       <!-- todo more variations -->
       <!-- Demo Url Parameters: <input type="text" placeholder="" > -->
-      <mat-form-field>
-        <mat-label>Stream Name(s) to Limit, comma-separated</mat-label>
-        <input matInput placeholder="Default" [value]="streamNames$.value" (input)="updateStreams($event)">
-      </mat-form-field>
-      &nbsp;
-      <mat-form-field>
-        <mat-label>Additional Url Parameters</mat-label>
-        <input matInput placeholder="?id=27" [value]="urlParams$.value" (input)="updateParams($event)">
-      </mat-form-field>
-      &nbsp;
+      <div class="stream-params-form">
+        <mat-form-field appearance="standard" color="accent">
+          <mat-label>Stream Name(s) to Limit, comma-separated</mat-label>
+          <input matInput placeholder="Default" [value]="streamNames$.value" (input)="updateStreams($event)">
+        </mat-form-field>
+
+        <mat-form-field appearance="standard" color="accent">
+          <mat-label>Additional Url Parameters</mat-label>
+          <input matInput placeholder="?id=27" [value]="urlParams$.value" (input)="updateParams($event)">
+        </mat-form-field>
+      </div>
 
       <!-- REST Tab showing the urls and code snippets -->
       <app-dev-rest-urls-and-code [data]="data"></app-dev-rest-urls-and-code>

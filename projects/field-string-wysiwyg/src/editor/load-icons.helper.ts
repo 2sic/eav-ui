@@ -47,7 +47,7 @@ const customTinyMceIcons: Dictionary<string> = {
 };
 
 export function loadCustomIcons(editor: TinyType) {
-  Object.entries(customTinyMceIcons).forEach(([name, icon]) => {
-    editor.ui.registry.addIcon(name, icon);
+  Object.entries(customTinyMceIcons).forEach(([name, svg]) => {
+    editor.ui.registry.addIcon(name, svg);
   });
 }

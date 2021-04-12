@@ -14,16 +14,10 @@ import { DevRestQueryTemplateVars } from './query-template-vars';
 
 const pathToQuery = 'app/{appname}/query/{queryname}';
 
-// #todoquery SPM
-// 1. help get the urlParams and streamNames fields to look correct
-// 1. link to this from VisualQuery designer
-//    1. create a new area (like the run/add tabs with the code-button)
-//    1. There create a new button "Use in REST APIs" to open this dilog
-
 @Component({
   selector: 'app-dev-rest-query',
   templateUrl: './query.component.html',
-  styleUrls: ['../dev-rest-all.scss'],
+  styleUrls: ['./query.component.scss', '../dev-rest-all.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DevRestQueryComponent extends DevRestBase implements OnDestroy {

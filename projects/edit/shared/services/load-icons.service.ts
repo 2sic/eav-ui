@@ -18,37 +18,35 @@ import sitemap from '!raw-loader!../../assets/icons/font-awesome/sitemap.svg';
 import { Injectable } from '@angular/core';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
+import { Dictionary } from '../../../ng-dialogs/src/app/shared/models/dictionary.model';
 
 @Injectable()
 export class LoadIconsService {
-  private icons = [
-    { name: 'apple', html: apple },
-    { name: 'appleFilled', html: appleFilled },
-    { name: 'draft-branch', html: draftBranch },
-    { name: 'file', html: file },
-    { name: 'file-archive', html: fileArchive },
-    { name: 'file-audio', html: fileAudio },
-    { name: 'file-code', html: fileCode },
-    { name: 'file-excel', html: fileExcel },
-    { name: 'file-image', html: fileImage },
-    { name: 'file-pdf', html: filePdf },
-    { name: 'file-powerpoint', html: filePowerpoint },
-    { name: 'file-text', html: fileText },
-    { name: 'file-video', html: fileVideo },
-    { name: 'file-word', html: fileWord },
-    { name: 'folder', html: folder },
-    { name: 'folder-plus', html: folderPlus },
-    { name: 'sitemap', html: sitemap },
-  ];
+  private icons: Dictionary<string> = {
+    apple,
+    appleFilled,
+    'draft-branch': draftBranch,
+    file,
+    'file-archive': fileArchive,
+    'file-audio': fileAudio,
+    'file-code': fileCode,
+    'file-excel': fileExcel,
+    'file-image': fileImage,
+    'file-pdf': filePdf,
+    'file-powerpoint': filePowerpoint,
+    'file-text': fileText,
+    'file-video': fileVideo,
+    'file-word': fileWord,
+    folder,
+    'folder-plus': folderPlus,
+    sitemap,
+  };
 
   constructor(private matIconRegistry: MatIconRegistry, private domSanitizer: DomSanitizer) { }
 
   load() {
-    this.icons.forEach(icon => {
-      this.matIconRegistry.addSvgIconLiteral(
-        icon.name,
-        this.domSanitizer.bypassSecurityTrustHtml(icon.html),
-      );
+    Object.entries(this.icons).forEach(([name, svg]) => {
+      this.matIconRegistry.addSvgIconLiteral(name, this.domSanitizer.bypassSecurityTrustHtml(svg));
     });
   }
 }

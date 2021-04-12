@@ -1,11 +1,14 @@
+import codeCurly from '!raw-loader!./assets/icons/code-curly.svg';
+import star from '!raw-loader!./assets/icons/star-24px.svg';
 import { Context as DnnContext, DnnAppComponent } from '@2sic.com/dnn-sxc-angular';
 import { ChangeDetectionStrategy, Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
 import { MatIconRegistry } from '@angular/material/icon';
-import { Title } from '@angular/platform-browser';
+import { DomSanitizer, Title } from '@angular/platform-browser';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { keyContentBlockId, keyModuleId } from './shared/constants/session.constants';
+import { Dictionary } from './shared/models/dictionary.model';
 import { Context } from './shared/services/context';
 
 @Component({
@@ -25,6 +28,7 @@ export class AppComponent extends DnnAppComponent implements OnInit, OnDestroy {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private matIconRegistry: MatIconRegistry,
+    private domSanitizer: DomSanitizer,
   ) {
     super(
       el,
@@ -34,7 +38,7 @@ export class AppComponent extends DnnAppComponent implements OnInit, OnDestroy {
       }),
     );
     this.context.initRoot();
-    this.matIconRegistry.setDefaultFontSetClass('material-icons-outlined');
+    this.loadFonts();
   }
 
   ngOnInit() {
@@ -62,5 +66,17 @@ export class AppComponent extends DnnAppComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
+  }
+
+  private loadFonts() {
+    this.matIconRegistry.setDefaultFontSetClass('material-icons-outlined');
+
+    const icons: Dictionary<string> = {
+      star,
+      'code-curly': codeCurly,
+    };
+    Object.entries(icons).forEach(([name, svg]) => {
+      this.matIconRegistry.addSvgIconLiteral(name, this.domSanitizer.bypassSecurityTrustHtml(svg));
+    });
   }
 }
