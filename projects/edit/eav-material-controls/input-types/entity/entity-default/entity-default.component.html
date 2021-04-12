@@ -15,7 +15,7 @@
     [placeholder]="data.placeholder" [required]="data.required" [invalid]="data.invalid" [touched]="data.touched"
     [disabled]="data.disabled" [freeTextMode]="data.freeTextMode" [settings]="data.settings"
     [selectedEntities]="data.selectedEntities" [availableEntities]="data.availableEntities"
-    [disableAddNew]="data.disableAddNew" [error]="data.error" (toggleFreeTextMode)="toggleFreeTextMode()"
-    (addSelected)="addSelected($event)" (editEntity)="editEntity($event)">
+    [disableAddNew]="data.disableAddNew" [error]="data.error" (fetchAvailableEntities)="fetchEntities(false)"
+    (toggleFreeTextMode)="toggleFreeTextMode()" (addSelected)="addSelected($event)" (editEntity)="editEntity($event)">
   </app-entity-default-search>
 </ng-container>

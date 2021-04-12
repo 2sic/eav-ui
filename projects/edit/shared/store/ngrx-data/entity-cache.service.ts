@@ -27,4 +27,8 @@ export class EntityCacheService extends BaseDataService<EntityInfo> {
       distinctUntilChanged(GeneralHelpers.arraysEqual),
     );
   }
+
+  getEntity(guid: string): EntityInfo {
+    return this.cache$.value.find(entity => entity.Value === guid);
+  }
 }

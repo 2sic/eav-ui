@@ -7,8 +7,8 @@
           'mat-form-field-invalid': invalid && touched
         }">
           <input matInput #autocomplete [placeholder]="getPlaceholder()" [matAutocomplete]="auto"
-            [disabled]="disabled || !settings.EnableAddExisting" (blur)="markAsTouched()"
-            (input)="filterSelectionList($event)">
+            [disabled]="disabled || !settings.EnableAddExisting" (focus)="fetchEntities()" (blur)="markAsTouched()"
+            (input)="filterSelectionList()">
           <button mat-icon-button matSuffix [disabled]="disabled || !settings.EnableAddExisting"
             *ngIf="!settings.EnableTextEntry">
             <mat-icon>arrow_drop_down</mat-icon>

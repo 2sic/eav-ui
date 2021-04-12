@@ -4,6 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
 import { EavService, EditRoutingService, EntityService, FieldsSettingsService } from '../../../../shared/services';
+import { EntityCacheService } from '../../../../shared/store/ngrx-data';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { EntityDefaultComponent } from '../entity-default/entity-default.component';
 import { EntityContentBlocksLogic } from './entity-content-blocks-logic';
@@ -25,16 +26,25 @@ export class EntityContentBlockComponent extends EntityDefaultComponent implemen
     translate: TranslateService,
     editRoutingService: EditRoutingService,
     snackBar: MatSnackBar,
+    entityCacheService: EntityCacheService,
   ) {
-    super(eavService, validationMessagesService, fieldsSettingsService, entityService, translate, editRoutingService, snackBar);
+    super(
+      eavService,
+      validationMessagesService,
+      fieldsSettingsService,
+      entityService, translate,
+      editRoutingService,
+      snackBar,
+      entityCacheService,
+    );
     EntityContentBlocksLogic.importMe();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     super.ngOnInit();
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     super.ngOnDestroy();
   }
 }
