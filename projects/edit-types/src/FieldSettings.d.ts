@@ -112,6 +112,7 @@ interface Number extends All {
  */
 interface Hyperlink extends All {
   FileFilter: string;
+  /** @deprecated */
   DefaultDialog: string;
   ShowPagePicker: boolean;
   ShowImageManager: boolean;

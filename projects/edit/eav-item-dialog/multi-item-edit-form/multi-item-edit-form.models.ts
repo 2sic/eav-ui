@@ -43,7 +43,7 @@ export interface MultiEditFormTemplateVars {
 }
 
 export interface Prefetch {
-  Adam: PrefetchAdam;
+  Adam: PrefetchAdams;
   Entities: EntityInfo[];
   Links: PrefetchLinks;
 
@@ -51,8 +51,10 @@ export interface Prefetch {
   _guid?: string;
 }
 
-export interface PrefetchAdam {
-  [key: string]: AdamItem;
+export interface PrefetchAdams {
+  [entityGuid: string]: {
+    [fieldName: string]: AdamItem[];
+  };
 }
 
 export interface PrefetchLinks {

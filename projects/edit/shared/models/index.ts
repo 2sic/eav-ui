@@ -1,3 +1,4 @@
+export * from './adam-snapshot.model';
 export * from './link-info.model';
 export * from './calculated-input-type.model';
 export * from './component-metadata.model';

@@ -11,7 +11,7 @@ import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { FeaturesConstants } from '../../../shared/constants';
 import { UrlHelpers } from '../../../shared/helpers';
 import { EditRoutingService, FileTypeService } from '../../../shared/services';
-import { FeatureService } from '../../../shared/store/ngrx-data';
+import { AdamCacheService, FeatureService } from '../../../shared/store/ngrx-data';
 import { AdamService } from '../adam.service';
 import { AdamBrowserTemplateVars, AdamConfigInstance } from './adam-browser.models';
 
@@ -49,6 +49,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
   private control: AbstractControl;
   private url: string;
   private subscription = new Subscription();
+  private firstFetch = true;
 
   constructor(
     private adamService: AdamService,
@@ -57,6 +58,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
     private dnnContext: DnnContext,
     private editRoutingService: EditRoutingService,
     private zone: NgZone,
+    private adamCacheService: AdamCacheService,
   ) { }
 
   ngOnInit() {
@@ -231,37 +233,55 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
     const adamConfig = this.adamConfig$.value;
     if (adamConfig == null) { return; }
     if (!adamConfig.autoLoad) { return; }
+
+    if (this.firstFetch) {
+      this.firstFetch = false;
+      const adamItems = this.adamCacheService.getAdamSnapshot(this.config.entityGuid, this.config.fieldName);
+      if (adamItems) {
+        const clonedItems = adamItems.map(adamItem => {
+          const clone: AdamItem = { ...adamItem };
+          return clone;
+        });
+        setTimeout(() => { this.processFetchedItems(clonedItems, adamConfig); });
+        return;
+      }
+    }
+
     this.adamService.getAll(this.url, adamConfig).subscribe(items => {
-      const filteredItems: AdamItem[] = [];
-      const extensionsFilter = this.getExtensionsFilter(adamConfig.fileFilter);
+      this.processFetchedItems(items, adamConfig);
+    });
+  }
 
-      for (const item of items) {
-        if (item.Name === '.') { // is root
-          const allowEdit = item.AllowEdit;
-          if (allowEdit !== adamConfig.allowEdit) {
-            this.config.adam.setConfig({ allowEdit });
-          }
-          continue;
-        }
-        if (item.Name === '2sxc' || item.Name === 'adam') { continue; }
-        if (!item.IsFolder && adamConfig.showImagesOnly && item.Type !== 'image') { continue; }
-        if (item.IsFolder && adamConfig.maxDepthReached) { continue; }
-        if (extensionsFilter.length > 0) {
-          const extension = item.Name.substring(item.Name.lastIndexOf('.') + 1).toLocaleLowerCase();
-          if (!extensionsFilter.includes(extension)) { continue; }
-        }
+  private processFetchedItems(items: AdamItem[], adamConfig: AdamConfig): void {
+    const filteredItems: AdamItem[] = [];
+    const extensionsFilter = this.getExtensionsFilter(adamConfig.fileFilter);
 
-        item._metadataContentType = this.getMetadataContentType(item);
-        item._icon = this.fileTypeService.getIconClass(item.Name);
-        item._isMaterialIcon = this.fileTypeService.isKnownType(item.Name);
-        item._displaySize = (item.Size / 1024).toFixed(0);
-        filteredItems.push(item);
+    for (const item of items) {
+      if (item.Name === '.') { // is root
+        const allowEdit = item.AllowEdit;
+        if (allowEdit !== adamConfig.allowEdit) {
+          this.config.adam.setConfig({ allowEdit });
+        }
+        continue;
+      }
+      if (item.Name === '2sxc' || item.Name === 'adam') { continue; }
+      if (!item.IsFolder && adamConfig.showImagesOnly && item.Type !== 'image') { continue; }
+      if (item.IsFolder && adamConfig.maxDepthReached) { continue; }
+      if (extensionsFilter.length > 0) {
+        const extension = item.Name.substring(item.Name.lastIndexOf('.') + 1).toLocaleLowerCase();
+        if (!extensionsFilter.includes(extension)) { continue; }
       }
 
-      filteredItems.sort((a, b) => a.Name.toLocaleLowerCase().localeCompare(b.Name.toLocaleLowerCase()));
-      filteredItems.sort((a, b) => b.IsFolder.toString().localeCompare(a.IsFolder.toString()));
-      this.items$.next(filteredItems);
-    });
+      item._metadataContentType = this.getMetadataContentType(item);
+      item._icon = this.fileTypeService.getIconClass(item.Name);
+      item._isMaterialIcon = this.fileTypeService.isKnownType(item.Name);
+      item._displaySize = (item.Size / 1024).toFixed(0);
+      filteredItems.push(item);
+    }
+
+    filteredItems.sort((a, b) => a.Name.toLocaleLowerCase().localeCompare(b.Name.toLocaleLowerCase()));
+    filteredItems.sort((a, b) => b.IsFolder.toString().localeCompare(a.IsFolder.toString()));
+    this.items$.next(filteredItems);
   }
 
   private toggle(usePortalRoot: boolean, showImagesOnly: boolean) {

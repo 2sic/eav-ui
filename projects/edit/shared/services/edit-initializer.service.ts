@@ -14,7 +14,7 @@ import { BestValueModes } from '../constants/localization.constants';
 import { FieldsSettingsHelpers, InputFieldHelpers, LocalizationHelpers } from '../helpers';
 import { Language, PublishStatus } from '../models';
 // tslint:disable-next-line:max-line-length
-import { ContentTypeItemService, ContentTypeService, EntityCacheService, FeatureService, InputTypeService, ItemService, LanguageInstanceService, LanguageService, PrefetchService, PublishStatusService } from '../store/ngrx-data';
+import { AdamCacheService, ContentTypeItemService, ContentTypeService, EntityCacheService, FeatureService, InputTypeService, ItemService, LanguageInstanceService, LanguageService, PrefetchService, PublishStatusService } from '../store/ngrx-data';
 
 @Injectable()
 export class EditInitializerService implements OnDestroy {
@@ -35,6 +35,7 @@ export class EditInitializerService implements OnDestroy {
     private snackBar: MatSnackBar,
     private formPrefetchService: PrefetchService,
     private entityCacheService: EntityCacheService,
+    private adamCacheService: AdamCacheService,
   ) { }
 
   ngOnDestroy(): void {
@@ -66,6 +67,7 @@ export class EditInitializerService implements OnDestroy {
       const prefetchGuid = itemGuids.join();
       this.formPrefetchService.loadPrefetch(formData.Prefetch, prefetchGuid);
     }
+    this.adamCacheService.loadAdams(formData.Prefetch?.Adam);
     this.entityCacheService.loadEntities(formData.Prefetch?.Entities);
 
     const items = this.itemService.getItems(itemGuids);
