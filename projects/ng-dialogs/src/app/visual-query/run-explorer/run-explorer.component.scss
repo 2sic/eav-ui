@@ -2,7 +2,8 @@
   padding: 24px;
 }
 
-.actions {
+.actions,
+.footer-actions {
   display: flex;
   flex-direction: column;
   padding-bottom: 32px;
@@ -42,7 +43,7 @@
   }
 }
 
-.footer-actions {
-  display: flex;
-  justify-content: flex-end;
-}
+// .footer-actions {
+//   display: flex;
+//   justify-content: flex-end;
+// }
