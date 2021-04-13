@@ -3,8 +3,8 @@ import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AdamItem, AdamPostResponse, DnnBridgeConnectorParams } from '../../../../../edit-types';
 import { FieldSettings } from '../../../../../edit-types';
+import { Dictionary } from '../../../../../ng-dialogs/src/app/shared/models/dictionary.model';
 import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
-import { PrefetchLinks } from '../../../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.models';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { DnnBridgeService, EavService, EditRoutingService, FieldsSettingsService, FileTypeService } from '../../../../shared/services';
 import { PrefetchService } from '../../../../shared/store/ngrx-data';
@@ -34,7 +34,7 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
   templateVars$: Observable<HyperlinkDefaultTemplateVars>;
 
   private preview$: BehaviorSubject<Preview>;
-  private fetchCache: PrefetchLinks = {};
+  private fetchCache: Dictionary<string> = {};
 
   constructor(
     eavService: EavService,

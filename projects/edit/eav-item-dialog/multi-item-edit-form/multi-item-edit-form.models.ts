@@ -2,7 +2,7 @@ import { AdamItem } from '../../../edit-types';
 import { Feature } from '../../../ng-dialogs/src/app/apps-management/models/feature.model';
 import { InputType } from '../../../ng-dialogs/src/app/content-type-fields/models/input-type.model';
 import { DialogContextApp, DialogContextLanguage, DialogContextSite, DialogContextSystem } from '../../../ng-dialogs/src/app/shared/models/dialog-context.models';
-import { EntityInfo } from '../../shared/models';
+import { EntityInfo, LinkInfo } from '../../shared/models';
 import { EavItem } from '../../shared/models/eav';
 import { ContentType1, Entity1, Item1 } from '../../shared/models/json-format-v1';
 
@@ -58,5 +58,5 @@ export interface PrefetchAdams {
 }
 
 export interface PrefetchLinks {
-  [key: string]: string;
+  [key: string]: LinkInfo;
 }

@@ -2,8 +2,8 @@ import { AfterViewInit, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewCh
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { DnnBridgeConnectorParams } from '../../../../edit-types';
+import { Dictionary } from '../../../../ng-dialogs/src/app/shared/models/dictionary.model';
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
-import { PrefetchLinks } from '../../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.models';
 import { ContentExpandAnimation } from '../../../shared/animations';
 import { DropzoneDraggingHelper } from '../../../shared/helpers';
 import { DnnBridgeService, EavService, EditRoutingService, FieldsSettingsService, FileTypeService } from '../../../shared/services';
@@ -33,7 +33,7 @@ export class HyperlinkDefaultExpandableWrapperComponent extends BaseComponent<st
 
   private preview$: BehaviorSubject<Preview>;
   private dropzoneDraggingHelper: DropzoneDraggingHelper;
-  private fetchCache: PrefetchLinks = {};
+  private fetchCache: Dictionary<string> = {};
 
   constructor(
     eavService: EavService,
