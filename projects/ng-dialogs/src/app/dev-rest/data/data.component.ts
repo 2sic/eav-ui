@@ -2,7 +2,8 @@ import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { ChangeDetectionStrategy, Component, HostBinding, OnDestroy } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
-import { combineLatest, Observable } from 'rxjs';
+import { EntityInfo } from 'projects/edit/shared/models';
+import { combineLatest } from 'rxjs';
 import { filter, map, share, switchMap } from 'rxjs/operators';
 import { generateApiCalls } from '..';
 import { EntityService } from '../../../../../edit/shared/services';
@@ -74,8 +75,10 @@ export class DevRestDataComponent extends DevRestBase<DevRestDataTemplateVars> i
         map(ct => ({ contentTypeName: ct.StaticName })),
       ),
     ).pipe(
-      map(list => list.length ? list[0] : null),
-      filter(i => !!i),
+      map(list => list.length
+        ? list[0]
+        // we need a dummy in case nothing is found, otherwise the observables stop
+        : { Id: 0, Value: "no data found", Text: "no data found" } as EntityInfo),
     );
 
     // Prepare everything for use in the template
