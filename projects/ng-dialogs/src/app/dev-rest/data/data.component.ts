@@ -23,11 +23,8 @@ const pathToContent = 'app/{appname}/content/{typename}';
   // we need preserve whitespace - otherwise spaces are missing in some conditional HTML
   preserveWhitespaces: true,
 })
-export class DevRestDataComponent extends DevRestBase implements OnDestroy {
+export class DevRestDataComponent extends DevRestBase<DevRestDataTemplateVars> implements OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
-
-  /** Template variables for the HTML template */
-  templateVars$: Observable<DevRestDataTemplateVars>;
 
   constructor(
     dialogRef: MatDialogRef<DevRestDataComponent>,

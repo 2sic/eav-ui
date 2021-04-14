@@ -15,7 +15,12 @@ import { Context } from '../shared/services/context';
   selector: 'app-dev-rest-base',
   template: ''
 })
-export class DevRestBase implements OnDestroy {
+export class DevRestBase<TemplateVarType> implements OnDestroy {
+
+  /** Template variables for the HTML template */
+  public templateVars$: Observable<TemplateVarType>;
+
+
   /** Subscription Sink */
   subscription = new Subscription();
 
@@ -36,8 +41,8 @@ export class DevRestBase implements OnDestroy {
     private dialogRef: MatDialogRef<any>,
     /** dnn-sxc-angular context. Used to resolve urls */
     private dnnContext: DnnContext,
-    private router: Router,
-    private route: ActivatedRoute,
+    protected router: Router,
+    protected route: ActivatedRoute,
     private permissionsService: PermissionsService,
   ) {
 
@@ -80,7 +85,7 @@ export class DevRestBase implements OnDestroy {
       root,
       scenario,
       permissions,
-      permissionsHasAnonymous: permissions.filter(p => p.Condition.indexOf('.Anonymous') > 0).length > 0,
+      permissionsHasAnonymous: permissions?.filter(p => p.Condition.indexOf('.Anonymous') > 0).length > 0,
       permissionTarget: identity,
     }
   }

@@ -1,7 +1,7 @@
 import { AllCommunityModules, GridOptions } from '@ag-grid-community/all-modules';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DevRestBaseTemplateVars, DevRestDataTemplateVars, GoToDevRest } from '..';
+import { DevRestBaseTemplateVars } from '..';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 
@@ -9,7 +9,7 @@ import { defaultGridOptions } from '../../shared/constants/default-grid-options.
   selector: 'app-dev-rest-tab-permissions',
   templateUrl: './tab-permissions.component.html',
 })
-export class DevRestTabPermissionsComponent implements OnInit {
+export class DevRestTabPermissionsComponent {
 
   @Input() data: DevRestBaseTemplateVars;
 
@@ -32,8 +32,6 @@ export class DevRestTabPermissionsComponent implements OnInit {
     private route: ActivatedRoute,
   ) { }
 
-  ngOnInit(): void {
-  }
 
   openPermissions() {
     this.router.navigate([GoToPermissions.goContentType(this.data.permissionTarget)], { relativeTo: this.route });

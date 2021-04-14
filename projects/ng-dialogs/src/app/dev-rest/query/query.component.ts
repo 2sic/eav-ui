@@ -2,14 +2,15 @@ import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { ChangeDetectionStrategy, Component, HostBinding, OnDestroy } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
-import { combineLatest, Observable, BehaviorSubject } from 'rxjs';
+import { combineLatest, BehaviorSubject } from 'rxjs';
 import { map, share } from 'rxjs/operators';
-import { generateQueryCalls, GoToDevRest } from '..';
+import { GoToDevRest } from '..';
 import { AppDialogConfigService, PipelinesService } from '../../app-administration/services';
 import { PermissionsService } from '../../permissions';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { Context } from '../../shared/services/context';
 import { DevRestBase } from '../dev-rest-base.component';
+import { generateQueryCalls } from './query-samples';
 import { DevRestQueryTemplateVars } from './query-template-vars';
 
 const pathToQuery = 'app/{appname}/query/{queryname}';
@@ -17,13 +18,11 @@ const pathToQuery = 'app/{appname}/query/{queryname}';
 @Component({
   selector: 'app-dev-rest-query',
   templateUrl: './query.component.html',
-  styleUrls: ['./query.component.scss', '../dev-rest-all.scss'],
+  styleUrls: [/*'./query.component.scss',*/ '../dev-rest-all.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DevRestQueryComponent extends DevRestBase implements OnDestroy {
+export class DevRestQueryComponent extends DevRestBase<DevRestQueryTemplateVars> implements OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
-
-  templateVars$: Observable<DevRestQueryTemplateVars>;
 
   /** Test values for url params */
   urlParams$ = new BehaviorSubject<string>('');
@@ -42,7 +41,6 @@ export class DevRestQueryComponent extends DevRestBase implements OnDestroy {
     permissionsService: PermissionsService,
     dnnContext: DnnContext,
   ) {
-
     super(appDialogConfigService, context, dialogRef, dnnContext, router, route, permissionsService);
 
     // build Query Stream

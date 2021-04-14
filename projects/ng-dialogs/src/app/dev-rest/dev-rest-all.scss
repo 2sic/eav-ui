@@ -35,3 +35,12 @@ pre {
     right: 0;
   }
 }
+
+.params-form {
+  display: flex;
+  max-width: 600px;
+
+  .mat-form-field:not(:first-of-type) {
+    margin-left: 8px;
+  }
+}

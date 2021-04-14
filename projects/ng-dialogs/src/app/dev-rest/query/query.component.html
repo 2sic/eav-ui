@@ -41,9 +41,8 @@
 
       <app-dev-rest-tab-examples-intro [data]="data"></app-dev-rest-tab-examples-intro>
 
-      <!-- todo more variations -->
-      <!-- Demo Url Parameters: <input type="text" placeholder="" > -->
-      <div class="stream-params-form">
+      <!-- Custom Parameters for calling -->
+      <div class="params-form">
         <mat-form-field appearance="standard" color="accent">
           <mat-label>Stream Name(s) to Limit, comma-separated</mat-label>
           <input matInput placeholder="Default" [value]="streamNames$.value" (input)="updateStreams($event)">
