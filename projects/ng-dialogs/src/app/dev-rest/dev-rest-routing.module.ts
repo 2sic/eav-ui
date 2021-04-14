@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { GoToPermissions } from '../permissions/go-to-permissions';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
-import { DevRestCustomComponent } from './custom/custom.component';
+import { DevRestApiComponent } from './api/api.component';
 import { DevRestDataComponent } from './data/data.component';
 import { devRestDialog } from './dev-rest-dialog.config';
 import { DevRestQueryComponent } from './query/query.component';
@@ -22,7 +22,7 @@ const routes: Routes = [
           GoToPermissions.route,
         ]
       },
-      { path: `custom/:${GoToDevRest.paramApiPath}`, component: DevRestCustomComponent },
+      { path: `custom/:${GoToDevRest.paramApiPath}`, component: DevRestApiComponent },
     ]
   },
 ];

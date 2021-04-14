@@ -22,7 +22,7 @@ import { MetadataService } from '../permissions/services/metadata.service';
 import { PermissionsService } from '../permissions/services/permissions.service';
 import { Context } from '../shared/services/context';
 import { SharedComponentsModule } from '../shared/shared-components.module';
-import { DevRestCustomComponent } from './custom/custom.component';
+import { DevRestApiComponent } from './api/api.component';
 import { DevRestDataComponent } from './data/data.component';
 import { DevRestEntryComponent } from './entry/entry.component';
 import { DevRestQueryIntroductionComponent } from './query/introduction/introduction.component';
@@ -37,6 +37,9 @@ import { InfoBoxComponent } from './info-box/info-box.component';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { DevRestDataIntroductionComponent } from './data/introduction/introduction.component';
+import { DevRestApiIntroductionComponent } from './api/introduction/introduction.component';
+import { DevRestApiActionParamsComponent } from './api/action-params/action-params.component';
+import { TrueFalseComponent } from './api/action-params/true-false.component';
 
 @NgModule({
   declarations: [
@@ -60,7 +63,10 @@ import { DevRestDataIntroductionComponent } from './data/introduction/introducti
     DevRestQueryIntroductionComponent,
 
     // Custom WebAPIs
-    DevRestCustomComponent,
+    DevRestApiComponent,
+    DevRestApiIntroductionComponent,
+    DevRestApiActionParamsComponent,
+    TrueFalseComponent,
   ],
   entryComponents: [
     DevRestDataComponent,
@@ -68,7 +74,7 @@ import { DevRestDataIntroductionComponent } from './data/introduction/introducti
     HelpPopupComponent,
     DevRestQueryComponent,
     DevRestEntryComponent,
-    DevRestCustomComponent,
+    DevRestApiComponent,
   ],
   imports: [
     CommonModule,
