@@ -11,10 +11,10 @@ export class AdamCacheService extends BaseDataService<AdamSnapshot> {
     super('AdamCache', serviceElementsFactory);
   }
 
-  loadAdams(adamsPrefetch: PrefetchAdams): void {
-    if (adamsPrefetch == null) { return; }
+  loadPrefetch(prefetchAdams: PrefetchAdams): void {
+    if (prefetchAdams == null) { return; }
 
-    const snapshots = Object.entries(adamsPrefetch).map(([entityGuid, attributes]) => {
+    const snapshots = Object.entries(prefetchAdams).map(([entityGuid, attributes]) => {
       const snapshot: AdamSnapshot = {
         Guid: entityGuid,
         Attributes: attributes,

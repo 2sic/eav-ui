@@ -10,5 +10,5 @@ export * from './input-type.service';
 export * from './item.service';
 export * from './language-instance.service';
 export * from './language.service';
-export * from './prefetch.service';
+export * from './link-cache.service';
 export * from './publish-status.service';

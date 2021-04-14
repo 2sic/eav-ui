@@ -1,5 +1,4 @@
 export * from './adam-snapshot.model';
-export * from './link-info.model';
 export * from './calculated-input-type.model';
 export * from './component-metadata.model';
 export * from './content-type-settings.model';
@@ -13,6 +12,8 @@ export * from './formula.models';
 export * from './global-config.model';
 export * from './language-instance.model';
 export * from './language.model';
+export * from './link-cache.model';
+export * from './link-info.model';
 export * from './paste-clipboard-image.models';
 export * from './publish-mode.models';
 export * from './publish-status.model';

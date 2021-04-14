@@ -18,7 +18,7 @@ import { EavItem } from '../../shared/models/eav';
 import { Item1 } from '../../shared/models/json-format-v1';
 import { EavService, EditRoutingService, FormsStateService, LoadIconsService } from '../../shared/services';
 // tslint:disable-next-line:max-line-length
-import { ContentTypeItemService, ContentTypeService, EntityCacheService, FeatureService, GlobalConfigService, InputTypeService, ItemService, LanguageInstanceService, LanguageService, PrefetchService, PublishStatusService } from '../../shared/store/ngrx-data';
+import { AdamCacheService, ContentTypeItemService, ContentTypeService, EntityCacheService, FeatureService, GlobalConfigService, InputTypeService, ItemService, LanguageInstanceService, LanguageService, LinkCacheService, PublishStatusService } from '../../shared/store/ngrx-data';
 import { ItemEditFormComponent } from '../item-edit-form/item-edit-form.component';
 import { MultiEditFormTemplateVars, SaveEavFormData } from './multi-item-edit-form.models';
 
@@ -54,9 +54,10 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy {
     private loadIconsService: LoadIconsService,
     private editRoutingService: EditRoutingService,
     private publishStatusService: PublishStatusService,
-    private formPrefetchService: PrefetchService,
     private formsStateService: FormsStateService,
     private entityCacheService: EntityCacheService,
+    private adamCacheService: AdamCacheService,
+    private linkCacheService: LinkCacheService,
   ) {
     this.dialogRef.disableClose = true;
   }
@@ -119,8 +120,9 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy {
       this.contentTypeItemService.clearCache();
       this.contentTypeService.clearCache();
       this.publishStatusService.clearCache();
-      this.formPrefetchService.clearCache();
       this.entityCacheService.clearCache();
+      this.adamCacheService.clearCache();
+      this.linkCacheService.clearCache();
     }
   }
 

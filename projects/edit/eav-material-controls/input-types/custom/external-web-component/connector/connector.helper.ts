@@ -128,9 +128,9 @@ export class ConnectorHelper {
     const contentType = this.config.contentTypeId;
     const entityGuid = this.config.entityGuid;
     const field = this.config.fieldName;
-    this.dnnBridgeService.getLinkInfo(value, contentType, entityGuid, field).subscribe(path => {
-      if (!path) { return; }
-      callback(path);
+    this.dnnBridgeService.getLinkInfo(value, contentType, entityGuid, field).subscribe(linkInfo => {
+      if (!linkInfo) { return; }
+      callback(linkInfo.Value);
     });
   }
 

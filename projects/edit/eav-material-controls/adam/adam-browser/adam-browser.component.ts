@@ -11,7 +11,7 @@ import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { FeaturesConstants } from '../../../shared/constants';
 import { UrlHelpers } from '../../../shared/helpers';
 import { EditRoutingService, FileTypeService } from '../../../shared/services';
-import { AdamCacheService, FeatureService } from '../../../shared/store/ngrx-data';
+import { AdamCacheService, FeatureService, LinkCacheService } from '../../../shared/store/ngrx-data';
 import { AdamService } from '../adam.service';
 import { AdamBrowserTemplateVars, AdamConfigInstance } from './adam-browser.models';
 
@@ -59,6 +59,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
     private editRoutingService: EditRoutingService,
     private zone: NgZone,
     private adamCacheService: AdamCacheService,
+    private linkCacheService: LinkCacheService,
   ) { }
 
   ngOnInit() {
@@ -253,6 +254,8 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
   }
 
   private processFetchedItems(items: AdamItem[], adamConfig: AdamConfig): void {
+    this.linkCacheService.loadAdam(items);
+
     const filteredItems: AdamItem[] = [];
     const extensionsFilter = this.getExtensionsFilter(adamConfig.fileFilter);
 

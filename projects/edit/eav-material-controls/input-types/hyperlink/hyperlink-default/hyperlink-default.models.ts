@@ -4,7 +4,7 @@ import { BaseFieldTemplateVars } from '../../base/base-field-template-vars.model
 export interface Preview {
   url: string;
   thumbnailUrl: string;
-  thumbnailPreviewUrl: string;
+  previewUrl: string;
   floatingText: string;
   isImage: boolean;
   isKnownType: boolean;

@@ -35,7 +35,7 @@ export class FileTypeService {
   constructor() { }
 
   getExtension(filename: string) {
-    return filename.substr(filename.lastIndexOf('.') + 1).toLowerCase();
+    return filename.substring(filename.lastIndexOf('.') + 1).toLocaleLowerCase();
   }
 
   getIconClass(filename: string) {

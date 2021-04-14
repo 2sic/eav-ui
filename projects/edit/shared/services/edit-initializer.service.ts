@@ -14,7 +14,7 @@ import { BestValueModes } from '../constants/localization.constants';
 import { FieldsSettingsHelpers, InputFieldHelpers, LocalizationHelpers } from '../helpers';
 import { Language, PublishStatus } from '../models';
 // tslint:disable-next-line:max-line-length
-import { AdamCacheService, ContentTypeItemService, ContentTypeService, EntityCacheService, FeatureService, InputTypeService, ItemService, LanguageInstanceService, LanguageService, PrefetchService, PublishStatusService } from '../store/ngrx-data';
+import { AdamCacheService, ContentTypeItemService, ContentTypeService, EntityCacheService, FeatureService, InputTypeService, ItemService, LanguageInstanceService, LanguageService, LinkCacheService, PublishStatusService } from '../store/ngrx-data';
 
 @Injectable()
 export class EditInitializerService implements OnDestroy {
@@ -33,9 +33,9 @@ export class EditInitializerService implements OnDestroy {
     private languageService: LanguageService,
     private languageInstanceService: LanguageInstanceService,
     private snackBar: MatSnackBar,
-    private formPrefetchService: PrefetchService,
     private entityCacheService: EntityCacheService,
     private adamCacheService: AdamCacheService,
+    private linkCacheService: LinkCacheService,
   ) { }
 
   ngOnDestroy(): void {
@@ -63,12 +63,9 @@ export class EditInitializerService implements OnDestroy {
     this.contentTypeItemService.addContentTypeItems(formData.ContentTypeItems);
     this.contentTypeService.addContentTypes(formData.ContentTypes);
     this.featureService.loadFeatures(formData.Features);
-    if (formData.Prefetch != null) {
-      const prefetchGuid = itemGuids.join();
-      this.formPrefetchService.loadPrefetch(formData.Prefetch, prefetchGuid);
-    }
-    this.adamCacheService.loadAdams(formData.Prefetch?.Adam);
+    this.adamCacheService.loadPrefetch(formData.Prefetch?.Adam);
     this.entityCacheService.loadEntities(formData.Prefetch?.Entities);
+    this.linkCacheService.loadPrefetch(formData.Prefetch?.Links, formData.Prefetch?.Adam);
 
     const items = this.itemService.getItems(itemGuids);
     const createMode = items[0].Entity.Id === 0;

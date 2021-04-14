@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { EavService } from '.';
 import { DnnBridgeConnectorParams } from '../../../edit-types';
 import { DnnBridgeComponent } from '../../eav-material-controls/input-types/dnn-bridge/dnn-bridge.component';
@@ -34,7 +33,7 @@ export class DnnBridgeService {
     return dialogRef;
   }
 
-  getLinkInfo(link: string, contentType: string, guid: string, field: string): Observable<string> {
+  getLinkInfo(link: string, contentType: string, guid: string, field: string): Observable<LinkInfo> {
     return this.http.get<LinkInfo>(this.dnnContext.$2sxc.http.apiUrl('cms/edit/linkInfo'), {
       params: {
         link,
@@ -43,8 +42,6 @@ export class DnnBridgeService {
         ...(field && { field }),
         appid: this.eavService.eavConfig.appId,
       }
-    }).pipe(
-      map(adamLinkInfo => adamLinkInfo.Value),
-    );
+    });
   }
 }

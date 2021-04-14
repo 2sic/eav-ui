@@ -61,9 +61,9 @@
           </div>
           <div class="preview-wrapper" *ngIf="data.value && data.preview">
             <!-- image -->
-            <a [href]="data.preview.thumbnailUrl" target="_blank" *ngIf="data.preview.isImage">
+            <a [href]="data.preview.url" target="_blank" *ngIf="data.preview.isImage">
               <div class="preview-image-box">
-                <img [src]="data.preview.thumbnailPreviewUrl" class="preview-image" />
+                <img [src]="data.preview.previewUrl" class="preview-image" />
               </div>
             </a>
             <!-- icon -->
