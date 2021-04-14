@@ -11,3 +11,4 @@ export * from './view-usage-data.model';
 export * from './view-usage.model';
 export * from './view.model';
 export * from './web-api.model';
+export * from './web-api-details';

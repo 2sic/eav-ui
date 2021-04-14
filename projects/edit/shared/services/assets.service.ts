@@ -7,7 +7,7 @@ const webApiAppFilesRoot = 'admin/appfiles/';
 export const webApiAppFilesAll = webApiAppFilesRoot + 'all';
 export const webApiAppFile = webApiAppFilesRoot + 'asset';
 export const webApiAppFileCreate = webApiAppFilesRoot + 'create';
-
+export const webApiExplorer = 'admin/ApiExplorer/inspect'
 @Injectable()
 export class AssetsService {
   constructor(private http: HttpClient, private eavService: EavService, private dnnContext: DnnContext) { }
