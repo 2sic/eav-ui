@@ -32,8 +32,8 @@
     <mat-tab>
       <div *matTabLabel class="mat-tab-label-box"
         [matTooltip]="(data.scenario.useVirtual ? 'Virtual ' : 'Absolute ') + 'REST URLs'">
-        <mat-icon>code</mat-icon>
-        <span>{{ data.scenario.useVirtual ? 'Virtual' : 'Absolute' }} REST URLs</span>
+        <mat-icon svgIcon="code-curly"></mat-icon>
+        <span>Call {{ data.scenario.useVirtual ? 'Virtual' : 'Absolute' }} REST URLs</span>
       </div>
 
       <app-dev-rest-tab-examples-intro [data]="data"></app-dev-rest-tab-examples-intro>

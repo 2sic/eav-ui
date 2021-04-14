@@ -8,7 +8,6 @@
     </div>
   </div>
 
-  {{ data.root }}
   <router-outlet></router-outlet>
 
   <!-- Template below this line -->
@@ -50,7 +49,7 @@
           <mat-label>Select an Action on the Controller</mat-label>
           <mat-select [value]="data.selected?.name" (selectionChange)="updateAction($event.value)">
             <mat-option *ngFor="let action of data.details.actions" [value]="action.name">
-              {{ action.name }}
+              {{ action.name }} ({{ action.verbs.join(', ') }})
             </mat-option>
           </mat-select>
         </mat-form-field>
@@ -75,7 +74,7 @@
         <mat-icon>person</mat-icon>
         <span>Permissions </span>
       </div>
-      <!-- <app-dev-rest-tab-permissions [data]="data"></app-dev-rest-tab-permissions> -->
+      <app-dev-api-permissions></app-dev-api-permissions>
     </mat-tab>
 
     <!-- HTTP Headers Explained -->

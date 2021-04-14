@@ -80,7 +80,8 @@ export class DevRestApiComponent extends DevRestBase<DevRestApiTemplateVars> imp
         webApi,
         details,
         selected: selected,
-        apiCalls: generateWebApiCalls(dnnContext.$2sxc, scenario, context, root, '', urlParams),
+        permissionsHasAnonymous: true, // dummy value to prevent error being shown
+        apiCalls: generateWebApiCalls(dnnContext.$2sxc, scenario, context, root, urlParams, selected.verbs),
       })),
     );
   }

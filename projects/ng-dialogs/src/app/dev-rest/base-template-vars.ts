@@ -13,6 +13,8 @@ export interface DevRestBaseTemplateVars {
   folder: string;
   moduleId: number;
   scenario: Scenario;
+
+
   permissions: Permission[];
   permissionsHasAnonymous: boolean;
   permissionTarget: string;

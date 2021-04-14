@@ -40,6 +40,7 @@ import { DevRestDataIntroductionComponent } from './data/introduction/introducti
 import { DevRestApiIntroductionComponent } from './api/introduction/introduction.component';
 import { DevRestApiActionParamsComponent } from './api/action-params/action-params.component';
 import { TrueFalseComponent } from './api/action-params/true-false.component';
+import { DevRestApiPermissionsComponent } from './api/permissions/permissions.component';
 
 @NgModule({
   declarations: [
@@ -67,6 +68,7 @@ import { TrueFalseComponent } from './api/action-params/true-false.component';
     DevRestApiIntroductionComponent,
     DevRestApiActionParamsComponent,
     TrueFalseComponent,
+    DevRestApiPermissionsComponent,
   ],
   entryComponents: [
     DevRestDataComponent,

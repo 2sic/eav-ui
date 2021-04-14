@@ -1,11 +1,11 @@
 import { SxcRoot } from '@2sic.com/2sxc-typings';
-import { ApiCall, CodeSample, hint$2sxc, Scenario, warningExternal } from '..';
+import { ApiCall, CodeSample, hint$2sxc, Scenario, warningExternal, warningSimpleSampleOnly } from '..';
 import { Context } from '../../shared/services/context';
 // tslint:disable: curly
 
 
 export function generateWebApiCalls($2sxc: SxcRoot, scenario: Scenario, context: Context, root: string,
-  streamNames: string, urlParams: string ) {
+  urlParams: string, verbs: string[] ) {
   const virtual = root[0] !== '/' && !root.startsWith('http');
 
   // if urlParams exist and it doesn't starts with a ?, add that
@@ -16,25 +16,21 @@ export function generateWebApiCalls($2sxc: SxcRoot, scenario: Scenario, context:
     ? `${urlParams}${urlParams ? '&' : '?'}PageId=${context.tabId}&ModuleId=${context.moduleId}`
     : '';
   const directUrl = $2sxc.http.apiUrl(root) + contextParams;
-  // const directWId = $2sxc.http.apiUrl(withId) + contextParams;
   const pathWithParams = root + urlParams;
-  const pathWithStream = `${root}/${streamNames ?? 'Default'}${urlParams}`;
 
+  const result = new Array<ApiCall>();
+  if(verbs.includes("GET"))
+    result.push(new ApiCall(virtual, 'GET', pathWithParams, 'call the WebAPI endpoint', 'call GET on this endpoint', true,
+      snippetsGet(scenario, pathWithParams, context), directUrl));
 
-  return [
-    new ApiCall(virtual, 'GET', pathWithParams, 'read all query streams', 'Read list of all items', true,
-      snippetsGet(scenario, pathWithParams, context), directUrl),
+  if(verbs.includes("POST"))
+    result.push(new ApiCall(virtual, 'POST', pathWithParams, 'call the WebAPI endpoint', 'call POST on this endpoint', false,
+      snippetsPost(scenario, pathWithParams, context.moduleId), directUrl));
 
-    new ApiCall(virtual, 'GET', pathWithStream, 'read only Stream Default', 'Read list of all items', true,
-      snippetsGet(scenario, pathWithStream, context), directUrl),
-
-    // #todoquery 2dm
-    // 1. later sample with IDs
-    // 1. later maybe sample with guids, but not certain because it's kind of an unexpected opening
-  ];
+  return result;
 }
 
-function snippetsGet(scenario: Scenario, path: string, context: Context, streamNames?: string): CodeSample[] {
+function snippetsGet(scenario: Scenario, path: string, context: Context): CodeSample[] {
   const moduleId = context.moduleId;
   const virtual = path[0] !== '/';
   const list: CodeSample[] = [];
@@ -136,3 +132,35 @@ $.ajax('${pathWithContext}').then(data => {
 }
 
 
+
+/** Snippets for basic Post */
+function snippetsPost(scenario: Scenario, path: string, moduleId: number): CodeSample[] {
+  const showWarning = !scenario.inSameContext;
+  return [
+    new CodeSample('Basic Example',
+      `This example uses the ModuleId to get the context information.
+To see other ways to get the context and headers, check out the GET examples.
+Note that this snippet doesn't use real names of properties to add.`,
+      `// get the sxc-controller for this module
+var sxc = $2sxc(${moduleId});
+
+// The object we'll send to get created. It's just a simple object with properties
+var urlParams = {
+  id: 47,
+};
+var postParams = {
+  // related items like tags can be assigned with IDs
+  // which you would usually get from somewhere first
+  list: [17, 4203, 5030],
+  message: 'Some Text',
+};
+
+// now create it and get the id back
+sxc.webApi.post('${path}', urlParams, postParams)
+  .then(data => {
+    console.log('Got this ID information: ', data)
+  });`,
+      false,
+      showWarning ? [warningSimpleSampleOnly] : []),
+  ];
+}
