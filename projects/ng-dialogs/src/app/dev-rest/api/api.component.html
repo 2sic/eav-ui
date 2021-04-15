@@ -57,12 +57,19 @@
 
       <app-dev-rest-api-action-params [data]="data.selected"></app-dev-rest-api-action-params>
 
-      <div class="params-form">
+      <div class="form-with-textarea">
         <mat-form-field appearance="standard" color="accent">
           <mat-label>Additional Url Parameters</mat-label>
           <input matInput placeholder="?id=27" [value]="urlParams$.value" (input)="updateParams($event)">
         </mat-form-field>
+        <mat-form-field appearance="standard" color="accent">
+          <mat-label>Post body</mat-label>
+          <textarea matInput [rows]="10" placeholder="Placeholder" [value]="urlParams$.value"
+            (input)="updateParams($event)">
+          </textarea>
+        </mat-form-field>
       </div>
+      <br>
 
       <!-- REST Tab showing the urls and code snippets -->
       <app-dev-rest-urls-and-code [data]="data"></app-dev-rest-urls-and-code>
