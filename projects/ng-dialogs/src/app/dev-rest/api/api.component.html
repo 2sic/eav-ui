@@ -12,18 +12,20 @@
 
   <!-- Template below this line -->
 
-  <app-selector-with-help label="Choose Scenario" [items]="scenarios" [value]="data.scenario.key"
-    (valueChange)="changeScenario($event)">
-  </app-selector-with-help>
+  <div style="display: flex; flex-wrap: wrap;">
+    <app-selector-with-help style="display: block; max-width: 100%;" label="Choose Scenario" [items]="scenarios"
+      [value]="data.scenario.key" (valueChange)="changeScenario($event)">
+    </app-selector-with-help>
 
-  <mat-form-field appearance="standard" color="accent">
-    <mat-label>Select an Action on the Controller</mat-label>
-    <mat-select [value]="data.selected?.name" (selectionChange)="updateAction($event.value)">
-      <mat-option *ngFor="let action of data.details.actions" [value]="action.name">
-        {{ action.name }} ({{ action.verbs.join(', ') }})
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
+    <mat-form-field color="accent" style="width: 360px; max-width: calc(100% - 40px);">
+      <mat-label>Select an Action on the Controller</mat-label>
+      <mat-select [value]="data.selected?.name" (selectionChange)="updateAction($event.value)">
+        <mat-option *ngFor="let action of data.details.actions" [value]="action.name">
+          {{ action.name }} ({{ action.verbs.join(', ') }})
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
 
   <!-- now the tabs -->
 
