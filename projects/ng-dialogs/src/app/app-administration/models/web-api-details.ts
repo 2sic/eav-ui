@@ -2,6 +2,7 @@
 export interface WebApiDetails {
   controller: string,
   actions: WebApiAction[],
+  security: WebApiSecurity,
 }
 
 export interface WebApiAction {
@@ -18,7 +19,8 @@ export interface WebApiAction {
   returns: string,
 
   /** security information for this action - not yet provided by the backend */
-  security: string[],
+  security: WebApiSecurity,
+  mergedSecurity: WebApiSecurity,
 }
 
 export interface WebApiActionParameters {
@@ -36,4 +38,16 @@ export interface WebApiActionParameters {
 
   /** If the param should be passed in the body */
   isBody: boolean,
+}
+
+export interface WebApiSecurity {
+  ignoreSecurity: boolean;
+  allowAnonymous: boolean;
+  requireVerificationToken: boolean;
+  view: boolean;
+  edit: boolean;
+  admin: boolean;
+  superUser: boolean;
+  requireContext: boolean;
+
 }

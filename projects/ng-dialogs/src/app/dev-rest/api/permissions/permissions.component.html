@@ -5,3 +5,82 @@
   Permissions must be specified in the code, using Attributes such as <code>[AllowAnonymous]</code>.
   Read more about it in the <a href="https://docs.2sxc.org/web-api/custom/custom-web-api-security.html" target="_blank">Docs for custom WebAPI Security.</a>.
 </p>
+
+
+Todo Petar @SPM
+<ol>
+  <li>Make the table below look nice</li>
+  <li>Pls make sure true/ false use icons - ideally the same as in the parameters table </li>
+</ol>
+
+<table>
+  <thead>
+    <tr>
+      <td>Requirement</td>
+      <td>Class</td>
+      <td>Method</td>
+      <td>Effective</td>
+      <td>Comments</td>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Ignore All Security Checks <code>[AllowAnonymous]</code></td>
+      <td>{{ data.details.security.ignoreSecurity }}</td>
+      <td>{{ data.selected.security.ignoreSecurity }}</td>
+      <td>{{ data.selected.mergedSecurity.ignoreSecurity }}</td>
+      <td>If this is set all other security checks are skipped</td>
+    </tr>
+
+    <tr>
+      <td>Allow Anonymous Use</td>
+      <td>{{ data.details.security.allowAnonymous }}</td>
+      <td>{{ data.selected.security.allowAnonymous }}</td>
+      <td>{{ data.selected.mergedSecurity.allowAnonymous }}</td>
+    </tr>
+
+    <tr>
+      <td>Require Verification Token</td>
+      <td>{{ data.details.security.requireVerificationToken }}</td>
+      <td>{{ data.selected.security.requireVerificationToken }}</td>
+      <td>{{ data.selected.mergedSecurity.requireVerificationToken }}</td>
+    </tr>
+
+    <tr>
+      <td>Allow users with <strong>view</strong> permissions</td>
+      <td>{{ data.details.security.view }}</td>
+      <td>{{ data.selected.security.view }}</td>
+      <td>{{ data.selected.mergedSecurity.view }}</td>
+    </tr>
+
+    <tr>
+      <td>Allow users with <strong>edit</strong> permissions</td>
+      <td>{{ data.details.security.edit }}</td>
+      <td>{{ data.selected.security.edit }}</td>
+      <td>{{ data.selected.mergedSecurity.edit }}</td>
+    </tr>
+
+    <tr>
+      <td>Allow users with <strong>admin</strong> permissions</td>
+      <td>{{ data.details.security.admin }}</td>
+      <td>{{ data.selected.security.admin }}</td>
+      <td>{{ data.selected.mergedSecurity.admin }}</td>
+    </tr>
+
+    <tr>
+      <td>Allow users with <strong>super-user</strong> permissions</td>
+      <td>{{ data.details.security.superUser }}</td>
+      <td>{{ data.selected.security.superUser }}</td>
+      <td>{{ data.selected.mergedSecurity.superUser }}</td>
+    </tr>
+
+    <tr>
+      <td>Require Context</td>
+      <td>{{ data.details.security.requireContext }}</td>
+      <td>{{ data.selected.security.requireContext }}</td>
+      <td>{{ data.selected.mergedSecurity.requireContext }}</td>
+      <td>If required, the context must be included - see also headers</td>
+    </tr>
+
+  </tbody>
+</table>

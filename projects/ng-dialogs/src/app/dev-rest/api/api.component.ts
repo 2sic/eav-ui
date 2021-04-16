@@ -17,7 +17,7 @@ const pathToApi = 'app/{appname}/api/{controller}/{action}';
 @Component({
   selector: 'app-dev-rest-api',
   templateUrl: './api.component.html',
-  styleUrls: ['../dev-rest-all.scss'],
+  styleUrls: ['../dev-rest-all.scss', '../header-selector.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DevRestApiComponent extends DevRestBase<DevRestApiTemplateVars> implements OnDestroy {
