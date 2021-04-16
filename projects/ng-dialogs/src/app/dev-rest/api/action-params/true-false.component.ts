@@ -8,25 +8,20 @@ import { TrueFalseParams } from './true-false-column-params';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TrueFalseComponent implements ICellRendererAngularComp {
-  value: boolean;
-
-  reverse: boolean;
-  trueIcon: string = 'check_circle';
-  falseIcon: string = 'circle';
-
   icon: string;
 
+  private trueIcon = 'check_circle';
+  private falseIcon = 'circle';
+
   agInit(params: TrueFalseParams) {
-    this.value = params.value;
-    if(params.reverse) this.value = !this.value;
-    if(params.trueIcon) this.trueIcon = params.trueIcon;
-    if(params.falseIcon) this.falseIcon = params.falseIcon;
-    this.icon = this.value ? this.trueIcon : this.falseIcon;
+    let value = params.value;
+    if (params.reverse) { value = !value; }
+    if (params.trueIcon) { this.trueIcon = params.trueIcon; }
+    if (params.falseIcon) { this.falseIcon = params.falseIcon; }
+    this.icon = value ? this.trueIcon : this.falseIcon;
   }
 
-  // 2dm @SPM - what is this for ?
   refresh(params?: any): boolean {
     return true;
   }
 }
-
