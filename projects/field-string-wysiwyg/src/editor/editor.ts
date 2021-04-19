@@ -1,4 +1,23 @@
 import { Subscription } from 'rxjs';
+import 'tinymce/tinymce'; // Important! tinymce has to be imported before themes and plugins
+// tslint:disable-next-line:ordered-imports
+import 'tinymce/icons/default';
+import 'tinymce/plugins/anchor';
+import 'tinymce/plugins/autolink';
+import 'tinymce/plugins/charmap';
+import 'tinymce/plugins/code';
+import 'tinymce/plugins/hr';
+import 'tinymce/plugins/image';
+import 'tinymce/plugins/link';
+import 'tinymce/plugins/lists';
+import 'tinymce/plugins/media';
+import 'tinymce/plugins/nonbreaking';
+import 'tinymce/plugins/paste';
+import 'tinymce/plugins/searchreplace';
+import 'tinymce/plugins/tabfocus';
+import 'tinymce/plugins/table';
+import 'tinymce/plugins/textpattern';
+import 'tinymce/themes/silver';
 import { Connector, EavCustomInputField } from '../../../edit-types';
 import { WysiwygReconfigure } from '../../../edit-types';
 import { FeaturesConstants } from '../../../edit/shared/constants';
@@ -13,13 +32,12 @@ import { TinyType } from '../shared/models';
 import * as styles from './editor.css';
 import * as template from './editor.html';
 import { fixMenuPositions } from './fix-menu-positions.helper';
-import * as skinOverrides from './oxide-skin-overrides.scss';
+import * as skinOverrides from './skin-overrides.scss';
 
 declare const window: EavWindow;
 export const wysiwygEditorTag = 'field-string-wysiwyg-dialog';
 const extWhitelist = '.doc, .docx, .dot, .xls, .xlsx, .ppt, .pptx, .pdf, .txt, .htm, .html, .md, .rtf, .xml, .xsl, .xsd, .css, .zip, .csv';
-const tinyMceBaseUrl = 'https://cdnjs.cloudflare.com/ajax/libs/tinymce/5.1.6';
-const translationBaseUrl = '../../system/field-string-wysiwyg';
+const tinyMceBaseUrl = '../../system/field-string-wysiwyg';
 
 export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomInputField<string> {
   fieldInitialized: boolean;
@@ -32,7 +50,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   private instanceId: string;
   private containerClass: string;
   private toolbarContainerClass: string;
-  private subscriptions: Subscription[] = [];
+  private subscriptions: Subscription[];
   private editorContent: string; // saves editor content to prevent slow update when first using editor
   private pasteClipboardImage: boolean;
   private editor: TinyType;
@@ -43,6 +61,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   constructor() {
     super();
     consoleLogWebpack(`${wysiwygEditorTag} constructor called`);
+    this.subscriptions = [];
     this.fieldInitialized = false;
     this.instanceId = `${Math.floor(Math.random() * 99999)}`;
     this.containerClass = `tinymce-container-${this.instanceId}`;
@@ -64,11 +83,11 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
     let lang = this.connector._experimental.translateService.currentLang;
     lang = TinyMceTranslations.fixTranslationKey(lang);
     this.connector.loadScript([
-      { test: 'tinymce', src: `${tinyMceBaseUrl}/tinymce.min.js` },
       {
-        test: () => lang === 'en' || Object.keys(window.tinymce.i18n.getData()).includes(lang)
+        test: () => lang === 'en'
+          || Object.keys(window.tinymce.i18n.getData()).includes(lang)
           || !TinyMceTranslations.supportedLanguages.includes(lang),
-        src: `${translationBaseUrl}/i18n/${lang}.js`
+        src: `${tinyMceBaseUrl}/i18n/${lang}.js`,
       }
     ], () => { this.tinyMceScriptLoaded(); });
     this.connector._experimental.dropzone.setConfig({ disabled: false });
@@ -82,7 +101,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
       this.containerClass, this.toolbarContainerClass, this.mode === 'inline', this.tinyMceSetup.bind(this),
     );
     this.firstInit = true;
-    if (window.tinymce.baseURL !== tinyMceBaseUrl) { window.tinymce.baseURL = tinyMceBaseUrl; }
+    window.tinymce.baseURL = tinyMceBaseUrl;
     // FYI: SPM - moved this here from Setup as it's actually global
     this.configurator.addTranslations();
     window.tinymce.init(tinyOptions);

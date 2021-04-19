@@ -39,6 +39,10 @@ const configuration = {
           to: './i18n',
           flatten: true,
         },
+        {
+          from: './projects/field-string-wysiwyg/src/assets/2sxc-tinymce-skin',
+          to: './',
+        },
       ],
     }),
     multiOutput.createCopyAfterBuildPlugin(distWysiwyg, targetDnnWysiwyg, targetAssetsWysiwyg),

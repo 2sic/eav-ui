@@ -1,6 +1,6 @@
 import { SxcRoot } from '@2sic.com/2sxc-typings';
+import { TinyMCE } from 'tinymce';
 import { FieldLogicManager } from '../../../../../edit/field-logic/field-logic-manager';
-import { TinyType } from '../../../../../field-string-wysiwyg/src/shared/models';
 import { Ace } from '../../code-editor/ace-editor/ace.model';
 import { PlumbType } from '../../visual-query/plumb-editor/plumb-editor.models';
 import { Dictionary } from './dictionary.model';
@@ -19,7 +19,7 @@ interface EavWindowProps {
     };
   };
   sxcVersion: string;
-  tinymce: TinyType;
+  tinymce: TinyMCE;
   windowBodyTimeouts: number[];
   $2sxc: SxcRoot;
   _jsApi: {};

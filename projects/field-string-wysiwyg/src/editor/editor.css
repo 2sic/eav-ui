@@ -20,11 +20,6 @@
   flex-shrink: 0;
 }
 
-.inline-wysiwyg .tinymce-toolbar-container {
-  background-color: rgba(0, 0, 0, 0.2);
-  min-height: 39px;
-}
-
 .tinymce-container {
   position: relative;
   height: 100%;
@@ -54,10 +49,6 @@
   -moz-box-shadow: inset 0 -10px 10px -10px #888;
   -webkit-box-shadow: inset 0 -10px 10px -10px #888;
   box-shadow: inset 0 -10px 10px -10px #888;
-}
-
-.full-wysiwyg .tox.tox-tinymce.tox-tinymce-inline {
-  display: flex !important;
 }
 
 .inline-wysiwyg:not(.disabled) {

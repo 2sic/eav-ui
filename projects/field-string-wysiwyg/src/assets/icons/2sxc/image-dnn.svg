@@ -1,1 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24.17 24.17"><defs><style>.cls-1{fill:none;}</style></defs><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><rect class="cls-1" width="24.17" height="24.17"/><polygon points="16.54 9.16 9.44 15.56 11.63 15.56 11.63 21.16 15.13 21.16 15.13 16.96 17.93 16.96 17.93 21.16 21.43 21.16 21.43 15.56 23.64 15.56 16.54 9.16"/><path d="M8,19.08H5.08V18l4.86-4.87-.53-.53a.75.75,0,0,0-1.06,0L5.08,15.82V5.08h14v4.2l2,1.85v-7a1,1,0,0,0-1-1h-16a1,1,0,0,0-1,1v16a1,1,0,0,0,1,1h6V17h0Z"/><circle cx="10.08" cy="9.08" r="2"/></g></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24.17 24.17">
+<defs>
+<style>.cls-1{fill:none;}</style>
+</defs>
+<g id="Layer_2" data-name="Layer 2">
+<g id="Layer_1-2" data-name="Layer 1">
+<rect class="cls-1" width="24.17" height="24.17"/>
+<polygon points="16.54 9.16 9.44 15.56 11.63 15.56 11.63 21.16 15.13 21.16 15.13 16.96 17.93 16.96 17.93 21.16 21.43 21.16 21.43 15.56 23.64 15.56 16.54 9.16"/>
+<path d="M8,19.08H5.08V18l4.86-4.87-.53-.53a.75.75,0,0,0-1.06,0L5.08,15.82V5.08h14v4.2l2,1.85v-7a1,1,0,0,0-1-1h-16a1,1,0,0,0-1,1v16a1,1,0,0,0,1,1h6V17h0Z"/>
+<circle cx="10.08" cy="9.08" r="2"/>
+</g>
+</g>
+</svg>

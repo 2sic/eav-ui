@@ -1,7 +1,7 @@
 import { Connector } from '../../../edit-types';
 import { WysiwygReconfigure } from '../../../edit-types';
 import { FeaturesConstants } from '../../../edit/shared/constants';
-import * as contentStyle from '../editor/tinymce-content.css';
+import * as contentStyle from '../editor/tinymce-content.scss';
 import { TinyType } from '../shared/models';
 import { DefaultAddOnSettings, DefaultOptions, DefaultPaste, DefaultPlugins } from './defaults';
 import { TinyMceToolbars } from './toolbars';

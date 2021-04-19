@@ -1,0 +1,51 @@
+// removes border surrounding header (menu + toolbar)
+.tox-editor-header {
+  border: none !important;
+}
+
+// fixes menu fonts which are colored black by default
+.tox-collection__item-label {
+  code {
+    color: #000 !important;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p,
+  div,
+  pre,
+  strong,
+  em,
+  span,
+  sup,
+  sub,
+  blockquote {
+    color: #fff !important;
+  }
+}
+
+// fixes color of textarea for <code> dialog
+.tox-textarea {
+  color: #000 !important;
+  background-color: #fff !important;
+}
+
+// removes background color for dialogs
+.tox-dialog-wrap__backdrop {
+  background-color: transparent !important;
+}
+
+// fixes notifications text color
+.tox-notification {
+  color: #000 !important;
+  fill: #000 !important;
+
+  * {
+    color: currentColor !important;
+    fill: currentColor !important;
+  }
+}
