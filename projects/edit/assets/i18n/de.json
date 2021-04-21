@@ -8,7 +8,7 @@
       "History.Tip": "Änderungen / Vorversionen"
     }
   },
-  "SaveMode": {
+  "PublishStatus": {
     "Label": "Status:",
     "show": "anzeigen",
     "show.Tip": "Änderungen sind öffentlich",
@@ -35,10 +35,13 @@
   },
   "Message": {
     "Saved": "gespeichert",
-    "Saving": "saving...",
+    "Saving": "speichern...",
+    "Deleted": "gelöscht",
+    "Deleting": "löschen...",
+    "DeleteError": "Löschen hat versagt. Bitte genauen Grund aus der Konsole entnehmen. ",
     "DebugEnabled": "debug aktiviert",
     "DebugDisabled": "debug deaktiviert",
-    "SwitchedLanguageToDefault": "We have switched language to default {{language}} because it's missing some or all values",
+    "SwitchedLanguageToDefault": "Es fehlen Werte in der Primärsprache, deshalb wurde auf die Standardsprache {{language}} umgestellt.",
     "CantSwitchLanguage": "Sprachwechsel erst möglich wenn alle Pflichtfelder in der aktuellen Sprache befüllt sind"
   },
   "LangMenu": {
@@ -118,7 +121,9 @@
       "DragMove": "Ziehen um die Liste neu zu ordnen",
       "Edit": "Element bearbeiten",
       "Remove": "Aus Liste entfernen",
-      "Delete": "Löschen"
+      "Delete": "Löschen",
+      "Loading": "lädt...",
+      "Search": "suchen"
     },
     "EntityQuery": {
       "QueryNoItems": "Keine Elemente gefunden",

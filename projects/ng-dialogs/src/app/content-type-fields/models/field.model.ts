@@ -1,10 +1,12 @@
 import { PermissionsCount } from '../../app-administration/models/permissions-count.model';
+import { Dictionary } from '../../shared/models/dictionary.model';
+import { InputType } from './input-type.model';
 
 export class Field {
   AttributeId: number;
   Id: number;
   InputType: string;
-  InputTypeConfig: FieldInputTypeConfig;
+  InputTypeConfig: InputType;
   IsTitle: boolean;
   Metadata: FieldMetadata;
   Permissions: PermissionsCount;
@@ -14,24 +16,10 @@ export class Field {
 }
 
 export class FieldMetadata {
-  All: FieldMetadataKey;
-  [key: string]: FieldMetadataKey;
+  All: Dictionary;
+  [key: string]: Dictionary;
   /** Merged metadata from other keys */
-  merged: FieldMetadataKey;
-}
-
-export class FieldMetadataKey {
-  [key: string]: any;
-}
-
-export class FieldInputTypeConfig {
-  Type: string;
-  Label: string;
-  Description: string;
-  Assets: string;
-  DisableI18n: boolean;
-  AngularAssets: string;
-  UseAdam: boolean;
+  merged: Dictionary;
 }
 
 export class FieldInputTypeOption {

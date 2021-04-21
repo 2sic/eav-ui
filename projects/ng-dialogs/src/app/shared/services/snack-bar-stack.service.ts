@@ -16,7 +16,7 @@ export class SnackBarStackService implements OnDestroy {
    * @returns observable that fires if the action is triggered.
    * Service will complete the observable
    */
-  add(message: string, action?: string, config: MatSnackBarConfig<any> = { duration: this.defaultDuration }) {
+  add(message: string, action?: string, config: MatSnackBarConfig = { duration: this.defaultDuration }) {
     const triggered$ = new Subject<void>();
     this.messageQueue.push({ message, action, config, triggered$ });
     if (!this.processingMessage) {
@@ -57,6 +57,6 @@ export class SnackBarStackService implements OnDestroy {
 class SnackBarData {
   message: string;
   action: string;
-  config: MatSnackBarConfig<any>;
+  config: MatSnackBarConfig;
   triggered$: Subject<void>;
 }

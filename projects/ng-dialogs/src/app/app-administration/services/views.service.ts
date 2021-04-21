@@ -1,7 +1,6 @@
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 import { ImportAppResult } from '../../import-app/models/import-app-result.model';
 import { Context } from '../../shared/services/context';
 import { Polymorphism } from '../models/polymorphism.model';
@@ -20,23 +19,23 @@ export class ViewsService {
   constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
 
   getAll() {
-    return this.http.get(this.dnnContext.$2sxc.http.apiUrl(webApiViews), {
+    return this.http.get<View[]>(this.dnnContext.$2sxc.http.apiUrl(webApiViews), {
       params: { appId: this.context.appId.toString() }
-    }) as Observable<View[]>;
+    });
   }
 
   delete(id: number) {
-    return this.http.get(this.dnnContext.$2sxc.http.apiUrl(webApiViewDelete), {
+    return this.http.get<boolean>(this.dnnContext.$2sxc.http.apiUrl(webApiViewDelete), {
       params: { appId: this.context.appId.toString(), Id: id.toString() },
-    }) as Observable<boolean>;
+    });
   }
 
   import(file: File) {
     const formData = new FormData();
     formData.append('File', file);
-    return this.http.post(this.dnnContext.$2sxc.http.apiUrl(webApiViewImport), formData, {
+    return this.http.post<ImportAppResult>(this.dnnContext.$2sxc.http.apiUrl(webApiViewImport), formData, {
       params: { appId: this.context.appId.toString(), zoneId: this.context.zoneId.toString() }
-    }) as Observable<ImportAppResult>;
+    });
   }
 
   export(id: number) {
@@ -48,14 +47,14 @@ export class ViewsService {
   }
 
   getPolymorphism() {
-    return this.http.get(this.dnnContext.$2sxc.http.apiUrl(webApiViewPolymorph), {
+    return this.http.get<Polymorphism>(this.dnnContext.$2sxc.http.apiUrl(webApiViewPolymorph), {
       params: { appId: this.context.appId.toString() }
-    }) as Observable<Polymorphism>;
+    });
   }
 
   getUsage(guid: string) {
-    return this.http.get(this.dnnContext.$2sxc.http.apiUrl(webApiViewUsage), {
+    return this.http.get<ViewUsage[]>(this.dnnContext.$2sxc.http.apiUrl(webApiViewUsage), {
       params: { appId: this.context.appId.toString(), guid }
-    }) as Observable<ViewUsage[]>;
+    });
   }
 }

@@ -1,11 +1,13 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
+import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
-import { EavService } from '../../../../shared/services/eav.service';
+import { EavService, FieldsSettingsService } from '../../../../shared/services';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { BaseComponent } from '../../base/base.component';
+import { CustomJsonEditorLogic } from './custom-json-editor-logic';
+import { CustomJsonEditorTemplateVars } from './custom-json-editor.models';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -14,19 +16,44 @@ import { BaseComponent } from '../../base/base.component';
   styleUrls: ['./custom-json-editor.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-@InputType({
-  wrapper: [WrappersConstants.EavLocalizationWrapper],
+@ComponentMetadata({
+  wrappers: [WrappersConstants.LocalizationWrapper],
 })
 export class CustomJsonEditorComponent extends BaseComponent<string> implements OnInit, OnDestroy {
-  rowCount$: Observable<number>;
+  templateVars$: Observable<CustomJsonEditorTemplateVars>;
 
-  constructor(eavService: EavService, validationMessagesService: ValidationMessagesService) {
-    super(eavService, validationMessagesService);
+  constructor(
+    eavService: EavService,
+    validationMessagesService: ValidationMessagesService,
+    fieldsSettingsService: FieldsSettingsService,
+  ) {
+    super(eavService, validationMessagesService, fieldsSettingsService);
+    CustomJsonEditorLogic.importMe();
   }
 
   ngOnInit() {
     super.ngOnInit();
-    this.rowCount$ = this.settings$.pipe(map(settings => settings.Rows || 5));
+    const rowCount$ = this.settings$.pipe(map(settings => settings.Rows));
+
+    this.templateVars$ = combineLatest([
+      combineLatest([rowCount$, this.placeholder$, this.required$, this.label$]),
+      combineLatest([this.disabled$, this.touched$]),
+    ]).pipe(
+      map(([
+        [rowCount, placeholder, required, label],
+        [disabled, touched],
+      ]) => {
+        const templateVars: CustomJsonEditorTemplateVars = {
+          rowCount,
+          placeholder,
+          required,
+          label,
+          disabled,
+          touched,
+        };
+        return templateVars;
+      }),
+    );
   }
 
   ngOnDestroy() {

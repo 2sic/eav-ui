@@ -1,17 +1,16 @@
 import { Directive, Input, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import { distinctUntilChanged, filter, map, startWith } from 'rxjs/operators';
 import { FieldSettings } from '../../../../edit-types';
 import { Field } from '../../../eav-dynamic-form/model/field';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
-import { EavService } from '../../../shared/services/eav.service';
-import { ValidationHelper } from '../../validators/validation-helper';
+import { EavService, FieldsSettingsService } from '../../../shared/services';
 import { ValidationMessagesService } from '../../validators/validation-messages-service';
 
 @Directive()
 // tslint:disable-next-line:directive-class-suffix
-export class BaseComponent<T> implements Field, OnInit, OnDestroy {
+export class BaseComponent<T = any> implements Field, OnInit, OnDestroy {
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
 
@@ -20,42 +19,70 @@ export class BaseComponent<T> implements Field, OnInit, OnDestroy {
   label$: Observable<string>;
   placeholder$: Observable<string>;
   value$: Observable<T>;
-  disabled$: Observable<boolean>;
+  disabled$: BehaviorSubject<boolean>;
   required$: Observable<boolean>;
   invalid$: Observable<boolean>;
-  showValidation$: Observable<AbstractControl>;
-  subscription = new Subscription();
+  /** Required for validation messages */
+  touched$: Observable<boolean>;
+  dirty$: Observable<boolean>;
+  subscription: Subscription;
 
-  constructor(public eavService: EavService, public validationMessagesService: ValidationMessagesService) { }
+  constructor(
+    public eavService: EavService,
+    public validationMessagesService: ValidationMessagesService,
+    public fieldsSettingsService: FieldsSettingsService,
+  ) { }
 
   ngOnInit() {
-    this.control = this.group.controls[this.config.field.name];
-    this.settings$ = this.config.field.settings$;
-    this.label$ = this.settings$.pipe(map(settings => settings.Name));
-    this.placeholder$ = this.settings$.pipe(map(settings => settings.Placeholder));
-    this.required$ = this.settings$.pipe(map(settings => ValidationHelper.isRequired(settings)));
-    this.invalid$ = this.control.statusChanges.pipe(map(status => status === 'INVALID'), startWith(this.control.invalid));
-    this.showValidation$ = this.validationMessagesService.showValidation$.pipe(filter(control => control === this.control));
-    // doesn't work because controls are sometimes updated without emitting change (e.g. on language change)
-    // this.value$ = this.control.valueChanges.pipe(
-    //   startWith(this.control.value)
-    // );
-    // this.status$ = this.control.statusChanges.pipe(
-    //   startWith(this.control.status)
-    // );
-    this.value$ = this.eavService.formValueChange$.pipe(
-      filter(formSet => (formSet.formId === this.config.form.formId) && (formSet.entityGuid === this.config.entity.entityGuid)),
-      map(formSet => this.control.value),
+    this.control = this.group.controls[this.config.fieldName];
+    this.subscription = new Subscription();
+
+    this.settings$ = new BehaviorSubject<FieldSettings>(this.fieldsSettingsService.getFieldSettings(this.config.fieldName));
+    this.subscription.add(
+      this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).subscribe(settings => {
+        this.settings$.next(settings);
+      })
+    );
+    this.label$ = this.settings$.pipe(map(settings => settings.Name), distinctUntilChanged());
+    this.placeholder$ = this.settings$.pipe(map(settings => settings.Placeholder), distinctUntilChanged());
+    this.required$ = this.settings$.pipe(map(settings => settings.Required), distinctUntilChanged());
+
+    this.invalid$ = this.control.statusChanges.pipe(
+      map(() => this.control.invalid),
+      startWith(this.control.invalid),
+      distinctUntilChanged(),
+    );
+    this.touched$ = combineLatest([
+      this.control.valueChanges.pipe(startWith(this.control.value)),
+      this.control.statusChanges.pipe(startWith(this.control.status)),
+      this.validationMessagesService.refreshTouched$.pipe(filter(control => control === this.control)),
+    ]).pipe(
+      map(() => this.control.touched),
+      startWith(this.control.touched),
+      distinctUntilChanged(),
+    );
+    this.dirty$ = combineLatest([
+      this.control.valueChanges.pipe(startWith(this.control.value)),
+      this.control.statusChanges.pipe(startWith(this.control.status)),
+      this.validationMessagesService.refreshDirty$.pipe(filter(control => control === this.control)),
+    ]).pipe(
+      map(() => this.control.dirty),
+      startWith(this.control.dirty),
+      distinctUntilChanged(),
+    );
+    this.value$ = this.control.valueChanges.pipe(
       startWith(this.control.value),
       distinctUntilChanged(),
     );
-    this.disabled$ = this.eavService.formDisabledChange$.asObservable().pipe(
-      filter(formDisabledSet => (formDisabledSet.formId === this.config.form.formId)
-        && (formDisabledSet.entityGuid === this.config.entity.entityGuid)
-      ),
-      map(formSet => this.control.disabled),
-      startWith(this.control.disabled),
-      distinctUntilChanged(),
+    this.disabled$ = new BehaviorSubject(this.control.disabled);
+    this.subscription.add(
+      this.control.valueChanges.pipe(
+        map(() => this.control.disabled),
+        startWith(this.control.disabled),
+        distinctUntilChanged(),
+      ).subscribe(disabled => {
+        this.disabled$.next(disabled);
+      })
     );
   }
 

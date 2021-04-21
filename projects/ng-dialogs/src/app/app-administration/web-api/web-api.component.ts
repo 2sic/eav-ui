@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@a
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
-import { SanitizeService } from '../../../../../edit/eav-material-controls/adam/sanitize.service';
+import { SanitizeHelper } from '../../../../../edit/eav-material-controls/adam/sanitize.helper';
 import { GoToDevRest } from '../../dev-rest/go-to-dev-rest';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { defaultControllerName } from '../../shared/constants/file-names.constants';
@@ -32,7 +32,7 @@ export class WebApiComponent implements OnInit, OnDestroy {
     columnDefs: [
       {
         headerName: 'Folder', field: 'folder', flex: 2, minWidth: 250, cellClass: 'no-outline',
-        sortable: true, filter: 'agTextColumnFilter',
+        sortable: true, sort: 'asc', filter: 'agTextColumnFilter',
       },
       {
         headerName: 'Name', field: 'name', flex: 2, minWidth: 250, cellClass: 'no-outline',
@@ -51,7 +51,6 @@ export class WebApiComponent implements OnInit, OnDestroy {
 
   constructor(
     private webApisService: WebApisService,
-    private sanitizeService: SanitizeService,
     private snackBar: MatSnackBar,
     private dialogService: DialogService,
     private router: Router,
@@ -70,7 +69,7 @@ export class WebApiComponent implements OnInit, OnDestroy {
     let name = prompt('Controller name:', defaultControllerName);
     if (name === null || name.length === 0) { return; }
 
-    name = this.sanitizeService.sanitizePath(name);
+    name = SanitizeHelper.sanitizePath(name);
     name = name.replace(/\s/g, ''); // remove all whitespaces
     // find name without extension
     let nameLower = name.toLocaleLowerCase();

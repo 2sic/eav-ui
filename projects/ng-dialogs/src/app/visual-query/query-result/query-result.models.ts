@@ -1,6 +1,7 @@
-import { PipelineResult } from '../models/pipeline-result.model';
+import { DebugStreamInfo, PipelineResult } from '../models';
 
 export interface QueryResultDialogData {
-  testParameters: string;
   result: PipelineResult;
+  debugStream?: DebugStreamInfo;
+  top: number;
 }

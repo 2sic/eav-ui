@@ -1,27 +1,23 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Input, NgZone, OnDestroy, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, NgZone, OnDestroy, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
-import { angularConsoleLog } from '../../../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
+import { consoleLogAngular } from '../../../../../../ng-dialogs/src/app/shared/helpers/console-log-angular.helper';
 import { FieldConfigSet } from '../../../../../eav-dynamic-form/model/field-config';
-import { DnnBridgeService } from '../../../../../shared/services/dnn-bridge.service';
-import { EavService } from '../../../../../shared/services/eav.service';
-import { EditRoutingService } from '../../../../../shared/services/edit-routing.service';
-import { ContentTypeService } from '../../../../../shared/store/ngrx-data/content-type.service';
-import { FeatureService } from '../../../../../shared/store/ngrx-data/feature.service';
-import { InputTypeService } from '../../../../../shared/store/ngrx-data/input-type.service';
+import { DnnBridgeService, EavService, EditRoutingService, FieldsSettingsService } from '../../../../../shared/services';
+import { ContentTypeService, FeatureService, InputTypeService } from '../../../../../shared/store/ngrx-data';
+import { ValidationMessagesService } from '../../../../validators/validation-messages-service';
 import { ConnectorHelper } from './connector.helper';
 
 @Component({
   selector: 'app-connector',
   templateUrl: './connector.component.html',
   styleUrls: ['./connector.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ConnectorComponent implements AfterViewInit, OnDestroy {
-  @ViewChild('customElContainer') customElContainerRef: ElementRef;
+  @ViewChild('customElContainer') private customElContainerRef: ElementRef;
 
-  @Input() config: FieldConfigSet;
-  @Input() group: FormGroup;
+  @Input() private config: FieldConfigSet;
+  @Input() private group: FormGroup;
 
   private connectorCreator: ConnectorHelper;
 
@@ -33,12 +29,14 @@ export class ConnectorComponent implements AfterViewInit, OnDestroy {
     private featureService: FeatureService,
     private editRoutingService: EditRoutingService,
     private dnnBridgeService: DnnBridgeService,
+    private fieldsSettingsService: FieldsSettingsService,
+    private validationMessagesService: ValidationMessagesService,
     private zone: NgZone,
   ) { }
 
   ngAfterViewInit() {
-    const componentTag = history?.state?.componentTag || `field-${this.config.field.inputType}-dialog`;
-    angularConsoleLog('Connector created for:', componentTag);
+    const componentTag = history?.state?.componentTag || `field-${this.config.inputType}-dialog`;
+    consoleLogAngular('Connector created for:', componentTag);
     this.connectorCreator = new ConnectorHelper(
       this.config,
       this.group,
@@ -51,12 +49,14 @@ export class ConnectorComponent implements AfterViewInit, OnDestroy {
       this.featureService,
       this.editRoutingService,
       this.dnnBridgeService,
+      this.fieldsSettingsService,
+      this.validationMessagesService,
       this.zone,
     );
   }
 
   ngOnDestroy() {
-    angularConsoleLog('Connector destroyed');
+    consoleLogAngular('Connector destroyed');
     this.connectorCreator.destroy();
   }
 }

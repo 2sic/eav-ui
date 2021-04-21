@@ -4,7 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { BehaviorSubject, from, Subscription } from 'rxjs';
 import { filter, map, pairwise, startWith, take } from 'rxjs/operators';
-import { GlobalConfigService } from '../../../../../edit/shared/services/global-configuration.service';
+import { GlobalConfigService } from '../../../../../edit/shared/store/ngrx-data';
 import { ContentExportService } from '../../content-export/services/content-export.service';
 import { ContentImportDialogData } from '../../content-import/content-import-dialog.config';
 import { GoToDevRest } from '../../dev-rest/go-to-dev-rest';
@@ -37,7 +37,7 @@ export class DataComponent implements OnInit, OnDestroy {
   scope = eavConstants.scopes.default.value;
   defaultScope = eavConstants.scopes.default.value;
   scopeOptions$ = new BehaviorSubject<EavScopeOption[]>([]);
-  debugEnabled$ = this.globalConfigService.getDebugEnabled();
+  debugEnabled$ = this.globalConfigService.getDebugEnabled$();
 
   modules = AllCommunityModules;
   gridOptions: GridOptions = {
@@ -57,8 +57,8 @@ export class DataComponent implements OnInit, OnDestroy {
         } as IdFieldParams,
       },
       {
-        headerName: 'Content Type', field: 'Label', flex: 3, minWidth: 250, cellClass: 'primary-action highlight', sort: 'asc',
-        sortable: true, filter: 'agTextColumnFilter', onCellClicked: this.showContentItems.bind(this),
+        headerName: 'Content Type', field: 'Label', flex: 3, minWidth: 250, cellClass: 'primary-action highlight', sortable: true,
+        sort: 'asc', filter: 'agTextColumnFilter', onCellClicked: this.showContentItems.bind(this),
       },
       {
         headerName: 'Items', field: 'Items', width: 102, headerClass: 'dense', cellClass: 'secondary-action no-padding',
@@ -122,7 +122,7 @@ export class DataComponent implements OnInit, OnDestroy {
     switch (ext) {
       case 'xml':
         from(toString(files[0])).pipe(take(1)).subscribe(fileString => {
-          const contentTypeName = fileString.split('<Entity Type="')[1].split('"')[0];
+          const contentTypeName = fileString.split('<Entity Type="')[1]?.split('"')[0];
           const contentType = this.contentTypes$.value.find(ct => ct.Name === contentTypeName);
           if (contentType == null) {
             const message = `Cannot find Content Type named '${contentTypeName}'. Please open Content Type Import dialog manually.`;

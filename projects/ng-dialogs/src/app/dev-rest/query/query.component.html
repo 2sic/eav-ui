@@ -1,0 +1,82 @@
+<ng-container *ngIf="templateVars$ | async as data">
+  <div mat-dialog-title>
+    <div class="dialog-title-box">
+      <div>Using REST with Query <code>{{ data.name }}</code></div>
+      <button mat-icon-button matTooltip="Close dialog" (click)="closeDialog()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <router-outlet></router-outlet>
+
+  <!-- Template below this line -->
+
+  <app-selector-with-help label="Choose Scenario" [items]="scenarios" [value]="data.scenario.key"
+    (valueChange)="changeScenario($event)">
+  </app-selector-with-help>
+
+  <mat-tab-group dynamicHeight color="accent"
+    class="mat-tab-group-fit-height mat-tab-group-fancy-scrollbar default-fonts">
+
+    <!-- Introduction -->
+    <mat-tab>
+      <div *matTabLabel class="mat-tab-label-box" matTooltip="Introduction">
+        <mat-icon>emoji_objects</mat-icon>
+        <span>Introduction</span>
+      </div>
+
+      <app-dev-query-introduction [data]="data"></app-dev-query-introduction>
+
+      <app-dev-rest-tab-introduction [data]="data"></app-dev-rest-tab-introduction>
+    </mat-tab>
+
+    <!-- Absolute / Virtual URLs -->
+    <mat-tab>
+      <div *matTabLabel class="mat-tab-label-box"
+        [matTooltip]="(data.scenario.useVirtual ? 'Virtual ' : 'Absolute ') + 'REST URLs'">
+        <mat-icon svgIcon="code-curly"></mat-icon>
+        <span>Call {{ data.scenario.useVirtual ? 'Virtual' : 'Absolute' }} REST URLs</span>
+      </div>
+
+      <app-dev-rest-tab-examples-intro [data]="data"></app-dev-rest-tab-examples-intro>
+
+      <!-- Custom Parameters for calling -->
+      <div class="params-form">
+        <mat-form-field appearance="standard" color="accent">
+          <mat-label>Stream Name(s) to Limit, comma-separated</mat-label>
+          <input matInput placeholder="Default" [value]="streamNames$.value" (input)="updateStreams($event)">
+        </mat-form-field>
+
+        <mat-form-field appearance="standard" color="accent">
+          <mat-label>Additional Url Parameters</mat-label>
+          <input matInput placeholder="?id=27" [value]="urlParams$.value" (input)="updateParams($event)">
+        </mat-form-field>
+      </div>
+
+      <!-- REST Tab showing the urls and code snippets -->
+      <app-dev-rest-urls-and-code [data]="data"></app-dev-rest-urls-and-code>
+    </mat-tab>
+
+    <!-- Permissions explained -->
+    <mat-tab>
+      <div *matTabLabel class="mat-tab-label-box" matTooltip="Permissions">
+        <mat-icon>person</mat-icon>
+        <span>Permissions ({{ data.permissions.length }})</span>
+        <mat-icon *ngIf="!data.permissions.length">warning</mat-icon>
+      </div>
+      <app-dev-rest-tab-permissions [data]="data"></app-dev-rest-tab-permissions>
+    </mat-tab>
+
+    <!-- HTTP Headers Explained -->
+    <mat-tab>
+      <div *matTabLabel class="mat-tab-label-box" matTooltip="HTTP headers and auto">
+        <mat-icon>perm_device_information</mat-icon>
+        <span>HTTP headers & &nbsp;<code>/auto/</code></span>
+      </div>
+      <app-dev-rest-tab-headers [data]="data"></app-dev-rest-tab-headers>
+    </mat-tab>
+  </mat-tab-group>
+
+
+</ng-container>

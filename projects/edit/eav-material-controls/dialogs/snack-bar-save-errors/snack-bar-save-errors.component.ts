@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
 import { MAT_SNACK_BAR_DATA } from '@angular/material/snack-bar';
-import { FieldErrorMessage } from '../../../shared/models/eav/field-error-message';
+import { FieldErrorMessage } from '../../../shared/models';
 import { SaveErrorsSnackData } from './snack-bar-save-errors.models';
 
 @Component({

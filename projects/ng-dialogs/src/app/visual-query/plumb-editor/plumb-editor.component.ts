@@ -2,8 +2,9 @@
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { eavConstants } from '../../shared/constants/eav.constants';
 import { loadScripts } from '../../shared/helpers/load-scripts.helper';
-import { PipelineDataSource, VisualDesignerData } from '../models/pipeline.model';
+import { PipelineDataSource, PipelineResultStream, VisualDesignerData } from '../models';
 import { QueryDefinitionService } from '../services/query-definition.service';
 import { VisualQueryService } from '../services/visual-query.service';
 import { calculateTypeInfos } from './plumb-editor.helpers';
@@ -30,7 +31,6 @@ export class PlumbEditorComponent implements OnInit, AfterViewInit, OnDestroy {
   private plumber: Plumber;
   private scriptLoaded$ = new BehaviorSubject(false);
   private subscription = new Subscription();
-  private plumbInits = 0;
 
   constructor(
     private visualQueryService: VisualQueryService,
@@ -83,7 +83,7 @@ export class PlumbEditorComponent implements OnInit, AfterViewInit, OnDestroy {
           this.visualQueryService.dataSources$.value,
           this.onConnectionsChanged.bind(this),
           this.onDragend.bind(this),
-          ++this.plumbInits,
+          this.onDebugStream.bind(this),
         );
       })
     );
@@ -105,6 +105,10 @@ export class PlumbEditorComponent implements OnInit, AfterViewInit, OnDestroy {
     this.visualQueryService.changeDataSourcePosition(pipelineDataSourceGuid, position);
   }
 
+  onDebugStream(stream: PipelineResultStream) {
+    this.visualQueryService.debugStream(stream);
+  }
+
   configureDataSource(dataSource: PipelineDataSource) {
     // ensure dataSource entity is saved
     if (dataSource.EntityGuid.includes('unsaved')) {
@@ -114,9 +118,16 @@ export class PlumbEditorComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  typeNameFilter(input: string, format: string) {
-    const filtered = this.queryDefinitionService.typeNameFilter(input, format);
-    return filtered;
+  getTypeName(partAssemblyAndType: string) {
+    if (partAssemblyAndType.length === 36 && (partAssemblyAndType.split('-').length - 1) === 4) {
+      // partAssemblyAndType is guid
+      return partAssemblyAndType.substring(0, 10) + '…';
+    }
+    return this.queryDefinitionService.typeNameFilter(partAssemblyAndType, 'className');
+  }
+
+  isOutDataSource(pipelineDataSource: PipelineDataSource) {
+    return pipelineDataSource.PartAssemblyAndType === eavConstants.pipelineDesigner.outDataSource.PartAssemblyAndType;
   }
 
   remove(pipelineDataSource: PipelineDataSource) {
@@ -126,6 +137,10 @@ export class PlumbEditorComponent implements OnInit, AfterViewInit, OnDestroy {
     const connections = this.plumber.getAllConnections();
     const streamsOut = this.plumber.getStreamsOut();
     this.visualQueryService.removeDataSource(pipelineDataSource.EntityGuid, connections, streamsOut);
+  }
+
+  openHelp(url: string) {
+    window.open(url, '_blank');
   }
 
   editName(dataSource: PipelineDataSource) {

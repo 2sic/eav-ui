@@ -20,19 +20,22 @@ import { TranslateModule } from '@ngx-translate/core';
 import { SharedComponentsModule } from '../../ng-dialogs/src/app/shared/shared-components.module';
 import { EavDynamicFormModule } from '../eav-dynamic-form/eav-dynamic-form.module';
 import { EavMaterialControlsModule } from '../eav-material-controls/eav-material-controls.module';
-import { LoadIconsService } from '../shared/services/load-icons.service';
-import { BuildFieldsService } from './item-edit-form/build-fields.service';
+import { EditEntryComponent } from '../edit-entry/edit-entry.component';
+import { LoadIconsService } from '../shared/services';
 import { ItemEditFormComponent } from './item-edit-form/item-edit-form.component';
 import { MultiItemEditFormDebugComponent } from './multi-item-edit-form-debug/multi-item-edit-form-debug.component';
 import { MultiItemEditFormHeaderComponent } from './multi-item-edit-form-header/multi-item-edit-form-header.component';
+import { FormSlideDirective } from './multi-item-edit-form/form-slide.directive';
 import { MultiItemEditFormComponent } from './multi-item-edit-form/multi-item-edit-form.component';
 
 @NgModule({
   declarations: [
+    EditEntryComponent,
     MultiItemEditFormComponent,
     ItemEditFormComponent,
     MultiItemEditFormHeaderComponent,
-    MultiItemEditFormDebugComponent
+    MultiItemEditFormDebugComponent,
+    FormSlideDirective,
   ],
   imports: [
     CommonModule,
@@ -57,14 +60,9 @@ import { MultiItemEditFormComponent } from './multi-item-edit-form/multi-item-ed
     TranslateModule,
     SharedComponentsModule,
   ],
-  entryComponents: [
-    MultiItemEditFormComponent
-  ],
-  exports: [],
   providers: [
     { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } },
     LoadIconsService,
-    BuildFieldsService,
   ],
 })
 export class EavItemDialogModule { }

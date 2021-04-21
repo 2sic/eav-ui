@@ -1,4 +1,4 @@
-import { DropdownOption } from './string-dropdown.models';
+import { DropdownOption } from '../../../../../edit-types';
 
 /** Takes current value and dropdownValues string from settings and calculates options for dropdown */
 export function calculateDropdownOptions(currentValue: string, dropdownValues: string) {

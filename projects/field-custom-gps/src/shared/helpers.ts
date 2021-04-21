@@ -1,4 +1,4 @@
-import * as mapMarker from '../../../edit/assets/icons/font-awesome/map-marker-alt-solid.svg';
+import * as mapMarker from '../assets/icons/font-awesome/map-marker-alt-solid.svg';
 
 export const customGpsIcons = {
   mapMarker: mapMarker.default,

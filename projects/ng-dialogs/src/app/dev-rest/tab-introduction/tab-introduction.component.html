@@ -1,0 +1,32 @@
+<p>
+  All data can be used in JavaScript, SPAs or anywhere with the REST API
+  (see <a href="https://docs.2sxc.org/web-api/index.html" target="_blank">docs</a>).
+  Use this for things like:
+</p>
+<ul>
+  <li><a href="https://docs.2sxc.org/web-api/index.html" target="_blank">WebAPI in 2sxc</a></li>
+  <li><a href="https://docs.2sxc.org/web-api/headless/index.html" target="_blank">Using DNN/2sxc as a headless CMS</a></li>
+  <li>Create SPAs in DNN/2sxc</li>
+  <li>Get data for mobile apps</li>
+  <li>Share data to other platforms</li>
+</ul>
+<p>
+  Just set off HTTP <code>GET</code> requests or similar
+  to the endpoint like <code>{{ data.root }}</code>. You can find the full list with example code
+  in the next tabs.
+  Make sure you also read about permissions and HTTP headers.
+</p>
+<h3>Scenarios Explained (dropdown on top)</h3>
+<p>
+  The examples / code / permission infos will change based on the scenario you choose.
+</p>
+<ng-container *ngFor="let scenario of scenarios">
+  <h4>Scenario: {{ scenario.name }}</h4>
+  <p>
+    {{ scenario.description }}
+  </p>
+  <p *ngIf="scenario.notes">
+    <em>
+      {{ scenario.notes }}
+    </em>
+  </p>

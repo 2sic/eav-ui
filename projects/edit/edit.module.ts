@@ -1,27 +1,23 @@
 import { DnnInterceptor } from '@2sic.com/dnn-sxc-angular';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { EavWindow } from '../ng-dialogs/src/app/shared/models/eav-window.model';
 import { Context } from '../ng-dialogs/src/app/shared/services/context';
 import { SharedComponentsModule } from '../ng-dialogs/src/app/shared/shared-components.module';
+import { buildTranslateConfiguration, TranslateLoaderWithErrorHandling } from '../ng-dialogs/src/app/shared/translation';
 import { EavItemDialogModule } from './eav-item-dialog/eav-item-dialog.module';
 import { AdamService } from './eav-material-controls/adam/adam.service';
-import { SanitizeService } from './eav-material-controls/adam/sanitize.service';
 import { EditRoutingModule } from './edit-routing.module';
-import { DnnBridgeService } from './shared/services/dnn-bridge.service';
-import { EavService } from './shared/services/eav.service';
-import { EditRoutingService } from './shared/services/edit-routing.service';
-import { EntityService } from './shared/services/entity.service';
-import { QueryService } from './shared/services/query.service';
-import { buildTranslateConfiguration, TranslateLoaderWithErrorHandling } from '../ng-dialogs/src/app/shared/translation';
-import { HttpClient } from '@angular/common/http';
+import { DnnBridgeService, EavService, EntityService, QueryService } from './shared/services';
 
-declare const sxcVersion: string;
+declare const window: EavWindow;
 
 // AoT requires an exported function for factories
 // at least according to https://github.com/ngx-translate/http-loader
 export function translateLoaderFactoryEdit(http: HttpClient): TranslateLoader {
-  return new TranslateLoaderWithErrorHandling(http, './i18n/', `.js?${sxcVersion}`);
+  return new TranslateLoaderWithErrorHandling(http, './i18n/', `.js?${window.sxcVersion}`);
 }
 
 @NgModule({
@@ -44,8 +40,6 @@ export function translateLoaderFactoryEdit(http: HttpClient): TranslateLoader {
     DnnBridgeService,
     EntityService,
     QueryService,
-    SanitizeService,
-    EditRoutingService,
   ],
 })
 export class EditModule { }

@@ -1,10 +1,12 @@
-import { DataSource } from '../models/data-sources.model';
-import { PipelineResult } from '../models/pipeline-result.model';
-import { PipelineDataSource, PipelineModel, StreamWire, VisualDesignerData } from '../models/pipeline.model';
+import { eavConstants } from '../../shared/constants/eav.constants';
+import { Dictionary } from '../../shared/models/dictionary.model';
+import { EavWindow } from '../../shared/models/eav-window.model';
+import { DataSource, PipelineDataSource, PipelineModel, PipelineResult, PipelineResultStream, StreamWire, VisualDesignerData } from '../models';
+import { EndpointInfo, PlumbType } from './plumb-editor.models';
+
+declare const window: EavWindow;
 
 export const dataSrcIdPrefix = 'dataSource_';
-type PlumbType = any;
-declare const jsPlumb: PlumbType;
 
 export class Plumber {
   private instance: PlumbType;
@@ -24,7 +26,7 @@ export class Plumber {
     '#76608a', '#a0522d',
   ];
   private maxCols = this.lineColors.length - 1;
-  private uuidColorMap: { [key: string]: any } = {};
+  private uuidColorMap: Dictionary = {};
   private bulkDelete = false;
 
   constructor(
@@ -33,10 +35,9 @@ export class Plumber {
     private dataSources: DataSource[],
     private onConnectionsChanged: () => void,
     private onDragend: (pipelineDataSourceGuid: string, position: VisualDesignerData) => void,
-    /** Workaround for multiple dblClick listeners */
-    private plumbInits: number,
+    private onDebugStream: (stream: PipelineResultStream) => void,
   ) {
-    this.instance = jsPlumb.getInstance(this.getInstanceDefaults(this.jsPlumbRoot));
+    this.instance = window.jsPlumb.getInstance(this.getInstanceDefaults(this.jsPlumbRoot));
     this.instance.batch(() => {
       this.initDomDataSources();
       this.initWirings();
@@ -49,6 +50,7 @@ export class Plumber {
 
   destroy() {
     this.instance.reset();
+    this.instance.unbindContainer();
   }
 
   removeEndpointsOnDataSource(pipelineDataSourceGuid: string) {
@@ -92,11 +94,22 @@ export class Plumber {
       const toUuid = targetElementId + '_in_' + stream.TargetIn;
 
       const sEndp: PlumbType = this.instance.getEndpoint(fromUuid);
-      sEndp?.connections?.forEach((connection: PlumbType) => {
-        if (connection.endpoints[1].getUuid() !== toUuid) { return; }
-
-        connection.setLabel({ label: stream.Count.toString(), cssClass: 'streamEntitiesCount' });
-      });
+      sEndp?.connections
+        ?.filter((connection: PlumbType) => connection.endpoints[1].getUuid() === toUuid)
+        ?.forEach((connection: PlumbType) => {
+          const label = !stream.Error ? stream.Count.toString() : '';
+          const cssClass = 'streamEntitiesCount ' + (!stream.Error ? '' : 'streamEntitiesError');
+          connection.setLabel({
+            label,
+            cssClass,
+            events: {
+              click: (labelOverlay: PlumbType) => {
+                if (!this.pipelineModel.Pipeline.AllowEdit) { return; }
+                this.onDebugStream(stream);
+              },
+            },
+          });
+        });
     });
   }
 
@@ -150,7 +163,7 @@ export class Plumber {
         this.addEndpoint(domDataSource, name, false, pipelineDataSource);
       });
 
-      // Add Out-Endpoints from Definition
+      // Add In-Endpoints from Definition
       dataSource.In?.forEach(name => {
         this.addEndpoint(domDataSource, name, true, pipelineDataSource);
       });
@@ -163,7 +176,7 @@ export class Plumber {
       }
 
       if (dataSource.DynamicOut) {
-        this.instance.makeSource(domDataSource, this.buildSourceEndpoint(), { filter: '.add-endpoint .new-connection' });
+        this.instance.makeSource(domDataSource, this.buildSourceEndpoint(), { filter: '.add-endpoint' });
       }
     }
   }
@@ -180,6 +193,8 @@ export class Plumber {
       // Ensure In-Endpoint exist
       if (!this.instance.getEndpoint(fromUuid)) {
         const domDataSource: HTMLElement = this.jsPlumbRoot.querySelector('#' + sourceElementId);
+        if (!domDataSource) { return; }
+
         const guid: string = domDataSource.id.replace(dataSrcIdPrefix, '');
         const pipelineDataSource = this.pipelineModel.DataSources.find(pipeDataSource => pipeDataSource.EntityGuid === guid);
         this.addEndpoint(domDataSource, wire.Out, false, pipelineDataSource);
@@ -188,6 +203,8 @@ export class Plumber {
       // Ensure Out-Endpoint exist
       if (!this.instance.getEndpoint(toUuid)) {
         const domDataSource: HTMLElement = this.jsPlumbRoot.querySelector('#' + targetElementId);
+        if (!domDataSource) { return; }
+
         const guid: string = domDataSource.id.replace(dataSrcIdPrefix, '');
         const pipelineDataSource = this.pipelineModel.DataSources.find(pipeDataSource => pipeDataSource.EntityGuid === guid);
         this.addEndpoint(domDataSource, wire.In, true, pipelineDataSource);
@@ -204,20 +221,45 @@ export class Plumber {
     });
   }
 
-  private addEndpoint(domDataSource: HTMLElement, name: string, isIn: boolean, pipelineDataSource: PipelineDataSource) {
-    const uuid = domDataSource.id + (isIn ? '_in_' : '_out_') + name;
-    const model = isIn ? this.buildTargetEndpoint() : this.buildSourceEndpoint();
+  private addEndpoint(domDataSource: HTMLElement, endpointName: string, isIn: boolean, pipelineDataSource: PipelineDataSource) {
+    const dataSource = this.dataSources.find(d => d.PartAssemblyAndType === pipelineDataSource.PartAssemblyAndType);
+    const isDynamic = isIn
+      ? !dataSource.In?.some(name => this.getEndpointInfo(name, false))
+      : !dataSource.Out?.some(name => this.getEndpointInfo(name, false));
+    const endpointInfo = this.getEndpointInfo(endpointName, isDynamic);
+
+    let style: string;
+    if (isDynamic) {
+      style = 'dynamic';
+    } else if (!endpointInfo.required) {
+      style = '';
+    } else {
+      const wireExists = this.pipelineModel.Pipeline.StreamWiring?.some(wire => {
+        const targetElementId = dataSrcIdPrefix + wire.To;
+        const targetEndpointName = wire.In;
+
+        return targetElementId === domDataSource.id && targetEndpointName === endpointInfo.name;
+      });
+      style = wireExists ? '' : 'required';
+    }
+
+    const uuid = domDataSource.id + (isIn ? '_in_' : '_out_') + endpointInfo.name;
+    const model = isIn ? this.buildTargetEndpoint(style) : this.buildSourceEndpoint(style);
     // Endpoints on Out-DataSource must be always enabled
-    const params = { uuid, enabled: this.pipelineModel.Pipeline.AllowEdit || pipelineDataSource.EntityGuid === 'Out' };
+    const params = {
+      uuid,
+      enabled: this.pipelineModel.Pipeline.AllowEdit
+        || pipelineDataSource.EntityGuid === eavConstants.pipelineDesigner.outDataSource.EntityGuid
+    };
 
     const endPoint: PlumbType = this.instance.addEndpoint(domDataSource, model, params);
-    endPoint.getOverlay('endpointLabel').setLabel(name);
+    endPoint.getOverlay('endpointLabel').setLabel(endpointInfo.name);
   }
 
-  private buildSourceEndpoint() {
+  private buildSourceEndpoint(style?: string) {
     const sourceEndpoint = {
       paintStyle: { fill: 'transparent', radius: 10 },
-      cssClass: 'sourceEndpoint',
+      cssClass: 'sourceEndpoint ' + style ?? '',
       maxConnections: -1,
       isSource: true,
       anchor: ['Continuous', { faces: ['top'] }],
@@ -226,10 +268,10 @@ export class Plumber {
     return sourceEndpoint;
   }
 
-  private buildTargetEndpoint() {
+  private buildTargetEndpoint(style?: string) {
     const targetEndpoint = {
       paintStyle: { fill: 'transparent', radius: 10 },
-      cssClass: 'targetEndpoint',
+      cssClass: 'targetEndpoint ' + style ?? '',
       maxConnections: 1,
       isTarget: true,
       anchor: ['Continuous', { faces: ['bottom'] }],
@@ -244,52 +286,40 @@ export class Plumber {
       [
         'Label', {
           id: 'endpointLabel',
-          // location: [0.5, isSource ? -0.5 : 1.5],
           location: [0.5, isSource ? 0 : 1],
           label: 'Default',
-          cssClass: 'noselect ' + (isSource ? 'endpointSourceLabel' : 'endpointTargetLabel'),
+          cssClass: isSource ? 'endpointSourceLabel' : 'endpointTargetLabel',
           events: {
-            dblclick: (labelOverlay: PlumbType) => {
+            click: (labelOverlay: PlumbType) => {
               if (!this.pipelineModel.Pipeline.AllowEdit) { return; }
-
-              // spm NOTE: workaround for multiple dblclick listeners
-              if (labelOverlay.dblClickCounter == null || labelOverlay.dblClickCounter >= this.plumbInits) {
-                labelOverlay.dblClickCounter = 1;
-              } else {
-                labelOverlay.dblClickCounter++;
-              }
-              if (labelOverlay.dblClickCounter > 1) { return; }
 
               const newLabel = prompt('Rename stream', labelOverlay.label);
               if (!newLabel) { return; }
               labelOverlay.setLabel(newLabel);
               setTimeout(() => { this.onConnectionsChanged(); });
-            }
-          }
+            },
+          },
         }
       ]
     ];
   }
 
   private bindEvents() {
-    // If connection on Out-DataSource was removed, remove custom Endpoint
     this.instance.bind('connectionDetached', (info: PlumbType) => {
-      // spm TODO: custom endpoints were removed only on Out DataSource. Bug?
-      // if (info.targetId !== dataSrcIdPrefix + 'Out') { return; }
       if (this.bulkDelete) { return; }
       const domDataSource: HTMLElement = info.target;
       const pipelineDataSource = this.pipelineModel.DataSources.find(
         pipelineDS => pipelineDS.EntityGuid === domDataSource.id.replace(dataSrcIdPrefix, '')
       );
       const dataSource = this.dataSources.find(ds => ds.PartAssemblyAndType === pipelineDataSource.PartAssemblyAndType);
-      const fixedEndpoints = dataSource.In;
       const label: string = info.targetEndpoint.getOverlay('endpointLabel').label;
-      if (fixedEndpoints.includes(label)) {
+      const isDynamic = !dataSource.In.some(name => this.getEndpointInfo(name, false).name === label);
+      if (isDynamic) {
+        this.instance.deleteEndpoint(info.targetEndpoint);
         setTimeout(() => { this.onConnectionsChanged(); });
-        return;
+      } else {
+        setTimeout(() => { this.onConnectionsChanged(); });
       }
-      this.instance.deleteEndpoint(info.targetEndpoint);
-      setTimeout(() => { this.onConnectionsChanged(); });
     });
 
     this.instance.bind('connection', (info: PlumbType) => {
@@ -316,4 +346,23 @@ export class Plumber {
     });
   }
 
+  private getEndpointInfo(endpointName: string, isDynamic: boolean): EndpointInfo {
+    let name: string;
+    let required: boolean;
+
+    if (isDynamic) {
+      name = endpointName;
+      required = false;
+    } else {
+      const trimmed = endpointName.trim();
+      required = trimmed.endsWith('*');
+      name = !required ? trimmed : trimmed.substring(0, trimmed.length - 1);
+    }
+
+    const endpointInfo: EndpointInfo = {
+      name,
+      required,
+    };
+    return endpointInfo;
+  }
 }

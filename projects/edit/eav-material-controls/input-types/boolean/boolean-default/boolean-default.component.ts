@@ -1,39 +1,47 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
-import { combineLatest } from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
+import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
-import { EavService } from '../../../../shared/services/eav.service';
+import { EavService, FieldsSettingsService } from '../../../../shared/services';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { BaseComponent } from '../../base/base.component';
+import { BooleanDefaultLogic } from './boolean-default-logic';
+import { BooleanDefaultTemplateVars } from './boolean-default.models';
 
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'boolean-default',
   templateUrl: './boolean-default.component.html',
   styleUrls: ['./boolean-default.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
-@InputType({
-  wrapper: [WrappersConstants.EavLocalizationWrapper],
+@ComponentMetadata({
+  wrappers: [WrappersConstants.LocalizationWrapper],
 })
 export class BooleanDefaultComponent extends BaseComponent<boolean> implements OnInit, OnDestroy {
+  templateVars$: Observable<BooleanDefaultTemplateVars>;
 
-  constructor(eavService: EavService, validationMessagesService: ValidationMessagesService) {
-    super(eavService, validationMessagesService);
+  constructor(
+    eavService: EavService,
+    validationMessagesService: ValidationMessagesService,
+    fieldsSettingsService: FieldsSettingsService,
+  ) {
+    super(eavService, validationMessagesService, fieldsSettingsService);
+    BooleanDefaultLogic.importMe();
   }
 
   ngOnInit() {
     super.ngOnInit();
-    this.label$ = combineLatest([this.value$, this.settings$, this.label$]).pipe(
-      map(([value, settings, label]) => {
-        if (value === true && settings.TitleTrue != null && settings.TitleTrue !== '') {
-          return settings.TitleTrue;
-        }
-        if (value === false && settings.TitleFalse != null && settings.TitleFalse !== '') {
-          return settings.TitleFalse;
-        }
-        return label;
+    this.label$ = this.settings$.pipe(map(settings => settings._label));
+
+    this.templateVars$ = combineLatest([this.label$, this.disabled$, this.touched$]).pipe(
+      map(([label, disabled, touched]) => {
+        const templateVars: BooleanDefaultTemplateVars = {
+          label,
+          disabled,
+          touched,
+        };
+        return templateVars;
       }),
     );
   }

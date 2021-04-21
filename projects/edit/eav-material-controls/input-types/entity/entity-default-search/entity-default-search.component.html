@@ -7,8 +7,8 @@
           'mat-form-field-invalid': invalid && touched
         }">
           <input matInput #autocomplete [placeholder]="getPlaceholder()" [matAutocomplete]="auto"
-            [disabled]="disabled || !settings.EnableAddExisting" (blur)="control.markAsTouched()"
-            (input)="filterSelectionList($event.target.value)">
+            [disabled]="disabled || !settings.EnableAddExisting" (focus)="fetchEntities()" (blur)="markAsTouched()"
+            (input)="filterSelectionList()">
           <button mat-icon-button matSuffix [disabled]="disabled || !settings.EnableAddExisting"
             *ngIf="!settings.EnableTextEntry">
             <mat-icon>arrow_drop_down</mat-icon>
@@ -49,7 +49,7 @@
 </div>
 
 <mat-form-field *ngIf="freeTextMode" [formGroup]="group" appearance="standard" color="accent">
-  <input matInput [required]="required" [formControlName]="config.field.name" [placeholder]="placeholder">
+  <input matInput [required]="required" [formControlName]="config.fieldName" [placeholder]="placeholder">
 
   <a matSuffix appClickStopPropagation (click)="toggleFreeText()">
     <button mat-icon-button [disabled]="disabled">

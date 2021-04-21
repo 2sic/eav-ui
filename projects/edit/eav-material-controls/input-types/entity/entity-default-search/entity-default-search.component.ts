@@ -5,8 +5,9 @@ import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { FieldSettings } from '../../../../../edit-types';
 import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
-import { EntityInfo } from '../../../../shared/models/eav/entity-info';
-import { GlobalConfigService } from '../../../../shared/services/global-configuration.service';
+import { EntityInfo } from '../../../../shared/models';
+import { GlobalConfigService } from '../../../../shared/store/ngrx-data';
+import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { SelectedEntity } from '../entity-default/entity-default.models';
 
 @Component({
@@ -16,11 +17,11 @@ import { SelectedEntity } from '../entity-default/entity-default.models';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EntityDefaultSearchComponent implements OnInit, OnChanges {
-  @ViewChild('autocomplete') autocompleteRef: ElementRef;
+  @ViewChild('autocomplete') autocompleteRef?: ElementRef;
 
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
-  @Input() control: AbstractControl;
+  @Input() private control: AbstractControl;
   @Input() label: string;
   @Input() placeholder: string;
   @Input() required: boolean;
@@ -29,35 +30,50 @@ export class EntityDefaultSearchComponent implements OnInit, OnChanges {
   @Input() disabled: boolean;
   @Input() freeTextMode: boolean;
   @Input() settings: FieldSettings;
-  @Input() error: string;
+  @Input() private error: string;
   @Input() disableAddNew: boolean;
   @Input() selectedEntities: SelectedEntity[];
-  @Input() availableEntities: EntityInfo[];
+  @Input() private availableEntities?: EntityInfo[];
 
-  @Output() toggleFreeTextMode = new EventEmitter<null>();
-  @Output() addSelected = new EventEmitter<string>();
-  @Output() editEntity = new EventEmitter<string>();
+  @Output() private fetchAvailableEntities = new EventEmitter<null>();
+  @Output() private toggleFreeTextMode = new EventEmitter<null>();
+  @Output() private addSelected = new EventEmitter<string>();
+  @Output() private editEntity = new EventEmitter<string>();
 
   filteredEntities: EntityInfo[] = [];
   debugEnabled$: Observable<boolean>;
 
-  constructor(private translate: TranslateService, private globalConfigService: GlobalConfigService) { }
+  constructor(
+    private translate: TranslateService,
+    private globalConfigService: GlobalConfigService,
+    private validationMessagesService: ValidationMessagesService,
+  ) { }
 
-  ngOnInit() {
-    this.debugEnabled$ = this.globalConfigService.getDebugEnabled();
+  ngOnInit(): void {
+    this.debugEnabled$ = this.globalConfigService.getDebugEnabled$();
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    const availableEntities: EntityInfo[] = changes.availableEntities?.currentValue;
-    if (availableEntities != null) {
-      const filter = this.autocompleteRef?.nativeElement.value || '';
-      this.filterSelectionList(filter);
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.availableEntities != null) {
+      this.filterSelectionList();
     }
   }
 
-  getPlaceholder() {
-    if (this.availableEntities.length) {
-      return 'search';
+  markAsTouched(): void {
+    this.validationMessagesService.markAsTouched(this.control);
+  }
+
+  fetchEntities(): void {
+    if (this.availableEntities != null) { return; }
+    this.fetchAvailableEntities.emit();
+  }
+
+  getPlaceholder(): string {
+    if (this.availableEntities == null) {
+      return this.translate.instant('Fields.Entity.Loading');
+    }
+    if (this.availableEntities.length > 0) {
+      return this.translate.instant('Fields.Entity.Search');
     }
     if (this.error) {
       return this.error;
@@ -65,40 +81,44 @@ export class EntityDefaultSearchComponent implements OnInit, OnChanges {
     return this.translate.instant('Fields.EntityQuery.QueryNoItems');
   }
 
-  toggleFreeText() {
+  toggleFreeText(): void {
     if (this.disabled) { return; }
     this.toggleFreeTextMode.emit();
   }
 
-  filterSelectionList(filter: string) {
-    if (filter === '') {
+  filterSelectionList(): EntityInfo[] {
+    if (this.availableEntities == null) { return []; }
+
+    const filter = this.autocompleteRef?.nativeElement.value;
+    if (!filter) {
       this.filteredEntities = this.availableEntities;
       return;
     }
+
     this.filteredEntities = this.availableEntities.filter(option =>
       option.Text
-        ? option.Text.toLowerCase().includes(filter.toLowerCase())
-        : option.Value.toLowerCase().includes(filter.toLowerCase())
+        ? option.Text.toLocaleLowerCase().includes(filter.toLocaleLowerCase())
+        : option.Value.toLocaleLowerCase().includes(filter.toLocaleLowerCase())
     );
   }
 
-  optionSelected(event: MatAutocompleteSelectedEvent) {
+  optionSelected(event: MatAutocompleteSelectedEvent): void {
     const selected: string = event.option.value;
     this.addSelected.emit(selected);
     this.autocompleteRef.nativeElement.value = '';
     this.autocompleteRef.nativeElement.blur();
   }
 
-  insertNull() {
+  insertNull(): void {
     this.addSelected.emit(null);
   }
 
-  isOptionDisabled(value: string) {
-    const isSelected = !!this.selectedEntities.find(entity => entity.value === value);
+  isOptionDisabled(value: string): boolean {
+    const isSelected = this.selectedEntities.some(entity => entity.value === value);
     return isSelected;
   }
 
-  openNewEntityDialog() {
+  openNewEntityDialog(): void {
     this.editEntity.emit(null);
   }
 }

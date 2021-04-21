@@ -1,10 +1,10 @@
 import { Directive, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
-import { angularConsoleLog } from '../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
-import { ElementEventListener } from '../../../shared/element-event-listener.model';
-import { FeaturesGuidsConstants } from '../../../shared/features-guids.constants';
+import { consoleLogAngular } from '../../../ng-dialogs/src/app/shared/helpers/console-log-angular.helper';
 import { FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
-import { PasteClipboardImageEventDetail } from '../models/adam/paste-clipboard-image';
-import { FeatureService } from '../store/ngrx-data/feature.service';
+import { FeaturesConstants } from '../constants';
+import { PasteClipboardImageEventDetail } from '../models';
+import { ElementEventListener } from '../models';
+import { FeatureService } from '../store/ngrx-data';
 
 @Directive({ selector: '[appPasteClipboardImage]' })
 export class PasteClipboardImageDirective implements OnInit, OnDestroy {
@@ -15,7 +15,7 @@ export class PasteClipboardImageDirective implements OnInit, OnDestroy {
   constructor(private elementRef: ElementRef, private featureService: FeatureService) { }
 
   ngOnInit() {
-    if (!this.featureService.isFeatureEnabled(FeaturesGuidsConstants.PasteImageFromClipboard)) { return; }
+    if (!this.featureService.isFeatureEnabled(FeaturesConstants.PasteImageFromClipboard)) { return; }
 
     switch (this.elementType) {
       case 'input':
@@ -44,7 +44,7 @@ export class PasteClipboardImageDirective implements OnInit, OnDestroy {
   }
 
   private handleImage(event: CustomEvent) {
-    angularConsoleLog('PASTE IMAGE', 'event:', event);
+    consoleLogAngular('PASTE IMAGE', 'event:', event);
     // todo: convert png to jpg to reduce file size
     const image = this.getFile(event.detail as PasteClipboardImageEventDetail);
     this.config.dropzone.uploadFile(image);

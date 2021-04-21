@@ -13,5 +13,4 @@ export class EmptyDefaultComponent implements OnInit {
 
   ngOnInit() {
   }
-
 }

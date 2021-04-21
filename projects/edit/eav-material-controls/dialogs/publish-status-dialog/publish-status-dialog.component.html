@@ -1,0 +1,31 @@
+<mat-card *ngIf="templateVars$ | async as data">
+  <div class="mat-card__header">
+    <div class="mat-card__title">{{ 'PublishStatus.Dialog.Title' | translate }}</div>
+    <div class="mat-card__description">{{ 'PublishStatus.Dialog.Intro' | translate }}</div>
+  </div>
+
+  <mat-nav-list toggle>
+
+    <mat-list-item (click)="setPublishMode(publishModes.Show)"
+      [ngClass]="{ 'mat-list-item-focus': data.publishMode === publishModes.Show }">
+      <mat-icon matListIcon color="accent">visibility</mat-icon>
+      <div matLine class="mat-list-item__title">{{ 'PublishStatus.Dialog.Show.Title' | translate }}</div>
+      <div matLine class="mat-list-item__body">{{ 'PublishStatus.Dialog.Show.Body' | translate }}</div>
+    </mat-list-item>
+
+    <mat-list-item (click)="setPublishMode(publishModes.Hide)"
+      [ngClass]="{ 'mat-list-item-focus': data.publishMode === publishModes.Hide }">
+      <mat-icon matListIcon color="accent">visibility_off</mat-icon>
+      <div matLine class="mat-list-item__title">{{ 'PublishStatus.Dialog.Hide.Title' | translate }}</div>
+      <div matLine class="mat-list-item__body">{{ 'PublishStatus.Dialog.Hide.Body' | translate }}</div>
+    </mat-list-item>
+
+    <mat-list-item (click)="setPublishMode(publishModes.Branch)"
+      [ngClass]="{ 'mat-list-item-focus': data.publishMode === publishModes.Branch }">
+      <mat-icon matListIcon color="accent" svgIcon="draft-branch"></mat-icon>
+      <div matLine class="mat-list-item__title">{{ 'PublishStatus.Dialog.Branch.Title' | translate }}</div>
+      <div matLine class="mat-list-item__body">{{ 'PublishStatus.Dialog.Branch.Body' | translate }}</div>
+    </mat-list-item>
+
+  </mat-nav-list>
+</mat-card>

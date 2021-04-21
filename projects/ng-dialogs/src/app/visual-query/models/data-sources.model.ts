@@ -1,6 +1,7 @@
 export interface DataSource {
   ContentType: string;
   Difficulty: number;
+  DynamicIn: boolean;
   DynamicOut: boolean;
   EnableConfig: boolean;
   HelpLink: string;
@@ -11,7 +12,6 @@ export interface DataSource {
   PartAssemblyAndType: string;
   PrimaryType: string;
   UiHint: string;
-  allowNew?: boolean;
 }
 
 export interface SortedDataSources {

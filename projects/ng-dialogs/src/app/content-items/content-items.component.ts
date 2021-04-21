@@ -6,7 +6,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { filter, map, pairwise, startWith, take } from 'rxjs/operators';
-import { GlobalConfigService } from '../../../../edit';
+import { GlobalConfigService } from '../../../../edit/shared/store/ngrx-data';
 import { ContentType } from '../app-administration/models/content-type.model';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { ContentExportService } from '../content-export/services/content-export.service';
@@ -18,7 +18,7 @@ import { IdFieldParams } from '../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
 import { eavConstants, EavKeyTypeKey, EavMetadataKey } from '../shared/constants/eav.constants';
 import { keyFilters } from '../shared/constants/session.constants';
-import { angularConsoleLog } from '../shared/helpers/angular-console-log.helper';
+import { consoleLogAngular } from '../shared/helpers/console-log-angular.helper';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 import { EditForm } from '../shared/models/edit-form.model';
 import { ContentItemsActionsComponent } from './ag-grid-components/content-items-actions/content-items-actions.component';
@@ -44,7 +44,7 @@ import { EntitiesService } from './services/entities.service';
 export class ContentItemsComponent implements OnInit, OnDestroy {
   contentType$ = new BehaviorSubject<ContentType>(null);
   items$ = new BehaviorSubject<ContentItem[]>(null);
-  debugEnabled$ = this.globalConfigService.getDebugEnabled();
+  debugEnabled$ = this.globalConfigService.getDebugEnabled$();
 
   modules = AllCommunityModules;
   gridOptions: GridOptions = {
@@ -129,7 +129,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   private setColumnDefs(columnDefs: ColDef[], filterModel: AgGridFilterModel) {
     this.gridApi$.value.setColumnDefs(columnDefs);
     if (filterModel) {
-      angularConsoleLog('Will try to apply filter:', filterModel);
+      consoleLogAngular('Will try to apply filter:', filterModel);
       this.gridApi$.value.setFilterModel(filterModel);
     }
   }
@@ -368,7 +368,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     const item: ContentItem = params.data;
     const published: PubMeta = {
       published: item.IsPublished,
-      metadata: !!item.Metadata,
+      metadata: !!item.For,
     };
     return published;
   }

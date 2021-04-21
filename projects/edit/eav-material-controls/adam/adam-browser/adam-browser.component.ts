@@ -1,42 +1,39 @@
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
-import { distinctUntilChanged, filter, map, startWith } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
+import { distinctUntilChanged, map, startWith } from 'rxjs/operators';
 import { AdamConfig, AdamItem, DropzoneConfigExt } from '../../../../edit-types';
 import { eavConstants } from '../../../../ng-dialogs/src/app/shared/constants/eav.constants';
 import { EditForm } from '../../../../ng-dialogs/src/app/shared/models/edit-form.model';
-import { FeaturesGuidsConstants } from '../../../../shared/features-guids.constants';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
-import { UrlHelper } from '../../../shared/helpers/url-helper';
-import { EavService } from '../../../shared/services/eav.service';
-import { EditRoutingService } from '../../../shared/services/edit-routing.service';
-import { FileTypeService } from '../../../shared/services/file-type.service';
-import { FeatureService } from '../../../shared/store/ngrx-data/feature.service';
+import { FeaturesConstants } from '../../../shared/constants';
+import { UrlHelpers } from '../../../shared/helpers';
+import { EditRoutingService, FileTypeService } from '../../../shared/services';
+import { AdamCacheService, FeatureService, LinkCacheService } from '../../../shared/store/ngrx-data';
 import { AdamService } from '../adam.service';
-import { AdamConfigInstance } from './adam-browser.models';
+import { AdamBrowserTemplateVars, AdamConfigInstance } from './adam-browser.models';
 
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'adam-browser',
   templateUrl: './adam-browser.component.html',
   styleUrls: ['./adam-browser.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     trigger('adamShowAnimate', [
       state('closed', style({
         height: '0',
-        overflow: 'hidden'
+        overflow: 'hidden',
       })),
       state('open', style({
         height: '*',
-        overflow: 'hidden'
+        overflow: 'hidden',
       })),
       transition('closed => open', [
         animate('300ms cubic-bezier(0.4, 0.0, 0.2, 1)'),
-      ])
-    ])
+      ]),
+    ]),
   ]
 })
 export class AdamBrowserComponent implements OnInit, OnDestroy {
@@ -44,35 +41,37 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
   @Input() group: FormGroup;
   @Output() openUpload = new EventEmitter<null>();
 
-  value$: Observable<string>;
-  disabled$: Observable<boolean>;
-  expanded$: Observable<boolean>;
-  adamConfig$ = new BehaviorSubject<AdamConfig>(null);
-  items$ = new BehaviorSubject<AdamItem[]>([]);
+  templateVars$: Observable<AdamBrowserTemplateVars>;
   pasteClipboardImage: boolean;
 
+  private adamConfig$: BehaviorSubject<AdamConfig>;
+  private items$: BehaviorSubject<AdamItem[]>;
   private control: AbstractControl;
   private url: string;
   private subscription = new Subscription();
+  private firstFetch = true;
 
   constructor(
     private adamService: AdamService,
     private fileTypeService: FileTypeService,
     private featureService: FeatureService,
     private dnnContext: DnnContext,
-    private eavService: EavService,
     private editRoutingService: EditRoutingService,
     private zone: NgZone,
+    private adamCacheService: AdamCacheService,
+    private linkCacheService: LinkCacheService,
   ) { }
 
   ngOnInit() {
-    this.control = this.group.controls[this.config.field.name];
+    this.control = this.group.controls[this.config.fieldName];
+    this.adamConfig$ = new BehaviorSubject<AdamConfig>(null);
+    this.items$ = new BehaviorSubject<AdamItem[]>([]);
     this.refreshOnChildClosed();
-    const contentType = this.config.entity.header.ContentTypeName;
-    const entityGuid = this.config.entity.header.Guid;
-    const field = this.config.field.name;
+    const contentType = this.config.contentTypeId;
+    const entityGuid = this.config.entityGuid;
+    const field = this.config.fieldName;
     this.url = this.dnnContext.$2sxc.http.apiUrl(`app-content/${contentType}/${entityGuid}/${field}`);
-    this.pasteClipboardImage = this.featureService.isFeatureEnabled(FeaturesGuidsConstants.PasteImageFromClipboard);
+    this.pasteClipboardImage = this.featureService.isFeatureEnabled(FeaturesConstants.PasteImageFromClipboard);
 
     // run inside zone to detect changes when called from custom components
     this.config.adam = {
@@ -98,24 +97,32 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
       },
     };
     this.subscription.add(
-      this.adamConfig$.subscribe(adamConfig => {
+      this.adamConfig$.subscribe(() => {
         this.fetchItems();
       })
     );
-    this.expanded$ = this.editRoutingService.isExpanded(this.config.field.index, this.config.entity.entityGuid);
-    this.value$ = this.eavService.formValueChange$.pipe(
-      filter(formSet => (formSet.formId === this.config.form.formId) && (formSet.entityGuid === this.config.entity.entityGuid)),
-      map(formSet => this.control.value),
+    const expanded$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
+    const value$ = this.control.valueChanges.pipe(
       startWith(this.control.value),
       distinctUntilChanged(),
     );
-    this.disabled$ = this.eavService.formDisabledChange$.asObservable().pipe(
-      filter(formDisabledSet => (formDisabledSet.formId === this.config.form.formId)
-        && (formDisabledSet.entityGuid === this.config.entity.entityGuid)
-      ),
-      map(formSet => this.control.disabled),
+    const disabled$ = this.control.valueChanges.pipe(
+      map(() => this.control.disabled),
       startWith(this.control.disabled),
       distinctUntilChanged(),
+    );
+
+    this.templateVars$ = combineLatest([this.adamConfig$, expanded$, this.items$, value$, disabled$]).pipe(
+      map(([adamConfig, expanded, items, value, disabled]) => {
+        const templateVars: AdamBrowserTemplateVars = {
+          adamConfig,
+          expanded,
+          items,
+          value,
+          disabled,
+        };
+        return templateVars;
+      }),
     );
   }
 
@@ -161,7 +168,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
           : { EntityId: adamItem.MetadataId }
       ],
     };
-    this.editRoutingService.open(this.config.field.index, this.config.entity.entityGuid, form);
+    this.editRoutingService.open(this.config.index, this.config.entityGuid, form);
   }
 
   goUp() {
@@ -227,43 +234,61 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
     const adamConfig = this.adamConfig$.value;
     if (adamConfig == null) { return; }
     if (!adamConfig.autoLoad) { return; }
-    this.adamService.getAll(this.url, adamConfig).subscribe(items => {
-      const filteredItems: AdamItem[] = [];
-      const allowedFileTypes = adamConfig.fileFilter
-        ? adamConfig.fileFilter.split(',').map(extension => extension.replace('*', '').trim())
-        : [];
 
-      for (const item of items) {
-        if (item.Name === '.') { // is root
-          const allowEdit = item.AllowEdit;
-          if (allowEdit !== adamConfig.allowEdit) {
-            this.config.adam.setConfig({ allowEdit });
-          }
-          continue;
-        }
-        if (item.Name === '2sxc' || item.Name === 'adam') { continue; }
-        if (!item.IsFolder && adamConfig.showImagesOnly && item.Type !== 'image') { continue; }
-        if (item.IsFolder && adamConfig.maxDepthReached) { continue; }
-        if (allowedFileTypes.length > 0) {
-          const extension = item.Name.substring(item.Name.lastIndexOf('.'));
-          if (!allowedFileTypes.includes(extension)) { continue; }
-        }
-
-        item._metadataContentType = this.getMetadataContentType(item);
-        item._icon = this.fileTypeService.getIconClass(item.Name);
-        item._isMaterialIcon = this.fileTypeService.isKnownType(item.Name);
-        item._displaySize = (item.Size / 1024).toFixed(0);
-        filteredItems.push(item);
+    if (this.firstFetch) {
+      this.firstFetch = false;
+      const adamItems = this.adamCacheService.getAdamSnapshot(this.config.entityGuid, this.config.fieldName);
+      if (adamItems) {
+        const clonedItems = adamItems.map(adamItem => {
+          const clone: AdamItem = { ...adamItem };
+          return clone;
+        });
+        setTimeout(() => { this.processFetchedItems(clonedItems, adamConfig); });
+        return;
       }
+    }
 
-      filteredItems.sort((a, b) => a.Name.toLocaleLowerCase().localeCompare(b.Name.toLocaleLowerCase()));
-      filteredItems.sort((a, b) => b.IsFolder.toString().localeCompare(a.IsFolder.toString()));
-      this.items$.next(filteredItems);
+    this.adamService.getAll(this.url, adamConfig).subscribe(items => {
+      this.processFetchedItems(items, adamConfig);
     });
   }
 
+  private processFetchedItems(items: AdamItem[], adamConfig: AdamConfig): void {
+    this.linkCacheService.loadAdam(items);
+
+    const filteredItems: AdamItem[] = [];
+    const extensionsFilter = this.getExtensionsFilter(adamConfig.fileFilter);
+
+    for (const item of items) {
+      if (item.Name === '.') { // is root
+        const allowEdit = item.AllowEdit;
+        if (allowEdit !== adamConfig.allowEdit) {
+          this.config.adam.setConfig({ allowEdit });
+        }
+        continue;
+      }
+      if (item.Name === '2sxc' || item.Name === 'adam') { continue; }
+      if (!item.IsFolder && adamConfig.showImagesOnly && item.Type !== 'image') { continue; }
+      if (item.IsFolder && adamConfig.maxDepthReached) { continue; }
+      if (extensionsFilter.length > 0) {
+        const extension = item.Name.substring(item.Name.lastIndexOf('.') + 1).toLocaleLowerCase();
+        if (!extensionsFilter.includes(extension)) { continue; }
+      }
+
+      item._metadataContentType = this.getMetadataContentType(item);
+      item._icon = this.fileTypeService.getIconClass(item.Name);
+      item._isMaterialIcon = this.fileTypeService.isKnownType(item.Name);
+      item._displaySize = (item.Size / 1024).toFixed(0);
+      filteredItems.push(item);
+    }
+
+    filteredItems.sort((a, b) => a.Name.toLocaleLowerCase().localeCompare(b.Name.toLocaleLowerCase()));
+    filteredItems.sort((a, b) => b.IsFolder.toString().localeCompare(a.IsFolder.toString()));
+    this.items$.next(filteredItems);
+  }
+
   private toggle(usePortalRoot: boolean, showImagesOnly: boolean) {
-    const newConfig = { ...this.adamConfig$.value, ...{ usePortalRoot, showImagesOnly } };
+    const newConfig: AdamConfig = { ...this.adamConfig$.value, ...{ usePortalRoot, showImagesOnly } };
     if (JSON.stringify(newConfig) === JSON.stringify(this.adamConfig$.value)) {
       newConfig.autoLoad = !newConfig.autoLoad;
     } else if (!newConfig.autoLoad) {
@@ -278,12 +303,12 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
 
   private setConfig(config: Partial<AdamConfig>) {
     // set new values and use old ones where new value is not provided
-    const startDisabled = this.config.field.isExternal;
+    const startDisabled = this.config.isExternal;
     const oldConfig = (this.adamConfig$.value != null) ? this.adamConfig$.value : new AdamConfigInstance(startDisabled);
     const newConfig = new AdamConfigInstance(startDisabled);
-    const newConfigKeys = Object.keys(newConfig);
-    for (const key of newConfigKeys) {
-      (newConfig as any)[key] = ((config as any)[key] != null) ? (config as any)[key] : (oldConfig as any)[key];
+
+    for (const key of Object.keys(newConfig)) {
+      (newConfig as any)[key] = (config as any)[key] ?? (oldConfig as any)[key];
     }
 
     // fixes
@@ -323,14 +348,14 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
     // fix dropzone
     const oldDzConfig = this.config.dropzone.getConfig();
     const newDzConfig: Partial<DropzoneConfigExt> = {};
-    const dzUrlParams = UrlHelper.getUrlParams(oldDzConfig.url as string);
+    const dzUrlParams = UrlHelpers.getUrlParams(oldDzConfig.url as string);
     const dzSubfolder = dzUrlParams.subfolder || '';
     const dzUsePortalRoot = dzUrlParams.usePortalRoot;
     const fixUploadUrl = dzSubfolder !== newConfig.subfolder || dzUsePortalRoot !== newConfig.usePortalRoot.toString();
     if (fixUploadUrl) {
       let newUrl = oldDzConfig.url as string;
-      newUrl = UrlHelper.replaceUrlParam(newUrl, 'subfolder', newConfig.subfolder);
-      newUrl = UrlHelper.replaceUrlParam(newUrl, 'usePortalRoot', newConfig.usePortalRoot.toString());
+      newUrl = UrlHelpers.replaceUrlParam(newUrl, 'subfolder', newConfig.subfolder);
+      newUrl = UrlHelpers.replaceUrlParam(newUrl, 'usePortalRoot', newConfig.usePortalRoot.toString());
       newDzConfig.url = newUrl;
     }
     const uploadDisabled = !newConfig.allowEdit
@@ -345,6 +370,23 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
     if (Object.keys(newDzConfig).length > 0) {
       this.config.dropzone.setConfig(newDzConfig);
     }
+  }
+
+  private getExtensionsFilter(fileFilter: string) {
+    if (!fileFilter) { return []; }
+
+    const extensions = fileFilter.split(',').map(extension => {
+      extension = extension.trim();
+
+      if (extension.startsWith('*.')) {
+        extension = extension.replace('*.', '');
+      } else if (extension.startsWith('*')) {
+        extension = extension.replace('*', '');
+      }
+
+      return extension.toLocaleLowerCase();
+    });
+    return extensions;
   }
 
   private refreshOnChildClosed() {

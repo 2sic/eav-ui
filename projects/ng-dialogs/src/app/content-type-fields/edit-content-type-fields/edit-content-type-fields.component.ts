@@ -110,20 +110,25 @@ export class EditContentTypeFieldsComponent implements OnInit, OnDestroy {
     this.dialogRef.close();
   }
 
-  resetInputType(index: number) {
-    this.fields[index].InputType = this.fields[index].Type.toLowerCase() + InputTypeConstants.DefaultSuffix;
-  }
-
   calculateInputTypeOptions(index: number) {
     this.filteredInputTypeOptions[index] = this.inputTypeOptions
-      .filter(option => option.dataType === this.fields[index].Type.toLowerCase());
+      .filter(option => option.dataType === this.fields[index].Type.toLocaleLowerCase());
+  }
+
+  resetInputType(index: number) {
+    let defaultInputType = this.fields[index].Type.toLocaleLowerCase() + InputTypeConstants.DefaultSuffix;
+    const defaultExists = this.filteredInputTypeOptions[index].some(option => option.inputType === defaultInputType);
+    if (!defaultExists) {
+      defaultInputType = this.filteredInputTypeOptions[index][0].inputType;
+    }
+    this.fields[index].InputType = defaultInputType;
   }
 
   calculateHints(index: number) {
     const selectedDataType = this.dataTypes.find(dataType => dataType.name === this.fields[index].Type);
     const selectedInputType = this.inputTypeOptions.find(inputTypeOption => inputTypeOption.inputType === this.fields[index].InputType);
-    this.dataTypeHints[index] = selectedDataType ? selectedDataType.description : '';
-    this.inputTypeHints[index] = selectedInputType ? selectedInputType.description : '';
+    this.dataTypeHints[index] = selectedDataType?.description ?? '';
+    this.inputTypeHints[index] = selectedInputType?.description ?? '';
   }
 
   save() {

@@ -1,26 +1,30 @@
 import { Injectable } from '@angular/core';
-import { EntityCollectionServiceBase, EntityCollectionServiceElementsFactory } from '@ngrx/data';
-import { map } from 'rxjs/operators';
-import { ContentType } from '../../models/eav';
-import { JsonContentType1 } from '../../models/json-format-v1';
+import { EntityCollectionServiceElementsFactory } from '@ngrx/data';
+import { Observable } from 'rxjs';
+import { distinctUntilChanged, map } from 'rxjs/operators';
+import { EavContentType } from '../../models/eav';
+import { ContentType1 } from '../../models/json-format-v1';
+import { BaseDataService } from './base-data.service';
 
 @Injectable({ providedIn: 'root' })
-export class ContentTypeService extends EntityCollectionServiceBase<ContentType> {
+export class ContentTypeService extends BaseDataService<EavContentType> {
   constructor(serviceElementsFactory: EntityCollectionServiceElementsFactory) {
     super('ContentType', serviceElementsFactory);
   }
 
-  /** Add new content types to the store */
-  addContentTypes(rawContentTypes: JsonContentType1[]) {
-    const builtContentTypes = rawContentTypes.map(rawCT => ContentType.create(rawCT));
-    this.addManyToCache(builtContentTypes);
+  addContentTypes(contentTypes1: ContentType1[]): void {
+    const contentTypes = contentTypes1.map(contentType1 => EavContentType.convert(contentType1));
+    this.addManyToCache(contentTypes);
   }
 
-  /** Get content type observable from the store */
-  getContentTypeById(id: string) {
-    return this.entities$.pipe(
-      map(contentTypes => contentTypes.find(contentType => contentType.contentType.id === id))
-      // maybe add distinctUntilChanged()
+  getContentType(id: string): EavContentType {
+    return this.cache$.value.find(contentType => contentType.Id === id);
+  }
+
+  getContentType$(id: string): Observable<EavContentType> {
+    return this.cache$.pipe(
+      map(contentTypes => contentTypes.find(contentType => contentType.Id === id)),
+      distinctUntilChanged(),
     );
   }
 }

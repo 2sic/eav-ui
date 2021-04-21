@@ -1,14 +1,10 @@
-/**
- * The default plugins we're activating on TinyMce
- */
+/** The default plugins we're activating on TinyMce */
 export const DefaultPlugins = [
   'code', // allow view / edit source
-  // 'contextmenu', // right-click menu for things like insert, etc. spm built into tinymce core in v5
   'autolink', // automatically convert www.xxx links to real links
   'tabfocus', // get in an out of the editor with tab
   'image', // image button and image-settings
   'link', // link button + ctrl+k to add link
-  // 'autosave',     // temp-backups the content in case the browser crashes, allows restore
   'paste', // enables paste as text from word etc. https://www.tinymce.com/docs/plugins/paste/
   'anchor', // allows users to set an anchor inside the text
   'charmap', // character map https://www.tinymce.com/docs/plugins/visualchars/

@@ -1,16 +1,17 @@
 import { Observable } from 'rxjs';
 import { Connector, ConnectorData, ExperimentalProps, FieldConfig } from '../../../../../../../edit-types';
-import { ConnectorDialog } from '../../../../../../../edit-types/src/ConnectorDialog';
+import { ConnectorDialog } from '../../../../../../../edit-types';
 import { loadScripts } from '../../../../../../../ng-dialogs/src/app/shared/helpers/load-scripts.helper';
-import { UrlHelper } from '../../../../../../shared/helpers/url-helper';
-import { EavConfig } from '../../../../../../shared/models/eav-config';
+import { EavWindow } from '../../../../../../../ng-dialogs/src/app/shared/models/eav-window.model';
+import { UrlHelpers } from '../../../../../../shared/helpers';
+import { EavConfig } from '../../../../../../shared/models';
 
-declare const sxcVersion: string;
+declare const window: EavWindow;
 
-export class ConnectorInstance<T> implements Connector<T> {
+export class ConnectorInstance<T = any> implements Connector<T> {
   field$: Observable<FieldConfig>;
   data: ConnectorData<T>;
-  dialog: ConnectorDialog<T>;
+  dialog: ConnectorDialog;
   loadScript: (...args: any[]) => void;
 
   constructor(
@@ -24,9 +25,9 @@ export class ConnectorInstance<T> implements Connector<T> {
     this.dialog = new ConnectorDialogInstance<T>(_connectorHost);
 
     this.loadScript = (
-      testOrScripts: string | (() => any) | { test: string | (() => any); src: string }[],
-      srcOrCallback: string | (() => any),
-      callback?: () => any
+      testOrScripts: string | (() => boolean) | { test: string | (() => boolean); src: string }[],
+      srcOrCallback: string | (() => void),
+      callback?: () => void,
     ) => {
       // one script (3 parameters: global or test, script url and a callback)
       if (
@@ -51,11 +52,11 @@ export class ConnectorInstance<T> implements Connector<T> {
   }
 
   resolveTokens(src: string, eavConfig: EavConfig) {
-    src = src.replace(/\[System:Path\]/i, UrlHelper.getUrlPrefix('system', eavConfig))
-      .replace(/\[Zone:Path\]/i, UrlHelper.getUrlPrefix('zone', eavConfig))
-      .replace(/\[App:Path\]/i, UrlHelper.getUrlPrefix('app', eavConfig));
+    src = src.replace(/\[System:Path\]/i, UrlHelpers.getUrlPrefix('system', eavConfig))
+      .replace(/\[Zone:Path\]/i, UrlHelpers.getUrlPrefix('zone', eavConfig))
+      .replace(/\[App:Path\]/i, UrlHelpers.getUrlPrefix('app', eavConfig));
     if (!src.includes('?')) {
-      src = `${src}?sxcver=${sxcVersion}`;
+      src = `${src}?sxcver=${window.sxcVersion}`;
     }
     return src;
   }
@@ -63,7 +64,6 @@ export class ConnectorInstance<T> implements Connector<T> {
 
 export class ConnectorDataInstance<T> implements ConnectorData<T> {
   value$: Observable<T>;
-  forceConnectorSave$: Observable<null>;
   value: T;
   clientValueChangeListeners: ((newValue: T) => void)[] = [];
 
@@ -72,7 +72,6 @@ export class ConnectorDataInstance<T> implements ConnectorData<T> {
     value$: Observable<T>
   ) {
     this.value$ = value$;
-    this.forceConnectorSave$ = _connectorHost.forceConnectorSave$;
     // Host will complete this observable. Therefore unsubscribe is not required
     this.value$.subscribe(newValue => {
       this.value = newValue;
@@ -89,7 +88,7 @@ export class ConnectorDataInstance<T> implements ConnectorData<T> {
   }
 }
 
-export class ConnectorDialogInstance<T> implements ConnectorDialog<T> {
+export class ConnectorDialogInstance<T> implements ConnectorDialog {
   open: (componentTag?: string) => void;
   close: () => void;
 
@@ -100,8 +99,7 @@ export class ConnectorDialogInstance<T> implements ConnectorDialog<T> {
 }
 
 /** Props and methods available to the connector to communicate with the host */
-export interface ConnectorHost<T> {
-  forceConnectorSave$: Observable<null>;
+export interface ConnectorHost<T = any> {
   update: (value: T) => void;
   expand: (expand: boolean, componentTag?: string) => void;
 }

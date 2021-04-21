@@ -1,5 +1,5 @@
 import { Route } from '@angular/router';
-import { ContentType, Query, WebApi } from '../app-administration/models';
+import { ContentType, WebApi } from '../app-administration/models';
 
 const base = 'restapi';
 
@@ -13,8 +13,8 @@ export const GoToDevRest = {
     return `${base}/data/${contentType.StaticName}`;
   },
 
-  goToQuery(query: Query) {
-    return `${base}/query/${query.Guid}`;
+  goToQuery(queryGuid: string) {
+    return `${base}/query/${queryGuid}`;
   },
 
   goToWebApi(api: WebApi) {

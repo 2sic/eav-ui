@@ -20,7 +20,7 @@ export function editRoot(url: UrlSegment[]): UrlMatchResult {
   };
   const match: UrlMatchResult = {
     consumed: url.slice(0, (hasDetails || hasUpdate) ? 7 : 4),
-    posParams: posParams as any
+    posParams: posParams as any,
   };
   return match;
 }
@@ -36,7 +36,7 @@ export function refreshEditRoot(url: UrlSegment[]): UrlMatchResult {
   };
   const match: UrlMatchResult = {
     consumed: url.slice(0, 5),
-    posParams: posParams as any
+    posParams: posParams as any,
   };
   return match;
 }
@@ -58,7 +58,7 @@ export function edit(url: UrlSegment[]): UrlMatchResult {
   };
   const match: UrlMatchResult = {
     consumed: url.slice(0, (hasDetails || hasUpdate) ? 5 : 2),
-    posParams: posParams as any
+    posParams: posParams as any,
   };
   return match;
 }
@@ -72,7 +72,7 @@ export function refreshEdit(url: UrlSegment[]): UrlMatchResult {
   };
   const match: UrlMatchResult = {
     consumed: url.slice(0, 3),
-    posParams: posParams as any
+    posParams: posParams as any,
   };
   return match;
 }

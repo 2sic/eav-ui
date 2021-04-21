@@ -1,18 +1,19 @@
-import { DataSource } from '../models/data-sources.model';
-import { PipelineDataSource } from '../models/pipeline.model';
+import { DataSource, PipelineDataSource } from '../models';
 import { GuiTypes, TypeInfo, TypeInfos } from './plumb-editor.models';
 
 export const guiTypes: GuiTypes = {
-  Cache: { name: 'Cache', icon: 'history', notes: 'Caching of data' },
-  Filter: { name: 'Filter', icon: 'filter_list', notes: 'Filter data - usually returning less items than came in' },
-  Logic: { name: 'Logic', icon: 'share', notes: 'Logic operations - usually choosing between different streams' },
-  Lookup: { name: 'Lookup', icon: 'search', notes: 'Lookup operation - usually looking for other data based on a criteria' },
-  Modify: { name: 'Modify', icon: 'star_half', notes: 'Modify data - usually changing, adding or removing values' },
-  Security: { name: 'Security', icon: 'account_circle', notes: 'Security - usually limit what the user sees based on his identity' },
-  Sort: { name: 'Sort', icon: 'sort', notes: 'Sort the items' },
-  Source: { name: 'Source', icon: 'cloud_upload', notes: 'Source of new data - usually SQL, CSV or similar' },
-  Target: { name: 'Target', icon: 'adjust', notes: 'Target - usually just a destination of data' },
-  Unknown: { name: 'Unknown', icon: 'fiber_manual_record', notes: 'Unknown type' },
+  Cache: { Name: 'Cache', Icon: 'history', UiHint: 'Caching of data' },
+  Filter: { Name: 'Filter', Icon: 'filter_list', UiHint: 'Filter data - usually returning less items than came in' },
+  Logic: { Name: 'Logic', Icon: 'share', UiHint: 'Logic operations - usually choosing between different streams' },
+  Lookup: { Name: 'Lookup', Icon: 'search', UiHint: 'Lookup operation - usually looking for other data based on a criteria' },
+  Modify: { Name: 'Modify', Icon: 'edit_attributes', UiHint: 'Modify data - usually changing, adding or removing values' },
+  Security: { Name: 'Security', Icon: 'account_circle', UiHint: 'Security - usually limit what the user sees based on his identity' },
+  Sort: { Name: 'Sort', Icon: 'sort', UiHint: 'Sort the items' },
+  Source: { Name: 'Source', Icon: 'cloud_upload', UiHint: 'Source of new data - usually SQL, CSV or similar' },
+  Target: { Name: 'Target', Icon: 'adjust', UiHint: 'Target - usually just a destination of data' },
+  Unknown: { Name: 'Unknown', Icon: 'fiber_manual_record', UiHint: 'Unknown type' },
+  Debug: { Name: 'Debug', Icon: 'bug_report', UiHint: 'Debugging Tools'},
+  System: { Name: 'System', Icon: 'military_tech', UiHint: 'System Data' },
 };
 
 export function calculateTypeInfos(pipelineDataSources: PipelineDataSource[], dataSources: DataSource[]) {
@@ -23,12 +24,14 @@ export function calculateTypeInfos(pipelineDataSources: PipelineDataSource[], da
     const dataSource = dataSources.find(ds => ds.PartAssemblyAndType === pipelineDataSource.PartAssemblyAndType);
     if (dataSource) {
       typeInfo = { ...(dataSource.PrimaryType ? guiTypes[dataSource.PrimaryType] : guiTypes.Unknown) };
-      if (dataSource.Icon) { typeInfo.icon = dataSource.Icon; }
-      if (dataSource.DynamicOut) { typeInfo.dynamicOut = true; }
-      if (dataSource.HelpLink) { typeInfo.helpLink = dataSource.HelpLink; }
-      if (dataSource.EnableConfig) { typeInfo.config = dataSource.EnableConfig; }
+      if (dataSource.Icon != null) { typeInfo.Icon = dataSource.Icon; }
+      if (dataSource.DynamicIn != null) { typeInfo.DynamicIn = dataSource.DynamicIn; }
+      if (dataSource.DynamicOut != null) { typeInfo.DynamicOut = dataSource.DynamicOut; }
+      if (dataSource.HelpLink != null) { typeInfo.HelpLink = dataSource.HelpLink; }
+      if (dataSource.EnableConfig != null) { typeInfo.EnableConfig = dataSource.EnableConfig; }
+      if (dataSource.UiHint != null) { typeInfo.UiHint = dataSource.UiHint; }
     }
-    if (!typeInfo) { typeInfo = guiTypes.Unknown; }
+    if (!typeInfo) { typeInfo = { ...guiTypes.Unknown }; }
     typeInfos[pipelineDataSource.EntityGuid] = typeInfo;
   }
 

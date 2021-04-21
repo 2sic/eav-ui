@@ -23,21 +23,11 @@
     </div>
   </div>
 </div>
-<div class="c-ew__preview-holder" *ngIf="{
-  value: value$ | async,
-  label: label$ | async,
-  required: required$ | async,
-  invalid: invalid$ | async,
-  touched: control.touched,
-  dirty: control.dirty,
-  focused: config.field.focused$ | async,
-  disabled: disabled$ | async,
-  showValidation: showValidation$ | async
-} as data">
+<div class="c-ew__preview-holder" *ngIf="templateVars$ | async as data">
   <mat-label class="c-ew__preview-label" [ngClass]="{
     'mat-caption' : data.value,
     'mat-empty' : !data.value,
-    'mat-error' : data.invalid && data.touched && !data.disabled,
+    'mat-error' : data.invalid && (data.touched || data.dirty) && !data.disabled,
     'color__primary' : !(data.invalid && data.touched) && !data.disabled,
     'color__label-disabled' : data.disabled,
     'c-ew__preview-label--focused': data.focused
@@ -53,7 +43,8 @@
     <div class="c-ew__preview-container">
       <div #previewContainer class="c-ew__preview-content u-hide-scrollbar" [ngClass]="{
         'c-ew__preview-content--disabled': data.disabled
-      }"></div>
+      }">
+      </div>
     </div>
   </div>
   <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>

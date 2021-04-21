@@ -15,7 +15,7 @@
 
     <div class="parameters">
       <div class="title">
-        <div>Parameters</div>
+        <div>Query Parameters</div>
         <div>
           <button mat-icon-button matTooltip="Edit parameters" (click)="editPipeline()">
             <mat-icon>edit</mat-icon>
@@ -48,8 +48,7 @@
           <mat-icon style="color: red">warning</mat-icon>
         </div>
         <ol class="values">
-          <li *ngFor="let warning of warnings">
-            {{ warning }}
+          <li *ngFor="let warning of warnings" [innerHTML]="warning">
           </li>
         </ol>
       </div>
@@ -59,5 +58,13 @@
       <div class="title">Query Description</div>
       <div>{{ pipelineModel.Pipeline.Description }}</div>
     </div>
+
+    <div class="footer-actions">
+      <button mat-raised-button class="action" (click)="openRestApi()">
+        Use in JSON / REST API
+        <mat-icon svgIcon="code-curly"></mat-icon>
+      </button>
+    </div>
+
   </div>
 </div>

@@ -1,7 +1,7 @@
 import { Subscription } from 'rxjs';
 import { Connector, EavCustomInputField } from '../../../edit-types';
-import { ElementEventListener } from '../../../shared/element-event-listener.model';
-import { webpackConsoleLog } from '../../../shared/webpack-console-log.helper';
+import { ElementEventListener } from '../../../edit/shared/models';
+import { consoleLogWebpack } from '../../../field-custom-gps/src/shared/console-log-webpack.helper';
 import { buildTemplate } from '../shared/helpers';
 import * as styles from './preview.css';
 import * as template from './preview.html';
@@ -9,17 +9,26 @@ import * as template from './preview.html';
 export const wysiwygPreviewTag = 'field-string-wysiwyg-preview';
 
 export class FieldStringWysiwygPreview extends HTMLElement implements EavCustomInputField<string> {
+  fieldInitialized: boolean;
   connector: Connector<string>;
-  private subscription = new Subscription();
-  private eventListeners: ElementEventListener[] = [];
+
+  private subscription: Subscription;
+  private eventListeners: ElementEventListener[];
 
   constructor() {
     super();
-    webpackConsoleLog(`${wysiwygPreviewTag} constructor called`);
+    consoleLogWebpack(`${wysiwygPreviewTag} constructor called`);
+    this.fieldInitialized = false;
   }
 
   connectedCallback() {
-    webpackConsoleLog(`${wysiwygPreviewTag} connectedCallback called`);
+    if (this.fieldInitialized) { return; }
+    this.fieldInitialized = true;
+    consoleLogWebpack(`${wysiwygPreviewTag} connectedCallback called`);
+
+    this.subscription = new Subscription();
+    this.eventListeners = [];
+
     this.innerHTML = buildTemplate(template.default, styles.default);
     const previewContainer: HTMLDivElement = this.querySelector('.wysiwyg-preview');
     if (this.connector.field.disabled) {
@@ -39,17 +48,14 @@ export class FieldStringWysiwygPreview extends HTMLElement implements EavCustomI
   }
 
   disconnectedCallback() {
-    webpackConsoleLog(`${wysiwygPreviewTag} disconnectedCallback called`);
+    consoleLogWebpack(`${wysiwygPreviewTag} disconnectedCallback called`);
     this.eventListeners.forEach(listener => {
       listener.element.removeEventListener(listener.type, listener.listener);
     });
-    this.eventListeners = null;
     this.subscription.unsubscribe();
-    this.subscription = null;
   }
 }
 
-// only register the tag, if it has not been registered before
 if (!customElements.get(wysiwygPreviewTag)) {
   customElements.define(wysiwygPreviewTag, FieldStringWysiwygPreview);
 }

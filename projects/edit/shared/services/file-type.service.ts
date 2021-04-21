@@ -1,13 +1,11 @@
 import { Injectable } from '@angular/core';
+import { Dictionary } from '../../../ng-dialogs/src/app/shared/models/dictionary.model';
 
 @Injectable()
 export class FileTypeService {
-
-  constructor() { }
-
   private defaultIcon = 'file';
   private checkImgRegEx = /(?:([^:\/?#]+):)?(?:\/\/([^\/?#]*))?([^?#]*\.(?:jpg|jpeg|gif|png))(?:\?([^#]*))?(?:#(.*))?/i;
-  private customExtensions: { [key: string]: string } = {
+  private customExtensions: Dictionary<string> = {
     doc: 'file-word',
     docx: 'file-word',
     xls: 'file-excel',
@@ -30,12 +28,14 @@ export class FileTypeService {
     xsl: 'file-code',
   };
 
-  private matExtensions: { [key: string]: string } = {
+  private matExtensions: Dictionary<string> = {
     vcf: 'person',
   };
 
+  constructor() { }
+
   getExtension(filename: string) {
-    return filename.substr(filename.lastIndexOf('.') + 1).toLowerCase();
+    return filename.substring(filename.lastIndexOf('.') + 1).toLocaleLowerCase();
   }
 
   getIconClass(filename: string) {

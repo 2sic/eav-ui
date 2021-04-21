@@ -1,4 +1,6 @@
-import { PipelineDataSource } from '../models/pipeline.model';
+import { PipelineDataSource } from '../models';
+
+export type PlumbType = any;
 
 export interface PlumbEditorTemplateModel {
   pipelineDataSources: PipelineDataSource[];
@@ -11,12 +13,13 @@ export interface TypeInfos {
 }
 
 export interface TypeInfo {
-  config?: boolean;
-  dynamicOut?: boolean;
-  helpLink?: string;
-  icon: string;
-  name: string;
-  notes: string;
+  EnableConfig?: boolean;
+  DynamicIn?: boolean;
+  DynamicOut?: boolean;
+  HelpLink?: string;
+  Icon: string;
+  Name: string;
+  UiHint: string;
 }
 
 export interface GuiTypes {
@@ -24,7 +27,12 @@ export interface GuiTypes {
 }
 
 export interface GuiType {
-  icon: string;
+  Icon: string;
+  Name: string;
+  UiHint: string;
+}
+
+export interface EndpointInfo {
   name: string;
-  notes: string;
+  required: boolean;
 }

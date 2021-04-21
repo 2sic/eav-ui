@@ -1,43 +1,49 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
-import { combineLatest } from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
+import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
-import { EavService } from '../../../../shared/services/eav.service';
+import { EavService, FieldsSettingsService } from '../../../../shared/services';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { BaseComponent } from '../../base/base.component';
+import { BooleanTristateLogic } from './boolean-tristate-logic';
+import { BooleanTristateTemplateVars } from './boolean-tristate.models';
 
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'boolean-tristate',
   templateUrl: './boolean-tristate.component.html',
   styleUrls: ['./boolean-tristate.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
-@InputType({
-  wrapper: [WrappersConstants.EavLocalizationWrapper],
+@ComponentMetadata({
+  wrappers: [WrappersConstants.LocalizationWrapper],
 })
 export class BooleanTristateComponent extends BaseComponent<boolean | ''> implements OnInit, OnDestroy {
+  templateVars$: Observable<BooleanTristateTemplateVars>;
 
-  constructor(eavService: EavService, validationMessagesService: ValidationMessagesService) {
-    super(eavService, validationMessagesService);
+  constructor(
+    eavService: EavService,
+    validationMessagesService: ValidationMessagesService,
+    fieldsSettingsService: FieldsSettingsService,
+  ) {
+    super(eavService, validationMessagesService, fieldsSettingsService);
+    BooleanTristateLogic.importMe();
   }
 
   ngOnInit() {
     super.ngOnInit();
     this.value$ = this.value$.pipe(map(value => (value === '') ? null : value));
-    this.label$ = combineLatest([this.value$, this.settings$, this.label$]).pipe(
-      map(([value, settings, label]) => {
-        if (value === true && settings.TitleTrue != null && settings.TitleTrue !== '') {
-          return settings.TitleTrue;
-        }
-        if (value === false && settings.TitleFalse != null && settings.TitleFalse !== '') {
-          return settings.TitleFalse;
-        }
-        if (value === null && settings.TitleIndeterminate != null && settings.TitleIndeterminate !== '') {
-          return settings.TitleIndeterminate;
-        }
-        return label;
+    this.label$ = this.settings$.pipe(map(settings => settings._label));
+
+    this.templateVars$ = combineLatest([this.value$, this.label$, this.disabled$, this.touched$]).pipe(
+      map(([value, label, disabled, touched]) => {
+        const templateVars: BooleanTristateTemplateVars = {
+          value,
+          label,
+          disabled,
+          touched,
+        };
+        return templateVars;
       }),
     );
   }

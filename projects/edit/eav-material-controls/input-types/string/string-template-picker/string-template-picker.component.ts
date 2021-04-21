@@ -1,53 +1,73 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { FieldMaskService } from '../../../../../shared/field-mask.service';
-import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
-import { AssetsService } from '../../../../shared/services/assets.service';
-import { EavService } from '../../../../shared/services/eav.service';
+import { FieldMask } from '../../../../shared/helpers';
+import { AssetsService, EavService, FieldsSettingsService } from '../../../../shared/services';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { BaseComponent } from '../../base/base.component';
 import { templateTypes } from './string-template-picker.constants';
+import { StringTemplatePickerTemplateVars } from './string-template-picker.models';
 
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'string-template-picker',
   templateUrl: './string-template-picker.component.html',
   styleUrls: ['./string-template-picker.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
-@InputType({
-  wrapper: [WrappersConstants.EavLocalizationWrapper],
+@ComponentMetadata({
+  wrappers: [WrappersConstants.LocalizationWrapper],
 })
 export class StringTemplatePickerComponent extends BaseComponent<string> implements OnInit, OnDestroy {
-  templateOptions$ = new BehaviorSubject<string[]>([]);
+  templateVars$: Observable<StringTemplatePickerTemplateVars>;
 
-  private typeWatcher: FieldMaskService;
-  private locationWatcher: FieldMaskService;
+  private templateOptions$: BehaviorSubject<string[]>;
+  private typeMask: FieldMask;
+  private locationMask: FieldMask;
   private activeSpec = templateTypes.Token;
   private templates: string[] = [];
   private global = false;
   /** Reset only after templates have been fetched once */
   private resetIfNotFound = false;
 
-  constructor(eavService: EavService, validationMessagesService: ValidationMessagesService, private assetsService: AssetsService) {
-    super(eavService, validationMessagesService);
+  constructor(
+    eavService: EavService,
+    validationMessagesService: ValidationMessagesService,
+    fieldsSettingsService: FieldsSettingsService,
+    private assetsService: AssetsService,
+  ) {
+    super(eavService, validationMessagesService, fieldsSettingsService);
   }
 
   ngOnInit() {
     super.ngOnInit();
+    this.templateOptions$ = new BehaviorSubject<string[]>([]);
     // set change-watchers to the other values
-    this.typeWatcher = new FieldMaskService('[Type]', this.group.controls, this.setFileConfig.bind(this), null);
-    this.locationWatcher = new FieldMaskService('[Location]', this.group.controls, this.onLocationChange.bind(this), null);
+    this.typeMask = new FieldMask('[Type]', this.group.controls, this.setFileConfig.bind(this), null);
+    this.locationMask = new FieldMask('[Location]', this.group.controls, this.onLocationChange.bind(this), null);
 
-    this.setFileConfig(this.typeWatcher.resolve() || 'Token'); // use token setting as default, till the UI tells us otherwise
-    this.onLocationChange(this.locationWatcher.resolve() || null); // set initial file list
+    this.setFileConfig(this.typeMask.resolve() || 'Token'); // use token setting as default, till the UI tells us otherwise
+    this.onLocationChange(this.locationMask.resolve() || null); // set initial file list
+
+    this.templateVars$ = combineLatest([this.label$, this.required$, this.templateOptions$, this.disabled$, this.touched$]).pipe(
+      map(([label, required, templateOptions, disabled, touched]) => {
+        const templateVars: StringTemplatePickerTemplateVars = {
+          label,
+          required,
+          templateOptions,
+          disabled,
+          touched,
+        };
+        return templateVars;
+      }),
+    );
   }
 
   ngOnDestroy() {
     this.templateOptions$.complete();
-    this.typeWatcher.destroy();
-    this.locationWatcher.destroy();
+    this.typeMask.destroy();
+    this.locationMask.destroy();
     super.ngOnDestroy();
   }
 

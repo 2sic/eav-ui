@@ -1,8 +1,6 @@
-// tslint:disable: curly
+export type InfoBoxType = 'alert' | 'info' | 'tip' | 'warning';
 
-export type infoBoxType = 'alert' | 'info' | 'tip' | 'warning';
-
-export const infoBoxIconMap: { [name in infoBoxType]: string } = {
+export const infoBoxIconMap: { [name in InfoBoxType]: string } = {
   alert: 'warning',
   info: 'menu_book',
   tip: 'star',
@@ -11,11 +9,8 @@ export const infoBoxIconMap: { [name in infoBoxType]: string } = {
 
 export class Hint {
   public icon: string;
-  constructor(
-    public type: infoBoxType,
-    public message: string,
-    public link: string = '',
-  ) {
+
+  constructor(public type: InfoBoxType, public message: string, public link = '') {
     this.icon = infoBoxIconMap[type];
   }
 }

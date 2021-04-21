@@ -1,9 +1,11 @@
+import { KeyValue } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { DataSource } from '../models/data-sources.model';
-import { SortedDataSources } from '../models/data-sources.model';
+import { eavConstants } from '../../shared/constants/eav.constants';
+import { DataSource, SortedDataSources } from '../models';
+import { guiTypes } from '../plumb-editor/plumb-editor.helpers';
 import { VisualQueryService } from '../services/visual-query.service';
 import { filterAndSortDataSources, toggleInArray } from './add-explorer.helpers';
 
@@ -16,22 +18,16 @@ import { filterAndSortDataSources, toggleInArray } from './add-explorer.helpers'
 export class AddExplorerComponent implements OnInit, OnDestroy {
   sorted$: Observable<SortedDataSources>;
   toggledItems: string[] = [];
+  guiTypes = guiTypes;
 
-  private difficulties = {
-    default: 100,
-    advanced: 200,
-  };
+  private difficulties = eavConstants.pipelineDesigner.dataSourceDifficulties;
   private difficulty$ = new BehaviorSubject(this.difficulties.default);
 
   constructor(private visualQueryService: VisualQueryService) { }
 
   ngOnInit() {
     this.sorted$ = combineLatest([this.visualQueryService.dataSources$, this.difficulty$]).pipe(
-      map(([dataSources, difficulty]) => {
-        if (dataSources == null) { return; }
-        const sorted = filterAndSortDataSources(dataSources, difficulty);
-        return sorted;
-      }),
+      map(([dataSources, difficulty]) => filterAndSortDataSources(dataSources, difficulty)),
     );
   }
 
@@ -52,4 +48,11 @@ export class AddExplorerComponent implements OnInit, OnDestroy {
     toggleInArray(item, this.toggledItems);
   }
 
+  trackGroups(index: number, type: KeyValue<string, DataSource[]>) {
+    return type.key;
+  }
+
+  trackDataSources(index: number, dataSource: DataSource) {
+    return dataSource.PartAssemblyAndType;
+  }
 }

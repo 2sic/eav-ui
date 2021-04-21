@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
-import { UrlHelper } from '../helpers/url-helper';
-import { EavService } from './eav.service';
+import { EavService } from '.';
+import { EavWindow } from '../../../ng-dialogs/src/app/shared/models/eav-window.model';
+import { UrlHelpers } from '../helpers';
 
-declare const sxcVersion: string;
+declare const window: EavWindow;
 
-export const FileTypeConstants = {
-  CSS: '.css',
-  JS: '.js',
-};
+export enum FileTypeConstants {
+  CSS = '.css',
+  JS = '.js',
+}
 
 export interface LoadFile {
   path: string;
@@ -23,7 +24,7 @@ export class ScriptsLoaderService {
   constructor(private eavService: EavService) { }
 
   /** Loads CSS and JS files in order (CSS first) and calls callback function when finished */
-  public load(scripts: string[], callback: () => any) {
+  load(scripts: string[], callback: () => void) {
     const sortedFiles = this.sortByType(scripts);
     this.insertToDom(sortedFiles, callback, 0); // async, called again and again after each script is loaded
   }
@@ -49,14 +50,14 @@ export class ScriptsLoaderService {
     return cssFiles.concat(jsFiles);
   }
 
-  private insertToDom(files: LoadFile[], callback: () => any, increment: number) {
+  private insertToDom(files: LoadFile[], callback: () => void, increment: number) {
     const file = files[increment];
     increment++;
     if (!file) {
       callback();
       return;
     }
-    file.path = file.path + '?sxcver=' + sxcVersion; // break cache
+    file.path = file.path + '?sxcver=' + window.sxcVersion; // break cache
 
     const existing = this.loadedFiles.find(loadedFile => loadedFile.path === file.path);
     if (existing) {
@@ -98,8 +99,8 @@ export class ScriptsLoaderService {
   }
 
   private resolveSpecialPaths(url: string) {
-    return url.replace(/\[System:Path\]/i, UrlHelper.getUrlPrefix('system', this.eavService.eavConfig))
-      .replace(/\[Zone:Path\]/i, UrlHelper.getUrlPrefix('zone', this.eavService.eavConfig))
-      .replace(/\[App:Path\]/i, UrlHelper.getUrlPrefix('app', this.eavService.eavConfig));
+    return url.replace(/\[System:Path\]/i, UrlHelpers.getUrlPrefix('system', this.eavService.eavConfig))
+      .replace(/\[Zone:Path\]/i, UrlHelpers.getUrlPrefix('zone', this.eavService.eavConfig))
+      .replace(/\[App:Path\]/i, UrlHelpers.getUrlPrefix('app', this.eavService.eavConfig));
   }
 }

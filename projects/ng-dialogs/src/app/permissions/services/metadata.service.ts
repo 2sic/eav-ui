@@ -16,8 +16,8 @@ export class MetadataService {
    * @param key key of content type for which we search for permissions. Key is connected with keyType
    * @param contentTypeName name of content type where permissions are stored
    */
-  getMetadata(typeId: number, keyType: string, key: string, contentTypeName: string) {
-    return this.http.get(this.dnnContext.$2sxc.http.apiUrl(webApiRoot), {
+  getMetadata<T>(typeId: number, keyType: string, key: string, contentTypeName: string) {
+    return this.http.get<T>(this.dnnContext.$2sxc.http.apiUrl(webApiRoot), {
       params: {
         appId: this.context.appId.toString(),
         targetType: typeId.toString(),

@@ -1,6 +1,6 @@
 import { Connector, EavCustomInputField } from '../../../edit-types';
-import { WysiwygReconfigure } from '../../../edit-types/src/WysiwygReconfigure';
-import { webpackConsoleLog } from '../../../shared/webpack-console-log.helper';
+import { WysiwygReconfigure } from '../../../edit-types';
+import { consoleLogWebpack } from '../../../field-custom-gps/src/shared/console-log-webpack.helper';
 import { FieldStringWysiwygEditor, wysiwygEditorTag } from '../editor/editor';
 import { FieldStringWysiwygPreview, wysiwygPreviewTag } from '../preview/preview';
 import * as styles from './field-string-wysiwyg.css';
@@ -9,17 +9,22 @@ const wysiwygTag = 'field-string-wysiwyg';
 
 /** Acts like a switcher that decides whether to load preview or the editor  */
 class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<string> {
+  fieldInitialized: boolean;
   connector: Connector<string>;
   mode?: 'edit' | 'preview';
   reconfigure?: WysiwygReconfigure;
 
   constructor() {
     super();
-    webpackConsoleLog(`${wysiwygTag} constructor called`);
+    consoleLogWebpack(`${wysiwygTag} constructor called`);
+    this.fieldInitialized = false;
   }
 
   connectedCallback() {
-    webpackConsoleLog(`${wysiwygTag} connectedCallback called`);
+    if (this.fieldInitialized) { return; }
+    this.fieldInitialized = true;
+    consoleLogWebpack(`${wysiwygTag} connectedCallback called`);
+
     this.innerHTML = `<style>${styles.default}</style>`;
     this.classList.add('wysiwyg-switcher');
 
@@ -57,11 +62,10 @@ class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<stri
   }
 
   disconnectedCallback() {
-    webpackConsoleLog(`${wysiwygTag} disconnectedCallback called`);
+    consoleLogWebpack(`${wysiwygTag} disconnectedCallback called`);
   }
 }
 
-// only register the tag, if it has not been registered before
 if (!customElements.get(wysiwygTag)) {
   customElements.define(wysiwygTag, FieldStringWysiwyg);
 }

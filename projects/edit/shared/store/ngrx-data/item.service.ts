@@ -1,113 +1,114 @@
 import { Injectable } from '@angular/core';
-import { EntityCollectionServiceBase, EntityCollectionServiceElementsFactory } from '@ngrx/data';
-import { distinctUntilChanged, map, take } from 'rxjs/operators';
-import { FieldSettings } from '../../../../edit-types';
-import { DataTypeConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/data-type.constants';
-import { FormValue, FormValues } from '../../../eav-item-dialog/item-edit-form/item-edit-form.models';
-import { InputFieldHelper } from '../../helpers/input-field-helper';
-import { LocalizationHelper } from '../../helpers/localization-helper';
-import { ContentType, EavDimensions, EavHeader, EavValue, EavValues, Item, Language } from '../../models/eav';
-import { AttributeDef } from '../../models/eav/attribute-def';
-import { SaveResult } from '../../models/eav/save-result.model';
-import { JsonItem1 } from '../../models/json-format-v1';
-import { ContentTypeService } from './content-type.service';
-import { InputTypeService } from './input-type.service';
+import { EntityCollectionServiceElementsFactory } from '@ngrx/data';
+import { Observable } from 'rxjs';
+import { distinctUntilChanged, map } from 'rxjs/operators';
+import { FieldSettings, FieldValue } from '../../../../edit-types';
+import { InputType } from '../../../../ng-dialogs/src/app/content-type-fields/models/input-type.model';
+import { FormValues } from '../../../eav-item-dialog/item-edit-form/item-edit-form.models';
+import { BestValueModes } from '../../constants/localization.constants';
+import { GeneralHelpers, InputFieldHelpers, LocalizationHelpers } from '../../helpers';
+import { Language, SaveResult } from '../../models';
+import { EavContentTypeAttribute, EavDimension, EavEntityAttributes, EavHeader, EavItem, EavValue } from '../../models/eav';
+import { Item1 } from '../../models/json-format-v1';
+import { BaseDataService } from './base-data.service';
 
 @Injectable({ providedIn: 'root' })
-export class ItemService extends EntityCollectionServiceBase<Item> {
+export class ItemService extends BaseDataService<EavItem> {
   constructor(serviceElementsFactory: EntityCollectionServiceElementsFactory) {
     super('Item', serviceElementsFactory);
   }
 
-  loadItems(items: JsonItem1[]) {
-    items.forEach(jsonItem1 => {
-      const item = Item.create(jsonItem1);
-      this.upsertOneInCache(item);
-    });
+  loadItems(items1: Item1[]): void {
+    const items = items1.map(item1 => EavItem.convert(item1));
+    this.upsertManyInCache(items);
   }
 
-  updateItemId(itemData: SaveResult) {
-    const guid = Object.keys(itemData)[0];
-    const entityId = itemData[guid];
-    let oldItem: Item;
-    this.entities$.pipe(take(1)).subscribe(items => {
-      oldItem = items.find(item => item.entity.id === 0 ? item.entity.guid === guid : item.entity.id === entityId);
-    });
-    if (!oldItem || (oldItem.header.EntityId !== 0 && oldItem.entity.id !== 0)) { return; }
+  updateItemId(itemData: SaveResult): void {
+    const entityGuid = Object.keys(itemData)[0];
+    const entityId = itemData[entityGuid];
+    const oldItem = this.cache$.value.find(item => item.Entity.Guid === entityGuid);
+    if (!oldItem || (oldItem.Header.EntityId !== 0 && oldItem.Entity.Id !== 0)) { return; }
 
-    const newItem = {
+    const newItem: EavItem = {
       ...oldItem,
-      header: {
-        ...oldItem.header,
-        entityId
+      Header: {
+        ...oldItem.Header,
+        EntityId: entityId,
       },
-      entity: {
-        ...oldItem.entity,
-        id: entityId
+      Entity: {
+        ...oldItem.Entity,
+        Id: entityId,
       }
     };
     this.updateOneInCache(newItem);
   }
 
-  addAttributeValue(entityGuid: string, attribute: string, newValue: FormValue, lang: string, isReadOnly: boolean, fieldType: string) {
-    const newValueDimension = isReadOnly ? `~${lang}` : lang;
-    const newEavValue = new EavValue(newValue, [new EavDimensions(newValueDimension)]);
-    this.addItemAttributeValue(entityGuid, attribute, newEavValue, fieldType);
-  }
+  addItemAttributeValue(
+    entityGuid: string,
+    attributeKey: string,
+    newValue: FieldValue,
+    currentLanguage: string,
+    isReadOnly: boolean,
+    attributeType: string,
+    isTransaction = false,
+    transactionItem?: EavItem,
+  ): EavItem {
+    const newValueDimension = isReadOnly ? `~${currentLanguage}` : currentLanguage;
+    const newEavValue = EavValue.create(newValue, [EavDimension.create(newValueDimension)]);
+    const oldItem = transactionItem ?? this.cache$.value.find(item => item.Entity.Guid === entityGuid);
 
-  private addItemAttributeValue(entityGuid: string, attribute: string, newEavValue: EavValue<any>, fieldType: string) {
-    let oldItem: Item;
-    this.entities$.pipe(take(1)).subscribe(items => {
-      oldItem = items.find(item => item.entity.guid === entityGuid);
-    });
-    if (!oldItem) { return; }
-
-    const newItem = {
+    const newItem: EavItem = {
       ...oldItem,
-      entity: {
-        ...oldItem.entity,
-        attributes: LocalizationHelper.addAttributeValue(oldItem.entity.attributes, newEavValue, attribute, fieldType),
+      Entity: {
+        ...oldItem.Entity,
+        Attributes: LocalizationHelpers.addAttributeValue(oldItem.Entity.Attributes, newEavValue, attributeKey, attributeType),
       }
     };
-    this.updateOneInCache(newItem);
+
+    if (!isTransaction) { this.updateOneInCache(newItem); }
+    return newItem;
   }
 
   updateItemAttributeValue(
     entityGuid: string,
-    attribute: string,
-    newValue: string,
-    lang: string,
-    defaultLang: string,
+    attributeKey: string,
+    newValue: FieldValue,
+    currentLanguage: string,
+    defaultLanguage: string,
     isReadOnly: boolean,
-  ) {
-    let oldItem: Item;
-    this.entities$.pipe(take(1)).subscribe(items => {
-      oldItem = items.find(item => item.entity.guid === entityGuid);
-    });
+  ): void {
+    const oldItem = this.cache$.value.find(item => item.Entity.Guid === entityGuid);
     if (!oldItem) { return; }
 
-    const newItem = {
+    const newItem: EavItem = {
       ...oldItem,
-      entity: {
-        ...oldItem.entity,
-        attributes: LocalizationHelper.updateAttributeValue(oldItem.entity.attributes, attribute, newValue, lang, defaultLang, isReadOnly),
+      Entity: {
+        ...oldItem.Entity,
+        Attributes: LocalizationHelpers.updateAttributeValue(
+          oldItem.Entity.Attributes, attributeKey, newValue, currentLanguage, defaultLanguage, isReadOnly,
+        ),
       }
     };
     this.updateOneInCache(newItem);
   }
 
-  updateItemAttributesValues(entityGuid: string, newValues: FormValues, lang: string, defaultLang: string) {
-    let oldItem: Item;
-    this.entities$.pipe(take(1)).subscribe(items => {
-      oldItem = items.find(item => item.entity.guid === entityGuid);
-    });
+  updateItemAttributesValues(entityGuid: string, newValues: FormValues, currentLanguage: string, defaultLanguage: string): void {
+    const oldItem = this.cache$.value.find(item => item.Entity.Guid === entityGuid);
     if (!oldItem) { return; }
 
-    const newItem = {
+    const oldValues: FormValues = {};
+    for (const [name, values] of Object.entries(oldItem.Entity.Attributes)) {
+      if (!newValues.hasOwnProperty(name)) { continue; }
+      oldValues[name] = LocalizationHelpers.translate(currentLanguage, defaultLanguage, values, null);
+    }
+    const changes = GeneralHelpers.getFormChanges(oldValues, newValues);
+    if (changes == null) { return; }
+
+    const newItem: EavItem = {
       ...oldItem,
-      entity: {
-        ...oldItem.entity,
-        attributes: LocalizationHelper.updateAttributesValues(oldItem.entity.attributes, newValues, lang, defaultLang),
+      Entity: {
+        ...oldItem.Entity,
+        Attributes: LocalizationHelpers.updateAttributesValues(oldItem.Entity.Attributes, changes, currentLanguage, defaultLanguage),
       }
     };
     this.updateOneInCache(newItem);
@@ -117,179 +118,136 @@ export class ItemService extends EntityCollectionServiceBase<Item> {
    * Update entity attribute dimension. Add readonly languageKey to existing useFromLanguageKey.
    * Example to useFrom en-us add fr-fr = "en-us,-fr-fr"
    */
-  addItemAttributeDimension(entityId: number, attributeKey: string, dimensionValue: string,
-    existingDimensionValue: string, defaultLanguage: string, isReadOnly: boolean, guid: string) {
-    let oldItem: Item;
-    this.entities$.pipe(take(1)).subscribe(items => {
-      oldItem = items.find(item => item.entity.id === 0 ? item.entity.guid === guid : item.entity.id === entityId);
-    });
-    if (!oldItem) { return; }
+  addItemAttributeDimension(
+    entityGuid: string,
+    attributeKey: string,
+    currentLanguage: string,
+    shareWithLanguage: string,
+    defaultLanguage: string,
+    isReadOnly: boolean,
+    transactionItem?: EavItem,
+  ): void {
+    const oldItem = transactionItem ?? this.cache$.value.find(item => item.Entity.Guid === entityGuid);
 
-    const newItem = {
+    const newItem: EavItem = {
       ...oldItem,
-      entity: {
-        ...oldItem.entity,
-        attributes: LocalizationHelper.addAttributeDimension(oldItem.entity.attributes, attributeKey,
-          dimensionValue, existingDimensionValue, defaultLanguage, isReadOnly)
+      Entity: {
+        ...oldItem.Entity,
+        Attributes: LocalizationHelpers.addAttributeDimension(
+          oldItem.Entity.Attributes, attributeKey, currentLanguage, shareWithLanguage, defaultLanguage, isReadOnly,
+        ),
       }
     };
     this.updateOneInCache(newItem);
   }
 
-  removeItemAttributeDimension(entityId: number, attributeKey: string, dimensionValue: string, guid: string) {
-    let oldItem: Item;
-    this.entities$.pipe(take(1)).subscribe(items => {
-      oldItem = items.find(item => item.entity.id === 0 ? item.entity.guid === guid : item.entity.id === entityId);
-    });
-    if (!oldItem) { return; }
+  removeItemAttributeDimension(
+    entityGuid: string,
+    attributeKey: string,
+    currentLanguage: string,
+    isTransaction = false,
+    transactionItem?: EavItem,
+  ): EavItem {
+    const oldItem = transactionItem ?? this.cache$.value.find(item => item.Entity.Guid === entityGuid);
 
-    const newItem = {
+    const newItem: EavItem = {
       ...oldItem,
-      entity: {
-        ...oldItem.entity,
-        attributes: LocalizationHelper.removeAttributeDimension(oldItem.entity.attributes, attributeKey, dimensionValue)
+      Entity: {
+        ...oldItem.Entity,
+        Attributes: LocalizationHelpers.removeAttributeDimension(oldItem.Entity.Attributes, attributeKey, currentLanguage),
       }
     };
-    this.updateOneInCache(newItem);
+
+    if (!isTransaction) { this.updateOneInCache(newItem); }
+    return newItem;
   }
 
-  updateItemHeader(entityId: number, guid: string, header: EavHeader) {
-    let oldItem: Item;
-    this.entities$.pipe(take(1)).subscribe(items => {
-      oldItem = items.find(item => item.entity.id === 0 ? item.entity.guid === guid : item.entity.id === entityId);
-    });
+  updateItemHeader(entityGuid: string, header: EavHeader): void {
+    const oldItem = this.cache$.value.find(item => item.Entity.Guid === entityGuid);
     if (!oldItem) { return; }
 
-    const newItem = {
+    const newItem: EavItem = {
       ...oldItem,
-      header: {
+      Header: {
         ...header
       }
     };
     this.updateOneInCache(newItem);
   }
 
-  selectAttributesByEntityGuid(guid: string) {
-    return this.entities$.pipe(
-      map(items => items.find(item => item.entity.guid === guid)?.entity.attributes),
+  getItemAttributes(entityGuid: string): EavEntityAttributes {
+    return this.cache$.value.find(item => item.Entity.Guid === entityGuid)?.Entity.Attributes;
+  }
+
+  getItemAttributes$(entityGuid: string): Observable<EavEntityAttributes> {
+    return this.cache$.pipe(
+      map(items => items.find(item => item.Entity.Guid === entityGuid)?.Entity.Attributes),
       distinctUntilChanged(),
     );
   }
 
-  selectAllItems() {
-    return this.entities$;
+  getItem(entityGuid: string): EavItem {
+    return this.cache$.value.find(item => item.Entity.Guid === entityGuid);
   }
 
-  selectItemById(id: number) {
-    return this.entities$.pipe(
-      map(items => items.find(item => item.entity.id === id)),
-      distinctUntilChanged()
+  getItem$(entityGuid: string): Observable<EavItem> {
+    return this.cache$.pipe(
+      map(items => items.find(item => item.Entity.Guid === entityGuid)),
+      distinctUntilChanged(),
     );
   }
 
-  /** Observe header for item from store */
-  selectHeaderByEntityId(entityId: number, guid: string) {
-    return this.entities$.pipe(
-      map(items => {
-        const item = items.find(itm => itm.entity.id === 0 ? itm.entity.guid === guid : itm.entity.id === entityId);
-        return item ? item.header : null;
-      }),
-      distinctUntilChanged()
+  getItemHeader$(entityGuid: string): Observable<EavHeader> {
+    return this.cache$.pipe(
+      map(items => items.find(item => item.Entity.Guid === entityGuid)?.Header),
+      distinctUntilChanged(),
     );
   }
 
-  /** Select items from store by id array list */
-  selectItemsByIdList(idsList: (number | string)[]) {
-    return this.entities$.pipe(
-      map(items =>
-        items.filter(item => item.entity === null || idsList.filter(id => id === item.entity.id || id === item.entity.guid).length > 0)
-      ),
-      distinctUntilChanged((oldList, newList) => {
-        let isEqual = true;
-        if (oldList.length !== newList.length) {
-          isEqual = false;
-        } else {
-          for (let i = 0; i < oldList.length; i++) {
-            if (oldList[i] !== newList[i]) {
-              isEqual = false;
-              break;
-            }
-          }
-        }
-        return isEqual;
-      })
+  getItems(entityGuids?: string[]): EavItem[] {
+    if (entityGuids == null) { return this.cache$.value; }
+
+    return this.cache$.value.filter(item => entityGuids.includes(item.Entity.Guid));
+  }
+
+  getItems$(entityGuids?: string[]): Observable<EavItem[]> {
+    if (entityGuids == null) { return this.cache$.asObservable(); }
+
+    return this.cache$.pipe(
+      map(items => items.filter(item => entityGuids.includes(item.Entity.Guid))),
+      distinctUntilChanged(GeneralHelpers.arraysEqual),
     );
   }
 
-  valuesExistInDefaultLanguage(idsList: (number | string)[], defaultLanguage: string, inputTypeService: InputTypeService,
-    contentTypeService: ContentTypeService) {
-    let valuesExistInDefaultLanguage = true;
-    this.entities$.pipe(
-      take(1),
-      map(items =>
-        items.filter(item => item.entity === null || idsList.filter(id => id === item.entity.id || id === item.entity.guid).length > 0)
-      ),
-    ).subscribe(items => {
-      // check if each attribute for each item has value in default dimension
-      items.forEach(item => {
-        let attributesValues: { values: EavValues<any>; disableI18n: boolean; }[] = [];
-        const contentTypeId = InputFieldHelper.getContentTypeId(item);
-        let contentType: ContentType;
-        contentTypeService.getContentTypeById(contentTypeId).pipe(take(1)).subscribe(type => {
-          contentType = type;
-        });
-
-        Object.keys(item.entity.attributes).forEach(key => {
-          const attributeDef = contentType.contentType.attributes.find(attr => attr.name === key);
-          const calculatedInputType = InputFieldHelper.calculateInputType(attributeDef, inputTypeService);
-          const disableI18n = LocalizationHelper.isI18nDisabled(inputTypeService, calculatedInputType, attributeDef.settings);
-          attributesValues.push({
-            values: item.entity.attributes[key],
-            disableI18n,
-          });
-        });
-
-        if (attributesValues.length < contentType.contentType.attributes.filter(cType => cType.type !== DataTypeConstants.Empty).length) {
-          valuesExistInDefaultLanguage = false;
-        }
-
-        attributesValues.forEach(attributeValues => {
-          const translationExistsInDefault = LocalizationHelper.translationExistsInDefaultStrict(
-            attributeValues.values, defaultLanguage, attributeValues.disableI18n);
-          if (!translationExistsInDefault) { valuesExistInDefaultLanguage = false; }
-        });
-        attributesValues = null;
-      });
-    });
-    return valuesExistInDefaultLanguage;
-  }
-
-  /** Set default value and add that attribute in store */
   setDefaultValue(
-    item: Item,
-    attribute: AttributeDef,
-    inputType: string,
-    settingsTranslated: FieldSettings,
-    langs: Language[],
-    lang: string,
-    defaultLang: string,
-  ) {
-    const defaultValue = InputFieldHelper.parseDefaultValue(attribute.name, inputType, settingsTranslated, item.header);
-    const exists = item.entity.attributes.hasOwnProperty(attribute.name);
-    if (!exists) {
-      if (langs.length === 0) {
-        this.addAttributeValue(item.entity.guid, attribute.name, defaultValue, '*', false, attribute.type);
+    item: EavItem,
+    ctAttribute: EavContentTypeAttribute,
+    inputType: InputType,
+    settings: FieldSettings,
+    languages: Language[],
+    defaultLanguage: string,
+  ): void {
+    const defaultValue = InputFieldHelpers.parseDefaultValue(ctAttribute.Name, inputType, settings, item.Header);
+
+    const defaultLanguageValue = LocalizationHelpers.getBestValue(
+      item.Entity.Attributes[ctAttribute.Name],
+      defaultLanguage,
+      defaultLanguage,
+      BestValueModes.Strict,
+    );
+    if (defaultLanguageValue === undefined) {
+      if (languages.length === 0 || inputType?.DisableI18n) {
+        this.addItemAttributeValue(item.Entity.Guid, ctAttribute.Name, defaultValue, '*', false, ctAttribute.Type);
       } else {
-        this.addAttributeValue(item.entity.guid, attribute.name, defaultValue, lang, false, attribute.type);
+        this.addItemAttributeValue(item.Entity.Guid, ctAttribute.Name, defaultValue, defaultLanguage, false, ctAttribute.Type);
       }
     } else {
-      if (langs.length === 0) {
-        this.updateItemAttributeValue(item.entity.guid, attribute.name, defaultValue, '*', defaultLang, false);
+      // most likely used only for entity fields because we can never know if they were cleaned out or brand new
+      if (languages.length === 0 || inputType?.DisableI18n) {
+        this.updateItemAttributeValue(item.Entity.Guid, ctAttribute.Name, defaultValue, '*', defaultLanguage, false);
       } else {
-        this.updateItemAttributeValue(item.entity.guid, attribute.name, defaultValue, lang, defaultLang, false);
+        this.updateItemAttributeValue(item.Entity.Guid, ctAttribute.Name, defaultValue, defaultLanguage, defaultLanguage, false);
       }
     }
-    return defaultValue;
   }
-
 }

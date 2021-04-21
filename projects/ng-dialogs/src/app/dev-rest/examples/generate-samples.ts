@@ -1,17 +1,8 @@
 import { SxcRoot } from '@2sic.com/2sxc-typings';
-import { ApiCall, CodeSample, Scenario } from '..';
+import { ApiCall, CodeSample, hint$2sxc, Scenario, warningExternal, warningSimpleSampleOnly } from '..';
 import { Context } from '../../shared/services/context';
-import { Hint } from '../info-box/hint';
 // tslint:disable: curly
 
-const hint$2sxc = new Hint('tip', `The <code>$2sxc</code> is a helper JS from 2sxc. It's always included for super-users (hosts).
- But if you need normal visitors to use the API, you must request it in your Razor using @Edit.Enable(...).
- <a href="https://docs.2sxc.org/specs/js/2sxc.html" target="_blank">see docs</a>`);
-
-const warningSimpleSampleOnly = new Hint('warning', `WARNING: We only prepared the basic example running in the same app. You can of course also run this elsewhere,
-but you'll have to compare it with the GET examples to be sure you have the right headers etc. `, '');
-
-const warningExternal = new Hint('alert', 'IMPORTANT: This will only work if you set anonymous permissions on the content-type.');
 
 export function generateApiCalls($2sxc: SxcRoot, scenario: Scenario, context: Context, root: string, id: number) {
   const virtual = root[0] !== '/' && !root.startsWith('http');

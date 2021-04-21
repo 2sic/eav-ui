@@ -1,20 +1,17 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { AdamItem, AdamPostResponse } from '../../../../../edit-types';
+import { AdamItem, AdamPostResponse, DnnBridgeConnectorParams } from '../../../../../edit-types';
 import { FieldSettings } from '../../../../../edit-types';
-import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
-import { PrefetchLinks } from '../../../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.models';
+import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
-import { DnnBridgeService } from '../../../../shared/services/dnn-bridge.service';
-import { EavService } from '../../../../shared/services/eav.service';
-import { EditRoutingService } from '../../../../shared/services/edit-routing.service';
-import { FileTypeService } from '../../../../shared/services/file-type.service';
-import { PrefetchService } from '../../../../shared/store/ngrx-data/prefetch.service';
+import { DnnBridgeService, EavService, EditRoutingService, FieldsSettingsService, FileTypeService } from '../../../../shared/services';
+import { LinkCacheService } from '../../../../shared/store/ngrx-data';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { BaseComponent } from '../../base/base.component';
-import { DnnBridgeConnectorParams, PagePickerResult } from '../../dnn-bridge/dnn-bridge.models';
-import { Preview } from './hyperlink-default.models';
+import { PagePickerResult } from '../../dnn-bridge/dnn-bridge.models';
+import { HyperlinkDefaultLogic } from './hyperlink-default-logic';
+import { HyperlinkDefaultTemplateVars, Preview } from './hyperlink-default.models';
 
 // TODO: warning: the two files are almost identical: hyperlink-default.component and hyperlink-default-expandable-wrapper.component
 
@@ -23,57 +20,79 @@ import { Preview } from './hyperlink-default.models';
   selector: 'hyperlink-default',
   templateUrl: './hyperlink-default.component.html',
   styleUrls: ['./hyperlink-default.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
-@InputType({
-  wrapper: [WrappersConstants.DropzoneWrapper, WrappersConstants.EavLocalizationWrapper,
-  WrappersConstants.HyperlinkDefaultExpandableWrapper, WrappersConstants.AdamAttachWrapper],
+@ComponentMetadata({
+  wrappers: [
+    WrappersConstants.DropzoneWrapper,
+    WrappersConstants.LocalizationWrapper,
+    WrappersConstants.HyperlinkDefaultExpandableWrapper,
+    WrappersConstants.AdamAttachWrapper,
+  ],
 })
 export class HyperlinkDefaultComponent extends BaseComponent<string> implements OnInit, OnDestroy {
-  buttons$: Observable<string>;
-  open$: Observable<boolean>;
-  preview$ = new BehaviorSubject<Preview>({
-    url: '',
-    thumbnailUrl: '',
-    thumbnailPreviewUrl: '',
-    floatingText: '',
-    isImage: false,
-    isKnownType: false,
-    icon: '',
-  });
+  templateVars$: Observable<HyperlinkDefaultTemplateVars>;
 
-  private prefetchLinks: PrefetchLinks = {};
-  private fetchCache: PrefetchLinks = {};
+  private preview$: BehaviorSubject<Preview>;
 
   constructor(
     eavService: EavService,
     validationMessagesService: ValidationMessagesService,
+    fieldsSettingsService: FieldsSettingsService,
     private fileTypeService: FileTypeService,
     private dnnBridgeService: DnnBridgeService,
     private editRoutingService: EditRoutingService,
-    private prefetchService: PrefetchService,
+    private linkCacheService: LinkCacheService,
   ) {
-    super(eavService, validationMessagesService);
+    super(eavService, validationMessagesService, fieldsSettingsService);
+    HyperlinkDefaultLogic.importMe();
   }
 
   ngOnInit() {
     super.ngOnInit();
+    this.preview$ = new BehaviorSubject<Preview>({
+      url: '',
+      thumbnailUrl: '',
+      previewUrl: '',
+      floatingText: '',
+      isImage: false,
+      isKnownType: false,
+      icon: '',
+    });
     this.subscription.add(
-      this.prefetchService.getPrefetchedLinks().subscribe(links => {
-        this.prefetchLinks = links;
+      this.value$.subscribe(value => {
+        this.fetchLink(value);
       })
     );
-    this.buttons$ = this.settings$.pipe(map(settings => settings.Buttons || 'adam,more'));
-    this.open$ = this.editRoutingService.isExpanded(this.config.field.index, this.config.entity.entityGuid);
+    const open$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
+    const buttons$ = this.settings$.pipe(map(settings => settings.Buttons));
     this.subscription.add(
       this.settings$.subscribe(settings => {
         this.attachAdam(settings);
       })
     );
-    this.subscription.add(
-      this.value$.subscribe(value => {
-        this.fetchLink(value);
-      })
+
+    this.templateVars$ = combineLatest([
+      combineLatest([open$, this.value$, this.preview$, this.label$, this.placeholder$, this.required$]),
+      combineLatest([this.settings$, buttons$, this.disabled$, this.touched$]),
+    ]).pipe(
+      map(([
+        [open, value, preview, label, placeholder, required],
+        [settings, buttons, disabled, touched],
+      ]) => {
+        const templateVars: HyperlinkDefaultTemplateVars = {
+          open,
+          buttons,
+          settings,
+          value,
+          preview,
+          label,
+          placeholder,
+          required,
+          disabled,
+          touched,
+        };
+        return templateVars;
+      }),
     );
   }
 
@@ -86,20 +105,22 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
     const settings = this.settings$.value;
     const params: DnnBridgeConnectorParams = {
       CurrentValue: this.control.value,
-      FileFilter: (settings.FileFilter != null) ? settings.FileFilter : '',
-      Paths: (settings.Paths != null) ? settings.Paths : '',
+      FileFilter: settings.FileFilter,
+      Paths: settings.Paths,
     };
-    this.dnnBridgeService.open('pagepicker', params, this.pagePickerCallback.bind(this));
-  }
 
-  private pagePickerCallback(value: PagePickerResult) {
-    // Convert to page:xyz format (if it wasn't cancelled)
-    if (!value) { return; }
-    this.control.patchValue(`page:${value.id}`);
+    this.dnnBridgeService.open('pagepicker', params, (value: PagePickerResult) => {
+      // Convert to page:xyz format (if it wasn't cancelled)
+      if (!value) { return; }
+      this.control.patchValue(`page:${value.id}`);
+    });
   }
 
   private fetchLink(value: string) {
-    if (!value) { return; }
+    if (!value) {
+      this.setLink(value, false);
+      return;
+    }
 
     const isFileOrPage = this.isFileOrPage(value);
     if (!isFileOrPage) {
@@ -107,30 +128,34 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
       return;
     }
 
-    const fromCache = this.findInCache(value);
-    if (fromCache != null) {
-      this.setLink(fromCache, true);
+    const cached = this.linkCacheService.getLinkInfo(value);
+    if (cached) {
+      const isResolved = !this.isFileOrPage(cached.Value);
+      this.setLink(cached.Value, isResolved, cached.Adam);
       return;
     }
 
     // handle short-ID links like file:17
-    const contentType = this.config.entity.header.ContentTypeName;
-    const entityGuid = this.config.entity.header.Guid;
-    const field = this.config.field.name;
-    this.dnnBridgeService.getUrlOfId(value, contentType, entityGuid, field).subscribe(path => {
-      if (!path) { return; }
-      this.fetchCache[value] = path;
-      const isResolved = !this.isFileOrPage(path);
-      this.setLink(path, isResolved);
+    const contentType = this.config.contentTypeId;
+    const entityGuid = this.config.entityGuid;
+    const field = this.config.fieldName;
+    this.dnnBridgeService.getLinkInfo(value, contentType, entityGuid, field).subscribe(linkInfo => {
+      if (!linkInfo) {
+        this.setLink(value, false);
+        return;
+      }
+      this.linkCacheService.loadLink(value, linkInfo);
+      const isResolved = !this.isFileOrPage(linkInfo.Value);
+      this.setLink(linkInfo.Value, isResolved, linkInfo.Adam);
     });
   }
 
-  private setLink(value: string, isResolved: boolean) {
+  private setLink(value: string, isResolved: boolean, adam?: AdamItem) {
     const preview: Preview = {
       url: value,
-      floatingText: isResolved ? `.../${value.substring(value.lastIndexOf('/') + 1, value.length)}` : '',
-      thumbnailUrl: this.thumbnailUrl(value),
-      thumbnailPreviewUrl: this.thumbnailUrl(value, 2),
+      floatingText: isResolved ? `.../${value.substring(value.lastIndexOf('/') + 1)}` : '',
+      thumbnailUrl: `url("${adam?.ThumbnailUrl ?? this.buildUrl(value, 1)}")`,
+      previewUrl: adam?.PreviewUrl ?? this.buildUrl(value, 2),
       isImage: this.fileTypeService.isImage(value),
       isKnownType: this.fileTypeService.isKnownType(value),
       icon: this.fileTypeService.getIconClass(value),
@@ -138,16 +163,18 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
     this.preview$.next(preview);
   }
 
-  private thumbnailUrl(link: string, size?: number, quote?: boolean) {
-    let result = link;
+  private buildUrl(url: string, size?: 1 | 2): string {
+    let query = '';
     if (size === 1) {
-      result = result + '?w=72&h=72&mode=crop';
+      query += 'w=80&h=80&mode=crop';
     }
     if (size === 2) {
-      result = result + '?w=800&h=800&mode=max';
+      query += 'w=800&h=800&mode=max';
     }
-    const qt = quote ? '"' : '';
-    return qt + result + qt;
+    if (query && !url.includes('?')) {
+      query = '?' + query;
+    }
+    return url + query;
   }
 
   toggleAdam(usePortalRoot: boolean, showImagesOnly: boolean) {
@@ -167,7 +194,7 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
   private setValue(item: AdamItem | AdamPostResponse) {
     const usePath = this.settings$.value.ServerResourceMapping === 'url';
     if (usePath) {
-      const imageOrFileUrl = (item as AdamItem).Url != null ? (item as AdamItem).Url : (item as AdamPostResponse).Path;
+      const imageOrFileUrl = (item as AdamItem).Url ?? (item as AdamPostResponse).Path;
       this.control.patchValue(imageOrFileUrl);
     } else {
       this.control.patchValue(`file:${item.Id}`);
@@ -178,21 +205,5 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
     const cleanValue = value.trim().toLocaleLowerCase();
     const isFileOrPage = cleanValue.startsWith('file:') || cleanValue.startsWith('page:');
     return isFileOrPage;
-  }
-
-  private findInCache(value: string): string {
-    const cleanValue = value.trim().toLocaleLowerCase();
-
-    for (const [linkKey, linkValue] of Object.entries(this.prefetchLinks)) {
-      const cleanKey = linkKey.trim().toLocaleLowerCase();
-      if (cleanKey !== cleanValue) { continue; }
-      return linkValue;
-    }
-
-    for (const [linkKey, linkValue] of Object.entries(this.fetchCache)) {
-      const cleanKey = linkKey.trim().toLocaleLowerCase();
-      if (cleanKey !== cleanValue) { continue; }
-      return linkValue;
-    }
   }
 }

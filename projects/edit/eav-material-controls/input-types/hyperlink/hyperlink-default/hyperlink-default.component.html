@@ -1,13 +1,5 @@
-<ng-container *ngIf="{
-  disabled: disabled$ | async,
-  buttons: buttons$ | async,
-  settings: settings$ | async,
-  value: value$ | async,
-  preview: preview$ | async,
-  showValidation: showValidation$ | async
-} as data">
-
-  <ng-container *ngIf="open$ | async">
+<ng-container *ngIf="templateVars$ | async as data">
+  <ng-container *ngIf="data.open">
 
     <div class="fabs-box">
       <button mat-mini-fab color="accent" [matTooltip]="'Fields.Hyperlink.Default.AdamTip' | translate"
@@ -50,11 +42,11 @@
           <div class="hyperlink-input-link-wrapper">
             <!-- input -->
             <mat-form-field [formGroup]="group" appearance="standard" color="accent">
-              <input matInput [formControlName]="config.field.name"
+              <input matInput [formControlName]="config.fieldName"
                 [matTooltip]="'Fields.Hyperlink.Default.Tooltip' | translate" matTooltipPosition="above"
-                [placeholder]="placeholder$ | async" [required]="required$ | async" appPasteClipboardImage
-                [config]="config" [elementType]="'input'">
-              <mat-label>{{ label$ | async }}</mat-label>
+                [placeholder]="data.placeholder" [required]="data.required" appPasteClipboardImage [config]="config"
+                [elementType]="'input'">
+              <mat-label>{{ data.label }}</mat-label>
             </mat-form-field>
             <!-- link absolutely positioned above input -->
             <div *ngIf="data.preview?.floatingText" class="hyperlink-floating">
@@ -69,9 +61,9 @@
           </div>
           <div class="preview-wrapper" *ngIf="data.value && data.preview">
             <!-- image -->
-            <a [href]="data.preview.thumbnailUrl" target="_blank" *ngIf="data.preview.isImage">
+            <a [href]="data.preview.url" target="_blank" *ngIf="data.preview.isImage">
               <div class="preview-image-box">
-                <img [src]="data.preview.thumbnailPreviewUrl" class="preview-image" />
+                <img [src]="data.preview.previewUrl" class="preview-image" />
               </div>
             </a>
             <!-- icon -->

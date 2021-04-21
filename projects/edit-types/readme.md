@@ -1,4 +1,3 @@
-
 ## Communication of External Components
 
 _This is still Work-In-Progress_
@@ -27,9 +26,6 @@ _This is still Work-In-Progress_
   * `item` - anything related to the item that's currently being edited
     * `guid`
     * `fields` --> should replace the use of `allInputTypeNames`
-    * 
   * `ui` - interactions with the form ui
     * `dialog(boolean [, name])` - open / close a dialog with a component having the same name just `-dialog` suffix unless you specify a name
     * `dialog$` - an observable reporting `{open: boolean, name: string}` - only fires for the current field
-  
-  

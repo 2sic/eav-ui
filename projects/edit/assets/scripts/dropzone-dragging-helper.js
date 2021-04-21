@@ -1,6 +1,6 @@
 const dropzoneClass = 'dropzone';
 const dropzoneDisabledClass = 'dropzone-disabled';
-const draggingClass = 'eav-dragging';
+draggingClass = 'eav-dragging';
 
 /** Prevent drop on page - can only drop on dropzone */
 window.addEventListener('dragover', function (event) {

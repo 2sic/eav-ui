@@ -1,34 +1,32 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Observable } from 'rxjs';
-import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
+import { combineLatest, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { consoleLogAngular } from '../../../../ng-dialogs/src/app/shared/helpers/console-log-angular.helper';
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
-import { ContentExpandAnimation } from '../../../shared/animations/content-expand-animation';
-import { DnnBridgeService } from '../../../shared/services/dnn-bridge.service';
-import { DropzoneDraggingHelper } from '../../../shared/services/dropzone-dragging.helper';
-import { EavService } from '../../../shared/services/eav.service';
-import { EditRoutingService } from '../../../shared/services/edit-routing.service';
-import { ContentTypeService } from '../../../shared/store/ngrx-data/content-type.service';
-import { FeatureService } from '../../../shared/store/ngrx-data/feature.service';
-import { InputTypeService } from '../../../shared/store/ngrx-data/input-type.service';
+import { ContentExpandAnimation } from '../../../shared/animations';
+import { DropzoneDraggingHelper } from '../../../shared/helpers';
+import { DnnBridgeService, EavService, EditRoutingService, FieldsSettingsService } from '../../../shared/services';
+import { ContentTypeService, FeatureService, InputTypeService } from '../../../shared/store/ngrx-data';
 import { BaseComponent } from '../../input-types/base/base.component';
 import { ConnectorHelper } from '../../input-types/custom/external-web-component/connector/connector.helper';
 import { ValidationMessagesService } from '../../validators/validation-messages-service';
+import { ExpandableWrapperTemplateVars } from './expandable-wrapper.models';
 
 @Component({
   selector: 'app-expandable-wrapper',
   templateUrl: './expandable-wrapper.component.html',
   styleUrls: ['./expandable-wrapper.component.scss'],
   animations: [ContentExpandAnimation],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ExpandableWrapperComponent extends BaseComponent<string> implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
-  @ViewChild('previewContainer') previewContainerRef: ElementRef;
-  @ViewChild('backdrop') backdropRef: ElementRef;
-  @ViewChild('dialog') dialogRef: ElementRef;
+  @ViewChild('previewContainer') private previewContainerRef: ElementRef;
+  @ViewChild('backdrop') private backdropRef: ElementRef;
+  @ViewChild('dialog') private dialogRef: ElementRef;
 
   open$: Observable<boolean>;
+  templateVars$: Observable<ExpandableWrapperTemplateVars>;
 
   private connectorCreator: ConnectorHelper;
   private dropzoneDraggingHelper: DropzoneDraggingHelper;
@@ -36,6 +34,7 @@ export class ExpandableWrapperComponent extends BaseComponent<string> implements
   constructor(
     eavService: EavService,
     validationMessagesService: ValidationMessagesService,
+    fieldsSettingsService: FieldsSettingsService,
     private translateService: TranslateService,
     private contentTypeService: ContentTypeService,
     private inputTypeService: InputTypeService,
@@ -44,17 +43,39 @@ export class ExpandableWrapperComponent extends BaseComponent<string> implements
     private dnnBridgeService: DnnBridgeService,
     private zone: NgZone,
   ) {
-    super(eavService, validationMessagesService);
+    super(eavService, validationMessagesService, fieldsSettingsService);
   }
 
   ngOnInit() {
     super.ngOnInit();
-    this.open$ = this.editRoutingService.isExpanded(this.config.field.index, this.config.entity.entityGuid);
+    this.open$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
+
+    this.templateVars$ = combineLatest([
+      combineLatest([this.value$, this.label$, this.required$, this.invalid$, this.config.focused$]),
+      combineLatest([this.disabled$, this.dirty$, this.touched$]),
+    ]).pipe(
+      map(([
+        [value, label, required, invalid, focused],
+        [disabled, dirty, touched],
+      ]) => {
+        const templateVars: ExpandableWrapperTemplateVars = {
+          value,
+          label,
+          required,
+          invalid,
+          focused,
+          disabled,
+          dirty,
+          touched,
+        };
+        return templateVars;
+      }),
+    );
   }
 
   ngAfterViewInit() {
-    const componentTag = `field-${this.config.field.inputType}`;
-    angularConsoleLog('ExpandableWrapper created for:', componentTag);
+    const componentTag = `field-${this.config.inputType}`;
+    consoleLogAngular('ExpandableWrapper created for:', componentTag);
     this.connectorCreator = new ConnectorHelper(
       this.config,
       this.group,
@@ -67,6 +88,8 @@ export class ExpandableWrapperComponent extends BaseComponent<string> implements
       this.featureService,
       this.editRoutingService,
       this.dnnBridgeService,
+      this.fieldsSettingsService,
+      this.validationMessagesService,
       this.zone,
     );
 
@@ -76,18 +99,18 @@ export class ExpandableWrapperComponent extends BaseComponent<string> implements
   }
 
   ngOnDestroy() {
-    angularConsoleLog('ExpandableWrapper destroyed');
+    consoleLogAngular('ExpandableWrapper destroyed');
     this.connectorCreator.destroy();
     this.dropzoneDraggingHelper.detach();
     super.ngOnDestroy();
   }
 
   expandDialog() {
-    this.editRoutingService.expand(true, this.config.field.index, this.config.entity.entityGuid);
+    this.editRoutingService.expand(true, this.config.index, this.config.entityGuid);
   }
 
   closeDialog() {
-    this.editRoutingService.expand(false, this.config.field.index, this.config.entity.entityGuid);
+    this.editRoutingService.expand(false, this.config.index, this.config.entityGuid);
   }
 
   calculateBottomPixels() {

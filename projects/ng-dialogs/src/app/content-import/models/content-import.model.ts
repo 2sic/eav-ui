@@ -17,7 +17,10 @@ export class ImportContentRequest {
 
 export class EvaluateContentResult {
   Success: boolean;
-  Detail: EvaluateContentResultDetail;
+  /** Success === true */
+  Detail?: EvaluateContentResultDetail;
+  /** Success === false */
+  Errors?: EvaluateContentResultError[];
 }
 
 export class EvaluateContentResultDetail {
@@ -29,6 +32,14 @@ export class EvaluateContentResultDetail {
   AttributeNamesNotImported: string[];
   DocumentElementsCount: number;
   LanguagesInDocumentCount: number;
+}
+
+export class EvaluateContentResultError {
+  Message: string;
+  ErrorCode: number;
+  ErrorDetail: string;
+  LineNumber: number;
+  LineDetail: string;
 }
 
 export class ImportContentResult {

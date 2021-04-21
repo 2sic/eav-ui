@@ -1,0 +1,18 @@
+<ng-container *ngIf="templateVars$ | async as data">
+
+  <div fxLayoutAlign="end center" *ngIf="data.currentLanguage !== data.defaultLanguage">
+    <button mat-button fxLayoutAlign="end center" [disabled]="data.slotIsEmpty" [matMenuTriggerFor]="menu">
+      <span fxLayoutAlign="end center">
+        {{ ('LangMenu.Translate' | translate).toUpperCase() }}
+        &nbsp;&nbsp;
+        <mat-icon class="translate-icon">translate</mat-icon>
+      </span>
+    </button>
+
+    <mat-menu #menu="matMenu" overlapTrigger="true">
+      <button mat-menu-item (click)="translateMany()">{{ 'LangMenu.TranslateAll' | translate }}</button>
+      <button mat-menu-item (click)="dontTranslateMany()">{{ 'LangMenu.NoTranslateAll' | translate }}</button>
+    </mat-menu>
+  </div>
+
+</ng-container>

@@ -1,9 +1,7 @@
+import { Dictionary } from '../../shared/models/dictionary.model';
+
 export class ReplaceConfig {
   SelectedId: number;
-  Items: ReplaceConfigItems;
+  Items: Dictionary<string>;
   ContentTypeName: string;
-}
-
-export class ReplaceConfigItems {
-  [key: number]: string;
 }

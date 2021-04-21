@@ -1,6 +1,6 @@
 /*!
 Math.uuid.js (v1.4)
-http://www.broofa.com
+https://www.broofa.com
 mailto:robert@broofa.com
 Copyright (c) 2010 Robert Kieffer
 Dual licensed under the MIT and GPL licenses.
@@ -34,7 +34,7 @@ export class Guid {
   // Private array of chars to use
   private static CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
 
-  public static uuid(len?: any, radix?: any) {
+  public static uuid(len?: number, radix?: number) {
     // tslint:disable
     var chars = Guid.CHARS, uuid = [], i;
     radix = radix || chars.length;

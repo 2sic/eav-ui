@@ -1,4 +1,4 @@
-import { FieldErrorMessage } from '../../../shared/models/eav/field-error-message';
+import { FieldErrorMessage } from '../../../shared/models';
 
 export interface SaveErrorsSnackData {
   fieldErrors: FieldErrorMessage[];

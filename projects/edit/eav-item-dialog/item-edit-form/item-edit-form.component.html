@@ -1,5 +1,1 @@
-<div *ngIf="contentType$ | async">
-  <app-eav-form [config]="itemFields$ | async" [formId]="formId" [entityGuid]="item.entity.guid" (formSubmit)="submit()"
-    (formValueChange)="formValueChange($event)">
-  </app-eav-form>
-</div>
+<app-eav-form [entityGuid]="entityGuid"></app-eav-form>

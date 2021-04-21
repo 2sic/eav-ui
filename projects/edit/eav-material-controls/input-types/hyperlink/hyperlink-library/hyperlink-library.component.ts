@@ -1,9 +1,10 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { ValidatorFn } from '@angular/forms';
+import { combineLatest, Subscription } from 'rxjs';
 import { FieldSettings } from '../../../../../edit-types';
-import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
+import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
-import { EavService } from '../../../../shared/services/eav.service';
+import { EavService, FieldsSettingsService } from '../../../../shared/services';
 import { CustomValidators } from '../../../validators/custom-validators';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { BaseComponent } from '../../base/base.component';
@@ -16,24 +17,33 @@ import { AdamControl } from './hyperlink-library.models';
   styleUrls: ['./hyperlink-library.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-@InputType({
-  wrapper: [WrappersConstants.DropzoneWrapper, WrappersConstants.EavLocalizationWrapper,
-  WrappersConstants.HyperlinkLibraryExpandableWrapper, WrappersConstants.AdamAttachWrapper],
+@ComponentMetadata({
+  wrappers: [
+    WrappersConstants.DropzoneWrapper,
+    WrappersConstants.LocalizationWrapper,
+    WrappersConstants.HyperlinkLibraryExpandableWrapper,
+    WrappersConstants.AdamAttachWrapper,
+  ],
 })
 export class HyperlinkLibraryComponent extends BaseComponent<null> implements OnInit, OnDestroy {
   /** Requires more handling that normal subscriptions */
   private adamValidation: Subscription;
 
-  constructor(eavService: EavService, validationMessagesService: ValidationMessagesService) {
-    super(eavService, validationMessagesService);
+  constructor(
+    eavService: EavService,
+    validationMessagesService: ValidationMessagesService,
+    fieldsSettingsService: FieldsSettingsService,
+  ) {
+    super(eavService, validationMessagesService, fieldsSettingsService);
   }
 
   ngOnInit() {
     super.ngOnInit();
+    const validators$ = this.fieldsSettingsService.getFieldValidation$(this.config.fieldName);
     this.subscription.add(
-      this.settings$.subscribe(settings => {
+      combineLatest([this.settings$, validators$]).subscribe(([settings, validators]) => {
         this.attachAdam(settings);
-        this.attachAdamValidator(settings.Required);
+        this.attachAdamValidator(settings.Required, validators);
       })
     );
   }
@@ -55,22 +65,21 @@ export class HyperlinkLibraryComponent extends BaseComponent<null> implements On
     });
   }
 
-  private attachAdamValidator(required: boolean) {
+  private attachAdamValidator(required: boolean, validators: ValidatorFn[]) {
     if (!required) {
       this.adamValidation?.unsubscribe();
-      this.control.setValidators(this.config.field.validation);
+      this.control.setValidators(validators);
       return;
     }
 
-    const validators = [
-      ...this.config.field.validation,
+    const newValidators: ValidatorFn[] = [
+      ...validators,
       CustomValidators.validateAdam(),
     ];
-    this.control.setValidators(validators);
+    this.control.setValidators(newValidators);
     this.adamValidation = this.config.adam.items$.subscribe(items => {
       (this.control as AdamControl).adamItems = items.length;
-      // onlySelf doesn't update form being valid for some reason
-      this.control.updateValueAndValidity(/*{ onlySelf: true }*/);
+      this.control.updateValueAndValidity();
     });
   }
 }

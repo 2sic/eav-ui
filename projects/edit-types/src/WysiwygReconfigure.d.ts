@@ -1,39 +1,37 @@
+import { Editor, RawEditorSettings, TinyMCE } from 'tinymce';
 import { AddOnSettings } from './AddOnSettings';
 
-
 export interface WysiwygReconfigure {
-
   /**
-   * Very early call to configure the editorManager of tinyMCE
+   * Just booleans to disable various features
    */
-  initManager?(editorManager: any): void;
-
+  disablePagePicker?: boolean;
+  /**
+   * Just booleans to disable various features
+   */
+  disableAdam?: boolean;
+  /**
+   * Very early call to configure TinyMCE
+   */
+  initManager?(tinymce: TinyMCE): void;
   /**
    * Add translations to the editor manager - fairly early in the lifecycle
    */
-  addTranslations?(editorManager: any, currentLanguage: string): void;
-
+  addTranslations?(tinymce: TinyMCE, currentLanguage: string): void;
   /**
    * Configure
    */
   configureAddOns(addOnSettings: AddOnSettings): AddOnSettings;
-
   /**
    * Review / modify the options after they have been completely initialized and expanded
    */
-  configureOptions?(options: any): any;
-
+  configureOptions?(options: RawEditorSettings): RawEditorSettings;
   /**
-   * called when the editor was created, but before we added events etc.
+   * Called when the editor was created, but before we added events etc.
    */
-  editorOnInit?(editor: any): void;
-
+  editorOnInit?(editor: Editor): void;
   /**
-   * called after the form has prepared the editor
+   * Called after the form has prepared the editor
    */
-  configureEditor?(editor: any): void;
-
-  // Just booleans to disable various features
-  disablePagePicker?: boolean;
-  disableAdam?: boolean;
+  configureEditor?(editor: Editor): void;
 }

@@ -1,8 +1,8 @@
-export class TranslationLinkConstants {
-  public static readonly Translate = 'translate';
-  public static readonly DontTranslate = 'dontTranslate';
-  public static readonly MissingDefaultLangValue = 'missingDefaultLangValue';
-  public static readonly LinkReadOnly = 'linkReadOnly';
-  public static readonly LinkReadWrite = 'linkReadWrite';
-  public static readonly LinkCopyFrom = 'linkCopyFrom';
+export enum TranslationLinkConstants {
+  Translate = 'Translate',
+  DontTranslate = 'DontTranslate',
+  MissingDefaultLangValue = 'MissingDefaultLangValue',
+  LinkReadOnly = 'LinkReadOnly',
+  LinkReadWrite = 'LinkReadWrite',
+  LinkCopyFrom = 'LinkCopyFrom',
 }

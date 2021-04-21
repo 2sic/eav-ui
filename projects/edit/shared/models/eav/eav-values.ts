@@ -1,17 +1,17 @@
-import { Value1 } from '../json-format-v1/value1';
-import { EavValue } from './eav-value';
+import { EavValue } from '.';
+import { Value1 } from '../json-format-v1';
 
 export class EavValues<T> {
-  values: EavValue<any>[];
-  type: string;
+  Values: EavValue<T>[];
+  Type: string;
 
-  constructor(values: EavValue<T>[], type: string) {
-    this.values = values;
-    this.type = type;
-  }
+  static convert<T>(value1: Value1<T>, type: string): EavValues<T> {
+    const values = EavValue.convert(value1);
 
-  /** Create Eav Value from typed json Value1 */
-  public static create<T>(value1: Value1<T>, type: string): EavValues<T> {
-    return new EavValues<T>(EavValue.create(value1), type);
+    const eavValues: EavValues<T> = {
+      Values: values,
+      Type: type,
+    };
+    return eavValues;
   }
 }

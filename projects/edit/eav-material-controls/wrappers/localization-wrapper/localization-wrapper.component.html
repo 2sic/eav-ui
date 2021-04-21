@@ -1,0 +1,12 @@
+<div class="language-wrap">
+  <div class="language-wrap__field"
+    [ngClass]="{ 'language-wrap__field-short': (currentLanguage$ | async) !== (defaultLanguage$ | async) }"
+    (dblclick)="translate()">
+    <ng-container #fieldComponent></ng-container>
+  </div>
+
+  <app-translate-menu class="language-wrap__translate"
+    [ngClass]="{ 'language-wrap__translate--hidden': (currentLanguage$ | async) === (defaultLanguage$ | async) }"
+    [config]="config" [group]="group">
+  </app-translate-menu>
+</div>

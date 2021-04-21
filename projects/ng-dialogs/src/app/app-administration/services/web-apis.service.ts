@@ -1,10 +1,10 @@
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { webApiAppFileCreate, webApiAppFilesAll } from 'projects/edit';
 import { map } from 'rxjs/operators';
+import { webApiAppFileCreate, webApiAppFilesAll, webApiExplorer } from '../../../../../edit/shared/services';
 import { Context } from '../../shared/services/context';
-import { WebApi } from '../models/web-api.model';
+import { WebApi, WebApiDetails } from '../models';
 
 @Injectable()
 export class WebApisService {
@@ -31,6 +31,12 @@ export class WebApisService {
   create(name: string) {
     return this.http.post<boolean>(this.dnnContext.$2sxc.http.apiUrl(webApiAppFileCreate), {}, {
       params: { appId: this.context.appId.toString(), global: 'false', path: `api/${name}` },
+    });
+  }
+
+  details(apiPath: string) {
+    return this.http.get<WebApiDetails>(this.dnnContext.$2sxc.http.apiUrl(webApiExplorer), {
+      params: { path: apiPath },
     });
   }
 }

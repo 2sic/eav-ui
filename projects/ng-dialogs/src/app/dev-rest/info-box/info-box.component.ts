@@ -1,15 +1,15 @@
 import { Component, Input } from '@angular/core';
-import { infoBoxIconMap, infoBoxType } from './hint';
+import { infoBoxIconMap, InfoBoxType } from './hint';
 
 @Component({
-    selector: 'app-info-box',
-    templateUrl: './info-box.component.html',
-    styleUrls: ['./info-box.component.scss']
+  selector: 'app-info-box',
+  templateUrl: './info-box.component.html',
+  styleUrls: ['./info-box.component.scss']
 })
 export class InfoBoxComponent {
-  @Input() type: infoBoxType;
+  @Input() type: InfoBoxType;
   @Input() title: string;
-  constructor () {}
+  constructor() { }
 
   getIcon() {
     return infoBoxIconMap[this.type];

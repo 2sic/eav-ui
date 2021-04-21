@@ -1,10 +1,12 @@
+import { RawEditorSettings } from 'tinymce';
 import { Adam, AdamPostResponse, Dropzone } from '../../../../edit-types';
-import { webpackConsoleLog } from '../../../../shared/webpack-console-log.helper';
+import { consoleLogWebpack } from '../../../../field-custom-gps/src/shared/console-log-webpack.helper';
+import { BlobInfo } from '../../shared/models';
 
 export class DefaultPaste {
 
   /** Paste formatted text, e.g. text copied from MS Word */
-  static formattedText = {
+  static formattedText: RawEditorSettings = {
     paste_as_text: false,
     paste_enable_default_filters: true,
     paste_create_paragraphs: true,
@@ -16,39 +18,45 @@ export class DefaultPaste {
     paste_convert_headers_to_strong: false,
     paste_remove_spans: true,
     paste_remove_styles: true,
-    paste_preprocess(e: any, args: any) {
-      webpackConsoleLog('paste preprocess', e, args);
+    paste_preprocess(plugin: any, args: any) {
     },
     paste_postprocess(plugin: any, args: any) {
       try {
-        const anchors = args.node.getElementsByTagName('a');
-        for (const anchor of anchors) {
-          if (anchor.hasAttribute('target') === false) {
-            anchor.setAttribute('target', '_blank');
+        const anchors = (args.node as HTMLElement).getElementsByTagName('a');
+        for (const anchor of Array.from(anchors)) {
+          if (!anchor.target) {
+            anchor.target = '_blank';
           }
         }
-      } catch (e) {
-        console.error('error in paste postprocess - will only log but not throw', e);
+      } catch (error) {
+        console.error('Error in paste postprocess:', error);
       }
     }
   };
 
   /** Paste image */
-  static images(dropzone: Dropzone, adam: Adam) {
-    return {
+  static images(dropzone: Dropzone, adam: Adam): RawEditorSettings {
+    const imageUploadSettings: RawEditorSettings = {
       automatic_uploads: true,
       images_reuse_filename: true,
       paste_data_images: true,
       paste_filter_drop: false,
       paste_block_drop: false,
-      images_upload_handler: (blobInfo: any, success: (imgPath: string) => any, failure: () => any) => {
-        DefaultPaste.imagesUploadHandler(blobInfo, success, failure, dropzone, adam);
+      images_upload_handler: (blobInfo: BlobInfo, success: (url: string) => void, failure: (err: string) => void) => {
+        this.imagesUploadHandler(blobInfo, success, failure, dropzone, adam);
       },
     };
+    return imageUploadSettings;
   }
 
-  private static imagesUploadHandler(blobInfo: any, success: (imgPath: string) => any, failure: () => any, dropzone: Dropzone, adam: Adam) {
-    webpackConsoleLog('TinyMCE upload');
+  private static imagesUploadHandler(
+    blobInfo: BlobInfo,
+    success: (url: string) => void,
+    failure: (err: string) => void,
+    dropzone: Dropzone,
+    adam: Adam,
+  ): void {
+    consoleLogWebpack('TinyMCE upload');
 
     const formData = new FormData();
     formData.append('file', blobInfo.blob(), blobInfo.filename());
@@ -63,17 +71,15 @@ export class DefaultPaste {
     }).then(response =>
       response.json()
     ).then((response: AdamPostResponse) => {
-      webpackConsoleLog('TinyMCE upload data', response);
+      consoleLogWebpack('TinyMCE upload data', response);
       if (!response.Success) {
         alert(`Upload failed because: ${response.Error}`);
         return;
       }
-
       success(response.Path);
       adam.refresh();
     }).catch(error => {
-      webpackConsoleLog('TinyMCE upload error:', error);
+      consoleLogWebpack('TinyMCE upload error:', error);
     });
-
   }
 }

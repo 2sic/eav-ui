@@ -45,7 +45,7 @@ export class ViewsUsageComponent implements OnInit, OnDestroy {
         sortable: true, filter: 'agTextColumnFilter', valueGetter: pageIdValueGetter, cellClass: pageIdClassGetter,
       },
       {
-        headerName: 'Name', field: 'Name', flex: 2, minWidth: 250, sortable: true, filter: 'agTextColumnFilter',
+        headerName: 'Name', field: 'Name', flex: 2, minWidth: 250, sortable: true, sort: 'asc', filter: 'agTextColumnFilter',
         cellClass: nameClassGetter, onCellClicked: onNameClicked,
       },
       { headerName: 'Language', field: 'Language', width: 90, cellClass: 'no-outline', sortable: true, filter: 'agTextColumnFilter' },

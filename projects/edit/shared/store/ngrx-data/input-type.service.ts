@@ -1,24 +1,28 @@
 import { Injectable } from '@angular/core';
-import { EntityCollectionServiceBase, EntityCollectionServiceElementsFactory } from '@ngrx/data';
-import { map } from 'rxjs/operators';
-import { InputType } from '../../models/eav';
+import { EntityCollectionServiceElementsFactory } from '@ngrx/data';
+import { Observable } from 'rxjs';
+import { InputType } from '../../../../ng-dialogs/src/app/content-type-fields/models/input-type.model';
+import { BaseDataService } from './base-data.service';
 
 @Injectable({ providedIn: 'root' })
-export class InputTypeService extends EntityCollectionServiceBase<InputType> {
+export class InputTypeService extends BaseDataService<InputType> {
   constructor(serviceElementsFactory: EntityCollectionServiceElementsFactory) {
     super('InputType', serviceElementsFactory);
   }
 
-  /** Add new input types to the store */
-  addInputTypes(inputTypes: InputType[]) {
+  addInputTypes(inputTypes: InputType[]): void {
     this.addManyToCache(inputTypes);
   }
 
-  /** Get input type observable from the store */
-  getInputTypeById(type: string) {
-    return this.entities$.pipe(
-      map(inputTypes => inputTypes.find(inputType => inputType.Type === type))
-      // maybe add distinctUntilChanged()
-    );
+  getInputType(type: string): InputType {
+    return this.cache$.value.find(inputType => inputType.Type === type);
+  }
+
+  getInputTypes(): InputType[] {
+    return this.cache$.value;
+  }
+
+  getInputTypes$(): Observable<InputType[]> {
+    return this.cache$.asObservable();
   }
 }

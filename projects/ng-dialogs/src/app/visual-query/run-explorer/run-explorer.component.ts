@@ -1,8 +1,10 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { GoToDevRest } from '../../dev-rest';
 import { Context } from '../../shared/services/context';
-import { PipelineModel } from '../models/pipeline.model';
+import { PipelineModel } from '../models';
 import { VisualQueryService } from '../services/visual-query.service';
 import { calculateWarnings } from './run-explorer.helpers';
 
@@ -16,7 +18,12 @@ export class RunExplorerComponent implements OnInit {
   pipelineModel$: Observable<PipelineModel>;
   warnings$: Observable<string[]>;
 
-  constructor(private context: Context, private visualQueryService: VisualQueryService) { }
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private context: Context,
+    private visualQueryService: VisualQueryService,
+  ) { }
 
   ngOnInit() {
     this.pipelineModel$ = this.visualQueryService.pipelineModel$;
@@ -37,4 +44,8 @@ export class RunExplorerComponent implements OnInit {
     this.visualQueryService.saveAndRun(save, run);
   }
 
+  openRestApi() {
+    const queryGuid = this.visualQueryService.pipelineModel$.value.Pipeline.EntityGuid;
+    this.router.navigate([GoToDevRest.goToQuery(queryGuid)], { relativeTo: this.route });
+  }
 }

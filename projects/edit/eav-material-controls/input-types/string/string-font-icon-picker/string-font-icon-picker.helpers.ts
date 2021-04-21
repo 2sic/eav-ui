@@ -1,17 +1,16 @@
-import { IconOption, LoadedIcons } from './string-font-icon-picker.models';
+import { Dictionary } from '../../../../../ng-dialogs/src/app/shared/models/dictionary.model';
+import { IconOption } from './string-font-icon-picker.models';
 
 /** Calculates available css classes with className prefix. WARNING: Expensive operation */
 export function findAllIconsInCss(classPrefix: string, showPrefix: boolean) {
   const foundList: IconOption[] = [];
-  const duplicateDetector: LoadedIcons = {};
+  const duplicateDetector: Dictionary<boolean> = {};
 
   if (!classPrefix) { return foundList; }
 
   const truncateLabel = showPrefix ? 0 : classPrefix.length - 1;
 
-  // tslint:disable-next-line:prefer-for-of
-  for (let i = 0; i < document.styleSheets.length; i++) {
-    const sheet = document.styleSheets[i] as CSSStyleSheet;
+  for (const sheet of Array.from(document.styleSheets)) {
     if (!sheet) { continue; }
 
     let rules: CSSRuleList;
@@ -25,9 +24,7 @@ export function findAllIconsInCss(classPrefix: string, showPrefix: boolean) {
     }
     if (!rules) { continue; }
 
-    // tslint:disable-next-line:prefer-for-of
-    for (let j = 0; j < rules.length; j++) {
-      const rule = rules[j] as CSSStyleRule;
+    for (const rule of Array.from(rules) as CSSStyleRule[]) {
       if (!(rule.selectorText && rule.selectorText.startsWith(classPrefix))) { continue; }
 
       const selector = rule.selectorText;

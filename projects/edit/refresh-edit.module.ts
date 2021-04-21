@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ActivatedRoute, Router } from '@angular/router';
 import { EditParams } from './edit-matcher.models';
-import { calculatePathFromRoot } from './shared/services/edit-routing.helpers';
+import { UrlHelpers } from './shared/helpers';
 
 @Component({
   template: '',
@@ -15,7 +15,7 @@ export class RefreshEditComponent {
     const oldEditUrl = `edit/refresh/${params.items}`;
     const newEditUrl = `edit/${params.items}`;
 
-    const currentUrl = calculatePathFromRoot(route);
+    const currentUrl = UrlHelpers.calculatePathFromRoot(route);
     const lastIndex = currentUrl.lastIndexOf(oldEditUrl);
     if (lastIndex <= 0) { return; }
     const newUrl = currentUrl.substring(0, lastIndex) + currentUrl.substring(lastIndex).replace(oldEditUrl, newEditUrl);

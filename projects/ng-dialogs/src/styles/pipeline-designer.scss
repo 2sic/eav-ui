@@ -1,3 +1,10 @@
+@import "./material-icon.styles.scss";
+@import "../../../edit/assets/styles/variables";
+
+$data-source-color: #eeeeef;
+$data-source-padding: 0.5em;
+$icon-size: 22px;
+
 #pipeline-root {
   width: 100%;
   height: 100%;
@@ -10,37 +17,16 @@
   }
 
   .mat-icon {
-    font-size: 16px;
-    width: 16px;
-    height: 16px;
-  }
-
-  .new-connection {
-    font-size: 32px;
-    width: 32px;
-    height: 32px;
+    font-size: $icon-size;
+    width: $icon-size;
+    height: $icon-size;
   }
 
   .dataSource .description .mat-icon,
   .dataSource .name .mat-icon {
-    font-size: 12px;
-    width: 12px;
-    height: 12px;
-  }
-
-  .actions {
-    width: 215px;
-    position: fixed;
-    right: 0;
-  }
-
-  .actions * {
-    margin: 4px 0 4px 0;
-  }
-
-  .actions .panel-heading {
-    height: 45px;
-    margin: 0;
+    font-size: 11px;
+    width: 11px;
+    height: 11px;
   }
 
   .dataSource {
@@ -58,11 +44,12 @@
     text-align: center;
     z-index: 20;
     position: absolute;
-    background-color: #eeeeef;
+    background-color: $data-source-color;
     color: black;
     font-family: helvetica;
-    padding: 0.5em;
+    padding: $data-source-padding;
     font-size: 0.9em;
+    user-select: none;
   }
 
   .dataSource:hover {
@@ -78,9 +65,11 @@
   .dataSource .description {
     cursor: text !important;
     display: inline-block;
-    max-width: 215px;
+    max-width: 180px;
     max-height: 16px;
     overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 
   .dataSource .name {
@@ -106,35 +95,65 @@
     display: none;
   }
 
-  .dataSource .delete {
+  .dataSource .add-endpoint {
+    position: absolute;
+    top: -15px;
+    right: -8px;
+    cursor: pointer;
+    color: orange;
+    display: none;
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
+  }
+
+  .dataSource .add-endpoint:hover {
+    color: #D98D00;
+  }
+
+  .dataSource .many-in {
     display: none;
     position: absolute;
-    color: #aaaaaa;
+    color: orange;
+    right: -8px;
+    top: 33px;
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
+  }
+
+  .dataSource .actions {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    top: 12px;
+  }
+
+  .dataSource .actions.left {
+    left: 5px;
+  }
+
+  .dataSource .actions.right {
     right: 0;
-    top: 32px;
+  }
+
+  .dataSource .actions .mat-icon:not(:first-of-type) {
+    margin-left: 2px;
+  }
+
+  .dataSource .type-info {}
+
+  .dataSource .configure {
+    display: none;
+    color: $accent-color;
   }
 
   .dataSource .help {
     display: none;
-    position: absolute;
-    color: #aaaaaa;
-    left: 0;
-    top: 32px;
   }
 
-  .dataSource .configure {
+  .dataSource .delete {
     display: none;
-    position: absolute;
-    top: 0;
-    left: 0;
-  }
-
-  .dataSource .type-info {
-    position: absolute;
-    top: 10px;
-    left: 0;
-    padding: 3px;
-    font-size: large;
   }
 
   .dataSource .show-hover-inline {
@@ -148,6 +167,7 @@
   /* show all hidden elements */
   .dataSource:hover .configure,
   .dataSource:hover .delete,
+  .dataSource:hover .many-in,
   .dataSource:hover .help,
   .dataSource:hover .typename,
   .dataSource:hover .add-endpoint {
@@ -155,20 +175,29 @@
     display: block;
   }
 
+  /* outline inner icons */
+  .dataSource .type-info,
+  .dataSource .configure,
+  .dataSource .delete,
+  .dataSource .help {
+    background-color: $data-source-color;
+    border-radius: 50%;
+    border: 1px solid $data-source-color;
+  }
 
-  .sourceEndpoint:after,
-  .targetEndpoint:after {
-    font-family: 'Material Icons Outlined';
-    content: "arrow_drop_up";
-    font-feature-settings: 'liga';
-    margin-top: -6px;
-    margin-left: -6px;
-    color: #000;
-    font-size: 32px;
-    border-radius: 10px;
-    width: 32px;
-    display: inline-block;
-    text-align: center;
+  .sourceEndpoint,
+  .targetEndpoint {
+    &.dynamic {
+      color: orange;
+    }
+
+    &.required {
+      color: red;
+    }
+
+    &::after {
+      @include materialIcon("arrow_drop_up", 32px);
+    }
   }
 
   .jtk-endpoint,
@@ -183,10 +212,12 @@
     z-index: 101;
   }
 
-
   /* The endpoint needs a round radius, because otherwise the hover won't look good '*/
   .jtk-endpoint {
     border-radius: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .jtk-endpoint.active,
@@ -211,7 +242,7 @@
     color: #444;
     opacity: 0.8;
     filter: alpha(opacity=80);
-    cursor: pointer;
+    user-select: none;
   }
 
   .endpointSourceLabel.jtk-hover,
@@ -222,9 +253,15 @@
     border: 1px solid white;
     z-index: 100;
     opacity: 1;
+
+    &::after {
+      @include materialIcon("edit", 11px);
+      margin-left: 2px;
+    }
   }
 
   .streamEntitiesCount {
+    cursor: pointer;
     background: #93ceff;
     color: black;
     padding: 2px;
@@ -232,32 +269,21 @@
     opacity: 0.8;
     min-width: 25px;
     text-align: center;
-  }
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-  .add-endpoint {
-    position: absolute;
-    top: -15px;
-    right: 5px;
-    width: 1em;
-    height: 1em;
-    cursor: pointer;
-    font-size: large;
-    color: orange;
-    display: none
-  }
+    &:not(.streamEntitiesError):hover::after {
+      @include materialIcon("find_in_page", 18px);
+    }
 
-  .add-endpoint:hover {
-    color: #D98D00;
-  }
+    &.streamEntitiesError {
+      width: 32px;
 
-  .noselect {
-    cursor: default;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+      &::after {
+        @include materialIcon("warning", 18px);
+      }
+    }
   }
 
 }

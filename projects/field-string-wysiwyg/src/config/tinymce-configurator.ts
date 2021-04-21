@@ -1,41 +1,35 @@
-import { Connector } from '../../../edit-types';
-import { WysiwygReconfigure } from '../../../edit-types/src/WysiwygReconfigure';
-import { FeaturesGuidsConstants as FeatGuids } from '../../../shared/features-guids.constants';
-import * as contentStyle from '../editor/tinymce-content.css';
-import { DefaultOptions, DefaultPaste, DefaultPlugins } from './defaults';
-import { AddOnSettings } from './defaults/add-on-settings';
+import { Editor, RawEditorSettings } from 'tinymce';
+import { AddOnSettings, Connector } from '../../../edit-types';
+import { WysiwygReconfigure } from '../../../edit-types';
+import { FeaturesConstants } from '../../../edit/shared/constants';
+import { EavWindow } from '../../../ng-dialogs/src/app/shared/models/eav-window.model';
+import * as contentStyle from '../editor/tinymce-content.scss';
+import { DefaultAddOnSettings, DefaultOptions, DefaultPaste, DefaultPlugins } from './defaults';
 import { TinyMceToolbars } from './toolbars';
 import { TinyMceTranslations } from './translations';
-// tslint:disable: curly
 
-const reconfigErr = `Very likely an error in your reconfigure code. Check http://r.2sxc.org/field-wysiwyg`;
+declare const window: EavWindow;
+const reconfigErr = `Very likely an error in your reconfigure code. Check https://r.2sxc.org/field-wysiwyg`;
 
-/**
- * This object will configure the tinyMCE
- */
+/** This object will configure the TinyMCE */
 export class TinyMceConfigurator {
-  /** language used - will be set by the constructor */
+  addOnSettings: AddOnSettings = { ...DefaultAddOnSettings };
+
   private language: string;
 
-  /** Standard constructor */
-  constructor(
-    /** TinyMCE editorManager - in charge of buttons, i18n etc. */
-    public editorManager: any,
-    private connector: Connector<any>,
-    /** Reconfiguration object - which can optionally change/extend/enhance stuff */
-    private reconfigure: WysiwygReconfigure,
-  ) {
-    this.language = connector._experimental.translateService.currentLang;
+  constructor(private connector: Connector<string>, private reconfigure: WysiwygReconfigure) {
+    this.language = this.connector._experimental.translateService.currentLang;
 
     // call optional reconfiguration
     if (reconfigure) {
-      reconfigure.initManager?.(editorManager);
+      reconfigure.initManager?.(window.tinymce);
       if (reconfigure.configureAddOns) {
         const changedAddOns = reconfigure.configureAddOns(this.addOnSettings);
-        if (changedAddOns)
+        if (changedAddOns) {
           this.addOnSettings = changedAddOns;
-        else
+        } else {
           console.error(`reconfigure.configureAddOns(...) didn't return a value. ${reconfigErr}`);
+        }
       }
 
       this.addOnSettings = reconfigure.configureAddOns?.(this.addOnSettings) || this.addOnSettings;
@@ -43,71 +37,57 @@ export class TinyMceConfigurator {
     }
 
     this.warnAboutCommonSettingsIssues();
-
   }
 
-  /** options to be used - can be modified before it's applied */
-  private options = { ...DefaultOptions, ...{ plugins: [...DefaultPlugins] } };  // copy the object, so changes don't affect original
-
-  public addOnSettings = { ...AddOnSettings };
-
-  private warnAboutCommonSettingsIssues() {
+  private warnAboutCommonSettingsIssues(): void {
     const contentCss = this.connector.field.settings.ContentCss;
-    if (contentCss && contentCss?.toLocaleLowerCase().indexOf('file:') >= 0)
+    if (contentCss && contentCss?.toLocaleLowerCase().includes('file:')) {
       console.error(`Found a setting for wysiwyg ContentCss but it should be a real link, got this instead: '${contentCss}'`);
+    }
   }
 
-  /**
-   * Construct TinyMce options
-   */
-  buildOptions(containerClass: string, fixedToolbarClass: string, inlineMode: boolean, setup: (editor: any) => any) {
+  /** Construct TinyMCE options */
+  buildOptions(containerClass: string, fixedToolbarClass: string, inlineMode: boolean, setup: (editor: Editor) => void): RawEditorSettings {
     const connector = this.connector;
     const exp = connector._experimental;
     const buttonSource = connector.field.settings.ButtonSource;
     const buttonAdvanced = connector.field.settings.ButtonAdvanced;
     const dropzone = exp.dropzone;
     const adam = exp.adam;
-    if (dropzone == null || adam == null) console.error(`Dropzone or ADAM Config not available, some things won't work`);
-    // enable content blocks if there is another field after this one and it's type is entity-content-blocks
-    const contentBlocksEnabled = (exp.allInputTypeNames.length > connector.field.index + 1)
-      ? exp.allInputTypeNames[connector.field.index + 1].inputType === 'entity-content-blocks'
-      : false;
 
-    // build options based on defaults + a few instance specific properties
-    let options = {
-      ...this.options,
-      // plugins: this.plugins,
+    const contentBlocksEnabled = exp.allInputTypeNames[connector.field.index + 1]?.inputType === 'entity-content-blocks';
+    const toolbarModes = TinyMceToolbars.build(contentBlocksEnabled, inlineMode, buttonSource, buttonAdvanced);
+
+    if (dropzone == null || adam == null) {
+      console.error(`Dropzone or ADAM Config not available, some things won't work`);
+    }
+
+    const options: RawEditorSettings = {
+      ...DefaultOptions,
+      ...{ plugins: [...DefaultPlugins] },
       selector: `.${containerClass}`,
       fixed_toolbar_container: `.${fixedToolbarClass}`,
       content_style: contentStyle.default,
       content_css: connector.field.settings?.ContentCss,
-      setup, // callback function during setup
+      setup,
+      ...toolbarModes,
+      ...TinyMceTranslations.getLanguageOptions(this.language),
+      ...(exp.isFeatureEnabled(FeaturesConstants.PasteWithFormatting) ? DefaultPaste.formattedText : {}),
+      ...(exp.isFeatureEnabled(FeaturesConstants.PasteImageFromClipboard) ? DefaultPaste.images(dropzone, adam) : {}),
     };
-
-    const modesOptions = TinyMceToolbars.build(contentBlocksEnabled, inlineMode, buttonSource, buttonAdvanced);
-    options = { ...options, ...modesOptions };
-
-    // TODO: SPM - unsure if this actually does anything, as we already add all i18n?
-    options = { ...options, ...TinyMceTranslations.getLanguageOptions(this.language) };
-
-    if (exp.isFeatureEnabled(FeatGuids.PasteWithFormatting))
-      options = { ...options, ...DefaultPaste.formattedText };
-
-    if (exp.isFeatureEnabled(FeatGuids.PasteImageFromClipboard))
-      options = { ...options, ...DefaultPaste.images(dropzone, adam) };
 
     if (this.reconfigure?.configureOptions) {
       const newOptions = this.reconfigure.configureOptions(options);
-      if (newOptions) return newOptions;
+      if (newOptions) {
+        return newOptions;
+      }
       console.error(`reconfigure.configureOptions(options) didn't return an options object. ${reconfigErr}`);
     }
     return options;
   }
 
-  addTranslations() {
-    TinyMceTranslations.addTranslations(this.language,
-      this.connector._experimental.translateService,
-      this.editorManager);
-    this.reconfigure?.addTranslations?.(this.editorManager, this.language);
+  addTranslations(): void {
+    TinyMceTranslations.addTranslations(this.language, this.connector._experimental.translateService);
+    this.reconfigure?.addTranslations?.(window.tinymce, this.language);
   }
 }

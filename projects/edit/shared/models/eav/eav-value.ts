@@ -1,26 +1,23 @@
-import { Value1 } from '../json-format-v1/value1';
-import { EavDimensions } from './eav-dimensions';
+import { EavDimension } from '.';
+import { Value1 } from '../json-format-v1';
 
 export class EavValue<T> {
-  value: T;
-  dimensions: EavDimensions<T>[];
+  Value: T;
+  Dimensions: EavDimension[];
 
-  constructor(value: T, dimensions: EavDimensions<T>[]) {
-    this.value = value;
-    this.dimensions = dimensions;
+  static create<T>(value: T, dimensions: EavDimension[]): EavValue<T> {
+    const eavValue: EavValue<T> = {
+      Value: value,
+      Dimensions: dimensions,
+    };
+    return eavValue;
   }
 
-  /** Create Eav Value from typed json Value1 */
-  public static create<T>(value1: Value1<T>): EavValue<T>[] {
-    const newEavValueArray: EavValue<T>[] = [];
-
-    Object.keys(value1).forEach(value1Key => {
-      const dimensions: EavDimensions<T>[] = [];
-      value1Key.split(',').forEach((language: any) => {
-        dimensions.push(new EavDimensions<T>(language));
-      });
-      newEavValueArray.push(new EavValue(value1[value1Key], dimensions));
+  static convert<T>(value1: Value1<T>): EavValue<T>[] {
+    const values = Object.entries(value1).map(([langs, value]) => {
+      const dimensions = langs.split(',').map(lang => EavDimension.create(lang));
+      return this.create(value, dimensions);
     });
-    return newEavValueArray;
+    return values;
   }
 }

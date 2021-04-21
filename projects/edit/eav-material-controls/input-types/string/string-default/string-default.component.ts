@@ -1,32 +1,58 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
+import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
-import { EavService } from '../../../../shared/services/eav.service';
+import { EavService, FieldsSettingsService } from '../../../../shared/services';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { BaseComponent } from '../../base/base.component';
+import { StringDefaultLogic } from './string-default-logic';
+import { StringDefaultTemplateVars } from './string-default.models';
 
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'string-default',
   templateUrl: './string-default.component.html',
   styleUrls: ['./string-default.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
-@InputType({
-  wrapper: [WrappersConstants.EavLocalizationWrapper],
+@ComponentMetadata({
+  wrappers: [WrappersConstants.LocalizationWrapper],
 })
 export class StringDefaultComponent extends BaseComponent<string> implements OnInit, OnDestroy {
-  rowCount$: Observable<number>;
+  templateVars$: Observable<StringDefaultTemplateVars>;
 
-  constructor(eavService: EavService, validationMessagesService: ValidationMessagesService) {
-    super(eavService, validationMessagesService);
+  constructor(
+    eavService: EavService,
+    validationMessagesService: ValidationMessagesService,
+    fieldsSettingsService: FieldsSettingsService,
+  ) {
+    super(eavService, validationMessagesService, fieldsSettingsService);
+    StringDefaultLogic.importMe();
   }
 
   ngOnInit() {
     super.ngOnInit();
-    this.rowCount$ = this.settings$.pipe(map(settings => settings.RowCount || 1));
+    const rowCount$ = this.settings$.pipe(map(settings => settings.RowCount));
+
+    this.templateVars$ = combineLatest([
+      combineLatest([rowCount$, this.label$, this.placeholder$, this.required$]),
+      combineLatest([this.disabled$, this.touched$]),
+    ]).pipe(
+      map(([
+        [rowCount, label, placeholder, required],
+        [disabled, touched],
+      ]) => {
+        const templateVars: StringDefaultTemplateVars = {
+          rowCount,
+          label,
+          placeholder,
+          required,
+          disabled,
+          touched,
+        };
+        return templateVars;
+      }),
+    );
   }
 
   ngOnDestroy() {

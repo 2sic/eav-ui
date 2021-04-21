@@ -1,5 +1,5 @@
-export interface FormValues {
-  [fieldName: string]: FormValue;
-}
+import { FieldValue } from '../../../edit-types';
 
-export type FormValue = any;
+export interface FormValues {
+  [fieldName: string]: FieldValue;
+}

@@ -1,54 +1,50 @@
 
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
-import { FieldSettings } from '../../../../../edit-types';
-import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
-import { EavService } from '../../../../shared/services/eav.service';
-import { EditRoutingService } from '../../../../shared/services/edit-routing.service';
-import { EntityService } from '../../../../shared/services/entity.service';
+import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
+import { EavService, EditRoutingService, EntityService, FieldsSettingsService } from '../../../../shared/services';
+import { EntityCacheService } from '../../../../shared/store/ngrx-data';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { EntityDefaultComponent } from '../entity-default/entity-default.component';
+import { EntityContentBlocksLogic } from './entity-content-blocks-logic';
 
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'entity-content-blocks',
   templateUrl: '../entity-default/entity-default.component.html',
   styleUrls: ['../entity-default/entity-default.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
-@InputType({})
+@ComponentMetadata({})
 export class EntityContentBlockComponent extends EntityDefaultComponent implements OnInit, OnDestroy {
 
   constructor(
     eavService: EavService,
     validationMessagesService: ValidationMessagesService,
+    fieldsSettingsService: FieldsSettingsService,
     entityService: EntityService,
     translate: TranslateService,
     editRoutingService: EditRoutingService,
     snackBar: MatSnackBar,
+    entityCacheService: EntityCacheService,
   ) {
-    super(eavService, validationMessagesService, entityService, translate, editRoutingService, snackBar);
+    super(
+      eavService,
+      validationMessagesService,
+      fieldsSettingsService,
+      entityService, translate,
+      editRoutingService,
+      snackBar,
+      entityCacheService,
+    );
+    EntityContentBlocksLogic.importMe();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     super.ngOnInit();
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     super.ngOnDestroy();
-  }
-
-  /** Override function in superclass */
-  calculateSettings(settings: FieldSettings) {
-    const fixedSettings = super.calculateSettings(settings);
-    fixedSettings.AllowMultiValue = false;
-    fixedSettings.EnableRemove = true;
-    fixedSettings.AllowMultiValue = true;
-    fixedSettings.EnableAddExisting = false;
-    fixedSettings.EnableCreate = false;
-    fixedSettings.EnableEdit = false;
-    fixedSettings.EntityType = 'ContentGroupReference';
-    return fixedSettings;
   }
 }

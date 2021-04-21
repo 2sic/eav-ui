@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, HostBinding, OnDestroy, OnInit } fr
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, forkJoin } from 'rxjs';
-import { Language } from '../../../../edit/shared/models/eav/language';
+import { Language } from '../../../../edit/shared/models';
 import { ContentType } from '../app-administration/models/content-type.model';
 import { AppDialogConfigService } from '../app-administration/services/app-dialog-config.service';
 import { ContentTypesService } from '../app-administration/services/content-types.service';

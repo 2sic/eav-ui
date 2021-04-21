@@ -26,22 +26,10 @@
 </div>
 
 <!-- preview -->
-<div class="c-hyperlink-default-field-preview" *ngIf="{
-  value: value$ | async,
-  preview: preview$ | async,
-  label: label$ | async,
-  placeholder: placeholder$ | async,
-  invalid: invalid$ | async,
-  touched: control.touched,
-  required: required$ | async,
-  disabled: disabled$ | async,
-  adamButton: adamButton$ | async,
-  pageButton: pageButton$ | async,
-  showValidation: showValidation$ | async
-} as data">
+<div class="c-hyperlink-default-field-preview" *ngIf="templateVars$ | async as data">
   <div class="c-ew__preview" fxLayout="row" fxLayoutAlign="start start" [ngClass]="{
     'c-ew__preview--disabled': data.disabled,
-    'c-ew__preview--last-in-group': config.field.isLastInGroup
+    'c-ew__preview--last-in-group': config.isLastInGroup
   }">
     <!-- image / icon -->
     <div class="thumbnail-before-input" [matTooltip]="'Fields.Hyperlink.Default.Fullscreen' | translate"
@@ -67,7 +55,7 @@
         }">
           <input matInput [matTooltip]="'Fields.Hyperlink.Default.Tooltip' | translate" matTooltipPosition="above"
             [placeholder]="data.placeholder" (change)="setValue($event)" [disabled]="data.disabled"
-            (blur)="control.markAsTouched()" [value]="data.value" (keyup)="setValue($event)" appPasteClipboardImage
+            (blur)="markAsTouched()" [value]="data.value" (keyup)="setValue($event)" appPasteClipboardImage
             [config]="config" [elementType]="'input'">
           <div matSuffix fxLayoutAlign="center center" *ngIf="data.adamButton || data.pageButton">
             <div class="c-ew__preview-suffix-text" fxHide fxShow.gt-xs [ngClass]="{

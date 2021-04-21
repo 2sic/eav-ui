@@ -9,6 +9,7 @@ export class InputTypeConstants {
     public static readonly StringWysiwyg = 'string-wysiwyg';
     // Boolean
     public static readonly BooleanDefault = 'boolean-default';
+    public static readonly BooleanTristate = 'boolean-tristate';
     // DateTime
     public static readonly DatetimeDefault = 'datetime-default';
     // Empty
@@ -25,6 +26,7 @@ export class InputTypeConstants {
     // Custom
     public static readonly ExternalWebComponent = 'external-web-component';
     public static readonly CustomGPS = 'custom-gps';
+    public static readonly CustomJsonEditor = 'custom-json-editor';
     public static readonly CustomDefault = 'custom-default';
     // Old
     public static readonly OldTypeDropdown = 'dropdown';

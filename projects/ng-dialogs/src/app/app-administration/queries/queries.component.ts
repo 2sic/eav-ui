@@ -47,7 +47,7 @@ export class QueriesComponent implements OnInit, OnDestroy {
       },
       {
         headerName: 'Name', field: 'Name', flex: 2, minWidth: 250, cellClass: 'primary-action highlight', sortable: true,
-        filter: 'agTextColumnFilter', onCellClicked: this.openVisualQueryDesigner.bind(this),
+        sort: 'asc', filter: 'agTextColumnFilter', onCellClicked: this.openVisualQueryDesigner.bind(this),
       },
       {
         headerName: 'Description', field: 'Description', flex: 2, minWidth: 250, cellClass: 'no-outline', sortable: true,
@@ -104,7 +104,7 @@ export class QueriesComponent implements OnInit, OnDestroy {
     switch (action) {
       case QueryActions.Edit: return this.editQuery(query);
       case QueryActions.Rest:
-        return this.router.navigate([GoToDevRest.goToQuery(query)], { relativeTo: this.route.firstChild });
+        return this.router.navigate([GoToDevRest.goToQuery(query.Guid)], { relativeTo: this.route.firstChild });
       case QueryActions.Clone: return this.cloneQuery(query);
       case QueryActions.Permissions: return this.openPermissions(query);
       case QueryActions.Export: return this.exportQuery(query);

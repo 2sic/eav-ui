@@ -4,18 +4,18 @@ import { Observable } from 'rxjs';
 import { InputTypeName } from './InputTypeName';
 import { Dropzone } from './Dropzone';
 import { Adam } from './Adam';
-import { DnnBridgeConnectorParams } from '../../edit/eav-material-controls/input-types/dnn-bridge/dnn-bridge.models';
+import { DnnBridgeConnectorParams } from './DnnBridgeConnectorParams';
+import { FieldValue } from './FieldValue';
 
 export interface ExperimentalProps {
   entityGuid: string;
   allInputTypeNames: InputTypeName[];
   formGroup: FormGroup;
-  translateService: TranslateService; // for WYSIWYG
+  translateService: TranslateService;
   isExpanded$: Observable<boolean>;
   dropzone: Dropzone;
   adam: Adam;
-
-  updateField(name: string, value: any): void;
+  updateField(name: string, value: FieldValue): void;
   setFocused(focused: boolean): void;
   isFeatureEnabled(guid: string): boolean;
   openPagePicker(params: DnnBridgeConnectorParams, callback: (value: any) => void): void;

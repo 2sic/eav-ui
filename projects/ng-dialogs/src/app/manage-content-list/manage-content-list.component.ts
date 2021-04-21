@@ -100,7 +100,7 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
     this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
   }
 
-  drop(event: CdkDragDrop<any[]>) {
+  drop(event: CdkDragDrop<GroupHeader[]>) {
     const items = [...this.items$.value];
     moveItemInArray(items, event.previousIndex, event.currentIndex);
     this.items$.next(items);

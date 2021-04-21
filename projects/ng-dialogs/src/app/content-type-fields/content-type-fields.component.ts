@@ -1,11 +1,8 @@
-import star from '!raw-loader!./assets/star-24px.svg';
 // tslint:disable-next-line:max-line-length
 import { AllCommunityModules, CellClickedEvent, FilterChangedEvent, GridApi, GridOptions, GridReadyEvent, RowDragEvent, SortChangedEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { MatIconRegistry } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { BehaviorSubject, forkJoin, Subscription } from 'rxjs';
 import { filter, map, mergeMap, pairwise, share, startWith } from 'rxjs/operators';
@@ -39,7 +36,7 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
   modules = AllCommunityModules;
   gridOptions: GridOptions = {
     ...defaultGridOptions,
-    getRowClass(params: any) {
+    getRowClass(params) {
       const field: Field = params.data;
       return field.InputType === InputTypeConstants.EmptyDefault ? 'group-row' : '';
     },
@@ -101,11 +98,7 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
     private contentTypesService: ContentTypesService,
     private contentTypesFieldsService: ContentTypesFieldsService,
     private snackBar: MatSnackBar,
-    private matIconRegistry: MatIconRegistry,
-    private domSanitizer: DomSanitizer,
-  ) {
-    this.matIconRegistry.addSvgIconLiteral('star', this.domSanitizer.bypassSecurityTrustHtml(star));
-  }
+  ) { }
 
   ngOnInit() {
     this.fetchFields();

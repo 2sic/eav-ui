@@ -1,18 +1,16 @@
-<ng-container *ngIf="{
-  showValidation: showValidation$ | async
-} as data">
+<ng-container *ngIf="templateVars$ | async as data">
 
   <div class="picker-wrapper">
     <mat-form-field [formGroup]="group" appearance="standard" color="accent">
-      <mat-select [formControlName]="config.field.name" [required]="required$ | async">
+      <mat-select [formControlName]="config.fieldName" [required]="data.required">
         <mat-option value="">(no file selected)</mat-option>
-        <mat-option *ngFor="let file of templateOptions$ | async" [value]="file">
+        <mat-option *ngFor="let file of data.templateOptions" [value]="file">
           {{ file }}
         </mat-option>
       </mat-select>
-      <mat-label>{{ label$ | async }}</mat-label>
+      <mat-label>{{ data.label }}</mat-label>
     </mat-form-field>
-    <button mat-icon-button matTooltip="Create a new file" [disabled]="disabled$ | async" (click)="createTemplate()">
+    <button mat-icon-button matTooltip="Create a new file" [disabled]="data.disabled" (click)="createTemplate()">
       <mat-icon>add</mat-icon>
     </button>
   </div>

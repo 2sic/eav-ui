@@ -48,7 +48,7 @@ export class AppsListComponent implements OnInit, OnDestroy {
       },
       {
         headerName: 'Name', field: 'Name', flex: 2, minWidth: 250, cellClass: 'apps-list-primary-action highlight', sortable: true,
-        filter: 'agTextColumnFilter', onCellClicked: this.openApp.bind(this), cellRenderer: (params: ICellRendererParams) => {
+        sort: 'asc', filter: 'agTextColumnFilter', onCellClicked: this.openApp.bind(this), cellRenderer: (params: ICellRendererParams) => {
           const app: App = params.data;
           if (app.Thumbnail != null) {
             return `

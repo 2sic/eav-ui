@@ -29,16 +29,13 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
 import { DropzoneModule } from 'ngx-dropzone-wrapper';
 import { SharedComponentsModule } from '../../ng-dialogs/src/app/shared/shared-components.module';
-import { ChangeAnchorTargetDirective } from '../shared/directives/change-anchor-target.directive';
-import { PasteClipboardImageDirective } from '../shared/directives/paste-clipboard-image.directive';
-import { AssetsService } from '../shared/services/assets.service';
-import { FileTypeService } from '../shared/services/file-type.service';
-import { ScriptsLoaderService } from '../shared/services/scripts-loader.service';
+import { ChangeAnchorTargetDirective, PasteClipboardImageDirective } from '../shared/directives';
+import { AssetsService, FileTypeService, ScriptsLoaderService } from '../shared/services';
 import { AdamAttachWrapperComponent } from './adam/adam-attach-wrapper/adam-attach-wrapper.component';
 import { AdamBrowserComponent } from './adam/adam-browser/adam-browser.component';
 import { AdamHintComponent } from './adam/adam-hint/adam-hint.component';
 import { DropzoneWrapperComponent } from './adam/dropzone-wrapper/dropzone-wrapper.component';
-import { SaveStatusDialogComponent } from './dialogs/save-status-dialog/save-status-dialog.component';
+import { PublishStatusDialogComponent } from './dialogs/publish-status-dialog/publish-status-dialog.component';
 import { SnackBarSaveErrorsComponent } from './dialogs/snack-bar-save-errors/snack-bar-save-errors.component';
 import { SnackBarUnsavedChangesComponent } from './dialogs/snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
 import { BooleanDefaultComponent } from './input-types/boolean/boolean-default/boolean-default.component';
@@ -64,19 +61,19 @@ import { StringDropdownComponent } from './input-types/string/string-dropdown/st
 import { StringFontIconPickerComponent } from './input-types/string/string-font-icon-picker/string-font-icon-picker.component';
 import { StringTemplatePickerComponent } from './input-types/string/string-template-picker/string-template-picker.component';
 import { StringUrlPathComponent } from './input-types/string/string-url-path/string-url-path.component';
-import { EavLanguageSwitcherComponent } from './localization/eav-language-switcher/eav-language-switcher.component';
-import { LinkToOtherLanguageComponent } from './localization/link-to-other-language/link-to-other-language.component';
-import { TranslateGroupMenuComponent } from './localization/translate-group-menu/translate-group-menu.component';
+import { EntityTranslateMenuComponent } from './localization/entity-translate-menu/entity-translate-menu.component';
+import { LanguageSwitcherComponent } from './localization/language-switcher/language-switcher.component';
+import { TranslateMenuDialogComponent } from './localization/translate-menu-dialog/translate-menu-dialog.component';
+import { TranslateMenuComponent } from './localization/translate-menu/translate-menu.component';
 import { ValidationMessagesService } from './validators/validation-messages-service';
 import { CollapsibleWrapperComponent } from './wrappers';
-import { CollapsibleFieldWrapperComponent } from './wrappers/collapsible-field-wrapper/collapsible-field-wrapper.component';
-import { EavLocalizationComponent } from './wrappers/eav-localization-wrapper/eav-localization-wrapper.component';
 import { EntityExpandableWrapperComponent } from './wrappers/entity-expandable-wrapper/entity-expandable-wrapper.component';
 import { ExpandableWrapperComponent } from './wrappers/expandable-wrapper/expandable-wrapper.component';
 import { FieldHelperTextComponent } from './wrappers/field-helper-text/field-helper-text.component';
 import { HiddenWrapperComponent } from './wrappers/hidden-wrapper/hidden-wrapper.component';
 import { HyperlinkDefaultExpandableWrapperComponent } from './wrappers/hyperlink-default-expandable-wrapper/hyperlink-default-expandable-wrapper.component';
 import { HyperlinkLibraryExpandableWrapperComponent } from './wrappers/hyperlink-library-expandable-wrapper/hyperlink-library-expandable-wrapper.component';
+import { LocalizationWrapperComponent } from './wrappers/localization-wrapper/localization-wrapper.component';
 
 @NgModule({
   declarations: [
@@ -92,25 +89,26 @@ import { HyperlinkLibraryExpandableWrapperComponent } from './wrappers/hyperlink
     DatetimeDefaultComponent,
     EmptyDefaultComponent,
     NumberDefaultComponent,
-    EavLocalizationComponent,
+    LocalizationWrapperComponent,
     EntityDefaultComponent,
     HyperlinkDefaultComponent,
     AdamBrowserComponent,
     AdamHintComponent,
     AdamAttachWrapperComponent,
     HyperlinkLibraryComponent,
-    EavLanguageSwitcherComponent,
+    LanguageSwitcherComponent,
     PasteClipboardImageDirective,
     ChangeAnchorTargetDirective,
     HiddenWrapperComponent,
     DnnBridgeComponent,
-    SaveStatusDialogComponent,
+    PublishStatusDialogComponent,
     ExpandableWrapperComponent,
     SnackBarUnsavedChangesComponent,
     SnackBarSaveErrorsComponent,
     FieldHelperTextComponent,
-    TranslateGroupMenuComponent,
-    LinkToOtherLanguageComponent,
+    EntityTranslateMenuComponent,
+    TranslateMenuComponent,
+    TranslateMenuDialogComponent,
     EntityExpandableWrapperComponent,
     EntityDefaultListComponent,
     EntityDefaultSearchComponent,
@@ -119,7 +117,6 @@ import { HyperlinkLibraryExpandableWrapperComponent } from './wrappers/hyperlink
     DropzoneWrapperComponent,
     HyperlinkLibraryExpandableWrapperComponent,
     EntityContentBlockComponent,
-    CollapsibleFieldWrapperComponent,
     ExternalWebComponentComponent,
     ConnectorComponent,
     CustomDefaultComponent,
@@ -164,7 +161,7 @@ import { HyperlinkLibraryExpandableWrapperComponent } from './wrappers/hyperlink
     CollapsibleWrapperComponent,
     DatetimeDefaultComponent,
     AdamAttachWrapperComponent,
-    EavLocalizationComponent,
+    LocalizationWrapperComponent,
     EmptyDefaultComponent,
     EntityDefaultComponent,
     EntityQueryComponent,
@@ -175,7 +172,7 @@ import { HyperlinkLibraryExpandableWrapperComponent } from './wrappers/hyperlink
     DnnBridgeComponent,
     HyperlinkLibraryComponent,
     NumberDefaultComponent,
-    SaveStatusDialogComponent,
+    PublishStatusDialogComponent,
     SnackBarUnsavedChangesComponent,
     SnackBarSaveErrorsComponent,
     StringDefaultComponent,
@@ -184,18 +181,22 @@ import { HyperlinkLibraryExpandableWrapperComponent } from './wrappers/hyperlink
     StringFontIconPickerComponent,
     StringUrlPathComponent,
     StringTemplatePickerComponent,
-    LinkToOtherLanguageComponent,
+    TranslateMenuDialogComponent,
     HyperlinkDefaultExpandableWrapperComponent,
     DropzoneWrapperComponent,
     HyperlinkLibraryExpandableWrapperComponent,
     EntityContentBlockComponent,
-    CollapsibleFieldWrapperComponent,
     ExternalWebComponentComponent,
     ConnectorComponent,
     CustomDefaultComponent,
     CustomJsonEditorComponent,
   ],
-  exports: [EavLanguageSwitcherComponent],
+  exports: [
+    LanguageSwitcherComponent,
+    EntityTranslateMenuComponent,
+    TranslateMenuComponent,
+    ChangeAnchorTargetDirective,
+  ],
   providers: [
     FileTypeService,
     ValidationMessagesService,

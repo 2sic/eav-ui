@@ -1,3 +1,5 @@
+import { DnnBridgeConnectorParams } from '../../../../edit-types';
+
 export interface DnnBridgeDialogData {
   connector: DnnBridgeConnector;
 }
@@ -8,15 +10,13 @@ export interface DnnBridgeConnector {
   dialogType: DnnBridgeType;
 }
 
-export interface DnnBridgeConnectorParams {
-  CurrentValue: string;
-  FileFilter: string;
-  Paths: string;
-}
-
 export type DnnBridgeType = 'pagepicker';
 
 export interface PagePickerResult {
   id: string;
   name: string;
 }
+
+export type DnnBridgeIframe = (typeof window | HTMLIFrameElement) & {
+  connectBridge(connector: DnnBridgeConnector): void;
+};

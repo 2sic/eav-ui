@@ -1,31 +1,38 @@
 import { FieldSettings } from './FieldSettings';
 
 export interface FieldConfig {
-
-  /** Static name of the field */
+  /**
+   * Static name of the field
+   */
   name: string;
-
-  /** Ordering index of the field inside the form */
+  /**
+   * Ordering index of the field inside the form
+   */
   index: number;
-
-  /** Field label */
-  label: string; // updated on language change
-
-  /** Field placeholder text */
-  placeholder: string; // never updated atm. Probably will be
-
-  /** Input type of the field. e.g. string-default, string-dropdown, etc. */
+  /**
+   * Field label
+   */
+  label: string;
+  /**
+   * Field placeholder text
+   */
+  placeholder: string;
+  /**
+   * Input type of the field. e.g. string-default, string-dropdown, etc.
+   */
   inputType: string;
-
-  /** Data type of the field. e.g. String, Hyperlink, Entity, etc. */
+  /**
+   * Data type of the field. e.g. String, Hyperlink, Entity, etc.
+   */
   type: string;
-
-  /** Tells whether the field is required */
-  required: boolean; // updated on language change
-
-  /** Tells whether the field is disabled. This is the initial value that was set in settings for this field */
+  /**
+   * Tells whether the field is required
+   */
+  required: boolean;
+  /**
+   * Tells whether the field is disabled. This is the initial value that was set in settings for this field
+   */
   disabled: boolean;
-
   /**
    * Settings of the field, as configured in the UI
    * This is just a normal dictionary-object with keys having the same names as the fields in the configuration dialog.

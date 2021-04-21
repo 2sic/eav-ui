@@ -1,188 +1,199 @@
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { FieldSettings } from '../../../../../edit-types';
+import { distinctUntilChanged, map } from 'rxjs/operators';
 import { EditForm } from '../../../../../ng-dialogs/src/app/shared/models/edit-form.model';
-import { FieldMaskService } from '../../../../../shared/field-mask.service';
-import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
-import { Helper } from '../../../../shared/helpers/helper';
-import { EntityInfo } from '../../../../shared/models/eav/entity-info';
-import { EavService } from '../../../../shared/services/eav.service';
-import { EditRoutingService } from '../../../../shared/services/edit-routing.service';
-import { EntityService } from '../../../../shared/services/entity.service';
+import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
+import { FieldMask } from '../../../../shared/helpers';
+import { EntityInfo } from '../../../../shared/models';
+import { EavService, EditRoutingService, EntityService, FieldsSettingsService } from '../../../../shared/services';
+import { EntityCacheService } from '../../../../shared/store/ngrx-data';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { BaseComponent } from '../../base/base.component';
 import { ReorderIndexes } from '../entity-default-list/entity-default-list.models';
 import { EntityDefaultSearchComponent } from '../entity-default-search/entity-default-search.component';
-import { calculateSelectedEntities } from './entity-default.helpers';
-import { DeleteEntityProps, SelectedEntity } from './entity-default.models';
+import { EntityDefaultLogic } from './entity-default-logic';
+import { calculateSelectedEntities, convertArrayToString, convertValueToArray } from './entity-default.helpers';
+import { DeleteEntityProps, EntityTemplateVars, SelectedEntity } from './entity-default.models';
 
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'entity-default',
   templateUrl: './entity-default.component.html',
   styleUrls: ['./entity-default.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
-@InputType({})
+@ComponentMetadata({})
 export class EntityDefaultComponent extends BaseComponent<string | string[]> implements OnInit, OnDestroy {
   @ViewChild(EntityDefaultSearchComponent) private entitySearchComponent: EntityDefaultSearchComponent;
 
-  useQuery = false;
-  contentTypeMask: FieldMaskService;
+  isQuery: boolean;
+  contentTypeMask?: FieldMask;
 
-  /** New in 11.11.03 - Prefill feature to add prefill to new entities */
-  prefillMask: FieldMaskService;
-
-  error$ = new BehaviorSubject('');
-  freeTextMode$ = new BehaviorSubject(false);
-  disableAddNew$ = new BehaviorSubject(true);
+  error$: BehaviorSubject<string>;
+  freeTextMode$: BehaviorSubject<boolean>;
+  disableAddNew$: BehaviorSubject<boolean>;
   isExpanded$: Observable<boolean>;
   selectedEntities$: Observable<SelectedEntity[]>;
+  availableEntities$: BehaviorSubject<EntityInfo[]>;
+  templateVars$: Observable<EntityTemplateVars>;
 
   constructor(
     eavService: EavService,
     validationMessagesService: ValidationMessagesService,
+    fieldsSettingsService: FieldsSettingsService,
     private entityService: EntityService,
     public translate: TranslateService,
     private editRoutingService: EditRoutingService,
     private snackBar: MatSnackBar,
+    public entityCacheService: EntityCacheService,
   ) {
-    super(eavService, validationMessagesService);
+    super(eavService, validationMessagesService, fieldsSettingsService);
+    EntityDefaultLogic.importMe();
+    this.isQuery = false;
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     super.ngOnInit();
-    this.config.entityCache$ = new BehaviorSubject<EntityInfo[]>([]);
+    this.error$ = new BehaviorSubject('');
+    this.freeTextMode$ = new BehaviorSubject(false);
+    this.disableAddNew$ = new BehaviorSubject(true);
+    this.availableEntities$ = new BehaviorSubject<EntityInfo[]>(null);
 
-    this.settings$ = new BehaviorSubject<FieldSettings>(null);
+    const separator$ = this.settings$.pipe(map(settings => settings.Separator), distinctUntilChanged());
+    this.selectedEntities$ = combineLatest([this.value$, separator$, this.entityCacheService.getEntities$()]).pipe(
+      map(([value, separator, entityCache]) => calculateSelectedEntities(value, separator, entityCache, this.translate)),
+    );
+
+    this.isExpanded$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
+
     this.subscription.add(
-      this.config.field.settings$.pipe(map(settings => this.calculateSettings(settings))).subscribe(settings => {
-        this.settings$.next(settings);
+      this.settings$.pipe(
+        map(settings => settings.EntityType),
+        distinctUntilChanged(),
+      ).subscribe(entityType => {
+        this.contentTypeMask?.destroy();
+        this.contentTypeMask = new FieldMask(
+          entityType,
+          this.group.controls,
+          () => {
+            // for EntityQuery we don't have to refetch entities because entities come from settings.Query, not settings.EntityType
+            if (!this.isQuery) {
+              this.availableEntities$.next(null);
+            }
+            this.updateAddNew();
+          },
+          null,
+          this.eavService.eavConfig,
+        );
+
+        this.availableEntities$.next(null);
+        this.updateAddNew();
       })
     );
-    this.selectedEntities$ = combineLatest([this.value$, this.settings$, this.config.entityCache$]).pipe(
-      map(([fieldValue, settings, availableEntities]) => {
-        const selected = calculateSelectedEntities(fieldValue, settings.Separator, availableEntities, this.translate);
-        return selected;
+
+    this.templateVars$ = combineLatest([
+      combineLatest([this.label$, this.placeholder$, this.required$, this.invalid$, this.freeTextMode$, this.settings$]),
+      combineLatest([this.selectedEntities$, this.availableEntities$, this.disableAddNew$, this.isExpanded$, this.error$]),
+      combineLatest([this.disabled$, this.touched$]),
+    ]).pipe(
+      map(([
+        [label, placeholder, required, invalid, freeTextMode, settings],
+        [selectedEntities, availableEntities, disableAddNew, isExpanded, error],
+        [disabled, touched],
+      ]) => {
+        const templateVars: EntityTemplateVars = {
+          label,
+          placeholder,
+          required,
+          invalid,
+          freeTextMode,
+          settings,
+          selectedEntities,
+          availableEntities,
+          disableAddNew,
+          isExpanded,
+          error,
+          disabled,
+          touched,
+        };
+        return templateVars;
       }),
     );
-
-    this.isExpanded$ = this.editRoutingService.isExpanded(this.config.field.index, this.config.entity.entityGuid);
-
-    this.subscription.add(
-      this.settings$.subscribe(settings => {
-        this.contentTypeMask?.destroy();
-        this.contentTypeMask = new FieldMaskService(
-          settings.EntityType,
-          this.group.controls,
-          !this.useQuery ? this.fetchAvailableEntities.bind(this) : this.updateAddNew.bind(this),
-          null,
-          this.eavService.eavConfig,
-        );
-
-        // new in 11.11.03 - similar to contentTypeMask
-        // not exactly sure what each piece does, must ask SPM to finalize
-        this.prefillMask?.destroy();
-        this.prefillMask = new FieldMaskService(
-          settings.Prefill,
-          this.group.controls,
-          !this.useQuery ? this.fetchAvailableEntities.bind(this) : this.updateAddNew.bind(this),
-          null,
-          this.eavService.eavConfig,
-        );
-
-      })
-    );
-
-    if (!this.useQuery) {
-      this.fetchAvailableEntities();
-    } else {
-      this.updateAddNew();
-    }
 
     this.refreshOnChildClosed();
   }
 
-  ngOnDestroy() {
-    this.settings$.complete();
+  ngOnDestroy(): void {
     this.error$.complete();
     this.freeTextMode$.complete();
     this.disableAddNew$.complete();
-    this.config.entityCache$.complete();
-    this.contentTypeMask.destroy();
-    this.prefillMask?.destroy();
+    this.availableEntities$.complete();
+    this.contentTypeMask?.destroy();
     super.ngOnDestroy();
   }
 
-  toggleFreeTextMode() {
+  toggleFreeTextMode(): void {
     this.freeTextMode$.next(!this.freeTextMode$.value);
   }
 
-  /** Overridden in subclass */
-  calculateSettings(settings: FieldSettings) {
-    const fixedSettings = { ...settings };
-    if (fixedSettings.EntityType == null) { fixedSettings.EntityType = ''; }
-    if (fixedSettings.AllowMultiValue == null) { fixedSettings.AllowMultiValue = false; }
-    if (fixedSettings.EnableEdit == null) { fixedSettings.EnableEdit = true; }
-    if (fixedSettings.EnableCreate == null) { fixedSettings.EnableCreate = true; }
-    if (fixedSettings.EnableAddExisting == null) { fixedSettings.EnableAddExisting = true; }
-    if (fixedSettings.EnableRemove == null) { fixedSettings.EnableRemove = true; }
-    if (fixedSettings.EnableDelete == null) { fixedSettings.EnableDelete = false; }
-    return fixedSettings;
-  }
+  /**
+   * WARNING! Overridden in subclass.
+   * @param clearAvailableEntitiesAndOnlyUpdateCache - clears availableEntities and fetches only items which are selected
+   * to update names in entityCache
+   */
+  fetchEntities(clearAvailableEntitiesAndOnlyUpdateCache: boolean): void {
+    if (clearAvailableEntitiesAndOnlyUpdateCache) {
+      this.availableEntities$.next(null);
+    }
 
-  /** Overridden in subclass */
-  fetchAvailableEntities() {
-    this.updateAddNew();
     const contentTypeName = this.contentTypeMask.resolve();
-    const enableAddExisting = this.settings$.value.EnableAddExisting;
-    // spm TODO: Should this work like this?
-    // check if we should get all or only the selected ones...
-    // if we can't add, then we only need one...
-    const filterText = enableAddExisting ? null : this.control.value;
-    this.entityService.getAvailableEntities(filterText, contentTypeName).subscribe(items => {
-      this.config.entityCache$.next(items);
+    const entitiesFilter: string[] = (clearAvailableEntitiesAndOnlyUpdateCache || !this.settings$.value.EnableAddExisting)
+      ? (this.control.value as string[]).filter(guid => guid != null)
+      : null;
+
+    this.entityService.getAvailableEntities(contentTypeName, entitiesFilter).subscribe(items => {
+      this.entityCacheService.loadEntities(items);
+      if (!clearAvailableEntitiesAndOnlyUpdateCache) {
+        this.availableEntities$.next(items);
+      }
     });
   }
 
-  updateAddNew() {
+  private updateAddNew(): void {
     const contentTypeName = this.contentTypeMask.resolve();
     this.disableAddNew$.next(!contentTypeName);
   }
 
-  reorder(reorderIndexes: ReorderIndexes) {
+  reorder(reorderIndexes: ReorderIndexes): void {
     this.updateValue('reorder', reorderIndexes);
   }
 
-  addSelected(guid: string) {
+  addSelected(guid: string): void {
     this.updateValue('add', guid);
   }
 
-  removeSelected(index: number) {
+  removeSelected(index: number): void {
     this.updateValue('delete', index);
   }
 
-  editEntity(entityGuid: string) {
+  editEntity(entityGuid: string): void {
     let form: EditForm;
     if (entityGuid == null) {
       const contentTypeName = this.contentTypeMask.resolve();
-
       const prefill = this.getPrefill();
       form = {
         items: [{ ContentTypeName: contentTypeName, Prefill: prefill }],
       };
     } else {
-      const entity = this.config.entityCache$.value.find(e => e.Value === entityGuid);
+      const entity = this.entityCacheService.getEntity(entityGuid);
       form = {
         items: [{ EntityId: entity.Id }],
       };
     }
-    this.editRoutingService.open(this.config.field.index, this.config.entity.entityGuid, form);
+    this.editRoutingService.open(this.config.index, this.config.entityGuid, form);
   }
 
   /**
@@ -195,67 +206,75 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
   private getPrefill(): Record<string, string> {
     // still very experimental, and to avoid errors try to catch any mistakes
     try {
-      const prefill = this.prefillMask.resolve();
-      if(!prefill || !prefill.trim()) return null;
+      const prefillMask = new FieldMask(this.settings$.value.Prefill, this.group.controls, null, null, this.eavService.eavConfig);
+      const prefill = prefillMask.resolve();
+      prefillMask.destroy();
+      if (!prefill || !prefill.trim()) { return null; }
       const result: Record<string, string> = {};
       prefill.split('\n').forEach(line => {
         const parts = line.split('=');
-        if(parts.length === 2 && parts[0] && parts[1])
+        if (parts.length === 2 && parts[0] && parts[1]) {
           result[parts[0]] = parts[1];
+        }
       });
       return result;
     } catch {
-      console.error('Error in getting Prefill for new entity. Will skip prefill.')
+      console.error('Error in getting Prefill for new entity. Will skip prefill.');
       return null;
     }
   }
 
-  deleteEntity(props: DeleteEntityProps) {
-    const entity = this.config.entityCache$.value.find(e => e.Value === props.entityGuid);
-    const id = entity.Id.toString();
+  deleteEntity(props: DeleteEntityProps): void {
+    const entity = this.entityCacheService.getEntity(props.entityGuid);
+    const id = entity.Id;
     const title = entity.Text;
     const contentType = this.contentTypeMask.resolve();
 
     const confirmed = confirm(this.translate.instant('Data.Delete.Question', { title, id }));
     if (!confirmed) { return; }
 
-    this.snackBar.open('Deleting...');
+    this.snackBar.open(this.translate.instant('Message.Deleting'));
     this.entityService.delete(contentType, id, false).subscribe({
       next: () => {
-        this.snackBar.open('Deleted', null, { duration: 2000 });
+        this.snackBar.open(this.translate.instant('Message.Deleted'), null, { duration: 2000 });
         this.removeSelected(props.index);
-        this.fetchAvailableEntities();
+        this.fetchEntities(true);
       },
-      error: (err: HttpErrorResponse) => {
+      error: (error1: HttpErrorResponse) => {
         this.snackBar.dismiss();
         if (!confirm(this.translate.instant('Data.Delete.Question', { title, id }))) { return; }
-        this.snackBar.open('Deleting...');
-        this.entityService.delete(contentType, id, true).subscribe(res2 => {
-          this.snackBar.open('Deleted', null, { duration: 2000 });
-          this.removeSelected(props.index);
-          this.fetchAvailableEntities();
+        this.snackBar.open(this.translate.instant('Message.Deleting'));
+        this.entityService.delete(contentType, id, true).subscribe({
+          next: () => {
+            this.snackBar.open(this.translate.instant('Message.Deleted'), null, { duration: 2000 });
+            this.removeSelected(props.index);
+            this.fetchEntities(true);
+          },
+          error: (error2: HttpErrorResponse) => {
+            this.snackBar.open(this.translate.instant('Message.DeleteError'), null, { duration: 2000 });
+          }
         });
       }
     });
   }
 
-  private refreshOnChildClosed() {
+  private refreshOnChildClosed(): void {
     this.subscription.add(
-      this.editRoutingService.childFormClosed().subscribe(() => {
-        this.fetchAvailableEntities();
-      })
-    );
-    this.subscription.add(
-      this.editRoutingService.childFormResult(this.config.field.index, this.config.entity.entityGuid).subscribe(result => {
+      this.editRoutingService.childFormResult(this.config.index, this.config.entityGuid).subscribe(result => {
         const newItemGuid = Object.keys(result)[0];
         this.addSelected(newItemGuid);
       })
     );
+    this.subscription.add(
+      this.editRoutingService.childFormClosed().subscribe(() => {
+        this.fetchEntities(true);
+      })
+    );
   }
 
-  private updateValue(action: 'add' | 'delete' | 'reorder', value: string | number | ReorderIndexes) {
+  private updateValue(action: 'add' | 'delete' | 'reorder', value: string | number | ReorderIndexes): void {
     const valueArray: string[] = (typeof this.control.value === 'string')
-      ? Helper.convertValueToArray(this.control.value, this.settings$.value.Separator)
+      ? convertValueToArray(this.control.value, this.settings$.value.Separator)
       : [...this.control.value];
 
     switch (action) {
@@ -274,7 +293,7 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
     }
 
     if (typeof this.control.value === 'string') {
-      const valueString = Helper.convertArrayToString(valueArray, this.settings$.value.Separator);
+      const valueString = convertArrayToString(valueArray, this.settings$.value.Separator);
       this.control.patchValue(valueString);
     } else {
       this.control.patchValue(valueArray);

@@ -2,10 +2,11 @@
 import { ChangeDetectionStrategy, Component, ElementRef, forwardRef, Input, NgZone, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { loadScripts } from '../../shared/helpers/load-scripts.helper';
+import { EavWindow } from '../../shared/models/eav-window.model';
 import { aceOptions } from './ace-options';
-import { Ace, Editor } from './ace.model';
+import { Editor } from './ace.model';
 
-declare const ace: Ace;
+declare const window: EavWindow;
 
 @Component({
   selector: 'app-ace-editor',
@@ -26,7 +27,7 @@ export class AceEditorComponent implements OnInit, OnChanges, OnDestroy {
   @Input() toggleResize: boolean;
 
   private value = '';
-  private editor: Editor;
+  private editor: Editor & { $blockScrolling?: number; };
 
   propagateChange: (_: any) => void = () => { };
   propagateTouched: (_: any) => void = () => { };
@@ -61,7 +62,7 @@ export class AceEditorComponent implements OnInit, OnChanges, OnDestroy {
 
   insertSnippet(snippet: any) {
     this.zone.runOutsideAngular(() => {
-      const snippetManager = ace.require('ace/snippets').snippetManager;
+      const snippetManager = window.ace.require('ace/snippets').snippetManager;
       snippetManager.insertSnippet(this.editor, snippet);
       this.editor.focus();
     });
@@ -95,9 +96,9 @@ export class AceEditorComponent implements OnInit, OnChanges, OnDestroy {
 
   private aceLoaded() {
     this.zone.runOutsideAngular(() => {
-      ace.config.set('basePath', 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11');
-      this.editor = ace.edit(this.editorRef.nativeElement, aceOptions);
-      (this.editor as any).$blockScrolling = Infinity;
+      window.ace.config.set('basePath', 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11');
+      this.editor = window.ace.edit(this.editorRef.nativeElement, aceOptions);
+      this.editor.$blockScrolling = Infinity;
       this.editor.session.setValue(this.value); // set value and reset undo history
       this.updateValues(this.filename, this.snippets);
       this.editor.on('change', this.onEditorValueChange.bind(this));
@@ -122,12 +123,12 @@ export class AceEditorComponent implements OnInit, OnChanges, OnDestroy {
     if (!this.editor) { return; }
     this.zone.runOutsideAngular(() => {
       if (filename) {
-        const modelist = ace.require('ace/ext/modelist');
+        const modelist = window.ace.require('ace/ext/modelist');
         const mode = modelist.getModeForPath(filename).mode;
         this.editor.session.setMode(mode);
       }
       if (snippets) {
-        const snippetManager = ace.require('ace/snippets').snippetManager;
+        const snippetManager = window.ace.require('ace/snippets').snippetManager;
         snippetManager.register(this.snippets);
       }
     });

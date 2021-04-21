@@ -4,12 +4,12 @@ import { DropzoneDirective } from 'ngx-dropzone-wrapper';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AdamPostResponse, DropzoneConfigExt } from '../../../../edit-types';
-import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
+import { consoleLogAngular } from '../../../../ng-dialogs/src/app/shared/helpers/console-log-angular.helper';
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
-import { EavService } from '../../../shared/services/eav.service';
+import { EavService, FieldsSettingsService } from '../../../shared/services';
 import { BaseComponent } from '../../input-types/base/base.component';
 import { ValidationMessagesService } from '../../validators/validation-messages-service';
-import { DropzoneConfigInstance } from './dropzone-wrapper.models';
+import { DropzoneConfigInstance, DropzoneType } from './dropzone-wrapper.models';
 
 @Component({
   selector: 'app-dropzone-wrapper',
@@ -17,7 +17,7 @@ import { DropzoneConfigInstance } from './dropzone-wrapper.models';
   styleUrls: ['./dropzone-wrapper.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DropzoneWrapperComponent extends BaseComponent<any> implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
+export class DropzoneWrapperComponent extends BaseComponent implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild(DropzoneDirective) dropzoneRef: DropzoneDirective;
 
@@ -27,10 +27,11 @@ export class DropzoneWrapperComponent extends BaseComponent<any> implements Fiel
   constructor(
     eavService: EavService,
     validationMessagesService: ValidationMessagesService,
+    fieldsSettingsService: FieldsSettingsService,
     private dnnContext: DnnContext,
     private zone: NgZone,
   ) {
-    super(eavService, validationMessagesService);
+    super(eavService, validationMessagesService, fieldsSettingsService);
   }
 
   ngOnInit() {
@@ -63,8 +64,8 @@ export class DropzoneWrapperComponent extends BaseComponent<any> implements Fiel
   ngAfterViewInit() {
     setTimeout(() => {
       this.config.dropzone.setConfig({
-        previewsContainer: '.field-' + this.config.field.index + ' .dropzone-previews',
-        clickable: '.field-' + this.config.field.index + ' .invisible-clickable',
+        previewsContainer: '.field-' + this.config.index + ' .dropzone-previews',
+        clickable: '.field-' + this.config.index + ' .invisible-clickable',
       });
     });
   }
@@ -74,12 +75,12 @@ export class DropzoneWrapperComponent extends BaseComponent<any> implements Fiel
     super.ngOnDestroy();
   }
 
-  onUploadError(args: any) {
-    angularConsoleLog('Dropzone upload error. Args:', args);
+  onUploadError(args: DropzoneType) {
+    consoleLogAngular('Dropzone upload error. Args:', args);
     this.dropzoneRef.reset();
   }
 
-  onUploadSuccess(args: any) {
+  onUploadSuccess(args: DropzoneType) {
     const response: AdamPostResponse = args[1]; // Gets the server response as second argument.
     if (response.Success) {
       if (this.config.adam) {
@@ -95,12 +96,12 @@ export class DropzoneWrapperComponent extends BaseComponent<any> implements Fiel
   }
 
   private setConfig(config: Partial<DropzoneConfigExt>) {
-    const contentType = this.config.entity.header.ContentTypeName;
-    const entityGuid = this.config.entity.header.Guid;
-    const field = this.config.field.name;
+    const contentType = this.config.contentTypeId;
+    const entityGuid = this.config.entityGuid;
+    const field = this.config.fieldName;
     const appId = this.eavService.eavConfig.appId;
 
-    const startDisabled = this.config.field.isExternal;
+    const startDisabled = this.config.isExternal;
     const url = this.dnnContext.$2sxc.http.apiUrl(`app-content/${contentType}/${entityGuid}/${field}?subfolder=&usePortalRoot=false&appId=${appId}`);
     const headers = this.dnnContext.sxc.webApi.headers();
 
@@ -109,9 +110,8 @@ export class DropzoneWrapperComponent extends BaseComponent<any> implements Fiel
       : new DropzoneConfigInstance(startDisabled, url, headers);
     const newConfig = new DropzoneConfigInstance(startDisabled, url, headers);
 
-    const newConfigKeys = Object.keys(newConfig);
-    for (const key of newConfigKeys) {
-      (newConfig as any)[key] = ((config as any)[key] != null) ? (config as any)[key] : (oldConfig as any)[key];
+    for (const key of Object.keys(newConfig)) {
+      (newConfig as any)[key] = (config as any)[key] ?? (oldConfig as any)[key];
     }
 
     // fixes
@@ -129,9 +129,9 @@ export class DropzoneWrapperComponent extends BaseComponent<any> implements Fiel
     this.dropzoneConfig$.next(newConfig);
   }
 
-  private uploadFile(file: File) {
+  private uploadFile(file: File & { upload?: { chunked: boolean; }; }) {
     const dropzone = this.dropzoneRef.dropzone();
-    (file as any).upload = { chunked: dropzone.defaultOptions.chunking };
+    file.upload = { chunked: dropzone.defaultOptions.chunking };
     dropzone.processFile(file);
   }
 

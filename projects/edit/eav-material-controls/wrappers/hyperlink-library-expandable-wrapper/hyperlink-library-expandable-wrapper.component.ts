@@ -1,43 +1,69 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { AfterViewInit, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { AdamItem } from '../../../../edit-types';
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
-import { ContentExpandAnimation } from '../../../shared/animations/content-expand-animation';
-import { DropzoneDraggingHelper } from '../../../shared/services/dropzone-dragging.helper';
-import { EavService } from '../../../shared/services/eav.service';
-import { EditRoutingService } from '../../../shared/services/edit-routing.service';
+import { ContentExpandAnimation } from '../../../shared/animations';
+import { DropzoneDraggingHelper } from '../../../shared/helpers';
+import { EavService, EditRoutingService, FieldsSettingsService } from '../../../shared/services';
 import { BaseComponent } from '../../input-types/base/base.component';
 import { ValidationMessagesService } from '../../validators/validation-messages-service';
+import { HyperlinkLibraryExpandableTemplateVars } from './hyperlink-library-expandable-wrapper.models';
 
 @Component({
   selector: 'app-hyperlink-library-expandable-wrapper',
   templateUrl: './hyperlink-library-expandable-wrapper.component.html',
   styleUrls: ['./hyperlink-library-expandable-wrapper.component.scss'],
   animations: [ContentExpandAnimation],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 // tslint:disable-next-line:max-line-length
 export class HyperlinkLibraryExpandableWrapperComponent extends BaseComponent<null> implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
-  @ViewChild('backdrop') backdropRef: ElementRef;
-  @ViewChild('dialog') dialogRef: ElementRef;
+  @ViewChild('backdrop') private backdropRef: ElementRef;
+  @ViewChild('dialog') private dialogRef: ElementRef;
 
   open$: Observable<boolean>;
-  adamItems$ = new BehaviorSubject<AdamItem[]>([]);
+  templateVars$: Observable<HyperlinkLibraryExpandableTemplateVars>;
+
+  private adamItems$: BehaviorSubject<AdamItem[]>;
   private dropzoneDraggingHelper: DropzoneDraggingHelper;
 
   constructor(
     eavService: EavService,
     validationMessagesService: ValidationMessagesService,
+    fieldsSettingsService: FieldsSettingsService,
     private zone: NgZone,
     private editRoutingService: EditRoutingService,
   ) {
-    super(eavService, validationMessagesService);
+    super(eavService, validationMessagesService, fieldsSettingsService);
   }
 
   ngOnInit() {
     super.ngOnInit();
-    this.open$ = this.editRoutingService.isExpanded(this.config.field.index, this.config.entity.entityGuid);
+    this.open$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
+    this.adamItems$ = new BehaviorSubject<AdamItem[]>([]);
+
+    this.templateVars$ = combineLatest([
+      combineLatest([this.value$, this.label$, this.required$, this.invalid$, this.adamItems$]),
+      combineLatest([this.disabled$, this.touched$]),
+    ]).pipe(
+      map(([
+        [value, label, required, invalid, items],
+        [disabled, touched],
+      ]) => {
+        const templateVars: HyperlinkLibraryExpandableTemplateVars = {
+          value,
+          label,
+          required,
+          invalid,
+          items: items.slice(0, 9),
+          itemsNumber: items.length,
+          disabled,
+          touched,
+        };
+        return templateVars;
+      }),
+    );
   }
 
   ngAfterViewInit() {
@@ -66,11 +92,11 @@ export class HyperlinkLibraryExpandableWrapperComponent extends BaseComponent<nu
   }
 
   expandDialog() {
-    if (this.config.field.disabled) { return; }
-    this.editRoutingService.expand(true, this.config.field.index, this.config.entity.entityGuid);
+    if (this.config.initialDisabled) { return; }
+    this.editRoutingService.expand(true, this.config.index, this.config.entityGuid);
   }
 
   closeDialog() {
-    this.editRoutingService.expand(false, this.config.field.index, this.config.entity.entityGuid);
+    this.editRoutingService.expand(false, this.config.index, this.config.entityGuid);
   }
 }

@@ -2,10 +2,14 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnIni
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { take } from 'rxjs/operators';
-import { NavigateFormResult } from '../../../../../../edit';
-import { angularConsoleLog } from '../../helpers/angular-console-log.helper';
+import { NavigateFormResult } from '../../../../../../edit/shared/models';
+import { consoleLogAngular } from '../../helpers/console-log-angular.helper';
 import { DialogConfig } from '../../models/dialog-config.model';
+import { Dictionary } from '../../models/dictionary.model';
+import { EavWindow } from '../../models/eav-window.model';
 import { Context } from '../../services/context';
+
+declare const window: EavWindow;
 
 @Component({
   selector: 'app-dialog-entry',
@@ -14,7 +18,7 @@ import { Context } from '../../services/context';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DialogEntryComponent implements OnInit, OnDestroy {
-  private dialogData: { [key: string]: any; };
+  private dialogData: Dictionary;
   private dialogRef: MatDialogRef<any>;
 
   constructor(
@@ -34,7 +38,7 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
     if (dialogConfig == null) {
       throw new Error(`Could not find config for dialog. Did you forget to add DialogConfig to route data?`);
     }
-    angularConsoleLog('Open dialog:', dialogConfig.name, 'Context id:', this.context.id, 'Context:', this.context);
+    consoleLogAngular('Open dialog:', dialogConfig.name, 'Context id:', this.context.id, 'Context:', this.context);
 
     dialogConfig.getComponent().then(component => {
       if (dialogConfig.initContext) {
@@ -59,7 +63,7 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
       });
 
       this.dialogRef.afterClosed().pipe(take(1)).subscribe((data: any) => {
-        angularConsoleLog('Dialog was closed:', dialogConfig.name, 'Data:', data);
+        consoleLogAngular('Dialog was closed:', dialogConfig.name, 'Data:', data);
 
         const navRes = data as NavigateFormResult;
         if (navRes?.navigateUrl != null) {
@@ -69,7 +73,7 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
 
         if (this.route.pathFromRoot.length <= 3) {
           try {
-            (window.parent as any).$2sxc.totalPopup.close();
+            window.parent.$2sxc.totalPopup.close();
           } catch (error) { }
           return;
         }

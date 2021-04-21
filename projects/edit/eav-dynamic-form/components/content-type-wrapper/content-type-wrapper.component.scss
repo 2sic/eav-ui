@@ -1,0 +1,53 @@
+$border-radius: 8px;
+
+.mat-card-group-parent {
+  padding: 0;
+  margin: 0;
+  border-radius: $border-radius;
+
+  @media (max-width: 600px) {
+    border-radius: 4px;
+  }
+}
+
+.mat-card-header-group-parent {
+  padding: 24px 32px;
+  border-radius: $border-radius;
+  height: 68px;
+
+  .title {
+    font-size: 16px;
+    font-weight: 400;
+  }
+}
+
+.mat-card-content-group-parent {
+  border-radius: $border-radius;
+  padding-bottom: 0;
+
+  .description {
+    font-size: 14px;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+
+.mat-card-title-group {
+  margin: 0;
+  cursor: pointer;
+  line-height: 20px;
+  color: #0088F4;
+}
+
+.mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  line-height: 20px !important;
+  margin-right: 6px;
+}
+
+.mdc-layout-grid {
+  padding: 16px;
+  padding-top: 0;
+}

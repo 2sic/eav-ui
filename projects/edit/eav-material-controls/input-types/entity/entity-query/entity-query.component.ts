@@ -1,16 +1,16 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
-import { FieldSettings } from '../../../../../edit-types';
-import { FieldMaskService } from '../../../../../shared/field-mask.service';
-import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
-import { EntityInfo } from '../../../../shared/models/eav/entity-info';
-import { EavService } from '../../../../shared/services/eav.service';
-import { EditRoutingService } from '../../../../shared/services/edit-routing.service';
-import { EntityService } from '../../../../shared/services/entity.service';
-import { QueryService } from '../../../../shared/services/query.service';
+import { combineLatest } from 'rxjs';
+import { distinctUntilChanged, map } from 'rxjs/operators';
+import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
+import { FieldMask } from '../../../../shared/helpers';
+import { EntityInfo } from '../../../../shared/models';
+import { EavService, EditRoutingService, EntityService, FieldsSettingsService, QueryService } from '../../../../shared/services';
+import { EntityCacheService } from '../../../../shared/store/ngrx-data';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { EntityDefaultComponent } from '../entity-default/entity-default.component';
+import { EntityQueryLogic } from './entity-query-logic';
 import { QueryEntity } from './entity-query.models';
 
 @Component({
@@ -18,70 +18,94 @@ import { QueryEntity } from './entity-query.models';
   selector: 'entity-query',
   templateUrl: '../entity-default/entity-default.component.html',
   styleUrls: ['../entity-default/entity-default.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
-@InputType({})
+@ComponentMetadata({})
 export class EntityQueryComponent extends EntityDefaultComponent implements OnInit, OnDestroy {
-  useQuery = true;
-  private paramsMask: FieldMaskService;
+  isStringQuery: boolean;
+  private paramsMask: FieldMask;
 
   constructor(
     eavService: EavService,
     validationMessagesService: ValidationMessagesService,
+    fieldsSettingsService: FieldsSettingsService,
     entityService: EntityService,
     translate: TranslateService,
     editRoutingService: EditRoutingService,
     snackBar: MatSnackBar,
+    entityCacheService: EntityCacheService,
     private queryService: QueryService,
   ) {
-    super(eavService, validationMessagesService, entityService, translate, editRoutingService, snackBar);
+    super(
+      eavService,
+      validationMessagesService,
+      fieldsSettingsService,
+      entityService,
+      translate,
+      editRoutingService,
+      snackBar,
+      entityCacheService,
+    );
+    EntityQueryLogic.importMe();
+    this.isQuery = true;
+    this.isStringQuery = false;
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     super.ngOnInit();
 
     this.subscription.add(
-      this.settings$.subscribe(settings => {
+      this.settings$.pipe(
+        map(settings => settings.UrlParameters),
+        distinctUntilChanged(),
+      ).subscribe(urlParameters => {
         this.paramsMask?.destroy();
-        this.paramsMask = new FieldMaskService(
-          settings.UrlParameters,
+        this.paramsMask = new FieldMask(
+          urlParameters,
           this.group.controls,
-          this.fetchAvailableEntities.bind(this),
+          () => { this.availableEntities$.next(null); },
           null,
           this.eavService.eavConfig,
         );
+
+        this.availableEntities$.next(null);
       })
     );
 
-    this.fetchAvailableEntities();
+    this.subscription.add(
+      combineLatest([
+        this.settings$.pipe(map(settings => settings.Query), distinctUntilChanged()),
+        this.settings$.pipe(map(settings => settings.StreamName), distinctUntilChanged()),
+      ]).subscribe(() => {
+        this.availableEntities$.next(null);
+      })
+    );
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
+    this.paramsMask?.destroy();
     super.ngOnDestroy();
   }
 
-  /** Override function in superclass */
-  calculateSettings(settings: FieldSettings) {
-    const fixedSettings = super.calculateSettings(settings);
-    if (fixedSettings.Query == null) { fixedSettings.Query = ''; }
-    if (fixedSettings.StreamName == null || fixedSettings.StreamName === '') { fixedSettings.StreamName = 'Default'; }
-    if (fixedSettings.UrlParameters == null) { fixedSettings.UrlParameters = ''; }
-    return fixedSettings;
-  }
+  /** WARNING! Overrides function in superclass */
+  fetchEntities(clearAvailableEntitiesAndOnlyUpdateCache: boolean): void {
+    if (clearAvailableEntitiesAndOnlyUpdateCache) {
+      this.availableEntities$.next(null);
+    }
 
-  /** Override function in superclass */
-  fetchAvailableEntities() {
     const settings = this.settings$.value;
     if (!settings.Query) {
-      alert(`No query defined for ${this.config.field.name} - can't load entities`);
+      alert(`No query defined for ${this.config.fieldName} - can't load entities`);
       return;
     }
 
     const streamName = settings.StreamName;
     const queryUrl = settings.Query.includes('/') ? settings.Query : `${settings.Query}/${streamName}`;
     const params = this.paramsMask.resolve();
+    const entitiesFilter: string[] = clearAvailableEntitiesAndOnlyUpdateCache && !this.isStringQuery
+      ? (this.control.value as string[]).filter(guid => guid != null)
+      : null;
 
-    this.queryService.getAvailableEntities(queryUrl, true, params).subscribe({
+    this.queryService.getAvailableEntities(queryUrl, true, params, entitiesFilter).subscribe({
       next: (data) => {
         if (!data) {
           this.error$.next(this.translate.instant('Fields.EntityQuery.QueryError'));
@@ -91,8 +115,13 @@ export class EntityQueryComponent extends EntityDefaultComponent implements OnIn
           this.error$.next(this.translate.instant('Fields.EntityQuery.QueryStreamNotFound') + streamName);
           return;
         }
-        const items: EntityInfo[] = data[streamName].map(this.queryEntityMapping.bind(this));
-        this.config.entityCache$.next(items);
+        const items: EntityInfo[] = data[streamName].map(entity => this.queryEntityMapping(entity));
+        if (!this.isStringQuery) {
+          this.entityCacheService.loadEntities(items);
+        }
+        if (!clearAvailableEntitiesAndOnlyUpdateCache) {
+          this.availableEntities$.next(items);
+        }
       },
       error: (error) => {
         console.error(error);
@@ -101,8 +130,8 @@ export class EntityQueryComponent extends EntityDefaultComponent implements OnIn
     });
   }
 
-  /** Overridden in subclass */
-  queryEntityMapping(entity: QueryEntity) {
+  /** WARNING! Overridden in subclass */
+  queryEntityMapping(entity: QueryEntity): EntityInfo {
     const entityInfo: EntityInfo = {
       Id: entity.Id,
       Value: entity.Guid,

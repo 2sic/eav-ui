@@ -5,9 +5,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { Dictionary } from '../shared/models/dictionary.model';
 import { getHistoryItems } from './item-history.helpers';
 import { CompareWith } from './models/compare-with.model';
-import { ExpandedPanels } from './models/expanded-panels.model';
 import { ItemHistoryResult } from './models/item-history-result.model';
 import { Version } from './models/version.model';
 import { VersionsService } from './services/versions.service';
@@ -22,8 +22,8 @@ export class ItemHistoryComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
   pageSizeOptions = [10, 20, 50];
-  expandedPanels: ExpandedPanels = {};
-  expandedAttributes: ExpandedPanels = {};
+  expandedPanels: Dictionary<boolean> = {};
+  expandedAttributes: Dictionary<boolean> = {};
 
   private itemId = parseInt(this.route.snapshot.paramMap.get('itemId'), 10);
   private versions$ = new BehaviorSubject<Version[]>(null);

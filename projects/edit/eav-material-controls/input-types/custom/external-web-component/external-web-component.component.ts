@@ -1,41 +1,51 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { take } from 'rxjs/operators';
-import { angularConsoleLog } from '../../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
-import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
-import { InputType as InputTypeModel } from '../../../../shared/models/eav';
-import { EavService } from '../../../../shared/services/eav.service';
-import { EditRoutingService } from '../../../../shared/services/edit-routing.service';
-import { ScriptsLoaderService } from '../../../../shared/services/scripts-loader.service';
-import { InputTypeService } from '../../../../shared/store/ngrx-data/input-type.service';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { consoleLogAngular } from '../../../../../ng-dialogs/src/app/shared/helpers/console-log-angular.helper';
+import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
+import { EavService, EditRoutingService, FieldsSettingsService, ScriptsLoaderService } from '../../../../shared/services';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { BaseComponent } from '../../base/base.component';
+import { ExternalWebComponentTemplateVars } from './external-web-component.models';
 
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'external-web-component',
   templateUrl: './external-web-component.component.html',
   styleUrls: ['./external-web-component.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
-@InputType({})
+@ComponentMetadata({})
 export class ExternalWebComponentComponent extends BaseComponent<string> implements OnInit, OnDestroy {
-  loading$ = new BehaviorSubject(true);
-  isExpanded$: Observable<boolean>;
+  templateVars$: Observable<ExternalWebComponentTemplateVars>;
+
+  private loading$: BehaviorSubject<boolean>;
 
   constructor(
     eavService: EavService,
     validationMessagesService: ValidationMessagesService,
-    private inputTypeService: InputTypeService,
+    fieldsSettingsService: FieldsSettingsService,
     private scriptsLoaderService: ScriptsLoaderService,
     private editRoutingService: EditRoutingService,
   ) {
-    super(eavService, validationMessagesService);
+    super(eavService, validationMessagesService, fieldsSettingsService);
   }
 
   ngOnInit() {
     super.ngOnInit();
-    this.isExpanded$ = this.editRoutingService.isExpanded(this.config.field.index, this.config.entity.entityGuid);
+    this.loading$ = new BehaviorSubject(true);
+    const isExpanded$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
+
+    this.templateVars$ = combineLatest([this.loading$, isExpanded$, this.disabled$, this.touched$]).pipe(
+      map(([loading, isExpanded, disabled, touched]) => {
+        const templateVars: ExternalWebComponentTemplateVars = {
+          loading,
+          isExpanded,
+          disabled,
+          touched,
+        };
+        return templateVars;
+      }),
+    );
     this.loadAssets();
   }
 
@@ -45,18 +55,13 @@ export class ExternalWebComponentComponent extends BaseComponent<string> impleme
   }
 
   private loadAssets() {
-    let inputType: InputTypeModel;
-    this.inputTypeService.getInputTypeById(this.config.field.inputType).pipe(take(1)).subscribe(type => {
-      inputType = type;
-    });
-
-    const assets = inputType.AngularAssets.split('\n');
+    const assets = this.config.angularAssets.split('\n');
     if (assets.length === 0) { return; }
     this.scriptsLoaderService.load(assets, this.assetsLoaded.bind(this));
   }
 
   private assetsLoaded() {
-    angularConsoleLog('ExternalWebcomponentComponent', this.config.field.name, 'loaded');
+    consoleLogAngular('ExternalWebcomponentComponent', this.config.fieldName, 'loaded');
     this.loading$.next(false);
   }
 }

@@ -1,47 +1,70 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { InputType } from '../../../../eav-dynamic-form/decorators/input-type.decorator';
+import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
-import { EavService } from '../../../../shared/services/eav.service';
+import { EavService, FieldsSettingsService } from '../../../../shared/services';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { BaseComponent } from '../../base/base.component';
-import { calculateDropdownOptions } from './string-dropdown.helpers';
-import { DropdownOption } from './string-dropdown.models';
+import { StringDropdownLogic } from './string-dropdown-logic';
+import { StringDropdownTemplateVars } from './string-dropdown.models';
 
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'string-dropdown',
   templateUrl: './string-dropdown.component.html',
   styleUrls: ['./string-dropdown.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
-@InputType({
-  wrapper: [WrappersConstants.EavLocalizationWrapper],
+@ComponentMetadata({
+  wrappers: [WrappersConstants.LocalizationWrapper],
 })
 export class StringDropdownComponent extends BaseComponent<string> implements OnInit, OnDestroy {
-  enableTextEntry$: Observable<boolean>;
-  dropdownOptions$: Observable<DropdownOption[]>;
-  freeTextMode$: Observable<boolean>;
-  private toggleFreeText$ = new BehaviorSubject(false);
+  templateVars$: Observable<StringDropdownTemplateVars>;
 
-  constructor(eavService: EavService, validationMessagesService: ValidationMessagesService) {
-    super(eavService, validationMessagesService);
+  private toggleFreeText$: BehaviorSubject<boolean>;
+
+  constructor(
+    eavService: EavService,
+    validationMessagesService: ValidationMessagesService,
+    fieldsSettingsService: FieldsSettingsService,
+  ) {
+    super(eavService, validationMessagesService, fieldsSettingsService);
+    StringDropdownLogic.importMe();
   }
 
   ngOnInit() {
     super.ngOnInit();
-    this.enableTextEntry$ = this.settings$.pipe(map(settings => settings.EnableTextEntry || false));
-    this.dropdownOptions$ = combineLatest([this.value$, this.settings$]).pipe(
-      map(([value, settings]) => {
-        const dropdownOptions = calculateDropdownOptions(value, settings.DropdownValues);
-        return dropdownOptions;
-      }),
-    );
-    this.freeTextMode$ = combineLatest([this.enableTextEntry$, this.toggleFreeText$]).pipe(
+    this.toggleFreeText$ = new BehaviorSubject(false);
+
+    const enableTextEntry$ = this.settings$.pipe(map(settings => settings.EnableTextEntry));
+    const dropdownOptions$ = this.settings$.pipe(map(settings => settings._options));
+
+    const freeTextMode$ = combineLatest([enableTextEntry$, this.toggleFreeText$]).pipe(
       map(([enableTextEntry, freeTextMode]) => {
         if (!enableTextEntry) { return false; }
         return freeTextMode;
+      }),
+    );
+
+    this.templateVars$ = combineLatest([
+      combineLatest([this.label$, this.placeholder$, this.required$, enableTextEntry$, dropdownOptions$, freeTextMode$]),
+      combineLatest([this.disabled$, this.touched$]),
+    ]).pipe(
+      map(([
+        [label, placeholder, required, enableTextEntry, dropdownOptions, freeTextMode],
+        [disabled, touched],
+      ]) => {
+        const templateVars: StringDropdownTemplateVars = {
+          label,
+          placeholder,
+          required,
+          enableTextEntry,
+          dropdownOptions,
+          freeTextMode,
+          disabled,
+          touched,
+        };
+        return templateVars;
       }),
     );
   }

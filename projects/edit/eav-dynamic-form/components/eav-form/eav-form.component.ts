@@ -1,57 +1,117 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { Subscription } from 'rxjs';
-import { skip } from 'rxjs/operators';
-import { angularConsoleLog } from '../../../../ng-dialogs/src/app/shared/helpers/angular-console-log.helper';
+import { combineLatest, Subscription } from 'rxjs';
+import { distinctUntilChanged, map, startWith } from 'rxjs/operators';
+import { InputTypeConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { FormValues } from '../../../eav-item-dialog/item-edit-form/item-edit-form.models';
-import { FormulaInstanceService } from '../../../shared/services/formula-instance.service';
-import { LanguageInstanceService } from '../../../shared/store/ngrx-data/language-instance.service';
-import { FieldConfigGroup, FieldConfigSet } from '../../model/field-config';
-import { FormValueChange } from './eav-form.models';
+import { GeneralHelpers } from '../../../shared/helpers';
+import { EavService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
+import { ItemService, LanguageInstanceService } from '../../../shared/store/ngrx-data';
 
 @Component({
   selector: 'app-eav-form',
   templateUrl: './eav-form.component.html',
   styleUrls: ['./eav-form.component.scss'],
-  providers: [FormulaInstanceService],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class EavFormComponent implements OnInit, AfterViewInit, OnDestroy {
-  @Input() config: FieldConfigSet[] = [];
-  @Input() private formId: number;
-  @Input() private entityGuid: string;
-  @Output() private formSubmit = new EventEmitter<void>();
-  @Output() private formValueChange = new EventEmitter<FormValueChange>();
+export class EavFormComponent implements OnInit, OnDestroy {
+  @Input() entityGuid: string;
 
-  form: FormGroup = new FormGroup({});
-  private subscription = new Subscription();
+  form: FormGroup;
+  private subscription: Subscription;
 
   constructor(
     private formBuilder: FormBuilder,
-    private formulaInstance: FormulaInstanceService,
+    private eavService: EavService,
+    private formsStateService: FormsStateService,
+    private itemService: ItemService,
+    private fieldsSettingsService: FieldsSettingsService,
     private languageInstanceService: LanguageInstanceService,
   ) { }
 
   ngOnInit() {
-    this.createControlsInFormGroup(this.config);
-    this.formulaInstance.init(this.formId, this.form, this.entityGuid, this.config);
-  }
-
-  ngAfterViewInit() {
-    // run formulas when form is created
-    this.formulaInstance.runSettingsFormulas();
-    this.formulaInstance.runValueFormulas();
-
+    this.form = new FormGroup({});
+    this.subscription = new Subscription();
     this.subscription.add(
-      this.form.valueChanges.subscribe((formValues: FormValues) => {
-        this.formValueChange.emit({ formValues, formulaInstance: this.formulaInstance });
+      this.fieldsSettingsService.getFieldsProps$().subscribe(fieldsProps => {
+        // 1. create missing controls
+        for (const [fieldName, fieldProps] of Object.entries(fieldsProps)) {
+          if (fieldProps.calculatedInputType.inputType === InputTypeConstants.EmptyDefault) { continue; }
+          const control = this.form.controls[fieldName];
+          if (control != null) { continue; }
+
+          const value = fieldProps.value;
+          const disabled = fieldProps.settings.Disabled;
+          const validation = fieldProps.validators;
+          const newControl = this.formBuilder.control({ disabled, value }, validation);
+          this.form.addControl(fieldName, newControl);
+        }
+
+        // 2. sync values
+        const oldValues: FormValues = this.form.getRawValue();
+        const newValues: FormValues = {};
+        for (const [fieldName, fieldProps] of Object.entries(fieldsProps)) {
+          if (!this.form.controls.hasOwnProperty(fieldName)) { continue; }
+          newValues[fieldName] = fieldProps.value;
+        }
+
+        const changes = GeneralHelpers.getFormChanges(oldValues, newValues);
+        if (changes != null) {
+          this.form.patchValue(changes);
+        }
+
+        // 3. sync disabled
+        for (const [fieldName, fieldProps] of Object.entries(fieldsProps)) {
+          if (!this.form.controls.hasOwnProperty(fieldName)) { continue; }
+          const control = this.form.controls[fieldName];
+          const disabled = fieldProps.settings.Disabled;
+          if (disabled === control.disabled) { continue; }
+
+          // WARNING!!! Fires valueChange event for every single control
+          if (disabled) {
+            control.disable();
+          } else {
+            control.enable();
+          }
+        }
+
+        // TODO: 4. sync validators
+      })
+    );
+
+    const formValid$ = this.form.statusChanges.pipe(
+      map(() => !this.form.invalid),
+      startWith(!this.form.invalid),
+      distinctUntilChanged(),
+    );
+    const itemHeader$ = this.itemService.getItemHeader$(this.entityGuid);
+    this.subscription.add(
+      combineLatest([formValid$, itemHeader$]).pipe(
+        map(([formValid, itemHeader]) => {
+          if (itemHeader.Group?.SlotIsEmpty) { return true; }
+          return formValid;
+        }),
+        distinctUntilChanged(),
+      ).subscribe(isValid => {
+        this.formsStateService.setFormValid(this.entityGuid, isValid);
+      })
+    );
+    this.subscription.add(
+      this.form.valueChanges.pipe(
+        map(() => this.form.dirty),
+        startWith(this.form.dirty),
+        // distinctUntilChanged(), // cant have distinctUntilChanged because dirty state is not reset on form save
+      ).subscribe(isDirty => {
+        this.formsStateService.setFormDirty(this.entityGuid, isDirty);
       })
     );
 
     this.subscription.add(
-      this.languageInstanceService.getCurrentLanguage(this.formId).pipe(skip(1)).subscribe(currentLang => {
-        // run formulas when language is changed and fields are translated
-        this.formulaInstance.runFormulasAfterFieldsTranslated();
+      this.form.valueChanges.subscribe(() => {
+        const formValues = this.form.getRawValue();
+        const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
+        const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
+        this.itemService.updateItemAttributesValues(this.entityGuid, formValues, currentLanguage, defaultLanguage);
       })
     );
   }
@@ -59,67 +119,4 @@ export class EavFormComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnDestroy() {
     this.subscription.unsubscribe();
   }
-
-  submitOutside() {
-    angularConsoleLog('form save');
-    // Use this to emit value out
-    this.formSubmit.emit();
-  }
-
-  /**
-   * Patch values to formGroup. It accepts an object with control names as keys and will do it's best to
-   * match the values to the correct controls in the group.
-   * If emitEvent is true, this change will cause a valueChanges event on the FormGroup to be emitted.
-   * This defaults to true (as it falls through to updateValueAndValidity)
-   */
-  patchValue(values: { [key: string]: any }, emitEvent: boolean) {
-    this.form.patchValue(values, { emitEvent });
-  }
-
-  /** Check if value in form changed */
-  valueIsChanged(values: { [key: string]: any }) {
-    let valueIsChanged = false;
-
-    const valueKeys = Object.keys(values);
-    for (const valueKey of valueKeys) {
-      if (values[valueKey] !== this.form.value[valueKey]) {
-        valueIsChanged = true;
-        break;
-      }
-    }
-
-    // spm isn't this always true? Something could be wrong here
-    angularConsoleLog('VALUECHANGED:', valueIsChanged, 'VALUES:', values, 'FORM VALUES:', this.form.value);
-    return valueIsChanged;
-  }
-
-  /** Create form from configuration */
-  private createControlsInFormGroup(fieldConfigArray: FieldConfigSet[]) {
-    try {
-      fieldConfigArray.forEach(fieldConfig => {
-        const field = fieldConfig.field as FieldConfigGroup;
-        if (field.fieldGroup) {
-          this.createControlsInFormGroup(field.fieldGroup);
-        } else {
-          this.form.addControl(fieldConfig.field.name, this.createControl(fieldConfig));
-        }
-      });
-      return this.form;
-    } catch (error) {
-      console.error(`Error creating form controls: ${error}\nFieldConfig: ${fieldConfigArray}`);
-      throw error;
-    }
-  }
-
-  /** Create form control */
-  private createControl(config: FieldConfigSet) {
-    try {
-      const { disabled, validation, initialValue } = config.field;
-      return this.formBuilder.control({ disabled, value: initialValue }, validation);
-    } catch (error) {
-      console.error(`Error creating form control: ${error}\nConfig: ${config}`);
-      throw error;
-    }
-  }
-
 }
