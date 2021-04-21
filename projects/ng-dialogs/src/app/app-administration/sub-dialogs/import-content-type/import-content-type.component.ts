@@ -56,14 +56,7 @@ export class ImportContentTypeComponent implements OnInit, OnDestroy {
 
   filesChange(event: Event) {
     const fileList = (event.target as HTMLInputElement).files;
-    let files: File[] = null;
-    if (fileList.length) {
-      files = [];
-      // tslint:disable-next-line:prefer-for-of
-      for (let i = 0; i < fileList.length; i++) {
-        files.push(fileList[i]);
-      }
-    }
+    const files = fileList.length > 0 ? Array.from(fileList) : null;
     this.importFiles$.next(files);
     this.importResult$.next(null);
   }

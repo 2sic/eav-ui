@@ -1,4 +1,6 @@
-export const DefaultOptions = {
+import { RawEditorSettings } from 'tinymce';
+
+export const DefaultOptions: RawEditorSettings = {
   skin: '2sxc-tinymce-skin',
   theme: 'silver',
   suffix: '.min', // force minified skin, theme, plugins, etc.

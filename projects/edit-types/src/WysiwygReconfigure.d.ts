@@ -1,3 +1,4 @@
+import { Editor, RawEditorSettings, TinyMCE } from 'tinymce';
 import { AddOnSettings } from './AddOnSettings';
 
 export interface WysiwygReconfigure {
@@ -10,13 +11,13 @@ export interface WysiwygReconfigure {
    */
   disableAdam?: boolean;
   /**
-   * Very early call to configure the editorManager of tinyMCE
+   * Very early call to configure TinyMCE
    */
-  initManager?(editorManager: any): void;
+  initManager?(tinymce: TinyMCE): void;
   /**
    * Add translations to the editor manager - fairly early in the lifecycle
    */
-  addTranslations?(editorManager: any, currentLanguage: string): void;
+  addTranslations?(tinymce: TinyMCE, currentLanguage: string): void;
   /**
    * Configure
    */
@@ -24,13 +25,13 @@ export interface WysiwygReconfigure {
   /**
    * Review / modify the options after they have been completely initialized and expanded
    */
-  configureOptions?(options: any): any;
+  configureOptions?(options: RawEditorSettings): RawEditorSettings;
   /**
    * Called when the editor was created, but before we added events etc.
    */
-  editorOnInit?(editor: any): void;
+  editorOnInit?(editor: Editor): void;
   /**
    * Called after the form has prepared the editor
    */
-  configureEditor?(editor: any): void;
+  configureEditor?(editor: Editor): void;
 }

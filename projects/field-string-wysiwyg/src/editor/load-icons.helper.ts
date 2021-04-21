@@ -1,3 +1,4 @@
+import { Editor } from 'tinymce';
 import * as contentBlock from '../assets/icons/2sxc/content-block.svg';
 import * as fileDnn from '../assets/icons/2sxc/file-dnn.svg';
 import * as imageH1 from '../assets/icons/2sxc/H1.svg';
@@ -19,7 +20,6 @@ import * as file from '../assets/icons/font-awesome/file.svg';
 import * as sitemap from '../assets/icons/font-awesome/sitemap.svg';
 import * as school from '../assets/icons/google-material/baseline-school-24px.svg';
 import * as paragraph from '../assets/icons/tinymce/paragraph.svg';
-import { TinyType } from '../shared/models';
 
 const customTinyMceIcons: Record<string, string> = {
   'custom-anchor': anchor.default,
@@ -45,7 +45,7 @@ const customTinyMceIcons: Record<string, string> = {
   'custom-paragraph': paragraph.default,
 };
 
-export function loadCustomIcons(editor: TinyType) {
+export function loadCustomIcons(editor: Editor): void {
   Object.entries(customTinyMceIcons).forEach(([name, svg]) => {
     editor.ui.registry.addIcon(name, svg);
   });

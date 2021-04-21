@@ -1,6 +1,6 @@
-import { Subscription } from 'rxjs';
 import 'tinymce/tinymce'; // Important! tinymce has to be imported before themes and plugins
-// tslint:disable-next-line:ordered-imports
+
+import { Subscription } from 'rxjs';
 import 'tinymce/icons/default';
 import 'tinymce/plugins/anchor';
 import 'tinymce/plugins/autolink';
@@ -18,6 +18,7 @@ import 'tinymce/plugins/tabfocus';
 import 'tinymce/plugins/table';
 import 'tinymce/plugins/textpattern';
 import 'tinymce/themes/silver';
+import { Editor } from 'tinymce/tinymce';
 import { Connector, EavCustomInputField } from '../../../edit-types';
 import { WysiwygReconfigure } from '../../../edit-types';
 import { FeaturesConstants } from '../../../edit/shared/constants';
@@ -28,7 +29,6 @@ import { TinyMceConfigurator } from '../config/tinymce-configurator';
 import { TinyMceTranslations } from '../config/translations';
 import { attachAdam } from '../connector/adam';
 import { buildTemplate } from '../shared/helpers';
-import { TinyType } from '../shared/models';
 import * as styles from './editor.css';
 import * as template from './editor.html';
 import { fixMenuPositions } from './fix-menu-positions.helper';
@@ -44,7 +44,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   connector: Connector<string>;
   mode?: 'inline' | 'normal';
   reconfigure?: WysiwygReconfigure;
-  /** Responsible for configuring tinymce */
+  /** Responsible for configuring TinyMCE */
   configurator: TinyMceConfigurator;
 
   private instanceId: string;
@@ -53,10 +53,10 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   private subscriptions: Subscription[];
   private editorContent: string; // saves editor content to prevent slow update when first using editor
   private pasteClipboardImage: boolean;
-  private editor: TinyType;
+  private editor: Editor;
   private firstInit: boolean;
   private dialogIsOpen: boolean;
-  private observer: MutationObserver;
+  private menuObserver: MutationObserver;
 
   constructor() {
     super();
@@ -68,7 +68,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
     this.toolbarContainerClass = `tinymce-toolbar-container-${this.instanceId}`;
   }
 
-  connectedCallback() {
+  connectedCallback(): void {
     if (this.fieldInitialized) { return; }
     this.fieldInitialized = true;
     consoleLogWebpack(`${wysiwygEditorTag} connectedCallback called`);
@@ -80,42 +80,50 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
     if (this.connector.field.disabled) {
       this.classList.add('disabled');
     }
-    let lang = this.connector._experimental.translateService.currentLang;
-    lang = TinyMceTranslations.fixTranslationKey(lang);
-    this.connector.loadScript([
-      {
-        test: () => lang === 'en'
-          || Object.keys(window.tinymce.i18n.getData()).includes(lang)
-          || !TinyMceTranslations.supportedLanguages.includes(lang),
-        src: `${tinyMceBaseUrl}/i18n/${lang}.js`,
+    this.pasteClipboardImage = this.connector._experimental.isFeatureEnabled(FeaturesConstants.PasteImageFromClipboard);
+
+    const tinyLang = TinyMceTranslations.fixTranslationKey(this.connector._experimental.translateService.currentLang);
+    this.connector.loadScript(
+      [
+        {
+          test: () => tinyLang === 'en' || Object.keys(window.tinymce.i18n.getData()).includes(tinyLang),
+          src: `${tinyMceBaseUrl}/i18n/${tinyLang}.js`,
+        },
+      ],
+      () => {
+        this.tinyMceScriptLoaded();
       }
-    ], () => { this.tinyMceScriptLoaded(); });
+    );
+
     this.connector._experimental.dropzone.setConfig({ disabled: false });
   }
 
-  private tinyMceScriptLoaded() {
+  private tinyMceScriptLoaded(): void {
     consoleLogWebpack(`${wysiwygEditorTag} tinyMceScriptLoaded called`);
-    this.configurator = new TinyMceConfigurator(window.tinymce, this.connector, this.reconfigure);
-    this.pasteClipboardImage = this.connector._experimental.isFeatureEnabled(FeaturesConstants.PasteImageFromClipboard);
+    this.configurator = new TinyMceConfigurator(this.connector, this.reconfigure);
     const tinyOptions = this.configurator.buildOptions(
-      this.containerClass, this.toolbarContainerClass, this.mode === 'inline', this.tinyMceSetup.bind(this),
+      this.containerClass,
+      this.toolbarContainerClass,
+      this.mode === 'inline',
+      (editor: Editor) => { this.tinyMceSetup(editor); },
     );
     this.firstInit = true;
-    window.tinymce.baseURL = tinyMceBaseUrl;
-    // FYI: SPM - moved this here from Setup as it's actually global
     this.configurator.addTranslations();
+    window.tinymce.baseURL = tinyMceBaseUrl;
     window.tinymce.init(tinyOptions);
   }
 
   /** This will initialized an instance of an editor. Everything else is kind of global. */
-  private tinyMceSetup(editor: TinyType) {
+  private tinyMceSetup(editor: Editor): void {
     this.editor = editor;
-    editor.on('init', (_event: TinyType) => {
+    editor.on('init', _event => {
       consoleLogWebpack(`${wysiwygEditorTag} TinyMCE initialized`, editor);
       this.reconfigure?.editorOnInit?.(editor);
       TinyMceButtons.registerAll(this, editor, this.connector._experimental.adam);
-      if (!this.reconfigure?.disableAdam) { attachAdam(editor, this.connector._experimental.adam); }
-      this.observer = fixMenuPositions(this);
+      if (!this.reconfigure?.disableAdam) {
+        attachAdam(editor, this.connector._experimental.adam);
+      }
+      this.menuObserver = fixMenuPositions(this);
       // Shared subscriptions
       this.subscriptions.push(
         this.connector.data.value$.subscribe(newValue => {
@@ -138,16 +146,18 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
       this.firstInit = false;
     });
 
-    // called after tinymce editor is removed
-    editor.on('remove', (_event: TinyType) => {
+    // called after TinyMCE editor is removed
+    editor.on('remove', _event => {
       consoleLogWebpack(`${wysiwygEditorTag} TinyMCE removed`, _event);
       this.clearData();
     });
 
-    editor.on('focus', (_event: TinyType) => {
+    editor.on('focus', _event => {
       this.classList.add('focused');
       consoleLogWebpack(`${wysiwygEditorTag} TinyMCE focused`, _event);
-      if (!this.reconfigure?.disableAdam) { attachAdam(editor, this.connector._experimental.adam); }
+      if (!this.reconfigure?.disableAdam) {
+        attachAdam(editor, this.connector._experimental.adam);
+      }
       if (this.pasteClipboardImage) {
         // When tiny is in focus, let it handle image uploads by removing image types from accepted files in dropzone.
         // Files will be handled by dropzone
@@ -158,7 +168,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
       }
     });
 
-    editor.on('blur', (_event: TinyType) => {
+    editor.on('blur', _event => {
       this.classList.remove('focused');
       consoleLogWebpack(`${wysiwygEditorTag} TinyMCE blurred`, _event);
       if (this.pasteClipboardImage) {
@@ -170,13 +180,13 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
       }
     });
 
-    editor.on('change', this.saveValue.bind(this));
-    editor.on('undo', this.saveValue.bind(this));
-    editor.on('redo', this.saveValue.bind(this));
+    editor.on('change', () => { this.saveValue(); });
+    editor.on('undo', () => { this.saveValue(); });
+    editor.on('redo', () => { this.saveValue(); });
     this.reconfigure?.configureEditor?.(editor);
   }
 
-  private saveValue() {
+  private saveValue(): void {
     const newContent = this.editor.getContent();
     if (newContent.includes('<img src="data:image')) { return; }
 
@@ -184,24 +194,17 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
     this.connector.data.update(this.editorContent);
   }
 
-  private clearData() {
-    if (this.editor) {
-      this.editor.remove();
-    }
-    if (this.subscriptions.length > 0) {
-      this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
-      this.subscriptions = [];
-    }
-    if (this.editorContent != null) {
-      this.editorContent = null;
-    }
-    if (this.observer != null) {
-      this.observer.disconnect();
-      this.observer = null;
-    }
+  private clearData(): void {
+    this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
+    this.subscriptions = [];
+    this.editor?.destroy();
+    this.editor?.remove();
+    this.editorContent = null;
+    this.menuObserver?.disconnect();
+    this.menuObserver = null;
   }
 
-  disconnectedCallback() {
+  disconnectedCallback(): void {
     consoleLogWebpack(`${wysiwygEditorTag} disconnectedCallback called`);
     this.clearData();
   }
