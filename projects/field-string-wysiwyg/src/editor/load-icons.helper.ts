@@ -1,7 +1,4 @@
-import * as filePdf from '../../../edit/assets/icons/font-awesome/file-pdf.svg';
-import * as file from '../../../edit/assets/icons/font-awesome/file.svg';
-import * as sitemap from '../../../edit/assets/icons/font-awesome/sitemap.svg';
-import { Dictionary } from '../../../ng-dialogs/src/app/shared/models/dictionary.model';
+import { Editor } from 'tinymce';
 import * as contentBlock from '../assets/icons/2sxc/content-block.svg';
 import * as fileDnn from '../assets/icons/2sxc/file-dnn.svg';
 import * as imageH1 from '../assets/icons/2sxc/H1.svg';
@@ -18,11 +15,13 @@ import * as imageU4 from '../assets/icons/2sxc/U4.svg';
 import * as imageU5 from '../assets/icons/2sxc/U5.svg';
 import * as imageU6 from '../assets/icons/2sxc/U6.svg';
 import * as anchor from '../assets/icons/font-awesome/anchor.svg';
+import * as filePdf from '../assets/icons/font-awesome/file-pdf.svg';
+import * as file from '../assets/icons/font-awesome/file.svg';
+import * as sitemap from '../assets/icons/font-awesome/sitemap.svg';
 import * as school from '../assets/icons/google-material/baseline-school-24px.svg';
 import * as paragraph from '../assets/icons/tinymce/paragraph.svg';
-import { TinyType } from '../shared/models';
 
-const customTinyMceIcons: Dictionary<string> = {
+const customTinyMceIcons: Record<string, string> = {
   'custom-anchor': anchor.default,
   'custom-content-block': contentBlock.default,
   'custom-file': file.default,
@@ -46,7 +45,7 @@ const customTinyMceIcons: Dictionary<string> = {
   'custom-paragraph': paragraph.default,
 };
 
-export function loadCustomIcons(editor: TinyType) {
+export function loadCustomIcons(editor: Editor): void {
   Object.entries(customTinyMceIcons).forEach(([name, svg]) => {
     editor.ui.registry.addIcon(name, svg);
   });

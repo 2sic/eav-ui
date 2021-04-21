@@ -2,15 +2,15 @@ export class TinyMceToolbars {
 
   static build(contentBlocksEnabled: boolean, inlineMode: boolean, buttonSource: string, buttonAdvanced: string) {
     const modes = {
-      inline: TinyMceToolbars.inline(contentBlocksEnabled, buttonSource, buttonAdvanced),
-      standard: TinyMceToolbars.standard(contentBlocksEnabled, buttonSource, buttonAdvanced),
-      advanced: TinyMceToolbars.advanced(inlineMode, contentBlocksEnabled),
+      inline: this.inline(contentBlocksEnabled, buttonSource, buttonAdvanced),
+      standard: this.standard(contentBlocksEnabled, buttonSource, buttonAdvanced),
+      advanced: this.advanced(inlineMode, contentBlocksEnabled),
     };
     return {
-      modes, // for later switch to another mode
-      menubar: inlineMode ? modes.inline.menubar : modes.standard.menubar, // basic menu (none)
-      toolbar: inlineMode ? modes.inline.toolbar : modes.standard.toolbar, // basic toolbar
-      contextmenu: inlineMode ? modes.inline.contextmenu : modes.standard.contextmenu, // 'link image | charmap hr adamimage',
+      modes,
+      menubar: inlineMode ? modes.inline.menubar : modes.standard.menubar,
+      toolbar: inlineMode ? modes.inline.toolbar : modes.standard.toolbar,
+      contextmenu: inlineMode ? modes.inline.contextmenu : modes.standard.contextmenu,
     };
   }
 

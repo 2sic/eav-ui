@@ -1,5 +1,7 @@
-export const DefaultOptions = {
-  skin: 'oxide',
+import { RawEditorSettings } from 'tinymce';
+
+export const DefaultOptions: RawEditorSettings = {
+  skin: '2sxc-tinymce-skin',
   theme: 'silver',
   suffix: '.min', // force minified skin, theme, plugins, etc.
   // body_class: 'field-string-wysiwyg-mce-box',
@@ -24,4 +26,5 @@ export const DefaultOptions = {
   default_link_target: '_blank', // auto-use blank as default link-target
   object_resizing: false, // don't allow manual scaling of images
   debounce: false, // DONT slow-down model updates - otherwise we sometimes miss the last changes
+  toolbar_persist: true,
 };

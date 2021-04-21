@@ -57,7 +57,7 @@ export class DragAndDropDirective implements OnInit, OnDestroy {
     this.clearTimeouts();
     this.element.classList.remove(this.dragClass);
     const fileList = event.dataTransfer.files;
-    let files = this.convertToArray(fileList);
+    let files = Array.from(fileList);
     files = this.filterTypes(files, this.allowedFileTypes);
     if (files.length > 0) {
       this.filesDropped.emit(files);
@@ -69,15 +69,6 @@ export class DragAndDropDirective implements OnInit, OnDestroy {
       clearTimeout(timeout);
     }
     this.timeouts = [];
-  }
-
-  private convertToArray(fileList: FileList) {
-    const fileArray: File[] = [];
-    // tslint:disable-next-line:prefer-for-of
-    for (let i = 0; i < fileList.length; i++) {
-      fileArray.push(fileList[i]);
-    }
-    return fileArray;
   }
 
   private filterTypes(files: File[], allowedFileTypes: string) {

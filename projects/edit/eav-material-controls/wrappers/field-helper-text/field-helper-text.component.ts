@@ -57,11 +57,11 @@ export class FieldHelperTextComponent implements OnInit {
   toggleHint(event: MouseEvent) {
     let target = event.target as HTMLElement;
 
-    if (target.tagName === 'A') { return; }
+    if (target.nodeName.toLocaleLowerCase() === 'a') { return; }
     while (target && target.classList && !target.classList.contains('notes-container')) {
       target = target.parentNode as HTMLElement;
       if (!target) { return; }
-      if (target.tagName === 'A') { return; }
+      if (target.nodeName.toLocaleLowerCase() === 'a') { return; }
     }
 
     this.isFullText = !this.isFullText;
