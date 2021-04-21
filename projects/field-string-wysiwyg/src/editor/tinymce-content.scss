@@ -1,3 +1,4 @@
+/* Custom stuff */
 .mce-content-body {
 
   /* Content block */
@@ -18,7 +19,10 @@
     width: calc(100% - 2px);
     margin-top: 17px;
   }
+}
 
+/* Skin stuff. Replace inner content on skin change */
+.mce-content-body {
   table {
     border-collapse: collapse;
   }
