@@ -6,7 +6,7 @@ import { distinctUntilChanged, map } from 'rxjs/operators';
 import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
 import { EntityInfo } from '../../../../shared/models';
 import { EavService, EditRoutingService, EntityService, FieldsSettingsService, QueryService } from '../../../../shared/services';
-import { EntityCacheService } from '../../../../shared/store/ngrx-data';
+import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { EntityQueryComponent } from '../../entity/entity-query/entity-query.component';
 import { QueryEntity } from '../../entity/entity-query/entity-query.models';
@@ -30,6 +30,7 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
     editRoutingService: EditRoutingService,
     snackBar: MatSnackBar,
     entityCacheService: EntityCacheService,
+    stringQueryCacheService: StringQueryCacheService,
     queryService: QueryService,
   ) {
     super(
@@ -41,6 +42,7 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
       editRoutingService,
       snackBar,
       entityCacheService,
+      stringQueryCacheService,
       queryService,
     );
     StringDropdownQueryLogic.importMe();
@@ -58,6 +60,8 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
         this.availableEntities$.next(null);
       })
     );
+
+    this.fetchEntities(true);
   }
 
   ngOnDestroy(): void {

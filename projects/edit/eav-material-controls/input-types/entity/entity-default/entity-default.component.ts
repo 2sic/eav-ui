@@ -10,7 +10,7 @@ import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/compo
 import { FieldMask } from '../../../../shared/helpers';
 import { EntityInfo } from '../../../../shared/models';
 import { EavService, EditRoutingService, EntityService, FieldsSettingsService } from '../../../../shared/services';
-import { EntityCacheService } from '../../../../shared/store/ngrx-data';
+import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { BaseComponent } from '../../base/base.component';
 import { ReorderIndexes } from '../entity-default-list/entity-default-list.models';
@@ -30,6 +30,7 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
   @ViewChild(EntityDefaultSearchComponent) private entitySearchComponent: EntityDefaultSearchComponent;
 
   isQuery: boolean;
+  isStringQuery: boolean;
   contentTypeMask?: FieldMask;
 
   error$: BehaviorSubject<string>;
@@ -49,10 +50,12 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
     private editRoutingService: EditRoutingService,
     private snackBar: MatSnackBar,
     public entityCacheService: EntityCacheService,
+    public stringQueryCacheService: StringQueryCacheService,
   ) {
     super(eavService, validationMessagesService, fieldsSettingsService);
     EntityDefaultLogic.importMe();
     this.isQuery = false;
+    this.isStringQuery = false;
   }
 
   ngOnInit(): void {
@@ -63,8 +66,17 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
     this.availableEntities$ = new BehaviorSubject<EntityInfo[]>(null);
 
     const separator$ = this.settings$.pipe(map(settings => settings.Separator), distinctUntilChanged());
-    this.selectedEntities$ = combineLatest([this.value$, separator$, this.entityCacheService.getEntities$()]).pipe(
-      map(([value, separator, entityCache]) => calculateSelectedEntities(value, separator, entityCache, this.translate)),
+    const stringQueryLabel$ = this.settings$.pipe(map(settings => settings.Label), distinctUntilChanged());
+    this.selectedEntities$ = combineLatest([
+      this.value$,
+      separator$,
+      this.entityCacheService.getEntities$(),
+      this.stringQueryCacheService.getEntities$(),
+      stringQueryLabel$,
+    ]).pipe(
+      map(([value, separator, entityCache, stringQueryCache, stringQueryLabel]) =>
+        calculateSelectedEntities(value, separator, entityCache, stringQueryCache, stringQueryLabel, this.translate)
+      ),
     );
 
     this.isExpanded$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);

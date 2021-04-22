@@ -5,7 +5,7 @@ import { distinctUntilChanged, map } from 'rxjs/operators';
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { ContentExpandAnimation } from '../../../shared/animations';
 import { EavService, EditRoutingService, FieldsSettingsService } from '../../../shared/services';
-import { EntityCacheService } from '../../../shared/store/ngrx-data';
+import { EntityCacheService, StringQueryCacheService } from '../../../shared/store/ngrx-data';
 import { BaseComponent } from '../../input-types/base/base.component';
 import { calculateSelectedEntities } from '../../input-types/entity/entity-default/entity-default.helpers';
 import { SelectedEntity } from '../../input-types/entity/entity-default/entity-default.models';
@@ -31,6 +31,7 @@ export class EntityExpandableWrapperComponent extends BaseComponent<string | str
     private translate: TranslateService,
     private editRoutingService: EditRoutingService,
     private entityCacheService: EntityCacheService,
+    private stringQueryCache: StringQueryCacheService,
   ) {
     super(eavService, validationMessagesService, fieldsSettingsService);
   }
@@ -40,8 +41,17 @@ export class EntityExpandableWrapperComponent extends BaseComponent<string | str
     this.dialogIsOpen$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
 
     const separator$ = this.settings$.pipe(map(settings => settings.Separator), distinctUntilChanged());
-    const selectedEntities$ = combineLatest([this.value$, separator$, this.entityCacheService.getEntities$()]).pipe(
-      map(([value, separator, entityCache]) => calculateSelectedEntities(value, separator, entityCache, this.translate)),
+    const stringQueryLabel$ = this.settings$.pipe(map(settings => settings.Label), distinctUntilChanged());
+    const selectedEntities$ = combineLatest([
+      this.value$,
+      separator$,
+      this.entityCacheService.getEntities$(),
+      this.stringQueryCache.getEntities$(),
+      stringQueryLabel$,
+    ]).pipe(
+      map(([value, separator, entityCache, stringQueryCache, stringQueryLabel]) =>
+        calculateSelectedEntities(value, separator, entityCache, stringQueryCache, stringQueryLabel, this.translate)
+      ),
     );
 
     this.templateVars$ = combineLatest([
