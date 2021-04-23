@@ -28,6 +28,14 @@ export class EntityCacheService extends BaseDataService<EntityInfo> {
     );
   }
 
+  getEntities(guids?: string[]): EntityInfo[] {
+    if (guids == null) {
+      return this.cache$.value;
+    }
+
+    return this.cache$.value.filter(entity => guids.includes(entity.Value));
+  }
+
   getEntity(guid: string): EntityInfo {
     return this.cache$.value.find(entity => entity.Value === guid);
   }

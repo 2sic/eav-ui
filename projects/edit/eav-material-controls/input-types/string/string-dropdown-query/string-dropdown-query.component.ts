@@ -60,10 +60,6 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
         this.availableEntities$.next(null);
       })
     );
-
-    if (this.control.value) {
-      this.fetchEntities(true);
-    }
   }
 
   ngOnDestroy(): void {

@@ -1,6 +1,6 @@
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
@@ -26,7 +26,7 @@ import { DeleteEntityProps, EntityTemplateVars, SelectedEntity } from './entity-
   styleUrls: ['./entity-default.component.scss'],
 })
 @ComponentMetadata({})
-export class EntityDefaultComponent extends BaseComponent<string | string[]> implements OnInit, OnDestroy {
+export class EntityDefaultComponent extends BaseComponent<string | string[]> implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(EntityDefaultSearchComponent) private entitySearchComponent: EntityDefaultSearchComponent;
 
   isQuery: boolean;
@@ -136,6 +136,10 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
     );
 
     this.refreshOnChildClosed();
+  }
+
+  ngAfterViewInit() {
+    this.fixPrefillAndStringQueryCache();
   }
 
   ngOnDestroy(): void {
@@ -268,6 +272,21 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
         });
       }
     });
+  }
+
+  /**
+   * If guid is initially in value, but not in cache, it is either prefilled or entity is deleted,
+   * or in case of StringDropdownQuery, backend doesn't provide entities initially.
+   * This will fetch data once to figure out missing guids.
+   */
+  private fixPrefillAndStringQueryCache() {
+    // filter out null items
+    const guids = convertValueToArray(this.control.value, this.settings$.value.Separator).filter(guid => guid != null);
+    if (guids.length === 0) { return; }
+    const cached = this.entityCacheService.getEntities(guids);
+    if (guids.length !== cached.length) {
+      this.fetchEntities(true);
+    }
   }
 
   private refreshOnChildClosed(): void {
