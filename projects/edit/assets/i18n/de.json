@@ -117,7 +117,7 @@
     "Entity": {
       "Choose": "bestehendes Element auswählen",
       "New": "neues Element erstellen",
-      "EmptySlot": "lerer Eintrag",
+      "EmptySlot": "leerer Eintrag",
       "EntityNotFound": "(Element nicht gefunden)",
       "DragMove": "Ziehen um die Liste neu zu ordnen",
       "Edit": "Element bearbeiten",
