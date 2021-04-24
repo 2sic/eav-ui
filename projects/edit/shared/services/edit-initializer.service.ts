@@ -2,6 +2,7 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
+import { TempUpdateEnvVarsFromDialogSettings } from 'projects/ng-dialogs/src/app/shared/models/dialog-context.models';
 import { BehaviorSubject } from 'rxjs';
 import { EavService } from '.';
 import { FieldSettings } from '../../../edit-types';
@@ -48,6 +49,10 @@ export class EditInitializerService implements OnDestroy {
     this.eavService.fetchFormData(editItems).subscribe(formData => {
       this.saveFormData(formData);
       this.setMissingValues();
+
+      // new for v12
+      TempUpdateEnvVarsFromDialogSettings(formData.Context.App);
+
       this.loaded$.next(true);
     });
   }
