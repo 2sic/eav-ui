@@ -2,11 +2,11 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { TempUpdateEnvVarsFromDialogSettings } from 'projects/ng-dialogs/src/app/shared/models/dialog-context.models';
 import { BehaviorSubject } from 'rxjs';
 import { EavService } from '.';
 import { FieldSettings } from '../../../edit-types';
 import { InputTypeConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
+import { UpdateEnvVarsFromDialogSettings } from '../../../ng-dialogs/src/app/shared/helpers/update-env-vars-from-dialog-settings.helper';
 import { convertUrlToForm } from '../../../ng-dialogs/src/app/shared/helpers/url-prep.helper';
 import { calculateIsParentDialog, sortLanguages } from '../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.helpers';
 import { EavFormData } from '../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.models';
@@ -47,11 +47,9 @@ export class EditInitializerService implements OnDestroy {
     const form = convertUrlToForm((this.route.snapshot.params as EditParams).items);
     const editItems = JSON.stringify(form.items);
     this.eavService.fetchFormData(editItems).subscribe(formData => {
+      UpdateEnvVarsFromDialogSettings(formData.Context.App);
       this.saveFormData(formData);
       this.setMissingValues();
-
-      // new for v12
-      TempUpdateEnvVarsFromDialogSettings(formData.Context.App);
 
       this.loaded$.next(true);
     });

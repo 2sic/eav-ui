@@ -4,7 +4,7 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, Subscription } from 'rxjs';
 import { filter, map, pairwise, startWith } from 'rxjs/operators';
-import { TempUpdateEnvVarsFromDialogSettings } from '../../shared/models/dialog-context.models';
+import { UpdateEnvVarsFromDialogSettings } from '../../shared/helpers/update-env-vars-from-dialog-settings.helper';
 import { DialogSettings } from '../models/dialog-settings.model';
 import { AppDialogConfigService } from '../services/app-dialog-config.service';
 
@@ -66,10 +66,8 @@ export class AppAdministrationNavComponent implements OnInit, OnDestroy {
 
   private fetchDialogSettings() {
     this.appDialogConfigService.getDialogSettings().subscribe(dialogSettings => {
+      UpdateEnvVarsFromDialogSettings(dialogSettings.Context.App);
       this.dialogSettings$.next(dialogSettings);
-
-      // new for v12
-      TempUpdateEnvVarsFromDialogSettings(dialogSettings.Context.App);
 
       let tabs = ['home', 'data', 'queries', 'views', 'web-api', 'app']; // tabs order has to match template
       if (!dialogSettings.Context.Enable.Query) {

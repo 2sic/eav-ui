@@ -6,10 +6,6 @@ export interface DialogSettings {
 }
 
 export interface DialogContext extends EditDialogContext {
-  // App: DialogContextApp;
   Enable: DialogContextEnable;
-  // Language: DialogContextLanguage;
   Page: DialogContextPage;
-  // Site: DialogContextSite;
-  // System: DialogContextSystem;
 }
