@@ -102,7 +102,7 @@ export class EntityQueryComponent extends EntityDefaultComponent implements OnIn
     const queryUrl = settings.Query.includes('/') ? settings.Query : `${settings.Query}/${streamName}`;
     const params = this.paramsMask.resolve();
     const entitiesFilter: string[] = clearAvailableEntitiesAndOnlyUpdateCache && !this.isStringQuery
-      ? (this.control.value as string[]).filter(guid => guid != null)
+      ? (this.control.value as string[]).filter(guid => guid)
       : null;
 
     this.queryService.getAvailableEntities(queryUrl, true, params, entitiesFilter).subscribe({

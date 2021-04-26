@@ -167,7 +167,7 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
 
     const contentTypeName = this.contentTypeMask.resolve();
     const entitiesFilter: string[] = (clearAvailableEntitiesAndOnlyUpdateCache || !this.settings$.value.EnableAddExisting)
-      ? (this.control.value as string[]).filter(guid => guid != null)
+      ? (this.control.value as string[]).filter(guid => guid)
       : null;
 
     this.entityService.getAvailableEntities(contentTypeName, entitiesFilter).subscribe(items => {
@@ -281,7 +281,7 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
    */
   private fixPrefillAndStringQueryCache() {
     // filter out null items
-    const guids = convertValueToArray(this.control.value, this.settings$.value.Separator).filter(guid => guid != null);
+    const guids = convertValueToArray(this.control.value, this.settings$.value.Separator).filter(guid => guid);
     if (guids.length === 0) { return; }
     const cached = this.entityCacheService.getEntities(guids);
     if (guids.length !== cached.length) {
