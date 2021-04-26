@@ -2,8 +2,8 @@ import { ElementRef, NgZone } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { distinctUntilChanged } from 'rxjs/operators';
-import { EavCustomInputField, ExperimentalProps, FieldConfig, FieldValue } from '../../../../../../edit-types';
+import { distinctUntilChanged, map } from 'rxjs/operators';
+import { EavCustomInputField, ExperimentalProps, FieldConfig, FieldSettings, FieldValue } from '../../../../../../edit-types';
 import { FieldConfigSet } from '../../../../../eav-dynamic-form/model/field-config';
 import { InputFieldHelpers } from '../../../../../shared/helpers';
 import { DnnBridgeService, EavService, EditRoutingService, FieldsSettingsService } from '../../../../../shared/services';
@@ -57,20 +57,13 @@ export class ConnectorHelper {
   private buildConnector() {
     const connectorHost = this.calculateRegularProps();
     const experimental = this.calculateExperimentalProps();
-    const fieldSettings = this.fieldsSettingsService.getFieldSettings(this.config.fieldName);
-    const fieldConfig: FieldConfig = {
-      name: this.config.fieldName,
-      index: this.config.index,
-      label: fieldSettings.Name,
-      placeholder: fieldSettings.Placeholder,
-      inputType: this.config.inputType,
-      type: this.config.type,
-      required: fieldSettings.Required,
-      disabled: this.config.initialDisabled,
-      settings: fieldSettings,
-    };
+    const settingsSnapshot = this.fieldsSettingsService.getFieldSettings(this.config.fieldName);
+    const fieldConfig = this.getFieldConfig(settingsSnapshot);
+    const fieldConfig$ = this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).pipe(
+      map(settings => this.getFieldConfig(settings)),
+    );
     const value$ = this.value$.asObservable();
-    const connector = new ConnectorInstance(connectorHost, value$, fieldConfig, experimental, this.eavService.eavConfig);
+    const connector = new ConnectorInstance(connectorHost, value$, fieldConfig, fieldConfig$, experimental, this.eavService.eavConfig);
     this.subscription.add(
       this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).subscribe(settings => {
         connector.field.settings = settings;
@@ -125,6 +118,21 @@ export class ConnectorHelper {
     };
 
     return experimentalProps;
+  }
+
+  private getFieldConfig(settings: FieldSettings): FieldConfig {
+    const fieldConfig: FieldConfig = {
+      name: this.config.fieldName,
+      index: this.config.index,
+      label: settings.Name,
+      placeholder: settings.Placeholder,
+      inputType: this.config.inputType,
+      type: this.config.type,
+      required: settings.Required,
+      disabled: this.config.initialDisabled,
+      settings,
+    };
+    return fieldConfig;
   }
 
   private getUrlOfId(value: string, callback: (value: string) => void) {

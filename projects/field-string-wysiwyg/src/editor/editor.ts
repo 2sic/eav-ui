@@ -77,9 +77,6 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
     this.querySelector('.tinymce-container').classList.add(this.containerClass);
     this.querySelector('.tinymce-toolbar-container').classList.add(this.toolbarContainerClass);
     this.classList.add(this.mode === 'inline' ? 'inline-wysiwyg' : 'full-wysiwyg');
-    if (this.connector.field.disabled) {
-      this.classList.add('disabled');
-    }
     this.pasteClipboardImage = this.connector._experimental.isFeatureEnabled(FeaturesConstants.PasteImageFromClipboard);
 
     const tinyLang = TinyMceTranslations.fixTranslationKey(this.connector._experimental.translateService.currentLang);
@@ -130,6 +127,13 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
           if (this.editorContent === newValue) { return; }
           this.editorContent = newValue;
           editor.setContent(this.editorContent);
+        }),
+        this.connector.field$.subscribe(fieldConfig => {
+          if (fieldConfig.settings.Disabled) {
+            this.classList.add('disabled');
+          } else {
+            this.classList.remove('disabled');
+          }
         }),
       );
       if (this.mode !== 'inline') {
