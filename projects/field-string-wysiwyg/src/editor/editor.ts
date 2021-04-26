@@ -29,8 +29,8 @@ import { TinyMceConfigurator } from '../config/tinymce-configurator';
 import { TinyMceTranslations } from '../config/translations';
 import { attachAdam } from '../connector/adam';
 import { buildTemplate } from '../shared/helpers';
-import * as styles from './editor.css';
 import * as template from './editor.html';
+import * as styles from './editor.scss';
 import { fixMenuPositions } from './fix-menu-positions.helper';
 import * as skinOverrides from './skin-overrides.scss';
 
