@@ -3,7 +3,7 @@ import { WysiwygReconfigure } from '../../../edit-types';
 import { consoleLogWebpack } from '../../../field-custom-gps/src/shared/console-log-webpack.helper';
 import { FieldStringWysiwygEditor, wysiwygEditorTag } from '../editor/editor';
 import { FieldStringWysiwygPreview, wysiwygPreviewTag } from '../preview/preview';
-import * as styles from './field-string-wysiwyg.css';
+import * as styles from './field-string-wysiwyg.scss';
 
 const wysiwygTag = 'field-string-wysiwyg';
 

@@ -3,8 +3,8 @@ import { ElementEventListener } from '../../../edit/shared/models';
 import { consoleLogWebpack } from '../shared/console-log-webpack.helper';
 import { defaultCoordinates } from '../shared/constants';
 import { buildTemplate, customGpsIcons, parseLatLng } from '../shared/helpers';
-import * as styles from './preview.css';
 import * as template from './preview.html';
+import * as styles from './preview.scss';
 
 const gpsTag = 'field-custom-gps';
 

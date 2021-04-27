@@ -12,3 +12,8 @@ declare module "*.svg" {
   const svg: string;
   export default svg;
 }
+
+declare module "*.scss" {
+  const scss: string;
+  export default scss;
+}

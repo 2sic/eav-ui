@@ -6,8 +6,8 @@ import { ElementEventListener } from '../../../edit/shared/models';
 import { consoleLogWebpack } from '../shared/console-log-webpack.helper';
 import { defaultCoordinates, mapsApiUrl } from '../shared/constants';
 import { buildTemplate, parseLatLng, stringifyLatLng } from '../shared/helpers';
-import * as styles from './main.css';
 import * as template from './main.html';
+import * as styles from './main.scss';
 
 const gpsDialogTag = 'field-custom-gps-dialog';
 
