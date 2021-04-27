@@ -11,9 +11,9 @@ const gpsTag = 'field-custom-gps';
 class FieldCustomGps extends HTMLElement implements EavCustomInputField<string> {
   fieldInitialized: boolean;
   connector: Connector<string>;
-  latContainer: HTMLSpanElement;
-  lngContainer: HTMLSpanElement;
 
+  private latContainer: HTMLSpanElement;
+  private lngContainer: HTMLSpanElement;
   private eventListeners: ElementEventListener[];
 
   constructor() {
@@ -22,20 +22,20 @@ class FieldCustomGps extends HTMLElement implements EavCustomInputField<string> 
     this.fieldInitialized = false;
   }
 
-  connectedCallback() {
+  connectedCallback(): void {
     if (this.fieldInitialized) { return; }
     this.fieldInitialized = true;
     consoleLogWebpack(`${gpsTag} connectedCallback called`);
 
     this.innerHTML = buildTemplate(template.default, styles.default);
-    const mapIconContainer = this.querySelector('#map-icon-container');
+    const mapIconContainer = this.querySelector<HTMLDivElement>('#map-icon-container');
     mapIconContainer.innerHTML = customGpsIcons.mapMarker;
-    this.latContainer = this.querySelector('#lat-container');
-    this.lngContainer = this.querySelector('#lng-container');
+    this.latContainer = this.querySelector<HTMLSpanElement>('#lat-container');
+    this.lngContainer = this.querySelector<HTMLSpanElement>('#lng-container');
     this.eventListeners = [];
-    const expandBound = this.expand.bind(this);
-    this.addEventListener('click', expandBound);
-    this.eventListeners.push({ element: this, type: 'click', listener: expandBound });
+    const expand = () => { this.expand(); };
+    this.addEventListener('click', expand);
+    this.eventListeners.push({ element: this, type: 'click', listener: expand });
 
     // set initial value
     if (!this.connector.data.value) {
@@ -55,21 +55,20 @@ class FieldCustomGps extends HTMLElement implements EavCustomInputField<string> 
     });
   }
 
-  private updateHtml(latLng: google.maps.LatLngLiteral) {
-    this.latContainer.innerText = latLng.lat ? latLng.lat.toString() : '';
-    this.lngContainer.innerText = latLng.lng ? latLng.lng.toString() : '';
+  private updateHtml(latLng: google.maps.LatLngLiteral): void {
+    this.latContainer.innerText = latLng.lat?.toString() ?? '';
+    this.lngContainer.innerText = latLng.lng?.toString() ?? '';
   }
 
-  private expand() {
+  private expand(): void {
     this.connector.dialog.open();
   }
 
-  disconnectedCallback() {
+  disconnectedCallback(): void {
     consoleLogWebpack(`${gpsTag} disconnectedCallback called`);
-    this.eventListeners.forEach(evListener => {
-      evListener.element.removeEventListener(evListener.type, evListener.listener);
+    this.eventListeners.forEach(({ element, type, listener }) => {
+      element.removeEventListener(type, listener);
     });
-    this.eventListeners = null;
   }
 }
 

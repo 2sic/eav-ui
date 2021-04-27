@@ -15,7 +15,7 @@ export class ShowShadowsHelper {
     this.ngZone.runOutsideAngular(() => {
       this.calculateShadows();
 
-      const calculateShadows = this.calculateShadows.bind(this);
+      const calculateShadows = () => { this.calculateShadows(); };
       this.header.addEventListener('scroll', calculateShadows, { passive: true });
       window.addEventListener('resize', calculateShadows, { passive: true });
       this.eventListeners.push(
@@ -27,9 +27,8 @@ export class ShowShadowsHelper {
 
   destroy() {
     this.ngZone.runOutsideAngular(() => {
-      this.eventListeners.forEach(evList => {
-        evList.element.removeEventListener(evList.type, evList.listener);
-        evList = null;
+      this.eventListeners.forEach(({ element, type, listener }) => {
+        element.removeEventListener(type, listener);
       });
       this.eventListeners = null;
     });

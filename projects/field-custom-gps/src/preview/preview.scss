@@ -9,30 +9,30 @@
   line-height: 20px;
   margin-bottom: -2px;
   cursor: pointer;
-}
 
-.custom-gps-preview__text {
-  flex-shrink: 0;
-  max-width: 80%;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
+  &__text {
+    flex-shrink: 0;
+    max-width: 80%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
 
-.custom-gps-preview__spacer {
-  flex-grow: 1;
-}
+  &__spacer {
+    flex-grow: 1;
+  }
 
-.custom-gps-preview__map-icon {
-  flex-shrink: 0;
-  margin-right: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+  &__map-icon {
+    flex-shrink: 0;
+    margin-right: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-.custom-gps-preview__map-icon svg {
-  width: 20px;
-  height: 20px;
-  line-height: 20px;
+    svg {
+      width: 20px;
+      height: 20px;
+      line-height: 20px;
+    }
+  }
 }

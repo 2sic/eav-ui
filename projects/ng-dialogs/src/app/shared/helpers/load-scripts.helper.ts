@@ -20,7 +20,7 @@ export function loadScripts(scriptObjects: ScriptObject[], callback: () => void,
     return;
   }
 
-  const scriptInDom: HTMLScriptElement = document.querySelector(`script[src="${scrObj.src}"]`);
+  const scriptInDom = document.querySelector<HTMLScriptElement>(`script[src="${scrObj.src}"]`);
   if (scriptInDom) {
     scriptInDom.addEventListener('load', newCallback, { once: true });
     return;

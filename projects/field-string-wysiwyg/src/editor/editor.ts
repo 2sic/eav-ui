@@ -74,8 +74,8 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
     consoleLogWebpack(`${wysiwygEditorTag} connectedCallback called`);
 
     this.innerHTML = buildTemplate(template.default, styles.default + skinOverrides.default);
-    this.querySelector('.tinymce-container').classList.add(this.containerClass);
-    this.querySelector('.tinymce-toolbar-container').classList.add(this.toolbarContainerClass);
+    this.querySelector<HTMLDivElement>('.tinymce-container').classList.add(this.containerClass);
+    this.querySelector<HTMLDivElement>('.tinymce-toolbar-container').classList.add(this.toolbarContainerClass);
     this.classList.add(this.mode === 'inline' ? 'inline-wysiwyg' : 'full-wysiwyg');
     this.pasteClipboardImage = this.connector._experimental.isFeatureEnabled(FeaturesConstants.PasteImageFromClipboard);
 
@@ -199,7 +199,9 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   }
 
   private clearData(): void {
-    this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
+    this.subscriptions.forEach(subscription => {
+      subscription.unsubscribe();
+    });
     this.subscriptions = [];
     this.editor?.destroy();
     this.editor?.remove();

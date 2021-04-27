@@ -25,20 +25,17 @@ export class PasteClipboardImageDirective implements OnInit, OnDestroy {
         this.elementRef.nativeElement.pastableNonInputable();
         break;
     }
-    const handleImageBound = this.handleImage.bind(this);
-    this.elementRef.nativeElement.addEventListener('handleImage', handleImageBound);
+    const handleImage = (event: CustomEvent) => { this.handleImage(event); };
+    this.elementRef.nativeElement.addEventListener('handleImage', handleImage);
 
     this.eventListeners.push(
-      { element: this.elementRef.nativeElement, type: 'handleImage', listener: handleImageBound },
+      { element: this.elementRef.nativeElement, type: 'handleImage', listener: handleImage },
     );
   }
 
   ngOnDestroy() {
     // spm 2019-10-24 paste.js which handles clipboard paste doesn't destroy listeners
-    this.eventListeners.forEach(eventListener => {
-      const element = eventListener.element;
-      const type = eventListener.type;
-      const listener = eventListener.listener;
+    this.eventListeners.forEach(({ element, type, listener }) => {
       element.removeEventListener(type, listener);
     });
   }

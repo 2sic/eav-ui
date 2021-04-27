@@ -39,10 +39,7 @@ export class DropzoneDraggingHelper {
   /** Removes event listeners from registered elements */
   detach() {
     this.zone.runOutsideAngular(() => {
-      this.eventListeners.forEach(eventListener => {
-        const element = eventListener.element;
-        const type = eventListener.type;
-        const listener = eventListener.listener;
+      this.eventListeners.forEach(({ element, type, listener }) => {
         element.removeEventListener(type, listener);
       });
     });
