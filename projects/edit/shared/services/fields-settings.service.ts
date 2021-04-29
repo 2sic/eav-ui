@@ -4,11 +4,12 @@ import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { EavService } from '.';
 import { FieldSettings } from '../../../edit-types';
+import { FormValues } from '../../eav-item-dialog/item-edit-form/item-edit-form.models';
 import { ValidationHelper } from '../../eav-material-controls/validators/validation-helper';
 import { FieldLogicManager } from '../../field-logic/field-logic-manager';
-import { FieldsSettingsHelpers, GeneralHelpers, InputFieldHelpers, LocalizationHelpers } from '../helpers';
-import { ContentTypeSettings, FieldsProps, TranslationState } from '../models';
-import { ContentTypeService, InputTypeService, ItemService, LanguageInstanceService } from '../store/ngrx-data';
+import { FieldsSettingsHelpers, FormulaHelpers, GeneralHelpers, InputFieldHelpers, LocalizationHelpers } from '../helpers';
+import { ContentTypeSettings, FieldsProps, FormulaContext, TranslationState } from '../models';
+import { ContentTypeItemService, ContentTypeService, InputTypeService, ItemService, LanguageInstanceService } from '../store/ngrx-data';
 
 @Injectable()
 export class FieldsSettingsService implements OnDestroy {
@@ -22,6 +23,7 @@ export class FieldsSettingsService implements OnDestroy {
     private eavService: EavService,
     private itemService: ItemService,
     private inputTypeService: InputTypeService,
+    private contentTypeItemService: ContentTypeItemService,
   ) { }
 
   ngOnDestroy(): void {
@@ -70,12 +72,17 @@ export class FieldsSettingsService implements OnDestroy {
     this.subscription.add(
       combineLatest([contentType$, currentLanguage$, defaultLanguage$, itemAttributes$, itemHeader$, inputTypes$]).pipe(
         map(([contentType, currentLanguage, defaultLanguage, itemAttributes, itemHeader, inputTypes]) => {
+          const formValues: FormValues = {};
+          for (const [fieldName, fieldValues] of Object.entries(itemAttributes)) {
+            formValues[fieldName] = LocalizationHelpers.translate(currentLanguage, defaultLanguage, fieldValues, null);
+          }
+
           const fieldsProps: FieldsProps = {};
           for (const attribute of contentType.Attributes) {
             const attributeValues = itemAttributes[attribute.Name];
-            // empty-default value is null
-            const value = LocalizationHelpers.translate(currentLanguage, defaultLanguage, attributeValues, null);
-            // custom-default inputType is null
+            // empty-default has no value
+            const value = formValues[attribute.Name];
+            // custom-default has no inputType
             const inputType = inputTypes.find(i => i.Type === attribute.InputType);
 
             const merged = FieldsSettingsHelpers.mergeSettings<FieldSettings>(attribute.Metadata, currentLanguage, defaultLanguage);
@@ -87,6 +94,21 @@ export class FieldsSettingsService implements OnDestroy {
             merged.Required ??= false;
             merged.Disabled ??= false;
             merged.DisableTranslation ??= false;
+            // formulas
+            const context: FormulaContext = {
+              data: {
+                name: attribute.Name,
+                value,
+                form: formValues,
+              },
+            };
+            const formulaItems = this.contentTypeItemService.getContentTypeItems(merged.Calculations);
+            const formulaVisible = FormulaHelpers.getFormulaValue('visible', context, currentLanguage, defaultLanguage, formulaItems);
+            merged.VisibleInEditUI = formulaVisible === false ? false : merged.VisibleInEditUI;
+            const formulaRequired = FormulaHelpers.getFormulaValue('required', context, currentLanguage, defaultLanguage, formulaItems);
+            merged.Required = formulaRequired === true ? true : merged.Required;
+            const formulaEnabled = FormulaHelpers.getFormulaValue('enabled', context, currentLanguage, defaultLanguage, formulaItems);
+            merged.Disabled = formulaEnabled === false ? true : merged.Disabled;
             // special fixes
             merged.Name = merged.Name || attribute.Name;
             merged.Required = ValidationHelper.isRequired(merged);
