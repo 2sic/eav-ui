@@ -1,5 +1,4 @@
 export * from './assets.service';
-export * from './dnn-bridge.service';
 export * from './eav.service';
 export * from './edit-initializer.service';
 export * from './edit-routing.service';

@@ -46,20 +46,20 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
       }
 
       this.dialogRef = this.dialog.open(component, {
-        data: this.dialogData,
+        autoFocus: false,
         backdropClass: 'dialog-backdrop',
+        closeOnNavigation: false,
+        data: this.dialogData,
         panelClass: [
           'dialog-panel',
           `dialog-panel-${dialogConfig.panelSize}`,
           dialogConfig.showScrollbar ? 'show-scrollbar' : 'no-scrollbar',
           ...(dialogConfig.panelClass ? dialogConfig.panelClass : []),
         ],
-        viewContainerRef: this.viewContainerRef,
-        autoFocus: false,
-        closeOnNavigation: false,
-        // spm NOTE: used to force align-items: flex-start; on cdk-global-overlay-wrapper.
+        // spm NOTE: position used to force align-items: flex-start; on cdk-global-overlay-wrapper.
         // Real top margin is overwritten in css e.g. dialog-panel-large
-        position: { top: '0' }
+        position: { top: '0' },
+        viewContainerRef: this.viewContainerRef,
       });
 
       this.dialogRef.afterClosed().pipe(take(1)).subscribe((data: any) => {

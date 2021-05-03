@@ -1,6 +1,5 @@
 import { Editor } from 'tinymce';
-import { Adam, DnnBridgeConnectorParams } from '../../../edit-types';
-import { PagePickerResult } from '../../../edit/eav-material-controls/input-types/dnn-bridge/dnn-bridge.models';
+import { Adam } from '../../../edit-types';
 import { FieldStringWysiwygEditor, wysiwygEditorTag } from '../editor/editor';
 import { loadCustomIcons } from '../editor/load-icons.helper';
 import { Guid } from '../shared/guid';
@@ -457,17 +456,13 @@ function registerTinyMceFormats(editor: Editor, imgSizes: number[]): void {
 
 function openPagePicker(editor: Editor, fieldStringWysiwyg: FieldStringWysiwygEditor): void {
   const connector = fieldStringWysiwyg.connector._experimental;
-  const params: DnnBridgeConnectorParams = {
-    CurrentValue: '',
-    FileFilter: '',
-    Paths: '',
-  };
-  connector.openPagePicker(params, (value: PagePickerResult) => {
-    if (!value) { return; }
 
-    connector.getUrlOfId('page:' + value.id, (path: string) => {
+  connector.openPagePicker(page => {
+    if (!page) { return; }
+
+    connector.getUrlOfId(`page:${page.id}`, (path) => {
       const previouslySelected = editor.selection.getContent();
-      editor.insertContent('<a href=\"' + path + '\">' + (previouslySelected || value.name) + '</a>');
+      editor.insertContent(`<a href="${path}">${(previouslySelected || page.name)}</a>`);
     });
   });
 }

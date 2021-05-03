@@ -1,13 +1,15 @@
-import { ElementRef, NgZone } from '@angular/core';
+import { ElementRef, NgZone, ViewContainerRef } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { EavCustomInputField, ExperimentalProps, FieldConfig, FieldSettings, FieldValue } from '../../../../../../edit-types';
 import { FieldConfigSet } from '../../../../../eav-dynamic-form/model/field-config';
-import { InputFieldHelpers } from '../../../../../shared/helpers';
-import { DnnBridgeService, EavService, EditRoutingService, FieldsSettingsService } from '../../../../../shared/services';
+import { InputFieldHelpers, PagePicker } from '../../../../../shared/helpers';
+import { EavService, EditRoutingService, FieldsSettingsService } from '../../../../../shared/services';
 import { ContentTypeService, FeatureService, InputTypeService } from '../../../../../shared/store/ngrx-data';
+import { AdamService } from '../../../../adam/adam.service';
 import { ValidationMessagesService } from '../../../../validators/validation-messages-service';
 import { ConnectorHost, ConnectorInstance } from './models/connector-instance.model';
 
@@ -28,7 +30,9 @@ export class ConnectorHelper {
     private inputTypeService: InputTypeService,
     private featureService: FeatureService,
     private editRoutingService: EditRoutingService,
-    private dnnBridgeService: DnnBridgeService,
+    private adamService: AdamService,
+    private dialog: MatDialog,
+    private viewContainerRef: ViewContainerRef,
     private fieldsSettingsService: FieldsSettingsService,
     private validationMessagesService: ValidationMessagesService,
     private zone: NgZone,
@@ -109,8 +113,8 @@ export class ConnectorHelper {
       setFocused: (focused) => {
         this.zone.run(() => { this.config.focused$.next(focused); });
       },
-      openPagePicker: (params, callback) => {
-        this.zone.run(() => { this.dnnBridgeService.open('pagepicker', params, callback); });
+      openPagePicker: (callback) => {
+        this.zone.run(() => { PagePicker.open(this.dialog, this.viewContainerRef, callback); });
       },
       getUrlOfId: (value, callback) => {
         this.zone.run(() => { this.getUrlOfId(value, callback); });
@@ -142,7 +146,7 @@ export class ConnectorHelper {
     const contentType = this.config.contentTypeId;
     const entityGuid = this.config.entityGuid;
     const field = this.config.fieldName;
-    this.dnnBridgeService.getLinkInfo(value, contentType, entityGuid, field).subscribe(linkInfo => {
+    this.adamService.getLinkInfo(value, contentType, entityGuid, field).subscribe(linkInfo => {
       if (!linkInfo) { return; }
       callback(linkInfo.Value);
     });

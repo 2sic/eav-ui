@@ -45,7 +45,6 @@ import { CustomJsonEditorComponent } from './input-types/custom/custom-json-edit
 import { ConnectorComponent } from './input-types/custom/external-web-component/connector/connector.component';
 import { ExternalWebComponentComponent } from './input-types/custom/external-web-component/external-web-component.component';
 import { DatetimeDefaultComponent } from './input-types/datetime/datetime-default/datetime-default.component';
-import { DnnBridgeComponent } from './input-types/dnn-bridge/dnn-bridge.component';
 import { EmptyDefaultComponent } from './input-types/empty/empty-default/empty-default.component';
 import { EntityContentBlockComponent } from './input-types/entity/entity-content-blocks/entity-content-blocks.component';
 import { EntityDefaultListComponent } from './input-types/entity/entity-default-list/entity-default-list.component';
@@ -65,6 +64,7 @@ import { EntityTranslateMenuComponent } from './localization/entity-translate-me
 import { LanguageSwitcherComponent } from './localization/language-switcher/language-switcher.component';
 import { TranslateMenuDialogComponent } from './localization/translate-menu-dialog/translate-menu-dialog.component';
 import { TranslateMenuComponent } from './localization/translate-menu/translate-menu.component';
+import { PagePickerComponent } from './page-picker/page-picker.component';
 import { ValidationMessagesService } from './validators/validation-messages-service';
 import { CollapsibleWrapperComponent } from './wrappers';
 import { EntityExpandableWrapperComponent } from './wrappers/entity-expandable-wrapper/entity-expandable-wrapper.component';
@@ -100,7 +100,7 @@ import { LocalizationWrapperComponent } from './wrappers/localization-wrapper/lo
     PasteClipboardImageDirective,
     ChangeAnchorTargetDirective,
     HiddenWrapperComponent,
-    DnnBridgeComponent,
+    PagePickerComponent,
     PublishStatusDialogComponent,
     ExpandableWrapperComponent,
     SnackBarUnsavedChangesComponent,
@@ -169,7 +169,7 @@ import { LocalizationWrapperComponent } from './wrappers/localization-wrapper/lo
     ExpandableWrapperComponent,
     HiddenWrapperComponent,
     HyperlinkDefaultComponent,
-    DnnBridgeComponent,
+    PagePickerComponent,
     HyperlinkLibraryComponent,
     NumberDefaultComponent,
     PublishStatusDialogComponent,

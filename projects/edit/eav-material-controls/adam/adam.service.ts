@@ -1,13 +1,15 @@
-
+import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { AdamConfig, AdamItem } from '../../../edit-types';
+import { LinkInfo } from '../../shared/models';
 import { EavService } from '../../shared/services';
 import { SanitizeHelper } from './sanitize.helper';
 
 @Injectable()
 export class AdamService {
-  constructor(private http: HttpClient, private eavService: EavService) { }
+  constructor(private http: HttpClient, private dnnContext: DnnContext, private eavService: EavService) { }
 
   getAll(url: string, config: AdamConfig) {
     return this.http.get<AdamItem[]>(url + '/items', {
@@ -55,4 +57,15 @@ export class AdamService {
     });
   }
 
+  getLinkInfo(link: string, contentType: string, guid: string, field: string): Observable<LinkInfo> {
+    return this.http.get<LinkInfo>(this.dnnContext.$2sxc.http.apiUrl('cms/edit/linkInfo'), {
+      params: {
+        link,
+        ...(guid && { guid }),
+        ...(contentType && { contentType }),
+        ...(field && { field }),
+        appid: this.eavService.eavConfig.appId,
+      }
+    });
+  }
 }
