@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { combineLatest, Observable } from 'rxjs';
@@ -44,6 +44,7 @@ export class ExpandableWrapperComponent extends BaseComponent<string> implements
     private editRoutingService: EditRoutingService,
     private adamService: AdamService,
     private dialog: MatDialog,
+    private changeDetectorRef: ChangeDetectorRef,
     private viewContainerRef: ViewContainerRef,
     private zone: NgZone,
   ) {
@@ -94,6 +95,7 @@ export class ExpandableWrapperComponent extends BaseComponent<string> implements
       this.adamService,
       this.dialog,
       this.viewContainerRef,
+      this.changeDetectorRef,
       this.fieldsSettingsService,
       this.validationMessagesService,
       this.zone,

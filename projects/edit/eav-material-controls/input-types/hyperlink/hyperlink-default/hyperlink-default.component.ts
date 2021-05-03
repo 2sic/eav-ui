@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -44,6 +44,7 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
     private adamService: AdamService,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
+    private changeDetectorRef: ChangeDetectorRef,
     private editRoutingService: EditRoutingService,
     private linkCacheService: LinkCacheService,
   ) {
@@ -106,7 +107,7 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
   }
 
   openPagePicker() {
-    PagePicker.open(this.dialog, this.viewContainerRef, (page) => {
+    PagePicker.open(this.dialog, this.viewContainerRef, this.changeDetectorRef, (page) => {
       // Convert to page:xyz format (if it wasn't cancelled)
       if (!page) { return; }
       this.control.patchValue(`page:${page.id}`);

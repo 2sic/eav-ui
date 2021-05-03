@@ -1,5 +1,48 @@
-<h3>{{ 'Fields.Hyperlink.PagePicker.Title' | translate }}</h3>
+<ng-container *ngIf="templateVars$ | async as data">
 
-<div style="height:370px; width:600px">
+  <h3 class="page-picker-title">
+    {{ 'Fields.Hyperlink.PagePicker.Title' | translate }}
+  </h3>
 
-</div>
+  <div class="page-search-box">
+    <mat-form-field appearance="standard" color="accent">
+      <mat-label>Search pages</mat-label>
+      <input matInput [matAutocomplete]="auto" [ngModel]="data.filterText" (ngModelChange)="setFilter($event)">
+      <mat-autocomplete #auto="matAutocomplete">
+        <cdk-virtual-scroll-viewport itemSize="48" minBufferPx="500" maxBufferPx="1000"
+          [style.height.px]="data.filteredSearch.length < 6 ? data.filteredSearch.length * 48 : 240">
+          <mat-option *cdkVirtualFor="let page of data.filteredSearch" [value]="page.name" (click)="select(page.id)">
+            {{ page.name }}
+          </mat-option>
+        </cdk-virtual-scroll-viewport>
+      </mat-autocomplete>
+    </mat-form-field>
+  </div>
+
+  <div class="page-tree-box">
+    <ul>
+      <ng-container *ngFor="let page of data.tree">
+        <ng-container *ngTemplateOutlet="pageAndChildren; context: {page: page}"></ng-container>
+      </ng-container>
+    </ul>
+  </div>
+
+  <ng-template #pageAndChildren let-page="page">
+    <li>
+      <div class="page-row">
+        <span class="no-toggle" *ngIf="page.children.length === 0"></span>
+        <mat-icon class="page-toggle" *ngIf="page.children.length > 0" (click)="toggle(page.id)">
+          {{ toggled.includes(page.id) ? 'keyboard_arrow_down' : 'keyboard_arrow_right' }}
+        </mat-icon>
+        <mat-icon svgIcon="file" class="page-icon"></mat-icon>
+        <span class="page-label" (click)="select(page.id)">{{ page.name }}</span>
+      </div>
+
+      <ul *ngIf="page.children.length > 0 && toggled.includes(page.id)">
+        <ng-container *ngFor="let child of page.children">
+          <ng-container *ngTemplateOutlet="pageAndChildren; context: {page: child}"></ng-container>
+        </ng-container>
+      </ul>
+    </li>
+  </ng-template>
+</ng-container>

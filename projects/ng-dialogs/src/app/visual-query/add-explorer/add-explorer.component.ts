@@ -3,11 +3,12 @@ import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { GeneralHelpers } from '../../../../../edit/shared/helpers';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { DataSource, SortedDataSources } from '../models';
 import { guiTypes } from '../plumb-editor/plumb-editor.helpers';
 import { VisualQueryService } from '../services/visual-query.service';
-import { filterAndSortDataSources, toggleInArray } from './add-explorer.helpers';
+import { filterAndSortDataSources } from './add-explorer.helpers';
 
 @Component({
   selector: 'app-add-explorer',
@@ -45,7 +46,7 @@ export class AddExplorerComponent implements OnInit, OnDestroy {
   }
 
   toggleItem(item: string) {
-    toggleInArray(item, this.toggledItems);
+    GeneralHelpers.toggleInArray(item, this.toggledItems);
   }
 
   trackGroups(index: number, type: KeyValue<string, DataSource[]>) {

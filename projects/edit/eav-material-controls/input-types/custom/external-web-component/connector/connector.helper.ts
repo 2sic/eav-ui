@@ -1,4 +1,4 @@
-import { ElementRef, NgZone, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, ElementRef, NgZone, ViewContainerRef } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
@@ -33,6 +33,7 @@ export class ConnectorHelper {
     private adamService: AdamService,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
+    private changeDetectorRef: ChangeDetectorRef,
     private fieldsSettingsService: FieldsSettingsService,
     private validationMessagesService: ValidationMessagesService,
     private zone: NgZone,
@@ -114,7 +115,7 @@ export class ConnectorHelper {
         this.zone.run(() => { this.config.focused$.next(focused); });
       },
       openPagePicker: (callback) => {
-        this.zone.run(() => { PagePicker.open(this.dialog, this.viewContainerRef, callback); });
+        this.zone.run(() => { PagePicker.open(this.dialog, this.viewContainerRef, this.changeDetectorRef, callback); });
       },
       getUrlOfId: (value, callback) => {
         this.zone.run(() => { this.getUrlOfId(value, callback); });

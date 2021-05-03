@@ -43,4 +43,13 @@ export class GeneralHelpers {
     }
     return Object.keys(changes).length === 0 ? undefined : changes;
   }
+
+  static toggleInArray<T>(item: T, array: T[]): void {
+    const index = array.indexOf(item);
+    if (index === -1) {
+      array.push(item);
+    } else {
+      array.splice(index, 1);
+    }
+  }
 }

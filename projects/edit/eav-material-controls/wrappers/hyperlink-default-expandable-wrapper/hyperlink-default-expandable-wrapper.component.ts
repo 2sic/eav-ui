@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
@@ -42,6 +42,7 @@ export class HyperlinkDefaultExpandableWrapperComponent extends BaseComponent<st
     private adamService: AdamService,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
+    private changeDetectorRef: ChangeDetectorRef,
     private zone: NgZone,
     private editRoutingService: EditRoutingService,
     private linkCacheService: LinkCacheService,
@@ -131,7 +132,7 @@ export class HyperlinkDefaultExpandableWrapperComponent extends BaseComponent<st
   }
 
   openPagePicker() {
-    PagePicker.open(this.dialog, this.viewContainerRef, (page) => {
+    PagePicker.open(this.dialog, this.viewContainerRef, this.changeDetectorRef, (page) => {
       // Convert to page:xyz format (if it wasn't cancelled)
       if (!page) { return; }
       this.control.patchValue(`page:${page.id}`);

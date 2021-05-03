@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Input, NgZone, OnDestroy, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, Input, NgZone, OnDestroy, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
@@ -33,6 +33,7 @@ export class ConnectorComponent implements AfterViewInit, OnDestroy {
     private adamService: AdamService,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
+    private changeDetectorRef: ChangeDetectorRef,
     private fieldsSettingsService: FieldsSettingsService,
     private validationMessagesService: ValidationMessagesService,
     private zone: NgZone,
@@ -55,6 +56,7 @@ export class ConnectorComponent implements AfterViewInit, OnDestroy {
       this.adamService,
       this.dialog,
       this.viewContainerRef,
+      this.changeDetectorRef,
       this.fieldsSettingsService,
       this.validationMessagesService,
       this.zone,
