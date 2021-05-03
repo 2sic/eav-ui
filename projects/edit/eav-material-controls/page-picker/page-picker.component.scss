@@ -1,0 +1,57 @@
+$icon-size: 20px;
+
+.page-picker-title {
+  margin: 0;
+}
+
+.page-search-box {
+  margin-bottom: 16px;
+}
+
+.page-tree-box {
+  height: 300px;
+  max-width: 100%;
+  overflow: auto;
+
+  ul {
+    list-style-type: none;
+    padding-left: 8px;
+    margin: 0;
+  }
+
+  >ul {
+    padding-left: 0;
+  }
+}
+
+.page-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 4px;
+  padding-bottom: 4px;
+
+  mat-icon {
+    width: $icon-size;
+    height: $icon-size;
+    font-size: $icon-size;
+  }
+}
+
+.no-toggle {
+  width: $icon-size;
+  height: $icon-size;
+  display: inline-block;
+}
+
+.page-toggle {
+  cursor: pointer;
+}
+
+.page-icon {
+  margin-right: 4px;
+}
+
+.page-label {
+  cursor: pointer;
+}

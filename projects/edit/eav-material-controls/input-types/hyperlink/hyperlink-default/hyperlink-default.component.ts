@@ -1,15 +1,17 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { AdamItem, AdamPostResponse, DnnBridgeConnectorParams } from '../../../../../edit-types';
+import { AdamItem, AdamPostResponse } from '../../../../../edit-types';
 import { FieldSettings } from '../../../../../edit-types';
 import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
-import { DnnBridgeService, EavService, EditRoutingService, FieldsSettingsService, FileTypeService } from '../../../../shared/services';
+import { PagePicker } from '../../../../shared/helpers';
+import { EavService, EditRoutingService, FieldsSettingsService, FileTypeService } from '../../../../shared/services';
 import { LinkCacheService } from '../../../../shared/store/ngrx-data';
+import { AdamService } from '../../../adam/adam.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { BaseComponent } from '../../base/base.component';
-import { PagePickerResult } from '../../dnn-bridge/dnn-bridge.models';
 import { HyperlinkDefaultLogic } from './hyperlink-default-logic';
 import { HyperlinkDefaultTemplateVars, Preview } from './hyperlink-default.models';
 
@@ -39,7 +41,10 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
     validationMessagesService: ValidationMessagesService,
     fieldsSettingsService: FieldsSettingsService,
     private fileTypeService: FileTypeService,
-    private dnnBridgeService: DnnBridgeService,
+    private adamService: AdamService,
+    private dialog: MatDialog,
+    private viewContainerRef: ViewContainerRef,
+    private changeDetectorRef: ChangeDetectorRef,
     private editRoutingService: EditRoutingService,
     private linkCacheService: LinkCacheService,
   ) {
@@ -102,17 +107,10 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
   }
 
   openPagePicker() {
-    const settings = this.settings$.value;
-    const params: DnnBridgeConnectorParams = {
-      CurrentValue: this.control.value,
-      FileFilter: settings.FileFilter,
-      Paths: settings.Paths,
-    };
-
-    this.dnnBridgeService.open('pagepicker', params, (value: PagePickerResult) => {
+    PagePicker.open(this.dialog, this.viewContainerRef, this.changeDetectorRef, (page) => {
       // Convert to page:xyz format (if it wasn't cancelled)
-      if (!value) { return; }
-      this.control.patchValue(`page:${value.id}`);
+      if (!page) { return; }
+      this.control.patchValue(`page:${page.id}`);
     });
   }
 
@@ -139,7 +137,7 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
     const contentType = this.config.contentTypeId;
     const entityGuid = this.config.entityGuid;
     const field = this.config.fieldName;
-    this.dnnBridgeService.getLinkInfo(value, contentType, entityGuid, field).subscribe(linkInfo => {
+    this.adamService.getLinkInfo(value, contentType, entityGuid, field).subscribe(linkInfo => {
       if (!linkInfo) {
         this.setLink(value, false);
         return;

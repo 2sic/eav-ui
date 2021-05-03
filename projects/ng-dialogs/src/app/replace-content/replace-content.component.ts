@@ -51,7 +51,9 @@ export class ReplaceContentComponent implements OnInit, OnDestroy {
     this.options$ = new BehaviorSubject([]);
 
     const filteredOptions$ = combineLatest([this.filterText$, this.options$]).pipe(
-      map(([filterText, options]) => options.filter(option => option.label.includes(filterText)).map(option => option.label)),
+      map(([filterText, options]) =>
+        options.filter(option => option.label.toLocaleLowerCase().includes(filterText.toLocaleLowerCase())).map(option => option.label)
+      ),
     );
     this.templateVars$ = combineLatest([this.filterText$, filteredOptions$]).pipe(
       map(([filterText, filteredOptions]) => {

@@ -81,11 +81,11 @@ export class TranslateMenuComponent implements OnInit {
       },
     };
     this.dialog.open(TranslateMenuDialogComponent, {
-      panelClass: 'translate-menu-dialog',
       autoFocus: false,
-      width: '350px',
-      viewContainerRef: this.viewContainerRef,
       data: dialogData,
+      panelClass: 'translate-menu-dialog',
+      viewContainerRef: this.viewContainerRef,
+      width: '350px',
     });
   }
 }

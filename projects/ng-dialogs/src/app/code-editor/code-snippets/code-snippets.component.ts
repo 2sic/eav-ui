@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { toggleInArray } from './code-snippets.helpers';
+import { GeneralHelpers } from '../../../../../edit/shared/helpers';
 
 @Component({
   selector: 'app-code-snippets',
@@ -25,19 +25,19 @@ export class CodeSnippetsComponent implements OnInit {
   }
 
   toggleSection(set: any) {
-    toggleInArray(set, this.toggledSections);
+    GeneralHelpers.toggleInArray(set, this.toggledSections);
   }
 
   toggleFolder(item: any) {
-    toggleInArray(item, this.toggledFolders);
+    GeneralHelpers.toggleInArray(item, this.toggledFolders);
   }
 
   toggleInfo(info: any) {
-    toggleInArray(info, this.toggledInfos);
+    GeneralHelpers.toggleInArray(info, this.toggledInfos);
   }
 
   toggleMore(more: any) {
-    toggleInArray(more, this.toggledMores);
+    GeneralHelpers.toggleInArray(more, this.toggledMores);
   }
 
 }

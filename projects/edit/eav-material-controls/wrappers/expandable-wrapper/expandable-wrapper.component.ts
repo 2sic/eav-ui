@@ -1,4 +1,5 @@
-import { AfterViewInit, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -6,8 +7,9 @@ import { consoleLogAngular } from '../../../../ng-dialogs/src/app/shared/helpers
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { ContentExpandAnimation } from '../../../shared/animations';
 import { DropzoneDraggingHelper } from '../../../shared/helpers';
-import { DnnBridgeService, EavService, EditRoutingService, FieldsSettingsService } from '../../../shared/services';
+import { EavService, EditRoutingService, FieldsSettingsService } from '../../../shared/services';
 import { ContentTypeService, FeatureService, InputTypeService } from '../../../shared/store/ngrx-data';
+import { AdamService } from '../../adam/adam.service';
 import { BaseComponent } from '../../input-types/base/base.component';
 import { ConnectorHelper } from '../../input-types/custom/external-web-component/connector/connector.helper';
 import { ValidationMessagesService } from '../../validators/validation-messages-service';
@@ -40,7 +42,10 @@ export class ExpandableWrapperComponent extends BaseComponent<string> implements
     private inputTypeService: InputTypeService,
     private featureService: FeatureService,
     private editRoutingService: EditRoutingService,
-    private dnnBridgeService: DnnBridgeService,
+    private adamService: AdamService,
+    private dialog: MatDialog,
+    private changeDetectorRef: ChangeDetectorRef,
+    private viewContainerRef: ViewContainerRef,
     private zone: NgZone,
   ) {
     super(eavService, validationMessagesService, fieldsSettingsService);
@@ -87,7 +92,10 @@ export class ExpandableWrapperComponent extends BaseComponent<string> implements
       this.inputTypeService,
       this.featureService,
       this.editRoutingService,
-      this.dnnBridgeService,
+      this.adamService,
+      this.dialog,
+      this.viewContainerRef,
+      this.changeDetectorRef,
       this.fieldsSettingsService,
       this.validationMessagesService,
       this.zone,

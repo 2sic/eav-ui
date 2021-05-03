@@ -36,9 +36,9 @@ export class SelectorWithHelpComponent implements OnInit {
     };
 
     this.dialog.open(HelpPopupComponent, {
-      width: '500px',
-      data,
       autoFocus: false,
+      data,
+      width: '500px',
     });
   }
 }

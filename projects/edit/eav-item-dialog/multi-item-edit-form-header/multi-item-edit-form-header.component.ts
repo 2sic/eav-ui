@@ -46,10 +46,10 @@ export class MultiItemEditFormHeaderComponent implements OnInit {
 
   openPublishStatusDialog() {
     this.dialog.open(PublishStatusDialogComponent, {
-      panelClass: 'c-publish-status-dialog',
       autoFocus: false,
-      width: '350px',
+      panelClass: 'c-publish-status-dialog',
       viewContainerRef: this.viewContainerRef,
+      width: '350px',
     });
   }
 }
