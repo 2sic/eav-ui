@@ -1138,7 +1138,7 @@ button::-moz-focus-inner {
   z-index: 1;
 }
 .tox .tox-dialog-wrap__backdrop--opaque {
-  background-color: #0087f4;
+  background-color: #002753;
 }
 .tox .tox-dialog {
   background-color: #0f94ff;
@@ -1779,7 +1779,7 @@ body.tox-dialog__disable-scroll {
 }
 .tox .tox-textfield[disabled],
 .tox .tox-textarea[disabled] {
-  background-color: #0087f4;
+  background-color: #002753;
   color: rgba(255, 255, 255, 0.85);
   cursor: not-allowed;
 }
@@ -2116,8 +2116,8 @@ body.tox-dialog__disable-scroll {
   margin: 0;
 }
 .tox .tox-menubar {
-  background: url("data:image/svg+xml;charset=utf8,%3Csvg height='39px' viewBox='0 0 40 39px' width='40' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='0' y='38px' width='100' height='1' fill='%23ccc'/%3E%3C/svg%3E") left 0 top 0 #0087f4;
-  background-color: #0087f4;
+  background: url("data:image/svg+xml;charset=utf8,%3Csvg height='39px' viewBox='0 0 40 39px' width='40' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='0' y='38px' width='100' height='1' fill='%23ccc'/%3E%3C/svg%3E") left 0 top 0 #002753;
+  background-color: #002753;
   display: flex;
   flex: 0 0 auto;
   flex-shrink: 0;
@@ -2354,7 +2354,7 @@ body.tox-dialog__disable-scroll {
   flex-wrap: nowrap;
 }
 .tox .tox-pop__dialog {
-  background-color: #0087f4;
+  background-color: #002753;
   border: 1px solid #ccc;
   border-radius: 3px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
@@ -2383,7 +2383,7 @@ body.tox-dialog__disable-scroll {
   top: 100%;
 }
 .tox .tox-pop.tox-pop--bottom::after {
-  border-color: #0087f4 transparent transparent transparent;
+  border-color: #002753 transparent transparent transparent;
   border-width: 8px;
   margin-left: -8px;
   margin-top: -1px;
@@ -2400,7 +2400,7 @@ body.tox-dialog__disable-scroll {
   transform: translateY(-100%);
 }
 .tox .tox-pop.tox-pop--top::after {
-  border-color: transparent transparent #0087f4 transparent;
+  border-color: transparent transparent #002753 transparent;
   border-width: 8px;
   margin-left: -8px;
   margin-top: 1px;
@@ -2417,7 +2417,7 @@ body.tox-dialog__disable-scroll {
   transform: translateY(-50%);
 }
 .tox .tox-pop.tox-pop--left::after {
-  border-color: transparent #0087f4 transparent transparent;
+  border-color: transparent #002753 transparent transparent;
   border-width: 8px;
   margin-left: -15px;
 }
@@ -2433,7 +2433,7 @@ body.tox-dialog__disable-scroll {
   transform: translateY(-50%);
 }
 .tox .tox-pop.tox-pop--right::after {
-  border-color: transparent transparent transparent #0087f4;
+  border-color: transparent transparent transparent #002753;
   border-width: 8px;
   margin-left: -1px;
 }
@@ -2458,7 +2458,7 @@ body.tox-dialog__disable-scroll {
   min-height: 0;
 }
 .tox .tox-sidebar {
-  background-color: #0087f4;
+  background-color: #002753;
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
@@ -2564,7 +2564,7 @@ body.tox-dialog__disable-scroll {
 }
 .tox .tox-statusbar {
   align-items: center;
-  background-color: #0087f4;
+  background-color: #002753;
   border-top: 1px solid #ccc;
   color: #ffffff;
   display: flex;
@@ -2845,13 +2845,13 @@ body.tox-dialog__disable-scroll {
   color: rgba(255, 255, 255, 0.5);
 }
 .tox .tox-toolbar-overlord {
-  background-color: #0087f4;
+  background-color: #002753;
 }
 .tox .tox-toolbar,
 .tox .tox-toolbar__primary,
 .tox .tox-toolbar__overflow {
-  background: url("data:image/svg+xml;charset=utf8,%3Csvg height='39px' viewBox='0 0 40 39px' width='40' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='0' y='38px' width='100' height='1' fill='%23ccc'/%3E%3C/svg%3E") left 0 top 0 #0087f4;
-  background-color: #0087f4;
+  background: url("data:image/svg+xml;charset=utf8,%3Csvg height='39px' viewBox='0 0 40 39px' width='40' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='0' y='38px' width='100' height='1' fill='%23ccc'/%3E%3C/svg%3E") left 0 top 0 #002753;
+  background-color: #002753;
   display: flex;
   flex: 0 0 auto;
   flex-shrink: 0;
@@ -2891,7 +2891,7 @@ body.tox-dialog__disable-scroll {
   border-top: 1px solid #ccc;
 }
 .tox.tox-tinymce-aux .tox-toolbar__overflow {
-  background-color: #0087f4;
+  background-color: #002753;
   border: 1px solid #ccc;
   border-radius: 3px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
