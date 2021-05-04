@@ -1,13 +1,13 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { ChangeDetectionStrategy, Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { PagePickerResult } from '../../../edit-types';
+import { FieldValue, PagePickerResult } from '../../../edit-types';
 import { GeneralHelpers } from '../../shared/helpers';
 import { QueryService } from '../../shared/services';
 import { buildPageSearch, buildPageTree } from './page-picker.helpers';
-import { PagePickerTemplateVars, PageSearchItem, PageTreeItem } from './page-picker.models';
+import { PageEntity, PagePickerDialogData, PagePickerTemplateVars, PageSearchItem, PageTreeItem } from './page-picker.models';
 
 @Component({
   selector: 'app-page-picker',
@@ -16,20 +16,23 @@ import { PagePickerTemplateVars, PageSearchItem, PageTreeItem } from './page-pic
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PagePickerComponent implements OnInit, OnDestroy {
-  templateVars$: Observable<PagePickerTemplateVars>;
+  selected: number;
   toggled: number[];
+  templateVars$: Observable<PagePickerTemplateVars>;
 
   private filterText$: BehaviorSubject<string>;
   private searchItems$: BehaviorSubject<PageSearchItem[]>;
   private tree$: BehaviorSubject<PageTreeItem[]>;
 
   constructor(
+    @Inject(MAT_DIALOG_DATA) private dialogData: PagePickerDialogData,
     private dialogRef: MatDialogRef<PagePickerComponent>,
     private queryService: QueryService,
     private translate: TranslateService,
   ) { }
 
   ngOnInit(): void {
+    this.selected = this.parseSelectedPageId();
     this.toggled = [];
     this.filterText$ = new BehaviorSubject('');
     this.searchItems$ = new BehaviorSubject([]);
@@ -89,17 +92,19 @@ export class PagePickerComponent implements OnInit, OnDestroy {
   }
 
   private fetchPages(): void {
-    this.queryService.getAvailableEntities('Eav.Queries.Global.Pages/Default', true, null, null).subscribe({
+    const query = 'Eav.Queries.Global.Pages';
+    const stream = 'Default';
+    this.queryService.getAvailableEntities(`${query}/${stream}`, true, null, null).subscribe({
       next: (data) => {
         if (!data) {
           console.error(this.translate.instant('Fields.EntityQuery.QueryError'));
           return;
         }
-        if (!data.Default) {
-          console.error(this.translate.instant('Fields.EntityQuery.QueryStreamNotFound') + 'Default');
+        if (!data[stream]) {
+          console.error(this.translate.instant('Fields.EntityQuery.QueryStreamNotFound') + stream);
           return;
         }
-        const pages = data.Default;
+        const pages = data[stream] as PageEntity[];
         const searchItems = buildPageSearch(pages);
         this.searchItems$.next(searchItems);
         const tree = buildPageTree(pages);
@@ -110,5 +115,21 @@ export class PagePickerComponent implements OnInit, OnDestroy {
         console.error(`${this.translate.instant('Fields.EntityQuery.QueryError')} - ${error.data}`);
       }
     });
+  }
+
+  private parseSelectedPageId(): number {
+    const prefix = 'page:';
+    let fieldValue: FieldValue = this.dialogData.group.controls[this.dialogData.config.fieldName].value;
+    if (typeof fieldValue !== 'string') { return; }
+
+    fieldValue = fieldValue.trim().toLocaleLowerCase();
+    if (!fieldValue.startsWith(prefix)) { return; }
+
+    try {
+      const id = parseInt(fieldValue.split(prefix)[1], 10);
+      return id;
+    } catch {
+      return;
+    }
   }
 }

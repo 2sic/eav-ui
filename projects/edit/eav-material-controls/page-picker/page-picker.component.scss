@@ -1,3 +1,5 @@
+@import "../../assets/styles/theme/material-colors";
+
 $icon-size: 20px;
 
 .page-picker-title {
@@ -28,8 +30,6 @@ $icon-size: 20px;
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  padding-top: 4px;
-  padding-bottom: 4px;
 
   mat-icon {
     width: $icon-size;
@@ -42,16 +42,47 @@ $icon-size: 20px;
   width: $icon-size;
   height: $icon-size;
   display: inline-block;
+  flex-shrink: 0;
 }
 
 .page-toggle {
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 .page-icon {
   margin-right: 4px;
+  flex-shrink: 0;
 }
 
 .page-label {
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 4px;
+  padding-left: 2px;
+  border-radius: 4px;
+
+  .page-path {
+    color: map_get($mat-eav-item-dialog-background, 200);
+  }
+
+  &.selected {
+    background-color: map_get($mat-eav-item-dialog-secondary, 500);
+    color: #fff;
+
+    .page-path {
+      color: map_get($mat-eav-item-dialog-background, 100);
+    }
+  }
+
+  &:hover {
+    background-color: map_get($mat-eav-item-dialog-secondary, 300);
+    color: #fff;
+
+    .page-path {
+      color: map_get($mat-eav-item-dialog-background, 100);
+    }
+  }
 }

@@ -115,7 +115,9 @@ export class ConnectorHelper {
         this.zone.run(() => { this.config.focused$.next(focused); });
       },
       openPagePicker: (callback) => {
-        this.zone.run(() => { PagePicker.open(this.dialog, this.viewContainerRef, this.changeDetectorRef, callback); });
+        this.zone.run(() => {
+          PagePicker.open(this.config, this.group, this.dialog, this.viewContainerRef, this.changeDetectorRef, callback);
+        });
       },
       getUrlOfId: (value, callback) => {
         this.zone.run(() => { this.getUrlOfId(value, callback); });

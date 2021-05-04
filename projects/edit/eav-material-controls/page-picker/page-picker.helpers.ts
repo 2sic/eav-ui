@@ -1,13 +1,19 @@
-import { QueryEntity } from '../input-types/entity/entity-query/entity-query.models';
-import { PageSearchItem, PageTreeItem } from './page-picker.models';
+import { PageEntity, PageSearchItem, PageTreeItem } from './page-picker.models';
 
-export function buildPageSearch(pages: QueryEntity[]): PageSearchItem[] {
+export function buildPageSearch(pages: PageEntity[]): PageSearchItem[] {
   if (!pages) { return []; }
 
   const items = pages.map(page => {
+    let path = page.Path.trim().replace(/\\/g, '/').replace(/\/\//g, '/');
+    if (path.startsWith('/')) {
+      path = path.substring(1);
+    }
+    path = path.split('/').slice(0, -1).join(' > ');
+
     const item: PageSearchItem = {
       id: page.Id,
       name: page.Name,
+      path,
     };
     return item;
   });
@@ -15,7 +21,7 @@ export function buildPageSearch(pages: QueryEntity[]): PageSearchItem[] {
   return items;
 }
 
-export function buildPageTree(pages: QueryEntity[]): PageTreeItem[] {
+export function buildPageTree(pages: PageEntity[]): PageTreeItem[] {
   if (!pages) { return []; }
 
   const items = pages.map(page => {

@@ -132,7 +132,7 @@ export class HyperlinkDefaultExpandableWrapperComponent extends BaseComponent<st
   }
 
   openPagePicker() {
-    PagePicker.open(this.dialog, this.viewContainerRef, this.changeDetectorRef, (page) => {
+    PagePicker.open(this.config, this.group, this.dialog, this.viewContainerRef, this.changeDetectorRef, (page) => {
       // Convert to page:xyz format (if it wasn't cancelled)
       if (!page) { return; }
       this.control.patchValue(`page:${page.id}`);
