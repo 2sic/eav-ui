@@ -1,9 +1,10 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { ValidatorFn } from '@angular/forms';
 import { combineLatest, Subscription } from 'rxjs';
-import { FieldSettings } from '../../../../../edit-types';
+import { distinctUntilChanged, map } from 'rxjs/operators';
 import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
+import { GeneralHelpers } from '../../../../shared/helpers';
 import { EavService, FieldsSettingsService } from '../../../../shared/services';
 import { CustomValidators } from '../../../validators/custom-validators';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
@@ -39,13 +40,8 @@ export class HyperlinkLibraryComponent extends BaseComponent<null> implements On
 
   ngOnInit() {
     super.ngOnInit();
-    const validators$ = this.fieldsSettingsService.getFieldValidation$(this.config.fieldName);
-    this.subscription.add(
-      combineLatest([this.settings$, validators$]).subscribe(([settings, validators]) => {
-        this.attachAdam(settings);
-        this.attachAdamValidator(settings.Required, validators);
-      })
-    );
+    this.attachAdam();
+    this.attachAdamValidator();
   }
 
   ngOnDestroy() {
@@ -53,33 +49,54 @@ export class HyperlinkLibraryComponent extends BaseComponent<null> implements On
     super.ngOnDestroy();
   }
 
-  private attachAdam(settings: FieldSettings) {
-    this.config.adam.setConfig({
-      allowAssetsInRoot: settings.AllowAssetsInRoot,
-      autoLoad: true,
-      enableSelect: false,
-      rootSubfolder: settings.Paths,
-      fileFilter: settings.FileFilter,
-      folderDepth: settings.FolderDepth || 0,
-      metadataContentTypes: settings.MetadataContentTypes,
-    });
+  private attachAdam() {
+    this.subscription.add(
+      this.settings$.pipe(
+        map(settings => ({
+          AllowAssetsInRoot: settings.AllowAssetsInRoot,
+          Paths: settings.Paths,
+          FileFilter: settings.FileFilter,
+          FolderDepth: settings.FolderDepth,
+          MetadataContentTypes: settings.MetadataContentTypes,
+        })),
+        distinctUntilChanged(GeneralHelpers.objectsEqual),
+      ).subscribe(settings => {
+        this.config.adam.setConfig({
+          allowAssetsInRoot: settings.AllowAssetsInRoot,
+          autoLoad: true,
+          enableSelect: false,
+          rootSubfolder: settings.Paths,
+          fileFilter: settings.FileFilter,
+          folderDepth: settings.FolderDepth || 0,
+          metadataContentTypes: settings.MetadataContentTypes,
+        });
+      })
+    );
   }
 
-  private attachAdamValidator(required: boolean, validators: ValidatorFn[]) {
-    if (!required) {
-      this.adamValidation?.unsubscribe();
-      this.control.setValidators(validators);
-      return;
-    }
+  private attachAdamValidator() {
+    const validators$ = this.fieldsSettingsService.getFieldValidation$(this.config.fieldName);
+    this.subscription.add(
+      combineLatest([this.required$, validators$]).subscribe(([required, validators]) => {
+        if (!required) {
+          this.adamValidation?.unsubscribe();
+          this.control.setValidators(validators);
+          this.control.updateValueAndValidity();
+          return;
+        }
 
-    const newValidators: ValidatorFn[] = [
-      ...validators,
-      CustomValidators.validateAdam(),
-    ];
-    this.control.setValidators(newValidators);
-    this.adamValidation = this.config.adam.items$.subscribe(items => {
-      (this.control as AdamControl).adamItems = items.length;
-      this.control.updateValueAndValidity();
-    });
+        const newValidators: ValidatorFn[] = [
+          ...validators,
+          CustomValidators.validateAdam(),
+        ];
+        this.control.setValidators(newValidators);
+        this.control.updateValueAndValidity();
+
+        this.adamValidation = this.config.adam.items$.subscribe(items => {
+          (this.control as AdamControl).adamItems = items.length;
+          this.control.updateValueAndValidity();
+        });
+      })
+    );
   }
 }

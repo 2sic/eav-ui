@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { combineLatest, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { distinctUntilChanged, map } from 'rxjs/operators';
 import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { EavService, FieldsSettingsService } from '../../../../shared/services';
@@ -32,7 +32,7 @@ export class BooleanDefaultComponent extends BaseComponent<boolean> implements O
 
   ngOnInit() {
     super.ngOnInit();
-    this.label$ = this.settings$.pipe(map(settings => settings._label));
+    this.label$ = this.settings$.pipe(map(settings => settings._label), distinctUntilChanged());
 
     this.templateVars$ = combineLatest([this.label$, this.disabled$, this.touched$]).pipe(
       map(([label, disabled, touched]) => {

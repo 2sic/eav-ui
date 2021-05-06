@@ -1,11 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
-import { combineLatest } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
+import { EntityInfo } from '../../../../../edit-types';
 import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
-import { FieldMask } from '../../../../shared/helpers';
-import { EntityInfo } from '../../../../shared/models';
+import { FieldMask, GeneralHelpers } from '../../../../shared/helpers';
 import { EavService, EditRoutingService, EntityService, FieldsSettingsService, QueryService } from '../../../../shared/services';
 import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
@@ -72,10 +71,13 @@ export class EntityQueryComponent extends EntityDefaultComponent implements OnIn
     );
 
     this.subscription.add(
-      combineLatest([
-        this.settings$.pipe(map(settings => settings.Query), distinctUntilChanged()),
-        this.settings$.pipe(map(settings => settings.StreamName), distinctUntilChanged()),
-      ]).subscribe(() => {
+      this.settings$.pipe(
+        map(settings => ({
+          Query: settings.Query,
+          StreamName: settings.StreamName,
+        })),
+        distinctUntilChanged(GeneralHelpers.objectsEqual),
+      ).subscribe(() => {
         this.availableEntities$.next(null);
       })
     );

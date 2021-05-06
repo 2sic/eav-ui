@@ -38,14 +38,13 @@ export class FieldHelperTextComponent implements OnInit {
       distinctUntilChanged(),
     );
     const settings$ = this.fieldsSettingsService.getFieldSettings$(this.config.fieldName);
-    const description$ = settings$.pipe(map(settings => settings.Notes));
 
-    this.templateVars$ = combineLatest([invalid$, disabled$, description$, settings$]).pipe(
-      map(([invalid, disabled, description, settings]) => {
+    this.templateVars$ = combineLatest([invalid$, disabled$, settings$]).pipe(
+      map(([invalid, disabled, settings]) => {
         const templateVars: FieldHelperTextTemplateVars = {
           invalid,
           disabled,
-          description,
+          description: settings.Notes,
           settings,
         };
         return templateVars;

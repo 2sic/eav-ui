@@ -16,23 +16,18 @@ export class CustomValidators {
   // create a static method for your validation
   static validateDecimals(decimals: number): ValidatorFn {
     return (control: FormControl): Dictionary<boolean> => {
-      // first check if the control has a value
-      if (control.value) {
-        // match the control value against the regular expression
-        const matches = control.value.toString().match(`^-?[0-9]+(\.[0-9]{1,${decimals}})?$`);
-        // if there are not matches return an object, else return null.
-        return !matches ? { decimals: true } : null;
-      } else {
+      if (!control.value) {
         return null;
       }
+
+      const matches = control.value.toString().match(`^-?[0-9]+(\.[0-9]{1,${decimals}})?$`);
+      return !matches ? { decimals: true } : null;
     };
   }
 
   static validateAdam(): ValidatorFn {
     return (control: FormControl & AdamControl): Dictionary<boolean> => {
-      if (control.adamItems == null) { return { required: true }; }
-
-      if (control.adamItems === 0) {
+      if (control.adamItems == null || control.adamItems === 0) {
         return { required: true };
       }
 

@@ -14,25 +14,3 @@ export interface FormulaCtxData {
 export type FormulaFunction = (context: FormulaContext) => FieldValue;
 
 export type FormulaType = 'value' | 'visible' | 'required' | 'enabled';
-
-export interface FieldFormulas {
-  [fieldName: string]: FormulaFunction;
-}
-
-export interface CalcFields {
-  [fieldName: string]: string[];
-}
-
-export interface LanguageChangeCheckedFields {
-  [fieldName: string]: boolean;
-}
-
-export interface FieldsFormulaSettings {
-  [fieldName: string]: FormulaFieldSettings;
-}
-
-export interface FormulaFieldSettings {
-  hidden: boolean;
-  required: boolean;
-  disabled: boolean;
-}

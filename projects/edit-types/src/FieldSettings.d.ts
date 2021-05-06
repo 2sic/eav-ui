@@ -196,6 +196,7 @@ interface Boolean extends All {
   TitleTrue: string;
   TitleFalse: string;
   TitleIndeterminate: string;
+  /** Label for Boolean fields */
   _label: string;
 }
 

@@ -1,20 +1,23 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { ValidatorFn } from '@angular/forms';
 import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
-import { distinctUntilChanged, map } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map } from 'rxjs/operators';
 import { EavService } from '.';
 import { FieldSettings } from '../../../edit-types';
+import { FormValues } from '../../eav-item-dialog/item-edit-form/item-edit-form.models';
 import { ValidationHelper } from '../../eav-material-controls/validators/validation-helper';
 import { FieldLogicManager } from '../../field-logic/field-logic-manager';
-import { FieldsSettingsHelpers, GeneralHelpers, InputFieldHelpers, LocalizationHelpers } from '../helpers';
-import { ContentTypeSettings, FieldsProps, TranslationState } from '../models';
-import { ContentTypeService, InputTypeService, ItemService, LanguageInstanceService } from '../store/ngrx-data';
+import { FieldsSettingsHelpers, FormulaHelpers, GeneralHelpers, InputFieldHelpers, LocalizationHelpers } from '../helpers';
+import { ContentTypeSettings, FieldsProps, FormulaContext, TranslationState } from '../models';
+import { ContentTypeItemService, ContentTypeService, InputTypeService, ItemService, LanguageInstanceService } from '../store/ngrx-data';
 
 @Injectable()
 export class FieldsSettingsService implements OnDestroy {
   private contentTypeSettings$: BehaviorSubject<ContentTypeSettings>;
   private fieldsProps$: BehaviorSubject<FieldsProps>;
   private subscription: Subscription;
+  private valueFormulaCounter = 0;
+  private maxValueFormulaCycles = 5;
 
   constructor(
     private contentTypeService: ContentTypeService,
@@ -22,6 +25,7 @@ export class FieldsSettingsService implements OnDestroy {
     private eavService: EavService,
     private itemService: ItemService,
     private inputTypeService: InputTypeService,
+    private contentTypeItemService: ContentTypeItemService,
   ) { }
 
   ngOnDestroy(): void {
@@ -70,12 +74,18 @@ export class FieldsSettingsService implements OnDestroy {
     this.subscription.add(
       combineLatest([contentType$, currentLanguage$, defaultLanguage$, itemAttributes$, itemHeader$, inputTypes$]).pipe(
         map(([contentType, currentLanguage, defaultLanguage, itemAttributes, itemHeader, inputTypes]) => {
+          const formValues: FormValues = {};
+          for (const [fieldName, fieldValues] of Object.entries(itemAttributes)) {
+            formValues[fieldName] = LocalizationHelpers.translate(currentLanguage, defaultLanguage, fieldValues, null);
+          }
+
           const fieldsProps: FieldsProps = {};
+          const formulaUpdates: FormValues = {};
           for (const attribute of contentType.Attributes) {
             const attributeValues = itemAttributes[attribute.Name];
-            // empty-default value is null
-            const value = LocalizationHelpers.translate(currentLanguage, defaultLanguage, attributeValues, null);
-            // custom-default inputType is null
+            // empty-default has no value
+            const value = formValues[attribute.Name];
+            // custom-default has no inputType
             const inputType = inputTypes.find(i => i.Type === attribute.InputType);
 
             const merged = FieldsSettingsHelpers.mergeSettings<FieldSettings>(attribute.Metadata, currentLanguage, defaultLanguage);
@@ -87,6 +97,21 @@ export class FieldsSettingsService implements OnDestroy {
             merged.Required ??= false;
             merged.Disabled ??= false;
             merged.DisableTranslation ??= false;
+            // formulas - visible, required, enabled
+            const context: FormulaContext = {
+              data: {
+                name: attribute.Name,
+                value,
+                form: formValues,
+              },
+            };
+            const formulaItems = this.contentTypeItemService.getContentTypeItems(merged.Calculations);
+            const formulaVisible = FormulaHelpers.getFormulaValue('visible', context, currentLanguage, defaultLanguage, formulaItems);
+            merged.VisibleInEditUI = formulaVisible === false ? false : merged.VisibleInEditUI;
+            const formulaRequired = FormulaHelpers.getFormulaValue('required', context, currentLanguage, defaultLanguage, formulaItems);
+            merged.Required = formulaRequired === true ? true : merged.Required;
+            const formulaEnabled = FormulaHelpers.getFormulaValue('enabled', context, currentLanguage, defaultLanguage, formulaItems);
+            merged.Disabled = formulaEnabled === false ? true : merged.Disabled;
             // special fixes
             merged.Name = merged.Name || attribute.Name;
             merged.Required = ValidationHelper.isRequired(merged);
@@ -102,6 +127,20 @@ export class FieldsSettingsService implements OnDestroy {
             // update settings with respective FieldLogics
             const logic = FieldLogicManager.singleton().get(attribute.InputType);
             const fixed = logic?.update(merged, value) ?? merged;
+
+            // formulas - value
+            const formulaValue = FormulaHelpers.getFormulaValue('value', context, currentLanguage, defaultLanguage, formulaItems);
+            // important to compare with undefined because null is allowed value
+            if (value !== undefined && formulaValue !== undefined) {
+              let valuesNotEqual = value !== formulaValue;
+              // do a more in depth comparisson in case of calculated entity fields
+              if (valuesNotEqual && Array.isArray(value) && Array.isArray(formulaValue)) {
+                valuesNotEqual = !GeneralHelpers.arraysEqual(value as string[], formulaValue as string[]);
+              }
+              if (!fixed.Disabled && valuesNotEqual) {
+                formulaUpdates[attribute.Name] = formulaValue;
+              }
+            }
 
             const validators = ValidationHelper.getValidators(fixed, attribute);
             const calculatedInputType = InputFieldHelpers.calculateInputType(attribute, inputTypes);
@@ -135,8 +174,16 @@ export class FieldsSettingsService implements OnDestroy {
               wrappers,
             };
           }
+
+          if (Object.keys(formulaUpdates).length > 0 && this.maxValueFormulaCycles > this.valueFormulaCounter) {
+            this.valueFormulaCounter++;
+            this.itemService.updateItemAttributesValues(entityGuid, formulaUpdates, currentLanguage, defaultLanguage);
+            return;
+          }
+          this.valueFormulaCounter = 0;
           return fieldsProps;
         }),
+        filter(fieldsProps => !!fieldsProps),
       ).subscribe(fieldsProps => {
         this.fieldsProps$.next(fieldsProps);
       })
@@ -162,30 +209,21 @@ export class FieldsSettingsService implements OnDestroy {
   getFieldSettings$(fieldName: string): Observable<FieldSettings> {
     return this.fieldsProps$.pipe(
       map(fieldsSettings => fieldsSettings[fieldName].settings),
-      distinctUntilChanged((oldSettings, newSettings) => {
-        const equal = GeneralHelpers.objectsEqual(oldSettings, newSettings);
-        return equal;
-      }),
+      distinctUntilChanged(GeneralHelpers.objectsEqual),
     );
   }
 
   getFieldValidation$(fieldName: string): Observable<ValidatorFn[]> {
     return this.fieldsProps$.pipe(
       map(fieldsSettings => fieldsSettings[fieldName].validators),
-      distinctUntilChanged((oldValidators, newValidators) => {
-        const equal = GeneralHelpers.arraysEqual(oldValidators, newValidators);
-        return equal;
-      }),
+      distinctUntilChanged(GeneralHelpers.arraysEqual),
     );
   }
 
   getTranslationState$(fieldName: string): Observable<TranslationState> {
     return this.fieldsProps$.pipe(
       map(fieldsSettings => fieldsSettings[fieldName].translationState),
-      distinctUntilChanged((oldState, newState) => {
-        const equal = GeneralHelpers.objectsEqual(oldState, newState);
-        return equal;
-      }),
+      distinctUntilChanged(GeneralHelpers.objectsEqual),
     );
   }
 }

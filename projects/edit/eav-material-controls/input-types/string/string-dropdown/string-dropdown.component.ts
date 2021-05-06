@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { distinctUntilChanged, map } from 'rxjs/operators';
 import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { EavService, FieldsSettingsService } from '../../../../shared/services';
@@ -36,14 +36,12 @@ export class StringDropdownComponent extends BaseComponent<string> implements On
     super.ngOnInit();
     this.toggleFreeText$ = new BehaviorSubject(false);
 
-    const enableTextEntry$ = this.settings$.pipe(map(settings => settings.EnableTextEntry));
-    const dropdownOptions$ = this.settings$.pipe(map(settings => settings._options));
+    const enableTextEntry$ = this.settings$.pipe(map(settings => settings.EnableTextEntry), distinctUntilChanged());
+    const dropdownOptions$ = this.settings$.pipe(map(settings => settings._options), distinctUntilChanged());
 
     const freeTextMode$ = combineLatest([enableTextEntry$, this.toggleFreeText$]).pipe(
-      map(([enableTextEntry, freeTextMode]) => {
-        if (!enableTextEntry) { return false; }
-        return freeTextMode;
-      }),
+      map(([enableTextEntry, freeTextMode]) => enableTextEntry ? freeTextMode : false),
+      distinctUntilChanged(),
     );
 
     this.templateVars$ = combineLatest([

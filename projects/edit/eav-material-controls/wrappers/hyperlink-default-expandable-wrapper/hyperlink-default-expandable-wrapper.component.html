@@ -57,20 +57,20 @@
             [placeholder]="data.placeholder" (change)="setValue($event)" [disabled]="data.disabled"
             (blur)="markAsTouched()" [value]="data.value" (keyup)="setValue($event)" appPasteClipboardImage
             [config]="config" [elementType]="'input'">
-          <div matSuffix fxLayoutAlign="center center" *ngIf="data.adamButton || data.pageButton">
+          <div matSuffix fxLayoutAlign="center center" *ngIf="data.buttonAdam || data.buttonPage">
             <div class="c-ew__preview-suffix-text" fxHide fxShow.gt-xs [ngClass]="{
               'c-ew__preview-suffix-text--disabled': data.disabled
             }">
-              {{ data.adamButton ? ('Fields.Hyperlink.AdamFileManager.Hint' | translate) : '' }}
+              {{ data.buttonAdam ? ('Fields.Hyperlink.AdamFileManager.Hint' | translate) : '' }}
             </div>
             <button mat-icon-button class="c-ew__preview-suffix-icon"
               [matTooltip]="'Fields.Hyperlink.Default.Fullscreen' | translate" appClickStopPropagation
-              *ngIf="data.adamButton" [disabled]="data.disabled" (click)="expandDialog()">
+              *ngIf="data.buttonAdam" [disabled]="data.disabled" (click)="expandDialog()">
               <mat-icon svgIcon="apple"></mat-icon>
             </button>
             <button mat-icon-button class="c-ew__preview-suffix-icon"
               [matTooltip]="'Fields.Hyperlink.Default.PageTip' | translate" appClickStopPropagation
-              *ngIf="data.pageButton" [disabled]="data.disabled" (click)="openPagePicker()">
+              *ngIf="data.buttonPage" [disabled]="data.disabled" (click)="openPagePicker()">
               <mat-icon svgIcon="sitemap"></mat-icon>
             </button>
           </div>
@@ -95,7 +95,7 @@
         <app-field-helper-text class="c__helper-wrapper--left" [config]="config" [group]="group"
           [hyperlinkDefaultWrapperFix]="true">
         </app-field-helper-text>
-        <div *ngIf="data.adamButton" align="end" class="c-ew__preview-field-hint c__helper-wrapper--right" fxHide
+        <div *ngIf="data.buttonAdam" align="end" class="c-ew__preview-field-hint c__helper-wrapper--right" fxHide
           fxShow.gt-xs>
           <span>{{ 'Fields.Hyperlink.Default.Sponsor' | translate }}</span>
         </div>

@@ -5,7 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { consoleLogAngular } from '../../../../../../ng-dialogs/src/app/shared/helpers/console-log-angular.helper';
 import { FieldConfigSet } from '../../../../../eav-dynamic-form/model/field-config';
 import { EavService, EditRoutingService, FieldsSettingsService } from '../../../../../shared/services';
-import { ContentTypeService, FeatureService, InputTypeService } from '../../../../../shared/store/ngrx-data';
+import { ContentTypeService, EntityCacheService, FeatureService, InputTypeService } from '../../../../../shared/store/ngrx-data';
 import { AdamService } from '../../../../adam/adam.service';
 import { ValidationMessagesService } from '../../../../validators/validation-messages-service';
 import { ConnectorHelper } from './connector.helper';
@@ -36,6 +36,7 @@ export class ConnectorComponent implements AfterViewInit, OnDestroy {
     private changeDetectorRef: ChangeDetectorRef,
     private fieldsSettingsService: FieldsSettingsService,
     private validationMessagesService: ValidationMessagesService,
+    private entityCacheService: EntityCacheService,
     private zone: NgZone,
   ) { }
 
@@ -59,6 +60,7 @@ export class ConnectorComponent implements AfterViewInit, OnDestroy {
       this.changeDetectorRef,
       this.fieldsSettingsService,
       this.validationMessagesService,
+      this.entityCacheService,
       this.zone,
     );
   }

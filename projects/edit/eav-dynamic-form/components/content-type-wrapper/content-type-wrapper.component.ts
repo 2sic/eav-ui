@@ -2,7 +2,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { distinctUntilChanged, map } from 'rxjs/operators';
+import { GeneralHelpers } from '../../../shared/helpers';
 import { EavHeader } from '../../../shared/models/eav';
 import { EavService, FieldsSettingsService } from '../../../shared/services';
 import { ItemService, LanguageInstanceService } from '../../../shared/store/ngrx-data';
@@ -34,14 +35,17 @@ export class ContentTypeWrapperComponent implements OnInit {
     const currentLanguage$ = this.languageInstanceService.getCurrentLanguage$(this.eavService.eavConfig.formId);
     const defaultLanguage$ = this.languageInstanceService.getDefaultLanguage$(this.eavService.eavConfig.formId);
     const header$ = this.itemService.getItemHeader$(this.entityGuid);
-    const settings$ = this.fieldsSettingsService.getContentTypeSettings$();
+    const settings$ = this.fieldsSettingsService.getContentTypeSettings$().pipe(
+      map(settings => ({
+        _itemTitle: settings._itemTitle,
+        _slotCanBeEmpty: settings._slotCanBeEmpty,
+        _slotIsEmpty: settings._slotIsEmpty,
+        EditInstructions: settings.EditInstructions,
+      })),
+      distinctUntilChanged(GeneralHelpers.objectsEqual),
+    );
 
-    this.templateVars$ = combineLatest([
-      currentLanguage$,
-      defaultLanguage$,
-      header$,
-      settings$,
-    ]).pipe(
+    this.templateVars$ = combineLatest([currentLanguage$, defaultLanguage$, header$, settings$]).pipe(
       map(([currentLanguage, defaultLanguage, header, settings]) => {
         const templateVars: ContentTypeTemplateVars = {
           currentLanguage,

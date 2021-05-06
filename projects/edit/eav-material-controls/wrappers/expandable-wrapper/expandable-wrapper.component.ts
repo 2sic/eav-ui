@@ -8,7 +8,7 @@ import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { ContentExpandAnimation } from '../../../shared/animations';
 import { DropzoneDraggingHelper } from '../../../shared/helpers';
 import { EavService, EditRoutingService, FieldsSettingsService } from '../../../shared/services';
-import { ContentTypeService, FeatureService, InputTypeService } from '../../../shared/store/ngrx-data';
+import { ContentTypeService, EntityCacheService, FeatureService, InputTypeService } from '../../../shared/store/ngrx-data';
 import { AdamService } from '../../adam/adam.service';
 import { BaseComponent } from '../../input-types/base/base.component';
 import { ConnectorHelper } from '../../input-types/custom/external-web-component/connector/connector.helper';
@@ -46,6 +46,7 @@ export class ExpandableWrapperComponent extends BaseComponent<string> implements
     private dialog: MatDialog,
     private changeDetectorRef: ChangeDetectorRef,
     private viewContainerRef: ViewContainerRef,
+    private entityCacheService: EntityCacheService,
     private zone: NgZone,
   ) {
     super(eavService, validationMessagesService, fieldsSettingsService);
@@ -98,6 +99,7 @@ export class ExpandableWrapperComponent extends BaseComponent<string> implements
       this.changeDetectorRef,
       this.fieldsSettingsService,
       this.validationMessagesService,
+      this.entityCacheService,
       this.zone,
     );
 

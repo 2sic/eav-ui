@@ -16,6 +16,7 @@ export * from './src/DropdownOption';
 export * from './src/Dropzone';
 export * from './src/DropzoneConfigExt';
 export * from './src/EavCustomInputField';
+export * from './src/EntityInfo';
 export * from './src/ExperimentalProps';
 export * from './src/FieldConfig';
 export * from './src/FieldSettings';

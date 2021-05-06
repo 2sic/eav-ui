@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { EntityCollectionServiceElementsFactory } from '@ngrx/data';
 import { Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
+import { EntityInfo } from '../../../../edit-types';
 import { GeneralHelpers } from '../../helpers';
-import { EntityInfo } from '../../models';
 import { BaseDataService } from './base-data.service';
 
 @Injectable({ providedIn: 'root' })

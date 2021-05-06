@@ -3,7 +3,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DateAdapter } from '@angular/material/core';
 import { TranslateService } from '@ngx-translate/core';
 import { combineLatest, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { distinctUntilChanged, map } from 'rxjs/operators';
 import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { EavService, FieldsSettingsService } from '../../../../shared/services';
@@ -39,7 +39,7 @@ export class DatetimeDefaultComponent extends BaseComponent<string> implements O
 
   ngOnInit() {
     super.ngOnInit();
-    const useTimePicker$ = this.settings$.pipe(map(settings => settings.UseTimePicker));
+    const useTimePicker$ = this.settings$.pipe(map(settings => settings.UseTimePicker), distinctUntilChanged());
 
     this.templateVars$ = combineLatest([
       combineLatest([useTimePicker$, this.placeholder$, this.required$, this.label$]),
