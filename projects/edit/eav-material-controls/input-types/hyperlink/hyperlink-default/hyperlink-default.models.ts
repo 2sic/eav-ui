@@ -1,4 +1,3 @@
-import { FieldSettings } from '../../../../../edit-types';
 import { BaseFieldTemplateVars } from '../../base/base-field-template-vars.model';
 
 export interface Preview {
@@ -13,8 +12,13 @@ export interface Preview {
 
 export interface HyperlinkDefaultTemplateVars extends BaseFieldTemplateVars {
   open: boolean;
-  buttons: string;
-  settings: FieldSettings;
+  buttonAdam: boolean;
+  buttonPage: boolean;
+  buttonMore: boolean;
+  showAdam: boolean;
+  showPagePicker: boolean;
+  showImageManager: boolean;
+  showFileManager: boolean;
   value: string;
   preview: Preview;
   label: string;

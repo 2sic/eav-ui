@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { combineLatest, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { distinctUntilChanged, map } from 'rxjs/operators';
 import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { EavService, FieldsSettingsService } from '../../../../shared/services';
@@ -30,8 +30,8 @@ export class NumberDefaultComponent extends BaseComponent<number> implements OnI
 
   ngOnInit() {
     super.ngOnInit();
-    const min$ = this.settings$.pipe(map(settings => settings.Min));
-    const max$ = this.settings$.pipe(map(settings => settings.Max));
+    const min$ = this.settings$.pipe(map(settings => settings.Min), distinctUntilChanged());
+    const max$ = this.settings$.pipe(map(settings => settings.Max), distinctUntilChanged());
 
     this.templateVars$ = combineLatest([
       combineLatest([this.label$, this.placeholder$, this.required$, min$, max$]),

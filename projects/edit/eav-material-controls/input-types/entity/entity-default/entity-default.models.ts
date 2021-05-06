@@ -1,4 +1,3 @@
-import { FieldSettings } from '../../../../../edit-types';
 import { EntityInfo } from '../../../../shared/models';
 import { BaseFieldTemplateVars } from '../../base/base-field-template-vars.model';
 
@@ -15,7 +14,7 @@ export interface EntityTemplateVars extends BaseFieldTemplateVars {
   required: boolean;
   invalid: boolean;
   freeTextMode: boolean;
-  settings: FieldSettings;
+  allowMultiValue: boolean;
   selectedEntities: SelectedEntity[];
   availableEntities: EntityInfo[];
   disableAddNew: boolean;

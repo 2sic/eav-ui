@@ -165,6 +165,7 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
     this.eventListeners.forEach(({ element, type, listener }) => {
       element.removeEventListener(type, listener);
     });
+    this.addressMask.destroy();
   }
 }
 

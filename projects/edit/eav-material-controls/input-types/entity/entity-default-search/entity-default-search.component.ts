@@ -1,27 +1,28 @@
-import { ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { TranslateService } from '@ngx-translate/core';
-import { Observable } from 'rxjs';
-import { FieldSettings } from '../../../../../edit-types';
+import { combineLatest, Observable } from 'rxjs';
+import { distinctUntilChanged, map } from 'rxjs/operators';
 import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
+import { GeneralHelpers } from '../../../../shared/helpers';
 import { EntityInfo } from '../../../../shared/models';
+import { FieldsSettingsService } from '../../../../shared/services';
 import { GlobalConfigService } from '../../../../shared/store/ngrx-data';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { SelectedEntity } from '../entity-default/entity-default.models';
+import { EntitySearchTemplateVars } from './entity-default-search.models';
 
 @Component({
   selector: 'app-entity-default-search',
   templateUrl: './entity-default-search.component.html',
   styleUrls: ['./entity-default-search.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EntityDefaultSearchComponent implements OnInit, OnChanges {
   @ViewChild('autocomplete') autocompleteRef?: ElementRef;
 
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
-  @Input() private control: AbstractControl;
   @Input() label: string;
   @Input() placeholder: string;
   @Input() required: boolean;
@@ -29,11 +30,10 @@ export class EntityDefaultSearchComponent implements OnInit, OnChanges {
   @Input() touched: boolean;
   @Input() disabled: boolean;
   @Input() freeTextMode: boolean;
-  @Input() settings: FieldSettings;
-  @Input() private error: string;
-  @Input() disableAddNew: boolean;
   @Input() selectedEntities: SelectedEntity[];
   @Input() private availableEntities?: EntityInfo[];
+  @Input() disableAddNew: boolean;
+  @Input() private error: string;
 
   @Output() private fetchAvailableEntities = new EventEmitter<null>();
   @Output() private toggleFreeTextMode = new EventEmitter<null>();
@@ -41,16 +41,43 @@ export class EntityDefaultSearchComponent implements OnInit, OnChanges {
   @Output() private editEntity = new EventEmitter<string>();
 
   filteredEntities: EntityInfo[] = [];
-  debugEnabled$: Observable<boolean>;
+  templateVars$: Observable<EntitySearchTemplateVars>;
+  private control: AbstractControl;
 
   constructor(
     private translate: TranslateService,
     private globalConfigService: GlobalConfigService,
     private validationMessagesService: ValidationMessagesService,
+    private fieldsSettingsService: FieldsSettingsService,
   ) { }
 
   ngOnInit(): void {
-    this.debugEnabled$ = this.globalConfigService.getDebugEnabled$();
+    this.control = this.group.controls[this.config.fieldName];
+
+    const debugEnabled$ = this.globalConfigService.getDebugEnabled$();
+    const settings$ = this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).pipe(
+      map(settings => ({
+        AllowMultiValue: settings.AllowMultiValue,
+        EnableCreate: settings.EnableCreate,
+        EntityType: settings.EntityType,
+        EnableAddExisting: settings.EnableAddExisting,
+        EnableTextEntry: settings.EnableTextEntry,
+      })),
+      distinctUntilChanged(GeneralHelpers.objectsEqual),
+    );
+    this.templateVars$ = combineLatest([debugEnabled$, settings$]).pipe(
+      map(([debugEnabled, settings]) => {
+        const templateVars: EntitySearchTemplateVars = {
+          debugEnabled,
+          allowMultiValue: settings.AllowMultiValue,
+          enableCreate: settings.EnableCreate,
+          entityType: settings.EntityType,
+          enableAddExisting: settings.EnableAddExisting,
+          enableTextEntry: settings.EnableTextEntry,
+        };
+        return templateVars;
+      }),
+    );
   }
 
   ngOnChanges(changes: SimpleChanges): void {

@@ -4,7 +4,7 @@ import { distinctUntilChanged, map } from 'rxjs/operators';
 import { AdamItem, DnnBridgeConnectorParams } from '../../../../edit-types';
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { ContentExpandAnimation } from '../../../shared/animations';
-import { DropzoneDraggingHelper } from '../../../shared/helpers';
+import { DropzoneDraggingHelper, GeneralHelpers } from '../../../shared/helpers';
 import { DnnBridgeService, EavService, EditRoutingService, FieldsSettingsService, FileTypeService } from '../../../shared/services';
 import { LinkCacheService } from '../../../shared/store/ngrx-data';
 import { BaseComponent } from '../../input-types/base/base.component';
@@ -63,16 +63,21 @@ export class HyperlinkDefaultExpandableWrapperComponent extends BaseComponent<st
       })
     );
     this.open$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
-    const adamButton$ = this.settings$.pipe(map(settings => settings.Buttons?.includes('adam')), distinctUntilChanged());
-    const pageButton$ = this.settings$.pipe(map(settings => settings.Buttons?.includes('page')), distinctUntilChanged());
+    const settings$ = this.settings$.pipe(
+      map(settings => ({
+        _buttonAdam: settings.Buttons.includes('adam'),
+        _buttonPage: settings.Buttons.includes('page'),
+      })),
+      distinctUntilChanged(GeneralHelpers.objectsEqual),
+    );
 
     this.templateVars$ = combineLatest([
       combineLatest([this.value$, this.preview$, this.label$, this.placeholder$, this.invalid$, this.required$]),
-      combineLatest([adamButton$, pageButton$, this.disabled$, this.touched$]),
+      combineLatest([settings$, this.disabled$, this.touched$]),
     ]).pipe(
       map(([
         [value, preview, label, placeholder, invalid, required],
-        [adamButton, pageButton, disabled, touched],
+        [settings, disabled, touched],
       ]) => {
         const templateVars: HyperlinkDefaultExpandableTemplateVars = {
           value,
@@ -81,8 +86,8 @@ export class HyperlinkDefaultExpandableWrapperComponent extends BaseComponent<st
           placeholder,
           invalid,
           required,
-          adamButton,
-          pageButton,
+          buttonAdam: settings._buttonAdam,
+          buttonPage: settings._buttonPage,
           disabled,
           touched,
         };

@@ -7,7 +7,7 @@ import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { EditForm } from '../../../../../ng-dialogs/src/app/shared/models/edit-form.model';
 import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
-import { FieldMask } from '../../../../shared/helpers';
+import { FieldMask, GeneralHelpers } from '../../../../shared/helpers';
 import { EntityInfo } from '../../../../shared/models';
 import { EavService, EditRoutingService, EntityService, FieldsSettingsService } from '../../../../shared/services';
 import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
@@ -65,17 +65,20 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
     this.disableAddNew$ = new BehaviorSubject(true);
     this.availableEntities$ = new BehaviorSubject<EntityInfo[]>(null);
 
-    const separator$ = this.settings$.pipe(map(settings => settings.Separator), distinctUntilChanged());
-    const stringQueryLabel$ = this.settings$.pipe(map(settings => settings.Label), distinctUntilChanged());
     this.selectedEntities$ = combineLatest([
       this.value$,
-      separator$,
       this.entityCacheService.getEntities$(),
       this.stringQueryCacheService.getEntities$(),
-      stringQueryLabel$,
+      this.settings$.pipe(
+        map(settings => ({
+          Separator: settings.Separator,
+          Label: settings.Label,
+        })),
+        distinctUntilChanged(GeneralHelpers.objectsEqual),
+      ),
     ]).pipe(
-      map(([value, separator, entityCache, stringQueryCache, stringQueryLabel]) =>
-        calculateSelectedEntities(value, separator, entityCache, stringQueryCache, stringQueryLabel, this.translate)
+      map(([value, entityCache, stringQueryCache, settings]) =>
+        calculateSelectedEntities(value, settings.Separator, entityCache, stringQueryCache, settings.Label, this.translate)
       ),
     );
 
@@ -106,13 +109,14 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
       })
     );
 
+    const allowMultiValue$ = this.settings$.pipe(map(settings => settings.AllowMultiValue), distinctUntilChanged());
     this.templateVars$ = combineLatest([
-      combineLatest([this.label$, this.placeholder$, this.required$, this.invalid$, this.freeTextMode$, this.settings$]),
+      combineLatest([this.label$, this.placeholder$, this.required$, this.invalid$, this.freeTextMode$, allowMultiValue$]),
       combineLatest([this.selectedEntities$, this.availableEntities$, this.disableAddNew$, this.isExpanded$, this.error$]),
       combineLatest([this.disabled$, this.touched$]),
     ]).pipe(
       map(([
-        [label, placeholder, required, invalid, freeTextMode, settings],
+        [label, placeholder, required, invalid, freeTextMode, allowMultiValue],
         [selectedEntities, availableEntities, disableAddNew, isExpanded, error],
         [disabled, touched],
       ]) => {
@@ -122,7 +126,7 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
           required,
           invalid,
           freeTextMode,
-          settings,
+          allowMultiValue,
           selectedEntities,
           availableEntities,
           disableAddNew,
@@ -138,7 +142,7 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
     this.refreshOnChildClosed();
   }
 
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
     this.fixPrefillAndStringQueryCache();
   }
 
@@ -279,7 +283,7 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
    * or in case of StringDropdownQuery, backend doesn't provide entities initially.
    * This will fetch data once to figure out missing guids.
    */
-  private fixPrefillAndStringQueryCache() {
+  private fixPrefillAndStringQueryCache(): void {
     // filter out null items
     const guids = convertValueToArray(this.control.value, this.settings$.value.Separator).filter(guid => guid);
     if (guids.length === 0) { return; }

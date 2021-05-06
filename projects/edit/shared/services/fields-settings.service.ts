@@ -209,30 +209,21 @@ export class FieldsSettingsService implements OnDestroy {
   getFieldSettings$(fieldName: string): Observable<FieldSettings> {
     return this.fieldsProps$.pipe(
       map(fieldsSettings => fieldsSettings[fieldName].settings),
-      distinctUntilChanged((oldSettings, newSettings) => {
-        const equal = GeneralHelpers.objectsEqual(oldSettings, newSettings);
-        return equal;
-      }),
+      distinctUntilChanged(GeneralHelpers.objectsEqual),
     );
   }
 
   getFieldValidation$(fieldName: string): Observable<ValidatorFn[]> {
     return this.fieldsProps$.pipe(
       map(fieldsSettings => fieldsSettings[fieldName].validators),
-      distinctUntilChanged((oldValidators, newValidators) => {
-        const equal = GeneralHelpers.arraysEqual(oldValidators, newValidators);
-        return equal;
-      }),
+      distinctUntilChanged(GeneralHelpers.arraysEqual),
     );
   }
 
   getTranslationState$(fieldName: string): Observable<TranslationState> {
     return this.fieldsProps$.pipe(
       map(fieldsSettings => fieldsSettings[fieldName].translationState),
-      distinctUntilChanged((oldState, newState) => {
-        const equal = GeneralHelpers.objectsEqual(oldState, newState);
-        return equal;
-      }),
+      distinctUntilChanged(GeneralHelpers.objectsEqual),
     );
   }
 }

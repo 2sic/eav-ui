@@ -1,9 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
-import { combineLatest } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
+import { GeneralHelpers } from '../../../../shared/helpers';
 import { EntityInfo } from '../../../../shared/models';
 import { EavService, EditRoutingService, EntityService, FieldsSettingsService, QueryService } from '../../../../shared/services';
 import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
@@ -53,10 +53,13 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
     super.ngOnInit();
 
     this.subscription.add(
-      combineLatest([
-        this.settings$.pipe(map(settings => settings.Value), distinctUntilChanged()),
-        this.settings$.pipe(map(settings => settings.Label), distinctUntilChanged()),
-      ]).subscribe(() => {
+      this.settings$.pipe(
+        map(settings => ({
+          Value: settings.Value,
+          Label: settings.Label,
+        })),
+        distinctUntilChanged(GeneralHelpers.objectsEqual),
+      ).subscribe(() => {
         this.availableEntities$.next(null);
       })
     );

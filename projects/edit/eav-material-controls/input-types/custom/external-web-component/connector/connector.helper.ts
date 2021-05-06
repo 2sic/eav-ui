@@ -16,6 +16,7 @@ export class ConnectorHelper {
   private customEl: EavCustomInputField;
   private subscription: Subscription;
   private value$: BehaviorSubject<FieldValue>;
+  private settings$: BehaviorSubject<FieldSettings>;
 
   constructor(
     private config: FieldConfigSet,
@@ -41,6 +42,12 @@ export class ConnectorHelper {
         this.value$.next(value);
       })
     );
+    this.settings$ = new BehaviorSubject(this.fieldsSettingsService.getFieldSettings(this.config.fieldName));
+    this.subscription.add(
+      this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).subscribe(settings => {
+        this.settings$.next(settings);
+      })
+    );
 
     this.customEl = document.createElement(this.customElName) as EavCustomInputField;
     this.customEl.connector = this.buildConnector();
@@ -48,7 +55,8 @@ export class ConnectorHelper {
   }
 
   destroy() {
-    this.value$?.complete();
+    this.value$.complete();
+    this.settings$.complete();
     this.subscription.unsubscribe();
     this.customEl?.parentNode.removeChild(this.customEl);
     this.customEl = null;
@@ -59,13 +67,11 @@ export class ConnectorHelper {
     const experimental = this.calculateExperimentalProps();
     const settingsSnapshot = this.fieldsSettingsService.getFieldSettings(this.config.fieldName);
     const fieldConfig = this.getFieldConfig(settingsSnapshot);
-    const fieldConfig$ = this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).pipe(
-      map(settings => this.getFieldConfig(settings)),
-    );
+    const fieldConfig$ = this.settings$.pipe(map(settings => this.getFieldConfig(settings)));
     const value$ = this.value$.asObservable();
     const connector = new ConnectorInstance(connectorHost, value$, fieldConfig, fieldConfig$, experimental, this.eavService.eavConfig);
     this.subscription.add(
-      this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).subscribe(settings => {
+      this.settings$.subscribe(settings => {
         connector.field.settings = settings;
         connector.field.label = settings.Name;
         connector.field.placeholder = settings.Placeholder;

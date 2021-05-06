@@ -1,37 +1,62 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { FieldSettings } from '../../../../../edit-types';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { combineLatest, Observable } from 'rxjs';
+import { distinctUntilChanged, map } from 'rxjs/operators';
 import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config';
+import { GeneralHelpers } from '../../../../shared/helpers';
+import { FieldsSettingsService } from '../../../../shared/services';
 import { DeleteEntityProps, SelectedEntity } from '../entity-default/entity-default.models';
-import { ReorderIndexes } from './entity-default-list.models';
+import { EntityListTemplateVars, ReorderIndexes } from './entity-default-list.models';
 
 @Component({
   selector: 'app-entity-default-list',
   templateUrl: './entity-default-list.component.html',
   styleUrls: ['./entity-default-list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class EntityDefaultListComponent {
+export class EntityDefaultListComponent implements OnInit {
   @Input() config: FieldConfigSet;
   @Input() label: string;
   @Input() required: boolean;
   @Input() disabled: boolean;
-  @Input() freeTextMode: boolean;
-  @Input() settings: FieldSettings;
   @Input() selectedEntities: SelectedEntity[];
 
-  @Output() reorder = new EventEmitter<ReorderIndexes>();
-  @Output() removeSelected = new EventEmitter<number>();
-  @Output() editEntity = new EventEmitter<string>();
-  @Output() deleteEntity = new EventEmitter<DeleteEntityProps>();
+  @Output() private reorder = new EventEmitter<ReorderIndexes>();
+  @Output() private removeSelected = new EventEmitter<number>();
+  @Output() private editEntity = new EventEmitter<string>();
+  @Output() private deleteEntity = new EventEmitter<DeleteEntityProps>();
 
-  constructor() { }
+  templateVars$: Observable<EntityListTemplateVars>;
 
-  trackByFn(index: number, item: SelectedEntity) {
+  constructor(private fieldsSettingsService: FieldsSettingsService) { }
+
+  ngOnInit(): void {
+    const settings$ = this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).pipe(
+      map(settings => ({
+        AllowMultiValue: settings.AllowMultiValue,
+        EnableEdit: settings.EnableEdit,
+        EnableDelete: settings.EnableDelete,
+        EnableRemove: settings.EnableRemove,
+      })),
+      distinctUntilChanged(GeneralHelpers.objectsEqual),
+    );
+    this.templateVars$ = combineLatest([settings$]).pipe(
+      map(([settings]) => {
+        const templateVars: EntityListTemplateVars = {
+          allowMultiValue: settings.AllowMultiValue,
+          enableEdit: settings.EnableEdit,
+          enableDelete: settings.EnableDelete,
+          enableRemove: settings.EnableRemove,
+        };
+        return templateVars;
+      }),
+    );
+  }
+
+  trackByFn(index: number, item: SelectedEntity): string {
     return item.value;
   }
 
-  drop(event: CdkDragDrop<SelectedEntity[]>) {
+  drop(event: CdkDragDrop<SelectedEntity[]>): void {
     moveItemInArray(this.selectedEntities, event.previousIndex, event.currentIndex);
     const reorderIndexes: ReorderIndexes = {
       previousIndex: event.previousIndex,
@@ -40,15 +65,15 @@ export class EntityDefaultListComponent {
     this.reorder.emit(reorderIndexes);
   }
 
-  edit(entityGuid: string) {
+  edit(entityGuid: string): void {
     this.editEntity.emit(entityGuid);
   }
 
-  removeItem(index: number) {
+  removeItem(index: number): void {
     this.removeSelected.emit(index);
   }
 
-  deleteItem(index: number, entityGuid: string) {
+  deleteItem(index: number, entityGuid: string): void {
     this.deleteEntity.emit({ index, entityGuid });
   }
 }

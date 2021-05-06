@@ -1,10 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { distinctUntilChanged, map } from 'rxjs/operators';
 import { AdamItem, AdamPostResponse, DnnBridgeConnectorParams } from '../../../../../edit-types';
-import { FieldSettings } from '../../../../../edit-types';
 import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
+import { GeneralHelpers } from '../../../../shared/helpers';
 import { DnnBridgeService, EavService, EditRoutingService, FieldsSettingsService, FileTypeService } from '../../../../shared/services';
 import { LinkCacheService } from '../../../../shared/store/ngrx-data';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
@@ -63,26 +63,39 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
         this.fetchLink(value);
       })
     );
+    this.attachAdam();
+
     const open$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
-    const buttons$ = this.settings$.pipe(map(settings => settings.Buttons));
-    this.subscription.add(
-      this.settings$.subscribe(settings => {
-        this.attachAdam(settings);
-      })
+    const settings$ = this.settings$.pipe(
+      map(settings => ({
+        _buttonAdam: settings.Buttons.includes('adam'),
+        _buttonPage: settings.Buttons.includes('page'),
+        _buttonMore: settings.Buttons.includes('more'),
+        ShowAdam: settings.ShowAdam,
+        ShowPagePicker: settings.ShowPagePicker,
+        ShowImageManager: settings.ShowImageManager,
+        ShowFileManager: settings.ShowFileManager,
+      })),
+      distinctUntilChanged(GeneralHelpers.objectsEqual)
     );
 
     this.templateVars$ = combineLatest([
       combineLatest([open$, this.value$, this.preview$, this.label$, this.placeholder$, this.required$]),
-      combineLatest([this.settings$, buttons$, this.disabled$, this.touched$]),
+      combineLatest([settings$, this.disabled$, this.touched$]),
     ]).pipe(
       map(([
         [open, value, preview, label, placeholder, required],
-        [settings, buttons, disabled, touched],
+        [settings, disabled, touched],
       ]) => {
         const templateVars: HyperlinkDefaultTemplateVars = {
           open,
-          buttons,
-          settings,
+          buttonAdam: settings._buttonAdam,
+          buttonPage: settings._buttonPage,
+          buttonMore: settings._buttonMore,
+          showAdam: settings.ShowAdam,
+          showPagePicker: settings.ShowPagePicker,
+          showImageManager: settings.ShowImageManager,
+          showFileManager: settings.ShowFileManager,
           value,
           preview,
           label,
@@ -181,14 +194,24 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
     this.config.adam.toggle(usePortalRoot, showImagesOnly);
   }
 
-  private attachAdam(settings: FieldSettings) {
-    this.config.adam.onItemClick = (item: AdamItem) => { this.setValue(item); };
-    this.config.adam.onItemUpload = (item: AdamPostResponse) => { this.setValue(item); };
-    this.config.adam.setConfig({
-      rootSubfolder: settings.Paths,
-      fileFilter: settings.FileFilter,
-      autoLoad: true,
-    });
+  private attachAdam() {
+    this.subscription.add(
+      this.settings$.pipe(
+        map(settings => ({
+          Paths: settings.Paths,
+          FileFilter: settings.FileFilter,
+        })),
+        distinctUntilChanged(GeneralHelpers.objectsEqual),
+      ).subscribe(settings => {
+        this.config.adam.onItemClick = (item: AdamItem) => { this.setValue(item); };
+        this.config.adam.onItemUpload = (item: AdamPostResponse) => { this.setValue(item); };
+        this.config.adam.setConfig({
+          rootSubfolder: settings.Paths,
+          fileFilter: settings.FileFilter,
+          autoLoad: true,
+        });
+      })
+    );
   }
 
   private setValue(item: AdamItem | AdamPostResponse) {

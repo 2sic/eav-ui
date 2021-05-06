@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { distinctUntilChanged, map } from 'rxjs/operators';
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { EavService, FieldsSettingsService } from '../../../shared/services';
 import { BaseComponent } from '../../input-types/base/base.component';
@@ -27,7 +27,7 @@ export class HiddenWrapperComponent extends BaseComponent implements FieldWrappe
 
   ngOnInit() {
     super.ngOnInit();
-    this.hidden$ = this.settings$.pipe(map(settings => !settings.VisibleInEditUI));
+    this.hidden$ = this.settings$.pipe(map(settings => !settings.VisibleInEditUI), distinctUntilChanged());
   }
 
   ngOnDestroy() {

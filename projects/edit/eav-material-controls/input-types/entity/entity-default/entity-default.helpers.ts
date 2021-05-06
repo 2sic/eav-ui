@@ -10,7 +10,7 @@ export function calculateSelectedEntities(
   stringQueryCache: QueryEntity[],
   stringQueryLabel: string,
   translate: TranslateService,
-) {
+): SelectedEntity[] {
   // name is guid or freetext
   const names = typeof fieldValue === 'string' ? convertValueToArray(fieldValue, separator) : fieldValue;
   const selectedEntities = names.map(name => {

@@ -1,8 +1,7 @@
-import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { FieldSettings } from '../../../../edit-types';
+import { Observable } from 'rxjs';
+import { distinctUntilChanged, map, share, startWith } from 'rxjs/operators';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { FieldsSettingsService } from '../../../shared/services';
@@ -14,7 +13,7 @@ import { EmptyDefaultLogic } from './collapsible-wrapper-logic';
   styleUrls: ['./collapsible-wrapper.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDestroy {
+export class CollapsibleWrapperComponent implements FieldWrapper, OnInit {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
@@ -24,30 +23,18 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
   label$: Observable<string>;
   notes$: Observable<string>;
 
-  private settings$ = new BehaviorSubject<FieldSettings>(null);
-  private subscription = new Subscription();
-
   constructor(private fieldsSettingsService: FieldsSettingsService) {
     EmptyDefaultLogic.importMe();
   }
 
   ngOnInit() {
-    const settings$ = this.fieldsSettingsService.getFieldSettings$(this.config.fieldName);
-    this.subscription.add(
-      settings$.subscribe(settings => {
-        this.settings$.next(settings);
-      })
-    );
-    this.collapse = this.settings$.value.DefaultCollapsed;
+    const settingsSnapshot = this.fieldsSettingsService.getFieldSettings(this.config.fieldName);
+    this.collapse = settingsSnapshot.DefaultCollapsed;
 
-    this.visibleInEditUI$ = this.settings$.pipe(map(settings => settings.VisibleInEditUI));
-    this.label$ = this.settings$.pipe(map(settings => settings.Name));
-    this.notes$ = this.settings$.pipe(map(settings => settings.Notes));
-  }
-
-  ngOnDestroy() {
-    this.settings$.complete();
-    this.subscription.unsubscribe();
+    const settings$ = this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).pipe(share(), startWith(settingsSnapshot));
+    this.visibleInEditUI$ = settings$.pipe(map(settings => settings.VisibleInEditUI), distinctUntilChanged());
+    this.label$ = settings$.pipe(map(settings => settings.Name), distinctUntilChanged());
+    this.notes$ = settings$.pipe(map(settings => settings.Notes), distinctUntilChanged());
   }
 
   toggleCollapse() {

@@ -40,6 +40,7 @@ export class TranslateMenuComponent implements OnInit {
     const translationState$ = this.fieldsSettingsService.getTranslationState$(this.config.fieldName);
     const disableTranslation$ = this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).pipe(
       map(settings => settings.DisableTranslation),
+      distinctUntilChanged(),
     );
 
     const control = this.group.controls[this.config.fieldName];
