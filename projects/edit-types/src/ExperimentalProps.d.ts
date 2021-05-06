@@ -6,6 +6,7 @@ import { Dropzone } from './Dropzone';
 import { Adam } from './Adam';
 import { DnnBridgeConnectorParams } from './DnnBridgeConnectorParams';
 import { FieldValue } from './FieldValue';
+import { EntityInfo } from './EntityInfo';
 
 export interface ExperimentalProps {
   entityGuid: string;
@@ -20,4 +21,6 @@ export interface ExperimentalProps {
   isFeatureEnabled(guid: string): boolean;
   openPagePicker(params: DnnBridgeConnectorParams, callback: (value: any) => void): void;
   getUrlOfId(value: string, callback: (value: string) => void): void;
+  getEntityCache(guids?: string[]): EntityInfo[];
+  getEntityCache$(guids?: string[]): Observable<EntityInfo[]>;
 }

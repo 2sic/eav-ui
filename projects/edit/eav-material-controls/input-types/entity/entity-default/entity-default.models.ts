@@ -1,4 +1,4 @@
-import { EntityInfo } from '../../../../shared/models';
+import { EntityInfo } from '../../../../../edit-types';
 import { BaseFieldTemplateVars } from '../../base/base-field-template-vars.model';
 
 export interface SelectedEntity {

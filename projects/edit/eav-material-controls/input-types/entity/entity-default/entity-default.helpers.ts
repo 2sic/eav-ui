@@ -1,5 +1,5 @@
 import { TranslateService } from '@ngx-translate/core';
-import { EntityInfo } from '../../../../shared/models';
+import { EntityInfo } from '../../../../../edit-types';
 import { QueryEntity } from '../entity-query/entity-query.models';
 import { SelectedEntity } from './entity-default.models';
 

@@ -7,7 +7,7 @@ import { EavCustomInputField, ExperimentalProps, FieldConfig, FieldSettings, Fie
 import { FieldConfigSet } from '../../../../../eav-dynamic-form/model/field-config';
 import { InputFieldHelpers } from '../../../../../shared/helpers';
 import { DnnBridgeService, EavService, EditRoutingService, FieldsSettingsService } from '../../../../../shared/services';
-import { ContentTypeService, FeatureService, InputTypeService } from '../../../../../shared/store/ngrx-data';
+import { ContentTypeService, EntityCacheService, FeatureService, InputTypeService } from '../../../../../shared/store/ngrx-data';
 import { ValidationMessagesService } from '../../../../validators/validation-messages-service';
 import { ConnectorHost, ConnectorInstance } from './models/connector-instance.model';
 
@@ -32,6 +32,7 @@ export class ConnectorHelper {
     private dnnBridgeService: DnnBridgeService,
     private fieldsSettingsService: FieldsSettingsService,
     private validationMessagesService: ValidationMessagesService,
+    private entityCacheService: EntityCacheService,
     private zone: NgZone,
   ) {
     this.control = this.group.controls[this.config.fieldName];
@@ -121,6 +122,8 @@ export class ConnectorHelper {
       getUrlOfId: (value, callback) => {
         this.zone.run(() => { this.getUrlOfId(value, callback); });
       },
+      getEntityCache: (guids?) => this.entityCacheService.getEntities(guids),
+      getEntityCache$: (guids?) => this.entityCacheService.getEntities$(guids),
     };
 
     return experimentalProps;
