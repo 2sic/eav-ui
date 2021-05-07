@@ -11,6 +11,7 @@ export class FormulaHelpers {
     currentLanguage: string,
     defaultLanguage: string,
     formulaItems: EavEntity[],
+    propagateError: boolean,
   ): FieldValue {
     const formulaItem = formulaItems.find(item => {
       const target: string = LocalizationHelpers.translate(currentLanguage, defaultLanguage, item.Attributes.Target, null);
@@ -26,6 +27,9 @@ export class FormulaHelpers {
       const calculatedValue = formulaFn(context);
       return calculatedValue;
     } catch (error) {
+      if (propagateError) {
+        throw error;
+      }
       console.error(`Error while calculating formula "${type}" for field "${context.field.name}"`, error);
     }
   }

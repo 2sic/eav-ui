@@ -30,6 +30,13 @@ export interface FormulaCtxValue {
   // initial: FieldValue;
 }
 
+export interface FormulaErrorCounter {
+  count: number;
+  entityGuid: string;
+  fieldName: string;
+  type: FormulaType;
+}
+
 export type FormulaFunction = (context: FormulaContext) => FieldValue;
 
 export type FormulaType = 'value' | 'visible' | 'required' | 'enabled';
