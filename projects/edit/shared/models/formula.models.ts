@@ -1,14 +1,33 @@
 import { FieldValue } from '../../../edit-types';
-import { FormValues } from '../../eav-item-dialog/item-edit-form/item-edit-form.models';
 
 export interface FormulaContext {
-  data: FormulaCtxData;
+  culture: FormulaCtxCulture;
+  entity: FormulaCtxEntity;
+  field: FormulaCtxField;
+  fields: Record<string, FormulaCtxField>;
+  value: FormulaCtxValue;
 }
 
-export interface FormulaCtxData {
+export interface FormulaCtxCulture {
+  code: string;
   name: string;
+}
+
+export interface FormulaCtxEntity {
+  guid: string;
+  id: number;
+}
+
+export interface FormulaCtxField {
+  name: string;
+  type: string;
   value: FieldValue;
-  form: FormValues;
+}
+
+export interface FormulaCtxValue {
+  current: FieldValue;
+  default: FieldValue;
+  // initial: FieldValue;
 }
 
 export type FormulaFunction = (context: FormulaContext) => FieldValue;

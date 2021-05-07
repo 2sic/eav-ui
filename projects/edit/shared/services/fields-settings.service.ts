@@ -4,12 +4,14 @@ import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import { distinctUntilChanged, filter, map } from 'rxjs/operators';
 import { EavService } from '.';
 import { FieldSettings } from '../../../edit-types';
+import { InputType } from '../../../ng-dialogs/src/app/content-type-fields/models/input-type.model';
 import { FormValues } from '../../eav-item-dialog/item-edit-form/item-edit-form.models';
 import { ValidationHelper } from '../../eav-material-controls/validators/validation-helper';
 import { FieldLogicManager } from '../../field-logic/field-logic-manager';
 import { FieldsSettingsHelpers, FormulaHelpers, GeneralHelpers, InputFieldHelpers, LocalizationHelpers } from '../helpers';
-import { ContentTypeSettings, FieldsProps, FormulaContext, TranslationState } from '../models';
-import { ContentTypeItemService, ContentTypeService, InputTypeService, ItemService, LanguageInstanceService } from '../store/ngrx-data';
+import { ContentTypeSettings, FieldsProps, FormulaContext, FormulaCtxField, TranslationState } from '../models';
+import { EavContentTypeAttribute } from '../models/eav';
+import { ContentTypeItemService, ContentTypeService, InputTypeService, ItemService, LanguageInstanceService, LanguageService } from '../store/ngrx-data';
 
 @Injectable()
 export class FieldsSettingsService implements OnDestroy {
@@ -26,6 +28,7 @@ export class FieldsSettingsService implements OnDestroy {
     private itemService: ItemService,
     private inputTypeService: InputTypeService,
     private contentTypeItemService: ContentTypeItemService,
+    private languageService: LanguageService,
   ) { }
 
   ngOnDestroy(): void {
@@ -98,13 +101,7 @@ export class FieldsSettingsService implements OnDestroy {
             merged.Disabled ??= false;
             merged.DisableTranslation ??= false;
             // formulas - visible, required, enabled
-            const context: FormulaContext = {
-              data: {
-                name: attribute.Name,
-                value,
-                form: formValues,
-              },
-            };
+            const context = this.getFormulaContext(entityGuid, attribute.Name, formValues, contentType.Attributes, inputType, merged);
             const formulaItems = this.contentTypeItemService.getContentTypeItems(merged.Calculations);
             const formulaVisible = FormulaHelpers.getFormulaValue('visible', context, currentLanguage, defaultLanguage, formulaItems);
             merged.VisibleInEditUI = formulaVisible === false ? false : merged.VisibleInEditUI;
@@ -225,5 +222,52 @@ export class FieldsSettingsService implements OnDestroy {
       map(fieldsSettings => fieldsSettings[fieldName].translationState),
       distinctUntilChanged(GeneralHelpers.objectsEqual),
     );
+  }
+
+  private getFormulaContext(
+    entityGuid: string,
+    fieldName: string,
+    formValues: FormValues,
+    ctAttributes: EavContentTypeAttribute[],
+    inputType: InputType,
+    settings: FieldSettings,
+  ): FormulaContext {
+    const languageKey = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
+    const languages = this.languageService.getLanguages();
+    const languageName = languages.find(l => l.key === languageKey)?.name;
+    const item = this.itemService.getItem(entityGuid);
+
+    const fields: Record<string, FormulaCtxField> = {};
+    for (const [name, value] of Object.entries(formValues)) {
+      fields[name] = {
+        name,
+        type: ctAttributes.find(a => a.Name === name)?.Type,
+        value,
+      };
+    }
+
+    const context: FormulaContext = {
+      culture: {
+        code: languageKey,
+        name: languageName,
+      },
+      entity: {
+        guid: item.Entity.Guid,
+        id: item.Entity.Id,
+      },
+      field: {
+        name: fieldName,
+        type: ctAttributes.find(a => a.Name === fieldName)?.Type,
+        value: formValues[fieldName],
+      },
+      fields,
+      value: {
+        current: formValues[fieldName],
+        get default() {
+          return InputFieldHelpers.parseDefaultValue(fieldName, inputType, settings, item.Header);
+        },
+      },
+    };
+    return context;
   }
 }

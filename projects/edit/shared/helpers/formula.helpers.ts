@@ -5,7 +5,7 @@ import { EavEntity } from '../models/eav';
 
 export class FormulaHelpers {
 
-  public static getFormulaValue(
+  static getFormulaValue(
     type: FormulaType,
     context: FormulaContext,
     currentLanguage: string,
@@ -26,7 +26,7 @@ export class FormulaHelpers {
       const calculatedValue = formulaFn(context);
       return calculatedValue;
     } catch (error) {
-      console.error(`Error while calculating formula "${type}" for field "${context.data.name}"`, error);
+      console.error(`Error while calculating formula "${type}" for field "${context.field.name}"`, error);
     }
   }
 
