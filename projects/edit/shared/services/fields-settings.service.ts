@@ -3,7 +3,7 @@ import { ValidatorFn } from '@angular/forms';
 import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import { distinctUntilChanged, filter, map } from 'rxjs/operators';
 import { EavService } from '.';
-import { FieldSettings } from '../../../edit-types';
+import { FieldSettings, FieldValue } from '../../../edit-types';
 import { InputType } from '../../../ng-dialogs/src/app/content-type-fields/models/input-type.model';
 import { FormValues } from '../../eav-item-dialog/item-edit-form/item-edit-form.models';
 import { ValidationHelper } from '../../eav-material-controls/validators/validation-helper';
@@ -13,11 +13,13 @@ import { FieldsSettingsHelpers, FormulaHelpers, GeneralHelpers, InputFieldHelper
 import { ContentTypeSettings, FieldsProps, FormulaContext, FormulaCtxField, FormulaErrorCounter, FormulaType, FormulaTypes, TranslationState } from '../models';
 import { EavContentTypeAttribute, EavEntity } from '../models/eav';
 import { ContentTypeItemService, ContentTypeService, InputTypeService, ItemService, LanguageInstanceService, LanguageService } from '../store/ngrx-data';
+import { FormulaDesignerService } from './formula-designer.service';
 
 @Injectable()
 export class FieldsSettingsService implements OnDestroy {
   private contentTypeSettings$: BehaviorSubject<ContentTypeSettings>;
   private fieldsProps$: BehaviorSubject<FieldsProps>;
+  private forceSettings$: BehaviorSubject<void>;
   private subscription: Subscription;
   private valueFormulaCounter = 0;
   private maxValueFormulaCycles = 5;
@@ -32,18 +34,21 @@ export class FieldsSettingsService implements OnDestroy {
     private inputTypeService: InputTypeService,
     private contentTypeItemService: ContentTypeItemService,
     private languageService: LanguageService,
+    private formulaDesignerService: FormulaDesignerService,
   ) { }
 
   ngOnDestroy(): void {
     this.contentTypeSettings$?.complete();
     this.fieldsProps$?.complete();
+    this.forceSettings$?.complete();
     this.subscription?.unsubscribe();
   }
 
   init(entityGuid: string): void {
     this.subscription = new Subscription();
-    this.contentTypeSettings$ = new BehaviorSubject<ContentTypeSettings>(null);
-    this.fieldsProps$ = new BehaviorSubject<FieldsProps>(null);
+    this.contentTypeSettings$ = new BehaviorSubject(null);
+    this.fieldsProps$ = new BehaviorSubject(null);
+    this.forceSettings$ = new BehaviorSubject(null);
 
     const item = this.itemService.getItem(entityGuid);
     const contentTypeId = InputFieldHelpers.getContentTypeId(item);
@@ -78,8 +83,14 @@ export class FieldsSettingsService implements OnDestroy {
     const itemAttributes$ = this.itemService.getItemAttributes$(entityGuid);
     const inputTypes$ = this.inputTypeService.getInputTypes$();
     this.subscription.add(
-      combineLatest([contentType$, currentLanguage$, defaultLanguage$, itemAttributes$, itemHeader$, inputTypes$]).pipe(
-        map(([contentType, currentLanguage, defaultLanguage, itemAttributes, itemHeader, inputTypes]) => {
+      combineLatest([
+        combineLatest([contentType$, currentLanguage$, defaultLanguage$, itemAttributes$, itemHeader$, inputTypes$]),
+        combineLatest([this.forceSettings$]),
+      ]).pipe(
+        map(([
+          [contentType, currentLanguage, defaultLanguage, itemAttributes, itemHeader, inputTypes],
+          [forceSettings],
+        ]) => {
           const formValues: FormValues = {};
           for (const [fieldName, fieldValues] of Object.entries(itemAttributes)) {
             formValues[fieldName] = LocalizationHelpers.translate(currentLanguage, defaultLanguage, fieldValues, null);
@@ -231,6 +242,10 @@ export class FieldsSettingsService implements OnDestroy {
     );
   }
 
+  forceSettings(): void {
+    this.forceSettings$.next();
+  }
+
   private getFormulaContext(
     entityGuid: string,
     fieldName: string,
@@ -284,14 +299,40 @@ export class FieldsSettingsService implements OnDestroy {
     type: FormulaType,
     context: FormulaContext,
     formulaItems: EavEntity[],
-  ) {
+  ): FieldValue {
+    const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
+    const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
+
+    const customFormula = this.formulaDesignerService.getFormula(entityGuid, fieldName, type);
+    if (customFormula) {
+      try {
+        const formulaFn = FormulaHelpers.buildFormulaFunction(customFormula);
+        const value = formulaFn(context);
+        this.formulaDesignerService.upsertFormulaResult(entityGuid, fieldName, type, value, false);
+        return value;
+      } catch (error) {
+        console.error(`Error while calculating designed formula "${type}" for field "${context.field.name}"`, error);
+        this.formulaDesignerService.upsertFormulaResult(entityGuid, fieldName, type, undefined, true);
+      }
+      return;
+    }
+
+    const formulaItem = formulaItems.find(item => {
+      const target: string = LocalizationHelpers.translate(currentLanguage, defaultLanguage, item.Attributes.Target, null);
+      return target === type;
+    });
+    if (formulaItem == null) { return; }
+
+    const formula = LocalizationHelpers.translate(currentLanguage, defaultLanguage, formulaItem.Attributes.Formula, null);
+    if (formula == null) { return; }
+
     const counter = this.formulaErrorCounters.find(c => c.entityGuid === entityGuid && c.fieldName === fieldName && c.type === type);
     if (counter?.count >= this.maxFormulaErrors) { return; }
 
     try {
-      const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
-      const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
-      return FormulaHelpers.getFormulaValue(type, context, currentLanguage, defaultLanguage, formulaItems, true);
+      const formulaFn = FormulaHelpers.buildFormulaFunction(formula);
+      const value = formulaFn(context);
+      return value;
     } catch (error) {
       if (!counter) {
         const newCounter: FormulaErrorCounter = {

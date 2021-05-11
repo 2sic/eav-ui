@@ -1,9 +1,10 @@
-<ng-container *ngIf="!formulaLoadError">
+<ng-container *ngIf="!loadError">
 
   <div class="formula-context-box">
     <mat-form-field color="accent">
       <mat-label>Entity</mat-label>
-      <mat-select [ngModel]="selectedEntity" name="selectedEntity" (ngModelChange)="selectedEntityChanged($event)">
+      <mat-select [ngModel]="selectedEntity" name="selectedEntity" (ngModelChange)="selectedEntityChanged($event)"
+        [disabled]="editMode">
         <mat-option *ngFor="let entity of entityOptions" [value]="entity.entityGuid">
           {{ entity.label }}
         </mat-option>
@@ -13,7 +14,7 @@
     <mat-form-field color="accent">
       <mat-label>Attribute</mat-label>
       <mat-select [ngModel]="selectedField" name="selectedField" (ngModelChange)="selectedFieldChanged($event)"
-        [disabled]="selectedEntity == null">
+        [disabled]="editMode || selectedEntity == null">
         <mat-option *ngFor="let field of fieldOptions[selectedEntity]" [value]="field.fieldName">
           {{ field.fieldName }}
         </mat-option>
@@ -22,8 +23,8 @@
 
     <mat-form-field color="accent">
       <mat-label>Formula Type</mat-label>
-      <mat-select [ngModel]="selectedFormulaType" name="selectedFormulaType"
-        (ngModelChange)="selectedFormulaTypeChanged($event)" [disabled]="selectedField == null">
+      <mat-select [ngModel]="selectedType" name="selectedFormulaType" (ngModelChange)="selectedTypeChanged($event)"
+        [disabled]="editMode || selectedEntity == null || selectedField == null">
         <mat-option *ngFor="let formulaType of FormulaTypes | keyvalue" [value]="formulaType.value">
           {{ formulaType.key }}
         </mat-option>
@@ -31,10 +32,11 @@
     </mat-form-field>
   </div>
 
-  <div class="formula-function-box">
+  <div class="formula-box">
     <mat-form-field color="accent">
-      <textarea matInput rows="10" [matTextareaAutosize]="false" [disabled]="selectedFormulaType == null"
-        [ngModel]="formulaFunction" name="formulaFunction" (ngModelChange)="formulaFunctionChanged($event)"></textarea>
+      <textarea matInput rows="10" [matTextareaAutosize]="false"
+        [disabled]="!editMode || selectedEntity == null || selectedField == null || selectedType == null"
+        [ngModel]="formula" name="formula" (ngModelChange)="formulaChanged($event)"></textarea>
       <mat-label>Function</mat-label>
     </mat-form-field>
   </div>
@@ -42,16 +44,28 @@
   <div class="formula-footer-box">
     <div class="formula-result-box">
       <span>Result:</span>
-      <span></span>
+      &nbsp;
+      <span>{{ result$ | async | json }}</span>
     </div>
 
     <div class="formula-actions-box">
+      <button mat-icon-button matTooltip="Edit" (click)="toggleEdit()">
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button mat-icon-button matTooltip="Reset" (click)="reset()">
+        <mat-icon>history</mat-icon>
+      </button>
+      <button mat-icon-button matTooltip="Run" [disabled]="!editMode || !formula" (click)="run()">
+        <mat-icon>play_arrow</mat-icon>
+      </button>
+      <!--
       <button mat-icon-button matTooltip="Run once">
         <mat-icon>play_arrow</mat-icon>
       </button>
       <button mat-icon-button matTooltip="Run watch">
         <mat-icon>all_inclusive</mat-icon>
       </button>
+      -->
       <button mat-icon-button matTooltip="Help" (click)="openFunctionsHelp()">
         <mat-icon>help</mat-icon>
       </button>

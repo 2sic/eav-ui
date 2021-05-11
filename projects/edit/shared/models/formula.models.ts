@@ -47,3 +47,18 @@ export const FormulaTypes = {
 } as const;
 
 export type FormulaType = typeof FormulaTypes[keyof typeof FormulaTypes];
+
+export interface CustomFormula {
+  entityGuid: string;
+  fieldName: string;
+  type: FormulaType;
+  formula: string;
+}
+
+export interface CustomFormulaResult {
+  entityGuid: string;
+  fieldName: string;
+  type: FormulaType;
+  value: FieldValue;
+  isError: boolean;
+}

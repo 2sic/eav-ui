@@ -1,11 +1,14 @@
 import { Component, Input, OnInit, QueryList } from '@angular/core';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { FieldValue } from '../../../../edit-types';
 import { InputTypeConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { LocalizationHelpers } from '../../../shared/helpers';
 import { FormulaType, FormulaTypes } from '../../../shared/models';
-import { EavService } from '../../../shared/services';
+import { EavService, FormulaDesignerService } from '../../../shared/services';
 import { ContentTypeItemService, LanguageInstanceService } from '../../../shared/store/ngrx-data';
 import { ItemEditFormComponent } from '../../item-edit-form/item-edit-form.component';
-import { defaultFormulaFunction } from './formula-designer.constants';
+import { defaultFormula } from './formula-designer.constants';
 import { EntityOption, FieldOption } from './formula-designer.models';
 
 @Component({
@@ -17,52 +20,75 @@ export class FormulaDesignerComponent implements OnInit {
   @Input() private itemEditFormRefs: QueryList<ItemEditFormComponent>;
 
   FormulaTypes = FormulaTypes;
+  loadError = false;
   entityOptions: EntityOption[];
   fieldOptions: Record<string, FieldOption[]>;
   selectedEntity: string;
   selectedField: string;
-  selectedFormulaType: FormulaType;
-  formulaFunction: string;
-  formulaLoadError = false;
+  selectedType: FormulaType;
+  formula: string;
+  editMode = false;
+  result$: Observable<FieldValue>;
 
   constructor(
     private contentTypeItemService: ContentTypeItemService,
     private languageInstanceService: LanguageInstanceService,
     private eavService: EavService,
+    private formulaDesignerService: FormulaDesignerService,
   ) { }
 
   ngOnInit(): void {
-    this.buildFunctionsProps();
+    this.buildOptionsAndFormula();
   }
 
   selectedEntityChanged(entityGuid: string): void {
     this.selectedEntity = entityGuid;
     this.selectedField = this.fieldOptions[this.selectedEntity][0].fieldName;
-    this.loadFunction();
+    this.loadFormula();
   }
 
   selectedFieldChanged(fieldName: string): void {
     this.selectedField = fieldName;
-    this.loadFunction();
+    this.loadFormula();
   }
 
-  selectedFormulaTypeChanged(type: FormulaType): void {
-    this.selectedFormulaType = type;
-    this.loadFunction();
+  selectedTypeChanged(type: FormulaType): void {
+    this.selectedType = type;
+    this.loadFormula();
   }
 
-  formulaFunctionChanged(formulaFunction: string): void {
-    this.formulaFunction = formulaFunction;
+  formulaChanged(formula: string): void {
+    this.formula = formula;
+    this.formulaDesignerService.upsertFormula(this.selectedEntity, this.selectedField, this.selectedType, this.formula);
+  }
+
+  toggleEdit(): void {
+    this.editMode = !this.editMode;
+    this.loadFormula();
+    if (this.editMode && this.formula) {
+      this.formulaDesignerService.upsertFormula(this.selectedEntity, this.selectedField, this.selectedType, this.formula);
+    }
+  }
+
+  reset(): void {
+    this.editMode = false;
+    this.formulaDesignerService.deleteFormula(this.selectedEntity, this.selectedField, this.selectedType);
+    this.loadFormula();
+  }
+
+  run(): void {
+    this.itemEditFormRefs.find(itemEditFormRef => itemEditFormRef.entityGuid === this.selectedEntity)
+      .fieldsSettingsService.forceSettings();
   }
 
   openFunctionsHelp(): void {
     window.open('https://r.2sxc.org/functions', '_blank');
   }
 
-  private buildFunctionsProps(): void {
-    this.formulaLoadError = false;
+  private buildOptionsAndFormula(): void {
+    this.loadError = false;
     if (this.itemEditFormRefs == null) {
-      this.formulaLoadError = true;
+      this.loadError = true;
       return;
     }
 
@@ -90,12 +116,23 @@ export class FormulaDesignerComponent implements OnInit {
 
     this.selectedEntity ??= this.entityOptions[0].entityGuid;
     this.selectedField ??= this.fieldOptions[this.selectedEntity][0].fieldName;
-    this.selectedFormulaType ??= this.FormulaTypes.Value;
+    this.selectedType ??= this.FormulaTypes.Value;
 
-    this.loadFunction();
+    this.loadFormula();
   }
 
-  private loadFunction() {
+  private loadFormula() {
+    this.result$ = this.formulaDesignerService
+      .getFormulaResult$(this.selectedEntity, this.selectedField, this.selectedType)
+      .pipe(
+        map(result => result?.isError ? 'Calculation failed. Please check console for more info' : result?.value),
+      );
+
+    this.formula = this.formulaDesignerService.getFormula(this.selectedEntity, this.selectedField, this.selectedType);
+    if (this.formula != null) {
+      return;
+    }
+
     const selectedRef = this.itemEditFormRefs.find(itemEditFormRef => itemEditFormRef.entityGuid === this.selectedEntity);
     const settings = selectedRef.fieldsSettingsService.getFieldSettings(this.selectedField);
     const formulaItems = this.contentTypeItemService.getContentTypeItems(settings.Calculations);
@@ -104,19 +141,17 @@ export class FormulaDesignerComponent implements OnInit {
 
     const formulaItem = formulaItems.find(item => {
       const target: FormulaType = LocalizationHelpers.translate(currentLanguage, defaultLanguage, item.Attributes.Target, null);
-      return target === this.selectedFormulaType;
+      return target === this.selectedType;
     });
     if (formulaItem == null) {
-      this.formulaFunction = defaultFormulaFunction;
+      this.formula = this.editMode ? defaultFormula : null;
       return;
     }
 
-    const formula: string = LocalizationHelpers.translate(currentLanguage, defaultLanguage, formulaItem.Attributes.Formula, null);
-    if (formula == null) {
-      this.formulaFunction = defaultFormulaFunction;
+    this.formula = LocalizationHelpers.translate(currentLanguage, defaultLanguage, formulaItem.Attributes.Formula, null);
+    if (this.formula == null) {
+      this.formula = this.editMode ? defaultFormula : null;
       return;
     }
-
-    this.formulaFunction = formula;
   }
 }

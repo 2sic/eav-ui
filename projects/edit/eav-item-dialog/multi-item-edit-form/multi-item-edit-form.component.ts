@@ -16,7 +16,7 @@ import { EditEntryComponent } from '../../edit-entry/edit-entry.component';
 import { FieldErrorMessage, SaveResult } from '../../shared/models';
 import { EavItem } from '../../shared/models/eav';
 import { Item1 } from '../../shared/models/json-format-v1';
-import { EavService, EditRoutingService, FormsStateService, LoadIconsService } from '../../shared/services';
+import { EavService, EditRoutingService, FormsStateService, FormulaDesignerService, LoadIconsService } from '../../shared/services';
 // tslint:disable-next-line:max-line-length
 import { AdamCacheService, ContentTypeItemService, ContentTypeService, EntityCacheService, FeatureService, GlobalConfigService, InputTypeService, ItemService, LanguageInstanceService, LanguageService, LinkCacheService, PublishStatusService, StringQueryCacheService } from '../../shared/store/ngrx-data';
 import { ItemEditFormComponent } from '../item-edit-form/item-edit-form.component';
@@ -26,7 +26,7 @@ import { MultiEditFormTemplateVars, SaveEavFormData } from './multi-item-edit-fo
   selector: 'app-multi-item-edit-form',
   templateUrl: './multi-item-edit-form.component.html',
   styleUrls: ['./multi-item-edit-form.component.scss'],
-  providers: [EditRoutingService, FormsStateService],
+  providers: [EditRoutingService, FormsStateService, FormulaDesignerService],
 })
 export class MultiItemEditFormComponent implements OnInit, OnDestroy {
   @ViewChildren(ItemEditFormComponent) itemEditFormRefs: QueryList<ItemEditFormComponent>;
