@@ -1,5 +1,6 @@
-import { EavItem } from '../../shared/models/eav';
+export const DebugTypes = {
+  Data: 'data',
+  Functions: 'functions',
+} as const;
 
-export interface FormDebugTemplateVars {
-  items: EavItem[];
-}
+export type DebugType = typeof DebugTypes[keyof typeof DebugTypes];

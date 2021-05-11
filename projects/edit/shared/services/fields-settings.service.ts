@@ -9,7 +9,8 @@ import { FormValues } from '../../eav-item-dialog/item-edit-form/item-edit-form.
 import { ValidationHelper } from '../../eav-material-controls/validators/validation-helper';
 import { FieldLogicManager } from '../../field-logic/field-logic-manager';
 import { FieldsSettingsHelpers, FormulaHelpers, GeneralHelpers, InputFieldHelpers, LocalizationHelpers } from '../helpers';
-import { ContentTypeSettings, FieldsProps, FormulaContext, FormulaCtxField, FormulaErrorCounter, FormulaType, TranslationState } from '../models';
+// tslint:disable-next-line:max-line-length
+import { ContentTypeSettings, FieldsProps, FormulaContext, FormulaCtxField, FormulaErrorCounter, FormulaType, FormulaTypes, TranslationState } from '../models';
 import { EavContentTypeAttribute, EavEntity } from '../models/eav';
 import { ContentTypeItemService, ContentTypeService, InputTypeService, ItemService, LanguageInstanceService, LanguageService } from '../store/ngrx-data';
 
@@ -105,11 +106,11 @@ export class FieldsSettingsService implements OnDestroy {
             // formulas - visible, required, enabled
             const context = this.getFormulaContext(entityGuid, attribute.Name, formValues, contentType.Attributes, inputType, merged);
             const formulaItems = this.contentTypeItemService.getContentTypeItems(merged.Calculations);
-            const formulaVisible = this.runFormula(entityGuid, attribute.Name, 'visible', context, formulaItems);
+            const formulaVisible = this.runFormula(entityGuid, attribute.Name, FormulaTypes.Visible, context, formulaItems);
             merged.VisibleInEditUI = formulaVisible === false ? false : merged.VisibleInEditUI;
-            const formulaRequired = this.runFormula(entityGuid, attribute.Name, 'required', context, formulaItems);
+            const formulaRequired = this.runFormula(entityGuid, attribute.Name, FormulaTypes.Required, context, formulaItems);
             merged.Required = formulaRequired === true ? true : merged.Required;
-            const formulaEnabled = this.runFormula(entityGuid, attribute.Name, 'enabled', context, formulaItems);
+            const formulaEnabled = this.runFormula(entityGuid, attribute.Name, FormulaTypes.Enabled, context, formulaItems);
             merged.Disabled = formulaEnabled === false ? true : merged.Disabled;
             // special fixes
             merged.Name = merged.Name || attribute.Name;
@@ -128,7 +129,7 @@ export class FieldsSettingsService implements OnDestroy {
             const fixed = logic?.update(merged, value) ?? merged;
 
             // formulas - value
-            const formulaValue = this.runFormula(entityGuid, attribute.Name, 'value', context, formulaItems);
+            const formulaValue = this.runFormula(entityGuid, attribute.Name, FormulaTypes.Value, context, formulaItems);
             // important to compare with undefined because null is allowed value
             if (value !== undefined && formulaValue !== undefined) {
               let valuesNotEqual = value !== formulaValue;

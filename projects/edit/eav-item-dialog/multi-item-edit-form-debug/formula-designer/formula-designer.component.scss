@@ -1,0 +1,51 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.formula-context-box {
+  display: flex;
+
+  .mat-form-field {
+    font-size: 14px;
+  }
+
+  .mat-form-field:not(:first-of-type) {
+    margin-left: 8px;
+  }
+}
+
+.formula-function-box {
+  flex: 1 1 auto;
+
+  .mat-form-field {
+    font-size: 14px;
+    width: 100%;
+  }
+}
+
+.formula-footer-box {
+  display: flex;
+  justify-content: space-between;
+}
+
+.formula-result-box {}
+
+.formula-actions-box {
+  .mat-icon-button {
+    margin-left: 0;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    flex-shrink: 0;
+  }
+
+  .mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    line-height: 20px !important;
+  }
+}

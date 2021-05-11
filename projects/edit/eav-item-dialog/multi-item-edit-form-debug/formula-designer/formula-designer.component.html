@@ -1,0 +1,60 @@
+<ng-container *ngIf="!formulaLoadError">
+
+  <div class="formula-context-box">
+    <mat-form-field color="accent">
+      <mat-label>Entity</mat-label>
+      <mat-select [ngModel]="selectedEntity" name="selectedEntity" (ngModelChange)="selectedEntityChanged($event)">
+        <mat-option *ngFor="let entity of entityOptions" [value]="entity.entityGuid">
+          {{ entity.label }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field color="accent">
+      <mat-label>Attribute</mat-label>
+      <mat-select [ngModel]="selectedField" name="selectedField" (ngModelChange)="selectedFieldChanged($event)"
+        [disabled]="selectedEntity == null">
+        <mat-option *ngFor="let field of fieldOptions[selectedEntity]" [value]="field.fieldName">
+          {{ field.fieldName }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field color="accent">
+      <mat-label>Formula Type</mat-label>
+      <mat-select [ngModel]="selectedFormulaType" name="selectedFormulaType"
+        (ngModelChange)="selectedFormulaTypeChanged($event)" [disabled]="selectedField == null">
+        <mat-option *ngFor="let formulaType of FormulaTypes | keyvalue" [value]="formulaType.value">
+          {{ formulaType.key }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div class="formula-function-box">
+    <mat-form-field color="accent">
+      <textarea matInput rows="10" [matTextareaAutosize]="false" [disabled]="selectedFormulaType == null"
+        [ngModel]="formulaFunction" name="formulaFunction" (ngModelChange)="formulaFunctionChanged($event)"></textarea>
+      <mat-label>Function</mat-label>
+    </mat-form-field>
+  </div>
+
+  <div class="formula-footer-box">
+    <div class="formula-result-box">
+      <span>Result:</span>
+      <span></span>
+    </div>
+
+    <div class="formula-actions-box">
+      <button mat-icon-button matTooltip="Run once">
+        <mat-icon>play_arrow</mat-icon>
+      </button>
+      <button mat-icon-button matTooltip="Run watch">
+        <mat-icon>all_inclusive</mat-icon>
+      </button>
+      <button mat-icon-button matTooltip="Help" (click)="openFunctionsHelp()">
+        <mat-icon>help</mat-icon>
+      </button>
+    </div>
+  </div>
+</ng-container>

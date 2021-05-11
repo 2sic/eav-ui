@@ -39,4 +39,11 @@ export interface FormulaErrorCounter {
 
 export type FormulaFunction = (context: FormulaContext) => FieldValue;
 
-export type FormulaType = 'value' | 'visible' | 'required' | 'enabled';
+export const FormulaTypes = {
+  Value: 'value',
+  Visible: 'visible',
+  Required: 'required',
+  Enabled: 'enabled',
+} as const;
+
+export type FormulaType = typeof FormulaTypes[keyof typeof FormulaTypes];

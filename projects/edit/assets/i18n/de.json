@@ -91,8 +91,7 @@
   "General": {
     "Buttons": {
       "NotSave": "Änderungen verwerfen",
-      "Save": "speichern",
-      "Debug": "debug"
+      "Save": "speichern"
     }
   },
   "Data": {

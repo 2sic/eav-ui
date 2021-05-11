@@ -37,7 +37,7 @@
     </div>
   </div>
 
-  <app-multi-item-edit-form-debug mat-dialog-actions *ngIf="data.debugEnabled"
+  <app-multi-item-edit-form-debug mat-dialog-actions *ngIf="data.debugEnabled" [itemEditFormRefs]="itemEditFormRefs"
     (debugInfoOpened)="debugInfoOpened($event)">
   </app-multi-item-edit-form-debug>
 </div>

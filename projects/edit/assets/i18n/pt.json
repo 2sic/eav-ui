@@ -91,8 +91,7 @@
   "General": {
     "Buttons": {
       "NotSave": "descartar alterações",
-      "Save": "gravar",
-      "Debug": "depurar"
+      "Save": "gravar"
     }
   },
   "Data": {

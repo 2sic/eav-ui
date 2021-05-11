@@ -29,7 +29,7 @@ import { MultiEditFormTemplateVars, SaveEavFormData } from './multi-item-edit-fo
   providers: [EditRoutingService, FormsStateService],
 })
 export class MultiItemEditFormComponent implements OnInit, OnDestroy {
-  @ViewChildren(ItemEditFormComponent) private itemEditFormRefs: QueryList<ItemEditFormComponent>;
+  @ViewChildren(ItemEditFormComponent) itemEditFormRefs: QueryList<ItemEditFormComponent>;
 
   templateVars$: Observable<MultiEditFormTemplateVars>;
 
