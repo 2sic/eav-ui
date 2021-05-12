@@ -42,8 +42,9 @@
   </div>
 
   <div class="formula-footer-box">
-    <div class="formula-result-box">
-      <span>Result:</span>&nbsp;<span>{{ result$ | async | json }}</span>
+    <div class="formula-result-box hide-scrollbar">
+      <span class="label">Result:&nbsp;</span>
+      <span>{{ result$ | async | json }}</span>
     </div>
 
     <div class="formula-actions-box">
@@ -56,14 +57,6 @@
       <button mat-icon-button matTooltip="Run" [disabled]="!editMode || !formula" (click)="run()">
         <mat-icon>play_arrow</mat-icon>
       </button>
-      <!--
-      <button mat-icon-button matTooltip="Run once">
-        <mat-icon>play_arrow</mat-icon>
-      </button>
-      <button mat-icon-button matTooltip="Run watch">
-        <mat-icon>all_inclusive</mat-icon>
-      </button>
-      -->
       <button mat-icon-button matTooltip="Help" (click)="openFunctionsHelp()">
         <mat-icon>help</mat-icon>
       </button>

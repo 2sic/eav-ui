@@ -3,6 +3,7 @@
   flex-direction: column;
   height: 100%;
   box-sizing: border-box;
+  overflow: hidden;
 }
 
 .formula-context-box {
@@ -28,12 +29,25 @@
 
 .formula-footer-box {
   display: flex;
+  align-items: center;
   justify-content: space-between;
+  overflow: hidden;
 }
 
-.formula-result-box {}
+.formula-result-box {
+  flex: 0 1 auto;
+  height: 100%;
+  overflow: auto;
+
+  .label {
+    user-select: none;
+    font-weight: 500;
+  }
+}
 
 .formula-actions-box {
+  flex: 0 0 auto;
+
   .mat-icon-button {
     margin-left: 0;
     width: 30px;
