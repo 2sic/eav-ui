@@ -10,8 +10,8 @@ import { ValidationHelper } from '../../eav-material-controls/validators/validat
 import { FieldLogicManager } from '../../field-logic/field-logic-manager';
 import { FieldsSettingsHelpers, FormulaHelpers, GeneralHelpers, InputFieldHelpers, LocalizationHelpers } from '../helpers';
 // tslint:disable-next-line:max-line-length
-import { ContentTypeSettings, FieldsProps, FormulaContext, FormulaCtxField, FormulaErrorCounter, FormulaType, FormulaTypes, TranslationState } from '../models';
-import { EavContentTypeAttribute, EavEntity } from '../models/eav';
+import { ContentTypeSettings, FieldsProps, FormulaErrorCounter, FormulaProps, FormulaType, FormulaTypes, TranslationState } from '../models';
+import { EavHeader } from '../models/eav';
 import { ContentTypeItemService, ContentTypeService, InputTypeService, ItemService, LanguageInstanceService, LanguageService } from '../store/ngrx-data';
 import { FormulaDesignerService } from './formula-designer.service';
 
@@ -115,14 +115,18 @@ export class FieldsSettingsService implements OnDestroy {
             merged.Disabled ??= false;
             merged.DisableTranslation ??= false;
             // formulas - visible, required, enabled
-            const context = this.getFormulaContext(entityGuid, attribute.Name, formValues, contentType.Attributes, inputType, merged);
-            const formulaItems = this.contentTypeItemService.getContentTypeItems(merged.Calculations);
-            const formulaVisible = this.runFormula(entityGuid, attribute.Name, FormulaTypes.Visible, context, formulaItems);
+            const formulaVisible = this.runFormula(
+              entityGuid, attribute.Name, FormulaTypes.Visible, formValues, inputType, merged, itemHeader,
+            );
             merged.VisibleInEditUI = formulaVisible === false ? false : merged.VisibleInEditUI;
-            const formulaRequired = this.runFormula(entityGuid, attribute.Name, FormulaTypes.Required, context, formulaItems);
+            const formulaRequired = this.runFormula(
+              entityGuid, attribute.Name, FormulaTypes.Required, formValues, inputType, merged, itemHeader,
+            );
             merged.Required = formulaRequired === true ? true : merged.Required;
-            const formulaEnabled = this.runFormula(entityGuid, attribute.Name, FormulaTypes.Enabled, context, formulaItems);
-            merged.Disabled = formulaEnabled === false ? true : merged.Disabled;
+            const formulaDisabled = this.runFormula(
+              entityGuid, attribute.Name, FormulaTypes.Disabled, formValues, inputType, merged, itemHeader,
+            );
+            merged.Disabled = formulaDisabled === true ? true : merged.Disabled;
             // special fixes
             merged.Name = merged.Name || attribute.Name;
             merged.Required = ValidationHelper.isRequired(merged);
@@ -140,7 +144,9 @@ export class FieldsSettingsService implements OnDestroy {
             const fixed = logic?.update(merged, value) ?? merged;
 
             // formulas - value
-            const formulaValue = this.runFormula(entityGuid, attribute.Name, FormulaTypes.Value, context, formulaItems);
+            const formulaValue = this.runFormula(
+              entityGuid, attribute.Name, FormulaTypes.Value, formValues, inputType, merged, itemHeader,
+            );
             // important to compare with undefined because null is allowed value
             if (value !== undefined && formulaValue !== undefined) {
               let valuesNotEqual = value !== formulaValue;
@@ -246,59 +252,53 @@ export class FieldsSettingsService implements OnDestroy {
     this.forceSettings$.next();
   }
 
-  private getFormulaContext(
-    entityGuid: string,
+  private getFormulaProps(
     fieldName: string,
+    type: FormulaType,
     formValues: FormValues,
-    ctAttributes: EavContentTypeAttribute[],
     inputType: InputType,
     settings: FieldSettings,
-  ): FormulaContext {
+    itemHeader: EavHeader,
+  ): FormulaProps {
     const languageKey = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
     const languages = this.languageService.getLanguages();
     const languageName = languages.find(l => l.key === languageKey)?.name;
-    const item = this.itemService.getItem(entityGuid);
 
-    const fields: Record<string, FormulaCtxField> = {};
-    for (const [name, value] of Object.entries(formValues)) {
-      fields[name] = {
-        name,
-        type: ctAttributes.find(a => a.Name === name)?.Type,
-        value,
-      };
-    }
-
-    const context: FormulaContext = {
-      culture: {
-        code: languageKey,
-        name: languageName,
-      },
-      entity: {
-        guid: item.Entity.Guid,
-        id: item.Entity.Id,
-      },
-      field: {
-        name: fieldName,
-        type: ctAttributes.find(a => a.Name === fieldName)?.Type,
+    const formulaProps: FormulaProps = {
+      data: {
+        ...formValues,
         value: formValues[fieldName],
-      },
-      fields,
-      value: {
-        current: formValues[fieldName],
         get default() {
-          return InputFieldHelpers.parseDefaultValue(fieldName, inputType, settings, item.Header);
+          return InputFieldHelpers.parseDefaultValue(fieldName, inputType, settings, itemHeader);
+        },
+      },
+      context: {
+        culture: {
+          code: languageKey,
+          name: languageName,
+        },
+        target: {
+          get default() {
+            return InputFieldHelpers.parseDefaultValue(fieldName, inputType, settings, itemHeader);
+          },
+          name: fieldName,
+          type,
+          value: formValues[fieldName],
         },
       },
     };
-    return context;
+
+    return formulaProps;
   }
 
   private runFormula(
     entityGuid: string,
     fieldName: string,
     type: FormulaType,
-    context: FormulaContext,
-    formulaItems: EavEntity[],
+    formValues: FormValues,
+    inputType: InputType,
+    settings: FieldSettings,
+    itemHeader: EavHeader,
   ): FieldValue {
     const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
     const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
@@ -307,17 +307,22 @@ export class FieldsSettingsService implements OnDestroy {
     if (customFormula) {
       try {
         const formulaFn = FormulaHelpers.buildFormulaFunction(customFormula);
-        const value = formulaFn(context);
+        const formulaProps = this.getFormulaProps(fieldName, type, formValues, inputType, settings, itemHeader);
+        const value = formulaFn(formulaProps.data, formulaProps.context);
         this.formulaDesignerService.upsertFormulaResult(entityGuid, fieldName, type, value, false);
         return value;
       } catch (error) {
-        console.error(`Error while calculating designed formula "${type}" for field "${context.field.name}"`, error);
+        console.error(`Error while calculating designed formula "${type}" for field "${fieldName}"`, error);
         this.formulaDesignerService.upsertFormulaResult(entityGuid, fieldName, type, undefined, true);
       }
       return;
     }
 
+    const formulaItems = this.contentTypeItemService.getContentTypeItems(settings.Calculations);
     const formulaItem = formulaItems.find(item => {
+      const enabled: boolean = LocalizationHelpers.translate(currentLanguage, defaultLanguage, item.Attributes.Enabled, null);
+      if (!enabled) { return false; }
+
       const target: string = LocalizationHelpers.translate(currentLanguage, defaultLanguage, item.Attributes.Target, null);
       return target === type;
     });
@@ -331,7 +336,8 @@ export class FieldsSettingsService implements OnDestroy {
 
     try {
       const formulaFn = FormulaHelpers.buildFormulaFunction(formula);
-      const value = formulaFn(context);
+      const formulaProps = this.getFormulaProps(fieldName, type, formValues, inputType, settings, itemHeader);
+      const value = formulaFn(formulaProps.data, formulaProps.context);
       return value;
     } catch (error) {
       if (!counter) {

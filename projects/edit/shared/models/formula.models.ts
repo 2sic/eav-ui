@@ -1,11 +1,19 @@
 import { FieldValue } from '../../../edit-types';
 
+export interface FormulaProps {
+  data: FormulaData;
+  context: FormulaContext;
+}
+
+export interface FormulaData {
+  default: FieldValue;
+  value: FieldValue;
+  [fieldName: string]: FieldValue;
+}
+
 export interface FormulaContext {
   culture: FormulaCtxCulture;
-  entity: FormulaCtxEntity;
-  field: FormulaCtxField;
-  fields: Record<string, FormulaCtxField>;
-  value: FormulaCtxValue;
+  target: FormulaCtxTarget;
 }
 
 export interface FormulaCtxCulture {
@@ -13,21 +21,11 @@ export interface FormulaCtxCulture {
   name: string;
 }
 
-export interface FormulaCtxEntity {
-  guid: string;
-  id: number;
-}
-
-export interface FormulaCtxField {
-  name: string;
-  type: string;
-  value: FieldValue;
-}
-
-export interface FormulaCtxValue {
-  current: FieldValue;
+export interface FormulaCtxTarget {
   default: FieldValue;
-  // initial: FieldValue;
+  name: string;
+  type: FormulaType;
+  value: FieldValue;
 }
 
 export interface FormulaErrorCounter {
@@ -37,13 +35,13 @@ export interface FormulaErrorCounter {
   type: FormulaType;
 }
 
-export type FormulaFunction = (context: FormulaContext) => FieldValue;
+export type FormulaFunction = (data: FormulaData, context: FormulaContext) => FieldValue;
 
 export const FormulaTypes = {
-  Value: 'value',
-  Visible: 'visible',
-  Required: 'required',
-  Enabled: 'enabled',
+  Disabled: 'Field.Settings.Disabled',
+  Required: 'Field.Settings.Required',
+  Value: 'Field.Value',
+  Visible: 'Field.Settings.VisibleInEditUI',
 } as const;
 
 export type FormulaType = typeof FormulaTypes[keyof typeof FormulaTypes];
