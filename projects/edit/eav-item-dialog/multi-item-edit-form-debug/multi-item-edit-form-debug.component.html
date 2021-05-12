@@ -9,6 +9,10 @@
       <mat-icon>functions</mat-icon>
       <span>Functions</span>
     </button>
+    <button mat-button matTooltip="Show Logs" (click)="toggleDebugType(DebugTypes.Logs)">
+      <mat-icon>speed</mat-icon>
+      <span>Logs</span>
+    </button>
     <div class="sxc-version">2sxc {{ sxcVer }}</div>
   </div>
 
@@ -17,5 +21,7 @@
 
     <app-formula-designer *ngIf="activeDebug === DebugTypes.Functions" [itemEditFormRefs]="itemEditFormRefs">
     </app-formula-designer>
+
+    <app-logs-dump *ngIf="activeDebug === DebugTypes.Logs"></app-logs-dump>
   </div>
 </mat-card>

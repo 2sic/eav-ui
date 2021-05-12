@@ -25,6 +25,7 @@ import { LoadIconsService } from '../shared/services';
 import { ItemEditFormComponent } from './item-edit-form/item-edit-form.component';
 import { DataDumpComponent } from './multi-item-edit-form-debug/data-dump/data-dump.component';
 import { FormulaDesignerComponent } from './multi-item-edit-form-debug/formula-designer/formula-designer.component';
+import { LogsDumpComponent } from './multi-item-edit-form-debug/logs-dump/logs-dump.component';
 import { MultiItemEditFormDebugComponent } from './multi-item-edit-form-debug/multi-item-edit-form-debug.component';
 import { MultiItemEditFormHeaderComponent } from './multi-item-edit-form-header/multi-item-edit-form-header.component';
 import { FormSlideDirective } from './multi-item-edit-form/form-slide.directive';
@@ -39,6 +40,7 @@ import { MultiItemEditFormComponent } from './multi-item-edit-form/multi-item-ed
     MultiItemEditFormDebugComponent,
     DataDumpComponent,
     FormulaDesignerComponent,
+    LogsDumpComponent,
     FormSlideDirective,
   ],
   imports: [
