@@ -114,6 +114,7 @@ export class FieldsSettingsService implements OnDestroy {
             merged.Required ??= false;
             merged.Disabled ??= false;
             merged.DisableTranslation ??= false;
+            merged.Calculations ??= [];
             // formulas - visible, required, enabled
             const formulaVisible = this.runFormula(
               entityGuid, attribute.Name, FormulaTypes.Visible, formValues, inputType, merged, itemHeader,
