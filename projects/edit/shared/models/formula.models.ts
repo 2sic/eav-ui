@@ -24,7 +24,7 @@ export interface FormulaCtxCulture {
 export interface FormulaCtxTarget {
   default: FieldValue;
   name: string;
-  type: FormulaType;
+  type: string;
   value: FieldValue;
 }
 

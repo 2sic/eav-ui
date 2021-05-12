@@ -268,10 +268,10 @@ export class FieldsSettingsService implements OnDestroy {
     const formulaProps: FormulaProps = {
       data: {
         ...formValues,
-        value: formValues[fieldName],
         get default() {
           return InputFieldHelpers.parseDefaultValue(fieldName, inputType, settings, itemHeader);
         },
+        value: formValues[fieldName],
       },
       context: {
         culture: {
@@ -282,8 +282,8 @@ export class FieldsSettingsService implements OnDestroy {
           get default() {
             return InputFieldHelpers.parseDefaultValue(fieldName, inputType, settings, itemHeader);
           },
-          name: fieldName,
-          type,
+          name: type === FormulaTypes.Value ? fieldName : type.substring(type.lastIndexOf('.') + 1),
+          type: type === FormulaTypes.Value ? type : type.substring(0, type.lastIndexOf('.')),
           value: formValues[fieldName],
         },
       },
