@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { LogEntry, LogSeverities } from '../../../shared/models/log-entry.model';
+import { LogEntry, LogSeverities } from '../../../shared/models';
 import { LoggingService } from '../../../shared/services';
 import { LogsDumpTemplateVars } from './logs-dump.component.models';
 

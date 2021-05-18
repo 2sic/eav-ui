@@ -1,8 +1,9 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { ValidatorFn } from '@angular/forms';
+import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import { distinctUntilChanged, filter, map } from 'rxjs/operators';
-import { EavService } from '.';
+import { EavService, LoggingService } from '.';
 import { FieldSettings, FieldValue } from '../../../edit-types';
 import { InputType } from '../../../ng-dialogs/src/app/content-type-fields/models/input-type.model';
 import { FormValues } from '../../eav-item-dialog/item-edit-form/item-edit-form.models';
@@ -10,9 +11,8 @@ import { ValidationHelper } from '../../eav-material-controls/validators/validat
 import { FieldLogicManager } from '../../field-logic/field-logic-manager';
 import { FieldsSettingsHelpers, FormulaHelpers, GeneralHelpers, InputFieldHelpers, LocalizationHelpers } from '../helpers';
 // tslint:disable-next-line:max-line-length
-import { ContentTypeSettings, FieldsProps, FormulaErrorCounter, FormulaProps, FormulaType, FormulaTypes, TranslationState } from '../models';
-import { EavHeader } from '../models/eav';
-import { ContentTypeItemService, ContentTypeService, InputTypeService, ItemService, LanguageInstanceService, LanguageService } from '../store/ngrx-data';
+import { ContentTypeSettings, FieldsProps, FormulaFunctionDefault, FormulaTarget, FormulaTargets, FormulaVersions, LogSeverities, TranslationState } from '../models';
+import { ContentTypeService, InputTypeService, ItemService, LanguageInstanceService, LanguageService } from '../store/ngrx-data';
 import { FormulaDesignerService } from './formula-designer.service';
 
 @Injectable()
@@ -23,8 +23,6 @@ export class FieldsSettingsService implements OnDestroy {
   private subscription: Subscription;
   private valueFormulaCounter = 0;
   private maxValueFormulaCycles = 5;
-  private formulaErrorCounters: FormulaErrorCounter[] = [];
-  private maxFormulaErrors = 10;
 
   constructor(
     private contentTypeService: ContentTypeService,
@@ -32,9 +30,10 @@ export class FieldsSettingsService implements OnDestroy {
     private eavService: EavService,
     private itemService: ItemService,
     private inputTypeService: InputTypeService,
-    private contentTypeItemService: ContentTypeItemService,
     private languageService: LanguageService,
     private formulaDesignerService: FormulaDesignerService,
+    private loggingService: LoggingService,
+    private translate: TranslateService,
   ) { }
 
   ngOnDestroy(): void {
@@ -116,17 +115,11 @@ export class FieldsSettingsService implements OnDestroy {
             merged.DisableTranslation ??= false;
             merged.Calculations ??= [];
             // formulas - visible, required, enabled
-            const formulaVisible = this.runFormula(
-              entityGuid, attribute.Name, FormulaTypes.Visible, formValues, inputType, merged, itemHeader,
-            );
+            const formulaVisible = this.runFormula(entityGuid, attribute.Name, FormulaTargets.Visible, formValues, inputType, merged);
             merged.VisibleInEditUI = formulaVisible === false ? false : merged.VisibleInEditUI;
-            const formulaRequired = this.runFormula(
-              entityGuid, attribute.Name, FormulaTypes.Required, formValues, inputType, merged, itemHeader,
-            );
+            const formulaRequired = this.runFormula(entityGuid, attribute.Name, FormulaTargets.Required, formValues, inputType, merged);
             merged.Required = formulaRequired === true ? true : merged.Required;
-            const formulaDisabled = this.runFormula(
-              entityGuid, attribute.Name, FormulaTypes.Disabled, formValues, inputType, merged, itemHeader,
-            );
+            const formulaDisabled = this.runFormula(entityGuid, attribute.Name, FormulaTargets.Disabled, formValues, inputType, merged);
             merged.Disabled = formulaDisabled === true ? true : merged.Disabled;
             // special fixes
             merged.Name = merged.Name || attribute.Name;
@@ -145,9 +138,7 @@ export class FieldsSettingsService implements OnDestroy {
             const fixed = logic?.update(merged, value) ?? merged;
 
             // formulas - value
-            const formulaValue = this.runFormula(
-              entityGuid, attribute.Name, FormulaTypes.Value, formValues, inputType, merged, itemHeader,
-            );
+            const formulaValue = this.runFormula(entityGuid, attribute.Name, FormulaTargets.Value, formValues, inputType, merged);
             // important to compare with undefined because null is allowed value
             if (value !== undefined && formulaValue !== undefined) {
               let valuesNotEqual = value !== formulaValue;
@@ -253,109 +244,47 @@ export class FieldsSettingsService implements OnDestroy {
     this.forceSettings$.next();
   }
 
-  private getFormulaProps(
-    fieldName: string,
-    type: FormulaType,
-    formValues: FormValues,
-    inputType: InputType,
-    settings: FieldSettings,
-    itemHeader: EavHeader,
-  ): FormulaProps {
-    const languageKey = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
-    const languages = this.languageService.getLanguages();
-    const languageName = languages.find(l => l.key === languageKey)?.name;
-
-    const formulaProps: FormulaProps = {
-      data: {
-        ...formValues,
-        get default() {
-          return InputFieldHelpers.parseDefaultValue(fieldName, inputType, settings, itemHeader);
-        },
-        value: formValues[fieldName],
-      },
-      context: {
-        culture: {
-          code: languageKey,
-          name: languageName,
-        },
-        target: {
-          get default() {
-            return InputFieldHelpers.parseDefaultValue(fieldName, inputType, settings, itemHeader);
-          },
-          name: type === FormulaTypes.Value ? fieldName : type.substring(type.lastIndexOf('.') + 1),
-          type: type === FormulaTypes.Value ? type : type.substring(0, type.lastIndexOf('.')),
-          value: formValues[fieldName],
-        },
-      },
-    };
-
-    return formulaProps;
-  }
-
   private runFormula(
     entityGuid: string,
     fieldName: string,
-    type: FormulaType,
+    target: FormulaTarget,
     formValues: FormValues,
     inputType: InputType,
     settings: FieldSettings,
-    itemHeader: EavHeader,
   ): FieldValue {
-    const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
-    const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
-
-    const customFormula = this.formulaDesignerService.getFormula(entityGuid, fieldName, type);
-    if (customFormula) {
-      try {
-        const formulaFn = FormulaHelpers.buildFormulaFunction(customFormula);
-        const formulaProps = this.getFormulaProps(fieldName, type, formValues, inputType, settings, itemHeader);
-        const value = formulaFn(formulaProps.data, formulaProps.context);
-        this.formulaDesignerService.upsertFormulaResult(entityGuid, fieldName, type, value, false);
-        return value;
-      } catch (error) {
-        console.error(`Error while calculating designed formula "${type}" for field "${fieldName}"`, error);
-        this.formulaDesignerService.upsertFormulaResult(entityGuid, fieldName, type, undefined, true);
-      }
-      return;
-    }
-
-    const formulaItems = this.contentTypeItemService.getContentTypeItems(settings.Calculations);
-    const formulaItem = formulaItems.find(item => {
-      const enabled: boolean = LocalizationHelpers.translate(currentLanguage, defaultLanguage, item.Attributes.Enabled, null);
-      if (!enabled) { return false; }
-
-      const target: string = LocalizationHelpers.translate(currentLanguage, defaultLanguage, item.Attributes.Target, null);
-      return target === type;
-    });
-    if (formulaItem == null) { return; }
-
-    const formula = LocalizationHelpers.translate(currentLanguage, defaultLanguage, formulaItem.Attributes.Formula, null);
+    const formula = this.formulaDesignerService.getFormula(entityGuid, fieldName, target, false);
     if (formula == null) { return; }
 
-    const counter = this.formulaErrorCounters.find(c => c.entityGuid === entityGuid && c.fieldName === fieldName && c.type === type);
-    if (counter?.count >= this.maxFormulaErrors) { return; }
-
+    const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
+    const languages = this.languageService.getLanguages();
+    const formulaProps = FormulaHelpers.buildFormulaProps(formula, inputType, settings, formValues, currentLanguage, languages);
+    const activeDesigner = this.formulaDesignerService.getActiveDesigner();
+    const isOpenInDesigner = activeDesigner?.entityGuid === entityGuid
+      && activeDesigner?.fieldName === fieldName
+      && activeDesigner?.target === target;
+    const ctSettings = this.getContentTypeSettings();
     try {
-      const formulaFn = FormulaHelpers.buildFormulaFunction(formula);
-      const formulaProps = this.getFormulaProps(fieldName, type, formValues, inputType, settings, itemHeader);
-      const value = formulaFn(formulaProps.data, formulaProps.context);
-      return value;
-    } catch (error) {
-      if (!counter) {
-        const newCounter: FormulaErrorCounter = {
-          count: 1,
-          entityGuid,
-          fieldName,
-          type,
-        };
-        this.formulaErrorCounters.push(newCounter);
-        return;
+      switch (formula.version) {
+        case FormulaVersions.V1:
+          if (isOpenInDesigner) {
+            console.log(`Running formula${FormulaVersions.V1.toLocaleUpperCase()} for Entity: "${ctSettings._itemTitle}", Field: "${fieldName}", Target: "${target}" with following arguments:`, formulaProps);
+          }
+          const valueV1 = formula.fn(formulaProps.data, formulaProps.context);
+          this.formulaDesignerService.upsertFormulaResult(entityGuid, fieldName, target, valueV1, false);
+          return valueV1;
+        default:
+          if (isOpenInDesigner) {
+            console.log(`Running formula for Entity: "${ctSettings._itemTitle}", Field: "${fieldName}", Target: "${target}" with following arguments:`, undefined);
+          }
+          const valueDefault = (formula.fn as FormulaFunctionDefault)();
+          this.formulaDesignerService.upsertFormulaResult(entityGuid, fieldName, target, valueDefault, false);
+          return valueDefault;
       }
-
-      counter.count++;
-      if (counter.count >= this.maxFormulaErrors) {
-        const ctSettings = this.getContentTypeSettings();
-        console.error(`Error while calculating formula "${type}" for field "${fieldName}" for entity "${ctSettings._itemTitle}". It will now be ignored.\n\n`, error);
+    } catch (error) {
+      this.formulaDesignerService.upsertFormulaResult(entityGuid, fieldName, target, undefined, true);
+      this.loggingService.addLog(LogSeverities.Error, `Error in formula calculation for Entity: "${ctSettings._itemTitle}", Field: "${fieldName}", Target: "${target}"`, error);
+      if (!isOpenInDesigner) {
+        this.loggingService.showMessage(this.translate.instant('Errors.FormulaCalculation'), 2000);
       }
     }
   }

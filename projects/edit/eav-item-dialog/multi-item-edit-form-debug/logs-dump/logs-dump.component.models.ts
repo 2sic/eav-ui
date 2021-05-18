@@ -1,4 +1,4 @@
-import { LogEntry } from '../../../shared/models/log-entry.model';
+import { LogEntry } from '../../../shared/models';
 
 export interface LogsDumpTemplateVars {
   logs: LogEntry[];

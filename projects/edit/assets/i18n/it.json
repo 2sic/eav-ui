@@ -86,7 +86,9 @@
   },
   "Errors": {
     "UnsavedChanges": "You have unsaved changes.",
-    "SaveErrors": "To save the form, please fix the following errors:"
+    "SaveErrors": "To save the form, please fix the following errors:",
+    "FormulaConfiguration": "There is an error in form configuration. Please report this to admin",
+    "FormulaCalculation": "There was an error in form calculations. Please report this to admin"
   },
   "General": {
     "Buttons": {

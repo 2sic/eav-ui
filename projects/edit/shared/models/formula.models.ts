@@ -1,62 +1,81 @@
 import { FieldValue } from '../../../edit-types';
 
-export interface FormulaProps {
-  data: FormulaData;
-  context: FormulaContext;
-}
-
-export interface FormulaData {
-  default: FieldValue;
-  value: FieldValue;
-  [fieldName: string]: FieldValue;
-}
-
-export interface FormulaContext {
-  culture: FormulaCtxCulture;
-  target: FormulaCtxTarget;
-}
-
-export interface FormulaCtxCulture {
-  code: string;
-  name: string;
-}
-
-export interface FormulaCtxTarget {
-  default: FieldValue;
-  name: string;
-  type: string;
-  value: FieldValue;
-}
-
-export interface FormulaErrorCounter {
-  count: number;
+export interface FormulaCacheItem {
   entityGuid: string;
   fieldName: string;
-  type: FormulaType;
+  /** Function built when formula is saved */
+  fn: FormulaFunction;
+  /** Is formula currently being edited (not yet saved) */
+  isDraft: boolean;
+  /** Current formula string */
+  source: string;
+  /** Formula string in field settings */
+  sourceFromSettings: string;
+  target: FormulaTarget;
+  version: FormulaVersion;
 }
 
-export type FormulaFunction = (data: FormulaData, context: FormulaContext) => FieldValue;
+export type FormulaFunction = FormulaFunctionDefault | FormulaFunctionV1;
 
-export const FormulaTypes = {
+export type FormulaFunctionDefault = () => FieldValue;
+
+export type FormulaFunctionV1 = (data: FormulaV1Data, context: FormulaV1Context) => FieldValue;
+
+export const FormulaVersions = {
+  V1: 'v1',
+} as const;
+
+export type FormulaVersion = typeof FormulaVersions[keyof typeof FormulaVersions];
+
+export const FormulaTargets = {
   Disabled: 'Field.Settings.Disabled',
   Required: 'Field.Settings.Required',
   Value: 'Field.Value',
   Visible: 'Field.Settings.VisibleInEditUI',
 } as const;
 
-export type FormulaType = typeof FormulaTypes[keyof typeof FormulaTypes];
+export type FormulaTarget = typeof FormulaTargets[keyof typeof FormulaTargets];
 
-export interface CustomFormula {
-  entityGuid: string;
-  fieldName: string;
-  type: FormulaType;
-  formula: string;
+export type FormulaProps = FormulaPropsV1;
+
+export interface FormulaPropsV1 {
+  data: FormulaV1Data;
+  context: FormulaV1Context;
 }
 
-export interface CustomFormulaResult {
+export interface FormulaV1Data {
+  default: FieldValue;
+  value: FieldValue;
+  [fieldName: string]: FieldValue;
+}
+
+export interface FormulaV1Context {
+  culture: FormulaV1CtxCulture;
+  target: FormulaV1CtxTarget;
+}
+
+export interface FormulaV1CtxCulture {
+  code: string;
+  name: string;
+}
+
+export interface FormulaV1CtxTarget {
+  default: FieldValue;
+  name: string;
+  type: string;
+  value: FieldValue;
+}
+
+export interface FormulaResult {
   entityGuid: string;
   fieldName: string;
-  type: FormulaType;
+  target: FormulaTarget;
   value: FieldValue;
   isError: boolean;
+}
+
+export interface ActiveDesigner {
+  entityGuid: string;
+  fieldName: string;
+  target: FormulaTarget;
 }

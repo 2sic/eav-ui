@@ -1,83 +1,93 @@
-import { Component, Input, OnInit, QueryList } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { FieldValue } from '../../../../edit-types';
-import { InputTypeConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
-import { LocalizationHelpers } from '../../../shared/helpers';
-import { FormulaType, FormulaTypes } from '../../../shared/models';
-import { EavService, FormulaDesignerService } from '../../../shared/services';
-import { ContentTypeItemService, LanguageInstanceService } from '../../../shared/store/ngrx-data';
+import { Component, Input, OnDestroy, OnInit, QueryList } from '@angular/core';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
+import { distinctUntilChanged, map, mergeMap } from 'rxjs/operators';
+import { ActiveDesigner, FormulaTarget, FormulaTargets } from '../../../shared/models';
+import { FormulaDesignerService } from '../../../shared/services';
 import { ItemEditFormComponent } from '../../item-edit-form/item-edit-form.component';
 import { defaultFormula } from './formula-designer.constants';
-import { EntityOption, FieldOption } from './formula-designer.models';
+import { EntityOption, FieldOption, FormulaDesignerTemplateVars, HasFormula, SelectTarget, SelectTargets } from './formula-designer.models';
 
 @Component({
   selector: 'app-formula-designer',
   templateUrl: './formula-designer.component.html',
   styleUrls: ['./formula-designer.component.scss'],
 })
-export class FormulaDesignerComponent implements OnInit {
+export class FormulaDesignerComponent implements OnInit, OnDestroy {
   @Input() private itemEditFormRefs: QueryList<ItemEditFormComponent>;
 
-  FormulaTypes = FormulaTypes;
+  FormulaTargets = FormulaTargets;
+  SelectTargets = SelectTargets;
   loadError = false;
   entityOptions: EntityOption[];
   fieldOptions: Record<string, FieldOption[]>;
-  selectedEntity: string;
-  selectedField: string;
-  selectedType: FormulaType;
-  formula: string;
-  editMode = false;
-  result$: Observable<FieldValue>;
+  templateVars$: Observable<FormulaDesignerTemplateVars>;
 
-  constructor(
-    private contentTypeItemService: ContentTypeItemService,
-    private languageInstanceService: LanguageInstanceService,
-    private eavService: EavService,
-    private formulaDesignerService: FormulaDesignerService,
-  ) { }
+  private editMode$: BehaviorSubject<boolean>;
+
+  constructor(private formulaDesignerService: FormulaDesignerService) { }
 
   ngOnInit(): void {
-    this.buildOptionsAndFormula();
+    this.loadError = false;
+    if (this.itemEditFormRefs == null) {
+      this.loadError = true;
+      return;
+    }
+    this.formulaDesignerService.setDesignerOpen(true);
+    this.editMode$ = new BehaviorSubject(false);
+    this.buildOptions();
+    this.buildTemplateVars();
   }
 
-  selectedEntityChanged(entityGuid: string): void {
-    this.selectedEntity = entityGuid;
-    this.selectedField = this.fieldOptions[this.selectedEntity][0].fieldName;
-    this.loadFormula();
+  ngOnDestroy(): void {
+    this.formulaDesignerService.setDesignerOpen(false);
   }
 
-  selectedFieldChanged(fieldName: string): void {
-    this.selectedField = fieldName;
-    this.loadFormula();
-  }
+  selectedChanged(target: SelectTarget, value: string | FormulaTarget): void {
+    const selected = this.formulaDesignerService.getActiveDesigner();
+    const newSelected: ActiveDesigner = { ...selected };
+    switch (target) {
+      case SelectTargets.Entity:
+        newSelected.entityGuid = value;
+        newSelected.fieldName = this.fieldOptions[value]?.[0]?.fieldName;
+        break;
+      case SelectTargets.Field:
+        newSelected.fieldName = value;
+        break;
+      case SelectTargets.Target:
+        newSelected.target = value as FormulaTarget;
+        break;
+    }
 
-  selectedTypeChanged(type: FormulaType): void {
-    this.selectedType = type;
-    this.loadFormula();
+    this.formulaDesignerService.setActiveDesigner(newSelected);
   }
 
   formulaChanged(formula: string): void {
-    this.formula = formula;
-    this.formulaDesignerService.upsertFormula(this.selectedEntity, this.selectedField, this.selectedType, this.formula);
+    const selected = this.formulaDesignerService.getActiveDesigner();
+    this.formulaDesignerService.upsertFormula(selected.entityGuid, selected.fieldName, selected.target, formula, false);
   }
 
   toggleEdit(): void {
-    this.editMode = !this.editMode;
-    this.loadFormula();
-    if (this.editMode && this.formula) {
-      this.formulaDesignerService.upsertFormula(this.selectedEntity, this.selectedField, this.selectedType, this.formula);
+    this.editMode$.next(!this.editMode$.value);
+    if (this.editMode$.value) {
+      const selected = this.formulaDesignerService.getActiveDesigner();
+      const formula = this.formulaDesignerService.getFormula(selected.entityGuid, selected.fieldName, selected.target, true);
+      if (formula == null) {
+        this.formulaDesignerService.upsertFormula(selected.entityGuid, selected.fieldName, selected.target, defaultFormula, false);
+      }
     }
   }
 
   reset(): void {
-    this.editMode = false;
-    this.formulaDesignerService.deleteFormula(this.selectedEntity, this.selectedField, this.selectedType);
-    this.loadFormula();
+    this.editMode$.next(false);
+    const selected = this.formulaDesignerService.getActiveDesigner();
+    this.formulaDesignerService.deleteFormula(selected.entityGuid, selected.fieldName, selected.target);
   }
 
   run(): void {
-    this.itemEditFormRefs.find(itemEditFormRef => itemEditFormRef.entityGuid === this.selectedEntity)
+    const selected = this.formulaDesignerService.getActiveDesigner();
+    const formula = this.formulaDesignerService.getFormula(selected.entityGuid, selected.fieldName, selected.target, true);
+    this.formulaDesignerService.upsertFormula(selected.entityGuid, selected.fieldName, selected.target, formula.source, true);
+    this.itemEditFormRefs.find(itemEditFormRef => itemEditFormRef.entityGuid === selected.entityGuid)
       .fieldsSettingsService.forceSettings();
   }
 
@@ -85,13 +95,7 @@ export class FormulaDesignerComponent implements OnInit {
     window.open('https://r.2sxc.org/functions', '_blank');
   }
 
-  private buildOptionsAndFormula(): void {
-    this.loadError = false;
-    if (this.itemEditFormRefs == null) {
-      this.loadError = true;
-      return;
-    }
-
+  private buildOptions(): void {
     this.entityOptions = this.itemEditFormRefs.map(itemEditFormRef => {
       const entity: EntityOption = {
         entityGuid: itemEditFormRef.entityGuid,
@@ -100,58 +104,70 @@ export class FormulaDesignerComponent implements OnInit {
       return entity;
     });
 
-    this.fieldOptions = {};
-    this.itemEditFormRefs.forEach(itemEditFormRef => {
-      const fields = Object.entries(itemEditFormRef.fieldsSettingsService.getFieldsProps())
-        .filter(([fieldName, fieldProps]) => fieldProps.calculatedInputType.inputType !== InputTypeConstants.EmptyDefault)
-        .map(([fieldName, fieldProps]) => {
-          const field: FieldOption = {
-            fieldName,
-            label: fieldName,
-          };
-          return field;
-        });
-      this.fieldOptions[itemEditFormRef.entityGuid] = fields;
-    });
+    this.fieldOptions = this.itemEditFormRefs.reduce((acc, itemEditFormRef) => {
+      const fields = Object.keys(itemEditFormRef.fieldsSettingsService.getFieldsProps()).map(fieldName => {
+        const field: FieldOption = {
+          fieldName,
+          label: fieldName,
+        };
+        return field;
+      });
+      acc[itemEditFormRef.entityGuid] = fields;
+      return acc;
+    }, {} as Record<string, FieldOption[]>);
 
-    this.selectedEntity ??= this.entityOptions[0].entityGuid;
-    this.selectedField ??= this.fieldOptions[this.selectedEntity][0].fieldName;
-    this.selectedType ??= this.FormulaTypes.Value;
-
-    this.loadFormula();
+    const activeDesigner = this.formulaDesignerService.getActiveDesigner();
+    if (activeDesigner == null) {
+      const newSelected: ActiveDesigner = {
+        entityGuid: this.entityOptions[0]?.entityGuid,
+        fieldName: this.fieldOptions[this.entityOptions[0]?.entityGuid]?.[0]?.fieldName,
+        target: this.FormulaTargets.Value,
+      };
+      this.formulaDesignerService.setActiveDesigner(newSelected);
+    }
   }
 
-  private loadFormula() {
-    this.result$ = this.formulaDesignerService
-      .getFormulaResult$(this.selectedEntity, this.selectedField, this.selectedType)
-      .pipe(
-        map(result => result?.isError ? 'Calculation failed. Please check console for more info' : result?.value),
-      );
+  private buildTemplateVars(): void {
+    const hasFormula$ = this.formulaDesignerService.getFormulas$().pipe(
+      map(formulas => {
+        const hasFormula: HasFormula = {};
+        for (const formula of formulas) {
+          if (hasFormula[formula.entityGuid] == null) {
+            hasFormula[formula.entityGuid] = {};
+          }
+          if (hasFormula[formula.entityGuid][formula.fieldName] == null) {
+            hasFormula[formula.entityGuid][formula.fieldName] = {};
+          }
+          hasFormula[formula.entityGuid][formula.fieldName][formula.target] = true;
+        }
+        return hasFormula;
+      }),
+    );
+    const activeDesigner$ = this.formulaDesignerService.getActiveDesigner$();
+    const formula$ = activeDesigner$.pipe(
+      mergeMap(activeDesigner =>
+        this.formulaDesignerService.getFormula$(activeDesigner.entityGuid, activeDesigner.fieldName, activeDesigner.target, true)
+      ),
+    );
+    const result$ = activeDesigner$.pipe(
+      mergeMap(activeDesigner =>
+        this.formulaDesignerService.getFormulaResult$(activeDesigner.entityGuid, activeDesigner.fieldName, activeDesigner.target)
+      ),
+      map(result => result?.isError ? 'Calculation failed. Please check logs for more info' : result?.value),
+      distinctUntilChanged(),
+    );
 
-    this.formula = this.formulaDesignerService.getFormula(this.selectedEntity, this.selectedField, this.selectedType);
-    if (this.formula != null) {
-      return;
-    }
-
-    const selectedRef = this.itemEditFormRefs.find(itemEditFormRef => itemEditFormRef.entityGuid === this.selectedEntity);
-    const settings = selectedRef.fieldsSettingsService.getFieldSettings(this.selectedField);
-    const formulaItems = this.contentTypeItemService.getContentTypeItems(settings.Calculations);
-    const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
-    const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
-
-    const formulaItem = formulaItems.find(item => {
-      const target: FormulaType = LocalizationHelpers.translate(currentLanguage, defaultLanguage, item.Attributes.Target, null);
-      return target === this.selectedType;
-    });
-    if (formulaItem == null) {
-      this.formula = this.editMode ? defaultFormula : null;
-      return;
-    }
-
-    this.formula = LocalizationHelpers.translate(currentLanguage, defaultLanguage, formulaItem.Attributes.Formula, null);
-    if (this.formula == null) {
-      this.formula = this.editMode ? defaultFormula : null;
-      return;
-    }
+    this.templateVars$ = combineLatest([this.editMode$, hasFormula$, formula$, activeDesigner$, result$]).pipe(
+      map(([editMode, hasFormula, formula, activeDesigner, result]) => {
+        const templateVars: FormulaDesignerTemplateVars = {
+          editMode,
+          formula,
+          hasFormula,
+          selected: activeDesigner,
+          result,
+        };
+        return templateVars;
+      }),
+    );
   }
 }

@@ -16,12 +16,13 @@
 .log-entry {
   display: flex;
   align-items: center;
-  height: 20px;
   box-sizing: border-box;
   border-bottom: 1px solid rgb(240, 240, 240);
+  padding-top: 2px;
+  padding-bottom: 2px;
 
   .log-entry-part:not(:first-of-type) {
-    margin-left: 4px;
+    margin-left: 8px;
   }
 }
 
@@ -37,7 +38,16 @@
   background-color: rgb(255, 251, 229);
 }
 
+.log-entry-time {
+  flex: 0 0 auto;
+}
+
+.log-entry-label {
+  flex: 1 1 auto;
+}
+
 .log-entry-show {
+  flex: 0 0 auto;
   color: map_get($mat-eav-item-dialog-secondary, 300);
   font-size: 12px;
   text-decoration: underline;

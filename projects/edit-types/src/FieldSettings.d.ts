@@ -19,7 +19,7 @@ interface All {
   Errors: unknown;
   Warnings: unknown;
   ValidationRegExJavaScript: string;
-  Calculations: string[];
+  Calculations?: string[];
   CustomJavaScript: string;
 }
 

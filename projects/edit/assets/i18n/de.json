@@ -86,7 +86,9 @@
   },
   "Errors": {
     "UnsavedChanges": "Du hast Änderungen.",
-    "SaveErrors": "Um zu speichern, bitte folgende Probleme beheben:"
+    "SaveErrors": "Um zu speichern, bitte folgende Probleme beheben:",
+    "FormulaConfiguration": "Es gibt einen Fehler bei den Formulareinstellungen. Bitte dem Admin melden",
+    "FormulaCalculation": "Es gibt einen Fehler bei den Formularberechnungen. Bitte dem Admin melden"
   },
   "General": {
     "Buttons": {

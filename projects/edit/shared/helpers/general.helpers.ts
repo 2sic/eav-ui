@@ -4,6 +4,8 @@ import { FormValues } from '../../eav-item-dialog/item-edit-form/item-edit-form.
 export class GeneralHelpers {
 
   static objectsEqual<T>(x: T, y: T): boolean {
+    if (x == null || y == null) { return x === y; }
+
     const obj1 = x as Dictionary;
     const obj2 = y as Dictionary;
 
@@ -21,6 +23,8 @@ export class GeneralHelpers {
   }
 
   static arraysEqual<T>(x: T[], y: T[]): boolean {
+    if (x == null || y == null) { return x === y; }
+
     if (x.length !== y.length) { return false; }
 
     const equal = x.every((item, index) => {

@@ -86,7 +86,9 @@
   },
   "Errors": {
     "UnsavedChanges": "Tem alterações por guardar.",
-    "SaveErrors": "Para gravar o formulário, por favor corrija os seguintes erros:"
+    "SaveErrors": "Para gravar o formulário, por favor corrija os seguintes erros:",
+    "FormulaConfiguration": "There is an error in form configuration. Please report this to admin",
+    "FormulaCalculation": "There was an error in form calculations. Please report this to admin"
   },
   "General": {
     "Buttons": {

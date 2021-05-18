@@ -1,78 +1,215 @@
 import { Injectable, OnDestroy } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
-import { FieldValue } from '../../../edit-types';
-import { CustomFormula, CustomFormulaResult, FormulaType } from '../models';
+import { EavService, LoggingService } from '.';
+import { FieldSettings, FieldValue } from '../../../edit-types';
+import { FieldsSettingsHelpers, FormulaHelpers, GeneralHelpers, InputFieldHelpers, LocalizationHelpers } from '../helpers';
+import { ActiveDesigner, FormulaCacheItem, FormulaFunction, FormulaResult, FormulaTarget, LogSeverities } from '../models';
+import { ContentTypeItemService, ContentTypeService, ItemService, LanguageInstanceService } from '../store/ngrx-data';
 
 @Injectable()
 export class FormulaDesignerService implements OnDestroy {
-  private customFormulas: CustomFormula[] = [];
-  private customFormulaResults$ = new BehaviorSubject<CustomFormulaResult[]>([]);
+  private formulaCache$: BehaviorSubject<FormulaCacheItem[]>;
+  private formulaResults$: BehaviorSubject<FormulaResult[]>;
+  private designerIsOpen$: BehaviorSubject<boolean>;
+  private activeDesigner$: BehaviorSubject<ActiveDesigner>;
 
-  constructor() { }
+  constructor(
+    private eavService: EavService,
+    private itemService: ItemService,
+    private contentTypeService: ContentTypeService,
+    private languageInstanceService: LanguageInstanceService,
+    private contentTypeItemService: ContentTypeItemService,
+    private loggingService: LoggingService,
+    private translate: TranslateService,
+  ) { }
 
   ngOnDestroy(): void {
-    this.customFormulaResults$.complete();
+    this.formulaCache$?.complete();
+    this.formulaResults$?.complete();
+    this.designerIsOpen$?.complete();
+    this.activeDesigner$?.complete();
   }
 
-  getFormula(entityGuid: string, fieldName: string, type: FormulaType): string {
-    return this.customFormulas.find(c => c.entityGuid === entityGuid && c.fieldName === fieldName && c.type === type)?.formula;
+  init(): void {
+    const formulaCache = this.buildFormulaCache();
+    this.formulaCache$ = new BehaviorSubject(formulaCache);
+    this.formulaResults$ = new BehaviorSubject([]);
+    this.designerIsOpen$ = new BehaviorSubject(false);
+    this.activeDesigner$ = new BehaviorSubject(null);
   }
 
-  upsertFormula(entityGuid: string, fieldName: string, type: FormulaType, formula: string): void {
-    const existing = this.customFormulas.find(c => c.entityGuid === entityGuid && c.fieldName === fieldName && c.type === type);
-    if (existing != null) {
-      existing.formula = formula;
-      return;
+  getFormula(entityGuid: string, fieldName: string, target: FormulaTarget, allowDraft: boolean): FormulaCacheItem {
+    const isDraft = allowDraft ? [true, false] : [false];
+    return this.formulaCache$.value.find(
+      f => f.entityGuid === entityGuid && f.fieldName === fieldName && f.target === target && isDraft.includes(f.isDraft)
+    );
+  }
+
+  getFormula$(entityGuid: string, fieldName: string, target: FormulaTarget, allowDraft: boolean): Observable<FormulaCacheItem> {
+    const isDraft = allowDraft ? [true, false] : [false];
+    return this.formulaCache$.pipe(
+      map(formulas => formulas.find(
+        f => f.entityGuid === entityGuid && f.fieldName === fieldName && f.target === target && isDraft.includes(f.isDraft))
+      ),
+      distinctUntilChanged(GeneralHelpers.objectsEqual),
+    );
+  }
+
+  getFormulas$(): Observable<FormulaCacheItem[]> {
+    return this.formulaCache$.asObservable();
+  }
+
+  upsertFormula(entityGuid: string, fieldName: string, target: FormulaTarget, formula: string, save: boolean): void {
+    let formulaFunction: FormulaFunction;
+    if (save) {
+      try {
+        formulaFunction = FormulaHelpers.buildFormulaFunction(formula);
+      } catch (error) {
+        this.upsertFormulaResult(entityGuid, fieldName, target, undefined, true);
+        const item = this.itemService.getItem(entityGuid);
+        const contentTypeId = InputFieldHelpers.getContentTypeId(item);
+        const contentType = this.contentTypeService.getContentType(contentTypeId);
+        const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
+        const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
+        const itemTitle = FieldsSettingsHelpers.getContentTypeTitle(contentType, currentLanguage, defaultLanguage);
+        this.loggingService.addLog(LogSeverities.Error, `Error building formula for Entity: "${itemTitle}", Field: "${fieldName}", Target: "${target}"`, error);
+      }
     }
 
-    const newFormula: CustomFormula = {
+    const oldFormulaCache = this.formulaCache$.value;
+    const oldFormulaIndex = oldFormulaCache.findIndex(f => f.entityGuid === entityGuid && f.fieldName === fieldName && f.target === target);
+    const oldFormulaItem = oldFormulaCache[oldFormulaIndex];
+
+    const newFormulaItem: FormulaCacheItem = {
       entityGuid,
       fieldName,
-      type,
-      formula,
+      fn: formulaFunction,
+      isDraft: save ? formulaFunction == null : true,
+      source: formula,
+      sourceFromSettings: oldFormulaItem?.sourceFromSettings,
+      target,
+      version: FormulaHelpers.findFormulaVersion(formula),
     };
-    this.customFormulas.push(newFormula);
+
+    const newCache = oldFormulaIndex >= 0
+      ? [...oldFormulaCache.slice(0, oldFormulaIndex), newFormulaItem, ...oldFormulaCache.slice(oldFormulaIndex + 1)]
+      : [newFormulaItem, ...oldFormulaCache];
+    this.formulaCache$.next(newCache);
   }
 
-  deleteFormula(entityGuid: string, fieldName: string, type: FormulaType): void {
-    const formulaIndex = this.customFormulas.findIndex(c => c.entityGuid === entityGuid && c.fieldName === fieldName && c.type === type);
-    if (formulaIndex >= 0) {
-      this.customFormulas.splice(formulaIndex, 1);
+  deleteFormula(entityGuid: string, fieldName: string, target: FormulaTarget): void {
+    const oldResults = this.formulaResults$.value;
+    const oldResultIndex = oldResults.findIndex(r => r.entityGuid === entityGuid && r.fieldName === fieldName && r.target === target);
+    if (oldResultIndex >= 0) {
+      const newResults = [...oldResults.slice(0, oldResultIndex), ...oldResults.slice(oldResultIndex + 1)];
+      this.formulaResults$.next(newResults);
     }
 
-    const results = this.customFormulaResults$.value;
-    const resultIndex = results.findIndex(r => r.entityGuid === entityGuid && r.fieldName === fieldName && r.type === type);
-    if (resultIndex >= 0) {
-      const newResults = [...results.slice(0, resultIndex), ...results.slice(resultIndex + 1)];
-      this.customFormulaResults$.next(newResults);
+    const oldFormulaCache = this.formulaCache$.value;
+    const oldFormulaIndex = oldFormulaCache.findIndex(f => f.entityGuid === entityGuid && f.fieldName === fieldName && f.target === target);
+    const oldFormulaItem = oldFormulaCache[oldFormulaIndex];
+
+    if (oldFormulaItem.sourceFromSettings != null) {
+      this.upsertFormula(entityGuid, fieldName, target, oldFormulaItem.sourceFromSettings, true);
+    } else if (oldFormulaIndex >= 0) {
+      const newCache = [...oldFormulaCache.slice(0, oldFormulaIndex), ...oldFormulaCache.slice(oldFormulaIndex + 1)];
+      this.formulaCache$.next(newCache);
     }
   }
 
-  upsertFormulaResult(entityGuid: string, fieldName: string, type: FormulaType, value: FieldValue, isError: boolean): void {
-    const newResult: CustomFormulaResult = {
+  upsertFormulaResult(entityGuid: string, fieldName: string, target: FormulaTarget, value: FieldValue, isError: boolean): void {
+    const newResult: FormulaResult = {
       entityGuid,
       fieldName,
-      type,
+      target,
       value,
       isError,
     };
 
-    const results = this.customFormulaResults$.value;
-    const index = results.findIndex(r => r.entityGuid === entityGuid && r.fieldName === fieldName && r.type === type);
-    if (index >= 0) {
-      const newResults = [...results.slice(0, index), newResult, ...results.slice(index + 1)];
-      this.customFormulaResults$.next(newResults);
-      return;
-    }
-
-    this.customFormulaResults$.next([...results, newResult]);
+    const oldResults = this.formulaResults$.value;
+    const oldResultIndex = oldResults.findIndex(r => r.entityGuid === entityGuid && r.fieldName === fieldName && r.target === target);
+    const newResults = oldResultIndex >= 0
+      ? [...oldResults.slice(0, oldResultIndex), newResult, ...oldResults.slice(oldResultIndex + 1)]
+      : [newResult, ...oldResults];
+    this.formulaResults$.next(newResults);
   }
 
-  getFormulaResult$(entityGuid: string, fieldName: string, type: FormulaType): Observable<CustomFormulaResult> {
-    return this.customFormulaResults$.pipe(
-      map(results => results.find(r => r.entityGuid === entityGuid && r.fieldName === fieldName && r.type === type)),
-      distinctUntilChanged(),
+  getFormulaResult$(entityGuid: string, fieldName: string, target: FormulaTarget): Observable<FormulaResult> {
+    return this.formulaResults$.pipe(
+      map(results => results.find(r => r.entityGuid === entityGuid && r.fieldName === fieldName && r.target === target)),
+      distinctUntilChanged(GeneralHelpers.objectsEqual),
     );
+  }
+
+  setDesignerOpen(isOpen: boolean): void {
+    this.designerIsOpen$.next(isOpen);
+  }
+
+  setActiveDesigner(activeDesigner: ActiveDesigner): void {
+    this.activeDesigner$.next(activeDesigner);
+  }
+
+  getActiveDesigner(): ActiveDesigner {
+    if (!this.designerIsOpen$.value) { return; }
+
+    return this.activeDesigner$.value;
+  }
+
+  getActiveDesigner$(): Observable<ActiveDesigner> {
+    return this.activeDesigner$.asObservable();
+  }
+
+  private buildFormulaCache(): FormulaCacheItem[] {
+    const formulaCache: FormulaCacheItem[] = [];
+    const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
+    const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
+
+    for (const entityGuid of this.eavService.eavConfig.itemGuids) {
+      const item = this.itemService.getItem(entityGuid);
+      const contentTypeId = InputFieldHelpers.getContentTypeId(item);
+      const contentType = this.contentTypeService.getContentType(contentTypeId);
+      for (const attribute of contentType.Attributes) {
+        const settings = FieldsSettingsHelpers.mergeSettings<FieldSettings>(attribute.Metadata, currentLanguage, defaultLanguage);
+        const formulaItems = this.contentTypeItemService.getContentTypeItems(settings.Calculations ?? [])
+          .filter(formulaItem => {
+            const enabled: boolean = LocalizationHelpers.translate(currentLanguage, defaultLanguage, formulaItem.Attributes.Enabled, null);
+            return enabled;
+          });
+        for (const formulaItem of formulaItems) {
+          const formula: string = LocalizationHelpers.translate(currentLanguage, defaultLanguage, formulaItem.Attributes.Formula, null);
+          if (formula == null) { continue; }
+
+          const target: FormulaTarget = LocalizationHelpers
+            .translate(currentLanguage, defaultLanguage, formulaItem.Attributes.Target, null);
+
+          let formulaFunction: FormulaFunction;
+          try {
+            formulaFunction = FormulaHelpers.buildFormulaFunction(formula);
+          } catch (error) {
+            this.upsertFormulaResult(entityGuid, attribute.Name, target, undefined, true);
+            const itemTitle = FieldsSettingsHelpers.getContentTypeTitle(contentType, currentLanguage, defaultLanguage);
+            this.loggingService.addLog(LogSeverities.Error, `Error building formula for Entity: "${itemTitle}", Field: "${attribute.Name}", Target: "${target}"`, error);
+            this.loggingService.showMessage(this.translate.instant('Errors.FormulaConfiguration'), 2000);
+          }
+
+          const formulaCacheItem: FormulaCacheItem = {
+            entityGuid,
+            fieldName: attribute.Name,
+            fn: formulaFunction,
+            isDraft: formulaFunction == null,
+            source: formula,
+            sourceFromSettings: formula,
+            target,
+            version: FormulaHelpers.findFormulaVersion(formula),
+          };
+
+          formulaCache.push(formulaCacheItem);
+        }
+      }
+    }
+
+    return formulaCache;
   }
 }

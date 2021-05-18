@@ -13,6 +13,7 @@ export * from './language-instance.model';
 export * from './language.model';
 export * from './link-cache.model';
 export * from './link-info.model';
+export * from './log-entry.model';
 export * from './paste-clipboard-image.models';
 export * from './publish-mode.models';
 export * from './publish-status.model';

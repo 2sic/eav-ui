@@ -1,65 +1,75 @@
 <ng-container *ngIf="!loadError">
+  <ng-container *ngIf="templateVars$ | async as data">
 
-  <div class="formula-context-box">
-    <mat-form-field color="accent">
-      <mat-label>Entity</mat-label>
-      <mat-select [ngModel]="selectedEntity" name="selectedEntity" (ngModelChange)="selectedEntityChanged($event)"
-        [disabled]="editMode">
-        <mat-option *ngFor="let entity of entityOptions" [value]="entity.entityGuid">
-          {{ entity.label }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+    <div class="formula-context-box">
+      <mat-form-field color="accent">
+        <mat-label>Entity</mat-label>
+        <mat-select [ngModel]="data.selected.entityGuid" (ngModelChange)="selectedChanged(SelectTargets.Entity, $event)"
+          [disabled]="data.editMode">
+          <mat-option *ngFor="let entity of entityOptions" [value]="entity.entityGuid">
+            <span [ngClass]="{ 'has-formula': data.hasFormula[entity.entityGuid] != null }">
+              {{ entity.label }}
+            </span>
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
 
-    <mat-form-field color="accent">
-      <mat-label>Attribute</mat-label>
-      <mat-select [ngModel]="selectedField" name="selectedField" (ngModelChange)="selectedFieldChanged($event)"
-        [disabled]="editMode || selectedEntity == null">
-        <mat-option *ngFor="let field of fieldOptions[selectedEntity]" [value]="field.fieldName">
-          {{ field.fieldName }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+      <mat-form-field color="accent">
+        <mat-label>Attribute</mat-label>
+        <mat-select [ngModel]="data.selected.fieldName" (ngModelChange)="selectedChanged(SelectTargets.Field, $event)"
+          [disabled]="data.editMode || data.selected.entityGuid == null">
+          <mat-option *ngFor="let field of fieldOptions[data.selected.entityGuid]" [value]="field.fieldName">
+            <span
+              [ngClass]="{ 'has-formula': data.hasFormula[data.selected.entityGuid] != null && data.hasFormula[data.selected.entityGuid][field.fieldName] != null }">
+              {{ field.fieldName }}
+            </span>
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
 
-    <mat-form-field color="accent">
-      <mat-label>Formula Type</mat-label>
-      <mat-select [ngModel]="selectedType" name="selectedFormulaType" (ngModelChange)="selectedTypeChanged($event)"
-        [disabled]="editMode || selectedEntity == null || selectedField == null">
-        <mat-option *ngFor="let formulaType of FormulaTypes | keyvalue" [value]="formulaType.value">
-          {{ formulaType.key }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-  </div>
-
-  <div class="formula-box">
-    <mat-form-field color="accent">
-      <textarea matInput rows="10" [matTextareaAutosize]="false"
-        [disabled]="!editMode || selectedEntity == null || selectedField == null || selectedType == null"
-        [ngModel]="formula" name="formula" (ngModelChange)="formulaChanged($event)"></textarea>
-      <mat-label>Function</mat-label>
-    </mat-form-field>
-  </div>
-
-  <div class="formula-footer-box">
-    <div class="formula-result-box hide-scrollbar">
-      <span class="label">Result:&nbsp;</span>
-      <span>{{ result$ | async | json }}</span>
+      <mat-form-field color="accent">
+        <mat-label>Formula Type</mat-label>
+        <mat-select [ngModel]="data.selected.target" (ngModelChange)="selectedChanged(SelectTargets.Target, $event)"
+          [disabled]="data.editMode || data.selected.entityGuid == null || data.selected.fieldName == null">
+          <mat-option *ngFor="let formulaTarget of FormulaTargets | keyvalue" [value]="formulaTarget.value">
+            <span
+              [ngClass]="{ 'has-formula': data.hasFormula[data.selected.entityGuid] != null && data.hasFormula[data.selected.entityGuid][data.selected.fieldName] != null && data.hasFormula[data.selected.entityGuid][data.selected.fieldName][formulaTarget.value] }">
+              {{ formulaTarget.key }}
+            </span>
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
     </div>
 
-    <div class="formula-actions-box">
-      <button mat-icon-button matTooltip="Edit" (click)="toggleEdit()">
-        <mat-icon>edit</mat-icon>
-      </button>
-      <button mat-icon-button matTooltip="Reset" (click)="reset()">
-        <mat-icon>history</mat-icon>
-      </button>
-      <button mat-icon-button matTooltip="Run" [disabled]="!editMode || !formula" (click)="run()">
-        <mat-icon>play_arrow</mat-icon>
-      </button>
-      <button mat-icon-button matTooltip="Help" (click)="openFunctionsHelp()">
-        <mat-icon>help</mat-icon>
-      </button>
+    <div class="formula-box">
+      <mat-form-field color="accent">
+        <textarea matInput rows="10" [matTextareaAutosize]="false" [ngModel]="data.formula?.source"
+          (ngModelChange)="formulaChanged($event)"
+          [disabled]="!data.editMode || data.selected.entityGuid == null || data.selected.fieldName == null || data.selected.target == null"></textarea>
+        <mat-label>Function</mat-label>
+      </mat-form-field>
     </div>
-  </div>
+
+    <div class="formula-footer-box">
+      <div class="formula-result-box hide-scrollbar">
+        <span class="label">Result:&nbsp;</span>
+        <span>{{ data.result | json }}</span>
+      </div>
+
+      <div class="formula-actions-box">
+        <button mat-icon-button matTooltip="Edit" (click)="toggleEdit()">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button matTooltip="Reset" (click)="reset()">
+          <mat-icon>history</mat-icon>
+        </button>
+        <button mat-icon-button matTooltip="Run" [disabled]="!data.editMode || !data.formula?.source" (click)="run()">
+          <mat-icon>play_arrow</mat-icon>
+        </button>
+        <button mat-icon-button matTooltip="Help" (click)="openFunctionsHelp()">
+          <mat-icon>help</mat-icon>
+        </button>
+      </div>
+    </div>
+  </ng-container>
 </ng-container>

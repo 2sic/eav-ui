@@ -59,6 +59,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy {
     private adamCacheService: AdamCacheService,
     private linkCacheService: LinkCacheService,
     private stringQueryCacheService: StringQueryCacheService,
+    private formulaDesignerService: FormulaDesignerService,
   ) {
     this.dialogRef.disableClose = true;
   }
@@ -69,6 +70,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy {
     this.editRoutingService.init();
     this.loadIconsService.load();
     this.formsStateService.init();
+    this.formulaDesignerService.init();
     /** Small delay to make form opening feel smoother. */
     const delayForm$ = of(false).pipe(delay(0), startWith(true));
     const reduceSaveButton$ = of(true).pipe(delay(5000), startWith(false));
