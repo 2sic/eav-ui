@@ -2,6 +2,7 @@ import { InputFieldHelpers } from '.';
 import { FieldSettings } from '../../../edit-types';
 import { InputType } from '../../../ng-dialogs/src/app/content-type-fields/models/input-type.model';
 import { FormValues } from '../../eav-item-dialog/item-edit-form/item-edit-form.models';
+import { DesignerSnippet, FieldOption } from '../../eav-item-dialog/multi-item-edit-form-debug/formula-designer/formula-designer.models';
 import { FormulaCacheItem, FormulaFunction, FormulaProps, FormulaPropsV1, FormulaTargets, FormulaVersion, FormulaVersions, Language } from '../models';
 
 export class FormulaHelpers {
@@ -72,6 +73,35 @@ export class FormulaHelpers {
           },
         };
         return propsV1;
+      default:
+        return;
+    }
+  }
+
+  static buildDesignerSnippets(formula: FormulaCacheItem, fieldOptions: FieldOption[]): DesignerSnippet[] {
+    switch (formula.version) {
+      case FormulaVersions.V1:
+        const valueSnippet: DesignerSnippet = {
+          code: 'data.value',
+          label: 'data.value',
+        };
+
+        const defaultSnippet: DesignerSnippet = {
+          code: 'data.default',
+          label: 'data.default',
+        };
+
+        const fieldSnippets = fieldOptions.map(field => {
+          const hasDash = field.fieldName.includes('-') || field.fieldName.includes(' ');
+          const code = hasDash ? `data.['${field.fieldName}']` : `data.${field.fieldName}`;
+          const fieldSnippet: DesignerSnippet = {
+            code,
+            label: code,
+          };
+          return fieldSnippet;
+        });
+
+        return [valueSnippet, defaultSnippet, ...fieldSnippets];
       default:
         return;
     }

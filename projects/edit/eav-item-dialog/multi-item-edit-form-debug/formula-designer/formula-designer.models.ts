@@ -6,6 +6,7 @@ export interface FormulaDesignerTemplateVars {
   formula: FormulaCacheItem;
   hasFormula: HasFormula;
   selected: ActiveDesigner;
+  snippets: DesignerSnippet[];
   result: FieldValue;
 }
 
@@ -24,6 +25,11 @@ export interface EntityOption {
 
 export interface FieldOption {
   fieldName: string;
+  label: string;
+}
+
+export interface DesignerSnippet {
+  code: string;
   label: string;
 }
 

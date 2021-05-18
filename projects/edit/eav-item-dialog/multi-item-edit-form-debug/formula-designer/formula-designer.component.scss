@@ -1,3 +1,5 @@
+@import "../../../assets/styles/_variables";
+
 :host {
   display: flex;
   flex-direction: column;
@@ -24,10 +26,41 @@
 
 .formula-box {
   flex: 1 1 auto;
+  display: flex;
+  overflow: hidden;
 
   .mat-form-field {
+    flex: 0 1 auto;
     font-size: 14px;
     width: 100%;
+  }
+
+  .formula-snippets {
+    flex: 0 0 auto;
+    max-width: 200px;
+    max-height: 194px;
+    overflow: hidden auto;
+
+    &.disabled {
+      pointer-events: none;
+      color: rgba($editUI-foreground-color, 0.44),
+    }
+
+    .snippet {
+      font-size: 14px;
+      cursor: pointer;
+      white-space: nowrap;
+      padding-top: 1px;
+      padding-bottom: 1px;
+
+      &:first-of-type {
+        padding-top: 0;
+      }
+
+      &:last-of-type {
+        padding-bottom: 0;
+      }
+    }
   }
 }
 

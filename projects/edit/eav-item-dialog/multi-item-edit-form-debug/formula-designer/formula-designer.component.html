@@ -6,7 +6,7 @@
         <mat-label>Entity</mat-label>
         <mat-select [ngModel]="data.selected.entityGuid" (ngModelChange)="selectedChanged(SelectTargets.Entity, $event)"
           [disabled]="data.editMode">
-          <mat-option *ngFor="let entity of entityOptions" [value]="entity.entityGuid">
+          <mat-option *ngFor="let entity of entityOptions; trackBy: trackEntityOptions" [value]="entity.entityGuid">
             <span [ngClass]="{ 'has-formula': data.hasFormula[entity.entityGuid] != null }">
               {{ entity.label }}
             </span>
@@ -18,7 +18,8 @@
         <mat-label>Attribute</mat-label>
         <mat-select [ngModel]="data.selected.fieldName" (ngModelChange)="selectedChanged(SelectTargets.Field, $event)"
           [disabled]="data.editMode || data.selected.entityGuid == null">
-          <mat-option *ngFor="let field of fieldOptions[data.selected.entityGuid]" [value]="field.fieldName">
+          <mat-option *ngFor="let field of fieldOptions[data.selected.entityGuid]; trackBy: trackFieldOptions"
+            [value]="field.fieldName">
             <span
               [ngClass]="{ 'has-formula': data.hasFormula[data.selected.entityGuid] != null && data.hasFormula[data.selected.entityGuid][field.fieldName] != null }">
               {{ field.fieldName }}
@@ -48,6 +49,13 @@
           [disabled]="!data.editMode || data.selected.entityGuid == null || data.selected.fieldName == null || data.selected.target == null"></textarea>
         <mat-label>Function</mat-label>
       </mat-form-field>
+
+      <div class="formula-snippets fancy-scrollbar-light" [ngClass]="{ 'disabled': !data.editMode }">
+        <div class="snippet" *ngFor="let snippet of data.snippets; trackBy: trackSnippets" [title]="snippet.code"
+          (click)="copyToClipboard(snippet.code)">
+          {{ snippet.label }}
+        </div>
+      </div>
     </div>
 
     <div class="formula-footer-box">

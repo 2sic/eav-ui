@@ -99,7 +99,7 @@ export class FormulaDesignerService implements OnDestroy {
     this.formulaCache$.next(newCache);
   }
 
-  deleteFormula(entityGuid: string, fieldName: string, target: FormulaTarget): void {
+  resetFormula(entityGuid: string, fieldName: string, target: FormulaTarget): void {
     const oldResults = this.formulaResults$.value;
     const oldResultIndex = oldResults.findIndex(r => r.entityGuid === entityGuid && r.fieldName === fieldName && r.target === target);
     if (oldResultIndex >= 0) {
