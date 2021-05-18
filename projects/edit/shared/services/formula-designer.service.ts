@@ -172,7 +172,7 @@ export class FormulaDesignerService implements OnDestroy {
       const contentType = this.contentTypeService.getContentType(contentTypeId);
       for (const attribute of contentType.Attributes) {
         const settings = FieldsSettingsHelpers.mergeSettings<FieldSettings>(attribute.Metadata, currentLanguage, defaultLanguage);
-        const formulaItems = this.contentTypeItemService.getContentTypeItems(settings.Calculations ?? [])
+        const formulaItems = this.contentTypeItemService.getContentTypeItems(settings.Formulas ?? [])
           .filter(formulaItem => {
             const enabled: boolean = LocalizationHelpers.translate(currentLanguage, defaultLanguage, formulaItem.Attributes.Enabled, null);
             return enabled;
