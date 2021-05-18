@@ -1,6 +1,6 @@
 export const DebugTypes = {
   Data: 'data',
-  Functions: 'functions',
+  Formulas: 'formulas',
   Logs: 'logs',
 } as const;
 

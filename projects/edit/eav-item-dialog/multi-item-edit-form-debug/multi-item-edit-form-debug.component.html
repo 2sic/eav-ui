@@ -5,9 +5,9 @@
       <mat-icon>offline_bolt</mat-icon>
       <span>Data</span>
     </button>
-    <button mat-button matTooltip="Show Formula Designer" (click)="toggleDebugType(DebugTypes.Functions)">
+    <button mat-button matTooltip="Show Formula Designer" (click)="toggleDebugType(DebugTypes.Formulas)">
       <mat-icon>functions</mat-icon>
-      <span>Functions</span>
+      <span>Formulas</span>
     </button>
     <button mat-button matTooltip="Show Logs" (click)="toggleDebugType(DebugTypes.Logs)">
       <mat-icon>speed</mat-icon>
@@ -19,7 +19,7 @@
   <div class="debug-info-container" *ngIf="activeDebug != null">
     <app-data-dump *ngIf="activeDebug === DebugTypes.Data"></app-data-dump>
 
-    <app-formula-designer *ngIf="activeDebug === DebugTypes.Functions" [itemEditFormRefs]="itemEditFormRefs">
+    <app-formula-designer *ngIf="activeDebug === DebugTypes.Formulas" [itemEditFormRefs]="itemEditFormRefs">
     </app-formula-designer>
 
     <app-logs-dump *ngIf="activeDebug === DebugTypes.Logs"></app-logs-dump>
