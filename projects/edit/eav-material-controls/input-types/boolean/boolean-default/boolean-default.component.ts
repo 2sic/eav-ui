@@ -34,9 +34,16 @@ export class BooleanDefaultComponent extends BaseComponent<boolean> implements O
     super.ngOnInit();
     this.label$ = this.settings$.pipe(map(settings => settings._label), distinctUntilChanged());
 
-    this.templateVars$ = combineLatest([this.label$, this.disabled$, this.touched$]).pipe(
-      map(([label, disabled, touched]) => {
+    const reverseToggle$ = this.settings$.pipe(map(settings => settings.ReverseToggle), distinctUntilChanged());
+    const checked$ = combineLatest([this.value$, reverseToggle$]).pipe(
+      map(([value, reverseToogle]) => reverseToogle ? !value : value),
+      distinctUntilChanged(),
+    );
+
+    this.templateVars$ = combineLatest([checked$, this.label$, this.disabled$, this.touched$]).pipe(
+      map(([checked, label, disabled, touched]) => {
         const templateVars: BooleanDefaultTemplateVars = {
+          checked,
           label,
           disabled,
           touched,
@@ -48,5 +55,12 @@ export class BooleanDefaultComponent extends BaseComponent<boolean> implements O
 
   ngOnDestroy() {
     super.ngOnDestroy();
+  }
+
+  patchValue() {
+    const newValue = !this.control.value;
+    this.control.patchValue(newValue);
+    this.validationMessagesService.markAsTouched(this.control);
+    this.validationMessagesService.markAsDirty(this.control);
   }
 }
