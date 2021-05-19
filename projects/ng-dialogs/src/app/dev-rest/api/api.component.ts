@@ -59,11 +59,13 @@ export class DevRestApiComponent extends DevRestBase<DevRestApiTemplateVars> imp
     const selectedAction$ = combineLatest([apiDetails$, this.selectedActionName$])
       .pipe(map(([details, name]) => details?.actions?.find(a => a.name == name)));
 
-    // Build Root Stream (for the root folder)
-    const root$ = combineLatest([apiDetails$, selectedAction$, this.scenario$, this.dialogSettings$]).pipe(
-      map(([details, action, scenario, dialogSettings]) => {
+    // Build Root Stream for the root folder
+    const root$ = combineLatest([webApi$, apiDetails$, selectedAction$, this.scenario$, this.dialogSettings$]).pipe(
+      map(([webApi, details, action, scenario, dialogSettings]) => {
+        console.log('webApi object', webApi);
         const resolved = pathToApi
           .replace('{appname}', scenario.inSameContext ? 'auto' : encodeURI(dialogSettings.Context.App.Folder))
+          .replace('/api/', `/${webApi.folder}/`)
           .replace('{controller}', details.controller.replace(/controller/i, ''))
           .replace('{action}', action.name);
         return this.rootBasedOnScenario(resolved, scenario);
