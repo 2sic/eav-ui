@@ -4,6 +4,8 @@ import { FormValues } from '../../eav-item-dialog/item-edit-form/item-edit-form.
 export class GeneralHelpers {
 
   static objectsEqual<T>(x: T, y: T): boolean {
+    if (x == null || y == null) { return x === y; }
+
     const obj1 = x as Dictionary;
     const obj2 = y as Dictionary;
 
@@ -21,6 +23,8 @@ export class GeneralHelpers {
   }
 
   static arraysEqual<T>(x: T[], y: T[]): boolean {
+    if (x == null || y == null) { return x === y; }
+
     if (x.length !== y.length) { return false; }
 
     const equal = x.every((item, index) => {
@@ -36,11 +40,20 @@ export class GeneralHelpers {
     for (const key of Object.keys(newValues)) {
       const newValue = newValues[key];
       const oldValue = oldValues[key];
-      if (Array.isArray(newValue) && Array.isArray(oldValue) && GeneralHelpers.arraysEqual(newValue, oldValue)) { continue; }
       if (newValue === oldValue) { continue; }
+      if (Array.isArray(newValue) && Array.isArray(oldValue) && GeneralHelpers.arraysEqual(newValue, oldValue)) { continue; }
 
       changes[key] = newValue;
     }
     return Object.keys(changes).length === 0 ? undefined : changes;
+  }
+
+  static toggleInArray<T>(item: T, array: T[]): void {
+    const index = array.indexOf(item);
+    if (index === -1) {
+      array.push(item);
+    } else {
+      array.splice(index, 1);
+    }
   }
 }

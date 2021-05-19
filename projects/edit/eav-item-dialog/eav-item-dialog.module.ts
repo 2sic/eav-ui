@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatMomentDateModule, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -23,6 +23,9 @@ import { EavMaterialControlsModule } from '../eav-material-controls/eav-material
 import { EditEntryComponent } from '../edit-entry/edit-entry.component';
 import { LoadIconsService } from '../shared/services';
 import { ItemEditFormComponent } from './item-edit-form/item-edit-form.component';
+import { DataDumpComponent } from './multi-item-edit-form-debug/data-dump/data-dump.component';
+import { FormulaDesignerComponent } from './multi-item-edit-form-debug/formula-designer/formula-designer.component';
+import { LogsDumpComponent } from './multi-item-edit-form-debug/logs-dump/logs-dump.component';
 import { MultiItemEditFormDebugComponent } from './multi-item-edit-form-debug/multi-item-edit-form-debug.component';
 import { MultiItemEditFormHeaderComponent } from './multi-item-edit-form-header/multi-item-edit-form-header.component';
 import { FormSlideDirective } from './multi-item-edit-form/form-slide.directive';
@@ -35,6 +38,9 @@ import { MultiItemEditFormComponent } from './multi-item-edit-form/multi-item-ed
     ItemEditFormComponent,
     MultiItemEditFormHeaderComponent,
     MultiItemEditFormDebugComponent,
+    DataDumpComponent,
+    FormulaDesignerComponent,
+    LogsDumpComponent,
     FormSlideDirective,
   ],
   imports: [
@@ -59,6 +65,7 @@ import { MultiItemEditFormComponent } from './multi-item-edit-form/multi-item-ed
     FlexLayoutModule,
     TranslateModule,
     SharedComponentsModule,
+    FormsModule,
   ],
   providers: [
     { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } },

@@ -4,6 +4,7 @@ import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { ContentExpandAnimation } from '../../../shared/animations';
+import { GeneralHelpers } from '../../../shared/helpers';
 import { EavService, EditRoutingService, FieldsSettingsService } from '../../../shared/services';
 import { EntityCacheService, StringQueryCacheService } from '../../../shared/store/ngrx-data';
 import { BaseComponent } from '../../input-types/base/base.component';
@@ -40,17 +41,20 @@ export class EntityExpandableWrapperComponent extends BaseComponent<string | str
     super.ngOnInit();
     this.dialogIsOpen$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
 
-    const separator$ = this.settings$.pipe(map(settings => settings.Separator), distinctUntilChanged());
-    const stringQueryLabel$ = this.settings$.pipe(map(settings => settings.Label), distinctUntilChanged());
     const selectedEntities$ = combineLatest([
       this.value$,
-      separator$,
       this.entityCacheService.getEntities$(),
       this.stringQueryCache.getEntities$(),
-      stringQueryLabel$,
+      this.settings$.pipe(
+        map(settings => ({
+          Separator: settings.Separator,
+          Label: settings.Label,
+        })),
+        distinctUntilChanged(GeneralHelpers.objectsEqual),
+      ),
     ]).pipe(
-      map(([value, separator, entityCache, stringQueryCache, stringQueryLabel]) =>
-        calculateSelectedEntities(value, separator, entityCache, stringQueryCache, stringQueryLabel, this.translate)
+      map(([value, entityCache, stringQueryCache, settings]) =>
+        calculateSelectedEntities(value, settings.Separator, entityCache, stringQueryCache, settings.Label, this.translate)
       ),
     );
 

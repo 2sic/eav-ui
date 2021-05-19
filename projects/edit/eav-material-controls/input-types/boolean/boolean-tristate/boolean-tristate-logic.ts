@@ -7,6 +7,7 @@ export class BooleanTristateLogic extends FieldLogicBase {
 
   update(settings: FieldSettings, value: boolean | ''): FieldSettings {
     const fixedSettings: FieldSettings = { ...settings };
+    fixedSettings.ReverseToggle ??= false;
     fixedSettings._label = this.calculateLabel(value, fixedSettings);
     return fixedSettings;
   }

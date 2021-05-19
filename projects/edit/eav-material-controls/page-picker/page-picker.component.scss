@@ -1,0 +1,88 @@
+@import "../../assets/styles/theme/material-colors";
+
+$icon-size: 20px;
+
+.page-picker-title {
+  margin: 0;
+}
+
+.page-search-box {
+  margin-bottom: 16px;
+}
+
+.page-tree-box {
+  height: 300px;
+  max-width: 100%;
+  overflow: auto;
+
+  ul {
+    list-style-type: none;
+    padding-left: 8px;
+    margin: 0;
+  }
+
+  >ul {
+    padding-left: 0;
+  }
+}
+
+.page-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+
+  mat-icon {
+    width: $icon-size;
+    height: $icon-size;
+    font-size: $icon-size;
+  }
+}
+
+.no-toggle {
+  width: $icon-size;
+  height: $icon-size;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.page-toggle {
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.page-icon {
+  margin-right: 4px;
+  flex-shrink: 0;
+}
+
+.page-label {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 4px;
+  padding-left: 2px;
+  border-radius: 4px;
+
+  .page-path {
+    color: map_get($mat-eav-item-dialog-background, 200);
+  }
+
+  &:hover {
+    background-color: map_get($mat-eav-item-dialog-secondary, 300);
+    color: #fff;
+
+    .page-path {
+      color: map_get($mat-eav-item-dialog-background, 100);
+    }
+  }
+
+  &.selected {
+    background-color: map_get($mat-eav-item-dialog-secondary, 500);
+    color: #fff;
+
+    .page-path {
+      color: map_get($mat-eav-item-dialog-background, 100);
+    }
+  }
+}

@@ -1,0 +1,55 @@
+@import "../../../assets/styles/variables.scss";
+@import "../../../assets/styles/theme/material-colors";
+
+:host {
+  width: 100%;
+  height: 100%;
+  display: flex;
+}
+
+.logs-box {
+  flex: 1 1 auto;
+  overflow: auto;
+  font-size: 14px;
+}
+
+.log-entry {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  border-bottom: 1px solid rgb(240, 240, 240);
+  padding-top: 2px;
+  padding-bottom: 2px;
+
+  .log-entry-part:not(:first-of-type) {
+    margin-left: 8px;
+  }
+}
+
+.log-error {
+  color: rgb(255, 0, 0);
+  border-color: rgb(255, 214, 214);
+  background-color: rgb(255, 240, 240);
+}
+
+.log-warn {
+  color: rgb(92, 60, 0);
+  border-color: rgb(255, 245, 194);
+  background-color: rgb(255, 251, 229);
+}
+
+.log-entry-time {
+  flex: 0 0 auto;
+}
+
+.log-entry-label {
+  flex: 1 1 auto;
+}
+
+.log-entry-show {
+  flex: 0 0 auto;
+  color: map_get($mat-eav-item-dialog-secondary, 300);
+  font-size: 12px;
+  text-decoration: underline;
+  cursor: pointer;
+}

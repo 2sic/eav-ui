@@ -19,7 +19,7 @@ interface All {
   Errors: unknown;
   Warnings: unknown;
   ValidationRegExJavaScript: string;
-  Calculations: string[];
+  Formulas?: string[];
   CustomJavaScript: string;
 }
 
@@ -196,6 +196,8 @@ interface Boolean extends All {
   TitleTrue: string;
   TitleFalse: string;
   TitleIndeterminate: string;
+  ReverseToggle?: boolean;
+  /** Label for Boolean fields */
   _label: string;
 }
 

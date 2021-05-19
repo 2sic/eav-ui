@@ -13,6 +13,9 @@
   height: $edit-ui-dialog-debug-max-height;
   z-index: 1;
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
 }
 
 .mat-card.debug-enabled {
@@ -20,38 +23,20 @@
 }
 
 .debug-buttons-container {
-  padding-top: 17px;
-  padding-right: 16px;
-  padding-bottom: 15px;
-  padding-left: 16px;
+  padding: 17px 16px 15px;
   height: $edit-ui-dialog-debug-max-height;
   width: 100%;
-}
+  display: flex;
+  box-sizing: border-box;
+  align-items: center;
 
-.debug-info-container {
-  margin: $debug-info-container-margin !important;
-  margin-top: 0 !important;
-  width: calc(100% - 2 * #{$debug-info-container-margin});
-  height: $debug-info-container-height;
-  position: relative;
-}
+  .mat-button {
+    margin-left: 0;
 
-.debug-dump {
-  width: calc(100% - 10px);
-  margin: 0px;
-  padding: 10px;
-  padding-right: 0;
-  border: 0px;
-  height: calc(100% - 20px);
-  resize: none;
-  background-color: $editUI-disabled-background;
-}
-
-.mat-icon-button {
-  margin-right: 12px;
-  width: 30px;
-  height: 30px;
-  line-height: 30px;
+    .mat-icon {
+      margin-right: 4px;
+    }
+  }
 }
 
 .mat-icon {
@@ -61,6 +46,17 @@
   line-height: 20px !important;
 }
 
-.hidden {
-  visibility: hidden;
+.sxc-version {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.debug-info-container {
+  margin: $debug-info-container-margin !important;
+  margin-top: 0 !important;
+  width: calc(100% - 2 * #{$debug-info-container-margin});
+  height: $debug-info-container-height;
+  position: relative;
+  overflow: auto;
 }

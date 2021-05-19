@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { combineLatest, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { distinctUntilChanged, map } from 'rxjs/operators';
 import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { EavService, FieldsSettingsService } from '../../../../shared/services';
@@ -32,13 +32,19 @@ export class BooleanTristateComponent extends BaseComponent<boolean | ''> implem
 
   ngOnInit() {
     super.ngOnInit();
-    this.value$ = this.value$.pipe(map(value => (value === '') ? null : value));
-    this.label$ = this.settings$.pipe(map(settings => settings._label));
+    this.value$ = this.value$.pipe(map(value => (value === '') ? null : value), distinctUntilChanged());
+    this.label$ = this.settings$.pipe(map(settings => settings._label), distinctUntilChanged());
 
-    this.templateVars$ = combineLatest([this.value$, this.label$, this.disabled$, this.touched$]).pipe(
-      map(([value, label, disabled, touched]) => {
+    const reverseToggle$ = this.settings$.pipe(map(settings => settings.ReverseToggle), distinctUntilChanged());
+    const checked$ = combineLatest([this.value$, reverseToggle$]).pipe(
+      map(([value, reverseToogle]) => value == null ? value : reverseToogle ? !value : value),
+      distinctUntilChanged(),
+    );
+
+    this.templateVars$ = combineLatest([checked$, this.label$, this.disabled$, this.touched$]).pipe(
+      map(([checked, label, disabled, touched]) => {
         const templateVars: BooleanTristateTemplateVars = {
-          value,
+          checked,
           label,
           disabled,
           touched,
@@ -52,22 +58,25 @@ export class BooleanTristateComponent extends BaseComponent<boolean | ''> implem
     super.ngOnDestroy();
   }
 
-  toggle() {
+  patchValue() {
     const currentValue: boolean | '' = this.control.value;
+    const reverseToogle = this.settings$.value.ReverseToggle;
+
     let nextValue: boolean;
     switch (currentValue) {
       case false:
-        nextValue = null;
+        nextValue = reverseToogle ? true : null;
         break;
       case '':
       case null:
-        nextValue = true;
+        nextValue = reverseToogle ? false : true;
         break;
       case true:
-        nextValue = false;
+        nextValue = reverseToogle ? null : false;
         break;
     }
     this.control.patchValue(nextValue);
+    this.validationMessagesService.markAsTouched(this.control);
+    this.validationMessagesService.markAsDirty(this.control);
   }
-
 }

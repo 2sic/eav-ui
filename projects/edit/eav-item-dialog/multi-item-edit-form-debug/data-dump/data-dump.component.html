@@ -1,0 +1,3 @@
+<ng-container *ngIf="templateVars$ | async as data">
+  <textarea readonly class="fancy-scrollbar-light">{{ data.items | json }}</textarea>
+</ng-container>

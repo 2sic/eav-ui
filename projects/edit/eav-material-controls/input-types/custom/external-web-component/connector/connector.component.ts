@@ -1,10 +1,12 @@
-import { AfterViewInit, Component, ElementRef, Input, NgZone, OnDestroy, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, Input, NgZone, OnDestroy, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { consoleLogAngular } from '../../../../../../ng-dialogs/src/app/shared/helpers/console-log-angular.helper';
 import { FieldConfigSet } from '../../../../../eav-dynamic-form/model/field-config';
-import { DnnBridgeService, EavService, EditRoutingService, FieldsSettingsService } from '../../../../../shared/services';
-import { ContentTypeService, FeatureService, InputTypeService } from '../../../../../shared/store/ngrx-data';
+import { EavService, EditRoutingService, FieldsSettingsService } from '../../../../../shared/services';
+import { ContentTypeService, EntityCacheService, FeatureService, InputTypeService } from '../../../../../shared/store/ngrx-data';
+import { AdamService } from '../../../../adam/adam.service';
 import { ValidationMessagesService } from '../../../../validators/validation-messages-service';
 import { ConnectorHelper } from './connector.helper';
 
@@ -28,9 +30,13 @@ export class ConnectorComponent implements AfterViewInit, OnDestroy {
     private inputTypeService: InputTypeService,
     private featureService: FeatureService,
     private editRoutingService: EditRoutingService,
-    private dnnBridgeService: DnnBridgeService,
+    private adamService: AdamService,
+    private dialog: MatDialog,
+    private viewContainerRef: ViewContainerRef,
+    private changeDetectorRef: ChangeDetectorRef,
     private fieldsSettingsService: FieldsSettingsService,
     private validationMessagesService: ValidationMessagesService,
+    private entityCacheService: EntityCacheService,
     private zone: NgZone,
   ) { }
 
@@ -48,9 +54,13 @@ export class ConnectorComponent implements AfterViewInit, OnDestroy {
       this.inputTypeService,
       this.featureService,
       this.editRoutingService,
-      this.dnnBridgeService,
+      this.adamService,
+      this.dialog,
+      this.viewContainerRef,
+      this.changeDetectorRef,
       this.fieldsSettingsService,
       this.validationMessagesService,
+      this.entityCacheService,
       this.zone,
     );
   }

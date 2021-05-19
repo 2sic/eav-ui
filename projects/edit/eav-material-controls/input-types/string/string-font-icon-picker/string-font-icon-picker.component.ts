@@ -1,8 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { distinctUntilChanged, map } from 'rxjs/operators';
 import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
+import { GeneralHelpers } from '../../../../shared/helpers';
 import { EavService, FieldsSettingsService, ScriptsLoaderService } from '../../../../shared/services';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { BaseComponent } from '../../base/base.component';
@@ -37,24 +38,30 @@ export class StringFontIconPickerComponent extends BaseComponent<string> impleme
   ngOnInit() {
     super.ngOnInit();
     this.iconOptions$ = new BehaviorSubject<IconOption[]>([]);
+
     this.subscription.add(
-      this.settings$.subscribe(settings => {
-        const files = settings.Files;
-        const cssPrefix = settings.CssPrefix;
-        const showPrefix = settings.ShowPrefix;
+      this.settings$.pipe(
+        map(settings => ({
+          Files: settings.Files,
+          CssPrefix: settings.CssPrefix,
+          ShowPrefix: settings.ShowPrefix,
+        })),
+        distinctUntilChanged(GeneralHelpers.objectsEqual),
+      ).subscribe(settings => {
         // load each file (usually CSS) in the settings
-        this.scriptsLoaderService.load(files.split('\n'), () => {
-          const newIconOptions = findAllIconsInCss(cssPrefix, showPrefix);
+        this.scriptsLoaderService.load(settings.Files.split('\n'), () => {
+          const newIconOptions = findAllIconsInCss(settings.CssPrefix, settings.ShowPrefix);
           this.iconOptions$.next(newIconOptions);
         });
       })
     );
-    const previewCss$ = this.settings$.pipe(map(settings => settings.PreviewCss));
+
+    const previewCss$ = this.settings$.pipe(map(settings => settings.PreviewCss), distinctUntilChanged());
     const filteredIcons$ = combineLatest([this.value$, this.iconOptions$]).pipe(
       map(([search, iconList]) => {
         // if we have a filter param, use it, otherwise don't filter
         const filtered = search
-          ? iconList.filter(icon => icon.search?.includes(search.toLowerCase()) ?? false)
+          ? iconList.filter(icon => icon.search?.includes(search.toLocaleLowerCase()) ?? false)
           : iconList;
         return filtered;
       }),

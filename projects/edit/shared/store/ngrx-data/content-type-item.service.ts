@@ -18,4 +18,8 @@ export class ContentTypeItemService extends BaseDataService<EavEntity> {
   getContentTypeItem(guid: string): EavEntity {
     return this.cache$.value.find(contentTypeItem => contentTypeItem.Guid === guid);
   }
+
+  getContentTypeItems(guids: string[]): EavEntity[] {
+    return this.cache$.value.filter(contentTypeItem => guids.includes(contentTypeItem.Guid));
+  }
 }

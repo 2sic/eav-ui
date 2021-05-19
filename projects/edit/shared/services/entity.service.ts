@@ -5,7 +5,7 @@ import { Context } from 'projects/ng-dialogs/src/app/shared/services/context';
 import { Observable } from 'rxjs';
 import { filter, share, switchMap } from 'rxjs/operators';
 import { EavService, webApiEditRoot } from '.';
-import { EntityInfo } from '../models';
+import { EntityInfo } from '../../../edit-types';
 
 export const webApiEntityRoot = 'admin/entity/';
 export const webApiEntityList = 'admin/entity/list';

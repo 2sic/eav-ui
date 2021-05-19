@@ -1,13 +1,15 @@
-import { ElementRef, NgZone } from '@angular/core';
+import { ChangeDetectorRef, ElementRef, NgZone, ViewContainerRef } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { EavCustomInputField, ExperimentalProps, FieldConfig, FieldSettings, FieldValue } from '../../../../../../edit-types';
 import { FieldConfigSet } from '../../../../../eav-dynamic-form/model/field-config';
-import { InputFieldHelpers } from '../../../../../shared/helpers';
-import { DnnBridgeService, EavService, EditRoutingService, FieldsSettingsService } from '../../../../../shared/services';
-import { ContentTypeService, FeatureService, InputTypeService } from '../../../../../shared/store/ngrx-data';
+import { InputFieldHelpers, PagePicker } from '../../../../../shared/helpers';
+import { EavService, EditRoutingService, FieldsSettingsService } from '../../../../../shared/services';
+import { ContentTypeService, EntityCacheService, FeatureService, InputTypeService } from '../../../../../shared/store/ngrx-data';
+import { AdamService } from '../../../../adam/adam.service';
 import { ValidationMessagesService } from '../../../../validators/validation-messages-service';
 import { ConnectorHost, ConnectorInstance } from './models/connector-instance.model';
 
@@ -16,6 +18,7 @@ export class ConnectorHelper {
   private customEl: EavCustomInputField;
   private subscription: Subscription;
   private value$: BehaviorSubject<FieldValue>;
+  private settings$: BehaviorSubject<FieldSettings>;
 
   constructor(
     private config: FieldConfigSet,
@@ -28,9 +31,13 @@ export class ConnectorHelper {
     private inputTypeService: InputTypeService,
     private featureService: FeatureService,
     private editRoutingService: EditRoutingService,
-    private dnnBridgeService: DnnBridgeService,
+    private adamService: AdamService,
+    private dialog: MatDialog,
+    private viewContainerRef: ViewContainerRef,
+    private changeDetectorRef: ChangeDetectorRef,
     private fieldsSettingsService: FieldsSettingsService,
     private validationMessagesService: ValidationMessagesService,
+    private entityCacheService: EntityCacheService,
     private zone: NgZone,
   ) {
     this.control = this.group.controls[this.config.fieldName];
@@ -41,6 +48,12 @@ export class ConnectorHelper {
         this.value$.next(value);
       })
     );
+    this.settings$ = new BehaviorSubject(this.fieldsSettingsService.getFieldSettings(this.config.fieldName));
+    this.subscription.add(
+      this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).subscribe(settings => {
+        this.settings$.next(settings);
+      })
+    );
 
     this.customEl = document.createElement(this.customElName) as EavCustomInputField;
     this.customEl.connector = this.buildConnector();
@@ -48,7 +61,8 @@ export class ConnectorHelper {
   }
 
   destroy() {
-    this.value$?.complete();
+    this.value$.complete();
+    this.settings$.complete();
     this.subscription.unsubscribe();
     this.customEl?.parentNode.removeChild(this.customEl);
     this.customEl = null;
@@ -59,13 +73,11 @@ export class ConnectorHelper {
     const experimental = this.calculateExperimentalProps();
     const settingsSnapshot = this.fieldsSettingsService.getFieldSettings(this.config.fieldName);
     const fieldConfig = this.getFieldConfig(settingsSnapshot);
-    const fieldConfig$ = this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).pipe(
-      map(settings => this.getFieldConfig(settings)),
-    );
+    const fieldConfig$ = this.settings$.pipe(map(settings => this.getFieldConfig(settings)));
     const value$ = this.value$.asObservable();
     const connector = new ConnectorInstance(connectorHost, value$, fieldConfig, fieldConfig$, experimental, this.eavService.eavConfig);
     this.subscription.add(
-      this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).subscribe(settings => {
+      this.settings$.subscribe(settings => {
         connector.field.settings = settings;
         connector.field.label = settings.Name;
         connector.field.placeholder = settings.Placeholder;
@@ -109,12 +121,16 @@ export class ConnectorHelper {
       setFocused: (focused) => {
         this.zone.run(() => { this.config.focused$.next(focused); });
       },
-      openPagePicker: (params, callback) => {
-        this.zone.run(() => { this.dnnBridgeService.open('pagepicker', params, callback); });
+      openPagePicker: (callback) => {
+        this.zone.run(() => {
+          PagePicker.open(this.config, this.group, this.dialog, this.viewContainerRef, this.changeDetectorRef, callback);
+        });
       },
       getUrlOfId: (value, callback) => {
         this.zone.run(() => { this.getUrlOfId(value, callback); });
       },
+      getEntityCache: (guids?) => this.entityCacheService.getEntities(guids),
+      getEntityCache$: (guids?) => this.entityCacheService.getEntities$(guids),
     };
 
     return experimentalProps;
@@ -142,7 +158,7 @@ export class ConnectorHelper {
     const contentType = this.config.contentTypeId;
     const entityGuid = this.config.entityGuid;
     const field = this.config.fieldName;
-    this.dnnBridgeService.getLinkInfo(value, contentType, entityGuid, field).subscribe(linkInfo => {
+    this.adamService.getLinkInfo(value, contentType, entityGuid, field).subscribe(linkInfo => {
       if (!linkInfo) { return; }
       callback(linkInfo.Value);
     });
