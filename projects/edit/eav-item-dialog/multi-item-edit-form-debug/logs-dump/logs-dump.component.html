@@ -1,5 +1,5 @@
 <ng-container *ngIf="templateVars$ | async as data">
-  <div class="logs-box">
+  <div class="logs-box fancy-scrollbar-light">
     <div *ngIf="data.logs.length === 0">Logs are empty</div>
     <div class="log-entry" *ngFor="let log of data.logs" [ngClass]="{
       'log-error': log.severity === LogSeverities.Error,

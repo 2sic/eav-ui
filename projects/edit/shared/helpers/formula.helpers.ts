@@ -9,13 +9,14 @@ export class FormulaHelpers {
 
   static findFormulaVersion(formula: string): FormulaVersion {
     const cleanFormula = formula.trim();
+    const typePart = cleanFormula.substring(0, cleanFormula.indexOf('(')).trim();
 
-    let version: FormulaVersion;
-    if (cleanFormula.toLocaleUpperCase().startsWith(FormulaVersions.V1.toLocaleUpperCase())) {
-      version = FormulaVersions.V1;
+    switch (typePart) {
+      case FormulaVersions.V1:
+        return FormulaVersions.V1;
+      default:
+        return;
     }
-
-    return version;
   }
 
   static buildFormulaFunction(formula: string): FormulaFunction {
@@ -92,8 +93,7 @@ export class FormulaHelpers {
         };
 
         const fieldSnippets = fieldOptions.map(field => {
-          const hasDash = field.fieldName.includes('-') || field.fieldName.includes(' ');
-          const code = hasDash ? `data.['${field.fieldName}']` : `data.${field.fieldName}`;
+          const code = `data.${field.fieldName}`;
           const fieldSnippet: DesignerSnippet = {
             code,
             label: code,

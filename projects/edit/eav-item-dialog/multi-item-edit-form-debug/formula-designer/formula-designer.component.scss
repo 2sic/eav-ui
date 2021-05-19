@@ -40,8 +40,9 @@
     max-width: 200px;
     max-height: 194px;
     overflow: hidden auto;
+    padding-left: 2px;
 
-    &.disabled {
+    &.disabled .snippet {
       pointer-events: none;
       color: rgba($editUI-foreground-color, 0.44),
     }

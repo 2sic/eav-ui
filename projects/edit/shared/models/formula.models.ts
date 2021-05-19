@@ -74,8 +74,10 @@ export interface FormulaResult {
   isError: boolean;
 }
 
-export interface ActiveDesigner {
+export interface DesignerState {
+  editMode: boolean;
   entityGuid: string;
   fieldName: string;
+  isOpen: boolean;
   target: FormulaTarget;
 }

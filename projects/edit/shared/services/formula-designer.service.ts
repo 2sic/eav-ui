@@ -5,15 +5,14 @@ import { distinctUntilChanged, map } from 'rxjs/operators';
 import { EavService, LoggingService } from '.';
 import { FieldSettings, FieldValue } from '../../../edit-types';
 import { FieldsSettingsHelpers, FormulaHelpers, GeneralHelpers, InputFieldHelpers, LocalizationHelpers } from '../helpers';
-import { ActiveDesigner, FormulaCacheItem, FormulaFunction, FormulaResult, FormulaTarget, LogSeverities } from '../models';
+import { DesignerState, FormulaCacheItem, FormulaFunction, FormulaResult, FormulaTarget, LogSeverities } from '../models';
 import { ContentTypeItemService, ContentTypeService, ItemService, LanguageInstanceService } from '../store/ngrx-data';
 
 @Injectable()
 export class FormulaDesignerService implements OnDestroy {
   private formulaCache$: BehaviorSubject<FormulaCacheItem[]>;
   private formulaResults$: BehaviorSubject<FormulaResult[]>;
-  private designerIsOpen$: BehaviorSubject<boolean>;
-  private activeDesigner$: BehaviorSubject<ActiveDesigner>;
+  private designerState$: BehaviorSubject<DesignerState>;
 
   constructor(
     private eavService: EavService,
@@ -28,16 +27,21 @@ export class FormulaDesignerService implements OnDestroy {
   ngOnDestroy(): void {
     this.formulaCache$?.complete();
     this.formulaResults$?.complete();
-    this.designerIsOpen$?.complete();
-    this.activeDesigner$?.complete();
+    this.designerState$?.complete();
   }
 
   init(): void {
+    this.formulaResults$ = new BehaviorSubject([]);
+    const initialDesignerState: DesignerState = {
+      editMode: false,
+      entityGuid: undefined,
+      fieldName: undefined,
+      isOpen: false,
+      target: undefined,
+    };
+    this.designerState$ = new BehaviorSubject(initialDesignerState);
     const formulaCache = this.buildFormulaCache();
     this.formulaCache$ = new BehaviorSubject(formulaCache);
-    this.formulaResults$ = new BehaviorSubject([]);
-    this.designerIsOpen$ = new BehaviorSubject(false);
-    this.activeDesigner$ = new BehaviorSubject(null);
   }
 
   getFormula(entityGuid: string, fieldName: string, target: FormulaTarget, allowDraft: boolean): FormulaCacheItem {
@@ -144,21 +148,25 @@ export class FormulaDesignerService implements OnDestroy {
   }
 
   setDesignerOpen(isOpen: boolean): void {
-    this.designerIsOpen$.next(isOpen);
+    const newState: DesignerState = {
+      ...this.getDesignerState(),
+      isOpen,
+    };
+    this.setDesignerState(newState);
   }
 
-  setActiveDesigner(activeDesigner: ActiveDesigner): void {
-    this.activeDesigner$.next(activeDesigner);
+  setDesignerState(activeDesigner: DesignerState): void {
+    this.designerState$.next(activeDesigner);
   }
 
-  getActiveDesigner(): ActiveDesigner {
-    if (!this.designerIsOpen$.value) { return; }
-
-    return this.activeDesigner$.value;
+  getDesignerState(): DesignerState {
+    return this.designerState$.value;
   }
 
-  getActiveDesigner$(): Observable<ActiveDesigner> {
-    return this.activeDesigner$.asObservable();
+  getDesignerState$(): Observable<DesignerState> {
+    return this.designerState$.pipe(
+      distinctUntilChanged(GeneralHelpers.objectsEqual),
+    );
   }
 
   private buildFormulaCache(): FormulaCacheItem[] {

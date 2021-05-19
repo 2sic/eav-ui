@@ -4,8 +4,8 @@
     <div class="formula-context-box">
       <mat-form-field color="accent">
         <mat-label>Entity</mat-label>
-        <mat-select [ngModel]="data.selected.entityGuid" (ngModelChange)="selectedChanged(SelectTargets.Entity, $event)"
-          [disabled]="data.editMode">
+        <mat-select [ngModel]="data.designer.entityGuid" (ngModelChange)="selectedChanged(SelectTargets.Entity, $event)"
+          [disabled]="data.designer.editMode">
           <mat-option *ngFor="let entity of entityOptions; trackBy: trackEntityOptions" [value]="entity.entityGuid">
             <span [ngClass]="{ 'has-formula': data.hasFormula[entity.entityGuid] != null }">
               {{ entity.label }}
@@ -16,12 +16,12 @@
 
       <mat-form-field color="accent">
         <mat-label>Attribute</mat-label>
-        <mat-select [ngModel]="data.selected.fieldName" (ngModelChange)="selectedChanged(SelectTargets.Field, $event)"
-          [disabled]="data.editMode || data.selected.entityGuid == null">
-          <mat-option *ngFor="let field of fieldOptions[data.selected.entityGuid]; trackBy: trackFieldOptions"
+        <mat-select [ngModel]="data.designer.fieldName" (ngModelChange)="selectedChanged(SelectTargets.Field, $event)"
+          [disabled]="data.designer.editMode || data.designer.entityGuid == null">
+          <mat-option *ngFor="let field of fieldOptions[data.designer.entityGuid]; trackBy: trackFieldOptions"
             [value]="field.fieldName">
             <span
-              [ngClass]="{ 'has-formula': data.hasFormula[data.selected.entityGuid] != null && data.hasFormula[data.selected.entityGuid][field.fieldName] != null }">
+              [ngClass]="{ 'has-formula': data.hasFormula[data.designer.entityGuid] != null && data.hasFormula[data.designer.entityGuid][field.fieldName] != null }">
               {{ field.fieldName }}
             </span>
           </mat-option>
@@ -30,11 +30,11 @@
 
       <mat-form-field color="accent">
         <mat-label>Formula Type</mat-label>
-        <mat-select [ngModel]="data.selected.target" (ngModelChange)="selectedChanged(SelectTargets.Target, $event)"
-          [disabled]="data.editMode || data.selected.entityGuid == null || data.selected.fieldName == null">
+        <mat-select [ngModel]="data.designer.target" (ngModelChange)="selectedChanged(SelectTargets.Target, $event)"
+          [disabled]="data.designer.editMode || data.designer.entityGuid == null || data.designer.fieldName == null">
           <mat-option *ngFor="let formulaTarget of FormulaTargets | keyvalue" [value]="formulaTarget.value">
             <span
-              [ngClass]="{ 'has-formula': data.hasFormula[data.selected.entityGuid] != null && data.hasFormula[data.selected.entityGuid][data.selected.fieldName] != null && data.hasFormula[data.selected.entityGuid][data.selected.fieldName][formulaTarget.value] }">
+              [ngClass]="{ 'has-formula': data.hasFormula[data.designer.entityGuid] != null && data.hasFormula[data.designer.entityGuid][data.designer.fieldName] != null && data.hasFormula[data.designer.entityGuid][data.designer.fieldName][formulaTarget.value] }">
               {{ formulaTarget.key }}
             </span>
           </mat-option>
@@ -44,13 +44,13 @@
 
     <div class="formula-box">
       <mat-form-field color="accent">
-        <textarea matInput rows="10" [matTextareaAutosize]="false" [ngModel]="data.formula?.source"
-          (ngModelChange)="formulaChanged($event)"
-          [disabled]="!data.editMode || data.selected.entityGuid == null || data.selected.fieldName == null || data.selected.target == null"></textarea>
+        <textarea matInput class="fancy-scrollbar-light" rows="10" [matTextareaAutosize]="false"
+          [ngModel]="data.formula?.source" (ngModelChange)="formulaChanged($event)"
+          [disabled]="!data.designer.editMode || data.designer.entityGuid == null || data.designer.fieldName == null || data.designer.target == null"></textarea>
         <mat-label>Function</mat-label>
       </mat-form-field>
 
-      <div class="formula-snippets fancy-scrollbar-light" [ngClass]="{ 'disabled': !data.editMode }">
+      <div class="formula-snippets fancy-scrollbar-light" [ngClass]="{ 'disabled': !data.designer.editMode }">
         <div class="snippet" *ngFor="let snippet of data.snippets; trackBy: trackSnippets" [title]="snippet.code"
           (click)="copyToClipboard(snippet.code)">
           {{ snippet.label }}
@@ -71,7 +71,8 @@
         <button mat-icon-button matTooltip="Reset" (click)="reset()">
           <mat-icon>history</mat-icon>
         </button>
-        <button mat-icon-button matTooltip="Run" [disabled]="!data.editMode || !data.formula?.source" (click)="run()">
+        <button mat-icon-button matTooltip="Run" [disabled]="!data.designer.editMode || !data.formula?.source"
+          (click)="run()">
           <mat-icon>play_arrow</mat-icon>
         </button>
         <button mat-icon-button matTooltip="Help" (click)="openFormulasHelp()">

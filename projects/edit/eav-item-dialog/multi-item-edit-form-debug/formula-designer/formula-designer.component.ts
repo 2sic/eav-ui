@@ -1,10 +1,10 @@
 import { Component, Input, OnDestroy, OnInit, QueryList } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map, mergeMap } from 'rxjs/operators';
 import { copyToClipboard } from '../../../../ng-dialogs/src/app/shared/helpers/copy-to-clipboard.helper';
 import { FormulaHelpers } from '../../../shared/helpers';
-import { ActiveDesigner, FormulaTarget, FormulaTargets } from '../../../shared/models';
+import { DesignerState, FormulaTarget, FormulaTargets } from '../../../shared/models';
 import { FormulaDesignerService } from '../../../shared/services';
 import { ItemEditFormComponent } from '../../item-edit-form/item-edit-form.component';
 import { defaultFormula } from './formula-designer.constants';
@@ -25,8 +25,6 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
   fieldOptions: Record<string, FieldOption[]>;
   templateVars$: Observable<FormulaDesignerTemplateVars>;
 
-  private editMode$: BehaviorSubject<boolean>;
-
   constructor(private formulaDesignerService: FormulaDesignerService, private snackBar: MatSnackBar) { }
 
   ngOnInit(): void {
@@ -36,7 +34,6 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
       return;
     }
     this.formulaDesignerService.setDesignerOpen(true);
-    this.editMode$ = new BehaviorSubject(false);
     this.buildOptions();
     this.buildTemplateVars();
   }
@@ -58,27 +55,28 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
   }
 
   selectedChanged(target: SelectTarget, value: string | FormulaTarget): void {
-    const selected = this.formulaDesignerService.getActiveDesigner();
-    const newSelected: ActiveDesigner = { ...selected };
+    const newState: DesignerState = {
+      ...this.formulaDesignerService.getDesignerState(),
+    };
     switch (target) {
       case SelectTargets.Entity:
-        newSelected.entityGuid = value;
-        newSelected.fieldName = this.fieldOptions[value]?.[0]?.fieldName;
+        newState.entityGuid = value;
+        newState.fieldName = this.fieldOptions[value]?.[0]?.fieldName;
         break;
       case SelectTargets.Field:
-        newSelected.fieldName = value;
+        newState.fieldName = value;
         break;
       case SelectTargets.Target:
-        newSelected.target = value as FormulaTarget;
+        newState.target = value as FormulaTarget;
         break;
     }
 
-    this.formulaDesignerService.setActiveDesigner(newSelected);
+    this.formulaDesignerService.setDesignerState(newState);
   }
 
   formulaChanged(formula: string): void {
-    const selected = this.formulaDesignerService.getActiveDesigner();
-    this.formulaDesignerService.upsertFormula(selected.entityGuid, selected.fieldName, selected.target, formula, false);
+    const designer = this.formulaDesignerService.getDesignerState();
+    this.formulaDesignerService.upsertFormula(designer.entityGuid, designer.fieldName, designer.target, formula, false);
   }
 
   copyToClipboard(text: string): void {
@@ -87,27 +85,34 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
   }
 
   toggleEdit(): void {
-    this.editMode$.next(!this.editMode$.value);
-    if (this.editMode$.value) {
-      const selected = this.formulaDesignerService.getActiveDesigner();
-      const formula = this.formulaDesignerService.getFormula(selected.entityGuid, selected.fieldName, selected.target, true);
+    const oldState = this.formulaDesignerService.getDesignerState();
+    const designer: DesignerState = {
+      ...oldState,
+      editMode: !oldState.editMode,
+    };
+    this.formulaDesignerService.setDesignerState(designer);
+    if (designer.editMode) {
+      const formula = this.formulaDesignerService.getFormula(designer.entityGuid, designer.fieldName, designer.target, true);
       if (formula == null) {
-        this.formulaDesignerService.upsertFormula(selected.entityGuid, selected.fieldName, selected.target, defaultFormula, false);
+        this.formulaDesignerService.upsertFormula(designer.entityGuid, designer.fieldName, designer.target, defaultFormula, false);
       }
     }
   }
 
   reset(): void {
-    this.editMode$.next(false);
-    const selected = this.formulaDesignerService.getActiveDesigner();
-    this.formulaDesignerService.resetFormula(selected.entityGuid, selected.fieldName, selected.target);
+    const designer: DesignerState = {
+      ...this.formulaDesignerService.getDesignerState(),
+      editMode: false,
+    };
+    this.formulaDesignerService.setDesignerState(designer);
+    this.formulaDesignerService.resetFormula(designer.entityGuid, designer.fieldName, designer.target);
   }
 
   run(): void {
-    const selected = this.formulaDesignerService.getActiveDesigner();
-    const formula = this.formulaDesignerService.getFormula(selected.entityGuid, selected.fieldName, selected.target, true);
-    this.formulaDesignerService.upsertFormula(selected.entityGuid, selected.fieldName, selected.target, formula.source, true);
-    this.itemEditFormRefs.find(itemEditFormRef => itemEditFormRef.entityGuid === selected.entityGuid)
+    const designer = this.formulaDesignerService.getDesignerState();
+    const formula = this.formulaDesignerService.getFormula(designer.entityGuid, designer.fieldName, designer.target, true);
+    this.formulaDesignerService.upsertFormula(designer.entityGuid, designer.fieldName, designer.target, formula.source, true);
+    this.itemEditFormRefs.find(itemEditFormRef => itemEditFormRef.entityGuid === designer.entityGuid)
       .fieldsSettingsService.forceSettings();
   }
 
@@ -136,14 +141,15 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
       return acc;
     }, {} as Record<string, FieldOption[]>);
 
-    const activeDesigner = this.formulaDesignerService.getActiveDesigner();
-    if (activeDesigner == null) {
-      const newSelected: ActiveDesigner = {
+    const oldState = this.formulaDesignerService.getDesignerState();
+    if (oldState.entityGuid == null && oldState.fieldName == null && oldState.target == null) {
+      const newState: DesignerState = {
+        ...oldState,
         entityGuid: this.entityOptions[0]?.entityGuid,
         fieldName: this.fieldOptions[this.entityOptions[0]?.entityGuid]?.[0]?.fieldName,
         target: this.FormulaTargets.Value,
       };
-      this.formulaDesignerService.setActiveDesigner(newSelected);
+      this.formulaDesignerService.setDesignerState(newState);
     }
   }
 
@@ -163,30 +169,29 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
         return hasFormula;
       }),
     );
-    const activeDesigner$ = this.formulaDesignerService.getActiveDesigner$();
-    const formula$ = activeDesigner$.pipe(
-      mergeMap(activeDesigner =>
-        this.formulaDesignerService.getFormula$(activeDesigner.entityGuid, activeDesigner.fieldName, activeDesigner.target, true)
+    const designerState$ = this.formulaDesignerService.getDesignerState$();
+    const formula$ = designerState$.pipe(
+      mergeMap(designer =>
+        this.formulaDesignerService.getFormula$(designer.entityGuid, designer.fieldName, designer.target, true)
       ),
     );
     const snippets$ = formula$.pipe(
       map(formula => formula != null ? FormulaHelpers.buildDesignerSnippets(formula, this.fieldOptions[formula.entityGuid]) : []),
     );
-    const result$ = activeDesigner$.pipe(
-      mergeMap(activeDesigner =>
-        this.formulaDesignerService.getFormulaResult$(activeDesigner.entityGuid, activeDesigner.fieldName, activeDesigner.target)
+    const result$ = designerState$.pipe(
+      mergeMap(designer =>
+        this.formulaDesignerService.getFormulaResult$(designer.entityGuid, designer.fieldName, designer.target)
       ),
       map(result => result?.isError ? 'Calculation failed. Please check logs for more info' : result?.value),
       distinctUntilChanged(),
     );
 
-    this.templateVars$ = combineLatest([this.editMode$, hasFormula$, formula$, snippets$, activeDesigner$, result$]).pipe(
-      map(([editMode, hasFormula, formula, snippets, activeDesigner, result]) => {
+    this.templateVars$ = combineLatest([hasFormula$, formula$, snippets$, designerState$, result$]).pipe(
+      map(([hasFormula, formula, snippets, designer, result]) => {
         const templateVars: FormulaDesignerTemplateVars = {
-          editMode,
           formula,
           hasFormula,
-          selected: activeDesigner,
+          designer,
           snippets,
           result,
         };

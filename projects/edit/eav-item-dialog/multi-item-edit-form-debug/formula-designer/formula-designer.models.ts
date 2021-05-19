@@ -1,11 +1,10 @@
 import { FieldValue } from '../../../../edit-types';
-import { ActiveDesigner, FormulaCacheItem } from '../../../shared/models';
+import { DesignerState, FormulaCacheItem } from '../../../shared/models';
 
 export interface FormulaDesignerTemplateVars {
-  editMode: boolean;
   formula: FormulaCacheItem;
   hasFormula: HasFormula;
-  selected: ActiveDesigner;
+  designer: DesignerState;
   snippets: DesignerSnippet[];
   result: FieldValue;
 }

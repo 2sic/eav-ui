@@ -258,10 +258,11 @@ export class FieldsSettingsService implements OnDestroy {
     const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
     const languages = this.languageService.getLanguages();
     const formulaProps = FormulaHelpers.buildFormulaProps(formula, inputType, settings, formValues, currentLanguage, languages);
-    const activeDesigner = this.formulaDesignerService.getActiveDesigner();
-    const isOpenInDesigner = activeDesigner?.entityGuid === entityGuid
-      && activeDesigner?.fieldName === fieldName
-      && activeDesigner?.target === target;
+    const designerState = this.formulaDesignerService.getDesignerState();
+    const isOpenInDesigner = designerState.isOpen
+      && designerState.entityGuid === entityGuid
+      && designerState.fieldName === fieldName
+      && designerState.target === target;
     const ctSettings = this.getContentTypeSettings();
     try {
       switch (formula.version) {
