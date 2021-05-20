@@ -11,7 +11,7 @@ import { ValidationHelper } from '../../eav-material-controls/validators/validat
 import { FieldLogicManager } from '../../field-logic/field-logic-manager';
 import { FieldsSettingsHelpers, FormulaHelpers, GeneralHelpers, InputFieldHelpers, LocalizationHelpers } from '../helpers';
 // tslint:disable-next-line:max-line-length
-import { ContentTypeSettings, FieldsProps, FormulaFunctionDefault, FormulaTarget, FormulaTargets, FormulaVersions, LogSeverities, TranslationState } from '../models';
+import { ContentTypeSettings, FieldsProps, FormulaFunctionDefault, FormulaTarget, FormulaTargets, FormulaVersions, LogSeverities, SettingsFormulaPrefix, TranslationState } from '../models';
 import { ContentTypeService, InputTypeService, ItemService, LanguageInstanceService, LanguageService } from '../store/ngrx-data';
 import { FormulaDesignerService } from './formula-designer.service';
 
@@ -113,30 +113,24 @@ export class FieldsSettingsService implements OnDestroy {
             merged.Required ??= false;
             merged.Disabled ??= false;
             merged.DisableTranslation ??= false;
-            merged.Formulas ??= [];
-            // formulas - visible, required, enabled
-            const formulaVisible = this.runFormula(entityGuid, attribute.Name, FormulaTargets.Visible, formValues, inputType, merged);
-            merged.VisibleInEditUI = formulaVisible === false ? false : merged.VisibleInEditUI;
-            const formulaRequired = this.runFormula(entityGuid, attribute.Name, FormulaTargets.Required, formValues, inputType, merged);
-            merged.Required = formulaRequired === true ? true : merged.Required;
-            const formulaDisabled = this.runFormula(entityGuid, attribute.Name, FormulaTargets.Disabled, formValues, inputType, merged);
-            merged.Disabled = formulaDisabled === true ? true : merged.Disabled;
+            // run formulas for settings
+            const calculated = this.runSettingsFormulas(entityGuid, attribute.Name, formValues, inputType, merged);
             // special fixes
-            merged.Name = merged.Name || attribute.Name;
-            merged.Required = ValidationHelper.isRequired(merged);
-            merged.DisableTranslation = FieldsSettingsHelpers.findDisableTranslation(
+            calculated.Name = calculated.Name || calculated.Name;
+            calculated.Required = ValidationHelper.isRequired(calculated);
+            calculated.DisableTranslation = FieldsSettingsHelpers.findDisableTranslation(
               inputType, attributeValues, defaultLanguage, attribute.Metadata,
             );
             const slotIsEmpty = itemHeader.Group?.SlotCanBeEmpty && itemHeader.Group?.SlotIsEmpty;
-            merged.DisableTranslation = slotIsEmpty || merged.DisableTranslation;
-            merged.Disabled = slotIsEmpty || merged.Disabled;
+            calculated.DisableTranslation = slotIsEmpty || calculated.DisableTranslation;
+            calculated.Disabled = slotIsEmpty || calculated.Disabled;
             const disabledBecauseTranslations = FieldsSettingsHelpers.getDisabledBecauseTranslations(
-              attributeValues, merged.DisableTranslation, currentLanguage, defaultLanguage,
+              attributeValues, calculated.DisableTranslation, currentLanguage, defaultLanguage,
             );
-            merged.Disabled = disabledBecauseTranslations || merged.Disabled;
+            calculated.Disabled = disabledBecauseTranslations || calculated.Disabled;
             // update settings with respective FieldLogics
             const logic = FieldLogicManager.singleton().get(attribute.InputType);
-            const fixed = logic?.update(merged, value) ?? merged;
+            const fixed = logic?.update(calculated, value) ?? calculated;
 
             // formulas - value
             const formulaValue = this.runFormula(entityGuid, attribute.Name, FormulaTargets.Value, formValues, inputType, merged);
@@ -243,6 +237,44 @@ export class FieldsSettingsService implements OnDestroy {
 
   forceSettings(): void {
     this.forceSettings$.next();
+  }
+
+  private runSettingsFormulas(
+    entityGuid: string,
+    fieldName: string,
+    formValues: FormValues,
+    inputType: InputType,
+    settings: FieldSettings,
+  ): FieldSettings {
+    const formulas = this.formulaDesignerService.getFormulas(entityGuid, fieldName, null, false)
+      .filter(formula => formula.target.startsWith(SettingsFormulaPrefix));
+
+    const calculatedSettings: Record<string, any> = { ...settings };
+    for (const formula of formulas) {
+      const setting = formula.target.substring(SettingsFormulaPrefix.length);
+
+      const originalValue = calculatedSettings[setting];
+      const calculatedValue = this.runFormula(entityGuid, fieldName, formula.target, formValues, inputType, settings);
+
+      if (originalValue == null || calculatedValue == null) {
+        // can't check types, hope for the best
+        calculatedSettings[setting] = calculatedValue;
+        continue;
+      }
+
+      if (Array.isArray(originalValue) && Array.isArray(calculatedValue)) {
+        // can't check types of items in array, hope for the best
+        calculatedSettings[setting] = calculatedValue;
+        continue;
+      }
+
+      if (typeof originalValue === typeof calculatedValue) {
+        // maybe typesafe
+        calculatedSettings[setting] = calculatedValue;
+        continue;
+      }
+    }
+    return calculatedSettings as FieldSettings;
   }
 
   private runFormula(

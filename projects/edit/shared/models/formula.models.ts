@@ -34,6 +34,8 @@ export const FormulaTargets = {
   Visible: 'Field.Settings.VisibleInEditUI',
 } as const;
 
+export const SettingsFormulaPrefix = FormulaTargets.Disabled.substring(0, FormulaTargets.Disabled.lastIndexOf('.') + 1);
+
 export type FormulaTarget = typeof FormulaTargets[keyof typeof FormulaTargets];
 
 export type FormulaProps = FormulaPropsV1;

@@ -61,6 +61,16 @@ export class FormulaDesignerService implements OnDestroy {
     );
   }
 
+  getFormulas(entityGuid?: string, fieldName?: string, target?: FormulaTarget, allowDraft?: boolean): FormulaCacheItem[] {
+    return this.formulaCache$.value.filter(
+      f =>
+        (entityGuid ? f.entityGuid === entityGuid : true)
+        && (fieldName ? f.fieldName === fieldName : true)
+        && (target ? f.target === target : true)
+        && (!allowDraft ? f.isDraft === false : true)
+    );
+  }
+
   getFormulas$(): Observable<FormulaCacheItem[]> {
     return this.formulaCache$.asObservable();
   }
