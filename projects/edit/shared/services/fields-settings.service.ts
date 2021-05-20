@@ -124,15 +124,16 @@ export class FieldsSettingsService implements OnDestroy {
             // special fixes
             merged.Name = merged.Name || attribute.Name;
             merged.Required = ValidationHelper.isRequired(merged);
-            const slotIsEmpty = itemHeader.Group?.SlotCanBeEmpty && itemHeader.Group?.SlotIsEmpty;
             merged.DisableTranslation = FieldsSettingsHelpers.findDisableTranslation(
               inputType, attributeValues, defaultLanguage, attribute.Metadata,
             );
+            const slotIsEmpty = itemHeader.Group?.SlotCanBeEmpty && itemHeader.Group?.SlotIsEmpty;
             merged.DisableTranslation = slotIsEmpty || merged.DisableTranslation;
             merged.Disabled = slotIsEmpty || merged.Disabled;
-            merged.Disabled = FieldsSettingsHelpers.getDisabledBecauseTranslations(
+            const disabledBecauseTranslations = FieldsSettingsHelpers.getDisabledBecauseTranslations(
               attributeValues, merged.DisableTranslation, currentLanguage, defaultLanguage,
-            ) || merged.Disabled;
+            );
+            merged.Disabled = disabledBecauseTranslations || merged.Disabled;
             // update settings with respective FieldLogics
             const logic = FieldLogicManager.singleton().get(attribute.InputType);
             const fixed = logic?.update(merged, value) ?? merged;
@@ -140,13 +141,13 @@ export class FieldsSettingsService implements OnDestroy {
             // formulas - value
             const formulaValue = this.runFormula(entityGuid, attribute.Name, FormulaTargets.Value, formValues, inputType, merged);
             // important to compare with undefined because null is allowed value
-            if (value !== undefined && formulaValue !== undefined) {
+            if (!slotIsEmpty && !disabledBecauseTranslations && value !== undefined && formulaValue !== undefined) {
               let valuesNotEqual = value !== formulaValue;
               // do a more in depth comparisson in case of calculated entity fields
               if (valuesNotEqual && Array.isArray(value) && Array.isArray(formulaValue)) {
                 valuesNotEqual = !GeneralHelpers.arraysEqual(value as string[], formulaValue as string[]);
               }
-              if (!fixed.Disabled && valuesNotEqual) {
+              if (valuesNotEqual) {
                 formulaUpdates[attribute.Name] = formulaValue;
               }
             }
