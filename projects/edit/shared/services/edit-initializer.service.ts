@@ -112,8 +112,9 @@ export class EditInitializerService implements OnDestroy {
 
       for (const ctAttribute of contentType.Attributes) {
         const inputType = inputTypes.find(i => i.Type === ctAttribute.InputType);
-        // 'custom-default' doesn't have inputType
-        if (inputType?.Type === InputTypeConstants.EmptyDefault) { continue; }
+        // 'custom-default' doesn't have inputType and 'empty-default' and 'empty-end' don't save value
+        const empties = [InputTypeConstants.EmptyDefault, InputTypeConstants.EmptyEnd];
+        if (empties.includes(inputType?.Type)) { continue; }
 
         const attributeValues = item.Entity.Attributes[ctAttribute.Name];
         const fieldSettings = FieldsSettingsHelpers.mergeSettings<FieldSettings>(ctAttribute.Metadata, defaultLanguage, defaultLanguage);

@@ -38,7 +38,9 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
     ...defaultGridOptions,
     getRowClass(params) {
       const field: Field = params.data;
-      return field.InputType === InputTypeConstants.EmptyDefault ? 'group-row' : '';
+      if (field.InputType === InputTypeConstants.EmptyDefault) { return 'group-start-row'; }
+      if (field.InputType === InputTypeConstants.EmptyEnd) { return 'group-end-row'; }
+      return '';
     },
     frameworkComponents: {
       contentTypeFieldsTitleComponent: ContentTypeFieldsTitleComponent,

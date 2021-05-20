@@ -91,9 +91,10 @@ export class FieldsSettingsHelpers {
     const indexOfFirstEmpty = contentType.Attributes.findIndex(a => a.InputType === InputTypeConstants.EmptyDefault);
     if (index < indexOfFirstEmpty) { return false; }
 
-    const isNotEmpty = attribute.InputType !== InputTypeConstants.EmptyDefault;
-    const nextIsEmpty = contentType.Attributes[index + 1].InputType === InputTypeConstants.EmptyDefault;
-    if (isNotEmpty && nextIsEmpty) { return true; }
+    if (attribute.InputType === InputTypeConstants.EmptyEnd) { return true; }
+
+    const empties = [InputTypeConstants.EmptyDefault, InputTypeConstants.EmptyEnd];
+    if (empties.includes(contentType.Attributes[index + 1].InputType)) { return true; }
 
     return false;
   }
