@@ -1,7 +1,7 @@
 import { Component, Input, OnDestroy, OnInit, QueryList } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { combineLatest, Observable } from 'rxjs';
-import { distinctUntilChanged, map, mergeMap } from 'rxjs/operators';
+import { map, mergeMap } from 'rxjs/operators';
 import { copyToClipboard } from '../../../../ng-dialogs/src/app/shared/helpers/copy-to-clipboard.helper';
 import { FormulaHelpers } from '../../../shared/helpers';
 import { DesignerState, FormulaTarget, FormulaTargets } from '../../../shared/models';
@@ -182,8 +182,6 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
       mergeMap(designer =>
         this.formulaDesignerService.getFormulaResult$(designer.entityGuid, designer.fieldName, designer.target)
       ),
-      map(result => result?.isError ? 'Calculation failed. Please check logs for more info' : result?.value),
-      distinctUntilChanged(),
     );
 
     this.templateVars$ = combineLatest([hasFormula$, formula$, snippets$, designerState$, result$]).pipe(
@@ -193,7 +191,8 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
           hasFormula,
           designer,
           snippets,
-          result,
+          result: result?.value,
+          resultIsError: result?.isError ?? false,
         };
         return templateVars;
       }),

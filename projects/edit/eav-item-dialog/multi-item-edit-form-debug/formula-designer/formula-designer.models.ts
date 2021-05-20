@@ -7,6 +7,7 @@ export interface FormulaDesignerTemplateVars {
   designer: DesignerState;
   snippets: DesignerSnippet[];
   result: FieldValue;
+  resultIsError: boolean;
 }
 
 export interface HasFormula {
