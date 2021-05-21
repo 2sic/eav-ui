@@ -264,6 +264,8 @@ export class FieldsSettingsService implements OnDestroy {
         entityGuid, entityId, fieldName, formula.target, formValues, inputType, settings, itemHeader,
       );
 
+      if (calculatedValue === undefined) { continue; }
+
       if (originalValue == null || calculatedValue == null) {
         // can't check types, hope for the best
         calculatedSettings[setting] = calculatedValue;
