@@ -68,8 +68,16 @@ export class InputFieldHelpers {
     return wrappers;
   }
 
-  /** Include itemHeader if you need data from prefill */
-  static parseDefaultValue(attributeKey: string, inputType: InputType, settings: FieldSettings, itemHeader?: EavHeader): FieldValue {
+  /** Include itemHeader if you need data from prefill, and set onlyPrefill if you only need parsed prefill */
+  static parseDefaultValue(
+    attributeKey: string,
+    inputType: InputType,
+    settings: FieldSettings,
+    itemHeader?: EavHeader,
+    onlyPrefill?: boolean,
+  ): FieldValue {
+    if (onlyPrefill && itemHeader?.Prefill?.[attributeKey] === undefined) { return; }
+
     let defaultValue = settings.DefaultValue;
 
     if (itemHeader?.Prefill?.[attributeKey]) {

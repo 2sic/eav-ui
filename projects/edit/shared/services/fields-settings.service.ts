@@ -12,6 +12,7 @@ import { FieldLogicManager } from '../../field-logic/field-logic-manager';
 import { FieldsSettingsHelpers, FormulaHelpers, GeneralHelpers, InputFieldHelpers, LocalizationHelpers } from '../helpers';
 // tslint:disable-next-line:max-line-length
 import { ContentTypeSettings, FieldsProps, FormulaFunctionDefault, FormulaTarget, FormulaTargets, FormulaVersions, LogSeverities, SettingsFormulaPrefix, TranslationState } from '../models';
+import { EavHeader } from '../models/eav';
 import { ContentTypeService, InputTypeService, ItemService, LanguageInstanceService, LanguageService } from '../store/ngrx-data';
 import { FormulaDesignerService } from './formula-designer.service';
 
@@ -50,6 +51,7 @@ export class FieldsSettingsService implements OnDestroy {
     this.forceSettings$ = new BehaviorSubject(null);
 
     const item = this.itemService.getItem(entityGuid);
+    const entityId = item.Entity.Id;
     const contentTypeId = InputFieldHelpers.getContentTypeId(item);
     const contentType$ = this.contentTypeService.getContentType$(contentTypeId);
     const itemHeader$ = this.itemService.getItemHeader$(entityGuid);
@@ -114,7 +116,7 @@ export class FieldsSettingsService implements OnDestroy {
             merged.Disabled ??= false;
             merged.DisableTranslation ??= false;
             // run formulas for settings
-            const calculated = this.runSettingsFormulas(entityGuid, attribute.Name, formValues, inputType, merged);
+            const calculated = this.runSettingsFormulas(entityGuid, entityId, attribute.Name, formValues, inputType, merged, itemHeader);
             // special fixes
             calculated.Name = calculated.Name || calculated.Name;
             calculated.Required = ValidationHelper.isRequired(calculated);
@@ -133,7 +135,9 @@ export class FieldsSettingsService implements OnDestroy {
             const fixed = logic?.update(calculated, value) ?? calculated;
 
             // formulas - value
-            const formulaValue = this.runFormula(entityGuid, attribute.Name, FormulaTargets.Value, formValues, inputType, merged);
+            const formulaValue = this.runFormula(
+              entityGuid, entityId, attribute.Name, FormulaTargets.Value, formValues, inputType, merged, itemHeader,
+            );
             // important to compare with undefined because null is allowed value
             if (!slotIsEmpty && !disabledBecauseTranslations && value !== undefined && formulaValue !== undefined) {
               let valuesNotEqual = value !== formulaValue;
@@ -241,10 +245,12 @@ export class FieldsSettingsService implements OnDestroy {
 
   private runSettingsFormulas(
     entityGuid: string,
+    entityId: number,
     fieldName: string,
     formValues: FormValues,
     inputType: InputType,
     settings: FieldSettings,
+    itemHeader: EavHeader,
   ): FieldSettings {
     const formulas = this.formulaDesignerService.getFormulas(entityGuid, fieldName, null, false)
       .filter(formula => formula.target.startsWith(SettingsFormulaPrefix));
@@ -254,7 +260,9 @@ export class FieldsSettingsService implements OnDestroy {
       const setting = formula.target.substring(SettingsFormulaPrefix.length);
 
       const originalValue = calculatedSettings[setting];
-      const calculatedValue = this.runFormula(entityGuid, fieldName, formula.target, formValues, inputType, settings);
+      const calculatedValue = this.runFormula(
+        entityGuid, entityId, fieldName, formula.target, formValues, inputType, settings, itemHeader,
+      );
 
       if (originalValue == null || calculatedValue == null) {
         // can't check types, hope for the best
@@ -279,18 +287,22 @@ export class FieldsSettingsService implements OnDestroy {
 
   private runFormula(
     entityGuid: string,
+    entityId: number,
     fieldName: string,
     target: FormulaTarget,
     formValues: FormValues,
     inputType: InputType,
     settings: FieldSettings,
+    itemHeader: EavHeader,
   ): FieldValue {
     const formula = this.formulaDesignerService.getFormula(entityGuid, fieldName, target, false);
     if (formula == null) { return; }
 
     const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
     const languages = this.languageService.getLanguages();
-    const formulaProps = FormulaHelpers.buildFormulaProps(formula, inputType, settings, formValues, currentLanguage, languages);
+    const formulaProps = FormulaHelpers.buildFormulaProps(
+      formula, entityGuid, entityId, inputType, settings, formValues, currentLanguage, languages, itemHeader,
+    );
     const designerState = this.formulaDesignerService.getDesignerState();
     const isOpenInDesigner = designerState.isOpen
       && designerState.entityGuid === entityGuid

@@ -4,6 +4,7 @@ import { InputType } from '../../../ng-dialogs/src/app/content-type-fields/model
 import { FormValues } from '../../eav-item-dialog/item-edit-form/item-edit-form.models';
 import { DesignerSnippet, FieldOption } from '../../eav-item-dialog/multi-item-edit-form-debug/formula-designer/formula-designer.models';
 import { FormulaCacheItem, FormulaFunction, FormulaProps, FormulaPropsV1, FormulaTargets, FormulaVersion, FormulaVersions, Language } from '../models';
+import { EavHeader } from '../models/eav';
 
 export class FormulaHelpers {
 
@@ -37,11 +38,14 @@ export class FormulaHelpers {
 
   static buildFormulaProps(
     formula: FormulaCacheItem,
+    entityGuid: string,
+    entityId: number,
     inputType: InputType,
     settings: FieldSettings,
     formValues: FormValues,
     currentLanguage: string,
     languages: Language[],
+    itemHeader: EavHeader,
   ): FormulaProps {
 
     switch (formula.version) {
@@ -50,9 +54,20 @@ export class FormulaHelpers {
           data: {
             ...formValues,
             get default() {
+              if (formula.target !== FormulaTargets.Value) { return; }
               return InputFieldHelpers.parseDefaultValue(formula.fieldName, inputType, settings);
             },
-            value: formValues[formula.fieldName],
+            get prefill() {
+              if (formula.target !== FormulaTargets.Value) { return; }
+              return InputFieldHelpers.parseDefaultValue(formula.fieldName, inputType, settings, itemHeader, true);
+            },
+            get value() {
+              if (formula.target === FormulaTargets.Value) {
+                return formValues[formula.fieldName];
+              }
+              const setting = formula.target.substring(formula.target.lastIndexOf('.') + 1);
+              return (settings as Record<string, any>)[setting];
+            },
           },
           context: {
             culture: {
@@ -60,8 +75,9 @@ export class FormulaHelpers {
               name: languages.find(l => l.key === currentLanguage)?.name,
             },
             target: {
-              get default() {
-                return InputFieldHelpers.parseDefaultValue(formula.fieldName, inputType, settings);
+              entity: {
+                guid: entityGuid,
+                id: entityId,
               },
               name: formula.target === FormulaTargets.Value
                 ? formula.fieldName
@@ -69,7 +85,6 @@ export class FormulaHelpers {
               type: formula.target === FormulaTargets.Value
                 ? formula.target
                 : formula.target.substring(0, formula.target.lastIndexOf('.')),
-              value: formValues[formula.fieldName],
             },
           },
         };

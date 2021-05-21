@@ -62,10 +62,14 @@ export interface FormulaV1CtxCulture {
 }
 
 export interface FormulaV1CtxTarget {
-  default: FieldValue;
+  entity: FormulaV1CtxTargetEntity;
   name: string;
   type: string;
-  value: FieldValue;
+}
+
+export interface FormulaV1CtxTargetEntity {
+  guid: string;
+  id: number;
 }
 
 export interface FormulaResult {

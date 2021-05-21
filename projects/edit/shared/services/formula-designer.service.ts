@@ -45,9 +45,12 @@ export class FormulaDesignerService implements OnDestroy {
   }
 
   getFormula(entityGuid: string, fieldName: string, target: FormulaTarget, allowDraft: boolean): FormulaCacheItem {
-    const isDraft = allowDraft ? [true, false] : [false];
     return this.formulaCache$.value.find(
-      f => f.entityGuid === entityGuid && f.fieldName === fieldName && f.target === target && isDraft.includes(f.isDraft)
+      f =>
+        f.entityGuid === entityGuid
+        && f.fieldName === fieldName
+        && f.target === target
+        && (allowDraft ? true : !f.isDraft)
     );
   }
 
@@ -67,7 +70,7 @@ export class FormulaDesignerService implements OnDestroy {
         (entityGuid ? f.entityGuid === entityGuid : true)
         && (fieldName ? f.fieldName === fieldName : true)
         && (target ? f.target === target : true)
-        && (!allowDraft ? f.isDraft === false : true)
+        && (allowDraft ? true : !f.isDraft)
     );
   }
 
