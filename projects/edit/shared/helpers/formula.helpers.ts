@@ -107,6 +107,11 @@ export class FormulaHelpers {
           label: 'data.default',
         };
 
+        const prefillSnippet: DesignerSnippet = {
+          code: 'data.prefill',
+          label: 'data.prefill',
+        };
+
         const fieldSnippets = fieldOptions.map(field => {
           const code = `data.${field.fieldName}`;
           const fieldSnippet: DesignerSnippet = {
@@ -116,7 +121,7 @@ export class FormulaHelpers {
           return fieldSnippet;
         });
 
-        return [valueSnippet, defaultSnippet, ...fieldSnippets];
+        return [valueSnippet, defaultSnippet, prefillSnippet, ...fieldSnippets];
       default:
         return;
     }
