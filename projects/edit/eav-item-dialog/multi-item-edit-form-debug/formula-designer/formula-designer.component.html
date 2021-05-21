@@ -41,7 +41,8 @@
           </mat-option>
         </mat-select>
         <input *ngIf="freeTextTarget" matInput [ngModel]="data.designer.target"
-          (ngModelChange)="selectedChanged(SelectTargets.Target, $event)">
+          (ngModelChange)="selectedChanged(SelectTargets.Target, $event)"
+          [disabled]="data.designer.editMode || data.designer.entityGuid == null || data.designer.fieldName == null">
       </mat-form-field>
 
       <button mat-icon-button class="formula-target-freetext" matTooltip="FreeText Target"
