@@ -115,6 +115,7 @@ export class FieldsSettingsService implements OnDestroy {
             merged.Required ??= false;
             merged.Disabled ??= false;
             merged.DisableTranslation ??= false;
+            merged.Collapsed = merged.DefaultCollapsed;
             // run formulas for settings
             const calculated = this.runSettingsFormulas(entityGuid, entityId, attribute.Name, formValues, inputType, merged, itemHeader);
             // special fixes

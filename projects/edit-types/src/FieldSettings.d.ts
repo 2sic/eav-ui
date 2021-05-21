@@ -163,6 +163,8 @@ interface EntityQuery extends Entity {
  */
 interface EmptyDefault extends All {
   DefaultCollapsed: boolean;
+  /** DefaultCollapsed is copied into Collapsed to allow formulas to alter this value */
+  Collapsed: boolean;
 }
 
 /**

@@ -4,7 +4,7 @@
     <div fxFlex="auto" fxLayoutAlign="start center" (click)="toggleCollapse()">
       <div fxLayoutAlign="start center" class="mat-card-title-group mat-body-1">
         <mat-icon class="title-arrow">
-          {{ collapse ? 'keyboard_arrow_down' : 'keyboard_arrow_up' }}
+          {{ (collapsed$ | async) ? 'keyboard_arrow_down' : 'keyboard_arrow_up' }}
         </mat-icon>
         <span class="title">
           {{ (label$ | async) || ('ItemCard.DefaultTitle' | translate) }}
@@ -13,7 +13,7 @@
     </div>
   </div>
 
-  <mat-card-content class="mat-card-content-group-child" [style.display]="collapse ? 'none' : 'block'">
+  <mat-card-content class="mat-card-content-group-child" [style.display]="(collapsed$ | async) ? 'none' : 'block'">
     <div class="mdc-layout-grid">
       <div class="mdc-layout-grid__inner">
         <div class="mdc-layout-grid__cell--span-12 mat-body-1" align="start" *ngIf="notes$ | async as notes">
