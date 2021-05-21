@@ -7,7 +7,7 @@
           {{ (collapsed$ | async) ? 'keyboard_arrow_down' : 'keyboard_arrow_up' }}
         </mat-icon>
         <span class="title">
-          {{ (label$ | async) || ('ItemCard.DefaultTitle' | translate) }}
+          {{ (label$ | async) || config.fieldName }}
         </span>
       </div>
     </div>
