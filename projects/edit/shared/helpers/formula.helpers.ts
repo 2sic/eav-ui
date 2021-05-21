@@ -54,8 +54,11 @@ export class FormulaHelpers {
           data: {
             ...formValues,
             get default() {
-              if (formula.target !== FormulaTargets.Value) { return; }
-              return InputFieldHelpers.parseDefaultValue(formula.fieldName, inputType, settings);
+              if (formula.target === FormulaTargets.Value) {
+                return InputFieldHelpers.parseDefaultValue(formula.fieldName, inputType, settings);
+              }
+              const setting = formula.target.substring(formula.target.lastIndexOf('.') + 1);
+              return (settings as Record<string, any>)[setting];
             },
             get prefill() {
               if (formula.target !== FormulaTargets.Value) { return; }
