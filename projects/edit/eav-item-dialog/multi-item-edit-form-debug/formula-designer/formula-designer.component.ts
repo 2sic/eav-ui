@@ -23,6 +23,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
   loadError = false;
   entityOptions: EntityOption[];
   fieldOptions: Record<string, FieldOption[]>;
+  freeTextType = false;
   templateVars$: Observable<FormulaDesignerTemplateVars>;
 
   constructor(private formulaDesignerService: FormulaDesignerService, private snackBar: MatSnackBar) { }

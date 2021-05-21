@@ -30,7 +30,8 @@
 
       <mat-form-field color="accent">
         <mat-label>Formula Type</mat-label>
-        <mat-select [ngModel]="data.designer.target" (ngModelChange)="selectedChanged(SelectTargets.Target, $event)"
+        <mat-select *ngIf="!freeTextType" [ngModel]="data.designer.target"
+          (ngModelChange)="selectedChanged(SelectTargets.Target, $event)"
           [disabled]="data.designer.editMode || data.designer.entityGuid == null || data.designer.fieldName == null">
           <mat-option *ngFor="let formulaTarget of FormulaTargets | keyvalue" [value]="formulaTarget.value">
             <span
@@ -39,7 +40,14 @@
             </span>
           </mat-option>
         </mat-select>
+        <input *ngIf="freeTextType" matInput [ngModel]="data.designer.target"
+          (ngModelChange)="selectedChanged(SelectTargets.Target, $event)">
       </mat-form-field>
+
+      <button mat-icon-button class="formula-type-freetext" matTooltip="FreeText Formula Type"
+        (click)="freeTextType = !freeTextType">
+        <mat-icon>text_fields</mat-icon>
+      </button>
     </div>
 
     <div class="formula-box">

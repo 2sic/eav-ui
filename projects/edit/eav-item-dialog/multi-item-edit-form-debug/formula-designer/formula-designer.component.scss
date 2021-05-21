@@ -10,6 +10,7 @@
 
 .formula-context-box {
   display: flex;
+  align-items: center;
 
   .mat-form-field {
     font-size: 14px;
@@ -17,6 +18,13 @@
 
   .mat-form-field:not(:first-of-type) {
     margin-left: 8px;
+  }
+
+  .formula-type-freetext {
+    margin-left: 8px;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
   }
 }
 
