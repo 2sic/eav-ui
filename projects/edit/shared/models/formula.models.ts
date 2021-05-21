@@ -1,6 +1,7 @@
 import { FieldValue } from '../../../edit-types';
 
 export interface FormulaCacheItem {
+  cache: Record<string, any>;
   entityGuid: string;
   fieldName: string;
   /** Function built when formula is saved */
