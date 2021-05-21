@@ -45,6 +45,7 @@
       </mat-form-field>
 
       <button mat-icon-button class="formula-target-freetext" matTooltip="FreeText Target"
+        [disabled]="data.designer.editMode || data.designer.entityGuid == null || data.designer.fieldName == null"
         (click)="freeTextTarget = !freeTextTarget">
         <mat-icon>text_fields</mat-icon>
       </button>
