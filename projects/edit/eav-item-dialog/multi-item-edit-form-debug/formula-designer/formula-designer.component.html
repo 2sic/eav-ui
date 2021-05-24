@@ -4,11 +4,13 @@
     <div class="formula-context-box">
       <mat-form-field color="accent">
         <mat-label>Entity</mat-label>
-        <mat-select [ngModel]="data.designer.entityGuid" (ngModelChange)="selectedChanged(SelectTargets.Entity, $event)"
+        <mat-select [ngModel]="data.designer.entityGuid"
+          (ngModelChange)="selectedChanged(SelectTargets.Entity, $event, data.fieldOptions)"
           [disabled]="data.designer.editMode">
-          <mat-option *ngFor="let entity of entityOptions; trackBy: trackEntityOptions" [value]="entity.entityGuid">
-            <span [ngClass]="{ 'has-formula': data.hasFormula[entity.entityGuid] != null }">
-              {{ entity.label }}
+          <mat-option *ngFor="let entityOption of data.entityOptions; trackBy: trackEntityOptions"
+            [value]="entityOption.entityGuid">
+            <span [ngClass]="{ 'has-formula': entityOption.hasFormula }">
+              {{ entityOption.label }}
             </span>
           </mat-option>
         </mat-select>
@@ -16,13 +18,14 @@
 
       <mat-form-field color="accent">
         <mat-label>Attribute</mat-label>
-        <mat-select [ngModel]="data.designer.fieldName" (ngModelChange)="selectedChanged(SelectTargets.Field, $event)"
+        <mat-select [ngModel]="data.designer.fieldName"
+          (ngModelChange)="selectedChanged(SelectTargets.Field, $event, data.fieldOptions)"
           [disabled]="data.designer.editMode || data.designer.entityGuid == null">
-          <mat-option *ngFor="let field of fieldOptions[data.designer.entityGuid]; trackBy: trackFieldOptions"
-            [value]="field.fieldName">
-            <span
-              [ngClass]="{ 'has-formula': data.hasFormula[data.designer.entityGuid] != null && data.hasFormula[data.designer.entityGuid][field.fieldName] != null }">
-              {{ field.fieldName }}
+          <mat-option
+            *ngFor="let fieldOption of data.fieldOptions[data.designer.entityGuid]; trackBy: trackFieldOptions"
+            [value]="fieldOption.fieldName">
+            <span [ngClass]="{ 'has-formula': fieldOption.hasFormula }">
+              {{ fieldOption.fieldName }}
             </span>
           </mat-option>
         </mat-select>
@@ -31,17 +34,17 @@
       <mat-form-field color="accent">
         <mat-label>Target</mat-label>
         <mat-select *ngIf="!freeTextTarget" [ngModel]="data.designer.target"
-          (ngModelChange)="selectedChanged(SelectTargets.Target, $event)"
+          (ngModelChange)="selectedChanged(SelectTargets.Target, $event, data.fieldOptions)"
           [disabled]="data.designer.editMode || data.designer.entityGuid == null || data.designer.fieldName == null">
-          <mat-option *ngFor="let formulaTarget of FormulaTargets | keyvalue" [value]="formulaTarget.value">
-            <span
-              [ngClass]="{ 'has-formula': data.hasFormula[data.designer.entityGuid] != null && data.hasFormula[data.designer.entityGuid][data.designer.fieldName] != null && data.hasFormula[data.designer.entityGuid][data.designer.fieldName][formulaTarget.value] }">
-              {{ formulaTarget.key }}
+          <mat-option *ngFor="let targetOption of data.targetOptions[data.designer.entityGuid][data.designer.fieldName]"
+            [value]="targetOption.target">
+            <span [ngClass]="{ 'has-formula': targetOption.hasFormula }">
+              {{ targetOption.label }}
             </span>
           </mat-option>
         </mat-select>
         <input *ngIf="freeTextTarget" matInput [ngModel]="data.designer.target"
-          (ngModelChange)="selectedChanged(SelectTargets.Target, $event)"
+          (ngModelChange)="selectedChanged(SelectTargets.Target, $event, data.fieldOptions)"
           [disabled]="data.designer.editMode || data.designer.entityGuid == null || data.designer.fieldName == null">
       </mat-form-field>
 

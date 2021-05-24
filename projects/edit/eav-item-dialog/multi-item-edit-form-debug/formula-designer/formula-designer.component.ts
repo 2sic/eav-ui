@@ -1,14 +1,15 @@
 import { Component, Input, OnDestroy, OnInit, QueryList } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { combineLatest, Observable } from 'rxjs';
-import { map, mergeMap } from 'rxjs/operators';
+import { map, mergeMap, tap } from 'rxjs/operators';
 import { copyToClipboard } from '../../../../ng-dialogs/src/app/shared/helpers/copy-to-clipboard.helper';
 import { FormulaHelpers } from '../../../shared/helpers';
 import { DesignerState, FormulaTarget, FormulaTargets } from '../../../shared/models';
 import { FormulaDesignerService } from '../../../shared/services';
 import { ItemEditFormComponent } from '../../item-edit-form/item-edit-form.component';
 import { defaultFormula } from './formula-designer.constants';
-import { DesignerSnippet, EntityOption, FieldOption, FormulaDesignerTemplateVars, HasFormula, SelectTarget, SelectTargets } from './formula-designer.models';
+// tslint:disable-next-line:max-line-length
+import { DesignerSnippet, EntityOption, FieldOption, FieldOptions, FormulaDesignerTemplateVars, SelectTarget, SelectTargets, TargetOption, TargetOptions } from './formula-designer.models';
 
 @Component({
   selector: 'app-formula-designer',
@@ -21,8 +22,6 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
   FormulaTargets = FormulaTargets;
   SelectTargets = SelectTargets;
   loadError = false;
-  entityOptions: EntityOption[];
-  fieldOptions: Record<string, FieldOption[]>;
   freeTextTarget = false;
   templateVars$: Observable<FormulaDesignerTemplateVars>;
 
@@ -35,7 +34,6 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
       return;
     }
     this.formulaDesignerService.setDesignerOpen(true);
-    this.buildOptions();
     this.buildTemplateVars();
   }
 
@@ -55,14 +53,14 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     return snippet.code;
   }
 
-  selectedChanged(target: SelectTarget, value: string | FormulaTarget): void {
+  selectedChanged(target: SelectTarget, value: string | FormulaTarget, fieldOptions: FieldOptions): void {
     const newState: DesignerState = {
       ...this.formulaDesignerService.getDesignerState(),
     };
     switch (target) {
       case SelectTargets.Entity:
         newState.entityGuid = value;
-        newState.fieldName = this.fieldOptions[value]?.[0]?.fieldName;
+        newState.fieldName = fieldOptions[value]?.[0]?.fieldName;
         break;
       case SelectTargets.Field:
         newState.fieldName = value;
@@ -121,53 +119,92 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     window.open('https://r.2sxc.org/functions', '_blank');
   }
 
-  private buildOptions(): void {
-    this.entityOptions = this.itemEditFormRefs.map(itemEditFormRef => {
-      const entity: EntityOption = {
-        entityGuid: itemEditFormRef.entityGuid,
-        label: itemEditFormRef.fieldsSettingsService.getContentTypeSettings()._itemTitle,
-      };
-      return entity;
-    });
-
-    this.fieldOptions = this.itemEditFormRefs.reduce((acc, itemEditFormRef) => {
-      const fields = Object.keys(itemEditFormRef.fieldsSettingsService.getFieldsProps()).map(fieldName => {
-        const field: FieldOption = {
-          fieldName,
-          label: fieldName,
-        };
-        return field;
-      });
-      acc[itemEditFormRef.entityGuid] = fields;
-      return acc;
-    }, {} as Record<string, FieldOption[]>);
-
-    const oldState = this.formulaDesignerService.getDesignerState();
-    if (oldState.entityGuid == null && oldState.fieldName == null && oldState.target == null) {
-      const newState: DesignerState = {
-        ...oldState,
-        entityGuid: this.entityOptions[0]?.entityGuid,
-        fieldName: this.fieldOptions[this.entityOptions[0]?.entityGuid]?.[0]?.fieldName,
-        target: this.FormulaTargets.Value,
-      };
-      this.formulaDesignerService.setDesignerState(newState);
-    }
-  }
-
   private buildTemplateVars(): void {
-    const hasFormula$ = this.formulaDesignerService.getFormulas$().pipe(
-      map(formulas => {
-        const hasFormula: HasFormula = {};
-        for (const formula of formulas) {
-          if (hasFormula[formula.entityGuid] == null) {
-            hasFormula[formula.entityGuid] = {};
+    const options$ = combineLatest([
+      this.formulaDesignerService.getDesignerState$(),
+      this.formulaDesignerService.getFormulas$()
+    ]).pipe(
+      map(([designer, formulas]) => {
+        const entityOptions = this.itemEditFormRefs.map(itemEditFormRef => {
+          const entityGuid = itemEditFormRef.entityGuid;
+          const entity: EntityOption = {
+            entityGuid,
+            hasFormula: formulas.some(f => f.entityGuid === entityGuid),
+            label: itemEditFormRef.fieldsSettingsService.getContentTypeSettings()._itemTitle,
+          };
+          return entity;
+        });
+
+        const fieldOptions: FieldOptions = {};
+        this.itemEditFormRefs.forEach(itemEditFormRef => {
+          const entityGuid = itemEditFormRef.entityGuid;
+          const fields = Object.keys(itemEditFormRef.fieldsSettingsService.getFieldsProps()).map(fieldName => {
+            const field: FieldOption = {
+              fieldName,
+              hasFormula: formulas.some(f => f.entityGuid === entityGuid && f.fieldName === fieldName),
+              label: fieldName,
+            };
+            return field;
+          });
+          fieldOptions[entityGuid] = fields;
+        });
+
+        const targetOptions: TargetOptions = {};
+        this.itemEditFormRefs.forEach(itemEditFormRef => {
+          const entityGuid = itemEditFormRef.entityGuid;
+          if (targetOptions[entityGuid] == null) {
+            targetOptions[entityGuid] = {};
           }
-          if (hasFormula[formula.entityGuid][formula.fieldName] == null) {
-            hasFormula[formula.entityGuid][formula.fieldName] = {};
-          }
-          hasFormula[formula.entityGuid][formula.fieldName][formula.target] = true;
+          const fieldNames = Object.keys(itemEditFormRef.fieldsSettingsService.getFieldsProps());
+          fieldNames.forEach(fieldName => {
+            const formulasForThisField = formulas.filter(f => f.entityGuid === entityGuid && f.fieldName === fieldName);
+            const defaultTargets = Object.values(FormulaTargets).map(target => {
+              const targetOption: TargetOption = {
+                hasFormula: formulas.some(f => f.entityGuid === entityGuid && f.fieldName === fieldName && f.target === target),
+                label: target.substring(target.lastIndexOf('.') + 1),
+                target,
+              };
+              return targetOption;
+            });
+            const otherTargets = formulasForThisField.map(formula => {
+              const existsInDefault = defaultTargets.some(t => t.target === formula.target);
+              if (existsInDefault) { return; }
+              const targetOption: TargetOption = {
+                hasFormula: true,
+                label: formula.target.substring(formula.target.lastIndexOf('.') + 1),
+                target: formula.target,
+              };
+              return targetOption;
+            }).filter(t => !!t);
+
+            const merged = [...defaultTargets, ...otherTargets];
+            if (designer.entityGuid != null && designer.fieldName != null && designer.target != null) {
+              if (!merged.some(t => t.target === designer.target)) {
+                const targetOption: TargetOption = {
+                  hasFormula: formulas.some(f => f.entityGuid === entityGuid && f.fieldName === fieldName && f.target === designer.target),
+                  label: designer.target.substring(designer.target.lastIndexOf('.') + 1),
+                  target: designer.target,
+                };
+                merged.push(targetOption);
+              }
+            }
+            targetOptions[itemEditFormRef.entityGuid][fieldName] = merged;
+          });
+        });
+
+        return { entityOptions, fieldOptions, targetOptions };
+      }),
+      tap(options => {
+        const oldState = this.formulaDesignerService.getDesignerState();
+        if (oldState.entityGuid == null && oldState.fieldName == null && oldState.target == null) {
+          const newState: DesignerState = {
+            ...oldState,
+            entityGuid: options.entityOptions[0]?.entityGuid,
+            fieldName: options.fieldOptions[options.entityOptions[0]?.entityGuid]?.[0]?.fieldName,
+            target: this.FormulaTargets.Value,
+          };
+          this.formulaDesignerService.setDesignerState(newState);
         }
-        return hasFormula;
       }),
     );
     const designerState$ = this.formulaDesignerService.getDesignerState$();
@@ -176,8 +213,11 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
         this.formulaDesignerService.getFormula$(designer.entityGuid, designer.fieldName, designer.target, true)
       ),
     );
-    const snippets$ = formula$.pipe(
-      map(formula => formula != null ? FormulaHelpers.buildDesignerSnippets(formula, this.fieldOptions[formula.entityGuid]) : []),
+    const snippets$ = combineLatest([options$, formula$]).pipe(
+      map(([options, formula]) => formula != null
+        ? FormulaHelpers.buildDesignerSnippets(formula, options.fieldOptions[formula.entityGuid])
+        : []
+      ),
     );
     const result$ = designerState$.pipe(
       mergeMap(designer =>
@@ -185,11 +225,13 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
       ),
     );
 
-    this.templateVars$ = combineLatest([hasFormula$, formula$, snippets$, designerState$, result$]).pipe(
-      map(([hasFormula, formula, snippets, designer, result]) => {
+    this.templateVars$ = combineLatest([options$, formula$, snippets$, designerState$, result$]).pipe(
+      map(([options, formula, snippets, designer, result]) => {
         const templateVars: FormulaDesignerTemplateVars = {
+          entityOptions: options.entityOptions,
+          fieldOptions: options.fieldOptions,
+          targetOptions: options.targetOptions,
           formula,
-          hasFormula,
           designer,
           snippets,
           result: result?.value,

@@ -30,6 +30,7 @@ export type FormulaVersion = typeof FormulaVersions[keyof typeof FormulaVersions
 
 export const FormulaTargets = {
   Disabled: 'Field.Settings.Disabled',
+  Name: 'Field.Settings.Name',
   Required: 'Field.Settings.Required',
   Value: 'Field.Value',
   Visible: 'Field.Settings.Visible',
