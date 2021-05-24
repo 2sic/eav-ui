@@ -119,7 +119,7 @@ export class FieldsSettingsService implements OnDestroy {
             // run formulas for settings
             const calculated = this.runSettingsFormulas(entityGuid, entityId, attribute.Name, formValues, inputType, merged, itemHeader);
             // special fixes
-            calculated.Name = calculated.Name || calculated.Name;
+            calculated.Name = calculated.Name || attribute.Name;
             calculated.Required = ValidationHelper.isRequired(calculated);
             calculated.DisableTranslation = FieldsSettingsHelpers.findDisableTranslation(
               inputType, attributeValues, defaultLanguage, attribute.Metadata,
