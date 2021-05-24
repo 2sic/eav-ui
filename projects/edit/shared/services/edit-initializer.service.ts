@@ -117,7 +117,9 @@ export class EditInitializerService implements OnDestroy {
         if (empties.includes(inputType?.Type)) { continue; }
 
         const attributeValues = item.Entity.Attributes[ctAttribute.Name];
-        const fieldSettings = FieldsSettingsHelpers.mergeSettings<FieldSettings>(ctAttribute.Metadata, defaultLanguage, defaultLanguage);
+        const fieldSettings = FieldsSettingsHelpers.setDefaultFieldSettings(
+          FieldsSettingsHelpers.mergeSettings<FieldSettings>(ctAttribute.Metadata, defaultLanguage, defaultLanguage)
+        );
 
         if (languages.length === 0) {
           const firstValue = LocalizationHelpers.getBestValue(attributeValues, '*', '*', BestValueModes.Default);

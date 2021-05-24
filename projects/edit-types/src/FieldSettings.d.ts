@@ -12,7 +12,10 @@ interface All {
   DefaultValue: string;
   Placeholder: string;
   Notes: string;
+  /** @deprecated */
   VisibleInEditUI: boolean;
+  /** VisibleInEditUi is copied Visible and then deleted */
+  Visible: boolean;
   Required: boolean;
   Disabled: boolean;
   DisableTranslation: boolean;
@@ -160,8 +163,9 @@ interface EntityQuery extends Entity {
  * @empty-default
  */
 interface EmptyDefault extends All {
+  /** @deprecated */
   DefaultCollapsed: boolean;
-  /** DefaultCollapsed is copied into Collapsed to allow formulas to alter this value */
+  /** DefaultCollapsed is copied to Collapsed and then deleted  */
   Collapsed: boolean;
 }
 

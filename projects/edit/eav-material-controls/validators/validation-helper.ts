@@ -8,7 +8,7 @@ export class ValidationHelper {
 
   static isRequired(settings: FieldSettings): boolean {
     // hidden field can't be required
-    const visible = settings.VisibleInEditUI ?? true;
+    const visible = settings.Visible ?? true;
     if (!visible) { return false; }
 
     const required = settings.Required ?? false;
@@ -17,7 +17,7 @@ export class ValidationHelper {
 
   static getValidators(settings: FieldSettings, attribute: EavContentTypeAttribute): ValidatorFn[] {
     // hidden field can't have validators
-    const visible = settings.VisibleInEditUI ?? true;
+    const visible = settings.Visible ?? true;
     if (!visible) { return []; }
 
     const validators: ValidatorFn[] = [];

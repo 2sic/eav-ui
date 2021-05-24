@@ -19,7 +19,7 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
 
-  visibleInEditUI$: Observable<boolean>;
+  visible$: Observable<boolean>;
   collapsed$: BehaviorSubject<boolean>;
   label$: Observable<string>;
   notes$: Observable<string>;
@@ -46,7 +46,7 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
       })
     );
 
-    this.visibleInEditUI$ = this.settings$.pipe(map(settings => settings.VisibleInEditUI), distinctUntilChanged());
+    this.visible$ = this.settings$.pipe(map(settings => settings.Visible), distinctUntilChanged());
     this.label$ = this.settings$.pipe(map(settings => settings.Name), distinctUntilChanged());
     this.notes$ = this.settings$.pipe(map(settings => settings.Notes), distinctUntilChanged());
 

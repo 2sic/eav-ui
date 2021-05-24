@@ -27,7 +27,7 @@ export class HiddenWrapperComponent extends BaseComponent implements FieldWrappe
 
   ngOnInit() {
     super.ngOnInit();
-    this.hidden$ = this.settings$.pipe(map(settings => !settings.VisibleInEditUI), distinctUntilChanged());
+    this.hidden$ = this.settings$.pipe(map(settings => !settings.Visible), distinctUntilChanged());
   }
 
   ngOnDestroy() {

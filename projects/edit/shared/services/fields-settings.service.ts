@@ -109,18 +109,9 @@ export class FieldsSettingsService implements OnDestroy {
             // custom-default has no inputType
             const inputType = inputTypes.find(i => i.Type === attribute.InputType);
 
-            const merged = FieldsSettingsHelpers.mergeSettings<FieldSettings>(attribute.Metadata, currentLanguage, defaultLanguage);
-            // update @All settings
-            merged.Name ??= '';
-            merged.Placeholder ??= '';
-            merged.Notes ??= '';
-            merged.VisibleInEditUI ??= true;
-            merged.Required ??= false;
-            merged.Disabled ??= false;
-            merged.DisableTranslation ??= false;
-            if (merged.DefaultCollapsed != null) {
-              merged.Collapsed = merged.DefaultCollapsed;
-            }
+            const merged = FieldsSettingsHelpers.setDefaultFieldSettings(
+              FieldsSettingsHelpers.mergeSettings<FieldSettings>(attribute.Metadata, defaultLanguage, defaultLanguage)
+            );
 
             // run formulas
             const formulaResult = this.runFormulas(entityGuid, entityId, attribute.Name, formValues, inputType, merged, itemHeader);
@@ -159,8 +150,8 @@ export class FieldsSettingsService implements OnDestroy {
             const validators = ValidationHelper.getValidators(fixed, attribute);
             const calculatedInputType = InputFieldHelpers.calculateInputType(attribute, inputTypes);
             const wrappers = InputFieldHelpers.getWrappers(fixed, calculatedInputType);
-            const initialSettings = FieldsSettingsHelpers.mergeSettings<FieldSettings>(
-              attribute.Metadata, this.eavService.eavConfig.lang, defaultLanguage,
+            const initialSettings = FieldsSettingsHelpers.setDefaultFieldSettings(
+              FieldsSettingsHelpers.mergeSettings<FieldSettings>(attribute.Metadata, this.eavService.eavConfig.lang, defaultLanguage)
             );
             const initialDisabled = initialSettings.Disabled ?? false;
             const fieldTranslation = FieldsSettingsHelpers.getTranslationState(

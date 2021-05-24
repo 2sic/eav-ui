@@ -32,7 +32,7 @@ export const FormulaTargets = {
   Disabled: 'Field.Settings.Disabled',
   Required: 'Field.Settings.Required',
   Value: 'Field.Value',
-  Visible: 'Field.Settings.VisibleInEditUI',
+  Visible: 'Field.Settings.Visible',
 } as const;
 
 export const SettingsFormulaPrefix = FormulaTargets.Disabled.substring(0, FormulaTargets.Disabled.lastIndexOf('.') + 1);

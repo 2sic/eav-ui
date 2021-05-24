@@ -9,7 +9,6 @@ import { EavHeader } from '../models/eav';
 
 export class FormulaHelpers {
 
-  // identifier -> currentLanguage:de-de:defaultLanguage:en-us:fieldName:Ante = settings.
   static encodeFormulaCache(
     fieldName: string,
     currentLanguage: string,
