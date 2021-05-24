@@ -91,7 +91,16 @@ export class FormulaDesignerService implements OnDestroy {
         const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
         const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
         const itemTitle = FieldsSettingsHelpers.getContentTypeTitle(contentType, currentLanguage, defaultLanguage);
-        this.loggingService.addLog(LogSeverities.Error, `Error building formula for Entity: "${itemTitle}", Field: "${fieldName}", Target: "${target}"`, error);
+        const errorLabel = `Error building formula for Entity: "${itemTitle}", Field: "${fieldName}", Target: "${target}"`;
+        this.loggingService.addLog(LogSeverities.Error, errorLabel, error);
+        const designerState = this.getDesignerState();
+        const isOpenInDesigner = designerState.isOpen
+          && designerState.entityGuid === entityGuid
+          && designerState.fieldName === fieldName
+          && designerState.target === target;
+        if (isOpenInDesigner) {
+          console.error(errorLabel, error);
+        }
       }
     }
 

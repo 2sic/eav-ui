@@ -361,9 +361,12 @@ export class FieldsSettingsService implements OnDestroy {
           return valueDefault;
       }
     } catch (error) {
+      const errorLabel = `Error in formula calculation for Entity: "${ctSettings._itemTitle}", Field: "${fieldName}", Target: "${target}"`;
       this.formulaDesignerService.upsertFormulaResult(entityGuid, fieldName, target, undefined, true);
-      this.loggingService.addLog(LogSeverities.Error, `Error in formula calculation for Entity: "${ctSettings._itemTitle}", Field: "${fieldName}", Target: "${target}"`, error);
-      if (!isOpenInDesigner) {
+      this.loggingService.addLog(LogSeverities.Error, errorLabel, error);
+      if (isOpenInDesigner) {
+        console.error(errorLabel, error);
+      } else {
         this.loggingService.showMessage(this.translate.instant('Errors.FormulaCalculation'), 2000);
       }
     }
