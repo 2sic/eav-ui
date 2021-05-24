@@ -3,10 +3,48 @@ import { FieldSettings } from '../../../edit-types';
 import { InputType } from '../../../ng-dialogs/src/app/content-type-fields/models/input-type.model';
 import { FormValues } from '../../eav-item-dialog/item-edit-form/item-edit-form.models';
 import { DesignerSnippet, FieldOption } from '../../eav-item-dialog/multi-item-edit-form-debug/formula-designer/formula-designer.models';
-import { FormulaCacheItem, FormulaFunction, FormulaProps, FormulaPropsV1, FormulaTargets, FormulaVersion, FormulaVersions, Language } from '../models';
+// tslint:disable-next-line:max-line-length
+import { FormulaCacheItem, FormulaFunction, FormulaProps, FormulaPropsV1, FormulaTargets, FormulaVersion, FormulaVersions, Language, SettingsFormulaPrefix } from '../models';
 import { EavHeader } from '../models/eav';
 
 export class FormulaHelpers {
+
+  // identifier -> currentLanguage:de-de:defaultLanguage:en-us:fieldName:Ante = settings.
+  static encodeFormulaCache(
+    fieldName: string,
+    currentLanguage: string,
+    defaultLanguage: string,
+    settings: FieldSettings,
+    cache: Record<string, FieldSettings>,
+  ): Record<string, FieldSettings> {
+    const key = `fieldName:${fieldName}:currentLanguage:${currentLanguage}:defaultLanguage:${defaultLanguage}`;
+    const newCache = {
+      ...cache,
+      [key]: settings,
+    };
+    return newCache;
+  }
+
+  static parseFormulaCache(
+    fieldName: string,
+    currentLanguage: string,
+    defaultLanguage: string,
+    cache: Record<string, FieldSettings>,
+  ): Record<string, any> {
+    if (cache == null) { return; }
+
+    const found = Object.keys(cache).find(key => {
+      const keyValueParts = key.split(':');
+      const obj: Record<string, string> = {};
+      for (let i = 0; i < keyValueParts.length; i = i + 2) {
+        obj[keyValueParts[i]] = keyValueParts[i + 1];
+      }
+      return obj.fieldName === fieldName && obj.currentLanguage === currentLanguage && obj.defaultLanguage === defaultLanguage;
+    });
+    if (found == null) { return; }
+
+    return cache[found];
+  }
 
   static findFormulaVersion(formula: string): FormulaVersion {
     const cleanFormula = formula.trim();
@@ -42,6 +80,7 @@ export class FormulaHelpers {
     entityId: number,
     inputType: InputType,
     settings: FieldSettings,
+    previousSettings: FieldSettings,
     formValues: FormValues,
     currentLanguage: string,
     languages: Language[],
@@ -57,8 +96,10 @@ export class FormulaHelpers {
               if (formula.target === FormulaTargets.Value) {
                 return InputFieldHelpers.parseDefaultValue(formula.fieldName, inputType, settings);
               }
-              const setting = formula.target.substring(formula.target.lastIndexOf('.') + 1);
-              return (settings as Record<string, any>)[setting];
+              if (formula.target.startsWith(SettingsFormulaPrefix)) {
+                const settingName = formula.target.substring(SettingsFormulaPrefix.length);
+                return (settings as Record<string, any>)[settingName];
+              }
             },
             get prefill() {
               if (formula.target !== FormulaTargets.Value) { return; }
@@ -68,8 +109,10 @@ export class FormulaHelpers {
               if (formula.target === FormulaTargets.Value) {
                 return formValues[formula.fieldName];
               }
-              const setting = formula.target.substring(formula.target.lastIndexOf('.') + 1);
-              return (settings as Record<string, any>)[setting];
+              if (formula.target.startsWith(SettingsFormulaPrefix)) {
+                const settingName = formula.target.substring(SettingsFormulaPrefix.length);
+                return (previousSettings as Record<string, any>)[settingName];
+              }
             },
           },
           context: {

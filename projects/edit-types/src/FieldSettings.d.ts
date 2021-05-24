@@ -16,8 +16,6 @@ interface All {
   Required: boolean;
   Disabled: boolean;
   DisableTranslation: boolean;
-  Errors: unknown;
-  Warnings: unknown;
   ValidationRegExJavaScript: string;
   Formulas?: string[];
   CustomJavaScript: string;

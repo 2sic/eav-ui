@@ -1,4 +1,4 @@
-import { FieldValue } from '../../../edit-types';
+import { FieldSettings, FieldValue } from '../../../edit-types';
 
 export interface FormulaCacheItem {
   cache: Record<string, any>;
@@ -71,6 +71,11 @@ export interface FormulaV1CtxTarget {
 export interface FormulaV1CtxTargetEntity {
   guid: string;
   id: number;
+}
+
+export interface RunFormulasResult {
+  settings: FieldSettings;
+  value: FieldValue;
 }
 
 export interface FormulaResult {
