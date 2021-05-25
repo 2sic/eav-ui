@@ -165,7 +165,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
       };
       this.eavService.saveFormData(saveData, 'false').subscribe(saveResult => {
         this.formulaDesignerService.updateSaved(designer.entityGuid, designer.fieldName, designer.target, formula.source);
-        this.snackBar.open('Saved', null, { duration: 2000 });
+        this.snackBar.open('Formula saved', null, { duration: 2000 });
       });
     } catch (error) {
       console.error(error);
