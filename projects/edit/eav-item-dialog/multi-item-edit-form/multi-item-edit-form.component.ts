@@ -171,7 +171,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy {
       consoleLogAngular('SAVE FORM DATA:', saveFormData);
       this.snackBar.open(this.translate.instant('Message.Saving'), null, { duration: 2000 });
 
-      this.eavService.saveFormData(saveFormData).subscribe({
+      this.eavService.saveFormData(saveFormData, this.eavService.eavConfig.partOfPage).subscribe({
         next: result => {
           consoleLogAngular('SAVED!, result:', result, 'close:', close);
           this.itemService.updateItemId(result);

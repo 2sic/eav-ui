@@ -91,6 +91,14 @@
           (click)="run()">
           <mat-icon>play_arrow</mat-icon>
         </button>
+        <button mat-icon-button matTooltip="Save"
+          [matTooltipDisabled]="!data.designer.editMode || !data.formula?.source || !data.formula?.sourceGuid"
+          [disabled]="!data.designer.editMode || !data.formula?.source || !data.formula?.sourceGuid" (click)="save()">
+          <mat-icon matTooltip="Saving only works if formula was previously defined in settings"
+            [matTooltipDisabled]="!data.designer.editMode || (data.designer.editMode && !data.formula?.source) || data.formula?.sourceGuid">
+            save
+          </mat-icon>
+        </button>
         <button mat-icon-button matTooltip="Help" (click)="openFormulasHelp()">
           <mat-icon>help</mat-icon>
         </button>

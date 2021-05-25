@@ -20,7 +20,7 @@ interface All {
   Disabled: boolean;
   DisableTranslation: boolean;
   ValidationRegExJavaScript: string;
-  Formulas?: string[];
+  Formulas: string[];
   CustomJavaScript: string;
 }
 

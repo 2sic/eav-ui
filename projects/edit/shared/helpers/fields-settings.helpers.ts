@@ -59,6 +59,7 @@ export class FieldsSettingsHelpers {
       defaultSettings.Collapsed = defaultSettings.DefaultCollapsed;
       delete defaultSettings.DefaultCollapsed;
     }
+    defaultSettings.Formulas ??= [];
     return defaultSettings;
   }
 

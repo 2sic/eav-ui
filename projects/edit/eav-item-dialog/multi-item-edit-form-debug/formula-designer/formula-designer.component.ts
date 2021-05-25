@@ -3,10 +3,14 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { combineLatest, Observable } from 'rxjs';
 import { map, mergeMap, tap } from 'rxjs/operators';
 import { copyToClipboard } from '../../../../ng-dialogs/src/app/shared/helpers/copy-to-clipboard.helper';
-import { FormulaHelpers } from '../../../shared/helpers';
+import { FormulaHelpers, LocalizationHelpers } from '../../../shared/helpers';
 import { DesignerState, FormulaTarget, FormulaTargets } from '../../../shared/models';
-import { FormulaDesignerService } from '../../../shared/services';
+import { EavItem } from '../../../shared/models/eav';
+import { Item1 } from '../../../shared/models/json-format-v1';
+import { EavService, FormulaDesignerService } from '../../../shared/services';
+import { ContentTypeItemService } from '../../../shared/store/ngrx-data';
 import { ItemEditFormComponent } from '../../item-edit-form/item-edit-form.component';
+import { SaveEavFormData } from '../../multi-item-edit-form/multi-item-edit-form.models';
 import { defaultFormula } from './formula-designer.constants';
 // tslint:disable-next-line:max-line-length
 import { DesignerSnippet, EntityOption, FieldOption, FieldOptions, FormulaDesignerTemplateVars, SelectTarget, SelectTargets, TargetOption, TargetOptions } from './formula-designer.models';
@@ -25,7 +29,12 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
   freeTextTarget = false;
   templateVars$: Observable<FormulaDesignerTemplateVars>;
 
-  constructor(private formulaDesignerService: FormulaDesignerService, private snackBar: MatSnackBar) { }
+  constructor(
+    private formulaDesignerService: FormulaDesignerService,
+    private snackBar: MatSnackBar,
+    private contentTypeItemService: ContentTypeItemService,
+    private eavService: EavService,
+  ) { }
 
   ngOnInit(): void {
     this.loadError = false;
@@ -115,6 +124,52 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     this.formulaDesignerService.upsertFormula(designer.entityGuid, designer.fieldName, designer.target, formula.source, true);
     this.itemEditFormRefs.find(itemEditFormRef => itemEditFormRef.entityGuid === designer.entityGuid)
       .fieldsSettingsService.forceSettings();
+  }
+
+  save(): void {
+    try {
+      const designer = this.formulaDesignerService.getDesignerState();
+      const formula = this.formulaDesignerService.getFormula(designer.entityGuid, designer.fieldName, designer.target, true);
+      if (formula.sourceGuid == null) { return; }
+
+      const oldFormulaItem = this.contentTypeItemService.getContentTypeItem(formula.sourceGuid);
+      if (oldFormulaItem == null) { return; }
+
+      const language = oldFormulaItem.Attributes.Formula.Values[0].Dimensions[0].Value;
+      if (language == null) { return; }
+
+      const newFormulaItem: EavItem = {
+        Entity: {
+          ...oldFormulaItem,
+          Attributes: LocalizationHelpers.updateAttributeValue(
+            oldFormulaItem.Attributes, 'Formula', formula.source, language, language, false,
+          ),
+        },
+        Header: {
+          Add: null,
+          ContentTypeName: oldFormulaItem.Type.Name,
+          DuplicateEntity: null,
+          EntityId: oldFormulaItem.Id,
+          For: null,
+          Group: null,
+          Guid: oldFormulaItem.Guid,
+          Index: null,
+          Prefill: null,
+        },
+      };
+
+      const saveData: SaveEavFormData = {
+        Items: [Item1.convert(newFormulaItem)],
+        DraftShouldBranch: false,
+        IsPublished: true,
+      };
+      this.eavService.saveFormData(saveData, 'false').subscribe(saveResult => {
+        this.snackBar.open('Saved', null, { duration: 2000 });
+      });
+    } catch (error) {
+      console.error(error);
+      this.snackBar.open('Saving formula failed. Please check console for more info', null, { duration: 2000 });
+    }
   }
 
   openFormulasHelp(): void {

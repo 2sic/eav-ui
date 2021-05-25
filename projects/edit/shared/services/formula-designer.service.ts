@@ -78,9 +78,9 @@ export class FormulaDesignerService implements OnDestroy {
     return this.formulaCache$.asObservable();
   }
 
-  upsertFormula(entityGuid: string, fieldName: string, target: FormulaTarget, formula: string, save: boolean): void {
+  upsertFormula(entityGuid: string, fieldName: string, target: FormulaTarget, formula: string, run: boolean): void {
     let formulaFunction: FormulaFunction;
-    if (save) {
+    if (run) {
       try {
         formulaFunction = FormulaHelpers.buildFormulaFunction(formula);
       } catch (error) {
@@ -114,9 +114,10 @@ export class FormulaDesignerService implements OnDestroy {
       entityGuid,
       fieldName,
       fn: formulaFunction?.bind(cache),
-      isDraft: save ? formulaFunction == null : true,
+      isDraft: run ? formulaFunction == null : true,
       source: formula,
       sourceFromSettings: oldFormulaItem?.sourceFromSettings,
+      sourceGuid: oldFormulaItem?.sourceGuid,
       target,
       version: FormulaHelpers.findFormulaVersion(formula),
     };
@@ -206,11 +207,10 @@ export class FormulaDesignerService implements OnDestroy {
         const settings = FieldsSettingsHelpers.setDefaultFieldSettings(
           FieldsSettingsHelpers.mergeSettings<FieldSettings>(attribute.Metadata, defaultLanguage, defaultLanguage)
         );
-        const formulaItems = this.contentTypeItemService.getContentTypeItems(settings.Formulas ?? [])
-          .filter(formulaItem => {
-            const enabled: boolean = LocalizationHelpers.translate(currentLanguage, defaultLanguage, formulaItem.Attributes.Enabled, null);
-            return enabled;
-          });
+        const formulaItems = this.contentTypeItemService.getContentTypeItems(settings.Formulas).filter(formulaItem => {
+          const enabled: boolean = LocalizationHelpers.translate(currentLanguage, defaultLanguage, formulaItem.Attributes.Enabled, null);
+          return enabled;
+        });
         for (const formulaItem of formulaItems) {
           const formula: string = LocalizationHelpers.translate(currentLanguage, defaultLanguage, formulaItem.Attributes.Formula, null);
           if (formula == null) { continue; }
@@ -236,6 +236,7 @@ export class FormulaDesignerService implements OnDestroy {
             isDraft: formulaFunction == null,
             source: formula,
             sourceFromSettings: formula,
+            sourceGuid: formulaItem.Guid,
             target,
             version: FormulaHelpers.findFormulaVersion(formula),
           };
