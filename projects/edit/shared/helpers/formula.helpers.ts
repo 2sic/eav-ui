@@ -1,10 +1,10 @@
 import { InputFieldHelpers } from '.';
-import { FieldSettings } from '../../../edit-types';
+import { FieldSettings, FieldValue } from '../../../edit-types';
 import { InputType } from '../../../ng-dialogs/src/app/content-type-fields/models/input-type.model';
 import { FormValues } from '../../eav-item-dialog/item-edit-form/item-edit-form.models';
 import { DesignerSnippet, FieldOption } from '../../eav-item-dialog/multi-item-edit-form-debug/formula-designer/formula-designer.models';
 // tslint:disable-next-line:max-line-length
-import { FormulaCacheItem, FormulaFunction, FormulaProps, FormulaPropsV1, FormulaTargets, FormulaVersion, FormulaVersions, Language, SettingsFormulaPrefix } from '../models';
+import { FormulaCacheItem, FormulaFunction, FormulaProps, FormulaPropsV1, FormulaTargets, FormulaV1Data, FormulaVersion, FormulaVersions, Language, SettingsFormulaPrefix } from '../models';
 import { EavHeader } from '../models/eav';
 
 export class FormulaHelpers {
@@ -88,10 +88,15 @@ export class FormulaHelpers {
 
     switch (formula.version) {
       case FormulaVersions.V1:
-        const propsV1: FormulaPropsV1 = {
-          data: {
-            ...formValues,
-            get default() {
+        const data: FormulaV1Data = {
+          ...formValues,
+          get default() { return undefined as FieldValue; },
+          get prefill() { return undefined as FieldValue; },
+          get value() { return undefined as FieldValue; },
+        };
+        Object.defineProperties(data, {
+          default: {
+            get(): FieldValue {
               if (formula.target === FormulaTargets.Value) {
                 return InputFieldHelpers.parseDefaultValue(formula.fieldName, inputType, settings);
               }
@@ -100,11 +105,15 @@ export class FormulaHelpers {
                 return (settings as Record<string, any>)[settingName];
               }
             },
-            get prefill() {
+          },
+          prefill: {
+            get(): FieldValue {
               if (formula.target !== FormulaTargets.Value) { return; }
               return InputFieldHelpers.parseDefaultValue(formula.fieldName, inputType, settings, itemHeader, true);
             },
-            get value() {
+          },
+          value: {
+            get(): FieldValue {
               if (formula.target === FormulaTargets.Value) {
                 return formValues[formula.fieldName];
               }
@@ -114,6 +123,35 @@ export class FormulaHelpers {
               }
             },
           },
+        });
+        const propsV1: FormulaPropsV1 = {
+          data,
+          // spm TODO: figure out why this doesn't work
+          // data: {
+          //   ...formValues,
+          //   get default() {
+          //     if (formula.target === FormulaTargets.Value) {
+          //       return InputFieldHelpers.parseDefaultValue(formula.fieldName, inputType, settings);
+          //     }
+          //     if (formula.target.startsWith(SettingsFormulaPrefix)) {
+          //       const settingName = formula.target.substring(SettingsFormulaPrefix.length);
+          //       return (settings as Record<string, any>)[settingName];
+          //     }
+          //   },
+          //   get prefill() {
+          //     if (formula.target !== FormulaTargets.Value) { return; }
+          //     return InputFieldHelpers.parseDefaultValue(formula.fieldName, inputType, settings, itemHeader, true);
+          //   },
+          //   get value() {
+          //     if (formula.target === FormulaTargets.Value) {
+          //       return formValues[formula.fieldName];
+          //     }
+          //     if (formula.target.startsWith(SettingsFormulaPrefix)) {
+          //       const settingName = formula.target.substring(SettingsFormulaPrefix.length);
+          //       return (previousSettings as Record<string, any>)[settingName];
+          //     }
+          //   },
+          // },
           context: {
             culture: {
               code: currentLanguage,
