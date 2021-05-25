@@ -105,6 +105,8 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     };
     this.formulaDesignerService.setDesignerState(designer);
     this.formulaDesignerService.resetFormula(designer.entityGuid, designer.fieldName, designer.target);
+    this.itemEditFormRefs.find(itemEditFormRef => itemEditFormRef.entityGuid === designer.entityGuid)
+      .fieldsSettingsService.forceSettings();
   }
 
   run(): void {
