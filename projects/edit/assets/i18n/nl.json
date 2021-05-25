@@ -86,13 +86,14 @@
   },
   "Errors": {
     "UnsavedChanges": "U hebt niet opgeslagen wijzigingen.",
-    "SaveErrors": "To save the form, please fix the following errors:"
+    "SaveErrors": "To save the form, please fix the following errors:",
+    "FormulaConfiguration": "There is an error in form configuration. Please report this to admin",
+    "FormulaCalculation": "There was an error in form calculations. Please report this to admin"
   },
   "General": {
     "Buttons": {
       "NotSave": "discard changes",
-      "Save": "save",
-      "Debug": "debug"
+      "Save": "save"
     }
   },
   "Data": {
@@ -117,6 +118,7 @@
     "Entity": {
       "Choose": "bestaand item toevoegen",
       "New": "maak nieuw",
+      "EmptySlot": "empty slot",
       "EntityNotFound": "(item niet gevonden)",
       "DragMove": "drag om de lijst te herordenen",
       "Edit": "bewerk dit item",

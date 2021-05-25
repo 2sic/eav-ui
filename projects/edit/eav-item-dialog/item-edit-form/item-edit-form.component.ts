@@ -12,7 +12,7 @@ export class ItemEditFormComponent implements OnInit {
   @ViewChild(EavFormComponent) eavFormRef: EavFormComponent;
   @Input() entityGuid: string;
 
-  constructor(private fieldsSettingsService: FieldsSettingsService, private fieldsTranslateService: FieldsTranslateService) { }
+  constructor(public fieldsSettingsService: FieldsSettingsService, private fieldsTranslateService: FieldsTranslateService) { }
 
   ngOnInit() {
     this.fieldsSettingsService.init(this.entityGuid);

@@ -3,8 +3,8 @@ import { Connector, EavCustomInputField } from '../../../edit-types';
 import { ElementEventListener } from '../../../edit/shared/models';
 import { consoleLogWebpack } from '../../../field-custom-gps/src/shared/console-log-webpack.helper';
 import { buildTemplate } from '../shared/helpers';
-import * as styles from './preview.css';
 import * as template from './preview.html';
+import * as styles from './preview.scss';
 
 export const wysiwygPreviewTag = 'field-string-wysiwyg-preview';
 
@@ -12,7 +12,7 @@ export class FieldStringWysiwygPreview extends HTMLElement implements EavCustomI
   fieldInitialized: boolean;
   connector: Connector<string>;
 
-  private subscription: Subscription;
+  private subscriptions: Subscription[];
   private eventListeners: ElementEventListener[];
 
   constructor() {
@@ -21,38 +21,45 @@ export class FieldStringWysiwygPreview extends HTMLElement implements EavCustomI
     this.fieldInitialized = false;
   }
 
-  connectedCallback() {
+  connectedCallback(): void {
     if (this.fieldInitialized) { return; }
     this.fieldInitialized = true;
     consoleLogWebpack(`${wysiwygPreviewTag} connectedCallback called`);
 
-    this.subscription = new Subscription();
+    this.subscriptions = [];
     this.eventListeners = [];
 
     this.innerHTML = buildTemplate(template.default, styles.default);
-    const previewContainer: HTMLDivElement = this.querySelector('.wysiwyg-preview');
-    if (this.connector.field.disabled) {
-      previewContainer.classList.add('disabled');
-    } else {
-      const expand = () => { this.connector.dialog.open(); };
-      previewContainer.addEventListener('click', expand);
-      this.eventListeners.push({ element: previewContainer, type: 'click', listener: expand });
-    }
-    this.subscription.add(
+    const previewContainer = this.querySelector<HTMLDivElement>('.wysiwyg-preview');
+
+    const expand = () => { this.connector.dialog.open(); };
+    previewContainer.addEventListener('click', expand);
+    this.eventListeners.push({ element: previewContainer, type: 'click', listener: expand });
+
+    this.subscriptions.push(
       this.connector.data.value$.subscribe(value => {
         previewContainer.innerHTML = !value ? '' : value
           .replace('<hr sxc="sxc-content-block', '<hr class="sxc-content-block') // content block
           .replace(/<a[^>]*>(.*?)<\/a>/g, '$1'); // remove href from A tag
-      })
+      }),
+      this.connector.field$.subscribe(fieldConfig => {
+        if (fieldConfig.settings.Disabled) {
+          previewContainer.classList.add('disabled');
+        } else {
+          previewContainer.classList.remove('disabled');
+        }
+      }),
     );
   }
 
-  disconnectedCallback() {
+  disconnectedCallback(): void {
     consoleLogWebpack(`${wysiwygPreviewTag} disconnectedCallback called`);
-    this.eventListeners.forEach(listener => {
-      listener.element.removeEventListener(listener.type, listener.listener);
+    this.eventListeners.forEach(({ element, type, listener }) => {
+      element.removeEventListener(type, listener);
     });
-    this.subscription.unsubscribe();
+    this.subscriptions.forEach(subscription => {
+      subscription.unsubscribe();
+    });
   }
 }
 

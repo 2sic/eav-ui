@@ -1,15 +1,17 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { AdamItem, AdamPostResponse, DnnBridgeConnectorParams } from '../../../../../edit-types';
-import { FieldSettings } from '../../../../../edit-types';
+import { distinctUntilChanged, map } from 'rxjs/operators';
+import { AdamItem, AdamPostResponse } from '../../../../../edit-types';
 import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
-import { DnnBridgeService, EavService, EditRoutingService, FieldsSettingsService, FileTypeService } from '../../../../shared/services';
+import { PagePicker } from '../../../../shared/helpers';
+import { GeneralHelpers } from '../../../../shared/helpers';
+import { EavService, EditRoutingService, FieldsSettingsService, FileTypeService } from '../../../../shared/services';
 import { LinkCacheService } from '../../../../shared/store/ngrx-data';
+import { AdamService } from '../../../adam/adam.service';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { BaseComponent } from '../../base/base.component';
-import { PagePickerResult } from '../../dnn-bridge/dnn-bridge.models';
 import { HyperlinkDefaultLogic } from './hyperlink-default-logic';
 import { HyperlinkDefaultTemplateVars, Preview } from './hyperlink-default.models';
 
@@ -39,7 +41,10 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
     validationMessagesService: ValidationMessagesService,
     fieldsSettingsService: FieldsSettingsService,
     private fileTypeService: FileTypeService,
-    private dnnBridgeService: DnnBridgeService,
+    private adamService: AdamService,
+    private dialog: MatDialog,
+    private viewContainerRef: ViewContainerRef,
+    private changeDetectorRef: ChangeDetectorRef,
     private editRoutingService: EditRoutingService,
     private linkCacheService: LinkCacheService,
   ) {
@@ -63,26 +68,39 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
         this.fetchLink(value);
       })
     );
+    this.attachAdam();
+
     const open$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
-    const buttons$ = this.settings$.pipe(map(settings => settings.Buttons));
-    this.subscription.add(
-      this.settings$.subscribe(settings => {
-        this.attachAdam(settings);
-      })
+    const settings$ = this.settings$.pipe(
+      map(settings => ({
+        _buttonAdam: settings.Buttons.includes('adam'),
+        _buttonPage: settings.Buttons.includes('page'),
+        _buttonMore: settings.Buttons.includes('more'),
+        ShowAdam: settings.ShowAdam,
+        ShowPagePicker: settings.ShowPagePicker,
+        ShowImageManager: settings.ShowImageManager,
+        ShowFileManager: settings.ShowFileManager,
+      })),
+      distinctUntilChanged(GeneralHelpers.objectsEqual)
     );
 
     this.templateVars$ = combineLatest([
       combineLatest([open$, this.value$, this.preview$, this.label$, this.placeholder$, this.required$]),
-      combineLatest([this.settings$, buttons$, this.disabled$, this.touched$]),
+      combineLatest([settings$, this.disabled$, this.touched$]),
     ]).pipe(
       map(([
         [open, value, preview, label, placeholder, required],
-        [settings, buttons, disabled, touched],
+        [settings, disabled, touched],
       ]) => {
         const templateVars: HyperlinkDefaultTemplateVars = {
           open,
-          buttons,
-          settings,
+          buttonAdam: settings._buttonAdam,
+          buttonPage: settings._buttonPage,
+          buttonMore: settings._buttonMore,
+          showAdam: settings.ShowAdam,
+          showPagePicker: settings.ShowPagePicker,
+          showImageManager: settings.ShowImageManager,
+          showFileManager: settings.ShowFileManager,
           value,
           preview,
           label,
@@ -102,17 +120,10 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
   }
 
   openPagePicker() {
-    const settings = this.settings$.value;
-    const params: DnnBridgeConnectorParams = {
-      CurrentValue: this.control.value,
-      FileFilter: settings.FileFilter,
-      Paths: settings.Paths,
-    };
-
-    this.dnnBridgeService.open('pagepicker', params, (value: PagePickerResult) => {
+    PagePicker.open(this.config, this.group, this.dialog, this.viewContainerRef, this.changeDetectorRef, (page) => {
       // Convert to page:xyz format (if it wasn't cancelled)
-      if (!value) { return; }
-      this.control.patchValue(`page:${value.id}`);
+      if (!page) { return; }
+      this.control.patchValue(`page:${page.id}`);
     });
   }
 
@@ -139,7 +150,7 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
     const contentType = this.config.contentTypeId;
     const entityGuid = this.config.entityGuid;
     const field = this.config.fieldName;
-    this.dnnBridgeService.getLinkInfo(value, contentType, entityGuid, field).subscribe(linkInfo => {
+    this.adamService.getLinkInfo(value, contentType, entityGuid, field).subscribe(linkInfo => {
       if (!linkInfo) {
         this.setLink(value, false);
         return;
@@ -181,14 +192,24 @@ export class HyperlinkDefaultComponent extends BaseComponent<string> implements 
     this.config.adam.toggle(usePortalRoot, showImagesOnly);
   }
 
-  private attachAdam(settings: FieldSettings) {
-    this.config.adam.onItemClick = (item: AdamItem) => { this.setValue(item); };
-    this.config.adam.onItemUpload = (item: AdamPostResponse) => { this.setValue(item); };
-    this.config.adam.setConfig({
-      rootSubfolder: settings.Paths,
-      fileFilter: settings.FileFilter,
-      autoLoad: true,
-    });
+  private attachAdam() {
+    this.subscription.add(
+      this.settings$.pipe(
+        map(settings => ({
+          Paths: settings.Paths,
+          FileFilter: settings.FileFilter,
+        })),
+        distinctUntilChanged(GeneralHelpers.objectsEqual),
+      ).subscribe(settings => {
+        this.config.adam.onItemClick = (item: AdamItem) => { this.setValue(item); };
+        this.config.adam.onItemUpload = (item: AdamPostResponse) => { this.setValue(item); };
+        this.config.adam.setConfig({
+          rootSubfolder: settings.Paths,
+          fileFilter: settings.FileFilter,
+          autoLoad: true,
+        });
+      })
+    );
   }
 
   private setValue(item: AdamItem | AdamPostResponse) {

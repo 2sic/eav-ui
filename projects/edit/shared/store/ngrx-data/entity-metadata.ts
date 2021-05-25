@@ -1,7 +1,9 @@
 import { EntityMetadataMap } from '@ngrx/data';
+import { EntityInfo } from '../../../../edit-types';
 import { InputType } from '../../../../ng-dialogs/src/app/content-type-fields/models/input-type.model';
 import { Prefetch } from '../../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.models';
-import { AdamSnapshot, EntityInfo, Language, LanguageInstance, LinkCache, PublishStatus } from '../../models';
+import { QueryEntity } from '../../../eav-material-controls/input-types/entity/entity-query/entity-query.models';
+import { AdamSnapshot, Language, LanguageInstance, LinkCache, PublishStatus } from '../../models';
 import { EavContentType, EavEntity, EavItem } from '../../models/eav';
 
 export const entityMetadata: EntityMetadataMap = {
@@ -39,6 +41,9 @@ export const entityMetadata: EntityMetadataMap = {
   },
   LinkCache: {
     selectId: linkCacheSelectId,
+  },
+  StringQueryCache: {
+    selectId: stringQueryCacheSelectId,
   },
 };
 
@@ -94,4 +99,8 @@ export function adamCacheSelectId(adamSnapshot: AdamSnapshot): string {
 
 export function linkCacheSelectId(link: LinkCache): string {
   return link?.key;
+}
+
+export function stringQueryCacheSelectId(entity: QueryEntity): string {
+  return entity?.Guid;
 }

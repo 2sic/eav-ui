@@ -77,7 +77,7 @@ export function fixMenuPositions(fieldStringWysiwyg: FieldStringWysiwygEditor): 
       }
     }
   });
-  const toolbarContainer = fieldStringWysiwyg.querySelector('.tinymce-toolbar-container');
+  const toolbarContainer = fieldStringWysiwyg.querySelector<HTMLDivElement>('.tinymce-toolbar-container');
   observer.observe(toolbarContainer, { subtree: true, childList: true });
   return observer;
 }

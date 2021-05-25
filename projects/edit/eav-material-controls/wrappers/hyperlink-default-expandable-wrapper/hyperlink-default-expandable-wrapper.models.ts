@@ -8,6 +8,6 @@ export interface HyperlinkDefaultExpandableTemplateVars extends BaseFieldTemplat
   placeholder: string;
   invalid: boolean;
   required: boolean;
-  adamButton: boolean;
-  pageButton: boolean;
+  buttonAdam: boolean;
+  buttonPage: boolean;
 }

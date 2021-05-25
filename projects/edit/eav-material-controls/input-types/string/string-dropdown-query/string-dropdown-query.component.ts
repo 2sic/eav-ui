@@ -1,12 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
-import { combineLatest } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
+import { EntityInfo } from '../../../../../edit-types';
 import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
-import { EntityInfo } from '../../../../shared/models';
+import { GeneralHelpers } from '../../../../shared/helpers';
 import { EavService, EditRoutingService, EntityService, FieldsSettingsService, QueryService } from '../../../../shared/services';
-import { EntityCacheService } from '../../../../shared/store/ngrx-data';
+import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { EntityQueryComponent } from '../../entity/entity-query/entity-query.component';
 import { QueryEntity } from '../../entity/entity-query/entity-query.models';
@@ -30,6 +30,7 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
     editRoutingService: EditRoutingService,
     snackBar: MatSnackBar,
     entityCacheService: EntityCacheService,
+    stringQueryCacheService: StringQueryCacheService,
     queryService: QueryService,
   ) {
     super(
@@ -41,6 +42,7 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
       editRoutingService,
       snackBar,
       entityCacheService,
+      stringQueryCacheService,
       queryService,
     );
     StringDropdownQueryLogic.importMe();
@@ -51,10 +53,13 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
     super.ngOnInit();
 
     this.subscription.add(
-      combineLatest([
-        this.settings$.pipe(map(settings => settings.Value), distinctUntilChanged()),
-        this.settings$.pipe(map(settings => settings.Label), distinctUntilChanged()),
-      ]).subscribe(() => {
+      this.settings$.pipe(
+        map(settings => ({
+          Value: settings.Value,
+          Label: settings.Label,
+        })),
+        distinctUntilChanged(GeneralHelpers.objectsEqual),
+      ).subscribe(() => {
         this.availableEntities$.next(null);
       })
     );

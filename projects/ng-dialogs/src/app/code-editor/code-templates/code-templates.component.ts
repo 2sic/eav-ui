@@ -1,8 +1,9 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { GeneralHelpers } from '../../../../../edit/shared/helpers';
 import { DialogService } from '../../shared/services/dialog.service';
 import { SourceView } from '../models/source-view.model';
 import { TreeItem } from '../models/tree-item.model';
-import { calculateTree, toggleInArray } from './code-templates.helpers';
+import { calculateTree } from './code-templates.helpers';
 
 @Component({
   selector: 'app-code-templates',
@@ -36,7 +37,7 @@ export class CodeTemplatesComponent implements OnInit, OnChanges {
   }
 
   toggleItem(path: string) {
-    toggleInArray(path, this.toggledItems);
+    GeneralHelpers.toggleInArray(path, this.toggledItems);
   }
 
   addFile(folder?: string) {

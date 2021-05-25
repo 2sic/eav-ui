@@ -4,7 +4,7 @@ import { ElementEventListener } from '../../../shared/models';
 export class CenterSelectedHelper {
   private positionX: number;
   private positionY: number;
-  private moveThreshold = 2; // Pixels for which header can be scrolled while clicking to still register as click
+  private moveThreshold = 2; // pixels for which header can be scrolled while clicking to still register as click
   private stopClick = false;
   private eventListeners: ElementEventListener[] = [];
 
@@ -13,7 +13,7 @@ export class CenterSelectedHelper {
     private header: HTMLElement,
   ) {
     this.ngZone.runOutsideAngular(() => {
-      const checkIfMouseMoved = this.checkIfMouseMoved.bind(this);
+      const checkIfMouseMoved = (event: MouseEvent) => { this.checkIfMouseMoved(event); };
       document.addEventListener('mouseup', checkIfMouseMoved, { passive: true });
       this.eventListeners.push({ element: document, type: 'mouseup', listener: checkIfMouseMoved });
     });
@@ -37,9 +37,8 @@ export class CenterSelectedHelper {
 
   destroy() {
     this.ngZone.runOutsideAngular(() => {
-      this.eventListeners.forEach(evList => {
-        evList.element.removeEventListener(evList.type, evList.listener);
-        evList = null;
+      this.eventListeners.forEach(({ element, type, listener }) => {
+        element.removeEventListener(type, listener);
       });
       this.eventListeners = null;
     });

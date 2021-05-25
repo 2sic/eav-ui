@@ -11,6 +11,7 @@ export class ToggleDebugDirective {
     const CTRL_SHIFT_ALT_CLICK = (navigator.platform.match('Mac') ? event.metaKey : event.ctrlKey) && event.shiftKey && event.altKey;
     if (CTRL_SHIFT_ALT_CLICK) {
       this.globalConfigService.toggleDebugEnabled();
+      window.getSelection().removeAllRanges();
     }
   }
 }

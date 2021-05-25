@@ -5,6 +5,8 @@ import { keyPartOfPage, keyPublishing } from '../../../ng-dialogs/src/app/shared
 import { Context } from '../../../ng-dialogs/src/app/shared/services/context';
 import { EavFormData, EditDialogContext, SaveEavFormData } from '../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.models';
 import { EavConfig, SaveResult, VersioningOptions } from '../models';
+import { EavEntity } from '../models/eav';
+import { Entity1, Item1 } from '../models/json-format-v1';
 
 export const webApiEditRoot = 'cms/edit/';
 
@@ -61,9 +63,9 @@ export class EavService {
     });
   }
 
-  saveFormData(result: SaveEavFormData) {
+  saveFormData(result: SaveEavFormData, partOfPage: string) {
     return this.http.post<SaveResult>(this.dnnContext.$2sxc.http.apiUrl(webApiEditRoot + 'save'), result, {
-      params: { appId: this.eavConfig.appId, partOfPage: this.eavConfig.partOfPage }
+      params: { appId: this.eavConfig.appId, partOfPage }
     });
   }
 

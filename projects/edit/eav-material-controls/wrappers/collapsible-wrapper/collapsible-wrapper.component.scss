@@ -10,6 +10,10 @@ $border-radius: 8px;
   padding: 20px 32px;
   border-radius: $border-radius;
 
+  .title-arrow {
+    margin-right: 6px;
+  }
+
   .title {
     font-size: 16px;
     font-weight: 400;
@@ -28,7 +32,7 @@ $border-radius: 8px;
   margin: 0;
   cursor: pointer;
   line-height: 20px;
-  color: #0088F4;
+  color: #002753;
 }
 
 .mat-icon {
@@ -36,7 +40,6 @@ $border-radius: 8px;
   width: 20px;
   height: 20px;
   line-height: 20px !important;
-  margin-right: 6px;
 }
 
 .mdc-layout-grid {

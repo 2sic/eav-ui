@@ -1,33 +1,31 @@
 import { } from 'google-maps';
-import { Subscription } from 'rxjs';
 import { Connector, EavCustomInputField } from '../../../edit-types';
 import { FieldMask } from '../../../edit/shared/helpers/field-mask.helper';
 import { ElementEventListener } from '../../../edit/shared/models';
 import { consoleLogWebpack } from '../shared/console-log-webpack.helper';
 import { defaultCoordinates, mapsApiUrl } from '../shared/constants';
 import { buildTemplate, parseLatLng, stringifyLatLng } from '../shared/helpers';
-import * as styles from './main.css';
 import * as template from './main.html';
+import * as styles from './main.scss';
 
 const gpsDialogTag = 'field-custom-gps-dialog';
 
 class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<string> {
   fieldInitialized: boolean;
   connector: Connector<string>;
-  eventListeners: ElementEventListener[];
-  addressMask: FieldMask;
-  geocoder: google.maps.Geocoder;
-  iconSearch: HTMLAnchorElement;
-  latFieldName: string;
-  latInput: HTMLInputElement;
-  lngFieldName: string;
-  lngInput: HTMLInputElement;
-  map: google.maps.Map;
-  mapApiUrl: string;
-  mapContainer: HTMLDivElement;
-  marker: google.maps.Marker;
 
-  private subscription: Subscription;
+  private addressMask: FieldMask;
+  private geocoder: google.maps.Geocoder;
+  private iconSearch: HTMLAnchorElement;
+  private latFieldName: string;
+  private latInput: HTMLInputElement;
+  private lngFieldName: string;
+  private lngInput: HTMLInputElement;
+  private map: google.maps.Map;
+  private mapApiUrl: string;
+  private mapContainer: HTMLDivElement;
+  private marker: google.maps.Marker;
+  private eventListeners: ElementEventListener[];
 
   constructor() {
     super();
@@ -35,28 +33,27 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
     this.fieldInitialized = false;
   }
 
-  connectedCallback() {
+  connectedCallback(): void {
     if (this.fieldInitialized) { return; }
     this.fieldInitialized = true;
     consoleLogWebpack(`${gpsDialogTag} connectedCallback called`);
 
     this.eventListeners = [];
-    this.subscription = new Subscription();
     this.mapApiUrl = mapsApiUrl();
 
     this.innerHTML = buildTemplate(template.default, styles.default);
-    this.latInput = this.querySelector('#lat');
-    this.lngInput = this.querySelector('#lng');
-    const addressMaskContainer = this.querySelector('#address-mask-container') as HTMLDivElement;
-    this.iconSearch = this.querySelector('#icon-search');
-    const formattedAddressContainer = this.querySelector('#formatted-address-container') as HTMLSpanElement;
-    this.mapContainer = this.querySelector('#map');
+    this.latInput = this.querySelector<HTMLInputElement>('#lat');
+    this.lngInput = this.querySelector<HTMLInputElement>('#lng');
+    const addressMaskContainer = this.querySelector<HTMLDivElement>('#address-mask-container');
+    this.iconSearch = this.querySelector<HTMLAnchorElement>('#icon-search');
+    const formattedAddressContainer = this.querySelector<HTMLSpanElement>('#formatted-address-container');
+    this.mapContainer = this.querySelector<HTMLDivElement>('#map');
 
     const allInputNames = this.connector._experimental.allInputTypeNames.map(inputType => inputType.name);
-    if (allInputNames.indexOf(this.connector.field.settings.LatField) !== -1) {
+    if (allInputNames.includes(this.connector.field.settings.LatField)) {
       this.latFieldName = this.connector.field.settings.LatField;
     }
-    if (allInputNames.indexOf(this.connector.field.settings.LongField) !== -1) {
+    if (allInputNames.includes(this.connector.field.settings.LongField)) {
       this.lngFieldName = this.connector.field.settings.LongField;
     }
 
@@ -71,7 +68,7 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
     this.connector.loadScript('google', this.mapApiUrl, () => { this.mapScriptLoaded(); });
   }
 
-  private mapScriptLoaded() {
+  private mapScriptLoaded(): void {
     consoleLogWebpack(`${gpsDialogTag} mapScriptLoaded called`);
     this.map = new google.maps.Map(this.mapContainer, { zoom: 15, center: defaultCoordinates, gestureHandling: 'greedy' });
     this.marker = new google.maps.Marker({ position: defaultCoordinates, map: this.map, draggable: true });
@@ -85,30 +82,32 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
     }
 
     // listen to inputs, iconSearch and marker. Update inputs, map, marker and form
-    const onLatLngInputChangeBound = this.onLatLngInputChange.bind(this);
-    this.latInput.addEventListener('change', onLatLngInputChangeBound);
-    this.lngInput.addEventListener('change', onLatLngInputChangeBound);
+    const onLatLngInputChange = () => { this.onLatLngInputChange(); };
+    this.latInput.addEventListener('change', onLatLngInputChange);
+    this.lngInput.addEventListener('change', onLatLngInputChange);
 
-    const autoSelectBound = this.autoSelect.bind(this);
-    this.iconSearch.addEventListener('click', autoSelectBound);
+    const autoSelect = () => { this.autoSelect(); };
+    this.iconSearch.addEventListener('click', autoSelect);
 
     this.eventListeners.push(
-      { element: this.latInput, type: 'change', listener: onLatLngInputChangeBound },
-      { element: this.lngInput, type: 'change', listener: onLatLngInputChangeBound },
-      { element: this.iconSearch, type: 'click', listener: autoSelectBound },
+      { element: this.latInput, type: 'change', listener: onLatLngInputChange },
+      { element: this.lngInput, type: 'change', listener: onLatLngInputChange },
+      { element: this.iconSearch, type: 'click', listener: autoSelect },
     );
 
-    this.marker.addListener('dragend', this.onMarkerDragend.bind(this));
+    this.marker.addListener('dragend', (event: google.maps.MouseEvent) => {
+      this.onMarkerDragend(event);
+    });
   }
 
-  private updateHtml(latLng: google.maps.LatLngLiteral) {
-    this.latInput.value = latLng.lat ? latLng.lat.toString() : '';
-    this.lngInput.value = latLng.lng ? latLng.lng.toString() : '';
+  private updateHtml(latLng: google.maps.LatLngLiteral): void {
+    this.latInput.value = latLng.lat?.toString() ?? '';
+    this.lngInput.value = latLng.lng?.toString() ?? '';
     this.map.setCenter(latLng);
     this.marker.setPosition(latLng);
   }
 
-  private updateForm(latLng: google.maps.LatLngLiteral) {
+  private updateForm(latLng: google.maps.LatLngLiteral): void {
     this.connector.data.update(stringifyLatLng(latLng));
     if (this.latFieldName) {
       this.connector._experimental.updateField(this.latFieldName, latLng.lat);
@@ -118,7 +117,7 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
     }
   }
 
-  private onLatLngInputChange() {
+  private onLatLngInputChange(): void {
     consoleLogWebpack(`${gpsDialogTag} input changed`);
     const latLng: google.maps.LatLngLiteral = {
       lat: this.latInput.value.length > 0 ? parseFloat(this.latInput.value) : null,
@@ -128,7 +127,7 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
     this.updateForm(latLng);
   }
 
-  private autoSelect() {
+  private autoSelect(): void {
     consoleLogWebpack(`${gpsDialogTag} geocoder called`);
     const address = this.addressMask.resolve();
     this.geocoder.geocode({
@@ -148,7 +147,7 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
     });
   }
 
-  private onMarkerDragend(event: google.maps.MouseEvent) {
+  private onMarkerDragend(event: google.maps.MouseEvent): void {
     consoleLogWebpack(`${gpsDialogTag} marker changed`);
     const latLng: google.maps.LatLngLiteral = {
       lat: event.latLng.lat(),
@@ -158,18 +157,15 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
     this.updateForm(latLng);
   }
 
-  disconnectedCallback() {
+  disconnectedCallback(): void {
     consoleLogWebpack(`${gpsDialogTag} disconnectedCallback called`);
     google?.maps.event.clearInstanceListeners(this.marker);
     google?.maps.event.clearInstanceListeners(this.map);
 
-    this.eventListeners.forEach(eventListener => {
-      const element = eventListener.element;
-      const type = eventListener.type;
-      const listener = eventListener.listener;
+    this.eventListeners.forEach(({ element, type, listener }) => {
       element.removeEventListener(type, listener);
     });
-    this.subscription.unsubscribe();
+    this.addressMask.destroy();
   }
 }
 

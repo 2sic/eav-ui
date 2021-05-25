@@ -12,14 +12,15 @@ interface All {
   DefaultValue: string;
   Placeholder: string;
   Notes: string;
+  /** @deprecated */
   VisibleInEditUI: boolean;
+  /** VisibleInEditUi is copied Visible and then deleted */
+  Visible: boolean;
   Required: boolean;
   Disabled: boolean;
   DisableTranslation: boolean;
-  Errors: unknown;
-  Warnings: unknown;
   ValidationRegExJavaScript: string;
-  Calculations: string[];
+  Formulas: string[];
   CustomJavaScript: string;
 }
 
@@ -162,7 +163,10 @@ interface EntityQuery extends Entity {
  * @empty-default
  */
 interface EmptyDefault extends All {
+  /** @deprecated */
   DefaultCollapsed: boolean;
+  /** DefaultCollapsed is copied to Collapsed and then deleted  */
+  Collapsed: boolean;
 }
 
 /**
@@ -196,6 +200,8 @@ interface Boolean extends All {
   TitleTrue: string;
   TitleFalse: string;
   TitleIndeterminate: string;
+  ReverseToggle?: boolean;
+  /** Label for Boolean fields */
   _label: string;
 }
 

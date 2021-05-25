@@ -13,36 +13,36 @@
   padding-left: 14px;
   border-bottom: 1px solid #e1e1e1;
   background: white;
+
+  label,
+  #icon-search {
+    margin-right: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+    text-transform: uppercase;
+    padding: 4px;
+  }
+
+  #icon-search i {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+    font-weight: bold;
+  }
+
+  input {
+    margin-right: 8px;
+    padding: 4px 16px;
+    border: none;
+    background: transparent;
+    outline: none !important;
+  }
 }
 
 .address-mask-container {
   flex-wrap: nowrap;
-}
-
-.map-info label,
-.map-info #icon-search {
-  margin-right: 8px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 12px;
-  text-transform: uppercase;
-  padding: 4px;
-}
-
-.map-info #icon-search i {
-  font-size: 14px;
-  width: 14px;
-  height: 14px;
-  font-weight: bold;
-}
-
-.map-info input {
-  margin-right: 8px;
-  padding: 4px 16px;
-  border: none;
-  background: transparent;
-  outline: none !important;
 }
 
 .map-info__map {
@@ -58,10 +58,11 @@
 .btn {
   border: 1px solid silver;
   border-radius: 4px;
-}
-.btn:hover {
-  background-color: rgba(69, 79, 99, 0.08);
-  cursor: pointer;
+
+  &:hover {
+    background-color: rgba(69, 79, 99, 0.08);
+    cursor: pointer;
+  }
 }
 
 .input-component {
@@ -71,7 +72,8 @@
   border-radius: 4px 4px 0 0;
   border-bottom: 1px solid silver;
   margin: 8px 0;
-}
-.input-component:hover {
-  border-bottom: 1px solid #0087f4;
+
+  &:hover {
+    border-bottom: 1px solid #002753;
+  }
 }

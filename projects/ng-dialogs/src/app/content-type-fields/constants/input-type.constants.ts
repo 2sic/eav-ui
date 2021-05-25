@@ -14,6 +14,7 @@ export class InputTypeConstants {
     public static readonly DatetimeDefault = 'datetime-default';
     // Empty
     public static readonly EmptyDefault = 'empty-default';
+    public static readonly EmptyEnd = 'empty-end';
     // Number
     public static readonly NumberDefault = 'number-default';
     // Entity

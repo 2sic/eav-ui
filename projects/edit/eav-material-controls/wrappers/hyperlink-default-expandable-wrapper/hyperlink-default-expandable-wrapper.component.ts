@@ -1,14 +1,15 @@
-import { AfterViewInit, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
-import { AdamItem, DnnBridgeConnectorParams } from '../../../../edit-types';
+import { AdamItem } from '../../../../edit-types';
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { ContentExpandAnimation } from '../../../shared/animations';
-import { DropzoneDraggingHelper } from '../../../shared/helpers';
-import { DnnBridgeService, EavService, EditRoutingService, FieldsSettingsService, FileTypeService } from '../../../shared/services';
+import { DropzoneDraggingHelper, GeneralHelpers, PagePicker } from '../../../shared/helpers';
+import { EavService, EditRoutingService, FieldsSettingsService, FileTypeService } from '../../../shared/services';
 import { LinkCacheService } from '../../../shared/store/ngrx-data';
+import { AdamService } from '../../adam/adam.service';
 import { BaseComponent } from '../../input-types/base/base.component';
-import { PagePickerResult } from '../../input-types/dnn-bridge/dnn-bridge.models';
 import { Preview } from '../../input-types/hyperlink/hyperlink-default/hyperlink-default.models';
 import { ValidationMessagesService } from '../../validators/validation-messages-service';
 import { HyperlinkDefaultExpandableTemplateVars } from './hyperlink-default-expandable-wrapper.models';
@@ -38,7 +39,10 @@ export class HyperlinkDefaultExpandableWrapperComponent extends BaseComponent<st
     validationMessagesService: ValidationMessagesService,
     fieldsSettingsService: FieldsSettingsService,
     private fileTypeService: FileTypeService,
-    private dnnBridgeService: DnnBridgeService,
+    private adamService: AdamService,
+    private dialog: MatDialog,
+    private viewContainerRef: ViewContainerRef,
+    private changeDetectorRef: ChangeDetectorRef,
     private zone: NgZone,
     private editRoutingService: EditRoutingService,
     private linkCacheService: LinkCacheService,
@@ -63,16 +67,21 @@ export class HyperlinkDefaultExpandableWrapperComponent extends BaseComponent<st
       })
     );
     this.open$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
-    const adamButton$ = this.settings$.pipe(map(settings => settings.Buttons?.includes('adam')), distinctUntilChanged());
-    const pageButton$ = this.settings$.pipe(map(settings => settings.Buttons?.includes('page')), distinctUntilChanged());
+    const settings$ = this.settings$.pipe(
+      map(settings => ({
+        _buttonAdam: settings.Buttons.includes('adam'),
+        _buttonPage: settings.Buttons.includes('page'),
+      })),
+      distinctUntilChanged(GeneralHelpers.objectsEqual),
+    );
 
     this.templateVars$ = combineLatest([
       combineLatest([this.value$, this.preview$, this.label$, this.placeholder$, this.invalid$, this.required$]),
-      combineLatest([adamButton$, pageButton$, this.disabled$, this.touched$]),
+      combineLatest([settings$, this.disabled$, this.touched$]),
     ]).pipe(
       map(([
         [value, preview, label, placeholder, invalid, required],
-        [adamButton, pageButton, disabled, touched],
+        [settings, disabled, touched],
       ]) => {
         const templateVars: HyperlinkDefaultExpandableTemplateVars = {
           value,
@@ -81,8 +90,8 @@ export class HyperlinkDefaultExpandableWrapperComponent extends BaseComponent<st
           placeholder,
           invalid,
           required,
-          adamButton,
-          pageButton,
+          buttonAdam: settings._buttonAdam,
+          buttonPage: settings._buttonPage,
           disabled,
           touched,
         };
@@ -128,17 +137,10 @@ export class HyperlinkDefaultExpandableWrapperComponent extends BaseComponent<st
   }
 
   openPagePicker() {
-    const settings = this.settings$.value;
-    const params: DnnBridgeConnectorParams = {
-      CurrentValue: this.control.value,
-      FileFilter: settings.FileFilter,
-      Paths: settings.Paths,
-    };
-
-    this.dnnBridgeService.open('pagepicker', params, (value: PagePickerResult) => {
+    PagePicker.open(this.config, this.group, this.dialog, this.viewContainerRef, this.changeDetectorRef, (page) => {
       // Convert to page:xyz format (if it wasn't cancelled)
-      if (!value) { return; }
-      this.control.patchValue(`page:${value.id}`);
+      if (!page) { return; }
+      this.control.patchValue(`page:${page.id}`);
     });
   }
 
@@ -165,7 +167,7 @@ export class HyperlinkDefaultExpandableWrapperComponent extends BaseComponent<st
     const contentType = this.config.contentTypeId;
     const entityGuid = this.config.entityGuid;
     const field = this.config.fieldName;
-    this.dnnBridgeService.getLinkInfo(value, contentType, entityGuid, field).subscribe(linkInfo => {
+    this.adamService.getLinkInfo(value, contentType, entityGuid, field).subscribe(linkInfo => {
       if (!linkInfo) {
         this.setLink(value, false);
         return;

@@ -7,8 +7,8 @@ export class EmptyDefaultLogic extends FieldLogicBase {
 
   update(settings: FieldSettings, value: undefined): FieldSettings {
     const fixedSettings: FieldSettings = { ...settings };
-    fixedSettings.VisibleInEditUI ??= true;
-    fixedSettings.DefaultCollapsed ??= false;
+    fixedSettings.Visible ??= true;
+    fixedSettings.Collapsed ??= false;
     fixedSettings.Notes ??= '';
     return fixedSettings;
   }

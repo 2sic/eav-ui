@@ -9,7 +9,6 @@ import { EavConfig } from '../../../../../../shared/models';
 declare const window: EavWindow;
 
 export class ConnectorInstance<T = any> implements Connector<T> {
-  field$: Observable<FieldConfig>;
   data: ConnectorData<T>;
   dialog: ConnectorDialog;
   loadScript: (...args: any[]) => void;
@@ -18,6 +17,7 @@ export class ConnectorInstance<T = any> implements Connector<T> {
     _connectorHost: ConnectorHost<T>,
     value$: Observable<T>,
     public field: FieldConfig,
+    public field$: Observable<FieldConfig>,
     public _experimental: ExperimentalProps,
     eavConfig: EavConfig,
   ) {
@@ -63,15 +63,13 @@ export class ConnectorInstance<T = any> implements Connector<T> {
 }
 
 export class ConnectorDataInstance<T> implements ConnectorData<T> {
-  value$: Observable<T>;
   value: T;
   clientValueChangeListeners: ((newValue: T) => void)[] = [];
 
   constructor(
     private _connectorHost: ConnectorHost<T>,
-    value$: Observable<T>
+    public value$: Observable<T>,
   ) {
-    this.value$ = value$;
     // Host will complete this observable. Therefore unsubscribe is not required
     this.value$.subscribe(newValue => {
       this.value = newValue;

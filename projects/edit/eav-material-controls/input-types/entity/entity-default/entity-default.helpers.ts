@@ -1,24 +1,28 @@
 import { TranslateService } from '@ngx-translate/core';
-import { EntityInfo } from '../../../../shared/models';
+import { EntityInfo } from '../../../../../edit-types';
+import { QueryEntity } from '../entity-query/entity-query.models';
 import { SelectedEntity } from './entity-default.models';
 
 export function calculateSelectedEntities(
   fieldValue: string | string[],
   separator: string,
   entityCache: EntityInfo[],
+  stringQueryCache: QueryEntity[],
+  stringQueryLabel: string,
   translate: TranslateService,
-) {
+): SelectedEntity[] {
   // name is guid or freetext
   const names = typeof fieldValue === 'string' ? convertValueToArray(fieldValue, separator) : fieldValue;
   const selectedEntities = names.map(name => {
     const entity = entityCache.find(e => e.Value === name);
+    const stringEntity = stringQueryCache.find(e => e.Guid === name);
     let label: string;
     if (name == null) {
-      label = 'empty slot';
+      label = translate.instant('Fields.Entity.EmptySlot');
     } else if (typeof fieldValue === 'string') {
-      label = entity != null ? entity.Text : name;
+      label = stringEntity?.[stringQueryLabel] ?? name;
     } else {
-      label = entity != null ? entity.Text : translate.instant('Fields.Entity.EntityNotFound');
+      label = entity?.Text ?? translate.instant('Fields.Entity.EntityNotFound');
     }
     const selectedEntity: SelectedEntity = {
       value: name,

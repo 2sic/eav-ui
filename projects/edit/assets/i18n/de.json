@@ -86,13 +86,14 @@
   },
   "Errors": {
     "UnsavedChanges": "Du hast Änderungen.",
-    "SaveErrors": "Um zu speichern, bitte folgende Probleme beheben:"
+    "SaveErrors": "Um zu speichern, bitte folgende Probleme beheben:",
+    "FormulaConfiguration": "Es gibt einen Fehler bei den Formulareinstellungen. Bitte dem Admin melden",
+    "FormulaCalculation": "Es gibt einen Fehler bei den Formularberechnungen. Bitte dem Admin melden"
   },
   "General": {
     "Buttons": {
       "NotSave": "Änderungen verwerfen",
-      "Save": "speichern",
-      "Debug": "debug"
+      "Save": "speichern"
     }
   },
   "Data": {
@@ -117,6 +118,7 @@
     "Entity": {
       "Choose": "bestehendes Element auswählen",
       "New": "neues Element erstellen",
+      "EmptySlot": "leerer Eintrag",
       "EntityNotFound": "(Element nicht gefunden)",
       "DragMove": "Ziehen um die Liste neu zu ordnen",
       "Edit": "Element bearbeiten",

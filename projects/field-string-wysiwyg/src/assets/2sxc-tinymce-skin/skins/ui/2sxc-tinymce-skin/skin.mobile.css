@@ -264,7 +264,7 @@
   margin-right: 2px;
 }
 .tinymce-mobile-toolstrip .tinymce-mobile-toolbar:not(.tinymce-mobile-context-toolbar) .tinymce-mobile-toolbar-group .tinymce-mobile-toolbar-group-item.tinymce-mobile-toolbar-button.tinymce-mobile-toolbar-button-selected {
-  background: #bfd5fa;
+  background: #bfc9d4;
   color: #cccccc;
 }
 .tinymce-mobile-toolstrip .tinymce-mobile-toolbar:not(.tinymce-mobile-context-toolbar) .tinymce-mobile-toolbar-group:first-of-type,
@@ -357,7 +357,7 @@
   padding-top: 3px;
 }
 .tinymce-mobile-toolstrip .tinymce-mobile-toolbar.tinymce-mobile-context-toolbar .tinymce-mobile-toolbar-group .tinymce-mobile-dot-item.tinymce-mobile-dot-active {
-  color: #bfd5fa;
+  color: #bfc9d4;
 }
 .tinymce-mobile-toolstrip .tinymce-mobile-toolbar.tinymce-mobile-context-toolbar .tinymce-mobile-toolbar-group .tinymce-mobile-icon-large-font::before,
 .tinymce-mobile-toolstrip .tinymce-mobile-toolbar.tinymce-mobile-context-toolbar .tinymce-mobile-toolbar-group .tinymce-mobile-icon-large-heading::before {

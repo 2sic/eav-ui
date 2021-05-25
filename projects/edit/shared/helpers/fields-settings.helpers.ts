@@ -1,4 +1,5 @@
 import { LocalizationHelpers } from '.';
+import { FieldSettings } from '../../../edit-types';
 import { InputTypeConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { InputType } from '../../../ng-dialogs/src/app/content-type-fields/models/input-type.model';
 import { Dictionary } from '../../../ng-dialogs/src/app/shared/models/dictionary.model';
@@ -40,6 +41,26 @@ export class FieldsSettingsHelpers {
     }
 
     return merged as T;
+  }
+
+  static setDefaultFieldSettings(settings: FieldSettings): FieldSettings {
+    const defaultSettings = { ...settings };
+    // update @All settings
+    defaultSettings.Name ??= '';
+    defaultSettings.Placeholder ??= '';
+    defaultSettings.Notes ??= '';
+    defaultSettings.VisibleInEditUI ??= true;
+    defaultSettings.Required ??= false;
+    defaultSettings.Disabled ??= false;
+    defaultSettings.DisableTranslation ??= false;
+    defaultSettings.Visible = defaultSettings.VisibleInEditUI;
+    delete defaultSettings.VisibleInEditUI;
+    if (defaultSettings.DefaultCollapsed != null) {
+      defaultSettings.Collapsed = defaultSettings.DefaultCollapsed;
+      delete defaultSettings.DefaultCollapsed;
+    }
+    defaultSettings.Formulas ??= [];
+    return defaultSettings;
   }
 
   /** Find if DisableTranslation is true in any setting and in any language */
@@ -91,9 +112,10 @@ export class FieldsSettingsHelpers {
     const indexOfFirstEmpty = contentType.Attributes.findIndex(a => a.InputType === InputTypeConstants.EmptyDefault);
     if (index < indexOfFirstEmpty) { return false; }
 
-    const isNotEmpty = attribute.InputType !== InputTypeConstants.EmptyDefault;
-    const nextIsEmpty = contentType.Attributes[index + 1].InputType === InputTypeConstants.EmptyDefault;
-    if (isNotEmpty && nextIsEmpty) { return true; }
+    if (attribute.InputType === InputTypeConstants.EmptyEnd) { return true; }
+
+    const empties = [InputTypeConstants.EmptyDefault, InputTypeConstants.EmptyEnd];
+    if (empties.includes(contentType.Attributes[index + 1].InputType)) { return true; }
 
     return false;
   }

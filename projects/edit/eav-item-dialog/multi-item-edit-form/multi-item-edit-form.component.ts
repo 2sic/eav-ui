@@ -16,9 +16,9 @@ import { EditEntryComponent } from '../../edit-entry/edit-entry.component';
 import { FieldErrorMessage, SaveResult } from '../../shared/models';
 import { EavItem } from '../../shared/models/eav';
 import { Item1 } from '../../shared/models/json-format-v1';
-import { EavService, EditRoutingService, FormsStateService, LoadIconsService } from '../../shared/services';
+import { EavService, EditRoutingService, FormsStateService, FormulaDesignerService, LoadIconsService } from '../../shared/services';
 // tslint:disable-next-line:max-line-length
-import { AdamCacheService, ContentTypeItemService, ContentTypeService, EntityCacheService, FeatureService, GlobalConfigService, InputTypeService, ItemService, LanguageInstanceService, LanguageService, LinkCacheService, PublishStatusService } from '../../shared/store/ngrx-data';
+import { AdamCacheService, ContentTypeItemService, ContentTypeService, EntityCacheService, FeatureService, GlobalConfigService, InputTypeService, ItemService, LanguageInstanceService, LanguageService, LinkCacheService, PublishStatusService, StringQueryCacheService } from '../../shared/store/ngrx-data';
 import { ItemEditFormComponent } from '../item-edit-form/item-edit-form.component';
 import { MultiEditFormTemplateVars, SaveEavFormData } from './multi-item-edit-form.models';
 
@@ -26,10 +26,10 @@ import { MultiEditFormTemplateVars, SaveEavFormData } from './multi-item-edit-fo
   selector: 'app-multi-item-edit-form',
   templateUrl: './multi-item-edit-form.component.html',
   styleUrls: ['./multi-item-edit-form.component.scss'],
-  providers: [EditRoutingService, FormsStateService],
+  providers: [EditRoutingService, FormsStateService, FormulaDesignerService],
 })
 export class MultiItemEditFormComponent implements OnInit, OnDestroy {
-  @ViewChildren(ItemEditFormComponent) private itemEditFormRefs: QueryList<ItemEditFormComponent>;
+  @ViewChildren(ItemEditFormComponent) itemEditFormRefs: QueryList<ItemEditFormComponent>;
 
   templateVars$: Observable<MultiEditFormTemplateVars>;
 
@@ -58,6 +58,8 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy {
     private entityCacheService: EntityCacheService,
     private adamCacheService: AdamCacheService,
     private linkCacheService: LinkCacheService,
+    private stringQueryCacheService: StringQueryCacheService,
+    private formulaDesignerService: FormulaDesignerService,
   ) {
     this.dialogRef.disableClose = true;
   }
@@ -68,6 +70,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy {
     this.editRoutingService.init();
     this.loadIconsService.load();
     this.formsStateService.init();
+    this.formulaDesignerService.init();
     /** Small delay to make form opening feel smoother. */
     const delayForm$ = of(false).pipe(delay(0), startWith(true));
     const reduceSaveButton$ = of(true).pipe(delay(5000), startWith(false));
@@ -123,6 +126,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy {
       this.entityCacheService.clearCache();
       this.adamCacheService.clearCache();
       this.linkCacheService.clearCache();
+      this.stringQueryCacheService.clearCache();
     }
   }
 
@@ -167,7 +171,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy {
       consoleLogAngular('SAVE FORM DATA:', saveFormData);
       this.snackBar.open(this.translate.instant('Message.Saving'), null, { duration: 2000 });
 
-      this.eavService.saveFormData(saveFormData).subscribe({
+      this.eavService.saveFormData(saveFormData, this.eavService.eavConfig.partOfPage).subscribe({
         next: result => {
           consoleLogAngular('SAVED!, result:', result, 'close:', close);
           this.itemService.updateItemId(result);

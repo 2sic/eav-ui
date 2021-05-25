@@ -1,13 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
-import { combineLatest } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
+import { EntityInfo } from '../../../../../edit-types';
 import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
-import { FieldMask } from '../../../../shared/helpers';
-import { EntityInfo } from '../../../../shared/models';
+import { FieldMask, GeneralHelpers } from '../../../../shared/helpers';
 import { EavService, EditRoutingService, EntityService, FieldsSettingsService, QueryService } from '../../../../shared/services';
-import { EntityCacheService } from '../../../../shared/store/ngrx-data';
+import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { EntityDefaultComponent } from '../entity-default/entity-default.component';
 import { EntityQueryLogic } from './entity-query-logic';
@@ -21,7 +20,6 @@ import { QueryEntity } from './entity-query.models';
 })
 @ComponentMetadata({})
 export class EntityQueryComponent extends EntityDefaultComponent implements OnInit, OnDestroy {
-  isStringQuery: boolean;
   private paramsMask: FieldMask;
 
   constructor(
@@ -33,6 +31,7 @@ export class EntityQueryComponent extends EntityDefaultComponent implements OnIn
     editRoutingService: EditRoutingService,
     snackBar: MatSnackBar,
     entityCacheService: EntityCacheService,
+    stringQueryCacheService: StringQueryCacheService,
     private queryService: QueryService,
   ) {
     super(
@@ -44,10 +43,10 @@ export class EntityQueryComponent extends EntityDefaultComponent implements OnIn
       editRoutingService,
       snackBar,
       entityCacheService,
+      stringQueryCacheService,
     );
     EntityQueryLogic.importMe();
     this.isQuery = true;
-    this.isStringQuery = false;
   }
 
   ngOnInit(): void {
@@ -72,10 +71,13 @@ export class EntityQueryComponent extends EntityDefaultComponent implements OnIn
     );
 
     this.subscription.add(
-      combineLatest([
-        this.settings$.pipe(map(settings => settings.Query), distinctUntilChanged()),
-        this.settings$.pipe(map(settings => settings.StreamName), distinctUntilChanged()),
-      ]).subscribe(() => {
+      this.settings$.pipe(
+        map(settings => ({
+          Query: settings.Query,
+          StreamName: settings.StreamName,
+        })),
+        distinctUntilChanged(GeneralHelpers.objectsEqual),
+      ).subscribe(() => {
         this.availableEntities$.next(null);
       })
     );
@@ -102,7 +104,7 @@ export class EntityQueryComponent extends EntityDefaultComponent implements OnIn
     const queryUrl = settings.Query.includes('/') ? settings.Query : `${settings.Query}/${streamName}`;
     const params = this.paramsMask.resolve();
     const entitiesFilter: string[] = clearAvailableEntitiesAndOnlyUpdateCache && !this.isStringQuery
-      ? (this.control.value as string[]).filter(guid => guid != null)
+      ? (this.control.value as string[]).filter(guid => guid)
       : null;
 
     this.queryService.getAvailableEntities(queryUrl, true, params, entitiesFilter).subscribe({
@@ -118,6 +120,8 @@ export class EntityQueryComponent extends EntityDefaultComponent implements OnIn
         const items: EntityInfo[] = data[streamName].map(entity => this.queryEntityMapping(entity));
         if (!this.isStringQuery) {
           this.entityCacheService.loadEntities(items);
+        } else {
+          this.stringQueryCacheService.loadEntities(data[streamName]);
         }
         if (!clearAvailableEntitiesAndOnlyUpdateCache) {
           this.availableEntities$.next(items);

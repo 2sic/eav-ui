@@ -10,7 +10,7 @@ import { buildTranslateConfiguration, TranslateLoaderWithErrorHandling } from '.
 import { EavItemDialogModule } from './eav-item-dialog/eav-item-dialog.module';
 import { AdamService } from './eav-material-controls/adam/adam.service';
 import { EditRoutingModule } from './edit-routing.module';
-import { DnnBridgeService, EavService, EntityService, QueryService } from './shared/services';
+import { EavService, EntityService, QueryService } from './shared/services';
 
 declare const window: EavWindow;
 
@@ -37,7 +37,6 @@ export function translateLoaderFactoryEdit(http: HttpClient): TranslateLoader {
     DnnInterceptor,
     EavService,
     AdamService,
-    DnnBridgeService,
     EntityService,
     QueryService,
   ],

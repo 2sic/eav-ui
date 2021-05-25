@@ -4,8 +4,9 @@ import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { ContentExpandAnimation } from '../../../shared/animations';
+import { GeneralHelpers } from '../../../shared/helpers';
 import { EavService, EditRoutingService, FieldsSettingsService } from '../../../shared/services';
-import { EntityCacheService } from '../../../shared/store/ngrx-data';
+import { EntityCacheService, StringQueryCacheService } from '../../../shared/store/ngrx-data';
 import { BaseComponent } from '../../input-types/base/base.component';
 import { calculateSelectedEntities } from '../../input-types/entity/entity-default/entity-default.helpers';
 import { SelectedEntity } from '../../input-types/entity/entity-default/entity-default.models';
@@ -31,6 +32,7 @@ export class EntityExpandableWrapperComponent extends BaseComponent<string | str
     private translate: TranslateService,
     private editRoutingService: EditRoutingService,
     private entityCacheService: EntityCacheService,
+    private stringQueryCache: StringQueryCacheService,
   ) {
     super(eavService, validationMessagesService, fieldsSettingsService);
   }
@@ -39,9 +41,21 @@ export class EntityExpandableWrapperComponent extends BaseComponent<string | str
     super.ngOnInit();
     this.dialogIsOpen$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
 
-    const separator$ = this.settings$.pipe(map(settings => settings.Separator), distinctUntilChanged());
-    const selectedEntities$ = combineLatest([this.value$, separator$, this.entityCacheService.getEntities$()]).pipe(
-      map(([value, separator, entityCache]) => calculateSelectedEntities(value, separator, entityCache, this.translate)),
+    const selectedEntities$ = combineLatest([
+      this.value$,
+      this.entityCacheService.getEntities$(),
+      this.stringQueryCache.getEntities$(),
+      this.settings$.pipe(
+        map(settings => ({
+          Separator: settings.Separator,
+          Label: settings.Label,
+        })),
+        distinctUntilChanged(GeneralHelpers.objectsEqual),
+      ),
+    ]).pipe(
+      map(([value, entityCache, stringQueryCache, settings]) =>
+        calculateSelectedEntities(value, settings.Separator, entityCache, stringQueryCache, settings.Label, this.translate)
+      ),
     );
 
     this.templateVars$ = combineLatest([

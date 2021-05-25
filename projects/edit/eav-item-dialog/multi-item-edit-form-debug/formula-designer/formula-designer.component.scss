@@ -1,0 +1,134 @@
+@import "../../../assets/styles/_variables";
+
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  border-top: 1px solid lightgray;
+  padding-top: 8px;
+}
+
+.formula-context-box {
+  display: flex;
+  align-items: center;
+
+  .mat-form-field {
+    font-size: 14px;
+  }
+
+  .mat-form-field:not(:first-of-type) {
+    margin-left: 8px;
+  }
+
+  .mat-icon-button {
+    margin-left: 8px;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+
+    .mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+      line-height: 20px !important;
+    }
+  }
+
+  .spacer {
+    flex: 1 1 auto;
+  }
+}
+
+.has-formula {
+  font-weight: bold;
+}
+
+.formula-box {
+  flex: 1 1 auto;
+  display: flex;
+  overflow: hidden;
+
+  .mat-form-field {
+    flex: 0 1 auto;
+    font-size: 14px;
+    width: 100%;
+  }
+
+  .formula-snippets {
+    flex: 0 0 auto;
+    max-width: 200px;
+    max-height: 194px;
+    overflow: hidden auto;
+    padding-left: 2px;
+
+    &.disabled .snippet {
+      pointer-events: none;
+      color: rgba($editUI-foreground-color, 0.44),
+    }
+
+    .snippet {
+      font-size: 14px;
+      cursor: pointer;
+      white-space: nowrap;
+      padding-top: 1px;
+      padding-bottom: 1px;
+
+      &:first-of-type {
+        padding-top: 0;
+      }
+
+      &:last-of-type {
+        padding-bottom: 0;
+      }
+    }
+  }
+}
+
+.formula-footer-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+.formula-result-box {
+  flex: 0 1 auto;
+  height: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+
+  .label {
+    user-select: none;
+    font-weight: 500;
+  }
+
+  .result-error {
+    color: red;
+  }
+}
+
+.formula-actions-box {
+  flex: 0 0 auto;
+
+  .mat-icon-button {
+    margin-left: 0;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    flex-shrink: 0;
+
+    .mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+      line-height: 20px !important;
+    }
+  }
+
+  .run-button {
+    margin-left: 8px;
+  }
+}

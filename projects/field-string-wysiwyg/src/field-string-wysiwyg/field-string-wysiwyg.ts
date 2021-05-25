@@ -3,7 +3,7 @@ import { WysiwygReconfigure } from '../../../edit-types';
 import { consoleLogWebpack } from '../../../field-custom-gps/src/shared/console-log-webpack.helper';
 import { FieldStringWysiwygEditor, wysiwygEditorTag } from '../editor/editor';
 import { FieldStringWysiwygPreview, wysiwygPreviewTag } from '../preview/preview';
-import * as styles from './field-string-wysiwyg.css';
+import * as styles from './field-string-wysiwyg.scss';
 
 const wysiwygTag = 'field-string-wysiwyg';
 
@@ -20,7 +20,7 @@ class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<stri
     this.fieldInitialized = false;
   }
 
-  connectedCallback() {
+  connectedCallback(): void {
     if (this.fieldInitialized) { return; }
     this.fieldInitialized = true;
     consoleLogWebpack(`${wysiwygTag} connectedCallback called`);
@@ -36,7 +36,7 @@ class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<stri
     }
   }
 
-  private isPreviewMode() {
+  private isPreviewMode(): boolean {
     let previewMode = this.connector.field.settings?.Dialog === 'dialog';
     if (this.mode != null || this.getAttribute('mode') != null) {
       previewMode = this.mode === 'preview' || this.getAttribute('mode') === 'preview';
@@ -45,14 +45,14 @@ class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<stri
     return previewMode;
   }
 
-  private createPreview() {
+  private createPreview(): void {
     const previewName = wysiwygPreviewTag;
     const previewEl = document.createElement(previewName) as FieldStringWysiwygPreview;
     previewEl.connector = this.connector;
     this.appendChild(previewEl);
   }
 
-  private createEditor() {
+  private createEditor(): void {
     const editorName = wysiwygEditorTag;
     const editorEl = document.createElement(editorName) as FieldStringWysiwygEditor;
     editorEl.connector = this.connector;
@@ -61,7 +61,7 @@ class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<stri
     this.appendChild(editorEl);
   }
 
-  disconnectedCallback() {
+  disconnectedCallback(): void {
     consoleLogWebpack(`${wysiwygTag} disconnectedCallback called`);
   }
 }

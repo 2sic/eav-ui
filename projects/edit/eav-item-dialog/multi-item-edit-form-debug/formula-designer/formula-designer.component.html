@@ -1,0 +1,110 @@
+<ng-container *ngIf="!loadError">
+  <ng-container *ngIf="templateVars$ | async as data">
+
+    <div class="formula-context-box">
+      <mat-form-field color="accent">
+        <mat-label>Entity</mat-label>
+        <mat-select [ngModel]="data.designer.entityGuid"
+          (ngModelChange)="selectedChanged(SelectTargets.Entity, $event, data.fieldOptions)">
+          <mat-option *ngFor="let entityOption of data.entityOptions; trackBy: trackEntityOptions"
+            [value]="entityOption.entityGuid">
+            <span [ngClass]="{ 'has-formula': entityOption.hasFormula }">
+              {{ entityOption.label }}
+            </span>
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field color="accent">
+        <mat-label>Attribute</mat-label>
+        <mat-select [ngModel]="data.designer.fieldName"
+          (ngModelChange)="selectedChanged(SelectTargets.Field, $event, data.fieldOptions)"
+          [disabled]="data.designer.entityGuid == null">
+          <mat-option
+            *ngFor="let fieldOption of data.fieldOptions[data.designer.entityGuid]; trackBy: trackFieldOptions"
+            [value]="fieldOption.fieldName">
+            <span [ngClass]="{ 'has-formula': fieldOption.hasFormula }">
+              {{ fieldOption.fieldName }}
+            </span>
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field color="accent">
+        <mat-label>Target</mat-label>
+        <mat-select *ngIf="!freeTextTarget" [ngModel]="data.designer.target"
+          (ngModelChange)="selectedChanged(SelectTargets.Target, $event, data.fieldOptions)"
+          [disabled]="data.designer.entityGuid == null || data.designer.fieldName == null">
+          <mat-option *ngFor="let targetOption of data.targetOptions[data.designer.entityGuid][data.designer.fieldName]"
+            [value]="targetOption.target">
+            <span [ngClass]="{ 'has-formula': targetOption.hasFormula }">
+              {{ targetOption.label }}
+            </span>
+          </mat-option>
+        </mat-select>
+        <input *ngIf="freeTextTarget" matInput [ngModel]="data.designer.target"
+          (ngModelChange)="selectedChanged(SelectTargets.Target, $event, data.fieldOptions)"
+          [disabled]="data.designer.entityGuid == null || data.designer.fieldName == null">
+      </mat-form-field>
+
+      <button mat-icon-button matTooltip="FreeText Target"
+        [disabled]="data.designer.entityGuid == null || data.designer.fieldName == null"
+        (click)="freeTextTarget = !freeTextTarget">
+        <mat-icon>text_fields</mat-icon>
+      </button>
+
+      <div class="spacer"></div>
+
+      <button mat-icon-button matTooltip="Help" (click)="openFormulasHelp()">
+        <mat-icon>help</mat-icon>
+      </button>
+    </div>
+
+    <div class="formula-box">
+      <mat-form-field color="accent">
+        <textarea matInput spellcheck="false" class="fancy-scrollbar-light" rows="10" [matTextareaAutosize]="false"
+          [ngModel]="data.formula?.source" (ngModelChange)="formulaChanged($event)"
+          [disabled]="!data.designer.editMode || data.designer.entityGuid == null || data.designer.fieldName == null || data.designer.target == null"></textarea>
+        <mat-label>Function</mat-label>
+      </mat-form-field>
+
+      <div class="formula-snippets fancy-scrollbar-light" [ngClass]="{ 'disabled': !data.designer.editMode }">
+        <div class="snippet" *ngFor="let snippet of data.snippets; trackBy: trackSnippets" [title]="snippet.code"
+          (click)="copyToClipboard(snippet.code)">
+          {{ snippet.label }}
+        </div>
+      </div>
+    </div>
+
+    <div class="formula-footer-box">
+      <div class="formula-result-box hide-scrollbar">
+        <span class="label">Result:&nbsp;</span>
+        <span *ngIf="!data.resultIsError">{{ data.result | json }}</span>
+        <span class="result-error" *ngIf="data.resultIsError">
+          Calculation failed. Please check logs for more info
+        </span>
+      </div>
+
+      <div class="formula-actions-box">
+        <button mat-icon-button matTooltip="Edit" (click)="toggleEdit()">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button matTooltip="Reset" (click)="reset()">
+          <mat-icon>history</mat-icon>
+        </button>
+        <button mat-icon-button matTooltip="Save"
+          [matTooltipDisabled]="!data.designer.editMode || !data.formula?.source || !data.formula?.sourceGuid"
+          [disabled]="!data.designer.editMode || !data.formula?.source || !data.formula?.sourceGuid" (click)="save()">
+          <mat-icon matTooltip="Saving only works if formula was previously defined in settings"
+            [matTooltipDisabled]="!data.designer.editMode || (data.designer.editMode && !data.formula?.source) || data.formula?.sourceGuid">
+            save
+          </mat-icon>
+        </button>
+        <button mat-icon-button class="run-button" matTooltip="Run"
+          [disabled]="!data.designer.editMode || !data.formula?.source" (click)="run()">
+          <mat-icon>play_arrow</mat-icon>
+        </button>
+      </div>
+    </div>
+  </ng-container>
+</ng-container>

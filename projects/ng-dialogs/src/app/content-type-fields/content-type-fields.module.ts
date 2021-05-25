@@ -17,6 +17,7 @@ import { Context } from '../shared/services/context';
 import { SharedComponentsModule } from '../shared/shared-components.module';
 import { ContentTypeFieldsActionsComponent } from './ag-grid-components/content-type-fields-actions/content-type-fields-actions.component';
 import { ContentTypeFieldsInputTypeComponent } from './ag-grid-components/content-type-fields-input-type/content-type-fields-input-type.component';
+import { ContentTypeFieldsSpecialComponent } from './ag-grid-components/content-type-fields-special/content-type-fields-special.component';
 import { ContentTypeFieldsTitleComponent } from './ag-grid-components/content-type-fields-title/content-type-fields-title.component';
 import { ContentTypeFieldsTypeComponent } from './ag-grid-components/content-type-fields-type/content-type-fields-type.component';
 import { ContentTypeFieldsRoutingModule } from './content-type-fields-routing.module';
@@ -32,6 +33,7 @@ import { ContentTypesFieldsService } from './services/content-types-fields.servi
     ContentTypeFieldsActionsComponent,
     EditContentTypeFieldsComponent,
     ContentTypeFieldsTypeComponent,
+    ContentTypeFieldsSpecialComponent,
   ],
   entryComponents: [
     ContentTypeFieldsComponent,
@@ -40,6 +42,7 @@ import { ContentTypesFieldsService } from './services/content-types-fields.servi
     ContentTypeFieldsActionsComponent,
     EditContentTypeFieldsComponent,
     ContentTypeFieldsTypeComponent,
+    ContentTypeFieldsSpecialComponent,
   ],
   imports: [
     CommonModule,

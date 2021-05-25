@@ -259,15 +259,15 @@ export class VisualQueryService implements OnDestroy {
       top,
     };
     this.dialog.open(QueryResultComponent, {
-      data: dialogData,
-      backdropClass: 'dialog-backdrop',
-      panelClass: ['dialog-panel', `dialog-panel-medium`, 'no-scrollbar'],
-      viewContainerRef: this.viewContainerRef,
       autoFocus: false,
+      backdropClass: 'dialog-backdrop',
       closeOnNavigation: false,
-      // spm NOTE: used to force align-items: flex-start; on cdk-global-overlay-wrapper.
+      data: dialogData,
+      panelClass: ['dialog-panel', `dialog-panel-medium`, 'no-scrollbar'],
+      // spm NOTE: position used to force align-items: flex-start; on cdk-global-overlay-wrapper.
       // Real top margin is overwritten in css e.g. dialog-panel-large
       position: { top: '0' },
+      viewContainerRef: this.viewContainerRef,
     });
     this.changeDetectorRef.markForCheck();
   }
@@ -277,15 +277,15 @@ export class VisualQueryService implements OnDestroy {
       errorData: stream.ErrorData,
     };
     this.dialog.open(StreamErrorResultComponent, {
-      data: dialogData,
-      backdropClass: 'dialog-backdrop',
-      panelClass: ['dialog-panel', `dialog-panel-medium`, 'no-scrollbar'],
-      viewContainerRef: this.viewContainerRef,
       autoFocus: false,
+      backdropClass: 'dialog-backdrop',
       closeOnNavigation: false,
-      // spm NOTE: used to force align-items: flex-start; on cdk-global-overlay-wrapper.
+      data: dialogData,
+      panelClass: ['dialog-panel', `dialog-panel-medium`, 'no-scrollbar'],
+      // spm NOTE: position used to force align-items: flex-start; on cdk-global-overlay-wrapper.
       // Real top margin is overwritten in css e.g. dialog-panel-large
       position: { top: '0' },
+      viewContainerRef: this.viewContainerRef,
     });
     this.changeDetectorRef.markForCheck();
   }

@@ -29,8 +29,8 @@ import { TinyMceConfigurator } from '../config/tinymce-configurator';
 import { TinyMceTranslations } from '../config/translations';
 import { attachAdam } from '../connector/adam';
 import { buildTemplate } from '../shared/helpers';
-import * as styles from './editor.css';
 import * as template from './editor.html';
+import * as styles from './editor.scss';
 import { fixMenuPositions } from './fix-menu-positions.helper';
 import * as skinOverrides from './skin-overrides.scss';
 
@@ -74,12 +74,9 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
     consoleLogWebpack(`${wysiwygEditorTag} connectedCallback called`);
 
     this.innerHTML = buildTemplate(template.default, styles.default + skinOverrides.default);
-    this.querySelector('.tinymce-container').classList.add(this.containerClass);
-    this.querySelector('.tinymce-toolbar-container').classList.add(this.toolbarContainerClass);
+    this.querySelector<HTMLDivElement>('.tinymce-container').classList.add(this.containerClass);
+    this.querySelector<HTMLDivElement>('.tinymce-toolbar-container').classList.add(this.toolbarContainerClass);
     this.classList.add(this.mode === 'inline' ? 'inline-wysiwyg' : 'full-wysiwyg');
-    if (this.connector.field.disabled) {
-      this.classList.add('disabled');
-    }
     this.pasteClipboardImage = this.connector._experimental.isFeatureEnabled(FeaturesConstants.PasteImageFromClipboard);
 
     const tinyLang = TinyMceTranslations.fixTranslationKey(this.connector._experimental.translateService.currentLang);
@@ -130,6 +127,13 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
           if (this.editorContent === newValue) { return; }
           this.editorContent = newValue;
           editor.setContent(this.editorContent);
+        }),
+        this.connector.field$.subscribe(fieldConfig => {
+          if (fieldConfig.settings.Disabled) {
+            this.classList.add('disabled');
+          } else {
+            this.classList.remove('disabled');
+          }
         }),
       );
       if (this.mode !== 'inline') {
@@ -195,7 +199,9 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   }
 
   private clearData(): void {
-    this.subscriptions.forEach(subscription => { subscription.unsubscribe(); });
+    this.subscriptions.forEach(subscription => {
+      subscription.unsubscribe();
+    });
     this.subscriptions = [];
     this.editor?.destroy();
     this.editor?.remove();

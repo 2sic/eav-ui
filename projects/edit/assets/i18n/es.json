@@ -86,13 +86,14 @@
   },
   "Errors": {
     "UnsavedChanges": "Tiene cambios sin guardar.",
-    "SaveErrors": "To save the form, please fix the following errors:"
+    "SaveErrors": "To save the form, please fix the following errors:",
+    "FormulaConfiguration": "There is an error in form configuration. Please report this to admin",
+    "FormulaCalculation": "There was an error in form calculations. Please report this to admin"
   },
   "General": {
     "Buttons": {
       "NotSave": "discard changes",
-      "Save": "save",
-      "Debug": "debug"
+      "Save": "save"
     }
   },
   "Data": {
@@ -117,6 +118,7 @@
     "Entity": {
       "Choose": "-- elija elemento para añadir --",
       "New": "-- crear nuevo --",
+      "EmptySlot": "empty slot",
       "EntityNotFound": "(elemento no encontrado)",
       "DragMove": "arrastre para reordenar la lista",
       "Edit": "edite este elemento",

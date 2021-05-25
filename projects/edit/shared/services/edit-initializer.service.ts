@@ -6,6 +6,7 @@ import { BehaviorSubject } from 'rxjs';
 import { EavService } from '.';
 import { FieldSettings } from '../../../edit-types';
 import { InputTypeConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
+import { UpdateEnvVarsFromDialogSettings } from '../../../ng-dialogs/src/app/shared/helpers/update-env-vars-from-dialog-settings.helper';
 import { convertUrlToForm } from '../../../ng-dialogs/src/app/shared/helpers/url-prep.helper';
 import { calculateIsParentDialog, sortLanguages } from '../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.helpers';
 import { EavFormData } from '../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.models';
@@ -46,8 +47,10 @@ export class EditInitializerService implements OnDestroy {
     const form = convertUrlToForm((this.route.snapshot.params as EditParams).items);
     const editItems = JSON.stringify(form.items);
     this.eavService.fetchFormData(editItems).subscribe(formData => {
+      UpdateEnvVarsFromDialogSettings(formData.Context.App);
       this.saveFormData(formData);
       this.setMissingValues();
+
       this.loaded$.next(true);
     });
   }
@@ -109,11 +112,14 @@ export class EditInitializerService implements OnDestroy {
 
       for (const ctAttribute of contentType.Attributes) {
         const inputType = inputTypes.find(i => i.Type === ctAttribute.InputType);
-        // 'custom-default' doesn't have inputType
-        if (inputType?.Type === InputTypeConstants.EmptyDefault) { continue; }
+        // 'custom-default' doesn't have inputType and 'empty-default' and 'empty-end' don't save value
+        const empties = [InputTypeConstants.EmptyDefault, InputTypeConstants.EmptyEnd];
+        if (empties.includes(inputType?.Type)) { continue; }
 
         const attributeValues = item.Entity.Attributes[ctAttribute.Name];
-        const fieldSettings = FieldsSettingsHelpers.mergeSettings<FieldSettings>(ctAttribute.Metadata, defaultLanguage, defaultLanguage);
+        const fieldSettings = FieldsSettingsHelpers.setDefaultFieldSettings(
+          FieldsSettingsHelpers.mergeSettings<FieldSettings>(ctAttribute.Metadata, defaultLanguage, defaultLanguage)
+        );
 
         if (languages.length === 0) {
           const firstValue = LocalizationHelpers.getBestValue(attributeValues, '*', '*', BestValueModes.Default);

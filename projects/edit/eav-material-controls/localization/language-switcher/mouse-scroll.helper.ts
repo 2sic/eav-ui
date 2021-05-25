@@ -23,9 +23,8 @@ export class MouseScrollHelper {
     this.ngZone.runOutsideAngular(() => {
       this.headerDownListener.element.removeEventListener(this.headerDownListener.type, this.headerDownListener.listener);
       this.headerDownListener = null;
-      this.eventListeners.forEach(evList => {
-        evList.element.removeEventListener(evList.type, evList.listener);
-        evList = null;
+      this.eventListeners.forEach(({ element, type, listener }) => {
+        element.removeEventListener(type, listener);
       });
       this.eventListeners = null;
     });
@@ -44,8 +43,8 @@ export class MouseScrollHelper {
     this.header.style.scrollBehavior = 'auto';
     this.positionX = event.pageX;
 
-    const doScroll = this.doScroll.bind(this);
-    const removeScroll = this.removeScroll.bind(this);
+    const doScroll = (e: MouseEvent) => { this.doScroll(e); };
+    const removeScroll = () => { this.removeScroll(); };
     document.addEventListener('pointermove', doScroll, { passive: true });
     document.addEventListener('pointerup', removeScroll, { passive: true });
     document.addEventListener('pointerleave', removeScroll, { passive: true });
@@ -59,9 +58,8 @@ export class MouseScrollHelper {
   private removeScroll() {
     this.header.style.scrollBehavior = this.oldScrollBehavior;
 
-    this.eventListeners.forEach(evList => {
-      evList.element.removeEventListener(evList.type, evList.listener);
-      evList = null;
+    this.eventListeners.forEach(({ element, type, listener }) => {
+      element.removeEventListener(type, listener);
     });
     this.eventListeners.splice(0, this.eventListeners.length);
   }

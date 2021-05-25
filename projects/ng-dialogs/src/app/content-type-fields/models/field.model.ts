@@ -4,9 +4,11 @@ import { InputType } from './input-type.model';
 
 export class Field {
   AttributeId: number;
+  HasFormulas: boolean;
   Id: number;
   InputType: string;
   InputTypeConfig: InputType;
+  IsEphemeral: boolean;
   IsTitle: boolean;
   Metadata: FieldMetadata;
   Permissions: PermissionsCount;

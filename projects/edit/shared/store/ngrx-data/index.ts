@@ -12,3 +12,4 @@ export * from './language-instance.service';
 export * from './language.service';
 export * from './link-cache.service';
 export * from './publish-status.service';
+export * from './string-query-cache.service';

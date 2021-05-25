@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { EntityCollectionServiceElementsFactory } from '@ngrx/data';
 import { Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
+import { EntityInfo } from '../../../../edit-types';
 import { GeneralHelpers } from '../../helpers';
-import { EntityInfo } from '../../models';
 import { BaseDataService } from './base-data.service';
 
 @Injectable({ providedIn: 'root' })
@@ -26,6 +26,14 @@ export class EntityCacheService extends BaseDataService<EntityInfo> {
       map(entities => entities.filter(entity => guids.includes(entity.Value))),
       distinctUntilChanged(GeneralHelpers.arraysEqual),
     );
+  }
+
+  getEntities(guids?: string[]): EntityInfo[] {
+    if (guids == null) {
+      return this.cache$.value;
+    }
+
+    return this.cache$.value.filter(entity => guids.includes(entity.Value));
   }
 
   getEntity(guid: string): EntityInfo {

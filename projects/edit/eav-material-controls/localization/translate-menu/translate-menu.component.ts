@@ -40,6 +40,7 @@ export class TranslateMenuComponent implements OnInit {
     const translationState$ = this.fieldsSettingsService.getTranslationState$(this.config.fieldName);
     const disableTranslation$ = this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).pipe(
       map(settings => settings.DisableTranslation),
+      distinctUntilChanged(),
     );
 
     const control = this.group.controls[this.config.fieldName];
@@ -81,11 +82,11 @@ export class TranslateMenuComponent implements OnInit {
       },
     };
     this.dialog.open(TranslateMenuDialogComponent, {
-      panelClass: 'translate-menu-dialog',
       autoFocus: false,
-      width: '350px',
-      viewContainerRef: this.viewContainerRef,
       data: dialogData,
+      panelClass: 'translate-menu-dialog',
+      viewContainerRef: this.viewContainerRef,
+      width: '350px',
     });
   }
 }

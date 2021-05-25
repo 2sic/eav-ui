@@ -16,7 +16,7 @@ export class EntityContentBlocksLogic extends FieldLogicBase {
     fixedSettings.EnableCreate = false;
     fixedSettings.EnableEdit = false;
     fixedSettings.EntityType = 'ContentGroupReference';
-    fixedSettings.VisibleInEditUI = false;
+    fixedSettings.Visible = false;
     return fixedSettings;
   }
 }

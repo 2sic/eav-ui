@@ -8,6 +8,8 @@ export interface DialogContextApp {
   Folder: string;
   Permissions: PermissionsCount;
   Url: string;
+  /** New in v12 - the root for app APIs and content/query */
+  Api: string;
 }
 
 export interface DialogContextEnable {

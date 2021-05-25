@@ -1,18 +1,28 @@
-<mat-card *ngIf="templateVars$ | async as data" fxLayout="column" fxLayoutAlign="center start"
-  [ngClass]="{ 'debug-enabled': showDebugInfo }">
+<mat-card class="mat-elevation-z4" [ngClass]="{ 'debug-enabled': activeDebug != null }">
 
-  <div class="debug-buttons-container" fxLayout="row" fxLayoutAlign="space-between center">
-    <button mat-icon-button [matTooltip]="'General.Buttons.Debug' | translate" (click)="toggleDebugInfo()">
+  <div class="debug-buttons-container">
+    <button mat-button matTooltip="Show Data JSON" (click)="toggleDebugType(DebugTypes.Data)">
       <mat-icon>offline_bolt</mat-icon>
+      <span>Data</span>
     </button>
-    <div>2sxc {{ sxcVer }}</div>
-    <!-- copy of the button to keep 2sxc version text correctly aligned in the middle -->
-    <button mat-icon-button class="hidden">
-      <mat-icon>offline_bolt</mat-icon>
+    <button mat-button matTooltip="Show Formula Designer" (click)="toggleDebugType(DebugTypes.Formulas)">
+      <mat-icon>functions</mat-icon>
+      <span>Formulas</span>
     </button>
+    <button mat-button matTooltip="Show Logs" (click)="toggleDebugType(DebugTypes.Logs)">
+      <mat-icon>speed</mat-icon>
+      <span>Logs</span>
+    </button>
+    <div class="spacer"></div>
+    <div class="sxc-version">2sxc {{ sxcVer }}</div>
   </div>
 
-  <div *ngIf="showDebugInfo" class="debug-info-container">
-    <textarea readonly class="debug-dump">{{ data.items | json }}</textarea>
+  <div class="debug-info-container" *ngIf="activeDebug != null">
+    <app-data-dump *ngIf="activeDebug === DebugTypes.Data"></app-data-dump>
+
+    <app-formula-designer *ngIf="activeDebug === DebugTypes.Formulas" [itemEditFormRefs]="itemEditFormRefs">
+    </app-formula-designer>
+
+    <app-logs-dump *ngIf="activeDebug === DebugTypes.Logs"></app-logs-dump>
   </div>
 </mat-card>

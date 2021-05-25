@@ -1,16 +1,16 @@
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
+import { EntityInfo } from '../../../../../edit-types';
 import { EditForm } from '../../../../../ng-dialogs/src/app/shared/models/edit-form.model';
 import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
-import { FieldMask } from '../../../../shared/helpers';
-import { EntityInfo } from '../../../../shared/models';
+import { FieldMask, GeneralHelpers } from '../../../../shared/helpers';
 import { EavService, EditRoutingService, EntityService, FieldsSettingsService } from '../../../../shared/services';
-import { EntityCacheService } from '../../../../shared/store/ngrx-data';
+import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { BaseComponent } from '../../base/base.component';
 import { ReorderIndexes } from '../entity-default-list/entity-default-list.models';
@@ -26,10 +26,11 @@ import { DeleteEntityProps, EntityTemplateVars, SelectedEntity } from './entity-
   styleUrls: ['./entity-default.component.scss'],
 })
 @ComponentMetadata({})
-export class EntityDefaultComponent extends BaseComponent<string | string[]> implements OnInit, OnDestroy {
+export class EntityDefaultComponent extends BaseComponent<string | string[]> implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(EntityDefaultSearchComponent) private entitySearchComponent: EntityDefaultSearchComponent;
 
   isQuery: boolean;
+  isStringQuery: boolean;
   contentTypeMask?: FieldMask;
 
   error$: BehaviorSubject<string>;
@@ -49,10 +50,12 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
     private editRoutingService: EditRoutingService,
     private snackBar: MatSnackBar,
     public entityCacheService: EntityCacheService,
+    public stringQueryCacheService: StringQueryCacheService,
   ) {
     super(eavService, validationMessagesService, fieldsSettingsService);
     EntityDefaultLogic.importMe();
     this.isQuery = false;
+    this.isStringQuery = false;
   }
 
   ngOnInit(): void {
@@ -62,9 +65,21 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
     this.disableAddNew$ = new BehaviorSubject(true);
     this.availableEntities$ = new BehaviorSubject<EntityInfo[]>(null);
 
-    const separator$ = this.settings$.pipe(map(settings => settings.Separator), distinctUntilChanged());
-    this.selectedEntities$ = combineLatest([this.value$, separator$, this.entityCacheService.getEntities$()]).pipe(
-      map(([value, separator, entityCache]) => calculateSelectedEntities(value, separator, entityCache, this.translate)),
+    this.selectedEntities$ = combineLatest([
+      this.value$,
+      this.entityCacheService.getEntities$(),
+      this.stringQueryCacheService.getEntities$(),
+      this.settings$.pipe(
+        map(settings => ({
+          Separator: settings.Separator,
+          Label: settings.Label,
+        })),
+        distinctUntilChanged(GeneralHelpers.objectsEqual),
+      ),
+    ]).pipe(
+      map(([value, entityCache, stringQueryCache, settings]) =>
+        calculateSelectedEntities(value, settings.Separator, entityCache, stringQueryCache, settings.Label, this.translate)
+      ),
     );
 
     this.isExpanded$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
@@ -94,13 +109,14 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
       })
     );
 
+    const allowMultiValue$ = this.settings$.pipe(map(settings => settings.AllowMultiValue), distinctUntilChanged());
     this.templateVars$ = combineLatest([
-      combineLatest([this.label$, this.placeholder$, this.required$, this.invalid$, this.freeTextMode$, this.settings$]),
+      combineLatest([this.label$, this.placeholder$, this.required$, this.invalid$, this.freeTextMode$, allowMultiValue$]),
       combineLatest([this.selectedEntities$, this.availableEntities$, this.disableAddNew$, this.isExpanded$, this.error$]),
       combineLatest([this.disabled$, this.touched$]),
     ]).pipe(
       map(([
-        [label, placeholder, required, invalid, freeTextMode, settings],
+        [label, placeholder, required, invalid, freeTextMode, allowMultiValue],
         [selectedEntities, availableEntities, disableAddNew, isExpanded, error],
         [disabled, touched],
       ]) => {
@@ -110,7 +126,7 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
           required,
           invalid,
           freeTextMode,
-          settings,
+          allowMultiValue,
           selectedEntities,
           availableEntities,
           disableAddNew,
@@ -124,6 +140,10 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
     );
 
     this.refreshOnChildClosed();
+  }
+
+  ngAfterViewInit(): void {
+    this.fixPrefillAndStringQueryCache();
   }
 
   ngOnDestroy(): void {
@@ -151,7 +171,7 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
 
     const contentTypeName = this.contentTypeMask.resolve();
     const entitiesFilter: string[] = (clearAvailableEntitiesAndOnlyUpdateCache || !this.settings$.value.EnableAddExisting)
-      ? (this.control.value as string[]).filter(guid => guid != null)
+      ? (this.control.value as string[]).filter(guid => guid)
       : null;
 
     this.entityService.getAvailableEntities(contentTypeName, entitiesFilter).subscribe(items => {
@@ -256,6 +276,21 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
         });
       }
     });
+  }
+
+  /**
+   * If guid is initially in value, but not in cache, it is either prefilled or entity is deleted,
+   * or in case of StringDropdownQuery, backend doesn't provide entities initially.
+   * This will fetch data once to figure out missing guids.
+   */
+  private fixPrefillAndStringQueryCache(): void {
+    // filter out null items
+    const guids = convertValueToArray(this.control.value, this.settings$.value.Separator).filter(guid => guid);
+    if (guids.length === 0) { return; }
+    const cached = this.entityCacheService.getEntities(guids);
+    if (guids.length !== cached.length) {
+      this.fetchEntities(true);
+    }
   }
 
   private refreshOnChildClosed(): void {

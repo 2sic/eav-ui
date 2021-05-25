@@ -97,6 +97,8 @@ export class EavFieldDirective implements OnInit, OnDestroy {
       if (fieldProps.calculatedInputType.inputType === InputTypeConstants.EmptyDefault) {
         containerRef = this.containerRef;
         containerRef = this.createGroup(containerRef, fieldProps, fieldConfig);
+      } else if (fieldProps.calculatedInputType.inputType === InputTypeConstants.EmptyEnd) {
+        containerRef = this.containerRef;
       } else {
         this.createComponent(containerRef, fieldProps, fieldConfig);
       }

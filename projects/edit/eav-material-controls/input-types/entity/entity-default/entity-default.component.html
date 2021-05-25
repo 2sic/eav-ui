@@ -4,18 +4,17 @@
 -->
 <ng-container *ngIf="templateVars$ | async as data">
   <app-entity-default-list
-    *ngIf="!data.freeTextMode && data.selectedEntities.length && (!data.settings.AllowMultiValue || (data.settings.AllowMultiValue && data.isExpanded))"
+    *ngIf="!data.freeTextMode && data.selectedEntities.length && (!data.allowMultiValue || (data.allowMultiValue && data.isExpanded))"
     [config]="config" [label]="data.label" [required]="data.required" [disabled]="data.disabled"
-    [freeTextMode]="data.freeTextMode" [settings]="data.settings" [selectedEntities]="data.selectedEntities"
-    (reorder)="reorder($event)" (removeSelected)="removeSelected($event)" (editEntity)="editEntity($event)"
-    (deleteEntity)="deleteEntity($event)">
+    [selectedEntities]="data.selectedEntities" (reorder)="reorder($event)" (removeSelected)="removeSelected($event)"
+    (editEntity)="editEntity($event)" (deleteEntity)="deleteEntity($event)">
   </app-entity-default-list>
 
-  <app-entity-default-search [config]="config" [group]="group" [control]="control" [label]="data.label"
-    [placeholder]="data.placeholder" [required]="data.required" [invalid]="data.invalid" [touched]="data.touched"
-    [disabled]="data.disabled" [freeTextMode]="data.freeTextMode" [settings]="data.settings"
-    [selectedEntities]="data.selectedEntities" [availableEntities]="data.availableEntities"
-    [disableAddNew]="data.disableAddNew" [error]="data.error" (fetchAvailableEntities)="fetchEntities(false)"
-    (toggleFreeTextMode)="toggleFreeTextMode()" (addSelected)="addSelected($event)" (editEntity)="editEntity($event)">
+  <app-entity-default-search [config]="config" [group]="group" [label]="data.label" [placeholder]="data.placeholder"
+    [required]="data.required" [invalid]="data.invalid" [touched]="data.touched" [disabled]="data.disabled"
+    [freeTextMode]="data.freeTextMode" [selectedEntities]="data.selectedEntities"
+    [availableEntities]="data.availableEntities" [disableAddNew]="data.disableAddNew" [error]="data.error"
+    (fetchAvailableEntities)="fetchEntities(false)" (toggleFreeTextMode)="toggleFreeTextMode()"
+    (addSelected)="addSelected($event)" (editEntity)="editEntity($event)">
   </app-entity-default-search>
 </ng-container>

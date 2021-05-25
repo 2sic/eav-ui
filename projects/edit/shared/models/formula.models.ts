@@ -1,38 +1,99 @@
-import { FieldValue } from '../../../edit-types';
-import { FormValues } from '../../eav-item-dialog/item-edit-form/item-edit-form.models';
+import { FieldSettings, FieldValue } from '../../../edit-types';
 
-export interface FormulaContext {
-  data: FormulaCtxData;
+export interface FormulaCacheItem {
+  cache: Record<string, any>;
+  entityGuid: string;
+  fieldName: string;
+  /** Function built when formula is saved */
+  fn: FormulaFunction;
+  /** Is formula currently being edited (not yet saved) */
+  isDraft: boolean;
+  /** Current formula string */
+  source: string;
+  /** Formula string in field settings */
+  sourceFromSettings: string;
+  sourceGuid: string;
+  target: FormulaTarget;
+  version: FormulaVersion;
 }
 
-export interface FormulaCtxData {
-  name: string;
+export type FormulaFunction = FormulaFunctionDefault | FormulaFunctionV1;
+
+export type FormulaFunctionDefault = () => FieldValue;
+
+export type FormulaFunctionV1 = (data: FormulaV1Data, context: FormulaV1Context) => FieldValue;
+
+export const FormulaVersions = {
+  V1: 'v1',
+} as const;
+
+export type FormulaVersion = typeof FormulaVersions[keyof typeof FormulaVersions];
+
+export const FormulaTargets = {
+  Disabled: 'Field.Settings.Disabled',
+  Name: 'Field.Settings.Name',
+  Required: 'Field.Settings.Required',
+  Value: 'Field.Value',
+  Visible: 'Field.Settings.Visible',
+} as const;
+
+export const SettingsFormulaPrefix = FormulaTargets.Disabled.substring(0, FormulaTargets.Disabled.lastIndexOf('.') + 1);
+
+export type FormulaTarget = typeof FormulaTargets[keyof typeof FormulaTargets];
+
+export type FormulaProps = FormulaPropsV1;
+
+export interface FormulaPropsV1 {
+  data: FormulaV1Data;
+  context: FormulaV1Context;
+}
+
+export interface FormulaV1Data {
+  default: FieldValue;
+  prefill: FieldValue;
   value: FieldValue;
-  form: FormValues;
+  [fieldName: string]: FieldValue;
 }
 
-export type FormulaFunction = (context: FormulaContext) => FieldValue;
-
-export type FormulaType = 'value' | 'visible' | 'required' | 'enabled';
-
-export interface FieldFormulas {
-  [fieldName: string]: FormulaFunction;
+export interface FormulaV1Context {
+  cache: Record<string, any>;
+  culture: FormulaV1CtxCulture;
+  target: FormulaV1CtxTarget;
 }
 
-export interface CalcFields {
-  [fieldName: string]: string[];
+export interface FormulaV1CtxCulture {
+  code: string;
+  name: string;
 }
 
-export interface LanguageChangeCheckedFields {
-  [fieldName: string]: boolean;
+export interface FormulaV1CtxTarget {
+  entity: FormulaV1CtxTargetEntity;
+  name: string;
+  type: string;
 }
 
-export interface FieldsFormulaSettings {
-  [fieldName: string]: FormulaFieldSettings;
+export interface FormulaV1CtxTargetEntity {
+  guid: string;
+  id: number;
 }
 
-export interface FormulaFieldSettings {
-  hidden: boolean;
-  required: boolean;
-  disabled: boolean;
+export interface RunFormulasResult {
+  settings: FieldSettings;
+  value: FieldValue;
+}
+
+export interface FormulaResult {
+  entityGuid: string;
+  fieldName: string;
+  target: FormulaTarget;
+  value: FieldValue;
+  isError: boolean;
+}
+
+export interface DesignerState {
+  editMode: boolean;
+  entityGuid: string;
+  fieldName: string;
+  isOpen: boolean;
+  target: FormulaTarget;
 }

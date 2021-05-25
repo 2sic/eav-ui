@@ -49,6 +49,21 @@ const configuration = {
         test: /\.svg$/,
         use: 'raw-loader',
       },
+      {
+        test: /\.s[ac]ss$/i,
+        use: [
+          // Use CSS as a string
+          'raw-loader',
+          // Compiles Sass to CSS
+          {
+            loader: 'sass-loader',
+            options: {
+              implementation: require('sass'),
+              // sourceMap: true,
+            },
+          },
+        ],
+      },
     ]
   },
   resolve: {

@@ -138,7 +138,7 @@ export class Plumber {
   /** Create sources, targets and endpoints */
   private initDomDataSources() {
     for (const pipelineDataSource of this.pipelineModel.DataSources) {
-      const domDataSource: HTMLElement = this.jsPlumbRoot.querySelector('#' + dataSrcIdPrefix + pipelineDataSource.EntityGuid);
+      const domDataSource = this.jsPlumbRoot.querySelector<HTMLElement>('#' + dataSrcIdPrefix + pipelineDataSource.EntityGuid);
       if (!domDataSource) { continue; }
       const dataSource = this.dataSources.find(ds => ds.PartAssemblyAndType === pipelineDataSource.PartAssemblyAndType);
       if (!dataSource) { continue; }
@@ -192,7 +192,7 @@ export class Plumber {
 
       // Ensure In-Endpoint exist
       if (!this.instance.getEndpoint(fromUuid)) {
-        const domDataSource: HTMLElement = this.jsPlumbRoot.querySelector('#' + sourceElementId);
+        const domDataSource = this.jsPlumbRoot.querySelector<HTMLElement>('#' + sourceElementId);
         if (!domDataSource) { return; }
 
         const guid: string = domDataSource.id.replace(dataSrcIdPrefix, '');
@@ -202,7 +202,7 @@ export class Plumber {
 
       // Ensure Out-Endpoint exist
       if (!this.instance.getEndpoint(toUuid)) {
-        const domDataSource: HTMLElement = this.jsPlumbRoot.querySelector('#' + targetElementId);
+        const domDataSource = this.jsPlumbRoot.querySelector<HTMLElement>('#' + targetElementId);
         if (!domDataSource) { return; }
 
         const guid: string = domDataSource.id.replace(dataSrcIdPrefix, '');

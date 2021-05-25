@@ -10,7 +10,7 @@ export interface EavHeader {
   Group: EavGroupAssignment;
   Guid: string;
   Index: number;
-  Metadata: EavEntity[];
+  Metadata?: EavEntity[];
   Prefill: Dictionary;
-  Title: string;
+  Title?: string;
 }

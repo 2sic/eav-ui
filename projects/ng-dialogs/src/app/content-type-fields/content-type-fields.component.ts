@@ -17,6 +17,7 @@ import { AddItem, EditForm, EditItem } from '../shared/models/edit-form.model';
 import { ContentTypeFieldsActionsComponent } from './ag-grid-components/content-type-fields-actions/content-type-fields-actions.component';
 import { ContentTypeFieldsActionsParams } from './ag-grid-components/content-type-fields-actions/content-type-fields-actions.models';
 import { ContentTypeFieldsInputTypeComponent } from './ag-grid-components/content-type-fields-input-type/content-type-fields-input-type.component';
+import { ContentTypeFieldsSpecialComponent } from './ag-grid-components/content-type-fields-special/content-type-fields-special.component';
 import { ContentTypeFieldsTitleComponent } from './ag-grid-components/content-type-fields-title/content-type-fields-title.component';
 import { ContentTypeFieldsTypeComponent } from './ag-grid-components/content-type-fields-type/content-type-fields-type.component';
 import { InputTypeConstants } from './constants/input-type.constants';
@@ -38,12 +39,15 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
     ...defaultGridOptions,
     getRowClass(params) {
       const field: Field = params.data;
-      return field.InputType === InputTypeConstants.EmptyDefault ? 'group-row' : '';
+      if (field.InputType === InputTypeConstants.EmptyDefault) { return 'group-start-row'; }
+      if (field.InputType === InputTypeConstants.EmptyEnd) { return 'group-end-row'; }
+      return '';
     },
     frameworkComponents: {
       contentTypeFieldsTitleComponent: ContentTypeFieldsTitleComponent,
       contentTypeFieldsTypeComponent: ContentTypeFieldsTypeComponent,
       contentTypeFieldsInputTypeComponent: ContentTypeFieldsInputTypeComponent,
+      contentTypeFieldsSpecialComponent: ContentTypeFieldsSpecialComponent,
       contentTypeFieldsActionsComponent: ContentTypeFieldsActionsComponent,
     },
     columnDefs: [
@@ -68,6 +72,10 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
       {
         headerName: 'Label', field: 'Metadata.All.Name', flex: 2, minWidth: 250, cellClass: 'no-outline',
         sortable: true, filter: 'agTextColumnFilter',
+      },
+      {
+        headerName: 'Special', width: 66, headerClass: 'dense', cellClass: 'no-outline',
+        cellRenderer: 'contentTypeFieldsSpecialComponent',
       },
       {
         headerName: 'Notes', field: 'Metadata.All.Notes', flex: 2, minWidth: 250, cellClass: 'no-outline',
