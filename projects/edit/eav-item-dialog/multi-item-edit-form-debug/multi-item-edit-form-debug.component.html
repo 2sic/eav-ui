@@ -1,4 +1,4 @@
-<mat-card [ngClass]="{ 'debug-enabled': activeDebug != null }">
+<mat-card class="mat-elevation-z4" [ngClass]="{ 'debug-enabled': activeDebug != null }">
 
   <div class="debug-buttons-container">
     <button mat-button matTooltip="Show Data JSON" (click)="toggleDebugType(DebugTypes.Data)">
