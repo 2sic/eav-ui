@@ -5,8 +5,7 @@
       <mat-form-field color="accent">
         <mat-label>Entity</mat-label>
         <mat-select [ngModel]="data.designer.entityGuid"
-          (ngModelChange)="selectedChanged(SelectTargets.Entity, $event, data.fieldOptions)"
-          [disabled]="data.designer.editMode">
+          (ngModelChange)="selectedChanged(SelectTargets.Entity, $event, data.fieldOptions)">
           <mat-option *ngFor="let entityOption of data.entityOptions; trackBy: trackEntityOptions"
             [value]="entityOption.entityGuid">
             <span [ngClass]="{ 'has-formula': entityOption.hasFormula }">
@@ -20,7 +19,7 @@
         <mat-label>Attribute</mat-label>
         <mat-select [ngModel]="data.designer.fieldName"
           (ngModelChange)="selectedChanged(SelectTargets.Field, $event, data.fieldOptions)"
-          [disabled]="data.designer.editMode || data.designer.entityGuid == null">
+          [disabled]="data.designer.entityGuid == null">
           <mat-option
             *ngFor="let fieldOption of data.fieldOptions[data.designer.entityGuid]; trackBy: trackFieldOptions"
             [value]="fieldOption.fieldName">
@@ -35,7 +34,7 @@
         <mat-label>Target</mat-label>
         <mat-select *ngIf="!freeTextTarget" [ngModel]="data.designer.target"
           (ngModelChange)="selectedChanged(SelectTargets.Target, $event, data.fieldOptions)"
-          [disabled]="data.designer.editMode || data.designer.entityGuid == null || data.designer.fieldName == null">
+          [disabled]="data.designer.entityGuid == null || data.designer.fieldName == null">
           <mat-option *ngFor="let targetOption of data.targetOptions[data.designer.entityGuid][data.designer.fieldName]"
             [value]="targetOption.target">
             <span [ngClass]="{ 'has-formula': targetOption.hasFormula }">
@@ -45,11 +44,11 @@
         </mat-select>
         <input *ngIf="freeTextTarget" matInput [ngModel]="data.designer.target"
           (ngModelChange)="selectedChanged(SelectTargets.Target, $event, data.fieldOptions)"
-          [disabled]="data.designer.editMode || data.designer.entityGuid == null || data.designer.fieldName == null">
+          [disabled]="data.designer.entityGuid == null || data.designer.fieldName == null">
       </mat-form-field>
 
       <button mat-icon-button matTooltip="FreeText Target"
-        [disabled]="data.designer.editMode || data.designer.entityGuid == null || data.designer.fieldName == null"
+        [disabled]="data.designer.entityGuid == null || data.designer.fieldName == null"
         (click)="freeTextTarget = !freeTextTarget">
         <mat-icon>text_fields</mat-icon>
       </button>

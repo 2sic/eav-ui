@@ -65,6 +65,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
   selectedChanged(target: SelectTarget, value: string | FormulaTarget, fieldOptions: FieldOptions): void {
     const newState: DesignerState = {
       ...this.formulaDesignerService.getDesignerState(),
+      editMode: false,
     };
     switch (target) {
       case SelectTargets.Entity:
