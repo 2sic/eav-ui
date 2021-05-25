@@ -154,7 +154,7 @@ export class FormulaDesignerService implements OnDestroy {
     const oldFormulaIndex = oldFormulaCache.findIndex(f => f.entityGuid === entityGuid && f.fieldName === fieldName && f.target === target);
     const oldFormulaItem = oldFormulaCache[oldFormulaIndex];
 
-    if (oldFormulaItem.sourceFromSettings != null) {
+    if (oldFormulaItem?.sourceFromSettings != null) {
       this.upsertFormula(entityGuid, fieldName, target, oldFormulaItem.sourceFromSettings, true);
     } else if (oldFormulaIndex >= 0) {
       const newCache = [...oldFormulaCache.slice(0, oldFormulaIndex), ...oldFormulaCache.slice(oldFormulaIndex + 1)];
