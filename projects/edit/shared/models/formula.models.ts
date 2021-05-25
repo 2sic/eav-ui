@@ -56,6 +56,7 @@ export interface FormulaV1Data {
 }
 
 export interface FormulaV1Context {
+  cache: Record<string, any>;
   culture: FormulaV1CtxCulture;
   target: FormulaV1CtxTarget;
 }

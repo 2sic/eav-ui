@@ -126,7 +126,7 @@ export class FormulaHelpers {
         });
         const propsV1: FormulaPropsV1 = {
           data,
-          // spm TODO: figure out why this doesn't work
+          // spm TODO: figure out why getters here calculate values immediately
           // data: {
           //   ...formValues,
           //   get default() {
@@ -153,6 +153,7 @@ export class FormulaHelpers {
           //   },
           // },
           context: {
+            cache: formula.cache,
             culture: {
               code: currentLanguage,
               name: languages.find(l => l.key === currentLanguage)?.name,

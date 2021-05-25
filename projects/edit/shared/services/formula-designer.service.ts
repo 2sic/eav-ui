@@ -108,12 +108,11 @@ export class FormulaDesignerService implements OnDestroy {
     const oldFormulaIndex = oldFormulaCache.findIndex(f => f.entityGuid === entityGuid && f.fieldName === fieldName && f.target === target);
     const oldFormulaItem = oldFormulaCache[oldFormulaIndex];
 
-    const cache = oldFormulaItem?.cache ?? {};
     const newFormulaItem: FormulaCacheItem = {
-      cache,
+      cache: oldFormulaItem?.cache ?? {},
       entityGuid,
       fieldName,
-      fn: formulaFunction?.bind(cache),
+      fn: formulaFunction,
       isDraft: run ? formulaFunction == null : true,
       source: formula,
       sourceFromSettings: oldFormulaItem?.sourceFromSettings,
