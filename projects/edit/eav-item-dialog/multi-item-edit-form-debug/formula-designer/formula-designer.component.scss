@@ -49,8 +49,6 @@
   flex: 1 1 auto;
   display: flex;
   overflow: hidden;
-  padding-bottom: 10px;
-  box-sizing: border-box;
 
   .mat-form-field {
     flex: 0 1 auto;
@@ -98,7 +96,9 @@
 .formula-result-box {
   flex: 0 1 auto;
   height: 100%;
-  overflow: auto;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 
   .label {
     user-select: none;
