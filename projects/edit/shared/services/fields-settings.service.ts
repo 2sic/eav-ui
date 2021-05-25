@@ -342,6 +342,9 @@ export class FieldsSettingsService implements OnDestroy {
           }
           const valueV1 = formula.fn(formulaProps.data, formulaProps.context);
           this.formulaDesignerService.upsertFormulaResult(entityGuid, fieldName, target, valueV1, false);
+          if (isOpenInDesigner) {
+            console.log('Formula result:', valueV1);
+          }
           return valueV1;
         default:
           if (isOpenInDesigner) {
@@ -349,6 +352,9 @@ export class FieldsSettingsService implements OnDestroy {
           }
           const valueDefault = (formula.fn as FormulaFunctionDefault)();
           this.formulaDesignerService.upsertFormulaResult(entityGuid, fieldName, target, valueDefault, false);
+          if (isOpenInDesigner) {
+            console.log('Formula result:', valueDefault);
+          }
           return valueDefault;
       }
     } catch (error) {
