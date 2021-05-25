@@ -48,10 +48,16 @@
           [disabled]="data.designer.editMode || data.designer.entityGuid == null || data.designer.fieldName == null">
       </mat-form-field>
 
-      <button mat-icon-button class="formula-target-freetext" matTooltip="FreeText Target"
+      <button mat-icon-button matTooltip="FreeText Target"
         [disabled]="data.designer.editMode || data.designer.entityGuid == null || data.designer.fieldName == null"
         (click)="freeTextTarget = !freeTextTarget">
         <mat-icon>text_fields</mat-icon>
+      </button>
+
+      <div class="spacer"></div>
+
+      <button mat-icon-button matTooltip="Help" (click)="openFormulasHelp()">
+        <mat-icon>help</mat-icon>
       </button>
     </div>
 
@@ -87,10 +93,6 @@
         <button mat-icon-button matTooltip="Reset" (click)="reset()">
           <mat-icon>history</mat-icon>
         </button>
-        <button mat-icon-button matTooltip="Run" [disabled]="!data.designer.editMode || !data.formula?.source"
-          (click)="run()">
-          <mat-icon>play_arrow</mat-icon>
-        </button>
         <button mat-icon-button matTooltip="Save"
           [matTooltipDisabled]="!data.designer.editMode || !data.formula?.source || !data.formula?.sourceGuid"
           [disabled]="!data.designer.editMode || !data.formula?.source || !data.formula?.sourceGuid" (click)="save()">
@@ -99,8 +101,9 @@
             save
           </mat-icon>
         </button>
-        <button mat-icon-button matTooltip="Help" (click)="openFormulasHelp()">
-          <mat-icon>help</mat-icon>
+        <button mat-icon-button class="run-button" matTooltip="Run"
+          [disabled]="!data.designer.editMode || !data.formula?.source" (click)="run()">
+          <mat-icon>play_arrow</mat-icon>
         </button>
       </div>
     </div>

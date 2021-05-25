@@ -6,6 +6,8 @@
   height: 100%;
   box-sizing: border-box;
   overflow: hidden;
+  border-top: 1px solid lightgray;
+  padding-top: 8px;
 }
 
 .formula-context-box {
@@ -20,11 +22,22 @@
     margin-left: 8px;
   }
 
-  .formula-target-freetext {
+  .mat-icon-button {
     margin-left: 8px;
     width: 30px;
     height: 30px;
     line-height: 30px;
+
+    .mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+      line-height: 20px !important;
+    }
+  }
+
+  .spacer {
+    flex: 1 1 auto;
   }
 }
 
@@ -36,6 +49,8 @@
   flex: 1 1 auto;
   display: flex;
   overflow: hidden;
+  padding-bottom: 10px;
+  box-sizing: border-box;
 
   .mat-form-field {
     flex: 0 1 auto;
@@ -104,12 +119,16 @@
     height: 30px;
     line-height: 30px;
     flex-shrink: 0;
+
+    .mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+      line-height: 20px !important;
+    }
   }
 
-  .mat-icon {
-    font-size: 20px;
-    width: 20px;
-    height: 20px;
-    line-height: 20px !important;
+  .run-button {
+    margin-left: 8px;
   }
 }

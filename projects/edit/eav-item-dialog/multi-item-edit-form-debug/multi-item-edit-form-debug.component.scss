@@ -37,6 +37,14 @@
       margin-right: 4px;
     }
   }
+
+  .spacer {
+    flex: 1 1 auto;
+  }
+
+  .sxc-version {
+    cursor: default;
+  }
 }
 
 .mat-icon {
@@ -46,17 +54,12 @@
   line-height: 20px !important;
 }
 
-.sxc-version {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
 .debug-info-container {
   margin: $debug-info-container-margin !important;
   margin-top: 0 !important;
   width: calc(100% - 2 * #{$debug-info-container-margin});
   height: $debug-info-container-height;
+  box-sizing: border-box;
   position: relative;
   overflow: auto;
 }
