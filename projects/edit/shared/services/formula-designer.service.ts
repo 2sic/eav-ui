@@ -203,9 +203,7 @@ export class FormulaDesignerService implements OnDestroy {
   }
 
   getDesignerState$(): Observable<DesignerState> {
-    return this.designerState$.pipe(
-      distinctUntilChanged(GeneralHelpers.objectsEqual),
-    );
+    return this.designerState$.pipe(distinctUntilChanged(GeneralHelpers.objectsEqual));
   }
 
   private buildFormulaCache(): FormulaCacheItem[] {
@@ -229,8 +227,9 @@ export class FormulaDesignerService implements OnDestroy {
           const formula: string = LocalizationHelpers.translate(currentLanguage, defaultLanguage, formulaItem.Attributes.Formula, null);
           if (formula == null) { continue; }
 
-          const target: FormulaTarget = LocalizationHelpers
-            .translate(currentLanguage, defaultLanguage, formulaItem.Attributes.Target, null);
+          const target: FormulaTarget = LocalizationHelpers.translate(
+            currentLanguage, defaultLanguage, formulaItem.Attributes.Target, null
+          );
 
           let formulaFunction: FormulaFunction;
           try {

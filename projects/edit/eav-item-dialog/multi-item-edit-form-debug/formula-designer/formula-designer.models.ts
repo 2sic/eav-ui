@@ -3,13 +3,19 @@ import { DesignerState, FormulaCacheItem, FormulaTarget } from '../../../shared/
 
 export interface FormulaDesignerTemplateVars {
   entityOptions: EntityOption[];
-  fieldOptions: FieldOptions;
-  targetOptions: TargetOptions;
+  fieldOptions: FieldOption[];
+  targetOptions: TargetOption[];
   formula: FormulaCacheItem;
   designer: DesignerState;
   snippets: DesignerSnippet[];
   result: FieldValue;
   resultIsError: boolean;
+}
+
+export interface SelectOptions {
+  entityOptions: EntityOption[];
+  fieldOptions: FieldOption[];
+  targetOptions: TargetOption[];
 }
 
 export interface EntityOption {
@@ -18,20 +24,10 @@ export interface EntityOption {
   label: string;
 }
 
-export interface FieldOptions {
-  [entityGuid: string]: FieldOption[];
-}
-
 export interface FieldOption {
   fieldName: string;
   hasFormula: boolean;
   label: string;
-}
-
-export interface TargetOptions {
-  [entityGuid: string]: {
-    [fieldName: string]: TargetOption[];
-  };
 }
 
 export interface TargetOption {
