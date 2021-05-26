@@ -61,7 +61,7 @@
     </div>
 
     <div class="formula-box">
-      <mat-form-field color="accent">
+      <mat-form-field color="accent" appMatFormFieldTextarea>
         <textarea matInput spellcheck="false" class="fancy-scrollbar-light" rows="10" [matTextareaAutosize]="false"
           [ngModel]="data.formula?.source" (ngModelChange)="formulaChanged($event)"
           [disabled]="!data.designer.editMode || data.designer.entityGuid == null || data.designer.fieldName == null || data.designer.target == null"></textarea>
