@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, NgZone, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
@@ -28,7 +28,7 @@ import { MultiEditFormTemplateVars, SaveEavFormData } from './multi-item-edit-fo
   styleUrls: ['./multi-item-edit-form.component.scss'],
   providers: [EditRoutingService, FormsStateService, FormulaDesignerService],
 })
-export class MultiItemEditFormComponent implements OnInit, OnDestroy {
+export class MultiItemEditFormComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChildren(ItemEditFormComponent) itemEditFormRefs: QueryList<ItemEditFormComponent>;
 
   templateVars$: Observable<MultiEditFormTemplateVars>;
@@ -60,6 +60,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy {
     private linkCacheService: LinkCacheService,
     private stringQueryCacheService: StringQueryCacheService,
     private formulaDesignerService: FormulaDesignerService,
+    private zone: NgZone,
   ) {
     this.dialogRef.disableClose = true;
   }
@@ -105,6 +106,19 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy {
       }),
     );
     this.dialogBackdropClickSubscribe();
+  }
+
+  ngAfterViewInit() {
+    const thisIsIt = document.querySelector<HTMLElement>('#this-is-it');
+    thisIsIt.style.display = 'block';
+    setTimeout(() => {
+      this.zone.runOutsideAngular(() => {
+        // thisIsIt.style.visibility = 'visible';
+        // thisIsIt.style.transition = 'height 0.33s';
+        // thisIsIt.style.height = '90vh';
+        (window as any).gsap.to('#this-is-it', .5, { height: '90vh' });
+      });
+    });
   }
 
   ngOnDestroy() {

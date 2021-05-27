@@ -13,7 +13,7 @@
       'hide-header-height-fix': data.hideHeader
     }">
       <div class="mdc-layout-grid">
-        <div class="mdc-layout-grid__inner">
+        <div id="this-is-it" class="mdc-layout-grid__inner" style="height: 0; display: none;">
           <div class="mdc-layout-grid__cell--span-12" appFormSlide *ngIf="!data.delayForm">
             <div *ngFor="let item of data.items; trackBy: trackByFn">
               <app-item-edit-form [entityGuid]="item.Entity.Guid"></app-item-edit-form>
