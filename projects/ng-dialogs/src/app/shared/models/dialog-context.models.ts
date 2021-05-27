@@ -13,10 +13,13 @@ export interface DialogContextApp {
 }
 
 export interface DialogContextEnable {
+  /** Determines if app admin should show app-permissions (true for Apps, false for Content) */
   AppPermissions?: boolean;
+  /** Determines if Code editing should be enabled (true for super-users) */
   CodeEditor?: boolean;
+  /** Determines if Queries should be enabled (true for Apps) */
   Query?: boolean;
-  /** Available in Edit Ui */
+  /** True if saving of formulas should be enabled (for edit-ui) */
   FormulaSave?: boolean;
 }
 
