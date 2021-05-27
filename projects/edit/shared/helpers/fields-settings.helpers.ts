@@ -6,8 +6,8 @@ import { Dictionary } from '../../../ng-dialogs/src/app/shared/models/dictionary
 import { TranslateMenuHelpers } from '../../eav-material-controls/localization/translate-menu/translate-menu.helpers';
 import { TranslationStateCore } from '../../eav-material-controls/localization/translate-menu/translate-menu.models';
 import { TranslationLinkConstants } from '../constants';
-import { TranslationState } from '../models';
-import { EavContentType, EavContentTypeAttribute, EavEntity, EavValues } from '../models/eav';
+import { ContentTypeSettings, TranslationState } from '../models';
+import { EavContentType, EavContentTypeAttribute, EavEntity, EavHeader, EavValues } from '../models/eav';
 
 export class FieldsSettingsHelpers {
 
@@ -41,6 +41,27 @@ export class FieldsSettingsHelpers {
     }
 
     return merged as T;
+  }
+
+  static setDefaultContentTypeSettings(
+    settings: ContentTypeSettings,
+    contentType: EavContentType,
+    currentLanguage: string,
+    defaultLanguage: string,
+    itemHeader: EavHeader,
+  ): ContentTypeSettings {
+    const defaultSettings = { ...settings };
+    defaultSettings.Description ??= '';
+    defaultSettings.EditInstructions ??= '';
+    defaultSettings.Label ??= '';
+    defaultSettings.ListInstructions ??= '';
+    defaultSettings.Notes ??= '';
+    defaultSettings.Icon ??= '';
+    defaultSettings.Link ??= '';
+    defaultSettings._itemTitle = FieldsSettingsHelpers.getContentTypeTitle(contentType, currentLanguage, defaultLanguage);
+    defaultSettings._slotCanBeEmpty = itemHeader.Group?.SlotCanBeEmpty ?? false;
+    defaultSettings._slotIsEmpty = itemHeader.Group?.SlotIsEmpty ?? false;
+    return defaultSettings;
   }
 
   static setDefaultFieldSettings(settings: FieldSettings): FieldSettings {

@@ -65,19 +65,13 @@ export class FieldsSettingsService implements OnDestroy {
     this.subscription.add(
       combineLatest([contentType$, itemHeader$, currentLanguage$, defaultLanguage$]).pipe(
         map(([contentType, itemHeader, currentLanguage, defaultLanguage]) => {
-          const ctSettings = FieldsSettingsHelpers.mergeSettings<ContentTypeSettings>(
-            contentType.Metadata, currentLanguage, defaultLanguage,
+          const ctSettings = FieldsSettingsHelpers.setDefaultContentTypeSettings(
+            FieldsSettingsHelpers.mergeSettings<ContentTypeSettings>(contentType.Metadata, currentLanguage, defaultLanguage),
+            contentType,
+            currentLanguage,
+            defaultLanguage,
+            itemHeader,
           );
-          ctSettings.Description ??= '';
-          ctSettings.EditInstructions ??= '';
-          ctSettings.Label ??= '';
-          ctSettings.ListInstructions ??= '';
-          ctSettings.Notes ??= '';
-          ctSettings.Icon ??= '';
-          ctSettings.Link ??= '';
-          ctSettings._itemTitle = FieldsSettingsHelpers.getContentTypeTitle(contentType, currentLanguage, defaultLanguage);
-          ctSettings._slotCanBeEmpty = itemHeader.Group?.SlotCanBeEmpty ?? false;
-          ctSettings._slotIsEmpty = itemHeader.Group?.SlotIsEmpty ?? false;
           return ctSettings;
         }),
       ).subscribe(ctSettings => {
@@ -111,7 +105,7 @@ export class FieldsSettingsService implements OnDestroy {
             const inputType = inputTypes.find(i => i.Type === attribute.InputType);
 
             const merged = FieldsSettingsHelpers.setDefaultFieldSettings(
-              FieldsSettingsHelpers.mergeSettings<FieldSettings>(attribute.Metadata, defaultLanguage, defaultLanguage)
+              FieldsSettingsHelpers.mergeSettings<FieldSettings>(attribute.Metadata, defaultLanguage, defaultLanguage),
             );
 
             // run formulas
@@ -152,7 +146,7 @@ export class FieldsSettingsService implements OnDestroy {
             const calculatedInputType = InputFieldHelpers.calculateInputType(attribute, inputTypes);
             const wrappers = InputFieldHelpers.getWrappers(fixed, calculatedInputType);
             const initialSettings = FieldsSettingsHelpers.setDefaultFieldSettings(
-              FieldsSettingsHelpers.mergeSettings<FieldSettings>(attribute.Metadata, this.eavService.eavConfig.lang, defaultLanguage)
+              FieldsSettingsHelpers.mergeSettings<FieldSettings>(attribute.Metadata, this.eavService.eavConfig.lang, defaultLanguage),
             );
             const initialDisabled = initialSettings.Disabled ?? false;
             const fieldTranslation = FieldsSettingsHelpers.getTranslationState(
