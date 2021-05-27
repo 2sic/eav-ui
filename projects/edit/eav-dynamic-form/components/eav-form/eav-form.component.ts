@@ -19,6 +19,7 @@ export class EavFormComponent implements OnInit, OnDestroy {
 
   form: FormGroup;
   private subscription: Subscription;
+  counter = 0;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -28,6 +29,10 @@ export class EavFormComponent implements OnInit, OnDestroy {
     private fieldsSettingsService: FieldsSettingsService,
     private languageInstanceService: LanguageInstanceService,
   ) { }
+
+  getCounter() {
+    return this.counter++;
+  }
 
   ngOnInit() {
     this.form = new FormGroup({});

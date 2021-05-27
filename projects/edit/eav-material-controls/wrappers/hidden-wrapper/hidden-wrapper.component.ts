@@ -16,6 +16,7 @@ export class HiddenWrapperComponent extends BaseComponent implements FieldWrappe
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
 
   hidden$: Observable<boolean>;
+  counter = 0;
 
   constructor(
     eavService: EavService,
@@ -23,6 +24,10 @@ export class HiddenWrapperComponent extends BaseComponent implements FieldWrappe
     fieldsSettingsService: FieldsSettingsService,
   ) {
     super(eavService, validationMessagesService, fieldsSettingsService);
+  }
+
+  getCounter() {
+    return this.counter++;
   }
 
   ngOnInit() {

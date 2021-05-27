@@ -11,11 +11,16 @@ import { FieldsSettingsService, FieldsTranslateService } from '../../shared/serv
 export class ItemEditFormComponent implements OnInit {
   @ViewChild(EavFormComponent) eavFormRef: EavFormComponent;
   @Input() entityGuid: string;
+  counter = 0;
 
   constructor(public fieldsSettingsService: FieldsSettingsService, private fieldsTranslateService: FieldsTranslateService) { }
 
   ngOnInit() {
     this.fieldsSettingsService.init(this.entityGuid);
     this.fieldsTranslateService.init(this.entityGuid);
+  }
+
+  getCounter() {
+    return this.counter++;
   }
 }

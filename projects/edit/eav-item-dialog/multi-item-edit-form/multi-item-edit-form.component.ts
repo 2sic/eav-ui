@@ -36,6 +36,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy {
   private debugInfoIsOpen$: BehaviorSubject<boolean>;
   private subscription: Subscription;
   private saveResult: SaveResult;
+  counter = 0;
 
   constructor(
     private dialogRef: MatDialogRef<EditEntryComponent>,
@@ -128,6 +129,10 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy {
       this.linkCacheService.clearCache();
       this.stringQueryCacheService.clearCache();
     }
+  }
+
+  getCounter() {
+    return this.counter++;
   }
 
   closeDialog(forceClose?: boolean) {

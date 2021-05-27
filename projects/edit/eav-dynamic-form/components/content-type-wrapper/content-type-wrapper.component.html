@@ -1,4 +1,5 @@
 <mat-card *ngIf="templateVars$ | async as data" class="mat-card-group-parent shadow-bottom-z-1">
+  ContentTypeWrapper: {{ getCounter() }}
   <div class="mat-card-header-group-parent" fxLayout="row" fxLayoutAlign="start center">
 
     <div fxFlex="auto" fxLayoutAlign="start center" (click)="toggleCollapse()">

@@ -19,6 +19,7 @@ export class LocalizationWrapperComponent extends BaseComponent implements Field
 
   currentLanguage$: Observable<string>;
   defaultLanguage$: Observable<string>;
+  counter = 0;
 
   constructor(
     eavService: EavService,
@@ -49,5 +50,9 @@ export class LocalizationWrapperComponent extends BaseComponent implements Field
     if (isExpanded) { return; }
 
     this.translateMenu.translate();
+  }
+
+  getCounter() {
+    return this.counter++;
   }
 }

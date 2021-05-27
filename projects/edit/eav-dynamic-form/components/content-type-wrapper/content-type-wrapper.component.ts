@@ -20,6 +20,7 @@ export class ContentTypeWrapperComponent implements OnInit {
 
   collapse: boolean;
   templateVars$: Observable<ContentTypeTemplateVars>;
+  counter = 0;
 
   constructor(
     private languageInstanceService: LanguageInstanceService,
@@ -29,6 +30,10 @@ export class ContentTypeWrapperComponent implements OnInit {
     private fieldsSettingsService: FieldsSettingsService,
     public eavService: EavService,
   ) { }
+
+  getCounter() {
+    return this.counter++;
+  }
 
   ngOnInit() {
     this.collapse = false;
