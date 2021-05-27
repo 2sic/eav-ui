@@ -26,6 +26,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
   SelectTargets = SelectTargets;
   loadError = false;
   freeTextTarget = false;
+  allowSaveFormula = this.eavService.eavConfig.enableFormulaSave;
   templateVars$: Observable<FormulaDesignerTemplateVars>;
 
   constructor(

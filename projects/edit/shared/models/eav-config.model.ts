@@ -21,4 +21,5 @@ export interface EavConfig {
   createMode: boolean;
   isCopy: boolean;
   enableHistory: boolean;
+  enableFormulaSave: boolean;
 }

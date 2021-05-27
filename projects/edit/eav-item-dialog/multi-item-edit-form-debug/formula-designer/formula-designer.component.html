@@ -88,7 +88,7 @@
         <button mat-icon-button matTooltip="Reset" (click)="reset()">
           <mat-icon>history</mat-icon>
         </button>
-        <button mat-icon-button matTooltip="Save"
+        <button *ngIf="allowSaveFormula" mat-icon-button matTooltip="Save"
           [matTooltipDisabled]="!data.designer.editMode || !data.formula?.source || !data.formula?.sourceGuid"
           [disabled]="!data.designer.editMode || !data.formula?.source || !data.formula?.sourceGuid" (click)="save()">
           <mat-icon matTooltip="Saving only works if formula was previously defined in settings"

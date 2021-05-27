@@ -13,9 +13,11 @@ export interface DialogContextApp {
 }
 
 export interface DialogContextEnable {
-  AppPermissions: boolean;
-  CodeEditor: boolean;
-  Query: boolean;
+  AppPermissions?: boolean;
+  CodeEditor?: boolean;
+  Query?: boolean;
+  /** Available in Edit Ui */
+  FormulaSave?: boolean;
 }
 
 export interface DialogContextLanguage {
