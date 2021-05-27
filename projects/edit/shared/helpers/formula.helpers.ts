@@ -84,6 +84,7 @@ export class FormulaHelpers {
     currentLanguage: string,
     languages: Language[],
     itemHeader: EavHeader,
+    debugEnabled: boolean,
   ): FormulaProps {
 
     switch (formula.version) {
@@ -158,6 +159,7 @@ export class FormulaHelpers {
               code: currentLanguage,
               name: languages.find(l => l.key === currentLanguage)?.name,
             },
+            debug: debugEnabled,
             target: {
               entity: {
                 guid: entityGuid,

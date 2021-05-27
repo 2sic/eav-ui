@@ -19,6 +19,10 @@ export class GlobalConfigService extends BaseDataService<GlobalConfig> {
     this.addOneToCache(initial);
   }
 
+  getDebugEnabled(): boolean {
+    return this.cache$.value[0].debugEnabled;
+  }
+
   getDebugEnabled$(): Observable<boolean> {
     return this.cache$.pipe(map(configs => configs[0].debugEnabled));
   }

@@ -13,7 +13,7 @@ import { FieldsSettingsHelpers, FormulaHelpers, GeneralHelpers, InputFieldHelper
 // tslint:disable-next-line:max-line-length
 import { ContentTypeSettings, FieldsProps, FormulaFunctionDefault, FormulaTarget, FormulaTargets, FormulaVersions, LogSeverities, RunFormulasResult, SettingsFormulaPrefix, TranslationState } from '../models';
 import { EavHeader } from '../models/eav';
-import { ContentTypeService, InputTypeService, ItemService, LanguageInstanceService, LanguageService } from '../store/ngrx-data';
+import { ContentTypeService, GlobalConfigService, InputTypeService, ItemService, LanguageInstanceService, LanguageService } from '../store/ngrx-data';
 import { FormulaDesignerService } from './formula-designer.service';
 
 @Injectable()
@@ -36,6 +36,7 @@ export class FieldsSettingsService implements OnDestroy {
     private formulaDesignerService: FormulaDesignerService,
     private loggingService: LoggingService,
     private translate: TranslateService,
+    private globalConfigService: GlobalConfigService,
   ) { }
 
   ngOnDestroy(): void {
@@ -325,8 +326,19 @@ export class FieldsSettingsService implements OnDestroy {
 
     const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
     const languages = this.languageService.getLanguages();
+    const debugEnabled = this.globalConfigService.getDebugEnabled();
     const formulaProps = FormulaHelpers.buildFormulaProps(
-      formula, entityGuid, entityId, inputType, settings, previousSettings, formValues, currentLanguage, languages, itemHeader,
+      formula,
+      entityGuid,
+      entityId,
+      inputType,
+      settings,
+      previousSettings,
+      formValues,
+      currentLanguage,
+      languages,
+      itemHeader,
+      debugEnabled,
     );
     const designerState = this.formulaDesignerService.getDesignerState();
     const isOpenInDesigner = designerState.isOpen
