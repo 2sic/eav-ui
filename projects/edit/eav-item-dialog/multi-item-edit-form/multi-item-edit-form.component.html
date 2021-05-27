@@ -1,4 +1,5 @@
 <div *ngIf="templateVars$ | async as data" style="position: relative" mat-dialog-container appToggleDebug>
+  MultiItemEditForm: {{ getCounter() }}
 
   <div mat-dialog-actions class="form-header-container" [ngClass]="{ 'u-display-none': data.hideHeader }">
     <app-multi-item-edit-form-header class="multi-item-edit-form-header" [disabled]="!data.formsValid"
