@@ -81,6 +81,7 @@ export class FormulaHelpers {
     settings: FieldSettings,
     previousSettings: FieldSettings,
     formValues: FormValues,
+    initialFormValues: FormValues,
     currentLanguage: string,
     languages: Language[],
     itemHeader: EavHeader,
@@ -92,6 +93,7 @@ export class FormulaHelpers {
         const data: FormulaV1Data = {
           ...formValues,
           get default() { return undefined as FieldValue; },
+          get initial() { return undefined as FieldValue; },
           get prefill() { return undefined as FieldValue; },
           get value() { return undefined as FieldValue; },
         };
@@ -105,6 +107,12 @@ export class FormulaHelpers {
                 const settingName = formula.target.substring(SettingsFormulaPrefix.length);
                 return (settings as Record<string, any>)[settingName];
               }
+            },
+          },
+          initial: {
+            get(): FieldValue {
+              if (formula.target !== FormulaTargets.Value) { return; }
+              return initialFormValues[formula.fieldName];
             },
           },
           prefill: {

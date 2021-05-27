@@ -50,6 +50,7 @@ export interface FormulaPropsV1 {
 
 export interface FormulaV1Data {
   default: FieldValue;
+  initial: FieldValue;
   prefill: FieldValue;
   value: FieldValue;
   [fieldName: string]: FieldValue;

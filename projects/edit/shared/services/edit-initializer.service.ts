@@ -8,6 +8,7 @@ import { FieldSettings } from '../../../edit-types';
 import { InputTypeConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { UpdateEnvVarsFromDialogSettings } from '../../../ng-dialogs/src/app/shared/helpers/update-env-vars-from-dialog-settings.helper';
 import { convertUrlToForm } from '../../../ng-dialogs/src/app/shared/helpers/url-prep.helper';
+import { FormValues } from '../../eav-item-dialog/item-edit-form/item-edit-form.models';
 import { calculateIsParentDialog, sortLanguages } from '../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.helpers';
 import { EavFormData } from '../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.models';
 import { EditParams } from '../../edit-matcher.models';
@@ -20,6 +21,7 @@ import { AdamCacheService, ContentTypeItemService, ContentTypeService, EntityCac
 @Injectable()
 export class EditInitializerService implements OnDestroy {
   loaded$ = new BehaviorSubject(false);
+  initialFormValues: Record<string, FormValues> = {};
 
   constructor(
     private route: ActivatedRoute,
@@ -97,6 +99,14 @@ export class EditInitializerService implements OnDestroy {
       IsPublished: formData.IsPublished,
     };
     this.publishStatusService.setPublishStatus(publishStatus);
+
+    for (const item of items) {
+      const formValues: FormValues = {};
+      for (const [fieldName, fieldValues] of Object.entries(item.Entity.Attributes)) {
+        formValues[fieldName] = LocalizationHelpers.translate(currentLanguage, defaultLanguage, fieldValues, null);
+      }
+      this.initialFormValues[item.Entity.Guid] = formValues;
+    }
   }
 
   private setMissingValues(): void {

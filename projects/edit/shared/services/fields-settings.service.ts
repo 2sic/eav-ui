@@ -3,7 +3,7 @@ import { ValidatorFn } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import { distinctUntilChanged, filter, map } from 'rxjs/operators';
-import { EavService, LoggingService } from '.';
+import { EavService, EditInitializerService, LoggingService } from '.';
 import { FieldSettings, FieldValue } from '../../../edit-types';
 import { InputType } from '../../../ng-dialogs/src/app/content-type-fields/models/input-type.model';
 import { FormValues } from '../../eav-item-dialog/item-edit-form/item-edit-form.models';
@@ -37,6 +37,7 @@ export class FieldsSettingsService implements OnDestroy {
     private loggingService: LoggingService,
     private translate: TranslateService,
     private globalConfigService: GlobalConfigService,
+    private editInitializerService: EditInitializerService,
   ) { }
 
   ngOnDestroy(): void {
@@ -321,6 +322,7 @@ export class FieldsSettingsService implements OnDestroy {
     const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
     const languages = this.languageService.getLanguages();
     const debugEnabled = this.globalConfigService.getDebugEnabled();
+    const initialFormValues = this.editInitializerService.initialFormValues[entityGuid];
     const formulaProps = FormulaHelpers.buildFormulaProps(
       formula,
       entityGuid,
@@ -329,6 +331,7 @@ export class FieldsSettingsService implements OnDestroy {
       settings,
       previousSettings,
       formValues,
+      initialFormValues,
       currentLanguage,
       languages,
       itemHeader,
