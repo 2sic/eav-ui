@@ -20,7 +20,7 @@ import { StringDefaultTemplateVars } from './string-default.models';
 })
 export class StringDefaultComponent extends BaseComponent<string> implements OnInit, OnDestroy {
   templateVars$: Observable<StringDefaultTemplateVars>;
-  counter = 0;
+  counter = 1;
 
   constructor(
     eavService: EavService,

@@ -16,7 +16,7 @@ export class HiddenWrapperComponent extends BaseComponent implements FieldWrappe
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
 
   hidden$: Observable<boolean>;
-  counter = 0;
+  counter = 1;
 
   constructor(
     eavService: EavService,

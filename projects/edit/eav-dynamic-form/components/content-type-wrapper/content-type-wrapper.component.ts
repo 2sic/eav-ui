@@ -20,7 +20,7 @@ export class ContentTypeWrapperComponent implements OnInit {
 
   collapse: boolean;
   templateVars$: Observable<ContentTypeTemplateVars>;
-  counter = 0;
+  counter = 1;
 
   constructor(
     private languageInstanceService: LanguageInstanceService,

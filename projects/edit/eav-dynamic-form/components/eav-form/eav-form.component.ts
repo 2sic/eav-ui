@@ -19,7 +19,7 @@ export class EavFormComponent implements OnInit, OnDestroy {
 
   form: FormGroup;
   private subscription: Subscription;
-  counter = 0;
+  counter = 1;
 
   constructor(
     private formBuilder: FormBuilder,

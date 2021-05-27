@@ -11,7 +11,7 @@ import { FieldsSettingsService, FieldsTranslateService } from '../../shared/serv
 export class ItemEditFormComponent implements OnInit {
   @ViewChild(EavFormComponent) eavFormRef: EavFormComponent;
   @Input() entityGuid: string;
-  counter = 0;
+  counter = 1;
 
   constructor(public fieldsSettingsService: FieldsSettingsService, private fieldsTranslateService: FieldsTranslateService) { }
 

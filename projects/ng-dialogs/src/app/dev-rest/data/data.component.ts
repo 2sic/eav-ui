@@ -26,7 +26,7 @@ const pathToContent = 'app/{appname}/content/{typename}';
 })
 export class DevRestDataComponent extends DevRestBase<DevRestDataTemplateVars> implements OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
-  counter = 0;
+  counter = 1;
 
   constructor(
     dialogRef: MatDialogRef<DevRestDataComponent>,

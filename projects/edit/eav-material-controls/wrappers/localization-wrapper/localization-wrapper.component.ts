@@ -19,7 +19,7 @@ export class LocalizationWrapperComponent extends BaseComponent implements Field
 
   currentLanguage$: Observable<string>;
   defaultLanguage$: Observable<string>;
-  counter = 0;
+  counter = 1;
 
   constructor(
     eavService: EavService,
