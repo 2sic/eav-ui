@@ -9,42 +9,6 @@ import { EavHeader } from '../models/eav';
 
 export class FormulaHelpers {
 
-  static encodeFormulaCache(
-    fieldName: string,
-    currentLanguage: string,
-    defaultLanguage: string,
-    settings: FieldSettings,
-    cache: Record<string, FieldSettings>,
-  ): Record<string, FieldSettings> {
-    const key = `fieldName:${fieldName}:currentLanguage:${currentLanguage}:defaultLanguage:${defaultLanguage}`;
-    const newCache = {
-      ...cache,
-      [key]: settings,
-    };
-    return newCache;
-  }
-
-  static parseFormulaCache(
-    fieldName: string,
-    currentLanguage: string,
-    defaultLanguage: string,
-    cache: Record<string, FieldSettings>,
-  ): Record<string, any> {
-    if (cache == null) { return; }
-
-    const found = Object.keys(cache).find(key => {
-      const keyValueParts = key.split(':');
-      const obj: Record<string, string> = {};
-      for (let i = 0; i < keyValueParts.length; i = i + 2) {
-        obj[keyValueParts[i]] = keyValueParts[i + 1];
-      }
-      return obj.fieldName === fieldName && obj.currentLanguage === currentLanguage && obj.defaultLanguage === defaultLanguage;
-    });
-    if (found == null) { return; }
-
-    return cache[found];
-  }
-
   static findFormulaVersion(formula: string): FormulaVersion {
     const cleanFormula = formula.trim();
     const typePart = cleanFormula.substring(0, cleanFormula.indexOf('(')).trim();

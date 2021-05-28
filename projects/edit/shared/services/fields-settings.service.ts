@@ -24,7 +24,7 @@ export class FieldsSettingsService implements OnDestroy {
   private subscription: Subscription;
   private valueFormulaCounter = 0;
   private maxValueFormulaCycles = 5;
-  private formulaSettingsCache$: BehaviorSubject<Record<string, FieldSettings>>;
+  private formulaSettingsCache: Record<string, FieldSettings> = {};
 
   constructor(
     private contentTypeService: ContentTypeService,
@@ -44,7 +44,6 @@ export class FieldsSettingsService implements OnDestroy {
     this.contentTypeSettings$?.complete();
     this.fieldsProps$?.complete();
     this.forceSettings$?.complete();
-    this.formulaSettingsCache$?.complete();
     this.subscription?.unsubscribe();
   }
 
@@ -53,7 +52,6 @@ export class FieldsSettingsService implements OnDestroy {
     this.contentTypeSettings$ = new BehaviorSubject(null);
     this.fieldsProps$ = new BehaviorSubject(null);
     this.forceSettings$ = new BehaviorSubject(null);
-    this.formulaSettingsCache$ = new BehaviorSubject(null);
 
     const item = this.itemService.getItem(entityGuid);
     const entityId = item.Entity.Id;
@@ -248,10 +246,9 @@ export class FieldsSettingsService implements OnDestroy {
     const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
     const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
 
-    const cached = FormulaHelpers.parseFormulaCache(fieldName, currentLanguage, defaultLanguage, this.formulaSettingsCache$.value);
     const previousSettings: FieldSettings = {
       ...settings,
-      ...cached,
+      ...this.formulaSettingsCache[this.getFormulaCacheKey(fieldName, currentLanguage, defaultLanguage)],
     };
 
     const formulasForSettings = this.formulaDesignerService.getFormulas(entityGuid, fieldName, null, false)
@@ -286,10 +283,8 @@ export class FieldsSettingsService implements OnDestroy {
       }
     }
 
-    const newSettingsCache = FormulaHelpers.encodeFormulaCache(
-      fieldName, currentLanguage, defaultLanguage, formulaSettings as FieldSettings, this.formulaSettingsCache$.value,
-    );
-    this.formulaSettingsCache$.next(newSettingsCache);
+    // save settings for the next cycle
+    this.formulaSettingsCache[this.getFormulaCacheKey(fieldName, currentLanguage, defaultLanguage)] = formulaSettings as FieldSettings;
 
     const formulaValue = this.runFormula(
       entityGuid, entityId, fieldName, FormulaTargets.Value, formValues, inputType, settings, previousSettings, itemHeader,
@@ -303,6 +298,10 @@ export class FieldsSettingsService implements OnDestroy {
       value: formulaValue,
     };
     return formulaResult;
+  }
+
+  private getFormulaCacheKey(fieldName: string, currentLanguage: string, defaultLanguage: string): string {
+    return `fieldName:${fieldName}:currentLanguage:${currentLanguage}:defaultLanguage:${defaultLanguage}`;
   }
 
   private runFormula(
