@@ -11,7 +11,7 @@ import { ValidationHelper } from '../../eav-material-controls/validators/validat
 import { FieldLogicManager } from '../../field-logic/field-logic-manager';
 import { FieldsSettingsHelpers, FormulaHelpers, GeneralHelpers, InputFieldHelpers, LocalizationHelpers } from '../helpers';
 // tslint:disable-next-line:max-line-length
-import { ContentTypeSettings, FieldsProps, FormulaFunctionDefault, FormulaTarget, FormulaTargets, FormulaVersions, LogSeverities, RunFormulasResult, SettingsFormulaPrefix, TranslationState } from '../models';
+import { ContentTypeSettings, FieldsProps, FormulaCacheItem, FormulaFunctionDefault, FormulaTargets, FormulaVersions, LogSeverities, RunFormulasResult, SettingsFormulaPrefix, TranslationState } from '../models';
 import { EavHeader } from '../models/eav';
 import { ContentTypeService, GlobalConfigService, InputTypeService, ItemService, LanguageInstanceService, LanguageService } from '../store/ngrx-data';
 import { FormulaDesignerService } from './formula-designer.service';
@@ -248,47 +248,47 @@ export class FieldsSettingsService implements OnDestroy {
 
     const previousSettings: FieldSettings = {
       ...settings,
-      ...this.formulaSettingsCache[this.getFormulaCacheKey(fieldName, currentLanguage, defaultLanguage)],
+      ...this.formulaSettingsCache[this.getFormulaSettingsKey(fieldName, currentLanguage, defaultLanguage)],
     };
 
-    const formulasForSettings = this.formulaDesignerService.getFormulas(entityGuid, fieldName, null, false)
-      .filter(formula => formula.target.startsWith(SettingsFormulaPrefix));
+    const formulas = this.formulaDesignerService.getFormulas(entityGuid, fieldName, null, false);
+    let formulaValue: FieldValue;
     const formulaSettings: Record<string, any> = {};
-    for (const formula of formulasForSettings) {
-      const settingName = formula.target.substring(SettingsFormulaPrefix.length);
+    for (const formula of formulas) {
+      const runResult = this.runFormula(formula, entityId, formValues, inputType, settings, previousSettings, itemHeader);
+      if (runResult === undefined) { continue; }
 
-      const defaultSetting = (settings as Record<string, any>)[settingName];
-      const formulaSetting = this.runFormula(
-        entityGuid, entityId, fieldName, formula.target, formValues, inputType, settings, previousSettings, itemHeader,
-      );
-
-      if (formulaSetting === undefined) { continue; }
-
-      if (defaultSetting == null || formulaSetting == null) {
-        // can't check types, hope for the best
-        formulaSettings[settingName] = formulaSetting;
+      if (formula.target === FormulaTargets.Value) {
+        formulaValue = runResult;
         continue;
       }
 
-      if (Array.isArray(defaultSetting) && Array.isArray(formulaSetting)) {
-        // can't check types of items in array, hope for the best
-        formulaSettings[settingName] = formulaSetting;
-        continue;
-      }
+      if (formula.target.startsWith(SettingsFormulaPrefix)) {
+        const settingName = formula.target.substring(SettingsFormulaPrefix.length);
+        const defaultSetting = (settings as Record<string, any>)[settingName];
 
-      if (typeof defaultSetting === typeof formulaSetting) {
-        // maybe typesafe
-        formulaSettings[settingName] = formulaSetting;
-        continue;
+        if (defaultSetting == null || runResult == null) {
+          // can't check types, hope for the best
+          formulaSettings[settingName] = runResult;
+          continue;
+        }
+
+        if (Array.isArray(defaultSetting) && Array.isArray(runResult)) {
+          // can't check types of items in array, hope for the best
+          formulaSettings[settingName] = runResult;
+          continue;
+        }
+
+        if (typeof defaultSetting === typeof runResult) {
+          // maybe typesafe
+          formulaSettings[settingName] = runResult;
+          continue;
+        }
       }
     }
 
     // save settings for the next cycle
-    this.formulaSettingsCache[this.getFormulaCacheKey(fieldName, currentLanguage, defaultLanguage)] = formulaSettings as FieldSettings;
-
-    const formulaValue = this.runFormula(
-      entityGuid, entityId, fieldName, FormulaTargets.Value, formValues, inputType, settings, previousSettings, itemHeader,
-    );
+    this.formulaSettingsCache[this.getFormulaSettingsKey(fieldName, currentLanguage, defaultLanguage)] = formulaSettings as FieldSettings;
 
     const formulaResult: RunFormulasResult = {
       settings: {
@@ -300,31 +300,25 @@ export class FieldsSettingsService implements OnDestroy {
     return formulaResult;
   }
 
-  private getFormulaCacheKey(fieldName: string, currentLanguage: string, defaultLanguage: string): string {
+  private getFormulaSettingsKey(fieldName: string, currentLanguage: string, defaultLanguage: string): string {
     return `fieldName:${fieldName}:currentLanguage:${currentLanguage}:defaultLanguage:${defaultLanguage}`;
   }
 
   private runFormula(
-    entityGuid: string,
+    formula: FormulaCacheItem,
     entityId: number,
-    fieldName: string,
-    target: FormulaTarget,
     formValues: FormValues,
     inputType: InputType,
     settings: FieldSettings,
     previousSettings: FieldSettings,
     itemHeader: EavHeader,
   ): FieldValue {
-    const formula = this.formulaDesignerService.getFormula(entityGuid, fieldName, target, false);
-    if (formula == null) { return; }
-
     const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
     const languages = this.languageService.getLanguages();
     const debugEnabled = this.globalConfigService.getDebugEnabled();
-    const initialFormValues = this.editInitializerService.getInitialValues(entityGuid, currentLanguage);
+    const initialFormValues = this.editInitializerService.getInitialValues(formula.entityGuid, currentLanguage);
     const formulaProps = FormulaHelpers.buildFormulaProps(
       formula,
-      entityGuid,
       entityId,
       inputType,
       settings,
@@ -338,36 +332,36 @@ export class FieldsSettingsService implements OnDestroy {
     );
     const designerState = this.formulaDesignerService.getDesignerState();
     const isOpenInDesigner = designerState.isOpen
-      && designerState.entityGuid === entityGuid
-      && designerState.fieldName === fieldName
-      && designerState.target === target;
+      && designerState.entityGuid === formula.entityGuid
+      && designerState.fieldName === formula.fieldName
+      && designerState.target === formula.target;
     const ctSettings = this.getContentTypeSettings();
     try {
       switch (formula.version) {
         case FormulaVersions.V1:
           if (isOpenInDesigner) {
-            console.log(`Running formula${FormulaVersions.V1.toLocaleUpperCase()} for Entity: "${ctSettings._itemTitle}", Field: "${fieldName}", Target: "${target}" with following arguments:`, formulaProps);
+            console.log(`Running formula${FormulaVersions.V1.toLocaleUpperCase()} for Entity: "${ctSettings._itemTitle}", Field: "${formula.fieldName}", Target: "${formula.target}" with following arguments:`, formulaProps);
           }
           const valueV1 = formula.fn(formulaProps.data, formulaProps.context);
-          this.formulaDesignerService.upsertFormulaResult(entityGuid, fieldName, target, valueV1, false);
+          this.formulaDesignerService.upsertFormulaResult(formula.entityGuid, formula.fieldName, formula.target, valueV1, false);
           if (isOpenInDesigner) {
             console.log('Formula result:', valueV1);
           }
           return valueV1;
         default:
           if (isOpenInDesigner) {
-            console.log(`Running formula for Entity: "${ctSettings._itemTitle}", Field: "${fieldName}", Target: "${target}" with following arguments:`, undefined);
+            console.log(`Running formula for Entity: "${ctSettings._itemTitle}", Field: "${formula.fieldName}", Target: "${formula.target}" with following arguments:`, undefined);
           }
           const valueDefault = (formula.fn as FormulaFunctionDefault)();
-          this.formulaDesignerService.upsertFormulaResult(entityGuid, fieldName, target, valueDefault, false);
+          this.formulaDesignerService.upsertFormulaResult(formula.entityGuid, formula.fieldName, formula.target, valueDefault, false);
           if (isOpenInDesigner) {
             console.log('Formula result:', valueDefault);
           }
           return valueDefault;
       }
     } catch (error) {
-      const errorLabel = `Error in formula calculation for Entity: "${ctSettings._itemTitle}", Field: "${fieldName}", Target: "${target}"`;
-      this.formulaDesignerService.upsertFormulaResult(entityGuid, fieldName, target, undefined, true);
+      const errorLabel = `Error in formula calculation for Entity: "${ctSettings._itemTitle}", Field: "${formula.fieldName}", Target: "${formula.target}"`;
+      this.formulaDesignerService.upsertFormulaResult(formula.entityGuid, formula.fieldName, formula.target, undefined, true);
       this.loggingService.addLog(LogSeverities.Error, errorLabel, error);
       if (isOpenInDesigner) {
         console.error(errorLabel, error);

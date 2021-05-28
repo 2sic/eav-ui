@@ -39,7 +39,6 @@ export class FormulaHelpers {
 
   static buildFormulaProps(
     formula: FormulaCacheItem,
-    entityGuid: string,
     entityId: number,
     inputType: InputType,
     settings: FieldSettings,
@@ -134,7 +133,7 @@ export class FormulaHelpers {
             debug: debugEnabled,
             target: {
               entity: {
-                guid: entityGuid,
+                guid: formula.entityGuid,
                 id: entityId,
               },
               name: formula.target === FormulaTargets.Value
