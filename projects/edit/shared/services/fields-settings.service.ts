@@ -322,7 +322,7 @@ export class FieldsSettingsService implements OnDestroy {
     const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
     const languages = this.languageService.getLanguages();
     const debugEnabled = this.globalConfigService.getDebugEnabled();
-    const initialFormValues = this.editInitializerService.initialFormValues[entityGuid];
+    const initialFormValues = this.editInitializerService.getInitialValues(entityGuid, currentLanguage);
     const formulaProps = FormulaHelpers.buildFormulaProps(
       formula,
       entityGuid,

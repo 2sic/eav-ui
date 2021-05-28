@@ -21,7 +21,8 @@ import { AdamCacheService, ContentTypeItemService, ContentTypeService, EntityCac
 @Injectable()
 export class EditInitializerService implements OnDestroy {
   loaded$ = new BehaviorSubject(false);
-  initialFormValues: Record<string, FormValues> = {};
+
+  private initialFormValues: Record<string, FormValues> = {};
 
   constructor(
     private route: ActivatedRoute,
@@ -51,6 +52,7 @@ export class EditInitializerService implements OnDestroy {
     this.eavService.fetchFormData(editItems).subscribe(formData => {
       UpdateEnvVarsFromDialogSettings(formData.Context.App);
       this.saveFormData(formData);
+      this.keepInitialValues();
       this.setMissingValues();
 
       this.loaded$.next(true);
@@ -99,14 +101,37 @@ export class EditInitializerService implements OnDestroy {
       IsPublished: formData.IsPublished,
     };
     this.publishStatusService.setPublishStatus(publishStatus);
+  }
+
+  private keepInitialValues(): void {
+    const items = this.itemService.getItems(this.eavService.eavConfig.itemGuids);
+    const languages = this.languageService.getLanguages().map(language => language.key);
+    const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
+    const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
+    if (!languages.includes(currentLanguage)) {
+      languages.push(currentLanguage);
+    }
+    if (!languages.includes(defaultLanguage)) {
+      languages.push(defaultLanguage);
+    }
 
     for (const item of items) {
-      const formValues: FormValues = {};
-      for (const [fieldName, fieldValues] of Object.entries(item.Entity.Attributes)) {
-        formValues[fieldName] = LocalizationHelpers.translate(currentLanguage, defaultLanguage, fieldValues, null);
+      for (const language of languages) {
+        const formValues: FormValues = {};
+        for (const [fieldName, fieldValues] of Object.entries(item.Entity.Attributes)) {
+          formValues[fieldName] = LocalizationHelpers.translate(language, defaultLanguage, fieldValues, null);
+        }
+        this.initialFormValues[this.getInitialValuesKey(item.Entity.Guid, language)] = formValues;
       }
-      this.initialFormValues[item.Entity.Guid] = formValues;
     }
+  }
+
+  private getInitialValuesKey(entityGuid: string, language: string): string {
+    return `entityGuid:${entityGuid}:language:${language}`;
+  }
+
+  getInitialValues(entityGuid: string, language: string): FormValues {
+    return this.initialFormValues[this.getInitialValuesKey(entityGuid, language)];
   }
 
   private setMissingValues(): void {
