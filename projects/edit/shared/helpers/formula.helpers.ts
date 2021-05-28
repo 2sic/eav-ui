@@ -98,32 +98,6 @@ export class FormulaHelpers {
         });
         const propsV1: FormulaPropsV1 = {
           data,
-          // spm TODO: figure out why getters here calculate values immediately
-          // data: {
-          //   ...formValues,
-          //   get default() {
-          //     if (formula.target === FormulaTargets.Value) {
-          //       return InputFieldHelpers.parseDefaultValue(formula.fieldName, inputType, settings);
-          //     }
-          //     if (formula.target.startsWith(SettingsFormulaPrefix)) {
-          //       const settingName = formula.target.substring(SettingsFormulaPrefix.length);
-          //       return (settings as Record<string, any>)[settingName];
-          //     }
-          //   },
-          //   get prefill() {
-          //     if (formula.target !== FormulaTargets.Value) { return; }
-          //     return InputFieldHelpers.parseDefaultValue(formula.fieldName, inputType, settings, itemHeader, true);
-          //   },
-          //   get value() {
-          //     if (formula.target === FormulaTargets.Value) {
-          //       return formValues[formula.fieldName];
-          //     }
-          //     if (formula.target.startsWith(SettingsFormulaPrefix)) {
-          //       const settingName = formula.target.substring(SettingsFormulaPrefix.length);
-          //       return (previousSettings as Record<string, any>)[settingName];
-          //     }
-          //   },
-          // },
           context: {
             cache: formula.cache,
             culture: {
