@@ -17,8 +17,8 @@
     "release": "set NODE_ENV=production && npm run prod-all"
   },
   "dependencies": {
-    "@2sic.com/2sxc-typings": "^10.25.3",
-    "@2sic.com/dnn-sxc-angular": "^10.25.5",
+    "@2sic.com/2sxc-typings": "^11.0.0",
+    "@2sic.com/dnn-sxc-angular": "^11.1.2",
     "@ag-grid-community/all-modules": "^24.0.0",
     "@ag-grid-community/angular": "^24.0.0",
     "@angular-material-components/datetime-picker": "^5.1.0",
