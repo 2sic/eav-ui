@@ -37,6 +37,7 @@ export interface MultiEditFormTemplateVars {
   items: EavItem[];
   formsValid: boolean;
   delayForm: boolean;
+  viewInitiated: boolean;
   reduceSaveButton: boolean;
   debugEnabled: boolean;
   debugInfoIsOpen: boolean;

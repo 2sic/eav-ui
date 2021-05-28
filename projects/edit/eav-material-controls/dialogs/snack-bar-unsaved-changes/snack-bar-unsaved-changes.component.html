@@ -2,9 +2,9 @@
 
 <div fxLayoutAlign="end end">
   <button mat-button color="primary" (click)="saveChanges(false)">
-    {{ ('General.Buttons.NotSave' | translate).toLocaleUpperCase() }}
+    {{ 'General.Buttons.NotSave' | translate | uppercase }}
   </button>
   <button mat-button color="primary" (click)="saveChanges(true)">
-    {{ ('General.Buttons.Save' | translate).toLocaleUpperCase()}}
+    {{ 'General.Buttons.Save' | translate | uppercase }}
   </button>
 </div>

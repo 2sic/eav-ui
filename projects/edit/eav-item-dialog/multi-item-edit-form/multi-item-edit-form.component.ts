@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
@@ -28,11 +28,12 @@ import { MultiEditFormTemplateVars, SaveEavFormData } from './multi-item-edit-fo
   styleUrls: ['./multi-item-edit-form.component.scss'],
   providers: [EditRoutingService, FormsStateService, FormulaDesignerService],
 })
-export class MultiItemEditFormComponent implements OnInit, OnDestroy {
+export class MultiItemEditFormComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChildren(ItemEditFormComponent) itemEditFormRefs: QueryList<ItemEditFormComponent>;
 
   templateVars$: Observable<MultiEditFormTemplateVars>;
 
+  private viewInitiated$: BehaviorSubject<boolean>;
   private debugInfoIsOpen$: BehaviorSubject<boolean>;
   private subscription: Subscription;
   private saveResult: SaveResult;
@@ -65,6 +66,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.viewInitiated$ = new BehaviorSubject(false);
     this.debugInfoIsOpen$ = new BehaviorSubject(false);
     this.subscription = new Subscription();
     this.editRoutingService.init();
@@ -85,17 +87,18 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy {
       })
     );
     this.templateVars$ = combineLatest([
-      combineLatest([items$, formsValid$, delayForm$, reduceSaveButton$]),
+      combineLatest([items$, formsValid$, delayForm$, this.viewInitiated$, reduceSaveButton$]),
       combineLatest([debugEnabled$, this.debugInfoIsOpen$, hideHeader$]),
     ]).pipe(
       map(([
-        [items, formsValid, delayForm, reduceSaveButton],
+        [items, formsValid, delayForm, viewInitiated, reduceSaveButton],
         [debugEnabled, debugInfoIsOpen, hideHeader],
       ]) => {
         const templateVars: MultiEditFormTemplateVars = {
           items,
           formsValid,
           delayForm,
+          viewInitiated,
           reduceSaveButton,
           debugEnabled,
           debugInfoIsOpen,
@@ -107,7 +110,14 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy {
     this.dialogBackdropClickSubscribe();
   }
 
+  ngAfterViewInit() {
+    setTimeout(() => {
+      this.viewInitiated$.next(true);
+    });
+  }
+
   ngOnDestroy() {
+    this.viewInitiated$.complete();
     this.debugInfoIsOpen$.complete();
     this.subscription.unsubscribe();
     this.languageInstanceService.removeLanguageInstance(this.eavService.eavConfig.formId);
