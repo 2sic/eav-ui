@@ -77,7 +77,8 @@ export class StringTemplatePickerComponent extends BaseComponent<string> impleme
   }
 
   private onLocationChange(location: string) {
-    this.global = (location === 'Host File System');
+    this.global = (location === 'Host File System' // Original value used from 2sxc up until v12.01
+      || location === 'Global'); // New key used in 2sxc 12.02 and later
 
     this.assetsService.getAll(this.global).subscribe(templates => {
       this.templates = templates;
