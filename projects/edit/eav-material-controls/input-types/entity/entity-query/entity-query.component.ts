@@ -9,6 +9,7 @@ import { EavService, EditRoutingService, EntityService, FieldsSettingsService, Q
 import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { EntityDefaultComponent } from '../entity-default/entity-default.component';
+import { filterGuids } from '../entity-default/entity-default.helpers';
 import { EntityQueryLogic } from './entity-query-logic';
 import { QueryEntity } from './entity-query.models';
 
@@ -104,7 +105,11 @@ export class EntityQueryComponent extends EntityDefaultComponent implements OnIn
     const queryUrl = settings.Query.includes('/') ? settings.Query : `${settings.Query}/${streamName}`;
     const params = this.paramsMask.resolve();
     const entitiesFilter: string[] = clearAvailableEntitiesAndOnlyUpdateCache && !this.isStringQuery
-      ? (this.control.value as string[]).filter(guid => guid)
+      ? filterGuids(
+        this.fieldsSettingsService.getContentTypeSettings()._itemTitle,
+        this.config.fieldName,
+        (this.control.value as string[]).filter(guid => !!guid),
+      )
       : null;
 
     this.queryService.getAvailableEntities(queryUrl, true, params, entitiesFilter).subscribe({

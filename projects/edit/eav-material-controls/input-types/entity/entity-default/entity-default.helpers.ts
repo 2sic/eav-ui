@@ -1,5 +1,6 @@
 import { TranslateService } from '@ngx-translate/core';
 import { EntityInfo } from '../../../../../edit-types';
+import { guidRegex } from '../../../../../ng-dialogs/src/app/shared/constants/guid.constants';
 import { QueryEntity } from '../entity-query/entity-query.models';
 import { SelectedEntity } from './entity-default.models';
 
@@ -52,4 +53,24 @@ export function convertArrayToString(value: string | string[], separator: string
   if (Array.isArray(value)) { return value.join(separator); }
 
   return value;
+}
+
+export function filterGuids(entityName: string, fieldName: string, guids: string[]): string[] {
+  if (guids == null) { return; }
+
+  const validGuids: string[] = [];
+  const invalidGuids: string[] = [];
+  for (const guid of guids) {
+    if (guidRegex().test(guid)) {
+      validGuids.push(guid);
+    } else {
+      invalidGuids.push(guid);
+    }
+  }
+
+  if (invalidGuids.length > 0) {
+    console.error(`Found invalid guids in Entity: "${entityName}", Field: "${fieldName}"`, invalidGuids);
+  }
+
+  return validGuids;
 }

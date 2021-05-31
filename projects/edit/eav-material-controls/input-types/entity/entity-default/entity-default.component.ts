@@ -16,7 +16,7 @@ import { BaseComponent } from '../../base/base.component';
 import { ReorderIndexes } from '../entity-default-list/entity-default-list.models';
 import { EntityDefaultSearchComponent } from '../entity-default-search/entity-default-search.component';
 import { EntityDefaultLogic } from './entity-default-logic';
-import { calculateSelectedEntities, convertArrayToString, convertValueToArray } from './entity-default.helpers';
+import { calculateSelectedEntities, convertArrayToString, convertValueToArray, filterGuids } from './entity-default.helpers';
 import { DeleteEntityProps, EntityTemplateVars, SelectedEntity } from './entity-default.models';
 
 @Component({
@@ -171,7 +171,11 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
 
     const contentTypeName = this.contentTypeMask.resolve();
     const entitiesFilter: string[] = (clearAvailableEntitiesAndOnlyUpdateCache || !this.settings$.value.EnableAddExisting)
-      ? (this.control.value as string[]).filter(guid => guid)
+      ? filterGuids(
+        this.fieldsSettingsService.getContentTypeSettings()._itemTitle,
+        this.config.fieldName,
+        (this.control.value as string[]).filter(guid => !!guid),
+      )
       : null;
 
     this.entityService.getAvailableEntities(contentTypeName, entitiesFilter).subscribe(items => {
@@ -285,8 +289,9 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
    */
   private fixPrefillAndStringQueryCache(): void {
     // filter out null items
-    const guids = convertValueToArray(this.control.value, this.settings$.value.Separator).filter(guid => guid);
+    const guids = convertValueToArray(this.control.value, this.settings$.value.Separator).filter(guid => !!guid);
     if (guids.length === 0) { return; }
+
     const cached = this.entityCacheService.getEntities(guids);
     if (guids.length !== cached.length) {
       this.fetchEntities(true);
