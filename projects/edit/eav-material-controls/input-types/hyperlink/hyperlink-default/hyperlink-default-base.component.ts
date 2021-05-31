@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Directive, OnDestroy, OnInit, ViewContainerRef } fro
 import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject } from 'rxjs';
 import { AdamItem } from '../../../../../edit-types';
-import { PagePicker } from '../../../../shared/helpers';
+import { PagePicker, UrlHelpers } from '../../../../shared/helpers';
 import { EavService, FieldsSettingsService, FileTypeService } from '../../../../shared/services';
 import { LinkCacheService } from '../../../../shared/store/ngrx-data';
 import { AdamService } from '../../../adam/adam.service';
@@ -62,20 +62,20 @@ export class HyperlinkDefaultBaseComponent extends BaseComponent<string> impleme
 
   private fetchLink(value: string) {
     if (!value) {
-      this.setLink(value, false);
+      this.setPreview(value, false);
       return;
     }
 
     const isFileOrPage = this.isFileOrPage(value);
     if (!isFileOrPage) {
-      this.setLink(value, false);
+      this.setPreview(value, false);
       return;
     }
 
     const cached = this.linkCacheService.getLinkInfo(value);
     if (cached) {
       const isResolved = !this.isFileOrPage(cached.Value);
-      this.setLink(cached.Value, isResolved, cached.Adam);
+      this.setPreview(cached.Value, isResolved, cached.Adam);
       return;
     }
 
@@ -85,16 +85,19 @@ export class HyperlinkDefaultBaseComponent extends BaseComponent<string> impleme
     const field = this.config.fieldName;
     this.adamService.getLinkInfo(value, contentType, entityGuid, field).subscribe(linkInfo => {
       if (!linkInfo) {
-        this.setLink(value, false);
+        this.setPreview(value, false);
         return;
       }
       this.linkCacheService.loadLink(value, linkInfo);
       const isResolved = !this.isFileOrPage(linkInfo.Value);
-      this.setLink(linkInfo.Value, isResolved, linkInfo.Adam);
+      this.setPreview(linkInfo.Value, isResolved, linkInfo.Adam);
     });
   }
 
-  private setLink(value: string, isResolved: boolean, adam?: AdamItem) {
+  private setPreview(value: string, isResolved: boolean, adam?: AdamItem) {
+    // for preview resolve [App:Path]
+    value = value.replace(/\[App:Path\]/i, UrlHelpers.getUrlPrefix('app', this.eavService.eavConfig));
+
     const preview: Preview = {
       url: value,
       floatingText: isResolved ? `.../${value.substring(value.lastIndexOf('/') + 1)}` : '',
