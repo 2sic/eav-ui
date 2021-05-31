@@ -91,6 +91,10 @@ const configuration = {
     filename: 'index.js',
     path: distWysiwyg,
   },
+  performance: {
+    maxEntrypointSize: 1500000,
+    maxAssetSize: 1500000,
+  }
 };
 
 /* change source map generation based on production mode */
