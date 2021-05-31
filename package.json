@@ -3,6 +3,10 @@
   "// VERSION": "The version number is very important, as it's used for publishing the source maps",
   "version": "12.01.01",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/2sic/eav-item-dialog-angular.git"
+  },
   "scripts": {
     "pre-build": "node ./build-helpers/clear-dist && node ./build-helpers/build-languages",
     "copy-to-dnn": "node ./build-helpers/copy-to-dnn",
