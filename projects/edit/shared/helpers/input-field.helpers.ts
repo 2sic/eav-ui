@@ -100,7 +100,7 @@ export class InputFieldHelpers {
       case InputTypeConstants.NumberDefault:
         return defaultValue != null && defaultValue !== ''
           ? Number(defaultValue)
-          : '';
+          : null;
       case InputTypeConstants.EntityDefault:
       case InputTypeConstants.EntityQuery:
       case InputTypeConstants.EntityContentBlocks:
