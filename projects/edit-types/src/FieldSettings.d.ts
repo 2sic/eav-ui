@@ -57,6 +57,15 @@ interface StringUrlPath extends String {
 }
 
 /**
+ * @string-template-picker
+ * New in 12.02
+ */
+interface StringTemplatePicker extends String {
+  /** Contains the extension for which the file picker should filter. If not set, use preset mechanisms */
+  FileType: string;
+}
+
+/**
  * @string-wysiwyg
  */
 interface StringWysiwyg extends String {
@@ -209,6 +218,7 @@ export interface FieldSettings
   extends StringDefault,
   StringDropdown,
   StringUrlPath,
+  StringTemplatePicker,
   StringWysiwyg,
   StringDropdownQuery,
   StringFontIconPicker,
