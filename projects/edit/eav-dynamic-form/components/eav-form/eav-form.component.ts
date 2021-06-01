@@ -4,6 +4,7 @@ import { combineLatest, Subscription } from 'rxjs';
 import { distinctUntilChanged, map, startWith } from 'rxjs/operators';
 import { InputTypeConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { FormValues } from '../../../eav-item-dialog/item-edit-form/item-edit-form.models';
+import { ValidationHelper } from '../../../eav-material-controls/validators/validation-helper';
 import { GeneralHelpers } from '../../../shared/helpers';
 import { EavService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
 import { ItemService, LanguageInstanceService } from '../../../shared/store/ngrx-data';
@@ -37,15 +38,16 @@ export class EavFormComponent implements OnInit, OnDestroy {
         // 1. create missing controls
         for (const [fieldName, fieldProps] of Object.entries(fieldsProps)) {
           const empties = [InputTypeConstants.EmptyDefault, InputTypeConstants.EmptyEnd];
-          if (empties.includes(fieldProps.calculatedInputType.inputType)) { continue; }
+          const inputType = fieldProps.calculatedInputType.inputType;
+          if (empties.includes(inputType)) { continue; }
 
-          const control = this.form.controls[fieldName];
-          if (control != null) { continue; }
+          if (this.form.controls.hasOwnProperty(fieldName)) { continue; }
 
           const value = fieldProps.value;
           const disabled = fieldProps.settings.Disabled;
-          const validation = fieldProps.validators;
-          const newControl = this.formBuilder.control({ disabled, value }, validation);
+          const validators = ValidationHelper.getValidators(fieldName, inputType, this.fieldsSettingsService);
+          const newControl = this.formBuilder.control({ disabled, value }, validators);
+          // TODO: build all fields at once. That should be faster
           this.form.addControl(fieldName, newControl);
         }
 
@@ -76,8 +78,6 @@ export class EavFormComponent implements OnInit, OnDestroy {
             control.enable();
           }
         }
-
-        // TODO: 4. sync validators
       })
     );
 

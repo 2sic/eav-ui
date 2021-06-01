@@ -1,5 +1,4 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { ValidatorFn } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import { distinctUntilChanged, filter, map } from 'rxjs/operators';
@@ -141,7 +140,6 @@ export class FieldsSettingsService implements OnDestroy {
               }
             }
 
-            const validators = ValidationHelper.getValidators(fixed, attribute);
             const calculatedInputType = InputFieldHelpers.calculateInputType(attribute, inputTypes);
             const wrappers = InputFieldHelpers.getWrappers(fixed, calculatedInputType);
             const initialSettings = FieldsSettingsHelpers.setDefaultFieldSettings(
@@ -168,7 +166,6 @@ export class FieldsSettingsService implements OnDestroy {
               },
               settings: fixed,
               translationState: fieldTranslation,
-              validators,
               value,
               wrappers,
             };
@@ -213,13 +210,6 @@ export class FieldsSettingsService implements OnDestroy {
     return this.fieldsProps$.pipe(
       map(fieldsSettings => fieldsSettings[fieldName].settings),
       distinctUntilChanged(GeneralHelpers.objectsEqual),
-    );
-  }
-
-  getFieldValidation$(fieldName: string): Observable<ValidatorFn[]> {
-    return this.fieldsProps$.pipe(
-      map(fieldsSettings => fieldsSettings[fieldName].validators),
-      distinctUntilChanged(GeneralHelpers.arraysEqual),
     );
   }
 
