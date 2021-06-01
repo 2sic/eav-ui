@@ -1,11 +1,13 @@
-import { InputFieldHelpers } from '.';
+import { InputFieldHelpers, LocalizationHelpers } from '.';
 import { FieldSettings, FieldValue } from '../../../edit-types';
 import { InputType } from '../../../ng-dialogs/src/app/content-type-fields/models/input-type.model';
 import { FormValues } from '../../eav-item-dialog/item-edit-form/item-edit-form.models';
 import { DesignerSnippet, FieldOption } from '../../eav-item-dialog/multi-item-edit-form-debug/formula-designer/formula-designer.models';
 // tslint:disable-next-line:max-line-length
-import { FormulaCacheItem, FormulaFunction, FormulaProps, FormulaPropsV1, FormulaTargets, FormulaV1Data, FormulaVersion, FormulaVersions, Language, SettingsFormulaPrefix } from '../models';
+import { FormulaCacheItem, FormulaFunction, FormulaProps, FormulaPropsV1, FormulaTargets, FormulaV1Data, FormulaV1ExperimentalEntity, FormulaVersion, FormulaVersions, Language, SettingsFormulaPrefix } from '../models';
 import { EavHeader } from '../models/eav';
+import { EavService, FieldsSettingsService } from '../services';
+import { ItemService } from '../store/ngrx-data';
 
 export class FormulaHelpers {
 
@@ -46,9 +48,13 @@ export class FormulaHelpers {
     formValues: FormValues,
     initialFormValues: FormValues,
     currentLanguage: string,
+    defaultLanguage: string,
     languages: Language[],
     itemHeader: EavHeader,
     debugEnabled: boolean,
+    itemService: ItemService,
+    eavService: EavService,
+    fieldsSettingsService: FieldsSettingsService,
   ): FormulaProps {
 
     switch (formula.version) {
@@ -118,6 +124,30 @@ export class FormulaHelpers {
                 : formula.target.substring(0, formula.target.lastIndexOf('.')),
             },
           },
+          experimental: {
+            getEntities(): FormulaV1ExperimentalEntity[] {
+              const v1Entities = itemService.getItems(eavService.eavConfig.itemGuids).map(item => {
+                const v1Entity: FormulaV1ExperimentalEntity = {
+                  guid: item.Entity.Guid,
+                  id: item.Entity.Id,
+                  type: item.Entity.Type,
+                };
+                return v1Entity;
+              });
+              return v1Entities;
+            },
+            getSettings(fieldName: string): FieldSettings {
+              return fieldsSettingsService.getFieldSettings(fieldName);
+            },
+            getValues(entityGuid: string): FormValues {
+              const item = itemService.getItem(entityGuid);
+              const values: FormValues = {};
+              for (const [fieldName, fieldValues] of Object.entries(item.Entity.Attributes)) {
+                values[fieldName] = LocalizationHelpers.translate(currentLanguage, defaultLanguage, fieldValues, null);
+              }
+              return values;
+            },
+          }
         };
         return propsV1;
       default:

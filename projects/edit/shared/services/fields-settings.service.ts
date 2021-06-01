@@ -304,6 +304,7 @@ export class FieldsSettingsService implements OnDestroy {
     itemHeader: EavHeader,
   ): FieldValue {
     const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
+    const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
     const languages = this.languageService.getLanguages();
     const debugEnabled = this.globalConfigService.getDebugEnabled();
     const initialFormValues = this.editInitializerService.getInitialValues(formula.entityGuid, currentLanguage);
@@ -316,9 +317,13 @@ export class FieldsSettingsService implements OnDestroy {
       formValues,
       initialFormValues,
       currentLanguage,
+      defaultLanguage,
       languages,
       itemHeader,
       debugEnabled,
+      this.itemService,
+      this.eavService,
+      this,
     );
     const designerState = this.formulaDesignerService.getDesignerState();
     const isOpenInDesigner = designerState.isOpen
@@ -332,7 +337,7 @@ export class FieldsSettingsService implements OnDestroy {
           if (isOpenInDesigner) {
             console.log(`Running formula${FormulaVersions.V1.toLocaleUpperCase()} for Entity: "${ctSettings._itemTitle}", Field: "${formula.fieldName}", Target: "${formula.target}" with following arguments:`, formulaProps);
           }
-          const valueV1 = formula.fn(formulaProps.data, formulaProps.context);
+          const valueV1 = formula.fn(formulaProps.data, formulaProps.context, formulaProps.experimental);
           this.formulaDesignerService.upsertFormulaResult(formula.entityGuid, formula.fieldName, formula.target, valueV1, false);
           if (isOpenInDesigner) {
             console.log('Formula result:', valueV1);
