@@ -41,6 +41,7 @@ export class GeneralHelpers {
       const newValue = newValues[key];
       const oldValue = oldValues[key];
       if (newValue === oldValue) { continue; }
+      if (typeof newValue === 'number' && typeof oldValue === 'number' && isNaN(newValue) && isNaN(oldValue)) { continue; }
       if (Array.isArray(newValue) && Array.isArray(oldValue) && GeneralHelpers.arraysEqual(newValue, oldValue)) { continue; }
 
       changes[key] = newValue;

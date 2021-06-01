@@ -99,7 +99,7 @@ export class InputFieldHelpers {
           : null;
       case InputTypeConstants.NumberDefault:
         return defaultValue != null && defaultValue !== ''
-          ? Number(defaultValue)
+          ? !isNaN(Number(defaultValue)) ? Number(defaultValue) : null
           : null;
       case InputTypeConstants.EntityDefault:
       case InputTypeConstants.EntityQuery:
