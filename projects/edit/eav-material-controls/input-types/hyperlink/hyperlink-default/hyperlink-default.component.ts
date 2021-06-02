@@ -6,7 +6,7 @@ import { AdamItem, AdamPostResponse } from '../../../../../edit-types';
 import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { GeneralHelpers } from '../../../../shared/helpers';
-import { EavService, EditRoutingService, FieldsSettingsService, FileTypeService } from '../../../../shared/services';
+import { EavService, EditRoutingService, FieldsSettingsService } from '../../../../shared/services';
 import { LinkCacheService } from '../../../../shared/store/ngrx-data';
 import { AdamService } from '../../../adam/adam.service';
 import { HyperlinkDefaultBaseComponent } from './hyperlink-default-base.component';
@@ -33,7 +33,6 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
   constructor(
     eavService: EavService,
     fieldsSettingsService: FieldsSettingsService,
-    fileTypeService: FileTypeService,
     adamService: AdamService,
     dialog: MatDialog,
     viewContainerRef: ViewContainerRef,
@@ -44,7 +43,6 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
     super(
       eavService,
       fieldsSettingsService,
-      fileTypeService,
       adamService,
       dialog,
       viewContainerRef,

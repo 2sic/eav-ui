@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject } from 'rxjs';
 import { AdamItem } from '../../../../../edit-types';
 import { GeneralHelpers, PagePicker, UrlHelpers } from '../../../../shared/helpers';
-import { EavService, FieldsSettingsService, FileTypeService } from '../../../../shared/services';
+import { EavService, FieldsSettingsService, FileTypeHelpers } from '../../../../shared/services';
 import { LinkCacheService } from '../../../../shared/store/ngrx-data';
 import { AdamService } from '../../../adam/adam.service';
 import { BaseComponent } from '../../base/base.component';
@@ -17,7 +17,6 @@ export class HyperlinkDefaultBaseComponent extends BaseComponent<string> impleme
   constructor(
     eavService: EavService,
     fieldsSettingsService: FieldsSettingsService,
-    public fileTypeService: FileTypeService,
     public adamService: AdamService,
     public dialog: MatDialog,
     public viewContainerRef: ViewContainerRef,
@@ -101,9 +100,9 @@ export class HyperlinkDefaultBaseComponent extends BaseComponent<string> impleme
       floatingText: isResolved ? `.../${value.substring(value.lastIndexOf('/') + 1)}` : '',
       thumbnailUrl: `url("${adam?.ThumbnailUrl ?? this.buildUrl(value, 1)}")`,
       previewUrl: adam?.PreviewUrl ?? this.buildUrl(value, 2),
-      isImage: this.fileTypeService.isImage(value),
-      isKnownType: this.fileTypeService.isKnownType(value),
-      icon: this.fileTypeService.getIconClass(value),
+      isImage: FileTypeHelpers.isImage(value),
+      isKnownType: FileTypeHelpers.isKnownType(value),
+      icon: FileTypeHelpers.getIconClass(value),
     };
     this.preview$.next(preview);
   }

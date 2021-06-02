@@ -1,11 +1,7 @@
-import { Injectable } from '@angular/core';
-import { Dictionary } from '../../../ng-dialogs/src/app/shared/models/dictionary.model';
+export class FileTypeHelpers {
 
-@Injectable()
-export class FileTypeService {
-  private defaultIcon = 'file';
-  private checkImgRegEx = /(?:([^:\/?#]+):)?(?:\/\/([^\/?#]*))?([^?#]*\.(?:jpg|jpeg|gif|png))(?:\?([^#]*))?(?:#(.*))?/i;
-  private customExtensions: Dictionary<string> = {
+  private static defaultIcon = 'file';
+  private static customExtensions: Record<string, string> = {
     doc: 'file-word',
     docx: 'file-word',
     xls: 'file-excel',
@@ -27,27 +23,28 @@ export class FileTypeService {
     xml: 'file-code',
     xsl: 'file-code',
   };
-
-  private matExtensions: Dictionary<string> = {
+  private static matExtensions: Record<string, string> = {
     vcf: 'person',
   };
 
-  constructor() { }
-
-  getExtension(filename: string) {
+  static getExtension(filename: string) {
     return filename.substring(filename.lastIndexOf('.') + 1).toLocaleLowerCase();
   }
 
-  getIconClass(filename: string) {
+  static getIconClass(filename: string) {
     const ext = this.getExtension(filename);
     return this.matExtensions[ext] || this.customExtensions[ext] || this.defaultIcon;
   }
 
-  isKnownType(filename: string) {
+  static isKnownType(filename: string) {
     return this.matExtensions[this.getExtension(filename)] != null;
   }
 
-  isImage(filename: string) {
-    return this.checkImgRegEx.test(filename);
+  static isImage(filename: string) {
+    return this.checkImgRegex().test(filename);
+  }
+
+  private static checkImgRegex() {
+    return /(?:([^:\/?#]+):)?(?:\/\/([^\/?#]*))?([^?#]*\.(?:jpg|jpeg|gif|png))(?:\?([^#]*))?(?:#(.*))?/i;
   }
 }

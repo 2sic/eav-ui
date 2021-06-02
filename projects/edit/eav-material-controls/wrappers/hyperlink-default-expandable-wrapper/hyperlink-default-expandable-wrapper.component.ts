@@ -5,7 +5,7 @@ import { distinctUntilChanged, map } from 'rxjs/operators';
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { ContentExpandAnimation } from '../../../shared/animations';
 import { DropzoneDraggingHelper, GeneralHelpers } from '../../../shared/helpers';
-import { EavService, EditRoutingService, FieldsSettingsService, FileTypeService } from '../../../shared/services';
+import { EavService, EditRoutingService, FieldsSettingsService } from '../../../shared/services';
 import { LinkCacheService } from '../../../shared/store/ngrx-data';
 import { AdamService } from '../../adam/adam.service';
 import { HyperlinkDefaultBaseComponent } from '../../input-types/hyperlink/hyperlink-default/hyperlink-default-base.component';
@@ -31,7 +31,6 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
   constructor(
     eavService: EavService,
     fieldsSettingsService: FieldsSettingsService,
-    fileTypeService: FileTypeService,
     adamService: AdamService,
     dialog: MatDialog,
     viewContainerRef: ViewContainerRef,
@@ -43,7 +42,6 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
     super(
       eavService,
       fieldsSettingsService,
-      fileTypeService,
       adamService,
       dialog,
       viewContainerRef,
