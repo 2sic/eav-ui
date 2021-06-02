@@ -9,8 +9,8 @@ import { eavConstants } from '../../../../ng-dialogs/src/app/shared/constants/ea
 import { EditForm } from '../../../../ng-dialogs/src/app/shared/models/edit-form.model';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { FeaturesConstants } from '../../../shared/constants';
-import { UrlHelpers } from '../../../shared/helpers';
-import { EditRoutingService, FileTypeHelpers } from '../../../shared/services';
+import { FileTypeHelpers, UrlHelpers } from '../../../shared/helpers';
+import { EditRoutingService } from '../../../shared/services';
 import { AdamCacheService, FeatureService, LinkCacheService } from '../../../shared/store/ngrx-data';
 import { AdamService } from '../adam.service';
 import { AdamBrowserTemplateVars, AdamConfigInstance } from './adam-browser.models';

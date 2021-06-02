@@ -2,8 +2,8 @@ import { ChangeDetectorRef, Directive, OnDestroy, OnInit, ViewContainerRef } fro
 import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject } from 'rxjs';
 import { AdamItem } from '../../../../../edit-types';
-import { GeneralHelpers, PagePicker, UrlHelpers } from '../../../../shared/helpers';
-import { EavService, FieldsSettingsService, FileTypeHelpers } from '../../../../shared/services';
+import { FileTypeHelpers, GeneralHelpers, PagePicker, UrlHelpers } from '../../../../shared/helpers';
+import { EavService, FieldsSettingsService } from '../../../../shared/services';
 import { LinkCacheService } from '../../../../shared/store/ngrx-data';
 import { AdamService } from '../../../adam/adam.service';
 import { BaseComponent } from '../../base/base.component';

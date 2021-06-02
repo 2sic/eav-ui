@@ -1,5 +1,4 @@
 export class FileTypeHelpers {
-
   private static defaultIcon = 'file';
   private static customExtensions: Record<string, string> = {
     doc: 'file-word',
@@ -41,10 +40,10 @@ export class FileTypeHelpers {
   }
 
   static isImage(filename: string) {
-    return this.checkImgRegex().test(filename);
+    return this.isImgRegex().test(filename);
   }
 
-  private static checkImgRegex() {
+  private static isImgRegex() {
     return /(?:([^:\/?#]+):)?(?:\/\/([^\/?#]*))?([^?#]*\.(?:jpg|jpeg|gif|png))(?:\?([^#]*))?(?:#(.*))?/i;
   }
 }
