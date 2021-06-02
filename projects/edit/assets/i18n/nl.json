@@ -109,8 +109,8 @@
     "NotValid": "Not valid",
     "Required": "This is required",
     "RequiredShort": "required",
-    "Min": "This value should be more than {{param.Min}}",
-    "Max": "This value should be less or equal {{param.Max}}",
+    "Min": "This value should be {{param.Min}} or higher",
+    "Max": "This value should be {{param.Max}} or lower",
     "Pattern": "Please match the requested format",
     "Decimals": "This number can have up to {{param.Decimals}} decimal places"
   },
