@@ -60,8 +60,10 @@ export class EavFormComponent implements OnInit, OnDestroy {
 
         const changes = GeneralHelpers.getFormChanges(oldValues, newValues);
         if (changes != null) {
-          this.form.markAsTouched();
-          this.form.markAsDirty();
+          // controls probably don't need to set touched and dirty for this kind of update.
+          // This update usually happens for language change, formula or updates on same entity in another Edit Ui.
+          // In case controls should be updated, update with control.markAsTouched and control.markAsDirty.
+          // Marking the form will not mark controls, but marking controls marks the form
           this.form.patchValue(changes);
         }
 
