@@ -3,7 +3,7 @@ import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
-import { FieldMask, UrlHelpers } from '../../../../shared/helpers';
+import { FieldMask, GeneralHelpers, UrlHelpers } from '../../../../shared/helpers';
 import { EavService, FieldsSettingsService } from '../../../../shared/services';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { BaseComponent } from '../../base/base.component';
@@ -91,13 +91,13 @@ export class StringUrlPathComponent extends BaseComponent<string> implements OnI
     if (!cleaned) { return; }
     this.lastAutoCopy = cleaned;
     if (value === cleaned) { return; }
-    this.control.patchValue(cleaned);
+    GeneralHelpers.patchControlValue(this.control, cleaned);
   }
 
   clean(trimEnd: boolean) {
     const value = this.control.value;
     const cleaned = UrlHelpers.stripNonUrlCharacters(value, this.settings$.value.AllowSlashes, trimEnd);
     if (value === cleaned) { return; }
-    this.control.patchValue(cleaned);
+    GeneralHelpers.patchControlValue(this.control, cleaned);
   }
 }

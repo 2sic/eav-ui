@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Directive, OnDestroy, OnInit, ViewContainerRef } fro
 import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject } from 'rxjs';
 import { AdamItem } from '../../../../../edit-types';
-import { PagePicker, UrlHelpers } from '../../../../shared/helpers';
+import { GeneralHelpers, PagePicker, UrlHelpers } from '../../../../shared/helpers';
 import { EavService, FieldsSettingsService, FileTypeService } from '../../../../shared/services';
 import { LinkCacheService } from '../../../../shared/store/ngrx-data';
 import { AdamService } from '../../../adam/adam.service';
@@ -56,7 +56,7 @@ export class HyperlinkDefaultBaseComponent extends BaseComponent<string> impleme
     PagePicker.open(this.config, this.group, this.dialog, this.viewContainerRef, this.changeDetectorRef, (page) => {
       // convert to page:xyz format (if it wasn't cancelled)
       if (!page) { return; }
-      this.control.patchValue(`page:${page.id}`);
+      GeneralHelpers.patchControlValue(this.control, `page:${page.id}`);
     });
   }
 

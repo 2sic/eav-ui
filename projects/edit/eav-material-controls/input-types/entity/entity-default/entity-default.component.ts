@@ -332,16 +332,10 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
         break;
     }
 
-    if (typeof this.control.value === 'string') {
-      const valueString = convertArrayToString(valueArray, this.settings$.value.Separator);
-      this.control.patchValue(valueString);
-    } else {
-      this.control.patchValue(valueArray);
-    }
-
-    if (!this.control.dirty) {
-      this.control.markAsDirty();
-    }
+    const newValue = typeof this.control.value === 'string'
+      ? convertArrayToString(valueArray, this.settings$.value.Separator)
+      : valueArray;
+    GeneralHelpers.patchControlValue(this.control, newValue);
 
     if (action === 'delete' && !valueArray.length) {
       setTimeout(() => {

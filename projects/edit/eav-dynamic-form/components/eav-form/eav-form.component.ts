@@ -61,6 +61,8 @@ export class EavFormComponent implements OnInit, OnDestroy {
 
         const changes = GeneralHelpers.getFormChanges(oldValues, newValues);
         if (changes != null) {
+          this.form.markAsTouched();
+          this.form.markAsDirty();
           this.form.patchValue(changes);
         }
 
@@ -81,7 +83,7 @@ export class EavFormComponent implements OnInit, OnDestroy {
       })
     );
 
-    const formValid$ = this.form.statusChanges.pipe(
+    const formValid$ = this.form.valueChanges.pipe(
       map(() => !this.form.invalid),
       startWith(!this.form.invalid),
       distinctUntilChanged(),

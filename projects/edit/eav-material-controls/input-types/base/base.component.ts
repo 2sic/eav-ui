@@ -47,25 +47,20 @@ export class BaseComponent<T = any> implements Field, OnInit, OnDestroy {
     this.placeholder$ = this.settings$.pipe(map(settings => settings.Placeholder), distinctUntilChanged());
     this.required$ = this.settings$.pipe(map(settings => settings.Required), distinctUntilChanged());
 
-    this.invalid$ = this.control.statusChanges.pipe(
+    this.invalid$ = this.control.valueChanges.pipe(
       map(() => this.control.invalid),
       startWith(this.control.invalid),
       distinctUntilChanged(),
     );
     this.touched$ = combineLatest([
       this.control.valueChanges.pipe(startWith(this.control.value)),
-      this.control.statusChanges.pipe(startWith(this.control.status)),
       this.validationMessagesService.refreshTouched$.pipe(filter(control => control === this.control)),
     ]).pipe(
       map(() => this.control.touched),
       startWith(this.control.touched),
       distinctUntilChanged(),
     );
-    this.dirty$ = combineLatest([
-      this.control.valueChanges.pipe(startWith(this.control.value)),
-      this.control.statusChanges.pipe(startWith(this.control.status)),
-      this.validationMessagesService.refreshDirty$.pipe(filter(control => control === this.control)),
-    ]).pipe(
+    this.dirty$ = this.control.valueChanges.pipe(
       map(() => this.control.dirty),
       startWith(this.control.dirty),
       distinctUntilChanged(),

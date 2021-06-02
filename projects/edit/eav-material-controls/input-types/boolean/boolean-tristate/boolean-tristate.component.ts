@@ -3,6 +3,7 @@ import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
+import { GeneralHelpers } from '../../../../shared/helpers';
 import { EavService, FieldsSettingsService } from '../../../../shared/services';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { BaseComponent } from '../../base/base.component';
@@ -58,7 +59,7 @@ export class BooleanTristateComponent extends BaseComponent<boolean | ''> implem
     super.ngOnDestroy();
   }
 
-  patchValue() {
+  updateValue() {
     const currentValue: boolean | '' = this.control.value;
     const reverseToogle = this.settings$.value.ReverseToggle;
 
@@ -75,8 +76,6 @@ export class BooleanTristateComponent extends BaseComponent<boolean | ''> implem
         nextValue = reverseToogle ? null : false;
         break;
     }
-    this.control.patchValue(nextValue);
-    this.validationMessagesService.markAsTouched(this.control);
-    this.validationMessagesService.markAsDirty(this.control);
+    GeneralHelpers.patchControlValue(this.control, nextValue);
   }
 }

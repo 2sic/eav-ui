@@ -98,7 +98,6 @@ export class ExpandableWrapperComponent extends BaseComponent<string> implements
       this.viewContainerRef,
       this.changeDetectorRef,
       this.fieldsSettingsService,
-      this.validationMessagesService,
       this.entityCacheService,
       this.zone,
     );

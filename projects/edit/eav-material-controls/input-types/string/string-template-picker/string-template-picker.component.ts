@@ -3,7 +3,7 @@ import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
-import { FieldMask } from '../../../../shared/helpers';
+import { FieldMask, GeneralHelpers } from '../../../../shared/helpers';
 import { AssetsService, EavService, FieldsSettingsService } from '../../../../shared/services';
 import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { BaseComponent } from '../../base/base.component';
@@ -95,7 +95,9 @@ export class StringTemplatePickerComponent extends BaseComponent<string> impleme
     filtered = filtered.filter(template => template.slice(template.length - ext.length) === ext);
     this.templateOptions$.next(filtered);
     const resetValue = this.resetIfNotFound && !filtered.find(template => template === this.control.value);
-    if (resetValue) { this.control.patchValue(''); }
+    if (resetValue) {
+      GeneralHelpers.patchControlValue(this.control, '');
+    }
   }
 
   createTemplate() {
@@ -130,7 +132,7 @@ export class StringTemplatePickerComponent extends BaseComponent<string> impleme
       } else {
         this.templates.push(fullPath);
         this.setTemplateOptions();
-        this.control.patchValue(fullPath);
+        GeneralHelpers.patchControlValue(this.control, fullPath);
       }
     });
   }

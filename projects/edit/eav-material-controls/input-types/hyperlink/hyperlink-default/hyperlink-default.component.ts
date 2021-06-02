@@ -136,11 +136,7 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
 
   private setValue(item: AdamItem | AdamPostResponse) {
     const usePath = this.settings$.value.ServerResourceMapping === 'url';
-    if (usePath) {
-      const imageOrFileUrl = (item as AdamItem).Url ?? (item as AdamPostResponse).Path;
-      this.control.patchValue(imageOrFileUrl);
-    } else {
-      this.control.patchValue(`file:${item.Id}`);
-    }
+    const newValue = !usePath ? `file:${item.Id}` : (item as AdamItem).Url ?? (item as AdamPostResponse).Path;
+    GeneralHelpers.patchControlValue(this.control, newValue);
   }
 }

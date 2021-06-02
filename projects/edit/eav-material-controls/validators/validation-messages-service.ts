@@ -8,7 +8,6 @@ import { FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
 export class ValidationMessagesService implements OnDestroy {
   /** Fires on field validation touch to display validation messages */
   refreshTouched$ = new Subject<AbstractControl>();
-  refreshDirty$ = new Subject<AbstractControl>();
 
   private validationMessages: Dictionary<(config: FieldConfigSet) => string> = {
     required: (config: FieldConfigSet) => {
@@ -33,7 +32,6 @@ export class ValidationMessagesService implements OnDestroy {
   // spm TODO: ngOnDestroy only fires in services provided in component
   ngOnDestroy(): void {
     this.refreshTouched$.complete();
-    this.refreshDirty$.complete();
   }
 
   /** Marks controls as touched to show errors beneath controls and collects error messages */
@@ -56,12 +54,6 @@ export class ValidationMessagesService implements OnDestroy {
     if (control.touched) { return; }
     control.markAsTouched();
     this.refreshTouched$.next(control);
-  }
-
-  markAsDirty(control: AbstractControl): void {
-    if (control.dirty) { return; }
-    control.markAsDirty();
-    this.refreshDirty$.next(control);
   }
 
   /** Calculates error message */

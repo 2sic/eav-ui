@@ -7,7 +7,6 @@ import { FieldConfigSet } from '../../../../../eav-dynamic-form/model/field-conf
 import { EavService, EditRoutingService, FieldsSettingsService } from '../../../../../shared/services';
 import { ContentTypeService, EntityCacheService, FeatureService, InputTypeService } from '../../../../../shared/store/ngrx-data';
 import { AdamService } from '../../../../adam/adam.service';
-import { ValidationMessagesService } from '../../../../validators/validation-messages-service';
 import { ConnectorHelper } from './connector.helper';
 
 @Component({
@@ -35,7 +34,6 @@ export class ConnectorComponent implements AfterViewInit, OnDestroy {
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
     private fieldsSettingsService: FieldsSettingsService,
-    private validationMessagesService: ValidationMessagesService,
     private entityCacheService: EntityCacheService,
     private zone: NgZone,
   ) { }
@@ -59,7 +57,6 @@ export class ConnectorComponent implements AfterViewInit, OnDestroy {
       this.viewContainerRef,
       this.changeDetectorRef,
       this.fieldsSettingsService,
-      this.validationMessagesService,
       this.entityCacheService,
       this.zone,
     );

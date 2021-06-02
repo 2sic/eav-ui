@@ -114,8 +114,7 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
   setValue(event: Event) {
     const newValue = (event.target as HTMLInputElement).value;
     if (this.control.value === newValue) { return; }
-    this.control.patchValue(newValue);
-    this.control.markAsDirty();
+    GeneralHelpers.patchControlValue(this.control, newValue);
   }
 
   expandDialog() {

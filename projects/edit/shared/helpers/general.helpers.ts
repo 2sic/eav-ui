@@ -1,3 +1,5 @@
+import { AbstractControl } from '@angular/forms';
+import { FieldValue } from '../../../edit-types';
 import { Dictionary } from '../../../ng-dialogs/src/app/shared/models/dictionary.model';
 import { FormValues } from '../../eav-item-dialog/item-edit-form/item-edit-form.models';
 
@@ -40,9 +42,7 @@ export class GeneralHelpers {
     for (const key of Object.keys(newValues)) {
       const newValue = newValues[key];
       const oldValue = oldValues[key];
-      if (newValue === oldValue) { continue; }
-      if (typeof newValue === 'number' && typeof oldValue === 'number' && isNaN(newValue) && isNaN(oldValue)) { continue; }
-      if (Array.isArray(newValue) && Array.isArray(oldValue) && GeneralHelpers.arraysEqual(newValue, oldValue)) { continue; }
+      if (this.controlValuesEqual(newValue, oldValue)) { continue; }
 
       changes[key] = newValue;
     }
@@ -56,5 +56,23 @@ export class GeneralHelpers {
     } else {
       array.splice(index, 1);
     }
+  }
+
+  /** Use to update form controls value */
+  static patchControlValue(control: AbstractControl, newValue: FieldValue): void {
+    if (!control.touched) {
+      control.markAsTouched();
+    }
+    if (!control.dirty && !this.controlValuesEqual(control.value, newValue)) {
+      control.markAsDirty();
+    }
+    control.patchValue(newValue);
+  }
+
+  private static controlValuesEqual(x: FieldValue, y: FieldValue): boolean {
+    if (x === y) { return true; }
+    if (typeof x === 'number' && typeof y === 'number' && isNaN(x) && isNaN(y)) { return true; }
+    if (Array.isArray(x) && Array.isArray(y) && this.arraysEqual(x, y)) { return true; }
+    return false;
   }
 }
