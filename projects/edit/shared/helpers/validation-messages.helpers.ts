@@ -1,6 +1,6 @@
 import { AbstractControl, FormGroup } from '@angular/forms';
+import { GeneralHelpers } from '.';
 import { FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
-import { GeneralHelpers } from '../../shared/helpers';
 
 export class ValidationMessagesHelpers {
 

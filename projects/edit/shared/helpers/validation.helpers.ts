@@ -1,11 +1,11 @@
 import { AbstractControl, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { FieldSettings } from '../../../edit-types';
 import { InputTypeConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
-import { FieldsSettingsService } from '../../shared/services';
-import { AdamControl } from '../input-types/hyperlink/hyperlink-library/hyperlink-library.models';
+import { AdamControl } from '../../eav-material-controls/input-types/hyperlink/hyperlink-library/hyperlink-library.models';
+import { FieldsSettingsService } from '../services';
 
 /** Validators here are copied from https://github.com/angular/angular/blob/master/packages/forms/src/validators.ts */
-export class ValidationHelper {
+export class ValidationHelpers {
 
   static isRequired(settings: FieldSettings): boolean {
     // hidden field can't be required

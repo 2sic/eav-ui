@@ -11,8 +11,8 @@ import { SnackBarSaveErrorsComponent } from '../../eav-material-controls/dialogs
 import { SaveErrorsSnackData } from '../../eav-material-controls/dialogs/snack-bar-save-errors/snack-bar-save-errors.models';
 import { SnackBarUnsavedChangesComponent } from '../../eav-material-controls/dialogs/snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
 import { UnsavedChangesSnackData } from '../../eav-material-controls/dialogs/snack-bar-unsaved-changes/snack-bar-unsaved-changes.models';
-import { ValidationMessagesHelpers } from '../../eav-material-controls/validators/validation-messages-service';
 import { EditEntryComponent } from '../../edit-entry/edit-entry.component';
+import { ValidationMessagesHelpers } from '../../shared/helpers';
 import { FieldErrorMessage, SaveResult } from '../../shared/models';
 import { EavItem } from '../../shared/models/eav';
 import { Item1 } from '../../shared/models/json-format-v1';

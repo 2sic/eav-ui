@@ -6,9 +6,8 @@ import { EavService, EditInitializerService, LoggingService } from '.';
 import { FieldSettings, FieldValue } from '../../../edit-types';
 import { InputType } from '../../../ng-dialogs/src/app/content-type-fields/models/input-type.model';
 import { FormValues } from '../../eav-item-dialog/item-edit-form/item-edit-form.models';
-import { ValidationHelper } from '../../eav-material-controls/validators/validation-helper';
 import { FieldLogicManager } from '../../field-logic/field-logic-manager';
-import { FieldsSettingsHelpers, FormulaHelpers, GeneralHelpers, InputFieldHelpers, LocalizationHelpers } from '../helpers';
+import { FieldsSettingsHelpers, FormulaHelpers, GeneralHelpers, InputFieldHelpers, LocalizationHelpers, ValidationHelpers } from '../helpers';
 // tslint:disable-next-line:max-line-length
 import { ContentTypeSettings, FieldsProps, FormulaCacheItem, FormulaFunctionDefault, FormulaTargets, FormulaVersions, LogSeverities, RunFormulasResult, SettingsFormulaPrefix, TranslationState } from '../models';
 import { EavHeader } from '../models/eav';
@@ -113,7 +112,7 @@ export class FieldsSettingsService implements OnDestroy {
 
             // special fixes
             calculated.Name = calculated.Name || attribute.Name;
-            calculated.Required = ValidationHelper.isRequired(calculated);
+            calculated.Required = ValidationHelpers.isRequired(calculated);
             calculated.DisableTranslation = FieldsSettingsHelpers.findDisableTranslation(
               inputType, attributeValues, defaultLanguage, attribute.Metadata,
             );

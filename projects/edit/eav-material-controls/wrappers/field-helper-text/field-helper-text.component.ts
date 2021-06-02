@@ -3,8 +3,8 @@ import { AbstractControl, FormGroup } from '@angular/forms';
 import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map, startWith } from 'rxjs/operators';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
+import { ValidationMessagesHelpers } from '../../../shared/helpers';
 import { FieldsSettingsService } from '../../../shared/services';
-import { ValidationMessagesHelpers } from '../../validators/validation-messages-service';
 import { FieldHelperTextTemplateVars } from './field-helper-text.models';
 
 @Component({
