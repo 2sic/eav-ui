@@ -87,7 +87,7 @@ export class EntityDefaultSearchComponent implements OnInit, OnChanges {
   }
 
   markAsTouched(): void {
-    this.validationMessagesService.markAsTouched(this.control);
+    GeneralHelpers.markControlTouched(this.control);
   }
 
   fetchEntities(): void {

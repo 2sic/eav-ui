@@ -58,6 +58,14 @@ export class GeneralHelpers {
     }
   }
 
+  /** TODO: Try to remove this by assigning controls [formControlName] in [formGroup] */
+  static markControlTouched(control: AbstractControl): void {
+    if (control.touched) { return; }
+
+    control.markAsTouched();
+    control.updateValueAndValidity();
+  }
+
   /** Use to update form controls value */
   static patchControlValue(control: AbstractControl, newValue: FieldValue): void {
     if (!control.touched) {

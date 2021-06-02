@@ -1,7 +1,7 @@
 import { Directive, Input, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
-import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
-import { distinctUntilChanged, filter, map, startWith } from 'rxjs/operators';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { distinctUntilChanged, map, startWith } from 'rxjs/operators';
 import { FieldSettings } from '../../../../edit-types';
 import { Field } from '../../../eav-dynamic-form/model/field';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
@@ -52,10 +52,7 @@ export class BaseComponent<T = any> implements Field, OnInit, OnDestroy {
       startWith(this.control.invalid),
       distinctUntilChanged(),
     );
-    this.touched$ = combineLatest([
-      this.control.valueChanges.pipe(startWith(this.control.value)),
-      this.validationMessagesService.refreshTouched$.pipe(filter(control => control === this.control)),
-    ]).pipe(
+    this.touched$ = this.control.valueChanges.pipe(
       map(() => this.control.touched),
       startWith(this.control.touched),
       distinctUntilChanged(),

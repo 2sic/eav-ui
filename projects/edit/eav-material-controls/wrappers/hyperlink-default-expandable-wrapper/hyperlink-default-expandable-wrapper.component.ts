@@ -108,7 +108,7 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
   }
 
   markAsTouched() {
-    this.validationMessagesService.markAsTouched(this.control);
+    GeneralHelpers.markControlTouched(this.control);
   }
 
   setValue(event: Event) {

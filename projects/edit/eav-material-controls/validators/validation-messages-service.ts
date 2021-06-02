@@ -1,15 +1,12 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
-import { Subject } from 'rxjs';
-import { Dictionary } from '../../../ng-dialogs/src/app/shared/models/dictionary.model';
 import { FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
+import { GeneralHelpers } from '../../shared/helpers';
 
 @Injectable()
-export class ValidationMessagesService implements OnDestroy {
-  /** Fires on field validation touch to display validation messages */
-  refreshTouched$ = new Subject<AbstractControl>();
+export class ValidationMessagesService {
 
-  private validationMessages: Dictionary<(config: FieldConfigSet) => string> = {
+  private validationMessages: Record<string, (config: FieldConfigSet) => string> = {
     required: (config: FieldConfigSet) => {
       return config ? 'ValidationMessage.Required' : `ValidationMessage.RequiredShort`; // short version in toaster
     },
@@ -29,16 +26,11 @@ export class ValidationMessagesService implements OnDestroy {
 
   constructor() { }
 
-  // spm TODO: ngOnDestroy only fires in services provided in component
-  ngOnDestroy(): void {
-    this.refreshTouched$.complete();
-  }
-
   /** Marks controls as touched to show errors beneath controls and collects error messages */
-  validateForm(form: FormGroup): Dictionary<string> {
-    const errors: Dictionary<string> = {};
+  validateForm(form: FormGroup): Record<string, string> {
+    const errors: Record<string, string> = {};
     for (const [controlKey, control] of Object.entries(form.controls)) {
-      this.markAsTouched(control);
+      GeneralHelpers.markControlTouched(control);
 
       if (!control.invalid) { continue; }
 
@@ -48,12 +40,6 @@ export class ValidationMessagesService implements OnDestroy {
       }
     }
     return errors;
-  }
-
-  markAsTouched(control: AbstractControl): void {
-    if (control.touched) { return; }
-    control.markAsTouched();
-    this.refreshTouched$.next(control);
   }
 
   /** Calculates error message */
