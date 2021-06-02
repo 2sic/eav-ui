@@ -43,8 +43,13 @@ export class StringTemplatePickerComponent extends BaseComponent<string> impleme
   ngOnInit() {
     super.ngOnInit();
     this.templateOptions$ = new BehaviorSubject<string[]>([]);
+
+    // If we have a configured type, use that, otherwise use the field mask
+    // We'll still use the field-mask (even though it wouldn't be needed) to keep the logic simple
+    const typeFilterMask = (this.settings$.value as any).FileType ?? '[Type]';
+
     // set change-watchers to the other values
-    this.typeMask = new FieldMask('[Type]', this.group.controls, this.setFileConfig.bind(this), null);
+    this.typeMask = new FieldMask(typeFilterMask, this.group.controls, this.setFileConfig.bind(this), null);
     this.locationMask = new FieldMask('[Location]', this.group.controls, this.onLocationChange.bind(this), null);
 
     this.setFileConfig(this.typeMask.resolve() || 'Token'); // use token setting as default, till the UI tells us otherwise
@@ -126,7 +131,7 @@ export class StringTemplatePickerComponent extends BaseComponent<string> impleme
     const fullPath = path + name;
 
     // 4. tell service to create it
-    this.assetsService.create(fullPath, this.global).subscribe(res => {
+    this.assetsService.create(fullPath, this.global, this.activeSpec.purpose).subscribe(res => {
       if (res === false) {
         alert('Server reported that create failed - the file probably already exists'); // todo: i18n
       } else {
