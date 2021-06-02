@@ -11,7 +11,7 @@ import { SnackBarSaveErrorsComponent } from '../../eav-material-controls/dialogs
 import { SaveErrorsSnackData } from '../../eav-material-controls/dialogs/snack-bar-save-errors/snack-bar-save-errors.models';
 import { SnackBarUnsavedChangesComponent } from '../../eav-material-controls/dialogs/snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
 import { UnsavedChangesSnackData } from '../../eav-material-controls/dialogs/snack-bar-unsaved-changes/snack-bar-unsaved-changes.models';
-import { ValidationMessagesService } from '../../eav-material-controls/validators/validation-messages-service';
+import { ValidationMessagesHelpers } from '../../eav-material-controls/validators/validation-messages-service';
 import { EditEntryComponent } from '../../edit-entry/edit-entry.component';
 import { FieldErrorMessage, SaveResult } from '../../shared/models';
 import { EavItem } from '../../shared/models/eav';
@@ -51,7 +51,6 @@ export class MultiItemEditFormComponent implements OnInit, AfterViewInit, OnDest
     private languageInstanceService: LanguageInstanceService,
     private snackBar: MatSnackBar,
     private translate: TranslateService,
-    private validationMessagesService: ValidationMessagesService,
     private loadIconsService: LoadIconsService,
     private editRoutingService: EditRoutingService,
     private publishStatusService: PublishStatusService,
@@ -203,7 +202,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterViewInit, OnDest
       const formErrors: Dictionary<string>[] = [];
       this.itemEditFormRefs.forEach(itemEditFormRef => {
         if (!itemEditFormRef.eavFormRef.form.invalid) { return; }
-        formErrors.push(this.validationMessagesService.validateForm(itemEditFormRef.eavFormRef.form));
+        formErrors.push(ValidationMessagesHelpers.validateForm(itemEditFormRef.eavFormRef.form));
       });
 
       const fieldErrors: FieldErrorMessage[] = [];

@@ -1,12 +1,10 @@
-import { Injectable } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
 import { GeneralHelpers } from '../../shared/helpers';
 
-@Injectable()
-export class ValidationMessagesService {
+export class ValidationMessagesHelpers {
 
-  private validationMessages: Record<string, (config: FieldConfigSet) => string> = {
+  private static validationMessages: Record<string, (config: FieldConfigSet) => string> = {
     required: (config: FieldConfigSet) => {
       return config ? 'ValidationMessage.Required' : `ValidationMessage.RequiredShort`; // short version in toaster
     },
@@ -24,10 +22,8 @@ export class ValidationMessagesService {
     },
   };
 
-  constructor() { }
-
   /** Marks controls as touched to show errors beneath controls and collects error messages */
-  validateForm(form: FormGroup): Record<string, string> {
+  static validateForm(form: FormGroup): Record<string, string> {
     const errors: Record<string, string> = {};
     for (const [controlKey, control] of Object.entries(form.controls)) {
       GeneralHelpers.markControlTouched(control);
@@ -43,7 +39,7 @@ export class ValidationMessagesService {
   }
 
   /** Calculates error message */
-  getErrorMessage(control: AbstractControl, config: FieldConfigSet): string {
+  static getErrorMessage(control: AbstractControl, config: FieldConfigSet): string {
     let error = '';
     if (!control.invalid) { return error; }
     if (!control.dirty && !control.touched) { return error; }

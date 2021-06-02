@@ -65,7 +65,6 @@ import { LanguageSwitcherComponent } from './localization/language-switcher/lang
 import { TranslateMenuDialogComponent } from './localization/translate-menu-dialog/translate-menu-dialog.component';
 import { TranslateMenuComponent } from './localization/translate-menu/translate-menu.component';
 import { PagePickerComponent } from './page-picker/page-picker.component';
-import { ValidationMessagesService } from './validators/validation-messages-service';
 import { CollapsibleWrapperComponent } from './wrappers';
 import { EntityExpandableWrapperComponent } from './wrappers/entity-expandable-wrapper/entity-expandable-wrapper.component';
 import { ExpandableWrapperComponent } from './wrappers/expandable-wrapper/expandable-wrapper.component';
@@ -200,7 +199,6 @@ import { LocalizationWrapperComponent } from './wrappers/localization-wrapper/lo
   ],
   providers: [
     FileTypeService,
-    ValidationMessagesService,
     { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } },
     { provide: NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } },
     AssetsService,
