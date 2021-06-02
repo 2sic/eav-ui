@@ -4,7 +4,6 @@ import { map } from 'rxjs/operators';
 import { consoleLogAngular } from '../../../../../ng-dialogs/src/app/shared/helpers/console-log-angular.helper';
 import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
 import { EavService, EditRoutingService, FieldsSettingsService, ScriptsLoaderService } from '../../../../shared/services';
-import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { BaseComponent } from '../../base/base.component';
 import { ExternalWebComponentTemplateVars } from './external-web-component.models';
 
@@ -22,12 +21,11 @@ export class ExternalWebComponentComponent extends BaseComponent<string> impleme
 
   constructor(
     eavService: EavService,
-    validationMessagesService: ValidationMessagesService,
     fieldsSettingsService: FieldsSettingsService,
     private scriptsLoaderService: ScriptsLoaderService,
     private editRoutingService: EditRoutingService,
   ) {
-    super(eavService, validationMessagesService, fieldsSettingsService);
+    super(eavService, fieldsSettingsService);
   }
 
   ngOnInit() {

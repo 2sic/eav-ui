@@ -5,7 +5,6 @@ import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/compo
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { EavService, FieldsSettingsService } from '../../../../shared/services';
-import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { BaseComponent } from '../../base/base.component';
 import { BooleanDefaultLogic } from './boolean-default-logic';
 import { BooleanDefaultTemplateVars } from './boolean-default.models';
@@ -22,12 +21,8 @@ import { BooleanDefaultTemplateVars } from './boolean-default.models';
 export class BooleanDefaultComponent extends BaseComponent<boolean> implements OnInit, OnDestroy {
   templateVars$: Observable<BooleanDefaultTemplateVars>;
 
-  constructor(
-    eavService: EavService,
-    validationMessagesService: ValidationMessagesService,
-    fieldsSettingsService: FieldsSettingsService,
-  ) {
-    super(eavService, validationMessagesService, fieldsSettingsService);
+  constructor(eavService: EavService, fieldsSettingsService: FieldsSettingsService) {
+    super(eavService, fieldsSettingsService);
     BooleanDefaultLogic.importMe();
   }
 

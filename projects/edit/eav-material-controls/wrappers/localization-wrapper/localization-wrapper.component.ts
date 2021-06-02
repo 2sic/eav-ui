@@ -5,7 +5,6 @@ import { EavService, EditRoutingService, FieldsSettingsService } from '../../../
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data';
 import { BaseComponent } from '../../input-types/base/base.component';
 import { TranslateMenuComponent } from '../../localization/translate-menu/translate-menu.component';
-import { ValidationMessagesService } from '../../validators/validation-messages-service';
 
 @Component({
   selector: 'app-localization-wrapper',
@@ -22,12 +21,11 @@ export class LocalizationWrapperComponent extends BaseComponent implements Field
 
   constructor(
     eavService: EavService,
-    validationMessagesService: ValidationMessagesService,
     fieldsSettingsService: FieldsSettingsService,
     private languageInstanceService: LanguageInstanceService,
     private editRoutingService: EditRoutingService,
   ) {
-    super(eavService, validationMessagesService, fieldsSettingsService);
+    super(eavService, fieldsSettingsService);
   }
 
   ngOnInit() {

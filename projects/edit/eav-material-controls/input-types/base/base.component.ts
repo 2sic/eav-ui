@@ -6,7 +6,6 @@ import { FieldSettings } from '../../../../edit-types';
 import { Field } from '../../../eav-dynamic-form/model/field';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { EavService, FieldsSettingsService } from '../../../shared/services';
-import { ValidationMessagesService } from '../../validators/validation-messages-service';
 
 @Directive()
 // tslint:disable-next-line:directive-class-suffix
@@ -27,11 +26,7 @@ export class BaseComponent<T = any> implements Field, OnInit, OnDestroy {
   dirty$: Observable<boolean>;
   subscription: Subscription;
 
-  constructor(
-    public eavService: EavService,
-    public validationMessagesService: ValidationMessagesService,
-    public fieldsSettingsService: FieldsSettingsService,
-  ) { }
+  constructor(public eavService: EavService, public fieldsSettingsService: FieldsSettingsService) { }
 
   ngOnInit() {
     this.control = this.group.controls[this.config.fieldName];

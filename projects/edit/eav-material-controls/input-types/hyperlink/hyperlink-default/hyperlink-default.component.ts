@@ -9,7 +9,6 @@ import { GeneralHelpers } from '../../../../shared/helpers';
 import { EavService, EditRoutingService, FieldsSettingsService, FileTypeService } from '../../../../shared/services';
 import { LinkCacheService } from '../../../../shared/store/ngrx-data';
 import { AdamService } from '../../../adam/adam.service';
-import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { HyperlinkDefaultBaseComponent } from './hyperlink-default-base.component';
 import { HyperlinkDefaultLogic } from './hyperlink-default-logic';
 import { HyperlinkDefaultTemplateVars } from './hyperlink-default.models';
@@ -33,7 +32,6 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
 
   constructor(
     eavService: EavService,
-    validationMessagesService: ValidationMessagesService,
     fieldsSettingsService: FieldsSettingsService,
     fileTypeService: FileTypeService,
     adamService: AdamService,
@@ -45,7 +43,6 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
   ) {
     super(
       eavService,
-      validationMessagesService,
       fieldsSettingsService,
       fileTypeService,
       adamService,

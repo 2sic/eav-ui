@@ -6,7 +6,6 @@ import { GeneralHelpers, PagePicker, UrlHelpers } from '../../../../shared/helpe
 import { EavService, FieldsSettingsService, FileTypeService } from '../../../../shared/services';
 import { LinkCacheService } from '../../../../shared/store/ngrx-data';
 import { AdamService } from '../../../adam/adam.service';
-import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { BaseComponent } from '../../base/base.component';
 import { Preview } from './hyperlink-default.models';
 
@@ -17,7 +16,6 @@ export class HyperlinkDefaultBaseComponent extends BaseComponent<string> impleme
 
   constructor(
     eavService: EavService,
-    validationMessagesService: ValidationMessagesService,
     fieldsSettingsService: FieldsSettingsService,
     public fileTypeService: FileTypeService,
     public adamService: AdamService,
@@ -26,7 +24,7 @@ export class HyperlinkDefaultBaseComponent extends BaseComponent<string> impleme
     public changeDetectorRef: ChangeDetectorRef,
     public linkCacheService: LinkCacheService,
   ) {
-    super(eavService, validationMessagesService, fieldsSettingsService);
+    super(eavService, fieldsSettingsService);
   }
 
   ngOnInit() {

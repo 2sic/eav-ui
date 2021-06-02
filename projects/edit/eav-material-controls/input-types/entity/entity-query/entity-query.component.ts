@@ -7,7 +7,6 @@ import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/compo
 import { FieldMask, GeneralHelpers } from '../../../../shared/helpers';
 import { EavService, EditRoutingService, EntityService, FieldsSettingsService, QueryService } from '../../../../shared/services';
 import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
-import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { EntityDefaultComponent } from '../entity-default/entity-default.component';
 import { filterGuids } from '../entity-default/entity-default.helpers';
 import { EntityQueryLogic } from './entity-query-logic';
@@ -25,7 +24,6 @@ export class EntityQueryComponent extends EntityDefaultComponent implements OnIn
 
   constructor(
     eavService: EavService,
-    validationMessagesService: ValidationMessagesService,
     fieldsSettingsService: FieldsSettingsService,
     entityService: EntityService,
     translate: TranslateService,
@@ -37,7 +35,6 @@ export class EntityQueryComponent extends EntityDefaultComponent implements OnIn
   ) {
     super(
       eavService,
-      validationMessagesService,
       fieldsSettingsService,
       entityService,
       translate,

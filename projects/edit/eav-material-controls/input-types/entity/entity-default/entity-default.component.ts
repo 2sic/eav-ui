@@ -11,7 +11,6 @@ import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/compo
 import { FieldMask, GeneralHelpers } from '../../../../shared/helpers';
 import { EavService, EditRoutingService, EntityService, FieldsSettingsService } from '../../../../shared/services';
 import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
-import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { BaseComponent } from '../../base/base.component';
 import { ReorderIndexes } from '../entity-default-list/entity-default-list.models';
 import { EntityDefaultSearchComponent } from '../entity-default-search/entity-default-search.component';
@@ -43,7 +42,6 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
 
   constructor(
     eavService: EavService,
-    validationMessagesService: ValidationMessagesService,
     fieldsSettingsService: FieldsSettingsService,
     private entityService: EntityService,
     public translate: TranslateService,
@@ -52,7 +50,7 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
     public entityCacheService: EntityCacheService,
     public stringQueryCacheService: StringQueryCacheService,
   ) {
-    super(eavService, validationMessagesService, fieldsSettingsService);
+    super(eavService, fieldsSettingsService);
     EntityDefaultLogic.importMe();
     this.isQuery = false;
     this.isStringQuery = false;

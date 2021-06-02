@@ -12,7 +12,6 @@ import { ContentTypeService, EntityCacheService, FeatureService, InputTypeServic
 import { AdamService } from '../../adam/adam.service';
 import { BaseComponent } from '../../input-types/base/base.component';
 import { ConnectorHelper } from '../../input-types/custom/external-web-component/connector/connector.helper';
-import { ValidationMessagesService } from '../../validators/validation-messages-service';
 import { ExpandableWrapperTemplateVars } from './expandable-wrapper.models';
 
 @Component({
@@ -35,7 +34,6 @@ export class ExpandableWrapperComponent extends BaseComponent<string> implements
 
   constructor(
     eavService: EavService,
-    validationMessagesService: ValidationMessagesService,
     fieldsSettingsService: FieldsSettingsService,
     private translateService: TranslateService,
     private contentTypeService: ContentTypeService,
@@ -49,7 +47,7 @@ export class ExpandableWrapperComponent extends BaseComponent<string> implements
     private entityCacheService: EntityCacheService,
     private zone: NgZone,
   ) {
-    super(eavService, validationMessagesService, fieldsSettingsService);
+    super(eavService, fieldsSettingsService);
   }
 
   ngOnInit() {

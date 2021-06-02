@@ -9,7 +9,6 @@ import { EavService, EditRoutingService, FieldsSettingsService, FileTypeService 
 import { LinkCacheService } from '../../../shared/store/ngrx-data';
 import { AdamService } from '../../adam/adam.service';
 import { HyperlinkDefaultBaseComponent } from '../../input-types/hyperlink/hyperlink-default/hyperlink-default-base.component';
-import { ValidationMessagesService } from '../../validators/validation-messages-service';
 import { HyperlinkDefaultExpandableTemplateVars } from './hyperlink-default-expandable-wrapper.models';
 
 @Component({
@@ -31,7 +30,6 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
 
   constructor(
     eavService: EavService,
-    validationMessagesService: ValidationMessagesService,
     fieldsSettingsService: FieldsSettingsService,
     fileTypeService: FileTypeService,
     adamService: AdamService,
@@ -44,7 +42,6 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
   ) {
     super(
       eavService,
-      validationMessagesService,
       fieldsSettingsService,
       fileTypeService,
       adamService,

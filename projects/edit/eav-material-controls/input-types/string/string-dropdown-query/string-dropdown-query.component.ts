@@ -7,7 +7,6 @@ import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/compo
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { EavService, EditRoutingService, EntityService, FieldsSettingsService, QueryService } from '../../../../shared/services';
 import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
-import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { EntityQueryComponent } from '../../entity/entity-query/entity-query.component';
 import { QueryEntity } from '../../entity/entity-query/entity-query.models';
 import { StringDropdownQueryLogic } from './string-dropdown-query-logic';
@@ -23,7 +22,6 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
 
   constructor(
     eavService: EavService,
-    validationMessagesService: ValidationMessagesService,
     fieldsSettingsService: FieldsSettingsService,
     entityService: EntityService,
     translate: TranslateService,
@@ -35,7 +33,6 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
   ) {
     super(
       eavService,
-      validationMessagesService,
       fieldsSettingsService,
       entityService,
       translate,
