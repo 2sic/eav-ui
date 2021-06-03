@@ -130,7 +130,10 @@ export class FormulaHelpers {
                 const v1Entity: FormulaV1ExperimentalEntity = {
                   guid: item.Entity.Guid,
                   id: item.Entity.Id,
-                  type: item.Entity.Type,
+                  type: {
+                    id: item.Entity.Type.Id,
+                    name: item.Entity.Type.Name,
+                  }
                 };
                 return v1Entity;
               });

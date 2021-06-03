@@ -91,7 +91,10 @@ export interface FormulaV1Experimental {
 export interface FormulaV1ExperimentalEntity {
   guid: string;
   id: number;
-  type: EavType;
+  type: {
+    id: string,
+    name: string
+  };
 }
 
 export interface RunFormulasResult {
