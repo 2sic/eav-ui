@@ -91,12 +91,12 @@ export class ContentTypesFieldsService {
     });
   }
 
-  rename(item: Field, contentType: ContentType, newName: string) {
+  rename(fieldId: number, contentTypeId: number, newName: string) {
     return this.http.post<null>(this.apiUrl(webApiFieldsRoot + 'Rename'), null, {
       params: {
         appid: this.context.appId.toString(),
-        contentTypeId: contentType.Id.toString(),
-        attributeId: item.Id.toString(),
+        contentTypeId: contentTypeId.toString(),
+        attributeId: fieldId.toString(),
         newName,
       },
     });

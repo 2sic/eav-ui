@@ -28,7 +28,7 @@ export class EditContentTypeFieldsComponent implements OnInit, OnDestroy {
 
   fields: Partial<Field>[] = [];
   reservedNames: ReservedNames;
-  editMode: boolean;
+  editMode: 'name' | 'inputType';
   dataTypes: DataType[];
   filteredInputTypeOptions: FieldInputTypeOption[][] = [];
   dataTypeHints: string[] = [];
@@ -63,10 +63,9 @@ export class EditContentTypeFieldsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    const contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
-    const editFieldId = this.route.snapshot.paramMap.get('id') ? parseInt(this.route.snapshot.paramMap.get('id'), 10) : null;
-    this.editMode = (editFieldId !== null);
+    this.editMode = this.route.snapshot.paramMap.get('editMode') as 'name' | 'inputType';
 
+    const contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
     const contentType$ = this.contentTypesService.retrieveContentType(contentTypeStaticName).pipe(share());
     const fields$ = contentType$.pipe(mergeMap(contentType => this.contentTypesFieldsService.getFields(contentType)));
     const dataTypes$ = this.contentTypesFieldsService.typeListRetrieve().pipe(map(rawDataTypes => calculateDataTypes(rawDataTypes)));
@@ -88,8 +87,12 @@ export class EditContentTypeFieldsComponent implements OnInit, OnDestroy {
           ...existingFields,
         };
 
-        if (this.editMode) {
+        if (this.editMode != null) {
+          const editFieldId = this.route.snapshot.paramMap.get('id') ? parseInt(this.route.snapshot.paramMap.get('id'), 10) : null;
           const editField = fields.find(field => field.Id === editFieldId);
+          if (this.editMode === 'name') {
+            delete this.reservedNames[editField.StaticName];
+          }
           this.fields.push(editField);
         } else {
           for (let i = 1; i <= 8; i++) {
@@ -147,13 +150,21 @@ export class EditContentTypeFieldsComponent implements OnInit, OnDestroy {
   save() {
     this.saving$.next(true);
     this.snackBar.open('Saving...');
-    if (this.editMode) {
+    if (this.editMode != null) {
       const field = this.fields[0];
-      this.contentTypesFieldsService.updateInputType(field.Id, field.StaticName, field.InputType).subscribe(res => {
-        this.saving$.next(false);
-        this.snackBar.open('Saved', null, { duration: 2000 });
-        this.closeDialog();
-      });
+      if (this.editMode === 'name') {
+        this.contentTypesFieldsService.rename(field.Id, this.contentType.Id, field.StaticName).subscribe(() => {
+          this.saving$.next(false);
+          this.snackBar.open('Saved', null, { duration: 2000 });
+          this.closeDialog();
+        });
+      } else if (this.editMode === 'inputType') {
+        this.contentTypesFieldsService.updateInputType(field.Id, field.StaticName, field.InputType).subscribe(() => {
+          this.saving$.next(false);
+          this.snackBar.open('Saved', null, { duration: 2000 });
+          this.closeDialog();
+        });
+      }
     } else {
       of(...this.fields).pipe(
         filter(field => !!field.StaticName),
