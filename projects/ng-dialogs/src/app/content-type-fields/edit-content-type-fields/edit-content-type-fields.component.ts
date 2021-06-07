@@ -76,13 +76,20 @@ export class EditContentTypeFieldsComponent implements OnInit, OnDestroy {
     forkJoin([contentType$, fields$, dataTypes$, inputTypes$, reservedNames$]).subscribe(
       ([contentType, fields, dataTypes, inputTypes, reservedNames]) => {
         this.contentType = contentType;
-        const allFields = fields;
         this.dataTypes = dataTypes;
         this.inputTypeOptions = inputTypes;
-        this.reservedNames = reservedNames;
+
+        const existingFields: ReservedNames = {};
+        fields.forEach(field => {
+          existingFields[field.StaticName] = 'Field with this name already exists';
+        });
+        this.reservedNames = {
+          ...reservedNames,
+          ...existingFields,
+        };
 
         if (this.editMode) {
-          const editField = allFields.find(field => field.Id === editFieldId);
+          const editField = fields.find(field => field.Id === editFieldId);
           this.fields.push(editField);
         } else {
           for (let i = 1; i <= 8; i++) {
@@ -91,8 +98,8 @@ export class EditContentTypeFieldsComponent implements OnInit, OnDestroy {
               Type: DataTypeConstants.String,
               InputType: InputTypeConstants.StringDefault,
               StaticName: '',
-              IsTitle: allFields.length === 0,
-              SortOrder: allFields.length + i,
+              IsTitle: fields.length === 0,
+              SortOrder: fields.length + i,
             });
           }
         }
