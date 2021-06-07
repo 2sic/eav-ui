@@ -27,17 +27,19 @@ export class StringDefaultComponent extends BaseComponent<string> implements OnI
 
   ngOnInit() {
     super.ngOnInit();
+    const fontFamily$ = this.settings$.pipe(map(settings => settings.InputFontFamily), distinctUntilChanged());
     const rowCount$ = this.settings$.pipe(map(settings => settings.RowCount), distinctUntilChanged());
 
     this.templateVars$ = combineLatest([
-      combineLatest([rowCount$, this.label$, this.placeholder$, this.required$]),
+      combineLatest([fontFamily$, rowCount$, this.label$, this.placeholder$, this.required$]),
       combineLatest([this.disabled$, this.touched$]),
     ]).pipe(
       map(([
-        [rowCount, label, placeholder, required],
+        [fontFamily, rowCount, label, placeholder, required],
         [disabled, touched],
       ]) => {
         const templateVars: StringDefaultTemplateVars = {
+          fontFamily,
           rowCount,
           label,
           placeholder,

@@ -36,6 +36,7 @@ interface String extends All {
  * @string-default
  */
 interface StringDefault extends String {
+  InputFontFamily: '' | 'monospace';
   RowCount: number;
 }
 

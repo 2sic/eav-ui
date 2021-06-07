@@ -7,6 +7,7 @@ export class StringDefaultLogic extends FieldLogicBase {
 
   update(settings: FieldSettings, value: string): FieldSettings {
     const fixedSettings: FieldSettings = { ...settings };
+    fixedSettings.InputFontFamily ??= '';
     fixedSettings.RowCount ||= 1;
     return fixedSettings;
   }
