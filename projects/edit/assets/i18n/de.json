@@ -109,8 +109,8 @@
     "NotValid": "Ungültig",
     "Required": "Pflichtfeld",
     "RequiredShort": "Pflichtfeld",
-    "Min": "Wert muss grösser als {{param.Min}} sein",
-    "Max": "Wert muss kleiner als {{param.Max}} sein",
+    "Min": "Dieser Wert sollte mindestens {{param.Min}} sein",
+    "Max": "Dieser Wert sollte höchstens {{param.Max}} sein",
     "Pattern": "Bitte richtig eingeben",
     "Decimals": "Diese Zahl kann {{param.Decimals}} Dezimalstellen haben"
   },
