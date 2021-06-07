@@ -54,6 +54,10 @@
     flex: 0 1 auto;
     font-size: 14px;
     width: 100%;
+
+    textarea {
+      font-family: monospace;
+    }
   }
 
   .formula-snippets {
