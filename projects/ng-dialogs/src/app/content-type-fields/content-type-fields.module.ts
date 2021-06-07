@@ -23,6 +23,7 @@ import { ContentTypeFieldsTypeComponent } from './ag-grid-components/content-typ
 import { ContentTypeFieldsRoutingModule } from './content-type-fields-routing.module';
 import { ContentTypeFieldsComponent } from './content-type-fields.component';
 import { EditContentTypeFieldsComponent } from './edit-content-type-fields/edit-content-type-fields.component';
+import { ReservedNamesValidatorDirective } from './edit-content-type-fields/reserved-names.directive';
 import { ContentTypesFieldsService } from './services/content-types-fields.service';
 
 @NgModule({
@@ -34,6 +35,7 @@ import { ContentTypesFieldsService } from './services/content-types-fields.servi
     EditContentTypeFieldsComponent,
     ContentTypeFieldsTypeComponent,
     ContentTypeFieldsSpecialComponent,
+    ReservedNamesValidatorDirective,
   ],
   entryComponents: [
     ContentTypeFieldsComponent,

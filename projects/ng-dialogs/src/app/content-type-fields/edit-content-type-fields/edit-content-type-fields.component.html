@@ -12,11 +12,14 @@
       <div class="edit-input">
         <mat-form-field appearance="standard" color="accent">
           <mat-label>Name</mat-label>
-          <input matInput [pattern]="fieldNamePattern" [(ngModel)]="field.StaticName" [name]="'StaticName' + i"
-            [disabled]="editMode" #staticName="ngModel">
+          <input matInput [pattern]="fieldNamePattern" [appReservedNames]="reservedNames" [(ngModel)]="field.StaticName"
+            [name]="'StaticName' + i" [disabled]="editMode" #staticName="ngModel">
         </mat-form-field>
         <ng-container *ngIf="staticName.touched && staticName.errors">
           <app-field-hint *ngIf="staticName.errors.pattern" [isError]="true">{{ fieldNameError }}</app-field-hint>
+          <app-field-hint *ngIf="staticName.errors.reservedNames" [isError]="true">
+            {{ staticName.errors.reservedNames }}
+          </app-field-hint>
         </ng-container>
       </div>
 

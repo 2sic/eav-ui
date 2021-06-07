@@ -12,6 +12,7 @@ import { DataTypeConstants } from '../constants/data-type.constants';
 import { InputTypeConstants } from '../constants/input-type.constants';
 import { calculateTypeIcon } from '../content-type-fields.helpers';
 import { Field, FieldInputTypeOption } from '../models/field.model';
+import { ReservedNames } from '../models/reserved-names.model';
 import { ContentTypesFieldsService } from '../services/content-types-fields.service';
 import { calculateDataTypes, DataType } from './edit-content-type-fields.helpers';
 
@@ -26,6 +27,7 @@ export class EditContentTypeFieldsComponent implements OnInit, OnDestroy {
   @ViewChild('ngForm', { read: NgForm }) private form: NgForm;
 
   fields: Partial<Field>[] = [];
+  reservedNames: ReservedNames;
   editMode: boolean;
   dataTypes: DataType[];
   filteredInputTypeOptions: FieldInputTypeOption[][] = [];
@@ -69,35 +71,39 @@ export class EditContentTypeFieldsComponent implements OnInit, OnDestroy {
     const fields$ = contentType$.pipe(mergeMap(contentType => this.contentTypesFieldsService.getFields(contentType)));
     const dataTypes$ = this.contentTypesFieldsService.typeListRetrieve().pipe(map(rawDataTypes => calculateDataTypes(rawDataTypes)));
     const inputTypes$ = this.contentTypesFieldsService.getInputTypesList();
+    const reservedNames$ = this.contentTypesFieldsService.getReservedNames();
 
-    forkJoin([contentType$, fields$, dataTypes$, inputTypes$]).subscribe(([contentType, fields, dataTypes, inputTypes]) => {
-      this.contentType = contentType;
-      const allFields = fields;
-      this.dataTypes = dataTypes;
-      this.inputTypeOptions = inputTypes;
+    forkJoin([contentType$, fields$, dataTypes$, inputTypes$, reservedNames$]).subscribe(
+      ([contentType, fields, dataTypes, inputTypes, reservedNames]) => {
+        this.contentType = contentType;
+        const allFields = fields;
+        this.dataTypes = dataTypes;
+        this.inputTypeOptions = inputTypes;
+        this.reservedNames = reservedNames;
 
-      if (this.editMode) {
-        const editField = allFields.find(field => field.Id === editFieldId);
-        this.fields.push(editField);
-      } else {
-        for (let i = 1; i <= 8; i++) {
-          this.fields.push({
-            Id: 0,
-            Type: DataTypeConstants.String,
-            InputType: InputTypeConstants.StringDefault,
-            StaticName: '',
-            IsTitle: allFields.length === 0,
-            SortOrder: allFields.length + i,
-          });
+        if (this.editMode) {
+          const editField = allFields.find(field => field.Id === editFieldId);
+          this.fields.push(editField);
+        } else {
+          for (let i = 1; i <= 8; i++) {
+            this.fields.push({
+              Id: 0,
+              Type: DataTypeConstants.String,
+              InputType: InputTypeConstants.StringDefault,
+              StaticName: '',
+              IsTitle: allFields.length === 0,
+              SortOrder: allFields.length + i,
+            });
+          }
         }
-      }
 
-      for (let i = 0; i < this.fields.length; i++) {
-        this.calculateInputTypeOptions(i);
-        this.calculateHints(i);
+        for (let i = 0; i < this.fields.length; i++) {
+          this.calculateInputTypeOptions(i);
+          this.calculateHints(i);
+        }
+        this.loading$.next(false);
       }
-      this.loading$.next(false);
-    });
+    );
   }
 
   ngOnDestroy() {
