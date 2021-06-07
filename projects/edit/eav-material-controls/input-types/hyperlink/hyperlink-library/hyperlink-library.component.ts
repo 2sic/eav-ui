@@ -64,13 +64,17 @@ export class HyperlinkLibraryComponent extends BaseComponent<null> implements On
   }
 
   private attachAdamValidator() {
+    let first = true;
     this.subscription.add(
       this.config.adam.items$.pipe(
         map(items => items.length),
         distinctUntilChanged(),
       ).subscribe(itemsCount => {
         (this.control as AdamControl).adamItems = itemsCount;
-        this.control.updateValueAndValidity();
+        if (!first) {
+          this.control.updateValueAndValidity();
+        }
+        first = false;
       })
     );
   }
