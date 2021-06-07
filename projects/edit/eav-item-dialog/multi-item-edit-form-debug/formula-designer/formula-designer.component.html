@@ -75,10 +75,15 @@
     <div class="formula-footer-box">
       <div class="formula-result-box hide-scrollbar">
         <span class="label">Result:&nbsp;</span>
-        <span *ngIf="!data.resultIsError">{{ data.result | json }}</span>
-        <span class="result-error" *ngIf="data.resultIsError">
-          Calculation failed. Please check logs for more info
-        </span>
+        <ng-container *ngIf="data.resultExists">
+          <ng-container *ngIf="!data.resultIsError">
+            <span *ngIf="data.result === undefined" class="result-undefined">undefined</span>
+            <span *ngIf="data.result !== undefined">{{ data.result | json }}</span>
+          </ng-container>
+          <span class="result-error" *ngIf="data.resultIsError">
+            Calculation failed. Please check logs for more info
+          </span>
+        </ng-container>
       </div>
 
       <div class="formula-actions-box">
