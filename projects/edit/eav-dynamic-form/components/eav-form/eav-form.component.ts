@@ -113,7 +113,7 @@ export class EavFormComponent implements OnInit, OnDestroy {
 
     this.subscription.add(
       this.form.valueChanges.subscribe(() => {
-        const formValues = this.form.getRawValue();
+        const formValues: FormValues = this.form.getRawValue();
         const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
         const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
         this.itemService.updateItemAttributesValues(this.entityGuid, formValues, currentLanguage, defaultLanguage);

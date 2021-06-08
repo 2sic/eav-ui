@@ -5,4 +5,5 @@ export interface DatetimeDefaultTemplateVars extends BaseFieldTemplateVars {
   placeholder: string;
   required: boolean;
   label: string;
+  value: string;
 }
