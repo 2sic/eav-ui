@@ -1,12 +1,11 @@
 import { Directive, Input, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
-import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
-import { distinctUntilChanged, filter, map, startWith } from 'rxjs/operators';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { distinctUntilChanged, map, startWith } from 'rxjs/operators';
 import { FieldSettings } from '../../../../edit-types';
 import { Field } from '../../../eav-dynamic-form/model/field';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { EavService, FieldsSettingsService } from '../../../shared/services';
-import { ValidationMessagesService } from '../../validators/validation-messages-service';
 
 @Directive()
 // tslint:disable-next-line:directive-class-suffix
@@ -27,11 +26,7 @@ export class BaseComponent<T = any> implements Field, OnInit, OnDestroy {
   dirty$: Observable<boolean>;
   subscription: Subscription;
 
-  constructor(
-    public eavService: EavService,
-    public validationMessagesService: ValidationMessagesService,
-    public fieldsSettingsService: FieldsSettingsService,
-  ) { }
+  constructor(public eavService: EavService, public fieldsSettingsService: FieldsSettingsService) { }
 
   ngOnInit() {
     this.control = this.group.controls[this.config.fieldName];
@@ -47,25 +42,17 @@ export class BaseComponent<T = any> implements Field, OnInit, OnDestroy {
     this.placeholder$ = this.settings$.pipe(map(settings => settings.Placeholder), distinctUntilChanged());
     this.required$ = this.settings$.pipe(map(settings => settings.Required), distinctUntilChanged());
 
-    this.invalid$ = this.control.statusChanges.pipe(
+    this.invalid$ = this.control.valueChanges.pipe(
       map(() => this.control.invalid),
       startWith(this.control.invalid),
       distinctUntilChanged(),
     );
-    this.touched$ = combineLatest([
-      this.control.valueChanges.pipe(startWith(this.control.value)),
-      this.control.statusChanges.pipe(startWith(this.control.status)),
-      this.validationMessagesService.refreshTouched$.pipe(filter(control => control === this.control)),
-    ]).pipe(
+    this.touched$ = this.control.valueChanges.pipe(
       map(() => this.control.touched),
       startWith(this.control.touched),
       distinctUntilChanged(),
     );
-    this.dirty$ = combineLatest([
-      this.control.valueChanges.pipe(startWith(this.control.value)),
-      this.control.statusChanges.pipe(startWith(this.control.status)),
-      this.validationMessagesService.refreshDirty$.pipe(filter(control => control === this.control)),
-    ]).pipe(
+    this.dirty$ = this.control.valueChanges.pipe(
       map(() => this.control.dirty),
       startWith(this.control.dirty),
       distinctUntilChanged(),

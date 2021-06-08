@@ -30,7 +30,7 @@ export class WebApisService {
 
   create(name: string) {
     return this.http.post<boolean>(this.dnnContext.$2sxc.http.apiUrl(webApiAppFileCreate), {}, {
-      params: { appId: this.context.appId.toString(), global: 'false', path: `api/${name}` },
+      params: { appId: this.context.appId.toString(), purpose: 'api', global: 'false', path: `api/${name}` },
     });
   }
 

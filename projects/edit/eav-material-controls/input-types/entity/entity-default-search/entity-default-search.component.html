@@ -3,7 +3,7 @@
     <div class="ed-field" fxLayout="row" fxLayoutAlign="start end">
       <div
         [ngClass]="(data.enableCreate && data.entityType && !selectedEntities.length && !data.allowMultiValue) ? 'ed-field__field-short' : 'ed-field__field'">
-        <div [hidden]="!data.allowMultiValue && selectedEntities.length">
+        <div [hidden]="(!data.allowMultiValue && selectedEntities.length) || !data.enableAddExisting">
           <mat-form-field [formGroup]="group" appearance="standard" color="accent" [ngClass]="{
             'mat-form-field-invalid': invalid && touched
           }">

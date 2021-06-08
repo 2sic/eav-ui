@@ -1,7 +1,7 @@
 import { Component, Input, OnDestroy, OnInit, QueryList } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { combineLatest, Observable } from 'rxjs';
-import { map, mergeMap, tap } from 'rxjs/operators';
+import { map, mergeMap } from 'rxjs/operators';
 import { copyToClipboard } from '../../../../ng-dialogs/src/app/shared/helpers/copy-to-clipboard.helper';
 import { FormulaHelpers, LocalizationHelpers } from '../../../shared/helpers';
 import { DesignerState, FormulaTarget, FormulaTargets } from '../../../shared/models';
@@ -13,7 +13,7 @@ import { ItemEditFormComponent } from '../../item-edit-form/item-edit-form.compo
 import { SaveEavFormData } from '../../multi-item-edit-form/multi-item-edit-form.models';
 import { defaultFormula } from './formula-designer.constants';
 // tslint:disable-next-line:max-line-length
-import { DesignerSnippet, EntityOption, FieldOption, FieldOptions, FormulaDesignerTemplateVars, SelectTarget, SelectTargets, TargetOption, TargetOptions } from './formula-designer.models';
+import { DesignerSnippet, EntityOption, FieldOption, FormulaDesignerTemplateVars, SelectOptions, SelectTarget, SelectTargets, TargetOption } from './formula-designer.models';
 
 @Component({
   selector: 'app-formula-designer',
@@ -23,10 +23,10 @@ import { DesignerSnippet, EntityOption, FieldOption, FieldOptions, FormulaDesign
 export class FormulaDesignerComponent implements OnInit, OnDestroy {
   @Input() private itemEditFormRefs: QueryList<ItemEditFormComponent>;
 
-  FormulaTargets = FormulaTargets;
   SelectTargets = SelectTargets;
   loadError = false;
   freeTextTarget = false;
+  allowSaveFormula = this.eavService.eavConfig.enableFormulaSave;
   templateVars$: Observable<FormulaDesignerTemplateVars>;
 
   constructor(
@@ -62,7 +62,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     return snippet.code;
   }
 
-  selectedChanged(target: SelectTarget, value: string | FormulaTarget, fieldOptions: FieldOptions): void {
+  selectedChanged(target: SelectTarget, value: string | FormulaTarget): void {
     const newState: DesignerState = {
       ...this.formulaDesignerService.getDesignerState(),
       editMode: false,
@@ -70,7 +70,8 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     switch (target) {
       case SelectTargets.Entity:
         newState.entityGuid = value;
-        newState.fieldName = fieldOptions[value]?.[0]?.fieldName;
+        const selectedEditFormRef = this.itemEditFormRefs.find(itemEditFormRef => itemEditFormRef.entityGuid === newState.entityGuid);
+        newState.fieldName = Object.keys(selectedEditFormRef.fieldsSettingsService.getFieldsProps())[0];
         break;
       case SelectTargets.Field:
         newState.fieldName = value;
@@ -81,6 +82,10 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     }
 
     this.formulaDesignerService.setDesignerState(newState);
+  }
+
+  toggleFreeText(): void {
+    this.freeTextTarget = !this.freeTextTarget;
   }
 
   formulaChanged(formula: string): void {
@@ -115,7 +120,8 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     };
     this.formulaDesignerService.setDesignerState(designer);
     this.formulaDesignerService.resetFormula(designer.entityGuid, designer.fieldName, designer.target);
-    this.itemEditFormRefs.find(itemEditFormRef => itemEditFormRef.entityGuid === designer.entityGuid)
+    this.itemEditFormRefs
+      .find(itemEditFormRef => itemEditFormRef.entityGuid === designer.entityGuid)
       .fieldsSettingsService.forceSettings();
   }
 
@@ -123,7 +129,8 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     const designer = this.formulaDesignerService.getDesignerState();
     const formula = this.formulaDesignerService.getFormula(designer.entityGuid, designer.fieldName, designer.target, true);
     this.formulaDesignerService.upsertFormula(designer.entityGuid, designer.fieldName, designer.target, formula.source, true);
-    this.itemEditFormRefs.find(itemEditFormRef => itemEditFormRef.entityGuid === designer.entityGuid)
+    this.itemEditFormRefs
+      .find(itemEditFormRef => itemEditFormRef.entityGuid === designer.entityGuid)
       .fieldsSettingsService.forceSettings();
   }
 
@@ -179,91 +186,97 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
   }
 
   private buildTemplateVars(): void {
+    const oldState = this.formulaDesignerService.getDesignerState();
+    if (oldState.entityGuid == null && oldState.fieldName == null && oldState.target == null) {
+      const entityGuid = this.itemEditFormRefs.first.entityGuid;
+      const fieldsProps = this.itemEditFormRefs.first.fieldsSettingsService.getFieldsProps();
+      const fieldName = Object.keys(fieldsProps)[0];
+      const target = fieldName != null ? FormulaTargets.Value : null;
+      const newState: DesignerState = {
+        ...oldState,
+        entityGuid,
+        fieldName,
+        target,
+      };
+      this.formulaDesignerService.setDesignerState(newState);
+    }
+
     const options$ = combineLatest([
       this.formulaDesignerService.getDesignerState$(),
       this.formulaDesignerService.getFormulas$()
     ]).pipe(
-      map(([designer, formulas]) => {
+      map(([designer, formulas]): SelectOptions => {
         const entityOptions = this.itemEditFormRefs.map(itemEditFormRef => {
-          const entityGuid = itemEditFormRef.entityGuid;
           const entity: EntityOption = {
-            entityGuid,
-            hasFormula: formulas.some(f => f.entityGuid === entityGuid),
+            entityGuid: itemEditFormRef.entityGuid,
+            hasFormula: formulas.some(f => f.entityGuid === itemEditFormRef.entityGuid),
             label: itemEditFormRef.fieldsSettingsService.getContentTypeSettings()._itemTitle,
           };
           return entity;
         });
 
-        const fieldOptions: FieldOptions = {};
-        this.itemEditFormRefs.forEach(itemEditFormRef => {
-          const entityGuid = itemEditFormRef.entityGuid;
-          const fields = Object.keys(itemEditFormRef.fieldsSettingsService.getFieldsProps()).map(fieldName => {
+        const fieldOptions: FieldOption[] = [];
+        if (designer.entityGuid != null) {
+          const selectedItem = this.itemEditFormRefs.find(i => i.entityGuid === designer.entityGuid);
+          const fieldsProps = selectedItem.fieldsSettingsService.getFieldsProps();
+          for (const fieldName of Object.keys(fieldsProps)) {
             const field: FieldOption = {
               fieldName,
-              hasFormula: formulas.some(f => f.entityGuid === entityGuid && f.fieldName === fieldName),
+              hasFormula: formulas.some(f => f.entityGuid === designer.entityGuid && f.fieldName === fieldName),
               label: fieldName,
             };
-            return field;
-          });
-          fieldOptions[entityGuid] = fields;
-        });
-
-        const targetOptions: TargetOptions = {};
-        this.itemEditFormRefs.forEach(itemEditFormRef => {
-          const entityGuid = itemEditFormRef.entityGuid;
-          if (targetOptions[entityGuid] == null) {
-            targetOptions[entityGuid] = {};
+            fieldOptions.push(field);
           }
-          const fieldNames = Object.keys(itemEditFormRef.fieldsSettingsService.getFieldsProps());
-          fieldNames.forEach(fieldName => {
-            const formulasForThisField = formulas.filter(f => f.entityGuid === entityGuid && f.fieldName === fieldName);
-            const defaultTargets = Object.values(FormulaTargets).map(target => {
-              const targetOption: TargetOption = {
-                hasFormula: formulas.some(f => f.entityGuid === entityGuid && f.fieldName === fieldName && f.target === target),
-                label: target.substring(target.lastIndexOf('.') + 1),
-                target,
-              };
-              return targetOption;
-            });
-            const otherTargets = formulasForThisField.map(formula => {
-              const existsInDefault = defaultTargets.some(t => t.target === formula.target);
-              if (existsInDefault) { return; }
-              const targetOption: TargetOption = {
-                hasFormula: true,
-                label: formula.target.substring(formula.target.lastIndexOf('.') + 1),
-                target: formula.target,
-              };
-              return targetOption;
-            }).filter(t => !!t);
-
-            const merged = [...defaultTargets, ...otherTargets];
-            if (designer.entityGuid != null && designer.fieldName != null && designer.target != null) {
-              if (!merged.some(t => t.target === designer.target)) {
-                const targetOption: TargetOption = {
-                  hasFormula: formulas.some(f => f.entityGuid === entityGuid && f.fieldName === fieldName && f.target === designer.target),
-                  label: designer.target.substring(designer.target.lastIndexOf('.') + 1),
-                  target: designer.target,
-                };
-                merged.push(targetOption);
-              }
-            }
-            targetOptions[itemEditFormRef.entityGuid][fieldName] = merged;
-          });
-        });
-
-        return { entityOptions, fieldOptions, targetOptions };
-      }),
-      tap(options => {
-        const oldState = this.formulaDesignerService.getDesignerState();
-        if (oldState.entityGuid == null && oldState.fieldName == null && oldState.target == null) {
-          const newState: DesignerState = {
-            ...oldState,
-            entityGuid: options.entityOptions[0]?.entityGuid,
-            fieldName: options.fieldOptions[options.entityOptions[0]?.entityGuid]?.[0]?.fieldName,
-            target: this.FormulaTargets.Value,
-          };
-          this.formulaDesignerService.setDesignerState(newState);
         }
+
+        const targetOptions: TargetOption[] = [];
+        if (designer.entityGuid != null && designer.fieldName != null) {
+          // default targets
+          for (const target of Object.values(FormulaTargets)) {
+            const targetOption: TargetOption = {
+              hasFormula: formulas.some(
+                f => f.entityGuid === designer.entityGuid && f.fieldName === designer.fieldName && f.target === target
+              ),
+              label: target.substring(target.lastIndexOf('.') + 1),
+              target,
+            };
+            targetOptions.push(targetOption);
+          }
+
+          // targets for formulas
+          const formulasForThisField = formulas.filter(f => f.entityGuid === designer.entityGuid && f.fieldName === designer.fieldName);
+          for (const formula of formulasForThisField) {
+            const formulaExists = targetOptions.some(t => t.target === formula.target);
+            if (formulaExists) { continue; }
+
+            const targetOption: TargetOption = {
+              hasFormula: true,
+              label: formula.target.substring(formula.target.lastIndexOf('.') + 1),
+              target: formula.target,
+            };
+            targetOptions.push(targetOption);
+          }
+
+          // currently selected target
+          const selectedExists = targetOptions.some(t => t.target === designer.target);
+          if (!selectedExists) {
+            const targetOption: TargetOption = {
+              hasFormula: formulas.some(
+                f => f.entityGuid === designer.entityGuid && f.fieldName === designer.fieldName && f.target === designer.target
+              ),
+              label: designer.target.substring(designer.target.lastIndexOf('.') + 1),
+              target: designer.target,
+            };
+            targetOptions.push(targetOption);
+          }
+        }
+
+        const selectOptions: SelectOptions = {
+          entityOptions,
+          fieldOptions,
+          targetOptions,
+        };
+        return selectOptions;
       }),
     );
     const designerState$ = this.formulaDesignerService.getDesignerState$();
@@ -274,7 +287,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     );
     const snippets$ = combineLatest([options$, formula$]).pipe(
       map(([options, formula]) => formula != null
-        ? FormulaHelpers.buildDesignerSnippets(formula, options.fieldOptions[formula.entityGuid])
+        ? FormulaHelpers.buildDesignerSnippets(formula, options.fieldOptions)
         : []
       ),
     );
@@ -294,6 +307,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
           designer,
           snippets,
           result: result?.value,
+          resultExists: result != null,
           resultIsError: result?.isError ?? false,
         };
         return templateVars;

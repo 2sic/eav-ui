@@ -4,7 +4,6 @@ import { InputTypeConstants } from '../../../../ng-dialogs/src/app/content-type-
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { EavService, FieldsSettingsService } from '../../../shared/services';
 import { BaseComponent } from '../../input-types/base/base.component';
-import { ValidationMessagesService } from '../../validators/validation-messages-service';
 
 @Component({
   selector: 'app-adam-attach-wrapper',
@@ -19,12 +18,8 @@ export class AdamAttachWrapperComponent extends BaseComponent implements FieldWr
   fullscreenAdam: boolean;
   adamDisabled$ = new BehaviorSubject(true);
 
-  constructor(
-    eavService: EavService,
-    validationMessagesService: ValidationMessagesService,
-    fieldsSettingsService: FieldsSettingsService,
-  ) {
-    super(eavService, validationMessagesService, fieldsSettingsService);
+  constructor(eavService: EavService, fieldsSettingsService: FieldsSettingsService) {
+    super(eavService, fieldsSettingsService);
   }
 
   ngOnInit() {

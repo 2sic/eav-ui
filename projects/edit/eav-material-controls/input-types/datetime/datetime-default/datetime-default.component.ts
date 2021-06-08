@@ -1,13 +1,15 @@
-import { NgxMatDateAdapter } from '@angular-material-components/datetime-picker';
+import { MatDatetimePickerInputEvent, NgxMatDateAdapter } from '@angular-material-components/datetime-picker';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DateAdapter } from '@angular/material/core';
+import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { TranslateService } from '@ngx-translate/core';
+import { Moment } from 'moment';
 import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
+import { GeneralHelpers } from '../../../../shared/helpers';
 import { EavService, FieldsSettingsService } from '../../../../shared/services';
-import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { BaseComponent } from '../../base/base.component';
 import { DatetimeDefaultTemplateVars } from './datetime-default.models';
 
@@ -25,13 +27,12 @@ export class DatetimeDefaultComponent extends BaseComponent<string> implements O
 
   constructor(
     eavService: EavService,
-    validationMessagesService: ValidationMessagesService,
     fieldsSettingsService: FieldsSettingsService,
     private translate: TranslateService,
     private dateAdapter: DateAdapter<any>,
     private ngxDateTimeAdapter: NgxMatDateAdapter<any>,
   ) {
-    super(eavService, validationMessagesService, fieldsSettingsService);
+    super(eavService, fieldsSettingsService);
     const currentLang = this.translate.currentLang;
     this.dateAdapter.setLocale(currentLang);
     this.ngxDateTimeAdapter.setLocale(currentLang);
@@ -43,11 +44,11 @@ export class DatetimeDefaultComponent extends BaseComponent<string> implements O
 
     this.templateVars$ = combineLatest([
       combineLatest([useTimePicker$, this.placeholder$, this.required$, this.label$]),
-      combineLatest([this.disabled$, this.touched$]),
+      combineLatest([this.disabled$, this.touched$, this.value$]),
     ]).pipe(
       map(([
         [useTimePicker, placeholder, required, label],
-        [disabled, touched],
+        [disabled, touched, value],
       ]) => {
         const templateVars: DatetimeDefaultTemplateVars = {
           useTimePicker,
@@ -56,6 +57,7 @@ export class DatetimeDefaultComponent extends BaseComponent<string> implements O
           label,
           disabled,
           touched,
+          value,
         };
         return templateVars;
       }),
@@ -64,5 +66,10 @@ export class DatetimeDefaultComponent extends BaseComponent<string> implements O
 
   ngOnDestroy() {
     super.ngOnDestroy();
+  }
+
+  updateValue(event: MatDatepickerInputEvent<Moment> | MatDatetimePickerInputEvent<Moment>) {
+    const newValue = event.value != null ? event.value.toJSON() : null;
+    GeneralHelpers.patchControlValue(this.control, newValue);
   }
 }

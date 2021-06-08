@@ -3,7 +3,7 @@
   <div fxLayoutAlign="end center" *ngIf="data.currentLanguage !== data.defaultLanguage">
     <button mat-button fxLayoutAlign="end center" [disabled]="data.slotIsEmpty" [matMenuTriggerFor]="menu">
       <span fxLayoutAlign="end center">
-        {{ ('LangMenu.Translate' | translate).toUpperCase() }}
+        {{ 'LangMenu.Translate' | translate | uppercase }}
         &nbsp;&nbsp;
         <mat-icon class="translate-icon">translate</mat-icon>
       </span>

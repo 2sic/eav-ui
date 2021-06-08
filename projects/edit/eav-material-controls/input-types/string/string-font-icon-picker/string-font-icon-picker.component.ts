@@ -5,7 +5,6 @@ import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/compo
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { EavService, FieldsSettingsService, ScriptsLoaderService } from '../../../../shared/services';
-import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { BaseComponent } from '../../base/base.component';
 import { StringFontIconPickerLogic } from './string-font-icon-picker-logic';
 import { findAllIconsInCss } from './string-font-icon-picker.helpers';
@@ -25,13 +24,8 @@ export class StringFontIconPickerComponent extends BaseComponent<string> impleme
 
   private iconOptions$: BehaviorSubject<IconOption[]>;
 
-  constructor(
-    eavService: EavService,
-    validationMessagesService: ValidationMessagesService,
-    fieldsSettingsService: FieldsSettingsService,
-    private scriptsLoaderService: ScriptsLoaderService,
-  ) {
-    super(eavService, validationMessagesService, fieldsSettingsService);
+  constructor(eavService: EavService, fieldsSettingsService: FieldsSettingsService, private scriptsLoaderService: ScriptsLoaderService) {
+    super(eavService, fieldsSettingsService);
     StringFontIconPickerLogic.importMe();
   }
 

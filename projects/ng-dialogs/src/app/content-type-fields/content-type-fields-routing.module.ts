@@ -10,7 +10,11 @@ const routes: Routes = [
   {
     path: '', component: DialogEntryComponent, data: { dialog: contentTypeFieldsDialog }, children: [
       { path: 'add/:contentTypeStaticName', component: DialogEntryComponent, data: { dialog: editContentTypeFieldsDialog } },
-      { path: 'update/:contentTypeStaticName/:id', component: DialogEntryComponent, data: { dialog: editContentTypeFieldsDialog } },
+      {
+        path: 'update/:contentTypeStaticName/:id/:editMode',
+        component: DialogEntryComponent,
+        data: { dialog: editContentTypeFieldsDialog },
+      },
       GoToPermissions.route,
       {
         matcher: edit,

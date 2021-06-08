@@ -7,6 +7,7 @@ import { webApiTypeRoot } from '../../app-administration/services/content-types.
 import { Context } from '../../shared/services/context';
 import { Field, FieldInputTypeOption } from '../models/field.model';
 import { InputType } from '../models/input-type.model';
+import { ReservedNames } from '../models/reserved-names.model';
 
 export const webApiFieldsRoot = 'admin/field/';
 export const webApiFieldsAll = webApiFieldsRoot + 'all';
@@ -42,6 +43,10 @@ export class ContentTypesFieldsService {
           return inputTypeOptions;
         }),
       );
+  }
+
+  getReservedNames() {
+    return this.http.get<ReservedNames>(this.apiUrl(webApiFieldsRoot + 'ReservedNames'));
   }
 
   getFields(contentType: ContentType) {
@@ -86,12 +91,12 @@ export class ContentTypesFieldsService {
     });
   }
 
-  rename(item: Field, contentType: ContentType, newName: string) {
+  rename(fieldId: number, contentTypeId: number, newName: string) {
     return this.http.post<null>(this.apiUrl(webApiFieldsRoot + 'Rename'), null, {
       params: {
         appid: this.context.appId.toString(),
-        contentTypeId: contentType.Id.toString(),
-        attributeId: item.Id.toString(),
+        contentTypeId: contentTypeId.toString(),
+        attributeId: fieldId.toString(),
         newName,
       },
     });

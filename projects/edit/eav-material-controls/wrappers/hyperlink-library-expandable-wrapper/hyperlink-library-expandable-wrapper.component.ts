@@ -7,7 +7,6 @@ import { ContentExpandAnimation } from '../../../shared/animations';
 import { DropzoneDraggingHelper } from '../../../shared/helpers';
 import { EavService, EditRoutingService, FieldsSettingsService } from '../../../shared/services';
 import { BaseComponent } from '../../input-types/base/base.component';
-import { ValidationMessagesService } from '../../validators/validation-messages-service';
 import { HyperlinkLibraryExpandableTemplateVars } from './hyperlink-library-expandable-wrapper.models';
 
 @Component({
@@ -30,12 +29,11 @@ export class HyperlinkLibraryExpandableWrapperComponent extends BaseComponent<nu
 
   constructor(
     eavService: EavService,
-    validationMessagesService: ValidationMessagesService,
     fieldsSettingsService: FieldsSettingsService,
     private zone: NgZone,
     private editRoutingService: EditRoutingService,
   ) {
-    super(eavService, validationMessagesService, fieldsSettingsService);
+    super(eavService, fieldsSettingsService);
   }
 
   ngOnInit() {

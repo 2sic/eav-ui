@@ -3,10 +3,9 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { EavService } from '.';
 
-const webApiAppFilesRoot = 'admin/appfiles/';
-export const webApiAppFilesAll = webApiAppFilesRoot + 'all';
-export const webApiAppFile = webApiAppFilesRoot + 'asset';
-export const webApiAppFileCreate = webApiAppFilesRoot + 'create';
+export const webApiAppFilesAll = 'admin/appfiles/all';
+export const webApiAppFile = 'admin/appfiles/asset';
+export const webApiAppFileCreate = 'admin/appfiles/create';
 export const webApiExplorer = 'admin/ApiExplorer/inspect'
 @Injectable()
 export class AssetsService {
@@ -18,9 +17,9 @@ export class AssetsService {
     });
   }
 
-  create(path: string, global: boolean) {
+  create(path: string, global: boolean, purpose: string) {
     return this.http.post<boolean>(this.dnnContext.$2sxc.http.apiUrl(webApiAppFileCreate), {}, {
-      params: { appId: this.eavService.eavConfig.appId, global: global.toString(), path }
+      params: { appId: this.eavService.eavConfig.appId, global: global.toString(), purpose, path }
     });
   }
 }

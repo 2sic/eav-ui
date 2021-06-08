@@ -9,8 +9,8 @@ import { eavConstants } from '../../../../ng-dialogs/src/app/shared/constants/ea
 import { EditForm } from '../../../../ng-dialogs/src/app/shared/models/edit-form.model';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
 import { FeaturesConstants } from '../../../shared/constants';
-import { UrlHelpers } from '../../../shared/helpers';
-import { EditRoutingService, FileTypeService } from '../../../shared/services';
+import { FileTypeHelpers, UrlHelpers } from '../../../shared/helpers';
+import { EditRoutingService } from '../../../shared/services';
 import { AdamCacheService, FeatureService, LinkCacheService } from '../../../shared/store/ngrx-data';
 import { AdamService } from '../adam.service';
 import { AdamBrowserTemplateVars, AdamConfigInstance } from './adam-browser.models';
@@ -53,7 +53,6 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
 
   constructor(
     private adamService: AdamService,
-    private fileTypeService: FileTypeService,
     private featureService: FeatureService,
     private dnnContext: DnnContext,
     private editRoutingService: EditRoutingService,
@@ -276,8 +275,8 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
       }
 
       item._metadataContentType = this.getMetadataContentType(item);
-      item._icon = this.fileTypeService.getIconClass(item.Name);
-      item._isMaterialIcon = this.fileTypeService.isKnownType(item.Name);
+      item._icon = FileTypeHelpers.getIconClass(item.Name);
+      item._isMaterialIcon = FileTypeHelpers.isKnownType(item.Name);
       item._displaySize = (item.Size / 1024).toFixed(0);
       filteredItems.push(item);
     }

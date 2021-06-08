@@ -5,7 +5,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
 import { EavService, EditRoutingService, EntityService, FieldsSettingsService } from '../../../../shared/services';
 import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
-import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { EntityDefaultComponent } from '../entity-default/entity-default.component';
 import { EntityContentBlocksLogic } from './entity-content-blocks-logic';
 
@@ -20,7 +19,6 @@ export class EntityContentBlockComponent extends EntityDefaultComponent implemen
 
   constructor(
     eavService: EavService,
-    validationMessagesService: ValidationMessagesService,
     fieldsSettingsService: FieldsSettingsService,
     entityService: EntityService,
     translate: TranslateService,
@@ -31,7 +29,6 @@ export class EntityContentBlockComponent extends EntityDefaultComponent implemen
   ) {
     super(
       eavService,
-      validationMessagesService,
       fieldsSettingsService,
       entityService, translate,
       editRoutingService,

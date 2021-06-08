@@ -30,7 +30,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { DropzoneModule } from 'ngx-dropzone-wrapper';
 import { SharedComponentsModule } from '../../ng-dialogs/src/app/shared/shared-components.module';
 import { ChangeAnchorTargetDirective, PasteClipboardImageDirective } from '../shared/directives';
-import { AssetsService, FileTypeService, ScriptsLoaderService } from '../shared/services';
+import { AssetsService, ScriptsLoaderService } from '../shared/services';
 import { AdamAttachWrapperComponent } from './adam/adam-attach-wrapper/adam-attach-wrapper.component';
 import { AdamBrowserComponent } from './adam/adam-browser/adam-browser.component';
 import { AdamHintComponent } from './adam/adam-hint/adam-hint.component';
@@ -65,7 +65,6 @@ import { LanguageSwitcherComponent } from './localization/language-switcher/lang
 import { TranslateMenuDialogComponent } from './localization/translate-menu-dialog/translate-menu-dialog.component';
 import { TranslateMenuComponent } from './localization/translate-menu/translate-menu.component';
 import { PagePickerComponent } from './page-picker/page-picker.component';
-import { ValidationMessagesService } from './validators/validation-messages-service';
 import { CollapsibleWrapperComponent } from './wrappers';
 import { EntityExpandableWrapperComponent } from './wrappers/entity-expandable-wrapper/entity-expandable-wrapper.component';
 import { ExpandableWrapperComponent } from './wrappers/expandable-wrapper/expandable-wrapper.component';
@@ -199,8 +198,6 @@ import { LocalizationWrapperComponent } from './wrappers/localization-wrapper/lo
     ChangeAnchorTargetDirective,
   ],
   providers: [
-    FileTypeService,
-    ValidationMessagesService,
     { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } },
     { provide: NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } },
     AssetsService,

@@ -1,12 +1,11 @@
 // tslint:disable-next-line:max-line-length
-import { AllCommunityModules, CellClickedEvent, FilterChangedEvent, GridApi, GridOptions, GridReadyEvent, RowDragEvent, SortChangedEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
+import { AllCommunityModules, CellClickedEvent, FilterChangedEvent, GridApi, GridOptions, GridReadyEvent, ICellRendererParams, RowDragEvent, SortChangedEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { BehaviorSubject, forkJoin, Subscription } from 'rxjs';
 import { filter, map, mergeMap, pairwise, share, startWith } from 'rxjs/operators';
-import { fieldNameError, fieldNamePattern } from '../app-administration/constants/field-name.patterns';
 import { ContentType } from '../app-administration/models/content-type.model';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { GoToPermissions } from '../permissions/go-to-permissions';
@@ -37,7 +36,7 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
   modules = AllCommunityModules;
   gridOptions: GridOptions = {
     ...defaultGridOptions,
-    getRowClass(params) {
+    getRowClass(params/*: RowClassParams*/) {
       const field: Field = params.data;
       if (field.InputType === InputTypeConstants.EmptyDefault) { return 'group-start-row'; }
       if (field.InputType === InputTypeConstants.EmptyEnd) { return 'group-end-row'; }
@@ -59,6 +58,7 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
       {
         headerName: 'Name', field: 'StaticName', flex: 2, minWidth: 250, cellClass: 'primary-action highlight',
         sortable: true, filter: 'agTextColumnFilter', onCellClicked: this.editFieldMetadata.bind(this),
+        cellRenderer: this.nameCellRenderer.bind(this),
       },
       {
         headerName: 'Type', field: 'Type', width: 70, headerClass: 'dense', cellClass: 'no-outline', sortable: true,
@@ -92,9 +92,9 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
     ],
   };
 
+  sortApplied = false;
+  filterApplied = false;
   private gridApi: GridApi;
-  private sortApplied = false;
-  private filterApplied = false;
   private rowDragSuppressed = false;
   private contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
   private subscription = new Subscription();
@@ -193,6 +193,30 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
     this.router.navigate([`add/${this.contentTypeStaticName}`], { relativeTo: this.route });
   }
 
+  private nameCellRenderer(params: ICellRendererParams) {
+    const currentField: Field = params.data;
+    if ([InputTypeConstants.EmptyDefault, InputTypeConstants.EmptyEnd].includes(currentField.InputType)) {
+      return params.value;
+    }
+
+    let isGroupOpen = false;
+    for (const field of this.fields$.value) {
+      if (field.InputType === InputTypeConstants.EmptyDefault) {
+        isGroupOpen = true;
+        continue;
+      }
+      if (field.InputType === InputTypeConstants.EmptyEnd) {
+        isGroupOpen = false;
+        continue;
+      }
+      if (field.StaticName === currentField.StaticName) {
+        break;
+      }
+    }
+
+    return isGroupOpen ? `<span class="is-in-group">${params.value}</span>` : params.value;
+  }
+
   private inputTypeValueGetter(params: ValueGetterParams) {
     const field: Field = params.data;
     const inputType = field.InputType.substring(field.InputType.indexOf('-') + 1);
@@ -253,25 +277,11 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
 
   private changeInputType(params: CellClickedEvent) {
     const field: Field = params.data;
-    this.router.navigate([`update/${this.contentTypeStaticName}/${field.Id}`], { relativeTo: this.route });
+    this.router.navigate([`update/${this.contentTypeStaticName}/${field.Id}/inputType`], { relativeTo: this.route });
   }
 
   private rename(field: Field) {
-    let newName = prompt(`What new name would you like for '${field.StaticName}' (${field.Id})?`, field.StaticName);
-    if (newName === null) { return; }
-    newName = newName.trim().replace(/\s\s+/g, ' '); // remove multiple white spaces and tabs
-    if (newName === field.StaticName) { return; }
-    while (!newName.match(fieldNamePattern)) {
-      newName = prompt(`What new name would you like for '${field.StaticName}' (${field.Id})?\n${fieldNameError}`, newName);
-      if (newName === null) { return; }
-      newName = newName.trim().replace(/\s\s+/g, ' '); // remove multiple white spaces and tabs
-      if (newName === field.StaticName) { return; }
-    }
-    this.snackBar.open('Saving...');
-    this.contentTypesFieldsService.rename(field, this.contentType$.value, newName).subscribe(() => {
-      this.snackBar.open('Saved', null, { duration: 2000 });
-      this.fetchFields();
-    });
+    this.router.navigate([`update/${this.contentTypeStaticName}/${field.Id}/name`], { relativeTo: this.route });
   }
 
   private delete(field: Field) {

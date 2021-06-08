@@ -8,7 +8,6 @@ import { consoleLogAngular } from '../../../../ng-dialogs/src/app/shared/helpers
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
 import { EavService, FieldsSettingsService } from '../../../shared/services';
 import { BaseComponent } from '../../input-types/base/base.component';
-import { ValidationMessagesService } from '../../validators/validation-messages-service';
 import { DropzoneConfigInstance, DropzoneType } from './dropzone-wrapper.models';
 
 @Component({
@@ -26,12 +25,11 @@ export class DropzoneWrapperComponent extends BaseComponent implements FieldWrap
 
   constructor(
     eavService: EavService,
-    validationMessagesService: ValidationMessagesService,
     fieldsSettingsService: FieldsSettingsService,
     private dnnContext: DnnContext,
     private zone: NgZone,
   ) {
-    super(eavService, validationMessagesService, fieldsSettingsService);
+    super(eavService, fieldsSettingsService);
   }
 
   ngOnInit() {

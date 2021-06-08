@@ -1,4 +1,6 @@
 import { FieldSettings, FieldValue } from '../../../edit-types';
+import { FormValues } from '../../eav-item-dialog/item-edit-form/item-edit-form.models';
+import { EavType } from './eav';
 
 export interface FormulaCacheItem {
   cache: Record<string, any>;
@@ -21,7 +23,7 @@ export type FormulaFunction = FormulaFunctionDefault | FormulaFunctionV1;
 
 export type FormulaFunctionDefault = () => FieldValue;
 
-export type FormulaFunctionV1 = (data: FormulaV1Data, context: FormulaV1Context) => FieldValue;
+export type FormulaFunctionV1 = (data: FormulaV1Data, context: FormulaV1Context, experimental: FormulaV1Experimental) => FieldValue;
 
 export const FormulaVersions = {
   V1: 'v1',
@@ -46,10 +48,12 @@ export type FormulaProps = FormulaPropsV1;
 export interface FormulaPropsV1 {
   data: FormulaV1Data;
   context: FormulaV1Context;
+  experimental: FormulaV1Experimental;
 }
 
 export interface FormulaV1Data {
   default: FieldValue;
+  initial: FieldValue;
   prefill: FieldValue;
   value: FieldValue;
   [fieldName: string]: FieldValue;
@@ -58,6 +62,7 @@ export interface FormulaV1Data {
 export interface FormulaV1Context {
   cache: Record<string, any>;
   culture: FormulaV1CtxCulture;
+  debug: boolean;
   target: FormulaV1CtxTarget;
 }
 
@@ -75,6 +80,21 @@ export interface FormulaV1CtxTarget {
 export interface FormulaV1CtxTargetEntity {
   guid: string;
   id: number;
+}
+
+export interface FormulaV1Experimental {
+  getEntities(): FormulaV1ExperimentalEntity[];
+  getSettings(fieldName: string): FieldSettings;
+  getValues(entityGuid: string): FormValues;
+}
+
+export interface FormulaV1ExperimentalEntity {
+  guid: string;
+  id: number;
+  type: {
+    id: string,
+    name: string
+  };
 }
 
 export interface RunFormulasResult {

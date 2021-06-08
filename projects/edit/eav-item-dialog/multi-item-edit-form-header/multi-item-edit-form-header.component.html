@@ -14,7 +14,7 @@
     [matTooltip]="'PublishStatus.' + data.publishMode + '.Tip' | translate">
     <span class="header__publish-mode">
       {{ 'PublishStatus.Label' | translate }}
-      <b>{{ ('PublishStatus.' + data.publishMode | translate).toUpperCase() }}</b>
+      <b>{{ 'PublishStatus.' + data.publishMode | translate | uppercase }}</b>
     </span>
   </button>
 </mat-card>

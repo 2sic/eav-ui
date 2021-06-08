@@ -12,6 +12,7 @@ import { DataTypeConstants } from '../constants/data-type.constants';
 import { InputTypeConstants } from '../constants/input-type.constants';
 import { calculateTypeIcon } from '../content-type-fields.helpers';
 import { Field, FieldInputTypeOption } from '../models/field.model';
+import { ReservedNames } from '../models/reserved-names.model';
 import { ContentTypesFieldsService } from '../services/content-types-fields.service';
 import { calculateDataTypes, DataType } from './edit-content-type-fields.helpers';
 
@@ -26,7 +27,8 @@ export class EditContentTypeFieldsComponent implements OnInit, OnDestroy {
   @ViewChild('ngForm', { read: NgForm }) private form: NgForm;
 
   fields: Partial<Field>[] = [];
-  editMode: boolean;
+  reservedNames: ReservedNames;
+  editMode: 'name' | 'inputType';
   dataTypes: DataType[];
   filteredInputTypeOptions: FieldInputTypeOption[][] = [];
   dataTypeHints: string[] = [];
@@ -61,43 +63,57 @@ export class EditContentTypeFieldsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    const contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
-    const editFieldId = this.route.snapshot.paramMap.get('id') ? parseInt(this.route.snapshot.paramMap.get('id'), 10) : null;
-    this.editMode = (editFieldId !== null);
+    this.editMode = this.route.snapshot.paramMap.get('editMode') as 'name' | 'inputType';
 
+    const contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
     const contentType$ = this.contentTypesService.retrieveContentType(contentTypeStaticName).pipe(share());
     const fields$ = contentType$.pipe(mergeMap(contentType => this.contentTypesFieldsService.getFields(contentType)));
     const dataTypes$ = this.contentTypesFieldsService.typeListRetrieve().pipe(map(rawDataTypes => calculateDataTypes(rawDataTypes)));
     const inputTypes$ = this.contentTypesFieldsService.getInputTypesList();
+    const reservedNames$ = this.contentTypesFieldsService.getReservedNames();
 
-    forkJoin([contentType$, fields$, dataTypes$, inputTypes$]).subscribe(([contentType, fields, dataTypes, inputTypes]) => {
-      this.contentType = contentType;
-      const allFields = fields;
-      this.dataTypes = dataTypes;
-      this.inputTypeOptions = inputTypes;
+    forkJoin([contentType$, fields$, dataTypes$, inputTypes$, reservedNames$]).subscribe(
+      ([contentType, fields, dataTypes, inputTypes, reservedNames]) => {
+        this.contentType = contentType;
+        this.dataTypes = dataTypes;
+        this.inputTypeOptions = inputTypes;
 
-      if (this.editMode) {
-        const editField = allFields.find(field => field.Id === editFieldId);
-        this.fields.push(editField);
-      } else {
-        for (let i = 1; i <= 8; i++) {
-          this.fields.push({
-            Id: 0,
-            Type: DataTypeConstants.String,
-            InputType: InputTypeConstants.StringDefault,
-            StaticName: '',
-            IsTitle: allFields.length === 0,
-            SortOrder: allFields.length + i,
-          });
+        const existingFields: ReservedNames = {};
+        fields.forEach(field => {
+          existingFields[field.StaticName] = 'Field with this name already exists';
+        });
+        this.reservedNames = {
+          ...reservedNames,
+          ...existingFields,
+        };
+
+        if (this.editMode != null) {
+          const editFieldId = this.route.snapshot.paramMap.get('id') ? parseInt(this.route.snapshot.paramMap.get('id'), 10) : null;
+          const editField = fields.find(field => field.Id === editFieldId);
+          if (this.editMode === 'name') {
+            delete this.reservedNames[editField.StaticName];
+          }
+          this.fields.push(editField);
+        } else {
+          for (let i = 1; i <= 8; i++) {
+            this.fields.push({
+              Id: 0,
+              Type: DataTypeConstants.String,
+              InputType: InputTypeConstants.StringDefault,
+              StaticName: '',
+              IsTitle: fields.length === 0,
+              SortOrder: fields.length + i,
+            });
+          }
         }
-      }
 
-      for (let i = 0; i < this.fields.length; i++) {
-        this.calculateInputTypeOptions(i);
-        this.calculateHints(i);
+        for (let i = 0; i < this.fields.length; i++) {
+          this.calculateInputTypeOptions(i);
+          this.calculateHints(i);
+        }
+        this.loading$.next(false);
       }
-      this.loading$.next(false);
-    });
+    );
   }
 
   ngOnDestroy() {
@@ -134,13 +150,21 @@ export class EditContentTypeFieldsComponent implements OnInit, OnDestroy {
   save() {
     this.saving$.next(true);
     this.snackBar.open('Saving...');
-    if (this.editMode) {
+    if (this.editMode != null) {
       const field = this.fields[0];
-      this.contentTypesFieldsService.updateInputType(field.Id, field.StaticName, field.InputType).subscribe(res => {
-        this.saving$.next(false);
-        this.snackBar.open('Saved', null, { duration: 2000 });
-        this.closeDialog();
-      });
+      if (this.editMode === 'name') {
+        this.contentTypesFieldsService.rename(field.Id, this.contentType.Id, field.StaticName).subscribe(() => {
+          this.saving$.next(false);
+          this.snackBar.open('Saved', null, { duration: 2000 });
+          this.closeDialog();
+        });
+      } else if (this.editMode === 'inputType') {
+        this.contentTypesFieldsService.updateInputType(field.Id, field.StaticName, field.InputType).subscribe(() => {
+          this.saving$.next(false);
+          this.snackBar.open('Saved', null, { duration: 2000 });
+          this.closeDialog();
+        });
+      }
     } else {
       of(...this.fields).pipe(
         filter(field => !!field.StaticName),

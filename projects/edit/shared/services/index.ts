@@ -5,7 +5,6 @@ export * from './edit-routing.service';
 export * from './entity.service';
 export * from './fields-settings.service';
 export * from './fields-translate.service';
-export * from './file-type.service';
 export * from './forms-state.service';
 export * from './formula-designer.service';
 export * from './logging.service';

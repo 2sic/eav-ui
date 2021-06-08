@@ -4,7 +4,7 @@ import { combineLatest, Subscription } from 'rxjs';
 import { distinctUntilChanged, map, startWith } from 'rxjs/operators';
 import { InputTypeConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { FormValues } from '../../../eav-item-dialog/item-edit-form/item-edit-form.models';
-import { GeneralHelpers } from '../../../shared/helpers';
+import { GeneralHelpers, ValidationHelpers } from '../../../shared/helpers';
 import { EavService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
 import { ItemService, LanguageInstanceService } from '../../../shared/store/ngrx-data';
 
@@ -37,15 +37,16 @@ export class EavFormComponent implements OnInit, OnDestroy {
         // 1. create missing controls
         for (const [fieldName, fieldProps] of Object.entries(fieldsProps)) {
           const empties = [InputTypeConstants.EmptyDefault, InputTypeConstants.EmptyEnd];
-          if (empties.includes(fieldProps.calculatedInputType.inputType)) { continue; }
+          const inputType = fieldProps.calculatedInputType.inputType;
+          if (empties.includes(inputType)) { continue; }
 
-          const control = this.form.controls[fieldName];
-          if (control != null) { continue; }
+          if (this.form.controls.hasOwnProperty(fieldName)) { continue; }
 
           const value = fieldProps.value;
           const disabled = fieldProps.settings.Disabled;
-          const validation = fieldProps.validators;
-          const newControl = this.formBuilder.control({ disabled, value }, validation);
+          const validators = ValidationHelpers.getValidators(fieldName, inputType, this.fieldsSettingsService);
+          const newControl = this.formBuilder.control({ disabled, value }, validators);
+          // TODO: build all fields at once. That should be faster
           this.form.addControl(fieldName, newControl);
         }
 
@@ -59,6 +60,10 @@ export class EavFormComponent implements OnInit, OnDestroy {
 
         const changes = GeneralHelpers.getFormChanges(oldValues, newValues);
         if (changes != null) {
+          // controls probably don't need to set touched and dirty for this kind of update.
+          // This update usually happens for language change, formula or updates on same entity in another Edit Ui.
+          // In case controls should be updated, update with control.markAsTouched and control.markAsDirty.
+          // Marking the form will not mark controls, but marking controls marks the form
           this.form.patchValue(changes);
         }
 
@@ -76,12 +81,10 @@ export class EavFormComponent implements OnInit, OnDestroy {
             control.enable();
           }
         }
-
-        // TODO: 4. sync validators
       })
     );
 
-    const formValid$ = this.form.statusChanges.pipe(
+    const formValid$ = this.form.valueChanges.pipe(
       map(() => !this.form.invalid),
       startWith(!this.form.invalid),
       distinctUntilChanged(),
@@ -110,7 +113,7 @@ export class EavFormComponent implements OnInit, OnDestroy {
 
     this.subscription.add(
       this.form.valueChanges.subscribe(() => {
-        const formValues = this.form.getRawValue();
+        const formValues: FormValues = this.form.getRawValue();
         const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
         const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
         this.itemService.updateItemAttributesValues(this.entityGuid, formValues, currentLanguage, defaultLanguage);

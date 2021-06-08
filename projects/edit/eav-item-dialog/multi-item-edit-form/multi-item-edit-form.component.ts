@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
@@ -11,8 +11,8 @@ import { SnackBarSaveErrorsComponent } from '../../eav-material-controls/dialogs
 import { SaveErrorsSnackData } from '../../eav-material-controls/dialogs/snack-bar-save-errors/snack-bar-save-errors.models';
 import { SnackBarUnsavedChangesComponent } from '../../eav-material-controls/dialogs/snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
 import { UnsavedChangesSnackData } from '../../eav-material-controls/dialogs/snack-bar-unsaved-changes/snack-bar-unsaved-changes.models';
-import { ValidationMessagesService } from '../../eav-material-controls/validators/validation-messages-service';
 import { EditEntryComponent } from '../../edit-entry/edit-entry.component';
+import { ValidationMessagesHelpers } from '../../shared/helpers';
 import { FieldErrorMessage, SaveResult } from '../../shared/models';
 import { EavItem } from '../../shared/models/eav';
 import { Item1 } from '../../shared/models/json-format-v1';
@@ -28,11 +28,12 @@ import { MultiEditFormTemplateVars, SaveEavFormData } from './multi-item-edit-fo
   styleUrls: ['./multi-item-edit-form.component.scss'],
   providers: [EditRoutingService, FormsStateService, FormulaDesignerService],
 })
-export class MultiItemEditFormComponent implements OnInit, OnDestroy {
+export class MultiItemEditFormComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChildren(ItemEditFormComponent) itemEditFormRefs: QueryList<ItemEditFormComponent>;
 
   templateVars$: Observable<MultiEditFormTemplateVars>;
 
+  private viewInitiated$: BehaviorSubject<boolean>;
   private debugInfoIsOpen$: BehaviorSubject<boolean>;
   private subscription: Subscription;
   private saveResult: SaveResult;
@@ -50,7 +51,6 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy {
     private languageInstanceService: LanguageInstanceService,
     private snackBar: MatSnackBar,
     private translate: TranslateService,
-    private validationMessagesService: ValidationMessagesService,
     private loadIconsService: LoadIconsService,
     private editRoutingService: EditRoutingService,
     private publishStatusService: PublishStatusService,
@@ -65,6 +65,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.viewInitiated$ = new BehaviorSubject(false);
     this.debugInfoIsOpen$ = new BehaviorSubject(false);
     this.subscription = new Subscription();
     this.editRoutingService.init();
@@ -85,17 +86,18 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy {
       })
     );
     this.templateVars$ = combineLatest([
-      combineLatest([items$, formsValid$, delayForm$, reduceSaveButton$]),
+      combineLatest([items$, formsValid$, delayForm$, this.viewInitiated$, reduceSaveButton$]),
       combineLatest([debugEnabled$, this.debugInfoIsOpen$, hideHeader$]),
     ]).pipe(
       map(([
-        [items, formsValid, delayForm, reduceSaveButton],
+        [items, formsValid, delayForm, viewInitiated, reduceSaveButton],
         [debugEnabled, debugInfoIsOpen, hideHeader],
       ]) => {
         const templateVars: MultiEditFormTemplateVars = {
           items,
           formsValid,
           delayForm,
+          viewInitiated,
           reduceSaveButton,
           debugEnabled,
           debugInfoIsOpen,
@@ -107,7 +109,14 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy {
     this.dialogBackdropClickSubscribe();
   }
 
+  ngAfterViewInit() {
+    setTimeout(() => {
+      this.viewInitiated$.next(true);
+    });
+  }
+
   ngOnDestroy() {
+    this.viewInitiated$.complete();
     this.debugInfoIsOpen$.complete();
     this.subscription.unsubscribe();
     this.languageInstanceService.removeLanguageInstance(this.eavService.eavConfig.formId);
@@ -193,7 +202,7 @@ export class MultiItemEditFormComponent implements OnInit, OnDestroy {
       const formErrors: Dictionary<string>[] = [];
       this.itemEditFormRefs.forEach(itemEditFormRef => {
         if (!itemEditFormRef.eavFormRef.form.invalid) { return; }
-        formErrors.push(this.validationMessagesService.validateForm(itemEditFormRef.eavFormRef.form));
+        formErrors.push(ValidationMessagesHelpers.validateForm(itemEditFormRef.eavFormRef.form));
       });
 
       const fieldErrors: FieldErrorMessage[] = [];

@@ -10,7 +10,6 @@ import { EntityCacheService, StringQueryCacheService } from '../../../shared/sto
 import { BaseComponent } from '../../input-types/base/base.component';
 import { calculateSelectedEntities } from '../../input-types/entity/entity-default/entity-default.helpers';
 import { SelectedEntity } from '../../input-types/entity/entity-default/entity-default.models';
-import { ValidationMessagesService } from '../../validators/validation-messages-service';
 import { EntityExpandableTemplateVars } from './entity-expandable-wrapper.models';
 
 @Component({
@@ -27,14 +26,13 @@ export class EntityExpandableWrapperComponent extends BaseComponent<string | str
 
   constructor(
     eavService: EavService,
-    validationMessagesService: ValidationMessagesService,
     fieldsSettingsService: FieldsSettingsService,
     private translate: TranslateService,
     private editRoutingService: EditRoutingService,
     private entityCacheService: EntityCacheService,
     private stringQueryCache: StringQueryCacheService,
   ) {
-    super(eavService, validationMessagesService, fieldsSettingsService);
+    super(eavService, fieldsSettingsService);
   }
 
   ngOnInit() {

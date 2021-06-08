@@ -5,8 +5,6 @@ import { keyPartOfPage, keyPublishing } from '../../../ng-dialogs/src/app/shared
 import { Context } from '../../../ng-dialogs/src/app/shared/services/context';
 import { EavFormData, EditDialogContext, SaveEavFormData } from '../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.models';
 import { EavConfig, SaveResult, VersioningOptions } from '../models';
-import { EavEntity } from '../models/eav';
-import { Entity1, Item1 } from '../models/json-format-v1';
 
 export const webApiEditRoot = 'cms/edit/';
 
@@ -54,6 +52,7 @@ export class EavService {
       createMode,
       isCopy,
       enableHistory,
+      enableFormulaSave: editDialogContext.Enable.FormulaSave ?? false,
     };
   }
 

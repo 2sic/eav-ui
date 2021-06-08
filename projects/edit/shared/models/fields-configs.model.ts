@@ -1,4 +1,3 @@
-import { ValidatorFn } from '@angular/forms';
 import { CalculatedInputType } from '.';
 import { FieldSettings, FieldValue } from '../../../edit-types';
 import { TranslationStateCore } from '../../eav-material-controls/localization/translate-menu/translate-menu.models';
@@ -12,7 +11,6 @@ export interface FieldProps {
   constants: FieldConstants;
   settings: FieldSettings;
   translationState: TranslationState;
-  validators: ValidatorFn[];
   /** empty-default value is null */
   value: FieldValue;
   wrappers: string[];

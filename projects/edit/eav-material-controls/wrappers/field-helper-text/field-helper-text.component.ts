@@ -3,8 +3,8 @@ import { AbstractControl, FormGroup } from '@angular/forms';
 import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map, startWith } from 'rxjs/operators';
 import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
+import { ValidationMessagesHelpers } from '../../../shared/helpers';
 import { FieldsSettingsService } from '../../../shared/services';
-import { ValidationMessagesService } from '../../validators/validation-messages-service';
 import { FieldHelperTextTemplateVars } from './field-helper-text.models';
 
 @Component({
@@ -22,12 +22,12 @@ export class FieldHelperTextComponent implements OnInit {
   control: AbstractControl;
   templateVars$: Observable<FieldHelperTextTemplateVars>;
 
-  constructor(private validationMessagesService: ValidationMessagesService, private fieldsSettingsService: FieldsSettingsService) { }
+  constructor(private fieldsSettingsService: FieldsSettingsService) { }
 
   ngOnInit() {
     this.control = this.group.controls[this.config.fieldName];
 
-    const invalid$ = this.control.statusChanges.pipe(
+    const invalid$ = this.control.valueChanges.pipe(
       map(() => this.control.invalid),
       startWith(this.control.invalid),
       distinctUntilChanged(),
@@ -67,6 +67,6 @@ export class FieldHelperTextComponent implements OnInit {
   }
 
   getErrorMessage() {
-    return this.validationMessagesService.getErrorMessage(this.control, this.config);
+    return ValidationMessagesHelpers.getErrorMessage(this.control, this.config);
   }
 }

@@ -3,9 +3,8 @@ import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
-import { FieldMask, UrlHelpers } from '../../../../shared/helpers';
+import { FieldMask, GeneralHelpers, UrlHelpers } from '../../../../shared/helpers';
 import { EavService, FieldsSettingsService } from '../../../../shared/services';
-import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { BaseComponent } from '../../base/base.component';
 import { StringUrlPathLogic } from './string-url-path-logic';
 import { StringUrlPathTemplateVars } from './string-url-path.models';
@@ -26,12 +25,8 @@ export class StringUrlPathComponent extends BaseComponent<string> implements OnI
   /** Blocks external update if field was changed manually and doesn't match external updates. WARNING: Doesn't work on language change */
   private lastAutoCopy = '';
 
-  constructor(
-    eavService: EavService,
-    validationMessagesService: ValidationMessagesService,
-    fieldsSettingsService: FieldsSettingsService,
-  ) {
-    super(eavService, validationMessagesService, fieldsSettingsService);
+  constructor(eavService: EavService, fieldsSettingsService: FieldsSettingsService) {
+    super(eavService, fieldsSettingsService);
     StringUrlPathLogic.importMe();
   }
 
@@ -91,13 +86,13 @@ export class StringUrlPathComponent extends BaseComponent<string> implements OnI
     if (!cleaned) { return; }
     this.lastAutoCopy = cleaned;
     if (value === cleaned) { return; }
-    this.control.patchValue(cleaned);
+    GeneralHelpers.patchControlValue(this.control, cleaned);
   }
 
   clean(trimEnd: boolean) {
     const value = this.control.value;
     const cleaned = UrlHelpers.stripNonUrlCharacters(value, this.settings$.value.AllowSlashes, trimEnd);
     if (value === cleaned) { return; }
-    this.control.patchValue(cleaned);
+    GeneralHelpers.patchControlValue(this.control, cleaned);
   }
 }

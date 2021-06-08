@@ -36,6 +36,7 @@ interface String extends All {
  * @string-default
  */
 interface StringDefault extends String {
+  InputFontFamily: '' | 'monospace';
   RowCount: number;
 }
 
@@ -54,6 +55,15 @@ interface StringDropdown extends String {
 interface StringUrlPath extends String {
   AutoGenerateMask: string;
   AllowSlashes: boolean;
+}
+
+/**
+ * @string-template-picker
+ * New in 12.02
+ */
+interface StringTemplatePicker extends String {
+  /** Contains the extension for which the file picker should filter. If not set, use preset mechanisms */
+  FileType: string;
 }
 
 /**
@@ -209,6 +219,7 @@ export interface FieldSettings
   extends StringDefault,
   StringDropdown,
   StringUrlPath,
+  StringTemplatePicker,
   StringWysiwyg,
   StringDropdownQuery,
   StringFontIconPicker,

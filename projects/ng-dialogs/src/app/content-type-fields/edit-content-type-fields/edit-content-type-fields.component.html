@@ -1,8 +1,8 @@
 <div mat-dialog-title>
-  <div class="dialog-title-box" [ngSwitch]="editMode">
-    <ng-container *ngSwitchCase="undefined">Fields</ng-container>
-    <ng-container *ngSwitchCase="true">Edit Field</ng-container>
-    <ng-container *ngSwitchCase="false">Add Fields</ng-container>
+  <div class="dialog-title-box">
+    <ng-container *ngIf="editMode === undefined">Fields</ng-container>
+    <ng-container *ngIf="editMode === null">Add Fields</ng-container>
+    <ng-container *ngIf="editMode != null">Edit Field</ng-container>
   </div>
 </div>
 
@@ -12,11 +12,14 @@
       <div class="edit-input">
         <mat-form-field appearance="standard" color="accent">
           <mat-label>Name</mat-label>
-          <input matInput [pattern]="fieldNamePattern" [(ngModel)]="field.StaticName" [name]="'StaticName' + i"
-            [disabled]="editMode" #staticName="ngModel">
+          <input matInput [pattern]="fieldNamePattern" [appReservedNames]="reservedNames" [(ngModel)]="field.StaticName"
+            [name]="'StaticName' + i" #staticName="ngModel" [disabled]="editMode === 'inputType'">
         </mat-form-field>
         <ng-container *ngIf="staticName.touched && staticName.errors">
           <app-field-hint *ngIf="staticName.errors.pattern" [isError]="true">{{ fieldNameError }}</app-field-hint>
+          <app-field-hint *ngIf="staticName.errors.reservedNames" [isError]="true">
+            {{ staticName.errors.reservedNames }}
+          </app-field-hint>
         </ng-container>
       </div>
 
@@ -24,7 +27,7 @@
         <mat-form-field appearance="standard" color="accent">
           <mat-label>Data Type</mat-label>
           <mat-select (selectionChange)="calculateInputTypeOptions(i); resetInputType(i); calculateHints(i)"
-            [(ngModel)]="field.Type" [name]="'Type' + i" [disabled]="editMode">
+            [(ngModel)]="field.Type" [name]="'Type' + i" [disabled]="editMode != null">
             <mat-select-trigger>
               <mat-icon class="type-icon">{{ findIcon(field.Type) }}</mat-icon>
               <span>{{ field.Type }}</span>
@@ -41,7 +44,8 @@
       <div class="edit-input">
         <mat-form-field appearance="standard" color="accent">
           <mat-label>Input Type</mat-label>
-          <mat-select (selectionChange)="calculateHints(i)" [(ngModel)]="field.InputType" [name]="'InputType' + i">
+          <mat-select (selectionChange)="calculateHints(i)" [(ngModel)]="field.InputType" [name]="'InputType' + i"
+            [disabled]="editMode === 'name'">
             <mat-option *ngFor="let option of filteredInputTypeOptions[i]" [value]="option.inputType">
               {{ option.label }}</mat-option>
           </mat-select>

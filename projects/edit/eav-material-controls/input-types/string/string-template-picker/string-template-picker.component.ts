@@ -3,9 +3,8 @@ import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
-import { FieldMask } from '../../../../shared/helpers';
+import { FieldMask, GeneralHelpers } from '../../../../shared/helpers';
 import { AssetsService, EavService, FieldsSettingsService } from '../../../../shared/services';
-import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { BaseComponent } from '../../base/base.component';
 import { templateTypes } from './string-template-picker.constants';
 import { StringTemplatePickerTemplateVars } from './string-template-picker.models';
@@ -31,20 +30,20 @@ export class StringTemplatePickerComponent extends BaseComponent<string> impleme
   /** Reset only after templates have been fetched once */
   private resetIfNotFound = false;
 
-  constructor(
-    eavService: EavService,
-    validationMessagesService: ValidationMessagesService,
-    fieldsSettingsService: FieldsSettingsService,
-    private assetsService: AssetsService,
-  ) {
-    super(eavService, validationMessagesService, fieldsSettingsService);
+  constructor(eavService: EavService, fieldsSettingsService: FieldsSettingsService, private assetsService: AssetsService) {
+    super(eavService, fieldsSettingsService);
   }
 
   ngOnInit() {
     super.ngOnInit();
     this.templateOptions$ = new BehaviorSubject<string[]>([]);
+
+    // If we have a configured type, use that, otherwise use the field mask
+    // We'll still use the field-mask (even though it wouldn't be needed) to keep the logic simple
+    const typeFilterMask = (this.settings$.value as any).FileType ?? '[Type]';
+
     // set change-watchers to the other values
-    this.typeMask = new FieldMask('[Type]', this.group.controls, this.setFileConfig.bind(this), null);
+    this.typeMask = new FieldMask(typeFilterMask, this.group.controls, this.setFileConfig.bind(this), null);
     this.locationMask = new FieldMask('[Location]', this.group.controls, this.onLocationChange.bind(this), null);
 
     this.setFileConfig(this.typeMask.resolve() || 'Token'); // use token setting as default, till the UI tells us otherwise
@@ -77,7 +76,8 @@ export class StringTemplatePickerComponent extends BaseComponent<string> impleme
   }
 
   private onLocationChange(location: string) {
-    this.global = (location === 'Host File System');
+    this.global = (location === 'Host File System' // Original value used from 2sxc up until v12.01
+      || location === 'Global'); // New key used in 2sxc 12.02 and later
 
     this.assetsService.getAll(this.global).subscribe(templates => {
       this.templates = templates;
@@ -94,7 +94,9 @@ export class StringTemplatePickerComponent extends BaseComponent<string> impleme
     filtered = filtered.filter(template => template.slice(template.length - ext.length) === ext);
     this.templateOptions$.next(filtered);
     const resetValue = this.resetIfNotFound && !filtered.find(template => template === this.control.value);
-    if (resetValue) { this.control.patchValue(''); }
+    if (resetValue) {
+      GeneralHelpers.patchControlValue(this.control, '');
+    }
   }
 
   createTemplate() {
@@ -123,13 +125,13 @@ export class StringTemplatePickerComponent extends BaseComponent<string> impleme
     const fullPath = path + name;
 
     // 4. tell service to create it
-    this.assetsService.create(fullPath, this.global).subscribe(res => {
+    this.assetsService.create(fullPath, this.global, this.activeSpec.purpose).subscribe(res => {
       if (res === false) {
         alert('Server reported that create failed - the file probably already exists'); // todo: i18n
       } else {
         this.templates.push(fullPath);
         this.setTemplateOptions();
-        this.control.patchValue(fullPath);
+        GeneralHelpers.patchControlValue(this.control, fullPath);
       }
     });
   }

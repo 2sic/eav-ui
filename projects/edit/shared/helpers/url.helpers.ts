@@ -133,7 +133,7 @@ export class UrlHelpers {
     return url + (url.indexOf('?') > 0 ? '&' : '?') + paramName + '=' + paramValue;
   }
 
-  static getUrlPrefix(area: string, eavConfig: EavConfig) {
+  static getUrlPrefix(area: 'system' | 'zone' | 'app', eavConfig: EavConfig) {
     let result = '';
 
     if (area === 'system') { result = eavConfig.systemRoot; } // used to link to JS-stuff and similar

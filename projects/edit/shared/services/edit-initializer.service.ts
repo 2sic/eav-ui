@@ -8,6 +8,7 @@ import { FieldSettings } from '../../../edit-types';
 import { InputTypeConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { UpdateEnvVarsFromDialogSettings } from '../../../ng-dialogs/src/app/shared/helpers/update-env-vars-from-dialog-settings.helper';
 import { convertUrlToForm } from '../../../ng-dialogs/src/app/shared/helpers/url-prep.helper';
+import { FormValues } from '../../eav-item-dialog/item-edit-form/item-edit-form.models';
 import { calculateIsParentDialog, sortLanguages } from '../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.helpers';
 import { EavFormData } from '../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.models';
 import { EditParams } from '../../edit-matcher.models';
@@ -20,6 +21,8 @@ import { AdamCacheService, ContentTypeItemService, ContentTypeService, EntityCac
 @Injectable()
 export class EditInitializerService implements OnDestroy {
   loaded$ = new BehaviorSubject(false);
+
+  private initialFormValues: Record<string, FormValues> = {};
 
   constructor(
     private route: ActivatedRoute,
@@ -49,6 +52,7 @@ export class EditInitializerService implements OnDestroy {
     this.eavService.fetchFormData(editItems).subscribe(formData => {
       UpdateEnvVarsFromDialogSettings(formData.Context.App);
       this.saveFormData(formData);
+      this.keepInitialValues();
       this.setMissingValues();
 
       this.loaded$.next(true);
@@ -99,6 +103,37 @@ export class EditInitializerService implements OnDestroy {
     this.publishStatusService.setPublishStatus(publishStatus);
   }
 
+  private keepInitialValues(): void {
+    const items = this.itemService.getItems(this.eavService.eavConfig.itemGuids);
+    const languages = this.languageService.getLanguages().map(language => language.key);
+    const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
+    const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
+    if (!languages.includes(currentLanguage)) {
+      languages.push(currentLanguage);
+    }
+    if (!languages.includes(defaultLanguage)) {
+      languages.push(defaultLanguage);
+    }
+
+    for (const item of items) {
+      for (const language of languages) {
+        const formValues: FormValues = {};
+        for (const [fieldName, fieldValues] of Object.entries(item.Entity.Attributes)) {
+          formValues[fieldName] = LocalizationHelpers.translate(language, defaultLanguage, fieldValues, null);
+        }
+        this.initialFormValues[this.getInitialValuesKey(item.Entity.Guid, language)] = formValues;
+      }
+    }
+  }
+
+  private getInitialValuesKey(entityGuid: string, language: string): string {
+    return `entityGuid:${entityGuid}:language:${language}`;
+  }
+
+  getInitialValues(entityGuid: string, language: string): FormValues {
+    return this.initialFormValues[this.getInitialValuesKey(entityGuid, language)];
+  }
+
   private setMissingValues(): void {
     const items = this.itemService.getItems(this.eavService.eavConfig.itemGuids);
     const inputTypes = this.inputTypeService.getInputTypes();
@@ -118,7 +153,7 @@ export class EditInitializerService implements OnDestroy {
 
         const attributeValues = item.Entity.Attributes[ctAttribute.Name];
         const fieldSettings = FieldsSettingsHelpers.setDefaultFieldSettings(
-          FieldsSettingsHelpers.mergeSettings<FieldSettings>(ctAttribute.Metadata, defaultLanguage, defaultLanguage)
+          FieldsSettingsHelpers.mergeSettings<FieldSettings>(ctAttribute.Metadata, defaultLanguage, defaultLanguage),
         );
 
         if (languages.length === 0) {

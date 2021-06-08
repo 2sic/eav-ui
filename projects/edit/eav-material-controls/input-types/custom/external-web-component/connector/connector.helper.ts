@@ -6,11 +6,10 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { EavCustomInputField, ExperimentalProps, FieldConfig, FieldSettings, FieldValue } from '../../../../../../edit-types';
 import { FieldConfigSet } from '../../../../../eav-dynamic-form/model/field-config';
-import { InputFieldHelpers, PagePicker } from '../../../../../shared/helpers';
+import { GeneralHelpers, InputFieldHelpers, PagePicker } from '../../../../../shared/helpers';
 import { EavService, EditRoutingService, FieldsSettingsService } from '../../../../../shared/services';
 import { ContentTypeService, EntityCacheService, FeatureService, InputTypeService } from '../../../../../shared/store/ngrx-data';
 import { AdamService } from '../../../../adam/adam.service';
-import { ValidationMessagesService } from '../../../../validators/validation-messages-service';
 import { ConnectorHost, ConnectorInstance } from './models/connector-instance.model';
 
 export class ConnectorHelper {
@@ -36,7 +35,6 @@ export class ConnectorHelper {
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
     private fieldsSettingsService: FieldsSettingsService,
-    private validationMessagesService: ValidationMessagesService,
     private entityCacheService: EntityCacheService,
     private zone: NgZone,
   ) {
@@ -165,10 +163,7 @@ export class ConnectorHelper {
   }
 
   private updateControl(control: AbstractControl, value: FieldValue) {
-    if (control == null || control.disabled) { return; }
-
-    if (control.value !== value) { control.patchValue(value); }
-    this.validationMessagesService.markAsTouched(control);
-    this.validationMessagesService.markAsDirty(control);
+    if (control.disabled) { return; }
+    GeneralHelpers.patchControlValue(control, value);
   }
 }

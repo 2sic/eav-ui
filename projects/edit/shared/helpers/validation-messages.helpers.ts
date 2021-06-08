@@ -1,16 +1,10 @@
-import { Injectable, OnDestroy } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
-import { Subject } from 'rxjs';
-import { Dictionary } from '../../../ng-dialogs/src/app/shared/models/dictionary.model';
+import { GeneralHelpers } from '.';
 import { FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
 
-@Injectable()
-export class ValidationMessagesService implements OnDestroy {
-  /** Fires on field validation touch to display validation messages */
-  refreshTouched$ = new Subject<AbstractControl>();
-  refreshDirty$ = new Subject<AbstractControl>();
+export class ValidationMessagesHelpers {
 
-  private validationMessages: Dictionary<(config: FieldConfigSet) => string> = {
+  private static validationMessages: Record<string, (config: FieldConfigSet) => string> = {
     required: (config: FieldConfigSet) => {
       return config ? 'ValidationMessage.Required' : `ValidationMessage.RequiredShort`; // short version in toaster
     },
@@ -28,19 +22,11 @@ export class ValidationMessagesService implements OnDestroy {
     },
   };
 
-  constructor() { }
-
-  // spm TODO: ngOnDestroy only fires in services provided in component
-  ngOnDestroy(): void {
-    this.refreshTouched$.complete();
-    this.refreshDirty$.complete();
-  }
-
   /** Marks controls as touched to show errors beneath controls and collects error messages */
-  validateForm(form: FormGroup): Dictionary<string> {
-    const errors: Dictionary<string> = {};
+  static validateForm(form: FormGroup): Record<string, string> {
+    const errors: Record<string, string> = {};
     for (const [controlKey, control] of Object.entries(form.controls)) {
-      this.markAsTouched(control);
+      GeneralHelpers.markControlTouched(control);
 
       if (!control.invalid) { continue; }
 
@@ -52,20 +38,8 @@ export class ValidationMessagesService implements OnDestroy {
     return errors;
   }
 
-  markAsTouched(control: AbstractControl): void {
-    if (control.touched) { return; }
-    control.markAsTouched();
-    this.refreshTouched$.next(control);
-  }
-
-  markAsDirty(control: AbstractControl): void {
-    if (control.dirty) { return; }
-    control.markAsDirty();
-    this.refreshDirty$.next(control);
-  }
-
   /** Calculates error message */
-  getErrorMessage(control: AbstractControl, config: FieldConfigSet): string {
+  static getErrorMessage(control: AbstractControl, config: FieldConfigSet): string {
     let error = '';
     if (!control.invalid) { return error; }
     if (!control.dirty && !control.touched) { return error; }

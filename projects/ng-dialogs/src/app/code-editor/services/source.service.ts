@@ -52,7 +52,7 @@ export class SourceService {
 
   createTemplate(name: string) {
     return this.http.post<boolean>(this.dnnContext.$2sxc.http.apiUrl(webApiAppFileCreate), {}, {
-      params: { appId: this.context.appId.toString(), global: this.isShared, path: name },
+      params: { appId: this.context.appId.toString(), global: this.isShared, purpose: 'auto', path: name },
     });
   }
 

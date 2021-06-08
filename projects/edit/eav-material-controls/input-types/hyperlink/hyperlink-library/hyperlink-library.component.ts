@@ -1,13 +1,9 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
-import { ValidatorFn } from '@angular/forms';
-import { combineLatest, Subscription } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { EavService, FieldsSettingsService } from '../../../../shared/services';
-import { CustomValidators } from '../../../validators/custom-validators';
-import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { BaseComponent } from '../../base/base.component';
 import { AdamControl } from './hyperlink-library.models';
 
@@ -27,15 +23,9 @@ import { AdamControl } from './hyperlink-library.models';
   ],
 })
 export class HyperlinkLibraryComponent extends BaseComponent<null> implements OnInit, OnDestroy {
-  /** Requires more handling that normal subscriptions */
-  private adamValidation: Subscription;
 
-  constructor(
-    eavService: EavService,
-    validationMessagesService: ValidationMessagesService,
-    fieldsSettingsService: FieldsSettingsService,
-  ) {
-    super(eavService, validationMessagesService, fieldsSettingsService);
+  constructor(eavService: EavService, fieldsSettingsService: FieldsSettingsService) {
+    super(eavService, fieldsSettingsService);
   }
 
   ngOnInit() {
@@ -45,7 +35,6 @@ export class HyperlinkLibraryComponent extends BaseComponent<null> implements On
   }
 
   ngOnDestroy() {
-    this.adamValidation?.unsubscribe();
     super.ngOnDestroy();
   }
 
@@ -75,27 +64,17 @@ export class HyperlinkLibraryComponent extends BaseComponent<null> implements On
   }
 
   private attachAdamValidator() {
-    const validators$ = this.fieldsSettingsService.getFieldValidation$(this.config.fieldName);
+    let first = true;
     this.subscription.add(
-      combineLatest([this.required$, validators$]).subscribe(([required, validators]) => {
-        if (!required) {
-          this.adamValidation?.unsubscribe();
-          this.control.setValidators(validators);
+      this.config.adam.items$.pipe(
+        map(items => items.length),
+        distinctUntilChanged(),
+      ).subscribe(itemsCount => {
+        (this.control as AdamControl).adamItems = itemsCount;
+        if (!first) {
           this.control.updateValueAndValidity();
-          return;
         }
-
-        const newValidators: ValidatorFn[] = [
-          ...validators,
-          CustomValidators.validateAdam(),
-        ];
-        this.control.setValidators(newValidators);
-        this.control.updateValueAndValidity();
-
-        this.adamValidation = this.config.adam.items$.subscribe(items => {
-          (this.control as AdamControl).adamItems = items.length;
-          this.control.updateValueAndValidity();
-        });
+        first = false;
       })
     );
   }

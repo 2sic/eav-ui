@@ -9,7 +9,6 @@ import { FieldConfigSet } from '../../../../eav-dynamic-form/model/field-config'
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { FieldsSettingsService } from '../../../../shared/services';
 import { GlobalConfigService } from '../../../../shared/store/ngrx-data';
-import { ValidationMessagesService } from '../../../validators/validation-messages-service';
 import { SelectedEntity } from '../entity-default/entity-default.models';
 import { EntitySearchTemplateVars } from './entity-default-search.models';
 
@@ -47,7 +46,6 @@ export class EntityDefaultSearchComponent implements OnInit, OnChanges {
   constructor(
     private translate: TranslateService,
     private globalConfigService: GlobalConfigService,
-    private validationMessagesService: ValidationMessagesService,
     private fieldsSettingsService: FieldsSettingsService,
   ) { }
 
@@ -87,7 +85,7 @@ export class EntityDefaultSearchComponent implements OnInit, OnChanges {
   }
 
   markAsTouched(): void {
-    this.validationMessagesService.markAsTouched(this.control);
+    GeneralHelpers.markControlTouched(this.control);
   }
 
   fetchEntities(): void {

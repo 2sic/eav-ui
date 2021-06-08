@@ -1,5 +1,6 @@
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { guidRegex } from '../../../shared/constants/guid.constants';
 import { ContentType } from '../../models/content-type.model';
 import { DataActionsParams } from './data-actions.models';
 
@@ -20,7 +21,7 @@ export class DataActionsComponent implements ICellRendererAngularComp {
     this.params = params;
     this.contentType = this.params.data;
     const enablePermissions = this.params.enablePermissionsGetter();
-    this.enablePermissions = enablePermissions && this.isGuid(this.contentType.StaticName);
+    this.enablePermissions = enablePermissions && guidRegex().test(this.contentType.StaticName);
   }
 
   refresh(params?: any): boolean {
@@ -57,10 +58,5 @@ export class DataActionsComponent implements ICellRendererAngularComp {
 
   deleteContentType() {
     this.params.onDelete(this.contentType);
-  }
-
-  private isGuid(txtToTest: string) {
-    const patt = new RegExp(/[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}/i);
-    return patt.test(txtToTest);
   }
 }
