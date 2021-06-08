@@ -4,6 +4,7 @@ import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import { distinctUntilChanged, filter, map } from 'rxjs/operators';
 import { EavService, EditInitializerService, LoggingService } from '.';
 import { FieldSettings, FieldValue } from '../../../edit-types';
+import { InputTypeConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { InputType } from '../../../ng-dialogs/src/app/content-type-fields/models/input-type.model';
 import { FormValues } from '../../eav-item-dialog/item-edit-form/item-edit-form.models';
 import { FieldLogicManager } from '../../field-logic/field-logic-manager';
@@ -336,7 +337,10 @@ export class FieldsSettingsService implements OnDestroy {
           if (isOpenInDesigner) {
             console.log(`Running formula${FormulaVersions.V1.toLocaleUpperCase()} for Entity: "${ctSettings._itemTitle}", Field: "${formula.fieldName}", Target: "${formula.target}" with following arguments:`, formulaProps);
           }
-          const valueV1 = (formula.fn as FormulaFunctionV1)(formulaProps.data, formulaProps.context, formulaProps.experimental);
+          const valueV1 = this.doValueCorrection(
+            (formula.fn as FormulaFunctionV1)(formulaProps.data, formulaProps.context, formulaProps.experimental),
+            inputType,
+          );
           this.formulaDesignerService.upsertFormulaResult(formula.entityGuid, formula.fieldName, formula.target, valueV1, false);
           if (isOpenInDesigner) {
             console.log('Formula result:', valueV1);
@@ -346,7 +350,10 @@ export class FieldsSettingsService implements OnDestroy {
           if (isOpenInDesigner) {
             console.log(`Running formula for Entity: "${ctSettings._itemTitle}", Field: "${formula.fieldName}", Target: "${formula.target}" with following arguments:`, undefined);
           }
-          const valueDefault = (formula.fn as FormulaFunctionDefault)();
+          const valueDefault = this.doValueCorrection(
+            (formula.fn as FormulaFunctionDefault)(),
+            inputType,
+          );
           this.formulaDesignerService.upsertFormulaResult(formula.entityGuid, formula.fieldName, formula.target, valueDefault, false);
           if (isOpenInDesigner) {
             console.log('Formula result:', valueDefault);
@@ -363,5 +370,24 @@ export class FieldsSettingsService implements OnDestroy {
         this.loggingService.showMessage(this.translate.instant('Errors.FormulaCalculation'), 2000);
       }
     }
+  }
+
+  private doValueCorrection(value: FieldValue, inputType: InputType): FieldValue {
+    if (value == null) { return value; }
+
+    if (inputType.Type === InputTypeConstants.DatetimeDefault) {
+      const date = new Date(value as string | number | Date);
+
+      // if value is ISO string, or miliseconds, no correction
+      if (date.toJSON() === value || date.getTime() === value) {
+        return date.toJSON();
+      }
+
+      // otherwise do timezone correction
+      date.setTime(date.getTime() - date.getTimezoneOffset() * 60000);
+      return date.toJSON();
+    }
+
+    return value;
   }
 }
