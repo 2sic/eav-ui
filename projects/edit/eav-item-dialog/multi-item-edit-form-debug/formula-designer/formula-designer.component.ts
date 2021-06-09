@@ -1,7 +1,7 @@
 import { Component, Input, OnDestroy, OnInit, QueryList } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { combineLatest, Observable } from 'rxjs';
-import { map, mergeMap } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { copyToClipboard } from '../../../../ng-dialogs/src/app/shared/helpers/copy-to-clipboard.helper';
 import { FormulaHelpers, LocalizationHelpers } from '../../../shared/helpers';
 import { DesignerState, FormulaTarget, FormulaTargets } from '../../../shared/models';
@@ -201,8 +201,9 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
       this.formulaDesignerService.setDesignerState(newState);
     }
 
+    const designerState$ = this.formulaDesignerService.getDesignerState$();
     const options$ = combineLatest([
-      this.formulaDesignerService.getDesignerState$(),
+      designerState$,
       this.formulaDesignerService.getFormulas$()
     ]).pipe(
       map(([designer, formulas]): SelectOptions => {
@@ -279,9 +280,8 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
         return selectOptions;
       }),
     );
-    const designerState$ = this.formulaDesignerService.getDesignerState$();
     const formula$ = designerState$.pipe(
-      mergeMap(designer =>
+      switchMap(designer =>
         this.formulaDesignerService.getFormula$(designer.entityGuid, designer.fieldName, designer.target, true)
       ),
     );
@@ -292,7 +292,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
       ),
     );
     const result$ = designerState$.pipe(
-      mergeMap(designer =>
+      switchMap(designer =>
         this.formulaDesignerService.getFormulaResult$(designer.entityGuid, designer.fieldName, designer.target)
       ),
     );
