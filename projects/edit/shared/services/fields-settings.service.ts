@@ -10,7 +10,7 @@ import { FormValues } from '../../eav-item-dialog/item-edit-form/item-edit-form.
 import { FieldLogicManager } from '../../field-logic/field-logic-manager';
 import { FieldsSettingsHelpers, FormulaHelpers, GeneralHelpers, InputFieldHelpers, LocalizationHelpers, ValidationHelpers } from '../helpers';
 // tslint:disable-next-line:max-line-length
-import { ContentTypeSettings, FieldsProps, FormulaCacheItem, FormulaFunctionDefault, FormulaFunctionV1, FormulaTargets, FormulaVersions, LogSeverities, RunFormulasResult, SettingsFormulaPrefix, TranslationState } from '../models';
+import { ContentTypeSettings, FieldsProps, FormulaCacheItem, FormulaFunctionDefault, FormulaFunctionV1, FormulaTarget, FormulaTargets, FormulaVersions, LogSeverities, RunFormulasResult, SettingsFormulaPrefix, TranslationState } from '../models';
 import { EavHeader } from '../models/eav';
 import { ContentTypeService, GlobalConfigService, InputTypeService, ItemService, LanguageInstanceService, LanguageService } from '../store/ngrx-data';
 import { FormulaDesignerService } from './formula-designer.service';
@@ -249,7 +249,7 @@ export class FieldsSettingsService implements OnDestroy {
       if (runResult === undefined) { continue; }
 
       if (formula.target === FormulaTargets.Value) {
-        formulaValue = this.doValueCorrection(runResult, inputType);
+        formulaValue = runResult;
         continue;
       }
 
@@ -337,7 +337,11 @@ export class FieldsSettingsService implements OnDestroy {
           if (isOpenInDesigner) {
             console.log(`Running formula${FormulaVersions.V1.toLocaleUpperCase()} for Entity: "${ctSettings._itemTitle}", Field: "${formula.fieldName}", Target: "${formula.target}" with following arguments:`, formulaProps);
           }
-          const valueV1 = (formula.fn as FormulaFunctionV1)(formulaProps.data, formulaProps.context, formulaProps.experimental);
+          const valueV1 = this.doValueCorrection(
+            formula.target,
+            (formula.fn as FormulaFunctionV1)(formulaProps.data, formulaProps.context, formulaProps.experimental),
+            inputType,
+          );
           this.formulaDesignerService.upsertFormulaResult(formula.entityGuid, formula.fieldName, formula.target, valueV1, false);
           if (isOpenInDesigner) {
             console.log('Formula result:', valueV1);
@@ -347,7 +351,11 @@ export class FieldsSettingsService implements OnDestroy {
           if (isOpenInDesigner) {
             console.log(`Running formula for Entity: "${ctSettings._itemTitle}", Field: "${formula.fieldName}", Target: "${formula.target}" with following arguments:`, undefined);
           }
-          const valueDefault = (formula.fn as FormulaFunctionDefault)();
+          const valueDefault = this.doValueCorrection(
+            formula.target,
+            (formula.fn as FormulaFunctionDefault)(),
+            inputType,
+          );
           this.formulaDesignerService.upsertFormulaResult(formula.entityGuid, formula.fieldName, formula.target, valueDefault, false);
           if (isOpenInDesigner) {
             console.log('Formula result:', valueDefault);
@@ -366,7 +374,9 @@ export class FieldsSettingsService implements OnDestroy {
     }
   }
 
-  private doValueCorrection(value: FieldValue, inputType: InputType): FieldValue {
+  private doValueCorrection(target: FormulaTarget, value: FieldValue, inputType: InputType): FieldValue {
+    // atm we are only correcting Value formulas
+    if (target !== FormulaTargets.Value) { return value; }
     if (value == null) { return value; }
 
     if (inputType.Type === InputTypeConstants.DatetimeDefault) {
@@ -379,6 +389,8 @@ export class FieldsSettingsService implements OnDestroy {
 
       // otherwise do timezone correction
       date.setTime(date.getTime() - date.getTimezoneOffset() * 60000);
+      // ignore miliseconds
+      date.setMilliseconds(0);
       return date.toJSON();
     }
 
