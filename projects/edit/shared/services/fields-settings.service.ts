@@ -249,7 +249,7 @@ export class FieldsSettingsService implements OnDestroy {
       if (runResult === undefined) { continue; }
 
       if (formula.target === FormulaTargets.Value) {
-        formulaValue = runResult;
+        formulaValue = this.doValueCorrection(runResult, inputType);
         continue;
       }
 
@@ -337,10 +337,7 @@ export class FieldsSettingsService implements OnDestroy {
           if (isOpenInDesigner) {
             console.log(`Running formula${FormulaVersions.V1.toLocaleUpperCase()} for Entity: "${ctSettings._itemTitle}", Field: "${formula.fieldName}", Target: "${formula.target}" with following arguments:`, formulaProps);
           }
-          const valueV1 = this.doValueCorrection(
-            (formula.fn as FormulaFunctionV1)(formulaProps.data, formulaProps.context, formulaProps.experimental),
-            inputType,
-          );
+          const valueV1 = (formula.fn as FormulaFunctionV1)(formulaProps.data, formulaProps.context, formulaProps.experimental);
           this.formulaDesignerService.upsertFormulaResult(formula.entityGuid, formula.fieldName, formula.target, valueV1, false);
           if (isOpenInDesigner) {
             console.log('Formula result:', valueV1);
@@ -350,10 +347,7 @@ export class FieldsSettingsService implements OnDestroy {
           if (isOpenInDesigner) {
             console.log(`Running formula for Entity: "${ctSettings._itemTitle}", Field: "${formula.fieldName}", Target: "${formula.target}" with following arguments:`, undefined);
           }
-          const valueDefault = this.doValueCorrection(
-            (formula.fn as FormulaFunctionDefault)(),
-            inputType,
-          );
+          const valueDefault = (formula.fn as FormulaFunctionDefault)();
           this.formulaDesignerService.upsertFormulaResult(formula.entityGuid, formula.fieldName, formula.target, valueDefault, false);
           if (isOpenInDesigner) {
             console.log('Formula result:', valueDefault);
