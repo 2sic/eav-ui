@@ -72,14 +72,18 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
     );
 
     this.templateVars$ = combineLatest([
-      combineLatest([open$, this.value$, this.preview$, this.label$, this.placeholder$, this.required$]),
-      combineLatest([settings$, this.disabled$, this.touched$]),
+      combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
+      combineLatest([open$, this.preview$, settings$]),
     ]).pipe(
       map(([
-        [open, value, preview, label, placeholder, required],
-        [settings, disabled, touched],
+        [controlStatus, label, placeholder, required],
+        [open, preview, settings],
       ]) => {
         const templateVars: HyperlinkDefaultTemplateVars = {
+          controlStatus,
+          label,
+          placeholder,
+          required,
           open,
           buttonAdam: settings._buttonAdam,
           buttonPage: settings._buttonPage,
@@ -88,13 +92,7 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
           showPagePicker: settings.ShowPagePicker,
           showImageManager: settings.ShowImageManager,
           showFileManager: settings.ShowFileManager,
-          value,
           preview,
-          label,
-          placeholder,
-          required,
-          disabled,
-          touched,
         };
         return templateVars;
       }),

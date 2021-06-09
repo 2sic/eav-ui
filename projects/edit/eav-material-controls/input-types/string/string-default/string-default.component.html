@@ -4,10 +4,10 @@
     'textarea-field': data.rowCount > 1
   }">
     <input *ngIf="data.rowCount <= 1" matInput [formControlName]="config.fieldName" [placeholder]="data.placeholder"
-      [required]="data.required" [ngStyle]="{ 'font-family': data.fontFamily }">
+      [required]="data.required" [ngStyle]="{ 'font-family': data.inputFontFamily }">
 
     <textarea *ngIf="data.rowCount > 1" matInput [formControlName]="config.fieldName" [rows]="data.rowCount"
-      [placeholder]="data.placeholder" [required]="data.required" [ngStyle]="{ 'font-family': data.fontFamily }">
+      [placeholder]="data.placeholder" [required]="data.required" [ngStyle]="{ 'font-family': data.inputFontFamily }">
     </textarea>
 
     <mat-label>{{ data.label }}</mat-label>

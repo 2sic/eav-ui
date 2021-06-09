@@ -40,22 +40,21 @@ export class StringDropdownComponent extends BaseComponent<string> implements On
     );
 
     this.templateVars$ = combineLatest([
-      combineLatest([this.label$, this.placeholder$, this.required$, enableTextEntry$, dropdownOptions$, freeTextMode$]),
-      combineLatest([this.disabled$, this.touched$]),
+      combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
+      combineLatest([enableTextEntry$, dropdownOptions$, freeTextMode$]),
     ]).pipe(
       map(([
-        [label, placeholder, required, enableTextEntry, dropdownOptions, freeTextMode],
-        [disabled, touched],
+        [controlStatus, label, placeholder, required],
+        [enableTextEntry, dropdownOptions, freeTextMode],
       ]) => {
         const templateVars: StringDropdownTemplateVars = {
+          controlStatus,
           label,
           placeholder,
           required,
           enableTextEntry,
           dropdownOptions,
           freeTextMode,
-          disabled,
-          touched,
         };
         return templateVars;
       }),

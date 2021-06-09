@@ -25,24 +25,24 @@
 </div>
 <div class="c-ew__preview-holder" *ngIf="templateVars$ | async as data">
   <mat-label class="c-ew__preview-label" [ngClass]="{
-    'mat-caption' : data.value,
-    'mat-empty' : !data.value,
-    'mat-error' : data.invalid && (data.touched || data.dirty) && !data.disabled,
-    'color__primary' : !(data.invalid && data.touched) && !data.disabled,
-    'color__label-disabled' : data.disabled,
+    'mat-caption' : data.controlStatus.value,
+    'mat-empty' : !data.controlStatus.value,
+    'mat-error' : data.controlStatus.invalid && (data.controlStatus.touched || data.controlStatus.dirty) && !data.controlStatus.disabled,
+    'color__primary' : !(data.controlStatus.invalid && data.controlStatus.touched) && !data.controlStatus.disabled,
+    'color__label-disabled' : data.controlStatus.disabled,
     'c-ew__preview-label--focused': data.focused
   }">
     {{ data.label }}
     {{ data.required ? '*': '' }}
   </mat-label>
   <div class="c-ew__preview" [ngClass]="{
-    'c-ew__preview--invalid' : data.invalid && (data.touched || data.dirty),
-    'c-ew__preview--disabled': data.disabled,
+    'c-ew__preview--invalid' : data.controlStatus.invalid && (data.controlStatus.touched || data.controlStatus.dirty),
+    'c-ew__preview--disabled': data.controlStatus.disabled,
     'c-ew__preview--focused': data.focused
   }">
     <div class="c-ew__preview-container">
       <div #previewContainer class="c-ew__preview-content u-hide-scrollbar" [ngClass]="{
-        'c-ew__preview-content--disabled': data.disabled
+        'c-ew__preview-content--disabled': data.controlStatus.disabled
       }">
       </div>
     </div>

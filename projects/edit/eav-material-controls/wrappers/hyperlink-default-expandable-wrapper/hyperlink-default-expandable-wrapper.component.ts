@@ -63,24 +63,21 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
     );
 
     this.templateVars$ = combineLatest([
-      combineLatest([this.value$, this.preview$, this.label$, this.placeholder$, this.invalid$, this.required$]),
-      combineLatest([settings$, this.disabled$, this.touched$]),
+      combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
+      combineLatest([this.preview$, settings$]),
     ]).pipe(
       map(([
-        [value, preview, label, placeholder, invalid, required],
-        [settings, disabled, touched],
+        [controlStatus, label, placeholder, required],
+        [preview, settings],
       ]) => {
         const templateVars: HyperlinkDefaultExpandableTemplateVars = {
-          value,
-          preview,
+          controlStatus,
           label,
           placeholder,
-          invalid,
           required,
+          preview,
           buttonAdam: settings._buttonAdam,
           buttonPage: settings._buttonPage,
-          disabled,
-          touched,
         };
         return templateVars;
       }),

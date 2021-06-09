@@ -64,7 +64,7 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
     this.availableEntities$ = new BehaviorSubject<EntityInfo[]>(null);
 
     this.selectedEntities$ = combineLatest([
-      this.value$,
+      this.controlStatus$.pipe(map(controlStatus => controlStatus.value), distinctUntilChanged()),
       this.entityCacheService.getEntities$(),
       this.stringQueryCacheService.getEntities$(),
       this.settings$.pipe(
@@ -109,20 +109,18 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
 
     const allowMultiValue$ = this.settings$.pipe(map(settings => settings.AllowMultiValue), distinctUntilChanged());
     this.templateVars$ = combineLatest([
-      combineLatest([this.label$, this.placeholder$, this.required$, this.invalid$, this.freeTextMode$, allowMultiValue$]),
+      combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$, this.freeTextMode$, allowMultiValue$]),
       combineLatest([this.selectedEntities$, this.availableEntities$, this.disableAddNew$, this.isExpanded$, this.error$]),
-      combineLatest([this.disabled$, this.touched$]),
     ]).pipe(
       map(([
-        [label, placeholder, required, invalid, freeTextMode, allowMultiValue],
+        [controlStatus, label, placeholder, required, freeTextMode, allowMultiValue],
         [selectedEntities, availableEntities, disableAddNew, isExpanded, error],
-        [disabled, touched],
       ]) => {
         const templateVars: EntityTemplateVars = {
+          controlStatus,
           label,
           placeholder,
           required,
-          invalid,
           freeTextMode,
           allowMultiValue,
           selectedEntities,
@@ -130,8 +128,6 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
           disableAddNew,
           isExpanded,
           error,
-          disabled,
-          touched,
         };
         return templateVars;
       }),

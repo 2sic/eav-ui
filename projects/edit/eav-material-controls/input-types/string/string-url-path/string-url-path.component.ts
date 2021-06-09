@@ -58,14 +58,13 @@ export class StringUrlPathComponent extends BaseComponent<string> implements OnI
       })
     );
 
-    this.templateVars$ = combineLatest([this.label$, this.placeholder$, this.required$, this.disabled$, this.touched$]).pipe(
-      map(([label, placeholder, required, disabled, touched]) => {
+    this.templateVars$ = combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]).pipe(
+      map(([controlStatus, label, placeholder, required]) => {
         const templateVars: StringUrlPathTemplateVars = {
+          controlStatus,
           label,
           placeholder,
           required,
-          disabled,
-          touched,
         };
         return templateVars;
       }),

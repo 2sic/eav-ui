@@ -3,6 +3,7 @@ import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
+import { GeneralHelpers } from '../../../../shared/helpers';
 import { EavService, FieldsSettingsService } from '../../../../shared/services';
 import { BaseComponent } from '../../base/base.component';
 import { NumberDefaultTemplateVars } from './number-default.models';
@@ -25,25 +26,29 @@ export class NumberDefaultComponent extends BaseComponent<number> implements OnI
 
   ngOnInit() {
     super.ngOnInit();
-    const min$ = this.settings$.pipe(map(settings => settings.Min), distinctUntilChanged());
-    const max$ = this.settings$.pipe(map(settings => settings.Max), distinctUntilChanged());
+    const settings$ = this.settings$.pipe(
+      map(settings => ({
+        Min: settings.Min,
+        Max: settings.Max,
+      })),
+      distinctUntilChanged(GeneralHelpers.objectsEqual),
+    );
 
     this.templateVars$ = combineLatest([
-      combineLatest([this.label$, this.placeholder$, this.required$, min$, max$]),
-      combineLatest([this.disabled$, this.touched$]),
+      combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
+      combineLatest([settings$]),
     ]).pipe(
       map(([
-        [label, placeholder, required, min, max],
-        [disabled, touched],
+        [controlStatus, label, placeholder, required],
+        [settings],
       ]) => {
         const templateVars: NumberDefaultTemplateVars = {
+          controlStatus,
           label,
           placeholder,
           required,
-          min,
-          max,
-          disabled,
-          touched,
+          min: settings.Min,
+          max: settings.Max,
         };
         return templateVars;
       }),

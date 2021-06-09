@@ -3,15 +3,15 @@
 
     <div class="fabs-box">
       <button mat-mini-fab color="accent" [matTooltip]="'Fields.Hyperlink.Default.AdamTip' | translate"
-        *ngIf="data.buttonAdam" [disabled]="data.disabled" (click)="toggleAdam(false, false)">
+        *ngIf="data.buttonAdam" [disabled]="data.controlStatus.disabled" (click)="toggleAdam(false, false)">
         <mat-icon svgIcon="appleFilled"></mat-icon>
       </button>
       <button mat-mini-fab color="primary" [matTooltip]="'Fields.Hyperlink.Default.PageTip' | translate"
-        *ngIf="data.buttonPage" [disabled]="data.disabled" (click)="openPagePicker()">
+        *ngIf="data.buttonPage" [disabled]="data.controlStatus.disabled" (click)="openPagePicker()">
         <mat-icon svgIcon="sitemap"></mat-icon>
       </button>
       <button mat-mini-fab color="primary" [matTooltip]="'Fields.Hyperlink.Default.MoreOptions' | translate"
-        *ngIf="data.buttonMore" [disabled]="data.disabled" [matMenuTriggerFor]="menu">
+        *ngIf="data.buttonMore" [disabled]="data.controlStatus.disabled" [matMenuTriggerFor]="menu">
         <mat-icon>more_vert</mat-icon>
       </button>
     </div>
@@ -50,7 +50,7 @@
             </mat-form-field>
             <!-- link absolutely positioned above input -->
             <div *ngIf="data.preview?.floatingText" class="hyperlink-floating">
-              <div class="hyperlink-floating__value">{{ data.value }}</div>
+              <div class="hyperlink-floating__value">{{ data.controlStatus.value }}</div>
               <div class="hyperlink-floating__url-box">
                 <a [href]="data.preview.url" target="_blank" class="hyperlink-floating__url"
                   [matTooltip]="data.preview.url">
@@ -59,7 +59,7 @@
               </div>
             </div>
           </div>
-          <div class="preview-wrapper" *ngIf="data.value && data.preview">
+          <div class="preview-wrapper" *ngIf="data.controlStatus.value && data.preview">
             <!-- image -->
             <a [href]="data.preview.url" target="_blank" *ngIf="data.preview.isImage">
               <div class="preview-image-box">

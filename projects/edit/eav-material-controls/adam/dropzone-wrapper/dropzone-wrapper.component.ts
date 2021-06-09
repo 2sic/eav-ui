@@ -2,7 +2,7 @@ import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { AfterViewInit, ChangeDetectionStrategy, Component, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { DropzoneDirective } from 'ngx-dropzone-wrapper';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { distinctUntilChanged, map } from 'rxjs/operators';
 import { AdamPostResponse, DropzoneConfigExt } from '../../../../edit-types';
 import { consoleLogAngular } from '../../../../ng-dialogs/src/app/shared/helpers/console-log-angular.helper';
 import { FieldWrapper } from '../../../eav-dynamic-form/model/field-wrapper';
@@ -34,7 +34,10 @@ export class DropzoneWrapperComponent extends BaseComponent implements FieldWrap
 
   ngOnInit() {
     super.ngOnInit();
-    this.dropzoneDisabled$ = combineLatest([this.disabled$, this.dropzoneConfig$]).pipe(
+    this.dropzoneDisabled$ = combineLatest([
+      this.controlStatus$.pipe(map(controlStatus => controlStatus.disabled), distinctUntilChanged()),
+      this.dropzoneConfig$,
+    ]).pipe(
       map(([controlDisabled, dropzoneConfig]) => {
         const dropzoneDisabled = (dropzoneConfig != null) ? dropzoneConfig.disabled : true;
         return controlDisabled || dropzoneDisabled;

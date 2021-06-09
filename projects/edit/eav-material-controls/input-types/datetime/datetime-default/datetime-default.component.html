@@ -1,8 +1,8 @@
 <ng-container *ngIf="templateVars$ | async as data">
 
   <mat-form-field [formGroup]="group" appearance="standard" color="accent" *ngIf="!data.useTimePicker">
-    <input matInput [disabled]="data.disabled" [matDatepicker]="picker" [placeholder]="data.placeholder"
-      [required]="data.required" [value]="data.value" (dateChange)="updateValue($event)">
+    <input matInput [disabled]="data.controlStatus.disabled" [matDatepicker]="picker" [placeholder]="data.placeholder"
+      [required]="data.required" [value]="data.controlStatus.value" (dateChange)="updateValue($event)">
     <mat-datepicker-toggle matSuffix [for]="picker" [matTooltip]="'Fields.DateTime.Open' | translate">
     </mat-datepicker-toggle>
     <mat-datepicker #picker></mat-datepicker>
@@ -10,8 +10,9 @@
   </mat-form-field>
 
   <mat-form-field [formGroup]="group" appearance="standard" color="accent" *ngIf="data.useTimePicker">
-    <input matInput [disabled]="data.disabled" [ngxMatDatetimePicker]="picker" [placeholder]="data.placeholder"
-      [required]="data.required" [value]="data.value" (dateChange)="updateValue($event)">
+    <input matInput [disabled]="data.controlStatus.disabled" [ngxMatDatetimePicker]="picker"
+      [placeholder]="data.placeholder" [required]="data.required" [value]="data.controlStatus.value"
+      (dateChange)="updateValue($event)">
     <mat-datepicker-toggle matSuffix [for]="$any(picker)" [matTooltip]="'Fields.DateTime.Open' | translate">
     </mat-datepicker-toggle>
     <ngx-mat-datetime-picker #picker></ngx-mat-datetime-picker>

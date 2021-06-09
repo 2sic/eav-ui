@@ -9,10 +9,6 @@ export interface SelectedEntity {
 }
 
 export interface EntityTemplateVars extends BaseFieldTemplateVars {
-  label: string;
-  placeholder: string;
-  required: boolean;
-  invalid: boolean;
   freeTextMode: boolean;
   allowMultiValue: boolean;
   selectedEntities: SelectedEntity[];

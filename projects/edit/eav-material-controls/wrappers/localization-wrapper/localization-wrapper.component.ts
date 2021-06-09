@@ -42,7 +42,7 @@ export class LocalizationWrapperComponent extends BaseComponent implements Field
     const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
     const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
     if (currentLanguage === defaultLanguage) { return; }
-    if (!this.disabled$.value) { return; }
+    if (!this.control.disabled) { return; }
     const isExpanded = this.editRoutingService.isExpanded(this.config.index, this.config.entityGuid);
     if (isExpanded) { return; }
 

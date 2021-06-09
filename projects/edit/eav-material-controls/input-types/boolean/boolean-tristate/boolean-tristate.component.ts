@@ -28,22 +28,30 @@ export class BooleanTristateComponent extends BaseComponent<boolean | ''> implem
 
   ngOnInit() {
     super.ngOnInit();
-    this.value$ = this.value$.pipe(map(value => (value === '') ? null : value), distinctUntilChanged());
     this.label$ = this.settings$.pipe(map(settings => settings._label), distinctUntilChanged());
 
-    const reverseToggle$ = this.settings$.pipe(map(settings => settings.ReverseToggle), distinctUntilChanged());
-    const checked$ = combineLatest([this.value$, reverseToggle$]).pipe(
+    const checked$ = combineLatest([
+      this.controlStatus$.pipe(map(controlStatus => (controlStatus.value === '') ? null : controlStatus.value), distinctUntilChanged()),
+      this.settings$.pipe(map(settings => settings.ReverseToggle), distinctUntilChanged()),
+    ]).pipe(
       map(([value, reverseToogle]) => value == null ? value : reverseToogle ? !value : value),
       distinctUntilChanged(),
     );
 
-    this.templateVars$ = combineLatest([checked$, this.label$, this.disabled$, this.touched$]).pipe(
-      map(([checked, label, disabled, touched]) => {
+    this.templateVars$ = combineLatest([
+      combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
+      combineLatest([checked$]),
+    ]).pipe(
+      map(([
+        [controlStatus, label, placeholder, required],
+        [checked],
+      ]) => {
         const templateVars: BooleanTristateTemplateVars = {
-          checked,
+          controlStatus,
           label,
-          disabled,
-          touched,
+          placeholder,
+          required,
+          checked,
         };
         return templateVars;
       }),

@@ -3,6 +3,7 @@ import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { ComponentMetadata } from '../../../../eav-dynamic-form/decorators/component-metadata.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
+import { GeneralHelpers } from '../../../../shared/helpers';
 import { EavService, FieldsSettingsService } from '../../../../shared/services';
 import { BaseComponent } from '../../base/base.component';
 import { StringDefaultLogic } from './string-default-logic';
@@ -27,25 +28,29 @@ export class StringDefaultComponent extends BaseComponent<string> implements OnI
 
   ngOnInit() {
     super.ngOnInit();
-    const fontFamily$ = this.settings$.pipe(map(settings => settings.InputFontFamily), distinctUntilChanged());
-    const rowCount$ = this.settings$.pipe(map(settings => settings.RowCount), distinctUntilChanged());
+    const settings$ = this.settings$.pipe(
+      map(settings => ({
+        InputFontFamily: settings.InputFontFamily,
+        RowCount: settings.RowCount,
+      })),
+      distinctUntilChanged(GeneralHelpers.objectsEqual),
+    );
 
     this.templateVars$ = combineLatest([
-      combineLatest([fontFamily$, rowCount$, this.label$, this.placeholder$, this.required$]),
-      combineLatest([this.disabled$, this.touched$]),
+      combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
+      combineLatest([settings$]),
     ]).pipe(
       map(([
-        [fontFamily, rowCount, label, placeholder, required],
-        [disabled, touched],
+        [controlStatus, label, placeholder, required],
+        [settings],
       ]) => {
         const templateVars: StringDefaultTemplateVars = {
-          fontFamily,
-          rowCount,
+          controlStatus,
           label,
           placeholder,
           required,
-          disabled,
-          touched,
+          inputFontFamily: settings.InputFontFamily,
+          rowCount: settings.RowCount,
         };
         return templateVars;
       }),

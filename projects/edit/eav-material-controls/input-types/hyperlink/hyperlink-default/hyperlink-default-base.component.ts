@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Directive, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject } from 'rxjs';
+import { distinctUntilChanged, map } from 'rxjs/operators';
 import { AdamItem } from '../../../../../edit-types';
 import { FileTypeHelpers, GeneralHelpers, PagePicker, UrlHelpers } from '../../../../shared/helpers';
 import { EavService, FieldsSettingsService } from '../../../../shared/services';
@@ -38,7 +39,7 @@ export class HyperlinkDefaultBaseComponent extends BaseComponent<string> impleme
       icon: '',
     });
     this.subscription.add(
-      this.value$.subscribe(value => {
+      this.controlStatus$.pipe(map(controlStatus => controlStatus.value), distinctUntilChanged()).subscribe(value => {
         this.fetchLink(value);
       })
     );

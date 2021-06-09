@@ -31,20 +31,19 @@ export class CustomJsonEditorComponent extends BaseComponent<string> implements 
     const rowCount$ = this.settings$.pipe(map(settings => settings.Rows), distinctUntilChanged());
 
     this.templateVars$ = combineLatest([
-      combineLatest([rowCount$, this.placeholder$, this.required$, this.label$]),
-      combineLatest([this.disabled$, this.touched$]),
+      combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
+      combineLatest([rowCount$]),
     ]).pipe(
       map(([
-        [rowCount, placeholder, required, label],
-        [disabled, touched],
+        [controlStatus, label, placeholder, required],
+        [rowCount],
       ]) => {
         const templateVars: CustomJsonEditorTemplateVars = {
-          rowCount,
+          controlStatus,
+          label,
           placeholder,
           required,
-          label,
-          disabled,
-          touched,
+          rowCount,
         };
         return templateVars;
       }),

@@ -43,21 +43,19 @@ export class DatetimeDefaultComponent extends BaseComponent<string> implements O
     const useTimePicker$ = this.settings$.pipe(map(settings => settings.UseTimePicker), distinctUntilChanged());
 
     this.templateVars$ = combineLatest([
-      combineLatest([useTimePicker$, this.placeholder$, this.required$, this.label$]),
-      combineLatest([this.disabled$, this.touched$, this.value$]),
+      combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
+      combineLatest([useTimePicker$]),
     ]).pipe(
       map(([
-        [useTimePicker, placeholder, required, label],
-        [disabled, touched, value],
+        [controlStatus, label, placeholder, required],
+        [useTimePicker],
       ]) => {
         const templateVars: DatetimeDefaultTemplateVars = {
-          useTimePicker,
+          controlStatus,
+          label,
           placeholder,
           required,
-          label,
-          disabled,
-          touched,
-          value,
+          useTimePicker,
         };
         return templateVars;
       }),

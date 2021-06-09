@@ -51,7 +51,10 @@ export class StringFontIconPickerComponent extends BaseComponent<string> impleme
     );
 
     const previewCss$ = this.settings$.pipe(map(settings => settings.PreviewCss), distinctUntilChanged());
-    const filteredIcons$ = combineLatest([this.value$, this.iconOptions$]).pipe(
+    const filteredIcons$ = combineLatest([
+      this.controlStatus$.pipe(map(controlStatus => controlStatus.value), distinctUntilChanged()),
+      this.iconOptions$,
+    ]).pipe(
       map(([search, iconList]) => {
         // if we have a filter param, use it, otherwise don't filter
         const filtered = search
@@ -62,22 +65,20 @@ export class StringFontIconPickerComponent extends BaseComponent<string> impleme
     );
 
     this.templateVars$ = combineLatest([
-      combineLatest([this.value$, filteredIcons$, previewCss$, this.label$, this.placeholder$, this.required$]),
-      combineLatest([this.disabled$, this.touched$]),
+      combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
+      combineLatest([filteredIcons$, previewCss$]),
     ]).pipe(
       map(([
-        [value, filteredIcons, previewCss, label, placeholder, required],
-        [disabled, touched],
+        [controlStatus, label, placeholder, required],
+        [filteredIcons, previewCss],
       ]) => {
         const templateVars: StringFontIconPickerTemplateVars = {
-          value,
-          filteredIcons,
-          previewCss,
+          controlStatus,
           label,
           placeholder,
           required,
-          disabled,
-          touched,
+          filteredIcons,
+          previewCss,
         };
         return templateVars;
       }),

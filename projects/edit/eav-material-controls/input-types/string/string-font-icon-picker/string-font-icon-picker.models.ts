@@ -10,10 +10,6 @@ export interface IconOption {
 }
 
 export interface StringFontIconPickerTemplateVars extends BaseFieldTemplateVars {
-  value: string;
   filteredIcons: IconOption[];
   previewCss: string;
-  label: string;
-  placeholder: string;
-  required: boolean;
 }

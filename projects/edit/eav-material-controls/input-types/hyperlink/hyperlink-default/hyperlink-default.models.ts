@@ -19,9 +19,5 @@ export interface HyperlinkDefaultTemplateVars extends BaseFieldTemplateVars {
   showPagePicker: boolean;
   showImageManager: boolean;
   showFileManager: boolean;
-  value: string;
   preview: Preview;
-  label: string;
-  placeholder: string;
-  required: boolean;
 }

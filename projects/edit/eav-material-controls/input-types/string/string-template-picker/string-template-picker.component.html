@@ -10,7 +10,8 @@
       </mat-select>
       <mat-label>{{ data.label }}</mat-label>
     </mat-form-field>
-    <button mat-icon-button matTooltip="Create a new file" [disabled]="data.disabled" (click)="createTemplate()">
+    <button mat-icon-button matTooltip="Create a new file" [disabled]="data.controlStatus.disabled"
+      (click)="createTemplate()">
       <mat-icon>add</mat-icon>
     </button>
   </div>

@@ -31,18 +31,18 @@
   <mat-label class="c-ew__preview-label c-ew__color--primary" [ngClass]="{
     'mat-caption' : data.itemsNumber > 0,
     'mat-empty' : data.itemsNumber === 0,
-    'mat-error' : data.invalid && !config.initialDisabled,
-    'color__primary' : !data.invalid && !config.initialDisabled,
+    'mat-error' : data.controlStatus.invalid && !config.initialDisabled,
+    'color__primary' : !data.controlStatus.invalid && !config.initialDisabled,
     'color__label-disabled' : config.initialDisabled
   }">
     {{ data.label }} {{ data.required ? '*': '' }}
   </mat-label>
   <div matRipple class="c-ew__preview mat-ripple" [matRippleAnimation]="{ enterDuration: 360 }" (click)="expandDialog()"
     [ngClass]="{
-      'c-ew__preview--invalid': data.invalid,
+      'c-ew__preview--invalid': data.controlStatus.invalid,
       'c-ew__preview--disabled': config.initialDisabled
     }">
-    <div [ngClass]="data.value ? 'c-ew__preview-container' : 'c-ew__preview-container--empty'">
+    <div [ngClass]="data.controlStatus.value ? 'c-ew__preview-container' : 'c-ew__preview-container--empty'">
       <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="2px" class="c-ew__preview-content">
         <ng-container *ngFor="let item of data.items; trackBy: trackByFn">
           <!-- folders -->

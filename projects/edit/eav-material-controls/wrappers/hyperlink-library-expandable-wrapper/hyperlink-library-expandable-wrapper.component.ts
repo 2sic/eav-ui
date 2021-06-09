@@ -42,22 +42,20 @@ export class HyperlinkLibraryExpandableWrapperComponent extends BaseComponent<nu
     this.adamItems$ = new BehaviorSubject<AdamItem[]>([]);
 
     this.templateVars$ = combineLatest([
-      combineLatest([this.value$, this.label$, this.required$, this.invalid$, this.adamItems$]),
-      combineLatest([this.disabled$, this.touched$]),
+      combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
+      combineLatest([this.adamItems$]),
     ]).pipe(
       map(([
-        [value, label, required, invalid, items],
-        [disabled, touched],
+        [controlStatus, label, placeholder, required],
+        [adamItems],
       ]) => {
         const templateVars: HyperlinkLibraryExpandableTemplateVars = {
-          value,
+          controlStatus,
           label,
+          placeholder,
           required,
-          invalid,
-          items: items.slice(0, 9),
-          itemsNumber: items.length,
-          disabled,
-          touched,
+          items: adamItems.slice(0, 9),
+          itemsNumber: adamItems.length,
         };
         return templateVars;
       }),

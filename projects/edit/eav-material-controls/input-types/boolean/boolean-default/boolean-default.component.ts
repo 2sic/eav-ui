@@ -30,19 +30,28 @@ export class BooleanDefaultComponent extends BaseComponent<boolean> implements O
     super.ngOnInit();
     this.label$ = this.settings$.pipe(map(settings => settings._label), distinctUntilChanged());
 
-    const reverseToggle$ = this.settings$.pipe(map(settings => settings.ReverseToggle), distinctUntilChanged());
-    const checked$ = combineLatest([this.value$, reverseToggle$]).pipe(
+    const checked$ = combineLatest([
+      this.controlStatus$.pipe(map(controlStatus => controlStatus.value), distinctUntilChanged()),
+      this.settings$.pipe(map(settings => settings.ReverseToggle), distinctUntilChanged())
+    ]).pipe(
       map(([value, reverseToogle]) => reverseToogle ? !value : value),
       distinctUntilChanged(),
     );
 
-    this.templateVars$ = combineLatest([checked$, this.label$, this.disabled$, this.touched$]).pipe(
-      map(([checked, label, disabled, touched]) => {
+    this.templateVars$ = combineLatest([
+      combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
+      combineLatest([checked$]),
+    ]).pipe(
+      map(([
+        [controlStatus, label, placeholder, required],
+        [checked],
+      ]) => {
         const templateVars: BooleanDefaultTemplateVars = {
-          checked,
+          controlStatus,
           label,
-          disabled,
-          touched,
+          placeholder,
+          required,
+          checked,
         };
         return templateVars;
       }),

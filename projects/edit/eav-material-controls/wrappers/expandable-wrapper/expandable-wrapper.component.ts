@@ -55,22 +55,19 @@ export class ExpandableWrapperComponent extends BaseComponent<string> implements
     this.open$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
 
     this.templateVars$ = combineLatest([
-      combineLatest([this.value$, this.label$, this.required$, this.invalid$, this.config.focused$]),
-      combineLatest([this.disabled$, this.dirty$, this.touched$]),
+      combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
+      combineLatest([this.config.focused$]),
     ]).pipe(
       map(([
-        [value, label, required, invalid, focused],
-        [disabled, dirty, touched],
+        [controlStatus, label, placeholder, required],
+        [focused],
       ]) => {
         const templateVars: ExpandableWrapperTemplateVars = {
-          value,
+          controlStatus,
           label,
+          placeholder,
           required,
-          invalid,
           focused,
-          disabled,
-          dirty,
-          touched,
         };
         return templateVars;
       }),

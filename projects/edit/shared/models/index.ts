@@ -2,6 +2,7 @@ export * from './adam-snapshot.model';
 export * from './calculated-input-type.model';
 export * from './component-metadata.model';
 export * from './content-type-settings.model';
+export * from './control-status.model';
 export * from './eav-config.model';
 export * from './edit-routing.models';
 export * from './element-event-listener.model';

@@ -40,7 +40,7 @@ export class EntityExpandableWrapperComponent extends BaseComponent<string | str
     this.dialogIsOpen$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
 
     const selectedEntities$ = combineLatest([
-      this.value$,
+      this.controlStatus$.pipe(map(controlStatus => controlStatus.value), distinctUntilChanged()),
       this.entityCacheService.getEntities$(),
       this.stringQueryCache.getEntities$(),
       this.settings$.pipe(
@@ -57,21 +57,20 @@ export class EntityExpandableWrapperComponent extends BaseComponent<string | str
     );
 
     this.templateVars$ = combineLatest([
-      combineLatest([this.label$, this.required$, this.invalid$, selectedEntities$]),
-      combineLatest([this.disabled$, this.touched$]),
+      combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
+      combineLatest([selectedEntities$]),
     ]).pipe(
       map(([
-        [label, required, invalid, selectedEntities],
-        [disabled, touched],
+        [controlStatus, label, placeholder, required],
+        [selectedEntities],
       ]) => {
         const templateVars: EntityExpandableTemplateVars = {
+          controlStatus,
           label,
+          placeholder,
           required,
-          invalid,
           selectedEntities: selectedEntities?.slice(0, 9) || [],
           entitiesNumber: selectedEntities?.length || 0,
-          disabled,
-          touched,
         };
         return templateVars;
       }),
