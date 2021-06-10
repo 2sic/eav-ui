@@ -379,7 +379,7 @@ export class FieldsSettingsService implements OnDestroy {
     if (target !== FormulaTargets.Value) { return value; }
     if (value == null) { return value; }
 
-    if (inputType.Type === InputTypeConstants.DatetimeDefault) {
+    if (inputType?.Type === InputTypeConstants.DatetimeDefault) {
       const date = new Date(value as string | number | Date);
 
       // if value is ISO string, or miliseconds, no correction
