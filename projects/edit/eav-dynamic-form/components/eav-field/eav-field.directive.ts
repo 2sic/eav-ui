@@ -24,7 +24,7 @@ import { StringDropdownComponent } from '../../../eav-material-controls/input-ty
 import { StringFontIconPickerComponent } from '../../../eav-material-controls/input-types/string/string-font-icon-picker/string-font-icon-picker.component';
 import { StringTemplatePickerComponent } from '../../../eav-material-controls/input-types/string/string-template-picker/string-template-picker.component';
 import { StringUrlPathComponent } from '../../../eav-material-controls/input-types/string/string-url-path/string-url-path.component';
-import { CollapsibleWrapperComponent } from '../../../eav-material-controls/wrappers';
+import { CollapsibleWrapperComponent } from '../../../eav-material-controls/wrappers/collapsible-wrapper/collapsible-wrapper.component';
 import { EntityExpandableWrapperComponent } from '../../../eav-material-controls/wrappers/entity-expandable-wrapper/entity-expandable-wrapper.component';
 import { ExpandableWrapperComponent } from '../../../eav-material-controls/wrappers/expandable-wrapper/expandable-wrapper.component';
 import { HiddenWrapperComponent } from '../../../eav-material-controls/wrappers/hidden-wrapper/hidden-wrapper.component';

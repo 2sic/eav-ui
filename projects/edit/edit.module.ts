@@ -78,7 +78,7 @@ import { LanguageSwitcherComponent } from './eav-material-controls/localization/
 import { TranslateMenuDialogComponent } from './eav-material-controls/localization/translate-menu-dialog/translate-menu-dialog.component';
 import { TranslateMenuComponent } from './eav-material-controls/localization/translate-menu/translate-menu.component';
 import { PagePickerComponent } from './eav-material-controls/page-picker/page-picker.component';
-import { CollapsibleWrapperComponent } from './eav-material-controls/wrappers';
+import { CollapsibleWrapperComponent } from './eav-material-controls/wrappers/collapsible-wrapper/collapsible-wrapper.component';
 import { EntityExpandableWrapperComponent } from './eav-material-controls/wrappers/entity-expandable-wrapper/entity-expandable-wrapper.component';
 import { ExpandableWrapperComponent } from './eav-material-controls/wrappers/expandable-wrapper/expandable-wrapper.component';
 import { FieldHelperTextComponent } from './eav-material-controls/wrappers/field-helper-text/field-helper-text.component';
