@@ -1,4 +1,3 @@
-import { DnnInterceptor } from '@2sic.com/dnn-sxc-angular';
 import { NgxMatDatetimePickerModule } from '@angular-material-components/datetime-picker';
 import { NgxMatMomentModule, NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular-material-components/moment-adapter';
 import { DragDropModule } from '@angular/cdk/drag-drop';
@@ -12,14 +11,11 @@ import { MatMomentDateModule, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/m
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatChipsModule } from '@angular/material/chips';
 import { MatRippleModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
@@ -28,7 +24,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
@@ -170,7 +165,6 @@ export function translateLoaderFactoryEdit(http: HttpClient): TranslateLoader {
     TranslateModule.forChild(buildTranslateConfiguration(translateLoaderFactoryEdit)),
     RouterModule,
     MatButtonModule,
-    MatCheckboxModule,
     MatInputModule,
     MatSelectModule,
     ReactiveFormsModule,
@@ -190,11 +184,8 @@ export function translateLoaderFactoryEdit(http: HttpClient): TranslateLoader {
     DragDropModule,
     DropzoneModule,
     MatAutocompleteModule,
-    MatChipsModule,
-    MatGridListModule,
     MatListModule,
     MatProgressSpinnerModule,
-    MatTabsModule,
     NgxMatDatetimePickerModule,
     NgxMatMomentModule,
     MatRippleModule,
@@ -202,7 +193,6 @@ export function translateLoaderFactoryEdit(http: HttpClient): TranslateLoader {
   ],
   providers: [
     Context,
-    DnnInterceptor,
     EavService,
     AdamService,
     EntityService,
