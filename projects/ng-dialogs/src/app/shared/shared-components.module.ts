@@ -36,10 +36,6 @@ import { SafeResourceUrlPipe } from './pipes/safe-resource-url';
     ToggleDebugDirective,
     MatFormFieldTextareaDirective,
   ],
-  entryComponents: [
-    BooleanFilterComponent,
-    IdFieldComponent,
-  ],
   imports: [
     RouterModule,
     CommonModule,

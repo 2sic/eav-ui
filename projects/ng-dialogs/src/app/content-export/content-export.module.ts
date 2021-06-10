@@ -20,9 +20,6 @@ import { ContentExportService } from './services/content-export.service';
   declarations: [
     ContentExportComponent,
   ],
-  entryComponents: [
-    ContentExportComponent,
-  ],
   imports: [
     CommonModule,
     ContentExportRoutingModule,

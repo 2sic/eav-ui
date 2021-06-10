@@ -29,14 +29,6 @@ import { VisualQueryComponent } from './visual-query.component';
     QueryResultComponent,
     StreamErrorResultComponent,
   ],
-  entryComponents: [
-    VisualQueryComponent,
-    RunExplorerComponent,
-    AddExplorerComponent,
-    PlumbEditorComponent,
-    QueryResultComponent,
-    StreamErrorResultComponent,
-  ],
   imports: [
     CommonModule,
     SharedComponentsModule,

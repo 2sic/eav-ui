@@ -37,15 +37,6 @@ import { ContentTypesFieldsService } from './services/content-types-fields.servi
     ContentTypeFieldsSpecialComponent,
     ReservedNamesValidatorDirective,
   ],
-  entryComponents: [
-    ContentTypeFieldsComponent,
-    ContentTypeFieldsTitleComponent,
-    ContentTypeFieldsInputTypeComponent,
-    ContentTypeFieldsActionsComponent,
-    EditContentTypeFieldsComponent,
-    ContentTypeFieldsTypeComponent,
-    ContentTypeFieldsSpecialComponent,
-  ],
   imports: [
     CommonModule,
     ContentTypeFieldsRoutingModule,

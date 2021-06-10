@@ -21,9 +21,6 @@ import { ReplaceContentComponent } from './replace-content.component';
   declarations: [
     ReplaceContentComponent,
   ],
-  entryComponents: [
-    ReplaceContentComponent,
-  ],
   imports: [
     CommonModule,
     ReplaceContentRoutingModule,

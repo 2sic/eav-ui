@@ -37,14 +37,6 @@ import { EntitiesService } from './services/entities.service';
     ContentItemsEntityComponent,
     ContentItemImportComponent,
   ],
-  entryComponents: [
-    ContentItemsComponent,
-    PubMetaFilterComponent,
-    ContentItemsStatusComponent,
-    ContentItemsActionsComponent,
-    ContentItemsEntityComponent,
-    ContentItemImportComponent,
-  ],
   imports: [
     CommonModule,
     ContentItemsRoutingModule,

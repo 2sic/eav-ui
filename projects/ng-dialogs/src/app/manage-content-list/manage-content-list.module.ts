@@ -16,9 +16,6 @@ import { ContentGroupService } from './services/content-group.service';
   declarations: [
     ManageContentListComponent,
   ],
-  entryComponents: [
-    ManageContentListComponent,
-  ],
   imports: [
     CommonModule,
     ManageContentListRoutingModule,

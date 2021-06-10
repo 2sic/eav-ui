@@ -44,12 +44,6 @@ export function translateLoaderFactoryCode(http: HttpClient) {
     DepthPaddingPipe,
     SortItemsPipe,
   ],
-  entryComponents: [
-    CodeEditorComponent,
-    CodeSnippetsComponent,
-    CodeTemplatesComponent,
-    AceEditorComponent,
-  ],
   imports: [
     CodeEditorRoutingModule,
     SharedComponentsModule,

@@ -20,9 +20,6 @@ import { VersionsService } from './services/versions.service';
   declarations: [
     ItemHistoryComponent,
   ],
-  entryComponents: [
-    ItemHistoryComponent,
-  ],
   imports: [
     CommonModule,
     ItemHistoryRoutingModule,

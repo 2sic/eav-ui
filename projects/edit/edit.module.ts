@@ -23,8 +23,6 @@ export function translateLoaderFactoryEdit(http: HttpClient): TranslateLoader {
 @NgModule({
   declarations: [
   ],
-  entryComponents: [
-  ],
   imports: [
     EditRoutingModule,
     SharedComponentsModule,

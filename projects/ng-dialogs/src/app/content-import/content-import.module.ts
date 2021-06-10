@@ -19,9 +19,6 @@ import { ContentImportService } from './services/content-import.service';
   declarations: [
     ContentImportComponent,
   ],
-  entryComponents: [
-    ContentImportComponent,
-  ],
   imports: [
     CommonModule,
     ContentImportRoutingModule,

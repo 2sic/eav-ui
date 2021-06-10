@@ -15,9 +15,6 @@ import { ImportAppService } from './services/import-app.service';
   declarations: [
     ImportAppComponent,
   ],
-  entryComponents: [
-    ImportAppComponent,
-  ],
   imports: [
     CommonModule,
     ImportAppRoutingModule,

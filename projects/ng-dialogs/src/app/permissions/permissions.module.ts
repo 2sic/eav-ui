@@ -21,10 +21,6 @@ import { PermissionsService } from './services/permissions.service';
     PermissionsComponent,
     PermissionsActionsComponent,
   ],
-  entryComponents: [
-    PermissionsComponent,
-    PermissionsActionsComponent,
-  ],
   imports: [
     CommonModule,
     PermissionsRoutingModule,

@@ -49,16 +49,6 @@ import { SxcInsightsComponent } from './sxc-insights/sxc-insights.component';
     EnableLanguagesComponent,
     EnableLanguagesStatusComponent,
   ],
-  entryComponents: [
-    AppsManagementNavComponent,
-    AppsListShowComponent,
-    AppsListActionsComponent,
-    FeaturesListEnabledComponent,
-    FeaturesListUiComponent,
-    FeaturesListPublicComponent,
-    FeaturesListSecurityComponent,
-    EnableLanguagesStatusComponent,
-  ],
   imports: [
     AppsManagementRoutingModule,
     SharedComponentsModule,

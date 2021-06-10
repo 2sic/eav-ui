@@ -33,9 +33,6 @@ const editRefreshRoutes: Routes = [
   declarations: [
     RefreshEditComponent,
   ],
-  entryComponents: [
-    RefreshEditComponent,
-  ],
   imports: [
     RouterModule.forChild(editRefreshRoutes),
   ],

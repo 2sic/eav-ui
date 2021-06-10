@@ -23,8 +23,6 @@ import { Context } from './shared/services/context';
   declarations: [
     AppComponent,
   ],
-  entryComponents: [
-  ],
   imports: [
     AppRoutingModule,
     BrowserModule,
