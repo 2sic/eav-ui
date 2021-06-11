@@ -5,7 +5,7 @@ import { map } from 'rxjs/operators';
 import { PublishStatusDialogComponent } from '../../eav-material-controls/dialogs/publish-status-dialog/publish-status-dialog.component';
 import { EavService } from '../../shared/services';
 import { LanguageService, PublishStatusService } from '../../shared/store/ngrx-data';
-import { FormHeaderTemplateVars } from './edit-dialog-header.models';
+import { EditDialogHeaderTemplateVars } from './edit-dialog-header.models';
 
 @Component({
   selector: 'app-edit-dialog-header',
@@ -16,7 +16,7 @@ export class EditDialogHeaderComponent implements OnInit {
   @Input() disabled: boolean;
   @Output() private closeDialog = new EventEmitter<null>();
 
-  templateVars$: Observable<FormHeaderTemplateVars>;
+  templateVars$: Observable<EditDialogHeaderTemplateVars>;
 
   constructor(
     private dialog: MatDialog,
@@ -31,7 +31,7 @@ export class EditDialogHeaderComponent implements OnInit {
     const publishMode$ = this.publishStatusService.getPublishMode$(this.eavService.eavConfig.formId);
     this.templateVars$ = combineLatest([hasLanguages$, publishMode$]).pipe(
       map(([hasLanguages, publishMode]) => {
-        const templateVars: FormHeaderTemplateVars = {
+        const templateVars: EditDialogHeaderTemplateVars = {
           hasLanguages,
           publishMode,
         };

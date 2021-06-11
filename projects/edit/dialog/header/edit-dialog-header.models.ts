@@ -1,6 +1,6 @@
 import { PublishMode } from '../../shared/models';
 
-export interface FormHeaderTemplateVars {
+export interface EditDialogHeaderTemplateVars {
   hasLanguages: boolean;
   publishMode: PublishMode;
 }
