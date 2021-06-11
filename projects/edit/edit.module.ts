@@ -34,6 +34,7 @@ import { SharedComponentsModule } from '../ng-dialogs/src/app/shared/shared-comp
 import { buildTranslateConfiguration, TranslateLoaderWithErrorHandling } from '../ng-dialogs/src/app/shared/translation';
 import { EditEntryComponent } from './dialog/entry/edit-entry.component';
 import { EditDialogHeaderComponent } from './dialog/header/edit-dialog-header.component';
+import { LanguageSwitcherComponent } from './dialog/header/language-switcher/language-switcher.component';
 import { ItemEditFormComponent } from './dialog/item-edit-form/item-edit-form.component';
 import { DataDumpComponent } from './dialog/multi-item-edit-form-debug/data-dump/data-dump.component';
 import { FormulaDesignerComponent } from './dialog/multi-item-edit-form-debug/formula-designer/formula-designer.component';
@@ -72,7 +73,6 @@ import { StringFontIconPickerComponent } from './eav-material-controls/input-typ
 import { StringTemplatePickerComponent } from './eav-material-controls/input-types/string/string-template-picker/string-template-picker.component';
 import { StringUrlPathComponent } from './eav-material-controls/input-types/string/string-url-path/string-url-path.component';
 import { EntityTranslateMenuComponent } from './eav-material-controls/localization/entity-translate-menu/entity-translate-menu.component';
-import { LanguageSwitcherComponent } from './eav-material-controls/localization/language-switcher/language-switcher.component';
 import { TranslateMenuDialogComponent } from './eav-material-controls/localization/translate-menu-dialog/translate-menu-dialog.component';
 import { TranslateMenuComponent } from './eav-material-controls/localization/translate-menu/translate-menu.component';
 import { PagePickerComponent } from './eav-material-controls/page-picker/page-picker.component';
