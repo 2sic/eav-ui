@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { DialogEntryComponent } from '../ng-dialogs/src/app/shared/components/dialog-entry/dialog-entry.component';
-import { editDialog } from './edit-entry/edit-dialog.config';
+import { editDialog } from './edit-dialog.config';
 import { edit, refreshEdit } from './edit.matcher';
 
 const editRoutes: Routes = [

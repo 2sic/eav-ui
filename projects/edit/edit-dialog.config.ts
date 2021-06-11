@@ -1,4 +1,4 @@
-import { DialogConfig } from '../../ng-dialogs/src/app/shared/models/dialog-config.model';
+import { DialogConfig } from '../ng-dialogs/src/app/shared/models/dialog-config.model';
 
 export const editDialog: DialogConfig = {
   name: 'ITEMS_EDIT_DIALOG',
@@ -7,7 +7,7 @@ export const editDialog: DialogConfig = {
   panelClass: ['c-multi-item-dialog'],
 
   async getComponent() {
-    const { EditEntryComponent } = await import('./edit-entry.component');
+    const { EditEntryComponent } = await import('./edit-entry/edit-entry.component');
     return EditEntryComponent;
   }
 };
