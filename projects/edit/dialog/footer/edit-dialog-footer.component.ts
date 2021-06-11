@@ -1,16 +1,16 @@
 import { Component, EventEmitter, Input, OnInit, Output, QueryList } from '@angular/core';
 import { EavWindow } from '../../../ng-dialogs/src/app/shared/models/eav-window.model';
 import { ItemEditFormComponent } from '../item-edit-form/item-edit-form.component';
-import { DebugType, DebugTypes } from './multi-item-edit-form-debug.models';
+import { DebugType, DebugTypes } from './edit-dialog-footer.models';
 
 declare const window: EavWindow;
 
 @Component({
-  selector: 'app-multi-item-edit-form-debug',
-  templateUrl: './multi-item-edit-form-debug.component.html',
-  styleUrls: ['./multi-item-edit-form-debug.component.scss'],
+  selector: 'app-edit-dialog-footer',
+  templateUrl: './edit-dialog-footer.component.html',
+  styleUrls: ['./edit-dialog-footer.component.scss'],
 })
-export class MultiItemEditFormDebugComponent implements OnInit {
+export class EditDialogFooterComponent implements OnInit {
   @Input() itemEditFormRefs: QueryList<ItemEditFormComponent>;
   @Output() private debugInfoOpened = new EventEmitter<boolean>();
 
