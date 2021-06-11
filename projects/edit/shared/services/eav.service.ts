@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { keyPartOfPage, keyPublishing } from '../../../ng-dialogs/src/app/shared/constants/session.constants';
 import { Context } from '../../../ng-dialogs/src/app/shared/services/context';
-import { EavFormData, EditDialogContext, SaveEavFormData } from '../../dialog/multi-item-edit-form/multi-item-edit-form.models';
+import { EavFormData, EditDialogContext, SaveEavFormData } from '../../dialog/main/edit-dialog-main.models';
 import { EavConfig, SaveResult, VersioningOptions } from '../models';
 
 export const webApiEditRoot = 'cms/edit/';

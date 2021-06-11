@@ -10,7 +10,7 @@ import { Item1 } from '../../../shared/models/json-format-v1';
 import { EavService, FormulaDesignerService } from '../../../shared/services';
 import { ContentTypeItemService } from '../../../shared/store/ngrx-data';
 import { ItemEditFormComponent } from '../../item-edit-form/item-edit-form.component';
-import { SaveEavFormData } from '../../multi-item-edit-form/multi-item-edit-form.models';
+import { SaveEavFormData } from '../../main/edit-dialog-main.models';
 import { defaultFormula } from './formula-designer.constants';
 // tslint:disable-next-line:max-line-length
 import { DesignerSnippet, EntityOption, FieldOption, FormulaDesignerTemplateVars, SelectOptions, SelectTarget, SelectTargets, TargetOption } from './formula-designer.models';

@@ -40,8 +40,8 @@ import { LogsDumpComponent } from './dialog/footer/logs-dump/logs-dump.component
 import { EditDialogHeaderComponent } from './dialog/header/edit-dialog-header.component';
 import { LanguageSwitcherComponent } from './dialog/header/language-switcher/language-switcher.component';
 import { ItemEditFormComponent } from './dialog/item-edit-form/item-edit-form.component';
-import { FormSlideDirective } from './dialog/multi-item-edit-form/form-slide.directive';
-import { MultiItemEditFormComponent } from './dialog/multi-item-edit-form/multi-item-edit-form.component';
+import { EditDialogMainComponent } from './dialog/main/edit-dialog-main.component';
+import { FormSlideDirective } from './dialog/main/form-slide.directive';
 import { AdamAttachWrapperComponent } from './eav-material-controls/adam/adam-attach-wrapper/adam-attach-wrapper.component';
 import { AdamBrowserComponent } from './eav-material-controls/adam/adam-browser/adam-browser.component';
 import { AdamHintComponent } from './eav-material-controls/adam/adam-hint/adam-hint.component';
@@ -102,7 +102,7 @@ export function translateLoaderFactoryEdit(http: HttpClient): TranslateLoader {
 @NgModule({
   declarations: [
     EditEntryComponent,
-    MultiItemEditFormComponent,
+    EditDialogMainComponent,
     ItemEditFormComponent,
     EditDialogHeaderComponent,
     EditDialogFooterComponent,

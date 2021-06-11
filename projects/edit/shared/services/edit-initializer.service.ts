@@ -9,8 +9,8 @@ import { InputTypeConstants } from '../../../ng-dialogs/src/app/content-type-fie
 import { UpdateEnvVarsFromDialogSettings } from '../../../ng-dialogs/src/app/shared/helpers/update-env-vars-from-dialog-settings.helper';
 import { convertUrlToForm } from '../../../ng-dialogs/src/app/shared/helpers/url-prep.helper';
 import { FormValues } from '../../dialog/item-edit-form/item-edit-form.models';
-import { calculateIsParentDialog, sortLanguages } from '../../dialog/multi-item-edit-form/multi-item-edit-form.helpers';
-import { EavFormData } from '../../dialog/multi-item-edit-form/multi-item-edit-form.models';
+import { calculateIsParentDialog, sortLanguages } from '../../dialog/main/edit-dialog-main.helpers';
+import { EavFormData } from '../../dialog/main/edit-dialog-main.models';
 import { EditParams } from '../../edit-matcher.models';
 import { BestValueModes } from '../constants/localization.constants';
 import { FieldsSettingsHelpers, InputFieldHelpers, LocalizationHelpers } from '../helpers';

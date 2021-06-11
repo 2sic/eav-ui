@@ -33,7 +33,7 @@ export interface SaveEavFormData extends EavPublishStatus {
   Items: Item1[];
 }
 
-export interface MultiEditFormTemplateVars {
+export interface EditDialogMainTemplateVars {
   items: EavItem[];
   formsValid: boolean;
   delayForm: boolean;

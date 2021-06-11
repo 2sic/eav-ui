@@ -20,18 +20,18 @@ import { EavService, EditRoutingService, FormsStateService, FormulaDesignerServi
 import { AdamCacheService, ContentTypeItemService, ContentTypeService, EntityCacheService, FeatureService, GlobalConfigService, InputTypeService, ItemService, LanguageInstanceService, LanguageService, LinkCacheService, PublishStatusService, StringQueryCacheService } from '../../shared/store/ngrx-data';
 import { EditEntryComponent } from '../entry/edit-entry.component';
 import { ItemEditFormComponent } from '../item-edit-form/item-edit-form.component';
-import { MultiEditFormTemplateVars, SaveEavFormData } from './multi-item-edit-form.models';
+import { EditDialogMainTemplateVars, SaveEavFormData } from './edit-dialog-main.models';
 
 @Component({
-  selector: 'app-multi-item-edit-form',
-  templateUrl: './multi-item-edit-form.component.html',
-  styleUrls: ['./multi-item-edit-form.component.scss'],
+  selector: 'app-edit-dialog-main',
+  templateUrl: './edit-dialog-main.component.html',
+  styleUrls: ['./edit-dialog-main.component.scss'],
   providers: [EditRoutingService, FormsStateService, FormulaDesignerService],
 })
-export class MultiItemEditFormComponent implements OnInit, AfterViewInit, OnDestroy {
+export class EditDialogMainComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChildren(ItemEditFormComponent) itemEditFormRefs: QueryList<ItemEditFormComponent>;
 
-  templateVars$: Observable<MultiEditFormTemplateVars>;
+  templateVars$: Observable<EditDialogMainTemplateVars>;
 
   private viewInitiated$: BehaviorSubject<boolean>;
   private debugInfoIsOpen$: BehaviorSubject<boolean>;
@@ -93,7 +93,7 @@ export class MultiItemEditFormComponent implements OnInit, AfterViewInit, OnDest
         [items, formsValid, delayForm, viewInitiated, reduceSaveButton],
         [debugEnabled, debugInfoIsOpen, hideHeader],
       ]) => {
-        const templateVars: MultiEditFormTemplateVars = {
+        const templateVars: EditDialogMainTemplateVars = {
           items,
           formsValid,
           delayForm,
