@@ -33,12 +33,12 @@ import { Context } from '../ng-dialogs/src/app/shared/services/context';
 import { SharedComponentsModule } from '../ng-dialogs/src/app/shared/shared-components.module';
 import { buildTranslateConfiguration, TranslateLoaderWithErrorHandling } from '../ng-dialogs/src/app/shared/translation';
 import { EditEntryComponent } from './dialog/entry/edit-entry.component';
+import { EditDialogHeaderComponent } from './dialog/header/edit-dialog-header.component';
 import { ItemEditFormComponent } from './dialog/item-edit-form/item-edit-form.component';
 import { DataDumpComponent } from './dialog/multi-item-edit-form-debug/data-dump/data-dump.component';
 import { FormulaDesignerComponent } from './dialog/multi-item-edit-form-debug/formula-designer/formula-designer.component';
 import { LogsDumpComponent } from './dialog/multi-item-edit-form-debug/logs-dump/logs-dump.component';
 import { MultiItemEditFormDebugComponent } from './dialog/multi-item-edit-form-debug/multi-item-edit-form-debug.component';
-import { MultiItemEditFormHeaderComponent } from './dialog/multi-item-edit-form-header/multi-item-edit-form-header.component';
 import { FormSlideDirective } from './dialog/multi-item-edit-form/form-slide.directive';
 import { MultiItemEditFormComponent } from './dialog/multi-item-edit-form/multi-item-edit-form.component';
 import { AdamAttachWrapperComponent } from './eav-material-controls/adam/adam-attach-wrapper/adam-attach-wrapper.component';
@@ -104,7 +104,7 @@ export function translateLoaderFactoryEdit(http: HttpClient): TranslateLoader {
     EditEntryComponent,
     MultiItemEditFormComponent,
     ItemEditFormComponent,
-    MultiItemEditFormHeaderComponent,
+    EditDialogHeaderComponent,
     MultiItemEditFormDebugComponent,
     DataDumpComponent,
     FormulaDesignerComponent,

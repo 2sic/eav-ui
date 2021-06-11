@@ -5,14 +5,14 @@ import { map } from 'rxjs/operators';
 import { PublishStatusDialogComponent } from '../../eav-material-controls/dialogs/publish-status-dialog/publish-status-dialog.component';
 import { EavService } from '../../shared/services';
 import { LanguageService, PublishStatusService } from '../../shared/store/ngrx-data';
-import { FormHeaderTemplateVars } from './multi-item-edit-form-header.models';
+import { FormHeaderTemplateVars } from './edit-dialog-header.models';
 
 @Component({
-  selector: 'app-multi-item-edit-form-header',
-  templateUrl: './multi-item-edit-form-header.component.html',
-  styleUrls: ['./multi-item-edit-form-header.component.scss'],
+  selector: 'app-edit-dialog-header',
+  templateUrl: './edit-dialog-header.component.html',
+  styleUrls: ['./edit-dialog-header.component.scss'],
 })
-export class MultiItemEditFormHeaderComponent implements OnInit {
+export class EditDialogHeaderComponent implements OnInit {
   @Input() disabled: boolean;
   @Output() private closeDialog = new EventEmitter<null>();
 
