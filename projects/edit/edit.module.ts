@@ -32,6 +32,7 @@ import { EavWindow } from '../ng-dialogs/src/app/shared/models/eav-window.model'
 import { Context } from '../ng-dialogs/src/app/shared/services/context';
 import { SharedComponentsModule } from '../ng-dialogs/src/app/shared/shared-components.module';
 import { buildTranslateConfiguration, TranslateLoaderWithErrorHandling } from '../ng-dialogs/src/app/shared/translation';
+import { EditEntryComponent } from './dialog/entry/edit-entry.component';
 import { ItemEditFormComponent } from './dialog/item-edit-form/item-edit-form.component';
 import { DataDumpComponent } from './dialog/multi-item-edit-form-debug/data-dump/data-dump.component';
 import { FormulaDesignerComponent } from './dialog/multi-item-edit-form-debug/formula-designer/formula-designer.component';
@@ -83,7 +84,6 @@ import { HiddenWrapperComponent } from './eav-material-controls/wrappers/hidden-
 import { HyperlinkDefaultExpandableWrapperComponent } from './eav-material-controls/wrappers/hyperlink-default-expandable-wrapper/hyperlink-default-expandable-wrapper.component';
 import { HyperlinkLibraryExpandableWrapperComponent } from './eav-material-controls/wrappers/hyperlink-library-expandable-wrapper/hyperlink-library-expandable-wrapper.component';
 import { LocalizationWrapperComponent } from './eav-material-controls/wrappers/localization-wrapper/localization-wrapper.component';
-import { EditEntryComponent } from './edit-entry/edit-entry.component';
 import { EditRoutingModule } from './edit-routing.module';
 import { ContentTypeWrapperComponent } from './form/components/content-type-wrapper/content-type-wrapper.component';
 import { EavFieldDirective } from './form/components/eav-field/eav-field.directive';

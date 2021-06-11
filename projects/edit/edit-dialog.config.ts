@@ -7,7 +7,7 @@ export const editDialog: DialogConfig = {
   panelClass: ['c-multi-item-dialog'],
 
   async getComponent() {
-    const { EditEntryComponent } = await import('./edit-entry/edit-entry.component');
+    const { EditEntryComponent } = await import('./dialog/entry/edit-entry.component');
     return EditEntryComponent;
   }
 };

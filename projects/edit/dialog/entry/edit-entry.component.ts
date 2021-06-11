@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { EditInitializerService, LoggingService } from '../shared/services';
+import { EditInitializerService, LoggingService } from '../../shared/services';
 import { EditEntryTemplateVars } from './edit-entry.models';
 
 @Component({

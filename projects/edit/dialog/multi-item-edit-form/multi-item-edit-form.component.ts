@@ -11,7 +11,6 @@ import { SnackBarSaveErrorsComponent } from '../../eav-material-controls/dialogs
 import { SaveErrorsSnackData } from '../../eav-material-controls/dialogs/snack-bar-save-errors/snack-bar-save-errors.models';
 import { SnackBarUnsavedChangesComponent } from '../../eav-material-controls/dialogs/snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
 import { UnsavedChangesSnackData } from '../../eav-material-controls/dialogs/snack-bar-unsaved-changes/snack-bar-unsaved-changes.models';
-import { EditEntryComponent } from '../../edit-entry/edit-entry.component';
 import { ValidationMessagesHelpers } from '../../shared/helpers';
 import { FieldErrorMessage, SaveResult } from '../../shared/models';
 import { EavItem } from '../../shared/models/eav';
@@ -19,6 +18,7 @@ import { Item1 } from '../../shared/models/json-format-v1';
 import { EavService, EditRoutingService, FormsStateService, FormulaDesignerService, LoadIconsService } from '../../shared/services';
 // tslint:disable-next-line:max-line-length
 import { AdamCacheService, ContentTypeItemService, ContentTypeService, EntityCacheService, FeatureService, GlobalConfigService, InputTypeService, ItemService, LanguageInstanceService, LanguageService, LinkCacheService, PublishStatusService, StringQueryCacheService } from '../../shared/store/ngrx-data';
+import { EditEntryComponent } from '../entry/edit-entry.component';
 import { ItemEditFormComponent } from '../item-edit-form/item-edit-form.component';
 import { MultiEditFormTemplateVars, SaveEavFormData } from './multi-item-edit-form.models';
 
