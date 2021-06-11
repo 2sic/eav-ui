@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { EavFormComponent } from '../../eav-dynamic-form/components/eav-form/eav-form.component';
+import { EavFormComponent } from '../../form/components/eav-form/eav-form.component';
 import { FieldsSettingsService, FieldsTranslateService } from '../../shared/services';
 
 @Component({

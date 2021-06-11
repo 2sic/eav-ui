@@ -40,9 +40,6 @@ import { MultiItemEditFormDebugComponent } from './dialog/multi-item-edit-form-d
 import { MultiItemEditFormHeaderComponent } from './dialog/multi-item-edit-form-header/multi-item-edit-form-header.component';
 import { FormSlideDirective } from './dialog/multi-item-edit-form/form-slide.directive';
 import { MultiItemEditFormComponent } from './dialog/multi-item-edit-form/multi-item-edit-form.component';
-import { ContentTypeWrapperComponent } from './eav-dynamic-form/components/content-type-wrapper/content-type-wrapper.component';
-import { EavFieldDirective } from './eav-dynamic-form/components/eav-field/eav-field.directive';
-import { EavFormComponent } from './eav-dynamic-form/components/eav-form/eav-form.component';
 import { AdamAttachWrapperComponent } from './eav-material-controls/adam/adam-attach-wrapper/adam-attach-wrapper.component';
 import { AdamBrowserComponent } from './eav-material-controls/adam/adam-browser/adam-browser.component';
 import { AdamHintComponent } from './eav-material-controls/adam/adam-hint/adam-hint.component';
@@ -88,6 +85,9 @@ import { HyperlinkLibraryExpandableWrapperComponent } from './eav-material-contr
 import { LocalizationWrapperComponent } from './eav-material-controls/wrappers/localization-wrapper/localization-wrapper.component';
 import { EditEntryComponent } from './edit-entry/edit-entry.component';
 import { EditRoutingModule } from './edit-routing.module';
+import { ContentTypeWrapperComponent } from './form/components/content-type-wrapper/content-type-wrapper.component';
+import { EavFieldDirective } from './form/components/eav-field/eav-field.directive';
+import { EavFormComponent } from './form/components/eav-form/eav-form.component';
 import { ChangeAnchorTargetDirective, PasteClipboardImageDirective } from './shared/directives';
 import { AssetsService, EavService, EntityService, LoadIconsService, QueryService, ScriptsLoaderService } from './shared/services';
 

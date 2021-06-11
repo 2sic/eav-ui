@@ -5,7 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { EavCustomInputField, ExperimentalProps, FieldConfig, FieldSettings, FieldValue } from '../../../../../../edit-types';
-import { FieldConfigSet } from '../../../../../eav-dynamic-form/model/field-config';
+import { FieldConfigSet } from '../../../../../form/model/field-config';
 import { GeneralHelpers, InputFieldHelpers, PagePicker } from '../../../../../shared/helpers';
 import { EavService, EditRoutingService, FieldsSettingsService } from '../../../../../shared/services';
 import { ContentTypeService, EntityCacheService, FeatureService, InputTypeService } from '../../../../../shared/store/ngrx-data';

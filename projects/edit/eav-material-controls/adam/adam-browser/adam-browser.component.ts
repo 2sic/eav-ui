@@ -7,7 +7,7 @@ import { distinctUntilChanged, map, startWith } from 'rxjs/operators';
 import { AdamConfig, AdamItem, DropzoneConfigExt } from '../../../../edit-types';
 import { eavConstants } from '../../../../ng-dialogs/src/app/shared/constants/eav.constants';
 import { EditForm } from '../../../../ng-dialogs/src/app/shared/models/edit-form.model';
-import { FieldConfigSet } from '../../../eav-dynamic-form/model/field-config';
+import { FieldConfigSet } from '../../../form/model/field-config';
 import { FeaturesConstants } from '../../../shared/constants';
 import { FileTypeHelpers, UrlHelpers } from '../../../shared/helpers';
 import { EditRoutingService } from '../../../shared/services';

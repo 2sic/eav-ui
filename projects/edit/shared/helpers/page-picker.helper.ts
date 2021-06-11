@@ -3,9 +3,9 @@ import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { take } from 'rxjs/operators';
 import { PagePickerResult } from '../../../edit-types';
-import { FieldConfigSet } from '../../eav-dynamic-form/model/field-config';
 import { PagePickerComponent } from '../../eav-material-controls/page-picker/page-picker.component';
 import { PagePickerDialogData } from '../../eav-material-controls/page-picker/page-picker.models';
+import { FieldConfigSet } from '../../form/model/field-config';
 
 export class PagePicker {
   static open(
