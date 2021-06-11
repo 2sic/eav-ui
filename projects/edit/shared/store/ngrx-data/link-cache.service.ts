@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { EntityCollectionServiceElementsFactory } from '@ngrx/data';
 import { AdamItem } from '../../../../edit-types';
-import { PrefetchAdams, PrefetchLinks } from '../../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.models';
+import { PrefetchAdams, PrefetchLinks } from '../../../dialog/multi-item-edit-form/multi-item-edit-form.models';
 import { LinkCache, LinkInfo } from '../../models';
 import { BaseDataService } from './base-data.service';
 

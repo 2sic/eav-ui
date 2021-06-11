@@ -1,7 +1,7 @@
 import { AbstractControl } from '@angular/forms';
 import { FieldValue } from '../../../edit-types';
 import { Dictionary } from '../../../ng-dialogs/src/app/shared/models/dictionary.model';
-import { FormValues } from '../../eav-item-dialog/item-edit-form/item-edit-form.models';
+import { FormValues } from '../../dialog/item-edit-form/item-edit-form.models';
 
 export class GeneralHelpers {
 
