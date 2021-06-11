@@ -8,13 +8,12 @@ import { FieldSettings } from '../../../edit-types';
 import { InputTypeConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { UpdateEnvVarsFromDialogSettings } from '../../../ng-dialogs/src/app/shared/helpers/update-env-vars-from-dialog-settings.helper';
 import { convertUrlToForm } from '../../../ng-dialogs/src/app/shared/helpers/url-prep.helper';
-import { FormValues } from '../../dialog/item-edit-form/item-edit-form.models';
 import { calculateIsParentDialog, sortLanguages } from '../../dialog/main/edit-dialog-main.helpers';
 import { EavFormData } from '../../dialog/main/edit-dialog-main.models';
 import { EditParams } from '../../edit-matcher.models';
 import { BestValueModes } from '../constants/localization.constants';
 import { FieldsSettingsHelpers, InputFieldHelpers, LocalizationHelpers } from '../helpers';
-import { Language, PublishStatus } from '../models';
+import { FormValues, Language, PublishStatus } from '../models';
 // tslint:disable-next-line:max-line-length
 import { AdamCacheService, ContentTypeItemService, ContentTypeService, EntityCacheService, FeatureService, InputTypeService, ItemService, LanguageInstanceService, LanguageService, LinkCacheService, PublishStatusService } from '../store/ngrx-data';
 

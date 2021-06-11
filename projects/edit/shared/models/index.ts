@@ -8,6 +8,7 @@ export * from './edit-routing.models';
 export * from './element-event-listener.model';
 export * from './field-error-message.model';
 export * from './fields-configs.model';
+export * from './form-values.model';
 export * from './formula.models';
 export * from './global-config.model';
 export * from './language-instance.model';

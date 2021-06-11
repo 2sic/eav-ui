@@ -1,5 +1,5 @@
+import { FormValues } from '.';
 import { FieldSettings, FieldValue } from '../../../edit-types';
-import { FormValues } from '../../dialog/item-edit-form/item-edit-form.models';
 
 export interface FormulaCacheItem {
   cache: Record<string, any>;
