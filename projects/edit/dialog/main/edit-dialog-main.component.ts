@@ -11,6 +11,7 @@ import { SnackBarSaveErrorsComponent } from '../../eav-material-controls/dialogs
 import { SaveErrorsSnackData } from '../../eav-material-controls/dialogs/snack-bar-save-errors/snack-bar-save-errors.models';
 import { SnackBarUnsavedChangesComponent } from '../../eav-material-controls/dialogs/snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
 import { UnsavedChangesSnackData } from '../../eav-material-controls/dialogs/snack-bar-unsaved-changes/snack-bar-unsaved-changes.models';
+import { EavFormComponent } from '../../form/components/eav-form/eav-form.component';
 import { ValidationMessagesHelpers } from '../../shared/helpers';
 import { FieldErrorMessage, SaveResult } from '../../shared/models';
 import { EavItem } from '../../shared/models/eav';
@@ -19,7 +20,6 @@ import { EavService, EditRoutingService, FormsStateService, FormulaDesignerServi
 // tslint:disable-next-line:max-line-length
 import { AdamCacheService, ContentTypeItemService, ContentTypeService, EntityCacheService, FeatureService, GlobalConfigService, InputTypeService, ItemService, LanguageInstanceService, LanguageService, LinkCacheService, PublishStatusService, StringQueryCacheService } from '../../shared/store/ngrx-data';
 import { EditEntryComponent } from '../entry/edit-entry.component';
-import { ItemEditFormComponent } from '../item-edit-form/item-edit-form.component';
 import { EditDialogMainTemplateVars, SaveEavFormData } from './edit-dialog-main.models';
 
 @Component({
@@ -29,7 +29,7 @@ import { EditDialogMainTemplateVars, SaveEavFormData } from './edit-dialog-main.
   providers: [EditRoutingService, FormsStateService, FormulaDesignerService],
 })
 export class EditDialogMainComponent implements OnInit, AfterViewInit, OnDestroy {
-  @ViewChildren(ItemEditFormComponent) itemEditFormRefs: QueryList<ItemEditFormComponent>;
+  @ViewChildren(EavFormComponent) eavFormRefs: QueryList<EavFormComponent>;
 
   templateVars$: Observable<EditDialogMainTemplateVars>;
 
@@ -156,9 +156,9 @@ export class EditDialogMainComponent implements OnInit, AfterViewInit, OnDestroy
   /** Save all forms */
   saveAll(close: boolean) {
     if (this.formsStateService.formsValid$.value) {
-      const items = this.itemEditFormRefs
-        .map(itemEditFormRef => {
-          const eavItem = this.itemService.getItem(itemEditFormRef.entityGuid);
+      const items = this.eavFormRefs
+        .map(eavFormRef => {
+          const eavItem = this.itemService.getItem(eavFormRef.entityGuid);
           const isValid = this.formsStateService.getFormValid(eavItem.Entity.Guid);
           if (!isValid) { return; }
 
@@ -197,12 +197,12 @@ export class EditDialogMainComponent implements OnInit, AfterViewInit, OnDestroy
         },
       });
     } else {
-      if (this.itemEditFormRefs == null) { return; }
+      if (this.eavFormRefs == null) { return; }
 
       const formErrors: Dictionary<string>[] = [];
-      this.itemEditFormRefs.forEach(itemEditFormRef => {
-        if (!itemEditFormRef.eavFormRef.form.invalid) { return; }
-        formErrors.push(ValidationMessagesHelpers.validateForm(itemEditFormRef.eavFormRef.form));
+      this.eavFormRefs.forEach(eavFormRef => {
+        if (!eavFormRef.form.invalid) { return; }
+        formErrors.push(ValidationMessagesHelpers.validateForm(eavFormRef.form));
       });
 
       const fieldErrors: FieldErrorMessage[] = [];

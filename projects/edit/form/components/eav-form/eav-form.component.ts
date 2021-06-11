@@ -5,13 +5,14 @@ import { distinctUntilChanged, map, startWith } from 'rxjs/operators';
 import { InputTypeConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { GeneralHelpers, ValidationHelpers } from '../../../shared/helpers';
 import { FormValues } from '../../../shared/models';
-import { EavService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
+import { EavService, FieldsSettingsService, FieldsTranslateService, FormsStateService } from '../../../shared/services';
 import { ItemService, LanguageInstanceService } from '../../../shared/store/ngrx-data';
 
 @Component({
   selector: 'app-eav-form',
   templateUrl: './eav-form.component.html',
   styleUrls: ['./eav-form.component.scss'],
+  providers: [FieldsSettingsService, FieldsTranslateService],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EavFormComponent implements OnInit, OnDestroy {
@@ -21,15 +22,19 @@ export class EavFormComponent implements OnInit, OnDestroy {
   private subscription: Subscription;
 
   constructor(
+    public fieldsSettingsService: FieldsSettingsService,
+    private fieldsTranslateService: FieldsTranslateService,
     private formBuilder: FormBuilder,
     private eavService: EavService,
     private formsStateService: FormsStateService,
     private itemService: ItemService,
-    private fieldsSettingsService: FieldsSettingsService,
     private languageInstanceService: LanguageInstanceService,
   ) { }
 
   ngOnInit() {
+    this.fieldsSettingsService.init(this.entityGuid);
+    this.fieldsTranslateService.init(this.entityGuid);
+
     this.form = new FormGroup({});
     this.subscription = new Subscription();
     this.subscription.add(

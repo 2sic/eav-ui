@@ -16,7 +16,7 @@
         <div class="mdc-layout-grid__inner">
           <div class="mdc-layout-grid__cell--span-12" appFormSlide *ngIf="!data.delayForm">
             <div *ngFor="let item of data.items; trackBy: trackByFn">
-              <app-item-edit-form [entityGuid]="item.Entity.Guid"></app-item-edit-form>
+              <app-eav-form [entityGuid]="item.Entity.Guid"></app-eav-form>
             </div>
           </div>
         </div>
@@ -37,7 +37,7 @@
     </div>
   </div>
 
-  <app-edit-dialog-footer mat-dialog-actions *ngIf="data.debugEnabled" [itemEditFormRefs]="itemEditFormRefs"
+  <app-edit-dialog-footer mat-dialog-actions *ngIf="data.debugEnabled" [eavFormRefs]="eavFormRefs"
     (debugInfoOpened)="debugInfoOpened($event)">
   </app-edit-dialog-footer>
 </div>

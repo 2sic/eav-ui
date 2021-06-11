@@ -39,7 +39,6 @@ import { FormulaDesignerComponent } from './dialog/footer/formula-designer/formu
 import { LogsDumpComponent } from './dialog/footer/logs-dump/logs-dump.component';
 import { EditDialogHeaderComponent } from './dialog/header/edit-dialog-header.component';
 import { LanguageSwitcherComponent } from './dialog/header/language-switcher/language-switcher.component';
-import { ItemEditFormComponent } from './dialog/item-edit-form/item-edit-form.component';
 import { EditDialogMainComponent } from './dialog/main/edit-dialog-main.component';
 import { FormSlideDirective } from './dialog/main/form-slide.directive';
 import { AdamAttachWrapperComponent } from './eav-material-controls/adam/adam-attach-wrapper/adam-attach-wrapper.component';
@@ -103,7 +102,6 @@ export function translateLoaderFactoryEdit(http: HttpClient): TranslateLoader {
   declarations: [
     EditEntryComponent,
     EditDialogMainComponent,
-    ItemEditFormComponent,
     EditDialogHeaderComponent,
     EditDialogFooterComponent,
     DataDumpComponent,
