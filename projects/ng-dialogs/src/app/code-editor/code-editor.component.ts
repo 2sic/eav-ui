@@ -4,7 +4,7 @@ import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, combineLatest, forkJoin, fromEvent, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { SanitizeHelper } from '../../../../edit/eav-material-controls/adam/sanitize.helper';
+import { SanitizeHelper } from '../../../../edit/shared/helpers';
 import { defaultControllerName, defaultTemplateName } from '../shared/constants/file-names.constants';
 import { keyItems } from '../shared/constants/session.constants';
 import { EditItem, SourceItem, } from '../shared/models/edit-form.model';

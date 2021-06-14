@@ -4,9 +4,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { consoleLogAngular } from '../../../../../../ng-dialogs/src/app/shared/helpers/console-log-angular.helper';
 import { FieldConfigSet } from '../../../../../form/builder/eav-field/field-config-set.model';
-import { EavService, EditRoutingService, FieldsSettingsService } from '../../../../../shared/services';
+import { AdamService, EavService, EditRoutingService, FieldsSettingsService } from '../../../../../shared/services';
 import { ContentTypeService, EntityCacheService, FeatureService, InputTypeService } from '../../../../../shared/store/ngrx-data';
-import { AdamService } from '../../../../adam/adam.service';
 import { ConnectorHelper } from './connector.helper';
 
 @Component({

@@ -4,9 +4,8 @@ import { BehaviorSubject } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { AdamItem } from '../../../../../edit-types';
 import { FileTypeHelpers, GeneralHelpers, PagePicker, UrlHelpers } from '../../../../shared/helpers';
-import { EavService, FieldsSettingsService } from '../../../../shared/services';
+import { AdamService, EavService, FieldsSettingsService } from '../../../../shared/services';
 import { LinkCacheService } from '../../../../shared/store/ngrx-data';
-import { AdamService } from '../../../adam/adam.service';
 import { BaseComponent } from '../../base/base.component';
 import { Preview } from './hyperlink-default.models';
 

@@ -7,6 +7,7 @@ export * from './general.helpers';
 export * from './input-field.helpers';
 export * from './localization.helpers';
 export * from './page-picker.helper';
+export * from './sanitize.helper';
 export * from './url.helpers';
 export * from './validation-messages.helpers';
 export * from './validation.helpers';

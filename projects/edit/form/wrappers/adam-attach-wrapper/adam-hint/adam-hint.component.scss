@@ -1,0 +1,29 @@
+@import "../../../../assets/styles/variables.scss";
+
+.hint-box {
+  padding: 2px 24px;
+  background-color: white;
+  color: rgba($editUI-foreground-color, 0.44);
+  display: flex;
+
+  &__hint {
+    flex: 1 1 auto;
+  }
+
+  &__sponsor {
+    display: flex;
+    align-items: flex-start;
+  }
+}
+
+.adam-link {
+  display: flex;
+  align-items: center;
+
+  .mat-icon {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+    line-height: 14px;
+  }
+}

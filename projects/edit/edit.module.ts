@@ -41,14 +41,10 @@ import { EditDialogHeaderComponent } from './dialog/header/edit-dialog-header.co
 import { LanguageSwitcherComponent } from './dialog/header/language-switcher/language-switcher.component';
 import { EditDialogMainComponent } from './dialog/main/edit-dialog-main.component';
 import { FormSlideDirective } from './dialog/main/form-slide.directive';
-import { AdamAttachWrapperComponent } from './eav-material-controls/adam/adam-attach-wrapper/adam-attach-wrapper.component';
-import { AdamBrowserComponent } from './eav-material-controls/adam/adam-browser/adam-browser.component';
-import { AdamHintComponent } from './eav-material-controls/adam/adam-hint/adam-hint.component';
-import { AdamService } from './eav-material-controls/adam/adam.service';
-import { DropzoneWrapperComponent } from './eav-material-controls/adam/dropzone-wrapper/dropzone-wrapper.component';
 import { PublishStatusDialogComponent } from './eav-material-controls/dialogs/publish-status-dialog/publish-status-dialog.component';
 import { SnackBarSaveErrorsComponent } from './eav-material-controls/dialogs/snack-bar-save-errors/snack-bar-save-errors.component';
 import { SnackBarUnsavedChangesComponent } from './eav-material-controls/dialogs/snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
+import { FieldHelperTextComponent } from './eav-material-controls/field-helper-text/field-helper-text.component';
 import { BooleanDefaultComponent } from './eav-material-controls/input-types/boolean/boolean-default/boolean-default.component';
 import { BooleanTristateComponent } from './eav-material-controls/input-types/boolean/boolean-tristate/boolean-tristate.component';
 import { CustomDefaultComponent } from './eav-material-controls/input-types/custom/custom-default/custom-default.component';
@@ -75,20 +71,23 @@ import { EntityTranslateMenuComponent } from './eav-material-controls/localizati
 import { TranslateMenuDialogComponent } from './eav-material-controls/localization/translate-menu-dialog/translate-menu-dialog.component';
 import { TranslateMenuComponent } from './eav-material-controls/localization/translate-menu/translate-menu.component';
 import { PagePickerComponent } from './eav-material-controls/page-picker/page-picker.component';
-import { CollapsibleWrapperComponent } from './eav-material-controls/wrappers/collapsible-wrapper/collapsible-wrapper.component';
-import { EntityExpandableWrapperComponent } from './eav-material-controls/wrappers/entity-expandable-wrapper/entity-expandable-wrapper.component';
-import { ExpandableWrapperComponent } from './eav-material-controls/wrappers/expandable-wrapper/expandable-wrapper.component';
-import { FieldHelperTextComponent } from './eav-material-controls/wrappers/field-helper-text/field-helper-text.component';
-import { HiddenWrapperComponent } from './eav-material-controls/wrappers/hidden-wrapper/hidden-wrapper.component';
-import { HyperlinkDefaultExpandableWrapperComponent } from './eav-material-controls/wrappers/hyperlink-default-expandable-wrapper/hyperlink-default-expandable-wrapper.component';
-import { HyperlinkLibraryExpandableWrapperComponent } from './eav-material-controls/wrappers/hyperlink-library-expandable-wrapper/hyperlink-library-expandable-wrapper.component';
-import { LocalizationWrapperComponent } from './eav-material-controls/wrappers/localization-wrapper/localization-wrapper.component';
 import { EditRoutingModule } from './edit-routing.module';
 import { ContentTypeWrapperComponent } from './form/builder/content-type-wrapper/content-type-wrapper.component';
 import { EavFieldDirective } from './form/builder/eav-field/eav-field.directive';
 import { EavFormComponent } from './form/builder/eav-form/eav-form.component';
+import { AdamAttachWrapperComponent } from './form/wrappers/adam-attach-wrapper/adam-attach-wrapper.component';
+import { AdamBrowserComponent } from './form/wrappers/adam-attach-wrapper/adam-browser/adam-browser.component';
+import { AdamHintComponent } from './form/wrappers/adam-attach-wrapper/adam-hint/adam-hint.component';
+import { CollapsibleWrapperComponent } from './form/wrappers/collapsible-wrapper/collapsible-wrapper.component';
+import { DropzoneWrapperComponent } from './form/wrappers/dropzone-wrapper/dropzone-wrapper.component';
+import { EntityExpandableWrapperComponent } from './form/wrappers/entity-expandable-wrapper/entity-expandable-wrapper.component';
+import { ExpandableWrapperComponent } from './form/wrappers/expandable-wrapper/expandable-wrapper.component';
+import { HiddenWrapperComponent } from './form/wrappers/hidden-wrapper/hidden-wrapper.component';
+import { HyperlinkDefaultExpandableWrapperComponent } from './form/wrappers/hyperlink-default-expandable-wrapper/hyperlink-default-expandable-wrapper.component';
+import { HyperlinkLibraryExpandableWrapperComponent } from './form/wrappers/hyperlink-library-expandable-wrapper/hyperlink-library-expandable-wrapper.component';
+import { LocalizationWrapperComponent } from './form/wrappers/localization-wrapper/localization-wrapper.component';
 import { ChangeAnchorTargetDirective, PasteClipboardImageDirective } from './shared/directives';
-import { AssetsService, EavService, EntityService, LoadIconsService, QueryService, ScriptsLoaderService } from './shared/services';
+import { AdamService, AssetsService, EavService, EntityService, LoadIconsService, QueryService, ScriptsLoaderService } from './shared/services';
 
 declare const window: EavWindow;
 

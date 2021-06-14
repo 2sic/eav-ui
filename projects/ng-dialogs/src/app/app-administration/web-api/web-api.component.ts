@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@a
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
-import { SanitizeHelper } from '../../../../../edit/eav-material-controls/adam/sanitize.helper';
+import { SanitizeHelper } from '../../../../../edit/shared/helpers';
 import { GoToDevRest } from '../../dev-rest/go-to-dev-rest';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { defaultControllerName } from '../../shared/constants/file-names.constants';
