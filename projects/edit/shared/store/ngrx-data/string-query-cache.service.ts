@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { EntityCollectionServiceElementsFactory } from '@ngrx/data';
 import { Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
-import { QueryEntity } from '../../../eav-material-controls/input-types/entity/entity-query/entity-query.models';
+import { QueryEntity } from '../../../form/fields/entity/entity-query/entity-query.models';
 import { GeneralHelpers } from '../../helpers';
 import { BaseDataService } from './base-data.service';
 

@@ -2,7 +2,7 @@ import { EntityMetadataMap } from '@ngrx/data';
 import { EntityInfo } from '../../../../edit-types';
 import { InputType } from '../../../../ng-dialogs/src/app/content-type-fields/models/input-type.model';
 import { Prefetch } from '../../../dialog/main/edit-dialog-main.models';
-import { QueryEntity } from '../../../eav-material-controls/input-types/entity/entity-query/entity-query.models';
+import { QueryEntity } from '../../../form/fields/entity/entity-query/entity-query.models';
 import { AdamSnapshot, Language, LanguageInstance, LinkCache, PublishStatus } from '../../models';
 import { EavContentType, EavEntity, EavItem } from '../../models/eav';
 

@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Context } from '../../../ng-dialogs/src/app/shared/services/context';
-import { QueryStreams } from '../../eav-material-controls/input-types/entity/entity-query/entity-query.models';
+import { QueryStreams } from '../../form/fields/entity/entity-query/entity-query.models';
 
 @Injectable()
 export class QueryService {

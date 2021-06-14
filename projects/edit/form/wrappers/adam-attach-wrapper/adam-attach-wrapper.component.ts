@@ -1,9 +1,9 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { InputTypeConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
-import { BaseComponent } from '../../../eav-material-controls/input-types/base/base.component';
 import { EavService, FieldsSettingsService } from '../../../shared/services';
 import { FieldWrapper } from '../../builder/eav-field/field-wrapper.model';
+import { BaseComponent } from '../../fields/base/base.component';
 
 @Component({
   selector: 'app-adam-attach-wrapper',

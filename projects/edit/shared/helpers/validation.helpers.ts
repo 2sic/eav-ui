@@ -1,7 +1,7 @@
 import { AbstractControl, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { FieldSettings } from '../../../edit-types';
 import { InputTypeConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
-import { AdamControl } from '../../eav-material-controls/input-types/hyperlink/hyperlink-library/hyperlink-library.models';
+import { AdamControl } from '../../form/fields/hyperlink/hyperlink-library/hyperlink-library.models';
 import { FieldsSettingsService } from '../services';
 
 /** Validators here are copied from https://github.com/angular/angular/blob/master/packages/forms/src/validators.ts */

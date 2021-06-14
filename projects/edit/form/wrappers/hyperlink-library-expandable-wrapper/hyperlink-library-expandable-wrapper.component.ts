@@ -2,11 +2,11 @@ import { AfterViewInit, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewCh
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AdamItem } from '../../../../edit-types';
-import { BaseComponent } from '../../../eav-material-controls/input-types/base/base.component';
 import { ContentExpandAnimation } from '../../../shared/animations';
 import { DropzoneDraggingHelper } from '../../../shared/helpers';
 import { EavService, EditRoutingService, FieldsSettingsService } from '../../../shared/services';
 import { FieldWrapper } from '../../builder/eav-field/field-wrapper.model';
+import { BaseComponent } from '../../fields/base/base.component';
 import { HyperlinkLibraryExpandableTemplateVars } from './hyperlink-library-expandable-wrapper.models';
 
 @Component({

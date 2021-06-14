@@ -5,9 +5,9 @@ import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { AdamPostResponse, DropzoneConfigExt } from '../../../../edit-types';
 import { consoleLogAngular } from '../../../../ng-dialogs/src/app/shared/helpers/console-log-angular.helper';
-import { BaseComponent } from '../../../eav-material-controls/input-types/base/base.component';
 import { EavService, FieldsSettingsService } from '../../../shared/services';
 import { FieldWrapper } from '../../builder/eav-field/field-wrapper.model';
+import { BaseComponent } from '../../fields/base/base.component';
 import { DropzoneConfigInstance, DropzoneType } from './dropzone-wrapper.models';
 
 @Component({

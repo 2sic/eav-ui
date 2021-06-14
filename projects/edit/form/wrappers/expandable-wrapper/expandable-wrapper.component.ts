@@ -4,13 +4,13 @@ import { TranslateService } from '@ngx-translate/core';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { consoleLogAngular } from '../../../../ng-dialogs/src/app/shared/helpers/console-log-angular.helper';
-import { BaseComponent } from '../../../eav-material-controls/input-types/base/base.component';
-import { ConnectorHelper } from '../../../eav-material-controls/input-types/custom/external-web-component/connector/connector.helper';
 import { ContentExpandAnimation } from '../../../shared/animations';
 import { DropzoneDraggingHelper } from '../../../shared/helpers';
 import { AdamService, EavService, EditRoutingService, FieldsSettingsService } from '../../../shared/services';
 import { ContentTypeService, EntityCacheService, FeatureService, InputTypeService } from '../../../shared/store/ngrx-data';
 import { FieldWrapper } from '../../builder/eav-field/field-wrapper.model';
+import { BaseComponent } from '../../fields/base/base.component';
+import { ConnectorHelper } from '../../shared/connector/connector.helper';
 import { ExpandableWrapperTemplateVars } from './expandable-wrapper.models';
 
 @Component({

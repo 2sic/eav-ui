@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { Observable } from 'rxjs';
-import { BaseComponent } from '../../../eav-material-controls/input-types/base/base.component';
 import { TranslateMenuComponent } from '../../../eav-material-controls/localization/translate-menu/translate-menu.component';
 import { EavService, EditRoutingService, FieldsSettingsService } from '../../../shared/services';
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data';
 import { FieldWrapper } from '../../builder/eav-field/field-wrapper.model';
+import { BaseComponent } from '../../fields/base/base.component';
 
 @Component({
   selector: 'app-localization-wrapper',

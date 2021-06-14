@@ -2,14 +2,14 @@ import { Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angu
 import { TranslateService } from '@ngx-translate/core';
 import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
-import { BaseComponent } from '../../../eav-material-controls/input-types/base/base.component';
-import { calculateSelectedEntities } from '../../../eav-material-controls/input-types/entity/entity-default/entity-default.helpers';
-import { SelectedEntity } from '../../../eav-material-controls/input-types/entity/entity-default/entity-default.models';
 import { ContentExpandAnimation } from '../../../shared/animations';
 import { GeneralHelpers } from '../../../shared/helpers';
 import { EavService, EditRoutingService, FieldsSettingsService } from '../../../shared/services';
 import { EntityCacheService, StringQueryCacheService } from '../../../shared/store/ngrx-data';
 import { FieldWrapper } from '../../builder/eav-field/field-wrapper.model';
+import { BaseComponent } from '../../fields/base/base.component';
+import { calculateSelectedEntities } from '../../fields/entity/entity-default/entity-default.helpers';
+import { SelectedEntity } from '../../fields/entity/entity-default/entity-default.models';
 import { EntityExpandableTemplateVars } from './entity-expandable-wrapper.models';
 
 @Component({
