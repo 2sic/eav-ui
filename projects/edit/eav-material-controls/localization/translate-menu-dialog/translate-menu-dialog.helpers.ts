@@ -1,4 +1,4 @@
-import { FieldConfigSet } from '../../../form/model/field-config';
+import { FieldConfigSet } from '../../../form/builder/eav-field/field-config-set.model';
 import { TranslationLinkConstants } from '../../../shared/constants';
 import { LocalizationHelpers } from '../../../shared/helpers';
 import { Language } from '../../../shared/models';

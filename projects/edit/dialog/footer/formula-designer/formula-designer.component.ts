@@ -3,7 +3,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { combineLatest, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { copyToClipboard } from '../../../../ng-dialogs/src/app/shared/helpers/copy-to-clipboard.helper';
-import { EavFormComponent } from '../../../form/components/eav-form/eav-form.component';
+import { EavFormComponent } from '../../../form/builder/eav-form/eav-form.component';
 import { FormulaHelpers, LocalizationHelpers } from '../../../shared/helpers';
 import { DesignerState, FormulaTarget, FormulaTargets } from '../../../shared/models';
 import { EavItem } from '../../../shared/models/eav';

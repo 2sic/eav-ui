@@ -3,7 +3,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { EntityInfo } from '../../../../../edit-types';
-import { ComponentMetadata } from '../../../../form/decorators/component-metadata.decorator';
+import { ComponentMetadata } from '../../../../form/builder/eav-field/component-metadata.decorator';
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { EavService, EditRoutingService, EntityService, FieldsSettingsService, QueryService } from '../../../../shared/services';
 import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';

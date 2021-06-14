@@ -5,7 +5,7 @@ import { take } from 'rxjs/operators';
 import { PagePickerResult } from '../../../edit-types';
 import { PagePickerComponent } from '../../eav-material-controls/page-picker/page-picker.component';
 import { PagePickerDialogData } from '../../eav-material-controls/page-picker/page-picker.models';
-import { FieldConfigSet } from '../../form/model/field-config';
+import { FieldConfigSet } from '../../form/builder/eav-field/field-config-set.model';
 
 export class PagePicker {
   static open(

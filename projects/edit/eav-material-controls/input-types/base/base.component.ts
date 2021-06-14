@@ -3,8 +3,8 @@ import { AbstractControl, FormGroup } from '@angular/forms';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { FieldSettings, FieldValue } from '../../../../edit-types';
-import { Field } from '../../../form/model/field';
-import { FieldConfigSet } from '../../../form/model/field-config';
+import { FieldConfigSet } from '../../../form/builder/eav-field/field-config-set.model';
+import { Field } from '../../../form/builder/eav-field/field.model';
 import { ControlStatus } from '../../../shared/models';
 import { EavService, FieldsSettingsService } from '../../../shared/services';
 

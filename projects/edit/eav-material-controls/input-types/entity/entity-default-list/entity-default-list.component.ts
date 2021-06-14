@@ -2,7 +2,7 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
-import { FieldConfigSet } from '../../../../form/model/field-config';
+import { FieldConfigSet } from '../../../../form/builder/eav-field/field-config-set.model';
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { FieldsSettingsService } from '../../../../shared/services';
 import { DeleteEntityProps, SelectedEntity } from '../entity-default/entity-default.models';

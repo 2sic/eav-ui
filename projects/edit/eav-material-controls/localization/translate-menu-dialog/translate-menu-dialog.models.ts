@@ -1,4 +1,4 @@
-import { FieldConfigSet } from '../../../form/model/field-config';
+import { FieldConfigSet } from '../../../form/builder/eav-field/field-config-set.model';
 import { TranslationStateCore } from '../translate-menu/translate-menu.models';
 
 export interface TranslateMenuDialogData {

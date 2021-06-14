@@ -7,7 +7,7 @@ import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { EntityInfo } from '../../../../../edit-types';
 import { EditForm } from '../../../../../ng-dialogs/src/app/shared/models/edit-form.model';
-import { ComponentMetadata } from '../../../../form/decorators/component-metadata.decorator';
+import { ComponentMetadata } from '../../../../form/builder/eav-field/component-metadata.decorator';
 import { FieldMask, GeneralHelpers } from '../../../../shared/helpers';
 import { EavService, EditRoutingService, EntityService, FieldsSettingsService } from '../../../../shared/services';
 import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';

@@ -6,7 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Moment } from 'moment';
 import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
-import { ComponentMetadata } from '../../../../form/decorators/component-metadata.decorator';
+import { ComponentMetadata } from '../../../../form/builder/eav-field/component-metadata.decorator';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { EavService, FieldsSettingsService } from '../../../../shared/services';

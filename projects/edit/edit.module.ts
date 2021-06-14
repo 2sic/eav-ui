@@ -84,9 +84,9 @@ import { HyperlinkDefaultExpandableWrapperComponent } from './eav-material-contr
 import { HyperlinkLibraryExpandableWrapperComponent } from './eav-material-controls/wrappers/hyperlink-library-expandable-wrapper/hyperlink-library-expandable-wrapper.component';
 import { LocalizationWrapperComponent } from './eav-material-controls/wrappers/localization-wrapper/localization-wrapper.component';
 import { EditRoutingModule } from './edit-routing.module';
-import { ContentTypeWrapperComponent } from './form/components/content-type-wrapper/content-type-wrapper.component';
-import { EavFieldDirective } from './form/components/eav-field/eav-field.directive';
-import { EavFormComponent } from './form/components/eav-form/eav-form.component';
+import { ContentTypeWrapperComponent } from './form/builder/content-type-wrapper/content-type-wrapper.component';
+import { EavFieldDirective } from './form/builder/eav-field/eav-field.directive';
+import { EavFormComponent } from './form/builder/eav-form/eav-form.component';
 import { ChangeAnchorTargetDirective, PasteClipboardImageDirective } from './shared/directives';
 import { AssetsService, EavService, EntityService, LoadIconsService, QueryService, ScriptsLoaderService } from './shared/services';
 

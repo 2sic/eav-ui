@@ -3,7 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map, startWith } from 'rxjs/operators';
-import { FieldConfigSet } from '../../../form/model/field-config';
+import { FieldConfigSet } from '../../../form/builder/eav-field/field-config-set.model';
 import { TranslationLinkConstants } from '../../../shared/constants';
 import { TranslationState } from '../../../shared/models';
 import { EavService, FieldsSettingsService, FieldsTranslateService } from '../../../shared/services';

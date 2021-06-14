@@ -34,9 +34,9 @@ import { LocalizationWrapperComponent } from '../../../eav-material-controls/wra
 import { componentMetadataKey } from '../../../shared/constants';
 import { ComponentMetadataModel, FieldProps } from '../../../shared/models';
 import { FieldsSettingsService } from '../../../shared/services';
-import { Field } from '../../model/field';
-import { FieldConfigSet } from '../../model/field-config';
-import { FieldWrapper } from '../../model/field-wrapper';
+import { FieldConfigSet } from './field-config-set.model';
+import { FieldWrapper } from './field-wrapper.model';
+import { Field } from './field.model';
 
 @Directive({ selector: '[appEavField]' })
 export class EavFieldDirective implements OnInit, OnDestroy {
