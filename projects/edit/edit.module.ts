@@ -39,11 +39,11 @@ import { FormulaDesignerComponent } from './dialog/footer/formula-designer/formu
 import { LogsDumpComponent } from './dialog/footer/logs-dump/logs-dump.component';
 import { EditDialogHeaderComponent } from './dialog/header/edit-dialog-header.component';
 import { LanguageSwitcherComponent } from './dialog/header/language-switcher/language-switcher.component';
+import { PublishStatusDialogComponent } from './dialog/header/publish-status-dialog/publish-status-dialog.component';
 import { EditDialogMainComponent } from './dialog/main/edit-dialog-main.component';
 import { FormSlideDirective } from './dialog/main/form-slide.directive';
-import { PublishStatusDialogComponent } from './eav-material-controls/dialogs/publish-status-dialog/publish-status-dialog.component';
-import { SnackBarSaveErrorsComponent } from './eav-material-controls/dialogs/snack-bar-save-errors/snack-bar-save-errors.component';
-import { SnackBarUnsavedChangesComponent } from './eav-material-controls/dialogs/snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
+import { SnackBarSaveErrorsComponent } from './dialog/main/snack-bar-save-errors/snack-bar-save-errors.component';
+import { SnackBarUnsavedChangesComponent } from './dialog/main/snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
 import { EntityTranslateMenuComponent } from './eav-material-controls/localization/entity-translate-menu/entity-translate-menu.component';
 import { TranslateMenuDialogComponent } from './eav-material-controls/localization/translate-menu-dialog/translate-menu-dialog.component';
 import { TranslateMenuComponent } from './eav-material-controls/localization/translate-menu/translate-menu.component';

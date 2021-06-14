@@ -2,10 +2,10 @@ import { Component, EventEmitter, Input, OnInit, Output, ViewContainerRef } from
 import { MatDialog } from '@angular/material/dialog';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { PublishStatusDialogComponent } from '../../eav-material-controls/dialogs/publish-status-dialog/publish-status-dialog.component';
 import { EavService } from '../../shared/services';
 import { LanguageService, PublishStatusService } from '../../shared/store/ngrx-data';
 import { EditDialogHeaderTemplateVars } from './edit-dialog-header.models';
+import { PublishStatusDialogComponent } from './publish-status-dialog/publish-status-dialog.component';
 
 @Component({
   selector: 'app-edit-dialog-header',

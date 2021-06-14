@@ -7,10 +7,6 @@ import { BehaviorSubject, combineLatest, fromEvent, Observable, of, Subscription
 import { delay, map, startWith, tap } from 'rxjs/operators';
 import { consoleLogAngular } from '../../../ng-dialogs/src/app/shared/helpers/console-log-angular.helper';
 import { Dictionary } from '../../../ng-dialogs/src/app/shared/models/dictionary.model';
-import { SnackBarSaveErrorsComponent } from '../../eav-material-controls/dialogs/snack-bar-save-errors/snack-bar-save-errors.component';
-import { SaveErrorsSnackData } from '../../eav-material-controls/dialogs/snack-bar-save-errors/snack-bar-save-errors.models';
-import { SnackBarUnsavedChangesComponent } from '../../eav-material-controls/dialogs/snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
-import { UnsavedChangesSnackData } from '../../eav-material-controls/dialogs/snack-bar-unsaved-changes/snack-bar-unsaved-changes.models';
 import { EavFormComponent } from '../../form/builder/eav-form/eav-form.component';
 import { ValidationMessagesHelpers } from '../../shared/helpers';
 import { FieldErrorMessage, SaveResult } from '../../shared/models';
@@ -21,6 +17,10 @@ import { EavService, EditRoutingService, FormsStateService, FormulaDesignerServi
 import { AdamCacheService, ContentTypeItemService, ContentTypeService, EntityCacheService, FeatureService, GlobalConfigService, InputTypeService, ItemService, LanguageInstanceService, LanguageService, LinkCacheService, PublishStatusService, StringQueryCacheService } from '../../shared/store/ngrx-data';
 import { EditEntryComponent } from '../entry/edit-entry.component';
 import { EditDialogMainTemplateVars, SaveEavFormData } from './edit-dialog-main.models';
+import { SnackBarSaveErrorsComponent } from './snack-bar-save-errors/snack-bar-save-errors.component';
+import { SaveErrorsSnackData } from './snack-bar-save-errors/snack-bar-save-errors.models';
+import { SnackBarUnsavedChangesComponent } from './snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
+import { UnsavedChangesSnackData } from './snack-bar-unsaved-changes/snack-bar-unsaved-changes.models';
 
 @Component({
   selector: 'app-edit-dialog-main',
