@@ -44,11 +44,9 @@ import { EditDialogMainComponent } from './dialog/main/edit-dialog-main.componen
 import { FormSlideDirective } from './dialog/main/form-slide.directive';
 import { SnackBarSaveErrorsComponent } from './dialog/main/snack-bar-save-errors/snack-bar-save-errors.component';
 import { SnackBarUnsavedChangesComponent } from './dialog/main/snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
-import { EntityTranslateMenuComponent } from './eav-material-controls/localization/entity-translate-menu/entity-translate-menu.component';
-import { TranslateMenuDialogComponent } from './eav-material-controls/localization/translate-menu-dialog/translate-menu-dialog.component';
-import { TranslateMenuComponent } from './eav-material-controls/localization/translate-menu/translate-menu.component';
 import { EditRoutingModule } from './edit-routing.module';
 import { ContentTypeWrapperComponent } from './form/builder/content-type-wrapper/content-type-wrapper.component';
+import { EntityTranslateMenuComponent } from './form/builder/content-type-wrapper/entity-translate-menu/entity-translate-menu.component';
 import { EavFieldDirective } from './form/builder/eav-field/eav-field.directive';
 import { EavFormComponent } from './form/builder/eav-form/eav-form.component';
 import { BooleanDefaultComponent } from './form/fields/boolean/boolean-default/boolean-default.component';
@@ -86,6 +84,8 @@ import { HiddenWrapperComponent } from './form/wrappers/hidden-wrapper/hidden-wr
 import { HyperlinkDefaultExpandableWrapperComponent } from './form/wrappers/hyperlink-default-expandable-wrapper/hyperlink-default-expandable-wrapper.component';
 import { HyperlinkLibraryExpandableWrapperComponent } from './form/wrappers/hyperlink-library-expandable-wrapper/hyperlink-library-expandable-wrapper.component';
 import { LocalizationWrapperComponent } from './form/wrappers/localization-wrapper/localization-wrapper.component';
+import { TranslateMenuDialogComponent } from './form/wrappers/localization-wrapper/translate-menu-dialog/translate-menu-dialog.component';
+import { TranslateMenuComponent } from './form/wrappers/localization-wrapper/translate-menu/translate-menu.component';
 import { ChangeAnchorTargetDirective, PasteClipboardImageDirective } from './shared/directives';
 import { AdamService, AssetsService, EavService, EntityService, LoadIconsService, QueryService, ScriptsLoaderService } from './shared/services';
 

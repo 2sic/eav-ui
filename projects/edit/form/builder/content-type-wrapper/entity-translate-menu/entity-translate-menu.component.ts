@@ -1,8 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { EavService, FieldsTranslateService } from '../../../shared/services';
-import { ItemService, LanguageInstanceService } from '../../../shared/store/ngrx-data';
+import { EavService, FieldsTranslateService } from '../../../../shared/services';
+import { ItemService, LanguageInstanceService } from '../../../../shared/store/ngrx-data';
 import { EntityTranslateMenuTemplateVars } from './entity-translate-menu.models';
 
 @Component({

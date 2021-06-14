@@ -1,5 +1,5 @@
-import { Dictionary } from '../../../../ng-dialogs/src/app/shared/models/dictionary.model';
-import { TranslationLinkConstants } from '../../../shared/constants';
+import { Dictionary } from '../../../../../ng-dialogs/src/app/shared/models/dictionary.model';
+import { TranslationLinkConstants } from '../../../../shared/constants';
 
 export class TranslateMenuHelpers {
 

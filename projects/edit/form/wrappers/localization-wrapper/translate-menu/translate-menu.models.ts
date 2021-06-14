@@ -1,4 +1,4 @@
-import { TranslationState } from '../../../shared/models';
+import { TranslationState } from '../../../../shared/models';
 
 export interface TranslationStateCore {
   linkType: string;

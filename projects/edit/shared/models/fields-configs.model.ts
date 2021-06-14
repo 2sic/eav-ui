@@ -1,6 +1,6 @@
 import { CalculatedInputType } from '.';
 import { FieldSettings, FieldValue } from '../../../edit-types';
-import { TranslationStateCore } from '../../eav-material-controls/localization/translate-menu/translate-menu.models';
+import { TranslationStateCore } from '../../form/wrappers/localization-wrapper/translate-menu/translate-menu.models';
 
 export interface FieldsProps {
   [attributeName: string]: FieldProps;
