@@ -1,4 +1,4 @@
-import { FieldSettings, FieldValue } from '../../edit-types';
+import { FieldSettings, FieldValue } from '../../../../edit-types';
 import { FieldLogicManager } from './field-logic-manager';
 
 type LogicConstructor = new (...args: any[]) => FieldLogicBase;

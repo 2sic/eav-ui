@@ -1,6 +1,6 @@
 import { FieldSettings } from '../../../../../edit-types';
 import { InputTypeConstants } from '../../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
-import { FieldLogicBase } from '../../../../field-logic/field-logic-base';
+import { FieldLogicBase } from '../../../shared/field-logic/field-logic-base';
 
 export class CustomJsonEditorLogic extends FieldLogicBase {
   name = InputTypeConstants.CustomJsonEditor;

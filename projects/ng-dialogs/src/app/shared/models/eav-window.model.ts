@@ -1,6 +1,6 @@
 import { SxcRoot } from '@2sic.com/2sxc-typings';
 import { TinyMCE } from 'tinymce';
-import { FieldLogicManager } from '../../../../../edit/field-logic/field-logic-manager';
+import { FieldLogicManager } from '../../../../../edit/form/shared/field-logic/field-logic-manager';
 import { Ace } from '../../code-editor/ace-editor/ace.model';
 import { PlumbType } from '../../visual-query/plumb-editor/plumb-editor.models';
 import { Dictionary } from './dictionary.model';

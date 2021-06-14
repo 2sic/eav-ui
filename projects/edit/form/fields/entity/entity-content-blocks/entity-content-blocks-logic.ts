@@ -1,7 +1,7 @@
 import { FieldSettings } from '../../../../../edit-types';
 import { InputTypeConstants } from '../../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
-import { FieldLogicBase } from '../../../../field-logic/field-logic-base';
-import { FieldLogicManager } from '../../../../field-logic/field-logic-manager';
+import { FieldLogicBase } from '../../../shared/field-logic/field-logic-base';
+import { FieldLogicManager } from '../../../shared/field-logic/field-logic-manager';
 
 export class EntityContentBlocksLogic extends FieldLogicBase {
   name = InputTypeConstants.EntityContentBlocks;
