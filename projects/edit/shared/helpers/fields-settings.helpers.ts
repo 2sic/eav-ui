@@ -2,7 +2,6 @@ import { LocalizationHelpers } from '.';
 import { FieldSettings } from '../../../edit-types';
 import { InputTypeConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { InputType } from '../../../ng-dialogs/src/app/content-type-fields/models/input-type.model';
-import { Dictionary } from '../../../ng-dialogs/src/app/shared/models/dictionary.model';
 import { TranslateMenuHelpers } from '../../form/wrappers/localization-wrapper/translate-menu/translate-menu.helpers';
 import { TranslationStateCore } from '../../form/wrappers/localization-wrapper/translate-menu/translate-menu.models';
 import { TranslationLinkConstants } from '../constants';
@@ -14,7 +13,7 @@ export class FieldsSettingsHelpers {
   static mergeSettings<T>(metadataItems: EavEntity[], currentLanguage: string, defaultLanguage: string): T {
     if (metadataItems == null) { return {} as T; }
 
-    const merged: Dictionary = {};
+    const merged: Record<string, any> = {};
     // copy metadata settings which are not @All
     for (const item of metadataItems) {
       if (item.Type.Id === '@All') { continue; }

@@ -6,7 +6,6 @@ import { map } from 'rxjs/operators';
 import { ContentType } from '../app-administration/models/content-type.model';
 import { AppDialogConfigService } from '../app-administration/services/app-dialog-config.service';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
-import { Dictionary } from '../shared/models/dictionary.model';
 import { ContentImportDialogData } from './content-import-dialog.config';
 import { ContentImport, EvaluateContentResult, ImportContentResult } from './models/content-import.model';
 import { ContentImportService } from './services/content-import.service';
@@ -38,7 +37,7 @@ export class ContentImportComponent implements OnInit, OnDestroy {
     map(([contentType, loading, viewStateSelected, evaluationResult, importResult]) =>
       ({ contentType, loading, viewStateSelected, evaluationResult, importResult })),
   );
-  errors: Dictionary<string> = {
+  errors: Record<number, string> = {
     0: 'Unknown error occured.',
     1: 'Selected content-type does not exist.',
     2: 'Document is not a valid XML file.',

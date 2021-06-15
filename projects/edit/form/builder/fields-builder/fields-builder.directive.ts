@@ -2,7 +2,6 @@ import { ComponentFactoryResolver, ComponentRef, Directive, Input, OnDestroy, On
 import { FormGroup } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { InputTypeConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
-import { Dictionary } from '../../../../ng-dialogs/src/app/shared/models/dictionary.model';
 import { fieldMetadataKey } from '../../../shared/constants';
 import { FieldMetadataModel, FieldProps } from '../../../shared/models';
 import { FieldsSettingsService } from '../../../shared/services';
@@ -43,7 +42,7 @@ export class FieldsBuilderDirective implements OnInit, OnDestroy {
   @Input() private group: FormGroup;
   private fieldConfigs: FieldConfigSet[] = [];
 
-  private components: Dictionary<Type<any>> = {
+  private components: Record<string, Type<any>> = {
     'app-adam-attach-wrapper': AdamAttachWrapperComponent,
     'app-collapsible-wrapper': CollapsibleWrapperComponent,
     'app-dropzone-wrapper': DropzoneWrapperComponent,

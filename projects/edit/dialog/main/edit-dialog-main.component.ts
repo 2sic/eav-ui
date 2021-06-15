@@ -6,7 +6,6 @@ import 'reflect-metadata';
 import { BehaviorSubject, combineLatest, fromEvent, Observable, of, Subscription } from 'rxjs';
 import { delay, map, startWith, tap } from 'rxjs/operators';
 import { consoleLogAngular } from '../../../ng-dialogs/src/app/shared/helpers/console-log-angular.helper';
-import { Dictionary } from '../../../ng-dialogs/src/app/shared/models/dictionary.model';
 import { FormBuilderComponent } from '../../form/builder/form-builder/form-builder.component';
 import { ValidationMessagesHelpers } from '../../shared/helpers';
 import { FieldErrorMessage, SaveResult } from '../../shared/models';
@@ -199,7 +198,7 @@ export class EditDialogMainComponent implements OnInit, AfterViewInit, OnDestroy
     } else {
       if (this.formBuilderRefs == null) { return; }
 
-      const formErrors: Dictionary<string>[] = [];
+      const formErrors: Record<string, string>[] = [];
       this.formBuilderRefs.forEach(formBuilderRef => {
         if (!formBuilderRef.form.invalid) { return; }
         formErrors.push(ValidationMessagesHelpers.validateForm(formBuilderRef.form));

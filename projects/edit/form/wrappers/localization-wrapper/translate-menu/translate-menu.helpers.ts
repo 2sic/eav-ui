@@ -1,4 +1,3 @@
-import { Dictionary } from '../../../../../ng-dialogs/src/app/shared/models/dictionary.model';
 import { TranslationLinkConstants } from '../../../../shared/constants';
 
 export class TranslateMenuHelpers {
@@ -42,7 +41,7 @@ export class TranslateMenuHelpers {
   }
 
   private static calculateShortDimensions(dimensions: string[], currentLanguage: string): string[] {
-    const dimensionsMap: Dictionary<string[]> = {};
+    const dimensionsMap: Record<string, string[]> = {};
     const shortCurrentLanguage = currentLanguage.slice(0, currentLanguage.indexOf('-'));
 
     dimensionsMap[shortCurrentLanguage] = [];

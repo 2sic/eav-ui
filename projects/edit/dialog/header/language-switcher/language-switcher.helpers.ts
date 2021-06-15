@@ -1,4 +1,3 @@
-import { Dictionary } from '../../../../ng-dialogs/src/app/shared/models/dictionary.model';
 import { Language } from '../../../shared/models';
 
 export interface LanguageButton extends Language {
@@ -8,7 +7,7 @@ export interface LanguageButton extends Language {
 /** Calculates properties of language buttons, e.g. name to be desplayed */
 export function getLanguageButtons(languages: Language[]): LanguageButton[] {
   const languageButtons: LanguageButton[] = [];
-  const regionlessNamesCount: Dictionary<number> = {};
+  const regionlessNamesCount: Record<string, number> = {};
 
   // count the number of repetitions of the same language without region key
   // e.g. English (United States) and English (Australia) are both English

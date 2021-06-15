@@ -18,11 +18,10 @@ import sitemap from '!raw-loader!../../assets/icons/font-awesome/sitemap.svg';
 import { Injectable } from '@angular/core';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
-import { Dictionary } from '../../../ng-dialogs/src/app/shared/models/dictionary.model';
 
 @Injectable()
 export class LoadIconsService {
-  private icons: Dictionary<string> = {
+  private icons: Record<string, string> = {
     apple,
     appleFilled,
     'draft-branch': draftBranch,

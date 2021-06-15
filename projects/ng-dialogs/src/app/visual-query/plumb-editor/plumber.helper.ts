@@ -1,5 +1,4 @@
 import { eavConstants } from '../../shared/constants/eav.constants';
-import { Dictionary } from '../../shared/models/dictionary.model';
 import { EavWindow } from '../../shared/models/eav-window.model';
 import { DataSource, PipelineDataSource, PipelineModel, PipelineResult, PipelineResultStream, StreamWire, VisualDesignerData } from '../models';
 import { EndpointInfo, PlumbType } from './plumb-editor.models';
@@ -26,7 +25,7 @@ export class Plumber {
     '#76608a', '#a0522d',
   ];
   private maxCols = this.lineColors.length - 1;
-  private uuidColorMap: Dictionary = {};
+  private uuidColorMap: Record<string, any> = {};
   private bulkDelete = false;
 
   constructor(

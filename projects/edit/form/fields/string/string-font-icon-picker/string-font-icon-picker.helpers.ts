@@ -1,10 +1,9 @@
-import { Dictionary } from '../../../../../ng-dialogs/src/app/shared/models/dictionary.model';
 import { IconOption } from './string-font-icon-picker.models';
 
 /** Calculates available css classes with className prefix. WARNING: Expensive operation */
 export function findAllIconsInCss(classPrefix: string, showPrefix: boolean) {
   const foundList: IconOption[] = [];
-  const duplicateDetector: Dictionary<boolean> = {};
+  const duplicateDetector: Record<string, boolean> = {};
 
   if (!classPrefix) { return foundList; }
 

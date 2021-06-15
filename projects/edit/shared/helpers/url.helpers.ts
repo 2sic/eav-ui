@@ -1,5 +1,4 @@
 import { ActivatedRoute } from '@angular/router';
-import { Dictionary } from '../../../ng-dialogs/src/app/shared/models/dictionary.model';
 import { EavConfig } from '../models';
 
 export class UrlHelpers {
@@ -21,7 +20,7 @@ export class UrlHelpers {
   }
 
   static latinizeText(input: string) {
-    const latinMap: Dictionary<string> = {
+    const latinMap: Record<string, string> = {
       Á: 'A', Ă: 'A', Ắ: 'A', Ặ: 'A', Ằ: 'A', Ẳ: 'A', Ẵ: 'A', Ǎ: 'A', Â: 'A', Ấ: 'A', Ậ: 'A',
       Ầ: 'A', Ẩ: 'A', Ẫ: 'A', Ä: 'Ae', Ǟ: 'A', Ȧ: 'A', Ǡ: 'A', Ạ: 'A', Ȁ: 'A', À: 'A', Ả: 'A', Ȃ: 'A',
       Ā: 'A', Ą: 'A', Å: 'A', Ǻ: 'A', Ḁ: 'A', Ⱥ: 'A', Ã: 'A', Ꜳ: 'AA', Æ: 'AE', Ǽ: 'AE', Ǣ: 'AE',
@@ -97,8 +96,8 @@ export class UrlHelpers {
     return input.replace(/[^A-Za-z0-9\[\] ]/g, (a) => (latinMap[a] || a));
   }
 
-  static readQueryStringParameters(url: string): Dictionary<string> {
-    const queryParams: Dictionary<string> = {};
+  static readQueryStringParameters(url: string): Record<string, string> {
+    const queryParams: Record<string, string> = {};
     url.split('&').forEach(f => {
       if (f.split('=').length === 2) {
         queryParams[f.split('=')[0]] = decodeURIComponent(f.split('=')[1].replace(/\+/g, ' '));
@@ -111,7 +110,7 @@ export class UrlHelpers {
   static getUrlParams(qs: string) {
     qs = qs.split('+').join(' ');
 
-    const params: Dictionary<string> = {};
+    const params: Record<string, string> = {};
     let tokens;
     const re = /[?&]?([^=]+)=([^&]*)/g;
 

@@ -1,6 +1,5 @@
 import { AbstractControl } from '@angular/forms';
 import { FieldValue } from '../../../edit-types';
-import { Dictionary } from '../../../ng-dialogs/src/app/shared/models/dictionary.model';
 import { FormValues } from '../models';
 
 export class GeneralHelpers {
@@ -8,8 +7,8 @@ export class GeneralHelpers {
   static objectsEqual<T>(x: T, y: T): boolean {
     if (x == null || y == null) { return x === y; }
 
-    const obj1 = x as Dictionary;
-    const obj2 = y as Dictionary;
+    const obj1 = x as Record<string, any>;
+    const obj2 = y as Record<string, any>;
 
     const keys1 = Object.keys(obj1);
     const keys2 = Object.keys(obj2);

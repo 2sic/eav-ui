@@ -1,15 +1,14 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { EavService } from '.';
-import { Dictionary } from '../../../ng-dialogs/src/app/shared/models/dictionary.model';
 
 @Injectable()
 export class FormsStateService implements OnDestroy {
   formsValid$: BehaviorSubject<boolean>;
   formsDirty$: BehaviorSubject<boolean>;
 
-  private formsValid: Dictionary<boolean>;
-  private formsDirty: Dictionary<boolean>;
+  private formsValid: Record<string, boolean>;
+  private formsDirty: Record<string, boolean>;
 
   constructor(private eavService: EavService) { }
 

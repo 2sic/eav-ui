@@ -1,5 +1,4 @@
 import { EavEntity, EavFor, EavGroupAssignment } from '.';
-import { Dictionary } from '../../../../ng-dialogs/src/app/shared/models/dictionary.model';
 
 export interface EavHeader {
   Add: boolean;
@@ -11,6 +10,6 @@ export interface EavHeader {
   Guid: string;
   Index: number;
   Metadata?: EavEntity[];
-  Prefill: Dictionary;
+  Prefill: Record<string, any>;
   Title?: string;
 }
