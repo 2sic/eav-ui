@@ -45,10 +45,10 @@ import { FormSlideDirective } from './dialog/main/form-slide.directive';
 import { SnackBarSaveErrorsComponent } from './dialog/main/snack-bar-save-errors/snack-bar-save-errors.component';
 import { SnackBarUnsavedChangesComponent } from './dialog/main/snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
 import { EditRoutingModule } from './edit-routing.module';
-import { ContentTypeWrapperComponent } from './form/builder/content-type-wrapper/content-type-wrapper.component';
-import { EntityTranslateMenuComponent } from './form/builder/content-type-wrapper/entity-translate-menu/entity-translate-menu.component';
 import { EavFieldDirective } from './form/builder/eav-field/eav-field.directive';
 import { EavFormComponent } from './form/builder/eav-form/eav-form.component';
+import { EntityTranslateMenuComponent } from './form/builder/entity-wrapper/entity-translate-menu/entity-translate-menu.component';
+import { EntityWrapperComponent } from './form/builder/entity-wrapper/entity-wrapper.component';
 import { BooleanDefaultComponent } from './form/fields/boolean/boolean-default/boolean-default.component';
 import { BooleanTristateComponent } from './form/fields/boolean/boolean-tristate/boolean-tristate.component';
 import { CustomDefaultComponent } from './form/fields/custom/custom-default/custom-default.component';
@@ -109,7 +109,7 @@ export function translateLoaderFactoryEdit(http: HttpClient): TranslateLoader {
     FormSlideDirective,
     EavFieldDirective,
     EavFormComponent,
-    ContentTypeWrapperComponent,
+    EntityWrapperComponent,
     CollapsibleWrapperComponent,
     StringDefaultComponent,
     StringUrlPathComponent,

@@ -7,14 +7,14 @@ import { GeneralHelpers } from '../../../shared/helpers';
 import { EavHeader } from '../../../shared/models/eav';
 import { EavService, FieldsSettingsService } from '../../../shared/services';
 import { ItemService, LanguageInstanceService } from '../../../shared/store/ngrx-data';
-import { ContentTypeTemplateVars } from './content-type-wrapper.models';
+import { ContentTypeTemplateVars } from './entity-wrapper.models';
 
 @Component({
-  selector: 'app-content-type-wrapper',
-  templateUrl: './content-type-wrapper.component.html',
-  styleUrls: ['./content-type-wrapper.component.scss'],
+  selector: 'app-entity-wrapper',
+  templateUrl: './entity-wrapper.component.html',
+  styleUrls: ['./entity-wrapper.component.scss'],
 })
-export class ContentTypeWrapperComponent implements OnInit {
+export class EntityWrapperComponent implements OnInit {
   @Input() entityGuid: string;
   @Input() group: FormGroup;
 
