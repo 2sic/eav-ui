@@ -5,10 +5,10 @@ import { UrlHelpers } from '../helpers';
 
 declare const window: EavWindow;
 
-export enum FileTypeConstants {
-  CSS = '.css',
-  JS = '.js',
-}
+export const FileTypeConstants = {
+  CSS: '.css',
+  JS: '.js',
+} as const;
 
 export interface LoadFile {
   path: string;

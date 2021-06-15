@@ -2,11 +2,11 @@ import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { TranslationLinkConstants } from '../../../../shared/constants';
+import { TranslationLink, TranslationLinks } from '../../../../shared/constants';
 import { EavService, FieldsTranslateService } from '../../../../shared/services';
 import { ItemService, LanguageInstanceService, LanguageService } from '../../../../shared/store/ngrx-data';
 import { TranslationStateCore } from '../translate-menu/translate-menu.models';
-import { I18nKeyConstants } from './translate-menu-dialog.constants';
+import { I18nKeys } from './translate-menu-dialog.constants';
 import { findI18nKey, getTemplateLanguages } from './translate-menu-dialog.helpers';
 import { TranslateMenuDialogData, TranslateMenuDialogTemplateVars } from './translate-menu-dialog.models';
 
@@ -16,12 +16,12 @@ import { TranslateMenuDialogData, TranslateMenuDialogTemplateVars } from './tran
   styleUrls: ['./translate-menu-dialog.component.scss'],
 })
 export class TranslateMenuDialogComponent implements OnInit, OnDestroy {
-  translationLinks = TranslationLinkConstants;
-  i18nKeys = I18nKeyConstants;
+  TranslationLinks = TranslationLinks;
+  I18nKeys = I18nKeys;
   templateVars$: Observable<TranslateMenuDialogTemplateVars>;
 
   private translationState$: BehaviorSubject<TranslationStateCore>;
-  private noLanguageRequired: string[];
+  private noLanguageRequired: TranslationLink[];
 
   constructor(
     private dialogRef: MatDialogRef<TranslateMenuDialogComponent>,
@@ -41,7 +41,7 @@ export class TranslateMenuDialogComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.translationState$ = new BehaviorSubject(this.dialogData.translationState);
-    this.noLanguageRequired = [TranslationLinkConstants.Translate, TranslationLinkConstants.DontTranslate];
+    this.noLanguageRequired = [TranslationLinks.Translate, TranslationLinks.DontTranslate];
 
     const currentLanguage$ = this.languageInstanceService.getCurrentLanguage$(this.eavService.eavConfig.formId);
     const defaultLanguage$ = this.languageInstanceService.getDefaultLanguage$(this.eavService.eavConfig.formId);
@@ -70,7 +70,7 @@ export class TranslateMenuDialogComponent implements OnInit, OnDestroy {
     this.translationState$.complete();
   }
 
-  setLinkType(linkType: string): void {
+  setLinkType(linkType: TranslationLink): void {
     const newTranslationState: TranslationStateCore = {
       linkType,
       language: this.noLanguageRequired.includes(linkType) ? '' : this.translationState$.value.language,
@@ -94,19 +94,19 @@ export class TranslateMenuDialogComponent implements OnInit, OnDestroy {
     }
 
     switch (newState.linkType) {
-      case TranslationLinkConstants.Translate:
+      case TranslationLinks.Translate:
         this.fieldsTranslateService.translate(this.dialogData.config.name);
         break;
-      case TranslationLinkConstants.DontTranslate:
+      case TranslationLinks.DontTranslate:
         this.fieldsTranslateService.dontTranslate(this.dialogData.config.name);
         break;
-      case TranslationLinkConstants.LinkReadOnly:
+      case TranslationLinks.LinkReadOnly:
         this.fieldsTranslateService.linkReadOnly(this.dialogData.config.name, newState.language);
         break;
-      case TranslationLinkConstants.LinkReadWrite:
+      case TranslationLinks.LinkReadWrite:
         this.fieldsTranslateService.linkReadWrite(this.dialogData.config.name, newState.language);
         break;
-      case TranslationLinkConstants.LinkCopyFrom:
+      case TranslationLinks.LinkCopyFrom:
         this.fieldsTranslateService.copyFrom(this.dialogData.config.name, newState.language);
         break;
       default:

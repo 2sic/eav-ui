@@ -10,19 +10,19 @@
 
   <mat-nav-list toggle>
     <ng-container
-      *ngTemplateOutlet="item;context:{ link: translationLinks.DontTranslate, icon: 'lock', i18nKey: i18nKeys.NoTranslate }">
+      *ngTemplateOutlet="item;context:{ link: TranslationLinks.DontTranslate, icon: 'lock', i18nKey: I18nKeys.NoTranslate }">
     </ng-container>
     <ng-container
-      *ngTemplateOutlet="item;context:{ link: translationLinks.Translate, icon: 'lock_open', i18nKey: i18nKeys.FromPrimary }">
+      *ngTemplateOutlet="item;context:{ link: TranslationLinks.Translate, icon: 'lock_open', i18nKey: I18nKeys.FromPrimary }">
     </ng-container>
     <ng-container
-      *ngTemplateOutlet="item;context:{ link: translationLinks.LinkCopyFrom, icon: 'translate', i18nKey: i18nKeys.FromOther }">
+      *ngTemplateOutlet="item;context:{ link: TranslationLinks.LinkCopyFrom, icon: 'translate', i18nKey: I18nKeys.FromOther }">
     </ng-container>
     <ng-container
-      *ngTemplateOutlet="item;context:{ link: translationLinks.LinkReadOnly, icon: 'link', i18nKey: i18nKeys.LinkReadOnly }">
+      *ngTemplateOutlet="item;context:{ link: TranslationLinks.LinkReadOnly, icon: 'link', i18nKey: I18nKeys.LinkReadOnly }">
     </ng-container>
     <ng-container
-      *ngTemplateOutlet="item;context:{ link: translationLinks.LinkReadWrite, icon: 'share', i18nKey: i18nKeys.LinkShared }">
+      *ngTemplateOutlet="item;context:{ link: TranslationLinks.LinkReadWrite, icon: 'share', i18nKey: I18nKeys.LinkShared }">
     </ng-container>
   </mat-nav-list>
 

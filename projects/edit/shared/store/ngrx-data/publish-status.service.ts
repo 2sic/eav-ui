@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { EntityCollectionServiceElementsFactory } from '@ngrx/data';
 import { Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
-import { PublishMode, PublishModeConstants, PublishStatus } from '../../models';
+import { PublishMode, PublishModes, PublishStatus } from '../../models';
 import { EavService } from '../../services';
 import { BaseDataService } from './base-data.service';
 
@@ -38,8 +38,8 @@ export class PublishStatusService extends BaseDataService<PublishStatus> {
     }
     const publishStatus: PublishStatus = {
       formId,
-      DraftShouldBranch: publishMode === PublishModeConstants.Branch,
-      IsPublished: publishMode === PublishModeConstants.Show,
+      DraftShouldBranch: publishMode === PublishModes.Branch,
+      IsPublished: publishMode === PublishModes.Show,
     };
     this.setPublishStatus(publishStatus);
   }
@@ -48,8 +48,8 @@ export class PublishStatusService extends BaseDataService<PublishStatus> {
     return this.getPublishStatus$(formId).pipe(
       map(publishStatus => {
         const publishMode: PublishMode = publishStatus.DraftShouldBranch
-          ? PublishModeConstants.Branch
-          : publishStatus.IsPublished ? PublishModeConstants.Show : PublishModeConstants.Hide;
+          ? PublishModes.Branch
+          : publishStatus.IsPublished ? PublishModes.Show : PublishModes.Hide;
         return publishMode;
       }),
     );

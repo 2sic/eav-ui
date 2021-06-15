@@ -1,7 +1,8 @@
+import { TranslationLink } from '../../../../shared/constants';
 import { TranslationState } from '../../../../shared/models';
 
 export interface TranslationStateCore {
-  linkType: string;
+  linkType: TranslationLink;
   language: string;
 }
 

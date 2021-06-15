@@ -13,11 +13,11 @@
 
     <mat-menu #menu="matMenu" overlapTrigger="true">
       <button mat-menu-item (click)="translate()"
-        [ngClass]="{ 'menu-item-selected': data.translationState.linkType === translationLinkConstants.Translate }">
+        [ngClass]="{ 'menu-item-selected': data.translationState.linkType === TranslationLinks.Translate }">
         {{ 'LangMenu.Translate' | translate }}
       </button>
       <button mat-menu-item (click)="dontTranslate()"
-        [ngClass]="{ 'menu-item-selected': data.translationState.linkType === translationLinkConstants.DontTranslate }">
+        [ngClass]="{ 'menu-item-selected': data.translationState.linkType === TranslationLinks.DontTranslate }">
         {{ 'LangMenu.NoTranslate' | translate }}
       </button>
       <button mat-menu-item (click)="openTranslateMenuDialog(data.translationState)"

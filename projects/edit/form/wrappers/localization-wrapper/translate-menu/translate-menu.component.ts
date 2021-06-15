@@ -3,7 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map, startWith } from 'rxjs/operators';
-import { TranslationLinkConstants } from '../../../../shared/constants';
+import { TranslationLinks } from '../../../../shared/constants';
 import { TranslationState } from '../../../../shared/models';
 import { EavService, FieldsSettingsService, FieldsTranslateService } from '../../../../shared/services';
 import { LanguageInstanceService } from '../../../../shared/store/ngrx-data';
@@ -22,7 +22,7 @@ export class TranslateMenuComponent implements OnInit {
   @Input() config: FieldConfigSet;
   @Input() private group: FormGroup;
 
-  translationLinkConstants = TranslationLinkConstants;
+  TranslationLinks = TranslationLinks;
   templateVars$: Observable<TranslateMenuTemplateVars>;
 
   constructor(

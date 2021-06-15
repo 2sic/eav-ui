@@ -1,9 +1,9 @@
-import { TranslationLinkConstants } from '../../../../shared/constants';
+import { TranslationLink, TranslationLinks } from '../../../../shared/constants';
 import { LocalizationHelpers } from '../../../../shared/helpers';
 import { Language } from '../../../../shared/models';
 import { EavEntityAttributes } from '../../../../shared/models/eav';
 import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
-import { I18nKeyConstants } from './translate-menu-dialog.constants';
+import { I18nKey, I18nKeys } from './translate-menu-dialog.constants';
 import { TranslateMenuDialogTemplateLanguage } from './translate-menu-dialog.models';
 
 export function getTemplateLanguages(
@@ -27,17 +27,17 @@ export function getTemplateLanguages(
   return templateLanguages;
 }
 
-export function findI18nKey(translationLink: string) {
+export function findI18nKey(translationLink: TranslationLink): I18nKey {
   switch (translationLink) {
-    case TranslationLinkConstants.Translate:
-      return I18nKeyConstants.FromPrimary;
-    case TranslationLinkConstants.DontTranslate:
-      return I18nKeyConstants.NoTranslate;
-    case TranslationLinkConstants.LinkReadOnly:
-      return I18nKeyConstants.LinkReadOnly;
-    case TranslationLinkConstants.LinkReadWrite:
-      return I18nKeyConstants.LinkShared;
-    case TranslationLinkConstants.LinkCopyFrom:
-      return I18nKeyConstants.FromOther;
+    case TranslationLinks.Translate:
+      return I18nKeys.FromPrimary;
+    case TranslationLinks.DontTranslate:
+      return I18nKeys.NoTranslate;
+    case TranslationLinks.LinkReadOnly:
+      return I18nKeys.LinkReadOnly;
+    case TranslationLinks.LinkReadWrite:
+      return I18nKeys.LinkShared;
+    case TranslationLinks.LinkCopyFrom:
+      return I18nKeys.FromOther;
   }
 }

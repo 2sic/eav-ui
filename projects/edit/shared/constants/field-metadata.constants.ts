@@ -1,1 +1,1 @@
-export const fieldMetadataKey = 'fieldMetadata';
+export const FieldMetadataKey = 'FieldMetadata' as const;

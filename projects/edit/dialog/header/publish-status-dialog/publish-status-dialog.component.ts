@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { PublishMode, PublishModeConstants } from '../../../shared/models';
+import { PublishMode, PublishModes } from '../../../shared/models';
 import { EavService } from '../../../shared/services';
 import { PublishStatusService } from '../../../shared/store/ngrx-data';
 import { PublishStatusDialogTemplateVars } from './publish-status-dialog.models';
@@ -13,7 +13,7 @@ import { PublishStatusDialogTemplateVars } from './publish-status-dialog.models'
   styleUrls: ['./publish-status-dialog.component.scss'],
 })
 export class PublishStatusDialogComponent implements OnInit {
-  publishModes = PublishModeConstants;
+  PublishModes = PublishModes;
   templateVars$: Observable<PublishStatusDialogTemplateVars>;
 
   constructor(

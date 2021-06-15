@@ -1,19 +1,19 @@
-import { TranslationLinkConstants } from '../../../../shared/constants';
+import { TranslationLink, TranslationLinks } from '../../../../shared/constants';
 
 export class TranslateMenuHelpers {
 
-  static getTranslationStateClass(linkType: string) {
+  static getTranslationStateClass(linkType: TranslationLink) {
     switch (linkType) {
-      case TranslationLinkConstants.MissingDefaultLangValue:
+      case TranslationLinks.MissingDefaultLangValue:
         return 'localization-missing-default-lang-value';
-      case TranslationLinkConstants.Translate:
-      case TranslationLinkConstants.LinkCopyFrom:
+      case TranslationLinks.Translate:
+      case TranslationLinks.LinkCopyFrom:
         return 'localization-translate';
-      case TranslationLinkConstants.DontTranslate:
+      case TranslationLinks.DontTranslate:
         return '';
-      case TranslationLinkConstants.LinkReadOnly:
+      case TranslationLinks.LinkReadOnly:
         return 'localization-link-read-only';
-      case TranslationLinkConstants.LinkReadWrite:
+      case TranslationLinks.LinkReadWrite:
         return 'localization-link-read-write';
       default:
         return '';

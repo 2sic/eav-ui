@@ -2,7 +2,7 @@ import { ComponentFactoryResolver, ComponentRef, Directive, Input, OnDestroy, On
 import { FormGroup } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { InputTypeConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
-import { fieldMetadataKey } from '../../../shared/constants';
+import { FieldMetadataKey } from '../../../shared/constants';
 import { FieldMetadataModel, FieldProps } from '../../../shared/models';
 import { FieldsSettingsService } from '../../../shared/services';
 import { BooleanDefaultComponent } from '../../fields/boolean/boolean-default/boolean-default.component';
@@ -127,7 +127,7 @@ export class FieldsBuilderDirective implements OnInit, OnDestroy {
       : this.readComponentType(fieldProps.calculatedInputType.inputType);
 
     // create component only if fieldMetadata exist
-    const fieldMetadata: FieldMetadataModel = Reflect.getMetadata(fieldMetadataKey, componentType);
+    const fieldMetadata: FieldMetadataModel = Reflect.getMetadata(FieldMetadataKey, componentType);
     if (fieldMetadata == null) { return; }
 
     if (fieldMetadata.wrappers) {

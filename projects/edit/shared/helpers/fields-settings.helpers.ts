@@ -4,7 +4,7 @@ import { InputTypeConstants } from '../../../ng-dialogs/src/app/content-type-fie
 import { InputType } from '../../../ng-dialogs/src/app/content-type-fields/models/input-type.model';
 import { TranslateMenuHelpers } from '../../form/wrappers/localization-wrapper/translate-menu/translate-menu.helpers';
 import { TranslationStateCore } from '../../form/wrappers/localization-wrapper/translate-menu/translate-menu.models';
-import { TranslationLinkConstants } from '../constants';
+import { TranslationLink, TranslationLinks } from '../constants';
 import { ContentTypeSettings, TranslationState } from '../models';
 import { EavContentType, EavContentTypeAttribute, EavEntity, EavHeader, EavValues } from '../models/eav';
 
@@ -212,35 +212,35 @@ export class FieldsSettingsHelpers {
     defaultLanguage: string,
   ): TranslationStateCore {
     let language: string;
-    let linkType: string;
+    let linkType: TranslationLink;
 
     // Determine is control disabled or enabled and info message
     if (!LocalizationHelpers.translationExistsInDefault(attributeValues, defaultLanguage)) {
       language = '';
-      linkType = TranslationLinkConstants.MissingDefaultLangValue;
+      linkType = TranslationLinks.MissingDefaultLangValue;
     } else if (disableTranslation) {
       language = '';
-      linkType = TranslationLinkConstants.DontTranslate;
+      linkType = TranslationLinks.DontTranslate;
     } else if (LocalizationHelpers.isEditableTranslationExist(attributeValues, currentLanguage, defaultLanguage)) {
       const editableElements = LocalizationHelpers.getValueTranslation(attributeValues, currentLanguage, defaultLanguage)
         .Dimensions.filter(dimension => dimension.Value !== currentLanguage);
 
       if (editableElements.length > 0) {
         language = editableElements[0].Value;
-        linkType = TranslationLinkConstants.LinkReadWrite;
+        linkType = TranslationLinks.LinkReadWrite;
       } else {
         language = '';
-        linkType = TranslationLinkConstants.Translate;
+        linkType = TranslationLinks.Translate;
       }
     } else if (LocalizationHelpers.isReadonlyTranslationExist(attributeValues, currentLanguage)) {
       const readOnlyElements = LocalizationHelpers.getValueTranslation(attributeValues, currentLanguage, defaultLanguage)
         .Dimensions.filter(dimension => dimension.Value !== currentLanguage);
 
       language = readOnlyElements[0].Value;
-      linkType = TranslationLinkConstants.LinkReadOnly;
+      linkType = TranslationLinks.LinkReadOnly;
     } else {
       language = '';
-      linkType = TranslationLinkConstants.DontTranslate;
+      linkType = TranslationLinks.DontTranslate;
     }
 
     const translationState: TranslationStateCore = {

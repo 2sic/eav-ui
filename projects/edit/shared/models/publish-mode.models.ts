@@ -1,9 +1,8 @@
 /** PublishMode is short version of PublishStatus */
-export type PublishMode = 'branch' | 'show' | 'hide';
+export const PublishModes = {
+  Show: 'show',
+  Hide: 'hide',
+  Branch: 'branch',
+} as const;
 
-/** PublishMode is short version of PublishStatus */
-export enum PublishModeConstants {
-  Show = 'show',
-  Hide = 'hide',
-  Branch = 'branch',
-}
+export type PublishMode = typeof PublishModes[keyof typeof PublishModes];
