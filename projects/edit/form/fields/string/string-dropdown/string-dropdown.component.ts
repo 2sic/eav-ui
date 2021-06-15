@@ -3,7 +3,7 @@ import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { EavService, FieldsSettingsService } from '../../../../shared/services';
-import { ComponentMetadata } from '../../../builder/eav-field/component-metadata.decorator';
+import { ComponentMetadata } from '../../../builder/fields-builder/component-metadata.decorator';
 import { BaseComponent } from '../../base/base.component';
 import { StringDropdownLogic } from './string-dropdown-logic';
 import { StringDropdownTemplateVars } from './string-dropdown.models';

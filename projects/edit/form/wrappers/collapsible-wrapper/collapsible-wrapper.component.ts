@@ -5,8 +5,8 @@ import { distinctUntilChanged, map } from 'rxjs/operators';
 import { FieldSettings } from '../../../../edit-types';
 import { EavService, FieldsSettingsService } from '../../../shared/services';
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data';
-import { FieldConfigSet } from '../../builder/eav-field/field-config-set.model';
-import { FieldWrapper } from '../../builder/eav-field/field-wrapper.model';
+import { FieldConfigSet } from '../../builder/fields-builder/field-config-set.model';
+import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { EmptyDefaultLogic } from './collapsible-wrapper-logic';
 
 @Component({

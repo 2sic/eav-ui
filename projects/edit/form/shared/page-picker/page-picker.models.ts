@@ -1,5 +1,5 @@
 import { FormGroup } from '@angular/forms';
-import { FieldConfigSet } from '../../builder/eav-field/field-config-set.model';
+import { FieldConfigSet } from '../../builder/fields-builder/field-config-set.model';
 import { QueryEntity } from '../../fields/entity/entity-query/entity-query.models';
 
 export interface PagePickerDialogData {

@@ -7,7 +7,7 @@ import { WrappersConstants } from '../../../../shared/constants/wrappers.constan
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { AdamService, EavService, EditRoutingService, FieldsSettingsService } from '../../../../shared/services';
 import { LinkCacheService } from '../../../../shared/store/ngrx-data';
-import { ComponentMetadata } from '../../../builder/eav-field/component-metadata.decorator';
+import { ComponentMetadata } from '../../../builder/fields-builder/component-metadata.decorator';
 import { HyperlinkDefaultBaseComponent } from './hyperlink-default-base.component';
 import { HyperlinkDefaultLogic } from './hyperlink-default-logic';
 import { HyperlinkDefaultTemplateVars } from './hyperlink-default.models';

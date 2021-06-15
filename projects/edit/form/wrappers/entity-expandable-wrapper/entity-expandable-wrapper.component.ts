@@ -6,7 +6,7 @@ import { ContentExpandAnimation } from '../../../shared/animations';
 import { GeneralHelpers } from '../../../shared/helpers';
 import { EavService, EditRoutingService, FieldsSettingsService } from '../../../shared/services';
 import { EntityCacheService, StringQueryCacheService } from '../../../shared/store/ngrx-data';
-import { FieldWrapper } from '../../builder/eav-field/field-wrapper.model';
+import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { BaseComponent } from '../../fields/base/base.component';
 import { calculateSelectedEntities } from '../../fields/entity/entity-default/entity-default.helpers';
 import { SelectedEntity } from '../../fields/entity/entity-default/entity-default.models';

@@ -3,7 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { take } from 'rxjs/operators';
 import { PagePickerResult } from '../../../edit-types';
-import { FieldConfigSet } from '../../form/builder/eav-field/field-config-set.model';
+import { FieldConfigSet } from '../../form/builder/fields-builder/field-config-set.model';
 import { PagePickerComponent } from '../../form/shared/page-picker/page-picker.component';
 import { PagePickerDialogData } from '../../form/shared/page-picker/page-picker.models';
 

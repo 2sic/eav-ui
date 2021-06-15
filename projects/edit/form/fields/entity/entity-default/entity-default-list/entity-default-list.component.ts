@@ -4,7 +4,7 @@ import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { GeneralHelpers } from '../../../../../shared/helpers';
 import { FieldsSettingsService } from '../../../../../shared/services';
-import { FieldConfigSet } from '../../../../builder/eav-field/field-config-set.model';
+import { FieldConfigSet } from '../../../../builder/fields-builder/field-config-set.model';
 import { DeleteEntityProps, SelectedEntity } from '../entity-default.models';
 import { EntityListTemplateVars, ReorderIndexes } from './entity-default-list.models';
 

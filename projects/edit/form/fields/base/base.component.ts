@@ -5,8 +5,8 @@ import { distinctUntilChanged, map } from 'rxjs/operators';
 import { FieldSettings, FieldValue } from '../../../../edit-types';
 import { ControlStatus } from '../../../shared/models';
 import { EavService, FieldsSettingsService } from '../../../shared/services';
-import { FieldConfigSet } from '../../builder/eav-field/field-config-set.model';
-import { Field } from '../../builder/eav-field/field.model';
+import { FieldConfigSet } from '../../builder/fields-builder/field-config-set.model';
+import { Field } from '../../builder/fields-builder/field.model';
 
 @Directive()
 // tslint:disable-next-line:directive-class-suffix

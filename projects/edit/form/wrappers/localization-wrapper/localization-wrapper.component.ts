@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild, ViewC
 import { Observable } from 'rxjs';
 import { EavService, EditRoutingService, FieldsSettingsService } from '../../../shared/services';
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data';
-import { FieldWrapper } from '../../builder/eav-field/field-wrapper.model';
+import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { BaseComponent } from '../../fields/base/base.component';
 import { TranslateMenuComponent } from './translate-menu/translate-menu.component';
 

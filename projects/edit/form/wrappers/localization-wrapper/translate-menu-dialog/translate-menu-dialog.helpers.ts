@@ -2,7 +2,7 @@ import { TranslationLinkConstants } from '../../../../shared/constants';
 import { LocalizationHelpers } from '../../../../shared/helpers';
 import { Language } from '../../../../shared/models';
 import { EavEntityAttributes } from '../../../../shared/models/eav';
-import { FieldConfigSet } from '../../../builder/eav-field/field-config-set.model';
+import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
 import { I18nKeyConstants } from './translate-menu-dialog.constants';
 import { TranslateMenuDialogTemplateLanguage } from './translate-menu-dialog.models';
 

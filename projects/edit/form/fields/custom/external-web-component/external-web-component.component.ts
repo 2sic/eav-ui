@@ -3,7 +3,7 @@ import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { consoleLogAngular } from '../../../../../ng-dialogs/src/app/shared/helpers/console-log-angular.helper';
 import { EavService, EditRoutingService, FieldsSettingsService, ScriptsLoaderService } from '../../../../shared/services';
-import { ComponentMetadata } from '../../../builder/eav-field/component-metadata.decorator';
+import { ComponentMetadata } from '../../../builder/fields-builder/component-metadata.decorator';
 import { BaseComponent } from '../../base/base.component';
 import { ExternalWebComponentTemplateVars } from './external-web-component.models';
 

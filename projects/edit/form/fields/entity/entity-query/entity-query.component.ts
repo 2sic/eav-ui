@@ -6,7 +6,7 @@ import { EntityInfo } from '../../../../../edit-types';
 import { FieldMask, GeneralHelpers } from '../../../../shared/helpers';
 import { EavService, EditRoutingService, EntityService, FieldsSettingsService, QueryService } from '../../../../shared/services';
 import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
-import { ComponentMetadata } from '../../../builder/eav-field/component-metadata.decorator';
+import { ComponentMetadata } from '../../../builder/fields-builder/component-metadata.decorator';
 import { EntityDefaultComponent } from '../entity-default/entity-default.component';
 import { filterGuids } from '../entity-default/entity-default.helpers';
 import { EntityQueryLogic } from './entity-query-logic';

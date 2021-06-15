@@ -11,7 +11,7 @@ import { FeaturesConstants } from '../../../../shared/constants';
 import { FileTypeHelpers, UrlHelpers } from '../../../../shared/helpers';
 import { AdamService, EditRoutingService } from '../../../../shared/services';
 import { AdamCacheService, FeatureService, LinkCacheService } from '../../../../shared/store/ngrx-data';
-import { FieldConfigSet } from '../../../builder/eav-field/field-config-set.model';
+import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
 import { AdamBrowserTemplateVars, AdamConfigInstance } from './adam-browser.models';
 
 @Component({

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild, ViewC
 import { Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { EavService, FieldsSettingsService } from '../../../shared/services';
-import { FieldWrapper } from '../../builder/eav-field/field-wrapper.model';
+import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { BaseComponent } from '../../fields/base/base.component';
 
 @Component({

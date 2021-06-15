@@ -5,7 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { consoleLogAngular } from '../../../../ng-dialogs/src/app/shared/helpers/console-log-angular.helper';
 import { AdamService, EavService, EditRoutingService, FieldsSettingsService } from '../../../shared/services';
 import { ContentTypeService, EntityCacheService, FeatureService, InputTypeService } from '../../../shared/store/ngrx-data';
-import { FieldConfigSet } from '../../builder/eav-field/field-config-set.model';
+import { FieldConfigSet } from '../../builder/fields-builder/field-config-set.model';
 import { ConnectorHelper } from './connector.helper';
 
 @Component({

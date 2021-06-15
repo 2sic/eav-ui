@@ -1,10 +1,9 @@
-
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { EavService, EditRoutingService, EntityService, FieldsSettingsService } from '../../../../shared/services';
 import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
-import { ComponentMetadata } from '../../../builder/eav-field/component-metadata.decorator';
+import { ComponentMetadata } from '../../../builder/fields-builder/component-metadata.decorator';
 import { EntityDefaultComponent } from '../entity-default/entity-default.component';
 import { EntityContentBlocksLogic } from './entity-content-blocks-logic';
 

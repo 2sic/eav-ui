@@ -38,8 +38,8 @@ import { FieldConfigSet } from './field-config-set.model';
 import { FieldWrapper } from './field-wrapper.model';
 import { Field } from './field.model';
 
-@Directive({ selector: '[appEavField]' })
-export class EavFieldDirective implements OnInit, OnDestroy {
+@Directive({ selector: '[appFieldsBuilder]' })
+export class FieldsBuilderDirective implements OnInit, OnDestroy {
   @Input() private group: FormGroup;
   private fieldConfigs: FieldConfigSet[] = [];
 
