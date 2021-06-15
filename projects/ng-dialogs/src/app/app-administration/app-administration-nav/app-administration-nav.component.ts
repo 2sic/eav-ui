@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
@@ -12,7 +12,6 @@ import { AppDialogConfigService } from '../services/app-dialog-config.service';
   selector: 'app-app-administration-nav',
   templateUrl: './app-administration-nav.component.html',
   styleUrls: ['./app-administration-nav.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppAdministrationNavComponent implements OnInit, OnDestroy {
   private dialogSettings$ = new BehaviorSubject<DialogSettings>(null);

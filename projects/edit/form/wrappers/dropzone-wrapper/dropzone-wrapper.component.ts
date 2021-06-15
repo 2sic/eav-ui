@@ -1,5 +1,5 @@
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
-import { AfterViewInit, ChangeDetectionStrategy, Component, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, Component, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { DropzoneDirective } from 'ngx-dropzone-wrapper';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
@@ -14,7 +14,6 @@ import { DropzoneConfigInstance, DropzoneType } from './dropzone-wrapper.models'
   selector: 'app-dropzone-wrapper',
   templateUrl: './dropzone-wrapper.component.html',
   styleUrls: ['./dropzone-wrapper.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DropzoneWrapperComponent extends BaseComponent implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;

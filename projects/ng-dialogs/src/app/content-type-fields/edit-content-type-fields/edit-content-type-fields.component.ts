@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -20,7 +20,6 @@ import { calculateDataTypes, DataType } from './edit-content-type-fields.helpers
   selector: 'app-edit-content-type-fields',
   templateUrl: './edit-content-type-fields.component.html',
   styleUrls: ['./edit-content-type-fields.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditContentTypeFieldsComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
@@ -13,7 +13,6 @@ import { PageEntity, PagePickerDialogData, PagePickerTemplateVars, PageSearchIte
   selector: 'app-page-picker',
   templateUrl: './page-picker.component.html',
   styleUrls: ['./page-picker.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PagePickerComponent implements OnInit, OnDestroy {
   selected: number;

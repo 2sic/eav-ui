@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, HostBinding, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostBinding, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
@@ -15,7 +15,6 @@ import { ContentItemImportDialogData } from './content-item-import-dialog.config
   selector: 'app-content-item-import',
   templateUrl: './content-item-import.component.html',
   styleUrls: ['./content-item-import.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ContentItemImportComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';

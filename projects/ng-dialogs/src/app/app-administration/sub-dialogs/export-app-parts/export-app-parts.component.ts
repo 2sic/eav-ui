@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -11,7 +11,6 @@ import { ExportAppPartsService } from '../../services/export-app-parts.service';
   selector: 'app-export-app-parts',
   templateUrl: './export-app-parts.component.html',
   styleUrls: ['./export-app-parts.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ExportAppPartsComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';

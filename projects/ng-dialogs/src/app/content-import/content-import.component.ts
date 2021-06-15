@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, HostBinding, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostBinding, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, combineLatest, forkJoin } from 'rxjs';
@@ -14,7 +14,6 @@ import { ContentImportService } from './services/content-import.service';
   selector: 'app-content-import',
   templateUrl: './content-import.component.html',
   styleUrls: ['./content-import.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ContentImportComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';

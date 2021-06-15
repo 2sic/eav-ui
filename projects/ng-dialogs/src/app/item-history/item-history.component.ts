@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { PageEvent } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -15,7 +15,6 @@ import { VersionsService } from './services/versions.service';
   selector: 'app-item-history',
   templateUrl: './item-history.component.html',
   styleUrls: ['./item-history.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ItemHistoryComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';

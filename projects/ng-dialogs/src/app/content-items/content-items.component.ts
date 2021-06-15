@@ -1,6 +1,6 @@
 import { AllCommunityModules, CellClickedEvent, ColDef, GridApi, GridOptions, GridReadyEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
@@ -39,7 +39,6 @@ import { EntitiesService } from './services/entities.service';
   selector: 'app-content-items',
   templateUrl: './content-items.component.html',
   styleUrls: ['./content-items.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ContentItemsComponent implements OnInit, OnDestroy {
   contentType$ = new BehaviorSubject<ContentType>(null);

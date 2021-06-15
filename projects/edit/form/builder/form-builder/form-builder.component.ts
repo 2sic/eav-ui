@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { combineLatest, Subscription } from 'rxjs';
 import { distinctUntilChanged, map, startWith } from 'rxjs/operators';
@@ -13,7 +13,6 @@ import { ItemService, LanguageInstanceService } from '../../../shared/store/ngrx
   templateUrl: './form-builder.component.html',
   styleUrls: ['./form-builder.component.scss'],
   providers: [FieldsSettingsService, FieldsTranslateService],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FormBuilderComponent implements OnInit, OnDestroy {
   @Input() entityGuid: string;

@@ -1,6 +1,6 @@
 // tslint:disable-next-line:max-line-length
 import { AllCommunityModules, CellClickedEvent, FilterChangedEvent, GridApi, GridOptions, GridReadyEvent, ICellRendererParams, RowDragEvent, SortChangedEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
@@ -27,7 +27,6 @@ import { ContentTypesFieldsService } from './services/content-types-fields.servi
   selector: 'app-content-type-fields',
   templateUrl: './content-type-fields.component.html',
   styleUrls: ['./content-type-fields.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
   contentType$ = new BehaviorSubject<ContentType>(null);

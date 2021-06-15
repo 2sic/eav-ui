@@ -1,5 +1,5 @@
 import { AllCommunityModules, CellClassParams, CellClickedEvent, GridOptions } from '@ag-grid-community/all-modules';
-import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { BehaviorSubject, from, Subscription } from 'rxjs';
@@ -28,7 +28,6 @@ import { ImportContentTypeDialogData } from '../sub-dialogs/import-content-type/
   selector: 'app-data',
   templateUrl: './data.component.html',
   styleUrls: ['./data.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DataComponent implements OnInit, OnDestroy {
   @Input() private enablePermissions: boolean;

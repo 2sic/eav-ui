@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { GeneralHelpers } from '../../../../shared/helpers';
@@ -12,7 +12,6 @@ import { AdamControl } from './hyperlink-library.models';
   selector: 'hyperlink-library',
   templateUrl: './hyperlink-library.component.html',
   styleUrls: ['./hyperlink-library.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 @FieldMetadata({
   wrappers: [

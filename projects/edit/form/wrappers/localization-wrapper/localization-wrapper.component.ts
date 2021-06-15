@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { Observable } from 'rxjs';
 import { EavService, EditRoutingService, FieldsSettingsService } from '../../../shared/services';
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data';
@@ -10,7 +10,6 @@ import { TranslateMenuComponent } from './translate-menu/translate-menu.componen
   selector: 'app-localization-wrapper',
   templateUrl: './localization-wrapper.component.html',
   styleUrls: ['./localization-wrapper.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LocalizationWrapperComponent extends BaseComponent implements FieldWrapper, OnInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;

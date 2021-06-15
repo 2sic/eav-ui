@@ -1,5 +1,5 @@
 // tslint:disable-next-line:max-line-length
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { eavConstants } from '../../shared/constants/eav.constants';
@@ -18,7 +18,6 @@ const jsPlumbUrl = 'https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.14.5/js/jsp
   templateUrl: './plumb-editor.component.html',
   styles: [':host { display: block; width: 100%; height: 100%; }'],
   styleUrls: ['./plumb-editor.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PlumbEditorComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('domRoot') private domRootRef: ElementRef<HTMLDivElement>;

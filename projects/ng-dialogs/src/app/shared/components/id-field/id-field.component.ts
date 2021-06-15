@@ -1,5 +1,5 @@
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { copyToClipboard } from '../../helpers/copy-to-clipboard.helper';
 import { IdFieldParams } from './id-field.models';
@@ -8,7 +8,6 @@ import { IdFieldParams } from './id-field.models';
   selector: 'app-id-field',
   templateUrl: './id-field.component.html',
   styleUrls: ['./id-field.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class IdFieldComponent implements ICellRendererAngularComp {
   id: number | string;

@@ -1,11 +1,10 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { GeneralHelpers } from '../../../../../edit/shared/helpers';
 
 @Component({
   selector: 'app-code-snippets',
   templateUrl: './code-snippets.component.html',
   styleUrls: ['./code-snippets.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CodeSnippetsComponent implements OnInit {
   @Input() snippets: any;

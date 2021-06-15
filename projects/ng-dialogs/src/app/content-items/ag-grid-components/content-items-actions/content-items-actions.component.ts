@@ -1,5 +1,5 @@
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { ContentItem } from '../../models/content-item.model';
 import { ContentItemsActionsParams } from './content-items-actions.models';
 
@@ -7,7 +7,6 @@ import { ContentItemsActionsParams } from './content-items-actions.models';
   selector: 'app-content-items-actions',
   templateUrl: './content-items-actions.component.html',
   styleUrls: ['./content-items-actions.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ContentItemsActionsComponent implements ICellRendererAngularComp {
   private params: ContentItemsActionsParams;

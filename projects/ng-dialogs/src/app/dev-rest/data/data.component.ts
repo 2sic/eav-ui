@@ -1,5 +1,5 @@
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
-import { ChangeDetectionStrategy, Component, HostBinding, OnDestroy } from '@angular/core';
+import { Component, HostBinding, OnDestroy } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest } from 'rxjs';
@@ -20,7 +20,6 @@ const pathToContent = 'app/{appname}/content/{typename}';
   selector: 'app-dev-rest-data',
   templateUrl: './data.component.html',
   styleUrls: ['../dev-rest-all.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   // we need preserve whitespace - otherwise spaces are missing in some conditional HTML
   preserveWhitespaces: true,
 })

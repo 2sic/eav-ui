@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MatSnackBarRef, MAT_SNACK_BAR_DATA } from '@angular/material/snack-bar';
 import { UnsavedChangesSnackData } from './snack-bar-unsaved-changes.models';
 
@@ -6,7 +6,6 @@ import { UnsavedChangesSnackData } from './snack-bar-unsaved-changes.models';
   selector: 'app-snack-bar-unsaved-changes',
   templateUrl: './snack-bar-unsaved-changes.component.html',
   styleUrls: ['./snack-bar-unsaved-changes.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SnackBarUnsavedChangesComponent implements OnInit {
 

@@ -1,5 +1,5 @@
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
-import { ChangeDetectionStrategy, Component, HostBinding, OnDestroy } from '@angular/core';
+import { Component, HostBinding, OnDestroy } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, BehaviorSubject } from 'rxjs';
@@ -19,7 +19,6 @@ const pathToQuery = 'app/{appname}/query/{queryname}';
   selector: 'app-dev-rest-query',
   templateUrl: './query.component.html',
   styleUrls: [/*'./query.component.scss',*/ '../dev-rest-all.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DevRestQueryComponent extends DevRestBase<DevRestQueryTemplateVars> implements OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';

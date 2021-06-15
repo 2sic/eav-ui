@@ -1,5 +1,5 @@
 import { KeyValue } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -14,7 +14,6 @@ import { filterAndSortDataSources } from './add-explorer.helpers';
   selector: 'app-add-explorer',
   templateUrl: './add-explorer.component.html',
   styleUrls: ['./add-explorer.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AddExplorerComponent implements OnInit, OnDestroy {
   sorted$: Observable<SortedDataSources>;

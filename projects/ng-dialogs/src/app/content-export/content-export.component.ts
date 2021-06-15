@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, forkJoin } from 'rxjs';
@@ -13,7 +13,6 @@ import { ContentExportService } from './services/content-export.service';
   selector: 'app-content-export',
   templateUrl: './content-export.component.html',
   styleUrls: ['./content-export.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ContentExportComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';

@@ -1,5 +1,5 @@
 import { AllCommunityModules, CellClickedEvent, GridOptions } from '@ag-grid-community/all-modules';
-import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { BehaviorSubject, Subscription } from 'rxjs';
@@ -24,7 +24,6 @@ import { ImportQueryDialogData } from '../sub-dialogs/import-query/import-query-
   selector: 'app-queries',
   templateUrl: './queries.component.html',
   styleUrls: ['./queries.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class QueriesComponent implements OnInit, OnDestroy {
   @Input() private enablePermissions: boolean;

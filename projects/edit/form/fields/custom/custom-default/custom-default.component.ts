@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { EavService, FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
@@ -9,7 +9,6 @@ import { BaseComponent } from '../../base/base.component';
   selector: 'custom-default',
   templateUrl: './custom-default.component.html',
   styleUrls: ['./custom-default.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 @FieldMetadata({
   wrappers: [WrappersConstants.LocalizationWrapper],

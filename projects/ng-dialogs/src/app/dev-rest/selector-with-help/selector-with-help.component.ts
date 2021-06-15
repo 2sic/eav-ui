@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { HelpPopupComponent } from '..';
 import { HelpPopupData } from '../help-popup/help-popup.models';
@@ -8,7 +8,6 @@ import { Scenario } from '../scenarios';
   selector: 'app-selector-with-help',
   templateUrl: './selector-with-help.component.html',
   styleUrls: ['../header-selector.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SelectorWithHelpComponent implements OnInit {
   @Input() label: string;

@@ -1,5 +1,5 @@
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { View } from '../../models/view.model';
 import { ViewActionsParams } from './views-actions.models';
 
@@ -7,7 +7,6 @@ import { ViewActionsParams } from './views-actions.models';
   selector: 'app-views-actions',
   templateUrl: './views-actions.component.html',
   styleUrls: ['./views-actions.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ViewsActionsComponent implements ICellRendererAngularComp {
   view: View;

@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ContentItemsService } from '../../content-items/services/content-items.service';
@@ -16,7 +16,6 @@ import { ImportAppPartsService } from '../services/import-app-parts.service';
   selector: 'app-app-configuration',
   templateUrl: './app-configuration.component.html',
   styleUrls: ['./app-configuration.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppConfigurationComponent implements OnInit {
   @Input() dialogSettings: DialogSettings;

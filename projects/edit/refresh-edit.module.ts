@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ActivatedRoute, Router } from '@angular/router';
 import { EditParams } from './edit-matcher.models';
@@ -7,7 +7,6 @@ import { UrlHelpers } from './shared/helpers';
 
 @Component({
   template: '',
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RefreshEditComponent {
   constructor(router: Router, route: ActivatedRoute) {

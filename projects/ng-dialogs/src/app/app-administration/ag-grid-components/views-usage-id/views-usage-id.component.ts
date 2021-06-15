@@ -1,6 +1,6 @@
 import { ICellRendererParams } from '@ag-grid-community/all-modules';
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { copyToClipboard } from '../../../shared/helpers/copy-to-clipboard.helper';
 
@@ -8,7 +8,6 @@ import { copyToClipboard } from '../../../shared/helpers/copy-to-clipboard.helpe
   selector: 'app-views-usage-id',
   templateUrl: './views-usage-id.component.html',
   styleUrls: ['./views-usage-id.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ViewsUsageIdComponent implements ICellRendererAngularComp {
   tooltip: string;

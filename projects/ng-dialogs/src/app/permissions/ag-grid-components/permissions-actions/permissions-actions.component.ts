@@ -1,5 +1,5 @@
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { Permission } from '../../models/permission.model';
 import { PermissionsActionsParams } from './permissions-actions.models';
 
@@ -7,7 +7,6 @@ import { PermissionsActionsParams } from './permissions-actions.models';
   selector: 'app-permissions-actions',
   templateUrl: './permissions-actions.component.html',
   styleUrls: ['./permissions-actions.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PermissionsActionsComponent implements ICellRendererAngularComp {
   private params: PermissionsActionsParams;

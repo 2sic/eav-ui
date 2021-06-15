@@ -1,5 +1,5 @@
 import { AllCommunityModules, CellClickedEvent, GridOptions, ICellRendererParams, ValueGetterParams } from '@ag-grid-community/all-modules';
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject, combineLatest, fromEvent, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
@@ -18,7 +18,6 @@ import { FeaturesConfigService } from '../services/features-config.service';
   selector: 'app-manage-features',
   templateUrl: './manage-features.component.html',
   styleUrls: ['./manage-features.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ManageFeaturesComponent implements OnInit, OnDestroy {
   modules = AllCommunityModules;

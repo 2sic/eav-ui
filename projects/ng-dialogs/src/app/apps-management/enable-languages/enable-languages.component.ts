@@ -1,5 +1,5 @@
 import { AllCommunityModules, CellClickedEvent, GridOptions } from '@ag-grid-community/all-modules';
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
@@ -14,7 +14,6 @@ import { EnableLanguagesService } from '../services/enable-languages.service';
   selector: 'app-enable-languages',
   templateUrl: './enable-languages.component.html',
   styleUrls: ['./enable-languages.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EnableLanguagesComponent implements OnInit, OnDestroy {
   languages$ = new BehaviorSubject<EnableLanguage[]>(null);

@@ -1,5 +1,5 @@
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { guidRegex } from '../../../shared/constants/guid.constants';
 import { ContentType } from '../../models/content-type.model';
 import { DataActionsParams } from './data-actions.models';
@@ -8,7 +8,6 @@ import { DataActionsParams } from './data-actions.models';
   selector: 'app-data-actions',
   templateUrl: './data-actions.component.html',
   styleUrls: ['./data-actions.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DataActionsComponent implements ICellRendererAngularComp {
   contentType: ContentType;

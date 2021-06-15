@@ -1,6 +1,6 @@
 import polymorphLogo from '!url-loader!./polymorph-logo.png';
 import { AllCommunityModules, CellClickedEvent, GridOptions, ValueGetterParams } from '@ag-grid-community/all-modules';
-import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { BehaviorSubject, Subscription } from 'rxjs';
@@ -28,7 +28,6 @@ import { calculateViewType } from './views.helpers';
   selector: 'app-views',
   templateUrl: './views.component.html',
   styleUrls: ['./views.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ViewsComponent implements OnInit, OnDestroy {
   @Input() private enableCode: boolean;

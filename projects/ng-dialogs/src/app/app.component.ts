@@ -14,7 +14,7 @@ import { Context } from './shared/services/context';
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent extends DnnAppComponent implements OnInit, OnDestroy {
   private subscription = new Subscription();

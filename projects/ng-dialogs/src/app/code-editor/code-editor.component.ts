@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
@@ -20,7 +20,6 @@ import { SourceService } from './services/source.service';
   selector: 'app-code-editor',
   templateUrl: './code-editor.component.html',
   styleUrls: ['./code-editor.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CodeEditorComponent implements OnInit, OnDestroy {
   @ViewChild(AceEditorComponent) private aceEditorRef: AceEditorComponent;

@@ -1,5 +1,5 @@
 import { AllCommunityModules, CellClickedEvent, GridOptions } from '@ag-grid-community/all-modules';
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
@@ -20,7 +20,6 @@ import { PermissionsService } from './services/permissions.service';
   selector: 'app-permissions',
   templateUrl: './permissions.component.html',
   styleUrls: ['./permissions.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PermissionsComponent implements OnInit, OnDestroy {
   permissions$ = new BehaviorSubject<Permission[]>(null);

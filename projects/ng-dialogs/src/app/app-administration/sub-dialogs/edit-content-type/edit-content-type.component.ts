@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
@@ -13,7 +13,6 @@ import { ContentTypesService } from '../../services/content-types.service';
   selector: 'app-edit-content-type',
   templateUrl: './edit-content-type.component.html',
   styleUrls: ['./edit-content-type.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditContentTypeComponent implements OnInit, OnDestroy, AfterViewInit {
   @HostBinding('className') hostClass = 'dialog-component';

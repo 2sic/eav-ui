@@ -1,5 +1,4 @@
-// tslint:disable-next-line:max-line-length
-import { ChangeDetectionStrategy, Component, ElementRef, forwardRef, Input, NgZone, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, ElementRef, forwardRef, Input, NgZone, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { loadScripts } from '../../shared/helpers/load-scripts.helper';
 import { EavWindow } from '../../shared/models/eav-window.model';
@@ -17,7 +16,6 @@ declare const window: EavWindow;
     useExisting: forwardRef(() => AceEditorComponent),
     multi: true
   }],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AceEditorComponent implements OnInit, OnChanges, OnDestroy {
   @ViewChild('editor') editorRef: ElementRef;

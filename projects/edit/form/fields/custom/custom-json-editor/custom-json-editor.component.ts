@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
@@ -13,7 +13,6 @@ import { CustomJsonEditorTemplateVars } from './custom-json-editor.models';
   selector: 'custom-json-editor',
   templateUrl: './custom-json-editor.component.html',
   styleUrls: ['./custom-json-editor.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 @FieldMetadata({
   wrappers: [WrappersConstants.LocalizationWrapper],
