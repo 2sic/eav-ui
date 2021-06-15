@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output, QueryList } from '@angular/core';
 import { EavWindow } from '../../../ng-dialogs/src/app/shared/models/eav-window.model';
-import { EavFormComponent } from '../../form/builder/eav-form/eav-form.component';
+import { EavFormComponent } from '../../form/builder/form-builder/form-builder.component';
 import { DebugType, DebugTypes } from './edit-dialog-footer.models';
 
 declare const window: EavWindow;

@@ -7,7 +7,7 @@ import { BehaviorSubject, combineLatest, fromEvent, Observable, of, Subscription
 import { delay, map, startWith, tap } from 'rxjs/operators';
 import { consoleLogAngular } from '../../../ng-dialogs/src/app/shared/helpers/console-log-angular.helper';
 import { Dictionary } from '../../../ng-dialogs/src/app/shared/models/dictionary.model';
-import { EavFormComponent } from '../../form/builder/eav-form/eav-form.component';
+import { EavFormComponent } from '../../form/builder/form-builder/form-builder.component';
 import { ValidationMessagesHelpers } from '../../shared/helpers';
 import { FieldErrorMessage, SaveResult } from '../../shared/models';
 import { EavItem } from '../../shared/models/eav';

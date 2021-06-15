@@ -9,9 +9,9 @@ import { EavService, FieldsSettingsService, FieldsTranslateService, FormsStateSe
 import { ItemService, LanguageInstanceService } from '../../../shared/store/ngrx-data';
 
 @Component({
-  selector: 'app-eav-form',
-  templateUrl: './eav-form.component.html',
-  styleUrls: ['./eav-form.component.scss'],
+  selector: 'app-form-builder',
+  templateUrl: './form-builder.component.html',
+  styleUrls: ['./form-builder.component.scss'],
   providers: [FieldsSettingsService, FieldsTranslateService],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
