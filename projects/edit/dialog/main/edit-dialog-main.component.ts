@@ -7,7 +7,7 @@ import { BehaviorSubject, combineLatest, fromEvent, Observable, of, Subscription
 import { delay, map, startWith, tap } from 'rxjs/operators';
 import { consoleLogAngular } from '../../../ng-dialogs/src/app/shared/helpers/console-log-angular.helper';
 import { Dictionary } from '../../../ng-dialogs/src/app/shared/models/dictionary.model';
-import { EavFormComponent } from '../../form/builder/form-builder/form-builder.component';
+import { FormBuilderComponent } from '../../form/builder/form-builder/form-builder.component';
 import { ValidationMessagesHelpers } from '../../shared/helpers';
 import { FieldErrorMessage, SaveResult } from '../../shared/models';
 import { EavItem } from '../../shared/models/eav';
@@ -29,7 +29,7 @@ import { UnsavedChangesSnackData } from './snack-bar-unsaved-changes/snack-bar-u
   providers: [EditRoutingService, FormsStateService, FormulaDesignerService],
 })
 export class EditDialogMainComponent implements OnInit, AfterViewInit, OnDestroy {
-  @ViewChildren(EavFormComponent) eavFormRefs: QueryList<EavFormComponent>;
+  @ViewChildren(FormBuilderComponent) formBuilderRefs: QueryList<FormBuilderComponent>;
 
   templateVars$: Observable<EditDialogMainTemplateVars>;
 
@@ -156,9 +156,9 @@ export class EditDialogMainComponent implements OnInit, AfterViewInit, OnDestroy
   /** Save all forms */
   saveAll(close: boolean) {
     if (this.formsStateService.formsValid$.value) {
-      const items = this.eavFormRefs
-        .map(eavFormRef => {
-          const eavItem = this.itemService.getItem(eavFormRef.entityGuid);
+      const items = this.formBuilderRefs
+        .map(formBuilderRef => {
+          const eavItem = this.itemService.getItem(formBuilderRef.entityGuid);
           const isValid = this.formsStateService.getFormValid(eavItem.Entity.Guid);
           if (!isValid) { return; }
 
@@ -197,12 +197,12 @@ export class EditDialogMainComponent implements OnInit, AfterViewInit, OnDestroy
         },
       });
     } else {
-      if (this.eavFormRefs == null) { return; }
+      if (this.formBuilderRefs == null) { return; }
 
       const formErrors: Dictionary<string>[] = [];
-      this.eavFormRefs.forEach(eavFormRef => {
-        if (!eavFormRef.form.invalid) { return; }
-        formErrors.push(ValidationMessagesHelpers.validateForm(eavFormRef.form));
+      this.formBuilderRefs.forEach(formBuilderRef => {
+        if (!formBuilderRef.form.invalid) { return; }
+        formErrors.push(ValidationMessagesHelpers.validateForm(formBuilderRef.form));
       });
 
       const fieldErrors: FieldErrorMessage[] = [];

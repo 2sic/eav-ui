@@ -15,7 +15,7 @@ import { ItemService, LanguageInstanceService } from '../../../shared/store/ngrx
   providers: [FieldsSettingsService, FieldsTranslateService],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class EavFormComponent implements OnInit, OnDestroy {
+export class FormBuilderComponent implements OnInit, OnDestroy {
   @Input() entityGuid: string;
 
   form: FormGroup;

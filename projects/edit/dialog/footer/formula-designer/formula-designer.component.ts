@@ -3,7 +3,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { combineLatest, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { copyToClipboard } from '../../../../ng-dialogs/src/app/shared/helpers/copy-to-clipboard.helper';
-import { EavFormComponent } from '../../../form/builder/form-builder/form-builder.component';
+import { FormBuilderComponent } from '../../../form/builder/form-builder/form-builder.component';
 import { FormulaHelpers, LocalizationHelpers } from '../../../shared/helpers';
 import { DesignerState, FormulaTarget, FormulaTargets } from '../../../shared/models';
 import { EavItem } from '../../../shared/models/eav';
@@ -21,7 +21,7 @@ import { DesignerSnippet, EntityOption, FieldOption, FormulaDesignerTemplateVars
   styleUrls: ['./formula-designer.component.scss'],
 })
 export class FormulaDesignerComponent implements OnInit, OnDestroy {
-  @Input() private eavFormRefs: QueryList<EavFormComponent>;
+  @Input() private formBuilderRefs: QueryList<FormBuilderComponent>;
 
   SelectTargets = SelectTargets;
   loadError = false;
@@ -38,7 +38,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadError = false;
-    if (this.eavFormRefs == null) {
+    if (this.formBuilderRefs == null) {
       this.loadError = true;
       return;
     }
@@ -70,7 +70,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     switch (target) {
       case SelectTargets.Entity:
         newState.entityGuid = value;
-        const selectedFormRef = this.eavFormRefs.find(eavFormRef => eavFormRef.entityGuid === newState.entityGuid);
+        const selectedFormRef = this.formBuilderRefs.find(formBuilderRef => formBuilderRef.entityGuid === newState.entityGuid);
         newState.fieldName = Object.keys(selectedFormRef.fieldsSettingsService.getFieldsProps())[0];
         break;
       case SelectTargets.Field:
@@ -120,8 +120,8 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     };
     this.formulaDesignerService.setDesignerState(designer);
     this.formulaDesignerService.resetFormula(designer.entityGuid, designer.fieldName, designer.target);
-    this.eavFormRefs
-      .find(eavFormRef => eavFormRef.entityGuid === designer.entityGuid)
+    this.formBuilderRefs
+      .find(formBuilderRef => formBuilderRef.entityGuid === designer.entityGuid)
       .fieldsSettingsService.forceSettings();
   }
 
@@ -129,8 +129,8 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     const designer = this.formulaDesignerService.getDesignerState();
     const formula = this.formulaDesignerService.getFormula(designer.entityGuid, designer.fieldName, designer.target, true);
     this.formulaDesignerService.upsertFormula(designer.entityGuid, designer.fieldName, designer.target, formula.source, true);
-    this.eavFormRefs
-      .find(eavFormRef => eavFormRef.entityGuid === designer.entityGuid)
+    this.formBuilderRefs
+      .find(formBuilderRef => formBuilderRef.entityGuid === designer.entityGuid)
       .fieldsSettingsService.forceSettings();
   }
 
@@ -188,8 +188,8 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
   private buildTemplateVars(): void {
     const oldState = this.formulaDesignerService.getDesignerState();
     if (oldState.entityGuid == null && oldState.fieldName == null && oldState.target == null) {
-      const entityGuid = this.eavFormRefs.first.entityGuid;
-      const fieldsProps = this.eavFormRefs.first.fieldsSettingsService.getFieldsProps();
+      const entityGuid = this.formBuilderRefs.first.entityGuid;
+      const fieldsProps = this.formBuilderRefs.first.fieldsSettingsService.getFieldsProps();
       const fieldName = Object.keys(fieldsProps)[0];
       const target = fieldName != null ? FormulaTargets.Value : null;
       const newState: DesignerState = {
@@ -207,18 +207,18 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
       this.formulaDesignerService.getFormulas$()
     ]).pipe(
       map(([designer, formulas]): SelectOptions => {
-        const entityOptions = this.eavFormRefs.map(eavFormRef => {
+        const entityOptions = this.formBuilderRefs.map(formBuilderRef => {
           const entity: EntityOption = {
-            entityGuid: eavFormRef.entityGuid,
-            hasFormula: formulas.some(f => f.entityGuid === eavFormRef.entityGuid),
-            label: eavFormRef.fieldsSettingsService.getContentTypeSettings()._itemTitle,
+            entityGuid: formBuilderRef.entityGuid,
+            hasFormula: formulas.some(f => f.entityGuid === formBuilderRef.entityGuid),
+            label: formBuilderRef.fieldsSettingsService.getContentTypeSettings()._itemTitle,
           };
           return entity;
         });
 
         const fieldOptions: FieldOption[] = [];
         if (designer.entityGuid != null) {
-          const selectedItem = this.eavFormRefs.find(i => i.entityGuid === designer.entityGuid);
+          const selectedItem = this.formBuilderRefs.find(i => i.entityGuid === designer.entityGuid);
           const fieldsProps = selectedItem.fieldsSettingsService.getFieldsProps();
           for (const fieldName of Object.keys(fieldsProps)) {
             const field: FieldOption = {

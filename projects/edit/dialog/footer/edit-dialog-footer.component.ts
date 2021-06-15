@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output, QueryList } from '@angular/core';
 import { EavWindow } from '../../../ng-dialogs/src/app/shared/models/eav-window.model';
-import { EavFormComponent } from '../../form/builder/form-builder/form-builder.component';
+import { FormBuilderComponent } from '../../form/builder/form-builder/form-builder.component';
 import { DebugType, DebugTypes } from './edit-dialog-footer.models';
 
 declare const window: EavWindow;
@@ -11,7 +11,7 @@ declare const window: EavWindow;
   styleUrls: ['./edit-dialog-footer.component.scss'],
 })
 export class EditDialogFooterComponent implements OnInit {
-  @Input() eavFormRefs: QueryList<EavFormComponent>;
+  @Input() formBuilderRefs: QueryList<FormBuilderComponent>;
   @Output() private debugInfoOpened = new EventEmitter<boolean>();
 
   DebugTypes = DebugTypes;

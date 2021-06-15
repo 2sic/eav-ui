@@ -48,7 +48,7 @@ import { EditRoutingModule } from './edit-routing.module';
 import { EntityTranslateMenuComponent } from './form/builder/entity-wrapper/entity-translate-menu/entity-translate-menu.component';
 import { EntityWrapperComponent } from './form/builder/entity-wrapper/entity-wrapper.component';
 import { FieldsBuilderDirective } from './form/builder/fields-builder/fields-builder.directive';
-import { EavFormComponent } from './form/builder/form-builder/form-builder.component';
+import { FormBuilderComponent } from './form/builder/form-builder/form-builder.component';
 import { BooleanDefaultComponent } from './form/fields/boolean/boolean-default/boolean-default.component';
 import { BooleanTristateComponent } from './form/fields/boolean/boolean-tristate/boolean-tristate.component';
 import { CustomDefaultComponent } from './form/fields/custom/custom-default/custom-default.component';
@@ -108,7 +108,7 @@ export function translateLoaderFactoryEdit(http: HttpClient): TranslateLoader {
     LogsDumpComponent,
     FormSlideDirective,
     FieldsBuilderDirective,
-    EavFormComponent,
+    FormBuilderComponent,
     EntityWrapperComponent,
     CollapsibleWrapperComponent,
     StringDefaultComponent,

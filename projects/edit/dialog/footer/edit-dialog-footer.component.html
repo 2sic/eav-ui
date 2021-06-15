@@ -20,7 +20,7 @@
   <div class="debug-info-container" *ngIf="activeDebug != null">
     <app-data-dump *ngIf="activeDebug === DebugTypes.Data"></app-data-dump>
 
-    <app-formula-designer *ngIf="activeDebug === DebugTypes.Formulas" [eavFormRefs]="eavFormRefs">
+    <app-formula-designer *ngIf="activeDebug === DebugTypes.Formulas" [formBuilderRefs]="formBuilderRefs">
     </app-formula-designer>
 
     <app-logs-dump *ngIf="activeDebug === DebugTypes.Logs"></app-logs-dump>
