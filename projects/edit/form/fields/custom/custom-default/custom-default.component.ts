@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { EavService, FieldsSettingsService } from '../../../../shared/services';
-import { ComponentMetadata } from '../../../builder/fields-builder/component-metadata.decorator';
+import { FieldMetadata } from '../../../builder/fields-builder/component-metadata.decorator';
 import { BaseComponent } from '../../base/base.component';
 
 @Component({
@@ -11,7 +11,7 @@ import { BaseComponent } from '../../base/base.component';
   styleUrls: ['./custom-default.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-@ComponentMetadata({
+@FieldMetadata({
   wrappers: [WrappersConstants.LocalizationWrapper],
 })
 export class CustomDefaultComponent extends BaseComponent<null> implements OnInit, OnDestroy {

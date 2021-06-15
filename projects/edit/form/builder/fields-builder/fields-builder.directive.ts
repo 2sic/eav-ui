@@ -3,8 +3,8 @@ import { FormGroup } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { InputTypeConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { Dictionary } from '../../../../ng-dialogs/src/app/shared/models/dictionary.model';
-import { componentMetadataKey } from '../../../shared/constants';
-import { ComponentMetadataModel, FieldProps } from '../../../shared/models';
+import { fieldMetadataKey } from '../../../shared/constants';
+import { FieldMetadataModel, FieldProps } from '../../../shared/models';
 import { FieldsSettingsService } from '../../../shared/services';
 import { BooleanDefaultComponent } from '../../fields/boolean/boolean-default/boolean-default.component';
 import { BooleanTristateComponent } from '../../fields/boolean/boolean-tristate/boolean-tristate.component';
@@ -127,12 +127,12 @@ export class FieldsBuilderDirective implements OnInit, OnDestroy {
       ? this.readComponentType(InputTypeConstants.ExternalWebComponent)
       : this.readComponentType(fieldProps.calculatedInputType.inputType);
 
-    // create component only if componentMetadata exist
-    const componentMetadata: ComponentMetadataModel = Reflect.getMetadata(componentMetadataKey, componentType);
-    if (componentMetadata == null) { return; }
+    // create component only if fieldMetadata exist
+    const fieldMetadata: FieldMetadataModel = Reflect.getMetadata(fieldMetadataKey, componentType);
+    if (fieldMetadata == null) { return; }
 
-    if (componentMetadata.wrappers) {
-      containerRef = this.createWrappers(containerRef, componentMetadata.wrappers, fieldConfig);
+    if (fieldMetadata.wrappers) {
+      containerRef = this.createWrappers(containerRef, fieldMetadata.wrappers, fieldConfig);
     }
 
     const factory = this.resolver.resolveComponentFactory<Field>(componentType);

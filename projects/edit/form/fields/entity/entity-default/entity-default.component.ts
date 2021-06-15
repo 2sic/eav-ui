@@ -10,7 +10,7 @@ import { EditForm } from '../../../../../ng-dialogs/src/app/shared/models/edit-f
 import { FieldMask, GeneralHelpers } from '../../../../shared/helpers';
 import { EavService, EditRoutingService, EntityService, FieldsSettingsService } from '../../../../shared/services';
 import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
-import { ComponentMetadata } from '../../../builder/fields-builder/component-metadata.decorator';
+import { FieldMetadata } from '../../../builder/fields-builder/component-metadata.decorator';
 import { BaseComponent } from '../../base/base.component';
 import { ReorderIndexes } from './entity-default-list/entity-default-list.models';
 import { EntityDefaultLogic } from './entity-default-logic';
@@ -24,7 +24,7 @@ import { DeleteEntityProps, EntityTemplateVars, SelectedEntity } from './entity-
   templateUrl: './entity-default.component.html',
   styleUrls: ['./entity-default.component.scss'],
 })
-@ComponentMetadata({})
+@FieldMetadata({})
 export class EntityDefaultComponent extends BaseComponent<string | string[]> implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(EntityDefaultSearchComponent) private entitySearchComponent: EntityDefaultSearchComponent;
 

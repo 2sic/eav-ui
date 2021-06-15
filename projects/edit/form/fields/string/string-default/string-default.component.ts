@@ -4,7 +4,7 @@ import { distinctUntilChanged, map } from 'rxjs/operators';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { EavService, FieldsSettingsService } from '../../../../shared/services';
-import { ComponentMetadata } from '../../../builder/fields-builder/component-metadata.decorator';
+import { FieldMetadata } from '../../../builder/fields-builder/component-metadata.decorator';
 import { BaseComponent } from '../../base/base.component';
 import { StringDefaultLogic } from './string-default-logic';
 import { StringDefaultTemplateVars } from './string-default.models';
@@ -15,7 +15,7 @@ import { StringDefaultTemplateVars } from './string-default.models';
   templateUrl: './string-default.component.html',
   styleUrls: ['./string-default.component.scss'],
 })
-@ComponentMetadata({
+@FieldMetadata({
   wrappers: [WrappersConstants.LocalizationWrapper],
 })
 export class StringDefaultComponent extends BaseComponent<string> implements OnInit, OnDestroy {

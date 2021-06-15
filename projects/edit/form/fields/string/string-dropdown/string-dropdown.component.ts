@@ -3,7 +3,7 @@ import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { EavService, FieldsSettingsService } from '../../../../shared/services';
-import { ComponentMetadata } from '../../../builder/fields-builder/component-metadata.decorator';
+import { FieldMetadata } from '../../../builder/fields-builder/component-metadata.decorator';
 import { BaseComponent } from '../../base/base.component';
 import { StringDropdownLogic } from './string-dropdown-logic';
 import { StringDropdownTemplateVars } from './string-dropdown.models';
@@ -14,7 +14,7 @@ import { StringDropdownTemplateVars } from './string-dropdown.models';
   templateUrl: './string-dropdown.component.html',
   styleUrls: ['./string-dropdown.component.scss'],
 })
-@ComponentMetadata({
+@FieldMetadata({
   wrappers: [WrappersConstants.LocalizationWrapper],
 })
 export class StringDropdownComponent extends BaseComponent<string> implements OnInit, OnDestroy {

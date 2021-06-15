@@ -9,7 +9,7 @@ import { distinctUntilChanged, map } from 'rxjs/operators';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { EavService, FieldsSettingsService } from '../../../../shared/services';
-import { ComponentMetadata } from '../../../builder/fields-builder/component-metadata.decorator';
+import { FieldMetadata } from '../../../builder/fields-builder/component-metadata.decorator';
 import { BaseComponent } from '../../base/base.component';
 import { DatetimeDefaultTemplateVars } from './datetime-default.models';
 
@@ -19,7 +19,7 @@ import { DatetimeDefaultTemplateVars } from './datetime-default.models';
   templateUrl: './datetime-default.component.html',
   styleUrls: ['./datetime-default.component.scss'],
 })
-@ComponentMetadata({
+@FieldMetadata({
   wrappers: [WrappersConstants.LocalizationWrapper],
 })
 export class DatetimeDefaultComponent extends BaseComponent<string> implements OnInit, OnDestroy {

@@ -1,3 +1,3 @@
-export interface ComponentMetadataModel {
+export interface FieldMetadataModel {
   wrappers?: string[];
 }

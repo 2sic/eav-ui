@@ -3,7 +3,7 @@ import { distinctUntilChanged, map } from 'rxjs/operators';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { EavService, FieldsSettingsService } from '../../../../shared/services';
-import { ComponentMetadata } from '../../../builder/fields-builder/component-metadata.decorator';
+import { FieldMetadata } from '../../../builder/fields-builder/component-metadata.decorator';
 import { BaseComponent } from '../../base/base.component';
 import { AdamControl } from './hyperlink-library.models';
 
@@ -14,7 +14,7 @@ import { AdamControl } from './hyperlink-library.models';
   styleUrls: ['./hyperlink-library.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-@ComponentMetadata({
+@FieldMetadata({
   wrappers: [
     WrappersConstants.DropzoneWrapper,
     WrappersConstants.LocalizationWrapper,

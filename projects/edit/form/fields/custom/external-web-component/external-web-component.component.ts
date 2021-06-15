@@ -3,7 +3,7 @@ import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { consoleLogAngular } from '../../../../../ng-dialogs/src/app/shared/helpers/console-log-angular.helper';
 import { EavService, EditRoutingService, FieldsSettingsService, ScriptsLoaderService } from '../../../../shared/services';
-import { ComponentMetadata } from '../../../builder/fields-builder/component-metadata.decorator';
+import { FieldMetadata } from '../../../builder/fields-builder/component-metadata.decorator';
 import { BaseComponent } from '../../base/base.component';
 import { ExternalWebComponentTemplateVars } from './external-web-component.models';
 
@@ -13,7 +13,7 @@ import { ExternalWebComponentTemplateVars } from './external-web-component.model
   templateUrl: './external-web-component.component.html',
   styleUrls: ['./external-web-component.component.scss'],
 })
-@ComponentMetadata({})
+@FieldMetadata({})
 export class ExternalWebComponentComponent extends BaseComponent<string> implements OnInit, OnDestroy {
   templateVars$: Observable<ExternalWebComponentTemplateVars>;
 

@@ -1,1 +1,1 @@
-export const componentMetadataKey = 'componentMetadata';
+export const fieldMetadataKey = 'fieldMetadata';

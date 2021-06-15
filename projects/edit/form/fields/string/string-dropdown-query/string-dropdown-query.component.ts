@@ -6,7 +6,7 @@ import { EntityInfo } from '../../../../../edit-types';
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { EavService, EditRoutingService, EntityService, FieldsSettingsService, QueryService } from '../../../../shared/services';
 import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
-import { ComponentMetadata } from '../../../builder/fields-builder/component-metadata.decorator';
+import { FieldMetadata } from '../../../builder/fields-builder/component-metadata.decorator';
 import { EntityQueryComponent } from '../../entity/entity-query/entity-query.component';
 import { QueryEntity } from '../../entity/entity-query/entity-query.models';
 import { StringDropdownQueryLogic } from './string-dropdown-query-logic';
@@ -17,7 +17,7 @@ import { StringDropdownQueryLogic } from './string-dropdown-query-logic';
   templateUrl: '../../entity/entity-default/entity-default.component.html',
   styleUrls: ['../../entity/entity-default/entity-default.component.scss'],
 })
-@ComponentMetadata({})
+@FieldMetadata({})
 export class StringDropdownQueryComponent extends EntityQueryComponent implements OnInit, OnDestroy {
 
   constructor(

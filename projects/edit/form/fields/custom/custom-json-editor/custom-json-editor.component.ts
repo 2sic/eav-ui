@@ -3,7 +3,7 @@ import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { EavService, FieldsSettingsService } from '../../../../shared/services';
-import { ComponentMetadata } from '../../../builder/fields-builder/component-metadata.decorator';
+import { FieldMetadata } from '../../../builder/fields-builder/component-metadata.decorator';
 import { BaseComponent } from '../../base/base.component';
 import { CustomJsonEditorLogic } from './custom-json-editor-logic';
 import { CustomJsonEditorTemplateVars } from './custom-json-editor.models';
@@ -15,7 +15,7 @@ import { CustomJsonEditorTemplateVars } from './custom-json-editor.models';
   styleUrls: ['./custom-json-editor.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-@ComponentMetadata({
+@FieldMetadata({
   wrappers: [WrappersConstants.LocalizationWrapper],
 })
 export class CustomJsonEditorComponent extends BaseComponent<string> implements OnInit, OnDestroy {
