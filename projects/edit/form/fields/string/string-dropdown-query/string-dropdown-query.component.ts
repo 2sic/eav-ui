@@ -6,7 +6,7 @@ import { EntityInfo } from '../../../../../edit-types';
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { EavService, EditRoutingService, EntityService, FieldsSettingsService, QueryService } from '../../../../shared/services';
 import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
-import { FieldMetadata } from '../../../builder/fields-builder/component-metadata.decorator';
+import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { EntityQueryComponent } from '../../entity/entity-query/entity-query.component';
 import { QueryEntity } from '../../entity/entity-query/entity-query.models';
 import { StringDropdownQueryLogic } from './string-dropdown-query-logic';

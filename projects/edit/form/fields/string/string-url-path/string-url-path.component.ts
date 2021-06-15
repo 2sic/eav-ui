@@ -4,7 +4,7 @@ import { distinctUntilChanged, map } from 'rxjs/operators';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { FieldMask, GeneralHelpers, UrlHelpers } from '../../../../shared/helpers';
 import { EavService, FieldsSettingsService } from '../../../../shared/services';
-import { FieldMetadata } from '../../../builder/fields-builder/component-metadata.decorator';
+import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { BaseComponent } from '../../base/base.component';
 import { StringUrlPathLogic } from './string-url-path-logic';
 import { StringUrlPathTemplateVars } from './string-url-path.models';

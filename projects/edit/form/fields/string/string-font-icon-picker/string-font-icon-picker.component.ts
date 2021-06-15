@@ -4,7 +4,7 @@ import { distinctUntilChanged, map } from 'rxjs/operators';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { EavService, FieldsSettingsService, ScriptsLoaderService } from '../../../../shared/services';
-import { FieldMetadata } from '../../../builder/fields-builder/component-metadata.decorator';
+import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { BaseComponent } from '../../base/base.component';
 import { StringFontIconPickerLogic } from './string-font-icon-picker-logic';
 import { findAllIconsInCss } from './string-font-icon-picker.helpers';

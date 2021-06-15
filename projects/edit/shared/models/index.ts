@@ -1,6 +1,6 @@
 export * from './adam-snapshot.model';
 export * from './calculated-input-type.model';
-export * from './component-metadata.model';
+export * from './field-metadata.model';
 export * from './content-type-settings.model';
 export * from './control-status.model';
 export * from './eav-config.model';
