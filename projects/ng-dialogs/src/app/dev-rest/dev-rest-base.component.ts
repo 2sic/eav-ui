@@ -2,7 +2,7 @@ import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { Component, OnDestroy } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject, Subscription, Observable, combineLatest } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import { map, share, switchMap } from 'rxjs/operators';
 import { AllScenarios, DevRestBaseTemplateVars, fireOnStartAndWhenSubDialogCloses, Scenario } from '.';
 import { DialogSettings } from '../app-administration/models';
@@ -15,11 +15,11 @@ import { Context } from '../shared/services/context';
   selector: 'app-dev-rest-base',
   template: ''
 })
+// tslint:disable-next-line:component-class-suffix
 export class DevRestBase<TemplateVarType> implements OnDestroy {
 
   /** Template variables for the HTML template */
   public templateVars$: Observable<TemplateVarType>;
-
 
   /** Subscription Sink */
   subscription = new Subscription();
@@ -67,7 +67,6 @@ export class DevRestBase<TemplateVarType> implements OnDestroy {
     );
   }
 
-
   rootBasedOnScenario(root: string, scenario: Scenario): string {
     const domainPrefix = document.location.protocol + '//' + document.location.host;
     return scenario.useVirtual
@@ -75,7 +74,8 @@ export class DevRestBase<TemplateVarType> implements OnDestroy {
       : (scenario.inSameSite ? '' : domainPrefix) + this.dnnContext.$2sxc.http.apiUrl(root);
   }
 
-  buildBaseTemplateVars(name: string, identity: string, diag: DialogSettings, permissions: Permission[], root: string, scenario: Scenario): DevRestBaseTemplateVars {
+  buildBaseTemplateVars(name: string, identity: string, diag: DialogSettings, permissions: Permission[], root: string,
+    scenario: Scenario): DevRestBaseTemplateVars {
     return {
       apiCalls: null,
       name,
@@ -87,7 +87,7 @@ export class DevRestBase<TemplateVarType> implements OnDestroy {
       permissions,
       permissionsHasAnonymous: permissions?.filter(p => p.Condition.indexOf('.Anonymous') > 0).length > 0,
       permissionTarget: identity,
-    }
+    };
   }
 
   changeScenario(scenario: Scenario) {
@@ -98,7 +98,6 @@ export class DevRestBase<TemplateVarType> implements OnDestroy {
     this.scenario$.complete();
     this.subscription.unsubscribe();
   }
-
 
   closeDialog() {
     this.dialogRef.close();

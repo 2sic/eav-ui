@@ -3,6 +3,6 @@ import { WebApi, WebApiAction, WebApiDetails } from '../../app-administration/mo
 
 export interface DevRestApiTemplateVars extends DevRestBaseTemplateVars {
   webApi: WebApi;
-  details: WebApiDetails,
-  selected: WebApiAction,
+  details: WebApiDetails;
+  selected: WebApiAction;
 }

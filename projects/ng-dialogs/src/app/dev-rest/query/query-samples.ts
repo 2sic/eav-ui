@@ -3,13 +3,12 @@ import { ApiCall, CodeSample, hint$2sxc, Scenario, warningExternal } from '..';
 import { Context } from '../../shared/services/context';
 // tslint:disable: curly
 
-
 export function generateQueryCalls($2sxc: SxcRoot, scenario: Scenario, context: Context, root: string, id: number,
-  streamNames: string, urlParams: string ) {
+  streamNames: string, urlParams: string) {
   const virtual = root[0] !== '/' && !root.startsWith('http');
 
   // if urlParams exist and it doesn't starts with a ?, add that
-  if(urlParams && urlParams.length && urlParams[0] != '?')
+  if (urlParams && urlParams.length && urlParams[0] !== '?')
     urlParams = '?' + urlParams;
 
   const contextParams = virtual
@@ -19,7 +18,6 @@ export function generateQueryCalls($2sxc: SxcRoot, scenario: Scenario, context: 
   // const directWId = $2sxc.http.apiUrl(withId) + contextParams;
   const pathWithParams = root + urlParams;
   const pathWithStream = `${root}/${streamNames ?? 'Default'}${urlParams}`;
-
 
   return [
     new ApiCall(virtual, 'GET', pathWithParams, 'read all query streams', 'Read list of all items', true,
@@ -121,7 +119,7 @@ $.ajax(${endPointGetWithParams}).then(data => {
       `
 $.ajax('${path}').then(data => {
   console.log('Got this data:', data);
-})`, false, [ warningExternal  ]));
+})`, false, [warningExternal]));
 
     // jQuery External with Context
     list.push(new CodeSample('Using jQuery with Context in URL',
@@ -129,10 +127,8 @@ $.ajax('${path}').then(data => {
       `
 $.ajax('${pathWithContext}').then(data => {
   console.log('Got this data:', data);
-})`, false, [ warningExternal ]));
+})`, false, [warningExternal]));
   }
   // return generated snippets
   return list;
 }
-
-
