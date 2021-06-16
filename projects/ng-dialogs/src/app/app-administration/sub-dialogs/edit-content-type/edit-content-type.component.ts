@@ -30,7 +30,7 @@ export class EditContentTypeComponent implements OnInit, OnDestroy, AfterViewIni
     map(([contentType, lockScope, scopeOptions, disableAnimation, loading]) =>
       ({ contentType, lockScope, scopeOptions, disableAnimation, loading })),
   );
-  private scope = this.route.snapshot.paramMap.get('scope');
+  private scope = this.route.snapshot.parent.paramMap.get('scope');
 
   constructor(
     private dialogRef: MatDialogRef<EditContentTypeComponent>,

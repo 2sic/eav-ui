@@ -40,12 +40,12 @@ const appAdministrationRoutes: Routes = [
             loadChildren: () => import('../../../../edit/refresh-edit.module').then(m => m.RefreshEditModule)
           },
           {
-            path: ':scope/add',
+            path: 'add',
             component: DialogEntryComponent,
             data: { dialog: editContentTypeDialog, title: 'Add Content Type' },
           },
           {
-            path: ':scope/:contentTypeStaticName/edit',
+            path: ':contentTypeStaticName/edit',
             component: DialogEntryComponent,
             data: { dialog: editContentTypeDialog, title: 'Edit Content Type' },
           },

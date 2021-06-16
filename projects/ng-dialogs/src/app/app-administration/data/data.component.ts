@@ -150,10 +150,10 @@ export class DataComponent implements OnInit, OnDestroy {
 
   editContentType(contentType: ContentType) {
     if (!contentType) {
-      this.router.navigate([`${this.scope$.value}/add`], { relativeTo: this.route.firstChild });
+      this.router.navigate(['add'], { relativeTo: this.route.firstChild });
     } else {
       if (contentType.UsesSharedDef) { return; }
-      this.router.navigate([`${this.scope$.value}/${contentType.StaticName}/edit`], { relativeTo: this.route.firstChild });
+      this.router.navigate([`${contentType.StaticName}/edit`], { relativeTo: this.route.firstChild });
     }
   }
 
@@ -280,8 +280,8 @@ export class DataComponent implements OnInit, OnDestroy {
     this.subscription.add(
       this.router.events.pipe(
         filter(event => event instanceof NavigationEnd),
-        map(() => this.route.snapshot.firstChild.params.scope as string),
-        startWith(this.route.snapshot.firstChild.params.scope as string),
+        map(() => this.route.snapshot.firstChild.paramMap.get('scope')),
+        startWith(this.route.snapshot.firstChild.paramMap.get('scope')),
         filter(scope => !!scope),
         distinctUntilChanged(),
       ).subscribe(scope => {
