@@ -4,6 +4,7 @@ import { MatTabChangeEvent } from '@angular/material/tabs';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, Subscription } from 'rxjs';
 import { filter, map, pairwise, startWith } from 'rxjs/operators';
+import { eavConstants } from '../../shared/constants/eav.constants';
 import { UpdateEnvVarsFromDialogSettings } from '../../shared/helpers/update-env-vars-from-dialog-settings.helper';
 import { DialogSettings } from '../models/dialog-settings.model';
 import { AppDialogConfigService } from '../services/app-dialog-config.service';
@@ -14,6 +15,7 @@ import { AppDialogConfigService } from '../services/app-dialog-config.service';
   styleUrls: ['./app-administration-nav.component.scss'],
 })
 export class AppAdministrationNavComponent implements OnInit, OnDestroy {
+  private defaultScope = eavConstants.scopes.default.value;
   private dialogSettings$ = new BehaviorSubject<DialogSettings>(null);
   private tabs$ = new BehaviorSubject<string[]>(null);
   private tabIndex$ = combineLatest([
@@ -59,7 +61,10 @@ export class AppAdministrationNavComponent implements OnInit, OnDestroy {
   }
 
   changeTab(event: MatTabChangeEvent) {
-    const path = this.tabs$.value[event.index];
+    let path = this.tabs$.value[event.index];
+    if (path === 'data') {
+      path = `data/${this.defaultScope}`;
+    }
     this.router.navigate([path], { relativeTo: this.route });
   }
 

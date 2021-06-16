@@ -3,7 +3,7 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { BehaviorSubject, from, Subscription } from 'rxjs';
-import { filter, map, pairwise, startWith, take } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map, pairwise, startWith, take } from 'rxjs/operators';
 import { GlobalConfigService } from '../../../../../edit/shared/store/ngrx-data';
 import { ContentExportService } from '../../content-export/services/content-export.service';
 import { ContentImportDialogData } from '../../content-import/content-import-dialog.config';
@@ -33,8 +33,7 @@ export class DataComponent implements OnInit, OnDestroy {
   @Input() private enablePermissions: boolean;
 
   contentTypes$ = new BehaviorSubject<ContentType[]>(null);
-  scope = eavConstants.scopes.default.value;
-  defaultScope = eavConstants.scopes.default.value;
+  scope$ = new BehaviorSubject<string>(null);
   scopeOptions$ = new BehaviorSubject<EavScopeOption[]>([]);
   debugEnabled$ = this.globalConfigService.getDebugEnabled$();
 
@@ -92,6 +91,7 @@ export class DataComponent implements OnInit, OnDestroy {
     ],
   };
 
+  private defaultScope = eavConstants.scopes.default.value;
   private subscription = new Subscription();
 
   constructor(
@@ -104,13 +104,14 @@ export class DataComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.fetchContentTypes();
     this.fetchScopes();
+    this.refreshScopeOnRouteChange();
     this.refreshOnChildClosed();
   }
 
   ngOnDestroy() {
     this.contentTypes$.complete();
+    this.scope$.complete();
     this.scopeOptions$.complete();
     this.subscription.unsubscribe();
   }
@@ -149,17 +150,17 @@ export class DataComponent implements OnInit, OnDestroy {
 
   editContentType(contentType: ContentType) {
     if (!contentType) {
-      this.router.navigate([`${this.scope}/add`], { relativeTo: this.route.firstChild });
+      this.router.navigate([`${this.scope$.value}/add`], { relativeTo: this.route.firstChild });
     } else {
       if (contentType.UsesSharedDef) { return; }
-      this.router.navigate([`${this.scope}/${contentType.StaticName}/edit`], { relativeTo: this.route.firstChild });
+      this.router.navigate([`${this.scope$.value}/${contentType.StaticName}/edit`], { relativeTo: this.route.firstChild });
     }
   }
 
   private fetchContentTypes() {
-    this.contentTypesService.retrieveContentTypes(this.scope).subscribe(contentTypes => {
+    this.contentTypesService.retrieveContentTypes(this.scope$.value).subscribe(contentTypes => {
       this.contentTypes$.next(contentTypes);
-      if (this.scope !== this.defaultScope) {
+      if (this.scope$.value !== this.defaultScope) {
         const message = 'Warning! You are in a special scope. Changing things here could easily break functionality';
         this.snackBar.open(message, null, { duration: 2000 });
       }
@@ -167,8 +168,17 @@ export class DataComponent implements OnInit, OnDestroy {
   }
 
   private fetchScopes() {
-    this.contentTypesService.getScopes().subscribe(scopes => {
-      this.scopeOptions$.next(scopes);
+    this.contentTypesService.getScopes().subscribe(scopeOptions => {
+      const newScopes = [...this.scopeOptions$.value];
+      scopeOptions.forEach(scopeOption => {
+        const existing = newScopes.find(scope => scope.value === scopeOption.value);
+        if (existing) {
+          existing.name = scopeOption.name;
+        } else {
+          newScopes.push(scopeOption);
+        }
+      });
+      this.scopeOptions$.next(newScopes);
     });
   }
 
@@ -184,19 +194,9 @@ export class DataComponent implements OnInit, OnDestroy {
 
   changeScope(newScope: string) {
     if (newScope === 'Other') {
-      newScope = prompt('This is an advanced feature to show content-types of another scope. Don\'t use this if you don\'t know what you\'re doing, as content-types of other scopes are usually hidden for a good reason.');
-      if (!newScope) {
-        newScope = eavConstants.scopes.default.value;
-      } else if (!this.scopeOptions$.value.find(option => option.value === newScope)) {
-        const newScopeOption: EavScopeOption = {
-          name: newScope,
-          value: newScope,
-        };
-        this.scopeOptions$.next([...this.scopeOptions$.value, newScopeOption]);
-      }
+      newScope = prompt('This is an advanced feature to show content-types of another scope. Don\'t use this if you don\'t know what you\'re doing, as content-types of other scopes are usually hidden for a good reason.') || this.defaultScope;
     }
-    this.scope = newScope;
-    this.fetchContentTypes();
+    this.router.navigate([`data/${newScope}`], { relativeTo: this.route });
   }
 
   private enablePermissionsGetter() {
@@ -274,6 +274,28 @@ export class DataComponent implements OnInit, OnDestroy {
       this.snackBar.open('Deleted', null, { duration: 2000 });
       this.fetchContentTypes();
     });
+  }
+
+  private refreshScopeOnRouteChange() {
+    this.subscription.add(
+      this.router.events.pipe(
+        filter(event => event instanceof NavigationEnd),
+        map(() => this.route.snapshot.firstChild.params.scope as string),
+        startWith(this.route.snapshot.firstChild.params.scope as string),
+        filter(scope => !!scope),
+        distinctUntilChanged(),
+      ).subscribe(scope => {
+        this.scope$.next(scope);
+        if (!this.scopeOptions$.value.map(option => option.value).includes(scope)) {
+          const newScopeOption: EavScopeOption = {
+            name: scope,
+            value: scope,
+          };
+          this.scopeOptions$.next([...this.scopeOptions$.value, newScopeOption]);
+        }
+        this.fetchContentTypes();
+      })
+    );
   }
 
   private refreshOnChildClosed() {

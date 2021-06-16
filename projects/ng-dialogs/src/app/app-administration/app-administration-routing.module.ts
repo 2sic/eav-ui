@@ -21,7 +21,7 @@ const appAdministrationRoutes: Routes = [
       { path: '', redirectTo: 'home', pathMatch: 'full' },
       { path: 'home', component: EmptyRouteComponent, data: { title: 'App Home' } },
       {
-        path: 'data', component: EmptyRouteComponent, children: [
+        path: 'data/:scope', component: EmptyRouteComponent, children: [
           {
             path: 'import',
             component: DialogEntryComponent,
@@ -81,7 +81,7 @@ const appAdministrationRoutes: Routes = [
             loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule),
             data: { title: 'Edit Query Name and Description', history: false },
           },
-          { ...GoToPermissions.route, data: { title: 'Query Permissions' }},
+          { ...GoToPermissions.route, data: { title: 'Query Permissions' } },
           GoToDevRest.route,
         ],
         data: { title: 'App Queries' },
@@ -103,7 +103,7 @@ const appAdministrationRoutes: Routes = [
             matcher: refreshEdit,
             loadChildren: () => import('../../../../edit/refresh-edit.module').then(m => m.RefreshEditModule)
           },
-          { ...GoToPermissions.route, data: { title: 'View Permissions' }},
+          { ...GoToPermissions.route, data: { title: 'View Permissions' } },
         ],
         data: { title: 'App Views' },
       },
@@ -128,7 +128,7 @@ const appAdministrationRoutes: Routes = [
             loadChildren: () => import('../content-type-fields/content-type-fields.module').then(m => m.ContentTypeFieldsModule),
             data: { title: 'Edit Fields of App Settings & Resources' },
           },
-          { ...GoToPermissions.route, data: { title: 'App Permissions' }},
+          { ...GoToPermissions.route, data: { title: 'App Permissions' } },
           { path: 'export', component: DialogEntryComponent, data: { dialog: exportAppDialog, title: 'Export App' } },
           { path: 'export/parts', component: DialogEntryComponent, data: { dialog: exportAppPartsDialog, title: 'Export App Parts' } },
           { path: 'import/parts', component: DialogEntryComponent, data: { dialog: importAppPartsDialog, title: 'Import App Parts' } },
