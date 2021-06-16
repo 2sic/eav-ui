@@ -23,7 +23,7 @@ import { HyperlinkDefaultTemplateVars } from './hyperlink-default.models';
     WrappersConstants.DropzoneWrapper,
     WrappersConstants.LocalizationWrapper,
     WrappersConstants.HyperlinkDefaultExpandableWrapper,
-    WrappersConstants.AdamAttachWrapper,
+    WrappersConstants.AdamWrapper,
   ],
 })
 export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent implements OnInit, OnDestroy {

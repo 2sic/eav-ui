@@ -61,7 +61,7 @@ export class InputFieldHelpers {
         WrappersConstants.DropzoneWrapper,
         WrappersConstants.LocalizationWrapper,
         WrappersConstants.ExpandableWrapper,
-        WrappersConstants.AdamAttachWrapper,
+        WrappersConstants.AdamWrapper,
       );
     }
 

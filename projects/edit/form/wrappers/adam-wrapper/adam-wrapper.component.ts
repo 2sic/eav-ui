@@ -6,11 +6,11 @@ import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { BaseComponent } from '../../fields/base/base.component';
 
 @Component({
-  selector: 'app-adam-attach-wrapper',
-  templateUrl: './adam-attach-wrapper.component.html',
-  styleUrls: ['./adam-attach-wrapper.component.scss'],
+  selector: 'app-adam-wrapper',
+  templateUrl: './adam-wrapper.component.html',
+  styleUrls: ['./adam-wrapper.component.scss'],
 })
-export class AdamAttachWrapperComponent extends BaseComponent implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
+export class AdamWrapperComponent extends BaseComponent implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild('invisibleClickable') invisibleClickableRef: ElementRef;
 

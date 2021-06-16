@@ -24,7 +24,7 @@ import { StringDropdownComponent } from '../../fields/string/string-dropdown/str
 import { StringFontIconPickerComponent } from '../../fields/string/string-font-icon-picker/string-font-icon-picker.component';
 import { StringTemplatePickerComponent } from '../../fields/string/string-template-picker/string-template-picker.component';
 import { StringUrlPathComponent } from '../../fields/string/string-url-path/string-url-path.component';
-import { AdamAttachWrapperComponent } from '../../wrappers/adam-attach-wrapper/adam-attach-wrapper.component';
+import { AdamWrapperComponent } from '../../wrappers/adam-wrapper/adam-wrapper.component';
 import { CollapsibleWrapperComponent } from '../../wrappers/collapsible-wrapper/collapsible-wrapper.component';
 import { DropzoneWrapperComponent } from '../../wrappers/dropzone-wrapper/dropzone-wrapper.component';
 import { EntityExpandableWrapperComponent } from '../../wrappers/entity-expandable-wrapper/entity-expandable-wrapper.component';
@@ -43,7 +43,7 @@ export class FieldsBuilderDirective implements OnInit, OnDestroy {
   private fieldConfigs: FieldConfigSet[] = [];
 
   private components: Record<string, Type<any>> = {
-    'app-adam-attach-wrapper': AdamAttachWrapperComponent,
+    'app-adam-wrapper': AdamWrapperComponent,
     'app-collapsible-wrapper': CollapsibleWrapperComponent,
     'app-dropzone-wrapper': DropzoneWrapperComponent,
     'app-localization-wrapper': LocalizationWrapperComponent,

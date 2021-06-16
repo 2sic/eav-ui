@@ -73,9 +73,9 @@ import { StringUrlPathComponent } from './form/fields/string/string-url-path/str
 import { ConnectorComponent } from './form/shared/connector/connector.component';
 import { FieldHelperTextComponent } from './form/shared/field-helper-text/field-helper-text.component';
 import { PagePickerComponent } from './form/shared/page-picker/page-picker.component';
-import { AdamAttachWrapperComponent } from './form/wrappers/adam-attach-wrapper/adam-attach-wrapper.component';
-import { AdamBrowserComponent } from './form/wrappers/adam-attach-wrapper/adam-browser/adam-browser.component';
-import { AdamHintComponent } from './form/wrappers/adam-attach-wrapper/adam-hint/adam-hint.component';
+import { AdamBrowserComponent } from './form/wrappers/adam-wrapper/adam-browser/adam-browser.component';
+import { AdamHintComponent } from './form/wrappers/adam-wrapper/adam-hint/adam-hint.component';
+import { AdamWrapperComponent } from './form/wrappers/adam-wrapper/adam-wrapper.component';
 import { CollapsibleWrapperComponent } from './form/wrappers/collapsible-wrapper/collapsible-wrapper.component';
 import { DropzoneWrapperComponent } from './form/wrappers/dropzone-wrapper/dropzone-wrapper.component';
 import { EntityExpandableWrapperComponent } from './form/wrappers/entity-expandable-wrapper/entity-expandable-wrapper.component';
@@ -127,7 +127,7 @@ export function translateLoaderFactoryEdit(http: HttpClient): TranslateLoader {
     HyperlinkDefaultComponent,
     AdamBrowserComponent,
     AdamHintComponent,
-    AdamAttachWrapperComponent,
+    AdamWrapperComponent,
     HyperlinkLibraryComponent,
     LanguageSwitcherComponent,
     PasteClipboardImageDirective,

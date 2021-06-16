@@ -18,7 +18,7 @@ import { AdamControl } from './hyperlink-library.models';
     WrappersConstants.DropzoneWrapper,
     WrappersConstants.LocalizationWrapper,
     WrappersConstants.HyperlinkLibraryExpandableWrapper,
-    WrappersConstants.AdamAttachWrapper,
+    WrappersConstants.AdamWrapper,
   ],
 })
 export class HyperlinkLibraryComponent extends BaseComponent<null> implements OnInit, OnDestroy {

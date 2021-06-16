@@ -6,7 +6,7 @@ export const WrappersConstants = {
   DropzoneWrapper: 'app-dropzone-wrapper',
   LocalizationWrapper: 'app-localization-wrapper',
   ExpandableWrapper: 'app-expandable-wrapper',
-  AdamAttachWrapper: 'app-adam-attach-wrapper',
+  AdamWrapper: 'app-adam-wrapper',
   // entity specific
   EntityExpandableWrapper: 'app-entity-expandable-wrapper',
   // hyperlink specific
