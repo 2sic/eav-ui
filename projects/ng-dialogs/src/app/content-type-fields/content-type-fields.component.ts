@@ -194,7 +194,8 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
 
   private nameCellRenderer(params: ICellRendererParams) {
     const currentField: Field = params.data;
-    if ([InputTypeConstants.EmptyDefault, InputTypeConstants.EmptyEnd].includes(currentField.InputType)) {
+    const empties: string[] = [InputTypeConstants.EmptyDefault, InputTypeConstants.EmptyEnd];
+    if (empties.includes(currentField.InputType)) {
       return params.value;
     }
 

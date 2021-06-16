@@ -11,6 +11,7 @@ import { ContentType } from '../app-administration/models/content-type.model';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { ContentExportService } from '../content-export/services/content-export.service';
 import { ContentImportDialogData } from '../content-import/content-import-dialog.config';
+import { DataTypeConstants } from '../content-type-fields/constants/data-type.constants';
 import { Field } from '../content-type-fields/models/field.model';
 import { BooleanFilterComponent } from '../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../shared/components/id-field/id-field.component';
@@ -294,7 +295,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
         sortable: true,
       };
       switch (column.Type) {
-        case 'Entity':
+        case DataTypeConstants.Entity:
           try {
             colDef.allowMultiValue = column.Metadata.Entity.AllowMultiValue;
           } catch (e) {
@@ -304,7 +305,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
           colDef.valueGetter = this.valueGetterEntityField;
           colDef.filter = 'agTextColumnFilter';
           break;
-        case 'DateTime':
+        case DataTypeConstants.DateTime:
           try {
             colDef.useTimePicker = column.Metadata.DateTime.UseTimePicker;
           } catch (e) {
@@ -313,11 +314,11 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
           colDef.valueGetter = this.valueGetterDateTime;
           colDef.filter = 'agTextColumnFilter';
           break;
-        case 'Boolean':
+        case DataTypeConstants.Boolean:
           colDef.valueGetter = this.valueGetterBoolean;
           colDef.filter = 'booleanFilterComponent';
           break;
-        case 'Number':
+        case DataTypeConstants.Number:
           colDef.filter = 'agNumberColumnFilter';
           break;
         default:

@@ -134,7 +134,7 @@ export class FieldsSettingsHelpers {
 
     if (attribute.InputType === InputTypeConstants.EmptyEnd) { return true; }
 
-    const empties = [InputTypeConstants.EmptyDefault, InputTypeConstants.EmptyEnd];
+    const empties: string[] = [InputTypeConstants.EmptyDefault, InputTypeConstants.EmptyEnd];
     if (empties.includes(contentType.Attributes[index + 1].InputType)) { return true; }
 
     return false;
