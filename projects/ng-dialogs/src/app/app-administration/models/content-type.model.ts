@@ -22,7 +22,7 @@ export interface ContentTypeMetadata {
   Id: number;
   Label: string;
   Link: string;
-  ListInstructions: any;
+  ListInstructions: string;
   Notes: string;
   Title: string;
 }
