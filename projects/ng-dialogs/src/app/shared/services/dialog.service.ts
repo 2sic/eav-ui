@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { DialogTypeConstants } from '../constants/dialog-types.constants';
+import { DialogTypeConstants } from '../constants/dialog-type.constants';
 // tslint:disable-next-line:max-line-length
 import { keyApi, keyAppId, keyContentBlockId, keyDebug, keyDialog, keyItems, keyModuleId, keyPartOfPage, keyPipelineId, keyRequestToken, keyTabId, keyUrl, keyZoneId, prefix } from '../constants/session.constants';
 import { EditForm } from '../models/edit-form.model';
