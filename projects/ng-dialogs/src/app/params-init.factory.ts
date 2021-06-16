@@ -2,7 +2,7 @@ import { JsInfo } from '@2sic.com/2sxc-typings';
 import { Injector } from '@angular/core';
 import { Router } from '@angular/router';
 import { UrlHelpers } from '../../../edit/shared/helpers/url.helpers';
-import { DialogTypeConstants } from './shared/constants/dialog-types.constants';
+import { DialogTypeConstant, DialogTypeConstants } from './shared/constants/dialog-types.constants';
 // tslint:disable-next-line:max-line-length
 import { keyApi, keyAppId, keyContentType, keyDialog, keyItems, keyPipelineId, keyRequestToken, keyTabId, keyUrl, keyZoneId, prefix } from './shared/constants/session.constants';
 import { convertFormToUrl } from './shared/helpers/url-prep.helper';
@@ -38,7 +38,7 @@ export function paramsInitFactory(injector: Injector): () => void {
       const router = injector.get(Router);
       const zoneId = sessionStorage.getItem(keyZoneId);
       const appId = sessionStorage.getItem(keyAppId);
-      const dialog = sessionStorage.getItem(keyDialog);
+      const dialog = sessionStorage.getItem(keyDialog) as DialogTypeConstant;
       const contentType = sessionStorage.getItem(keyContentType);
       const items = sessionStorage.getItem(keyItems);
       switch (dialog) {
