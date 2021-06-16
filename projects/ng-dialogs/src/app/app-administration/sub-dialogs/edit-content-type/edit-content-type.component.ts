@@ -63,6 +63,13 @@ export class EditContentTypeComponent implements OnInit, OnDestroy, AfterViewIni
     const scopes$ = this.contentTypesService.getScopes();
     combineLatest([contentType$, scopes$]).subscribe(([contentType, scopes]) => {
       this.contentType$.next(contentType);
+      if (!scopes.map(scope => scope.value).includes(this.scope)) {
+        const newScopeOption: EavScopeOption = {
+          name: this.scope,
+          value: this.scope,
+        };
+        scopes.push(newScopeOption);
+      }
       this.scopeOptions$.next(scopes);
     });
   }
