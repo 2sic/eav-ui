@@ -1,4 +1,4 @@
-export class Snippet {
+export interface Snippet {
   content: string;
   help: string;
   links: string;

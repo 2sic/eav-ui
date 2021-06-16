@@ -53,14 +53,13 @@ export class EditContentTypeComponent implements OnInit, OnDestroy, AfterViewIni
           }),
         )
       : of({
-        ...(new ContentTypeEdit()),
         StaticName: '',
         Name: '',
         Description: '',
         Scope: this.scope,
         ChangeStaticName: false,
         NewStaticName: '',
-      });
+      } as ContentTypeEdit);
     const scopes$ = this.contentTypesService.getScopes();
     combineLatest([contentType$, scopes$]).subscribe(([contentType, scopes]) => {
       this.contentType$.next(contentType);

@@ -1,3 +1,3 @@
-export class PermissionsCount {
+export interface PermissionsCount {
   Count: number;
 }

@@ -32,7 +32,7 @@ export function loadScripts(scriptObjects: ScriptObject[], callback: () => void,
   document.head.appendChild(scriptEl);
 }
 
-export class ScriptObject {
+export interface ScriptObject {
   /** window.xxx or a function that returns a boolean */
   test: string | (() => boolean);
   src: string;

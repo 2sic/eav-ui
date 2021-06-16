@@ -1,7 +1,6 @@
 import { calculateTypeIcon } from '../content-type-fields.helpers';
 
-// tslint:disable:max-line-length
-const dataTypeLabels: { [key: string]: { label: string, description: string } } = {
+const dataTypeLabels: Record<string, { label: string, description: string }> = {
   Boolean: { label: 'Boolean (yes/no)', description: 'Yes/no or true/false values' },
   Custom: { label: 'Custom - ui-tools or custom types', description: 'Use for things like gps-pickers (which writes into multiple fields) or for custom-data which serializes something exotic into the db like an array, a custom json or anything' },
   DateTime: { label: 'Date and/or time', description: 'For date, time or combined values' },
@@ -11,9 +10,8 @@ const dataTypeLabels: { [key: string]: { label: string, description: string } } 
   Number: { label: 'Number', description: 'Any kind of number' },
   String: { label: 'Text / string', description: 'Any kind of text' },
 };
-// tslint:enable:max-line-length
 
-export class DataType {
+export interface DataType {
   name: string;
   label: string;
   icon: string;

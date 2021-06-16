@@ -1,4 +1,4 @@
-export class GroupHeader {
+export interface GroupHeader {
   Index: number;
   Id: number;
   Guid: string;

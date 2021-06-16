@@ -1,15 +1,15 @@
 import { EavFor } from '../../../../../edit/shared/models/eav';
 
 /** Type for edit form. To add new item send newItem and to edit existing item send editItems */
-export class EditForm {
-  constructor(public items: (AddItem | EditItem | GroupItem | InnerItem | SourceItem)[]) { }
+export interface EditForm {
+  items: (AddItem | EditItem | GroupItem | InnerItem | SourceItem)[];
 }
 
-export class EditItem {
-  constructor(public EntityId: number) { }
+export interface EditItem {
+  EntityId: number;
 }
 
-export class AddItem {
+export interface AddItem {
   /** Content type */
   ContentTypeName: string;
   /** Add item as metadata to another item */
@@ -22,19 +22,19 @@ export class AddItem {
   DuplicateEntity?: number;
 }
 
-export class GroupItem {
+export interface GroupItem {
   Group: GroupItemGroup;
   Prefill?: Record<string, string>;
 }
 
-export class GroupItemGroup {
+export interface GroupItemGroup {
   Guid: string;
   Index: number;
   Part: string;
   Add: boolean;
 }
 
-export class InnerItem {
+export interface InnerItem {
   Add: boolean;
   EntityId: number;
   Field: string;
@@ -43,12 +43,12 @@ export class InnerItem {
   Prefill?: Record<string, string>;
 }
 
-export class SourceItem {
-  constructor(public Path: string) { }
+export interface SourceItem {
+  Path: string;
 }
 
 /** @deprecated 2sxc 9 Metadata object */
-export class LegacyMetadata {
+export interface LegacyMetadata {
   key: string;
   keyType: string;
   targetType: number;

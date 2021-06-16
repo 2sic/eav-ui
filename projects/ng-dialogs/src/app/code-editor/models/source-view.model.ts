@@ -1,4 +1,4 @@
-export class SourceView {
+export interface SourceView {
   AppId: number;
   Code: string;
   Extension: string;

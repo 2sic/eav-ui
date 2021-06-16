@@ -1,4 +1,4 @@
-export class ReplaceConfig {
+export interface ReplaceConfig {
   SelectedId: number;
   Items: Record<string, string>;
   ContentTypeName: string;

@@ -1,6 +1,6 @@
 import { PermissionsCount } from './permissions-count.model';
 
-export class View {
+export interface View {
   ContentType: ViewEntity;
   Guid: string;
   HasQuery: boolean;
@@ -22,7 +22,7 @@ export class View {
   ViewNameInUrl: string;
 }
 
-export class ViewEntity {
+export interface ViewEntity {
   DemoId: number;
   DemoTitle: string;
   Id: number;
