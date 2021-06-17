@@ -31,6 +31,8 @@ export const eavConstants = {
     default: { name: 'Default', value: '2SexyContent' },
     /** This contains content-types for configuration, settings and resources of the app */
     app: { name: 'System: App', value: '2SexyContent-App' },
+    /** This contains special app settings */
+    configuration: { name: 'Configuration', value: 'System.Configuration' },
   },
 
   /** Content types where templates, permissions, etc. are stored */

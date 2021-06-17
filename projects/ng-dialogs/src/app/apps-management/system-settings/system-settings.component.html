@@ -1,0 +1,39 @@
+<div class="cards-box">
+  <mat-card class="mat-elevation-z2">
+    <mat-card-header>
+      <mat-card-title>Manage Site Settings</mat-card-title>
+      <div class="mat-card-header-icon">
+        <mat-icon>settings</mat-icon>
+      </div>
+    </mat-card-header>
+    <mat-card-content>
+      This includes both pre-defined SystemSettings as well as custom Settings. It will affect the entire Site / Portal.
+      See <a href="https://r.2sxc.org/settings" target="_blank">docs</a>.
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-button (click)="openSiteSettings()">
+        <mat-icon>settings</mat-icon>
+        <span>Open Site Settings</span>
+      </button>
+    </mat-card-actions>
+  </mat-card>
+
+  <mat-card class="mat-elevation-z2">
+    <mat-card-header>
+      <mat-card-title>Manage Global Settings</mat-card-title>
+      <div class="mat-card-header-icon">
+        <mat-icon>settings_suggest</mat-icon>
+      </div>
+    </mat-card-header>
+    <mat-card-content>
+      This includes both pre-defined SystemSettings as well as custom Settings. It will affect the entire Installation.
+      See <a href="https://r.2sxc.org/settings" target="_blank">docs</a>.
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-button (click)="openGlobalSettings()">
+        <mat-icon>settings_suggest</mat-icon>
+        <span>Open Global Settings</span>
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>

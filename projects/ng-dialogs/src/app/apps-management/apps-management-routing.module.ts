@@ -17,6 +17,19 @@ const appsManagementRoutes: Routes = [
         ],
         data: { title: 'Apps in this Zone' },
       },
+      {
+        path: 'settings', component: EmptyRouteComponent, children: [
+          {
+            path: ':appId',
+            loadChildren: () => import('../app-administration/app-administration.module').then(m => m.AppAdministrationModule)
+          },
+          {
+            path: ':zoneId/:appId',
+            loadChildren: () => import('../app-administration/app-administration.module').then(m => m.AppAdministrationModule)
+          },
+        ],
+        data: { title: 'System Settings' },
+      },
       { path: 'languages', component: EmptyRouteComponent, data: { title: 'Zone Languages' } },
       { path: 'features', component: EmptyRouteComponent, data: { title: 'Zone Features' } },
       { path: 'sxc-insights', component: EmptyRouteComponent, data: { title: 'Debug Insights' } },

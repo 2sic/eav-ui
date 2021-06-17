@@ -78,7 +78,6 @@ export class AppConfigurationComponent implements OnInit {
     });
   }
 
-  /** Experimental */
   resetApp() {
     if (!confirm('Are you sure? All changes since last xml export will be lost')) { return; }
     this.snackBar.open('Resetting...');
@@ -90,5 +89,12 @@ export class AppConfigurationComponent implements OnInit {
         this.snackBar.open('Reset failed. Please check console for more information', null, { duration: 3000 });
       },
     });
+  }
+
+  openSystemSettings() {
+    this.router.navigate([`${this.context.zoneId}/apps`]);
+    setTimeout(() => {
+      this.router.navigate([`${this.context.zoneId}/apps/settings`]);
+    }, 750);
   }
 }

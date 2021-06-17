@@ -30,6 +30,14 @@
     </mat-tab>
 
     <mat-tab>
+      <div *matTabLabel class="mat-tab-label-box" matTooltip="System Settings">
+        <mat-icon>settings</mat-icon>
+        <span>Settings</span>
+      </div>
+      <app-system-settings *matTabContent></app-system-settings>
+    </mat-tab>
+
+    <mat-tab>
       <div *matTabLabel class="mat-tab-label-box" matTooltip="Features">
         <mat-icon>tune</mat-icon>
         <span>Features</span>

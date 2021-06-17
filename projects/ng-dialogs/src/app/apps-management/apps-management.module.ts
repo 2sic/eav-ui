@@ -33,6 +33,7 @@ import { EnableLanguagesService } from './services/enable-languages.service';
 import { FeaturesConfigService } from './services/features-config.service';
 import { SxcInsightsService } from './services/sxc-insights.service';
 import { SxcInsightsComponent } from './sxc-insights/sxc-insights.component';
+import { SystemSettingsComponent } from './system-settings/system-settings.component';
 
 @NgModule({
   declarations: [
@@ -48,6 +49,7 @@ import { SxcInsightsComponent } from './sxc-insights/sxc-insights.component';
     FeaturesListSecurityComponent,
     EnableLanguagesComponent,
     EnableLanguagesStatusComponent,
+    SystemSettingsComponent,
   ],
   imports: [
     AppsManagementRoutingModule,
