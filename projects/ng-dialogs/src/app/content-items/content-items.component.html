@@ -10,6 +10,10 @@
 
   <router-outlet></router-outlet>
 
+  <div *ngIf="(contentType$ | async)?.Metadata?.ListInstructions as listInstructions"
+    [innerHTML]="listInstructions | safeHtml">
+  </div>
+
   <div class="grid-wrapper">
     <ag-grid-angular class="ag-theme-material" [rowData]="items$ | async" [modules]="modules"
       [gridOptions]="gridOptions" (gridReady)="onGridReady($event)" appDragAndDrop [allowedFileTypes]="'xml,json'"
