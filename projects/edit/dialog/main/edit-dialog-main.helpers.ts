@@ -28,15 +28,9 @@ export function sortLanguages(primaryLangKey: string, languages: Language[]) {
       otherLangs.push(language);
     }
   }
-  sameLangs.sort(alphabetCompare);
-  otherLangs.sort(alphabetCompare);
+  sameLangs.sort((a, b) => a.key.localeCompare(b.key));
+  otherLangs.sort((a, b) => a.key.localeCompare(b.key));
 
   const allLangsSorted: Language[] = !primaryLang ? [...sameLangs, ...otherLangs] : [primaryLang, ...sameLangs, ...otherLangs];
   return allLangsSorted;
-}
-
-function alphabetCompare(a: Language, b: Language) {
-  if (a.key < b.key) { return -1; }
-  if (a.key > b.key) { return 1; }
-  return 0;
 }
