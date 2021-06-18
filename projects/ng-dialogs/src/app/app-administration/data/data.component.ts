@@ -57,6 +57,11 @@ export class DataComponent implements OnInit, OnDestroy {
       {
         headerName: 'Content Type', field: 'Label', flex: 3, minWidth: 250, cellClass: 'primary-action highlight', sortable: true,
         sort: 'asc', filter: 'agTextColumnFilter', onCellClicked: this.showContentItems.bind(this),
+        comparator: (valueA, valueB, nodeA, nodeB, isInverted) => {
+          const a = (nodeA.data as ContentType)._compareLabel;
+          const b = (nodeB.data as ContentType)._compareLabel;
+          return a.localeCompare(b);
+        },
       },
       {
         headerName: 'Items', field: 'Items', width: 102, headerClass: 'dense', cellClass: 'secondary-action no-padding',
@@ -159,6 +164,9 @@ export class DataComponent implements OnInit, OnDestroy {
 
   private fetchContentTypes() {
     this.contentTypesService.retrieveContentTypes(this.scope$.value).subscribe(contentTypes => {
+      for (const contentType of contentTypes) {
+        contentType._compareLabel = contentType.Label.replace(/\p{Emoji}/gu, 'ž');
+      }
       this.contentTypes$.next(contentTypes);
       if (this.scope$.value !== this.defaultScope) {
         const message = 'Warning! You are in a special scope. Changing things here could easily break functionality';

@@ -13,6 +13,7 @@ export interface ContentType {
   SharedDefId: number;
   StaticName: string;
   UsesSharedDef: boolean;
+  _compareLabel?: string;
 }
 
 export interface ContentTypeMetadata {
