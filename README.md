@@ -1,8 +1,8 @@
-# 2sxc / EAV Admin and Edit Dialogs
+# 2sxc / EAV UI - the Admin and Edit Dialogs
 
 This is part of [2sxc](https://2sxc.org) - an awesome extension for DNN :)
 
-It's built using Angular 10. 
+It's built using Angular 11. 
 
 ## Projects
 
