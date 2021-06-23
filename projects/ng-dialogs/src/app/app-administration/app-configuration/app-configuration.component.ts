@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ContentItemsService } from '../../content-items/services/content-items.service';
@@ -17,7 +17,7 @@ import { ImportAppPartsService } from '../services/import-app-parts.service';
   templateUrl: './app-configuration.component.html',
   styleUrls: ['./app-configuration.component.scss'],
 })
-export class AppConfigurationComponent implements OnInit {
+export class AppConfigurationComponent implements OnInit, OnDestroy {
   @Input() dialogSettings: DialogSettings;
   eavConstants = eavConstants;
 
@@ -32,6 +32,10 @@ export class AppConfigurationComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+  }
+
+  ngOnDestroy() {
+    this.snackBar.dismiss();
   }
 
   edit(staticName: string) {
@@ -83,7 +87,11 @@ export class AppConfigurationComponent implements OnInit {
     this.snackBar.open('Resetting...');
     this.importAppPartsService.resetApp().subscribe({
       next: result => {
-        this.snackBar.open('Reset worked!', null, { duration: 3000 });
+        this.snackBar.open(
+          'Reset worked! Since this is a complex operation, please restart the Website to ensure all caches are correct',
+          null,
+          { duration: 30000 },
+        );
       },
       error: (error: HttpErrorResponse) => {
         this.snackBar.open('Reset failed. Please check console for more information', null, { duration: 3000 });
