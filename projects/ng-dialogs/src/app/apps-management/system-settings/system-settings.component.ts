@@ -34,6 +34,9 @@ export class SystemSettingsComponent implements OnInit {
   openGlobalSettings() {
     const defaultZone = 1;
     const defaultApp = 1;
-    this.router.navigate([`${defaultZone}/${defaultApp}`], { relativeTo: this.route.firstChild });
+    this.router.navigate(
+      [`${defaultZone}/${defaultApp}/data/${eavConstants.scopes.configuration.value}`],
+      { relativeTo: this.route.firstChild },
+    );
   }
 }
