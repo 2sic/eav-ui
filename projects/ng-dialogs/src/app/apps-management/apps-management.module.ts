@@ -15,6 +15,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { EcoFabSpeedDialModule } from '@ecodev/fab-speed-dial';
 import { Context } from '../shared/services/context';
+import { DialogService } from '../shared/services/dialog.service';
 import { SharedComponentsModule } from '../shared/shared-components.module';
 import { AppsListActionsComponent } from './ag-grid-components/apps-list-actions/apps-list-actions.component';
 import { AppsListShowComponent } from './ag-grid-components/apps-list-show/apps-list-show.component';
@@ -76,6 +77,7 @@ import { SystemSettingsComponent } from './system-settings/system-settings.compo
     EnableLanguagesService,
     FeaturesConfigService,
     SxcInsightsService,
+    DialogService,
   ]
 })
 export class AppsManagementModule { }

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
 import { eavConstants } from '../../shared/constants/eav.constants';
+import { Context } from '../../shared/services/context';
+import { DialogService } from '../../shared/services/dialog.service';
 import { AppsListService } from '../services/apps-list.service';
 
 @Component({
@@ -11,17 +12,14 @@ import { AppsListService } from '../services/apps-list.service';
 export class SystemSettingsComponent implements OnInit {
   private siteDefaultAppId: number;
 
-  constructor(private route: ActivatedRoute, private router: Router, private appsListService: AppsListService) { }
+  constructor(private dialogService: DialogService, private context: Context, private appsListService: AppsListService) { }
 
   ngOnInit() {
   }
 
   openSiteSettings() {
     if (this.siteDefaultAppId != null) {
-      this.router.navigate(
-        [`${this.siteDefaultAppId}/data/${eavConstants.scopes.configuration.value}`],
-        { relativeTo: this.route.firstChild },
-      );
+      this.dialogService.openAppAdministration(this.context.zoneId, this.siteDefaultAppId, 'data', eavConstants.scopes.configuration.value);
     } else {
       this.appsListService.getAll().subscribe(apps => {
         const defaultApp = apps.find(app => app.Guid.toLocaleLowerCase() === 'default');
@@ -34,9 +32,6 @@ export class SystemSettingsComponent implements OnInit {
   openGlobalSettings() {
     const defaultZone = 1;
     const defaultApp = 1;
-    this.router.navigate(
-      [`${defaultZone}/${defaultApp}/data/${eavConstants.scopes.configuration.value}`],
-      { relativeTo: this.route.firstChild },
-    );
+    this.dialogService.openAppAdministration(defaultZone, defaultApp, 'data', eavConstants.scopes.configuration.value);
   }
 }

@@ -4,8 +4,9 @@ import { Router } from '@angular/router';
 import { UrlHelpers } from '../../../edit/shared/helpers/url.helpers';
 import { DialogTypeConstant, DialogTypeConstants } from './shared/constants/dialog-type.constants';
 // tslint:disable-next-line:max-line-length
-import { keyApi, keyAppId, keyContentType, keyDialog, keyItems, keyPipelineId, keyRequestToken, keyTabId, keyUrl, keyZoneId, prefix } from './shared/constants/session.constants';
+import { keyApi, keyAppId, keyContentType, keyDialog, keyExtras, keyItems, keyPipelineId, keyRequestToken, keyTabId, keyUrl, keyZoneId, prefix } from './shared/constants/session.constants';
 import { convertFormToUrl } from './shared/helpers/url-prep.helper';
+import { ExtrasParam } from './shared/models/dialog-url-params.model';
 import { EavWindow } from './shared/models/eav-window.model';
 import { EditForm, EditItem, GroupItem } from './shared/models/edit-form.model';
 
@@ -49,7 +50,8 @@ export function paramsInitFactory(injector: Injector): () => void {
           router.navigate([`${zoneId}/import`]);
           break;
         case DialogTypeConstants.App:
-          router.navigate([`${zoneId}/${appId}/app`]);
+          const extras: ExtrasParam = JSON.parse(sessionStorage.getItem(keyExtras));
+          router.navigate([`${zoneId}/${appId}/app${extras ? `/${extras.tab}/${extras.scope}` : ''}`]);
           break;
         case DialogTypeConstants.ContentType:
           router.navigate([`${zoneId}/${appId}/fields/${contentType}`]);
