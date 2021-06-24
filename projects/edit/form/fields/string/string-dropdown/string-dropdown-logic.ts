@@ -9,7 +9,9 @@ export class StringDropdownLogic extends FieldLogicBase {
   update(settings: FieldSettings, value: string): FieldSettings {
     const fixedSettings: FieldSettings = { ...settings };
     fixedSettings.EnableTextEntry ??= false;
-    fixedSettings._options = calculateDropdownOptions(value, fixedSettings.DropdownValues);
+    fixedSettings.DropdownValues ??= '';
+    fixedSettings.DropdownValuesFormat ??= '';
+    fixedSettings._options = calculateDropdownOptions(value, fixedSettings.DropdownValuesFormat, fixedSettings.DropdownValues);
     return fixedSettings;
   }
 }
