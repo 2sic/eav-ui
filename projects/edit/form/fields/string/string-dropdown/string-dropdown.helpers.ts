@@ -3,7 +3,7 @@ import { DropdownOption } from '../../../../../edit-types';
 /** Takes current value and dropdownValues string from settings and calculates options for dropdown */
 export function calculateDropdownOptions(
   currentValue: string,
-  dropdownValuesFormat: '' | 'key-value',
+  dropdownValuesFormat: '' | 'value-label',
   dropdownValues: string
 ): DropdownOption[] {
   let options: DropdownOption[] = [];
@@ -25,13 +25,13 @@ export function calculateDropdownOptions(
           return option;
         });
         break;
-      case 'key-value':
-        options = dropdownValuesArray.map(keyValue => {
+      case 'value-label':
+        options = dropdownValuesArray.map(valueLabel => {
           // remove backslash escapes
           const chars: { char: string, escaped: boolean }[] = [];
-          for (let i = 0; i < keyValue.length; i++) {
-            const current = keyValue[i];
-            const next = keyValue[i + 1];
+          for (let i = 0; i < valueLabel.length; i++) {
+            const current = valueLabel[i];
+            const next = valueLabel[i + 1];
 
             if (current === '\\' && next != null) {
               chars.push({ char: next, escaped: true });
