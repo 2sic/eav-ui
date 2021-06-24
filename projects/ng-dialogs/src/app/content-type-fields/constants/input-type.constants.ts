@@ -17,6 +17,7 @@ export const InputTypeConstants = {
   EmptyEnd: 'empty-end',
   // number
   NumberDefault: 'number-default',
+  NumberDropdown: 'number-dropdown',
   // entity
   EntityDefault: 'entity-default',
   EntityQuery: 'entity-query',

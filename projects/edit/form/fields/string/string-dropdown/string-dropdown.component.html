@@ -1,5 +1,6 @@
-<ng-container *ngIf="templateVars$ | async as data">
+<!-- This template is used for StringDropdown and NumberDropdown -->
 
+<ng-container *ngIf="templateVars$ | async as data">
   <mat-form-field [formGroup]="group" appearance="standard" color="accent">
 
     <mat-select *ngIf="!data.freeTextMode" [formControlName]="config.fieldName" [required]="data.required"
@@ -9,8 +10,11 @@
       </mat-option>
     </mat-select>
 
-    <input matInput *ngIf="data.freeTextMode" [formControlName]="config.fieldName" [required]="data.required"
-      [placeholder]="data.placeholder">
+    <input matInput *ngIf="data.freeTextMode && type === 'string'" [formControlName]="config.fieldName"
+      [required]="data.required" [placeholder]="data.placeholder">
+
+    <input matInput type="number" *ngIf="data.freeTextMode && type === 'number'" [formControlName]="config.fieldName"
+      [required]="data.required" [placeholder]="data.placeholder">
 
     <button matSuffix mat-icon-button *ngIf="data.enableTextEntry" [disabled]="data.controlStatus.disabled"
       appClickStopPropagation (click)="toggleFreeTextMode()">

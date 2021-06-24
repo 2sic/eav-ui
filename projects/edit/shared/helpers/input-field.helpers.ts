@@ -98,6 +98,7 @@ export class InputFieldHelpers {
           ? new Date(defaultValue).toJSON()
           : null;
       case InputTypeConstants.NumberDefault:
+      case InputTypeConstants.NumberDropdown:
         return defaultValue != null && defaultValue !== ''
           ? !isNaN(Number(defaultValue)) ? Number(defaultValue) : null
           : null;

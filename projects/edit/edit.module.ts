@@ -64,6 +64,7 @@ import { EntityQueryComponent } from './form/fields/entity/entity-query/entity-q
 import { HyperlinkDefaultComponent } from './form/fields/hyperlink/hyperlink-default/hyperlink-default.component';
 import { HyperlinkLibraryComponent } from './form/fields/hyperlink/hyperlink-library/hyperlink-library.component';
 import { NumberDefaultComponent } from './form/fields/number/number-default/number-default.component';
+import { NumberDropdownComponent } from './form/fields/number/number-dropdown/number-dropdown.component';
 import { StringDefaultComponent } from './form/fields/string/string-default/string-default.component';
 import { StringDropdownQueryComponent } from './form/fields/string/string-dropdown-query/string-dropdown-query.component';
 import { StringDropdownComponent } from './form/fields/string/string-dropdown/string-dropdown.component';
@@ -154,6 +155,7 @@ export function translateLoaderFactoryEdit(http: HttpClient): TranslateLoader {
     ConnectorComponent,
     CustomDefaultComponent,
     CustomJsonEditorComponent,
+    NumberDropdownComponent,
   ],
   imports: [
     EditRoutingModule,

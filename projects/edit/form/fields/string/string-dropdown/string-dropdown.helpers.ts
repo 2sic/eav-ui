@@ -3,6 +3,7 @@ import { DropdownOption } from '../../../../../edit-types';
 /** Takes current value and dropdownValues string from settings and calculates options for dropdown */
 export function calculateDropdownOptions(
   currentValue: string,
+  type: 'string' | 'number',
   dropdownValuesFormat: '' | 'value-label',
   dropdownValues: string
 ): DropdownOption[] {
@@ -52,6 +53,11 @@ export function calculateDropdownOptions(
               ? chars.slice(0, separatorIndex).map(c => c.char).join('')
               : chars.map(c => c.char).join(''),
           };
+          if (type === 'number') {
+            option.value = option.value != null && option.value !== ''
+              ? !isNaN(Number(option.value)) ? Number(option.value) : null
+              : null;
+          }
           return option;
         });
         break;

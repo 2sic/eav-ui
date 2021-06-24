@@ -18,6 +18,7 @@ import { EntityQueryComponent } from '../../fields/entity/entity-query/entity-qu
 import { HyperlinkDefaultComponent } from '../../fields/hyperlink/hyperlink-default/hyperlink-default.component';
 import { HyperlinkLibraryComponent } from '../../fields/hyperlink/hyperlink-library/hyperlink-library.component';
 import { NumberDefaultComponent } from '../../fields/number/number-default/number-default.component';
+import { NumberDropdownComponent } from '../../fields/number/number-dropdown/number-dropdown.component';
 import { StringDefaultComponent } from '../../fields/string/string-default/string-default.component';
 import { StringDropdownQueryComponent } from '../../fields/string/string-dropdown-query/string-dropdown-query.component';
 import { StringDropdownComponent } from '../../fields/string/string-dropdown/string-dropdown.component';
@@ -65,6 +66,7 @@ export class FieldsBuilderDirective implements OnInit, OnDestroy {
     'hyperlink-default': HyperlinkDefaultComponent,
     'hyperlink-library': HyperlinkLibraryComponent,
     'number-default': NumberDefaultComponent,
+    'number-dropdown': NumberDropdownComponent,
     'string-default': StringDefaultComponent,
     'string-dropdown': StringDropdownComponent,
     'string-dropdown-query': StringDropdownQueryComponent,
