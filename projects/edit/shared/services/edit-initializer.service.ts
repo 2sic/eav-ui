@@ -146,8 +146,8 @@ export class EditInitializerService implements OnDestroy {
 
       for (const ctAttribute of contentType.Attributes) {
         const inputType = inputTypes.find(i => i.Type === ctAttribute.InputType);
-        // 'custom-default' doesn't have inputType and 'empty-default' and 'empty-end' don't save value
-        const empties: string[] = [InputTypeConstants.EmptyDefault, InputTypeConstants.EmptyEnd];
+        // 'custom-default' doesn't have inputType and 'empty-default' and 'empty-end' and 'empty-message' don't save value
+        const empties: string[] = [InputTypeConstants.EmptyDefault, InputTypeConstants.EmptyEnd, InputTypeConstants.EmptyMessage];
         if (empties.includes(inputType?.Type)) { continue; }
 
         const attributeValues = item.Entity.Attributes[ctAttribute.Name];

@@ -56,6 +56,7 @@ import { CustomJsonEditorComponent } from './form/fields/custom/custom-json-edit
 import { ExternalWebComponentComponent } from './form/fields/custom/external-web-component/external-web-component.component';
 import { DatetimeDefaultComponent } from './form/fields/datetime/datetime-default/datetime-default.component';
 import { EmptyDefaultComponent } from './form/fields/empty/empty-default/empty-default.component';
+import { EmptyMessageComponent } from './form/fields/empty/empty-message/empty-message.component';
 import { EntityContentBlockComponent } from './form/fields/entity/entity-content-blocks/entity-content-blocks.component';
 import { EntityDefaultListComponent } from './form/fields/entity/entity-default/entity-default-list/entity-default-list.component';
 import { EntityDefaultSearchComponent } from './form/fields/entity/entity-default/entity-default-search/entity-default-search.component';
@@ -156,6 +157,7 @@ export function translateLoaderFactoryEdit(http: HttpClient): TranslateLoader {
     CustomDefaultComponent,
     CustomJsonEditorComponent,
     NumberDropdownComponent,
+    EmptyMessageComponent,
   ],
   imports: [
     EditRoutingModule,

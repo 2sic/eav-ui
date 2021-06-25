@@ -96,7 +96,7 @@ export class FieldsSettingsService implements OnDestroy {
           const formulaUpdates: FormValues = {};
           for (const attribute of contentType.Attributes) {
             const attributeValues = itemAttributes[attribute.Name];
-            // empty-default has no value
+            // empty-default and empty-message have no value
             const value = formValues[attribute.Name];
             // custom-default has no inputType
             const inputType = inputTypes.find(i => i.Type === attribute.InputType);

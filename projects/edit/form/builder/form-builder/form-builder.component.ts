@@ -41,7 +41,7 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
         // 1. create missing controls
         for (const [fieldName, fieldProps] of Object.entries(fieldsProps)) {
           const inputType = fieldProps.calculatedInputType.inputType;
-          const empties: string[] = [InputTypeConstants.EmptyDefault, InputTypeConstants.EmptyEnd];
+          const empties: string[] = [InputTypeConstants.EmptyDefault, InputTypeConstants.EmptyEnd, InputTypeConstants.EmptyMessage];
           if (empties.includes(inputType)) { continue; }
 
           if (this.form.controls.hasOwnProperty(fieldName)) { continue; }

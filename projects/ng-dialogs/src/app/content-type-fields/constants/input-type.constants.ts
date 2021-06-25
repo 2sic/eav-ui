@@ -15,6 +15,7 @@ export const InputTypeConstants = {
   // empty
   EmptyDefault: 'empty-default',
   EmptyEnd: 'empty-end',
+  EmptyMessage: 'empty-message',
   // number
   NumberDefault: 'number-default',
   NumberDropdown: 'number-dropdown',

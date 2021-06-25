@@ -12,6 +12,7 @@ import { CustomJsonEditorComponent } from '../../fields/custom/custom-json-edito
 import { ExternalWebComponentComponent } from '../../fields/custom/external-web-component/external-web-component.component';
 import { DatetimeDefaultComponent } from '../../fields/datetime/datetime-default/datetime-default.component';
 import { EmptyDefaultComponent } from '../../fields/empty/empty-default/empty-default.component';
+import { EmptyMessageComponent } from '../../fields/empty/empty-message/empty-message.component';
 import { EntityContentBlockComponent } from '../../fields/entity/entity-content-blocks/entity-content-blocks.component';
 import { EntityDefaultComponent } from '../../fields/entity/entity-default/entity-default.component';
 import { EntityQueryComponent } from '../../fields/entity/entity-query/entity-query.component';
@@ -59,6 +60,7 @@ export class FieldsBuilderDirective implements OnInit, OnDestroy {
     'custom-json-editor': CustomJsonEditorComponent,
     'datetime-default': DatetimeDefaultComponent,
     'empty-default': EmptyDefaultComponent,
+    'empty-message': EmptyMessageComponent,
     'entity-content-blocks': EntityContentBlockComponent,
     'entity-default': EntityDefaultComponent,
     'entity-query': EntityQueryComponent,
