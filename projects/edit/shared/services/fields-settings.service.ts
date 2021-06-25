@@ -102,7 +102,7 @@ export class FieldsSettingsService implements OnDestroy {
             const inputType = inputTypes.find(i => i.Type === attribute.InputType);
 
             const merged = FieldsSettingsHelpers.setDefaultFieldSettings(
-              FieldsSettingsHelpers.mergeSettings<FieldSettings>(attribute.Metadata, defaultLanguage, defaultLanguage),
+              FieldsSettingsHelpers.mergeSettings<FieldSettings>(attribute.Metadata, currentLanguage, defaultLanguage),
             );
 
             // run formulas
