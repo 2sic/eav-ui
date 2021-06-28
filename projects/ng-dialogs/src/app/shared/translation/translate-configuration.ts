@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
-import { TranslateLoader } from '@ngx-translate/core';
+import { TranslateLoader, TranslateModuleConfig } from '@ngx-translate/core';
 
-export function buildTranslateConfiguration(factory: (http: HttpClient) => TranslateLoader) {
-  return {
+export function buildTranslateConfiguration(factory: (http: HttpClient) => TranslateLoader): TranslateModuleConfig {
+  const config: TranslateModuleConfig = {
     loader: {
       provide: TranslateLoader,
       useFactory: factory,
@@ -11,4 +11,5 @@ export function buildTranslateConfiguration(factory: (http: HttpClient) => Trans
     defaultLanguage: 'en',
     isolate: true,
   };
+  return config;
 }
