@@ -22,8 +22,8 @@
   },
   "dependencies": {
     "@2sic.com/dnn-sxc-angular": "^11.1.2",
-    "@ag-grid-community/all-modules": "^24.0.0",
-    "@ag-grid-community/angular": "^24.0.0",
+    "@ag-grid-community/all-modules": "^25.3.0",
+    "@ag-grid-community/angular": "^25.3.0",
     "@angular-material-components/datetime-picker": "^5.1.0",
     "@angular-material-components/moment-adapter": "^5.0.0",
     "@angular/animations": "^11.2.14",
