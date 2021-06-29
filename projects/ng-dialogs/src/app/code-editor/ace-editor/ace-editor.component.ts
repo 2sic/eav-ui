@@ -2,6 +2,7 @@ import { Component, ElementRef, forwardRef, Input, NgZone, OnChanges, OnDestroy,
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { loadScripts } from '../../shared/helpers/load-scripts.helper';
 import { EavWindow } from '../../shared/models/eav-window.model';
+import { Snippet } from '../models/snippet.model';
 import { aceOptions } from './ace-options';
 import { Editor } from './ace.model';
 
@@ -20,7 +21,7 @@ declare const window: EavWindow;
 export class AceEditorComponent implements OnInit, OnChanges, OnDestroy {
   @ViewChild('editor') editorRef: ElementRef;
   @Input() filename: string;
-  @Input() snippets: any[];
+  @Input() snippets: Snippet[];
   /** If value changes editor will be resized */
   @Input() toggleResize: boolean;
 
@@ -32,7 +33,7 @@ export class AceEditorComponent implements OnInit, OnChanges, OnDestroy {
 
   constructor(private zone: NgZone) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     loadScripts(
       [
         { test: 'ace', src: 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/ace.min.js' },
@@ -43,9 +44,9 @@ export class AceEditorComponent implements OnInit, OnChanges, OnDestroy {
     );
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    const filename = changes.filename?.currentValue;
-    const snippets = changes.snippets?.currentValue;
+  ngOnChanges(changes: SimpleChanges): void {
+    const filename = changes.filename?.currentValue != null ? this.filename : undefined;
+    const snippets = changes.snippets?.currentValue != null ? this.snippets : undefined;
     this.updateValues(filename, snippets);
 
     if (!this.editor) { return; }
@@ -58,7 +59,7 @@ export class AceEditorComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  insertSnippet(snippet: any) {
+  insertSnippet(snippet: string): void {
     this.zone.runOutsideAngular(() => {
       const snippetManager = window.ace.require('ace/snippets').snippetManager;
       snippetManager.insertSnippet(this.editor, snippet);
@@ -66,7 +67,7 @@ export class AceEditorComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
-  writeValue(value: string) {
+  writeValue(value: string): void {
     this.value = value || '';
     if (!this.editor) { return; }
     this.zone.runOutsideAngular(() => {
@@ -84,7 +85,7 @@ export class AceEditorComponent implements OnInit, OnChanges, OnDestroy {
     this.propagateTouched = fn;
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.zone.runOutsideAngular(() => {
       this.editor.destroy();
       this.editor.container.remove();
@@ -92,7 +93,7 @@ export class AceEditorComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
-  private aceLoaded() {
+  private aceLoaded(): void {
     this.zone.runOutsideAngular(() => {
       window.ace.config.set('basePath', 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11');
       this.editor = window.ace.edit(this.editorRef.nativeElement, aceOptions);
@@ -105,19 +106,19 @@ export class AceEditorComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
-  private onEditorValueChange() {
+  private onEditorValueChange(): void {
     this.zone.run(() => {
       this.propagateChange(this.editor.getValue());
     });
   }
 
-  private onEditorBlurred() {
+  private onEditorBlurred(): void {
     this.zone.run(() => {
       this.propagateTouched(this.editor.getValue());
     });
   }
 
-  private updateValues(filename: string, snippets: any[]) {
+  private updateValues(filename: string, snippets: Snippet[]): void {
     if (!this.editor) { return; }
     this.zone.runOutsideAngular(() => {
       if (filename) {
@@ -131,5 +132,4 @@ export class AceEditorComponent implements OnInit, OnChanges, OnDestroy {
       }
     });
   }
-
 }
