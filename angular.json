@@ -24,6 +24,7 @@
             "tsConfig": "projects/ng-dialogs/tsconfig.app.json",
             "showCircularDependencies": false,
             "aot": false,
+            "buildOptimizer": false,
             "assets": [
               "projects/ng-dialogs/src/assets"
             ],
