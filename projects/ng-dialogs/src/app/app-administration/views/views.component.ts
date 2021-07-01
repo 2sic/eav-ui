@@ -30,8 +30,8 @@ import { calculateViewType } from './views.helpers';
   styleUrls: ['./views.component.scss'],
 })
 export class ViewsComponent implements OnInit, OnDestroy {
-  @Input() private enableCode: boolean;
-  @Input() private enablePermissions: boolean;
+  @Input() enableCode: boolean;
+  @Input() enablePermissions: boolean;
 
   views$ = new BehaviorSubject<View[]>(null);
   polymorphStatus$ = new BehaviorSubject('');

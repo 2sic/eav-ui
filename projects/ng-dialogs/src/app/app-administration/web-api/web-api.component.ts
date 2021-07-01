@@ -19,7 +19,7 @@ import { WebApisService } from '../services/web-apis.service';
   styleUrls: ['./web-api.component.scss'],
 })
 export class WebApiComponent implements OnInit, OnDestroy {
-  @Input() private enableCode: boolean;
+  @Input() enableCode: boolean;
 
   webApis$ = new BehaviorSubject<WebApi[]>(null);
   modules = AllCommunityModules;

@@ -21,7 +21,7 @@ import { DesignerSnippet, EntityOption, FieldOption, FormulaDesignerTemplateVars
   styleUrls: ['./formula-designer.component.scss'],
 })
 export class FormulaDesignerComponent implements OnInit, OnDestroy {
-  @Input() private formBuilderRefs: QueryList<FormBuilderComponent>;
+  @Input() formBuilderRefs: QueryList<FormBuilderComponent>;
 
   SelectTargets = SelectTargets;
   loadError = false;

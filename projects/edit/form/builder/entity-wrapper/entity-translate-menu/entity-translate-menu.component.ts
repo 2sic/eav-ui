@@ -11,7 +11,7 @@ import { EntityTranslateMenuTemplateVars } from './entity-translate-menu.models'
   styleUrls: ['./entity-translate-menu.component.scss'],
 })
 export class EntityTranslateMenuComponent implements OnInit {
-  @Input() private entityGuid: string;
+  @Input() entityGuid: string;
 
   templateVars$: Observable<EntityTranslateMenuTemplateVars>;
 

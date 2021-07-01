@@ -123,8 +123,8 @@ export class ManageFeaturesComponent implements OnInit, OnDestroy {
   /** Waits for a json message from the iframe and sends it to the server */
   private subscribeToMessages() {
     this.subscription.add(
-      fromEvent(window, 'message').pipe(
-        filter((event: MessageEvent) => this.showManagement$.value),
+      fromEvent<MessageEvent>(window, 'message').pipe(
+        filter(() => this.showManagement$.value),
         filter(event => event.origin.endsWith('2sxc.org') === true),
         filter(event => event.data != null),
       ).subscribe(event => {

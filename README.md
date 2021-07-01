@@ -2,11 +2,11 @@
 
 This is part of [2sxc](https://2sxc.org) - an awesome extension for DNN :)
 
-It's built using Angular 11. 
+It's built using Angular 12. 
 
 ## Projects
 
-1. **edit** part of the main Angula project, but historically an own component. Build using `ng`
+1. **edit** part of the main Angular project, but historically an own component. Build using `ng`
 1. **field-custom-gps** an extension field with gps-picker & map. Build using `webpack`
 1. **field-string-wysiwyg** an extension field for wysiwyg. Build using `webpack`
 

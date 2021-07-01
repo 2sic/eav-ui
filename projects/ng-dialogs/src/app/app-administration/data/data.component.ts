@@ -30,7 +30,7 @@ import { ImportContentTypeDialogData } from '../sub-dialogs/import-content-type/
   styleUrls: ['./data.component.scss'],
 })
 export class DataComponent implements OnInit, OnDestroy {
-  @Input() private enablePermissions: boolean;
+  @Input() enablePermissions: boolean;
 
   contentTypes$ = new BehaviorSubject<ContentType[]>(null);
   scope$ = new BehaviorSubject<string>(null);

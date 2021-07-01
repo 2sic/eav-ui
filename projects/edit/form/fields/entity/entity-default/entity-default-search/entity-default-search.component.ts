@@ -30,9 +30,9 @@ export class EntityDefaultSearchComponent implements OnInit, OnChanges {
   @Input() disabled: boolean;
   @Input() freeTextMode: boolean;
   @Input() selectedEntities: SelectedEntity[];
-  @Input() private availableEntities?: EntityInfo[];
+  @Input() availableEntities?: EntityInfo[];
   @Input() disableAddNew: boolean;
-  @Input() private error: string;
+  @Input() error: string;
 
   @Output() private fetchAvailableEntities = new EventEmitter<null>();
   @Output() private toggleFreeTextMode = new EventEmitter<null>();

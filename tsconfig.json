@@ -1,16 +1,23 @@
+/* To learn more about this file see: https://angular.io/config/tsconfig. */
 {
   "compileOnSave": false,
   "compilerOptions": {
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
+    "forceConsistentCasingInFileNames": true,
+    // "strict": true,
+    // "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
     "sourceMap": true,
     "declaration": false,
     "downlevelIteration": true,
     "experimentalDecorators": true,
-    "module": "esnext",
     "moduleResolution": "node",
     "importHelpers": true,
+    // any target newer than es5 fails in dev mode with emitDecoratorMetadata: true
+    // https://github.com/angular/angular-cli/issues/15077
     "target": "es5",
+    "module": "esnext",
     "lib": [
       "es2018",
       "dom"
@@ -22,8 +29,10 @@
     "noImplicitAny": true
   },
   "angularCompilerOptions": {
-    "fullTemplateTypeCheck": true,
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
     "strictTemplates": true,
-    "strictInjectionParameters": true
+    "fullTemplateTypeCheck": true
   }
 }

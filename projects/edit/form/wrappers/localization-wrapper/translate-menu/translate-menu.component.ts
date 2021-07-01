@@ -20,7 +20,7 @@ import { TranslateMenuTemplateVars } from './translate-menu.models';
 })
 export class TranslateMenuComponent implements OnInit {
   @Input() config: FieldConfigSet;
-  @Input() private group: FormGroup;
+  @Input() group: FormGroup;
 
   TranslationLinks = TranslationLinks;
   templateVars$: Observable<TranslateMenuTemplateVars>;

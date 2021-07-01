@@ -41,7 +41,7 @@ import { Field } from './field.model';
 
 @Directive({ selector: '[appFieldsBuilder]' })
 export class FieldsBuilderDirective implements OnInit, OnDestroy {
-  @Input() private group: FormGroup;
+  @Input() group: FormGroup;
   private fieldConfigs: FieldConfigSet[] = [];
 
   private components: Record<string, Type<any>> = {

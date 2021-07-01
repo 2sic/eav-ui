@@ -4,9 +4,14 @@
 /dist
 /tmp
 /out-tsc
-/.vs
+# Only exists if Bazel was run
+/bazel-out
+
 # dependencies
 /node_modules
+
+# profiling files
+chrome-profiler-events*.json
 
 # IDEs and editors
 /.idea
@@ -16,6 +21,7 @@
 *.launch
 .settings/
 *.sublime-workspace
+/.vs
 
 # IDE - VSCode
 .vscode/*
@@ -23,6 +29,7 @@
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+.history/*
 
 # misc
 /.sass-cache
@@ -30,12 +37,9 @@
 /coverage
 /libpeerconnection.log
 npm-debug.log
+yarn-error.log
 testem.log
 /typings
-
-# e2e
-/e2e/*.js
-/e2e/*.map
 
 # System Files
 .DS_Store

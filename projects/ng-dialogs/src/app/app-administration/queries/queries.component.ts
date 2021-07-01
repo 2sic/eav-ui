@@ -26,7 +26,7 @@ import { ImportQueryDialogData } from '../sub-dialogs/import-query/import-query-
   styleUrls: ['./queries.component.scss'],
 })
 export class QueriesComponent implements OnInit, OnDestroy {
-  @Input() private enablePermissions: boolean;
+  @Input() enablePermissions: boolean;
 
   queries$ = new BehaviorSubject<Query[]>(null);
   modules = AllCommunityModules;

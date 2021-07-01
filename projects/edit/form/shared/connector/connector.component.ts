@@ -16,8 +16,8 @@ import { ConnectorHelper } from './connector.helper';
 export class ConnectorComponent implements AfterViewInit, OnDestroy {
   @ViewChild('customElContainer') private customElContainerRef: ElementRef;
 
-  @Input() private config: FieldConfigSet;
-  @Input() private group: FormGroup;
+  @Input() config: FieldConfigSet;
+  @Input() group: FormGroup;
 
   private connectorCreator: ConnectorHelper;
 
