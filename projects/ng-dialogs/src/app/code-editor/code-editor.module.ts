@@ -23,6 +23,7 @@ import { ObjectToArrayPipe } from './code-snippets/object-to-array.pipe';
 import { CodeTemplatesComponent } from './code-templates/code-templates.component';
 import { DepthPaddingPipe } from './code-templates/depth-padding.pipe';
 import { SortItemsPipe } from './code-templates/order-items.pipe';
+import { MonacoEditorComponent } from './monaco-editor/monaco-editor.component';
 import { SnippetsService } from './services/snippets.service';
 import { SourceService } from './services/source.service';
 
@@ -43,6 +44,7 @@ export function translateLoaderFactoryCode(http: HttpClient) {
     AceEditorComponent,
     DepthPaddingPipe,
     SortItemsPipe,
+    MonacoEditorComponent,
   ],
   imports: [
     CodeEditorRoutingModule,

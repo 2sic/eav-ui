@@ -1,4 +1,4 @@
-import { Component, ElementRef, forwardRef, Input, NgZone, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, forwardRef, Input, NgZone, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { loadScripts } from '../../shared/helpers/load-scripts.helper';
 import { EavWindow } from '../../shared/models/eav-window.model';
@@ -18,7 +18,7 @@ declare const window: EavWindow;
     multi: true
   }],
 })
-export class AceEditorComponent implements OnInit, OnChanges, OnDestroy {
+export class AceEditorComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy {
   @ViewChild('editor') editorRef: ElementRef;
   @Input() filename: string;
   @Input() snippets: Snippet[];
@@ -34,6 +34,9 @@ export class AceEditorComponent implements OnInit, OnChanges, OnDestroy {
   constructor(private zone: NgZone) { }
 
   ngOnInit(): void {
+  }
+
+  ngAfterViewInit(): void {
     loadScripts(
       [
         { test: 'ace', src: 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/ace.min.js' },

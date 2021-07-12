@@ -5,6 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, combineLatest, forkJoin, fromEvent, Observable, Subscription } from 'rxjs';
 import { map, mergeMap, share } from 'rxjs/operators';
 import { SanitizeHelper } from '../../../../edit/shared/helpers';
+import { GlobalConfigService } from '../../../../edit/shared/store/ngrx-data';
 import { defaultControllerName, defaultTemplateName } from '../shared/constants/file-names.constants';
 import { keyItems } from '../shared/constants/session.constants';
 import { EditItem, SourceItem, } from '../shared/models/edit-form.model';
@@ -12,9 +13,10 @@ import { Context } from '../shared/services/context';
 import { DialogService } from '../shared/services/dialog.service';
 import { SnackBarStackService } from '../shared/services/snack-bar-stack.service';
 import { AceEditorComponent } from './ace-editor/ace-editor.component';
-import { CodeEditorTemplateVars } from './code-editor.models';
+import { CodeEditorTemplateVars, EditorOption, Editors, ExplorerOption, Explorers } from './code-editor.models';
 import { Snippet, SnippetsSets } from './models/snippet.model';
 import { SourceView } from './models/source-view.model';
+import { MonacoEditorComponent } from './monaco-editor/monaco-editor.component';
 import { SnippetsService } from './services/snippets.service';
 import { SourceService } from './services/source.service';
 
@@ -25,12 +27,12 @@ import { SourceService } from './services/source.service';
 })
 export class CodeEditorComponent implements OnInit, OnDestroy {
   @ViewChild(AceEditorComponent) private aceEditorRef: AceEditorComponent;
+  @ViewChild(MonacoEditorComponent) private monacoEditorRef: MonacoEditorComponent;
 
-  explorer = {
-    templates: 'templates',
-    snippets: 'snippets'
-  };
-  activeExplorer = this.explorer.templates;
+  Explorers = Explorers;
+  activeExplorer: ExplorerOption = Explorers.Templates;
+  Editors = Editors;
+  activeEditor: EditorOption = Editors.Ace;
   templateVars$: Observable<CodeEditorTemplateVars>;
 
   private view$: BehaviorSubject<SourceView>;
@@ -51,6 +53,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
     private zone: NgZone,
     private titleService: Title,
     private dialogService: DialogService,
+    private globalConfigService: GlobalConfigService,
   ) {
     this.context.init(this.route);
   }
@@ -78,10 +81,12 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
       this.titleService.setTitle(`${this.view$.value.FileName} - Code Editor`);
       this.showCodeAndEditionWarnings(view, templates);
     });
+    const debugEnabled$ = this.globalConfigService.getDebugEnabled$();
 
-    this.templateVars$ = combineLatest([this.view$, this.templates$, this.explorerSnipps$, this.editorSnipps$]).pipe(
-      map(([view, templates, explorerSnipps, editorSnipps]) => {
+    this.templateVars$ = combineLatest([this.view$, this.templates$, this.explorerSnipps$, this.editorSnipps$, debugEnabled$]).pipe(
+      map(([view, templates, explorerSnipps, editorSnipps, debugEnabled]) => {
         const templateVars: CodeEditorTemplateVars = {
+          debugEnabled,
           view,
           templates,
           explorerSnipps,
@@ -100,8 +105,21 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  toggleExplorer(explorer: string): void {
+  toggleExplorer(explorer: ExplorerOption): void {
     this.activeExplorer = (this.activeExplorer !== explorer) ? explorer : null;
+  }
+
+  toggleEditor(): void {
+    switch (this.activeEditor) {
+      case Editors.Ace:
+        this.activeEditor = Editors.Monaco;
+        break;
+      case Editors.Monaco:
+        this.activeEditor = Editors.Ace;
+        break;
+      default:
+        this.activeEditor = Editors.Ace;
+    }
   }
 
   createTemplate(folder?: string): void {
@@ -125,8 +143,12 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
     });
   }
 
-  changeInsertSnipp(snippet: string): void {
-    this.aceEditorRef.insertSnippet(snippet);
+  insertSnippet(snippet: string): void {
+    if (this.aceEditorRef != null) {
+      this.aceEditorRef.insertSnippet(snippet);
+    } else if (this.monacoEditorRef != null) {
+      this.monacoEditorRef.insertSnippet(snippet);
+    }
   }
 
   codeChanged(code: string): void {
