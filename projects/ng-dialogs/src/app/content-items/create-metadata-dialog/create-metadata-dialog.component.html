@@ -1,0 +1,79 @@
+<div mat-dialog-title>
+  <div class="dialog-title-box">Create Metadata Info</div>
+</div>
+
+<p class="dialog-description">
+  This is a special operation to add an item which is metadata for another item.
+</p>
+
+<form [formGroup]="form" class="dialog-form">
+  <div class="dialog-form-content fancy-scrollbar-light">
+
+    <!-- Target Type -->
+    <mat-form-field appearance="standard" color="accent">
+      <mat-label>What kind of assignment do you want?</mat-label>
+      <mat-select *ngIf="!freeTextTargetType" formControlName="targetType">
+        <mat-option *ngFor="let targetType of targetTypeOptions" [value]="targetType.type">
+          {{ targetType.target }}
+        </mat-option>
+        <mat-option *ngIf="!validTargetTypes.includes(form.controls['targetType'].value)"
+          [value]="form.controls['targetType'].value">
+          {{ form.controls['targetType'].value }}
+        </mat-option>
+      </mat-select>
+
+      <input matInput type="number" min="0" *ngIf="freeTextTargetType" formControlName="targetType">
+
+      <button mat-icon-button matSuffix matTooltip="FreeText TargetType"
+        (click)="freeTextTargetType = !freeTextTargetType" appClickStopPropagation>
+        <mat-icon>text_fields</mat-icon>
+      </button>
+    </mat-form-field>
+
+    <app-field-hint *ngIf="form.controls['targetType'].touched && form.controls['targetType'].errors?.required"
+      [isError]="true">
+      This field is required
+    </app-field-hint>
+    <app-field-hint
+      *ngIf="form.controls['targetType'].touched && !form.controls['targetType'].invalid && !validTargetTypes.includes(form.controls['targetType'].value)"
+      [isError]="false">
+      Warning: you entered an unknown target type. This may work or may not. Please be sure you know what you're doing
+    </app-field-hint>
+
+    <!-- Key Type -->
+    <mat-form-field appearance="standard" color="accent">
+      <mat-label>What key type do you want?</mat-label>
+      <mat-select formControlName="keyType">
+        <mat-option *ngFor="let keyType of keyTypeOptions" [value]="keyType">
+          {{ keyType }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <app-field-hint *ngIf="form.controls['keyType'].touched && form.controls['keyType'].errors?.required"
+      [isError]="true">
+      This field is required
+    </app-field-hint>
+
+    <!-- Key -->
+    <mat-form-field appearance="standard" color="accent">
+      <mat-label>What key do you want?</mat-label>
+      <input matInput type="text" *ngIf="form.controls['keyType'].value !== 'number'" formControlName="key">
+      <input matInput type="number" *ngIf="form.controls['keyType'].value === 'number'" formControlName="key">
+    </mat-form-field>
+
+    <app-field-hint *ngIf="form.controls['key'].touched && form.controls['key'].errors?.required" [isError]="true">
+      This field is required
+    </app-field-hint>
+    <app-field-hint
+      *ngIf="form.controls['key'].touched && !form.controls['key'].errors?.required && form.controls['key'].errors?.mismatch"
+      [isError]="true">
+      Key type and key don't match
+    </app-field-hint>
+  </div>
+
+  <div class="dialog-form-actions">
+    <button mat-raised-button (click)="closeDialog()">Cancel</button>
+    <button mat-raised-button color="accent" [disabled]="!form.valid" (click)="confirm()">Confirm</button>
+  </div>
+</form>

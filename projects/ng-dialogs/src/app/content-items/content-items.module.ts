@@ -1,7 +1,7 @@
 import { AgGridModule } from '@ag-grid-community/angular';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatRippleModule } from '@angular/material/core';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -25,6 +25,7 @@ import { PubMetaFilterComponent } from './ag-grid-components/pub-meta-filter/pub
 import { ContentItemImportComponent } from './content-item-import/content-item-import.component';
 import { ContentItemsRoutingModule } from './content-items-routing.module';
 import { ContentItemsComponent } from './content-items.component';
+import { CreateMetadataDialogComponent } from './create-metadata-dialog/create-metadata-dialog.component';
 import { ContentItemsService } from './services/content-items.service';
 import { EntitiesService } from './services/entities.service';
 
@@ -36,6 +37,7 @@ import { EntitiesService } from './services/entities.service';
     ContentItemsActionsComponent,
     ContentItemsEntityComponent,
     ContentItemImportComponent,
+    CreateMetadataDialogComponent,
   ],
   imports: [
     CommonModule,
@@ -55,6 +57,7 @@ import { EntitiesService } from './services/entities.service';
     MatSnackBarModule,
     EcoFabSpeedDialModule,
     MatMenuModule,
+    ReactiveFormsModule,
   ],
   providers: [
     Context,

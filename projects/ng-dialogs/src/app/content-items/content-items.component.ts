@@ -1,7 +1,7 @@
 import { AllCommunityModules, CellClickedEvent, ColDef, GridApi, GridOptions, GridReadyEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { BehaviorSubject, Subscription } from 'rxjs';
@@ -17,7 +17,7 @@ import { BooleanFilterComponent } from '../shared/components/boolean-filter/bool
 import { IdFieldComponent } from '../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
-import { eavConstants, EavKeyTypeKey, EavMetadataKey } from '../shared/constants/eav.constants';
+import { eavConstants } from '../shared/constants/eav.constants';
 import { keyFilters } from '../shared/constants/session.constants';
 import { consoleLogAngular } from '../shared/helpers/console-log-angular.helper';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
@@ -30,6 +30,8 @@ import { PubMetaFilterComponent } from './ag-grid-components/pub-meta-filter/pub
 import { PubMeta } from './ag-grid-components/pub-meta-filter/pub-meta-filter.model';
 import { ContentItemImportDialogData } from './content-item-import/content-item-import-dialog.config';
 import { buildFilterModel } from './content-items.helpers';
+import { CreateMetadataDialogComponent } from './create-metadata-dialog/create-metadata-dialog.component';
+import { MetadataInfo } from './create-metadata-dialog/create-metadata-dialog.models';
 import { AgGridFilterModel } from './models/ag-grid-filter.model';
 import { ContentItem } from './models/content-item.model';
 import { ExtendedColDef } from './models/extended-col-def.model';
@@ -73,6 +75,9 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     private contentExportService: ContentExportService,
     private snackBar: MatSnackBar,
     private globalConfigService: GlobalConfigService,
+    private dialog: MatDialog,
+    private viewContainerRef: ViewContainerRef,
+    private changeDetectorRef: ChangeDetectorRef,
   ) { }
 
   ngOnInit() {
@@ -183,60 +188,29 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   }
 
   addMetadata() {
-    if (!confirm(
-      'This is a special operation to add an item which is metadata for another item.'
-      + ' If you didn\'t understand that, this is not for you :). Continue?'
-    )) { return; }
+    const metadataDialogRef = this.dialog.open(CreateMetadataDialogComponent, {
+      autoFocus: false,
+      viewContainerRef: this.viewContainerRef,
+      width: '650px',
+    });
+    metadataDialogRef.afterClosed().pipe(take(1)).subscribe((res: MetadataInfo) => {
+      if (res == null) { return; }
 
-    const metadataKeys = Object.keys(eavConstants.metadata) as EavMetadataKey[];
-    const validTargetTypes = metadataKeys.map(metaKey => eavConstants.metadata[metaKey].type);
-    const targetType = parseInt(prompt(
-      'What kind of assignment do you want?'
-      + metadataKeys.map(metaKey => `\n${eavConstants.metadata[metaKey].type}: ${eavConstants.metadata[metaKey].target}`),
-      eavConstants.metadata.entity.type.toString()
-    ), 10);
-    if (!targetType) { return alert('No target type entered. Cancelled'); }
-    if (!validTargetTypes.includes(targetType)) {
-      alert(`Warning: you entered an unknown target type. This may work or may not. Please be sure you know what you're doing.`);
-    }
-
-    const key = prompt('What key do you want?');
-    if (!key) { return alert('No key entered. Cancelled'); }
-
-    const keyTypeKeys = Object.keys(eavConstants.keyTypes) as EavKeyTypeKey[];
-    const validKeyTypes = keyTypeKeys.map(keyTypeKey => eavConstants.keyTypes[keyTypeKey]);
-    const keyType = prompt(
-      'What key type do you want?'
-      + keyTypeKeys.map(keyTypeKey => `\n${eavConstants.keyTypes[keyTypeKey]}`),
-      eavConstants.keyTypes.number
-    );
-    if (!keyType) { return alert('No key type entered. Cancelled'); }
-    if (!validKeyTypes.includes(keyType)) { return alert('Invalid key type. Cancelled'); }
-    if (keyType === eavConstants.keyTypes.number && !parseInt(key, 10)) {
-      return alert('Key type number and key don\'t match. Cancelled');
-    }
-
-    let target: string;
-    for (const metaKey of metadataKeys) {
-      if (targetType !== eavConstants.metadata[metaKey].type) { continue; }
-      target = eavConstants.metadata[metaKey].target;
-      break;
-    }
-    target ??= targetType?.toString();  // if not a known type, just use the number
-
-    const form: EditForm = {
-      items: [{
-        ContentTypeName: this.contentTypeStaticName,
-        For: {
-          Target: target,
-          ...(keyType === eavConstants.keyTypes.guid && { Guid: key }),
-          ...(keyType === eavConstants.keyTypes.number && { Number: parseInt(key, 10) }),
-          ...(keyType === eavConstants.keyTypes.string && { String: key }),
-        },
-      }],
-    };
-    const formUrl = convertFormToUrl(form);
-    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
+      const form: EditForm = {
+        items: [{
+          ContentTypeName: this.contentTypeStaticName,
+          For: {
+            Target: res.target,
+            ...(res.keyType === eavConstants.keyTypes.guid && { Guid: res.key }),
+            ...(res.keyType === eavConstants.keyTypes.number && { Number: parseInt(res.key, 10) }),
+            ...(res.keyType === eavConstants.keyTypes.string && { String: res.key }),
+          },
+        }],
+      };
+      const formUrl = convertFormToUrl(form);
+      this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
+      this.changeDetectorRef.markForCheck();
+    });
   }
 
   debugFilter() {
