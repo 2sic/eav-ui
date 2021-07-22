@@ -8,3 +8,9 @@ export interface TargetTypeOption {
   type: number;
   target: string;
 }
+
+export interface MetadataFormValues {
+  targetType: number;
+  keyType: string;
+  key: string | number;
+}

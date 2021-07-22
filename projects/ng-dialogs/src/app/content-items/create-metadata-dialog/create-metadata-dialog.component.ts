@@ -1,8 +1,8 @@
 import { Component, HostBinding, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
-import { eavConstants, EavKeyTypeKey, EavMetadataKey } from '../../shared/constants/eav.constants';
-import { MetadataInfo, TargetTypeOption } from './create-metadata-dialog.models';
+import { eavConstants } from '../../shared/constants/eav.constants';
+import { MetadataFormValues, MetadataInfo, TargetTypeOption } from './create-metadata-dialog.models';
 import { metadataKeyValidator } from './metadata-key.validator';
 
 @Component({
@@ -15,53 +15,37 @@ export class CreateMetadataDialogComponent implements OnInit {
 
   eavConstants = eavConstants;
   form: FormGroup;
-  targetTypeOptions: TargetTypeOption[] = [];
+  targetTypeOptions: TargetTypeOption[];
   freeTextTargetType = false;
-  validTargetTypes: number[] = [];
-  keyTypeOptions: string[] = [];
+  knownTargetTypes: number[];
+  keyTypeOptions: string[];
 
   constructor(private dialogRef: MatDialogRef<CreateMetadataDialogComponent>) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.form = new FormGroup({});
     this.form.addControl('targetType', new FormControl(eavConstants.metadata.entity.type, [Validators.required]));
     this.form.addControl('keyType', new FormControl(eavConstants.keyTypes.number, [Validators.required]));
     this.form.addControl('key', new FormControl(null, [Validators.required, metadataKeyValidator(this.form)]));
 
-    const metadataKeys = Object.keys(eavConstants.metadata) as EavMetadataKey[];
-    this.targetTypeOptions = metadataKeys.map(metaKey => {
-      const option: TargetTypeOption = {
-        type: eavConstants.metadata[metaKey].type,
-        target: eavConstants.metadata[metaKey].target,
-      };
-      return option;
-    });
-
-    this.validTargetTypes = metadataKeys.map(metaKey => eavConstants.metadata[metaKey].type);
-
-    const keyTypeKeys = Object.keys(eavConstants.keyTypes) as EavKeyTypeKey[];
-    this.keyTypeOptions = keyTypeKeys.map(keyTypeKey => eavConstants.keyTypes[keyTypeKey]);
+    this.targetTypeOptions = Object.values(eavConstants.metadata).map(option => ({ ...option }));
+    this.knownTargetTypes = this.targetTypeOptions.map(option => option.type);
+    this.keyTypeOptions = Object.values(eavConstants.keyTypes);
   }
 
-  closeDialog(result?: MetadataInfo) {
+  closeDialog(result?: MetadataInfo): void {
     this.dialogRef.close(result);
   }
 
-  confirm() {
-    const formValues = this.form.getRawValue();
-    let target: string;
-    const metadataKeys = Object.keys(eavConstants.metadata) as EavMetadataKey[];
-    for (const metaKey of metadataKeys) {
-      if (formValues.targetType !== eavConstants.metadata[metaKey].type) { continue; }
-      target = eavConstants.metadata[metaKey].target;
-      break;
-    }
-    target ??= formValues.targetType?.toString(); // if not a known type, just use the number
+  confirm(): void {
+    const formValues: MetadataFormValues = this.form.getRawValue();
+    // if not a known target, use the number
+    const target = this.targetTypeOptions.find(option => option.type === formValues.targetType)?.target ?? formValues.targetType.toString();
 
     const result: MetadataInfo = {
       target,
       keyType: formValues.keyType,
-      key: formValues.key,
+      key: formValues.key.toString(),
     };
     this.closeDialog(result);
   }

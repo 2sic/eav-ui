@@ -13,10 +13,10 @@
     <mat-form-field appearance="standard" color="accent">
       <mat-label>What kind of assignment do you want?</mat-label>
       <mat-select *ngIf="!freeTextTargetType" formControlName="targetType">
-        <mat-option *ngFor="let targetType of targetTypeOptions" [value]="targetType.type">
-          {{ targetType.target }}
+        <mat-option *ngFor="let option of targetTypeOptions" [value]="option.type">
+          {{ option.target }}
         </mat-option>
-        <mat-option *ngIf="!validTargetTypes.includes(form.controls['targetType'].value)"
+        <mat-option *ngIf="!knownTargetTypes.includes(form.controls['targetType'].value)"
           [value]="form.controls['targetType'].value">
           {{ form.controls['targetType'].value }}
         </mat-option>
@@ -35,7 +35,7 @@
       This field is required
     </app-field-hint>
     <app-field-hint
-      *ngIf="form.controls['targetType'].touched && !form.controls['targetType'].invalid && !validTargetTypes.includes(form.controls['targetType'].value)"
+      *ngIf="form.controls['targetType'].touched && !form.controls['targetType'].invalid && !knownTargetTypes.includes(form.controls['targetType'].value)"
       [isError]="false">
       Warning: you entered an unknown target type. This may work or may not. Please be sure you know what you're doing
     </app-field-hint>
@@ -44,8 +44,8 @@
     <mat-form-field appearance="standard" color="accent">
       <mat-label>What key type do you want?</mat-label>
       <mat-select formControlName="keyType">
-        <mat-option *ngFor="let keyType of keyTypeOptions" [value]="keyType">
-          {{ keyType }}
+        <mat-option *ngFor="let option of keyTypeOptions" [value]="option">
+          {{ option }}
         </mat-option>
       </mat-select>
     </mat-form-field>
