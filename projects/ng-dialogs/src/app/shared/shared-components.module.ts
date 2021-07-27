@@ -16,6 +16,7 @@ import { ClickStopPropagationDirective } from './directives/click-stop-propagati
 import { DragAndDropDirective } from './directives/drag-and-drop.directive';
 import { MatFormFieldTextareaDirective } from './directives/mat-form-field-textarea.directive';
 import { MousedownStopPropagationDirective } from './directives/mousedown-stop-propagation.directive';
+import { TippyDirective } from './directives/tippy.directive';
 import { ToggleDebugDirective } from './directives/toggle-debug.directive';
 import { SafeHtmlPipe } from './pipes/safe-html.pipe';
 import { SafeResourceUrlPipe } from './pipes/safe-resource-url';
@@ -35,6 +36,7 @@ import { SafeResourceUrlPipe } from './pipes/safe-resource-url';
     SafeResourceUrlPipe,
     ToggleDebugDirective,
     MatFormFieldTextareaDirective,
+    TippyDirective,
   ],
   imports: [
     RouterModule,
@@ -60,6 +62,7 @@ import { SafeResourceUrlPipe } from './pipes/safe-resource-url';
     SafeResourceUrlPipe,
     ToggleDebugDirective,
     MatFormFieldTextareaDirective,
+    TippyDirective,
   ]
 })
 export class SharedComponentsModule { }

@@ -1,0 +1,17 @@
+@import 'tippy.js/dist/tippy.css';
+@import 'tippy.js/animations/scale-subtle.css';
+
+.tippy-box[data-theme~='2sxc'] {
+  background-color: rgba(97, 97, 97, 0.9);
+  color: #fff;
+
+  .tippy-content {
+    font-size: 10px;
+    padding: 6px 8px;
+
+    @media (max-width: 600px) {
+      font-size: 14px;
+      padding: 8px 16px;
+    }
+  }
+}
