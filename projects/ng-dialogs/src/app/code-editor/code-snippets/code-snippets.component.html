@@ -1,8 +1,8 @@
 <div class="editor-active-explorer fancy-scrollbar-dark">
   <div *ngFor="let section of snippets | keyvalue">
 
-    <div class="collapsible-header section" [matTooltip]="'SourceEditorSnippets.' + section.key + '.Help' | translate"
-      matTooltipShowDelay="750" (click)="toggleSection(section)">
+    <div class="collapsible-header section" [tippy]="'SourceEditorSnippets.' + section.key + '.Help' | translate"
+      tippyShowDelay="750" (click)="toggleSection(section)">
       <mat-icon>{{ toggledSections.includes(section) ? 'keyboard_arrow_down' : 'keyboard_arrow_right' }}</mat-icon>
       <span>{{ 'SourceEditorSnippets.' + section.key + '.Title' | translate }}</span>
     </div>
@@ -11,8 +11,8 @@
       <div *ngFor="let folder of section.value | keyvalue">
 
         <div class="collapsible-header folder"
-          [matTooltip]="'SourceEditorSnippets.' + section.key + '.' + folder.key + '.Help' | translate"
-          matTooltipShowDelay="750" (click)="toggleFolder(folder)">
+          [tippy]="'SourceEditorSnippets.' + section.key + '.' + folder.key + '.Help' | translate" tippyShowDelay="750"
+          (click)="toggleFolder(folder)">
           <mat-icon>{{ toggledFolders.includes(folder) ? 'keyboard_arrow_down' : 'keyboard_arrow_right' }}</mat-icon>
           <span>{{ 'SourceEditorSnippets.' + section.key + '.' + folder.key + '.Title' | translate }}</span>
         </div>
@@ -21,16 +21,14 @@
           <div class="snippet" *ngFor="let snippet of (folder.value | objectToArray)">
 
             <div class="snippet-label">
-              <div matRipple class="text" [matTooltip]="snippet.snip" matTooltipShowDelay="750"
+              <div matRipple class="text" [tippy]="snippet.snip" tippyShowDelay="750"
                 (click)="addSnippet(snippet.snip)">
                 {{ snippet.label }}
               </div>
-              <mat-icon *ngIf="snippet.more" matTooltip="Show More" matTooltipShowDelay="750"
-                (click)="toggleMore(snippet)">
+              <mat-icon *ngIf="snippet.more" tippy="Show More" tippyShowDelay="750" (click)="toggleMore(snippet)">
                 {{ toggledMores.includes(snippet) ? 'more_vert' : 'more_horiz' }}
               </mat-icon>
-              <mat-icon matTooltip="Show Help" matTooltipShowDelay="750" appClickStopPropagation
-                (click)="toggleInfo(snippet)">
+              <mat-icon tippy="Show Help" tippyShowDelay="750" appClickStopPropagation (click)="toggleInfo(snippet)">
                 info
               </mat-icon>
             </div>
@@ -46,12 +44,11 @@
               <div *ngFor="let more of (snippet.more | objectToArray)">
 
                 <div class="snippet-label">
-                  <div matRipple class="text text-more" [matTooltip]="more.snip" matTooltipShowDelay="750"
+                  <div matRipple class="text text-more" [tippy]="more.snip" tippyShowDelay="750"
                     (click)="addSnippet(more.snip)">
                     {{ more.label }}
                   </div>
-                  <mat-icon matTooltip="Show Help" matTooltipShowDelay="750" appClickStopPropagation
-                    (click)="toggleInfo(more)">
+                  <mat-icon tippy="Show Help" tippyShowDelay="750" appClickStopPropagation (click)="toggleInfo(more)">
                     info
                   </mat-icon>
                 </div>
