@@ -5,7 +5,6 @@ import { MatRippleModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatRadioModule } from '@angular/material/radio';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { BooleanFilterComponent } from './components/boolean-filter/boolean-filter.component';
 import { DialogEntryComponent } from './components/dialog-entry/dialog-entry.component';
@@ -44,7 +43,6 @@ import { SafeResourceUrlPipe } from './pipes/safe-resource-url';
     MatFormFieldModule,
     FormsModule,
     MatRadioModule,
-    MatTooltipModule,
     MatRippleModule,
     MatIconModule,
   ],
