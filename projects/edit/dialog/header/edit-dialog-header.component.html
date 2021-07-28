@@ -1,6 +1,6 @@
 <mat-card *ngIf="templateVars$ | async as data" class="header">
   <button mat-icon-button class="header__exit-button" (click)="close()"
-    [matTooltip]="(eavService.eavConfig.isParentDialog ? 'Form.Buttons.Exit.Tip' : 'Form.Buttons.Return.Tip') | translate">
+    [tippy]="(eavService.eavConfig.isParentDialog ? 'Form.Buttons.Exit.Tip' : 'Form.Buttons.Return.Tip') | translate">
     <mat-icon>{{ eavService.eavConfig.isParentDialog ? 'clear' : 'arrow_back' }}</mat-icon>
   </button>
 
@@ -11,7 +11,7 @@
   </div>
 
   <button mat-button class="header__publish-button" (click)="openPublishStatusDialog()"
-    [matTooltip]="'PublishStatus.' + data.publishMode + '.Tip' | translate">
+    [tippy]="'PublishStatus.' + data.publishMode + '.Tip' | translate">
     <span class="header__publish-mode">
       {{ 'PublishStatus.Label' | translate }}
       <b>{{ 'PublishStatus.' + data.publishMode | translate | uppercase }}</b>

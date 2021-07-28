@@ -5,7 +5,7 @@
     <div [ngClass]="{ 'c-ew__dialog-header mat-elevation-z2': (open$ | async) }">
       <mat-card class="mat-elevation-z0" fxLayout="row">
         <button mat-icon-button class="back-arrow" fxLayoutAlign="center center"
-          [matTooltip]="'Form.Buttons.Return.Tip' | translate" (click)="closeDialog()">
+          [tippy]="'Form.Buttons.Return.Tip' | translate" (click)="closeDialog()">
           <mat-icon>arrow_back</mat-icon>
         </button>
         <span fxLayoutAlign="center center" class="title mat-display-1">{{ label$ | async }}</span>

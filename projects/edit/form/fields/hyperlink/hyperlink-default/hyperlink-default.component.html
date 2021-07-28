@@ -2,15 +2,15 @@
   <ng-container *ngIf="data.open">
 
     <div class="fabs-box">
-      <button mat-mini-fab color="accent" [matTooltip]="'Fields.Hyperlink.Default.AdamTip' | translate"
+      <button mat-mini-fab color="accent" [tippy]="'Fields.Hyperlink.Default.AdamTip' | translate"
         *ngIf="data.buttonAdam" [disabled]="data.controlStatus.disabled" (click)="toggleAdam(false, false)">
         <mat-icon svgIcon="appleFilled"></mat-icon>
       </button>
-      <button mat-mini-fab color="primary" [matTooltip]="'Fields.Hyperlink.Default.PageTip' | translate"
+      <button mat-mini-fab color="primary" [tippy]="'Fields.Hyperlink.Default.PageTip' | translate"
         *ngIf="data.buttonPage" [disabled]="data.controlStatus.disabled" (click)="openPagePicker()">
         <mat-icon svgIcon="sitemap"></mat-icon>
       </button>
-      <button mat-mini-fab color="primary" [matTooltip]="'Fields.Hyperlink.Default.MoreOptions' | translate"
+      <button mat-mini-fab color="primary" [tippy]="'Fields.Hyperlink.Default.MoreOptions' | translate"
         *ngIf="data.buttonMore" [disabled]="data.controlStatus.disabled" [matMenuTriggerFor]="menu">
         <mat-icon>more_vert</mat-icon>
       </button>
@@ -43,7 +43,7 @@
             <!-- input -->
             <mat-form-field [formGroup]="group" appearance="standard" color="accent">
               <input matInput [formControlName]="config.fieldName"
-                [matTooltip]="'Fields.Hyperlink.Default.Tooltip' | translate" matTooltipPosition="above"
+                [tippy]="'Fields.Hyperlink.Default.Tooltip' | translate" tippyPlacement="top"
                 [placeholder]="data.placeholder" [required]="data.required" appPasteClipboardImage [config]="config"
                 [elementType]="'input'">
               <mat-label>{{ data.label }}</mat-label>
@@ -52,8 +52,7 @@
             <div *ngIf="data.preview?.floatingText" class="hyperlink-floating">
               <div class="hyperlink-floating__value">{{ data.controlStatus.value }}</div>
               <div class="hyperlink-floating__url-box">
-                <a [href]="data.preview.url" target="_blank" class="hyperlink-floating__url"
-                  [matTooltip]="data.preview.url">
+                <a [href]="data.preview.url" target="_blank" class="hyperlink-floating__url" [tippy]="data.preview.url">
                   <span>{{ data.preview.floatingText }}</span>
                 </a>
               </div>
@@ -67,7 +66,7 @@
               </div>
             </a>
             <!-- icon -->
-            <a [href]="data.preview.url" target="_blank" [matTooltip]="data.preview.url" matTooltipPosition="right"
+            <a [href]="data.preview.url" target="_blank" [tippy]="data.preview.url" tippyPlacement="right"
               *ngIf="!data.preview.isImage">
               <div class="preview-icon-box">
                 <mat-icon *ngIf="data.preview.isKnownType">{{ data.preview.icon }}</mat-icon>

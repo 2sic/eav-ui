@@ -3,12 +3,12 @@
   <div #leftShadow class="scrollable__overlay--left-shadow"></div>
   <div #rightShadow class="scrollable__overlay--right-shadow"></div>
 
-  <div #scrollable class="scrollable lang-switch" [matTooltip]="'Message.CantSwitchLanguage' | translate"
-    [matTooltipDisabled]="!disabled">
+  <div #scrollable class="scrollable lang-switch" [tippy]="'Message.CantSwitchLanguage' | translate"
+    [tippyDisabled]="!disabled">
     <button *ngFor="let langButton of data.languageButtons" mat-flat-button class="lang-switch__button"
       [disabled]="disabled && data.currentLanguage !== langButton.key"
       [color]="data.currentLanguage === langButton.key ? 'accent' : 'white'" (mousedown)="lngButtonMouseDown($event)"
-      (click)="lngButtonClick($event, langButton)" [matTooltip]="langButton.name" [matTooltipDisabled]="disabled">
+      (click)="lngButtonClick($event, langButton)" [tippy]="langButton.name" [tippyDisabled]="disabled">
       {{ langButton.buttonText }}
     </button>
   </div>

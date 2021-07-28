@@ -24,7 +24,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { DropzoneModule } from 'ngx-dropzone-wrapper';
@@ -175,7 +174,6 @@ export function translateLoaderFactoryEdit(http: HttpClient): TranslateLoader {
     MatIconModule,
     MatMenuModule,
     MatSnackBarModule,
-    MatTooltipModule,
     MatDialogModule,
     MatDividerModule,
     FlexLayoutModule,

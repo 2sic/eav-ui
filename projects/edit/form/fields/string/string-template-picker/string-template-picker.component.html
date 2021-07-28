@@ -3,15 +3,15 @@
   <div class="picker-wrapper">
     <mat-form-field [formGroup]="group" appearance="standard" color="accent">
       <mat-select [formControlName]="config.fieldName" [required]="data.required">
-        <mat-option value="">(no file selected)</mat-option>
+        <mat-option value="">{{ 'Fields.TemplatePicker.NotSelected' | translate }}</mat-option>
         <mat-option *ngFor="let file of data.templateOptions" [value]="file">
           {{ file }}
         </mat-option>
       </mat-select>
       <mat-label>{{ data.label }}</mat-label>
     </mat-form-field>
-    <button mat-icon-button matTooltip="Create a new file" [disabled]="data.controlStatus.disabled"
-      (click)="createTemplate()">
+    <button mat-icon-button [tippy]="'Fields.TemplatePicker.NewTemplate' | translate"
+      [disabled]="data.controlStatus.disabled" (click)="createTemplate()">
       <mat-icon>add</mat-icon>
     </button>
   </div>
