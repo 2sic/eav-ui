@@ -5,7 +5,7 @@
   </mat-slide-toggle>
 
   <ng-container *ngFor="let group of sorted | keyvalue; trackBy: trackGroups">
-    <div class="collapsible" [matTooltip]="guiTypes[group.key].UiHint || group.key" matTooltipShowDelay="750"
+    <div class="collapsible" [tippy]="guiTypes[group.key].UiHint || group.key" tippyShowDelay="750"
       (click)="toggleItem(group.key)">
       <mat-icon>{{ guiTypes[group.key].Icon || guiTypes.Unknown.Icon }}</mat-icon>
       <span>{{ group.key }}</span>
@@ -13,8 +13,7 @@
 
     <div class="list" *ngIf="toggledItems.includes(group.key)">
       <div class="list-item" *ngFor="let dataSource of group.value; trackBy: trackDataSources"
-        [matTooltip]="dataSource.UiHint || dataSource.Name" matTooltipShowDelay="750"
-        (click)="addDataSource(dataSource)">
+        [tippy]="dataSource.UiHint || dataSource.Name" tippyShowDelay="750" (click)="addDataSource(dataSource)">
         <mat-icon>{{ dataSource.Icon || guiTypes.Unknown.Icon }}</mat-icon>
         <span>{{ dataSource.Name }}</span>
       </div>
