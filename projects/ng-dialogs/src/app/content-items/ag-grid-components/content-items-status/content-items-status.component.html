@@ -1,5 +1,5 @@
 <div class="icon-container">
-  <mat-icon *ngIf="value.published" matTooltip="Published">visibility</mat-icon>
-  <mat-icon *ngIf="!value.published" matTooltip="Not published">visibility_off</mat-icon>
-  <mat-icon class="meta-icon" *ngIf="value.metadata" [matTooltip]="metadataTooltip">local_offer</mat-icon>
+  <mat-icon *ngIf="value.published" tippy="Published">visibility</mat-icon>
+  <mat-icon *ngIf="!value.published" tippy="Not published">visibility_off</mat-icon>
+  <mat-icon class="meta-icon" *ngIf="value.metadata" [tippy]="metadataTooltip">local_offer</mat-icon>
 </div>

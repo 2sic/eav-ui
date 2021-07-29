@@ -17,7 +17,6 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { EcoFabSpeedDialModule } from '@ecodev/fab-speed-dial';
 import { AppsListService } from '../apps-management/services/apps-list.service';
 import { ContentExportService } from '../content-export/services/content-export.service';
@@ -95,7 +94,6 @@ import { WebApiComponent } from './web-api/web-api.component';
     CommonModule,
     MatButtonModule,
     MatIconModule,
-    MatTooltipModule,
     AgGridModule.withComponents([]),
     MatTabsModule,
     FormsModule,

@@ -1,4 +1,4 @@
-<div matRipple class="chip-component highlight" matTooltip="Edit fields" *ngIf="!contentType.UsesSharedDef">
+<div matRipple class="chip-component highlight" tippy="Edit fields" *ngIf="!contentType.UsesSharedDef">
   <div class="chip-box">
     <span class="chip">{{ value }}</span>
   </div>
@@ -8,7 +8,7 @@
 </div>
 
 <div class="chip-component disabled" *ngIf="contentType.UsesSharedDef"
-  matTooltip="This content-type shares the definition of #{{ contentType.SharedDefId }} so you can't edit it here. Read 2sxc.org/help?tag=shared-types">
+  tippy="This content-type shares the definition of #{{ contentType.SharedDefId }} so you can't edit it here. Read 2sxc.org/help?tag=shared-types">
   <div class="chip-box">
     <span class="chip">{{ value }}</span>
   </div>

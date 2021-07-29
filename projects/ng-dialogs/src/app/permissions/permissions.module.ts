@@ -6,7 +6,6 @@ import { MatRippleModule } from '@angular/material/core';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { EntitiesService } from '../content-items/services/entities.service';
 import { Context } from '../shared/services/context';
 import { SharedComponentsModule } from '../shared/shared-components.module';
@@ -28,7 +27,6 @@ import { PermissionsService } from './services/permissions.service';
     MatDialogModule,
     MatButtonModule,
     MatIconModule,
-    MatTooltipModule,
     AgGridModule.withComponents([]),
     MatRippleModule,
     MatSnackBarModule,

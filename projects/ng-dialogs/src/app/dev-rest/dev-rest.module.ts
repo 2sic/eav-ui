@@ -13,7 +13,6 @@ import { MatListModule } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { HelpPopupComponent, SelectorWithHelpComponent } from '.';
 import { EavService, EntityService } from '../../../../edit/shared/services';
 import { PipelinesService } from '../app-administration/services';
@@ -77,7 +76,6 @@ import { DevRestTabPermissionsComponent } from './tab-permissions/tab-permission
     FormsModule,
     MatDialogModule,
     MatButtonModule,
-    MatTooltipModule,
     MatSnackBarModule,
     MatFormFieldModule,
     MatInputModule,

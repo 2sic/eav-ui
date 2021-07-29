@@ -10,7 +10,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { ContentGroupService } from '../manage-content-list/services/content-group.service';
 import { Context } from '../shared/services/context';
 import { SharedComponentsModule } from '../shared/shared-components.module';
@@ -28,7 +27,6 @@ import { ReplaceContentComponent } from './replace-content.component';
     MatDialogModule,
     MatButtonModule,
     MatIconModule,
-    MatTooltipModule,
     MatFormFieldModule,
     MatSelectModule,
     FormsModule,

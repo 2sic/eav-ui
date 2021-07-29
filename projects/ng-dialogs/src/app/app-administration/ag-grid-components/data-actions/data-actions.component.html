@@ -1,5 +1,5 @@
 <div class="actions-component">
-  <div class="like-button highlight" matRipple *ngIf="!contentType.UsesSharedDef" matTooltip="Metadata"
+  <div class="like-button highlight" matRipple *ngIf="!contentType.UsesSharedDef" tippy="Metadata"
     (click)="createOrEditMetadata()">
     <mat-icon>edit</mat-icon>
   </div>
@@ -7,7 +7,7 @@
     <mat-icon>edit</mat-icon>
   </div>
 
-  <div class="like-button highlight" matRipple *ngIf="enablePermissions" matTooltip="Permissions"
+  <div class="like-button highlight" matRipple *ngIf="enablePermissions" tippy="Permissions"
     (click)="openPermissions()">
     <mat-icon [matBadge]="contentType.Permissions.Count" matBadgePosition="after" matBadgeColor="accent"
       matBadgeSize="small" *ngIf="contentType.Permissions.Count">
@@ -19,7 +19,7 @@
     <mat-icon>person</mat-icon>
   </div>
 
-  <div class="like-button highlight" matRipple matTooltip="More" [matMenuTriggerFor]="menu">
+  <div class="like-button highlight" matRipple tippy="More" [matMenuTriggerFor]="menu">
     <mat-icon>more_horiz</mat-icon>
   </div>
 </div>

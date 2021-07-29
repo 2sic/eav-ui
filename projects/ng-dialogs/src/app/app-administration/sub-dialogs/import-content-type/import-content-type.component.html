@@ -10,7 +10,7 @@
   <p class="dialog-description">Select Content Type definition files (json) from your computer to import.</p>
 
   <div>
-    <button mat-raised-button matTooltip="Open file browser" [disabled]="data.isImporting" (click)="fileInput.click()">
+    <button mat-raised-button tippy="Open file browser" [disabled]="data.isImporting" (click)="fileInput.click()">
       <div *ngIf="!data.importFiles">Select or drop files</div>
       <ng-container *ngIf="data.importFiles">
         <div *ngFor="let file of data.importFiles">{{ file.name }}</div>

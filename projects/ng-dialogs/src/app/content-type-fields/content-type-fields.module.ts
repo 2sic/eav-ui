@@ -11,7 +11,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { Context } from '../shared/services/context';
 import { SharedComponentsModule } from '../shared/shared-components.module';
@@ -44,7 +43,6 @@ import { ContentTypesFieldsService } from './services/content-types-fields.servi
     MatDialogModule,
     MatButtonModule,
     MatIconModule,
-    MatTooltipModule,
     AgGridModule.withComponents([]),
     FormsModule,
     MatInputModule,
