@@ -24,8 +24,8 @@
 
       <input matInput type="number" min="0" *ngIf="freeTextTargetType" formControlName="targetType">
 
-      <button mat-icon-button matSuffix matTooltip="FreeText TargetType"
-        (click)="freeTextTargetType = !freeTextTargetType" appClickStopPropagation>
+      <button mat-icon-button matSuffix tippy="FreeText TargetType" (click)="freeTextTargetType = !freeTextTargetType"
+        appClickStopPropagation>
         <mat-icon>text_fields</mat-icon>
       </button>
     </mat-form-field>

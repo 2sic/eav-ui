@@ -17,7 +17,7 @@
             <a matSuffix *ngIf="data.enableTextEntry" fxLayoutAlign="center center" appClickStopPropagation
               (click)="toggleFreeText()">
               <button mat-icon-button [disabled]="disabled">
-                <mat-icon [matTooltip]="'Fields.String.Freetext' | translate">text_fields</mat-icon>
+                <mat-icon [tippy]="'Fields.String.Freetext' | translate">text_fields</mat-icon>
               </button>
               <button mat-icon-button [disabled]="disabled" *ngIf="freeTextMode">
                 <mat-icon>arrow_drop_down</mat-icon>
@@ -40,7 +40,7 @@
       <div fxLayoutAlign="end center"
         [ngClass]="(data.enableCreate && data.entityType && !selectedEntities.length && !data.allowMultiValue) ? 'ed-field__create-icon' : 'ed-field__create-icon-hide'">
         <!-- create new entity to add to this list -->
-        <button mat-icon-button [matTooltip]="'Fields.Entity.New' | translate" [disabled]="disabled || disableAddNew"
+        <button mat-icon-button [tippy]="'Fields.Entity.New' | translate" [disabled]="disabled || disableAddNew"
           *ngIf="data.enableCreate && data.entityType && !selectedEntities.length && !data.allowMultiValue"
           (click)="openNewEntityDialog()">
           <mat-icon>add_circle_outline</mat-icon>
@@ -66,8 +66,8 @@
 
   <!-- add new entity -->
   <div *ngIf="!freeTextMode && data.enableCreate && data.entityType && data.allowMultiValue">
-    <button mat-mini-fab color="accent" [matTooltip]="'Fields.Entity.New' | translate"
-      [disabled]="disabled || disableAddNew" (click)="openNewEntityDialog()">
+    <button mat-mini-fab color="accent" [tippy]="'Fields.Entity.New' | translate" [disabled]="disabled || disableAddNew"
+      (click)="openNewEntityDialog()">
       <mat-icon>add</mat-icon>
     </button>
   </div>

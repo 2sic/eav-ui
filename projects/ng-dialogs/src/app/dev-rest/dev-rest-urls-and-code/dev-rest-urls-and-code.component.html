@@ -33,8 +33,7 @@
         <p>{{ code.description }}</p>
         <div class="code-example">
           <pre class="code-example__text">{{ code.code }}</pre>
-          <button mat-icon-button class="code-example__copy" matTooltip="Copy to clipboard"
-            (click)="copyCode(code.code)">
+          <button mat-icon-button class="code-example__copy" tippy="Copy to clipboard" (click)="copyCode(code.code)">
             <mat-icon>copy</mat-icon>
           </button>
         </div>

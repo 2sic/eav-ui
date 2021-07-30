@@ -12,7 +12,6 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTabsModule } from '@angular/material/tabs';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { EcoFabSpeedDialModule } from '@ecodev/fab-speed-dial';
 import { Context } from '../shared/services/context';
 import { DialogService } from '../shared/services/dialog.service';
@@ -61,7 +60,6 @@ import { SystemSettingsComponent } from './system-settings/system-settings.compo
     MatButtonModule,
     MatIconModule,
     MatProgressSpinnerModule,
-    MatTooltipModule,
     MatSlideToggleModule,
     MatTabsModule,
     MatRippleModule,

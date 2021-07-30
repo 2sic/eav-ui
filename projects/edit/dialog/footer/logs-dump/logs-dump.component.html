@@ -7,7 +7,7 @@
     }">
       <span class="log-entry-part log-entry-time">{{ log.time | date : 'HH:mm:ss' }}:</span>
       <span class="log-entry-part log-entry-label">{{ log.label }}</span>
-      <span class="log-entry-part log-entry-show" matTooltip="Log to console" (click)="logToConsole(log)">
+      <span class="log-entry-part log-entry-show" tippy="Log to console" (click)="logToConsole(log)">
         console
       </span>
     </div>

@@ -18,7 +18,7 @@
 
     <button matSuffix mat-icon-button *ngIf="data.enableTextEntry" [disabled]="data.controlStatus.disabled"
       appClickStopPropagation (click)="toggleFreeTextMode()">
-      <mat-icon [matTooltip]="(data.freeTextMode ? 'Fields.String.Dropdown' : 'Fields.String.Freetext') | translate">
+      <mat-icon [tippy]="(data.freeTextMode ? 'Fields.String.Dropdown' : 'Fields.String.Freetext') | translate">
         {{ data.freeTextMode ? 'arrow_drop_down_circle' : 'text_fields' }}
       </mat-icon>
     </button>

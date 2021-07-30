@@ -8,7 +8,6 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { EavWindow } from '../shared/models/eav-window.model';
 import { Context } from '../shared/services/context';
@@ -53,7 +52,6 @@ export function translateLoaderFactoryCode(http: HttpClient) {
     MatDialogModule,
     MatButtonModule,
     MatIconModule,
-    MatTooltipModule,
     MatSnackBarModule,
     FormsModule,
     MatSelectModule,

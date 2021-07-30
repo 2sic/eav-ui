@@ -174,6 +174,10 @@
     "String": {
       "Dropdown": "switch to dropdown",
       "Freetext": "switch to enter text"
+    },
+    "TemplatePicker": {
+      "NotSelected": "(no file selected)",
+      "NewTemplate": "Create a new file"
     }
   },
   "Extension.TinyMce": {

@@ -5,7 +5,7 @@
     <div [ngClass]="{ 'c-ew__dialog-header mat-elevation-z2': (open$ | async) }">
       <mat-card class="mat-elevation-z0" fxLayout="row">
         <button mat-icon-button class="back-arrow" fxLayoutAlign="center center"
-          [matTooltip]="'Form.Buttons.Return.Tip' | translate" (click)="closeDialog()">
+          [tippy]="'Form.Buttons.Return.Tip' | translate" (click)="closeDialog()">
           <mat-icon>arrow_back</mat-icon>
         </button>
         <span fxLayoutAlign="center center" class="title mat-display-1">{{ label$ | async }}</span>
@@ -32,19 +32,19 @@
     'c-ew__preview--last-in-group': config.isLastInGroup
   }">
     <!-- image / icon -->
-    <div class="thumbnail-before-input" [matTooltip]="'Fields.Hyperlink.Default.Fullscreen' | translate"
-      [matTooltipDisabled]="data.controlStatus.disabled" [ngClass]="{
+    <div class="thumbnail-before-input" [tippy]="'Fields.Hyperlink.Default.Fullscreen' | translate"
+      [tippyDisabled]="data.controlStatus.disabled" [ngClass]="{
       'icon-before-input': data.controlStatus.value && !data.preview.isImage,
       'thumbnail-before-input--disabled': data.controlStatus.disabled
     }"
       [ngStyle]="{ 'background-image': data.controlStatus.value && data.preview.isImage ? data.preview.thumbnailUrl : '' }"
       (click)="expandDialog()">
       <mat-icon *ngIf="data.controlStatus.value && !data.preview.isImage && data.preview.isKnownType"
-        [matTooltip]="data.preview.url" matTooltipPosition="right">
+        [tippy]="data.preview.url" tippyPlacement="right">
         {{ data.preview.icon }}
       </mat-icon>
       <mat-icon *ngIf="data.controlStatus.value && !data.preview.isImage && !data.preview.isKnownType"
-        [matTooltip]="data.preview.url" matTooltipPosition="right" [svgIcon]="data.preview.icon">
+        [tippy]="data.preview.url" tippyPlacement="right" [svgIcon]="data.preview.icon">
       </mat-icon>
     </div>
     <!-- field -->
@@ -54,7 +54,7 @@
         <mat-form-field appearance="standard" color="accent" [ngClass]="{
           'mat-form-field-invalid': data.controlStatus.invalid && data.controlStatus.touched
         }">
-          <input matInput [matTooltip]="'Fields.Hyperlink.Default.Tooltip' | translate" matTooltipPosition="above"
+          <input matInput [tippy]="'Fields.Hyperlink.Default.Tooltip' | translate" tippyPlacement="top"
             [placeholder]="data.placeholder" (change)="setValue($event)" [disabled]="data.controlStatus.disabled"
             (blur)="markAsTouched()" [value]="data.controlStatus.value" (keyup)="setValue($event)"
             appPasteClipboardImage [config]="config" [elementType]="'input'">
@@ -65,13 +65,13 @@
               {{ data.buttonAdam ? ('Fields.Hyperlink.AdamFileManager.Hint' | translate) : '' }}
             </div>
             <button mat-icon-button class="c-ew__preview-suffix-icon"
-              [matTooltip]="'Fields.Hyperlink.Default.Fullscreen' | translate" appClickStopPropagation
+              [tippy]="'Fields.Hyperlink.Default.Fullscreen' | translate" appClickStopPropagation
               *ngIf="data.buttonAdam" [disabled]="data.controlStatus.disabled" (click)="expandDialog()">
               <mat-icon svgIcon="apple"></mat-icon>
             </button>
             <button mat-icon-button class="c-ew__preview-suffix-icon"
-              [matTooltip]="'Fields.Hyperlink.Default.PageTip' | translate" appClickStopPropagation
-              *ngIf="data.buttonPage" [disabled]="data.controlStatus.disabled" (click)="openPagePicker()">
+              [tippy]="'Fields.Hyperlink.Default.PageTip' | translate" appClickStopPropagation *ngIf="data.buttonPage"
+              [disabled]="data.controlStatus.disabled" (click)="openPagePicker()">
               <mat-icon svgIcon="sitemap"></mat-icon>
             </button>
           </div>
@@ -85,7 +85,7 @@
           <div class="hyperlink-floating__value">{{ data.controlStatus.value }}</div>
           <div class="hyperlink-floating__url-box">
             <a [href]="data.preview.url" target="_blank" tabindex="-1" class="hyperlink-floating__url"
-              [matTooltip]="data.preview.url">
+              [tippy]="data.preview.url">
               <span>{{ data.preview.floatingText }}</span>
             </a>
           </div>

@@ -1,15 +1,15 @@
 <div class="editor-root" appToggleDebug *ngIf="templateVars$ | async as data">
   <div class="editor-side-toolbar">
-    <div class="button" [ngClass]="{ 'active': activeExplorer === Explorers.Templates }" matTooltip="Templates"
+    <div class="button" [ngClass]="{ 'active': activeExplorer === Explorers.Templates }" tippy="Templates"
       (click)="toggleExplorer(Explorers.Templates)">
       <mat-icon>file_copy</mat-icon>
     </div>
-    <div class="button" [ngClass]="{ 'active': activeExplorer === Explorers.Snippets }" matTooltip="Snippets"
+    <div class="button" [ngClass]="{ 'active': activeExplorer === Explorers.Snippets }" tippy="Snippets"
       (click)="toggleExplorer(Explorers.Snippets)">
       <mat-icon>code</mat-icon>
     </div>
     <div class="button" *ngIf="data.debugEnabled" [ngClass]="{ 'active': activeEditor === Editors.Monaco }"
-      matTooltip="Toggle Monaco" (click)="toggleEditor()">
+      tippy="Toggle Monaco" (click)="toggleEditor()">
       <mat-icon>highlight</mat-icon>
     </div>
   </div>
@@ -31,7 +31,7 @@
     [toggleResize]="!this.activeExplorer">
   </app-monaco-editor>
 
-  <button mat-fab mat-elevation-z24 matTooltip="Click to save or CTRL + S" (click)="save()">
+  <button mat-fab mat-elevation-z24 tippy="Click to save or CTRL + S" (click)="save()">
     <mat-icon>done</mat-icon>
   </button>
 </div>

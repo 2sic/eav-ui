@@ -14,11 +14,11 @@
 
     <mat-slide-toggle fxLayoutAlign="start center" *ngIf="data.slotCanBeEmpty" (change)="toggleSlotIsEmpty(data.header)"
       [checked]="!data.slotIsEmpty" [disabled]="data.currentLanguage !== data.defaultLanguage"
-      [matTooltip]="(!data.slotIsEmpty ? 'ItemCard.SlotUsedTrue' : 'ItemCard.SlotUsedFalse') | translate"
-      [matTooltipDisabled]="data.currentLanguage !== data.defaultLanguage">
+      [tippy]="(!data.slotIsEmpty ? 'ItemCard.SlotUsedTrue' : 'ItemCard.SlotUsedFalse') | translate"
+      [tippyDisabled]="data.currentLanguage !== data.defaultLanguage">
     </mat-slide-toggle>
 
-    <button mat-icon-button type="button" [matTooltip]="'Form.Buttons.History.Tip' | translate"
+    <button mat-icon-button type="button" [tippy]="'Form.Buttons.History.Tip' | translate"
       *ngIf="eavService.eavConfig.enableHistory" (click)="openHistory()">
       <mat-icon>history</mat-icon>
     </button>

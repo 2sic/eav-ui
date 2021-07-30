@@ -8,22 +8,22 @@
     <ng-template #fileOrFolder let-item="item">
 
       <div class="file" *ngIf="!item.isFolder" [style]="item.depth | depthPadding: item.isFolder"
-        [ngClass]="{'active': toggledItems.includes(item.pathFromRoot) }" matTooltipShowDelay="750"
-        [matTooltip]="item.name" (click)="openTemplate(item.pathFromRoot)">
+        [ngClass]="{'active': toggledItems.includes(item.pathFromRoot) }" [tippy]="item.name" tippyShowDelay="750"
+        (click)="openTemplate(item.pathFromRoot)">
         {{ item.name }}
       </div>
 
       <div *ngIf="item.isFolder">
         <div class="folder-name-wrapper" [style]="item.depth | depthPadding: item.isFolder"
           (click)="toggleItem(item.pathFromRoot)">
-          <div class="folder-name" matTooltipShowDelay="750" [matTooltip]="item.name">
+          <div class="folder-name" [tippy]="item.name" tippyShowDelay="750">
             <mat-icon>
               {{ toggledItems.includes(item.pathFromRoot) ? 'keyboard_arrow_down' : 'keyboard_arrow_right' }}
             </mat-icon>
             <span>{{ item.name }}</span>
           </div>
-          <div class="add-item" matTooltipShowDelay="750" matTooltip="Create file in this folder"
-            appClickStopPropagation (click)="addFile(item.pathFromRoot)">
+          <div class="add-item" tippy="Create file in this folder" tippyShowDelay="750" appClickStopPropagation
+            (click)="addFile(item.pathFromRoot)">
             <mat-icon>add</mat-icon>
           </div>
         </div>
@@ -39,7 +39,7 @@
   </div>
 
   <div class="create-button-wrapper">
-    <button mat-icon-button matTooltip="Create file" (click)="addFile()">
+    <button mat-icon-button tippy="Create file" (click)="addFile()">
       <mat-icon>add</mat-icon>
     </button>
   </div>

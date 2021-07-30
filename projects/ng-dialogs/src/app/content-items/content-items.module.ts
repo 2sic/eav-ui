@@ -12,7 +12,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { EcoFabSpeedDialModule } from '@ecodev/fab-speed-dial';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { ContentExportService } from '../content-export/services/content-export.service';
@@ -49,7 +48,6 @@ import { EntitiesService } from './services/entities.service';
     AgGridModule.withComponents([]),
     FormsModule,
     MatRadioModule,
-    MatTooltipModule,
     MatInputModule,
     MatSelectModule,
     MatProgressSpinnerModule,

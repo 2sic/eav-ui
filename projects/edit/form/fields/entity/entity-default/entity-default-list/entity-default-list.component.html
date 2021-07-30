@@ -15,27 +15,27 @@
       'disabled': disabled
     }">
       <div class="item-title" [ngClass]="{ 'disabled': disabled }">
-        <mat-icon class="item-title__icon" *ngIf="data.allowMultiValue" [matTooltipDisabled]="disabled"
-          [matTooltip]="'Fields.Entity.DragMove' | translate">
+        <mat-icon class="item-title__icon" *ngIf="data.allowMultiValue" [tippy]="'Fields.Entity.DragMove' | translate"
+          [tippyDisabled]="disabled">
           drag_handle
         </mat-icon>
-        <span class="item-title__text" [matTooltip]="item.tooltip">
+        <span class="item-title__text" [tippy]="item.tooltip">
           {{ item.label }}
         </span>
       </div>
       <div class="item-actions">
         <!-- Disable edit only if it was disabled in the settings, not if disabled by language change -->
         <button mat-icon-button *ngIf="data.enableEdit && !item.isFreeTextOrNotFound"
-          [matTooltip]="'Fields.Entity.Edit' | translate" [disabled]="config.initialDisabled"
-          appMousedownStopPropagation (click)="edit(item.value)">
+          [tippy]="'Fields.Entity.Edit' | translate" [disabled]="config.initialDisabled" appMousedownStopPropagation
+          (click)="edit(item.value)">
           <mat-icon>edit</mat-icon>
         </button>
         <button mat-icon-button *ngIf="data.enableDelete && !item.isFreeTextOrNotFound"
-          [matTooltip]="'Fields.Entity.Delete' | translate" [disabled]="disabled" appMousedownStopPropagation
+          [tippy]="'Fields.Entity.Delete' | translate" [disabled]="disabled" appMousedownStopPropagation
           (click)="deleteItem(index, item.value)">
           <mat-icon>delete</mat-icon>
         </button>
-        <button mat-icon-button *ngIf="data.enableRemove" [matTooltip]="'Fields.Entity.Remove' | translate"
+        <button mat-icon-button *ngIf="data.enableRemove" [tippy]="'Fields.Entity.Remove' | translate"
           [disabled]="disabled" appMousedownStopPropagation (click)="removeItem(index)">
           <mat-icon>{{ data.allowMultiValue ? 'clear' : 'arrow_drop_down' }}</mat-icon>
         </button>

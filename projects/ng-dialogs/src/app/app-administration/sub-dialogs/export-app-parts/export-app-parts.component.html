@@ -21,7 +21,7 @@
           </mat-option>
           <mat-option value="Other">Other...</mat-option>
         </mat-select>
-        <button mat-icon-button type="button" matSuffix [matTooltip]="lockScope ? 'Unlock' : 'Lock'">
+        <button mat-icon-button type="button" matSuffix [tippy]="lockScope ? 'Unlock' : 'Lock'">
           <mat-icon appClickStopPropagation (click)="unlockScope()">
             {{ lockScope ? 'lock' : 'lock_open' }}
           </mat-icon>
