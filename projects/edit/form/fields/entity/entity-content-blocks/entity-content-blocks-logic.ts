@@ -9,7 +9,6 @@ export class EntityContentBlocksLogic extends FieldLogicBase {
   update(settings: FieldSettings, value: string[]): FieldSettings {
     const entityDefaultLogic = FieldLogicManager.singleton().get(InputTypeConstants.EntityDefault);
     const fixedSettings = entityDefaultLogic.update(settings, value);
-    fixedSettings.AllowMultiValue = false;
     fixedSettings.EnableRemove = true;
     fixedSettings.AllowMultiValue = true;
     fixedSettings.EnableAddExisting = false;
