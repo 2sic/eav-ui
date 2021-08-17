@@ -116,7 +116,7 @@ export class EntityQueryComponent extends EntityDefaultComponent implements OnIn
           return;
         }
         if (!data[streamName]) {
-          this.error$.next(this.translate.instant('Fields.EntityQuery.QueryStreamNotFound') + streamName);
+          this.error$.next(this.translate.instant('Fields.EntityQuery.QueryStreamNotFound') + ' ' + streamName);
           return;
         }
         const items: EntityInfo[] = data[streamName].map(entity => this.queryEntityMapping(entity));

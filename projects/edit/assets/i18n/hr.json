@@ -2,20 +2,20 @@
   "Form": {
     "Buttons": {
       "Save": "SAVE (CTRL + S)",
-      "Save.Tip": "save and close (CTRL + S saves and doesn't close)",
-      "Exit.Tip": "exit - if something changed, you will be asked to save",
-      "Return.Tip": "return to previous dialog",
-      "History.Tip": "history / previous versions"
+      "Save.Tip": "Save and close (CTRL + S saves and doesn't close)",
+      "Exit.Tip": "Exit - if something changed, you will be asked to save",
+      "Return.Tip": "Return to previous dialog",
+      "History.Tip": "History / previous versions"
     }
   },
   "PublishStatus": {
     "Label": "Status:",
     "show": "show",
-    "show.Tip": "changes are public",
+    "show.Tip": "Changes are public",
     "hide": "hide",
-    "hide.Tip": "this item is not publicly visible",
+    "hide.Tip": "This item is not publicly visible",
     "branch": "draft",
-    "branch.Tip": "changes are only visible to editors",
+    "branch.Tip": "Changes are only visible to editors",
     "Dialog": {
       "Title": "Save Mode",
       "Intro": "This determines how you will save. The default is show/publish.",
@@ -34,13 +34,11 @@
     }
   },
   "Message": {
-    "Saved": "saved",
-    "Saving": "saving...",
-    "Deleted": "deleted",
-    "Deleting": "deleting...",
-    "DeleteError": "delete failed. Please check console for more information",
-    "DebugEnabled": "debug mode enabled",
-    "DebugDisabled": "debug mode disabled",
+    "Saved": "Saved",
+    "Saving": "Saving...",
+    "Deleted": "Deleted",
+    "Deleting": "Deleting...",
+    "DeleteError": "Delete failed. Please check console for more information",
     "SwitchedLanguageToDefault": "We have switched language to default {{language}} because it's missing some or all values",
     "CantSwitchLanguage": "Can't switch languages until current language has all required values"
   },
@@ -60,25 +58,25 @@
       "Intro": "You can do many things when translating, like linking languages together.",
       "NoTranslate": {
         "Title": "Don't Translate",
-        "Body": "use value in primary language {{primary}}"
+        "Body": "Use value in primary language {{primary}}"
       },
       "FromPrimary": {
         "Title": "Translate from: {{primary}}",
-        "Body": "begin translation with with the value in the primary language"
+        "Body": "Begin translation with with the value in the primary language"
       },
       "FromOther": {
         "Title": "Translate from: ...",
-        "Body": "begin translation with the value from another language",
+        "Body": "Begin translation with the value from another language",
         "Subtitle": "Language to translate from"
       },
       "LinkReadOnly": {
         "Title": "Inherit from other language (read-only)",
-        "Body": "inherit value from another language",
+        "Body": "Inherit value from another language",
         "Subtitle": "Language to inherit from"
       },
       "LinkShared": {
         "Title": "Share with another language (read/write)",
-        "Body": "link languages together to use the same editable value",
+        "Body": "Link languages together to use the same editable value",
         "Subtitle": "Language to share with"
       },
       "PickLanguageIntro": "Only languages with content can be selected."
@@ -92,17 +90,17 @@
   },
   "General": {
     "Buttons": {
-      "NotSave": "discard changes",
-      "Save": "save"
+      "NotSave": "Discard changes",
+      "Save": "Save"
     }
   },
   "Data": {
-    "Delete.Question": "delete '{{title}}' ({{id}})?"
+    "Delete.Question": "Delete '{{title}}' ({{id}})?"
   },
   "ItemCard": {
     "DefaultTitle": "Edit item",
-    "SlotUsedTrue": "this item is open for editing. Click here to lock / remove it and revert to default.",
-    "SlotUsedFalse": "this item is locked and will stay empty/default. The values are shown for your convenience. Click here to unlock if needed.",
+    "SlotUsedTrue": "This item is open for editing. Click here to lock / remove it and revert to default.",
+    "SlotUsedFalse": "This item is locked and will stay empty/default. The values are shown for your convenience. Click here to unlock if needed.",
     "CopyHint": "(copy)"
   },
   "ValidationMessage": {
@@ -116,45 +114,45 @@
   },
   "Fields": {
     "Entity": {
-      "Choose": "add existing item",
-      "New": "create new",
+      "Choose": "Add existing item",
+      "New": "Create new",
       "EmptySlot": "empty slot",
       "EntityNotFound": "(item not found)",
-      "DragMove": "drag to re-order the list",
-      "Edit": "edit this item",
-      "Remove": "remove from list",
-      "Delete": "delete",
-      "Loading": "loading...",
-      "Search": "search"
+      "DragMove": "Drag to reorder the list",
+      "Edit": "Edit this item",
+      "Remove": "Remove from list",
+      "Delete": "Delete",
+      "Loading": "Loading...",
+      "Search": "Search"
     },
     "EntityQuery": {
       "QueryNoItems": "No items found",
       "QueryError": "Error: An error occurred while executing the query. See the console for more information.",
-      "QueryStreamNotFound": "Error: The query did not return a stream named "
+      "QueryStreamNotFound": "Error: The query did not return a stream named"
     },
     "Hyperlink": {
       "Default": {
-        "Tooltip": "Drop files here to auto-upload. For help see 2sxc.org/help?tag=adam. ADAM - sponsored with ♡ by 2sic.com",
+        "Tooltip": "Drop files here to auto upload. For help see 2sxc.org/help?tag=adam. ADAM - sponsored with ♡ by 2sic.com",
         "Sponsor": "ADAM - sponsored with ♡ by 2sic.com",
-        "Fullscreen": "open in fullscreen",
-        "AdamTip": "quick-upload using ADAM",
-        "PageTip": "pick a page",
-        "MoreOptions": "more...",
+        "Fullscreen": "Open in fullscreen",
+        "AdamTip": "Quick upload using ADAM",
+        "PageTip": "Pick a page",
+        "MoreOptions": "More...",
         "MenuAdam": "Upload file with Adam",
         "MenuPage": "Page Picker",
         "MenuImage": "Image Manager",
         "MenuDocs": "File Manager"
       },
       "AdamFileManager": {
-        "UploadLabel": "upload to",
-        "UploadTip": "quick-upload using ADAM",
-        "UploadPasteLabel": "paste image",
-        "UploadPasteFocusedLabel": "press ctrl+v",
-        "UploadPasteTip": "click here and press [Ctrl]+[V] to paste image from clipboard",
-        "NewFolder": "New folder",
-        "NewFolderTip": "create a new folder",
+        "UploadLabel": "Upload to",
+        "UploadTip": "Quick upload using ADAM",
+        "UploadPasteLabel": "Paste Image",
+        "UploadPasteFocusedLabel": "Press CTRL + V",
+        "UploadPasteTip": "Click here and press CTRL + V to paste image from clipboard",
+        "NewFolder": "New Folder",
+        "NewFolderTip": "Create a new folder",
         "BackFolder": "Back",
-        "BackFolderTip": "return to previous folder",
+        "BackFolderTip": "Return to previous folder",
         "Show": "Open in new tab",
         "Edit": "Rename",
         "RenameQuestion": "Rename file / folder to:",
@@ -169,11 +167,11 @@
       }
     },
     "DateTime": {
-      "Open": "open calendar"
+      "Open": "Open calendar"
     },
     "String": {
-      "Dropdown": "switch to dropdown",
-      "Freetext": "switch to enter text"
+      "Dropdown": "Switch to dropdown",
+      "Freetext": "Switch to enter text"
     },
     "TemplatePicker": {
       "NotSelected": "(no file selected)",
@@ -181,12 +179,12 @@
     }
   },
   "Extension.TinyMce": {
-    "Link.AdamFile": "Link ADAM-file (recommended)",
+    "Link.AdamFile": "Link ADAM file (recommended)",
     "Link.AdamFile.Tooltip": "Link using ADAM - just drop files using the Automatic Digital Assets Manager",
     "Image.AdamImage": "Insert ADAM image (recommended)",
     "Image.AdamImage.Tooltip": "Image from ADAM - just drop files using the Automatic Digital Assets Manager",
-    "Link.DnnFile": "Link DNN-file",
-    "Link.DnnFile.Tooltip": "Link a DNN-file (all files, slow)",
+    "Link.DnnFile": "Link DNN file",
+    "Link.DnnFile.Tooltip": "Link a DNN file (all files, slow)",
     "Image.DnnImage": "Insert DNN image",
     "Image.DnnImage.Tooltip": "Image from DNN file storage (all files, slow)",
     "Link.Page": "Link to another page",
@@ -202,6 +200,6 @@
     "H5": "H5",
     "H6": "H6",
     "Paragraph": "Paragraph",
-    "ContentBlock.Add": "add app or content-block"
+    "ContentBlock.Add": "Add app or content block"
   }
 }
