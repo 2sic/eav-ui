@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { DialogTypeConstants } from '../constants/dialog-type.constants';
 // tslint:disable-next-line:max-line-length
-import { keyApi, keyAppId, keyContentBlockId, keyDebug, keyDialog, keyExtras, keyIsShared, keyItems, keyModuleId, keyPartOfPage, keyPipelineId, keyRequestToken, keyTabId, keyUrl, keyZoneId, prefix } from '../constants/session.constants';
+import { keyApi, keyAppId, keyContentBlockId, keyDebug, keyDialog, keyExtras, keyIsShared, keyItems, keyModuleId, keyPartOfPage, keyPipelineId, keyRequestToken, keyTabId, keyUrl, keyZoneId, prefix, keyRequestTokenHeaderName } from '../constants/session.constants';
 import { DialogHashParams, ExtrasParam } from '../models/dialog-url-params.model';
 import { EditForm } from '../models/edit-form.model';
 import { Context } from './context';
@@ -62,6 +62,7 @@ export class DialogService {
       ...this.buildHashParam(keyContentBlockId, this.context.contentBlockId.toString()),
       ...this.buildHashParam(keyPartOfPage),
       ...this.buildHashParam(keyRequestToken),
+      ...this.buildHashParam(keyRequestTokenHeaderName), // #RvtHeaderName - New in 12.04
       ...this.buildHashParam(keyApi),
       ...(sessionStorage.getItem(keyDebug) ? this.buildHashParam(keyDebug) : {}),
     };

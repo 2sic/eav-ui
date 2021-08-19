@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { UrlHelpers } from '../../../edit/shared/helpers/url.helpers';
 import { DialogTypeConstant, DialogTypeConstants } from './shared/constants/dialog-type.constants';
 // tslint:disable-next-line:max-line-length
-import { keyApi, keyAppId, keyContentType, keyDialog, keyExtras, keyItems, keyPipelineId, keyRequestToken, keyTabId, keyUrl, keyZoneId, prefix } from './shared/constants/session.constants';
+import { keyApi, keyAppId, keyContentType, keyDialog, keyExtras, keyItems, keyPipelineId, keyRequestToken, keyRequestTokenHeaderName, keyTabId, keyUrl, keyZoneId, prefix } from './shared/constants/session.constants';
 import { convertFormToUrl } from './shared/helpers/url-prep.helper';
 import { ExtrasParam } from './shared/models/dialog-url-params.model';
 import { EavWindow } from './shared/models/eav-window.model';
@@ -111,9 +111,10 @@ export function paramsInitFactory(injector: Injector): () => void {
 }
 
 function loadEnvironment() {
-  const jsInfo: Partial<JsInfo> = {
+  const jsInfo: Partial<JsInfo> | { rvtHeader: string } = { // #RvtHeaderName - New in 12.04
     page: parseInt(sessionStorage.getItem(keyTabId), 10),
     rvt: sessionStorage.getItem(keyRequestToken),
+    rvtHeader: sessionStorage.getItem(keyRequestTokenHeaderName), // #RvtHeaderName - New in 12.04
     api: sessionStorage.getItem(keyApi),
   };
   window.$2sxc.env.load(jsInfo as JsInfo);

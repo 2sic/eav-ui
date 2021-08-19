@@ -1,6 +1,6 @@
 import { Injectable, Optional, SkipSelf } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
-import { keyAppId, keyContentBlockId, keyModuleId, keyRequestToken, keyTabId, keyZoneId, prefix } from '../constants/session.constants';
+import { keyAppId, keyContentBlockId, keyModuleId, keyRequestToken, keyTabId, keyZoneId, prefix, keyRequestTokenHeaderName } from '../constants/session.constants';
 import { consoleLogAngular } from '../helpers/console-log-angular.helper';
 import { EavWindow } from '../models/eav-window.model';
 
@@ -39,6 +39,13 @@ export class Context {
    */
   get requestToken(): string { return this._rvt || (this._rvt = this.parent.requestToken); }
   private _rvt: string;
+
+  /**
+   * The request verification token for http requests uses different names in Dnn and different versions of Oqtane.
+   * #RvtHeaderName - New in 12.04
+   */
+  get requestTokenHeaderName(): string { return this._rvtHeaderName || (this._rvtHeaderName = this.parent.requestTokenHeaderName); }
+  private _rvtHeaderName: string;
 
   /** Tab Id is global */
   get tabId(): number {
@@ -81,6 +88,7 @@ export class Context {
   initRoot() {
     // required, global things
     this._rvt = sessionStorage.getItem(keyRequestToken);
+    this._rvtHeaderName = sessionStorage.getItem(keyRequestTokenHeaderName); // #RvtHeaderName - New in 12.04
     this._zoneId = this.sessionNumber(keyZoneId);
     this._tabId = this.sessionNumber(keyTabId);
     this._contentBlockId = this.sessionNumber(keyContentBlockId);
