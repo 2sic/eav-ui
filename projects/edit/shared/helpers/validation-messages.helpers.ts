@@ -6,7 +6,7 @@ export class ValidationMessagesHelpers {
 
   private static validationMessages: Record<string, (config: FieldConfigSet) => string> = {
     required: (config: FieldConfigSet) => {
-      return config ? 'ValidationMessage.Required' : `ValidationMessage.RequiredShort`; // short version in toaster
+      return config ? 'ValidationMessage.Required' : `ValidationMessage.RequiredShort`; // short version in snackbar
     },
     min: (config: FieldConfigSet) => {
       return config ? `ValidationMessage.Min` : `ValidationMessage.NotValid`;

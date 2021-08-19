@@ -100,7 +100,7 @@ export class PagePickerComponent implements OnInit, OnDestroy {
           return;
         }
         if (!data[stream]) {
-          console.error(this.translate.instant('Fields.EntityQuery.QueryStreamNotFound') + stream);
+          console.error(this.translate.instant('Fields.EntityQuery.QueryStreamNotFound') + ' ' + stream);
           return;
         }
         const pages = data[stream] as PageEntity[];

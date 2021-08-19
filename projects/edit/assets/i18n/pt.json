@@ -2,20 +2,20 @@
   "Form": {
     "Buttons": {
       "Save": "GRAVAR (CTRL + S)",
-      "Save.Tip": "gravar e fechar (CTRL + S grava mas não fecha)",
-      "Exit.Tip": "sair - se alguma coisa foi alterada, vai-lhe ser questionado se quer gravar",
-      "Return.Tip": "voltar ao formulário anterior",
-      "History.Tip": "history / previous versions"
+      "Save.Tip": "Gravar e fechar (CTRL + S grava mas não fecha)",
+      "Exit.Tip": "Sair - se alguma coisa foi alterada, vai-lhe ser questionado se quer gravar",
+      "Return.Tip": "Voltar ao formulário anterior",
+      "History.Tip": "History / previous versions"
     }
   },
   "PublishStatus": {
     "Label": "Estado:",
     "show": "mostrar",
-    "show.Tip": "as alterações são públicas",
+    "show.Tip": "As alterações são públicas",
     "hide": "ocultar",
-    "hide.Tip": "este item não é visível publicamente",
+    "hide.Tip": "Este item não é visível publicamente",
     "branch": "rascunho",
-    "branch.Tip": "as alterações são visíveis apenas a editores",
+    "branch.Tip": "As alterações são visíveis apenas a editores",
     "Dialog": {
       "Title": "Modo Gravação",
       "Intro": "Isto determina como vai gravar. O padrão é mostrar/publicar.",
@@ -34,13 +34,11 @@
     }
   },
   "Message": {
-    "Saved": "gravado",
-    "Saving": "a gravar...",
-    "Deleted": "deleted",
-    "Deleting": "deleting...",
-    "DeleteError": "delete failed. Please check console for more information",
-    "DebugEnabled": "modo de depuração ativado",
-    "DebugDisabled": "modo de depuração desativado",
+    "Saved": "Gravado",
+    "Saving": "A gravar...",
+    "Deleted": "Deleted",
+    "Deleting": "Deleting...",
+    "DeleteError": "Delete failed. Please check console for more information",
     "SwitchedLanguageToDefault": "Alterámos a língua para a padrão {{language}} a atual tem alguns ou todos os valores em falta",
     "CantSwitchLanguage": "Não pode alterar a língua até a atual ter todos os valores necessários preenchidos"
   },
@@ -60,25 +58,25 @@
       "Intro": "Pode fazer várias coisas ao traduzir, como ligar línguas.",
       "NoTranslate": {
         "Title": "Não traduzir",
-        "Body": "usar valor da língua primária {{primary}}"
+        "Body": "Usar valor da língua primária {{primary}}"
       },
       "FromPrimary": {
         "Title": "Traduzir de: {{primary}}",
-        "Body": "iniciar tradução com o valor da língua primária"
+        "Body": "Iniciar tradução com o valor da língua primária"
       },
       "FromOther": {
         "Title": "Traduzir de: ...",
-        "Body": "iniciar tradução com um valor de outra língua",
+        "Body": "Iniciar tradução com um valor de outra língua",
         "Subtitle": "Traduzir da língua"
       },
       "LinkReadOnly": {
         "Title": "Herdar de outra língua (ler-apenas)",
-        "Body": "herdar valor de outra língua",
+        "Body": "Herdar valor de outra língua",
         "Subtitle": "Língua para herdar"
       },
       "LinkShared": {
         "Title": "Partilhar com outra língua (ler/escrever)",
-        "Body": "ligar línguas para usarem o mesmo valor editável",
+        "Body": "Ligar línguas para usarem o mesmo valor editável",
         "Subtitle": "Língua para partilhar"
       },
       "PickLanguageIntro": "Apenas línguas com conteúdos podem ser selecionadas."
@@ -92,17 +90,17 @@
   },
   "General": {
     "Buttons": {
-      "NotSave": "descartar alterações",
-      "Save": "gravar"
+      "NotSave": "Descartar alterações",
+      "Save": "Gravar"
     }
   },
   "Data": {
-    "Delete.Question": "apagar '{{title}}' ({{id}})?"
+    "Delete.Question": "Apagar '{{title}}' ({{id}})?"
   },
   "ItemCard": {
     "DefaultTitle": "Editar item",
-    "SlotUsedTrue": "este item está aberto para edição. Clique aqui para tranca-lo / remove-lo e reverter ao valor padrão.",
-    "SlotUsedFalse": "este item está trancado e vai permanecer vazia/padrão. Os valores são mostrados para sua conveniência. Clique aqui para destrancar se necessário.",
+    "SlotUsedTrue": "Este item está aberto para edição. Clique aqui para tranca-lo / remove-lo e reverter ao valor padrão.",
+    "SlotUsedFalse": "Este item está trancado e vai permanecer vazia/padrão. Os valores são mostrados para sua conveniência. Clique aqui para destrancar se necessário.",
     "CopyHint": "(copy)"
   },
   "ValidationMessage": {
@@ -116,45 +114,45 @@
   },
   "Fields": {
     "Entity": {
-      "Choose": "adicionar item existente",
-      "New": "criar novo",
+      "Choose": "Adicionar item existente",
+      "New": "Criar novo",
       "EmptySlot": "empty slot",
       "EntityNotFound": "(item não encontrado)",
-      "DragMove": "arraste para reordernar a lista",
-      "Edit": "editar este item",
-      "Remove": "remover da lista",
-      "Delete": "apagar",
-      "Loading": "loading...",
-      "Search": "search"
+      "DragMove": "Arraste para reordernar a lista",
+      "Edit": "Editar este item",
+      "Remove": "Remover da lista",
+      "Delete": "Apagar",
+      "Loading": "Loading...",
+      "Search": "Search"
     },
     "EntityQuery": {
       "QueryNoItems": "Não foram encontrados items",
       "QueryError": "Erro: Ocorreu um erro ao executar a query. Veja o registo de erros para mais informação.",
-      "QueryStreamNotFound": "Erro: A query não devolveu uma stream nomeada "
+      "QueryStreamNotFound": "Erro: A query não devolveu uma stream nomeada"
     },
     "Hyperlink": {
       "Default": {
         "Tooltip": "Arraste os ficheiros para aqui para serem carregados. Para ajuda ver 2sxc.org/help?tag=adam. ADAM - patrocinado com ♡ por 2sic.com",
         "Sponsor": "ADAM - patrocinado com ♡ por 2sic.com",
-        "Fullscreen": "abrir em janela completa",
-        "AdamTip": "carregar rapidamente através do ADAM",
-        "PageTip": "escolha uma página",
-        "MoreOptions": "mais...",
+        "Fullscreen": "Abrir em janela completa",
+        "AdamTip": "Carregar rapidamente através do ADAM",
+        "PageTip": "Escolha uma página",
+        "MoreOptions": "Mais...",
         "MenuAdam": "Carregar ficheiro com o Adam",
         "MenuPage": "Selector de Página",
         "MenuImage": "Gestor de Imagens",
         "MenuDocs": "Gestor de Ficheiros"
       },
       "AdamFileManager": {
-        "UploadLabel": "carregar para",
-        "UploadTip": "carregar rapidamente através do ADAM",
-        "UploadPasteLabel": "colar imagem",
-        "UploadPasteFocusedLabel": "carregue em ctrl+v",
-        "UploadPasteTip": "clique aqui e carregue em [Ctrl]+[V] para copiar a imagem da área de transferência",
-        "NewFolder": "Nova pasta",
-        "NewFolderTip": "criar uma nova pasta",
+        "UploadLabel": "Carregar para",
+        "UploadTip": "Carregar rapidamente através do ADAM",
+        "UploadPasteLabel": "Colar Imagem",
+        "UploadPasteFocusedLabel": "Carregue em CTRL + V",
+        "UploadPasteTip": "Clique aqui e carregue em CTRL + V para copiar a imagem da área de transferência",
+        "NewFolder": "Nova Pasta",
+        "NewFolderTip": "Criar uma nova pasta",
         "BackFolder": "Voltar",
-        "BackFolderTip": "voltar à pasta anterior",
+        "BackFolderTip": "Voltar à pasta anterior",
         "Show": "Abrir num novo separador",
         "Edit": "Renomear",
         "RenameQuestion": "Renomear ficheiro/ pasta para:",
@@ -169,11 +167,11 @@
       }
     },
     "DateTime": {
-      "Open": "abrir calendário"
+      "Open": "Abrir calendário"
     },
     "String": {
-      "Dropdown": "mudar para seleção vertical",
-      "Freetext": "mudar para introdução de texto"
+      "Dropdown": "Mudar para seleção vertical",
+      "Freetext": "Mudar para introdução de texto"
     },
     "TemplatePicker": {
       "NotSelected": "(no file selected)",
@@ -202,6 +200,6 @@
     "H5": "H5",
     "H6": "H6",
     "Paragraph": "Parágrafo",
-    "ContentBlock.Add": "adicionar uma app bloco-conteúdo"
+    "ContentBlock.Add": "Adicionar uma app bloco-conteúdo"
   }
 }

@@ -2,9 +2,9 @@
   "Form": {
     "Buttons": {
       "Save": "Speichern (CTRL + S)",
-      "Save.Tip": "speichern und schliessen - mit CTRL + S nur speichern",
-      "Exit.Tip": "verlassen - bei Änderungen wird zum Speichern aufgefordert",
-      "Return.Tip": "zurück zum vorherigen Dialog",
+      "Save.Tip": "Speichern und schliessen - mit CTRL + S nur speichern",
+      "Exit.Tip": "Verlassen - bei Änderungen wird zum Speichern aufgefordert",
+      "Return.Tip": "Zurück zum vorherigen Dialog",
       "History.Tip": "Änderungen / Vorversionen"
     }
   },
@@ -13,9 +13,9 @@
     "show": "anzeigen",
     "show.Tip": "Änderungen sind öffentlich",
     "hide": "verstecken",
-    "hide.Tip": "dieses Element ist nicht öffentlich",
+    "hide.Tip": "Dieses Element ist nicht öffentlich",
     "branch": "entwurf",
-    "branch.Tip": "nur Redakteure sehen Änderungen",
+    "branch.Tip": "Nur Redakteure sehen Änderungen",
     "Dialog": {
       "Title": "Speichern",
       "Intro": "Entscheide, wie du speichern möchtest. Standard ist anzeigen / veröffentlichen.",
@@ -34,13 +34,11 @@
     }
   },
   "Message": {
-    "Saved": "gespeichert",
-    "Saving": "speichern...",
-    "Deleted": "gelöscht",
-    "Deleting": "löschen...",
+    "Saved": "Gespeichert",
+    "Saving": "Speichern...",
+    "Deleted": "Gelöscht",
+    "Deleting": "Löschen...",
     "DeleteError": "Löschen hat versagt. Bitte genauen Grund aus der Konsole entnehmen. ",
-    "DebugEnabled": "debug aktiviert",
-    "DebugDisabled": "debug deaktiviert",
     "SwitchedLanguageToDefault": "Es fehlen Werte in der Primärsprache, deshalb wurde auf die Standardsprache {{language}} umgestellt.",
     "CantSwitchLanguage": "Sprachwechsel erst möglich wenn alle Pflichtfelder in der aktuellen Sprache befüllt sind"
   },
@@ -60,25 +58,25 @@
       "Intro": "Du kannst auf verschiedene Arten übersetzen, auch Sprachen aneinander koppeln.",
       "NoTranslate": {
         "Title": "Nicht übersetzen",
-        "Body": "verwendet den Wert aus der Primärsprache {{primary}}"
+        "Body": "Verwendet den Wert aus der Primärsprache {{primary}}"
       },
       "FromPrimary": {
         "Title": "Übersetzen von: {{primary}}",
-        "Body": "beginne beim Übersetzen mit dem Wert in der Primärsprache"
+        "Body": "Beginne beim Übersetzen mit dem Wert in der Primärsprache"
       },
       "FromOther": {
         "Title": "Übersetzen von: ...",
-        "Body": "beginne beim Übersetzen mit dem Wert in einer anderen Sprache",
+        "Body": "Beginne beim Übersetzen mit dem Wert in einer anderen Sprache",
         "Subtitle": "Vorlagensprache"
       },
       "LinkReadOnly": {
         "Title": "Von anderer Sprache erben (nur anzeigen)",
-        "Body": "nutzt den Wert einer anderen sprache, ist jedoch nicht bearbeitbar",
+        "Body": "Nutzt den Wert einer anderen sprache, ist jedoch nicht bearbeitbar",
         "Subtitle": "Sprache, von der geerbt wird"
       },
       "LinkShared": {
         "Title": "Mit anderer Sprache verbinden (bearbeitbar)",
-        "Body": "verbindet Sprachen zusammen, damit sie den gleichen Wert verwenden",
+        "Body": "Verbindet Sprachen zusammen, damit sie den gleichen Wert verwenden",
         "Subtitle": "Sprache, die verbunden wird"
       },
       "PickLanguageIntro": "Nur Sprachen mit bestehendem Inhalt können ausgewählt werden."
@@ -93,7 +91,7 @@
   "General": {
     "Buttons": {
       "NotSave": "Änderungen verwerfen",
-      "Save": "speichern"
+      "Save": "Speichern"
     }
   },
   "Data": {
@@ -116,45 +114,45 @@
   },
   "Fields": {
     "Entity": {
-      "Choose": "bestehendes Element auswählen",
-      "New": "neues Element erstellen",
+      "Choose": "Bestehendes Element auswählen",
+      "New": "Neues Element erstellen",
       "EmptySlot": "leerer Eintrag",
       "EntityNotFound": "(Element nicht gefunden)",
       "DragMove": "Ziehen um die Liste neu zu ordnen",
       "Edit": "Element bearbeiten",
       "Remove": "Aus Liste entfernen",
       "Delete": "Löschen",
-      "Loading": "lädt...",
-      "Search": "suchen"
+      "Loading": "Lädt...",
+      "Search": "Suchen"
     },
     "EntityQuery": {
       "QueryNoItems": "Keine Elemente gefunden",
       "QueryError": "Fehler: Die Abfrage konnte nicht ausgeführt werden. In der Konsole findest du genauere Details.",
-      "QueryStreamNotFound": "Fehler: Die Abfrage enthielt keinen Stream mit dem Namen "
+      "QueryStreamNotFound": "Fehler: Die Abfrage enthielt keinen Stream mit dem Namen"
     },
     "Hyperlink": {
       "Default": {
         "Tooltip": "Dateien einfach hierher ziehen. Weitere Infos: 2sxc.org/help?tag=adam. ADAM - gesponsored ♡ von 2sic.com",
         "Sponsor": "ADAM - gesponsored ♡ von 2sic.com",
         "Fullscreen": "Grossdialog öffnen",
-        "AdamTip": "schnell-upload mit ADAM",
+        "AdamTip": "Schnell upload mit ADAM",
         "PageTip": "Seite wählen",
-        "MoreOptions": "mehr...",
+        "MoreOptions": "Mehr...",
         "MenuAdam": "Datei mit ADAM uploaden",
         "MenuPage": "Seitenauswahl",
         "MenuImage": "Bildverwaltung",
         "MenuDocs": "Dateiverwaltung"
       },
       "AdamFileManager": {
-        "UploadLabel": "upload nach",
-        "UploadTip": "schnell-upload mit ADAM",
+        "UploadLabel": "Upload nach",
+        "UploadTip": "Schnell upload mit ADAM",
         "UploadPasteLabel": "Bild aus Zwischenablage",
-        "UploadPasteFocusedLabel": "Ctrl+V drücken",
-        "UploadPasteTip": "Klick hier und drück [Ctrl]+[V] um aus der Zwischenablage einzufügen",
+        "UploadPasteFocusedLabel": "CTRL + V drücken",
+        "UploadPasteTip": "Klick hier und drück CTRL + V um aus der Zwischenablage einzufügen",
         "NewFolder": "Neuer Ordner",
         "NewFolderTip": "Neuen Ordner erstellen",
         "BackFolder": "Zurück",
-        "BackFolderTip": "zum vorherigen Ordner",
+        "BackFolderTip": "Zum vorherigen Ordner",
         "Show": "In neuem Fenster öffnen",
         "Edit": "Umbenennen",
         "RenameQuestion": "Umbenennen:",
@@ -181,14 +179,14 @@
     }
   },
   "Extension.TinyMce": {
-    "Link.AdamFile": "ADAM-Datei verlinken (empfohlen)",
-    "Link.AdamFile.Tooltip": "ADAM-Dateien verlinken - Dateien einfach hierhin ziehen - verwendet den Automatic Digital Assets Manager",
-    "Image.AdamImage": "ADAM-Bild (empfohlen)",
-    "Image.AdamImage.Tooltip": "ADAM-Bild einfügen - Dateien einfach hierhin ziehen - verwendet den Automatic Digital Assets Manager",
-    "Link.DnnFile": "DNN-Datei verlinken",
-    "Link.DnnFile.Tooltip": "DNN-Datei verlinken (alle Dateien, langsam)",
-    "Image.DnnImage": "DNN-Bild",
-    "Image.DnnImage.Tooltip": "DNN-Bild einfügen (alle Dateien, langsam)",
+    "Link.AdamFile": "ADAM Datei verlinken (empfohlen)",
+    "Link.AdamFile.Tooltip": "ADAM Dateien verlinken - Dateien einfach hierhin ziehen - verwendet den Automatic Digital Assets Manager",
+    "Image.AdamImage": "ADAM Bild (empfohlen)",
+    "Image.AdamImage.Tooltip": "ADAM Bild einfügen - Dateien einfach hierhin ziehen - verwendet den Automatic Digital Assets Manager",
+    "Link.DnnFile": "DNN Datei verlinken",
+    "Link.DnnFile.Tooltip": "DNN Datei verlinken (alle Dateien, langsam)",
+    "Image.DnnImage": "DNN Bild",
+    "Image.DnnImage.Tooltip": "DNN Bild einfügen (alle Dateien, langsam)",
     "Link.Page": "Seite verlinken",
     "Link.Page.Tooltip": "Eine Seite aus dieser Website verlinken",
     "Link.Anchor.Tooltip": "Texmarke (Anchor) für Verlinkung mit .../page#anchorname",

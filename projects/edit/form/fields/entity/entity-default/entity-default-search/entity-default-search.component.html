@@ -60,7 +60,9 @@
     <mat-label>{{ label }}</mat-label>
   </mat-form-field>
 
-  <div *ngIf="data.debugEnabled">debug: <span (click)="insertNull()">add null-item</span></div>
+  <div *ngIf="data.debugEnabled" class="null-box">
+    debug: <span class="null-button" tippy="Add null-item" (click)="insertNull()">add null-item</span>
+  </div>
 
   <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
 

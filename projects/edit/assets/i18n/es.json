@@ -2,20 +2,20 @@
   "Form": {
     "Buttons": {
       "Save": "SAVE (CTRL + S)",
-      "Save.Tip": "save and close (CTRL + S saves and doesn't close)",
-      "Exit.Tip": "exit - if something changed, you will be asked to save",
-      "Return.Tip": "return to previous dialog",
-      "History.Tip": "history / previous versions"
+      "Save.Tip": "Save and close (CTRL + S saves and doesn't close)",
+      "Exit.Tip": "Exit - if something changed, you will be asked to save",
+      "Return.Tip": "Return to previous dialog",
+      "History.Tip": "History / previous versions"
     }
   },
   "PublishStatus": {
     "Label": "Status:",
     "show": "show",
-    "show.Tip": "changes are public",
+    "show.Tip": "Changes are public",
     "hide": "hide",
-    "hide.Tip": "this item is not publicly visible",
+    "hide.Tip": "This item is not publicly visible",
     "branch": "draft",
-    "branch.Tip": "changes are only visible to editors",
+    "branch.Tip": "Changes are only visible to editors",
     "Dialog": {
       "Title": "Save Mode",
       "Intro": "This determines how you will save. The default is show/publish.",
@@ -34,13 +34,11 @@
     }
   },
   "Message": {
-    "Saved": "guardado",
-    "Saving": "guardando...",
-    "Deleted": "deleted",
-    "Deleting": "deleting...",
-    "DeleteError": "delete failed. Please check console for more information",
-    "DebugEnabled": "debug mode enabled",
-    "DebugDisabled": "debug mode disabled",
+    "Saved": "Guardado",
+    "Saving": "Guardando...",
+    "Deleted": "Deleted",
+    "Deleting": "Deleting...",
+    "DeleteError": "Delete failed. Please check console for more information",
     "SwitchedLanguageToDefault": "We have switched language to default {{language}} because it's missing some or all values",
     "CantSwitchLanguage": "Can't switch languages until current language has all required values"
   },
@@ -60,25 +58,25 @@
       "Intro": "You can do many things when translating, like linking languages together.",
       "NoTranslate": {
         "Title": "Don't Translate",
-        "Body": "use value in primary language {{primary}}"
+        "Body": "Use value in primary language {{primary}}"
       },
       "FromPrimary": {
         "Title": "Translate from: {{primary}}",
-        "Body": "begin translation with with the value in the primary language"
+        "Body": "Begin translation with with the value in the primary language"
       },
       "FromOther": {
         "Title": "Translate from: ...",
-        "Body": "begin translation with the value from another language",
+        "Body": "Begin translation with the value from another language",
         "Subtitle": "Language to translate from"
       },
       "LinkReadOnly": {
         "Title": "Inherit from other language (read-only)",
-        "Body": "inherit value from another language",
+        "Body": "Inherit value from another language",
         "Subtitle": "Language to inherit from"
       },
       "LinkShared": {
         "Title": "Share with another language (read/write)",
-        "Body": "link languages together to use the same editable value",
+        "Body": "Link languages together to use the same editable value",
         "Subtitle": "Language to share with"
       },
       "PickLanguageIntro": "Only languages with content can be selected."
@@ -92,17 +90,17 @@
   },
   "General": {
     "Buttons": {
-      "NotSave": "discard changes",
-      "Save": "save"
+      "NotSave": "Discard changes",
+      "Save": "Save"
     }
   },
   "Data": {
-    "Delete.Question": "delete '{{title}}' ({{id}})?"
+    "Delete.Question": "Delete '{{title}}' ({{id}})?"
   },
   "ItemCard": {
     "DefaultTitle": "Editar elemento",
-    "SlotUsedTrue": "este elemento está abierto para edición. Pulse aquí para bloquearlo / eliminarlo y devolverlo a predeterminado.",
-    "SlotUsedFalse": "este elemento está bloqueado y permanecerá vacío/predeterminado. Los valores se muestran a su conveniencia. Pulse aquí para desbloquearlo si es necesario.",
+    "SlotUsedTrue": "Este elemento está abierto para edición. Pulse aquí para bloquearlo / eliminarlo y devolverlo a predeterminado.",
+    "SlotUsedFalse": "Este elemento está bloqueado y permanecerá vacío/predeterminado. Los valores se muestran a su conveniencia. Pulse aquí para desbloquearlo si es necesario.",
     "CopyHint": "(copy)"
   },
   "ValidationMessage": {
@@ -116,45 +114,45 @@
   },
   "Fields": {
     "Entity": {
-      "Choose": "-- elija elemento para añadir --",
-      "New": "-- crear nuevo --",
+      "Choose": "Elija elemento para añadir",
+      "New": "Crear nuevo",
       "EmptySlot": "empty slot",
       "EntityNotFound": "(elemento no encontrado)",
-      "DragMove": "arrastre para reordenar la lista",
-      "Edit": "edite este elemento",
-      "Remove": "quitar de la lista",
-      "Delete": "delete",
-      "Loading": "loading...",
-      "Search": "search"
+      "DragMove": "Arrastre para reordenar la lista",
+      "Edit": "Edite este elemento",
+      "Remove": "Quitar de la lista",
+      "Delete": "Delete",
+      "Loading": "Loading...",
+      "Search": "Search"
     },
     "EntityQuery": {
       "QueryNoItems": "No items found",
       "QueryError": "Error: An error occurred while executing the query. See the console for more information.",
-      "QueryStreamNotFound": "Error: The query did not return a stream named "
+      "QueryStreamNotFound": "Error: The query did not return a stream named"
     },
     "Hyperlink": {
       "Default": {
-        "Tooltip": "Drop files here to auto-upload. For help see 2sxc.org/help?tag=adam. ADAM - sponsored with ♥ by 2sic.com",
+        "Tooltip": "Drop files here to auto upload. For help see 2sxc.org/help?tag=adam. ADAM - sponsored with ♡ by 2sic.com",
         "Sponsor": "ADAM - sponsored with ♡ by 2sic.com",
-        "Fullscreen": "open in fullscreen",
-        "AdamTip": "quick-upload using ADAM",
-        "PageTip": "pick a page",
-        "MoreOptions": "more...",
+        "Fullscreen": "Open in fullscreen",
+        "AdamTip": "Quick upload using ADAM",
+        "PageTip": "Pick a page",
+        "MoreOptions": "More...",
         "MenuAdam": "Upload file with Adam",
         "MenuPage": "Page Picker",
         "MenuImage": "Image Manager",
-        "MenuDocs": "Document Manager"
+        "MenuDocs": "File Manager"
       },
       "AdamFileManager": {
-        "UploadLabel": "upload to",
-        "UploadTip": "quick-upload using ADAM",
-        "UploadPasteLabel": "paste image",
-        "UploadPasteFocusedLabel": "press ctrl+v",
-        "UploadPasteTip": "click here and press [Ctrl]+[V] to paste image from clipboard",
-        "NewFolder": "New folder",
-        "NewFolderTip": "create a new folder",
+        "UploadLabel": "Upload to",
+        "UploadTip": "Quick upload using ADAM",
+        "UploadPasteLabel": "Paste Image",
+        "UploadPasteFocusedLabel": "Press CTRL + V",
+        "UploadPasteTip": "Click here and press CTRL + V to paste image from clipboard",
+        "NewFolder": "New Folder",
+        "NewFolderTip": "Create a new folder",
         "BackFolder": "Back",
-        "BackFolderTip": "return to previous folder",
+        "BackFolderTip": "Return to previous folder",
         "Show": "Open in new tab",
         "Edit": "Rename",
         "RenameQuestion": "Rename file / folder to:",
@@ -162,18 +160,18 @@
         "DeleteQuestion": "Are you sure you want to delete this file?",
         "Hint": "drop files here",
         "SponsorTooltip": "ADAM is the Automatic Digital Assets Manager - click to discover more",
-        "SponsorLine": "is sponsored with ♥ by"
+        "SponsorLine": "is sponsored with ♡ by"
       },
       "PagePicker": {
         "Title": "Select a web page"
       }
     },
     "DateTime": {
-      "Open": "open calendar"
+      "Open": "Open calendar"
     },
     "String": {
-      "Dropdown": "switch to dropdown select",
-      "Freetext": "switch to freetext"
+      "Dropdown": "Switch to dropdown",
+      "Freetext": "Switch to enter text"
     },
     "TemplatePicker": {
       "NotSelected": "(no file selected)",
@@ -182,9 +180,9 @@
   },
   "Extension.TinyMce": {
     "Link.AdamFile": "Enlace a archivo ADAM (recomendado)",
-    "Link.AdamFile.Tooltip": "Enlace a archivo ADAM – solo arrastre y suelte los archivos utilizando el Automatic Digital Assets Manager",
+    "Link.AdamFile.Tooltip": "Enlace a archivo ADAM - solo arrastre y suelte los archivos utilizando el Automatic Digital Assets Manager",
     "Image.AdamImage": "Insertar una imagen ADAM (recomendado)",
-    "Image.AdamImage.Tooltip": "Insertar una imagen ADAM- solo arrastre y suelte los archivos utilizando el Automatic Digital Assets Manager",
+    "Image.AdamImage.Tooltip": "Insertar una imagen ADAM - solo arrastre y suelte los archivos utilizando el Automatic Digital Assets Manager",
     "Link.DnnFile": "Enlace a Archivo de DNN",
     "Link.DnnFile.Tooltip": "Enlace a archivo de DNN (todos los archivos, lento)",
     "Image.DnnImage": "Insertar imagen de DNN",
@@ -202,6 +200,6 @@
     "H5": "H5",
     "H6": "H6",
     "Paragraph": "Párrafo",
-    "ContentBlock.Add": "add app or content-block"
+    "ContentBlock.Add": "Add app or content block"
   }
 }
