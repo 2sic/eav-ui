@@ -31,6 +31,7 @@
               "projects/ng-dialogs/src/styles.scss"
             ],
             "scripts": [
+              "projects/ng-dialogs/src/scripts/require.js",
               "projects/edit/assets/scripts/dropzone-dragging-helper.js",
               "projects/edit/assets/scripts/clipboard-paste/paste.js",
               {

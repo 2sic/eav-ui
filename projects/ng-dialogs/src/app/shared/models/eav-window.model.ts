@@ -1,12 +1,13 @@
 import { SxcRoot } from '@2sic.com/2sxc-typings';
 import { TinyMCE } from 'tinymce';
 import { FieldLogicManager } from '../../../../../edit/form/shared/field-logic/field-logic-manager';
-import { Ace } from '../../code-editor/ace-editor/ace.model';
 import { PlumbType } from '../../visual-query/plumb-editor/plumb-editor.models';
+import { RequirejsType } from './requirejs.models';
 
 interface EavWindowProps {
-  ace: Ace;
   contextId: number;
+  /** requirejs */
+  define: RequirejsType;
   draggingClass: string;
   eavFieldLogicManager: FieldLogicManager;
   jsPlumb: PlumbType;
@@ -17,6 +18,10 @@ interface EavWindowProps {
       };
     };
   };
+  /** requirejs */
+  require: RequirejsType;
+  /** requirejs */
+  requirejs: RequirejsType;
   sxcVersion: string;
   tinymce: TinyMCE;
   windowBodyTimeouts: number[];
