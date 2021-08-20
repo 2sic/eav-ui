@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, forwardRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, forwardRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { fromEvent, Subscription } from 'rxjs';
 import { EavWindow } from '../../shared/models/eav-window.model';
@@ -17,12 +17,10 @@ declare const window: EavWindow;
     multi: true,
   }],
 })
-export class MonacoEditorComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy {
-  @ViewChild('editor') editorRef: ElementRef<HTMLElement>;
+export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
+  @ViewChild('editor') private editorRef: ElementRef<HTMLElement>;
   @Input() filename: string;
   @Input() snippets: Snippet[];
-  /** If value changes editor will be resized */
-  @Input() toggleResize: boolean;
 
   private value = '';
   private monaco?: any;
@@ -55,13 +53,6 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnChanges, 
       this.monaco = monaco;
       this.monacoLoaded();
     });
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    const resize = changes.toggleResize?.currentValue !== changes.toggleResize?.previousValue;
-    if (resize) {
-      this.resize();
-    }
   }
 
   insertSnippet(snippet: string): void {
@@ -113,6 +104,9 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnChanges, 
     this.editor.getModel().onDidChangeContent(() => {
       this.propagateChange(this.editor.getModel().getValue());
     });
+
+    this.editor.focus();
+    this.resize();
   }
 
   private resize(): void {

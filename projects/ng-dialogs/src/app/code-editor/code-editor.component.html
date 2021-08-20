@@ -22,13 +22,11 @@
   </app-code-snippets>
 
   <app-ace-editor *ngIf="data.view && activeEditor === Editors.Ace" [filename]="data.view.FileName"
-    [ngModel]="data.view.Code" (ngModelChange)="codeChanged($event)" [snippets]="data.editorSnipps"
-    [toggleResize]="!this.activeExplorer">
+    [ngModel]="data.view.Code" (ngModelChange)="codeChanged($event)" [snippets]="data.editorSnipps">
   </app-ace-editor>
 
   <app-monaco-editor *ngIf="data.view && activeEditor === Editors.Monaco" [filename]="data.view.FileName"
-    [ngModel]="data.view.Code" (ngModelChange)="codeChanged($event)" [snippets]="data.editorSnipps"
-    [toggleResize]="!this.activeExplorer">
+    [ngModel]="data.view.Code" (ngModelChange)="codeChanged($event)" [snippets]="data.editorSnipps">
   </app-monaco-editor>
 
   <button mat-fab mat-elevation-z24 tippy="Click to save or CTRL + S" (click)="save()">

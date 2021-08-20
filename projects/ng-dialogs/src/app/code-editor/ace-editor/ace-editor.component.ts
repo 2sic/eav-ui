@@ -18,11 +18,9 @@ declare const window: EavWindow;
   }],
 })
 export class AceEditorComponent implements AfterViewInit, OnChanges, OnDestroy {
-  @ViewChild('editor') editorRef: ElementRef<HTMLElement>;
+  @ViewChild('editor') private editorRef: ElementRef<HTMLElement>;
   @Input() filename: string;
   @Input() snippets: Snippet[];
-  /** If value changes editor will be resized */
-  @Input() toggleResize: boolean;
 
   private value = '';
   private editor: Editor & { $blockScrolling?: number; };
@@ -57,15 +55,6 @@ export class AceEditorComponent implements AfterViewInit, OnChanges, OnDestroy {
     const filename = changes.filename?.currentValue != null ? this.filename : undefined;
     const snippets = changes.snippets?.currentValue != null ? this.snippets : undefined;
     this.updateValues(filename, snippets);
-
-    if (!this.editor) { return; }
-    const resize = changes.toggleResize?.currentValue !== changes.toggleResize?.previousValue;
-    if (resize) {
-      this.zone.runOutsideAngular(() => {
-        // wait for Angular to update DOM to be able to get proper size of the container
-        setTimeout(() => { this.editor.resize(); }, 50);
-      });
-    }
   }
 
   insertSnippet(snippet: string): void {
@@ -111,6 +100,8 @@ export class AceEditorComponent implements AfterViewInit, OnChanges, OnDestroy {
       this.editor.on('change', this.onEditorValueChange.bind(this));
       this.editor.on('blur', this.onEditorBlurred.bind(this));
       this.editor.focus();
+      // wait for Angular to update DOM to be able to get proper size of the container
+      setTimeout(() => { this.editor.resize(); }, 50);
     });
   }
 
