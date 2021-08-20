@@ -1,7 +1,6 @@
 import inner from '!raw-loader!./inner.html';
 import { Component, forwardRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { fromEvent, Subscription } from 'rxjs';
 import { Snippet } from '../models/snippet.model';
 import { monacoDetectLanguage } from './monaco-editor.helpers';
@@ -32,7 +31,7 @@ export class MonacoEditorComponent implements OnInit, OnChanges, OnDestroy {
   propagateChange: (_: any) => void = () => { };
   propagateTouched: (_: any) => void = () => { };
 
-  constructor(private snackBar: MatSnackBar) { }
+  constructor() { }
 
   ngOnInit(): void {
     this.subscription = new Subscription();
@@ -52,7 +51,9 @@ export class MonacoEditorComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   insertSnippet(snippet: string): void {
-    this.snackBar.open('Insert snippet functionality does not exist in Monaco Editor', null, { duration: 3000 });
+    const snippetController = this.editor?.getContribution('snippetController2');
+    snippetController?.insert(snippet);
+    this.editor?.focus();
   }
 
   ngOnDestroy(): void {

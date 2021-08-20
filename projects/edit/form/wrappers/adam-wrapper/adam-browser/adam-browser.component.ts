@@ -215,7 +215,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
   rename(item: AdamItem) {
     if (this.control.disabled) { return; }
 
-    const newName = window.prompt('Rename the file / folder to: ', item.Name);
+    const newName = window.prompt('Rename the file / folder to: ', item.Name); // todo i18n
     if (!newName) { return; }
 
     this.adamService.rename(item, newName, this.url, this.adamConfig$.value).subscribe(res => {
