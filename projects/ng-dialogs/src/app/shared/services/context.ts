@@ -1,6 +1,6 @@
 import { Injectable, Optional, SkipSelf } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
-import { keyAppId, keyContentBlockId, keyModuleId, keyRequestToken, keyTabId, keyZoneId, prefix, keyRequestTokenHeaderName } from '../constants/session.constants';
+import { keyAppId, keyContentBlockId, keyModuleId, keyRequestToken, keyRequestTokenHeaderName, keyTabId, keyZoneId, prefix } from '../constants/session.constants';
 import { consoleLogAngular } from '../helpers/console-log-angular.helper';
 import { EavWindow } from '../models/eav-window.model';
 

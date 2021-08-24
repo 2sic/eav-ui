@@ -82,4 +82,15 @@ export class GeneralHelpers {
     if (Array.isArray(x) && Array.isArray(y) && this.arraysEqual(x, y)) { return true; }
     return false;
   }
+
+  /** Disables/enables control if not already disabled/enabled. Use this helper to trigger fewer events on the form */
+  static disableControl(control: AbstractControl, disable: boolean) {
+    if (control.disabled === disable) { return; }
+
+    if (disable) {
+      control.disable();
+    } else {
+      control.enable();
+    }
+  }
 }

@@ -1,28 +1,33 @@
 export type EavMetadataKey = 'attribute' | 'app' | 'entity' | 'contentType' | 'zone' | 'cmsObject';
-export type EavKeyTypeKey = 'guid' | 'string' | 'number';
+export const EavKeyTypes = {
+  Guid: 'guid',
+  String: 'string',
+  Number: 'number',
+} as const;
+export type EavKeyTypeKey = typeof EavKeyTypes[keyof typeof EavKeyTypes];
 export interface EavScopeOption { name: string; value: string; }
 
 export const eavConstants = {
   metadata: {
     /** metadataOfAttribute */
-    attribute: { type: 2, target: 'EAV Field Properties' },
+    attribute: { type: 2, target: 'EAV Field Properties', label: 'Content-Type Field/Attribute (2)', keyType: EavKeyTypes.Number },
     /** metadataOfApp */
-    app: { type: 3, target: 'App' },
+    app: { type: 3, target: 'App', label: 'App (3)', keyType: EavKeyTypes.Number },
     /** metadataOfEntity */
-    entity: { type: 4, target: 'Entity' },
+    entity: { type: 4, target: 'Entity', label: 'Entity (4)', keyType: EavKeyTypes.Guid },
     /** metadataOfContentType */
-    contentType: { type: 5, target: 'ContentType' },
+    contentType: { type: 5, target: 'ContentType', label: 'Content-Type (5)', keyType: EavKeyTypes.String },
     /** metadataOfZone */
-    zone: { type: 6, target: 'Zone' },
+    zone: { type: 6, target: 'Zone', label: 'Zone (6) - not used as of now', keyType: EavKeyTypes.Number },
     /** metadataOfCmsObject */
-    cmsObject: { type: 10, target: 'CmsObject' },
+    cmsObject: { type: 10, target: 'CmsObject', label: 'Cms Object (10)', keyType: EavKeyTypes.String, hint: 'Usually this is "file:400" or "folder:4030"' },
   },
 
   /** Loopup type for the metadata, e.g. key=80adb152-efad-4aa4-855e-74c5ef230e1f is keyType=guid */
   keyTypes: {
-    guid: 'guid',
-    string: 'string',
-    number: 'number',
+    guid: EavKeyTypes.Guid,
+    string: EavKeyTypes.String,
+    number: EavKeyTypes.Number,
   },
 
   /** Scopes */
