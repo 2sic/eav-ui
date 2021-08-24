@@ -76,14 +76,8 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
           if (!this.form.controls.hasOwnProperty(fieldName)) { continue; }
           const control = this.form.controls[fieldName];
           const disabled = fieldProps.settings.Disabled;
-          if (disabled === control.disabled) { continue; }
-
           // WARNING!!! Fires valueChange event for every single control
-          if (disabled) {
-            control.disable();
-          } else {
-            control.enable();
-          }
+          GeneralHelpers.disableControl(control, disabled);
         }
       })
     );
