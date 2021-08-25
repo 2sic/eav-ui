@@ -3,7 +3,6 @@ import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { fromEvent, Subscription } from 'rxjs';
 import { EavWindow } from '../../shared/models/eav-window.model';
 import { Snippet } from '../models/snippet.model';
-import { monacoDetectLanguage } from './monaco-editor.helpers';
 
 declare const window: EavWindow;
 
@@ -25,6 +24,12 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
   private value = '';
   private monaco?: any;
   private editor?: any;
+  /**
+   * TODO: Remove completionItemProvider when changing language or destroying editor.
+   * Also don't register completionItemProvider multiple times.
+   * https://github.com/react-monaco-editor/react-monaco-editor/issues/88
+   */
+  private completionItemProvider?: any;
   private subscription: Subscription;
 
   propagateChange: (_: any) => void = () => { };
@@ -63,7 +68,8 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
-    this.monaco?.editor.getModels().forEach((model: any) => model.dispose());
+    this.completionItemProvider?.dispose();
+    this.editor?.dispose();
   }
 
   writeValue(value: string): void {
@@ -80,15 +86,11 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   monacoLoaded(): void {
-    this.editor = this.monaco.editor.create(
-      this.editorRef.nativeElement,
-      {
-        value: this.value,
-        language: monacoDetectLanguage(this.filename),
-      },
-    );
+    this.editor = this.monaco.editor.create(this.editorRef.nativeElement);
+    const editorModel = this.monaco.editor.createModel(this.value, undefined, this.monaco.Uri.file(this.filename));
+    this.editor.setModel(editorModel);
 
-    this.monaco.languages.registerCompletionItemProvider(monacoDetectLanguage(this.filename), {
+    this.completionItemProvider = this.monaco.languages.registerCompletionItemProvider(this.editor.getModel().getModeId(), {
       provideCompletionItems: (model: any, position: any) => {
         const word = model.getWordUntilPosition(position);
         const range = {
