@@ -1,3 +1,6 @@
+import { ContentType } from '../../app-administration/models';
+import { ContentItem } from '../models/content-item.model';
+
 export interface MetadataInfo {
   key: string;
   keyType: string;
@@ -19,10 +22,13 @@ export interface MetadataFormValues {
 }
 
 export interface MetadataDialogTemplateVars {
-  advancedMode: boolean;
+  guidedMode: boolean;
   unknownTargetType: boolean;
-  targetTypeOptions: TargetTypeOption[];
   targetTypeHint?: string;
   keyTypeOptions: string[];
+  guidedKey: boolean;
+  guidedKeyExists: boolean;
   formValues: MetadataFormValues;
+  contentItems: ContentItem[];
+  contentTypes: ContentType[];
 }

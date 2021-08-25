@@ -2,11 +2,16 @@ import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
-import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
+import { ActivatedRoute } from '@angular/router';
+import { BehaviorSubject, combineLatest, merge, Observable, Subscription } from 'rxjs';
+import { distinctUntilChanged, filter, map, startWith } from 'rxjs/operators';
 import { GeneralHelpers } from '../../../../../edit/shared/helpers';
-import { eavConstants, EavKeyTypes } from '../../shared/constants/eav.constants';
+import { ContentType } from '../../app-administration/models';
+import { ContentTypesService } from '../../app-administration/services';
+import { eavConstants } from '../../shared/constants/eav.constants';
 import { Context } from '../../shared/services/context';
+import { ContentItem } from '../models/content-item.model';
+import { ContentItemsService } from '../services/content-items.service';
 import { MetadataDialogTemplateVars, MetadataFormValues, MetadataInfo, TargetTypeOption } from './create-metadata-dialog.models';
 import { metadataKeyValidator } from './metadata-key.validator';
 
@@ -21,75 +26,89 @@ export class CreateMetadataDialogComponent implements OnInit, OnDestroy {
   eavConstants = eavConstants;
   form: FormGroup;
   templateVars$: Observable<MetadataDialogTemplateVars>;
+  targetTypeOptions: TargetTypeOption[];
 
-  /** Constants from metadata definitions */
-  private targetTypeOptions: TargetTypeOption[];
   /** Constants from metadata definitions */
   private keyTypeOptions: string[];
-  private advancedMode$: BehaviorSubject<boolean>;
-  /** Currently available options */
-  private targetTypeOptions$: BehaviorSubject<TargetTypeOption[]>;
+  private guidedMode$: BehaviorSubject<boolean>;
   /** Currently available options */
   private keyTypeOptions$: BehaviorSubject<string[]>;
+  private contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
+  private contentItems: BehaviorSubject<ContentItem[]>;
+  private contentTypes$: BehaviorSubject<ContentType[]>;
+  private guidedKey$: BehaviorSubject<boolean>;
   private subscription: Subscription;
 
-  constructor(private dialogRef: MatDialogRef<CreateMetadataDialogComponent>, private context: Context) { }
+  constructor(
+    private dialogRef: MatDialogRef<CreateMetadataDialogComponent>,
+    private context: Context,
+    private route: ActivatedRoute,
+    private contentItemsService: ContentItemsService,
+    private contentTypesService: ContentTypesService,
+  ) { }
 
   ngOnInit(): void {
     this.subscription = new Subscription();
     this.targetTypeOptions = Object.values(eavConstants.metadata).map(option => ({ ...option }));
     this.keyTypeOptions = Object.values(eavConstants.keyTypes);
 
-    this.targetTypeOptions$ = new BehaviorSubject([]);
-    this.keyTypeOptions$ = new BehaviorSubject([]);
-    this.advancedMode$ = new BehaviorSubject(false);
+    this.keyTypeOptions$ = new BehaviorSubject<string[]>([]);
+    this.guidedMode$ = new BehaviorSubject(true);
+    this.contentItems = new BehaviorSubject<ContentItem[]>([]);
+    this.contentTypes$ = new BehaviorSubject<ContentType[]>([]);
+    this.guidedKey$ = new BehaviorSubject(true);
+
+    this.contentItemsService.getAll(this.contentTypeStaticName).subscribe(items => {
+      this.contentItems.next(items);
+    });
+    this.contentTypesService.retrieveContentTypes(eavConstants.scopes.default.value).subscribe(contentTypes => {
+      this.contentTypes$.next(contentTypes);
+    });
 
     this.form = new FormGroup({});
     this.form.addControl('targetType', new FormControl(eavConstants.metadata.entity.type, [Validators.required, Validators.pattern(/^[0-9]+$/)]));
-    this.form.addControl('keyType', new FormControl(eavConstants.keyTypes.number, [Validators.required]));
+    this.form.addControl('keyType', new FormControl(eavConstants.keyTypes.guid, [Validators.required]));
     this.form.addControl('key', new FormControl(null, [Validators.required, metadataKeyValidator(this.form)]));
 
-    const formValues$: Observable<MetadataFormValues> = this.form.valueChanges.pipe(
-      startWith(this.form.getRawValue()),
-      map(() => this.form.getRawValue()),
+    const formValues$ = this.form.valueChanges.pipe(
+      startWith(this.form.getRawValue() as MetadataFormValues),
+      map(() => this.form.getRawValue() as MetadataFormValues),
+      distinctUntilChanged(GeneralHelpers.objectsEqual),
+    );
+
+    // reset key if target or keyType changed
+    this.subscription.add(
+      merge(
+        this.form.controls['targetType'].valueChanges,
+        this.form.controls['keyType'].valueChanges,
+      ).pipe(
+        filter(() => (this.form.getRawValue() as MetadataFormValues).key != null),
+      ).subscribe(() => {
+        this.guidedKey$.next(true);
+        const updatedForm: Partial<MetadataFormValues> = {
+          key: null,
+        };
+        this.form.patchValue(updatedForm);
+      })
     );
 
     this.subscription.add(
-      combineLatest([formValues$, this.advancedMode$]).subscribe(([formValues, advancedMode]) => {
-        // targetTypeOptions are constants, but can also include manual value in advanced mode
-        const unknownTargetType = !this.targetTypeOptions.some(option => option.type === formValues.targetType);
-        if (unknownTargetType) {
-          const unknownOption: TargetTypeOption = {
-            type: formValues.targetType,
-            label: formValues.targetType?.toString(),
-            keyType: undefined,
-            target: formValues.targetType?.toString(),
-          };
-          this.targetTypeOptions$.next([...this.targetTypeOptions, unknownOption]);
-        } else {
-          this.targetTypeOptions$.next([...this.targetTypeOptions]);
-        }
-
+      combineLatest([formValues$, this.guidedMode$]).subscribe(([formValues, guidedMode]) => {
         // keyTypeOptions depend on targetType and advanced
-        if (advancedMode || unknownTargetType) {
-          this.keyTypeOptions$.next([...this.keyTypeOptions]);
-        } else {
-          const selectedTargetType = this.targetTypeOptions.find(option => option.type === formValues.targetType);
-          this.keyTypeOptions$.next([selectedTargetType.keyType]);
+        const foundTargetType = this.targetTypeOptions.find(option => option.type === formValues.targetType);
+        const keyTypeOptions = guidedMode && foundTargetType ? [foundTargetType.keyType] : [...this.keyTypeOptions];
+        if (!GeneralHelpers.arraysEqual(keyTypeOptions, this.keyTypeOptions$.value)) {
+          this.keyTypeOptions$.next(keyTypeOptions);
         }
 
-        // update form if keyType is not available or key is of incorrect type
+        // update form if keyType is not available
         const updatedForm: Partial<MetadataFormValues> = {};
         if (!this.keyTypeOptions$.value.includes(formValues.keyType)) {
           updatedForm.keyType = this.keyTypeOptions$.value[0];
         }
 
-        const typeofKey = (updatedForm.keyType ?? formValues.keyType) === EavKeyTypes.Number ? EavKeyTypes.Number : EavKeyTypes.String;
-        if (formValues.key != null && typeof formValues.key !== typeofKey) {
-          updatedForm.key = null;
-        }
-
-        const isAppMetadata = !advancedMode && formValues.targetType === eavConstants.metadata.app.type;
+        // if target is app key must be current app id
+        const isAppMetadata = guidedMode && formValues.targetType === eavConstants.metadata.app.type;
         if (isAppMetadata && formValues.key !== this.context.appId) {
           updatedForm.key = this.context.appId;
         }
@@ -98,21 +117,30 @@ export class CreateMetadataDialogComponent implements OnInit, OnDestroy {
           this.form.patchValue(updatedForm);
         }
 
-        const keyTypeDisabled = !advancedMode && this.keyTypeOptions$.value.length <= 1;
+        const keyTypeDisabled = guidedMode && this.keyTypeOptions$.value.length <= 1;
         GeneralHelpers.disableControl(this.form.controls['keyType'], keyTypeDisabled);
         GeneralHelpers.disableControl(this.form.controls['key'], isAppMetadata);
       })
     );
 
-    this.templateVars$ = combineLatest([this.advancedMode$, this.targetTypeOptions$, this.keyTypeOptions$, formValues$]).pipe(
-      map(([advancedMode, targetTypeOptions, keyTypeOptions, formValues]) => {
+    this.templateVars$ = combineLatest([
+      combineLatest([this.guidedMode$, this.keyTypeOptions$, this.contentItems, this.contentTypes$]),
+      combineLatest([formValues$, this.guidedKey$]),
+    ]).pipe(
+      map(([
+        [guidedMode, keyTypeOptions, contentItems, contentTypes],
+        [formValues, guidedKey],
+      ]) => {
         const templateVars: MetadataDialogTemplateVars = {
-          advancedMode,
+          guidedMode,
           unknownTargetType: !this.targetTypeOptions.some(option => option.type === formValues.targetType),
-          targetTypeOptions,
-          targetTypeHint: !advancedMode && targetTypeOptions.find(option => option.type === formValues.targetType)?.hint,
+          targetTypeHint: guidedMode && this.targetTypeOptions.find(option => option.type === formValues.targetType)?.hint,
           keyTypeOptions,
+          guidedKey,
+          guidedKeyExists: [eavConstants.metadata.entity.type, eavConstants.metadata.contentType.type].includes(formValues.targetType),
           formValues,
+          contentItems,
+          contentTypes,
         };
         return templateVars;
       }),
@@ -120,9 +148,11 @@ export class CreateMetadataDialogComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.advancedMode$.complete();
-    this.targetTypeOptions$.complete();
+    this.guidedMode$.complete();
     this.keyTypeOptions$.complete();
+    this.contentItems.complete();
+    this.contentTypes$.complete();
+    this.guidedKey$.complete();
     this.subscription.unsubscribe();
   }
 
@@ -130,19 +160,23 @@ export class CreateMetadataDialogComponent implements OnInit, OnDestroy {
     this.dialogRef.close(result);
   }
 
-  toggleAdvanced(event: MatSlideToggleChange): void {
-    this.advancedMode$.next(event.checked);
+  toggleGuidedKey(event: boolean): void {
+    this.guidedKey$.next(event);
+  }
+
+  toggleGuidedMode(event: MatSlideToggleChange): void {
+    this.guidedMode$.next(event.checked);
   }
 
   confirm(): void {
     const formValues: MetadataFormValues = this.form.getRawValue();
-    // if not a known target, use the number
-    const target = this.targetTypeOptions.find(option => option.type === formValues.targetType)?.target ?? formValues.targetType.toString();
 
     const result: MetadataInfo = {
-      target,
+      // if not a known target, use the number
+      target: this.targetTypeOptions.find(option => option.type === formValues.targetType)?.target ?? formValues.targetType.toString(),
       keyType: formValues.keyType,
-      key: formValues.key.toString(),
+      // if keyType is guid remove curly brackets
+      key: formValues.keyType === eavConstants.keyTypes.guid ? (formValues.key as string).replace(/{|}/g, '') : formValues.key.toString(),
     };
     this.closeDialog(result);
   }

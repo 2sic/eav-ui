@@ -2,6 +2,15 @@
   margin-top: 8px;
 }
 
+.selection-suffix {
+  display: flex;
+
+  .active {
+    background-color: #002753;
+    color: white;
+  }
+}
+
 .spacer {
   flex: 1 1 auto;
 }

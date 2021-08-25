@@ -14,13 +14,17 @@
       <!-- Target Type -->
       <mat-form-field appearance="standard" color="accent">
         <mat-label>Target</mat-label>
-        <mat-select *ngIf="!data.advancedMode" formControlName="targetType">
-          <mat-option *ngFor="let option of data.targetTypeOptions" [value]="option.type">
+
+        <mat-select *ngIf="data.guidedMode" formControlName="targetType">
+          <mat-option *ngFor="let option of targetTypeOptions" [value]="option.type">
             {{ option.label }}
+          </mat-option>
+          <mat-option *ngIf="data.unknownTargetType" [value]="data.formValues.targetType">
+            {{ data.formValues.targetType }}
           </mat-option>
         </mat-select>
 
-        <input matInput type="number" min="0" *ngIf="data.advancedMode" formControlName="targetType">
+        <input matInput type="number" min="0" *ngIf="!data.guidedMode" formControlName="targetType">
       </mat-form-field>
 
       <app-field-hint *ngIf="form.controls['targetType'].touched && form.controls['targetType'].errors?.required"
@@ -41,6 +45,7 @@
       <!-- Key Type -->
       <mat-form-field appearance="standard" color="accent">
         <mat-label>Key type</mat-label>
+
         <mat-select formControlName="keyType">
           <mat-option *ngFor="let option of data.keyTypeOptions" [value]="option">
             {{ option }}
@@ -56,8 +61,53 @@
       <!-- Key -->
       <mat-form-field appearance="standard" color="accent">
         <mat-label>Key</mat-label>
-        <input matInput type="text" *ngIf="data.formValues.keyType !== 'number'" formControlName="key">
-        <input matInput type="number" *ngIf="data.formValues.keyType === 'number'" formControlName="key">
+
+        <ng-container *ngIf="data.guidedMode; then specialKeyInputs else defaultKeyInput">
+        </ng-container>
+
+        <ng-template #specialKeyInputs>
+          <ng-container [ngSwitch]="data.formValues.targetType">
+            <ng-container *ngSwitchCase="eavConstants.metadata.entity.type">
+              <mat-select *ngIf="data.guidedKey" formControlName="key">
+                <mat-option *ngFor="let item of data.contentItems" [value]="item.Guid">
+                  {{ item.Title }} ({{ item.Id }})
+                </mat-option>
+              </mat-select>
+
+              <input matInput type="text" *ngIf="!data.guidedKey" formControlName="key">
+            </ng-container>
+
+            <ng-container *ngSwitchCase="eavConstants.metadata.contentType.type">
+              <mat-select *ngIf="data.guidedKey" formControlName="key">
+                <mat-option *ngFor="let contentType of data.contentTypes" [value]="contentType.StaticName">
+                  {{ contentType.Label }}
+                </mat-option>
+              </mat-select>
+
+              <input matInput type="text" *ngIf="!data.guidedKey" formControlName="key">
+            </ng-container>
+
+            <ng-container *ngSwitchDefault>
+              <ng-container *ngTemplateOutlet="defaultKeyInput"></ng-container>
+            </ng-container>
+          </ng-container>
+        </ng-template>
+
+        <ng-template #defaultKeyInput>
+          <input matInput type="text" *ngIf="data.formValues.keyType !== 'number'" formControlName="key">
+          <input matInput type="number" *ngIf="data.formValues.keyType === 'number'" formControlName="key">
+        </ng-template>
+
+        <div matSuffix class="selection-suffix" *ngIf="data.guidedMode && data.guidedKeyExists">
+          <button mat-icon-button [ngClass]="{ 'active': data.guidedKey }" tippy="Select option"
+            (click)="toggleGuidedKey(true)">
+            <mat-icon>search</mat-icon>
+          </button>
+          <button mat-icon-button [ngClass]="{ 'active': !data.guidedKey }" tippy="Insert text"
+            (click)="toggleGuidedKey(false)">
+            <mat-icon>text_fields</mat-icon>
+          </button>
+        </div>
       </mat-form-field>
 
       <app-field-hint *ngIf="form.controls['key'].touched && form.controls['key'].errors?.required" [isError]="true">
@@ -73,9 +123,10 @@
     </div>
 
     <div class="dialog-form-actions">
-      <mat-slide-toggle labelPosition="before" color="accent" [checked]="data.advancedMode"
-        (change)="toggleAdvanced($event)">
-        {{ data.advancedMode ? 'Manual' : 'Guided' }}
+      <mat-slide-toggle color="accent"
+        [tippy]="data.guidedMode ? 'Guided mode helps you select options that work' : 'Manual mode is for advanced uses and allows you to insert any values'"
+        [checked]="data.guidedMode" (change)="toggleGuidedMode($event)">
+        {{ data.guidedMode ? 'Guided' : 'Manual' }}
       </mat-slide-toggle>
       <div class="spacer"></div>
       <button mat-raised-button type="button" (click)="closeDialog()">Cancel</button>

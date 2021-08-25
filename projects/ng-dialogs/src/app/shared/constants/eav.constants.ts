@@ -1,5 +1,5 @@
 export type EavMetadataKey = 'attribute' | 'app' | 'entity' | 'contentType' | 'zone' | 'cmsObject';
-export const EavKeyTypes = {
+const EavKeyTypes = {
   Guid: 'guid',
   String: 'string',
   Number: 'number',
