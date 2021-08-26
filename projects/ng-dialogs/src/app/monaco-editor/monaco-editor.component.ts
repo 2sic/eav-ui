@@ -23,6 +23,7 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private value = '';
   private monaco?: any;
+  private editorModel?: any;
   private editor?: any;
   /**
    * TODO: Remove completionItemProvider when changing language or destroying editor.
@@ -69,6 +70,7 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
     this.completionItemProvider?.dispose();
+    this.editorModel?.dispose();
     this.editor?.dispose();
   }
 
@@ -87,8 +89,8 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
 
   monacoLoaded(): void {
     this.editor = this.monaco.editor.create(this.editorRef.nativeElement);
-    const editorModel = this.monaco.editor.createModel(this.value, undefined, this.monaco.Uri.file(this.filename));
-    this.editor.setModel(editorModel);
+    this.editorModel = this.monaco.editor.createModel(this.value, undefined, this.monaco.Uri.file(this.filename));
+    this.editor.setModel(this.editorModel);
 
     this.completionItemProvider = this.monaco.languages.registerCompletionItemProvider(this.editor.getModel().getModeId(), {
       provideCompletionItems: (model: any, position: any) => {
