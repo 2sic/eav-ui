@@ -1,8 +1,8 @@
 import { AfterViewInit, Component, ElementRef, forwardRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { fromEvent, Subscription } from 'rxjs';
-import { EavWindow } from '../../shared/models/eav-window.model';
-import { Snippet } from '../models/snippet.model';
+import { Snippet } from '../code-editor/models/snippet.model';
+import { EavWindow } from '../shared/models/eav-window.model';
 
 declare const window: EavWindow;
 

@@ -6,6 +6,7 @@ import { BehaviorSubject, combineLatest, forkJoin, fromEvent, Observable, Subscr
 import { map, mergeMap, share } from 'rxjs/operators';
 import { SanitizeHelper } from '../../../../edit/shared/helpers';
 import { GlobalConfigService } from '../../../../edit/shared/store/ngrx-data';
+import { MonacoEditorComponent } from '../monaco-editor';
 import { defaultControllerName, defaultTemplateName } from '../shared/constants/file-names.constants';
 import { keyItems } from '../shared/constants/session.constants';
 import { EditItem, SourceItem, } from '../shared/models/edit-form.model';
@@ -16,7 +17,6 @@ import { AceEditorComponent } from './ace-editor/ace-editor.component';
 import { CodeEditorTemplateVars, EditorOption, Editors, ExplorerOption, Explorers } from './code-editor.models';
 import { Snippet, SnippetsSets } from './models/snippet.model';
 import { SourceView } from './models/source-view.model';
-import { MonacoEditorComponent } from './monaco-editor/monaco-editor.component';
 import { SnippetsService } from './services/snippets.service';
 import { SourceService } from './services/source.service';
 

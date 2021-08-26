@@ -9,6 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { MonacoEditorModule } from '../monaco-editor';
 import { EavWindow } from '../shared/models/eav-window.model';
 import { Context } from '../shared/services/context';
 import { DialogService } from '../shared/services/dialog.service';
@@ -22,7 +23,6 @@ import { ObjectToArrayPipe } from './code-snippets/object-to-array.pipe';
 import { CodeTemplatesComponent } from './code-templates/code-templates.component';
 import { DepthPaddingPipe } from './code-templates/depth-padding.pipe';
 import { SortItemsPipe } from './code-templates/order-items.pipe';
-import { MonacoEditorComponent } from './monaco-editor/monaco-editor.component';
 import { SnippetsService } from './services/snippets.service';
 import { SourceService } from './services/source.service';
 
@@ -43,7 +43,6 @@ export function translateLoaderFactoryCode(http: HttpClient) {
     AceEditorComponent,
     DepthPaddingPipe,
     SortItemsPipe,
-    MonacoEditorComponent,
   ],
   imports: [
     CodeEditorRoutingModule,
@@ -57,6 +56,7 @@ export function translateLoaderFactoryCode(http: HttpClient) {
     MatSelectModule,
     MatRippleModule,
     TranslateModule.forChild(buildTranslateConfiguration(translateLoaderFactoryCode)),
+    MonacoEditorModule,
   ],
   providers: [
     Context,
