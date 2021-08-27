@@ -27,6 +27,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { RouterModule } from '@angular/router';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { DropzoneModule } from 'ngx-dropzone-wrapper';
+import { MonacoEditorModule } from '../ng-dialogs/src/app/monaco-editor';
 import { EavWindow } from '../ng-dialogs/src/app/shared/models/eav-window.model';
 import { Context } from '../ng-dialogs/src/app/shared/services/context';
 import { SharedComponentsModule } from '../ng-dialogs/src/app/shared/shared-components.module';
@@ -189,6 +190,7 @@ export function translateLoaderFactoryEdit(http: HttpClient): TranslateLoader {
     NgxMatMomentModule,
     MatRippleModule,
     ScrollingModule,
+    MonacoEditorModule,
   ],
   providers: [
     Context,
