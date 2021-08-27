@@ -21,8 +21,8 @@ export class MonacoEditorComponent implements AfterViewInit, OnDestroy {
   @Input() snippets: Snippet[];
   @Input() options?: Record<string, any>;
   @Input() autoFocus = false;
-  @Output() private focused = new EventEmitter();
-  @Output() private blured = new EventEmitter();
+  @Output() private focused = new EventEmitter<undefined>();
+  @Output() private blured = new EventEmitter<undefined>();
 
   private value = '';
   private monaco?: any;

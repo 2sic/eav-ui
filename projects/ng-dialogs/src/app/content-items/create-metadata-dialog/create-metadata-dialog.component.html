@@ -64,7 +64,7 @@
           <mat-label>Content Type</mat-label>
 
           <mat-select formControlName="contentTypeForContentItems" required
-            [placeholder]="!data.contentTypes.length ? 'No items' : ''">
+            [placeholder]="!data.contentTypes.length ? 'No items found' : ''">
             <mat-option *ngFor="let contentType of data.contentTypes" [value]="contentType.StaticName">
               {{ contentType.Label }}
             </mat-option>
@@ -89,7 +89,7 @@
           <ng-container [ngSwitch]="data.formValues.targetType">
             <ng-container *ngSwitchCase="eavConstants.metadata.entity.type">
               <mat-select *ngIf="data.guidedKey" formControlName="key" required
-                [placeholder]="!data.contentItems.length ? 'No items' : ''">
+                [placeholder]="!data.contentItems.length ? 'No items found' : ''">
                 <mat-option *ngFor="let item of data.contentItems" [value]="item.Guid">
                   {{ item.Title }} ({{ item.Id }})
                 </mat-option>
@@ -100,7 +100,7 @@
 
             <ng-container *ngSwitchCase="eavConstants.metadata.contentType.type">
               <mat-select *ngIf="data.guidedKey" formControlName="key" required
-                [placeholder]="!data.contentTypes.length ? 'No items' : ''">
+                [placeholder]="!data.contentTypes.length ? 'No items found' : ''">
                 <mat-option *ngFor="let contentType of data.contentTypes" [value]="contentType.StaticName">
                   {{ contentType.Label }}
                 </mat-option>
