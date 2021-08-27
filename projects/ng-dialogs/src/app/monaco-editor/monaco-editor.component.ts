@@ -1,6 +1,5 @@
-import { AfterViewInit, Component, ElementRef, forwardRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, forwardRef, Input, OnDestroy, Output, ViewChild } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
-import { fromEvent, Subscription } from 'rxjs';
 import { Snippet } from '../code-editor/models/snippet.model';
 import { EavWindow } from '../shared/models/eav-window.model';
 
@@ -9,46 +8,45 @@ declare const window: EavWindow;
 @Component({
   selector: 'app-monaco-editor',
   template: `<div style="width: 100%; height: 100%; overflow: hidden;" #editor></div>`,
-  styles: [':host { display: block; width: 100%; height: 100%; }'],
+  styles: [':host { display: block; width: 100%; height: 100%; overflow: hidden; }'],
   providers: [{
     provide: NG_VALUE_ACCESSOR,
     useExisting: forwardRef(() => MonacoEditorComponent),
     multi: true,
   }],
 })
-export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
+export class MonacoEditorComponent implements AfterViewInit, OnDestroy {
   @ViewChild('editor') private editorRef: ElementRef<HTMLElement>;
   @Input() filename: string;
   @Input() snippets: Snippet[];
+  @Input() options?: Record<string, any>;
+  @Input() autoFocus = false;
+  @Output() private focused = new EventEmitter();
+  @Output() private blured = new EventEmitter();
 
   private value = '';
   private monaco?: any;
   private editorModel?: any;
-  private editor?: any;
+  private editorInstance?: any;
   /**
    * TODO: Remove completionItemProvider when changing language or destroying editor.
    * Also don't register completionItemProvider multiple times.
    * https://github.com/react-monaco-editor/react-monaco-editor/issues/88
    */
   private completionItemProvider?: any;
-  private subscription: Subscription;
+  private observer?: ResizeObserver;
 
   propagateChange: (_: any) => void = () => { };
   propagateTouched: (_: any) => void = () => { };
 
   constructor() { }
 
-  ngOnInit(): void {
-    this.subscription = new Subscription();
-
-    this.subscription.add(
-      fromEvent(window, 'resize').subscribe(() => {
-        this.resize();
-      })
-    );
-  }
-
   ngAfterViewInit(): void {
+    this.observer = new ResizeObserver(entries => {
+      this.editorInstance?.layout();
+    });
+    this.observer.observe(this.editorRef.nativeElement);
+
     window.require.config({
       paths: {
         vs: ['https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.25.2/min/vs'],
@@ -62,21 +60,21 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   insertSnippet(snippet: string): void {
-    const snippetController = this.editor?.getContribution('snippetController2');
+    const snippetController = this.editorInstance?.getContribution('snippetController2');
     snippetController?.insert(snippet);
-    this.editor?.focus();
+    this.editorInstance?.focus();
   }
 
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    this.observer?.disconnect();
     this.completionItemProvider?.dispose();
     this.editorModel?.dispose();
-    this.editor?.dispose();
+    this.editorInstance?.dispose();
   }
 
   writeValue(value: string): void {
     this.value = value || '';
-    this.editor?.getModel().setValue(this.value);
+    this.editorInstance?.getModel().setValue(this.value);
   }
 
   registerOnChange(fn: (_: any) => void): void {
@@ -88,34 +86,43 @@ export class MonacoEditorComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   monacoLoaded(): void {
-    this.editor = this.monaco.editor.create(this.editorRef.nativeElement);
+    // https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.istandaloneeditorconstructionoptions.html
+    this.editorInstance = this.monaco.editor.create(this.editorRef.nativeElement, this.options);
     this.editorModel = this.monaco.editor.createModel(this.value, undefined, this.monaco.Uri.file(this.filename));
-    this.editor.setModel(this.editorModel);
+    this.editorInstance.setModel(this.editorModel);
+    // https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.itextmodelupdateoptions.html
+    // this.editor.getModel().updateOptions({ tabSize: 2 });
 
-    this.completionItemProvider = this.monaco.languages.registerCompletionItemProvider(this.editor.getModel().getModeId(), {
-      provideCompletionItems: (model: any, position: any) => {
-        const word = model.getWordUntilPosition(position);
-        const range = {
-          startLineNumber: position.lineNumber,
-          endLineNumber: position.lineNumber,
-          startColumn: word.startColumn,
-          endColumn: word.endColumn
-        };
-        return { suggestions: this.createDependencyProposals(range) };
-      }
+    if (this.snippets) {
+      this.completionItemProvider = this.monaco.languages.registerCompletionItemProvider(this.editorInstance.getModel().getModeId(), {
+        provideCompletionItems: (model: any, position: any) => {
+          const word = model.getWordUntilPosition(position);
+          const range = {
+            startLineNumber: position.lineNumber,
+            endLineNumber: position.lineNumber,
+            startColumn: word.startColumn,
+            endColumn: word.endColumn
+          };
+          return { suggestions: this.createDependencyProposals(range) };
+        }
+      });
+    }
+
+    this.editorInstance.getModel().onDidChangeContent(() => {
+      this.propagateChange(this.editorInstance.getModel().getValue());
     });
 
-    this.editor.getModel().onDidChangeContent(() => {
-      this.propagateChange(this.editor.getModel().getValue());
+    this.editorInstance.onDidFocusEditorWidget(() => {
+      this.focused.emit();
     });
 
-    this.editor.focus();
-    this.resize();
-  }
+    this.editorInstance.onDidBlurEditorWidget(() => {
+      this.blured.emit();
+    });
 
-  private resize(): void {
-    // wait for Angular to update DOM to be able to get proper size of the container
-    setTimeout(() => { this.editor?.layout(); }, 50);
+    if (this.autoFocus) {
+      this.editorInstance.focus();
+    }
   }
 
   private createDependencyProposals(range: any) {
