@@ -18,6 +18,7 @@ export interface TargetTypeOption {
 export interface MetadataFormValues {
   targetType: number;
   keyType: string;
+  contentTypeForContentItems: string;
   key: string | number;
 }
 

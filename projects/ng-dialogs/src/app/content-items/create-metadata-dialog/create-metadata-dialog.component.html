@@ -15,7 +15,7 @@
       <mat-form-field appearance="standard" color="accent">
         <mat-label>Target</mat-label>
 
-        <mat-select *ngIf="data.guidedMode" formControlName="targetType">
+        <mat-select *ngIf="data.guidedMode" formControlName="targetType" required>
           <mat-option *ngFor="let option of targetTypeOptions" [value]="option.type">
             {{ option.label }}
           </mat-option>
@@ -24,9 +24,15 @@
           </mat-option>
         </mat-select>
 
-        <input matInput type="number" min="0" *ngIf="!data.guidedMode" formControlName="targetType">
+        <input matInput type="number" min="0" *ngIf="!data.guidedMode" formControlName="targetType" required>
       </mat-form-field>
 
+      <app-field-hint
+        *ngIf="form.controls['targetType'].touched && !form.controls['targetType'].invalid && data.unknownTargetType"
+        [isError]="false">
+        Warning: you entered an unknown target type. This may work or may not. Please be sure you know what you're doing
+      </app-field-hint>
+      <app-field-hint *ngIf="data.targetTypeHint" [isError]="false">{{ data.targetTypeHint }}</app-field-hint>
       <app-field-hint *ngIf="form.controls['targetType'].touched && form.controls['targetType'].errors?.required"
         [isError]="true">
         This field is required
@@ -35,18 +41,12 @@
         [isError]="true">
         Must be a whole number
       </app-field-hint>
-      <app-field-hint
-        *ngIf="form.controls['targetType'].touched && !form.controls['targetType'].invalid && data.unknownTargetType"
-        [isError]="false">
-        Warning: you entered an unknown target type. This may work or may not. Please be sure you know what you're doing
-      </app-field-hint>
-      <app-field-hint *ngIf="data.targetTypeHint" [isError]="false">{{ data.targetTypeHint }}</app-field-hint>
 
       <!-- Key Type -->
       <mat-form-field appearance="standard" color="accent">
         <mat-label>Key type</mat-label>
 
-        <mat-select formControlName="keyType">
+        <mat-select formControlName="keyType" required>
           <mat-option *ngFor="let option of data.keyTypeOptions" [value]="option">
             {{ option }}
           </mat-option>
@@ -58,6 +58,26 @@
         This field is required
       </app-field-hint>
 
+      <!-- Content Type for Content Items -->
+      <ng-container *ngIf="data.guidedMode && data.formValues.targetType === eavConstants.metadata.entity.type">
+        <mat-form-field appearance="standard" color="accent">
+          <mat-label>Content Type</mat-label>
+
+          <mat-select formControlName="contentTypeForContentItems" required
+            [placeholder]="!data.contentTypes.length ? 'No items' : ''">
+            <mat-option *ngFor="let contentType of data.contentTypes" [value]="contentType.StaticName">
+              {{ contentType.Label }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <app-field-hint
+          *ngIf="form.controls['contentTypeForContentItems'].touched && form.controls['contentTypeForContentItems'].errors?.required"
+          [isError]="true">
+          This field is required
+        </app-field-hint>
+      </ng-container>
+
       <!-- Key -->
       <mat-form-field appearance="standard" color="accent">
         <mat-label>Key</mat-label>
@@ -68,23 +88,25 @@
         <ng-template #specialKeyInputs>
           <ng-container [ngSwitch]="data.formValues.targetType">
             <ng-container *ngSwitchCase="eavConstants.metadata.entity.type">
-              <mat-select *ngIf="data.guidedKey" formControlName="key">
+              <mat-select *ngIf="data.guidedKey" formControlName="key" required
+                [placeholder]="!data.contentItems.length ? 'No items' : ''">
                 <mat-option *ngFor="let item of data.contentItems" [value]="item.Guid">
                   {{ item.Title }} ({{ item.Id }})
                 </mat-option>
               </mat-select>
 
-              <input matInput type="text" *ngIf="!data.guidedKey" formControlName="key">
+              <input matInput type="text" *ngIf="!data.guidedKey" formControlName="key" required>
             </ng-container>
 
             <ng-container *ngSwitchCase="eavConstants.metadata.contentType.type">
-              <mat-select *ngIf="data.guidedKey" formControlName="key">
+              <mat-select *ngIf="data.guidedKey" formControlName="key" required
+                [placeholder]="!data.contentTypes.length ? 'No items' : ''">
                 <mat-option *ngFor="let contentType of data.contentTypes" [value]="contentType.StaticName">
                   {{ contentType.Label }}
                 </mat-option>
               </mat-select>
 
-              <input matInput type="text" *ngIf="!data.guidedKey" formControlName="key">
+              <input matInput type="text" *ngIf="!data.guidedKey" formControlName="key" required>
             </ng-container>
 
             <ng-container *ngSwitchDefault>
@@ -94,8 +116,8 @@
         </ng-template>
 
         <ng-template #defaultKeyInput>
-          <input matInput type="text" *ngIf="data.formValues.keyType !== 'number'" formControlName="key">
-          <input matInput type="number" *ngIf="data.formValues.keyType === 'number'" formControlName="key">
+          <input matInput type="text" *ngIf="data.formValues.keyType !== 'number'" formControlName="key" required>
+          <input matInput type="number" *ngIf="data.formValues.keyType === 'number'" formControlName="key" required>
         </ng-template>
 
         <div matSuffix class="selection-suffix" *ngIf="data.guidedMode && data.guidedKeyExists">

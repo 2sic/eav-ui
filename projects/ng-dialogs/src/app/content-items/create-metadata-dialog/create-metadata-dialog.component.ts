@@ -4,7 +4,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, combineLatest, merge, Observable, Subscription } from 'rxjs';
-import { distinctUntilChanged, filter, map, startWith } from 'rxjs/operators';
+import { distinctUntilChanged, map, startWith } from 'rxjs/operators';
 import { GeneralHelpers } from '../../../../../edit/shared/helpers';
 import { ContentType } from '../../app-administration/models';
 import { ContentTypesService } from '../../app-administration/services';
@@ -34,7 +34,7 @@ export class CreateMetadataDialogComponent implements OnInit, OnDestroy {
   /** Currently available options */
   private keyTypeOptions$: BehaviorSubject<string[]>;
   private contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
-  private contentItems: BehaviorSubject<ContentItem[]>;
+  private contentItems$: BehaviorSubject<ContentItem[]>;
   private contentTypes$: BehaviorSubject<ContentType[]>;
   private guidedKey$: BehaviorSubject<boolean>;
   private subscription: Subscription;
@@ -54,42 +54,62 @@ export class CreateMetadataDialogComponent implements OnInit, OnDestroy {
 
     this.keyTypeOptions$ = new BehaviorSubject<string[]>([]);
     this.guidedMode$ = new BehaviorSubject(true);
-    this.contentItems = new BehaviorSubject<ContentItem[]>([]);
+    this.contentItems$ = new BehaviorSubject<ContentItem[]>([]);
     this.contentTypes$ = new BehaviorSubject<ContentType[]>([]);
     this.guidedKey$ = new BehaviorSubject(true);
-
-    this.contentItemsService.getAll(this.contentTypeStaticName).subscribe(items => {
-      this.contentItems.next(items);
-    });
-    this.contentTypesService.retrieveContentTypes(eavConstants.scopes.default.value).subscribe(contentTypes => {
-      this.contentTypes$.next(contentTypes);
-    });
 
     this.form = new FormGroup({});
     this.form.addControl('targetType', new FormControl(eavConstants.metadata.entity.type, [Validators.required, Validators.pattern(/^[0-9]+$/)]));
     this.form.addControl('keyType', new FormControl(eavConstants.keyTypes.guid, [Validators.required]));
+    this.form.addControl('contentTypeForContentItems', new FormControl(this.contentTypeStaticName, [Validators.required]));
     this.form.addControl('key', new FormControl(null, [Validators.required, metadataKeyValidator(this.form)]));
+
+    this.contentTypesService.retrieveContentTypes(eavConstants.scopes.default.value).subscribe(contentTypes => {
+      this.contentTypes$.next(contentTypes);
+    });
+
+    // reset key if target or keyType changed
+    this.subscription.add(
+      merge(
+        this.form.controls['targetType'].valueChanges.pipe(distinctUntilChanged()),
+        this.form.controls['keyType'].valueChanges.pipe(distinctUntilChanged()),
+      ).subscribe(() => {
+        this.guidedKey$.next(true);
+
+        const formValues: MetadataFormValues = this.form.getRawValue();
+        if (formValues.key != null) {
+          const updatedForm: Partial<MetadataFormValues> = {
+            key: null,
+          };
+          this.form.patchValue(updatedForm);
+        }
+      })
+    );
+
+    // reset key if contentTypeForContentItems changed
+    this.subscription.add(
+      this.form.controls['contentTypeForContentItems'].valueChanges.pipe(
+        startWith(this.form.controls['contentTypeForContentItems'].value),
+        distinctUntilChanged(),
+      ).subscribe(contentTypeStaticName => {
+        const formValues: MetadataFormValues = this.form.getRawValue();
+        if (formValues.targetType === eavConstants.metadata.entity.type && formValues.key != null) {
+          const updatedForm: Partial<MetadataFormValues> = {
+            key: null,
+          };
+          this.form.patchValue(updatedForm);
+        }
+
+        this.contentItemsService.getAll(contentTypeStaticName).subscribe(items => {
+          this.contentItems$.next(items);
+        });
+      })
+    );
 
     const formValues$ = this.form.valueChanges.pipe(
       startWith(this.form.getRawValue() as MetadataFormValues),
       map(() => this.form.getRawValue() as MetadataFormValues),
       distinctUntilChanged(GeneralHelpers.objectsEqual),
-    );
-
-    // reset key if target or keyType changed
-    this.subscription.add(
-      merge(
-        this.form.controls['targetType'].valueChanges,
-        this.form.controls['keyType'].valueChanges,
-      ).pipe(
-        filter(() => (this.form.getRawValue() as MetadataFormValues).key != null),
-      ).subscribe(() => {
-        this.guidedKey$.next(true);
-        const updatedForm: Partial<MetadataFormValues> = {
-          key: null,
-        };
-        this.form.patchValue(updatedForm);
-      })
     );
 
     this.subscription.add(
@@ -124,7 +144,7 @@ export class CreateMetadataDialogComponent implements OnInit, OnDestroy {
     );
 
     this.templateVars$ = combineLatest([
-      combineLatest([this.guidedMode$, this.keyTypeOptions$, this.contentItems, this.contentTypes$]),
+      combineLatest([this.guidedMode$, this.keyTypeOptions$, this.contentItems$, this.contentTypes$]),
       combineLatest([formValues$, this.guidedKey$]),
     ]).pipe(
       map(([
@@ -150,7 +170,7 @@ export class CreateMetadataDialogComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.guidedMode$.complete();
     this.keyTypeOptions$.complete();
-    this.contentItems.complete();
+    this.contentItems$.complete();
     this.contentTypes$.complete();
     this.guidedKey$.complete();
     this.subscription.unsubscribe();

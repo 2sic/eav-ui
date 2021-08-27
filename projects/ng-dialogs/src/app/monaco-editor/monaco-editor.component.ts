@@ -88,6 +88,7 @@ export class MonacoEditorComponent implements AfterViewInit, OnDestroy {
   monacoLoaded(): void {
     // https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.istandaloneeditorconstructionoptions.html
     this.editorInstance = this.monaco.editor.create(this.editorRef.nativeElement, this.options);
+    // editorInstance.updateOptions({ readOnly: true })
     this.editorModel = this.monaco.editor.createModel(this.value, undefined, this.monaco.Uri.file(this.filename));
     this.editorInstance.setModel(this.editorModel);
     // https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.itextmodelupdateoptions.html
