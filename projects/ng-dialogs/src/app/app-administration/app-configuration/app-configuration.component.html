@@ -20,6 +20,10 @@
         <mat-icon>dns</mat-icon>
         <span>Configure Fields</span>
       </button>
+      <button mat-button (click)="analyze(AnalyzeParts.Settings)">
+        <mat-icon>search</mat-icon>
+        <span>Analyze</span>
+      </button>
     </mat-card-actions>
   </mat-card>
 
@@ -42,6 +46,10 @@
       <button mat-button (click)="config(eavConstants.contentTypes.resources)">
         <mat-icon>dns</mat-icon>
         <span>Configure Fields</span>
+      </button>
+      <button mat-button (click)="analyze(AnalyzeParts.Resources)">
+        <mat-icon>search</mat-icon>
+        <span>Analyze</span>
       </button>
     </mat-card-actions>
   </mat-card>

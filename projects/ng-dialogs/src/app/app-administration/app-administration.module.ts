@@ -24,6 +24,9 @@ import { ContentItemsService } from '../content-items/services/content-items.ser
 import { Context } from '../shared/services/context';
 import { DialogService } from '../shared/services/dialog.service';
 import { SharedComponentsModule } from '../shared/shared-components.module';
+import { AnalyzeSettingsKeyComponent } from './ag-grid-components/analyze-settings-key/analyze-settings-key.component';
+import { AnalyzeSettingsTotalResultsComponent } from './ag-grid-components/analyze-settings-total-results/analyze-settings-total-results.component';
+import { AnalyzeSettingsValueComponent } from './ag-grid-components/analyze-settings-value/analyze-settings-value.component';
 import { DataActionsComponent } from './ag-grid-components/data-actions/data-actions.component';
 import { DataFieldsComponent } from './ag-grid-components/data-fields/data-fields.component';
 import { DataItemsComponent } from './ag-grid-components/data-items/data-items.component';
@@ -40,6 +43,7 @@ import { AppConfigurationComponent } from './app-configuration/app-configuration
 import { DataComponent } from './data/data.component';
 import { GettingStartedComponent } from './getting-started/getting-started.component';
 import { QueriesComponent } from './queries/queries.component';
+import { AnalyzeSettingsService } from './services/analyze-settings.service';
 import { AppDialogConfigService } from './services/app-dialog-config.service';
 import { ContentTypesService } from './services/content-types.service';
 import { ExportAppPartsService } from './services/export-app-parts.service';
@@ -48,6 +52,8 @@ import { ImportAppPartsService } from './services/import-app-parts.service';
 import { PipelinesService } from './services/pipelines.service';
 import { ViewsService } from './services/views.service';
 import { WebApisService } from './services/web-apis.service';
+import { AnalyzeSettingsComponent } from './sub-dialogs/analyze-settings/analyze-settings.component';
+import { SettingsItemDetailsComponent } from './sub-dialogs/analyze-settings/settings-item-details/settings-item-details.component';
 import { EditContentTypeComponent } from './sub-dialogs/edit-content-type/edit-content-type.component';
 import { ExportAppPartsComponent } from './sub-dialogs/export-app-parts/export-app-parts.component';
 import { ExportAppComponent } from './sub-dialogs/export-app/export-app.component';
@@ -86,6 +92,11 @@ import { WebApiComponent } from './web-api/web-api.component';
     ViewsUsageStatusFilterComponent,
     ImportContentTypeComponent,
     ImportViewComponent,
+    AnalyzeSettingsComponent,
+    AnalyzeSettingsKeyComponent,
+    AnalyzeSettingsValueComponent,
+    AnalyzeSettingsTotalResultsComponent,
+    SettingsItemDetailsComponent,
   ],
   imports: [
     AppAdministrationRoutingModule,
@@ -124,6 +135,7 @@ import { WebApiComponent } from './web-api/web-api.component';
     ImportAppPartsService,
     DialogService,
     AppsListService,
+    AnalyzeSettingsService,
   ]
 })
 export class AppAdministrationModule { }

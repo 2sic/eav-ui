@@ -11,6 +11,7 @@ import { Context } from '../../shared/services/context';
 import { DialogSettings } from '../models/dialog-settings.model';
 import { ExportAppService } from '../services/export-app.service';
 import { ImportAppPartsService } from '../services/import-app-parts.service';
+import { AnalyzePart, AnalyzeParts } from '../sub-dialogs/analyze-settings/analyze-settings.models';
 
 @Component({
   selector: 'app-app-configuration',
@@ -20,6 +21,7 @@ import { ImportAppPartsService } from '../services/import-app-parts.service';
 export class AppConfigurationComponent implements OnInit, OnDestroy {
   @Input() dialogSettings: DialogSettings;
   eavConstants = eavConstants;
+  AnalyzeParts = AnalyzeParts;
 
   constructor(
     private contentItemsService: ContentItemsService,
@@ -104,5 +106,9 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       this.router.navigate([`${this.context.zoneId}/apps/settings`]);
     }, 750);
+  }
+
+  analyze(part: AnalyzePart) {
+    this.router.navigate([`analyze/${part}`], { relativeTo: this.route.firstChild });
   }
 }
