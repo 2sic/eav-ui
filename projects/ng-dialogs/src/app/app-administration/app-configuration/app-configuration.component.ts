@@ -8,6 +8,7 @@ import { eavConstants } from '../../shared/constants/eav.constants';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { EditForm } from '../../shared/models/edit-form.model';
 import { Context } from '../../shared/services/context';
+import { DialogService } from '../../shared/services/dialog.service';
 import { DialogSettings } from '../models/dialog-settings.model';
 import { ExportAppService } from '../services/export-app.service';
 import { ImportAppPartsService } from '../services/import-app-parts.service';
@@ -31,6 +32,7 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
     private exportAppService: ExportAppService,
     private importAppPartsService: ImportAppPartsService,
     private snackBar: MatSnackBar,
+    private dialogService: DialogService,
   ) { }
 
   ngOnInit() {
@@ -102,10 +104,7 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
   }
 
   openSystemSettings() {
-    this.router.navigate([`${this.context.zoneId}/apps`]);
-    setTimeout(() => {
-      this.router.navigate([`${this.context.zoneId}/apps/settings`]);
-    }, 750);
+    this.dialogService.openAppsManagement(this.context.zoneId, 'settings');
   }
 
   analyze(part: AnalyzePart) {

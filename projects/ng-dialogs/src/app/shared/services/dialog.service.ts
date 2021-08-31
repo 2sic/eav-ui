@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { DialogTypeConstants } from '../constants/dialog-type.constants';
 // tslint:disable-next-line:max-line-length
-import { keyApi, keyAppId, keyContentBlockId, keyDebug, keyDialog, keyExtras, keyIsShared, keyItems, keyModuleId, keyPartOfPage, keyPipelineId, keyRequestToken, keyTabId, keyUrl, keyZoneId, prefix, keyRequestTokenHeaderName } from '../constants/session.constants';
+import { keyApi, keyAppId, keyContentBlockId, keyDebug, keyDialog, keyExtras, keyIsShared, keyItems, keyModuleId, keyPartOfPage, keyPipelineId, keyRequestToken, keyRequestTokenHeaderName, keyTabId, keyUrl, keyZoneId, prefix } from '../constants/session.constants';
 import { DialogHashParams, ExtrasParam } from '../models/dialog-url-params.model';
 import { EditForm } from '../models/edit-form.model';
 import { Context } from './context';
@@ -35,6 +35,17 @@ export class DialogService {
       ...this.buildHashParam(keyDialog, dialog),
       ...this.buildHashParam(keyPipelineId, queryId.toString()),
       ...this.buildHashParam(keyItems, JSON.stringify(form.items)),
+    };
+    const url = this.buildFullUrl(hashParams);
+    window.open(url, '_blank');
+  }
+
+  openAppsManagement(zoneId: number, tab?: string) {
+    const extras: ExtrasParam = tab ? { tab } : null;
+    const hashParams: DialogHashParams = {
+      ...this.buildHashParam(keyZoneId, zoneId.toString()),
+      ...this.buildHashParam(keyDialog, DialogTypeConstants.Zone),
+      ...(extras ? this.buildHashParam(keyExtras, JSON.stringify(extras)) : ''),
     };
     const url = this.buildFullUrl(hashParams);
     window.open(url, '_blank');
