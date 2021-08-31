@@ -29,6 +29,7 @@
 
         2. note that if the list of items returns 2, that's ok - pick the one with SettingsEntityScope=null/empty
            if there is none with an empty SettingsEntityScope, then create a new one with prefill
+        3. if possible, actually query that when this dialog shows, and show an indicator if data already exists
       -->
       <button mat-button (click)="edit(eavConstants.contentTypes.systemSettings)">
         <mat-icon>edit</mat-icon>
@@ -38,8 +39,10 @@
         1. todo SPM: Show only if it's the default app (Settings App.Identifier == "Default")
 
         2. note that if the list of items returns 2, that's ok - pick the one with SettingsEntityScope="site"
-        If there is none with "site" thes please create a new one with prefill
-        3. Repeat these buttons for the resources (won't work yet, but I'll prepare the content-types)
+           If there is none with "site" thes please create a new one with prefill
+        3. if possible, actually query that when this dialog shows, and show an indicator if data already exists
+
+        4. Repeat these buttons for the resources (won't work yet, but I'll prepare the content-types)
       -->
       <button mat-button (click)="edit(eavConstants.contentTypes.systemSettings)">
         <mat-icon>edit</mat-icon>
