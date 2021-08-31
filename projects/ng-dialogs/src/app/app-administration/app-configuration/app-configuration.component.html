@@ -1,7 +1,7 @@
 <div class="cards-box">
   <mat-card class="mat-elevation-z2">
     <mat-card-header>
-      <mat-card-title>App Settings</mat-card-title>
+      <mat-card-title>Settings</mat-card-title>
       <div class="mat-card-header-icon">
         <mat-icon>settings</mat-icon>
       </div>
@@ -53,7 +53,7 @@
 
   <mat-card class="mat-elevation-z2">
     <mat-card-header>
-      <mat-card-title>App Resources</mat-card-title>
+      <mat-card-title>Language Resources (i18n)</mat-card-title>
       <div class="mat-card-header-icon">
         <mat-icon>translate</mat-icon>
       </div>
@@ -82,18 +82,18 @@
 <div class="cards-box">
   <mat-card class="mat-elevation-z2">
     <mat-card-header>
-      <mat-card-title>App Package Definition</mat-card-title>
+      <mat-card-title>App Configuration</mat-card-title>
       <div class="mat-card-header-icon">
         <mat-icon>redeem</mat-icon>
       </div>
     </mat-card-header>
     <mat-card-content>
-      The app-package definition is important when exporting/importing this app.
+      App name, folder, version and more.
     </mat-card-content>
     <mat-card-actions>
       <button mat-button (click)="edit(eavConstants.scopes.app.value)">
         <mat-icon>edit</mat-icon>
-        <span>Edit App Package Definition</span>
+        <span>Edit Configuration</span>
       </button>
     </mat-card-actions>
   </mat-card>
@@ -106,7 +106,7 @@
       </div>
     </mat-card-header>
     <mat-card-content>
-      Permissions give access to people to the entire app (all content-types / data), so use with care.
+      Give access to the entire app (all data). Use with care.
     </mat-card-content>
     <mat-card-actions>
       <button mat-button [disabled]="!dialogSettings.Context.Enable.AppPermissions" (click)="openPermissions()">
@@ -129,7 +129,7 @@
       </div>
     </mat-card-header>
     <mat-card-content>
-      Create an app-package (zip) which can be installed in another portal.
+      Create an package (zip) which can be installed in another site.
     </mat-card-content>
     <mat-card-actions>
       <button mat-button (click)="exportApp()">
@@ -166,17 +166,18 @@
 <div class="cards-box">
   <mat-card class="mat-elevation-z2">
     <mat-card-header>
-      <mat-card-title>Experimental: App State Versioning</mat-card-title>
+      <mat-card-title>App-State Versioning</mat-card-title>
       <div class="mat-card-header-icon">
         <mat-icon>history_toggle_off</mat-icon>
       </div>
     </mat-card-header>
     <mat-card-content>
-      Reset all app data to the state stored in the .data/app.xml.
+      You can save / restore the app with data and configuration in <code>.data/app.xml</code>.
+      This file can then also be versioned using git.
     </mat-card-content>
     <mat-card-actions>
       <button mat-button (click)="exportAppXml()">
-        <mat-icon>save_alt</mat-icon>
+        <mat-icon>more_time</mat-icon>
         <span>Save state</span>
       </button>
       <button mat-button (click)="resetApp()">
