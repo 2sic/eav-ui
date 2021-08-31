@@ -12,17 +12,38 @@
       each language.
     </mat-card-content>
     <mat-card-actions>
+      <button mat-button (click)="analyze(AnalyzeParts.Settings)">
+        <mat-icon>manage_search</mat-icon>
+        <span>Analyze</span>
+      </button>
       <button mat-button (click)="edit(eavConstants.contentTypes.settings)">
         <mat-icon>edit</mat-icon>
-        <span>Edit Settings</span>
+        <span>Edit</span>
       </button>
       <button mat-button (click)="config(eavConstants.contentTypes.settings)">
         <mat-icon>dns</mat-icon>
-        <span>Configure Fields</span>
+        <span>Fields</span>
       </button>
-      <button mat-button (click)="analyze(AnalyzeParts.Settings)">
-        <mat-icon>search</mat-icon>
-        <span>Analyze</span>
+      <!-- todo SPM
+        1. The following two buttons should be grouped or something, so if the line-breaks, they are together
+
+        2. note that if the list of items returns 2, that's ok - pick the one with SettingsEntityScope=null/empty
+           if there is none with an empty SettingsEntityScope, then create a new one with prefill
+      -->
+      <button mat-button (click)="edit(eavConstants.contentTypes.systemSettings)">
+        <mat-icon>edit</mat-icon>
+        <span>App SystemSettings</span>
+      </button>
+      <!--
+        1. todo SPM: Show only if it's the default app (Settings App.Identifier == "Default")
+
+        2. note that if the list of items returns 2, that's ok - pick the one with SettingsEntityScope="site"
+        If there is none with "site" thes please create a new one with prefill
+        3. Repeat these buttons for the resources (won't work yet, but I'll prepare the content-types)
+      -->
+      <button mat-button (click)="edit(eavConstants.contentTypes.systemSettings)">
+        <mat-icon>edit</mat-icon>
+        <span>Site SystemSettings</span>
       </button>
     </mat-card-actions>
   </mat-card>
@@ -39,17 +60,17 @@
       views and such, and should not be used for App-Settings.
     </mat-card-content>
     <mat-card-actions>
+      <button mat-button (click)="analyze(AnalyzeParts.Resources)">
+        <mat-icon>manage_search</mat-icon>
+        <span>Analyze</span>
+      </button>
       <button mat-button (click)="edit(eavConstants.contentTypes.resources)">
         <mat-icon>edit</mat-icon>
-        <span>Edit Resources</span>
+        <span>Edit</span>
       </button>
       <button mat-button (click)="config(eavConstants.contentTypes.resources)">
         <mat-icon>dns</mat-icon>
-        <span>Configure Fields</span>
-      </button>
-      <button mat-button (click)="analyze(AnalyzeParts.Resources)">
-        <mat-icon>search</mat-icon>
-        <span>Analyze</span>
+        <span>Fields</span>
       </button>
     </mat-card-actions>
   </mat-card>
