@@ -6,6 +6,11 @@ const EavKeyTypes = {
 } as const;
 export type EavKeyTypeKey = typeof EavKeyTypes[keyof typeof EavKeyTypes];
 export interface EavScopeOption { name: string; value: string; }
+export const SystemSettingsScopes = {
+  App: 'app',
+  Site: 'site',
+} as const;
+export type SystemSettingsScope = typeof SystemSettingsScopes[keyof typeof SystemSettingsScopes];
 
 export const eavConstants = {
   metadata: {

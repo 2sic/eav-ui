@@ -24,12 +24,19 @@
         <mat-icon>dns</mat-icon>
         <span>Fields</span>
       </button>
-      <button mat-button (click)="edit(eavConstants.contentTypes.systemSettings, 'app')">
-        <mat-icon>edit</mat-icon>
+      <button mat-button (click)="edit(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.App)">
+        <mat-icon matBadgePosition="after" matBadgeColor="accent" matBadgeSize="small"
+          [matBadge]="appSystemSettingsExists ? 1 : null">
+          edit
+        </mat-icon>
         <span>App SystemSettings</span>
       </button>
-      <button mat-button *ngIf="isContentApp" (click)="edit(eavConstants.contentTypes.systemSettings, 'site')">
-        <mat-icon>edit</mat-icon>
+      <button mat-button *ngIf="dialogSettings.Context.App.Identifier === 'Default'"
+        (click)="edit(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.Site)">
+        <mat-icon matBadgePosition="after" matBadgeColor="accent" matBadgeSize="small"
+          [matBadge]="siteSystemSettingsExists ? 1 : null">
+          edit
+        </mat-icon>
         <span>Site SystemSettings</span>
       </button>
     </mat-card-actions>
@@ -59,12 +66,19 @@
         <mat-icon>dns</mat-icon>
         <span>Fields</span>
       </button>
-      <button mat-button (click)="edit(eavConstants.contentTypes.systemResources, 'app')">
-        <mat-icon>edit</mat-icon>
+      <button mat-button (click)="edit(eavConstants.contentTypes.systemResources, SystemSettingsScopes.App)">
+        <mat-icon matBadgePosition="after" matBadgeColor="accent" matBadgeSize="small"
+          [matBadge]="appSystemResourcesExists ? 1 : null">
+          edit
+        </mat-icon>
         <span>App SystemResources</span>
       </button>
-      <button mat-button *ngIf="isContentApp" (click)="edit(eavConstants.contentTypes.systemResources, 'site')">
-        <mat-icon>edit</mat-icon>
+      <button mat-button *ngIf="dialogSettings.Context.App.Identifier === 'Default'"
+        (click)="edit(eavConstants.contentTypes.systemResources, SystemSettingsScopes.Site)">
+        <mat-icon matBadgePosition="after" matBadgeColor="accent" matBadgeSize="small"
+          [matBadge]="siteSystemResourcesExists ? 1 : null">
+          edit
+        </mat-icon>
         <span>Site SystemResources</span>
       </button>
     </mat-card-actions>

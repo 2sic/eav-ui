@@ -1,10 +1,12 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { forkJoin, Subscription } from 'rxjs';
+import { filter, map, pairwise, startWith } from 'rxjs/operators';
 import { ContentItemsService } from '../../content-items/services/content-items.service';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
-import { eavConstants } from '../../shared/constants/eav.constants';
+import { eavConstants, SystemSettingsScope, SystemSettingsScopes } from '../../shared/constants/eav.constants';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { EditForm } from '../../shared/models/edit-form.model';
 import { Context } from '../../shared/services/context';
@@ -23,7 +25,13 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
   @Input() dialogSettings: DialogSettings;
   eavConstants = eavConstants;
   AnalyzeParts = AnalyzeParts;
-  isContentApp: boolean;
+  SystemSettingsScopes = SystemSettingsScopes;
+  appSystemSettingsExists: boolean;
+  siteSystemSettingsExists: boolean;
+  appSystemResourcesExists: boolean;
+  siteSystemResourcesExists: boolean;
+
+  private subscription: Subscription;
 
   constructor(
     private contentItemsService: ContentItemsService,
@@ -34,28 +42,39 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
     private importAppPartsService: ImportAppPartsService,
     private snackBar: MatSnackBar,
     private dialogService: DialogService,
+    private changeDetectorRef: ChangeDetectorRef,
   ) { }
 
   ngOnInit() {
-    this.isContentApp = this.dialogSettings.Context.App.Identifier === 'Default';
+    this.subscription = new Subscription();
+    this.fetchSystemSettings();
+    this.refreshOnChildClosed();
   }
 
   ngOnDestroy() {
     this.snackBar.dismiss();
+    this.subscription.unsubscribe();
   }
 
-  edit(staticName: string, settingsType?: 'app' | 'site') {
+  edit(staticName: string, systemSettingsScope?: SystemSettingsScope) {
     this.contentItemsService.getAll(staticName).subscribe(contentItems => {
       let form: EditForm;
 
       switch (staticName) {
         case eavConstants.contentTypes.systemSettings:
         case eavConstants.contentTypes.systemResources:
-          const settingsEntity = contentItems.find(i => settingsType === 'app' ? !i.SettingsEntityScope : i.SettingsEntityScope === 'site');
+          const settingsEntity = contentItems.find(i => systemSettingsScope === SystemSettingsScopes.App
+            ? !i.SettingsEntityScope
+            : i.SettingsEntityScope === SystemSettingsScopes.Site);
           form = {
             items: [
               settingsEntity == null
-                ? { ContentTypeName: staticName, Prefill: { ...(settingsType === 'site' && { SettingsEntityScope: 'site' }) } }
+                ? {
+                  ContentTypeName: staticName,
+                  Prefill: {
+                    ...(systemSettingsScope === SystemSettingsScopes.Site && { SettingsEntityScope: SystemSettingsScopes.Site }),
+                  }
+                }
                 : { EntityId: settingsEntity.Id }
             ],
           };
@@ -129,5 +148,33 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
 
   analyze(part: AnalyzePart) {
     this.router.navigate([`analyze/${part}`], { relativeTo: this.route.firstChild });
+  }
+
+  private fetchSystemSettings() {
+    forkJoin([
+      this.contentItemsService.getAll(eavConstants.contentTypes.systemSettings),
+      this.contentItemsService.getAll(eavConstants.contentTypes.systemResources),
+    ]).subscribe(([systemSettingsItems, systemResourcesItems]) => {
+      this.appSystemSettingsExists = systemSettingsItems.some(i => !i.SettingsEntityScope);
+      this.siteSystemSettingsExists = systemSettingsItems.some(i => i.SettingsEntityScope === SystemSettingsScopes.Site);
+      this.appSystemResourcesExists = systemResourcesItems.some(i => !i.SettingsEntityScope);
+      this.siteSystemResourcesExists = systemResourcesItems.some(i => i.SettingsEntityScope === SystemSettingsScopes.Site);
+
+      this.changeDetectorRef.markForCheck();
+    });
+  }
+
+  private refreshOnChildClosed() {
+    this.subscription.add(
+      this.router.events.pipe(
+        filter(event => event instanceof NavigationEnd),
+        startWith(!!this.route.snapshot.firstChild.firstChild),
+        map(() => !!this.route.snapshot.firstChild.firstChild),
+        pairwise(),
+        filter(([hadChild, hasChild]) => hadChild && !hasChild),
+      ).subscribe(() => {
+        this.fetchSystemSettings();
+      })
+    );
   }
 }
