@@ -34,10 +34,6 @@ export class SettingsItemDetailsComponent implements OnInit, OnDestroy {
         headerName: 'Source', field: 'Source', flex: 1, minWidth: 150, cellClass: 'no-outline',
         sortable: true, filter: 'agTextColumnFilter',
       },
-      // {
-      //   headerName: 'Total', field: 'TotalResults', width: 70, headerClass: 'dense', cellClass: 'no-outline',
-      //   sortable: true, filter: 'agNumberColumnFilter',
-      // },
     ],
   };
 

@@ -24,27 +24,11 @@
         <mat-icon>dns</mat-icon>
         <span>Fields</span>
       </button>
-      <!-- todo SPM
-        1. The following two buttons should be grouped or something, so if the line-breaks, they are together
-
-        2. note that if the list of items returns 2, that's ok - pick the one with SettingsEntityScope=null/empty
-           if there is none with an empty SettingsEntityScope, then create a new one with prefill
-        3. if possible, actually query that when this dialog shows, and show an indicator if data already exists
-      -->
-      <button mat-button (click)="edit(eavConstants.contentTypes.systemSettings)">
+      <button mat-button (click)="edit(eavConstants.contentTypes.systemSettings, 'app')">
         <mat-icon>edit</mat-icon>
         <span>App SystemSettings</span>
       </button>
-      <!--
-        1. todo SPM: Show only if it's the default app (Settings App.Identifier == "Default")
-
-        2. note that if the list of items returns 2, that's ok - pick the one with SettingsEntityScope="site"
-           If there is none with "site" thes please create a new one with prefill
-        3. if possible, actually query that when this dialog shows, and show an indicator if data already exists
-
-        4. Repeat these buttons for the resources (won't work yet, but I'll prepare the content-types)
-      -->
-      <button mat-button (click)="edit(eavConstants.contentTypes.systemSettings)">
+      <button mat-button *ngIf="isContentApp" (click)="edit(eavConstants.contentTypes.systemSettings, 'site')">
         <mat-icon>edit</mat-icon>
         <span>Site SystemSettings</span>
       </button>
@@ -74,6 +58,14 @@
       <button mat-button (click)="config(eavConstants.contentTypes.resources)">
         <mat-icon>dns</mat-icon>
         <span>Fields</span>
+      </button>
+      <button mat-button (click)="edit(eavConstants.contentTypes.systemResources, 'app')">
+        <mat-icon>edit</mat-icon>
+        <span>App SystemResources</span>
+      </button>
+      <button mat-button *ngIf="isContentApp" (click)="edit(eavConstants.contentTypes.systemResources, 'site')">
+        <mat-icon>edit</mat-icon>
+        <span>Site SystemResources</span>
       </button>
     </mat-card-actions>
   </mat-card>

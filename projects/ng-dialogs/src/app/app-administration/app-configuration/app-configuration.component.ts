@@ -23,6 +23,7 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
   @Input() dialogSettings: DialogSettings;
   eavConstants = eavConstants;
   AnalyzeParts = AnalyzeParts;
+  isContentApp: boolean;
 
   constructor(
     private contentItemsService: ContentItemsService,
@@ -36,19 +37,38 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+    this.isContentApp = this.dialogSettings.Context.App.Identifier === 'Default';
   }
 
   ngOnDestroy() {
     this.snackBar.dismiss();
   }
 
-  edit(staticName: string) {
+  edit(staticName: string, settingsType?: 'app' | 'site') {
     this.contentItemsService.getAll(staticName).subscribe(contentItems => {
-      if (contentItems.length !== 1) { throw new Error(`Found too many settings for the type ${staticName}`); }
-      const item = contentItems[0];
-      const form: EditForm = {
-        items: [{ EntityId: item.Id }],
-      };
+      let form: EditForm;
+
+      switch (staticName) {
+        case eavConstants.contentTypes.systemSettings:
+        case eavConstants.contentTypes.systemResources:
+          const settingsEntity = contentItems.find(i => settingsType === 'app' ? !i.SettingsEntityScope : i.SettingsEntityScope === 'site');
+          form = {
+            items: [
+              settingsEntity == null
+                ? { ContentTypeName: staticName, Prefill: { ...(settingsType === 'site' && { SettingsEntityScope: 'site' }) } }
+                : { EntityId: settingsEntity.Id }
+            ],
+          };
+          break;
+        default:
+          if (contentItems.length !== 1) {
+            throw new Error(`Found too many settings for the type ${staticName}`);
+          }
+          form = {
+            items: [{ EntityId: contentItems[0].Id }],
+          };
+      }
+
       const formUrl = convertFormToUrl(form);
       this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.firstChild });
     });
