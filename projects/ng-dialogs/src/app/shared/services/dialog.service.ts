@@ -41,23 +41,28 @@ export class DialogService {
   }
 
   openAppsManagement(zoneId: number, tab?: string) {
-    const extras: ExtrasParam = tab ? { tab } : null;
+    const extras: ExtrasParam = {
+      ...(tab && { tab }),
+    };
     const hashParams: DialogHashParams = {
       ...this.buildHashParam(keyZoneId, zoneId.toString()),
       ...this.buildHashParam(keyDialog, DialogTypeConstants.Zone),
-      ...(extras ? this.buildHashParam(keyExtras, JSON.stringify(extras)) : ''),
+      ...(Object.keys(extras).length ? this.buildHashParam(keyExtras, JSON.stringify(extras)) : ''),
     };
     const url = this.buildFullUrl(hashParams);
     window.open(url, '_blank');
   }
 
   openAppAdministration(zoneId: number, appId: number, tab?: string, scope?: string) {
-    const extras: ExtrasParam = tab && scope ? { tab, scope } : null;
+    const extras: ExtrasParam = {
+      ...(tab && { tab }),
+      ...(scope && { scope }),
+    };
     const hashParams: DialogHashParams = {
       ...this.buildHashParam(keyZoneId, zoneId.toString()),
       ...this.buildHashParam(keyAppId, appId.toString()),
       ...this.buildHashParam(keyDialog, DialogTypeConstants.App),
-      ...(extras ? this.buildHashParam(keyExtras, JSON.stringify(extras)) : ''),
+      ...(Object.keys(extras).length ? this.buildHashParam(keyExtras, JSON.stringify(extras)) : ''),
     };
     const url = this.buildFullUrl(hashParams);
     window.open(url, '_blank');

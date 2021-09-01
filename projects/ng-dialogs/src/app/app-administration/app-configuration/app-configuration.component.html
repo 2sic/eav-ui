@@ -26,23 +26,71 @@
           <span>Fields</span>
         </button>
       </div>
-      <div class="actions-row">
-        <button mat-button (click)="edit(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.App)">
-          <mat-icon matBadgePosition="after" matBadgeColor="accent" matBadgeSize="small"
-            [matBadge]="appSystemSettingsExists ? 1 : null">
-            edit
-          </mat-icon>
-          <span>App SystemSettings</span>
-        </button>
-        <button mat-button *ngIf="dialogSettings.Context.App.Identifier === 'Default'"
-          (click)="edit(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.Site)">
-          <mat-icon matBadgePosition="after" matBadgeColor="accent" matBadgeSize="small"
-            [matBadge]="siteSystemSettingsExists ? 1 : null">
-            edit
-          </mat-icon>
-          <span>Site SystemSettings</span>
-        </button>
-      </div>
+      <!-- Global System Settings on Default App -->
+      <ng-container *ngIf="dialogSettings.Context.App.Id === eavConstants.defaultApp">
+        <div class="actions-row">
+          <button mat-button (click)="edit(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.App)">
+            <mat-icon matBadgePosition="after" matBadgeColor="accent" matBadgeSize="small"
+              [matBadge]="appSystemSettingsExists ? 1 : null">
+              edit
+            </mat-icon>
+            <span>Global SystemSettings</span>
+          </button>
+        </div>
+      </ng-container>
+      <!-- App and Site System Settings on Content App -->
+      <ng-container
+        *ngIf="dialogSettings.Context.App.Id !== eavConstants.defaultApp && dialogSettings.Context.App.Identifier === 'Default'">
+        <div class="actions-row">
+          <button mat-button (click)="edit(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.App)">
+            <mat-icon matBadgePosition="after" matBadgeColor="accent" matBadgeSize="small"
+              [matBadge]="appSystemSettingsExists ? 1 : null">
+              edit
+            </mat-icon>
+            <span>App SystemSettings</span>
+          </button>
+        </div>
+        <div class="actions-row">
+          <button mat-button (click)="edit(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.Site)">
+            <mat-icon matBadgePosition="after" matBadgeColor="accent" matBadgeSize="small"
+              [matBadge]="siteSystemSettingsExists ? 1 : null">
+              edit
+            </mat-icon>
+            <span>Site SystemSettings</span>
+          </button>
+        </div>
+        <div class="actions-row">
+          <button mat-button (click)="openGlobalSettings()">
+            <mat-icon>link</mat-icon>
+            <span>Go to Global SystemSettings</span>
+          </button>
+        </div>
+      </ng-container>
+      <!-- App System Settings on normal Apps -->
+      <ng-container
+        *ngIf="dialogSettings.Context.App.Id !== eavConstants.defaultApp && dialogSettings.Context.App.Identifier !== 'Default'">
+        <div class="actions-row">
+          <button mat-button (click)="edit(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.App)">
+            <mat-icon matBadgePosition="after" matBadgeColor="accent" matBadgeSize="small"
+              [matBadge]="appSystemSettingsExists ? 1 : null">
+              edit
+            </mat-icon>
+            <span>App SystemSettings</span>
+          </button>
+        </div>
+        <div class="actions-row">
+          <button mat-button (click)="openSiteSettings()">
+            <mat-icon>link</mat-icon>
+            <span>Go to Site SystemSettings</span>
+          </button>
+        </div>
+        <div class="actions-row">
+          <button mat-button (click)="openGlobalSettings()">
+            <mat-icon>link</mat-icon>
+            <span>Go to Global SystemSettings</span>
+          </button>
+        </div>
+      </ng-container>
     </mat-card-actions>
   </mat-card>
 
@@ -72,23 +120,71 @@
           <span>Fields</span>
         </button>
       </div>
-      <div class="actions-row">
-        <button mat-button (click)="edit(eavConstants.contentTypes.systemResources, SystemSettingsScopes.App)">
-          <mat-icon matBadgePosition="after" matBadgeColor="accent" matBadgeSize="small"
-            [matBadge]="appSystemResourcesExists ? 1 : null">
-            edit
-          </mat-icon>
-          <span>App SystemResources</span>
-        </button>
-        <button mat-button *ngIf="dialogSettings.Context.App.Identifier === 'Default'"
-          (click)="edit(eavConstants.contentTypes.systemResources, SystemSettingsScopes.Site)">
-          <mat-icon matBadgePosition="after" matBadgeColor="accent" matBadgeSize="small"
-            [matBadge]="siteSystemResourcesExists ? 1 : null">
-            edit
-          </mat-icon>
-          <span>Site SystemResources</span>
-        </button>
-      </div>
+      <!-- Global System Resources on Default App -->
+      <ng-container *ngIf="dialogSettings.Context.App.Id === eavConstants.defaultApp">
+        <div class="actions-row">
+          <button mat-button (click)="edit(eavConstants.contentTypes.systemResources, SystemSettingsScopes.App)">
+            <mat-icon matBadgePosition="after" matBadgeColor="accent" matBadgeSize="small"
+              [matBadge]="appSystemResourcesExists ? 1 : null">
+              edit
+            </mat-icon>
+            <span>Global SystemResources</span>
+          </button>
+        </div>
+      </ng-container>
+      <!-- App and Site System Resources on Content App -->
+      <ng-container
+        *ngIf="dialogSettings.Context.App.Id !== eavConstants.defaultApp && dialogSettings.Context.App.Identifier === 'Default'">
+        <div class="actions-row">
+          <button mat-button (click)="edit(eavConstants.contentTypes.systemResources, SystemSettingsScopes.App)">
+            <mat-icon matBadgePosition="after" matBadgeColor="accent" matBadgeSize="small"
+              [matBadge]="appSystemResourcesExists ? 1 : null">
+              edit
+            </mat-icon>
+            <span>App SystemResources</span>
+          </button>
+        </div>
+        <div class="actions-row">
+          <button mat-button (click)="edit(eavConstants.contentTypes.systemResources, SystemSettingsScopes.Site)">
+            <mat-icon matBadgePosition="after" matBadgeColor="accent" matBadgeSize="small"
+              [matBadge]="siteSystemResourcesExists ? 1 : null">
+              edit
+            </mat-icon>
+            <span>Site SystemResources</span>
+          </button>
+        </div>
+        <div class="actions-row">
+          <button mat-button (click)="openGlobalSettings()">
+            <mat-icon>link</mat-icon>
+            <span>Go to Global SystemResources</span>
+          </button>
+        </div>
+      </ng-container>
+      <!-- App System Resources on normal Apps -->
+      <ng-container
+        *ngIf="dialogSettings.Context.App.Id !== eavConstants.defaultApp && dialogSettings.Context.App.Identifier !== 'Default'">
+        <div class="actions-row">
+          <button mat-button (click)="edit(eavConstants.contentTypes.systemResources, SystemSettingsScopes.App)">
+            <mat-icon matBadgePosition="after" matBadgeColor="accent" matBadgeSize="small"
+              [matBadge]="appSystemResourcesExists ? 1 : null">
+              edit
+            </mat-icon>
+            <span>App SystemResources</span>
+          </button>
+        </div>
+        <div class="actions-row">
+          <button mat-button (click)="openSiteSettings()">
+            <mat-icon>link</mat-icon>
+            <span>Go to Site SystemResources</span>
+          </button>
+        </div>
+        <div class="actions-row">
+          <button mat-button (click)="openGlobalSettings()">
+            <mat-icon>link</mat-icon>
+            <span>Go to Global SystemResources</span>
+          </button>
+        </div>
+      </ng-container>
     </mat-card-actions>
   </mat-card>
 </div>
@@ -197,28 +293,6 @@
       <button mat-button (click)="resetApp()">
         <mat-icon>restore</mat-icon>
         <span>Restore state</span>
-      </button>
-    </mat-card-actions>
-  </mat-card>
-</div>
-
-<hr style="margin-top: 48px;">
-
-<div class="cards-box">
-  <mat-card class="mat-elevation-z2">
-    <mat-card-header>
-      <mat-card-title>Site and Global Settings</mat-card-title>
-      <div class="mat-card-header-icon">
-        <mat-icon>settings</mat-icon>
-      </div>
-    </mat-card-header>
-    <mat-card-content>
-      Configure Site-wide and Global Settings.
-    </mat-card-content>
-    <mat-card-actions>
-      <button mat-button (click)="openSystemSettings()">
-        <mat-icon>settings</mat-icon>
-        <span>Go to System Settings</span>
       </button>
     </mat-card-actions>
   </mat-card>

@@ -45,14 +45,14 @@ export function paramsInitFactory(injector: Injector): () => void {
       switch (dialog) {
         case DialogTypeConstants.Zone:
           const extrasZone: ExtrasParam = JSON.parse(sessionStorage.getItem(keyExtras));
-          router.navigate([`${zoneId}/apps${extrasZone ? `/${extrasZone.tab}` : ''}`]);
+          router.navigate([`${zoneId}/apps${extrasZone?.tab ? `/${extrasZone.tab}` : ''}`]);
           break;
         case DialogTypeConstants.AppImport:
           router.navigate([`${zoneId}/import`]);
           break;
         case DialogTypeConstants.App:
           const extrasApp: ExtrasParam = JSON.parse(sessionStorage.getItem(keyExtras));
-          router.navigate([`${zoneId}/${appId}/app${extrasApp ? `/${extrasApp.tab}/${extrasApp.scope}` : ''}`]);
+          router.navigate([`${zoneId}/${appId}/app${extrasApp?.tab ? `/${extrasApp.tab}` : ''}${extrasApp?.scope ? `/${extrasApp.scope}` : ''}`]);
           break;
         case DialogTypeConstants.ContentType:
           router.navigate([`${zoneId}/${appId}/fields/${contentType}`]);
