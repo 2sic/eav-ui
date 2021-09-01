@@ -116,6 +116,7 @@
     "Entity": {
       "Choose": "Elija elemento para añadir",
       "New": "Crear nuevo",
+      "Empty": "Empty",
       "EmptySlot": "empty slot",
       "EntityNotFound": "(elemento no encontrado)",
       "DragMove": "Arrastre para reordenar la lista",

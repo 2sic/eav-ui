@@ -36,6 +36,11 @@
             </mat-option>
           </mat-autocomplete>
         </div>
+        <div *ngIf="!data.enableAddExisting && !selectedEntities.length">
+          <mat-form-field appearance="standard" color="accent">
+            <input matInput [placeholder]="'Fields.Entity.Empty' | translate" disabled>
+          </mat-form-field>
+        </div>
       </div>
       <div fxLayoutAlign="end center"
         [ngClass]="(data.enableCreate && data.entityType && !selectedEntities.length && !data.allowMultiValue) ? 'ed-field__create-icon' : 'ed-field__create-icon-hide'">

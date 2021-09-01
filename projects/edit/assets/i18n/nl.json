@@ -116,6 +116,7 @@
     "Entity": {
       "Choose": "Bestaand item toevoegen",
       "New": "Maak nieuw",
+      "Empty": "Empty",
       "EmptySlot": "empty slot",
       "EntityNotFound": "(item niet gevonden)",
       "DragMove": "Drag om de lijst te herordenen",
