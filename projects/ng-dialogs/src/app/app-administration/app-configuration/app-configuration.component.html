@@ -12,33 +12,37 @@
       each language.
     </mat-card-content>
     <mat-card-actions>
-      <button mat-button (click)="analyze(AnalyzeParts.Settings)">
-        <mat-icon>manage_search</mat-icon>
-        <span>Analyze</span>
-      </button>
-      <button mat-button (click)="edit(eavConstants.contentTypes.settings)">
-        <mat-icon>edit</mat-icon>
-        <span>Edit</span>
-      </button>
-      <button mat-button (click)="config(eavConstants.contentTypes.settings)">
-        <mat-icon>dns</mat-icon>
-        <span>Fields</span>
-      </button>
-      <button mat-button (click)="edit(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.App)">
-        <mat-icon matBadgePosition="after" matBadgeColor="accent" matBadgeSize="small"
-          [matBadge]="appSystemSettingsExists ? 1 : null">
-          edit
-        </mat-icon>
-        <span>App SystemSettings</span>
-      </button>
-      <button mat-button *ngIf="dialogSettings.Context.App.Identifier === 'Default'"
-        (click)="edit(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.Site)">
-        <mat-icon matBadgePosition="after" matBadgeColor="accent" matBadgeSize="small"
-          [matBadge]="siteSystemSettingsExists ? 1 : null">
-          edit
-        </mat-icon>
-        <span>Site SystemSettings</span>
-      </button>
+      <div class="actions-row">
+        <button mat-button (click)="analyze(AnalyzeParts.Settings)">
+          <mat-icon>manage_search</mat-icon>
+          <span>Analyze</span>
+        </button>
+        <button mat-button (click)="edit(eavConstants.contentTypes.settings)">
+          <mat-icon>edit</mat-icon>
+          <span>Edit</span>
+        </button>
+        <button mat-button (click)="config(eavConstants.contentTypes.settings)">
+          <mat-icon>dns</mat-icon>
+          <span>Fields</span>
+        </button>
+      </div>
+      <div class="actions-row">
+        <button mat-button (click)="edit(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.App)">
+          <mat-icon matBadgePosition="after" matBadgeColor="accent" matBadgeSize="small"
+            [matBadge]="appSystemSettingsExists ? 1 : null">
+            edit
+          </mat-icon>
+          <span>App SystemSettings</span>
+        </button>
+        <button mat-button *ngIf="dialogSettings.Context.App.Identifier === 'Default'"
+          (click)="edit(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.Site)">
+          <mat-icon matBadgePosition="after" matBadgeColor="accent" matBadgeSize="small"
+            [matBadge]="siteSystemSettingsExists ? 1 : null">
+            edit
+          </mat-icon>
+          <span>Site SystemSettings</span>
+        </button>
+      </div>
     </mat-card-actions>
   </mat-card>
 
@@ -54,33 +58,37 @@
       views and such, and should not be used for App-Settings.
     </mat-card-content>
     <mat-card-actions>
-      <button mat-button (click)="analyze(AnalyzeParts.Resources)">
-        <mat-icon>manage_search</mat-icon>
-        <span>Analyze</span>
-      </button>
-      <button mat-button (click)="edit(eavConstants.contentTypes.resources)">
-        <mat-icon>edit</mat-icon>
-        <span>Edit</span>
-      </button>
-      <button mat-button (click)="config(eavConstants.contentTypes.resources)">
-        <mat-icon>dns</mat-icon>
-        <span>Fields</span>
-      </button>
-      <button mat-button (click)="edit(eavConstants.contentTypes.systemResources, SystemSettingsScopes.App)">
-        <mat-icon matBadgePosition="after" matBadgeColor="accent" matBadgeSize="small"
-          [matBadge]="appSystemResourcesExists ? 1 : null">
-          edit
-        </mat-icon>
-        <span>App SystemResources</span>
-      </button>
-      <button mat-button *ngIf="dialogSettings.Context.App.Identifier === 'Default'"
-        (click)="edit(eavConstants.contentTypes.systemResources, SystemSettingsScopes.Site)">
-        <mat-icon matBadgePosition="after" matBadgeColor="accent" matBadgeSize="small"
-          [matBadge]="siteSystemResourcesExists ? 1 : null">
-          edit
-        </mat-icon>
-        <span>Site SystemResources</span>
-      </button>
+      <div class="actions-row">
+        <button mat-button (click)="analyze(AnalyzeParts.Resources)">
+          <mat-icon>manage_search</mat-icon>
+          <span>Analyze</span>
+        </button>
+        <button mat-button (click)="edit(eavConstants.contentTypes.resources)">
+          <mat-icon>edit</mat-icon>
+          <span>Edit</span>
+        </button>
+        <button mat-button (click)="config(eavConstants.contentTypes.resources)">
+          <mat-icon>dns</mat-icon>
+          <span>Fields</span>
+        </button>
+      </div>
+      <div class="actions-row">
+        <button mat-button (click)="edit(eavConstants.contentTypes.systemResources, SystemSettingsScopes.App)">
+          <mat-icon matBadgePosition="after" matBadgeColor="accent" matBadgeSize="small"
+            [matBadge]="appSystemResourcesExists ? 1 : null">
+            edit
+          </mat-icon>
+          <span>App SystemResources</span>
+        </button>
+        <button mat-button *ngIf="dialogSettings.Context.App.Identifier === 'Default'"
+          (click)="edit(eavConstants.contentTypes.systemResources, SystemSettingsScopes.Site)">
+          <mat-icon matBadgePosition="after" matBadgeColor="accent" matBadgeSize="small"
+            [matBadge]="siteSystemResourcesExists ? 1 : null">
+            edit
+          </mat-icon>
+          <span>Site SystemResources</span>
+        </button>
+      </div>
     </mat-card-actions>
   </mat-card>
 </div>
