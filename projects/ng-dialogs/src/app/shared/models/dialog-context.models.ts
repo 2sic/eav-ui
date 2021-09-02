@@ -10,6 +10,7 @@ export interface DialogContextApp {
   Url: string;
   /** New in v12 - the root for app APIs and content/query */
   Api: string;
+  SettingsScope: AppScope;
 }
 
 export interface DialogContextEnable {
@@ -45,3 +46,10 @@ export interface DialogContextSite {
 export interface DialogContextSystem {
   Url: string;
 }
+
+export const AppScopes = {
+  App: 'App',
+  Site: 'Site',
+  Global: 'Global',
+} as const;
+export type AppScope = typeof AppScopes[keyof typeof AppScopes];

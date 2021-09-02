@@ -27,7 +27,7 @@
         </button>
       </div>
       <!-- Global System Settings on Default App -->
-      <ng-container *ngIf="dialogSettings.Context.App.Id === eavConstants.defaultApp">
+      <ng-container *ngIf="dialogSettings.Context.App.SettingsScope === AppScopes.Global">
         <div class="actions-row">
           <button mat-button (click)="edit(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.App)">
             <mat-icon matBadgePosition="after" matBadgeColor="accent" matBadgeSize="small"
@@ -39,8 +39,7 @@
         </div>
       </ng-container>
       <!-- App and Site System Settings on Content App -->
-      <ng-container
-        *ngIf="dialogSettings.Context.App.Id !== eavConstants.defaultApp && dialogSettings.Context.App.Identifier === 'Default'">
+      <ng-container *ngIf="dialogSettings.Context.App.SettingsScope === AppScopes.Site">
         <div class="actions-row">
           <button mat-button (click)="edit(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.App)">
             <mat-icon matBadgePosition="after" matBadgeColor="accent" matBadgeSize="small"
@@ -67,8 +66,7 @@
         </div>
       </ng-container>
       <!-- App System Settings on normal Apps -->
-      <ng-container
-        *ngIf="dialogSettings.Context.App.Id !== eavConstants.defaultApp && dialogSettings.Context.App.Identifier !== 'Default'">
+      <ng-container *ngIf="dialogSettings.Context.App.SettingsScope === AppScopes.App">
         <div class="actions-row">
           <button mat-button (click)="edit(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.App)">
             <mat-icon matBadgePosition="after" matBadgeColor="accent" matBadgeSize="small"
@@ -121,7 +119,7 @@
         </button>
       </div>
       <!-- Global System Resources on Default App -->
-      <ng-container *ngIf="dialogSettings.Context.App.Id === eavConstants.defaultApp">
+      <ng-container *ngIf="dialogSettings.Context.App.SettingsScope === AppScopes.Global">
         <div class="actions-row">
           <button mat-button (click)="edit(eavConstants.contentTypes.systemResources, SystemSettingsScopes.App)">
             <mat-icon matBadgePosition="after" matBadgeColor="accent" matBadgeSize="small"
@@ -133,8 +131,7 @@
         </div>
       </ng-container>
       <!-- App and Site System Resources on Content App -->
-      <ng-container
-        *ngIf="dialogSettings.Context.App.Id !== eavConstants.defaultApp && dialogSettings.Context.App.Identifier === 'Default'">
+      <ng-container *ngIf="dialogSettings.Context.App.SettingsScope === AppScopes.Site">
         <div class="actions-row">
           <button mat-button (click)="edit(eavConstants.contentTypes.systemResources, SystemSettingsScopes.App)">
             <mat-icon matBadgePosition="after" matBadgeColor="accent" matBadgeSize="small"
@@ -161,8 +158,7 @@
         </div>
       </ng-container>
       <!-- App System Resources on normal Apps -->
-      <ng-container
-        *ngIf="dialogSettings.Context.App.Id !== eavConstants.defaultApp && dialogSettings.Context.App.Identifier !== 'Default'">
+      <ng-container *ngIf="dialogSettings.Context.App.SettingsScope === AppScopes.App">
         <div class="actions-row">
           <button mat-button (click)="edit(eavConstants.contentTypes.systemResources, SystemSettingsScopes.App)">
             <mat-icon matBadgePosition="after" matBadgeColor="accent" matBadgeSize="small"

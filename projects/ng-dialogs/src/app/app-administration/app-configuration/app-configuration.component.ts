@@ -9,6 +9,7 @@ import { ContentItemsService } from '../../content-items/services/content-items.
 import { GoToPermissions } from '../../permissions/go-to-permissions';
 import { eavConstants, SystemSettingsScope, SystemSettingsScopes } from '../../shared/constants/eav.constants';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
+import { AppScopes } from '../../shared/models/dialog-context.models';
 import { EditForm } from '../../shared/models/edit-form.model';
 import { Context } from '../../shared/services/context';
 import { DialogService } from '../../shared/services/dialog.service';
@@ -27,6 +28,7 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
   eavConstants = eavConstants;
   AnalyzeParts = AnalyzeParts;
   SystemSettingsScopes = SystemSettingsScopes;
+  AppScopes = AppScopes;
   appSystemSettingsExists: boolean;
   siteSystemSettingsExists: boolean;
   appSystemResourcesExists: boolean;
