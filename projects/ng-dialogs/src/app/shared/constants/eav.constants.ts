@@ -67,9 +67,9 @@ export const eavConstants = {
     /** Content type containing app resources */
     resources: 'App-Resources',
     /** Content type containing system app settings */
-    systemSettings: 'SystemSettings',
+    systemSettings: 'SettingsSystem',
     /** Content type containing system app resources */
-    systemResources: 'SystemResources',
+    systemResources: 'ResourcesSystem',
   },
 
   pipelineDesigner: {
