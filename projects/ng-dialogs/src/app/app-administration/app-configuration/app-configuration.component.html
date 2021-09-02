@@ -405,7 +405,10 @@
           [matBadge]="appSettings.Permissions.Count ? appSettings.Permissions.Count : null">
           person
         </mat-icon>
-        <span>Edit Permissions</span>
+        <span>
+          Edit Permissions
+          {{ dialogSettings.Context.Enable.AppPermissions ? '' : '(not available on Content)' }}
+        </span>
       </button>
     </mat-card-actions>
   </mat-card>
