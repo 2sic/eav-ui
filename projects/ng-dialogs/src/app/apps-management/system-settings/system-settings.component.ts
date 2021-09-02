@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
-import { eavConstants } from '../../shared/constants/eav.constants';
-import { Context } from '../../shared/services/context';
+import { AppDialogConfigService } from '../../app-administration/services';
+import { DialogContextDefaultApp } from '../../shared/models/dialog-context.models';
 import { DialogService } from '../../shared/services/dialog.service';
-import { AppsListService } from '../services/apps-list.service';
 
 @Component({
   selector: 'app-system-settings',
@@ -10,16 +9,34 @@ import { AppsListService } from '../services/apps-list.service';
   styleUrls: ['./system-settings.component.scss'],
 })
 export class SystemSettingsComponent {
-  constructor(private dialogService: DialogService, private context: Context, private appsListService: AppsListService) { }
+  private siteDefaultApp: DialogContextDefaultApp;
+  private globalDefaultApp: DialogContextDefaultApp;
 
-  openSiteSettings() {
-    this.appsListService.getAll().subscribe(apps => {
-      const contentApp = apps.find(app => app.Guid === eavConstants.contentApp);
-      this.dialogService.openAppAdministration(this.context.zoneId, contentApp.Id, 'app');
-    });
+  constructor(private dialogService: DialogService, private appDialogConfigService: AppDialogConfigService) { }
+
+  openSiteSettings(): void {
+    if (this.siteDefaultApp == null) {
+      this.getDialogSettings(() => { this.openSiteSettings(); });
+      return;
+    }
+
+    this.dialogService.openAppAdministration(this.siteDefaultApp.ZoneId, this.siteDefaultApp.AppId, 'app');
   }
 
-  openGlobalSettings() {
-    this.dialogService.openAppAdministration(eavConstants.defaultZone, eavConstants.defaultApp, 'app');
+  openGlobalSettings(): void {
+    if (this.globalDefaultApp == null) {
+      this.getDialogSettings(() => { this.openGlobalSettings(); });
+      return;
+    }
+
+    this.dialogService.openAppAdministration(this.globalDefaultApp.ZoneId, this.globalDefaultApp.AppId, 'app');
+  }
+
+  private getDialogSettings(callback: () => void): void {
+    this.appDialogConfigService.getDialogSettings(0).subscribe(dialogSettings => {
+      this.siteDefaultApp = dialogSettings.Context.Site.DefaultApp;
+      this.globalDefaultApp = dialogSettings.Context.System.DefaultApp;
+      callback();
+    });
   }
 }

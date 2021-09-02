@@ -13,6 +13,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTabsModule } from '@angular/material/tabs';
 import { EcoFabSpeedDialModule } from '@ecodev/fab-speed-dial';
+import { AppDialogConfigService } from '../app-administration/services';
 import { Context } from '../shared/services/context';
 import { DialogService } from '../shared/services/dialog.service';
 import { SharedComponentsModule } from '../shared/shared-components.module';
@@ -76,6 +77,7 @@ import { SystemSettingsComponent } from './system-settings/system-settings.compo
     FeaturesConfigService,
     SxcInsightsService,
     DialogService,
+    AppDialogConfigService,
   ]
 })
 export class AppsManagementModule { }

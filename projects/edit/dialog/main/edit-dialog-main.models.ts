@@ -1,7 +1,7 @@
 import { AdamItem, EntityInfo } from '../../../edit-types';
+import { DialogContext } from '../../../ng-dialogs/src/app/app-administration/models';
 import { Feature } from '../../../ng-dialogs/src/app/apps-management/models/feature.model';
 import { InputType } from '../../../ng-dialogs/src/app/content-type-fields/models/input-type.model';
-import { DialogContextApp, DialogContextEnable, DialogContextLanguage, DialogContextSite, DialogContextSystem } from '../../../ng-dialogs/src/app/shared/models/dialog-context.models';
 import { LinkInfo } from '../../shared/models';
 import { EavItem } from '../../shared/models/eav';
 import { ContentType1, Entity1, Item1 } from '../../shared/models/json-format-v1';
@@ -14,19 +14,11 @@ export interface EavPublishStatus {
 export interface EavFormData extends EavPublishStatus {
   ContentTypeItems: Entity1[];
   ContentTypes: ContentType1[];
-  Context: EditDialogContext;
+  Context: DialogContext;
   Features: Feature[];
   InputTypes: InputType[];
   Items: Item1[];
   Prefetch?: Prefetch;
-}
-
-export interface EditDialogContext {
-  App: DialogContextApp;
-  Enable: DialogContextEnable;
-  Language: DialogContextLanguage;
-  Site: DialogContextSite;
-  System: DialogContextSystem;
 }
 
 export interface SaveEavFormData extends EavPublishStatus {

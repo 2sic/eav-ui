@@ -1,9 +1,10 @@
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { DialogContext } from '../../../ng-dialogs/src/app/app-administration/models';
 import { keyPartOfPage, keyPublishing } from '../../../ng-dialogs/src/app/shared/constants/session.constants';
 import { Context } from '../../../ng-dialogs/src/app/shared/services/context';
-import { EavFormData, EditDialogContext, SaveEavFormData } from '../../dialog/main/edit-dialog-main.models';
+import { EavFormData, SaveEavFormData } from '../../dialog/main/edit-dialog-main.models';
 import { EavConfig, SaveResult, VersioningOptions } from '../models';
 
 export const webApiEditRoot = 'cms/edit/';
@@ -22,7 +23,7 @@ export class EavService {
 
   /** Create EavConfiguration from sessionStorage */
   setEavConfig(
-    editDialogContext: EditDialogContext,
+    dialogContext: DialogContext,
     formId: number,
     isParentDialog: boolean,
     itemGuids: string[],
@@ -33,13 +34,13 @@ export class EavService {
     this.eavConfig = {
       zoneId: this.context.zoneId.toString(),
       appId: this.context.appId.toString(),
-      appRoot: editDialogContext.App.Url,
-      lang: editDialogContext.Language.Current,
-      langPri: editDialogContext.Language.Primary,
-      langs: editDialogContext.Language.All,
+      appRoot: dialogContext.App.Url,
+      lang: dialogContext.Language.Current,
+      langPri: dialogContext.Language.Primary,
+      langs: dialogContext.Language.All,
       moduleId: this.context.moduleId.toString(),
       partOfPage: sessionStorage.getItem(keyPartOfPage),
-      portalRoot: editDialogContext.Site.Url,
+      portalRoot: dialogContext.Site.Url,
       tabId: this.context.tabId.toString(),
       systemRoot: window.location.pathname.split('/dist/')[0] + '/',
       versioningOptions: this.getVersioningOptions(
@@ -52,7 +53,7 @@ export class EavService {
       createMode,
       isCopy,
       enableHistory,
-      enableFormulaSave: editDialogContext.Enable.FormulaSave ?? false,
+      enableFormulaSave: dialogContext.Enable.FormulaSave ?? false,
     };
   }
 

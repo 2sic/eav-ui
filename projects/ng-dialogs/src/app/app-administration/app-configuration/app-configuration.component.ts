@@ -4,7 +4,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { forkJoin, Subscription } from 'rxjs';
 import { filter, map, pairwise, startWith } from 'rxjs/operators';
-import { AppsListService } from '../../apps-management/services/apps-list.service';
 import { ContentItemsService } from '../../content-items/services/content-items.service';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
 import { eavConstants, SystemSettingsScope, SystemSettingsScopes } from '../../shared/constants/eav.constants';
@@ -46,7 +45,6 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
     private snackBar: MatSnackBar,
     private dialogService: DialogService,
     private changeDetectorRef: ChangeDetectorRef,
-    private appsListService: AppsListService,
   ) { }
 
   ngOnInit() {
@@ -98,14 +96,13 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
   }
 
   openSiteSettings() {
-    this.appsListService.getAll().subscribe(apps => {
-      const contentApp = apps.find(app => app.Guid === eavConstants.contentApp);
-      this.dialogService.openAppAdministration(this.context.zoneId, contentApp.Id, 'app');
-    });
+    const siteDefaultApp = this.dialogSettings.Context.Site.DefaultApp;
+    this.dialogService.openAppAdministration(siteDefaultApp.ZoneId, siteDefaultApp.AppId, 'app');
   }
 
   openGlobalSettings() {
-    this.dialogService.openAppAdministration(eavConstants.defaultZone, eavConstants.defaultApp, 'app');
+    const globalDefaultApp = this.dialogSettings.Context.System.DefaultApp;
+    this.dialogService.openAppAdministration(globalDefaultApp.ZoneId, globalDefaultApp.AppId, 'app');
   }
 
   config(staticName: string) {

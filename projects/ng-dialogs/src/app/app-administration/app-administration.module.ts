@@ -18,7 +18,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { EcoFabSpeedDialModule } from '@ecodev/fab-speed-dial';
-import { AppsListService } from '../apps-management/services/apps-list.service';
 import { ContentExportService } from '../content-export/services/content-export.service';
 import { ContentItemsService } from '../content-items/services/content-items.service';
 import { Context } from '../shared/services/context';
@@ -134,7 +133,6 @@ import { WebApiComponent } from './web-api/web-api.component';
     ExportAppPartsService,
     ImportAppPartsService,
     DialogService,
-    AppsListService,
     AnalyzeSettingsService,
   ]
 })

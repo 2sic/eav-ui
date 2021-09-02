@@ -13,13 +13,6 @@ export const SystemSettingsScopes = {
 export type SystemSettingsScope = typeof SystemSettingsScopes[keyof typeof SystemSettingsScopes];
 
 export const eavConstants = {
-  /** Id of default zone */
-  defaultZone: 1,
-  /** Id of default app */
-  defaultApp: 1,
-  /** GUID of content app */
-  contentApp: 'Default',
-
   metadata: {
     /** metadataOfAttribute */
     attribute: { type: 2, target: 'EAV Field Properties', label: 'Content-Type Field/Attribute (2)', keyType: EavKeyTypes.Number },
