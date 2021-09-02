@@ -8,7 +8,7 @@ import { ContentItemsService } from '../../content-items/services/content-items.
 import { GoToPermissions } from '../../permissions/go-to-permissions';
 import { eavConstants, SystemSettingsScope, SystemSettingsScopes } from '../../shared/constants/eav.constants';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
-import { AppScopes } from '../../shared/models/dialog-context.models';
+import { AppScopes, DialogContextApp } from '../../shared/models/dialog-context.models';
 import { EditForm } from '../../shared/models/edit-form.model';
 import { Context } from '../../shared/services/context';
 import { DialogService } from '../../shared/services/dialog.service';
@@ -33,6 +33,9 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
   appSystemResourcesExists: boolean;
   siteSystemResourcesExists: boolean;
 
+  /** Shortcut to AppSettings as used a lot in the template */
+  appSettings: DialogContextApp;
+
   private subscription: Subscription;
 
   constructor(
@@ -51,6 +54,7 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
     this.subscription = new Subscription();
     this.fetchSystemSettings();
     this.refreshOnChildClosed();
+    this.appSettings = this.dialogSettings.Context.App;
   }
 
   ngOnDestroy() {
