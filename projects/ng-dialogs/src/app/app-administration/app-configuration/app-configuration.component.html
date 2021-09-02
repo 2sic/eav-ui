@@ -1,3 +1,15 @@
+<div class="alert alert-info scope-info"
+  *ngIf="dialogSettings.Context.App.SettingsScope === AppScopes.Global || dialogSettings.Context.App.SettingsScope === AppScopes.Site">
+  <ng-container *ngIf="dialogSettings.Context.App.SettingsScope === AppScopes.Global">
+    This is the Global App. Anything configured here will affect all Sites and Apps in this installation.
+  </ng-container>
+  <ng-container *ngIf="dialogSettings.Context.App.SettingsScope === AppScopes.Site">
+    This is the Content App of this Site. It is the primary app so you can also configure sitewide settings and
+    resources here.
+  </ng-container>
+  See <a href="https://r.2sxc.org/settings" target="_blank">docs</a>.
+</div>
+
 <div class="cards-box">
   <mat-card class="mat-elevation-z2">
     <mat-card-header>

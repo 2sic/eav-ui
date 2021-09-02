@@ -1,7 +1,15 @@
 <div class="nav-component-wrapper" appToggleDebug *ngIf="(templateVars$ | async) as data">
   <div mat-dialog-title>
     <div class="dialog-title-box">
-      <div>{{ data.dialogSettings?.Context.App.Name }} Admin</div>
+      <div>
+        <ng-container *ngIf="data.dialogSettings?.Context.App.SettingsScope === AppScopes.Global">
+          Global
+        </ng-container>
+        <ng-container *ngIf="data.dialogSettings?.Context.App.SettingsScope !== AppScopes.Global">
+          {{ data.dialogSettings?.Context.App.Name }}
+        </ng-container>
+        Admin
+      </div>
       <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
         <mat-icon>close</mat-icon>
       </button>

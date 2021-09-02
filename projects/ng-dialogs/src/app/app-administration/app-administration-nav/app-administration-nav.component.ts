@@ -6,6 +6,7 @@ import { BehaviorSubject, combineLatest, Subscription } from 'rxjs';
 import { filter, map, pairwise, startWith } from 'rxjs/operators';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { UpdateEnvVarsFromDialogSettings } from '../../shared/helpers/update-env-vars-from-dialog-settings.helper';
+import { AppScopes } from '../../shared/models/dialog-context.models';
 import { DialogSettings } from '../models/dialog-settings.model';
 import { AppDialogConfigService } from '../services/app-dialog-config.service';
 
@@ -15,6 +16,8 @@ import { AppDialogConfigService } from '../services/app-dialog-config.service';
   styleUrls: ['./app-administration-nav.component.scss'],
 })
 export class AppAdministrationNavComponent implements OnInit, OnDestroy {
+  AppScopes = AppScopes;
+
   private defaultScope = eavConstants.scopes.default.value;
   private dialogSettings$ = new BehaviorSubject<DialogSettings>(null);
   private tabs$ = new BehaviorSubject<string[]>(null);
