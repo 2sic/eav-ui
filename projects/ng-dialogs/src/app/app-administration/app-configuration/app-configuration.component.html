@@ -1,9 +1,9 @@
 <div class="alert alert-info scope-info"
-  *ngIf="appSettings.SettingsScope === AppScopes.Global || appSettings.SettingsScope === AppScopes.Site">
-  <ng-container *ngIf="appSettings.SettingsScope === AppScopes.Global">
+  *ngIf="dialogSettings.Context.App.SettingsScope === AppScopes.Global || dialogSettings.Context.App.SettingsScope === AppScopes.Site">
+  <ng-container *ngIf="dialogSettings.Context.App.SettingsScope === AppScopes.Global">
     This is the Global App. Anything configured here will affect all Sites and Apps in this installation.
   </ng-container>
-  <ng-container *ngIf="appSettings.SettingsScope === AppScopes.Site">
+  <ng-container *ngIf="dialogSettings.Context.App.SettingsScope === AppScopes.Site">
     This is the Primary App of this Site. You can also configure sitewide settings and resources here.
   </ng-container>
   See <a href="https://r.2sxc.org/settings" target="_blank">docs</a>.
@@ -33,10 +33,11 @@
         </thead>
         <tbody>
           <!-- Only show App Settings when not on Global -->
-          <tr *ngIf="appSettings.SettingsScope !== AppScopes.Global">
-            <th>{{ appSettings.Name }}</th>
+          <tr *ngIf="dialogSettings.Context.App.SettingsScope !== AppScopes.Global">
+            <th>{{ dialogSettings.Context.App.Name }}</th>
             <td>
-              <button mat-button (click)="edit(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.App)" tippy="edit app system settings">
+              <button mat-button (click)="edit(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.App)"
+                tippy="edit app system settings">
                 <mat-icon matBadgePosition="below after" matBadgeColor="accent" matBadgeSize="small"
                   [matBadge]="appSystemSettingsExists ? 1 : null">
                   edit
@@ -49,18 +50,20 @@
                 <mat-icon>edit</mat-icon>
                 <span></span>
               </button>
-              <button mat-button (click)="config(eavConstants.contentTypes.settings)" tippy="configure fields of the custom app settings">
+              <button mat-button (click)="config(eavConstants.contentTypes.settings)"
+                tippy="configure fields of the custom app settings">
                 <mat-icon>dns</mat-icon>
                 <span></span>
               </button>
             </td>
           </tr>
           <!-- Only show the Site Settings when we're not on Global -->
-          <tr *ngIf="appSettings.SettingsScope !== AppScopes.Global">
+          <tr *ngIf="dialogSettings.Context.App.SettingsScope !== AppScopes.Global">
             <th>Site</th>
-            <ng-container *ngIf="appSettings.SettingsScope === AppScopes.Site; else elseGotoSite">
+            <ng-container *ngIf="dialogSettings.Context.App.SettingsScope === AppScopes.Site; else elseGotoSite">
               <td>
-                <button mat-button (click)="edit(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.Site)" tippy="edit site system settings">
+                <button mat-button (click)="edit(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.Site)"
+                  tippy="edit site system settings">
                   <mat-icon matBadgePosition="below after" matBadgeColor="accent" matBadgeSize="small"
                     [matBadge]="siteSystemSettingsExists ? 1 : null">
                     edit
@@ -69,7 +72,8 @@
                 </button>
               </td>
               <td>
-                <mat-icon tippy="This isn't automated yet. Just create a SettingsCustom yourself.">help_outline</mat-icon>
+                <mat-icon tippy="This isn't automated yet. Just create a SettingsCustom yourself.">help_outline
+                </mat-icon>
               </td>
             </ng-container>
 
@@ -78,7 +82,7 @@
           <tr>
             <th>Global</th>
             <!-- Global System Settings should be shown on the Global Default App -->
-            <ng-container *ngIf="appSettings.SettingsScope === AppScopes.Global; else elseGotoGlobal">
+            <ng-container *ngIf="dialogSettings.Context.App.SettingsScope === AppScopes.Global; else elseGotoGlobal">
               <td>
                 <button mat-button (click)="edit(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.App)"
                   tippy="edit global system settings">
@@ -90,7 +94,8 @@
                 </button>
               </td>
               <td>
-                <mat-icon tippy="This isn't automated yet. Just create a SettingsCustom yourself.">help_outline</mat-icon>
+                <mat-icon tippy="This isn't automated yet. Just create a SettingsCustom yourself.">help_outline
+                </mat-icon>
               </td>
             </ng-container>
             <!-- Global Settings - show this when not on the Global Default App -->
@@ -205,10 +210,11 @@
         </thead>
         <tbody>
           <!-- Only show App Settings when not on Global -->
-          <tr *ngIf="appSettings.SettingsScope !== AppScopes.Global">
-            <th>{{ appSettings.Name }}</th>
+          <tr *ngIf="dialogSettings.Context.App.SettingsScope !== AppScopes.Global">
+            <th>{{ dialogSettings.Context.App.Name }}</th>
             <td>
-              <button mat-button (click)="edit(eavConstants.contentTypes.systemResources, SystemSettingsScopes.App)" tippy="edit app system resources">
+              <button mat-button (click)="edit(eavConstants.contentTypes.systemResources, SystemSettingsScopes.App)"
+                tippy="edit app system resources">
                 <mat-icon matBadgePosition="below after" matBadgeColor="accent" matBadgeSize="small"
                   [matBadge]="appSystemResourcesExists ? 1 : null">
                   edit
@@ -221,18 +227,20 @@
                 <mat-icon>edit</mat-icon>
                 <span></span>
               </button>
-              <button mat-button (click)="config(eavConstants.contentTypes.resources)" tippy="configure fields of the custom app resources">
+              <button mat-button (click)="config(eavConstants.contentTypes.resources)"
+                tippy="configure fields of the custom app resources">
                 <mat-icon>dns</mat-icon>
                 <span></span>
               </button>
             </td>
           </tr>
           <!-- Only show the Site Settings when we're not on Global -->
-          <tr *ngIf="appSettings.SettingsScope !== AppScopes.Global">
+          <tr *ngIf="dialogSettings.Context.App.SettingsScope !== AppScopes.Global">
             <th>Site</th>
-            <ng-container *ngIf="appSettings.SettingsScope === AppScopes.Site; else elseGotoSite">
+            <ng-container *ngIf="dialogSettings.Context.App.SettingsScope === AppScopes.Site; else elseGotoSite">
               <td>
-                <button mat-button (click)="edit(eavConstants.contentTypes.systemResources, SystemSettingsScopes.Site)" tippy="edit site system resources">
+                <button mat-button (click)="edit(eavConstants.contentTypes.systemResources, SystemSettingsScopes.Site)"
+                  tippy="edit site system resources">
                   <mat-icon matBadgePosition="below after" matBadgeColor="accent" matBadgeSize="small"
                     [matBadge]="siteSystemResourcesExists ? 1 : null">
                     edit
@@ -241,7 +249,8 @@
                 </button>
               </td>
               <td>
-                <mat-icon tippy="This isn't automated yet. Just create a ResourcesCustom yourself.">help_outline</mat-icon>
+                <mat-icon tippy="This isn't automated yet. Just create a ResourcesCustom yourself.">help_outline
+                </mat-icon>
               </td>
             </ng-container>
           </tr>
@@ -249,7 +258,7 @@
           <tr>
             <th>Global</th>
             <!-- Global System Settings should be shown on the Global Default App -->
-            <ng-container *ngIf="appSettings.SettingsScope === AppScopes.Global; else elseGotoGlobal">
+            <ng-container *ngIf="dialogSettings.Context.App.SettingsScope === AppScopes.Global; else elseGotoGlobal">
               <td>
                 <button mat-button (click)="edit(eavConstants.contentTypes.systemResources, SystemSettingsScopes.App)"
                   tippy="edit global system resources">
@@ -261,7 +270,8 @@
                 </button>
               </td>
               <td>
-                <mat-icon tippy="This isn't automated yet. Just create a ResourcesCustom yourself.">help_outline</mat-icon>
+                <mat-icon tippy="This isn't automated yet. Just create a ResourcesCustom yourself.">help_outline
+                </mat-icon>
               </td>
             </ng-container>
           </tr>
@@ -402,7 +412,7 @@
     <mat-card-actions>
       <button mat-button [disabled]="!dialogSettings.Context.Enable.AppPermissions" (click)="openPermissions()">
         <mat-icon matBadgePosition="below after" matBadgeColor="accent" matBadgeSize="small"
-          [matBadge]="appSettings.Permissions.Count ? appSettings.Permissions.Count : null">
+          [matBadge]="dialogSettings.Context.App.Permissions.Count ? dialogSettings.Context.App.Permissions.Count : null">
           person
         </mat-icon>
         <span>
@@ -481,5 +491,3 @@
     </mat-card-actions>
   </mat-card>
 </div>
-
-
