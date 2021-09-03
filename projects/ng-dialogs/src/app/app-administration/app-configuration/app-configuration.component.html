@@ -37,7 +37,7 @@
             <th>{{ dialogSettings.Context.App.Name }}</th>
             <td>
               <button mat-button (click)="edit(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.App)"
-                tippy="edit app system settings">
+                tippy="Edit app system settings">
                 <mat-icon matBadgePosition="below after" matBadgeColor="accent" matBadgeSize="small"
                   [matBadge]="appSystemSettingsExists ? 1 : null">
                   edit
@@ -46,12 +46,12 @@
               </button>
             </td>
             <td>
-              <button mat-button (click)="edit(eavConstants.contentTypes.settings)" tippy="edit custom app settings">
+              <button mat-button (click)="edit(eavConstants.contentTypes.settings)" tippy="Edit custom app settings">
                 <mat-icon>edit</mat-icon>
                 <span></span>
               </button>
               <button mat-button (click)="config(eavConstants.contentTypes.settings)"
-                tippy="configure fields of the custom app settings">
+                tippy="Configure fields of the custom app settings">
                 <mat-icon>dns</mat-icon>
                 <span></span>
               </button>
@@ -63,7 +63,7 @@
             <ng-container *ngIf="dialogSettings.Context.App.SettingsScope === AppScopes.Site; else elseGotoSite">
               <td>
                 <button mat-button (click)="edit(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.Site)"
-                  tippy="edit site system settings">
+                  tippy="Edit site system settings">
                   <mat-icon matBadgePosition="below after" matBadgeColor="accent" matBadgeSize="small"
                     [matBadge]="siteSystemSettingsExists ? 1 : null">
                     edit
@@ -85,7 +85,7 @@
             <ng-container *ngIf="dialogSettings.Context.App.SettingsScope === AppScopes.Global; else elseGotoGlobal">
               <td>
                 <button mat-button (click)="edit(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.App)"
-                  tippy="edit global system settings">
+                  tippy="Edit global system settings">
                   <mat-icon matBadgePosition="below after" matBadgeColor="accent" matBadgeSize="small"
                     [matBadge]="appSystemSettingsExists ? 1 : null">
                     edit
@@ -107,7 +107,7 @@
 
     <mat-card-actions>
       <div class="actions-row">
-        <button mat-button (click)="analyze(AnalyzeParts.Settings)" tippy="see the result of combining all settings">
+        <button mat-button (click)="analyze(AnalyzeParts.Settings)" tippy="See the result of combining all settings">
           <mat-icon>manage_search</mat-icon>
           <span>Analyze Combined Settings</span>
         </button>
@@ -214,7 +214,7 @@
             <th>{{ dialogSettings.Context.App.Name }}</th>
             <td>
               <button mat-button (click)="edit(eavConstants.contentTypes.systemResources, SystemSettingsScopes.App)"
-                tippy="edit app system resources">
+                tippy="Edit app system resources">
                 <mat-icon matBadgePosition="below after" matBadgeColor="accent" matBadgeSize="small"
                   [matBadge]="appSystemResourcesExists ? 1 : null">
                   edit
@@ -223,12 +223,12 @@
               </button>
             </td>
             <td>
-              <button mat-button (click)="edit(eavConstants.contentTypes.resources)" tippy="edit custom app resources">
+              <button mat-button (click)="edit(eavConstants.contentTypes.resources)" tippy="Edit custom app resources">
                 <mat-icon>edit</mat-icon>
                 <span></span>
               </button>
               <button mat-button (click)="config(eavConstants.contentTypes.resources)"
-                tippy="configure fields of the custom app resources">
+                tippy="Configure fields of the custom app resources">
                 <mat-icon>dns</mat-icon>
                 <span></span>
               </button>
@@ -240,7 +240,7 @@
             <ng-container *ngIf="dialogSettings.Context.App.SettingsScope === AppScopes.Site; else elseGotoSite">
               <td>
                 <button mat-button (click)="edit(eavConstants.contentTypes.systemResources, SystemSettingsScopes.Site)"
-                  tippy="edit site system resources">
+                  tippy="Edit site system resources">
                   <mat-icon matBadgePosition="below after" matBadgeColor="accent" matBadgeSize="small"
                     [matBadge]="siteSystemResourcesExists ? 1 : null">
                     edit
@@ -261,7 +261,7 @@
             <ng-container *ngIf="dialogSettings.Context.App.SettingsScope === AppScopes.Global; else elseGotoGlobal">
               <td>
                 <button mat-button (click)="edit(eavConstants.contentTypes.systemResources, SystemSettingsScopes.App)"
-                  tippy="edit global system resources">
+                  tippy="Edit global system resources">
                   <mat-icon matBadgePosition="below after" matBadgeColor="accent" matBadgeSize="small"
                     [matBadge]="appSystemResourcesExists ? 1 : null">
                     edit
@@ -280,7 +280,7 @@
     </mat-card-content>
     <mat-card-actions>
       <div class="actions-row">
-        <button mat-button (click)="analyze(AnalyzeParts.Resources)" tippy="see the result of combining all resources">
+        <button mat-button (click)="analyze(AnalyzeParts.Resources)" tippy="See the result of combining all resources">
           <mat-icon>manage_search</mat-icon>
           <span>Analyze Combined Resources</span>
         </button>
@@ -362,7 +362,7 @@
   <!-- Templates which are re-used in the table above -->
   <ng-template #elseGotoSite>
     <td>
-      <button mat-button (click)="openSiteSettings()" tippy="go to site">
+      <button mat-button (click)="openSiteSettings()" tippy="Go to site">
         <mat-icon>open_in_new</mat-icon>
         <span></span>
       </button>
@@ -371,7 +371,7 @@
 
   <ng-template #elseGotoGlobal>
     <td>
-      <button mat-button (click)="openGlobalSettings()" tippy="go to global">
+      <button mat-button (click)="openGlobalSettings()" tippy="Go to global">
         <mat-icon>open_in_new</mat-icon>
         <span></span>
       </button>
