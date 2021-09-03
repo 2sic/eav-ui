@@ -1,4 +1,4 @@
-export class EnableLanguage {
+export interface EnableLanguage {
   Code: string;
   Culture: string;
   IsEnabled: boolean;

@@ -1,35 +1,37 @@
 @import '../variables.scss';
-// overwrite mat-form-field-fill-typography
-@mixin mat-form-field-fill-typography($config) {
-  // standard appearance
-  .mat-form-field-appearance-standard {
-    width: 100%;
-    height: calc(86px - 1.4375em);
 
-    .mat-form-field-wrapper {
-      padding-bottom: 0;
-    }
-    .mat-form-field-underline {
-      bottom: 0;
-    }
-    .mat-form-field-suffix {
-      .mat-icon-button {
-        top: 6px;
-        width: 30px !important;
-        height: 30px !important;
-        line-height: 30px;
-      }
-    }
-    .mat-select-arrow-wrapper {
-      transform: translateX(-5px) !important;
-      .mat-select-arrow {
-        color: $editUI-foreground-color;
-      }
+// standard appearance
+.mat-form-field-appearance-standard {
+  width: 100%;
+  height: calc(86px - 1.4375em);
+
+  .mat-form-field-wrapper {
+    padding-bottom: 0;
+  }
+
+  .mat-form-field-underline {
+    bottom: 0;
+  }
+
+  .mat-form-field-suffix {
+    .mat-icon-button {
+      top: 6px;
+      width: 30px !important;
+      height: 30px !important;
+      line-height: 30px;
     }
   }
 
-  // boolean field
-  .mat-slide-toggle {
-    padding-top: 12px;
+  .mat-select-arrow-wrapper {
+    transform: translateX(-5px) !important;
+
+    .mat-select-arrow {
+      color: $editUI-foreground-color;
+    }
   }
+}
+
+// boolean field
+.mat-slide-toggle {
+  padding-top: 12px;
 }

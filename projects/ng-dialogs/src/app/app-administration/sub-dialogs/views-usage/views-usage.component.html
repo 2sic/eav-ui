@@ -1,8 +1,8 @@
 <div class="nav-component-wrapper">
   <div mat-dialog-title>
     <div class="dialog-title-box">
-      <div [matTooltip]="viewTooltip$ | async">View: {{ (viewUsage$ | async)?.Name }}</div>
-      <button mat-icon-button matTooltip="Close dialog" (click)="closeDialog()">
+      <div [tippy]="viewTooltip$ | async">View: {{ (viewUsage$ | async)?.Name }}</div>
+      <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
         <mat-icon>close</mat-icon>
       </button>
     </div>

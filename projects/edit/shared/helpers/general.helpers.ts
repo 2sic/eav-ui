@@ -1,15 +1,14 @@
 import { AbstractControl } from '@angular/forms';
 import { FieldValue } from '../../../edit-types';
-import { Dictionary } from '../../../ng-dialogs/src/app/shared/models/dictionary.model';
-import { FormValues } from '../../eav-item-dialog/item-edit-form/item-edit-form.models';
+import { FormValues } from '../models';
 
 export class GeneralHelpers {
 
   static objectsEqual<T>(x: T, y: T): boolean {
     if (x == null || y == null) { return x === y; }
 
-    const obj1 = x as Dictionary;
-    const obj2 = y as Dictionary;
+    const obj1 = x as Record<string, any>;
+    const obj2 = y as Record<string, any>;
 
     const keys1 = Object.keys(obj1);
     const keys2 = Object.keys(obj2);
@@ -82,5 +81,16 @@ export class GeneralHelpers {
     if (typeof x === 'number' && typeof y === 'number' && isNaN(x) && isNaN(y)) { return true; }
     if (Array.isArray(x) && Array.isArray(y) && this.arraysEqual(x, y)) { return true; }
     return false;
+  }
+
+  /** Disables/enables control if not already disabled/enabled. Use this helper to trigger fewer events on the form */
+  static disableControl(control: AbstractControl, disable: boolean) {
+    if (control.disabled === disable) { return; }
+
+    if (disable) {
+      control.disable();
+    } else {
+      control.enable();
+    }
   }
 }

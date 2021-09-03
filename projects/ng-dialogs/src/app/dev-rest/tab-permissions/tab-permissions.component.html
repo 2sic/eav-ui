@@ -1,11 +1,10 @@
-
 <h3>Permissions ({{ data.permissions.length }})</h3>
 <p>
   This target <code>{{ data.name }}</code> has {{ data.permissions.length }} permissions
   configured.
-  <button mat-icon-button matTooltip="Open permissions" (click)="openPermissions()">
-    <mat-icon [matBadge]="data.permissions.length" matBadgePosition="after" matBadgeColor="accent"
-      matBadgeSize="small" *ngIf="data.permissions.length">
+  <button mat-icon-button tippy="Open permissions" (click)="openPermissions()">
+    <mat-icon [matBadge]="data.permissions.length" matBadgePosition="after" matBadgeColor="accent" matBadgeSize="small"
+      *ngIf="data.permissions.length">
       person
     </mat-icon>
     <mat-icon *ngIf="!data.permissions.length">person</mat-icon>
@@ -17,8 +16,8 @@
   endpoints.
 </p>
 
-<ag-grid-angular class="ag-theme-material" [rowData]="data.permissions" [modules]="modules"
-  [gridOptions]="gridOptions" [style.height]="(33 + data.permissions.length * 48) + 'px'">
+<ag-grid-angular class="ag-theme-material" [rowData]="data.permissions" [modules]="modules" [gridOptions]="gridOptions"
+  [style.height]="(33 + data.permissions.length * 48) + 'px'">
 </ag-grid-angular>
 
 <h4>Super-Users (Host) can use all Endpoints</h4>

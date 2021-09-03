@@ -4,7 +4,6 @@ import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { ImportAppResult } from '../../import-app/models/import-app-result.model';
 import { EavScopeOption } from '../../shared/constants/eav.constants';
-import { Dictionary } from '../../shared/models/dictionary.model';
 import { Context } from '../../shared/services/context';
 import { ContentType, ContentTypeEdit } from '../models/content-type.model';
 
@@ -31,7 +30,7 @@ export class ContentTypesService {
   }
 
   getScopes() {
-    return this.http.get<Dictionary<string>>(this.apiUrl(webApiTypeRoot + 'scopes'), {
+    return this.http.get<Record<string, string>>(this.apiUrl(webApiTypeRoot + 'scopes'), {
       params: { appId: this.context.appId.toString() }
     }).pipe(
       map(scopes => {

@@ -1,8 +1,7 @@
 import { PermissionsCount } from '../../app-administration/models/permissions-count.model';
-import { Dictionary } from '../../shared/models/dictionary.model';
 import { InputType } from './input-type.model';
 
-export class Field {
+export interface Field {
   AttributeId: number;
   HasFormulas: boolean;
   Id: number;
@@ -17,14 +16,14 @@ export class Field {
   Type: string;
 }
 
-export class FieldMetadata {
-  All: Dictionary;
-  [key: string]: Dictionary;
+export interface FieldMetadata {
+  All: Record<string, any>;
+  [key: string]: Record<string, any>;
   /** Merged metadata from other keys */
-  merged: Dictionary;
+  merged: Record<string, any>;
 }
 
-export class FieldInputTypeOption {
+export interface FieldInputTypeOption {
   dataType: string;
   inputType: string;
   label: string;

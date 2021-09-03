@@ -1,0 +1,43 @@
+<div *ngIf="templateVars$ | async as data" style="position: relative" mat-dialog-container appToggleDebug>
+
+  <div mat-dialog-actions class="form-header-container" [ngClass]="{ 'u-display-none': data.hideHeader }">
+    <app-edit-dialog-header class="multi-item-edit-form-header" [disabled]="!data.formsValid"
+      (closeDialog)="closeDialog()">
+    </app-edit-dialog-header>
+  </div>
+
+  <div style="position: relative">
+    <div mat-dialog-content class="u-hide-scrollbar" [ngClass]="{
+      'debug-enabled': data.debugEnabled,
+      'debug-info-is-open': data.debugInfoIsOpen,
+      'hide-header-height-fix': data.hideHeader
+    }">
+      <div class="mdc-layout-grid">
+        <div class="mdc-layout-grid__inner">
+          <div class="mdc-layout-grid__cell--span-12" appFormSlide *ngIf="!data.delayForm">
+            <div *ngFor="let item of data.items; trackBy: trackByFn">
+              <app-form-builder [entityGuid]="item.Entity.Guid"></app-form-builder>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="data.viewInitiated" class="c-multi-item-dialog__save-container">
+        <div class="c-multi-item-dialog__save-button">
+          <button mat-fab class="mat-elevation-z24" [tippy]="'Form.Buttons.Save.Tip' | translate" [ngClass]="{
+            'mat-fab--compact' : data.reduceSaveButton,
+            'mat-fab--extended' : !data.reduceSaveButton,
+            'mat-fab--disabled' : !data.formsValid
+          }" (click)="saveAll(true)">
+            <mat-icon>done</mat-icon>
+            {{ data.reduceSaveButton ? '' : ('Form.Buttons.Save' | translate | uppercase) }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <app-edit-dialog-footer mat-dialog-actions *ngIf="data.debugEnabled" [formBuilderRefs]="formBuilderRefs"
+    (debugInfoOpened)="debugInfoOpened($event)">
+  </app-edit-dialog-footer>
+</div>

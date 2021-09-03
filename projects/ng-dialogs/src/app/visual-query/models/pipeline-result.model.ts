@@ -1,5 +1,3 @@
-import { Dictionary } from '../../shared/models/dictionary.model';
-
 export interface PipelineResult {
   Query: PipelineResultQuery;
   QueryTimer: PipelineResultTimer;
@@ -25,7 +23,7 @@ export interface PipelineResultSources {
 }
 
 export interface PipelineResultSourceValue {
-  Configuration: Dictionary;
+  Configuration: Record<string, any>;
   Error: boolean;
   Guid: string;
   Type: string;

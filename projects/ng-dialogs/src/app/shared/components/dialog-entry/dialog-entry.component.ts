@@ -1,11 +1,10 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { take } from 'rxjs/operators';
 import { NavigateFormResult } from '../../../../../../edit/shared/models';
 import { consoleLogAngular } from '../../helpers/console-log-angular.helper';
 import { DialogConfig } from '../../models/dialog-config.model';
-import { Dictionary } from '../../models/dictionary.model';
 import { EavWindow } from '../../models/eav-window.model';
 import { Context } from '../../services/context';
 
@@ -15,10 +14,9 @@ declare const window: EavWindow;
   selector: 'app-dialog-entry',
   templateUrl: './dialog-entry.component.html',
   styleUrls: ['./dialog-entry.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DialogEntryComponent implements OnInit, OnDestroy {
-  private dialogData: Dictionary;
+  private dialogData: Record<string, any>;
   private dialogRef: MatDialogRef<any>;
 
   constructor(

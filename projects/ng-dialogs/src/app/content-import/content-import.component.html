@@ -18,7 +18,7 @@
       <form #ngForm="ngForm" class="dialog-form" *ngSwitchCase="1">
         <div class="dialog-form-content fancy-scrollbar-light">
           <div>
-            <button mat-raised-button matTooltip="Open file browser" (click)="fileInput.click()">
+            <button mat-raised-button tippy="Open file browser" (click)="fileInput.click()">
               <span>{{ formValues.file ? formValues.file.name : 'Select or drop file' }}</span>
             </button>
             <input #fileInput type="file" (change)="fileChange($event)" class="hide" />

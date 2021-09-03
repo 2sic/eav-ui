@@ -25,8 +25,7 @@
         </cdk-virtual-scroll-viewport>
       </mat-autocomplete>
     </mat-form-field>
-    <button mat-icon-button class="options-box__copy" matTooltip="Copy" [disabled]="!data.isMatch"
-      (click)="copySelected()">
+    <button mat-icon-button class="options-box__copy" tippy="Copy" [disabled]="!data.isMatch" (click)="copySelected()">
       <mat-icon>file_copy</mat-icon>
     </button>
   </div>

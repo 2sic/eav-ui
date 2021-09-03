@@ -1,5 +1,5 @@
 import { AllCommunityModules, GridOptions } from '@ag-grid-community/all-modules';
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
@@ -17,7 +17,6 @@ import { buildData } from './views-usage.helpers';
   selector: 'app-views-usage',
   templateUrl: './views-usage.component.html',
   styleUrls: ['./views-usage.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ViewsUsageComponent implements OnInit, OnDestroy {
   viewUsage$ = new BehaviorSubject<ViewUsage>(null);

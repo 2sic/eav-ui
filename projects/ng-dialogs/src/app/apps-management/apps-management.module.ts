@@ -12,9 +12,10 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTabsModule } from '@angular/material/tabs';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { EcoFabSpeedDialModule } from '@ecodev/fab-speed-dial';
+import { AppDialogConfigService } from '../app-administration/services';
 import { Context } from '../shared/services/context';
+import { DialogService } from '../shared/services/dialog.service';
 import { SharedComponentsModule } from '../shared/shared-components.module';
 import { AppsListActionsComponent } from './ag-grid-components/apps-list-actions/apps-list-actions.component';
 import { AppsListShowComponent } from './ag-grid-components/apps-list-show/apps-list-show.component';
@@ -33,6 +34,7 @@ import { EnableLanguagesService } from './services/enable-languages.service';
 import { FeaturesConfigService } from './services/features-config.service';
 import { SxcInsightsService } from './services/sxc-insights.service';
 import { SxcInsightsComponent } from './sxc-insights/sxc-insights.component';
+import { SystemSettingsComponent } from './system-settings/system-settings.component';
 
 @NgModule({
   declarations: [
@@ -48,16 +50,7 @@ import { SxcInsightsComponent } from './sxc-insights/sxc-insights.component';
     FeaturesListSecurityComponent,
     EnableLanguagesComponent,
     EnableLanguagesStatusComponent,
-  ],
-  entryComponents: [
-    AppsManagementNavComponent,
-    AppsListShowComponent,
-    AppsListActionsComponent,
-    FeaturesListEnabledComponent,
-    FeaturesListUiComponent,
-    FeaturesListPublicComponent,
-    FeaturesListSecurityComponent,
-    EnableLanguagesStatusComponent,
+    SystemSettingsComponent,
   ],
   imports: [
     AppsManagementRoutingModule,
@@ -68,7 +61,6 @@ import { SxcInsightsComponent } from './sxc-insights/sxc-insights.component';
     MatButtonModule,
     MatIconModule,
     MatProgressSpinnerModule,
-    MatTooltipModule,
     MatSlideToggleModule,
     MatTabsModule,
     MatRippleModule,
@@ -84,6 +76,8 @@ import { SxcInsightsComponent } from './sxc-insights/sxc-insights.component';
     EnableLanguagesService,
     FeaturesConfigService,
     SxcInsightsService,
+    DialogService,
+    AppDialogConfigService,
   ]
 })
 export class AppsManagementModule { }

@@ -1,6 +1,6 @@
 import { PermissionsCount } from './permissions-count.model';
 
-export class Query {
+export interface Query {
   AllowEdit: boolean;
   Description: string;
   Guid: string;

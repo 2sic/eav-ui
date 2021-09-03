@@ -1,5 +1,5 @@
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
-import { ChangeDetectionStrategy, Component, HostBinding, OnDestroy } from '@angular/core';
+import { Component, HostBinding, OnDestroy } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest } from 'rxjs';
@@ -20,7 +20,6 @@ const pathToContent = 'app/{appname}/content/{typename}';
   selector: 'app-dev-rest-data',
   templateUrl: './data.component.html',
   styleUrls: ['../dev-rest-all.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   // we need preserve whitespace - otherwise spaces are missing in some conditional HTML
   preserveWhitespaces: true,
 })
@@ -55,7 +54,6 @@ export class DevRestDataComponent extends DevRestBase<DevRestDataTemplateVars> i
 
     this.permissions$ = this.buildPermissionStream(GoToDevRest.paramTypeName);
 
-
     // Build Root Stream (for the root folder)
     const root$ = combineLatest([contentType$, this.scenario$, this.dialogSettings$]).pipe(
       map(([contentType, scenario, dialogSettings]) => {
@@ -65,8 +63,6 @@ export class DevRestDataComponent extends DevRestBase<DevRestDataTemplateVars> i
         return this.rootBasedOnScenario(resolved, scenario);
       }),
     );
-
-
 
     // Get an item of this type for building urls
     const itemOfThisType$ = entityService.reactiveEntities(
@@ -78,7 +74,7 @@ export class DevRestDataComponent extends DevRestBase<DevRestDataTemplateVars> i
       map(list => list.length
         ? list[0]
         // we need a dummy in case nothing is found, otherwise the observables stop
-        : { Id: 0, Value: "no data found", Text: "no data found" } as EntityInfo),
+        : { Id: 0, Value: 'no data found', Text: 'no data found' } as EntityInfo),
     );
 
     // Prepare everything for use in the template
@@ -97,7 +93,5 @@ export class DevRestDataComponent extends DevRestBase<DevRestDataTemplateVars> i
     );
 
   }
-
-
 
 }

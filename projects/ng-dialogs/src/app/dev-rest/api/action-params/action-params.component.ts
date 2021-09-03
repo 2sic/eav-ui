@@ -1,9 +1,9 @@
 import { AllCommunityModules, GridOptions } from '@ag-grid-community/all-modules';
 import { Component, Input } from '@angular/core';
-import { defaultGridOptions } from '../../../shared/constants/default-grid-options.constants';
 import { WebApiAction } from '../../../app-administration/models/web-api-details';
-import { TrueFalseComponent } from './true-false.component';
+import { defaultGridOptions } from '../../../shared/constants/default-grid-options.constants';
 import { TrueFalseParams } from './true-false-column-params';
+import { TrueFalseComponent } from './true-false.component';
 
 @Component({
   selector: 'app-dev-rest-api-action-params',
@@ -33,7 +33,6 @@ export class DevRestApiActionParamsComponent {
     ],
   };
 
-  constructor(  ) { }
-
+  constructor() { }
 
 }

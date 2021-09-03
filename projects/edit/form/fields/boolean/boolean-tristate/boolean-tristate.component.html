@@ -1,0 +1,11 @@
+<div *ngIf="templateVars$ | async as data" [formGroup]="group">
+  <mat-slide-toggle [disabled]="data.controlStatus.disabled" [checked]="data.checked" (change)="updateValue()"
+    [ngClass]="{
+    'toggle-false': data.checked === false,
+    'toggle-null': data.checked === null
+  }">
+    {{ data.label }}
+  </mat-slide-toggle>
+
+  <app-field-helper-text [config]="config" [group]="group" [disableError]="true"></app-field-helper-text>
+</div>

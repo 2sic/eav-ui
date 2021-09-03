@@ -8,13 +8,12 @@ import { FieldSettings } from '../../../edit-types';
 import { InputTypeConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { UpdateEnvVarsFromDialogSettings } from '../../../ng-dialogs/src/app/shared/helpers/update-env-vars-from-dialog-settings.helper';
 import { convertUrlToForm } from '../../../ng-dialogs/src/app/shared/helpers/url-prep.helper';
-import { FormValues } from '../../eav-item-dialog/item-edit-form/item-edit-form.models';
-import { calculateIsParentDialog, sortLanguages } from '../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.helpers';
-import { EavFormData } from '../../eav-item-dialog/multi-item-edit-form/multi-item-edit-form.models';
+import { calculateIsParentDialog, sortLanguages } from '../../dialog/main/edit-dialog-main.helpers';
+import { EavFormData } from '../../dialog/main/edit-dialog-main.models';
 import { EditParams } from '../../edit-matcher.models';
 import { BestValueModes } from '../constants/localization.constants';
 import { FieldsSettingsHelpers, InputFieldHelpers, LocalizationHelpers } from '../helpers';
-import { Language, PublishStatus } from '../models';
+import { FormValues, Language, PublishStatus } from '../models';
 // tslint:disable-next-line:max-line-length
 import { AdamCacheService, ContentTypeItemService, ContentTypeService, EntityCacheService, FeatureService, InputTypeService, ItemService, LanguageInstanceService, LanguageService, LinkCacheService, PublishStatusService } from '../store/ngrx-data';
 
@@ -147,8 +146,8 @@ export class EditInitializerService implements OnDestroy {
 
       for (const ctAttribute of contentType.Attributes) {
         const inputType = inputTypes.find(i => i.Type === ctAttribute.InputType);
-        // 'custom-default' doesn't have inputType and 'empty-default' and 'empty-end' don't save value
-        const empties = [InputTypeConstants.EmptyDefault, InputTypeConstants.EmptyEnd];
+        // 'custom-default' doesn't have inputType and 'empty-default' and 'empty-end' and 'empty-message' don't save value
+        const empties: string[] = [InputTypeConstants.EmptyDefault, InputTypeConstants.EmptyEnd, InputTypeConstants.EmptyMessage];
         if (empties.includes(inputType?.Type)) { continue; }
 
         const attributeValues = item.Entity.Attributes[ctAttribute.Name];

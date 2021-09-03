@@ -1,0 +1,30 @@
+<!-- This template is used for StringDropdown and NumberDropdown -->
+
+<ng-container *ngIf="templateVars$ | async as data">
+  <mat-form-field [formGroup]="group" appearance="standard" color="accent">
+
+    <mat-select *ngIf="!data.freeTextMode" [formControlName]="config.fieldName" [required]="data.required"
+      [placeholder]="data.placeholder">
+      <mat-option *ngFor="let option of data.dropdownOptions" [value]="option.value">
+        {{ option.label }}
+      </mat-option>
+    </mat-select>
+
+    <input matInput *ngIf="data.freeTextMode && type === 'string'" [formControlName]="config.fieldName"
+      [required]="data.required" [placeholder]="data.placeholder">
+
+    <input matInput type="number" *ngIf="data.freeTextMode && type === 'number'" [formControlName]="config.fieldName"
+      [required]="data.required" [placeholder]="data.placeholder">
+
+    <button matSuffix mat-icon-button *ngIf="data.enableTextEntry" [disabled]="data.controlStatus.disabled"
+      appClickStopPropagation (click)="toggleFreeTextMode()">
+      <mat-icon [tippy]="(data.freeTextMode ? 'Fields.String.Dropdown' : 'Fields.String.Freetext') | translate">
+        {{ data.freeTextMode ? 'arrow_drop_down_circle' : 'text_fields' }}
+      </mat-icon>
+    </button>
+
+    <mat-label>{{ data.label }}</mat-label>
+  </mat-form-field>
+
+  <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
+</ng-container>

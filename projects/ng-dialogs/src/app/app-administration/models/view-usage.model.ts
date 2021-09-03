@@ -1,6 +1,6 @@
 import { ViewUsageDataModule } from './view-usage-data.model';
 
-export class ViewUsage {
+export interface ViewUsage {
   Blocks: ViewUsageBlock[];
   Guid: string;
   Id: number;
@@ -8,19 +8,19 @@ export class ViewUsage {
   Path: string;
 }
 
-export class ViewUsageBlock {
+export interface ViewUsageBlock {
   Guid: string;
   Id: number;
   Modules: ViewUsageModule[];
 }
 
-export class ViewUsageModule extends ViewUsageDataModule {
+export interface ViewUsageModule extends ViewUsageDataModule {
   IsDeleted: boolean;
   Page: ViewUsagePage;
   ShowOnAllPages: boolean;
 }
 
-export class ViewUsagePage {
+export interface ViewUsagePage {
   CultureCode: string;
   Id: number;
   Name: string;

@@ -1,0 +1,80 @@
+$paddingBottom: 11px;
+
+.json-field {
+  padding-top: 28px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  padding-bottom: calc(1px + #{$paddingBottom});
+  position: relative;
+
+  .label {
+    display: block;
+    color: rgba(0, 0, 0, 0.6);
+    cursor: default;
+    transform: scale(0.75);
+    transition: none;
+    position: absolute;
+    left: 0;
+    top: 0;
+    user-select: none;
+  }
+
+  .placeholder {
+    position: absolute;
+    top: 28px;
+    left: 64px;
+    border: none;
+    background: transparent;
+    outline: none;
+    width: calc(100% - 112px);
+    font-family: inherit;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    pointer-events: none;
+  }
+
+  .editor {
+    ::ng-deep .monaco-editor .scroll-decoration {
+      display: none;
+    }
+  }
+
+  &:hover {
+    border-bottom: 2px solid rgba(0, 0, 0, 0.4);
+    padding-bottom: $paddingBottom;
+  }
+
+  &.focused {
+    border-bottom: 2px solid #002753;
+    padding-bottom: $paddingBottom;
+
+    .label {
+      color: #002753;
+    }
+  }
+
+  &.error {
+    border-bottom: 2px solid #b00030;
+    padding-bottom: $paddingBottom;
+
+    .label {
+      color: #b00030;
+    }
+  }
+
+  &.disabled {
+    .editor {
+      pointer-events: none;
+
+      ::ng-deep * {
+        color: rgba(0, 0, 0, 0.38);
+      }
+    }
+
+    border-bottom: none;
+    padding-bottom: calc(2px + #{$paddingBottom});
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.2) 33%, transparent 0%);
+    background-position: bottom;
+    background-size: 4px 1px;
+    background-repeat: repeat-x;
+  }
+}

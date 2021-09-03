@@ -1,11 +1,14 @@
-import { EditDialogContext } from 'projects/edit/eav-item-dialog/multi-item-edit-form/multi-item-edit-form.models';
-import { DialogContextEnable, DialogContextPage } from '../../shared/models/dialog-context.models';
+import { DialogContextApp, DialogContextEnable, DialogContextLanguage, DialogContextPage, DialogContextSite, DialogContextSystem } from '../../shared/models/dialog-context.models';
 
 export interface DialogSettings {
   Context: DialogContext;
 }
 
-export interface DialogContext extends EditDialogContext {
+export interface DialogContext {
+  App: DialogContextApp;
   Enable: DialogContextEnable;
-  Page: DialogContextPage;
+  Language: DialogContextLanguage;
+  Page?: DialogContextPage;
+  Site: DialogContextSite;
+  System: DialogContextSystem;
 }

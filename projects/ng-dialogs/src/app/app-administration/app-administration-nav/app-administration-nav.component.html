@@ -1,8 +1,16 @@
 <div class="nav-component-wrapper" appToggleDebug *ngIf="(templateVars$ | async) as data">
   <div mat-dialog-title>
     <div class="dialog-title-box">
-      <div>{{ data.dialogSettings?.Context.App.Name }} Admin</div>
-      <button mat-icon-button matTooltip="Close dialog" (click)="closeDialog()">
+      <div>
+        <ng-container *ngIf="data.dialogSettings?.Context.App.SettingsScope === AppScopes.Global">
+          Global
+        </ng-container>
+        <ng-container *ngIf="data.dialogSettings?.Context.App.SettingsScope !== AppScopes.Global">
+          {{ data.dialogSettings?.Context.App.Name }}
+        </ng-container>
+        Admin
+      </div>
+      <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
         <mat-icon>close</mat-icon>
       </button>
     </div>
@@ -15,7 +23,7 @@
     *ngIf="data.dialogSettings && data.tabIndex != null" (selectedTabChange)="changeTab($event)"
     [selectedIndex]="data.tabIndex">
     <mat-tab>
-      <div *matTabLabel class="mat-tab-label-box" matTooltip="App Info">
+      <div *matTabLabel class="mat-tab-label-box" tippy="App Info">
         <mat-icon>info</mat-icon>
         <span>Info</span>
       </div>
@@ -24,7 +32,7 @@
     </mat-tab>
 
     <mat-tab>
-      <div *matTabLabel class="mat-tab-label-box" matTooltip="Data / Content">
+      <div *matTabLabel class="mat-tab-label-box" tippy="Data / Content">
         <mat-icon>menu</mat-icon>
         <span>Data</span>
       </div>
@@ -32,7 +40,7 @@
     </mat-tab>
 
     <mat-tab *ngIf="data.dialogSettings.Context.Enable.Query">
-      <div *matTabLabel class="mat-tab-label-box" matTooltip="Queries / Visual Query Designer">
+      <div *matTabLabel class="mat-tab-label-box" tippy="Queries / Visual Query Designer">
         <mat-icon>filter_list</mat-icon>
         <span>Queries</span>
       </div>
@@ -41,7 +49,7 @@
     </mat-tab>
 
     <mat-tab>
-      <div *matTabLabel class="mat-tab-label-box" matTooltip="Views / Templates">
+      <div *matTabLabel class="mat-tab-label-box" tippy="Views / Templates">
         <mat-icon>layers</mat-icon>
         <span>Views</span>
       </div>
@@ -51,7 +59,7 @@
     </mat-tab>
 
     <mat-tab *ngIf="data.dialogSettings.Context.Enable.Query">
-      <div *matTabLabel class="mat-tab-label-box" matTooltip="WebApi">
+      <div *matTabLabel class="mat-tab-label-box" tippy="WebApi">
         <mat-icon>offline_bolt</mat-icon>
         <span>WebApi</span>
       </div>
@@ -60,7 +68,7 @@
     </mat-tab>
 
     <mat-tab>
-      <div *matTabLabel class="mat-tab-label-box" matTooltip="App Settings">
+      <div *matTabLabel class="mat-tab-label-box" tippy="App Settings">
         <mat-icon>settings_applications</mat-icon>
         <span>App</span>
       </div>

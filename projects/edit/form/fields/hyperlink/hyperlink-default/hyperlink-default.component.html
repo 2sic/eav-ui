@@ -1,0 +1,82 @@
+<ng-container *ngIf="templateVars$ | async as data">
+  <ng-container *ngIf="data.open">
+
+    <div class="fabs-box">
+      <button mat-mini-fab color="accent" [tippy]="'Fields.Hyperlink.Default.AdamTip' | translate"
+        *ngIf="data.buttonAdam" [disabled]="data.controlStatus.disabled" (click)="toggleAdam(false, false)">
+        <mat-icon svgIcon="appleFilled"></mat-icon>
+      </button>
+      <button mat-mini-fab color="primary" [tippy]="'Fields.Hyperlink.Default.PageTip' | translate"
+        *ngIf="data.buttonPage" [disabled]="data.controlStatus.disabled" (click)="openPagePicker()">
+        <mat-icon svgIcon="sitemap"></mat-icon>
+      </button>
+      <button mat-mini-fab color="primary" [tippy]="'Fields.Hyperlink.Default.MoreOptions' | translate"
+        *ngIf="data.buttonMore" [disabled]="data.controlStatus.disabled" [matMenuTriggerFor]="menu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+    </div>
+
+    <mat-menu #menu="matMenu" class="menu-box">
+      <button mat-menu-item *ngIf="data.showAdam" (click)="toggleAdam(false, false)">
+        <mat-icon svgIcon="appleFilled"></mat-icon>
+        <span>{{ 'Fields.Hyperlink.Default.MenuAdam' | translate }}</span>
+      </button>
+      <button mat-menu-item *ngIf="data.showPagePicker" (click)="openPagePicker()">
+        <mat-icon svgIcon="sitemap"></mat-icon>
+        <span>{{ 'Fields.Hyperlink.Default.MenuPage' | translate }}</span>
+      </button>
+      <button mat-menu-item *ngIf="data.showImageManager" (click)="toggleAdam(true, true)">
+        <mat-icon svgIcon="file-image"></mat-icon>
+        <span>{{ 'Fields.Hyperlink.Default.MenuImage' | translate }}</span>
+      </button>
+      <button mat-menu-item *ngIf="data.showFileManager" (click)="toggleAdam(true, false)">
+        <mat-icon svgIcon="file"></mat-icon>
+        <span>{{ 'Fields.Hyperlink.Default.MenuDocs' | translate }}</span>
+      </button>
+    </mat-menu>
+
+    <!-- content -->
+    <div class="mdc-layout-grid">
+      <div class="mdc-layout-grid__inner">
+        <mat-card class="mdc-layout-grid__cell--span-12 hyperlink-card shadow-bottom-z-1">
+          <div class="hyperlink-input-link-wrapper">
+            <!-- input -->
+            <mat-form-field [formGroup]="group" appearance="standard" color="accent">
+              <input matInput [formControlName]="config.fieldName"
+                [tippy]="'Fields.Hyperlink.Default.Tooltip' | translate" tippyPlacement="top"
+                [placeholder]="data.placeholder" [required]="data.required" appPasteClipboardImage [config]="config"
+                [elementType]="'input'">
+              <mat-label>{{ data.label }}</mat-label>
+            </mat-form-field>
+            <!-- link absolutely positioned above input -->
+            <div *ngIf="data.preview?.floatingText" class="hyperlink-floating">
+              <div class="hyperlink-floating__value">{{ data.controlStatus.value }}</div>
+              <div class="hyperlink-floating__url-box">
+                <a [href]="data.preview.url" target="_blank" class="hyperlink-floating__url" [tippy]="data.preview.url">
+                  <span>{{ data.preview.floatingText }}</span>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="preview-wrapper" *ngIf="data.controlStatus.value && data.preview">
+            <!-- image -->
+            <a [href]="data.preview.url" target="_blank" *ngIf="data.preview.isImage">
+              <div class="preview-image-box">
+                <img [src]="data.preview.previewUrl" class="preview-image" />
+              </div>
+            </a>
+            <!-- icon -->
+            <a [href]="data.preview.url" target="_blank" [tippy]="data.preview.url" tippyPlacement="right"
+              *ngIf="!data.preview.isImage">
+              <div class="preview-icon-box">
+                <mat-icon *ngIf="data.preview.isKnownType">{{ data.preview.icon }}</mat-icon>
+                <mat-icon *ngIf="!data.preview.isKnownType" [svgIcon]="data.preview.icon"></mat-icon>
+              </div>
+            </a>
+          </div>
+        </mat-card>
+      </div>
+    </div>
+
+  </ng-container>
+</ng-container>

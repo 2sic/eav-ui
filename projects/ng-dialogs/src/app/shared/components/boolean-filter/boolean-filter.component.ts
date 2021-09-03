@@ -1,13 +1,12 @@
 import { IAfterGuiAttachedParams, IDoesFilterPassParams, IFilterParams } from '@ag-grid-community/all-modules';
 import { IFilterAngularComp } from '@ag-grid-community/angular';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { BooleanFilterModel } from './boolean-filter.model';
 
 @Component({
   selector: 'app-boolean-filter',
   templateUrl: './boolean-filter.component.html',
   styleUrls: ['./boolean-filter.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BooleanFilterComponent implements IFilterAngularComp {
   filter = '';

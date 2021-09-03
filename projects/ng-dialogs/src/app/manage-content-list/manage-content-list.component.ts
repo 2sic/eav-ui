@@ -1,5 +1,5 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { ChangeDetectionStrategy, Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
@@ -15,7 +15,6 @@ import { ContentGroupService } from './services/content-group.service';
   selector: 'app-manage-content-list',
   templateUrl: './manage-content-list.component.html',
   styleUrls: ['./manage-content-list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ManageContentListComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';

@@ -1,5 +1,5 @@
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { App } from '../../models/app.model';
 import { AppsListActionsParams } from './apps-list-actions.models';
 
@@ -7,7 +7,6 @@ import { AppsListActionsParams } from './apps-list-actions.models';
   selector: 'app-apps-list-actions',
   templateUrl: './apps-list-actions.component.html',
   styleUrls: ['./apps-list-actions.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppsListActionsComponent implements ICellRendererAngularComp {
   app: App;

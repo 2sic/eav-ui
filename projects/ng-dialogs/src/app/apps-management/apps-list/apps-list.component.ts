@@ -1,5 +1,5 @@
 import { AllCommunityModules, CellClickedEvent, GridOptions, ICellRendererParams, ValueGetterParams } from '@ag-grid-community/all-modules';
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { BehaviorSubject, Subscription } from 'rxjs';
@@ -20,7 +20,6 @@ import { AppsListService } from '../services/apps-list.service';
   selector: 'app-apps-list',
   templateUrl: './apps-list.component.html',
   styleUrls: ['./apps-list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppsListComponent implements OnInit, OnDestroy {
   apps$ = new BehaviorSubject<App[]>(null);

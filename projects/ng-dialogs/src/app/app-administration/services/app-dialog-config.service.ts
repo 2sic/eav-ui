@@ -10,9 +10,9 @@ const webApiDialogRoot = 'admin/dialog/';
 export class AppDialogConfigService {
   constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
 
-  getDialogSettings() {
+  getDialogSettings(appId?: number) {
     return this.http.get<DialogSettings>(this.dnnContext.$2sxc.http.apiUrl(webApiDialogRoot + 'settings'), {
-      params: { appid: this.context.appId.toString() },
+      params: { appId: appId ?? this.context.appId.toString() },
     });
   }
 }

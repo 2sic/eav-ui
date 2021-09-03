@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -16,7 +16,6 @@ import { ReplaceContentTemplateVars } from './replace-content.models';
   selector: 'app-replace-content',
   templateUrl: './replace-content.component.html',
   styleUrls: ['./replace-content.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReplaceContentComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';

@@ -1,0 +1,27 @@
+<ng-container *ngIf="templateVars$ | async as data">
+
+  <mat-form-field [formGroup]="group" appearance="standard" color="accent">
+    <div class="icon-option">
+      <i *ngIf="data.controlStatus.value" class="icon-preview {{ data.previewCss }} {{ data.controlStatus.value }}"></i>
+      <input matInput [formControlName]="config.fieldName" [placeholder]="data.placeholder" [required]="data.required"
+        [matAutocomplete]="auto">
+    </div>
+
+    <mat-autocomplete #auto="matAutocomplete">
+      <cdk-virtual-scroll-viewport itemSize="48" minBufferPx="500" maxBufferPx="1000"
+        [style.height.px]="data.filteredIcons.length < 6 ? data.filteredIcons.length * 48 : 240">
+        <mat-option *cdkVirtualFor="let icon of data.filteredIcons" [value]="icon.class">
+          <div class="icon-option">
+            <i class="icon-preview {{ data.previewCss }} {{ icon.class }}"></i>
+            <span>{{ icon.label }}</span>
+          </div>
+        </mat-option>
+      </cdk-virtual-scroll-viewport>
+    </mat-autocomplete>
+
+    <mat-label>{{ data.label }}</mat-label>
+  </mat-form-field>
+
+  <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
+
+</ng-container>

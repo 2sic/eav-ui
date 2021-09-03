@@ -3,40 +3,45 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import cloneDeep from 'lodash-es/cloneDeep';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { DataTypeConstants } from '../../content-type-fields/constants/data-type.constants';
 import { Field } from '../../content-type-fields/models/field.model';
 import { webApiFieldsAll } from '../../content-type-fields/services/content-types-fields.service';
-import { Snippet } from '../models/snippet.model';
+import { MoreSnippet, SetSnippet, SetSnippetLink, Snippet, SnippetsSets, SnippetsSubSubSets } from '../models/snippet.model';
 import { SourceView } from '../models/source-view.model';
 
 @Injectable()
 export class SnippetsService {
-  private keyPrefixes = ['@', '['];
-  private keyPrefixIndex = (view: SourceView) => (view.Type.indexOf('Razor') > -1) ? 0 : 1;
 
-  constructor(
-    private http: HttpClient,
-    private dnnContext: DnnContext,
-    private translate: TranslateService,
-  ) { }
+  constructor(private http: HttpClient, private dnnContext: DnnContext, private translate: TranslateService) { }
 
-  async getSnippets(view: SourceView) {
-    const res: any = await this.http.get('../ng-assets/snippets.json.js').toPromise();
-    const snippets: Snippet[] = res.snippets;
-    const relevant = this.filterAwayNotNeededSnippetsList(snippets, view);
-    const standAndInputSnips = this.extractInputTypeSnippets(relevant);
-    const sets = this.initSnippetsWithConfig(standAndInputSnips.standardArray, view, standAndInputSnips.inputTypeSnippets);
-    return { sets, list: standAndInputSnips.standardArray };
+  getSnippets(view: SourceView): Observable<{ list: Snippet[]; sets: SnippetsSets; }> {
+    return this.http.get<{ snippets: Snippet[] }>('../ng-assets/snippets.json.js').pipe(
+      map(res => {
+        const relevant = this.filterAwayNotNeededSnippetsList(res.snippets, view);
+        const standardAndInputSnips = this.extractInputTypeSnippets(relevant);
+        const sets = this.initSnippetsWithConfig(standardAndInputSnips.standardArray, view, standardAndInputSnips.inputTypeSnippets);
+        const sorted: { list: Snippet[]; sets: SnippetsSets; } = {
+          list: standardAndInputSnips.standardArray,
+          sets
+        };
+        return sorted;
+      }),
+    );
   }
 
-  // scan the list for sets starting with @ or [ and filter if not needed right now
-  private filterAwayNotNeededSnippetsList(list: Snippet[], view: SourceView) {
-    const newList = [];
+  /** Scan the list for sets starting with @ or [ and filter if not needed right now */
+  private filterAwayNotNeededSnippetsList(list: Snippet[], view: SourceView): Snippet[] {
+    const keyPrefixes = ['@', '['];
+    const keyPrefixIndex = (v: SourceView) => (v.Type.indexOf('Razor') > -1) ? 0 : 1;
+
+    const newList: Snippet[] = [];
     for (const itm of list) {
-      const setHasPrefix = this.keyPrefixes.indexOf(itm.set[0]);
-      if (setHasPrefix === -1 || (setHasPrefix === this.keyPrefixIndex(view))) {
+      const setHasPrefix = keyPrefixes.indexOf(itm.set[0]);
+      if (setHasPrefix === -1 || (setHasPrefix === keyPrefixIndex(view))) {
         // if necessary, remove first char
-        if (setHasPrefix === this.keyPrefixIndex(view)) {
+        if (setHasPrefix === keyPrefixIndex(view)) {
           itm.set = itm.set.substr(1);
         }
         newList.push(itm);
@@ -45,7 +50,7 @@ export class SnippetsService {
     return newList;
   }
 
-  private extractInputTypeSnippets(list: Snippet[]) {
+  private extractInputTypeSnippets(list: Snippet[]): { standardArray: Snippet[]; inputTypeSnippets: Record<string, Snippet[]>; } {
     const standardArray: Snippet[] = [];
     const inputTypeArray: Snippet[] = [];
 
@@ -59,14 +64,15 @@ export class SnippetsService {
       }
     }
     const inputTypeSnippets = this.catalogInputTypeSnippets(inputTypeArray);
-    return {
+    const extracted: { standardArray: Snippet[]; inputTypeSnippets: Record<string, Snippet[]>; } = {
       standardArray,
       inputTypeSnippets,
     };
+    return extracted;
   }
 
-  private catalogInputTypeSnippets(list: Snippet[]) {
-    const inputTypeList: any = {};
+  private catalogInputTypeSnippets(list: Snippet[]): Record<string, Snippet[]> {
+    const inputTypeList: Record<string, Snippet[]> = {};
     for (const itm of list) {
       if (inputTypeList[itm.subset] === undefined) {
         inputTypeList[itm.subset] = [];
@@ -76,30 +82,52 @@ export class SnippetsService {
     return inputTypeList;
   }
 
-  private initSnippetsWithConfig(sets: any, templateConfiguration: SourceView, inputTypeSnippets: any) {
-    sets = this.makeTree(sets);
+  private initSnippetsWithConfig(
+    standardArray: Snippet[],
+    templateConfiguration: SourceView,
+    inputTypeSnippets: Record<string, Snippet[]>,
+  ): SnippetsSets {
+    const sets = this.makeTree(standardArray);
 
     // retrieve all relevant content-types and infos
     sets.Content = Object.assign({}, sets.Content, { Fields: {}, PresentationFields: {} });
     if (templateConfiguration.TypeContent) {
-      this.loadContentType(sets.Content.Fields, templateConfiguration.TypeContent, 'Content', templateConfiguration, inputTypeSnippets);
+      this.loadContentType(
+        sets.Content.Fields as SnippetsSubSubSets,
+        templateConfiguration.TypeContent,
+        'Content',
+        templateConfiguration,
+        inputTypeSnippets,
+      );
     }
     if (templateConfiguration.TypeContentPresentation) {
       this.loadContentType(
-        sets.Content.PresentationFields, templateConfiguration.TypeContentPresentation,
-        'Content.Presentation', templateConfiguration, inputTypeSnippets,
+        sets.Content.PresentationFields as SnippetsSubSubSets,
+        templateConfiguration.TypeContentPresentation,
+        'Content.Presentation',
+        templateConfiguration,
+        inputTypeSnippets,
       );
     }
 
     if (templateConfiguration.HasList) {
       sets.List = Object.assign({}, sets.List, { Fields: {}, PresentationFields: {} });
       if (templateConfiguration.TypeList) {
-        this.loadContentType(sets.List.Fields, templateConfiguration.TypeList, 'Header', templateConfiguration, inputTypeSnippets);
+        this.loadContentType(
+          sets.List.Fields as SnippetsSubSubSets,
+          templateConfiguration.TypeList,
+          'Header',
+          templateConfiguration,
+          inputTypeSnippets,
+        );
       }
       if (templateConfiguration.TypeListPresentation) {
         this.loadContentType(
-          sets.List.PresentationFields, templateConfiguration.TypeListPresentation,
-          'Header.Presentation', templateConfiguration, inputTypeSnippets,
+          sets.List.PresentationFields as SnippetsSubSubSets,
+          templateConfiguration.TypeListPresentation,
+          'Header.Presentation',
+          templateConfiguration,
+          inputTypeSnippets,
         );
       }
     } else {
@@ -117,9 +145,9 @@ export class SnippetsService {
     return sets;
   }
 
-  // Convert the list into a tree with set/subset/item
-  private makeTree(list: Snippet[]) {
-    const tree: any = {};
+  /** Convert the list into a tree with set/subset/item */
+  private makeTree(list: Snippet[]): SnippetsSets {
+    const tree: SnippetsSets = {};
     for (const o of list) {
       if (tree[o.set] === undefined) {
         tree[o.set] = {};
@@ -127,7 +155,7 @@ export class SnippetsService {
       if (tree[o.set][o.subset] === undefined) {
         tree[o.set][o.subset] = [];
       }
-      const reformatted = {
+      const reformatted: SetSnippet = {
         key: o.name,
         label: this.label(o.set, o.subset, o.name),
         snip: o.content,
@@ -135,115 +163,127 @@ export class SnippetsService {
         links: this.linksList(o.links)
       };
 
-      tree[o.set][o.subset].push(reformatted);
+      (tree[o.set][o.subset] as SetSnippet[]).push(reformatted);
     }
     return tree;
   }
 
-  private label(set: any, subset: any, snip: any) {
+  private label(set: string, subset: string, snip: string): string {
     const key = this.getHelpKey(set, subset, snip, '.Key');
 
-    let result = this.translate.instant(key);
+    let result: string = this.translate.instant(key);
     if (result === key) {
       result = snip;
     }
     return result;
   }
 
-  private getHelpKey(set: any, subset: any, snip: any, addition: any) {
+  private getHelpKey(set: string, subset: string, snip: string, addition: string): string {
     return 'SourceEditorSnippets' + '.' + set + '.' + subset + '.' + snip + addition;
   }
 
-  private help(set: any, subset: any, snip: any) {
+  private help(set: string, subset: string, snip: string): string {
     const key = this.getHelpKey(set, subset, snip, '.Help');
 
-    let result = this.translate.instant(key);
+    let result: string = this.translate.instant(key);
     if (result === key) {
       result = '';
     }
     return result;
   }
 
-  private linksList(linksString: any) {
-    if (!linksString) {
-      return null;
-    }
-    const links = [];
+  private linksList(linksString: string): SetSnippetLink[] {
+    if (!linksString) { return null; }
+
+    const links: SetSnippetLink[] = [];
     const llist = linksString.split('\n');
     for (const l of llist) {
       const pair = l.split(':');
       if (pair.length === 3) {
-        links.push({ name: pair[0].trim(), url: pair[1].trim() + ':' + pair[2].trim() });
+        const link: SetSnippetLink = {
+          name: pair[0].trim(),
+          url: pair[1].trim() + ':' + pair[2].trim(),
+        };
+        links.push(link);
       }
     }
     if (links.length === 0) { return null; }
     return links;
   }
 
-  // get fields in content types
-  private loadContentType(target: any, type: any, prefix: any, templateConfiguration: SourceView, inputTypeSnippets: any) {
-    this.getFields(templateConfiguration.AppId, type)
-      .then(fields => {
-        // first add common items if the content-type actually exists
-        for (const value of fields) {
-          const fieldname = value.StaticName;
-          target[fieldname] = {
-            key: fieldname,
-            label: fieldname,
-            snip: this.valuePlaceholder(prefix, fieldname, templateConfiguration),
-            help: value.Metadata.merged.Notes || '' + ' (' + value.Type.toLowerCase() + ') '
-          };
-          // try to add generic snippets specific to this input-type
-          const snipDefaults = cloneDeep(target[fieldname]); // must be a copy, because target[fieldname] will grow
+  /** spm TODO: this happens after snippets are calculated for the first time. Needs to be fixed */
+  private loadContentType(
+    target: SnippetsSubSubSets,
+    type: string,
+    prefix: string,
+    templateConfiguration: SourceView,
+    inputTypeSnippets: Record<string, Snippet[]>,
+  ): void {
+    this.getFields(templateConfiguration.AppId, type).subscribe(fields => {
+      // first add common items if the content-type actually exists
+      for (const field of fields) {
+        const fieldname = field.StaticName;
+        target[fieldname] = {
+          key: fieldname,
+          label: fieldname,
+          snip: this.valuePlaceholder(prefix, fieldname, templateConfiguration),
+          help: field.Metadata.merged.Notes || ' (' + field.Type.toLowerCase() + ') '
+        };
+        // try to add generic snippets specific to this input-type
+        const snipDefaults = cloneDeep(target[fieldname]); // must be a copy, because target[fieldname] will grow
+        this.attachSnippets(target, prefix, fieldname, field.InputType, snipDefaults, inputTypeSnippets);
+      }
 
-          this.attachSnippets(target, prefix, fieldname, value.InputType, snipDefaults, inputTypeSnippets);
-        }
-
+      if (fields.length) {
         const std = ['EntityId', 'EntityTitle', 'EntityGuid', 'EntityType', 'IsPublished', 'Modified'];
-        if (fields.length) {
-          // tslint:disable-next-line:prefer-for-of
-          for (let i = 0; i < std.length; i++) {
-            target[std[i]] = {
-              key: std[i],
-              label: std[i],
-              snip: this.valuePlaceholder(prefix, std[i], templateConfiguration),
-              help: this.translate.instant('SourceEditorSnippets.StandardFields.' + std[i] + '.Help'),
-            };
-          }
+        // tslint:disable-next-line:prefer-for-of
+        for (let i = 0; i < std.length; i++) {
+          target[std[i]] = {
+            key: std[i],
+            label: std[i],
+            snip: this.valuePlaceholder(prefix, std[i], templateConfiguration),
+            help: this.translate.instant('SourceEditorSnippets.StandardFields.' + std[i] + '.Help'),
+          };
         }
-      });
+      }
+    });
   }
 
-  private valuePlaceholder(obj: any, val: any, templateConfiguration: any) {
+  private valuePlaceholder(obj: string, val: string, templateConfiguration: SourceView): string {
     return (templateConfiguration.Type.indexOf('Razor') > -1)
       ? '@' + obj + '.' + val
       : '[' + obj.replace('.', ':') + ':' + val + ']';
   }
 
-  private getFields(appId: number, staticName: string) {
-    return this.http.get(this.dnnContext.$2sxc.http.apiUrl(webApiFieldsAll), {
+  private getFields(appId: number, staticName: string): Observable<Field[]> {
+    return this.http.get<Field[]>(this.dnnContext.$2sxc.http.apiUrl(webApiFieldsAll), {
       params: { appid: appId.toString(), staticName },
-    })
-      .toPromise()
-      .then((fields: Field[]) => {
+    }).pipe(
+      map(fields => {
         fields = fields.filter(field => field.Type !== DataTypeConstants.Empty);
-        if (fields) {
-          for (const fld of fields) {
-            if (!fld.Metadata) { continue; }
-            const md = fld.Metadata;
-            const allMd = md.All;
-            const typeMd = md[fld.Type];
-            const inputMd = md[fld.InputType];
-            md.merged = { ...allMd, ...typeMd, ...inputMd };
-          }
+        for (const fld of fields) {
+          if (!fld.Metadata) { continue; }
+          const md = fld.Metadata;
+          const allMd = md.All;
+          const typeMd = md[fld.Type];
+          const inputMd = md[fld.InputType];
+          md.merged = { ...allMd, ...typeMd, ...inputMd };
         }
         return fields;
-      });
+      }),
+    );
   }
 
-  private attachSnippets(target: any, prefix: any, fieldname: any, inputType: any, snipDefaults: any, inputTypeSnippets: any) {
+  private attachSnippets(
+    target: SnippetsSubSubSets,
+    prefix: string,
+    fieldname: string,
+    inputType: string,
+    snipDefaults: SetSnippet,
+    inputTypeSnippets: Record<string, Snippet[]>,
+  ): void {
     let genericSnippet = inputTypeSnippets[inputType];
-    if (inputType.indexOf('-')) {   // if it's a sub-type, let's also get the master-type
+    if (inputType.indexOf('-')) { // if it's a sub-type, let's also get the master-type
       const fieldType = inputType.substr(0, inputType.indexOf('-'));
       if (fieldType) {
         const typeSnips = inputTypeSnippets[fieldType];
@@ -252,12 +292,10 @@ export class SnippetsService {
         }
       }
     }
-    if (!genericSnippet) {
-      return;
-    }
+    if (!genericSnippet) { return; }
 
     if (target[fieldname].more === undefined) {
-      target[fieldname].more = [];
+      target[fieldname].more = {};
     }
     const fieldSnips = target[fieldname].more;
     // tslint:disable-next-line:prefer-for-of
@@ -267,14 +305,15 @@ export class SnippetsService {
           key: fieldname + ' - ' + genericSnippet[g].name,
           label: genericSnippet[g].name,
           snip: this.localizeGenericSnippet(genericSnippet[g].content, prefix, fieldname),
-          collapse: true
-        });
+          collapse: true,
+        } as MoreSnippet);
       } finally { }
     }
   }
 
-  private localizeGenericSnippet(snip: any, objName: any, fieldName: any) {
-    snip = snip.replace(/(\$\{[0-9]+\:)var(\})/gi, '$1' + objName + '$2')
+  private localizeGenericSnippet(snip: string, objName: string, fieldName: string): string {
+    snip = snip
+      .replace(/(\$\{[0-9]+\:)var(\})/gi, '$1' + objName + '$2')
       .replace(/(\$\{[0-9]+\:)prop(\})/gi, '$1' + fieldName + '$2');
     return snip;
   }

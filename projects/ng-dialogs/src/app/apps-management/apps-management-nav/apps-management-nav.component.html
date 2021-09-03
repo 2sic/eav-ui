@@ -2,7 +2,7 @@
   <div mat-dialog-title>
     <div class="dialog-title-box">
       <div>Manage Apps in Zone {{ zoneId }}</div>
-      <button mat-icon-button matTooltip="Close dialog" (click)="closeDialog()">
+      <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
         <mat-icon>close</mat-icon>
       </button>
     </div>
@@ -14,7 +14,7 @@
   <mat-tab-group class="mat-tab-group-max-height" dynamicHeight color="accent" (selectedTabChange)="changeTab($event)"
     [selectedIndex]="tabIndex$ | async">
     <mat-tab>
-      <div *matTabLabel class="mat-tab-label-box" matTooltip="Apps">
+      <div *matTabLabel class="mat-tab-label-box" tippy="Apps">
         <mat-icon>star_border</mat-icon>
         <span>Apps</span>
       </div>
@@ -22,7 +22,7 @@
     </mat-tab>
 
     <mat-tab>
-      <div *matTabLabel class="mat-tab-label-box" matTooltip="Languages">
+      <div *matTabLabel class="mat-tab-label-box" tippy="Languages">
         <mat-icon>translate</mat-icon>
         <span>Languages</span>
       </div>
@@ -30,7 +30,15 @@
     </mat-tab>
 
     <mat-tab>
-      <div *matTabLabel class="mat-tab-label-box" matTooltip="Features">
+      <div *matTabLabel class="mat-tab-label-box" tippy="System Settings">
+        <mat-icon>settings</mat-icon>
+        <span>Settings</span>
+      </div>
+      <app-system-settings *matTabContent></app-system-settings>
+    </mat-tab>
+
+    <mat-tab>
+      <div *matTabLabel class="mat-tab-label-box" tippy="Features">
         <mat-icon>tune</mat-icon>
         <span>Features</span>
       </div>
@@ -38,7 +46,7 @@
     </mat-tab>
 
     <mat-tab>
-      <div *matTabLabel class="mat-tab-label-box" matTooltip="2sxc Insights">
+      <div *matTabLabel class="mat-tab-label-box" tippy="2sxc Insights">
         <mat-icon>speed</mat-icon>
         <span>2sxc Insights</span>
       </div>

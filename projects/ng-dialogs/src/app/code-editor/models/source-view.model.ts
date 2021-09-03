@@ -1,6 +1,4 @@
-import { Dictionary } from '../../shared/models/dictionary.model';
-
-export class SourceView {
+export interface SourceView {
   AppId: number;
   Code: string;
   Extension: string;
@@ -10,7 +8,7 @@ export class SourceView {
   IsSafe: boolean;
   LocationScope: string;
   Name: string;
-  Streams: Dictionary;
+  Streams: Record<string, any>;
   Type: string;
   TypeContent: string;
   TypeContentPresentation: string;

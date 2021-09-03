@@ -33,6 +33,7 @@ export const AllScenarios: Array<Scenario> = [
   //   inSameSite: false,
   //   inSameContext: false,
   //   name: 'JS from a DIFFERENT site',
+  // tslint:disable-next-line:max-line-length
   //   description: `When coding from another site, the path needs to be complete (not virtual), since auto-detection of site etc. can't work.
   //   In addition, most DNN-headers cause trouble because they tell the server a context which isn't actually true. `,
   //   notes: '',

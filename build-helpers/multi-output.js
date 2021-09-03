@@ -3,7 +3,7 @@
 
 var dnnRoot = process.env.Dev2sxcDnnRoot;
 if(!dnnRoot) throw "Problem: environment variable 'Dev2sxcDnnRoot' doesn't exist. It should point to the web folder of your dev DNN";
-var targetDnn = (dnnRoot + "DesktopModules\\ToSIC_SexyContent\\").replace('//', '/').replace('\\\\', '\\');
+var targetDnn = (dnnRoot + "\\DesktopModules\\ToSIC_SexyContent\\").replace('//', '/').replace('\\\\', '\\');
 
 var devAssets = process.env.Dev2sxcAssets;
 if(!devAssets) throw "Problem: environment variable 'Dev2sxcAssets' doesn't exist. It should point to the assets source folder in your 2sxc environment";

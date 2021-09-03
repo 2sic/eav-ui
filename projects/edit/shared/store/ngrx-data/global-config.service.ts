@@ -36,9 +36,9 @@ export class GlobalConfigService extends BaseDataService<GlobalConfig> {
     this.updateOneInCache(newConfig);
 
     if (newConfig.debugEnabled) {
-      this.snackBar.open('debug mode enabled', null, { duration: 3000 });
+      this.snackBar.open('Debug mode enabled', null, { duration: 3000 });
     } else {
-      this.snackBar.open('debug mode disabled', null, { duration: 3000 });
+      this.snackBar.open('Debug mode disabled', null, { duration: 3000 });
     }
   }
 }

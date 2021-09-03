@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, HostBinding, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostBinding, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BehaviorSubject, combineLatest } from 'rxjs';
@@ -12,7 +12,6 @@ import { ImportAppService } from './services/import-app.service';
   selector: 'app-import-app',
   templateUrl: './import-app.component.html',
   styleUrls: ['./import-app.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ImportAppComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';

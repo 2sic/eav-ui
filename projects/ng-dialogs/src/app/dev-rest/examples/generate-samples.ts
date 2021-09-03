@@ -3,7 +3,6 @@ import { ApiCall, CodeSample, hint$2sxc, Scenario, warningExternal, warningSimpl
 import { Context } from '../../shared/services/context';
 // tslint:disable: curly
 
-
 export function generateApiCalls($2sxc: SxcRoot, scenario: Scenario, context: Context, root: string, id: number) {
   const virtual = root[0] !== '/' && !root.startsWith('http');
   root = root + '/';
@@ -110,7 +109,7 @@ $.ajax(${endPointGetWithParams}).then(data => {
       `
 $.ajax('${path}').then(data => {
   console.log('Got this data:', data);
-})`, false, [ warningExternal  ]));
+})`, false, [warningExternal]));
 
     // jQuery External with Context
     list.push(new CodeSample('Using jQuery with Context in URL',
@@ -118,7 +117,7 @@ $.ajax('${path}').then(data => {
       `
 $.ajax('${pathWithContext}').then(data => {
   console.log('Got this data:', data);
-})`, false, [ warningExternal ]));
+})`, false, [warningExternal]));
   }
   // return generated snippets
   return list;

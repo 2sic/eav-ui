@@ -2,7 +2,6 @@ import { Directive, ElementRef, NgZone, OnDestroy, OnInit } from '@angular/core'
 
 @Directive({ selector: '[appMatFormFieldTextarea]' })
 export class MatFormFieldTextareaDirective implements OnInit, OnDestroy {
-  // @ts-ignore
   private observer: ResizeObserver;
   private debounce = 500;
   private oldResizeTime = 0;
@@ -12,7 +11,6 @@ export class MatFormFieldTextareaDirective implements OnInit, OnDestroy {
   ngOnInit() {
     this.zone.runOutsideAngular(() => {
       const matFormField = this.elementRef.nativeElement;
-      // @ts-ignore
       this.observer = new ResizeObserver(entries => {
         const newResizeTime = Date.now();
         if (newResizeTime - this.oldResizeTime < this.debounce) { return; }

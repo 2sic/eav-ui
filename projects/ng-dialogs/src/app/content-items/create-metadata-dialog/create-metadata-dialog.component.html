@@ -1,0 +1,160 @@
+<ng-container *ngIf="templateVars$ | async as data">
+  <div mat-dialog-title>
+    <div class="dialog-title-box">Create Metadata Info</div>
+  </div>
+
+  <p class="dialog-description">
+    This is a special operation to add an item which is metadata for another item,
+    see <a href="https://r.2sxc.org/metadata" target="_blank">docs</a>.
+  </p>
+
+  <form [formGroup]="form" class="dialog-form">
+    <div class="dialog-form-content fancy-scrollbar-light">
+
+      <!-- Target Type -->
+      <mat-form-field appearance="standard" color="accent">
+        <mat-label>Target</mat-label>
+
+        <mat-select *ngIf="data.guidedMode" formControlName="targetType" required>
+          <mat-option *ngFor="let option of targetTypeOptions" [value]="option.type">
+            {{ option.label }}
+          </mat-option>
+          <mat-option *ngIf="data.unknownTargetType" [value]="data.formValues.targetType">
+            {{ data.formValues.targetType }}
+          </mat-option>
+        </mat-select>
+
+        <input matInput type="number" min="0" *ngIf="!data.guidedMode" formControlName="targetType" required>
+      </mat-form-field>
+
+      <app-field-hint
+        *ngIf="form.controls['targetType'].touched && !form.controls['targetType'].invalid && data.unknownTargetType"
+        [isError]="false">
+        Warning: you entered an unknown target type. This may work or may not. Please be sure you know what you're doing
+      </app-field-hint>
+      <app-field-hint *ngIf="data.targetTypeHint" [isError]="false">{{ data.targetTypeHint }}</app-field-hint>
+      <app-field-hint *ngIf="form.controls['targetType'].touched && form.controls['targetType'].errors?.required"
+        [isError]="true">
+        This field is required
+      </app-field-hint>
+      <app-field-hint *ngIf="form.controls['targetType'].touched && form.controls['targetType'].errors?.pattern"
+        [isError]="true">
+        Must be a whole number
+      </app-field-hint>
+
+      <!-- Key Type -->
+      <mat-form-field appearance="standard" color="accent">
+        <mat-label>Key type</mat-label>
+
+        <mat-select formControlName="keyType" required>
+          <mat-option *ngFor="let option of data.keyTypeOptions" [value]="option">
+            {{ option }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <app-field-hint *ngIf="form.controls['keyType'].touched && form.controls['keyType'].errors?.required"
+        [isError]="true">
+        This field is required
+      </app-field-hint>
+
+      <!-- Content Type for Content Items -->
+      <ng-container *ngIf="data.guidedMode && data.formValues.targetType === eavConstants.metadata.entity.type">
+        <mat-form-field appearance="standard" color="accent">
+          <mat-label>Content Type</mat-label>
+
+          <mat-select formControlName="contentTypeForContentItems" required
+            [placeholder]="!data.contentTypes.length ? 'No items found' : ''">
+            <mat-option *ngFor="let contentType of data.contentTypes" [value]="contentType.StaticName">
+              {{ contentType.Label }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <app-field-hint
+          *ngIf="form.controls['contentTypeForContentItems'].touched && form.controls['contentTypeForContentItems'].errors?.required"
+          [isError]="true">
+          This field is required
+        </app-field-hint>
+      </ng-container>
+
+      <!-- Key -->
+      <mat-form-field appearance="standard" color="accent">
+        <mat-label>Key</mat-label>
+
+        <ng-container *ngIf="data.guidedMode; then specialKeyInputs else defaultKeyInput">
+        </ng-container>
+
+        <ng-template #specialKeyInputs>
+          <ng-container [ngSwitch]="data.formValues.targetType">
+            <ng-container *ngSwitchCase="eavConstants.metadata.entity.type">
+              <mat-select *ngIf="data.guidedKey" formControlName="key" required
+                [placeholder]="!data.contentItems.length ? 'No items found' : ''">
+                <mat-option *ngFor="let item of data.contentItems" [value]="item.Guid">
+                  {{ item.Title }} ({{ item.Id }})
+                </mat-option>
+              </mat-select>
+
+              <input matInput type="text" *ngIf="!data.guidedKey" formControlName="key" required>
+            </ng-container>
+
+            <ng-container *ngSwitchCase="eavConstants.metadata.contentType.type">
+              <mat-select *ngIf="data.guidedKey" formControlName="key" required
+                [placeholder]="!data.contentTypes.length ? 'No items found' : ''">
+                <mat-option *ngFor="let contentType of data.contentTypes" [value]="contentType.StaticName">
+                  {{ contentType.Label }}
+                </mat-option>
+              </mat-select>
+
+              <input matInput type="text" *ngIf="!data.guidedKey" formControlName="key" required>
+            </ng-container>
+
+            <ng-container *ngSwitchDefault>
+              <ng-container *ngTemplateOutlet="defaultKeyInput"></ng-container>
+            </ng-container>
+          </ng-container>
+        </ng-template>
+
+        <ng-template #defaultKeyInput>
+          <input matInput type="text" *ngIf="data.formValues.keyType !== 'number'" formControlName="key" required>
+          <input matInput type="number" *ngIf="data.formValues.keyType === 'number'" formControlName="key" required>
+        </ng-template>
+
+        <div matSuffix class="selection-suffix" *ngIf="data.guidedMode && data.guidedKeyExists">
+          <button mat-icon-button [ngClass]="{ 'active': data.guidedKey }" tippy="Select option"
+            (click)="toggleGuidedKey(true)">
+            <mat-icon>search</mat-icon>
+          </button>
+          <button mat-icon-button [ngClass]="{ 'active': !data.guidedKey }" tippy="Insert value"
+            (click)="toggleGuidedKey(false)">
+            <mat-icon>text_fields</mat-icon>
+          </button>
+        </div>
+      </mat-form-field>
+
+      <app-field-hint *ngIf="form.controls['key'].touched && form.controls['key'].errors?.required" [isError]="true">
+        This field is required
+      </app-field-hint>
+      <app-field-hint *ngIf="form.controls['key'].touched && form.controls['key'].errors?.patternWholeNumber"
+        [isError]="true">
+        Must be a whole number
+      </app-field-hint>
+      <app-field-hint *ngIf="form.controls['key'].touched && form.controls['key'].errors?.patternGuid" [isError]="true">
+        Must be a valid GUID
+      </app-field-hint>
+    </div>
+
+    <div class="dialog-form-actions">
+      <mat-slide-toggle color="accent"
+        [tippy]="data.guidedMode ? 'Guided mode helps you select options that work' : 'Manual mode is for advanced uses and allows you to insert any values'"
+        [checked]="data.guidedMode" (change)="toggleGuidedMode($event)">
+        {{ data.guidedMode ? 'Guided' : 'Manual' }}
+      </mat-slide-toggle>
+      <div class="spacer"></div>
+      <button mat-raised-button type="button" (click)="closeDialog()">Cancel</button>
+      <button mat-raised-button type="button" color="accent" [disabled]="!form.valid" (click)="confirm()">
+        Confirm
+      </button>
+    </div>
+  </form>
+</ng-container>

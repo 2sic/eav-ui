@@ -2,10 +2,9 @@ import { LocalizationHelpers } from '.';
 import { FieldSettings } from '../../../edit-types';
 import { InputTypeConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { InputType } from '../../../ng-dialogs/src/app/content-type-fields/models/input-type.model';
-import { Dictionary } from '../../../ng-dialogs/src/app/shared/models/dictionary.model';
-import { TranslateMenuHelpers } from '../../eav-material-controls/localization/translate-menu/translate-menu.helpers';
-import { TranslationStateCore } from '../../eav-material-controls/localization/translate-menu/translate-menu.models';
-import { TranslationLinkConstants } from '../constants';
+import { TranslateMenuHelpers } from '../../form/wrappers/localization-wrapper/translate-menu/translate-menu.helpers';
+import { TranslationStateCore } from '../../form/wrappers/localization-wrapper/translate-menu/translate-menu.models';
+import { TranslationLink, TranslationLinks } from '../constants';
 import { ContentTypeSettings, TranslationState } from '../models';
 import { EavContentType, EavContentTypeAttribute, EavEntity, EavHeader, EavValues } from '../models/eav';
 
@@ -14,7 +13,7 @@ export class FieldsSettingsHelpers {
   static mergeSettings<T>(metadataItems: EavEntity[], currentLanguage: string, defaultLanguage: string): T {
     if (metadataItems == null) { return {} as T; }
 
-    const merged: Dictionary = {};
+    const merged: Record<string, any> = {};
     // copy metadata settings which are not @All
     for (const item of metadataItems) {
       if (item.Type.Id === '@All') { continue; }
@@ -135,7 +134,7 @@ export class FieldsSettingsHelpers {
 
     if (attribute.InputType === InputTypeConstants.EmptyEnd) { return true; }
 
-    const empties = [InputTypeConstants.EmptyDefault, InputTypeConstants.EmptyEnd];
+    const empties: string[] = [InputTypeConstants.EmptyDefault, InputTypeConstants.EmptyEnd];
     if (empties.includes(contentType.Attributes[index + 1].InputType)) { return true; }
 
     return false;
@@ -213,35 +212,35 @@ export class FieldsSettingsHelpers {
     defaultLanguage: string,
   ): TranslationStateCore {
     let language: string;
-    let linkType: string;
+    let linkType: TranslationLink;
 
     // Determine is control disabled or enabled and info message
     if (!LocalizationHelpers.translationExistsInDefault(attributeValues, defaultLanguage)) {
       language = '';
-      linkType = TranslationLinkConstants.MissingDefaultLangValue;
+      linkType = TranslationLinks.MissingDefaultLangValue;
     } else if (disableTranslation) {
       language = '';
-      linkType = TranslationLinkConstants.DontTranslate;
+      linkType = TranslationLinks.DontTranslate;
     } else if (LocalizationHelpers.isEditableTranslationExist(attributeValues, currentLanguage, defaultLanguage)) {
       const editableElements = LocalizationHelpers.getValueTranslation(attributeValues, currentLanguage, defaultLanguage)
         .Dimensions.filter(dimension => dimension.Value !== currentLanguage);
 
       if (editableElements.length > 0) {
         language = editableElements[0].Value;
-        linkType = TranslationLinkConstants.LinkReadWrite;
+        linkType = TranslationLinks.LinkReadWrite;
       } else {
         language = '';
-        linkType = TranslationLinkConstants.Translate;
+        linkType = TranslationLinks.Translate;
       }
     } else if (LocalizationHelpers.isReadonlyTranslationExist(attributeValues, currentLanguage)) {
       const readOnlyElements = LocalizationHelpers.getValueTranslation(attributeValues, currentLanguage, defaultLanguage)
         .Dimensions.filter(dimension => dimension.Value !== currentLanguage);
 
       language = readOnlyElements[0].Value;
-      linkType = TranslationLinkConstants.LinkReadOnly;
+      linkType = TranslationLinks.LinkReadOnly;
     } else {
       language = '';
-      linkType = TranslationLinkConstants.DontTranslate;
+      linkType = TranslationLinks.DontTranslate;
     }
 
     const translationState: TranslationStateCore = {

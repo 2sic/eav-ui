@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { Query } from '../../models/query.model';
 import { AgActionsComponent } from '../ag-actions';
 import { QueriesActionsParams, QueryActions } from './queries-actions';
@@ -6,7 +6,6 @@ import { QueriesActionsParams, QueryActions } from './queries-actions';
 @Component({
   selector: 'app-queries-actions',
   templateUrl: './queries-actions.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class QueriesActionsComponent extends AgActionsComponent<QueriesActionsParams, Query> {
   enablePermissions: boolean;

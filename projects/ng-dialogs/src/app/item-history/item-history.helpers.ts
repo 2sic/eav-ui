@@ -1,4 +1,3 @@
-import { Dictionary } from '../shared/models/dictionary.model';
 import { CompareWith } from './models/compare-with.model';
 import { HistoryAttribute, HistoryAttributeValue, HistoryItem } from './models/history-item.model';
 import { Version, VersionEntityAttributeValues, VersionJsonParsed } from './models/version.model';
@@ -132,7 +131,7 @@ function calcChangeType(currentValue: any, previousValue: any, sortObjectKeys = 
   return change;
 }
 
-function sortKeysAlphabetically(obj: Dictionary): Dictionary {
+function sortKeysAlphabetically(obj: Record<string, any>): Record<string, any> {
   if (typeof obj !== 'object') { return obj; }
 
   return Object.keys(obj).sort().reduce((acc, key) => ({ ...acc, [key]: obj[key] }), {});

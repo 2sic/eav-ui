@@ -1,0 +1,106 @@
+<!-- header -->
+<div [ngClass]="(open$ | async) ? 'c-ew__container' : 'u-display-none'">
+  <div #backdrop class="c-ew__backdrop" (click)="closeDialog()"></div>
+  <div #dialog fxLayout="column" class="c-ew__dialog mat-elevation-z24 u-border-radius">
+    <div [ngClass]="{ 'c-ew__dialog-header mat-elevation-z2': (open$ | async) }">
+      <mat-card class="mat-elevation-z0" fxLayout="row">
+        <button mat-icon-button class="back-arrow" fxLayoutAlign="center center"
+          [tippy]="'Form.Buttons.Return.Tip' | translate" (click)="closeDialog()">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        <span fxLayoutAlign="center center" class="title mat-display-1">{{ label$ | async }}</span>
+      </mat-card>
+    </div>
+    <div>
+      <div [@itemShrinkAnimation]="(open$ | async) ? 'closed' : 'open'">
+      </div>
+      <div class="c-ew__dialog-content u-border-radius-bottom u-add-scrollbar u-hide-scrollbar"
+        [@contentExpandAnimation]="{
+          value: (open$ | async) ? 'expanded' : 'closed',
+          params: { bottomPixels: calculateBottomPixels() }
+        }">
+        <ng-container #fieldComponent></ng-container>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- preview -->
+<div class="c-hyperlink-default-field-preview" *ngIf="templateVars$ | async as data">
+  <div class="c-ew__preview" fxLayout="row" fxLayoutAlign="start start" [ngClass]="{
+    'c-ew__preview--disabled': data.controlStatus.disabled,
+    'c-ew__preview--last-in-group': config.isLastInGroup
+  }">
+    <!-- image / icon -->
+    <div class="thumbnail-before-input" [tippy]="'Fields.Hyperlink.Default.Fullscreen' | translate"
+      [tippyDisabled]="data.controlStatus.disabled" [ngClass]="{
+      'icon-before-input': data.controlStatus.value && !data.preview.isImage,
+      'thumbnail-before-input--disabled': data.controlStatus.disabled
+    }"
+      [ngStyle]="{ 'background-image': data.controlStatus.value && data.preview.isImage ? data.preview.thumbnailUrl : '' }"
+      (click)="expandDialog()">
+      <mat-icon *ngIf="data.controlStatus.value && !data.preview.isImage && data.preview.isKnownType"
+        [tippy]="data.preview.url" tippyPlacement="right">
+        {{ data.preview.icon }}
+      </mat-icon>
+      <mat-icon *ngIf="data.controlStatus.value && !data.preview.isImage && !data.preview.isKnownType"
+        [tippy]="data.preview.url" tippyPlacement="right" [svgIcon]="data.preview.icon">
+      </mat-icon>
+    </div>
+    <!-- field -->
+    <div class="c-ew__preview-field--short" fxFlex="auto">
+      <!-- input -->
+      <div class="hyperlink-input-link-wrapper">
+        <mat-form-field appearance="standard" color="accent" [ngClass]="{
+          'mat-form-field-invalid': data.controlStatus.invalid && data.controlStatus.touched
+        }">
+          <input matInput [tippy]="'Fields.Hyperlink.Default.Tooltip' | translate" tippyPlacement="top"
+            [placeholder]="data.placeholder" (change)="setValue($event)" [disabled]="data.controlStatus.disabled"
+            (blur)="markAsTouched()" [value]="data.controlStatus.value" (keyup)="setValue($event)"
+            appPasteClipboardImage [config]="config" [elementType]="'input'">
+          <div matSuffix fxLayoutAlign="center center" *ngIf="data.buttonAdam || data.buttonPage">
+            <div class="c-ew__preview-suffix-text" fxHide fxShow.gt-xs [ngClass]="{
+              'c-ew__preview-suffix-text--disabled': data.controlStatus.disabled
+            }">
+              {{ data.buttonAdam ? ('Fields.Hyperlink.AdamFileManager.Hint' | translate) : '' }}
+            </div>
+            <button mat-icon-button class="c-ew__preview-suffix-icon"
+              [tippy]="'Fields.Hyperlink.Default.Fullscreen' | translate" appClickStopPropagation
+              *ngIf="data.buttonAdam" [disabled]="data.controlStatus.disabled" (click)="expandDialog()">
+              <mat-icon svgIcon="apple"></mat-icon>
+            </button>
+            <button mat-icon-button class="c-ew__preview-suffix-icon"
+              [tippy]="'Fields.Hyperlink.Default.PageTip' | translate" appClickStopPropagation *ngIf="data.buttonPage"
+              [disabled]="data.controlStatus.disabled" (click)="openPagePicker()">
+              <mat-icon svgIcon="sitemap"></mat-icon>
+            </button>
+          </div>
+          <mat-label [ngClass]="{ 'mat-error' : data.controlStatus.invalid && data.controlStatus.touched }">
+            {{ data.label }}
+            {{ data.required ? '*': '' }}
+          </mat-label>
+        </mat-form-field>
+        <!-- link absolutely positioned above input -->
+        <div *ngIf="data.preview.floatingText" class="hyperlink-floating" fxHide fxShow.gt-xs>
+          <div class="hyperlink-floating__value">{{ data.controlStatus.value }}</div>
+          <div class="hyperlink-floating__url-box">
+            <a [href]="data.preview.url" target="_blank" tabindex="-1" class="hyperlink-floating__url"
+              [tippy]="data.preview.url">
+              <span>{{ data.preview.floatingText }}</span>
+            </a>
+          </div>
+        </div>
+      </div>
+      <!-- helper text and adam text -->
+      <div class="c__helper-wrapper">
+        <app-field-helper-text class="c__helper-wrapper--left" [config]="config" [group]="group"
+          [hyperlinkDefaultWrapperFix]="true">
+        </app-field-helper-text>
+        <div *ngIf="data.buttonAdam" align="end" class="c-ew__preview-field-hint c__helper-wrapper--right" fxHide
+          fxShow.gt-xs>
+          <span>{{ 'Fields.Hyperlink.Default.Sponsor' | translate }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

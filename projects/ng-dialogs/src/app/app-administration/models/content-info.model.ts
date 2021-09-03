@@ -1,9 +1,9 @@
-export class ContentInfo {
+export interface ContentInfo {
   ContentTypes: ContentInfoContentType[];
   TemplatesWithoutContentTypes: ContentInfoTemplate[];
 }
 
-export class ContentInfoContentType {
+export interface ContentInfoContentType {
   Id: number;
   Name: string;
   StaticName: string;
@@ -12,13 +12,13 @@ export class ContentInfoContentType {
   _export?: boolean;
 }
 
-export class ContentInfoTemplate {
+export interface ContentInfoTemplate {
   Id: number;
   Name: string;
   _export?: boolean;
 }
 
-export class ContentInfoEntity {
+export interface ContentInfoEntity {
   Title: string;
   Id: number;
   _export?: boolean;

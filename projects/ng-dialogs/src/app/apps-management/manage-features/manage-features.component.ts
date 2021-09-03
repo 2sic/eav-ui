@@ -1,5 +1,5 @@
 import { AllCommunityModules, CellClickedEvent, GridOptions, ICellRendererParams, ValueGetterParams } from '@ag-grid-community/all-modules';
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject, combineLatest, fromEvent, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
@@ -18,7 +18,6 @@ import { FeaturesConfigService } from '../services/features-config.service';
   selector: 'app-manage-features',
   templateUrl: './manage-features.component.html',
   styleUrls: ['./manage-features.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ManageFeaturesComponent implements OnInit, OnDestroy {
   modules = AllCommunityModules;
@@ -124,8 +123,8 @@ export class ManageFeaturesComponent implements OnInit, OnDestroy {
   /** Waits for a json message from the iframe and sends it to the server */
   private subscribeToMessages() {
     this.subscription.add(
-      fromEvent(window, 'message').pipe(
-        filter((event: MessageEvent) => this.showManagement$.value),
+      fromEvent<MessageEvent>(window, 'message').pipe(
+        filter(() => this.showManagement$.value),
         filter(event => event.origin.endsWith('2sxc.org') === true),
         filter(event => event.data != null),
       ).subscribe(event => {

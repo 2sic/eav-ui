@@ -2,10 +2,11 @@ import { JsInfo } from '@2sic.com/2sxc-typings';
 import { Injector } from '@angular/core';
 import { Router } from '@angular/router';
 import { UrlHelpers } from '../../../edit/shared/helpers/url.helpers';
-import { DialogTypeConstants } from './shared/constants/dialog-types.constants';
+import { DialogTypeConstant, DialogTypeConstants } from './shared/constants/dialog-type.constants';
 // tslint:disable-next-line:max-line-length
-import { keyApi, keyAppId, keyContentType, keyDialog, keyItems, keyPipelineId, keyRequestToken, keyTabId, keyUrl, keyZoneId, prefix } from './shared/constants/session.constants';
+import { keyApi, keyAppId, keyContentType, keyDialog, keyExtras, keyItems, keyPipelineId, keyRequestToken, keyRequestTokenHeaderName, keyTabId, keyUrl, keyZoneId, prefix } from './shared/constants/session.constants';
 import { convertFormToUrl } from './shared/helpers/url-prep.helper';
+import { ExtrasParam } from './shared/models/dialog-url-params.model';
 import { EavWindow } from './shared/models/eav-window.model';
 import { EditForm, EditItem, GroupItem } from './shared/models/edit-form.model';
 
@@ -38,18 +39,20 @@ export function paramsInitFactory(injector: Injector): () => void {
       const router = injector.get(Router);
       const zoneId = sessionStorage.getItem(keyZoneId);
       const appId = sessionStorage.getItem(keyAppId);
-      const dialog = sessionStorage.getItem(keyDialog);
+      const dialog = sessionStorage.getItem(keyDialog) as DialogTypeConstant;
       const contentType = sessionStorage.getItem(keyContentType);
       const items = sessionStorage.getItem(keyItems);
       switch (dialog) {
         case DialogTypeConstants.Zone:
-          router.navigate([`${zoneId}/apps`]);
+          const extrasZone: ExtrasParam = JSON.parse(sessionStorage.getItem(keyExtras));
+          router.navigate([`${zoneId}/apps${extrasZone?.tab ? `/${extrasZone.tab}` : ''}`]);
           break;
         case DialogTypeConstants.AppImport:
           router.navigate([`${zoneId}/import`]);
           break;
         case DialogTypeConstants.App:
-          router.navigate([`${zoneId}/${appId}/app`]);
+          const extrasApp: ExtrasParam = JSON.parse(sessionStorage.getItem(keyExtras));
+          router.navigate([`${zoneId}/${appId}/app${extrasApp?.tab ? `/${extrasApp.tab}` : ''}${extrasApp?.scope ? `/${extrasApp.scope}` : ''}`]);
           break;
         case DialogTypeConstants.ContentType:
           router.navigate([`${zoneId}/${appId}/fields/${contentType}`]);
@@ -109,9 +112,10 @@ export function paramsInitFactory(injector: Injector): () => void {
 }
 
 function loadEnvironment() {
-  const jsInfo: Partial<JsInfo> = {
+  const jsInfo: Partial<JsInfo> | { rvtHeader: string } = { // #RvtHeaderName - New in 12.04
     page: parseInt(sessionStorage.getItem(keyTabId), 10),
     rvt: sessionStorage.getItem(keyRequestToken),
+    rvtHeader: sessionStorage.getItem(keyRequestTokenHeaderName), // #RvtHeaderName - New in 12.04
     api: sessionStorage.getItem(keyApi),
   };
   window.$2sxc.env.load(jsInfo as JsInfo);

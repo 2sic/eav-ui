@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BehaviorSubject } from 'rxjs';
@@ -11,7 +11,6 @@ declare const window: EavWindow;
   selector: 'app-sxc-insights',
   templateUrl: './sxc-insights.component.html',
   styleUrls: ['./sxc-insights.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SxcInsightsComponent implements OnInit, OnDestroy {
   pageLogDuration: number;

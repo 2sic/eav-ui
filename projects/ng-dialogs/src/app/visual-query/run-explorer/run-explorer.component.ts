@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -12,7 +12,6 @@ import { calculateWarnings } from './run-explorer.helpers';
   selector: 'app-run-explorer',
   templateUrl: './run-explorer.component.html',
   styleUrls: ['./run-explorer.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RunExplorerComponent implements OnInit {
   pipelineModel$: Observable<PipelineModel>;

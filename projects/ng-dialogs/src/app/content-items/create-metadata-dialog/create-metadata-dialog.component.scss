@@ -1,0 +1,16 @@
+.dialog-form-content .mat-form-field:not(:first-of-type) {
+  margin-top: 8px;
+}
+
+.selection-suffix {
+  display: flex;
+
+  .active {
+    background-color: #002753;
+    color: white;
+  }
+}
+
+.spacer {
+  flex: 1 1 auto;
+}

@@ -32,7 +32,6 @@ export class DevRestTabPermissionsComponent {
     private route: ActivatedRoute,
   ) { }
 
-
   openPermissions() {
     this.router.navigate([GoToPermissions.goContentType(this.data.permissionTarget)], { relativeTo: this.route });
   }

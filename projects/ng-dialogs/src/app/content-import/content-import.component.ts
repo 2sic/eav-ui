@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, HostBinding, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostBinding, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, combineLatest, forkJoin } from 'rxjs';
@@ -6,7 +6,6 @@ import { map } from 'rxjs/operators';
 import { ContentType } from '../app-administration/models/content-type.model';
 import { AppDialogConfigService } from '../app-administration/services/app-dialog-config.service';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
-import { Dictionary } from '../shared/models/dictionary.model';
 import { ContentImportDialogData } from './content-import-dialog.config';
 import { ContentImport, EvaluateContentResult, ImportContentResult } from './models/content-import.model';
 import { ContentImportService } from './services/content-import.service';
@@ -15,7 +14,6 @@ import { ContentImportService } from './services/content-import.service';
   selector: 'app-content-import',
   templateUrl: './content-import.component.html',
   styleUrls: ['./content-import.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ContentImportComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
@@ -38,7 +36,7 @@ export class ContentImportComponent implements OnInit, OnDestroy {
     map(([contentType, loading, viewStateSelected, evaluationResult, importResult]) =>
       ({ contentType, loading, viewStateSelected, evaluationResult, importResult })),
   );
-  errors: Dictionary<string> = {
+  errors: Record<number, string> = {
     0: 'Unknown error occured.',
     1: 'Selected content-type does not exist.',
     2: 'Document is not a valid XML file.',

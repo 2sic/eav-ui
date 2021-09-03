@@ -8,8 +8,8 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { MonacoEditorModule } from '../monaco-editor';
 import { EavWindow } from '../shared/models/eav-window.model';
 import { Context } from '../shared/services/context';
 import { DialogService } from '../shared/services/dialog.service';
@@ -44,12 +44,6 @@ export function translateLoaderFactoryCode(http: HttpClient) {
     DepthPaddingPipe,
     SortItemsPipe,
   ],
-  entryComponents: [
-    CodeEditorComponent,
-    CodeSnippetsComponent,
-    CodeTemplatesComponent,
-    AceEditorComponent,
-  ],
   imports: [
     CodeEditorRoutingModule,
     SharedComponentsModule,
@@ -57,12 +51,12 @@ export function translateLoaderFactoryCode(http: HttpClient) {
     MatDialogModule,
     MatButtonModule,
     MatIconModule,
-    MatTooltipModule,
     MatSnackBarModule,
     FormsModule,
     MatSelectModule,
     MatRippleModule,
     TranslateModule.forChild(buildTranslateConfiguration(translateLoaderFactoryCode)),
+    MonacoEditorModule,
   ],
   providers: [
     Context,

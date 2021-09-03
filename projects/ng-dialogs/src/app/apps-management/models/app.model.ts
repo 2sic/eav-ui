@@ -1,15 +1,13 @@
-export class App {
-  constructor(
-    public Id: number,
-    public IsApp: boolean,
-    public Guid: string,
-    public Name: string,
-    public Folder: string,
-    public AppRoot: string,
-    public IsHidden: boolean,
-    public ConfigurationId: number,
-    public Items: number,
-    public Thumbnail: string,
-    public Version: string,
-  ) { }
+export interface App {
+  Id: number;
+  IsApp: boolean;
+  Guid: string;
+  Name: string;
+  Folder: string;
+  AppRoot: string;
+  IsHidden: boolean;
+  ConfigurationId: number;
+  Items: number;
+  Thumbnail: string;
+  Version: string;
 }

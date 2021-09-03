@@ -7,14 +7,13 @@ import { ReservedNames } from '../models/reserved-names.model';
   providers: [{ provide: NG_VALIDATORS, useExisting: ReservedNamesValidatorDirective, multi: true }],
 })
 export class ReservedNamesValidatorDirective implements Validator {
-  @Input('appReservedNames') private reservedNames: ReservedNames = {};
+  @Input('appReservedNames') reservedNames: ReservedNames = {};
 
   validate(control: AbstractControl): ValidationErrors | null {
-    for (const [reservedName, errorMessage] of Object.entries(this.reservedNames)) {
-      if (reservedName.toLocaleLowerCase() !== control.value?.toLocaleLowerCase()) { continue; }
+    if (!control.value) { return null; }
 
-      return { reservedNames: errorMessage };
-    }
-    return null;
+    const controlValue = (control.value as string).toLocaleLowerCase();
+    const reservedName = Object.keys(this.reservedNames).find(name => name.toLocaleLowerCase() === controlValue);
+    return reservedName ? { reservedNames: this.reservedNames[reservedName] } : null;
   }
 }

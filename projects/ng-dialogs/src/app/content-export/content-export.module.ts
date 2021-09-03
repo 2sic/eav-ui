@@ -7,7 +7,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { AppDialogConfigService } from '../app-administration/services/app-dialog-config.service';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { Context } from '../shared/services/context';
@@ -20,9 +19,6 @@ import { ContentExportService } from './services/content-export.service';
   declarations: [
     ContentExportComponent,
   ],
-  entryComponents: [
-    ContentExportComponent,
-  ],
   imports: [
     CommonModule,
     ContentExportRoutingModule,
@@ -30,7 +26,6 @@ import { ContentExportService } from './services/content-export.service';
     MatDialogModule,
     MatButtonModule,
     MatIconModule,
-    MatTooltipModule,
     FormsModule,
     MatInputModule,
     MatSelectModule,

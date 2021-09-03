@@ -1,13 +1,12 @@
 import { ICellRendererParams } from '@ag-grid-community/all-modules';
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { calculateViewType } from '../../views/views.helpers';
 
 @Component({
   selector: 'app-views-type',
   templateUrl: './views-type.component.html',
   styleUrls: ['./views-type.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ViewsTypeComponent implements ICellRendererAngularComp {
   value: string;

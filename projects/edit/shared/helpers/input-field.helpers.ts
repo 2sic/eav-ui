@@ -1,7 +1,7 @@
 import { FieldSettings, FieldValue, InputTypeName } from '../../../edit-types';
 import { InputTypeConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { InputType } from '../../../ng-dialogs/src/app/content-type-fields/models/input-type.model';
-import { WrappersConstants } from '../constants/wrappers.constants';
+import { WrappersConstant, WrappersConstants } from '../constants/wrappers.constants';
 import { CalculatedInputType } from '../models';
 import { EavContentTypeAttribute, EavHeader, EavItem } from '../models/eav';
 import { EavService } from '../services';
@@ -36,11 +36,13 @@ export class InputFieldHelpers {
     const inputType = calculatedInputType.inputType;
     const isExternal = calculatedInputType.isExternal;
 
+    if (inputType === InputTypeConstants.EmptyMessage) { return []; }
+
     // empty inputtype wrappers
     if (inputType === InputTypeConstants.EmptyDefault) { return [WrappersConstants.CollapsibleWrapper]; }
 
     // default wrappers
-    const wrappers = [WrappersConstants.HiddenWrapper];
+    const wrappers: WrappersConstant[] = [WrappersConstants.HiddenWrapper];
 
     // entity-default wrappers
     const isEntityType = (inputType === InputTypeConstants.EntityDefault)
@@ -61,7 +63,7 @@ export class InputFieldHelpers {
         WrappersConstants.DropzoneWrapper,
         WrappersConstants.LocalizationWrapper,
         WrappersConstants.ExpandableWrapper,
-        WrappersConstants.AdamAttachWrapper,
+        WrappersConstants.AdamWrapper,
       );
     }
 
@@ -98,6 +100,7 @@ export class InputFieldHelpers {
           ? new Date(defaultValue).toJSON()
           : null;
       case InputTypeConstants.NumberDefault:
+      case InputTypeConstants.NumberDropdown:
         return defaultValue != null && defaultValue !== ''
           ? !isNaN(Number(defaultValue)) ? Number(defaultValue) : null
           : null;

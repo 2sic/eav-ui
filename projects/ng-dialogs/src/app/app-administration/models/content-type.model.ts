@@ -1,6 +1,6 @@
 import { PermissionsCount } from './permissions-count.model';
 
-export class ContentType {
+export interface ContentType {
   Description: string;
   Fields: number;
   Id: number;
@@ -13,21 +13,22 @@ export class ContentType {
   SharedDefId: number;
   StaticName: string;
   UsesSharedDef: boolean;
+  _compareLabel?: string;
 }
 
-export class ContentTypeMetadata {
+export interface ContentTypeMetadata {
   Description: string;
   EditInstructions: string;
   Icon: string;
   Id: number;
   Label: string;
   Link: string;
-  ListInstructions: any;
+  ListInstructions: string;
   Notes: string;
   Title: string;
 }
 
-export class ContentTypeEdit extends ContentType {
+export interface ContentTypeEdit extends ContentType {
   ChangeStaticName: boolean;
   NewStaticName: string;
 }

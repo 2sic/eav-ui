@@ -5,8 +5,8 @@ import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-e
 import { DevRestApiComponent } from './api/api.component';
 import { DevRestDataComponent } from './data/data.component';
 import { devRestDialog } from './dev-rest-dialog.config';
-import { DevRestQueryComponent } from './query/query.component';
 import { GoToDevRest } from './go-to-dev-rest';
+import { DevRestQueryComponent } from './query/query.component';
 
 const routes: Routes = [
   {

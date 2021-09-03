@@ -1,6 +1,5 @@
 import { AbstractControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { Dictionary } from '../../../ng-dialogs/src/app/shared/models/dictionary.model';
 import { EavConfig } from '../models';
 
 /**
@@ -15,7 +14,7 @@ import { EavConfig } from '../models';
  */
 export class FieldMask {
   private mask: string;
-  private model: Dictionary<AbstractControl>;
+  private model: Record<string, AbstractControl>;
   private fields: string[] = [];
   private value: string;
   private findFields = /\[.*?\]/ig;
@@ -24,7 +23,7 @@ export class FieldMask {
 
   constructor(
     mask: string,
-    model: Dictionary<AbstractControl>,
+    model: Record<string, AbstractControl>,
     private changeEvent: (newValue: string) => void,
     overloadPreCleanValues: (key: string, value: string) => string,
     private eavConfig?: EavConfig,

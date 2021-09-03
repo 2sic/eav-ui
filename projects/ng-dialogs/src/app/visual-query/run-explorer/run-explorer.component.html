@@ -17,10 +17,10 @@
       <div class="title">
         <div>Query Parameters</div>
         <div>
-          <button mat-icon-button matTooltip="Edit parameters" (click)="editPipeline()">
+          <button mat-icon-button tippy="Edit parameters" (click)="editPipeline()">
             <mat-icon>edit</mat-icon>
           </button>
-          <button mat-icon-button matTooltip="Query Params Docs" (click)="openParamsHelp()">
+          <button mat-icon-button tippy="Query Params Docs" (click)="openParamsHelp()">
             <mat-icon>info</mat-icon>
           </button>
         </div>
@@ -61,7 +61,7 @@
 
     <div class="footer-actions">
       <button mat-raised-button class="action" (click)="openRestApi()">
-        Use in JSON / REST API
+        <span>Use in JSON / REST API</span>
         <mat-icon svgIcon="code-curly"></mat-icon>
       </button>
     </div>

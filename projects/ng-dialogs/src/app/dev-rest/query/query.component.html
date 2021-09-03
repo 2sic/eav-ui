@@ -2,7 +2,7 @@
   <div mat-dialog-title>
     <div class="dialog-title-box">
       <div>Using REST with Query <code>{{ data.name }}</code></div>
-      <button mat-icon-button matTooltip="Close dialog" (click)="closeDialog()">
+      <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
         <mat-icon>close</mat-icon>
       </button>
     </div>
@@ -21,7 +21,7 @@
 
     <!-- Introduction -->
     <mat-tab>
-      <div *matTabLabel class="mat-tab-label-box" matTooltip="Introduction">
+      <div *matTabLabel class="mat-tab-label-box" tippy="Introduction">
         <mat-icon>emoji_objects</mat-icon>
         <span>Introduction</span>
       </div>
@@ -34,7 +34,7 @@
     <!-- Absolute / Virtual URLs -->
     <mat-tab>
       <div *matTabLabel class="mat-tab-label-box"
-        [matTooltip]="(data.scenario.useVirtual ? 'Virtual ' : 'Absolute ') + 'REST URLs'">
+        [tippy]="(data.scenario.useVirtual ? 'Virtual ' : 'Absolute ') + 'REST URLs'">
         <mat-icon svgIcon="code-curly"></mat-icon>
         <span>Call {{ data.scenario.useVirtual ? 'Virtual' : 'Absolute' }} REST URLs</span>
       </div>
@@ -60,7 +60,7 @@
 
     <!-- Permissions explained -->
     <mat-tab>
-      <div *matTabLabel class="mat-tab-label-box" matTooltip="Permissions">
+      <div *matTabLabel class="mat-tab-label-box" tippy="Permissions">
         <mat-icon>person</mat-icon>
         <span>Permissions ({{ data.permissions.length }})</span>
         <mat-icon *ngIf="!data.permissions.length">warning</mat-icon>
@@ -70,7 +70,7 @@
 
     <!-- HTTP Headers Explained -->
     <mat-tab>
-      <div *matTabLabel class="mat-tab-label-box" matTooltip="HTTP headers and auto">
+      <div *matTabLabel class="mat-tab-label-box" tippy="HTTP headers and auto">
         <mat-icon>perm_device_information</mat-icon>
         <span>HTTP headers & &nbsp;<code>/auto/</code></span>
       </div>

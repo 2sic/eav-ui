@@ -1,12 +1,12 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser';
+import { DomSanitizer, SafeStyle } from '@angular/platform-browser';
 
 @Pipe({ name: 'depthPadding' })
 export class DepthPaddingPipe implements PipeTransform {
 
   constructor(private sanitizer: DomSanitizer) { }
 
-  transform(depth: number, isFolder: boolean) {
+  transform(depth: number, isFolder: boolean): SafeStyle {
     let padding: number;
     if (isFolder) {
       padding = depth * 8;

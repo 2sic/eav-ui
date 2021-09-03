@@ -1,7 +1,7 @@
 import { AgGridModule } from '@ag-grid-community/angular';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatRippleModule } from '@angular/material/core';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -11,8 +11,8 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { EcoFabSpeedDialModule } from '@ecodev/fab-speed-dial';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { ContentExportService } from '../content-export/services/content-export.service';
@@ -25,6 +25,7 @@ import { PubMetaFilterComponent } from './ag-grid-components/pub-meta-filter/pub
 import { ContentItemImportComponent } from './content-item-import/content-item-import.component';
 import { ContentItemsRoutingModule } from './content-items-routing.module';
 import { ContentItemsComponent } from './content-items.component';
+import { CreateMetadataDialogComponent } from './create-metadata-dialog/create-metadata-dialog.component';
 import { ContentItemsService } from './services/content-items.service';
 import { EntitiesService } from './services/entities.service';
 
@@ -36,14 +37,7 @@ import { EntitiesService } from './services/entities.service';
     ContentItemsActionsComponent,
     ContentItemsEntityComponent,
     ContentItemImportComponent,
-  ],
-  entryComponents: [
-    ContentItemsComponent,
-    PubMetaFilterComponent,
-    ContentItemsStatusComponent,
-    ContentItemsActionsComponent,
-    ContentItemsEntityComponent,
-    ContentItemImportComponent,
+    CreateMetadataDialogComponent,
   ],
   imports: [
     CommonModule,
@@ -55,7 +49,6 @@ import { EntitiesService } from './services/entities.service';
     AgGridModule.withComponents([]),
     FormsModule,
     MatRadioModule,
-    MatTooltipModule,
     MatInputModule,
     MatSelectModule,
     MatProgressSpinnerModule,
@@ -63,6 +56,8 @@ import { EntitiesService } from './services/entities.service';
     MatSnackBarModule,
     EcoFabSpeedDialModule,
     MatMenuModule,
+    ReactiveFormsModule,
+    MatSlideToggleModule,
   ],
   providers: [
     Context,

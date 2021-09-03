@@ -1,4 +1,4 @@
-export class ContentImport {
+export interface ContentImport {
   defaultLanguage: string;
   contentType: string;
   file: File;
@@ -6,7 +6,7 @@ export class ContentImport {
   clearEntities: string;
 }
 
-export class ImportContentRequest {
+export interface ImportContentRequest {
   AppId: string;
   DefaultLanguage: string;
   ContentType: string;
@@ -15,7 +15,7 @@ export class ImportContentRequest {
   ClearEntities: string;
 }
 
-export class EvaluateContentResult {
+export interface EvaluateContentResult {
   Success: boolean;
   /** Success === true */
   Detail?: EvaluateContentResultDetail;
@@ -23,7 +23,7 @@ export class EvaluateContentResult {
   Errors?: EvaluateContentResultError[];
 }
 
-export class EvaluateContentResultDetail {
+export interface EvaluateContentResultDetail {
   AmountOfEntitiesCreated: number;
   AmountOfEntitiesDeleted: number;
   AmountOfEntitiesUpdated: number;
@@ -34,7 +34,7 @@ export class EvaluateContentResultDetail {
   LanguagesInDocumentCount: number;
 }
 
-export class EvaluateContentResultError {
+export interface EvaluateContentResultError {
   Message: string;
   ErrorCode: number;
   ErrorDetail: string;
@@ -42,7 +42,7 @@ export class EvaluateContentResultError {
   LineDetail: string;
 }
 
-export class ImportContentResult {
+export interface ImportContentResult {
   Success: boolean;
   Detail: any;
 }

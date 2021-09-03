@@ -1,4 +1,4 @@
-export class ContentItem {
+export interface ContentItem {
   Id: number;
   Guid: string;
   _RepositoryId: number;
@@ -17,7 +17,7 @@ export class ContentItem {
   [key: string]: any;
 }
 
-export class ContentItemMetadata {
+export interface ContentItemMetadata {
   Target: number;
   Number: number;
   Guid: string;

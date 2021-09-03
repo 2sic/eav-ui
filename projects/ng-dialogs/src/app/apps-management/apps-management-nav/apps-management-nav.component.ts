@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
@@ -9,12 +9,11 @@ import { Context } from '../../shared/services/context';
   selector: 'app-apps-management-nav',
   templateUrl: './apps-management-nav.component.html',
   styleUrls: ['./apps-management-nav.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppsManagementNavComponent implements OnInit {
   zoneId = this.context.zoneId;
 
-  private tabs = ['list', 'languages', 'features', 'sxc-insights']; // tabs order has to match template
+  private tabs = ['list', 'languages', 'settings', 'features', 'sxc-insights']; // tabs order has to match template
   tabIndex$ = this.router.events.pipe(
     filter(event => event instanceof NavigationEnd),
     map(() => this.tabs.indexOf(this.route.snapshot.firstChild.url[0].path)),

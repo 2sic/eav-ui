@@ -1,4 +1,4 @@
-export class ContentExport {
+export interface ContentExport {
   defaultLanguage: string;
   contentTypeStaticName: string;
   language: string;

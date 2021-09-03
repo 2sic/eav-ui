@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Context } from '../shared/services/context';
 import { PlumbEditorComponent } from './plumb-editor/plumb-editor.component';
@@ -9,7 +9,6 @@ import { VisualQueryService } from './services/visual-query.service';
   templateUrl: './visual-query.component.html',
   styleUrls: ['./visual-query.component.scss'],
   providers: [VisualQueryService],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class VisualQueryComponent implements OnInit {
   @ViewChild(PlumbEditorComponent) plumbEditor: PlumbEditorComponent;

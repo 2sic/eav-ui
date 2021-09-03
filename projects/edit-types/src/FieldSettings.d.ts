@@ -45,6 +45,7 @@ interface StringDefault extends String {
  */
 interface StringDropdown extends String {
   DropdownValues: string;
+  DropdownValuesFormat: '' | 'value-label';
   EnableTextEntry: boolean;
   _options: DropdownOption[];
 }

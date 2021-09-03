@@ -1,15 +1,15 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { GeneralHelpers } from '../../../../../edit/shared/helpers';
+import { SnippetsSets } from '../models/snippet.model';
 
 @Component({
   selector: 'app-code-snippets',
   templateUrl: './code-snippets.component.html',
   styleUrls: ['./code-snippets.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CodeSnippetsComponent implements OnInit {
-  @Input() snippets: any;
-  @Output() insertSnippet: EventEmitter<any> = new EventEmitter();
+export class CodeSnippetsComponent {
+  @Input() snippets: SnippetsSets;
+  @Output() insertSnippet: EventEmitter<string> = new EventEmitter();
   toggledSections: any[] = [];
   toggledFolders: any[] = [];
   toggledInfos: any[] = [];
@@ -17,27 +17,23 @@ export class CodeSnippetsComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit() {
-  }
-
-  addSnippet(snippet: string) {
+  addSnippet(snippet: string): void {
     this.insertSnippet.emit(snippet);
   }
 
-  toggleSection(set: any) {
+  toggleSection(set: any): void {
     GeneralHelpers.toggleInArray(set, this.toggledSections);
   }
 
-  toggleFolder(item: any) {
+  toggleFolder(item: any): void {
     GeneralHelpers.toggleInArray(item, this.toggledFolders);
   }
 
-  toggleInfo(info: any) {
+  toggleInfo(info: any): void {
     GeneralHelpers.toggleInArray(info, this.toggledInfos);
   }
 
-  toggleMore(more: any) {
+  toggleMore(more: any): void {
     GeneralHelpers.toggleInArray(more, this.toggledMores);
   }
-
 }

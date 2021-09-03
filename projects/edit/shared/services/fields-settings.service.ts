@@ -6,11 +6,10 @@ import { EavService, EditInitializerService, LoggingService } from '.';
 import { FieldSettings, FieldValue } from '../../../edit-types';
 import { InputTypeConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { InputType } from '../../../ng-dialogs/src/app/content-type-fields/models/input-type.model';
-import { FormValues } from '../../eav-item-dialog/item-edit-form/item-edit-form.models';
-import { FieldLogicManager } from '../../field-logic/field-logic-manager';
+import { FieldLogicManager } from '../../form/shared/field-logic/field-logic-manager';
 import { FieldsSettingsHelpers, FormulaHelpers, GeneralHelpers, InputFieldHelpers, LocalizationHelpers, ValidationHelpers } from '../helpers';
 // tslint:disable-next-line:max-line-length
-import { ContentTypeSettings, FieldsProps, FormulaCacheItem, FormulaFunctionDefault, FormulaFunctionV1, FormulaTargets, FormulaVersions, LogSeverities, RunFormulasResult, SettingsFormulaPrefix, TranslationState } from '../models';
+import { ContentTypeSettings, FieldsProps, FormulaCacheItem, FormulaFunctionDefault, FormulaFunctionV1, FormulaTarget, FormulaTargets, FormulaVersions, FormValues, LogSeverities, RunFormulasResult, SettingsFormulaPrefix, TranslationState } from '../models';
 import { EavHeader } from '../models/eav';
 import { ContentTypeService, GlobalConfigService, InputTypeService, ItemService, LanguageInstanceService, LanguageService } from '../store/ngrx-data';
 import { FormulaDesignerService } from './formula-designer.service';
@@ -97,13 +96,13 @@ export class FieldsSettingsService implements OnDestroy {
           const formulaUpdates: FormValues = {};
           for (const attribute of contentType.Attributes) {
             const attributeValues = itemAttributes[attribute.Name];
-            // empty-default has no value
+            // empty-default and empty-message have no value
             const value = formValues[attribute.Name];
             // custom-default has no inputType
             const inputType = inputTypes.find(i => i.Type === attribute.InputType);
 
             const merged = FieldsSettingsHelpers.setDefaultFieldSettings(
-              FieldsSettingsHelpers.mergeSettings<FieldSettings>(attribute.Metadata, defaultLanguage, defaultLanguage),
+              FieldsSettingsHelpers.mergeSettings<FieldSettings>(attribute.Metadata, currentLanguage, defaultLanguage),
             );
 
             // run formulas
@@ -338,6 +337,7 @@ export class FieldsSettingsService implements OnDestroy {
             console.log(`Running formula${FormulaVersions.V1.toLocaleUpperCase()} for Entity: "${ctSettings._itemTitle}", Field: "${formula.fieldName}", Target: "${formula.target}" with following arguments:`, formulaProps);
           }
           const valueV1 = this.doValueCorrection(
+            formula.target,
             (formula.fn as FormulaFunctionV1)(formulaProps.data, formulaProps.context, formulaProps.experimental),
             inputType,
           );
@@ -351,6 +351,7 @@ export class FieldsSettingsService implements OnDestroy {
             console.log(`Running formula for Entity: "${ctSettings._itemTitle}", Field: "${formula.fieldName}", Target: "${formula.target}" with following arguments:`, undefined);
           }
           const valueDefault = this.doValueCorrection(
+            formula.target,
             (formula.fn as FormulaFunctionDefault)(),
             inputType,
           );
@@ -372,10 +373,12 @@ export class FieldsSettingsService implements OnDestroy {
     }
   }
 
-  private doValueCorrection(value: FieldValue, inputType: InputType): FieldValue {
+  private doValueCorrection(target: FormulaTarget, value: FieldValue, inputType: InputType): FieldValue {
+    // atm we are only correcting Value formulas
+    if (target !== FormulaTargets.Value) { return value; }
     if (value == null) { return value; }
 
-    if (inputType.Type === InputTypeConstants.DatetimeDefault) {
+    if (inputType?.Type === InputTypeConstants.DatetimeDefault) {
       const date = new Date(value as string | number | Date);
 
       // if value is ISO string, or miliseconds, no correction
@@ -385,6 +388,8 @@ export class FieldsSettingsService implements OnDestroy {
 
       // otherwise do timezone correction
       date.setTime(date.getTime() - date.getTimezoneOffset() * 60000);
+      // ignore miliseconds
+      date.setMilliseconds(0);
       return date.toJSON();
     }
 

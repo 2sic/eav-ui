@@ -6,7 +6,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { MetadataService } from '../permissions/services/metadata.service';
 import { Context } from '../shared/services/context';
@@ -29,20 +28,11 @@ import { VisualQueryComponent } from './visual-query.component';
     QueryResultComponent,
     StreamErrorResultComponent,
   ],
-  entryComponents: [
-    VisualQueryComponent,
-    RunExplorerComponent,
-    AddExplorerComponent,
-    PlumbEditorComponent,
-    QueryResultComponent,
-    StreamErrorResultComponent,
-  ],
   imports: [
     CommonModule,
     SharedComponentsModule,
     VisualQueryRoutingModule,
     MatIconModule,
-    MatTooltipModule,
     MatButtonModule,
     MatSlideToggleModule,
     MatSnackBarModule,

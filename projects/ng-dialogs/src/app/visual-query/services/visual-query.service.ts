@@ -300,9 +300,9 @@ export class VisualQueryService implements OnDestroy {
   private attachKeyboardSave() {
     this.zone.runOutsideAngular(() => {
       this.subscription.add(
-        fromEvent(window, 'keydown').pipe(
+        fromEvent<KeyboardEvent>(window, 'keydown').pipe(
           filter(() => !this.route.snapshot.firstChild),
-          filter((event: KeyboardEvent) => {
+          filter(event => {
             const CTRL_S = (navigator.platform.match('Mac') ? event.metaKey : event.ctrlKey) && event.keyCode === 83;
             return CTRL_S;
           }),

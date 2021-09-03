@@ -5,7 +5,6 @@ import { MatRippleModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatRadioModule } from '@angular/material/radio';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { BooleanFilterComponent } from './components/boolean-filter/boolean-filter.component';
 import { DialogEntryComponent } from './components/dialog-entry/dialog-entry.component';
@@ -16,6 +15,7 @@ import { ClickStopPropagationDirective } from './directives/click-stop-propagati
 import { DragAndDropDirective } from './directives/drag-and-drop.directive';
 import { MatFormFieldTextareaDirective } from './directives/mat-form-field-textarea.directive';
 import { MousedownStopPropagationDirective } from './directives/mousedown-stop-propagation.directive';
+import { TippyDirective } from './directives/tippy.directive';
 import { ToggleDebugDirective } from './directives/toggle-debug.directive';
 import { SafeHtmlPipe } from './pipes/safe-html.pipe';
 import { SafeResourceUrlPipe } from './pipes/safe-resource-url';
@@ -35,10 +35,7 @@ import { SafeResourceUrlPipe } from './pipes/safe-resource-url';
     SafeResourceUrlPipe,
     ToggleDebugDirective,
     MatFormFieldTextareaDirective,
-  ],
-  entryComponents: [
-    BooleanFilterComponent,
-    IdFieldComponent,
+    TippyDirective,
   ],
   imports: [
     RouterModule,
@@ -46,7 +43,6 @@ import { SafeResourceUrlPipe } from './pipes/safe-resource-url';
     MatFormFieldModule,
     FormsModule,
     MatRadioModule,
-    MatTooltipModule,
     MatRippleModule,
     MatIconModule,
   ],
@@ -64,6 +60,7 @@ import { SafeResourceUrlPipe } from './pipes/safe-resource-url';
     SafeResourceUrlPipe,
     ToggleDebugDirective,
     MatFormFieldTextareaDirective,
+    TippyDirective,
   ]
 })
 export class SharedComponentsModule { }

@@ -1,26 +1,42 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { forkJoin, Subscription } from 'rxjs';
+import { filter, map, pairwise, startWith } from 'rxjs/operators';
 import { ContentItemsService } from '../../content-items/services/content-items.service';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
-import { eavConstants } from '../../shared/constants/eav.constants';
+import { eavConstants, SystemSettingsScope, SystemSettingsScopes } from '../../shared/constants/eav.constants';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
+import { AppScopes, DialogContextApp } from '../../shared/models/dialog-context.models';
 import { EditForm } from '../../shared/models/edit-form.model';
 import { Context } from '../../shared/services/context';
+import { DialogService } from '../../shared/services/dialog.service';
 import { DialogSettings } from '../models/dialog-settings.model';
 import { ExportAppService } from '../services/export-app.service';
 import { ImportAppPartsService } from '../services/import-app-parts.service';
+import { AnalyzePart, AnalyzeParts } from '../sub-dialogs/analyze-settings/analyze-settings.models';
 
 @Component({
   selector: 'app-app-configuration',
   templateUrl: './app-configuration.component.html',
   styleUrls: ['./app-configuration.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AppConfigurationComponent implements OnInit {
+export class AppConfigurationComponent implements OnInit, OnDestroy {
   @Input() dialogSettings: DialogSettings;
   eavConstants = eavConstants;
+  AnalyzeParts = AnalyzeParts;
+  SystemSettingsScopes = SystemSettingsScopes;
+  AppScopes = AppScopes;
+  appSystemSettingsExists: boolean;
+  siteSystemSettingsExists: boolean;
+  appSystemResourcesExists: boolean;
+  siteSystemResourcesExists: boolean;
+
+  /** Shortcut to AppSettings as used a lot in the template */
+  appSettings: DialogContextApp;
+
+  private subscription: Subscription;
 
   constructor(
     private contentItemsService: ContentItemsService,
@@ -30,21 +46,67 @@ export class AppConfigurationComponent implements OnInit {
     private exportAppService: ExportAppService,
     private importAppPartsService: ImportAppPartsService,
     private snackBar: MatSnackBar,
+    private dialogService: DialogService,
+    private changeDetectorRef: ChangeDetectorRef,
   ) { }
 
   ngOnInit() {
+    this.subscription = new Subscription();
+    this.fetchSystemSettings();
+    this.refreshOnChildClosed();
+    this.appSettings = this.dialogSettings.Context.App;
   }
 
-  edit(staticName: string) {
+  ngOnDestroy() {
+    this.snackBar.dismiss();
+    this.subscription.unsubscribe();
+  }
+
+  edit(staticName: string, systemSettingsScope?: SystemSettingsScope) {
     this.contentItemsService.getAll(staticName).subscribe(contentItems => {
-      if (contentItems.length !== 1) { throw new Error(`Found too many settings for the type ${staticName}`); }
-      const item = contentItems[0];
-      const form: EditForm = {
-        items: [{ EntityId: item.Id }],
-      };
+      let form: EditForm;
+
+      switch (staticName) {
+        case eavConstants.contentTypes.systemSettings:
+        case eavConstants.contentTypes.systemResources:
+          const settingsEntity = contentItems.find(i => systemSettingsScope === SystemSettingsScopes.App
+            ? !i.SettingsEntityScope
+            : i.SettingsEntityScope === SystemSettingsScopes.Site);
+          form = {
+            items: [
+              settingsEntity == null
+                ? {
+                  ContentTypeName: staticName,
+                  Prefill: {
+                    ...(systemSettingsScope === SystemSettingsScopes.Site && { SettingsEntityScope: SystemSettingsScopes.Site }),
+                  }
+                }
+                : { EntityId: settingsEntity.Id }
+            ],
+          };
+          break;
+        default:
+          if (contentItems.length !== 1) {
+            throw new Error(`Found too many settings for the type ${staticName}`);
+          }
+          form = {
+            items: [{ EntityId: contentItems[0].Id }],
+          };
+      }
+
       const formUrl = convertFormToUrl(form);
       this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.firstChild });
     });
+  }
+
+  openSiteSettings() {
+    const siteDefaultApp = this.dialogSettings.Context.Site.DefaultApp;
+    this.dialogService.openAppAdministration(siteDefaultApp.ZoneId, siteDefaultApp.AppId, 'app');
+  }
+
+  openGlobalSettings() {
+    const globalDefaultApp = this.dialogSettings.Context.System.DefaultApp;
+    this.dialogService.openAppAdministration(globalDefaultApp.ZoneId, globalDefaultApp.AppId, 'app');
   }
 
   config(staticName: string) {
@@ -79,17 +141,52 @@ export class AppConfigurationComponent implements OnInit {
     });
   }
 
-  /** Experimental */
   resetApp() {
     if (!confirm('Are you sure? All changes since last xml export will be lost')) { return; }
     this.snackBar.open('Resetting...');
     this.importAppPartsService.resetApp().subscribe({
       next: result => {
-        this.snackBar.open('Reset worked!', null, { duration: 3000 });
+        this.snackBar.open(
+          'Reset worked! Since this is a complex operation, please restart the Website to ensure all caches are correct',
+          null,
+          { duration: 30000 },
+        );
       },
       error: (error: HttpErrorResponse) => {
         this.snackBar.open('Reset failed. Please check console for more information', null, { duration: 3000 });
       },
     });
+  }
+
+  analyze(part: AnalyzePart) {
+    this.router.navigate([`analyze/${part}`], { relativeTo: this.route.firstChild });
+  }
+
+  private fetchSystemSettings() {
+    forkJoin([
+      this.contentItemsService.getAll(eavConstants.contentTypes.systemSettings),
+      this.contentItemsService.getAll(eavConstants.contentTypes.systemResources),
+    ]).subscribe(([systemSettingsItems, systemResourcesItems]) => {
+      this.appSystemSettingsExists = systemSettingsItems.some(i => !i.SettingsEntityScope);
+      this.siteSystemSettingsExists = systemSettingsItems.some(i => i.SettingsEntityScope === SystemSettingsScopes.Site);
+      this.appSystemResourcesExists = systemResourcesItems.some(i => !i.SettingsEntityScope);
+      this.siteSystemResourcesExists = systemResourcesItems.some(i => i.SettingsEntityScope === SystemSettingsScopes.Site);
+
+      this.changeDetectorRef.markForCheck();
+    });
+  }
+
+  private refreshOnChildClosed() {
+    this.subscription.add(
+      this.router.events.pipe(
+        filter(event => event instanceof NavigationEnd),
+        startWith(!!this.route.snapshot.firstChild.firstChild),
+        map(() => !!this.route.snapshot.firstChild.firstChild),
+        pairwise(),
+        filter(([hadChild, hasChild]) => hadChild && !hasChild),
+      ).subscribe(() => {
+        this.fetchSystemSettings();
+      })
+    );
   }
 }

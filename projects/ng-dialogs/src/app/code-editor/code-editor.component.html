@@ -1,27 +1,35 @@
-<div class="editor-root" *ngIf="(templateVars$ | async) as data">
+<div class="editor-root" appToggleDebug *ngIf="templateVars$ | async as data">
   <div class="editor-side-toolbar">
-    <div class="button" [ngClass]="{ 'active': activeExplorer === explorer.templates }" matTooltip="Templates"
-      (click)="toggleExplorer(explorer.templates)">
+    <div class="button" [ngClass]="{ 'active': activeExplorer === Explorers.Templates }" tippy="Templates"
+      (click)="toggleExplorer(Explorers.Templates)">
       <mat-icon>file_copy</mat-icon>
     </div>
-    <div class="button" [ngClass]="{ 'active': activeExplorer === explorer.snippets }" matTooltip="Snippets"
-      (click)="toggleExplorer(explorer.snippets)">
+    <div class="button" [ngClass]="{ 'active': activeExplorer === Explorers.Snippets }" tippy="Snippets"
+      (click)="toggleExplorer(Explorers.Snippets)">
       <mat-icon>code</mat-icon>
+    </div>
+    <div class="button" *ngIf="data.debugEnabled" [ngClass]="{ 'active': activeEditor === Editors.Monaco }"
+      tippy="Toggle Monaco" (click)="toggleEditor()">
+      <mat-icon>highlight</mat-icon>
     </div>
   </div>
 
-  <app-code-templates [hidden]="activeExplorer !== explorer.templates" [view]="data.view" [templates]="data.templates"
+  <app-code-templates [hidden]="activeExplorer !== Explorers.Templates" [view]="data.view" [templates]="data.templates"
     (createTemplate)="createTemplate($event)">
   </app-code-templates>
-  <app-code-snippets [hidden]="activeExplorer !== explorer.snippets" [snippets]="data.explorerSnipps"
-    (insertSnippet)="changeInsertSnipp($event)">
+  <app-code-snippets [hidden]="activeExplorer !== Explorers.Snippets" [snippets]="data.explorerSnipps"
+    (insertSnippet)="insertSnippet($event)">
   </app-code-snippets>
 
-  <app-ace-editor *ngIf="data.view" [filename]="data.view.FileName" [ngModel]="data.view.Code"
-    (ngModelChange)="codeChanged($event)" [snippets]="data.editorSnipps" [toggleResize]="!this.activeExplorer">
+  <app-ace-editor *ngIf="data.view && activeEditor === Editors.Ace" [filename]="data.view.FileName"
+    [ngModel]="data.view.Code" (ngModelChange)="codeChanged($event)" [snippets]="data.editorSnipps">
   </app-ace-editor>
 
-  <button mat-fab mat-elevation-z24 matTooltip="Click to save or CTRL + S" (click)="save()">
+  <app-monaco-editor *ngIf="data.view && activeEditor === Editors.Monaco" [filename]="data.view.FileName"
+    [ngModel]="data.view.Code" (ngModelChange)="codeChanged($event)" [snippets]="data.editorSnipps" [autoFocus]="true">
+  </app-monaco-editor>
+
+  <button mat-fab mat-elevation-z24 tippy="Click to save or CTRL + S" (click)="save()">
     <mat-icon>done</mat-icon>
   </button>
 </div>

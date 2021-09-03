@@ -1,7 +1,7 @@
 import { FieldValue } from '../../../edit-types';
 import { consoleLogAngular } from '../../../ng-dialogs/src/app/shared/helpers/console-log-angular.helper';
-import { FormValues } from '../../eav-item-dialog/item-edit-form/item-edit-form.models';
 import { BestValueMode, BestValueModes } from '../constants/localization.constants';
+import { FormValues } from '../models';
 import { EavDimension, EavEntityAttributes, EavValue, EavValues } from '../models/eav';
 
 export class LocalizationHelpers {

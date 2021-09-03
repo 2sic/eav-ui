@@ -1,6 +1,5 @@
+import { FormValues } from '.';
 import { FieldSettings, FieldValue } from '../../../edit-types';
-import { FormValues } from '../../eav-item-dialog/item-edit-form/item-edit-form.models';
-import { EavType } from './eav';
 
 export interface FormulaCacheItem {
   cache: Record<string, any>;

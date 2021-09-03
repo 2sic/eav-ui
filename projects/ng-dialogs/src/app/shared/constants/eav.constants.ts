@@ -1,28 +1,38 @@
 export type EavMetadataKey = 'attribute' | 'app' | 'entity' | 'contentType' | 'zone' | 'cmsObject';
-export type EavKeyTypeKey = 'guid' | 'string' | 'number';
+const EavKeyTypes = {
+  Guid: 'guid',
+  String: 'string',
+  Number: 'number',
+} as const;
+export type EavKeyTypeKey = typeof EavKeyTypes[keyof typeof EavKeyTypes];
 export interface EavScopeOption { name: string; value: string; }
+export const SystemSettingsScopes = {
+  App: 'app',
+  Site: 'site',
+} as const;
+export type SystemSettingsScope = typeof SystemSettingsScopes[keyof typeof SystemSettingsScopes];
 
 export const eavConstants = {
   metadata: {
     /** metadataOfAttribute */
-    attribute: { type: 2, target: 'EAV Field Properties' },
+    attribute: { type: 2, target: 'EAV Field Properties', label: 'Content-Type Field/Attribute (2)', keyType: EavKeyTypes.Number },
     /** metadataOfApp */
-    app: { type: 3, target: 'App' },
+    app: { type: 3, target: 'App', label: 'App (3)', keyType: EavKeyTypes.Number },
     /** metadataOfEntity */
-    entity: { type: 4, target: 'Entity' },
+    entity: { type: 4, target: 'Entity', label: 'Entity (4)', keyType: EavKeyTypes.Guid },
     /** metadataOfContentType */
-    contentType: { type: 5, target: 'ContentType' },
+    contentType: { type: 5, target: 'ContentType', label: 'Content-Type (5)', keyType: EavKeyTypes.String },
     /** metadataOfZone */
-    zone: { type: 6, target: 'Zone' },
+    zone: { type: 6, target: 'Zone', label: 'Zone (6) - not used as of now', keyType: EavKeyTypes.Number },
     /** metadataOfCmsObject */
-    cmsObject: { type: 10, target: 'CmsObject' },
+    cmsObject: { type: 10, target: 'CmsObject', label: 'Cms Object (10)', keyType: EavKeyTypes.String, hint: 'Usually this is "file:400" or "folder:4030"' },
   },
 
   /** Loopup type for the metadata, e.g. key=80adb152-efad-4aa4-855e-74c5ef230e1f is keyType=guid */
   keyTypes: {
-    guid: 'guid',
-    string: 'string',
-    number: 'number',
+    guid: EavKeyTypes.Guid,
+    string: EavKeyTypes.String,
+    number: EavKeyTypes.Number,
   },
 
   /** Scopes */
@@ -31,6 +41,8 @@ export const eavConstants = {
     default: { name: 'Default', value: '2SexyContent' },
     /** This contains content-types for configuration, settings and resources of the app */
     app: { name: 'System: App', value: '2SexyContent-App' },
+    /** This contains special app settings */
+    configuration: { name: 'Configuration', value: 'System.Configuration' },
   },
 
   /** Content types where templates, permissions, etc. are stored */
@@ -43,10 +55,14 @@ export const eavConstants = {
     query: 'DataPipeline',
     /** Content type containing content type metadata (app administration > data > metadata) */
     contentType: 'ContentType',
-    /** Content type containing app settings */
+    /** Content type containing custom app settings */
     settings: 'App-Settings',
     /** Content type containing app resources */
     resources: 'App-Resources',
+    /** Content type containing system app settings */
+    systemSettings: 'SettingsSystem',
+    /** Content type containing system app resources */
+    systemResources: 'ResourcesSystem',
   },
 
   pipelineDesigner: {
@@ -65,16 +81,6 @@ export const eavConstants = {
     },
     defaultPipeline: {
       dataSources: [
-        // disable for https://github.com/2sic/2sxc/issues/2388 - remove in a few iterations ca. 2021-05
-        // {
-        //   EntityGuid: 'unsaved3',
-        //   PartAssemblyAndType: 'ToSic.Eav.DataSources.IAppRoot, ToSic.Eav.DataSources',
-        //   VisualDesignerData: { Top: 440, Left: 440 },
-        // }, {
-        //   EntityGuid: 'unsaved2',
-        //   PartAssemblyAndType: 'ToSic.Eav.DataSources.PublishingFilter, ToSic.Eav.DataSources',
-        //   VisualDesignerData: { Top: 300, Left: 440 },
-        // },
         {
           EntityGuid: 'unsaved1',
           PartAssemblyAndType: 'ToSic.Sxc.DataSources.CmsBlock, ToSic.Sxc',
@@ -82,11 +88,6 @@ export const eavConstants = {
         }
       ],
       streamWiring: [
-        // disable for https://github.com/2sic/2sxc/issues/2388 - remove in a few iterations ca. 2021-05
-        // { From: 'unsaved3', Out: 'Default', To: 'unsaved2', In: 'Default' },
-        // { From: 'unsaved3', Out: 'Drafts', To: 'unsaved2', In: 'Drafts' },
-        // { From: 'unsaved3', Out: 'Published', To: 'unsaved2', In: 'Published' },
-        // { From: 'unsaved2', Out: 'Default', To: 'unsaved1', In: 'Default' },
         { From: 'unsaved1', Out: 'Header', To: 'Out', In: 'Header' },
         { From: 'unsaved1', Out: 'Default', To: 'Out', In: 'Default' },
       ],

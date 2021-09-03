@@ -1,0 +1,52 @@
+@import "../../../../assets/styles/variables.scss";
+@import "../../../../assets/styles/theme/material-colors.scss";
+
+.menu-item-selected {
+  background: $edit-ui-selected-option;
+}
+
+.localization-lock-open {
+  color: green;
+}
+
+.localization {
+  &-missing-default-lang-value {
+    color: red;
+  }
+
+  &-translate {
+    color: green;
+  }
+
+  &-link-read-only {
+    color: blue;
+  }
+
+  &-link-read-write {
+    color: blue;
+  }
+}
+
+.shared-languages {
+  position: relative;
+  left: -6px;
+  top: -1px;
+  padding: 0px 4px 0 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: 16px;
+  cursor: default;
+  color: rgba($editUI-foreground-color, 0.44);
+
+  &--disabled {
+    color: rgba($editUI-foreground-color, 0.24);
+  }
+}
+
+.translate-icon {
+  font-size: 20px;
+  height: 20px;
+  width: 20px;
+  line-height: 20px;
+}

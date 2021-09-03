@@ -3,13 +3,12 @@ import { ApiCall, CodeSample, hint$2sxc, Scenario, warningExternal, warningSimpl
 import { Context } from '../../shared/services/context';
 // tslint:disable: curly
 
-
 export function generateWebApiCalls($2sxc: SxcRoot, scenario: Scenario, context: Context, root: string,
-  urlParams: string, verbs: string[] ) {
+  urlParams: string, verbs: string[]) {
   const virtual = root[0] !== '/' && !root.startsWith('http');
 
   // if urlParams exist and it doesn't starts with a ?, add that
-  if(urlParams && urlParams.length && urlParams[0] != '?')
+  if (urlParams && urlParams.length && urlParams[0] !== '?')
     urlParams = '?' + urlParams;
 
   const contextParams = virtual
@@ -19,11 +18,11 @@ export function generateWebApiCalls($2sxc: SxcRoot, scenario: Scenario, context:
   const pathWithParams = root + urlParams;
 
   const result = new Array<ApiCall>();
-  if(verbs.includes("GET"))
+  if (verbs.includes('GET'))
     result.push(new ApiCall(virtual, 'GET', pathWithParams, 'call the WebAPI endpoint', 'call GET on this endpoint', true,
       snippetsGet(scenario, pathWithParams, context), directUrl));
 
-  if(verbs.includes("POST"))
+  if (verbs.includes('POST'))
     result.push(new ApiCall(virtual, 'POST', pathWithParams, 'call the WebAPI endpoint', 'call POST on this endpoint', false,
       snippetsPost(scenario, pathWithParams, context.moduleId), directUrl));
 
@@ -117,7 +116,7 @@ $.ajax(${endPointGetWithParams}).then(data => {
       `
 $.ajax('${path}').then(data => {
   console.log('Got this data:', data);
-})`, false, [ warningExternal  ]));
+})`, false, [warningExternal]));
 
     // jQuery External with Context
     list.push(new CodeSample('Using jQuery with Context in URL',
@@ -125,13 +124,11 @@ $.ajax('${path}').then(data => {
       `
 $.ajax('${pathWithContext}').then(data => {
   console.log('Got this data:', data);
-})`, false, [ warningExternal ]));
+})`, false, [warningExternal]));
   }
   // return generated snippets
   return list;
 }
-
-
 
 /** Snippets for basic Post */
 function snippetsPost(scenario: Scenario, path: string, moduleId: number): CodeSample[] {

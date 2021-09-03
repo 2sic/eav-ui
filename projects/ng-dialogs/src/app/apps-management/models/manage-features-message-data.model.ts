@@ -1,9 +1,9 @@
-export class ManageFeaturesMessageData {
+export interface ManageFeaturesMessageData {
   key: string;
   msg: ManageFeaturesMessageDataMsg;
 }
 
-export class ManageFeaturesMessageDataMsg {
+export interface ManageFeaturesMessageDataMsg {
   features: string;
   signature: any;
 }

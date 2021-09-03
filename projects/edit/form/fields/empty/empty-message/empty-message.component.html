@@ -1,0 +1,3 @@
+<ng-container *ngIf="templateVars$ | async as data">
+  <div *ngIf="data.visible" class="message-box" [innerHtml]="data.notes | safeHtml"></div>
+</ng-container>

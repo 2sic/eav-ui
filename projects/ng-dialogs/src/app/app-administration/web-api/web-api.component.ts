@@ -1,9 +1,9 @@
 import { AllCommunityModules, GridOptions } from '@ag-grid-community/all-modules';
-import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
-import { SanitizeHelper } from '../../../../../edit/eav-material-controls/adam/sanitize.helper';
+import { SanitizeHelper } from '../../../../../edit/shared/helpers';
 import { GoToDevRest } from '../../dev-rest/go-to-dev-rest';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { defaultControllerName } from '../../shared/constants/file-names.constants';
@@ -17,10 +17,9 @@ import { WebApisService } from '../services/web-apis.service';
   selector: 'app-web-api',
   templateUrl: './web-api.component.html',
   styleUrls: ['./web-api.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WebApiComponent implements OnInit, OnDestroy {
-  @Input() private enableCode: boolean;
+  @Input() enableCode: boolean;
 
   webApis$ = new BehaviorSubject<WebApi[]>(null);
   modules = AllCommunityModules;

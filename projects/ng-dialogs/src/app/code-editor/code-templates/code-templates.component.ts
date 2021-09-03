@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { GeneralHelpers } from '../../../../../edit/shared/helpers';
 import { DialogService } from '../../shared/services/dialog.service';
 import { SourceView } from '../models/source-view.model';
@@ -9,9 +9,8 @@ import { calculateTree } from './code-templates.helpers';
   selector: 'app-code-templates',
   templateUrl: './code-templates.component.html',
   styleUrls: ['./code-templates.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CodeTemplatesComponent implements OnInit, OnChanges {
+export class CodeTemplatesComponent implements OnChanges {
   @Input() view: SourceView;
   @Input() templates: string[];
   @Output() createTemplate: EventEmitter<string> = new EventEmitter();
@@ -20,10 +19,7 @@ export class CodeTemplatesComponent implements OnInit, OnChanges {
 
   constructor(private dialogService: DialogService) { }
 
-  ngOnInit() {
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
+  ngOnChanges(changes: SimpleChanges): void {
     if (changes.templates?.currentValue) {
       this.tree = calculateTree(this.templates);
     }
@@ -32,19 +28,19 @@ export class CodeTemplatesComponent implements OnInit, OnChanges {
     }
   }
 
-  openTemplate(path: string) {
+  openTemplate(path: string): void {
     this.dialogService.openCodeFile(path);
   }
 
-  toggleItem(path: string) {
+  toggleItem(path: string): void {
     GeneralHelpers.toggleInArray(path, this.toggledItems);
   }
 
-  addFile(folder?: string) {
+  addFile(folder?: string): void {
     this.createTemplate.emit(folder);
   }
 
-  private showFileInTree(file: string) {
+  private showFileInTree(file: string): void {
     if (file == null) { return; }
     if (this.toggledItems.includes(file)) { return; }
 
@@ -56,5 +52,4 @@ export class CodeTemplatesComponent implements OnInit, OnChanges {
       this.toggleItem(pathFromRoot);
     }
   }
-
 }

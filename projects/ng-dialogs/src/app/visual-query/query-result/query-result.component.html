@@ -6,7 +6,7 @@
         for Stream: "{{ debugStream.name }}" on Source: "{{ debugStream.sourceName }}"
       </ng-container>
     </div>
-    <button mat-icon-button matTooltip="Close dialog" (click)="closeDialog()">
+    <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
       <mat-icon>close</mat-icon>
     </button>
   </div>
@@ -19,7 +19,7 @@
 
 <mat-tab-group dynamicHeight color="accent">
   <mat-tab>
-    <div *matTabLabel class="mat-tab-label-box" matTooltip="Results">
+    <div *matTabLabel class="mat-tab-label-box" tippy="Results">
       <span>Results</span>
     </div>
 
@@ -36,7 +36,7 @@
   </mat-tab>
 
   <mat-tab *ngIf="parameters?.length">
-    <div *matTabLabel class="mat-tab-label-box" matTooltip="Parameters">
+    <div *matTabLabel class="mat-tab-label-box" tippy="Parameters">
       <span>Parameters</span>
     </div>
 
@@ -47,7 +47,7 @@
   </mat-tab>
 
   <mat-tab>
-    <div *matTabLabel class="mat-tab-label-box" matTooltip="Sources">
+    <div *matTabLabel class="mat-tab-label-box" tippy="Sources">
       <span>Sources</span>
     </div>
 
@@ -77,7 +77,7 @@
   </mat-tab>
 
   <mat-tab>
-    <div *matTabLabel class="mat-tab-label-box" matTooltip="Streams">
+    <div *matTabLabel class="mat-tab-label-box" tippy="Streams">
       <span>Streams</span>
     </div>
 

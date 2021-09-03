@@ -1,0 +1,15 @@
+<ng-container *ngIf="templateVars$ | async as data">
+  <div class="logs-box fancy-scrollbar-light">
+    <div *ngIf="data.logs.length === 0">Logs are empty</div>
+    <div class="log-entry" *ngFor="let log of data.logs" [ngClass]="{
+      'log-error': log.severity === LogSeverities.Error,
+      'log-warn': log.severity === LogSeverities.Warn
+    }">
+      <span class="log-entry-part log-entry-time">{{ log.time | date : 'HH:mm:ss' }}:</span>
+      <span class="log-entry-part log-entry-label">{{ log.label }}</span>
+      <span class="log-entry-part log-entry-show" tippy="Log to console" (click)="logToConsole(log)">
+        console
+      </span>
+    </div>
+  </div>
+</ng-container>

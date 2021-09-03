@@ -1,42 +1,44 @@
-
 @import "../variables.scss";
 
 .u-hide-scrollbar {
-    -ms-overflow-style: none;  // IE 10+
-    overflow: -moz-scrollbars-none;  // Firefox
-    scrollbar-width: none;
-    &::-webkit-scrollbar { 
-        display: none;  // Safari and Chrome
-    }
-} 
+  -ms-overflow-style: none; // IE 10+
+  overflow: -moz-scrollbars-none; // Firefox
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none; // Safari and Chrome
+  }
+}
 
 .u-add-scrollbar {
-    overflow: scroll;
+  overflow: scroll;
 }
 
 .u-display-none {
-    display: none !important;
+  display: none !important;
 }
 
 .u-border-radius {
-    border-radius: $edit-ui-dialog-border-radius;
-    @media (max-width: 600px) {
-        border-radius: $edit-ui-dialog-border-radius-mobile;
-    }
+  border-radius: $edit-ui-dialog-border-radius;
+
+  @media (max-width: 600px) {
+    border-radius: $edit-ui-dialog-border-radius-mobile;
+  }
 }
 
-.u-border-radius-top { 
-    border-radius:$edit-ui-dialog-border-radius $edit-ui-dialog-border-radius 0 0 ;
+.u-border-radius-top {
+  border-radius: $edit-ui-dialog-border-radius $edit-ui-dialog-border-radius 0 0;
 }
 
-.u-border-radius-bottom { 
-    border-radius: 0 0 $edit-ui-dialog-border-radius $edit-ui-dialog-border-radius;
-    @media (max-width: 600px) {
-        border-radius: 0;
-    }
-} 
+.u-border-radius-bottom {
+  border-radius: 0 0 $edit-ui-dialog-border-radius $edit-ui-dialog-border-radius;
+
+  @media (max-width: 600px) {
+    border-radius: 0;
+  }
+}
 
 // small shadow top
 .u-shadow-top {
-    box-shadow: 0 -3px 3px -1px rgba(0,0,0,0.25);
+  box-shadow: 0 -3px 3px -1px rgba(0, 0, 0, 0.25);
 }

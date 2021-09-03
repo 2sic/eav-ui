@@ -1,4 +1,4 @@
-export class AppInfo {
+export interface AppInfo {
   Name: string;
   Guid: string;
   Version: string;

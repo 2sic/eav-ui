@@ -1,0 +1,30 @@
+<ng-container *ngIf="templateVars$ | async as data">
+
+  <div fxLayoutAlign="end center" *ngIf="data.currentLanguage !== data.defaultLanguage">
+    <div fxLayoutAlign="end center" class="shared-languages-container" [ngClass]="data.translationStateClass">
+      <div class="shared-languages mat-caption" [ngClass]="{ 'shared-languages--disabled': data.disabled }">
+        {{ data.translationState.infoLabel ? (data.translationState.infoLabel | translate:{ languages:
+        data.translationState.infoMessage }): '' }}
+      </div>
+      <button mat-icon-button [matMenuTriggerFor]="menu" [disabled]="data.disableTranslation">
+        <mat-icon class=" translate-icon">translate</mat-icon>
+      </button>
+    </div>
+
+    <mat-menu #menu="matMenu" overlapTrigger="true">
+      <button mat-menu-item (click)="translate()"
+        [ngClass]="{ 'menu-item-selected': data.translationState.linkType === TranslationLinks.Translate }">
+        {{ 'LangMenu.Translate' | translate }}
+      </button>
+      <button mat-menu-item (click)="dontTranslate()"
+        [ngClass]="{ 'menu-item-selected': data.translationState.linkType === TranslationLinks.DontTranslate }">
+        {{ 'LangMenu.NoTranslate' | translate }}
+      </button>
+      <button mat-menu-item (click)="openTranslateMenuDialog(data.translationState)"
+        [ngClass]="{ 'menu-item-selected': data.translationState.language !== '' }">
+        {{ 'LangMenu.Link' | translate }}
+      </button>
+    </mat-menu>
+  </div>
+
+</ng-container>

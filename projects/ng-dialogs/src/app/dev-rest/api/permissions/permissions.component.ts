@@ -10,7 +10,7 @@ import { DevRestApiTemplateVars } from '../api-template-vars';
   templateUrl: './permissions.component.html',
 })
 export class DevRestApiPermissionsComponent implements OnInit, OnChanges {
-  @Input() private data: DevRestApiTemplateVars;
+  @Input() data: DevRestApiTemplateVars;
 
   gridModules: Module[];
   gridOptions: GridOptions;

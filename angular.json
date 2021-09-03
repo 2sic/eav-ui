@@ -22,8 +22,8 @@
             "main": "projects/ng-dialogs/src/main.ts",
             "polyfills": "projects/ng-dialogs/src/polyfills.ts",
             "tsConfig": "projects/ng-dialogs/tsconfig.app.json",
+            "inlineStyleLanguage": "css",
             "showCircularDependencies": false,
-            "aot": false,
             "assets": [
               "projects/ng-dialogs/src/assets"
             ],
@@ -31,6 +31,7 @@
               "projects/ng-dialogs/src/styles.scss"
             ],
             "scripts": [
+              "projects/ng-dialogs/src/scripts/require.js",
               "projects/edit/assets/scripts/dropzone-dragging-helper.js",
               "projects/edit/assets/scripts/clipboard-paste/paste.js",
               {
@@ -50,12 +51,20 @@
               "outputHashing": "bundles",
               "sourceMap": true,
               "namedChunks": true,
-              "aot": true,
               "extractLicenses": true,
               "vendorChunk": true,
               "buildOptimizer": true
+            },
+            "development": {
+              "optimization": false,
+              "sourceMap": true,
+              "namedChunks": true,
+              "extractLicenses": false,
+              "vendorChunk": true,
+              "buildOptimizer": false
             }
-          }
+          },
+          "defaultConfiguration": "development"
         },
         "serve": {
           "builder": "ngx-build-plus:dev-server",
@@ -66,8 +75,12 @@
           "configurations": {
             "production": {
               "browserTarget": "ng-dialogs:build:production"
+            },
+            "development": {
+              "browserTarget": "ng-dialogs:build:development"
             }
-          }
+          },
+          "defaultConfiguration": "development"
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
@@ -82,6 +95,7 @@
             "polyfills": "projects/ng-dialogs/src/polyfills.ts",
             "tsConfig": "projects/ng-dialogs/tsconfig.spec.json",
             "karmaConfig": "projects/ng-dialogs/karma.conf.js",
+            "inlineStyleLanguage": "css",
             "assets": [
               "projects/ng-dialogs/src/assets"
             ],
@@ -96,24 +110,11 @@
           "options": {
             "tsConfig": [
               "projects/ng-dialogs/tsconfig.app.json",
-              "projects/ng-dialogs/tsconfig.spec.json",
-              "projects/ng-dialogs/e2e/tsconfig.json"
+              "projects/ng-dialogs/tsconfig.spec.json"
             ],
             "exclude": [
               "**/node_modules/**"
             ]
-          }
-        },
-        "e2e": {
-          "builder": "@angular-devkit/build-angular:protractor",
-          "options": {
-            "protractorConfig": "projects/ng-dialogs/e2e/protractor.conf.js",
-            "devServerTarget": "ng-dialogs:serve"
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "ng-dialogs:serve:production"
-            }
           }
         }
       }

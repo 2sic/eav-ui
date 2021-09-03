@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { EavWindow } from '../../shared/models/eav-window.model';
 import { StreamErrorData } from '../models';
@@ -10,7 +10,6 @@ declare const window: EavWindow;
   selector: 'app-stream-error-result',
   templateUrl: './stream-error-result.component.html',
   styleUrls: ['./stream-error-result.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StreamErrorResultComponent implements OnInit {
   errorData: StreamErrorData;

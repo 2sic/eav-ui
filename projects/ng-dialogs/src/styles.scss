@@ -1,11 +1,12 @@
 /* You can add global styles to this file, and also import other style files */
-@import '~@angular/material/theming';
-@include mat-core();
+@use '~@angular/material'as mat;
+// Include the common styles for Angular Material. Be sure that you only ever include this mixin once!
+@include mat.core();
 @import '~@material/layout-grid/mdc-layout-grid';
 @import '~@ag-grid-community/all-modules/dist/styles/ag-grid.css';
 @import '@ag-grid-community/all-modules/dist/styles/ag-theme-material.css';
 @import 'https://fonts.googleapis.com/icon?family=Material+Icons+Outlined';
-@import 'https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap';
+@import 'https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap';
 
 @import './styles/variables.scss';
 @import './styles/theme.scss';
@@ -25,6 +26,12 @@
 @import './styles/mat-button.styles.scss';
 @import './styles/drag-and-drop.styles.scss';
 @import './styles/item-history.styles.scss';
+@import './styles/tippy.styles.scss';
+
+html,
+body {
+  height: 100%;
+}
 
 body {
   margin: 0;

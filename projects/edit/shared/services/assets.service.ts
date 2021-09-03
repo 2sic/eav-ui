@@ -6,7 +6,7 @@ import { EavService } from '.';
 export const webApiAppFilesAll = 'admin/appfiles/all';
 export const webApiAppFile = 'admin/appfiles/asset';
 export const webApiAppFileCreate = 'admin/appfiles/create';
-export const webApiExplorer = 'admin/ApiExplorer/inspect'
+export const webApiExplorer = 'admin/ApiExplorer/inspect';
 @Injectable()
 export class AssetsService {
   constructor(private http: HttpClient, private eavService: EavService, private dnnContext: DnnContext) { }

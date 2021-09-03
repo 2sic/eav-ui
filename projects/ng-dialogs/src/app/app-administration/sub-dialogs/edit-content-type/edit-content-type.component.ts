@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
@@ -13,7 +13,6 @@ import { ContentTypesService } from '../../services/content-types.service';
   selector: 'app-edit-content-type',
   templateUrl: './edit-content-type.component.html',
   styleUrls: ['./edit-content-type.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EditContentTypeComponent implements OnInit, OnDestroy, AfterViewInit {
   @HostBinding('className') hostClass = 'dialog-component';
@@ -31,7 +30,7 @@ export class EditContentTypeComponent implements OnInit, OnDestroy, AfterViewIni
     map(([contentType, lockScope, scopeOptions, disableAnimation, loading]) =>
       ({ contentType, lockScope, scopeOptions, disableAnimation, loading })),
   );
-  private scope = this.route.snapshot.paramMap.get('scope');
+  private scope = this.route.snapshot.parent.paramMap.get('scope');
 
   constructor(
     private dialogRef: MatDialogRef<EditContentTypeComponent>,
@@ -54,17 +53,23 @@ export class EditContentTypeComponent implements OnInit, OnDestroy, AfterViewIni
           }),
         )
       : of({
-        ...(new ContentTypeEdit()),
         StaticName: '',
         Name: '',
         Description: '',
         Scope: this.scope,
         ChangeStaticName: false,
         NewStaticName: '',
-      });
+      } as ContentTypeEdit);
     const scopes$ = this.contentTypesService.getScopes();
     combineLatest([contentType$, scopes$]).subscribe(([contentType, scopes]) => {
       this.contentType$.next(contentType);
+      if (!scopes.map(scope => scope.value).includes(this.scope)) {
+        const newScopeOption: EavScopeOption = {
+          name: this.scope,
+          value: this.scope,
+        };
+        scopes.push(newScopeOption);
+      }
       this.scopeOptions$.next(scopes);
     });
   }

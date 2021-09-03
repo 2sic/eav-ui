@@ -70,3 +70,17 @@
 .fancy-scrollbar-dark {
   @include fancy-scrollbar(rgb(119, 119, 120), rgb(32, 32, 34), rgb(95, 95, 96));
 }
+
+.alert {
+  position: relative;
+  padding: 1rem 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid transparent;
+  border-radius: .25rem;
+}
+
+.alert-info {
+  color: #055160;
+  background-color: #cff4fc;
+  border-color: #b6effb;
+}

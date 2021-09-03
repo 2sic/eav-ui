@@ -8,14 +8,13 @@ import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { keyContentBlockId, keyModuleId } from './shared/constants/session.constants';
-import { Dictionary } from './shared/models/dictionary.model';
 import { Context } from './shared/services/context';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent extends DnnAppComponent implements OnInit, OnDestroy {
   private subscription = new Subscription();
@@ -71,7 +70,7 @@ export class AppComponent extends DnnAppComponent implements OnInit, OnDestroy {
   private loadFonts() {
     this.matIconRegistry.setDefaultFontSetClass('material-icons-outlined');
 
-    const icons: Dictionary<string> = {
+    const icons: Record<string, string> = {
       star,
       'code-curly': codeCurly,
     };

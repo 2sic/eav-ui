@@ -1,6 +1,7 @@
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { webApiAppFile, webApiAppFileCreate, webApiAppFilesAll } from '../../../../../edit/shared/services';
 import { keyIsShared } from '../../shared/constants/session.constants';
@@ -14,13 +15,13 @@ export class SourceService {
   constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
 
   /** Key is templateId or path */
-  get(key: number | string) {
+  get(key: number | string): Observable<SourceView> {
     return this.http.get<SourceView>(this.dnnContext.$2sxc.http.apiUrl(webApiAppFile), {
       params: { appId: this.context.appId.toString(), global: this.isShared, ...this.templateIdOrPath(key) }
     }).pipe(
       map(view => {
-        if (view.Type.toLowerCase() === 'auto') {
-          switch (view.Extension.toLowerCase()) {
+        if (view.Type.toLocaleLowerCase() === 'auto') {
+          switch (view.Extension.toLocaleLowerCase()) {
             case '.cs':
             case '.cshtml':
               view.Type = 'Razor';
@@ -38,19 +39,19 @@ export class SourceService {
   }
 
   /** Key is templateId or path */
-  save(key: number | string, view: SourceView) {
+  save(key: number | string, view: SourceView): Observable<boolean> {
     return this.http.post<boolean>(this.dnnContext.$2sxc.http.apiUrl(webApiAppFile), view, {
       params: { appId: this.context.appId.toString(), global: this.isShared, ...this.templateIdOrPath(key) },
     });
   }
 
-  getTemplates() {
+  getTemplates(): Observable<string[]> {
     return this.http.get<string[]>(this.dnnContext.$2sxc.http.apiUrl(webApiAppFilesAll), {
       params: { appId: this.context.appId.toString(), global: this.isShared, withSubfolders: 'true' },
     });
   }
 
-  createTemplate(name: string) {
+  createTemplate(name: string): Observable<boolean> {
     return this.http.post<boolean>(this.dnnContext.$2sxc.http.apiUrl(webApiAppFileCreate), {}, {
       params: { appId: this.context.appId.toString(), global: this.isShared, purpose: 'auto', path: name },
     });

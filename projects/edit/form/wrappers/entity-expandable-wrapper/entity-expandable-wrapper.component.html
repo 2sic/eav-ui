@@ -1,0 +1,61 @@
+<div [ngClass]="(dialogIsOpen$ | async) ? 'c-ew__container' : 'u-display-none'">
+  <div class="c-ew__backdrop" (click)="closeDialog()"></div>
+  <div fxLayout="column" class="c-ew__dialog mat-elevation-z24">
+    <div [ngClass]="{ 'c-ew__dialog-header mat-elevation-z2': dialogIsOpen$ | async }">
+      <mat-card class="mat-elevation-z0" fxLayout="row">
+        <button mat-icon-button class="back-arrow" fxLayoutAlign="center center"
+          [tippy]="'Form.Buttons.Return.Tip' | translate" (click)="closeDialog()">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        <span fxLayoutAlign="center center" class="title mat-display-1">{{ label$ | async }}</span>
+      </mat-card>
+    </div>
+    <div>
+      <div [@itemShrinkAnimation]="(dialogIsOpen$ | async) ? 'closed' : 'open'">
+      </div>
+      <div class="c-ew__dialog-content u-add-scrollbar u-hide-scrollbar" [@contentExpandAnimation]="{
+        value: (dialogIsOpen$ | async) ? 'expanded' : 'closed',
+        params: { bottomPixels: calculateBottomPixels() }
+      }">
+        <div class="mdc-layout-grid">
+          <div class="mdc-layout-grid__inner">
+            <mat-card class="mdc-layout-grid__cell--span-12 u-border-radius shadow-bottom-z-1">
+              <ng-container #fieldComponent></ng-container>
+            </mat-card>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="templateVars$ | async as data" class="c-ew__preview-holder">
+  <mat-label class="c-ew__preview-label" [ngClass]="{
+    'mat-caption' : data.entitiesNumber,
+    'mat-empty' : !data.entitiesNumber,
+    'mat-error' : data.controlStatus.invalid && data.controlStatus.touched && !config.initialDisabled,
+    'color__primary' : !(data.controlStatus.invalid && data.controlStatus.touched) && !config.initialDisabled,
+    'color__label-disabled' : config.initialDisabled
+  }">
+    {{ data.label }} {{ data.required ? '*': '' }}
+  </mat-label>
+  <div matRipple [matRippleAnimation]="{ enterDuration: 360 }" class="c-ew__preview mat-ripple" (click)="expandDialog()"
+    [ngClass]="{
+      'c-ew__preview--invalid' : data.controlStatus.invalid && data.controlStatus.touched,
+      'c-ew__preview--disabled': config.initialDisabled
+    }">
+    <div [ngClass]="data.entitiesNumber ? 'c-ew__preview-container' : 'c-ew__preview-container--empty'">
+      <div fxLayout="row" fxLayoutAlign="start center">
+        <mat-list *ngIf="data.entitiesNumber" fxLayout="row">
+          <mat-list-item role="listitem" *ngFor="let item of data.selectedEntities; trackBy: trackByFn">
+            <span mat-line>{{ item.label }}</span>
+          </mat-list-item>
+        </mat-list>
+        <span *ngIf="data.entitiesNumber > 5" class="more-entities mat-body-1">
+          {{ data.entitiesNumber }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
+</div>

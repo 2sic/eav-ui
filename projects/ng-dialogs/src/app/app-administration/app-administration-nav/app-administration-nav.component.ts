@@ -1,10 +1,12 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, Subscription } from 'rxjs';
 import { filter, map, pairwise, startWith } from 'rxjs/operators';
+import { eavConstants } from '../../shared/constants/eav.constants';
 import { UpdateEnvVarsFromDialogSettings } from '../../shared/helpers/update-env-vars-from-dialog-settings.helper';
+import { AppScopes } from '../../shared/models/dialog-context.models';
 import { DialogSettings } from '../models/dialog-settings.model';
 import { AppDialogConfigService } from '../services/app-dialog-config.service';
 
@@ -12,9 +14,11 @@ import { AppDialogConfigService } from '../services/app-dialog-config.service';
   selector: 'app-app-administration-nav',
   templateUrl: './app-administration-nav.component.html',
   styleUrls: ['./app-administration-nav.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppAdministrationNavComponent implements OnInit, OnDestroy {
+  AppScopes = AppScopes;
+
+  private defaultScope = eavConstants.scopes.default.value;
   private dialogSettings$ = new BehaviorSubject<DialogSettings>(null);
   private tabs$ = new BehaviorSubject<string[]>(null);
   private tabIndex$ = combineLatest([
@@ -60,7 +64,10 @@ export class AppAdministrationNavComponent implements OnInit, OnDestroy {
   }
 
   changeTab(event: MatTabChangeEvent) {
-    const path = this.tabs$.value[event.index];
+    let path = this.tabs$.value[event.index];
+    if (path === 'data') {
+      path = `data/${this.defaultScope}`;
+    }
     this.router.navigate([path], { relativeTo: this.route });
   }
 

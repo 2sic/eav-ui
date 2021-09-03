@@ -2,16 +2,16 @@
 
 <div class="editor-root">
   <div class="editor-side-toolbar">
-    <div class="button" matTooltip="Run" [ngClass]="{ 'active': activeExplorer === explorer.run }"
+    <div class="button" tippy="Run" [ngClass]="{ 'active': activeExplorer === explorer.run }"
       (click)="toggleExplorer(explorer.run)">
       <mat-icon>play_arrow</mat-icon>
     </div>
-    <div class="button" matTooltip="Add" [ngClass]="{ 'active': activeExplorer === explorer.add }"
+    <div class="button" tippy="Add" [ngClass]="{ 'active': activeExplorer === explorer.add }"
       (click)="toggleExplorer(explorer.add)">
       <mat-icon>add</mat-icon>
     </div>
     <div class="spacer"></div>
-    <div class="button" matTooltip="Help" (click)="openHelp()">
+    <div class="button" tippy="Help" (click)="openHelp()">
       <mat-icon>help_outline</mat-icon>
     </div>
   </div>

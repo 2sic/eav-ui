@@ -1,0 +1,20 @@
+<ng-container *ngIf="templateVars$ | async as data">
+
+  <div class="json-field" [ngClass]="{
+    'disabled': data.controlStatus.disabled,
+    'focused': data.focused,
+    'error': data.controlStatus.touched && data.controlStatus.invalid
+  }">
+    <mat-label class="label">{{ data.label }} {{ data.required ? '*' : '' }}</mat-label>
+
+    <app-monaco-editor class="editor" [ngStyle]="{ 'height': data.editorHeight }" [filename]="filename"
+      [ngModel]="data.controlStatus.value" (ngModelChange)="codeChanged($event)" [options]="editorOptions"
+      (focused)="onFocused()" (blured)="onBlurred()">
+    </app-monaco-editor>
+
+    <input class="placeholder" *ngIf="!data.controlStatus.value && data.placeholder" [placeholder]="data.placeholder">
+  </div>
+
+  <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
+
+</ng-container>

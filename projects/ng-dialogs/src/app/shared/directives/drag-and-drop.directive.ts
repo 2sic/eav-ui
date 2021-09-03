@@ -4,9 +4,9 @@ import { fromEvent, Subscription } from 'rxjs';
 
 @Directive({ selector: '[appDragAndDrop]' })
 export class DragAndDropDirective implements OnInit, OnDestroy {
-  @Input() private markStyle: 'outline' | 'fill' | 'shadow' = 'outline';
+  @Input() markStyle: 'outline' | 'fill' | 'shadow' = 'outline';
   /** Comma separated file types, e.g. 'txt,doc,docx' */
-  @Input() private allowedFileTypes = '';
+  @Input() allowedFileTypes = '';
   @Output() private filesDropped = new EventEmitter<File[]>();
 
   private element: HTMLElement;
@@ -25,7 +25,7 @@ export class DragAndDropDirective implements OnInit, OnDestroy {
     this.element.classList.add(this.dropAreaClass, this.markStyleClass);
     this.zone.runOutsideAngular(() => {
       this.subscription.add(
-        fromEvent(this.element, 'dragover').subscribe((event: DragEvent) => {
+        fromEvent<DragEvent>(this.element, 'dragover').subscribe(event => {
           event.preventDefault();
           event.stopPropagation();
           this.clearTimeouts();
@@ -33,7 +33,7 @@ export class DragAndDropDirective implements OnInit, OnDestroy {
         })
       );
       this.subscription.add(
-        fromEvent(this.element, 'dragleave').subscribe((event: DragEvent) => {
+        fromEvent<DragEvent>(this.element, 'dragleave').subscribe(event => {
           event.preventDefault();
           event.stopPropagation();
           this.timeouts.push(

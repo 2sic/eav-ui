@@ -4,7 +4,7 @@
   padding-top: 40px;
 
   .mat-card {
-    max-width: 400px;
+    width: 420px;
     margin: 8px;
     padding-top: 8px;
   }
@@ -12,9 +12,21 @@
   .mat-card-header {
     align-items: center;
     justify-content: space-between;
+    margin-top: 8px !important;
+    margin-bottom: 12px;
 
     .mat-card-header-text {
       margin: 0;
+    }
+
+    .mat-card-header-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      .mat-icon {
+        user-select: none;
+      }
     }
 
     .mat-card-title {
@@ -24,12 +36,17 @@
     }
   }
 
-  .actions-box {
-    display: flex;
-    height: 40px;
-  }
-
   .mat-card-content {
     font-size: 14px;
+  }
+
+  .mat-card-actions {
+    .mat-icon {
+      margin-right: 4px;
+    }
+
+    .actions-row:not(:first-of-type) {
+      margin-top: 8px;
+    }
   }
 }

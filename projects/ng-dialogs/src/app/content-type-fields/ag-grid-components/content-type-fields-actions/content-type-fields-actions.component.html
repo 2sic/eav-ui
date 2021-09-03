@@ -1,5 +1,5 @@
 <div class="actions-component">
-  <div class="like-button highlight" matRipple matTooltip="Permissions" *ngIf="enablePermissions"
+  <div class="like-button highlight" matRipple tippy="Permissions" *ngIf="enablePermissions"
     (click)="openPermissions()">
     <mat-icon [matBadge]="field.Permissions.Count" matBadgePosition="after" matBadgeColor="accent" matBadgeSize="small"
       *ngIf="field.Permissions.Count">
@@ -11,7 +11,7 @@
     <mat-icon>person</mat-icon>
   </div>
 
-  <div class="like-button highlight" matRipple matTooltip="More" [matMenuTriggerFor]="menu">
+  <div class="like-button highlight" matRipple tippy="More" [matMenuTriggerFor]="menu">
     <mat-icon>more_horiz</mat-icon>
   </div>
 </div>
