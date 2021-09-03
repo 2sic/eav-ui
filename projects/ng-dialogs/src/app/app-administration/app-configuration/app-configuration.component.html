@@ -23,6 +23,7 @@
         If necessary, settings like a link to an RSS-Feed could be different in each language.
         <a href="http://r.2sxc.org/settings" target="_blank">docs</a>
       </p>
+
       <table class="settings">
         <thead>
           <tr>
@@ -42,18 +43,15 @@
                   [matBadge]="appSystemSettingsExists ? 1 : null">
                   edit
                 </mat-icon>
-                <span></span>
               </button>
             </td>
             <td>
               <button mat-button (click)="edit(eavConstants.contentTypes.settings)" tippy="Edit custom app settings">
                 <mat-icon>edit</mat-icon>
-                <span></span>
               </button>
               <button mat-button (click)="config(eavConstants.contentTypes.settings)"
                 tippy="Configure fields of the custom app settings">
                 <mat-icon>dns</mat-icon>
-                <span></span>
               </button>
             </td>
           </tr>
@@ -68,15 +66,14 @@
                     [matBadge]="siteSystemSettingsExists ? 1 : null">
                     edit
                   </mat-icon>
-                  <span></span>
                 </button>
               </td>
               <td>
-                <mat-icon tippy="This isn't automated yet. Just create a SettingsCustom yourself.">help_outline
+                <mat-icon tippy="This isn't automated yet. Just create a SettingsCustom yourself">
+                  help_outline
                 </mat-icon>
               </td>
             </ng-container>
-
           </tr>
           <!-- Global Row - always show -->
           <tr>
@@ -90,11 +87,11 @@
                     [matBadge]="appSystemSettingsExists ? 1 : null">
                     edit
                   </mat-icon>
-                  <span></span>
                 </button>
               </td>
               <td>
-                <mat-icon tippy="This isn't automated yet. Just create a SettingsCustom yourself.">help_outline
+                <mat-icon tippy="This isn't automated yet. Just create a SettingsCustom yourself">
+                  help_outline
                 </mat-icon>
               </td>
             </ng-container>
@@ -103,7 +100,6 @@
         </tbody>
       </table>
     </mat-card-content>
-
 
     <mat-card-actions>
       <div class="actions-row">
@@ -219,18 +215,15 @@
                   [matBadge]="appSystemResourcesExists ? 1 : null">
                   edit
                 </mat-icon>
-                <span></span>
               </button>
             </td>
             <td>
               <button mat-button (click)="edit(eavConstants.contentTypes.resources)" tippy="Edit custom app resources">
                 <mat-icon>edit</mat-icon>
-                <span></span>
               </button>
               <button mat-button (click)="config(eavConstants.contentTypes.resources)"
                 tippy="Configure fields of the custom app resources">
                 <mat-icon>dns</mat-icon>
-                <span></span>
               </button>
             </td>
           </tr>
@@ -245,11 +238,11 @@
                     [matBadge]="siteSystemResourcesExists ? 1 : null">
                     edit
                   </mat-icon>
-                  <span></span>
                 </button>
               </td>
               <td>
-                <mat-icon tippy="This isn't automated yet. Just create a ResourcesCustom yourself.">help_outline
+                <mat-icon tippy="This isn't automated yet. Just create a ResourcesCustom yourself">
+                  help_outline
                 </mat-icon>
               </td>
             </ng-container>
@@ -266,11 +259,11 @@
                     [matBadge]="appSystemResourcesExists ? 1 : null">
                     edit
                   </mat-icon>
-                  <span></span>
                 </button>
               </td>
               <td>
-                <mat-icon tippy="This isn't automated yet. Just create a ResourcesCustom yourself.">help_outline
+                <mat-icon tippy="This isn't automated yet. Just create a ResourcesCustom yourself">
+                  help_outline
                 </mat-icon>
               </td>
             </ng-container>
@@ -364,7 +357,6 @@
     <td>
       <button mat-button (click)="openSiteSettings()" tippy="Go to site">
         <mat-icon>open_in_new</mat-icon>
-        <span></span>
       </button>
     </td>
   </ng-template>
@@ -373,7 +365,6 @@
     <td>
       <button mat-button (click)="openGlobalSettings()" tippy="Go to global">
         <mat-icon>open_in_new</mat-icon>
-        <span></span>
       </button>
     </td>
   </ng-template>
