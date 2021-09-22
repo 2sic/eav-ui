@@ -1,6 +1,6 @@
-import { WindowObject } from '../models/eav-window.model';
+import { EavWindow } from '../models/eav-window.model';
 
-declare const window: WindowObject;
+declare const window: EavWindow;
 
 export function loadScripts(scriptObjects: ScriptObject[], callback: () => void, iteration = 0) {
   const isLast = scriptObjects.length === iteration + 1;
@@ -9,8 +9,9 @@ export function loadScripts(scriptObjects: ScriptObject[], callback: () => void,
 
   const global = typeof scrObj.test === 'string' ? scrObj.test : null;
   const test = typeof scrObj.test === 'function' ? scrObj.test : null;
+  const w = window as Record<string, any>;
 
-  if (global != null && !!window[global]) {
+  if (global != null && !!w[global]) {
     callback();
     return;
   }
@@ -20,16 +21,12 @@ export function loadScripts(scriptObjects: ScriptObject[], callback: () => void,
     return;
   }
 
-  const scriptInDom = document.querySelector<HTMLScriptElement>(`script[src="${scrObj.src}"]`);
-  if (scriptInDom) {
-    scriptInDom.addEventListener('load', newCallback, { once: true });
-    return;
-  }
-
-  const scriptEl = document.createElement('script');
-  scriptEl.src = scrObj.src;
-  scriptEl.addEventListener('load', newCallback, { once: true });
-  document.head.appendChild(scriptEl);
+  window.require([scrObj.src], (exportedVar: any) => {
+    if (exportedVar && !w[global]) {
+      w[global] = exportedVar;
+    }
+    newCallback();
+  });
 }
 
 export interface ScriptObject {
