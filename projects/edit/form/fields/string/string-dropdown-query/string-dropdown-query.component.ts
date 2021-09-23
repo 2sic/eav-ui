@@ -71,8 +71,8 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
     const settings = this.settings$.value;
     const entityInfo: EntityInfo = {
       Id: entity.Id,
-      Value: entity[settings.Value],
-      Text: entity[settings.Label],
+      Value: entity[settings.Value] ? `${entity[settings.Value]}` : entity[settings.Value],
+      Text: entity[settings.Label] ? `${entity[settings.Label]}` : entity[settings.Label],
     };
     return entityInfo;
   }

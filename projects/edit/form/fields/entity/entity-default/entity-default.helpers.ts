@@ -9,19 +9,20 @@ export function calculateSelectedEntities(
   separator: string,
   entityCache: EntityInfo[],
   stringQueryCache: QueryEntity[],
-  stringQueryLabel: string,
+  stringQueryValueField: string,
+  stringQueryLabelField: string,
   translate: TranslateService,
 ): SelectedEntity[] {
   // name is guid or freetext
   const names = typeof fieldValue === 'string' ? convertValueToArray(fieldValue, separator) : fieldValue;
   const selectedEntities = names.map(name => {
     const entity = entityCache.find(e => e.Value === name);
-    const stringEntity = stringQueryCache.find(e => e.Guid === name);
+    const stringEntity = stringQueryCache.find(e => `${e[stringQueryValueField]}` === name);
     let label: string;
     if (name == null) {
       label = translate.instant('Fields.Entity.EmptySlot');
     } else if (typeof fieldValue === 'string') {
-      label = stringEntity?.[stringQueryLabel] ?? name;
+      label = stringEntity?.[stringQueryLabelField] ?? name;
     } else {
       label = entity?.Text ?? translate.instant('Fields.Entity.EntityNotFound');
     }

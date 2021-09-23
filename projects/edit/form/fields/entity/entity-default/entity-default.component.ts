@@ -66,17 +66,18 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
     this.selectedEntities$ = combineLatest([
       this.controlStatus$.pipe(map(controlStatus => controlStatus.value), distinctUntilChanged()),
       this.entityCacheService.getEntities$(),
-      this.stringQueryCacheService.getEntities$(),
+      this.stringQueryCacheService.getEntities$(this.config.entityGuid, this.config.fieldName),
       this.settings$.pipe(
         map(settings => ({
           Separator: settings.Separator,
+          Value: settings.Value,
           Label: settings.Label,
         })),
         distinctUntilChanged(GeneralHelpers.objectsEqual),
       ),
     ]).pipe(
       map(([value, entityCache, stringQueryCache, settings]) =>
-        calculateSelectedEntities(value, settings.Separator, entityCache, stringQueryCache, settings.Label, this.translate)
+        calculateSelectedEntities(value, settings.Separator, entityCache, stringQueryCache, settings.Value, settings.Label, this.translate)
       ),
     );
 

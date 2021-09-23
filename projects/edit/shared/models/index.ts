@@ -20,4 +20,5 @@ export * from './paste-clipboard-image.models';
 export * from './publish-mode.models';
 export * from './publish-status.model';
 export * from './save-result.model';
+export * from './string-query-cache-item';
 export * from './versioning-options.model';

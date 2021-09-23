@@ -123,7 +123,7 @@ export class EntityQueryComponent extends EntityDefaultComponent implements OnIn
         if (!this.isStringQuery) {
           this.entityCacheService.loadEntities(items);
         } else {
-          this.stringQueryCacheService.loadEntities(data[streamName]);
+          this.stringQueryCacheService.loadEntities(this.config.entityGuid, this.config.fieldName, data[streamName]);
         }
         if (!clearAvailableEntitiesAndOnlyUpdateCache) {
           this.availableEntities$.next(items);

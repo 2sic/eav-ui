@@ -2,8 +2,7 @@ import { EntityMetadataMap } from '@ngrx/data';
 import { EntityInfo } from '../../../../edit-types';
 import { InputType } from '../../../../ng-dialogs/src/app/content-type-fields/models/input-type.model';
 import { Prefetch } from '../../../dialog/main/edit-dialog-main.models';
-import { QueryEntity } from '../../../form/fields/entity/entity-query/entity-query.models';
-import { AdamSnapshot, Language, LanguageInstance, LinkCache, PublishStatus } from '../../models';
+import { AdamSnapshot, Language, LanguageInstance, LinkCache, PublishStatus, StringQueryCacheItem } from '../../models';
 import { EavContentType, EavEntity, EavItem } from '../../models/eav';
 
 export const entityMetadata: EntityMetadataMap = {
@@ -101,6 +100,6 @@ export function linkCacheSelectId(link: LinkCache): string {
   return link?.key;
 }
 
-export function stringQueryCacheSelectId(entity: QueryEntity): string {
-  return entity?.Guid;
+export function stringQueryCacheSelectId(cacheItem: StringQueryCacheItem): string {
+  return cacheItem?.selector;
 }
