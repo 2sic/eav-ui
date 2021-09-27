@@ -129,14 +129,12 @@ export class MonacoEditorComponent implements AfterViewInit, OnDestroy {
   private createDependencyProposals(range: any) {
     // kind and rule copied from:
     // https://microsoft.github.io/monaco-editor/playground.html#extending-language-services-completion-provider-example
-    const kind = 27;
-    const insertTextRules = 4;
     const monacoSnippets = this.snippets.map(snippet => ({
       label: snippet.name,
-      kind,
+      kind: this.monaco.languages.CompletionItemKind.Snippet,
       documentation: `${snippet.title}\n${snippet.help}\n${snippet.links}`,
       insertText: snippet.content,
-      insertTextRules,
+      insertTextRules: this.monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
       range,
     }));
     return monacoSnippets;
