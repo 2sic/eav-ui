@@ -23,6 +23,9 @@ export class ValidationHelpers {
       this.max(fieldName, fieldsSettingsService),
       this.min(fieldName, fieldsSettingsService),
     ];
+    if (inputType === InputTypeConstants.CustomJsonEditor) {
+      validators.push(this.validJson(fieldName, fieldsSettingsService));
+    }
     return validators;
   }
 
@@ -86,6 +89,21 @@ export class ValidationHelpers {
       if (settings.Min == null) { return null; }
 
       return Validators.min(settings.Min)(control);
+    };
+  }
+
+  private static validJson(fieldName: string, fieldsSettingsService: FieldsSettingsService): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const settings = fieldsSettingsService.getFieldSettings(fieldName);
+      if (this.ignoreValidators(settings)) { return null; }
+      if (!control.value) { return null; }
+
+      try {
+        JSON.parse(control.value);
+        return null;
+      } catch {
+        return { jsonError: true };
+      }
     };
   }
 

@@ -20,6 +20,9 @@ export class ValidationMessagesHelpers {
     decimals: (config: FieldConfigSet) => {
       return config ? `ValidationMessage.Decimals` : `ValidationMessage.NotValid`;
     },
+    jsonError: (config: FieldConfigSet) => {
+      return config ? `ValidationMessage.JsonError` : `ValidationMessage.NotValid`;
+    },
   };
 
   /** Marks controls as touched to show errors beneath controls and collects error messages */
