@@ -26,6 +26,7 @@ export class MonacoEditorComponent implements AfterViewInit, OnDestroy {
 
   private value = '';
   private monaco?: any;
+  private editorModelUri?: any;
   private editorModel?: any;
   private editorInstance?: any;
   /**
@@ -91,7 +92,8 @@ export class MonacoEditorComponent implements AfterViewInit, OnDestroy {
     // https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.istandaloneeditorconstructionoptions.html
     this.editorInstance = this.monaco.editor.create(this.editorRef.nativeElement, this.options);
     // editorInstance.updateOptions({ readOnly: true })
-    this.editorModel = this.monaco.editor.createModel(this.value, undefined, this.monaco.Uri.file(this.filename));
+    this.editorModelUri = this.monaco.Uri.file(this.filename);
+    this.editorModel = this.monaco.editor.createModel(this.value, undefined, this.editorModelUri);
     this.editorInstance.setModel(this.editorModel);
     // https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.itextmodelupdateoptions.html
     // this.editor.getModel().updateOptions({ tabSize: 2 });
@@ -166,6 +168,10 @@ export class MonacoEditorComponent implements AfterViewInit, OnDestroy {
             if (c === '"') { quotes++; }
           });
           if (quotes % 2 !== 0) { return { suggestions: [] }; }
+          // check that it's not a closing tag
+          if (codeInTag.startsWith('</')) { return { suggestions: [] }; }
+          // check that tag is not already closed
+          if (codeInTag.indexOf('>') !== codeInTag.length - 1) { return { suggestions: [] }; }
 
           // tag name ends with space or tag is closed completely
           let tagEndIndex = codeInTag.indexOf(' ');
