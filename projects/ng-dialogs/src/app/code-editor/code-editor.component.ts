@@ -35,6 +35,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
   activeEditor: EditorOption = Editors.Ace;
   monacoOptions = {
     theme: 'vs-dark',
+    tabSize: 2,
   };
   templateVars$: Observable<CodeEditorTemplateVars>;
 

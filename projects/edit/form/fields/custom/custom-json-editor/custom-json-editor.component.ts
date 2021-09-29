@@ -28,6 +28,7 @@ export class CustomJsonEditorComponent extends BaseComponent<string> implements 
     },
     lineHeight: 19,
     scrollBeyondLastLine: false,
+    tabSize: 2,
   };
 
   constructor(eavService: EavService, fieldsSettingsService: FieldsSettingsService) {
