@@ -56,6 +56,7 @@ export class MonacoEditorComponent implements AfterViewInit, OnDestroy {
 
     window.require(['vs/editor/editor.main'], (monaco: any) => {
       this.monaco = monaco;
+      this.addThemes();
       this.monacoLoaded();
     });
   }
@@ -136,10 +137,22 @@ export class MonacoEditorComponent implements AfterViewInit, OnDestroy {
     }
   }
 
+  private addThemes() {
+    // TODO: make a more robust check if themes were added
+    if (this.monaco.themesWereAdded) { return; }
+    this.monaco.themesWereAdded = true;
+
+    this.monaco.editor.defineTheme('2sxc-dark', {
+      base: 'vs-dark',
+      inherit: true,
+      rules: [
+        { token: 'metatag.cs', foreground: 'ffff00' },
+      ],
+    });
+  }
+
   private addSnippets() {
-    // dirty way to stop adding snippets multiple times in case editor is created in multiple places.
-    // downside is that this won't load different snippets if they exist, only first ones.
-    // figuring out a fix will be quite complex because I have to globaly store each snippets that was ever loaded to not load it again
+    // TODO: make a more robust check if snippets were added
     if (this.monaco.snippetsWereAdded) { return; }
     this.monaco.snippetsWereAdded = true;
 
