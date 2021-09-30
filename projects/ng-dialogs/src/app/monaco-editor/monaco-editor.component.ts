@@ -1,5 +1,7 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, forwardRef, Input, OnDestroy, Output, ViewChild } from '@angular/core';
+// tslint:disable-next-line:max-line-length
+import { AfterViewInit, Component, ElementRef, EventEmitter, forwardRef, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
+import { JsonSchema } from '.';
 import { Snippet } from '../code-editor/models/snippet.model';
 import { EavWindow } from '../shared/models/eav-window.model';
 
@@ -15,11 +17,12 @@ declare const window: EavWindow;
     multi: true,
   }],
 })
-export class MonacoEditorComponent implements AfterViewInit, OnDestroy {
+export class MonacoEditorComponent implements AfterViewInit, OnChanges, OnDestroy {
   @ViewChild('editor') private editorRef: ElementRef<HTMLElement>;
   @Input() filename: string;
   @Input() snippets: Snippet[];
   @Input() options?: Record<string, any>;
+  @Input() jsonSchema?: JsonSchema;
   @Input() autoFocus = false;
   @Output() private focused = new EventEmitter<undefined>();
   @Output() private blured = new EventEmitter<undefined>();
@@ -61,6 +64,12 @@ export class MonacoEditorComponent implements AfterViewInit, OnDestroy {
     });
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.jsonSchema != null) {
+      this.setJsonSchema();
+    }
+  }
+
   insertSnippet(snippet: string): void {
     const snippetController = this.editorInstance?.getContribution('snippetController2');
     snippetController?.insert(snippet);
@@ -98,6 +107,7 @@ export class MonacoEditorComponent implements AfterViewInit, OnDestroy {
     this.editorInstance.setModel(this.editorModel);
     // https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.itextmodelupdateoptions.html
     // this.editor.getModel().updateOptions({ tabSize: 2 });
+    this.setJsonSchema();
     this.addSnippets();
 
     this.editorInstance.getModel().onDidChangeContent(() => {
@@ -137,7 +147,48 @@ export class MonacoEditorComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  private addThemes() {
+  private setJsonSchema(): void {
+    if (this.monaco == null || this.editorModelUri == null || this.jsonSchema == null) { return; }
+
+    const diagnosticsOptions = {
+      ...this.monaco.languages.json.jsonDefaults.diagnosticsOptions,
+      enableSchemaRequest: true,
+      schemaRequest: 'warning',
+      schemaValidation: 'warning',
+      validate: true,
+    };
+
+    const exists = diagnosticsOptions.schemas.some((schema: any) => schema.fileMatch[0] === this.editorModelUri.toString());
+    if (exists) {
+      diagnosticsOptions.schemas = diagnosticsOptions.schemas.map((schema: any) => {
+        if (schema.fileMatch[0] !== this.editorModelUri.toString()) { return schema; }
+        return this.buildCurrentSchema();
+      });
+    } else {
+      diagnosticsOptions.schemas = [
+        ...diagnosticsOptions.schemas,
+        this.buildCurrentSchema(),
+      ];
+    }
+
+    this.monaco.languages.json.jsonDefaults.setDiagnosticsOptions(diagnosticsOptions);
+  }
+
+  private buildCurrentSchema() {
+    const schema = this.jsonSchema.type === 'link'
+      ? {
+        uri: this.jsonSchema.value,
+        fileMatch: [this.editorModelUri.toString()],
+      }
+      : {
+        uri: this.editorModelUri.toString(),
+        fileMatch: [this.editorModelUri.toString()],
+        schema: JSON.parse(this.jsonSchema.value),
+      };
+    return schema;
+  }
+
+  private addThemes(): void {
     // TODO: make a more robust check if themes were added
     if (this.monaco.themesWereAdded) { return; }
     this.monaco.themesWereAdded = true;
@@ -151,7 +202,7 @@ export class MonacoEditorComponent implements AfterViewInit, OnDestroy {
     });
   }
 
-  private addSnippets() {
+  private addSnippets(): void {
     // TODO: make a more robust check if snippets were added
     if (this.monaco.snippetsWereAdded) { return; }
     this.monaco.snippetsWereAdded = true;

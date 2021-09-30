@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
+import { JsonSchema } from '../../../../../ng-dialogs/src/app/monaco-editor';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { EavService, FieldsSettingsService } from '../../../../shared/services';
@@ -40,14 +41,26 @@ export class CustomJsonEditorComponent extends BaseComponent<string> implements 
     super.ngOnInit();
     this.filename = `${this.config.fieldName} ${this.config.entityGuid} ${this.eavService.eavConfig.formId}.json`;
     const rowCount$ = this.settings$.pipe(map(settings => settings.Rows), distinctUntilChanged());
+    const jsonSchema$ = this.settings$.pipe(
+      map(settings => {
+        if (settings.JsonSchemaMode === 'none') { return; }
+
+        const jsonSchema: JsonSchema = {
+          type: settings.JsonSchemaSource,
+          value: settings.JsonSchemaSource === 'link' ? settings.JsonSchemaUrl : settings.JsonSchemaRaw,
+        };
+        return jsonSchema;
+      }),
+      distinctUntilChanged(GeneralHelpers.objectsEqual),
+    );
 
     this.templateVars$ = combineLatest([
       combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$, this.config.focused$]),
-      combineLatest([rowCount$]),
+      combineLatest([rowCount$, jsonSchema$]),
     ]).pipe(
       map(([
         [controlStatus, label, placeholder, required, focused],
-        [rowCount],
+        [rowCount, jsonSchema],
       ]) => {
         const templateVars: CustomJsonEditorTemplateVars = {
           controlStatus,
@@ -57,6 +70,7 @@ export class CustomJsonEditorComponent extends BaseComponent<string> implements 
           focused,
           rowCount,
           editorHeight: rowCount * this.editorOptions.lineHeight + 'px',
+          jsonSchema,
         };
         return templateVars;
       }),

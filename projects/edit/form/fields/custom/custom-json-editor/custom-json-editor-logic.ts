@@ -9,6 +9,10 @@ export class CustomJsonEditorLogic extends FieldLogicBase {
     const fixedSettings: FieldSettings = { ...settings };
     fixedSettings.Rows ||= 5;
     fixedSettings.JsonValidation ||= 'strict';
+    fixedSettings.JsonSchemaMode ||= 'none';
+    fixedSettings.JsonSchemaSource ||= 'link';
+    fixedSettings.JsonSchemaUrl ??= '';
+    fixedSettings.JsonSchemaRaw ??= '';
     return fixedSettings;
   }
 }

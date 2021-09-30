@@ -193,6 +193,10 @@ interface DateTime extends All {
 interface CustomJsonEditor extends All {
   Rows: number;
   JsonValidation: 'strict' | 'light' | 'none';
+  JsonSchemaMode: 'strict' | 'light' | 'none';
+  JsonSchemaSource: 'link' | 'raw';
+  JsonSchemaUrl: string;
+  JsonSchemaRaw: string;
 }
 
 /**
