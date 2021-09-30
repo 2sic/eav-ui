@@ -8,6 +8,7 @@ export class CustomJsonEditorLogic extends FieldLogicBase {
   update(settings: FieldSettings, value: string): FieldSettings {
     const fixedSettings: FieldSettings = { ...settings };
     fixedSettings.Rows ||= 5;
+    fixedSettings.JsonValidation ||= 'strict';
     return fixedSettings;
   }
 }

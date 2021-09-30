@@ -192,6 +192,7 @@ interface DateTime extends All {
  */
 interface CustomJsonEditor extends All {
   Rows: number;
+  JsonValidation: 'strict' | 'light' | 'none';
 }
 
 /**

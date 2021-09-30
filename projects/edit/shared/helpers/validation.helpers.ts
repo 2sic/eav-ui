@@ -96,6 +96,7 @@ export class ValidationHelpers {
     return (control: AbstractControl): ValidationErrors | null => {
       const settings = fieldsSettingsService.getFieldSettings(fieldName);
       if (this.ignoreValidators(settings)) { return null; }
+      if (settings.JsonValidation === 'none') { return null; }
       if (!control.value) { return null; }
 
       try {
