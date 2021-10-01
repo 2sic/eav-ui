@@ -1,7 +1,9 @@
 import { AbstractControl, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { BehaviorSubject } from 'rxjs';
 import { FieldSettings } from '../../../edit-types';
 import { InputTypeConstants } from '../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { AdamControl } from '../../form/fields/hyperlink/hyperlink-library/hyperlink-library.models';
+import { SxcAbstractControl } from '../models';
 import { FieldsSettingsService } from '../services';
 
 /** Validators here are copied from https://github.com/angular/angular/blob/master/packages/forms/src/validators.ts */
@@ -29,8 +31,19 @@ export class ValidationHelpers {
     return validators;
   }
 
+  /**
+   * Validations run when controls are created, but only for fields which are not disabled,
+   * and it can be too late to attach warning after field creation
+   */
+  static ensureWarning(control: SxcAbstractControl): void {
+    if (control._warning$ == null) {
+      control._warning$ = new BehaviorSubject<ValidationErrors>(null);
+    }
+  }
+
   private static required(fieldName: string, fieldsSettingsService: FieldsSettingsService): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
+      this.ensureWarning(control);
       const settings = fieldsSettingsService.getFieldSettings(fieldName);
       if (this.ignoreValidators(settings)) { return null; }
       if (!settings.Required) { return null; }
@@ -40,17 +53,19 @@ export class ValidationHelpers {
   }
 
   private static requiredAdam(fieldName: string, fieldsSettingsService: FieldsSettingsService): ValidatorFn {
-    return (control: AdamControl): ValidationErrors | null => {
+    return (control: AbstractControl): ValidationErrors | null => {
+      this.ensureWarning(control);
       const settings = fieldsSettingsService.getFieldSettings(fieldName);
       if (this.ignoreValidators(settings)) { return null; }
       if (!settings.Required) { return null; }
 
-      return control.adamItems === 0 ? { required: true } : null;
+      return (control as AdamControl).adamItems === 0 ? { required: true } : null;
     };
   }
 
   private static pattern(fieldName: string, fieldsSettingsService: FieldsSettingsService): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
+      this.ensureWarning(control);
       const settings = fieldsSettingsService.getFieldSettings(fieldName);
       if (this.ignoreValidators(settings)) { return null; }
       if (!settings.ValidationRegExJavaScript) { return null; }
@@ -61,6 +76,7 @@ export class ValidationHelpers {
 
   private static decimals(fieldName: string, fieldsSettingsService: FieldsSettingsService): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
+      this.ensureWarning(control);
       const settings = fieldsSettingsService.getFieldSettings(fieldName);
       if (this.ignoreValidators(settings)) { return null; }
       if (settings.Decimals == null || settings.Decimals < 0) { return null; }
@@ -74,6 +90,7 @@ export class ValidationHelpers {
 
   private static max(fieldName: string, fieldsSettingsService: FieldsSettingsService): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
+      this.ensureWarning(control);
       const settings = fieldsSettingsService.getFieldSettings(fieldName);
       if (this.ignoreValidators(settings)) { return null; }
       if (settings.Max == null) { return null; }
@@ -84,6 +101,7 @@ export class ValidationHelpers {
 
   private static min(fieldName: string, fieldsSettingsService: FieldsSettingsService): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
+      this.ensureWarning(control);
       const settings = fieldsSettingsService.getFieldSettings(fieldName);
       if (this.ignoreValidators(settings)) { return null; }
       if (settings.Min == null) { return null; }
@@ -93,18 +111,33 @@ export class ValidationHelpers {
   }
 
   private static validJson(fieldName: string, fieldsSettingsService: FieldsSettingsService): ValidatorFn {
-    return (control: AbstractControl): ValidationErrors | null => {
+    return (control: SxcAbstractControl): ValidationErrors | null => {
+      this.ensureWarning(control);
       const settings = fieldsSettingsService.getFieldSettings(fieldName);
-      if (this.ignoreValidators(settings)) { return null; }
-      if (settings.JsonValidation === 'none') { return null; }
-      if (!control.value) { return null; }
+      let error: boolean;
+      let warning: boolean;
 
-      try {
-        JSON.parse(control.value);
-        return null;
-      } catch {
-        return { jsonError: true };
+      if (this.ignoreValidators(settings) || settings.JsonValidation === 'none' || !control.value) {
+        error = false;
+        warning = false;
+      } else {
+        try {
+          JSON.parse(control.value);
+          error = false;
+          warning = false;
+        } catch {
+          if (settings.JsonValidation === 'strict') {
+            error = true;
+            warning = false;
+          } else if (settings.JsonValidation === 'light') {
+            error = false;
+            warning = true;
+          }
+        }
       }
+
+      control._warning$.next(warning ? { jsonWarning: true } : null);
+      return error ? { jsonError: true } : null;
     };
   }
 

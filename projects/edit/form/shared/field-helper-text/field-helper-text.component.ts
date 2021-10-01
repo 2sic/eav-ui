@@ -69,4 +69,8 @@ export class FieldHelperTextComponent implements OnInit {
   getErrorMessage() {
     return ValidationMessagesHelpers.getErrorMessage(this.control, this.config);
   }
+
+  getWarningMessage() {
+    return ValidationMessagesHelpers.getWarningMessage(this.control);
+  }
 }

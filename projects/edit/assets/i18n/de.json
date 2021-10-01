@@ -111,7 +111,8 @@
     "Max": "Dieser Wert sollte höchstens {{param.Max}} sein",
     "Pattern": "Bitte richtig eingeben",
     "Decimals": "Diese Zahl kann {{param.Decimals}} Dezimalstellen haben",
-    "JsonError": "JSON ist nicht valide"
+    "JsonError": "JSON ist nicht valide",
+    "JsonWarning": "JSON is not valid"
   },
   "Fields": {
     "Entity": {

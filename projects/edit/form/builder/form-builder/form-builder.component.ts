@@ -4,7 +4,7 @@ import { combineLatest, Subscription } from 'rxjs';
 import { distinctUntilChanged, map, startWith } from 'rxjs/operators';
 import { InputTypeConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { GeneralHelpers, ValidationHelpers } from '../../../shared/helpers';
-import { FormValues } from '../../../shared/models';
+import { FormValues, SxcAbstractControl } from '../../../shared/models';
 import { EavService, FieldsSettingsService, FieldsTranslateService, FormsStateService } from '../../../shared/services';
 import { ItemService, LanguageInstanceService } from '../../../shared/store/ngrx-data';
 
@@ -52,6 +52,7 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
           const newControl = this.formBuilder.control({ disabled, value }, validators);
           // TODO: build all fields at once. That should be faster
           this.form.addControl(fieldName, newControl);
+          ValidationHelpers.ensureWarning(this.form.controls[fieldName]);
         }
 
         // 2. sync values
@@ -120,6 +121,9 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    Object.values(this.form.controls).forEach((control: SxcAbstractControl) => {
+      control._warning$.complete();
+    });
     this.subscription.unsubscribe();
   }
 }

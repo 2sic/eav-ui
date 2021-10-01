@@ -111,7 +111,8 @@
     "Max": "Este valor deve ser inferior ou igual a {{param.Max}}",
     "Pattern": "Por favor adeque o formato ao requerido",
     "Decimals": "Este número pode ter até {{param.Decimals}} casas decimais",
-    "JsonError": "JSON is not valid"
+    "JsonError": "JSON is not valid",
+    "JsonWarning": "JSON is not valid"
   },
   "Fields": {
     "Entity": {
