@@ -10,7 +10,7 @@
 
   <router-outlet></router-outlet>
 
-  <div *ngIf="(contentType$ | async)?.Metadata?.ListInstructions as listInstructions"
+  <div *ngIf="(contentType$ | async)?.Properties?.ListInstructions as listInstructions"
     [innerHTML]="listInstructions | safeHtml">
   </div>
 

@@ -238,7 +238,7 @@ export class DataComponent implements OnInit, OnDestroy {
   private createOrEditMetadata(contentType: ContentType) {
     const form: EditForm = {
       items: [
-        !contentType.Metadata
+        !contentType.Properties
           ? {
             ContentTypeName: eavConstants.contentTypes.contentType,
             For: {
@@ -247,7 +247,7 @@ export class DataComponent implements OnInit, OnDestroy {
             },
             Prefill: { Label: contentType.Name, Description: contentType.Description },
           }
-          : { EntityId: contentType.Metadata.Id }
+          : { EntityId: contentType.Properties.Id }
       ],
     };
     const formUrl = convertFormToUrl(form);

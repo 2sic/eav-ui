@@ -6,7 +6,7 @@ export interface ContentType {
   Id: number;
   Items: number;
   Label: string;
-  Metadata: ContentTypeMetadata;
+  Properties: ContentTypeProperties;
   Name: string;
   Permissions: PermissionsCount;
   Scope: string;
@@ -16,7 +16,7 @@ export interface ContentType {
   _compareLabel?: string;
 }
 
-export interface ContentTypeMetadata {
+export interface ContentTypeProperties {
   Description: string;
   EditInstructions: string;
   Icon: string;
