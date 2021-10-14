@@ -9,7 +9,7 @@ import { TinyMceToolbars } from './toolbars';
 import { TinyMceTranslations } from './translations';
 
 declare const window: EavWindow;
-const reconfigErr = `Very likely an error in your reconfigure code. Check https://r.2sxc.org/field-wysiwyg`;
+const reconfigErr = `Very likely an error in your reconfigure code. Check http://r.2sxc.org/field-wysiwyg`;
 
 /** This object will configure the TinyMCE */
 export class TinyMceConfigurator {

@@ -209,7 +209,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
       this.snackBarStack
         .add(`There are ${otherEditions} other editions of this. You may be editing an edition which is not the one you see.`, 'Help')
         .subscribe(() => {
-          window.open('https://r.2sxc.org/polymorphism', '_blank');
+          window.open('http://r.2sxc.org/polymorphism', '_blank');
         });
     }
   }

@@ -36,7 +36,7 @@ export class RunExplorerComponent implements OnInit {
   }
 
   openParamsHelp() {
-    window.open('https://r.2sxc.org/QueryParams', '_blank');
+    window.open('http://r.2sxc.org/QueryParams', '_blank');
   }
 
   saveAndRunQuery(save: boolean, run: boolean) {

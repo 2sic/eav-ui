@@ -182,7 +182,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
   }
 
   openFormulasHelp(): void {
-    window.open('https://r.2sxc.org/functions', '_blank');
+    window.open('http://r.2sxc.org/formulas', '_blank');
   }
 
   private buildTemplateVars(): void {
