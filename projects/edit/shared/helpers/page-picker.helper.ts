@@ -16,13 +16,13 @@ export class PagePicker {
     changeDetectorRef: ChangeDetectorRef,
     callback: (value: PagePickerResult) => void,
   ): void {
-    const data: PagePickerDialogData = {
+    const dialogData: PagePickerDialogData = {
       config,
       group,
     };
     const dialogRef = dialog.open(PagePickerComponent, {
       autoFocus: false,
-      data,
+      data: dialogData,
       viewContainerRef,
       width: '650px',
     });

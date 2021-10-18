@@ -1,7 +1,7 @@
 import { AgGridModule } from '@ag-grid-community/angular';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -60,6 +60,7 @@ import { ImportAppPartsComponent } from './sub-dialogs/import-app-parts/import-a
 import { ImportContentTypeComponent } from './sub-dialogs/import-content-type/import-content-type.component';
 import { ImportQueryComponent } from './sub-dialogs/import-query/import-query.component';
 import { ImportViewComponent } from './sub-dialogs/import-view/import-view.component';
+import { MetadataSaveDialogComponent } from './sub-dialogs/metadata/metadata-save-dialog.component';
 import { ViewsUsageComponent } from './sub-dialogs/views-usage/views-usage.component';
 import { ViewsComponent } from './views/views.component';
 import { WebApiComponent } from './web-api/web-api.component';
@@ -96,6 +97,7 @@ import { WebApiComponent } from './web-api/web-api.component';
     AnalyzeSettingsValueComponent,
     AnalyzeSettingsTotalResultsComponent,
     SettingsItemDetailsComponent,
+    MetadataSaveDialogComponent,
   ],
   imports: [
     AppAdministrationRoutingModule,
@@ -119,6 +121,7 @@ import { WebApiComponent } from './web-api/web-api.component';
     MatSnackBarModule,
     MatMenuModule,
     MatBadgeModule,
+    ReactiveFormsModule,
   ],
   providers: [
     Context,
@@ -134,6 +137,6 @@ import { WebApiComponent } from './web-api/web-api.component';
     ImportAppPartsService,
     DialogService,
     AnalyzeSettingsService,
-  ]
+  ],
 })
 export class AppAdministrationModule { }

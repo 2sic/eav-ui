@@ -17,7 +17,7 @@
           <app-field-hint *ngIf="name.errors.pattern" [isError]="true">{{ contentTypeNameError }}</app-field-hint>
         </ng-container>
       </div>
-      <mat-accordion>
+      <mat-accordion [@.disabled]="data.disableAnimation">
         <mat-expansion-panel>
           <mat-expansion-panel-header>
             <mat-panel-title>Advanced</mat-panel-title>

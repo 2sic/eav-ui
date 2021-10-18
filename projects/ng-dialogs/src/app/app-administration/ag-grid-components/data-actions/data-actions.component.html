@@ -25,9 +25,13 @@
 </div>
 
 <mat-menu #menu="matMenu" class="grid-more-menu">
-  <button mat-menu-item (click)="editContentType()">
+  <button mat-menu-item [disabled]="contentType.UsesSharedDef" (click)="editContentType()">
     <mat-icon>settings</mat-icon>
     <span>Rename</span>
+  </button>
+  <button mat-menu-item [disabled]="contentType.UsesSharedDef" (click)="addMetadata()">
+    <mat-icon>local_offer</mat-icon>
+    <span>Add metadata</span>
   </button>
   <button mat-menu-item (click)="openRestApi()">
     <mat-icon svgIcon="code-curly"></mat-icon>

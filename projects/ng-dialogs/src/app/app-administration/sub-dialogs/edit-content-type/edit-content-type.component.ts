@@ -61,16 +61,23 @@ export class EditContentTypeComponent implements OnInit, OnDestroy, AfterViewIni
         NewStaticName: '',
       } as ContentTypeEdit);
     const scopes$ = this.contentTypesService.getScopes();
-    combineLatest([contentType$, scopes$]).subscribe(([contentType, scopes]) => {
+    combineLatest([contentType$, scopes$]).subscribe(([contentType, scopeOptions]) => {
       this.contentType$.next(contentType);
-      if (!scopes.map(scope => scope.value).includes(this.scope)) {
+
+      const newScopes = [...(this.scopeOptions$.value ?? [])];
+      scopeOptions.forEach(scopeOption => {
+        if (!newScopes.some(scope => scope.value === scopeOption.value)) {
+          newScopes.push(scopeOption);
+        }
+      });
+      if (!newScopes.some(scope => scope.value === this.scope)) {
         const newScopeOption: EavScopeOption = {
           name: this.scope,
           value: this.scope,
         };
-        scopes.push(newScopeOption);
+        newScopes.push(newScopeOption);
       }
-      this.scopeOptions$.next(scopes);
+      this.scopeOptions$.next(newScopes);
     });
   }
 
@@ -84,7 +91,7 @@ export class EditContentTypeComponent implements OnInit, OnDestroy, AfterViewIni
 
   // workaround for angular component issue #13870
   ngAfterViewInit() {
-    // timeout required to avoid the dreaded 'ExpressionChangedAfterItHasBeenCheckedError'
+    // timeout required to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => this.disableAnimation$.next(false));
   }
 

@@ -187,7 +187,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     this.router.navigate(['import'], { relativeTo: this.route, state: dialogData });
   }
 
-  addMetadata() {
+  createMetadata() {
     const metadataDialogRef = this.dialog.open(CreateMetadataDialogComponent, {
       autoFocus: false,
       viewContainerRef: this.viewContainerRef,

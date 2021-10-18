@@ -24,6 +24,10 @@
 </div>
 
 <mat-menu #menu="matMenu" class="grid-more-menu">
+  <button mat-menu-item (click)="addMetadata()">
+    <mat-icon>local_offer</mat-icon>
+    <span>Add metadata</span>
+  </button>
   <button mat-menu-item (click)="cloneView()">
     <mat-icon>file_copy</mat-icon>
     <span>Copy</span>
