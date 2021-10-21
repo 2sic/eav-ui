@@ -1,6 +1,5 @@
 // tslint:disable-next-line:max-line-length
-import { AfterViewInit, Component, ElementRef, EventEmitter, forwardRef, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild } from '@angular/core';
-import { NG_VALUE_ACCESSOR } from '@angular/forms';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { JsonSchema } from '.';
 import { Snippet } from '../code-editor/models/snippet.model';
 import { EavWindow } from '../shared/models/eav-window.model';
@@ -9,25 +8,22 @@ declare const window: EavWindow;
 
 @Component({
   selector: 'app-monaco-editor',
-  template: `<div style="width: 100%; height: 100%; overflow: hidden;" #editor></div>`,
-  styles: [':host { display: block; width: 100%; height: 100%; overflow: hidden; }'],
-  providers: [{
-    provide: NG_VALUE_ACCESSOR,
-    useExisting: forwardRef(() => MonacoEditorComponent),
-    multi: true,
-  }],
+  templateUrl: './monaco-editor.component.html',
+  styleUrls: ['./monaco-editor.component.scss'],
 })
 export class MonacoEditorComponent implements AfterViewInit, OnChanges, OnDestroy {
   @ViewChild('editor') private editorRef: ElementRef<HTMLElement>;
   @Input() filename: string;
+  @Input() value: string;
   @Input() snippets: Snippet[];
   @Input() options?: Record<string, any>;
   @Input() jsonSchema?: JsonSchema;
   @Input() autoFocus = false;
+  @Output() private valueChanged = new EventEmitter<string>();
   @Output() private focused = new EventEmitter<undefined>();
   @Output() private blured = new EventEmitter<undefined>();
 
-  private value = '';
+  private cachedValue: string;
   private monaco?: any;
   private editorModelUri?: any;
   private editorModel?: any;
@@ -39,9 +35,6 @@ export class MonacoEditorComponent implements AfterViewInit, OnChanges, OnDestro
    */
   private completionItemProviders: any[] = [];
   private observer?: ResizeObserver;
-
-  propagateChange: (_: any) => void = () => { };
-  propagateTouched: (_: any) => void = () => { };
 
   constructor() { }
 
@@ -68,6 +61,12 @@ export class MonacoEditorComponent implements AfterViewInit, OnChanges, OnDestro
     if (changes.jsonSchema != null) {
       this.setJsonSchema();
     }
+    if (changes.value != null) {
+      if (this.cachedValue !== this.value) {
+        this.cachedValue = this.value;
+        this.editorInstance?.getModel().setValue(this.value);
+      }
+    }
   }
 
   insertSnippet(snippet: string): void {
@@ -85,19 +84,6 @@ export class MonacoEditorComponent implements AfterViewInit, OnChanges, OnDestro
     this.editorInstance?.dispose();
   }
 
-  writeValue(value: string): void {
-    this.value = value || '';
-    this.editorInstance?.getModel().setValue(this.value);
-  }
-
-  registerOnChange(fn: (_: any) => void): void {
-    this.propagateChange = fn;
-  }
-
-  registerOnTouched(fn: (_: any) => void): void {
-    this.propagateTouched = fn;
-  }
-
   monacoLoaded(): void {
     // https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.istandaloneeditorconstructionoptions.html
     this.editorInstance = this.monaco.editor.create(this.editorRef.nativeElement, this.options);
@@ -111,7 +97,11 @@ export class MonacoEditorComponent implements AfterViewInit, OnChanges, OnDestro
     this.addSnippets();
 
     this.editorInstance.getModel().onDidChangeContent(() => {
-      this.propagateChange(this.editorInstance.getModel().getValue());
+      const newValue = this.editorInstance.getModel().getValue();
+      if (newValue !== this.cachedValue) {
+        this.cachedValue = newValue;
+        this.valueChanged.emit(newValue);
+      }
     });
 
     // this.editorInstance.onDidChangeModelDecorations((e: any) => {

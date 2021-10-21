@@ -26,7 +26,7 @@
   </app-ace-editor>
 
   <app-monaco-editor *ngIf="data.view && activeEditor === Editors.Monaco" [filename]="data.view.FileName"
-    [ngModel]="data.view.Code" (ngModelChange)="codeChanged($event)" [options]="monacoOptions"
+    [value]="data.view.Code" (valueChanged)="codeChanged($event)" [options]="monacoOptions"
     [snippets]="data.editorSnipps" [autoFocus]="true">
   </app-monaco-editor>
 

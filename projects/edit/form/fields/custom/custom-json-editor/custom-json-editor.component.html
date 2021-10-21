@@ -8,7 +8,7 @@
     <mat-label class="label">{{ data.label }} {{ data.required ? '*' : '' }}</mat-label>
 
     <app-monaco-editor class="editor" [ngStyle]="{ 'height': data.editorHeight }" [filename]="filename"
-      [ngModel]="data.controlStatus.value" (ngModelChange)="codeChanged($event)" [options]="editorOptions"
+      [value]="data.controlStatus.value" (valueChanged)="codeChanged($event)" [options]="editorOptions"
       [jsonSchema]="data.jsonSchema" (focused)="onFocused()" (blured)="onBlurred()">
     </app-monaco-editor>
 
