@@ -1,4 +1,6 @@
-<div class="editor-root" appToggleDebug *ngIf="templateVars$ | async as data">
+<div class="editor-root" appToggleDebug
+  [ngClass]="{ 'sxc-dark': activeEditor === Editors.Monaco && monacoOptions.theme === '2sxc-dark' }"
+  *ngIf="templateVars$ | async as data">
   <div class="editor-side-toolbar">
     <div class="button" [ngClass]="{ 'active': activeExplorer === Explorers.Templates }" tippy="Templates"
       (click)="toggleExplorer(Explorers.Templates)">
