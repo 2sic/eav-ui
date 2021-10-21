@@ -8,8 +8,8 @@
       (click)="toggleExplorer(Explorers.Snippets)">
       <mat-icon>code</mat-icon>
     </div>
-    <div class="button" *ngIf="data.debugEnabled" [ngClass]="{ 'active': activeEditor === Editors.Monaco }"
-      tippy="Toggle Monaco" (click)="toggleEditor()">
+    <div class="button" [ngClass]="{ 'active': activeEditor === Editors.Monaco }" tippy="Toggle Monaco"
+      (click)="toggleEditor()">
       <mat-icon>highlight</mat-icon>
     </div>
   </div>

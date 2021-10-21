@@ -5,7 +5,6 @@ import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, combineLatest, forkJoin, fromEvent, Observable, Subscription } from 'rxjs';
 import { map, mergeMap, share } from 'rxjs/operators';
 import { SanitizeHelper } from '../../../../edit/shared/helpers';
-import { GlobalConfigService } from '../../../../edit/shared/store/ngrx-data';
 import { MonacoEditorComponent } from '../monaco-editor';
 import { defaultControllerName, defaultTemplateName } from '../shared/constants/file-names.constants';
 import { keyItems } from '../shared/constants/session.constants';
@@ -32,7 +31,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
   Explorers = Explorers;
   activeExplorer: ExplorerOption = Explorers.Templates;
   Editors = Editors;
-  activeEditor: EditorOption = Editors.Ace;
+  activeEditor: EditorOption = Editors.Monaco;
   monacoOptions = {
     theme: '2sxc-dark',
     tabSize: 2,
@@ -57,7 +56,6 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
     private zone: NgZone,
     private titleService: Title,
     private dialogService: DialogService,
-    private globalConfigService: GlobalConfigService,
   ) {
     this.context.init(this.route);
   }
@@ -85,12 +83,10 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
       this.titleService.setTitle(`${this.view$.value.FileName} - Code Editor`);
       this.showCodeAndEditionWarnings(view, templates);
     });
-    const debugEnabled$ = this.globalConfigService.getDebugEnabled$();
 
-    this.templateVars$ = combineLatest([this.view$, this.templates$, this.explorerSnipps$, this.editorSnipps$, debugEnabled$]).pipe(
-      map(([view, templates, explorerSnipps, editorSnipps, debugEnabled]) => {
+    this.templateVars$ = combineLatest([this.view$, this.templates$, this.explorerSnipps$, this.editorSnipps$]).pipe(
+      map(([view, templates, explorerSnipps, editorSnipps]) => {
         const templateVars: CodeEditorTemplateVars = {
-          debugEnabled,
           view,
           templates,
           explorerSnipps,
