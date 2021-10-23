@@ -9,7 +9,7 @@
 
     <app-monaco-editor class="editor" [ngStyle]="{ 'height': data.editorHeight }" [filename]="filename"
       [value]="data.controlStatus.value" (valueChanged)="codeChanged($event)" [options]="editorOptions"
-      [jsonSchema]="data.jsonSchema" (focused)="onFocused()" (blured)="onBlurred()">
+      [jsonSchema]="data.jsonSchema" (focused)="onFocused()" (blurred)="onBlurred()">
     </app-monaco-editor>
 
     <input class="placeholder" *ngIf="!data.controlStatus.value && data.placeholder" [placeholder]="data.placeholder">
