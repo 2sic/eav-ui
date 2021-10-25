@@ -7,8 +7,6 @@ import { map, mergeMap, share } from 'rxjs/operators';
 import { SanitizeHelper } from '../../../../edit/shared/helpers';
 import { MonacoEditorComponent } from '../monaco-editor';
 import { defaultControllerName, defaultTemplateName } from '../shared/constants/file-names.constants';
-import { keyItems } from '../shared/constants/session.constants';
-import { EditItem, SourceItem, } from '../shared/models/edit-form.model';
 import { Context } from '../shared/services/context';
 import { DialogService } from '../shared/services/dialog.service';
 import { SnackBarStackService } from '../shared/services/snack-bar-stack.service';
@@ -42,7 +40,8 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
   private templates$: BehaviorSubject<string[]>;
   private explorerSnipps$: BehaviorSubject<SnippetsSets>;
   private editorSnipps$: BehaviorSubject<Snippet[]>;
-  private viewKey: number | string; // templateId or path
+  /** templateId or path */
+  private viewKey = this.route.snapshot.paramMap.get('codeItemKeys');
   private savedCode: string;
   private subscription: Subscription;
 
@@ -67,7 +66,6 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
     this.explorerSnipps$ = new BehaviorSubject(null);
     this.editorSnipps$ = new BehaviorSubject(null);
 
-    this.calculateViewKey();
     this.attachListeners();
 
     const view$ = this.sourceService.get(this.viewKey).pipe(share());
@@ -172,14 +170,6 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
         this.snackBar.open('Failed', null, { duration: 2000 });
       }
     });
-  }
-
-  private calculateViewKey(): void {
-    // spm TODO: Move items for code-editor to the url?
-    const itemsRaw = sessionStorage.getItem(keyItems);
-    const editItems: EditItem[] | SourceItem[] = JSON.parse(itemsRaw);
-    const item = editItems[0];
-    this.viewKey = (item as EditItem).EntityId || (item as SourceItem).Path;
   }
 
   /** Show info about editions if other files with the same name exist */

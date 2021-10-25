@@ -35,13 +35,13 @@ export function buildFilterModel(urlFilters: string) {
     if (key === 'IsPublished' || key === 'IsMetadata') { continue; }
 
     const value = parsed[key];
-    if (typeof value === typeof '') {
+    if (typeof value === 'string') {
       const filter: TextFilterModel = { filterType: 'text', type: 'equals', filter: value };
       filterModel[key] = filter;
-    } else if (typeof value === typeof 0) {
+    } else if (typeof value === 'number') {
       const filter: NumberFilterModel = { filterType: 'number', type: 'equals', filter: value, filterTo: null };
       filterModel[key] = filter;
-    } else if (typeof value === typeof true) {
+    } else if (typeof value === 'boolean') {
       const filter: BooleanFilterModel = { filterType: 'boolean', filter: value.toString() };
       filterModel[key] = filter;
     }

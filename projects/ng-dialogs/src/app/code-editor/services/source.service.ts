@@ -14,10 +14,10 @@ export class SourceService {
 
   constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
 
-  /** Key is templateId or path */
-  get(key: number | string): Observable<SourceView> {
+  /** ViewKey is templateId or path */
+  get(viewKey: string): Observable<SourceView> {
     return this.http.get<SourceView>(this.dnnContext.$2sxc.http.apiUrl(webApiAppFile), {
-      params: { appId: this.context.appId.toString(), global: this.isShared, ...this.templateIdOrPath(key) }
+      params: { appId: this.context.appId.toString(), global: this.isShared, ...this.templateIdOrPath(viewKey) }
     }).pipe(
       map(view => {
         if (view.Type.toLocaleLowerCase() === 'auto') {
@@ -38,10 +38,10 @@ export class SourceService {
     );
   }
 
-  /** Key is templateId or path */
-  save(key: number | string, view: SourceView): Observable<boolean> {
+  /** ViewKey is templateId or path */
+  save(viewKey: string, view: SourceView): Observable<boolean> {
     return this.http.post<boolean>(this.dnnContext.$2sxc.http.apiUrl(webApiAppFile), view, {
-      params: { appId: this.context.appId.toString(), global: this.isShared, ...this.templateIdOrPath(key) },
+      params: { appId: this.context.appId.toString(), global: this.isShared, ...this.templateIdOrPath(viewKey) },
     });
   }
 
@@ -57,11 +57,12 @@ export class SourceService {
     });
   }
 
-  private templateIdOrPath(key: number | string) {
-    if (typeof key === typeof 0) {
-      return { templateId: key.toString() };
+  private templateIdOrPath(viewKey: string) {
+    const parsedKey = JSON.parse(viewKey) as number | string;
+    if (typeof parsedKey === 'number') {
+      return { templateId: viewKey };
     } else {
-      return { path: key as string };
+      return { path: viewKey };
     }
   }
 }

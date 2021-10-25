@@ -8,7 +8,7 @@ import { keyApi, keyAppId, keyContentType, keyDialog, keyExtras, keyItems, keyPi
 import { convertFormToUrl } from './shared/helpers/url-prep.helper';
 import { ExtrasParam } from './shared/models/dialog-url-params.model';
 import { EavWindow } from './shared/models/eav-window.model';
-import { EditForm, EditItem, GroupItem } from './shared/models/edit-form.model';
+import { EditForm, EditItem, GroupItem, SourceItem } from './shared/models/edit-form.model';
 
 declare const window: EavWindow;
 
@@ -71,7 +71,9 @@ export function paramsInitFactory(injector: Injector): () => void {
           router.navigate([`${zoneId}/${appId}/versions/${historyItems[0].EntityId}`]);
           break;
         case DialogTypeConstants.Develop:
-          router.navigate([`${zoneId}/${appId}/code`]);
+          const codeItems: EditItem[] | SourceItem[] = JSON.parse(items);
+          const codeItemKey = (codeItems[0] as EditItem).EntityId || (codeItems[0] as SourceItem).Path;
+          router.navigate([`${zoneId}/${appId}/code/${codeItemKey}`]);
           break;
         case DialogTypeConstants.PipelineDesigner:
           const pipelineId = sessionStorage.getItem(keyPipelineId);

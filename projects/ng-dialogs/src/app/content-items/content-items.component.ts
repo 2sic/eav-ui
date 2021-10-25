@@ -368,7 +368,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
 
   private valueGetterBoolean(params: ValueGetterParams) {
     const rawValue = params.data[params.colDef.field];
-    if (typeof rawValue !== typeof true) { return null; }
+    if (typeof rawValue !== 'boolean') { return null; }
     return rawValue.toString();
   }
 }
