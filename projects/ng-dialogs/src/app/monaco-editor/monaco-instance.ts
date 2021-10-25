@@ -18,12 +18,12 @@ export class MonacoInstance {
     value: string,
     container: HTMLElement,
     options: MonacoType,
-    snippets: Snippet[],
+    private snippets: Snippet[],
   ) {
     this.defineThemes(this.monaco);
     this.cachedValue = value;
     this.editorInstance = this.createInstance(this.monaco, filename, value, container, options);
-    this.completionItemProviders = this.addSnippets(this.monaco, this.editorInstance, snippets);
+    this.completionItemProviders = this.addSnippets(this.monaco, this.editorInstance);
     this.resizeObserver = this.createResizeObserver(container, this.editorInstance);
     this.addEvents(this.editorInstance);
   }
@@ -62,6 +62,10 @@ export class MonacoInstance {
   insertSnippet(snippet: string): void {
     const snippetController = this.editorInstance.getContribution('snippetController2');
     snippetController.insert(snippet);
+  }
+
+  setSnippets(snippets: Snippet[]): void {
+    this.snippets = snippets;
   }
 
   setJsonSchema(jsonSchema: JsonSchema): void {
@@ -115,19 +119,13 @@ export class MonacoInstance {
     return editorInstance;
   }
 
-  private addSnippets(monaco: MonacoType, editorInstance: MonacoType, snippets: Snippet[]): MonacoType[] {
-    // TODO: snippets are only defined once and for one language. Make sure snippetsAreAdded check includes file type
-    // predefined snippets should always be added, like the one for closing html tags
-    // and custom snippets should be read from monacoInstance where change occured to enable instance specific snippets
-    // and updates on those snippets. Only custom snippets should be destroyed with the instance
-    if (monaco._snippetsAreAdded) { return []; }
-    monaco._snippetsAreAdded = true;
-
-    const completionItemProviders = [];
-    completionItemProviders.push(
+  private addSnippets(monaco: MonacoType, editorInstance: MonacoType): MonacoType[] {
+    const completionItemProviders = [
       monaco.languages.registerCompletionItemProvider(editorInstance.getModel().getModeId(), {
         triggerCharacters: ['>'],
-        provideCompletionItems: (model: any, position: any) => {
+        provideCompletionItems: (model: MonacoType, position: MonacoType) => {
+          if (editorInstance.getModel() !== model) { return { suggestions: [] }; }
+
           const textUntilPosition: string = model.getValueInRange({
             startLineNumber: position.lineNumber,
             startColumn: 1,
@@ -180,37 +178,35 @@ export class MonacoInstance {
           return { suggestions };
         },
       }),
-    );
 
-    if (snippets) {
-      completionItemProviders.push(
-        monaco.languages.registerCompletionItemProvider(editorInstance.getModel().getModeId(), {
-          provideCompletionItems: (model: any, position: any) => {
-            const word = model.getWordUntilPosition(position);
-            const range = {
-              startLineNumber: position.lineNumber,
-              endLineNumber: position.lineNumber,
-              startColumn: word.startColumn,
-              endColumn: word.endColumn
+      monaco.languages.registerCompletionItemProvider(editorInstance.getModel().getModeId(), {
+        provideCompletionItems: (model: MonacoType, position: MonacoType) => {
+          if (this.snippets == null || editorInstance.getModel() !== model) { return { suggestions: [] }; }
+
+          const word = model.getWordUntilPosition(position);
+          const range = {
+            startLineNumber: position.lineNumber,
+            endLineNumber: position.lineNumber,
+            startColumn: word.startColumn,
+            endColumn: word.endColumn
+          };
+          // kind and rule copied from:
+          // https://microsoft.github.io/monaco-editor/playground.html#extending-language-services-completion-provider-example
+          const suggestions = this.snippets.map(snippet => {
+            if (!snippet.content) { return; }
+            return {
+              label: snippet.name,
+              kind: monaco.languages.CompletionItemKind.Snippet,
+              documentation: `${snippet.title ?? ''}\n${snippet.help ?? ''}\n${snippet.links ?? ''}`,
+              insertText: snippet.content,
+              insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+              range,
             };
-            // kind and rule copied from:
-            // https://microsoft.github.io/monaco-editor/playground.html#extending-language-services-completion-provider-example
-            const suggestions = snippets.map(snippet => {
-              if (!snippet.content) { return; }
-              return {
-                label: snippet.name,
-                kind: monaco.languages.CompletionItemKind.Snippet,
-                documentation: `${snippet.title ?? ''}\n${snippet.help ?? ''}\n${snippet.links ?? ''}`,
-                insertText: snippet.content,
-                insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-                range,
-              };
-            }).filter(snippet => !!snippet);
-            return { suggestions };
-          },
-        }),
-      );
-    }
+          }).filter(snippet => !!snippet);
+          return { suggestions };
+        },
+      }),
+    ];
 
     return completionItemProviders;
   }

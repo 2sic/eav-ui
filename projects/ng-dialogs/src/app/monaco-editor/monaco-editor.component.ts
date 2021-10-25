@@ -15,7 +15,7 @@ export class MonacoEditorComponent implements AfterViewInit, OnChanges, OnDestro
   @ViewChild('editor') private editorRef: ElementRef<HTMLElement>;
   @Input() filename: string;
   @Input() value: string;
-  @Input() snippets: Snippet[];
+  @Input() snippets?: Snippet[];
   @Input() options?: Record<string, any>;
   @Input() jsonSchema?: JsonSchema;
   @Input() autoFocus = false;
@@ -67,6 +67,9 @@ export class MonacoEditorComponent implements AfterViewInit, OnChanges, OnDestro
     }
     if (changes.jsonSchema != null) {
       this.monacoInstance?.setJsonSchema(this.jsonSchema);
+    }
+    if (changes.snippets != null) {
+      this.monacoInstance?.setSnippets(this.snippets);
     }
   }
 
