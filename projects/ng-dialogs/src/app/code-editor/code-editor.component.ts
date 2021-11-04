@@ -2,17 +2,15 @@ import { Component, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject, combineLatest, forkJoin, fromEvent, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, combineLatest, forkJoin, fromEvent, Observable, of, Subscription } from 'rxjs';
 import { map, mergeMap, share } from 'rxjs/operators';
 import { SanitizeHelper } from '../../../../edit/shared/helpers';
 import { MonacoEditorComponent } from '../monaco-editor';
 import { defaultControllerName, defaultTemplateName } from '../shared/constants/file-names.constants';
 import { Context } from '../shared/services/context';
-import { DialogService } from '../shared/services/dialog.service';
 import { SnackBarStackService } from '../shared/services/snack-bar-stack.service';
 import { AceEditorComponent } from './ace-editor/ace-editor.component';
-import { CodeEditorTemplateVars, EditorOption, Editors, ExplorerOption, Explorers } from './code-editor.models';
-import { Snippet, SnippetsSets } from './models/snippet.model';
+import { CodeEditorTemplateVars, EditorOption, Editors, ExplorerOption, Explorers, Tab, ViewInfo } from './code-editor.models';
 import { SourceView } from './models/source-view.model';
 import { SnippetsService } from './services/snippets.service';
 import { SourceService } from './services/source.service';
@@ -36,13 +34,10 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
   };
   templateVars$: Observable<CodeEditorTemplateVars>;
 
-  private view$: BehaviorSubject<SourceView>;
   private templates$: BehaviorSubject<string[]>;
-  private explorerSnipps$: BehaviorSubject<SnippetsSets>;
-  private editorSnipps$: BehaviorSubject<Snippet[]>;
-  /** templateId or path */
-  private viewKey = this.route.snapshot.paramMap.get('codeItemKeys');
-  private savedCode: string;
+  private activeView$: BehaviorSubject<string>;
+  private openViews$: BehaviorSubject<string[]>;
+  private viewInfos$: BehaviorSubject<ViewInfo[]>;
   private subscription: Subscription;
 
   constructor(
@@ -54,41 +49,104 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
     private snippetsService: SnippetsService,
     private zone: NgZone,
     private titleService: Title,
-    private dialogService: DialogService,
   ) {
     this.context.init(this.route);
   }
 
   ngOnInit(): void {
     this.subscription = new Subscription();
-    this.view$ = new BehaviorSubject(null);
-    this.templates$ = new BehaviorSubject(null);
-    this.explorerSnipps$ = new BehaviorSubject(null);
-    this.editorSnipps$ = new BehaviorSubject(null);
+    this.templates$ = new BehaviorSubject<string[]>([]);
+    const initialViewKey = this.route.snapshot.paramMap.get('codeItemKey');
+    this.activeView$ = new BehaviorSubject(initialViewKey);
+    this.openViews$ = new BehaviorSubject([initialViewKey]);
+    this.viewInfos$ = new BehaviorSubject<ViewInfo[]>([]);
 
     this.attachListeners();
 
-    const view$ = this.sourceService.get(this.viewKey).pipe(share());
-    const templates$ = this.sourceService.getTemplates();
-    const snippets$ = view$.pipe(mergeMap(view => this.snippetsService.getSnippets(view)));
-    forkJoin([view$, templates$, snippets$]).subscribe(([view, templates, snippets]) => {
-      this.view$.next(view);
+    this.sourceService.getTemplates().subscribe(templates => {
       this.templates$.next(templates);
-      this.explorerSnipps$.next(snippets.sets);
-      this.editorSnipps$.next(snippets.list);
-
-      this.savedCode = this.view$.value.Code;
-      this.titleService.setTitle(`${this.view$.value.FileName} - Code Editor`);
-      this.showCodeAndEditionWarnings(view, templates);
     });
 
-    this.templateVars$ = combineLatest([this.view$, this.templates$, this.explorerSnipps$, this.editorSnipps$]).pipe(
-      map(([view, templates, explorerSnipps, editorSnipps]) => {
+    this.subscription.add(
+      combineLatest([this.templates$, this.openViews$]).subscribe(([templates, openViews]) => {
+        if (templates.length === 0) { return; }
+
+        let viewInfos = this.viewInfos$.value;
+        const notLoaded = openViews.filter(viewKey => !viewInfos.some(v => v.viewKey === viewKey));
+        if (notLoaded.length === 0) { return; }
+
+        forkJoin(
+          notLoaded.map(viewKey => {
+            // set viewKey in viewInfos to mark that view is being fetched
+            const newViewInfo: ViewInfo = {
+              viewKey,
+            };
+            viewInfos = [...viewInfos, newViewInfo];
+
+            const view$ = this.sourceService.get(viewKey).pipe(share());
+            const snippets$ = view$.pipe(mergeMap(view => this.snippetsService.getSnippets(view)));
+            return forkJoin([of(viewKey), view$, snippets$]);
+          })
+        ).subscribe(results => {
+          let viewInfos1 = this.viewInfos$.value;
+
+          results.forEach(([viewKey, view, snippets]) => {
+            const selectedIndex = viewInfos1.findIndex(v => v.viewKey === viewKey);
+            if (selectedIndex < 0) { return; }
+
+            const newViewInfo: ViewInfo = {
+              viewKey,
+              view,
+              explorerSnipps: snippets.sets,
+              editorSnipps: snippets.list,
+              savedCode: view.Code,
+            };
+            viewInfos1 = [...viewInfos1.slice(0, selectedIndex), newViewInfo, ...viewInfos1.slice(selectedIndex + 1)];
+            this.showCodeAndEditionWarnings(view, templates);
+          });
+
+          this.viewInfos$.next(viewInfos1);
+        });
+
+        this.viewInfos$.next(viewInfos);
+      })
+    );
+
+    this.subscription.add(
+      combineLatest([this.activeView$, this.viewInfos$]).subscribe(([activeView, viewInfos]) => {
+        const active = viewInfos.find(v => v.viewKey === activeView);
+        const defaultTitle = 'Code Editor';
+        const newTitle = active == null ? defaultTitle : `${active.view?.FileName} - ${defaultTitle}`;
+        const oldTitle = this.titleService.getTitle();
+        if (newTitle !== oldTitle) {
+          this.titleService.setTitle(newTitle);
+        }
+      })
+    );
+
+    this.templateVars$ = combineLatest([this.templates$, this.activeView$, this.openViews$, this.viewInfos$]).pipe(
+      map(([templates, activeView, openViews, viewInfos]) => {
+        const tabs = openViews.map(viewKey => {
+          const viewInfo = viewInfos.find(v => v.viewKey === viewKey);
+          const label: Tab = {
+            viewKey,
+            label: viewInfo?.view?.FileName ?? viewKey,
+            isActive: viewKey === activeView,
+            isModified: viewInfo?.view?.Code !== viewInfo?.savedCode,
+            isLoading: viewInfo?.view == null,
+          };
+          return label;
+        });
+        const activeViewInfo = viewInfos.find(v => v.viewKey === activeView);
+
         const templateVars: CodeEditorTemplateVars = {
-          view,
+          activeView,
+          tabs,
+          viewKey: activeViewInfo?.viewKey,
+          view: activeViewInfo?.view,
           templates,
-          explorerSnipps,
-          editorSnipps,
+          explorerSnipps: activeViewInfo?.explorerSnipps,
+          editorSnipps: activeViewInfo?.editorSnipps,
         };
         return templateVars;
       }),
@@ -96,10 +154,10 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.view$.complete();
     this.templates$.complete();
-    this.explorerSnipps$.complete();
-    this.editorSnipps$.complete();
+    this.activeView$.complete();
+    this.openViews$.complete();
+    this.viewInfos$.complete();
     this.subscription.unsubscribe();
   }
 
@@ -116,7 +174,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
         this.activeEditor = Editors.Ace;
         break;
       default:
-        this.activeEditor = Editors.Ace;
+        this.activeEditor = Editors.Monaco;
     }
   }
 
@@ -149,21 +207,74 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
     }
   }
 
-  codeChanged(code: string): void {
-    this.view$.next({ ...this.view$.value, Code: code });
+  codeChanged(code: string, viewKey: string): void {
+    let viewInfos = this.viewInfos$.value;
+    const selectedIndex = viewInfos.findIndex(v => v.viewKey === viewKey);
+    const selectedViewInfo = viewInfos[selectedIndex];
+    const newViewInfo: ViewInfo = {
+      ...selectedViewInfo,
+      view: {
+        ...selectedViewInfo.view,
+        Code: code,
+      },
+    };
+    viewInfos = [...viewInfos.slice(0, selectedIndex), newViewInfo, ...viewInfos.slice(selectedIndex + 1)];
+    this.viewInfos$.next(viewInfos);
   }
 
-  save(): void {
+  openView(viewKey: string): void {
+    // fix viewKey because it can be a templateId or a path, and file might already be open
+    viewKey = this.viewInfos$.value.find(v => v.viewKey !== viewKey && v.view?.FileName === viewKey)?.viewKey ?? viewKey;
+
+    const oldActiveView = this.activeView$.value;
+    if (oldActiveView !== viewKey) {
+      this.activeView$.next(viewKey);
+    }
+    const oldOpenViews = this.openViews$.value;
+    if (!oldOpenViews.includes(viewKey)) {
+      const newOpenViews = [...oldOpenViews, viewKey];
+      this.openViews$.next(newOpenViews);
+    }
+  }
+
+  closeEditor(viewKey: string): void {
+    const oldOpenViews = this.openViews$.value;
+    const newOpenViews = oldOpenViews.filter(key => key !== viewKey);
+
+    const oldActiveView = this.activeView$.value;
+    if (oldActiveView === viewKey) {
+      const newActiveView = oldOpenViews[oldOpenViews.indexOf(oldActiveView) - 1] ?? newOpenViews[0];
+      this.activeView$.next(newActiveView);
+    }
+
+    this.openViews$.next(newOpenViews);
+  }
+
+  save(viewKey?: string): void {
+    viewKey ??= this.activeView$.value;
+    const viewInfo = this.viewInfos$.value.find(v => v.viewKey === viewKey);
+    if (viewInfo?.view == null) { return; }
+
     this.snackBar.open('Saving...');
-    let codeToSave = this.view$.value.Code;
-    this.sourceService.save(this.viewKey, this.view$.value).subscribe({
+    const codeToSave = viewInfo.view.Code;
+    this.sourceService.save(viewKey, viewInfo.view).subscribe({
       next: res => {
         if (!res) {
           this.snackBar.open('Failed', null, { duration: 2000 });
           return;
         }
-        this.savedCode = codeToSave;
-        codeToSave = null;
+
+        let newViewInfos = [...this.viewInfos$.value];
+        const selectedIndex = newViewInfos.findIndex(v => v.viewKey === viewKey);
+        if (selectedIndex < 0) { return; }
+
+        const selectedViewInfo = newViewInfos[selectedIndex];
+        const newViewInfo: ViewInfo = {
+          ...selectedViewInfo,
+          savedCode: codeToSave,
+        };
+        newViewInfos = [...newViewInfos.slice(0, selectedIndex), newViewInfo, ...newViewInfos.slice(selectedIndex + 1)];
+        this.viewInfos$.next(newViewInfos);
         this.snackBar.open('Saved', null, { duration: 2000 });
       },
       error: () => {
@@ -186,14 +297,14 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
 
     if (codeFile) {
       this.snackBarStack
-        .add(`This template also has a code-behind file '${codeFile}'.`, 'Open')
+        .add(`${view.FileName} also has a code-behind file '${codeFile}'.`, 'Open')
         .subscribe(() => {
-          this.dialogService.openCodeFile(codeFile);
+          this.openView(codeFile);
         });
     }
     if (otherEditions) {
       this.snackBarStack
-        .add(`There are ${otherEditions} other editions of this. You may be editing an edition which is not the one you see.`, 'Help')
+        .add(`There are ${otherEditions} other editions of ${view.FileName}. You may be editing an edition which is not the one you see.`, 'Help')
         .subscribe(() => {
           window.open('http://r.2sxc.org/polymorphism', '_blank');
         });
@@ -204,7 +315,8 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
     this.zone.runOutsideAngular(() => {
       this.subscription.add(
         fromEvent<BeforeUnloadEvent>(window, 'beforeunload').subscribe(event => {
-          if (this.savedCode === this.view$.value.Code) { return; }
+          const allSaved = !this.viewInfos$.value.some(v => v.view != null && v.view.Code !== v.savedCode);
+          if (allSaved) { return; }
           event.preventDefault();
           event.returnValue = ''; // fix for Chrome
         })

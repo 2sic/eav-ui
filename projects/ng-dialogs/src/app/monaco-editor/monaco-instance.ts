@@ -1,4 +1,4 @@
-import { JsonSchema, MonacoType } from '.';
+import { JsonSchema, Monaco2sxc, MonacoType } from '.';
 import { Snippet } from '../code-editor/models/snippet.model';
 
 export class MonacoInstance {
@@ -6,6 +6,7 @@ export class MonacoInstance {
   private editorInstance: MonacoType;
   private completionItemProviders: MonacoType[];
   private resizeObserver: ResizeObserver;
+  private globalCache: Monaco2sxc;
   private cachedValue: string;
   private valueChangedCallback?: (value: string) => void;
   private focusedCallback?: () => void;
@@ -20,15 +21,18 @@ export class MonacoInstance {
     options: MonacoType,
     private snippets: Snippet[],
   ) {
-    this.defineThemes(this.monaco);
+    this.globalCache = this.createGlobalCache(monaco);
+    this.defineThemes(this.globalCache, this.monaco);
     this.cachedValue = value;
     this.editorInstance = this.createInstance(this.monaco, filename, value, container, options);
     this.completionItemProviders = this.addSnippets(this.monaco, this.editorInstance);
     this.resizeObserver = this.createResizeObserver(container, this.editorInstance);
+    this.restoreState(this.globalCache, this.editorInstance);
     this.addEvents(this.editorInstance);
   }
 
   destroy(): void {
+    this.saveState(this.globalCache, this.editorInstance);
     this.resizeObserver.disconnect();
     this.completionItemProviders.forEach(completionItemProvider => {
       completionItemProvider.dispose();
@@ -92,11 +96,22 @@ export class MonacoInstance {
     this.monaco.languages.json.jsonDefaults.setDiagnosticsOptions(jsonDiagnostics);
   }
 
+  private createGlobalCache(monaco: MonacoType): Monaco2sxc {
+    if (monaco._2sxc == null) {
+      const _2sxc: Monaco2sxc = {
+        themesAreDefined: false,
+        savedStates: {},
+      };
+      monaco._2sxc = _2sxc;
+    }
+    return monaco._2sxc;
+  }
+
   /** Registers our themes. Themes are global. Run before creating editor */
-  private defineThemes(monaco: MonacoType): void {
+  private defineThemes(globalCache: Monaco2sxc, monaco: MonacoType): void {
     // there is currently no official way to get defined themes from Monaco to check if some theme was already defined
-    if (monaco._themesAreDefined) { return; }
-    monaco._themesAreDefined = true;
+    if (globalCache.themesAreDefined) { return; }
+    globalCache.themesAreDefined = true;
 
     monaco.editor.defineTheme('2sxc-dark', {
       base: 'vs-dark',
@@ -117,6 +132,26 @@ export class MonacoInstance {
     // https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.itextmodelupdateoptions.html
     // editorInstance.getModel().updateOptions({ tabSize: 2 });
     return editorInstance;
+  }
+
+  private saveState(globalCache: Monaco2sxc, editorInstance: MonacoType): void {
+    const uri = editorInstance.getModel().uri.toString();
+    const viewState = JSON.stringify(editorInstance.saveViewState());
+
+    if (globalCache.savedStates[uri] == null) {
+      globalCache.savedStates[uri] = { viewState };
+    } else {
+      globalCache.savedStates[uri].viewState = viewState;
+    }
+  }
+
+  private restoreState(globalCache: Monaco2sxc, editorInstance: MonacoType): void {
+    const uri = editorInstance.getModel().uri.toString();
+    const savedState = globalCache.savedStates[uri];
+    if (savedState == null) { return; }
+
+    const viewState = JSON.parse(savedState.viewState);
+    editorInstance.restoreViewState(viewState);
   }
 
   private addSnippets(monaco: MonacoType, editorInstance: MonacoType): MonacoType[] {

@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild } from '@angular/core';
-import { JsonSchema } from '.';
+import { JsonSchema, MonacoType } from '.';
 import { Snippet } from '../code-editor/models/snippet.model';
 import { EavWindow } from '../shared/models/eav-window.model';
 import { MonacoInstance } from './monaco-instance';
@@ -23,6 +23,7 @@ export class MonacoEditorComponent implements AfterViewInit, OnChanges, OnDestro
   @Output() private focused = new EventEmitter<undefined>();
   @Output() private blurred = new EventEmitter<undefined>();
 
+  private monaco: MonacoType;
   private monacoInstance?: MonacoInstance;
 
   constructor() { }
@@ -35,33 +36,16 @@ export class MonacoEditorComponent implements AfterViewInit, OnChanges, OnDestro
     });
 
     window.require(['vs/editor/editor.main'], (monaco: any) => {
-      this.monacoInstance = new MonacoInstance(
-        monaco, this.filename, this.value, this.editorRef.nativeElement, this.options, this.snippets,
-      );
-
-      if (this.jsonSchema) {
-        this.monacoInstance.setJsonSchema(this.jsonSchema);
-      }
-
-      this.monacoInstance.onValueChange(value => {
-        this.valueChanged.emit(value);
-      });
-
-      this.monacoInstance.onFocus(() => {
-        this.focused.emit();
-      });
-
-      this.monacoInstance.onBlur(() => {
-        this.blurred.emit();
-      });
-
-      if (this.autoFocus) {
-        this.monacoInstance.focus();
-      }
+      this.monaco = monaco;
+      this.createEditor(this.autoFocus);
     });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if (changes.filename != null && this.monacoInstance != null) {
+      this.monacoInstance.destroy();
+      this.createEditor(true);
+    }
     if (changes.value != null) {
       this.monacoInstance?.updateValue(this.value);
     }
@@ -80,5 +64,31 @@ export class MonacoEditorComponent implements AfterViewInit, OnChanges, OnDestro
 
   ngOnDestroy(): void {
     this.monacoInstance?.destroy();
+  }
+
+  private createEditor(autoFocus: boolean): void {
+    this.monacoInstance = new MonacoInstance(
+      this.monaco, this.filename, this.value, this.editorRef.nativeElement, this.options, this.snippets,
+    );
+
+    if (this.jsonSchema) {
+      this.monacoInstance.setJsonSchema(this.jsonSchema);
+    }
+
+    this.monacoInstance.onValueChange(value => {
+      this.valueChanged.emit(value);
+    });
+
+    this.monacoInstance.onFocus(() => {
+      this.focused.emit();
+    });
+
+    this.monacoInstance.onBlur(() => {
+      this.blurred.emit();
+    });
+
+    if (autoFocus) {
+      this.monacoInstance.focus();
+    }
   }
 }

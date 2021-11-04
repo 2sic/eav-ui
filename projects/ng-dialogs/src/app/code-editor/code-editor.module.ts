@@ -6,13 +6,13 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatRippleModule } from '@angular/material/core';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { MonacoEditorModule } from '../monaco-editor';
 import { EavWindow } from '../shared/models/eav-window.model';
 import { Context } from '../shared/services/context';
-import { DialogService } from '../shared/services/dialog.service';
 import { SharedComponentsModule } from '../shared/shared-components.module';
 import { buildTranslateConfiguration, TranslateLoaderWithErrorHandling } from '../shared/translation';
 import { AceEditorComponent } from './ace-editor/ace-editor.component';
@@ -57,13 +57,13 @@ export function translateLoaderFactoryCode(http: HttpClient) {
     MatRippleModule,
     TranslateModule.forChild(buildTranslateConfiguration(translateLoaderFactoryCode)),
     MonacoEditorModule,
+    MatProgressSpinnerModule,
   ],
   providers: [
     Context,
     SourceService,
-    DialogService,
     SnippetsService,
     TranslateService,
-  ]
+  ],
 })
 export class CodeEditorModule { }

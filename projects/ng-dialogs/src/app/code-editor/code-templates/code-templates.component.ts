@@ -1,7 +1,5 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { GeneralHelpers } from '../../../../../edit/shared/helpers';
-import { DialogService } from '../../shared/services/dialog.service';
-import { SourceView } from '../models/source-view.model';
 import { TreeItem } from '../models/tree-item.model';
 import { calculateTree } from './code-templates.helpers';
 
@@ -11,25 +9,32 @@ import { calculateTree } from './code-templates.helpers';
   styleUrls: ['./code-templates.component.scss'],
 })
 export class CodeTemplatesComponent implements OnChanges {
-  @Input() view: SourceView;
+  @Input() filename: string;
   @Input() templates: string[];
+  @Output() openView: EventEmitter<string> = new EventEmitter();
   @Output() createTemplate: EventEmitter<string> = new EventEmitter();
   tree: TreeItem[];
   toggledItems: string[] = [];
 
-  constructor(private dialogService: DialogService) { }
+  constructor() { }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.templates?.currentValue) {
-      this.tree = calculateTree(this.templates);
+    if (changes.templates != null) {
+      this.tree = calculateTree(this.templates ?? []);
     }
-    if (changes.view?.currentValue) {
-      this.showFileInTree(this.view.FileName);
+    if (changes.filename != null) {
+      const previousFilename = changes.filename.previousValue;
+      if (previousFilename) {
+        this.toggleItem(previousFilename);
+      }
+      if (this.filename) {
+        this.showFileInTree(this.filename);
+      }
     }
   }
 
   openTemplate(path: string): void {
-    this.dialogService.openCodeFile(path);
+    this.openView.emit(path);
   }
 
   toggleItem(path: string): void {

@@ -58,8 +58,7 @@ export class SourceService {
   }
 
   private templateIdOrPath(viewKey: string) {
-    const parsedKey = JSON.parse(viewKey) as number | string;
-    if (typeof parsedKey === 'number') {
+    if (parseInt(viewKey, 10).toString() === viewKey) {
       return { templateId: viewKey };
     } else {
       return { path: viewKey };
