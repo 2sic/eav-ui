@@ -2,4 +2,5 @@
     "editor.rulers": [
         140
     ],
+    "typescript.tsdk": "node_modules\\typescript\\lib",
 }
