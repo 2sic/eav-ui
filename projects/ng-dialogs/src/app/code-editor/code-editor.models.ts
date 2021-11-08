@@ -26,13 +26,6 @@ export const Explorers = {
 
 export type ExplorerOption = typeof Explorers[keyof typeof Explorers];
 
-export const Editors = {
-  Ace: 'Ace',
-  Monaco: 'Monaco',
-} as const;
-
-export type EditorOption = typeof Editors[keyof typeof Editors];
-
 export interface ViewInfo {
   /** ViewKey is templateId or path */
   viewKey: string;

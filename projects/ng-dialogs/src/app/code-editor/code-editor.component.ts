@@ -9,8 +9,7 @@ import { MonacoEditorComponent } from '../monaco-editor';
 import { defaultControllerName, defaultTemplateName } from '../shared/constants/file-names.constants';
 import { Context } from '../shared/services/context';
 import { SnackBarStackService } from '../shared/services/snack-bar-stack.service';
-import { AceEditorComponent } from './ace-editor/ace-editor.component';
-import { CodeEditorTemplateVars, EditorOption, Editors, ExplorerOption, Explorers, Tab, ViewInfo } from './code-editor.models';
+import { CodeEditorTemplateVars, ExplorerOption, Explorers, Tab, ViewInfo } from './code-editor.models';
 import { SourceView } from './models/source-view.model';
 import { SnippetsService } from './services/snippets.service';
 import { SourceService } from './services/source.service';
@@ -21,13 +20,10 @@ import { SourceService } from './services/source.service';
   styleUrls: ['./code-editor.component.scss'],
 })
 export class CodeEditorComponent implements OnInit, OnDestroy {
-  @ViewChild(AceEditorComponent) private aceEditorRef: AceEditorComponent;
   @ViewChild(MonacoEditorComponent) private monacoEditorRef: MonacoEditorComponent;
 
   Explorers = Explorers;
   activeExplorer: ExplorerOption = Explorers.Templates;
-  Editors = Editors;
-  activeEditor: EditorOption = Editors.Monaco;
   monacoOptions = {
     theme: '2sxc-dark',
     tabSize: 2,
@@ -165,19 +161,6 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
     this.activeExplorer = (this.activeExplorer !== explorer) ? explorer : null;
   }
 
-  toggleEditor(): void {
-    switch (this.activeEditor) {
-      case Editors.Ace:
-        this.activeEditor = Editors.Monaco;
-        break;
-      case Editors.Monaco:
-        this.activeEditor = Editors.Ace;
-        break;
-      default:
-        this.activeEditor = Editors.Monaco;
-    }
-  }
-
   createTemplate(folder?: string): void {
     let question = 'File name:';
     let suggestion = defaultTemplateName;
@@ -200,11 +183,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
   }
 
   insertSnippet(snippet: string): void {
-    if (this.aceEditorRef != null) {
-      this.aceEditorRef.insertSnippet(snippet);
-    } else if (this.monacoEditorRef != null) {
-      this.monacoEditorRef.insertSnippet(snippet);
-    }
+    this.monacoEditorRef?.insertSnippet(snippet);
   }
 
   codeChanged(code: string, viewKey: string): void {

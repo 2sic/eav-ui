@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatRippleModule } from '@angular/material/core';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -15,7 +14,6 @@ import { EavWindow } from '../shared/models/eav-window.model';
 import { Context } from '../shared/services/context';
 import { SharedComponentsModule } from '../shared/shared-components.module';
 import { buildTranslateConfiguration, TranslateLoaderWithErrorHandling } from '../shared/translation';
-import { AceEditorComponent } from './ace-editor/ace-editor.component';
 import { CodeEditorRoutingModule } from './code-editor-routing.module';
 import { CodeEditorComponent } from './code-editor.component';
 import { CodeSnippetsComponent } from './code-snippets/code-snippets.component';
@@ -40,7 +38,6 @@ export function translateLoaderFactoryCode(http: HttpClient) {
     CodeSnippetsComponent,
     ObjectToArrayPipe,
     CodeTemplatesComponent,
-    AceEditorComponent,
     DepthPaddingPipe,
     SortItemsPipe,
   ],
@@ -52,7 +49,6 @@ export function translateLoaderFactoryCode(http: HttpClient) {
     MatButtonModule,
     MatIconModule,
     MatSnackBarModule,
-    FormsModule,
     MatSelectModule,
     MatRippleModule,
     TranslateModule.forChild(buildTranslateConfiguration(translateLoaderFactoryCode)),

@@ -1,5 +1,4 @@
-<div class="editor-root" appToggleDebug
-  [ngClass]="{ 'sxc-dark': activeEditor === Editors.Monaco && monacoOptions.theme === '2sxc-dark' }"
+<div class="editor-root" appToggleDebug [ngClass]="{ 'sxc-dark': monacoOptions.theme === '2sxc-dark' }"
   *ngIf="templateVars$ | async as data">
   <div class="editor-side-toolbar">
     <div class="button" [ngClass]="{ 'active': activeExplorer === Explorers.Templates }" tippy="Templates"
@@ -10,10 +9,6 @@
       (click)="toggleExplorer(Explorers.Snippets)">
       <mat-icon>code</mat-icon>
     </div>
-    <div class="button" [ngClass]="{ 'active': activeEditor === Editors.Monaco }" tippy="Toggle Monaco"
-      (click)="toggleEditor()">
-      <mat-icon>highlight</mat-icon>
-    </div>
   </div>
 
   <app-code-templates [hidden]="activeExplorer !== Explorers.Templates" [filename]="data.view?.FileName"
@@ -23,11 +18,7 @@
     (insertSnippet)="insertSnippet($event)">
   </app-code-snippets>
 
-  <app-ace-editor *ngIf="data.view && activeEditor === Editors.Ace" [filename]="data.view.FileName"
-    [ngModel]="data.view.Code" (ngModelChange)="codeChanged($event, data.viewKey)" [snippets]="data.editorSnipps">
-  </app-ace-editor>
-
-  <div class="editor-group" *ngIf="activeEditor === Editors.Monaco">
+  <div class="editor-group">
     <div class="tabs-container fancy-scrollbar-dark" *ngIf="data.tabs.length > 0">
       <div class="tab" *ngFor="let tab of data.tabs" [ngClass]="{
         'active': tab.isActive,
