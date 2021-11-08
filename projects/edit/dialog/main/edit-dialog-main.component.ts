@@ -17,9 +17,9 @@ import { AdamCacheService, ContentTypeItemService, ContentTypeService, EntityCac
 import { EditEntryComponent } from '../entry/edit-entry.component';
 import { EditDialogMainTemplateVars, SaveEavFormData } from './edit-dialog-main.models';
 import { SnackBarSaveErrorsComponent } from './snack-bar-save-errors/snack-bar-save-errors.component';
-import { SaveErrorsSnackData } from './snack-bar-save-errors/snack-bar-save-errors.models';
+import { SaveErrorsSnackBarData } from './snack-bar-save-errors/snack-bar-save-errors.models';
 import { SnackBarUnsavedChangesComponent } from './snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
-import { UnsavedChangesSnackData } from './snack-bar-unsaved-changes/snack-bar-unsaved-changes.models';
+import { UnsavedChangesSnackBarData } from './snack-bar-unsaved-changes/snack-bar-unsaved-changes.models';
 
 @Component({
   selector: 'app-edit-dialog-main',
@@ -210,11 +210,11 @@ export class EditDialogMainComponent implements OnInit, AfterViewInit, OnDestroy
           fieldErrors.push({ field: key, message: formError[key] });
         });
       });
-      const snackData: SaveErrorsSnackData = {
+      const snackBarData: SaveErrorsSnackBarData = {
         fieldErrors,
       };
       this.snackBar.openFromComponent(SnackBarSaveErrorsComponent, {
-        data: snackData,
+        data: snackBarData,
         duration: 5000,
       });
     }
@@ -253,16 +253,16 @@ export class EditDialogMainComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   private snackBarYouHaveUnsavedChanges() {
-    const snackData: UnsavedChangesSnackData = {
+    const snackBarData: UnsavedChangesSnackBarData = {
       save: false,
     };
     const snackBarRef = this.snackBar.openFromComponent(SnackBarUnsavedChangesComponent, {
-      data: snackData,
+      data: snackBarData,
       duration: 5000,
     });
 
     snackBarRef.onAction().subscribe(() => {
-      if (snackBarRef.containerInstance.snackBarConfig.data.save) {
+      if ((snackBarRef.containerInstance.snackBarConfig.data as UnsavedChangesSnackBarData).save) {
         this.saveAll(true);
       } else {
         this.closeDialog(true);

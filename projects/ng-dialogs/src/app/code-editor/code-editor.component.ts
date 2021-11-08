@@ -8,7 +8,8 @@ import { SanitizeHelper } from '../../../../edit/shared/helpers';
 import { MonacoEditorComponent } from '../monaco-editor';
 import { defaultControllerName, defaultTemplateName } from '../shared/constants/file-names.constants';
 import { Context } from '../shared/services/context';
-import { SnackBarStackService } from '../shared/services/snack-bar-stack.service';
+import { CodeAndEditionWarningsComponent } from './code-and-edition-warnings/code-and-edition-warnings.component';
+import { CodeAndEditionWarningsSnackBarData } from './code-and-edition-warnings/code-and-edition-warnings.models';
 import { CodeEditorTemplateVars, ExplorerOption, Explorers, Tab, ViewInfo } from './code-editor.models';
 import { SourceView } from './models/source-view.model';
 import { SnippetsService } from './services/snippets.service';
@@ -40,7 +41,6 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
     private context: Context,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
-    private snackBarStack: SnackBarStackService,
     private sourceService: SourceService,
     private snippetsService: SnippetsService,
     private zone: NgZone,
@@ -274,19 +274,23 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
     const codeFile = files.find(file => file === pathWithSlash + nameCode);
     const otherEditions = files.filter(file => file.endsWith(fullName)).length - 1;
 
-    if (codeFile) {
-      this.snackBarStack
-        .add(`${view.FileName} also has a code-behind file '${codeFile}'.`, 'Open')
-        .subscribe(() => {
+    if (codeFile || otherEditions) {
+      const snackBarData: CodeAndEditionWarningsSnackBarData = {
+        fileName: view.FileName,
+        codeFile,
+        otherEditions,
+        openCodeBehind: false,
+      };
+      const snackBarRef = this.snackBar.openFromComponent(CodeAndEditionWarningsComponent, {
+        data: snackBarData,
+        duration: 10000,
+      });
+
+      snackBarRef.onAction().subscribe(() => {
+        if ((snackBarRef.containerInstance.snackBarConfig.data as CodeAndEditionWarningsSnackBarData).openCodeBehind) {
           this.openView(codeFile);
-        });
-    }
-    if (otherEditions) {
-      this.snackBarStack
-        .add(`There are ${otherEditions} other editions of ${view.FileName}. You may be editing an edition which is not the one you see.`, 'Help')
-        .subscribe(() => {
-          window.open('http://r.2sxc.org/polymorphism', '_blank');
-        });
+        }
+      });
     }
   }
 

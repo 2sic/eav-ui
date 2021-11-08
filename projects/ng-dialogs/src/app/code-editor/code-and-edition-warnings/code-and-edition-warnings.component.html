@@ -1,0 +1,16 @@
+<div class="messages">
+  <ng-container *ngIf="snackBarData.codeFile">
+    <div>"{{ snackBarData.fileName }}" also has a code-behind file "{{ snackBarData.codeFile }}".</div>
+    <br>
+  </ng-container>
+  <div *ngIf="snackBarData.otherEditions">
+    There are {{ snackBarData.otherEditions }} other editions of "{{ snackBarData.fileName }}". You may be editing an
+    edition which is not the one you see. See <a href="http://r.2sxc.org/polymorphism" target="_blank">docs</a>.
+  </div>
+</div>
+
+<div class="actions">
+  <button mat-button color="primary" *ngIf="snackBarData.codeFile" (click)="openCodeBehind()">
+    Open code-behind file
+  </button>
+</div>

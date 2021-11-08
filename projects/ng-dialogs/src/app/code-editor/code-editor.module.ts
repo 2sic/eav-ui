@@ -14,6 +14,7 @@ import { EavWindow } from '../shared/models/eav-window.model';
 import { Context } from '../shared/services/context';
 import { SharedComponentsModule } from '../shared/shared-components.module';
 import { buildTranslateConfiguration, TranslateLoaderWithErrorHandling } from '../shared/translation';
+import { CodeAndEditionWarningsComponent } from './code-and-edition-warnings/code-and-edition-warnings.component';
 import { CodeEditorRoutingModule } from './code-editor-routing.module';
 import { CodeEditorComponent } from './code-editor.component';
 import { CodeSnippetsComponent } from './code-snippets/code-snippets.component';
@@ -40,6 +41,7 @@ export function translateLoaderFactoryCode(http: HttpClient) {
     CodeTemplatesComponent,
     DepthPaddingPipe,
     SortItemsPipe,
+    CodeAndEditionWarningsComponent,
   ],
   imports: [
     CodeEditorRoutingModule,
