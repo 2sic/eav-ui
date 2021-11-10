@@ -148,15 +148,17 @@ export class FieldsSettingsService implements OnDestroy {
             const fieldTranslation = FieldsSettingsHelpers.getTranslationState(
               attributeValues, fixed.DisableTranslation, currentLanguage, defaultLanguage,
             );
+            const index = contentType.Attributes.indexOf(attribute);
 
             fieldsProps[attribute.Name] = {
               calculatedInputType,
               constants: {
                 angularAssets: inputType?.AngularAssets,
                 contentTypeId,
+                dropzonePreviewsClass: `dropzone-previews-${this.eavService.eavConfig.formId}-${index}`,
                 entityGuid,
                 fieldName: attribute.Name,
-                index: contentType.Attributes.indexOf(attribute),
+                index,
                 initialDisabled,
                 inputType: calculatedInputType.inputType,
                 isExternal: calculatedInputType.isExternal,

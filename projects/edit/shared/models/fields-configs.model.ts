@@ -19,6 +19,7 @@ export interface FieldProps {
 export interface FieldConstants {
   angularAssets?: string;
   contentTypeId?: string;
+  dropzonePreviewsClass?: string;
   entityGuid?: string;
   fieldName?: string;
   index?: number;

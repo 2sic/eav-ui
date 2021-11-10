@@ -7,7 +7,7 @@
     'u-display-none': adamDisabled$ | async
   }">
   </adam-browser>
-  <div class="field-{{ config.index }}" [ngClass]="{ 'u-display-none': adamDisabled$ | async }">
+  <div class="{{ config.dropzonePreviewsClass }}" [ngClass]="{ 'u-display-none': adamDisabled$ | async }">
     <div class="dropzone-previews"></div>
     <span #invisibleClickable class="invisible-clickable" data-note="just a fake, invisible area for dropzone"></span>
   </div>
