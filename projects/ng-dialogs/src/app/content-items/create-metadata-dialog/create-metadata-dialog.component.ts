@@ -2,7 +2,6 @@ import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
-import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, combineLatest, merge, Observable, Subscription } from 'rxjs';
 import { distinctUntilChanged, map, startWith } from 'rxjs/operators';
 import { GeneralHelpers } from '../../../../../edit/shared/helpers';
@@ -33,7 +32,6 @@ export class CreateMetadataDialogComponent implements OnInit, OnDestroy {
   private guidedMode$: BehaviorSubject<boolean>;
   /** Currently available options */
   private keyTypeOptions$: BehaviorSubject<string[]>;
-  private contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
   private contentItems$: BehaviorSubject<ContentItem[]>;
   private contentTypes$: BehaviorSubject<ContentType[]>;
   private guidedKey$: BehaviorSubject<boolean>;
@@ -42,7 +40,6 @@ export class CreateMetadataDialogComponent implements OnInit, OnDestroy {
   constructor(
     private dialogRef: MatDialogRef<CreateMetadataDialogComponent>,
     private context: Context,
-    private route: ActivatedRoute,
     private contentItemsService: ContentItemsService,
     private contentTypesService: ContentTypesService,
   ) { }
@@ -61,7 +58,7 @@ export class CreateMetadataDialogComponent implements OnInit, OnDestroy {
     this.form = new FormGroup({});
     this.form.addControl('targetType', new FormControl(eavConstants.metadata.entity.type, [Validators.required, Validators.pattern(/^[0-9]+$/)]));
     this.form.addControl('keyType', new FormControl(eavConstants.keyTypes.guid, [Validators.required]));
-    this.form.addControl('contentTypeForContentItems', new FormControl(this.contentTypeStaticName, [Validators.required]));
+    this.form.addControl('contentTypeForContentItems', new FormControl(null, [Validators.required]));
     this.form.addControl('key', new FormControl(null, [Validators.required, metadataKeyValidator(this.form)]));
 
     this.contentTypesService.retrieveContentTypes(eavConstants.scopes.default.value).subscribe(contentTypes => {

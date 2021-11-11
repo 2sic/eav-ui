@@ -121,11 +121,11 @@
         </ng-template>
 
         <div matSuffix class="selection-suffix" *ngIf="data.guidedMode && data.guidedKeyExists">
-          <button mat-icon-button [ngClass]="{ 'active': data.guidedKey }" tippy="Select option"
+          <button mat-icon-button type="button" [ngClass]="{ 'active': data.guidedKey }" tippy="Select option"
             (click)="toggleGuidedKey(true)">
             <mat-icon>search</mat-icon>
           </button>
-          <button mat-icon-button [ngClass]="{ 'active': !data.guidedKey }" tippy="Insert value"
+          <button mat-icon-button type="button" [ngClass]="{ 'active': !data.guidedKey }" tippy="Insert value"
             (click)="toggleGuidedKey(false)">
             <mat-icon>text_fields</mat-icon>
           </button>
