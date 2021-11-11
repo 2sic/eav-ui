@@ -5,11 +5,10 @@
 }
 
 .dropzone-previews {
-  // display: flex;
-  display: none;
+  display: flex;
   overflow-x: auto;
   overflow-y: hidden;
-  border-top: 2px solid #ccc;
+  box-shadow: 0 2px 0 #ccc inset;
 
   ::ng-deep .dz-preview {
     padding: 5px;
