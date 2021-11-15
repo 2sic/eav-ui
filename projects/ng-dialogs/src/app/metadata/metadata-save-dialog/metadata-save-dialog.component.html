@@ -1,0 +1,39 @@
+<ng-container *ngIf="templateVars$ | async as data">
+  <div mat-dialog-title>
+    <div class="dialog-title-box">Create Metadata</div>
+  </div>
+
+  <p class="dialog-description">
+    This is a special operation to add an item which is metadata for another item,
+    see <a href="http://r.2sxc.org/metadata" target="_blank">docs</a>.
+  </p>
+
+  <form [formGroup]="form" class="dialog-form">
+    <div class="dialog-form-content fancy-scrollbar-light">
+
+      <!-- Content Type of metadata item -->
+      <mat-form-field appearance="standard" color="accent">
+        <mat-label>Content Type</mat-label>
+
+        <mat-select formControlName="contentType" required
+          [placeholder]="!data.contentTypes.length ? 'No items found' : ''">
+          <mat-option *ngFor="let contentType of data.contentTypes" [value]="contentType.StaticName">
+            {{ contentType.Label }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <app-field-hint *ngIf="form.controls['contentType'].touched && form.controls['contentType'].errors?.required"
+        [isError]="true">
+        This field is required
+      </app-field-hint>
+    </div>
+
+    <div class="dialog-form-actions">
+      <button mat-raised-button type="button" (click)="closeDialog()">Cancel</button>
+      <button mat-raised-button type="button" color="accent" [disabled]="!form.valid" (click)="confirm()">
+        Confirm
+      </button>
+    </div>
+  </form>
+</ng-container>

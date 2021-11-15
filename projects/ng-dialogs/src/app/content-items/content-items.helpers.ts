@@ -26,6 +26,7 @@ export function buildFilterModel(urlFilters: string) {
       filterType: 'pub-meta',
       published: parsed.IsPublished ? parsed.IsPublished : '',
       metadata: parsed.IsMetadata ? parsed.IsMetadata : '',
+      hasMetadata: '',
     };
     filterModel.Status = filter;
   }

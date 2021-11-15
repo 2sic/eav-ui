@@ -39,8 +39,8 @@ export class DataActionsComponent implements ICellRendererAngularComp {
     this.params.onEdit(this.contentType);
   }
 
-  addMetadata() {
-    this.params.onAddMetadata(this.contentType);
+  openMetadata() {
+    this.params.onOpenMetadata(this.contentType);
   }
 
   openRestApi() {

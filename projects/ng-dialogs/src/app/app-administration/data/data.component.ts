@@ -1,6 +1,5 @@
 import { AllCommunityModules, CellClassParams, CellClickedEvent, GridOptions } from '@ag-grid-community/all-modules';
-import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { BehaviorSubject, from, Subscription } from 'rxjs';
@@ -9,6 +8,7 @@ import { GlobalConfigService } from '../../../../../edit/shared/store/ngrx-data'
 import { ContentExportService } from '../../content-export/services/content-export.service';
 import { ContentImportDialogData } from '../../content-import/content-import-dialog.config';
 import { GoToDevRest } from '../../dev-rest/go-to-dev-rest';
+import { GoToMetadata } from '../../metadata';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
@@ -24,8 +24,6 @@ import { DataItemsComponent } from '../ag-grid-components/data-items/data-items.
 import { ContentType } from '../models/content-type.model';
 import { ContentTypesService } from '../services/content-types.service';
 import { ImportContentTypeDialogData } from '../sub-dialogs/import-content-type/import-content-type-dialog.config';
-import { MetadataSaveDialogComponent } from '../sub-dialogs/metadata/metadata-save-dialog.component';
-import { MetadataSaveDialogData } from '../sub-dialogs/metadata/metadata-save-dialog.models';
 
 @Component({
   selector: 'app-data',
@@ -90,7 +88,7 @@ export class DataComponent implements OnInit, OnDestroy {
           onOpenPermissions: this.openPermissions.bind(this),
           onEdit: this.editContentType.bind(this),
           onOpenRestApi: this.openRestApi.bind(this),
-          onAddMetadata: this.addMetadata.bind(this),
+          onOpenMetadata: this.openMetadata.bind(this),
           onTypeExport: this.exportType.bind(this),
           onOpenDataExport: this.openDataExport.bind(this),
           onOpenDataImport: this.openDataImport.bind(this),
@@ -110,9 +108,6 @@ export class DataComponent implements OnInit, OnDestroy {
     private globalConfigService: GlobalConfigService,
     private snackBar: MatSnackBar,
     private contentExportService: ContentExportService,
-    private dialog: MatDialog,
-    private viewContainerRef: ViewContainerRef,
-    private changeDetectorRef: ChangeDetectorRef,
   ) { }
 
   ngOnInit() {
@@ -261,32 +256,14 @@ export class DataComponent implements OnInit, OnDestroy {
     this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.firstChild });
   }
 
-  private addMetadata(contentType: ContentType) {
-    const dialogData: MetadataSaveDialogData = {
-      scope: this.scope$.value,
-    };
-    const metadataDialogRef = this.dialog.open(MetadataSaveDialogComponent, {
-      autoFocus: false,
-      viewContainerRef: this.viewContainerRef,
-      width: '650px',
-      data: dialogData,
-    });
-    metadataDialogRef.afterClosed().pipe(take(1)).subscribe((saveToContentTypeName: string) => {
-      if (saveToContentTypeName == null) { return; }
-
-      const form: EditForm = {
-        items: [{
-          ContentTypeName: saveToContentTypeName,
-          For: {
-            Target: eavConstants.metadata.contentType.target,
-            String: contentType.StaticName,
-          },
-        }],
-      };
-      const formUrl = convertFormToUrl(form);
-      this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.firstChild });
-      this.changeDetectorRef.markForCheck();
-    });
+  private openMetadata(contentType: ContentType) {
+    const url = GoToMetadata.getUrl(
+      eavConstants.metadata.entity.type,
+      eavConstants.keyTypes.guid,
+      contentType.StaticName,
+      contentType.Name,
+    );
+    this.router.navigate([url], { relativeTo: this.route.firstChild });
   }
 
   private openRestApi(contentType: ContentType) {

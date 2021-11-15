@@ -35,8 +35,8 @@ export class ViewsActionsComponent implements ICellRendererAngularComp {
     this.params.onOpenPermissions(this.view);
   }
 
-  addMetadata() {
-    this.params.onAddMetadata(this.view);
+  openMetadata() {
+    this.params.onOpenMetadata(this.view);
   }
 
   cloneView() {

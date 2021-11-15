@@ -2,6 +2,7 @@ import { AgGridModule } from '@ag-grid-community/angular';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatRippleModule } from '@angular/material/core';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -58,6 +59,7 @@ import { EntitiesService } from './services/entities.service';
     MatMenuModule,
     ReactiveFormsModule,
     MatSlideToggleModule,
+    MatBadgeModule,
   ],
   providers: [
     Context,

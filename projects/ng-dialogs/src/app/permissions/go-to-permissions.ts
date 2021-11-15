@@ -34,6 +34,6 @@ export const GoToPermissions = {
   route: {
     path: 'permissions/:type/:keyType/:key',
     loadChildren: () => import('./permissions.module').then(m => m.PermissionsModule),
-    data: { title: 'Permission' },
+    data: { title: 'Permissions' },
   } as Route,
 };

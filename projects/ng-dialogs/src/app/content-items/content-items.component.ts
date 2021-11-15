@@ -13,6 +13,7 @@ import { ContentExportService } from '../content-export/services/content-export.
 import { ContentImportDialogData } from '../content-import/content-import-dialog.config';
 import { DataTypeConstants } from '../content-type-fields/constants/data-type.constants';
 import { Field } from '../content-type-fields/models/field.model';
+import { GoToMetadata } from '../metadata';
 import { BooleanFilterComponent } from '../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../shared/components/id-field/id-field.models';
@@ -26,6 +27,7 @@ import { ContentItemsActionsComponent } from './ag-grid-components/content-items
 import { ContentItemsActionsParams } from './ag-grid-components/content-items-actions/content-items-actions.models';
 import { ContentItemsEntityComponent } from './ag-grid-components/content-items-entity/content-items-entity.component';
 import { ContentItemsStatusComponent } from './ag-grid-components/content-items-status/content-items-status.component';
+import { ContentItemsStatusParams } from './ag-grid-components/content-items-status/content-items-status.models';
 import { PubMetaFilterComponent } from './ag-grid-components/pub-meta-filter/pub-meta-filter.component';
 import { PubMeta } from './ag-grid-components/pub-meta-filter/pub-meta-filter.model';
 import { ContentItemImportDialogData } from './content-item-import/content-item-import-dialog.config';
@@ -139,6 +141,17 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     }
   }
 
+  openMetadata(item: ContentItem) {
+    const url = GoToMetadata.getUrl(
+      eavConstants.metadata.entity.type,
+      eavConstants.keyTypes.guid,
+      item.Guid,
+      item._Title,
+      this.contentTypeStaticName,
+    );
+    this.router.navigate([url], { relativeTo: this.route });
+  }
+
   editItem(params: CellClickedEvent) {
     const item: ContentItem = params?.data;
     const form: EditForm = {
@@ -242,8 +255,11 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
         } as IdFieldParams,
       },
       {
-        headerName: 'Status', field: 'Status', width: 80, headerClass: 'dense', cellClass: 'no-outline',
+        headerName: 'Status', field: 'Status', width: 80, headerClass: 'dense', cellClass: 'secondary-action no-padding',
         filter: 'pubMetaFilterComponent', cellRenderer: 'contentItemsStatusComponent', valueGetter: this.valueGetterStatus,
+        cellRendererParams: {
+          onOpenMetadata: this.openMetadata.bind(this),
+        } as ContentItemsStatusParams,
       },
       {
         headerName: 'Item (Entity)', field: '_Title', flex: 2, minWidth: 250, cellClass: 'primary-action highlight',
@@ -343,6 +359,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     const published: PubMeta = {
       published: item.IsPublished,
       metadata: !!item.For,
+      hasMetadata: item.Metadata ? item.Metadata.length > 0 : false,
     };
     return published;
   }

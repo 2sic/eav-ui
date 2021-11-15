@@ -1,5 +1,11 @@
-<div class="icon-container">
-  <mat-icon *ngIf="value.published" tippy="Published">visibility</mat-icon>
-  <mat-icon *ngIf="!value.published" tippy="Not published">visibility_off</mat-icon>
-  <mat-icon class="meta-icon" *ngIf="value.metadata" [tippy]="metadataTooltip">local_offer</mat-icon>
+<div class="actions-component">
+  <div class="like-button button-publish" [tippy]="value.published ? 'Published' : 'Not published'">
+    <mat-icon>{{ value.published ? 'visibility' : 'visibility_off' }}</mat-icon>
+  </div>
+  <div class="like-button highlight" matRipple [tippy]="metadataTooltip" (click)="openMetadata()">
+    <mat-icon [matBadge]="metadataCount > 0 ? metadataCount : null" matBadgePosition="below after"
+      matBadgeColor="accent" matBadgeSize="small">
+      {{ value.metadata ? 'loyalty' : 'local_offer' }}
+    </mat-icon>
+  </div>
 </div>

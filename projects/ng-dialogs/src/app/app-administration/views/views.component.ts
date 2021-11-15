@@ -1,11 +1,11 @@
 import polymorphLogo from '!url-loader!./polymorph-logo.png';
 import { AllCommunityModules, CellClickedEvent, GridOptions, ValueGetterParams } from '@ag-grid-community/all-modules';
-import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { filter, map, pairwise, startWith, take } from 'rxjs/operators';
+import { filter, map, pairwise, startWith } from 'rxjs/operators';
+import { GoToMetadata } from '../../metadata';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
@@ -23,7 +23,6 @@ import { Polymorphism } from '../models/polymorphism.model';
 import { View } from '../models/view.model';
 import { ViewsService } from '../services/views.service';
 import { ImportViewDialogData } from '../sub-dialogs/import-view/import-view-dialog.config';
-import { MetadataSaveDialogComponent } from '../sub-dialogs/metadata/metadata-save-dialog.component';
 import { calculateViewType } from './views.helpers';
 
 @Component({
@@ -120,7 +119,7 @@ export class ViewsComponent implements OnInit, OnDestroy {
           enablePermissionsGetter: this.enablePermissionsGetter.bind(this),
           onOpenCode: this.openCode.bind(this),
           onOpenPermissions: this.openPermissions.bind(this),
-          onAddMetadata: this.addMetadata.bind(this),
+          onOpenMetadata: this.openMetadata.bind(this),
           onClone: this.cloneView.bind(this),
           onExport: this.exportView.bind(this),
           onDelete: this.deleteView.bind(this),
@@ -138,9 +137,6 @@ export class ViewsComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
     private dialogService: DialogService,
-    private dialog: MatDialog,
-    private viewContainerRef: ViewContainerRef,
-    private changeDetectorRef: ChangeDetectorRef,
   ) { }
 
   ngOnInit() {
@@ -255,28 +251,14 @@ export class ViewsComponent implements OnInit, OnDestroy {
     this.router.navigate([GoToPermissions.goEntity(view.Guid)], { relativeTo: this.route.firstChild });
   }
 
-  private addMetadata(view: View) {
-    const metadataDialogRef = this.dialog.open(MetadataSaveDialogComponent, {
-      autoFocus: false,
-      viewContainerRef: this.viewContainerRef,
-      width: '650px',
-    });
-    metadataDialogRef.afterClosed().pipe(take(1)).subscribe((saveToContentTypeName: string) => {
-      if (saveToContentTypeName == null) { return; }
-
-      const form: EditForm = {
-        items: [{
-          ContentTypeName: saveToContentTypeName,
-          For: {
-            Target: eavConstants.metadata.entity.target,
-            String: view.Guid,
-          },
-        }],
-      };
-      const formUrl = convertFormToUrl(form);
-      this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.firstChild });
-      this.changeDetectorRef.markForCheck();
-    });
+  private openMetadata(view: View) {
+    const url = GoToMetadata.getUrl(
+      eavConstants.metadata.entity.type,
+      eavConstants.keyTypes.guid,
+      view.Guid,
+      view.Name,
+    );
+    this.router.navigate([url], { relativeTo: this.route.firstChild });
   }
 
   private cloneView(view: View) {

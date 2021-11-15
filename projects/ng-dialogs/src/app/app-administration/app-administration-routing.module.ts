@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { edit, refreshEdit } from '../../../../edit/edit.matcher';
 import { GoToDevRest } from '../dev-rest';
+import { GoToMetadata } from '../metadata';
 import { GoToPermissions } from '../permissions/go-to-permissions';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
 import { EmptyRouteComponent } from '../shared/components/empty-route/empty-route.component';
@@ -51,6 +52,7 @@ const appAdministrationRoutes: Routes = [
             component: DialogEntryComponent,
             data: { dialog: editContentTypeDialog, title: 'Edit Content Type' },
           },
+          ...GoToMetadata.getRoutes(),
           GoToDevRest.route,
           {
             path: 'fields/:contentTypeStaticName',
@@ -106,6 +108,7 @@ const appAdministrationRoutes: Routes = [
             loadChildren: () => import('../../../../edit/refresh-edit.module').then(m => m.RefreshEditModule)
           },
           { ...GoToPermissions.route, data: { title: 'View Permissions' } },
+          ...GoToMetadata.getRoutes(),
         ],
         data: { title: 'App Views' },
       },

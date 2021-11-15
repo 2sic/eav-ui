@@ -5,7 +5,8 @@ export interface ContentItem {
   IsPublished: boolean;
   _Title: string;
   Title: string;
-  For?: ContentItemMetadata;
+  For?: ContentItemFor;
+  Metadata?: ContentItemMetadata[];
 
   /** How often this is being used by other entities (parents) */
   _Used: number;
@@ -17,9 +18,15 @@ export interface ContentItem {
   [key: string]: any;
 }
 
-export interface ContentItemMetadata {
+export interface ContentItemFor {
   Target: number;
-  Number: number;
+  Number?: number;
+  Guid?: string;
+  String?: string;
+}
+
+export interface ContentItemMetadata {
   Guid: string;
-  String: string;
+  Id: number;
+  Title: string;
 }

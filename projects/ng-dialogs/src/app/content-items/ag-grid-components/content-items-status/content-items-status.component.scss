@@ -1,3 +1,7 @@
-.meta-icon {
-  margin-left: 8px;
+.button-publish {
+  cursor: default !important;
+
+  .mat-icon {
+    color: initial !important;
+  }
 }

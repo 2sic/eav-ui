@@ -5,9 +5,16 @@
   <mat-radio-button value="false">Not published</mat-radio-button>
 </mat-radio-group>
 
-<div class="title">Metadata</div>
+<div class="title">Is Metadata</div>
 <mat-radio-group [(ngModel)]="metadata" (ngModelChange)="filterChanged()">
   <mat-radio-button value="">All</mat-radio-button>
   <mat-radio-button value="true">Is metadata</mat-radio-button>
   <mat-radio-button value="false">Is not metadata</mat-radio-button>
+</mat-radio-group>
+
+<div class="title">Has Metadata</div>
+<mat-radio-group [(ngModel)]="hasMetadata" (ngModelChange)="filterChanged()">
+  <mat-radio-button value="">All</mat-radio-button>
+  <mat-radio-button value="true">Has metadata</mat-radio-button>
+  <mat-radio-button value="false">Has no metadata</mat-radio-button>
 </mat-radio-group>
