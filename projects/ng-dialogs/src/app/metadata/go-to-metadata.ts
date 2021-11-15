@@ -29,7 +29,7 @@ export class GoToMetadata {
   static getUrl(targetType: number, keyType: string, key: string, title?: string, contentTypeStaticName?: string): string {
     let url = `metadata/${targetType}/${keyType}/${key}`;
     if (title) {
-      url += `/title/${title}`;
+      url += `/title/${encodeURIComponent(title)}`;
     }
     if (contentTypeStaticName) {
       url += `/contentType/${contentTypeStaticName}`;

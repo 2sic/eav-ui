@@ -65,7 +65,7 @@ export class MetadataComponent implements OnInit, OnDestroy {
   private targetType = parseInt(this.route.snapshot.paramMap.get('type'), 10);
   private keyType = this.route.snapshot.paramMap.get('keyType');
   private key = this.route.snapshot.paramMap.get('key');
-  title = this.route.snapshot.paramMap.get('title');
+  title = decodeURIComponent(this.route.snapshot.paramMap.get('title') ?? '');
   private contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
 
   constructor(
