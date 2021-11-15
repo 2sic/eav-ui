@@ -1,16 +1,17 @@
-import { Component, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, combineLatest, forkJoin, fromEvent, Observable, of, Subscription } from 'rxjs';
 import { map, mergeMap, share } from 'rxjs/operators';
-import { SanitizeHelper } from '../../../../edit/shared/helpers';
 import { MonacoEditorComponent } from '../monaco-editor';
-import { defaultControllerName, defaultTemplateName } from '../shared/constants/file-names.constants';
 import { Context } from '../shared/services/context';
 import { CodeAndEditionWarningsComponent } from './code-and-edition-warnings/code-and-edition-warnings.component';
 import { CodeAndEditionWarningsSnackBarData } from './code-and-edition-warnings/code-and-edition-warnings.models';
 import { CodeEditorTemplateVars, ExplorerOption, Explorers, Tab, ViewInfo } from './code-editor.models';
+import { CreateFileDialogComponent } from './create-file-dialog/create-file-dialog.component';
+import { CreateFileDialogData, CreateFileDialogResult } from './create-file-dialog/create-file-dialog.models';
 import { SourceView } from './models/source-view.model';
 import { SnippetsService } from './services/snippets.service';
 import { SourceService } from './services/source.service';
@@ -45,6 +46,8 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
     private snippetsService: SnippetsService,
     private zone: NgZone,
     private titleService: Title,
+    private dialog: MatDialog,
+    private viewContainerRef: ViewContainerRef,
   ) {
     this.context.init(this.route);
   }
@@ -162,22 +165,23 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
   }
 
   createTemplate(folder?: string): void {
-    let question = 'File name:';
-    let suggestion = defaultTemplateName;
-    if (folder === 'api' || folder?.startsWith('api/')) {
-      question = 'Controller name:';
-      suggestion = defaultControllerName;
-    }
-    let name = prompt(question, suggestion);
-    if (name === null || name.length === 0) { return; }
+    const data: CreateFileDialogData = {
+      folder,
+    };
+    const dialogRef = this.dialog.open(CreateFileDialogComponent, {
+      autoFocus: false,
+      data,
+      viewContainerRef: this.viewContainerRef,
+      width: '650px',
+    });
 
-    name = SanitizeHelper.sanitizePath(name);
-    if (folder != null) {
-      name = `${folder}/${name}`;
-    }
-    this.sourceService.createTemplate(name).subscribe(res => {
-      this.sourceService.getTemplates().subscribe(files => {
-        this.templates$.next(files);
+    dialogRef.afterClosed().subscribe((result?: CreateFileDialogResult) => {
+      if (!result) { return; }
+
+      this.sourceService.createTemplate(result.name, result.templateKey).subscribe(() => {
+        this.sourceService.getTemplates().subscribe(files => {
+          this.templates$.next(files);
+        });
       });
     });
   }

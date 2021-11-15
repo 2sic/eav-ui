@@ -6,7 +6,10 @@ import { map } from 'rxjs/operators';
 import { webApiAppFile, webApiAppFileCreate, webApiAppFilesAll } from '../../../../../edit/shared/services';
 import { keyIsShared } from '../../shared/constants/session.constants';
 import { Context } from '../../shared/services/context';
+import { PredefinedTemplate } from '../models/predefined-template.model';
 import { SourceView } from '../models/source-view.model';
+
+export const webApiAppFilesPredefinedTemplates = 'admin/appfiles/GetTemplates';
 
 @Injectable()
 export class SourceService {
@@ -51,9 +54,21 @@ export class SourceService {
     });
   }
 
-  createTemplate(name: string): Observable<boolean> {
+  getPredefinedTemplates(): Observable<any> {
+    return this.http.get<{ Templates: PredefinedTemplate[] }>(this.dnnContext.$2sxc.http.apiUrl(webApiAppFilesPredefinedTemplates)).pipe(
+      map(res => res?.Templates),
+    );
+  }
+
+  createTemplate(name: string, templateKey?: string): Observable<boolean> {
     return this.http.post<boolean>(this.dnnContext.$2sxc.http.apiUrl(webApiAppFileCreate), {}, {
-      params: { appId: this.context.appId.toString(), global: this.isShared, purpose: 'auto', path: name },
+      params: {
+        appId: this.context.appId.toString(),
+        global: this.isShared,
+        purpose: 'auto',
+        path: name,
+        ...(templateKey && { templateKey }),
+      },
     });
   }
 

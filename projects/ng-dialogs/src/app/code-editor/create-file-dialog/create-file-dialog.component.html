@@ -1,0 +1,72 @@
+<ng-container *ngIf="templateVars$ | async as data">
+  <div mat-dialog-title>
+    <div class="dialog-title-box">Create file</div>
+  </div>
+
+  <p class="dialog-description">
+    Enter properties of the new file.
+  </p>
+
+  <form [formGroup]="form" class="dialog-form">
+    <div class="dialog-form-content fancy-scrollbar-light">
+
+      <!-- File Name -->
+      <mat-form-field appearance="standard" color="accent">
+        <mat-label>Name</mat-label>
+        <input matInput type="text" formControlName="name" required>
+      </mat-form-field>
+      <app-field-hint [isError]="false">
+        Template name must start with "_", e.g. "_MyFile",<br>
+        Controller name must end with "Controller", e.g. "MyController"
+      </app-field-hint>
+      <app-field-hint *ngIf="form.controls.name.touched && form.controls.name.errors?.required" [isError]="true">
+        This field is required
+      </app-field-hint>
+
+      <!-- File Type -->
+      <mat-form-field appearance="standard" color="accent">
+        <mat-label>{{ guidedType ? 'Type' : 'Extension' }}</mat-label>
+        <mat-select *ngIf="guidedType" formControlName="type" required
+          [placeholder]="!data.predefinedTemplates.length ? 'No items found' : ''">
+          <mat-option *ngFor="let template of data.predefinedTemplates" [value]="template.Key">
+            {{ template.Name }}
+          </mat-option>
+        </mat-select>
+
+        <input matInput type="text" *ngIf="!guidedType" formControlName="extension" required>
+
+        <div matSuffix class="selection-suffix">
+          <button mat-icon-button type="button" [ngClass]="{ 'active': guidedType }" tippy="Select option"
+            (click)="toggleGuidedType(true)">
+            <mat-icon>search</mat-icon>
+          </button>
+          <button mat-icon-button type="button" [ngClass]="{ 'active': !guidedType }" tippy="Insert value"
+            (click)="toggleGuidedType(false)">
+            <mat-icon>text_fields</mat-icon>
+          </button>
+        </div>
+      </mat-form-field>
+      <app-field-hint *ngIf="guidedType && form.controls.type.touched && form.controls.type.errors?.required"
+        [isError]="true">
+        This field is required
+      </app-field-hint>
+      <app-field-hint *ngIf="!guidedType && form.controls.extension.touched && form.controls.extension.errors?.required"
+        [isError]="true">
+        This field is required
+      </app-field-hint>
+
+      <!-- Folder -->
+      <mat-form-field appearance="standard" color="accent" *ngIf="form.controls.folder.value">
+        <mat-label>Folder</mat-label>
+        <input matInput type="text" formControlName="folder">
+      </mat-form-field>
+    </div>
+
+    <div class="dialog-form-actions">
+      <button mat-raised-button type="button" (click)="closeDialog()">Cancel</button>
+      <button mat-raised-button type="button" color="accent" [disabled]="!form.valid" (click)="confirm()">
+        Confirm
+      </button>
+    </div>
+  </form>
+</ng-container>
