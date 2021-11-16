@@ -4,6 +4,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import { distinctUntilChanged, filter, map, startWith } from 'rxjs/operators';
 import { SanitizeHelper } from '../../../../../edit/shared/helpers';
+import { defaultControllerName, defaultTemplateName } from '../../shared/constants/file-names.constants';
 import { PredefinedTemplate } from '../models/predefined-template.model';
 import { SourceService } from '../services/source.service';
 import { CreateFileDialogData, CreateFileDialogResult, CreateFileFormValues, CreateFileTemplateVars } from './create-file-dialog.models';
@@ -33,11 +34,15 @@ export class CreateFileDialogComponent implements OnInit, OnDestroy {
     this.subscription = new Subscription();
     this.predefinedTemplates$ = new BehaviorSubject<PredefinedTemplate[]>([]);
 
+    const folderPrefill = this.dialogData.folder;
+    let namePrefill = (folderPrefill === 'api' || folderPrefill?.startsWith('api/')) ? defaultControllerName : defaultTemplateName;
+    namePrefill = namePrefill.substring(0, namePrefill.lastIndexOf('.'));
+
     this.form = new FormGroup({
-      name: new FormControl(null, [Validators.required]),
+      name: new FormControl(namePrefill, [Validators.required]),
       type: new FormControl(null, [Validators.required]),
       extension: new FormControl(null, [Validators.required]),
-      folder: new FormControl({ disabled: true, value: this.dialogData.folder }),
+      folder: new FormControl({ disabled: true, value: folderPrefill }),
     });
 
     this.subscription.add(
@@ -88,8 +93,16 @@ export class CreateFileDialogComponent implements OnInit, OnDestroy {
 
     this.guidedType = newGuidedType;
 
-    // if typeControl is not active, disable it to allow form to be valid without it
     const typeControl = this.form.controls.type;
+    const extControl = this.form.controls.extension;
+    // reset extension value when type picker is activated
+    if (this.guidedType) {
+      const templateExt = this.predefinedTemplates$.value.find(t => t.Key === typeControl.value)?.Extension;
+      if (extControl.value !== templateExt) {
+        extControl.patchValue(templateExt);
+      }
+    }
+    // if type picker is not active, disable it to allow form to be valid without it
     if (this.guidedType && typeControl.disabled) {
       typeControl.enable();
     } else if (!this.guidedType && typeControl.enabled) {
