@@ -6,6 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { EntityInfo } from '../../../../../edit-types';
+import { InputTypeConstants } from '../../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { EditForm } from '../../../../../ng-dialogs/src/app/shared/models/edit-form.model';
 import { FieldMask, GeneralHelpers } from '../../../../shared/helpers';
 import { EavService, EditRoutingService, EntityService, FieldsSettingsService } from '../../../../shared/services';
@@ -19,8 +20,7 @@ import { calculateSelectedEntities, convertArrayToString, convertValueToArray, f
 import { DeleteEntityProps, EntityTemplateVars, SelectedEntity } from './entity-default.models';
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'entity-default',
+  selector: InputTypeConstants.EntityDefault,
   templateUrl: './entity-default.component.html',
   styleUrls: ['./entity-default.component.scss'],
 })

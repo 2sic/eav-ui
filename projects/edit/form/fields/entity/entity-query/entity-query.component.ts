@@ -3,6 +3,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { EntityInfo } from '../../../../../edit-types';
+import { InputTypeConstants } from '../../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { FieldMask, GeneralHelpers } from '../../../../shared/helpers';
 import { EavService, EditRoutingService, EntityService, FieldsSettingsService, QueryService } from '../../../../shared/services';
 import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
@@ -13,8 +14,7 @@ import { EntityQueryLogic } from './entity-query-logic';
 import { QueryEntity } from './entity-query.models';
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'entity-query',
+  selector: InputTypeConstants.EntityQuery,
   templateUrl: '../entity-default/entity-default.component.html',
   styleUrls: ['../entity-default/entity-default.component.scss'],
 })

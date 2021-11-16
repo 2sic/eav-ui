@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { AdamItem, AdamPostResponse } from '../../../../../edit-types';
+import { InputTypeConstants } from '../../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { AdamService, EavService, EditRoutingService, FieldsSettingsService } from '../../../../shared/services';
@@ -13,8 +14,7 @@ import { HyperlinkDefaultLogic } from './hyperlink-default-logic';
 import { HyperlinkDefaultTemplateVars } from './hyperlink-default.models';
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'hyperlink-default',
+  selector: InputTypeConstants.HyperlinkDefault,
   templateUrl: './hyperlink-default.component.html',
   styleUrls: ['./hyperlink-default.component.scss'],
 })

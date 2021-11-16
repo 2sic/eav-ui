@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { InputTypeConstants } from '../../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { FieldMask, GeneralHelpers } from '../../../../shared/helpers';
 import { AssetsService, EavService, FieldsSettingsService } from '../../../../shared/services';
@@ -10,8 +11,7 @@ import { templateTypes } from './string-template-picker.constants';
 import { StringTemplatePickerTemplateVars } from './string-template-picker.models';
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'string-template-picker',
+  selector: InputTypeConstants.StringTemplatePicker,
   templateUrl: './string-template-picker.component.html',
   styleUrls: ['./string-template-picker.component.scss'],
 })

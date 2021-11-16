@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { InputTypeConstants } from '../../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { EavService, FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
@@ -6,8 +7,7 @@ import { StringDropdownComponent } from '../../string/string-dropdown/string-dro
 import { NumberDropdownLogic } from './number-dropdown-logic';
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'number-dropdown',
+  selector: InputTypeConstants.NumberDropdown,
   templateUrl: '../../string/string-dropdown/string-dropdown.component.html',
   styleUrls: ['../../string/string-dropdown/string-dropdown.component.scss'],
 })

@@ -6,6 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Moment } from 'moment';
 import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
+import { InputTypeConstants } from '../../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { EavService, FieldsSettingsService } from '../../../../shared/services';
@@ -14,8 +15,7 @@ import { BaseComponent } from '../../base/base.component';
 import { DatetimeDefaultTemplateVars } from './datetime-default.models';
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'datetime-default',
+  selector: InputTypeConstants.DatetimeDefault,
   templateUrl: './datetime-default.component.html',
   styleUrls: ['./datetime-default.component.scss'],
 })

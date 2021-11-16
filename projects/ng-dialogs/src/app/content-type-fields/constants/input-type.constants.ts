@@ -1,46 +1,29 @@
 export const InputTypeConstants = {
-  // string
+  BooleanDefault: 'boolean-default',
+  BooleanTristate: 'boolean-tristate',
+  CustomDefault: 'custom-default',
+  CustomJsonEditor: 'custom-json-editor',
+  DatetimeDefault: 'datetime-default',
+  DefaultSuffix: '-default',
+  EmptyDefault: 'empty-default',
+  EmptyEnd: 'empty-end',
+  EmptyMessage: 'empty-message',
+  EntityContentBlocks: 'entity-content-blocks',
+  EntityDefault: 'entity-default',
+  EntityQuery: 'entity-query',
+  ExternalWebComponent: 'external-web-component',
+  HyperlinkDefault: 'hyperlink-default',
+  HyperlinkLibrary: 'hyperlink-library',
+  NumberDefault: 'number-default',
+  NumberDropdown: 'number-dropdown',
   StringDefault: 'string-default',
-  StringUrlPath: 'string-url-path',
   StringDropdown: 'string-dropdown',
   StringDropdownQuery: 'string-dropdown-query',
   StringFontIconPicker: 'string-font-icon-picker',
   StringJson: 'string-json',
   StringTemplatePicker: 'string-template-picker',
+  StringUrlPath: 'string-url-path',
   StringWysiwyg: 'string-wysiwyg',
-  // boolean
-  BooleanDefault: 'boolean-default',
-  BooleanTristate: 'boolean-tristate',
-  // dateTime
-  DatetimeDefault: 'datetime-default',
-  // empty
-  EmptyDefault: 'empty-default',
-  EmptyEnd: 'empty-end',
-  EmptyMessage: 'empty-message',
-  // number
-  NumberDefault: 'number-default',
-  NumberDropdown: 'number-dropdown',
-  // entity
-  EntityDefault: 'entity-default',
-  EntityQuery: 'entity-query',
-  EntityContentBlocks: 'entity-content-blocks',
-  // hyperlink
-  HyperlinkDefault: 'hyperlink-default',
-  HyperlinkLibrary: 'hyperlink-library',
-  // custom
-  ExternalWebComponent: 'external-web-component',
-  CustomGPS: 'custom-gps',
-  CustomJsonEditor: 'custom-json-editor',
-  CustomDefault: 'custom-default',
-  // old
-  OldTypeDropdown: 'dropdown',
-  OldTypeWysiwyg: 'wysiwyg',
-  OldTypeDefault: 'default',
-  StringWysiwygTinymce: 'string-wysiwyg-tinymce',
-  StringWysiwygAdv: 'string-wysiwyg-adv',
-  StringWysiwygDnn: 'string-wysiwyg-dnn',
-  // default
-  DefaultSuffix: '-default',
 } as const;
 
 export type InputTypeConstant = typeof InputTypeConstants[keyof typeof InputTypeConstants];

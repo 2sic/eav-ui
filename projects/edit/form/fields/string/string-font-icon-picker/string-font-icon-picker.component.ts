@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
+import { InputTypeConstants } from '../../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { EavService, FieldsSettingsService, ScriptsLoaderService } from '../../../../shared/services';
@@ -11,8 +12,7 @@ import { findAllIconsInCss } from './string-font-icon-picker.helpers';
 import { IconOption, StringFontIconPickerTemplateVars } from './string-font-icon-picker.models';
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'string-font-icon-picker',
+  selector: InputTypeConstants.StringFontIconPicker,
   templateUrl: './string-font-icon-picker.component.html',
   styleUrls: ['./string-font-icon-picker.component.scss'],
 })
