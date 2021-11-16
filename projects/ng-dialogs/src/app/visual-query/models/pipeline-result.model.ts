@@ -1,3 +1,5 @@
+import { PipelineDataSource } from '.';
+
 export interface PipelineResult {
   Query: PipelineResultQuery;
   QueryTimer: PipelineResultTimer;
@@ -24,6 +26,7 @@ export interface PipelineResultSources {
 
 export interface PipelineResultSourceValue {
   Configuration: Record<string, any>;
+  Definition?: PipelineDataSource;
   Error: boolean;
   Guid: string;
   Type: string;
