@@ -18,3 +18,9 @@ export class CustomJsonEditorLogic extends FieldLogicBase {
 }
 
 FieldLogicBase.add(CustomJsonEditorLogic);
+
+export class StringJsonLogic extends CustomJsonEditorLogic {
+  name = InputTypeConstants.StringJson as any;
+}
+
+FieldLogicBase.add(StringJsonLogic);

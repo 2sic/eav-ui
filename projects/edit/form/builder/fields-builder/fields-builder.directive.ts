@@ -58,6 +58,7 @@ export class FieldsBuilderDirective implements OnInit, OnDestroy {
     'boolean-tristate': BooleanTristateComponent,
     'custom-default': CustomDefaultComponent,
     'custom-json-editor': CustomJsonEditorComponent,
+    'string-json': CustomJsonEditorComponent,
     'datetime-default': DatetimeDefaultComponent,
     'empty-default': EmptyDefaultComponent,
     'empty-message': EmptyMessageComponent,

@@ -5,6 +5,7 @@ export const InputTypeConstants = {
   StringDropdown: 'string-dropdown',
   StringDropdownQuery: 'string-dropdown-query',
   StringFontIconPicker: 'string-font-icon-picker',
+  StringJson: 'string-json',
   StringTemplatePicker: 'string-template-picker',
   StringWysiwyg: 'string-wysiwyg',
   // boolean
