@@ -5,12 +5,13 @@ export interface CreateFileDialogData {
 }
 
 export interface CreateFileTemplateVars {
-  predefinedTemplates: PredefinedTemplate[];
+  guidedType: boolean;
+  templates: PredefinedTemplate[];
 }
 
 export interface CreateFileFormValues {
   name: string;
-  type: string;
+  templateKey: string;
   extension: string;
   folder: string;
 }

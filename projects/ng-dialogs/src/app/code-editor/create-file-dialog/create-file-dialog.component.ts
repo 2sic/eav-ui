@@ -1,5 +1,5 @@
 import { Component, HostBinding, Inject, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import { distinctUntilChanged, filter, map, startWith } from 'rxjs/operators';
@@ -18,10 +18,14 @@ export class CreateFileDialogComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
   form: FormGroup;
+  nameControl: AbstractControl;
+  templateKeyControl: AbstractControl;
+  extensionControl: AbstractControl;
+  folderControl: AbstractControl;
   templateVars$: Observable<CreateFileTemplateVars>;
-  guidedType = true;
 
-  private predefinedTemplates$: BehaviorSubject<PredefinedTemplate[]>;
+  private guidedType$: BehaviorSubject<boolean>;
+  private templates$: BehaviorSubject<PredefinedTemplate[]>;
   private subscription: Subscription;
 
   constructor(
@@ -32,47 +36,19 @@ export class CreateFileDialogComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subscription = new Subscription();
-    this.predefinedTemplates$ = new BehaviorSubject<PredefinedTemplate[]>([]);
-
-    const folderPrefill = this.dialogData.folder;
-    let namePrefill = (folderPrefill === 'api' || folderPrefill?.startsWith('api/')) ? defaultControllerName : defaultTemplateName;
-    namePrefill = namePrefill.substring(0, namePrefill.lastIndexOf('.'));
-
-    this.form = new FormGroup({
-      name: new FormControl(namePrefill, [Validators.required]),
-      type: new FormControl(null, [Validators.required]),
-      extension: new FormControl(null, [Validators.required]),
-      folder: new FormControl({ disabled: true, value: folderPrefill }),
+    this.guidedType$ = new BehaviorSubject(true);
+    this.templates$ = new BehaviorSubject<PredefinedTemplate[]>([]);
+    this.sourceService.getPredefinedTemplates().subscribe(templates => {
+      this.templates$.next(templates);
     });
+    this.buildForm();
+    this.formFixes();
 
-    this.subscription.add(
-      combineLatest([
-        this.form.controls.type.valueChanges.pipe(
-          startWith<string, string>(this.form.controls.type.value),
-          filter(type => !!type),
-          distinctUntilChanged(),
-        ),
-        this.predefinedTemplates$.pipe(
-          filter(templates => !!templates),
-        ),
-      ]).pipe(
-        filter(() => this.guidedType),
-      ).subscribe(([type, predefinedTemplates]) => {
-        const extension = predefinedTemplates.find(t => t.Key === type)?.Extension;
-        if (!extension) { return; }
-
-        this.form.controls.extension.patchValue(extension);
-      })
-    );
-
-    this.sourceService.getPredefinedTemplates().subscribe(predefinedTemplates => {
-      this.predefinedTemplates$.next(predefinedTemplates);
-    });
-
-    this.templateVars$ = combineLatest([this.predefinedTemplates$]).pipe(
-      map(([predefinedTemplates]) => {
+    this.templateVars$ = combineLatest([this.guidedType$, this.templates$]).pipe(
+      map(([guidedType, templates]) => {
         const templateVars: CreateFileTemplateVars = {
-          predefinedTemplates,
+          guidedType,
+          templates,
         };
         return templateVars;
       }),
@@ -80,7 +56,8 @@ export class CreateFileDialogComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.predefinedTemplates$.complete();
+    this.guidedType$.complete();
+    this.templates$.complete();
     this.subscription.unsubscribe();
   }
 
@@ -89,25 +66,8 @@ export class CreateFileDialogComponent implements OnInit, OnDestroy {
   }
 
   toggleGuidedType(newGuidedType: boolean): void {
-    if (this.guidedType === newGuidedType) { return; }
-
-    this.guidedType = newGuidedType;
-
-    const typeControl = this.form.controls.type;
-    const extControl = this.form.controls.extension;
-    // reset extension value when type picker is activated
-    if (this.guidedType) {
-      const templateExt = this.predefinedTemplates$.value.find(t => t.Key === typeControl.value)?.Extension;
-      if (extControl.value !== templateExt) {
-        extControl.patchValue(templateExt);
-      }
-    }
-    // if type picker is not active, disable it to allow form to be valid without it
-    if (this.guidedType && typeControl.disabled) {
-      typeControl.enable();
-    } else if (!this.guidedType && typeControl.enabled) {
-      typeControl.disable();
-    }
+    if (this.guidedType$.value === newGuidedType) { return; }
+    this.guidedType$.next(newGuidedType);
   }
 
   confirm(): void {
@@ -120,8 +80,68 @@ export class CreateFileDialogComponent implements OnInit, OnDestroy {
 
     const result: CreateFileDialogResult = {
       name: fullName,
-      templateKey: this.guidedType ? formValues.type : undefined,
+      templateKey: this.guidedType$.value ? formValues.templateKey : undefined,
     };
     this.closeDialog(result);
+  }
+
+  private buildForm(): void {
+    const folderPrefill = this.dialogData.folder;
+    const defaultName = (folderPrefill === 'api' || folderPrefill?.startsWith('api/')) ? defaultControllerName : defaultTemplateName;
+    const namePrefill = defaultName.substring(0, defaultName.lastIndexOf('.'));
+    const extPrefill = defaultName.substring(defaultName.lastIndexOf('.'));
+
+    this.form = new FormGroup({
+      name: new FormControl(namePrefill, [Validators.required]),
+      templateKey: new FormControl(null, [Validators.required]),
+      extension: new FormControl(extPrefill, [Validators.required]),
+      folder: new FormControl({ disabled: true, value: folderPrefill }),
+    });
+    this.nameControl = this.form.controls.name;
+    this.templateKeyControl = this.form.controls.templateKey;
+    this.extensionControl = this.form.controls.extension;
+    this.folderControl = this.form.controls.folder;
+  }
+
+  private formFixes(): void {
+    this.subscription.add(
+      this.guidedType$.pipe(
+        distinctUntilChanged(),
+      ).subscribe(guidedType => {
+        // reset extension value when template picker is activated
+        if (guidedType) {
+          const templates = this.templates$.value;
+          const selectedKey = this.templateKeyControl.value;
+          const templateExt = templates.find(t => t.Key === selectedKey)?.Extension;
+          if (this.extensionControl.value !== templateExt) {
+            this.extensionControl.patchValue(templateExt);
+          }
+        }
+        // disable template picker control when it's not active to allow form to be valid
+        if (guidedType && this.templateKeyControl.disabled) {
+          this.templateKeyControl.enable();
+        } else if (!guidedType && this.templateKeyControl.enabled) {
+          this.templateKeyControl.disable();
+        }
+      })
+    );
+
+    // change extension when template is changed
+    this.subscription.add(
+      combineLatest([
+        this.templateKeyControl.valueChanges.pipe(
+          startWith<string, string>(this.templateKeyControl.value),
+          distinctUntilChanged(),
+        ),
+        this.templates$,
+      ]).pipe(
+        filter(() => this.guidedType$.value),
+      ).subscribe(([templateKey, templates]) => {
+        const templateExt = templates?.find(t => t.Key === templateKey)?.Extension;
+        if (templateExt) {
+          this.extensionControl.patchValue(templateExt);
+        }
+      })
+    );
   }
 }
