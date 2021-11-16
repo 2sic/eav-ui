@@ -3,7 +3,7 @@ import { InputTypeConstants } from '../../../../../ng-dialogs/src/app/content-ty
 import { FieldLogicBase } from '../../../shared/field-logic/field-logic-base';
 
 export class CustomJsonEditorLogic extends FieldLogicBase {
-  name = InputTypeConstants.CustomJsonEditor;
+  name = InputTypeConstants.CustomJsonEditor as string;
 
   update(settings: FieldSettings, value: string): FieldSettings {
     const fixedSettings: FieldSettings = { ...settings };
@@ -20,7 +20,7 @@ export class CustomJsonEditorLogic extends FieldLogicBase {
 FieldLogicBase.add(CustomJsonEditorLogic);
 
 export class StringJsonLogic extends CustomJsonEditorLogic {
-  name = InputTypeConstants.StringJson as any;
+  name = InputTypeConstants.StringJson;
 }
 
 FieldLogicBase.add(StringJsonLogic);

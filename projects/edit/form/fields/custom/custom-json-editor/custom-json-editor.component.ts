@@ -8,7 +8,7 @@ import { GeneralHelpers } from '../../../../shared/helpers';
 import { EavService, FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { BaseComponent } from '../../base/base.component';
-import { CustomJsonEditorLogic } from './custom-json-editor-logic';
+import { CustomJsonEditorLogic, StringJsonLogic } from './custom-json-editor-logic';
 import { CustomJsonEditorTemplateVars } from './custom-json-editor.models';
 
 @Component({
@@ -35,6 +35,7 @@ export class CustomJsonEditorComponent extends BaseComponent<string> implements 
   constructor(eavService: EavService, fieldsSettingsService: FieldsSettingsService) {
     super(eavService, fieldsSettingsService);
     CustomJsonEditorLogic.importMe();
+    StringJsonLogic.importMe();
   }
 
   ngOnInit() {
