@@ -5,13 +5,14 @@ import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { AdamPostResponse, DropzoneConfigExt } from '../../../../edit-types';
 import { consoleLogAngular } from '../../../../ng-dialogs/src/app/shared/helpers/console-log-angular.helper';
+import { WrappersConstants } from '../../../shared/constants';
 import { EavService, FieldsSettingsService } from '../../../shared/services';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { BaseComponent } from '../../fields/base/base.component';
 import { DropzoneConfigInstance, DropzoneType } from './dropzone-wrapper.models';
 
 @Component({
-  selector: 'app-dropzone-wrapper',
+  selector: WrappersConstants.DropzoneWrapper,
   templateUrl: './dropzone-wrapper.component.html',
   styleUrls: ['./dropzone-wrapper.component.scss'],
 })

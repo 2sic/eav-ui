@@ -1,12 +1,13 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { InputTypeConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
+import { WrappersConstants } from '../../../shared/constants';
 import { EavService, FieldsSettingsService } from '../../../shared/services';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { BaseComponent } from '../../fields/base/base.component';
 
 @Component({
-  selector: 'app-adam-wrapper',
+  selector: WrappersConstants.AdamWrapper,
   templateUrl: './adam-wrapper.component.html',
   styleUrls: ['./adam-wrapper.component.scss'],
 })

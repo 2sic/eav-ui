@@ -2,7 +2,7 @@ import { ComponentFactoryResolver, ComponentRef, Directive, Input, OnDestroy, On
 import { FormGroup } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { InputTypeConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
-import { FieldMetadataKey } from '../../../shared/constants';
+import { FieldMetadataKey, WrappersConstants } from '../../../shared/constants';
 import { FieldMetadataModel, FieldProps } from '../../../shared/models';
 import { FieldsSettingsService } from '../../../shared/services';
 import { BooleanDefaultComponent } from '../../fields/boolean/boolean-default/boolean-default.component';
@@ -45,15 +45,15 @@ export class FieldsBuilderDirective implements OnInit, OnDestroy {
   private fieldConfigs: FieldConfigSet[] = [];
 
   private components: Record<string, Type<any>> = {
-    'app-adam-wrapper': AdamWrapperComponent,
-    'app-collapsible-wrapper': CollapsibleWrapperComponent,
-    'app-dropzone-wrapper': DropzoneWrapperComponent,
-    'app-localization-wrapper': LocalizationWrapperComponent,
-    'app-entity-expandable-wrapper': EntityExpandableWrapperComponent,
-    'app-expandable-wrapper': ExpandableWrapperComponent,
-    'app-hidden-wrapper': HiddenWrapperComponent,
-    'app-hyperlink-default-expandable-wrapper': HyperlinkDefaultExpandableWrapperComponent,
-    'app-hyperlink-library-expandable-wrapper': HyperlinkLibraryExpandableWrapperComponent,
+    [WrappersConstants.AdamWrapper]: AdamWrapperComponent,
+    [WrappersConstants.CollapsibleWrapper]: CollapsibleWrapperComponent,
+    [WrappersConstants.DropzoneWrapper]: DropzoneWrapperComponent,
+    [WrappersConstants.EntityExpandableWrapper]: EntityExpandableWrapperComponent,
+    [WrappersConstants.ExpandableWrapper]: ExpandableWrapperComponent,
+    [WrappersConstants.HiddenWrapper]: HiddenWrapperComponent,
+    [WrappersConstants.HyperlinkDefaultExpandableWrapper]: HyperlinkDefaultExpandableWrapperComponent,
+    [WrappersConstants.HyperlinkLibraryExpandableWrapper]: HyperlinkLibraryExpandableWrapperComponent,
+    [WrappersConstants.LocalizationWrapper]: LocalizationWrapperComponent,
     'boolean-default': BooleanDefaultComponent,
     'boolean-tristate': BooleanTristateComponent,
     'custom-default': CustomDefaultComponent,

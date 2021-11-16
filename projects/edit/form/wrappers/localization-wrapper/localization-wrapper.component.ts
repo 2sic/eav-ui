@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { Observable } from 'rxjs';
+import { WrappersConstants } from '../../../shared/constants';
 import { EavService, EditRoutingService, FieldsSettingsService } from '../../../shared/services';
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
@@ -7,7 +8,7 @@ import { BaseComponent } from '../../fields/base/base.component';
 import { TranslateMenuComponent } from './translate-menu/translate-menu.component';
 
 @Component({
-  selector: 'app-localization-wrapper',
+  selector: WrappersConstants.LocalizationWrapper,
   templateUrl: './localization-wrapper.component.html',
   styleUrls: ['./localization-wrapper.component.scss'],
 })

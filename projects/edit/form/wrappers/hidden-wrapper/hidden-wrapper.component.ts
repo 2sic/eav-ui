@@ -1,12 +1,13 @@
 import { Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
+import { WrappersConstants } from '../../../shared/constants';
 import { EavService, FieldsSettingsService } from '../../../shared/services';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { BaseComponent } from '../../fields/base/base.component';
 
 @Component({
-  selector: 'app-hidden-wrapper',
+  selector: WrappersConstants.HiddenWrapper,
   templateUrl: './hidden-wrapper.component.html',
   styleUrls: ['./hidden-wrapper.component.scss'],
 })

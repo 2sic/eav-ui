@@ -1,17 +1,13 @@
 export const WrappersConstants = {
-  // empty specific
-  CollapsibleWrapper: 'app-collapsible-wrapper',
-  // default wrappers
-  HiddenWrapper: 'app-hidden-wrapper',
-  DropzoneWrapper: 'app-dropzone-wrapper',
-  LocalizationWrapper: 'app-localization-wrapper',
-  ExpandableWrapper: 'app-expandable-wrapper',
-  AdamWrapper: 'app-adam-wrapper',
-  // entity specific
-  EntityExpandableWrapper: 'app-entity-expandable-wrapper',
-  // hyperlink specific
-  HyperlinkDefaultExpandableWrapper: 'app-hyperlink-default-expandable-wrapper',
-  HyperlinkLibraryExpandableWrapper: 'app-hyperlink-library-expandable-wrapper',
+  AdamWrapper: 'app-adam-wrapper', // default
+  CollapsibleWrapper: 'app-collapsible-wrapper', // empty specific
+  DropzoneWrapper: 'app-dropzone-wrapper', // default
+  EntityExpandableWrapper: 'app-entity-expandable-wrapper', // entity specific
+  ExpandableWrapper: 'app-expandable-wrapper', // default
+  HiddenWrapper: 'app-hidden-wrapper', // default
+  HyperlinkDefaultExpandableWrapper: 'app-hyperlink-default-expandable-wrapper', // hyperlink specific
+  HyperlinkLibraryExpandableWrapper: 'app-hyperlink-library-expandable-wrapper', // hyperlink specific
+  LocalizationWrapper: 'app-localization-wrapper', // default
 } as const;
 
 export type WrappersConstant = typeof WrappersConstants[keyof typeof WrappersConstants];

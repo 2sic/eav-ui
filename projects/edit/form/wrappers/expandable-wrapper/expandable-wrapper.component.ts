@@ -4,6 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { consoleLogAngular } from '../../../../ng-dialogs/src/app/shared/helpers/console-log-angular.helper';
+import { WrappersConstants } from '../../../shared/constants';
 import { DropzoneDraggingHelper } from '../../../shared/helpers';
 import { AdamService, EavService, EditRoutingService, FieldsSettingsService } from '../../../shared/services';
 import { ContentTypeService, EntityCacheService, FeatureService, InputTypeService } from '../../../shared/store/ngrx-data';
@@ -14,7 +15,7 @@ import { ContentExpandAnimation } from './content-expand.animation';
 import { ExpandableWrapperTemplateVars } from './expandable-wrapper.models';
 
 @Component({
-  selector: 'app-expandable-wrapper',
+  selector: WrappersConstants.ExpandableWrapper,
   templateUrl: './expandable-wrapper.component.html',
   styleUrls: ['./expandable-wrapper.component.scss'],
   animations: [ContentExpandAnimation],

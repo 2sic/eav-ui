@@ -3,6 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { FieldSettings } from '../../../../edit-types';
+import { WrappersConstants } from '../../../shared/constants';
 import { EavService, FieldsSettingsService } from '../../../shared/services';
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data';
 import { FieldConfigSet } from '../../builder/fields-builder/field-config-set.model';
@@ -10,7 +11,7 @@ import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { EmptyDefaultLogic } from './collapsible-wrapper-logic';
 
 @Component({
-  selector: 'app-collapsible-wrapper',
+  selector: WrappersConstants.CollapsibleWrapper,
   templateUrl: './collapsible-wrapper.component.html',
   styleUrls: ['./collapsible-wrapper.component.scss'],
 })
