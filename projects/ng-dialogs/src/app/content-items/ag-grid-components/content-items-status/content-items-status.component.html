@@ -2,7 +2,8 @@
   <div class="like-button button-publish" [tippy]="value.published ? 'Published' : 'Not published'">
     <mat-icon>{{ value.published ? 'visibility' : 'visibility_off' }}</mat-icon>
   </div>
-  <div class="like-button highlight" matRipple [tippy]="metadataTooltip" (click)="openMetadata()">
+  <div class="like-button highlight" [ngClass]="{ 'hide-until-row-hover': metadataCount === 0 && !value.metadata }"
+    matRipple [tippy]="metadataTooltip" (click)="openMetadata()">
     <mat-icon [matBadge]="metadataCount > 0 ? metadataCount : null" matBadgePosition="below after"
       matBadgeColor="accent" matBadgeSize="small">
       {{ value.metadata ? 'loyalty' : 'local_offer' }}

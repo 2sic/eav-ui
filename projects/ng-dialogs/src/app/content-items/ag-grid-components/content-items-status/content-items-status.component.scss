@@ -5,3 +5,11 @@
     color: initial !important;
   }
 }
+
+.hide-until-row-hover {
+  visibility: hidden;
+}
+
+::ng-deep .ag-row-hover .hide-until-row-hover {
+  visibility: visible;
+}
