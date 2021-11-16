@@ -1,24 +1,15 @@
 import { DataTypeConstants } from './constants/data-type.constants';
 
 export function calculateTypeIcon(typeName: string): string {
-  switch (typeName) {
-    case DataTypeConstants.String:
-      return 'text_fields';
-    case DataTypeConstants.Entity:
-      return 'share';
-    case DataTypeConstants.Boolean:
-      return 'toggle_on';
-    case DataTypeConstants.Number:
-      return 'dialpad';
-    case DataTypeConstants.Custom:
-      return 'extension';
-    case DataTypeConstants.DateTime:
-      return 'today';
-    case DataTypeConstants.Hyperlink:
-      return 'link';
-    case DataTypeConstants.Empty:
-      return 'crop_free';
-    default:
-      return 'device_unknown';
-  }
+  const typeIconMap: Record<string, string> = {
+    [DataTypeConstants.Boolean]: 'toggle_on',
+    [DataTypeConstants.Custom]: 'extension',
+    [DataTypeConstants.DateTime]: 'today',
+    [DataTypeConstants.Empty]: 'crop_free',
+    [DataTypeConstants.Entity]: 'share',
+    [DataTypeConstants.Hyperlink]: 'link',
+    [DataTypeConstants.Number]: 'dialpad',
+    [DataTypeConstants.String]: 'text_fields',
+  };
+  return typeIconMap[typeName] ?? 'device_unknown';
 }
