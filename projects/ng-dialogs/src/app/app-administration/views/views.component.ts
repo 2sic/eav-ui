@@ -256,7 +256,7 @@ export class ViewsComponent implements OnInit, OnDestroy {
       eavConstants.metadata.entity.type,
       eavConstants.keyTypes.guid,
       view.Guid,
-      view.Name,
+      `Metadata for View: ${view.Name} (${view.Id})`,
     );
     this.router.navigate([url], { relativeTo: this.route.firstChild });
   }

@@ -1,7 +1,7 @@
 <div class="nav-component-wrapper">
   <div mat-dialog-title>
     <div class="dialog-title-box">
-      <div>Metadata {{ title }}</div>
+      <div>{{ title || 'Metadata' }}</div>
       <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
         <mat-icon>close</mat-icon>
       </button>

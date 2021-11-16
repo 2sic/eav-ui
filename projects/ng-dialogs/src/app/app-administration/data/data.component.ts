@@ -261,7 +261,7 @@ export class DataComponent implements OnInit, OnDestroy {
       eavConstants.metadata.entity.type,
       eavConstants.keyTypes.guid,
       contentType.StaticName,
-      contentType.Name,
+      `Metadata for Content Type: ${contentType.Name} (${contentType.Id})`,
     );
     this.router.navigate([url], { relativeTo: this.route.firstChild });
   }

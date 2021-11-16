@@ -85,6 +85,7 @@ const appAdministrationRoutes: Routes = [
             loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule),
             data: { title: 'Edit Query Name and Description', history: false },
           },
+          ...GoToMetadata.getRoutes(),
           { ...GoToPermissions.route, data: { title: 'Query Permissions' } },
           GoToDevRest.route,
         ],
@@ -119,6 +120,7 @@ const appAdministrationRoutes: Routes = [
       },
       {
         path: 'app', component: EmptyRouteComponent, children: [
+          ...GoToMetadata.getRoutes(),
           {
             matcher: edit,
             loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule),

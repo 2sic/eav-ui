@@ -6,6 +6,7 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 import { filter, map, pairwise, startWith } from 'rxjs/operators';
 import { ContentExportService } from '../../content-export/services/content-export.service';
 import { GoToDevRest } from '../../dev-rest/go-to-dev-rest';
+import { GoToMetadata } from '../../metadata';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
@@ -102,6 +103,7 @@ export class QueriesComponent implements OnInit, OnDestroy {
   private doMenuAction(action: QueryActions, query: Query) {
     switch (action) {
       case QueryActions.Edit: return this.editQuery(query);
+      case QueryActions.Metadata: return this.openMetadata(query);
       case QueryActions.Rest:
         return this.router.navigate([GoToDevRest.goToQuery(query.Guid)], { relativeTo: this.route.firstChild });
       case QueryActions.Clone: return this.cloneQuery(query);
@@ -133,6 +135,16 @@ export class QueriesComponent implements OnInit, OnDestroy {
   private openVisualQueryDesigner(params: CellClickedEvent) {
     const query: Query = params.data;
     this.dialogService.openQueryDesigner(query.Id);
+  }
+
+  private openMetadata(query: Query) {
+    const url = GoToMetadata.getUrl(
+      eavConstants.metadata.entity.type,
+      eavConstants.keyTypes.guid,
+      query.Guid,
+      `Metadata for Query: ${query.Name} (${query.Id})`,
+    );
+    this.router.navigate([url], { relativeTo: this.route.firstChild });
   }
 
   private cloneQuery(query: Query) {

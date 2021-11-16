@@ -21,6 +21,10 @@
 </div>
 
 <mat-menu #menu="matMenu" class="grid-more-menu">
+  <button mat-menu-item (click)="params.do(actions.Metadata, item)">
+    <mat-icon>local_offer</mat-icon>
+    <span>Metadata</span>
+  </button>
   <button mat-menu-item (click)="params.do(actions.Rest, item)">
     <mat-icon svgIcon="code-curly"></mat-icon>
     <span>REST API</span>

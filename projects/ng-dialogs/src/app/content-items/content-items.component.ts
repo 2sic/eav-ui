@@ -146,7 +146,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
       eavConstants.metadata.entity.type,
       eavConstants.keyTypes.guid,
       item.Guid,
-      item._Title,
+      `Metadata for Entity: ${item._Title} (${item.Id})`,
       this.contentTypeStaticName,
     );
     this.router.navigate([url], { relativeTo: this.route });

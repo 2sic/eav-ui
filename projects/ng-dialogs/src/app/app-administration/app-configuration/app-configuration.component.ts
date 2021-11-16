@@ -5,6 +5,7 @@ import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { forkJoin, Subscription } from 'rxjs';
 import { filter, map, pairwise, startWith } from 'rxjs/operators';
 import { ContentItemsService } from '../../content-items/services/content-items.service';
+import { GoToMetadata } from '../../metadata';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
 import { eavConstants, SystemSettingsScope, SystemSettingsScopes } from '../../shared/constants/eav.constants';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
@@ -93,6 +94,16 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
       const formUrl = convertFormToUrl(form);
       this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.firstChild });
     });
+  }
+
+  openMetadata() {
+    const url = GoToMetadata.getUrl(
+      eavConstants.metadata.app.type,
+      eavConstants.keyTypes.number,
+      this.context.appId.toString(),
+      `Metadata for App: ${this.dialogSettings.Context.App.Name} (${this.context.appId})`,
+    );
+    this.router.navigate([url], { relativeTo: this.route.firstChild });
   }
 
   openSiteSettings() {
