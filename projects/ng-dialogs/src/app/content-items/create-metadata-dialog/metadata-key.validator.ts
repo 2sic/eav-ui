@@ -22,6 +22,8 @@ export function metadataKeyValidator(form: FormGroup): ValidatorFn {
         );
         const isGuid = guidRegex().test(guid);
         return !isGuid ? { patternGuid: true } : null;
+      case eavConstants.keyTypes.string:
+        return null;
       default:
         return null;
     }

@@ -18,17 +18,17 @@ export type SystemSettingsScope = typeof SystemSettingsScopes[keyof typeof Syste
 
 export const eavConstants = {
   metadata: {
-    /** metadataOfAttribute */
+    /** Metadata of Attribute */
     attribute: { type: 2, target: 'EAV Field Properties', label: 'Content-Type Field/Attribute (2)', keyType: MetadataKeyTypes.Number },
-    /** metadataOfApp */
+    /** Metadata of App */
     app: { type: 3, target: 'App', label: 'App (3)', keyType: MetadataKeyTypes.Number },
-    /** metadataOfEntity */
+    /** Metadata of Entity */
     entity: { type: 4, target: 'Entity', label: 'Entity (4)', keyType: MetadataKeyTypes.Guid },
-    /** metadataOfContentType */
+    /** Metadata of ContentType */
     contentType: { type: 5, target: 'ContentType', label: 'Content-Type (5)', keyType: MetadataKeyTypes.String },
-    /** metadataOfZone */
+    /** Metadata of Zone */
     zone: { type: 6, target: 'Zone', label: 'Zone (6) - not used as of now', keyType: MetadataKeyTypes.Number },
-    /** metadataOfCmsObject */
+    /** Metadata of CmsObject */
     cmsObject: { type: 10, target: 'CmsObject', label: 'Cms Object (10)', keyType: MetadataKeyTypes.String, hint: 'Usually this is "file:400" or "folder:4030"' },
   },
 

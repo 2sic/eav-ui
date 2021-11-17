@@ -59,24 +59,17 @@
       </app-field-hint>
 
       <!-- Content Type for Content Items -->
-      <ng-container *ngIf="data.guidedMode && data.formValues.targetType === eavConstants.metadata.entity.type">
-        <mat-form-field appearance="standard" color="accent">
-          <mat-label>Content Type</mat-label>
+      <mat-form-field appearance="standard" color="accent"
+        *ngIf="data.guidedMode && data.formValues.targetType === eavConstants.metadata.entity.type">
+        <mat-label>Content Type</mat-label>
 
-          <mat-select formControlName="contentTypeForContentItems" required
-            [placeholder]="!data.contentTypes.length ? 'No items found' : ''">
-            <mat-option *ngFor="let contentType of data.contentTypes" [value]="contentType.StaticName">
-              {{ contentType.Label }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-
-        <app-field-hint
-          *ngIf="form.controls['contentTypeForContentItems'].touched && form.controls['contentTypeForContentItems'].errors?.required"
-          [isError]="true">
-          This field is required
-        </app-field-hint>
-      </ng-container>
+        <mat-select formControlName="contentTypeForContentItems"
+          [placeholder]="!data.contentTypes.length ? 'No items found' : ''">
+          <mat-option *ngFor="let contentType of data.contentTypes" [value]="contentType.StaticName">
+            {{ contentType.Label }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
 
       <!-- Key -->
       <mat-form-field appearance="standard" color="accent">
