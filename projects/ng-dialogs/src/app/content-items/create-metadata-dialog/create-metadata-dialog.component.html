@@ -116,8 +116,10 @@
         </ng-template>
 
         <ng-template #defaultKeyInput>
-          <input matInput type="text" *ngIf="data.formValues.keyType !== 'number'" formControlName="key" required>
-          <input matInput type="number" *ngIf="data.formValues.keyType === 'number'" formControlName="key" required>
+          <input matInput type="text" *ngIf="data.formValues.keyType !== eavConstants.keyTypes.number"
+            formControlName="key" required>
+          <input matInput type="number" *ngIf="data.formValues.keyType === eavConstants.keyTypes.number"
+            formControlName="key" required>
         </ng-template>
 
         <div matSuffix class="selection-suffix" *ngIf="data.guidedMode && data.guidedKeyExists">

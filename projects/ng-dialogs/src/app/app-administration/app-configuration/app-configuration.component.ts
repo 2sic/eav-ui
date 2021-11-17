@@ -119,7 +119,7 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
   }
 
   openPermissions() {
-    this.router.navigate([GoToPermissions.goApp(this.context.appId)], { relativeTo: this.route.firstChild });
+    this.router.navigate([GoToPermissions.getUrlApp(this.context.appId)], { relativeTo: this.route.firstChild });
   }
 
   exportApp() {

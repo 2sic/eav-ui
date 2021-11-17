@@ -102,14 +102,20 @@ export class QueriesComponent implements OnInit, OnDestroy {
    */
   private doMenuAction(action: QueryActions, query: Query) {
     switch (action) {
-      case QueryActions.Edit: return this.editQuery(query);
-      case QueryActions.Metadata: return this.openMetadata(query);
+      case QueryActions.Edit:
+        return this.editQuery(query);
+      case QueryActions.Metadata:
+        return this.openMetadata(query);
       case QueryActions.Rest:
-        return this.router.navigate([GoToDevRest.goToQuery(query.Guid)], { relativeTo: this.route.firstChild });
-      case QueryActions.Clone: return this.cloneQuery(query);
-      case QueryActions.Permissions: return this.openPermissions(query);
-      case QueryActions.Export: return this.exportQuery(query);
-      case QueryActions.Delete: return this.deleteQuery(query);
+        return this.router.navigate([GoToDevRest.getUrlQuery(query.Guid)], { relativeTo: this.route.firstChild });
+      case QueryActions.Clone:
+        return this.cloneQuery(query);
+      case QueryActions.Permissions:
+        return this.openPermissions(query);
+      case QueryActions.Export:
+        return this.exportQuery(query);
+      case QueryActions.Delete:
+        return this.deleteQuery(query);
     }
   }
 
@@ -154,7 +160,7 @@ export class QueriesComponent implements OnInit, OnDestroy {
   }
 
   private openPermissions(query: Query) {
-    this.router.navigate([GoToPermissions.goEntity(query.Guid)], { relativeTo: this.route.firstChild });
+    this.router.navigate([GoToPermissions.getUrlEntity(query.Guid)], { relativeTo: this.route.firstChild });
   }
 
   private exportQuery(query: Query) {

@@ -4,7 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, combineLatest, of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { eavConstants, EavScopeOption } from '../../../shared/constants/eav.constants';
+import { eavConstants, ScopeOption } from '../../../shared/constants/eav.constants';
 import { contentTypeNameError, contentTypeNamePattern } from '../../constants/content-type.patterns';
 import { ContentTypeEdit } from '../../models/content-type.model';
 import { ContentTypesService } from '../../services/content-types.service';
@@ -23,7 +23,7 @@ export class EditContentTypeComponent implements OnInit, OnDestroy, AfterViewIni
 
   private contentType$ = new BehaviorSubject<ContentTypeEdit>(null);
   private lockScope$ = new BehaviorSubject(true);
-  private scopeOptions$ = new BehaviorSubject<EavScopeOption[]>(null);
+  private scopeOptions$ = new BehaviorSubject<ScopeOption[]>(null);
   private disableAnimation$ = new BehaviorSubject(true);
   private loading$ = new BehaviorSubject(false);
   templateVars$ = combineLatest([this.contentType$, this.lockScope$, this.scopeOptions$, this.disableAnimation$, this.loading$]).pipe(
@@ -71,7 +71,7 @@ export class EditContentTypeComponent implements OnInit, OnDestroy, AfterViewIni
         }
       });
       if (!newScopes.some(scope => scope.value === this.scope)) {
-        const newScopeOption: EavScopeOption = {
+        const newScopeOption: ScopeOption = {
           name: this.scope,
           value: this.scope,
         };
@@ -109,7 +109,7 @@ export class EditContentTypeComponent implements OnInit, OnDestroy, AfterViewIni
       if (!newScope) {
         newScope = eavConstants.scopes.default.value;
       } else if (!this.scopeOptions$.value.find(option => option.value === newScope)) {
-        const newScopeOption: EavScopeOption = {
+        const newScopeOption: ScopeOption = {
           name: newScope,
           value: newScope,
         };

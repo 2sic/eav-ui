@@ -45,6 +45,6 @@ export class RunExplorerComponent implements OnInit {
 
   openRestApi() {
     const queryGuid = this.visualQueryService.pipelineModel$.value.Pipeline.EntityGuid;
-    this.router.navigate([GoToDevRest.goToQuery(queryGuid)], { relativeTo: this.route });
+    this.router.navigate([GoToDevRest.getUrlQuery(queryGuid)], { relativeTo: this.route });
   }
 }

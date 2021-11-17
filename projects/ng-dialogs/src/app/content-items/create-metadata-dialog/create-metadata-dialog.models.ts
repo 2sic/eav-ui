@@ -1,14 +1,15 @@
 import { ContentType } from '../../app-administration/models';
+import { MetadataKeyType } from '../../shared/constants/eav.constants';
 import { ContentItem } from '../models/content-item.model';
 
 export interface MetadataInfo {
   key: string;
-  keyType: string;
+  keyType: MetadataKeyType;
   target: string;
 }
 
 export interface TargetTypeOption {
-  keyType: string | undefined;
+  keyType: MetadataKeyType;
   label: string;
   type: number;
   target: string;
@@ -17,7 +18,7 @@ export interface TargetTypeOption {
 
 export interface MetadataFormValues {
   targetType: number;
-  keyType: string;
+  keyType: MetadataKeyType;
   contentTypeForContentItems: string;
   key: string | number;
 }

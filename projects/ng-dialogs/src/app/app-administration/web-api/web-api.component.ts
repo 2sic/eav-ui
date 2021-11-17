@@ -105,7 +105,7 @@ export class WebApiComponent implements OnInit, OnDestroy {
   }
 
   private openRestApi(api: WebApi) {
-    this.router.navigate([GoToDevRest.goToWebApi(api)], { relativeTo: this.route.firstChild });
+    this.router.navigate([GoToDevRest.getUrlWebApi(api)], { relativeTo: this.route.firstChild });
   }
 
 }

@@ -12,7 +12,7 @@ import { MetadataService } from '../permissions';
 import { IdFieldComponent } from '../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
-import { eavConstants } from '../shared/constants/eav.constants';
+import { eavConstants, MetadataKeyType } from '../shared/constants/eav.constants';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 import { EditForm } from '../shared/models/edit-form.model';
 import { MetadataActionsComponent } from './ag-grid-components/metadata-actions/metadata-actions.component';
@@ -63,7 +63,7 @@ export class MetadataComponent implements OnInit, OnDestroy {
 
   private subscription = new Subscription();
   private targetType = parseInt(this.route.snapshot.paramMap.get('type'), 10);
-  private keyType = this.route.snapshot.paramMap.get('keyType');
+  private keyType = this.route.snapshot.paramMap.get('keyType') as MetadataKeyType;
   private key = this.route.snapshot.paramMap.get('key');
   title = decodeURIComponent(this.route.snapshot.paramMap.get('title') ?? '');
   private contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');

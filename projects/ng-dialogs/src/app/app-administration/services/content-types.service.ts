@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { ImportAppResult } from '../../import-app/models/import-app-result.model';
-import { EavScopeOption } from '../../shared/constants/eav.constants';
+import { ScopeOption } from '../../shared/constants/eav.constants';
 import { Context } from '../../shared/services/context';
 import { ContentType, ContentTypeEdit } from '../models/content-type.model';
 
@@ -34,7 +34,7 @@ export class ContentTypesService {
       params: { appId: this.context.appId.toString() }
     }).pipe(
       map(scopes => {
-        const scopeOptions: EavScopeOption[] = Object.keys(scopes).map(key => ({ name: scopes[key], value: key }));
+        const scopeOptions: ScopeOption[] = Object.keys(scopes).map(key => ({ name: scopes[key], value: key }));
         return scopeOptions;
       }),
     );

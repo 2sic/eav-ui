@@ -1,5 +1,5 @@
 import { Route } from '@angular/router';
-import { eavConstants } from '../shared/constants/eav.constants';
+import { eavConstants, MetadataKeyType } from '../shared/constants/eav.constants';
 
 export class GoToMetadata {
 
@@ -27,7 +27,7 @@ export class GoToMetadata {
     return routes;
   }
 
-  static getUrl(targetType: number, keyType: string, key: string, dialogTitle?: string, contentTypeStaticName?: string): string {
+  static getUrl(targetType: number, keyType: MetadataKeyType, key: string, dialogTitle?: string, contentTypeStaticName?: string): string {
     let url = `metadata/${targetType}/${keyType}/${key}`;
     if (dialogTitle) {
       url += `/title/${encodeURIComponent(dialogTitle)}`;

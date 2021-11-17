@@ -2,7 +2,7 @@ import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { eavConstants, EavScopeOption } from '../../../shared/constants/eav.constants';
+import { eavConstants, ScopeOption } from '../../../shared/constants/eav.constants';
 import { ContentInfo, ContentInfoEntity, ContentInfoTemplate } from '../../models/content-info.model';
 import { ContentTypesService } from '../../services/content-types.service';
 import { ExportAppPartsService } from '../../services/export-app-parts.service';
@@ -17,7 +17,7 @@ export class ExportAppPartsComponent implements OnInit, OnDestroy {
 
   contentInfo: ContentInfo;
   exportScope = eavConstants.scopes.default.value;
-  scopeOptions: EavScopeOption[];
+  scopeOptions: ScopeOption[];
   lockScope = true;
   private loading$ = new BehaviorSubject(false);
   private isExporting$ = new BehaviorSubject(false);
@@ -64,7 +64,7 @@ export class ExportAppPartsComponent implements OnInit, OnDestroy {
       if (!newScope) {
         newScope = eavConstants.scopes.default.value;
       } else if (!this.scopeOptions.find(option => option.value === newScope)) {
-        const newScopeOption: EavScopeOption = {
+        const newScopeOption: ScopeOption = {
           name: newScope,
           value: newScope,
         };

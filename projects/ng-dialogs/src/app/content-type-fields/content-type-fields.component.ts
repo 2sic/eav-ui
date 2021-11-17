@@ -294,7 +294,7 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
   }
 
   private openPermissions(field: Field) {
-    this.router.navigate([GoToPermissions.goAttribute(field.Id)], { relativeTo: this.route });
+    this.router.navigate([GoToPermissions.getUrlAttribute(field.Id)], { relativeTo: this.route });
   }
 
   private refreshOnChildClosed() {

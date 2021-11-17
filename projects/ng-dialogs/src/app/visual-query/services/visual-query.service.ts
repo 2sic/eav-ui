@@ -142,7 +142,7 @@ export class VisualQueryService implements OnDestroy {
     //   ?? '|Config ' + this.queryDefinitionService.typeNameFilter(pipelineDataSource.PartAssemblyAndType, 'classFullName');
     const contentTypeName = dataSource.ContentType;
     const typeId = eavConstants.metadata.entity.type;
-    const keyType = eavConstants.keyTypes.guid;
+    const keyType = eavConstants.metadata.entity.keyType;
     const key = pipelineDataSource.EntityGuid;
 
     // query for existing Entity

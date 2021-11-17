@@ -1,6 +1,7 @@
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { MetadataKeyType } from '../../shared/constants/eav.constants';
 import { Context } from '../../shared/services/context';
 
 const webApiRoot = 'admin/metadata/get';
@@ -17,7 +18,7 @@ export class MetadataService {
    * @param contentTypeName name of content type where permissions are stored.
    * If left blank, backend returns all metadata except permissions
    */
-  getMetadata<T>(typeId: number, keyType: string, key: string, contentTypeName?: string) {
+  getMetadata<T>(typeId: number, keyType: MetadataKeyType, key: string, contentTypeName?: string) {
     return this.http.get<T>(this.dnnContext.$2sxc.http.apiUrl(webApiRoot), {
       params: {
         appId: this.context.appId.toString(),

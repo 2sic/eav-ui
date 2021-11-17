@@ -33,6 +33,6 @@ export class DevRestTabPermissionsComponent {
   ) { }
 
   openPermissions() {
-    this.router.navigate([GoToPermissions.goContentType(this.data.permissionTarget)], { relativeTo: this.route });
+    this.router.navigate([GoToPermissions.getUrlContentType(this.data.permissionTarget)], { relativeTo: this.route });
   }
 }

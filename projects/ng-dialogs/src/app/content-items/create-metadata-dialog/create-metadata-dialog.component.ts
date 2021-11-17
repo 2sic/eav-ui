@@ -7,7 +7,7 @@ import { distinctUntilChanged, map, startWith } from 'rxjs/operators';
 import { GeneralHelpers } from '../../../../../edit/shared/helpers';
 import { ContentType } from '../../app-administration/models';
 import { ContentTypesService } from '../../app-administration/services';
-import { eavConstants } from '../../shared/constants/eav.constants';
+import { eavConstants, MetadataKeyType } from '../../shared/constants/eav.constants';
 import { Context } from '../../shared/services/context';
 import { ContentItem } from '../models/content-item.model';
 import { ContentItemsService } from '../services/content-items.service';
@@ -28,10 +28,10 @@ export class CreateMetadataDialogComponent implements OnInit, OnDestroy {
   targetTypeOptions: TargetTypeOption[];
 
   /** Constants from metadata definitions */
-  private keyTypeOptions: string[];
+  private keyTypeOptions: MetadataKeyType[];
   private guidedMode$: BehaviorSubject<boolean>;
   /** Currently available options */
-  private keyTypeOptions$: BehaviorSubject<string[]>;
+  private keyTypeOptions$: BehaviorSubject<MetadataKeyType[]>;
   private contentItems$: BehaviorSubject<ContentItem[]>;
   private contentTypes$: BehaviorSubject<ContentType[]>;
   private guidedKey$: BehaviorSubject<boolean>;
@@ -49,7 +49,7 @@ export class CreateMetadataDialogComponent implements OnInit, OnDestroy {
     this.targetTypeOptions = Object.values(eavConstants.metadata).map(option => ({ ...option }));
     this.keyTypeOptions = Object.values(eavConstants.keyTypes);
 
-    this.keyTypeOptions$ = new BehaviorSubject<string[]>([]);
+    this.keyTypeOptions$ = new BehaviorSubject<MetadataKeyType[]>([]);
     this.guidedMode$ = new BehaviorSubject(true);
     this.contentItems$ = new BehaviorSubject<ContentItem[]>([]);
     this.contentTypes$ = new BehaviorSubject<ContentType[]>([]);
@@ -57,7 +57,7 @@ export class CreateMetadataDialogComponent implements OnInit, OnDestroy {
 
     this.form = new FormGroup({});
     this.form.addControl('targetType', new FormControl(eavConstants.metadata.entity.type, [Validators.required, Validators.pattern(/^[0-9]+$/)]));
-    this.form.addControl('keyType', new FormControl(eavConstants.keyTypes.guid, [Validators.required]));
+    this.form.addControl('keyType', new FormControl(eavConstants.metadata.entity.keyType, [Validators.required]));
     this.form.addControl('contentTypeForContentItems', new FormControl(null, [Validators.required]));
     this.form.addControl('key', new FormControl(null, [Validators.required, metadataKeyValidator(this.form)]));
 

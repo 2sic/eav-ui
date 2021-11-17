@@ -13,7 +13,7 @@ import { GoToPermissions } from '../../permissions/go-to-permissions';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
-import { eavConstants, EavScopeOption } from '../../shared/constants/eav.constants';
+import { eavConstants, ScopeOption } from '../../shared/constants/eav.constants';
 import { toString } from '../../shared/helpers/file-to-base64.helper';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { EditForm } from '../../shared/models/edit-form.model';
@@ -35,7 +35,7 @@ export class DataComponent implements OnInit, OnDestroy {
 
   contentTypes$ = new BehaviorSubject<ContentType[]>(null);
   scope$ = new BehaviorSubject<string>(null);
-  scopeOptions$ = new BehaviorSubject<EavScopeOption[]>([]);
+  scopeOptions$ = new BehaviorSubject<ScopeOption[]>([]);
   debugEnabled$ = this.globalConfigService.getDebugEnabled$();
 
   modules = AllCommunityModules;
@@ -265,7 +265,7 @@ export class DataComponent implements OnInit, OnDestroy {
   }
 
   private openRestApi(contentType: ContentType) {
-    this.router.navigate([GoToDevRest.goToData(contentType)], { relativeTo: this.route.firstChild });
+    this.router.navigate([GoToDevRest.getUrlData(contentType)], { relativeTo: this.route.firstChild });
   }
 
   private exportType(contentType: ContentType) {
@@ -282,7 +282,7 @@ export class DataComponent implements OnInit, OnDestroy {
   }
 
   private openPermissions(contentType: ContentType) {
-    this.router.navigate([GoToPermissions.goEntity(contentType.StaticName)], { relativeTo: this.route.firstChild });
+    this.router.navigate([GoToPermissions.getUrlContentType(contentType.StaticName)], { relativeTo: this.route.firstChild });
   }
 
   private deleteContentType(contentType: ContentType) {
@@ -305,7 +305,7 @@ export class DataComponent implements OnInit, OnDestroy {
       ).subscribe(scope => {
         this.scope$.next(scope);
         if (!this.scopeOptions$.value.map(option => option.value).includes(scope)) {
-          const newScopeOption: EavScopeOption = {
+          const newScopeOption: ScopeOption = {
             name: scope,
             value: scope,
           };
