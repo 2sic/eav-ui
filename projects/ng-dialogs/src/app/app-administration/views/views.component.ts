@@ -252,9 +252,7 @@ export class ViewsComponent implements OnInit, OnDestroy {
   }
 
   private openMetadata(view: View) {
-    const url = GoToMetadata.getUrl(
-      eavConstants.metadata.entity.type,
-      eavConstants.keyTypes.guid,
+    const url = GoToMetadata.getUrlEntity(
       view.Guid,
       `Metadata for View: ${view.Name} (${view.Id})`,
     );

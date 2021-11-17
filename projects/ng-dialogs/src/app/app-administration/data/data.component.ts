@@ -257,9 +257,7 @@ export class DataComponent implements OnInit, OnDestroy {
   }
 
   private openMetadata(contentType: ContentType) {
-    const url = GoToMetadata.getUrl(
-      eavConstants.metadata.entity.type,
-      eavConstants.keyTypes.guid,
+    const url = GoToMetadata.getUrlContentType(
       contentType.StaticName,
       `Metadata for Content Type: ${contentType.Name} (${contentType.Id})`,
     );

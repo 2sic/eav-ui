@@ -97,10 +97,8 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
   }
 
   openMetadata() {
-    const url = GoToMetadata.getUrl(
-      eavConstants.metadata.app.type,
-      eavConstants.keyTypes.number,
-      this.context.appId.toString(),
+    const url = GoToMetadata.getUrlApp(
+      this.context.appId,
       `Metadata for App: ${this.dialogSettings.Context.App.Name} (${this.context.appId})`,
     );
     this.router.navigate([url], { relativeTo: this.route.firstChild });

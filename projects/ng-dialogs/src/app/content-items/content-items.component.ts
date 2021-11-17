@@ -142,9 +142,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   }
 
   openMetadata(item: ContentItem) {
-    const url = GoToMetadata.getUrl(
-      eavConstants.metadata.entity.type,
-      eavConstants.keyTypes.guid,
+    const url = GoToMetadata.getUrlEntity(
       item.Guid,
       `Metadata for Entity: ${item._Title} (${item.Id})`,
       this.contentTypeStaticName,

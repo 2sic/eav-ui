@@ -1,4 +1,5 @@
 import { Route } from '@angular/router';
+import { eavConstants } from '../shared/constants/eav.constants';
 
 export class GoToMetadata {
 
@@ -26,15 +27,43 @@ export class GoToMetadata {
     return routes;
   }
 
-  static getUrl(targetType: number, keyType: string, key: string, title?: string, contentTypeStaticName?: string): string {
+  static getUrl(targetType: number, keyType: string, key: string, dialogTitle?: string, contentTypeStaticName?: string): string {
     let url = `metadata/${targetType}/${keyType}/${key}`;
-    if (title) {
-      url += `/title/${encodeURIComponent(title)}`;
+    if (dialogTitle) {
+      url += `/title/${encodeURIComponent(dialogTitle)}`;
     }
     if (contentTypeStaticName) {
       url += `/contentType/${contentTypeStaticName}`;
     }
     return url;
+  }
+
+  static getUrlApp(appId: number, dialogTitle?: string): string {
+    return this.getUrl(
+      eavConstants.metadata.app.type,
+      eavConstants.metadata.app.keyType,
+      appId.toString(),
+      dialogTitle,
+    );
+  }
+
+  static getUrlContentType(staticName: string, dialogTitle?: string): string {
+    return this.getUrl(
+      eavConstants.metadata.contentType.type,
+      eavConstants.metadata.contentType.keyType,
+      staticName,
+      dialogTitle,
+    );
+  }
+
+  static getUrlEntity(guid: string, dialogTitle?: string, contentTypeStaticName?: string): string {
+    return this.getUrl(
+      eavConstants.metadata.entity.type,
+      eavConstants.metadata.entity.keyType,
+      guid,
+      dialogTitle,
+      contentTypeStaticName,
+    );
   }
 
 }

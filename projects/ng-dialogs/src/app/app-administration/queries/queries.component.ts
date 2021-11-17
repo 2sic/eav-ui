@@ -138,9 +138,7 @@ export class QueriesComponent implements OnInit, OnDestroy {
   }
 
   private openMetadata(query: Query) {
-    const url = GoToMetadata.getUrl(
-      eavConstants.metadata.entity.type,
-      eavConstants.keyTypes.guid,
+    const url = GoToMetadata.getUrlEntity(
       query.Guid,
       `Metadata for Query: ${query.Name} (${query.Id})`,
     );
