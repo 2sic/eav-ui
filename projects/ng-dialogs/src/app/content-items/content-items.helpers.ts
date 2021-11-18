@@ -19,7 +19,8 @@ export function buildFilterModel(urlFilters: string) {
   }
   if (!parsed) { return; }
 
-  // filters can be published, metadata, string, number and boolean
+  // Info: filters can be IsPublished, IsMetadata, string, number and boolean
+  // 1. First handle IsPublished and IsMetadata
   const filterModel: AgGridFilterModel = {};
   if (parsed.IsPublished || parsed.IsMetadata) {
     const filter: PubMetaFilterModel = {
@@ -31,10 +32,15 @@ export function buildFilterModel(urlFilters: string) {
     filterModel.Status = filter;
   }
 
+  // 2. Now handle all other cases
   const filterKeys = Object.keys(parsed);
   for (const key of filterKeys) {
+    // Skip IsPublished/IsMetadata, as they were already handled before
     if (key === 'IsPublished' || key === 'IsMetadata') { continue; }
 
+    // TODO:
+    // Support multiple values: It should be possible to have "Title: ['Daniel', 'Petar']" resulting in an OR on this column
+    // Support entity-id on item-columns, like "Authors: 42" instead of a title-search
     const value = parsed[key];
     if (typeof value === 'string') {
       const filter: TextFilterModel = { filterType: 'text', type: 'equals', filter: value };
