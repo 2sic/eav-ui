@@ -46,8 +46,15 @@
           <mat-label>Input Type</mat-label>
           <mat-select (selectionChange)="calculateHints(i)" [(ngModel)]="field.InputType" [name]="'InputType' + i"
             [disabled]="editMode === 'name'">
-            <mat-option *ngFor="let option of filteredInputTypeOptions[i]" [value]="option.inputType">
-              {{ option.label }}</mat-option>
+            <mat-select-trigger>
+              <span>{{ getInputType(field.InputType).label }}</span>
+              <mat-icon class="input-icon">{{ getInputType(field.InputType).Icon }}</mat-icon>
+            </mat-select-trigger>
+            <mat-option *ngFor="let option of filteredInputTypeOptions[i]" [value]="option.inputType"
+              class="{{ option.IsObsolete ? 'input-obsolete' : ''}}">
+              {{ option.label }}
+              <mat-icon class="input-icon" *ngIf="option.Icon">{{option.Icon}}</mat-icon>
+            </mat-option>
           </mat-select>
         </mat-form-field>
         <app-field-hint>{{ inputTypeHints[i] }}</app-field-hint>
