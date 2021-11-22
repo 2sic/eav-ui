@@ -4,6 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, combineLatest, of } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { dropdownInsertValue } from '../../../shared/constants/dropdown-insert-value.constant';
 import { eavConstants, ScopeOption } from '../../../shared/constants/eav.constants';
 import { contentTypeNameError, contentTypeNamePattern } from '../../constants/content-type.patterns';
 import { ContentTypeEdit } from '../../models/content-type.model';
@@ -20,6 +21,7 @@ export class EditContentTypeComponent implements OnInit, OnDestroy, AfterViewIni
   contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
   contentTypeNamePattern = contentTypeNamePattern;
   contentTypeNameError = contentTypeNameError;
+  dropdownInsertValue = dropdownInsertValue;
 
   private contentType$ = new BehaviorSubject<ContentTypeEdit>(null);
   private lockScope$ = new BehaviorSubject(true);
@@ -104,16 +106,14 @@ export class EditContentTypeComponent implements OnInit, OnDestroy, AfterViewIni
   }
 
   changeScope(newScope: string) {
-    if (newScope === 'Other') {
-      newScope = prompt('This is an advanced feature to show content-types of another scope. Don\'t use this if you don\'t know what you\'re doing, as content-types of other scopes are usually hidden for a good reason.');
-      if (!newScope) {
-        newScope = eavConstants.scopes.default.value;
-      } else if (!this.scopeOptions$.value.find(option => option.value === newScope)) {
+    if (newScope === dropdownInsertValue) {
+      newScope = prompt('This is an advanced feature to show content-types of another scope. Don\'t use this if you don\'t know what you\'re doing, as content-types of other scopes are usually hidden for a good reason.') || eavConstants.scopes.default.value;
+      if (!this.scopeOptions$.value.some(option => option.value === newScope)) {
         const newScopeOption: ScopeOption = {
           name: newScope,
           value: newScope,
         };
-        this.scopeOptions$.next([...this.scopeOptions$.value, newScopeOption]);
+        this.scopeOptions$.next([newScopeOption, ...this.scopeOptions$.value]);
       }
     }
     this.contentType$.next({ ...this.contentType$.value, Scope: newScope });

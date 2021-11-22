@@ -14,7 +14,6 @@
       <!-- Content Type of metadata item -->
       <mat-form-field appearance="standard" color="accent">
         <mat-label>Content Type</mat-label>
-
         <mat-select formControlName="contentType" required
           [placeholder]="!data.contentTypes.length ? 'No items found' : ''">
           <mat-option *ngFor="let contentType of data.contentTypes" [value]="contentType.StaticName">
@@ -22,10 +21,24 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-
-      <app-field-hint *ngIf="form.controls['contentType'].touched && form.controls['contentType'].errors?.required"
+      <app-field-hint *ngIf="form.controls.contentType.touched && form.controls.contentType.errors?.required"
         [isError]="true">
         This field is required
+      </app-field-hint>
+
+      <!-- Scope -->
+      <mat-form-field appearance="standard" color="accent">
+        <mat-label>Scope</mat-label>
+        <mat-select formControlName="scope" [placeholder]="!data.scopeOptions.length ? 'No items found' : ''">
+          <mat-option *ngFor="let scopeOption of data.scopeOptions" [value]="scopeOption.value">
+            {{ scopeOption.name }}
+          </mat-option>
+          <mat-option [value]="dropdownInsertValue">Other...</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <app-field-hint>
+        The scope should almost never be changed -
+        <a href="https://2sxc.org/help?tag=scope" target="_blank" appClickStopPropagation>see help</a>
       </app-field-hint>
     </div>
 

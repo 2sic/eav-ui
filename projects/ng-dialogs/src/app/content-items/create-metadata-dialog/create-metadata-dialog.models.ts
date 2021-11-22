@@ -1,5 +1,5 @@
 import { ContentType } from '../../app-administration/models';
-import { MetadataKeyType } from '../../shared/constants/eav.constants';
+import { MetadataKeyType, ScopeOption } from '../../shared/constants/eav.constants';
 import { ContentItem } from '../models/content-item.model';
 
 export interface MetadataInfo {
@@ -20,6 +20,7 @@ export interface MetadataFormValues {
   targetType: number;
   keyType: MetadataKeyType;
   contentTypeForContentItems: string;
+  scopeForContentTypes: string;
   key: string | number;
 }
 
@@ -28,6 +29,7 @@ export interface MetadataDialogTemplateVars {
   unknownTargetType: boolean;
   targetTypeHint?: string;
   keyTypeOptions: string[];
+  scopeOptions: ScopeOption[];
   guidedKey: boolean;
   guidedKeyExists: boolean;
   formValues: MetadataFormValues;

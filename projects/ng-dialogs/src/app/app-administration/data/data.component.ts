@@ -13,6 +13,7 @@ import { GoToPermissions } from '../../permissions/go-to-permissions';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
+import { dropdownInsertValue } from '../../shared/constants/dropdown-insert-value.constant';
 import { eavConstants, ScopeOption } from '../../shared/constants/eav.constants';
 import { toString } from '../../shared/helpers/file-to-base64.helper';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
@@ -98,6 +99,7 @@ export class DataComponent implements OnInit, OnDestroy {
     ],
   };
 
+  dropdownInsertValue = dropdownInsertValue;
   private defaultScope = eavConstants.scopes.default.value;
   private subscription = new Subscription();
 
@@ -203,7 +205,7 @@ export class DataComponent implements OnInit, OnDestroy {
   }
 
   changeScope(newScope: string) {
-    if (newScope === 'Other') {
+    if (newScope === dropdownInsertValue) {
       newScope = prompt('This is an advanced feature to show content-types of another scope. Don\'t use this if you don\'t know what you\'re doing, as content-types of other scopes are usually hidden for a good reason.') || this.defaultScope;
     }
     this.router.navigate([`data/${newScope}`], { relativeTo: this.route });

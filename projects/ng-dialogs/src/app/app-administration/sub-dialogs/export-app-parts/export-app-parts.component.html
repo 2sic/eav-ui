@@ -19,7 +19,7 @@
           <mat-option *ngFor="let scopeOption of scopeOptions" [value]="scopeOption.value">
             {{ scopeOption.name }}
           </mat-option>
-          <mat-option value="Other">Other...</mat-option>
+          <mat-option [value]="dropdownInsertValue">Other...</mat-option>
         </mat-select>
         <button mat-icon-button type="button" matSuffix [tippy]="lockScope ? 'Unlock' : 'Lock'">
           <mat-icon appClickStopPropagation (click)="unlockScope()">

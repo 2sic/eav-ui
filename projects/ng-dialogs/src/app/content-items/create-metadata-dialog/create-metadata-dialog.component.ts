@@ -7,7 +7,8 @@ import { distinctUntilChanged, map, startWith } from 'rxjs/operators';
 import { GeneralHelpers } from '../../../../../edit/shared/helpers';
 import { ContentType } from '../../app-administration/models';
 import { ContentTypesService } from '../../app-administration/services';
-import { eavConstants, MetadataKeyType } from '../../shared/constants/eav.constants';
+import { dropdownInsertValue } from '../../shared/constants/dropdown-insert-value.constant';
+import { eavConstants, MetadataKeyType, ScopeOption } from '../../shared/constants/eav.constants';
 import { Context } from '../../shared/services/context';
 import { ContentItem } from '../models/content-item.model';
 import { ContentItemsService } from '../services/content-items.service';
@@ -23,6 +24,7 @@ export class CreateMetadataDialogComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
   eavConstants = eavConstants;
+  dropdownInsertValue = dropdownInsertValue;
   form: FormGroup;
   templateVars$: Observable<MetadataDialogTemplateVars>;
   targetTypeOptions: TargetTypeOption[];
@@ -32,6 +34,7 @@ export class CreateMetadataDialogComponent implements OnInit, OnDestroy {
   private guidedMode$: BehaviorSubject<boolean>;
   /** Currently available options */
   private keyTypeOptions$: BehaviorSubject<MetadataKeyType[]>;
+  private scopeOptions$: BehaviorSubject<ScopeOption[]>;
   private contentItems$: BehaviorSubject<ContentItem[]>;
   private contentTypes$: BehaviorSubject<ContentType[]>;
   private guidedKey$: BehaviorSubject<boolean>;
@@ -50,20 +53,46 @@ export class CreateMetadataDialogComponent implements OnInit, OnDestroy {
     this.keyTypeOptions = Object.values(eavConstants.keyTypes);
 
     this.keyTypeOptions$ = new BehaviorSubject<MetadataKeyType[]>([]);
+    this.scopeOptions$ = new BehaviorSubject<ScopeOption[]>([]);
     this.guidedMode$ = new BehaviorSubject(true);
     this.contentItems$ = new BehaviorSubject<ContentItem[]>([]);
     this.contentTypes$ = new BehaviorSubject<ContentType[]>([]);
     this.guidedKey$ = new BehaviorSubject(true);
 
+    this.fetchScopes();
+
+    const defaultScope = eavConstants.scopes.default.value;
     this.form = new FormGroup({});
     this.form.addControl('targetType', new FormControl(eavConstants.metadata.entity.type, [Validators.required, Validators.pattern(/^[0-9]+$/)]));
     this.form.addControl('keyType', new FormControl(eavConstants.metadata.entity.keyType, [Validators.required]));
     this.form.addControl('contentTypeForContentItems', new FormControl(null));
+    this.form.addControl('scopeForContentTypes', new FormControl(defaultScope));
     this.form.addControl('key', new FormControl(null, [Validators.required, metadataKeyValidator(this.form)]));
 
-    this.contentTypesService.retrieveContentTypes(eavConstants.scopes.default.value).subscribe(contentTypes => {
-      this.contentTypes$.next(contentTypes);
-    });
+    this.subscription.add(
+      this.form.controls['scopeForContentTypes'].valueChanges.pipe(
+        startWith(this.form.controls['scopeForContentTypes'].value),
+        distinctUntilChanged(),
+      ).subscribe((newScope: string) => {
+        if (this.form.controls['contentTypeForContentItems'].value != null) {
+          this.form.controls['contentTypeForContentItems'].patchValue(null);
+        }
+
+        if (newScope === dropdownInsertValue) {
+          newScope = prompt('This is an advanced feature to show content-types of another scope. Don\'t use this if you don\'t know what you\'re doing, as content-types of other scopes are usually hidden for a good reason.') || defaultScope;
+          if (!this.scopeOptions$.value.some(option => option.value === newScope)) {
+            const newScopeOption: ScopeOption = {
+              name: newScope,
+              value: newScope,
+            };
+            this.scopeOptions$.next([newScopeOption, ...this.scopeOptions$.value]);
+          }
+          this.form.controls['scopeForContentTypes'].patchValue(newScope);
+        } else {
+          this.fetchContentTypes(newScope);
+        }
+      })
+    );
 
     // reset key if target or keyType changed
     this.subscription.add(
@@ -141,11 +170,11 @@ export class CreateMetadataDialogComponent implements OnInit, OnDestroy {
     );
 
     this.templateVars$ = combineLatest([
-      combineLatest([this.guidedMode$, this.keyTypeOptions$, this.contentItems$, this.contentTypes$]),
+      combineLatest([this.guidedMode$, this.keyTypeOptions$, this.scopeOptions$, this.contentItems$, this.contentTypes$]),
       combineLatest([formValues$, this.guidedKey$]),
     ]).pipe(
       map(([
-        [guidedMode, keyTypeOptions, contentItems, contentTypes],
+        [guidedMode, keyTypeOptions, scopeOptions, contentItems, contentTypes],
         [formValues, guidedKey],
       ]) => {
         const templateVars: MetadataDialogTemplateVars = {
@@ -153,6 +182,7 @@ export class CreateMetadataDialogComponent implements OnInit, OnDestroy {
           unknownTargetType: !this.targetTypeOptions.some(option => option.type === formValues.targetType),
           targetTypeHint: guidedMode && this.targetTypeOptions.find(option => option.type === formValues.targetType)?.hint,
           keyTypeOptions,
+          scopeOptions,
           guidedKey,
           guidedKeyExists: [eavConstants.metadata.entity.type, eavConstants.metadata.contentType.type].includes(formValues.targetType),
           formValues,
@@ -196,5 +226,17 @@ export class CreateMetadataDialogComponent implements OnInit, OnDestroy {
       key: formValues.keyType === eavConstants.keyTypes.guid ? (formValues.key as string).replace(/{|}/g, '') : formValues.key.toString(),
     };
     this.closeDialog(result);
+  }
+
+  private fetchContentTypes(scope: string): void {
+    this.contentTypesService.retrieveContentTypes(scope).subscribe(contentTypes => {
+      this.contentTypes$.next(contentTypes);
+    });
+  }
+
+  private fetchScopes(): void {
+    this.contentTypesService.getScopes().subscribe(scopes => {
+      this.scopeOptions$.next(scopes);
+    });
   }
 }
