@@ -11,7 +11,7 @@ import { convertUrlToForm } from '../../../ng-dialogs/src/app/shared/helpers/url
 import { calculateIsParentDialog, sortLanguages } from '../../dialog/main/edit-dialog-main.helpers';
 import { EavFormData } from '../../dialog/main/edit-dialog-main.models';
 import { EditParams } from '../../edit-matcher.models';
-import { BestValueModes } from '../constants/localization.constants';
+import { BestValueModes } from '../constants';
 import { FieldsSettingsHelpers, InputFieldHelpers, LocalizationHelpers } from '../helpers';
 import { FormValues, Language, PublishStatus } from '../models';
 // tslint:disable-next-line:max-line-length

@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { FieldSettings, FieldValue } from '../../../../edit-types';
 import { InputType } from '../../../../ng-dialogs/src/app/content-type-fields/models/input-type.model';
-import { BestValueModes } from '../../constants/localization.constants';
+import { BestValueModes } from '../../constants';
 import { GeneralHelpers, InputFieldHelpers, LocalizationHelpers } from '../../helpers';
 import { FormValues, Language, SaveResult } from '../../models';
 import { EavContentTypeAttribute, EavDimension, EavEntityAttributes, EavHeader, EavItem, EavValue } from '../../models/eav';

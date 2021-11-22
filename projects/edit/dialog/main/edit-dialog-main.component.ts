@@ -7,7 +7,8 @@ import { BehaviorSubject, combineLatest, fromEvent, Observable, of, Subscription
 import { delay, map, startWith, tap } from 'rxjs/operators';
 import { consoleLogAngular } from '../../../ng-dialogs/src/app/shared/helpers/console-log-angular.helper';
 import { FormBuilderComponent } from '../../form/builder/form-builder/form-builder.component';
-import { ValidationMessagesHelpers } from '../../shared/helpers';
+import { MetadataDecorators } from '../../shared/constants';
+import { InputFieldHelpers, ValidationMessagesHelpers } from '../../shared/helpers';
 import { FieldErrorMessage, SaveResult } from '../../shared/models';
 import { EavItem } from '../../shared/models/eav';
 import { Item1 } from '../../shared/models/json-format-v1';
@@ -162,8 +163,12 @@ export class EditDialogMainComponent implements OnInit, AfterViewInit, OnDestroy
           if (!isValid) { return; }
 
           // do not try to save item which doesn't have any fields, nothing could have changed about it
+          // but enable saving if there is a special metadata
           const hasAttributes = Object.keys(eavItem.Entity.Attributes).length > 0;
-          if (!hasAttributes) { return; }
+          const contentTypeId = InputFieldHelpers.getContentTypeId(eavItem);
+          const contentType = this.contentTypeService.getContentType(contentTypeId);
+          const saveIfEmpty = contentType.Metadata.some(m => m.Type.Name === MetadataDecorators.SaveEmptyDecorator);
+          if (!hasAttributes && !saveIfEmpty) { return; }
 
           const item = Item1.convert(eavItem);
           return item;
