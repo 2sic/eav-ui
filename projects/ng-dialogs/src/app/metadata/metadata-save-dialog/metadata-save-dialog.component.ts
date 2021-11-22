@@ -20,6 +20,7 @@ export class MetadataSaveDialogComponent implements OnInit, OnDestroy {
   form: FormGroup;
   dropdownInsertValue = dropdownInsertValue;
   templateVars$: Observable<MetadataSaveDialogTemplateVars>;
+  guidedContentType = true;
 
   private contentTypes$: BehaviorSubject<ContentType[]>;
   private scopeOptions$: BehaviorSubject<ScopeOption[]>;
@@ -54,6 +55,10 @@ export class MetadataSaveDialogComponent implements OnInit, OnDestroy {
 
   closeDialog(contentType?: string): void {
     this.dialogRef.close(contentType);
+  }
+
+  toggleGuidedContentType(guidedContentType: boolean): void {
+    this.guidedContentType = guidedContentType;
   }
 
   confirm(): void {

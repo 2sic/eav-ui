@@ -14,12 +14,25 @@
       <!-- Content Type of metadata item -->
       <mat-form-field appearance="standard" color="accent">
         <mat-label>Content Type</mat-label>
-        <mat-select formControlName="contentType" required
+        <mat-select *ngIf="guidedContentType" formControlName="contentType" required
           [placeholder]="!data.contentTypes.length ? 'No items found' : ''">
           <mat-option *ngFor="let contentType of data.contentTypes" [value]="contentType.StaticName">
             {{ contentType.Label }}
           </mat-option>
         </mat-select>
+
+        <input matInput type="text" *ngIf="!guidedContentType" formControlName="contentType" required>
+
+        <div matSuffix class="selection-suffix">
+          <button mat-icon-button type="button" [ngClass]="{ 'active': guidedContentType }" tippy="Select option"
+            (click)="toggleGuidedContentType(true)">
+            <mat-icon>search</mat-icon>
+          </button>
+          <button mat-icon-button type="button" [ngClass]="{ 'active': !guidedContentType }" tippy="Insert value"
+            (click)="toggleGuidedContentType(false)">
+            <mat-icon>text_fields</mat-icon>
+          </button>
+        </div>
       </mat-form-field>
       <app-field-hint *ngIf="form.controls.contentType.touched && form.controls.contentType.errors?.required"
         [isError]="true">
@@ -27,19 +40,21 @@
       </app-field-hint>
 
       <!-- Scope -->
-      <mat-form-field appearance="standard" color="accent">
-        <mat-label>Scope</mat-label>
-        <mat-select formControlName="scope" [placeholder]="!data.scopeOptions.length ? 'No items found' : ''">
-          <mat-option *ngFor="let scopeOption of data.scopeOptions" [value]="scopeOption.value">
-            {{ scopeOption.name }}
-          </mat-option>
-          <mat-option [value]="dropdownInsertValue">Other...</mat-option>
-        </mat-select>
-      </mat-form-field>
-      <app-field-hint>
-        The scope should almost never be changed -
-        <a href="https://2sxc.org/help?tag=scope" target="_blank" appClickStopPropagation>see help</a>
-      </app-field-hint>
+      <ng-container *ngIf="guidedContentType">
+        <mat-form-field appearance="standard" color="accent">
+          <mat-label>Scope</mat-label>
+          <mat-select formControlName="scope" [placeholder]="!data.scopeOptions.length ? 'No items found' : ''">
+            <mat-option *ngFor="let scopeOption of data.scopeOptions" [value]="scopeOption.value">
+              {{ scopeOption.name }}
+            </mat-option>
+            <mat-option [value]="dropdownInsertValue">Other...</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <app-field-hint>
+          The scope should almost never be changed -
+          <a href="https://2sxc.org/help?tag=scope" target="_blank" appClickStopPropagation>see help</a>
+        </app-field-hint>
+      </ng-container>
     </div>
 
     <div class="dialog-form-actions">

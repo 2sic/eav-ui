@@ -7,6 +7,7 @@ import { MatRippleModule } from '@angular/material/core';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { EntitiesService } from '../content-items/services/entities.service';
@@ -37,6 +38,7 @@ import { MetadataComponent } from './metadata.component';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatSelectModule,
+    MatInputModule,
   ],
   providers: [
     Context,
