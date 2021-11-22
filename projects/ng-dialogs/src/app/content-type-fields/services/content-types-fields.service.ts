@@ -37,6 +37,11 @@ export class ContentTypesFieldsService {
               inputType: config.Type,
               label: config.Label,
               description: config.Description,
+              IsDefault: config.IsDefault,
+              IsObsolete: config.IsObsolete,
+              IsRecommended: config.IsRecommended,
+              ObsoleteMessage: config.ObsoleteMessage,
+              Icon: config.IsDefault ? 'star' : config.IsRecommended ? 'star_outlined' : null,
             };
             return option;
           });

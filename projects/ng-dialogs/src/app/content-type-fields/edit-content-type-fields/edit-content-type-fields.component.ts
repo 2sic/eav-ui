@@ -143,7 +143,14 @@ export class EditContentTypeFieldsComponent implements OnInit, OnDestroy {
     const selectedDataType = this.dataTypes.find(dataType => dataType.name === this.fields[index].Type);
     const selectedInputType = this.inputTypeOptions.find(inputTypeOption => inputTypeOption.inputType === this.fields[index].InputType);
     this.dataTypeHints[index] = selectedDataType?.description ?? '';
-    this.inputTypeHints[index] = selectedInputType?.description ?? '';
+    this.inputTypeHints[index] =
+      selectedInputType.IsObsolete ? 'OBSOLETE - ' + selectedInputType.ObsoleteMessage : ''
+      + selectedInputType?.description ?? '';
+  }
+
+  // WIP 2dm
+  getInputType(inputName: string) {
+    return this.inputTypeOptions.find(inputTypeOption => inputTypeOption.inputType === inputName);
   }
 
   save() {
