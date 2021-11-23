@@ -1,13 +1,12 @@
 import { Component, HostBinding, Inject, OnDestroy, OnInit } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
-import { distinctUntilChanged, filter, map, startWith } from 'rxjs/operators';
+import { map, startWith } from 'rxjs/operators';
 import { SanitizeHelper } from '../../../../../edit/shared/helpers';
-import { defaultControllerName, defaultTemplateName } from '../../shared/constants/file-names.constants';
 import { PredefinedTemplate } from '../models/predefined-template.model';
 import { SourceService } from '../services/source.service';
-import { CreateFileDialogData, CreateFileDialogResult, CreateFileFormValues, CreateFileTemplateVars } from './create-file-dialog.models';
+import { CreateFileDialogData, CreateFileDialogResult, CreateFileFormControls, CreateFileFormValues, CreateFileTemplateVars } from './create-file-dialog.models';
 
 @Component({
   selector: 'app-create-file-dialog',
@@ -18,14 +17,12 @@ export class CreateFileDialogComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
   form: FormGroup;
-  nameControl: AbstractControl;
-  templateKeyControl: AbstractControl;
-  extensionControl: AbstractControl;
-  folderControl: AbstractControl;
+  controls: CreateFileFormControls;
+  showPreview = false;
   templateVars$: Observable<CreateFileTemplateVars>;
 
-  private guidedType$: BehaviorSubject<boolean>;
   private templates$: BehaviorSubject<PredefinedTemplate[]>;
+  private all = 'All' as const;
   private subscription: Subscription;
 
   constructor(
@@ -36,27 +33,14 @@ export class CreateFileDialogComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subscription = new Subscription();
-    this.guidedType$ = new BehaviorSubject(true);
     this.templates$ = new BehaviorSubject<PredefinedTemplate[]>([]);
-    this.sourceService.getPredefinedTemplates().subscribe(templates => {
-      this.templates$.next(templates);
-    });
-    this.buildForm();
-    this.formFixes();
 
-    this.templateVars$ = combineLatest([this.guidedType$, this.templates$]).pipe(
-      map(([guidedType, templates]) => {
-        const templateVars: CreateFileTemplateVars = {
-          guidedType,
-          templates,
-        };
-        return templateVars;
-      }),
-    );
+    this.fetchTemplates();
+    this.buildForm();
+    this.buildTemplateVars();
   }
 
   ngOnDestroy(): void {
-    this.guidedType$.complete();
     this.templates$.complete();
     this.subscription.unsubscribe();
   }
@@ -65,83 +49,124 @@ export class CreateFileDialogComponent implements OnInit, OnDestroy {
     this.dialogRef.close(result);
   }
 
-  toggleGuidedType(newGuidedType: boolean): void {
-    if (this.guidedType$.value === newGuidedType) { return; }
-    this.guidedType$.next(newGuidedType);
+  togglePreview(): void {
+    this.showPreview = !this.showPreview;
   }
 
   confirm(): void {
     const formValues: CreateFileFormValues = this.form.getRawValue();
 
     const folder = (formValues.folder ?? '').trim();
-    const name = SanitizeHelper.sanitizePath(formValues.name.trim());
-    const extension = formValues.extension.trim();
-    const fullName = `${folder}${folder ? '/' : ''}${name}${extension.startsWith('.') ? '' : '.'}${extension}`.replace(/\/{2,}/g, '');
+    const name = SanitizeHelper.sanitizePath(formValues.finalName.trim());
 
     const result: CreateFileDialogResult = {
-      name: fullName,
-      templateKey: this.guidedType$.value ? formValues.templateKey : undefined,
+      name: `${folder}${folder ? '/' : ''}${name}`.replace(/\/{2,}/g, ''),
+      templateKey: formValues.templateKey,
     };
     this.closeDialog(result);
   }
 
-  private buildForm(): void {
-    const folderPrefill = this.dialogData.folder;
-    const defaultName = (folderPrefill === 'api' || folderPrefill?.startsWith('api/')) ? defaultControllerName : defaultTemplateName;
-    const namePrefill = defaultName.substring(0, defaultName.lastIndexOf('.'));
-    const extPrefill = defaultName.substring(defaultName.lastIndexOf('.'));
-
-    this.form = new FormGroup({
-      name: new FormControl(namePrefill, [Validators.required]),
-      templateKey: new FormControl(null, [Validators.required]),
-      extension: new FormControl(extPrefill, [Validators.required]),
-      folder: new FormControl({ disabled: true, value: folderPrefill }),
+  private fetchTemplates(): void {
+    this.sourceService.getPredefinedTemplates().subscribe(templates => {
+      this.templates$.next(templates);
     });
-    this.nameControl = this.form.controls.name;
-    this.templateKeyControl = this.form.controls.templateKey;
-    this.extensionControl = this.form.controls.extension;
-    this.folderControl = this.form.controls.folder;
   }
 
-  private formFixes(): void {
+  private buildForm(): void {
+    this.form = new FormGroup({
+      platform: new FormControl(this.all, Validators.required),
+      purpose: new FormControl(this.all, Validators.required),
+      templateKey: new FormControl(null, Validators.required),
+      name: new FormControl(null, Validators.required),
+      finalName: new FormControl({ value: null, disabled: true }),
+      folder: new FormControl({ value: this.dialogData.folder, disabled: true }),
+    });
+
+    this.controls = this.form.controls as any;
+
     this.subscription.add(
-      this.guidedType$.pipe(
-        distinctUntilChanged(),
-      ).subscribe(guidedType => {
-        // reset extension value when template picker is activated
-        if (guidedType) {
-          const templates = this.templates$.value;
-          const selectedKey = this.templateKeyControl.value;
-          const templateExt = templates.find(t => t.Key === selectedKey)?.Extension;
-          if (this.extensionControl.value !== templateExt) {
-            this.extensionControl.patchValue(templateExt);
-          }
-        }
-        // disable template picker control when it's not active to allow form to be valid
-        if (guidedType && this.templateKeyControl.disabled) {
-          this.templateKeyControl.enable();
-        } else if (!guidedType && this.templateKeyControl.enabled) {
-          this.templateKeyControl.disable();
+      combineLatest([
+        this.templates$,
+        this.controls.templateKey.valueChanges.pipe(
+          startWith<string, string>(this.controls.templateKey.value),
+        ),
+        this.controls.name.valueChanges.pipe(
+          startWith<string, string>(this.controls.name.value),
+        ),
+      ]).subscribe(([templates, templateKey, name]) => {
+        const template = templates.find(t => t.Key === templateKey);
+        const finalName = name
+          ? `${template?.Prefix ?? ''}${name}${template?.Extension ?? ''}`
+          : null;
+
+        if (this.controls.finalName.value !== finalName) {
+          this.controls.finalName.patchValue(finalName);
         }
       })
     );
+  }
 
-    // change extension when template is changed
-    this.subscription.add(
-      combineLatest([
-        this.templateKeyControl.valueChanges.pipe(
-          startWith<string, string>(this.templateKeyControl.value),
-          distinctUntilChanged(),
-        ),
-        this.templates$,
-      ]).pipe(
-        filter(() => this.guidedType$.value),
-      ).subscribe(([templateKey, templates]) => {
-        const templateExt = templates?.find(t => t.Key === templateKey)?.Extension;
-        if (templateExt) {
-          this.extensionControl.patchValue(templateExt);
-        }
-      })
+  private buildTemplateVars(): void {
+    const platforms$ = this.templates$.pipe(
+      map(templates => {
+        const platformsMap: Record<string, string> = {
+          [this.all]: this.all,
+        };
+        templates.forEach(template => {
+          template.Platforms.forEach(platform => {
+            platformsMap[platform] = platform;
+          });
+        });
+        return Object.keys(platformsMap);
+      }),
+    );
+    const purposes$ = this.templates$.pipe(
+      map(templates => {
+        const purposesMap: Record<string, string> = {
+          [this.all]: this.all,
+        };
+        templates.forEach(template => {
+          purposesMap[template.Purpose] = template.Purpose;
+        });
+        return Object.keys(purposesMap);
+      }),
+    );
+    const templates$ = combineLatest([
+      this.templates$,
+      this.controls.platform.valueChanges.pipe(
+        startWith<string, string>(this.controls.platform.value),
+      ),
+      this.controls.purpose.valueChanges.pipe(
+        startWith<string, string>(this.controls.purpose.value),
+      ),
+    ]).pipe(
+      map(([templates, platform, purpose]) => {
+        const filtered = templates.filter(template => {
+          const platformMatch = platform === this.all || template.Platforms.includes(platform);
+          const purposeMatch = purpose === this.all || template.Purpose === purpose;
+          return platformMatch && purposeMatch;
+        });
+        return filtered;
+      }),
+    );
+    const preview$ = combineLatest([
+      this.templates$,
+      this.controls.templateKey.valueChanges.pipe(
+        startWith<string, string>(this.controls.templateKey.value),
+      ),
+    ]).pipe(
+      map(([templates, templateKey]) => templates.find(t => t.Key === templateKey)?.Body),
+    );
+    this.templateVars$ = combineLatest([platforms$, purposes$, templates$, preview$]).pipe(
+      map(([platforms, purposes, templates, preview]) => {
+        const templateVars: CreateFileTemplateVars = {
+          platforms,
+          purposes,
+          templates,
+          preview,
+        };
+        return templateVars;
+      }),
     );
   }
 }

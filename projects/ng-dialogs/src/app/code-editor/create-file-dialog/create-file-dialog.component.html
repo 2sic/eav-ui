@@ -3,72 +3,88 @@
     <div class="dialog-title-box">Create file</div>
   </div>
 
-  <p class="dialog-description">
-    Enter properties of the new file.
-  </p>
-
   <form [formGroup]="form" class="dialog-form">
     <div class="dialog-form-content fancy-scrollbar-light">
 
-      <!-- File Name -->
-      <mat-form-field appearance="standard" color="accent">
-        <mat-label>Name</mat-label>
-        <input matInput type="text" formControlName="name" required>
-      </mat-form-field>
-      <app-field-hint>
-        Template name must start with "_", e.g. "_MyFile",<br>
-        Controller name must end with "Controller", e.g. "MyController"
-      </app-field-hint>
-      <app-field-hint *ngIf="nameControl.touched && nameControl.errors?.required" [isError]="true">
-        This field is required
-      </app-field-hint>
-
-      <!-- Code template -->
-      <mat-form-field appearance="standard" color="accent">
-        <mat-label>{{ data.guidedType ? 'Code template' : 'Extension' }}</mat-label>
-        <mat-select *ngIf="data.guidedType" formControlName="templateKey" required
-          [placeholder]="!data.templates.length ? 'No items found' : ''">
-          <mat-option *ngFor="let template of data.templates" [value]="template.Key">
-            {{ template.Name }}
-          </mat-option>
-        </mat-select>
-
-        <input matInput type="text" *ngIf="!data.guidedType" formControlName="extension" required>
-
-        <div matSuffix class="selection-suffix">
-          <button mat-icon-button type="button" [ngClass]="{ 'active': data.guidedType }" tippy="Select option"
-            (click)="toggleGuidedType(true)">
-            <mat-icon>search</mat-icon>
-          </button>
-          <button mat-icon-button type="button" [ngClass]="{ 'active': !data.guidedType }" tippy="Insert value"
-            (click)="toggleGuidedType(false)">
-            <mat-icon>text_fields</mat-icon>
-          </button>
+      <div class="field-container multiple">
+        <!-- Platform -->
+        <div class="multiple-field">
+          <mat-form-field appearance="standard" color="accent">
+            <mat-label>Platform</mat-label>
+            <mat-select formControlName="platform" required
+              [placeholder]="!data.platforms.length ? 'No items found' : ''">
+              <mat-option *ngFor="let platform of data.platforms" [value]="platform">
+                {{ platform }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <app-field-hint *ngIf="controls.platform.touched && controls.platform.errors?.required" [isError]="true">
+            This field is required
+          </app-field-hint>
         </div>
-      </mat-form-field>
-      <ng-container *ngIf="data.guidedType">
-        <app-field-hint>This sets code prefill in new file</app-field-hint>
-        <app-field-hint *ngIf="templateKeyControl.touched && templateKeyControl.errors?.required" [isError]="true">
+
+        <!-- Purpose -->
+        <div class="multiple-field">
+          <mat-form-field appearance="standard" color="accent">
+            <mat-label>Purpose</mat-label>
+            <mat-select formControlName="purpose" required
+              [placeholder]="!data.purposes.length ? 'No items found' : ''">
+              <mat-option *ngFor="let purpose of data.purposes" [value]="purpose">
+                {{ purpose }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <app-field-hint *ngIf="controls.purpose.touched && controls.purpose.errors?.required" [isError]="true">
+            This field is required
+          </app-field-hint>
+        </div>
+      </div>
+
+      <!-- Template -->
+      <div class="field-container">
+        <mat-form-field appearance="standard" color="accent">
+          <mat-label>Template</mat-label>
+          <mat-select formControlName="templateKey" required
+            [placeholder]="!data.templates.length ? 'No items found' : ''">
+            <mat-option *ngFor="let template of data.templates" [value]="template.Key">
+              {{ template.Name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <app-field-hint *ngIf="controls.templateKey.touched && controls.templateKey.errors?.required" [isError]="true">
           This field is required
         </app-field-hint>
-      </ng-container>
-      <app-field-hint *ngIf="!data.guidedType && extensionControl.touched && extensionControl.errors?.required"
-        [isError]="true">
-        This field is required
-      </app-field-hint>
+      </div>
 
-      <!-- Folder -->
-      <mat-form-field appearance="standard" color="accent" *ngIf="folderControl.value">
-        <mat-label>Folder</mat-label>
-        <input matInput type="text" formControlName="folder">
-      </mat-form-field>
+      <!-- Name -->
+      <div class="field-container">
+        <mat-form-field appearance="standard" color="accent">
+          <mat-label>Name</mat-label>
+          <input matInput type="text" formControlName="name" required>
+        </mat-form-field>
+        <app-field-hint *ngIf="controls.name.touched && controls.name.errors?.required" [isError]="true">
+          This field is required
+        </app-field-hint>
+      </div>
+
+      <!-- Final Name -->
+      <div class="field-container">
+        <mat-form-field appearance="standard" color="accent">
+          <mat-label>Final Name</mat-label>
+          <input matInput type="text" formControlName="finalName">
+        </mat-form-field>
+      </div>
     </div>
 
     <div class="dialog-form-actions">
+      <button mat-raised-button type="button" (click)="togglePreview()" [disabled]="!data.preview">Preview</button>
+      <div class="spacer"></div>
       <button mat-raised-button type="button" (click)="closeDialog()">Cancel</button>
       <button mat-raised-button type="button" color="accent" [disabled]="!form.valid" (click)="confirm()">
         Confirm
       </button>
     </div>
+
+    <pre class="fancy-scrollbar-light" *ngIf="showPreview && data.preview">{{ data.preview }}</pre>
   </form>
 </ng-container>

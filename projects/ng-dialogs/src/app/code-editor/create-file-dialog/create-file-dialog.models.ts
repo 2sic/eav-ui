@@ -1,3 +1,4 @@
+import { AbstractControl } from '@angular/forms';
 import { PredefinedTemplate } from '../models/predefined-template.model';
 
 export interface CreateFileDialogData {
@@ -5,14 +6,27 @@ export interface CreateFileDialogData {
 }
 
 export interface CreateFileTemplateVars {
-  guidedType: boolean;
   templates: PredefinedTemplate[];
+  platforms: string[];
+  purposes: string[];
+  preview: string;
+}
+
+export interface CreateFileFormControls {
+  platform: AbstractControl;
+  purpose: AbstractControl;
+  templateKey: AbstractControl;
+  name: AbstractControl;
+  finalName: AbstractControl;
+  folder: AbstractControl;
 }
 
 export interface CreateFileFormValues {
-  name: string;
+  platform: string;
+  purpose: string;
   templateKey: string;
-  extension: string;
+  name: string;
+  finalName: string;
   folder: string;
 }
 
