@@ -3,10 +3,10 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
+import { CreateFileDialogData, CreateFileDialogResult, CreateFileFormControls, CreateFileFormValues, CreateFileTemplateVars } from '.';
 import { SanitizeHelper } from '../../../../edit/shared/helpers';
 import { PredefinedTemplate } from '../code-editor/models/predefined-template.model';
 import { SourceService } from '../code-editor/services/source.service';
-import { CreateFileDialogData, CreateFileDialogResult, CreateFileFormControls, CreateFileFormValues, CreateFileTemplateVars } from './create-file-dialog.models';
 
 @Component({
   selector: 'app-create-file-dialog',

@@ -8,7 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { CreateFileDialogModule } from '../create-file-dialog/create-file-dialog.module';
+import { CreateFileDialogModule } from '../create-file-dialog';
 import { MonacoEditorModule } from '../monaco-editor';
 import { EavWindow } from '../shared/models/eav-window.model';
 import { Context } from '../shared/services/context';
