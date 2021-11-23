@@ -1,17 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatRippleModule } from '@angular/material/core';
 import { MatDialogModule } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { CreateFileDialogModule } from '../create-file-dialog/create-file-dialog.module';
 import { MonacoEditorModule } from '../monaco-editor';
 import { EavWindow } from '../shared/models/eav-window.model';
 import { Context } from '../shared/services/context';
@@ -25,7 +22,6 @@ import { ObjectToArrayPipe } from './code-snippets/object-to-array.pipe';
 import { CodeTemplatesComponent } from './code-templates/code-templates.component';
 import { DepthPaddingPipe } from './code-templates/depth-padding.pipe';
 import { SortItemsPipe } from './code-templates/order-items.pipe';
-import { CreateFileDialogComponent } from './create-file-dialog/create-file-dialog.component';
 import { SnippetsService } from './services/snippets.service';
 import { SourceService } from './services/source.service';
 
@@ -46,7 +42,6 @@ export function translateLoaderFactoryCode(http: HttpClient) {
     DepthPaddingPipe,
     SortItemsPipe,
     CodeAndEditionWarningsComponent,
-    CreateFileDialogComponent,
   ],
   imports: [
     CodeEditorRoutingModule,
@@ -56,14 +51,11 @@ export function translateLoaderFactoryCode(http: HttpClient) {
     MatButtonModule,
     MatIconModule,
     MatSnackBarModule,
-    MatSelectModule,
     MatRippleModule,
     TranslateModule.forChild(buildTranslateConfiguration(translateLoaderFactoryCode)),
     MonacoEditorModule,
     MatProgressSpinnerModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
+    CreateFileDialogModule,
   ],
   providers: [
     Context,

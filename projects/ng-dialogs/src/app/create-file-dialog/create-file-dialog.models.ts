@@ -1,5 +1,5 @@
 import { AbstractControl } from '@angular/forms';
-import { PredefinedTemplate } from '../models/predefined-template.model';
+import { PredefinedTemplate } from '../code-editor/models/predefined-template.model';
 
 export interface CreateFileDialogData {
   folder?: string;
