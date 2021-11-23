@@ -18,11 +18,12 @@ export class CreateFileDialogComponent implements OnInit, OnDestroy {
 
   form: FormGroup;
   controls: CreateFileFormControls;
+  all = 'all' as const;
+  noTemplate = '' as const;
   showPreview = false;
   templateVars$: Observable<CreateFileTemplateVars>;
 
   private templates$: BehaviorSubject<PredefinedTemplate[]>;
-  private all = 'All' as const;
   private subscription: Subscription;
 
   constructor(
@@ -61,7 +62,7 @@ export class CreateFileDialogComponent implements OnInit, OnDestroy {
 
     const result: CreateFileDialogResult = {
       name: `${folder}${folder ? '/' : ''}${name}`.replace(/\/{2,}/g, ''),
-      templateKey: formValues.templateKey,
+      templateKey: formValues.templateKey !== this.noTemplate ? formValues.templateKey : undefined,
     };
     this.closeDialog(result);
   }
@@ -74,9 +75,9 @@ export class CreateFileDialogComponent implements OnInit, OnDestroy {
 
   private buildForm(): void {
     this.form = new FormGroup({
-      platform: new FormControl(this.all, Validators.required),
-      purpose: new FormControl(this.all, Validators.required),
-      templateKey: new FormControl(null, Validators.required),
+      platform: new FormControl(this.all),
+      purpose: new FormControl(this.all),
+      templateKey: new FormControl(this.noTemplate),
       name: new FormControl(null, Validators.required),
       finalName: new FormControl({ value: null, disabled: true }),
       folder: new FormControl({ value: this.dialogData.folder, disabled: true }),
@@ -109,9 +110,7 @@ export class CreateFileDialogComponent implements OnInit, OnDestroy {
   private buildTemplateVars(): void {
     const platforms$ = this.templates$.pipe(
       map(templates => {
-        const platformsMap: Record<string, string> = {
-          [this.all]: this.all,
-        };
+        const platformsMap: Record<string, string> = {};
         templates.forEach(template => {
           template.Platforms.forEach(platform => {
             platformsMap[platform] = platform;
@@ -122,9 +121,7 @@ export class CreateFileDialogComponent implements OnInit, OnDestroy {
     );
     const purposes$ = this.templates$.pipe(
       map(templates => {
-        const purposesMap: Record<string, string> = {
-          [this.all]: this.all,
-        };
+        const purposesMap: Record<string, string> = {};
         templates.forEach(template => {
           purposesMap[template.Purpose] = template.Purpose;
         });

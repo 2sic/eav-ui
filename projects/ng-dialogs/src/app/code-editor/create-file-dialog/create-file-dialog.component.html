@@ -11,32 +11,26 @@
         <div class="multiple-field">
           <mat-form-field appearance="standard" color="accent">
             <mat-label>Platform</mat-label>
-            <mat-select formControlName="platform" required
-              [placeholder]="!data.platforms.length ? 'No items found' : ''">
+            <mat-select formControlName="platform">
+              <mat-option [value]="all">All</mat-option>
               <mat-option *ngFor="let platform of data.platforms" [value]="platform">
                 {{ platform }}
               </mat-option>
             </mat-select>
           </mat-form-field>
-          <app-field-hint *ngIf="controls.platform.touched && controls.platform.errors?.required" [isError]="true">
-            This field is required
-          </app-field-hint>
         </div>
 
         <!-- Purpose -->
         <div class="multiple-field">
           <mat-form-field appearance="standard" color="accent">
             <mat-label>Purpose</mat-label>
-            <mat-select formControlName="purpose" required
-              [placeholder]="!data.purposes.length ? 'No items found' : ''">
+            <mat-select formControlName="purpose">
+              <mat-option [value]="all">All</mat-option>
               <mat-option *ngFor="let purpose of data.purposes" [value]="purpose">
                 {{ purpose }}
               </mat-option>
             </mat-select>
           </mat-form-field>
-          <app-field-hint *ngIf="controls.purpose.touched && controls.purpose.errors?.required" [isError]="true">
-            This field is required
-          </app-field-hint>
         </div>
       </div>
 
@@ -44,16 +38,13 @@
       <div class="field-container">
         <mat-form-field appearance="standard" color="accent">
           <mat-label>Template</mat-label>
-          <mat-select formControlName="templateKey" required
-            [placeholder]="!data.templates.length ? 'No items found' : ''">
+          <mat-select formControlName="templateKey">
+            <mat-option [value]="noTemplate">No template</mat-option>
             <mat-option *ngFor="let template of data.templates" [value]="template.Key">
               {{ template.Name }}
             </mat-option>
           </mat-select>
         </mat-form-field>
-        <app-field-hint *ngIf="controls.templateKey.touched && controls.templateKey.errors?.required" [isError]="true">
-          This field is required
-        </app-field-hint>
       </div>
 
       <!-- Name -->
