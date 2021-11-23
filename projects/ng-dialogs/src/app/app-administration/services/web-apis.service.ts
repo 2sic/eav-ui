@@ -28,9 +28,15 @@ export class WebApisService {
     );
   }
 
-  create(name: string) {
+  create(name: string, templateKey?: string) {
     return this.http.post<boolean>(this.dnnContext.$2sxc.http.apiUrl(webApiAppFileCreate), {}, {
-      params: { appId: this.context.appId.toString(), purpose: 'api', global: 'false', path: `api/${name}` },
+      params: {
+        appId: this.context.appId.toString(),
+        global: 'false',
+        purpose: 'api',
+        path: `api/${name}`,
+        ...(templateKey && { templateKey }),
+      },
     });
   }
 

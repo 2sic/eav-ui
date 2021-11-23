@@ -3,6 +3,7 @@ import { PredefinedTemplate } from '../code-editor/models/predefined-template.mo
 
 export interface CreateFileDialogData {
   folder?: string;
+  purposeForce?: string;
 }
 
 export interface CreateFileTemplateVars {

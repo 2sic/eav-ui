@@ -5,6 +5,7 @@ export interface PredefinedTemplate {
   Key: string;
   Name: string;
   Platforms: string[];
-  Prefix: string;
+  Prefix?: string;
   Purpose: string;
+  Suffix?: string;
 }

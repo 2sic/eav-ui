@@ -54,7 +54,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.subscription = new Subscription();
     this.templates$ = new BehaviorSubject<string[]>([]);
-    const initialViewKey = this.route.snapshot.paramMap.get('codeItemKey');
+    const initialViewKey = decodeURIComponent(this.route.snapshot.paramMap.get('codeItemKey'));
     this.activeView$ = new BehaviorSubject(initialViewKey);
     this.openViews$ = new BehaviorSubject([initialViewKey]);
     this.viewInfos$ = new BehaviorSubject<ViewInfo[]>([]);

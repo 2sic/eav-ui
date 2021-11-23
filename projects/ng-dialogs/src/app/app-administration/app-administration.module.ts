@@ -20,6 +20,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { EcoFabSpeedDialModule } from '@ecodev/fab-speed-dial';
 import { ContentExportService } from '../content-export/services/content-export.service';
 import { ContentItemsService } from '../content-items/services/content-items.service';
+import { CreateFileDialogModule } from '../create-file-dialog';
 import { Context } from '../shared/services/context';
 import { DialogService } from '../shared/services/dialog.service';
 import { SharedComponentsModule } from '../shared/shared-components.module';
@@ -119,6 +120,7 @@ import { WebApiComponent } from './web-api/web-api.component';
     MatSnackBarModule,
     MatMenuModule,
     MatBadgeModule,
+    CreateFileDialogModule,
   ],
   providers: [
     Context,

@@ -1,12 +1,12 @@
 import { AllCommunityModules, GridOptions } from '@ag-grid-community/all-modules';
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
-import { SanitizeHelper } from '../../../../../edit/shared/helpers';
+import { CreateFileDialogComponent, CreateFileDialogData, CreateFileDialogResult } from '../../create-file-dialog';
 import { GoToDevRest } from '../../dev-rest/go-to-dev-rest';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
-import { defaultControllerName } from '../../shared/constants/file-names.constants';
 import { DialogService } from '../../shared/services/dialog.service';
 import { WebApiActionsComponent } from '../ag-grid-components/web-api-actions/web-api-actions.component';
 import { WebApiActionsParams } from '../ag-grid-components/web-api-actions/web-api-actions.models';
@@ -54,6 +54,8 @@ export class WebApiComponent implements OnInit, OnDestroy {
     private dialogService: DialogService,
     private router: Router,
     private route: ActivatedRoute,
+    private dialog: MatDialog,
+    private viewContainerRef: ViewContainerRef,
   ) { }
 
   ngOnInit() {
@@ -64,29 +66,31 @@ export class WebApiComponent implements OnInit, OnDestroy {
     this.webApis$.complete();
   }
 
-  addController() {
-    let name = prompt('Controller name:', defaultControllerName);
-    if (name === null || name.length === 0) { return; }
+  createController(): void {
+    const data: CreateFileDialogData = {
+      purposeForce: 'Api',
+    };
+    const dialogRef = this.dialog.open(CreateFileDialogComponent, {
+      autoFocus: false,
+      data,
+      viewContainerRef: this.viewContainerRef,
+      width: '650px',
+    });
 
-    name = SanitizeHelper.sanitizePath(name);
-    name = name.replace(/\s/g, ''); // remove all whitespaces
-    // find name without extension
-    let nameLower = name.toLocaleLowerCase();
-    const extIndex = nameLower.lastIndexOf('.cs');
-    if (extIndex > 0) {
-      nameLower = nameLower.substring(0, extIndex);
-    }
-    const typeIndex = nameLower.lastIndexOf('controller');
-    if (typeIndex > 0) {
-      nameLower = nameLower.substring(0, typeIndex);
-    }
-    // uppercase first letter, take other letters as is and append extension
-    name = name.charAt(0).toLocaleUpperCase() + name.substring(1, nameLower.length) + 'Controller.cs';
+    dialogRef.afterClosed().subscribe((result?: CreateFileDialogResult) => {
+      if (!result) { return; }
 
-    this.snackBar.open('Saving...');
-    this.webApisService.create(name).subscribe(res => {
-      this.snackBar.open('Saved', null, { duration: 2000 });
-      this.fetchWebApis();
+      if (result.name.endsWith('Controller.cs') && !/^[A-Z][a-zA-Z0-9]*Controller\.cs$/g.test(result.name)) {
+        const message = `"${result.name}" is invalid controller name. Should be something like "MyController.cs"`;
+        this.snackBar.open(message, null, { duration: 5000 });
+        return;
+      }
+
+      this.snackBar.open('Saving...');
+      this.webApisService.create(result.name, result.templateKey).subscribe(() => {
+        this.snackBar.open('Saved', null, { duration: 2000 });
+        this.fetchWebApis();
+      });
     });
   }
 

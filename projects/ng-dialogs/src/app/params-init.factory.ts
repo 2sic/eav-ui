@@ -73,7 +73,7 @@ export function paramsInitFactory(injector: Injector): () => void {
         case DialogTypeConstants.Develop:
           const codeItems: EditItem[] | SourceItem[] = JSON.parse(items);
           const codeItemKey = (codeItems[0] as EditItem).EntityId || (codeItems[0] as SourceItem).Path;
-          router.navigate([`${zoneId}/${appId}/code/${codeItemKey}`]);
+          router.navigate([`${zoneId}/${appId}/code/${encodeURIComponent(codeItemKey)}`]);
           break;
         case DialogTypeConstants.PipelineDesigner:
           const pipelineId = sessionStorage.getItem(keyPipelineId);
