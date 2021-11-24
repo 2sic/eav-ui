@@ -1,3 +1,15 @@
+.dialog-title-box {
+  justify-content: flex-start;
+  line-height: normal;
+  white-space: nowrap;
+  overflow-x: auto;
+
+  .file-name {
+    margin-left: 8px;
+    background-color: lightgrey;
+  }
+}
+
 .field-container {
 
   &:not(:first-of-type) {
@@ -17,12 +29,17 @@
   }
 }
 
-.spacer {
-  flex: 1;
+.dialog-form-content {
+  flex-shrink: 0;
+}
+
+.dialog-form-actions {
+  flex-shrink: 0;
 }
 
 pre {
-  height: 200px;
+  flex-grow: 1;
+  flex-shrink: 1;
   font-family: monospace;
 }
 

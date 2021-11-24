@@ -1,3 +1,8 @@
+export interface PredefinedTemplatesResponse {
+  Default: string;
+  Templates: PredefinedTemplate[];
+}
+
 export interface PredefinedTemplate {
   Body: string;
   Description: string;

@@ -1,6 +1,13 @@
 <ng-container *ngIf="templateVars$ | async as data">
   <div mat-dialog-title>
-    <div class="dialog-title-box">Create file</div>
+    <div class="dialog-title-box hide-scrollbar">
+      <span>Create file</span>
+      <span class="file-name">{{
+        controls.finalName.value
+        ? (controls.folder.value ? controls.folder.value + '/' : '') + controls.finalName.value
+        : ''
+        }}</span>
+    </div>
   </div>
 
   <form [formGroup]="form" class="dialog-form">
@@ -57,25 +64,15 @@
           This field is required
         </app-field-hint>
       </div>
-
-      <!-- Final Name -->
-      <div class="field-container">
-        <mat-form-field appearance="standard" color="accent">
-          <mat-label>Final Name</mat-label>
-          <input matInput type="text" formControlName="finalName">
-        </mat-form-field>
-      </div>
     </div>
 
     <div class="dialog-form-actions">
-      <button mat-raised-button type="button" (click)="togglePreview()" [disabled]="!data.preview">Preview</button>
-      <div class="spacer"></div>
       <button mat-raised-button type="button" (click)="closeDialog()">Cancel</button>
       <button mat-raised-button type="button" color="accent" [disabled]="!form.valid" (click)="confirm()">
-        Confirm
+        Create
       </button>
     </div>
 
-    <pre class="fancy-scrollbar-light" *ngIf="showPreview && data.preview">{{ data.preview }}</pre>
+    <pre class="fancy-scrollbar-light" *ngIf="data.preview">{{ data.preview }}</pre>
   </form>
 </ng-container>

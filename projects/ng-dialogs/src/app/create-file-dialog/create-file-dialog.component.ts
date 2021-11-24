@@ -2,7 +2,7 @@ import { Component, HostBinding, Inject, OnDestroy, OnInit } from '@angular/core
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
+import { map, startWith, tap } from 'rxjs/operators';
 import { CreateFileDialogData, CreateFileDialogResult, CreateFileFormControls, CreateFileFormValues, CreateFileTemplateVars } from '.';
 import { SanitizeHelper } from '../../../../edit/shared/helpers';
 import { PredefinedTemplate } from '../code-editor/models/predefined-template.model';
@@ -20,7 +20,6 @@ export class CreateFileDialogComponent implements OnInit, OnDestroy {
   controls: CreateFileFormControls;
   all = 'all' as const;
   noTemplate = '' as const;
-  showPreview = false;
   templateVars$: Observable<CreateFileTemplateVars>;
 
   private templates$: BehaviorSubject<PredefinedTemplate[]>;
@@ -50,14 +49,10 @@ export class CreateFileDialogComponent implements OnInit, OnDestroy {
     this.dialogRef.close(result);
   }
 
-  togglePreview(): void {
-    this.showPreview = !this.showPreview;
-  }
-
   confirm(): void {
     const formValues: CreateFileFormValues = this.form.getRawValue();
 
-    const folder = (formValues.folder ?? '').trim();
+    const folder = formValues.folder.trim();
     const name = SanitizeHelper.sanitizePath(formValues.finalName.trim());
 
     const result: CreateFileDialogResult = {
@@ -68,8 +63,9 @@ export class CreateFileDialogComponent implements OnInit, OnDestroy {
   }
 
   private fetchTemplates(): void {
-    this.sourceService.getPredefinedTemplates().subscribe(templates => {
-      this.templates$.next(templates);
+    this.sourceService.getPredefinedTemplates().subscribe(response => {
+      this.controls.templateKey.patchValue(response.Default);
+      this.templates$.next(response.Templates);
     });
   }
 
@@ -80,7 +76,7 @@ export class CreateFileDialogComponent implements OnInit, OnDestroy {
       templateKey: new FormControl(this.noTemplate),
       name: new FormControl(null, Validators.required),
       finalName: new FormControl({ value: null, disabled: true }),
-      folder: new FormControl({ value: this.dialogData.folder, disabled: true }),
+      folder: new FormControl({ value: this.dialogData.folder ?? '', disabled: true }),
     });
 
     this.controls = this.form.controls as any;
@@ -144,6 +140,11 @@ export class CreateFileDialogComponent implements OnInit, OnDestroy {
           return platformMatch && purposeMatch;
         });
         return filtered;
+      }),
+      tap(templates => {
+        if (!templates.some(t => t.Key === this.controls.templateKey.value)) {
+          this.controls.templateKey.patchValue(templates[0]?.Key ?? this.noTemplate);
+        }
       }),
     );
     const preview$ = combineLatest([
