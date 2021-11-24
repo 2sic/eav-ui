@@ -11,6 +11,7 @@ export interface DataSource {
   Out: string[];
   PartAssemblyAndType: string;
   PrimaryType: string;
+  TypeNameForUi: string;
   UiHint: string;
 }
 

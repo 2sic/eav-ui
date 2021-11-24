@@ -83,6 +83,7 @@ export class QueryDefinitionService {
           Out: undefined,
           PartAssemblyAndType: outDs.PartAssemblyAndType,
           PrimaryType: outDs.PrimaryType,
+          TypeNameForUi: undefined,
           UiHint: undefined,
         };
         dataSources.push(outDsConst);
