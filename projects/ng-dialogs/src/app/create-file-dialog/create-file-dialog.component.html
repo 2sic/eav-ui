@@ -2,7 +2,10 @@
   <div mat-dialog-title>
     <div class="dialog-title-box hide-scrollbar">
       <span>Create file</span>
-      <span class="file-name">{{ controls.finalName.value }}</span>
+      <span class="file-name">{{
+        controls.finalName.value
+        || (controls.folder.value ? controls.folder.value.trim() + '/' : '')
+        }}</span>
     </div>
   </div>
 
@@ -69,6 +72,11 @@
       </button>
     </div>
 
-    <pre class="fancy-scrollbar-light" *ngIf="data.preview">{{ data.preview }}</pre>
+    <ng-container *ngIf="data.preview">
+      <div class="preview-label-box">
+        <label class="preview-label">Preview</label>
+      </div>
+      <pre class="fancy-scrollbar-light">{{ data.preview }}</pre>
+    </ng-container>
   </form>
 </ng-container>
