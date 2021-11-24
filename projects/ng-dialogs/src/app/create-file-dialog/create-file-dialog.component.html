@@ -1,7 +1,7 @@
 <ng-container *ngIf="templateVars$ | async as data">
   <div mat-dialog-title>
     <div class="dialog-title-box hide-scrollbar">
-      <span>Create file</span>
+      <span>Create</span>
       <span class="file-name">{{
         controls.finalName.value
         || (controls.folder.value ? controls.folder.value.trim() + '/' : '')

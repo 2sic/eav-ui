@@ -1,7 +1,9 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { InputTypeConstants } from '../../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
+import { CreateFileDialogComponent, CreateFileDialogData, CreateFileDialogResult } from '../../../../../ng-dialogs/src/app/create-file-dialog';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { FieldMask, GeneralHelpers } from '../../../../shared/helpers';
 import { AssetsService, EavService, FieldsSettingsService } from '../../../../shared/services';
@@ -30,7 +32,13 @@ export class StringTemplatePickerComponent extends BaseComponent<string> impleme
   /** Reset only after templates have been fetched once */
   private resetIfNotFound = false;
 
-  constructor(eavService: EavService, fieldsSettingsService: FieldsSettingsService, private assetsService: AssetsService) {
+  constructor(
+    eavService: EavService,
+    fieldsSettingsService: FieldsSettingsService,
+    private assetsService: AssetsService,
+    private dialog: MatDialog,
+    private viewContainerRef: ViewContainerRef,
+  ) {
     super(eavService, fieldsSettingsService);
   }
 
@@ -40,7 +48,7 @@ export class StringTemplatePickerComponent extends BaseComponent<string> impleme
 
     // If we have a configured type, use that, otherwise use the field mask
     // We'll still use the field-mask (even though it wouldn't be needed) to keep the logic simple
-    const typeFilterMask = (this.settings$.value as any).FileType ?? '[Type]';
+    const typeFilterMask = this.settings$.value.FileType ?? '[Type]';
 
     // set change-watchers to the other values
     this.typeMask = new FieldMask(typeFilterMask, this.group.controls, this.setFileConfig.bind(this), null);
@@ -106,40 +114,27 @@ export class StringTemplatePickerComponent extends BaseComponent<string> impleme
   }
 
   createTemplate() {
-    let name = prompt('Enter new file name', this.activeSpec.suggestion); // todo: i18n
-    if (!name) { return; }
+    const data: CreateFileDialogData = {
+      purposeForce: 'Template',
+    };
+    const dialogRef = this.dialog.open(CreateFileDialogComponent, {
+      autoFocus: false,
+      data,
+      viewContainerRef: this.viewContainerRef,
+      width: '650px',
+    });
+    dialogRef.afterClosed().subscribe((result?: CreateFileDialogResult) => {
+      if (!result) { return; }
 
-    // 1. check for folders
-    let path = '';
-    name = name.replace('\\', '/');
-    const foundSlash = name.lastIndexOf('/');
-    if (foundSlash > -1) {
-      path = name.substring(0, foundSlash + 1); // path with slash
-      name = name.substring(foundSlash + 1);
-    }
-
-    // 2. check if extension already provided, otherwise or if not perfect, just attach default
-    if (!name.endsWith(this.activeSpec.ext)) {
-      name += this.activeSpec.ext;
-    }
-
-    // 3. check if cshtmls have a "_" in the file name (not folder, must be the file name part)
-    if (this.activeSpec.prefix !== '' && name[0] !== this.activeSpec.prefix) {
-      name = this.activeSpec.prefix + name;
-    }
-
-    const fullPath = path + name;
-
-    // 4. tell service to create it
-    this.assetsService.create(fullPath, this.global, this.activeSpec.purpose).subscribe(res => {
-      if (res === false) {
-        alert('Server reported that create failed - the file probably already exists'); // todo: i18n
-      } else {
-        this.templates.push(fullPath);
-        this.setTemplateOptions();
-        GeneralHelpers.patchControlValue(this.control, fullPath);
-      }
+      this.assetsService.create(result.name, this.global, this.activeSpec.purpose).subscribe(res => {
+        if (res === false) {
+          alert('Server reported that create failed - the file probably already exists');
+        } else {
+          this.templates.push(result.name);
+          this.setTemplateOptions();
+          GeneralHelpers.patchControlValue(this.control, result.name);
+        }
+      });
     });
   }
-
 }

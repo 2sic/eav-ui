@@ -154,7 +154,7 @@ export class CreateFileDialogComponent implements OnInit, OnDestroy {
         return filtered;
       }),
       tap(templates => {
-        if (!templates.some(t => t.Key === this.controls.templateKey.value)) {
+        if (this.controls.templateKey.value !== this.noTemplate && !templates.some(t => t.Key === this.controls.templateKey.value)) {
           const newTemplateKey = templates[0]?.Key ?? this.noTemplate;
           if (this.controls.templateKey.value !== newTemplateKey) {
             this.controls.templateKey.patchValue(newTemplateKey);
