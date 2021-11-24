@@ -34,7 +34,7 @@ export class WebApisService {
         appId: this.context.appId.toString(),
         global: 'false',
         purpose: 'api',
-        path: `api/${name}`,
+        path: name,
         ...(templateKey && { templateKey }),
       },
     });

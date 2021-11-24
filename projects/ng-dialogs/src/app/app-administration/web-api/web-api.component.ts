@@ -68,6 +68,7 @@ export class WebApiComponent implements OnInit, OnDestroy {
 
   createController(): void {
     const data: CreateFileDialogData = {
+      folder: 'api',
       purposeForce: 'Api',
     };
     const dialogRef = this.dialog.open(CreateFileDialogComponent, {
@@ -80,10 +81,13 @@ export class WebApiComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe((result?: CreateFileDialogResult) => {
       if (!result) { return; }
 
-      if (result.name.endsWith('Controller.cs') && !/^[A-Z][a-zA-Z0-9]*Controller\.cs$/g.test(result.name)) {
-        const message = `"${result.name}" is invalid controller name. Should be something like "MyController.cs"`;
-        this.snackBar.open(message, null, { duration: 5000 });
-        return;
+      if (result.name.endsWith('Controller.cs')) {
+        const fileName = result.name.substring(result.name.lastIndexOf('/') + 1);
+        if (!/^[A-Z][a-zA-Z0-9]*Controller\.cs$/g.test(fileName)) {
+          const message = `"${fileName}" is invalid controller name. Should be something like "MyController.cs"`;
+          this.snackBar.open(message, null, { duration: 5000 });
+          return;
+        }
       }
 
       this.snackBar.open('Saving...');
