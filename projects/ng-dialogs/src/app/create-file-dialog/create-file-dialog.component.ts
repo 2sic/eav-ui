@@ -2,7 +2,7 @@ import { Component, HostBinding, Inject, OnDestroy, OnInit } from '@angular/core
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
-import { map, startWith, tap } from 'rxjs/operators';
+import { distinctUntilChanged, map, startWith, tap } from 'rxjs/operators';
 import { CreateFileDialogData, CreateFileDialogResult, CreateFileFormControls, CreateFileFormValues, CreateFileTemplateVars } from '.';
 import { SanitizeHelper } from '../../../../edit/shared/helpers';
 import { PredefinedTemplate } from '../code-editor/models/predefined-template.model';
@@ -52,11 +52,8 @@ export class CreateFileDialogComponent implements OnInit, OnDestroy {
   confirm(): void {
     const formValues: CreateFileFormValues = this.form.getRawValue();
 
-    const folder = formValues.folder.trim();
-    const name = SanitizeHelper.sanitizePath(formValues.finalName.trim());
-
     const result: CreateFileDialogResult = {
-      name: `${folder}${folder ? '/' : ''}${name}`.replace(/\/{2,}/g, ''),
+      name: formValues.finalName,
       templateKey: formValues.templateKey !== this.noTemplate ? formValues.templateKey : undefined,
     };
     this.closeDialog(result);
@@ -64,7 +61,9 @@ export class CreateFileDialogComponent implements OnInit, OnDestroy {
 
   private fetchTemplates(): void {
     this.sourceService.getPredefinedTemplates().subscribe(response => {
-      this.controls.templateKey.patchValue(response.Default);
+      if (this.controls.templateKey.value !== response.Default) {
+        this.controls.templateKey.patchValue(response.Default);
+      }
       this.templates$.next(response.Templates);
     });
   }
@@ -86,15 +85,26 @@ export class CreateFileDialogComponent implements OnInit, OnDestroy {
         this.templates$,
         this.controls.templateKey.valueChanges.pipe(
           startWith<string, string>(this.controls.templateKey.value),
+          distinctUntilChanged(),
         ),
         this.controls.name.valueChanges.pipe(
           startWith<string, string>(this.controls.name.value),
+          distinctUntilChanged(),
         ),
-      ]).subscribe(([templates, templateKey, name]) => {
+        this.controls.folder.valueChanges.pipe(
+          startWith<string, string>(this.controls.folder.value),
+          distinctUntilChanged(),
+        ),
+      ]).subscribe(([templates, templateKey, name, folder]) => {
         const template = templates.find(t => t.Key === templateKey);
-        const finalName = name
-          ? `${template?.Prefix ?? ''}${name}${template?.Suffix ?? ''}${template?.Extension ?? ''}`
-          : null;
+
+        let finalName: string = null;
+        if (name) {
+          folder = folder.trim();
+          name = SanitizeHelper.sanitizePath(name.trim());
+          name = `${template?.Prefix ?? ''}${name}${template?.Suffix ?? ''}${template?.Extension ?? ''}`;
+          finalName = `${folder ? `${folder}/` : ''}${name}`.replace(/\/{2,}/g, '/');
+        }
 
         if (this.controls.finalName.value !== finalName) {
           this.controls.finalName.patchValue(finalName);
@@ -128,9 +138,11 @@ export class CreateFileDialogComponent implements OnInit, OnDestroy {
       this.templates$,
       this.controls.platform.valueChanges.pipe(
         startWith<string, string>(this.controls.platform.value),
+        distinctUntilChanged(),
       ),
       this.controls.purpose.valueChanges.pipe(
         startWith<string, string>(this.controls.purpose.value),
+        distinctUntilChanged(),
       ),
     ]).pipe(
       map(([templates, platform, purpose]) => {
@@ -143,7 +155,10 @@ export class CreateFileDialogComponent implements OnInit, OnDestroy {
       }),
       tap(templates => {
         if (!templates.some(t => t.Key === this.controls.templateKey.value)) {
-          this.controls.templateKey.patchValue(templates[0]?.Key ?? this.noTemplate);
+          const newTemplateKey = templates[0]?.Key ?? this.noTemplate;
+          if (this.controls.templateKey.value !== newTemplateKey) {
+            this.controls.templateKey.patchValue(newTemplateKey);
+          }
         }
       }),
     );
@@ -151,6 +166,7 @@ export class CreateFileDialogComponent implements OnInit, OnDestroy {
       this.templates$,
       this.controls.templateKey.valueChanges.pipe(
         startWith<string, string>(this.controls.templateKey.value),
+        distinctUntilChanged(),
       ),
     ]).pipe(
       map(([templates, templateKey]) => templates.find(t => t.Key === templateKey)?.Body),
