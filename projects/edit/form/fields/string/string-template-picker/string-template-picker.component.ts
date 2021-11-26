@@ -101,13 +101,13 @@ export class StringTemplatePickerComponent extends BaseComponent<string> impleme
   }
 
   private setTemplateOptions() {
-    let filtered = this.templates;
     const ext = this.activeSpec.ext;
-    // new feature in v11 - '.code.xxx' files shouldn't be shown, they are code-behind
-    filtered = filtered.filter(template => !template.includes('.code.'));
-    filtered = filtered.filter(template => template.slice(template.length - ext.length) === ext);
+    const filtered = this.templates
+      // new feature in v11 - '.code.xxx' files shouldn't be shown, they are code-behind
+      .filter(template => !/\.code\.[a-zA-Z0-9]+$/.test(template))
+      .filter(template => template.endsWith(ext));
     this.templateOptions$.next(filtered);
-    const resetValue = this.resetIfNotFound && !filtered.find(template => template === this.control.value);
+    const resetValue = this.resetIfNotFound && !filtered.some(template => template === this.control.value);
     if (resetValue) {
       GeneralHelpers.patchControlValue(this.control, '');
     }
@@ -115,7 +115,8 @@ export class StringTemplatePickerComponent extends BaseComponent<string> impleme
 
   createTemplate() {
     const data: CreateFileDialogData = {
-      purposeForce: 'Template',
+      purpose: this.activeSpec.purpose,
+      type: this.activeSpec.type,
     };
     const dialogRef = this.dialog.open(CreateFileDialogComponent, {
       autoFocus: false,
@@ -126,7 +127,7 @@ export class StringTemplatePickerComponent extends BaseComponent<string> impleme
     dialogRef.afterClosed().subscribe((result?: CreateFileDialogResult) => {
       if (!result) { return; }
 
-      this.assetsService.create(result.name, this.global, this.activeSpec.purpose).subscribe(res => {
+      this.assetsService.create(result.name, result.templateKey, this.global).subscribe(res => {
         if (res === false) {
           alert('Server reported that create failed - the file probably already exists');
         } else {

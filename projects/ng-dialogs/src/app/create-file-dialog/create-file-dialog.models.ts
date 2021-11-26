@@ -3,7 +3,8 @@ import { PredefinedTemplate } from '../code-editor/models/predefined-template.mo
 
 export interface CreateFileDialogData {
   folder?: string;
-  purposeForce?: 'Template' | 'Api';
+  purpose?: 'Template' | 'Search' | 'Api';
+  type?: 'Token' | 'Razor';
 }
 
 export interface CreateFileTemplateVars {
@@ -33,5 +34,5 @@ export interface CreateFileFormValues {
 
 export interface CreateFileDialogResult {
   name: string;
-  templateKey?: string;
+  templateKey: string;
 }

@@ -17,14 +17,14 @@ export class AssetsService {
     });
   }
 
-  create(path: string, global: boolean, purpose: string, templateKey?: string) {
+  create(path: string, templateKey: string, global: boolean) {
     return this.http.post<boolean>(this.dnnContext.$2sxc.http.apiUrl(webApiAppFileCreate), {}, {
       params: {
         appId: this.eavService.eavConfig.appId,
         global: global.toString(),
-        purpose,
+        purpose: 'auto',
         path,
-        ...(templateKey && { templateKey }),
+        templateKey,
       },
     });
   }

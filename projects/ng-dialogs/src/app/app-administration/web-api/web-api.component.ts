@@ -69,7 +69,7 @@ export class WebApiComponent implements OnInit, OnDestroy {
   createController(): void {
     const data: CreateFileDialogData = {
       folder: 'api',
-      purposeForce: 'Api',
+      purpose: 'Api',
     };
     const dialogRef = this.dialog.open(CreateFileDialogComponent, {
       autoFocus: false,

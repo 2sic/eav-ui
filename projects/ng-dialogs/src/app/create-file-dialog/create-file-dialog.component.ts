@@ -18,10 +18,9 @@ export class CreateFileDialogComponent implements OnInit, OnDestroy {
 
   form: FormGroup;
   controls: CreateFileFormControls;
-  all = 'all' as const;
-  noTemplate = '' as const;
   templateVars$: Observable<CreateFileTemplateVars>;
 
+  private all = 'All' as const;
   private templates$: BehaviorSubject<PredefinedTemplate[]>;
   private subscription: Subscription;
 
@@ -35,8 +34,8 @@ export class CreateFileDialogComponent implements OnInit, OnDestroy {
     this.subscription = new Subscription();
     this.templates$ = new BehaviorSubject<PredefinedTemplate[]>([]);
 
-    this.fetchTemplates();
     this.buildForm();
+    this.fetchTemplates();
     this.buildTemplateVars();
   }
 
@@ -54,13 +53,13 @@ export class CreateFileDialogComponent implements OnInit, OnDestroy {
 
     const result: CreateFileDialogResult = {
       name: formValues.finalName,
-      templateKey: formValues.templateKey !== this.noTemplate ? formValues.templateKey : undefined,
+      templateKey: formValues.templateKey,
     };
     this.closeDialog(result);
   }
 
   private fetchTemplates(): void {
-    this.sourceService.getPredefinedTemplates().subscribe(response => {
+    this.sourceService.getPredefinedTemplates(this.dialogData.purpose, this.dialogData.type).subscribe(response => {
       if (this.controls.templateKey.value !== response.Default) {
         this.controls.templateKey.patchValue(response.Default);
       }
@@ -71,14 +70,31 @@ export class CreateFileDialogComponent implements OnInit, OnDestroy {
   private buildForm(): void {
     this.form = new FormGroup({
       platform: new FormControl(this.all),
-      purpose: new FormControl({ value: this.dialogData.purposeForce ?? this.all, disabled: this.dialogData.purposeForce != null }),
-      templateKey: new FormControl(this.noTemplate),
+      purpose: new FormControl({ value: this.dialogData.purpose ?? this.all, disabled: this.dialogData.purpose != null }),
+      templateKey: new FormControl(null, Validators.required),
       name: new FormControl(null, Validators.required),
       finalName: new FormControl({ value: null, disabled: true }),
       folder: new FormControl({ value: this.dialogData.folder ?? '', disabled: true }),
     });
 
     this.controls = this.form.controls as any;
+
+    this.subscription.add(
+      combineLatest([
+        this.templates$,
+        this.controls.templateKey.valueChanges.pipe(
+          startWith<string, string>(this.controls.templateKey.value),
+          distinctUntilChanged(),
+        ),
+      ]).subscribe(([templates, templateKey]) => {
+        const template = templates.find(t => t.Key === templateKey);
+        const suggestedName = template?.SuggestedFileName ?? null;
+
+        if (this.controls.name.value !== suggestedName) {
+          this.controls.name.patchValue(suggestedName);
+        }
+      })
+    );
 
     this.subscription.add(
       combineLatest([
@@ -116,9 +132,11 @@ export class CreateFileDialogComponent implements OnInit, OnDestroy {
   private buildTemplateVars(): void {
     const platforms$ = this.templates$.pipe(
       map(templates => {
-        const platformsMap: Record<string, string> = {};
+        const platformsMap: Record<string, string> = {
+          [this.all]: this.all,
+        };
         templates.forEach(template => {
-          template.Platforms.forEach(platform => {
+          template.Platforms?.forEach(platform => {
             platformsMap[platform] = platform;
           });
         });
@@ -127,7 +145,9 @@ export class CreateFileDialogComponent implements OnInit, OnDestroy {
     );
     const purposes$ = this.templates$.pipe(
       map(templates => {
-        const purposesMap: Record<string, string> = {};
+        const purposesMap: Record<string, string> = {
+          [this.all]: this.all,
+        };
         templates.forEach(template => {
           purposesMap[template.Purpose] = template.Purpose;
         });
@@ -147,15 +167,15 @@ export class CreateFileDialogComponent implements OnInit, OnDestroy {
     ]).pipe(
       map(([templates, platform, purpose]) => {
         const filtered = templates.filter(template => {
-          const platformMatch = platform === this.all || template.Platforms.includes(platform);
+          const platformMatch = platform === this.all || (template.Platforms?.includes(platform) ?? false);
           const purposeMatch = purpose === this.all || template.Purpose === purpose;
           return platformMatch && purposeMatch;
         });
         return filtered;
       }),
       tap(templates => {
-        if (this.controls.templateKey.value !== this.noTemplate && !templates.some(t => t.Key === this.controls.templateKey.value)) {
-          const newTemplateKey = templates[0]?.Key ?? this.noTemplate;
+        if (!templates.some(t => t.Key === this.controls.templateKey.value)) {
+          const newTemplateKey = templates[0]?.Key ?? null;
           if (this.controls.templateKey.value !== newTemplateKey) {
             this.controls.templateKey.patchValue(newTemplateKey);
           }

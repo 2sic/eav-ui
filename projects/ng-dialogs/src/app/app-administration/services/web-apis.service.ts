@@ -28,14 +28,14 @@ export class WebApisService {
     );
   }
 
-  create(name: string, templateKey?: string) {
+  create(path: string, templateKey: string) {
     return this.http.post<boolean>(this.dnnContext.$2sxc.http.apiUrl(webApiAppFileCreate), {}, {
       params: {
         appId: this.context.appId.toString(),
         global: 'false',
-        purpose: 'api',
-        path: name,
-        ...(templateKey && { templateKey }),
+        purpose: 'auto',
+        path,
+        templateKey,
       },
     });
   }

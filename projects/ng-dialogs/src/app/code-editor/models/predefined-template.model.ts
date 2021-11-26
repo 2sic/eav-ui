@@ -9,8 +9,9 @@ export interface PredefinedTemplate {
   Extension: string;
   Key: string;
   Name: string;
-  Platforms: string[];
+  Platforms?: string[];
   Prefix?: string;
   Purpose: string;
   Suffix?: string;
+  SuggestedFileName: string;
 }

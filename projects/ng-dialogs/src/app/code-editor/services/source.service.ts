@@ -54,18 +54,23 @@ export class SourceService {
     });
   }
 
-  getPredefinedTemplates(): Observable<PredefinedTemplatesResponse> {
-    return this.http.get<PredefinedTemplatesResponse>(this.dnnContext.$2sxc.http.apiUrl(webApiAppFilesPredefinedTemplates));
+  getPredefinedTemplates(purpose?: 'Template' | 'Search' | 'Api', type?: 'Token' | 'Razor'): Observable<PredefinedTemplatesResponse> {
+    return this.http.get<PredefinedTemplatesResponse>(this.dnnContext.$2sxc.http.apiUrl(webApiAppFilesPredefinedTemplates), {
+      params: {
+        ...(purpose && { purpose }),
+        ...(type && { type }),
+      },
+    });
   }
 
-  createTemplate(name: string, templateKey?: string): Observable<boolean> {
+  createTemplate(path: string, templateKey: string): Observable<boolean> {
     return this.http.post<boolean>(this.dnnContext.$2sxc.http.apiUrl(webApiAppFileCreate), {}, {
       params: {
         appId: this.context.appId.toString(),
         global: this.isShared,
         purpose: 'auto',
-        path: name,
-        ...(templateKey && { templateKey }),
+        path,
+        templateKey,
       },
     });
   }

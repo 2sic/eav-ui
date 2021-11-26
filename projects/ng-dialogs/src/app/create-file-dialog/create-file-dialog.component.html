@@ -18,7 +18,6 @@
           <mat-form-field appearance="standard" color="accent">
             <mat-label>Platform</mat-label>
             <mat-select formControlName="platform">
-              <mat-option [value]="all">All</mat-option>
               <mat-option *ngFor="let platform of data.platforms" [value]="platform">
                 {{ platform }}
               </mat-option>
@@ -31,7 +30,6 @@
           <mat-form-field appearance="standard" color="accent">
             <mat-label>Purpose</mat-label>
             <mat-select formControlName="purpose">
-              <mat-option [value]="all">All</mat-option>
               <mat-option *ngFor="let purpose of data.purposes" [value]="purpose">
                 {{ purpose }}
               </mat-option>
@@ -45,7 +43,6 @@
         <mat-form-field appearance="standard" color="accent">
           <mat-label>Template</mat-label>
           <mat-select formControlName="templateKey">
-            <mat-option [value]="noTemplate">No template</mat-option>
             <mat-option *ngFor="let template of data.templates" [value]="template.Key">
               {{ template.Name }}
             </mat-option>
