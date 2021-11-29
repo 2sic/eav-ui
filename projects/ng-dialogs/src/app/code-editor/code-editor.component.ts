@@ -290,7 +290,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
 
     if (codeFile || otherEditions) {
       const snackBarData: CodeAndEditionWarningsSnackBarData = {
-        fileName: view.FileName,
+        fileName: fullName,
         codeFile,
         edition: this.urlItems.find(i => i.EntityId?.toString() === viewKey && i.Path === view.FileName)?.Edition,
         otherEditions,
