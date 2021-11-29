@@ -10,10 +10,13 @@ import { Context } from './context';
 export class DialogService {
   constructor(private context: Context) { }
 
-  openCodeFile(path: string, isShared = false) {
+  openCodeFile(path: string, templateId?: number, isShared = false) {
     const dialog = DialogTypeConstants.Develop;
     const form: EditForm = {
-      items: [{ Path: path }]
+      items: [{
+        Path: path,
+        ...(templateId != null && { EntityId: templateId }),
+      }]
     };
 
     const hashParams: DialogHashParams = {

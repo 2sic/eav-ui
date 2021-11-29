@@ -7,6 +7,8 @@ import { BehaviorSubject, combineLatest, forkJoin, fromEvent, Observable, of, Su
 import { map, mergeMap, share } from 'rxjs/operators';
 import { CreateFileDialogComponent, CreateFileDialogData, CreateFileDialogResult } from '../create-file-dialog';
 import { MonacoEditorComponent } from '../monaco-editor';
+import { keyItems } from '../shared/constants/session.constants';
+import { SourceItem } from '../shared/models/edit-form.model';
 import { Context } from '../shared/services/context';
 import { CodeAndEditionWarningsComponent } from './code-and-edition-warnings/code-and-edition-warnings.component';
 import { CodeAndEditionWarningsSnackBarData } from './code-and-edition-warnings/code-and-edition-warnings.models';
@@ -36,6 +38,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
   private openViews$: BehaviorSubject<string[]>;
   private viewInfos$: BehaviorSubject<ViewInfo[]>;
   private subscription: Subscription;
+  private urlItems: SourceItem[];
 
   constructor(
     private context: Context,
@@ -49,14 +52,22 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
     private viewContainerRef: ViewContainerRef,
   ) {
     this.context.init(this.route);
+    const codeItems: SourceItem[] = JSON.parse(sessionStorage.getItem(keyItems));
+    codeItems.forEach(codeItem => {
+      // remove leading "/" from path
+      if (codeItem.Path.startsWith('/')) {
+        codeItem.Path = codeItem.Path.substring(1);
+      }
+    });
+    this.urlItems = codeItems;
   }
 
   ngOnInit(): void {
     this.subscription = new Subscription();
     this.templates$ = new BehaviorSubject<string[]>([]);
-    const initialViewKey = decodeURIComponent(this.route.snapshot.paramMap.get('codeItemKey'));
-    this.activeView$ = new BehaviorSubject(initialViewKey);
-    this.openViews$ = new BehaviorSubject([initialViewKey]);
+    const initialViews = this.urlItems.map(item => item.EntityId?.toString() ?? item.Path);
+    this.activeView$ = new BehaviorSubject(initialViews[0]);
+    this.openViews$ = new BehaviorSubject(initialViews);
     this.viewInfos$ = new BehaviorSubject<ViewInfo[]>([]);
 
     this.attachListeners();
@@ -81,7 +92,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
             };
             viewInfos = [...viewInfos, newViewInfo];
 
-            const view$ = this.sourceService.get(viewKey).pipe(share());
+            const view$ = this.sourceService.get(viewKey, this.urlItems).pipe(share());
             const snippets$ = view$.pipe(mergeMap(view => this.snippetsService.getSnippets(view)));
             return forkJoin([of(viewKey), view$, snippets$]);
           })
@@ -100,7 +111,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
               savedCode: view.Code,
             };
             viewInfos1 = [...viewInfos1.slice(0, selectedIndex), newViewInfo, ...viewInfos1.slice(selectedIndex + 1)];
-            this.showCodeAndEditionWarnings(view, templates);
+            this.showCodeAndEditionWarnings(viewKey, view, templates);
           });
 
           this.viewInfos$.next(viewInfos1);
@@ -239,7 +250,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
 
     this.snackBar.open('Saving...');
     const codeToSave = viewInfo.view.Code;
-    this.sourceService.save(viewKey, viewInfo.view).subscribe({
+    this.sourceService.save(viewKey, viewInfo.view, this.urlItems).subscribe({
       next: res => {
         if (!res) {
           this.snackBar.open('Failed', null, { duration: 2000 });
@@ -266,7 +277,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
   }
 
   /** Show info about editions if other files with the same name exist */
-  private showCodeAndEditionWarnings(view: SourceView, files: string[]): void {
+  private showCodeAndEditionWarnings(viewKey: string, view: SourceView, files: string[]): void {
     const pathAndName = view.FileName;
     const pathSeparator = pathAndName.indexOf('/') > -1 ? pathAndName.lastIndexOf('/') + 1 : 0;
     const pathWithSlash = pathSeparator === 0 ? '' : pathAndName.substring(0, pathSeparator);
@@ -281,6 +292,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
       const snackBarData: CodeAndEditionWarningsSnackBarData = {
         fileName: view.FileName,
         codeFile,
+        edition: this.urlItems.find(i => i.EntityId?.toString() === viewKey && i.Path === view.FileName)?.Edition,
         otherEditions,
         openCodeBehind: false,
       };

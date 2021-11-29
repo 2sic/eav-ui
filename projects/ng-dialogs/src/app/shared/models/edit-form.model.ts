@@ -44,6 +44,8 @@ export interface InnerItem {
 }
 
 export interface SourceItem {
+  Edition?: string;
+  EntityId?: number;
   Path: string;
 }
 

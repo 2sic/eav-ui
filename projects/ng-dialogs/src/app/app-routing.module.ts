@@ -19,7 +19,7 @@ const appRoutes: Routes = [
     data: { title: 'App' },
   },
   {
-    path: ':zoneId/:appId/code/:codeItemKey',
+    path: ':zoneId/:appId/code',
     loadChildren: () => import('./code-editor/code-editor.module').then(m => m.CodeEditorModule),
     data: { title: 'Code Editor' },
   },
