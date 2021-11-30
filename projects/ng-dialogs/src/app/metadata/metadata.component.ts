@@ -49,8 +49,11 @@ export class MetadataComponent implements OnInit, OnDestroy {
         sortable: true, sort: 'asc', filter: 'agTextColumnFilter', onCellClicked: this.editMetadata.bind(this),
       },
       {
-        headerName: 'Content Type', field: '_Type.Name', flex: 2, minWidth: 250, cellClass: 'no-outline', sortable: true,
-        filter: 'agTextColumnFilter',
+        headerName: 'Content Type', flex: 2, minWidth: 250, cellClass: 'no-outline', sortable: true,
+        filter: 'agTextColumnFilter', valueGetter: (params) => {
+          const metadata = params.data as Metadata;
+          return `${metadata._Type.Name}${metadata._Type.Description ? ` (${metadata._Type.Description})` : ''}`;
+        },
       },
       {
         width: 40, cellClass: 'secondary-action no-padding', cellRenderer: 'metadataActionsComponent', pinned: 'right',
