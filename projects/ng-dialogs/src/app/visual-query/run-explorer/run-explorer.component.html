@@ -41,6 +41,13 @@
       </ul>
     </div>
 
+    <div class="parameters" *ngIf="visualDesignerData$ | async as visualDesignerData">
+      <mat-slide-toggle color="accent" labelPosition="before" [checked]="visualDesignerData.ShowDataSourceDetails"
+        (change)="showDataSourceDetails($event)">
+        Show DataSource Params
+      </mat-slide-toggle>
+    </div>
+
     <ng-container *ngIf="(warnings$ | async) as warnings">
       <div class="warnings" *ngIf="warnings.length">
         <div class="title">

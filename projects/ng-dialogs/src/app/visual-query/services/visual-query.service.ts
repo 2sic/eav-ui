@@ -7,6 +7,7 @@ import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import cloneDeep from 'lodash-es/cloneDeep';
 import { BehaviorSubject, fromEvent, Subject, Subscription } from 'rxjs';
 import { filter, map, pairwise, startWith } from 'rxjs/operators';
+import { GeneralHelpers } from '../../../../../edit/shared/helpers';
 import { ContentTypesService } from '../../app-administration/services/content-types.service';
 import { MetadataService } from '../../permissions/services/metadata.service';
 import { eavConstants } from '../../shared/constants/eav.constants';
@@ -78,6 +79,14 @@ export class VisualQueryService implements OnDestroy {
     } else if (run) {
       this.runPipeline();
     }
+  }
+
+  showDataSourceDetails(showDetails: boolean) {
+    const pipelineModel = cloneDeep(this.pipelineModel$.value);
+    const visualDesignerData: Record<string, any> = GeneralHelpers.tryParse(pipelineModel.Pipeline.VisualDesignerData) ?? {};
+    visualDesignerData.ShowDataSourceDetails = showDetails;
+    pipelineModel.Pipeline.VisualDesignerData = JSON.stringify(visualDesignerData);
+    this.pipelineModel$.next(pipelineModel);
   }
 
   addDataSource(dataSource: DataSource) {

@@ -29,6 +29,8 @@ export interface Pipeline {
   StreamWiring: StreamWire[];
   StreamsOut: string;
   TestParameters: string;
+  /** This field stores JSON */
+  VisualDesignerData: string;
 }
 
 export interface StreamWire {
