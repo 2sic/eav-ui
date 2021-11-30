@@ -29,7 +29,13 @@ export interface PipelineResultSourceValue {
   Definition?: PipelineDataSource;
   Error: boolean;
   Guid: string;
+  Out: PipelineResultSourceOut[];
   Type: string;
+}
+
+export interface PipelineResultSourceOut {
+  Name: string;
+  Scope: string;
 }
 
 export interface PipelineResultStream {

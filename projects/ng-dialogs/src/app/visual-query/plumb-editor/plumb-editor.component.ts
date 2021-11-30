@@ -1,5 +1,6 @@
 // tslint:disable-next-line:max-line-length
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren, ViewContainerRef } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { eavConstants } from '../../shared/constants/eav.constants';
@@ -35,6 +36,8 @@ export class PlumbEditorComponent implements OnInit, AfterViewInit, OnDestroy {
     private visualQueryService: VisualQueryService,
     private queryDefinitionService: QueryDefinitionService,
     private changeDetectorRef: ChangeDetectorRef,
+    private dialog: MatDialog,
+    private viewContainerRef: ViewContainerRef,
   ) { }
 
   ngOnInit() {
@@ -83,6 +86,9 @@ export class PlumbEditorComponent implements OnInit, AfterViewInit, OnDestroy {
           this.onConnectionsChanged.bind(this),
           this.onDragend.bind(this),
           this.onDebugStream.bind(this),
+          this.dialog,
+          this.viewContainerRef,
+          this.changeDetectorRef,
         );
       })
     );

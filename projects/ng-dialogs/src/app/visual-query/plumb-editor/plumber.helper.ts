@@ -1,7 +1,11 @@
+import { ChangeDetectorRef, ViewContainerRef } from '@angular/core';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { EavWindow } from '../../shared/models/eav-window.model';
 import { DataSource, PipelineDataSource, PipelineModel, PipelineResult, PipelineResultStream, StreamWire, VisualDesignerData } from '../models';
 import { EndpointInfo, PlumbType } from './plumb-editor.models';
+import { RenameStreamComponent } from './rename-stream/rename-stream.component';
+import { RenameStreamDialogData } from './rename-stream/rename-stream.models';
 
 declare const window: EavWindow;
 
@@ -27,6 +31,7 @@ export class Plumber {
   private maxCols = this.lineColors.length - 1;
   private uuidColorMap: Record<string, any> = {};
   private bulkDelete = false;
+  private dialogRef: MatDialogRef<RenameStreamComponent>;
 
   constructor(
     private jsPlumbRoot: HTMLElement,
@@ -35,6 +40,9 @@ export class Plumber {
     private onConnectionsChanged: () => void,
     private onDragend: (pipelineDataSourceGuid: string, position: VisualDesignerData) => void,
     private onDebugStream: (stream: PipelineResultStream) => void,
+    private dialog: MatDialog,
+    private viewContainerRef: ViewContainerRef,
+    private changeDetectorRef: ChangeDetectorRef,
   ) {
     this.instance = window.jsPlumb.getInstance(this.getInstanceDefaults(this.jsPlumbRoot));
     this.instance.batch(() => {
@@ -48,6 +56,7 @@ export class Plumber {
   }
 
   destroy() {
+    this.dialogRef?.close();
     this.instance.reset();
     this.instance.unbindContainer();
   }
@@ -169,13 +178,13 @@ export class Plumber {
 
       // Make DataSource a Target for new Endpoints (if .In is an Array)
       if (dataSource.In) {
-        const targetEndpointUnlimited = this.buildTargetEndpoint();
+        const targetEndpointUnlimited = this.buildTargetEndpoint(pipelineDataSource.EntityGuid);
         targetEndpointUnlimited.maxConnections = -1;
         this.instance.makeTarget(domDataSource, targetEndpointUnlimited);
       }
 
       if (dataSource.DynamicOut) {
-        this.instance.makeSource(domDataSource, this.buildSourceEndpoint(), { filter: '.add-endpoint' });
+        this.instance.makeSource(domDataSource, this.buildSourceEndpoint(pipelineDataSource.EntityGuid), { filter: '.add-endpoint' });
       }
     }
   }
@@ -243,7 +252,9 @@ export class Plumber {
     }
 
     const uuid = domDataSource.id + (isIn ? '_in_' : '_out_') + endpointInfo.name;
-    const model = isIn ? this.buildTargetEndpoint(style) : this.buildSourceEndpoint(style);
+    const model = isIn
+      ? this.buildTargetEndpoint(pipelineDataSource.EntityGuid, style)
+      : this.buildSourceEndpoint(pipelineDataSource.EntityGuid, style);
     // Endpoints on Out-DataSource must be always enabled
     const params = {
       uuid,
@@ -255,32 +266,32 @@ export class Plumber {
     endPoint.getOverlay('endpointLabel').setLabel(endpointInfo.name);
   }
 
-  private buildSourceEndpoint(style?: string) {
+  private buildSourceEndpoint(pipelineDataSourceGuid: string, style?: string) {
     const sourceEndpoint = {
       paintStyle: { fill: 'transparent', radius: 10 },
       cssClass: 'sourceEndpoint ' + style ?? '',
       maxConnections: -1,
       isSource: true,
       anchor: ['Continuous', { faces: ['top'] }],
-      overlays: this.getEndpointOverlays(true)
+      overlays: this.getEndpointOverlays(true, pipelineDataSourceGuid)
     };
     return sourceEndpoint;
   }
 
-  private buildTargetEndpoint(style?: string) {
+  private buildTargetEndpoint(pipelineDataSourceGuid: string, style?: string) {
     const targetEndpoint = {
       paintStyle: { fill: 'transparent', radius: 10 },
       cssClass: 'targetEndpoint ' + style ?? '',
       maxConnections: 1,
       isTarget: true,
       anchor: ['Continuous', { faces: ['bottom'] }],
-      overlays: this.getEndpointOverlays(false),
+      overlays: this.getEndpointOverlays(false, pipelineDataSourceGuid),
       dropOptions: { hoverClass: 'hover', activeClass: 'active' }
     };
     return targetEndpoint;
   }
 
-  private getEndpointOverlays(isSource: boolean) {
+  private getEndpointOverlays(isSource: boolean, pipelineDataSourceGuid: string) {
     return [
       [
         'Label', {
@@ -292,10 +303,23 @@ export class Plumber {
             click: (labelOverlay: PlumbType) => {
               if (!this.pipelineModel.Pipeline.AllowEdit) { return; }
 
-              const newLabel = prompt('Rename stream', labelOverlay.label);
-              if (!newLabel) { return; }
-              labelOverlay.setLabel(newLabel);
-              setTimeout(() => { this.onConnectionsChanged(); });
+              const data: RenameStreamDialogData = {
+                pipelineDataSourceGuid,
+                isSource,
+                label: labelOverlay.label,
+              };
+              this.dialogRef = this.dialog.open(RenameStreamComponent, {
+                autoFocus: false,
+                data,
+                viewContainerRef: this.viewContainerRef,
+                width: '650px',
+              });
+              this.changeDetectorRef.markForCheck();
+              this.dialogRef.afterClosed().subscribe(newLabel => {
+                if (!newLabel) { return; }
+                labelOverlay.setLabel(newLabel);
+                setTimeout(() => { this.onConnectionsChanged(); });
+              });
             },
           },
         }

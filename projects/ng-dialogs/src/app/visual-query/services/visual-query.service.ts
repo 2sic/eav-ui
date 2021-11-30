@@ -25,6 +25,7 @@ export class VisualQueryService implements OnDestroy {
   pipelineModel$ = new BehaviorSubject<PipelineModel>(null);
   dataSources$ = new BehaviorSubject<DataSource[]>(null);
   putEntityCountOnConnections$ = new Subject<PipelineResult>();
+  pipelineResult?: PipelineResult;
 
   private pipelineId = parseInt(this.route.snapshot.paramMap.get('pipelineId'), 10);
   private doRefresh = false;
@@ -198,6 +199,7 @@ export class VisualQueryService implements OnDestroy {
     this.queryDefinitionService.runPipeline(this.pipelineModel$.value.Pipeline.EntityId, top).subscribe({
       next: pipelineResult => {
         this.snackBar.open('Query worked', null, { duration: 2000 });
+        this.pipelineResult = pipelineResult;
         this.showQueryResult(pipelineResult, top);
         console.warn(pipelineResult);
         // push cloned pipelineModel to reset jsPlumb
