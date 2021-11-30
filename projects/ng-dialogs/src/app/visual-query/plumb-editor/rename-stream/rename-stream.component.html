@@ -30,7 +30,7 @@
     <!-- Rich form -->
     <ng-container *ngIf="isSource && pipelineResultExists">
       <!-- Scope -->
-      <ng-container *ngIf="advancedMode">
+      <ng-container *ngIf="advancedMode && guidedLabel">
         <mat-form-field appearance="standard" color="accent">
           <mat-label>Scope</mat-label>
           <mat-select formControlName="scope" [placeholder]="!scopeOptions.length ? 'No items found' : ''">

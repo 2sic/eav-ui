@@ -92,7 +92,10 @@ export class RenameStreamComponent implements OnInit, OnDestroy {
       if (defaultScope) {
         defaultScope.value = eavConstants.scopes.default.name;
       }
-      this.scopeOptions = scopes;
+      const sourceOut = Object.values(this.visualQueryService.pipelineResult.Sources)
+        .find(source => source.Guid === this.dialogData.pipelineDataSourceGuid).Out;
+      const filtered = scopes.filter(s => sourceOut.some(o => o.Scope === s.value));
+      this.scopeOptions = filtered;
       this.changeDetectorRef.markForCheck();
     });
   }
