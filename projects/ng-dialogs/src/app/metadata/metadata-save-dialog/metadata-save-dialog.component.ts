@@ -1,6 +1,7 @@
 import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
+import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map, startWith } from 'rxjs/operators';
 import { ContentType } from '../../app-administration/models';
@@ -21,6 +22,7 @@ export class MetadataSaveDialogComponent implements OnInit, OnDestroy {
   dropdownInsertValue = dropdownInsertValue;
   templateVars$: Observable<MetadataSaveDialogTemplateVars>;
   guidedContentType = true;
+  advancedMode = false;
 
   private contentTypes$: BehaviorSubject<ContentType[]>;
   private scopeOptions$: BehaviorSubject<ScopeOption[]>;
@@ -59,6 +61,10 @@ export class MetadataSaveDialogComponent implements OnInit, OnDestroy {
 
   toggleGuidedContentType(guidedContentType: boolean): void {
     this.guidedContentType = guidedContentType;
+  }
+
+  toggleAdvancedMode(event: MatSlideToggleChange): void {
+    this.advancedMode = event.checked;
   }
 
   confirm(): void {

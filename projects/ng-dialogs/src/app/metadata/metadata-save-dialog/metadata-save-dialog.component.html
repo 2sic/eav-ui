@@ -11,6 +11,23 @@
   <form [formGroup]="form" class="dialog-form">
     <div class="dialog-form-content fancy-scrollbar-light">
 
+      <!-- Scope -->
+      <ng-container *ngIf="advancedMode && guidedContentType">
+        <mat-form-field appearance="standard" color="accent">
+          <mat-label>Scope</mat-label>
+          <mat-select formControlName="scope" [placeholder]="!data.scopeOptions.length ? 'No items found' : ''">
+            <mat-option *ngFor="let scopeOption of data.scopeOptions" [value]="scopeOption.value">
+              {{ scopeOption.name }}
+            </mat-option>
+            <mat-option [value]="dropdownInsertValue">Other...</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <app-field-hint>
+          The scope should almost never be changed -
+          <a href="https://2sxc.org/help?tag=scope" target="_blank" appClickStopPropagation>see help</a>
+        </app-field-hint>
+      </ng-container>
+
       <!-- Content Type of metadata item -->
       <mat-form-field appearance="standard" color="accent">
         <mat-label>Content Type</mat-label>
@@ -38,26 +55,13 @@
         [isError]="true">
         This field is required
       </app-field-hint>
-
-      <!-- Scope -->
-      <ng-container *ngIf="guidedContentType">
-        <mat-form-field appearance="standard" color="accent">
-          <mat-label>Scope</mat-label>
-          <mat-select formControlName="scope" [placeholder]="!data.scopeOptions.length ? 'No items found' : ''">
-            <mat-option *ngFor="let scopeOption of data.scopeOptions" [value]="scopeOption.value">
-              {{ scopeOption.name }}
-            </mat-option>
-            <mat-option [value]="dropdownInsertValue">Other...</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <app-field-hint>
-          The scope should almost never be changed -
-          <a href="https://2sxc.org/help?tag=scope" target="_blank" appClickStopPropagation>see help</a>
-        </app-field-hint>
-      </ng-container>
     </div>
 
     <div class="dialog-form-actions">
+      <mat-slide-toggle color="accent" [checked]="advancedMode" (change)="toggleAdvancedMode($event)">
+        {{ advancedMode ? 'Advanced' : 'Simple' }}
+      </mat-slide-toggle>
+      <div class="spacer"></div>
       <button mat-raised-button type="button" (click)="closeDialog()">Cancel</button>
       <button mat-raised-button type="button" color="accent" [disabled]="!form.valid" (click)="confirm()">
         Confirm

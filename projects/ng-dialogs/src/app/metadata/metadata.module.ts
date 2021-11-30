@@ -9,6 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { EntitiesService } from '../content-items/services/entities.service';
 import { MetadataService } from '../permissions';
@@ -39,6 +40,7 @@ import { MetadataComponent } from './metadata.component';
     MatFormFieldModule,
     MatSelectModule,
     MatInputModule,
+    MatSlideToggleModule,
   ],
   providers: [
     Context,
