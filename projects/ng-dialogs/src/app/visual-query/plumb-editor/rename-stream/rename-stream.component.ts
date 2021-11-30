@@ -64,7 +64,7 @@ export class RenameStreamComponent implements OnInit, OnDestroy {
   private buildForm(): void {
     this.form = new FormGroup({
       label: new FormControl(this.dialogData.label, Validators.required),
-      scope: new FormControl(eavConstants.scopes.default.value),
+      scope: new FormControl(eavConstants.scopes.default.name),
     });
     this.controls = this.form.controls as any;
 
@@ -86,6 +86,12 @@ export class RenameStreamComponent implements OnInit, OnDestroy {
     );
 
     this.contentTypesService.getScopes().subscribe(scopes => {
+      // TODO: hard-coded rename for 2SexyContent scope to be Default to match out-stream scope.
+      // Remove when backend is fixed
+      const defaultScope = scopes.find(s => s.value === eavConstants.scopes.default.value);
+      if (defaultScope) {
+        defaultScope.value = eavConstants.scopes.default.name;
+      }
       this.scopeOptions = scopes;
       this.changeDetectorRef.markForCheck();
     });
