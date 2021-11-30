@@ -1,4 +1,4 @@
-import { PipelineDataSource } from '../models';
+import { DataSourceConfigs, PipelineDataSource } from '../models';
 
 export type PlumbType = any;
 
@@ -6,6 +6,8 @@ export interface PlumbEditorTemplateModel {
   pipelineDataSources: PipelineDataSource[];
   typeInfos: TypeInfos;
   allowEdit: boolean;
+  showDataSourceDetails: boolean;
+  dataSourceConfigs: DataSourceConfigs;
 }
 
 export interface TypeInfos {

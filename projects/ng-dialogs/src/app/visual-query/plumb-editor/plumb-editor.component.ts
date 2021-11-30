@@ -2,7 +2,8 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { distinctUntilChanged, map } from 'rxjs/operators';
+import { GeneralHelpers } from '../../../../../edit/shared/helpers';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { loadScripts } from '../../shared/helpers/load-scripts.helper';
 import { PipelineDataSource, PipelineResultStream, VisualDesignerData } from '../models';
@@ -51,8 +52,18 @@ export class PlumbEditorComponent implements OnInit, AfterViewInit, OnDestroy {
       })
     );
 
-    this.templateModel$ = combineLatest([this.visualQueryService.pipelineModel$, this.visualQueryService.dataSources$]).pipe(
-      map(([pipelineModel, dataSources]) => {
+    const pipelineDesignerData$ = this.visualQueryService.pipelineModel$.pipe(
+      map(pipelineModel => GeneralHelpers.tryParse(pipelineModel?.Pipeline.VisualDesignerData) ?? {}),
+      distinctUntilChanged(GeneralHelpers.objectsEqual),
+    );
+
+    this.templateModel$ = combineLatest([
+      this.visualQueryService.pipelineModel$,
+      this.visualQueryService.dataSources$,
+      pipelineDesignerData$,
+      this.visualQueryService.dataSourceConfigs$,
+    ]).pipe(
+      map(([pipelineModel, dataSources, pipelineDesignerData, dataSourceConfigs]) => {
         if (pipelineModel == null || dataSources == null) { return; }
 
         // workaround for jsPlumb not working with dom elements which it initialized on previously.
@@ -64,6 +75,8 @@ export class PlumbEditorComponent implements OnInit, AfterViewInit, OnDestroy {
           pipelineDataSources: pipelineModel.DataSources,
           typeInfos: calculateTypeInfos(pipelineModel.DataSources, dataSources),
           allowEdit: pipelineModel.Pipeline.AllowEdit,
+          showDataSourceDetails: pipelineDesignerData.ShowDataSourceDetails ?? false,
+          dataSourceConfigs,
         };
         return templateModel;
       }),

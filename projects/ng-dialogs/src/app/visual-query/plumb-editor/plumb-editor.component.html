@@ -6,6 +6,8 @@
         'top': dataSource.VisualDesignerData.Top + 'px',
         'left': dataSource.VisualDesignerData.Left + 'px',
         'min-width': dataSource.VisualDesignerData.Width ? dataSource.VisualDesignerData.Width + 'px' : null
+      }" [ngClass]="{
+        'show-details': templateModel.showDataSourceDetails && templateModel.dataSourceConfigs[dataSource.EntityId]?.length
       }">
 
       <div class="actions left">
@@ -46,6 +48,15 @@
         <mat-icon class="show-hover-inline">edit</mat-icon>
       </div>
       <br />
+
+      <ng-container
+        *ngIf="templateModel.showDataSourceDetails && templateModel.dataSourceConfigs[dataSource.EntityId]?.length">
+        <div class="config" *ngFor="let config of templateModel.dataSourceConfigs[dataSource.EntityId]"
+          [title]="config.name + ': ' + (config.value | json)">
+          <b>{{ config.name }}:</b> {{ config.value | json }}
+        </div>
+        <br>
+      </ng-container>
 
       <div class="typename" [title]="dataSource.PartAssemblyAndType">
         Type: {{ getTypeName(dataSource.PartAssemblyAndType) }}
