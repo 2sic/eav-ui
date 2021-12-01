@@ -7,4 +7,5 @@ export interface Metadata {
   Modified: string;
   Title: string;
   _Type: EavType;
+  [key: string]: any;
 }

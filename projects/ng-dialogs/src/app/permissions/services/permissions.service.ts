@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { EntitiesService } from '../../content-items/services/entities.service';
 import { eavConstants, MetadataKeyType } from '../../shared/constants/eav.constants';
 import { Permission } from '../models/permission.model';
@@ -8,7 +9,7 @@ import { MetadataService } from './metadata.service';
 export class PermissionsService {
   constructor(private metadataService: MetadataService, private entitiesService: EntitiesService) { }
 
-  getAll(targetType: number, keyType: MetadataKeyType, key: string) {
+  getAll(targetType: number, keyType: MetadataKeyType, key: string): Observable<Permission[]> {
     return this.metadataService.getMetadata<Permission[]>(targetType, keyType, key, eavConstants.contentTypes.permissions);
   }
 

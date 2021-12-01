@@ -1,5 +1,3 @@
-import { Metadata } from '../../metadata';
-
 export interface DataSource {
   ContentType: string;
   Difficulty: number;
@@ -19,8 +17,4 @@ export interface DataSource {
 
 export interface SortedDataSources {
   [key: string]: DataSource[];
-}
-
-export interface DataSourceMetadata extends Metadata {
-  [key: string]: any;
 }

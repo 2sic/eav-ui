@@ -1,8 +1,7 @@
-export interface Permission {
-  Title: string;
+import { Metadata } from '../../metadata';
+
+export interface Permission extends Metadata {
   Identity: string;
   Condition: string;
   Grant: string;
-  Id: number;
-  Guid: string;
 }

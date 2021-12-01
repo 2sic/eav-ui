@@ -136,7 +136,7 @@ export class MetadataComponent implements OnInit, OnDestroy {
   }
 
   private fetchMetadata() {
-    this.metadataService.getMetadata<Metadata[]>(this.targetType, this.keyType, this.key).subscribe(metadata => {
+    this.metadataService.getMetadata(this.targetType, this.keyType, this.key).subscribe(metadata => {
       this.metadata$.next(metadata);
     });
   }

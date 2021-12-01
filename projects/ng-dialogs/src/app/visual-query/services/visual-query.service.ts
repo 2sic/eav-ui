@@ -14,7 +14,7 @@ import { eavConstants } from '../../shared/constants/eav.constants';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { EditForm } from '../../shared/models/edit-form.model';
 // tslint:disable-next-line:max-line-length
-import { DataSource, DataSourceConfig, DataSourceConfigs, DataSourceMetadata, DebugStreamInfo, PipelineDataSource, PipelineModel, PipelineResult, PipelineResultStream, StreamWire, VisualDesignerData } from '../models';
+import { DataSource, DataSourceConfig, DataSourceConfigs, DebugStreamInfo, PipelineDataSource, PipelineModel, PipelineResult, PipelineResultStream, StreamWire, VisualDesignerData } from '../models';
 import { QueryResultComponent } from '../query-result/query-result.component';
 import { QueryResultDialogData } from '../query-result/query-result.models';
 import { StreamErrorResultComponent } from '../stream-error-result/stream-error-result.component';
@@ -158,7 +158,7 @@ export class VisualQueryService implements OnDestroy {
           const typeId = eavConstants.metadata.entity.type;
           const keyType = eavConstants.metadata.entity.keyType;
           const key = pipelineDataSource.EntityGuid;
-          return this.metadataService.getMetadata<DataSourceMetadata[]>(typeId, keyType, key, contentTypeName).pipe(
+          return this.metadataService.getMetadata(typeId, keyType, key, contentTypeName).pipe(
             map(metadata => {
               const dataSourceConfigs: DataSourceConfig[] = [];
               metadata.forEach(item => {
@@ -206,7 +206,7 @@ export class VisualQueryService implements OnDestroy {
     const key = pipelineDataSource.EntityGuid;
 
     // query for existing Entity
-    this.metadataService.getMetadata<DataSourceMetadata[]>(typeId, keyType, key, contentTypeName).subscribe(metadata => {
+    this.metadataService.getMetadata(typeId, keyType, key, contentTypeName).subscribe(metadata => {
       // edit existing Entity
       if (metadata.length) {
         const form: EditForm = {
