@@ -161,7 +161,7 @@ export class VisualQueryService implements OnDestroy {
           return this.metadataService.getMetadata(typeId, keyType, key, contentTypeName).pipe(
             map(metadata => {
               const dataSourceConfigs: DataSourceConfig[] = [];
-              metadata.forEach(item => {
+              metadata.Items.forEach(item => {
                 Object.entries(item).forEach(([attributeName, attributeValue]) => {
                   if (['Created', 'Guid', 'Id', 'Modified', 'Title', '_Type'].includes(attributeName)) { return; }
                   try {
@@ -208,9 +208,9 @@ export class VisualQueryService implements OnDestroy {
     // query for existing Entity
     this.metadataService.getMetadata(typeId, keyType, key, contentTypeName).subscribe(metadata => {
       // edit existing Entity
-      if (metadata.length) {
+      if (metadata.Items.length) {
         const form: EditForm = {
-          items: [{ EntityId: metadata[0].Id }],
+          items: [{ EntityId: metadata.Items[0].Id }],
         };
         const formUrl = convertFormToUrl(form);
         this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
