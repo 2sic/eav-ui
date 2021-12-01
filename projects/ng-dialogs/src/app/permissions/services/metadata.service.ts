@@ -2,7 +2,7 @@ import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Metadata } from '../../metadata';
+import { MetadataItem } from '../../metadata';
 import { MetadataKeyType } from '../../shared/constants/eav.constants';
 import { Context } from '../../shared/services/context';
 
@@ -20,7 +20,7 @@ export class MetadataService {
    * @param contentTypeName name of content type where permissions are stored.
    * If left blank, backend returns all metadata except permissions
    */
-  getMetadata<T extends Metadata[]>(
+  getMetadata<T extends MetadataItem[]>(
     typeId: number,
     keyType: MetadataKeyType,
     key: string,

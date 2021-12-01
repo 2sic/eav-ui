@@ -1,6 +1,6 @@
 import { EavType } from '../../../../../edit/shared/models/eav';
 
-export interface Metadata {
+export interface MetadataItem {
   Created: string;
   Guid: string;
   Id: number;

@@ -1,6 +1,6 @@
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { Component } from '@angular/core';
-import { Metadata } from '../../models/metadata.model';
+import { MetadataItem } from '../../models/metadata.model';
 import { MetadataActionsParams } from './metadata-actions.models';
 
 @Component({
@@ -20,7 +20,7 @@ export class MetadataActionsComponent implements ICellRendererAngularComp {
   }
 
   deleteMetadata() {
-    const metadata: Metadata = this.params.data;
+    const metadata: MetadataItem = this.params.data;
     this.params.onDelete(metadata);
   }
 }

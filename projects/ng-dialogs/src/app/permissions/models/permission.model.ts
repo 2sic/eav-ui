@@ -1,6 +1,6 @@
-import { Metadata } from '../../metadata';
+import { MetadataItem } from '../../metadata';
 
-export interface Permission extends Metadata {
+export interface Permission extends MetadataItem {
   Identity: string;
   Condition: string;
   Grant: string;

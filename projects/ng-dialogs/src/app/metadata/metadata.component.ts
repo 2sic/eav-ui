@@ -18,7 +18,7 @@ import { EditForm } from '../shared/models/edit-form.model';
 import { MetadataActionsComponent } from './ag-grid-components/metadata-actions/metadata-actions.component';
 import { MetadataActionsParams } from './ag-grid-components/metadata-actions/metadata-actions.models';
 import { MetadataSaveDialogComponent } from './metadata-save-dialog/metadata-save-dialog.component';
-import { Metadata } from './models/metadata.model';
+import { MetadataItem } from './models/metadata.model';
 
 @Component({
   selector: 'app-metadata',
@@ -26,7 +26,7 @@ import { Metadata } from './models/metadata.model';
   styleUrls: ['./metadata.component.scss'],
 })
 export class MetadataComponent implements OnInit, OnDestroy {
-  metadata$ = new BehaviorSubject<Metadata[]>(null);
+  metadata$ = new BehaviorSubject<MetadataItem[]>(null);
   for?: ContentItemFor;
 
   modules = AllCommunityModules;
@@ -41,7 +41,7 @@ export class MetadataComponent implements OnInit, OnDestroy {
         headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
         cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter',
         cellRendererParams: {
-          tooltipGetter: (paramsData: Metadata) => `ID: ${paramsData.Id}\nGUID: ${paramsData.Guid}`,
+          tooltipGetter: (paramsData: MetadataItem) => `ID: ${paramsData.Id}\nGUID: ${paramsData.Guid}`,
         } as IdFieldParams,
       },
       {
@@ -51,7 +51,7 @@ export class MetadataComponent implements OnInit, OnDestroy {
       {
         headerName: 'Content Type', flex: 2, minWidth: 250, cellClass: 'no-outline', sortable: true,
         filter: 'agTextColumnFilter', valueGetter: (params) => {
-          const metadata = params.data as Metadata;
+          const metadata = params.data as MetadataItem;
           return `${metadata._Type.Name}${metadata._Type.Description ? ` (${metadata._Type.Description})` : ''}`;
         },
       },
@@ -142,7 +142,7 @@ export class MetadataComponent implements OnInit, OnDestroy {
   }
 
   private editMetadata(params: CellClickedEvent) {
-    const metadata: Metadata = params.data;
+    const metadata: MetadataItem = params.data;
     const form: EditForm = {
       items: [{ EntityId: metadata.Id }],
     };
@@ -150,7 +150,7 @@ export class MetadataComponent implements OnInit, OnDestroy {
     this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
   }
 
-  private deleteMetadata(metadata: Metadata) {
+  private deleteMetadata(metadata: MetadataItem) {
     if (!confirm(`Delete '${metadata.Title}' (${metadata.Id})?`)) { return; }
 
     this.snackBar.open('Deleting...');

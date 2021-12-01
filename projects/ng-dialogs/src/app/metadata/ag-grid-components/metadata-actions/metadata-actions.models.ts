@@ -1,6 +1,6 @@
 import { ICellRendererParams } from '@ag-grid-community/core';
-import { Metadata } from '../../models/metadata.model';
+import { MetadataItem } from '../../models/metadata.model';
 
 export interface MetadataActionsParams extends ICellRendererParams {
-  onDelete(metadata: Metadata): void;
+  onDelete(metadata: MetadataItem): void;
 }
