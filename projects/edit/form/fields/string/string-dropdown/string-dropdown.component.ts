@@ -67,7 +67,9 @@ export class StringDropdownComponent extends BaseComponent<string | number> impl
     super.ngOnDestroy();
   }
 
-  toggleFreeTextMode() {
-    this.toggleFreeText$.next(!this.toggleFreeText$.value);
+  toggleFreeTextMode(freeTextMode: boolean) {
+    if (this.toggleFreeText$.value !== freeTextMode) {
+      this.toggleFreeText$.next(freeTextMode);
+    }
   }
 }

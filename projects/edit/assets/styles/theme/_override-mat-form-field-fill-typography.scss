@@ -20,6 +20,15 @@
       height: 30px !important;
       line-height: 30px;
     }
+
+    .selection-suffix {
+      display: flex;
+
+      .active {
+        background-color: #002753;
+        color: white;
+      }
+    }
   }
 
   .mat-select-arrow-wrapper {
