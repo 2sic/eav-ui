@@ -101,7 +101,7 @@
     "DefaultTitle": "Element bearbeiten",
     "SlotUsedTrue": "Dieses Element kann bearbeitet werden. Klicke um die Bearbeitung zu sperren - eingegebene Werte werden dann mit den Standardwerten ersetzt.",
     "SlotUsedFalse": "Dieses Element kann nicht bearbeitet werden und zeigt die Standardwerte an. Klicke um das Element freizuschalten.",
-    "CopyHint": "(Kopie)"
+    "CopyHint": "Dies ist eine Kopie und wird als neuen Artikel gespeichert"
   },
   "ValidationMessage": {
     "NotValid": "Ungültig",
@@ -112,7 +112,7 @@
     "Pattern": "Bitte richtig eingeben",
     "Decimals": "Diese Zahl kann {{param.Decimals}} Dezimalstellen haben",
     "JsonError": "JSON ist nicht valide",
-    "JsonWarning": "JSON is not valid"
+    "JsonWarning": "JSON ist nicht valide"
   },
   "Fields": {
     "Entity": {

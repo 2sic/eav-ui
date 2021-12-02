@@ -101,7 +101,7 @@
     "DefaultTitle": "Editar elemento",
     "SlotUsedTrue": "Este elemento está abierto para edición. Pulse aquí para bloquearlo / eliminarlo y devolverlo a predeterminado.",
     "SlotUsedFalse": "Este elemento está bloqueado y permanecerá vacío/predeterminado. Los valores se muestran a su conveniencia. Pulse aquí para desbloquearlo si es necesario.",
-    "CopyHint": "(copy)"
+    "CopyHint": "This is a copy and will be saved as a new item"
   },
   "ValidationMessage": {
     "NotValid": "Not valid",

@@ -101,7 +101,7 @@
     "DefaultTitle": "Modifica elemento",
     "SlotUsedTrue": "Questo elemento è possibile modificarlo. Clicca qui per bloccarlo / rimuoverlo e tornare al default.",
     "SlotUsedFalse": "Questo elemento è bloccato e resterà vuoto/predefinito. Questi valori vengono mostrati per facilarti. Clicca qui per sbloccare se necessario.",
-    "CopyHint": "(copy)"
+    "CopyHint": "This is a copy and will be saved as a new item"
   },
   "ValidationMessage": {
     "NotValid": "Not valid",
