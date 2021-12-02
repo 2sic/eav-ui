@@ -42,7 +42,7 @@
     </div>
 
     <div class="parameters" *ngIf="visualDesignerData$ | async as visualDesignerData">
-      <mat-slide-toggle color="accent" labelPosition="before" [checked]="visualDesignerData.ShowDataSourceDetails"
+      <mat-slide-toggle color="primary" labelPosition="before" [checked]="visualDesignerData.ShowDataSourceDetails"
         (change)="showDataSourceDetails($event)">
         Show DataSource Params
       </mat-slide-toggle>

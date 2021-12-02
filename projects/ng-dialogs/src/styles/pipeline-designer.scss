@@ -90,11 +90,28 @@ $icon-size: 22px;
     font-size: xx-small;
   }
 
-  .dataSource .config {
+  .dataSource .configs {
+    margin-top: 16px;
+    margin-bottom: 16px;
     max-width: 300px;
-    overflow: hidden;
+    font-size: 12px;
+    text-align: start;
     white-space: nowrap;
-    text-overflow: ellipsis;
+  }
+
+  .dataSource .config {
+    .config-name {
+      font-weight: bold;
+      max-width: 100px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .config-value {
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
   }
 
   .dataSource .typename {

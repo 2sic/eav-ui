@@ -40,22 +40,24 @@
         <span>{{ dataSource.Name || '(no name)' }}</span>
         <mat-icon class="show-hover-inline">edit</mat-icon>
       </div>
-      <br />
+      <br>
 
       <div class="description" title="Click to edit description" appMousedownStopPropagation
         (click)="templateModel.allowEdit && editDescription(dataSource)">
         <span>{{ dataSource.Description }}</span>
         <mat-icon class="show-hover-inline">edit</mat-icon>
       </div>
-      <br />
+      <br>
 
       <ng-container
         *ngIf="templateModel.showDataSourceDetails && templateModel.dataSourceConfigs[dataSource.EntityId]?.length">
-        <div class="config" *ngFor="let config of templateModel.dataSourceConfigs[dataSource.EntityId]"
-          [title]="config.name + ': ' + (config.value | json)">
-          <b>{{ config.name }}:</b> {{ config.value | json }}
-        </div>
-        <br>
+        <hr style="margin: 0">
+        <table class="configs">
+          <tr class="config" *ngFor="let config of templateModel.dataSourceConfigs[dataSource.EntityId]">
+            <td class="config-name" [title]="config.name">{{ config.name }}</td>
+            <td class="config-value" [title]="config.value">{{ config.value }}</td>
+          </tr>
+        </table>
       </ng-container>
 
       <div class="typename" [title]="dataSource.PartAssemblyAndType">

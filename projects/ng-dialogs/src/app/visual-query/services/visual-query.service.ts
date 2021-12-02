@@ -164,6 +164,7 @@ export class VisualQueryService implements OnDestroy {
               metadata.Items.forEach(item => {
                 Object.entries(item).forEach(([attributeName, attributeValue]) => {
                   if (['Created', 'Guid', 'Id', 'Modified', 'Title', '_Type'].includes(attributeName)) { return; }
+                  if (attributeValue == null || attributeValue === '') { return; }
                   try {
                     if (
                       Array.isArray(attributeValue)
