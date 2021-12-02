@@ -11,6 +11,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { EcoFabSpeedDialModule } from '@ecodev/fab-speed-dial';
 import { EntitiesService } from '../content-items/services/entities.service';
 import { MetadataService } from '../permissions';
 import { Context } from '../shared/services/context';
@@ -41,6 +42,7 @@ import { MetadataComponent } from './metadata.component';
     MatSelectModule,
     MatInputModule,
     MatSlideToggleModule,
+    EcoFabSpeedDialModule,
   ],
   providers: [
     Context,

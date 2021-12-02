@@ -3,7 +3,7 @@ import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } fro
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import { filter, map, pairwise, startWith } from 'rxjs/operators';
 import { ContentItemFor } from '../content-items/models/content-item.model';
 import { ContentItemsService } from '../content-items/services/content-items.service';
@@ -18,7 +18,7 @@ import { EditForm } from '../shared/models/edit-form.model';
 import { MetadataActionsComponent } from './ag-grid-components/metadata-actions/metadata-actions.component';
 import { MetadataActionsParams } from './ag-grid-components/metadata-actions/metadata-actions.models';
 import { MetadataSaveDialogComponent } from './metadata-save-dialog/metadata-save-dialog.component';
-import { MetadataItem } from './models/metadata.model';
+import { MetadataItem, MetadataRecommendation, MetadataTemplateVars } from './models/metadata.model';
 
 @Component({
   selector: 'app-metadata',
@@ -26,9 +26,6 @@ import { MetadataItem } from './models/metadata.model';
   styleUrls: ['./metadata.component.scss'],
 })
 export class MetadataComponent implements OnInit, OnDestroy {
-  metadata$ = new BehaviorSubject<MetadataItem[]>(null);
-  for?: ContentItemFor;
-
   modules = AllCommunityModules;
   gridOptions: GridOptions = {
     ...defaultGridOptions,
@@ -41,7 +38,7 @@ export class MetadataComponent implements OnInit, OnDestroy {
         headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
         cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter',
         cellRendererParams: {
-          tooltipGetter: (paramsData: MetadataItem) => `ID: ${paramsData.Id}\nGUID: ${paramsData.Guid}`,
+          tooltipGetter: (metadata: MetadataItem) => `ID: ${metadata.Id}\nGUID: ${metadata.Guid}`,
         } as IdFieldParams,
       },
       {
@@ -64,12 +61,17 @@ export class MetadataComponent implements OnInit, OnDestroy {
     ],
   };
 
+  private metadata$ = new BehaviorSubject<MetadataItem[]>([]);
+  private recommendations$ = new BehaviorSubject<MetadataRecommendation[]>([]);
+  private itemFor$ = new BehaviorSubject<ContentItemFor | undefined>(undefined);
+  private fabOpen$ = new BehaviorSubject(false);
   private subscription = new Subscription();
   private targetType = parseInt(this.route.snapshot.paramMap.get('type'), 10);
   private keyType = this.route.snapshot.paramMap.get('keyType') as MetadataKeyType;
   private key = this.route.snapshot.paramMap.get('key');
   title = decodeURIComponent(this.route.snapshot.paramMap.get('title') ?? '');
   private contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
+  templateVars$: Observable<MetadataTemplateVars>;
 
   constructor(
     private dialogRef: MatDialogRef<MetadataComponent>,
@@ -88,10 +90,25 @@ export class MetadataComponent implements OnInit, OnDestroy {
     this.fetchFor();
     this.fetchMetadata();
     this.refreshOnChildClosed();
+
+    this.templateVars$ = combineLatest([this.metadata$, this.recommendations$, this.itemFor$, this.fabOpen$]).pipe(
+      map(([metadata, recommendations, itemFor, fabOpen]) => {
+        const templateVars: MetadataTemplateVars = {
+          metadata,
+          recommendations,
+          itemFor,
+          fabOpen,
+        };
+        return templateVars;
+      }),
+    );
   }
 
   ngOnDestroy() {
     this.metadata$.complete();
+    this.recommendations$.complete();
+    this.itemFor$.complete();
+    this.fabOpen$.complete();
     this.subscription.unsubscribe();
   }
 
@@ -99,7 +116,15 @@ export class MetadataComponent implements OnInit, OnDestroy {
     this.dialogRef.close();
   }
 
-  createMetadata() {
+  openChange(open: boolean) {
+    this.fabOpen$.next(open);
+  }
+
+  createMetadata(recommendation?: MetadataRecommendation) {
+    if (recommendation) {
+      this.createMetadataForm(recommendation.Id);
+      return;
+    }
     const metadataDialogRef = this.dialog.open(MetadataSaveDialogComponent, {
       autoFocus: false,
       viewContainerRef: this.viewContainerRef,
@@ -107,23 +132,26 @@ export class MetadataComponent implements OnInit, OnDestroy {
     });
     metadataDialogRef.afterClosed().subscribe((contentType?: string) => {
       if (contentType == null) { return; }
-
-      const form: EditForm = {
-        items: [{
-          ContentTypeName: contentType,
-          For: {
-            Target:
-              Object.values(eavConstants.metadata).find(option => option.type === this.targetType)?.target ?? this.targetType.toString(),
-            ...(this.keyType === eavConstants.keyTypes.guid && { Guid: this.key }),
-            ...(this.keyType === eavConstants.keyTypes.number && { Number: parseInt(this.key, 10) }),
-            ...(this.keyType === eavConstants.keyTypes.string && { String: this.key }),
-          },
-        }],
-      };
-      const formUrl = convertFormToUrl(form);
-      this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
-      this.changeDetectorRef.markForCheck();
+      this.createMetadataForm(contentType);
     });
+  }
+
+  private createMetadataForm(contentType: string) {
+    const form: EditForm = {
+      items: [{
+        ContentTypeName: contentType,
+        For: {
+          Target:
+            Object.values(eavConstants.metadata).find(option => option.type === this.targetType)?.target ?? this.targetType.toString(),
+          ...(this.keyType === eavConstants.keyTypes.guid && { Guid: this.key }),
+          ...(this.keyType === eavConstants.keyTypes.number && { Number: parseInt(this.key, 10) }),
+          ...(this.keyType === eavConstants.keyTypes.string && { String: this.key }),
+        },
+      }],
+    };
+    const formUrl = convertFormToUrl(form);
+    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
+    this.changeDetectorRef.markForCheck();
   }
 
   private fetchFor() {
@@ -131,13 +159,17 @@ export class MetadataComponent implements OnInit, OnDestroy {
 
     this.contentItemsService.getAll(this.contentTypeStaticName).subscribe(items => {
       const item = items.find(i => i.Guid === this.key);
-      this.for = item?.For;
+      if (item?.For) {
+        this.itemFor$.next(item.For);
+      }
     });
   }
 
   private fetchMetadata() {
     this.metadataService.getMetadata(this.targetType, this.keyType, this.key).subscribe(metadata => {
       this.metadata$.next(metadata.Items);
+      const filtered = metadata.Recommendations.filter(r => r.Count === 1 && !metadata.Items.some(i => i.Guid === r.Id));
+      this.recommendations$.next(filtered);
     });
   }
 
