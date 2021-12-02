@@ -111,7 +111,7 @@ export class Plumber {
             label,
             cssClass,
             events: {
-              click: (labelOverlay: PlumbType) => {
+              click: (overlay: PlumbType) => {
                 if (!this.pipelineModel.Pipeline.AllowEdit) { return; }
                 this.onDebugStream(stream);
               },
@@ -262,36 +262,48 @@ export class Plumber {
         || pipelineDataSource.EntityGuid === eavConstants.pipelineDesigner.outDataSource.EntityGuid
     };
 
-    const endPoint: PlumbType = this.instance.addEndpoint(domDataSource, model, params);
-    endPoint.getOverlay('endpointLabel').setLabel(endpointInfo.name);
+    const endpoint: PlumbType = this.instance.addEndpoint(domDataSource, model, params);
+    endpoint.getOverlay('endpointLabel').setLabel(endpointInfo.name);
   }
 
   private buildSourceEndpoint(pipelineDataSourceGuid: string, style?: string) {
+    const isSource = true;
     const sourceEndpoint = {
       paintStyle: { fill: 'transparent', radius: 10 },
       cssClass: 'sourceEndpoint ' + style ?? '',
       maxConnections: -1,
-      isSource: true,
+      isSource,
       anchor: ['Continuous', { faces: ['top'] }],
-      overlays: this.getEndpointOverlays(true, pipelineDataSourceGuid)
+      overlays: this.getEndpointOverlays(isSource),
+      events: {
+        click: (endpointOrOverlay: PlumbType) => {
+          this.onChangeLabel(endpointOrOverlay, isSource, pipelineDataSourceGuid);
+        },
+      },
     };
     return sourceEndpoint;
   }
 
   private buildTargetEndpoint(pipelineDataSourceGuid: string, style?: string) {
+    const isSource = false;
     const targetEndpoint = {
       paintStyle: { fill: 'transparent', radius: 10 },
       cssClass: 'targetEndpoint ' + style ?? '',
       maxConnections: 1,
-      isTarget: true,
+      isTarget: !isSource,
       anchor: ['Continuous', { faces: ['bottom'] }],
-      overlays: this.getEndpointOverlays(false, pipelineDataSourceGuid),
-      dropOptions: { hoverClass: 'hover', activeClass: 'active' }
+      overlays: this.getEndpointOverlays(isSource),
+      dropOptions: { hoverClass: 'hover', activeClass: 'active' },
+      events: {
+        click: (endpointOrOverlay: PlumbType) => {
+          this.onChangeLabel(endpointOrOverlay, isSource, pipelineDataSourceGuid);
+        },
+      },
     };
     return targetEndpoint;
   }
 
-  private getEndpointOverlays(isSource: boolean, pipelineDataSourceGuid: string) {
+  private getEndpointOverlays(isSource: boolean) {
     return [
       [
         'Label', {
@@ -299,32 +311,32 @@ export class Plumber {
           location: [0.5, isSource ? 0 : 1],
           label: 'Default',
           cssClass: isSource ? 'endpointSourceLabel' : 'endpointTargetLabel',
-          events: {
-            click: (labelOverlay: PlumbType) => {
-              if (!this.pipelineModel.Pipeline.AllowEdit) { return; }
-
-              const data: RenameStreamDialogData = {
-                pipelineDataSourceGuid,
-                isSource,
-                label: labelOverlay.label,
-              };
-              this.dialogRef = this.dialog.open(RenameStreamComponent, {
-                autoFocus: false,
-                data,
-                viewContainerRef: this.viewContainerRef,
-                width: '650px',
-              });
-              this.changeDetectorRef.markForCheck();
-              this.dialogRef.afterClosed().subscribe(newLabel => {
-                if (!newLabel) { return; }
-                labelOverlay.setLabel(newLabel);
-                setTimeout(() => { this.onConnectionsChanged(); });
-              });
-            },
-          },
-        }
-      ]
+        },
+      ],
     ];
+  }
+
+  private onChangeLabel(endpointOrOverlay: PlumbType, isSource: boolean, pipelineDataSourceGuid: string) {
+    if (!this.pipelineModel.Pipeline.AllowEdit) { return; }
+
+    const overlay: PlumbType = endpointOrOverlay.getOverlay ? endpointOrOverlay.getOverlay('endpointLabel') : endpointOrOverlay;
+    const data: RenameStreamDialogData = {
+      pipelineDataSourceGuid,
+      isSource,
+      label: overlay.label,
+    };
+    this.dialogRef = this.dialog.open(RenameStreamComponent, {
+      autoFocus: false,
+      data,
+      viewContainerRef: this.viewContainerRef,
+      width: '650px',
+    });
+    this.dialogRef.afterClosed().subscribe(newLabel => {
+      if (!newLabel) { return; }
+      overlay.setLabel(newLabel);
+      setTimeout(() => { this.onConnectionsChanged(); });
+    });
+    this.changeDetectorRef.markForCheck();
   }
 
   private bindEvents() {
