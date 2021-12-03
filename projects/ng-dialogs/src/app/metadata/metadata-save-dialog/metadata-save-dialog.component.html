@@ -41,11 +41,11 @@
         <input matInput type="text" *ngIf="!guidedContentType" formControlName="contentType" required>
 
         <div matSuffix class="selection-suffix">
-          <button mat-icon-button type="button" [ngClass]="{ 'active': guidedContentType }" tippy="Select option"
+          <button mat-icon-button type="button" [ngClass]="{ 'active': guidedContentType }" tippy="Pick existing value"
             (click)="toggleGuidedContentType(true)">
             <mat-icon>search</mat-icon>
           </button>
-          <button mat-icon-button type="button" [ngClass]="{ 'active': !guidedContentType }" tippy="Insert value"
+          <button mat-icon-button type="button" [ngClass]="{ 'active': !guidedContentType }" tippy="Manual entry"
             (click)="toggleGuidedContentType(false)">
             <mat-icon>text_fields</mat-icon>
           </button>

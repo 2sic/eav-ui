@@ -173,8 +173,8 @@
       "Open": "Kalendar öffnen"
     },
     "String": {
-      "Dropdown": "Auswahl",
-      "Freetext": "Freie Texteingabe"
+      "Dropdown": "Bestehendens auswählen",
+      "Freetext": "Manuell eintragen"
     },
     "TemplatePicker": {
       "NotSelected": "(no file selected)",

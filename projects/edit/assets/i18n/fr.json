@@ -173,8 +173,8 @@
       "Open": "Open calendar"
     },
     "String": {
-      "Dropdown": "Switch to dropdown",
-      "Freetext": "Switch to enter text"
+      "Dropdown": "Pick existing value",
+      "Freetext": "Manual entry"
     },
     "TemplatePicker": {
       "NotSelected": "(no file selected)",
