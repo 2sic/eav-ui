@@ -21,6 +21,14 @@
       line-height: 30px;
     }
 
+    .entity-dropdown-button {
+      cursor: text;
+
+      &.mat-button-disabled {
+        cursor: default;
+      }
+    }
+
     .selection-suffix {
       display: flex;
 

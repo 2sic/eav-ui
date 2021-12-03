@@ -37,7 +37,7 @@
         </button>
         <button mat-icon-button *ngIf="data.enableRemove" [tippy]="'Fields.Entity.Remove' | translate"
           [disabled]="disabled" appMousedownStopPropagation (click)="removeItem(index)">
-          <mat-icon>{{ data.allowMultiValue ? 'clear' : 'arrow_drop_down' }}</mat-icon>
+          <mat-icon>clear</mat-icon>
         </button>
       </div>
     </div>
