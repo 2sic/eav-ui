@@ -32,6 +32,14 @@
     .selection-suffix {
       display: flex;
 
+      .mat-icon-button {
+        top: 0;
+
+        .mat-icon {
+          font-size: 18px;
+        }
+      }
+
       .active {
         background-color: #002753;
         color: white;
