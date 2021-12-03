@@ -23,6 +23,7 @@ import { AppsListService } from '../services/apps-list.service';
 })
 export class AppsListComponent implements OnInit, OnDestroy {
   apps$ = new BehaviorSubject<App[]>(null);
+  fabOpen$ = new BehaviorSubject(false);
 
   modules = AllCommunityModules;
   gridOptions: GridOptions = {
@@ -104,7 +105,12 @@ export class AppsListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.apps$.complete();
+    this.fabOpen$.complete();
     this.subscription.unsubscribe();
+  }
+
+  openChange(open: boolean) {
+    this.fabOpen$.next(open);
   }
 
   browseCatalog() {

@@ -34,20 +34,20 @@
         <mat-icon>add</mat-icon>
       </button>
 
-      <eco-fab-speed-dial class="grid-fab" *ngIf="data.recommendations.length > 0" (openChange)="openChange($event)">
+      <eco-fab-speed-dial class="grid-fab" [ngClass]="{ 'fab-opened': data.fabOpen }"
+        *ngIf="data.recommendations.length > 0" (openChange)="openChange($event)">
         <eco-fab-speed-dial-trigger [spin]="true">
           <button mat-fab>
-            <mat-icon class="spin180">add</mat-icon>
+            <mat-icon class="spin180">{{ data.fabOpen ? 'close' : 'add' }}</mat-icon>
           </button>
         </eco-fab-speed-dial-trigger>
 
         <eco-fab-speed-dial-actions>
-          <button mat-mini-fab [attr.label]="'Other Content Type'" [ngClass]="{ 'show-label': data.fabOpen }"
-            (click)="createMetadata()">
+          <button mat-mini-fab label="Other Content Type" (click)="createMetadata()">
             <mat-icon>search</mat-icon>
           </button>
           <button mat-mini-fab *ngFor="let recommendation of data.recommendations" [attr.label]="recommendation.Name"
-            [ngClass]="{ 'show-label': data.fabOpen }" (click)="createMetadata(recommendation)">
+            (click)="createMetadata(recommendation)">
             <mat-icon>add</mat-icon>
           </button>
         </eco-fab-speed-dial-actions>

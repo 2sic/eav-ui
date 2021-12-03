@@ -5,18 +5,19 @@
 
   <div class="grid-more-actions-box"></div>
 
-  <eco-fab-speed-dial class="grid-fab">
+  <eco-fab-speed-dial class="grid-fab" [ngClass]="{ 'fab-opened': (fabOpen$ | async) }"
+    (openChange)="openChange($event)">
     <eco-fab-speed-dial-trigger [spin]="true">
       <button mat-fab>
-        <mat-icon class="spin180">add</mat-icon>
+        <mat-icon class="spin180">{{ (fabOpen$ | async) ? 'close' : 'add' }}</mat-icon>
       </button>
     </eco-fab-speed-dial-trigger>
 
     <eco-fab-speed-dial-actions>
-      <button mat-mini-fab tippy="Import query" (click)="importQuery()">
+      <button mat-mini-fab label="Import query" (click)="importQuery()">
         <mat-icon>cloud_upload</mat-icon>
       </button>
-      <button mat-mini-fab tippy="Create a new query" (click)="editQuery(null)">
+      <button mat-mini-fab label="Create a new query" (click)="editQuery(null)">
         <mat-icon>add</mat-icon>
       </button>
     </eco-fab-speed-dial-actions>

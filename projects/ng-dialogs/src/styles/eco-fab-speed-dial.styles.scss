@@ -1,0 +1,26 @@
+eco-fab-speed-dial {
+  .mat-mini-fab::before {
+    content: attr(label);
+    position: absolute;
+    right: 50px;
+    top: 8px;
+    background-color: rgba(97, 97, 97, 0.9);
+    color: #fff;
+    font-size: 12px;
+    font-weight: normal;
+    line-height: normal;
+    max-width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-radius: 4px;
+    padding: 4px 8px;
+    display: none;
+  }
+
+  &.fab-opened {
+    .mat-mini-fab::before {
+      display: block;
+    }
+  }
+}

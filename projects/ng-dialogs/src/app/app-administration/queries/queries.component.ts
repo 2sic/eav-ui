@@ -28,6 +28,7 @@ import { ImportQueryDialogData } from '../sub-dialogs/import-query/import-query-
 })
 export class QueriesComponent implements OnInit, OnDestroy {
   @Input() enablePermissions: boolean;
+  fabOpen$ = new BehaviorSubject(false);
 
   queries$ = new BehaviorSubject<Query[]>(null);
   modules = AllCommunityModules;
@@ -81,7 +82,12 @@ export class QueriesComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.queries$.complete();
+    this.fabOpen$.complete();
     this.subscription.unsubscribe();
+  }
+
+  openChange(open: boolean) {
+    this.fabOpen$.next(open);
   }
 
   private fetchQueries() {
