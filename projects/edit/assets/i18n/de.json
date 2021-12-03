@@ -101,7 +101,7 @@
     "DefaultTitle": "Element bearbeiten",
     "SlotUsedTrue": "Dieses Element kann bearbeitet werden. Klicke um die Bearbeitung zu sperren - eingegebene Werte werden dann mit den Standardwerten ersetzt.",
     "SlotUsedFalse": "Dieses Element kann nicht bearbeitet werden und zeigt die Standardwerte an. Klicke um das Element freizuschalten.",
-    "CopyHint": "Dies ist eine Kopie und wird als neuen Artikel gespeichert"
+    "CopyHint": "Dies ist eine Kopie und wird als neues Element gespeichert"
   },
   "ValidationMessage": {
     "NotValid": "Ungültig",
