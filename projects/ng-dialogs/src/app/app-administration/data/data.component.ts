@@ -23,6 +23,7 @@ import { DataActionsParams } from '../ag-grid-components/data-actions/data-actio
 import { DataFieldsComponent } from '../ag-grid-components/data-fields/data-fields.component';
 import { DataFieldsParams } from '../ag-grid-components/data-fields/data-fields.models';
 import { DataItemsComponent } from '../ag-grid-components/data-items/data-items.component';
+import { DataItemsParams } from '../ag-grid-components/data-items/data-items.models';
 import { ContentType } from '../models/content-type.model';
 import { ContentTypesService } from '../services/content-types.service';
 import { ImportContentTypeDialogData } from '../sub-dialogs/import-content-type/import-content-type-dialog.config';
@@ -59,7 +60,7 @@ export class DataComponent implements OnInit, OnDestroy {
       },
       {
         headerName: 'Content Type', field: 'Label', flex: 3, minWidth: 250, cellClass: 'primary-action highlight', sortable: true,
-        sort: 'asc', filter: 'agTextColumnFilter', onCellClicked: this.showContentItems.bind(this),
+        sort: 'asc', filter: 'agTextColumnFilter', onCellClicked: (params) => this.showContentItems(params.data),
         comparator: (valueA, valueB, nodeA, nodeB, isInverted) => {
           const a = (nodeA.data as ContentType)._compareLabel;
           const b = (nodeB.data as ContentType)._compareLabel;
@@ -68,7 +69,11 @@ export class DataComponent implements OnInit, OnDestroy {
       },
       {
         headerName: 'Items', field: 'Items', width: 102, headerClass: 'dense', cellClass: 'secondary-action no-padding',
-        sortable: true, filter: 'agNumberColumnFilter', cellRenderer: 'dataItemsComponent', onCellClicked: this.addItem.bind(this),
+        sortable: true, filter: 'agNumberColumnFilter', cellRenderer: 'dataItemsComponent',
+        cellRendererParams: {
+          onShowItems: (contentType) => this.showContentItems(contentType),
+          onAddItem: (contentType) => this.addItem(contentType),
+        } as DataItemsParams,
       },
       {
         headerName: 'Fields', field: 'Fields', width: 94, headerClass: 'dense', cellClass: 'secondary-action no-padding',
@@ -156,8 +161,7 @@ export class DataComponent implements OnInit, OnDestroy {
     this.router.navigate(['import'], { relativeTo: this.route.firstChild, state: importContentTypeData });
   }
 
-  private showContentItems(params: CellClickedEvent) {
-    const contentType = params.data as ContentType;
+  private showContentItems(contentType: ContentType) {
     this.router.navigate([`items/${contentType.StaticName}`], { relativeTo: this.route.firstChild });
   }
 
@@ -228,8 +232,7 @@ export class DataComponent implements OnInit, OnDestroy {
     }
   }
 
-  private addItem(params: CellClickedEvent) {
-    const contentType = params.data as ContentType;
+  private addItem(contentType: ContentType) {
     const form: EditForm = {
       items: [{ ContentTypeName: contentType.StaticName }],
     };
