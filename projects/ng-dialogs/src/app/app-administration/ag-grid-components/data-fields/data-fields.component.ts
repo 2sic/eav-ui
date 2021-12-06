@@ -1,7 +1,7 @@
-import { ICellRendererParams } from '@ag-grid-community/all-modules';
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { Component } from '@angular/core';
 import { ContentType } from '../../models/content-type.model';
+import { DataFieldsParams } from './data-fields.models';
 
 @Component({
   selector: 'app-data-fields',
@@ -11,13 +11,19 @@ import { ContentType } from '../../models/content-type.model';
 export class DataFieldsComponent implements ICellRendererAngularComp {
   contentType: ContentType;
   value: number;
+  private params: DataFieldsParams;
 
-  agInit(params: ICellRendererParams) {
+  agInit(params: DataFieldsParams): void {
+    this.params = params;
     this.contentType = params.data;
     this.value = params.value;
   }
 
   refresh(params?: any): boolean {
     return true;
+  }
+
+  editFields(): void {
+    this.params.onEditFields(this.contentType);
   }
 }

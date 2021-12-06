@@ -21,6 +21,7 @@ import { EditForm } from '../../shared/models/edit-form.model';
 import { DataActionsComponent } from '../ag-grid-components/data-actions/data-actions.component';
 import { DataActionsParams } from '../ag-grid-components/data-actions/data-actions.models';
 import { DataFieldsComponent } from '../ag-grid-components/data-fields/data-fields.component';
+import { DataFieldsParams } from '../ag-grid-components/data-fields/data-fields.models';
 import { DataItemsComponent } from '../ag-grid-components/data-items/data-items.component';
 import { ContentType } from '../models/content-type.model';
 import { ContentTypesService } from '../services/content-types.service';
@@ -71,7 +72,10 @@ export class DataComponent implements OnInit, OnDestroy {
       },
       {
         headerName: 'Fields', field: 'Fields', width: 94, headerClass: 'dense', cellClass: 'secondary-action no-padding',
-        sortable: true, filter: 'agNumberColumnFilter', cellRenderer: 'dataFieldsComponent', onCellClicked: this.editFields.bind(this),
+        sortable: true, filter: 'agNumberColumnFilter', cellRenderer: 'dataFieldsComponent',
+        cellRendererParams: {
+          onEditFields: this.editFields.bind(this),
+        } as DataFieldsParams,
       },
       {
         headerName: 'Name', field: 'Name', flex: 1, minWidth: 100, cellClass: this.nameCellClassGetter.bind(this),
@@ -233,8 +237,7 @@ export class DataComponent implements OnInit, OnDestroy {
     this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.firstChild });
   }
 
-  private editFields(params: CellClickedEvent) {
-    const contentType = params.data as ContentType;
+  private editFields(contentType: ContentType) {
     if (contentType.UsesSharedDef) { return; }
     this.router.navigate([`fields/${contentType.StaticName}`], { relativeTo: this.route.firstChild });
   }
