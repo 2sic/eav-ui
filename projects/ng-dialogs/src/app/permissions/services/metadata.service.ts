@@ -6,7 +6,7 @@ import { Metadata } from '../../metadata';
 import { MetadataKeyType } from '../../shared/constants/eav.constants';
 import { Context } from '../../shared/services/context';
 
-const webApiRoot = 'admin/metadata/getv13';
+const webApiRoot = 'admin/metadata/get';
 
 @Injectable()
 export class MetadataService {
