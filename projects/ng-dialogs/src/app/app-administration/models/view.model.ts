@@ -1,3 +1,4 @@
+import { MetadataItemShort } from '../../metadata';
 import { PermissionsCount } from './permissions-count.model';
 
 export interface View {
@@ -9,6 +10,7 @@ export interface View {
   List: boolean;
   ListContentType: ViewEntity;
   ListPresentationType: ViewEntity;
+  Metadata: MetadataItemShort[];
   Name: string;
   Permissions: PermissionsCount;
   PresentationType: ViewEntity;

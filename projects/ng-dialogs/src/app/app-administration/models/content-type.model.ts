@@ -1,3 +1,4 @@
+import { MetadataItemShort } from '../../metadata';
 import { PermissionsCount } from './permissions-count.model';
 
 export interface ContentType {
@@ -6,6 +7,7 @@ export interface ContentType {
   Id: number;
   Items: number;
   Label: string;
+  Metadata: MetadataItemShort[];
   Properties: ContentTypeProperties;
   Name: string;
   Permissions: PermissionsCount;

@@ -7,10 +7,18 @@
     <mat-icon>edit</mat-icon>
   </div>
 
+  <div class="like-button highlight" matRipple tippy="Metadata" (click)="openMetadata()">
+    <mat-icon [matBadge]="contentType.Metadata.length" matBadgeColor="accent" matBadgeSize="small"
+      *ngIf="contentType.Metadata.length">
+      local_offer
+    </mat-icon>
+    <mat-icon *ngIf="!contentType.Metadata.length">local_offer</mat-icon>
+  </div>
+
   <div class="like-button highlight" matRipple *ngIf="enablePermissions" tippy="Permissions"
     (click)="openPermissions()">
-    <mat-icon [matBadge]="contentType.Permissions.Count" matBadgePosition="after" matBadgeColor="accent"
-      matBadgeSize="small" *ngIf="contentType.Permissions.Count">
+    <mat-icon [matBadge]="contentType.Permissions.Count" matBadgeColor="accent" matBadgeSize="small"
+      *ngIf="contentType.Permissions.Count">
       person
     </mat-icon>
     <mat-icon *ngIf="!contentType.Permissions.Count">person</mat-icon>
@@ -28,10 +36,6 @@
   <button mat-menu-item [disabled]="contentType.UsesSharedDef" (click)="editContentType()">
     <mat-icon>settings</mat-icon>
     <span>Rename</span>
-  </button>
-  <button mat-menu-item (click)="openMetadata()">
-    <mat-icon>local_offer</mat-icon>
-    <span>Metadata</span>
   </button>
   <button mat-menu-item (click)="openRestApi()">
     <mat-icon svgIcon="code-curly"></mat-icon>

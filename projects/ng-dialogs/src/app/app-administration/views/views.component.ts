@@ -113,7 +113,7 @@ export class ViewsComponent implements OnInit, OnDestroy {
         sortable: true, filter: 'agTextColumnFilter', valueGetter: this.headerPresDemoValueGetter,
       },
       {
-        width: 120, cellClass: 'secondary-action no-padding', cellRenderer: 'viewsActionsComponent', pinned: 'right',
+        width: 160, cellClass: 'secondary-action no-padding', cellRenderer: 'viewsActionsComponent', pinned: 'right',
         cellRendererParams: {
           enableCodeGetter: this.enableCodeGetter.bind(this),
           enablePermissionsGetter: this.enablePermissionsGetter.bind(this),

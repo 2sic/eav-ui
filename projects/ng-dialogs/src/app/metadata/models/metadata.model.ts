@@ -1,5 +1,4 @@
-import { EavType } from '../../../../../edit/shared/models/eav';
-import { ContentItemFor } from '../../content-items/models/content-item.model';
+import { EavFor, EavType } from '../../../../../edit/shared/models/eav';
 
 export interface Metadata {
   Items: MetadataItem[];
@@ -26,6 +25,12 @@ export interface MetadataRecommendation {
 export interface MetadataTemplateVars {
   metadata: MetadataItem[];
   recommendations: MetadataRecommendation[];
-  itemFor?: ContentItemFor;
+  itemFor?: EavFor;
   fabOpen: boolean;
+}
+
+export interface MetadataItemShort {
+  Guid: string;
+  Id: number;
+  Title: string;
 }

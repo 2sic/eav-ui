@@ -55,7 +55,7 @@ export class QueriesComponent implements OnInit, OnDestroy {
         filter: 'agTextColumnFilter',
       },
       {
-        width: 120, cellClass: 'secondary-action no-padding', pinned: 'right',
+        width: 160, cellClass: 'secondary-action no-padding', pinned: 'right',
         cellRenderer: 'queriesActionsComponent', cellRendererParams: {
           getEnablePermissions: this.enablePermissionsGetter.bind(this),
           do: this.doMenuAction.bind(this),

@@ -4,8 +4,7 @@
   </div>
   <div class="like-button highlight" [ngClass]="{ 'hide-until-row-hover': metadataCount === 0 && !value.metadata }"
     matRipple [tippy]="metadataTooltip" (click)="openMetadata()">
-    <mat-icon [matBadge]="metadataCount > 0 ? metadataCount : null" matBadgePosition="below after"
-      matBadgeColor="accent" matBadgeSize="small">
+    <mat-icon [matBadge]="metadataCount > 0 ? metadataCount : null" matBadgeColor="accent" matBadgeSize="small">
       {{ value.metadata ? 'loyalty' : 'local_offer' }}
     </mat-icon>
   </div>

@@ -5,7 +5,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import { filter, map, pairwise, startWith } from 'rxjs/operators';
-import { ContentItemFor } from '../content-items/models/content-item.model';
+import { EavFor } from '../../../../edit/shared/models/eav';
 import { ContentItemsService } from '../content-items/services/content-items.service';
 import { EntitiesService } from '../content-items/services/entities.service';
 import { MetadataService } from '../permissions';
@@ -63,7 +63,7 @@ export class MetadataComponent implements OnInit, OnDestroy {
 
   private metadata$ = new BehaviorSubject<MetadataItem[]>([]);
   private recommendations$ = new BehaviorSubject<MetadataRecommendation[]>([]);
-  private itemFor$ = new BehaviorSubject<ContentItemFor | undefined>(undefined);
+  private itemFor$ = new BehaviorSubject<EavFor | undefined>(undefined);
   private fabOpen$ = new BehaviorSubject(false);
   private subscription = new Subscription();
   private targetType = parseInt(this.route.snapshot.paramMap.get('type'), 10);

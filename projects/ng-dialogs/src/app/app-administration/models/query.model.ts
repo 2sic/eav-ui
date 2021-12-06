@@ -1,3 +1,4 @@
+import { MetadataItemShort } from '../../metadata';
 import { PermissionsCount } from './permissions-count.model';
 
 export interface Query {
@@ -6,6 +7,7 @@ export interface Query {
   Guid: string;
   Id: number;
   IsPublished: boolean;
+  Metadata: MetadataItemShort[];
   Name: string;
   ParametersGroup: null;
   Params: string;

@@ -6,9 +6,17 @@
     <mat-icon>code</mat-icon>
   </div>
 
+  <div class="like-button highlight" matRipple tippy="Metadata" (click)="openMetadata()">
+    <mat-icon [matBadge]="view.Metadata.length" matBadgeColor="accent" matBadgeSize="small"
+      *ngIf="view.Metadata.length">
+      local_offer
+    </mat-icon>
+    <mat-icon *ngIf="!view.Metadata.length">local_offer</mat-icon>
+  </div>
+
   <div class="like-button highlight" matRipple *ngIf="enablePermissions" tippy="Permissions"
     (click)="openPermissions()">
-    <mat-icon [matBadge]="view.Permissions.Count" matBadgePosition="after" matBadgeColor="accent" matBadgeSize="small"
+    <mat-icon [matBadge]="view.Permissions.Count" matBadgeColor="accent" matBadgeSize="small"
       *ngIf="view.Permissions.Count">
       person
     </mat-icon>
@@ -24,10 +32,6 @@
 </div>
 
 <mat-menu #menu="matMenu" class="grid-more-menu">
-  <button mat-menu-item (click)="openMetadata()">
-    <mat-icon>local_offer</mat-icon>
-    <span>Metadata</span>
-  </button>
   <button mat-menu-item (click)="cloneView()">
     <mat-icon>file_copy</mat-icon>
     <span>Copy</span>
