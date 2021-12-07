@@ -47,6 +47,16 @@ export class GoToMetadata {
     );
   }
 
+  static getUrlAttribute(attributeId: number, dialogTitle?: string, contentTypeStaticName?: string): string {
+    return this.getUrl(
+      eavConstants.metadata.attribute.type,
+      eavConstants.metadata.attribute.keyType,
+      attributeId.toString(),
+      dialogTitle,
+      contentTypeStaticName,
+    );
+  }
+
   static getUrlContentType(staticName: string, dialogTitle?: string): string {
     return this.getUrl(
       eavConstants.metadata.contentType.type,

@@ -5,5 +5,5 @@ export interface ContentTypeFieldsActionsParams extends ICellRendererParams {
   onRename(field: Field): void;
   onDelete(field: Field): void;
   onOpenPermissions(field: Field): void;
-  onEditFieldMetadata(field: Field): void;
+  onOpenMetadata(field: Field): void;
 }

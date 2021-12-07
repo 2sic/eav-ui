@@ -8,6 +8,7 @@ import { BehaviorSubject, forkJoin, Subscription } from 'rxjs';
 import { filter, map, mergeMap, pairwise, share, startWith } from 'rxjs/operators';
 import { ContentType } from '../app-administration/models/content-type.model';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
+import { GoToMetadata } from '../metadata';
 import { GoToPermissions } from '../permissions/go-to-permissions';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
 import { eavConstants } from '../shared/constants/eav.constants';
@@ -86,7 +87,7 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
           onRename: (field) => this.rename(field),
           onDelete: (field) => this.delete(field),
           onOpenPermissions: (field) => this.openPermissions(field),
-          onEditFieldMetadata: (field) => this.editFieldMetadata(field),
+          onOpenMetadata: (field) => this.openMetadata(field),
         } as ContentTypeFieldsActionsParams,
       },
     ],
@@ -295,6 +296,14 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
 
   private openPermissions(field: Field) {
     this.router.navigate([GoToPermissions.getUrlAttribute(field.Id)], { relativeTo: this.route });
+  }
+
+  private openMetadata(field: Field) {
+    const url = GoToMetadata.getUrlAttribute(
+      field.Id,
+      `Metadata for Field: ${field.StaticName} (${field.Id})`,
+    );
+    this.router.navigate([url], { relativeTo: this.route });
   }
 
   private refreshOnChildClosed() {

@@ -29,8 +29,8 @@ export class ContentTypeFieldsActionsComponent implements ICellRendererAngularCo
     return true;
   }
 
-  editFieldMetadata() {
-    this.params.onEditFieldMetadata(this.field);
+  openMetadata() {
+    this.params.onOpenMetadata(this.field);
   }
 
   rename() {
