@@ -39,8 +39,7 @@
             <td>
               <button mat-button (click)="edit(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.App)"
                 tippy="Edit app system settings">
-                <mat-icon matBadgePosition="below after" matBadgeColor="accent" matBadgeSize="small"
-                  [matBadge]="appSystemSettingsExists ? 1 : null">
+                <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="appSystemSettingsExists ? 1 : null">
                   edit
                 </mat-icon>
               </button>
@@ -62,7 +61,7 @@
               <td>
                 <button mat-button (click)="edit(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.Site)"
                   tippy="Edit site system settings">
-                  <mat-icon matBadgePosition="below after" matBadgeColor="accent" matBadgeSize="small"
+                  <mat-icon matBadgeColor="accent" matBadgeSize="small"
                     [matBadge]="siteSystemSettingsExists ? 1 : null">
                     edit
                   </mat-icon>
@@ -83,8 +82,7 @@
               <td>
                 <button mat-button (click)="edit(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.App)"
                   tippy="Edit global system settings">
-                  <mat-icon matBadgePosition="below after" matBadgeColor="accent" matBadgeSize="small"
-                    [matBadge]="appSystemSettingsExists ? 1 : null">
+                  <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="appSystemSettingsExists ? 1 : null">
                     edit
                   </mat-icon>
                 </button>
@@ -120,7 +118,7 @@
       <!-- <ng-container *ngIf="dialogSettings.Context.App.SettingsScope === AppScopes.Global">
         <div class="actions-row">
           <button mat-button (click)="edit(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.App)">
-            <mat-icon matBadgePosition="after" matBadgeColor="accent" matBadgeSize="small"
+            <mat-icon matBadgeColor="accent" matBadgeSize="small"
               [matBadge]="appSystemSettingsExists ? 1 : null">
               edit
             </mat-icon>
@@ -132,7 +130,7 @@
       <!-- <ng-container *ngIf="dialogSettings.Context.App.SettingsScope === AppScopes.Site">
         <div class="actions-row">
           <button mat-button (click)="edit(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.App)">
-            <mat-icon matBadgePosition="after" matBadgeColor="accent" matBadgeSize="small"
+            <mat-icon matBadgeColor="accent" matBadgeSize="small"
               [matBadge]="appSystemSettingsExists ? 1 : null">
               edit
             </mat-icon>
@@ -141,7 +139,7 @@
         </div>
         <div class="actions-row">
           <button mat-button (click)="edit(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.Site)">
-            <mat-icon matBadgePosition="after" matBadgeColor="accent" matBadgeSize="small"
+            <mat-icon matBadgeColor="accent" matBadgeSize="small"
               [matBadge]="siteSystemSettingsExists ? 1 : null">
               edit
             </mat-icon>
@@ -159,7 +157,7 @@
       <!-- <ng-container *ngIf="dialogSettings.Context.App.SettingsScope === AppScopes.App">
         <div class="actions-row">
           <button mat-button (click)="edit(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.App)">
-            <mat-icon matBadgePosition="after" matBadgeColor="accent" matBadgeSize="small"
+            <mat-icon matBadgeColor="accent" matBadgeSize="small"
               [matBadge]="appSystemSettingsExists ? 1 : null">
               edit
             </mat-icon>
@@ -211,8 +209,7 @@
             <td>
               <button mat-button (click)="edit(eavConstants.contentTypes.systemResources, SystemSettingsScopes.App)"
                 tippy="Edit app system resources">
-                <mat-icon matBadgePosition="below after" matBadgeColor="accent" matBadgeSize="small"
-                  [matBadge]="appSystemResourcesExists ? 1 : null">
+                <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="appSystemResourcesExists ? 1 : null">
                   edit
                 </mat-icon>
               </button>
@@ -234,7 +231,7 @@
               <td>
                 <button mat-button (click)="edit(eavConstants.contentTypes.systemResources, SystemSettingsScopes.Site)"
                   tippy="Edit site system resources">
-                  <mat-icon matBadgePosition="below after" matBadgeColor="accent" matBadgeSize="small"
+                  <mat-icon matBadgeColor="accent" matBadgeSize="small"
                     [matBadge]="siteSystemResourcesExists ? 1 : null">
                     edit
                   </mat-icon>
@@ -255,7 +252,7 @@
               <td>
                 <button mat-button (click)="edit(eavConstants.contentTypes.systemResources, SystemSettingsScopes.App)"
                   tippy="Edit global system resources">
-                  <mat-icon matBadgePosition="below after" matBadgeColor="accent" matBadgeSize="small"
+                  <mat-icon matBadgeColor="accent" matBadgeSize="small"
                     [matBadge]="appSystemResourcesExists ? 1 : null">
                     edit
                   </mat-icon>
@@ -290,7 +287,7 @@
       <!-- <ng-container *ngIf="dialogSettings.Context.App.SettingsScope === AppScopes.Global">
         <div class="actions-row">
           <button mat-button (click)="edit(eavConstants.contentTypes.systemResources, SystemSettingsScopes.App)">
-            <mat-icon matBadgePosition="after" matBadgeColor="accent" matBadgeSize="small"
+            <mat-icon matBadgeColor="accent" matBadgeSize="small"
               [matBadge]="appSystemResourcesExists ? 1 : null">
               edit
             </mat-icon>
@@ -302,7 +299,7 @@
       <!-- <ng-container *ngIf="dialogSettings.Context.App.SettingsScope === AppScopes.Site">
         <div class="actions-row">
           <button mat-button (click)="edit(eavConstants.contentTypes.systemResources, SystemSettingsScopes.App)">
-            <mat-icon matBadgePosition="after" matBadgeColor="accent" matBadgeSize="small"
+            <mat-icon matBadgeColor="accent" matBadgeSize="small"
               [matBadge]="appSystemResourcesExists ? 1 : null">
               edit
             </mat-icon>
@@ -311,7 +308,7 @@
         </div>
         <div class="actions-row">
           <button mat-button (click)="edit(eavConstants.contentTypes.systemResources, SystemSettingsScopes.Site)">
-            <mat-icon matBadgePosition="after" matBadgeColor="accent" matBadgeSize="small"
+            <mat-icon matBadgeColor="accent" matBadgeSize="small"
               [matBadge]="siteSystemResourcesExists ? 1 : null">
               edit
             </mat-icon>
@@ -329,7 +326,7 @@
       <!-- <ng-container *ngIf="dialogSettings.Context.App.SettingsScope === AppScopes.App">
         <div class="actions-row">
           <button mat-button (click)="edit(eavConstants.contentTypes.systemResources, SystemSettingsScopes.App)">
-            <mat-icon matBadgePosition="after" matBadgeColor="accent" matBadgeSize="small"
+            <mat-icon matBadgeColor="accent" matBadgeSize="small"
               [matBadge]="appSystemResourcesExists ? 1 : null">
               edit
             </mat-icon>
@@ -406,7 +403,7 @@
     </mat-card-content>
     <mat-card-actions>
       <button mat-button [disabled]="!dialogSettings.Context.Enable.AppPermissions" (click)="openPermissions()">
-        <mat-icon matBadgePosition="below after" matBadgeColor="accent" matBadgeSize="small"
+        <mat-icon matBadgeColor="accent" matBadgeSize="small"
           [matBadge]="dialogSettings.Context.App.Permissions.Count ? dialogSettings.Context.App.Permissions.Count : null">
           person
         </mat-icon>
