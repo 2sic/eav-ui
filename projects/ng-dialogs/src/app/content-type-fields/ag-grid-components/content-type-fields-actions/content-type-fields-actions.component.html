@@ -1,4 +1,11 @@
 <div class="actions-component">
+  <div class="like-button highlight" matRipple tippy="Metadata" (click)="editFieldMetadata()">
+    <mat-icon [matBadge]="metadataCount" matBadgeColor="accent" matBadgeSize="small" *ngIf="metadataCount">
+      local_offer
+    </mat-icon>
+    <mat-icon *ngIf="!metadataCount">local_offer</mat-icon>
+  </div>
+
   <div class="like-button highlight" matRipple tippy="Permissions" *ngIf="enablePermissions"
     (click)="openPermissions()">
     <mat-icon [matBadge]="field.Permissions.Count" matBadgeColor="accent" matBadgeSize="small"

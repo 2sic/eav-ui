@@ -12,6 +12,7 @@ import { ContentTypeFieldsActionsParams } from './content-type-fields-actions.mo
 })
 export class ContentTypeFieldsActionsComponent implements ICellRendererAngularComp {
   field: Field;
+  metadataCount: number;
   enablePermissions: boolean;
   private params: ContentTypeFieldsActionsParams;
 
@@ -20,11 +21,16 @@ export class ContentTypeFieldsActionsComponent implements ICellRendererAngularCo
   agInit(params: ContentTypeFieldsActionsParams) {
     this.params = params;
     this.field = this.params.data;
+    this.metadataCount = this.field.Metadata ? Object.keys(this.field.Metadata).filter(key => key !== 'merged').length : 0;
     this.enablePermissions = this.field.InputType === InputTypeConstants.StringWysiwyg || this.field.Type === DataTypeConstants.Hyperlink;
   }
 
   refresh(params?: any): boolean {
     return true;
+  }
+
+  editFieldMetadata() {
+    this.params.onEditFieldMetadata(this.field);
   }
 
   rename() {

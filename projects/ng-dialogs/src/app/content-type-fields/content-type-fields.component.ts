@@ -56,7 +56,7 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
       },
       {
         headerName: 'Name', field: 'StaticName', flex: 2, minWidth: 250, cellClass: 'primary-action highlight',
-        sortable: true, filter: 'agTextColumnFilter', onCellClicked: this.editFieldMetadata.bind(this),
+        sortable: true, filter: 'agTextColumnFilter', onCellClicked: (params) => this.editFieldMetadata(params.data),
         cellRenderer: this.nameCellRenderer.bind(this),
       },
       {
@@ -81,11 +81,12 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
         sortable: true, filter: 'agTextColumnFilter',
       },
       {
-        width: 80, cellClass: 'secondary-action no-padding', cellRenderer: 'contentTypeFieldsActionsComponent', pinned: 'right',
+        width: 120, cellClass: 'secondary-action no-padding', cellRenderer: 'contentTypeFieldsActionsComponent', pinned: 'right',
         cellRendererParams: {
-          onRename: this.rename.bind(this),
-          onDelete: this.delete.bind(this),
-          onOpenPermissions: this.openPermissions.bind(this),
+          onRename: (field) => this.rename(field),
+          onDelete: (field) => this.delete(field),
+          onOpenPermissions: (field) => this.openPermissions(field),
+          onEditFieldMetadata: (field) => this.editFieldMetadata(field),
         } as ContentTypeFieldsActionsParams,
       },
     ],
@@ -240,8 +241,7 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
     }
   }
 
-  private editFieldMetadata(params: CellClickedEvent) {
-    const field: Field = params.data;
+  private editFieldMetadata(field: Field) {
     const form: EditForm = {
       items: [
         this.createItemDefinition(field, 'All'),
