@@ -2,10 +2,12 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { forkJoin, Subscription } from 'rxjs';
+import { forkJoin, of, Subscription } from 'rxjs';
 import { filter, map, pairwise, startWith } from 'rxjs/operators';
 import { ContentItemsService } from '../../content-items/services/content-items.service';
+import { ContentTypesFieldsService } from '../../content-type-fields/services/content-types-fields.service';
 import { GoToMetadata } from '../../metadata';
+import { MetadataService } from '../../permissions';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
 import { eavConstants, SystemSettingsScope, SystemSettingsScopes } from '../../shared/constants/eav.constants';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
@@ -29,10 +31,16 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
   AnalyzeParts = AnalyzeParts;
   SystemSettingsScopes = SystemSettingsScopes;
   AppScopes = AppScopes;
-  appSystemSettingsExists: boolean;
-  siteSystemSettingsExists: boolean;
-  appSystemResourcesExists: boolean;
-  siteSystemResourcesExists: boolean;
+  appSystemSettings: number;
+  appCustomSettings: number;
+  appCustomSettingsFields: number;
+  appSystemResources: number;
+  appCustomResources: number;
+  appCustomResourcesFields: number;
+  siteSystemSettings: number;
+  siteSystemResources: number;
+  appConfigurations: number;
+  appMetadata: number;
 
   private subscription: Subscription;
 
@@ -46,6 +54,8 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
     private snackBar: MatSnackBar,
     private dialogService: DialogService,
     private changeDetectorRef: ChangeDetectorRef,
+    private contentTypesFieldsService: ContentTypesFieldsService,
+    private metadataService: MetadataService,
   ) { }
 
   ngOnInit() {
@@ -83,8 +93,11 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
           };
           break;
         default:
-          if (contentItems.length !== 1) {
-            throw new Error(`Found too many settings for the type ${staticName}`);
+          if (contentItems.length < 1) {
+            throw new Error(`Found no settings for type ${staticName}`);
+          }
+          if (contentItems.length > 1) {
+            throw new Error(`Found too many settings for type ${staticName}`);
           }
           form = {
             items: [{ EntityId: contentItems[0].Id }],
@@ -168,14 +181,49 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
   }
 
   private fetchSystemSettings() {
+    // custom settings and custom resources don't work for global scope
+    const isGlobalScope = this.dialogSettings.Context.App.SettingsScope === AppScopes.Global;
     forkJoin([
-      this.contentItemsService.getAll(eavConstants.contentTypes.systemSettings),
-      this.contentItemsService.getAll(eavConstants.contentTypes.systemResources),
-    ]).subscribe(([systemSettingsItems, systemResourcesItems]) => {
-      this.appSystemSettingsExists = systemSettingsItems.some(i => !i.SettingsEntityScope);
-      this.siteSystemSettingsExists = systemSettingsItems.some(i => i.SettingsEntityScope === SystemSettingsScopes.Site);
-      this.appSystemResourcesExists = systemResourcesItems.some(i => !i.SettingsEntityScope);
-      this.siteSystemResourcesExists = systemResourcesItems.some(i => i.SettingsEntityScope === SystemSettingsScopes.Site);
+      forkJoin([
+        this.contentItemsService.getAll(eavConstants.contentTypes.systemSettings),
+        isGlobalScope ? of<undefined>(undefined) : this.contentItemsService.getAll(eavConstants.contentTypes.settings),
+        isGlobalScope ? of<undefined>(undefined) : this.contentTypesFieldsService.getFields(eavConstants.contentTypes.settings),
+      ]),
+      forkJoin([
+        this.contentItemsService.getAll(eavConstants.contentTypes.systemResources),
+        isGlobalScope ? of<undefined>(undefined) : this.contentItemsService.getAll(eavConstants.contentTypes.resources),
+        isGlobalScope ? of<undefined>(undefined) : this.contentTypesFieldsService.getFields(eavConstants.contentTypes.resources),
+      ]),
+      forkJoin([
+        this.contentItemsService.getAll(eavConstants.scopes.app.value),
+        this.metadataService.getMetadata(eavConstants.metadata.app.type, eavConstants.metadata.app.keyType, this.context.appId),
+      ]),
+    ]).subscribe(([
+      [
+        systemSettingsItems,
+        customSettingsItems,
+        customSettingsFields,
+      ],
+      [
+        systemResourcesItems,
+        customResourcesItems,
+        customResourcesFields,
+      ],
+      [
+        appConfigurations,
+        appMetadata,
+      ],
+    ]) => {
+      this.appSystemSettings = systemSettingsItems.filter(i => !i.SettingsEntityScope).length;
+      this.appCustomSettings = customSettingsItems?.length;
+      this.appCustomSettingsFields = customSettingsFields?.length;
+      this.appSystemResources = systemResourcesItems.filter(i => !i.SettingsEntityScope).length;
+      this.appCustomResources = customResourcesItems?.length;
+      this.appCustomResourcesFields = customResourcesFields?.length;
+      this.siteSystemSettings = systemSettingsItems.filter(i => i.SettingsEntityScope === SystemSettingsScopes.Site).length;
+      this.siteSystemResources = systemResourcesItems.filter(i => i.SettingsEntityScope === SystemSettingsScopes.Site).length;
+      this.appConfigurations = appConfigurations.length;
+      this.appMetadata = appMetadata.Items.length;
 
       this.changeDetectorRef.markForCheck();
     });

@@ -226,14 +226,14 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
   private fetchFields(callback?: () => void) {
     if (this.contentType$.value == null) {
       const contentType$ = this.contentTypesService.retrieveContentType(this.contentTypeStaticName).pipe(share());
-      const fields$ = contentType$.pipe(mergeMap(contentType => this.contentTypesFieldsService.getFields(contentType)));
+      const fields$ = contentType$.pipe(mergeMap(contentType => this.contentTypesFieldsService.getFields(contentType.StaticName)));
       forkJoin([contentType$, fields$]).subscribe(([contentType, fields]) => {
         this.contentType$.next(contentType);
         this.fields$.next(fields);
         if (callback != null) { callback(); }
       });
     } else {
-      this.contentTypesFieldsService.getFields(this.contentType$.value).subscribe(fields => {
+      this.contentTypesFieldsService.getFields(this.contentType$.value.StaticName).subscribe(fields => {
         this.fields$.next(fields);
         if (callback != null) { callback(); }
       });

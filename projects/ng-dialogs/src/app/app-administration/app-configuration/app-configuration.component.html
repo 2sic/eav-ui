@@ -39,18 +39,22 @@
             <td>
               <button mat-button (click)="edit(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.App)"
                 tippy="Edit app system settings">
-                <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="appSystemSettingsExists ? 1 : null">
+                <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="appSystemSettings || null">
                   edit
                 </mat-icon>
               </button>
             </td>
             <td>
               <button mat-button (click)="edit(eavConstants.contentTypes.settings)" tippy="Edit custom app settings">
-                <mat-icon>edit</mat-icon>
+                <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="appCustomSettings || null">
+                  edit
+                </mat-icon>
               </button>
               <button mat-button (click)="config(eavConstants.contentTypes.settings)"
                 tippy="Configure fields of the custom app settings">
-                <mat-icon>dns</mat-icon>
+                <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="appCustomSettingsFields || null">
+                  dns
+                </mat-icon>
               </button>
             </td>
           </tr>
@@ -61,14 +65,13 @@
               <td>
                 <button mat-button (click)="edit(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.Site)"
                   tippy="Edit site system settings">
-                  <mat-icon matBadgeColor="accent" matBadgeSize="small"
-                    [matBadge]="siteSystemSettingsExists ? 1 : null">
+                  <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="siteSystemSettings || null">
                     edit
                   </mat-icon>
                 </button>
               </td>
               <td>
-                <mat-icon tippy="This isn't automated yet. Just create a SettingsCustom yourself">
+                <mat-icon class="no-select" tippy="This isn't automated yet. Just create a SettingsCustom yourself">
                   help_outline
                 </mat-icon>
               </td>
@@ -82,13 +85,13 @@
               <td>
                 <button mat-button (click)="edit(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.App)"
                   tippy="Edit global system settings">
-                  <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="appSystemSettingsExists ? 1 : null">
+                  <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="appSystemSettings || null">
                     edit
                   </mat-icon>
                 </button>
               </td>
               <td>
-                <mat-icon tippy="This isn't automated yet. Just create a SettingsCustom yourself">
+                <mat-icon class="no-select" tippy="This isn't automated yet. Just create a SettingsCustom yourself">
                   help_outline
                 </mat-icon>
               </td>
@@ -209,18 +212,22 @@
             <td>
               <button mat-button (click)="edit(eavConstants.contentTypes.systemResources, SystemSettingsScopes.App)"
                 tippy="Edit app system resources">
-                <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="appSystemResourcesExists ? 1 : null">
+                <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="appSystemResources || null">
                   edit
                 </mat-icon>
               </button>
             </td>
             <td>
               <button mat-button (click)="edit(eavConstants.contentTypes.resources)" tippy="Edit custom app resources">
-                <mat-icon>edit</mat-icon>
+                <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="appCustomResources || null">
+                  edit
+                </mat-icon>
               </button>
               <button mat-button (click)="config(eavConstants.contentTypes.resources)"
                 tippy="Configure fields of the custom app resources">
-                <mat-icon>dns</mat-icon>
+                <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="appCustomResourcesFields || null">
+                  dns
+                </mat-icon>
               </button>
             </td>
           </tr>
@@ -231,14 +238,13 @@
               <td>
                 <button mat-button (click)="edit(eavConstants.contentTypes.systemResources, SystemSettingsScopes.Site)"
                   tippy="Edit site system resources">
-                  <mat-icon matBadgeColor="accent" matBadgeSize="small"
-                    [matBadge]="siteSystemResourcesExists ? 1 : null">
+                  <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="siteSystemResources || null">
                     edit
                   </mat-icon>
                 </button>
               </td>
               <td>
-                <mat-icon tippy="This isn't automated yet. Just create a ResourcesCustom yourself">
+                <mat-icon class="no-select" tippy="This isn't automated yet. Just create a ResourcesCustom yourself">
                   help_outline
                 </mat-icon>
               </td>
@@ -252,14 +258,13 @@
               <td>
                 <button mat-button (click)="edit(eavConstants.contentTypes.systemResources, SystemSettingsScopes.App)"
                   tippy="Edit global system resources">
-                  <mat-icon matBadgeColor="accent" matBadgeSize="small"
-                    [matBadge]="appSystemResourcesExists ? 1 : null">
+                  <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="appSystemResources || null">
                     edit
                   </mat-icon>
                 </button>
               </td>
               <td>
-                <mat-icon tippy="This isn't automated yet. Just create a ResourcesCustom yourself">
+                <mat-icon class="no-select" tippy="This isn't automated yet. Just create a ResourcesCustom yourself">
                   help_outline
                 </mat-icon>
               </td>
@@ -381,11 +386,15 @@
     </mat-card-content>
     <mat-card-actions>
       <button mat-button (click)="edit(eavConstants.scopes.app.value)">
-        <mat-icon>edit</mat-icon>
+        <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="appConfigurations || null">
+          edit
+        </mat-icon>
         <span>Edit Configuration</span>
       </button>
       <button mat-button (click)="openMetadata()">
-        <mat-icon>local_offer</mat-icon>
+        <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="appMetadata || null">
+          local_offer
+        </mat-icon>
         <span>Metadata</span>
       </button>
     </mat-card-actions>
@@ -404,7 +413,7 @@
     <mat-card-actions>
       <button mat-button [disabled]="!dialogSettings.Context.Enable.AppPermissions" (click)="openPermissions()">
         <mat-icon matBadgeColor="accent" matBadgeSize="small"
-          [matBadge]="dialogSettings.Context.App.Permissions.Count ? dialogSettings.Context.App.Permissions.Count : null">
+          [matBadge]="dialogSettings.Context.App.Permissions.Count || null">
           person
         </mat-icon>
         <span>

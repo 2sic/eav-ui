@@ -66,7 +66,7 @@ export class EditContentTypeFieldsComponent implements OnInit, OnDestroy {
 
     const contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
     const contentType$ = this.contentTypesService.retrieveContentType(contentTypeStaticName).pipe(share());
-    const fields$ = contentType$.pipe(mergeMap(contentType => this.contentTypesFieldsService.getFields(contentType)));
+    const fields$ = contentType$.pipe(mergeMap(contentType => this.contentTypesFieldsService.getFields(contentType.StaticName)));
     const dataTypes$ = this.contentTypesFieldsService.typeListRetrieve().pipe(map(rawDataTypes => calculateDataTypes(rawDataTypes)));
     const inputTypes$ = this.contentTypesFieldsService.getInputTypesList();
     const reservedNames$ = this.contentTypesFieldsService.getReservedNames();
@@ -145,7 +145,7 @@ export class EditContentTypeFieldsComponent implements OnInit, OnDestroy {
     this.dataTypeHints[index] = selectedDataType?.description ?? '';
     this.inputTypeHints[index] =
       selectedInputType.IsObsolete ? 'OBSOLETE - ' + selectedInputType.ObsoleteMessage : ''
-      + selectedInputType?.description ?? '';
+        + selectedInputType?.description ?? '';
   }
 
   // WIP 2dm
