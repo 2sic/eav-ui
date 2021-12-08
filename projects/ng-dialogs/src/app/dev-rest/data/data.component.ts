@@ -14,7 +14,7 @@ import { DevRestBase } from '../dev-rest-base.component';
 import { GoToDevRest } from '../go-to-dev-rest';
 import { DevRestDataTemplateVars } from './data-template-vars';
 
-const pathToContent = 'app/{appname}/content/{typename}';
+const pathToContent = 'app/{appname}/data/{typename}';
 
 @Component({
   selector: 'app-dev-rest-data',

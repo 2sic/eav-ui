@@ -32,7 +32,7 @@ function snippetsGet(scenario: Scenario, path: string, context: Context): CodeSa
     list.push(new CodeSample('Example with global $2sxc and event-context',
       'This example finds the context information from the HTML where an action started.',
       `
-<button onclick="$2sxc(this).webApi.get('${path}').then(data => console.log(data))">
+<button onclick="$2sxc(this).webApi.fetchJson('${path}').then(data => console.log(data))">
   get it
 </button>`, false, [hint$2sxc]));
 
@@ -43,7 +43,7 @@ function snippetsGet(scenario: Scenario, path: string, context: Context): CodeSa
 // get the sxc-controller for this module
 var sxc = $2sxc(${moduleId});
 // now get the data in the promise
-sxc.webApi.get('${path}')
+sxc.webApi.fetchJson('${path}')
   .then(data => {
     console.log(data)
   });`,
@@ -59,7 +59,7 @@ sxc.webApi.get('${path}')
 // this will be replaced on the server with the ID
 var moduleId = @Dnn.Module.ModuleID;
 var sxc = $2sxc(moduleId);
-var promise = sxc.webApi.get('${path}');`, false, [hint$2sxc]));
+var promise = sxc.webApi.fetchJson('${path}');`, false, [hint$2sxc]));
 
   // jquery examples, they differ based on the scenario
   const endPointGetter = virtual ? `$2sxc.http.apiUrl('${path}')` : `'${path}'`;
@@ -144,7 +144,7 @@ var newThing = {
 };
 
 // now create it and get the id back
-sxc.webApi.post('${path}', newThing)
+sxc.webApi.fetchJson('${path}', newThing)
   .then(data => {
     console.log('Got this ID information: ', data)
   });`,
@@ -171,7 +171,7 @@ var updateProperty1And2 = {
 };
 
 // now update the item
-sxc.webApi.post('${path}', updateProperty1And2)
+sxc.webApi.fetchJson('${path}', updateProperty1And2)
   .then(data => {
     console.log('Update completed', data)
   });`,
@@ -192,7 +192,7 @@ Note that this snippet doesn't use real names of properties to add.`,
 var sxc = $2sxc(${moduleId});
 
 // delete the item
-sxc.webApi.delete('${path}')
+sxc.webApi.fetchJson('${path}')
   .then(data => {
     console.log('Delete completed', data)
   });`,
