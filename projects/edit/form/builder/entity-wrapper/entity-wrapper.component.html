@@ -12,7 +12,7 @@
       </div>
     </div>
 
-    <mat-slide-toggle fxLayoutAlign="start center" *ngIf="data.slotCanBeEmpty" (change)="toggleSlotIsEmpty(data.header)"
+    <mat-slide-toggle class="empty-slot-toggle" *ngIf="data.slotCanBeEmpty" (change)="toggleSlotIsEmpty(data.header)"
       [checked]="!data.slotIsEmpty" [disabled]="data.currentLanguage !== data.defaultLanguage"
       [tippy]="(!data.slotIsEmpty ? 'ItemCard.SlotUsedTrue' : 'ItemCard.SlotUsedFalse') | translate"
       [tippyDisabled]="data.currentLanguage !== data.defaultLanguage">
