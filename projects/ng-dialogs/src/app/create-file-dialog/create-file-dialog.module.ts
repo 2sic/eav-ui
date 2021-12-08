@@ -4,6 +4,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { CreateFileDialogComponent } from '.';
 import { SourceService } from '../code-editor/services/source.service';
@@ -22,6 +23,7 @@ import { SharedComponentsModule } from '../shared/shared-components.module';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
+    MatProgressSpinnerModule,
   ],
   exports: [
     CreateFileDialogComponent,

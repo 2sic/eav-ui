@@ -11,7 +11,10 @@ export interface CreateFileTemplateVars {
   templates: PredefinedTemplate[];
   platforms: string[];
   purposes: string[];
+  loadingPreview: boolean;
   preview: string;
+  previewValid: boolean;
+  previewError: string;
 }
 
 export interface CreateFileFormControls {

@@ -63,17 +63,26 @@
     </div>
 
     <div class="dialog-form-actions">
+      <ng-container *ngIf="data.loadingPreview">
+        <mat-spinner mode="indeterminate" diameter="20" color="accent"></mat-spinner>
+        <div class="spacer"></div>
+      </ng-container>
       <button mat-raised-button type="button" (click)="closeDialog()">Cancel</button>
-      <button mat-raised-button type="button" color="accent" [disabled]="!form.valid" (click)="confirm()">
+      <button mat-raised-button type="button" color="accent"
+        [disabled]="!form.valid || data.loadingPreview || !data.previewValid" (click)="confirm()">
         Create
       </button>
     </div>
 
     <ng-container *ngIf="data.preview">
       <div class="preview-label-box">
-        <label class="preview-label">Preview</label>
+        <label class="preview-label" [ngClass]="{ 'disabled': data.loadingPreview }">Preview</label>
       </div>
-      <pre class="fancy-scrollbar-light">{{ data.preview }}</pre>
+      <pre class="fancy-scrollbar-light" [ngClass]="{ 'disabled': data.loadingPreview }">{{ data.preview }}</pre>
     </ng-container>
+
+    <div class="preview-error" *ngIf="!data.loadingPreview && data.previewError">
+      {{ data.previewError }}
+    </div>
   </form>
 </ng-container>

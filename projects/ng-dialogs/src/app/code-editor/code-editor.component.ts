@@ -177,6 +177,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
   createTemplate(folder?: string): void {
     const data: CreateFileDialogData = {
       folder,
+      purpose: folder === 'api' || folder?.startsWith('api/') ? 'Api' : undefined,
     };
     const dialogRef = this.dialog.open(CreateFileDialogComponent, {
       autoFocus: false,

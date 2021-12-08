@@ -1,3 +1,5 @@
+@import "../../../../edit/assets/styles/_variables.scss";
+
 .dialog-title-box {
   justify-content: flex-start;
   align-items: baseline;
@@ -43,6 +45,10 @@ pre {
   flex-grow: 1;
   flex-shrink: 1;
   font-family: monospace;
+
+  &.disabled {
+    color: $editUI-label-disabled-color;
+  }
 }
 
 .preview-label-box {
@@ -55,7 +61,17 @@ pre {
     font-size: 12px;
     color: rgba(0, 0, 0, 0.6);
     pointer-events: none;
+
+    &.disabled {
+      color: $editUI-field-disabled-color;
+    }
   }
+}
+
+.preview-error {
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: red;
 }
 
 pre {

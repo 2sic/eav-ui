@@ -8,9 +8,11 @@ import { keyIsShared } from '../../shared/constants/session.constants';
 import { SourceItem } from '../../shared/models/edit-form.model';
 import { Context } from '../../shared/services/context';
 import { PredefinedTemplatesResponse } from '../models/predefined-template.model';
+import { Preview } from '../models/preview.models';
 import { SourceView } from '../models/source-view.model';
 
 export const webApiAppFilesPredefinedTemplates = 'admin/appfiles/GetTemplates';
+export const webApiAppFilesPreview = 'admin/appfiles/preview';
 
 @Injectable()
 export class SourceService {
@@ -68,6 +70,17 @@ export class SourceService {
       params: {
         ...(purpose && { purpose }),
         ...(type && { type }),
+      },
+    });
+  }
+
+  getPreview(path: string, templateKey: string): Observable<Preview> {
+    return this.http.get<Preview>(this.dnnContext.$2sxc.http.apiUrl(webApiAppFilesPreview), {
+      params: {
+        appId: this.context.appId.toString(),
+        path,
+        templateKey,
+        global: this.isShared,
       },
     });
   }

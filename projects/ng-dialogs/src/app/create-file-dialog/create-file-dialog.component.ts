@@ -1,8 +1,8 @@
 import { Component, HostBinding, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
-import { distinctUntilChanged, map, startWith, tap } from 'rxjs/operators';
+import { asyncScheduler, BehaviorSubject, combineLatest, forkJoin, Observable, of, Subscription, timer } from 'rxjs';
+import { delay, distinctUntilChanged, map, startWith, switchMap, tap, throttleTime } from 'rxjs/operators';
 import { CreateFileDialogData, CreateFileDialogResult, CreateFileFormControls, CreateFileFormValues, CreateFileTemplateVars } from '.';
 import { SanitizeHelper } from '../../../../edit/shared/helpers';
 import { PredefinedTemplate } from '../code-editor/models/predefined-template.model';
@@ -22,6 +22,7 @@ export class CreateFileDialogComponent implements OnInit, OnDestroy {
 
   private all = 'All' as const;
   private templates$: BehaviorSubject<PredefinedTemplate[]>;
+  private loadingPreview$: BehaviorSubject<boolean>;
   private subscription: Subscription;
 
   constructor(
@@ -33,6 +34,7 @@ export class CreateFileDialogComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.subscription = new Subscription();
     this.templates$ = new BehaviorSubject<PredefinedTemplate[]>([]);
+    this.loadingPreview$ = new BehaviorSubject(false);
 
     this.buildForm();
     this.fetchTemplates();
@@ -41,6 +43,7 @@ export class CreateFileDialogComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.templates$.complete();
+    this.loadingPreview$.complete();
     this.subscription.unsubscribe();
   }
 
@@ -183,21 +186,41 @@ export class CreateFileDialogComponent implements OnInit, OnDestroy {
       }),
     );
     const preview$ = combineLatest([
-      this.templates$,
+      this.controls.finalName.valueChanges.pipe(
+        startWith<string, string>(this.controls.finalName.value),
+        distinctUntilChanged(),
+      ),
       this.controls.templateKey.valueChanges.pipe(
         startWith<string, string>(this.controls.templateKey.value),
         distinctUntilChanged(),
       ),
     ]).pipe(
-      map(([templates, templateKey]) => templates.find(t => t.Key === templateKey)?.Body),
+      throttleTime(100, asyncScheduler, { leading: true, trailing: true }),
+      tap(() => {
+        this.loadingPreview$.next(true);
+      }),
+      switchMap(([finalName, templateKey]) => {
+        return !finalName || !templateKey
+          ? of<undefined>(undefined)
+          : forkJoin([
+            this.sourceService.getPreview(finalName, templateKey),
+            timer(500),
+          ]).pipe(map(([preview]) => preview));
+      }),
+      tap(() => {
+        this.loadingPreview$.next(false);
+      }),
     );
-    this.templateVars$ = combineLatest([platforms$, purposes$, templates$, preview$]).pipe(
-      map(([platforms, purposes, templates, preview]) => {
+    this.templateVars$ = combineLatest([platforms$, purposes$, templates$, preview$, this.loadingPreview$]).pipe(
+      map(([platforms, purposes, templates, preview, loadingPreview]) => {
         const templateVars: CreateFileTemplateVars = {
           platforms,
           purposes,
           templates,
-          preview,
+          loadingPreview,
+          preview: preview?.Preview,
+          previewValid: preview?.IsValid ?? false,
+          previewError: preview?.Error,
         };
         return templateVars;
       }),
