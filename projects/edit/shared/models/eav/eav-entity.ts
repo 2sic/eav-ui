@@ -12,21 +12,6 @@ export class EavEntity {
   Metadata?: EavEntity[];
 
   static convertOne(entity1: Entity1): EavEntity {
-    // spm 2021.01.26. is empty entity ever used?
-    if (entity1 == null) {
-      const defaultEntity: EavEntity = {
-        Attributes: {},
-        Guid: '00000000-0000-0000-0000-000000000000',
-        Id: 0,
-        Owner: '',
-        Type: null,
-        Version: 1,
-        For: null,
-        Metadata: null,
-      };
-      return defaultEntity;
-    }
-
     const attributes = EavEntityAttributes.convert(entity1.Attributes);
     const metadata = this.convertMany(entity1.Metadata);
 
