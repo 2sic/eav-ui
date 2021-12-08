@@ -18,6 +18,10 @@
       [tippyDisabled]="data.currentLanguage !== data.defaultLanguage">
     </mat-slide-toggle>
 
+    <div class="metadata-icon-box" [tippy]="data.itemForTooltip" *ngIf="data.itemForTooltip">
+      <mat-icon>local_offer</mat-icon>
+    </div>
+
     <button mat-icon-button type="button" [tippy]="'Form.Buttons.History.Tip' | translate"
       *ngIf="eavService.eavConfig.enableHistory" (click)="openHistory()">
       <mat-icon>history</mat-icon>

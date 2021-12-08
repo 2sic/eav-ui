@@ -5,7 +5,8 @@
       "Save.Tip": "Speichern und schliessen - mit CTRL + S nur speichern",
       "Exit.Tip": "Verlassen - bei Änderungen wird zum Speichern aufgefordert",
       "Return.Tip": "Zurück zum vorherigen Dialog",
-      "History.Tip": "Änderungen / Vorversionen"
+      "History.Tip": "Änderungen / Vorversionen",
+      "Metadata.Tip": "This item is metadata for:"
     }
   },
   "PublishStatus": {

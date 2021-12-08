@@ -8,4 +8,5 @@ export interface ContentTypeTemplateVars {
   slotCanBeEmpty: boolean;
   slotIsEmpty: boolean;
   editInstructions: string;
+  itemForTooltip: string;
 }

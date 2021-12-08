@@ -7,7 +7,7 @@ import { InputType } from '../../../../ng-dialogs/src/app/content-type-fields/mo
 import { BestValueModes } from '../../constants';
 import { GeneralHelpers, InputFieldHelpers, LocalizationHelpers } from '../../helpers';
 import { FormValues, Language, SaveResult } from '../../models';
-import { EavContentTypeAttribute, EavDimension, EavEntityAttributes, EavHeader, EavItem, EavValue } from '../../models/eav';
+import { EavContentTypeAttribute, EavDimension, EavEntityAttributes, EavFor, EavHeader, EavItem, EavValue } from '../../models/eav';
 import { Item1 } from '../../models/json-format-v1';
 import { BaseDataService } from './base-data.service';
 
@@ -192,6 +192,13 @@ export class ItemService extends BaseDataService<EavItem> {
   getItem$(entityGuid: string): Observable<EavItem> {
     return this.cache$.pipe(
       map(items => items.find(item => item.Entity.Guid === entityGuid)),
+      distinctUntilChanged(),
+    );
+  }
+
+  getItemFor$(entityGuid: string): Observable<EavFor> {
+    return this.cache$.pipe(
+      map(items => items.find(item => item.Entity.Guid === entityGuid)?.Entity.For),
       distinctUntilChanged(),
     );
   }

@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { GeneralHelpers } from '../../../shared/helpers';
@@ -28,12 +29,25 @@ export class EntityWrapperComponent implements OnInit {
     private route: ActivatedRoute,
     private fieldsSettingsService: FieldsSettingsService,
     public eavService: EavService,
+    private translate: TranslateService,
   ) { }
 
   ngOnInit() {
     this.collapse = false;
     const currentLanguage$ = this.languageInstanceService.getCurrentLanguage$(this.eavService.eavConfig.formId);
     const defaultLanguage$ = this.languageInstanceService.getDefaultLanguage$(this.eavService.eavConfig.formId);
+    const itemForTooltip$ = this.itemService.getItemFor$(this.entityGuid).pipe(
+      map(itemFor => {
+        if (!itemFor) { return; }
+        const tooltip = this.translate.instant('Form.Buttons.Metadata.Tip')
+          + `\nType: ${itemFor.Target}`
+          + (itemFor.Number ? `\nNumber: ${itemFor.Number}` : '')
+          + (itemFor.String ? `\nString: ${itemFor.String}` : '')
+          + (itemFor.Guid ? `\nGuid: ${itemFor.Guid}` : '')
+          + (itemFor.Title ? `\nTitle: ${itemFor.Title}` : '');
+        return tooltip;
+      }),
+    );
     const header$ = this.itemService.getItemHeader$(this.entityGuid);
     const settings$ = this.fieldsSettingsService.getContentTypeSettings$().pipe(
       map(settings => ({
@@ -45,8 +59,8 @@ export class EntityWrapperComponent implements OnInit {
       distinctUntilChanged(GeneralHelpers.objectsEqual),
     );
 
-    this.templateVars$ = combineLatest([currentLanguage$, defaultLanguage$, header$, settings$]).pipe(
-      map(([currentLanguage, defaultLanguage, header, settings]) => {
+    this.templateVars$ = combineLatest([currentLanguage$, defaultLanguage$, itemForTooltip$, header$, settings$]).pipe(
+      map(([currentLanguage, defaultLanguage, itemForTooltip, header, settings]) => {
         const templateVars: ContentTypeTemplateVars = {
           currentLanguage,
           defaultLanguage,
@@ -55,6 +69,7 @@ export class EntityWrapperComponent implements OnInit {
           slotCanBeEmpty: settings._slotCanBeEmpty,
           slotIsEmpty: settings._slotIsEmpty,
           editInstructions: settings.EditInstructions,
+          itemForTooltip,
         };
         return templateVars;
       }),

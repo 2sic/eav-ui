@@ -5,7 +5,8 @@
       "Save.Tip": "Gravar e fechar (CTRL + S grava mas não fecha)",
       "Exit.Tip": "Sair - se alguma coisa foi alterada, vai-lhe ser questionado se quer gravar",
       "Return.Tip": "Voltar ao formulário anterior",
-      "History.Tip": "History / previous versions"
+      "History.Tip": "History / previous versions",
+      "Metadata.Tip": "This item is metadata for:"
     }
   },
   "PublishStatus": {

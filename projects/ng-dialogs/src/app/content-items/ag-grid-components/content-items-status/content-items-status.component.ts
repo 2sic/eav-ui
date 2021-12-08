@@ -30,6 +30,7 @@ export class ContentItemsStatusComponent implements ICellRendererAngularComp {
       + (this.item.For.Number ? `\nNumber: ${this.item.For.Number}` : '')
       + (this.item.For.String ? `\nString: ${this.item.For.String}` : '')
       + (this.item.For.Guid ? `\nGuid: ${this.item.For.Guid}` : '')
+      + (this.item.For.Title ? `\nTitle: ${this.item.For.Title}` : '')
       : 'This item is not metadata.';
     this.metadataTooltip += `\n\nThis item has ${this.metadataCount > 0 ? this.metadataCount : 'no'} other metadata ${this.metadataCount === 1 ? 'item' : 'items'} attached to it.`;
   }

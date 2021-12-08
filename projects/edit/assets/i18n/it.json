@@ -5,7 +5,8 @@
       "Save.Tip": "Save and close (CTRL + S saves and doesn't close)",
       "Exit.Tip": "Exit - if something changed, you will be asked to save",
       "Return.Tip": "Return to previous dialog",
-      "History.Tip": "History / previous versions"
+      "History.Tip": "History / previous versions",
+      "Metadata.Tip": "This item is metadata for:"
     }
   },
   "PublishStatus": {
