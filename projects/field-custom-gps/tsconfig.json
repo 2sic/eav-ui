@@ -1,11 +1,12 @@
 {
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "./dist/",
-    "sourceMap": true,
-    "noImplicitAny": true,
-    "noEmitOnError": true,
-    "module": "commonjs",
-    "target": "es5",
+    // "sourceMap": true,
+    // "noImplicitAny": true,
+    // "noEmitOnError": true,
+    // "module": "commonjs",
+    // "target": "es5",
     "allowJs": true
   },
   "exclude": [
