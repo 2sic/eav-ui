@@ -41,8 +41,12 @@
       }
 
       .active {
-        background-color: #002753;
+        background-color: $accent-color;
         color: white;
+
+        &.mat-button-disabled {
+          background-color: $editUI-label-disabled-color;
+        }
       }
     }
   }
