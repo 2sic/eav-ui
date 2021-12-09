@@ -253,7 +253,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
         } as IdFieldParams,
       },
       {
-        headerName: 'Status', field: 'Status', width: 80, headerClass: 'dense', cellClass: 'secondary-action no-padding',
+        headerName: 'Status', field: 'Status', width: 82, headerClass: 'dense', cellClass: 'secondary-action no-padding',
         filter: 'pubMetaFilterComponent', cellRenderer: 'contentItemsStatusComponent', valueGetter: this.valueGetterStatus,
         cellRendererParams: {
           onOpenMetadata: this.openMetadata.bind(this),
@@ -269,7 +269,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
         sortable: true, filter: 'agTextColumnFilter', valueGetter: this.valueGetterUsage,
       },
       {
-        cellClass: 'secondary-action no-padding', width: 120, cellRenderer: 'contentItemsActionsComponent', pinned: 'right',
+        cellClass: 'secondary-action no-padding', width: 122, cellRenderer: 'contentItemsActionsComponent', pinned: 'right',
         cellRendererParams: {
           onClone: this.clone.bind(this),
           onExport: this.export.bind(this),

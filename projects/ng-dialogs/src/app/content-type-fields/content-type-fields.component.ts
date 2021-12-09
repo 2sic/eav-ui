@@ -82,7 +82,7 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
         sortable: true, filter: 'agTextColumnFilter',
       },
       {
-        width: 120, cellClass: 'secondary-action no-padding', cellRenderer: 'contentTypeFieldsActionsComponent', pinned: 'right',
+        width: 122, cellClass: 'secondary-action no-padding', cellRenderer: 'contentTypeFieldsActionsComponent', pinned: 'right',
         cellRendererParams: {
           onRename: (field) => this.rename(field),
           onDelete: (field) => this.delete(field),

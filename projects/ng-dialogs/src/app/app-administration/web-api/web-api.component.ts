@@ -38,7 +38,7 @@ export class WebApiComponent implements OnInit, OnDestroy {
         sortable: true, filter: 'agTextColumnFilter',
       },
       {
-        width: 80, cellClass: 'secondary-action no-padding', cellRenderer: 'webApiActions', pinned: 'right',
+        width: 82, cellClass: 'secondary-action no-padding', cellRenderer: 'webApiActions', pinned: 'right',
         cellRendererParams: {
           enableCodeGetter: this.enableCodeGetter.bind(this),
           onOpenCode: this.openCode.bind(this),

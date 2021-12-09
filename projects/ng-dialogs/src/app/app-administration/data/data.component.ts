@@ -91,7 +91,7 @@ export class DataComponent implements OnInit, OnDestroy {
         sortable: true, filter: 'agTextColumnFilter',
       },
       {
-        width: 160, cellClass: 'secondary-action no-padding', cellRenderer: 'dataActionsComponent', pinned: 'right',
+        width: 162, cellClass: 'secondary-action no-padding', cellRenderer: 'dataActionsComponent', pinned: 'right',
         cellRendererParams: {
           enablePermissionsGetter: this.enablePermissionsGetter.bind(this),
           onCreateOrEditMetadata: this.createOrEditMetadata.bind(this),

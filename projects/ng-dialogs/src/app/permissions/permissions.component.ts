@@ -56,7 +56,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         sortable: true, filter: 'agTextColumnFilter',
       },
       {
-        width: 40, cellClass: 'secondary-action no-padding', cellRenderer: 'permissionsActionsComponent', pinned: 'right',
+        width: 42, cellClass: 'secondary-action no-padding', cellRenderer: 'permissionsActionsComponent', pinned: 'right',
         cellRendererParams: {
           onDelete: this.deletePermission.bind(this),
         } as PermissionsActionsParams,

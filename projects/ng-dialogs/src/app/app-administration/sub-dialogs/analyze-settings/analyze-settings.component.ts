@@ -45,7 +45,7 @@ export class AnalyzeSettingsComponent implements OnInit, OnDestroy {
         sortable: true, filter: 'agTextColumnFilter',
       },
       {
-        headerName: 'Total', field: 'TotalResults', width: 70, headerClass: 'dense', cellClass: 'secondary-action no-padding no-outline',
+        headerName: 'Total', field: 'TotalResults', width: 72, headerClass: 'dense', cellClass: 'secondary-action no-padding no-outline',
         cellRenderer: 'analyzeSettingsTotalComponent', sortable: true, filter: 'agNumberColumnFilter', cellRendererParams: {
           openDetails: (stackItem) => {
             this.router.navigate([`details/${this.selectedView$.value}/${stackItem.Path}`], { relativeTo: this.route });

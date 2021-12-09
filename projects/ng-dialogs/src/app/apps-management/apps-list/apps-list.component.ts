@@ -80,7 +80,7 @@ export class AppsListComponent implements OnInit, OnDestroy {
         filter: 'agNumberColumnFilter',
       },
       {
-        width: 80, cellClass: 'secondary-action no-padding', cellRenderer: 'appsListActionsComponent', pinned: 'right',
+        width: 82, cellClass: 'secondary-action no-padding', cellRenderer: 'appsListActionsComponent', pinned: 'right',
         cellRendererParams: {
           onDelete: this.deleteApp.bind(this),
           onFlush: this.flushApp.bind(this),

@@ -53,7 +53,7 @@ export class MetadataComponent implements OnInit, OnDestroy {
         },
       },
       {
-        width: 40, cellClass: 'secondary-action no-padding', cellRenderer: 'metadataActionsComponent', pinned: 'right',
+        width: 42, cellClass: 'secondary-action no-padding', cellRenderer: 'metadataActionsComponent', pinned: 'right',
         cellRendererParams: {
           onDelete: this.deleteMetadata.bind(this),
         } as MetadataActionsParams,
