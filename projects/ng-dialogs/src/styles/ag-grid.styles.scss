@@ -190,7 +190,7 @@ ag-grid-angular.ag-theme-material {
     justify-content: center;
     height: 100%;
     width: 40px;
-    overflow: visible; // fixes cut off matBadge
+    flex: 0 0 auto; // fixes cut off matBadge
 
     &:not(.disabled) {
       cursor: pointer;
