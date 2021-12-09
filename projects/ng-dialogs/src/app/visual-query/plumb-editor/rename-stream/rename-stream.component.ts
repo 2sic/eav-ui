@@ -86,14 +86,6 @@ export class RenameStreamComponent implements OnInit, OnDestroy {
     );
 
     this.contentTypesService.getScopes().subscribe(scopes => {
-      // TODO: hard-coded rename for 2SexyContent scope to be Default to match out-stream scope.
-      // Remove when backend is fixed
-      // 2021-12-08 2dm - disabled because backend fixed, and the result is never used + it looks buggy, as it would change the constants
-      // const defaultScope = scopes.find(s => s.value === eavConstants.scopes.default.value);
-      // if (defaultScope) {
-      //   defaultScope.value = eavConstants.scopes.default.name;
-      // }
-
       const sourceOut = Object.values(this.visualQueryService.pipelineResult.Sources)
         .find(source => source.Guid === this.dialogData.pipelineDataSourceGuid).Out;
       const filtered = scopes.filter(s => sourceOut.some(o => o.Scope === s.value));
