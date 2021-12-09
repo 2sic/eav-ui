@@ -73,10 +73,9 @@ export class MetadataSaveDialogComponent implements OnInit, OnDestroy {
   }
 
   private buildForm(): void {
-    const defaultScope = eavConstants.scopes.default.value;
     this.form = new FormGroup({});
     this.form.addControl('contentType', new FormControl(null, [Validators.required]));
-    this.form.addControl('scope', new FormControl(defaultScope));
+    this.form.addControl('scope', new FormControl(eavConstants.scopes.default.value));
 
     this.form.controls.scope.valueChanges.pipe(
       startWith(this.form.controls.scope.value),
@@ -89,7 +88,7 @@ export class MetadataSaveDialogComponent implements OnInit, OnDestroy {
 
       // add new scope on manual entry
       if (newScope === dropdownInsertValue) {
-        newScope = prompt('This is an advanced feature to show content-types of another scope. Don\'t use this if you don\'t know what you\'re doing, as content-types of other scopes are usually hidden for a good reason.') || defaultScope;
+        newScope = prompt('This is an advanced feature to show content-types of another scope. Don\'t use this if you don\'t know what you\'re doing, as content-types of other scopes are usually hidden for a good reason.') || eavConstants.scopes.default.value;
         if (!this.scopeOptions$.value.some(option => option.value === newScope)) {
           const newScopeOption: ScopeOption = {
             name: newScope,

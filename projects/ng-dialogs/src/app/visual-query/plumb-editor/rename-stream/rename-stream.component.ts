@@ -64,7 +64,7 @@ export class RenameStreamComponent implements OnInit, OnDestroy {
   private buildForm(): void {
     this.form = new FormGroup({
       label: new FormControl(this.dialogData.label, Validators.required),
-      scope: new FormControl(eavConstants.scopes.default.name),
+      scope: new FormControl(eavConstants.scopes.default.value),
     });
     this.controls = this.form.controls as any;
 

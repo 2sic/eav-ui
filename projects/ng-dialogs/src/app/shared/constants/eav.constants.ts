@@ -43,21 +43,19 @@ export const eavConstants = {
   scopes: {
     /** This is the main schema and the data you usually see is from here */
     default: { name: 'Default', value: 'Default' },
-    /** This contains content-types for configuration, settings and resources of the app */
-    app: { name: 'System: App', value: 'System.App' },
-    /** This contains special app settings */
-    configuration: { name: 'Configuration', value: 'System.Configuration' },
   },
 
   /** Content types where templates, permissions, etc. are stored */
   contentTypes: {
+    /** Content type containing app specifications */
+    appConfiguration: '2SexyContent-App',
     /** Content type containing app templates (views) */
     template: '2SexyContent-Template',
     /** Content type containing permissions */
     permissions: 'PermissionConfiguration',
     /** Content type containing queries */
     query: 'DataPipeline',
-    /** Content type containing content type metadata (app administration > data > metadata) */
+    /** Content type containing content type metadata */
     contentType: 'ContentType',
     /** Content type containing custom app settings */
     settings: 'App-Settings',

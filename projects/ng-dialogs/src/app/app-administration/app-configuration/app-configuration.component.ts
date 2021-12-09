@@ -195,7 +195,7 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
         isGlobalScope ? of<undefined>(undefined) : this.contentTypesFieldsService.getFields(eavConstants.contentTypes.resources),
       ]),
       forkJoin([
-        this.contentItemsService.getAll(eavConstants.scopes.app.value),
+        this.contentItemsService.getAll(eavConstants.contentTypes.appConfiguration),
         this.metadataService.getMetadata(eavConstants.metadata.app.type, eavConstants.metadata.app.keyType, this.context.appId),
       ]),
     ]).subscribe(([

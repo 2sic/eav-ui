@@ -109,7 +109,6 @@ export class DataComponent implements OnInit, OnDestroy {
   };
 
   dropdownInsertValue = dropdownInsertValue;
-  private defaultScope = eavConstants.scopes.default.value;
   private subscription = new Subscription();
 
   constructor(
@@ -180,7 +179,7 @@ export class DataComponent implements OnInit, OnDestroy {
         contentType._compareLabel = contentType.Label.replace(/\p{Emoji}/gu, 'ž');
       }
       this.contentTypes$.next(contentTypes);
-      if (this.scope$.value !== this.defaultScope) {
+      if (this.scope$.value !== eavConstants.scopes.default.value) {
         const message = 'Warning! You are in a special scope. Changing things here could easily break functionality';
         this.snackBar.open(message, null, { duration: 2000 });
       }
@@ -214,7 +213,7 @@ export class DataComponent implements OnInit, OnDestroy {
 
   changeScope(newScope: string) {
     if (newScope === dropdownInsertValue) {
-      newScope = prompt('This is an advanced feature to show content-types of another scope. Don\'t use this if you don\'t know what you\'re doing, as content-types of other scopes are usually hidden for a good reason.') || this.defaultScope;
+      newScope = prompt('This is an advanced feature to show content-types of another scope. Don\'t use this if you don\'t know what you\'re doing, as content-types of other scopes are usually hidden for a good reason.') || eavConstants.scopes.default.value;
     }
     this.router.navigate([`data/${newScope}`], { relativeTo: this.route });
   }
