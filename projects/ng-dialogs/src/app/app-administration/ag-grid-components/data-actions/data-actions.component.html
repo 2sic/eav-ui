@@ -7,12 +7,16 @@
     <mat-icon>edit</mat-icon>
   </div>
 
-  <div class="like-button highlight" matRipple tippy="Metadata" (click)="openMetadata()">
+  <div class="like-button highlight" matRipple *ngIf="!contentType.UsesSharedDef" tippy="Metadata"
+    (click)="openMetadata()">
     <mat-icon [matBadge]="contentType.Metadata.length" matBadgeColor="accent" matBadgeSize="small"
       *ngIf="contentType.Metadata.length">
       local_offer
     </mat-icon>
     <mat-icon *ngIf="!contentType.Metadata.length">local_offer</mat-icon>
+  </div>
+  <div class="like-button disabled" *ngIf="contentType.UsesSharedDef">
+    <mat-icon>local_offer</mat-icon>
   </div>
 
   <div class="like-button highlight" matRipple *ngIf="enablePermissions" tippy="Permissions"
