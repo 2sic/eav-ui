@@ -68,7 +68,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
     const contentType = this.config.contentTypeId;
     const entityGuid = this.config.entityGuid;
     const field = this.config.fieldName;
-    this.url = this.dnnContext.$2sxc.http.apiUrl(`app/auto/content/${contentType}/${entityGuid}/${field}`);
+    this.url = this.dnnContext.$2sxc.http.apiUrl(`app/auto/data/${contentType}/${entityGuid}/${field}`);
     this.pasteClipboardImage = this.featureService.isFeatureEnabled(FeaturesConstants.PasteImageFromClipboard);
 
     // run inside zone to detect changes when called from custom components

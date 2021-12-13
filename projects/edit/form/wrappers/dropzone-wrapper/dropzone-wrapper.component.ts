@@ -103,7 +103,7 @@ export class DropzoneWrapperComponent extends BaseComponent implements FieldWrap
     const appId = this.eavService.eavConfig.appId;
 
     const startDisabled = this.config.isExternal;
-    const url = this.dnnContext.$2sxc.http.apiUrl(`app/auto/content/${contentType}/${entityGuid}/${field}?subfolder=&usePortalRoot=false&appId=${appId}`);
+    const url = this.dnnContext.$2sxc.http.apiUrl(`app/auto/data/${contentType}/${entityGuid}/${field}?subfolder=&usePortalRoot=false&appId=${appId}`);
     const headers = this.dnnContext.sxc.webApi.headers();
 
     const oldConfig = (this.dropzoneConfig$.value != null)
