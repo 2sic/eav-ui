@@ -85,30 +85,22 @@ export class FieldsSettingsHelpers {
 
   /** Find if DisableTranslation is true in any setting and in any language */
   static findDisableTranslation(
-    contentType: EavContentType,
+    contentTypeMetadata: EavEntity[],
     inputType: InputType,
     attributeValues: EavValues<any>,
     defaultLanguage: string,
-    metadataItems: EavEntity[],
+    attributeMetadata: EavEntity[],
   ): boolean {
-    const languagesDecorator = contentType.Metadata.find(m => m.Type.Name === MetadataDecorators.LanguagesDecorator);
+    // disable translation if LanguagesDecorator in ContentType is false in any language
+    const languagesDecorator = contentTypeMetadata.find(m => m.Type.Name === MetadataDecorators.LanguagesDecorator);
     if (languagesDecorator?.Attributes.Enabled?.Values.some(eavValue => eavValue.Value === false)) { return true; }
 
     if (inputType?.DisableI18n) { return true; }
     if (!LocalizationHelpers.translationExistsInDefault(attributeValues, defaultLanguage)) { return true; }
-    if (metadataItems == null) { return false; }
 
-    // find DisableTranslation in @All, @String, @string-default, etc...
-    for (const item of metadataItems) {
-      const eavValues = item.Attributes['DisableTranslation'];
-      if (eavValues == null) { continue; }
-
-      // if true in any language, it is true for all cases
-      for (const eavValue of eavValues.Values) {
-        if (eavValue.Value === true) {
-          return true;
-        }
-      }
+    // disable translation if DisableTranslation is true in any language in @All, @String, @string-default, etc...
+    for (const metadataItem of attributeMetadata ?? []) {
+      if (metadataItem.Attributes.DisableTranslation?.Values.some(eavValue => eavValue.Value === true)) { return true; }
     }
 
     return false;
