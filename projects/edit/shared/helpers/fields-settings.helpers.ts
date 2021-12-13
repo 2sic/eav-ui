@@ -4,7 +4,7 @@ import { InputTypeConstants } from '../../../ng-dialogs/src/app/content-type-fie
 import { InputType } from '../../../ng-dialogs/src/app/content-type-fields/models/input-type.model';
 import { TranslateMenuHelpers } from '../../form/wrappers/localization-wrapper/translate-menu/translate-menu.helpers';
 import { TranslationStateCore } from '../../form/wrappers/localization-wrapper/translate-menu/translate-menu.models';
-import { TranslationLink, TranslationLinks } from '../constants';
+import { MetadataDecorators, TranslationLink, TranslationLinks } from '../constants';
 import { ContentTypeSettings, TranslationState } from '../models';
 import { EavContentType, EavContentTypeAttribute, EavEntity, EavHeader, EavValues } from '../models/eav';
 
@@ -85,11 +85,15 @@ export class FieldsSettingsHelpers {
 
   /** Find if DisableTranslation is true in any setting and in any language */
   static findDisableTranslation(
+    contentType: EavContentType,
     inputType: InputType,
     attributeValues: EavValues<any>,
     defaultLanguage: string,
     metadataItems: EavEntity[],
   ): boolean {
+    const languagesDecorator = contentType.Metadata.find(m => m.Type.Name === MetadataDecorators.LanguagesDecorator);
+    if (languagesDecorator?.Attributes.Enabled?.Values.some(eavValue => eavValue.Value === false)) { return true; }
+
     if (inputType?.DisableI18n) { return true; }
     if (!LocalizationHelpers.translationExistsInDefault(attributeValues, defaultLanguage)) { return true; }
     if (metadataItems == null) { return false; }

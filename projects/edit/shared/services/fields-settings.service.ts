@@ -114,7 +114,7 @@ export class FieldsSettingsService implements OnDestroy {
             calculated.Name = calculated.Name || attribute.Name;
             calculated.Required = ValidationHelpers.isRequired(calculated);
             calculated.DisableTranslation = FieldsSettingsHelpers.findDisableTranslation(
-              inputType, attributeValues, defaultLanguage, attribute.Metadata,
+              contentType, inputType, attributeValues, defaultLanguage, attribute.Metadata,
             );
             const slotIsEmpty = itemHeader.Group?.SlotCanBeEmpty && itemHeader.Group?.SlotIsEmpty;
             calculated.DisableTranslation = slotIsEmpty || calculated.DisableTranslation;
