@@ -276,7 +276,14 @@
         </mat-icon>
         <span>
           Edit Permissions
-          {{ dialogSettings.Context.Enable.AppPermissions ? '' : '(not available on Content)' }}
+          <ng-container *ngIf="!dialogSettings.Context.Enable.AppPermissions">
+            <ng-container *ngIf="dialogSettings.Context.App.SettingsScope === AppScopes.Global">
+              (not available on Global App)
+            </ng-container>
+            <ng-container *ngIf="dialogSettings.Context.App.SettingsScope === AppScopes.App">
+              (not available on Content App)
+            </ng-container>
+          </ng-container>
         </span>
       </button>
     </mat-card-actions>

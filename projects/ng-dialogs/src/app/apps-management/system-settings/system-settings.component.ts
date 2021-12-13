@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { AppDialogConfigService } from '../../app-administration/services';
-import { DialogContextDefaultApp } from '../../shared/models/dialog-context.models';
+import { DialogContextSiteApp } from '../../shared/models/dialog-context.models';
 import { DialogService } from '../../shared/services/dialog.service';
 
 @Component({
@@ -9,33 +9,33 @@ import { DialogService } from '../../shared/services/dialog.service';
   styleUrls: ['./system-settings.component.scss'],
 })
 export class SystemSettingsComponent {
-  private siteDefaultApp: DialogContextDefaultApp;
-  private globalDefaultApp: DialogContextDefaultApp;
+  private sitePrimaryApp: DialogContextSiteApp;
+  private globalPrimaryApp: DialogContextSiteApp;
 
   constructor(private dialogService: DialogService, private appDialogConfigService: AppDialogConfigService) { }
 
   openSiteSettings(): void {
-    if (this.siteDefaultApp == null) {
+    if (this.sitePrimaryApp == null) {
       this.getDialogSettings(() => { this.openSiteSettings(); });
       return;
     }
 
-    this.dialogService.openAppAdministration(this.siteDefaultApp.ZoneId, this.siteDefaultApp.AppId, 'app');
+    this.dialogService.openAppAdministration(this.sitePrimaryApp.ZoneId, this.sitePrimaryApp.AppId, 'app');
   }
 
   openGlobalSettings(): void {
-    if (this.globalDefaultApp == null) {
+    if (this.globalPrimaryApp == null) {
       this.getDialogSettings(() => { this.openGlobalSettings(); });
       return;
     }
 
-    this.dialogService.openAppAdministration(this.globalDefaultApp.ZoneId, this.globalDefaultApp.AppId, 'app');
+    this.dialogService.openAppAdministration(this.globalPrimaryApp.ZoneId, this.globalPrimaryApp.AppId, 'app');
   }
 
   private getDialogSettings(callback: () => void): void {
     this.appDialogConfigService.getDialogSettings(0).subscribe(dialogSettings => {
-      this.siteDefaultApp = dialogSettings.Context.Site.DefaultApp;
-      this.globalDefaultApp = dialogSettings.Context.System.DefaultApp;
+      this.sitePrimaryApp = dialogSettings.Context.Site.PrimaryApp;
+      this.globalPrimaryApp = dialogSettings.Context.System.PrimaryApp;
       callback();
     });
   }

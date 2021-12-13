@@ -118,13 +118,13 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
   }
 
   openSiteSettings() {
-    const siteDefaultApp = this.dialogSettings.Context.Site.DefaultApp;
-    this.dialogService.openAppAdministration(siteDefaultApp.ZoneId, siteDefaultApp.AppId, 'app');
+    const sitePrimaryApp = this.dialogSettings.Context.Site.PrimaryApp;
+    this.dialogService.openAppAdministration(sitePrimaryApp.ZoneId, sitePrimaryApp.AppId, 'app');
   }
 
   openGlobalSettings() {
-    const globalDefaultApp = this.dialogSettings.Context.System.DefaultApp;
-    this.dialogService.openAppAdministration(globalDefaultApp.ZoneId, globalDefaultApp.AppId, 'app');
+    const globalPrimaryApp = this.dialogSettings.Context.System.PrimaryApp;
+    this.dialogService.openAppAdministration(globalPrimaryApp.ZoneId, globalPrimaryApp.AppId, 'app');
   }
 
   config(staticName: string) {
@@ -181,18 +181,18 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
   }
 
   private fetchSystemSettings() {
-    // custom settings and custom resources don't work for global scope
-    const isGlobalScope = this.dialogSettings.Context.App.SettingsScope === AppScopes.Global;
+    // custom settings and custom resources don't work for Global App
+    const isGlobalApp = this.dialogSettings.Context.App.SettingsScope === AppScopes.Global;
     forkJoin([
       forkJoin([
         this.contentItemsService.getAll(eavConstants.contentTypes.systemSettings),
-        isGlobalScope ? of<undefined>(undefined) : this.contentItemsService.getAll(eavConstants.contentTypes.settings),
-        isGlobalScope ? of<undefined>(undefined) : this.contentTypesFieldsService.getFields(eavConstants.contentTypes.settings),
+        isGlobalApp ? of<undefined>(undefined) : this.contentItemsService.getAll(eavConstants.contentTypes.settings),
+        isGlobalApp ? of<undefined>(undefined) : this.contentTypesFieldsService.getFields(eavConstants.contentTypes.settings),
       ]),
       forkJoin([
         this.contentItemsService.getAll(eavConstants.contentTypes.systemResources),
-        isGlobalScope ? of<undefined>(undefined) : this.contentItemsService.getAll(eavConstants.contentTypes.resources),
-        isGlobalScope ? of<undefined>(undefined) : this.contentTypesFieldsService.getFields(eavConstants.contentTypes.resources),
+        isGlobalApp ? of<undefined>(undefined) : this.contentItemsService.getAll(eavConstants.contentTypes.resources),
+        isGlobalApp ? of<undefined>(undefined) : this.contentTypesFieldsService.getFields(eavConstants.contentTypes.resources),
       ]),
       forkJoin([
         this.contentItemsService.getAll(eavConstants.contentTypes.appConfiguration),

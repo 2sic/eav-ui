@@ -21,7 +21,7 @@ export const AppScopes = {
 export type AppScope = typeof AppScopes[keyof typeof AppScopes];
 
 export interface DialogContextEnable {
-  /** Determines if app admin should show app-permissions (true for Apps, false for Content) */
+  /** Determines if app admin should show app-permissions (true for Apps, false for Content and Global) */
   AppPermissions?: boolean;
   /** Determines if Code editing should be enabled (true for super-users) */
   CodeEditor?: boolean;
@@ -46,17 +46,19 @@ export interface DialogContextPage {
 }
 
 export interface DialogContextSite {
-  DefaultApp: DialogContextDefaultApp;
+  DefaultApp: DialogContextSiteApp;
   Id: number;
+  PrimaryApp: DialogContextSiteApp;
   Url: string;
 }
 
 export interface DialogContextSystem {
-  DefaultApp: DialogContextDefaultApp;
+  DefaultApp: DialogContextSiteApp;
+  PrimaryApp: DialogContextSiteApp;
   Url: string;
 }
 
-export interface DialogContextDefaultApp {
+export interface DialogContextSiteApp {
   ZoneId: number;
   AppId: number;
 }
