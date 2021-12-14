@@ -181,18 +181,16 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
   }
 
   private fetchSystemSettings() {
-    // custom settings and custom resources don't work for Global App
-    const isGlobalApp = this.dialogSettings.Context.App.SettingsScope === AppScopes.Global;
     forkJoin([
       forkJoin([
         this.contentItemsService.getAll(eavConstants.contentTypes.systemSettings),
-        isGlobalApp ? of<undefined>(undefined) : this.contentItemsService.getAll(eavConstants.contentTypes.settings),
-        isGlobalApp ? of<undefined>(undefined) : this.contentTypesFieldsService.getFields(eavConstants.contentTypes.settings),
+        this.contentItemsService.getAll(eavConstants.contentTypes.settings),
+        this.contentTypesFieldsService.getFields(eavConstants.contentTypes.settings),
       ]),
       forkJoin([
         this.contentItemsService.getAll(eavConstants.contentTypes.systemResources),
-        isGlobalApp ? of<undefined>(undefined) : this.contentItemsService.getAll(eavConstants.contentTypes.resources),
-        isGlobalApp ? of<undefined>(undefined) : this.contentTypesFieldsService.getFields(eavConstants.contentTypes.resources),
+        this.contentItemsService.getAll(eavConstants.contentTypes.resources),
+        this.contentTypesFieldsService.getFields(eavConstants.contentTypes.resources),
       ]),
       forkJoin([
         this.contentItemsService.getAll(eavConstants.contentTypes.appConfiguration),
