@@ -17,6 +17,7 @@ export interface MetadataItem {
 
 export interface MetadataRecommendation {
   Count: number;
+  CreateEmpty?: boolean;
   Debug: string;
   Id: string;
   Name: string;
