@@ -122,21 +122,21 @@ export class MetadataComponent implements OnInit, OnDestroy {
 
   createMetadata(recommendation?: MetadataRecommendation) {
     if (recommendation) {
-      // if (recommendation.CreateEmpty) {
-      //   this.snackBar.open(`Creating ${recommendation.Name}...`);
-      //   this.entitiesService.create(recommendation.Id, { For: this.calculateItemFor() }).subscribe({
-      //     error: () => {
-      //       this.snackBar.open(`Creating ${recommendation.Name} failed. Please check console for more info`, undefined, { duration: 3000 });
-      //       this.fetchMetadata();
-      //     },
-      //     next: () => {
-      //       this.snackBar.open(`Created ${recommendation.Name}`, undefined, { duration: 3000 });
-      //       this.fetchMetadata();
-      //     },
-      //   });
-      // } else {
-      //   this.createMetadataForm(recommendation.Id);
-      // }
+      if (recommendation.CreateEmpty) {
+        this.snackBar.open(`Creating ${recommendation.Name}...`);
+        this.entitiesService.create(recommendation.Id, { For: this.calculateItemFor() }).subscribe({
+          error: () => {
+            this.snackBar.open(`Creating ${recommendation.Name} failed. Please check console for more info`, undefined, { duration: 3000 });
+            this.fetchMetadata();
+          },
+          next: () => {
+            this.snackBar.open(`Created ${recommendation.Name}`, undefined, { duration: 3000 });
+            this.fetchMetadata();
+          },
+        });
+      } else {
+        this.createMetadataForm(recommendation.Id);
+      }
       this.createMetadataForm(recommendation.Id);
       return;
     }
