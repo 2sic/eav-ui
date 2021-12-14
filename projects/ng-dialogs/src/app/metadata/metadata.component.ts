@@ -122,6 +122,21 @@ export class MetadataComponent implements OnInit, OnDestroy {
 
   createMetadata(recommendation?: MetadataRecommendation) {
     if (recommendation) {
+      // if (recommendation.CreateEmpty) {
+      //   this.snackBar.open(`Creating ${recommendation.Name}...`);
+      //   this.entitiesService.create(recommendation.Id, { For: this.calculateItemFor() }).subscribe({
+      //     error: () => {
+      //       this.snackBar.open(`Creating ${recommendation.Name} failed. Please check console for more info`, undefined, { duration: 3000 });
+      //       this.fetchMetadata();
+      //     },
+      //     next: () => {
+      //       this.snackBar.open(`Created ${recommendation.Name}`, undefined, { duration: 3000 });
+      //       this.fetchMetadata();
+      //     },
+      //   });
+      // } else {
+      //   this.createMetadataForm(recommendation.Id);
+      // }
       this.createMetadataForm(recommendation.Id);
       return;
     }
@@ -140,18 +155,22 @@ export class MetadataComponent implements OnInit, OnDestroy {
     const form: EditForm = {
       items: [{
         ContentTypeName: contentType,
-        For: {
-          Target:
-            Object.values(eavConstants.metadata).find(option => option.type === this.targetType)?.target ?? this.targetType.toString(),
-          ...(this.keyType === eavConstants.keyTypes.guid && { Guid: this.key }),
-          ...(this.keyType === eavConstants.keyTypes.number && { Number: parseInt(this.key, 10) }),
-          ...(this.keyType === eavConstants.keyTypes.string && { String: this.key }),
-        },
+        For: this.calculateItemFor(),
       }],
     };
     const formUrl = convertFormToUrl(form);
     this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
     this.changeDetectorRef.markForCheck();
+  }
+
+  private calculateItemFor(): EavFor {
+    const itemFor: EavFor = {
+      Target: Object.values(eavConstants.metadata).find(option => option.type === this.targetType)?.target ?? this.targetType.toString(),
+      ...(this.keyType === eavConstants.keyTypes.guid && { Guid: this.key }),
+      ...(this.keyType === eavConstants.keyTypes.number && { Number: parseInt(this.key, 10) }),
+      ...(this.keyType === eavConstants.keyTypes.string && { String: this.key }),
+    };
+    return itemFor;
   }
 
   private fetchFor() {
@@ -183,7 +202,11 @@ export class MetadataComponent implements OnInit, OnDestroy {
   }
 
   private deleteMetadata(metadata: MetadataItem) {
-    if (!confirm(`Delete '${metadata.Title}' (${metadata.Id})?`)) { return; }
+    let warning = this.recommendations$.value.find(r => r.Id === metadata._Type.Id)?.DeleteWarning || '';
+    warning = warning
+      ? `${warning}\n\nAre you sure you want to delete '${metadata.Title}' (${metadata.Id})?`
+      : `Delete '${metadata.Title}' (${metadata.Id})?`;
+    if (!confirm(warning)) { return; }
 
     this.snackBar.open('Deleting...');
     this.entitiesService.delete(metadata._Type.Id, metadata.Id, false).subscribe({
