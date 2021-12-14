@@ -202,7 +202,11 @@ export class MetadataComponent implements OnInit, OnDestroy {
   }
 
   private deleteMetadata(metadata: MetadataItem) {
-    if (!confirm(`Delete '${metadata.Title}' (${metadata.Id})?`)) { return; }
+    let warning = this.recommendations$.value.find(r => r.Id === metadata._Type.Id)?.DeleteWarning || '';
+    warning = warning
+      ? `${warning}\n\nAre you sure you want to delete '${metadata.Title}' (${metadata.Id})?`
+      : `Delete '${metadata.Title}' (${metadata.Id})?`;
+    if (!confirm(warning)) { return; }
 
     this.snackBar.open('Deleting...');
     this.entitiesService.delete(metadata._Type.Id, metadata.Id, false).subscribe({

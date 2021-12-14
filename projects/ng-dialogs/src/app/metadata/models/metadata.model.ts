@@ -19,8 +19,11 @@ export interface MetadataRecommendation {
   Count: number;
   CreateEmpty?: boolean;
   Debug: string;
+  DeleteWarning: '' | string;
+  Icon: '' | string;
   Id: string;
   Name: string;
+  Title: string;
 }
 
 export interface MetadataTemplateVars {
