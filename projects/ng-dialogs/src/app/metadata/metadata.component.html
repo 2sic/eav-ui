@@ -47,9 +47,9 @@
           <button mat-mini-fab label="Other Content Type" (click)="createMetadata()">
             <mat-icon>search</mat-icon>
           </button>
-          <button mat-mini-fab *ngFor="let recommendation of data.recommendations" [attr.label]="recommendation.Name"
+          <button mat-mini-fab *ngFor="let recommendation of data.recommendations" [attr.label]="recommendation.Title"
             (click)="createMetadata(recommendation)">
-            <mat-icon>add</mat-icon>
+            <mat-icon>{{ recommendation.Icon || 'add' }}</mat-icon>
           </button>
         </eco-fab-speed-dial-actions>
       </eco-fab-speed-dial>
