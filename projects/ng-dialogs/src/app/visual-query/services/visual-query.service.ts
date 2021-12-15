@@ -5,7 +5,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import cloneDeep from 'lodash-es/cloneDeep';
-import { BehaviorSubject, forkJoin, fromEvent, Subject, Subscription } from 'rxjs';
+import { BehaviorSubject, fromEvent, Subject, Subscription } from 'rxjs';
 import { filter, map, pairwise, startWith } from 'rxjs/operators';
 import { GeneralHelpers } from '../../../../../edit/shared/helpers';
 import { ContentTypesService } from '../../app-administration/services/content-types.service';
@@ -56,7 +56,7 @@ export class VisualQueryService implements OnDestroy {
   }
 
   init() {
-    this.fetchDataSources(() => this.fetchPipeline());
+    this.fetchDataSources(() => this.fetchPipeline(true, true, false));
     this.attachKeyboardSave();
     this.refreshOnChildClosed();
   }
@@ -147,56 +147,27 @@ export class VisualQueryService implements OnDestroy {
     this.pipelineModel$.next(pipelineModel);
   }
 
-  private fetchDataSourceConfigs() {
-    forkJoin(
-      this.pipelineModel$.value.DataSources
-        .map(pipelineDataSource => {
-          if (!pipelineDataSource.EntityId) { return; }
-
-          const dataSource = this.dataSources$.value.find(ds => ds.PartAssemblyAndType === pipelineDataSource.PartAssemblyAndType);
-          const contentTypeName = dataSource.ContentType;
-          const typeId = eavConstants.metadata.entity.type;
-          const keyType = eavConstants.metadata.entity.keyType;
-          const key = pipelineDataSource.EntityGuid;
-          return this.metadataService.getMetadata(typeId, keyType, key, contentTypeName).pipe(
-            map(metadata => {
-              const dataSourceConfigs: DataSourceConfig[] = [];
-              metadata.Items.forEach(item => {
-                Object.entries(item).forEach(([attributeName, attributeValue]) => {
-                  if (['Created', 'Guid', 'Id', 'Modified', 'Title', '_Type'].includes(attributeName)) { return; }
-                  if (attributeValue == null || attributeValue === '') { return; }
-                  try {
-                    if (
-                      Array.isArray(attributeValue)
-                      && typeof attributeValue[0] === 'object'
-                      && attributeValue[0].Title != null
-                      && attributeValue[0].Id != null
-                    ) {
-                      attributeValue = `${attributeValue[0].Title} (${attributeValue[0].Id})`;
-                    }
-                  } catch { }
-                  const dataSourceConfig: DataSourceConfig = {
-                    name: attributeName,
-                    value: attributeValue,
-                  };
-                  dataSourceConfigs.push(dataSourceConfig);
-                });
-              });
-              return {
-                pipelineDataSourceId: pipelineDataSource.EntityId,
-                dataSourceConfigs,
-              };
-            }),
-          );
-        })
-        .filter(f => !!f)
-    ).subscribe(results => {
-      const dataSourceConfigs: DataSourceConfigs = {};
-      results.forEach(result => {
-        dataSourceConfigs[result.pipelineDataSourceId] = result.dataSourceConfigs;
+  private calculateDataSourceConfigs(dataSources: PipelineDataSource[]) {
+    const dataSourceConfigs: DataSourceConfigs = {};
+    dataSources.forEach(dataSource => {
+      if (dataSource.EntityId == null) { return; }
+      dataSourceConfigs[dataSource.EntityId] = [];
+      dataSource.Metadata?.forEach(metadataItem => {
+        Object.entries(metadataItem).forEach(([attributeName, attributeValue]) => {
+          if (attributeValue == null || attributeValue === '') { return; }
+          if (['Created', 'Guid', 'Id', 'Modified', 'Title', '_Type'].includes(attributeName)) { return; }
+          if (Array.isArray(attributeValue) && attributeValue[0]?.Title != null && attributeValue[0]?.Id != null) {
+            attributeValue = `${attributeValue[0].Title} (${attributeValue[0].Id})`;
+          }
+          const dataSourceConfig: DataSourceConfig = {
+            name: attributeName,
+            value: attributeValue,
+          };
+          dataSourceConfigs[dataSource.EntityId].push(dataSourceConfig);
+        });
       });
-      this.dataSourceConfigs$.next(dataSourceConfigs);
     });
+    this.dataSourceConfigs$.next(dataSourceConfigs);
   }
 
   editDataSource(pipelineDataSource: PipelineDataSource) {
@@ -303,17 +274,21 @@ export class VisualQueryService implements OnDestroy {
     });
   }
 
-  private fetchPipeline(reloadingSnackBar = false) {
-    if (reloadingSnackBar) {
+  private fetchPipeline(refreshPipeline: boolean, refreshDataSourceConfigs: boolean, showSnackBar: boolean) {
+    if (showSnackBar) {
       this.snackBar.open('Reloading query, please wait...');
     }
     this.queryDefinitionService.fetchPipeline(this.pipelineId, this.dataSources$.value).subscribe(pipelineModel => {
-      if (reloadingSnackBar) {
+      if (showSnackBar) {
         this.snackBar.open('Query reloaded', null, { duration: 2000 });
       }
-      this.pipelineModel$.next(pipelineModel);
       this.titleService.setTitle(`${pipelineModel.Pipeline.Name} - Visual Query`);
-      this.fetchDataSourceConfigs();
+      if (refreshPipeline) {
+        this.pipelineModel$.next(pipelineModel);
+      }
+      if (refreshDataSourceConfigs) {
+        this.calculateDataSourceConfigs(pipelineModel.DataSources);
+      }
     });
   }
 
@@ -388,11 +363,8 @@ export class VisualQueryService implements OnDestroy {
         pairwise(),
         filter(([hadChild, hasChild]) => hadChild && !hasChild),
       ).subscribe(() => {
-        if (this.refreshPipeline) {
-          this.fetchPipeline(true);
-        }
-        if (this.refreshDataSourceConfigs) {
-          this.fetchDataSourceConfigs();
+        if (this.refreshPipeline || this.refreshDataSourceConfigs) {
+          this.fetchPipeline(this.refreshPipeline, this.refreshDataSourceConfigs, this.refreshPipeline);
         }
         this.refreshPipeline = false;
         this.refreshDataSourceConfigs = false;
