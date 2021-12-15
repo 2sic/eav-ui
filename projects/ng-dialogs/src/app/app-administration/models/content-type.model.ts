@@ -8,7 +8,7 @@ export interface ContentType {
   Items: number;
   Label: string;
   Metadata: MetadataItemShort[];
-  Properties: ContentTypeProperties;
+  Properties?: ContentTypeProperties;
   Name: string;
   Permissions: PermissionsCount;
   Scope: string;
