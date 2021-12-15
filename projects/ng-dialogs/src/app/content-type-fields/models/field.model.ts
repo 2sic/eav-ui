@@ -1,5 +1,5 @@
 import { PermissionsCount } from '../../app-administration/models/permissions-count.model';
-import { InputType, InputTypeNew } from './input-type.model';
+import { InputType } from './input-type.model';
 
 export interface Field {
   AttributeId: number;
@@ -23,13 +23,14 @@ export interface FieldMetadata {
   merged: Record<string, any>;
 }
 
-// TODO: sync with the InputType interface, we probably just need one after renaming fields
-export interface FieldInputTypeOption extends InputTypeNew {
+export interface FieldInputTypeOption {
   dataType: string;
-  inputType: string;
-  label: string;
   description: string;
-
-  /** The icon to show, based on recommended / default */
-  Icon?: string;
+  icon?: string;
+  inputType: string;
+  isDefault?: boolean;
+  isObsolete?: boolean;
+  isRecommended?: boolean;
+  label: string;
+  obsoleteMessage?: string;
 }

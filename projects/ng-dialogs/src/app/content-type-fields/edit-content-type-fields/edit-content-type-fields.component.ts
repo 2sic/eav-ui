@@ -107,7 +107,7 @@ export class EditContentTypeFieldsComponent implements OnInit, OnDestroy {
         }
 
         for (let i = 0; i < this.fields.length; i++) {
-          this.calculateInputTypeOptions(i);
+          this.filterInputTypeOptions(i);
           this.calculateHints(i);
         }
         this.loading$.next(false);
@@ -125,9 +125,10 @@ export class EditContentTypeFieldsComponent implements OnInit, OnDestroy {
     this.dialogRef.close();
   }
 
-  calculateInputTypeOptions(index: number) {
-    this.filteredInputTypeOptions[index] = this.inputTypeOptions
-      .filter(option => option.dataType === this.fields[index].Type.toLocaleLowerCase());
+  filterInputTypeOptions(index: number) {
+    this.filteredInputTypeOptions[index] = this.inputTypeOptions.filter(
+      option => option.dataType === this.fields[index].Type.toLocaleLowerCase()
+    );
   }
 
   resetInputType(index: number) {
@@ -143,14 +144,13 @@ export class EditContentTypeFieldsComponent implements OnInit, OnDestroy {
     const selectedDataType = this.dataTypes.find(dataType => dataType.name === this.fields[index].Type);
     const selectedInputType = this.inputTypeOptions.find(inputTypeOption => inputTypeOption.inputType === this.fields[index].InputType);
     this.dataTypeHints[index] = selectedDataType?.description ?? '';
-    this.inputTypeHints[index] =
-      selectedInputType.IsObsolete ? 'OBSOLETE - ' + selectedInputType.ObsoleteMessage : ''
-        + selectedInputType?.description ?? '';
+    this.inputTypeHints[index] = selectedInputType?.isObsolete
+      ? `OBSOLETE - ${selectedInputType.obsoleteMessage}`
+      : selectedInputType?.description ?? '';
   }
 
-  // WIP 2dm
-  getInputType(inputName: string) {
-    return this.inputTypeOptions.find(inputTypeOption => inputTypeOption.inputType === inputName);
+  getInputTypeOption(inputName: string) {
+    return this.inputTypeOptions.find(option => option.inputType === inputName);
   }
 
   save() {

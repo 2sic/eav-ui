@@ -26,7 +26,7 @@
       <div class="edit-input">
         <mat-form-field appearance="standard" color="accent">
           <mat-label>Data Type</mat-label>
-          <mat-select (selectionChange)="calculateInputTypeOptions(i); resetInputType(i); calculateHints(i)"
+          <mat-select (selectionChange)="filterInputTypeOptions(i); resetInputType(i); calculateHints(i)"
             [(ngModel)]="field.Type" [name]="'Type' + i" [disabled]="editMode != null">
             <mat-select-trigger>
               <mat-icon class="type-icon">{{ findIcon(field.Type) }}</mat-icon>
@@ -47,13 +47,13 @@
           <mat-select (selectionChange)="calculateHints(i)" [(ngModel)]="field.InputType" [name]="'InputType' + i"
             [disabled]="editMode === 'name'">
             <mat-select-trigger>
-              <span>{{ getInputType(field.InputType).label }}</span>
-              <mat-icon class="input-icon">{{ getInputType(field.InputType).Icon }}</mat-icon>
+              <span>{{ getInputTypeOption(field.InputType)?.label }}</span>
+              <mat-icon class="input-icon">{{ getInputTypeOption(field.InputType)?.icon }}</mat-icon>
             </mat-select-trigger>
             <mat-option *ngFor="let option of filteredInputTypeOptions[i]" [value]="option.inputType"
-              class="{{ option.IsObsolete ? 'input-obsolete' : ''}}">
-              {{ option.label }}
-              <mat-icon class="input-icon" *ngIf="option.Icon">{{option.Icon}}</mat-icon>
+              [ngClass]="{ 'input-obsolete': option.isObsolete }">
+              <span>{{ option.label }}</span>
+              <mat-icon class="input-icon" *ngIf="option.icon">{{ option.icon }}</mat-icon>
             </mat-option>
           </mat-select>
         </mat-form-field>
