@@ -81,7 +81,7 @@ export class DialogService {
       ...this.buildHashParam(keyContentBlockId, this.context.contentBlockId.toString()),
       ...this.buildHashParam(keyPartOfPage),
       ...this.buildHashParam(keyRequestToken),
-      ...this.buildHashParam(keyRequestTokenHeaderName), // #RvtHeaderName - New in 12.04
+      ...this.buildHashParam(keyRequestTokenHeaderName),
       ...this.buildHashParam(keyApi),
       ...(sessionStorage.getItem(keyDebug) ? this.buildHashParam(keyDebug) : {}),
     };

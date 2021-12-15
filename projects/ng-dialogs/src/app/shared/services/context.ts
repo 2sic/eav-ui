@@ -42,7 +42,6 @@ export class Context {
 
   /**
    * The request verification token for http requests uses different names in Dnn and different versions of Oqtane.
-   * #RvtHeaderName - New in 12.04
    */
   get requestTokenHeaderName(): string { return this._rvtHeaderName || (this._rvtHeaderName = this.parent.requestTokenHeaderName); }
   private _rvtHeaderName: string;
@@ -88,7 +87,7 @@ export class Context {
   initRoot() {
     // required, global things
     this._rvt = sessionStorage.getItem(keyRequestToken);
-    this._rvtHeaderName = sessionStorage.getItem(keyRequestTokenHeaderName); // #RvtHeaderName - New in 12.04
+    this._rvtHeaderName = sessionStorage.getItem(keyRequestTokenHeaderName);
     this._zoneId = this.sessionNumber(keyZoneId);
     this._tabId = this.sessionNumber(keyTabId);
     this._contentBlockId = this.sessionNumber(keyContentBlockId);
