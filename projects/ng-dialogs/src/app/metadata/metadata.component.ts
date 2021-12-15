@@ -137,7 +137,6 @@ export class MetadataComponent implements OnInit, OnDestroy {
       } else {
         this.createMetadataForm(recommendation.Id);
       }
-      this.createMetadataForm(recommendation.Id);
       return;
     }
     const metadataDialogRef = this.dialog.open(MetadataSaveDialogComponent, {
