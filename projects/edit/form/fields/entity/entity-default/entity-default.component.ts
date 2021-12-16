@@ -248,12 +248,14 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
     const id = entity.Id;
     const title = entity.Text;
     const contentType = this.contentTypeMask.resolve();
+    const parentId = this.config.entityId;
+    const parentField = this.config.fieldName;
 
     const confirmed = confirm(this.translate.instant('Data.Delete.Question', { title, id }));
     if (!confirmed) { return; }
 
     this.snackBar.open(this.translate.instant('Message.Deleting'));
-    this.entityService.delete(contentType, id, false).subscribe({
+    this.entityService.delete(contentType, id, false, parentId, parentField).subscribe({
       next: () => {
         this.snackBar.open(this.translate.instant('Message.Deleted'), null, { duration: 2000 });
         this.removeSelected(props.index);
@@ -263,7 +265,7 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
         this.snackBar.dismiss();
         if (!confirm(this.translate.instant('Data.Delete.Question', { title, id }))) { return; }
         this.snackBar.open(this.translate.instant('Message.Deleting'));
-        this.entityService.delete(contentType, id, true).subscribe({
+        this.entityService.delete(contentType, id, true, parentId, parentField).subscribe({
           next: () => {
             this.snackBar.open(this.translate.instant('Message.Deleted'), null, { duration: 2000 });
             this.removeSelected(props.index);

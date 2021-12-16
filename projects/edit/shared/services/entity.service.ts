@@ -30,9 +30,16 @@ export class EntityService {
     );
   }
 
-  delete(contentType: string, entityId: number, force: boolean): Observable<null> {
+  delete(contentType: string, entityId: number, force: boolean, parentId?: number, parentField?: string): Observable<null> {
     return this.http.delete<null>(this.dnnContext.$2sxc.http.apiUrl(webApiEntityRoot + 'delete'), {
-      params: { contentType, id: entityId.toString(), appId: this.eavService.eavConfig.appId, force: force.toString() },
+      params: {
+        contentType,
+        id: entityId.toString(),
+        appId: this.eavService.eavConfig.appId,
+        force: force.toString(),
+        ...(parentId && { parentId: parentId.toString() }),
+        ...(parentId && parentField && { parentField }),
+      },
     });
   }
 }

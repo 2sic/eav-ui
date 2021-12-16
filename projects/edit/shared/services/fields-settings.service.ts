@@ -157,6 +157,7 @@ export class FieldsSettingsService implements OnDestroy {
                 contentTypeId,
                 dropzonePreviewsClass: `dropzone-previews-${this.eavService.eavConfig.formId}-${index}`,
                 entityGuid,
+                entityId,
                 fieldName: attribute.Name,
                 index,
                 initialDisabled,

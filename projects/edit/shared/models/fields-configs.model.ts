@@ -21,6 +21,7 @@ export interface FieldConstants {
   contentTypeId?: string;
   dropzonePreviewsClass?: string;
   entityGuid?: string;
+  entityId?: number;
   fieldName?: string;
   index?: number;
   initialDisabled?: boolean;
