@@ -15,6 +15,7 @@ import { DataTypeConstants } from '../content-type-fields/constants/data-type.co
 import { Field } from '../content-type-fields/models/field.model';
 import { GoToMetadata } from '../metadata';
 import { BooleanFilterComponent } from '../shared/components/boolean-filter/boolean-filter.component';
+import { EntityFilterComponent } from '../shared/components/entity-filter/entity-filter.component';
 import { IdFieldComponent } from '../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
@@ -56,6 +57,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     frameworkComponents: {
       pubMetaFilterComponent: PubMetaFilterComponent,
       booleanFilterComponent: BooleanFilterComponent,
+      entityFilterComponent: EntityFilterComponent,
       idFieldComponent: IdFieldComponent,
       contentItemsStatusComponent: ContentItemsStatusComponent,
       contentItemsActionsComponent: ContentItemsActionsComponent,
@@ -119,7 +121,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   private fetchColumns() {
     this.contentItemsService.getColumns(this.contentTypeStaticName).subscribe(columns => {
       const columnDefs = this.buildColumnDefs(columns);
-      const filterModel = buildFilterModel(sessionStorage.getItem(keyFilters));
+      const filterModel = buildFilterModel(sessionStorage.getItem(keyFilters), columnDefs);
       if (this.gridApi$.value) {
         this.setColumnDefs(columnDefs, filterModel);
       } else {
@@ -291,7 +293,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
           }
           colDef.cellRenderer = 'contentItemsEntityComponent';
           colDef.valueGetter = this.valueGetterEntityField;
-          colDef.filter = 'agTextColumnFilter';
+          colDef.filter = 'entityFilterComponent';
           break;
         case DataTypeConstants.DateTime:
           try {

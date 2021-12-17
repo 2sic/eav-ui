@@ -4,11 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { MatRippleModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { RouterModule } from '@angular/router';
 import { BooleanFilterComponent } from './components/boolean-filter/boolean-filter.component';
 import { DialogEntryComponent } from './components/dialog-entry/dialog-entry.component';
 import { EmptyRouteComponent } from './components/empty-route/empty-route.component';
+import { EntityFilterComponent } from './components/entity-filter/entity-filter.component';
 import { FieldHintComponent } from './components/field-hint/field-hint.component';
 import { IdFieldComponent } from './components/id-field/id-field.component';
 import { ClickStopPropagationDirective } from './directives/click-stop-propagation.directive';
@@ -36,6 +38,7 @@ import { SafeResourceUrlPipe } from './pipes/safe-resource-url';
     ToggleDebugDirective,
     MatFormFieldTextareaDirective,
     TippyDirective,
+    EntityFilterComponent,
   ],
   imports: [
     RouterModule,
@@ -45,6 +48,7 @@ import { SafeResourceUrlPipe } from './pipes/safe-resource-url';
     MatRadioModule,
     MatRippleModule,
     MatIconModule,
+    MatInputModule,
   ],
   providers: [
   ],
@@ -61,6 +65,7 @@ import { SafeResourceUrlPipe } from './pipes/safe-resource-url';
     ToggleDebugDirective,
     MatFormFieldTextareaDirective,
     TippyDirective,
-  ]
+    EntityFilterComponent,
+  ],
 })
 export class SharedComponentsModule { }
