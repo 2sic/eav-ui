@@ -1,9 +1,8 @@
-<div class="alert alert-info scope-info"
-  *ngIf="dialogSettings.Context.App.SettingsScope === AppScopes.Global || dialogSettings.Context.App.SettingsScope === AppScopes.Site">
-  <ng-container *ngIf="dialogSettings.Context.App.SettingsScope === AppScopes.Global">
+<div class="alert alert-info scope-info" *ngIf="isGlobal || isPrimary">
+  <ng-container *ngIf="isGlobal">
     This is the Global App. Anything configured here will affect all Sites and Apps in this installation.
   </ng-container>
-  <ng-container *ngIf="dialogSettings.Context.App.SettingsScope === AppScopes.Site">
+  <ng-container *ngIf="isPrimary">
     This is the Primary App of this Site. You can also configure sitewide settings and resources here.
   </ng-container>
   See <a href="http://r.2sxc.org/settings" target="_blank">docs</a>.
@@ -34,45 +33,54 @@
         </thead>
         <tbody>
           <!-- Settings for Global App -->
-          <ng-container *ngIf="dialogSettings.Context.App.SettingsScope === AppScopes.Global">
+          <ng-container *ngIf="isGlobal">
             <tr>
               <th>Global</th>
               <td>
                 <button mat-button (click)="edit(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.App)"
                   tippy="Edit global system settings">
-                  <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="appSystemSettings || null">
+                  <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="systemSettingsCount || null">
                     edit
                   </mat-icon>
                 </button>
               </td>
               <td>
-                <mat-icon class="no-select" tippy="This isn't automated yet. Just create a SettingsCustom yourself">
-                  help_outline
-                </mat-icon>
+                <button mat-button (click)="fixContentType(eavConstants.contentTypes.customSettings, 'edit')"
+                  tippy="Edit custom global settings">
+                  <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="customSettingsCount || null">
+                    edit
+                  </mat-icon>
+                </button>
+                <button mat-button (click)="fixContentType(eavConstants.contentTypes.customSettings, 'config')"
+                  tippy="Configure fields of the custom global settings">
+                  <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="customSettingsFieldsCount || null">
+                    dns
+                  </mat-icon>
+                </button>
               </td>
-            </tr>
           </ng-container>
           <!-- Settings for Primary App -->
-          <ng-container *ngIf="dialogSettings.Context.App.SettingsScope === AppScopes.Site">
+          <ng-container *ngIf="isPrimary">
             <tr>
               <th>Site</th>
               <td>
                 <button mat-button (click)="edit(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.Site)"
                   tippy="Edit site system settings">
-                  <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="siteSystemSettings || null">
+                  <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="systemSettingsCount || null">
                     edit
                   </mat-icon>
                 </button>
               </td>
               <td>
-                <button mat-button (click)="edit(eavConstants.contentTypes.settings)" tippy="Edit custom site settings">
-                  <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="appCustomSettings || null">
+                <button mat-button (click)="fixContentType(eavConstants.contentTypes.customSettings, 'edit')"
+                  tippy="Edit custom site settings">
+                  <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="customSettingsCount || null">
                     edit
                   </mat-icon>
                 </button>
-                <button mat-button (click)="config(eavConstants.contentTypes.settings)"
+                <button mat-button (click)="fixContentType(eavConstants.contentTypes.customSettings, 'config')"
                   tippy="Configure fields of the custom site settings">
-                  <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="appCustomSettingsFields || null">
+                  <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="customSettingsFieldsCount || null">
                     dns
                   </mat-icon>
                 </button>
@@ -81,26 +89,26 @@
             <ng-container *ngTemplateOutlet="goToGlobal"></ng-container>
           </ng-container>
           <!-- Settings for App and Content -->
-          <ng-container *ngIf="dialogSettings.Context.App.SettingsScope === AppScopes.App">
+          <ng-container *ngIf="isApp">
             <tr>
               <th>{{ dialogSettings.Context.App.Name }}</th>
               <td>
                 <button mat-button (click)="edit(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.App)"
                   tippy="Edit app system settings">
-                  <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="appSystemSettings || null">
+                  <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="systemSettingsCount || null">
                     edit
                   </mat-icon>
                 </button>
               </td>
               <td>
                 <button mat-button (click)="edit(eavConstants.contentTypes.settings)" tippy="Edit custom app settings">
-                  <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="appCustomSettings || null">
+                  <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="customSettingsCount || null">
                     edit
                   </mat-icon>
                 </button>
                 <button mat-button (click)="config(eavConstants.contentTypes.settings)"
                   tippy="Configure fields of the custom app settings">
-                  <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="appCustomSettingsFields || null">
+                  <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="customSettingsFieldsCount || null">
                     dns
                   </mat-icon>
                 </button>
@@ -147,46 +155,55 @@
         </thead>
         <tbody>
           <!-- Resources for Global App -->
-          <ng-container *ngIf="dialogSettings.Context.App.SettingsScope === AppScopes.Global">
+          <ng-container *ngIf="isGlobal">
             <tr>
               <th>Global</th>
               <td>
                 <button mat-button (click)="edit(eavConstants.contentTypes.systemResources, SystemSettingsScopes.App)"
                   tippy="Edit global system resources">
-                  <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="appSystemResources || null">
+                  <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="systemResourcesCount || null">
                     edit
                   </mat-icon>
                 </button>
               </td>
               <td>
-                <mat-icon class="no-select" tippy="This isn't automated yet. Just create a ResourcesCustom yourself">
-                  help_outline
-                </mat-icon>
+                <button mat-button (click)="fixContentType(eavConstants.contentTypes.customResources, 'edit')"
+                  tippy="Edit custom global resources">
+                  <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="customResourcesCount || null">
+                    edit
+                  </mat-icon>
+                </button>
+                <button mat-button (click)="fixContentType(eavConstants.contentTypes.customResources, 'config')"
+                  tippy="Configure fields of the custom global resources">
+                  <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="customResourcesFieldsCount || null">
+                    dns
+                  </mat-icon>
+                </button>
               </td>
             </tr>
           </ng-container>
           <!-- Resources for Primary App -->
-          <ng-container *ngIf="dialogSettings.Context.App.SettingsScope === AppScopes.Site">
+          <ng-container *ngIf="isPrimary">
             <tr>
               <th>Site</th>
               <td>
                 <button mat-button (click)="edit(eavConstants.contentTypes.systemResources, SystemSettingsScopes.Site)"
                   tippy="Edit site system resources">
-                  <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="siteSystemResources || null">
+                  <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="systemResourcesCount || null">
                     edit
                   </mat-icon>
                 </button>
               </td>
               <td>
-                <button mat-button (click)="edit(eavConstants.contentTypes.resources)"
+                <button mat-button (click)="fixContentType(eavConstants.contentTypes.customResources, 'edit')"
                   tippy="Edit custom site resources">
-                  <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="appCustomResources || null">
+                  <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="customResourcesCount || null">
                     edit
                   </mat-icon>
                 </button>
-                <button mat-button (click)="config(eavConstants.contentTypes.resources)"
+                <button mat-button (click)="fixContentType(eavConstants.contentTypes.customResources, 'config')"
                   tippy="Configure fields of the custom site resources">
-                  <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="appCustomResourcesFields || null">
+                  <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="customResourcesFieldsCount || null">
                     dns
                   </mat-icon>
                 </button>
@@ -195,13 +212,13 @@
             <ng-container *ngTemplateOutlet="goToGlobal"></ng-container>
           </ng-container>
           <!-- Resources for App and Content -->
-          <ng-container *ngIf="dialogSettings.Context.App.SettingsScope === AppScopes.App">
+          <ng-container *ngIf="isApp">
             <tr>
               <th>{{ dialogSettings.Context.App.Name }}</th>
               <td>
                 <button mat-button (click)="edit(eavConstants.contentTypes.systemResources, SystemSettingsScopes.App)"
                   tippy="Edit app system resources">
-                  <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="appSystemResources || null">
+                  <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="systemResourcesCount || null">
                     edit
                   </mat-icon>
                 </button>
@@ -209,13 +226,13 @@
               <td>
                 <button mat-button (click)="edit(eavConstants.contentTypes.resources)"
                   tippy="Edit custom app resources">
-                  <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="appCustomResources || null">
+                  <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="customResourcesCount || null">
                     edit
                   </mat-icon>
                 </button>
                 <button mat-button (click)="config(eavConstants.contentTypes.resources)"
                   tippy="Configure fields of the custom app resources">
-                  <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="appCustomResourcesFields || null">
+                  <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="customResourcesFieldsCount || null">
                     dns
                   </mat-icon>
                 </button>
@@ -275,13 +292,13 @@
     </mat-card-content>
     <mat-card-actions>
       <button mat-button (click)="edit(eavConstants.contentTypes.appConfiguration)">
-        <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="appConfigurations || null">
+        <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="appConfigurationsCount || null">
           edit
         </mat-icon>
         <span>Edit Configuration</span>
       </button>
       <button mat-button (click)="openMetadata()">
-        <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="appMetadata || null">
+        <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="appMetadataCount || null">
           local_offer
         </mat-icon>
         <span>Metadata</span>
@@ -308,10 +325,10 @@
         <span>
           Edit Permissions
           <ng-container *ngIf="!dialogSettings.Context.Enable.AppPermissions">
-            <ng-container *ngIf="dialogSettings.Context.App.SettingsScope === AppScopes.Global">
+            <ng-container *ngIf="isGlobal">
               (not available on Global App)
             </ng-container>
-            <ng-container *ngIf="dialogSettings.Context.App.SettingsScope === AppScopes.App">
+            <ng-container *ngIf="isApp">
               (not available on Content App)
             </ng-container>
           </ng-container>

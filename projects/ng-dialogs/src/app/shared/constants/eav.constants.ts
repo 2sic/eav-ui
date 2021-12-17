@@ -43,13 +43,14 @@ export const eavConstants = {
   scopes: {
     /** This is the main schema and the data you usually see is from here */
     default: { name: 'Default', value: 'Default' },
+    configuration: { name: 'Configuration (Views etc.)', value: 'System.Configuration' },
   },
 
   /** Content types where templates, permissions, etc. are stored */
   contentTypes: {
-    /** Content type containing app specifications */
+    /** Content type containing app's specifications */
     appConfiguration: '2SexyContent-App',
-    /** Content type containing app templates (views) */
+    /** Content type containing app's views */
     template: '2SexyContent-Template',
     /** Content type containing permissions */
     permissions: 'PermissionConfiguration',
@@ -57,14 +58,18 @@ export const eavConstants = {
     query: 'DataPipeline',
     /** Content type containing content type metadata */
     contentType: 'ContentType',
-    /** Content type containing custom app settings */
+    /** Content type containing app's custom settings */
     settings: 'App-Settings',
-    /** Content type containing app resources */
+    /** Content type containing app's custom resources */
     resources: 'App-Resources',
-    /** Content type containing system app settings */
+    /** Content type containing app's system settings */
     systemSettings: 'SettingsSystem',
-    /** Content type containing system app resources */
+    /** Content type containing app's system resources */
     systemResources: 'ResourcesSystem',
+    /** Content type containing Primary and Global App custom settings */
+    customSettings: 'SettingsCustom',
+    /** Content type containing Primary and Global App custom resources */
+    customResources: 'ResourcesCustom',
   },
 
   pipelineDesigner: {
