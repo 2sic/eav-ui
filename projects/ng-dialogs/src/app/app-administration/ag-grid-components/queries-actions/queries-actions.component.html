@@ -4,11 +4,10 @@
   </div>
 
   <div class="like-button highlight" matRipple tippy="Metadata" (click)="params.do(actions.Metadata, item)">
-    <mat-icon [matBadge]="item.Metadata.length" matBadgeColor="accent" matBadgeSize="small"
-      *ngIf="item.Metadata.length">
+    <mat-icon  *ngIf="item.Metadata?.length" [matBadge]="item.Metadata.length" matBadgeColor="accent" matBadgeSize="small">
       local_offer
     </mat-icon>
-    <mat-icon *ngIf="!item.Metadata.length">local_offer</mat-icon>
+    <mat-icon *ngIf="!item.Metadata?.length">local_offer</mat-icon>
   </div>
 
   <div class="like-button highlight" matRipple *ngIf="enablePermissions" tippy="Permissions"
