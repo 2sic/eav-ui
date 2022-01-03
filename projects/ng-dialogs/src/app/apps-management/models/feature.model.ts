@@ -1,7 +1,10 @@
 export interface Feature {
-  enabled: boolean;
-  expires: string;
-  id: string;
-  public: boolean;
-  ui: boolean;
+  Description: string;
+  Enabled: boolean;
+  Expires: string;
+  Guid: string;
+  Name: string;
+  Public: boolean;
+  Security: boolean;
+  Ui: boolean;
 }

@@ -6,6 +6,7 @@ import { BooleanFilterComponent } from '../../shared/components/boolean-filter/b
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
+import { nameof } from '../../shared/plumbing/nameof';
 import { FeaturesListEnabledComponent } from '../ag-grid-components/features-list-enabled/features-list-enabled.component';
 import { FeaturesListPublicComponent } from '../ag-grid-components/features-list-public/features-list-public.component';
 import { FeaturesListSecurityComponent } from '../ag-grid-components/features-list-security/features-list-security.component';
@@ -33,31 +34,31 @@ export class ManageFeaturesComponent implements OnInit, OnDestroy {
     },
     columnDefs: [
       {
-        headerName: 'ID', field: 'id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
+        headerName: 'ID', field: nameof<Feature>('Guid'), width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
         cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter',
         cellRendererParams: {
-          tooltipGetter: (paramsData: Feature) => `GUID: ${paramsData.id}`,
+          tooltipGetter: (paramsData: Feature) => `GUID: ${paramsData.Guid}`,
         } as IdFieldParams,
       },
       {
-        headerName: 'Enabled', field: 'enabled', width: 80, headerClass: 'dense', cellClass: 'no-outline',
+        headerName: 'Enabled', field: nameof<Feature>('Enabled'), width: 80, headerClass: 'dense', cellClass: 'no-outline',
         sortable: true, filter: 'booleanFilterComponent', cellRenderer: 'featuresListEnabledComponent',
       },
       {
-        headerName: 'UI', field: 'ui', width: 70, headerClass: 'dense', cellClass: 'no-outline',
+        headerName: 'UI', field: nameof<Feature>('Ui'), width: 70, headerClass: 'dense', cellClass: 'no-outline',
         sortable: true, filter: 'booleanFilterComponent', cellRenderer: 'featuresListUiComponent',
       },
       {
-        headerName: 'Public', field: 'public', width: 70, headerClass: 'dense', cellClass: 'no-outline',
+        headerName: 'Public', field: nameof<Feature>('Public'), width: 70, headerClass: 'dense', cellClass: 'no-outline',
         sortable: true, filter: 'booleanFilterComponent', cellRenderer: 'featuresListPublicComponent'
       },
       {
-        headerName: 'Name', field: 'id', flex: 2, minWidth: 250, cellClass: 'primary-action highlight', sortable: true,
+        headerName: 'Name', field: nameof<Feature>('Name'), flex: 2, minWidth: 250, cellClass: 'primary-action highlight', sortable: true,
         filter: 'agTextColumnFilter', onCellClicked: this.openFeature,
         cellRenderer: (params: ICellRendererParams) => 'details (name lookup still WIP)',
       },
       {
-        headerName: 'Expires', field: 'expires', flex: 1, minWidth: 200, cellClass: 'no-outline',
+        headerName: 'Expires', field: nameof<Feature>('Expires'), flex: 1, minWidth: 200, cellClass: 'no-outline',
         sortable: true, filter: 'agTextColumnFilter', valueGetter: this.valueGetterDateTime,
       },
       { headerName: 'Security', width: 70, cellClass: 'no-outline', cellRenderer: 'featuresListSecurityComponent' },

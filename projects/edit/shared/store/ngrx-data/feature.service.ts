@@ -14,6 +14,6 @@ export class FeatureService extends BaseDataService<Feature> {
   }
 
   isFeatureEnabled(guid: string): boolean {
-    return this.cache$.value.find(feature => feature.id === guid)?.enabled ?? false;
+    return this.cache$.value.find(feature => feature.Guid === guid)?.Enabled ?? false;
   }
 }
