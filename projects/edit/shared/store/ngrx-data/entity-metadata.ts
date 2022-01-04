@@ -1,4 +1,5 @@
 import { EntityMetadataMap } from '@ngrx/data';
+import { Feature } from 'projects/ng-dialogs/src/app/apps-management/models/feature.model';
 import { EntityInfo } from '../../../../edit-types';
 import { InputType } from '../../../../ng-dialogs/src/app/content-type-fields/models/input-type.model';
 import { Prefetch } from '../../../dialog/main/edit-dialog-main.models';
@@ -10,7 +11,9 @@ export const entityMetadata: EntityMetadataMap = {
   Item: {
     selectId: itemSelectId,
   },
-  Feature: {},
+  Feature: {
+    selectId: featureSelectId,
+  },
   Language: {
     selectId: languageSelectId,
   },
@@ -58,6 +61,10 @@ export const entityConfig = {
 
 export function itemSelectId(item: EavItem): string {
   return item?.Entity?.Guid;
+}
+
+export function featureSelectId(feature: Feature): string {
+  return feature?.Guid;
 }
 
 export function languageSelectId(language: Language): string {
