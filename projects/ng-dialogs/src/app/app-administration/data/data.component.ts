@@ -168,7 +168,7 @@ export class DataComponent implements OnInit, OnDestroy {
     if (!contentType) {
       this.router.navigate(['add'], { relativeTo: this.route.firstChild });
     } else {
-      if (contentType.UsesSharedDef) { return; }
+      if (contentType.EditInfo.ReadOnly) { return; }
       this.router.navigate([`${contentType.StaticName}/edit`], { relativeTo: this.route.firstChild });
     }
   }
@@ -223,12 +223,9 @@ export class DataComponent implements OnInit, OnDestroy {
   }
 
   private nameCellClassGetter(params: CellClassParams) {
-    const contentType: ContentType = params.data;
-    if (contentType.UsesSharedDef) {
-      return 'disabled';
-    } else {
-      return 'primary-action highlight';
-    }
+    return (params.data as ContentType).EditInfo.ReadOnly
+      ? 'disabled'
+      : 'primary-action highlight';
   }
 
   private addItem(contentType: ContentType) {
@@ -240,7 +237,7 @@ export class DataComponent implements OnInit, OnDestroy {
   }
 
   private editFields(contentType: ContentType) {
-    if (contentType.UsesSharedDef) { return; }
+    if (contentType.EditInfo.ReadOnly) { return; }
     this.router.navigate([`fields/${contentType.StaticName}`], { relativeTo: this.route.firstChild });
   }
 

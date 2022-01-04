@@ -1,5 +1,6 @@
 import { EavFor } from '../../../../../edit/shared/models/eav';
 import { MetadataItemShort } from '../../metadata';
+import { EditInfo } from '../../shared/models/edit-info';
 
 export interface ContentItem {
   Id: number;
@@ -16,6 +17,9 @@ export interface ContentItem {
 
   /** How often this entity uses other entities (children) */
   _Uses: number;
+
+  /** Additional information if this item can/may be edited */
+  _EditInfo: EditInfo;
 
   // fields added by the user
   [key: string]: any;

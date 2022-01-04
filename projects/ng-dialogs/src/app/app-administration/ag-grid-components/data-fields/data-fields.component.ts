@@ -2,6 +2,7 @@ import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { Component } from '@angular/core';
 import { ContentType } from '../../models/content-type.model';
 import { DataFieldsParams } from './data-fields.models';
+import { EditInfo } from '../../../shared/models/edit-info';
 
 @Component({
   selector: 'app-data-fields',
@@ -10,12 +11,14 @@ import { DataFieldsParams } from './data-fields.models';
 })
 export class DataFieldsComponent implements ICellRendererAngularComp {
   contentType: ContentType;
+  editInfo: EditInfo;
   value: number;
   private params: DataFieldsParams;
 
   agInit(params: DataFieldsParams): void {
     this.params = params;
     this.contentType = params.data;
+    this.editInfo = this.contentType.EditInfo;
     this.value = params.value;
   }
 

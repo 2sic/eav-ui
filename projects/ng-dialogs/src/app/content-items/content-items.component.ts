@@ -1,4 +1,4 @@
-import { AllCommunityModules, CellClickedEvent, ColDef, GridApi, GridOptions, GridReadyEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
+import { AllCommunityModules, CellClassParams, CellClickedEvent, ColDef, GridApi, GridOptions, GridReadyEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -248,21 +248,24 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   private buildColumnDefs(columns: Field[]) {
     const columnDefs: ColDef[] = [
       {
-        headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
+        headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense',
+        cellClass: (p: CellClassParams) => this.getCellClass(p, 'id-action no-padding no-outline'),
         cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter',
         cellRendererParams: {
           tooltipGetter: (paramsData: ContentItem) => `ID: ${paramsData.Id}\nRepoID: ${paramsData._RepositoryId}\nGUID: ${paramsData.Guid}`,
         } as IdFieldParams,
       },
       {
-        headerName: 'Status', field: 'Status', width: 82, headerClass: 'dense', cellClass: 'secondary-action no-padding',
+        headerName: 'Status', field: 'Status', width: 82, headerClass: 'dense',
+        cellClass: (p: CellClassParams) => this.getCellClass(p, 'secondary-action no-padding'),
         filter: 'pubMetaFilterComponent', cellRenderer: 'contentItemsStatusComponent', valueGetter: this.valueGetterStatus,
         cellRendererParams: {
           onOpenMetadata: this.openMetadata.bind(this),
         } as ContentItemsStatusParams,
       },
       {
-        headerName: 'Item (Entity)', field: '_Title', flex: 2, minWidth: 250, cellClass: 'primary-action highlight',
+        headerName: 'Item (Entity)', field: '_Title', flex: 2, minWidth: 250,
+        cellClass: (p: CellClassParams) => this.getCellClass(p, 'primary-action highlight'),
         sortable: true, filter: 'agTextColumnFilter', onCellClicked: this.editItem.bind(this),
       },
       {
@@ -327,6 +330,14 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     const formUrl = convertFormToUrl(form);
     this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
   }
+
+  /** Get the cell classes and optionally add 'disabled' if necessary */
+  private getCellClass(params: CellClassParams, defaultClasses: string) {
+    return defaultClasses + ((params.data as ContentItem)._EditInfo.ReadOnly
+      ? ' disabled'
+      : '');
+  }
+
 
   private export(item: ContentItem) {
     this.contentExportService.exportEntity(item.Id, this.contentTypeStaticName, true);
