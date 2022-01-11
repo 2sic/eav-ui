@@ -1,13 +1,15 @@
 export interface App {
+  AppRoot: string;
+  ConfigurationId: number;
+  Folder: string;
+  Guid: string;
   Id: number;
   IsApp: boolean;
-  Guid: string;
-  Name: string;
-  Folder: string;
-  AppRoot: string;
+  IsGlobal: boolean;
   IsHidden: boolean;
-  ConfigurationId: number;
+  IsInherited: boolean;
   Items: number;
-  Thumbnail: string;
+  Name: string;
+  Thumbnail: string | null;
   Version: string;
 }

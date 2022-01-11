@@ -1,7 +1,7 @@
 import { AgGridModule } from '@ag-grid-community/angular';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatRippleModule } from '@angular/material/core';
@@ -10,6 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTabsModule } from '@angular/material/tabs';
 import { EcoFabSpeedDialModule } from '@ecodev/fab-speed-dial';
@@ -27,6 +28,8 @@ import { FeaturesListUiComponent } from './ag-grid-components/features-list-ui/f
 import { AppsListComponent } from './apps-list/apps-list.component';
 import { AppsManagementNavComponent } from './apps-management-nav/apps-management-nav.component';
 import { AppsManagementRoutingModule } from './apps-management-routing.module';
+import { CreateAppComponent } from './create-app/create-app.component';
+import { CreateInheritedAppComponent } from './create-inherited-app/create-inherited-app.component';
 import { EnableLanguagesComponent } from './enable-languages/enable-languages.component';
 import { ManageFeaturesComponent } from './manage-features/manage-features.component';
 import { AppsListService } from './services/apps-list.service';
@@ -51,6 +54,8 @@ import { SystemSettingsComponent } from './system-settings/system-settings.compo
     EnableLanguagesComponent,
     EnableLanguagesStatusComponent,
     SystemSettingsComponent,
+    CreateAppComponent,
+    CreateInheritedAppComponent,
   ],
   imports: [
     AppsManagementRoutingModule,
@@ -69,6 +74,8 @@ import { SystemSettingsComponent } from './system-settings/system-settings.compo
     FormsModule,
     MatInputModule,
     MatMenuModule,
+    ReactiveFormsModule,
+    MatSelectModule,
   ],
   providers: [
     Context,
@@ -78,6 +85,6 @@ import { SystemSettingsComponent } from './system-settings/system-settings.compo
     SxcInsightsService,
     DialogService,
     AppDialogConfigService,
-  ]
+  ],
 })
 export class AppsManagementModule { }

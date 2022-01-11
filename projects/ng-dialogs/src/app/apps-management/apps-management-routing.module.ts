@@ -3,6 +3,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
 import { EmptyRouteComponent } from '../shared/components/empty-route/empty-route.component';
 import { appsManagementDialog } from './apps-management-nav/apps-management-dialog.config';
+import { createAppDialog } from './create-app/create-app-dialog.config';
+import { createInheritedAppDialog } from './create-inherited-app/create-inherited-app-dialog.config';
 
 const appsManagementRoutes: Routes = [
   {
@@ -14,6 +16,8 @@ const appsManagementRoutes: Routes = [
             path: 'import',
             loadChildren: () => import('../import-app/import-app.module').then(m => m.ImportAppModule)
           },
+          { path: 'create', component: DialogEntryComponent, data: { dialog: createAppDialog } },
+          { path: 'create-inherited', component: DialogEntryComponent, data: { dialog: createInheritedAppDialog } },
         ],
         data: { title: 'Apps in this Zone' },
       },

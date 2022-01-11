@@ -195,6 +195,10 @@ ag-grid-angular.ag-theme-material {
       cursor: pointer;
     }
 
+    &.icon {
+      cursor: default;
+    }
+
     &.disabled {
       .mat-icon {
         color: $grid-color-disabled !important;

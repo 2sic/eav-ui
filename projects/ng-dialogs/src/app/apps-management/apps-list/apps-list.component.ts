@@ -118,19 +118,11 @@ export class AppsListComponent implements OnInit, OnDestroy {
   }
 
   createApp() {
-    let name = prompt('Enter App Name (will also be used for folder)');
-    if (name === null) { return; }
-    name = name.trim().replace(/\s\s+/g, ' '); // remove multiple white spaces and tabs
-    while (!name.match(appNamePattern)) {
-      name = prompt(`Enter App Name (will also be used for folder)\n${appNameError}`, name);
-      if (name === null) { return; }
-      name = name.trim().replace(/\s\s+/g, ' '); // remove multiple white spaces and tabs
-    }
-    this.snackBar.open('Saving...');
-    this.appsListService.create(name).subscribe(() => {
-      this.snackBar.open('Saved', null, { duration: 2000 });
-      this.fetchAppsList();
-    });
+    this.router.navigate(['create'], { relativeTo: this.route.firstChild });
+  }
+
+  createInheritedApp(): void {
+    this.router.navigate(['create-inherited'], { relativeTo: this.route.firstChild });
   }
 
   importApp(files?: File[]) {
