@@ -1,4 +1,4 @@
-import { AllCommunityModules, CellClickedEvent, GridOptions, ICellRendererParams, ValueGetterParams } from '@ag-grid-community/all-modules';
+import { AllCommunityModules, CellClickedEvent, GridOptions, ValueGetterParams } from '@ag-grid-community/all-modules';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject, combineLatest, fromEvent, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
@@ -6,8 +6,8 @@ import { BooleanFilterComponent } from '../../shared/components/boolean-filter/b
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
-import { nameof } from '../../shared/plumbing/nameof';
 import { FeaturesListEnabledComponent } from '../ag-grid-components/features-list-enabled/features-list-enabled.component';
+import { FeaturesListNameComponent } from '../ag-grid-components/features-list-name/features-list-name.component';
 import { FeaturesListPublicComponent } from '../ag-grid-components/features-list-public/features-list-public.component';
 import { FeaturesListSecurityComponent } from '../ag-grid-components/features-list-security/features-list-security.component';
 import { FeaturesListUiComponent } from '../ag-grid-components/features-list-ui/features-list-ui.component';
@@ -30,38 +30,49 @@ export class ManageFeaturesComponent implements OnInit, OnDestroy {
       featuresListEnabledComponent: FeaturesListEnabledComponent,
       featuresListUiComponent: FeaturesListUiComponent,
       featuresListPublicComponent: FeaturesListPublicComponent,
+      featuresListNameComponent: FeaturesListNameComponent,
       featuresListSecurityComponent: FeaturesListSecurityComponent,
     },
     columnDefs: [
       {
-        headerName: 'ID', field: nameof<Feature>('Guid'), width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
+        field: 'ID', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
         cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter',
+        valueGetter: (params: ValueGetterParams) => (params.data as Feature).Guid,
         cellRendererParams: {
-          tooltipGetter: (paramsData: Feature) => `GUID: ${paramsData.Guid}`,
+          tooltipGetter: (feature: Feature) => `NameId: ${feature.NameId}\nGUID: ${feature.Guid}`,
         } as IdFieldParams,
       },
       {
-        headerName: 'Enabled', field: nameof<Feature>('Enabled'), width: 80, headerClass: 'dense', cellClass: 'no-outline',
+        field: 'Enabled', width: 80, headerClass: 'dense', cellClass: 'no-outline',
         sortable: true, filter: 'booleanFilterComponent', cellRenderer: 'featuresListEnabledComponent',
+        valueGetter: (params: ValueGetterParams) => (params.data as Feature).Enabled,
       },
       {
-        headerName: 'UI', field: nameof<Feature>('Ui'), width: 70, headerClass: 'dense', cellClass: 'no-outline',
+        field: 'UI', width: 70, headerClass: 'dense', cellClass: 'no-outline',
         sortable: true, filter: 'booleanFilterComponent', cellRenderer: 'featuresListUiComponent',
+        valueGetter: (params: ValueGetterParams) => (params.data as Feature).Ui,
       },
       {
-        headerName: 'Public', field: nameof<Feature>('Public'), width: 70, headerClass: 'dense', cellClass: 'no-outline',
-        sortable: true, filter: 'booleanFilterComponent', cellRenderer: 'featuresListPublicComponent'
+        field: 'Public', width: 70, headerClass: 'dense', cellClass: 'no-outline',
+        sortable: true, filter: 'booleanFilterComponent', cellRenderer: 'featuresListPublicComponent',
+        valueGetter: (params: ValueGetterParams) => (params.data as Feature).Public,
       },
       {
-        headerName: 'Name', field: nameof<Feature>('Name'), flex: 2, minWidth: 250, cellClass: 'primary-action highlight', sortable: true,
-        filter: 'agTextColumnFilter', onCellClicked: this.openFeature,
-        cellRenderer: (params: ICellRendererParams) => 'details (name lookup still WIP)',
+        field: 'Name', flex: 2, minWidth: 250, cellClass: 'primary-action highlight', sortable: true,
+        filter: 'agTextColumnFilter', cellRenderer: 'featuresListNameComponent',
+        onCellClicked: (params: CellClickedEvent) => this.openFeature(params.data),
+        valueGetter: (params: ValueGetterParams) => (params.data as Feature).Name,
       },
       {
-        headerName: 'Expires', field: nameof<Feature>('Expires'), flex: 1, minWidth: 200, cellClass: 'no-outline',
-        sortable: true, filter: 'agTextColumnFilter', valueGetter: this.valueGetterDateTime,
+        field: 'Expires', flex: 1, minWidth: 200, cellClass: 'no-outline',
+        sortable: true, filter: 'agTextColumnFilter',
+        valueGetter: (params: ValueGetterParams) => (params.data as Feature).Expires?.replace('T', ' ').replace('Z', ''),
       },
-      { headerName: 'Security', width: 70, cellClass: 'no-outline', cellRenderer: 'featuresListSecurityComponent' },
+      {
+        field: 'Security', width: 80, cellClass: 'no-outline', cellRenderer: 'featuresListSecurityComponent',
+        sortable: true, filter: 'agNumberColumnFilter',
+        valueGetter: (params: ValueGetterParams) => (params.data as Feature).Security.Impact,
+      },
     ],
   };
 
@@ -105,14 +116,8 @@ export class ManageFeaturesComponent implements OnInit, OnDestroy {
     });
   }
 
-  private openFeature(params: CellClickedEvent) {
-    window.open(`https://2sxc.org/r/f/${params.value}`, '_blank');
-  }
-
-  private valueGetterDateTime(params: ValueGetterParams) {
-    const rawValue: string = params.data[params.colDef.field];
-    if (!rawValue) { return null; }
-    return rawValue.substring(0, 19).replace('T', ' '); // remove 'Z' and replace 'T'
+  private openFeature(feature: Feature) {
+    window.open(`https://2sxc.org/r/f/${feature.Guid}`, '_blank');
   }
 
   private fetchFeatures() {

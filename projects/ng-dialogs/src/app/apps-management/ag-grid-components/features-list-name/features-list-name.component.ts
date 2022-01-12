@@ -4,12 +4,12 @@ import { Component } from '@angular/core';
 import { Feature } from '../../models/feature.model';
 
 @Component({
-  selector: 'app-features-list-security',
-  templateUrl: './features-list-security.component.html',
-  styleUrls: ['./features-list-security.component.scss'],
+  selector: 'app-features-list-name',
+  templateUrl: './features-list-name.component.html',
+  styleUrls: ['./features-list-name.component.scss'],
 })
-export class FeaturesListSecurityComponent implements ICellRendererAngularComp {
-  value: number;
+export class FeaturesListNameComponent implements ICellRendererAngularComp {
+  value: string;
   feature: Feature;
 
   agInit(params: ICellRendererParams) {

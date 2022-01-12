@@ -14,7 +14,7 @@ export interface Feature {
   /** If this feature is to be shown in API calls for public users */
   Public: boolean;
   /** Is this feature security relevant */
-  Security: boolean;
+  Security: FeatureSecurity;
   /** Does this feature apply to UIs (like the edit-form) */
   Ui: boolean;
 }

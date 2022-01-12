@@ -22,6 +22,7 @@ import { AppsListActionsComponent } from './ag-grid-components/apps-list-actions
 import { AppsListShowComponent } from './ag-grid-components/apps-list-show/apps-list-show.component';
 import { EnableLanguagesStatusComponent } from './ag-grid-components/enable-languages-status/enable-languages-status.component';
 import { FeaturesListEnabledComponent } from './ag-grid-components/features-list-enabled/features-list-enabled.component';
+import { FeaturesListNameComponent } from './ag-grid-components/features-list-name/features-list-name.component';
 import { FeaturesListPublicComponent } from './ag-grid-components/features-list-public/features-list-public.component';
 import { FeaturesListSecurityComponent } from './ag-grid-components/features-list-security/features-list-security.component';
 import { FeaturesListUiComponent } from './ag-grid-components/features-list-ui/features-list-ui.component';
@@ -50,6 +51,7 @@ import { SystemSettingsComponent } from './system-settings/system-settings.compo
     FeaturesListEnabledComponent,
     FeaturesListUiComponent,
     FeaturesListPublicComponent,
+    FeaturesListNameComponent,
     FeaturesListSecurityComponent,
     EnableLanguagesComponent,
     EnableLanguagesStatusComponent,
