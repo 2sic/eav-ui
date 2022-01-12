@@ -53,7 +53,7 @@ export class ViewsComponent implements OnInit, OnDestroy {
         headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
         cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter',
         cellRendererParams: {
-          tooltipGetter: (paramsData: View) => `ID: ${paramsData.Id}\nGUID: ${paramsData.Guid}`,
+          tooltipGetter: (view: View) => `ID: ${view.Id}\nGUID: ${view.Guid}`,
         } as IdFieldParams,
       },
       {

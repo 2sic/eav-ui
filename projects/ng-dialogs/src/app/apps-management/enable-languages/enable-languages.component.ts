@@ -31,7 +31,7 @@ export class EnableLanguagesComponent implements OnInit, OnDestroy {
         headerName: 'ID', field: 'Code', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
         cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter',
         cellRendererParams: {
-          tooltipGetter: (paramsData: EnableLanguage) => `ID: ${paramsData.Code}`,
+          tooltipGetter: (language: EnableLanguage) => `ID: ${language.Code}`,
         } as IdFieldParams,
       },
       {

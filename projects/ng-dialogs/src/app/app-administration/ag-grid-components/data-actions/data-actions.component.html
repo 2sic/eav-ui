@@ -1,13 +1,13 @@
 <div class="actions-component">
-  <div class="like-button highlight" matRipple *ngIf="!editInfo.ReadOnly" tippy="Description and more"
+  <div class="like-button highlight" matRipple *ngIf="!contentType.EditInfo.ReadOnly" tippy="Description and more"
     (click)="createOrEditMetadata()">
     <mat-icon>edit</mat-icon>
   </div>
-  <div class="like-button disabled" *ngIf="editInfo.ReadOnly">
+  <div class="like-button disabled" *ngIf="contentType.EditInfo.ReadOnly">
     <mat-icon>edit</mat-icon>
   </div>
 
-  <div class="like-button highlight" matRipple *ngIf="!editInfo.ReadOnly" tippy="Metadata"
+  <div class="like-button highlight" matRipple *ngIf="!contentType.EditInfo.ReadOnly" tippy="Metadata"
     (click)="openMetadata()">
     <mat-icon [matBadge]="contentType.Metadata.length" matBadgeColor="accent" matBadgeSize="small"
       *ngIf="contentType.Metadata.length">
@@ -15,7 +15,7 @@
     </mat-icon>
     <mat-icon *ngIf="!contentType.Metadata.length">local_offer</mat-icon>
   </div>
-  <div class="like-button disabled" *ngIf="editInfo.ReadOnly">
+  <div class="like-button disabled" *ngIf="contentType.EditInfo.ReadOnly">
     <mat-icon>local_offer</mat-icon>
   </div>
 
@@ -37,7 +37,7 @@
 </div>
 
 <mat-menu #menu="matMenu" class="grid-more-menu">
-  <button mat-menu-item [disabled]="editInfo.ReadOnly" (click)="editContentType()">
+  <button mat-menu-item [disabled]="contentType.EditInfo.ReadOnly" (click)="editContentType()">
     <mat-icon>settings</mat-icon>
     <span>Rename</span>
   </button>
@@ -57,7 +57,7 @@
     <mat-icon>cloud_upload</mat-icon>
     <span>Import data</span>
   </button>
-  <button mat-menu-item [disabled]="editInfo.ReadOnly" (click)="deleteContentType()">
+  <button mat-menu-item [disabled]="contentType.EditInfo.ReadOnly" (click)="deleteContentType()">
     <mat-icon>delete</mat-icon>
     <span>Delete</span>
   </button>

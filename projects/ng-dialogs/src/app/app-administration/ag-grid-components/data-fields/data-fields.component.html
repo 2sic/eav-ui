@@ -1,12 +1,12 @@
 <div class="actions-component">
-  <div class="like-button highlight" matRipple *ngIf="!editInfo.ReadOnly" tippy="Edit fields"
+  <div class="like-button highlight" matRipple *ngIf="!contentType.EditInfo.ReadOnly" tippy="Edit fields"
     (click)="editFields()">
     <mat-icon [matBadge]="value" matBadgeColor="accent" matBadgeSize="small" *ngIf="value">dns</mat-icon>
     <mat-icon *ngIf="!value">dns</mat-icon>
   </div>
 
-  <div class="like-button disabled" *ngIf="editInfo.ReadOnly"
-    tippy="{{ editInfo.ReadOnlyMessage }} This content-type shares the definition of #{{ contentType.SharedDefId }} so you can't edit it here. Read 2sxc.org/help?tag=shared-types">
+  <div class="like-button disabled" *ngIf="contentType.EditInfo.ReadOnly"
+    [tippy]="(contentType.EditInfo.ReadOnlyMessage ? contentType.EditInfo.ReadOnlyMessage + '\n\n' : '') + 'This ContentType shares the definition of #' + contentType.SharedDefId + ' so you can\'t edit it here. Read 2sxc.org/help?tag=shared-types'">
     <mat-icon [matBadge]="value" matBadgeColor="accent" matBadgeSize="small" matBadgeDisabled="true" *ngIf="value">
       share
     </mat-icon>

@@ -249,15 +249,15 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     const columnDefs: ColDef[] = [
       {
         headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense',
-        cellClass: (p: CellClassParams) => this.getCellClass(p, 'id-action no-padding no-outline'),
+        cellClass: (params) => this.getCellClass(params, 'id-action no-padding no-outline'),
         cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter',
         cellRendererParams: {
-          tooltipGetter: (paramsData: ContentItem) => `ID: ${paramsData.Id}\nRepoID: ${paramsData._RepositoryId}\nGUID: ${paramsData.Guid}`,
+          tooltipGetter: (item: ContentItem) => `ID: ${item.Id}\nRepoID: ${item._RepositoryId}\nGUID: ${item.Guid}`,
         } as IdFieldParams,
       },
       {
         headerName: 'Status', field: 'Status', width: 82, headerClass: 'dense',
-        cellClass: (p: CellClassParams) => this.getCellClass(p, 'secondary-action no-padding'),
+        cellClass: (params) => this.getCellClass(params, 'secondary-action no-padding'),
         filter: 'pubMetaFilterComponent', cellRenderer: 'contentItemsStatusComponent', valueGetter: this.valueGetterStatus,
         cellRendererParams: {
           onOpenMetadata: this.openMetadata.bind(this),
@@ -265,7 +265,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
       },
       {
         headerName: 'Item (Entity)', field: '_Title', flex: 2, minWidth: 250,
-        cellClass: (p: CellClassParams) => this.getCellClass(p, 'primary-action highlight'),
+        cellClass: (params) => this.getCellClass(params, 'primary-action highlight'),
         sortable: true, filter: 'agTextColumnFilter', onCellClicked: this.editItem.bind(this),
       },
       {
@@ -333,11 +333,9 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
 
   /** Get the cell classes and optionally add 'disabled' if necessary */
   private getCellClass(params: CellClassParams, defaultClasses: string) {
-    return defaultClasses + ((params.data as ContentItem)._EditInfo.ReadOnly
-      ? ' disabled'
-      : '');
+    const item: ContentItem = params.data;
+    return `${defaultClasses} ${item._EditInfo.ReadOnly ? 'disabled' : ''}`;
   }
-
 
   private export(item: ContentItem) {
     this.contentExportService.exportEntity(item.Id, this.contentTypeStaticName, true);

@@ -1,4 +1,4 @@
-import { AllCommunityModules, CellClickedEvent, GridOptions, ValueGetterParams } from '@ag-grid-community/all-modules';
+import { AllCommunityModules, GridOptions } from '@ag-grid-community/all-modules';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject, combineLatest, fromEvent, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
@@ -37,7 +37,7 @@ export class ManageFeaturesComponent implements OnInit, OnDestroy {
       {
         field: 'ID', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
         cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter',
-        valueGetter: (params: ValueGetterParams) => (params.data as Feature).Guid,
+        valueGetter: (params) => (params.data as Feature).Guid,
         cellRendererParams: {
           tooltipGetter: (feature: Feature) => `NameId: ${feature.NameId}\nGUID: ${feature.Guid}`,
         } as IdFieldParams,
@@ -45,33 +45,33 @@ export class ManageFeaturesComponent implements OnInit, OnDestroy {
       {
         field: 'Enabled', width: 80, headerClass: 'dense', cellClass: 'no-outline',
         sortable: true, filter: 'booleanFilterComponent', cellRenderer: 'featuresListEnabledComponent',
-        valueGetter: (params: ValueGetterParams) => (params.data as Feature).Enabled,
+        valueGetter: (params) => (params.data as Feature).Enabled,
       },
       {
         field: 'UI', width: 70, headerClass: 'dense', cellClass: 'no-outline',
         sortable: true, filter: 'booleanFilterComponent', cellRenderer: 'featuresListUiComponent',
-        valueGetter: (params: ValueGetterParams) => (params.data as Feature).Ui,
+        valueGetter: (params) => (params.data as Feature).Ui,
       },
       {
         field: 'Public', width: 70, headerClass: 'dense', cellClass: 'no-outline',
         sortable: true, filter: 'booleanFilterComponent', cellRenderer: 'featuresListPublicComponent',
-        valueGetter: (params: ValueGetterParams) => (params.data as Feature).Public,
+        valueGetter: (params) => (params.data as Feature).Public,
       },
       {
         field: 'Name', flex: 2, minWidth: 250, cellClass: 'primary-action highlight', sortable: true,
         filter: 'agTextColumnFilter', cellRenderer: 'featuresListNameComponent',
-        onCellClicked: (params: CellClickedEvent) => this.openFeature(params.data),
-        valueGetter: (params: ValueGetterParams) => (params.data as Feature).Name,
+        onCellClicked: (params) => this.openFeature(params.data),
+        valueGetter: (params) => (params.data as Feature).Name,
       },
       {
         field: 'Expires', flex: 1, minWidth: 200, cellClass: 'no-outline',
         sortable: true, filter: 'agTextColumnFilter',
-        valueGetter: (params: ValueGetterParams) => (params.data as Feature).Expires?.replace('T', ' ').replace('Z', ''),
+        valueGetter: (params) => (params.data as Feature).Expires?.replace('T', ' ').replace('Z', ''),
       },
       {
         field: 'Security', width: 80, cellClass: 'no-outline', cellRenderer: 'featuresListSecurityComponent',
         sortable: true, filter: 'agNumberColumnFilter',
-        valueGetter: (params: ValueGetterParams) => (params.data as Feature).Security.Impact,
+        valueGetter: (params) => (params.data as Feature).Security.Impact,
       },
     ],
   };

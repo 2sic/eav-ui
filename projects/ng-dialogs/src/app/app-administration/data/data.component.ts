@@ -55,7 +55,7 @@ export class DataComponent implements OnInit, OnDestroy {
         headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
         cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter',
         cellRendererParams: {
-          tooltipGetter: (paramsData: ContentType) => `ID: ${paramsData.Id}\nGUID: ${paramsData.StaticName}`,
+          tooltipGetter: (contentType: ContentType) => `ID: ${contentType.Id}\nGUID: ${contentType.StaticName}`,
         } as IdFieldParams,
       },
       {
@@ -223,9 +223,8 @@ export class DataComponent implements OnInit, OnDestroy {
   }
 
   private nameCellClassGetter(params: CellClassParams) {
-    return (params.data as ContentType).EditInfo.ReadOnly
-      ? 'disabled'
-      : 'primary-action highlight';
+    const contentType: ContentType = params.data;
+    return contentType.EditInfo.ReadOnly ? 'disabled' : 'primary-action highlight';
   }
 
   private addItem(contentType: ContentType) {

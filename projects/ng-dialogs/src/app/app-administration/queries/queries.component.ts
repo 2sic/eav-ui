@@ -43,7 +43,7 @@ export class QueriesComponent implements OnInit, OnDestroy {
         headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
         cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter',
         cellRendererParams: {
-          tooltipGetter: (paramsData: Query) => `ID: ${paramsData.Id}\nGUID: ${paramsData.Guid}`,
+          tooltipGetter: (query: Query) => `ID: ${query.Id}\nGUID: ${query.Guid}`,
         } as IdFieldParams,
       },
       {

@@ -39,7 +39,7 @@ export class AppsListComponent implements OnInit, OnDestroy {
         headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
         cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter',
         cellRendererParams: {
-          tooltipGetter: (paramsData: App) => `ID: ${paramsData.Id}\nGUID: ${paramsData.Guid}`,
+          tooltipGetter: (app: App) => `ID: ${app.Id}\nGUID: ${app.Guid}`,
         } as IdFieldParams,
       },
       {
