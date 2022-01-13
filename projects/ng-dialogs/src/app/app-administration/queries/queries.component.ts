@@ -1,4 +1,4 @@
-import { AllCommunityModules, CellClickedEvent, GridOptions } from '@ag-grid-community/all-modules';
+import { AllCommunityModules, GridOptions } from '@ag-grid-community/all-modules';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
@@ -28,7 +28,6 @@ import { ImportQueryDialogData } from '../sub-dialogs/import-query/import-query-
 })
 export class QueriesComponent implements OnInit, OnDestroy {
   @Input() enablePermissions: boolean;
-  fabOpen$ = new BehaviorSubject(false);
 
   queries$ = new BehaviorSubject<Query[]>(null);
   modules = AllCommunityModules;
@@ -40,15 +39,17 @@ export class QueriesComponent implements OnInit, OnDestroy {
     },
     columnDefs: [
       {
-        headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
+        headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense',
+        cellClass: (params) => `${(params.data as Query)._EditInfo.ReadOnly ? 'disabled' : ''} id-action no-padding no-outline`,
         cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter',
         cellRendererParams: {
           tooltipGetter: (query: Query) => `ID: ${query.Id}\nGUID: ${query.Guid}`,
         } as IdFieldParams,
       },
       {
-        headerName: 'Name', field: 'Name', flex: 2, minWidth: 250, cellClass: 'primary-action highlight', sortable: true,
-        sort: 'asc', filter: 'agTextColumnFilter', onCellClicked: this.openVisualQueryDesigner.bind(this),
+        headerName: 'Name', field: 'Name', flex: 2, minWidth: 250, sortable: true,
+        cellClass: (params) => (params.data as Query)._EditInfo.ReadOnly ? 'no-outline' : 'primary-action highlight',
+        sort: 'asc', filter: 'agTextColumnFilter', onCellClicked: (params) => this.openVisualQueryDesigner(params.data),
       },
       {
         headerName: 'Description', field: 'Description', flex: 2, minWidth: 250, cellClass: 'no-outline', sortable: true,
@@ -82,12 +83,7 @@ export class QueriesComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.queries$.complete();
-    this.fabOpen$.complete();
     this.subscription.unsubscribe();
-  }
-
-  openChange(open: boolean) {
-    this.fabOpen$.next(open);
   }
 
   private fetchQueries() {
@@ -144,8 +140,8 @@ export class QueriesComponent implements OnInit, OnDestroy {
     return this.enablePermissions;
   }
 
-  private openVisualQueryDesigner(params: CellClickedEvent) {
-    const query: Query = params.data;
+  private openVisualQueryDesigner(query: Query) {
+    if (query._EditInfo.ReadOnly) { return; }
     this.dialogService.openQueryDesigner(query.Id);
   }
 

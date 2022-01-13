@@ -14,7 +14,6 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { EcoFabSpeedDialModule } from '@ecodev/fab-speed-dial';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { ContentExportService } from '../content-export/services/content-export.service';
 import { Context } from '../shared/services/context';
@@ -55,7 +54,6 @@ import { EntitiesService } from './services/entities.service';
     MatProgressSpinnerModule,
     MatRippleModule,
     MatSnackBarModule,
-    EcoFabSpeedDialModule,
     MatMenuModule,
     ReactiveFormsModule,
     MatSlideToggleModule,
@@ -67,6 +65,6 @@ import { EntitiesService } from './services/entities.service';
     EntitiesService,
     ContentExportService,
     ContentTypesService,
-  ]
+  ],
 })
 export class ContentItemsModule { }

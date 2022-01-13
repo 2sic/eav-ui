@@ -17,7 +17,6 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
-import { EcoFabSpeedDialModule } from '@ecodev/fab-speed-dial';
 import { ContentExportService } from '../content-export/services/content-export.service';
 import { ContentItemsService } from '../content-items/services/content-items.service';
 import { ContentTypesFieldsService } from '../content-type-fields/services/content-types-fields.service';
@@ -118,7 +117,6 @@ import { WebApiComponent } from './web-api/web-api.component';
     MatExpansionModule,
     MatCardModule,
     MatRippleModule,
-    EcoFabSpeedDialModule,
     MatSnackBarModule,
     MatMenuModule,
     MatBadgeModule,
