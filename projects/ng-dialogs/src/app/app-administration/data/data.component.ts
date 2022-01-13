@@ -1,4 +1,4 @@
-import { AllCommunityModules, CellClassParams, CellClickedEvent, GridOptions } from '@ag-grid-community/all-modules';
+import { AllCommunityModules, GridOptions } from '@ag-grid-community/all-modules';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
@@ -52,7 +52,8 @@ export class DataComponent implements OnInit, OnDestroy {
     },
     columnDefs: [
       {
-        headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
+        headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense',
+        cellClass: (params) => `${(params.data as ContentType).EditInfo.ReadOnly ? 'disabled' : ''} id-action no-padding no-outline`,
         cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter',
         cellRendererParams: {
           tooltipGetter: (contentType: ContentType) => `ID: ${contentType.Id}\nGUID: ${contentType.StaticName}`,
@@ -79,12 +80,13 @@ export class DataComponent implements OnInit, OnDestroy {
         headerName: 'Fields', field: 'Fields', width: 94, headerClass: 'dense', cellClass: 'secondary-action no-padding',
         sortable: true, filter: 'agNumberColumnFilter', cellRenderer: 'dataFieldsComponent',
         cellRendererParams: {
-          onEditFields: (contentType) => { this.editFields(contentType); },
+          onEditFields: (contentType) => this.editFields(contentType),
         } as DataFieldsParams,
       },
       {
-        headerName: 'Name', field: 'Name', flex: 1, minWidth: 100, cellClass: this.nameCellClassGetter.bind(this),
-        sortable: true, filter: 'agTextColumnFilter', onCellClicked: (event) => { this.editContentType(event.data); },
+        headerName: 'Name', field: 'Name', flex: 1, minWidth: 100,
+        cellClass: (params) => (params.data as ContentType).EditInfo.ReadOnly ? 'no-outline' : 'primary-action highlight',
+        sortable: true, filter: 'agTextColumnFilter', onCellClicked: (event) => this.editContentType(event.data),
       },
       {
         headerName: 'Description', field: 'Properties.Description', flex: 3, minWidth: 250, cellClass: 'no-outline',
@@ -220,11 +222,6 @@ export class DataComponent implements OnInit, OnDestroy {
 
   private enablePermissionsGetter() {
     return this.enablePermissions;
-  }
-
-  private nameCellClassGetter(params: CellClassParams) {
-    const contentType: ContentType = params.data;
-    return contentType.EditInfo.ReadOnly ? 'disabled' : 'primary-action highlight';
   }
 
   private addItem(contentType: ContentType) {

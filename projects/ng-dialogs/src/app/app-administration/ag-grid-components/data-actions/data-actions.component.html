@@ -10,25 +10,29 @@
   <div class="like-button highlight" matRipple *ngIf="!contentType.EditInfo.ReadOnly" tippy="Metadata"
     (click)="openMetadata()">
     <mat-icon [matBadge]="contentType.Metadata.length" matBadgeColor="accent" matBadgeSize="small"
-      *ngIf="contentType.Metadata.length">
+      [matBadgeHidden]="!contentType.Metadata.length">
       local_offer
     </mat-icon>
-    <mat-icon *ngIf="!contentType.Metadata.length">local_offer</mat-icon>
   </div>
   <div class="like-button disabled" *ngIf="contentType.EditInfo.ReadOnly">
-    <mat-icon>local_offer</mat-icon>
+    <mat-icon [matBadge]="contentType.Metadata.length" matBadgeColor="accent" matBadgeSize="small"
+      matBadgeDisabled="true" [matBadgeHidden]="!contentType.Metadata.length">
+      local_offer
+    </mat-icon>
   </div>
 
-  <div class="like-button highlight" matRipple *ngIf="enablePermissions" tippy="Permissions"
-    (click)="openPermissions()">
+  <div class="like-button highlight" matRipple *ngIf="!contentType.EditInfo.ReadOnly && enablePermissions"
+    tippy="Permissions" (click)="openPermissions()">
     <mat-icon [matBadge]="contentType.Permissions.Count" matBadgeColor="accent" matBadgeSize="small"
-      *ngIf="contentType.Permissions.Count">
+      [matBadgeHidden]="!contentType.Permissions.Count">
       person
     </mat-icon>
-    <mat-icon *ngIf="!contentType.Permissions.Count">person</mat-icon>
   </div>
-  <div class="like-button disabled" *ngIf="!enablePermissions">
-    <mat-icon>person</mat-icon>
+  <div class="like-button disabled" *ngIf="contentType.EditInfo.ReadOnly || !enablePermissions">
+    <mat-icon [matBadge]="contentType.Permissions.Count" matBadgeColor="accent" matBadgeSize="small"
+      matBadgeDisabled="true" [matBadgeHidden]="!contentType.Permissions.Count">
+      person
+    </mat-icon>
   </div>
 
   <div class="like-button highlight" matRipple tippy="More" [matMenuTriggerFor]="menu">
