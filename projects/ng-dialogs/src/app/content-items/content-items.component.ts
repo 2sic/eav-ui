@@ -256,8 +256,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
         } as IdFieldParams,
       },
       {
-        headerName: 'Status', field: 'Status', width: 82, headerClass: 'dense',
-        cellClass: (params) => this.getCellClass(params, 'secondary-action no-padding'),
+        headerName: 'Status', field: 'Status', width: 82, headerClass: 'dense', cellClass: 'secondary-action no-padding',
         filter: 'pubMetaFilterComponent', cellRenderer: 'contentItemsStatusComponent', valueGetter: this.valueGetterStatus,
         cellRendererParams: {
           onOpenMetadata: this.openMetadata.bind(this),

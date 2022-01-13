@@ -13,9 +13,9 @@ export class ContentItemsStatusComponent implements ICellRendererAngularComp {
   value: PubMeta;
   metadataCount: number;
   metadataTooltip: string;
+  item: ContentItem;
 
   private params: ContentItemsStatusParams;
-  private item: ContentItem;
 
   agInit(params: ContentItemsStatusParams) {
     this.value = params.value;

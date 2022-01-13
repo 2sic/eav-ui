@@ -79,7 +79,7 @@ export class DataComponent implements OnInit, OnDestroy {
         headerName: 'Fields', field: 'Fields', width: 94, headerClass: 'dense', cellClass: 'secondary-action no-padding',
         sortable: true, filter: 'agNumberColumnFilter', cellRenderer: 'dataFieldsComponent',
         cellRendererParams: {
-          onEditFields: this.editFields.bind(this),
+          onEditFields: (contentType) => { this.editFields(contentType); },
         } as DataFieldsParams,
       },
       {
@@ -236,7 +236,6 @@ export class DataComponent implements OnInit, OnDestroy {
   }
 
   private editFields(contentType: ContentType) {
-    if (contentType.EditInfo.ReadOnly) { return; }
     this.router.navigate([`fields/${contentType.StaticName}`], { relativeTo: this.route.firstChild });
   }
 

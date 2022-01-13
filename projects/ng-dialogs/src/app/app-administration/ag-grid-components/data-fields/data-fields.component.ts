@@ -9,14 +9,21 @@ import { DataFieldsParams } from './data-fields.models';
   styleUrls: ['./data-fields.component.scss'],
 })
 export class DataFieldsComponent implements ICellRendererAngularComp {
-  contentType: ContentType;
   value: number;
+  tooltip: string;
+  icon: string;
+
   private params: DataFieldsParams;
+  private contentType: ContentType;
 
   agInit(params: DataFieldsParams): void {
     this.params = params;
     this.contentType = params.data;
     this.value = params.value;
+    this.tooltip = !this.contentType.EditInfo.ReadOnly
+      ? 'Edit fields'
+      : `${this.contentType.EditInfo.ReadOnlyMessage ? `${this.contentType.EditInfo.ReadOnlyMessage}\n\n` : ''}This ContentType shares the definition of #${this.contentType.SharedDefId} so you can't edit it here. Read 2sxc.org/help?tag=shared-types`;
+    this.icon = !this.contentType.EditInfo.ReadOnly ? 'dns' : 'share';
   }
 
   refresh(params?: any): boolean {

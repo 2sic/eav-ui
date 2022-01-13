@@ -11,7 +11,7 @@
 </div>
 
 <mat-menu #menu="matMenu" class="grid-more-menu">
-  <button mat-menu-item (click)="deleteItem()">
+  <button mat-menu-item [disabled]="item._EditInfo.ReadOnly" (click)="deleteItem()">
     <mat-icon>delete</mat-icon>
     <span>Delete</span>
   </button>

@@ -1,6 +1,13 @@
-<div matRipple class="input-component highlight">
+<div matRipple class="input-component highlight" *ngIf="!field.EditInfo.ReadOnly" (click)="changeInputType()">
   <div class="text">{{ value }}</div>
   <div class="like-button">
+    <mat-icon>arrow_drop_down</mat-icon>
+  </div>
+</div>
+
+<div class="input-component disabled" *ngIf="field.EditInfo.ReadOnly">
+  <div class="text disabled">{{ value }}</div>
+  <div class="like-button disabled">
     <mat-icon>arrow_drop_down</mat-icon>
   </div>
 </div>

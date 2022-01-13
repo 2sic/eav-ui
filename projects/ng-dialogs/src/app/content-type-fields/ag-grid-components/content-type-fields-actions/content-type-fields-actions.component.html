@@ -24,12 +24,12 @@
 </div>
 
 <mat-menu #menu="matMenu" class="grid-more-menu">
-  <button mat-menu-item (click)="rename()">
+  <button mat-menu-item [disabled]="field.EditInfo.ReadOnly" (click)="rename()">
     <mat-icon>text_fields</mat-icon>
     <span>Rename</span>
   </button>
 
-  <button mat-menu-item [disabled]="field.IsTitle" (click)="deleteField()">
+  <button mat-menu-item [disabled]="field.EditInfo.ReadOnly || field.IsTitle" (click)="deleteField()">
     <mat-icon>delete</mat-icon>
     <span>Delete</span>
   </button>

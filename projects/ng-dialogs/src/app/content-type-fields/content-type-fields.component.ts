@@ -1,11 +1,11 @@
 // tslint:disable-next-line:max-line-length
-import { AllCommunityModules, CellClickedEvent, FilterChangedEvent, GridApi, GridOptions, GridReadyEvent, ICellRendererParams, RowDragEvent, SortChangedEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
+import { AllCommunityModules, FilterChangedEvent, GridApi, GridOptions, GridReadyEvent, ICellRendererParams, RowClassParams, RowDragEvent, SortChangedEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { BehaviorSubject, forkJoin, Subscription } from 'rxjs';
-import { filter, map, mergeMap, pairwise, share, startWith } from 'rxjs/operators';
+import { BehaviorSubject, forkJoin, of, Subscription } from 'rxjs';
+import { filter, map, pairwise, startWith } from 'rxjs/operators';
 import { ContentType } from '../app-administration/models/content-type.model';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { GoToMetadata } from '../metadata';
@@ -17,8 +17,11 @@ import { AddItem, EditForm, EditItem } from '../shared/models/edit-form.model';
 import { ContentTypeFieldsActionsComponent } from './ag-grid-components/content-type-fields-actions/content-type-fields-actions.component';
 import { ContentTypeFieldsActionsParams } from './ag-grid-components/content-type-fields-actions/content-type-fields-actions.models';
 import { ContentTypeFieldsInputTypeComponent } from './ag-grid-components/content-type-fields-input-type/content-type-fields-input-type.component';
+// tslint:disable-next-line:max-line-length
+import { ContentTypeFieldsInputTypeParams } from './ag-grid-components/content-type-fields-input-type/content-type-fields-input-type.models';
 import { ContentTypeFieldsSpecialComponent } from './ag-grid-components/content-type-fields-special/content-type-fields-special.component';
 import { ContentTypeFieldsTitleComponent } from './ag-grid-components/content-type-fields-title/content-type-fields-title.component';
+import { ContentTypeFieldsTitleParams } from './ag-grid-components/content-type-fields-title/content-type-fields-title.models';
 import { ContentTypeFieldsTypeComponent } from './ag-grid-components/content-type-fields-type/content-type-fields-type.component';
 import { InputTypeConstants } from './constants/input-type.constants';
 import { Field } from './models/field.model';
@@ -36,11 +39,13 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
   modules = AllCommunityModules;
   gridOptions: GridOptions = {
     ...defaultGridOptions,
-    getRowClass(params/*: RowClassParams*/) {
+    getRowClass(params: RowClassParams) {
       const field: Field = params.data;
-      if (field.InputType === InputTypeConstants.EmptyDefault) { return 'group-start-row'; }
-      if (field.InputType === InputTypeConstants.EmptyEnd) { return 'group-end-row'; }
-      return '';
+      const rowClass: string[] = [];
+      if (field.EditInfo.ReadOnly) { rowClass.push('disable-row-drag'); }
+      if (field.InputType === InputTypeConstants.EmptyDefault) { rowClass.push('group-start-row'); }
+      if (field.InputType === InputTypeConstants.EmptyEnd) { rowClass.push('group-end-row'); }
+      return rowClass.join(' ');
     },
     frameworkComponents: {
       contentTypeFieldsTitleComponent: ContentTypeFieldsTitleComponent,
@@ -53,12 +58,15 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
       { rowDrag: true, width: 18, cellClass: 'no-select no-padding no-outline' },
       {
         headerName: 'Title', field: 'IsTitle', width: 42, cellClass: 'secondary-action no-padding no-outline',
-        cellRenderer: 'contentTypeFieldsTitleComponent', onCellClicked: this.setTitle.bind(this),
+        cellRenderer: 'contentTypeFieldsTitleComponent',
+        cellRendererParams: {
+          onSetTitle: (field) => { this.setTitle(field); },
+        } as ContentTypeFieldsTitleParams,
       },
       {
         headerName: 'Name', field: 'StaticName', flex: 2, minWidth: 250, cellClass: 'primary-action highlight',
-        sortable: true, filter: 'agTextColumnFilter', onCellClicked: (params) => this.editFieldMetadata(params.data),
-        cellRenderer: this.nameCellRenderer.bind(this),
+        sortable: true, filter: 'agTextColumnFilter', onCellClicked: (params) => { this.editFieldMetadata(params.data); },
+        cellRenderer: (params: ICellRendererParams) => this.nameCellRenderer(params),
       },
       {
         headerName: 'Type', field: 'Type', width: 70, headerClass: 'dense', cellClass: 'no-outline', sortable: true,
@@ -67,7 +75,10 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
       {
         headerName: 'Input', field: 'InputType', width: 160, cellClass: 'secondary-action no-padding',
         sortable: true, filter: 'agTextColumnFilter', cellRenderer: 'contentTypeFieldsInputTypeComponent',
-        onCellClicked: this.changeInputType.bind(this), valueGetter: this.inputTypeValueGetter,
+        valueGetter: (params) => this.inputTypeValueGetter(params),
+        cellRendererParams: {
+          onChangeInputType: (field) => { this.changeInputType(field); },
+        } as ContentTypeFieldsInputTypeParams,
       },
       {
         headerName: 'Label', field: 'Metadata.All.Name', flex: 2, minWidth: 250, cellClass: 'no-outline',
@@ -84,10 +95,10 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
       {
         width: 122, cellClass: 'secondary-action no-padding', cellRenderer: 'contentTypeFieldsActionsComponent', pinned: 'right',
         cellRendererParams: {
-          onRename: (field) => this.rename(field),
-          onDelete: (field) => this.delete(field),
-          onOpenPermissions: (field) => this.openPermissions(field),
-          onOpenMetadata: (field) => this.openMetadata(field),
+          onRename: (field) => { this.rename(field); },
+          onDelete: (field) => { this.delete(field); },
+          onOpenPermissions: (field) => { this.openPermissions(field); },
+          onOpenMetadata: (field) => { this.openMetadata(field); },
         } as ContentTypeFieldsActionsParams,
       },
     ],
@@ -226,20 +237,15 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
   }
 
   private fetchFields(callback?: () => void) {
-    if (this.contentType$.value == null) {
-      const contentType$ = this.contentTypesService.retrieveContentType(this.contentTypeStaticName).pipe(share());
-      const fields$ = contentType$.pipe(mergeMap(contentType => this.contentTypesFieldsService.getFields(contentType.StaticName)));
-      forkJoin([contentType$, fields$]).subscribe(([contentType, fields]) => {
-        this.contentType$.next(contentType);
-        this.fields$.next(fields);
-        if (callback != null) { callback(); }
-      });
-    } else {
-      this.contentTypesFieldsService.getFields(this.contentType$.value.StaticName).subscribe(fields => {
-        this.fields$.next(fields);
-        if (callback != null) { callback(); }
-      });
-    }
+    const contentType$ = this.contentType$.value == null
+      ? this.contentTypesService.retrieveContentType(this.contentTypeStaticName)
+      : of(this.contentType$.value);
+    const fields$ = this.contentTypesFieldsService.getFields(this.contentTypeStaticName);
+    forkJoin([contentType$, fields$]).subscribe(([contentType, fields]) => {
+      this.contentType$.next(contentType);
+      this.fields$.next(fields);
+      if (callback != null) { callback(); }
+    });
   }
 
   private editFieldMetadata(field: Field) {
@@ -267,8 +273,7 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
       };
   }
 
-  private setTitle(params: CellClickedEvent) {
-    const field: Field = params.data;
+  private setTitle(field: Field) {
     this.snackBar.open('Setting title...');
     this.contentTypesFieldsService.setTitle(field, this.contentType$.value).subscribe(() => {
       this.snackBar.open('Title set', null, { duration: 2000 });
@@ -276,8 +281,7 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
     });
   }
 
-  private changeInputType(params: CellClickedEvent) {
-    const field: Field = params.data;
+  private changeInputType(field: Field) {
     this.router.navigate([`update/${this.contentTypeStaticName}/${field.Id}/inputType`], { relativeTo: this.route });
   }
 

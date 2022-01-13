@@ -1,6 +1,7 @@
-import { ICellRendererParams } from '@ag-grid-community/all-modules';
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { Component } from '@angular/core';
+import { Field } from '../../models/field.model';
+import { ContentTypeFieldsTitleParams } from './content-type-fields-title.models';
 
 @Component({
   selector: 'app-content-type-fields-title',
@@ -9,12 +10,21 @@ import { Component } from '@angular/core';
 })
 export class ContentTypeFieldsTitleComponent implements ICellRendererAngularComp {
   isTitle: boolean;
+  field: Field;
 
-  agInit(params: ICellRendererParams) {
+  private params: ContentTypeFieldsTitleParams;
+
+  agInit(params: ContentTypeFieldsTitleParams) {
+    this.params = params;
     this.isTitle = params.value;
+    this.field = params.data;
   }
 
   refresh(params?: any): boolean {
     return true;
+  }
+
+  setTitle(): void {
+    this.params.onSetTitle(this.field);
   }
 }

@@ -9,8 +9,9 @@ import { ContentItemsActionsParams } from './content-items-actions.models';
   styleUrls: ['./content-items-actions.component.scss'],
 })
 export class ContentItemsActionsComponent implements ICellRendererAngularComp {
+  item: ContentItem;
+
   private params: ContentItemsActionsParams;
-  private item: ContentItem;
 
   constructor() { }
 
