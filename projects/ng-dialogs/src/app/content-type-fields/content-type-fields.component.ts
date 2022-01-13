@@ -60,12 +60,12 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
         headerName: 'Title', field: 'IsTitle', width: 42, cellClass: 'secondary-action no-padding no-outline',
         cellRenderer: 'contentTypeFieldsTitleComponent',
         cellRendererParams: {
-          onSetTitle: (field) => { this.setTitle(field); },
+          onSetTitle: (field) => this.setTitle(field),
         } as ContentTypeFieldsTitleParams,
       },
       {
         headerName: 'Name', field: 'StaticName', flex: 2, minWidth: 250, cellClass: 'primary-action highlight',
-        sortable: true, filter: 'agTextColumnFilter', onCellClicked: (params) => { this.editFieldMetadata(params.data); },
+        sortable: true, filter: 'agTextColumnFilter', onCellClicked: (params) => this.editFieldMetadata(params.data),
         cellRenderer: (params: ICellRendererParams) => this.nameCellRenderer(params),
       },
       {
@@ -73,11 +73,12 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
         filter: 'agTextColumnFilter', cellRenderer: 'contentTypeFieldsTypeComponent',
       },
       {
-        headerName: 'Input', field: 'InputType', width: 160, cellClass: 'secondary-action no-padding',
+        headerName: 'Input', field: 'InputType', width: 160,
+        cellClass: (params) => (params.data as Field).EditInfo.ReadOnly ? 'no-outline no-padding' : 'secondary-action no-padding',
         sortable: true, filter: 'agTextColumnFilter', cellRenderer: 'contentTypeFieldsInputTypeComponent',
         valueGetter: (params) => this.inputTypeValueGetter(params),
         cellRendererParams: {
-          onChangeInputType: (field) => { this.changeInputType(field); },
+          onChangeInputType: (field) => this.changeInputType(field),
         } as ContentTypeFieldsInputTypeParams,
       },
       {
@@ -95,10 +96,10 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
       {
         width: 122, cellClass: 'secondary-action no-padding', cellRenderer: 'contentTypeFieldsActionsComponent', pinned: 'right',
         cellRendererParams: {
-          onRename: (field) => { this.rename(field); },
-          onDelete: (field) => { this.delete(field); },
-          onOpenPermissions: (field) => { this.openPermissions(field); },
-          onOpenMetadata: (field) => { this.openMetadata(field); },
+          onRename: (field) => this.rename(field),
+          onDelete: (field) => this.delete(field),
+          onOpenPermissions: (field) => this.openPermissions(field),
+          onOpenMetadata: (field) => this.openMetadata(field),
         } as ContentTypeFieldsActionsParams,
       },
     ],
