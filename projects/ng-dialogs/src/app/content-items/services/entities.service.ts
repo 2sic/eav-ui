@@ -10,7 +10,9 @@ export class EntitiesService {
   constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
 
   create<T = any>(contentType: string, entity: Record<string, any>): Observable<T> {
-    return this.http.post<T>(`app/auto/data/${contentType}`, entity);
+    return this.http.post<T>(`app/auto/data/${contentType}`, entity, {
+      params: { appId: this.context.appId, zoneId: this.context.zoneId },
+    });
   }
 
   delete(type: string, id: number, tryForce: boolean) {
