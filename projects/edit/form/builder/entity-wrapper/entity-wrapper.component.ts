@@ -6,7 +6,7 @@ import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { GeneralHelpers } from '../../../shared/helpers';
 import { EavHeader } from '../../../shared/models/eav';
-import { EavService, FieldsSettingsService } from '../../../shared/services';
+import { EavService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
 import { ItemService, LanguageInstanceService } from '../../../shared/store/ngrx-data';
 import { ContentTypeTemplateVars } from './entity-wrapper.models';
 
@@ -30,10 +30,12 @@ export class EntityWrapperComponent implements OnInit {
     private fieldsSettingsService: FieldsSettingsService,
     public eavService: EavService,
     private translate: TranslateService,
+    private formsStateService: FormsStateService,
   ) { }
 
   ngOnInit() {
     this.collapse = false;
+    const readOnly$ = this.formsStateService.readOnly$;
     const currentLanguage$ = this.languageInstanceService.getCurrentLanguage$(this.eavService.eavConfig.formId);
     const defaultLanguage$ = this.languageInstanceService.getDefaultLanguage$(this.eavService.eavConfig.formId);
     const itemForTooltip$ = this.itemService.getItemFor$(this.entityGuid).pipe(
@@ -59,9 +61,10 @@ export class EntityWrapperComponent implements OnInit {
       distinctUntilChanged(GeneralHelpers.objectsEqual),
     );
 
-    this.templateVars$ = combineLatest([currentLanguage$, defaultLanguage$, itemForTooltip$, header$, settings$]).pipe(
-      map(([currentLanguage, defaultLanguage, itemForTooltip, header, settings]) => {
+    this.templateVars$ = combineLatest([readOnly$, currentLanguage$, defaultLanguage$, itemForTooltip$, header$, settings$]).pipe(
+      map(([readOnly, currentLanguage, defaultLanguage, itemForTooltip, header, settings]) => {
         const templateVars: ContentTypeTemplateVars = {
+          readOnly,
           currentLanguage,
           defaultLanguage,
           header,

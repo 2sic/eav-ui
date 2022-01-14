@@ -1,23 +1,30 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, combineLatest, Subscription } from 'rxjs';
 import { EavService } from '.';
+import { ItemService } from '../store/ngrx-data';
 
 @Injectable()
 export class FormsStateService implements OnDestroy {
+  readOnly$: BehaviorSubject<boolean>;
   formsValid$: BehaviorSubject<boolean>;
   formsDirty$: BehaviorSubject<boolean>;
 
   private formsValid: Record<string, boolean>;
   private formsDirty: Record<string, boolean>;
+  private subscription: Subscription;
 
-  constructor(private eavService: EavService) { }
+  constructor(private eavService: EavService, private itemService: ItemService) { }
 
   ngOnDestroy() {
+    this.readOnly$?.complete();
     this.formsValid$?.complete();
     this.formsDirty$?.complete();
+    this.subscription?.unsubscribe();
   }
 
   init() {
+    this.subscription = new Subscription();
+    this.readOnly$ = new BehaviorSubject(true);
     this.formsValid$ = new BehaviorSubject(false);
     this.formsDirty$ = new BehaviorSubject(false);
     this.formsValid = {};
@@ -26,6 +33,17 @@ export class FormsStateService implements OnDestroy {
       this.formsValid[entityGuid] = false;
       this.formsDirty[entityGuid] = false;
     }
+
+    this.subscription.add(
+      combineLatest(
+        this.eavService.eavConfig.itemGuids.map(entityGuid => this.itemService.getItemHeader$(entityGuid)),
+      ).subscribe(itemHeaders => {
+        const readOnly = itemHeaders.some(itemHeader => itemHeader?.EditInfo?.ReadOnly ?? false);
+        if (readOnly !== this.readOnly$.value) {
+          this.readOnly$.next(readOnly);
+        }
+      })
+    );
   }
 
   getFormValid(entityGuid: string) {

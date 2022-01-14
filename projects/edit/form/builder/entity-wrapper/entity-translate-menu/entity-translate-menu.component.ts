@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { EavService, FieldsTranslateService } from '../../../../shared/services';
+import { EavService, FieldsTranslateService, FormsStateService } from '../../../../shared/services';
 import { ItemService, LanguageInstanceService } from '../../../../shared/store/ngrx-data';
 import { EntityTranslateMenuTemplateVars } from './entity-translate-menu.models';
 
@@ -20,17 +20,20 @@ export class EntityTranslateMenuComponent implements OnInit {
     private itemService: ItemService,
     private eavService: EavService,
     private fieldsTranslateService: FieldsTranslateService,
+    private formsStateService: FormsStateService,
   ) { }
 
   ngOnInit() {
+    const readOnly$ = this.formsStateService.readOnly$;
     const slotIsEmpty$ = this.itemService.getItemHeader$(this.entityGuid).pipe(
       map(header => !header.Group?.SlotCanBeEmpty ? false : header.Group.SlotIsEmpty),
     );
     const currentLanguage$ = this.languageInstanceService.getCurrentLanguage$(this.eavService.eavConfig.formId);
     const defaultLanguage$ = this.languageInstanceService.getDefaultLanguage$(this.eavService.eavConfig.formId);
-    this.templateVars$ = combineLatest([slotIsEmpty$, currentLanguage$, defaultLanguage$]).pipe(
-      map(([slotIsEmpty, currentLanguage, defaultLanguage]) => {
+    this.templateVars$ = combineLatest([readOnly$, slotIsEmpty$, currentLanguage$, defaultLanguage$]).pipe(
+      map(([readOnly, slotIsEmpty, currentLanguage, defaultLanguage]) => {
         const templateVars: EntityTranslateMenuTemplateVars = {
+          readOnly,
           slotIsEmpty,
           currentLanguage,
           defaultLanguage,

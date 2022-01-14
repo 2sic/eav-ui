@@ -93,7 +93,9 @@
     "Buttons": {
       "NotSave": "Änderungen verwerfen",
       "Save": "Speichern"
-    }
+    },
+    "CopyHint": "Dies ist eine Kopie und wird als neues Element gespeichert",
+    "ReadOnlyHint": "Form is read only"
   },
   "Data": {
     "Delete.Question": "'{{title}}' ({{id}}) löschen?"
@@ -101,8 +103,7 @@
   "ItemCard": {
     "DefaultTitle": "Element bearbeiten",
     "SlotUsedTrue": "Dieses Element kann bearbeitet werden. Klicke um die Bearbeitung zu sperren - eingegebene Werte werden dann mit den Standardwerten ersetzt.",
-    "SlotUsedFalse": "Dieses Element kann nicht bearbeitet werden und zeigt die Standardwerte an. Klicke um das Element freizuschalten.",
-    "CopyHint": "Dies ist eine Kopie und wird als neues Element gespeichert"
+    "SlotUsedFalse": "Dieses Element kann nicht bearbeitet werden und zeigt die Standardwerte an. Klicke um das Element freizuschalten."
   },
   "ValidationMessage": {
     "NotValid": "Ungültig",

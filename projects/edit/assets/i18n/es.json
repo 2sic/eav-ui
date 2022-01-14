@@ -93,7 +93,9 @@
     "Buttons": {
       "NotSave": "Discard changes",
       "Save": "Save"
-    }
+    },
+    "CopyHint": "This is a copy and will be saved as a new item",
+    "ReadOnlyHint": "Form is read only"
   },
   "Data": {
     "Delete.Question": "Delete '{{title}}' ({{id}})?"
@@ -101,8 +103,7 @@
   "ItemCard": {
     "DefaultTitle": "Editar elemento",
     "SlotUsedTrue": "Este elemento está abierto para edición. Pulse aquí para bloquearlo / eliminarlo y devolverlo a predeterminado.",
-    "SlotUsedFalse": "Este elemento está bloqueado y permanecerá vacío/predeterminado. Los valores se muestran a su conveniencia. Pulse aquí para desbloquearlo si es necesario.",
-    "CopyHint": "This is a copy and will be saved as a new item"
+    "SlotUsedFalse": "Este elemento está bloqueado y permanecerá vacío/predeterminado. Los valores se muestran a su conveniencia. Pulse aquí para desbloquearlo si es necesario."
   },
   "ValidationMessage": {
     "NotValid": "Not valid",

@@ -8,11 +8,15 @@
     <app-language-switcher *ngIf="data.hasLanguages" [disabled]="disabled"></app-language-switcher>
   </div>
 
-  <mat-icon *ngIf="eavService.eavConfig.isCopy" class="header__copy" [tippy]="'ItemCard.CopyHint' | translate">
+  <mat-icon *ngIf="data.readOnly" class="header__hint-icon" [tippy]="'General.ReadOnlyHint' | translate">
+    lock
+  </mat-icon>
+
+  <mat-icon *ngIf="eavService.eavConfig.isCopy" class="header__hint-icon" [tippy]="'General.CopyHint' | translate">
     file_copy
   </mat-icon>
 
-  <button mat-button class="header__publish-button" (click)="openPublishStatusDialog()"
+  <button mat-button class="header__publish-button" [disabled]="data.readOnly" (click)="openPublishStatusDialog()"
     [tippy]="'PublishStatus.' + data.publishMode + '.Tip' | translate">
     <span class="header__publish-mode">
       {{ 'PublishStatus.Label' | translate }}

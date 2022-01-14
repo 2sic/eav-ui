@@ -9,7 +9,7 @@ import { eavConstants } from '../../../../../ng-dialogs/src/app/shared/constants
 import { EditForm } from '../../../../../ng-dialogs/src/app/shared/models/edit-form.model';
 import { FeaturesConstants } from '../../../../shared/constants';
 import { FileTypeHelpers, UrlHelpers } from '../../../../shared/helpers';
-import { AdamService, EditRoutingService } from '../../../../shared/services';
+import { AdamService, EditRoutingService, FormsStateService } from '../../../../shared/services';
 import { AdamCacheService, FeatureService, LinkCacheService } from '../../../../shared/store/ngrx-data';
 import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
 import { AdamBrowserTemplateVars, AdamConfigInstance } from './adam-browser.models';
@@ -58,6 +58,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
     private zone: NgZone,
     private adamCacheService: AdamCacheService,
     private linkCacheService: LinkCacheService,
+    private formsStateService: FormsStateService,
   ) { }
 
   ngOnInit() {
@@ -153,6 +154,8 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
   }
 
   editItemMetadata(adamItem: AdamItem) {
+    if (this.formsStateService.readOnly$.value) { return; }
+
     const form: EditForm = {
       items: [
         adamItem.MetadataId === 0

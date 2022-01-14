@@ -1,7 +1,8 @@
 <ng-container *ngIf="templateVars$ | async as data">
 
   <div fxLayoutAlign="end center" *ngIf="data.currentLanguage !== data.defaultLanguage">
-    <button mat-button fxLayoutAlign="end center" [disabled]="data.slotIsEmpty" [matMenuTriggerFor]="menu">
+    <button mat-button fxLayoutAlign="end center" [disabled]="data.readOnly || data.slotIsEmpty"
+      [matMenuTriggerFor]="menu">
       <span fxLayoutAlign="end center">
         {{ 'LangMenu.Translate' | translate | uppercase }}
         &nbsp;&nbsp;

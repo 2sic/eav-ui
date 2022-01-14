@@ -1,15 +1,17 @@
 import { EavEntity, EavFor, EavGroupAssignment } from '.';
+import { EditInfo } from '../../../../ng-dialogs/src/app/shared/models/edit-info';
 
 export interface EavHeader {
-  Add: boolean;
+  Add: boolean | null;
   ContentTypeName: string;
-  DuplicateEntity: number;
+  DuplicateEntity: number | null;
+  EditInfo: EditInfo | null;
   EntityId: number;
-  For: EavFor;
-  Group: EavGroupAssignment;
+  For: EavFor | null;
+  Group: EavGroupAssignment | null;
   Guid: string;
-  Index: number;
+  Index: number | null;
   Metadata?: EavEntity[];
-  Prefill: Record<string, any>;
+  Prefill: Record<string, any> | null;
   Title?: string;
 }

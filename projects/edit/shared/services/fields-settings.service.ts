@@ -12,6 +12,7 @@ import { FieldsSettingsHelpers, FormulaHelpers, GeneralHelpers, InputFieldHelper
 import { ContentTypeSettings, FieldsProps, FormulaCacheItem, FormulaFunctionDefault, FormulaFunctionV1, FormulaTarget, FormulaTargets, FormulaVersions, FormValues, LogSeverities, RunFormulasResult, SettingsFormulaPrefix, TranslationState } from '../models';
 import { EavHeader } from '../models/eav';
 import { ContentTypeService, GlobalConfigService, InputTypeService, ItemService, LanguageInstanceService, LanguageService } from '../store/ngrx-data';
+import { FormsStateService } from './forms-state.service';
 import { FormulaDesignerService } from './formula-designer.service';
 
 @Injectable()
@@ -36,6 +37,7 @@ export class FieldsSettingsService implements OnDestroy {
     private translate: TranslateService,
     private globalConfigService: GlobalConfigService,
     private editInitializerService: EditInitializerService,
+    private formsStateService: FormsStateService,
   ) { }
 
   ngOnDestroy(): void {
@@ -78,14 +80,15 @@ export class FieldsSettingsService implements OnDestroy {
 
     const itemAttributes$ = this.itemService.getItemAttributes$(entityGuid);
     const inputTypes$ = this.inputTypeService.getInputTypes$();
+    const readOnly$ = this.formsStateService.readOnly$;
     this.subscription.add(
       combineLatest([
         combineLatest([contentType$, currentLanguage$, defaultLanguage$, itemAttributes$, itemHeader$, inputTypes$]),
-        combineLatest([this.forceSettings$]),
+        combineLatest([readOnly$, this.forceSettings$]),
       ]).pipe(
         map(([
           [contentType, currentLanguage, defaultLanguage, itemAttributes, itemHeader, inputTypes],
-          [forceSettings],
+          [readOnly, forceSettings],
         ]) => {
           const formValues: FormValues = {};
           for (const [fieldName, fieldValues] of Object.entries(itemAttributes)) {
@@ -123,6 +126,7 @@ export class FieldsSettingsService implements OnDestroy {
               attributeValues, calculated.DisableTranslation, currentLanguage, defaultLanguage,
             );
             calculated.Disabled = disabledBecauseTranslations || calculated.Disabled;
+            calculated.Disabled = readOnly || calculated.Disabled;
             // update settings with respective FieldLogics
             const logic = FieldLogicManager.singleton().get(attribute.InputType);
             const fixed = logic?.update(calculated, value) ?? calculated;

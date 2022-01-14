@@ -157,6 +157,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
           Add: null,
           ContentTypeName: oldFormulaItem.Type.Name,
           DuplicateEntity: null,
+          EditInfo: null,
           EntityId: oldFormulaItem.Id,
           For: null,
           Group: null,

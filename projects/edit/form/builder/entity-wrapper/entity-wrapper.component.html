@@ -13,17 +13,17 @@
     </div>
 
     <mat-slide-toggle class="empty-slot-toggle" *ngIf="data.slotCanBeEmpty" (change)="toggleSlotIsEmpty(data.header)"
-      [checked]="!data.slotIsEmpty" [disabled]="data.currentLanguage !== data.defaultLanguage"
+      [checked]="!data.slotIsEmpty" [disabled]="data.readOnly || (data.currentLanguage !== data.defaultLanguage)"
       [tippy]="(!data.slotIsEmpty ? 'ItemCard.SlotUsedTrue' : 'ItemCard.SlotUsedFalse') | translate"
-      [tippyDisabled]="data.currentLanguage !== data.defaultLanguage">
+      [tippyDisabled]="data.readOnly || (data.currentLanguage !== data.defaultLanguage)">
     </mat-slide-toggle>
 
-    <div class="metadata-icon-box" [tippy]="data.itemForTooltip" *ngIf="data.itemForTooltip">
+    <div class="icon-box" [tippy]="data.itemForTooltip" *ngIf="data.itemForTooltip">
       <mat-icon>local_offer</mat-icon>
     </div>
 
-    <button mat-icon-button type="button" [tippy]="'Form.Buttons.History.Tip' | translate"
-      *ngIf="eavService.eavConfig.enableHistory" (click)="openHistory()">
+    <button type="button" mat-icon-button [tippy]="'Form.Buttons.History.Tip' | translate"
+      *ngIf="eavService.eavConfig.enableHistory" [disabled]="data.readOnly" (click)="openHistory()">
       <mat-icon>history</mat-icon>
     </button>
 

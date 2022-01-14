@@ -77,6 +77,7 @@ export class EditDialogMainComponent implements OnInit, AfterViewInit, OnDestroy
     const reduceSaveButton$ = of(true).pipe(delay(5000), startWith(false));
     const items$ = this.itemService.getItems$(this.eavService.eavConfig.itemGuids);
     const hideHeader$ = this.languageInstanceService.getHideHeader$(this.eavService.eavConfig.formId);
+    const readOnly$ = this.formsStateService.readOnly$;
     const formsValid$ = this.formsStateService.formsValid$;
     const debugEnabled$ = this.globalConfigService.getDebugEnabled$().pipe(
       tap(debugEnabled => {
@@ -87,11 +88,11 @@ export class EditDialogMainComponent implements OnInit, AfterViewInit, OnDestroy
     );
     this.templateVars$ = combineLatest([
       combineLatest([items$, formsValid$, delayForm$, this.viewInitiated$, reduceSaveButton$]),
-      combineLatest([debugEnabled$, this.debugInfoIsOpen$, hideHeader$]),
+      combineLatest([debugEnabled$, this.debugInfoIsOpen$, hideHeader$, readOnly$]),
     ]).pipe(
       map(([
         [items, formsValid, delayForm, viewInitiated, reduceSaveButton],
-        [debugEnabled, debugInfoIsOpen, hideHeader],
+        [debugEnabled, debugInfoIsOpen, hideHeader, readOnly],
       ]) => {
         const templateVars: EditDialogMainTemplateVars = {
           items,
@@ -102,6 +103,7 @@ export class EditDialogMainComponent implements OnInit, AfterViewInit, OnDestroy
           debugEnabled,
           debugInfoIsOpen,
           hideHeader,
+          readOnly,
         };
         return templateVars;
       }),
@@ -142,7 +144,7 @@ export class EditDialogMainComponent implements OnInit, AfterViewInit, OnDestroy
   closeDialog(forceClose?: boolean) {
     if (forceClose) {
       this.dialogRef.close(this.eavService.eavConfig.createMode ? this.saveResult : undefined);
-    } else if (this.formsStateService.formsDirty$.value) {
+    } else if (!this.formsStateService.readOnly$.value && this.formsStateService.formsDirty$.value) {
       this.snackBarYouHaveUnsavedChanges();
     } else {
       this.dialogRef.close(this.eavService.eavConfig.createMode ? this.saveResult : undefined);
@@ -232,7 +234,7 @@ export class EditDialogMainComponent implements OnInit, AfterViewInit, OnDestroy
   private dialogBackdropClickSubscribe() {
     this.subscription.add(
       fromEvent<BeforeUnloadEvent>(window, 'beforeunload').subscribe(event => {
-        if (!this.formsStateService.formsDirty$.value) { return; }
+        if (this.formsStateService.readOnly$.value || !this.formsStateService.formsDirty$.value) { return; }
         event.preventDefault();
         event.returnValue = ''; // fix for Chrome
         this.snackBarYouHaveUnsavedChanges();
@@ -252,7 +254,10 @@ export class EditDialogMainComponent implements OnInit, AfterViewInit, OnDestroy
       const CTRL_S = (navigator.platform.match('Mac') ? event.metaKey : event.ctrlKey) && event.keyCode === 83;
       if (CTRL_S) {
         event.preventDefault();
-        this.saveAll(false);
+        if (!this.formsStateService.readOnly$.value) {
+          this.saveAll(false);
+        }
+        return;
       }
     });
   }

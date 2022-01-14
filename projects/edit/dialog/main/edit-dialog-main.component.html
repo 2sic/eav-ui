@@ -28,7 +28,7 @@
             'mat-fab--compact' : data.reduceSaveButton,
             'mat-fab--extended' : !data.reduceSaveButton,
             'mat-fab--disabled' : !data.formsValid
-          }" (click)="saveAll(true)">
+          }" [disabled]="data.readOnly" (click)="saveAll(true)">
             <mat-icon>done</mat-icon>
             {{ data.reduceSaveButton ? '' : ('Form.Buttons.Save' | translate | uppercase) }}
           </button>
