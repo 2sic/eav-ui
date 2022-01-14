@@ -1,13 +1,18 @@
 <div class="actions-component">
-  <div class="like-button icon" [ngClass]="{ 'disabled': item._EditInfo.ReadOnly }"
-    [tippy]="value.published ? 'Published' : 'Not published'">
+  <div class="like-button icon" [tippy]="value.published ? 'Published' : 'Not published'">
     <mat-icon>{{ value.published ? 'visibility' : 'visibility_off' }}</mat-icon>
   </div>
 
-  <div class="like-button highlight" [ngClass]="{ 'hide-until-row-hover': metadataCount === 0 && !value.metadata }"
-    matRipple [tippy]="metadataTooltip" (click)="openMetadata()">
-    <mat-icon [matBadge]="metadataCount" matBadgeColor="accent" matBadgeSize="small"
-      [matBadgeHidden]="metadataCount === 0">
+  <div class="like-button highlight" matRipple *ngIf="!readOnly"
+    [ngClass]="{ 'hide-until-row-hover': !metadataCount && !value.metadata }" [tippy]="metadataTooltip"
+    (click)="openMetadata()">
+    <mat-icon [matBadge]="metadataCount" matBadgeColor="accent" matBadgeSize="small" [matBadgeHidden]="!metadataCount">
+      {{ value.metadata ? 'loyalty' : 'local_offer' }}
+    </mat-icon>
+  </div>
+  <div class="like-button disabled" *ngIf="readOnly && !(!metadataCount && !value.metadata)">
+    <mat-icon [matBadge]="metadataCount" matBadgeColor="accent" matBadgeSize="small" matBadgeDisabled="true"
+      [matBadgeHidden]="!metadataCount">
       {{ value.metadata ? 'loyalty' : 'local_offer' }}
     </mat-icon>
   </div>

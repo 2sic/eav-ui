@@ -249,7 +249,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     const columnDefs: ColDef[] = [
       {
         headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense',
-        cellClass: (params) => this.getCellClass(params, 'id-action no-padding no-outline'),
+        cellClass: (params) => `${(params.data as ContentItem)._EditInfo.ReadOnly ? 'disabled' : ''} id-action no-padding no-outline`,
         cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter',
         cellRendererParams: {
           tooltipGetter: (item: ContentItem) => `ID: ${item.Id}\nRepoID: ${item._RepositoryId}\nGUID: ${item.Guid}`,
@@ -263,8 +263,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
         } as ContentItemsStatusParams,
       },
       {
-        headerName: 'Item (Entity)', field: '_Title', flex: 2, minWidth: 250,
-        cellClass: (params) => this.getCellClass(params, 'primary-action highlight'),
+        headerName: 'Item (Entity)', field: '_Title', flex: 2, minWidth: 250, cellClass: 'primary-action highlight',
         sortable: true, filter: 'agTextColumnFilter', onCellClicked: this.editItem.bind(this),
       },
       {
@@ -330,12 +329,6 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
   }
 
-  /** Get the cell classes and optionally add 'disabled' if necessary */
-  private getCellClass(params: CellClassParams, defaultClasses: string) {
-    const item: ContentItem = params.data;
-    return `${defaultClasses} ${item._EditInfo.ReadOnly ? 'disabled' : ''}`;
-  }
-
   private export(item: ContentItem) {
     this.contentExportService.exportEntity(item.Id, this.contentTypeStaticName, true);
   }
@@ -386,9 +379,9 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   private valueGetterDateTime(params: ValueGetterParams) {
     const rawValue: string = params.data[params.colDef.field];
     if (!rawValue) { return null; }
-
-    // remove 'Z' and replace 'T'
-    return (params.colDef as ExtendedColDef).useTimePicker ? rawValue.substring(0, 19).replace('T', ' ') : rawValue.substring(0, 10);
+    return (params.colDef as ExtendedColDef).useTimePicker
+      ? rawValue.replace('T', ' ').replace('Z', '')
+      : rawValue.split('T')[0];
   }
 
   private valueGetterBoolean(params: ValueGetterParams) {

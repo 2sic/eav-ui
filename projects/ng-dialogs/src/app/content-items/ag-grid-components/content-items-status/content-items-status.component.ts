@@ -11,16 +11,18 @@ import { ContentItemsStatusParams } from './content-items-status.models';
 })
 export class ContentItemsStatusComponent implements ICellRendererAngularComp {
   value: PubMeta;
+  readOnly: boolean;
   metadataCount: number;
   metadataTooltip: string;
-  item: ContentItem;
 
+  private item: ContentItem;
   private params: ContentItemsStatusParams;
 
   agInit(params: ContentItemsStatusParams) {
     this.value = params.value;
     this.params = params;
     this.item = params.data;
+    this.readOnly = this.item._EditInfo.ReadOnly;
 
     this.metadataCount = this.item.Metadata?.length ?? 0;
 
