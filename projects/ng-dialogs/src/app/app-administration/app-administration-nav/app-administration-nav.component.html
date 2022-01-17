@@ -54,7 +54,8 @@
         <span>Views</span>
       </div>
       <app-views *matTabContent [enableCode]="data.dialogSettings.Context.Enable.CodeEditor"
-        [enablePermissions]="data.dialogSettings.Context.Enable.AppPermissions">
+        [enablePermissions]="data.dialogSettings.Context.Enable.AppPermissions"
+        [appIsInherited]="data.dialogSettings.Context.App.IsInherited">
       </app-views>
     </mat-tab>
 

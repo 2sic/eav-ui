@@ -1,16 +1,18 @@
 import { PermissionsCount } from '../../app-administration/models/permissions-count.model';
 
 export interface DialogContextApp {
+  /** Root for app APIs and content/query */
+  Api: string;
+  Folder: string;
   GettingStartedUrl: string;
   Id: number;
-  Identifier: unknown;
+  Identifier: string;
+  IsGlobal: boolean;
+  IsInherited: boolean;
   Name: string;
-  Folder: string;
   Permissions: PermissionsCount;
-  Url: string;
-  /** New in v12 - the root for app APIs and content/query */
-  Api: string;
   SettingsScope: AppScope;
+  Url: string;
 }
 
 export const AppScopes = {

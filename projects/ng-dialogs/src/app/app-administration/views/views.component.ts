@@ -33,6 +33,7 @@ import { calculateViewType } from './views.helpers';
 export class ViewsComponent implements OnInit, OnDestroy {
   @Input() enableCode: boolean;
   @Input() enablePermissions: boolean;
+  @Input() appIsInherited: boolean;
 
   views$ = new BehaviorSubject<View[]>(null);
   polymorphStatus$ = new BehaviorSubject('');

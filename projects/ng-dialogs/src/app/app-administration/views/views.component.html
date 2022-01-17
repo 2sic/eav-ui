@@ -4,7 +4,8 @@
   </ag-grid-angular>
 
   <div class="grid-more-actions-box">
-    <button mat-button tippy="Configure polymorphism" (click)="editPolymorphisms()">
+    <button mat-button class="polymorph-button" tippy="Configure polymorphism" [disabled]="appIsInherited"
+      (click)="editPolymorphisms()">
       <img class="polymorph-logo" [src]="polymorphLogo">
       <span>Polymorphism {{ polymorphStatus$ | async }}</span>
     </button>
