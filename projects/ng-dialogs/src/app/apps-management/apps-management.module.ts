@@ -38,6 +38,7 @@ import { EnableLanguagesService } from './services/enable-languages.service';
 import { FeaturesConfigService } from './services/features-config.service';
 import { SxcInsightsService } from './services/sxc-insights.service';
 import { SxcInsightsComponent } from './sxc-insights/sxc-insights.component';
+import { SystemInfoComponent } from './system-info/system-info.component';
 import { SystemSettingsComponent } from './system-settings/system-settings.component';
 
 @NgModule({
@@ -58,6 +59,7 @@ import { SystemSettingsComponent } from './system-settings/system-settings.compo
     SystemSettingsComponent,
     CreateAppComponent,
     CreateInheritedAppComponent,
+    SystemInfoComponent,
   ],
   imports: [
     AppsManagementRoutingModule,

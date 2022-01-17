@@ -12,7 +12,6 @@ import { defaultGridOptions } from '../../shared/constants/default-grid-options.
 import { AppsListActionsComponent } from '../ag-grid-components/apps-list-actions/apps-list-actions.component';
 import { AppsListActionsParams } from '../ag-grid-components/apps-list-actions/apps-list-actions.models';
 import { AppsListShowComponent } from '../ag-grid-components/apps-list-show/apps-list-show.component';
-import { appNameError, appNamePattern } from '../constants/app.patterns';
 import { App } from '../models/app.model';
 import { AppsListService } from '../services/apps-list.service';
 

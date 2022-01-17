@@ -14,6 +14,14 @@
   <mat-tab-group class="mat-tab-group-max-height" dynamicHeight color="accent" (selectedTabChange)="changeTab($event)"
     [selectedIndex]="tabIndex$ | async">
     <mat-tab>
+      <div *matTabLabel class="mat-tab-label-box" tippy="System Info">
+        <mat-icon>settings_suggest</mat-icon>
+        <span>System</span>
+      </div>
+      <app-system-info *matTabContent></app-system-info>
+    </mat-tab>
+
+    <mat-tab>
       <div *matTabLabel class="mat-tab-label-box" tippy="Apps">
         <mat-icon>star_border</mat-icon>
         <span>Apps</span>

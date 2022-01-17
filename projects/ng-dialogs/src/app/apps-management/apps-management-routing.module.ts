@@ -10,6 +10,7 @@ const appsManagementRoutes: Routes = [
   {
     path: '', component: DialogEntryComponent, data: { dialog: appsManagementDialog }, children: [
       { path: '', redirectTo: 'list', pathMatch: 'full' },
+      { path: 'system', component: EmptyRouteComponent, data: { title: 'System Info' } },
       {
         path: 'list', component: EmptyRouteComponent, children: [
           {

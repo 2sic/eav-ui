@@ -1,0 +1,33 @@
+<div class="cards-box" *ngIf="templateVars$ | async as data">
+  <mat-card class="mat-elevation-z2">
+    <mat-card-header>
+      <mat-card-title>Platform</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="info-row" *ngFor="let info of data.systemInfos">
+        <div class="info-row__label">{{ info.label }}</div>
+        <div class="info-row__value">
+          <span [tippy]="info.value" (click)="copyToClipboard(info.value)">
+            {{ info.value }}
+          </span>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="mat-elevation-z2">
+    <mat-card-header>
+      <mat-card-title>Current Site</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="info-row" *ngFor="let info of data.siteInfos">
+        <div class="info-row__label">{{ info.label }}</div>
+        <div class="info-row__value">
+          <span [tippy]="info.value" (click)="copyToClipboard(info.value)">
+            {{ info.value }}
+          </span>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

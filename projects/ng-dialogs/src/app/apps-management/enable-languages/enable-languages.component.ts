@@ -64,13 +64,13 @@ export class EnableLanguagesComponent implements OnInit, OnDestroy {
   }
 
   private toggleLanguage(language: EnableLanguage) {
-    this.languagesService.save(language.Code, !language.IsEnabled).subscribe(() => {
+    this.languagesService.toggleLanguage(language.Code, !language.IsEnabled).subscribe(() => {
       this.fetchLanguages();
     });
   }
 
   private fetchLanguages() {
-    this.languagesService.getAll().subscribe(languages => {
+    this.languagesService.getLanguages().subscribe(languages => {
       this.languages$.next(languages);
     });
   }
