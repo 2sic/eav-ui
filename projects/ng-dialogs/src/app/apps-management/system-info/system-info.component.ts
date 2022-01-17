@@ -4,7 +4,7 @@ import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { copyToClipboard } from '../../shared/helpers/copy-to-clipboard.helper';
 import { SystemInfoSet } from '../models/system-info.model';
-import { ZoneService } from '../services/enable-languages.service';
+import { ZoneService } from '../services/zone.service';
 import { InfoTemplate, SystemInfoTemplateVars } from './system-info.models';
 
 @Component({

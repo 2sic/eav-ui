@@ -7,8 +7,8 @@ import { IdFieldParams } from '../../shared/components/id-field/id-field.models'
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { EnableLanguagesStatusComponent } from '../ag-grid-components/enable-languages-status/enable-languages-status.component';
 import { EnableLanguagesStatusParams } from '../ag-grid-components/enable-languages-status/enable-languages-status.models';
-import { SiteLanguage } from '../models/enable-language.model';
-import { ZoneService } from '../services/enable-languages.service';
+import { SiteLanguage } from '../models/site-language.model';
+import { ZoneService } from '../services/zone.service';
 
 @Component({
   selector: 'app-enable-languages',

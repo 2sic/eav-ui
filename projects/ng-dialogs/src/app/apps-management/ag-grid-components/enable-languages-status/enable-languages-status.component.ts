@@ -1,6 +1,6 @@
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { Component } from '@angular/core';
-import { SiteLanguage } from '../../models/enable-language.model';
+import { SiteLanguage } from '../../models/site-language.model';
 import { EnableLanguagesStatusParams } from './enable-languages-status.models';
 
 @Component({

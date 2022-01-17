@@ -1,7 +1,7 @@
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { SiteLanguage } from '../models/enable-language.model';
+import { SiteLanguage } from '../models/site-language.model';
 import { SystemInfoSet } from '../models/system-info.model';
 
 const webApiZoneRoot = 'admin/zone/';
