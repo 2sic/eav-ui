@@ -5,15 +5,15 @@ import { BooleanFilterComponent } from '../../shared/components/boolean-filter/b
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
-import { SiteLanguagesStatusComponent } from '../ag-grid-components/enable-languages-status/enable-languages-status.component';
-import { SiteLanguagesStatusParams } from '../ag-grid-components/enable-languages-status/enable-languages-status.models';
+import { SiteLanguagesStatusComponent } from '../ag-grid-components/site-languages-status/site-languages-status.component';
+import { SiteLanguagesStatusParams } from '../ag-grid-components/site-languages-status/site-languages-status.models';
 import { SiteLanguage } from '../models/site-language.model';
 import { ZoneService } from '../services/zone.service';
 
 @Component({
   selector: 'app-site-languages',
-  templateUrl: './enable-languages.component.html',
-  styleUrls: ['./enable-languages.component.scss'],
+  templateUrl: './site-languages.component.html',
+  styleUrls: ['./site-languages.component.scss'],
 })
 export class SiteLanguagesComponent implements OnInit, OnDestroy {
   languages$ = new BehaviorSubject<SiteLanguage[]>(null);
