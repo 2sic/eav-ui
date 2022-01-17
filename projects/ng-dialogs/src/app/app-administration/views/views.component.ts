@@ -33,6 +33,7 @@ import { calculateViewType } from './views.helpers';
 export class ViewsComponent implements OnInit, OnDestroy {
   @Input() enableCode: boolean;
   @Input() enablePermissions: boolean;
+  @Input() appIsGlobal: boolean;
   @Input() appIsInherited: boolean;
 
   views$ = new BehaviorSubject<View[]>(null);
@@ -179,7 +180,12 @@ export class ViewsComponent implements OnInit, OnDestroy {
     const form: EditForm = {
       items: [
         view == null
-          ? { ContentTypeName: eavConstants.contentTypes.template }
+          ? {
+            ContentTypeName: eavConstants.contentTypes.template,
+            Prefill: {
+              ...(this.appIsGlobal && { Location: 'Global' }),
+            },
+          }
           : { EntityId: view.Id }
       ],
     };
