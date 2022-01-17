@@ -1,18 +1,18 @@
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { Component } from '@angular/core';
 import { SiteLanguage } from '../../models/site-language.model';
-import { EnableLanguagesStatusParams } from './enable-languages-status.models';
+import { SiteLanguagesStatusParams } from './enable-languages-status.models';
 
 @Component({
-  selector: 'app-enable-languages-status',
+  selector: 'app-site-languages-status',
   templateUrl: './enable-languages-status.component.html',
   styleUrls: ['./enable-languages-status.component.scss'],
 })
-export class EnableLanguagesStatusComponent implements ICellRendererAngularComp {
+export class SiteLanguagesStatusComponent implements ICellRendererAngularComp {
   value: boolean;
-  private params: EnableLanguagesStatusParams;
+  private params: SiteLanguagesStatusParams;
 
-  agInit(params: EnableLanguagesStatusParams) {
+  agInit(params: SiteLanguagesStatusParams) {
     this.params = params;
     this.value = this.params.value;
   }

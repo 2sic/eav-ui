@@ -5,17 +5,17 @@ import { BooleanFilterComponent } from '../../shared/components/boolean-filter/b
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
-import { EnableLanguagesStatusComponent } from '../ag-grid-components/enable-languages-status/enable-languages-status.component';
-import { EnableLanguagesStatusParams } from '../ag-grid-components/enable-languages-status/enable-languages-status.models';
+import { SiteLanguagesStatusComponent } from '../ag-grid-components/enable-languages-status/enable-languages-status.component';
+import { SiteLanguagesStatusParams } from '../ag-grid-components/enable-languages-status/enable-languages-status.models';
 import { SiteLanguage } from '../models/site-language.model';
 import { ZoneService } from '../services/zone.service';
 
 @Component({
-  selector: 'app-enable-languages',
+  selector: 'app-site-languages',
   templateUrl: './enable-languages.component.html',
   styleUrls: ['./enable-languages.component.scss'],
 })
-export class EnableLanguagesComponent implements OnInit, OnDestroy {
+export class SiteLanguagesComponent implements OnInit, OnDestroy {
   languages$ = new BehaviorSubject<SiteLanguage[]>(null);
 
   modules = AllCommunityModules;
@@ -24,7 +24,7 @@ export class EnableLanguagesComponent implements OnInit, OnDestroy {
     frameworkComponents: {
       idFieldComponent: IdFieldComponent,
       booleanFilterComponent: BooleanFilterComponent,
-      enableLanguagesStatusComponent: EnableLanguagesStatusComponent,
+      siteLanguagesStatusComponent: SiteLanguagesStatusComponent,
     },
     columnDefs: [
       {
@@ -40,10 +40,10 @@ export class EnableLanguagesComponent implements OnInit, OnDestroy {
       },
       {
         headerName: 'Status', field: 'IsEnabled', width: 72, headerClass: 'dense', cellClass: 'no-padding no-outline',
-        cellRenderer: 'enableLanguagesStatusComponent', sortable: true, filter: 'booleanFilterComponent',
+        cellRenderer: 'siteLanguagesStatusComponent', sortable: true, filter: 'booleanFilterComponent',
         cellRendererParams: {
           onEnabledToggle: this.toggleLanguage.bind(this),
-        } as EnableLanguagesStatusParams,
+        } as SiteLanguagesStatusParams,
       },
     ],
   };
