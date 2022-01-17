@@ -16,6 +16,7 @@ import { IdFieldComponent } from './components/id-field/id-field.component';
 import { ClickStopPropagationDirective } from './directives/click-stop-propagation.directive';
 import { DragAndDropDirective } from './directives/drag-and-drop.directive';
 import { MatFormFieldTextareaDirective } from './directives/mat-form-field-textarea.directive';
+import { MatInputAutofocusDirective } from './directives/mat-input-autofocus.directive';
 import { MousedownStopPropagationDirective } from './directives/mousedown-stop-propagation.directive';
 import { TippyDirective } from './directives/tippy.directive';
 import { ToggleDebugDirective } from './directives/toggle-debug.directive';
@@ -39,6 +40,7 @@ import { SafeResourceUrlPipe } from './pipes/safe-resource-url';
     MatFormFieldTextareaDirective,
     TippyDirective,
     EntityFilterComponent,
+    MatInputAutofocusDirective,
   ],
   imports: [
     RouterModule,
@@ -66,6 +68,7 @@ import { SafeResourceUrlPipe } from './pipes/safe-resource-url';
     MatFormFieldTextareaDirective,
     TippyDirective,
     EntityFilterComponent,
+    MatInputAutofocusDirective,
   ],
 })
 export class SharedComponentsModule { }

@@ -54,7 +54,7 @@
       <div class="field-container">
         <mat-form-field appearance="standard" color="accent">
           <mat-label>Name</mat-label>
-          <input matInput type="text" formControlName="name" required>
+          <input matInput type="text" formControlName="name" required appMatInputAutofocus autofocusSelectValue="true">
         </mat-form-field>
         <app-field-hint *ngIf="controls.name.touched && controls.name.errors?.required" [isError]="true">
           This field is required
