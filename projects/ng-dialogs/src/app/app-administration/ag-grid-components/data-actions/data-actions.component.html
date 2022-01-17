@@ -1,9 +1,9 @@
 <div class="actions-component">
-  <div class="like-button highlight" matRipple *ngIf="!contentType.EditInfo.ReadOnly" tippy="Description and more"
-    (click)="createOrEditMetadata()">
+  <div class="like-button highlight" matRipple *ngIf="!contentType.EditInfo.ReadOnly || contentType.Properties"
+    tippy="Description and more" (click)="createOrEditMetadata()">
     <mat-icon>edit</mat-icon>
   </div>
-  <div class="like-button disabled" *ngIf="contentType.EditInfo.ReadOnly">
+  <div class="like-button disabled" *ngIf="contentType.EditInfo.ReadOnly && !contentType.Properties">
     <mat-icon>edit</mat-icon>
   </div>
 
