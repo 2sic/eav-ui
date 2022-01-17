@@ -50,7 +50,8 @@ export class ViewsComponent implements OnInit, OnDestroy {
     },
     columnDefs: [
       {
-        headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
+        headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense',
+        cellClass: (params) => `${(params.data as View).EditInfo.ReadOnly ? 'disabled' : ''} id-action no-padding no-outline`,
         cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter',
         cellRendererParams: {
           tooltipGetter: (view: View) => `ID: ${view.Id}\nGUID: ${view.Guid}`,

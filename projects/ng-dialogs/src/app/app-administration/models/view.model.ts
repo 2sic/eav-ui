@@ -1,8 +1,10 @@
 import { MetadataItemShort } from '../../metadata';
+import { EditInfo } from '../../shared/models/edit-info';
 import { PermissionsCount } from './permissions-count.model';
 
 export interface View {
   ContentType: ViewEntity;
+  EditInfo: EditInfo;
   Guid: string;
   HasQuery: boolean;
   Id: number;
