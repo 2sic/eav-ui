@@ -1,6 +1,6 @@
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { Component } from '@angular/core';
-import { EnableLanguage } from '../../models/enable-language.model';
+import { SiteLanguage } from '../../models/enable-language.model';
 import { EnableLanguagesStatusParams } from './enable-languages-status.models';
 
 @Component({
@@ -22,7 +22,7 @@ export class EnableLanguagesStatusComponent implements ICellRendererAngularComp 
   }
 
   toggleLanguage() {
-    const language: EnableLanguage = this.params.data;
+    const language: SiteLanguage = this.params.data;
     this.params.onEnabledToggle(language);
   }
 }

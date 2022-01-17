@@ -1,17 +1,17 @@
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { EnableLanguage } from '../models/enable-language.model';
+import { SiteLanguage } from '../models/enable-language.model';
 import { SystemInfoSet } from '../models/system-info.model';
 
 const webApiZoneRoot = 'admin/zone/';
 
 @Injectable()
-export class EnableLanguagesService {
+export class ZoneService {
   constructor(private http: HttpClient, private dnnContext: DnnContext) { }
 
   getLanguages() {
-    return this.http.get<EnableLanguage[]>(this.dnnContext.$2sxc.http.apiUrl(webApiZoneRoot + 'GetLanguages'));
+    return this.http.get<SiteLanguage[]>(this.dnnContext.$2sxc.http.apiUrl(webApiZoneRoot + 'GetLanguages'));
   }
 
   toggleLanguage(code: string, enable: boolean) {

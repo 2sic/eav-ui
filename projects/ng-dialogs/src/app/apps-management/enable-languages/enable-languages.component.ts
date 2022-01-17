@@ -7,8 +7,8 @@ import { IdFieldParams } from '../../shared/components/id-field/id-field.models'
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { EnableLanguagesStatusComponent } from '../ag-grid-components/enable-languages-status/enable-languages-status.component';
 import { EnableLanguagesStatusParams } from '../ag-grid-components/enable-languages-status/enable-languages-status.models';
-import { EnableLanguage } from '../models/enable-language.model';
-import { EnableLanguagesService } from '../services/enable-languages.service';
+import { SiteLanguage } from '../models/enable-language.model';
+import { ZoneService } from '../services/enable-languages.service';
 
 @Component({
   selector: 'app-enable-languages',
@@ -16,7 +16,7 @@ import { EnableLanguagesService } from '../services/enable-languages.service';
   styleUrls: ['./enable-languages.component.scss'],
 })
 export class EnableLanguagesComponent implements OnInit, OnDestroy {
-  languages$ = new BehaviorSubject<EnableLanguage[]>(null);
+  languages$ = new BehaviorSubject<SiteLanguage[]>(null);
 
   modules = AllCommunityModules;
   gridOptions: GridOptions = {
@@ -31,7 +31,7 @@ export class EnableLanguagesComponent implements OnInit, OnDestroy {
         headerName: 'ID', field: 'Code', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
         cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter',
         cellRendererParams: {
-          tooltipGetter: (language: EnableLanguage) => `ID: ${language.Code}`,
+          tooltipGetter: (language: SiteLanguage) => `ID: ${language.Code}`,
         } as IdFieldParams,
       },
       {
@@ -48,7 +48,7 @@ export class EnableLanguagesComponent implements OnInit, OnDestroy {
     ],
   };
 
-  constructor(private languagesService: EnableLanguagesService) { }
+  constructor(private zoneService: ZoneService) { }
 
   ngOnInit() {
     this.fetchLanguages();
@@ -59,18 +59,18 @@ export class EnableLanguagesComponent implements OnInit, OnDestroy {
   }
 
   private handleNameClicked(params: CellClickedEvent) {
-    const language: EnableLanguage = params.data;
+    const language: SiteLanguage = params.data;
     this.toggleLanguage(language);
   }
 
-  private toggleLanguage(language: EnableLanguage) {
-    this.languagesService.toggleLanguage(language.Code, !language.IsEnabled).subscribe(() => {
+  private toggleLanguage(language: SiteLanguage) {
+    this.zoneService.toggleLanguage(language.Code, !language.IsEnabled).subscribe(() => {
       this.fetchLanguages();
     });
   }
 
   private fetchLanguages() {
-    this.languagesService.getLanguages().subscribe(languages => {
+    this.zoneService.getLanguages().subscribe(languages => {
       this.languages$.next(languages);
     });
   }

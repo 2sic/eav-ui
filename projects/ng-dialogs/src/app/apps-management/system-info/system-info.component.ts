@@ -4,7 +4,7 @@ import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { copyToClipboard } from '../../shared/helpers/copy-to-clipboard.helper';
 import { SystemInfoSet } from '../models/system-info.model';
-import { EnableLanguagesService } from '../services/enable-languages.service';
+import { ZoneService } from '../services/enable-languages.service';
 import { InfoTemplate, SystemInfoTemplateVars } from './system-info.models';
 
 @Component({
@@ -17,7 +17,7 @@ export class SystemInfoComponent implements OnInit, OnDestroy {
 
   private systemInfoSet$: BehaviorSubject<SystemInfoSet | undefined>;
 
-  constructor(private zoneService: EnableLanguagesService, private snackBar: MatSnackBar) { }
+  constructor(private zoneService: ZoneService, private snackBar: MatSnackBar) { }
 
   ngOnInit(): void {
     this.systemInfoSet$ = new BehaviorSubject<SystemInfoSet>(undefined);

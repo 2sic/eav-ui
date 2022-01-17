@@ -34,7 +34,7 @@ import { CreateInheritedAppComponent } from './create-inherited-app/create-inher
 import { EnableLanguagesComponent } from './enable-languages/enable-languages.component';
 import { ManageFeaturesComponent } from './manage-features/manage-features.component';
 import { AppsListService } from './services/apps-list.service';
-import { EnableLanguagesService } from './services/enable-languages.service';
+import { ZoneService } from './services/enable-languages.service';
 import { FeaturesConfigService } from './services/features-config.service';
 import { SxcInsightsService } from './services/sxc-insights.service';
 import { SxcInsightsComponent } from './sxc-insights/sxc-insights.component';
@@ -84,7 +84,7 @@ import { SystemSettingsComponent } from './system-settings/system-settings.compo
   providers: [
     Context,
     AppsListService,
-    EnableLanguagesService,
+    ZoneService,
     FeaturesConfigService,
     SxcInsightsService,
     DialogService,
