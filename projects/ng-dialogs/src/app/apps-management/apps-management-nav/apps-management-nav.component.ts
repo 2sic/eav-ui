@@ -17,6 +17,7 @@ export class AppsManagementNavComponent implements OnInit {
   tabIndex$ = this.router.events.pipe(
     filter(event => event instanceof NavigationEnd),
     map(() => this.tabs.indexOf(this.route.snapshot.firstChild.url[0].path)),
+    filter(tabIndex => tabIndex >= 0),
     startWith(this.tabs.indexOf(this.route.snapshot.firstChild.url[0].path)),
   );
 

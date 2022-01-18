@@ -32,7 +32,8 @@ export class AppAdministrationNavComponent implements OnInit, OnDestroy {
       if (tabs == null) { return; }
       const tabIndex = tabs.indexOf(path);
       return tabIndex;
-    })
+    }),
+    filter(tabIndex => tabIndex >= 0),
   );
   templateVars$ = combineLatest([this.dialogSettings$, this.tabIndex$]).pipe(
     map(([dialogSettings, tabIndex]) => ({ dialogSettings, tabIndex })),
