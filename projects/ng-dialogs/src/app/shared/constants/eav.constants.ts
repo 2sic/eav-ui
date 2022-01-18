@@ -28,6 +28,8 @@ export const eavConstants = {
     contentType: { type: 5, target: 'ContentType', label: 'Content-Type (5)', keyType: MetadataKeyTypes.String },
     /** Metadata of Zone */
     zone: { type: 6, target: 'Zone', label: 'Zone (6) - not used as of now', keyType: MetadataKeyTypes.Number },
+    /** Metadata of Language */
+    language: { type: 8, target: 'Language', label: 'Language (8) - not used as of now', keyType: MetadataKeyTypes.String },
     /** Metadata of CmsObject */
     cmsObject: { type: 10, target: 'CmsObject', label: 'Cms Object (10)', keyType: MetadataKeyTypes.String, hint: 'Usually this is "file:400" or "folder:4030"' },
   },

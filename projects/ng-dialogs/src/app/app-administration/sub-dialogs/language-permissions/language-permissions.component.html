@@ -1,0 +1,24 @@
+<div mat-dialog-title>
+  <div class="dialog-title-box">
+    <div>Language permissions</div>
+    <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+</div>
+
+<router-outlet></router-outlet>
+
+<p class="dialog-description"></p>
+
+<div class="dialog-component-content fancy-scrollbar-light" *ngIf="languages$ | async as languages">
+  <div class="language-row" *ngFor="let language of languages">
+    <div class="language-row__code">{{ language.Code }}</div>
+    <div class="language-row__culture">{{ language.Culture }}</div>
+    <div class="language-row__action">
+      <button mat-icon-button tippy="Permissions" (click)="openPermissions(language)">
+        <mat-icon>person</mat-icon>
+      </button>
+    </div>
+  </div>
+</div>

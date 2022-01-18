@@ -334,6 +334,10 @@
           </ng-container>
         </span>
       </button>
+      <button mat-button *ngIf="debugEnabled$ | async" (click)="openLanguagePermissions()">
+        <mat-icon>person</mat-icon>
+        <span>Language Permissions</span>
+      </button>
     </mat-card-actions>
   </mat-card>
 </div>

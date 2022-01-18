@@ -1,0 +1,15 @@
+.language-row {
+  display: flex;
+
+  &__code {
+    flex: 1;
+  }
+
+  &__culture {
+    flex: 2;
+  }
+
+  &__action {
+    flex: 1;
+  }
+}

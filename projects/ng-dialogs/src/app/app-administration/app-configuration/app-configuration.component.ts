@@ -4,6 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { forkJoin, of, Subscription } from 'rxjs';
 import { filter, map, pairwise, startWith } from 'rxjs/operators';
+import { GlobalConfigService } from '../../../../../edit/shared/store/ngrx-data';
 import { ContentItemsService } from '../../content-items/services/content-items.service';
 import { ContentTypesFieldsService } from '../../content-type-fields/services/content-types-fields.service';
 import { GoToMetadata } from '../../metadata';
@@ -45,6 +46,7 @@ export class AppConfigurationComponent implements OnInit, OnChanges, OnDestroy {
   customResourcesFieldsCount: number;
   appConfigurationsCount: number;
   appMetadataCount: number;
+  debugEnabled$ = this.globalConfigService.getDebugEnabled$();
 
   private subscription: Subscription;
 
@@ -61,6 +63,7 @@ export class AppConfigurationComponent implements OnInit, OnChanges, OnDestroy {
     private contentTypesFieldsService: ContentTypesFieldsService,
     private metadataService: MetadataService,
     private contentTypesService: ContentTypesService,
+    private globalConfigService: GlobalConfigService,
   ) { }
 
   ngOnInit() {
@@ -164,6 +167,10 @@ export class AppConfigurationComponent implements OnInit, OnChanges, OnDestroy {
 
   openPermissions() {
     this.router.navigate([GoToPermissions.getUrlApp(this.context.appId)], { relativeTo: this.route.firstChild });
+  }
+
+  openLanguagePermissions() {
+    this.router.navigate(['language-permissions'], { relativeTo: this.route.firstChild });
   }
 
   exportApp() {

@@ -30,4 +30,8 @@ export class GoToPermissions {
     return this.getUrl(eavConstants.metadata.entity.type, eavConstants.metadata.entity.keyType, guid);
   }
 
+  static getUrlLanguage(cultureCode: string): string {
+    return this.getUrl(eavConstants.metadata.language.type, eavConstants.metadata.language.keyType, cultureCode.toLocaleLowerCase());
+  }
+
 }

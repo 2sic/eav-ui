@@ -16,6 +16,7 @@ import { importAppPartsDialog } from './sub-dialogs/import-app-parts/import-app-
 import { importContentTypeDialog } from './sub-dialogs/import-content-type/import-content-type-dialog.config';
 import { importQueryDialog } from './sub-dialogs/import-query/import-query-dialog.config';
 import { importViewDialog } from './sub-dialogs/import-view/import-view-dialog.config';
+import { languagePermissionsDialog } from './sub-dialogs/language-permissions/language-permissions-dialog.config';
 import { viewsUsageDialog } from './sub-dialogs/views-usage/views-usage-dialog.config';
 
 const appAdministrationRoutes: Routes = [
@@ -134,6 +135,11 @@ const appAdministrationRoutes: Routes = [
             path: 'fields/:contentTypeStaticName',
             loadChildren: () => import('../content-type-fields/content-type-fields.module').then(m => m.ContentTypeFieldsModule),
             data: { title: 'Edit Fields of App Settings & Resources' },
+          },
+          {
+            path: 'language-permissions', component: DialogEntryComponent, data: { dialog: languagePermissionsDialog, title: 'Language Permissions' }, children: [
+              { ...GoToPermissions.route, data: { title: 'Language Permissions' } },
+            ],
           },
           { ...GoToPermissions.route, data: { title: 'App Permissions' } },
           { path: 'export', component: DialogEntryComponent, data: { dialog: exportAppDialog, title: 'Export App' } },

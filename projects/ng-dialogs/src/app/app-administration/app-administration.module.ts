@@ -17,6 +17,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
+import { ZoneService } from '../apps-management/services/zone.service';
 import { ContentExportService } from '../content-export/services/content-export.service';
 import { ContentItemsService } from '../content-items/services/content-items.service';
 import { ContentTypesFieldsService } from '../content-type-fields/services/content-types-fields.service';
@@ -62,6 +63,7 @@ import { ImportAppPartsComponent } from './sub-dialogs/import-app-parts/import-a
 import { ImportContentTypeComponent } from './sub-dialogs/import-content-type/import-content-type.component';
 import { ImportQueryComponent } from './sub-dialogs/import-query/import-query.component';
 import { ImportViewComponent } from './sub-dialogs/import-view/import-view.component';
+import { LanguagePermissionsComponent } from './sub-dialogs/language-permissions/language-permissions.component';
 import { ViewsUsageComponent } from './sub-dialogs/views-usage/views-usage.component';
 import { ViewsComponent } from './views/views.component';
 import { WebApiComponent } from './web-api/web-api.component';
@@ -98,6 +100,7 @@ import { WebApiComponent } from './web-api/web-api.component';
     AnalyzeSettingsValueComponent,
     AnalyzeSettingsTotalResultsComponent,
     SettingsItemDetailsComponent,
+    LanguagePermissionsComponent,
   ],
   imports: [
     AppAdministrationRoutingModule,
@@ -138,6 +141,7 @@ import { WebApiComponent } from './web-api/web-api.component';
     AnalyzeSettingsService,
     ContentTypesFieldsService,
     MetadataService,
+    ZoneService,
   ],
 })
 export class AppAdministrationModule { }
