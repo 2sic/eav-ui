@@ -19,6 +19,10 @@ const appsManagementRoutes: Routes = [
           },
           { path: 'create', component: DialogEntryComponent, data: { dialog: createAppDialog } },
           { path: 'create-inherited', component: DialogEntryComponent, data: { dialog: createInheritedAppDialog } },
+          {
+            path: ':appId',
+            loadChildren: () => import('../app-administration/app-administration.module').then(m => m.AppAdministrationModule)
+          },
         ],
         data: { title: 'Apps in this Zone' },
       },
@@ -26,10 +30,6 @@ const appsManagementRoutes: Routes = [
       { path: 'languages', component: EmptyRouteComponent, data: { title: 'Zone Languages' } },
       { path: 'features', component: EmptyRouteComponent, data: { title: 'Zone Features' } },
       { path: 'sxc-insights', component: EmptyRouteComponent, data: { title: 'Debug Insights' } },
-      {
-        path: ':appId',
-        loadChildren: () => import('../app-administration/app-administration.module').then(m => m.AppAdministrationModule)
-      },
     ]
   },
 ];

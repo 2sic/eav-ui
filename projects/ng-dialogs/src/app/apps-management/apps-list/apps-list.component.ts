@@ -164,7 +164,7 @@ export class AppsListComponent implements OnInit, OnDestroy {
 
   private openApp(params: CellClickedEvent) {
     const appId = (params.data as App).Id;
-    this.router.navigate([appId.toString()], { relativeTo: this.route.parent });
+    this.router.navigate([appId.toString()], { relativeTo: this.route.firstChild });
   }
 
   private refreshOnChildClosed() {
