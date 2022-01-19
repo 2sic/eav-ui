@@ -80,6 +80,10 @@ export class ManageFeaturesComponent implements OnInit, OnDestroy {
         sortable: true, filter: 'agNumberColumnFilter',
         valueGetter: (params) => (params.data as Feature).Security.Impact,
       },
+      {
+        field: 'License', flex: 1, minWidth: 150, cellClass: 'no-outline', sortable: true, filter: 'agTextColumnFilter',
+        valueGetter: (params) => (params.data as Feature).License,
+      },
     ],
   };
 

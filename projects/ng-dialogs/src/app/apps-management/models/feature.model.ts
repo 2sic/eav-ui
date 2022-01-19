@@ -9,6 +9,7 @@ export interface Feature {
   Expires: string;
   /** Global ID of this feature */
   Guid: string;
+  License: string;
   /** Nice name of this feature */
   Name: string;
   /** Name identifier for this feature */
