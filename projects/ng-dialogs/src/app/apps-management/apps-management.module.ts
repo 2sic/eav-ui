@@ -20,6 +20,7 @@ import { DialogService } from '../shared/services/dialog.service';
 import { SharedComponentsModule } from '../shared/shared-components.module';
 import { AppsListActionsComponent } from './ag-grid-components/apps-list-actions/apps-list-actions.component';
 import { AppsListShowComponent } from './ag-grid-components/apps-list-show/apps-list-show.component';
+import { FeaturesListEnabledReasonComponent } from './ag-grid-components/features-list-enabled-reason/features-list-enabled-reason.component';
 import { FeaturesListEnabledComponent } from './ag-grid-components/features-list-enabled/features-list-enabled.component';
 import { FeaturesListNameComponent } from './ag-grid-components/features-list-name/features-list-name.component';
 import { FeaturesListPublicComponent } from './ag-grid-components/features-list-public/features-list-public.component';
@@ -60,6 +61,7 @@ import { SystemSettingsComponent } from './system-settings/system-settings.compo
     CreateAppComponent,
     CreateInheritedAppComponent,
     SystemInfoComponent,
+    FeaturesListEnabledReasonComponent,
   ],
   imports: [
     AppsManagementRoutingModule,

@@ -3,6 +3,8 @@ export interface Feature {
   Description: string;
   /** Determines if the feature is enabled */
   Enabled: boolean;
+  EnabledReason: string;
+  EnabledReasonDetailed: string;
   /** Expiry date of this feature */
   Expires: string;
   /** Global ID of this feature */

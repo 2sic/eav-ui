@@ -6,6 +6,7 @@ import { BooleanFilterComponent } from '../../shared/components/boolean-filter/b
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
+import { FeaturesListEnabledReasonComponent } from '../ag-grid-components/features-list-enabled-reason/features-list-enabled-reason.component';
 import { FeaturesListEnabledComponent } from '../ag-grid-components/features-list-enabled/features-list-enabled.component';
 import { FeaturesListNameComponent } from '../ag-grid-components/features-list-name/features-list-name.component';
 import { FeaturesListPublicComponent } from '../ag-grid-components/features-list-public/features-list-public.component';
@@ -31,6 +32,7 @@ export class ManageFeaturesComponent implements OnInit, OnDestroy {
       featuresListUiComponent: FeaturesListUiComponent,
       featuresListPublicComponent: FeaturesListPublicComponent,
       featuresListNameComponent: FeaturesListNameComponent,
+      featuresListEnabledReasonComponent: FeaturesListEnabledReasonComponent,
       featuresListSecurityComponent: FeaturesListSecurityComponent,
     },
     columnDefs: [
@@ -58,10 +60,15 @@ export class ManageFeaturesComponent implements OnInit, OnDestroy {
         valueGetter: (params) => (params.data as Feature).Public,
       },
       {
-        field: 'Name', flex: 2, minWidth: 250, cellClass: 'primary-action highlight', sortable: true,
+        field: 'Name', flex: 3, minWidth: 250, cellClass: 'primary-action highlight', sortable: true,
         filter: 'agTextColumnFilter', cellRenderer: 'featuresListNameComponent',
         onCellClicked: (params) => this.openFeature(params.data),
         valueGetter: (params) => (params.data as Feature).Name,
+      },
+      {
+        field: 'EnabledReason', headerName: 'Reason', flex: 1, minWidth: 150, cellClass: 'no-outline', sortable: true,
+        filter: 'agTextColumnFilter', cellRenderer: 'featuresListEnabledReasonComponent',
+        valueGetter: (params) => (params.data as Feature).EnabledReason,
       },
       {
         field: 'Expires', flex: 1, minWidth: 200, cellClass: 'no-outline',
