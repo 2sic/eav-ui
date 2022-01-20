@@ -1,4 +1,3 @@
-var webpack = require('webpack');
 const pjson = require('../package.json');
 
 exports.default = {
@@ -8,7 +7,7 @@ exports.default = {
     const isProd = nodeEnv === 'production';
     if (!isProd) { return cfg; }
 
-    const sourceMapsDevToolPlugin = cfg.plugins.find(plugin => plugin instanceof webpack.SourceMapDevToolPlugin);
+    const sourceMapsDevToolPlugin = cfg.plugins.find(plugin => plugin.hasOwnProperty('sourceMapFilename'));
     sourceMapsDevToolPlugin.options.publicPath = 'https://sources.2sxc.org/' + pjson.version + '/ng-edit/';
 
     return cfg;
