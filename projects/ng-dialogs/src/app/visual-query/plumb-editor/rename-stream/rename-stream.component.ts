@@ -72,7 +72,7 @@ export class RenameStreamComponent implements OnInit, OnDestroy {
 
     this.subscription.add(
       this.controls.scope.valueChanges.pipe(
-        startWith<string, string>(this.controls.scope.value),
+        startWith<string>(this.controls.scope.value),
         distinctUntilChanged(),
       ).subscribe(scope => {
         this.labelOptions = Object.values(this.visualQueryService.pipelineResult.Sources)

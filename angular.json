@@ -23,7 +23,6 @@
             "polyfills": "projects/ng-dialogs/src/polyfills.ts",
             "tsConfig": "projects/ng-dialogs/tsconfig.app.json",
             "inlineStyleLanguage": "css",
-            "showCircularDependencies": false,
             "assets": [
               "projects/ng-dialogs/src/assets"
             ],
@@ -103,18 +102,6 @@
               "projects/ng-dialogs/src/styles.scss"
             ],
             "scripts": []
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "projects/ng-dialogs/tsconfig.app.json",
-              "projects/ng-dialogs/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
           }
         }
       }

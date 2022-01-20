@@ -2,10 +2,11 @@ import { Component, HostBinding, Inject, OnDestroy, OnInit } from '@angular/core
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { asyncScheduler, BehaviorSubject, combineLatest, forkJoin, Observable, of, Subscription, timer } from 'rxjs';
-import { delay, distinctUntilChanged, map, startWith, switchMap, tap, throttleTime } from 'rxjs/operators';
+import { distinctUntilChanged, map, startWith, switchMap, tap, throttleTime } from 'rxjs/operators';
 import { CreateFileDialogData, CreateFileDialogResult, CreateFileFormControls, CreateFileFormValues, CreateFileTemplateVars } from '.';
 import { SanitizeHelper } from '../../../../edit/shared/helpers';
 import { PredefinedTemplate } from '../code-editor/models/predefined-template.model';
+import { Preview } from '../code-editor/models/preview.models';
 import { SourceService } from '../code-editor/services/source.service';
 
 @Component({
@@ -86,7 +87,7 @@ export class CreateFileDialogComponent implements OnInit, OnDestroy {
       combineLatest([
         this.templates$,
         this.controls.templateKey.valueChanges.pipe(
-          startWith<string, string>(this.controls.templateKey.value),
+          startWith<string>(this.controls.templateKey.value),
           distinctUntilChanged(),
         ),
       ]).subscribe(([templates, templateKey]) => {
@@ -103,15 +104,15 @@ export class CreateFileDialogComponent implements OnInit, OnDestroy {
       combineLatest([
         this.templates$,
         this.controls.templateKey.valueChanges.pipe(
-          startWith<string, string>(this.controls.templateKey.value),
+          startWith<string>(this.controls.templateKey.value),
           distinctUntilChanged(),
         ),
         this.controls.name.valueChanges.pipe(
-          startWith<string, string>(this.controls.name.value),
+          startWith<string>(this.controls.name.value),
           distinctUntilChanged(),
         ),
         this.controls.folder.valueChanges.pipe(
-          startWith<string, string>(this.controls.folder.value),
+          startWith<string>(this.controls.folder.value),
           distinctUntilChanged(),
         ),
       ]).subscribe(([templates, templateKey, name, folder]) => {
@@ -160,11 +161,11 @@ export class CreateFileDialogComponent implements OnInit, OnDestroy {
     const templates$ = combineLatest([
       this.templates$,
       this.controls.platform.valueChanges.pipe(
-        startWith<string, string>(this.controls.platform.value),
+        startWith<string>(this.controls.platform.value),
         distinctUntilChanged(),
       ),
       this.controls.purpose.valueChanges.pipe(
-        startWith<string, string>(this.controls.purpose.value),
+        startWith<string>(this.controls.purpose.value),
         distinctUntilChanged(),
       ),
     ]).pipe(
@@ -187,11 +188,11 @@ export class CreateFileDialogComponent implements OnInit, OnDestroy {
     );
     const preview$ = combineLatest([
       this.controls.finalName.valueChanges.pipe(
-        startWith<string, string>(this.controls.finalName.value),
+        startWith<string>(this.controls.finalName.value),
         distinctUntilChanged(),
       ),
       this.controls.templateKey.valueChanges.pipe(
-        startWith<string, string>(this.controls.templateKey.value),
+        startWith<string>(this.controls.templateKey.value),
         distinctUntilChanged(),
       ),
     ]).pipe(
@@ -201,7 +202,7 @@ export class CreateFileDialogComponent implements OnInit, OnDestroy {
       }),
       switchMap(([finalName, templateKey]) => {
         return !finalName || !templateKey
-          ? of<undefined>(undefined)
+          ? of<Preview | undefined>(undefined)
           : forkJoin([
             this.sourceService.getPreview(finalName, templateKey),
             timer(500),
