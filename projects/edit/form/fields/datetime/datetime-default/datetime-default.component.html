@@ -15,7 +15,7 @@
       (dateChange)="updateValue($event)">
     <mat-datepicker-toggle matSuffix [for]="$any(picker)" [tippy]="'Fields.DateTime.Open' | translate">
     </mat-datepicker-toggle>
-    <ngx-mat-datetime-picker #picker></ngx-mat-datetime-picker>
+    <ngx-mat-datetime-picker #picker (opened)="pickerOpened()"></ngx-mat-datetime-picker>
     <mat-label>{{ data.label }}</mat-label>
   </mat-form-field>
 
