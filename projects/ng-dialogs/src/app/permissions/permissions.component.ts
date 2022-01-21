@@ -100,12 +100,13 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   editPermission(params: CellClickedEvent) {
     let form: EditForm;
     if (params == null) {
-      const target = Object.values(eavConstants.metadata).find(metaValue => metaValue.type === this.targetType)?.target;
+      const metadataFor = Object.values(eavConstants.metadata).find(metaValue => metaValue.type === this.targetType);
       form = {
         items: [{
           ContentTypeName: eavConstants.contentTypes.permissions,
           For: {
-            Target: target,
+            Target: metadataFor?.target ?? this.targetType.toString(),
+            TargetType: metadataFor?.type ?? this.targetType,
             ...(this.keyType === eavConstants.keyTypes.guid && { Guid: this.key }),
             ...(this.keyType === eavConstants.keyTypes.number && { Number: parseInt(this.key, 10) }),
             ...(this.keyType === eavConstants.keyTypes.string && { String: this.key }),

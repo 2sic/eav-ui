@@ -1,4 +1,4 @@
-import { AllCommunityModules, CellClassParams, CellClickedEvent, ColDef, GridApi, GridOptions, GridReadyEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
+import { AllCommunityModules, CellClickedEvent, ColDef, GridApi, GridOptions, GridReadyEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -206,17 +206,18 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
       viewContainerRef: this.viewContainerRef,
       width: '650px',
     });
-    metadataDialogRef.afterClosed().pipe(take(1)).subscribe((res: MetadataInfo) => {
-      if (res == null) { return; }
+    metadataDialogRef.afterClosed().subscribe((metadataFor: MetadataInfo) => {
+      if (metadataFor == null) { return; }
 
       const form: EditForm = {
         items: [{
           ContentTypeName: this.contentTypeStaticName,
           For: {
-            Target: res.target,
-            ...(res.keyType === eavConstants.keyTypes.guid && { Guid: res.key }),
-            ...(res.keyType === eavConstants.keyTypes.number && { Number: parseInt(res.key, 10) }),
-            ...(res.keyType === eavConstants.keyTypes.string && { String: res.key }),
+            Target: metadataFor.target ?? metadataFor.targetType.toString(),
+            TargetType: metadataFor.targetType,
+            ...(metadataFor.keyType === eavConstants.keyTypes.guid && { Guid: metadataFor.key }),
+            ...(metadataFor.keyType === eavConstants.keyTypes.number && { Number: parseInt(metadataFor.key, 10) }),
+            ...(metadataFor.keyType === eavConstants.keyTypes.string && { String: metadataFor.key }),
           },
         }],
       };
@@ -228,7 +229,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
 
   debugFilter() {
     console.warn('Current filter:', this.gridApi$.value.getFilterModel());
-    alert('Check console for filter information');
+    this.snackBar.open('Check console for filter information', undefined, { duration: 3000 });
   }
 
   private refreshOnChildClosed() {

@@ -42,7 +42,8 @@ export class EntityWrapperComponent implements OnInit {
       map(itemFor => {
         if (!itemFor) { return; }
         const tooltip = this.translate.instant('Form.Buttons.Metadata.Tip')
-          + `\nType: ${itemFor.Target}`
+          + `\nTarget: ${itemFor.Target}`
+          + `\nTargetType: ${itemFor.TargetType}`
           + (itemFor.Number ? `\nNumber: ${itemFor.Number}` : '')
           + (itemFor.String ? `\nString: ${itemFor.String}` : '')
           + (itemFor.Guid ? `\nGuid: ${itemFor.Guid}` : '')

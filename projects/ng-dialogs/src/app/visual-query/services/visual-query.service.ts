@@ -193,13 +193,18 @@ export class VisualQueryService implements OnDestroy {
       // Check if the type exists, and if yes, create new Entity
       this.contentTypesService.retrieveContentType(contentTypeName).subscribe({
         next: contentType => {
+          if (contentType == null) {
+            this.snackBar.open('DataSource doesn\'t have any configuration', undefined, { duration: 3000 });
+            return;
+          }
           const form: EditForm = {
             items: [{
               ContentTypeName: contentTypeName,
               For: {
                 Target: eavConstants.metadata.entity.target,
+                TargetType: eavConstants.metadata.entity.type,
                 Guid: key,
-              }
+              },
             }],
           };
           const formUrl = convertFormToUrl(form);
@@ -207,7 +212,8 @@ export class VisualQueryService implements OnDestroy {
           this.refreshDataSourceConfigs = true;
         },
         error: (error: HttpErrorResponse) => {
-          alert('Server reports error - this usually means that this data-source doesn\'t have any configuration');
+          const message = 'Server reports error - this usually means that this DataSource doesn\'t have any configuration';
+          this.snackBar.open(message, undefined, { duration: 3000 });
         }
       });
     });

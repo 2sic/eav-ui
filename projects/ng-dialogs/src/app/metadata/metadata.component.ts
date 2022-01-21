@@ -165,6 +165,7 @@ export class MetadataComponent implements OnInit, OnDestroy {
   private calculateItemFor(): EavFor {
     const itemFor: EavFor = {
       Target: Object.values(eavConstants.metadata).find(option => option.type === this.targetType)?.target ?? this.targetType.toString(),
+      TargetType: this.targetType,
       ...(this.keyType === eavConstants.keyTypes.guid && { Guid: this.key }),
       ...(this.keyType === eavConstants.keyTypes.number && { Number: parseInt(this.key, 10) }),
       ...(this.keyType === eavConstants.keyTypes.string && { String: this.key }),

@@ -14,6 +14,7 @@
       <ng-container *ngIf="data.itemFor">
         This item is metadata for:
         <br>Target: {{ data.itemFor.Target }}
+        <br>TargetType: {{ data.itemFor.TargetType }}
         <ng-container *ngIf="data.itemFor.Number"><br>Number: {{ data.itemFor.Number }}</ng-container>
         <ng-container *ngIf="data.itemFor.Guid"><br>Guid: {{ data.itemFor.Guid }}</ng-container>
         <ng-container *ngIf="data.itemFor.String"><br>String: {{ data.itemFor.String }}</ng-container>

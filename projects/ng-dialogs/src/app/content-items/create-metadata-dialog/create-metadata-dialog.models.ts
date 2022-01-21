@@ -5,7 +5,8 @@ import { ContentItem } from '../models/content-item.model';
 export interface MetadataInfo {
   key: string;
   keyType: MetadataKeyType;
-  target: string;
+  target?: string;
+  targetType: number;
 }
 
 export interface TargetTypeOption {

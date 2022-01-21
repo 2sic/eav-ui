@@ -1,5 +1,6 @@
 export interface EavFor {
   Target: string;
+  TargetType: number;
   Number?: number;
   String?: string;
   Guid?: string;

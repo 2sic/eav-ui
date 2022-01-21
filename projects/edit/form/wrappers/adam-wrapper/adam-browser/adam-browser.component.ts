@@ -163,6 +163,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
             ContentTypeName: adamItem._metadataContentType,
             For: {
               Target: eavConstants.metadata.cmsObject.target,
+              TargetType: eavConstants.metadata.cmsObject.type,
               String: `${adamItem.Type === 'folder' ? 'folder' : 'file'}:${adamItem.Id}`,
             }
           }

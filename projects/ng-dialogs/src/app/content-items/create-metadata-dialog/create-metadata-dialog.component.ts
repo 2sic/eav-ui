@@ -218,8 +218,8 @@ export class CreateMetadataDialogComponent implements OnInit, OnDestroy {
     const formValues: MetadataFormValues = this.form.getRawValue();
 
     const result: MetadataInfo = {
-      // if not a known target, use the number
-      target: this.targetTypeOptions.find(option => option.type === formValues.targetType)?.target ?? formValues.targetType.toString(),
+      target: this.targetTypeOptions.find(option => option.type === formValues.targetType)?.target,
+      targetType: formValues.targetType,
       keyType: formValues.keyType,
       // if keyType is guid remove curly brackets
       key: formValues.keyType === eavConstants.keyTypes.guid ? (formValues.key as string).replace(/{|}/g, '') : formValues.key.toString(),

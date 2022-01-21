@@ -244,6 +244,7 @@ export class DataComponent implements OnInit, OnDestroy {
             ContentTypeName: eavConstants.contentTypes.contentType,
             For: {
               Target: eavConstants.metadata.contentType.target,
+              TargetType: eavConstants.metadata.contentType.type,
               String: contentType.StaticName,
             },
             Prefill: { Label: contentType.Name, Description: contentType.Description },

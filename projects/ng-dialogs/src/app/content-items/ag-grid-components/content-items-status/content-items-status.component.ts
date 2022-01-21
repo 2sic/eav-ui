@@ -28,7 +28,8 @@ export class ContentItemsStatusComponent implements ICellRendererAngularComp {
 
     this.metadataTooltip = this.item.For
       ? 'This item is metadata for:'
-      + `\nType: ${this.item.For.Target}`
+      + `\nTarget: ${this.item.For.Target}`
+      + `\nTargetType: ${this.item.For.TargetType}`
       + (this.item.For.Number ? `\nNumber: ${this.item.For.Number}` : '')
       + (this.item.For.String ? `\nString: ${this.item.For.String}` : '')
       + (this.item.For.Guid ? `\nGuid: ${this.item.For.Guid}` : '')
