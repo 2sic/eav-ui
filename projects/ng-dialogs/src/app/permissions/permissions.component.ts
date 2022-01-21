@@ -65,7 +65,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   };
 
   private subscription = new Subscription();
-  private targetType = parseInt(this.route.snapshot.paramMap.get('type'), 10);
+  private targetType = parseInt(this.route.snapshot.paramMap.get('targetType'), 10);
   private keyType = this.route.snapshot.paramMap.get('keyType') as MetadataKeyType;
   private key = this.route.snapshot.paramMap.get('key');
 
@@ -100,13 +100,12 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   editPermission(params: CellClickedEvent) {
     let form: EditForm;
     if (params == null) {
-      const metadataFor = Object.values(eavConstants.metadata).find(metaValue => metaValue.type === this.targetType);
       form = {
         items: [{
           ContentTypeName: eavConstants.contentTypes.permissions,
           For: {
-            Target: metadataFor?.target ?? this.targetType.toString(),
-            TargetType: metadataFor?.type ?? this.targetType,
+            Target: Object.values(eavConstants.metadata).find(m => m.targetType === this.targetType)?.target ?? this.targetType.toString(),
+            TargetType: this.targetType,
             ...(this.keyType === eavConstants.keyTypes.guid && { Guid: this.key }),
             ...(this.keyType === eavConstants.keyTypes.number && { Number: parseInt(this.key, 10) }),
             ...(this.keyType === eavConstants.keyTypes.string && { String: this.key }),

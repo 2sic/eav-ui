@@ -206,18 +206,18 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
       viewContainerRef: this.viewContainerRef,
       width: '650px',
     });
-    metadataDialogRef.afterClosed().subscribe((metadataFor: MetadataInfo) => {
-      if (metadataFor == null) { return; }
+    metadataDialogRef.afterClosed().subscribe((itemFor: MetadataInfo) => {
+      if (itemFor == null) { return; }
 
       const form: EditForm = {
         items: [{
           ContentTypeName: this.contentTypeStaticName,
           For: {
-            Target: metadataFor.target ?? metadataFor.targetType.toString(),
-            TargetType: metadataFor.targetType,
-            ...(metadataFor.keyType === eavConstants.keyTypes.guid && { Guid: metadataFor.key }),
-            ...(metadataFor.keyType === eavConstants.keyTypes.number && { Number: parseInt(metadataFor.key, 10) }),
-            ...(metadataFor.keyType === eavConstants.keyTypes.string && { String: metadataFor.key }),
+            Target: itemFor.target ?? itemFor.targetType.toString(),
+            TargetType: itemFor.targetType,
+            ...(itemFor.keyType === eavConstants.keyTypes.guid && { Guid: itemFor.key }),
+            ...(itemFor.keyType === eavConstants.keyTypes.number && { Number: parseInt(itemFor.key, 10) }),
+            ...(itemFor.keyType === eavConstants.keyTypes.string && { String: itemFor.key }),
           },
         }],
       };

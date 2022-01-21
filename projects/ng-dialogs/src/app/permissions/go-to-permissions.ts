@@ -4,7 +4,7 @@ import { eavConstants, MetadataKeyType } from '../shared/constants/eav.constants
 export class GoToPermissions {
 
   static route: Route = {
-    path: 'permissions/:type/:keyType/:key',
+    path: 'permissions/:targetType/:keyType/:key',
     loadChildren: () => import('./permissions.module').then(m => m.PermissionsModule),
     data: { title: 'Permissions' },
   };
@@ -14,11 +14,11 @@ export class GoToPermissions {
   }
 
   static getUrlApp(appId: number): string {
-    return this.getUrl(eavConstants.metadata.app.type, eavConstants.metadata.app.keyType, appId.toString());
+    return this.getUrl(eavConstants.metadata.app.targetType, eavConstants.metadata.app.keyType, appId.toString());
   }
 
   static getUrlAttribute(id: number): string {
-    return this.getUrl(eavConstants.metadata.attribute.type, eavConstants.metadata.attribute.keyType, id.toString());
+    return this.getUrl(eavConstants.metadata.attribute.targetType, eavConstants.metadata.attribute.keyType, id.toString());
   }
 
   /** For historic reasons, it's the same as Entity */
@@ -27,11 +27,11 @@ export class GoToPermissions {
   }
 
   static getUrlEntity(guid: string): string {
-    return this.getUrl(eavConstants.metadata.entity.type, eavConstants.metadata.entity.keyType, guid);
+    return this.getUrl(eavConstants.metadata.entity.targetType, eavConstants.metadata.entity.keyType, guid);
   }
 
   static getUrlLanguage(cultureCode: string): string {
-    return this.getUrl(eavConstants.metadata.language.type, eavConstants.metadata.language.keyType, cultureCode.toLocaleLowerCase());
+    return this.getUrl(eavConstants.metadata.language.targetType, eavConstants.metadata.language.keyType, cultureCode.toLocaleLowerCase());
   }
 
 }

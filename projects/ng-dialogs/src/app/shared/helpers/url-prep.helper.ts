@@ -50,8 +50,8 @@ export function convertFormToUrl(form: EditForm) {
             keyType = 'g';
             break;
         }
-        const target = Object.values(eavConstants.metadata).find(metaValue => metaValue.type === addItem.Metadata.targetType)?.target;
-        formUrl += '&for:' + keyType + '~' + paramEncode(addItem.Metadata.key) + ':' + target;
+        const target = Object.values(eavConstants.metadata).find(m => m.targetType === addItem.Metadata.targetType)?.target;
+        formUrl += '&for:' + keyType + '~' + paramEncode(addItem.Metadata.key) + ':' + target + ':' + addItem.Metadata.targetType;
       }
 
       if (addItem.Prefill) {

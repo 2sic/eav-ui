@@ -5,7 +5,7 @@ export class GoToMetadata {
 
   static getRoutes(): Route[] {
     const defaultRoute: Route = {
-      path: 'metadata/:type/:keyType/:key',
+      path: 'metadata/:targetType/:keyType/:key',
       loadChildren: () => import('./metadata.module').then(m => m.MetadataModule),
       data: { title: 'Metadata' },
     };
@@ -40,7 +40,7 @@ export class GoToMetadata {
 
   static getUrlApp(appId: number, dialogTitle?: string): string {
     return this.getUrl(
-      eavConstants.metadata.app.type,
+      eavConstants.metadata.app.targetType,
       eavConstants.metadata.app.keyType,
       appId.toString(),
       dialogTitle,
@@ -49,7 +49,7 @@ export class GoToMetadata {
 
   static getUrlAttribute(attributeId: number, dialogTitle?: string, contentTypeStaticName?: string): string {
     return this.getUrl(
-      eavConstants.metadata.attribute.type,
+      eavConstants.metadata.attribute.targetType,
       eavConstants.metadata.attribute.keyType,
       attributeId.toString(),
       dialogTitle,
@@ -59,7 +59,7 @@ export class GoToMetadata {
 
   static getUrlContentType(staticName: string, dialogTitle?: string): string {
     return this.getUrl(
-      eavConstants.metadata.contentType.type,
+      eavConstants.metadata.contentType.targetType,
       eavConstants.metadata.contentType.keyType,
       staticName,
       dialogTitle,
@@ -68,7 +68,7 @@ export class GoToMetadata {
 
   static getUrlEntity(guid: string, dialogTitle?: string, contentTypeStaticName?: string): string {
     return this.getUrl(
-      eavConstants.metadata.entity.type,
+      eavConstants.metadata.entity.targetType,
       eavConstants.metadata.entity.keyType,
       guid,
       dialogTitle,

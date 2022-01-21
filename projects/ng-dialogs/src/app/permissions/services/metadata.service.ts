@@ -14,17 +14,16 @@ export class MetadataService {
 
   /**
    * Fetches metadata for given key in metadata content type
-   * @param typeId metadataOf something. For more info check eavConstants file
+   * @param targetType type of target metadata item is for, e.g. for Entity, or ContentType
    * @param keyType e.g. for keyType === guid, key === contentTypeStaticName
-   * @param key key of content type for which we search for permissions. Key is connected with keyType
-   * @param contentTypeName name of content type where permissions are stored.
-   * If left blank, backend returns all metadata except permissions
+   * @param key key of target metadata item is for
+   * @param contentTypeName name of content type where permissions are stored. If blank, backend returns all metadata except permissions
    */
-  getMetadata(typeId: number, keyType: MetadataKeyType, key: string | number, contentTypeName?: string): Observable<Metadata> {
+  getMetadata(targetType: number, keyType: MetadataKeyType, key: string | number, contentTypeName?: string): Observable<Metadata> {
     return this.http.get<Metadata>(this.dnnContext.$2sxc.http.apiUrl(webApiRoot), {
       params: {
         appId: this.context.appId.toString(),
-        targetType: typeId.toString(),
+        targetType: targetType.toString(),
         keyType,
         key: key.toString(),
         ...(contentTypeName && { contentType: contentTypeName }),

@@ -248,7 +248,7 @@ export class AppConfigurationComponent implements OnInit, OnChanges, OnDestroy {
         ]),
         forkJoin([
           this.contentItemsService.getAll(eavConstants.contentTypes.appConfiguration),
-          this.metadataService.getMetadata(eavConstants.metadata.app.type, eavConstants.metadata.app.keyType, this.context.appId),
+          this.metadataService.getMetadata(eavConstants.metadata.app.targetType, eavConstants.metadata.app.keyType, this.context.appId),
         ]),
       ]).subscribe(([
         [

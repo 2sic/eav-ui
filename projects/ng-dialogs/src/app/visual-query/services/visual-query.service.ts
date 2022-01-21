@@ -173,12 +173,12 @@ export class VisualQueryService implements OnDestroy {
   editDataSource(pipelineDataSource: PipelineDataSource) {
     const dataSource = this.dataSources$.value.find(ds => ds.PartAssemblyAndType === pipelineDataSource.PartAssemblyAndType);
     const contentTypeName = dataSource.ContentType;
-    const typeId = eavConstants.metadata.entity.type;
+    const targetType = eavConstants.metadata.entity.targetType;
     const keyType = eavConstants.metadata.entity.keyType;
     const key = pipelineDataSource.EntityGuid;
 
     // query for existing Entity
-    this.metadataService.getMetadata(typeId, keyType, key, contentTypeName).subscribe(metadata => {
+    this.metadataService.getMetadata(targetType, keyType, key, contentTypeName).subscribe(metadata => {
       // edit existing Entity
       if (metadata.Items.length) {
         const form: EditForm = {
@@ -202,7 +202,7 @@ export class VisualQueryService implements OnDestroy {
               ContentTypeName: contentTypeName,
               For: {
                 Target: eavConstants.metadata.entity.target,
-                TargetType: eavConstants.metadata.entity.type,
+                TargetType: eavConstants.metadata.entity.targetType,
                 Guid: key,
               },
             }],

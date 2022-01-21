@@ -19,19 +19,20 @@ export type SystemSettingsScope = typeof SystemSettingsScopes[keyof typeof Syste
 export const eavConstants = {
   metadata: {
     /** Metadata of Attribute */
-    attribute: { type: 2, target: 'EAV Field Properties', label: 'Content-Type Field/Attribute (2)', keyType: MetadataKeyTypes.Number },
+    // tslint:disable-next-line:max-line-length
+    attribute: { targetType: 2, target: 'EAV Field Properties', label: 'Content-Type Field/Attribute (2)', keyType: MetadataKeyTypes.Number },
     /** Metadata of App */
-    app: { type: 3, target: 'App', label: 'App (3)', keyType: MetadataKeyTypes.Number },
+    app: { targetType: 3, target: 'App', label: 'App (3)', keyType: MetadataKeyTypes.Number },
     /** Metadata of Entity */
-    entity: { type: 4, target: 'Entity', label: 'Entity (4)', keyType: MetadataKeyTypes.Guid },
+    entity: { targetType: 4, target: 'Entity', label: 'Entity (4)', keyType: MetadataKeyTypes.Guid },
     /** Metadata of ContentType */
-    contentType: { type: 5, target: 'ContentType', label: 'Content-Type (5)', keyType: MetadataKeyTypes.String },
+    contentType: { targetType: 5, target: 'ContentType', label: 'Content-Type (5)', keyType: MetadataKeyTypes.String },
     /** Metadata of Zone */
-    zone: { type: 6, target: 'Zone', label: 'Zone (6) - not used as of now', keyType: MetadataKeyTypes.Number },
+    zone: { targetType: 6, target: 'Zone', label: 'Zone (6) - not used as of now', keyType: MetadataKeyTypes.Number },
     /** Metadata of Language (a Dimension) */
-    language: { type: 8, target: 'Dimension', label: 'Language (8) - not used as of now', keyType: MetadataKeyTypes.String },
+    language: { targetType: 8, target: 'Dimension', label: 'Language (8)', keyType: MetadataKeyTypes.String },
     /** Metadata of CmsObject */
-    cmsObject: { type: 10, target: 'CmsObject', label: 'Cms Object (10)', keyType: MetadataKeyTypes.String, hint: 'Usually this is "file:400" or "folder:4030"' },
+    cmsObject: { targetType: 10, target: 'CmsObject', label: 'Cms Object (10)', keyType: MetadataKeyTypes.String, hint: 'Usually this is "file:400" or "folder:4030"' },
   },
 
   /** Lookup type for the metadata, e.g. key=80adb152-efad-4aa4-855e-74c5ef230e1f is keyType=guid */

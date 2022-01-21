@@ -62,7 +62,11 @@ export class DevRestBase<TemplateVarType> implements OnDestroy {
       switchMap(([_, permissionTarget]) => {
         // Permissions are always GUID based, so in this edge-case Content Types also pretend to be Entities
         // It's not ideal, but it can't be changed with reasonable effort, so leave this as is
-        return this.permissionsService.getAll(eavConstants.metadata.entity.type, eavConstants.metadata.entity.keyType, permissionTarget);
+        return this.permissionsService.getAll(
+          eavConstants.metadata.entity.targetType,
+          eavConstants.metadata.entity.keyType,
+          permissionTarget,
+        );
       }),
       share()
     );

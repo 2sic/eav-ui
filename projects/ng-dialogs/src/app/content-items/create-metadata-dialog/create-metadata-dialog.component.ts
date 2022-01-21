@@ -62,7 +62,7 @@ export class CreateMetadataDialogComponent implements OnInit, OnDestroy {
     this.fetchScopes();
 
     this.form = new FormGroup({});
-    this.form.addControl('targetType', new FormControl(eavConstants.metadata.entity.type, [Validators.required, Validators.pattern(/^[0-9]+$/)]));
+    this.form.addControl('targetType', new FormControl(eavConstants.metadata.entity.targetType, [Validators.required, Validators.pattern(/^[0-9]+$/)]));
     this.form.addControl('keyType', new FormControl(eavConstants.metadata.entity.keyType, [Validators.required]));
     this.form.addControl('contentTypeForContentItems', new FormControl(null));
     this.form.addControl('scopeForContentTypes', new FormControl(eavConstants.scopes.default.value));
@@ -118,7 +118,7 @@ export class CreateMetadataDialogComponent implements OnInit, OnDestroy {
         distinctUntilChanged(),
       ).subscribe(contentTypeStaticName => {
         const formValues: MetadataFormValues = this.form.getRawValue();
-        if (formValues.targetType === eavConstants.metadata.entity.type && formValues.key != null) {
+        if (formValues.targetType === eavConstants.metadata.entity.targetType && formValues.key != null) {
           const updatedForm: Partial<MetadataFormValues> = {
             key: null,
           };
@@ -140,7 +140,7 @@ export class CreateMetadataDialogComponent implements OnInit, OnDestroy {
     this.subscription.add(
       combineLatest([formValues$, this.guidedMode$]).subscribe(([formValues, guidedMode]) => {
         // keyTypeOptions depend on targetType and advanced
-        const foundTargetType = this.targetTypeOptions.find(option => option.type === formValues.targetType);
+        const foundTargetType = this.targetTypeOptions.find(option => option.targetType === formValues.targetType);
         const keyTypeOptions = guidedMode && foundTargetType ? [foundTargetType.keyType] : [...this.keyTypeOptions];
         if (!GeneralHelpers.arraysEqual(keyTypeOptions, this.keyTypeOptions$.value)) {
           this.keyTypeOptions$.next(keyTypeOptions);
@@ -153,7 +153,7 @@ export class CreateMetadataDialogComponent implements OnInit, OnDestroy {
         }
 
         // if target is app key must be current app id
-        const isAppMetadata = guidedMode && formValues.targetType === eavConstants.metadata.app.type;
+        const isAppMetadata = guidedMode && formValues.targetType === eavConstants.metadata.app.targetType;
         if (isAppMetadata && formValues.key !== this.context.appId) {
           updatedForm.key = this.context.appId;
         }
@@ -178,12 +178,13 @@ export class CreateMetadataDialogComponent implements OnInit, OnDestroy {
       ]) => {
         const templateVars: MetadataDialogTemplateVars = {
           guidedMode,
-          unknownTargetType: !this.targetTypeOptions.some(option => option.type === formValues.targetType),
-          targetTypeHint: guidedMode && this.targetTypeOptions.find(option => option.type === formValues.targetType)?.hint,
+          unknownTargetType: !this.targetTypeOptions.some(option => option.targetType === formValues.targetType),
+          targetTypeHint: guidedMode && this.targetTypeOptions.find(option => option.targetType === formValues.targetType)?.hint,
           keyTypeOptions,
           scopeOptions,
           guidedKey,
-          guidedKeyExists: [eavConstants.metadata.entity.type, eavConstants.metadata.contentType.type].includes(formValues.targetType),
+          guidedKeyExists:
+            [eavConstants.metadata.entity.targetType, eavConstants.metadata.contentType.targetType].includes(formValues.targetType),
           formValues,
           contentItems,
           contentTypes,
@@ -218,7 +219,7 @@ export class CreateMetadataDialogComponent implements OnInit, OnDestroy {
     const formValues: MetadataFormValues = this.form.getRawValue();
 
     const result: MetadataInfo = {
-      target: this.targetTypeOptions.find(option => option.type === formValues.targetType)?.target,
+      target: this.targetTypeOptions.find(option => option.targetType === formValues.targetType)?.target,
       targetType: formValues.targetType,
       keyType: formValues.keyType,
       // if keyType is guid remove curly brackets

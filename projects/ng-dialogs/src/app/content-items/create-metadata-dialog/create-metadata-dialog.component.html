@@ -16,7 +16,7 @@
         <mat-label>Target</mat-label>
 
         <mat-select *ngIf="data.guidedMode" formControlName="targetType" required>
-          <mat-option *ngFor="let option of targetTypeOptions" [value]="option.type">
+          <mat-option *ngFor="let option of targetTypeOptions" [value]="option.targetType">
             {{ option.label }}
           </mat-option>
           <mat-option *ngIf="data.unknownTargetType" [value]="data.formValues.targetType">
@@ -60,7 +60,7 @@
 
       <!-- Content Type for Content Items -->
       <mat-form-field appearance="standard" color="accent"
-        *ngIf="data.guidedMode && data.formValues.targetType === eavConstants.metadata.entity.type">
+        *ngIf="data.guidedMode && data.formValues.targetType === eavConstants.metadata.entity.targetType">
         <mat-label>Content Type</mat-label>
 
         <mat-select formControlName="contentTypeForContentItems"
@@ -73,7 +73,7 @@
 
       <!-- Scope for Content Types -->
       <mat-form-field appearance="standard" color="accent"
-        *ngIf="data.guidedMode && (data.formValues.targetType === eavConstants.metadata.entity.type || data.formValues.targetType === eavConstants.metadata.contentType.type)">
+        *ngIf="data.guidedMode && (data.formValues.targetType === eavConstants.metadata.entity.targetType || data.formValues.targetType === eavConstants.metadata.contentType.targetType)">
         <mat-label>Scope</mat-label>
 
         <mat-select formControlName="scopeForContentTypes"
@@ -99,7 +99,7 @@
 
         <ng-template #specialKeyInputs>
           <ng-container [ngSwitch]="data.formValues.targetType">
-            <ng-container *ngSwitchCase="eavConstants.metadata.entity.type">
+            <ng-container *ngSwitchCase="eavConstants.metadata.entity.targetType">
               <mat-select *ngIf="data.guidedKey" formControlName="key" required
                 [placeholder]="!data.contentItems.length ? 'No items found' : ''">
                 <mat-option *ngFor="let item of data.contentItems" [value]="item.Guid">
@@ -110,7 +110,7 @@
               <input matInput type="text" *ngIf="!data.guidedKey" formControlName="key" required>
             </ng-container>
 
-            <ng-container *ngSwitchCase="eavConstants.metadata.contentType.type">
+            <ng-container *ngSwitchCase="eavConstants.metadata.contentType.targetType">
               <mat-select *ngIf="data.guidedKey" formControlName="key" required
                 [placeholder]="!data.contentTypes.length ? 'No items found' : ''">
                 <mat-option *ngFor="let contentType of data.contentTypes" [value]="contentType.StaticName">

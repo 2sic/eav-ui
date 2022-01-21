@@ -268,7 +268,7 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
         ContentTypeName: '@' + metadataType, // otherwise the content type for new-assignment
         For: {
           Target: eavConstants.metadata.attribute.target,
-          TargetType: eavConstants.metadata.attribute.type,
+          TargetType: eavConstants.metadata.attribute.targetType,
           Number: field.Id,
         },
         Prefill: { Name: field.StaticName },

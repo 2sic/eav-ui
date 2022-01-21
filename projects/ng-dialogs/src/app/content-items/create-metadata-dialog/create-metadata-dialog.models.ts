@@ -12,7 +12,7 @@ export interface MetadataInfo {
 export interface TargetTypeOption {
   keyType: MetadataKeyType;
   label: string;
-  type: number;
+  targetType: number;
   target: string;
   hint?: string;
 }

@@ -66,7 +66,7 @@ export class MetadataComponent implements OnInit, OnDestroy {
   private itemFor$ = new BehaviorSubject<EavFor | undefined>(undefined);
   private fabOpen$ = new BehaviorSubject(false);
   private subscription = new Subscription();
-  private targetType = parseInt(this.route.snapshot.paramMap.get('type'), 10);
+  private targetType = parseInt(this.route.snapshot.paramMap.get('targetType'), 10);
   private keyType = this.route.snapshot.paramMap.get('keyType') as MetadataKeyType;
   private key = this.route.snapshot.paramMap.get('key');
   title = decodeURIComponent(this.route.snapshot.paramMap.get('title') ?? '');
@@ -164,7 +164,7 @@ export class MetadataComponent implements OnInit, OnDestroy {
 
   private calculateItemFor(): EavFor {
     const itemFor: EavFor = {
-      Target: Object.values(eavConstants.metadata).find(option => option.type === this.targetType)?.target ?? this.targetType.toString(),
+      Target: Object.values(eavConstants.metadata).find(m => m.targetType === this.targetType)?.target ?? this.targetType.toString(),
       TargetType: this.targetType,
       ...(this.keyType === eavConstants.keyTypes.guid && { Guid: this.key }),
       ...(this.keyType === eavConstants.keyTypes.number && { Number: parseInt(this.key, 10) }),
