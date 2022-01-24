@@ -13,7 +13,7 @@ export class AssetsService {
 
   getAll(global: boolean) {
     return this.http.get<string[]>(this.dnnContext.$2sxc.http.apiUrl(webApiAppFilesAll), {
-      params: { appId: this.eavService.eavConfig.appId, global: global.toString(), withSubfolders: 'true' },
+      params: { appId: this.eavService.eavConfig.appId, global, withSubfolders: 'true' },
     });
   }
 

@@ -115,6 +115,7 @@ export class StringTemplatePickerComponent extends BaseComponent<string> impleme
 
   createTemplate() {
     const data: CreateFileDialogData = {
+      global: this.global,
       purpose: this.activeSpec.purpose,
       type: this.activeSpec.type,
     };

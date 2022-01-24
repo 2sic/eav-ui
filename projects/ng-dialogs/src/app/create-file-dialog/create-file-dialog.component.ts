@@ -204,7 +204,7 @@ export class CreateFileDialogComponent implements OnInit, OnDestroy {
         return !finalName || !templateKey
           ? of<Preview | undefined>(undefined)
           : forkJoin([
-            this.sourceService.getPreview(finalName, templateKey),
+            this.sourceService.getPreview(finalName, this.dialogData.global, templateKey),
             timer(500),
           ]).pipe(map(([preview]) => preview));
       }),

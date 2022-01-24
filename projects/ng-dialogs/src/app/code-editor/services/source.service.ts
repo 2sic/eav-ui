@@ -4,7 +4,6 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { webApiAppFile, webApiAppFileCreate, webApiAppFilesAll } from '../../../../../edit/shared/services';
-import { keyIsShared } from '../../shared/constants/session.constants';
 import { SourceItem } from '../../shared/models/edit-form.model';
 import { Context } from '../../shared/services/context';
 import { PredefinedTemplatesResponse } from '../models/predefined-template.model';
@@ -16,18 +15,17 @@ export const webApiAppFilesPreview = 'admin/appfiles/preview';
 
 @Injectable()
 export class SourceService {
-  private isShared = sessionStorage.getItem(keyIsShared) ?? false.toString();
 
   constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
 
   /** ViewKey is templateId or path */
-  get(viewKey: string, urlItems: SourceItem[]): Observable<SourceView> {
+  get(viewKey: string, global: boolean, urlItems: SourceItem[]): Observable<SourceView> {
     return this.http.get<SourceView>(this.dnnContext.$2sxc.http.apiUrl(webApiAppFile), {
       params: {
-        appId: this.context.appId.toString(),
-        global: this.isShared,
+        appId: this.context.appId,
+        global,
         ...this.templateIdOrPath(viewKey, urlItems),
-      }
+      },
     }).pipe(
       map(view => {
         if (view.Type.toLocaleLowerCase() === 'auto') {
@@ -49,19 +47,19 @@ export class SourceService {
   }
 
   /** ViewKey is templateId or path */
-  save(viewKey: string, view: SourceView, urlItems: SourceItem[]): Observable<boolean> {
+  save(viewKey: string, global: boolean, view: SourceView, urlItems: SourceItem[]): Observable<boolean> {
     return this.http.post<boolean>(this.dnnContext.$2sxc.http.apiUrl(webApiAppFile), view, {
       params: {
-        appId: this.context.appId.toString(),
-        global: this.isShared,
+        appId: this.context.appId,
+        global,
         ...this.templateIdOrPath(viewKey, urlItems),
       },
     });
   }
 
-  getTemplates(): Observable<string[]> {
+  getTemplates(global: boolean): Observable<string[]> {
     return this.http.get<string[]>(this.dnnContext.$2sxc.http.apiUrl(webApiAppFilesAll), {
-      params: { appId: this.context.appId.toString(), global: this.isShared, withSubfolders: 'true' },
+      params: { appId: this.context.appId, global, withSubfolders: 'true' },
     });
   }
 
@@ -74,22 +72,22 @@ export class SourceService {
     });
   }
 
-  getPreview(path: string, templateKey: string): Observable<Preview> {
+  getPreview(path: string, global: boolean, templateKey: string): Observable<Preview> {
     return this.http.get<Preview>(this.dnnContext.$2sxc.http.apiUrl(webApiAppFilesPreview), {
       params: {
-        appId: this.context.appId.toString(),
+        appId: this.context.appId,
         path,
         templateKey,
-        global: this.isShared,
+        global,
       },
     });
   }
 
-  createTemplate(path: string, templateKey: string): Observable<boolean> {
+  createTemplate(path: string, global: boolean, templateKey: string): Observable<boolean> {
     return this.http.post<boolean>(this.dnnContext.$2sxc.http.apiUrl(webApiAppFileCreate), {}, {
       params: {
-        appId: this.context.appId.toString(),
-        global: this.isShared,
+        appId: this.context.appId,
+        global,
         purpose: 'auto',
         path,
         templateKey,

@@ -7,7 +7,7 @@ import { BehaviorSubject, combineLatest, forkJoin, fromEvent, Observable, of, Su
 import { map, mergeMap, share } from 'rxjs/operators';
 import { CreateFileDialogComponent, CreateFileDialogData, CreateFileDialogResult } from '../create-file-dialog';
 import { MonacoEditorComponent } from '../monaco-editor';
-import { keyItems } from '../shared/constants/session.constants';
+import { keyIsShared, keyItems } from '../shared/constants/session.constants';
 import { SourceItem } from '../shared/models/edit-form.model';
 import { Context } from '../shared/services/context';
 import { CodeAndEditionWarningsComponent } from './code-and-edition-warnings/code-and-edition-warnings.component';
@@ -39,6 +39,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
   private viewInfos$: BehaviorSubject<ViewInfo[]>;
   private subscription: Subscription;
   private urlItems: SourceItem[];
+  private isGlobal: boolean;
 
   constructor(
     private context: Context,
@@ -60,6 +61,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
       }
     });
     this.urlItems = codeItems;
+    this.isGlobal = sessionStorage.getItem(keyIsShared) === 'true' ?? false;
   }
 
   ngOnInit(): void {
@@ -72,7 +74,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
 
     this.attachListeners();
 
-    this.sourceService.getTemplates().subscribe(templates => {
+    this.sourceService.getTemplates(this.isGlobal).subscribe(templates => {
       this.templates$.next(templates);
     });
 
@@ -92,7 +94,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
             };
             viewInfos = [...viewInfos, newViewInfo];
 
-            const view$ = this.sourceService.get(viewKey, this.urlItems).pipe(share());
+            const view$ = this.sourceService.get(viewKey, this.isGlobal, this.urlItems).pipe(share());
             const snippets$ = view$.pipe(mergeMap(view => this.snippetsService.getSnippets(view)));
             return forkJoin([of(viewKey), view$, snippets$]);
           })
@@ -177,6 +179,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
   createTemplate(folder?: string): void {
     const data: CreateFileDialogData = {
       folder,
+      global: this.isGlobal,
       purpose: folder === 'api' || folder?.startsWith('api/') ? 'Api' : undefined,
     };
     const dialogRef = this.dialog.open(CreateFileDialogComponent, {
@@ -189,8 +192,8 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe((result?: CreateFileDialogResult) => {
       if (!result) { return; }
 
-      this.sourceService.createTemplate(result.name, result.templateKey).subscribe(() => {
-        this.sourceService.getTemplates().subscribe(files => {
+      this.sourceService.createTemplate(result.name, this.isGlobal, result.templateKey).subscribe(() => {
+        this.sourceService.getTemplates(this.isGlobal).subscribe(files => {
           this.templates$.next(files);
         });
       });
@@ -251,7 +254,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
 
     this.snackBar.open('Saving...');
     const codeToSave = viewInfo.view.Code;
-    this.sourceService.save(viewKey, viewInfo.view, this.urlItems).subscribe({
+    this.sourceService.save(viewKey, this.isGlobal, viewInfo.view, this.urlItems).subscribe({
       next: res => {
         if (!res) {
           this.snackBar.open('Failed', null, { duration: 2000 });
