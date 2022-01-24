@@ -74,7 +74,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
 
     this.attachListeners();
 
-    this.sourceService.getTemplates(this.isGlobal).subscribe(templates => {
+    this.sourceService.getAll(this.isGlobal).subscribe(templates => {
       this.templates$.next(templates);
     });
 
@@ -192,8 +192,8 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe((result?: CreateFileDialogResult) => {
       if (!result) { return; }
 
-      this.sourceService.createTemplate(result.name, this.isGlobal, result.templateKey).subscribe(() => {
-        this.sourceService.getTemplates(this.isGlobal).subscribe(files => {
+      this.sourceService.create(result.name, this.isGlobal, result.templateKey).subscribe(() => {
+        this.sourceService.getAll(this.isGlobal).subscribe(files => {
           this.templates$.next(files);
         });
       });

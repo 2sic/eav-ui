@@ -18,6 +18,7 @@ import { EavService, EntityService } from '../../../../edit/shared/services';
 import { PipelinesService } from '../app-administration/services';
 import { AppDialogConfigService } from '../app-administration/services/app-dialog-config.service';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
+import { SourceService } from '../code-editor/services/source.service';
 import { EntitiesService } from '../content-items/services/entities.service';
 import { MetadataService } from '../permissions/services/metadata.service';
 import { PermissionsService } from '../permissions/services/permissions.service';
@@ -97,6 +98,7 @@ import { DevRestTabPermissionsComponent } from './tab-permissions/tab-permission
     EntityService,
     PipelinesService,
     EavService,
-  ]
+    SourceService,
+  ],
 })
 export class DevRestModule { }

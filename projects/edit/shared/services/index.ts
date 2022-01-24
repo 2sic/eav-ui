@@ -1,5 +1,4 @@
 export * from './adam.service';
-export * from './assets.service';
 export * from './eav.service';
 export * from './edit-initializer.service';
 export * from './edit-routing.service';

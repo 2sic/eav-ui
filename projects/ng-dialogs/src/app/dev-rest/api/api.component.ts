@@ -6,7 +6,7 @@ import { BehaviorSubject, combineLatest } from 'rxjs';
 import { filter, map, share, switchMap, take } from 'rxjs/operators';
 import { DevRestBase } from '..';
 import { AppDialogConfigService } from '../../app-administration/services';
-import { WebApisService } from '../../app-administration/services/web-apis.service';
+import { SourceService } from '../../code-editor/services/source.service';
 import { Context } from '../../shared/services/context';
 import { GoToDevRest } from '../go-to-dev-rest';
 import { generateWebApiCalls } from './api-samples';
@@ -36,20 +36,20 @@ export class DevRestApiComponent extends DevRestBase<DevRestApiTemplateVars> imp
     dialogRef: MatDialogRef<DevRestApiComponent>,
     router: Router,
     route: ActivatedRoute,
-    private webApisService: WebApisService,
+    private sourceService: SourceService,
   ) {
     super(appDialogConfigService, context, dialogRef, dnnContext, router, route, null);
 
     const webApi$ = combineLatest([
       this.route.paramMap.pipe(map(pm => pm.get(GoToDevRest.paramApiPath))),
-      this.webApisService.getAll()
+      this.sourceService.getWebApis()
     ]).pipe(map(([name, webApis]) => {
       name = decodeURIComponent(name);
       return webApis.find(w => w.path === name);
     }));
 
     const apiDetails$ = webApi$.pipe(
-      switchMap(webApi => this.webApisService.details(webApi.path)),
+      switchMap(webApi => this.sourceService.getWebApiDetails(webApi.path)),
       share());
     apiDetails$.pipe(take(1), filter(x => !!x?.actions?.length)).subscribe(x => this.selectedActionName$.next(x?.actions[0]?.name));
     // apiDetails$.subscribe(x => console.log('details', x));

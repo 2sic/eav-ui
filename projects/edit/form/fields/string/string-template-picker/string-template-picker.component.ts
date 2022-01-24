@@ -2,11 +2,12 @@ import { Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { SourceService } from '../../../../../ng-dialogs/src/app/code-editor/services/source.service';
 import { InputTypeConstants } from '../../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { CreateFileDialogComponent, CreateFileDialogData, CreateFileDialogResult } from '../../../../../ng-dialogs/src/app/create-file-dialog';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { FieldMask, GeneralHelpers } from '../../../../shared/helpers';
-import { AssetsService, EavService, FieldsSettingsService } from '../../../../shared/services';
+import { EavService, FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { BaseComponent } from '../../base/base.component';
 import { templateTypes } from './string-template-picker.constants';
@@ -35,7 +36,7 @@ export class StringTemplatePickerComponent extends BaseComponent<string> impleme
   constructor(
     eavService: EavService,
     fieldsSettingsService: FieldsSettingsService,
-    private assetsService: AssetsService,
+    private sourceService: SourceService,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
   ) {
@@ -93,7 +94,7 @@ export class StringTemplatePickerComponent extends BaseComponent<string> impleme
     this.global = (location === 'Host File System' // Original value used from 2sxc up until v12.01
       || location === 'Global'); // New key used in 2sxc 12.02 and later
 
-    this.assetsService.getAll(this.global).subscribe(templates => {
+    this.sourceService.getAll(this.global).subscribe(templates => {
       this.templates = templates;
       this.resetIfNotFound = true;
       this.setTemplateOptions();
@@ -128,7 +129,7 @@ export class StringTemplatePickerComponent extends BaseComponent<string> impleme
     dialogRef.afterClosed().subscribe((result?: CreateFileDialogResult) => {
       if (!result) { return; }
 
-      this.assetsService.create(result.name, result.templateKey, this.global).subscribe(res => {
+      this.sourceService.create(result.name, this.global, result.templateKey).subscribe(res => {
         if (res === false) {
           alert('Server reported that create failed - the file probably already exists');
         } else {

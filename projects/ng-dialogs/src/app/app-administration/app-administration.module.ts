@@ -18,6 +18,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ZoneService } from '../apps-management/services/zone.service';
+import { SourceService } from '../code-editor/services/source.service';
 import { ContentExportService } from '../content-export/services/content-export.service';
 import { ContentItemsService } from '../content-items/services/content-items.service';
 import { ContentTypesFieldsService } from '../content-type-fields/services/content-types-fields.service';
@@ -53,7 +54,6 @@ import { ExportAppService } from './services/export-app.service';
 import { ImportAppPartsService } from './services/import-app-parts.service';
 import { PipelinesService } from './services/pipelines.service';
 import { ViewsService } from './services/views.service';
-import { WebApisService } from './services/web-apis.service';
 import { AnalyzeSettingsComponent } from './sub-dialogs/analyze-settings/analyze-settings.component';
 import { SettingsItemDetailsComponent } from './sub-dialogs/analyze-settings/settings-item-details/settings-item-details.component';
 import { EditContentTypeComponent } from './sub-dialogs/edit-content-type/edit-content-type.component';
@@ -132,7 +132,7 @@ import { WebApiComponent } from './web-api/web-api.component';
     PipelinesService,
     ViewsService,
     ContentExportService,
-    WebApisService,
+    SourceService,
     ContentItemsService,
     ExportAppService,
     ExportAppPartsService,

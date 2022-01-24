@@ -3,13 +3,17 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { webApiAppFile, webApiAppFileCreate, webApiAppFilesAll } from '../../../../../edit/shared/services';
+import { WebApi, WebApiDetails } from '../../app-administration/models';
 import { SourceItem } from '../../shared/models/edit-form.model';
 import { Context } from '../../shared/services/context';
 import { PredefinedTemplatesResponse } from '../models/predefined-template.model';
 import { Preview } from '../models/preview.models';
 import { SourceView } from '../models/source-view.model';
 
+export const webApiAppFilesAll = 'admin/appfiles/all';
+export const webApiAppFile = 'admin/appfiles/asset';
+export const webApiAppFileCreate = 'admin/appfiles/create';
+export const webApiExplorer = 'admin/ApiExplorer/inspect';
 export const webApiAppFilesPredefinedTemplates = 'admin/appfiles/GetTemplates';
 export const webApiAppFilesPreview = 'admin/appfiles/preview';
 
@@ -57,9 +61,36 @@ export class SourceService {
     });
   }
 
-  getTemplates(global: boolean): Observable<string[]> {
+  getAll(global: boolean, mask?: string): Observable<string[]> {
     return this.http.get<string[]>(this.dnnContext.$2sxc.http.apiUrl(webApiAppFilesAll), {
-      params: { appId: this.context.appId, global, withSubfolders: 'true' },
+      params: {
+        appId: this.context.appId,
+        global,
+        ...(mask && { mask }),
+        withSubfolders: 'true',
+      },
+    });
+  }
+
+  getWebApis() {
+    return this.getAll(false, '*Controller.cs').pipe(
+      map(paths => {
+        const webApis: WebApi[] = paths.map(path => {
+          const splitIndex = path.lastIndexOf('/');
+          const fileExtIndex = path.lastIndexOf('.');
+          const folder = path.substring(0, splitIndex);
+          const name = path.substring(splitIndex + 1, fileExtIndex);
+          const webApi: WebApi = { path, folder, name };
+          return webApi;
+        });
+        return webApis;
+      }),
+    );
+  }
+
+  getWebApiDetails(apiPath: string) {
+    return this.http.get<WebApiDetails>(this.dnnContext.$2sxc.http.apiUrl(webApiExplorer), {
+      params: { path: apiPath },
     });
   }
 
@@ -83,7 +114,7 @@ export class SourceService {
     });
   }
 
-  createTemplate(path: string, global: boolean, templateKey: string): Observable<boolean> {
+  create(path: string, global: boolean, templateKey: string): Observable<boolean> {
     return this.http.post<boolean>(this.dnnContext.$2sxc.http.apiUrl(webApiAppFileCreate), {}, {
       params: {
         appId: this.context.appId,

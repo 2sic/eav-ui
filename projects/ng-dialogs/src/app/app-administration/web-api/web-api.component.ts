@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
+import { SourceService } from '../../code-editor/services/source.service';
 import { CreateFileDialogComponent, CreateFileDialogData, CreateFileDialogResult } from '../../create-file-dialog';
 import { GoToDevRest } from '../../dev-rest/go-to-dev-rest';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
@@ -11,7 +12,6 @@ import { DialogService } from '../../shared/services/dialog.service';
 import { WebApiActionsComponent } from '../ag-grid-components/web-api-actions/web-api-actions.component';
 import { WebApiActionsParams } from '../ag-grid-components/web-api-actions/web-api-actions.models';
 import { WebApi } from '../models/web-api.model';
-import { WebApisService } from '../services/web-apis.service';
 
 @Component({
   selector: 'app-web-api',
@@ -48,8 +48,11 @@ export class WebApiComponent implements OnInit, OnDestroy {
     ],
   };
 
+  /** ATM WebApis are not shared */
+  private global = false;
+
   constructor(
-    private webApisService: WebApisService,
+    private sourceService: SourceService,
     private snackBar: MatSnackBar,
     private dialogService: DialogService,
     private router: Router,
@@ -69,7 +72,7 @@ export class WebApiComponent implements OnInit, OnDestroy {
   createController(): void {
     const data: CreateFileDialogData = {
       folder: 'api',
-      global: false,
+      global: this.global,
       purpose: 'Api',
     };
     const dialogRef = this.dialog.open(CreateFileDialogComponent, {
@@ -92,7 +95,7 @@ export class WebApiComponent implements OnInit, OnDestroy {
       }
 
       this.snackBar.open('Saving...');
-      this.webApisService.create(result.name, result.templateKey).subscribe(() => {
+      this.sourceService.create(result.name, this.global, result.templateKey).subscribe(() => {
         this.snackBar.open('Saved', null, { duration: 2000 });
         this.fetchWebApis();
       });
@@ -100,7 +103,7 @@ export class WebApiComponent implements OnInit, OnDestroy {
   }
 
   private fetchWebApis() {
-    this.webApisService.getAll().subscribe(webApis => {
+    this.sourceService.getWebApis().subscribe(webApis => {
       this.webApis$.next(webApis);
     });
   }
