@@ -1,7 +1,11 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { GeneralHelpers } from '../../../../../edit/shared/helpers';
+import { ViewKey } from '../code-editor.models';
+import { FileAsset } from '../models/file-asset.model';
+import { SourceView } from '../models/source-view.model';
 import { TreeItem } from '../models/tree-item.model';
-import { calculateTree } from './code-templates.helpers';
+import { calculateTreeAppShared } from './code-templates.helpers';
+import { appSharedRoot, CreateTemplateParams } from './code-templates.models';
 
 @Component({
   selector: 'app-code-templates',
@@ -9,52 +13,62 @@ import { calculateTree } from './code-templates.helpers';
   styleUrls: ['./code-templates.component.scss'],
 })
 export class CodeTemplatesComponent implements OnChanges {
-  @Input() filename: string;
-  @Input() templates: string[];
-  @Output() openView: EventEmitter<string> = new EventEmitter();
-  @Output() createTemplate: EventEmitter<string> = new EventEmitter();
+  @Input() view?: SourceView;
+  @Input() templates: FileAsset[];
+  @Output() openView: EventEmitter<ViewKey> = new EventEmitter();
+  @Output() createTemplate: EventEmitter<CreateTemplateParams> = new EventEmitter();
   tree: TreeItem[];
-  toggledItems: string[] = [];
+  toggledItemsApp: string[] = [];
+  toggledItemsShared: string[] = [];
 
   constructor() { }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.templates != null) {
-      this.tree = calculateTree(this.templates ?? []);
+      this.tree = calculateTreeAppShared(this.templates);
     }
-    if (changes.filename != null) {
-      const previousFilename = changes.filename.previousValue;
-      if (previousFilename) {
-        this.toggleItem(previousFilename);
+    if (changes.view != null) {
+      const previousView: SourceView = changes.view?.previousValue;
+      if (previousView) {
+        this.toggleItem(previousView.FileName, previousView.IsShared);
       }
-      if (this.filename) {
-        this.showFileInTree(this.filename);
+      if (this.view) {
+        this.showFileInTree(this.view.FileName, this.view.IsShared);
       }
     }
   }
 
-  openTemplate(path: string): void {
-    this.openView.emit(path);
+  isToggled(path: string, isShared: boolean): boolean {
+    const toggledItems = isShared ? this.toggledItemsShared : this.toggledItemsApp;
+    return toggledItems.includes(path);
   }
 
-  toggleItem(path: string): void {
-    GeneralHelpers.toggleInArray(path, this.toggledItems);
+  openTemplate(path: string, isShared: boolean): void {
+    const viewKey: ViewKey = { key: path, shared: isShared };
+    this.openView.emit(viewKey);
   }
 
-  addFile(folder?: string): void {
-    this.createTemplate.emit(folder);
+  toggleItem(path: string, isShared: boolean): void {
+    const toggledItems = isShared ? this.toggledItemsShared : this.toggledItemsApp;
+    GeneralHelpers.toggleInArray(path, toggledItems);
   }
 
-  private showFileInTree(file: string): void {
+  addFile(folder?: string, isShared?: boolean): void {
+    const params: CreateTemplateParams = { folder, isShared };
+    this.createTemplate.emit(params);
+  }
+
+  private showFileInTree(file: string, isShared: boolean): void {
     if (file == null) { return; }
-    if (this.toggledItems.includes(file)) { return; }
+    const toggledItems = isShared ? this.toggledItemsShared : this.toggledItemsApp;
+    if (toggledItems.includes(file)) { return; }
 
-    const paths = file.split('/');
+    const paths = [appSharedRoot, ...file.split('/')];
     let pathFromRoot = '';
     for (const path of paths) {
       pathFromRoot = !pathFromRoot ? path : `${pathFromRoot}/${path}`;
-      if (this.toggledItems.includes(pathFromRoot)) { continue; }
-      this.toggleItem(pathFromRoot);
+      if (toggledItems.includes(pathFromRoot)) { continue; }
+      this.toggleItem(pathFromRoot, isShared);
     }
   }
 }

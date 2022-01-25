@@ -11,8 +11,8 @@
     </div>
   </div>
 
-  <app-code-templates [hidden]="activeExplorer !== Explorers.Templates" [filename]="data.view?.FileName"
-    [templates]="data.templates" (openView)="openView($event)" (createTemplate)="createTemplate($event)">
+  <app-code-templates [hidden]="activeExplorer !== Explorers.Templates" [view]="data.view" [templates]="data.templates"
+    (openView)="openView($event)" (createTemplate)="createTemplate($event)">
   </app-code-templates>
   <app-code-snippets [hidden]="activeExplorer !== Explorers.Snippets" [snippets]="data.explorerSnipps"
     (insertSnippet)="insertSnippet($event)">
@@ -26,6 +26,7 @@
         'loading': tab.isLoading
       }" (click)="openView(tab.viewKey)">
         <div class="tab-label-container" [tippy]="tab.label" tippyShowDelay="750">
+          <mat-icon class="icon-shared" *ngIf="tab.viewKey.shared">share</mat-icon>
           <span class="tab-label">{{ tab.label }}</span>
         </div>
         <div class="tab-actions-container">

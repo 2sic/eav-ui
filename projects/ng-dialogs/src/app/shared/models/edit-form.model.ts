@@ -46,6 +46,7 @@ export interface InnerItem {
 export interface SourceItem {
   Edition?: string;
   EntityId?: number;
+  IsShared: boolean;
   Path: string;
 }
 

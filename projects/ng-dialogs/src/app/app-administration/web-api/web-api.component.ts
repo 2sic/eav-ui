@@ -103,7 +103,7 @@ export class WebApiComponent implements OnInit, OnDestroy {
   }
 
   private fetchWebApis() {
-    this.sourceService.getWebApis().subscribe(webApis => {
+    this.sourceService.getWebApis(this.global).subscribe(webApis => {
       this.webApis$.next(webApis);
     });
   }

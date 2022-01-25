@@ -6,16 +6,18 @@ import { map } from 'rxjs/operators';
 import { WebApi, WebApiDetails } from '../../app-administration/models';
 import { SourceItem } from '../../shared/models/edit-form.model';
 import { Context } from '../../shared/services/context';
+import { FileAsset } from '../models/file-asset.model';
 import { PredefinedTemplatesResponse } from '../models/predefined-template.model';
 import { Preview } from '../models/preview.models';
 import { SourceView } from '../models/source-view.model';
 
-export const webApiAppFilesAll = 'admin/appfiles/all';
-export const webApiAppFile = 'admin/appfiles/asset';
-export const webApiAppFileCreate = 'admin/appfiles/create';
-export const webApiExplorer = 'admin/ApiExplorer/inspect';
-export const webApiAppFilesPredefinedTemplates = 'admin/appfiles/GetTemplates';
-export const webApiAppFilesPreview = 'admin/appfiles/preview';
+const appFilesAllNew = 'admin/AppFiles/AppFiles';
+const appFilesAll = 'admin/AppFiles/all';
+const appFilesAsset = 'admin/AppFiles/asset';
+const appFilesCreate = 'admin/AppFiles/create';
+const apiExplorerInspect = 'admin/ApiExplorer/inspect';
+const appFilesPredefinedTemplates = 'admin/AppFiles/GetTemplates';
+const appFilesPreview = 'admin/AppFiles/preview';
 
 @Injectable()
 export class SourceService {
@@ -24,11 +26,11 @@ export class SourceService {
 
   /** ViewKey is templateId or path */
   get(viewKey: string, global: boolean, urlItems: SourceItem[]): Observable<SourceView> {
-    return this.http.get<SourceView>(this.dnnContext.$2sxc.http.apiUrl(webApiAppFile), {
+    return this.http.get<SourceView>(this.dnnContext.$2sxc.http.apiUrl(appFilesAsset), {
       params: {
         appId: this.context.appId,
         global,
-        ...this.templateIdOrPath(viewKey, urlItems),
+        ...this.templateIdOrPath(viewKey, global, urlItems),
       },
     }).pipe(
       map(view => {
@@ -52,17 +54,30 @@ export class SourceService {
 
   /** ViewKey is templateId or path */
   save(viewKey: string, global: boolean, view: SourceView, urlItems: SourceItem[]): Observable<boolean> {
-    return this.http.post<boolean>(this.dnnContext.$2sxc.http.apiUrl(webApiAppFile), view, {
+    return this.http.post<boolean>(this.dnnContext.$2sxc.http.apiUrl(appFilesAsset), view, {
       params: {
         appId: this.context.appId,
         global,
-        ...this.templateIdOrPath(viewKey, urlItems),
+        ...this.templateIdOrPath(viewKey, global, urlItems),
       },
     });
   }
 
+  getAllNew(): Observable<FileAsset[]> {
+    return this.http.get<{ Files: FileAsset[] }>(this.dnnContext.$2sxc.http.apiUrl(appFilesAllNew), {
+      params: { appId: this.context.appId },
+    }).pipe(
+      map(({ Files }) => {
+        Files.forEach(file => {
+          file.Shared ??= false;
+        });
+        return Files;
+      }),
+    );
+  }
+
   getAll(global: boolean, mask?: string): Observable<string[]> {
-    return this.http.get<string[]>(this.dnnContext.$2sxc.http.apiUrl(webApiAppFilesAll), {
+    return this.http.get<string[]>(this.dnnContext.$2sxc.http.apiUrl(appFilesAll), {
       params: {
         appId: this.context.appId,
         global,
@@ -72,8 +87,8 @@ export class SourceService {
     });
   }
 
-  getWebApis() {
-    return this.getAll(false, '*Controller.cs').pipe(
+  getWebApis(global: boolean): Observable<WebApi[]> {
+    return this.getAll(global, '*Controller.cs').pipe(
       map(paths => {
         const webApis: WebApi[] = paths.map(path => {
           const splitIndex = path.lastIndexOf('/');
@@ -88,14 +103,14 @@ export class SourceService {
     );
   }
 
-  getWebApiDetails(apiPath: string) {
-    return this.http.get<WebApiDetails>(this.dnnContext.$2sxc.http.apiUrl(webApiExplorer), {
-      params: { path: apiPath },
+  getWebApiDetails(apiPath: string): Observable<WebApiDetails> {
+    return this.http.get<WebApiDetails>(this.dnnContext.$2sxc.http.apiUrl(apiExplorerInspect), {
+      params: { appId: this.context.appId, zoneId: this.context.zoneId, path: apiPath },
     });
   }
 
   getPredefinedTemplates(purpose?: 'Template' | 'Search' | 'Api', type?: 'Token' | 'Razor'): Observable<PredefinedTemplatesResponse> {
-    return this.http.get<PredefinedTemplatesResponse>(this.dnnContext.$2sxc.http.apiUrl(webApiAppFilesPredefinedTemplates), {
+    return this.http.get<PredefinedTemplatesResponse>(this.dnnContext.$2sxc.http.apiUrl(appFilesPredefinedTemplates), {
       params: {
         ...(purpose && { purpose }),
         ...(type && { type }),
@@ -104,7 +119,7 @@ export class SourceService {
   }
 
   getPreview(path: string, global: boolean, templateKey: string): Observable<Preview> {
-    return this.http.get<Preview>(this.dnnContext.$2sxc.http.apiUrl(webApiAppFilesPreview), {
+    return this.http.get<Preview>(this.dnnContext.$2sxc.http.apiUrl(appFilesPreview), {
       params: {
         appId: this.context.appId,
         path,
@@ -115,7 +130,7 @@ export class SourceService {
   }
 
   create(path: string, global: boolean, templateKey: string): Observable<boolean> {
-    return this.http.post<boolean>(this.dnnContext.$2sxc.http.apiUrl(webApiAppFileCreate), {}, {
+    return this.http.post<boolean>(this.dnnContext.$2sxc.http.apiUrl(appFilesCreate), {}, {
       params: {
         appId: this.context.appId,
         global,
@@ -126,9 +141,9 @@ export class SourceService {
     });
   }
 
-  private templateIdOrPath(viewKey: string, urlItems: SourceItem[]) {
+  private templateIdOrPath(viewKey: string, global: boolean, urlItems: SourceItem[]) {
     if (/^[0-9]*$/g.test(viewKey)) {
-      const path = urlItems.find(i => i.EntityId?.toString() === viewKey)?.Path;
+      const path = urlItems.find(i => i.EntityId?.toString() === viewKey && i.IsShared === global)?.Path;
       return {
         templateId: viewKey,
         ...(path != null && { path }),

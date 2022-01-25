@@ -5,6 +5,7 @@ import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, combineLatest, forkJoin, fromEvent, Observable, of, Subscription } from 'rxjs';
 import { map, mergeMap, share } from 'rxjs/operators';
+import { GeneralHelpers } from '../../../../edit/shared/helpers';
 import { CreateFileDialogComponent, CreateFileDialogData, CreateFileDialogResult } from '../create-file-dialog';
 import { MonacoEditorComponent } from '../monaco-editor';
 import { keyIsShared, keyItems } from '../shared/constants/session.constants';
@@ -12,7 +13,10 @@ import { SourceItem } from '../shared/models/edit-form.model';
 import { Context } from '../shared/services/context';
 import { CodeAndEditionWarningsComponent } from './code-and-edition-warnings/code-and-edition-warnings.component';
 import { CodeAndEditionWarningsSnackBarData } from './code-and-edition-warnings/code-and-edition-warnings.models';
-import { CodeEditorTemplateVars, ExplorerOption, Explorers, Tab, ViewInfo } from './code-editor.models';
+import { CodeEditorTemplateVars, ExplorerOption, Explorers, Tab, ViewInfo, ViewKey } from './code-editor.models';
+import { CreateTemplateParams } from './code-templates/code-templates.models';
+import { FileLocationDialogComponent } from './file-location-dialog/file-location-dialog.component';
+import { FileAsset } from './models/file-asset.model';
 import { SourceView } from './models/source-view.model';
 import { SnippetsService } from './services/snippets.service';
 import { SourceService } from './services/source.service';
@@ -33,13 +37,12 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
   };
   templateVars$: Observable<CodeEditorTemplateVars>;
 
-  private templates$: BehaviorSubject<string[]>;
-  private activeView$: BehaviorSubject<string>;
-  private openViews$: BehaviorSubject<string[]>;
+  private templates$: BehaviorSubject<FileAsset[]>;
+  private activeView$: BehaviorSubject<ViewKey>;
+  private openViews$: BehaviorSubject<ViewKey[]>;
   private viewInfos$: BehaviorSubject<ViewInfo[]>;
   private subscription: Subscription;
   private urlItems: SourceItem[];
-  private isGlobal: boolean;
 
   constructor(
     private context: Context,
@@ -54,27 +57,31 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
   ) {
     this.context.init(this.route);
     const codeItems: SourceItem[] = JSON.parse(sessionStorage.getItem(keyItems));
+    const isShared = sessionStorage.getItem(keyIsShared) === 'true' ?? false;
     codeItems.forEach(codeItem => {
       // remove leading "/" from path
       if (codeItem.Path.startsWith('/')) {
         codeItem.Path = codeItem.Path.substring(1);
       }
+      codeItem.IsShared ??= isShared;
     });
     this.urlItems = codeItems;
-    this.isGlobal = sessionStorage.getItem(keyIsShared) === 'true' ?? false;
   }
 
   ngOnInit(): void {
     this.subscription = new Subscription();
-    this.templates$ = new BehaviorSubject<string[]>([]);
-    const initialViews = this.urlItems.map(item => item.EntityId?.toString() ?? item.Path);
-    this.activeView$ = new BehaviorSubject(initialViews[0]);
-    this.openViews$ = new BehaviorSubject(initialViews);
+    this.templates$ = new BehaviorSubject<FileAsset[]>([]);
+    const initialViews = this.urlItems.map(item => {
+      const viewKey: ViewKey = { key: item.EntityId?.toString() ?? item.Path, shared: item.IsShared };
+      return viewKey;
+    });
+    this.activeView$ = new BehaviorSubject<ViewKey>(initialViews[0]);
+    this.openViews$ = new BehaviorSubject<ViewKey[]>(initialViews);
     this.viewInfos$ = new BehaviorSubject<ViewInfo[]>([]);
 
     this.attachListeners();
 
-    this.sourceService.getAll(this.isGlobal).subscribe(templates => {
+    this.sourceService.getAllNew().subscribe(templates => {
       this.templates$.next(templates);
     });
 
@@ -83,7 +90,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
         if (templates.length === 0) { return; }
 
         let viewInfos = this.viewInfos$.value;
-        const notLoaded = openViews.filter(viewKey => !viewInfos.some(v => v.viewKey === viewKey));
+        const notLoaded = openViews.filter(viewKey => !viewInfos.some(v => GeneralHelpers.objectsEqual(v.viewKey, viewKey)));
         if (notLoaded.length === 0) { return; }
 
         forkJoin(
@@ -94,7 +101,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
             };
             viewInfos = [...viewInfos, newViewInfo];
 
-            const view$ = this.sourceService.get(viewKey, this.isGlobal, this.urlItems).pipe(share());
+            const view$ = this.sourceService.get(viewKey.key, viewKey.shared, this.urlItems).pipe(share());
             const snippets$ = view$.pipe(mergeMap(view => this.snippetsService.getSnippets(view)));
             return forkJoin([of(viewKey), view$, snippets$]);
           })
@@ -102,7 +109,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
           let viewInfos1 = this.viewInfos$.value;
 
           results.forEach(([viewKey, view, snippets]) => {
-            const selectedIndex = viewInfos1.findIndex(v => v.viewKey === viewKey);
+            const selectedIndex = viewInfos1.findIndex(v => GeneralHelpers.objectsEqual(v.viewKey, viewKey));
             if (selectedIndex < 0) { return; }
 
             const newViewInfo: ViewInfo = {
@@ -125,7 +132,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
 
     this.subscription.add(
       combineLatest([this.activeView$, this.viewInfos$]).subscribe(([activeView, viewInfos]) => {
-        const active = viewInfos.find(v => v.viewKey === activeView);
+        const active = viewInfos.find(v => GeneralHelpers.objectsEqual(v.viewKey, activeView));
         const defaultTitle = 'Code Editor';
         const newTitle = active == null ? defaultTitle : `${active.view?.FileName} - ${defaultTitle}`;
         const oldTitle = this.titleService.getTitle();
@@ -138,17 +145,17 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
     this.templateVars$ = combineLatest([this.templates$, this.activeView$, this.openViews$, this.viewInfos$]).pipe(
       map(([templates, activeView, openViews, viewInfos]) => {
         const tabs = openViews.map(viewKey => {
-          const viewInfo = viewInfos.find(v => v.viewKey === viewKey);
+          const viewInfo = viewInfos.find(v => GeneralHelpers.objectsEqual(v.viewKey, viewKey));
           const label: Tab = {
             viewKey,
-            label: viewInfo?.view?.FileName ?? viewKey,
-            isActive: viewKey === activeView,
+            label: viewInfo?.view?.FileName ?? viewKey.key,
+            isActive: GeneralHelpers.objectsEqual(viewKey, activeView),
             isModified: viewInfo?.view?.Code !== viewInfo?.savedCode,
             isLoading: viewInfo?.view == null,
           };
           return label;
         });
-        const activeViewInfo = viewInfos.find(v => v.viewKey === activeView);
+        const activeViewInfo = viewInfos.find(v => GeneralHelpers.objectsEqual(v.viewKey, activeView));
 
         const templateVars: CodeEditorTemplateVars = {
           activeView,
@@ -176,11 +183,24 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
     this.activeExplorer = (this.activeExplorer !== explorer) ? explorer : null;
   }
 
-  createTemplate(folder?: string): void {
+  createTemplate(params: CreateTemplateParams): void {
+    if (params.isShared == null) {
+      const locationDialogRef = this.dialog.open(FileLocationDialogComponent, {
+        autoFocus: false,
+        viewContainerRef: this.viewContainerRef,
+        width: '650px',
+      });
+      locationDialogRef.afterClosed().subscribe((isShared?: boolean) => {
+        if (isShared == null) { return; }
+        params.isShared = isShared;
+        this.createTemplate(params);
+      });
+      return;
+    }
     const data: CreateFileDialogData = {
-      folder,
-      global: this.isGlobal,
-      purpose: folder === 'api' || folder?.startsWith('api/') ? 'Api' : undefined,
+      folder: params.folder,
+      global: params.isShared,
+      purpose: params.folder === 'api' || params.folder?.startsWith('api/') ? 'Api' : undefined,
     };
     const dialogRef = this.dialog.open(CreateFileDialogComponent, {
       autoFocus: false,
@@ -192,8 +212,8 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe((result?: CreateFileDialogResult) => {
       if (!result) { return; }
 
-      this.sourceService.create(result.name, this.isGlobal, result.templateKey).subscribe(() => {
-        this.sourceService.getAll(this.isGlobal).subscribe(files => {
+      this.sourceService.create(result.name, params.isShared, result.templateKey).subscribe(() => {
+        this.sourceService.getAllNew().subscribe(files => {
           this.templates$.next(files);
         });
       });
@@ -204,9 +224,9 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
     this.monacoEditorRef?.insertSnippet(snippet);
   }
 
-  codeChanged(code: string, viewKey: string): void {
+  codeChanged(code: string, viewKey: ViewKey): void {
     let viewInfos = this.viewInfos$.value;
-    const selectedIndex = viewInfos.findIndex(v => v.viewKey === viewKey);
+    const selectedIndex = viewInfos.findIndex(v => GeneralHelpers.objectsEqual(v.viewKey, viewKey));
     const selectedViewInfo = viewInfos[selectedIndex];
     const newViewInfo: ViewInfo = {
       ...selectedViewInfo,
@@ -219,42 +239,44 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
     this.viewInfos$.next(viewInfos);
   }
 
-  openView(viewKey: string): void {
+  openView(viewKey: ViewKey): void {
     // fix viewKey because it can be a templateId or a path, and file might already be open
-    viewKey = this.viewInfos$.value.find(v => v.viewKey !== viewKey && v.view?.FileName === viewKey)?.viewKey ?? viewKey;
+    viewKey = this.viewInfos$.value.find(
+      v => !GeneralHelpers.objectsEqual(v.viewKey, viewKey) && v.view?.FileName === viewKey.key && v.view?.IsShared === viewKey.shared
+    )?.viewKey ?? viewKey;
 
     const oldActiveView = this.activeView$.value;
-    if (oldActiveView !== viewKey) {
+    if (!GeneralHelpers.objectsEqual(oldActiveView, viewKey)) {
       this.activeView$.next(viewKey);
     }
     const oldOpenViews = this.openViews$.value;
-    if (!oldOpenViews.includes(viewKey)) {
+    if (!oldOpenViews.some(v => GeneralHelpers.objectsEqual(v, viewKey))) {
       const newOpenViews = [...oldOpenViews, viewKey];
       this.openViews$.next(newOpenViews);
     }
   }
 
-  closeEditor(viewKey: string): void {
+  closeEditor(viewKey: ViewKey): void {
     const oldOpenViews = this.openViews$.value;
-    const newOpenViews = oldOpenViews.filter(key => key !== viewKey);
+    const newOpenViews = oldOpenViews.filter(key => !GeneralHelpers.objectsEqual(key, viewKey));
 
     const oldActiveView = this.activeView$.value;
-    if (oldActiveView === viewKey) {
-      const newActiveView = oldOpenViews[oldOpenViews.indexOf(oldActiveView) - 1] ?? newOpenViews[0];
+    if (GeneralHelpers.objectsEqual(oldActiveView, viewKey)) {
+      const newActiveView = oldOpenViews[oldOpenViews.findIndex(v => GeneralHelpers.objectsEqual(v, oldActiveView)) - 1] ?? newOpenViews[0];
       this.activeView$.next(newActiveView);
     }
 
     this.openViews$.next(newOpenViews);
   }
 
-  save(viewKey?: string): void {
+  save(viewKey?: ViewKey): void {
     viewKey ??= this.activeView$.value;
-    const viewInfo = this.viewInfos$.value.find(v => v.viewKey === viewKey);
+    const viewInfo = this.viewInfos$.value.find(v => GeneralHelpers.objectsEqual(v.viewKey, viewKey));
     if (viewInfo?.view == null) { return; }
 
     this.snackBar.open('Saving...');
     const codeToSave = viewInfo.view.Code;
-    this.sourceService.save(viewKey, this.isGlobal, viewInfo.view, this.urlItems).subscribe({
+    this.sourceService.save(viewKey.key, viewKey.shared, viewInfo.view, this.urlItems).subscribe({
       next: res => {
         if (!res) {
           this.snackBar.open('Failed', null, { duration: 2000 });
@@ -262,7 +284,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
         }
 
         let newViewInfos = [...this.viewInfos$.value];
-        const selectedIndex = newViewInfos.findIndex(v => v.viewKey === viewKey);
+        const selectedIndex = newViewInfos.findIndex(v => GeneralHelpers.objectsEqual(v.viewKey, viewKey));
         if (selectedIndex < 0) { return; }
 
         const selectedViewInfo = newViewInfos[selectedIndex];
@@ -281,7 +303,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
   }
 
   /** Show info about editions if other files with the same name exist */
-  private showCodeAndEditionWarnings(viewKey: string, view: SourceView, files: string[]): void {
+  private showCodeAndEditionWarnings(viewKey: ViewKey, view: SourceView, files: FileAsset[]): void {
     const pathAndName = view.FileName;
     const pathSeparator = pathAndName.indexOf('/') > -1 ? pathAndName.lastIndexOf('/') + 1 : 0;
     const pathWithSlash = pathSeparator === 0 ? '' : pathAndName.substring(0, pathSeparator);
@@ -289,14 +311,15 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
     const name = fullName.substring(0, fullName.length - view.Extension.length);
     const nameCode = name + '.code' + view.Extension;
     // find out if we also have a code file
-    const codeFile = files.find(file => file === pathWithSlash + nameCode);
-    const otherEditions = files.filter(file => file.endsWith(fullName)).length - 1;
+    const codeFile = files.find(file => file.Path === pathWithSlash + nameCode && file.Shared === view.IsShared);
+    const otherEditions = files.filter(file => file.Path.endsWith(fullName) && file.Shared === view.IsShared).length - 1;
 
     if (codeFile || otherEditions) {
       const snackBarData: CodeAndEditionWarningsSnackBarData = {
         fileName: fullName,
-        codeFile,
-        edition: this.urlItems.find(i => i.EntityId?.toString() === viewKey && i.Path === view.FileName)?.Edition,
+        codeFile: codeFile?.Path,
+        edition: this.urlItems
+          .find(i => i.EntityId?.toString() === viewKey.key && i.IsShared === view.IsShared && i.Path === view.FileName)?.Edition,
         otherEditions,
         openCodeBehind: false,
       };
@@ -307,7 +330,8 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
 
       snackBarRef.onAction().subscribe(() => {
         if ((snackBarRef.containerInstance.snackBarConfig.data as CodeAndEditionWarningsSnackBarData).openCodeBehind) {
-          this.openView(codeFile);
+          const openViewKey: ViewKey = { key: codeFile?.Path, shared: codeFile?.Shared };
+          this.openView(openViewKey);
         }
       });
     }

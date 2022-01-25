@@ -1,8 +1,9 @@
+import { FileAsset } from './models/file-asset.model';
 import { Snippet, SnippetsSets } from './models/snippet.model';
 import { SourceView } from './models/source-view.model';
 
 export interface Tab {
-  viewKey: string;
+  viewKey: ViewKey;
   label: string;
   isActive: boolean;
   isModified: boolean;
@@ -10,11 +11,11 @@ export interface Tab {
 }
 
 export interface CodeEditorTemplateVars {
-  activeView: string;
+  activeView: ViewKey;
   tabs: Tab[];
-  viewKey: string;
-  view: SourceView;
-  templates: string[];
+  viewKey: ViewKey;
+  view?: SourceView;
+  templates: FileAsset[];
   explorerSnipps: SnippetsSets;
   editorSnipps: Snippet[];
 }
@@ -27,10 +28,15 @@ export const Explorers = {
 export type ExplorerOption = typeof Explorers[keyof typeof Explorers];
 
 export interface ViewInfo {
-  /** ViewKey is templateId or path */
-  viewKey: string;
+  viewKey: ViewKey;
   view?: SourceView;
   explorerSnipps?: SnippetsSets;
   editorSnipps?: Snippet[];
   savedCode?: string;
+}
+
+export interface ViewKey {
+  /** ViewKey is templateId or path */
+  key: string;
+  shared: boolean;
 }

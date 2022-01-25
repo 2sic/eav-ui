@@ -1,11 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { NgModule } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatRippleModule } from '@angular/material/core';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CreateFileDialogModule } from '../create-file-dialog';
@@ -22,6 +25,7 @@ import { ObjectToArrayPipe } from './code-snippets/object-to-array.pipe';
 import { CodeTemplatesComponent } from './code-templates/code-templates.component';
 import { DepthPaddingPipe } from './code-templates/depth-padding.pipe';
 import { SortItemsPipe } from './code-templates/order-items.pipe';
+import { FileLocationDialogComponent } from './file-location-dialog/file-location-dialog.component';
 import { SnippetsService } from './services/snippets.service';
 import { SourceService } from './services/source.service';
 
@@ -42,6 +46,7 @@ export function translateLoaderFactoryCode(http: HttpClient) {
     DepthPaddingPipe,
     SortItemsPipe,
     CodeAndEditionWarningsComponent,
+    FileLocationDialogComponent,
   ],
   imports: [
     CodeEditorRoutingModule,
@@ -56,6 +61,9 @@ export function translateLoaderFactoryCode(http: HttpClient) {
     MonacoEditorModule,
     MatProgressSpinnerModule,
     CreateFileDialogModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatSelectModule,
   ],
   providers: [
     Context,
