@@ -34,7 +34,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     columnDefs: [
       {
         headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
-        cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter',
+        cellRenderer: 'idFieldComponent', sortable: true, filter: 'agNumberColumnFilter',
         cellRendererParams: {
           tooltipGetter: (permission: Permission) => `ID: ${permission.Id}\nGUID: ${permission.Guid}`,
         } as IdFieldParams,

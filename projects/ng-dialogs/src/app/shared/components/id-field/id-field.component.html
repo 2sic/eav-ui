@@ -1,4 +1,7 @@
-<div matRipple class="id-box highlight" [tippy]="tooltip" (click)="copy()">
+<div matRipple class="id-box highlight" [tippy]="tooltip" (click)="copy()" [ngClass]="{
+  'align-start': align === 'start',
+  'align-end': align === 'end'
+}">
   <span class="id">{{ id }}</span>
   <mat-icon class="icon">file_copy</mat-icon>
 </div>

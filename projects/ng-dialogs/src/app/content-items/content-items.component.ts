@@ -251,7 +251,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
       {
         headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense',
         cellClass: (params) => `${(params.data as ContentItem)._EditInfo.ReadOnly ? 'disabled' : ''} id-action no-padding no-outline`,
-        cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter',
+        cellRenderer: 'idFieldComponent', sortable: true, filter: 'agNumberColumnFilter',
         cellRendererParams: {
           tooltipGetter: (item: ContentItem) => `ID: ${item.Id}\nRepoID: ${item._RepositoryId}\nGUID: ${item.Guid}`,
         } as IdFieldParams,

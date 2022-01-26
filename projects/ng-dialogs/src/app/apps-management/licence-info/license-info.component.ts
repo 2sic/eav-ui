@@ -26,9 +26,9 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
     },
     columnDefs: [
       {
-        field: 'ID', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
+        field: 'ID', width: 200, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
         cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter',
-        valueGetter: (params) => (params.data as Feature).Guid,
+        valueGetter: (params) => (params.data as Feature).NameId,
         cellRendererParams: {
           tooltipGetter: (feature: Feature) => `NameId: ${feature.NameId}\nGUID: ${feature.Guid}`,
         } as IdFieldParams,

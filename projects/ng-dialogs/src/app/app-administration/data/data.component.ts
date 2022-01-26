@@ -54,7 +54,7 @@ export class DataComponent implements OnInit, OnDestroy {
       {
         headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense',
         cellClass: (params) => `${(params.data as ContentType).EditInfo.ReadOnly ? 'disabled' : ''} id-action no-padding no-outline`,
-        cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter',
+        cellRenderer: 'idFieldComponent', sortable: true, filter: 'agNumberColumnFilter',
         cellRendererParams: {
           tooltipGetter: (contentType: ContentType) => `ID: ${contentType.Id}\nGUID: ${contentType.StaticName}`,
         } as IdFieldParams,
