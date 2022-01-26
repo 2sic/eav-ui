@@ -1,0 +1,25 @@
+<div class="nav-component-wrapper" *ngIf="{
+  features: features$ | async,
+  changed: changed$ | async
+} as data">
+  <div mat-dialog-title>
+    <div class="dialog-title-box">
+      <div>Manage features</div>
+      <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <div class="grid-wrapper">
+    <ag-grid-angular class="ag-theme-material" [rowData]="data.features" [modules]="modules"
+      [gridOptions]="gridOptions">
+    </ag-grid-angular>
+
+    <div class="grid-more-actions-box"></div>
+
+    <button mat-fab mat-elevation-z24 class="grid-fab" tippy="Save" [disabled]="!data.changed" (click)="save()">
+      <mat-icon>done</mat-icon>
+    </button>
+  </div>
+</div>

@@ -1,7 +1,9 @@
 import { AllCommunityModules, GridOptions } from '@ag-grid-community/all-modules';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest, fromEvent, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
+import { GlobalConfigService } from '../../../../../edit/shared/store/ngrx-data';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
@@ -12,6 +14,7 @@ import { FeaturesListNameComponent } from '../ag-grid-components/features-list-n
 import { FeaturesListPublicComponent } from '../ag-grid-components/features-list-public/features-list-public.component';
 import { FeaturesListSecurityComponent } from '../ag-grid-components/features-list-security/features-list-security.component';
 import { FeaturesListUiComponent } from '../ag-grid-components/features-list-ui/features-list-ui.component';
+import { ManageFeaturesWipComponent } from '../manage-features-wip/manage-features-wip.component';
 import { Feature } from '../models/feature.model';
 import { ManageFeaturesMessageData } from '../models/manage-features-message-data.model';
 import { FeaturesConfigService } from '../services/features-config.service';
@@ -87,6 +90,8 @@ export class ManageFeaturesComponent implements OnInit, OnDestroy {
     ],
   };
 
+  debugEnabled$ = this.globalConfigService.getDebugEnabled$();
+
   private features$ = new BehaviorSubject<Feature[]>(null);
   private showManagement$ = new BehaviorSubject(false);
   private showSpinner$ = new BehaviorSubject(false);
@@ -96,7 +101,12 @@ export class ManageFeaturesComponent implements OnInit, OnDestroy {
   );
   private subscription = new Subscription();
 
-  constructor(private featuresConfigService: FeaturesConfigService) { }
+  constructor(
+    private featuresConfigService: FeaturesConfigService,
+    private globalConfigService: GlobalConfigService,
+    private dialog: MatDialog,
+    private viewContainerRef: ViewContainerRef,
+  ) { }
 
   ngOnInit() {
     this.fetchFeatures();
@@ -153,5 +163,23 @@ export class ManageFeaturesComponent implements OnInit, OnDestroy {
         });
       })
     );
+  }
+
+  wip(): void {
+    const wipRef = this.dialog.open(ManageFeaturesWipComponent, {
+      autoFocus: false,
+      backdropClass: 'dialog-backdrop',
+      closeOnNavigation: false,
+      panelClass: [
+        'dialog-panel',
+        `dialog-panel-large`,
+        'no-scrollbar',
+      ],
+      position: { top: '0' },
+      viewContainerRef: this.viewContainerRef,
+    });
+    wipRef.afterClosed().subscribe(() => {
+      this.fetchFeatures();
+    });
   }
 }

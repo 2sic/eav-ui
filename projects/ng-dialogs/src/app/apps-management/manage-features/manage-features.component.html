@@ -10,7 +10,12 @@
 
     <iframe class="iframe" *ngIf="data.showManagement" [src]="data.managementUrl | safeResourceUrl"></iframe>
 
-    <div class="grid-more-actions-box"></div>
+    <div class="grid-more-actions-box">
+      <button mat-button *ngIf="debugEnabled$ | async" color="accent" (click)="wip()">
+        <mat-icon>bug_report</mat-icon>
+        WIP
+      </button>
+    </div>
 
     <button mat-fab mat-elevation-z24 class="grid-fab" tippy="Manage features" *ngIf="!data.showManagement"
       (click)="toggleManagement()">

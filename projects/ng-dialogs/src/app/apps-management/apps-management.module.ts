@@ -12,6 +12,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { EcoFabSpeedDialModule } from '@ecodev/fab-speed-dial';
 import { AppDialogConfigService } from '../app-administration/services';
@@ -32,6 +33,8 @@ import { AppsManagementNavComponent } from './apps-management-nav/apps-managemen
 import { AppsManagementRoutingModule } from './apps-management-routing.module';
 import { CreateAppComponent } from './create-app/create-app.component';
 import { CreateInheritedAppComponent } from './create-inherited-app/create-inherited-app.component';
+import { FeaturesStatusComponent } from './manage-features-wip/features-status/features-status.component';
+import { ManageFeaturesWipComponent } from './manage-features-wip/manage-features-wip.component';
 import { ManageFeaturesComponent } from './manage-features/manage-features.component';
 import { AppsListService } from './services/apps-list.service';
 import { FeaturesConfigService } from './services/features-config.service';
@@ -62,6 +65,8 @@ import { SystemSettingsComponent } from './system-settings/system-settings.compo
     CreateInheritedAppComponent,
     SystemInfoComponent,
     FeaturesListEnabledReasonComponent,
+    ManageFeaturesWipComponent,
+    FeaturesStatusComponent,
   ],
   imports: [
     AppsManagementRoutingModule,
@@ -82,6 +87,7 @@ import { SystemSettingsComponent } from './system-settings/system-settings.compo
     MatMenuModule,
     ReactiveFormsModule,
     MatSelectModule,
+    MatSnackBarModule,
   ],
   providers: [
     Context,
