@@ -46,6 +46,14 @@
     </mat-tab>
 
     <mat-tab>
+      <div *matTabLabel class="mat-tab-label-box" tippy="License Info">
+        <mat-icon>copyright</mat-icon>
+        <span>License</span>
+      </div>
+      <app-license-info *matTabContent></app-license-info>
+    </mat-tab>
+
+    <mat-tab>
       <div *matTabLabel class="mat-tab-label-box" tippy="Features">
         <mat-icon>tune</mat-icon>
         <span>Features</span>

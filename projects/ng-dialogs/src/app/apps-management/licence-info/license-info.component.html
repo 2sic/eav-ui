@@ -1,0 +1,15 @@
+<mat-accordion multi *ngIf="licenses$ | async as licenses">
+  <mat-expansion-panel #panel *ngFor="let license of licenses | licensesOrder; trackBy: trackLicenses">
+    <mat-expansion-panel-header>
+      <mat-panel-title>{{ license.Name }}</mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <ng-container *ngIf="panel.expanded">
+      <p class="license-description">{{ license.Description }}</p>
+
+      <ag-grid-angular class="ag-theme-material" [rowData]="license.Features" [modules]="modules"
+        [gridOptions]="gridOptions" appAgGridHeight [itemsCount]="license.Features?.length">
+      </ag-grid-angular>
+    </ng-container>
+  </mat-expansion-panel>
+</mat-accordion>

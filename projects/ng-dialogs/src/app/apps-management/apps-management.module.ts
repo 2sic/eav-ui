@@ -6,6 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatRippleModule } from '@angular/material/core';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
@@ -33,6 +34,9 @@ import { AppsManagementNavComponent } from './apps-management-nav/apps-managemen
 import { AppsManagementRoutingModule } from './apps-management-routing.module';
 import { CreateAppComponent } from './create-app/create-app.component';
 import { CreateInheritedAppComponent } from './create-inherited-app/create-inherited-app.component';
+import { AgGridHeightDirective } from './licence-info/ag-grid-height.directive';
+import { LicenseInfoComponent } from './licence-info/license-info.component';
+import { LicensesOrderPipe } from './licence-info/licenses-order.pipe';
 import { FeaturesStatusComponent } from './manage-features-wip/features-status/features-status.component';
 import { ManageFeaturesWipComponent } from './manage-features-wip/manage-features-wip.component';
 import { ManageFeaturesComponent } from './manage-features/manage-features.component';
@@ -67,6 +71,9 @@ import { SystemSettingsComponent } from './system-settings/system-settings.compo
     FeaturesListEnabledReasonComponent,
     ManageFeaturesWipComponent,
     FeaturesStatusComponent,
+    LicenseInfoComponent,
+    LicensesOrderPipe,
+    AgGridHeightDirective,
   ],
   imports: [
     AppsManagementRoutingModule,
@@ -88,6 +95,7 @@ import { SystemSettingsComponent } from './system-settings/system-settings.compo
     ReactiveFormsModule,
     MatSelectModule,
     MatSnackBarModule,
+    MatExpansionModule,
   ],
   providers: [
     Context,

@@ -28,6 +28,7 @@ const appsManagementRoutes: Routes = [
       },
       { path: 'settings', component: EmptyRouteComponent, data: { title: 'System Settings' } },
       { path: 'languages', component: EmptyRouteComponent, data: { title: 'Zone Languages' } },
+      { path: 'license', component: EmptyRouteComponent, data: { title: 'License Info' } },
       { path: 'features', component: EmptyRouteComponent, data: { title: 'Zone Features' } },
       { path: 'sxc-insights', component: EmptyRouteComponent, data: { title: 'Debug Insights' } },
     ]

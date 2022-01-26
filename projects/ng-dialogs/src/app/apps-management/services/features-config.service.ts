@@ -3,8 +3,10 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { FeatureState } from '../manage-features-wip/manage-features-wip.models';
 import { Feature } from '../models/feature.model';
+import { License } from '../models/license.model';
 
 const webApiFeatures = 'admin/feature/';
+const webApiLicense = 'sys/license/summary';
 
 @Injectable()
 export class FeaturesConfigService {
@@ -24,5 +26,9 @@ export class FeaturesConfigService {
 
   saveFeaturesNew(featuresStates: FeatureState[]) {
     return this.http.post<null>(this.dnnContext.$2sxc.http.apiUrl(webApiFeatures + 'SaveNew'), featuresStates);
+  }
+
+  getLicenses() {
+    return this.http.get<License[]>(this.dnnContext.$2sxc.http.apiUrl(webApiLicense));
   }
 }
