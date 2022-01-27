@@ -3,6 +3,12 @@ import { Directive, ElementRef, Input, OnChanges, SimpleChanges } from '@angular
 @Directive({ selector: '[appAgGridHeight]' })
 export class AgGridHeightDirective implements OnChanges {
   @Input() itemsCount = 0;
+  @Input() headerHeight = 32;
+  @Input() rowHeight = 48;
+  @Input() maxRows = 100;
+
+  /** Fixes a bug where scrollbar appears when then is no overflow */
+  private extraHeight = 2;
 
   private element: HTMLElement;
 
@@ -12,12 +18,8 @@ export class AgGridHeightDirective implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.itemsCount != null) {
-      const headerHeight = 32;
-      const rowHeight = 48;
-      const extra = 2;
-      const maxRows = 4;
-      const rows = this.itemsCount === 0 ? 2 : this.itemsCount > maxRows ? maxRows : this.itemsCount;
-      this.element.style.height = `${headerHeight + rows * rowHeight + extra}px`;
+      const rows = this.itemsCount === 0 ? 2 : this.itemsCount > this.maxRows ? this.maxRows : this.itemsCount;
+      this.element.style.height = `${this.headerHeight + rows * this.rowHeight + this.extraHeight}px`;
     }
   }
 }

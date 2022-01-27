@@ -4,12 +4,27 @@
   padding-bottom: 40px;
 }
 
+.mat-expansion-panel-header {
+  padding-top: 4px;
+  padding-bottom: 4px;
+
+  ::ng-deep.mat-content {
+    max-height: 100%;
+  }
+}
+
 .mat-expansion-panel-header-title {
+  display: flex;
+  flex-direction: column;
+}
+
+.panel-title {
   font-size: 14px;
 }
 
-.license-description {
-  font-size: 14px;
-  margin: 0;
-  margin-bottom: 16px;
+.panel-description {
+  padding-top: 4px;
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.54);
+  overflow: hidden;
 }
