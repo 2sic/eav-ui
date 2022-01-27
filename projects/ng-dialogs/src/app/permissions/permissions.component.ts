@@ -68,6 +68,11 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   private targetType = parseInt(this.route.snapshot.paramMap.get('targetType'), 10);
   private keyType = this.route.snapshot.paramMap.get('keyType') as MetadataKeyType;
   private key = this.route.snapshot.paramMap.get('key');
+  private prefills: Record<string, Record<string, string>> = {
+    [eavConstants.metadata.language.targetType]: {
+      PermissionType: 'language',
+    },
+  };
 
   constructor(
     private dialogRef: MatDialogRef<PermissionsComponent>,
@@ -109,7 +114,8 @@ export class PermissionsComponent implements OnInit, OnDestroy {
             ...(this.keyType === eavConstants.keyTypes.guid && { Guid: this.key }),
             ...(this.keyType === eavConstants.keyTypes.number && { Number: parseInt(this.key, 10) }),
             ...(this.keyType === eavConstants.keyTypes.string && { String: this.key }),
-          }
+          },
+          ...(this.prefills[this.targetType] && { Prefill: this.prefills[this.targetType] }),
         }],
       };
     } else {

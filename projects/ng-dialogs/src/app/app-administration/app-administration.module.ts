@@ -33,6 +33,7 @@ import { AnalyzeSettingsValueComponent } from './ag-grid-components/analyze-sett
 import { DataActionsComponent } from './ag-grid-components/data-actions/data-actions.component';
 import { DataFieldsComponent } from './ag-grid-components/data-fields/data-fields.component';
 import { DataItemsComponent } from './ag-grid-components/data-items/data-items.component';
+import { LanguagesPermissionsActionsComponent } from './ag-grid-components/languages-permissions-actions/languages-permissions-actions.component';
 import { QueriesActionsComponent } from './ag-grid-components/queries-actions/queries-actions.component';
 import { ViewsActionsComponent } from './ag-grid-components/views-actions/views-actions.component';
 import { ViewsShowComponent } from './ag-grid-components/views-show/views-show.component';
@@ -101,6 +102,7 @@ import { WebApiComponent } from './web-api/web-api.component';
     AnalyzeSettingsTotalResultsComponent,
     SettingsItemDetailsComponent,
     LanguagePermissionsComponent,
+    LanguagesPermissionsActionsComponent,
   ],
   imports: [
     AppAdministrationRoutingModule,
