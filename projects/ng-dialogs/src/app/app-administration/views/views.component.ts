@@ -68,7 +68,7 @@ export class ViewsComponent implements OnInit, OnDestroy {
         sortable: true, sort: 'asc', filter: 'agTextColumnFilter', onCellClicked: this.editView.bind(this),
       },
       {
-        headerName: 'Type', field: 'Type', width: 70, headerClass: 'dense', cellClass: 'no-outline',
+        headerName: 'Type', field: 'Type', width: 82, headerClass: 'dense', cellClass: 'no-padding no-outline',
         sortable: true, filter: 'agTextColumnFilter', cellRenderer: 'viewsTypeComponent', valueGetter: this.typeValueGetter,
       },
       {
