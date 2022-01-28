@@ -37,7 +37,7 @@ export class EavService {
       appRoot: dialogContext.App.Url,
       lang: dialogContext.Language.Current,
       langPri: dialogContext.Language.Primary,
-      langs: dialogContext.Language.All,
+      langs: dialogContext.Language.List,
       moduleId: this.context.moduleId.toString(),
       partOfPage: sessionStorage.getItem(keyPartOfPage),
       portalRoot: dialogContext.Site.Url,

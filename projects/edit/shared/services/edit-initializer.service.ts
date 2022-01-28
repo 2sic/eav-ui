@@ -88,8 +88,7 @@ export class EditInitializerService implements OnDestroy {
 
     // load language data only for parent dialog to not overwrite languages when opening child dialogs
     if (isParentDialog) {
-      const eavLangs: Language[] = Object.entries(languages).map(([key, name]) => ({ key, name }));
-      const sortedLanguages = sortLanguages(defaultLanguage, eavLangs);
+      const sortedLanguages = sortLanguages(defaultLanguage, languages);
       this.languageService.loadLanguages(sortedLanguages);
     }
     this.languageInstanceService.addLanguageInstance(formId, currentLanguage, defaultLanguage, currentLanguage, false);
@@ -104,7 +103,7 @@ export class EditInitializerService implements OnDestroy {
 
   private keepInitialValues(): void {
     const items = this.itemService.getItems(this.eavService.eavConfig.itemGuids);
-    const languages = this.languageService.getLanguages().map(language => language.key);
+    const languages = this.languageService.getLanguages().map(language => language.NameId);
     const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
     const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
     if (!languages.includes(currentLanguage)) {

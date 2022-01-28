@@ -46,8 +46,7 @@ export class ContentExportComponent implements OnInit, OnDestroy {
     const dialogSettings$ = this.appDialogConfigService.getDialogSettings();
     forkJoin([contentType$, dialogSettings$]).subscribe(([contentType, dialogSettings]) => {
       this.contentType$.next(contentType);
-      const languages = dialogSettings.Context.Language.All;
-      this.languages = Object.keys(languages).map(key => ({ key, name: languages[key] }));
+      this.languages = dialogSettings.Context.Language.List;
 
       this.formValues = {
         defaultLanguage: dialogSettings.Context.Language.Primary,

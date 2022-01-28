@@ -12,7 +12,7 @@ export function getLanguageButtons(languages: Language[]): LanguageButton[] {
   // count the number of repetitions of the same language without region key
   // e.g. English (United States) and English (Australia) are both English
   languages.forEach(language => {
-    const regionlessName = removeRegionName(language.name);
+    const regionlessName = removeRegionName(language.Culture);
     if (regionlessNamesCount[regionlessName]) {
       regionlessNamesCount[regionlessName]++;
     } else {
@@ -22,12 +22,11 @@ export function getLanguageButtons(languages: Language[]): LanguageButton[] {
 
   // if language repeats, append language key to name which will be displayed
   languages.forEach(language => {
-    const regionlessName = removeRegionName(language.name);
+    const regionlessName = removeRegionName(language.Culture);
 
     languageButtons.push({
-      name: language.name,
-      key: language.key,
-      buttonText: (regionlessNamesCount[regionlessName] > 1) ? `${regionlessName} (${language.key})` : regionlessName,
+      ...language,
+      buttonText: (regionlessNamesCount[regionlessName] > 1) ? `${regionlessName} (${language.NameId})` : regionlessName,
     });
   });
 

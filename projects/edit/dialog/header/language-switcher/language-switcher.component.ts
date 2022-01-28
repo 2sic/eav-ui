@@ -75,7 +75,7 @@ export class LanguageSwitcherComponent implements OnInit, AfterViewInit, OnDestr
     this.centerSelectedHelper.lngButtonClick(event);
 
     if (!this.centerSelectedHelper.stopClickIfMouseMoved()) {
-      this.languageInstanceService.setCurrentLanguage(this.eavService.eavConfig.formId, language.key);
+      this.languageInstanceService.setCurrentLanguage(this.eavService.eavConfig.formId, language.NameId);
     }
   }
 

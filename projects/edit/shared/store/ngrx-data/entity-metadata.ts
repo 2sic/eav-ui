@@ -68,7 +68,7 @@ export function featureSelectId(feature: Feature): string {
 }
 
 export function languageSelectId(language: Language): string {
-  return language?.key;
+  return language?.NameId;
 }
 
 export function languageInstanceSelectId(languageInstance: LanguageInstance): number {

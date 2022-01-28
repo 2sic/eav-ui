@@ -1,3 +1,4 @@
+import { Language } from '../../../../../edit/shared/models';
 import { PermissionsCount } from '../../app-administration/models/permissions-count.model';
 
 export interface DialogContextApp {
@@ -34,13 +35,9 @@ export interface DialogContextEnable {
 }
 
 export interface DialogContextLanguage {
-  All: DialogContextAllLangs;
   Current: string;
+  List: Language[];
   Primary: string;
-}
-
-export interface DialogContextAllLangs {
-  [key: string]: string;
 }
 
 export interface DialogContextPage {

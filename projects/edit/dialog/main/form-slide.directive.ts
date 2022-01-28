@@ -23,8 +23,8 @@ export class FormSlideDirective implements OnInit, OnDestroy {
           pairwise(),
           map(([previousLang, currentLang]) => {
             const languages = this.languageService.getLanguages();
-            const previousLangIndex = languages.findIndex(lang => lang.key === previousLang);
-            const currentLangIndex = languages.findIndex(lang => lang.key === currentLang);
+            const previousLangIndex = languages.findIndex(lang => lang.NameId === previousLang);
+            const currentLangIndex = languages.findIndex(lang => lang.NameId === currentLang);
             const slide = (previousLangIndex > currentLangIndex) ? 'previous' : 'next';
             return slide;
           }),

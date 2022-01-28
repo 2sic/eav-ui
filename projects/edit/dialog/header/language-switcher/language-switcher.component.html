@@ -6,9 +6,9 @@
   <div #scrollable class="scrollable lang-switch" [tippy]="'Message.CantSwitchLanguage' | translate"
     [tippyDisabled]="!disabled">
     <button *ngFor="let langButton of data.languageButtons" mat-flat-button class="lang-switch__button"
-      [disabled]="disabled && data.currentLanguage !== langButton.key"
-      [color]="data.currentLanguage === langButton.key ? 'accent' : 'white'" (mousedown)="lngButtonMouseDown($event)"
-      (click)="lngButtonClick($event, langButton)" [tippy]="langButton.name" [tippyDisabled]="disabled">
+      [disabled]="disabled && data.currentLanguage !== langButton.NameId"
+      [color]="data.currentLanguage === langButton.NameId ? 'accent' : 'white'" (mousedown)="lngButtonMouseDown($event)"
+      (click)="lngButtonClick($event, langButton)" [tippy]="langButton.Culture" [tippyDisabled]="disabled">
       {{ langButton.buttonText }}
     </button>
   </div>

@@ -1,5 +1,4 @@
-import { VersioningOptions } from '.';
-import { DialogContextAllLangs } from '../../../ng-dialogs/src/app/shared/models/dialog-context.models';
+import { Language, VersioningOptions } from '.';
 
 /** WARNING! These are constants that form was loaded with. They do not change while form is running */
 export interface EavConfig {
@@ -8,7 +7,7 @@ export interface EavConfig {
   appRoot: string;
   lang: string;
   langPri: string;
-  langs: DialogContextAllLangs;
+  langs: Language[];
   moduleId: string;
   partOfPage: string;
   portalRoot: string;
