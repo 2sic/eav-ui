@@ -1,7 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { BehaviorSubject, combineLatest, Subscription } from 'rxjs';
+import { BehaviorSubject, combineLatest, map, Subscription } from 'rxjs';
 import { EavService } from '.';
-import { ItemService } from '../store/ngrx-data';
+import { ItemService, LanguageInstanceService, LanguageService } from '../store/ngrx-data';
 
 @Injectable()
 export class FormsStateService implements OnDestroy {
@@ -13,7 +13,12 @@ export class FormsStateService implements OnDestroy {
   private formsDirty: Record<string, boolean>;
   private subscription: Subscription;
 
-  constructor(private eavService: EavService, private itemService: ItemService) { }
+  constructor(
+    private eavService: EavService,
+    private itemService: ItemService,
+    private languageService: LanguageService,
+    private languageInstanceService: LanguageInstanceService,
+  ) { }
 
   ngOnDestroy() {
     this.readOnly$?.complete();
@@ -35,10 +40,18 @@ export class FormsStateService implements OnDestroy {
     }
 
     this.subscription.add(
-      combineLatest(
-        this.eavService.eavConfig.itemGuids.map(entityGuid => this.itemService.getItemHeader$(entityGuid)),
-      ).subscribe(itemHeaders => {
-        const readOnly = itemHeaders.some(itemHeader => itemHeader?.EditInfo?.ReadOnly ?? false);
+      combineLatest([
+        combineLatest(this.eavService.eavConfig.itemGuids.map(entityGuid => this.itemService.getItemHeader$(entityGuid))).pipe(
+          map(itemHeaders => itemHeaders.some(itemHeader => itemHeader?.EditInfo?.ReadOnly ?? false)),
+        ),
+        combineLatest([
+          this.languageInstanceService.getCurrentLanguage$(this.eavService.eavConfig.formId),
+          this.languageService.getLanguages$(),
+        ]).pipe(
+          map(([currentLanguage, languages]) => languages.find(l => l.NameId === currentLanguage)?.IsAllowed ?? true),
+        ),
+      ]).subscribe(([itemsReadOnly, languageAllowed]) => {
+        const readOnly = itemsReadOnly || !languageAllowed;
         if (readOnly !== this.readOnly$.value) {
           this.readOnly$.next(readOnly);
         }
