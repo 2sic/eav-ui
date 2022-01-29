@@ -33,7 +33,7 @@ export class EntityTranslateMenuComponent implements OnInit {
     this.templateVars$ = combineLatest([readOnly$, slotIsEmpty$, currentLanguage$, defaultLanguage$]).pipe(
       map(([readOnly, slotIsEmpty, currentLanguage, defaultLanguage]) => {
         const templateVars: EntityTranslateMenuTemplateVars = {
-          readOnly,
+          readOnly: readOnly.value,
           slotIsEmpty,
           currentLanguage,
           defaultLanguage,

@@ -65,7 +65,7 @@ export class EntityWrapperComponent implements OnInit {
     this.templateVars$ = combineLatest([readOnly$, currentLanguage$, defaultLanguage$, itemForTooltip$, header$, settings$]).pipe(
       map(([readOnly, currentLanguage, defaultLanguage, itemForTooltip, header, settings]) => {
         const templateVars: ContentTypeTemplateVars = {
-          readOnly,
+          readOnly: readOnly.value,
           currentLanguage,
           defaultLanguage,
           header,

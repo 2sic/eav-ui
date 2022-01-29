@@ -8,7 +8,8 @@
     <app-language-switcher *ngIf="data.hasLanguages" [disabled]="disabled"></app-language-switcher>
   </div>
 
-  <mat-icon *ngIf="data.readOnly" class="header__hint-icon" [tippy]="'General.ReadOnlyHint' | translate">
+  <mat-icon *ngIf="data.readOnly" class="header__hint-icon"
+    [tippy]="('General.ReadOnlyHint.' + data.readOnlyType) | translate" [tippyDisabled]="!data.readOnlyType">
     lock
   </mat-icon>
 

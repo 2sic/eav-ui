@@ -126,7 +126,7 @@ export class FieldsSettingsService implements OnDestroy {
               attributeValues, calculated.DisableTranslation, currentLanguage, defaultLanguage,
             );
             calculated.Disabled = disabledBecauseTranslations || calculated.Disabled;
-            calculated.Disabled = readOnly || calculated.Disabled;
+            calculated.Disabled = readOnly.value || calculated.Disabled;
             // update settings with respective FieldLogics
             const logic = FieldLogicManager.singleton().get(attribute.InputType);
             const fixed = logic?.update(calculated, value) ?? calculated;

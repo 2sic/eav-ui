@@ -34,7 +34,8 @@ export class EditDialogHeaderComponent implements OnInit {
     this.templateVars$ = combineLatest([readOnly$, hasLanguages$, publishMode$]).pipe(
       map(([readOnly, hasLanguages, publishMode]) => {
         const templateVars: EditDialogHeaderTemplateVars = {
-          readOnly,
+          readOnly: readOnly.value,
+          readOnlyType: readOnly.type,
           hasLanguages,
           publishMode,
         };

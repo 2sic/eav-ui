@@ -1,11 +1,13 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject, combineLatest, map, Subscription } from 'rxjs';
 import { EavService } from '.';
+import { GeneralHelpers } from '../helpers';
+import { FormReadOnly } from '../models';
 import { ItemService, LanguageInstanceService, LanguageService } from '../store/ngrx-data';
 
 @Injectable()
 export class FormsStateService implements OnDestroy {
-  readOnly$: BehaviorSubject<boolean>;
+  readOnly$: BehaviorSubject<FormReadOnly>;
   formsValid$: BehaviorSubject<boolean>;
   formsDirty$: BehaviorSubject<boolean>;
 
@@ -29,7 +31,7 @@ export class FormsStateService implements OnDestroy {
 
   init() {
     this.subscription = new Subscription();
-    this.readOnly$ = new BehaviorSubject(true);
+    this.readOnly$ = new BehaviorSubject({ value: true, type: undefined });
     this.formsValid$ = new BehaviorSubject(false);
     this.formsDirty$ = new BehaviorSubject(false);
     this.formsValid = {};
@@ -51,8 +53,11 @@ export class FormsStateService implements OnDestroy {
           map(([currentLanguage, languages]) => languages.find(l => l.NameId === currentLanguage)?.IsAllowed ?? true),
         ),
       ]).subscribe(([itemsReadOnly, languageAllowed]) => {
-        const readOnly = itemsReadOnly || !languageAllowed;
-        if (readOnly !== this.readOnly$.value) {
+        const readOnly: FormReadOnly = {
+          value: itemsReadOnly || !languageAllowed,
+          type: itemsReadOnly ? 'Form' : !languageAllowed ? 'Language' : undefined,
+        };
+        if (!GeneralHelpers.objectsEqual(readOnly, this.readOnly$.value)) {
           this.readOnly$.next(readOnly);
         }
       })

@@ -93,6 +93,11 @@
     "Buttons": {
       "NotSave": "Discard changes",
       "Save": "Save"
+    },
+    "CopyHint": "This is a copy and will be saved as a new item",
+    "ReadOnlyHint": {
+      "Form": "Form is read only",
+      "Language": "Language is read only"
     }
   },
   "Data": {
@@ -101,8 +106,7 @@
   "ItemCard": {
     "DefaultTitle": "Редагувати елемент",
     "SlotUsedTrue": "Цей елемент відкритий для редагування. Натисніть тут для блокування / видаліть його і поверніть до значення по замовчуванню.",
-    "SlotUsedFalse": "Цей елемент заблокований і залишиться пустим або значенням по замовчуванню. Значення наведені для вашої зручності. Натисніть тут для розблокування, якщо необхідно.",
-    "CopyHint": "This is a copy and will be saved as a new item"
+    "SlotUsedFalse": "Цей елемент заблокований і залишиться пустим або значенням по замовчуванню. Значення наведені для вашої зручності. Натисніть тут для розблокування, якщо необхідно."
   },
   "ValidationMessage": {
     "NotValid": "Not valid",

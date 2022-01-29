@@ -95,7 +95,10 @@
       "Save": "Speichern"
     },
     "CopyHint": "Dies ist eine Kopie und wird als neues Element gespeichert",
-    "ReadOnlyHint": "Form is read only"
+    "ReadOnlyHint": {
+      "Form": "Form is read only",
+      "Language": "Language is read only"
+    }
   },
   "Data": {
     "Delete.Question": "'{{title}}' ({{id}}) löschen?"

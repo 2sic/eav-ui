@@ -103,7 +103,7 @@ export class EditDialogMainComponent implements OnInit, AfterViewInit, OnDestroy
           debugEnabled,
           debugInfoIsOpen,
           hideHeader,
-          readOnly,
+          readOnly: readOnly.value,
         };
         return templateVars;
       }),

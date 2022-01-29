@@ -93,6 +93,11 @@
     "Buttons": {
       "NotSave": "Discard changes",
       "Save": "Save"
+    },
+    "CopyHint": "This is a copy and will be saved as a new item",
+    "ReadOnlyHint": {
+      "Form": "Form is read only",
+      "Language": "Language is read only"
     }
   },
   "Data": {
@@ -101,8 +106,7 @@
   "ItemCard": {
     "DefaultTitle": "Bewerk item",
     "SlotUsedTrue": "Dit item is open voor bewerken. Klik hier om te vergrendelen / verwijder het an keer terug naar de standaard.",
-    "SlotUsedFalse": "Dit item is vergrendeld en zal leeg/standaard blijven. De waarden worden getoond voor uw gemak. Klik hier om te ontgrendelen indien nodig.",
-    "CopyHint": "This is a copy and will be saved as a new item"
+    "SlotUsedFalse": "Dit item is vergrendeld en zal leeg/standaard blijven. De waarden worden getoond voor uw gemak. Klik hier om te ontgrendelen indien nodig."
   },
   "ValidationMessage": {
     "NotValid": "Not valid",

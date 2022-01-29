@@ -95,7 +95,10 @@
       "Save": "Save"
     },
     "CopyHint": "This is a copy and will be saved as a new item",
-    "ReadOnlyHint": "Form is read only"
+    "ReadOnlyHint": {
+      "Form": "Form is read only",
+      "Language": "Language is read only"
+    }
   },
   "Data": {
     "Delete.Question": "Delete '{{title}}' ({{id}})?"

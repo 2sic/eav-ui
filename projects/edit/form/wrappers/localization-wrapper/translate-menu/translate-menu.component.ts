@@ -57,7 +57,7 @@ export class TranslateMenuComponent implements OnInit {
     ]).pipe(
       map(([readOnly, currentLanguage, defaultLanguage, translationState, disableTranslation, disabled]) => {
         const templateVars: TranslateMenuTemplateVars = {
-          readOnly,
+          readOnly: readOnly.value,
           currentLanguage,
           defaultLanguage,
           translationState,
