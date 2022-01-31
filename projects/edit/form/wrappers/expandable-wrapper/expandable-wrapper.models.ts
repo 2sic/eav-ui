@@ -2,4 +2,5 @@ import { BaseFieldTemplateVars } from '../../fields/base/base-field-template-var
 
 export interface ExpandableWrapperTemplateVars extends BaseFieldTemplateVars {
   focused: boolean;
+  previewMinHeight: string;
 }

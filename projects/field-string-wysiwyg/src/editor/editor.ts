@@ -77,17 +77,6 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
     this.querySelector<HTMLDivElement>('.tinymce-container').classList.add(this.containerClass);
     this.querySelector<HTMLDivElement>('.tinymce-toolbar-container').classList.add(this.toolbarContainerClass);
     this.classList.add(this.mode === 'inline' ? 'inline-wysiwyg' : 'full-wysiwyg');
-    if (this.mode === 'inline') {
-      this.subscriptions.push(
-        this.connector.field$.subscribe(field => {
-          const contentContainer = this.querySelector<HTMLDivElement>('.tinymce-container');
-          if (contentContainer) {
-            const rows = parseInt(field.settings.InlineInitialHeight || '3', 10);
-            contentContainer.style.height = `${rows * 36}px`;
-          }
-        })
-      );
-    }
     this.pasteClipboardImage = this.connector._experimental.isFeatureEnabled(FeaturesConstants.PasteImageFromClipboard);
 
     const tinyLang = TinyMceTranslations.fixTranslationKey(this.connector._experimental.translateService.currentLang);

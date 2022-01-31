@@ -1,9 +1,11 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
-import { combineLatest, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { combineLatest, fromEvent, Observable } from 'rxjs';
+import { distinctUntilChanged, map, startWith } from 'rxjs/operators';
+import { InputTypeConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { consoleLogAngular } from '../../../../ng-dialogs/src/app/shared/helpers/console-log-angular.helper';
+import { vh } from '../../../../ng-dialogs/src/app/shared/helpers/viewport.helpers';
 import { WrappersConstants } from '../../../shared/constants';
 import { DropzoneDraggingHelper } from '../../../shared/helpers';
 import { AdamService, EavService, EditRoutingService, FieldsSettingsService } from '../../../shared/services';
@@ -54,13 +56,38 @@ export class ExpandableWrapperComponent extends BaseComponent<string> implements
     super.ngOnInit();
     this.open$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
 
+    const previewMinHeight$ = combineLatest([
+      fromEvent<UIEvent>(window, 'resize').pipe(
+        map(() => vh(50)), // WARNING! must match css
+        startWith(vh(50)), // WARNING! must match css
+      ),
+      this.fieldsSettingsService.getFieldSettings$(this.config.fieldName),
+    ]).pipe(
+      map(([maxHeight, settings]) => {
+        if (this.config.inputType === InputTypeConstants.StringWysiwyg) {
+          let rows = parseInt(settings.InlineInitialHeight || '3', 10);
+          if (rows < 1) {
+            rows = 1;
+          }
+          // header + rows
+          let minHeight = 40 + rows * 36;
+          if (minHeight > maxHeight) {
+            minHeight = maxHeight;
+          }
+          return `${minHeight}px`;
+        }
+        return null;
+      }),
+      distinctUntilChanged(),
+    );
+
     this.templateVars$ = combineLatest([
       combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
-      combineLatest([this.config.focused$]),
+      combineLatest([this.config.focused$, previewMinHeight$]),
     ]).pipe(
       map(([
         [controlStatus, label, placeholder, required],
-        [focused],
+        [focused, previewMinHeight],
       ]) => {
         const templateVars: ExpandableWrapperTemplateVars = {
           controlStatus,
@@ -68,6 +95,7 @@ export class ExpandableWrapperComponent extends BaseComponent<string> implements
           placeholder,
           required,
           focused,
+          previewMinHeight,
         };
         return templateVars;
       }),
