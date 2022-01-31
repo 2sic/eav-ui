@@ -41,6 +41,7 @@ import { ViewsTypeComponent } from './ag-grid-components/views-type/views-type.c
 import { ViewsUsageIdComponent } from './ag-grid-components/views-usage-id/views-usage-id.component';
 import { ViewsUsageStatusFilterComponent } from './ag-grid-components/views-usage-status-filter/views-usage-status-filter.component';
 import { WebApiActionsComponent } from './ag-grid-components/web-api-actions/web-api-actions.component';
+import { WebApiTypeComponent } from './ag-grid-components/web-api-type/web-api-type.component';
 import { AppAdministrationNavComponent } from './app-administration-nav/app-administration-nav.component';
 import { AppAdministrationRoutingModule } from './app-administration-routing.module';
 import { AppConfigurationComponent } from './app-configuration/app-configuration.component';
@@ -103,6 +104,7 @@ import { WebApiComponent } from './web-api/web-api.component';
     SettingsItemDetailsComponent,
     LanguagePermissionsComponent,
     LanguagesPermissionsActionsComponent,
+    WebApiTypeComponent,
   ],
   imports: [
     AppAdministrationRoutingModule,

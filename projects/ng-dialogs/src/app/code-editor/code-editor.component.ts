@@ -81,7 +81,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
 
     this.attachListeners();
 
-    this.sourceService.getAllNew().subscribe(templates => {
+    this.sourceService.getAll().subscribe(templates => {
       this.templates$.next(templates);
     });
 
@@ -213,7 +213,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
       if (!result) { return; }
 
       this.sourceService.create(result.name, params.isShared, result.templateKey).subscribe(() => {
-        this.sourceService.getAllNew().subscribe(files => {
+        this.sourceService.getAll().subscribe(files => {
           this.templates$.next(files);
         });
       });

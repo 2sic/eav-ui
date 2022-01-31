@@ -11,8 +11,7 @@ import { PredefinedTemplatesResponse } from '../models/predefined-template.model
 import { Preview } from '../models/preview.models';
 import { SourceView } from '../models/source-view.model';
 
-const appFilesAllNew = 'admin/AppFiles/AppFiles';
-const appFilesAll = 'admin/AppFiles/all';
+const appFilesAll = 'admin/AppFiles/AppFiles';
 const appFilesAsset = 'admin/AppFiles/asset';
 const appFilesCreate = 'admin/AppFiles/create';
 const apiExplorerInspect = 'admin/ApiExplorer/inspect';
@@ -63,9 +62,12 @@ export class SourceService {
     });
   }
 
-  getAllNew(): Observable<FileAsset[]> {
-    return this.http.get<{ Files: FileAsset[] }>(this.dnnContext.$2sxc.http.apiUrl(appFilesAllNew), {
-      params: { appId: this.context.appId },
+  getAll(mask?: string): Observable<FileAsset[]> {
+    return this.http.get<{ Files: FileAsset[] }>(this.dnnContext.$2sxc.http.apiUrl(appFilesAll), {
+      params: {
+        appId: this.context.appId,
+        ...(mask && { mask }),
+      },
     }).pipe(
       map(({ Files }) => {
         Files.forEach(file => {
@@ -76,26 +78,15 @@ export class SourceService {
     );
   }
 
-  getAll(global: boolean, mask?: string): Observable<string[]> {
-    return this.http.get<string[]>(this.dnnContext.$2sxc.http.apiUrl(appFilesAll), {
-      params: {
-        appId: this.context.appId,
-        global,
-        ...(mask && { mask }),
-        withSubfolders: 'true',
-      },
-    });
-  }
-
-  getWebApis(global: boolean): Observable<WebApi[]> {
-    return this.getAll(global, '*Controller.cs').pipe(
-      map(paths => {
-        const webApis: WebApi[] = paths.map(path => {
-          const splitIndex = path.lastIndexOf('/');
-          const fileExtIndex = path.lastIndexOf('.');
-          const folder = path.substring(0, splitIndex);
-          const name = path.substring(splitIndex + 1, fileExtIndex);
-          const webApi: WebApi = { path, folder, name };
+  getWebApis(): Observable<WebApi[]> {
+    return this.getAll('*Controller.cs').pipe(
+      map(files => {
+        const webApis: WebApi[] = files.map(file => {
+          const splitIndex = file.Path.lastIndexOf('/');
+          const fileExtIndex = file.Path.lastIndexOf('.');
+          const folder = file.Path.substring(0, splitIndex);
+          const name = file.Path.substring(splitIndex + 1, fileExtIndex);
+          const webApi: WebApi = { path: file.Path, folder, name, isShared: file.Shared };
           return webApi;
         });
         return webApis;

@@ -7,10 +7,12 @@ import { BehaviorSubject } from 'rxjs';
 import { SourceService } from '../../code-editor/services/source.service';
 import { CreateFileDialogComponent, CreateFileDialogData, CreateFileDialogResult } from '../../create-file-dialog';
 import { GoToDevRest } from '../../dev-rest/go-to-dev-rest';
+import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { DialogService } from '../../shared/services/dialog.service';
 import { WebApiActionsComponent } from '../ag-grid-components/web-api-actions/web-api-actions.component';
 import { WebApiActionsParams } from '../ag-grid-components/web-api-actions/web-api-actions.models';
+import { WebApiTypeComponent } from '../ag-grid-components/web-api-type/web-api-type.component';
 import { WebApi } from '../models/web-api.model';
 
 @Component({
@@ -27,29 +29,35 @@ export class WebApiComponent implements OnInit, OnDestroy {
     ...defaultGridOptions,
     frameworkComponents: {
       webApiActions: WebApiActionsComponent,
+      booleanFilterComponent: BooleanFilterComponent,
+      webApiTypeComponent: WebApiTypeComponent,
     },
     columnDefs: [
       {
-        headerName: 'Folder', field: 'folder', flex: 2, minWidth: 250, cellClass: 'no-outline',
+        field: 'Folder', flex: 2, minWidth: 250, cellClass: 'no-outline',
         sortable: true, sort: 'asc', filter: 'agTextColumnFilter',
+        valueGetter: (params) => (params.data as WebApi).folder,
       },
       {
-        headerName: 'Name', field: 'name', flex: 2, minWidth: 250, cellClass: 'no-outline',
+        field: 'Name', flex: 2, minWidth: 250, cellClass: 'no-outline',
         sortable: true, filter: 'agTextColumnFilter',
+        valueGetter: (params) => (params.data as WebApi).name,
+      },
+      {
+        field: 'Type', flex: 1, minWidth: 250, cellClass: 'no-outline',
+        sortable: true, filter: 'booleanFilterComponent', cellRenderer: 'webApiTypeComponent',
+        valueGetter: (params) => (params.data as WebApi).isShared,
       },
       {
         width: 82, cellClass: 'secondary-action no-padding', cellRenderer: 'webApiActions', pinned: 'right',
         cellRendererParams: {
-          enableCodeGetter: this.enableCodeGetter.bind(this),
-          onOpenCode: this.openCode.bind(this),
-          onOpenRestApi: this.openRestApi.bind(this),
+          enableCodeGetter: () => this.enableCodeGetter(),
+          onOpenCode: (api) => this.openCode(api),
+          onOpenRestApi: (api) => this.openRestApi(api),
         } as WebApiActionsParams,
       },
     ],
   };
-
-  /** ATM WebApis are not shared */
-  private global = false;
 
   constructor(
     private sourceService: SourceService,
@@ -70,9 +78,10 @@ export class WebApiComponent implements OnInit, OnDestroy {
   }
 
   createController(): void {
+    const global = false;
     const data: CreateFileDialogData = {
       folder: 'api',
-      global: this.global,
+      global,
       purpose: 'Api',
     };
     const dialogRef = this.dialog.open(CreateFileDialogComponent, {
@@ -95,7 +104,7 @@ export class WebApiComponent implements OnInit, OnDestroy {
       }
 
       this.snackBar.open('Saving...');
-      this.sourceService.create(result.name, this.global, result.templateKey).subscribe(() => {
+      this.sourceService.create(result.name, global, result.templateKey).subscribe(() => {
         this.snackBar.open('Saved', null, { duration: 2000 });
         this.fetchWebApis();
       });
@@ -103,7 +112,7 @@ export class WebApiComponent implements OnInit, OnDestroy {
   }
 
   private fetchWebApis() {
-    this.sourceService.getWebApis(this.global).subscribe(webApis => {
+    this.sourceService.getWebApis().subscribe(webApis => {
       this.webApis$.next(webApis);
     });
   }

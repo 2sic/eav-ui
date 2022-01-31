@@ -42,7 +42,7 @@ export class DevRestApiComponent extends DevRestBase<DevRestApiTemplateVars> imp
 
     const webApi$ = combineLatest([
       this.route.paramMap.pipe(map(pm => pm.get(GoToDevRest.paramApiPath))),
-      this.sourceService.getWebApis(false),
+      this.sourceService.getWebApis(),
     ]).pipe(map(([name, webApis]) => {
       name = decodeURIComponent(name);
       return webApis.find(w => w.path === name);

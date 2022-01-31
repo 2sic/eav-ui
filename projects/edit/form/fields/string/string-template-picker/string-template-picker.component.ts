@@ -94,8 +94,8 @@ export class StringTemplatePickerComponent extends BaseComponent<string> impleme
     this.global = (location === 'Host File System' // Original value used from 2sxc up until v12.01
       || location === 'Global'); // New key used in 2sxc 12.02 and later
 
-    this.sourceService.getAll(this.global).subscribe(templates => {
-      this.templates = templates;
+    this.sourceService.getAll().subscribe(files => {
+      this.templates = files.filter(file => file.Shared === this.global).map(file => file.Path);
       this.resetIfNotFound = true;
       this.setTemplateOptions();
     });
