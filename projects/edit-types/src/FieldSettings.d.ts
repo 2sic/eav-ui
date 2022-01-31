@@ -78,6 +78,7 @@ interface StringWysiwyg extends String {
    * CSS file to be used for content styling. New in 11.03. Must be a real path to work, not file:xx
    */
   ContentCss: string;
+  InlineInitialHeight: string;
 }
 
 /**
