@@ -65,6 +65,8 @@ export class ExpandableWrapperComponent extends BaseComponent<string> implements
     ]).pipe(
       map(([maxHeight, settings]) => {
         if (this.config.inputType === InputTypeConstants.StringWysiwyg) {
+          // ignore if not inline mode
+          if (settings.Dialog === 'dialog') { return null; }
           let rows = parseInt(settings.InlineInitialHeight || '3', 10);
           if (rows < 1) {
             rows = 1;
