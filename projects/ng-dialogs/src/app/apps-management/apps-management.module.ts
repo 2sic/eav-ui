@@ -10,7 +10,6 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
@@ -28,6 +27,7 @@ import { FeaturesListNameComponent } from './ag-grid-components/features-list-na
 import { FeaturesListPublicComponent } from './ag-grid-components/features-list-public/features-list-public.component';
 import { FeaturesListSecurityComponent } from './ag-grid-components/features-list-security/features-list-security.component';
 import { FeaturesListUiComponent } from './ag-grid-components/features-list-ui/features-list-ui.component';
+import { FeaturesStatusComponent } from './ag-grid-components/features-status/features-status.component';
 import { SiteLanguagesStatusComponent } from './ag-grid-components/site-languages-status/site-languages-status.component';
 import { AppsListComponent } from './apps-list/apps-list.component';
 import { AppsManagementNavComponent } from './apps-management-nav/apps-management-nav.component';
@@ -37,8 +37,6 @@ import { CreateInheritedAppComponent } from './create-inherited-app/create-inher
 import { AgGridHeightDirective } from './licence-info/ag-grid-height.directive';
 import { LicenseInfoComponent } from './licence-info/license-info.component';
 import { LicensesOrderPipe } from './licence-info/licenses-order.pipe';
-import { FeaturesStatusComponent } from './manage-features-wip/features-status/features-status.component';
-import { ManageFeaturesWipComponent } from './manage-features-wip/manage-features-wip.component';
 import { ManageFeaturesComponent } from './manage-features/manage-features.component';
 import { AppsListService } from './services/apps-list.service';
 import { FeaturesConfigService } from './services/features-config.service';
@@ -69,7 +67,6 @@ import { SystemSettingsComponent } from './system-settings/system-settings.compo
     CreateInheritedAppComponent,
     SystemInfoComponent,
     FeaturesListEnabledReasonComponent,
-    ManageFeaturesWipComponent,
     FeaturesStatusComponent,
     LicenseInfoComponent,
     LicensesOrderPipe,
@@ -83,7 +80,6 @@ import { SystemSettingsComponent } from './system-settings/system-settings.compo
     AgGridModule.withComponents([]),
     MatButtonModule,
     MatIconModule,
-    MatProgressSpinnerModule,
     MatSlideToggleModule,
     MatTabsModule,
     MatRippleModule,

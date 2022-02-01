@@ -24,3 +24,8 @@ export interface FeatureSecurity {
   /** Message how it could impact security */
   Message: string;
 }
+
+export interface FeatureState {
+  FeatureGuid: string;
+  Enabled: boolean | null;
+}

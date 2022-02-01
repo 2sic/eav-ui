@@ -1,9 +1,6 @@
-import { AllCommunityModules, GridOptions } from '@ag-grid-community/all-modules';
-import { Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { BehaviorSubject, combineLatest, fromEvent, Subscription } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
-import { GlobalConfigService } from '../../../../../edit/shared/store/ngrx-data';
+import { AllCommunityModules, GridOptions, ICellRendererParams } from '@ag-grid-community/all-modules';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
@@ -14,9 +11,9 @@ import { FeaturesListNameComponent } from '../ag-grid-components/features-list-n
 import { FeaturesListPublicComponent } from '../ag-grid-components/features-list-public/features-list-public.component';
 import { FeaturesListSecurityComponent } from '../ag-grid-components/features-list-security/features-list-security.component';
 import { FeaturesListUiComponent } from '../ag-grid-components/features-list-ui/features-list-ui.component';
-import { ManageFeaturesWipComponent } from '../manage-features-wip/manage-features-wip.component';
-import { Feature } from '../models/feature.model';
-import { ManageFeaturesMessageData } from '../models/manage-features-message-data.model';
+import { FeaturesStatusComponent } from '../ag-grid-components/features-status/features-status.component';
+import { FeaturesStatusParams } from '../ag-grid-components/features-status/features-status.models';
+import { Feature, FeatureState } from '../models/feature.model';
 import { FeaturesConfigService } from '../services/features-config.service';
 
 @Component({
@@ -37,6 +34,7 @@ export class ManageFeaturesComponent implements OnInit, OnDestroy {
       featuresListNameComponent: FeaturesListNameComponent,
       featuresListEnabledReasonComponent: FeaturesListEnabledReasonComponent,
       featuresListSecurityComponent: FeaturesListSecurityComponent,
+      featuresStatusComponent: FeaturesStatusComponent,
     },
     columnDefs: [
       {
@@ -48,25 +46,23 @@ export class ManageFeaturesComponent implements OnInit, OnDestroy {
         } as IdFieldParams,
       },
       {
-        field: 'Enabled', width: 80, headerClass: 'dense', cellClass: 'no-outline',
-        sortable: true, filter: 'booleanFilterComponent', cellRenderer: 'featuresListEnabledComponent',
-        valueGetter: (params) => (params.data as Feature).Enabled,
-      },
-      {
-        field: 'UI', width: 70, headerClass: 'dense', cellClass: 'no-outline',
-        sortable: true, filter: 'booleanFilterComponent', cellRenderer: 'featuresListUiComponent',
-        valueGetter: (params) => (params.data as Feature).Ui,
-      },
-      {
-        field: 'Public', width: 70, headerClass: 'dense', cellClass: 'no-outline',
-        sortable: true, filter: 'booleanFilterComponent', cellRenderer: 'featuresListPublicComponent',
-        valueGetter: (params) => (params.data as Feature).Public,
-      },
-      {
         field: 'Name', flex: 3, minWidth: 250, cellClass: 'primary-action highlight', sortable: true,
         filter: 'agTextColumnFilter', cellRenderer: 'featuresListNameComponent',
         onCellClicked: (params) => this.openFeature(params.data),
         valueGetter: (params) => (params.data as Feature).Name,
+      },
+      {
+        field: 'License', flex: 1, minWidth: 150, cellClass: 'no-outline', sortable: true, filter: 'agTextColumnFilter',
+        valueGetter: (params) => (params.data as Feature).License,
+        cellRenderer: (params: ICellRendererParams) => {
+          const feature: Feature = params.data;
+          return `<div ${feature.LicenseEnabled ? '' : 'style="text-decoration: line-through;"'}>${params.value}</div>`;
+        },
+      },
+      {
+        field: 'Enabled', width: 80, headerClass: 'dense', cellClass: 'no-outline',
+        sortable: true, filter: 'booleanFilterComponent', cellRenderer: 'featuresListEnabledComponent',
+        valueGetter: (params) => (params.data as Feature).Enabled,
       },
       {
         field: 'EnabledReason', headerName: 'Reason', flex: 1, minWidth: 150, cellClass: 'no-outline', sortable: true,
@@ -74,9 +70,9 @@ export class ManageFeaturesComponent implements OnInit, OnDestroy {
         valueGetter: (params) => (params.data as Feature).EnabledReason,
       },
       {
-        field: 'Expires', flex: 1, minWidth: 200, cellClass: 'no-outline',
+        field: 'Expires', width: 100, cellClass: 'no-outline',
         sortable: true, filter: 'agTextColumnFilter',
-        valueGetter: (params) => (params.data as Feature).Expires?.replace('T', ' ').replace('Z', ''),
+        valueGetter: (params) => (params.data as Feature).Expires?.split('T')[0],
       },
       {
         field: 'Security', width: 80, cellClass: 'no-outline', cellRenderer: 'featuresListSecurityComponent',
@@ -84,102 +80,55 @@ export class ManageFeaturesComponent implements OnInit, OnDestroy {
         valueGetter: (params) => (params.data as Feature).Security.Impact,
       },
       {
-        field: 'License', flex: 1, minWidth: 150, cellClass: 'no-outline', sortable: true, filter: 'agTextColumnFilter',
-        valueGetter: (params) => (params.data as Feature).License,
+        field: 'Status', width: 72, headerClass: 'dense', cellClass: 'no-padding no-outline',
+        cellRenderer: 'featuresStatusComponent', sortable: true, filter: 'booleanFilterComponent',
+        valueGetter: (params) => (params.data as Feature).EnabledStored,
+        cellRendererParams: {
+          onEnabledToggle: (feature, enabled) => this.toggleFeature(feature, enabled),
+        } as FeaturesStatusParams,
       },
+      // {
+      //   field: 'UI', width: 70, headerClass: 'dense', cellClass: 'no-outline',
+      //   sortable: true, filter: 'booleanFilterComponent', cellRenderer: 'featuresListUiComponent',
+      //   valueGetter: (params) => (params.data as Feature).Ui,
+      // },
+      // {
+      //   field: 'Public', width: 70, headerClass: 'dense', cellClass: 'no-outline',
+      //   sortable: true, filter: 'booleanFilterComponent', cellRenderer: 'featuresListPublicComponent',
+      //   valueGetter: (params) => (params.data as Feature).Public,
+      // },
     ],
   };
 
-  debugEnabled$ = this.globalConfigService.getDebugEnabled$();
+  features$ = new BehaviorSubject<Feature[]>(undefined);
 
-  private features$ = new BehaviorSubject<Feature[]>(null);
-  private showManagement$ = new BehaviorSubject(false);
-  private showSpinner$ = new BehaviorSubject(false);
-  private managementUrl$ = new BehaviorSubject<string>(null);
-  templateVars$ = combineLatest([this.features$, this.showManagement$, this.showSpinner$, this.managementUrl$]).pipe(
-    map(([features, showManagement, showSpinner, managementUrl]) => ({ features, showManagement, showSpinner, managementUrl })),
-  );
-  private subscription = new Subscription();
-
-  constructor(
-    private featuresConfigService: FeaturesConfigService,
-    private globalConfigService: GlobalConfigService,
-    private dialog: MatDialog,
-    private viewContainerRef: ViewContainerRef,
-  ) { }
+  constructor(private featuresConfigService: FeaturesConfigService) { }
 
   ngOnInit() {
     this.fetchFeatures();
-    this.subscribeToMessages();
   }
 
   ngOnDestroy() {
     this.features$.complete();
-    this.showManagement$.complete();
-    this.showSpinner$.complete();
-    this.managementUrl$.complete();
-    this.subscription.unsubscribe();
-  }
-
-  toggleManagement() {
-    this.showManagement$.next(!this.showManagement$.value);
-    if (!this.showManagement$.value) { return; }
-
-    this.showSpinner$.next(true);
-    this.managementUrl$.next(null); // reset url
-    this.featuresConfigService.getManageFeaturesUrl().subscribe(url => {
-      this.showSpinner$.next(false);
-      if (url.includes('error: user needs host permissions')) {
-        this.showManagement$.next(false);
-        throw new Error('User needs host permissions!');
-      }
-      this.managementUrl$.next(url);
-    });
   }
 
   private openFeature(feature: Feature) {
     window.open(`https://2sxc.org/r/f/${feature.Guid}`, '_blank');
   }
 
+  private toggleFeature(feature: Feature, enabled: boolean) {
+    const state: FeatureState = {
+      FeatureGuid: feature.Guid,
+      Enabled: enabled,
+    };
+    this.featuresConfigService.saveFeatures([state]).subscribe(() => {
+      this.fetchFeatures();
+    });
+  }
+
   private fetchFeatures() {
     this.featuresConfigService.getAll().subscribe(features => {
       this.features$.next(features);
-    });
-  }
-
-  /** Waits for a json message from the iframe and sends it to the server */
-  private subscribeToMessages() {
-    this.subscription.add(
-      fromEvent<MessageEvent>(window, 'message').pipe(
-        filter(() => this.showManagement$.value),
-        filter(event => event.origin.endsWith('2sxc.org') === true),
-        filter(event => event.data != null),
-      ).subscribe(event => {
-        const features: ManageFeaturesMessageData = event.data;
-        const featuresString = JSON.stringify(features);
-        this.featuresConfigService.saveFeatures(featuresString).subscribe(res => {
-          this.showManagement$.next(false);
-          this.fetchFeatures();
-        });
-      })
-    );
-  }
-
-  wip(): void {
-    const wipRef = this.dialog.open(ManageFeaturesWipComponent, {
-      autoFocus: false,
-      backdropClass: 'dialog-backdrop',
-      closeOnNavigation: false,
-      panelClass: [
-        'dialog-panel',
-        `dialog-panel-large`,
-        'no-scrollbar',
-      ],
-      position: { top: '0' },
-      viewContainerRef: this.viewContainerRef,
-    });
-    wipRef.afterClosed().subscribe(() => {
-      this.fetchFeatures();
     });
   }
 }
