@@ -6,7 +6,8 @@ import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, combineLatest, forkJoin, fromEvent, Observable, of, Subscription } from 'rxjs';
 import { map, mergeMap, share } from 'rxjs/operators';
 import { GeneralHelpers } from '../../../../edit/shared/helpers';
-import { CreateFileDialogComponent, CreateFileDialogData, CreateFileDialogResult } from '../create-file-dialog';
+// tslint:disable-next-line:max-line-length
+import { CreateFileDialogComponent, CreateFileDialogData, CreateFileDialogResult, FileLocationDialogComponent } from '../create-file-dialog';
 import { MonacoEditorComponent } from '../monaco-editor';
 import { keyIsShared, keyItems } from '../shared/constants/session.constants';
 import { SourceItem } from '../shared/models/edit-form.model';
@@ -15,7 +16,6 @@ import { CodeAndEditionWarningsComponent } from './code-and-edition-warnings/cod
 import { CodeAndEditionWarningsSnackBarData } from './code-and-edition-warnings/code-and-edition-warnings.models';
 import { CodeEditorTemplateVars, ExplorerOption, Explorers, Tab, ViewInfo, ViewKey } from './code-editor.models';
 import { CreateTemplateParams } from './code-templates/code-templates.models';
-import { FileLocationDialogComponent } from './file-location-dialog/file-location-dialog.component';
 import { FileAsset } from './models/file-asset.model';
 import { SourceView } from './models/source-view.model';
 import { SnippetsService } from './services/snippets.service';
@@ -185,31 +185,32 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
 
   createTemplate(params: CreateTemplateParams): void {
     if (params.isShared == null) {
-      const locationDialogRef = this.dialog.open(FileLocationDialogComponent, {
+      const fileLocationDialogRef = this.dialog.open(FileLocationDialogComponent, {
         autoFocus: false,
         viewContainerRef: this.viewContainerRef,
         width: '650px',
       });
-      locationDialogRef.afterClosed().subscribe((isShared?: boolean) => {
+      fileLocationDialogRef.afterClosed().subscribe((isShared?: boolean) => {
         if (isShared == null) { return; }
         params.isShared = isShared;
         this.createTemplate(params);
       });
       return;
     }
-    const data: CreateFileDialogData = {
+
+    const createFileDialogData: CreateFileDialogData = {
       folder: params.folder,
       global: params.isShared,
       purpose: params.folder === 'api' || params.folder?.startsWith('api/') ? 'Api' : undefined,
     };
-    const dialogRef = this.dialog.open(CreateFileDialogComponent, {
+    const createFileDialogRef = this.dialog.open(CreateFileDialogComponent, {
       autoFocus: false,
-      data,
+      data: createFileDialogData,
       viewContainerRef: this.viewContainerRef,
       width: '650px',
     });
 
-    dialogRef.afterClosed().subscribe((result?: CreateFileDialogResult) => {
+    createFileDialogRef.afterClosed().subscribe((result?: CreateFileDialogResult) => {
       if (!result) { return; }
 
       this.sourceService.create(result.name, params.isShared, result.templateKey).subscribe(() => {

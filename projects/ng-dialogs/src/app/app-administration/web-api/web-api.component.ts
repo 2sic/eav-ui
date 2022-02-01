@@ -5,7 +5,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { SourceService } from '../../code-editor/services/source.service';
-import { CreateFileDialogComponent, CreateFileDialogData, CreateFileDialogResult } from '../../create-file-dialog';
+import { CreateFileDialogComponent, CreateFileDialogData, CreateFileDialogResult, FileLocationDialogComponent } from '../../create-file-dialog';
 import { GoToDevRest } from '../../dev-rest/go-to-dev-rest';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
@@ -77,21 +77,33 @@ export class WebApiComponent implements OnInit, OnDestroy {
     this.webApis$.complete();
   }
 
-  createController(): void {
-    const global = false;
-    const data: CreateFileDialogData = {
+  createController(global?: boolean): void {
+    if (global == null) {
+      const fileLocationDialogRef = this.dialog.open(FileLocationDialogComponent, {
+        autoFocus: false,
+        viewContainerRef: this.viewContainerRef,
+        width: '650px',
+      });
+      fileLocationDialogRef.afterClosed().subscribe((isShared?: boolean) => {
+        if (isShared == null) { return; }
+        this.createController(isShared);
+      });
+      return;
+    }
+
+    const createFileDialogData: CreateFileDialogData = {
       folder: 'api',
       global,
       purpose: 'Api',
     };
-    const dialogRef = this.dialog.open(CreateFileDialogComponent, {
+    const createFileDialogRef = this.dialog.open(CreateFileDialogComponent, {
       autoFocus: false,
-      data,
+      data: createFileDialogData,
       viewContainerRef: this.viewContainerRef,
       width: '650px',
     });
 
-    dialogRef.afterClosed().subscribe((result?: CreateFileDialogResult) => {
+    createFileDialogRef.afterClosed().subscribe((result?: CreateFileDialogResult) => {
       if (!result) { return; }
 
       if (result.name.endsWith('Controller.cs')) {
@@ -122,7 +134,7 @@ export class WebApiComponent implements OnInit, OnDestroy {
   }
 
   private openCode(api: WebApi) {
-    this.dialogService.openCodeFile(api.path);
+    this.dialogService.openCodeFile(api.path, api.isShared);
   }
 
   private openRestApi(api: WebApi) {

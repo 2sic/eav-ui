@@ -6,7 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
-import { CreateFileDialogComponent } from '.';
+import { CreateFileDialogComponent, FileLocationDialogComponent } from '.';
 import { SourceService } from '../code-editor/services/source.service';
 import { Context } from '../shared/services/context';
 import { SharedComponentsModule } from '../shared/shared-components.module';
@@ -14,6 +14,7 @@ import { SharedComponentsModule } from '../shared/shared-components.module';
 @NgModule({
   declarations: [
     CreateFileDialogComponent,
+    FileLocationDialogComponent,
   ],
   imports: [
     CommonModule,
@@ -27,6 +28,7 @@ import { SharedComponentsModule } from '../shared/shared-components.module';
   ],
   exports: [
     CreateFileDialogComponent,
+    FileLocationDialogComponent,
   ],
   providers: [
     Context,

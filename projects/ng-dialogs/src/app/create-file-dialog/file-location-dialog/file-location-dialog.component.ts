@@ -1,7 +1,7 @@
 import { Component, HostBinding, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
-import { FileLocationFormValues } from './file-location-dialog.models';
+import { FileLocationFormValues } from '..';
 
 @Component({
   selector: 'app-file-location-dialog',

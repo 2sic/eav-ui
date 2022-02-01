@@ -10,7 +10,7 @@ import { Context } from './context';
 export class DialogService {
   constructor(private context: Context) { }
 
-  openCodeFile(path: string, templateId?: number, isShared = false) {
+  openCodeFile(path: string, isShared: boolean, templateId?: number) {
     const dialog = DialogTypeConstants.Develop;
     const form: EditForm = {
       items: [{
