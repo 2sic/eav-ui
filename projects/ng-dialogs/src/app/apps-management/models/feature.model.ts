@@ -1,18 +1,14 @@
 export interface Feature {
-  /** Description of this feature, can contain HTML */
   Description: string;
-  /** Determines if the feature is enabled */
   Enabled: boolean;
   EnabledReason: string;
   EnabledReasonDetailed: string;
-  /** Expiry date of this feature */
+  EnabledStored: boolean;
   Expires: string;
-  /** Global ID of this feature */
   Guid: string;
   License: string;
-  /** Nice name of this feature */
+  LicenseEnabled: boolean;
   Name: string;
-  /** Name identifier for this feature */
   NameId: string;
   /** If this feature is to be shown in API calls for public users */
   Public: boolean;

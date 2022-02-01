@@ -1,4 +1,4 @@
-import { AllCommunityModules, GridOptions } from '@ag-grid-community/all-modules';
+import { AllCommunityModules, GridOptions, ICellRendererParams } from '@ag-grid-community/all-modules';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -48,11 +48,15 @@ export class ManageFeaturesWipComponent implements OnInit, OnDestroy {
       {
         field: 'License', flex: 1, minWidth: 150, cellClass: 'no-outline', sortable: true, filter: 'agTextColumnFilter',
         valueGetter: (params) => (params.data as Feature).License,
+        cellRenderer: (params: ICellRendererParams) => {
+          const feature: Feature = params.data;
+          return `<div ${feature.LicenseEnabled ? '' : 'style="text-decoration: line-through;"'}>${params.value}</div>`;
+        },
       },
       {
         field: 'Status', width: 72, headerClass: 'dense', cellClass: 'no-padding no-outline',
         cellRenderer: 'featuresStatusComponent', sortable: true, filter: 'booleanFilterComponent',
-        valueGetter: (params) => (params.data as Feature).Enabled,
+        valueGetter: (params) => (params.data as Feature).EnabledStored,
         cellRendererParams: {
           onEnabledToggle: (feature, enabled) => this.toggle(feature, enabled),
         } as FeaturesStatusParams,
@@ -92,7 +96,7 @@ export class ManageFeaturesWipComponent implements OnInit, OnDestroy {
   save() {
     this.snackBar.open('Saving...');
     const featuresStates = this.features$.value.map(feature => {
-      const state: FeatureState = { FeatureGuid: feature.Guid, Enabled: feature.Enabled };
+      const state: FeatureState = { FeatureGuid: feature.Guid, Enabled: feature.EnabledStored };
       return state;
     });
     this.featuresConfigService.saveFeaturesNew(featuresStates).subscribe({
@@ -123,7 +127,7 @@ export class ManageFeaturesWipComponent implements OnInit, OnDestroy {
     if (updateIndex < 0) { return; }
     newFeatures[updateIndex] = {
       ...newFeatures[updateIndex],
-      Enabled: enabled,
+      EnabledStored: enabled,
     };
     this.features$.next(newFeatures);
   }
