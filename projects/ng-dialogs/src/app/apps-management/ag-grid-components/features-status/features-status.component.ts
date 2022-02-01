@@ -10,14 +10,17 @@ import { FeaturesStatusParams } from './features-status.models';
 })
 export class FeaturesStatusComponent implements ICellRendererAngularComp {
   value: boolean | null;
+  disabled: boolean;
   private params: FeaturesStatusParams;
 
   agInit(params: FeaturesStatusParams) {
     this.params = params;
     this.value = this.params.value;
+    this.disabled = this.params.isDisabled();
   }
 
-  refresh(params?: any): boolean {
+  refresh(params: FeaturesStatusParams): boolean {
+    this.disabled = this.params.isDisabled();
     return true;
   }
 
@@ -35,6 +38,7 @@ export class FeaturesStatusComponent implements ICellRendererAngularComp {
         nextValue = false;
         break;
     }
-    this.params.onEnabledToggle(feature, nextValue);
+    this.value = nextValue;
+    this.params.onToggle(feature, nextValue);
   }
 }

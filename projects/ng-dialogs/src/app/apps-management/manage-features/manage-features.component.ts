@@ -1,6 +1,7 @@
 import { AllCommunityModules, GridOptions, ICellRendererParams } from '@ag-grid-community/all-modules';
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { AgGridAngular } from '@ag-grid-community/angular';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { BehaviorSubject, distinctUntilChanged, forkJoin, Subscription, timer } from 'rxjs';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
@@ -22,6 +23,12 @@ import { FeaturesConfigService } from '../services/features-config.service';
   styleUrls: ['./manage-features.component.scss'],
 })
 export class ManageFeaturesComponent implements OnInit, OnDestroy {
+  @ViewChild(AgGridAngular) private gridRef: AgGridAngular;
+
+  features$ = new BehaviorSubject<Feature[]>(undefined);
+  disabled$ = new BehaviorSubject(false);
+  private subscription = new Subscription();
+
   modules = AllCommunityModules;
   gridOptions: GridOptions = {
     ...defaultGridOptions,
@@ -80,11 +87,12 @@ export class ManageFeaturesComponent implements OnInit, OnDestroy {
         valueGetter: (params) => (params.data as Feature).Security.Impact,
       },
       {
-        field: 'Status', width: 72, headerClass: 'dense', cellClass: 'no-padding no-outline',
-        cellRenderer: 'featuresStatusComponent', sortable: true, filter: 'booleanFilterComponent',
+        field: 'Status', headerName: '', width: 52, cellClass: 'secondary-action no-outline no-padding', pinned: 'right',
+        cellRenderer: 'featuresStatusComponent',
         valueGetter: (params) => (params.data as Feature).EnabledStored,
         cellRendererParams: {
-          onEnabledToggle: (feature, enabled) => this.toggleFeature(feature, enabled),
+          isDisabled: () => this.disabled$.value,
+          onToggle: (feature, enabled) => this.toggleFeature(feature, enabled),
         } as FeaturesStatusParams,
       },
       // {
@@ -100,16 +108,21 @@ export class ManageFeaturesComponent implements OnInit, OnDestroy {
     ],
   };
 
-  features$ = new BehaviorSubject<Feature[]>(undefined);
-
   constructor(private featuresConfigService: FeaturesConfigService) { }
 
   ngOnInit() {
     this.fetchFeatures();
+    this.subscription.add(
+      this.disabled$.pipe(distinctUntilChanged()).subscribe(() => {
+        this.gridRef?.api.refreshCells({ force: true, columns: ['Status'] });
+      })
+    );
   }
 
   ngOnDestroy() {
     this.features$.complete();
+    this.disabled$.complete();
+    this.subscription.unsubscribe();
   }
 
   private openFeature(feature: Feature) {
@@ -117,11 +130,15 @@ export class ManageFeaturesComponent implements OnInit, OnDestroy {
   }
 
   private toggleFeature(feature: Feature, enabled: boolean) {
-    const state: FeatureState = {
-      FeatureGuid: feature.Guid,
-      Enabled: enabled,
-    };
-    this.featuresConfigService.saveFeatures([state]).subscribe(() => {
+    this.disabled$.next(true);
+    const states = this.features$.value.map(f => {
+      const state: FeatureState = {
+        FeatureGuid: f.Guid,
+        Enabled: f.Guid === feature.Guid ? enabled : f.EnabledStored,
+      };
+      return state;
+    });
+    forkJoin([this.featuresConfigService.saveFeatures(states), timer(100)]).subscribe(() => {
       this.fetchFeatures();
     });
   }
@@ -129,6 +146,7 @@ export class ManageFeaturesComponent implements OnInit, OnDestroy {
   private fetchFeatures() {
     this.featuresConfigService.getAll().subscribe(features => {
       this.features$.next(features);
+      this.disabled$.next(false);
     });
   }
 }

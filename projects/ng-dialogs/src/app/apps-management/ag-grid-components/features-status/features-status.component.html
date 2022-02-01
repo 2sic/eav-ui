@@ -1,4 +1,4 @@
-<mat-slide-toggle [checked]="value" (change)="toggle()" [ngClass]="{
+<mat-slide-toggle [checked]="value" [disabled]="disabled" (change)="toggle()" [ngClass]="{
   'toggle-false': value === false,
   'toggle-null': value === null
   }">
