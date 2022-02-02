@@ -7,14 +7,14 @@ import { InputTypeConstants } from '../../../../ng-dialogs/src/app/content-type-
 import { consoleLogAngular } from '../../../../ng-dialogs/src/app/shared/helpers/console-log-angular.helper';
 import { vh } from '../../../../ng-dialogs/src/app/shared/helpers/viewport.helpers';
 import { WrappersConstants } from '../../../shared/constants';
-import { DropzoneDraggingHelper } from '../../../shared/helpers';
+import { DropzoneDraggingHelper, GeneralHelpers } from '../../../shared/helpers';
 import { AdamService, EavService, EditRoutingService, FieldsSettingsService } from '../../../shared/services';
 import { ContentTypeService, EntityCacheService, FeatureService, InputTypeService } from '../../../shared/store/ngrx-data';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { BaseComponent } from '../../fields/base/base.component';
 import { ConnectorHelper } from '../../shared/connector/connector.helper';
 import { ContentExpandAnimation } from './content-expand.animation';
-import { ExpandableWrapperTemplateVars } from './expandable-wrapper.models';
+import { ExpandableWrapperTemplateVars, PreviewHeight } from './expandable-wrapper.models';
 
 @Component({
   selector: WrappersConstants.ExpandableWrapper,
@@ -56,40 +56,40 @@ export class ExpandableWrapperComponent extends BaseComponent<string> implements
     super.ngOnInit();
     this.open$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
 
-    const previewMinHeight$ = combineLatest([
-      fromEvent<UIEvent>(window, 'resize').pipe(
-        map(() => vh(50)), // WARNING! must match css
-        startWith(vh(50)), // WARNING! must match css
-      ),
+    const previewHeight$ = combineLatest([
       this.fieldsSettingsService.getFieldSettings$(this.config.fieldName),
+      fromEvent<UIEvent>(window, 'resize').pipe(map(() => undefined), startWith(undefined)),
     ]).pipe(
-      map(([maxHeight, settings]) => {
-        if (this.config.inputType === InputTypeConstants.StringWysiwyg) {
-          // ignore if not inline mode
-          if (settings.Dialog === 'dialog') { return null; }
+      map(([settings]) => {
+        const previewHeight: PreviewHeight = {
+          minHeight: '36px',
+          maxHeight: '50vh',
+        };
+        if (this.config.inputType === InputTypeConstants.StringWysiwyg && settings.Dialog !== 'dialog') {
           let rows = parseInt(settings.InlineInitialHeight || '3', 10);
           if (rows < 1) {
             rows = 1;
           }
           // header + rows
+          const maxHeightInPx = vh(50);
           let minHeight = 40 + rows * 36;
-          if (minHeight > maxHeight) {
-            minHeight = maxHeight;
+          if (minHeight > maxHeightInPx) {
+            minHeight = maxHeightInPx;
           }
-          return `${minHeight}px`;
+          previewHeight.minHeight = `${minHeight}px`;
         }
-        return null;
+        return previewHeight;
       }),
-      distinctUntilChanged(),
+      distinctUntilChanged(GeneralHelpers.objectsEqual),
     );
 
     this.templateVars$ = combineLatest([
       combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
-      combineLatest([this.config.focused$, previewMinHeight$]),
+      combineLatest([this.config.focused$, previewHeight$]),
     ]).pipe(
       map(([
         [controlStatus, label, placeholder, required],
-        [focused, previewMinHeight],
+        [focused, previewHeight],
       ]) => {
         const templateVars: ExpandableWrapperTemplateVars = {
           controlStatus,
@@ -97,7 +97,7 @@ export class ExpandableWrapperComponent extends BaseComponent<string> implements
           placeholder,
           required,
           focused,
-          previewMinHeight,
+          previewHeight,
         };
         return templateVars;
       }),
