@@ -12,15 +12,17 @@ export function getTemplateLanguages(
   defaultLanguage: string,
   languages: Language[],
   attributes: EavEntityAttributes,
+  linkType: TranslationLink,
 ): TranslateMenuDialogTemplateLanguage[] {
   const templateLanguages = languages
     .filter(language => language.NameId !== currentLanguage)
     .map(language => {
       const values = attributes[config.fieldName];
-      const noTranslation = !LocalizationHelpers.isEditableTranslationExist(values, language.NameId, defaultLanguage);
+      const disabled = (linkType === TranslationLinks.LinkReadWrite && !language.IsAllowed)
+        || !LocalizationHelpers.isEditableTranslationExist(values, language.NameId, defaultLanguage);
       const templateLanguage: TranslateMenuDialogTemplateLanguage = {
         key: language.NameId,
-        disabled: noTranslation,
+        disabled,
       };
       return templateLanguage;
     });
