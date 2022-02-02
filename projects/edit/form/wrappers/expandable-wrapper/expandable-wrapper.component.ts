@@ -65,8 +65,8 @@ export class ExpandableWrapperComponent extends BaseComponent<string> implements
           minHeight: '36px',
           maxHeight: '50vh',
         };
-        if (this.config.inputType === InputTypeConstants.StringWysiwyg && settings.Dialog !== 'dialog') {
-          let rows = parseInt(settings.InlineInitialHeight || '3', 10);
+        if (this.config.inputType === InputTypeConstants.StringWysiwyg && settings.Dialog === 'inline') {
+          let rows = parseInt(settings.InlineInitialHeight, 10);
           if (rows < 1) {
             rows = 1;
           }

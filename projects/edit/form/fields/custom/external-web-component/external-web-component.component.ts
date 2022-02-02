@@ -7,6 +7,7 @@ import { EavService, EditRoutingService, FieldsSettingsService, ScriptsLoaderSer
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { BaseComponent } from '../../base/base.component';
 import { ExternalWebComponentTemplateVars } from './external-web-component.models';
+import { StringWysiwygLogic } from './external-web-components-logics';
 
 @Component({
   selector: InputTypeConstants.ExternalWebComponent,
@@ -26,6 +27,7 @@ export class ExternalWebComponentComponent extends BaseComponent<string> impleme
     private editRoutingService: EditRoutingService,
   ) {
     super(eavService, fieldsSettingsService);
+    StringWysiwygLogic.importMe();
   }
 
   ngOnInit() {
