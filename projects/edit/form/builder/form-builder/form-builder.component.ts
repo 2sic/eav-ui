@@ -113,7 +113,7 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
     this.subscription.add(
       this.form.valueChanges.pipe(
         map(() => this.form.getRawValue() as FormValues),
-        distinctUntilChanged((previous, current) => JSON.stringify(previous) === JSON.stringify(current)),
+        distinctUntilChanged((previous, current) => GeneralHelpers.getFormChanges(previous, current) == null),
       ).subscribe((formValues) => {
         const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
         const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
