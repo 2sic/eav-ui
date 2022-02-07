@@ -1,6 +1,10 @@
 import { JsonSchema, Monaco2sxc, MonacoType } from '.';
 import { Snippet } from '../code-editor/models/snippet.model';
 
+export const voidElements = 'area, base, br, col, embed, hr, img, input, link, meta, param, source, track, wbr'
+  .split(',')
+  .map(el => el.trim().toLocaleLowerCase());
+
 export class MonacoInstance {
   /** Editor instance configuration */
   private editorInstance: MonacoType;
@@ -196,6 +200,7 @@ export class MonacoInstance {
 
           const tag = codeInTag.substring(1, tagEndIndex);
           if (!tag) { return { suggestions: [] }; }
+          if (voidElements.includes(tag.toLocaleLowerCase())) { return { suggestions: [] }; }
           if (!/[a-zA-Z0-9_-]/.test(tag)) { return { suggestions: [] }; }
 
           const suggestions = [{
