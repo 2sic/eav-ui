@@ -1,6 +1,7 @@
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { map } from 'rxjs';
 import { DialogContext } from '../../../ng-dialogs/src/app/app-administration/models';
 import { keyPartOfPage, keyPublishing } from '../../../ng-dialogs/src/app/shared/constants/session.constants';
 import { Context } from '../../../ng-dialogs/src/app/shared/services/context';
@@ -60,7 +61,12 @@ export class EavService {
   fetchFormData(items: string) {
     return this.http.post<EavFormData>(this.dnnContext.$2sxc.http.apiUrl(webApiEditRoot + 'load'), items, {
       params: { appId: this.context.appId.toString() }
-    });
+    }).pipe(
+      map(formData => {
+        formData.Context.Language.List = formData.Context.Language.List.filter(language => language.IsEnabled);
+        return formData;
+      }),
+    );
   }
 
   saveFormData(result: SaveEavFormData, partOfPage: string) {
