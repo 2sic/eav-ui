@@ -117,6 +117,7 @@ export class FormulaDesignerService implements OnDestroy {
       source: formula,
       sourceFromSettings: oldFormulaItem?.sourceFromSettings,
       sourceGuid: oldFormulaItem?.sourceGuid,
+      sourceId: oldFormulaItem?.sourceId,
       target,
       version: FormulaHelpers.findFormulaVersion(formula),
     };
@@ -127,7 +128,7 @@ export class FormulaDesignerService implements OnDestroy {
     this.formulaCache$.next(newCache);
   }
 
-  updateSaved(entityGuid: string, fieldName: string, target: FormulaTarget, formula: string): void {
+  updateSaved(entityGuid: string, fieldName: string, target: FormulaTarget, formula: string, sourceGuid: string, sourceId: number): void {
     const oldFormulaCache = this.formulaCache$.value;
     const oldFormulaIndex = oldFormulaCache.findIndex(f => f.entityGuid === entityGuid && f.fieldName === fieldName && f.target === target);
     const oldFormulaItem = oldFormulaCache[oldFormulaIndex];
@@ -136,6 +137,8 @@ export class FormulaDesignerService implements OnDestroy {
     const newFormulaItem: FormulaCacheItem = {
       ...oldFormulaItem,
       sourceFromSettings: formula,
+      sourceGuid,
+      sourceId,
     };
 
     const newCache = [...oldFormulaCache.slice(0, oldFormulaIndex), newFormulaItem, ...oldFormulaCache.slice(oldFormulaIndex + 1)];
@@ -250,6 +253,7 @@ export class FormulaDesignerService implements OnDestroy {
             source: formula,
             sourceFromSettings: formula,
             sourceGuid: formulaItem.Guid,
+            sourceId: formulaItem.Id,
             target,
             version: FormulaHelpers.findFormulaVersion(formula),
           };

@@ -73,6 +73,8 @@ export const eavConstants = {
     customSettings: 'SettingsCustom',
     /** Content type containing Primary and Global App custom resources */
     customResources: 'ResourcesCustom',
+    /** Content type containing formulas */
+    formulas: 'UiFormula',
   },
 
   pipelineDesigner: {

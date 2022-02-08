@@ -1,16 +1,15 @@
 import { Component, Input, OnDestroy, OnInit, QueryList } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { combineLatest, Observable } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
+import { EntitiesService } from '../../../../ng-dialogs/src/app/content-items/services/entities.service';
+import { eavConstants } from '../../../../ng-dialogs/src/app/shared/constants/eav.constants';
 import { copyToClipboard } from '../../../../ng-dialogs/src/app/shared/helpers/copy-to-clipboard.helper';
 import { FormBuilderComponent } from '../../../form/builder/form-builder/form-builder.component';
-import { FormulaHelpers, LocalizationHelpers } from '../../../shared/helpers';
+import { FormulaHelpers, InputFieldHelpers } from '../../../shared/helpers';
 import { DesignerState, FormulaTarget, FormulaTargets } from '../../../shared/models';
-import { EavItem } from '../../../shared/models/eav';
-import { Item1 } from '../../../shared/models/json-format-v1';
 import { EavService, FormulaDesignerService } from '../../../shared/services';
-import { ContentTypeItemService } from '../../../shared/store/ngrx-data';
-import { SaveEavFormData } from '../../main/edit-dialog-main.models';
+import { ContentTypeService, ItemService } from '../../../shared/store/ngrx-data';
 import { defaultFormula } from './formula-designer.constants';
 // tslint:disable-next-line:max-line-length
 import { DesignerSnippet, EntityOption, FieldOption, FormulaDesignerTemplateVars, SelectOptions, SelectTarget, SelectTargets, TargetOption } from './formula-designer.models';
@@ -27,13 +26,16 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
   loadError = false;
   freeTextTarget = false;
   allowSaveFormula = this.eavService.eavConfig.enableFormulaSave;
+  saving$ = new BehaviorSubject(false);
   templateVars$: Observable<FormulaDesignerTemplateVars>;
 
   constructor(
     private formulaDesignerService: FormulaDesignerService,
     private snackBar: MatSnackBar,
-    private contentTypeItemService: ContentTypeItemService,
     private eavService: EavService,
+    private entitiesService: EntitiesService,
+    private itemService: ItemService,
+    private contentTypeService: ContentTypeService,
   ) { }
 
   ngOnInit(): void {
@@ -48,6 +50,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.formulaDesignerService.setDesignerOpen(false);
+    this.saving$.complete();
   }
 
   trackEntityOptions(index: number, entityOption: EntityOption): string {
@@ -135,51 +138,52 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
   }
 
   save(): void {
-    try {
-      const designer = this.formulaDesignerService.getDesignerState();
-      const formula = this.formulaDesignerService.getFormula(designer.entityGuid, designer.fieldName, designer.target, true);
-      if (formula.sourceGuid == null) { return; }
+    this.saving$.next(true);
+    const designer = this.formulaDesignerService.getDesignerState();
+    const formula = this.formulaDesignerService.getFormula(designer.entityGuid, designer.fieldName, designer.target, true);
 
-      const oldFormulaItem = this.contentTypeItemService.getContentTypeItem(formula.sourceGuid);
-      if (oldFormulaItem == null) { return; }
-
-      const language = oldFormulaItem.Attributes.Formula.Values[0].Dimensions[0].Value;
-      if (language == null) { return; }
-
-      const newFormulaItem: EavItem = {
-        Entity: {
-          ...oldFormulaItem,
-          Attributes: LocalizationHelpers.updateAttributeValue(
-            oldFormulaItem.Attributes, 'Formula', formula.source, language, language, false,
-          ),
+    if (formula.sourceId == null) {
+      const item = this.itemService.getItem(formula.entityGuid);
+      const contentTypeId = InputFieldHelpers.getContentTypeId(item);
+      const contentType = this.contentTypeService.getContentType(contentTypeId);
+      const attributeDef = contentType.Attributes.find(a => a.Name === formula.fieldName);
+      const atAllFieldSettings = attributeDef.Metadata.find(m => m.Type.Id === '@All');
+      if (!atAllFieldSettings) {
+        this.snackBar.open('Field configuration is missing. Please create formula in Administration', undefined, { duration: 3000 });
+        this.saving$.next(false);
+        return;
+      }
+      this.entitiesService.create(
+        eavConstants.contentTypes.formulas,
+        {
+          Title: formula.target,
+          Target: formula.target,
+          Formula: formula.source,
+          _addToParent: {
+            Add: null,
+            EntityId: null,
+            Field: 'Formulas',
+            Index: 0,
+            Parent: atAllFieldSettings.Guid,
+          },
         },
-        Header: {
-          Add: null,
-          ContentTypeName: oldFormulaItem.Type.Name,
-          DuplicateEntity: null,
-          EditInfo: null,
-          EntityId: oldFormulaItem.Id,
-          For: null,
-          Group: null,
-          Guid: oldFormulaItem.Guid,
-          Index: null,
-          Prefill: null,
-        },
-      };
-
-      const saveData: SaveEavFormData = {
-        Items: [Item1.convert(newFormulaItem)],
-        DraftShouldBranch: false,
-        IsPublished: true,
-      };
-      this.eavService.saveFormData(saveData, 'false').subscribe(saveResult => {
-        this.formulaDesignerService.updateSaved(designer.entityGuid, designer.fieldName, designer.target, formula.source);
+      ).subscribe(savedFormula => {
+        this.formulaDesignerService.updateSaved(
+          formula.entityGuid, formula.fieldName, formula.target, formula.source, savedFormula.Guid, savedFormula.Id,
+        );
         this.snackBar.open('Formula saved', null, { duration: 2000 });
+        this.saving$.next(false);
       });
-    } catch (error) {
-      console.error(error);
-      this.snackBar.open('Saving formula failed. Please check console for more info', null, { duration: 2000 });
+      return;
     }
+
+    this.entitiesService.update(eavConstants.contentTypes.formulas, formula.sourceId, { Formula: formula.source }).subscribe(() => {
+      this.formulaDesignerService.updateSaved(
+        formula.entityGuid, formula.fieldName, formula.target, formula.source, formula.sourceGuid, formula.sourceId,
+      );
+      this.snackBar.open('Formula saved', null, { duration: 2000 });
+      this.saving$.next(false);
+    });
   }
 
   openFormulasHelp(): void {
@@ -298,8 +302,8 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
       ),
     );
 
-    this.templateVars$ = combineLatest([options$, formula$, snippets$, designerState$, result$]).pipe(
-      map(([options, formula, snippets, designer, result]) => {
+    this.templateVars$ = combineLatest([options$, formula$, snippets$, designerState$, result$, this.saving$]).pipe(
+      map(([options, formula, snippets, designer, result, saving]) => {
         const templateVars: FormulaDesignerTemplateVars = {
           entityOptions: options.entityOptions,
           fieldOptions: options.fieldOptions,
@@ -310,6 +314,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
           result: result?.value,
           resultExists: result != null,
           resultIsError: result?.isError ?? false,
+          saving,
         };
         return templateVars;
       }),

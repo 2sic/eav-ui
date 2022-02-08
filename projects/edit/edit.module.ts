@@ -28,6 +28,7 @@ import { RouterModule } from '@angular/router';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { DropzoneModule } from 'ngx-dropzone-wrapper';
 import { SourceService } from '../ng-dialogs/src/app/code-editor/services/source.service';
+import { EntitiesService } from '../ng-dialogs/src/app/content-items/services/entities.service';
 import { CreateFileDialogModule } from '../ng-dialogs/src/app/create-file-dialog';
 import { MonacoEditorModule } from '../ng-dialogs/src/app/monaco-editor';
 import { EavWindow } from '../ng-dialogs/src/app/shared/models/eav-window.model';
@@ -206,6 +207,7 @@ export function translateLoaderFactoryEdit(http: HttpClient): TranslateLoader {
     LoadIconsService,
     SourceService,
     ScriptsLoaderService,
+    EntitiesService,
   ],
 })
 export class EditModule { }

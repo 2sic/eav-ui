@@ -94,12 +94,9 @@
           <mat-icon>history</mat-icon>
         </button>
         <button *ngIf="allowSaveFormula" mat-icon-button tippy="Save"
-          [tippyDisabled]="!data.designer.editMode || !data.formula?.source || !data.formula?.sourceGuid"
-          [disabled]="!data.designer.editMode || !data.formula?.source || !data.formula?.sourceGuid" (click)="save()">
-          <mat-icon tippy="Saving only works if formula was previously defined in settings"
-            [tippyDisabled]="!data.designer.editMode || (data.designer.editMode && !data.formula?.source) || data.formula?.sourceGuid">
-            save
-          </mat-icon>
+          [tippyDisabled]="!data.designer.editMode || !data.formula?.source"
+          [disabled]="!data.designer.editMode || !data.formula?.source || data.saving" (click)="save()">
+          <mat-icon>save</mat-icon>
         </button>
         <button mat-icon-button class="run-button" tippy="Run"
           [disabled]="!data.designer.editMode || !data.formula?.source" (click)="run()">
