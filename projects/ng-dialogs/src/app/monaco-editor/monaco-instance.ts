@@ -246,6 +246,27 @@ export class MonacoInstance {
           return { suggestions };
         },
       }),
+
+      // monaco.languages.registerHoverProvider(editorInstance.getModel().getModeId(), {
+      //   provideHover: (model: MonacoType, position: MonacoType) => {
+      //     const word = model.getWordAtPosition(position);
+      //     if (!word) { return; }
+      //     // const range = {
+      //     //   startLineNumber: position.lineNumber,
+      //     //   endLineNumber: position.lineNumber,
+      //     //   startColumn: word.startColumn,
+      //     //   endColumn: word.endColumn,
+      //     // };
+      //     if (word.word.toLocaleLowerCase() === '2sxc') {
+      //       const contents = [
+      //         { value: '2sxc - Dynamic Content and Apps for DNN' },
+      //         { value: '[2sxc - Dynamic Content and Apps for DNN](https://2sxc.org)' },
+      //         { value: '**BOLD**  \nLine2' },
+      //       ];
+      //       return { /*range,*/ contents };
+      //     }
+      //   }
+      // }),
     ];
 
     return completionItemProviders;
