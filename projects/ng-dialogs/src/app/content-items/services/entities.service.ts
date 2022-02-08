@@ -31,8 +31,10 @@ export class EntitiesService {
 }
 
 export interface QuickEntityRequest {
+  /** Metadata target */
   For?: EavFor;
-  _addToParent?: InnerItem;
+  /** Parent linking target (add to this entity) */
+  ParentRelationship?: InnerItem;
   [field: string]: any;
 }
 
