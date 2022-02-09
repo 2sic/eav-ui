@@ -76,7 +76,7 @@ export class CreateFileDialogComponent implements OnInit, OnDestroy {
       platform: new FormControl(this.all),
       purpose: new FormControl({ value: this.dialogData.purpose ?? this.all, disabled: this.dialogData.purpose != null }),
       templateKey: new FormControl(null, Validators.required),
-      name: new FormControl(null, Validators.required),
+      name: new FormControl(this.dialogData.name ?? null, Validators.required),
       finalName: new FormControl({ value: null, disabled: true }),
       folder: new FormControl({ value: this.dialogData.folder ?? '', disabled: true }),
     });
@@ -92,7 +92,9 @@ export class CreateFileDialogComponent implements OnInit, OnDestroy {
         ),
       ]).subscribe(([templates, templateKey]) => {
         const template = templates.find(t => t.Key === templateKey);
-        const suggestedName = template?.SuggestedFileName ?? null;
+        const suggestedName = this.dialogData.name
+          ? this.controls.name.value || this.dialogData.name
+          : template?.SuggestedFileName ?? null;
 
         if (this.controls.name.value !== suggestedName) {
           this.controls.name.patchValue(suggestedName);

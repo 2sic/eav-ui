@@ -6,6 +6,7 @@ export interface CreateFileDialogData {
   global: boolean;
   purpose?: 'Template' | 'Search' | 'Api';
   type?: 'Token' | 'Razor';
+  name?: string;
 }
 
 export interface CreateFileTemplateVars {

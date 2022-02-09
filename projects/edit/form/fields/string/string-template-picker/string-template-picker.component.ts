@@ -115,11 +115,14 @@ export class StringTemplatePickerComponent extends BaseComponent<string> impleme
   }
 
   createTemplate() {
+    const nameMask = new FieldMask('[Name]', this.group.controls, null, null);
     const data: CreateFileDialogData = {
       global: this.global,
       purpose: this.activeSpec.purpose,
       type: this.activeSpec.type,
+      name: nameMask.resolve(),
     };
+    nameMask.destroy();
     const dialogRef = this.dialog.open(CreateFileDialogComponent, {
       autoFocus: false,
       data,
