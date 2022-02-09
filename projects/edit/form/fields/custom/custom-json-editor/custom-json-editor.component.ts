@@ -22,8 +22,7 @@ import { CustomJsonEditorTemplateVars } from './custom-json-editor.models';
 export class CustomJsonEditorComponent extends BaseComponent<string> implements OnInit, OnDestroy {
   templateVars$: Observable<CustomJsonEditorTemplateVars>;
   filename: string;
-  editorOptions = {
-    insertSpaces: false,
+  monacoOptions = {
     minimap: {
       enabled: false
     },
@@ -70,7 +69,7 @@ export class CustomJsonEditorComponent extends BaseComponent<string> implements 
           required,
           focused,
           rowCount,
-          editorHeight: rowCount * this.editorOptions.lineHeight + 'px',
+          editorHeight: rowCount * this.monacoOptions.lineHeight + 'px',
           jsonSchema,
         };
         return templateVars;
