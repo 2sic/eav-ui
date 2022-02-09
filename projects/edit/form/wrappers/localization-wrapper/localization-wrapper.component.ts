@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { Observable } from 'rxjs';
 import { WrappersConstants } from '../../../shared/constants';
-import { EavService, EditRoutingService, FieldsSettingsService } from '../../../shared/services';
+import { EavService, EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { BaseComponent } from '../../fields/base/base.component';
@@ -24,6 +24,7 @@ export class LocalizationWrapperComponent extends BaseComponent implements Field
     fieldsSettingsService: FieldsSettingsService,
     private languageInstanceService: LanguageInstanceService,
     private editRoutingService: EditRoutingService,
+    private formsStateService: FormsStateService,
   ) {
     super(eavService, fieldsSettingsService);
   }
@@ -39,6 +40,7 @@ export class LocalizationWrapperComponent extends BaseComponent implements Field
   }
 
   translate() {
+    if (this.formsStateService.readOnly$.value.value) { return; }
     const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
     const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
     if (currentLanguage === defaultLanguage) { return; }
