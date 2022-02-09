@@ -31,7 +31,8 @@ export class FormsStateService implements OnDestroy {
 
   init() {
     this.subscription = new Subscription();
-    this.readOnly$ = new BehaviorSubject({ value: true, type: undefined });
+    const initialReadOnly: FormReadOnly = { isReadOnly: true, reason: undefined };
+    this.readOnly$ = new BehaviorSubject(initialReadOnly);
     this.formsValid$ = new BehaviorSubject(false);
     this.formsDirty$ = new BehaviorSubject(false);
     this.formsValid = {};
@@ -54,8 +55,8 @@ export class FormsStateService implements OnDestroy {
         ),
       ]).subscribe(([itemsReadOnly, languageAllowed]) => {
         const readOnly: FormReadOnly = {
-          value: itemsReadOnly || !languageAllowed,
-          type: itemsReadOnly ? 'Form' : !languageAllowed ? 'Language' : undefined,
+          isReadOnly: itemsReadOnly || !languageAllowed,
+          reason: itemsReadOnly ? 'Form' : !languageAllowed ? 'Language' : undefined,
         };
         if (!GeneralHelpers.objectsEqual(readOnly, this.readOnly$.value)) {
           this.readOnly$.next(readOnly);

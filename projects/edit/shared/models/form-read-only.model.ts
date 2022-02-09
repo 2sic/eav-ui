@@ -1,4 +1,4 @@
 export interface FormReadOnly {
-  value: boolean;
-  type: undefined | 'Form' | 'Language';
+  isReadOnly: boolean;
+  reason: undefined | 'Form' | 'Language';
 }

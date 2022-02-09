@@ -103,7 +103,7 @@ export class EditDialogMainComponent implements OnInit, AfterViewInit, OnDestroy
           debugEnabled,
           debugInfoIsOpen,
           hideHeader,
-          readOnly: readOnly.value,
+          readOnly: readOnly.isReadOnly,
         };
         return templateVars;
       }),
@@ -144,7 +144,7 @@ export class EditDialogMainComponent implements OnInit, AfterViewInit, OnDestroy
   closeDialog(forceClose?: boolean) {
     if (forceClose) {
       this.dialogRef.close(this.eavService.eavConfig.createMode ? this.saveResult : undefined);
-    } else if (!this.formsStateService.readOnly$.value.value && this.formsStateService.formsDirty$.value) {
+    } else if (!this.formsStateService.readOnly$.value.isReadOnly && this.formsStateService.formsDirty$.value) {
       this.snackBarYouHaveUnsavedChanges();
     } else {
       this.dialogRef.close(this.eavService.eavConfig.createMode ? this.saveResult : undefined);
@@ -234,7 +234,7 @@ export class EditDialogMainComponent implements OnInit, AfterViewInit, OnDestroy
   private dialogBackdropClickSubscribe() {
     this.subscription.add(
       fromEvent<BeforeUnloadEvent>(window, 'beforeunload').subscribe(event => {
-        if (this.formsStateService.readOnly$.value.value || !this.formsStateService.formsDirty$.value) { return; }
+        if (this.formsStateService.readOnly$.value.isReadOnly || !this.formsStateService.formsDirty$.value) { return; }
         event.preventDefault();
         event.returnValue = ''; // fix for Chrome
         this.snackBarYouHaveUnsavedChanges();
@@ -254,7 +254,7 @@ export class EditDialogMainComponent implements OnInit, AfterViewInit, OnDestroy
       const CTRL_S = (navigator.platform.match('Mac') ? event.metaKey : event.ctrlKey) && event.keyCode === 83;
       if (CTRL_S) {
         event.preventDefault();
-        if (!this.formsStateService.readOnly$.value.value) {
+        if (!this.formsStateService.readOnly$.value.isReadOnly) {
           this.saveAll(false);
         }
         return;

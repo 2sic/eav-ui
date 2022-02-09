@@ -40,7 +40,7 @@ export class LocalizationWrapperComponent extends BaseComponent implements Field
   }
 
   translate() {
-    if (this.formsStateService.readOnly$.value.value) { return; }
+    if (this.formsStateService.readOnly$.value.isReadOnly) { return; }
     const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
     const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
     if (currentLanguage === defaultLanguage) { return; }

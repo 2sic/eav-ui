@@ -9,7 +9,7 @@
   </div>
 
   <mat-icon *ngIf="data.readOnly" class="header__hint-icon"
-    [tippy]="('General.ReadOnlyHint.' + data.readOnlyType) | translate" [tippyDisabled]="!data.readOnlyType">
+    [tippy]="('General.ReadOnlyHint.' + data.readOnlyReason) | translate" [tippyDisabled]="!data.readOnlyReason">
     lock
   </mat-icon>
 
