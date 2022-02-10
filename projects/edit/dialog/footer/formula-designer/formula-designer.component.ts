@@ -159,6 +159,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
           Title: formula.target,
           Target: formula.target,
           Formula: formula.source,
+          Enabled: true,
           ParentRelationship: {
             Add: null,
             EntityId: null,
