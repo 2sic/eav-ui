@@ -3,6 +3,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { EntitiesService } from '../../../../ng-dialogs/src/app/content-items/services/entities.service';
+import { InputTypeConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { eavConstants } from '../../../../ng-dialogs/src/app/shared/constants/eav.constants';
 import { copyToClipboard } from '../../../../ng-dialogs/src/app/shared/helpers/copy-to-clipboard.helper';
 import { FormBuilderComponent } from '../../../form/builder/form-builder/form-builder.component';
@@ -248,6 +249,24 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
               target,
             };
             targetOptions.push(targetOption);
+          }
+
+          // optional targets
+          const item = this.itemService.getItem(designer.entityGuid);
+          const contentTypeId = InputFieldHelpers.getContentTypeId(item);
+          const contentType = this.contentTypeService.getContentType(contentTypeId);
+          const attribute = contentType.Attributes.find(a => a.Name === designer.fieldName);
+          if (attribute.InputType === InputTypeConstants.EmptyDefault) {
+            for (const target of ['Field.Settings.Collapsed']) {
+              const targetOption: TargetOption = {
+                hasFormula: formulas.some(
+                  f => f.entityGuid === designer.entityGuid && f.fieldName === designer.fieldName && f.target === target
+                ),
+                label: target.substring(target.lastIndexOf('.') + 1),
+                target: target as FormulaTarget,
+              };
+              targetOptions.push(targetOption);
+            }
           }
 
           // targets for formulas
