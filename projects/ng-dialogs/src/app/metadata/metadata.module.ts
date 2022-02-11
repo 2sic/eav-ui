@@ -17,6 +17,7 @@ import { MetadataService } from '../permissions';
 import { Context } from '../shared/services/context';
 import { SharedComponentsModule } from '../shared/shared-components.module';
 import { MetadataActionsComponent } from './ag-grid-components/metadata-actions/metadata-actions.component';
+import { MetadataContentTypeComponent } from './ag-grid-components/metadata-content-type/metadata-content-type.component';
 import { MetadataRoutingModule } from './metadata-routing.module';
 import { MetadataSaveDialogComponent } from './metadata-save-dialog/metadata-save-dialog.component';
 import { MetadataComponent } from './metadata.component';
@@ -26,6 +27,7 @@ import { MetadataComponent } from './metadata.component';
     MetadataComponent,
     MetadataActionsComponent,
     MetadataSaveDialogComponent,
+    MetadataContentTypeComponent,
   ],
   imports: [
     CommonModule,

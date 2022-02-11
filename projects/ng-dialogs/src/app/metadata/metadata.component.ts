@@ -1,4 +1,4 @@
-import { AllCommunityModules, CellClickedEvent, GridOptions } from '@ag-grid-community/all-modules';
+import { AllCommunityModules, GridOptions } from '@ag-grid-community/all-modules';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -17,6 +17,7 @@ import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 import { EditForm } from '../shared/models/edit-form.model';
 import { MetadataActionsComponent } from './ag-grid-components/metadata-actions/metadata-actions.component';
 import { MetadataActionsParams } from './ag-grid-components/metadata-actions/metadata-actions.models';
+import { MetadataContentTypeComponent } from './ag-grid-components/metadata-content-type/metadata-content-type.component';
 import { MetadataSaveDialogComponent } from './metadata-save-dialog/metadata-save-dialog.component';
 import { MetadataItem, MetadataRecommendation, MetadataTemplateVars } from './models/metadata.model';
 
@@ -31,31 +32,34 @@ export class MetadataComponent implements OnInit, OnDestroy {
     ...defaultGridOptions,
     frameworkComponents: {
       idFieldComponent: IdFieldComponent,
+      metadataContentTypeComponent: MetadataContentTypeComponent,
       metadataActionsComponent: MetadataActionsComponent,
     },
     columnDefs: [
       {
-        headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
+        field: 'ID', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
         cellRenderer: 'idFieldComponent', sortable: true, filter: 'agNumberColumnFilter',
+        valueGetter: (params) => (params.data as MetadataItem).Id,
         cellRendererParams: {
           tooltipGetter: (metadata: MetadataItem) => `ID: ${metadata.Id}\nGUID: ${metadata.Guid}`,
         } as IdFieldParams,
       },
       {
-        headerName: 'Title', field: 'Title', flex: 2, minWidth: 250, cellClass: 'primary-action highlight',
-        sortable: true, sort: 'asc', filter: 'agTextColumnFilter', onCellClicked: this.editMetadata.bind(this),
+        field: 'Title', flex: 2, minWidth: 250, cellClass: 'primary-action highlight',
+        valueGetter: (params) => (params.data as MetadataItem).Title,
+        sortable: true, sort: 'asc', filter: 'agTextColumnFilter', onCellClicked: (event) => this.editMetadata(event.data),
       },
       {
-        headerName: 'Content Type', flex: 2, minWidth: 250, cellClass: 'no-outline', sortable: true,
-        filter: 'agTextColumnFilter', valueGetter: (params) => {
+        field: 'Content Type', flex: 2, minWidth: 250, cellClass: 'no-outline', sortable: true,
+        cellRenderer: 'metadataContentTypeComponent', filter: 'agTextColumnFilter', valueGetter: (params) => {
           const metadata = params.data as MetadataItem;
-          return `${metadata._Type.Name}${metadata._Type.Description ? ` (${metadata._Type.Description})` : ''}`;
+          return `${metadata._Type.Name}${metadata._Type.Title !== metadata._Type.Name ? ` (${metadata._Type.Title})` : ''}`;
         },
       },
       {
         width: 42, cellClass: 'secondary-action no-padding', cellRenderer: 'metadataActionsComponent', pinned: 'right',
         cellRendererParams: {
-          onDelete: this.deleteMetadata.bind(this),
+          onDelete: (metadata) => this.deleteMetadata(metadata),
         } as MetadataActionsParams,
       },
     ],
@@ -192,8 +196,7 @@ export class MetadataComponent implements OnInit, OnDestroy {
     });
   }
 
-  private editMetadata(params: CellClickedEvent) {
-    const metadata: MetadataItem = params.data;
+  private editMetadata(metadata: MetadataItem) {
     const form: EditForm = {
       items: [{ EntityId: metadata.Id }],
     };
