@@ -15,6 +15,7 @@ export function convertFormToUrl(form: EditForm) {
         + ':' + innerItem.Parent + ':' + innerItem.Add + ':' + innerItem.Index;
       if (innerItem.Prefill) {
         for (const [key, prefill] of Object.entries(innerItem.Prefill)) {
+          if (prefill == null) { continue; }
           formUrl += '&prefill:' + key + '~' + paramEncode(prefill.toString());
         }
       }
@@ -56,6 +57,7 @@ export function convertFormToUrl(form: EditForm) {
 
       if (addItem.Prefill) {
         for (const [key, prefill] of Object.entries(addItem.Prefill)) {
+          if (prefill == null) { continue; }
           formUrl += '&prefill:' + key + '~' + paramEncode(prefill.toString());
         }
       }
@@ -69,6 +71,7 @@ export function convertFormToUrl(form: EditForm) {
       formUrl += 'group:' + groupItem.Group.Guid + ':' + groupItem.Group.Index + ':' + groupItem.Group.Part + ':' + groupItem.Group.Add;
       if (groupItem.Prefill) {
         for (const [key, prefill] of Object.entries(groupItem.Prefill)) {
+          if (prefill == null) { continue; }
           formUrl += '&prefill:' + key + '~' + paramEncode(prefill.toString());
         }
       }
