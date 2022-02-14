@@ -1,0 +1,12 @@
+<div mat-dialog-title>
+  <div class="dialog-title-box">Delete {{ dialogData.entityTitle }} ({{ dialogData.entityId }})?</div>
+</div>
+
+<div class="dialog-component-content fancy-scrollbar-light" *ngIf="dialogData.message"
+  [innerHtml]="dialogData.message | safeHtml">
+</div>
+
+<div class="dialog-component-actions">
+  <button mat-raised-button (click)="closeDialog()">Cancel</button>
+  <button mat-raised-button color="accent" (click)="closeDialog(true)">Delete</button>
+</div>

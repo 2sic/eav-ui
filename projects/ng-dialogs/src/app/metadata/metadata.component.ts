@@ -18,6 +18,8 @@ import { EditForm } from '../shared/models/edit-form.model';
 import { MetadataActionsComponent } from './ag-grid-components/metadata-actions/metadata-actions.component';
 import { MetadataActionsParams } from './ag-grid-components/metadata-actions/metadata-actions.models';
 import { MetadataContentTypeComponent } from './ag-grid-components/metadata-content-type/metadata-content-type.component';
+import { ConfirmDeleteDialogComponent } from './confirm-delete-dialog/confirm-delete-dialog.component';
+import { ConfirmDeleteDialogData } from './confirm-delete-dialog/confirm-delete-dialog.models';
 import { MetadataSaveDialogComponent } from './metadata-save-dialog/metadata-save-dialog.component';
 import { MetadataItem, MetadataRecommendation, MetadataTemplateVars } from './models/metadata.model';
 
@@ -207,12 +209,26 @@ export class MetadataComponent implements OnInit, OnDestroy {
     this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
   }
 
-  private deleteMetadata(metadata: MetadataItem) {
-    let warning = this.recommendations$.value.find(r => r.Id === metadata._Type.Id)?.DeleteWarning || '';
-    warning = warning
-      ? `${warning}\n\nAre you sure you want to delete '${metadata.Title}' (${metadata.Id})?`
-      : `Delete '${metadata.Title}' (${metadata.Id})?`;
-    if (!confirm(warning)) { return; }
+  private deleteMetadata(metadata: MetadataItem, confirmed = false) {
+    if (!confirmed) {
+      const data: ConfirmDeleteDialogData = {
+        entityId: metadata.Id,
+        entityTitle: metadata.Title,
+        message: this.recommendations$.value.find(r => r.Id === metadata._Type.Id)?.DeleteWarning,
+      };
+      const confirmationDialogRef = this.dialog.open(ConfirmDeleteDialogComponent, {
+        autoFocus: false,
+        data,
+        viewContainerRef: this.viewContainerRef,
+        width: '650px',
+      });
+      confirmationDialogRef.afterClosed().subscribe((isConfirmed: boolean) => {
+        if (isConfirmed) {
+          this.deleteMetadata(metadata, true);
+        }
+      });
+      return;
+    }
 
     this.snackBar.open('Deleting...');
     this.entitiesService.delete(metadata._Type.Id, metadata.Id, false).subscribe({
