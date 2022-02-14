@@ -95,7 +95,11 @@ export class MetadataComponent implements OnInit, OnDestroy {
     this.fetchMetadata();
     this.refreshOnChildClosed();
 
-    this.templateVars$ = combineLatest([this.metadata$, this.recommendations$, this.itemFor$, this.fabOpen$]).pipe(
+    const filteredRecommendations$ = combineLatest([this.metadata$, this.recommendations$]).pipe(
+      map(([metadataItems, recommendations]) =>
+        recommendations.filter(r => r.Count === 1 && !metadataItems.some(i => i._Type.Id === r.Id))),
+    );
+    this.templateVars$ = combineLatest([this.metadata$, filteredRecommendations$, this.itemFor$, this.fabOpen$]).pipe(
       map(([metadata, recommendations, itemFor, fabOpen]) => {
         const templateVars: MetadataTemplateVars = {
           metadata,
@@ -191,8 +195,7 @@ export class MetadataComponent implements OnInit, OnDestroy {
   private fetchMetadata() {
     this.metadataService.getMetadata(this.targetType, this.keyType, this.key).subscribe(metadata => {
       this.metadata$.next(metadata.Items);
-      const filtered = metadata.Recommendations.filter(r => r.Count === 1 && !metadata.Items.some(i => i._Type.Id === r.Id));
-      this.recommendations$.next(filtered);
+      this.recommendations$.next(metadata.Recommendations);
     });
   }
 
