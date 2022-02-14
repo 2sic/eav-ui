@@ -1,7 +1,12 @@
 <div appToggleDebug class="nav-component-wrapper">
   <div mat-dialog-title>
     <div class="dialog-title-box">
-      <div>{{ (contentType$ | async)?.Name }} Data</div>
+      <div>
+        <ng-container *ngIf="contentType$ | async as contentType">
+          {{ contentType.Label || contentType.Name }}
+        </ng-container>
+        Data
+      </div>
       <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
         <mat-icon>close</mat-icon>
       </button>
