@@ -1,33 +1,111 @@
-<div class="cards-box" *ngIf="templateVars$ | async as data">
-  <mat-card class="mat-elevation-z2">
+<ng-container *ngIf="templateVars$ | async as data">
+  <mat-card>
     <mat-card-header>
+      <div mat-card-avatar>
+        <mat-icon>settings_applications</mat-icon>
+      </div>
       <mat-card-title>Platform</mat-card-title>
+      <mat-card-subtitle>What's running under the hood</mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
       <div class="info-row" *ngFor="let info of data.systemInfos">
         <div class="info-row__label">{{ info.label }}</div>
         <div class="info-row__value">
-          <span [tippy]="info.value" (click)="copyToClipboard(info.value)">
-            {{ info.value }}
-          </span>
+          <span [tippy]="info.value" (click)="copyToClipboard(info.value)">{{ info.value }}</span>
         </div>
+      </div>
+      <div class="card-content-separator"></div>
+      <h4>Global Settings</h4>
+      <p>
+        This includes both pre-defined SystemSettings as well as custom Settings.
+        It will affect the entire Installation.
+        See <a href="http://r.2sxc.org/settings" target="_blank">docs</a>.
+      </p>
+      <div class="card-actions">
+        <button mat-button (click)="openGlobalSettings()">
+          <mat-icon>open_in_new</mat-icon>
+          <span>Open Global Settings</span>
+        </button>
       </div>
     </mat-card-content>
   </mat-card>
 
-  <mat-card class="mat-elevation-z2">
+  <mat-card>
     <mat-card-header>
-      <mat-card-title>Current Site</mat-card-title>
+      <div mat-card-avatar>
+        <mat-icon>public</mat-icon>
+      </div>
+      <mat-card-title>This Site</mat-card-title>
+      <mat-card-subtitle>The current Site you're on</mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
       <div class="info-row" *ngFor="let info of data.siteInfos">
         <div class="info-row__label">{{ info.label }}</div>
         <div class="info-row__value">
-          <span [tippy]="info.value" (click)="copyToClipboard(info.value)">
-            {{ info.value }}
-          </span>
+          <span [tippy]="info.value" (click)="copyToClipboard(info.value)">{{ info.value }}</span>
+          <a class="info-row__link" *ngIf="info.link" [routerLink]="info.link">manage</a>
         </div>
+      </div>
+      <div class="card-content-separator"></div>
+      <h4>Site Settings</h4>
+      <p>
+        This includes both pre-defined SystemSettings as well as custom Settings.
+        It will affect the entire Site / Portal.
+        See <a href="http://r.2sxc.org/settings" target="_blank">docs</a>.
+      </p>
+      <div class="card-actions">
+        <button mat-button (click)="openSiteSettings()">
+          <mat-icon>open_in_new</mat-icon>
+          <span>Open Site Settings</span>
+        </button>
       </div>
     </mat-card-content>
   </mat-card>
-</div>
+
+  <mat-card>
+    <mat-card-header>
+      <div mat-card-avatar>
+        <mat-icon>speed</mat-icon>
+      </div>
+      <mat-card-title>2sxc Insights</mat-card-title>
+      <mat-card-subtitle>See what's happening under the hood</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <h4>2sxc Insights for Super Users</h4>
+      <p>
+        This is to access a special section to see what is really in the server memory.
+        It's intended for extensive debugging - see also
+        <a href="https://2sxc.org/en/blog/post/using-2sxc-insights" target="_blank">this blog post</a>.
+      </p>
+      <div class="card-actions">
+        <button mat-button (click)="openInsights()">
+          <mat-icon>open_in_new</mat-icon>
+          <span>Open 2sxc Insights</span>
+        </button>
+      </div>
+      <div class="card-content-separator"></div>
+      <h4>Activate Page Level Logging</h4>
+      <form #activateLogForm="ngForm" class="activate-log-form" (ngSubmit)="activatePageLog(activateLogForm)">
+        <div>
+          This will place insights-logs in the HTML of the user output for users with ?debug=true in the url.
+          It can only be activated for short periods of time.
+        </div>
+        <mat-form-field appearance="standard" color="accent">
+          <mat-label>Duration in Minutes</mat-label>
+          <input matInput type="number" min="0" required [pattern]="positiveWholeNumber" [(ngModel)]="pageLogDuration"
+            name="Duration" #duration="ngModel" [disabled]="data.loading">
+        </mat-form-field>
+        <ng-container *ngIf="duration.touched && duration.errors">
+          <app-field-hint *ngIf="duration.errors.pattern" [isError]="true">
+            Only positive whole numbers
+          </app-field-hint>
+        </ng-container>
+        <div class="form-actions">
+          <button mat-raised-button type="submit" color="accent" [disabled]="!activateLogForm.valid || data.loading">
+            Activate
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</ng-container>

@@ -43,16 +43,13 @@ import { FeaturesConfigService } from './services/features-config.service';
 import { SxcInsightsService } from './services/sxc-insights.service';
 import { ZoneService } from './services/zone.service';
 import { SiteLanguagesComponent } from './site-languages/site-languages.component';
-import { SxcInsightsComponent } from './sxc-insights/sxc-insights.component';
 import { SystemInfoComponent } from './system-info/system-info.component';
-import { SystemSettingsComponent } from './system-settings/system-settings.component';
 
 @NgModule({
   declarations: [
     AppsManagementNavComponent,
     AppsListComponent,
     ManageFeaturesComponent,
-    SxcInsightsComponent,
     AppsListShowComponent,
     AppsListActionsComponent,
     FeaturesListEnabledComponent,
@@ -62,7 +59,6 @@ import { SystemSettingsComponent } from './system-settings/system-settings.compo
     FeaturesListSecurityComponent,
     SiteLanguagesComponent,
     SiteLanguagesStatusComponent,
-    SystemSettingsComponent,
     CreateAppComponent,
     CreateInheritedAppComponent,
     SystemInfoComponent,

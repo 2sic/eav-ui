@@ -1,7 +1,7 @@
 <div class="nav-component-wrapper" appToggleDebug>
   <div mat-dialog-title>
     <div class="dialog-title-box">
-      <div>Manage Apps in Zone {{ zoneId }}</div>
+      <div>Manage Zone {{ zoneId }}</div>
       <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
         <mat-icon>close</mat-icon>
       </button>
@@ -15,7 +15,7 @@
     [selectedIndex]="tabIndex$ | async">
     <mat-tab>
       <div *matTabLabel class="mat-tab-label-box" tippy="System Info">
-        <mat-icon>settings_suggest</mat-icon>
+        <mat-icon>settings</mat-icon>
         <span>System</span>
       </div>
       <app-system-info *matTabContent></app-system-info>
@@ -38,14 +38,6 @@
     </mat-tab>
 
     <mat-tab>
-      <div *matTabLabel class="mat-tab-label-box" tippy="System Settings">
-        <mat-icon>settings</mat-icon>
-        <span>Settings</span>
-      </div>
-      <app-system-settings *matTabContent></app-system-settings>
-    </mat-tab>
-
-    <mat-tab>
       <div *matTabLabel class="mat-tab-label-box" tippy="License Info">
         <mat-icon>copyright</mat-icon>
         <span>License</span>
@@ -59,14 +51,6 @@
         <span>Features</span>
       </div>
       <app-manage-features *matTabContent></app-manage-features>
-    </mat-tab>
-
-    <mat-tab>
-      <div *matTabLabel class="mat-tab-label-box" tippy="2sxc Insights">
-        <mat-icon>speed</mat-icon>
-        <span>2sxc Insights</span>
-      </div>
-      <app-sxc-insights *matTabContent></app-sxc-insights>
     </mat-tab>
   </mat-tab-group>
 </div>
