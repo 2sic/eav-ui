@@ -26,7 +26,7 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
     },
     columnDefs: [
       {
-        field: 'ID', width: 200, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
+        headerName: 'ID', field: 'Id', width: 200, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
         cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter',
         valueGetter: (params) => (params.data as Feature).NameId,
         cellRendererParams: {
@@ -36,7 +36,7 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
       {
         field: 'Name', flex: 3, minWidth: 250, cellClass: 'primary-action highlight', sortable: true,
         filter: 'agTextColumnFilter', cellRenderer: 'featuresListNameComponent',
-        onCellClicked: (params) => this.openFeature(params.data),
+        onCellClicked: (params) => this.openFeature(params.data as Feature),
         valueGetter: (params) => (params.data as Feature).Name,
       },
     ],

@@ -40,15 +40,17 @@ export class LanguagePermissionsComponent implements OnInit, OnDestroy {
       },
       columnDefs: [
         {
-          headerName: 'ID', field: 'Code', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
+          headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
           cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter',
+          valueGetter: (params) => (params.data as SiteLanguagePermissions).Code,
           cellRendererParams: {
             tooltipGetter: (language: SiteLanguagePermissions) => `ID: ${language.Code}`,
           } as IdFieldParams,
         },
         {
-          headerName: 'Name', field: 'Culture', flex: 2, minWidth: 250, cellClass: 'no-outline', sortable: true,
+          field: 'Name', flex: 2, minWidth: 250, cellClass: 'no-outline', sortable: true,
           sort: 'asc', filter: 'agTextColumnFilter',
+          valueGetter: (params) => (params.data as SiteLanguagePermissions).Culture,
         },
         {
           width: 42, cellClass: 'secondary-action no-padding', cellRenderer: 'languagesPermissionsActionsComponent', pinned: 'right',

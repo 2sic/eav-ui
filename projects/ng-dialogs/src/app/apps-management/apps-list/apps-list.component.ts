@@ -1,4 +1,4 @@
-import { AllCommunityModules, CellClickedEvent, GridOptions, ICellRendererParams, ValueGetterParams } from '@ag-grid-community/all-modules';
+import { AllCommunityModules, GridOptions, ICellRendererParams, ValueGetterParams } from '@ag-grid-community/all-modules';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
@@ -37,17 +37,20 @@ export class AppsListComponent implements OnInit, OnDestroy {
       {
         headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
         cellRenderer: 'idFieldComponent', sortable: true, filter: 'agNumberColumnFilter',
+        valueGetter: (params) => (params.data as App).Id,
         cellRendererParams: {
           tooltipGetter: (app: App) => `ID: ${app.Id}\nGUID: ${app.Guid}`,
         } as IdFieldParams,
       },
       {
-        headerName: 'Show', field: 'IsHidden', width: 70, headerClass: 'dense', cellClass: 'icons no-outline', sortable: true,
+        field: 'Show', width: 70, headerClass: 'dense', cellClass: 'icons no-outline', sortable: true,
         filter: 'booleanFilterComponent', cellRenderer: 'appsListShowComponent', valueGetter: this.showValueGetter,
       },
       {
-        headerName: 'Name', field: 'Name', flex: 2, minWidth: 250, cellClass: 'apps-list-primary-action highlight', sortable: true,
-        sort: 'asc', filter: 'agTextColumnFilter', onCellClicked: this.openApp.bind(this), cellRenderer: (params: ICellRendererParams) => {
+        field: 'Name', flex: 2, minWidth: 250, cellClass: 'apps-list-primary-action highlight', sortable: true,
+        sort: 'asc', filter: 'agTextColumnFilter', onCellClicked: (event) => this.openApp(event.data as App),
+        valueGetter: (params) => (params.data as App).Name,
+        cellRenderer: (params: ICellRendererParams) => {
           const app: App = params.data;
           if (app.Thumbnail != null) {
             return `
@@ -67,22 +70,22 @@ export class AppsListComponent implements OnInit, OnDestroy {
         },
       },
       {
-        headerName: 'Folder', field: 'Folder', flex: 2, minWidth: 250, cellClass: 'no-outline', sortable: true,
-        filter: 'agTextColumnFilter',
+        field: 'Folder', flex: 2, minWidth: 250, cellClass: 'no-outline', sortable: true,
+        filter: 'agTextColumnFilter', valueGetter: (params) => (params.data as App).Folder,
       },
       {
-        headerName: 'Version', field: 'Version', width: 78, headerClass: 'dense', cellClass: 'no-outline', sortable: true,
-        filter: 'agTextColumnFilter',
+        field: 'Version', width: 78, headerClass: 'dense', cellClass: 'no-outline', sortable: true,
+        filter: 'agTextColumnFilter', valueGetter: (params) => (params.data as App).Version,
       },
       {
-        headerName: 'Items', field: 'Items', width: 70, headerClass: 'dense', cellClass: 'number-cell no-outline', sortable: true,
-        filter: 'agNumberColumnFilter',
+        field: 'Items', width: 70, headerClass: 'dense', cellClass: 'number-cell no-outline', sortable: true,
+        filter: 'agNumberColumnFilter', valueGetter: (params) => (params.data as App).Items,
       },
       {
         width: 82, cellClass: 'secondary-action no-padding', cellRenderer: 'appsListActionsComponent', pinned: 'right',
         cellRendererParams: {
-          onDelete: this.deleteApp.bind(this),
-          onFlush: this.flushApp.bind(this),
+          onDelete: (app) => this.deleteApp(app),
+          onFlush: (app) => this.flushApp(app),
         } as AppsListActionsParams,
       },
     ],
@@ -162,9 +165,8 @@ export class AppsListComponent implements OnInit, OnDestroy {
     });
   }
 
-  private openApp(params: CellClickedEvent) {
-    const appId = (params.data as App).Id;
-    this.router.navigate([appId.toString()], { relativeTo: this.route.firstChild });
+  private openApp(app: App) {
+    this.router.navigate([app.Id.toString()], { relativeTo: this.route.firstChild });
   }
 
   private refreshOnChildClosed() {

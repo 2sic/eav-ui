@@ -1,4 +1,4 @@
-import { AllCommunityModules, ColDef, GridOptions, ICellRendererParams, Module } from '@ag-grid-community/all-modules';
+import { AllCommunityModules, ColDef, GridOptions, Module } from '@ag-grid-community/all-modules';
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { defaultGridOptions } from '../../../shared/constants/default-grid-options.constants';
 import { TrueFalseParams } from '../action-params/true-false-column-params';
@@ -17,13 +17,11 @@ export class DevRestApiPermissionsComponent implements OnInit, OnChanges {
   gridItems: ApiPermissionsGridItem[];
   gridHeight: string;
 
-  private booleanColumnDef: ColDef;
-
   constructor() { }
 
   ngOnInit() {
     this.gridModules = AllCommunityModules;
-    this.booleanColumnDef = {
+    const booleanColumnDef: ColDef = {
       headerClass: 'dense', width: 80, cellClass: 'no-outline', cellRenderer: 'trueFalseComponent',
       cellRendererParams: { reverse: false } as TrueFalseParams,
     };
@@ -34,13 +32,16 @@ export class DevRestApiPermissionsComponent implements OnInit, OnChanges {
       },
       columnDefs: [
         {
-          headerName: 'Requirement', field: 'requirement', flex: 2, minWidth: 200, cellClass: 'no-outline',
-          cellRenderer: (params: ICellRendererParams) => params.value,
+          field: 'Requirement', flex: 2, minWidth: 200, cellClass: 'no-outline',
+          valueGetter: (params) => (params.data as ApiPermissionsGridItem).requirement,
         },
-        { ...this.booleanColumnDef, headerName: 'Class', field: 'class' },
-        { ...this.booleanColumnDef, headerName: 'Method', field: 'method' },
-        { ...this.booleanColumnDef, headerName: 'Effective', field: 'effective' },
-        { headerName: 'Comments', field: 'comments', flex: 3, minWidth: 250, cellClass: 'no-outline' },
+        { ...booleanColumnDef, field: 'Class', valueGetter: (params) => (params.data as ApiPermissionsGridItem).class },
+        { ...booleanColumnDef, field: 'Method', valueGetter: (params) => (params.data as ApiPermissionsGridItem).method },
+        { ...booleanColumnDef, field: 'Effective', valueGetter: (params) => (params.data as ApiPermissionsGridItem).effective },
+        {
+          field: 'Comments', flex: 3, minWidth: 250, cellClass: 'no-outline',
+          valueGetter: (params) => (params.data as ApiPermissionsGridItem).comments,
+        },
       ],
     };
   }

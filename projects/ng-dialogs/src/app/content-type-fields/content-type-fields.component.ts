@@ -1,5 +1,5 @@
 // tslint:disable-next-line:max-line-length
-import { AllCommunityModules, FilterChangedEvent, GridApi, GridOptions, GridReadyEvent, ICellRendererParams, RowClassParams, RowDragEvent, SortChangedEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
+import { AllCommunityModules, FilterChangedEvent, GridApi, GridOptions, GridReadyEvent, ICellRendererParams, RowClassParams, RowDragEvent, SortChangedEvent } from '@ag-grid-community/all-modules';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -57,41 +57,42 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
     columnDefs: [
       { rowDrag: true, width: 18, cellClass: 'no-select no-padding no-outline' },
       {
-        headerName: 'Title', field: 'IsTitle', width: 42, cellClass: 'secondary-action no-padding no-outline',
-        cellRenderer: 'contentTypeFieldsTitleComponent',
+        field: 'Title', width: 42, cellClass: 'secondary-action no-padding no-outline',
+        cellRenderer: 'contentTypeFieldsTitleComponent', valueGetter: (params) => (params.data as Field).IsTitle,
         cellRendererParams: {
           onSetTitle: (field) => this.setTitle(field),
         } as ContentTypeFieldsTitleParams,
       },
       {
-        headerName: 'Name', field: 'StaticName', flex: 2, minWidth: 250, cellClass: 'primary-action highlight',
-        sortable: true, filter: 'agTextColumnFilter', onCellClicked: (params) => this.editFieldMetadata(params.data),
+        field: 'Name', flex: 2, minWidth: 250, cellClass: 'primary-action highlight',
+        sortable: true, filter: 'agTextColumnFilter', onCellClicked: (params) => this.editFieldMetadata(params.data as Field),
         cellRenderer: (params: ICellRendererParams) => this.nameCellRenderer(params),
+        valueGetter: (params) => (params.data as Field).StaticName,
       },
       {
-        headerName: 'Type', field: 'Type', width: 70, headerClass: 'dense', cellClass: 'no-outline', sortable: true,
+        field: 'Type', width: 70, headerClass: 'dense', cellClass: 'no-outline', sortable: true,
         filter: 'agTextColumnFilter', cellRenderer: 'contentTypeFieldsTypeComponent',
+        valueGetter: (params) => (params.data as Field).Type,
       },
       {
         headerName: 'Input', field: 'InputType', width: 160,
         cellClass: (params) => (params.data as Field).EditInfo.ReadOnly ? 'no-outline no-padding' : 'secondary-action no-padding',
         sortable: true, filter: 'agTextColumnFilter', cellRenderer: 'contentTypeFieldsInputTypeComponent',
-        valueGetter: (params) => this.inputTypeValueGetter(params),
+        valueGetter: (params) => this.inputTypeValueGetter(params.data as Field),
         cellRendererParams: {
           onChangeInputType: (field) => this.changeInputType(field),
         } as ContentTypeFieldsInputTypeParams,
       },
       {
-        headerName: 'Label', field: 'Metadata.All.Name', flex: 2, minWidth: 250, cellClass: 'no-outline',
-        sortable: true, filter: 'agTextColumnFilter',
+        field: 'Label', flex: 2, minWidth: 250, cellClass: 'no-outline',
+        sortable: true, filter: 'agTextColumnFilter', valueGetter: (params) => (params.data as Field).Metadata?.All?.Name,
       },
       {
-        headerName: 'Special', width: 66, headerClass: 'dense', cellClass: 'no-outline',
-        cellRenderer: 'contentTypeFieldsSpecialComponent',
+        field: 'Special', width: 66, headerClass: 'dense', cellClass: 'no-outline', cellRenderer: 'contentTypeFieldsSpecialComponent',
       },
       {
-        headerName: 'Notes', field: 'Metadata.All.Notes', flex: 2, minWidth: 250, cellClass: 'no-outline',
-        sortable: true, filter: 'agTextColumnFilter',
+        field: 'Notes', flex: 2, minWidth: 250, cellClass: 'no-outline',
+        sortable: true, filter: 'agTextColumnFilter', valueGetter: (params) => (params.data as Field).Metadata?.All?.Notes,
       },
       {
         width: 122, cellClass: 'secondary-action no-padding', cellRenderer: 'contentTypeFieldsActionsComponent', pinned: 'right',
@@ -231,8 +232,7 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
     return isGroupOpen ? `<span class="is-in-group">${params.value}</span>` : params.value;
   }
 
-  private inputTypeValueGetter(params: ValueGetterParams) {
-    const field: Field = params.data;
+  private inputTypeValueGetter(field: Field) {
     const inputType = field.InputType.substring(field.InputType.indexOf('-') + 1);
     return inputType;
   }

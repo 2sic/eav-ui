@@ -39,7 +39,7 @@ export class MetadataComponent implements OnInit, OnDestroy {
     },
     columnDefs: [
       {
-        field: 'ID', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
+        headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
         cellRenderer: 'idFieldComponent', sortable: true, filter: 'agNumberColumnFilter',
         valueGetter: (params) => (params.data as MetadataItem).Id,
         cellRendererParams: {
@@ -49,10 +49,11 @@ export class MetadataComponent implements OnInit, OnDestroy {
       {
         field: 'Title', flex: 2, minWidth: 250, cellClass: 'primary-action highlight',
         valueGetter: (params) => (params.data as MetadataItem).Title,
-        sortable: true, sort: 'asc', filter: 'agTextColumnFilter', onCellClicked: (event) => this.editMetadata(event.data),
+        sortable: true, sort: 'asc', filter: 'agTextColumnFilter',
+        onCellClicked: (event) => this.editMetadata(event.data as MetadataItem),
       },
       {
-        field: 'Content Type', flex: 2, minWidth: 250, cellClass: 'no-outline', sortable: true,
+        headerName: 'Content Type', field: 'ContentType', flex: 2, minWidth: 250, cellClass: 'no-outline', sortable: true,
         cellRenderer: 'metadataContentTypeComponent', filter: 'agTextColumnFilter', valueGetter: (params) => {
           const metadata = params.data as MetadataItem;
           return `${metadata._Type.Name}${metadata._Type.Title !== metadata._Type.Name ? ` (${metadata._Type.Title})` : ''}`;

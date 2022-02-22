@@ -32,25 +32,28 @@ export class ViewsUsageComponent implements OnInit, OnDestroy {
     },
     columnDefs: [
       {
-        headerName: 'Block', field: 'Block', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
+        field: 'Block', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
         cellRenderer: 'viewsUsageIdComponent', sortable: true, filter: 'agTextColumnFilter', valueGetter: blockIdValueGetter,
       },
       {
-        headerName: 'Module', field: 'Module', width: 76, headerClass: 'dense', cellRenderer: 'viewsUsageIdComponent',
+        field: 'Module', width: 76, headerClass: 'dense', cellRenderer: 'viewsUsageIdComponent',
         sortable: true, filter: 'agTextColumnFilter', valueGetter: moduleIdValueGetter, cellClass: moduleIdClassGetter,
       },
       {
-        headerName: 'Page', field: 'PageId', width: 70, headerClass: 'dense', cellRenderer: 'viewsUsageIdComponent',
+        field: 'Page', width: 70, headerClass: 'dense', cellRenderer: 'viewsUsageIdComponent',
         sortable: true, filter: 'agTextColumnFilter', valueGetter: pageIdValueGetter, cellClass: pageIdClassGetter,
       },
       {
-        headerName: 'Name', field: 'Name', flex: 2, minWidth: 250, sortable: true, sort: 'asc', filter: 'agTextColumnFilter',
-        cellClass: nameClassGetter, onCellClicked: onNameClicked,
+        field: 'Name', flex: 2, minWidth: 250, sortable: true, sort: 'asc', filter: 'agTextColumnFilter',
+        valueGetter: (params) => (params.data as ViewUsageData).Name, cellClass: nameClassGetter, onCellClicked: onNameClicked,
       },
-      { headerName: 'Language', field: 'Language', width: 90, cellClass: 'no-outline', sortable: true, filter: 'agTextColumnFilter' },
       {
-        headerName: 'Status', field: 'Status', width: 80, cellClass: 'icon no-outline', filter: 'viewsUsageStatusFilterComponent',
-        cellRenderer: statusCellRenderer,
+        field: 'Language', width: 90, cellClass: 'no-outline', sortable: true, filter: 'agTextColumnFilter',
+        valueGetter: (params) => (params.data as ViewUsageData).Language,
+      },
+      {
+        field: 'Status', width: 80, cellClass: 'icon no-outline', filter: 'viewsUsageStatusFilterComponent',
+        cellRenderer: statusCellRenderer, valueGetter: (params) => (params.data as ViewUsageData).Status,
       },
     ],
   };

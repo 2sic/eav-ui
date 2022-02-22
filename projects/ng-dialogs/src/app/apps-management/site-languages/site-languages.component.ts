@@ -1,4 +1,4 @@
-import { AllCommunityModules, CellClickedEvent, GridOptions } from '@ag-grid-community/all-modules';
+import { AllCommunityModules, GridOptions } from '@ag-grid-community/all-modules';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
@@ -28,21 +28,24 @@ export class SiteLanguagesComponent implements OnInit, OnDestroy {
     },
     columnDefs: [
       {
-        headerName: 'ID', field: 'Code', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
+        headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
         cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter',
+        valueGetter: (params) => (params.data as SiteLanguage).Code,
         cellRendererParams: {
           tooltipGetter: (language: SiteLanguage) => `ID: ${language.Code}`,
         } as IdFieldParams,
       },
       {
-        headerName: 'Name', field: 'Culture', flex: 2, minWidth: 250, cellClass: 'primary-action highlight no-outline', sortable: true,
-        sort: 'asc', filter: 'agTextColumnFilter', onCellClicked: this.handleNameClicked.bind(this),
+        field: 'Name', flex: 2, minWidth: 250, cellClass: 'primary-action highlight no-outline', sortable: true,
+        sort: 'asc', filter: 'agTextColumnFilter', onCellClicked: (event) => this.toggleLanguage(event.data as SiteLanguage),
+        valueGetter: (params) => (params.data as SiteLanguage).Culture,
       },
       {
-        headerName: 'Status', field: 'IsEnabled', width: 72, headerClass: 'dense', cellClass: 'no-padding no-outline',
+        field: 'Status', width: 72, headerClass: 'dense', cellClass: 'no-padding no-outline',
         cellRenderer: 'siteLanguagesStatusComponent', sortable: true, filter: 'booleanFilterComponent',
+        valueGetter: (params) => (params.data as SiteLanguage).IsEnabled,
         cellRendererParams: {
-          onEnabledToggle: this.toggleLanguage.bind(this),
+          onEnabledToggle: (language) => this.toggleLanguage(language),
         } as SiteLanguagesStatusParams,
       },
     ],
@@ -56,11 +59,6 @@ export class SiteLanguagesComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.languages$.complete();
-  }
-
-  private handleNameClicked(params: CellClickedEvent) {
-    const language: SiteLanguage = params.data;
-    this.toggleLanguage(language);
   }
 
   private toggleLanguage(language: SiteLanguage) {

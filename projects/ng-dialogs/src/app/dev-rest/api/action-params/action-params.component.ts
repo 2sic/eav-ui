@@ -1,6 +1,6 @@
 import { AllCommunityModules, GridOptions } from '@ag-grid-community/all-modules';
 import { Component, Input } from '@angular/core';
-import { WebApiAction } from '../../../app-administration/models/web-api-details';
+import { WebApiAction, WebApiActionParameters } from '../../../app-administration/models/web-api-details';
 import { defaultGridOptions } from '../../../shared/constants/default-grid-options.constants';
 import { TrueFalseParams } from './true-false-column-params';
 import { TrueFalseComponent } from './true-false.component';
@@ -23,13 +23,23 @@ export class DevRestApiActionParamsComponent {
     },
     columnDefs: [
       {
-        headerName: 'Required', field: 'isOptional', headerClass: 'dense', width: 70, cellClass: 'no-padding no-outline',
+        field: 'Required', headerClass: 'dense', width: 80, cellClass: 'no-padding no-outline',
+        valueGetter: (params) => (params.data as WebApiActionParameters).isOptional,
         cellRenderer: 'trueFalseComponent',
-        cellRendererParams: { reverse: true } as TrueFalseParams
+        cellRendererParams: { reverse: true } as TrueFalseParams,
       },
-      { headerName: 'Name', field: 'name', flex: 2, minWidth: 200, cellClass: 'no-outline' },
-      { headerName: 'Type', field: 'type', flex: 2, headerClass: 'dense', cellClass: 'no-outline' },
-      { headerName: 'Default Value', field: 'defaultValue', flex: 2, minWidth: 250, cellClass: 'no-outline' },
+      {
+        field: 'Name', flex: 2, minWidth: 200, cellClass: 'no-outline',
+        valueGetter: (params) => (params.data as WebApiActionParameters).name,
+      },
+      {
+        field: 'Type', flex: 2, headerClass: 'dense', cellClass: 'no-outline',
+        valueGetter: (params) => (params.data as WebApiActionParameters).type,
+      },
+      {
+        headerName: 'Default Value', field: 'DefaultValue', flex: 2, minWidth: 250, cellClass: 'no-outline',
+        valueGetter: (params) => (params.data as WebApiActionParameters).defaultValue,
+      },
     ],
   };
 

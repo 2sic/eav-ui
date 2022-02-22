@@ -1,4 +1,4 @@
-import { AllCommunityModules, CellClickedEvent, ColDef, GridApi, GridOptions, GridReadyEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
+import { AllCommunityModules, ColDef, GridApi, GridOptions, GridReadyEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -152,8 +152,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     this.router.navigate([url], { relativeTo: this.route });
   }
 
-  editItem(params: CellClickedEvent) {
-    const item: ContentItem = params?.data;
+  editItem(item?: ContentItem) {
     const form: EditForm = {
       items: [
         item == null
@@ -252,20 +251,22 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
         headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense',
         cellClass: (params) => `${(params.data as ContentItem)._EditInfo.ReadOnly ? 'disabled' : ''} id-action no-padding no-outline`,
         cellRenderer: 'idFieldComponent', sortable: true, filter: 'agNumberColumnFilter',
+        valueGetter: (params) => (params.data as ContentItem).Id,
         cellRendererParams: {
           tooltipGetter: (item: ContentItem) => `ID: ${item.Id}\nRepoID: ${item._RepositoryId}\nGUID: ${item.Guid}`,
         } as IdFieldParams,
       },
       {
-        headerName: 'Status', field: 'Status', width: 82, headerClass: 'dense', cellClass: 'secondary-action no-padding',
+        field: 'Status', width: 82, headerClass: 'dense', cellClass: 'secondary-action no-padding',
         filter: 'pubMetaFilterComponent', cellRenderer: 'contentItemsStatusComponent', valueGetter: this.valueGetterStatus,
         cellRendererParams: {
-          onOpenMetadata: this.openMetadata.bind(this),
+          onOpenMetadata: (item) => this.openMetadata(item),
         } as ContentItemsStatusParams,
       },
       {
         headerName: 'Item (Entity)', field: '_Title', flex: 2, minWidth: 250, cellClass: 'primary-action highlight',
-        sortable: true, filter: 'agTextColumnFilter', onCellClicked: this.editItem.bind(this),
+        sortable: true, filter: 'agTextColumnFilter', onCellClicked: (event) => this.editItem(event.data as ContentItem),
+        valueGetter: (params) => (params.data as ContentItem)._Title,
       },
       {
         headerName: 'Stats', headerTooltip: 'Used by others / uses others',
@@ -275,9 +276,9 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
       {
         cellClass: 'secondary-action no-padding', width: 122, cellRenderer: 'contentItemsActionsComponent', pinned: 'right',
         cellRendererParams: {
-          onClone: this.clone.bind(this),
-          onExport: this.export.bind(this),
-          onDelete: this.delete.bind(this),
+          onClone: (item) => this.clone(item),
+          onExport: (item) => this.export(item),
+          onDelete: (item) => this.delete(item),
         } as ContentItemsActionsParams,
       },
     ];
@@ -288,21 +289,13 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
       };
       switch (column.Type) {
         case DataTypeConstants.Entity:
-          try {
-            colDef.allowMultiValue = column.Metadata.Entity.AllowMultiValue;
-          } catch (e) {
-            colDef.allowMultiValue = true;
-          }
+          colDef.allowMultiValue = column.Metadata?.Entity?.AllowMultiValue ?? true;
           colDef.cellRenderer = 'contentItemsEntityComponent';
           colDef.valueGetter = this.valueGetterEntityField;
           colDef.filter = 'entityFilterComponent';
           break;
         case DataTypeConstants.DateTime:
-          try {
-            colDef.useTimePicker = column.Metadata.DateTime.UseTimePicker;
-          } catch (e) {
-            colDef.useTimePicker = false;
-          }
+          colDef.useTimePicker = column.Metadata?.DateTime?.UseTimePicker ?? false;
           colDef.valueGetter = this.valueGetterDateTime;
           colDef.filter = 'agTextColumnFilter';
           break;

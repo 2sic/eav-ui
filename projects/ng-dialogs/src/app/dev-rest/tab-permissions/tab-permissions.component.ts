@@ -2,6 +2,7 @@ import { AllCommunityModules, GridOptions } from '@ag-grid-community/all-modules
 import { Component, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DevRestBaseTemplateVars } from '..';
+import { Permission } from '../../permissions';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 
@@ -19,11 +20,26 @@ export class DevRestTabPermissionsComponent {
   gridOptions: GridOptions = {
     ...defaultGridOptions,
     columnDefs: [
-      { headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'no-padding no-outline' },
-      { headerName: 'Name', field: 'Title', flex: 2, minWidth: 250, cellClass: 'no-outline' },
-      { headerName: 'Identity', field: 'Identity', flex: 2, minWidth: 250, cellClass: 'no-outline' },
-      { headerName: 'Condition', field: 'Condition', flex: 2, minWidth: 250, cellClass: 'no-outline' },
-      { headerName: 'Grant', field: 'Grant', width: 70, headerClass: 'dense', cellClass: 'no-outline' },
+      {
+        headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'no-padding no-outline',
+        valueGetter: (params) => (params.data as Permission).Id,
+      },
+      {
+        field: 'Name', flex: 2, minWidth: 250, cellClass: 'no-outline',
+        valueGetter: (params) => (params.data as Permission).Title,
+      },
+      {
+        field: 'Identity', flex: 2, minWidth: 250, cellClass: 'no-outline',
+        valueGetter: (params) => (params.data as Permission).Identity,
+      },
+      {
+        field: 'Condition', flex: 2, minWidth: 250, cellClass: 'no-outline',
+        valueGetter: (params) => (params.data as Permission).Condition,
+      },
+      {
+        field: 'Grant', width: 70, headerClass: 'dense', cellClass: 'no-outline',
+        valueGetter: (params) => (params.data as Permission).Grant,
+      },
     ],
   };
 

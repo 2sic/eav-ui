@@ -1,4 +1,4 @@
-import { AllCommunityModules, CellClickedEvent, GridOptions } from '@ag-grid-community/all-modules';
+import { AllCommunityModules, GridOptions } from '@ag-grid-community/all-modules';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -35,30 +35,33 @@ export class PermissionsComponent implements OnInit, OnDestroy {
       {
         headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
         cellRenderer: 'idFieldComponent', sortable: true, filter: 'agNumberColumnFilter',
+        valueGetter: (params) => (params.data as Permission).Id,
         cellRendererParams: {
           tooltipGetter: (permission: Permission) => `ID: ${permission.Id}\nGUID: ${permission.Guid}`,
         } as IdFieldParams,
       },
       {
-        headerName: 'Name', field: 'Title', flex: 2, minWidth: 250, cellClass: 'primary-action highlight',
-        sortable: true, sort: 'asc', filter: 'agTextColumnFilter', onCellClicked: this.editPermission.bind(this),
+        field: 'Name', flex: 2, minWidth: 250, cellClass: 'primary-action highlight',
+        sortable: true, sort: 'asc', filter: 'agTextColumnFilter',
+        onCellClicked: (event) => this.editPermission(event.data as Permission),
+        valueGetter: (params) => (params.data as Permission).Title,
       },
       {
-        headerName: 'Identity', field: 'Identity', flex: 2, minWidth: 250, cellClass: 'no-outline', sortable: true,
-        filter: 'agTextColumnFilter',
+        field: 'Identity', flex: 2, minWidth: 250, cellClass: 'no-outline', sortable: true,
+        filter: 'agTextColumnFilter', valueGetter: (params) => (params.data as Permission).Identity,
       },
       {
-        headerName: 'Condition', field: 'Condition', flex: 2, minWidth: 250, cellClass: 'no-outline', sortable: true,
-        filter: 'agTextColumnFilter',
+        field: 'Condition', flex: 2, minWidth: 250, cellClass: 'no-outline', sortable: true,
+        filter: 'agTextColumnFilter', valueGetter: (params) => (params.data as Permission).Condition,
       },
       {
-        headerName: 'Grant', field: 'Grant', width: 70, headerClass: 'dense', cellClass: 'no-outline',
-        sortable: true, filter: 'agTextColumnFilter',
+        field: 'Grant', width: 70, headerClass: 'dense', cellClass: 'no-outline',
+        sortable: true, filter: 'agTextColumnFilter', valueGetter: (params) => (params.data as Permission).Grant,
       },
       {
         width: 42, cellClass: 'secondary-action no-padding', cellRenderer: 'permissionsActionsComponent', pinned: 'right',
         cellRendererParams: {
-          onDelete: this.deletePermission.bind(this),
+          onDelete: (permission) => this.deletePermission(permission),
         } as PermissionsActionsParams,
       },
     ],
@@ -102,9 +105,9 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     });
   }
 
-  editPermission(params: CellClickedEvent) {
+  editPermission(permission?: Permission) {
     let form: EditForm;
-    if (params == null) {
+    if (permission == null) {
       form = {
         items: [{
           ContentTypeName: eavConstants.contentTypes.permissions,
@@ -119,7 +122,6 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         }],
       };
     } else {
-      const permission: Permission = params.data;
       form = {
         items: [{ EntityId: permission.Id }],
       };
