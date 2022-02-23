@@ -23,10 +23,6 @@ import { AppsListActionsComponent } from './ag-grid-components/apps-list-actions
 import { AppsListShowComponent } from './ag-grid-components/apps-list-show/apps-list-show.component';
 import { FeaturesListEnabledReasonComponent } from './ag-grid-components/features-list-enabled-reason/features-list-enabled-reason.component';
 import { FeaturesListEnabledComponent } from './ag-grid-components/features-list-enabled/features-list-enabled.component';
-import { FeaturesListNameComponent } from './ag-grid-components/features-list-name/features-list-name.component';
-import { FeaturesListPublicComponent } from './ag-grid-components/features-list-public/features-list-public.component';
-import { FeaturesListSecurityComponent } from './ag-grid-components/features-list-security/features-list-security.component';
-import { FeaturesListUiComponent } from './ag-grid-components/features-list-ui/features-list-ui.component';
 import { FeaturesStatusComponent } from './ag-grid-components/features-status/features-status.component';
 import { SiteLanguagesStatusComponent } from './ag-grid-components/site-languages-status/site-languages-status.component';
 import { AppsListComponent } from './apps-list/apps-list.component';
@@ -34,10 +30,11 @@ import { AppsManagementNavComponent } from './apps-management-nav/apps-managemen
 import { AppsManagementRoutingModule } from './apps-management-routing.module';
 import { CreateAppComponent } from './create-app/create-app.component';
 import { CreateInheritedAppComponent } from './create-inherited-app/create-inherited-app.component';
+import { ActiveFeaturesCountPipe } from './licence-info/active-features-count.pipe';
 import { AgGridHeightDirective } from './licence-info/ag-grid-height.directive';
+import { FeatureDetailsDialogComponent } from './licence-info/feature-details-dialog/feature-details-dialog.component';
 import { LicenseInfoComponent } from './licence-info/license-info.component';
 import { LicensesOrderPipe } from './licence-info/licenses-order.pipe';
-import { ManageFeaturesComponent } from './manage-features/manage-features.component';
 import { AppsListService } from './services/apps-list.service';
 import { FeaturesConfigService } from './services/features-config.service';
 import { SxcInsightsService } from './services/sxc-insights.service';
@@ -49,14 +46,9 @@ import { SystemInfoComponent } from './system-info/system-info.component';
   declarations: [
     AppsManagementNavComponent,
     AppsListComponent,
-    ManageFeaturesComponent,
     AppsListShowComponent,
     AppsListActionsComponent,
     FeaturesListEnabledComponent,
-    FeaturesListUiComponent,
-    FeaturesListPublicComponent,
-    FeaturesListNameComponent,
-    FeaturesListSecurityComponent,
     SiteLanguagesComponent,
     SiteLanguagesStatusComponent,
     CreateAppComponent,
@@ -67,6 +59,8 @@ import { SystemInfoComponent } from './system-info/system-info.component';
     LicenseInfoComponent,
     LicensesOrderPipe,
     AgGridHeightDirective,
+    ActiveFeaturesCountPipe,
+    FeatureDetailsDialogComponent,
   ],
   imports: [
     AppsManagementRoutingModule,

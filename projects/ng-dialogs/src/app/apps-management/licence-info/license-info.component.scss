@@ -15,11 +15,29 @@
 
 .mat-expansion-panel-header-title {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+}
+
+.panel-icon {
+  margin-right: 16px;
 }
 
 .panel-title {
   font-size: 14px;
+}
+
+.active-features-count {
+  display: inline-block;
+  margin-left: 8px;
+  color: white;
+  font-size: 12px;
+  border-radius: 12px;
+  padding: 2px 6px;
+  background-color: #002753;
+  border: 1px solid rgba(29, 39, 61, 0.44);
+  box-sizing: border-box;
+  user-select: none;
+  white-space: nowrap;
 }
 
 .panel-description {

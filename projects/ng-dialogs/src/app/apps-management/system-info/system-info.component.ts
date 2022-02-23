@@ -22,11 +22,6 @@ declare const window: EavWindow;
   styleUrls: ['./system-info.component.scss'],
 })
 export class SystemInfoComponent implements OnInit, OnDestroy {
-  /*
-    TODO:
-    - use reactive form if possible
-    - optimize html and css
-  */
   pageLogDuration: number;
   positiveWholeNumber = /^[1-9][0-9]*$/;
   templateVars$: Observable<SystemInfoTemplateVars>;

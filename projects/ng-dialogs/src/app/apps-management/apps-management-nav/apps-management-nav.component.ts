@@ -13,7 +13,7 @@ import { Context } from '../../shared/services/context';
 export class AppsManagementNavComponent implements OnInit {
   zoneId = this.context.zoneId;
 
-  private tabs = ['system', 'list', 'languages', 'license', 'features']; // tabs order has to match template
+  private tabs = ['system', 'list', 'languages', 'license']; // tabs order has to match template
   tabIndex$ = this.router.events.pipe(
     filter(event => event instanceof NavigationEnd),
     map(() => this.tabs.indexOf(this.route.snapshot.firstChild.url[0].path)),

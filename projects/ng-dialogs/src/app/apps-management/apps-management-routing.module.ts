@@ -28,7 +28,6 @@ const appsManagementRoutes: Routes = [
       },
       { path: 'languages', component: EmptyRouteComponent, data: { title: 'Zone Languages' } },
       { path: 'license', component: EmptyRouteComponent, data: { title: 'License Info' } },
-      { path: 'features', component: EmptyRouteComponent, data: { title: 'Zone Features' } },
     ]
   },
 ];

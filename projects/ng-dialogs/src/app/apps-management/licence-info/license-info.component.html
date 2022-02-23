@@ -2,8 +2,16 @@
   <mat-expansion-panel #panel *ngFor="let license of licenses | licensesOrder; trackBy: trackLicenses">
     <mat-expansion-panel-header>
       <mat-panel-title>
-        <div class="panel-title">{{ license.Name }} ({{ license.IsEnabled ? 'active' : 'inactive' }})</div>
-        <div class="panel-description">{{ license.Description }}</div>
+        <mat-icon class="panel-icon" [tippy]="license.IsEnabled ? 'License is active' : 'License is not active'">
+          {{ license.IsEnabled ? 'check_circle_outline' : 'cancel' }}
+        </mat-icon>
+        <div>
+          <div class="panel-title">
+            <span>{{ license.Name }}</span>
+            <span class="active-features-count">{{ license | activeFeaturesCount }}</span>
+          </div>
+          <div class="panel-description">{{ license.Description }}</div>
+        </div>
       </mat-panel-title>
     </mat-expansion-panel-header>
 
