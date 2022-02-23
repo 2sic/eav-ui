@@ -180,8 +180,8 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
   }
 
   onSortChanged(params: SortChangedEvent) {
-    const sortModel = this.gridApi.getSortModel();
-    this.sortApplied = sortModel.length > 0;
+    const columnStates = params.columnApi.getColumnState();
+    this.sortApplied = columnStates.some(state => state.sort != null);
     this.suppressRowDrag();
   }
 
