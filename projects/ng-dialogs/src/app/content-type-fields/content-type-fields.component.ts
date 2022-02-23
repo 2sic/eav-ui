@@ -1,5 +1,5 @@
 // tslint:disable-next-line:max-line-length
-import { AllCommunityModules, FilterChangedEvent, GridApi, GridOptions, GridReadyEvent, ICellRendererParams, RowClassParams, RowDragEvent, SortChangedEvent } from '@ag-grid-community/all-modules';
+import { AllCommunityModules, ColumnApi, FilterChangedEvent, GridApi, GridOptions, GridReadyEvent, ICellRendererParams, RowClassParams, RowDragEvent, SortChangedEvent } from '@ag-grid-community/all-modules';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -109,6 +109,7 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
   sortApplied = false;
   filterApplied = false;
   private gridApi: GridApi;
+  private columnApi: ColumnApi;
   private rowDragSuppressed = false;
   private contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
   private subscription = new Subscription();
@@ -139,6 +140,7 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
 
   onGridReady(params: GridReadyEvent) {
     this.gridApi = params.api;
+    this.columnApi = params.columnApi;
   }
 
   onRowDragEnter(event: RowDragEvent) {
@@ -180,7 +182,7 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
   }
 
   onSortChanged(params: SortChangedEvent) {
-    const columnStates = params.columnApi.getColumnState();
+    const columnStates = this.columnApi.getColumnState();
     this.sortApplied = columnStates.some(state => state.sort != null);
     this.suppressRowDrag();
   }
