@@ -11,9 +11,10 @@ const webApiLicense = 'sys/license/summary';
 export class FeaturesConfigService {
   constructor(private http: HttpClient, private dnnContext: DnnContext) { }
 
-  getAll() {
-    return this.http.get<Feature[]>(this.dnnContext.$2sxc.http.apiUrl(webApiFeatures + 'List'));
-  }
+  // 2022-02-24 2dm @SPM TODO: probably remove, I believe it's not used any more
+  // getAll() {
+  //   return this.http.get<Feature[]>(this.dnnContext.$2sxc.http.apiUrl(webApiFeatures + 'List'));
+  // }
 
   saveFeatures(featuresStates: FeatureState[]) {
     return this.http.post<null>(this.dnnContext.$2sxc.http.apiUrl(webApiFeatures + 'SaveNew'), featuresStates);
