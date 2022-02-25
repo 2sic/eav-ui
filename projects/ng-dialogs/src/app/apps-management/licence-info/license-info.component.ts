@@ -139,18 +139,11 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
 
   private toggleFeature(feature: Feature, enabled: boolean): void {
     this.disabled$.next(true);
-    const features = this.licenses$.value.reduce((featuresArray, license) => {
-      featuresArray.push(...license.Features);
-      return featuresArray;
-    }, [] as Feature[]);
-    const states = features.map(f => {
-      const state: FeatureState = {
-        FeatureGuid: f.Guid,
-        Enabled: f.Guid === feature.Guid ? enabled : f.EnabledStored,
-      };
-      return state;
-    });
-    forkJoin([this.featuresConfigService.saveFeatures(states), timer(100)]).subscribe(() => {
+    const state: FeatureState = {
+        FeatureGuid: feature.Guid,
+        Enabled: enabled,
+    };
+    forkJoin([this.featuresConfigService.saveFeatures([state]), timer(100)]).subscribe(() => {
       this.fetchLicenses();
     });
   }
