@@ -1,13 +1,18 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { combineLatest, Observable } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, Subscription } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
+import { MetadataItem } from '../../../../ng-dialogs/src/app/metadata';
+import { MetadataService } from '../../../../ng-dialogs/src/app/permissions';
+import { eavConstants } from '../../../../ng-dialogs/src/app/shared/constants/eav.constants';
+import { EditForm } from '../../../../ng-dialogs/src/app/shared/models/edit-form.model';
 import { GeneralHelpers } from '../../../shared/helpers';
 import { EavHeader } from '../../../shared/models/eav';
-import { EavService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
+import { EavService, EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
 import { ItemService, LanguageInstanceService } from '../../../shared/store/ngrx-data';
+import { getNoteProps } from './entity-wrapper.helpers';
 import { ContentTypeTemplateVars } from './entity-wrapper.models';
 
 @Component({
@@ -15,12 +20,15 @@ import { ContentTypeTemplateVars } from './entity-wrapper.models';
   templateUrl: './entity-wrapper.component.html',
   styleUrls: ['./entity-wrapper.component.scss'],
 })
-export class EntityWrapperComponent implements OnInit {
+export class EntityWrapperComponent implements OnInit, OnDestroy {
   @Input() entityGuid: string;
   @Input() group: FormGroup;
 
   collapse: boolean;
   templateVars$: Observable<ContentTypeTemplateVars>;
+
+  private subscription: Subscription;
+  private note$: BehaviorSubject<MetadataItem>;
 
   constructor(
     private languageInstanceService: LanguageInstanceService,
@@ -31,9 +39,13 @@ export class EntityWrapperComponent implements OnInit {
     public eavService: EavService,
     private translate: TranslateService,
     private formsStateService: FormsStateService,
+    private editRoutingService: EditRoutingService,
+    private metadataService: MetadataService,
   ) { }
 
   ngOnInit() {
+    this.subscription = new Subscription();
+    this.note$ = new BehaviorSubject<MetadataItem>(undefined);
     this.collapse = false;
     const readOnly$ = this.formsStateService.readOnly$;
     const currentLanguage$ = this.languageInstanceService.getCurrentLanguage$(this.eavService.eavConfig.formId);
@@ -62,8 +74,14 @@ export class EntityWrapperComponent implements OnInit {
       distinctUntilChanged(GeneralHelpers.objectsEqual),
     );
 
-    this.templateVars$ = combineLatest([readOnly$, currentLanguage$, defaultLanguage$, itemForTooltip$, header$, settings$]).pipe(
-      map(([readOnly, currentLanguage, defaultLanguage, itemForTooltip, header, settings]) => {
+    this.templateVars$ = combineLatest([
+      combineLatest([readOnly$, currentLanguage$, defaultLanguage$]),
+      combineLatest([itemForTooltip$, header$, settings$, this.note$]),
+    ]).pipe(
+      map(([
+        [readOnly, currentLanguage, defaultLanguage],
+        [itemForTooltip, header, settings, note],
+      ]) => {
         const templateVars: ContentTypeTemplateVars = {
           readOnly: readOnly.isReadOnly,
           currentLanguage,
@@ -74,10 +92,20 @@ export class EntityWrapperComponent implements OnInit {
           slotIsEmpty: settings._slotIsEmpty,
           editInstructions: settings.EditInstructions,
           itemForTooltip,
+          note,
+          noteProps: getNoteProps(note),
         };
         return templateVars;
       }),
     );
+
+    this.fetchNote();
+    this.refreshOnChildClosed();
+  }
+
+  ngOnDestroy() {
+    this.note$.complete();
+    this.subscription.unsubscribe();
   }
 
   toggleCollapse() {
@@ -92,5 +120,40 @@ export class EntityWrapperComponent implements OnInit {
   openHistory() {
     const item = this.itemService.getItem(this.entityGuid);
     this.router.navigate([`versions/${item.Entity.Id}`], { relativeTo: this.route });
+  }
+
+  editNote(note?: MetadataItem) {
+    const form: EditForm = {
+      items: [
+        note == null
+          ? {
+            ContentTypeName: eavConstants.contentTypes.notes,
+            For: {
+              Target: eavConstants.metadata.entity.target,
+              TargetType: eavConstants.metadata.entity.targetType,
+              Guid: this.entityGuid,
+              Singleton: true,
+            }
+          }
+          : { EntityId: note.Id }
+      ],
+    };
+    this.editRoutingService.open(null, null, form);
+  }
+
+  private fetchNote() {
+    this.metadataService.getMetadata(
+      eavConstants.metadata.entity.targetType, eavConstants.metadata.entity.keyType, this.entityGuid, eavConstants.contentTypes.notes,
+    ).subscribe(metadata => {
+      this.note$.next(metadata.Items[0]);
+    });
+  }
+
+  private refreshOnChildClosed() {
+    this.subscription.add(
+      this.editRoutingService.childFormClosed().subscribe(() => {
+        this.fetchNote();
+      })
+    );
   }
 }

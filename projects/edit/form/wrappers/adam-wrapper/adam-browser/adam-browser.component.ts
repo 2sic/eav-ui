@@ -393,7 +393,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
 
   private refreshOnChildClosed() {
     this.subscription.add(
-      this.editRoutingService.childFormClosed().subscribe(result => {
+      this.editRoutingService.childFormClosed().subscribe(() => {
         this.fetchItems();
       })
     );

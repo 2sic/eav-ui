@@ -12,6 +12,11 @@
       </div>
     </div>
 
+    <button type="button" class="{{ data.noteProps.cssClass }}" mat-icon-button
+      [tippy]="data.noteProps.translationKey | translate" [disabled]="data.readOnly" (click)="editNote(data.note)">
+      <mat-icon>{{ data.noteProps.iconName }}</mat-icon>
+    </button>
+
     <mat-slide-toggle class="empty-slot-toggle" *ngIf="data.slotCanBeEmpty" (change)="toggleSlotIsEmpty(data.header)"
       [checked]="!data.slotIsEmpty" [disabled]="data.readOnly || (data.currentLanguage !== data.defaultLanguage)"
       [tippy]="(!data.slotIsEmpty ? 'ItemCard.SlotUsedTrue' : 'ItemCard.SlotUsedFalse') | translate"

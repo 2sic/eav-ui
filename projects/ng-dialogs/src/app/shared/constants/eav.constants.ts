@@ -75,6 +75,8 @@ export const eavConstants = {
     customResources: 'ResourcesCustom',
     /** Content type containing formulas */
     formulas: 'UiFormula',
+    /** Content type containing notes */
+    notes: 'NoteDecorator',
   },
 
   pipelineDesigner: {

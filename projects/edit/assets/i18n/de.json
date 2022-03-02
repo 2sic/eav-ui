@@ -6,7 +6,10 @@
       "Exit.Tip": "Verlassen - bei Änderungen wird zum Speichern aufgefordert",
       "Return.Tip": "Zurück zum vorherigen Dialog",
       "History.Tip": "Änderungen / Vorversionen",
-      "Metadata.Tip": "Dies sind Metadaten für:"
+      "Metadata.Tip": "Dies sind Metadaten für:",
+      "Note.Add": "Add note",
+      "Note.Note": "Show note",
+      "Note.Warning": "Show warning"
     }
   },
   "PublishStatus": {

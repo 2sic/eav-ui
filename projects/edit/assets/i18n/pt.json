@@ -6,7 +6,10 @@
       "Exit.Tip": "Sair - se alguma coisa foi alterada, vai-lhe ser questionado se quer gravar",
       "Return.Tip": "Voltar ao formulário anterior",
       "History.Tip": "History / previous versions",
-      "Metadata.Tip": "This item is metadata for:"
+      "Metadata.Tip": "This item is metadata for:",
+      "Note.Add": "Add note",
+      "Note.Note": "Show note",
+      "Note.Warning": "Show warning"
     }
   },
   "PublishStatus": {

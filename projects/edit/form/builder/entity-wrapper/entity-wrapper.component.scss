@@ -23,6 +23,18 @@ $border-radius: 8px;
     font-size: 16px;
     font-weight: 400;
   }
+
+  &:not(:hover) .no-note {
+    display: none;
+  }
+
+  .has-note .mat-icon {
+    color: #002753;
+  }
+
+  .has-warning .mat-icon {
+    color: orange;
+  }
 }
 
 .mat-card-content-group-parent {
