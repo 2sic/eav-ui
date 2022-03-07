@@ -149,6 +149,7 @@ export class EntityWrapperComponent implements OnInit, OnDestroy {
   }
 
   deleteNote(note: EavEntity) {
+    if (!confirm(this.translate.instant('Data.Delete.Question', { title: 'Note', id: note.Id }))) { return; }
     this.entityService.delete(eavConstants.contentTypes.notes, note.Id, false).subscribe(() => {
       this.fetchNote();
     });
