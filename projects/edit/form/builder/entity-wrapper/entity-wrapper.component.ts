@@ -115,11 +115,13 @@ export class EntityWrapperComponent implements OnInit, OnDestroy {
     this.router.navigate([`versions/${item.Entity.Id}`], { relativeTo: this.route });
   }
 
-  openNote() {
+  openNote(event: PointerEvent | MouseEvent) {
+    if (event instanceof PointerEvent && event.type === 'pointerenter' && event.pointerType === 'touch') { return; }
     this.noteTriggerRef?.openMenu();
   }
 
-  closeNote() {
+  closeNote(event: PointerEvent | MouseEvent) {
+    if (event instanceof PointerEvent && event.type === 'pointerleave' && event.pointerType === 'touch') { return; }
     this.noteTriggerRef?.closeMenu();
   }
 

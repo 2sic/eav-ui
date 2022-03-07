@@ -20,19 +20,21 @@
     </button>
     <button class="note {{ data.noteProps.cssClass }}" mat-icon-button [disabled]="data.readOnly"
       [tippy]="data.noteProps.tooltip | translate" [tippyDisabled]="data.readOnly || !data.noteProps.tooltip"
-      [matMenuTriggerFor]="note" #noteTrigger="matMenuTrigger" [matMenuTriggerRestoreFocus]="false"
-      (mouseenter)="openNote()" *ngIf="data.noteProps.note">
+      (pointerenter)="openNote($event)" (click)="openNote($event)" *ngIf="data.noteProps.note">
       <mat-icon>{{ data.noteProps.iconName }}</mat-icon>
+      <div class="note-trigger" [matMenuTriggerFor]="note" #noteTrigger="matMenuTrigger"
+        [matMenuTriggerRestoreFocus]="false">
+      </div>
     </button>
     <mat-menu #note="matMenu" class="custom-menu hide-scrollbar" [xPosition]="'before'">
       <ng-template matMenuContent>
-        <div class="note-wrapper" appClickStopPropagation (mouseleave)="closeNote()">
+        <div class="note-wrapper" appClickStopPropagation (pointerleave)="closeNote($event)">
           <div class="note-content hide-scrollbar" [innerHtml]="data.noteProps.noteHtml | safeHtml"></div>
           <div class="note-actions">
-            <button mat-button (click)="closeNote()">
+            <button mat-button (click)="closeNote($event)">
               {{ 'Form.Buttons.Close' | translate }}
             </button>
-            <button mat-button (click)="closeNote(); editNote(data.noteProps.note)">
+            <button mat-button (click)="closeNote($event); editNote(data.noteProps.note)">
               {{ 'Form.Buttons.Edit' | translate }}
             </button>
           </div>
