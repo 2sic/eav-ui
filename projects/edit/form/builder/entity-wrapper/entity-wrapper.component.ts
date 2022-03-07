@@ -7,7 +7,7 @@ import { combineLatest, Observable, Subscription } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { eavConstants } from '../../../../ng-dialogs/src/app/shared/constants/eav.constants';
 import { EditForm, EditItem } from '../../../../ng-dialogs/src/app/shared/models/edit-form.model';
-import { GeneralHelpers } from '../../../shared/helpers';
+import { GeneralHelpers, LocalizationHelpers } from '../../../shared/helpers';
 import { EavEntity, EavHeader, EavItem } from '../../../shared/models/eav';
 import { EavService, EditRoutingService, EntityService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
 import { ItemService, LanguageInstanceService } from '../../../shared/store/ngrx-data';
@@ -149,7 +149,11 @@ export class EntityWrapperComponent implements OnInit, OnDestroy {
   }
 
   deleteNote(note: EavEntity) {
-    if (!confirm(this.translate.instant('Data.Delete.Question', { title: 'Note', id: note.Id }))) { return; }
+    const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
+    const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
+    const title = LocalizationHelpers.translate(currentLanguage, defaultLanguage, note.Attributes.Title, null);
+    const id = note.Id;
+    if (!confirm(this.translate.instant('Data.Delete.Question', { title, id }))) { return; }
     this.entityService.delete(eavConstants.contentTypes.notes, note.Id, false).subscribe(() => {
       this.fetchNote();
     });
