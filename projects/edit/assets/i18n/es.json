@@ -8,8 +8,8 @@
       "History.Tip": "History / previous versions",
       "Metadata.Tip": "This item is metadata for:",
       "Note.Add": "Add note",
-      "Note.Note": "Show note",
-      "Note.Warning": "Show warning"
+      "Close": "Close",
+      "Edit": "Edit"
     }
   },
   "PublishStatus": {

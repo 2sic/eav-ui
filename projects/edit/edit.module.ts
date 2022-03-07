@@ -31,7 +31,6 @@ import { SourceService } from '../ng-dialogs/src/app/code-editor/services/source
 import { EntitiesService } from '../ng-dialogs/src/app/content-items/services/entities.service';
 import { CreateFileDialogModule } from '../ng-dialogs/src/app/create-file-dialog';
 import { MonacoEditorModule } from '../ng-dialogs/src/app/monaco-editor';
-import { MetadataService } from '../ng-dialogs/src/app/permissions';
 import { EavWindow } from '../ng-dialogs/src/app/shared/models/eav-window.model';
 import { Context } from '../ng-dialogs/src/app/shared/services/context';
 import { SharedComponentsModule } from '../ng-dialogs/src/app/shared/shared-components.module';
@@ -209,7 +208,6 @@ export function translateLoaderFactoryEdit(http: HttpClient): TranslateLoader {
     SourceService,
     ScriptsLoaderService,
     EntitiesService,
-    MetadataService,
   ],
 })
 export class EditModule { }

@@ -79,3 +79,38 @@ $border-radius: 8px;
   align-items: center;
   justify-content: center;
 }
+
+::ng-deep.custom-menu {
+  max-width: none !important;
+  max-height: none !important;
+}
+
+.note-wrapper {
+  display: flex;
+  flex-direction: column;
+  max-width: 300px;
+  max-height: 400px;
+  padding: 16px;
+  box-sizing: border-box;
+  overflow: hidden;
+  margin-top: -8px;
+  margin-bottom: -8px;
+}
+
+.note-content {
+  flex-shrink: 1;
+  overflow: auto;
+}
+
+.note-actions {
+  flex-shrink: 0;
+  margin-top: 12px;
+  margin-bottom: -8px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  .mat-button-base &:not(:last-of-type) {
+    margin-right: 8px;
+  }
+}
