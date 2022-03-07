@@ -31,11 +31,14 @@
         <div class="note-wrapper" appClickStopPropagation (pointerleave)="closeNote($event)">
           <div class="note-content hide-scrollbar" [innerHtml]="data.noteProps.noteHtml | safeHtml"></div>
           <div class="note-actions">
+            <button mat-button class="delete-button" (click)="deleteNote(data.noteProps.note)">
+              <mat-icon>delete</mat-icon>
+            </button>
             <button mat-button (click)="closeNote($event)">
-              {{ 'Form.Buttons.Close' | translate }}
+              <mat-icon>close</mat-icon>
             </button>
             <button mat-button (click)="closeNote($event); editNote(data.noteProps.note)">
-              {{ 'Form.Buttons.Edit' | translate }}
+              <mat-icon>edit</mat-icon>
             </button>
           </div>
         </div>

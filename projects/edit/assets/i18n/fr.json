@@ -10,9 +10,7 @@
       "Note": {
         "Add": "Add note",
         "ItemNotSaved": "To add a note, please save item first"
-      },
-      "Close": "Close",
-      "Edit": "Edit"
+      }
     }
   },
   "PublishStatus": {

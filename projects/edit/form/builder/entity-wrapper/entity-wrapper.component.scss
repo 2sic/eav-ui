@@ -131,4 +131,8 @@ $border-radius: 8px;
   .mat-button-base &:not(:last-of-type) {
     margin-right: 8px;
   }
+
+  .delete-button {
+    margin-right: 16px;
+  }
 }

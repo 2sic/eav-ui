@@ -9,7 +9,7 @@ import { eavConstants } from '../../../../ng-dialogs/src/app/shared/constants/ea
 import { EditForm, EditItem } from '../../../../ng-dialogs/src/app/shared/models/edit-form.model';
 import { GeneralHelpers } from '../../../shared/helpers';
 import { EavEntity, EavHeader, EavItem } from '../../../shared/models/eav';
-import { EavService, EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
+import { EavService, EditRoutingService, EntityService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
 import { ItemService, LanguageInstanceService } from '../../../shared/store/ngrx-data';
 import { getItemForTooltip, getNoteProps } from './entity-wrapper.helpers';
 import { ContentTypeTemplateVars } from './entity-wrapper.models';
@@ -40,6 +40,7 @@ export class EntityWrapperComponent implements OnInit, OnDestroy {
     private translate: TranslateService,
     private formsStateService: FormsStateService,
     private editRoutingService: EditRoutingService,
+    private entityService: EntityService,
   ) { }
 
   ngOnInit() {
@@ -145,6 +146,12 @@ export class EntityWrapperComponent implements OnInit, OnDestroy {
       ],
     };
     this.editRoutingService.open(null, null, form);
+  }
+
+  deleteNote(note: EavEntity) {
+    this.entityService.delete(eavConstants.contentTypes.notes, note.Id, false).subscribe(() => {
+      this.fetchNote();
+    });
   }
 
   private fetchNote() {
