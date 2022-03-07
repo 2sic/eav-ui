@@ -19,4 +19,5 @@ export interface NoteProps {
   noteHtml: string;
   cssClass: string;
   iconName: string;
+  itemNotSaved: boolean;
 }

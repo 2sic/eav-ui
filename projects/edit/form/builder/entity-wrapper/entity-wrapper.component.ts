@@ -62,8 +62,12 @@ export class EntityWrapperComponent implements OnInit, OnDestroy {
       distinctUntilChanged(GeneralHelpers.objectsEqual),
     );
     const note$ = this.itemService.getItemNote$(this.entityGuid);
-    const noteProps$ = combineLatest([note$, currentLanguage$, defaultLanguage$]).pipe(
-      map(([note, currentLanguage, defaultLanguage]) => getNoteProps(note, currentLanguage, defaultLanguage)),
+    const itemNotSaved$ = this.itemService.getItem$(this.entityGuid).pipe(
+      map(item => item.Entity.Id === 0),
+      distinctUntilChanged(),
+    );
+    const noteProps$ = combineLatest([note$, currentLanguage$, defaultLanguage$, itemNotSaved$]).pipe(
+      map(([note, currentLanguage, defaultLanguage, itemNotSaved]) => getNoteProps(note, currentLanguage, defaultLanguage, itemNotSaved)),
     );
 
     this.templateVars$ = combineLatest([
@@ -120,6 +124,9 @@ export class EntityWrapperComponent implements OnInit, OnDestroy {
   }
 
   editNote(note?: EavEntity) {
+    const item = this.itemService.getItem(this.entityGuid);
+    if (item.Entity.Id === 0) { return; }
+
     const form: EditForm = {
       items: [
         note == null
@@ -140,6 +147,8 @@ export class EntityWrapperComponent implements OnInit, OnDestroy {
 
   private fetchNote() {
     const item = this.itemService.getItem(this.entityGuid);
+    if (item.Entity.Id === 0) { return; }
+
     const editItems: EditItem[] = [{ EntityId: item.Entity.Id }];
     this.eavService.fetchFormData(JSON.stringify(editItems)).subscribe(formData => {
       const items = formData.Items.map(item1 => EavItem.convert(item1));

@@ -14,13 +14,14 @@ export function getItemForTooltip(itemFor: EavFor, translate: TranslateService) 
     + (itemFor.Title ? `\nTitle: ${itemFor.Title}` : '');
 }
 
-export function getNoteProps(note: EavEntity, currentLanguage: string, defaultLanguage: string): NoteProps {
+export function getNoteProps(note: EavEntity, currentLanguage: string, defaultLanguage: string, itemNotSaved: boolean): NoteProps {
   const noteProps: NoteProps = {
     note,
-    tooltip: 'Form.Buttons.Note.Add',
-    cssClass: 'no-note',
+    tooltip: itemNotSaved ? 'Form.Buttons.Note.ItemNotSaved' : 'Form.Buttons.Note.Add',
+    cssClass: `no-note ${itemNotSaved ? 'item-not-saved' : ''}`,
     iconName: 'sticky_note_2',
     noteHtml: undefined,
+    itemNotSaved,
   };
   if (!note) { return noteProps; }
 

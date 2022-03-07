@@ -28,12 +28,18 @@ $border-radius: 8px;
     display: none;
   }
 
-  .has-note .mat-icon {
-    color: #002753;
-  }
+  .note {
+    &.item-not-saved {
+      cursor: default;
+    }
 
-  .has-warning .mat-icon {
-    color: orange;
+    .mat-icon {
+      color: rgb(229, 170, 64);
+    }
+
+    &.has-warning .mat-icon {
+      color: red;
+    }
   }
 }
 

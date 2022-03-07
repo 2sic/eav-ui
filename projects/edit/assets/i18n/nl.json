@@ -7,7 +7,10 @@
       "Return.Tip": "Return to previous dialog",
       "History.Tip": "History / previous versions",
       "Metadata.Tip": "This item is metadata for:",
-      "Note.Add": "Add note",
+      "Note": {
+        "Add": "Add note",
+        "ItemNotSaved": "To add a note, please save item first"
+      },
       "Close": "Close",
       "Edit": "Edit"
     }
