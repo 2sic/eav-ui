@@ -16,7 +16,7 @@
       [tippy]="data.noteProps.tooltip | translate" [tippyDisabled]="data.readOnly || !data.noteProps.tooltip"
       [disableRipple]="data.noteProps.itemNotSaved"
       (pointerenter)="data.noteProps.note ? toggleNote($event, true) : null"
-      (click)="data.noteProps.note ? toggleNote() : editNote()">
+      (click)="data.noteProps.note ? toggleNote() : editNote()" *ngIf="showNotes">
       <mat-icon>{{ data.noteProps.iconName }}</mat-icon>
     </button>
 
@@ -45,7 +45,7 @@
       [tippyDisabled]="data.readOnly || (data.currentLanguage !== data.defaultLanguage)">
     </mat-slide-toggle>
 
-    <div class="icon-box" [tippy]="data.itemForTooltip" *ngIf="data.itemForTooltip">
+    <div class="icon-box" [tippy]="data.itemForTooltip" *ngIf="showMetadataFor && data.itemForTooltip">
       <mat-icon>local_offer</mat-icon>
     </div>
 

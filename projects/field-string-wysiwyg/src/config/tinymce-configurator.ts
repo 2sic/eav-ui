@@ -72,7 +72,7 @@ export class TinyMceConfigurator {
       setup,
       ...toolbarModes,
       ...TinyMceTranslations.getLanguageOptions(this.language),
-      ...(exp.isFeatureEnabled(FeaturesConstants.PasteWithFormatting) ? DefaultPaste.formattedText : {}),
+      ...(exp.isFeatureEnabled(FeaturesConstants.WysiwygPasteFormatted) ? DefaultPaste.formattedText : {}),
       ...(exp.isFeatureEnabled(FeaturesConstants.PasteImageFromClipboard) ? DefaultPaste.images(dropzone, adam) : {}),
     };
 

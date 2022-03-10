@@ -8,10 +8,11 @@ import { combineLatest, Observable, Subscription } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { eavConstants } from '../../../../ng-dialogs/src/app/shared/constants/eav.constants';
 import { EditForm, EditItem } from '../../../../ng-dialogs/src/app/shared/models/edit-form.model';
+import { FeaturesConstants } from '../../../shared/constants';
 import { GeneralHelpers, LocalizationHelpers } from '../../../shared/helpers';
 import { EavEntity, EavHeader, EavItem } from '../../../shared/models/eav';
 import { EavService, EditRoutingService, EntityService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
-import { ItemService, LanguageInstanceService } from '../../../shared/store/ngrx-data';
+import { FeatureService, ItemService, LanguageInstanceService } from '../../../shared/store/ngrx-data';
 import { getItemForTooltip, getNoteProps } from './entity-wrapper.helpers';
 import { ContentTypeTemplateVars } from './entity-wrapper.models';
 
@@ -29,6 +30,8 @@ export class EntityWrapperComponent implements OnInit, AfterViewChecked, OnDestr
 
   collapse = false;
   noteTouched: boolean;
+  showNotes: boolean;
+  showMetadataFor: boolean;
   templateVars$: Observable<ContentTypeTemplateVars>;
 
   private noteRef: OverlayRef;
@@ -48,6 +51,7 @@ export class EntityWrapperComponent implements OnInit, AfterViewChecked, OnDestr
     private entityService: EntityService,
     private overlayService: Overlay,
     private viewContainerRef: ViewContainerRef,
+    private featureService: FeatureService,
   ) { }
 
   ngAfterViewChecked() {
@@ -58,6 +62,8 @@ export class EntityWrapperComponent implements OnInit, AfterViewChecked, OnDestr
 
   ngOnInit() {
     this.subscription = new Subscription();
+    this.showNotes = this.featureService.isFeatureEnabled(FeaturesConstants.EditUiShowNotes);
+    this.showMetadataFor = this.featureService.isFeatureEnabled(FeaturesConstants.EditUiShowMetadataFor);
     const readOnly$ = this.formsStateService.readOnly$;
     const currentLanguage$ = this.languageInstanceService.getCurrentLanguage$(this.eavService.eavConfig.formId);
     const defaultLanguage$ = this.languageInstanceService.getDefaultLanguage$(this.eavService.eavConfig.formId);
