@@ -1,6 +1,6 @@
 import { Overlay, OverlayConfig, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
-import { Component, ElementRef, Input, OnDestroy, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, EmbeddedViewRef, Input, OnDestroy, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
@@ -20,7 +20,7 @@ import { ContentTypeTemplateVars } from './entity-wrapper.models';
   templateUrl: './entity-wrapper.component.html',
   styleUrls: ['./entity-wrapper.component.scss'],
 })
-export class EntityWrapperComponent implements OnInit, OnDestroy {
+export class EntityWrapperComponent implements OnInit, AfterViewChecked, OnDestroy {
   @ViewChild('noteTrigger', { read: ElementRef }) private noteTriggerRef?: ElementRef<HTMLButtonElement>;
   @ViewChild('noteTemplate') private noteTemplateRef?: TemplateRef<undefined>;
 
@@ -32,6 +32,7 @@ export class EntityWrapperComponent implements OnInit, OnDestroy {
   templateVars$: Observable<ContentTypeTemplateVars>;
 
   private noteRef: OverlayRef;
+  private noteViewRef: EmbeddedViewRef<undefined>;
   private subscription: Subscription;
 
   constructor(
@@ -48,6 +49,12 @@ export class EntityWrapperComponent implements OnInit, OnDestroy {
     private overlayService: Overlay,
     private viewContainerRef: ViewContainerRef,
   ) { }
+
+  ngAfterViewChecked() {
+    // change detection inside note template seems to be independent of this component and without forcing checks
+    // throws ExpressionChangedAfterItHasBeenCheckedError
+    this.noteViewRef?.detectChanges();
+  }
 
   ngOnInit() {
     this.subscription = new Subscription();
@@ -147,7 +154,7 @@ export class EntityWrapperComponent implements OnInit, OnDestroy {
     };
     this.noteRef = this.overlayService.create(overlayConfig);
     const overlayPortal = new TemplatePortal(this.noteTemplateRef, this.viewContainerRef);
-    this.noteRef.attach(overlayPortal);
+    this.noteViewRef = this.noteRef.attach(overlayPortal);
   }
 
   editNote(note?: EavEntity) {
