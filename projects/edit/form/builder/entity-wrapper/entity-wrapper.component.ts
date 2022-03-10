@@ -1,9 +1,7 @@
-import { DragDrop, DragRef } from '@angular/cdk/drag-drop';
 import { Overlay, OverlayConfig, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { Component, ElementRef, Input, OnDestroy, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { MatMenuTrigger } from '@angular/material/menu';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { combineLatest, Observable, Subscription } from 'rxjs';
@@ -23,18 +21,17 @@ import { ContentTypeTemplateVars } from './entity-wrapper.models';
   styleUrls: ['./entity-wrapper.component.scss'],
 })
 export class EntityWrapperComponent implements OnInit, OnDestroy {
-  @ViewChild('noteTrigger') private noteTriggerRef?: MatMenuTrigger;
-  @ViewChild('overlayTrigger', { read: ElementRef }) private overlayTriggerRef?: ElementRef<HTMLButtonElement>;
-  @ViewChild('overlayTemplate') private overlayTemplateRef?: TemplateRef<undefined>;
+  @ViewChild('noteTrigger', { read: ElementRef }) private noteTriggerRef?: ElementRef<HTMLButtonElement>;
+  @ViewChild('noteTemplate') private noteTemplateRef?: TemplateRef<undefined>;
 
   @Input() entityGuid: string;
   @Input() group: FormGroup;
 
-  collapse: boolean;
+  collapse = false;
+  noteTouched: boolean;
   templateVars$: Observable<ContentTypeTemplateVars>;
 
-  private dragRef: DragRef;
-  private overlayRef: OverlayRef;
+  private noteRef: OverlayRef;
   private subscription: Subscription;
 
   constructor(
@@ -48,14 +45,12 @@ export class EntityWrapperComponent implements OnInit, OnDestroy {
     private formsStateService: FormsStateService,
     private editRoutingService: EditRoutingService,
     private entityService: EntityService,
-    private dragDropService: DragDrop,
     private overlayService: Overlay,
     private viewContainerRef: ViewContainerRef,
   ) { }
 
   ngOnInit() {
     this.subscription = new Subscription();
-    this.collapse = false;
     const readOnly$ = this.formsStateService.readOnly$;
     const currentLanguage$ = this.languageInstanceService.getCurrentLanguage$(this.eavService.eavConfig.formId);
     const defaultLanguage$ = this.languageInstanceService.getDefaultLanguage$(this.eavService.eavConfig.formId);
@@ -109,7 +104,7 @@ export class EntityWrapperComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.closeOverlay();
+    this.noteRef?.dispose();
     this.subscription.unsubscribe();
   }
 
@@ -127,14 +122,43 @@ export class EntityWrapperComponent implements OnInit, OnDestroy {
     this.router.navigate([`versions/${item.Entity.Id}`], { relativeTo: this.route });
   }
 
-  openNote(event: PointerEvent | MouseEvent) {
-    if (event instanceof PointerEvent && event.type === 'pointerenter' && event.pointerType === 'touch') { return; }
-    this.noteTriggerRef?.openMenu();
-  }
+  toggleNote(event?: PointerEvent | MouseEvent, open?: boolean) {
+    if (
+      event instanceof PointerEvent && event.pointerType === 'touch'
+      && (event.type === 'pointerenter' || event.type === 'pointerleave')
+    ) { return; }
 
-  closeNote(event: PointerEvent | MouseEvent) {
-    if (event instanceof PointerEvent && event.type === 'pointerleave' && event.pointerType === 'touch') { return; }
-    this.noteTriggerRef?.closeMenu();
+    const isOpen = !!this.noteRef?.hasAttached();
+    open ??= !this.noteRef?.hasAttached();
+    if (isOpen === open) { return; }
+
+    this.noteTouched = false;
+    if (!open) {
+      this.noteRef?.dispose();
+      return;
+    }
+
+    const triggerElement = this.noteTriggerRef.nativeElement;
+    const overlayConfig: OverlayConfig = {
+      positionStrategy: this.overlayService.position()
+        .flexibleConnectedTo(triggerElement)
+        .withPositions([
+          {
+            originX: 'start',
+            originY: 'bottom',
+            overlayX: 'start',
+            overlayY: 'top',
+          },
+        ])
+        .withFlexibleDimensions(false)
+        .withPush(false),
+    };
+    this.noteRef = this.overlayService.create(overlayConfig);
+    const overlayPortal = new TemplatePortal<undefined>(this.noteTemplateRef, this.viewContainerRef);
+    this.noteRef.attach(overlayPortal);
+    this.noteRef.updatePosition();
+    const overlayPosition = this.noteRef.overlayElement.getBoundingClientRect();
+    this.noteRef.updatePositionStrategy(this.overlayService.position().global().top(`${overlayPosition.top}px`).left(`${overlayPosition.left}px`));
   }
 
   editNote(note?: EavEntity) {
@@ -166,6 +190,7 @@ export class EntityWrapperComponent implements OnInit, OnDestroy {
     const id = note.Id;
     if (!confirm(this.translate.instant('Data.Delete.Question', { title, id }))) { return; }
     this.entityService.delete(eavConstants.contentTypes.notes, note.Id, false).subscribe(() => {
+      this.toggleNote(undefined, false);
       this.fetchNote();
     });
   }
@@ -187,50 +212,5 @@ export class EntityWrapperComponent implements OnInit, OnDestroy {
         this.fetchNote();
       })
     );
-  }
-
-  toggleOverlay(open?: boolean) {
-    open ??= !this.overlayRef?.hasAttached();
-
-    if (!open) {
-      this.closeOverlay();
-      return;
-    }
-
-    const triggerElement = this.overlayTriggerRef.nativeElement;
-    const overlayConfig: OverlayConfig = {
-      positionStrategy: this.overlayService.position()
-        .flexibleConnectedTo(triggerElement)
-        .withPositions([
-          {
-            originX: 'end',
-            originY: 'bottom',
-            overlayX: 'end',
-            overlayY: 'top',
-          },
-        ])
-        .withFlexibleDimensions(false)
-        .withPush(false),
-    };
-    this.overlayRef = this.overlayService.create(overlayConfig);
-    const overlayPortal = new TemplatePortal<undefined>(this.overlayTemplateRef, this.viewContainerRef);
-    this.overlayRef.attach(overlayPortal);
-    this.overlayRef.updatePosition();
-    const initialOverlayPosition = this.overlayRef.overlayElement.getBoundingClientRect();
-    this.overlayRef.updatePositionStrategy(this.overlayService.position().global().top(`${initialOverlayPosition.top}px`).left(`${initialOverlayPosition.left}px`));
-
-    this.dragRef = this.dragDropService.createDrag(this.overlayRef.overlayElement);
-    this.dragRef.withHandles(Array.from(this.overlayRef.overlayElement.querySelectorAll<HTMLElement>('.note-actions')));
-    this.dragRef.withBoundaryElement(document.body);
-    this.dragRef.ended.subscribe(() => {
-      const overlayPosition = this.overlayRef.overlayElement.getBoundingClientRect();
-      this.overlayRef.updatePositionStrategy(this.overlayService.position().global().top(`${overlayPosition.top}px`).left(`${overlayPosition.left}px`));
-      this.dragRef.reset();
-    });
-  }
-
-  private closeOverlay() {
-    this.dragRef?.dispose();
-    this.overlayRef?.dispose();
   }
 }
