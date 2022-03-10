@@ -13,7 +13,7 @@ import { GeneralHelpers, LocalizationHelpers } from '../../../shared/helpers';
 import { EavEntity, EavHeader, EavItem } from '../../../shared/models/eav';
 import { EavService, EditRoutingService, EntityService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
 import { FeatureService, ItemService, LanguageInstanceService } from '../../../shared/store/ngrx-data';
-import { getItemForTooltip, getNoteProps } from './entity-wrapper.helpers';
+import { buildContentTypeFeatures, getItemForTooltip, getNoteProps } from './entity-wrapper.helpers';
 import { ContentTypeTemplateVars } from './entity-wrapper.models';
 
 @Component({
@@ -30,8 +30,6 @@ export class EntityWrapperComponent implements OnInit, AfterViewChecked, OnDestr
 
   collapse = false;
   noteTouched: boolean;
-  showNotes: boolean;
-  showMetadataFor: boolean;
   templateVars$: Observable<ContentTypeTemplateVars>;
 
   private noteRef: OverlayRef;
@@ -62,8 +60,6 @@ export class EntityWrapperComponent implements OnInit, AfterViewChecked, OnDestr
 
   ngOnInit() {
     this.subscription = new Subscription();
-    this.showNotes = this.featureService.isFeatureEnabled(FeaturesConstants.EditUiShowNotes);
-    this.showMetadataFor = this.featureService.isFeatureEnabled(FeaturesConstants.EditUiShowMetadataFor);
     const readOnly$ = this.formsStateService.readOnly$;
     const currentLanguage$ = this.languageInstanceService.getCurrentLanguage$(this.eavService.eavConfig.formId);
     const defaultLanguage$ = this.languageInstanceService.getDefaultLanguage$(this.eavService.eavConfig.formId);
@@ -77,6 +73,7 @@ export class EntityWrapperComponent implements OnInit, AfterViewChecked, OnDestr
         _slotCanBeEmpty: settings._slotCanBeEmpty,
         _slotIsEmpty: settings._slotIsEmpty,
         EditInstructions: settings.EditInstructions,
+        Features: settings.Features,
       })),
       distinctUntilChanged(GeneralHelpers.objectsEqual),
     );
@@ -88,13 +85,27 @@ export class EntityWrapperComponent implements OnInit, AfterViewChecked, OnDestr
     const noteProps$ = combineLatest([note$, currentLanguage$, defaultLanguage$, itemNotSaved$]).pipe(
       map(([note, currentLanguage, defaultLanguage, itemNotSaved]) => getNoteProps(note, currentLanguage, defaultLanguage, itemNotSaved)),
     );
+    const showNotes$ = combineLatest([
+      this.featureService.isFeatureEnabled$(FeaturesConstants.EditUiShowNotes),
+      settings$.pipe(map(settings => buildContentTypeFeatures(settings.Features))),
+    ]).pipe(
+      map(([featureEnabled, contentTypeFeatures]) => contentTypeFeatures[FeaturesConstants.EditUiShowNotes] ?? featureEnabled),
+      distinctUntilChanged(),
+    );
+    const showMetadataFor$ = combineLatest([
+      this.featureService.isFeatureEnabled$(FeaturesConstants.EditUiShowMetadataFor),
+      settings$.pipe(map(settings => buildContentTypeFeatures(settings.Features))),
+    ]).pipe(
+      map(([featureEnabled, contentTypeFeatures]) => contentTypeFeatures[FeaturesConstants.EditUiShowMetadataFor] ?? featureEnabled),
+      distinctUntilChanged(),
+    );
 
     this.templateVars$ = combineLatest([
-      combineLatest([readOnly$, currentLanguage$, defaultLanguage$]),
+      combineLatest([readOnly$, currentLanguage$, defaultLanguage$, showNotes$, showMetadataFor$]),
       combineLatest([itemForTooltip$, header$, settings$, noteProps$]),
     ]).pipe(
       map(([
-        [readOnly, currentLanguage, defaultLanguage],
+        [readOnly, currentLanguage, defaultLanguage, showNotes, showMetadataFor],
         [itemForTooltip, header, settings, noteProps],
       ]) => {
         const templateVars: ContentTypeTemplateVars = {
@@ -108,6 +119,8 @@ export class EntityWrapperComponent implements OnInit, AfterViewChecked, OnDestr
           editInstructions: settings.EditInstructions,
           itemForTooltip,
           noteProps,
+          showNotes,
+          showMetadataFor,
         };
         return templateVars;
       }),

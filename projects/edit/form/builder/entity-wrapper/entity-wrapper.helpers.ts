@@ -39,3 +39,17 @@ export function getNoteProps(note: EavEntity, currentLanguage: string, defaultLa
   }
   return noteProps;
 }
+
+export function buildContentTypeFeatures(contentTypeFeatures: string): Record<string, boolean> {
+  const features = contentTypeFeatures
+    .split('\n')
+    .reduce((result, contentTypeFeature) => {
+      if (!contentTypeFeature) { return result; }
+      const nameAndValue = contentTypeFeature.split('=');
+      const name = nameAndValue[0];
+      const value = nameAndValue[1] === 'true';
+      result[name] = value;
+      return result;
+    }, {} as Record<string, boolean>);
+  return features;
+}

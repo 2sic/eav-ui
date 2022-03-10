@@ -52,6 +52,7 @@ export class FieldsSettingsHelpers {
     const defaultSettings = { ...settings };
     defaultSettings.Description ??= '';
     defaultSettings.EditInstructions ??= '';
+    defaultSettings.Features ??= '';
     defaultSettings.Label ??= '';
     defaultSettings.ListInstructions ??= '';
     defaultSettings.Notes ??= '';

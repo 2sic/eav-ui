@@ -11,6 +11,8 @@ export interface ContentTypeTemplateVars {
   editInstructions: string;
   itemForTooltip: string;
   noteProps: NoteProps;
+  showNotes: boolean;
+  showMetadataFor: boolean;
 }
 
 export interface NoteProps {
