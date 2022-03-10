@@ -27,20 +27,6 @@ $border-radius: 8px;
   &:not(:hover) .no-note {
     display: none;
   }
-
-  .note {
-    &.item-not-saved {
-      cursor: default;
-    }
-
-    .mat-icon {
-      color: rgb(229, 170, 64);
-    }
-
-    &.has-warning .mat-icon {
-      color: red;
-    }
-  }
 }
 
 .mat-card-content-group-parent {
@@ -86,33 +72,35 @@ $border-radius: 8px;
   justify-content: center;
 }
 
-.note-trigger {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: -1;
-  pointer-events: none;
-  visibility: hidden;
-  user-select: none;
-}
+.note {
+  &.item-not-saved {
+    cursor: default;
+  }
 
-::ng-deep.custom-menu {
-  max-width: none !important;
-  max-height: none !important;
+  .mat-icon {
+    color: #D9CA1F;
+  }
+
+  &.has-warning .mat-icon {
+    color: #E90000;
+  }
 }
 
 .note-wrapper {
   display: flex;
   flex-direction: column;
-  max-width: 300px;
+  width: 300px;
+  min-height: 300px;
   max-height: 400px;
   padding: 16px;
   box-sizing: border-box;
   overflow: hidden;
-  margin-top: -8px;
-  margin-bottom: -8px;
+
+  background-color: #FFF79F;
+
+  &.warning {
+    background-color: #FFDEDE;
+  }
 }
 
 .note-content {
@@ -122,13 +110,10 @@ $border-radius: 8px;
 
 .note-actions {
   flex-shrink: 0;
-  margin-top: 12px;
-  margin-bottom: -8px;
+  margin-top: -8px;
+  margin-right: -8px;
   display: flex;
   align-items: center;
   justify-content: flex-end;
-
-  .mat-button-base &:not(:last-of-type) {
-    margin-right: 8px;
-  }
+  cursor: move;
 }

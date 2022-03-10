@@ -18,8 +18,9 @@ export function getNoteProps(note: EavEntity, currentLanguage: string, defaultLa
   const noteProps: NoteProps = {
     note,
     tooltip: itemNotSaved ? 'Form.Buttons.Note.ItemNotSaved' : 'Form.Buttons.Note.Add',
-    cssClass: `no-note ${itemNotSaved ? 'item-not-saved' : ''}`,
+    triggerClass: `no-note ${itemNotSaved ? 'item-not-saved' : ''}`,
     iconName: 'sticky_note_2',
+    noteClass: '',
     noteHtml: undefined,
     itemNotSaved,
   };
@@ -30,10 +31,11 @@ export function getNoteProps(note: EavEntity, currentLanguage: string, defaultLa
 
   const noteType = LocalizationHelpers.translate(currentLanguage, defaultLanguage, note.Attributes.NoteType, null);
   if (noteType === 'note') {
-    noteProps.cssClass = 'has-note';
+    noteProps.triggerClass = 'has-note';
   } else if (noteType === 'warning') {
-    noteProps.cssClass = 'has-warning';
+    noteProps.triggerClass = 'has-warning';
     noteProps.iconName = 'warning_amber';
+    noteProps.noteClass = 'warning';
   }
   return noteProps;
 }

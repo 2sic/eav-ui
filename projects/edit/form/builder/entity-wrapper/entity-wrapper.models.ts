@@ -17,7 +17,8 @@ export interface NoteProps {
   note: EavEntity;
   tooltip: string;
   noteHtml: string;
-  cssClass: string;
+  triggerClass: string;
+  noteClass: string;
   iconName: string;
   itemNotSaved: boolean;
 }

@@ -1,6 +1,7 @@
 import { NgxMatDatetimePickerModule } from '@angular-material-components/datetime-picker';
 import { NgxMatMomentModule, NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular-material-components/moment-adapter';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { OverlayModule } from '@angular/cdk/overlay';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
@@ -195,6 +196,7 @@ export function translateLoaderFactoryEdit(http: HttpClient): TranslateLoader {
     ScrollingModule,
     MonacoEditorModule,
     CreateFileDialogModule,
+    OverlayModule,
   ],
   providers: [
     Context,

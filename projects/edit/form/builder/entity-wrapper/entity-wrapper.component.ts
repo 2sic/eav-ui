@@ -1,4 +1,7 @@
-import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { DragDrop, DragRef } from '@angular/cdk/drag-drop';
+import { Overlay, OverlayConfig, OverlayRef } from '@angular/cdk/overlay';
+import { TemplatePortal } from '@angular/cdk/portal';
+import { Component, ElementRef, Input, OnDestroy, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -21,6 +24,8 @@ import { ContentTypeTemplateVars } from './entity-wrapper.models';
 })
 export class EntityWrapperComponent implements OnInit, OnDestroy {
   @ViewChild('noteTrigger') private noteTriggerRef?: MatMenuTrigger;
+  @ViewChild('overlayTrigger', { read: ElementRef }) private overlayTriggerRef?: ElementRef<HTMLButtonElement>;
+  @ViewChild('overlayTemplate') private overlayTemplateRef?: TemplateRef<undefined>;
 
   @Input() entityGuid: string;
   @Input() group: FormGroup;
@@ -28,6 +33,8 @@ export class EntityWrapperComponent implements OnInit, OnDestroy {
   collapse: boolean;
   templateVars$: Observable<ContentTypeTemplateVars>;
 
+  private dragRef: DragRef;
+  private overlayRef: OverlayRef;
   private subscription: Subscription;
 
   constructor(
@@ -41,6 +48,9 @@ export class EntityWrapperComponent implements OnInit, OnDestroy {
     private formsStateService: FormsStateService,
     private editRoutingService: EditRoutingService,
     private entityService: EntityService,
+    private dragDropService: DragDrop,
+    private overlayService: Overlay,
+    private viewContainerRef: ViewContainerRef,
   ) { }
 
   ngOnInit() {
@@ -99,6 +109,7 @@ export class EntityWrapperComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.closeOverlay();
     this.subscription.unsubscribe();
   }
 
@@ -176,5 +187,50 @@ export class EntityWrapperComponent implements OnInit, OnDestroy {
         this.fetchNote();
       })
     );
+  }
+
+  toggleOverlay(open?: boolean) {
+    open ??= !this.overlayRef?.hasAttached();
+
+    if (!open) {
+      this.closeOverlay();
+      return;
+    }
+
+    const triggerElement = this.overlayTriggerRef.nativeElement;
+    const overlayConfig: OverlayConfig = {
+      positionStrategy: this.overlayService.position()
+        .flexibleConnectedTo(triggerElement)
+        .withPositions([
+          {
+            originX: 'end',
+            originY: 'bottom',
+            overlayX: 'end',
+            overlayY: 'top',
+          },
+        ])
+        .withFlexibleDimensions(false)
+        .withPush(false),
+    };
+    this.overlayRef = this.overlayService.create(overlayConfig);
+    const overlayPortal = new TemplatePortal<undefined>(this.overlayTemplateRef, this.viewContainerRef);
+    this.overlayRef.attach(overlayPortal);
+    this.overlayRef.updatePosition();
+    const initialOverlayPosition = this.overlayRef.overlayElement.getBoundingClientRect();
+    this.overlayRef.updatePositionStrategy(this.overlayService.position().global().top(`${initialOverlayPosition.top}px`).left(`${initialOverlayPosition.left}px`));
+
+    this.dragRef = this.dragDropService.createDrag(this.overlayRef.overlayElement);
+    this.dragRef.withHandles(Array.from(this.overlayRef.overlayElement.querySelectorAll<HTMLElement>('.note-actions')));
+    this.dragRef.withBoundaryElement(document.body);
+    this.dragRef.ended.subscribe(() => {
+      const overlayPosition = this.overlayRef.overlayElement.getBoundingClientRect();
+      this.overlayRef.updatePositionStrategy(this.overlayService.position().global().top(`${overlayPosition.top}px`).left(`${overlayPosition.left}px`));
+      this.dragRef.reset();
+    });
+  }
+
+  private closeOverlay() {
+    this.dragRef?.dispose();
+    this.overlayRef?.dispose();
   }
 }

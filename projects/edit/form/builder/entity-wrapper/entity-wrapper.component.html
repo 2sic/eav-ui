@@ -13,6 +13,7 @@
     </div>
 
     <!-- MatMenu can't be opened conditionally so two buttons are required, one when menu is enabled and one when menu is disabled -->
+    <!--
     <button class="note {{ data.noteProps.cssClass }}" mat-icon-button [disabled]="data.readOnly"
       [tippy]="data.noteProps.tooltip | translate" [tippyDisabled]="data.readOnly || !data.noteProps.tooltip"
       [disableRipple]="data.noteProps.itemNotSaved" (click)="editNote()" *ngIf="!data.noteProps.note">
@@ -41,6 +42,30 @@
         </div>
       </ng-template>
     </mat-menu>
+    -->
+
+    <button #overlayTrigger mat-icon-button class="note {{ data.noteProps.triggerClass }}" [disabled]="data.readOnly"
+      [tippy]="data.noteProps.tooltip | translate" [tippyDisabled]="data.readOnly || !data.noteProps.tooltip"
+      [disableRipple]="data.noteProps.itemNotSaved" (click)="!data.noteProps.note ? editNote() : toggleOverlay()">
+      <mat-icon>{{ data.noteProps.iconName }}</mat-icon>
+    </button>
+
+    <ng-template #overlayTemplate>
+      <mat-card class="note-wrapper {{ data.noteProps.noteClass }}">
+        <div class="note-actions">
+          <button mat-icon-button (click)="editNote(data.noteProps.note)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button (click)="toggleOverlay(false); deleteNote(data.noteProps.note)">
+            <mat-icon>delete</mat-icon>
+          </button>
+          <button mat-icon-button (click)="toggleOverlay(false)">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+        <div class="note-content hide-scrollbar" [innerHtml]="data.noteProps.noteHtml | safeHtml"></div>
+      </mat-card>
+    </ng-template>
 
     <mat-slide-toggle class="empty-slot-toggle" *ngIf="data.slotCanBeEmpty" (change)="toggleSlotIsEmpty(data.header)"
       [checked]="!data.slotIsEmpty" [disabled]="data.readOnly || (data.currentLanguage !== data.defaultLanguage)"
