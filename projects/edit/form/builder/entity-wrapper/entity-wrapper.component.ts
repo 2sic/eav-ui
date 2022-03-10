@@ -138,27 +138,16 @@ export class EntityWrapperComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const triggerElement = this.noteTriggerRef.nativeElement;
+    const triggerPosition = this.noteTriggerRef.nativeElement.getBoundingClientRect();
     const overlayConfig: OverlayConfig = {
       positionStrategy: this.overlayService.position()
-        .flexibleConnectedTo(triggerElement)
-        .withPositions([
-          {
-            originX: 'start',
-            originY: 'bottom',
-            overlayX: 'start',
-            overlayY: 'top',
-          },
-        ])
-        .withFlexibleDimensions(false)
-        .withPush(false),
+        .global()
+        .top(`${triggerPosition.bottom}px`)
+        .left(`${triggerPosition.left}px`)
     };
     this.noteRef = this.overlayService.create(overlayConfig);
-    const overlayPortal = new TemplatePortal<undefined>(this.noteTemplateRef, this.viewContainerRef);
+    const overlayPortal = new TemplatePortal(this.noteTemplateRef, this.viewContainerRef);
     this.noteRef.attach(overlayPortal);
-    this.noteRef.updatePosition();
-    const overlayPosition = this.noteRef.overlayElement.getBoundingClientRect();
-    this.noteRef.updatePositionStrategy(this.overlayService.position().global().top(`${overlayPosition.top}px`).left(`${overlayPosition.left}px`));
   }
 
   editNote(note?: EavEntity) {
