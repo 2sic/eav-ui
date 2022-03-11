@@ -1,7 +1,6 @@
-import { Overlay, OverlayConfig, OverlayRef } from '@angular/cdk/overlay';
-import { TemplatePortal } from '@angular/cdk/portal';
-import { AfterViewChecked, Component, ElementRef, EmbeddedViewRef, Input, OnDestroy, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, Input, OnDestroy, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { MatDialog, MatDialogRef, MatDialogState } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { combineLatest, Observable, Subscription } from 'rxjs';
@@ -32,8 +31,7 @@ export class EntityWrapperComponent implements OnInit, AfterViewChecked, OnDestr
   noteTouched: boolean;
   templateVars$: Observable<ContentTypeTemplateVars>;
 
-  private noteRef: OverlayRef;
-  private noteViewRef: EmbeddedViewRef<undefined>;
+  private noteRef?: MatDialogRef<undefined, any>;
   private subscription: Subscription;
 
   constructor(
@@ -47,7 +45,7 @@ export class EntityWrapperComponent implements OnInit, AfterViewChecked, OnDestr
     private formsStateService: FormsStateService,
     private editRoutingService: EditRoutingService,
     private entityService: EntityService,
-    private overlayService: Overlay,
+    private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private featureService: FeatureService,
   ) { }
@@ -55,7 +53,7 @@ export class EntityWrapperComponent implements OnInit, AfterViewChecked, OnDestr
   ngAfterViewChecked() {
     // change detection inside note template seems to be independent of this component and without forcing checks
     // throws ExpressionChangedAfterItHasBeenCheckedError
-    this.noteViewRef?.detectChanges();
+    (this.noteRef?._containerInstance as any)?._changeDetectorRef?.detectChanges();
   }
 
   ngOnInit() {
@@ -130,7 +128,7 @@ export class EntityWrapperComponent implements OnInit, AfterViewChecked, OnDestr
   }
 
   ngOnDestroy() {
-    this.noteRef?.dispose();
+    this.noteRef?.close();
     this.subscription.unsubscribe();
   }
 
@@ -154,26 +152,30 @@ export class EntityWrapperComponent implements OnInit, AfterViewChecked, OnDestr
       && (event.type === 'pointerenter' || event.type === 'pointerleave')
     ) { return; }
 
-    const isOpen = !!this.noteRef?.hasAttached();
-    open ??= !this.noteRef?.hasAttached();
+    const isOpen = this.noteRef?.getState() === MatDialogState.OPEN;
+    open ??= this.noteRef?.getState() !== MatDialogState.OPEN;
     if (isOpen === open) { return; }
 
     this.noteTouched = false;
     if (!open) {
-      this.noteRef?.dispose();
+      this.noteRef?.close();
       return;
     }
 
     const triggerPosition = this.noteTriggerRef.nativeElement.getBoundingClientRect();
-    const overlayConfig: OverlayConfig = {
-      positionStrategy: this.overlayService.position()
-        .global()
-        .top(`${triggerPosition.bottom}px`)
-        .left(`${triggerPosition.left}px`)
-    };
-    this.noteRef = this.overlayService.create(overlayConfig);
-    const overlayPortal = new TemplatePortal(this.noteTemplateRef, this.viewContainerRef);
-    this.noteViewRef = this.noteRef.attach(overlayPortal);
+    this.noteRef = this.dialog.open(this.noteTemplateRef, {
+      autoFocus: false,
+      hasBackdrop: false,
+      disableClose: true,
+      restoreFocus: false,
+      closeOnNavigation: false,
+      position: {
+        top: `${triggerPosition.bottom}px`,
+        left: `${triggerPosition.left}px`,
+      },
+      viewContainerRef: this.viewContainerRef,
+      panelClass: 'note-dialog',
+    });
   }
 
   editNote(note?: EavEntity) {

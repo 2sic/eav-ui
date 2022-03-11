@@ -19,6 +19,13 @@ $max-height: calc(100vh - #{$dialog-margin-top} - #{$dialog-margin-bottom});
   }
 }
 
+.note-dialog {
+  .mat-dialog-container {
+    padding: 0;
+    box-shadow: 0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%) !important;
+  }
+}
+
 @mixin dialog-panel-fullscreen() {
   width: 100vw;
   max-width: 100vw !important;

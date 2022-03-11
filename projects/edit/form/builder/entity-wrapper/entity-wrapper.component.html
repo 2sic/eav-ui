@@ -16,12 +16,12 @@
       [tippy]="data.noteProps.tooltip | translate" [tippyDisabled]="data.readOnly || !data.noteProps.tooltip"
       [disableRipple]="data.noteProps.itemNotSaved"
       (pointerenter)="data.noteProps.note ? toggleNote($event, true) : null"
-      (click)="data.noteProps.note ? toggleNote() : editNote()" *ngIf="data.showNotes">
+      (click)="data.noteProps.note ? toggleNote($event) : editNote()" *ngIf="data.showNotes">
       <mat-icon>{{ data.noteProps.iconName }}</mat-icon>
     </button>
 
     <ng-template #noteTemplate>
-      <mat-card class="note-wrapper {{ data.noteProps.noteClass }}" cdkDrag cdkDragRootElement=".cdk-overlay-pane"
+      <div class="note-wrapper {{ data.noteProps.noteClass }}" cdkDrag cdkDragRootElement=".cdk-overlay-pane"
         cdkDragBoundary="body" (pointerdown)="noteTouched = true"
         (pointerleave)="noteTouched ? null : toggleNote($event, false)">
         <div class="note-actions" cdkDragHandle>
@@ -36,7 +36,7 @@
           </button>
         </div>
         <div class="note-content hide-scrollbar" [innerHtml]="data.noteProps.noteHtml | safeHtml"></div>
-      </mat-card>
+      </div>
     </ng-template>
 
     <mat-slide-toggle class="empty-slot-toggle" *ngIf="data.slotCanBeEmpty" (change)="toggleSlotIsEmpty(data.header)"
