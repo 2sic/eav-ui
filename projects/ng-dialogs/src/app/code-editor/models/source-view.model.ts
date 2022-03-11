@@ -6,7 +6,7 @@ export interface SourceView {
   HasApp: boolean;
   HasList: boolean;
   IsSafe: boolean;
-  LocationScope: string;
+  IsShared: boolean;
   Name: string;
   Streams: Record<string, any>;
   Type: string;

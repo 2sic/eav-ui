@@ -15,6 +15,7 @@ export function convertFormToUrl(form: EditForm) {
         + ':' + innerItem.Parent + ':' + innerItem.Add + ':' + innerItem.Index;
       if (innerItem.Prefill) {
         for (const [key, prefill] of Object.entries(innerItem.Prefill)) {
+          if (prefill == null) { continue; }
           formUrl += '&prefill:' + key + '~' + paramEncode(prefill.toString());
         }
       }
@@ -27,16 +28,16 @@ export function convertFormToUrl(form: EditForm) {
       const addItem = item as AddItem;
       formUrl += 'new:' + addItem.ContentTypeName;
 
-      // new v11.11 - support Singleton
-      const createForSuffix = (mdFor: EavFor) => ':' + mdFor.Target
-        + (mdFor.Singleton ? ':' + mdFor.Singleton.toString().toLowerCase() : '');
+      const buildForSuffix = (itemFor: EavFor) =>
+        ':' + itemFor.Target + ':' + itemFor.TargetType
+        + (itemFor.Singleton ? ':' + itemFor.Singleton.toString() : '');
 
       if (addItem.For?.String) {
-        formUrl += '&for:s~' + paramEncode(addItem.For.String) + createForSuffix(addItem.For);
+        formUrl += '&for:s~' + paramEncode(addItem.For.String) + buildForSuffix(addItem.For);
       } else if (addItem.For?.Number) {
-        formUrl += '&for:n~' + addItem.For.Number + createForSuffix(addItem.For);
+        formUrl += '&for:n~' + addItem.For.Number + buildForSuffix(addItem.For);
       } else if (addItem.For?.Guid) {
-        formUrl += '&for:g~' + addItem.For.Guid + createForSuffix(addItem.For);
+        formUrl += '&for:g~' + addItem.For.Guid + buildForSuffix(addItem.For);
       } else if (addItem.Metadata) {
         let keyType: string;
         switch (addItem.Metadata.keyType.toLocaleLowerCase()) {
@@ -50,12 +51,13 @@ export function convertFormToUrl(form: EditForm) {
             keyType = 'g';
             break;
         }
-        const target = Object.values(eavConstants.metadata).find(metaValue => metaValue.type === addItem.Metadata.targetType)?.target;
-        formUrl += '&for:' + keyType + '~' + paramEncode(addItem.Metadata.key) + ':' + target;
+        const target = Object.values(eavConstants.metadata).find(m => m.targetType === addItem.Metadata.targetType)?.target;
+        formUrl += '&for:' + keyType + '~' + paramEncode(addItem.Metadata.key) + ':' + target + ':' + addItem.Metadata.targetType;
       }
 
       if (addItem.Prefill) {
         for (const [key, prefill] of Object.entries(addItem.Prefill)) {
+          if (prefill == null) { continue; }
           formUrl += '&prefill:' + key + '~' + paramEncode(prefill.toString());
         }
       }
@@ -69,6 +71,7 @@ export function convertFormToUrl(form: EditForm) {
       formUrl += 'group:' + groupItem.Group.Guid + ':' + groupItem.Group.Index + ':' + groupItem.Group.Part + ':' + groupItem.Group.Add;
       if (groupItem.Prefill) {
         for (const [key, prefill] of Object.entries(groupItem.Prefill)) {
+          if (prefill == null) { continue; }
           formUrl += '&prefill:' + key + '~' + paramEncode(prefill.toString());
         }
       }
@@ -124,29 +127,20 @@ export function convertUrlToForm(formUrl: string) {
           addItem.ContentTypeName = newParams[1];
         } else if (option.startsWith('for:')) {
           // Add Item For
-          addItem.For = {} as EavFor;
           const forParams = option.split(':');
-          const forIntro = forParams[1].split('~');
-          const forType = forIntro[0];
-          const forValue = forIntro[1];
+          const forKeyType = forParams[1].split('~')[0];
+          const forKey = forParams[1].split('~')[1];
           const forTarget = forParams[2];
-
-          switch (forType) {
-            case 's':
-              addItem.For.String = paramDecode(forValue);
-              break;
-            case 'n':
-              addItem.For.Number = parseInt(forValue, 10);
-              break;
-            case 'g':
-              addItem.For.Guid = forValue;
-              break;
-          }
-          // new v11.11 - Singleton Metadata
-          if (forParams.length > 3) {
-            addItem.For.Singleton = forParams[3] === 'true';
-          }
-          addItem.For.Target = forTarget;
+          const forTargetType = parseInt(forParams[3], 10);
+          const forSingleton = forParams[4] != null ? forParams[4] === 'true' : undefined;
+          addItem.For = {
+            Target: forTarget,
+            TargetType: forTargetType,
+            ...(forKeyType === 'g' && { Guid: forKey }),
+            ...(forKeyType === 'n' && { Number: parseInt(forKey, 10) }),
+            ...(forKeyType === 's' && { String: paramDecode(forKey) }),
+            ...(forSingleton != null && { Singleton: forSingleton }),
+          };
         } else if (option.startsWith('prefill:')) {
           // Add Item Prefill
           if (addItem.Prefill == null) {

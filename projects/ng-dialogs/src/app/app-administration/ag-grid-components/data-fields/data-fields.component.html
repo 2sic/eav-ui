@@ -1,18 +1,7 @@
-<div matRipple class="chip-component highlight" tippy="Edit fields" *ngIf="!contentType.UsesSharedDef">
-  <div class="chip-box">
-    <span class="chip">{{ value }}</span>
-  </div>
-  <div class="like-button">
-    <mat-icon>dns</mat-icon>
-  </div>
-</div>
-
-<div class="chip-component disabled" *ngIf="contentType.UsesSharedDef"
-  tippy="This content-type shares the definition of #{{ contentType.SharedDefId }} so you can't edit it here. Read 2sxc.org/help?tag=shared-types">
-  <div class="chip-box">
-    <span class="chip">{{ value }}</span>
-  </div>
-  <div class="like-button disabled">
-    <mat-icon>share</mat-icon>
+<div class="actions-component">
+  <div class="like-button highlight" matRipple [tippy]="tooltip" (click)="editFields()">
+    <mat-icon [matBadge]="value" matBadgeColor="accent" matBadgeSize="small" [matBadgeHidden]="!value">
+      {{ icon }}
+    </mat-icon>
   </div>
 </div>

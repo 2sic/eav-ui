@@ -1,21 +1,22 @@
-import { Component, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject, combineLatest, forkJoin, fromEvent, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, combineLatest, forkJoin, fromEvent, Observable, of, Subscription } from 'rxjs';
 import { map, mergeMap, share } from 'rxjs/operators';
-import { SanitizeHelper } from '../../../../edit/shared/helpers';
-import { GlobalConfigService } from '../../../../edit/shared/store/ngrx-data';
+import { GeneralHelpers } from '../../../../edit/shared/helpers';
+// tslint:disable-next-line:max-line-length
+import { CreateFileDialogComponent, CreateFileDialogData, CreateFileDialogResult, FileLocationDialogComponent } from '../create-file-dialog';
 import { MonacoEditorComponent } from '../monaco-editor';
-import { defaultControllerName, defaultTemplateName } from '../shared/constants/file-names.constants';
-import { keyItems } from '../shared/constants/session.constants';
-import { EditItem, SourceItem, } from '../shared/models/edit-form.model';
+import { keyIsShared, keyItems } from '../shared/constants/session.constants';
+import { SourceItem } from '../shared/models/edit-form.model';
 import { Context } from '../shared/services/context';
-import { DialogService } from '../shared/services/dialog.service';
-import { SnackBarStackService } from '../shared/services/snack-bar-stack.service';
-import { AceEditorComponent } from './ace-editor/ace-editor.component';
-import { CodeEditorTemplateVars, EditorOption, Editors, ExplorerOption, Explorers } from './code-editor.models';
-import { Snippet, SnippetsSets } from './models/snippet.model';
+import { CodeAndEditionWarningsComponent } from './code-and-edition-warnings/code-and-edition-warnings.component';
+import { CodeAndEditionWarningsSnackBarData } from './code-and-edition-warnings/code-and-edition-warnings.models';
+import { CodeEditorTemplateVars, ExplorerOption, Explorers, Tab, ViewInfo, ViewKey } from './code-editor.models';
+import { CreateTemplateParams } from './code-templates/code-templates.models';
+import { FileAsset } from './models/file-asset.model';
 import { SourceView } from './models/source-view.model';
 import { SnippetsService } from './services/snippets.service';
 import { SourceService } from './services/source.service';
@@ -26,71 +27,144 @@ import { SourceService } from './services/source.service';
   styleUrls: ['./code-editor.component.scss'],
 })
 export class CodeEditorComponent implements OnInit, OnDestroy {
-  @ViewChild(AceEditorComponent) private aceEditorRef: AceEditorComponent;
   @ViewChild(MonacoEditorComponent) private monacoEditorRef: MonacoEditorComponent;
 
   Explorers = Explorers;
   activeExplorer: ExplorerOption = Explorers.Templates;
-  Editors = Editors;
-  activeEditor: EditorOption = Editors.Ace;
+  monacoOptions = {
+    theme: '2sxc-dark',
+    tabSize: 2,
+  };
   templateVars$: Observable<CodeEditorTemplateVars>;
 
-  private view$: BehaviorSubject<SourceView>;
-  private templates$: BehaviorSubject<string[]>;
-  private explorerSnipps$: BehaviorSubject<SnippetsSets>;
-  private editorSnipps$: BehaviorSubject<Snippet[]>;
-  private viewKey: number | string; // templateId or path
-  private savedCode: string;
+  private templates$: BehaviorSubject<FileAsset[]>;
+  private activeView$: BehaviorSubject<ViewKey>;
+  private openViews$: BehaviorSubject<ViewKey[]>;
+  private viewInfos$: BehaviorSubject<ViewInfo[]>;
   private subscription: Subscription;
+  private urlItems: SourceItem[];
 
   constructor(
     private context: Context,
     private route: ActivatedRoute,
     private snackBar: MatSnackBar,
-    private snackBarStack: SnackBarStackService,
     private sourceService: SourceService,
     private snippetsService: SnippetsService,
     private zone: NgZone,
     private titleService: Title,
-    private dialogService: DialogService,
-    private globalConfigService: GlobalConfigService,
+    private dialog: MatDialog,
+    private viewContainerRef: ViewContainerRef,
   ) {
     this.context.init(this.route);
+    const codeItems: SourceItem[] = JSON.parse(sessionStorage.getItem(keyItems));
+    const isShared = sessionStorage.getItem(keyIsShared) === 'true' ?? false;
+    codeItems.forEach(codeItem => {
+      // remove leading "/" from path
+      if (codeItem.Path.startsWith('/')) {
+        codeItem.Path = codeItem.Path.substring(1);
+      }
+      codeItem.IsShared ??= isShared;
+    });
+    this.urlItems = codeItems;
   }
 
   ngOnInit(): void {
     this.subscription = new Subscription();
-    this.view$ = new BehaviorSubject(null);
-    this.templates$ = new BehaviorSubject(null);
-    this.explorerSnipps$ = new BehaviorSubject(null);
-    this.editorSnipps$ = new BehaviorSubject(null);
+    this.templates$ = new BehaviorSubject<FileAsset[]>([]);
+    const initialViews = this.urlItems.map(item => {
+      const viewKey: ViewKey = { key: item.EntityId?.toString() ?? item.Path, shared: item.IsShared };
+      return viewKey;
+    });
+    this.activeView$ = new BehaviorSubject<ViewKey>(initialViews[0]);
+    this.openViews$ = new BehaviorSubject<ViewKey[]>(initialViews);
+    this.viewInfos$ = new BehaviorSubject<ViewInfo[]>([]);
 
-    this.calculateViewKey();
     this.attachListeners();
 
-    const view$ = this.sourceService.get(this.viewKey).pipe(share());
-    const templates$ = this.sourceService.getTemplates();
-    const snippets$ = view$.pipe(mergeMap(view => this.snippetsService.getSnippets(view)));
-    forkJoin([view$, templates$, snippets$]).subscribe(([view, templates, snippets]) => {
-      this.view$.next(view);
+    this.sourceService.getAll().subscribe(templates => {
       this.templates$.next(templates);
-      this.explorerSnipps$.next(snippets.sets);
-      this.editorSnipps$.next(snippets.list);
-
-      this.savedCode = this.view$.value.Code;
-      this.titleService.setTitle(`${this.view$.value.FileName} - Code Editor`);
-      this.showCodeAndEditionWarnings(view, templates);
     });
-    const debugEnabled$ = this.globalConfigService.getDebugEnabled$();
 
-    this.templateVars$ = combineLatest([this.view$, this.templates$, this.explorerSnipps$, this.editorSnipps$, debugEnabled$]).pipe(
-      map(([view, templates, explorerSnipps, editorSnipps, debugEnabled]) => {
+    this.subscription.add(
+      combineLatest([this.templates$, this.openViews$]).subscribe(([templates, openViews]) => {
+        if (templates.length === 0) { return; }
+
+        let viewInfos = this.viewInfos$.value;
+        const notLoaded = openViews.filter(viewKey => !viewInfos.some(v => GeneralHelpers.objectsEqual(v.viewKey, viewKey)));
+        if (notLoaded.length === 0) { return; }
+
+        forkJoin(
+          notLoaded.map(viewKey => {
+            // set viewKey in viewInfos to mark that view is being fetched
+            const newViewInfo: ViewInfo = {
+              viewKey,
+            };
+            viewInfos = [...viewInfos, newViewInfo];
+
+            const view$ = this.sourceService.get(viewKey.key, viewKey.shared, this.urlItems).pipe(share());
+            const snippets$ = view$.pipe(mergeMap(view => this.snippetsService.getSnippets(view)));
+            return forkJoin([of(viewKey), view$, snippets$]);
+          })
+        ).subscribe(results => {
+          let viewInfos1 = this.viewInfos$.value;
+
+          results.forEach(([viewKey, view, snippets]) => {
+            const selectedIndex = viewInfos1.findIndex(v => GeneralHelpers.objectsEqual(v.viewKey, viewKey));
+            if (selectedIndex < 0) { return; }
+
+            const newViewInfo: ViewInfo = {
+              viewKey,
+              view,
+              explorerSnipps: snippets.sets,
+              editorSnipps: snippets.list,
+              savedCode: view.Code,
+            };
+            viewInfos1 = [...viewInfos1.slice(0, selectedIndex), newViewInfo, ...viewInfos1.slice(selectedIndex + 1)];
+            this.showCodeAndEditionWarnings(viewKey, view, templates);
+          });
+
+          this.viewInfos$.next(viewInfos1);
+        });
+
+        this.viewInfos$.next(viewInfos);
+      })
+    );
+
+    this.subscription.add(
+      combineLatest([this.activeView$, this.viewInfos$]).subscribe(([activeView, viewInfos]) => {
+        const active = viewInfos.find(v => GeneralHelpers.objectsEqual(v.viewKey, activeView));
+        const defaultTitle = 'Code Editor';
+        const newTitle = active == null ? defaultTitle : `${active.view?.FileName} - ${defaultTitle}`;
+        const oldTitle = this.titleService.getTitle();
+        if (newTitle !== oldTitle) {
+          this.titleService.setTitle(newTitle);
+        }
+      })
+    );
+
+    this.templateVars$ = combineLatest([this.templates$, this.activeView$, this.openViews$, this.viewInfos$]).pipe(
+      map(([templates, activeView, openViews, viewInfos]) => {
+        const tabs = openViews.map(viewKey => {
+          const viewInfo = viewInfos.find(v => GeneralHelpers.objectsEqual(v.viewKey, viewKey));
+          const label: Tab = {
+            viewKey,
+            label: viewInfo?.view?.FileName ?? viewKey.key,
+            isActive: GeneralHelpers.objectsEqual(viewKey, activeView),
+            isModified: viewInfo?.view?.Code !== viewInfo?.savedCode,
+            isLoading: viewInfo?.view == null,
+          };
+          return label;
+        });
+        const activeViewInfo = viewInfos.find(v => GeneralHelpers.objectsEqual(v.viewKey, activeView));
+
         const templateVars: CodeEditorTemplateVars = {
-          debugEnabled,
-          view,
+          activeView,
+          tabs,
+          viewKey: activeViewInfo?.viewKey,
+          view: activeViewInfo?.view,
           templates,
-          explorerSnipps,
-          editorSnipps,
+          explorerSnipps: activeViewInfo?.explorerSnipps,
+          editorSnipps: activeViewInfo?.editorSnipps,
         };
         return templateVars;
       }),
@@ -98,10 +172,10 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.view$.complete();
     this.templates$.complete();
-    this.explorerSnipps$.complete();
-    this.editorSnipps$.complete();
+    this.activeView$.complete();
+    this.openViews$.complete();
+    this.viewInfos$.complete();
     this.subscription.unsubscribe();
   }
 
@@ -109,63 +183,118 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
     this.activeExplorer = (this.activeExplorer !== explorer) ? explorer : null;
   }
 
-  toggleEditor(): void {
-    switch (this.activeEditor) {
-      case Editors.Ace:
-        this.activeEditor = Editors.Monaco;
-        break;
-      case Editors.Monaco:
-        this.activeEditor = Editors.Ace;
-        break;
-      default:
-        this.activeEditor = Editors.Ace;
+  createTemplate(params: CreateTemplateParams): void {
+    if (params.isShared == null) {
+      const fileLocationDialogRef = this.dialog.open(FileLocationDialogComponent, {
+        autoFocus: false,
+        viewContainerRef: this.viewContainerRef,
+        width: '650px',
+      });
+      fileLocationDialogRef.afterClosed().subscribe((isShared?: boolean) => {
+        if (isShared == null) { return; }
+        params.isShared = isShared;
+        this.createTemplate(params);
+      });
+      return;
     }
-  }
 
-  createTemplate(folder?: string): void {
-    let question = 'File name:';
-    let suggestion = defaultTemplateName;
-    if (folder === 'api' || folder?.startsWith('api/')) {
-      question = 'Controller name:';
-      suggestion = defaultControllerName;
-    }
-    let name = prompt(question, suggestion);
-    if (name === null || name.length === 0) { return; }
+    const createFileDialogData: CreateFileDialogData = {
+      folder: params.folder,
+      global: params.isShared,
+      purpose: params.folder === 'api' || params.folder?.startsWith('api/') ? 'Api' : undefined,
+    };
+    const createFileDialogRef = this.dialog.open(CreateFileDialogComponent, {
+      autoFocus: false,
+      data: createFileDialogData,
+      viewContainerRef: this.viewContainerRef,
+      width: '650px',
+    });
 
-    name = SanitizeHelper.sanitizePath(name);
-    if (folder != null) {
-      name = `${folder}/${name}`;
-    }
-    this.sourceService.createTemplate(name).subscribe(res => {
-      this.sourceService.getTemplates().subscribe(files => {
-        this.templates$.next(files);
+    createFileDialogRef.afterClosed().subscribe((result?: CreateFileDialogResult) => {
+      if (!result) { return; }
+
+      this.sourceService.create(result.name, params.isShared, result.templateKey).subscribe(() => {
+        this.sourceService.getAll().subscribe(files => {
+          this.templates$.next(files);
+        });
       });
     });
   }
 
   insertSnippet(snippet: string): void {
-    if (this.aceEditorRef != null) {
-      this.aceEditorRef.insertSnippet(snippet);
-    } else if (this.monacoEditorRef != null) {
-      this.monacoEditorRef.insertSnippet(snippet);
+    this.monacoEditorRef?.insertSnippet(snippet);
+  }
+
+  codeChanged(code: string, viewKey: ViewKey): void {
+    let viewInfos = this.viewInfos$.value;
+    const selectedIndex = viewInfos.findIndex(v => GeneralHelpers.objectsEqual(v.viewKey, viewKey));
+    const selectedViewInfo = viewInfos[selectedIndex];
+    const newViewInfo: ViewInfo = {
+      ...selectedViewInfo,
+      view: {
+        ...selectedViewInfo.view,
+        Code: code,
+      },
+    };
+    viewInfos = [...viewInfos.slice(0, selectedIndex), newViewInfo, ...viewInfos.slice(selectedIndex + 1)];
+    this.viewInfos$.next(viewInfos);
+  }
+
+  openView(viewKey: ViewKey): void {
+    // fix viewKey because it can be a templateId or a path, and file might already be open
+    viewKey = this.viewInfos$.value.find(
+      v => !GeneralHelpers.objectsEqual(v.viewKey, viewKey) && v.view?.FileName === viewKey.key && v.view?.IsShared === viewKey.shared
+    )?.viewKey ?? viewKey;
+
+    const oldActiveView = this.activeView$.value;
+    if (!GeneralHelpers.objectsEqual(oldActiveView, viewKey)) {
+      this.activeView$.next(viewKey);
+    }
+    const oldOpenViews = this.openViews$.value;
+    if (!oldOpenViews.some(v => GeneralHelpers.objectsEqual(v, viewKey))) {
+      const newOpenViews = [...oldOpenViews, viewKey];
+      this.openViews$.next(newOpenViews);
     }
   }
 
-  codeChanged(code: string): void {
-    this.view$.next({ ...this.view$.value, Code: code });
+  closeEditor(viewKey: ViewKey): void {
+    const oldOpenViews = this.openViews$.value;
+    const newOpenViews = oldOpenViews.filter(key => !GeneralHelpers.objectsEqual(key, viewKey));
+
+    const oldActiveView = this.activeView$.value;
+    if (GeneralHelpers.objectsEqual(oldActiveView, viewKey)) {
+      const newActiveView = oldOpenViews[oldOpenViews.findIndex(v => GeneralHelpers.objectsEqual(v, oldActiveView)) - 1] ?? newOpenViews[0];
+      this.activeView$.next(newActiveView);
+    }
+
+    this.openViews$.next(newOpenViews);
   }
 
-  save(): void {
+  save(viewKey?: ViewKey): void {
+    viewKey ??= this.activeView$.value;
+    const viewInfo = this.viewInfos$.value.find(v => GeneralHelpers.objectsEqual(v.viewKey, viewKey));
+    if (viewInfo?.view == null) { return; }
+
     this.snackBar.open('Saving...');
-    let codeToSave = this.view$.value.Code;
-    this.sourceService.save(this.viewKey, this.view$.value).subscribe({
+    const codeToSave = viewInfo.view.Code;
+    this.sourceService.save(viewKey.key, viewKey.shared, viewInfo.view, this.urlItems).subscribe({
       next: res => {
         if (!res) {
           this.snackBar.open('Failed', null, { duration: 2000 });
           return;
         }
-        this.savedCode = codeToSave;
-        codeToSave = null;
+
+        let newViewInfos = [...this.viewInfos$.value];
+        const selectedIndex = newViewInfos.findIndex(v => GeneralHelpers.objectsEqual(v.viewKey, viewKey));
+        if (selectedIndex < 0) { return; }
+
+        const selectedViewInfo = newViewInfos[selectedIndex];
+        const newViewInfo: ViewInfo = {
+          ...selectedViewInfo,
+          savedCode: codeToSave,
+        };
+        newViewInfos = [...newViewInfos.slice(0, selectedIndex), newViewInfo, ...newViewInfos.slice(selectedIndex + 1)];
+        this.viewInfos$.next(newViewInfos);
         this.snackBar.open('Saved', null, { duration: 2000 });
       },
       error: () => {
@@ -174,16 +303,8 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
     });
   }
 
-  private calculateViewKey(): void {
-    // spm TODO: Move items for code-editor to the url?
-    const itemsRaw = sessionStorage.getItem(keyItems);
-    const editItems: EditItem[] | SourceItem[] = JSON.parse(itemsRaw);
-    const item = editItems[0];
-    this.viewKey = (item as EditItem).EntityId || (item as SourceItem).Path;
-  }
-
   /** Show info about editions if other files with the same name exist */
-  private showCodeAndEditionWarnings(view: SourceView, files: string[]): void {
+  private showCodeAndEditionWarnings(viewKey: ViewKey, view: SourceView, files: FileAsset[]): void {
     const pathAndName = view.FileName;
     const pathSeparator = pathAndName.indexOf('/') > -1 ? pathAndName.lastIndexOf('/') + 1 : 0;
     const pathWithSlash = pathSeparator === 0 ? '' : pathAndName.substring(0, pathSeparator);
@@ -191,22 +312,29 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
     const name = fullName.substring(0, fullName.length - view.Extension.length);
     const nameCode = name + '.code' + view.Extension;
     // find out if we also have a code file
-    const codeFile = files.find(file => file === pathWithSlash + nameCode);
-    const otherEditions = files.filter(file => file.endsWith(fullName)).length - 1;
+    const codeFile = files.find(file => file.Path === pathWithSlash + nameCode && file.Shared === view.IsShared);
+    const otherEditions = files.filter(file => file.Path.endsWith(fullName) && file.Shared === view.IsShared).length - 1;
 
-    if (codeFile) {
-      this.snackBarStack
-        .add(`This template also has a code-behind file '${codeFile}'.`, 'Open')
-        .subscribe(() => {
-          this.dialogService.openCodeFile(codeFile);
-        });
-    }
-    if (otherEditions) {
-      this.snackBarStack
-        .add(`There are ${otherEditions} other editions of this. You may be editing an edition which is not the one you see.`, 'Help')
-        .subscribe(() => {
-          window.open('https://r.2sxc.org/polymorphism', '_blank');
-        });
+    if (codeFile || otherEditions) {
+      const snackBarData: CodeAndEditionWarningsSnackBarData = {
+        fileName: fullName,
+        codeFile: codeFile?.Path,
+        edition: this.urlItems
+          .find(i => i.EntityId?.toString() === viewKey.key && i.IsShared === view.IsShared && i.Path === view.FileName)?.Edition,
+        otherEditions,
+        openCodeBehind: false,
+      };
+      const snackBarRef = this.snackBar.openFromComponent(CodeAndEditionWarningsComponent, {
+        data: snackBarData,
+        duration: 10000,
+      });
+
+      snackBarRef.onAction().subscribe(() => {
+        if ((snackBarRef.containerInstance.snackBarConfig.data as CodeAndEditionWarningsSnackBarData).openCodeBehind) {
+          const openViewKey: ViewKey = { key: codeFile?.Path, shared: codeFile?.Shared };
+          this.openView(openViewKey);
+        }
+      });
     }
   }
 
@@ -214,7 +342,8 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
     this.zone.runOutsideAngular(() => {
       this.subscription.add(
         fromEvent<BeforeUnloadEvent>(window, 'beforeunload').subscribe(event => {
-          if (this.savedCode === this.view$.value.Code) { return; }
+          const allSaved = !this.viewInfos$.value.some(v => v.view != null && v.view.Code !== v.savedCode);
+          if (allSaved) { return; }
           event.preventDefault();
           event.returnValue = ''; // fix for Chrome
         })

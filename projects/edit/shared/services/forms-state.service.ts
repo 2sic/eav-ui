@@ -1,23 +1,38 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, combineLatest, map, Subscription } from 'rxjs';
 import { EavService } from '.';
+import { GeneralHelpers } from '../helpers';
+import { FormReadOnly } from '../models';
+import { ItemService, LanguageInstanceService, LanguageService } from '../store/ngrx-data';
 
 @Injectable()
 export class FormsStateService implements OnDestroy {
+  readOnly$: BehaviorSubject<FormReadOnly>;
   formsValid$: BehaviorSubject<boolean>;
   formsDirty$: BehaviorSubject<boolean>;
 
   private formsValid: Record<string, boolean>;
   private formsDirty: Record<string, boolean>;
+  private subscription: Subscription;
 
-  constructor(private eavService: EavService) { }
+  constructor(
+    private eavService: EavService,
+    private itemService: ItemService,
+    private languageService: LanguageService,
+    private languageInstanceService: LanguageInstanceService,
+  ) { }
 
   ngOnDestroy() {
+    this.readOnly$?.complete();
     this.formsValid$?.complete();
     this.formsDirty$?.complete();
+    this.subscription?.unsubscribe();
   }
 
   init() {
+    this.subscription = new Subscription();
+    const initialReadOnly: FormReadOnly = { isReadOnly: true, reason: undefined };
+    this.readOnly$ = new BehaviorSubject(initialReadOnly);
     this.formsValid$ = new BehaviorSubject(false);
     this.formsDirty$ = new BehaviorSubject(false);
     this.formsValid = {};
@@ -26,6 +41,28 @@ export class FormsStateService implements OnDestroy {
       this.formsValid[entityGuid] = false;
       this.formsDirty[entityGuid] = false;
     }
+
+    this.subscription.add(
+      combineLatest([
+        combineLatest(this.eavService.eavConfig.itemGuids.map(entityGuid => this.itemService.getItemHeader$(entityGuid))).pipe(
+          map(itemHeaders => itemHeaders.some(itemHeader => itemHeader?.EditInfo?.ReadOnly ?? false)),
+        ),
+        combineLatest([
+          this.languageInstanceService.getCurrentLanguage$(this.eavService.eavConfig.formId),
+          this.languageService.getLanguages$(),
+        ]).pipe(
+          map(([currentLanguage, languages]) => languages.find(l => l.NameId === currentLanguage)?.IsAllowed ?? true),
+        ),
+      ]).subscribe(([itemsReadOnly, languageAllowed]) => {
+        const readOnly: FormReadOnly = {
+          isReadOnly: itemsReadOnly || !languageAllowed,
+          reason: itemsReadOnly ? 'Form' : !languageAllowed ? 'Language' : undefined,
+        };
+        if (!GeneralHelpers.objectsEqual(readOnly, this.readOnly$.value)) {
+          this.readOnly$.next(readOnly);
+        }
+      })
+    );
   }
 
   getFormValid(entityGuid: string) {

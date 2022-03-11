@@ -112,10 +112,10 @@ export function paramsInitFactory(injector: Injector): () => void {
 }
 
 function loadEnvironment() {
-  const jsInfo: Partial<JsInfo> | { rvtHeader: string } = { // #RvtHeaderName - New in 12.04
+  const jsInfo: Partial<JsInfo> & { rvtHeader: string } = {
     page: parseInt(sessionStorage.getItem(keyTabId), 10),
     rvt: sessionStorage.getItem(keyRequestToken),
-    rvtHeader: sessionStorage.getItem(keyRequestTokenHeaderName), // #RvtHeaderName - New in 12.04
+    rvtHeader: sessionStorage.getItem(keyRequestTokenHeaderName),
     api: sessionStorage.getItem(keyApi),
   };
   window.$2sxc.env.load(jsInfo as JsInfo);

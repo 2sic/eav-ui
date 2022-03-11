@@ -422,17 +422,19 @@ export class TinyMceButtons {
 
   /** Add Context toolbars */
   private static contextMenus(editor: Editor): void {
+    const rangeSelected = () => document.getSelection().rangeCount > 0 && !document.getSelection().getRangeAt(0).collapsed;
+
     editor.ui.registry.addContextToolbar('linkContextToolbar', {
       items: 'link unlink',
-      predicate: (elem) => elem.nodeName.toLocaleLowerCase() === 'a',
+      predicate: (elem) => elem.nodeName.toLocaleLowerCase() === 'a' && rangeSelected(),
     });
     editor.ui.registry.addContextToolbar('imgContextToolbar', {
       items: 'image | alignleft aligncenter alignright imgresponsive | removeformat | remove',
-      predicate: (elem) => elem.nodeName.toLocaleLowerCase() === 'img',
+      predicate: (elem) => elem.nodeName.toLocaleLowerCase() === 'img' && rangeSelected(),
     });
     editor.ui.registry.addContextToolbar('listContextToolbar', {
       items: 'numlist bullist | outdent indent',
-      predicate: (elem) => ['li', 'ol', 'ul'].includes(elem.nodeName.toLocaleLowerCase()),
+      predicate: (elem) => ['li', 'ol', 'ul'].includes(elem.nodeName.toLocaleLowerCase()) && rangeSelected(),
     });
   }
 }

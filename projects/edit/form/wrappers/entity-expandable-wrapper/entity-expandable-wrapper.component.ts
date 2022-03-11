@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angu
 import { TranslateService } from '@ngx-translate/core';
 import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
+import { WrappersConstants } from '../../../shared/constants';
 import { GeneralHelpers } from '../../../shared/helpers';
 import { EavService, EditRoutingService, FieldsSettingsService } from '../../../shared/services';
 import { EntityCacheService, StringQueryCacheService } from '../../../shared/store/ngrx-data';
@@ -13,7 +14,7 @@ import { ContentExpandAnimation } from '../expandable-wrapper/content-expand.ani
 import { EntityExpandableTemplateVars } from './entity-expandable-wrapper.models';
 
 @Component({
-  selector: 'app-entity-expandable-wrapper',
+  selector: WrappersConstants.EntityExpandableWrapper,
   templateUrl: './entity-expandable-wrapper.component.html',
   styleUrls: ['./entity-expandable-wrapper.component.scss'],
   animations: [ContentExpandAnimation],
@@ -42,17 +43,18 @@ export class EntityExpandableWrapperComponent extends BaseComponent<string | str
     const selectedEntities$ = combineLatest([
       this.controlStatus$.pipe(map(controlStatus => controlStatus.value), distinctUntilChanged()),
       this.entityCacheService.getEntities$(),
-      this.stringQueryCache.getEntities$(),
+      this.stringQueryCache.getEntities$(this.config.entityGuid, this.config.fieldName),
       this.settings$.pipe(
         map(settings => ({
           Separator: settings.Separator,
+          Value: settings.Value,
           Label: settings.Label,
         })),
         distinctUntilChanged(GeneralHelpers.objectsEqual),
       ),
     ]).pipe(
       map(([value, entityCache, stringQueryCache, settings]) =>
-        calculateSelectedEntities(value, settings.Separator, entityCache, stringQueryCache, settings.Label, this.translate)
+        calculateSelectedEntities(value, settings.Separator, entityCache, stringQueryCache, settings.Value, settings.Label, this.translate)
       ),
     );
 

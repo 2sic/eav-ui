@@ -1,3 +1,5 @@
+import { MetadataItem } from '../../metadata';
+
 export interface PipelineModel {
   DataSources: PipelineDataSource[];
   Pipeline: Pipeline;
@@ -7,6 +9,7 @@ export interface PipelineDataSource {
   Description: string;
   EntityGuid: string;
   EntityId: number;
+  Metadata?: MetadataItem[];
   Name: string;
   PartAssemblyAndType: string;
   VisualDesignerData: VisualDesignerData;
@@ -29,6 +32,8 @@ export interface Pipeline {
   StreamWiring: StreamWire[];
   StreamsOut: string;
   TestParameters: string;
+  /** This field stores JSON */
+  VisualDesignerData: string;
 }
 
 export interface StreamWire {

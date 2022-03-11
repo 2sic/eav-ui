@@ -5,7 +5,12 @@
       "Save.Tip": "Save and close (CTRL + S saves and doesn't close)",
       "Exit.Tip": "Exit - if something changed, you will be asked to save",
       "Return.Tip": "Return to previous dialog",
-      "History.Tip": "History / previous versions"
+      "History.Tip": "History / previous versions",
+      "Metadata.Tip": "This item is metadata for:",
+      "Note": {
+        "Add": "Add note",
+        "ItemNotSaved": "To add a note, please save item first"
+      }
     }
   },
   "PublishStatus": {
@@ -92,6 +97,11 @@
     "Buttons": {
       "NotSave": "Discard changes",
       "Save": "Save"
+    },
+    "CopyHint": "This is a copy and will be saved as a new item",
+    "ReadOnlyHint": {
+      "Form": "Form is read only",
+      "Language": "Language is read only"
     }
   },
   "Data": {
@@ -100,8 +110,7 @@
   "ItemCard": {
     "DefaultTitle": "Bewerk item",
     "SlotUsedTrue": "Dit item is open voor bewerken. Klik hier om te vergrendelen / verwijder het an keer terug naar de standaard.",
-    "SlotUsedFalse": "Dit item is vergrendeld en zal leeg/standaard blijven. De waarden worden getoond voor uw gemak. Klik hier om te ontgrendelen indien nodig.",
-    "CopyHint": "(copy)"
+    "SlotUsedFalse": "Dit item is vergrendeld en zal leeg/standaard blijven. De waarden worden getoond voor uw gemak. Klik hier om te ontgrendelen indien nodig."
   },
   "ValidationMessage": {
     "NotValid": "Not valid",
@@ -110,7 +119,9 @@
     "Min": "This value should be {{param.Min}} or higher",
     "Max": "This value should be {{param.Max}} or lower",
     "Pattern": "Please match the requested format",
-    "Decimals": "This number can have up to {{param.Decimals}} decimal places"
+    "Decimals": "This number can have up to {{param.Decimals}} decimal places",
+    "JsonError": "JSON is not valid",
+    "JsonWarning": "JSON is not valid"
   },
   "Fields": {
     "Entity": {
@@ -171,8 +182,8 @@
       "Open": "Open calendar"
     },
     "String": {
-      "Dropdown": "Switch to dropdown",
-      "Freetext": "Switch to enter text"
+      "Dropdown": "Pick existing value",
+      "Freetext": "Manual entry"
     },
     "TemplatePicker": {
       "NotSelected": "(no file selected)",

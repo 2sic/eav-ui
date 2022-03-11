@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
+import { InputTypeConstants } from '../../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { FieldMask, GeneralHelpers, UrlHelpers } from '../../../../shared/helpers';
 import { EavService, FieldsSettingsService } from '../../../../shared/services';
@@ -10,8 +11,7 @@ import { StringUrlPathLogic } from './string-url-path-logic';
 import { StringUrlPathTemplateVars } from './string-url-path.models';
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'string-url-path',
+  selector: InputTypeConstants.StringUrlPath,
   templateUrl: './string-url-path.component.html',
   styleUrls: ['./string-url-path.component.scss'],
 })

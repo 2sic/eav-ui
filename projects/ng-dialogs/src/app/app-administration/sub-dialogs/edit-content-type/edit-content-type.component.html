@@ -17,7 +17,7 @@
           <app-field-hint *ngIf="name.errors.pattern" [isError]="true">{{ contentTypeNameError }}</app-field-hint>
         </ng-container>
       </div>
-      <mat-accordion>
+      <mat-accordion [@.disabled]="data.disableAnimation">
         <mat-expansion-panel>
           <mat-expansion-panel-header>
             <mat-panel-title>Advanced</mat-panel-title>
@@ -32,7 +32,7 @@
                 <mat-option *ngFor="let scopeOption of data.scopeOptions" [value]="scopeOption.value">
                   {{ scopeOption.name }}
                 </mat-option>
-                <mat-option value="Other">Other...</mat-option>
+                <mat-option [value]="dropdownInsertValue">Other...</mat-option>
               </mat-select>
               <button mat-icon-button type="button" matSuffix [tippy]="data.lockScope ? 'Unlock' : 'Lock'">
                 <mat-icon appClickStopPropagation (click)="unlockScope()">

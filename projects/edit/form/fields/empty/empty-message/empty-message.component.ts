@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
+import { InputTypeConstants } from '../../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { FieldsSettingsService } from '../../../../shared/services';
 import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
@@ -8,8 +9,7 @@ import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.de
 import { EmptyMessageTemplateVars } from './empty-message.models';
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'empty-message',
+  selector: InputTypeConstants.EmptyMessage,
   templateUrl: './empty-message.component.html',
   styleUrls: ['./empty-message.component.scss'],
 })

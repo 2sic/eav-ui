@@ -60,13 +60,12 @@
 .tinymce-container {
   position: relative;
   height: 100%;
-  flex-grow: 1;
+  flex: 1 1 auto;
   outline: none;
   overflow-x: hidden;
   overflow-y: scroll;
   background-color: #fff;
   padding: 0 8px 1px 8px;
-  min-height: 120px;
   box-sizing: border-box;
   font-size: medium;
   /* IE 10+ */

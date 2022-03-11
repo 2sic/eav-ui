@@ -1,7 +1,7 @@
-import { ICellRendererParams } from '@ag-grid-community/all-modules';
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { Component } from '@angular/core';
 import { ContentType } from '../../models/content-type.model';
+import { DataFieldsParams } from './data-fields.models';
 
 @Component({
   selector: 'app-data-fields',
@@ -9,15 +9,28 @@ import { ContentType } from '../../models/content-type.model';
   styleUrls: ['./data-fields.component.scss'],
 })
 export class DataFieldsComponent implements ICellRendererAngularComp {
-  contentType: ContentType;
   value: number;
+  tooltip: string;
+  icon: string;
 
-  agInit(params: ICellRendererParams) {
+  private params: DataFieldsParams;
+  private contentType: ContentType;
+
+  agInit(params: DataFieldsParams): void {
+    this.params = params;
     this.contentType = params.data;
     this.value = params.value;
+    this.tooltip = !this.contentType.EditInfo.ReadOnly
+      ? 'Edit fields'
+      : `${this.contentType.EditInfo.ReadOnlyMessage ? `${this.contentType.EditInfo.ReadOnlyMessage}\n\n` : ''}This ContentType shares the definition of #${this.contentType.SharedDefId} so you can't edit it here. Read 2sxc.org/help?tag=shared-types`;
+    this.icon = !this.contentType.EditInfo.ReadOnly ? 'dns' : 'share';
   }
 
   refresh(params?: any): boolean {
     return true;
+  }
+
+  editFields(): void {
+    this.params.onEditFields(this.contentType);
   }
 }

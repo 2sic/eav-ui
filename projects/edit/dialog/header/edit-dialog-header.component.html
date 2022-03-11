@@ -4,13 +4,20 @@
     <mat-icon>{{ eavService.eavConfig.isParentDialog ? 'clear' : 'arrow_back' }}</mat-icon>
   </button>
 
-  <div *ngIf="eavService.eavConfig.isCopy" class="header__copy">{{ 'ItemCard.CopyHint' | translate }}</div>
-
   <div class="header__langs">
     <app-language-switcher *ngIf="data.hasLanguages" [disabled]="disabled"></app-language-switcher>
   </div>
 
-  <button mat-button class="header__publish-button" (click)="openPublishStatusDialog()"
+  <mat-icon *ngIf="data.readOnly" class="header__hint-icon"
+    [tippy]="('General.ReadOnlyHint.' + data.readOnlyReason) | translate" [tippyDisabled]="!data.readOnlyReason">
+    lock
+  </mat-icon>
+
+  <mat-icon *ngIf="eavService.eavConfig.isCopy" class="header__hint-icon" [tippy]="'General.CopyHint' | translate">
+    file_copy
+  </mat-icon>
+
+  <button mat-button class="header__publish-button" [disabled]="data.readOnly" (click)="openPublishStatusDialog()"
     [tippy]="'PublishStatus.' + data.publishMode + '.Tip' | translate">
     <span class="header__publish-mode">
       {{ 'PublishStatus.Label' | translate }}

@@ -11,7 +11,6 @@ import { DevRestQueryComponent } from './query/query.component';
 const routes: Routes = [
   {
     path: '', component: DialogEntryComponent, data: { dialog: devRestDialog, title: 'REST API' }, children: [
-      // New: Moved full responbility of sub-routes to here (2dm 2020-11-23)
       {
         path: `data/:${GoToDevRest.paramTypeName}`, component: DevRestDataComponent, children: [
           GoToPermissions.route,

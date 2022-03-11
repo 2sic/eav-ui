@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { InputTypeConstants } from '../../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'empty-default',
+  selector: InputTypeConstants.EmptyDefault,
   templateUrl: './empty-default.component.html',
   styleUrls: ['./empty-default.component.scss'],
 })

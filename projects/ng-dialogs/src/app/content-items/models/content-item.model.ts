@@ -1,3 +1,7 @@
+import { EavFor } from '../../../../../edit/shared/models/eav';
+import { MetadataItemShort } from '../../metadata';
+import { EditInfo } from '../../shared/models/edit-info';
+
 export interface ContentItem {
   Id: number;
   Guid: string;
@@ -5,7 +9,8 @@ export interface ContentItem {
   IsPublished: boolean;
   _Title: string;
   Title: string;
-  For?: ContentItemMetadata;
+  For?: EavFor;
+  Metadata?: MetadataItemShort[];
 
   /** How often this is being used by other entities (parents) */
   _Used: number;
@@ -13,13 +18,9 @@ export interface ContentItem {
   /** How often this entity uses other entities (children) */
   _Uses: number;
 
+  /** Additional information if this item can/may be edited */
+  _EditInfo: EditInfo;
+
   // fields added by the user
   [key: string]: any;
-}
-
-export interface ContentItemMetadata {
-  Target: number;
-  Number: number;
-  Guid: string;
-  String: string;
 }

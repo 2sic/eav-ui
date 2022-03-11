@@ -28,7 +28,7 @@ export class SelectorWithHelpComponent implements OnInit {
 
   showHelp() {
     const scenario = this.items.find(item => item.key === this.value);
-    const data: HelpPopupData = {
+    const dialogData: HelpPopupData = {
       name: scenario.name,
       body: scenario.description,
       notes: scenario.notes,
@@ -36,7 +36,7 @@ export class SelectorWithHelpComponent implements OnInit {
 
     this.dialog.open(HelpPopupComponent, {
       autoFocus: false,
-      data,
+      data: dialogData,
       width: '500px',
     });
   }

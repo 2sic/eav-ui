@@ -114,7 +114,7 @@ export class ConnectorHelper {
       updateField: (name, value) => {
         this.zone.run(() => { this.updateControl(this.group.controls[name], value); });
       },
-      isFeatureEnabled: (guid) => this.featureService.isFeatureEnabled(guid),
+      isFeatureEnabled: (nameId) => this.featureService.isFeatureEnabled(nameId),
       setFocused: (focused) => {
         this.zone.run(() => { this.config.focused$.next(focused); });
       },

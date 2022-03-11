@@ -1,4 +1,4 @@
-import { AllCommunityModules, CellClickedEvent, GridOptions } from '@ag-grid-community/all-modules';
+import { AllCommunityModules, GridOptions } from '@ag-grid-community/all-modules';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
@@ -6,6 +6,7 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 import { filter, map, pairwise, startWith } from 'rxjs/operators';
 import { ContentExportService } from '../../content-export/services/content-export.service';
 import { GoToDevRest } from '../../dev-rest/go-to-dev-rest';
+import { GoToMetadata } from '../../metadata';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
@@ -38,25 +39,29 @@ export class QueriesComponent implements OnInit, OnDestroy {
     },
     columnDefs: [
       {
-        headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
-        cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter',
+        headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense',
+        cellClass: (params) => `${(params.data as Query)._EditInfo.ReadOnly ? 'disabled' : ''} id-action no-padding no-outline`,
+        cellRenderer: 'idFieldComponent', sortable: true, filter: 'agNumberColumnFilter',
+        valueGetter: (params) => (params.data as Query).Id,
         cellRendererParams: {
-          tooltipGetter: (paramsData: Query) => `ID: ${paramsData.Id}\nGUID: ${paramsData.Guid}`,
+          tooltipGetter: (query: Query) => `ID: ${query.Id}\nGUID: ${query.Guid}`,
         } as IdFieldParams,
       },
       {
-        headerName: 'Name', field: 'Name', flex: 2, minWidth: 250, cellClass: 'primary-action highlight', sortable: true,
-        sort: 'asc', filter: 'agTextColumnFilter', onCellClicked: this.openVisualQueryDesigner.bind(this),
+        field: 'Name', flex: 2, minWidth: 250, sortable: true,
+        cellClass: (params) => (params.data as Query)._EditInfo.ReadOnly ? 'no-outline' : 'primary-action highlight',
+        sort: 'asc', filter: 'agTextColumnFilter', onCellClicked: (params) => this.openVisualQueryDesigner(params.data as Query),
+        valueGetter: (params) => (params.data as Query).Name,
       },
       {
-        headerName: 'Description', field: 'Description', flex: 2, minWidth: 250, cellClass: 'no-outline', sortable: true,
-        filter: 'agTextColumnFilter',
+        field: 'Description', flex: 2, minWidth: 250, cellClass: 'no-outline', sortable: true,
+        filter: 'agTextColumnFilter', valueGetter: (params) => (params.data as Query).Description,
       },
       {
-        width: 120, cellClass: 'secondary-action no-padding', pinned: 'right',
+        width: 162, cellClass: 'secondary-action no-padding', pinned: 'right',
         cellRenderer: 'queriesActionsComponent', cellRendererParams: {
-          getEnablePermissions: this.enablePermissionsGetter.bind(this),
-          do: this.doMenuAction.bind(this),
+          getEnablePermissions: () => this.enablePermissionsGetter(),
+          do: (action, query) => this.doMenuAction(action, query),
         } as QueriesActionsParams,
       },
     ],
@@ -101,13 +106,20 @@ export class QueriesComponent implements OnInit, OnDestroy {
    */
   private doMenuAction(action: QueryActions, query: Query) {
     switch (action) {
-      case QueryActions.Edit: return this.editQuery(query);
+      case QueryActions.Edit:
+        return this.editQuery(query);
+      case QueryActions.Metadata:
+        return this.openMetadata(query);
       case QueryActions.Rest:
-        return this.router.navigate([GoToDevRest.goToQuery(query.Guid)], { relativeTo: this.route.firstChild });
-      case QueryActions.Clone: return this.cloneQuery(query);
-      case QueryActions.Permissions: return this.openPermissions(query);
-      case QueryActions.Export: return this.exportQuery(query);
-      case QueryActions.Delete: return this.deleteQuery(query);
+        return this.router.navigate([GoToDevRest.getUrlQuery(query.Guid)], { relativeTo: this.route.firstChild });
+      case QueryActions.Clone:
+        return this.cloneQuery(query);
+      case QueryActions.Permissions:
+        return this.openPermissions(query);
+      case QueryActions.Export:
+        return this.exportQuery(query);
+      case QueryActions.Delete:
+        return this.deleteQuery(query);
     }
   }
 
@@ -130,9 +142,17 @@ export class QueriesComponent implements OnInit, OnDestroy {
     return this.enablePermissions;
   }
 
-  private openVisualQueryDesigner(params: CellClickedEvent) {
-    const query: Query = params.data;
+  private openVisualQueryDesigner(query: Query) {
+    if (query._EditInfo.ReadOnly) { return; }
     this.dialogService.openQueryDesigner(query.Id);
+  }
+
+  private openMetadata(query: Query) {
+    const url = GoToMetadata.getUrlEntity(
+      query.Guid,
+      `Metadata for Query: ${query.Name} (${query.Id})`,
+    );
+    this.router.navigate([url], { relativeTo: this.route.firstChild });
   }
 
   private cloneQuery(query: Query) {
@@ -144,7 +164,7 @@ export class QueriesComponent implements OnInit, OnDestroy {
   }
 
   private openPermissions(query: Query) {
-    this.router.navigate([GoToPermissions.goEntity(query.Guid)], { relativeTo: this.route.firstChild });
+    this.router.navigate([GoToPermissions.getUrlEntity(query.Guid)], { relativeTo: this.route.firstChild });
   }
 
   private exportQuery(query: Query) {

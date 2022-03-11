@@ -1,4 +1,3 @@
-
 export * from './app-info.model';
 export * from './content-info.model';
 export * from './content-type.model';

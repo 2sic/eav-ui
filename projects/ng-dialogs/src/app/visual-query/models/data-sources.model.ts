@@ -11,16 +11,10 @@ export interface DataSource {
   Out: string[];
   PartAssemblyAndType: string;
   PrimaryType: string;
+  TypeNameForUi: string;
   UiHint: string;
 }
 
 export interface SortedDataSources {
   [key: string]: DataSource[];
-}
-
-export interface DataSourceMetadata {
-  Guid: string;
-  Id: number;
-  Title: string;
-  TypeName: string;
 }

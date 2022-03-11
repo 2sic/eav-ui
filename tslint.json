@@ -146,7 +146,6 @@
       }
     ],
     "unified-signatures": true,
-    "use-life-cycle-interface": true,
     "variable-name": false,
     "whitespace": [
       true,

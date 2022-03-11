@@ -14,6 +14,7 @@ export interface FormulaCacheItem {
   /** Formula string in field settings */
   sourceFromSettings: string;
   sourceGuid: string;
+  sourceId: number;
   target: FormulaTarget;
   version: FormulaVersion;
 }

@@ -11,6 +11,7 @@ export interface FormulaDesignerTemplateVars {
   result: FieldValue;
   resultExists: boolean;
   resultIsError: boolean;
+  saving: boolean;
 }
 
 export interface SelectOptions {

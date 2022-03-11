@@ -4,7 +4,7 @@ import { InputTypeConstants } from '../../../ng-dialogs/src/app/content-type-fie
 import { InputType } from '../../../ng-dialogs/src/app/content-type-fields/models/input-type.model';
 import { TranslateMenuHelpers } from '../../form/wrappers/localization-wrapper/translate-menu/translate-menu.helpers';
 import { TranslationStateCore } from '../../form/wrappers/localization-wrapper/translate-menu/translate-menu.models';
-import { TranslationLink, TranslationLinks } from '../constants';
+import { MetadataDecorators, TranslationLink, TranslationLinks } from '../constants';
 import { ContentTypeSettings, TranslationState } from '../models';
 import { EavContentType, EavContentTypeAttribute, EavEntity, EavHeader, EavValues } from '../models/eav';
 
@@ -52,6 +52,7 @@ export class FieldsSettingsHelpers {
     const defaultSettings = { ...settings };
     defaultSettings.Description ??= '';
     defaultSettings.EditInstructions ??= '';
+    defaultSettings.Features ??= '';
     defaultSettings.Label ??= '';
     defaultSettings.ListInstructions ??= '';
     defaultSettings.Notes ??= '';
@@ -85,26 +86,22 @@ export class FieldsSettingsHelpers {
 
   /** Find if DisableTranslation is true in any setting and in any language */
   static findDisableTranslation(
+    contentTypeMetadata: EavEntity[],
     inputType: InputType,
     attributeValues: EavValues<any>,
     defaultLanguage: string,
-    metadataItems: EavEntity[],
+    attributeMetadata: EavEntity[],
   ): boolean {
+    // disable translation if LanguagesDecorator in ContentType is false in any language
+    const languagesDecorator = contentTypeMetadata.find(m => m.Type.Name === MetadataDecorators.LanguagesDecorator);
+    if (languagesDecorator?.Attributes.Enabled?.Values.some(eavValue => eavValue.Value === false)) { return true; }
+
     if (inputType?.DisableI18n) { return true; }
     if (!LocalizationHelpers.translationExistsInDefault(attributeValues, defaultLanguage)) { return true; }
-    if (metadataItems == null) { return false; }
 
-    // find DisableTranslation in @All, @String, @string-default, etc...
-    for (const item of metadataItems) {
-      const eavValues = item.Attributes['DisableTranslation'];
-      if (eavValues == null) { continue; }
-
-      // if true in any language, it is true for all cases
-      for (const eavValue of eavValues.Values) {
-        if (eavValue.Value === true) {
-          return true;
-        }
-      }
+    // disable translation if DisableTranslation is true in any language in @All, @String, @string-default, etc...
+    for (const metadataItem of attributeMetadata ?? []) {
+      if (metadataItem.Attributes.DisableTranslation?.Values.some(eavValue => eavValue.Value === true)) { return true; }
     }
 
     return false;

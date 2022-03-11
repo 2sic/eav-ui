@@ -1,52 +1,34 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, forwardRef, Input, OnDestroy, Output, ViewChild } from '@angular/core';
-import { NG_VALUE_ACCESSOR } from '@angular/forms';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { JsonSchema, MonacoType } from '.';
 import { Snippet } from '../code-editor/models/snippet.model';
 import { EavWindow } from '../shared/models/eav-window.model';
+import { MonacoInstance } from './monaco-instance';
 
 declare const window: EavWindow;
 
 @Component({
   selector: 'app-monaco-editor',
-  template: `<div style="width: 100%; height: 100%; overflow: hidden;" #editor></div>`,
-  styles: [':host { display: block; width: 100%; height: 100%; overflow: hidden; }'],
-  providers: [{
-    provide: NG_VALUE_ACCESSOR,
-    useExisting: forwardRef(() => MonacoEditorComponent),
-    multi: true,
-  }],
+  templateUrl: './monaco-editor.component.html',
+  styleUrls: ['./monaco-editor.component.scss'],
 })
-export class MonacoEditorComponent implements AfterViewInit, OnDestroy {
+export class MonacoEditorComponent implements AfterViewInit, OnChanges, OnDestroy {
   @ViewChild('editor') private editorRef: ElementRef<HTMLElement>;
   @Input() filename: string;
-  @Input() snippets: Snippet[];
+  @Input() value: string;
+  @Input() snippets?: Snippet[];
   @Input() options?: Record<string, any>;
+  @Input() jsonSchema?: JsonSchema;
   @Input() autoFocus = false;
+  @Output() private valueChanged = new EventEmitter<string>();
   @Output() private focused = new EventEmitter<undefined>();
-  @Output() private blured = new EventEmitter<undefined>();
+  @Output() private blurred = new EventEmitter<undefined>();
 
-  private value = '';
-  private monaco?: any;
-  private editorModel?: any;
-  private editorInstance?: any;
-  /**
-   * TODO: Remove completionItemProvider when changing language or destroying editor.
-   * Also don't register completionItemProvider multiple times.
-   * https://github.com/react-monaco-editor/react-monaco-editor/issues/88
-   */
-  private completionItemProvider?: any;
-  private observer?: ResizeObserver;
-
-  propagateChange: (_: any) => void = () => { };
-  propagateTouched: (_: any) => void = () => { };
+  private monaco: MonacoType;
+  private monacoInstance?: MonacoInstance;
 
   constructor() { }
 
   ngAfterViewInit(): void {
-    this.observer = new ResizeObserver(entries => {
-      this.editorInstance?.layout();
-    });
-    this.observer.observe(this.editorRef.nativeElement);
-
     window.require.config({
       paths: {
         vs: ['https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.25.2/min/vs'],
@@ -55,90 +37,58 @@ export class MonacoEditorComponent implements AfterViewInit, OnDestroy {
 
     window.require(['vs/editor/editor.main'], (monaco: any) => {
       this.monaco = monaco;
-      this.monacoLoaded();
+      this.createEditor(this.autoFocus);
     });
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.filename != null && this.monacoInstance != null) {
+      this.monacoInstance.destroy();
+      this.createEditor(true);
+    }
+    if (changes.value != null) {
+      this.monacoInstance?.updateValue(this.value);
+    }
+    if (changes.jsonSchema != null) {
+      this.monacoInstance?.setJsonSchema(this.jsonSchema);
+    }
+    if (changes.snippets != null) {
+      this.monacoInstance?.setSnippets(this.snippets);
+    }
   }
 
   insertSnippet(snippet: string): void {
-    const snippetController = this.editorInstance?.getContribution('snippetController2');
-    snippetController?.insert(snippet);
-    this.editorInstance?.focus();
+    this.monacoInstance?.insertSnippet(snippet);
+    this.monacoInstance?.focus();
   }
 
   ngOnDestroy(): void {
-    this.observer?.disconnect();
-    this.completionItemProvider?.dispose();
-    this.editorModel?.dispose();
-    this.editorInstance?.dispose();
+    this.monacoInstance?.destroy();
   }
 
-  writeValue(value: string): void {
-    this.value = value || '';
-    this.editorInstance?.getModel().setValue(this.value);
-  }
+  private createEditor(autoFocus: boolean): void {
+    this.monacoInstance = new MonacoInstance(
+      this.monaco, this.filename, this.value, this.editorRef.nativeElement, this.options, this.snippets,
+    );
 
-  registerOnChange(fn: (_: any) => void): void {
-    this.propagateChange = fn;
-  }
-
-  registerOnTouched(fn: (_: any) => void): void {
-    this.propagateTouched = fn;
-  }
-
-  monacoLoaded(): void {
-    // https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.istandaloneeditorconstructionoptions.html
-    this.editorInstance = this.monaco.editor.create(this.editorRef.nativeElement, this.options);
-    // editorInstance.updateOptions({ readOnly: true })
-    this.editorModel = this.monaco.editor.createModel(this.value, undefined, this.monaco.Uri.file(this.filename));
-    this.editorInstance.setModel(this.editorModel);
-    // https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.itextmodelupdateoptions.html
-    // this.editor.getModel().updateOptions({ tabSize: 2 });
-
-    if (this.snippets) {
-      this.completionItemProvider = this.monaco.languages.registerCompletionItemProvider(this.editorInstance.getModel().getModeId(), {
-        provideCompletionItems: (model: any, position: any) => {
-          const word = model.getWordUntilPosition(position);
-          const range = {
-            startLineNumber: position.lineNumber,
-            endLineNumber: position.lineNumber,
-            startColumn: word.startColumn,
-            endColumn: word.endColumn
-          };
-          return { suggestions: this.createDependencyProposals(range) };
-        }
-      });
+    if (this.jsonSchema) {
+      this.monacoInstance.setJsonSchema(this.jsonSchema);
     }
 
-    this.editorInstance.getModel().onDidChangeContent(() => {
-      this.propagateChange(this.editorInstance.getModel().getValue());
+    this.monacoInstance.onValueChange(value => {
+      this.valueChanged.emit(value);
     });
 
-    this.editorInstance.onDidFocusEditorWidget(() => {
+    this.monacoInstance.onFocus(() => {
       this.focused.emit();
     });
 
-    this.editorInstance.onDidBlurEditorWidget(() => {
-      this.blured.emit();
+    this.monacoInstance.onBlur(() => {
+      this.blurred.emit();
     });
 
-    if (this.autoFocus) {
-      this.editorInstance.focus();
+    if (autoFocus) {
+      this.monacoInstance.focus();
     }
-  }
-
-  private createDependencyProposals(range: any) {
-    // kind and rule copied from:
-    // https://microsoft.github.io/monaco-editor/playground.html#extending-language-services-completion-provider-example
-    const kind = 27;
-    const insertTextRules = 4;
-    const monacoSnippets = this.snippets.map(snippet => ({
-      label: snippet.name,
-      kind,
-      documentation: `${snippet.title}\n${snippet.help}\n${snippet.links}`,
-      insertText: snippet.content,
-      insertTextRules,
-      range,
-    }));
-    return monacoSnippets;
   }
 }

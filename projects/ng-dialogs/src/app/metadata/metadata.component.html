@@ -1,0 +1,59 @@
+<ng-container *ngIf="templateVars$ | async as data">
+  <div class="nav-component-wrapper">
+    <div mat-dialog-title>
+      <div class="dialog-title-box">
+        <div>{{ title || 'Metadata' }}</div>
+        <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <p class="dialog-description">
+      <ng-container *ngIf="!data.itemFor">This item is not metadata for anything else.</ng-container>
+      <ng-container *ngIf="data.itemFor">
+        This item is metadata for:
+        <br>Target: {{ data.itemFor.Target }}
+        <br>TargetType: {{ data.itemFor.TargetType }}
+        <ng-container *ngIf="data.itemFor.Number"><br>Number: {{ data.itemFor.Number }}</ng-container>
+        <ng-container *ngIf="data.itemFor.Guid"><br>Guid: {{ data.itemFor.Guid }}</ng-container>
+        <ng-container *ngIf="data.itemFor.String"><br>String: {{ data.itemFor.String }}</ng-container>
+        <ng-container *ngIf="data.itemFor.Title"><br>Title: {{ data.itemFor.String }}</ng-container>
+      </ng-container>
+    </p>
+
+    <router-outlet></router-outlet>
+
+    <div class="grid-wrapper">
+      <ag-grid-angular class="ag-theme-material" [rowData]="data.metadata" [modules]="modules"
+        [gridOptions]="gridOptions">
+      </ag-grid-angular>
+
+      <div class="grid-more-actions-box"></div>
+
+      <button mat-fab mat-elevation-z24 class="grid-fab" *ngIf="data.recommendations.length === 0"
+        tippy="Create a new metadata for this item" (click)="createMetadata()">
+        <mat-icon>add</mat-icon>
+      </button>
+
+      <eco-fab-speed-dial class="grid-fab" [ngClass]="{ 'fab-opened': data.fabOpen }"
+        *ngIf="data.recommendations.length > 0" (openChange)="openChange($event)">
+        <eco-fab-speed-dial-trigger [spin]="true">
+          <button mat-fab>
+            <mat-icon class="spin180">{{ data.fabOpen ? 'close' : 'add' }}</mat-icon>
+          </button>
+        </eco-fab-speed-dial-trigger>
+
+        <eco-fab-speed-dial-actions>
+          <button mat-mini-fab label="Other Content Type" (click)="createMetadata()">
+            <mat-icon>search</mat-icon>
+          </button>
+          <button mat-mini-fab *ngFor="let recommendation of data.recommendations" [attr.label]="recommendation.Title"
+            (click)="createMetadata(recommendation)">
+            <mat-icon>{{ recommendation.Icon || 'add' }}</mat-icon>
+          </button>
+        </eco-fab-speed-dial-actions>
+      </eco-fab-speed-dial>
+    </div>
+  </div>
+</ng-container>

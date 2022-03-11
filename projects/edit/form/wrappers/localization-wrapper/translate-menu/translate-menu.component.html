@@ -6,8 +6,8 @@
         {{ data.translationState.infoLabel ? (data.translationState.infoLabel | translate:{ languages:
         data.translationState.infoMessage }): '' }}
       </div>
-      <button mat-icon-button [matMenuTriggerFor]="menu" [disabled]="data.disableTranslation">
-        <mat-icon class=" translate-icon">translate</mat-icon>
+      <button mat-icon-button [matMenuTriggerFor]="menu" [disabled]="data.readOnly || data.disableTranslation">
+        <mat-icon class="translate-icon">translate</mat-icon>
       </button>
     </div>
 

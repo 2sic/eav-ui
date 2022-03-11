@@ -19,7 +19,9 @@ export interface FieldProps {
 export interface FieldConstants {
   angularAssets?: string;
   contentTypeId?: string;
+  dropzonePreviewsClass?: string;
   entityGuid?: string;
+  entityId?: number;
   fieldName?: string;
   index?: number;
   initialDisabled?: boolean;

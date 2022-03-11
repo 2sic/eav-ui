@@ -1,6 +1,7 @@
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { GeneralHelpers } from '.';
 import { FieldConfigSet } from '../../form/builder/fields-builder/field-config-set.model';
+import { SxcAbstractControl } from '../models';
 
 export class ValidationMessagesHelpers {
 
@@ -20,6 +21,13 @@ export class ValidationMessagesHelpers {
     decimals: (config: FieldConfigSet) => {
       return config ? `ValidationMessage.Decimals` : `ValidationMessage.NotValid`;
     },
+    jsonError: (config: FieldConfigSet) => {
+      return config ? `ValidationMessage.JsonError` : `ValidationMessage.NotValid`;
+    },
+  };
+
+  private static warningMessages: Record<string, string> = {
+    jsonWarning: 'ValidationMessage.JsonWarning',
   };
 
   /** Marks controls as touched to show errors beneath controls and collects error messages */
@@ -50,5 +58,15 @@ export class ValidationMessagesHelpers {
     }
 
     return error;
+  }
+
+  static getWarningMessage(control: SxcAbstractControl): string {
+    if (!control.dirty && !control.touched) { return; }
+    if (control._warning$.value == null) { return; }
+
+    for (const warningKey of Object.keys(control._warning$.value)) {
+      const warning = this.warningMessages[warningKey];
+      if (warning) { return warning; }
+    }
   }
 }

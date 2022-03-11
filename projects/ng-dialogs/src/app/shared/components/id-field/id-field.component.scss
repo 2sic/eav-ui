@@ -1,10 +1,16 @@
 .id-box {
   padding: 0 8px;
-  text-align: end;
   height: 100%;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+
+  &.align-start {
+    justify-content: flex-start;
+  }
+
+  &.align-end {
+    justify-content: flex-end;
+  }
 
   .id {
     max-width: 100%;

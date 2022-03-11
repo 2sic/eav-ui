@@ -12,14 +12,45 @@
       </div>
     </div>
 
-    <mat-slide-toggle fxLayoutAlign="start center" *ngIf="data.slotCanBeEmpty" (change)="toggleSlotIsEmpty(data.header)"
-      [checked]="!data.slotIsEmpty" [disabled]="data.currentLanguage !== data.defaultLanguage"
+    <button #noteTrigger mat-icon-button class="note {{ data.noteProps.triggerClass }}" [disabled]="data.readOnly"
+      [tippy]="data.noteProps.tooltip | translate" [tippyDisabled]="data.readOnly || !data.noteProps.tooltip"
+      [disableRipple]="data.noteProps.itemNotSaved"
+      (pointerenter)="data.noteProps.note ? toggleNote($event, true) : null"
+      (click)="data.noteProps.note ? toggleNote($event) : editNote()" *ngIf="data.showNotes">
+      <mat-icon>{{ data.noteProps.iconName }}</mat-icon>
+    </button>
+
+    <ng-template #noteTemplate>
+      <div class="note-wrapper {{ data.noteProps.noteClass }}" cdkDrag cdkDragRootElement=".cdk-overlay-pane"
+        cdkDragBoundary="body" (pointerdown)="noteTouched = true"
+        (pointerleave)="noteTouched ? null : toggleNote($event, false)">
+        <div class="note-actions" cdkDragHandle>
+          <button mat-icon-button appMousedownStopPropagation (click)="editNote(data.noteProps.note)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button appMousedownStopPropagation (click)="deleteNote(data.noteProps.note)">
+            <mat-icon>delete</mat-icon>
+          </button>
+          <button mat-icon-button appMousedownStopPropagation (click)="toggleNote($event, false)">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+        <div class="note-content hide-scrollbar" [innerHtml]="data.noteProps.noteHtml | safeHtml"></div>
+      </div>
+    </ng-template>
+
+    <mat-slide-toggle class="empty-slot-toggle" *ngIf="data.slotCanBeEmpty" (change)="toggleSlotIsEmpty(data.header)"
+      [checked]="!data.slotIsEmpty" [disabled]="data.readOnly || (data.currentLanguage !== data.defaultLanguage)"
       [tippy]="(!data.slotIsEmpty ? 'ItemCard.SlotUsedTrue' : 'ItemCard.SlotUsedFalse') | translate"
-      [tippyDisabled]="data.currentLanguage !== data.defaultLanguage">
+      [tippyDisabled]="data.readOnly || (data.currentLanguage !== data.defaultLanguage)">
     </mat-slide-toggle>
 
-    <button mat-icon-button type="button" [tippy]="'Form.Buttons.History.Tip' | translate"
-      *ngIf="eavService.eavConfig.enableHistory" (click)="openHistory()">
+    <div class="icon-box" [tippy]="data.itemForTooltip" *ngIf="data.showMetadataFor && data.itemForTooltip">
+      <mat-icon>local_offer</mat-icon>
+    </div>
+
+    <button mat-icon-button [tippy]="'Form.Buttons.History.Tip' | translate" *ngIf="eavService.eavConfig.enableHistory"
+      [disabled]="data.readOnly" (click)="openHistory()">
       <mat-icon>history</mat-icon>
     </button>
 

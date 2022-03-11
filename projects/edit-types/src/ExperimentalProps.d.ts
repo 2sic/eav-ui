@@ -18,7 +18,7 @@ export interface ExperimentalProps {
   adam: Adam;
   updateField(name: string, value: FieldValue): void;
   setFocused(focused: boolean): void;
-  isFeatureEnabled(guid: string): boolean;
+  isFeatureEnabled(nameId: string): boolean;
   openPagePicker(callback: (value: PagePickerResult) => void): void;
   getUrlOfId(value: string, callback: (value: string) => void): void;
   getEntityCache(guids?: string[]): EntityInfo[];

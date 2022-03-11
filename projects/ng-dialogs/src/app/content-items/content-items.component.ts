@@ -1,4 +1,4 @@
-import { AllCommunityModules, CellClickedEvent, ColDef, GridApi, GridOptions, GridReadyEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
+import { AllCommunityModules, ColDef, GridApi, GridOptions, GridReadyEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -13,7 +13,9 @@ import { ContentExportService } from '../content-export/services/content-export.
 import { ContentImportDialogData } from '../content-import/content-import-dialog.config';
 import { DataTypeConstants } from '../content-type-fields/constants/data-type.constants';
 import { Field } from '../content-type-fields/models/field.model';
+import { GoToMetadata } from '../metadata';
 import { BooleanFilterComponent } from '../shared/components/boolean-filter/boolean-filter.component';
+import { EntityFilterComponent } from '../shared/components/entity-filter/entity-filter.component';
 import { IdFieldComponent } from '../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
@@ -26,6 +28,7 @@ import { ContentItemsActionsComponent } from './ag-grid-components/content-items
 import { ContentItemsActionsParams } from './ag-grid-components/content-items-actions/content-items-actions.models';
 import { ContentItemsEntityComponent } from './ag-grid-components/content-items-entity/content-items-entity.component';
 import { ContentItemsStatusComponent } from './ag-grid-components/content-items-status/content-items-status.component';
+import { ContentItemsStatusParams } from './ag-grid-components/content-items-status/content-items-status.models';
 import { PubMetaFilterComponent } from './ag-grid-components/pub-meta-filter/pub-meta-filter.component';
 import { PubMeta } from './ag-grid-components/pub-meta-filter/pub-meta-filter.model';
 import { ContentItemImportDialogData } from './content-item-import/content-item-import-dialog.config';
@@ -54,6 +57,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     frameworkComponents: {
       pubMetaFilterComponent: PubMetaFilterComponent,
       booleanFilterComponent: BooleanFilterComponent,
+      entityFilterComponent: EntityFilterComponent,
       idFieldComponent: IdFieldComponent,
       contentItemsStatusComponent: ContentItemsStatusComponent,
       contentItemsActionsComponent: ContentItemsActionsComponent,
@@ -117,7 +121,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   private fetchColumns() {
     this.contentItemsService.getColumns(this.contentTypeStaticName).subscribe(columns => {
       const columnDefs = this.buildColumnDefs(columns);
-      const filterModel = buildFilterModel(sessionStorage.getItem(keyFilters));
+      const filterModel = buildFilterModel(sessionStorage.getItem(keyFilters), columnDefs);
       if (this.gridApi$.value) {
         this.setColumnDefs(columnDefs, filterModel);
       } else {
@@ -139,8 +143,16 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     }
   }
 
-  editItem(params: CellClickedEvent) {
-    const item: ContentItem = params?.data;
+  openMetadata(item: ContentItem) {
+    const url = GoToMetadata.getUrlEntity(
+      item.Guid,
+      `Metadata for Entity: ${item._Title} (${item.Id})`,
+      this.contentTypeStaticName,
+    );
+    this.router.navigate([url], { relativeTo: this.route });
+  }
+
+  editItem(item?: ContentItem) {
     const form: EditForm = {
       items: [
         item == null
@@ -187,23 +199,24 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     this.router.navigate(['import'], { relativeTo: this.route, state: dialogData });
   }
 
-  addMetadata() {
+  createMetadata() {
     const metadataDialogRef = this.dialog.open(CreateMetadataDialogComponent, {
       autoFocus: false,
       viewContainerRef: this.viewContainerRef,
       width: '650px',
     });
-    metadataDialogRef.afterClosed().pipe(take(1)).subscribe((res: MetadataInfo) => {
-      if (res == null) { return; }
+    metadataDialogRef.afterClosed().subscribe((itemFor: MetadataInfo) => {
+      if (itemFor == null) { return; }
 
       const form: EditForm = {
         items: [{
           ContentTypeName: this.contentTypeStaticName,
           For: {
-            Target: res.target,
-            ...(res.keyType === eavConstants.keyTypes.guid && { Guid: res.key }),
-            ...(res.keyType === eavConstants.keyTypes.number && { Number: parseInt(res.key, 10) }),
-            ...(res.keyType === eavConstants.keyTypes.string && { String: res.key }),
+            Target: itemFor.target ?? itemFor.targetType.toString(),
+            TargetType: itemFor.targetType,
+            ...(itemFor.keyType === eavConstants.keyTypes.guid && { Guid: itemFor.key }),
+            ...(itemFor.keyType === eavConstants.keyTypes.number && { Number: parseInt(itemFor.key, 10) }),
+            ...(itemFor.keyType === eavConstants.keyTypes.string && { String: itemFor.key }),
           },
         }],
       };
@@ -215,7 +228,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
 
   debugFilter() {
     console.warn('Current filter:', this.gridApi$.value.getFilterModel());
-    alert('Check console for filter information');
+    this.snackBar.open('Check console for filter information', undefined, { duration: 3000 });
   }
 
   private refreshOnChildClosed() {
@@ -235,19 +248,25 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   private buildColumnDefs(columns: Field[]) {
     const columnDefs: ColDef[] = [
       {
-        headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
-        cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter',
+        headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense',
+        cellClass: (params) => `${(params.data as ContentItem)._EditInfo.ReadOnly ? 'disabled' : ''} id-action no-padding no-outline`,
+        cellRenderer: 'idFieldComponent', sortable: true, filter: 'agNumberColumnFilter',
+        valueGetter: (params) => (params.data as ContentItem).Id,
         cellRendererParams: {
-          tooltipGetter: (paramsData: ContentItem) => `ID: ${paramsData.Id}\nRepoID: ${paramsData._RepositoryId}\nGUID: ${paramsData.Guid}`,
+          tooltipGetter: (item: ContentItem) => `ID: ${item.Id}\nRepoID: ${item._RepositoryId}\nGUID: ${item.Guid}`,
         } as IdFieldParams,
       },
       {
-        headerName: 'Status', field: 'Status', width: 80, headerClass: 'dense', cellClass: 'no-outline',
+        field: 'Status', width: 82, headerClass: 'dense', cellClass: 'secondary-action no-padding',
         filter: 'pubMetaFilterComponent', cellRenderer: 'contentItemsStatusComponent', valueGetter: this.valueGetterStatus,
+        cellRendererParams: {
+          onOpenMetadata: (item) => this.openMetadata(item),
+        } as ContentItemsStatusParams,
       },
       {
         headerName: 'Item (Entity)', field: '_Title', flex: 2, minWidth: 250, cellClass: 'primary-action highlight',
-        sortable: true, filter: 'agTextColumnFilter', onCellClicked: this.editItem.bind(this),
+        sortable: true, filter: 'agTextColumnFilter', onCellClicked: (event) => this.editItem(event.data as ContentItem),
+        valueGetter: (params) => (params.data as ContentItem)._Title,
       },
       {
         headerName: 'Stats', headerTooltip: 'Used by others / uses others',
@@ -255,11 +274,11 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
         sortable: true, filter: 'agTextColumnFilter', valueGetter: this.valueGetterUsage,
       },
       {
-        cellClass: 'secondary-action no-padding', width: 120, cellRenderer: 'contentItemsActionsComponent', pinned: 'right',
+        cellClass: 'secondary-action no-padding', width: 122, cellRenderer: 'contentItemsActionsComponent', pinned: 'right',
         cellRendererParams: {
-          onClone: this.clone.bind(this),
-          onExport: this.export.bind(this),
-          onDelete: this.delete.bind(this),
+          onClone: (item) => this.clone(item),
+          onExport: (item) => this.export(item),
+          onDelete: (item) => this.delete(item),
         } as ContentItemsActionsParams,
       },
     ];
@@ -270,21 +289,13 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
       };
       switch (column.Type) {
         case DataTypeConstants.Entity:
-          try {
-            colDef.allowMultiValue = column.Metadata.Entity.AllowMultiValue;
-          } catch (e) {
-            colDef.allowMultiValue = true;
-          }
+          colDef.allowMultiValue = column.Metadata?.Entity?.AllowMultiValue ?? true;
           colDef.cellRenderer = 'contentItemsEntityComponent';
           colDef.valueGetter = this.valueGetterEntityField;
-          colDef.filter = 'agTextColumnFilter';
+          colDef.filter = 'entityFilterComponent';
           break;
         case DataTypeConstants.DateTime:
-          try {
-            colDef.useTimePicker = column.Metadata.DateTime.UseTimePicker;
-          } catch (e) {
-            colDef.useTimePicker = false;
-          }
+          colDef.useTimePicker = column.Metadata?.DateTime?.UseTimePicker ?? false;
           colDef.valueGetter = this.valueGetterDateTime;
           colDef.filter = 'agTextColumnFilter';
           break;
@@ -343,6 +354,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     const published: PubMeta = {
       published: item.IsPublished,
       metadata: !!item.For,
+      hasMetadata: item.Metadata ? item.Metadata.length > 0 : false,
     };
     return published;
   }
@@ -361,14 +373,14 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   private valueGetterDateTime(params: ValueGetterParams) {
     const rawValue: string = params.data[params.colDef.field];
     if (!rawValue) { return null; }
-
-    // remove 'Z' and replace 'T'
-    return (params.colDef as ExtendedColDef).useTimePicker ? rawValue.substring(0, 19).replace('T', ' ') : rawValue.substring(0, 10);
+    return (params.colDef as ExtendedColDef).useTimePicker
+      ? rawValue.replace('T', ' ').replace('Z', '')
+      : rawValue.split('T')[0];
   }
 
   private valueGetterBoolean(params: ValueGetterParams) {
     const rawValue = params.data[params.colDef.field];
-    if (typeof rawValue !== typeof true) { return null; }
+    if (typeof rawValue !== 'boolean') { return null; }
     return rawValue.toString();
   }
 }

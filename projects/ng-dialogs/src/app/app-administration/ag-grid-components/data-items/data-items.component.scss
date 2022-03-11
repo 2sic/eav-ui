@@ -1,3 +1,21 @@
-.chip-box {
-  width: 40px;
+.text-icon {
+  width: 24px;
+  height: 24px;
+  font-size: 12px;
+  line-height: 22px;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border: 1px solid rgba(29, 39, 61, 0.44);
+  border-radius: 12px;
+  box-sizing: border-box;
+  background-color: #002753;
+  color: white;
+  user-select: none;
+}
+
+.text-icon {
+  min-width: 24px;
+  width: initial;
 }

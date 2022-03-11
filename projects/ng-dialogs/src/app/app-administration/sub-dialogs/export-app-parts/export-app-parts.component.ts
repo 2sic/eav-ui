@@ -2,7 +2,8 @@ import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { eavConstants, EavScopeOption } from '../../../shared/constants/eav.constants';
+import { dropdownInsertValue } from '../../../shared/constants/dropdown-insert-value.constant';
+import { eavConstants, ScopeOption } from '../../../shared/constants/eav.constants';
 import { ContentInfo, ContentInfoEntity, ContentInfoTemplate } from '../../models/content-info.model';
 import { ContentTypesService } from '../../services/content-types.service';
 import { ExportAppPartsService } from '../../services/export-app-parts.service';
@@ -17,8 +18,9 @@ export class ExportAppPartsComponent implements OnInit, OnDestroy {
 
   contentInfo: ContentInfo;
   exportScope = eavConstants.scopes.default.value;
-  scopeOptions: EavScopeOption[];
+  scopeOptions: ScopeOption[];
   lockScope = true;
+  dropdownInsertValue = dropdownInsertValue;
   private loading$ = new BehaviorSubject(false);
   private isExporting$ = new BehaviorSubject(false);
   templateVars$ = combineLatest([this.loading$, this.isExporting$]).pipe(
@@ -59,16 +61,14 @@ export class ExportAppPartsComponent implements OnInit, OnDestroy {
   }
 
   changeScope(newScope: string) {
-    if (newScope === 'Other') {
-      newScope = prompt('This is an advanced feature to show content-types of another scope. Don\'t use this if you don\'t know what you\'re doing, as content-types of other scopes are usually hidden for a good reason.');
-      if (!newScope) {
-        newScope = eavConstants.scopes.default.value;
-      } else if (!this.scopeOptions.find(option => option.value === newScope)) {
-        const newScopeOption: EavScopeOption = {
+    if (newScope === dropdownInsertValue) {
+      newScope = prompt('This is an advanced feature to show content-types of another scope. Don\'t use this if you don\'t know what you\'re doing, as content-types of other scopes are usually hidden for a good reason.') || eavConstants.scopes.default.value;
+      if (!this.scopeOptions.find(option => option.value === newScope)) {
+        const newScopeOption: ScopeOption = {
           name: newScope,
           value: newScope,
         };
-        this.scopeOptions.push(newScopeOption);
+        this.scopeOptions.unshift(newScopeOption);
       }
     }
     this.exportScope = newScope;

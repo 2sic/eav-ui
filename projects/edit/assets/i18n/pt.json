@@ -5,7 +5,12 @@
       "Save.Tip": "Gravar e fechar (CTRL + S grava mas não fecha)",
       "Exit.Tip": "Sair - se alguma coisa foi alterada, vai-lhe ser questionado se quer gravar",
       "Return.Tip": "Voltar ao formulário anterior",
-      "History.Tip": "History / previous versions"
+      "History.Tip": "History / previous versions",
+      "Metadata.Tip": "This item is metadata for:",
+      "Note": {
+        "Add": "Add note",
+        "ItemNotSaved": "To add a note, please save item first"
+      }
     }
   },
   "PublishStatus": {
@@ -92,6 +97,11 @@
     "Buttons": {
       "NotSave": "Descartar alterações",
       "Save": "Gravar"
+    },
+    "CopyHint": "This is a copy and will be saved as a new item",
+    "ReadOnlyHint": {
+      "Form": "Form is read only",
+      "Language": "Language is read only"
     }
   },
   "Data": {
@@ -100,8 +110,7 @@
   "ItemCard": {
     "DefaultTitle": "Editar item",
     "SlotUsedTrue": "Este item está aberto para edição. Clique aqui para tranca-lo / remove-lo e reverter ao valor padrão.",
-    "SlotUsedFalse": "Este item está trancado e vai permanecer vazia/padrão. Os valores são mostrados para sua conveniência. Clique aqui para destrancar se necessário.",
-    "CopyHint": "(copy)"
+    "SlotUsedFalse": "Este item está trancado e vai permanecer vazia/padrão. Os valores são mostrados para sua conveniência. Clique aqui para destrancar se necessário."
   },
   "ValidationMessage": {
     "NotValid": "Inválido",
@@ -110,7 +119,9 @@
     "Min": "Este valor deve ser maior que {{param.Min}}",
     "Max": "Este valor deve ser inferior ou igual a {{param.Max}}",
     "Pattern": "Por favor adeque o formato ao requerido",
-    "Decimals": "Este número pode ter até {{param.Decimals}} casas decimais"
+    "Decimals": "Este número pode ter até {{param.Decimals}} casas decimais",
+    "JsonError": "JSON is not valid",
+    "JsonWarning": "JSON is not valid"
   },
   "Fields": {
     "Entity": {
@@ -171,8 +182,8 @@
       "Open": "Abrir calendário"
     },
     "String": {
-      "Dropdown": "Mudar para seleção vertical",
-      "Freetext": "Mudar para introdução de texto"
+      "Dropdown": "Pick existing value",
+      "Freetext": "Manual entry"
     },
     "TemplatePicker": {
       "NotSelected": "(no file selected)",

@@ -3,6 +3,6 @@ import { WebApi } from '../../models/web-api.model';
 
 export interface WebApiActionsParams extends ICellRendererParams {
   enableCodeGetter(): boolean;
-  onOpenCode(view: WebApi): void;
-  onOpenRestApi(view: WebApi): void;
+  onOpenCode(api: WebApi): void;
+  onOpenRestApi(api: WebApi): void;
 }

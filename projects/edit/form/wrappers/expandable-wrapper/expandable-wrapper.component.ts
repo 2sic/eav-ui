@@ -1,20 +1,23 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
-import { combineLatest, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { combineLatest, fromEvent, Observable } from 'rxjs';
+import { distinctUntilChanged, map, startWith } from 'rxjs/operators';
+import { InputTypeConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { consoleLogAngular } from '../../../../ng-dialogs/src/app/shared/helpers/console-log-angular.helper';
-import { DropzoneDraggingHelper } from '../../../shared/helpers';
+import { vh } from '../../../../ng-dialogs/src/app/shared/helpers/viewport.helpers';
+import { WrappersConstants } from '../../../shared/constants';
+import { DropzoneDraggingHelper, GeneralHelpers } from '../../../shared/helpers';
 import { AdamService, EavService, EditRoutingService, FieldsSettingsService } from '../../../shared/services';
 import { ContentTypeService, EntityCacheService, FeatureService, InputTypeService } from '../../../shared/store/ngrx-data';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { BaseComponent } from '../../fields/base/base.component';
 import { ConnectorHelper } from '../../shared/connector/connector.helper';
 import { ContentExpandAnimation } from './content-expand.animation';
-import { ExpandableWrapperTemplateVars } from './expandable-wrapper.models';
+import { ExpandableWrapperTemplateVars, PreviewHeight } from './expandable-wrapper.models';
 
 @Component({
-  selector: 'app-expandable-wrapper',
+  selector: WrappersConstants.ExpandableWrapper,
   templateUrl: './expandable-wrapper.component.html',
   styleUrls: ['./expandable-wrapper.component.scss'],
   animations: [ContentExpandAnimation],
@@ -53,13 +56,40 @@ export class ExpandableWrapperComponent extends BaseComponent<string> implements
     super.ngOnInit();
     this.open$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
 
+    const previewHeight$ = combineLatest([
+      this.fieldsSettingsService.getFieldSettings$(this.config.fieldName),
+      fromEvent<UIEvent>(window, 'resize').pipe(map(() => undefined), startWith(undefined)),
+    ]).pipe(
+      map(([settings]) => {
+        const previewHeight: PreviewHeight = {
+          minHeight: '36px',
+          maxHeight: '50vh',
+        };
+        if (this.config.inputType === InputTypeConstants.StringWysiwyg && settings.Dialog === 'inline') {
+          let rows = parseInt(settings.InlineInitialHeight, 10);
+          if (rows < 1) {
+            rows = 1;
+          }
+          // header + rows
+          const maxHeightInPx = vh(50);
+          let minHeight = 40 + rows * 36;
+          if (minHeight > maxHeightInPx) {
+            minHeight = maxHeightInPx;
+          }
+          previewHeight.minHeight = `${minHeight}px`;
+        }
+        return previewHeight;
+      }),
+      distinctUntilChanged(GeneralHelpers.objectsEqual),
+    );
+
     this.templateVars$ = combineLatest([
       combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
-      combineLatest([this.config.focused$]),
+      combineLatest([this.config.focused$, previewHeight$]),
     ]).pipe(
       map(([
         [controlStatus, label, placeholder, required],
-        [focused],
+        [focused, previewHeight],
       ]) => {
         const templateVars: ExpandableWrapperTemplateVars = {
           controlStatus,
@@ -67,6 +97,7 @@ export class ExpandableWrapperComponent extends BaseComponent<string> implements
           placeholder,
           required,
           focused,
+          previewHeight,
         };
         return templateVars;
       }),

@@ -5,13 +5,14 @@ import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { AdamPostResponse, DropzoneConfigExt } from '../../../../edit-types';
 import { consoleLogAngular } from '../../../../ng-dialogs/src/app/shared/helpers/console-log-angular.helper';
+import { WrappersConstants } from '../../../shared/constants';
 import { EavService, FieldsSettingsService } from '../../../shared/services';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { BaseComponent } from '../../fields/base/base.component';
 import { DropzoneConfigInstance, DropzoneType } from './dropzone-wrapper.models';
 
 @Component({
-  selector: 'app-dropzone-wrapper',
+  selector: WrappersConstants.DropzoneWrapper,
   templateUrl: './dropzone-wrapper.component.html',
   styleUrls: ['./dropzone-wrapper.component.scss'],
 })
@@ -64,8 +65,8 @@ export class DropzoneWrapperComponent extends BaseComponent implements FieldWrap
   ngAfterViewInit() {
     setTimeout(() => {
       this.config.dropzone.setConfig({
-        previewsContainer: '.field-' + this.config.index + ' .dropzone-previews',
-        clickable: '.field-' + this.config.index + ' .invisible-clickable',
+        previewsContainer: `.${this.config.dropzonePreviewsClass} .dropzone-previews`,
+        clickable: `.${this.config.dropzonePreviewsClass} .invisible-clickable`,
       });
     });
   }
@@ -75,22 +76,22 @@ export class DropzoneWrapperComponent extends BaseComponent implements FieldWrap
     super.ngOnDestroy();
   }
 
-  onUploadError(args: DropzoneType) {
-    consoleLogAngular('Dropzone upload error. Args:', args);
+  onUploadError(event: DropzoneType) {
+    consoleLogAngular('Dropzone upload error. Event:', event);
     this.dropzoneRef.reset();
   }
 
-  onUploadSuccess(args: DropzoneType) {
-    const response: AdamPostResponse = args[1]; // Gets the server response as second argument.
+  onUploadSuccess(event: DropzoneType) {
+    const response: AdamPostResponse = event[1]; // gets the server response as second argument.
     if (response.Success) {
       if (this.config.adam) {
         this.config.adam.onItemUpload(response);
         this.config.adam.refresh();
       } else {
-        alert(`Upload failed because: ADAM reference doesn't exist`);
+        consoleLogAngular(`Upload failed because: ADAM reference doesn't exist`);
       }
     } else {
-      alert(`Upload failed because: ${response.Error}`);
+      consoleLogAngular(`Upload failed because: ${response.Error}`);
     }
     this.dropzoneRef.reset();
   }
@@ -102,7 +103,7 @@ export class DropzoneWrapperComponent extends BaseComponent implements FieldWrap
     const appId = this.eavService.eavConfig.appId;
 
     const startDisabled = this.config.isExternal;
-    const url = this.dnnContext.$2sxc.http.apiUrl(`app/auto/content/${contentType}/${entityGuid}/${field}?subfolder=&usePortalRoot=false&appId=${appId}`);
+    const url = this.dnnContext.$2sxc.http.apiUrl(`app/auto/data/${contentType}/${entityGuid}/${field}?subfolder=&usePortalRoot=false&appId=${appId}`);
     const headers = this.dnnContext.sxc.webApi.headers();
 
     const oldConfig = (this.dropzoneConfig$.value != null)

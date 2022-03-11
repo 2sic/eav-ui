@@ -4,7 +4,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, combineLatest, of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { eavConstants, EavScopeOption } from '../../../shared/constants/eav.constants';
+import { dropdownInsertValue } from '../../../shared/constants/dropdown-insert-value.constant';
+import { eavConstants, ScopeOption } from '../../../shared/constants/eav.constants';
 import { contentTypeNameError, contentTypeNamePattern } from '../../constants/content-type.patterns';
 import { ContentTypeEdit } from '../../models/content-type.model';
 import { ContentTypesService } from '../../services/content-types.service';
@@ -20,10 +21,11 @@ export class EditContentTypeComponent implements OnInit, OnDestroy, AfterViewIni
   contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
   contentTypeNamePattern = contentTypeNamePattern;
   contentTypeNameError = contentTypeNameError;
+  dropdownInsertValue = dropdownInsertValue;
 
   private contentType$ = new BehaviorSubject<ContentTypeEdit>(null);
   private lockScope$ = new BehaviorSubject(true);
-  private scopeOptions$ = new BehaviorSubject<EavScopeOption[]>(null);
+  private scopeOptions$ = new BehaviorSubject<ScopeOption[]>(null);
   private disableAnimation$ = new BehaviorSubject(true);
   private loading$ = new BehaviorSubject(false);
   templateVars$ = combineLatest([this.contentType$, this.lockScope$, this.scopeOptions$, this.disableAnimation$, this.loading$]).pipe(
@@ -61,16 +63,23 @@ export class EditContentTypeComponent implements OnInit, OnDestroy, AfterViewIni
         NewStaticName: '',
       } as ContentTypeEdit);
     const scopes$ = this.contentTypesService.getScopes();
-    combineLatest([contentType$, scopes$]).subscribe(([contentType, scopes]) => {
+    combineLatest([contentType$, scopes$]).subscribe(([contentType, scopeOptions]) => {
       this.contentType$.next(contentType);
-      if (!scopes.map(scope => scope.value).includes(this.scope)) {
-        const newScopeOption: EavScopeOption = {
+
+      const newScopes = [...(this.scopeOptions$.value ?? [])];
+      scopeOptions.forEach(scopeOption => {
+        if (!newScopes.some(scope => scope.value === scopeOption.value)) {
+          newScopes.push(scopeOption);
+        }
+      });
+      if (!newScopes.some(scope => scope.value === this.scope)) {
+        const newScopeOption: ScopeOption = {
           name: this.scope,
           value: this.scope,
         };
-        scopes.push(newScopeOption);
+        newScopes.push(newScopeOption);
       }
-      this.scopeOptions$.next(scopes);
+      this.scopeOptions$.next(newScopes);
     });
   }
 
@@ -84,7 +93,7 @@ export class EditContentTypeComponent implements OnInit, OnDestroy, AfterViewIni
 
   // workaround for angular component issue #13870
   ngAfterViewInit() {
-    // timeout required to avoid the dreaded 'ExpressionChangedAfterItHasBeenCheckedError'
+    // timeout required to avoid ExpressionChangedAfterItHasBeenCheckedError
     setTimeout(() => this.disableAnimation$.next(false));
   }
 
@@ -97,16 +106,14 @@ export class EditContentTypeComponent implements OnInit, OnDestroy, AfterViewIni
   }
 
   changeScope(newScope: string) {
-    if (newScope === 'Other') {
-      newScope = prompt('This is an advanced feature to show content-types of another scope. Don\'t use this if you don\'t know what you\'re doing, as content-types of other scopes are usually hidden for a good reason.');
-      if (!newScope) {
-        newScope = eavConstants.scopes.default.value;
-      } else if (!this.scopeOptions$.value.find(option => option.value === newScope)) {
-        const newScopeOption: EavScopeOption = {
+    if (newScope === dropdownInsertValue) {
+      newScope = prompt('This is an advanced feature to show content-types of another scope. Don\'t use this if you don\'t know what you\'re doing, as content-types of other scopes are usually hidden for a good reason.') || eavConstants.scopes.default.value;
+      if (!this.scopeOptions$.value.some(option => option.value === newScope)) {
+        const newScopeOption: ScopeOption = {
           name: newScope,
           value: newScope,
         };
-        this.scopeOptions$.next([...this.scopeOptions$.value, newScopeOption]);
+        this.scopeOptions$.next([newScopeOption, ...this.scopeOptions$.value]);
       }
     }
     this.contentType$.next({ ...this.contentType$.value, Scope: newScope });

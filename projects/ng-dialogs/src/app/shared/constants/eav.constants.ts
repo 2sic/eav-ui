@@ -1,11 +1,15 @@
-export type EavMetadataKey = 'attribute' | 'app' | 'entity' | 'contentType' | 'zone' | 'cmsObject';
-const EavKeyTypes = {
+const MetadataKeyTypes = {
   Guid: 'guid',
   String: 'string',
   Number: 'number',
 } as const;
-export type EavKeyTypeKey = typeof EavKeyTypes[keyof typeof EavKeyTypes];
-export interface EavScopeOption { name: string; value: string; }
+export type MetadataKeyType = typeof MetadataKeyTypes[keyof typeof MetadataKeyTypes];
+
+export interface ScopeOption {
+  name: string;
+  value: string;
+}
+
 export const SystemSettingsScopes = {
   App: 'app',
   Site: 'site',
@@ -14,55 +18,65 @@ export type SystemSettingsScope = typeof SystemSettingsScopes[keyof typeof Syste
 
 export const eavConstants = {
   metadata: {
-    /** metadataOfAttribute */
-    attribute: { type: 2, target: 'EAV Field Properties', label: 'Content-Type Field/Attribute (2)', keyType: EavKeyTypes.Number },
-    /** metadataOfApp */
-    app: { type: 3, target: 'App', label: 'App (3)', keyType: EavKeyTypes.Number },
-    /** metadataOfEntity */
-    entity: { type: 4, target: 'Entity', label: 'Entity (4)', keyType: EavKeyTypes.Guid },
-    /** metadataOfContentType */
-    contentType: { type: 5, target: 'ContentType', label: 'Content-Type (5)', keyType: EavKeyTypes.String },
-    /** metadataOfZone */
-    zone: { type: 6, target: 'Zone', label: 'Zone (6) - not used as of now', keyType: EavKeyTypes.Number },
-    /** metadataOfCmsObject */
-    cmsObject: { type: 10, target: 'CmsObject', label: 'Cms Object (10)', keyType: EavKeyTypes.String, hint: 'Usually this is "file:400" or "folder:4030"' },
+    /** Metadata of Attribute */
+    // tslint:disable-next-line:max-line-length
+    attribute: { targetType: 2, target: 'EAV Field Properties', label: 'Content-Type Field/Attribute (2)', keyType: MetadataKeyTypes.Number },
+    /** Metadata of App */
+    app: { targetType: 3, target: 'App', label: 'App (3)', keyType: MetadataKeyTypes.Number },
+    /** Metadata of Entity */
+    entity: { targetType: 4, target: 'Entity', label: 'Entity (4)', keyType: MetadataKeyTypes.Guid },
+    /** Metadata of ContentType */
+    contentType: { targetType: 5, target: 'ContentType', label: 'Content-Type (5)', keyType: MetadataKeyTypes.String },
+    /** Metadata of Zone */
+    zone: { targetType: 6, target: 'Zone', label: 'Zone (6) - not used as of now', keyType: MetadataKeyTypes.Number },
+    /** Metadata of Language (a Dimension) */
+    language: { targetType: 8, target: 'Dimension', label: 'Language (8)', keyType: MetadataKeyTypes.String },
+    /** Metadata of CmsObject */
+    cmsObject: { targetType: 10, target: 'CmsObject', label: 'Cms Object (10)', keyType: MetadataKeyTypes.String, hint: 'Usually this is "file:400" or "folder:4030"' },
   },
 
-  /** Loopup type for the metadata, e.g. key=80adb152-efad-4aa4-855e-74c5ef230e1f is keyType=guid */
+  /** Lookup type for the metadata, e.g. key=80adb152-efad-4aa4-855e-74c5ef230e1f is keyType=guid */
   keyTypes: {
-    guid: EavKeyTypes.Guid,
-    string: EavKeyTypes.String,
-    number: EavKeyTypes.Number,
+    guid: MetadataKeyTypes.Guid,
+    string: MetadataKeyTypes.String,
+    number: MetadataKeyTypes.Number,
   },
 
   /** Scopes */
   scopes: {
     /** This is the main schema and the data you usually see is from here */
-    default: { name: 'Default', value: '2SexyContent' },
-    /** This contains content-types for configuration, settings and resources of the app */
-    app: { name: 'System: App', value: '2SexyContent-App' },
-    /** This contains special app settings */
-    configuration: { name: 'Configuration', value: 'System.Configuration' },
+    default: { name: 'Default', value: 'Default' },
+    configuration: { name: 'Configuration (Views etc.)', value: 'System.Configuration' },
   },
 
   /** Content types where templates, permissions, etc. are stored */
   contentTypes: {
-    /** Content type containing app templates (views) */
+    /** Content type containing app's specifications */
+    appConfiguration: '2SexyContent-App',
+    /** Content type containing app's views */
     template: '2SexyContent-Template',
     /** Content type containing permissions */
     permissions: 'PermissionConfiguration',
     /** Content type containing queries */
     query: 'DataPipeline',
-    /** Content type containing content type metadata (app administration > data > metadata) */
+    /** Content type containing content type metadata */
     contentType: 'ContentType',
-    /** Content type containing custom app settings */
+    /** Content type containing app's custom settings */
     settings: 'App-Settings',
-    /** Content type containing app resources */
+    /** Content type containing app's custom resources */
     resources: 'App-Resources',
-    /** Content type containing system app settings */
+    /** Content type containing app's system settings */
     systemSettings: 'SettingsSystem',
-    /** Content type containing system app resources */
+    /** Content type containing app's system resources */
     systemResources: 'ResourcesSystem',
+    /** Content type containing Primary and Global App custom settings */
+    customSettings: 'SettingsCustom',
+    /** Content type containing Primary and Global App custom resources */
+    customResources: 'ResourcesCustom',
+    /** Content type containing formulas */
+    formulas: 'UiFormula',
+    /** Content type containing notes */
+    notes: 'NoteDecorator',
   },
 
   pipelineDesigner: {

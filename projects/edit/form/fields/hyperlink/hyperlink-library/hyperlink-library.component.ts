@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { distinctUntilChanged, map } from 'rxjs/operators';
+import { InputTypeConstants } from '../../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { EavService, FieldsSettingsService } from '../../../../shared/services';
@@ -8,8 +9,7 @@ import { BaseComponent } from '../../base/base.component';
 import { AdamControl } from './hyperlink-library.models';
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'hyperlink-library',
+  selector: InputTypeConstants.HyperlinkLibrary,
   templateUrl: './hyperlink-library.component.html',
   styleUrls: ['./hyperlink-library.component.scss'],
 })

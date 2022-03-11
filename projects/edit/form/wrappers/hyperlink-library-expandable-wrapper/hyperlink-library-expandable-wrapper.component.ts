@@ -2,6 +2,7 @@ import { AfterViewInit, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewCh
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AdamItem } from '../../../../edit-types';
+import { WrappersConstants } from '../../../shared/constants';
 import { DropzoneDraggingHelper } from '../../../shared/helpers';
 import { EavService, EditRoutingService, FieldsSettingsService } from '../../../shared/services';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
@@ -10,7 +11,7 @@ import { ContentExpandAnimation } from '../expandable-wrapper/content-expand.ani
 import { HyperlinkLibraryExpandableTemplateVars } from './hyperlink-library-expandable-wrapper.models';
 
 @Component({
-  selector: 'app-hyperlink-library-expandable-wrapper',
+  selector: WrappersConstants.HyperlinkLibraryExpandableWrapper,
   templateUrl: './hyperlink-library-expandable-wrapper.component.html',
   styleUrls: ['./hyperlink-library-expandable-wrapper.component.scss'],
   animations: [ContentExpandAnimation],

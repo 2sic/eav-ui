@@ -1,3 +1,107 @@
+.sxc-dark {
+  background-color: #1e1e1e;
+}
+
+.editor-group {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+
+  .tabs-container {
+    display: flex;
+    height: 35px;
+    background-color: #252526;
+    overflow: hidden;
+
+    &:hover {
+      overflow-x: auto;
+    }
+
+    .tab {
+      display: flex;
+      flex: 0 0 auto;
+      align-items: center;
+      cursor: pointer;
+      color: #ccc;
+      font-size: 13px;
+      padding-left: 10px;
+      border-right: 1px solid rgb(37, 37, 38);
+      background-color: #2d2d2d;
+      user-select: none;
+
+      .tab-label-container {
+        height: 100%;
+        display: flex;
+        align-items: center;
+
+        .icon-shared {
+          font-size: 16px;
+          width: 16px;
+          height: 16px;
+          line-height: 16px;
+          margin-right: 4px;
+        }
+      }
+
+      .tab-actions-container {
+        height: 100%;
+        width: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .tab-action {
+        display: none;
+        align-items: center;
+        justify-content: center;
+        width: 16px;
+        height: 16px;
+        padding: 2px;
+        font-size: 16px;
+        border-radius: 5px;
+
+        &.icon-modified {
+          width: 10px;
+          height: 10px;
+          font-size: 10px;
+        }
+
+        &:hover {
+          background-color: rgba(90, 93, 94, 0.31);
+        }
+      }
+
+      .spinner {
+        display: none;
+      }
+
+      &.active {
+        color: rgb(255, 255, 255);
+        background-color: #1e1e1e;
+      }
+
+      &:hover .icon-close {
+        display: flex;
+      }
+
+      &:not(:hover) {
+        &.modified .icon-modified {
+          display: flex;
+        }
+
+        &.loading .spinner {
+          display: block;
+        }
+
+        &:not(.modified):not(.loading).active .icon-close {
+          display: flex;
+        }
+      }
+    }
+  }
+}
+
 .mat-fab {
   position: absolute;
   right: 48px;

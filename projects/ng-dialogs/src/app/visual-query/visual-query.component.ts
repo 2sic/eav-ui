@@ -32,7 +32,7 @@ export class VisualQueryComponent implements OnInit {
   }
 
   openHelp() {
-    window.open('https://r.2sxc.org/visual-query', '_blank');
+    window.open('http://r.2sxc.org/visual-query', '_blank');
   }
 
 }

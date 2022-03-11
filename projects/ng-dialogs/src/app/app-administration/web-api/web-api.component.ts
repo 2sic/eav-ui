@@ -1,17 +1,19 @@
 import { AllCommunityModules, GridOptions } from '@ag-grid-community/all-modules';
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
-import { SanitizeHelper } from '../../../../../edit/shared/helpers';
+import { SourceService } from '../../code-editor/services/source.service';
+import { CreateFileDialogComponent, CreateFileDialogData, CreateFileDialogResult, FileLocationDialogComponent } from '../../create-file-dialog';
 import { GoToDevRest } from '../../dev-rest/go-to-dev-rest';
+import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
-import { defaultControllerName } from '../../shared/constants/file-names.constants';
 import { DialogService } from '../../shared/services/dialog.service';
 import { WebApiActionsComponent } from '../ag-grid-components/web-api-actions/web-api-actions.component';
 import { WebApiActionsParams } from '../ag-grid-components/web-api-actions/web-api-actions.models';
+import { WebApiTypeComponent } from '../ag-grid-components/web-api-type/web-api-type.component';
 import { WebApi } from '../models/web-api.model';
-import { WebApisService } from '../services/web-apis.service';
 
 @Component({
   selector: 'app-web-api',
@@ -27,33 +29,44 @@ export class WebApiComponent implements OnInit, OnDestroy {
     ...defaultGridOptions,
     frameworkComponents: {
       webApiActions: WebApiActionsComponent,
+      booleanFilterComponent: BooleanFilterComponent,
+      webApiTypeComponent: WebApiTypeComponent,
     },
     columnDefs: [
       {
-        headerName: 'Folder', field: 'folder', flex: 2, minWidth: 250, cellClass: 'no-outline',
+        field: 'Folder', flex: 2, minWidth: 250, cellClass: 'no-outline',
         sortable: true, sort: 'asc', filter: 'agTextColumnFilter',
+        valueGetter: (params) => (params.data as WebApi).folder,
       },
       {
-        headerName: 'Name', field: 'name', flex: 2, minWidth: 250, cellClass: 'no-outline',
+        field: 'Name', flex: 2, minWidth: 250, cellClass: 'no-outline',
         sortable: true, filter: 'agTextColumnFilter',
+        valueGetter: (params) => (params.data as WebApi).name,
       },
       {
-        width: 80, cellClass: 'secondary-action no-padding', cellRenderer: 'webApiActions', pinned: 'right',
+        field: 'Type', flex: 1, minWidth: 250, cellClass: 'no-outline',
+        sortable: true, filter: 'booleanFilterComponent', cellRenderer: 'webApiTypeComponent',
+        valueGetter: (params) => (params.data as WebApi).isShared,
+      },
+      {
+        width: 82, cellClass: 'secondary-action no-padding', cellRenderer: 'webApiActions', pinned: 'right',
         cellRendererParams: {
-          enableCodeGetter: this.enableCodeGetter.bind(this),
-          onOpenCode: this.openCode.bind(this),
-          onOpenRestApi: this.openRestApi.bind(this),
+          enableCodeGetter: () => this.enableCodeGetter(),
+          onOpenCode: (api) => this.openCode(api),
+          onOpenRestApi: (api) => this.openRestApi(api),
         } as WebApiActionsParams,
       },
     ],
   };
 
   constructor(
-    private webApisService: WebApisService,
+    private sourceService: SourceService,
     private snackBar: MatSnackBar,
     private dialogService: DialogService,
     private router: Router,
     private route: ActivatedRoute,
+    private dialog: MatDialog,
+    private viewContainerRef: ViewContainerRef,
   ) { }
 
   ngOnInit() {
@@ -64,34 +77,54 @@ export class WebApiComponent implements OnInit, OnDestroy {
     this.webApis$.complete();
   }
 
-  addController() {
-    let name = prompt('Controller name:', defaultControllerName);
-    if (name === null || name.length === 0) { return; }
-
-    name = SanitizeHelper.sanitizePath(name);
-    name = name.replace(/\s/g, ''); // remove all whitespaces
-    // find name without extension
-    let nameLower = name.toLocaleLowerCase();
-    const extIndex = nameLower.lastIndexOf('.cs');
-    if (extIndex > 0) {
-      nameLower = nameLower.substring(0, extIndex);
+  createController(global?: boolean): void {
+    if (global == null) {
+      const fileLocationDialogRef = this.dialog.open(FileLocationDialogComponent, {
+        autoFocus: false,
+        viewContainerRef: this.viewContainerRef,
+        width: '650px',
+      });
+      fileLocationDialogRef.afterClosed().subscribe((isShared?: boolean) => {
+        if (isShared == null) { return; }
+        this.createController(isShared);
+      });
+      return;
     }
-    const typeIndex = nameLower.lastIndexOf('controller');
-    if (typeIndex > 0) {
-      nameLower = nameLower.substring(0, typeIndex);
-    }
-    // uppercase first letter, take other letters as is and append extension
-    name = name.charAt(0).toLocaleUpperCase() + name.substring(1, nameLower.length) + 'Controller.cs';
 
-    this.snackBar.open('Saving...');
-    this.webApisService.create(name).subscribe(res => {
-      this.snackBar.open('Saved', null, { duration: 2000 });
-      this.fetchWebApis();
+    const createFileDialogData: CreateFileDialogData = {
+      folder: 'api',
+      global,
+      purpose: 'Api',
+    };
+    const createFileDialogRef = this.dialog.open(CreateFileDialogComponent, {
+      autoFocus: false,
+      data: createFileDialogData,
+      viewContainerRef: this.viewContainerRef,
+      width: '650px',
+    });
+
+    createFileDialogRef.afterClosed().subscribe((result?: CreateFileDialogResult) => {
+      if (!result) { return; }
+
+      if (result.name.endsWith('Controller.cs')) {
+        const fileName = result.name.substring(result.name.lastIndexOf('/') + 1);
+        if (!/^[A-Z][a-zA-Z0-9]*Controller\.cs$/g.test(fileName)) {
+          const message = `"${fileName}" is invalid controller name. Should be something like "MyController.cs"`;
+          this.snackBar.open(message, null, { duration: 5000 });
+          return;
+        }
+      }
+
+      this.snackBar.open('Saving...');
+      this.sourceService.create(result.name, global, result.templateKey).subscribe(() => {
+        this.snackBar.open('Saved', null, { duration: 2000 });
+        this.fetchWebApis();
+      });
     });
   }
 
   private fetchWebApis() {
-    this.webApisService.getAll().subscribe(webApis => {
+    this.sourceService.getWebApis().subscribe(webApis => {
       this.webApis$.next(webApis);
     });
   }
@@ -101,11 +134,11 @@ export class WebApiComponent implements OnInit, OnDestroy {
   }
 
   private openCode(api: WebApi) {
-    this.dialogService.openCodeFile(api.path);
+    this.dialogService.openCodeFile(api.path, api.isShared);
   }
 
   private openRestApi(api: WebApi) {
-    this.router.navigate([GoToDevRest.goToWebApi(api)], { relativeTo: this.route.firstChild });
+    this.router.navigate([GoToDevRest.getUrlWebApi(api)], { relativeTo: this.route.firstChild });
   }
 
 }

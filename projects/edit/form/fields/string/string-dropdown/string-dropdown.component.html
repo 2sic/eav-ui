@@ -16,12 +16,17 @@
     <input matInput type="number" *ngIf="data.freeTextMode && type === 'number'" [formControlName]="config.fieldName"
       [required]="data.required" [placeholder]="data.placeholder">
 
-    <button matSuffix mat-icon-button *ngIf="data.enableTextEntry" [disabled]="data.controlStatus.disabled"
-      appClickStopPropagation (click)="toggleFreeTextMode()">
-      <mat-icon [tippy]="(data.freeTextMode ? 'Fields.String.Dropdown' : 'Fields.String.Freetext') | translate">
-        {{ data.freeTextMode ? 'arrow_drop_down_circle' : 'text_fields' }}
-      </mat-icon>
-    </button>
+    <div matSuffix class="selection-suffix" *ngIf="data.enableTextEntry">
+      <button mat-icon-button [ngClass]="{ 'active': !data.freeTextMode }"
+        [tippy]="'Fields.String.Dropdown' | translate" [disabled]="data.controlStatus.disabled"
+        (click)="toggleFreeTextMode(false)">
+        <mat-icon>search</mat-icon>
+      </button>
+      <button mat-icon-button [ngClass]="{ 'active': data.freeTextMode }" [tippy]="'Fields.String.Freetext' | translate"
+        [disabled]="data.controlStatus.disabled" (click)="toggleFreeTextMode(true)">
+        <mat-icon>text_fields</mat-icon>
+      </button>
+    </div>
 
     <mat-label>{{ data.label }}</mat-label>
   </mat-form-field>

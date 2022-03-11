@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
+import { InputTypeConstants } from '../../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { EavService, FieldsSettingsService } from '../../../../shared/services';
@@ -10,8 +11,7 @@ import { BooleanDefaultLogic } from './boolean-default-logic';
 import { BooleanDefaultTemplateVars } from './boolean-default.models';
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'boolean-default',
+  selector: InputTypeConstants.BooleanDefault,
   templateUrl: './boolean-default.component.html',
   styleUrls: ['./boolean-default.component.scss'],
 })

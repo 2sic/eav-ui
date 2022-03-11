@@ -1,16 +1,19 @@
+import { Language } from '../../../../../edit/shared/models';
 import { PermissionsCount } from '../../app-administration/models/permissions-count.model';
 
 export interface DialogContextApp {
+  /** Root for app APIs and content/query */
+  Api: string;
+  Folder: string;
   GettingStartedUrl: string;
   Id: number;
-  Identifier: unknown;
+  Identifier: string;
+  IsGlobal: boolean;
+  IsInherited: boolean;
   Name: string;
-  Folder: string;
   Permissions: PermissionsCount;
-  Url: string;
-  /** New in v12 - the root for app APIs and content/query */
-  Api: string;
   SettingsScope: AppScope;
+  Url: string;
 }
 
 export const AppScopes = {
@@ -21,7 +24,7 @@ export const AppScopes = {
 export type AppScope = typeof AppScopes[keyof typeof AppScopes];
 
 export interface DialogContextEnable {
-  /** Determines if app admin should show app-permissions (true for Apps, false for Content) */
+  /** Determines if app admin should show app-permissions (true for Apps, false for Content and Global) */
   AppPermissions?: boolean;
   /** Determines if Code editing should be enabled (true for super-users) */
   CodeEditor?: boolean;
@@ -32,13 +35,9 @@ export interface DialogContextEnable {
 }
 
 export interface DialogContextLanguage {
-  All: DialogContextAllLangs;
   Current: string;
+  List: Language[];
   Primary: string;
-}
-
-export interface DialogContextAllLangs {
-  [key: string]: string;
 }
 
 export interface DialogContextPage {
@@ -46,17 +45,19 @@ export interface DialogContextPage {
 }
 
 export interface DialogContextSite {
-  DefaultApp: DialogContextDefaultApp;
+  DefaultApp: DialogContextSiteApp;
   Id: number;
+  PrimaryApp: DialogContextSiteApp;
   Url: string;
 }
 
 export interface DialogContextSystem {
-  DefaultApp: DialogContextDefaultApp;
+  DefaultApp: DialogContextSiteApp;
+  PrimaryApp: DialogContextSiteApp;
   Url: string;
 }
 
-export interface DialogContextDefaultApp {
+export interface DialogContextSiteApp {
   ZoneId: number;
   AppId: number;
 }

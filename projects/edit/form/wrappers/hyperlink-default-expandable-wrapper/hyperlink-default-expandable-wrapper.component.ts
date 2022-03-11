@@ -2,6 +2,7 @@ import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, NgZone, OnDest
 import { MatDialog } from '@angular/material/dialog';
 import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
+import { WrappersConstants } from '../../../shared/constants';
 import { DropzoneDraggingHelper, GeneralHelpers } from '../../../shared/helpers';
 import { AdamService, EavService, EditRoutingService, FieldsSettingsService } from '../../../shared/services';
 import { LinkCacheService } from '../../../shared/store/ngrx-data';
@@ -11,7 +12,7 @@ import { ContentExpandAnimation } from '../expandable-wrapper/content-expand.ani
 import { HyperlinkDefaultExpandableTemplateVars } from './hyperlink-default-expandable-wrapper.models';
 
 @Component({
-  selector: 'app-hyperlink-default-expandable-wrapper',
+  selector: WrappersConstants.HyperlinkDefaultExpandableWrapper,
   templateUrl: './hyperlink-default-expandable-wrapper.component.html',
   styleUrls: ['./hyperlink-default-expandable-wrapper.component.scss'],
   animations: [ContentExpandAnimation],

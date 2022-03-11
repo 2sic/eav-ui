@@ -33,20 +33,25 @@ export class AnalyzeSettingsComponent implements OnInit, OnDestroy {
     },
     columnDefs: [
       {
-        headerName: 'Key', field: 'Path', flex: 2, minWidth: 250, cellClass: 'primary-action no-padding no-outline',
+        field: 'Key', flex: 2, minWidth: 250, cellClass: 'primary-action no-padding no-outline',
         cellRenderer: 'analyzeSettingsKeyComponent', sortable: true, filter: 'agTextColumnFilter',
+        valueGetter: (params) => (params.data as SettingsStackItem).Path,
       },
       {
-        headerName: 'Value', field: '_value', flex: 2, minWidth: 250, cellClass: 'primary-action no-padding no-outline',
+        field: 'Value', flex: 2, minWidth: 250, cellClass: 'primary-action no-padding no-outline',
         cellRenderer: 'analyzeSettingsValueComponent', sortable: true, filter: 'agTextColumnFilter',
+        valueGetter: (params) => (params.data as SettingsStackItem)._value,
       },
       {
-        headerName: 'Source', field: 'Source', flex: 1, minWidth: 150, cellClass: 'no-outline',
+        field: 'Source', flex: 1, minWidth: 150, cellClass: 'no-outline',
         sortable: true, filter: 'agTextColumnFilter',
+        valueGetter: (params) => (params.data as SettingsStackItem).Source,
       },
       {
-        headerName: 'Total', field: 'TotalResults', width: 70, headerClass: 'dense', cellClass: 'secondary-action no-padding no-outline',
-        cellRenderer: 'analyzeSettingsTotalComponent', sortable: true, filter: 'agNumberColumnFilter', cellRendererParams: {
+        field: 'Total', width: 72, headerClass: 'dense', cellClass: 'secondary-action no-padding no-outline',
+        cellRenderer: 'analyzeSettingsTotalComponent', sortable: true, filter: 'agNumberColumnFilter',
+        valueGetter: (params) => (params.data as SettingsStackItem).TotalResults,
+        cellRendererParams: {
           openDetails: (stackItem) => {
             this.router.navigate([`details/${this.selectedView$.value}/${stackItem.Path}`], { relativeTo: this.route });
           },

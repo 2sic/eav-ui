@@ -6,13 +6,11 @@ export interface StringTemplatePickerTemplateVars extends BaseFieldTemplateVars 
 
 export interface TemplateSpec {
   /** File extension like '.cshtml' */
-  ext: string;
-  /** File prefix like '_' for Razor */
-  prefix: string;
+  ext: '.html' | '.cshtml' | '.cs';
   /** Purpose for the server to use the right template when creating */
-  purpose: string;
-  /** Suggested file name when showing the create-new dialog */
-  suggestion: string;
+  purpose: 'Template' | 'Search';
+  /** Addition to purpose, e.g. purpose=template&type=razor */
+  type?: 'Token' | 'Razor';
 }
 
 export interface TemplateTypes {

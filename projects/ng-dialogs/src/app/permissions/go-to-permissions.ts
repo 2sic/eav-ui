@@ -1,39 +1,37 @@
 import { Route } from '@angular/router';
-import { eavConstants } from '../shared/constants/eav.constants';
+import { eavConstants, MetadataKeyType } from '../shared/constants/eav.constants';
 
-/**
- * Navigation system to access permissions dialogs as sub-dialogs for many use cases
- */
-export const GoToPermissions = {
+export class GoToPermissions {
 
-  go(targetType: number, keyType: string, key: string) {
-    return `permissions/${targetType}/${keyType}/${key}`;
-  },
-
-  /** Go to edit permissions for entity */
-  goEntity(key: string) {
-    return this.go(eavConstants.metadata.entity.type, eavConstants.keyTypes.guid, key);
-  },
-
-  /** Go to edit permissions for content-type. For historic reasons, it's the same as Entity */
-  goContentType(key: string) {
-    return this.goEntity(key);
-  },
-
-  goAttribute(id: number) {
-    return this.go(eavConstants.metadata.attribute.type, eavConstants.keyTypes.number, id);
-  },
-
-  goApp(appId: number) {
-    return this.go(eavConstants.metadata.app.type, eavConstants.keyTypes.number, appId);
-  },
-
-  /**
-   * The route definition for use in all routing components which can route to this dialog
-   */
-  route: {
-    path: 'permissions/:type/:keyType/:key',
+  static route: Route = {
+    path: 'permissions/:targetType/:keyType/:key',
     loadChildren: () => import('./permissions.module').then(m => m.PermissionsModule),
-    data: { title: 'Permission' },
-  } as Route,
-};
+    data: { title: 'Permissions' },
+  };
+
+  static getUrl(targetType: number, keyType: MetadataKeyType, key: string): string {
+    return `permissions/${targetType}/${keyType}/${key}`;
+  }
+
+  static getUrlApp(appId: number): string {
+    return this.getUrl(eavConstants.metadata.app.targetType, eavConstants.metadata.app.keyType, appId.toString());
+  }
+
+  static getUrlAttribute(id: number): string {
+    return this.getUrl(eavConstants.metadata.attribute.targetType, eavConstants.metadata.attribute.keyType, id.toString());
+  }
+
+  /** For historic reasons, it's the same as Entity */
+  static getUrlContentType(guid: string): string {
+    return this.getUrlEntity(guid);
+  }
+
+  static getUrlEntity(guid: string): string {
+    return this.getUrl(eavConstants.metadata.entity.targetType, eavConstants.metadata.entity.keyType, guid);
+  }
+
+  static getUrlLanguage(id: string): string {
+    return this.getUrl(eavConstants.metadata.language.targetType, eavConstants.metadata.language.keyType, id);
+  }
+
+}

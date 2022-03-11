@@ -2,7 +2,7 @@ import { ComponentFactoryResolver, ComponentRef, Directive, Input, OnDestroy, On
 import { FormGroup } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { InputTypeConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
-import { FieldMetadataKey } from '../../../shared/constants';
+import { FieldMetadataKey, WrappersConstants } from '../../../shared/constants';
 import { FieldMetadataModel, FieldProps } from '../../../shared/models';
 import { FieldsSettingsService } from '../../../shared/services';
 import { BooleanDefaultComponent } from '../../fields/boolean/boolean-default/boolean-default.component';
@@ -45,36 +45,37 @@ export class FieldsBuilderDirective implements OnInit, OnDestroy {
   private fieldConfigs: FieldConfigSet[] = [];
 
   private components: Record<string, Type<any>> = {
-    'app-adam-wrapper': AdamWrapperComponent,
-    'app-collapsible-wrapper': CollapsibleWrapperComponent,
-    'app-dropzone-wrapper': DropzoneWrapperComponent,
-    'app-localization-wrapper': LocalizationWrapperComponent,
-    'app-entity-expandable-wrapper': EntityExpandableWrapperComponent,
-    'app-expandable-wrapper': ExpandableWrapperComponent,
-    'app-hidden-wrapper': HiddenWrapperComponent,
-    'app-hyperlink-default-expandable-wrapper': HyperlinkDefaultExpandableWrapperComponent,
-    'app-hyperlink-library-expandable-wrapper': HyperlinkLibraryExpandableWrapperComponent,
-    'boolean-default': BooleanDefaultComponent,
-    'boolean-tristate': BooleanTristateComponent,
-    'custom-default': CustomDefaultComponent,
-    'custom-json-editor': CustomJsonEditorComponent,
-    'datetime-default': DatetimeDefaultComponent,
-    'empty-default': EmptyDefaultComponent,
-    'empty-message': EmptyMessageComponent,
-    'entity-content-blocks': EntityContentBlockComponent,
-    'entity-default': EntityDefaultComponent,
-    'entity-query': EntityQueryComponent,
-    'external-web-component': ExternalWebComponentComponent,
-    'hyperlink-default': HyperlinkDefaultComponent,
-    'hyperlink-library': HyperlinkLibraryComponent,
-    'number-default': NumberDefaultComponent,
-    'number-dropdown': NumberDropdownComponent,
-    'string-default': StringDefaultComponent,
-    'string-dropdown': StringDropdownComponent,
-    'string-dropdown-query': StringDropdownQueryComponent,
-    'string-font-icon-picker': StringFontIconPickerComponent,
-    'string-template-picker': StringTemplatePickerComponent,
-    'string-url-path': StringUrlPathComponent,
+    [WrappersConstants.AdamWrapper]: AdamWrapperComponent,
+    [WrappersConstants.CollapsibleWrapper]: CollapsibleWrapperComponent,
+    [WrappersConstants.DropzoneWrapper]: DropzoneWrapperComponent,
+    [WrappersConstants.EntityExpandableWrapper]: EntityExpandableWrapperComponent,
+    [WrappersConstants.ExpandableWrapper]: ExpandableWrapperComponent,
+    [WrappersConstants.HiddenWrapper]: HiddenWrapperComponent,
+    [WrappersConstants.HyperlinkDefaultExpandableWrapper]: HyperlinkDefaultExpandableWrapperComponent,
+    [WrappersConstants.HyperlinkLibraryExpandableWrapper]: HyperlinkLibraryExpandableWrapperComponent,
+    [WrappersConstants.LocalizationWrapper]: LocalizationWrapperComponent,
+    [InputTypeConstants.BooleanDefault]: BooleanDefaultComponent,
+    [InputTypeConstants.BooleanTristate]: BooleanTristateComponent,
+    [InputTypeConstants.CustomDefault]: CustomDefaultComponent,
+    [InputTypeConstants.CustomJsonEditor]: CustomJsonEditorComponent,
+    [InputTypeConstants.DatetimeDefault]: DatetimeDefaultComponent,
+    [InputTypeConstants.EmptyDefault]: EmptyDefaultComponent,
+    [InputTypeConstants.EmptyMessage]: EmptyMessageComponent,
+    [InputTypeConstants.EntityContentBlocks]: EntityContentBlockComponent,
+    [InputTypeConstants.EntityDefault]: EntityDefaultComponent,
+    [InputTypeConstants.EntityQuery]: EntityQueryComponent,
+    [InputTypeConstants.ExternalWebComponent]: ExternalWebComponentComponent,
+    [InputTypeConstants.HyperlinkDefault]: HyperlinkDefaultComponent,
+    [InputTypeConstants.HyperlinkLibrary]: HyperlinkLibraryComponent,
+    [InputTypeConstants.NumberDefault]: NumberDefaultComponent,
+    [InputTypeConstants.NumberDropdown]: NumberDropdownComponent,
+    [InputTypeConstants.StringDefault]: StringDefaultComponent,
+    [InputTypeConstants.StringDropdown]: StringDropdownComponent,
+    [InputTypeConstants.StringDropdownQuery]: StringDropdownQueryComponent,
+    [InputTypeConstants.StringFontIconPicker]: StringFontIconPickerComponent,
+    [InputTypeConstants.StringJson]: CustomJsonEditorComponent,
+    [InputTypeConstants.StringTemplatePicker]: StringTemplatePickerComponent,
+    [InputTypeConstants.StringUrlPath]: StringUrlPathComponent,
   };
 
   constructor(

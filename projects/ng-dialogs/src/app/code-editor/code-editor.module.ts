@@ -1,21 +1,20 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatRippleModule } from '@angular/material/core';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { MatSelectModule } from '@angular/material/select';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { CreateFileDialogModule } from '../create-file-dialog';
 import { MonacoEditorModule } from '../monaco-editor';
 import { EavWindow } from '../shared/models/eav-window.model';
 import { Context } from '../shared/services/context';
-import { DialogService } from '../shared/services/dialog.service';
 import { SharedComponentsModule } from '../shared/shared-components.module';
 import { buildTranslateConfiguration, TranslateLoaderWithErrorHandling } from '../shared/translation';
-import { AceEditorComponent } from './ace-editor/ace-editor.component';
+import { CodeAndEditionWarningsComponent } from './code-and-edition-warnings/code-and-edition-warnings.component';
 import { CodeEditorRoutingModule } from './code-editor-routing.module';
 import { CodeEditorComponent } from './code-editor.component';
 import { CodeSnippetsComponent } from './code-snippets/code-snippets.component';
@@ -40,9 +39,9 @@ export function translateLoaderFactoryCode(http: HttpClient) {
     CodeSnippetsComponent,
     ObjectToArrayPipe,
     CodeTemplatesComponent,
-    AceEditorComponent,
     DepthPaddingPipe,
     SortItemsPipe,
+    CodeAndEditionWarningsComponent,
   ],
   imports: [
     CodeEditorRoutingModule,
@@ -52,18 +51,17 @@ export function translateLoaderFactoryCode(http: HttpClient) {
     MatButtonModule,
     MatIconModule,
     MatSnackBarModule,
-    FormsModule,
-    MatSelectModule,
     MatRippleModule,
     TranslateModule.forChild(buildTranslateConfiguration(translateLoaderFactoryCode)),
     MonacoEditorModule,
+    MatProgressSpinnerModule,
+    CreateFileDialogModule,
   ],
   providers: [
     Context,
     SourceService,
-    DialogService,
     SnippetsService,
     TranslateService,
-  ]
+  ],
 })
 export class CodeEditorModule { }

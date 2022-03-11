@@ -5,28 +5,43 @@ const chalkSuccess = chalk.green;
 const chokidar = require('chokidar');
 const fs = require('fs-extra');
 
+const fixPath = (path, removeStartingSlash = false, removeEndingSlash = false) => {
+  if (!path) return path;
+
+  let clean = path
+    .trim()
+    .replace(/\\/g, '/')
+    .replace(/\/+/g, '/');
+
+  if (removeStartingSlash && clean.startsWith('/')) clean = clean.substring(1);
+  if (removeEndingSlash && clean.endsWith('/')) clean = clean.substring(0, clean.length - 1);
+
+  return clean;
+};
+
 // 2020-08-27 2dm new copy to multiple targets specified in the environment variables
-var dnnRoot = process.env.Dev2sxcDnnRoot;
-if(!dnnRoot) throw "Problem: environment variable 'Dev2sxcDnnRoot' doesn't exist. It should point to the web folder of your dev DNN";
-var targetDnn = (dnnRoot + "\\DesktopModules\\ToSIC_SexyContent\\").replace('//', '/').replace('\\\\', '\\');
+const dnnRoot = fixPath(process.env.Dev2sxcDnnRoot, false, true);
+if (!dnnRoot) throw `Problem: environment variable 'Dev2sxcDnnRoot' doesn't exist. It should point to the web folder of your dev DNN`;
+const targetDnn = `${dnnRoot}/DesktopModules/ToSIC_SexyContent`;
 
-var devAssets = process.env.Dev2sxcAssets;
-if(!devAssets) throw "Problem: environment variable 'Dev2sxcAssets' doesn't exist. It should point to the assets source folder in your 2sxc environment";
-const targetAssets = (devAssets + '\\').replace('//', '/').replace('\\\\', '\\')
+const devAssets = fixPath(process.env.Dev2sxcAssets, false, true);
+if (!devAssets) throw `Problem: environment variable 'Dev2sxcAssets' doesn't exist. It should point to the assets source folder in your 2sxc environment`;
+const targetAssets = devAssets;
 
-console.log('Will build to these targets: \n'
-    + "* Dnn:  " + targetDnn + "\n"
-    + '* 2sxc: ' + devAssets + '\n\n'
+console.log(
+  'Will build to these targets: \n'
+  + `* Dnn:  ${targetDnn}\n`
+  + `* 2sxc: ${targetAssets}\n\n`
 );
 
-
-let sourcePath = 'dist';
-let sourcePathMain = 'dist/ng-dialogs';
-let outputPath = targetDnn + 'dist\\ng-edit' ;
-let outputAssets = targetAssets + 'dist\\ng-edit';
+const sourcePath = 'dist';
+const sourcePathMain = 'dist/ng-dialogs';
+const outputPath = `${targetDnn}/dist/ng-edit`;
+const outputAssets = `${targetAssets}/dist/ng-edit`;
 
 const excludeDirs = [
-  'out-tsc', 'system',
+  'out-tsc',
+  'system',
 ];
 
 let watchEnabled = false;
@@ -39,7 +54,7 @@ args.forEach((val, index) => {
 });
 
 const calculatePaths = (path) => {
-  path = path.replace(/\\/g, '/');
+  path = fixPath(path);
   const separatorIndex = path.lastIndexOf('/');
 
   const src = path.slice(0, separatorIndex);
@@ -62,16 +77,14 @@ const calculatePaths = (path) => {
 }
 
 const checkIfExcluded = (paths) => {
-  const fullSourcePath = paths.src + '/' + paths.file;
+  const fullSourcePath = `${paths.src}/${paths.file}`;
   // Checks if folder is excluded from copying
-  for (let i = 0; i < excludeDirs.length; i++) {
-    const excludeDir = excludeDirs[i];
-    const excludeDirClean = excludeDir.trim().replace(/^\/|\/$/g, '');
-    const isExcluded = fullSourcePath.includes('/' + excludeDirClean + '/');
+  return excludeDirs.some(excludeDir => {
+    excludeDir = fixPath(excludeDir, true, true);
+    const isExcluded = fullSourcePath.startsWith(`${excludeDir}/`) || fullSourcePath.includes(`/${excludeDir}/`);
     // console.log(`Checking if excluded:\nFull: ${fullSourcePath}\nExclude: ${excludeDir}\nExcluded: ${isExcluded}`);
-    if (isExcluded) return true;
-  }
-  return false;
+    return isExcluded;
+  });
 }
 
 console.log(chalkSuccess(`Copying files from ${sourcePath} to ${outputPath}`));
@@ -83,7 +96,7 @@ fs.removeSync(outputAssets);
 fs.ensureDirSync(outputAssets);
 
 // Initialize watcher
-const watcher = chokidar.watch(sourcePath, {
+const watcher = chokidar.watch([sourcePath, sourcePathMain], {
   persistent: true,
   usePolling: true,
   interval: 200,

@@ -1,7 +1,12 @@
 <div appToggleDebug class="nav-component-wrapper">
   <div mat-dialog-title>
     <div class="dialog-title-box">
-      <div>{{ (contentType$ | async)?.Name }} Data</div>
+      <div>
+        <ng-container *ngIf="contentType$ | async as contentType">
+          {{ contentType.Label || contentType.Name }}
+        </ng-container>
+        Data
+      </div>
       <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
         <mat-icon>close</mat-icon>
       </button>
@@ -10,7 +15,7 @@
 
   <router-outlet></router-outlet>
 
-  <div *ngIf="(contentType$ | async)?.Metadata?.ListInstructions as listInstructions"
+  <div *ngIf="(contentType$ | async)?.Properties?.ListInstructions as listInstructions"
     [innerHTML]="listInstructions | safeHtml">
   </div>
 
@@ -33,9 +38,9 @@
         <mat-icon>cloud_upload</mat-icon>
         <span>Item</span>
       </button>
-      <button mat-button tippy="Add metadata to entity" (click)="addMetadata()">
+      <button mat-button tippy="Create metadata" (click)="createMetadata()">
         <mat-icon>local_offer</mat-icon>
-        <span>Metadata</span>
+        <span>Create Metadata</span>
       </button>
       <button mat-button color="accent" tippy="Print filter to console" *ngIf="debugEnabled$ | async"
         (click)="debugFilter()">

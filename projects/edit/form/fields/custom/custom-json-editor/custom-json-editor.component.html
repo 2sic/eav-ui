@@ -8,8 +8,8 @@
     <mat-label class="label">{{ data.label }} {{ data.required ? '*' : '' }}</mat-label>
 
     <app-monaco-editor class="editor" [ngStyle]="{ 'height': data.editorHeight }" [filename]="filename"
-      [ngModel]="data.controlStatus.value" (ngModelChange)="codeChanged($event)" [options]="editorOptions"
-      (focused)="onFocused()" (blured)="onBlurred()">
+      [value]="data.controlStatus.value" (valueChanged)="codeChanged($event)" [options]="monacoOptions"
+      [jsonSchema]="data.jsonSchema" (focused)="onFocused()" (blurred)="onBlurred()">
     </app-monaco-editor>
 
     <input class="placeholder" *ngIf="!data.controlStatus.value && data.placeholder" [placeholder]="data.placeholder">

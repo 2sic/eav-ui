@@ -107,7 +107,7 @@ export class FormulaHelpers {
             cache: formula.cache,
             culture: {
               code: currentLanguage,
-              name: languages.find(l => l.key === currentLanguage)?.name,
+              name: languages.find(l => l.NameId === currentLanguage)?.Culture,
             },
             debug: debugEnabled,
             target: {

@@ -9,7 +9,7 @@
         <mat-option *ngFor="let scopeOption of (scopeOptions$ | async)" [value]="scopeOption.value">
           {{ 'Scope: ' + scopeOption.name }}
         </mat-option>
-        <mat-option value="Other">Scope: Other...</mat-option>
+        <mat-option [value]="dropdownInsertValue">Scope: Other...</mat-option>
       </mat-select>
     </mat-form-field>
 

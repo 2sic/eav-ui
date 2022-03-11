@@ -10,10 +10,10 @@ import { SnippetsSets } from '../models/snippet.model';
 export class CodeSnippetsComponent {
   @Input() snippets: SnippetsSets;
   @Output() insertSnippet: EventEmitter<string> = new EventEmitter();
-  toggledSections: any[] = [];
-  toggledFolders: any[] = [];
-  toggledInfos: any[] = [];
-  toggledMores: any[] = [];
+  toggledSections: string[] = [];
+  toggledFolders: string[] = [];
+  toggledInfos: string[] = [];
+  toggledMores: string[] = [];
 
   constructor() { }
 
@@ -21,19 +21,19 @@ export class CodeSnippetsComponent {
     this.insertSnippet.emit(snippet);
   }
 
-  toggleSection(set: any): void {
-    GeneralHelpers.toggleInArray(set, this.toggledSections);
+  toggleSection(key: string): void {
+    GeneralHelpers.toggleInArray(key, this.toggledSections);
   }
 
-  toggleFolder(item: any): void {
-    GeneralHelpers.toggleInArray(item, this.toggledFolders);
+  toggleFolder(key: string): void {
+    GeneralHelpers.toggleInArray(key, this.toggledFolders);
   }
 
-  toggleInfo(info: any): void {
-    GeneralHelpers.toggleInArray(info, this.toggledInfos);
+  toggleInfo(key: string): void {
+    GeneralHelpers.toggleInArray(key, this.toggledInfos);
   }
 
-  toggleMore(more: any): void {
-    GeneralHelpers.toggleInArray(more, this.toggledMores);
+  toggleMore(key: string): void {
+    GeneralHelpers.toggleInArray(key, this.toggledMores);
   }
 }

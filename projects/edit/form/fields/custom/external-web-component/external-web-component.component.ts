@@ -1,15 +1,16 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { InputTypeConstants } from '../../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { consoleLogAngular } from '../../../../../ng-dialogs/src/app/shared/helpers/console-log-angular.helper';
 import { EavService, EditRoutingService, FieldsSettingsService, ScriptsLoaderService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { BaseComponent } from '../../base/base.component';
 import { ExternalWebComponentTemplateVars } from './external-web-component.models';
+import { StringWysiwygLogic } from './external-web-components-logics';
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'external-web-component',
+  selector: InputTypeConstants.ExternalWebComponent,
   templateUrl: './external-web-component.component.html',
   styleUrls: ['./external-web-component.component.scss'],
 })
@@ -26,6 +27,7 @@ export class ExternalWebComponentComponent extends BaseComponent<string> impleme
     private editRoutingService: EditRoutingService,
   ) {
     super(eavService, fieldsSettingsService);
+    StringWysiwygLogic.importMe();
   }
 
   ngOnInit() {

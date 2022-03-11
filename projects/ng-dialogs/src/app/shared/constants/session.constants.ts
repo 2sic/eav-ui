@@ -1,7 +1,7 @@
 export const prefix = 'eav-';
 export const keyZoneId = prefix + 'zoneId';
 export const keyRequestToken = prefix + 'rvt';
-export const keyRequestTokenHeaderName = prefix + 'rvth'; // #RvtHeaderName - New in 12.04
+export const keyRequestTokenHeaderName = prefix + 'rvth';
 export const keyTabId = prefix + 'tid';
 export const keyContentBlockId = prefix + 'cbid';
 export const keyModuleId = prefix + 'mid';

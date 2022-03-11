@@ -11,12 +11,14 @@ import { IdFieldParams } from './id-field.models';
 })
 export class IdFieldComponent implements ICellRendererAngularComp {
   id: number | string;
+  align: 'start' | 'end';
   tooltip: string;
 
   constructor(private snackBar: MatSnackBar) { }
 
   agInit(params: IdFieldParams) {
     this.id = params.value;
+    this.align = typeof this.id === 'number' ? 'end' : 'start';
     this.tooltip = params.tooltipGetter(params.data);
   }
 

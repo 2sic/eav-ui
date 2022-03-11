@@ -1,5 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
-@use '~@angular/material'as mat;
+@use '@angular/material'as mat;
 // Include the common styles for Angular Material. Be sure that you only ever include this mixin once!
 @include mat.core();
 @import '~@material/layout-grid/mdc-layout-grid';
@@ -19,7 +19,6 @@
 @import './styles/ag-grid.styles.scss';
 @import './styles/ag-grid-components.styles.scss';
 @import './styles/sxc-messages.styles.scss';
-@import './styles/ace-editor.styles.scss';
 @import './styles/editor.styles.scss';
 @import './styles/pipeline-designer.scss';
 @import './styles/mat-radio.styles.scss';
@@ -27,6 +26,8 @@
 @import './styles/drag-and-drop.styles.scss';
 @import './styles/item-history.styles.scss';
 @import './styles/tippy.styles.scss';
+@import './styles/mat-snackbar.styles.scss';
+@import './styles/eco-fab-speed-dial.styles.scss';
 
 html,
 body {

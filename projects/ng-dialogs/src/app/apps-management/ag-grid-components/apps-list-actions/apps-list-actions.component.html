@@ -1,6 +1,9 @@
 <div class="actions-component">
-  <div class="like-button highlight" matRipple tippy="Flush cache" (click)="flushCache()">
-    <mat-icon>cached</mat-icon>
+  <div class="like-button icon"
+    [tippy]="app.IsGlobal ? 'This app is global' : app.IsInherited ? 'This app is inherited' : ''"
+    [tippyDisabled]="!app.IsGlobal && !app.IsInherited">
+    <mat-icon *ngIf="app.IsGlobal">foundation</mat-icon>
+    <mat-icon *ngIf="app.IsInherited">holiday_village</mat-icon>
   </div>
   <div class="like-button highlight" matRipple tippy="More" [matMenuTriggerFor]="menu">
     <mat-icon>more_horiz</mat-icon>
@@ -8,6 +11,10 @@
 </div>
 
 <mat-menu #menu="matMenu" class="grid-more-menu">
+  <button mat-menu-item (click)="flushCache()">
+    <mat-icon>cached</mat-icon>
+    <span>Flush cache</span>
+  </button>
   <button mat-menu-item [disabled]="!app.IsApp" (click)="deleteApp()">
     <mat-icon>delete</mat-icon>
     <span>Delete</span>

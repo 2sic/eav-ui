@@ -5,7 +5,7 @@ import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map, startWith } from 'rxjs/operators';
 import { TranslationLinks } from '../../../../shared/constants';
 import { TranslationState } from '../../../../shared/models';
-import { EavService, FieldsSettingsService, FieldsTranslateService } from '../../../../shared/services';
+import { EavService, FieldsSettingsService, FieldsTranslateService, FormsStateService } from '../../../../shared/services';
 import { LanguageInstanceService } from '../../../../shared/store/ngrx-data';
 import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
 import { TranslateMenuDialogComponent } from '../translate-menu-dialog/translate-menu-dialog.component';
@@ -32,9 +32,11 @@ export class TranslateMenuComponent implements OnInit {
     private eavService: EavService,
     private fieldsSettingsService: FieldsSettingsService,
     private fieldsTranslateService: FieldsTranslateService,
+    private formsStateService: FormsStateService,
   ) { }
 
   ngOnInit(): void {
+    const readOnly$ = this.formsStateService.readOnly$;
     const currentLanguage$ = this.languageInstanceService.getCurrentLanguage$(this.eavService.eavConfig.formId);
     const defaultLanguage$ = this.languageInstanceService.getDefaultLanguage$(this.eavService.eavConfig.formId);
     const translationState$ = this.fieldsSettingsService.getTranslationState$(this.config.fieldName);
@@ -50,9 +52,12 @@ export class TranslateMenuComponent implements OnInit {
       distinctUntilChanged(),
     );
 
-    this.templateVars$ = combineLatest([currentLanguage$, defaultLanguage$, translationState$, disableTranslation$, disabled$]).pipe(
-      map(([currentLanguage, defaultLanguage, translationState, disableTranslation, disabled]) => {
+    this.templateVars$ = combineLatest([
+      readOnly$, currentLanguage$, defaultLanguage$, translationState$, disableTranslation$, disabled$,
+    ]).pipe(
+      map(([readOnly, currentLanguage, defaultLanguage, translationState, disableTranslation, disabled]) => {
         const templateVars: TranslateMenuTemplateVars = {
+          readOnly: readOnly.isReadOnly,
           currentLanguage,
           defaultLanguage,
           translationState,

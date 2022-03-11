@@ -54,17 +54,26 @@ export function calculateWarnings(pipelineModel: PipelineModel, context: Context
       // Check if we should show the warning about the test ModuleId.
       // This is because in the old days, the ModuleId wasn't auto-filled, so people had to add it as a test value.
       // Now it's not necessary any more
-      const midRegex = /^\[module:moduleid\]=([0-9]*)$/gmi;
-      const midMatch = midRegex.exec(param); // capture the ModuleId
+      const midRegex = /^\[module:id\]=([0-9]*)$/gmi;
+      const midMatch = midRegex.exec(param);
       if (midMatch) {
         const testMid = midMatch[1];
         const urlMid = context.moduleId.toString();
         if (testMid !== urlMid) {
           warnings.push(`
-            Your test ModuleId (${testMid}) is different from the current ModuleId (${urlMid}).
-            Note that 2sxc 9.33 automatically provides the ModuleId - so you usually do not need to set it any more.
+            Your test ModuleId (${testMid}) is different from the current ModuleId (${urlMid}).<br>
+            Note that 2sxc automatically provides the ModuleId - so you usually do not need to set it
           `);
         }
+      }
+
+      const oldMidRegex = /^\[module:moduleid\]=([0-9]*)$/gmi;
+      const oldMidMatch = oldMidRegex.exec(param);
+      if (oldMidMatch) {
+        warnings.push(`
+          You are using deprecated [Module:ModuleId] test parameter.<br>
+          Please use [Module:Id]
+        `);
       }
     });
   } catch (error) {

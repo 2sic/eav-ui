@@ -7,32 +7,6 @@
   }
 }
 
-.chip-component {
-  display: flex;
-  padding: 0 8px;
-  align-items: center;
-  height: 100%;
-
-  &:not(.disabled) {
-    cursor: pointer;
-  }
-
-  &.disabled {
-    .chip {
-      background-color: $grid-color-disabled !important;
-    }
-  }
-
-  .chip {
-    background-color: map_get($mat-eav-item-dialog-secondary, 500);
-    border: 1px solid rgba(29, 39, 61, 0.44);
-    border-radius: 16px;
-    color: white;
-    padding: 2px 8px;
-    user-select: none;
-  }
-}
-
 .input-component {
   display: flex;
   padding: 0 8px;
@@ -40,7 +14,10 @@
   justify-content: space-between;
   height: 100%;
   user-select: none;
-  cursor: pointer;
+
+  &:not(.disabled) {
+    cursor: pointer;
+  }
 }
 
 .apps-list-primary-action {

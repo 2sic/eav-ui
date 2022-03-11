@@ -1,17 +1,20 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { SourceService } from '../../../../../ng-dialogs/src/app/code-editor/services/source.service';
+import { InputTypeConstants } from '../../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
+import { CreateFileDialogComponent, CreateFileDialogData, CreateFileDialogResult } from '../../../../../ng-dialogs/src/app/create-file-dialog';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { FieldMask, GeneralHelpers } from '../../../../shared/helpers';
-import { AssetsService, EavService, FieldsSettingsService } from '../../../../shared/services';
+import { EavService, FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { BaseComponent } from '../../base/base.component';
 import { templateTypes } from './string-template-picker.constants';
 import { StringTemplatePickerTemplateVars } from './string-template-picker.models';
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'string-template-picker',
+  selector: InputTypeConstants.StringTemplatePicker,
   templateUrl: './string-template-picker.component.html',
   styleUrls: ['./string-template-picker.component.scss'],
 })
@@ -30,7 +33,13 @@ export class StringTemplatePickerComponent extends BaseComponent<string> impleme
   /** Reset only after templates have been fetched once */
   private resetIfNotFound = false;
 
-  constructor(eavService: EavService, fieldsSettingsService: FieldsSettingsService, private assetsService: AssetsService) {
+  constructor(
+    eavService: EavService,
+    fieldsSettingsService: FieldsSettingsService,
+    private sourceService: SourceService,
+    private dialog: MatDialog,
+    private viewContainerRef: ViewContainerRef,
+  ) {
     super(eavService, fieldsSettingsService);
   }
 
@@ -40,7 +49,7 @@ export class StringTemplatePickerComponent extends BaseComponent<string> impleme
 
     // If we have a configured type, use that, otherwise use the field mask
     // We'll still use the field-mask (even though it wouldn't be needed) to keep the logic simple
-    const typeFilterMask = (this.settings$.value as any).FileType ?? '[Type]';
+    const typeFilterMask = this.settings$.value.FileType ?? '[Type]';
 
     // set change-watchers to the other values
     this.typeMask = new FieldMask(typeFilterMask, this.group.controls, this.setFileConfig.bind(this), null);
@@ -85,61 +94,53 @@ export class StringTemplatePickerComponent extends BaseComponent<string> impleme
     this.global = (location === 'Host File System' // Original value used from 2sxc up until v12.01
       || location === 'Global'); // New key used in 2sxc 12.02 and later
 
-    this.assetsService.getAll(this.global).subscribe(templates => {
-      this.templates = templates;
+    this.sourceService.getAll().subscribe(files => {
+      this.templates = files.filter(file => file.Shared === this.global).map(file => file.Path);
       this.resetIfNotFound = true;
       this.setTemplateOptions();
     });
   }
 
   private setTemplateOptions() {
-    let filtered = this.templates;
     const ext = this.activeSpec.ext;
-    // new feature in v11 - '.code.xxx' files shouldn't be shown, they are code-behind
-    filtered = filtered.filter(template => !template.includes('.code.'));
-    filtered = filtered.filter(template => template.slice(template.length - ext.length) === ext);
+    const filtered = this.templates
+      // new feature in v11 - '.code.xxx' files shouldn't be shown, they are code-behind
+      .filter(template => !/\.code\.[a-zA-Z0-9]+$/.test(template))
+      .filter(template => template.endsWith(ext));
     this.templateOptions$.next(filtered);
-    const resetValue = this.resetIfNotFound && !filtered.find(template => template === this.control.value);
+    const resetValue = this.resetIfNotFound && !filtered.some(template => template === this.control.value);
     if (resetValue) {
       GeneralHelpers.patchControlValue(this.control, '');
     }
   }
 
   createTemplate() {
-    let name = prompt('Enter new file name', this.activeSpec.suggestion); // todo: i18n
-    if (!name) { return; }
+    const nameMask = new FieldMask('[Name]', this.group.controls, null, null);
+    const data: CreateFileDialogData = {
+      global: this.global,
+      purpose: this.activeSpec.purpose,
+      type: this.activeSpec.type,
+      name: nameMask.resolve(),
+    };
+    nameMask.destroy();
+    const dialogRef = this.dialog.open(CreateFileDialogComponent, {
+      autoFocus: false,
+      data,
+      viewContainerRef: this.viewContainerRef,
+      width: '650px',
+    });
+    dialogRef.afterClosed().subscribe((result?: CreateFileDialogResult) => {
+      if (!result) { return; }
 
-    // 1. check for folders
-    let path = '';
-    name = name.replace('\\', '/');
-    const foundSlash = name.lastIndexOf('/');
-    if (foundSlash > -1) {
-      path = name.substring(0, foundSlash + 1); // path with slash
-      name = name.substring(foundSlash + 1);
-    }
-
-    // 2. check if extension already provided, otherwise or if not perfect, just attach default
-    if (!name.endsWith(this.activeSpec.ext)) {
-      name += this.activeSpec.ext;
-    }
-
-    // 3. check if cshtmls have a "_" in the file name (not folder, must be the file name part)
-    if (this.activeSpec.prefix !== '' && name[0] !== this.activeSpec.prefix) {
-      name = this.activeSpec.prefix + name;
-    }
-
-    const fullPath = path + name;
-
-    // 4. tell service to create it
-    this.assetsService.create(fullPath, this.global, this.activeSpec.purpose).subscribe(res => {
-      if (res === false) {
-        alert('Server reported that create failed - the file probably already exists'); // todo: i18n
-      } else {
-        this.templates.push(fullPath);
-        this.setTemplateOptions();
-        GeneralHelpers.patchControlValue(this.control, fullPath);
-      }
+      this.sourceService.create(result.name, this.global, result.templateKey).subscribe(res => {
+        if (res === false) {
+          alert('Server reported that create failed - the file probably already exists');
+        } else {
+          this.templates.push(result.name);
+          this.setTemplateOptions();
+          GeneralHelpers.patchControlValue(this.control, result.name);
+        }
+      });
     });
   }
-
 }

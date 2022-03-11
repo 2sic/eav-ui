@@ -1,4 +1,3 @@
 <div class="icon-container">
-  <mat-icon tippy="Feature is enabled" *ngIf="value">toggle_on</mat-icon>
-  <mat-icon tippy="Feature is disabled" *ngIf="!value">toggle_off</mat-icon>
+  <mat-icon>{{ value ? 'check_box' : 'check_box_outline_blank' }}</mat-icon>
 </div>

@@ -1,0 +1,71 @@
+<ng-container *ngIf="templateVars$ | async as data">
+  <div mat-dialog-title>
+    <div class="dialog-title-box">Create Metadata</div>
+  </div>
+
+  <p class="dialog-description">
+    This is a special operation to add an item which is metadata for another item,
+    see <a href="http://r.2sxc.org/metadata" target="_blank">docs</a>.
+  </p>
+
+  <form [formGroup]="form" class="dialog-form">
+    <div class="dialog-form-content fancy-scrollbar-light">
+
+      <!-- Scope -->
+      <ng-container *ngIf="advancedMode && guidedContentType">
+        <mat-form-field appearance="standard" color="accent">
+          <mat-label>Scope</mat-label>
+          <mat-select formControlName="scope" [placeholder]="!data.scopeOptions.length ? 'No items found' : ''">
+            <mat-option *ngFor="let scopeOption of data.scopeOptions" [value]="scopeOption.value">
+              {{ scopeOption.name }}
+            </mat-option>
+            <mat-option [value]="dropdownInsertValue">Other...</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <app-field-hint>
+          The scope should almost never be changed -
+          <a href="https://2sxc.org/help?tag=scope" target="_blank" appClickStopPropagation>see help</a>
+        </app-field-hint>
+      </ng-container>
+
+      <!-- Content Type of metadata item -->
+      <mat-form-field appearance="standard" color="accent">
+        <mat-label>Content Type</mat-label>
+        <mat-select *ngIf="guidedContentType" formControlName="contentType" required
+          [placeholder]="!data.contentTypes.length ? 'No items found' : ''">
+          <mat-option *ngFor="let contentType of data.contentTypes" [value]="contentType.StaticName">
+            {{ contentType.Label }}
+          </mat-option>
+        </mat-select>
+
+        <input matInput type="text" *ngIf="!guidedContentType" formControlName="contentType" required>
+
+        <div matSuffix class="selection-suffix">
+          <button mat-icon-button type="button" [ngClass]="{ 'active': guidedContentType }" tippy="Pick existing value"
+            (click)="toggleGuidedContentType(true)">
+            <mat-icon>search</mat-icon>
+          </button>
+          <button mat-icon-button type="button" [ngClass]="{ 'active': !guidedContentType }" tippy="Manual entry"
+            (click)="toggleGuidedContentType(false)">
+            <mat-icon>text_fields</mat-icon>
+          </button>
+        </div>
+      </mat-form-field>
+      <app-field-hint *ngIf="form.controls.contentType.touched && form.controls.contentType.errors?.required"
+        [isError]="true">
+        This field is required
+      </app-field-hint>
+    </div>
+
+    <div class="dialog-form-actions">
+      <mat-slide-toggle color="accent" [checked]="advancedMode" (change)="toggleAdvancedMode($event)">
+        {{ advancedMode ? 'Advanced' : 'Simple' }}
+      </mat-slide-toggle>
+      <div class="spacer"></div>
+      <button mat-raised-button type="button" (click)="closeDialog()">Cancel</button>
+      <button mat-raised-button type="button" color="accent" [disabled]="!form.valid" (click)="confirm()">
+        Confirm
+      </button>
+    </div>
+  </form>
+</ng-container>

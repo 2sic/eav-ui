@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output, ViewContainerRef } from
 import { MatDialog } from '@angular/material/dialog';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { EavService } from '../../shared/services';
+import { EavService, FormsStateService } from '../../shared/services';
 import { LanguageService, PublishStatusService } from '../../shared/store/ngrx-data';
 import { EditDialogHeaderTemplateVars } from './edit-dialog-header.models';
 import { PublishStatusDialogComponent } from './publish-status-dialog/publish-status-dialog.component';
@@ -24,14 +24,18 @@ export class EditDialogHeaderComponent implements OnInit {
     private languageService: LanguageService,
     private publishStatusService: PublishStatusService,
     public eavService: EavService,
+    private formsStateService: FormsStateService,
   ) { }
 
   ngOnInit() {
+    const readOnly$ = this.formsStateService.readOnly$;
     const hasLanguages$ = this.languageService.getLanguages$().pipe(map(languages => languages.length > 0));
     const publishMode$ = this.publishStatusService.getPublishMode$(this.eavService.eavConfig.formId);
-    this.templateVars$ = combineLatest([hasLanguages$, publishMode$]).pipe(
-      map(([hasLanguages, publishMode]) => {
+    this.templateVars$ = combineLatest([readOnly$, hasLanguages$, publishMode$]).pipe(
+      map(([readOnly, hasLanguages, publishMode]) => {
         const templateVars: EditDialogHeaderTemplateVars = {
+          readOnly: readOnly.isReadOnly,
+          readOnlyReason: readOnly.reason,
           hasLanguages,
           publishMode,
         };

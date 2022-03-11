@@ -18,7 +18,6 @@ import { AppDialogConfigService } from '../services/app-dialog-config.service';
 export class AppAdministrationNavComponent implements OnInit, OnDestroy {
   AppScopes = AppScopes;
 
-  private defaultScope = eavConstants.scopes.default.value;
   private dialogSettings$ = new BehaviorSubject<DialogSettings>(null);
   private tabs$ = new BehaviorSubject<string[]>(null);
   private tabIndex$ = combineLatest([
@@ -33,7 +32,8 @@ export class AppAdministrationNavComponent implements OnInit, OnDestroy {
       if (tabs == null) { return; }
       const tabIndex = tabs.indexOf(path);
       return tabIndex;
-    })
+    }),
+    filter(tabIndex => tabIndex >= 0),
   );
   templateVars$ = combineLatest([this.dialogSettings$, this.tabIndex$]).pipe(
     map(([dialogSettings, tabIndex]) => ({ dialogSettings, tabIndex })),
@@ -66,7 +66,7 @@ export class AppAdministrationNavComponent implements OnInit, OnDestroy {
   changeTab(event: MatTabChangeEvent) {
     let path = this.tabs$.value[event.index];
     if (path === 'data') {
-      path = `data/${this.defaultScope}`;
+      path = `data/${eavConstants.scopes.default.value}`;
     }
     this.router.navigate([path], { relativeTo: this.route });
   }

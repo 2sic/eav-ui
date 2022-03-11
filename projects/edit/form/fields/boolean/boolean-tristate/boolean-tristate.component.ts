@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
+import { InputTypeConstants } from '../../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { EavService, FieldsSettingsService } from '../../../../shared/services';
@@ -10,8 +11,7 @@ import { BooleanTristateLogic } from './boolean-tristate-logic';
 import { BooleanTristateTemplateVars } from './boolean-tristate.models';
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'boolean-tristate',
+  selector: InputTypeConstants.BooleanTristate,
   templateUrl: './boolean-tristate.component.html',
   styleUrls: ['./boolean-tristate.component.scss'],
 })

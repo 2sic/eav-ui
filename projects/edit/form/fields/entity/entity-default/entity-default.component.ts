@@ -6,6 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { EntityInfo } from '../../../../../edit-types';
+import { InputTypeConstants } from '../../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { EditForm } from '../../../../../ng-dialogs/src/app/shared/models/edit-form.model';
 import { FieldMask, GeneralHelpers } from '../../../../shared/helpers';
 import { EavService, EditRoutingService, EntityService, FieldsSettingsService } from '../../../../shared/services';
@@ -19,8 +20,7 @@ import { calculateSelectedEntities, convertArrayToString, convertValueToArray, f
 import { DeleteEntityProps, EntityTemplateVars, SelectedEntity } from './entity-default.models';
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'entity-default',
+  selector: InputTypeConstants.EntityDefault,
   templateUrl: './entity-default.component.html',
   styleUrls: ['./entity-default.component.scss'],
 })
@@ -66,17 +66,18 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
     this.selectedEntities$ = combineLatest([
       this.controlStatus$.pipe(map(controlStatus => controlStatus.value), distinctUntilChanged()),
       this.entityCacheService.getEntities$(),
-      this.stringQueryCacheService.getEntities$(),
+      this.stringQueryCacheService.getEntities$(this.config.entityGuid, this.config.fieldName),
       this.settings$.pipe(
         map(settings => ({
           Separator: settings.Separator,
+          Value: settings.Value,
           Label: settings.Label,
         })),
         distinctUntilChanged(GeneralHelpers.objectsEqual),
       ),
     ]).pipe(
       map(([value, entityCache, stringQueryCache, settings]) =>
-        calculateSelectedEntities(value, settings.Separator, entityCache, stringQueryCache, settings.Label, this.translate)
+        calculateSelectedEntities(value, settings.Separator, entityCache, stringQueryCache, settings.Value, settings.Label, this.translate)
       ),
     );
 
@@ -247,12 +248,14 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
     const id = entity.Id;
     const title = entity.Text;
     const contentType = this.contentTypeMask.resolve();
+    const parentId = this.config.entityId;
+    const parentField = this.config.fieldName;
 
     const confirmed = confirm(this.translate.instant('Data.Delete.Question', { title, id }));
     if (!confirmed) { return; }
 
     this.snackBar.open(this.translate.instant('Message.Deleting'));
-    this.entityService.delete(contentType, id, false).subscribe({
+    this.entityService.delete(contentType, id, false, parentId, parentField).subscribe({
       next: () => {
         this.snackBar.open(this.translate.instant('Message.Deleted'), null, { duration: 2000 });
         this.removeSelected(props.index);
@@ -262,7 +265,7 @@ export class EntityDefaultComponent extends BaseComponent<string | string[]> imp
         this.snackBar.dismiss();
         if (!confirm(this.translate.instant('Data.Delete.Question', { title, id }))) { return; }
         this.snackBar.open(this.translate.instant('Message.Deleting'));
-        this.entityService.delete(contentType, id, true).subscribe({
+        this.entityService.delete(contentType, id, true, parentId, parentField).subscribe({
           next: () => {
             this.snackBar.open(this.translate.instant('Message.Deleted'), null, { duration: 2000 });
             this.removeSelected(props.index);

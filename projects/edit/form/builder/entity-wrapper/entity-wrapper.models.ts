@@ -1,6 +1,7 @@
-import { EavHeader } from '../../../shared/models/eav';
+import { EavEntity, EavHeader } from '../../../shared/models/eav';
 
 export interface ContentTypeTemplateVars {
+  readOnly: boolean;
   currentLanguage: string;
   defaultLanguage: string;
   header: EavHeader;
@@ -8,4 +9,18 @@ export interface ContentTypeTemplateVars {
   slotCanBeEmpty: boolean;
   slotIsEmpty: boolean;
   editInstructions: string;
+  itemForTooltip: string;
+  noteProps: NoteProps;
+  showNotes: boolean;
+  showMetadataFor: boolean;
+}
+
+export interface NoteProps {
+  note: EavEntity;
+  tooltip: string;
+  noteHtml: string;
+  triggerClass: string;
+  noteClass: string;
+  iconName: string;
+  itemNotSaved: boolean;
 }

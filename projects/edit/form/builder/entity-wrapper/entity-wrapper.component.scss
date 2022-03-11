@@ -23,6 +23,10 @@ $border-radius: 8px;
     font-size: 16px;
     font-weight: 400;
   }
+
+  &:not(:hover) .no-note {
+    display: none;
+  }
 }
 
 .mat-card-content-group-parent {
@@ -53,4 +57,67 @@ $border-radius: 8px;
 .mdc-layout-grid {
   padding: 16px;
   padding-top: 0;
+}
+
+.empty-slot-toggle {
+  padding-top: 0;
+}
+
+.icon-box {
+  user-select: none;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.note {
+  &.item-not-saved {
+    cursor: default;
+  }
+
+  .mat-icon {
+    color: #D9CA1F;
+  }
+
+  &.has-warning .mat-icon {
+    color: #E90000;
+  }
+}
+
+.note-wrapper {
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  width: 300px;
+  min-height: 300px;
+  max-height: 400px;
+  box-sizing: border-box;
+  overflow: hidden;
+
+  background-color: #FFF79F;
+
+  &.warning {
+    background-color: #FFDEDE;
+  }
+}
+
+.note-content {
+  flex-shrink: 1;
+  overflow: auto;
+}
+
+.note-actions {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  cursor: move;
+  margin-top: -16px;
+  margin-left: -16px;
+  margin-right: -16px;
+  padding-top: 8px;
+  padding-left: 8px;
+  padding-right: 8px;
 }

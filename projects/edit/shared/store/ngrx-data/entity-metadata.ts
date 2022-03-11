@@ -1,9 +1,9 @@
 import { EntityMetadataMap } from '@ngrx/data';
+import { Feature } from 'projects/ng-dialogs/src/app/apps-management/models/feature.model';
 import { EntityInfo } from '../../../../edit-types';
 import { InputType } from '../../../../ng-dialogs/src/app/content-type-fields/models/input-type.model';
 import { Prefetch } from '../../../dialog/main/edit-dialog-main.models';
-import { QueryEntity } from '../../../form/fields/entity/entity-query/entity-query.models';
-import { AdamSnapshot, Language, LanguageInstance, LinkCache, PublishStatus } from '../../models';
+import { AdamSnapshot, Language, LanguageInstance, LinkCache, PublishStatus, StringQueryCacheItem } from '../../models';
 import { EavContentType, EavEntity, EavItem } from '../../models/eav';
 
 export const entityMetadata: EntityMetadataMap = {
@@ -11,7 +11,9 @@ export const entityMetadata: EntityMetadataMap = {
   Item: {
     selectId: itemSelectId,
   },
-  Feature: {},
+  Feature: {
+    selectId: featureSelectId,
+  },
   Language: {
     selectId: languageSelectId,
   },
@@ -61,8 +63,12 @@ export function itemSelectId(item: EavItem): string {
   return item?.Entity?.Guid;
 }
 
+export function featureSelectId(feature: Feature): string {
+  return feature?.Guid;
+}
+
 export function languageSelectId(language: Language): string {
-  return language?.key;
+  return language?.NameId;
 }
 
 export function languageInstanceSelectId(languageInstance: LanguageInstance): number {
@@ -101,6 +107,6 @@ export function linkCacheSelectId(link: LinkCache): string {
   return link?.key;
 }
 
-export function stringQueryCacheSelectId(entity: QueryEntity): string {
-  return entity?.Guid;
+export function stringQueryCacheSelectId(cacheItem: StringQueryCacheItem): string {
+  return cacheItem?.selector;
 }

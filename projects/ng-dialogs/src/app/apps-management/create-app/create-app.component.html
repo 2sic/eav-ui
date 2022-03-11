@@ -1,0 +1,36 @@
+<ng-container *ngIf="{
+  loading: loading$ | async
+} as data">
+  <div mat-dialog-title>
+    <div class="dialog-title-box">Create App</div>
+  </div>
+
+  <router-outlet></router-outlet>
+
+  <form [formGroup]="form">
+    <mat-form-field appearance="standard" color="accent">
+      <mat-label>Name</mat-label>
+      <input matInput type="text" formControlName="name">
+    </mat-form-field>
+    <app-field-hint>
+      App name will also be used for the folder
+    </app-field-hint>
+    <ng-container *ngIf="form.controls.name.touched">
+      <app-field-hint *ngIf="form.controls.name.errors?.required" [isError]="true">
+        Required
+      </app-field-hint>
+      <app-field-hint *ngIf="form.controls.name.errors?.pattern" [isError]="true">
+        {{ appNameError }}
+      </app-field-hint>
+    </ng-container>
+  </form>
+
+  <div class="dialog-component-actions">
+    <button type="button" mat-raised-button [disabled]="data.loading" (click)="closeDialog()">
+      Cancel
+    </button>
+    <button type="button" mat-raised-button color="accent" [disabled]="data.loading || !form.valid" (click)="create()">
+      Create
+    </button>
+  </div>
+</ng-container>

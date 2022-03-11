@@ -5,7 +5,12 @@
       "Save.Tip": "Speichern und schliessen - mit CTRL + S nur speichern",
       "Exit.Tip": "Verlassen - bei Änderungen wird zum Speichern aufgefordert",
       "Return.Tip": "Zurück zum vorherigen Dialog",
-      "History.Tip": "Änderungen / Vorversionen"
+      "History.Tip": "Änderungen / Vorversionen",
+      "Metadata.Tip": "Dies sind Metadaten für:",
+      "Note": {
+        "Add": "Notiz hinzufügen",
+        "ItemNotSaved": "To add a note, please save item first"
+      }
     }
   },
   "PublishStatus": {
@@ -92,6 +97,11 @@
     "Buttons": {
       "NotSave": "Änderungen verwerfen",
       "Save": "Speichern"
+    },
+    "CopyHint": "Dies ist eine Kopie und wird als neues Element gespeichert",
+    "ReadOnlyHint": {
+      "Form": "Form is read only",
+      "Language": "Language is read only"
     }
   },
   "Data": {
@@ -100,8 +110,7 @@
   "ItemCard": {
     "DefaultTitle": "Element bearbeiten",
     "SlotUsedTrue": "Dieses Element kann bearbeitet werden. Klicke um die Bearbeitung zu sperren - eingegebene Werte werden dann mit den Standardwerten ersetzt.",
-    "SlotUsedFalse": "Dieses Element kann nicht bearbeitet werden und zeigt die Standardwerte an. Klicke um das Element freizuschalten.",
-    "CopyHint": "(Kopie)"
+    "SlotUsedFalse": "Dieses Element kann nicht bearbeitet werden und zeigt die Standardwerte an. Klicke um das Element freizuschalten."
   },
   "ValidationMessage": {
     "NotValid": "Ungültig",
@@ -110,7 +119,9 @@
     "Min": "Dieser Wert sollte mindestens {{param.Min}} sein",
     "Max": "Dieser Wert sollte höchstens {{param.Max}} sein",
     "Pattern": "Bitte richtig eingeben",
-    "Decimals": "Diese Zahl kann {{param.Decimals}} Dezimalstellen haben"
+    "Decimals": "Diese Zahl kann {{param.Decimals}} Dezimalstellen haben",
+    "JsonError": "JSON ist nicht valide",
+    "JsonWarning": "JSON ist nicht valide"
   },
   "Fields": {
     "Entity": {
@@ -171,8 +182,8 @@
       "Open": "Kalendar öffnen"
     },
     "String": {
-      "Dropdown": "Auswahl",
-      "Freetext": "Freie Texteingabe"
+      "Dropdown": "Bestehendens auswählen",
+      "Freetext": "Manuell eintragen"
     },
     "TemplatePicker": {
       "NotSelected": "(no file selected)",

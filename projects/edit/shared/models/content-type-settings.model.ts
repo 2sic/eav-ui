@@ -1,6 +1,7 @@
 export interface ContentTypeSettings {
   Description: string;
   EditInstructions: string;
+  Features: string;
   Label: string;
   ListInstructions: string;
   Notes: string;

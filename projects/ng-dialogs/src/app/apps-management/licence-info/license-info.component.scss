@@ -1,0 +1,48 @@
+:host {
+  display: block;
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+
+.mat-expansion-panel-header {
+  padding-top: 4px;
+  padding-bottom: 4px;
+
+  ::ng-deep.mat-content {
+    max-height: 100%;
+  }
+}
+
+.mat-expansion-panel-header-title {
+  display: flex;
+  align-items: center;
+}
+
+.panel-icon {
+  margin-right: 16px;
+}
+
+.panel-title {
+  font-size: 14px;
+}
+
+.active-features-count {
+  display: inline-block;
+  margin-left: 8px;
+  color: white;
+  font-size: 12px;
+  border-radius: 12px;
+  padding: 2px 6px;
+  background-color: #002753;
+  border: 1px solid rgba(29, 39, 61, 0.44);
+  box-sizing: border-box;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.panel-description {
+  padding-top: 4px;
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.54);
+  overflow: hidden;
+}

@@ -4,10 +4,11 @@ import { Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { FieldSettings, FieldValue } from '../../../../edit-types';
 import { InputType } from '../../../../ng-dialogs/src/app/content-type-fields/models/input-type.model';
-import { BestValueModes } from '../../constants/localization.constants';
+import { eavConstants } from '../../../../ng-dialogs/src/app/shared/constants/eav.constants';
+import { BestValueModes } from '../../constants';
 import { GeneralHelpers, InputFieldHelpers, LocalizationHelpers } from '../../helpers';
 import { FormValues, Language, SaveResult } from '../../models';
-import { EavContentTypeAttribute, EavDimension, EavEntityAttributes, EavHeader, EavItem, EavValue } from '../../models/eav';
+import { EavContentTypeAttribute, EavDimension, EavEntity, EavEntityAttributes, EavFor, EavHeader, EavItem, EavValue } from '../../models/eav';
 import { Item1 } from '../../models/json-format-v1';
 import { BaseDataService } from './base-data.service';
 
@@ -37,6 +38,18 @@ export class ItemService extends BaseDataService<EavItem> {
       Entity: {
         ...oldItem.Entity,
         Id: entityId,
+      }
+    };
+    this.updateOneInCache(newItem);
+  }
+
+  updateItemMetadata(entityGuid: string, metadata: EavEntity[]): void {
+    const oldItem = this.cache$.value.find(item => item.Entity.Guid === entityGuid);
+    const newItem: EavItem = {
+      ...oldItem,
+      Entity: {
+        ...oldItem.Entity,
+        Metadata: metadata,
       }
     };
     this.updateOneInCache(newItem);
@@ -192,6 +205,29 @@ export class ItemService extends BaseDataService<EavItem> {
   getItem$(entityGuid: string): Observable<EavItem> {
     return this.cache$.pipe(
       map(items => items.find(item => item.Entity.Guid === entityGuid)),
+      distinctUntilChanged(),
+    );
+  }
+
+  getItemFor$(entityGuid: string): Observable<EavFor> {
+    return this.cache$.pipe(
+      map(items => items.find(item => item.Entity.Guid === entityGuid)?.Entity.For),
+      distinctUntilChanged(),
+    );
+  }
+
+  getItemNote(entityGuid: string): EavEntity {
+    return this.cache$.value
+      .find(item => item.Entity.Guid === entityGuid)?.Entity.Metadata
+      ?.find(metadata => metadata.Type.Name === eavConstants.contentTypes.notes);
+  }
+
+  getItemNote$(entityGuid: string): Observable<EavEntity> {
+    return this.cache$.pipe(
+      map(items =>
+        items.find(item => item.Entity.Guid === entityGuid)?.Entity.Metadata
+          ?.find(metadata => metadata.Type.Name === eavConstants.contentTypes.notes)
+      ),
       distinctUntilChanged(),
     );
   }

@@ -11,6 +11,7 @@ import { PubMeta, PubMetaFilterModel } from './pub-meta-filter.model';
 export class PubMetaFilterComponent implements IFilterAngularComp {
   published = '';
   metadata = '';
+  hasMetadata = '';
 
   private params: IFilterParams;
 
@@ -19,12 +20,13 @@ export class PubMetaFilterComponent implements IFilterAngularComp {
   }
 
   isFilterActive(): boolean {
-    return this.published !== '' || this.metadata !== '';
+    return this.published !== '' || this.metadata !== '' || this.hasMetadata !== '';
   }
 
   doesFilterPass(params: IDoesFilterPassParams): boolean {
     let publishedPassed = false;
     let metadataPassed = false;
+    let hasMetadataPassed = false;
     const value: PubMeta = this.params.valueGetter(params.node);
     if (this.published !== '') {
       if (value.published === null || value.published === undefined) {
@@ -44,21 +46,34 @@ export class PubMetaFilterComponent implements IFilterAngularComp {
     } else {
       metadataPassed = true;
     }
-    return publishedPassed && metadataPassed;
+    if (this.hasMetadata !== '') {
+      if (value.hasMetadata === null || value.hasMetadata === undefined) {
+        hasMetadataPassed = false;
+      } else {
+        hasMetadataPassed = value.hasMetadata.toString() === this.hasMetadata;
+      }
+    } else {
+      hasMetadataPassed = true;
+    }
+    return publishedPassed && metadataPassed && hasMetadataPassed;
   }
 
   getModel(): PubMetaFilterModel {
     if (!this.isFilterActive()) { return; }
-    return {
+
+    const model: PubMetaFilterModel = {
       filterType: 'pub-meta',
       published: this.published,
       metadata: this.metadata,
+      hasMetadata: this.hasMetadata,
     };
+    return model;
   }
 
   setModel(model: PubMetaFilterModel) {
     this.published = model ? model.published : '';
     this.metadata = model ? model.metadata : '';
+    this.hasMetadata = model ? model.hasMetadata : '';
   }
 
   afterGuiAttached(params: IAfterGuiAttachedParams) {

@@ -1,3 +1,3 @@
-export interface UnsavedChangesSnackData {
+export interface UnsavedChangesSnackBarData {
   save: boolean;
 }

@@ -30,5 +30,3 @@ interface EavWindowProps {
 }
 
 export type EavWindow = typeof window & EavWindowProps;
-
-export type WindowObject = typeof window & Record<string, any>;

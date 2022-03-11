@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { edit, refreshEdit } from '../../../../edit/edit.matcher';
 import { GoToDevRest } from '../dev-rest';
+import { GoToMetadata } from '../metadata';
 import { GoToPermissions } from '../permissions/go-to-permissions';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
 import { EmptyRouteComponent } from '../shared/components/empty-route/empty-route.component';
@@ -15,6 +16,7 @@ import { importAppPartsDialog } from './sub-dialogs/import-app-parts/import-app-
 import { importContentTypeDialog } from './sub-dialogs/import-content-type/import-content-type-dialog.config';
 import { importQueryDialog } from './sub-dialogs/import-query/import-query-dialog.config';
 import { importViewDialog } from './sub-dialogs/import-view/import-view-dialog.config';
+import { languagePermissionsDialog } from './sub-dialogs/language-permissions/language-permissions-dialog.config';
 import { viewsUsageDialog } from './sub-dialogs/views-usage/views-usage-dialog.config';
 
 const appAdministrationRoutes: Routes = [
@@ -51,6 +53,7 @@ const appAdministrationRoutes: Routes = [
             component: DialogEntryComponent,
             data: { dialog: editContentTypeDialog, title: 'Edit Content Type' },
           },
+          ...GoToMetadata.getRoutes(),
           GoToDevRest.route,
           {
             path: 'fields/:contentTypeStaticName',
@@ -83,6 +86,7 @@ const appAdministrationRoutes: Routes = [
             loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule),
             data: { title: 'Edit Query Name and Description', history: false },
           },
+          ...GoToMetadata.getRoutes(),
           { ...GoToPermissions.route, data: { title: 'Query Permissions' } },
           GoToDevRest.route,
         ],
@@ -106,6 +110,7 @@ const appAdministrationRoutes: Routes = [
             loadChildren: () => import('../../../../edit/refresh-edit.module').then(m => m.RefreshEditModule)
           },
           { ...GoToPermissions.route, data: { title: 'View Permissions' } },
+          ...GoToMetadata.getRoutes(),
         ],
         data: { title: 'App Views' },
       },
@@ -116,6 +121,7 @@ const appAdministrationRoutes: Routes = [
       },
       {
         path: 'app', component: EmptyRouteComponent, children: [
+          ...GoToMetadata.getRoutes(),
           {
             matcher: edit,
             loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule),
@@ -129,6 +135,11 @@ const appAdministrationRoutes: Routes = [
             path: 'fields/:contentTypeStaticName',
             loadChildren: () => import('../content-type-fields/content-type-fields.module').then(m => m.ContentTypeFieldsModule),
             data: { title: 'Edit Fields of App Settings & Resources' },
+          },
+          {
+            path: 'language-permissions', component: DialogEntryComponent, data: { dialog: languagePermissionsDialog, title: 'Language Permissions' }, children: [
+              { ...GoToPermissions.route, data: { title: 'Language Permissions' } },
+            ],
           },
           { ...GoToPermissions.route, data: { title: 'App Permissions' } },
           { path: 'export', component: DialogEntryComponent, data: { dialog: exportAppDialog, title: 'Export App' } },

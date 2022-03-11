@@ -3,7 +3,7 @@
   This target <code>{{ data.name }}</code> has {{ data.permissions.length }} permissions
   configured.
   <button mat-icon-button tippy="Open permissions" (click)="openPermissions()">
-    <mat-icon [matBadge]="data.permissions.length" matBadgePosition="after" matBadgeColor="accent" matBadgeSize="small"
+    <mat-icon [matBadge]="data.permissions.length" matBadgeColor="accent" matBadgeSize="small"
       *ngIf="data.permissions.length">
       person
     </mat-icon>

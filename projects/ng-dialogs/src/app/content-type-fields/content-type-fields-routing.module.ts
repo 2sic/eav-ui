@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { edit, refreshEdit } from '../../../../edit/edit.matcher';
+import { GoToMetadata } from '../metadata';
 import { GoToPermissions } from '../permissions/go-to-permissions';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
 import { contentTypeFieldsDialog } from './content-type-fields-dialog.config';
@@ -15,6 +16,7 @@ const routes: Routes = [
         component: DialogEntryComponent,
         data: { dialog: editContentTypeFieldsDialog },
       },
+      ...GoToMetadata.getRoutes(),
       GoToPermissions.route,
       {
         matcher: edit,

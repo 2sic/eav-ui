@@ -61,28 +61,6 @@ const appRoutes: Routes = [
     matcher: refreshEditRoot,
     loadChildren: () => import('../../../edit/refresh-edit.module').then(m => m.RefreshEditModule)
   },
-  // routes below are not linked directly from the initializer and are used for testing
-  // to make sure each module contains enough data to be self sustainable
-  {
-    path: ':zoneId/:appId/export/:contentTypeStaticName',
-    loadChildren: () => import('./content-export/content-export.module').then(m => m.ContentExportModule),
-    data: { title: 'Export Items' },
-  },
-  {
-    path: ':zoneId/:appId/export/:contentTypeStaticName/:selectedIds',
-    loadChildren: () => import('./content-export/content-export.module').then(m => m.ContentExportModule),
-    data: { title: 'Export Items' },
-  },
-  {
-    path: ':zoneId/:appId/import/:contentTypeStaticName',
-    loadChildren: () => import('./content-import/content-import.module').then(m => m.ContentImportModule),
-    data: { title: 'Import Items' },
-  },
-  {
-    path: ':zoneId/:appId/permissions/:type/:keyType/:key',
-    loadChildren: () => import('./permissions/permissions.module').then(m => m.PermissionsModule),
-    data: { title: 'Permissions' },
-  },
 ];
 
 @NgModule({

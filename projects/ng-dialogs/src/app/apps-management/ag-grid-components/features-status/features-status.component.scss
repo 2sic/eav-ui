@@ -1,0 +1,23 @@
+:host {
+  height: 100%;
+  display: flex;
+  padding-left: 12px;
+  padding-right: 12px;
+  align-items: center;
+}
+
+.mat-slide-toggle {
+  padding-top: 0;
+}
+
+::ng-deep .toggle-false {
+  .mat-slide-toggle-bar {
+    background-color: orange;
+  }
+}
+
+::ng-deep .toggle-null {
+  .mat-slide-toggle-thumb-container {
+    margin-left: 8px;
+  }
+}

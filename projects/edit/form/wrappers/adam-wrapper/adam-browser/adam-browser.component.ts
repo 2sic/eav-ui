@@ -9,7 +9,7 @@ import { eavConstants } from '../../../../../ng-dialogs/src/app/shared/constants
 import { EditForm } from '../../../../../ng-dialogs/src/app/shared/models/edit-form.model';
 import { FeaturesConstants } from '../../../../shared/constants';
 import { FileTypeHelpers, UrlHelpers } from '../../../../shared/helpers';
-import { AdamService, EditRoutingService } from '../../../../shared/services';
+import { AdamService, EditRoutingService, FormsStateService } from '../../../../shared/services';
 import { AdamCacheService, FeatureService, LinkCacheService } from '../../../../shared/store/ngrx-data';
 import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
 import { AdamBrowserTemplateVars, AdamConfigInstance } from './adam-browser.models';
@@ -58,6 +58,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
     private zone: NgZone,
     private adamCacheService: AdamCacheService,
     private linkCacheService: LinkCacheService,
+    private formsStateService: FormsStateService,
   ) { }
 
   ngOnInit() {
@@ -68,7 +69,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
     const contentType = this.config.contentTypeId;
     const entityGuid = this.config.entityGuid;
     const field = this.config.fieldName;
-    this.url = this.dnnContext.$2sxc.http.apiUrl(`app/auto/content/${contentType}/${entityGuid}/${field}`);
+    this.url = this.dnnContext.$2sxc.http.apiUrl(`app/auto/data/${contentType}/${entityGuid}/${field}`);
     this.pasteClipboardImage = this.featureService.isFeatureEnabled(FeaturesConstants.PasteImageFromClipboard);
 
     // run inside zone to detect changes when called from custom components
@@ -153,6 +154,8 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
   }
 
   editItemMetadata(adamItem: AdamItem) {
+    if (this.formsStateService.readOnly$.value.isReadOnly) { return; }
+
     const form: EditForm = {
       items: [
         adamItem.MetadataId === 0
@@ -160,6 +163,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
             ContentTypeName: adamItem._metadataContentType,
             For: {
               Target: eavConstants.metadata.cmsObject.target,
+              TargetType: eavConstants.metadata.cmsObject.targetType,
               String: `${adamItem.Type === 'folder' ? 'folder' : 'file'}:${adamItem.Id}`,
             }
           }
@@ -389,7 +393,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
 
   private refreshOnChildClosed() {
     this.subscription.add(
-      this.editRoutingService.childFormClosed().subscribe(result => {
+      this.editRoutingService.childFormClosed().subscribe(() => {
         this.fetchItems();
       })
     );

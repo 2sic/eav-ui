@@ -1,45 +1,29 @@
 export const InputTypeConstants = {
-  // string
-  StringDefault: 'string-default',
-  StringUrlPath: 'string-url-path',
-  StringDropdown: 'string-dropdown',
-  StringDropdownQuery: 'string-dropdown-query',
-  StringFontIconPicker: 'string-font-icon-picker',
-  StringTemplatePicker: 'string-template-picker',
-  StringWysiwyg: 'string-wysiwyg',
-  // boolean
   BooleanDefault: 'boolean-default',
   BooleanTristate: 'boolean-tristate',
-  // dateTime
+  CustomDefault: 'custom-default',
+  CustomJsonEditor: 'custom-json-editor',
   DatetimeDefault: 'datetime-default',
-  // empty
+  DefaultSuffix: '-default',
   EmptyDefault: 'empty-default',
   EmptyEnd: 'empty-end',
   EmptyMessage: 'empty-message',
-  // number
-  NumberDefault: 'number-default',
-  NumberDropdown: 'number-dropdown',
-  // entity
+  EntityContentBlocks: 'entity-content-blocks',
   EntityDefault: 'entity-default',
   EntityQuery: 'entity-query',
-  EntityContentBlocks: 'entity-content-blocks',
-  // hyperlink
+  ExternalWebComponent: 'external-web-component',
   HyperlinkDefault: 'hyperlink-default',
   HyperlinkLibrary: 'hyperlink-library',
-  // custom
-  ExternalWebComponent: 'external-web-component',
-  CustomGPS: 'custom-gps',
-  CustomJsonEditor: 'custom-json-editor',
-  CustomDefault: 'custom-default',
-  // old
-  OldTypeDropdown: 'dropdown',
-  OldTypeWysiwyg: 'wysiwyg',
-  OldTypeDefault: 'default',
-  StringWysiwygTinymce: 'string-wysiwyg-tinymce',
-  StringWysiwygAdv: 'string-wysiwyg-adv',
-  StringWysiwygDnn: 'string-wysiwyg-dnn',
-  // default
-  DefaultSuffix: '-default',
+  NumberDefault: 'number-default',
+  NumberDropdown: 'number-dropdown',
+  StringDefault: 'string-default',
+  StringDropdown: 'string-dropdown',
+  StringDropdownQuery: 'string-dropdown-query',
+  StringFontIconPicker: 'string-font-icon-picker',
+  StringJson: 'string-json',
+  StringTemplatePicker: 'string-template-picker',
+  StringUrlPath: 'string-url-path',
+  StringWysiwyg: 'string-wysiwyg',
 } as const;
 
 export type InputTypeConstant = typeof InputTypeConstants[keyof typeof InputTypeConstants];

@@ -37,6 +37,11 @@ export class ContentTypesFieldsService {
               inputType: config.Type,
               label: config.Label,
               description: config.Description,
+              isDefault: config.IsDefault,
+              isObsolete: config.IsObsolete,
+              isRecommended: config.IsRecommended,
+              obsoleteMessage: config.ObsoleteMessage,
+              icon: config.IsDefault ? 'star' : config.IsRecommended ? 'star_outlined' : null,
             };
             return option;
           });
@@ -49,10 +54,10 @@ export class ContentTypesFieldsService {
     return this.http.get<ReservedNames>(this.apiUrl(webApiFieldsRoot + 'ReservedNames'));
   }
 
-  getFields(contentType: ContentType) {
+  getFields(contentTypeStaticName: string) {
     return this.http
       .get<Field[]>(this.apiUrl(webApiFieldsAll), {
-        params: { appid: this.context.appId.toString(), staticName: contentType.StaticName },
+        params: { appid: this.context.appId.toString(), staticName: contentTypeStaticName },
       })
       .pipe(
         map(fields => {

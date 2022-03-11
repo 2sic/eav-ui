@@ -1,3 +1,5 @@
+import { MetadataItemShort } from '../../metadata';
+import { EditInfo } from '../../shared/models/edit-info';
 import { PermissionsCount } from './permissions-count.model';
 
 export interface ContentType {
@@ -6,17 +8,19 @@ export interface ContentType {
   Id: number;
   Items: number;
   Label: string;
-  Metadata: ContentTypeMetadata;
+  Metadata: MetadataItemShort[];
+  Properties?: ContentTypeProperties;
   Name: string;
   Permissions: PermissionsCount;
   Scope: string;
   SharedDefId: number;
   StaticName: string;
-  UsesSharedDef: boolean;
+  // UsesSharedDef: boolean; // 2022-01-04 2dm disabled, as we're now using the EditInfo.ReadOnly instead
+  EditInfo: EditInfo;
   _compareLabel?: string;
 }
 
-export interface ContentTypeMetadata {
+export interface ContentTypeProperties {
   Description: string;
   EditInstructions: string;
   Icon: string;

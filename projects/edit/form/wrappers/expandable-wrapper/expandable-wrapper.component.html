@@ -43,6 +43,9 @@
     <div class="c-ew__preview-container">
       <div #previewContainer class="c-ew__preview-content u-hide-scrollbar" [ngClass]="{
         'c-ew__preview-content--disabled': data.controlStatus.disabled
+      }" [ngStyle]="{
+        'min-height': data.previewHeight.minHeight,
+        'max-height': data.previewHeight.maxHeight
       }">
       </div>
     </div>

@@ -1,21 +1,38 @@
 <div class="actions-component">
-  <div class="like-button highlight" matRipple *ngIf="enableCode" tippy="Code" (click)="openCode()">
+  <div class="like-button highlight" matRipple *ngIf="!view.EditInfo.ReadOnly && enableCode" tippy="Code"
+    (click)="openCode()">
     <mat-icon>code</mat-icon>
   </div>
-  <div class="like-button disabled" *ngIf="!enableCode">
+  <div class="like-button disabled" *ngIf="view.EditInfo.ReadOnly || !enableCode">
     <mat-icon>code</mat-icon>
   </div>
 
-  <div class="like-button highlight" matRipple *ngIf="enablePermissions" tippy="Permissions"
+  <div class="like-button highlight" matRipple *ngIf="!view.EditInfo.ReadOnly" tippy="Metadata"
+    (click)="openMetadata()">
+    <mat-icon [matBadge]="view.Metadata.length" matBadgeColor="accent" matBadgeSize="small"
+      [matBadgeHidden]="!view.Metadata.length">
+      local_offer
+    </mat-icon>
+  </div>
+  <div class="like-button disabled" *ngIf="view.EditInfo.ReadOnly">
+    <mat-icon [matBadge]="view.Metadata.length" matBadgeColor="accent" matBadgeSize="small" matBadgeDisabled="true"
+      [matBadgeHidden]="!view.Metadata.length">
+      local_offer
+    </mat-icon>
+  </div>
+
+  <div class="like-button highlight" matRipple *ngIf="!view.EditInfo.ReadOnly && enablePermissions" tippy="Permissions"
     (click)="openPermissions()">
-    <mat-icon [matBadge]="view.Permissions.Count" matBadgePosition="after" matBadgeColor="accent" matBadgeSize="small"
-      *ngIf="view.Permissions.Count">
+    <mat-icon [matBadge]="view.Permissions.Count" matBadgeColor="accent" matBadgeSize="small"
+      [matBadgeHidden]="!view.Permissions.Count">
       person
     </mat-icon>
-    <mat-icon *ngIf="!view.Permissions.Count">person</mat-icon>
   </div>
-  <div class="like-button disabled" *ngIf="!enablePermissions">
-    <mat-icon>person</mat-icon>
+  <div class="like-button disabled" *ngIf="view.EditInfo.ReadOnly || !enablePermissions">
+    <mat-icon [matBadge]="view.Permissions.Count" matBadgeColor="accent" matBadgeSize="small" matBadgeDisabled="true"
+      [matBadgeHidden]="!view.Permissions.Count">
+      person
+    </mat-icon>
   </div>
 
   <div class="like-button highlight" matRipple tippy="More" [matMenuTriggerFor]="menu">
@@ -32,7 +49,7 @@
     <mat-icon>cloud_download</mat-icon>
     <span>Export</span>
   </button>
-  <button mat-menu-item (click)="deleteView()">
+  <button mat-menu-item [disabled]="view.EditInfo.ReadOnly" (click)="deleteView()">
     <mat-icon>delete</mat-icon>
     <span>Delete</span>
   </button>

@@ -54,13 +54,14 @@
     <br />
     <table class="description">
       <tr>
-        <th>Guid</th>
+        <th>Name and Guid</th>
         <th>Type</th>
         <th>Configuration</th>
         <th>Error</th>
       </tr>
       <tr *ngFor="let source of sources | keyvalue">
         <td>
+          <div *ngIf="source.value.Definition?.Name">{{ source.value.Definition?.Name }}</div>
           <pre>{{ source.value.Guid }}</pre>
         </td>
         <td>{{ source.value.Type }}</td>

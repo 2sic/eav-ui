@@ -34,6 +34,7 @@ export interface EditDialogMainTemplateVars {
   debugEnabled: boolean;
   debugInfoIsOpen: boolean;
   hideHeader: boolean;
+  readOnly: boolean;
 }
 
 export interface Prefetch {

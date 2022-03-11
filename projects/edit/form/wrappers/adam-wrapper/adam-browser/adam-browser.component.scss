@@ -1,7 +1,7 @@
 @import "../../../../assets/styles/variables.scss";
 
 .metadata-exists {
-  color: #002753;
+  color: $blue-accent-color;
 }
 
 .adam-browse-background-icon {
@@ -253,10 +253,6 @@
 .dropzone .dz-message {
   text-align: center;
   margin: 2em 0;
-}
-
-.dropzone-previews {
-  margin: 5px -5px;
 }
 
 .dropzone .dz-preview {

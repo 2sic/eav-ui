@@ -27,6 +27,9 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { RouterModule } from '@angular/router';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { DropzoneModule } from 'ngx-dropzone-wrapper';
+import { SourceService } from '../ng-dialogs/src/app/code-editor/services/source.service';
+import { EntitiesService } from '../ng-dialogs/src/app/content-items/services/entities.service';
+import { CreateFileDialogModule } from '../ng-dialogs/src/app/create-file-dialog';
 import { MonacoEditorModule } from '../ng-dialogs/src/app/monaco-editor';
 import { EavWindow } from '../ng-dialogs/src/app/shared/models/eav-window.model';
 import { Context } from '../ng-dialogs/src/app/shared/services/context';
@@ -89,7 +92,7 @@ import { LocalizationWrapperComponent } from './form/wrappers/localization-wrapp
 import { TranslateMenuDialogComponent } from './form/wrappers/localization-wrapper/translate-menu-dialog/translate-menu-dialog.component';
 import { TranslateMenuComponent } from './form/wrappers/localization-wrapper/translate-menu/translate-menu.component';
 import { ChangeAnchorTargetDirective, PasteClipboardImageDirective } from './shared/directives';
-import { AdamService, AssetsService, EavService, EntityService, LoadIconsService, QueryService, ScriptsLoaderService } from './shared/services';
+import { AdamService, EavService, EntityService, LoadIconsService, QueryService, ScriptsLoaderService } from './shared/services';
 
 declare const window: EavWindow;
 
@@ -191,6 +194,7 @@ export function translateLoaderFactoryEdit(http: HttpClient): TranslateLoader {
     MatRippleModule,
     ScrollingModule,
     MonacoEditorModule,
+    CreateFileDialogModule,
   ],
   providers: [
     Context,
@@ -201,8 +205,9 @@ export function translateLoaderFactoryEdit(http: HttpClient): TranslateLoader {
     { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } },
     { provide: NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } },
     LoadIconsService,
-    AssetsService,
+    SourceService,
     ScriptsLoaderService,
+    EntitiesService,
   ],
 })
 export class EditModule { }

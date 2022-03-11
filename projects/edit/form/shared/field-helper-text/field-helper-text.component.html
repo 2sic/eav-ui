@@ -12,7 +12,11 @@
     </span>
   </mat-hint>
 
-  <mat-error *ngIf="data.invalid && !disableError" class="mat-caption">
-    {{ getErrorMessage() | translate:{ param:data.settings } }}
-  </mat-error>
+  <ng-container *ngIf="data.invalid && !disableError && getErrorMessage() as error">
+    <mat-error class="mat-caption">{{ error | translate:{ param:data.settings } }}</mat-error>
+  </ng-container>
+
+  <ng-container *ngIf="!data.invalid && !disableError && getWarningMessage() as warning">
+    <mat-error class="mat-caption warning">{{ warning | translate }}</mat-error>
+  </ng-container>
 </div>

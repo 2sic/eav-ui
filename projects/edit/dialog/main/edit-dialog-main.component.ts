@@ -7,7 +7,8 @@ import { BehaviorSubject, combineLatest, fromEvent, Observable, of, Subscription
 import { delay, map, startWith, tap } from 'rxjs/operators';
 import { consoleLogAngular } from '../../../ng-dialogs/src/app/shared/helpers/console-log-angular.helper';
 import { FormBuilderComponent } from '../../form/builder/form-builder/form-builder.component';
-import { ValidationMessagesHelpers } from '../../shared/helpers';
+import { MetadataDecorators } from '../../shared/constants';
+import { InputFieldHelpers, ValidationMessagesHelpers } from '../../shared/helpers';
 import { FieldErrorMessage, SaveResult } from '../../shared/models';
 import { EavItem } from '../../shared/models/eav';
 import { Item1 } from '../../shared/models/json-format-v1';
@@ -17,9 +18,9 @@ import { AdamCacheService, ContentTypeItemService, ContentTypeService, EntityCac
 import { EditEntryComponent } from '../entry/edit-entry.component';
 import { EditDialogMainTemplateVars, SaveEavFormData } from './edit-dialog-main.models';
 import { SnackBarSaveErrorsComponent } from './snack-bar-save-errors/snack-bar-save-errors.component';
-import { SaveErrorsSnackData } from './snack-bar-save-errors/snack-bar-save-errors.models';
+import { SaveErrorsSnackBarData } from './snack-bar-save-errors/snack-bar-save-errors.models';
 import { SnackBarUnsavedChangesComponent } from './snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
-import { UnsavedChangesSnackData } from './snack-bar-unsaved-changes/snack-bar-unsaved-changes.models';
+import { UnsavedChangesSnackBarData } from './snack-bar-unsaved-changes/snack-bar-unsaved-changes.models';
 
 @Component({
   selector: 'app-edit-dialog-main',
@@ -76,6 +77,7 @@ export class EditDialogMainComponent implements OnInit, AfterViewInit, OnDestroy
     const reduceSaveButton$ = of(true).pipe(delay(5000), startWith(false));
     const items$ = this.itemService.getItems$(this.eavService.eavConfig.itemGuids);
     const hideHeader$ = this.languageInstanceService.getHideHeader$(this.eavService.eavConfig.formId);
+    const readOnly$ = this.formsStateService.readOnly$;
     const formsValid$ = this.formsStateService.formsValid$;
     const debugEnabled$ = this.globalConfigService.getDebugEnabled$().pipe(
       tap(debugEnabled => {
@@ -86,11 +88,11 @@ export class EditDialogMainComponent implements OnInit, AfterViewInit, OnDestroy
     );
     this.templateVars$ = combineLatest([
       combineLatest([items$, formsValid$, delayForm$, this.viewInitiated$, reduceSaveButton$]),
-      combineLatest([debugEnabled$, this.debugInfoIsOpen$, hideHeader$]),
+      combineLatest([debugEnabled$, this.debugInfoIsOpen$, hideHeader$, readOnly$]),
     ]).pipe(
       map(([
         [items, formsValid, delayForm, viewInitiated, reduceSaveButton],
-        [debugEnabled, debugInfoIsOpen, hideHeader],
+        [debugEnabled, debugInfoIsOpen, hideHeader, readOnly],
       ]) => {
         const templateVars: EditDialogMainTemplateVars = {
           items,
@@ -101,6 +103,7 @@ export class EditDialogMainComponent implements OnInit, AfterViewInit, OnDestroy
           debugEnabled,
           debugInfoIsOpen,
           hideHeader,
+          readOnly: readOnly.isReadOnly,
         };
         return templateVars;
       }),
@@ -141,7 +144,7 @@ export class EditDialogMainComponent implements OnInit, AfterViewInit, OnDestroy
   closeDialog(forceClose?: boolean) {
     if (forceClose) {
       this.dialogRef.close(this.eavService.eavConfig.createMode ? this.saveResult : undefined);
-    } else if (this.formsStateService.formsDirty$.value) {
+    } else if (!this.formsStateService.readOnly$.value.isReadOnly && this.formsStateService.formsDirty$.value) {
       this.snackBarYouHaveUnsavedChanges();
     } else {
       this.dialogRef.close(this.eavService.eavConfig.createMode ? this.saveResult : undefined);
@@ -162,8 +165,12 @@ export class EditDialogMainComponent implements OnInit, AfterViewInit, OnDestroy
           if (!isValid) { return; }
 
           // do not try to save item which doesn't have any fields, nothing could have changed about it
+          // but enable saving if there is a special metadata
           const hasAttributes = Object.keys(eavItem.Entity.Attributes).length > 0;
-          if (!hasAttributes) { return; }
+          const contentTypeId = InputFieldHelpers.getContentTypeId(eavItem);
+          const contentType = this.contentTypeService.getContentType(contentTypeId);
+          const saveIfEmpty = contentType.Metadata.some(m => m.Type.Name === MetadataDecorators.SaveEmptyDecorator);
+          if (!hasAttributes && !saveIfEmpty) { return; }
 
           const item = Item1.convert(eavItem);
           return item;
@@ -210,11 +217,11 @@ export class EditDialogMainComponent implements OnInit, AfterViewInit, OnDestroy
           fieldErrors.push({ field: key, message: formError[key] });
         });
       });
-      const snackData: SaveErrorsSnackData = {
+      const snackBarData: SaveErrorsSnackBarData = {
         fieldErrors,
       };
       this.snackBar.openFromComponent(SnackBarSaveErrorsComponent, {
-        data: snackData,
+        data: snackBarData,
         duration: 5000,
       });
     }
@@ -227,7 +234,7 @@ export class EditDialogMainComponent implements OnInit, AfterViewInit, OnDestroy
   private dialogBackdropClickSubscribe() {
     this.subscription.add(
       fromEvent<BeforeUnloadEvent>(window, 'beforeunload').subscribe(event => {
-        if (!this.formsStateService.formsDirty$.value) { return; }
+        if (this.formsStateService.readOnly$.value.isReadOnly || !this.formsStateService.formsDirty$.value) { return; }
         event.preventDefault();
         event.returnValue = ''; // fix for Chrome
         this.snackBarYouHaveUnsavedChanges();
@@ -247,22 +254,25 @@ export class EditDialogMainComponent implements OnInit, AfterViewInit, OnDestroy
       const CTRL_S = (navigator.platform.match('Mac') ? event.metaKey : event.ctrlKey) && event.keyCode === 83;
       if (CTRL_S) {
         event.preventDefault();
-        this.saveAll(false);
+        if (!this.formsStateService.readOnly$.value.isReadOnly) {
+          this.saveAll(false);
+        }
+        return;
       }
     });
   }
 
   private snackBarYouHaveUnsavedChanges() {
-    const snackData: UnsavedChangesSnackData = {
+    const snackBarData: UnsavedChangesSnackBarData = {
       save: false,
     };
     const snackBarRef = this.snackBar.openFromComponent(SnackBarUnsavedChangesComponent, {
-      data: snackData,
+      data: snackBarData,
       duration: 5000,
     });
 
     snackBarRef.onAction().subscribe(() => {
-      if (snackBarRef.containerInstance.snackBarConfig.data.save) {
+      if ((snackBarRef.containerInstance.snackBarConfig.data as UnsavedChangesSnackBarData).save) {
         this.saveAll(true);
       } else {
         this.closeDialog(true);

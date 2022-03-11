@@ -3,3 +3,48 @@
   max-height: 45%;
   overflow-y: scroll;
 }
+
+.dropzone-previews {
+  display: flex;
+  overflow-x: auto;
+  overflow-y: hidden;
+  box-shadow: 0 2px 0 #ccc inset;
+
+  ::ng-deep .dz-preview {
+    padding: 5px;
+  }
+
+  ::ng-deep .dz-details,
+  ::ng-deep .dz-progress,
+  ::ng-deep .dz-error-message,
+  ::ng-deep .dz-success-mark,
+  ::ng-deep .dz-error-mark {
+    display: none;
+  }
+
+  @keyframes spinner {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  ::ng-deep .dz-image {
+    position: relative;
+  }
+
+  ::ng-deep .dz-image:before {
+    content: '';
+    box-sizing: border-box;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 32px;
+    height: 32px;
+    margin-top: -16px;
+    margin-left: -16px;
+    border-radius: 50%;
+    border: 4px solid #0087f4;
+    border-top-color: transparent;
+    animation: spinner .6s linear infinite;
+  }
+}

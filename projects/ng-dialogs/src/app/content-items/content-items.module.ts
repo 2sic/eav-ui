@@ -2,6 +2,7 @@ import { AgGridModule } from '@ag-grid-community/angular';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatRippleModule } from '@angular/material/core';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -13,7 +14,6 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { EcoFabSpeedDialModule } from '@ecodev/fab-speed-dial';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { ContentExportService } from '../content-export/services/content-export.service';
 import { Context } from '../shared/services/context';
@@ -54,10 +54,10 @@ import { EntitiesService } from './services/entities.service';
     MatProgressSpinnerModule,
     MatRippleModule,
     MatSnackBarModule,
-    EcoFabSpeedDialModule,
     MatMenuModule,
     ReactiveFormsModule,
     MatSlideToggleModule,
+    MatBadgeModule,
   ],
   providers: [
     Context,
@@ -65,6 +65,6 @@ import { EntitiesService } from './services/entities.service';
     EntitiesService,
     ContentExportService,
     ContentTypesService,
-  ]
+  ],
 })
 export class ContentItemsModule { }

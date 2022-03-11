@@ -6,6 +6,7 @@ import { IAgActions } from '../ag-actions';
 // that's not great
 export enum QueryActions {
   Edit,
+  Metadata,
   Rest,
   Clone,
   Permissions,

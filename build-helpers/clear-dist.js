@@ -4,4 +4,6 @@ const chalk = require('chalk');
 const chalkSuccess = chalk.green;
 
 fs.emptyDirSync('./dist');
+// create angular.json outputPath
+fs.ensureDirSync('./dist/ng-dialogs');
 console.log(chalkSuccess('Dist folder emptied!'));

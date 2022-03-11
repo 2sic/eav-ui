@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
+import { InputTypeConstants } from '../../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { EavService, FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
@@ -9,8 +10,7 @@ import { StringDropdownLogic } from './string-dropdown-logic';
 import { StringDropdownTemplateVars } from './string-dropdown.models';
 
 @Component({
-  // tslint:disable-next-line:component-selector
-  selector: 'string-dropdown',
+  selector: InputTypeConstants.StringDropdown,
   templateUrl: './string-dropdown.component.html',
   styleUrls: ['./string-dropdown.component.scss'],
 })
@@ -67,7 +67,9 @@ export class StringDropdownComponent extends BaseComponent<string | number> impl
     super.ngOnDestroy();
   }
 
-  toggleFreeTextMode() {
-    this.toggleFreeText$.next(!this.toggleFreeText$.value);
+  toggleFreeTextMode(freeTextMode: boolean) {
+    if (this.toggleFreeText$.value !== freeTextMode) {
+      this.toggleFreeText$.next(freeTextMode);
+    }
   }
 }

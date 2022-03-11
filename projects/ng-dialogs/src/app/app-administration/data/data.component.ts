@@ -1,4 +1,4 @@
-import { AllCommunityModules, CellClassParams, CellClickedEvent, GridOptions } from '@ag-grid-community/all-modules';
+import { AllCommunityModules, GridOptions } from '@ag-grid-community/all-modules';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
@@ -8,18 +8,22 @@ import { GlobalConfigService } from '../../../../../edit/shared/store/ngrx-data'
 import { ContentExportService } from '../../content-export/services/content-export.service';
 import { ContentImportDialogData } from '../../content-import/content-import-dialog.config';
 import { GoToDevRest } from '../../dev-rest/go-to-dev-rest';
+import { GoToMetadata } from '../../metadata';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
-import { eavConstants, EavScopeOption } from '../../shared/constants/eav.constants';
+import { dropdownInsertValue } from '../../shared/constants/dropdown-insert-value.constant';
+import { eavConstants, ScopeOption } from '../../shared/constants/eav.constants';
 import { toString } from '../../shared/helpers/file-to-base64.helper';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { EditForm } from '../../shared/models/edit-form.model';
 import { DataActionsComponent } from '../ag-grid-components/data-actions/data-actions.component';
 import { DataActionsParams } from '../ag-grid-components/data-actions/data-actions.models';
 import { DataFieldsComponent } from '../ag-grid-components/data-fields/data-fields.component';
+import { DataFieldsParams } from '../ag-grid-components/data-fields/data-fields.models';
 import { DataItemsComponent } from '../ag-grid-components/data-items/data-items.component';
+import { DataItemsParams } from '../ag-grid-components/data-items/data-items.models';
 import { ContentType } from '../models/content-type.model';
 import { ContentTypesService } from '../services/content-types.service';
 import { ImportContentTypeDialogData } from '../sub-dialogs/import-content-type/import-content-type-dialog.config';
@@ -34,7 +38,7 @@ export class DataComponent implements OnInit, OnDestroy {
 
   contentTypes$ = new BehaviorSubject<ContentType[]>(null);
   scope$ = new BehaviorSubject<string>(null);
-  scopeOptions$ = new BehaviorSubject<EavScopeOption[]>([]);
+  scopeOptions$ = new BehaviorSubject<ScopeOption[]>([]);
   debugEnabled$ = this.globalConfigService.getDebugEnabled$();
 
   modules = AllCommunityModules;
@@ -48,15 +52,18 @@ export class DataComponent implements OnInit, OnDestroy {
     },
     columnDefs: [
       {
-        headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
-        cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter',
+        headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense',
+        cellClass: (params) => `${(params.data as ContentType).EditInfo.ReadOnly ? 'disabled' : ''} id-action no-padding no-outline`,
+        cellRenderer: 'idFieldComponent', sortable: true, filter: 'agNumberColumnFilter',
+        valueGetter: (params) => (params.data as ContentType).Id,
         cellRendererParams: {
-          tooltipGetter: (paramsData: ContentType) => `ID: ${paramsData.Id}\nGUID: ${paramsData.StaticName}`,
+          tooltipGetter: (contentType: ContentType) => `ID: ${contentType.Id}\nGUID: ${contentType.StaticName}`,
         } as IdFieldParams,
       },
       {
-        headerName: 'Content Type', field: 'Label', flex: 3, minWidth: 250, cellClass: 'primary-action highlight', sortable: true,
-        sort: 'asc', filter: 'agTextColumnFilter', onCellClicked: this.showContentItems.bind(this),
+        headerName: 'Content Type', field: 'ContentType', flex: 3, minWidth: 250, cellClass: 'primary-action highlight', sortable: true,
+        sort: 'asc', filter: 'agTextColumnFilter', onCellClicked: (params) => this.showContentItems(params.data as ContentType),
+        valueGetter: (params) => (params.data as ContentType).Label,
         comparator: (valueA, valueB, nodeA, nodeB, isInverted) => {
           const a = (nodeA.data as ContentType)._compareLabel;
           const b = (nodeB.data as ContentType)._compareLabel;
@@ -64,39 +71,52 @@ export class DataComponent implements OnInit, OnDestroy {
         },
       },
       {
-        headerName: 'Items', field: 'Items', width: 102, headerClass: 'dense', cellClass: 'secondary-action no-padding',
-        sortable: true, filter: 'agNumberColumnFilter', cellRenderer: 'dataItemsComponent', onCellClicked: this.addItem.bind(this),
-      },
-      {
-        headerName: 'Fields', field: 'Fields', width: 94, headerClass: 'dense', cellClass: 'secondary-action no-padding',
-        sortable: true, filter: 'agNumberColumnFilter', cellRenderer: 'dataFieldsComponent', onCellClicked: this.editFields.bind(this),
-      },
-      {
-        headerName: 'Name', field: 'Name', flex: 1, minWidth: 100, cellClass: this.nameCellClassGetter.bind(this),
-        sortable: true, filter: 'agTextColumnFilter', onCellClicked: (event) => { this.editContentType(event.data); },
-      },
-      {
-        headerName: 'Description', field: 'Metadata.Description', flex: 3, minWidth: 250, cellClass: 'no-outline',
-        sortable: true, filter: 'agTextColumnFilter',
-      },
-      {
-        width: 120, cellClass: 'secondary-action no-padding', cellRenderer: 'dataActionsComponent', pinned: 'right',
+        field: 'Items', width: 102, headerClass: 'dense', cellClass: 'secondary-action no-padding',
+        sortable: true, filter: 'agNumberColumnFilter', cellRenderer: 'dataItemsComponent',
+        valueGetter: (params) => (params.data as ContentType).Items,
         cellRendererParams: {
-          enablePermissionsGetter: this.enablePermissionsGetter.bind(this),
-          onCreateOrEditMetadata: this.createOrEditMetadata.bind(this),
-          onOpenPermissions: this.openPermissions.bind(this),
-          onEdit: this.editContentType.bind(this),
-          onOpenRestApi: this.openRestApi.bind(this),
-          onTypeExport: this.exportType.bind(this),
-          onOpenDataExport: this.openDataExport.bind(this),
-          onOpenDataImport: this.openDataImport.bind(this),
-          onDelete: this.deleteContentType.bind(this),
+          onShowItems: (contentType) => this.showContentItems(contentType),
+          onAddItem: (contentType) => this.addItem(contentType),
+        } as DataItemsParams,
+      },
+      {
+        field: 'Fields', width: 94, headerClass: 'dense', cellClass: 'secondary-action no-padding',
+        sortable: true, filter: 'agNumberColumnFilter', cellRenderer: 'dataFieldsComponent',
+        valueGetter: (params) => (params.data as ContentType).Fields,
+        cellRendererParams: {
+          onEditFields: (contentType) => this.editFields(contentType),
+        } as DataFieldsParams,
+      },
+      {
+        field: 'Name', flex: 1, minWidth: 100,
+        cellClass: (params) => (params.data as ContentType).EditInfo.ReadOnly ? 'no-outline' : 'primary-action highlight',
+        valueGetter: (params) => (params.data as ContentType).Name,
+        sortable: true, filter: 'agTextColumnFilter', onCellClicked: (event) => this.editContentType(event.data as ContentType),
+      },
+      {
+        field: 'Description', flex: 3, minWidth: 250, cellClass: 'no-outline',
+        sortable: true, filter: 'agTextColumnFilter',
+        valueGetter: (params) => (params.data as ContentType).Properties?.Description,
+      },
+      {
+        width: 162, cellClass: 'secondary-action no-padding', cellRenderer: 'dataActionsComponent', pinned: 'right',
+        cellRendererParams: {
+          enablePermissionsGetter: () => this.enablePermissionsGetter(),
+          onCreateOrEditMetadata: (contentType) => this.createOrEditMetadata(contentType),
+          onOpenPermissions: (contentType) => this.openPermissions(contentType),
+          onEdit: (contentType) => this.editContentType(contentType),
+          onOpenRestApi: (contentType) => this.openRestApi(contentType),
+          onOpenMetadata: (contentType) => this.openMetadata(contentType),
+          onTypeExport: (contentType) => this.exportType(contentType),
+          onOpenDataExport: (contentType) => this.openDataExport(contentType),
+          onOpenDataImport: (contentType) => this.openDataImport(contentType),
+          onDelete: (contentType) => this.deleteContentType(contentType),
         } as DataActionsParams,
       },
     ],
   };
 
-  private defaultScope = eavConstants.scopes.default.value;
+  dropdownInsertValue = dropdownInsertValue;
   private subscription = new Subscription();
 
   constructor(
@@ -148,8 +168,7 @@ export class DataComponent implements OnInit, OnDestroy {
     this.router.navigate(['import'], { relativeTo: this.route.firstChild, state: importContentTypeData });
   }
 
-  private showContentItems(params: CellClickedEvent) {
-    const contentType = params.data as ContentType;
+  private showContentItems(contentType: ContentType) {
     this.router.navigate([`items/${contentType.StaticName}`], { relativeTo: this.route.firstChild });
   }
 
@@ -157,7 +176,7 @@ export class DataComponent implements OnInit, OnDestroy {
     if (!contentType) {
       this.router.navigate(['add'], { relativeTo: this.route.firstChild });
     } else {
-      if (contentType.UsesSharedDef) { return; }
+      if (contentType.EditInfo.ReadOnly) { return; }
       this.router.navigate([`${contentType.StaticName}/edit`], { relativeTo: this.route.firstChild });
     }
   }
@@ -168,7 +187,7 @@ export class DataComponent implements OnInit, OnDestroy {
         contentType._compareLabel = contentType.Label.replace(/\p{Emoji}/gu, 'ž');
       }
       this.contentTypes$.next(contentTypes);
-      if (this.scope$.value !== this.defaultScope) {
+      if (this.scope$.value !== eavConstants.scopes.default.value) {
         const message = 'Warning! You are in a special scope. Changing things here could easily break functionality';
         this.snackBar.open(message, null, { duration: 2000 });
       }
@@ -201,8 +220,8 @@ export class DataComponent implements OnInit, OnDestroy {
   }
 
   changeScope(newScope: string) {
-    if (newScope === 'Other') {
-      newScope = prompt('This is an advanced feature to show content-types of another scope. Don\'t use this if you don\'t know what you\'re doing, as content-types of other scopes are usually hidden for a good reason.') || this.defaultScope;
+    if (newScope === dropdownInsertValue) {
+      newScope = prompt('This is an advanced feature to show content-types of another scope. Don\'t use this if you don\'t know what you\'re doing, as content-types of other scopes are usually hidden for a good reason.') || eavConstants.scopes.default.value;
     }
     this.router.navigate([`data/${newScope}`], { relativeTo: this.route });
   }
@@ -211,17 +230,7 @@ export class DataComponent implements OnInit, OnDestroy {
     return this.enablePermissions;
   }
 
-  private nameCellClassGetter(params: CellClassParams) {
-    const contentType: ContentType = params.data;
-    if (contentType.UsesSharedDef) {
-      return 'disabled';
-    } else {
-      return 'primary-action highlight';
-    }
-  }
-
-  private addItem(params: CellClickedEvent) {
-    const contentType = params.data as ContentType;
+  private addItem(contentType: ContentType) {
     const form: EditForm = {
       items: [{ ContentTypeName: contentType.StaticName }],
     };
@@ -229,33 +238,40 @@ export class DataComponent implements OnInit, OnDestroy {
     this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.firstChild });
   }
 
-  private editFields(params: CellClickedEvent) {
-    const contentType = params.data as ContentType;
-    if (contentType.UsesSharedDef) { return; }
+  private editFields(contentType: ContentType) {
     this.router.navigate([`fields/${contentType.StaticName}`], { relativeTo: this.route.firstChild });
   }
 
   private createOrEditMetadata(contentType: ContentType) {
     const form: EditForm = {
       items: [
-        !contentType.Metadata
+        !contentType.Properties
           ? {
             ContentTypeName: eavConstants.contentTypes.contentType,
             For: {
               Target: eavConstants.metadata.contentType.target,
+              TargetType: eavConstants.metadata.contentType.targetType,
               String: contentType.StaticName,
             },
             Prefill: { Label: contentType.Name, Description: contentType.Description },
           }
-          : { EntityId: contentType.Metadata.Id }
+          : { EntityId: contentType.Properties.Id }
       ],
     };
     const formUrl = convertFormToUrl(form);
     this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.firstChild });
   }
 
+  private openMetadata(contentType: ContentType) {
+    const url = GoToMetadata.getUrlContentType(
+      contentType.StaticName,
+      `Metadata for Content Type: ${contentType.Name} (${contentType.Id})`,
+    );
+    this.router.navigate([url], { relativeTo: this.route.firstChild });
+  }
+
   private openRestApi(contentType: ContentType) {
-    this.router.navigate([GoToDevRest.goToData(contentType)], { relativeTo: this.route.firstChild });
+    this.router.navigate([GoToDevRest.getUrlData(contentType)], { relativeTo: this.route.firstChild });
   }
 
   private exportType(contentType: ContentType) {
@@ -272,7 +288,7 @@ export class DataComponent implements OnInit, OnDestroy {
   }
 
   private openPermissions(contentType: ContentType) {
-    this.router.navigate([GoToPermissions.goEntity(contentType.StaticName)], { relativeTo: this.route.firstChild });
+    this.router.navigate([GoToPermissions.getUrlContentType(contentType.StaticName)], { relativeTo: this.route.firstChild });
   }
 
   private deleteContentType(contentType: ContentType) {
@@ -295,7 +311,7 @@ export class DataComponent implements OnInit, OnDestroy {
       ).subscribe(scope => {
         this.scope$.next(scope);
         if (!this.scopeOptions$.value.map(option => option.value).includes(scope)) {
-          const newScopeOption: EavScopeOption = {
+          const newScopeOption: ScopeOption = {
             name: scope,
             value: scope,
           };

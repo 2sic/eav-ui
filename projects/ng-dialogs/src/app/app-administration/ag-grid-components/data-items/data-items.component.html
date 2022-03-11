@@ -1,8 +1,9 @@
-<div matRipple class="chip-component highlight" tippy="Add item">
-  <div class="chip-box">
-    <span class="chip">{{ value }}</span>
+<div class="actions-component">
+  <div class="like-button highlight" matRipple tippy="{{ value }} items" (click)="showItems()">
+    <div class="text-icon">{{ value }}</div>
   </div>
-  <div class="like-button">
+
+  <div class="like-button highlight" matRipple tippy="Add item" (click)="addItem()">
     <mat-icon>add</mat-icon>
   </div>
 </div>

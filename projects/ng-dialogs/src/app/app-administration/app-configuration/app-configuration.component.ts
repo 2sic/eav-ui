@@ -1,18 +1,24 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { forkJoin, Subscription } from 'rxjs';
+import { forkJoin, of, Subscription } from 'rxjs';
 import { filter, map, pairwise, startWith } from 'rxjs/operators';
+import { GlobalConfigService } from '../../../../../edit/shared/store/ngrx-data';
 import { ContentItemsService } from '../../content-items/services/content-items.service';
+import { ContentTypesFieldsService } from '../../content-type-fields/services/content-types-fields.service';
+import { GoToMetadata } from '../../metadata';
+import { MetadataService } from '../../permissions';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
 import { eavConstants, SystemSettingsScope, SystemSettingsScopes } from '../../shared/constants/eav.constants';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
-import { AppScopes, DialogContextApp } from '../../shared/models/dialog-context.models';
+import { AppScopes } from '../../shared/models/dialog-context.models';
 import { EditForm } from '../../shared/models/edit-form.model';
 import { Context } from '../../shared/services/context';
 import { DialogService } from '../../shared/services/dialog.service';
+import { ContentTypeEdit } from '../models';
 import { DialogSettings } from '../models/dialog-settings.model';
+import { ContentTypesService } from '../services';
 import { ExportAppService } from '../services/export-app.service';
 import { ImportAppPartsService } from '../services/import-app-parts.service';
 import { AnalyzePart, AnalyzeParts } from '../sub-dialogs/analyze-settings/analyze-settings.models';
@@ -22,19 +28,25 @@ import { AnalyzePart, AnalyzeParts } from '../sub-dialogs/analyze-settings/analy
   templateUrl: './app-configuration.component.html',
   styleUrls: ['./app-configuration.component.scss'],
 })
-export class AppConfigurationComponent implements OnInit, OnDestroy {
+export class AppConfigurationComponent implements OnInit, OnChanges, OnDestroy {
   @Input() dialogSettings: DialogSettings;
+
   eavConstants = eavConstants;
   AnalyzeParts = AnalyzeParts;
   SystemSettingsScopes = SystemSettingsScopes;
   AppScopes = AppScopes;
-  appSystemSettingsExists: boolean;
-  siteSystemSettingsExists: boolean;
-  appSystemResourcesExists: boolean;
-  siteSystemResourcesExists: boolean;
-
-  /** Shortcut to AppSettings as used a lot in the template */
-  appSettings: DialogContextApp;
+  isGlobal: boolean;
+  isPrimary: boolean;
+  isApp: boolean;
+  systemSettingsCount: number;
+  customSettingsCount: number;
+  customSettingsFieldsCount: number;
+  systemResourcesCount: number;
+  customResourcesCount: number;
+  customResourcesFieldsCount: number;
+  appConfigurationsCount: number;
+  appMetadataCount: number;
+  debugEnabled$ = this.globalConfigService.getDebugEnabled$();
 
   private subscription: Subscription;
 
@@ -48,13 +60,24 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
     private snackBar: MatSnackBar,
     private dialogService: DialogService,
     private changeDetectorRef: ChangeDetectorRef,
+    private contentTypesFieldsService: ContentTypesFieldsService,
+    private metadataService: MetadataService,
+    private contentTypesService: ContentTypesService,
+    private globalConfigService: GlobalConfigService,
   ) { }
 
   ngOnInit() {
     this.subscription = new Subscription();
-    this.fetchSystemSettings();
+    this.fetchSettings();
     this.refreshOnChildClosed();
-    this.appSettings = this.dialogSettings.Context.App;
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.dialogSettings != null) {
+      this.isGlobal = this.dialogSettings.Context.App.SettingsScope === AppScopes.Global;
+      this.isPrimary = this.dialogSettings.Context.App.SettingsScope === AppScopes.Site;
+      this.isApp = this.dialogSettings.Context.App.SettingsScope === AppScopes.App;
+    }
   }
 
   ngOnDestroy() {
@@ -69,25 +92,46 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
       switch (staticName) {
         case eavConstants.contentTypes.systemSettings:
         case eavConstants.contentTypes.systemResources:
-          const settingsEntity = contentItems.find(i => systemSettingsScope === SystemSettingsScopes.App
+          const systemSettingsEntities = contentItems.filter(i => systemSettingsScope === SystemSettingsScopes.App
             ? !i.SettingsEntityScope
             : i.SettingsEntityScope === SystemSettingsScopes.Site);
+          if (systemSettingsEntities.length > 1) {
+            throw new Error(`Found too many settings for type ${staticName}`);
+          }
+          const systemSettingsEntity = systemSettingsEntities[0];
           form = {
             items: [
-              settingsEntity == null
+              systemSettingsEntity == null
                 ? {
                   ContentTypeName: staticName,
                   Prefill: {
                     ...(systemSettingsScope === SystemSettingsScopes.Site && { SettingsEntityScope: SystemSettingsScopes.Site }),
                   }
                 }
-                : { EntityId: settingsEntity.Id }
+                : { EntityId: systemSettingsEntity.Id }
+            ],
+          };
+          break;
+        case eavConstants.contentTypes.customSettings:
+        case eavConstants.contentTypes.customResources:
+          if (contentItems.length > 1) {
+            throw new Error(`Found too many settings for type ${staticName}`);
+          }
+          const customSettingsEntity = contentItems[0];
+          form = {
+            items: [
+              customSettingsEntity == null
+                ? { ContentTypeName: staticName }
+                : { EntityId: customSettingsEntity.Id }
             ],
           };
           break;
         default:
-          if (contentItems.length !== 1) {
-            throw new Error(`Found too many settings for the type ${staticName}`);
+          if (contentItems.length < 1) {
+            throw new Error(`Found no settings for type ${staticName}`);
+          }
+          if (contentItems.length > 1) {
+            throw new Error(`Found too many settings for type ${staticName}`);
           }
           form = {
             items: [{ EntityId: contentItems[0].Id }],
@@ -99,14 +143,22 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
     });
   }
 
+  openMetadata() {
+    const url = GoToMetadata.getUrlApp(
+      this.context.appId,
+      `Metadata for App: ${this.dialogSettings.Context.App.Name} (${this.context.appId})`,
+    );
+    this.router.navigate([url], { relativeTo: this.route.firstChild });
+  }
+
   openSiteSettings() {
-    const siteDefaultApp = this.dialogSettings.Context.Site.DefaultApp;
-    this.dialogService.openAppAdministration(siteDefaultApp.ZoneId, siteDefaultApp.AppId, 'app');
+    const sitePrimaryApp = this.dialogSettings.Context.Site.PrimaryApp;
+    this.dialogService.openAppAdministration(sitePrimaryApp.ZoneId, sitePrimaryApp.AppId, 'app');
   }
 
   openGlobalSettings() {
-    const globalDefaultApp = this.dialogSettings.Context.System.DefaultApp;
-    this.dialogService.openAppAdministration(globalDefaultApp.ZoneId, globalDefaultApp.AppId, 'app');
+    const globalPrimaryApp = this.dialogSettings.Context.System.PrimaryApp;
+    this.dialogService.openAppAdministration(globalPrimaryApp.ZoneId, globalPrimaryApp.AppId, 'app');
   }
 
   config(staticName: string) {
@@ -114,7 +166,11 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
   }
 
   openPermissions() {
-    this.router.navigate([GoToPermissions.goApp(this.context.appId)], { relativeTo: this.route.firstChild });
+    this.router.navigate([GoToPermissions.getUrlApp(this.context.appId)], { relativeTo: this.route.firstChild });
+  }
+
+  openLanguagePermissions() {
+    this.router.navigate(['language-permissions'], { relativeTo: this.route.firstChild });
   }
 
   exportApp() {
@@ -162,17 +218,69 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
     this.router.navigate([`analyze/${part}`], { relativeTo: this.route.firstChild });
   }
 
-  private fetchSystemSettings() {
-    forkJoin([
-      this.contentItemsService.getAll(eavConstants.contentTypes.systemSettings),
-      this.contentItemsService.getAll(eavConstants.contentTypes.systemResources),
-    ]).subscribe(([systemSettingsItems, systemResourcesItems]) => {
-      this.appSystemSettingsExists = systemSettingsItems.some(i => !i.SettingsEntityScope);
-      this.siteSystemSettingsExists = systemSettingsItems.some(i => i.SettingsEntityScope === SystemSettingsScopes.Site);
-      this.appSystemResourcesExists = systemResourcesItems.some(i => !i.SettingsEntityScope);
-      this.siteSystemResourcesExists = systemResourcesItems.some(i => i.SettingsEntityScope === SystemSettingsScopes.Site);
+  private fetchSettings() {
+    this.contentTypesService.retrieveContentTypes(eavConstants.scopes.configuration.value).subscribe(contentTypes => {
+      const settingsCustomExists = contentTypes.some(ct => ct.Name === eavConstants.contentTypes.customSettings);
+      const resourcesCustomExists = contentTypes.some(ct => ct.Name === eavConstants.contentTypes.customResources);
 
-      this.changeDetectorRef.markForCheck();
+      forkJoin([
+        forkJoin([
+          this.contentItemsService.getAll(eavConstants.contentTypes.systemSettings),
+          this.isGlobal || this.isPrimary
+            ? settingsCustomExists
+              ? this.contentItemsService.getAll(eavConstants.contentTypes.customSettings) : of(undefined)
+            : this.contentItemsService.getAll(eavConstants.contentTypes.settings),
+          this.isGlobal || this.isPrimary
+            ? settingsCustomExists
+              ? this.contentTypesFieldsService.getFields(eavConstants.contentTypes.customSettings) : of(undefined)
+            : this.contentTypesFieldsService.getFields(eavConstants.contentTypes.settings),
+        ]),
+        forkJoin([
+          this.contentItemsService.getAll(eavConstants.contentTypes.systemResources),
+          this.isGlobal || this.isPrimary
+            ? resourcesCustomExists
+              ? this.contentItemsService.getAll(eavConstants.contentTypes.customResources) : of(undefined)
+            : this.contentItemsService.getAll(eavConstants.contentTypes.resources),
+          this.isGlobal || this.isPrimary
+            ? resourcesCustomExists
+              ? this.contentTypesFieldsService.getFields(eavConstants.contentTypes.customResources) : of(undefined)
+            : this.contentTypesFieldsService.getFields(eavConstants.contentTypes.resources),
+        ]),
+        forkJoin([
+          this.contentItemsService.getAll(eavConstants.contentTypes.appConfiguration),
+          this.metadataService.getMetadata(eavConstants.metadata.app.targetType, eavConstants.metadata.app.keyType, this.context.appId),
+        ]),
+      ]).subscribe(([
+        [
+          systemSettingsItems,
+          customSettingsItems,
+          customSettingsFields,
+        ],
+        [
+          systemResourcesItems,
+          customResourcesItems,
+          customResourcesFields,
+        ],
+        [
+          appConfigurations,
+          appMetadata,
+        ],
+      ]) => {
+        this.systemSettingsCount = this.isPrimary
+          ? systemSettingsItems.filter(i => i.SettingsEntityScope === SystemSettingsScopes.Site).length
+          : systemSettingsItems.filter(i => !i.SettingsEntityScope).length;
+        this.customSettingsCount = customSettingsItems?.length;
+        this.customSettingsFieldsCount = customSettingsFields?.length;
+        this.systemResourcesCount = this.isPrimary
+          ? systemResourcesItems.filter(i => i.SettingsEntityScope === SystemSettingsScopes.Site).length
+          : systemResourcesItems.filter(i => !i.SettingsEntityScope).length;
+        this.customResourcesCount = customResourcesItems?.length;
+        this.customResourcesFieldsCount = customResourcesFields?.length;
+        this.appConfigurationsCount = appConfigurations.length;
+        this.appMetadataCount = appMetadata.Items.length;
+
+        this.changeDetectorRef.markForCheck();
+      });
     });
   }
 
@@ -185,8 +293,39 @@ export class AppConfigurationComponent implements OnInit, OnDestroy {
         pairwise(),
         filter(([hadChild, hasChild]) => hadChild && !hasChild),
       ).subscribe(() => {
-        this.fetchSystemSettings();
+        this.fetchSettings();
       })
     );
+  }
+
+  fixContentType(staticName: string, action: 'edit' | 'config') {
+    this.contentTypesService.retrieveContentTypes(eavConstants.scopes.configuration.value).subscribe(contentTypes => {
+      const contentTypeExists = contentTypes.some(ct => ct.Name === staticName);
+      if (contentTypeExists) {
+        if (action === 'edit') {
+          this.edit(staticName);
+        } else if (action === 'config') {
+          this.config(staticName);
+        }
+      } else {
+        const newContentType = {
+          StaticName: '',
+          Name: staticName,
+          Description: '',
+          Scope: eavConstants.scopes.configuration.value,
+          ChangeStaticName: false,
+          NewStaticName: '',
+        } as ContentTypeEdit;
+        this.contentTypesService.save(newContentType).subscribe(success => {
+          if (!success) { return; }
+
+          if (action === 'edit') {
+            this.edit(staticName);
+          } else if (action === 'config') {
+            this.config(staticName);
+          }
+        });
+      }
+    });
   }
 }

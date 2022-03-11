@@ -1,4 +1,4 @@
-import { AllCommunityModules, CellClickedEvent, GridOptions } from '@ag-grid-community/all-modules';
+import { AllCommunityModules, GridOptions } from '@ag-grid-community/all-modules';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -8,7 +8,7 @@ import { filter, map, pairwise, startWith } from 'rxjs/operators';
 import { IdFieldComponent } from '../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
-import { eavConstants } from '../shared/constants/eav.constants';
+import { eavConstants, MetadataKeyType } from '../shared/constants/eav.constants';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 import { EditForm } from '../shared/models/edit-form.model';
 import { PermissionsActionsComponent } from './ag-grid-components/permissions-actions/permissions-actions.component';
@@ -34,40 +34,48 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     columnDefs: [
       {
         headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
-        cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter',
+        cellRenderer: 'idFieldComponent', sortable: true, filter: 'agNumberColumnFilter',
+        valueGetter: (params) => (params.data as Permission).Id,
         cellRendererParams: {
-          tooltipGetter: (paramsData: Permission) => `ID: ${paramsData.Id}\nGUID: ${paramsData.Guid}`,
+          tooltipGetter: (permission: Permission) => `ID: ${permission.Id}\nGUID: ${permission.Guid}`,
         } as IdFieldParams,
       },
       {
-        headerName: 'Name', field: 'Title', flex: 2, minWidth: 250, cellClass: 'primary-action highlight',
-        sortable: true, sort: 'asc', filter: 'agTextColumnFilter', onCellClicked: this.editPermission.bind(this),
+        field: 'Name', flex: 2, minWidth: 250, cellClass: 'primary-action highlight',
+        sortable: true, sort: 'asc', filter: 'agTextColumnFilter',
+        onCellClicked: (event) => this.editPermission(event.data as Permission),
+        valueGetter: (params) => (params.data as Permission).Title,
       },
       {
-        headerName: 'Identity', field: 'Identity', flex: 2, minWidth: 250, cellClass: 'no-outline', sortable: true,
-        filter: 'agTextColumnFilter',
+        field: 'Identity', flex: 2, minWidth: 250, cellClass: 'no-outline', sortable: true,
+        filter: 'agTextColumnFilter', valueGetter: (params) => (params.data as Permission).Identity,
       },
       {
-        headerName: 'Condition', field: 'Condition', flex: 2, minWidth: 250, cellClass: 'no-outline', sortable: true,
-        filter: 'agTextColumnFilter',
+        field: 'Condition', flex: 2, minWidth: 250, cellClass: 'no-outline', sortable: true,
+        filter: 'agTextColumnFilter', valueGetter: (params) => (params.data as Permission).Condition,
       },
       {
-        headerName: 'Grant', field: 'Grant', width: 70, headerClass: 'dense', cellClass: 'no-outline',
-        sortable: true, filter: 'agTextColumnFilter',
+        field: 'Grant', width: 70, headerClass: 'dense', cellClass: 'no-outline',
+        sortable: true, filter: 'agTextColumnFilter', valueGetter: (params) => (params.data as Permission).Grant,
       },
       {
-        width: 40, cellClass: 'secondary-action no-padding', cellRenderer: 'permissionsActionsComponent', pinned: 'right',
+        width: 42, cellClass: 'secondary-action no-padding', cellRenderer: 'permissionsActionsComponent', pinned: 'right',
         cellRendererParams: {
-          onDelete: this.deletePermission.bind(this),
+          onDelete: (permission) => this.deletePermission(permission),
         } as PermissionsActionsParams,
       },
     ],
   };
 
   private subscription = new Subscription();
-  private targetType = parseInt(this.route.snapshot.paramMap.get('type'), 10);
-  private keyType = this.route.snapshot.paramMap.get('keyType');
+  private targetType = parseInt(this.route.snapshot.paramMap.get('targetType'), 10);
+  private keyType = this.route.snapshot.paramMap.get('keyType') as MetadataKeyType;
   private key = this.route.snapshot.paramMap.get('key');
+  private prefills: Record<string, Record<string, string>> = {
+    [eavConstants.metadata.language.targetType]: {
+      PermissionType: 'language',
+    },
+  };
 
   constructor(
     private dialogRef: MatDialogRef<PermissionsComponent>,
@@ -97,23 +105,23 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     });
   }
 
-  editPermission(params: CellClickedEvent) {
+  editPermission(permission?: Permission) {
     let form: EditForm;
-    if (params == null) {
-      const target = Object.values(eavConstants.metadata).find(metaValue => metaValue.type === this.targetType)?.target;
+    if (permission == null) {
       form = {
         items: [{
           ContentTypeName: eavConstants.contentTypes.permissions,
           For: {
-            Target: target,
+            Target: Object.values(eavConstants.metadata).find(m => m.targetType === this.targetType)?.target ?? this.targetType.toString(),
+            TargetType: this.targetType,
             ...(this.keyType === eavConstants.keyTypes.guid && { Guid: this.key }),
             ...(this.keyType === eavConstants.keyTypes.number && { Number: parseInt(this.key, 10) }),
             ...(this.keyType === eavConstants.keyTypes.string && { String: this.key }),
-          }
+          },
+          ...(this.prefills[this.targetType] && { Prefill: this.prefills[this.targetType] }),
         }],
       };
     } else {
-      const permission: Permission = params.data;
       form = {
         items: [{ EntityId: permission.Id }],
       };

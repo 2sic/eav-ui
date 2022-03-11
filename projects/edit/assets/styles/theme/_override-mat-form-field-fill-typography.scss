@@ -20,6 +20,35 @@
       height: 30px !important;
       line-height: 30px;
     }
+
+    .entity-dropdown-button {
+      cursor: text;
+
+      &.mat-button-disabled {
+        cursor: default;
+      }
+    }
+
+    .selection-suffix {
+      display: flex;
+
+      .mat-icon-button {
+        top: 0;
+
+        .mat-icon {
+          font-size: 18px;
+        }
+      }
+
+      .active {
+        background-color: $accent-color;
+        color: white;
+
+        &.mat-button-disabled {
+          background-color: $editUI-label-disabled-color;
+        }
+      }
+    }
   }
 
   .mat-select-arrow-wrapper {

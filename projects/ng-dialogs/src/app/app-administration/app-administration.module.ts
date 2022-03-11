@@ -17,9 +17,13 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
-import { EcoFabSpeedDialModule } from '@ecodev/fab-speed-dial';
+import { ZoneService } from '../apps-management/services/zone.service';
+import { SourceService } from '../code-editor/services/source.service';
 import { ContentExportService } from '../content-export/services/content-export.service';
 import { ContentItemsService } from '../content-items/services/content-items.service';
+import { ContentTypesFieldsService } from '../content-type-fields/services/content-types-fields.service';
+import { CreateFileDialogModule } from '../create-file-dialog';
+import { MetadataService } from '../permissions';
 import { Context } from '../shared/services/context';
 import { DialogService } from '../shared/services/dialog.service';
 import { SharedComponentsModule } from '../shared/shared-components.module';
@@ -29,6 +33,7 @@ import { AnalyzeSettingsValueComponent } from './ag-grid-components/analyze-sett
 import { DataActionsComponent } from './ag-grid-components/data-actions/data-actions.component';
 import { DataFieldsComponent } from './ag-grid-components/data-fields/data-fields.component';
 import { DataItemsComponent } from './ag-grid-components/data-items/data-items.component';
+import { LanguagesPermissionsActionsComponent } from './ag-grid-components/languages-permissions-actions/languages-permissions-actions.component';
 import { QueriesActionsComponent } from './ag-grid-components/queries-actions/queries-actions.component';
 import { ViewsActionsComponent } from './ag-grid-components/views-actions/views-actions.component';
 import { ViewsShowComponent } from './ag-grid-components/views-show/views-show.component';
@@ -36,6 +41,7 @@ import { ViewsTypeComponent } from './ag-grid-components/views-type/views-type.c
 import { ViewsUsageIdComponent } from './ag-grid-components/views-usage-id/views-usage-id.component';
 import { ViewsUsageStatusFilterComponent } from './ag-grid-components/views-usage-status-filter/views-usage-status-filter.component';
 import { WebApiActionsComponent } from './ag-grid-components/web-api-actions/web-api-actions.component';
+import { WebApiTypeComponent } from './ag-grid-components/web-api-type/web-api-type.component';
 import { AppAdministrationNavComponent } from './app-administration-nav/app-administration-nav.component';
 import { AppAdministrationRoutingModule } from './app-administration-routing.module';
 import { AppConfigurationComponent } from './app-configuration/app-configuration.component';
@@ -50,7 +56,6 @@ import { ExportAppService } from './services/export-app.service';
 import { ImportAppPartsService } from './services/import-app-parts.service';
 import { PipelinesService } from './services/pipelines.service';
 import { ViewsService } from './services/views.service';
-import { WebApisService } from './services/web-apis.service';
 import { AnalyzeSettingsComponent } from './sub-dialogs/analyze-settings/analyze-settings.component';
 import { SettingsItemDetailsComponent } from './sub-dialogs/analyze-settings/settings-item-details/settings-item-details.component';
 import { EditContentTypeComponent } from './sub-dialogs/edit-content-type/edit-content-type.component';
@@ -60,6 +65,7 @@ import { ImportAppPartsComponent } from './sub-dialogs/import-app-parts/import-a
 import { ImportContentTypeComponent } from './sub-dialogs/import-content-type/import-content-type.component';
 import { ImportQueryComponent } from './sub-dialogs/import-query/import-query.component';
 import { ImportViewComponent } from './sub-dialogs/import-view/import-view.component';
+import { LanguagePermissionsComponent } from './sub-dialogs/language-permissions/language-permissions.component';
 import { ViewsUsageComponent } from './sub-dialogs/views-usage/views-usage.component';
 import { ViewsComponent } from './views/views.component';
 import { WebApiComponent } from './web-api/web-api.component';
@@ -96,6 +102,9 @@ import { WebApiComponent } from './web-api/web-api.component';
     AnalyzeSettingsValueComponent,
     AnalyzeSettingsTotalResultsComponent,
     SettingsItemDetailsComponent,
+    LanguagePermissionsComponent,
+    LanguagesPermissionsActionsComponent,
+    WebApiTypeComponent,
   ],
   imports: [
     AppAdministrationRoutingModule,
@@ -115,10 +124,10 @@ import { WebApiComponent } from './web-api/web-api.component';
     MatExpansionModule,
     MatCardModule,
     MatRippleModule,
-    EcoFabSpeedDialModule,
     MatSnackBarModule,
     MatMenuModule,
     MatBadgeModule,
+    CreateFileDialogModule,
   ],
   providers: [
     Context,
@@ -127,13 +136,16 @@ import { WebApiComponent } from './web-api/web-api.component';
     PipelinesService,
     ViewsService,
     ContentExportService,
-    WebApisService,
+    SourceService,
     ContentItemsService,
     ExportAppService,
     ExportAppPartsService,
     ImportAppPartsService,
     DialogService,
     AnalyzeSettingsService,
-  ]
+    ContentTypesFieldsService,
+    MetadataService,
+    ZoneService,
+  ],
 })
 export class AppAdministrationModule { }

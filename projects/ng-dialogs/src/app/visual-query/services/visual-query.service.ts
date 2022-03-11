@@ -7,13 +7,14 @@ import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import cloneDeep from 'lodash-es/cloneDeep';
 import { BehaviorSubject, fromEvent, Subject, Subscription } from 'rxjs';
 import { filter, map, pairwise, startWith } from 'rxjs/operators';
+import { GeneralHelpers } from '../../../../../edit/shared/helpers';
 import { ContentTypesService } from '../../app-administration/services/content-types.service';
 import { MetadataService } from '../../permissions/services/metadata.service';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { EditForm } from '../../shared/models/edit-form.model';
 // tslint:disable-next-line:max-line-length
-import { DataSource, DataSourceMetadata, DebugStreamInfo, PipelineDataSource, PipelineModel, PipelineResult, PipelineResultStream, StreamWire, VisualDesignerData } from '../models';
+import { DataSource, DataSourceConfig, DataSourceConfigs, DebugStreamInfo, PipelineDataSource, PipelineModel, PipelineResult, PipelineResultStream, StreamWire, VisualDesignerData } from '../models';
 import { QueryResultComponent } from '../query-result/query-result.component';
 import { QueryResultDialogData } from '../query-result/query-result.models';
 import { StreamErrorResultComponent } from '../stream-error-result/stream-error-result.component';
@@ -25,9 +26,12 @@ export class VisualQueryService implements OnDestroy {
   pipelineModel$ = new BehaviorSubject<PipelineModel>(null);
   dataSources$ = new BehaviorSubject<DataSource[]>(null);
   putEntityCountOnConnections$ = new Subject<PipelineResult>();
+  dataSourceConfigs$ = new BehaviorSubject<DataSourceConfigs>({});
+  pipelineResult?: PipelineResult;
 
   private pipelineId = parseInt(this.route.snapshot.paramMap.get('pipelineId'), 10);
-  private doRefresh = false;
+  private refreshPipeline = false;
+  private refreshDataSourceConfigs = false;
   private subscription = new Subscription();
 
   constructor(
@@ -52,7 +56,7 @@ export class VisualQueryService implements OnDestroy {
   }
 
   init() {
-    this.fetchDataSources(() => this.fetchPipeline());
+    this.fetchDataSources(() => this.fetchPipeline(true, true, false));
     this.attachKeyboardSave();
     this.refreshOnChildClosed();
   }
@@ -64,8 +68,8 @@ export class VisualQueryService implements OnDestroy {
         items: [{ EntityId: this.pipelineModel$.value.Pipeline.EntityId }],
       };
       const formUrl = convertFormToUrl(form);
-      this.doRefresh = true;
       this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
+      this.refreshPipeline = true;
     });
   }
 
@@ -77,6 +81,14 @@ export class VisualQueryService implements OnDestroy {
     } else if (run) {
       this.runPipeline();
     }
+  }
+
+  showDataSourceDetails(showDetails: boolean) {
+    const pipelineModel = cloneDeep(this.pipelineModel$.value);
+    const visualDesignerData: Record<string, any> = GeneralHelpers.tryParse(pipelineModel.Pipeline.VisualDesignerData) ?? {};
+    visualDesignerData.ShowDataSourceDetails = showDetails;
+    pipelineModel.Pipeline.VisualDesignerData = JSON.stringify(visualDesignerData);
+    this.pipelineModel$.next(pipelineModel);
   }
 
   addDataSource(dataSource: DataSource) {
@@ -135,45 +147,73 @@ export class VisualQueryService implements OnDestroy {
     this.pipelineModel$.next(pipelineModel);
   }
 
+  private calculateDataSourceConfigs(dataSources: PipelineDataSource[]) {
+    const dataSourceConfigs: DataSourceConfigs = {};
+    dataSources.forEach(dataSource => {
+      if (dataSource.EntityId == null) { return; }
+      dataSourceConfigs[dataSource.EntityId] = [];
+      dataSource.Metadata?.forEach(metadataItem => {
+        Object.entries(metadataItem).forEach(([attributeName, attributeValue]) => {
+          if (attributeValue == null || attributeValue === '') { return; }
+          if (['Created', 'Guid', 'Id', 'Modified', 'Title', '_Type'].includes(attributeName)) { return; }
+          if (Array.isArray(attributeValue) && attributeValue[0]?.Title != null && attributeValue[0]?.Id != null) {
+            attributeValue = `${attributeValue[0].Title} (${attributeValue[0].Id})`;
+          }
+          const dataSourceConfig: DataSourceConfig = {
+            name: attributeName,
+            value: attributeValue,
+          };
+          dataSourceConfigs[dataSource.EntityId].push(dataSourceConfig);
+        });
+      });
+    });
+    this.dataSourceConfigs$.next(dataSourceConfigs);
+  }
+
   editDataSource(pipelineDataSource: PipelineDataSource) {
     const dataSource = this.dataSources$.value.find(ds => ds.PartAssemblyAndType === pipelineDataSource.PartAssemblyAndType);
-
-    // const contentTypeName = dataSource?.ContentType
-    //   ?? '|Config ' + this.queryDefinitionService.typeNameFilter(pipelineDataSource.PartAssemblyAndType, 'classFullName');
     const contentTypeName = dataSource.ContentType;
-    const typeId = eavConstants.metadata.entity.type;
-    const keyType = eavConstants.keyTypes.guid;
+    const targetType = eavConstants.metadata.entity.targetType;
+    const keyType = eavConstants.metadata.entity.keyType;
     const key = pipelineDataSource.EntityGuid;
 
     // query for existing Entity
-    this.metadataService.getMetadata<DataSourceMetadata[]>(typeId, keyType, key, contentTypeName).subscribe(metadata => {
+    this.metadataService.getMetadata(targetType, keyType, key, contentTypeName).subscribe(metadata => {
       // edit existing Entity
-      if (metadata.length) {
+      if (metadata.Items.length) {
         const form: EditForm = {
-          items: [{ EntityId: metadata[0].Id }],
+          items: [{ EntityId: metadata.Items[0].Id }],
         };
         const formUrl = convertFormToUrl(form);
         this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
+        this.refreshDataSourceConfigs = true;
         return;
       }
 
       // Check if the type exists, and if yes, create new Entity
-      this.contentTypesService.retrieveContentType(contentTypeName /*, { ignoreErrors: 'true' } */).subscribe({
+      this.contentTypesService.retrieveContentType(contentTypeName).subscribe({
         next: contentType => {
+          if (contentType == null) {
+            this.snackBar.open('DataSource doesn\'t have any configuration', undefined, { duration: 3000 });
+            return;
+          }
           const form: EditForm = {
             items: [{
               ContentTypeName: contentTypeName,
               For: {
                 Target: eavConstants.metadata.entity.target,
+                TargetType: eavConstants.metadata.entity.targetType,
                 Guid: key,
-              }
+              },
             }],
           };
           const formUrl = convertFormToUrl(form);
           this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
+          this.refreshDataSourceConfigs = true;
         },
         error: (error: HttpErrorResponse) => {
-          alert('Server reports error - this usually means that this data-source doesn\'t have any configuration');
+          const message = 'Server reports error - this usually means that this DataSource doesn\'t have any configuration';
+          this.snackBar.open(message, undefined, { duration: 3000 });
         }
       });
     });
@@ -198,6 +238,7 @@ export class VisualQueryService implements OnDestroy {
     this.queryDefinitionService.runPipeline(this.pipelineModel$.value.Pipeline.EntityId, top).subscribe({
       next: pipelineResult => {
         this.snackBar.open('Query worked', null, { duration: 2000 });
+        this.pipelineResult = pipelineResult;
         this.showQueryResult(pipelineResult, top);
         console.warn(pipelineResult);
         // push cloned pipelineModel to reset jsPlumb
@@ -239,16 +280,21 @@ export class VisualQueryService implements OnDestroy {
     });
   }
 
-  private fetchPipeline(reloadingSnackBar = false) {
-    if (reloadingSnackBar) {
+  private fetchPipeline(refreshPipeline: boolean, refreshDataSourceConfigs: boolean, showSnackBar: boolean) {
+    if (showSnackBar) {
       this.snackBar.open('Reloading query, please wait...');
     }
     this.queryDefinitionService.fetchPipeline(this.pipelineId, this.dataSources$.value).subscribe(pipelineModel => {
-      if (reloadingSnackBar) {
+      if (showSnackBar) {
         this.snackBar.open('Query reloaded', null, { duration: 2000 });
       }
-      this.pipelineModel$.next(pipelineModel);
       this.titleService.setTitle(`${pipelineModel.Pipeline.Name} - Visual Query`);
+      if (refreshPipeline) {
+        this.pipelineModel$.next(pipelineModel);
+      }
+      if (refreshDataSourceConfigs) {
+        this.calculateDataSourceConfigs(pipelineModel.DataSources);
+      }
     });
   }
 
@@ -322,13 +368,12 @@ export class VisualQueryService implements OnDestroy {
         map(() => !!this.route.snapshot.firstChild),
         pairwise(),
         filter(([hadChild, hasChild]) => hadChild && !hasChild),
-        filter(() => {
-          const refresh = this.doRefresh;
-          this.doRefresh = false;
-          return refresh;
-        }),
       ).subscribe(() => {
-        this.fetchPipeline(true);
+        if (this.refreshPipeline || this.refreshDataSourceConfigs) {
+          this.fetchPipeline(this.refreshPipeline, this.refreshDataSourceConfigs, this.refreshPipeline);
+        }
+        this.refreshPipeline = false;
+        this.refreshDataSourceConfigs = false;
       })
     );
   }

@@ -30,6 +30,10 @@ $icon-size: 22px;
   }
 
   .dataSource {
+    &.show-details {
+      height: auto;
+    }
+
     height: 50px;
     transition: box-shadow 0.15s ease-in 0s;
     min-width: 250px;
@@ -86,7 +90,34 @@ $icon-size: 22px;
     font-size: xx-small;
   }
 
+  .dataSource .configs {
+    margin-top: 16px;
+    margin-bottom: 16px;
+    max-width: 300px;
+    font-size: 12px;
+    text-align: start;
+    white-space: nowrap;
+  }
+
+  .dataSource .config {
+    .config-name {
+      font-weight: bold;
+      max-width: 100px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .config-value {
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
   .dataSource .typename {
+    position: absolute;
+    bottom: -32px;
+    width: calc(100% - 1em);
     font-size: 1em;
     background: white;
     opacity: 0.8;
@@ -97,7 +128,7 @@ $icon-size: 22px;
 
   .dataSource .add-endpoint {
     position: absolute;
-    top: -15px;
+    top: -17px;
     right: -8px;
     cursor: pointer;
     color: orange;
@@ -116,10 +147,11 @@ $icon-size: 22px;
     position: absolute;
     color: orange;
     right: -8px;
-    top: 33px;
+    bottom: -18px;
     font-size: 32px;
     width: 32px;
     height: 32px;
+    z-index: 100;
   }
 
   .dataSource .actions {
@@ -236,7 +268,6 @@ $icon-size: 22px;
 
   .endpointTargetLabel,
   .endpointSourceLabel {
-    cursor: text !important;
     background-color: white;
     font: 12px sans-serif;
     color: #444;

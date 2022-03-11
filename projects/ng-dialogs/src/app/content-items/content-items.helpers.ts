@@ -1,9 +1,11 @@
-import { NumberFilterModel, TextFilterModel } from '@ag-grid-community/all-modules';
+import { ColDef, NumberFilterModel, TextFilterModel } from '@ag-grid-community/all-modules';
+import { GeneralHelpers } from '../../../../edit/shared/helpers';
 import { BooleanFilterModel } from '../shared/components/boolean-filter/boolean-filter.model';
+import { EntityFilterModel } from '../shared/components/entity-filter/entity-filter.model';
 import { PubMetaFilterModel } from './ag-grid-components/pub-meta-filter/pub-meta-filter.model';
 import { AgGridFilterModel } from './models/ag-grid-filter.model';
 
-export function buildFilterModel(urlFilters: string) {
+export function buildFilterModel(urlFilters: string, columnDefs: ColDef[]) {
   if (!urlFilters) { return; }
 
   // special decode if parameter was passed as base64 - this is necessary for strings containing the "+" character
@@ -11,41 +13,53 @@ export function buildFilterModel(urlFilters: string) {
     urlFilters = atob(urlFilters);
   }
 
-  let parsed: Record<string, any>;
+  let filters: Record<string, any>;
   try {
-    parsed = JSON.parse(urlFilters);
+    filters = JSON.parse(urlFilters);
   } catch (error) {
     console.error('Can\'t parse JSON with filters from url:', urlFilters);
   }
-  if (!parsed) { return; }
+  if (!filters) { return; }
 
-  // filters can be published, metadata, string, number and boolean
+  // handle IsPublished and IsMetadata
   const filterModel: AgGridFilterModel = {};
-  if (parsed.IsPublished || parsed.IsMetadata) {
+  if (filters.IsPublished || filters.IsMetadata) {
     const filter: PubMetaFilterModel = {
       filterType: 'pub-meta',
-      published: parsed.IsPublished ? parsed.IsPublished : '',
-      metadata: parsed.IsMetadata ? parsed.IsMetadata : '',
+      published: filters.IsPublished ?? '',
+      metadata: filters.IsMetadata ?? '',
+      hasMetadata: '',
     };
     filterModel.Status = filter;
   }
 
-  const filterKeys = Object.keys(parsed);
-  for (const key of filterKeys) {
-    if (key === 'IsPublished' || key === 'IsMetadata') { continue; }
+  // handle all other cases
+  Object.entries(filters)
+    .filter(([key, value]) => key !== 'IsPublished' && key !== 'IsMetadata')
+    .forEach(([key, value]) => {
+      const columnDef = columnDefs.find(c => c.headerName === key);
+      if (columnDef?.filter === 'entityFilterComponent') {
+        value = GeneralHelpers.tryParse(value) ?? value;
+        const filter: EntityFilterModel = {
+          filterType: 'entity',
+          filter: typeof value === 'string' ? value : undefined,
+          idFilter: typeof value === 'number' ? [value] : Array.isArray(value) ? value.filter(v => typeof v === 'number') : undefined,
+        };
+        filterModel[key] = filter;
+        return;
+      }
 
-    const value = parsed[key];
-    if (typeof value === typeof '') {
-      const filter: TextFilterModel = { filterType: 'text', type: 'equals', filter: value };
-      filterModel[key] = filter;
-    } else if (typeof value === typeof 0) {
-      const filter: NumberFilterModel = { filterType: 'number', type: 'equals', filter: value, filterTo: null };
-      filterModel[key] = filter;
-    } else if (typeof value === typeof true) {
-      const filter: BooleanFilterModel = { filterType: 'boolean', filter: value.toString() };
-      filterModel[key] = filter;
-    }
-  }
+      if (typeof value === 'string') {
+        const filter: TextFilterModel = { filterType: 'text', type: 'equals', filter: value };
+        filterModel[key] = filter;
+      } else if (typeof value === 'number') {
+        const filter: NumberFilterModel = { filterType: 'number', type: 'equals', filter: value, filterTo: null };
+        filterModel[key] = filter;
+      } else if (typeof value === 'boolean') {
+        const filter: BooleanFilterModel = { filterType: 'boolean', filter: value.toString() };
+        filterModel[key] = filter;
+      }
+    });
 
   return filterModel;
 }

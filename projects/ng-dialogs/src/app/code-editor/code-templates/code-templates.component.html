@@ -8,27 +8,27 @@
     <ng-template #fileOrFolder let-item="item">
 
       <div class="file" *ngIf="!item.isFolder" [style]="item.depth | depthPadding: item.isFolder"
-        [ngClass]="{'active': toggledItems.includes(item.pathFromRoot) }" [tippy]="item.name" tippyShowDelay="750"
-        (click)="openTemplate(item.pathFromRoot)">
+        [ngClass]="{'active': isToggled(item.pathFromRoot, item.isShared) }" [tippy]="item.name" tippyShowDelay="750"
+        (click)="openTemplate(item.pathFromRoot, item.isShared)">
         {{ item.name }}
       </div>
 
       <div *ngIf="item.isFolder">
-        <div class="folder-name-wrapper" [style]="item.depth | depthPadding: item.isFolder"
-          (click)="toggleItem(item.pathFromRoot)">
+        <div class="folder-name-wrapper" [ngClass]="{'app-shared-root': item.depth < 0}"
+          [style]="item.depth + 1 | depthPadding: item.isFolder" (click)="toggleItem(item.pathFromRoot, item.isShared)">
           <div class="folder-name" [tippy]="item.name" tippyShowDelay="750">
             <mat-icon>
-              {{ toggledItems.includes(item.pathFromRoot) ? 'keyboard_arrow_down' : 'keyboard_arrow_right' }}
+              {{ isToggled(item.pathFromRoot, item.isShared) ? 'keyboard_arrow_down' : 'keyboard_arrow_right' }}
             </mat-icon>
             <span>{{ item.name }}</span>
           </div>
           <div class="add-item" tippy="Create file in this folder" tippyShowDelay="750" appClickStopPropagation
-            (click)="addFile(item.pathFromRoot)">
+            (click)="addFile(item.pathFromRoot, item.isShared)">
             <mat-icon>add</mat-icon>
           </div>
         </div>
 
-        <ng-container *ngIf="toggledItems.includes(item.pathFromRoot)">
+        <ng-container *ngIf="isToggled(item.pathFromRoot, item.isShared)">
           <ng-container *ngFor="let item1 of (item.children | sortItems)">
             <ng-container *ngTemplateOutlet="fileOrFolder; context: {item: item1}"></ng-container>
           </ng-container>

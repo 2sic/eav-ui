@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { EntityCollectionServiceElementsFactory } from '@ngrx/data';
+import { distinctUntilChanged, map, Observable } from 'rxjs';
 import { BaseDataService } from '.';
 import { Feature } from '../../../../ng-dialogs/src/app/apps-management/models/feature.model';
 
@@ -13,7 +14,14 @@ export class FeatureService extends BaseDataService<Feature> {
     this.addAllToCache(features);
   }
 
-  isFeatureEnabled(guid: string): boolean {
-    return this.cache$.value.find(feature => feature.id === guid)?.enabled ?? false;
+  isFeatureEnabled(nameId: string): boolean {
+    return this.cache$.value.find(feature => [feature.Guid, feature.NameId].includes(nameId))?.Enabled ?? false;
+  }
+
+  isFeatureEnabled$(nameId: string): Observable<boolean> {
+    return this.cache$.pipe(
+      map(features => features.find(feature => [feature.Guid, feature.NameId].includes(nameId))?.Enabled ?? false),
+      distinctUntilChanged(),
+    );
   }
 }

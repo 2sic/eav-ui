@@ -1,8 +1,10 @@
 import { PermissionsCount } from '../../app-administration/models/permissions-count.model';
+import { EditInfo } from '../../shared/models/edit-info';
 import { InputType } from './input-type.model';
 
 export interface Field {
   AttributeId: number;
+  EditInfo: EditInfo;
   HasFormulas: boolean;
   Id: number;
   InputType: string;
@@ -25,7 +27,12 @@ export interface FieldMetadata {
 
 export interface FieldInputTypeOption {
   dataType: string;
-  inputType: string;
-  label: string;
   description: string;
+  icon?: string;
+  inputType: string;
+  isDefault?: boolean;
+  isObsolete?: boolean;
+  isRecommended?: boolean;
+  label: string;
+  obsoleteMessage?: string;
 }

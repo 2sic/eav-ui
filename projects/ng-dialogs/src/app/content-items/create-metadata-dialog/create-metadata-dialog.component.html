@@ -1,11 +1,11 @@
 <ng-container *ngIf="templateVars$ | async as data">
   <div mat-dialog-title>
-    <div class="dialog-title-box">Create Metadata Info</div>
+    <div class="dialog-title-box">Create Metadata</div>
   </div>
 
   <p class="dialog-description">
     This is a special operation to add an item which is metadata for another item,
-    see <a href="https://r.2sxc.org/metadata" target="_blank">docs</a>.
+    see <a href="http://r.2sxc.org/metadata" target="_blank">docs</a>.
   </p>
 
   <form [formGroup]="form" class="dialog-form">
@@ -16,7 +16,7 @@
         <mat-label>Target</mat-label>
 
         <mat-select *ngIf="data.guidedMode" formControlName="targetType" required>
-          <mat-option *ngFor="let option of targetTypeOptions" [value]="option.type">
+          <mat-option *ngFor="let option of targetTypeOptions" [value]="option.targetType">
             {{ option.label }}
           </mat-option>
           <mat-option *ngIf="data.unknownTargetType" [value]="data.formValues.targetType">
@@ -59,24 +59,36 @@
       </app-field-hint>
 
       <!-- Content Type for Content Items -->
-      <ng-container *ngIf="data.guidedMode && data.formValues.targetType === eavConstants.metadata.entity.type">
-        <mat-form-field appearance="standard" color="accent">
-          <mat-label>Content Type</mat-label>
+      <mat-form-field appearance="standard" color="accent"
+        *ngIf="data.guidedMode && data.formValues.targetType === eavConstants.metadata.entity.targetType">
+        <mat-label>Content Type</mat-label>
 
-          <mat-select formControlName="contentTypeForContentItems" required
-            [placeholder]="!data.contentTypes.length ? 'No items found' : ''">
-            <mat-option *ngFor="let contentType of data.contentTypes" [value]="contentType.StaticName">
-              {{ contentType.Label }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+        <mat-select formControlName="contentTypeForContentItems"
+          [placeholder]="!data.contentTypes.length ? 'No items found' : ''">
+          <mat-option *ngFor="let contentType of data.contentTypes" [value]="contentType.StaticName">
+            {{ contentType.Label }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
 
-        <app-field-hint
-          *ngIf="form.controls['contentTypeForContentItems'].touched && form.controls['contentTypeForContentItems'].errors?.required"
-          [isError]="true">
-          This field is required
-        </app-field-hint>
-      </ng-container>
+      <!-- Scope for Content Types -->
+      <mat-form-field appearance="standard" color="accent"
+        *ngIf="data.guidedMode && (data.formValues.targetType === eavConstants.metadata.entity.targetType || data.formValues.targetType === eavConstants.metadata.contentType.targetType)">
+        <mat-label>Scope</mat-label>
+
+        <mat-select formControlName="scopeForContentTypes"
+          [placeholder]="!data.scopeOptions.length ? 'No items found' : ''">
+          <mat-option *ngFor="let scopeOption of data.scopeOptions" [value]="scopeOption.value">
+            {{ scopeOption.name }}
+          </mat-option>
+          <mat-option [value]="dropdownInsertValue">Other...</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <app-field-hint>
+        The scope should almost never be changed -
+        <a href="https://2sxc.org/help?tag=scope" target="_blank" appClickStopPropagation>see help</a>
+      </app-field-hint>
 
       <!-- Key -->
       <mat-form-field appearance="standard" color="accent">
@@ -87,7 +99,7 @@
 
         <ng-template #specialKeyInputs>
           <ng-container [ngSwitch]="data.formValues.targetType">
-            <ng-container *ngSwitchCase="eavConstants.metadata.entity.type">
+            <ng-container *ngSwitchCase="eavConstants.metadata.entity.targetType">
               <mat-select *ngIf="data.guidedKey" formControlName="key" required
                 [placeholder]="!data.contentItems.length ? 'No items found' : ''">
                 <mat-option *ngFor="let item of data.contentItems" [value]="item.Guid">
@@ -98,7 +110,7 @@
               <input matInput type="text" *ngIf="!data.guidedKey" formControlName="key" required>
             </ng-container>
 
-            <ng-container *ngSwitchCase="eavConstants.metadata.contentType.type">
+            <ng-container *ngSwitchCase="eavConstants.metadata.contentType.targetType">
               <mat-select *ngIf="data.guidedKey" formControlName="key" required
                 [placeholder]="!data.contentTypes.length ? 'No items found' : ''">
                 <mat-option *ngFor="let contentType of data.contentTypes" [value]="contentType.StaticName">
@@ -116,16 +128,18 @@
         </ng-template>
 
         <ng-template #defaultKeyInput>
-          <input matInput type="text" *ngIf="data.formValues.keyType !== 'number'" formControlName="key" required>
-          <input matInput type="number" *ngIf="data.formValues.keyType === 'number'" formControlName="key" required>
+          <input matInput type="text" *ngIf="data.formValues.keyType !== eavConstants.keyTypes.number"
+            formControlName="key" required>
+          <input matInput type="number" *ngIf="data.formValues.keyType === eavConstants.keyTypes.number"
+            formControlName="key" required>
         </ng-template>
 
         <div matSuffix class="selection-suffix" *ngIf="data.guidedMode && data.guidedKeyExists">
-          <button mat-icon-button [ngClass]="{ 'active': data.guidedKey }" tippy="Select option"
+          <button mat-icon-button type="button" [ngClass]="{ 'active': data.guidedKey }" tippy="Pick existing value"
             (click)="toggleGuidedKey(true)">
             <mat-icon>search</mat-icon>
           </button>
-          <button mat-icon-button [ngClass]="{ 'active': !data.guidedKey }" tippy="Insert value"
+          <button mat-icon-button type="button" [ngClass]="{ 'active': !data.guidedKey }" tippy="Manual entry"
             (click)="toggleGuidedKey(false)">
             <mat-icon>text_fields</mat-icon>
           </button>
