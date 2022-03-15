@@ -7,7 +7,8 @@
   </div>
 
   <div style="position: relative">
-    <div mat-dialog-content class="u-hide-scrollbar" [ngClass]="{
+    <!-- cdkScrollable is required when using matAutocomplete with scrollable element that is not body. Fixes matAutocomplete not following input  -->
+    <div mat-dialog-content cdkScrollable class="u-hide-scrollbar" [ngClass]="{
       'debug-enabled': data.debugEnabled,
       'debug-info-is-open': data.debugInfoIsOpen,
       'hide-header-height-fix': data.hideHeader

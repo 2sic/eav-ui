@@ -13,7 +13,8 @@
     <div>
       <div [@itemShrinkAnimation]="(dialogIsOpen$ | async) ? 'closed' : 'open'">
       </div>
-      <div class="c-ew__dialog-content u-add-scrollbar u-hide-scrollbar" [@contentExpandAnimation]="{
+      <!-- cdkScrollable is required when using matAutocomplete with scrollable element that is not body. Fixes matAutocomplete not following input  -->
+      <div class="c-ew__dialog-content u-add-scrollbar u-hide-scrollbar" cdkScrollable [@contentExpandAnimation]="{
         value: (dialogIsOpen$ | async) ? 'expanded' : 'closed',
         params: { bottomPixels: calculateBottomPixels() }
       }">
