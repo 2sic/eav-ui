@@ -1,4 +1,3 @@
-import { } from 'google-maps';
 import { Connector, EavCustomInputField } from '../../../edit-types';
 import { FieldMask } from '../../../edit/shared/helpers/field-mask.helper';
 import { ElementEventListener } from '../../../edit/shared/models';
@@ -95,7 +94,7 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
       { element: this.iconSearch, type: 'click', listener: autoSelect },
     );
 
-    this.marker.addListener('dragend', (event: google.maps.MouseEvent) => {
+    this.marker.addListener('dragend', (event: google.maps.MapMouseEvent) => {
       this.onMarkerDragend(event);
     });
   }
@@ -147,7 +146,7 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
     });
   }
 
-  private onMarkerDragend(event: google.maps.MouseEvent): void {
+  private onMarkerDragend(event: google.maps.MapMouseEvent): void {
     consoleLogWebpack(`${gpsDialogTag} marker changed`);
     const latLng: google.maps.LatLngLiteral = {
       lat: event.latLng.lat(),
