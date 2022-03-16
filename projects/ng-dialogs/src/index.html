@@ -36,7 +36,7 @@
       var vBuild = getParameterByName('sxcver');
       if (!vBuild) vBuild = getParameterByName('sxcver', sessionStorage.getItem('eav-url'));
       if (!vBuild) vBuild = Math.floor(Math.random() * 99999);
-      var vParts = vBuild.substr(vBuild.indexOf("=") + 1).split('.');
+      var vParts = vBuild.substring(vBuild.indexOf("=") + 1).split('.');
       for (var vi = 0; vi < vParts.length; vi++) vParts[vi] = Number(vParts[vi]);
       if (vParts[3] === 0) vParts[3] = Math.floor(Math.random() * 100000);
       var cacheBreak = vParts.join('.');
