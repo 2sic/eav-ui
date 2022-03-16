@@ -13,11 +13,11 @@
     "copy-to-dnn-watch": "node ./build-helpers/copy-to-dnn --watch",
     "dev-main": "ng build --configuration development --watch",
     "prod-main": "ng build --configuration production --plugin ~./build-helpers/external-source-maps-main.js",
-    "wysiwyg": "webpack --parts=wysiwyg --watch",
-    "gps": "webpack --parts=gps --watch",
-    "all": "npm run pre-build && webpack --parts=all && ng build && npm run copy-to-dnn",
-    "all-watch": "npm run pre-build && concurrently \"webpack --parts=all --watch\" npm:dev-main npm:copy-to-dnn-watch",
-    "prod-all": "npm run pre-build && webpack --parts=all --mode=production && npm run prod-main && npm run copy-to-dnn",
+    "wysiwyg": "webpack --env parts=wysiwyg --watch",
+    "gps": "webpack --env parts=gps --watch",
+    "all": "npm run pre-build && webpack --env parts=all && ng build --configuration development && npm run copy-to-dnn",
+    "all-watch": "npm run pre-build && concurrently \"webpack --env parts=all --watch\" npm:dev-main npm:copy-to-dnn-watch",
+    "prod-all": "npm run pre-build && webpack --env parts=all --mode=production && npm run prod-main && npm run copy-to-dnn",
     "release": "set NODE_ENV=production && npm run prod-all"
   },
   "dependencies": {
@@ -70,10 +70,10 @@
     "@types/node": "^16.11.26",
     "chalk": "^4.1.2",
     "chokidar": "^3.5.3",
-    "clean-webpack-plugin": "^3.0.0",
+    "clean-webpack-plugin": "^4.0.0",
     "codelyzer": "^6.0.2",
     "concurrently": "^6.5.1",
-    "copy-webpack-plugin": "^6.1.1",
+    "copy-webpack-plugin": "^10.2.4",
     "fs-extra": "^10.0.1",
     "jasmine-core": "^3.10.0",
     "karma": "^6.3.0",
@@ -83,13 +83,13 @@
     "karma-jasmine-html-reporter": "^1.7.0",
     "raw-loader": "^4.0.2",
     "rxjs-tslint": "^0.1.8",
-    "ts-loader": "^8.0.4",
-    "ts-node": "^9.0.0",
+    "ts-loader": "^9.2.8",
+    "ts-node": "^10.7.0",
     "tslint": "^6.1.3",
     "typescript": "^4.5.4",
     "url-loader": "^4.1.1",
-    "webpack-bundle-analyzer": "^3.9.0",
-    "webpack-cli": "^3.3.12",
-    "webpack-shell-plugin-next": "^1.2.0"
+    "webpack-bundle-analyzer": "^4.5.0",
+    "webpack-cli": "^4.9.2",
+    "webpack-shell-plugin-next": "^2.2.2"
   }
 }
