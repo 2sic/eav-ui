@@ -4,7 +4,7 @@
     <div class="fabs-box">
       <button mat-mini-fab color="accent" [tippy]="'Fields.Hyperlink.Default.AdamTip' | translate"
         *ngIf="data.buttonAdam" [disabled]="data.controlStatus.disabled" (click)="toggleAdam(false, false)">
-        <mat-icon svgIcon="appleFilled"></mat-icon>
+        <mat-icon svgIcon="apple-outlined"></mat-icon>
       </button>
       <button mat-mini-fab color="primary" [tippy]="'Fields.Hyperlink.Default.PageTip' | translate"
         *ngIf="data.buttonPage" [disabled]="data.controlStatus.disabled" (click)="openPagePicker()">
@@ -18,7 +18,7 @@
 
     <mat-menu #menu="matMenu" class="menu-box">
       <button mat-menu-item *ngIf="data.showAdam" (click)="toggleAdam(false, false)">
-        <mat-icon svgIcon="appleFilled"></mat-icon>
+        <mat-icon svgIcon="apple-outlined"></mat-icon>
         <span>{{ 'Fields.Hyperlink.Default.MenuAdam' | translate }}</span>
       </button>
       <button mat-menu-item *ngIf="data.showPagePicker" (click)="openPagePicker()">

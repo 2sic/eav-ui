@@ -30,7 +30,9 @@
           <span class="tab-label">{{ tab.label }}</span>
         </div>
         <div class="tab-actions-container">
-          <mat-icon *ngIf="tab.isModified" class="tab-action icon-modified" svgIcon="circle"></mat-icon>
+          <mat-icon *ngIf="tab.isModified" class="tab-action icon-modified" fontSet="material-icons">
+            circle
+          </mat-icon>
           <mat-spinner *ngIf="tab.isLoading" class="spinner" mode="indeterminate" diameter="14" color="white">
           </mat-spinner>
           <mat-icon class="tab-action icon-close" tippy="Close" appClickStopPropagation
