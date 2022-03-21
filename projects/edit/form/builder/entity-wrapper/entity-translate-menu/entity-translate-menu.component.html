@@ -10,9 +10,11 @@
       </span>
     </button>
 
-    <mat-menu #menu="matMenu" overlapTrigger="true">
-      <button mat-menu-item (click)="translateMany()">{{ 'LangMenu.TranslateAll' | translate }}</button>
-      <button mat-menu-item (click)="dontTranslateMany()">{{ 'LangMenu.NoTranslateAll' | translate }}</button>
+    <mat-menu #menu="matMenu">
+      <ng-template matMenuContent>
+        <button mat-menu-item (click)="translateMany()">{{ 'LangMenu.TranslateAll' | translate }}</button>
+        <button mat-menu-item (click)="dontTranslateMany()">{{ 'LangMenu.NoTranslateAll' | translate }}</button>
+      </ng-template>
     </mat-menu>
   </div>
 

@@ -17,22 +17,24 @@
     </div>
 
     <mat-menu #menu="matMenu" class="menu-box">
-      <button mat-menu-item *ngIf="data.showAdam" (click)="toggleAdam(false, false)">
-        <mat-icon svgIcon="apple-outlined"></mat-icon>
-        <span>{{ 'Fields.Hyperlink.Default.MenuAdam' | translate }}</span>
-      </button>
-      <button mat-menu-item *ngIf="data.showPagePicker" (click)="openPagePicker()">
-        <mat-icon svgIcon="sitemap"></mat-icon>
-        <span>{{ 'Fields.Hyperlink.Default.MenuPage' | translate }}</span>
-      </button>
-      <button mat-menu-item *ngIf="data.showImageManager" (click)="toggleAdam(true, true)">
-        <mat-icon svgIcon="file-image"></mat-icon>
-        <span>{{ 'Fields.Hyperlink.Default.MenuImage' | translate }}</span>
-      </button>
-      <button mat-menu-item *ngIf="data.showFileManager" (click)="toggleAdam(true, false)">
-        <mat-icon svgIcon="file"></mat-icon>
-        <span>{{ 'Fields.Hyperlink.Default.MenuDocs' | translate }}</span>
-      </button>
+      <ng-template matMenuContent>
+        <button mat-menu-item *ngIf="data.showAdam" (click)="toggleAdam(false, false)">
+          <mat-icon svgIcon="apple-outlined"></mat-icon>
+          <span>{{ 'Fields.Hyperlink.Default.MenuAdam' | translate }}</span>
+        </button>
+        <button mat-menu-item *ngIf="data.showPagePicker" (click)="openPagePicker()">
+          <mat-icon svgIcon="sitemap"></mat-icon>
+          <span>{{ 'Fields.Hyperlink.Default.MenuPage' | translate }}</span>
+        </button>
+        <button mat-menu-item *ngIf="data.showImageManager" (click)="toggleAdam(true, true)">
+          <mat-icon svgIcon="file-image"></mat-icon>
+          <span>{{ 'Fields.Hyperlink.Default.MenuImage' | translate }}</span>
+        </button>
+        <button mat-menu-item *ngIf="data.showFileManager" (click)="toggleAdam(true, false)">
+          <mat-icon svgIcon="file"></mat-icon>
+          <span>{{ 'Fields.Hyperlink.Default.MenuDocs' | translate }}</span>
+        </button>
+      </ng-template>
     </mat-menu>
 
     <!-- content -->
