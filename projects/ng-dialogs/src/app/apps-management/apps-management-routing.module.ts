@@ -27,7 +27,7 @@ const appsManagementRoutes: Routes = [
         data: { title: 'Apps in this Zone' },
       },
       { path: 'languages', component: EmptyRouteComponent, data: { title: 'Zone Languages' } },
-      { path: 'license', component: EmptyRouteComponent, data: { title: 'License Info' } },
+      { path: 'license', component: EmptyRouteComponent, data: { title: 'Extensions / Features' } },
     ]
   },
 ];
