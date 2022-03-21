@@ -13,6 +13,7 @@ export class CustomJsonEditorLogic extends FieldLogicBase {
     fixedSettings.JsonSchemaSource ||= 'link';
     fixedSettings.JsonSchemaUrl ??= '';
     fixedSettings.JsonSchemaRaw ??= '';
+    fixedSettings.JsonCommentsAllowed ??= false;
     return fixedSettings;
   }
 }

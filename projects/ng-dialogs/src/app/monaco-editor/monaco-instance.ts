@@ -1,4 +1,4 @@
-import { JsonSchema, Monaco2sxc, MonacoType } from '.';
+import { JsonComments, JsonSchema, Monaco2sxc, MonacoType } from '.';
 import { Snippet } from '../code-editor/models/snippet.model';
 
 export const voidElements = 'area, base, br, col, embed, hr, img, input, link, meta, param, source, track, wbr'
@@ -97,6 +97,14 @@ export class MonacoInstance {
       jsonDiagnostics.schemas = jsonDiagnostics.schemas.filter((schema: MonacoType) => schema.fileMatch[0] !== uri);
     }
 
+    this.monaco.languages.json.jsonDefaults.setDiagnosticsOptions(jsonDiagnostics);
+  }
+
+  setJsonComments(comments: JsonComments): void {
+    const jsonDiagnostics = {
+      ...this.monaco.languages.json.jsonDefaults.diagnosticsOptions,
+      comments,
+    };
     this.monaco.languages.json.jsonDefaults.setDiagnosticsOptions(jsonDiagnostics);
   }
 

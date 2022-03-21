@@ -198,6 +198,7 @@ interface CustomJsonEditor extends All {
   JsonSchemaSource: 'link' | 'raw';
   JsonSchemaUrl: string;
   JsonSchemaRaw: string;
+  JsonCommentsAllowed: boolean;
 }
 
 /**

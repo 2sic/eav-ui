@@ -3,6 +3,8 @@ export interface JsonSchema {
   value: string;
 }
 
+export type JsonComments = 'error' | 'warning' | 'ignore';
+
 export type MonacoType = any;
 
 export interface Monaco2sxc {
