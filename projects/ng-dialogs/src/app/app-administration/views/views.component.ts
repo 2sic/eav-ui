@@ -36,45 +36,38 @@ export class ViewsComponent implements OnInit, OnDestroy {
   @Input() appIsGlobal: boolean;
   @Input() appIsInherited: boolean;
 
-  views$ = new BehaviorSubject<View[]>(null);
-  polymorphStatus$ = new BehaviorSubject('');
+  views$ = new BehaviorSubject<View[]>(undefined);
+  polymorphStatus$ = new BehaviorSubject(undefined);
   polymorphLogo = polymorphLogo;
 
   modules = AllCommunityModules;
   gridOptions: GridOptions = {
     ...defaultGridOptions,
-    frameworkComponents: {
-      idFieldComponent: IdFieldComponent,
-      booleanFilterComponent: BooleanFilterComponent,
-      viewsTypeComponent: ViewsTypeComponent,
-      viewsShowComponent: ViewsShowComponent,
-      viewsActionsComponent: ViewsActionsComponent,
-    },
     columnDefs: [
       {
         headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense',
-        cellClass: (params) => `${(params.data as View).EditInfo.ReadOnly ? 'disabled' : ''} id-action no-padding no-outline`,
-        cellRenderer: 'idFieldComponent', sortable: true, filter: 'agNumberColumnFilter',
+        cellClass: (params) => `${(params.data as View).EditInfo.ReadOnly ? 'disabled' : ''} id-action no-padding no-outline`.split(' '),
+        cellRenderer: IdFieldComponent, sortable: true, filter: 'agNumberColumnFilter',
         valueGetter: (params) => (params.data as View).Id,
         cellRendererParams: {
           tooltipGetter: (view: View) => `ID: ${view.Id}\nGUID: ${view.Guid}`,
         } as IdFieldParams,
       },
       {
-        field: 'Show', width: 70, headerClass: 'dense', cellClass: 'no-outline', cellRenderer: 'viewsShowComponent',
-        sortable: true, filter: 'booleanFilterComponent', valueGetter: this.showValueGetter,
+        field: 'Show', width: 70, headerClass: 'dense', cellClass: 'no-outline', cellRenderer: ViewsShowComponent,
+        sortable: true, filter: BooleanFilterComponent, valueGetter: this.showValueGetter,
       },
       {
-        field: 'Name', flex: 2, minWidth: 250, cellClass: 'primary-action highlight',
+        field: 'Name', flex: 2, minWidth: 250, cellClass: 'primary-action highlight'.split(' '),
         sortable: true, sort: 'asc', filter: 'agTextColumnFilter', onCellClicked: (event) => this.editView(event.data as View),
         valueGetter: (params) => (params.data as View).Name,
       },
       {
-        field: 'Type', width: 82, headerClass: 'dense', cellClass: 'no-padding no-outline',
-        sortable: true, filter: 'agTextColumnFilter', cellRenderer: 'viewsTypeComponent', valueGetter: this.typeValueGetter,
+        field: 'Type', width: 82, headerClass: 'dense', cellClass: 'no-padding no-outline'.split(' '),
+        sortable: true, filter: 'agTextColumnFilter', cellRenderer: ViewsTypeComponent, valueGetter: this.typeValueGetter,
       },
       {
-        field: 'Used', width: 70, headerClass: 'dense', cellClass: 'primary-action highlight',
+        field: 'Used', width: 70, headerClass: 'dense', cellClass: 'primary-action highlight'.split(' '),
         sortable: true, filter: 'agNumberColumnFilter', onCellClicked: (event) => this.openUsage(event.data as View),
         valueGetter: (params) => (params.data as View).Used,
       },
@@ -119,7 +112,7 @@ export class ViewsComponent implements OnInit, OnDestroy {
         sortable: true, filter: 'agTextColumnFilter', valueGetter: this.headerPresDemoValueGetter,
       },
       {
-        width: 162, cellClass: 'secondary-action no-padding', cellRenderer: 'viewsActionsComponent', pinned: 'right',
+        width: 162, cellClass: 'secondary-action no-padding'.split(' '), cellRenderer: ViewsActionsComponent, pinned: 'right',
         cellRendererParams: {
           enableCodeGetter: () => this.enableCodeGetter(),
           enablePermissionsGetter: () => this.enablePermissionsGetter(),

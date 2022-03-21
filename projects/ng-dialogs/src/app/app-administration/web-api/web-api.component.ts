@@ -23,15 +23,10 @@ import { WebApi } from '../models/web-api.model';
 export class WebApiComponent implements OnInit, OnDestroy {
   @Input() enableCode: boolean;
 
-  webApis$ = new BehaviorSubject<WebApi[]>(null);
+  webApis$ = new BehaviorSubject<WebApi[]>(undefined);
   modules = AllCommunityModules;
   gridOptions: GridOptions = {
     ...defaultGridOptions,
-    frameworkComponents: {
-      webApiActions: WebApiActionsComponent,
-      booleanFilterComponent: BooleanFilterComponent,
-      webApiTypeComponent: WebApiTypeComponent,
-    },
     columnDefs: [
       {
         field: 'Folder', flex: 2, minWidth: 250, cellClass: 'no-outline',
@@ -45,11 +40,11 @@ export class WebApiComponent implements OnInit, OnDestroy {
       },
       {
         field: 'Type', flex: 1, minWidth: 250, cellClass: 'no-outline',
-        sortable: true, filter: 'booleanFilterComponent', cellRenderer: 'webApiTypeComponent',
+        sortable: true, filter: BooleanFilterComponent, cellRenderer: WebApiTypeComponent,
         valueGetter: (params) => (params.data as WebApi).isShared,
       },
       {
-        width: 82, cellClass: 'secondary-action no-padding', cellRenderer: 'webApiActions', pinned: 'right',
+        width: 82, cellClass: 'secondary-action no-padding'.split(' '), cellRenderer: WebApiActionsComponent, pinned: 'right',
         cellRendererParams: {
           enableCodeGetter: () => this.enableCodeGetter(),
           onOpenCode: (api) => this.openCode(api),

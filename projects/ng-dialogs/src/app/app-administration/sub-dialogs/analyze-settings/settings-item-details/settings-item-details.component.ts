@@ -22,13 +22,10 @@ export class SettingsItemDetailsComponent implements OnInit, OnDestroy {
   modules = AllCommunityModules;
   gridOptions: GridOptions = {
     ...defaultGridOptions,
-    frameworkComponents: {
-      analyzeSettingsValueComponent: AnalyzeSettingsValueComponent,
-    },
     columnDefs: [
       {
-        field: 'Value', flex: 2, minWidth: 250, cellClass: 'primary-action no-padding no-outline',
-        cellRenderer: 'analyzeSettingsValueComponent', sortable: true, filter: 'agTextColumnFilter',
+        field: 'Value', flex: 2, minWidth: 250, cellClass: 'primary-action no-padding no-outline'.split(' '),
+        cellRenderer: AnalyzeSettingsValueComponent, sortable: true, filter: 'agTextColumnFilter',
         valueGetter: (params) => (params.data as SettingsStackItem)._value,
       },
       {

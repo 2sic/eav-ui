@@ -18,14 +18,11 @@ export class DevRestApiActionParamsComponent {
   /** AgGrid options */
   gridOptions: GridOptions = {
     ...defaultGridOptions,
-    frameworkComponents: {
-      trueFalseComponent: TrueFalseComponent,
-    },
     columnDefs: [
       {
-        field: 'Required', headerClass: 'dense', width: 80, cellClass: 'no-padding no-outline',
+        field: 'Required', headerClass: 'dense', width: 80, cellClass: 'no-padding no-outline'.split(' '),
         valueGetter: (params) => (params.data as WebApiActionParameters).isOptional,
-        cellRenderer: 'trueFalseComponent',
+        cellRenderer: TrueFalseComponent,
         cellRendererParams: { reverse: true } as TrueFalseParams,
       },
       {

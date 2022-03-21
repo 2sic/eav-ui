@@ -34,14 +34,10 @@ export class LanguagePermissionsComponent implements OnInit, OnDestroy {
     this.languages$ = new BehaviorSubject<SiteLanguagePermissions[] | undefined>(undefined);
     this.gridOptions = {
       ...defaultGridOptions,
-      frameworkComponents: {
-        idFieldComponent: IdFieldComponent,
-        languagesPermissionsActionsComponent: LanguagesPermissionsActionsComponent,
-      },
       columnDefs: [
         {
-          headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
-          cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter',
+          headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline'.split(' '),
+          cellRenderer: IdFieldComponent, sortable: true, filter: 'agTextColumnFilter',
           valueGetter: (params) => (params.data as SiteLanguagePermissions).Code,
           cellRendererParams: {
             tooltipGetter: (language: SiteLanguagePermissions) => `ID: ${language.Code}`,
@@ -53,7 +49,7 @@ export class LanguagePermissionsComponent implements OnInit, OnDestroy {
           valueGetter: (params) => (params.data as SiteLanguagePermissions).Culture,
         },
         {
-          width: 42, cellClass: 'secondary-action no-padding', cellRenderer: 'languagesPermissionsActionsComponent', pinned: 'right',
+          width: 42, cellClass: 'secondary-action no-padding'.split(' '), cellRenderer: LanguagesPermissionsActionsComponent, pinned: 'right',
           cellRendererParams: {
             onOpenPermissions: (language) => this.openPermissions(language),
           } as LanguagesPermissionsActionsParams,

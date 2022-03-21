@@ -1,4 +1,4 @@
-import { IAfterGuiAttachedParams, IDoesFilterPassParams, IFilterParams } from '@ag-grid-community/all-modules';
+import { IAfterGuiAttachedParams, IDoesFilterPassParams, IFilterParams, ValueGetterParams } from '@ag-grid-community/all-modules';
 import { IFilterAngularComp } from '@ag-grid-community/angular';
 import { Component } from '@angular/core';
 import { PubMeta, PubMetaFilterModel } from './pub-meta-filter.model';
@@ -13,10 +13,10 @@ export class PubMetaFilterComponent implements IFilterAngularComp {
   metadata = '';
   hasMetadata = '';
 
-  private params: IFilterParams;
+  private filterParams: IFilterParams;
 
   agInit(params: IFilterParams) {
-    this.params = params;
+    this.filterParams = params;
   }
 
   isFilterActive(): boolean {
@@ -27,7 +27,18 @@ export class PubMetaFilterComponent implements IFilterAngularComp {
     let publishedPassed = false;
     let metadataPassed = false;
     let hasMetadataPassed = false;
-    const value: PubMeta = this.params.valueGetter(params.node);
+
+    const valueGetterParams: ValueGetterParams = {
+      api: this.filterParams.api,
+      colDef: this.filterParams.colDef,
+      column: this.filterParams.column,
+      columnApi: this.filterParams.columnApi,
+      context: this.filterParams.context,
+      data: params.node.data,
+      getValue: (field) => params.node.data[field],
+      node: params.node,
+    };
+    const value: PubMeta = this.filterParams.valueGetter(valueGetterParams);
     if (this.published !== '') {
       if (value.published === null || value.published === undefined) {
         publishedPassed = false;
@@ -80,6 +91,6 @@ export class PubMetaFilterComponent implements IFilterAngularComp {
   }
 
   filterChanged() {
-    this.params.filterChangedCallback();
+    this.filterParams.filterChangedCallback();
   }
 }

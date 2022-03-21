@@ -32,35 +32,30 @@ export class MetadataComponent implements OnInit, OnDestroy {
   modules = AllCommunityModules;
   gridOptions: GridOptions = {
     ...defaultGridOptions,
-    frameworkComponents: {
-      idFieldComponent: IdFieldComponent,
-      metadataContentTypeComponent: MetadataContentTypeComponent,
-      metadataActionsComponent: MetadataActionsComponent,
-    },
     columnDefs: [
       {
-        headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
-        cellRenderer: 'idFieldComponent', sortable: true, filter: 'agNumberColumnFilter',
+        headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline'.split(' '),
+        cellRenderer: IdFieldComponent, sortable: true, filter: 'agNumberColumnFilter',
         valueGetter: (params) => (params.data as MetadataItem).Id,
         cellRendererParams: {
           tooltipGetter: (metadata: MetadataItem) => `ID: ${metadata.Id}\nGUID: ${metadata.Guid}`,
         } as IdFieldParams,
       },
       {
-        field: 'Title', flex: 2, minWidth: 250, cellClass: 'primary-action highlight',
+        field: 'Title', flex: 2, minWidth: 250, cellClass: 'primary-action highlight'.split(' '),
         valueGetter: (params) => (params.data as MetadataItem).Title,
         sortable: true, sort: 'asc', filter: 'agTextColumnFilter',
         onCellClicked: (event) => this.editMetadata(event.data as MetadataItem),
       },
       {
         headerName: 'Content Type', field: 'ContentType', flex: 2, minWidth: 250, cellClass: 'no-outline', sortable: true,
-        cellRenderer: 'metadataContentTypeComponent', filter: 'agTextColumnFilter', valueGetter: (params) => {
+        cellRenderer: MetadataContentTypeComponent, filter: 'agTextColumnFilter', valueGetter: (params) => {
           const metadata = params.data as MetadataItem;
           return `${metadata._Type.Name}${metadata._Type.Title !== metadata._Type.Name ? ` (${metadata._Type.Title})` : ''}`;
         },
       },
       {
-        width: 42, cellClass: 'secondary-action no-padding', cellRenderer: 'metadataActionsComponent', pinned: 'right',
+        width: 42, cellClass: 'secondary-action no-padding'.split(' '), cellRenderer: MetadataActionsComponent, pinned: 'right',
         cellRendererParams: {
           onDelete: (metadata) => this.deleteMetadata(metadata),
         } as MetadataActionsParams,

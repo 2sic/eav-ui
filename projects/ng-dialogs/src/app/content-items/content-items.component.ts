@@ -47,22 +47,13 @@ import { EntitiesService } from './services/entities.service';
   styleUrls: ['./content-items.component.scss'],
 })
 export class ContentItemsComponent implements OnInit, OnDestroy {
-  contentType$ = new BehaviorSubject<ContentType>(null);
-  items$ = new BehaviorSubject<ContentItem[]>(null);
+  contentType$ = new BehaviorSubject<ContentType>(undefined);
+  items$ = new BehaviorSubject<ContentItem[]>(undefined);
   debugEnabled$ = this.globalConfigService.getDebugEnabled$();
 
   modules = AllCommunityModules;
   gridOptions: GridOptions = {
     ...defaultGridOptions,
-    frameworkComponents: {
-      pubMetaFilterComponent: PubMetaFilterComponent,
-      booleanFilterComponent: BooleanFilterComponent,
-      entityFilterComponent: EntityFilterComponent,
-      idFieldComponent: IdFieldComponent,
-      contentItemsStatusComponent: ContentItemsStatusComponent,
-      contentItemsActionsComponent: ContentItemsActionsComponent,
-      contentItemsEntityComponent: ContentItemsEntityComponent,
-    },
   };
 
   private gridApi$ = new BehaviorSubject<GridApi>(null);
@@ -249,22 +240,22 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     const columnDefs: ColDef[] = [
       {
         headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense',
-        cellClass: (params) => `${(params.data as ContentItem)._EditInfo.ReadOnly ? 'disabled' : ''} id-action no-padding no-outline`,
-        cellRenderer: 'idFieldComponent', sortable: true, filter: 'agNumberColumnFilter',
+        cellClass: (params) => `${(params.data as ContentItem)._EditInfo.ReadOnly ? 'disabled' : ''} id-action no-padding no-outline`.split(' '),
+        cellRenderer: IdFieldComponent, sortable: true, filter: 'agNumberColumnFilter',
         valueGetter: (params) => (params.data as ContentItem).Id,
         cellRendererParams: {
           tooltipGetter: (item: ContentItem) => `ID: ${item.Id}\nRepoID: ${item._RepositoryId}\nGUID: ${item.Guid}`,
         } as IdFieldParams,
       },
       {
-        field: 'Status', width: 82, headerClass: 'dense', cellClass: 'secondary-action no-padding',
-        filter: 'pubMetaFilterComponent', cellRenderer: 'contentItemsStatusComponent', valueGetter: this.valueGetterStatus,
+        field: 'Status', width: 82, headerClass: 'dense', cellClass: 'secondary-action no-padding'.split(' '),
+        filter: PubMetaFilterComponent, cellRenderer: ContentItemsStatusComponent, valueGetter: this.valueGetterStatus,
         cellRendererParams: {
           onOpenMetadata: (item) => this.openMetadata(item),
         } as ContentItemsStatusParams,
       },
       {
-        headerName: 'Item (Entity)', field: '_Title', flex: 2, minWidth: 250, cellClass: 'primary-action highlight',
+        headerName: 'Item (Entity)', field: '_Title', flex: 2, minWidth: 250, cellClass: 'primary-action highlight'.split(' '),
         sortable: true, filter: 'agTextColumnFilter', onCellClicked: (event) => this.editItem(event.data as ContentItem),
         valueGetter: (params) => (params.data as ContentItem)._Title,
       },
@@ -274,7 +265,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
         sortable: true, filter: 'agTextColumnFilter', valueGetter: this.valueGetterUsage,
       },
       {
-        cellClass: 'secondary-action no-padding', width: 122, cellRenderer: 'contentItemsActionsComponent', pinned: 'right',
+        cellClass: 'secondary-action no-padding'.split(' '), width: 122, cellRenderer: ContentItemsActionsComponent, pinned: 'right',
         cellRendererParams: {
           onClone: (item) => this.clone(item),
           onExport: (item) => this.export(item),
@@ -290,9 +281,9 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
       switch (column.Type) {
         case DataTypeConstants.Entity:
           colDef.allowMultiValue = column.Metadata?.Entity?.AllowMultiValue ?? true;
-          colDef.cellRenderer = 'contentItemsEntityComponent';
+          colDef.cellRenderer = ContentItemsEntityComponent;
           colDef.valueGetter = this.valueGetterEntityField;
-          colDef.filter = 'entityFilterComponent';
+          colDef.filter = EntityFilterComponent;
           break;
         case DataTypeConstants.DateTime:
           colDef.useTimePicker = column.Metadata?.DateTime?.UseTimePicker ?? false;
@@ -301,7 +292,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
           break;
         case DataTypeConstants.Boolean:
           colDef.valueGetter = this.valueGetterBoolean;
-          colDef.filter = 'booleanFilterComponent';
+          colDef.filter = BooleanFilterComponent;
           break;
         case DataTypeConstants.Number:
           colDef.filter = 'agNumberColumnFilter';

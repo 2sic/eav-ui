@@ -16,33 +16,28 @@ import { ZoneService } from '../services/zone.service';
   styleUrls: ['./site-languages.component.scss'],
 })
 export class SiteLanguagesComponent implements OnInit, OnDestroy {
-  languages$ = new BehaviorSubject<SiteLanguage[]>(null);
+  languages$ = new BehaviorSubject<SiteLanguage[]>(undefined);
 
   modules = AllCommunityModules;
   gridOptions: GridOptions = {
     ...defaultGridOptions,
-    frameworkComponents: {
-      idFieldComponent: IdFieldComponent,
-      booleanFilterComponent: BooleanFilterComponent,
-      siteLanguagesStatusComponent: SiteLanguagesStatusComponent,
-    },
     columnDefs: [
       {
-        headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
-        cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter',
+        headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline'.split(' '),
+        cellRenderer: IdFieldComponent, sortable: true, filter: 'agTextColumnFilter',
         valueGetter: (params) => (params.data as SiteLanguage).Code,
         cellRendererParams: {
           tooltipGetter: (language: SiteLanguage) => `ID: ${language.Code}`,
         } as IdFieldParams,
       },
       {
-        field: 'Name', flex: 2, minWidth: 250, cellClass: 'primary-action highlight no-outline', sortable: true,
+        field: 'Name', flex: 2, minWidth: 250, cellClass: 'primary-action highlight no-outline'.split(' '), sortable: true,
         sort: 'asc', filter: 'agTextColumnFilter', onCellClicked: (event) => this.toggleLanguage(event.data as SiteLanguage),
         valueGetter: (params) => (params.data as SiteLanguage).Culture,
       },
       {
-        field: 'Status', width: 72, headerClass: 'dense', cellClass: 'no-padding no-outline',
-        cellRenderer: 'siteLanguagesStatusComponent', sortable: true, filter: 'booleanFilterComponent',
+        field: 'Status', width: 72, headerClass: 'dense', cellClass: 'no-padding no-outline'.split(' '),
+        cellRenderer: SiteLanguagesStatusComponent, sortable: true, filter: BooleanFilterComponent,
         valueGetter: (params) => (params.data as SiteLanguage).IsEnabled,
         cellRendererParams: {
           onEnabledToggle: (language) => this.toggleLanguage(language),

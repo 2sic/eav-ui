@@ -58,7 +58,7 @@ ag-grid-angular:not(.grid-sorted):not(.grid-filtered) .is-in-group {
   }
 }
 
-ag-grid-angular.ag-theme-material {
+ag-grid-angular {
   flex-grow: 1;
 
   button {
@@ -92,10 +92,8 @@ ag-grid-angular.ag-theme-material {
       color: map_get($mat-eav-item-dialog-secondary, 500);
     }
 
-    &.ag-column-hover {
-      .text {
-        text-decoration: underline;
-      }
+    &:hover .text {
+      text-decoration: underline;
     }
   }
 
@@ -103,7 +101,7 @@ ag-grid-angular.ag-theme-material {
     cursor: pointer;
     color: map_get($mat-eav-item-dialog-secondary, 500);
 
-    &.ag-column-hover {
+    &:hover {
       text-decoration: underline;
     }
   }
@@ -113,7 +111,7 @@ ag-grid-angular.ag-theme-material {
       color: map_get($mat-eav-item-dialog-secondary, 500);
     }
 
-    &.ag-column-hover .text:not(.disabled) {
+    &:hover .text:not(.disabled) {
       text-decoration: underline;
     }
 
@@ -131,6 +129,10 @@ ag-grid-angular.ag-theme-material {
       margin-left: 0 !important;
     }
   }
+}
+
+.ag-cell-wrapper {
+  height: 100%;
 }
 
 .ag-cell {

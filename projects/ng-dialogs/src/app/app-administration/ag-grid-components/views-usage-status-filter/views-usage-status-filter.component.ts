@@ -1,4 +1,4 @@
-import { IAfterGuiAttachedParams, IDoesFilterPassParams, IFilterParams } from '@ag-grid-community/all-modules';
+import { IAfterGuiAttachedParams, IDoesFilterPassParams, IFilterParams, ValueGetterParams } from '@ag-grid-community/all-modules';
 import { IFilterAngularComp } from '@ag-grid-community/angular';
 import { Component } from '@angular/core';
 import { ViewUsageDataStatus } from '../../models/view-usage-data.model';
@@ -13,10 +13,10 @@ export class ViewsUsageStatusFilterComponent implements IFilterAngularComp {
   isVisible = '';
   isDeleted = '';
 
-  private params: IFilterParams;
+  private filterParams: IFilterParams;
 
   agInit(params: IFilterParams) {
-    this.params = params;
+    this.filterParams = params;
   }
 
   isFilterActive(): boolean {
@@ -26,7 +26,18 @@ export class ViewsUsageStatusFilterComponent implements IFilterAngularComp {
   doesFilterPass(params: IDoesFilterPassParams): boolean {
     let visiblePassed = false;
     let deletedPassed = false;
-    const value: ViewUsageDataStatus = this.params.valueGetter(params.node);
+
+    const valueGetterParams: ValueGetterParams = {
+      api: this.filterParams.api,
+      colDef: this.filterParams.colDef,
+      column: this.filterParams.column,
+      columnApi: this.filterParams.columnApi,
+      context: this.filterParams.context,
+      data: params.node.data,
+      getValue: (field) => params.node.data[field],
+      node: params.node,
+    };
+    const value: ViewUsageDataStatus = this.filterParams.valueGetter(valueGetterParams);
     if (value == null) { return false; }
     if (this.isVisible !== '') {
       visiblePassed = (value.IsVisible == null) ? false : value.IsVisible.toString() === this.isVisible;
@@ -59,6 +70,6 @@ export class ViewsUsageStatusFilterComponent implements IFilterAngularComp {
   }
 
   filterChanged() {
-    this.params.filterChangedCallback();
+    this.filterParams.filterChangedCallback();
   }
 }

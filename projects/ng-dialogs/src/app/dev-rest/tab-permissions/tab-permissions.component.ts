@@ -21,7 +21,7 @@ export class DevRestTabPermissionsComponent {
     ...defaultGridOptions,
     columnDefs: [
       {
-        headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'no-padding no-outline',
+        headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'no-padding no-outline'.split(' '),
         valueGetter: (params) => (params.data as Permission).Id,
       },
       {

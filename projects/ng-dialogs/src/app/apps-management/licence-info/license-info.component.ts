@@ -31,35 +31,28 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
   modules = AllCommunityModules;
   gridOptions: GridOptions = {
     ...defaultGridOptions,
-    frameworkComponents: {
-      booleanFilterComponent: BooleanFilterComponent,
-      idFieldComponent: IdFieldComponent,
-      featuresListEnabledComponent: FeaturesListEnabledComponent,
-      featuresListEnabledReasonComponent: FeaturesListEnabledReasonComponent,
-      featuresStatusComponent: FeaturesStatusComponent,
-    },
     columnDefs: [
       {
-        headerName: 'ID', field: 'Id', width: 200, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
-        cellRenderer: 'idFieldComponent', sortable: true, filter: 'agTextColumnFilter',
+        headerName: 'ID', field: 'Id', width: 200, headerClass: 'dense', cellClass: 'id-action no-padding no-outline'.split(' '),
+        cellRenderer: IdFieldComponent, sortable: true, filter: 'agTextColumnFilter',
         valueGetter: (params) => (params.data as Feature).NameId,
         cellRendererParams: {
           tooltipGetter: (feature: Feature) => `NameId: ${feature.NameId}\nGUID: ${feature.Guid}`,
         } as IdFieldParams,
       },
       {
-        field: 'Name', flex: 3, minWidth: 250, cellClass: 'primary-action highlight', sortable: true, filter: 'agTextColumnFilter',
+        field: 'Name', flex: 3, minWidth: 250, cellClass: 'primary-action highlight'.split(' '), sortable: true, filter: 'agTextColumnFilter',
         onCellClicked: (params) => this.showFeatureDetails(params.data as Feature),
         valueGetter: (params) => (params.data as Feature).Name,
       },
       {
         field: 'Enabled', width: 80, headerClass: 'dense', cellClass: 'no-outline',
-        sortable: true, filter: 'booleanFilterComponent', cellRenderer: 'featuresListEnabledComponent',
+        sortable: true, filter: BooleanFilterComponent, cellRenderer: FeaturesListEnabledComponent,
         valueGetter: (params) => (params.data as Feature).Enabled,
       },
       {
         field: 'EnabledReason', headerName: 'Reason', flex: 1, minWidth: 150, cellClass: 'no-outline', sortable: true,
-        filter: 'agTextColumnFilter', cellRenderer: 'featuresListEnabledReasonComponent',
+        filter: 'agTextColumnFilter', cellRenderer: FeaturesListEnabledReasonComponent,
         valueGetter: (params) => (params.data as Feature).EnabledReason,
       },
       {
@@ -72,8 +65,8 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
         },
       },
       {
-        field: 'Status', headerName: '', width: 62, cellClass: 'secondary-action no-outline no-padding', pinned: 'right',
-        cellRenderer: 'featuresStatusComponent',
+        field: 'Status', headerName: '', width: 62, cellClass: 'secondary-action no-outline no-padding'.split(' '), pinned: 'right',
+        cellRenderer: FeaturesStatusComponent,
         valueGetter: (params) => (params.data as Feature).EnabledStored,
         cellRendererParams: {
           isDisabled: () => this.disabled$.value,
@@ -140,8 +133,8 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
   private toggleFeature(feature: Feature, enabled: boolean): void {
     this.disabled$.next(true);
     const state: FeatureState = {
-        FeatureGuid: feature.Guid,
-        Enabled: enabled,
+      FeatureGuid: feature.Guid,
+      Enabled: enabled,
     };
     forkJoin([this.featuresConfigService.saveFeatures([state]), timer(100)]).subscribe(() => {
       this.fetchLicenses();
