@@ -10,6 +10,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
@@ -35,6 +36,7 @@ import { AgGridHeightDirective } from './licence-info/ag-grid-height.directive';
 import { FeatureDetailsDialogComponent } from './licence-info/feature-details-dialog/feature-details-dialog.component';
 import { LicenseInfoComponent } from './licence-info/license-info.component';
 import { LicensesOrderPipe } from './licence-info/licenses-order.pipe';
+import { UploadLicenseDialogComponent } from './licence-info/upload-license-dialog/upload-license-dialog.component';
 import { AppsListService } from './services/apps-list.service';
 import { FeaturesConfigService } from './services/features-config.service';
 import { SxcInsightsService } from './services/sxc-insights.service';
@@ -61,6 +63,7 @@ import { SystemInfoComponent } from './system-info/system-info.component';
     AgGridHeightDirective,
     ActiveFeaturesCountPipe,
     FeatureDetailsDialogComponent,
+    UploadLicenseDialogComponent,
   ],
   imports: [
     AppsManagementRoutingModule,
@@ -82,6 +85,7 @@ import { SystemInfoComponent } from './system-info/system-info.component';
     MatSelectModule,
     MatSnackBarModule,
     MatExpansionModule,
+    MatProgressSpinnerModule,
   ],
   providers: [
     Context,

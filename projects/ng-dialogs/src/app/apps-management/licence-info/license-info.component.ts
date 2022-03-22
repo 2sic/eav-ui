@@ -3,6 +3,7 @@ import { AgGridAngular } from '@ag-grid-community/angular';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, distinctUntilChanged, forkJoin, Subscription, timer } from 'rxjs';
+import { GlobalConfigService } from '../../../../../edit/shared/store/ngrx-data';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
@@ -16,6 +17,7 @@ import { License } from '../models/license.model';
 import { FeaturesConfigService } from '../services/features-config.service';
 import { FeatureDetailsDialogComponent } from './feature-details-dialog/feature-details-dialog.component';
 import { FeatureDetailsDialogData } from './feature-details-dialog/feature-details-dialog.models';
+import { UploadLicenseDialogComponent } from './upload-license-dialog/upload-license-dialog.component';
 
 @Component({
   selector: 'app-license-info',
@@ -27,6 +29,7 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
 
   licenses$ = new BehaviorSubject<License[]>(undefined);
   disabled$ = new BehaviorSubject(false);
+  debugEnabled$ = this.globalConfigService.getDebugEnabled$();
 
   modules = AllCommunityModules;
   gridOptions: GridOptions = {
@@ -83,6 +86,7 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
+    private globalConfigService: GlobalConfigService,
   ) { }
 
   ngOnInit(): void {
@@ -102,6 +106,19 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
 
   trackLicenses(index: number, license: License): string {
     return license.Guid;
+  }
+
+  openLicenseUpload(): void {
+    const dialogRef = this.dialog.open(UploadLicenseDialogComponent, {
+      autoFocus: false,
+      viewContainerRef: this.viewContainerRef,
+      width: '650px',
+    });
+    dialogRef.afterClosed().subscribe((refresh?: boolean) => {
+      if (refresh) {
+        this.fetchLicenses();
+      }
+    });
   }
 
   private fetchLicenses(): void {
