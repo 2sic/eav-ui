@@ -81,14 +81,15 @@ export class FieldsSettingsService implements OnDestroy {
     const itemAttributes$ = this.itemService.getItemAttributes$(entityGuid);
     const inputTypes$ = this.inputTypeService.getInputTypes$();
     const readOnly$ = this.formsStateService.readOnly$;
+    const debugEnabled$ = this.globalConfigService.getDebugEnabled$();
     this.subscription.add(
       combineLatest([
         combineLatest([contentType$, currentLanguage$, defaultLanguage$, itemAttributes$, itemHeader$, inputTypes$]),
-        combineLatest([readOnly$, this.forceSettings$]),
+        combineLatest([readOnly$, this.forceSettings$, debugEnabled$]),
       ]).pipe(
         map(([
           [contentType, currentLanguage, defaultLanguage, itemAttributes, itemHeader, inputTypes],
-          [readOnly, forceSettings],
+          [readOnly, forceSettings, debugEnabled],
         ]) => {
           const formValues: FormValues = {};
           for (const [fieldName, fieldValues] of Object.entries(itemAttributes)) {
@@ -129,7 +130,7 @@ export class FieldsSettingsService implements OnDestroy {
             calculated.Disabled = readOnly.isReadOnly || calculated.Disabled;
             // update settings with respective FieldLogics
             const logic = FieldLogicManager.singleton().get(attribute.InputType);
-            const fixed = logic?.update(calculated, value) ?? calculated;
+            const fixed = logic?.update(calculated, value, this.eavService.eavConfig, debugEnabled) ?? calculated;
 
             // important to compare with undefined because null is allowed value
             if (!slotIsEmpty && !disabledBecauseTranslations && value !== undefined && formulaValue !== undefined) {

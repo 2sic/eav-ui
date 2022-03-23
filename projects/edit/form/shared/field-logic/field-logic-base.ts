@@ -1,4 +1,5 @@
 import { FieldSettings, FieldValue } from '../../../../edit-types';
+import { EavConfig } from '../../../shared/models';
 import { FieldLogicManager } from './field-logic-manager';
 
 type LogicConstructor = new (...args: any[]) => FieldLogicBase;
@@ -18,5 +19,5 @@ export abstract class FieldLogicBase {
   }
 
   /** Update field settings */
-  abstract update(settings: FieldSettings, value: FieldValue): FieldSettings;
+  abstract update(settings: FieldSettings, value: FieldValue, eavConfig: EavConfig, debugEnabled: boolean): FieldSettings;
 }
