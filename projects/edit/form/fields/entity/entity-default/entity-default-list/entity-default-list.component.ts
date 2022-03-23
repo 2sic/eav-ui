@@ -3,7 +3,8 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { GeneralHelpers } from '../../../../../shared/helpers';
-import { FieldsSettingsService } from '../../../../../shared/services';
+import { EavService, FieldsSettingsService } from '../../../../../shared/services';
+import { GlobalConfigService } from '../../../../../shared/store/ngrx-data';
 import { FieldConfigSet } from '../../../../builder/fields-builder/field-config-set.model';
 import { DeleteEntityProps, SelectedEntity } from '../entity-default.models';
 import { EntityListTemplateVars, ReorderIndexes } from './entity-default-list.models';
@@ -27,15 +28,22 @@ export class EntityDefaultListComponent implements OnInit {
 
   templateVars$: Observable<EntityListTemplateVars>;
 
-  constructor(private fieldsSettingsService: FieldsSettingsService) { }
+  constructor(
+    private fieldsSettingsService: FieldsSettingsService,
+    private globalConfigService: GlobalConfigService,
+    private eavService: EavService,
+  ) { }
 
   ngOnInit(): void {
-    const settings$ = this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).pipe(
-      map(settings => ({
+    const settings$ = combineLatest([
+      this.globalConfigService.getDebugEnabled$(),
+      this.fieldsSettingsService.getFieldSettings$(this.config.fieldName),
+    ]).pipe(
+      map(([debugEnabled, settings]) => ({
         AllowMultiValue: settings.AllowMultiValue,
-        EnableEdit: settings.EnableEdit,
-        EnableDelete: settings.EnableDelete,
-        EnableRemove: settings.EnableRemove,
+        EnableEdit: this.eavService.eavConfig.overrideEditRestrictions && debugEnabled ? true : settings.EnableEdit,
+        EnableDelete: this.eavService.eavConfig.overrideEditRestrictions && debugEnabled ? true : settings.EnableDelete,
+        EnableRemove: this.eavService.eavConfig.overrideEditRestrictions && debugEnabled ? true : settings.EnableRemove,
       })),
       distinctUntilChanged(GeneralHelpers.objectsEqual),
     );

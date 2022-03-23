@@ -57,6 +57,7 @@ export class EavService {
       isCopy,
       enableHistory,
       enableFormulaSave: dialogContext.Enable.FormulaSave ?? false,
+      overrideEditRestrictions: dialogContext.Enable.OverrideEditRestrictions ?? false,
     };
   }
 
