@@ -18,8 +18,8 @@ import { AppDialogConfigService } from '../services/app-dialog-config.service';
 export class AppAdministrationNavComponent implements OnInit, OnDestroy {
   AppScopes = AppScopes;
 
-  private dialogSettings$ = new BehaviorSubject<DialogSettings>(null);
-  private tabs$ = new BehaviorSubject<string[]>(null);
+  private dialogSettings$ = new BehaviorSubject<DialogSettings>(undefined);
+  private tabs$ = new BehaviorSubject<string[]>(undefined);
   private tabIndex$ = combineLatest([
     this.tabs$,
     this.router.events.pipe(
