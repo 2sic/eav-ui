@@ -390,13 +390,13 @@ export class FieldsSettingsService implements OnDestroy {
       const date = new Date(value as string | number | Date);
 
       // if value is ISO string, or miliseconds, no correction
-      if (date.toJSON() === value || date.getTime() === value) {
+      if ((typeof value === 'string' && value.endsWith('Z')) || date.getTime() === value) {
+        date.setMilliseconds(0);
         return date.toJSON();
       }
 
       // otherwise do timezone correction
       date.setTime(date.getTime() - date.getTimezoneOffset() * 60000);
-      // ignore miliseconds
       date.setMilliseconds(0);
       return date.toJSON();
     }
