@@ -24,6 +24,10 @@
 </mat-accordion>
 
 <div class="actions-box">
+  <button mat-button color="accent" tippy="Retrieve Licenses" *ngIf="debugEnabled$ | async" (click)="retrieveLicense()">
+    <mat-icon>cloud_download</mat-icon>
+    <span>License</span>
+  </button>
   <button mat-button color="accent" tippy="Upload license" *ngIf="debugEnabled$ | async" (click)="openLicenseUpload()">
     <mat-icon>cloud_upload</mat-icon>
     <span>License</span>

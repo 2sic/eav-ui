@@ -108,6 +108,10 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
     return license.Guid;
   }
 
+  retrieveLicense(): void {
+    this.featuresConfigService.retrieveLicense().subscribe();
+  }
+
   openLicenseUpload(): void {
     const dialogRef = this.dialog.open(UploadLicenseDialogComponent, {
       autoFocus: false,

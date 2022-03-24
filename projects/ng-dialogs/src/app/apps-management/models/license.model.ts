@@ -9,3 +9,7 @@ export interface License {
   Name: string;
   Priority: number;
 }
+
+export interface LicenseInfo {
+  message: string;
+}
