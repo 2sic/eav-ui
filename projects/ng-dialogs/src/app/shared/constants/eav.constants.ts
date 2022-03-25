@@ -77,6 +77,8 @@ export const eavConstants = {
     formulas: 'UiFormula',
     /** Content type containing notes */
     notes: 'NoteDecorator',
+    /** Content type containing settings for image scaling */
+    imageDecorator: 'ImageDecorator',
   },
 
   pipelineDesigner: {

@@ -3,7 +3,7 @@ export interface AdamItem {
   Created: string;
   Id: number;
   IsFolder: boolean;
-  MetadataId: number;
+  Metadata?: AdamItemMetadata[];
   Modified: string;
   Name: string;
   ParentId: number;
@@ -27,7 +27,19 @@ export interface AdamItem {
   /**
    * Template helper
    */
+  _imageConfigurationContentType?: string;
+  /**
+   * Template helper
+   */
+  _imageConfigurationId?: number;
+  /**
+   * Template helper
+   */
   _metadataContentType?: string;
+  /**
+   * Template helper
+   */
+  _metadataId?: number;
   /**
    * Template helper
    */
@@ -40,4 +52,15 @@ export interface AdamItem {
    * Template helper
    */
   _displaySize?: string;
+}
+
+export interface AdamItemMetadata {
+  Guid: string;
+  Id: number;
+  Type: AdamItemMetadataType;
+}
+
+export interface AdamItemMetadataType {
+  Id: string;
+  Name: string;
 }

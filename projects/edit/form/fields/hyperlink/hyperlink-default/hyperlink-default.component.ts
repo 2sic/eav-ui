@@ -4,9 +4,11 @@ import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { AdamItem, AdamPostResponse } from '../../../../../edit-types';
 import { InputTypeConstants } from '../../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
+import { eavConstants } from '../../../../../ng-dialogs/src/app/shared/constants/eav.constants';
+import { EditForm } from '../../../../../ng-dialogs/src/app/shared/models/edit-form.model';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { GeneralHelpers } from '../../../../shared/helpers';
-import { AdamService, EavService, EditRoutingService, FieldsSettingsService } from '../../../../shared/services';
+import { AdamService, EavService, EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../../shared/services';
 import { LinkCacheService } from '../../../../shared/store/ngrx-data';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { HyperlinkDefaultBaseComponent } from './hyperlink-default-base.component';
@@ -38,6 +40,7 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
     changeDetectorRef: ChangeDetectorRef,
     linkCacheService: LinkCacheService,
     private editRoutingService: EditRoutingService,
+    private formsStateService: FormsStateService,
   ) {
     super(
       eavService,
@@ -70,13 +73,27 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
       distinctUntilChanged(GeneralHelpers.objectsEqual)
     );
 
+    const adamItem$ = combineLatest([this.controlStatus$, this.config.adam.items$]).pipe(
+      map(([controlStatus, adamItems]) => {
+        if (!controlStatus.value || !adamItems.length) { return; }
+
+        const match = controlStatus.value.trim().match(/^file:([0-9]+)$/i);
+        if (!match) { return; }
+
+        const adamItemId = parseInt(match[1], 10);
+        const adamItem = adamItems.find(i => i.Id === adamItemId);
+        return adamItem;
+      }),
+      distinctUntilChanged(),
+    );
+
     this.templateVars$ = combineLatest([
       combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
-      combineLatest([open$, this.preview$, settings$]),
+      combineLatest([open$, this.preview$, settings$, adamItem$]),
     ]).pipe(
       map(([
         [controlStatus, label, placeholder, required],
-        [open, preview, settings],
+        [open, preview, settings, adamItem],
       ]) => {
         const templateVars: HyperlinkDefaultTemplateVars = {
           controlStatus,
@@ -92,6 +109,7 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
           showImageManager: settings.ShowImageManager,
           showFileManager: settings.ShowFileManager,
           preview,
+          adamItem,
         };
         return templateVars;
       }),
@@ -104,6 +122,26 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
 
   toggleAdam(usePortalRoot: boolean, showImagesOnly: boolean) {
     this.config.adam.toggle(usePortalRoot, showImagesOnly);
+  }
+
+  openImageConfiguration(adamItem: AdamItem) {
+    if (this.formsStateService.readOnly$.value.isReadOnly) { return; }
+
+    const form: EditForm = {
+      items: [
+        adamItem._imageConfigurationId > 0
+          ? { EntityId: adamItem._imageConfigurationId }
+          : {
+            ContentTypeName: eavConstants.contentTypes.imageDecorator,
+            For: {
+              Target: eavConstants.metadata.cmsObject.target,
+              TargetType: eavConstants.metadata.cmsObject.targetType,
+              String: `file:${adamItem.Id}`,
+            },
+          },
+      ],
+    };
+    this.editRoutingService.open(this.config.index, this.config.entityGuid, form);
   }
 
   private attachAdam() {

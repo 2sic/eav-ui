@@ -9,7 +9,7 @@ import { eavConstants } from '../../../../../ng-dialogs/src/app/shared/constants
 import { EditForm } from '../../../../../ng-dialogs/src/app/shared/models/edit-form.model';
 import { FeaturesConstants } from '../../../../shared/constants';
 import { FileTypeHelpers, UrlHelpers } from '../../../../shared/helpers';
-import { AdamService, EditRoutingService, FormsStateService } from '../../../../shared/services';
+import { AdamService, EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../../shared/services';
 import { AdamCacheService, FeatureService, LinkCacheService } from '../../../../shared/store/ngrx-data';
 import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
 import { AdamBrowserTemplateVars, AdamConfigInstance } from './adam-browser.models';
@@ -59,6 +59,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
     private adamCacheService: AdamCacheService,
     private linkCacheService: LinkCacheService,
     private formsStateService: FormsStateService,
+    private fieldsSettingsService: FieldsSettingsService,
   ) { }
 
   ngOnInit() {
@@ -153,21 +154,21 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
     });
   }
 
-  editItemMetadata(adamItem: AdamItem) {
+  editItemMetadata(adamItem: AdamItem, contentTypeName: string, metadataId: number) {
     if (this.formsStateService.readOnly$.value.isReadOnly) { return; }
 
     const form: EditForm = {
       items: [
-        adamItem.MetadataId === 0
-          ? {
-            ContentTypeName: adamItem._metadataContentType,
+        metadataId > 0
+          ? { EntityId: metadataId }
+          : {
+            ContentTypeName: contentTypeName,
             For: {
               Target: eavConstants.metadata.cmsObject.target,
               TargetType: eavConstants.metadata.cmsObject.targetType,
               String: `${adamItem.Type === 'folder' ? 'folder' : 'file'}:${adamItem.Id}`,
-            }
-          }
-          : { EntityId: adamItem.MetadataId }
+            },
+          },
       ],
     };
     this.editRoutingService.open(this.config.index, this.config.entityGuid, form);
@@ -177,6 +178,15 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
     let subfolder = this.adamConfig$.value.subfolder;
     subfolder = subfolder.includes('/') ? subfolder.slice(0, subfolder.lastIndexOf('/')) : '';
     this.config.adam.setConfig({ subfolder });
+  }
+
+  private getImageConfigurationContentType(item: AdamItem) {
+    // allow image configuration if file is type image and if image configuration is enabled in settings
+    const settings = this.fieldsSettingsService.getFieldSettings(this.config.fieldName);
+    if (settings.EnableImageConfiguration && item.Type === 'image') {
+      return eavConstants.contentTypes.imageDecorator;
+    }
+    return null;
   }
 
   private getMetadataContentType(item: AdamItem) {
@@ -277,7 +287,10 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
         if (!extensionsFilter.includes(extension)) { continue; }
       }
 
+      item._imageConfigurationContentType = this.getImageConfigurationContentType(item);
+      item._imageConfigurationId = item.Metadata?.find(m => m.Type.Name === item._imageConfigurationContentType)?.Id ?? 0;
       item._metadataContentType = this.getMetadataContentType(item);
+      item._metadataId = item.Metadata?.find(m => m.Type.Name === item._metadataContentType)?.Id ?? 0;
       item._icon = FileTypeHelpers.getIconClass(item.Name);
       item._isMaterialIcon = FileTypeHelpers.isKnownType(item.Name);
       item._displaySize = (item.Size / 1024).toFixed(0);

@@ -2,18 +2,14 @@ import { FieldSettings } from '../../../../../edit-types';
 import { InputTypeConstants } from '../../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { FieldLogicBase } from '../../../shared/field-logic/field-logic-base';
 
-export class HyperlinkDefaultLogic extends FieldLogicBase {
-  name = InputTypeConstants.HyperlinkDefault;
+export class HyperlinkLibraryLogic extends FieldLogicBase {
+  name = InputTypeConstants.HyperlinkLibrary;
 
-  update(settings: FieldSettings, value: string): FieldSettings {
+  update(settings: FieldSettings, value: undefined): FieldSettings {
     const fixedSettings: FieldSettings = { ...settings };
-    fixedSettings.Buttons ||= 'adam,more';
-    fixedSettings.FileFilter ??= '';
-    fixedSettings.Paths ??= '';
-    fixedSettings.ServerResourceMapping ??= '';
     fixedSettings.EnableImageConfiguration ??= false;
     return fixedSettings;
   }
 }
 
-FieldLogicBase.add(HyperlinkDefaultLogic);
+FieldLogicBase.add(HyperlinkLibraryLogic);

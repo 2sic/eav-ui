@@ -166,6 +166,7 @@
         "BackFolder": "Back",
         "BackFolderTip": "Return to previous folder",
         "Show": "Open in new tab",
+        "ImageSettings": "Image settings",
         "Edit": "Rename",
         "RenameQuestion": "Rename file / folder to:",
         "Delete": "Delete",

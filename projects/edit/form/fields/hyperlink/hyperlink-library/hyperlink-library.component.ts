@@ -6,6 +6,7 @@ import { GeneralHelpers } from '../../../../shared/helpers';
 import { EavService, FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { BaseComponent } from '../../base/base.component';
+import { HyperlinkLibraryLogic } from './hyperlink-library-logic';
 import { AdamControl } from './hyperlink-library.models';
 
 @Component({
@@ -25,6 +26,7 @@ export class HyperlinkLibraryComponent extends BaseComponent<null> implements On
 
   constructor(eavService: EavService, fieldsSettingsService: FieldsSettingsService) {
     super(eavService, fieldsSettingsService);
+    HyperlinkLibraryLogic.importMe();
   }
 
   ngOnInit() {

@@ -134,6 +134,7 @@ interface Hyperlink extends All {
   Buttons: string;
   Paths: string;
   ServerResourceMapping: string;
+  EnableImageConfiguration: boolean;
 }
 
 /**

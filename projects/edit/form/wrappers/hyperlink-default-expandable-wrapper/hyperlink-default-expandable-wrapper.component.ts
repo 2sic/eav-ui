@@ -1,10 +1,13 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { combineLatest, Observable } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
+import { AdamItem } from '../../../../edit-types';
+import { eavConstants } from '../../../../ng-dialogs/src/app/shared/constants/eav.constants';
+import { EditForm } from '../../../../ng-dialogs/src/app/shared/models/edit-form.model';
 import { WrappersConstants } from '../../../shared/constants';
 import { DropzoneDraggingHelper, GeneralHelpers } from '../../../shared/helpers';
-import { AdamService, EavService, EditRoutingService, FieldsSettingsService } from '../../../shared/services';
+import { AdamService, EavService, EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
 import { LinkCacheService } from '../../../shared/store/ngrx-data';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { HyperlinkDefaultBaseComponent } from '../../fields/hyperlink/hyperlink-default/hyperlink-default-base.component';
@@ -26,6 +29,7 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
   open$: Observable<boolean>;
   templateVars$: Observable<HyperlinkDefaultExpandableTemplateVars>;
 
+  private adamItems$: BehaviorSubject<AdamItem[]>;
   private dropzoneDraggingHelper: DropzoneDraggingHelper;
 
   constructor(
@@ -38,6 +42,7 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
     linkCacheService: LinkCacheService,
     private editRoutingService: EditRoutingService,
     private zone: NgZone,
+    private formsStateService: FormsStateService,
   ) {
     super(
       eavService,
@@ -52,6 +57,7 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
 
   ngOnInit() {
     super.ngOnInit();
+    this.adamItems$ = new BehaviorSubject<AdamItem[]>([]);
 
     this.open$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
     const settings$ = this.settings$.pipe(
@@ -61,14 +67,27 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
       })),
       distinctUntilChanged(GeneralHelpers.objectsEqual),
     );
+    const adamItem$ = combineLatest([this.controlStatus$, this.adamItems$]).pipe(
+      map(([controlStatus, adamItems]) => {
+        if (!controlStatus.value || !adamItems.length) { return; }
+
+        const match = controlStatus.value.trim().match(/^file:([0-9]+)$/i);
+        if (!match) { return; }
+
+        const adamItemId = parseInt(match[1], 10);
+        const adamItem = adamItems.find(i => i.Id === adamItemId);
+        return adamItem;
+      }),
+      distinctUntilChanged(),
+    );
 
     this.templateVars$ = combineLatest([
       combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
-      combineLatest([this.preview$, settings$]),
+      combineLatest([this.preview$, settings$, adamItem$]),
     ]).pipe(
       map(([
         [controlStatus, label, placeholder, required],
-        [preview, settings],
+        [preview, settings, adamItem],
       ]) => {
         const templateVars: HyperlinkDefaultExpandableTemplateVars = {
           controlStatus,
@@ -78,6 +97,7 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
           preview,
           buttonAdam: settings._buttonAdam,
           buttonPage: settings._buttonPage,
+          adamItem,
         };
         return templateVars;
       }),
@@ -88,9 +108,15 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
     this.dropzoneDraggingHelper = new DropzoneDraggingHelper(this.zone);
     this.dropzoneDraggingHelper.attach(this.backdropRef.nativeElement);
     this.dropzoneDraggingHelper.attach(this.dialogRef.nativeElement);
+    this.subscription.add(
+      this.config.adam.items$.subscribe(items => {
+        this.adamItems$.next(items);
+      })
+    );
   }
 
   ngOnDestroy() {
+    this.adamItems$.complete();
     this.dropzoneDraggingHelper.detach();
     super.ngOnDestroy();
   }
@@ -116,5 +142,25 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
 
   closeDialog() {
     this.editRoutingService.expand(false, this.config.index, this.config.entityGuid);
+  }
+
+  openImageConfiguration(adamItem: AdamItem) {
+    if (this.formsStateService.readOnly$.value.isReadOnly) { return; }
+
+    const form: EditForm = {
+      items: [
+        adamItem._imageConfigurationId > 0
+          ? { EntityId: adamItem._imageConfigurationId }
+          : {
+            ContentTypeName: eavConstants.contentTypes.imageDecorator,
+            For: {
+              Target: eavConstants.metadata.cmsObject.target,
+              TargetType: eavConstants.metadata.cmsObject.targetType,
+              String: `file:${adamItem.Id}`,
+            },
+          },
+      ],
+    };
+    this.editRoutingService.open(this.config.index, this.config.entityGuid, form);
   }
 }
