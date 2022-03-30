@@ -48,8 +48,11 @@ export class UploadLicenseDialogComponent implements OnInit, OnDestroy {
         this.loading$.next(false);
         this.snackBar.open('Failed to upload license. Please check console for more information', undefined, { duration: 3000 });
       },
-      next: () => {
-        this.snackBar.open('License uploaded', undefined, { duration: 2000 });
+      next: (info) => {
+        const message = `License ${info.Success ? 'uploaded' : 'upload failed'}: ${info.Message}`;
+        const duration = info.Success ? 3000 : 10000;
+        const panelClass = info.Success ? undefined : 'snackbar-error';
+        this.snackBar.open(message, undefined, { duration, panelClass });
         this.closeDialog(true);
       },
     });

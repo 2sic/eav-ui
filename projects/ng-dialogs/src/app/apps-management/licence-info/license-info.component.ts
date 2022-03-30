@@ -2,7 +2,9 @@ import { AllCommunityModules, GridOptions } from '@ag-grid-community/all-modules
 import { AgGridAngular } from '@ag-grid-community/angular';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { BehaviorSubject, distinctUntilChanged, forkJoin, Subscription, timer } from 'rxjs';
+import { GeneralHelpers } from '../../../../../edit/shared/helpers';
 import { GlobalConfigService } from '../../../../../edit/shared/store/ngrx-data';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
@@ -87,6 +89,7 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
     private globalConfigService: GlobalConfigService,
+    private snackBar: MatSnackBar,
   ) { }
 
   ngOnInit(): void {
@@ -109,7 +112,12 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
   }
 
   retrieveLicense(): void {
-    this.featuresConfigService.retrieveLicense().subscribe();
+    this.featuresConfigService.retrieveLicense().subscribe(info => {
+      const message = `License ${info.Success ? 'retrieved' : 'retrieval failed'}: ${info.Message}`;
+      const duration = info.Success ? 3000 : 100000;
+      const panelClass = info.Success ? undefined : 'snackbar-error';
+      this.snackBar.open(message, undefined, { duration, panelClass });
+    });
   }
 
   openLicenseUpload(): void {

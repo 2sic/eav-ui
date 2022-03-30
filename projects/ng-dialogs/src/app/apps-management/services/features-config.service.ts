@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { FeatureState } from '../models/feature.model';
-import { License, LicenseInfo } from '../models/license.model';
+import { License, UploadInfo } from '../models/license.model';
 
 const webApiFeatures = 'admin/feature/';
 const webApiLicense = 'sys/license/';
@@ -20,13 +20,13 @@ export class FeaturesConfigService {
     return this.http.get<License[]>(this.dnnContext.$2sxc.http.apiUrl(webApiLicense + 'Summary'));
   }
 
-  uploadLicense(file: File): Observable<null> {
+  uploadLicense(file: File): Observable<UploadInfo> {
     const formData = new FormData();
     formData.append('File', file);
-    return this.http.post<null>(this.dnnContext.$2sxc.http.apiUrl(webApiLicense + 'Upload'), formData);
+    return this.http.post<UploadInfo>(this.dnnContext.$2sxc.http.apiUrl(webApiLicense + 'Upload'), formData);
   }
 
-  retrieveLicense(): Observable<LicenseInfo> {
-    return this.http.get<LicenseInfo>(this.dnnContext.$2sxc.http.apiUrl(webApiLicense + 'Retrieve'));
+  retrieveLicense(): Observable<UploadInfo> {
+    return this.http.get<UploadInfo>(this.dnnContext.$2sxc.http.apiUrl(webApiLicense + 'Retrieve'));
   }
 }

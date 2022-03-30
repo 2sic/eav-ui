@@ -1,6 +1,7 @@
 $primary-color: #ffffff;
 $accent-color: #002753;
 $blue-accent-color: #0087f4;
+$error-color: #b00030;
 
 $edit-ui-dialog-width: 100vw;
 $edit-ui-dialog-max-width: 800px;
@@ -47,7 +48,7 @@ $field-border-color--initial: rgba(0, 0, 0, 0.2);
 $field-border-color--hover: rgba(0, 0, 0, 0.4);
 $field-border-color--focus: $accent-color;
 $field-border-color--disabled:rgba(0, 0, 0, 0.2);
-$field-border-color--invalid:#B00030;
+$field-border-color--invalid: $error-color;
 
 // Dropzone
 $dropzone-background: rgba($accent-color, 0.44);
