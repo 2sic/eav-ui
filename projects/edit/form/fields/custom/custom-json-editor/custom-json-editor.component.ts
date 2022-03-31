@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { InputTypeConstants } from '../../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
-import { JsonSchema } from '../../../../../ng-dialogs/src/app/monaco-editor';
+import { JsonComments, JsonSchema } from '../../../../../ng-dialogs/src/app/monaco-editor';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { EavService, FieldsSettingsService } from '../../../../shared/services';
@@ -53,14 +53,21 @@ export class CustomJsonEditorComponent extends BaseComponent<string> implements 
       }),
       distinctUntilChanged(GeneralHelpers.objectsEqual),
     );
+    const jsonComments$ = this.settings$.pipe(
+      map(settings => {
+        const jsonComments: JsonComments = settings.JsonCommentsAllowed ? 'ignore' : 'error';
+        return jsonComments;
+      }),
+      distinctUntilChanged(),
+    );
 
     this.templateVars$ = combineLatest([
       combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$, this.config.focused$]),
-      combineLatest([rowCount$, jsonSchema$]),
+      combineLatest([rowCount$, jsonSchema$, jsonComments$]),
     ]).pipe(
       map(([
         [controlStatus, label, placeholder, required, focused],
-        [rowCount, jsonSchema],
+        [rowCount, jsonSchema, jsonComments],
       ]) => {
         const templateVars: CustomJsonEditorTemplateVars = {
           controlStatus,
@@ -71,6 +78,7 @@ export class CustomJsonEditorComponent extends BaseComponent<string> implements 
           rowCount,
           editorHeight: rowCount * this.monacoOptions.lineHeight + 'px',
           jsonSchema,
+          jsonComments,
         };
         return templateVars;
       }),

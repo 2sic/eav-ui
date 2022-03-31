@@ -36,8 +36,7 @@ const configuration = {
       patterns: [
         {
           from: './projects/field-string-wysiwyg/src/i18n/*.js',
-          to: './i18n',
-          flatten: true,
+          to: './i18n/[name][ext]',
         },
         {
           from: './projects/field-string-wysiwyg/src/assets/2sxc-tinymce-skin',

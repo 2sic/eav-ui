@@ -1,12 +1,13 @@
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map } from 'rxjs';
+import { map, tap } from 'rxjs';
 import { DialogContext } from '../../../ng-dialogs/src/app/app-administration/models';
 import { keyPartOfPage, keyPublishing } from '../../../ng-dialogs/src/app/shared/constants/session.constants';
 import { Context } from '../../../ng-dialogs/src/app/shared/services/context';
 import { EavFormData, SaveEavFormData } from '../../dialog/main/edit-dialog-main.models';
 import { EavConfig, SaveResult, VersioningOptions } from '../models';
+import { GlobalConfigService } from '../store/ngrx-data';
 
 export const webApiEditRoot = 'cms/edit/';
 
@@ -20,6 +21,7 @@ export class EavService {
     private dnnContext: DnnContext,
     /** Used to fetch form data and fill up eavConfig. Do not use anywhere else */
     private context: Context,
+    private globalConfigService: GlobalConfigService,
   ) { }
 
   /** Create EavConfiguration from sessionStorage */
@@ -55,6 +57,7 @@ export class EavService {
       isCopy,
       enableHistory,
       enableFormulaSave: dialogContext.Enable.FormulaSave ?? false,
+      overrideEditRestrictions: dialogContext.Enable.OverrideEditRestrictions ?? false,
     };
   }
 
@@ -65,6 +68,9 @@ export class EavService {
       map(formData => {
         formData.Context.Language.List = formData.Context.Language.List.filter(language => language.IsEnabled);
         return formData;
+      }),
+      tap(formData => {
+        this.globalConfigService.allowDebug(formData.Context.Enable.DebugMode);
       }),
     );
   }
@@ -88,7 +94,7 @@ export class EavService {
       case 'DraftRequired':
         return { branch: true, hide: true };
       default: {
-        console.error('invalid versioning requiremenets: ' + publish);
+        console.error(`Invalid versioning requirements: ${publish}`);
         return {};
       }
     }

@@ -1,5 +1,5 @@
 import appleFilled from '!raw-loader!../../assets/icons/2sxc/Material-Icon-Adam-48-filled.svg';
-import apple from '!raw-loader!../../assets/icons/2sxc/Material-Icon-Adam-48.svg';
+import appleOutlined from '!raw-loader!../../assets/icons/2sxc/Material-Icon-Adam-48-outlined.svg';
 import draftBranch from '!raw-loader!../../assets/icons/font-awesome/draft-branch.svg';
 import fileArchive from '!raw-loader!../../assets/icons/font-awesome/file-archive.svg';
 import fileAudio from '!raw-loader!../../assets/icons/font-awesome/file-audio.svg';
@@ -22,8 +22,8 @@ import { DomSanitizer } from '@angular/platform-browser';
 @Injectable()
 export class LoadIconsService {
   private icons: Record<string, string> = {
-    apple,
-    appleFilled,
+    'apple-filled': appleFilled,
+    'apple-outlined': appleOutlined,
     'draft-branch': draftBranch,
     file,
     'file-archive': fileArchive,

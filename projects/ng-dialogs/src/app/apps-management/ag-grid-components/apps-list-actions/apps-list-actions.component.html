@@ -11,12 +11,14 @@
 </div>
 
 <mat-menu #menu="matMenu" class="grid-more-menu">
-  <button mat-menu-item (click)="flushCache()">
-    <mat-icon>cached</mat-icon>
-    <span>Flush cache</span>
-  </button>
-  <button mat-menu-item [disabled]="!app.IsApp" (click)="deleteApp()">
-    <mat-icon>delete</mat-icon>
-    <span>Delete</span>
-  </button>
+  <ng-template matMenuContent>
+    <button mat-menu-item (click)="flushCache()">
+      <mat-icon>cached</mat-icon>
+      <span>Flush cache</span>
+    </button>
+    <button mat-menu-item [disabled]="!app.IsApp" (click)="deleteApp()">
+      <mat-icon>delete</mat-icon>
+      <span>Delete</span>
+    </button>
+  </ng-template>
 </mat-menu>

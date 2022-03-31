@@ -1,5 +1,5 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { BehaviorSubject, combineLatest, map, Subscription } from 'rxjs';
+import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, Subject, Subscription } from 'rxjs';
 import { EavService } from '.';
 import { GeneralHelpers } from '../helpers';
 import { FormReadOnly } from '../models';
@@ -7,9 +7,11 @@ import { ItemService, LanguageInstanceService, LanguageService } from '../store/
 
 @Injectable()
 export class FormsStateService implements OnDestroy {
+  saveForm$: Subject<boolean>;
   readOnly$: BehaviorSubject<FormReadOnly>;
   formsValid$: BehaviorSubject<boolean>;
   formsDirty$: BehaviorSubject<boolean>;
+  saveButtonDisabled$: Observable<boolean>;
 
   private formsValid: Record<string, boolean>;
   private formsDirty: Record<string, boolean>;
@@ -23,6 +25,7 @@ export class FormsStateService implements OnDestroy {
   ) { }
 
   ngOnDestroy() {
+    this.saveForm$.complete();
     this.readOnly$?.complete();
     this.formsValid$?.complete();
     this.formsDirty$?.complete();
@@ -31,10 +34,15 @@ export class FormsStateService implements OnDestroy {
 
   init() {
     this.subscription = new Subscription();
+    this.saveForm$ = new Subject();
     const initialReadOnly: FormReadOnly = { isReadOnly: true, reason: undefined };
     this.readOnly$ = new BehaviorSubject(initialReadOnly);
     this.formsValid$ = new BehaviorSubject(false);
     this.formsDirty$ = new BehaviorSubject(false);
+    this.saveButtonDisabled$ = combineLatest([this.readOnly$, this.formsValid$]).pipe(
+      map(([readOnly, formsValid]) => readOnly.isReadOnly || !formsValid),
+      distinctUntilChanged(),
+    );
     this.formsValid = {};
     this.formsDirty = {};
     for (const entityGuid of this.eavService.eavConfig.itemGuids) {

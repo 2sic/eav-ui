@@ -42,7 +42,7 @@ export class SnippetsService {
       if (setHasPrefix === -1 || (setHasPrefix === keyPrefixIndex(view))) {
         // if necessary, remove first char
         if (setHasPrefix === keyPrefixIndex(view)) {
-          itm.set = itm.set.substr(1);
+          itm.set = itm.set.substring(1);
         }
         newList.push(itm);
       }
@@ -59,7 +59,7 @@ export class SnippetsService {
       if (!systemSnippet) {
         standardArray.push(itm);
       } else {
-        itm.set = itm.set.substr(1);
+        itm.set = itm.set.substring(1);
         inputTypeArray.push(itm);
       }
     }
@@ -284,7 +284,7 @@ export class SnippetsService {
   ): void {
     let genericSnippet = inputTypeSnippets[inputType];
     if (inputType.indexOf('-')) { // if it's a sub-type, let's also get the master-type
-      const fieldType = inputType.substr(0, inputType.indexOf('-'));
+      const fieldType = inputType.substring(0, inputType.indexOf('-'));
       if (fieldType) {
         const typeSnips = inputTypeSnippets[fieldType];
         if (typeSnips) {

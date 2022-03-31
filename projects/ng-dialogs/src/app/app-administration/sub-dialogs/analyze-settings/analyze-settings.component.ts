@@ -26,20 +26,15 @@ export class AnalyzeSettingsComponent implements OnInit, OnDestroy {
   modules = AllCommunityModules;
   gridOptions: GridOptions = {
     ...defaultGridOptions,
-    frameworkComponents: {
-      analyzeSettingsKeyComponent: AnalyzeSettingsKeyComponent,
-      analyzeSettingsValueComponent: AnalyzeSettingsValueComponent,
-      analyzeSettingsTotalComponent: AnalyzeSettingsTotalResultsComponent,
-    },
     columnDefs: [
       {
-        field: 'Key', flex: 2, minWidth: 250, cellClass: 'primary-action no-padding no-outline',
-        cellRenderer: 'analyzeSettingsKeyComponent', sortable: true, filter: 'agTextColumnFilter',
+        field: 'Key', flex: 2, minWidth: 250, cellClass: 'primary-action no-padding no-outline'.split(' '),
+        cellRenderer: AnalyzeSettingsKeyComponent, sortable: true, filter: 'agTextColumnFilter',
         valueGetter: (params) => (params.data as SettingsStackItem).Path,
       },
       {
-        field: 'Value', flex: 2, minWidth: 250, cellClass: 'primary-action no-padding no-outline',
-        cellRenderer: 'analyzeSettingsValueComponent', sortable: true, filter: 'agTextColumnFilter',
+        field: 'Value', flex: 2, minWidth: 250, cellClass: 'primary-action no-padding no-outline'.split(' '),
+        cellRenderer: AnalyzeSettingsValueComponent, sortable: true, filter: 'agTextColumnFilter',
         valueGetter: (params) => (params.data as SettingsStackItem)._value,
       },
       {
@@ -48,8 +43,8 @@ export class AnalyzeSettingsComponent implements OnInit, OnDestroy {
         valueGetter: (params) => (params.data as SettingsStackItem).Source,
       },
       {
-        field: 'Total', width: 72, headerClass: 'dense', cellClass: 'secondary-action no-padding no-outline',
-        cellRenderer: 'analyzeSettingsTotalComponent', sortable: true, filter: 'agNumberColumnFilter',
+        field: 'Total', width: 72, headerClass: 'dense', cellClass: 'secondary-action no-padding no-outline'.split(' '),
+        cellRenderer: AnalyzeSettingsTotalResultsComponent, sortable: true, filter: 'agNumberColumnFilter',
         valueGetter: (params) => (params.data as SettingsStackItem).TotalResults,
         cellRendererParams: {
           openDetails: (stackItem) => {

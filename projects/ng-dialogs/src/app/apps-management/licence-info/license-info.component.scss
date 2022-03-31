@@ -46,3 +46,11 @@
   color: rgba(0, 0, 0, 0.54);
   overflow: hidden;
 }
+
+.actions-box {
+  margin-top: 8px;
+
+  button .mat-icon {
+    margin-right: 4px;
+  }
+}

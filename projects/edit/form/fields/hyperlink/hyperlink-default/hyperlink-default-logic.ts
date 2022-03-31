@@ -11,6 +11,7 @@ export class HyperlinkDefaultLogic extends FieldLogicBase {
     fixedSettings.FileFilter ??= '';
     fixedSettings.Paths ??= '';
     fixedSettings.ServerResourceMapping ??= '';
+    fixedSettings.EnableImageConfiguration ??= false;
     return fixedSettings;
   }
 }

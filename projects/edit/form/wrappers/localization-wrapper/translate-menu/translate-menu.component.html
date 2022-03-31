@@ -11,19 +11,21 @@
       </button>
     </div>
 
-    <mat-menu #menu="matMenu" overlapTrigger="true">
-      <button mat-menu-item (click)="translate()"
-        [ngClass]="{ 'menu-item-selected': data.translationState.linkType === TranslationLinks.Translate }">
-        {{ 'LangMenu.Translate' | translate }}
-      </button>
-      <button mat-menu-item (click)="dontTranslate()"
-        [ngClass]="{ 'menu-item-selected': data.translationState.linkType === TranslationLinks.DontTranslate }">
-        {{ 'LangMenu.NoTranslate' | translate }}
-      </button>
-      <button mat-menu-item (click)="openTranslateMenuDialog(data.translationState)"
-        [ngClass]="{ 'menu-item-selected': data.translationState.language !== '' }">
-        {{ 'LangMenu.Link' | translate }}
-      </button>
+    <mat-menu #menu="matMenu">
+      <ng-template matMenuContent>
+        <button mat-menu-item (click)="translate()"
+          [ngClass]="{ 'menu-item-selected': data.translationState.linkType === TranslationLinks.Translate }">
+          {{ 'LangMenu.Translate' | translate }}
+        </button>
+        <button mat-menu-item (click)="dontTranslate()"
+          [ngClass]="{ 'menu-item-selected': data.translationState.linkType === TranslationLinks.DontTranslate }">
+          {{ 'LangMenu.NoTranslate' | translate }}
+        </button>
+        <button mat-menu-item (click)="openTranslateMenuDialog(data.translationState)"
+          [ngClass]="{ 'menu-item-selected': data.translationState.language !== '' }">
+          {{ 'LangMenu.Link' | translate }}
+        </button>
+      </ng-template>
     </mat-menu>
   </div>
 

@@ -22,14 +22,11 @@ export class DevRestApiPermissionsComponent implements OnInit, OnChanges {
   ngOnInit() {
     this.gridModules = AllCommunityModules;
     const booleanColumnDef: ColDef = {
-      headerClass: 'dense', width: 80, cellClass: 'no-outline', cellRenderer: 'trueFalseComponent',
+      headerClass: 'dense', width: 80, cellClass: 'no-outline', cellRenderer: TrueFalseComponent,
       cellRendererParams: { reverse: false } as TrueFalseParams,
     };
     this.gridOptions = {
       ...defaultGridOptions,
-      frameworkComponents: {
-        trueFalseComponent: TrueFalseComponent,
-      },
       columnDefs: [
         {
           field: 'Requirement', flex: 2, minWidth: 200, cellClass: 'no-outline',

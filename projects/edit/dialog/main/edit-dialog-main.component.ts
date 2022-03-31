@@ -74,11 +74,10 @@ export class EditDialogMainComponent implements OnInit, AfterViewInit, OnDestroy
     this.formulaDesignerService.init();
     /** Small delay to make form opening feel smoother. */
     const delayForm$ = of(false).pipe(delay(0), startWith(true));
-    const reduceSaveButton$ = of(true).pipe(delay(5000), startWith(false));
     const items$ = this.itemService.getItems$(this.eavService.eavConfig.itemGuids);
     const hideHeader$ = this.languageInstanceService.getHideHeader$(this.eavService.eavConfig.formId);
-    const readOnly$ = this.formsStateService.readOnly$;
     const formsValid$ = this.formsStateService.formsValid$;
+    const saveButtonDisabled$ = this.formsStateService.saveButtonDisabled$;
     const debugEnabled$ = this.globalConfigService.getDebugEnabled$().pipe(
       tap(debugEnabled => {
         if (this.debugInfoIsOpen$.value && !debugEnabled) {
@@ -87,28 +86,27 @@ export class EditDialogMainComponent implements OnInit, AfterViewInit, OnDestroy
       })
     );
     this.templateVars$ = combineLatest([
-      combineLatest([items$, formsValid$, delayForm$, this.viewInitiated$, reduceSaveButton$]),
-      combineLatest([debugEnabled$, this.debugInfoIsOpen$, hideHeader$, readOnly$]),
+      combineLatest([items$, formsValid$, delayForm$, this.viewInitiated$]),
+      combineLatest([debugEnabled$, this.debugInfoIsOpen$, hideHeader$, saveButtonDisabled$]),
     ]).pipe(
       map(([
-        [items, formsValid, delayForm, viewInitiated, reduceSaveButton],
-        [debugEnabled, debugInfoIsOpen, hideHeader, readOnly],
+        [items, formsValid, delayForm, viewInitiated],
+        [debugEnabled, debugInfoIsOpen, hideHeader, saveButtonDisabled],
       ]) => {
         const templateVars: EditDialogMainTemplateVars = {
           items,
           formsValid,
           delayForm,
           viewInitiated,
-          reduceSaveButton,
           debugEnabled,
           debugInfoIsOpen,
           hideHeader,
-          readOnly: readOnly.isReadOnly,
+          saveButtonDisabled,
         };
         return templateVars;
       }),
     );
-    this.dialogBackdropClickSubscribe();
+    this.startSubscriptions();
   }
 
   ngAfterViewInit() {
@@ -231,7 +229,7 @@ export class EditDialogMainComponent implements OnInit, AfterViewInit, OnDestroy
     this.debugInfoIsOpen$.next(opened);
   }
 
-  private dialogBackdropClickSubscribe() {
+  private startSubscriptions() {
     this.subscription.add(
       fromEvent<BeforeUnloadEvent>(window, 'beforeunload').subscribe(event => {
         if (this.formsStateService.readOnly$.value.isReadOnly || !this.formsStateService.formsDirty$.value) { return; }
@@ -239,6 +237,10 @@ export class EditDialogMainComponent implements OnInit, AfterViewInit, OnDestroy
         event.returnValue = ''; // fix for Chrome
         this.snackBarYouHaveUnsavedChanges();
       })
+    );
+
+    this.subscription.add(
+      this.formsStateService.saveForm$.subscribe(close => this.saveAll(close)),
     );
 
     this.dialogRef.backdropClick().subscribe(event => {

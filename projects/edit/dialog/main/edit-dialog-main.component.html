@@ -7,7 +7,8 @@
   </div>
 
   <div style="position: relative">
-    <div mat-dialog-content class="u-hide-scrollbar" [ngClass]="{
+    <!-- cdkScrollable is required when using matAutocomplete with scrollable element that is not body. Fixes matAutocomplete not following input  -->
+    <div mat-dialog-content cdkScrollable class="u-hide-scrollbar" [ngClass]="{
       'debug-enabled': data.debugEnabled,
       'debug-info-is-open': data.debugInfoIsOpen,
       'hide-header-height-fix': data.hideHeader
@@ -21,20 +22,21 @@
           </div>
         </div>
       </div>
-
-      <div *ngIf="data.viewInitiated" class="c-multi-item-dialog__save-container">
-        <div class="c-multi-item-dialog__save-button">
-          <button mat-fab class="mat-elevation-z24" [tippy]="'Form.Buttons.Save.Tip' | translate" [ngClass]="{
-            'mat-fab--compact' : data.reduceSaveButton,
-            'mat-fab--extended' : !data.reduceSaveButton,
-            'mat-fab--disabled' : !data.formsValid
-          }" [disabled]="data.readOnly" (click)="saveAll(true)">
-            <mat-icon>done</mat-icon>
-            {{ data.reduceSaveButton ? '' : ('Form.Buttons.Save' | translate | uppercase) }}
-          </button>
-        </div>
-      </div>
     </div>
+    <extended-fab-speed-dial [disabled]="data.saveButtonDisabled" *ngIf="data.viewInitiated">
+      <ng-template extendedFabSpeedDialTriggerContent>
+        <button extended-fab-speed-dial-trigger matRipple [disabled]="data.saveButtonDisabled" (click)="saveAll(true)">
+          <mat-icon (click)="data.saveButtonDisabled && saveAll(false)">done</mat-icon>
+          <span>{{ 'Form.Buttons.SaveAndClose' | translate }}</span>
+        </button>
+      </ng-template>
+      <ng-template extendedFabSpeedDialActionsContent>
+        <button extended-fab-speed-dial-action matRipple [disabled]="data.saveButtonDisabled" (click)="saveAll(false)">
+          <span>{{ 'Form.Buttons.Save' | translate }}</span>
+          <mat-icon>save</mat-icon>
+        </button>
+      </ng-template>
+    </extended-fab-speed-dial>
   </div>
 
   <app-edit-dialog-footer mat-dialog-actions *ngIf="data.debugEnabled" [formBuilderRefs]="formBuilderRefs"

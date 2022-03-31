@@ -1,42 +1,30 @@
+module.exports = (env) => {
+  const envParam = 'parts';
+  const all = 'all';
+  const wysiwyg = 'wysiwyg';
+  const gps = 'gps';
 
-console.log('===== Will build the parts of the UI =====');
+  console.log('===== Will build the parts of the UI =====');
 
-// Prepare list of parts to build
-const paramParts = '--parts';
-
-function findParts() {
-  const args = process.argv.slice(2);
-  console.log("args:", args);
-  const partsIndex = args.findIndex(a => a === paramParts);
-  if (partsIndex !== -1) {
-    if (args.length < partsIndex + 1) throw "nothing after --parts parameter";
-    return args[partsIndex + 1].replace("'", '');
+  if (!env[envParam]) {
+    throw `Parts parameter missing, please specify something like --env ${envParam}=${all}`;
   }
 
-  const partsEq = args.find(a => a.startsWith(paramParts) + "=");
-  if (partsEq) return partsEq.substring(paramParts.length + 1).replace("'", '');
+  const parts = env.parts === all
+    ? [wysiwyg, gps]
+    : env.parts.split(',');
 
-  throw "--parts parameter missing, please specify something like --parts=all";
-}
+  const configs = parts.reduce((result, part) => {
+    if (part === wysiwyg) {
+      const wysiwygConfig = require('./projects/field-string-wysiwyg/webpack.config.js');
+      result.push(wysiwygConfig);
+    } else if (part === gps) {
+      const gpsConfig = require('./projects/field-custom-gps/webpack.config.js');
+      result.push(gpsConfig);
+    }
+    return result;
+  }, []);
 
-const partsTxt = findParts();
-const parts = partsTxt.split(' ');
-console.log('Parts (' + parts.length + "): '" + partsTxt + "'");
-
-function hasPart(name) {
-  return partsTxt === 'all' || parts.includes(name);
-}
-
-console.log('has all:' + hasPart('something'));
-
-// Create config array for Webpack
-var configs = [];
-if (hasPart('wysiwyg')) configs.push(require('./projects/field-string-wysiwyg/webpack.config.js'));
-if (hasPart('gps')) configs.push(require('./projects/field-custom-gps/webpack.config.js'));
-
-console.log('Will run ' + configs.length + ' parts');
-
-// debug multi-build
-// console.log('Testing configs on the copy-bits', configs[0].plugins[3]); //, configs[1].plugins[2]);
-
-module.exports = configs;
+  console.log('Will run', configs.length, 'parts:', parts.join(','));
+  return configs;
+};

@@ -134,6 +134,7 @@ interface Hyperlink extends All {
   Buttons: string;
   Paths: string;
   ServerResourceMapping: string;
+  EnableImageConfiguration: boolean;
 }
 
 /**
@@ -198,6 +199,7 @@ interface CustomJsonEditor extends All {
   JsonSchemaSource: 'link' | 'raw';
   JsonSchemaUrl: string;
   JsonSchemaRaw: string;
+  JsonCommentsAllowed: boolean;
 }
 
 /**

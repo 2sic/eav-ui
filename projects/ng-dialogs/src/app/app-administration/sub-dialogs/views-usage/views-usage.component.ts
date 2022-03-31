@@ -19,28 +19,24 @@ import { buildData } from './views-usage.helpers';
   styleUrls: ['./views-usage.component.scss'],
 })
 export class ViewsUsageComponent implements OnInit, OnDestroy {
-  viewUsage$ = new BehaviorSubject<ViewUsage>(null);
-  viewTooltip$ = new BehaviorSubject('');
-  data$ = new BehaviorSubject<ViewUsageData[]>(null);
+  viewUsage$ = new BehaviorSubject<ViewUsage>(undefined);
+  viewTooltip$ = new BehaviorSubject(undefined);
+  data$ = new BehaviorSubject<ViewUsageData[]>(undefined);
 
   modules = AllCommunityModules;
   gridOptions: GridOptions = {
     ...defaultGridOptions,
-    frameworkComponents: {
-      viewsUsageIdComponent: ViewsUsageIdComponent,
-      viewsUsageStatusFilterComponent: ViewsUsageStatusFilterComponent,
-    },
     columnDefs: [
       {
-        field: 'Block', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
-        cellRenderer: 'viewsUsageIdComponent', sortable: true, filter: 'agTextColumnFilter', valueGetter: blockIdValueGetter,
+        field: 'Block', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline'.split(' '),
+        cellRenderer: ViewsUsageIdComponent, sortable: true, filter: 'agTextColumnFilter', valueGetter: blockIdValueGetter,
       },
       {
-        field: 'Module', width: 76, headerClass: 'dense', cellRenderer: 'viewsUsageIdComponent',
+        field: 'Module', width: 76, headerClass: 'dense', cellRenderer: ViewsUsageIdComponent,
         sortable: true, filter: 'agTextColumnFilter', valueGetter: moduleIdValueGetter, cellClass: moduleIdClassGetter,
       },
       {
-        field: 'Page', width: 70, headerClass: 'dense', cellRenderer: 'viewsUsageIdComponent',
+        field: 'Page', width: 70, headerClass: 'dense', cellRenderer: ViewsUsageIdComponent,
         sortable: true, filter: 'agTextColumnFilter', valueGetter: pageIdValueGetter, cellClass: pageIdClassGetter,
       },
       {
@@ -52,7 +48,7 @@ export class ViewsUsageComponent implements OnInit, OnDestroy {
         valueGetter: (params) => (params.data as ViewUsageData).Language,
       },
       {
-        field: 'Status', width: 80, cellClass: 'icon no-outline', filter: 'viewsUsageStatusFilterComponent',
+        field: 'Status', width: 80, cellClass: 'icon no-outline'.split(' '), filter: ViewsUsageStatusFilterComponent,
         cellRenderer: statusCellRenderer, valueGetter: (params) => (params.data as ViewUsageData).Status,
       },
     ],

@@ -1,3 +1,4 @@
+import { AdamItem } from '../../../../../edit-types';
 import { BaseFieldTemplateVars } from '../../base/base-field-template-vars.model';
 
 export interface Preview {
@@ -20,4 +21,5 @@ export interface HyperlinkDefaultTemplateVars extends BaseFieldTemplateVars {
   showImageManager: boolean;
   showFileManager: boolean;
   preview: Preview;
+  adamItem: AdamItem;
 }

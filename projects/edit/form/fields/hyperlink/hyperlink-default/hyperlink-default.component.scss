@@ -1,5 +1,9 @@
 @import "../../../../assets/styles/variables.scss";
 
+.metadata-exists {
+  color: $blue-accent-color;
+}
+
 .fabs-box {
   display: flex;
   justify-content: flex-end;

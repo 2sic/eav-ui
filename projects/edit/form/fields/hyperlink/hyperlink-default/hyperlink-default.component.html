@@ -4,7 +4,13 @@
     <div class="fabs-box">
       <button mat-mini-fab color="accent" [tippy]="'Fields.Hyperlink.Default.AdamTip' | translate"
         *ngIf="data.buttonAdam" [disabled]="data.controlStatus.disabled" (click)="toggleAdam(false, false)">
-        <mat-icon svgIcon="appleFilled"></mat-icon>
+        <mat-icon svgIcon="apple-outlined"></mat-icon>
+      </button>
+      <button mat-mini-fab color="primary" *ngIf="data.adamItem?._imageConfigurationContentType"
+        [ngClass]="{ 'metadata-exists': data.adamItem._imageConfigurationId > 0 }"
+        [tippy]="'Fields.Hyperlink.AdamFileManager.ImageSettings' | translate"
+        (click)="openImageConfiguration(data.adamItem)">
+        <mat-icon>filter_center_focus</mat-icon>
       </button>
       <button mat-mini-fab color="primary" [tippy]="'Fields.Hyperlink.Default.PageTip' | translate"
         *ngIf="data.buttonPage" [disabled]="data.controlStatus.disabled" (click)="openPagePicker()">
@@ -17,22 +23,24 @@
     </div>
 
     <mat-menu #menu="matMenu" class="menu-box">
-      <button mat-menu-item *ngIf="data.showAdam" (click)="toggleAdam(false, false)">
-        <mat-icon svgIcon="appleFilled"></mat-icon>
-        <span>{{ 'Fields.Hyperlink.Default.MenuAdam' | translate }}</span>
-      </button>
-      <button mat-menu-item *ngIf="data.showPagePicker" (click)="openPagePicker()">
-        <mat-icon svgIcon="sitemap"></mat-icon>
-        <span>{{ 'Fields.Hyperlink.Default.MenuPage' | translate }}</span>
-      </button>
-      <button mat-menu-item *ngIf="data.showImageManager" (click)="toggleAdam(true, true)">
-        <mat-icon svgIcon="file-image"></mat-icon>
-        <span>{{ 'Fields.Hyperlink.Default.MenuImage' | translate }}</span>
-      </button>
-      <button mat-menu-item *ngIf="data.showFileManager" (click)="toggleAdam(true, false)">
-        <mat-icon svgIcon="file"></mat-icon>
-        <span>{{ 'Fields.Hyperlink.Default.MenuDocs' | translate }}</span>
-      </button>
+      <ng-template matMenuContent>
+        <button mat-menu-item *ngIf="data.showAdam" (click)="toggleAdam(false, false)">
+          <mat-icon svgIcon="apple-outlined"></mat-icon>
+          <span>{{ 'Fields.Hyperlink.Default.MenuAdam' | translate }}</span>
+        </button>
+        <button mat-menu-item *ngIf="data.showPagePicker" (click)="openPagePicker()">
+          <mat-icon svgIcon="sitemap"></mat-icon>
+          <span>{{ 'Fields.Hyperlink.Default.MenuPage' | translate }}</span>
+        </button>
+        <button mat-menu-item *ngIf="data.showImageManager" (click)="toggleAdam(true, true)">
+          <mat-icon svgIcon="file-image"></mat-icon>
+          <span>{{ 'Fields.Hyperlink.Default.MenuImage' | translate }}</span>
+        </button>
+        <button mat-menu-item *ngIf="data.showFileManager" (click)="toggleAdam(true, false)">
+          <mat-icon svgIcon="file"></mat-icon>
+          <span>{{ 'Fields.Hyperlink.Default.MenuDocs' | translate }}</span>
+        </button>
+      </ng-template>
     </mat-menu>
 
     <!-- content -->

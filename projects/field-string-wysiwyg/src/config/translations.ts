@@ -25,7 +25,7 @@ export class TinyMceTranslations {
 
   /** TinyMCE language keys are not always the same as Angular's. Returns defaultLanguage if language is not yet translated */
   static fixTranslationKey(language: string): string {
-    language = language.substr(0, 2).toLocaleLowerCase();
+    language = language.substring(0, 2).toLocaleLowerCase();
 
     switch (language) {
       case 'fr':

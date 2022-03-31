@@ -20,6 +20,26 @@
           params: { bottomPixels: calculateBottomPixels() }
         }">
         <ng-container #fieldComponent></ng-container>
+        <extended-fab-speed-dial class="adam">
+          <ng-template extendedFabSpeedDialTriggerContent>
+            <button extended-fab-speed-dial-trigger matRipple (click)="closeDialog()">
+              <mat-icon>done</mat-icon>
+              <span>{{ 'Form.Buttons.Return.Tip' | translate }}</span>
+            </button>
+          </ng-template>
+          <ng-template extendedFabSpeedDialActionsContent>
+            <button extended-fab-speed-dial-action matRipple [disabled]="saveButtonDisabled$ | async"
+              (click)="saveAll(false)">
+              <span>{{ 'Form.Buttons.Save' | translate }}</span>
+              <mat-icon>save</mat-icon>
+            </button>
+            <button extended-fab-speed-dial-action matRipple [disabled]="saveButtonDisabled$ | async"
+              (click)="saveAll(true)">
+              <span>{{ 'Form.Buttons.SaveAndClose' | translate }}</span>
+              <mat-icon>done_all</mat-icon>
+            </button>
+          </ng-template>
+        </extended-fab-speed-dial>
       </div>
     </div>
   </div>
@@ -67,7 +87,14 @@
             <button mat-icon-button class="c-ew__preview-suffix-icon"
               [tippy]="'Fields.Hyperlink.Default.Fullscreen' | translate" appClickStopPropagation
               *ngIf="data.buttonAdam" [disabled]="data.controlStatus.disabled" (click)="expandDialog()">
-              <mat-icon svgIcon="apple"></mat-icon>
+              <mat-icon svgIcon="apple-outlined"></mat-icon>
+            </button>
+            <button mat-icon-button class="c-ew__preview-suffix-icon" appClickStopPropagation
+              *ngIf="data.adamItem?._imageConfigurationContentType"
+              [ngClass]="{ 'metadata-exists': data.adamItem._imageConfigurationId > 0 }"
+              [tippy]="'Fields.Hyperlink.AdamFileManager.ImageSettings' | translate"
+              (click)="openImageConfiguration(data.adamItem)">
+              <mat-icon>filter_center_focus</mat-icon>
             </button>
             <button mat-icon-button class="c-ew__preview-suffix-icon"
               [tippy]="'Fields.Hyperlink.Default.PageTip' | translate" appClickStopPropagation *ngIf="data.buttonPage"

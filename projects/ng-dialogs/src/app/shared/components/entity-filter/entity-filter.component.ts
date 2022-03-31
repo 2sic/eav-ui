@@ -1,4 +1,4 @@
-import { IAfterGuiAttachedParams, IDoesFilterPassParams, IFilterParams } from '@ag-grid-community/all-modules';
+import { IAfterGuiAttachedParams, IDoesFilterPassParams, IFilterParams, ValueGetterParams } from '@ag-grid-community/all-modules';
 import { IFilterAngularComp } from '@ag-grid-community/angular';
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { EntityFilterModel } from './entity-filter.model';
@@ -14,11 +14,11 @@ export class EntityFilterComponent implements IFilterAngularComp {
   filter = '';
   idFilterString = '';
 
-  private params: IFilterParams;
+  private filterParams: IFilterParams;
   private idFilter: number[];
 
   agInit(params: IFilterParams): void {
-    this.params = params;
+    this.filterParams = params;
   }
 
   isFilterActive(): boolean {
@@ -27,13 +27,23 @@ export class EntityFilterComponent implements IFilterAngularComp {
 
   doesFilterPass(params: IDoesFilterPassParams): boolean {
     if (this.filter !== '') {
-      const values: string[] | undefined = this.params.valueGetter(params.node);
+      const valueGetterParams: ValueGetterParams = {
+        api: this.filterParams.api,
+        colDef: this.filterParams.colDef,
+        column: this.filterParams.column,
+        columnApi: this.filterParams.columnApi,
+        context: this.filterParams.context,
+        data: params.node.data,
+        getValue: (field) => params.node.data[field],
+        node: params.node,
+      };
+      const values: string[] | undefined = this.filterParams.valueGetter(valueGetterParams);
       if (values == null) { return false; }
       if (!values.some(value => !!value && value.includes(this.filter))) { return false; }
     }
 
     if (this.idFilter.length > 0) {
-      const item: { Id: number; Title: string; } | undefined = params.data[this.params.colDef.headerName]?.[0];
+      const item: { Id: number; Title: string; } | undefined = params.data[this.filterParams.colDef.headerName]?.[0];
       if (item == null) { return false; }
       if (!this.idFilter.includes(item.Id)) { return false; }
     }
@@ -66,6 +76,6 @@ export class EntityFilterComponent implements IFilterAngularComp {
   }
 
   filterChanged(): void {
-    this.params.filterChangedCallback();
+    this.filterParams.filterChangedCallback();
   }
 }

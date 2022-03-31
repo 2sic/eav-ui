@@ -21,4 +21,5 @@ export interface EavConfig {
   isCopy: boolean;
   enableHistory: boolean;
   enableFormulaSave: boolean;
+  overrideEditRestrictions: boolean;
 }

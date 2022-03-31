@@ -12,8 +12,10 @@
 </div>
 
 <mat-menu #menu="matMenu" class="grid-more-menu">
-  <button mat-menu-item (click)="openRestApi()">
-    <mat-icon svgIcon="code-curly"></mat-icon>
-    <span>REST API</span>
-  </button>
+  <ng-template matMenuContent>
+    <button mat-menu-item (click)="openRestApi()">
+      <mat-icon svgIcon="code-curly"></mat-icon>
+      <span>REST API</span>
+    </button>
+  </ng-template>
 </mat-menu>

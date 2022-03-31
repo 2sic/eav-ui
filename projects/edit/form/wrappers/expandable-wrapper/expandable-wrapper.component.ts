@@ -1,14 +1,14 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
-import { combineLatest, fromEvent, Observable } from 'rxjs';
-import { distinctUntilChanged, map, startWith } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, fromEvent, Observable } from 'rxjs';
+import { distinctUntilChanged, map, share, startWith } from 'rxjs/operators';
 import { InputTypeConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { consoleLogAngular } from '../../../../ng-dialogs/src/app/shared/helpers/console-log-angular.helper';
 import { vh } from '../../../../ng-dialogs/src/app/shared/helpers/viewport.helpers';
 import { WrappersConstants } from '../../../shared/constants';
 import { DropzoneDraggingHelper, GeneralHelpers } from '../../../shared/helpers';
-import { AdamService, EavService, EditRoutingService, FieldsSettingsService } from '../../../shared/services';
+import { AdamService, EavService, EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
 import { ContentTypeService, EntityCacheService, FeatureService, InputTypeService } from '../../../shared/store/ngrx-data';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { BaseComponent } from '../../fields/base/base.component';
@@ -29,6 +29,8 @@ export class ExpandableWrapperComponent extends BaseComponent<string> implements
   @ViewChild('dialog') private dialogRef: ElementRef;
 
   open$: Observable<boolean>;
+  adamDisabled$ = new BehaviorSubject(true);
+  saveButtonDisabled$ = this.formsStateService.saveButtonDisabled$.pipe(share());
   templateVars$: Observable<ExpandableWrapperTemplateVars>;
 
   private connectorCreator: ConnectorHelper;
@@ -48,6 +50,7 @@ export class ExpandableWrapperComponent extends BaseComponent<string> implements
     private viewContainerRef: ViewContainerRef,
     private entityCacheService: EntityCacheService,
     private zone: NgZone,
+    private formsStateService: FormsStateService,
   ) {
     super(eavService, fieldsSettingsService);
   }
@@ -105,6 +108,15 @@ export class ExpandableWrapperComponent extends BaseComponent<string> implements
   }
 
   ngAfterViewInit() {
+    this.subscription.add(
+      this.config.adam.getConfig$().subscribe(adamConfig => {
+        const disabled = adamConfig?.disabled ?? true;
+        if (this.adamDisabled$.value !== disabled) {
+          this.adamDisabled$.next(disabled);
+        }
+      })
+    );
+
     const componentTag = `field-${this.config.inputType}`;
     consoleLogAngular('ExpandableWrapper created for:', componentTag);
     this.connectorCreator = new ConnectorHelper(
@@ -134,6 +146,7 @@ export class ExpandableWrapperComponent extends BaseComponent<string> implements
 
   ngOnDestroy() {
     consoleLogAngular('ExpandableWrapper destroyed');
+    this.adamDisabled$.complete();
     this.connectorCreator.destroy();
     this.dropzoneDraggingHelper.detach();
     super.ngOnDestroy();
@@ -145,6 +158,10 @@ export class ExpandableWrapperComponent extends BaseComponent<string> implements
 
   closeDialog() {
     this.editRoutingService.expand(false, this.config.index, this.config.entityGuid);
+  }
+
+  saveAll(close: boolean) {
+    this.formsStateService.saveForm$.next(close);
   }
 
   calculateBottomPixels() {

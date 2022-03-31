@@ -9,7 +9,7 @@ export const DefaultOptions: RawEditorSettings = {
   branding: false,
   // statusbar: true, // doesn't work in inline
   inline: true, // use the div, not an iframe
-  toolbar_drawer: 'floating',
+  toolbar_mode: 'floating',
   automatic_uploads: false, // we're using our own upload mechanism
   autosave_ask_before_unload: false,
   paste_as_text: true,
@@ -27,4 +27,5 @@ export const DefaultOptions: RawEditorSettings = {
   object_resizing: false, // don't allow manual scaling of images
   debounce: false, // DONT slow-down model updates - otherwise we sometimes miss the last changes
   toolbar_persist: true,
+  deprecation_warnings: false, // spm TODO: remove after upgrading to TinyMCE 6
 };

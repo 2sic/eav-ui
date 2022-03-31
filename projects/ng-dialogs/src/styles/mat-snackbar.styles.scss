@@ -1,5 +1,13 @@
-@import '../../../edit/assets/styles/_variables';
+@import "../../../edit/assets/styles/variables";
 
 .mat-simple-snackbar-action {
   color: $primary-color;
+}
+
+.snackbar-error {
+  background: $error-color;
+
+  .mat-simple-snack-bar-content {
+    color: white;
+  }
 }

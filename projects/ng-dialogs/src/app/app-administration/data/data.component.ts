@@ -36,33 +36,28 @@ import { ImportContentTypeDialogData } from '../sub-dialogs/import-content-type/
 export class DataComponent implements OnInit, OnDestroy {
   @Input() enablePermissions: boolean;
 
-  contentTypes$ = new BehaviorSubject<ContentType[]>(null);
-  scope$ = new BehaviorSubject<string>(null);
+  contentTypes$ = new BehaviorSubject<ContentType[]>(undefined);
+  scope$ = new BehaviorSubject<string>(undefined);
   scopeOptions$ = new BehaviorSubject<ScopeOption[]>([]);
   debugEnabled$ = this.globalConfigService.getDebugEnabled$();
 
   modules = AllCommunityModules;
   gridOptions: GridOptions = {
     ...defaultGridOptions,
-    frameworkComponents: {
-      idFieldComponent: IdFieldComponent,
-      dataItemsComponent: DataItemsComponent,
-      dataFieldsComponent: DataFieldsComponent,
-      dataActionsComponent: DataActionsComponent,
-    },
     columnDefs: [
       {
         headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense',
-        cellClass: (params) => `${(params.data as ContentType).EditInfo.ReadOnly ? 'disabled' : ''} id-action no-padding no-outline`,
-        cellRenderer: 'idFieldComponent', sortable: true, filter: 'agNumberColumnFilter',
+        cellClass: (params) => `${(params.data as ContentType).EditInfo.ReadOnly ? 'disabled' : ''} id-action no-padding no-outline`.split(' '),
+        cellRenderer: IdFieldComponent, sortable: true, filter: 'agNumberColumnFilter',
         valueGetter: (params) => (params.data as ContentType).Id,
         cellRendererParams: {
           tooltipGetter: (contentType: ContentType) => `ID: ${contentType.Id}\nGUID: ${contentType.StaticName}`,
         } as IdFieldParams,
       },
       {
-        headerName: 'Content Type', field: 'ContentType', flex: 3, minWidth: 250, cellClass: 'primary-action highlight', sortable: true,
-        sort: 'asc', filter: 'agTextColumnFilter', onCellClicked: (params) => this.showContentItems(params.data as ContentType),
+        headerName: 'Content Type', field: 'ContentType', flex: 3, minWidth: 250, cellClass: 'primary-action highlight'.split(' '),
+        sortable: true, sort: 'asc', filter: 'agTextColumnFilter',
+        onCellClicked: (params) => this.showContentItems(params.data as ContentType),
         valueGetter: (params) => (params.data as ContentType).Label,
         comparator: (valueA, valueB, nodeA, nodeB, isInverted) => {
           const a = (nodeA.data as ContentType)._compareLabel;
@@ -71,8 +66,8 @@ export class DataComponent implements OnInit, OnDestroy {
         },
       },
       {
-        field: 'Items', width: 102, headerClass: 'dense', cellClass: 'secondary-action no-padding',
-        sortable: true, filter: 'agNumberColumnFilter', cellRenderer: 'dataItemsComponent',
+        field: 'Items', width: 102, headerClass: 'dense', cellClass: 'secondary-action no-padding'.split(' '),
+        sortable: true, filter: 'agNumberColumnFilter', cellRenderer: DataItemsComponent,
         valueGetter: (params) => (params.data as ContentType).Items,
         cellRendererParams: {
           onShowItems: (contentType) => this.showContentItems(contentType),
@@ -80,8 +75,8 @@ export class DataComponent implements OnInit, OnDestroy {
         } as DataItemsParams,
       },
       {
-        field: 'Fields', width: 94, headerClass: 'dense', cellClass: 'secondary-action no-padding',
-        sortable: true, filter: 'agNumberColumnFilter', cellRenderer: 'dataFieldsComponent',
+        field: 'Fields', width: 94, headerClass: 'dense', cellClass: 'secondary-action no-padding'.split(' '),
+        sortable: true, filter: 'agNumberColumnFilter', cellRenderer: DataFieldsComponent,
         valueGetter: (params) => (params.data as ContentType).Fields,
         cellRendererParams: {
           onEditFields: (contentType) => this.editFields(contentType),
@@ -89,7 +84,7 @@ export class DataComponent implements OnInit, OnDestroy {
       },
       {
         field: 'Name', flex: 1, minWidth: 100,
-        cellClass: (params) => (params.data as ContentType).EditInfo.ReadOnly ? 'no-outline' : 'primary-action highlight',
+        cellClass: (params) => `${(params.data as ContentType).EditInfo.ReadOnly ? 'no-outline' : 'primary-action highlight'}`.split(' '),
         valueGetter: (params) => (params.data as ContentType).Name,
         sortable: true, filter: 'agTextColumnFilter', onCellClicked: (event) => this.editContentType(event.data as ContentType),
       },
@@ -99,7 +94,7 @@ export class DataComponent implements OnInit, OnDestroy {
         valueGetter: (params) => (params.data as ContentType).Properties?.Description,
       },
       {
-        width: 162, cellClass: 'secondary-action no-padding', cellRenderer: 'dataActionsComponent', pinned: 'right',
+        width: 162, cellClass: 'secondary-action no-padding'.split(' '), cellRenderer: DataActionsComponent, pinned: 'right',
         cellRendererParams: {
           enablePermissionsGetter: () => this.enablePermissionsGetter(),
           onCreateOrEditMetadata: (contentType) => this.createOrEditMetadata(contentType),

@@ -12,9 +12,8 @@ export function moduleIdValueGetter(params: ValueGetterParams) {
   return `ID: ${data.Module.Id}\nUsageId: ${data.Module.UsageId}\nTitle: ${data.Module.Title}`;
 }
 
-export function moduleIdClassGetter(params: CellClassParams) {
-  if (params.value == null) { return 'no-outline'; }
-  return 'id-action no-padding no-outline';
+export function moduleIdClassGetter(params: CellClassParams): string[] {
+  return `${params.value != null ? 'id-action no-padding' : ''} no-outline`.split(' ');
 }
 
 export function pageIdValueGetter(params: ValueGetterParams) {
@@ -23,14 +22,12 @@ export function pageIdValueGetter(params: ValueGetterParams) {
   return `ID: ${data.PageId}`;
 }
 
-export function pageIdClassGetter(params: CellClassParams) {
-  if (params.value == null) { return 'no-outline'; }
-  return 'id-action no-padding no-outline';
+export function pageIdClassGetter(params: CellClassParams): string[] {
+  return `${params.value != null ? 'id-action no-padding' : ''} no-outline`.split(' ');
 }
 
-export function nameClassGetter(params: CellClassParams) {
-  if (params.value == null) { return 'no-outline'; }
-  return 'primary-action highlight';
+export function nameClassGetter(params: CellClassParams): string[] {
+  return `${params.value != null ? 'primary-action highlight' : 'no-outline'}`.split(' ');
 }
 
 export function onNameClicked(params: CellClickedEvent) {

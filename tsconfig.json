@@ -14,9 +14,7 @@
     "experimentalDecorators": true,
     "moduleResolution": "node",
     "importHelpers": true,
-    // any target newer than es5 fails in dev mode with emitDecoratorMetadata: true
-    // https://github.com/angular/angular-cli/issues/15077
-    "target": "es5",
+    "target": "es6",
     "module": "esnext",
     "lib": [
       "es2018",

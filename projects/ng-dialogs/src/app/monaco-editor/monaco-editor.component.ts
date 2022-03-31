@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild } from '@angular/core';
-import { JsonSchema, MonacoType } from '.';
+import { JsonComments, JsonSchema, MonacoType } from '.';
 import { Snippet } from '../code-editor/models/snippet.model';
 import { EavWindow } from '../shared/models/eav-window.model';
 import { MonacoInstance } from './monaco-instance';
@@ -18,6 +18,7 @@ export class MonacoEditorComponent implements AfterViewInit, OnChanges, OnDestro
   @Input() snippets?: Snippet[];
   @Input() options?: Record<string, any>;
   @Input() jsonSchema?: JsonSchema;
+  @Input() jsonComments?: JsonComments;
   @Input() autoFocus = false;
   @Output() private valueChanged = new EventEmitter<string>();
   @Output() private focused = new EventEmitter<undefined>();
@@ -52,6 +53,9 @@ export class MonacoEditorComponent implements AfterViewInit, OnChanges, OnDestro
     if (changes.jsonSchema != null) {
       this.monacoInstance?.setJsonSchema(this.jsonSchema);
     }
+    if (changes.jsonComments != null) {
+      this.monacoInstance?.setJsonComments(this.jsonComments);
+    }
     if (changes.snippets != null) {
       this.monacoInstance?.setSnippets(this.snippets);
     }
@@ -73,6 +77,10 @@ export class MonacoEditorComponent implements AfterViewInit, OnChanges, OnDestro
 
     if (this.jsonSchema) {
       this.monacoInstance.setJsonSchema(this.jsonSchema);
+    }
+
+    if (this.jsonComments) {
+      this.monacoInstance.setJsonComments(this.jsonComments);
     }
 
     this.monacoInstance.onValueChange(value => {

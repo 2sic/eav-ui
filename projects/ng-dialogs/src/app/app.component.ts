@@ -1,6 +1,4 @@
-import circle from '!raw-loader!./assets/icons/circle-24px.svg';
 import codeCurly from '!raw-loader!./assets/icons/code-curly.svg';
-import star from '!raw-loader!./assets/icons/star-24px.svg';
 import { Context as DnnContext, DnnAppComponent } from '@2sic.com/dnn-sxc-angular';
 import { ChangeDetectionStrategy, Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
 import { MatIconRegistry } from '@angular/material/icon';
@@ -50,10 +48,10 @@ export class AppComponent extends DnnAppComponent implements OnInit, OnDestroy {
         filter(event => event instanceof NavigationEnd),
         map(() => {
           let child = this.activatedRoute.firstChild;
-          while (child.firstChild) {
+          while (child?.firstChild) {
             child = child.firstChild;
           }
-          if (child.snapshot.data['title']) {
+          if (child?.snapshot.data['title']) {
             return child.snapshot.data['title'];
           }
           return appTitle;
@@ -72,8 +70,6 @@ export class AppComponent extends DnnAppComponent implements OnInit, OnDestroy {
     this.matIconRegistry.setDefaultFontSetClass('material-icons-outlined');
 
     const icons: Record<string, string> = {
-      circle,
-      star,
       'code-curly': codeCurly,
     };
     Object.entries(icons).forEach(([name, svg]) => {

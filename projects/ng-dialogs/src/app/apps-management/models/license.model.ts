@@ -9,3 +9,8 @@ export interface License {
   Name: string;
   Priority: number;
 }
+
+export interface UploadInfo {
+  Message: string;
+  Success: boolean;
+}

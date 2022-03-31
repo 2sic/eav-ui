@@ -42,8 +42,8 @@ import { Context } from './shared/services/context';
     { provide: HTTP_INTERCEPTORS, useClass: SetHeadersInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: HandleErrorsInterceptor, multi: true },
     Context,
-    Title
+    Title,
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule { }

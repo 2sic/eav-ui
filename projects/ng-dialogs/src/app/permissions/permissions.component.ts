@@ -22,26 +22,22 @@ import { PermissionsService } from './services/permissions.service';
   styleUrls: ['./permissions.component.scss'],
 })
 export class PermissionsComponent implements OnInit, OnDestroy {
-  permissions$ = new BehaviorSubject<Permission[]>(null);
+  permissions$ = new BehaviorSubject<Permission[]>(undefined);
 
   modules = AllCommunityModules;
   gridOptions: GridOptions = {
     ...defaultGridOptions,
-    frameworkComponents: {
-      idFieldComponent: IdFieldComponent,
-      permissionsActionsComponent: PermissionsActionsComponent,
-    },
     columnDefs: [
       {
-        headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
-        cellRenderer: 'idFieldComponent', sortable: true, filter: 'agNumberColumnFilter',
+        headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline'.split(' '),
+        cellRenderer: IdFieldComponent, sortable: true, filter: 'agNumberColumnFilter',
         valueGetter: (params) => (params.data as Permission).Id,
         cellRendererParams: {
           tooltipGetter: (permission: Permission) => `ID: ${permission.Id}\nGUID: ${permission.Guid}`,
         } as IdFieldParams,
       },
       {
-        field: 'Name', flex: 2, minWidth: 250, cellClass: 'primary-action highlight',
+        field: 'Name', flex: 2, minWidth: 250, cellClass: 'primary-action highlight'.split(' '),
         sortable: true, sort: 'asc', filter: 'agTextColumnFilter',
         onCellClicked: (event) => this.editPermission(event.data as Permission),
         valueGetter: (params) => (params.data as Permission).Title,
@@ -59,7 +55,7 @@ export class PermissionsComponent implements OnInit, OnDestroy {
         sortable: true, filter: 'agTextColumnFilter', valueGetter: (params) => (params.data as Permission).Grant,
       },
       {
-        width: 42, cellClass: 'secondary-action no-padding', cellRenderer: 'permissionsActionsComponent', pinned: 'right',
+        width: 42, cellClass: 'secondary-action no-padding'.split(' '), cellRenderer: PermissionsActionsComponent, pinned: 'right',
         cellRendererParams: {
           onDelete: (permission) => this.deletePermission(permission),
         } as PermissionsActionsParams,

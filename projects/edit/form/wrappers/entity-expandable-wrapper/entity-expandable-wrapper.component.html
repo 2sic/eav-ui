@@ -13,7 +13,8 @@
     <div>
       <div [@itemShrinkAnimation]="(dialogIsOpen$ | async) ? 'closed' : 'open'">
       </div>
-      <div class="c-ew__dialog-content u-add-scrollbar u-hide-scrollbar" [@contentExpandAnimation]="{
+      <!-- cdkScrollable is required when using matAutocomplete with scrollable element that is not body. Fixes matAutocomplete not following input  -->
+      <div class="c-ew__dialog-content u-add-scrollbar u-hide-scrollbar" cdkScrollable [@contentExpandAnimation]="{
         value: (dialogIsOpen$ | async) ? 'expanded' : 'closed',
         params: { bottomPixels: calculateBottomPixels() }
       }">
@@ -25,6 +26,26 @@
           </div>
         </div>
       </div>
+      <extended-fab-speed-dial>
+        <ng-template extendedFabSpeedDialTriggerContent>
+          <button extended-fab-speed-dial-trigger matRipple (click)="closeDialog()">
+            <mat-icon>done</mat-icon>
+            <span>{{ 'Form.Buttons.Return.Tip' | translate }}</span>
+          </button>
+        </ng-template>
+        <ng-template extendedFabSpeedDialActionsContent>
+          <button extended-fab-speed-dial-action matRipple [disabled]="saveButtonDisabled$ | async"
+            (click)="saveAll(false)">
+            <span>{{ 'Form.Buttons.Save' | translate }}</span>
+            <mat-icon>save</mat-icon>
+          </button>
+          <button extended-fab-speed-dial-action matRipple [disabled]="saveButtonDisabled$ | async"
+            (click)="saveAll(true)">
+            <span>{{ 'Form.Buttons.SaveAndClose' | translate }}</span>
+            <mat-icon>done_all</mat-icon>
+          </button>
+        </ng-template>
+      </extended-fab-speed-dial>
     </div>
   </div>
 </div>

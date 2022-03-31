@@ -32,6 +32,7 @@ import { EntitiesService } from '../ng-dialogs/src/app/content-items/services/en
 import { CreateFileDialogModule } from '../ng-dialogs/src/app/create-file-dialog';
 import { MonacoEditorModule } from '../ng-dialogs/src/app/monaco-editor';
 import { EavWindow } from '../ng-dialogs/src/app/shared/models/eav-window.model';
+import { ExtendedFabSpeedDialModule } from '../ng-dialogs/src/app/shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.module';
 import { Context } from '../ng-dialogs/src/app/shared/services/context';
 import { SharedComponentsModule } from '../ng-dialogs/src/app/shared/shared-components.module';
 import { buildTranslateConfiguration, TranslateLoaderWithErrorHandling } from '../ng-dialogs/src/app/shared/translation';
@@ -195,6 +196,7 @@ export function translateLoaderFactoryEdit(http: HttpClient): TranslateLoader {
     ScrollingModule,
     MonacoEditorModule,
     CreateFileDialogModule,
+    ExtendedFabSpeedDialModule,
   ],
   providers: [
     Context,

@@ -37,20 +37,22 @@
 </div>
 
 <mat-menu #menu="matMenu" class="grid-more-menu">
-  <button mat-menu-item (click)="params.do(actions.Rest, item)">
-    <mat-icon svgIcon="code-curly"></mat-icon>
-    <span>REST API</span>
-  </button>
-  <button mat-menu-item (click)="params.do(actions.Clone, item)">
-    <mat-icon>file_copy</mat-icon>
-    <span>Copy</span>
-  </button>
-  <button mat-menu-item (click)="params.do(actions.Export, item)">
-    <mat-icon>cloud_download</mat-icon>
-    <span>Export</span>
-  </button>
-  <button mat-menu-item [disabled]="item._EditInfo.ReadOnly" (click)="params.do(actions.Delete, item)">
-    <mat-icon>delete</mat-icon>
-    <span>Delete</span>
-  </button>
+  <ng-template matMenuContent>
+    <button mat-menu-item (click)="params.do(actions.Rest, item)">
+      <mat-icon svgIcon="code-curly"></mat-icon>
+      <span>REST API</span>
+    </button>
+    <button mat-menu-item (click)="params.do(actions.Clone, item)">
+      <mat-icon>file_copy</mat-icon>
+      <span>Copy</span>
+    </button>
+    <button mat-menu-item (click)="params.do(actions.Export, item)">
+      <mat-icon>cloud_download</mat-icon>
+      <span>Export</span>
+    </button>
+    <button mat-menu-item [disabled]="item._EditInfo.ReadOnly" (click)="params.do(actions.Delete, item)">
+      <mat-icon>delete</mat-icon>
+      <span>Delete</span>
+    </button>
+  </ng-template>
 </mat-menu>

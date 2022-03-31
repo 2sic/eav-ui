@@ -37,10 +37,7 @@
             "scripts": [
               "projects/ng-dialogs/src/scripts/require.js",
               "projects/edit/assets/scripts/dropzone-dragging-helper.js",
-              "projects/edit/assets/scripts/clipboard-paste/paste.js",
-              {
-                "input": "node_modules/document-register-element/build/document-register-element.js"
-              }
+              "projects/edit/assets/scripts/clipboard-paste/paste.js"
             ]
           },
           "configurations": {

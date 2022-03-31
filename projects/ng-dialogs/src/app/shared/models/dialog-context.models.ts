@@ -28,10 +28,13 @@ export interface DialogContextEnable {
   AppPermissions?: boolean;
   /** Determines if Code editing should be enabled (true for super-users) */
   CodeEditor?: boolean;
-  /** Determines if Queries should be enabled (true for Apps) */
-  Query?: boolean;
+  DebugMode: boolean;
   /** True if saving of formulas should be enabled (for edit-ui) */
   FormulaSave?: boolean;
+  /** While debug is enabled, this allows some Edit Ui actions even when they are disabled in fields settings */
+  OverrideEditRestrictions?: boolean;
+  /** Determines if Queries should be enabled (true for Apps) */
+  Query?: boolean;
 }
 
 export interface DialogContextLanguage {

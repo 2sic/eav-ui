@@ -1,4 +1,4 @@
-import { AllCommunityModules, GridOptions, ICellRendererParams, ValueGetterParams } from '@ag-grid-community/all-modules';
+import { AllCommunityModules, GridOptions, ICellRendererParams } from '@ag-grid-community/all-modules';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
@@ -21,33 +21,27 @@ import { AppsListService } from '../services/apps-list.service';
   styleUrls: ['./apps-list.component.scss'],
 })
 export class AppsListComponent implements OnInit, OnDestroy {
-  apps$ = new BehaviorSubject<App[]>(null);
+  apps$ = new BehaviorSubject<App[]>(undefined);
   fabOpen$ = new BehaviorSubject(false);
 
   modules = AllCommunityModules;
   gridOptions: GridOptions = {
     ...defaultGridOptions,
-    frameworkComponents: {
-      booleanFilterComponent: BooleanFilterComponent,
-      idFieldComponent: IdFieldComponent,
-      appsListShowComponent: AppsListShowComponent,
-      appsListActionsComponent: AppsListActionsComponent,
-    },
     columnDefs: [
       {
-        headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline',
-        cellRenderer: 'idFieldComponent', sortable: true, filter: 'agNumberColumnFilter',
+        headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline'.split(' '),
+        cellRenderer: IdFieldComponent, sortable: true, filter: 'agNumberColumnFilter',
         valueGetter: (params) => (params.data as App).Id,
         cellRendererParams: {
           tooltipGetter: (app: App) => `ID: ${app.Id}\nGUID: ${app.Guid}`,
         } as IdFieldParams,
       },
       {
-        field: 'Show', width: 70, headerClass: 'dense', cellClass: 'icons no-outline', sortable: true,
-        filter: 'booleanFilterComponent', cellRenderer: 'appsListShowComponent', valueGetter: this.showValueGetter,
+        field: 'Show', width: 70, headerClass: 'dense', cellClass: 'icons no-outline'.split(' '), sortable: true,
+        filter: BooleanFilterComponent, cellRenderer: AppsListShowComponent, valueGetter: (params) => !(params.data as App).IsHidden,
       },
       {
-        field: 'Name', flex: 2, minWidth: 250, cellClass: 'apps-list-primary-action highlight', sortable: true,
+        field: 'Name', flex: 2, minWidth: 250, cellClass: 'apps-list-primary-action highlight'.split(' '), sortable: true,
         sort: 'asc', filter: 'agTextColumnFilter', onCellClicked: (event) => this.openApp(event.data as App),
         valueGetter: (params) => (params.data as App).Name,
         cellRenderer: (params: ICellRendererParams) => {
@@ -78,11 +72,11 @@ export class AppsListComponent implements OnInit, OnDestroy {
         filter: 'agTextColumnFilter', valueGetter: (params) => (params.data as App).Version,
       },
       {
-        field: 'Items', width: 70, headerClass: 'dense', cellClass: 'number-cell no-outline', sortable: true,
+        field: 'Items', width: 70, headerClass: 'dense', cellClass: 'number-cell no-outline'.split(' '), sortable: true,
         filter: 'agNumberColumnFilter', valueGetter: (params) => (params.data as App).Items,
       },
       {
-        width: 82, cellClass: 'secondary-action no-padding', cellRenderer: 'appsListActionsComponent', pinned: 'right',
+        width: 82, cellClass: 'secondary-action no-padding'.split(' '), cellRenderer: AppsListActionsComponent, pinned: 'right',
         cellRendererParams: {
           onDelete: (app) => this.deleteApp(app),
           onFlush: (app) => this.flushApp(app),
@@ -136,11 +130,6 @@ export class AppsListComponent implements OnInit, OnDestroy {
     this.appsListService.getAll().subscribe(apps => {
       this.apps$.next(apps);
     });
-  }
-
-  private showValueGetter(params: ValueGetterParams) {
-    const app: App = params.data;
-    return !app.IsHidden;
   }
 
   private deleteApp(app: App) {

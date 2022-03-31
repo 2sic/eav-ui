@@ -16,7 +16,7 @@
           {{ 'Fields.Hyperlink.AdamFileManager.UploadLabel' | translate }}
           &nbsp;
           <mat-icon *ngIf="data.adamConfig.usePortalRoot">public</mat-icon>
-          <mat-icon *ngIf="!data.adamConfig.usePortalRoot" svgIcon="appleFilled"></mat-icon>
+          <mat-icon *ngIf="!data.adamConfig.usePortalRoot" svgIcon="apple-outlined"></mat-icon>
         </div>
       </div>
     </div>
@@ -85,9 +85,10 @@
               <div class="adam-full-name" [title]="item.Name">{{ item.Name }}</div>
             </div>
           </div>
-          <mat-icon class="adam-tag" [ngClass]="{ 'metadata-exists': item.MetadataId > 0 }"
-            (click)="editItemMetadata(item)" tippy="{{ item._metadataContentType }}: {{ item.MetadataId }}"
-            appClickStopPropagation *ngIf="item._metadataContentType">
+          <mat-icon class="adam-tag" appClickStopPropagation *ngIf="item._metadataContentType"
+            [ngClass]="{ 'metadata-exists': item._metadataId > 0 }"
+            tippy="{{ item._metadataContentType }}: {{ item._metadataId }}"
+            (click)="editItemMetadata(item, item._metadataContentType, item._metadataId)">
             local_offer
           </mat-icon>
         </div>
@@ -128,13 +129,22 @@
               <span>#{{ item.Id }} - {{ item._displaySize }} KB</span>
             </div>
             <a class="adam-link-button" target="_blank" [href]="item.Url" appClickStopPropagation>
-              <mat-icon [tippy]="'Fields.Hyperlink.AdamFileManager.Show' | translate">open_in_new
+              <mat-icon [tippy]="'Fields.Hyperlink.AdamFileManager.Show' | translate">
+                open_in_new
               </mat-icon>
             </a>
+            <mat-icon class="image-configuration-button" appClickStopPropagation
+              *ngIf="item._imageConfigurationContentType"
+              [ngClass]="{ 'metadata-exists': item._imageConfigurationId > 0 }"
+              [tippy]="'Fields.Hyperlink.AdamFileManager.ImageSettings' | translate"
+              (click)="editItemMetadata(item, item._imageConfigurationContentType, item._imageConfigurationId)">
+              filter_center_focus
+            </mat-icon>
           </div>
-          <mat-icon class="adam-tag" [ngClass]="{ 'metadata-exists': item.MetadataId > 0 }"
-            (click)="editItemMetadata(item)" *ngIf="item._metadataContentType" appClickStopPropagation
-            tippy="{{ item._metadataContentType }}: {{ item.MetadataId }}">
+          <mat-icon class="adam-tag" appClickStopPropagation *ngIf="item._metadataContentType"
+            [ngClass]="{ 'metadata-exists': item._metadataId > 0 }"
+            tippy="{{ item._metadataContentType }}: {{ item._metadataId }}"
+            (click)="editItemMetadata(item, item._metadataContentType, item._metadataId)">
             local_offer
           </mat-icon>
 
