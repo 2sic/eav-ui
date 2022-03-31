@@ -113,7 +113,7 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
 
   retrieveLicense(): void {
     this.featuresConfigService.retrieveLicense().subscribe(info => {
-      const message = `License ${info.Success ? 'retrieved' : 'retrieval failed'}: ${info.Message}`;
+      const message = `License ${info.Success ? 'Info' : 'Error'}: ${info.Message}`;
       const duration = info.Success ? 3000 : 100000;
       const panelClass = info.Success ? undefined : 'snackbar-error';
       this.snackBar.open(message, undefined, { duration, panelClass });
