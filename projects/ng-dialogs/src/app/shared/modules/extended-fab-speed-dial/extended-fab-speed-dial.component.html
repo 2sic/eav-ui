@@ -1,0 +1,9 @@
+<div class="extended-fab-speed-dial" [attr.disabled]="disabled || null" (pointerenter)="setOpen($event, true)"
+  (pointerleave)="setOpen($event, false)">
+  <div class="extended-fab-speed-dial-trigger">
+    <ng-container [ngTemplateOutlet]="trigger?.templateRef"></ng-container>
+  </div>
+  <div class="extended-fab-speed-dial-actions">
+    <ng-container [ngTemplateOutlet]="actions?.templateRef"></ng-container>
+  </div>
+</div>

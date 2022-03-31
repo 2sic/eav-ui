@@ -48,10 +48,10 @@ export class AppComponent extends DnnAppComponent implements OnInit, OnDestroy {
         filter(event => event instanceof NavigationEnd),
         map(() => {
           let child = this.activatedRoute.firstChild;
-          while (child.firstChild) {
+          while (child?.firstChild) {
             child = child.firstChild;
           }
-          if (child.snapshot.data['title']) {
+          if (child?.snapshot.data['title']) {
             return child.snapshot.data['title'];
           }
           return appTitle;

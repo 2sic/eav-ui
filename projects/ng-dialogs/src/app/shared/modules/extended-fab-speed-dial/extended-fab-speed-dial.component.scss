@@ -1,0 +1,94 @@
+$button-height: 44px;
+
+extended-fab-speed-dial {
+  display: block;
+}
+
+.extended-fab-speed-dial {
+
+  .extended-fab-speed-dial-trigger {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+  }
+
+  .extended-fab-speed-dial-actions {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: flex-end;
+    position: absolute;
+    bottom: $button-height;
+    right: 0;
+    pointer-events: none;
+
+    button[extended-fab-speed-dial-action] {
+      opacity: 0;
+      transition: opacity .3s ease-in-out;
+      margin-bottom: 8px;
+    }
+  }
+
+  &:hover:not([disabled]) {
+    .extended-fab-speed-dial-actions {
+      pointer-events: all;
+
+      button[extended-fab-speed-dial-action] {
+        opacity: 1;
+      }
+    }
+  }
+
+  button[extended-fab-speed-dial-trigger],
+  button[extended-fab-speed-dial-action] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 48px;
+    height: $button-height;
+    border: none;
+    border-radius: 16px 0;
+    padding-left: 14px;
+    padding-right: 14px;
+    color: white;
+    font-size: 12px;
+    white-space: nowrap;
+    background: #002753;
+    cursor: pointer;
+    box-shadow: 0px 3px 5px -1px rgb(0 0 0 / 20%), 0px 6px 10px 0px rgb(0 0 0 / 14%), 0px 1px 18px 0px rgb(0 0 0 / 12%);
+    box-sizing: border-box;
+
+    >mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+      line-height: 20px;
+    }
+
+    >span {
+      display: inline-block;
+      white-space: nowrap;
+      overflow: hidden;
+      max-width: 0;
+      transition: max-width 0.3s ease-in-out;
+
+      &:before,
+      &:after {
+        content: "";
+        width: 8px;
+        display: inline-block;
+      }
+    }
+
+    &[disabled] {
+      cursor: default;
+      color: rgba(0, 0, 0, 0.26);
+      background-color: rgba(29, 39, 61, 0.12);
+    }
+
+    &:hover:not([disabled]) {
+      >span {
+        max-width: 256px;
+      }
+    }
+  }
+}
