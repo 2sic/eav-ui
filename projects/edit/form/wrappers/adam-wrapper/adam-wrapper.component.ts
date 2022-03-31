@@ -30,8 +30,10 @@ export class AdamWrapperComponent extends BaseComponent implements FieldWrapper,
   ngAfterViewInit() {
     this.subscription.add(
       this.config.adam.getConfig$().subscribe(adamConfig => {
-        if (adamConfig == null) { return; }
-        this.adamDisabled$.next(adamConfig.disabled);
+        const disabled = adamConfig?.disabled ?? true;
+        if (this.adamDisabled$.value !== disabled) {
+          this.adamDisabled$.next(disabled);
+        }
       })
     );
   }

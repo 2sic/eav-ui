@@ -1,10 +1,10 @@
 import { AfterViewInit, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, share } from 'rxjs/operators';
 import { AdamItem } from '../../../../edit-types';
 import { WrappersConstants } from '../../../shared/constants';
 import { DropzoneDraggingHelper } from '../../../shared/helpers';
-import { EavService, EditRoutingService, FieldsSettingsService } from '../../../shared/services';
+import { EavService, EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { BaseComponent } from '../../fields/base/base.component';
 import { ContentExpandAnimation } from '../expandable-wrapper/content-expand.animation';
@@ -23,6 +23,7 @@ export class HyperlinkLibraryExpandableWrapperComponent extends BaseComponent<nu
   @ViewChild('dialog') private dialogRef: ElementRef;
 
   open$: Observable<boolean>;
+  saveButtonDisabled$ = this.formsStateService.saveButtonDisabled$.pipe(share());
   templateVars$: Observable<HyperlinkLibraryExpandableTemplateVars>;
 
   private adamItems$: BehaviorSubject<AdamItem[]>;
@@ -33,6 +34,7 @@ export class HyperlinkLibraryExpandableWrapperComponent extends BaseComponent<nu
     fieldsSettingsService: FieldsSettingsService,
     private zone: NgZone,
     private editRoutingService: EditRoutingService,
+    private formsStateService: FormsStateService,
   ) {
     super(eavService, fieldsSettingsService);
   }
@@ -95,5 +97,9 @@ export class HyperlinkLibraryExpandableWrapperComponent extends BaseComponent<nu
 
   closeDialog() {
     this.editRoutingService.expand(false, this.config.index, this.config.entityGuid);
+  }
+
+  saveAll(close: boolean) {
+    this.formsStateService.saveForm$.next(close);
   }
 }

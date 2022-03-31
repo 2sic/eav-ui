@@ -69,7 +69,17 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
 
   private mapScriptLoaded(): void {
     consoleLogWebpack(`${gpsDialogTag} mapScriptLoaded called`);
-    this.map = new google.maps.Map(this.mapContainer, { zoom: 15, center: defaultCoordinates, gestureHandling: 'greedy' });
+    this.map = new google.maps.Map(this.mapContainer, {
+      zoom: 15,
+      center: defaultCoordinates,
+      gestureHandling: 'greedy',
+      streetViewControlOptions: {
+        position: google.maps.ControlPosition.RIGHT_CENTER,
+      },
+      zoomControlOptions: {
+        position: google.maps.ControlPosition.RIGHT_CENTER,
+      },
+    });
     this.marker = new google.maps.Marker({ position: defaultCoordinates, map: this.map, draggable: true });
     this.geocoder = new google.maps.Geocoder();
 

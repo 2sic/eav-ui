@@ -30,11 +30,10 @@ export interface EditDialogMainTemplateVars {
   formsValid: boolean;
   delayForm: boolean;
   viewInitiated: boolean;
-  reduceSaveButton: boolean;
   debugEnabled: boolean;
   debugInfoIsOpen: boolean;
   hideHeader: boolean;
-  readOnly: boolean;
+  saveButtonDisabled: boolean;
 }
 
 export interface Prefetch {

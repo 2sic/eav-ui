@@ -1,8 +1,8 @@
 {
   "Form": {
     "Buttons": {
-      "Save": "GRAVAR (CTRL + S)",
-      "Save.Tip": "Gravar e fechar (CTRL + S grava mas não fecha)",
+      "Save": "Gravar (CTRL + S)",
+      "SaveAndClose": "Gravar e fechar",
       "Exit.Tip": "Sair - se alguma coisa foi alterada, vai-lhe ser questionado se quer gravar",
       "Return.Tip": "Voltar ao formulário anterior",
       "History.Tip": "History / previous versions",

@@ -2,7 +2,7 @@
   "Form": {
     "Buttons": {
       "Save": "Speichern (CTRL + S)",
-      "Save.Tip": "Speichern und schliessen - mit CTRL + S nur speichern",
+      "SaveAndClose": "Speichern und schliessen",
       "Exit.Tip": "Verlassen - bei Änderungen wird zum Speichern aufgefordert",
       "Return.Tip": "Zurück zum vorherigen Dialog",
       "History.Tip": "Änderungen / Vorversionen",

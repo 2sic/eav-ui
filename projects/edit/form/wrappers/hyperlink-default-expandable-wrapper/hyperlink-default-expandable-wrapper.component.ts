@@ -1,7 +1,7 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { distinctUntilChanged, map } from 'rxjs/operators';
+import { distinctUntilChanged, map, share } from 'rxjs/operators';
 import { AdamItem } from '../../../../edit-types';
 import { eavConstants } from '../../../../ng-dialogs/src/app/shared/constants/eav.constants';
 import { EditForm } from '../../../../ng-dialogs/src/app/shared/models/edit-form.model';
@@ -27,6 +27,7 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
   @ViewChild('dialog') private dialogRef: ElementRef;
 
   open$: Observable<boolean>;
+  saveButtonDisabled$ = this.formsStateService.saveButtonDisabled$.pipe(share());
   templateVars$: Observable<HyperlinkDefaultExpandableTemplateVars>;
 
   private adamItems$: BehaviorSubject<AdamItem[]>;
@@ -142,6 +143,10 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
 
   closeDialog() {
     this.editRoutingService.expand(false, this.config.index, this.config.entityGuid);
+  }
+
+  saveAll(close: boolean) {
+    this.formsStateService.saveForm$.next(close);
   }
 
   openImageConfiguration(adamItem: AdamItem) {

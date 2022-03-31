@@ -33,3 +33,30 @@ app-collapsible-wrapper {
     }
   }
 }
+
+.c-multi-item-dialog {
+  extended-fab-speed-dial {
+    position: relative;
+    bottom: 14px;
+    right: 24px;
+    z-index: 1;
+
+    @media (max-width: 600px) {
+      bottom: 4px;
+    }
+  }
+
+  .c-ew__dialog {
+    extended-fab-speed-dial {
+      z-index: 10;
+
+      &.adam {
+        bottom: 34px;
+
+        @media (max-width: 600px) {
+          bottom: 24px;
+        }
+      }
+    }
+  }
+}

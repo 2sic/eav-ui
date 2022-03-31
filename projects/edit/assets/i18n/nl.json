@@ -1,8 +1,8 @@
 {
   "Form": {
     "Buttons": {
-      "Save": "SAVE (CTRL + S)",
-      "Save.Tip": "Save and close (CTRL + S saves and doesn't close)",
+      "Save": "Save (CTRL + S)",
+      "SaveAndClose": "Save and close",
       "Exit.Tip": "Exit - if something changed, you will be asked to save",
       "Return.Tip": "Return to previous dialog",
       "History.Tip": "History / previous versions",

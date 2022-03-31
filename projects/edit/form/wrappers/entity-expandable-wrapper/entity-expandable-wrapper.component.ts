@@ -1,10 +1,10 @@
 import { Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { combineLatest, Observable } from 'rxjs';
-import { distinctUntilChanged, map } from 'rxjs/operators';
+import { distinctUntilChanged, map, share } from 'rxjs/operators';
 import { WrappersConstants } from '../../../shared/constants';
 import { GeneralHelpers } from '../../../shared/helpers';
-import { EavService, EditRoutingService, FieldsSettingsService } from '../../../shared/services';
+import { EavService, EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
 import { EntityCacheService, StringQueryCacheService } from '../../../shared/store/ngrx-data';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { BaseComponent } from '../../fields/base/base.component';
@@ -23,6 +23,7 @@ export class EntityExpandableWrapperComponent extends BaseComponent<string | str
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
 
   dialogIsOpen$: Observable<boolean>;
+  saveButtonDisabled$ = this.formsStateService.saveButtonDisabled$.pipe(share());
   templateVars$: Observable<EntityExpandableTemplateVars>;
 
   constructor(
@@ -32,6 +33,7 @@ export class EntityExpandableWrapperComponent extends BaseComponent<string | str
     private editRoutingService: EditRoutingService,
     private entityCacheService: EntityCacheService,
     private stringQueryCache: StringQueryCacheService,
+    private formsStateService: FormsStateService,
   ) {
     super(eavService, fieldsSettingsService);
   }
@@ -98,5 +100,9 @@ export class EntityExpandableWrapperComponent extends BaseComponent<string | str
 
   closeDialog() {
     this.editRoutingService.expand(false, this.config.index, this.config.entityGuid);
+  }
+
+  saveAll(close: boolean) {
+    this.formsStateService.saveForm$.next(close);
   }
 }
