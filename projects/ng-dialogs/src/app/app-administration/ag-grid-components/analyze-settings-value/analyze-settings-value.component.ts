@@ -2,6 +2,7 @@ import { ICellRendererParams } from '@ag-grid-community/all-modules';
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { Component } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { GeneralHelpers } from '../../../../../../edit/shared/helpers';
 import { copyToClipboard } from '../../../shared/helpers/copy-to-clipboard.helper';
 
 @Component({
@@ -22,8 +23,9 @@ export class AnalyzeSettingsValueComponent implements ICellRendererAngularComp {
     return true;
   }
 
-  copy() {
-    copyToClipboard(this.value);
+  copy(text: string) {
+    text = GeneralHelpers.tryParse(text) ?? text;
+    copyToClipboard(text);
     this.snackBar.open('Copied to clipboard', null, { duration: 2000 });
   }
 }
