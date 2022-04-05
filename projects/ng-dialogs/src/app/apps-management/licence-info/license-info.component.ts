@@ -3,8 +3,7 @@ import { AgGridAngular } from '@ag-grid-community/angular';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { BehaviorSubject, distinctUntilChanged, forkJoin, Subscription, timer } from 'rxjs';
-import { GeneralHelpers } from '../../../../../edit/shared/helpers';
+import { BehaviorSubject, distinctUntilChanged, forkJoin, Observable, share, Subscription, timer } from 'rxjs';
 import { GlobalConfigService } from '../../../../../edit/shared/store/ngrx-data';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
@@ -16,7 +15,9 @@ import { FeaturesStatusComponent } from '../ag-grid-components/features-status/f
 import { FeaturesStatusParams } from '../ag-grid-components/features-status/features-status.models';
 import { Feature, FeatureState } from '../models/feature.model';
 import { License } from '../models/license.model';
+import { SystemInfoSet } from '../models/system-info.model';
 import { FeaturesConfigService } from '../services/features-config.service';
+import { ZoneService } from '../services/zone.service';
 import { FeatureDetailsDialogComponent } from './feature-details-dialog/feature-details-dialog.component';
 import { FeatureDetailsDialogData } from './feature-details-dialog/feature-details-dialog.models';
 import { UploadLicenseDialogComponent } from './upload-license-dialog/upload-license-dialog.component';
@@ -32,6 +33,7 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
   licenses$ = new BehaviorSubject<License[]>(undefined);
   disabled$ = new BehaviorSubject(false);
   debugEnabled$ = this.globalConfigService.getDebugEnabled$();
+  systemInfoSet$: Observable<SystemInfoSet>;
 
   modules = AllCommunityModules;
   gridOptions: GridOptions = {
@@ -90,10 +92,12 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
     private changeDetectorRef: ChangeDetectorRef,
     private globalConfigService: GlobalConfigService,
     private snackBar: MatSnackBar,
+    private zoneService: ZoneService,
   ) { }
 
   ngOnInit(): void {
     this.fetchLicenses();
+    this.systemInfoSet$ = this.zoneService.getSystemInfo().pipe(share());
     this.subscription.add(
       this.disabled$.pipe(distinctUntilChanged()).subscribe(() => {
         this.gridRef?.api.refreshCells({ force: true, columns: ['Status'] });
@@ -131,6 +135,10 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
         this.fetchLicenses();
       }
     });
+  }
+
+  openLicenseRegistration(systemInfoSet: SystemInfoSet): void {
+    window.open(`https://patrons.2sxc.org/register?fingerprint=${systemInfoSet.System.Fingerprint}`, '_blank');
   }
 
   private fetchLicenses(): void {
