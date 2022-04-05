@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { editRoot, refreshEditRoot } from '../../../../edit/edit.matcher';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
 import { EmptyRouteComponent } from '../shared/components/empty-route/empty-route.component';
 import { appsManagementDialog } from './apps-management-nav/apps-management-dialog.config';
@@ -22,6 +23,14 @@ const appsManagementRoutes: Routes = [
           {
             path: ':appId',
             loadChildren: () => import('../app-administration/app-administration.module').then(m => m.AppAdministrationModule)
+          },
+          {
+            matcher: editRoot,
+            loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule),
+          },
+          {
+            matcher: refreshEditRoot,
+            loadChildren: () => import('../../../../edit/refresh-edit.module').then(m => m.RefreshEditModule)
           },
         ],
         data: { title: 'Apps in this Zone' },

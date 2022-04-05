@@ -23,6 +23,10 @@ export class AppsListActionsComponent implements ICellRendererAngularComp {
     return true;
   }
 
+  openLightspeed(): void {
+    this.params.onOpenLightspeed(this.app);
+  }
+
   flushCache() {
     this.params.onFlush(this.app);
   }

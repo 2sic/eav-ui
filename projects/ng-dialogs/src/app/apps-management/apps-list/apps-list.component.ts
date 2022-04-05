@@ -9,6 +9,9 @@ import { BooleanFilterComponent } from '../../shared/components/boolean-filter/b
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
+import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
+import { EditForm } from '../../shared/models/edit-form.model';
+import { Context } from '../../shared/services/context';
 import { AppsListActionsComponent } from '../ag-grid-components/apps-list-actions/apps-list-actions.component';
 import { AppsListActionsParams } from '../ag-grid-components/apps-list-actions/apps-list-actions.models';
 import { AppsListShowComponent } from '../ag-grid-components/apps-list-show/apps-list-show.component';
@@ -76,10 +79,11 @@ export class AppsListComponent implements OnInit, OnDestroy {
         filter: 'agNumberColumnFilter', valueGetter: (params) => (params.data as App).Items,
       },
       {
-        width: 82, cellClass: 'secondary-action no-padding'.split(' '), cellRenderer: AppsListActionsComponent, pinned: 'right',
+        width: 122, cellClass: 'secondary-action no-padding'.split(' '), cellRenderer: AppsListActionsComponent, pinned: 'right',
         cellRendererParams: {
           onDelete: (app) => this.deleteApp(app),
           onFlush: (app) => this.flushApp(app),
+          onOpenLightspeed: (app) => this.openLightspeed(app),
         } as AppsListActionsParams,
       },
     ],
@@ -92,6 +96,7 @@ export class AppsListComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private appsListService: AppsListService,
     private snackBar: MatSnackBar,
+    private context: Context,
   ) { }
 
   ngOnInit() {
@@ -152,6 +157,13 @@ export class AppsListComponent implements OnInit, OnDestroy {
     this.appsListService.flushCache(app.Id).subscribe(() => {
       this.snackBar.open('Cache flushed', null, { duration: 2000 });
     });
+  }
+
+  private openLightspeed(app: App) {
+    if (!app.Lightspeed) { return; }
+    const form: EditForm = { items: [{ EntityId: app.Lightspeed.Id }] };
+    const formUrl = convertFormToUrl(form);
+    this.router.navigate([`${this.context.zoneId}/${app.Id}/edit/${formUrl}`], { relativeTo: this.route.firstChild });
   }
 
   private openApp(app: App) {
