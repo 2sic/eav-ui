@@ -1,7 +1,10 @@
 :host {
-  display: block;
-  padding-top: 40px;
-  padding-bottom: 40px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding-top: 20px;
+  box-sizing: border-box;
+  position: relative;
 }
 
 .mat-expansion-panel-header {

@@ -28,7 +28,7 @@ import { UploadLicenseDialogComponent } from './upload-license-dialog/upload-lic
   styleUrls: ['./license-info.component.scss'],
 })
 export class LicenseInfoComponent implements OnInit, OnDestroy {
-  @ViewChild(AgGridAngular) private gridRef: AgGridAngular;
+  @ViewChild(AgGridAngular) private gridRef?: AgGridAngular;
 
   licenses$ = new BehaviorSubject<License[]>(undefined);
   disabled$ = new BehaviorSubject(false);
