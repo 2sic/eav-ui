@@ -1,6 +1,7 @@
 import { ICellRendererParams } from '@ag-grid-community/all-modules';
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { Component } from '@angular/core';
+import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { SiteLanguage } from '../../models/site-language.model';
 import { SiteLanguagesStatusParams } from './site-languages-status.models';
 
@@ -23,8 +24,8 @@ export class SiteLanguagesStatusComponent implements ICellRendererAngularComp {
     return true;
   }
 
-  toggleLanguage(): void {
+  toggleLanguage(event: MatSlideToggleChange): void {
     const language: SiteLanguage = this.params.data;
-    this.params.onEnabledToggle(language);
+    this.params.onToggleLanguage(language, event.checked);
   }
 }

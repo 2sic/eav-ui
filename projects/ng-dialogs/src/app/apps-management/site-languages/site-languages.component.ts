@@ -36,8 +36,8 @@ export class SiteLanguagesComponent implements OnInit, OnDestroy {
     this.refreshLanguages$.complete();
   }
 
-  private toggleLanguage(language: SiteLanguage): void {
-    this.zoneService.toggleLanguage(language.Code, !language.IsEnabled).subscribe({
+  private toggleLanguage(language: SiteLanguage, enable: boolean): void {
+    this.zoneService.toggleLanguage(language.Code, enable).subscribe({
       error: () => {
         this.refreshLanguages$.next();
       },
@@ -74,7 +74,10 @@ export class SiteLanguagesComponent implements OnInit, OnDestroy {
           sort: 'asc',
           filter: 'agTextColumnFilter',
           valueGetter: (params) => (params.data as SiteLanguage).Culture,
-          onCellClicked: (event) => this.toggleLanguage(event.data as SiteLanguage),
+          onCellClicked: (event) => {
+            const language: SiteLanguage = event.data;
+            this.toggleLanguage(language, !language.IsEnabled);
+          },
         },
         {
           field: 'Status',
@@ -87,7 +90,7 @@ export class SiteLanguagesComponent implements OnInit, OnDestroy {
           cellRenderer: SiteLanguagesStatusComponent,
           cellRendererParams: (() => {
             const params: SiteLanguagesStatusParams = {
-              onEnabledToggle: (language) => this.toggleLanguage(language),
+              onToggleLanguage: (language, enable) => this.toggleLanguage(language, enable),
             };
             return params;
           })(),
