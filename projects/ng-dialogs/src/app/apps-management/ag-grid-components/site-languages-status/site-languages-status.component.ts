@@ -1,3 +1,4 @@
+import { ICellRendererParams } from '@ag-grid-community/all-modules';
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { Component } from '@angular/core';
 import { SiteLanguage } from '../../models/site-language.model';
@@ -10,9 +11,10 @@ import { SiteLanguagesStatusParams } from './site-languages-status.models';
 })
 export class SiteLanguagesStatusComponent implements ICellRendererAngularComp {
   value: boolean;
-  private params: SiteLanguagesStatusParams;
 
-  agInit(params: SiteLanguagesStatusParams) {
+  private params: ICellRendererParams & SiteLanguagesStatusParams;
+
+  agInit(params: ICellRendererParams & SiteLanguagesStatusParams): void {
     this.params = params;
     this.value = this.params.value;
   }
@@ -21,7 +23,7 @@ export class SiteLanguagesStatusComponent implements ICellRendererAngularComp {
     return true;
   }
 
-  toggleLanguage() {
+  toggleLanguage(): void {
     const language: SiteLanguage = this.params.data;
     this.params.onEnabledToggle(language);
   }

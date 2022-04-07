@@ -1,6 +1,6 @@
 import { AllCommunityModules, GridOptions } from '@ag-grid-community/all-modules';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { catchError, Observable, of, share, startWith, Subject, switchMap } from 'rxjs';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
@@ -16,55 +16,84 @@ import { ZoneService } from '../services/zone.service';
   styleUrls: ['./site-languages.component.scss'],
 })
 export class SiteLanguagesComponent implements OnInit, OnDestroy {
-  languages$ = new BehaviorSubject<SiteLanguage[]>(undefined);
-
+  languages$: Observable<SiteLanguage[]>;
   modules = AllCommunityModules;
-  gridOptions: GridOptions = {
-    ...defaultGridOptions,
-    columnDefs: [
-      {
-        headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline'.split(' '),
-        cellRenderer: IdFieldComponent, sortable: true, filter: 'agTextColumnFilter',
-        valueGetter: (params) => (params.data as SiteLanguage).Code,
-        cellRendererParams: {
-          tooltipGetter: (language: SiteLanguage) => `ID: ${language.Code}`,
-        } as IdFieldParams,
-      },
-      {
-        field: 'Name', flex: 2, minWidth: 250, cellClass: 'primary-action highlight no-outline'.split(' '), sortable: true,
-        sort: 'asc', filter: 'agTextColumnFilter', onCellClicked: (event) => this.toggleLanguage(event.data as SiteLanguage),
-        valueGetter: (params) => (params.data as SiteLanguage).Culture,
-      },
-      {
-        field: 'Status', width: 72, headerClass: 'dense', cellClass: 'no-padding no-outline'.split(' '),
-        cellRenderer: SiteLanguagesStatusComponent, sortable: true, filter: BooleanFilterComponent,
-        valueGetter: (params) => (params.data as SiteLanguage).IsEnabled,
-        cellRendererParams: {
-          onEnabledToggle: (language) => this.toggleLanguage(language),
-        } as SiteLanguagesStatusParams,
-      },
-    ],
-  };
+  gridOptions = this.buildGridOptions();
+
+  private refreshLanguages$ = new Subject<void>();
 
   constructor(private zoneService: ZoneService) { }
 
-  ngOnInit() {
-    this.fetchLanguages();
+  ngOnInit(): void {
+    this.languages$ = this.refreshLanguages$.pipe(
+      startWith(undefined),
+      switchMap(() => this.zoneService.getLanguages().pipe(catchError(() => of(undefined)))),
+      share(),
+    );
   }
 
-  ngOnDestroy() {
-    this.languages$.complete();
+  ngOnDestroy(): void {
+    this.refreshLanguages$.complete();
   }
 
-  private toggleLanguage(language: SiteLanguage) {
-    this.zoneService.toggleLanguage(language.Code, !language.IsEnabled).subscribe(() => {
-      this.fetchLanguages();
+  private toggleLanguage(language: SiteLanguage): void {
+    this.zoneService.toggleLanguage(language.Code, !language.IsEnabled).subscribe({
+      error: () => {
+        this.refreshLanguages$.next();
+      },
+      next: () => {
+        this.refreshLanguages$.next();
+      },
     });
   }
 
-  private fetchLanguages() {
-    this.zoneService.getLanguages().subscribe(languages => {
-      this.languages$.next(languages);
-    });
+  private buildGridOptions(): GridOptions {
+    const gridOptions: GridOptions = {
+      ...defaultGridOptions,
+      columnDefs: [
+        {
+          headerName: 'ID',
+          field: 'Id',
+          width: 70,
+          headerClass: 'dense',
+          cellClass: 'id-action no-padding no-outline'.split(' '),
+          sortable: true,
+          filter: 'agTextColumnFilter',
+          valueGetter: (params) => (params.data as SiteLanguage).Code,
+          cellRenderer: IdFieldComponent,
+          cellRendererParams: {
+            tooltipGetter: (language: SiteLanguage) => `ID: ${language.Code}`,
+          } as IdFieldParams,
+        },
+        {
+          field: 'Name',
+          flex: 2,
+          minWidth: 250,
+          cellClass: 'primary-action highlight no-outline'.split(' '),
+          sortable: true,
+          sort: 'asc',
+          filter: 'agTextColumnFilter',
+          valueGetter: (params) => (params.data as SiteLanguage).Culture,
+          onCellClicked: (event) => this.toggleLanguage(event.data as SiteLanguage),
+        },
+        {
+          field: 'Status',
+          width: 72,
+          headerClass: 'dense',
+          cellClass: 'no-padding no-outline'.split(' '),
+          sortable: true,
+          filter: BooleanFilterComponent,
+          valueGetter: (params) => (params.data as SiteLanguage).IsEnabled,
+          cellRenderer: SiteLanguagesStatusComponent,
+          cellRendererParams: (() => {
+            const params: SiteLanguagesStatusParams = {
+              onEnabledToggle: (language) => this.toggleLanguage(language),
+            };
+            return params;
+          })(),
+        },
+      ],
+    };
+    return gridOptions;
   }
 }
