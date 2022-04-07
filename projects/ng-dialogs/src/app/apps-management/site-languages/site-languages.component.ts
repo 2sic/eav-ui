@@ -5,10 +5,10 @@ import { BooleanFilterComponent } from '../../shared/components/boolean-filter/b
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
-import { SiteLanguagesStatusComponent } from '../ag-grid-components/site-languages-status/site-languages-status.component';
-import { SiteLanguagesStatusParams } from '../ag-grid-components/site-languages-status/site-languages-status.models';
 import { SiteLanguage } from '../models/site-language.model';
 import { ZoneService } from '../services/zone.service';
+import { SiteLanguagesStatusComponent } from './site-languages-status/site-languages-status.component';
+import { SiteLanguagesStatusParams } from './site-languages-status/site-languages-status.models';
 
 @Component({
   selector: 'app-site-languages',

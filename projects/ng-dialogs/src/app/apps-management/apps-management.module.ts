@@ -23,7 +23,6 @@ import { SharedComponentsModule } from '../shared/shared-components.module';
 import { FeaturesListEnabledReasonComponent } from './ag-grid-components/features-list-enabled-reason/features-list-enabled-reason.component';
 import { FeaturesListEnabledComponent } from './ag-grid-components/features-list-enabled/features-list-enabled.component';
 import { FeaturesStatusComponent } from './ag-grid-components/features-status/features-status.component';
-import { SiteLanguagesStatusComponent } from './ag-grid-components/site-languages-status/site-languages-status.component';
 import { AppsListActionsComponent } from './apps-list/apps-list-actions/apps-list-actions.component';
 import { AppsListShowComponent } from './apps-list/apps-list-show/apps-list-show.component';
 import { AppsListComponent } from './apps-list/apps-list.component';
@@ -41,6 +40,7 @@ import { AppsListService } from './services/apps-list.service';
 import { FeaturesConfigService } from './services/features-config.service';
 import { SxcInsightsService } from './services/sxc-insights.service';
 import { ZoneService } from './services/zone.service';
+import { SiteLanguagesStatusComponent } from './site-languages/site-languages-status/site-languages-status.component';
 import { SiteLanguagesComponent } from './site-languages/site-languages.component';
 import { SystemInfoComponent } from './system-info/system-info.component';
 
