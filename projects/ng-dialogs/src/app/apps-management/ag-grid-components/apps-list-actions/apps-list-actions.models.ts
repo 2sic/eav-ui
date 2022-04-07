@@ -1,7 +1,6 @@
-import { ICellRendererParams } from '@ag-grid-community/core';
 import { App } from '../../models/app.model';
 
-export interface AppsListActionsParams extends ICellRendererParams {
+export interface AppsListActionsParams {
   onDelete(app: App): void;
   onFlush(app: App): void;
   onOpenLightspeed(app: App): void;

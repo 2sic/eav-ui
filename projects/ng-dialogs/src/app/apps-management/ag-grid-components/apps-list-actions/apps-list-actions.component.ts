@@ -1,3 +1,4 @@
+import { ICellRendererParams } from '@ag-grid-community/all-modules';
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { Component } from '@angular/core';
 import { App } from '../../models/app.model';
@@ -10,11 +11,10 @@ import { AppsListActionsParams } from './apps-list-actions.models';
 })
 export class AppsListActionsComponent implements ICellRendererAngularComp {
   app: App;
-  private params: AppsListActionsParams;
 
-  constructor() { }
+  private params: ICellRendererParams & AppsListActionsParams;
 
-  agInit(params: AppsListActionsParams) {
+  agInit(params: ICellRendererParams & AppsListActionsParams): void {
     this.params = params;
     this.app = this.params.data;
   }
@@ -27,11 +27,11 @@ export class AppsListActionsComponent implements ICellRendererAngularComp {
     this.params.onOpenLightspeed(this.app);
   }
 
-  flushCache() {
+  flushCache(): void {
     this.params.onFlush(this.app);
   }
 
-  deleteApp() {
+  deleteApp(): void {
     this.params.onDelete(this.app);
   }
 }
