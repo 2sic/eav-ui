@@ -9,10 +9,6 @@ import { BooleanFilterComponent } from '../../shared/components/boolean-filter/b
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
-import { FeaturesListEnabledReasonComponent } from '../ag-grid-components/features-list-enabled-reason/features-list-enabled-reason.component';
-import { FeaturesListEnabledComponent } from '../ag-grid-components/features-list-enabled/features-list-enabled.component';
-import { FeaturesStatusComponent } from '../ag-grid-components/features-status/features-status.component';
-import { FeaturesStatusParams } from '../ag-grid-components/features-status/features-status.models';
 import { Feature, FeatureState } from '../models/feature.model';
 import { License } from '../models/license.model';
 import { SystemInfoSet } from '../models/system-info.model';
@@ -20,6 +16,10 @@ import { FeaturesConfigService } from '../services/features-config.service';
 import { ZoneService } from '../services/zone.service';
 import { FeatureDetailsDialogComponent } from './feature-details-dialog/feature-details-dialog.component';
 import { FeatureDetailsDialogData } from './feature-details-dialog/feature-details-dialog.models';
+import { FeaturesListEnabledReasonComponent } from './features-list-enabled-reason/features-list-enabled-reason.component';
+import { FeaturesListEnabledComponent } from './features-list-enabled/features-list-enabled.component';
+import { FeaturesStatusComponent } from './features-status/features-status.component';
+import { FeaturesStatusParams } from './features-status/features-status.models';
 import { UploadLicenseDialogComponent } from './upload-license-dialog/upload-license-dialog.component';
 
 @Component({
