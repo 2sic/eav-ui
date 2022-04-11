@@ -64,6 +64,7 @@ export class FormulaHelpers {
           ...formValues,
           get default() { return undefined as FieldValue; },
           get initial() { return undefined as FieldValue; },
+          get parameters() { return undefined as Record<string, any>; },
           get prefill() { return undefined as FieldValue; },
           get value() { return undefined as FieldValue; },
         };
@@ -83,6 +84,11 @@ export class FormulaHelpers {
             get(): FieldValue {
               if (formula.target !== FormulaTargets.Value) { return; }
               return initialFormValues[formula.fieldName];
+            },
+          },
+          parameters: {
+            get(): string {
+              return JSON.parse(JSON.stringify(itemHeader.Prefill));
             },
           },
           prefill: {
@@ -170,31 +176,15 @@ export class FormulaHelpers {
   static buildDesignerSnippets(formula: FormulaCacheItem, fieldOptions: FieldOption[]): DesignerSnippet[] {
     switch (formula.version) {
       case FormulaVersions.V1:
-        const valueSnippet: DesignerSnippet = {
-          code: 'data.value',
-          label: 'data.value',
-        };
-
-        const defaultSnippet: DesignerSnippet = {
-          code: 'data.default',
-          label: 'data.default',
-        };
-
-        const prefillSnippet: DesignerSnippet = {
-          code: 'data.prefill',
-          label: 'data.prefill',
-        };
-
-        const fieldSnippets = fieldOptions.map(field => {
-          const code = `data.${field.fieldName}`;
+        const snippets = ['value', 'default', 'prefill', 'initial', 'parameters', ...fieldOptions.map(f => f.fieldName)].map(name => {
+          const code = `data.${name}`;
           const fieldSnippet: DesignerSnippet = {
             code,
             label: code,
           };
           return fieldSnippet;
         });
-
-        return [valueSnippet, defaultSnippet, prefillSnippet, ...fieldSnippets];
+        return snippets;
       default:
         return;
     }
