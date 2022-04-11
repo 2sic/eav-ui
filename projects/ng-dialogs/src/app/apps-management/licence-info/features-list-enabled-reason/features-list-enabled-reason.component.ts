@@ -12,7 +12,7 @@ export class FeaturesListEnabledReasonComponent implements ICellRendererAngularC
   value: boolean;
   feature: Feature;
 
-  agInit(params: ICellRendererParams) {
+  agInit(params: ICellRendererParams): void {
     this.value = params.value;
     this.feature = params.data;
   }

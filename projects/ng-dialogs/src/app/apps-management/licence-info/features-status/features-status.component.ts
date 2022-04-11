@@ -1,3 +1,4 @@
+import { ICellRendererParams } from '@ag-grid-community/all-modules';
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { Component } from '@angular/core';
 import { Feature } from '../../models/feature.model';
@@ -11,20 +12,21 @@ import { FeaturesStatusParams } from './features-status.models';
 export class FeaturesStatusComponent implements ICellRendererAngularComp {
   value: boolean | null;
   disabled: boolean;
-  private params: FeaturesStatusParams;
 
-  agInit(params: FeaturesStatusParams) {
+  private params: ICellRendererParams & FeaturesStatusParams;
+
+  agInit(params: ICellRendererParams & FeaturesStatusParams): void {
     this.params = params;
     this.value = this.params.value;
     this.disabled = this.params.isDisabled();
   }
 
-  refresh(params: FeaturesStatusParams): boolean {
+  refresh(params: ICellRendererParams & FeaturesStatusParams): boolean {
     this.disabled = this.params.isDisabled();
     return true;
   }
 
-  toggle() {
+  toggle(): void {
     const feature: Feature = this.params.data;
     let nextValue: boolean;
     switch (this.value) {

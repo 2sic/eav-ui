@@ -10,7 +10,7 @@ import { Component } from '@angular/core';
 export class FeaturesListEnabledComponent implements ICellRendererAngularComp {
   value: boolean;
 
-  agInit(params: ICellRendererParams) {
+  agInit(params: ICellRendererParams): void {
     this.value = params.value;
   }
 
