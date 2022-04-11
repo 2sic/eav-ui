@@ -1,5 +1,6 @@
 import { FormValues } from '.';
 import { FieldSettings, FieldValue } from '../../../edit-types';
+import { Feature } from '../../../ng-dialogs/src/app/apps-management/models/feature.model';
 
 export interface FormulaCacheItem {
   cache: Record<string, any>;
@@ -64,12 +65,18 @@ export interface FormulaV1Context {
   cache: Record<string, any>;
   culture: FormulaV1CtxCulture;
   debug: boolean;
+  features: FormulaV1CtxFeatures;
   target: FormulaV1CtxTarget;
 }
 
 export interface FormulaV1CtxCulture {
   code: string;
   name: string;
+}
+
+export interface FormulaV1CtxFeatures {
+  get(name: string): Feature;
+  isEnabled(name: string): boolean;
 }
 
 export interface FormulaV1CtxTarget {

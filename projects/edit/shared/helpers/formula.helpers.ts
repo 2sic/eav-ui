@@ -1,12 +1,13 @@
 import { InputFieldHelpers, LocalizationHelpers } from '.';
 import { FieldSettings, FieldValue } from '../../../edit-types';
+import { Feature } from '../../../ng-dialogs/src/app/apps-management/models/feature.model';
 import { InputType } from '../../../ng-dialogs/src/app/content-type-fields/models/input-type.model';
 import { DesignerSnippet, FieldOption } from '../../dialog/footer/formula-designer/formula-designer.models';
 // tslint:disable-next-line:max-line-length
 import { FormulaCacheItem, FormulaFunction, FormulaProps, FormulaPropsV1, FormulaTargets, FormulaV1Data, FormulaV1ExperimentalEntity, FormulaVersion, FormulaVersions, FormValues, Language, SettingsFormulaPrefix } from '../models';
 import { EavHeader } from '../models/eav';
 import { EavService, FieldsSettingsService } from '../services';
-import { ItemService } from '../store/ngrx-data';
+import { FeatureService, ItemService } from '../store/ngrx-data';
 
 export class FormulaHelpers {
 
@@ -54,6 +55,7 @@ export class FormulaHelpers {
     itemService: ItemService,
     eavService: EavService,
     fieldsSettingsService: FieldsSettingsService,
+    featureService: FeatureService,
   ): FormulaProps {
 
     switch (formula.version) {
@@ -110,6 +112,14 @@ export class FormulaHelpers {
               name: languages.find(l => l.NameId === currentLanguage)?.Culture,
             },
             debug: debugEnabled,
+            features: {
+              get(name: string): Feature {
+                return featureService.getFeature(name);
+              },
+              isEnabled(name: string): boolean {
+                return featureService.isFeatureEnabled(name);
+              },
+            },
             target: {
               entity: {
                 guid: formula.entityGuid,
