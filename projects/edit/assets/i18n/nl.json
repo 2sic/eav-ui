@@ -167,6 +167,7 @@
         "BackFolderTip": "Return to previous folder",
         "Show": "Open in new tab",
         "ImageSettings": "Image settings",
+        "NoImageSettings": "Image settings not available. The file is not an image or it doesn't belong to this item",
         "Edit": "Rename",
         "RenameQuestion": "Rename file / folder to:",
         "Delete": "Delete",

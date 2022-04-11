@@ -167,6 +167,7 @@
         "BackFolderTip": "Zum vorherigen Ordner",
         "Show": "In neuem Fenster öffnen",
         "ImageSettings": "Bildeinstellungen",
+        "NoImageSettings": "Bildeinstellungen nicht verfügbar. Diese Datei ist kein Bild oder sie gehört nicht zu diesem Element",
         "Edit": "Umbenennen",
         "RenameQuestion": "Umbenennen:",
         "Delete": "Löschen",

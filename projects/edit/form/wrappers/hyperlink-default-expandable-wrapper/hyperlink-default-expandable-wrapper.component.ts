@@ -149,15 +149,15 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
     this.formsStateService.saveForm$.next(close);
   }
 
-  openImageConfiguration(adamItem: AdamItem) {
-    if (this.formsStateService.readOnly$.value.isReadOnly) { return; }
+  openImageConfiguration(adamItem?: AdamItem) {
+    if (this.formsStateService.readOnly$.value.isReadOnly || !adamItem?._imageConfigurationContentType) { return; }
 
     const form: EditForm = {
       items: [
         adamItem._imageConfigurationId > 0
           ? { EntityId: adamItem._imageConfigurationId }
           : {
-            ContentTypeName: eavConstants.contentTypes.imageDecorator,
+            ContentTypeName: adamItem._imageConfigurationContentType,
             For: {
               Target: eavConstants.metadata.cmsObject.target,
               TargetType: eavConstants.metadata.cmsObject.targetType,

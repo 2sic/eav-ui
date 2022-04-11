@@ -167,6 +167,7 @@
         "BackFolderTip": "Voltar à pasta anterior",
         "Show": "Abrir num novo separador",
         "ImageSettings": "Image settings",
+        "NoImageSettings": "Image settings not available. The file is not an image or it doesn't belong to this item",
         "Edit": "Renomear",
         "RenameQuestion": "Renomear ficheiro/ pasta para:",
         "Delete": "Apagar",

@@ -90,11 +90,14 @@
               <mat-icon svgIcon="apple-outlined"></mat-icon>
             </button>
             <button mat-icon-button class="c-ew__preview-suffix-icon" appClickStopPropagation
-              *ngIf="data.adamItem?._imageConfigurationContentType"
-              [ngClass]="{ 'metadata-exists': data.adamItem._imageConfigurationId > 0 }"
+              [disabled]="!data.adamItem?._imageConfigurationContentType"
+              [ngClass]="{ 'metadata-exists': data.adamItem?._imageConfigurationId > 0 }"
               [tippy]="'Fields.Hyperlink.AdamFileManager.ImageSettings' | translate"
               (click)="openImageConfiguration(data.adamItem)">
-              <mat-icon>filter_center_focus</mat-icon>
+              <mat-icon [tippy]="'Fields.Hyperlink.AdamFileManager.NoImageSettings' | translate"
+                [tippyDisabled]="data.adamItem?._imageConfigurationContentType">
+                filter_center_focus
+              </mat-icon>
             </button>
             <button mat-icon-button class="c-ew__preview-suffix-icon"
               [tippy]="'Fields.Hyperlink.Default.PageTip' | translate" appClickStopPropagation *ngIf="data.buttonPage"

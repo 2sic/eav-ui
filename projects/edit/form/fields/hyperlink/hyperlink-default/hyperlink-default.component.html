@@ -6,11 +6,14 @@
         *ngIf="data.buttonAdam" [disabled]="data.controlStatus.disabled" (click)="toggleAdam(false, false)">
         <mat-icon svgIcon="apple-outlined"></mat-icon>
       </button>
-      <button mat-mini-fab color="primary" *ngIf="data.adamItem?._imageConfigurationContentType"
-        [ngClass]="{ 'metadata-exists': data.adamItem._imageConfigurationId > 0 }"
+      <button mat-mini-fab color="primary" [disabled]="!data.adamItem?._imageConfigurationContentType"
+        [ngClass]="{ 'metadata-exists': data.adamItem?._imageConfigurationId > 0 }"
         [tippy]="'Fields.Hyperlink.AdamFileManager.ImageSettings' | translate"
         (click)="openImageConfiguration(data.adamItem)">
-        <mat-icon>filter_center_focus</mat-icon>
+        <mat-icon [tippy]="'Fields.Hyperlink.AdamFileManager.NoImageSettings' | translate"
+          [tippyDisabled]="data.adamItem?._imageConfigurationContentType">
+          filter_center_focus
+        </mat-icon>
       </button>
       <button mat-mini-fab color="primary" [tippy]="'Fields.Hyperlink.Default.PageTip' | translate"
         *ngIf="data.buttonPage" [disabled]="data.controlStatus.disabled" (click)="openPagePicker()">
