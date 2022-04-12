@@ -1,4 +1,3 @@
-import { AgGridModule } from '@ag-grid-community/angular';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -17,6 +16,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { EcoFabSpeedDialModule } from '@ecodev/fab-speed-dial';
 import { AppDialogConfigService } from '../app-administration/services';
+import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
 import { Context } from '../shared/services/context';
 import { DialogService } from '../shared/services/dialog.service';
 import { SharedComponentsModule } from '../shared/shared-components.module';
@@ -70,7 +70,7 @@ import { SystemInfoComponent } from './system-info/system-info.component';
     SharedComponentsModule,
     MatDialogModule,
     CommonModule,
-    AgGridModule.withComponents([]),
+    SxcGridModule,
     MatButtonModule,
     MatIconModule,
     MatSlideToggleModule,

@@ -16,8 +16,8 @@
     </mat-expansion-panel-header>
 
     <ng-container *ngIf="panel.expanded">
-      <ag-grid-angular class="ag-theme-material" [rowData]="license.Features" [modules]="modules"
-        [gridOptions]="gridOptions" appAgGridHeight [itemsCount]="license.Features?.length">
+      <ag-grid-angular class="ag-theme-material" [rowData]="license.Features" [gridOptions]="gridOptions"
+        appAgGridHeight [itemsCount]="license.Features?.length">
       </ag-grid-angular>
     </ng-container>
   </mat-expansion-panel>

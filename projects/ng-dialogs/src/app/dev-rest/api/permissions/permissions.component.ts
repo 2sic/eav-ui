@@ -1,4 +1,4 @@
-import { AllCommunityModules, ColDef, GridOptions, Module } from '@ag-grid-community/all-modules';
+import { ColDef, GridOptions } from '@ag-grid-community/core';
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { defaultGridOptions } from '../../../shared/constants/default-grid-options.constants';
 import { TrueFalseParams } from '../action-params/true-false-column-params';
@@ -12,7 +12,6 @@ import { DevRestApiTemplateVars } from '../api-template-vars';
 export class DevRestApiPermissionsComponent implements OnInit, OnChanges {
   @Input() data: DevRestApiTemplateVars;
 
-  gridModules: Module[];
   gridOptions: GridOptions;
   gridItems: ApiPermissionsGridItem[];
   gridHeight: string;
@@ -20,7 +19,6 @@ export class DevRestApiPermissionsComponent implements OnInit, OnChanges {
   constructor() { }
 
   ngOnInit() {
-    this.gridModules = AllCommunityModules;
     const booleanColumnDef: ColDef = {
       headerClass: 'dense', width: 80, cellClass: 'no-outline', cellRenderer: TrueFalseComponent,
       cellRendererParams: { reverse: false } as TrueFalseParams,

@@ -1,4 +1,4 @@
-import { AllCommunityModules, GridOptions } from '@ag-grid-community/all-modules';
+import { GridOptions } from '@ag-grid-community/core';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -24,7 +24,6 @@ import { PermissionsService } from './services/permissions.service';
 export class PermissionsComponent implements OnInit, OnDestroy {
   permissions$ = new BehaviorSubject<Permission[]>(undefined);
 
-  modules = AllCommunityModules;
   gridOptions: GridOptions = {
     ...defaultGridOptions,
     columnDefs: [

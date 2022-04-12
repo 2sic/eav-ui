@@ -1,5 +1,5 @@
-import { AllCommunityModules, GridOptions } from '@ag-grid-community/all-modules';
 import { AgGridAngular } from '@ag-grid-community/angular';
+import { GridOptions } from '@ag-grid-community/core';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -35,7 +35,6 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
   disabled$ = new BehaviorSubject(false);
   debugEnabled$ = this.globalConfigService.getDebugEnabled$();
   systemInfoSet$: Observable<SystemInfoSet>;
-  modules = AllCommunityModules;
   gridOptions = this.buildGridOptions();
 
   private refreshLicenses$ = new Subject<void>();

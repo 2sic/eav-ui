@@ -1,4 +1,4 @@
-import { AllCommunityModules, GridOptions } from '@ag-grid-community/all-modules';
+import { GridOptions } from '@ag-grid-community/core';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
@@ -19,7 +19,6 @@ import { LanguagesPermissionsActionsParams } from '../../ag-grid-components/lang
 })
 export class LanguagePermissionsComponent implements OnInit, OnDestroy {
   languages$: BehaviorSubject<SiteLanguagePermissions[] | undefined>;
-  modules = AllCommunityModules;
   gridOptions: GridOptions;
 
   private subscription: Subscription;

@@ -1,4 +1,3 @@
-import { AgGridModule } from '@ag-grid-community/angular';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -12,6 +11,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
+import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
 import { Context } from '../shared/services/context';
 import { SharedComponentsModule } from '../shared/shared-components.module';
 import { ContentTypeFieldsActionsComponent } from './ag-grid-components/content-type-fields-actions/content-type-fields-actions.component';
@@ -43,7 +43,7 @@ import { ContentTypesFieldsService } from './services/content-types-fields.servi
     MatDialogModule,
     MatButtonModule,
     MatIconModule,
-    AgGridModule.withComponents([]),
+    SxcGridModule,
     FormsModule,
     MatInputModule,
     MatSelectModule,

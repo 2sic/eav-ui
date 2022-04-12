@@ -1,4 +1,4 @@
-import { AllCommunityModules, GridOptions } from '@ag-grid-community/all-modules';
+import { GridOptions } from '@ag-grid-community/core';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
@@ -19,7 +19,6 @@ export class SettingsItemDetailsComponent implements OnInit, OnDestroy {
   settingsItemKey: string;
   stack$: BehaviorSubject<SettingsStackItem[]>;
 
-  modules = AllCommunityModules;
   gridOptions: GridOptions = {
     ...defaultGridOptions,
     columnDefs: [

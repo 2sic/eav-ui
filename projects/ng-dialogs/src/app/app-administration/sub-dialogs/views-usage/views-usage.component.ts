@@ -1,4 +1,4 @@
-import { AllCommunityModules, GridOptions } from '@ag-grid-community/all-modules';
+import { GridOptions } from '@ag-grid-community/core';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
@@ -23,7 +23,6 @@ export class ViewsUsageComponent implements OnInit, OnDestroy {
   viewTooltip$ = new BehaviorSubject(undefined);
   data$ = new BehaviorSubject<ViewUsageData[]>(undefined);
 
-  modules = AllCommunityModules;
   gridOptions: GridOptions = {
     ...defaultGridOptions,
     columnDefs: [

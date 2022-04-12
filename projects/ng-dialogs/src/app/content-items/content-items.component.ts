@@ -1,4 +1,4 @@
-import { AllCommunityModules, ColDef, GridApi, GridOptions, GridReadyEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
+import { ColDef, GridApi, GridOptions, GridReadyEvent, ValueGetterParams } from '@ag-grid-community/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -51,7 +51,6 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   items$ = new BehaviorSubject<ContentItem[]>(undefined);
   debugEnabled$ = this.globalConfigService.getDebugEnabled$();
 
-  modules = AllCommunityModules;
   gridOptions: GridOptions = {
     ...defaultGridOptions,
   };

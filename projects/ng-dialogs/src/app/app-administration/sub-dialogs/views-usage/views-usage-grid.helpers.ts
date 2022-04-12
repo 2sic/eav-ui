@@ -1,4 +1,4 @@
-import { CellClassParams, CellClickedEvent, ICellRendererParams, ValueGetterParams } from '@ag-grid-community/all-modules';
+import { CellClassParams, CellClickedEvent, ICellRendererParams, ValueGetterParams } from '@ag-grid-community/core';
 import { ViewUsageData, ViewUsageDataStatus } from '../../models/view-usage-data.model';
 
 export function blockIdValueGetter(params: ValueGetterParams) {

@@ -1,4 +1,4 @@
-import { AllCommunityModules, GridOptions } from '@ag-grid-community/all-modules';
+import { GridOptions } from '@ag-grid-community/core';
 import { Component, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DevRestBaseTemplateVars } from '..';
@@ -11,12 +11,8 @@ import { defaultGridOptions } from '../../shared/constants/default-grid-options.
   templateUrl: './tab-permissions.component.html',
 })
 export class DevRestTabPermissionsComponent {
-
   @Input() data: DevRestBaseTemplateVars;
 
-  /** AgGrid modules */
-  modules = AllCommunityModules;
-  /** AgGrid options */
   gridOptions: GridOptions = {
     ...defaultGridOptions,
     columnDefs: [
@@ -43,10 +39,7 @@ export class DevRestTabPermissionsComponent {
     ],
   };
 
-  constructor(
-    private router: Router,
-    private route: ActivatedRoute,
-  ) { }
+  constructor(private router: Router, private route: ActivatedRoute) { }
 
   openPermissions() {
     this.router.navigate([GoToPermissions.getUrlContentType(this.data.permissionTarget)], { relativeTo: this.route });

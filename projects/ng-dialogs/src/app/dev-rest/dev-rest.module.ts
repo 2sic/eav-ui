@@ -1,4 +1,3 @@
-import { AgGridModule } from '@ag-grid-community/angular';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -22,6 +21,7 @@ import { SourceService } from '../code-editor/services/source.service';
 import { EntitiesService } from '../content-items/services/entities.service';
 import { MetadataService } from '../permissions/services/metadata.service';
 import { PermissionsService } from '../permissions/services/permissions.service';
+import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
 import { Context } from '../shared/services/context';
 import { SharedComponentsModule } from '../shared/shared-components.module';
 import { DevRestApiActionParamsComponent } from './api/action-params/action-params.component';
@@ -85,7 +85,7 @@ import { DevRestTabPermissionsComponent } from './tab-permissions/tab-permission
     MatListModule,
     MatIconModule,
     MatExpansionModule,
-    AgGridModule.withComponents([]),
+    SxcGridModule,
     MatBadgeModule,
   ],
   providers: [

@@ -1,4 +1,4 @@
-import { AllCommunityModules, GridOptions } from '@ag-grid-community/all-modules';
+import { GridOptions } from '@ag-grid-community/core';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -29,7 +29,6 @@ import { MetadataItem, MetadataRecommendation, MetadataTemplateVars } from './mo
   styleUrls: ['./metadata.component.scss'],
 })
 export class MetadataComponent implements OnInit, OnDestroy {
-  modules = AllCommunityModules;
   gridOptions: GridOptions = {
     ...defaultGridOptions,
     columnDefs: [

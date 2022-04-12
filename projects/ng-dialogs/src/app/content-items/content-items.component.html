@@ -20,8 +20,8 @@
   </div>
 
   <div class="grid-wrapper">
-    <ag-grid-angular class="ag-theme-material" [rowData]="items$ | async" [modules]="modules"
-      [gridOptions]="gridOptions" (gridReady)="onGridReady($event)" appDragAndDrop [allowedFileTypes]="'xml,json'"
+    <ag-grid-angular class="ag-theme-material" [rowData]="items$ | async" [gridOptions]="gridOptions"
+      (gridReady)="onGridReady($event)" appDragAndDrop [allowedFileTypes]="'xml,json'"
       (filesDropped)="filesDropped($event)">
     </ag-grid-angular>
 

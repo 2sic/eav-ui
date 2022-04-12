@@ -1,4 +1,4 @@
-import { ColDef, NumberFilterModel, TextFilterModel } from '@ag-grid-community/all-modules';
+import { ColDef, NumberFilterModel, TextFilterModel } from '@ag-grid-community/core';
 import { GeneralHelpers } from '../../../../edit/shared/helpers';
 import { BooleanFilterModel } from '../shared/components/boolean-filter/boolean-filter.model';
 import { EntityFilterModel } from '../shared/components/entity-filter/entity-filter.model';

@@ -1,9 +1,9 @@
-import { ICellRendererParams } from '@ag-grid-community/all-modules';
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
+import { ICellRendererParams } from '@ag-grid-community/core';
 
 export class AgActionsComponent<TParams extends ICellRendererParams, TData> implements ICellRendererAngularComp {
-  public item: TData;
-  public params: TParams;
+  item: TData;
+  params: TParams;
 
   constructor() { }
 
@@ -15,5 +15,4 @@ export class AgActionsComponent<TParams extends ICellRendererParams, TData> impl
   refresh(params?: any): boolean {
     return true;
   }
-
 }

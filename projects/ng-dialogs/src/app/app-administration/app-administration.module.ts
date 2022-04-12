@@ -1,4 +1,3 @@
-import { AgGridModule } from '@ag-grid-community/angular';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -24,6 +23,7 @@ import { ContentItemsService } from '../content-items/services/content-items.ser
 import { ContentTypesFieldsService } from '../content-type-fields/services/content-types-fields.service';
 import { CreateFileDialogModule } from '../create-file-dialog';
 import { MetadataService } from '../permissions';
+import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
 import { Context } from '../shared/services/context';
 import { DialogService } from '../shared/services/dialog.service';
 import { SharedComponentsModule } from '../shared/shared-components.module';
@@ -113,7 +113,7 @@ import { WebApiComponent } from './web-api/web-api.component';
     CommonModule,
     MatButtonModule,
     MatIconModule,
-    AgGridModule.withComponents([]),
+    SxcGridModule,
     MatTabsModule,
     FormsModule,
     MatInputModule,

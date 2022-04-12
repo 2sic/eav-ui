@@ -1,4 +1,4 @@
-import { AllCommunityModules, GridOptions } from '@ag-grid-community/all-modules';
+import { GridOptions } from '@ag-grid-community/core';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { catchError, Observable, of, share, startWith, Subject, switchMap } from 'rxjs';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
@@ -17,7 +17,6 @@ import { SiteLanguagesStatusParams } from './site-languages-status/site-language
 })
 export class SiteLanguagesComponent implements OnInit, OnDestroy {
   languages$: Observable<SiteLanguage[]>;
-  modules = AllCommunityModules;
   gridOptions = this.buildGridOptions();
 
   private refreshLanguages$ = new Subject<void>();

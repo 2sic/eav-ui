@@ -1,4 +1,4 @@
-import { AllCommunityModules, GridOptions } from '@ag-grid-community/all-modules';
+import { GridOptions } from '@ag-grid-community/core';
 import { Component, Input } from '@angular/core';
 import { WebApiAction, WebApiActionParameters } from '../../../app-administration/models/web-api-details';
 import { defaultGridOptions } from '../../../shared/constants/default-grid-options.constants';
@@ -10,12 +10,8 @@ import { TrueFalseComponent } from './true-false.component';
   templateUrl: './action-params.component.html',
 })
 export class DevRestApiActionParamsComponent {
-
   @Input() data: WebApiAction;
 
-  /** AgGrid modules */
-  modules = AllCommunityModules;
-  /** AgGrid options */
   gridOptions: GridOptions = {
     ...defaultGridOptions,
     columnDefs: [

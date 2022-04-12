@@ -1,5 +1,5 @@
 import polymorphLogo from '!url-loader!./polymorph-logo.png';
-import { AllCommunityModules, GridOptions, ValueGetterParams } from '@ag-grid-community/all-modules';
+import { GridOptions, ValueGetterParams } from '@ag-grid-community/core';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
@@ -40,7 +40,6 @@ export class ViewsComponent implements OnInit, OnDestroy {
   polymorphStatus$ = new BehaviorSubject(undefined);
   polymorphLogo = polymorphLogo;
 
-  modules = AllCommunityModules;
   gridOptions: GridOptions = {
     ...defaultGridOptions,
     columnDefs: [

@@ -1,4 +1,4 @@
-import { AllCommunityModules, GridOptions, ICellRendererParams } from '@ag-grid-community/all-modules';
+import { GridOptions, ICellRendererParams } from '@ag-grid-community/core';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
@@ -25,7 +25,6 @@ import { AppsListShowComponent } from './apps-list-show/apps-list-show.component
 export class AppsListComponent implements OnInit, OnDestroy {
   apps$: Observable<App[]>;
   fabOpen$ = new BehaviorSubject(false);
-  modules = AllCommunityModules;
   gridOptions = this.buildGridOptions();
 
   private refreshApps$ = new Subject<void>();

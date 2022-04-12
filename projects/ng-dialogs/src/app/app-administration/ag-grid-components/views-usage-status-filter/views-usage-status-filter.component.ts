@@ -1,5 +1,5 @@
-import { IAfterGuiAttachedParams, IDoesFilterPassParams, IFilterParams, ValueGetterParams } from '@ag-grid-community/all-modules';
 import { IFilterAngularComp } from '@ag-grid-community/angular';
+import { IAfterGuiAttachedParams, IDoesFilterPassParams, IFilterParams, ValueGetterParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
 import { ViewUsageDataStatus } from '../../models/view-usage-data.model';
 import { ViewsUsageStatusFilterModel } from './views-usage-status-filter.model';
