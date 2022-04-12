@@ -2,8 +2,8 @@ import { ColDef, NumberFilterModel, TextFilterModel } from '@ag-grid-community/c
 import { GeneralHelpers } from '../../../../edit/shared/helpers';
 import { BooleanFilterModel } from '../shared/components/boolean-filter/boolean-filter.model';
 import { EntityFilterModel } from '../shared/components/entity-filter/entity-filter.model';
-import { PubMetaFilterModel } from './ag-grid-components/pub-meta-filter/pub-meta-filter.model';
 import { AgGridFilterModel } from './models/ag-grid-filter.model';
+import { PubMetaFilterModel } from './pub-meta-filter/pub-meta-filter.model';
 
 export function buildFilterModel(urlFilters: string, columnDefs: ColDef[]) {
   if (!urlFilters) { return; }

@@ -14,16 +14,16 @@ import { defaultGridOptions } from '../shared/constants/default-grid-options.con
 import { eavConstants } from '../shared/constants/eav.constants';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 import { AddItem, EditForm, EditItem } from '../shared/models/edit-form.model';
-import { ContentTypeFieldsActionsComponent } from './ag-grid-components/content-type-fields-actions/content-type-fields-actions.component';
-import { ContentTypeFieldsActionsParams } from './ag-grid-components/content-type-fields-actions/content-type-fields-actions.models';
-import { ContentTypeFieldsInputTypeComponent } from './ag-grid-components/content-type-fields-input-type/content-type-fields-input-type.component';
-// tslint:disable-next-line:max-line-length
-import { ContentTypeFieldsInputTypeParams } from './ag-grid-components/content-type-fields-input-type/content-type-fields-input-type.models';
-import { ContentTypeFieldsSpecialComponent } from './ag-grid-components/content-type-fields-special/content-type-fields-special.component';
-import { ContentTypeFieldsTitleComponent } from './ag-grid-components/content-type-fields-title/content-type-fields-title.component';
-import { ContentTypeFieldsTitleParams } from './ag-grid-components/content-type-fields-title/content-type-fields-title.models';
-import { ContentTypeFieldsTypeComponent } from './ag-grid-components/content-type-fields-type/content-type-fields-type.component';
 import { InputTypeConstants } from './constants/input-type.constants';
+import { ContentTypeFieldsActionsComponent } from './content-type-fields-actions/content-type-fields-actions.component';
+import { ContentTypeFieldsActionsParams } from './content-type-fields-actions/content-type-fields-actions.models';
+import { ContentTypeFieldsInputTypeComponent } from './content-type-fields-input-type/content-type-fields-input-type.component';
+// tslint:disable-next-line:max-line-length
+import { ContentTypeFieldsInputTypeParams } from './content-type-fields-input-type/content-type-fields-input-type.models';
+import { ContentTypeFieldsSpecialComponent } from './content-type-fields-special/content-type-fields-special.component';
+import { ContentTypeFieldsTitleComponent } from './content-type-fields-title/content-type-fields-title.component';
+import { ContentTypeFieldsTitleParams } from './content-type-fields-title/content-type-fields-title.models';
+import { ContentTypeFieldsTypeComponent } from './content-type-fields-type/content-type-fields-type.component';
 import { Field } from './models/field.model';
 import { ContentTypesFieldsService } from './services/content-types-fields.service';
 

@@ -5,13 +5,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { defaultGridOptions } from '../../../shared/constants/default-grid-options.constants';
-import { AnalyzeSettingsKeyComponent } from '../../ag-grid-components/analyze-settings-key/analyze-settings-key.component';
-import { AnalyzeSettingsTotalResultsComponent } from '../../ag-grid-components/analyze-settings-total-results/analyze-settings-total-results.component';
-import { AnalyzeSettingsTotalResultsParams } from '../../ag-grid-components/analyze-settings-total-results/analyze-settings-total-results.models';
-import { AnalyzeSettingsValueComponent } from '../../ag-grid-components/analyze-settings-value/analyze-settings-value.component';
 import { View } from '../../models';
 import { ViewsService } from '../../services';
 import { AnalyzeSettingsService } from '../../services/analyze-settings.service';
+import { AnalyzeSettingsKeyComponent } from './analyze-settings-key/analyze-settings-key.component';
+import { AnalyzeSettingsTotalResultsComponent } from './analyze-settings-total-results/analyze-settings-total-results.component';
+import { AnalyzeSettingsTotalResultsParams } from './analyze-settings-total-results/analyze-settings-total-results.models';
+import { AnalyzeSettingsValueComponent } from './analyze-settings-value/analyze-settings-value.component';
 import { AnalyzePart, AnalyzeSettingsTemplateVars, SettingsStackItem } from './analyze-settings.models';
 
 @Component({

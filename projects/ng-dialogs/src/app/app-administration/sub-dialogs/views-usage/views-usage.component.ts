@@ -4,13 +4,13 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { defaultGridOptions } from '../../../shared/constants/default-grid-options.constants';
-import { ViewsUsageIdComponent } from '../../ag-grid-components/views-usage-id/views-usage-id.component';
-import { ViewsUsageStatusFilterComponent } from '../../ag-grid-components/views-usage-status-filter/views-usage-status-filter.component';
 import { ViewUsageData } from '../../models/view-usage-data.model';
 import { ViewUsage } from '../../models/view-usage.model';
 import { ViewsService } from '../../services/views.service';
 // tslint:disable-next-line:max-line-length
 import { blockIdValueGetter, moduleIdClassGetter, moduleIdValueGetter, nameClassGetter, onNameClicked, pageIdClassGetter, pageIdValueGetter, statusCellRenderer } from './views-usage-grid.helpers';
+import { ViewsUsageIdComponent } from './views-usage-id/views-usage-id.component';
+import { ViewsUsageStatusFilterComponent } from './views-usage-status-filter/views-usage-status-filter.component';
 import { buildData } from './views-usage.helpers';
 
 @Component({

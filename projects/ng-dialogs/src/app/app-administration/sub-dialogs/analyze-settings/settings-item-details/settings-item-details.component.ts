@@ -4,8 +4,8 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { defaultGridOptions } from '../../../../shared/constants/default-grid-options.constants';
-import { AnalyzeSettingsValueComponent } from '../../../ag-grid-components/analyze-settings-value/analyze-settings-value.component';
 import { AnalyzeSettingsService } from '../../../services/analyze-settings.service';
+import { AnalyzeSettingsValueComponent } from '../analyze-settings-value/analyze-settings-value.component';
 import { AnalyzePart, SettingsStackItem } from '../analyze-settings.models';
 
 @Component({

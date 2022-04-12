@@ -9,7 +9,7 @@ import { EntitiesService } from '../content-items/services/entities.service';
 import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
 import { Context } from '../shared/services/context';
 import { SharedComponentsModule } from '../shared/shared-components.module';
-import { PermissionsActionsComponent } from './ag-grid-components/permissions-actions/permissions-actions.component';
+import { PermissionsActionsComponent } from './permissions-actions/permissions-actions.component';
 import { PermissionsRoutingModule } from './permissions-routing.module';
 import { PermissionsComponent } from './permissions.component';
 import { MetadataService } from './services/metadata.service';

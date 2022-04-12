@@ -15,11 +15,11 @@ import { defaultGridOptions } from '../shared/constants/default-grid-options.con
 import { eavConstants, MetadataKeyType } from '../shared/constants/eav.constants';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 import { EditForm } from '../shared/models/edit-form.model';
-import { MetadataActionsComponent } from './ag-grid-components/metadata-actions/metadata-actions.component';
-import { MetadataActionsParams } from './ag-grid-components/metadata-actions/metadata-actions.models';
-import { MetadataContentTypeComponent } from './ag-grid-components/metadata-content-type/metadata-content-type.component';
 import { ConfirmDeleteDialogComponent } from './confirm-delete-dialog/confirm-delete-dialog.component';
 import { ConfirmDeleteDialogData } from './confirm-delete-dialog/confirm-delete-dialog.models';
+import { MetadataActionsComponent } from './metadata-actions/metadata-actions.component';
+import { MetadataActionsParams } from './metadata-actions/metadata-actions.models';
+import { MetadataContentTypeComponent } from './metadata-content-type/metadata-content-type.component';
 import { MetadataSaveDialogComponent } from './metadata-save-dialog/metadata-save-dialog.component';
 import { MetadataItem, MetadataRecommendation, MetadataTemplateVars } from './models/metadata.model';
 

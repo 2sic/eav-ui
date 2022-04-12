@@ -9,8 +9,8 @@ import { GoToPermissions } from '../../../permissions';
 import { IdFieldComponent } from '../../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../../../shared/constants/default-grid-options.constants';
-import { LanguagesPermissionsActionsComponent } from '../../ag-grid-components/languages-permissions-actions/languages-permissions-actions.component';
-import { LanguagesPermissionsActionsParams } from '../../ag-grid-components/languages-permissions-actions/languages-permissions-actions.models';
+import { LanguagesPermissionsActionsComponent } from './languages-permissions-actions/languages-permissions-actions.component';
+import { LanguagesPermissionsActionsParams } from './languages-permissions-actions/languages-permissions-actions.models';
 
 @Component({
   selector: 'app-language-permissions',

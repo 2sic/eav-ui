@@ -10,10 +10,10 @@ import { GoToDevRest } from '../../dev-rest/go-to-dev-rest';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { DialogService } from '../../shared/services/dialog.service';
-import { WebApiActionsComponent } from '../ag-grid-components/web-api-actions/web-api-actions.component';
-import { WebApiActionsParams } from '../ag-grid-components/web-api-actions/web-api-actions.models';
-import { WebApiTypeComponent } from '../ag-grid-components/web-api-type/web-api-type.component';
 import { WebApi } from '../models/web-api.model';
+import { WebApiActionsComponent } from './web-api-actions/web-api-actions.component';
+import { WebApiActionsParams } from './web-api-actions/web-api-actions.models';
+import { WebApiTypeComponent } from './web-api-type/web-api-type.component';
 
 @Component({
   selector: 'app-web-api',

@@ -15,14 +15,14 @@ import { eavConstants } from '../../shared/constants/eav.constants';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { EditForm } from '../../shared/models/edit-form.model';
 import { DialogService } from '../../shared/services/dialog.service';
-import { ViewsActionsComponent } from '../ag-grid-components/views-actions/views-actions.component';
-import { ViewActionsParams } from '../ag-grid-components/views-actions/views-actions.models';
-import { ViewsShowComponent } from '../ag-grid-components/views-show/views-show.component';
-import { ViewsTypeComponent } from '../ag-grid-components/views-type/views-type.component';
 import { Polymorphism } from '../models/polymorphism.model';
 import { View } from '../models/view.model';
 import { ViewsService } from '../services/views.service';
 import { ImportViewDialogData } from '../sub-dialogs/import-view/import-view-dialog.config';
+import { ViewsActionsComponent } from './views-actions/views-actions.component';
+import { ViewActionsParams } from './views-actions/views-actions.models';
+import { ViewsShowComponent } from './views-show/views-show.component';
+import { ViewsTypeComponent } from './views-type/views-type.component';
 import { calculateViewType } from './views.helpers';
 
 @Component({

@@ -2,8 +2,8 @@ import { GridOptions } from '@ag-grid-community/core';
 import { Component, Input } from '@angular/core';
 import { WebApiAction, WebApiActionParameters } from '../../../app-administration/models/web-api-details';
 import { defaultGridOptions } from '../../../shared/constants/default-grid-options.constants';
-import { TrueFalseParams } from './true-false-column-params';
-import { TrueFalseComponent } from './true-false.component';
+import { TrueFalseComponent } from '../true-false/true-false.component';
+import { TrueFalseParams } from '../true-false/true-false.models';
 
 @Component({
   selector: 'app-dev-rest-api-action-params',

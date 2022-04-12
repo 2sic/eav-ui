@@ -11,9 +11,9 @@ import { defaultGridOptions } from '../shared/constants/default-grid-options.con
 import { eavConstants, MetadataKeyType } from '../shared/constants/eav.constants';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 import { EditForm } from '../shared/models/edit-form.model';
-import { PermissionsActionsComponent } from './ag-grid-components/permissions-actions/permissions-actions.component';
-import { PermissionsActionsParams } from './ag-grid-components/permissions-actions/permissions-actions.models';
 import { Permission } from './models/permission.model';
+import { PermissionsActionsComponent } from './permissions-actions/permissions-actions.component';
+import { PermissionsActionsParams } from './permissions-actions/permissions-actions.models';
 import { PermissionsService } from './services/permissions.service';
 
 @Component({

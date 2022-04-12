@@ -15,11 +15,11 @@ import { eavConstants } from '../../shared/constants/eav.constants';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { EditForm } from '../../shared/models/edit-form.model';
 import { DialogService } from '../../shared/services/dialog.service';
-import { QueriesActionsParams, QueryActions } from '../ag-grid-components/queries-actions/queries-actions';
-import { QueriesActionsComponent } from '../ag-grid-components/queries-actions/queries-actions.component';
 import { Query } from '../models/query.model';
 import { PipelinesService } from '../services/pipelines.service';
 import { ImportQueryDialogData } from '../sub-dialogs/import-query/import-query-dialog.config';
+import { QueriesActionsParams, QueryActions } from './queries-actions/queries-actions';
+import { QueriesActionsComponent } from './queries-actions/queries-actions.component';
 
 @Component({
   selector: 'app-queries',

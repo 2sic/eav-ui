@@ -1,9 +1,9 @@
 import { ColDef, GridOptions } from '@ag-grid-community/core';
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { defaultGridOptions } from '../../../shared/constants/default-grid-options.constants';
-import { TrueFalseParams } from '../action-params/true-false-column-params';
-import { TrueFalseComponent } from '../action-params/true-false.component';
 import { DevRestApiTemplateVars } from '../api-template-vars';
+import { TrueFalseComponent } from '../true-false/true-false.component';
+import { TrueFalseParams } from '../true-false/true-false.models';
 
 @Component({
   selector: 'app-dev-api-permissions',

@@ -25,10 +25,10 @@ import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module
 import { Context } from '../shared/services/context';
 import { SharedComponentsModule } from '../shared/shared-components.module';
 import { DevRestApiActionParamsComponent } from './api/action-params/action-params.component';
-import { TrueFalseComponent } from './api/action-params/true-false.component';
 import { DevRestApiComponent } from './api/api.component';
 import { DevRestApiIntroductionComponent } from './api/introduction/introduction.component';
 import { DevRestApiPermissionsComponent } from './api/permissions/permissions.component';
+import { TrueFalseComponent } from './api/true-false/true-false.component';
 import { DevRestDataComponent } from './data/data.component';
 import { DevRestDataIntroductionComponent } from './data/introduction/introduction.component';
 import { DevRestRoutingModule } from './dev-rest-routing.module';

@@ -18,15 +18,15 @@ import { eavConstants, ScopeOption } from '../../shared/constants/eav.constants'
 import { toString } from '../../shared/helpers/file-to-base64.helper';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { EditForm } from '../../shared/models/edit-form.model';
-import { DataActionsComponent } from '../ag-grid-components/data-actions/data-actions.component';
-import { DataActionsParams } from '../ag-grid-components/data-actions/data-actions.models';
-import { DataFieldsComponent } from '../ag-grid-components/data-fields/data-fields.component';
-import { DataFieldsParams } from '../ag-grid-components/data-fields/data-fields.models';
-import { DataItemsComponent } from '../ag-grid-components/data-items/data-items.component';
-import { DataItemsParams } from '../ag-grid-components/data-items/data-items.models';
 import { ContentType } from '../models/content-type.model';
 import { ContentTypesService } from '../services/content-types.service';
 import { ImportContentTypeDialogData } from '../sub-dialogs/import-content-type/import-content-type-dialog.config';
+import { DataActionsComponent } from './data-actions/data-actions.component';
+import { DataActionsParams } from './data-actions/data-actions.models';
+import { DataFieldsComponent } from './data-fields/data-fields.component';
+import { DataFieldsParams } from './data-fields/data-fields.models';
+import { DataItemsComponent } from './data-items/data-items.component';
+import { DataItemsParams } from './data-items/data-items.models';
 
 @Component({
   selector: 'app-data',

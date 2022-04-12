@@ -18,14 +18,14 @@ import { ContentExportService } from '../content-export/services/content-export.
 import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
 import { Context } from '../shared/services/context';
 import { SharedComponentsModule } from '../shared/shared-components.module';
-import { ContentItemsActionsComponent } from './ag-grid-components/content-items-actions/content-items-actions.component';
-import { ContentItemsEntityComponent } from './ag-grid-components/content-items-entity/content-items-entity.component';
-import { ContentItemsStatusComponent } from './ag-grid-components/content-items-status/content-items-status.component';
-import { PubMetaFilterComponent } from './ag-grid-components/pub-meta-filter/pub-meta-filter.component';
 import { ContentItemImportComponent } from './content-item-import/content-item-import.component';
+import { ContentItemsActionsComponent } from './content-items-actions/content-items-actions.component';
+import { ContentItemsEntityComponent } from './content-items-entity/content-items-entity.component';
 import { ContentItemsRoutingModule } from './content-items-routing.module';
+import { ContentItemsStatusComponent } from './content-items-status/content-items-status.component';
 import { ContentItemsComponent } from './content-items.component';
 import { CreateMetadataDialogComponent } from './create-metadata-dialog/create-metadata-dialog.component';
+import { PubMetaFilterComponent } from './pub-meta-filter/pub-meta-filter.component';
 import { ContentItemsService } from './services/content-items.service';
 import { EntitiesService } from './services/entities.service';
 
