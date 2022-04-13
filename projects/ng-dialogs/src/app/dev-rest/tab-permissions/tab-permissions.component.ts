@@ -13,35 +13,56 @@ import { defaultGridOptions } from '../../shared/constants/default-grid-options.
 export class DevRestTabPermissionsComponent {
   @Input() data: DevRestBaseTemplateVars;
 
-  gridOptions: GridOptions = {
-    ...defaultGridOptions,
-    columnDefs: [
-      {
-        headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'no-padding no-outline'.split(' '),
-        valueGetter: (params) => (params.data as Permission).Id,
-      },
-      {
-        field: 'Name', flex: 2, minWidth: 250, cellClass: 'no-outline',
-        valueGetter: (params) => (params.data as Permission).Title,
-      },
-      {
-        field: 'Identity', flex: 2, minWidth: 250, cellClass: 'no-outline',
-        valueGetter: (params) => (params.data as Permission).Identity,
-      },
-      {
-        field: 'Condition', flex: 2, minWidth: 250, cellClass: 'no-outline',
-        valueGetter: (params) => (params.data as Permission).Condition,
-      },
-      {
-        field: 'Grant', width: 70, headerClass: 'dense', cellClass: 'no-outline',
-        valueGetter: (params) => (params.data as Permission).Grant,
-      },
-    ],
-  };
+  gridOptions = this.buildGridOptions();
 
   constructor(private router: Router, private route: ActivatedRoute) { }
 
   openPermissions() {
     this.router.navigate([GoToPermissions.getUrlContentType(this.data.permissionTarget)], { relativeTo: this.route });
+  }
+
+  private buildGridOptions(): GridOptions {
+    const gridOptions: GridOptions = {
+      ...defaultGridOptions,
+      columnDefs: [
+        {
+          headerName: 'ID',
+          field: 'Id',
+          width: 70,
+          headerClass: 'dense',
+          cellClass: 'no-padding no-outline'.split(' '),
+          valueGetter: (params) => (params.data as Permission).Id,
+        },
+        {
+          field: 'Name',
+          flex: 2,
+          minWidth: 250,
+          cellClass: 'no-outline',
+          valueGetter: (params) => (params.data as Permission).Title,
+        },
+        {
+          field: 'Identity',
+          flex: 2,
+          minWidth: 250,
+          cellClass: 'no-outline',
+          valueGetter: (params) => (params.data as Permission).Identity,
+        },
+        {
+          field: 'Condition',
+          flex: 2,
+          minWidth: 250,
+          cellClass: 'no-outline',
+          valueGetter: (params) => (params.data as Permission).Condition,
+        },
+        {
+          field: 'Grant',
+          width: 70,
+          headerClass: 'dense',
+          cellClass: 'no-outline',
+          valueGetter: (params) => (params.data as Permission).Grant,
+        },
+      ],
+    };
+    return gridOptions;
   }
 }

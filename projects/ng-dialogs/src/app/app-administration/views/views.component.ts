@@ -39,92 +39,7 @@ export class ViewsComponent implements OnInit, OnDestroy {
   views$ = new BehaviorSubject<View[]>(undefined);
   polymorphStatus$ = new BehaviorSubject(undefined);
   polymorphLogo = polymorphLogo;
-
-  gridOptions: GridOptions = {
-    ...defaultGridOptions,
-    columnDefs: [
-      {
-        headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense',
-        cellClass: (params) => `${(params.data as View).EditInfo.ReadOnly ? 'disabled' : ''} id-action no-padding no-outline`.split(' '),
-        cellRenderer: IdFieldComponent, sortable: true, filter: 'agNumberColumnFilter',
-        valueGetter: (params) => (params.data as View).Id,
-        cellRendererParams: {
-          tooltipGetter: (view: View) => `ID: ${view.Id}\nGUID: ${view.Guid}`,
-        } as IdFieldParams,
-      },
-      {
-        field: 'Show', width: 70, headerClass: 'dense', cellClass: 'no-outline', cellRenderer: ViewsShowComponent,
-        sortable: true, filter: BooleanFilterComponent, valueGetter: this.showValueGetter,
-      },
-      {
-        field: 'Name', flex: 2, minWidth: 250, cellClass: 'primary-action highlight'.split(' '),
-        sortable: true, sort: 'asc', filter: 'agTextColumnFilter', onCellClicked: (event) => this.editView(event.data as View),
-        valueGetter: (params) => (params.data as View).Name,
-      },
-      {
-        field: 'Type', width: 82, headerClass: 'dense', cellClass: 'no-padding no-outline'.split(' '),
-        sortable: true, filter: 'agTextColumnFilter', cellRenderer: ViewsTypeComponent, valueGetter: this.typeValueGetter,
-      },
-      {
-        field: 'Used', width: 70, headerClass: 'dense', cellClass: 'primary-action highlight'.split(' '),
-        sortable: true, filter: 'agNumberColumnFilter', onCellClicked: (event) => this.openUsage(event.data as View),
-        valueGetter: (params) => (params.data as View).Used,
-      },
-      {
-        headerName: 'Url Key', field: 'UrlKey', flex: 1, minWidth: 150, cellClass: 'no-outline',
-        sortable: true, filter: 'agTextColumnFilter', valueGetter: (params) => (params.data as View).ViewNameInUrl,
-      },
-      {
-        field: 'Path', flex: 2, minWidth: 250, cellClass: 'no-outline',
-        sortable: true, filter: 'agTextColumnFilter', valueGetter: (params) => (params.data as View).TemplatePath,
-      },
-      {
-        field: 'Content', flex: 2, minWidth: 250, cellClass: 'no-outline',
-        sortable: true, filter: 'agTextColumnFilter', valueGetter: (params) => (params.data as View).ContentType.Name,
-      },
-      {
-        headerName: 'Default', field: 'ContentDemo', flex: 1, minWidth: 150, cellClass: 'no-outline',
-        sortable: true, filter: 'agTextColumnFilter', valueGetter: this.contentDemoValueGetter,
-      },
-      {
-        field: 'Presentation', flex: 2, minWidth: 250, cellClass: 'no-outline',
-        sortable: true, filter: 'agTextColumnFilter', valueGetter: (params) => (params.data as View).PresentationType.Name,
-      },
-      {
-        headerName: 'Default', field: 'PresentationDemo', flex: 1, minWidth: 150, cellClass: 'no-outline',
-        sortable: true, filter: 'agTextColumnFilter', valueGetter: this.presentationDemoValueGetter,
-      },
-      {
-        field: 'Header', flex: 2, minWidth: 250, cellClass: 'no-outline',
-        sortable: true, filter: 'agTextColumnFilter', valueGetter: (params) => (params.data as View).ListContentType.Name,
-      },
-      {
-        headerName: 'Default', field: 'HeaderDemo', flex: 1, minWidth: 150, cellClass: 'no-outline',
-        sortable: true, filter: 'agTextColumnFilter', valueGetter: this.headerDemoValueGetter,
-      },
-      {
-        headerName: 'Header Presentation', field: 'HeaderPresentation', flex: 2, minWidth: 250, cellClass: 'no-outline',
-        sortable: true, filter: 'agTextColumnFilter', valueGetter: (params) => (params.data as View).ListPresentationType.Name,
-      },
-      {
-        headerName: 'Default', field: 'HeaderPresentationDemo', flex: 1, minWidth: 150, cellClass: 'no-outline',
-        sortable: true, filter: 'agTextColumnFilter', valueGetter: this.headerPresDemoValueGetter,
-      },
-      {
-        width: 162, cellClass: 'secondary-action no-padding'.split(' '), cellRenderer: ViewsActionsComponent, pinned: 'right',
-        cellRendererParams: {
-          enableCodeGetter: () => this.enableCodeGetter(),
-          enablePermissionsGetter: () => this.enablePermissionsGetter(),
-          onOpenCode: (view) => this.openCode(view),
-          onOpenPermissions: (view) => this.openPermissions(view),
-          onOpenMetadata: (view) => this.openMetadata(view),
-          onClone: (view) => this.cloneView(view),
-          onExport: (view) => this.exportView(view),
-          onDelete: (view) => this.deleteView(view),
-        } as ViewActionsParams,
-      },
-    ],
-  };
+  gridOptions = this.buildGridOptions();
 
   private subscription = new Subscription();
   private polymorphism: Polymorphism;
@@ -294,5 +209,181 @@ export class ViewsComponent implements OnInit, OnDestroy {
         this.fetchPolymorphism();
       })
     );
+  }
+
+  private buildGridOptions(): GridOptions {
+    const gridOptions: GridOptions = {
+      ...defaultGridOptions,
+      columnDefs: [
+        {
+          headerName: 'ID',
+          field: 'Id',
+          width: 70,
+          headerClass: 'dense',
+          cellClass: (params) => `${(params.data as View).EditInfo.ReadOnly ? 'disabled' : ''} id-action no-padding no-outline`.split(' '),
+          sortable: true,
+          filter: 'agNumberColumnFilter',
+          valueGetter: (params) => (params.data as View).Id,
+          cellRenderer: IdFieldComponent,
+          cellRendererParams: {
+            tooltipGetter: (view: View) => `ID: ${view.Id}\nGUID: ${view.Guid}`,
+          } as IdFieldParams,
+        },
+        {
+          field: 'Show',
+          width: 70,
+          headerClass: 'dense',
+          cellClass: 'no-outline',
+          sortable: true,
+          filter: BooleanFilterComponent,
+          valueGetter: this.showValueGetter,
+          cellRenderer: ViewsShowComponent,
+        },
+        {
+          field: 'Name',
+          flex: 2,
+          minWidth: 250,
+          cellClass: 'primary-action highlight'.split(' '),
+          sortable: true,
+          sort: 'asc',
+          filter: 'agTextColumnFilter',
+          onCellClicked: (event) => this.editView(event.data as View),
+          valueGetter: (params) => (params.data as View).Name,
+        },
+        {
+          field: 'Type',
+          width: 82,
+          headerClass: 'dense',
+          cellClass: 'no-padding no-outline'.split(' '),
+          sortable: true,
+          filter: 'agTextColumnFilter',
+          valueGetter: this.typeValueGetter,
+          cellRenderer: ViewsTypeComponent,
+        },
+        {
+          field: 'Used',
+          width: 70,
+          headerClass: 'dense',
+          cellClass: 'primary-action highlight'.split(' '),
+          sortable: true,
+          filter: 'agNumberColumnFilter',
+          onCellClicked: (event) => this.openUsage(event.data as View),
+          valueGetter: (params) => (params.data as View).Used,
+        },
+        {
+          headerName: 'Url Key',
+          field: 'UrlKey',
+          flex: 1,
+          minWidth: 150,
+          cellClass: 'no-outline',
+          sortable: true,
+          filter: 'agTextColumnFilter',
+          valueGetter: (params) => (params.data as View).ViewNameInUrl,
+        },
+        {
+          field: 'Path',
+          flex: 2,
+          minWidth: 250,
+          cellClass: 'no-outline',
+          sortable: true,
+          filter: 'agTextColumnFilter',
+          valueGetter: (params) => (params.data as View).TemplatePath,
+        },
+        {
+          field: 'Content',
+          flex: 2,
+          minWidth: 250,
+          cellClass: 'no-outline',
+          sortable: true,
+          filter: 'agTextColumnFilter',
+          valueGetter: (params) => (params.data as View).ContentType.Name,
+        },
+        {
+          headerName: 'Default',
+          field: 'ContentDemo',
+          flex: 1,
+          minWidth: 150,
+          cellClass: 'no-outline',
+          sortable: true,
+          filter: 'agTextColumnFilter',
+          valueGetter: this.contentDemoValueGetter,
+        },
+        {
+          field: 'Presentation',
+          flex: 2,
+          minWidth: 250,
+          cellClass: 'no-outline',
+          sortable: true,
+          filter: 'agTextColumnFilter',
+          valueGetter: (params) => (params.data as View).PresentationType.Name,
+        },
+        {
+          headerName: 'Default',
+          field: 'PresentationDemo',
+          flex: 1,
+          minWidth: 150,
+          cellClass: 'no-outline',
+          sortable: true,
+          filter: 'agTextColumnFilter',
+          valueGetter: this.presentationDemoValueGetter,
+        },
+        {
+          field: 'Header',
+          flex: 2,
+          minWidth: 250,
+          cellClass: 'no-outline',
+          sortable: true,
+          filter: 'agTextColumnFilter',
+          valueGetter: (params) => (params.data as View).ListContentType.Name,
+        },
+        {
+          headerName: 'Default',
+          field: 'HeaderDemo',
+          flex: 1,
+          minWidth: 150,
+          cellClass: 'no-outline',
+          sortable: true,
+          filter: 'agTextColumnFilter',
+          valueGetter: this.headerDemoValueGetter,
+        },
+        {
+          headerName: 'Header Presentation',
+          field: 'HeaderPresentation',
+          flex: 2,
+          minWidth: 250,
+          cellClass: 'no-outline',
+          sortable: true,
+          filter: 'agTextColumnFilter',
+          valueGetter: (params) => (params.data as View).ListPresentationType.Name,
+        },
+        {
+          headerName: 'Default',
+          field: 'HeaderPresentationDemo',
+          flex: 1,
+          minWidth: 150,
+          cellClass: 'no-outline',
+          sortable: true,
+          filter: 'agTextColumnFilter',
+          valueGetter: this.headerPresDemoValueGetter,
+        },
+        {
+          width: 162,
+          cellClass: 'secondary-action no-padding'.split(' '),
+          pinned: 'right',
+          cellRenderer: ViewsActionsComponent,
+          cellRendererParams: {
+            enableCodeGetter: () => this.enableCodeGetter(),
+            enablePermissionsGetter: () => this.enablePermissionsGetter(),
+            onOpenCode: (view) => this.openCode(view),
+            onOpenPermissions: (view) => this.openPermissions(view),
+            onOpenMetadata: (view) => this.openMetadata(view),
+            onClone: (view) => this.cloneView(view),
+            onExport: (view) => this.exportView(view),
+            onDelete: (view) => this.deleteView(view),
+          } as ViewActionsParams,
+        },
+      ],
+    };
+    return gridOptions;
   }
 }

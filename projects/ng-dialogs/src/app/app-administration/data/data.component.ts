@@ -40,77 +40,9 @@ export class DataComponent implements OnInit, OnDestroy {
   scope$ = new BehaviorSubject<string>(undefined);
   scopeOptions$ = new BehaviorSubject<ScopeOption[]>([]);
   debugEnabled$ = this.globalConfigService.getDebugEnabled$();
-
-  gridOptions: GridOptions = {
-    ...defaultGridOptions,
-    columnDefs: [
-      {
-        headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense',
-        cellClass: (params) => `${(params.data as ContentType).EditInfo.ReadOnly ? 'disabled' : ''} id-action no-padding no-outline`.split(' '),
-        cellRenderer: IdFieldComponent, sortable: true, filter: 'agNumberColumnFilter',
-        valueGetter: (params) => (params.data as ContentType).Id,
-        cellRendererParams: {
-          tooltipGetter: (contentType: ContentType) => `ID: ${contentType.Id}\nGUID: ${contentType.StaticName}`,
-        } as IdFieldParams,
-      },
-      {
-        headerName: 'Content Type', field: 'ContentType', flex: 3, minWidth: 250, cellClass: 'primary-action highlight'.split(' '),
-        sortable: true, sort: 'asc', filter: 'agTextColumnFilter',
-        onCellClicked: (params) => this.showContentItems(params.data as ContentType),
-        valueGetter: (params) => (params.data as ContentType).Label,
-        comparator: (valueA, valueB, nodeA, nodeB, isInverted) => {
-          const a = (nodeA.data as ContentType)._compareLabel;
-          const b = (nodeB.data as ContentType)._compareLabel;
-          return a.localeCompare(b);
-        },
-      },
-      {
-        field: 'Items', width: 102, headerClass: 'dense', cellClass: 'secondary-action no-padding'.split(' '),
-        sortable: true, filter: 'agNumberColumnFilter', cellRenderer: DataItemsComponent,
-        valueGetter: (params) => (params.data as ContentType).Items,
-        cellRendererParams: {
-          onShowItems: (contentType) => this.showContentItems(contentType),
-          onAddItem: (contentType) => this.addItem(contentType),
-        } as DataItemsParams,
-      },
-      {
-        field: 'Fields', width: 94, headerClass: 'dense', cellClass: 'secondary-action no-padding'.split(' '),
-        sortable: true, filter: 'agNumberColumnFilter', cellRenderer: DataFieldsComponent,
-        valueGetter: (params) => (params.data as ContentType).Fields,
-        cellRendererParams: {
-          onEditFields: (contentType) => this.editFields(contentType),
-        } as DataFieldsParams,
-      },
-      {
-        field: 'Name', flex: 1, minWidth: 100,
-        cellClass: (params) => `${(params.data as ContentType).EditInfo.ReadOnly ? 'no-outline' : 'primary-action highlight'}`.split(' '),
-        valueGetter: (params) => (params.data as ContentType).Name,
-        sortable: true, filter: 'agTextColumnFilter', onCellClicked: (event) => this.editContentType(event.data as ContentType),
-      },
-      {
-        field: 'Description', flex: 3, minWidth: 250, cellClass: 'no-outline',
-        sortable: true, filter: 'agTextColumnFilter',
-        valueGetter: (params) => (params.data as ContentType).Properties?.Description,
-      },
-      {
-        width: 162, cellClass: 'secondary-action no-padding'.split(' '), cellRenderer: DataActionsComponent, pinned: 'right',
-        cellRendererParams: {
-          enablePermissionsGetter: () => this.enablePermissionsGetter(),
-          onCreateOrEditMetadata: (contentType) => this.createOrEditMetadata(contentType),
-          onOpenPermissions: (contentType) => this.openPermissions(contentType),
-          onEdit: (contentType) => this.editContentType(contentType),
-          onOpenRestApi: (contentType) => this.openRestApi(contentType),
-          onOpenMetadata: (contentType) => this.openMetadata(contentType),
-          onTypeExport: (contentType) => this.exportType(contentType),
-          onOpenDataExport: (contentType) => this.openDataExport(contentType),
-          onOpenDataImport: (contentType) => this.openDataImport(contentType),
-          onDelete: (contentType) => this.deleteContentType(contentType),
-        } as DataActionsParams,
-      },
-    ],
-  };
-
+  gridOptions = this.buildGridOptions();
   dropdownInsertValue = dropdownInsertValue;
+
   private subscription = new Subscription();
 
   constructor(
@@ -330,4 +262,108 @@ export class DataComponent implements OnInit, OnDestroy {
     );
   }
 
+  private buildGridOptions(): GridOptions {
+    const gridOptions: GridOptions = {
+      ...defaultGridOptions,
+      columnDefs: [
+        {
+          headerName: 'ID',
+          field: 'Id',
+          width: 70,
+          headerClass: 'dense',
+          cellClass: (params) =>
+            `${(params.data as ContentType).EditInfo.ReadOnly ? 'disabled' : ''} id-action no-padding no-outline`.split(' '),
+          sortable: true,
+          filter: 'agNumberColumnFilter',
+          valueGetter: (params) => (params.data as ContentType).Id,
+          cellRenderer: IdFieldComponent,
+          cellRendererParams: {
+            tooltipGetter: (contentType: ContentType) => `ID: ${contentType.Id}\nGUID: ${contentType.StaticName}`,
+          } as IdFieldParams,
+        },
+        {
+          headerName: 'Content Type',
+          field: 'ContentType',
+          flex: 3,
+          minWidth: 250,
+          cellClass: 'primary-action highlight'.split(' '),
+          sortable: true,
+          sort: 'asc',
+          filter: 'agTextColumnFilter',
+          onCellClicked: (params) => this.showContentItems(params.data as ContentType),
+          valueGetter: (params) => (params.data as ContentType).Label,
+          comparator: (valueA, valueB, nodeA, nodeB, isInverted) => {
+            const a = (nodeA.data as ContentType)._compareLabel;
+            const b = (nodeB.data as ContentType)._compareLabel;
+            return a.localeCompare(b);
+          },
+        },
+        {
+          field: 'Items',
+          width: 102,
+          headerClass: 'dense',
+          cellClass: 'secondary-action no-padding'.split(' '),
+          sortable: true,
+          filter: 'agNumberColumnFilter',
+          valueGetter: (params) => (params.data as ContentType).Items,
+          cellRenderer: DataItemsComponent,
+          cellRendererParams: {
+            onShowItems: (contentType) => this.showContentItems(contentType),
+            onAddItem: (contentType) => this.addItem(contentType),
+          } as DataItemsParams,
+        },
+        {
+          field: 'Fields',
+          width: 94,
+          headerClass: 'dense',
+          cellClass: 'secondary-action no-padding'.split(' '),
+          sortable: true,
+          filter: 'agNumberColumnFilter',
+          valueGetter: (params) => (params.data as ContentType).Fields,
+          cellRenderer: DataFieldsComponent,
+          cellRendererParams: {
+            onEditFields: (contentType) => this.editFields(contentType),
+          } as DataFieldsParams,
+        },
+        {
+          field: 'Name',
+          flex: 1,
+          minWidth: 100,
+          cellClass: (params) => `${(params.data as ContentType).EditInfo.ReadOnly ? 'no-outline' : 'primary-action highlight'}`.split(' '),
+          valueGetter: (params) => (params.data as ContentType).Name,
+          sortable: true,
+          filter: 'agTextColumnFilter',
+          onCellClicked: (event) => this.editContentType(event.data as ContentType),
+        },
+        {
+          field: 'Description',
+          flex: 3,
+          minWidth: 250,
+          cellClass: 'no-outline',
+          sortable: true,
+          filter: 'agTextColumnFilter',
+          valueGetter: (params) => (params.data as ContentType).Properties?.Description,
+        },
+        {
+          width: 162,
+          cellClass: 'secondary-action no-padding'.split(' '),
+          pinned: 'right',
+          cellRenderer: DataActionsComponent,
+          cellRendererParams: {
+            enablePermissionsGetter: () => this.enablePermissionsGetter(),
+            onCreateOrEditMetadata: (contentType) => this.createOrEditMetadata(contentType),
+            onOpenPermissions: (contentType) => this.openPermissions(contentType),
+            onEdit: (contentType) => this.editContentType(contentType),
+            onOpenRestApi: (contentType) => this.openRestApi(contentType),
+            onOpenMetadata: (contentType) => this.openMetadata(contentType),
+            onTypeExport: (contentType) => this.exportType(contentType),
+            onOpenDataExport: (contentType) => this.openDataExport(contentType),
+            onOpenDataImport: (contentType) => this.openDataImport(contentType),
+            onDelete: (contentType) => this.deleteContentType(contentType),
+          } as DataActionsParams,
+        },
+      ],
+    };
+    return gridOptions;
+  }
 }

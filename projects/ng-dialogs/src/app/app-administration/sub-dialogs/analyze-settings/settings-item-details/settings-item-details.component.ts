@@ -18,22 +18,7 @@ export class SettingsItemDetailsComponent implements OnInit, OnDestroy {
   selectedView: string;
   settingsItemKey: string;
   stack$: BehaviorSubject<SettingsStackItem[]>;
-
-  gridOptions: GridOptions = {
-    ...defaultGridOptions,
-    columnDefs: [
-      {
-        field: 'Value', flex: 2, minWidth: 250, cellClass: 'primary-action no-padding no-outline'.split(' '),
-        cellRenderer: AnalyzeSettingsValueComponent, sortable: true, filter: 'agTextColumnFilter',
-        valueGetter: (params) => (params.data as SettingsStackItem)._value,
-      },
-      {
-        field: 'Source', flex: 1, minWidth: 150, cellClass: 'no-outline',
-        sortable: true, filter: 'agTextColumnFilter',
-        valueGetter: (params) => (params.data as SettingsStackItem).Source,
-      },
-    ],
-  };
+  gridOptions = this.buildGridOptions();
 
   constructor(
     private dialogRef: MatDialogRef<SettingsItemDetailsComponent>,
@@ -59,5 +44,33 @@ export class SettingsItemDetailsComponent implements OnInit, OnDestroy {
 
   closeDialog(): void {
     this.dialogRef.close();
+  }
+
+  private buildGridOptions(): GridOptions {
+    const gridOptions: GridOptions = {
+      ...defaultGridOptions,
+      columnDefs: [
+        {
+          field: 'Value',
+          flex: 2,
+          minWidth: 250,
+          cellClass: 'primary-action no-padding no-outline'.split(' '),
+          sortable: true,
+          filter: 'agTextColumnFilter',
+          valueGetter: (params) => (params.data as SettingsStackItem)._value,
+          cellRenderer: AnalyzeSettingsValueComponent,
+        },
+        {
+          field: 'Source',
+          flex: 1,
+          minWidth: 150,
+          cellClass: 'no-outline',
+          sortable: true,
+          filter: 'agTextColumnFilter',
+          valueGetter: (params) => (params.data as SettingsStackItem).Source,
+        },
+      ],
+    };
+    return gridOptions;
   }
 }

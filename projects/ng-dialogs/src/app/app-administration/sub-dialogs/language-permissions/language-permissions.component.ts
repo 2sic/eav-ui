@@ -31,30 +31,7 @@ export class LanguagePermissionsComponent implements OnInit, OnDestroy {
   ) {
     this.subscription = new Subscription();
     this.languages$ = new BehaviorSubject<SiteLanguagePermissions[] | undefined>(undefined);
-    this.gridOptions = {
-      ...defaultGridOptions,
-      columnDefs: [
-        {
-          headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline'.split(' '),
-          cellRenderer: IdFieldComponent, sortable: true, filter: 'agTextColumnFilter',
-          valueGetter: (params) => (params.data as SiteLanguagePermissions).Code,
-          cellRendererParams: {
-            tooltipGetter: (language: SiteLanguagePermissions) => `ID: ${language.Code}`,
-          } as IdFieldParams,
-        },
-        {
-          field: 'Name', flex: 2, minWidth: 250, cellClass: 'no-outline', sortable: true,
-          sort: 'asc', filter: 'agTextColumnFilter',
-          valueGetter: (params) => (params.data as SiteLanguagePermissions).Culture,
-        },
-        {
-          width: 42, cellClass: 'secondary-action no-padding'.split(' '), cellRenderer: LanguagesPermissionsActionsComponent, pinned: 'right',
-          cellRendererParams: {
-            onOpenPermissions: (language) => this.openPermissions(language),
-          } as LanguagesPermissionsActionsParams,
-        },
-      ],
-    };
+    this.gridOptions = this.buildGridOptions();
   }
 
   ngOnInit(): void {
@@ -98,5 +75,47 @@ export class LanguagePermissionsComponent implements OnInit, OnDestroy {
         this.getLanguages();
       })
     );
+  }
+
+  private buildGridOptions(): GridOptions {
+    const gridOptions: GridOptions = {
+      ...defaultGridOptions,
+      columnDefs: [
+        {
+          headerName: 'ID',
+          field: 'Id',
+          width: 70,
+          headerClass: 'dense',
+          cellClass: 'id-action no-padding no-outline'.split(' '),
+          sortable: true,
+          filter: 'agTextColumnFilter',
+          valueGetter: (params) => (params.data as SiteLanguagePermissions).Code,
+          cellRenderer: IdFieldComponent,
+          cellRendererParams: {
+            tooltipGetter: (language: SiteLanguagePermissions) => `ID: ${language.Code}`,
+          } as IdFieldParams,
+        },
+        {
+          field: 'Name',
+          flex: 2,
+          minWidth: 250,
+          cellClass: 'no-outline',
+          sortable: true,
+          sort: 'asc',
+          filter: 'agTextColumnFilter',
+          valueGetter: (params) => (params.data as SiteLanguagePermissions).Culture,
+        },
+        {
+          width: 42,
+          cellClass: 'secondary-action no-padding'.split(' '),
+          pinned: 'right',
+          cellRenderer: LanguagesPermissionsActionsComponent,
+          cellRendererParams: {
+            onOpenPermissions: (language) => this.openPermissions(language),
+          } as LanguagesPermissionsActionsParams,
+        },
+      ],
+    };
+    return gridOptions;
   }
 }

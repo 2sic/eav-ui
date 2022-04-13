@@ -23,44 +23,7 @@ import { PermissionsService } from './services/permissions.service';
 })
 export class PermissionsComponent implements OnInit, OnDestroy {
   permissions$ = new BehaviorSubject<Permission[]>(undefined);
-
-  gridOptions: GridOptions = {
-    ...defaultGridOptions,
-    columnDefs: [
-      {
-        headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline'.split(' '),
-        cellRenderer: IdFieldComponent, sortable: true, filter: 'agNumberColumnFilter',
-        valueGetter: (params) => (params.data as Permission).Id,
-        cellRendererParams: {
-          tooltipGetter: (permission: Permission) => `ID: ${permission.Id}\nGUID: ${permission.Guid}`,
-        } as IdFieldParams,
-      },
-      {
-        field: 'Name', flex: 2, minWidth: 250, cellClass: 'primary-action highlight'.split(' '),
-        sortable: true, sort: 'asc', filter: 'agTextColumnFilter',
-        onCellClicked: (event) => this.editPermission(event.data as Permission),
-        valueGetter: (params) => (params.data as Permission).Title,
-      },
-      {
-        field: 'Identity', flex: 2, minWidth: 250, cellClass: 'no-outline', sortable: true,
-        filter: 'agTextColumnFilter', valueGetter: (params) => (params.data as Permission).Identity,
-      },
-      {
-        field: 'Condition', flex: 2, minWidth: 250, cellClass: 'no-outline', sortable: true,
-        filter: 'agTextColumnFilter', valueGetter: (params) => (params.data as Permission).Condition,
-      },
-      {
-        field: 'Grant', width: 70, headerClass: 'dense', cellClass: 'no-outline',
-        sortable: true, filter: 'agTextColumnFilter', valueGetter: (params) => (params.data as Permission).Grant,
-      },
-      {
-        width: 42, cellClass: 'secondary-action no-padding'.split(' '), cellRenderer: PermissionsActionsComponent, pinned: 'right',
-        cellRendererParams: {
-          onDelete: (permission) => this.deletePermission(permission),
-        } as PermissionsActionsParams,
-      },
-    ],
-  };
+  gridOptions = this.buildGridOptions();
 
   private subscription = new Subscription();
   private targetType = parseInt(this.route.snapshot.paramMap.get('targetType'), 10);
@@ -148,4 +111,73 @@ export class PermissionsComponent implements OnInit, OnDestroy {
     );
   }
 
+  private buildGridOptions(): GridOptions {
+    const gridOptions: GridOptions = {
+      ...defaultGridOptions,
+      columnDefs: [
+        {
+          headerName: 'ID',
+          field: 'Id',
+          width: 70,
+          headerClass: 'dense',
+          cellClass: 'id-action no-padding no-outline'.split(' '),
+          sortable: true,
+          filter: 'agNumberColumnFilter',
+          valueGetter: (params) => (params.data as Permission).Id,
+          cellRenderer: IdFieldComponent,
+          cellRendererParams: {
+            tooltipGetter: (permission: Permission) => `ID: ${permission.Id}\nGUID: ${permission.Guid}`,
+          } as IdFieldParams,
+        },
+        {
+          field: 'Name',
+          flex: 2,
+          minWidth: 250,
+          cellClass: 'primary-action highlight'.split(' '),
+          sortable: true,
+          sort: 'asc',
+          filter: 'agTextColumnFilter',
+          onCellClicked: (event) => this.editPermission(event.data as Permission),
+          valueGetter: (params) => (params.data as Permission).Title,
+        },
+        {
+          field: 'Identity',
+          flex: 2,
+          minWidth: 250,
+          cellClass: 'no-outline',
+          sortable: true,
+          filter: 'agTextColumnFilter',
+          valueGetter: (params) => (params.data as Permission).Identity,
+        },
+        {
+          field: 'Condition',
+          flex: 2,
+          minWidth: 250,
+          cellClass: 'no-outline',
+          sortable: true,
+          filter: 'agTextColumnFilter',
+          valueGetter: (params) => (params.data as Permission).Condition,
+        },
+        {
+          field: 'Grant',
+          width: 70,
+          headerClass: 'dense',
+          cellClass: 'no-outline',
+          sortable: true,
+          filter: 'agTextColumnFilter',
+          valueGetter: (params) => (params.data as Permission).Grant,
+        },
+        {
+          width: 42,
+          cellClass: 'secondary-action no-padding'.split(' '),
+          pinned: 'right',
+          cellRenderer: PermissionsActionsComponent,
+          cellRendererParams: {
+            onDelete: (permission) => this.deletePermission(permission),
+          } as PermissionsActionsParams,
+        },
+      ],
+    };
+    return gridOptions;
+  }
 }

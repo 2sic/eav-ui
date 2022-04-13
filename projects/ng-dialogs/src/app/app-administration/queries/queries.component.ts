@@ -30,37 +30,7 @@ export class QueriesComponent implements OnInit, OnDestroy {
   @Input() enablePermissions: boolean;
 
   queries$ = new BehaviorSubject<Query[]>(undefined);
-  gridOptions: GridOptions = {
-    ...defaultGridOptions,
-    columnDefs: [
-      {
-        headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense',
-        cellClass: (params) => `${(params.data as Query)._EditInfo.ReadOnly ? 'disabled' : ''} id-action no-padding no-outline`.split(' '),
-        cellRenderer: IdFieldComponent, sortable: true, filter: 'agNumberColumnFilter',
-        valueGetter: (params) => (params.data as Query).Id,
-        cellRendererParams: {
-          tooltipGetter: (query: Query) => `ID: ${query.Id}\nGUID: ${query.Guid}`,
-        } as IdFieldParams,
-      },
-      {
-        field: 'Name', flex: 2, minWidth: 250, sortable: true,
-        cellClass: (params) => `${(params.data as Query)._EditInfo.ReadOnly ? 'no-outline' : 'primary-action highlight'}`.split(' '),
-        sort: 'asc', filter: 'agTextColumnFilter', onCellClicked: (params) => this.openVisualQueryDesigner(params.data as Query),
-        valueGetter: (params) => (params.data as Query).Name,
-      },
-      {
-        field: 'Description', flex: 2, minWidth: 250, cellClass: 'no-outline', sortable: true,
-        filter: 'agTextColumnFilter', valueGetter: (params) => (params.data as Query).Description,
-      },
-      {
-        width: 162, cellClass: 'secondary-action no-padding'.split(' '), pinned: 'right',
-        cellRenderer: QueriesActionsComponent, cellRendererParams: {
-          getEnablePermissions: () => this.enablePermissionsGetter(),
-          do: (action, query) => this.doMenuAction(action, query),
-        } as QueriesActionsParams,
-      },
-    ],
-  };
+  gridOptions = this.buildGridOptions();
 
   private subscription = new Subscription();
 
@@ -189,4 +159,57 @@ export class QueriesComponent implements OnInit, OnDestroy {
     );
   }
 
+  private buildGridOptions(): GridOptions {
+    const gridOptions: GridOptions = {
+      ...defaultGridOptions,
+      columnDefs: [
+        {
+          headerName: 'ID',
+          field: 'Id',
+          width: 70,
+          headerClass: 'dense',
+          cellClass: (params) =>
+            `${(params.data as Query)._EditInfo.ReadOnly ? 'disabled' : ''} id-action no-padding no-outline`.split(' '),
+          sortable: true,
+          filter: 'agNumberColumnFilter',
+          valueGetter: (params) => (params.data as Query).Id,
+          cellRenderer: IdFieldComponent,
+          cellRendererParams: {
+            tooltipGetter: (query: Query) => `ID: ${query.Id}\nGUID: ${query.Guid}`,
+          } as IdFieldParams,
+        },
+        {
+          field: 'Name',
+          flex: 2,
+          minWidth: 250,
+          sortable: true,
+          cellClass: (params) => `${(params.data as Query)._EditInfo.ReadOnly ? 'no-outline' : 'primary-action highlight'}`.split(' '),
+          sort: 'asc',
+          filter: 'agTextColumnFilter',
+          onCellClicked: (params) => this.openVisualQueryDesigner(params.data as Query),
+          valueGetter: (params) => (params.data as Query).Name,
+        },
+        {
+          field: 'Description',
+          flex: 2,
+          minWidth: 250,
+          cellClass: 'no-outline',
+          sortable: true,
+          filter: 'agTextColumnFilter',
+          valueGetter: (params) => (params.data as Query).Description,
+        },
+        {
+          width: 162,
+          cellClass: 'secondary-action no-padding'.split(' '),
+          pinned: 'right',
+          cellRenderer: QueriesActionsComponent,
+          cellRendererParams: {
+            getEnablePermissions: () => this.enablePermissionsGetter(),
+            do: (action, query) => this.doMenuAction(action, query),
+          } as QueriesActionsParams,
+        },
+      ],
+    };
+    return gridOptions;
+  }
 }

@@ -29,38 +29,7 @@ import { MetadataItem, MetadataRecommendation, MetadataTemplateVars } from './mo
   styleUrls: ['./metadata.component.scss'],
 })
 export class MetadataComponent implements OnInit, OnDestroy {
-  gridOptions: GridOptions = {
-    ...defaultGridOptions,
-    columnDefs: [
-      {
-        headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline'.split(' '),
-        cellRenderer: IdFieldComponent, sortable: true, filter: 'agNumberColumnFilter',
-        valueGetter: (params) => (params.data as MetadataItem).Id,
-        cellRendererParams: {
-          tooltipGetter: (metadata: MetadataItem) => `ID: ${metadata.Id}\nGUID: ${metadata.Guid}`,
-        } as IdFieldParams,
-      },
-      {
-        field: 'Title', flex: 2, minWidth: 250, cellClass: 'primary-action highlight'.split(' '),
-        valueGetter: (params) => (params.data as MetadataItem).Title,
-        sortable: true, sort: 'asc', filter: 'agTextColumnFilter',
-        onCellClicked: (event) => this.editMetadata(event.data as MetadataItem),
-      },
-      {
-        headerName: 'Content Type', field: 'ContentType', flex: 2, minWidth: 250, cellClass: 'no-outline', sortable: true,
-        cellRenderer: MetadataContentTypeComponent, filter: 'agTextColumnFilter', valueGetter: (params) => {
-          const metadata = params.data as MetadataItem;
-          return `${metadata._Type.Name}${metadata._Type.Title !== metadata._Type.Name ? ` (${metadata._Type.Title})` : ''}`;
-        },
-      },
-      {
-        width: 42, cellClass: 'secondary-action no-padding'.split(' '), cellRenderer: MetadataActionsComponent, pinned: 'right',
-        cellRendererParams: {
-          onDelete: (metadata) => this.deleteMetadata(metadata),
-        } as MetadataActionsParams,
-      },
-    ],
-  };
+  gridOptions = this.buildGridOptions();
 
   private metadata$ = new BehaviorSubject<MetadataItem[]>([]);
   private recommendations$ = new BehaviorSubject<MetadataRecommendation[]>([]);
@@ -251,4 +220,60 @@ export class MetadataComponent implements OnInit, OnDestroy {
     );
   }
 
+  private buildGridOptions(): GridOptions {
+    const gridOptions: GridOptions = {
+      ...defaultGridOptions,
+      columnDefs: [
+        {
+          headerName: 'ID',
+          field: 'Id',
+          width: 70,
+          headerClass: 'dense',
+          cellClass: 'id-action no-padding no-outline'.split(' '),
+          sortable: true,
+          filter: 'agNumberColumnFilter',
+          valueGetter: (params) => (params.data as MetadataItem).Id,
+          cellRenderer: IdFieldComponent,
+          cellRendererParams: {
+            tooltipGetter: (metadata: MetadataItem) => `ID: ${metadata.Id}\nGUID: ${metadata.Guid}`,
+          } as IdFieldParams,
+        },
+        {
+          field: 'Title',
+          flex: 2,
+          minWidth: 250,
+          cellClass: 'primary-action highlight'.split(' '),
+          valueGetter: (params) => (params.data as MetadataItem).Title,
+          sortable: true,
+          sort: 'asc',
+          filter: 'agTextColumnFilter',
+          onCellClicked: (event) => this.editMetadata(event.data as MetadataItem),
+        },
+        {
+          headerName: 'Content Type',
+          field: 'ContentType',
+          flex: 2,
+          minWidth: 250,
+          cellClass: 'no-outline',
+          sortable: true,
+          filter: 'agTextColumnFilter',
+          valueGetter: (params) => {
+            const metadata = params.data as MetadataItem;
+            return `${metadata._Type.Name}${metadata._Type.Title !== metadata._Type.Name ? ` (${metadata._Type.Title})` : ''}`;
+          },
+          cellRenderer: MetadataContentTypeComponent,
+        },
+        {
+          width: 42,
+          cellClass: 'secondary-action no-padding'.split(' '),
+          pinned: 'right',
+          cellRenderer: MetadataActionsComponent,
+          cellRendererParams: {
+            onDelete: (metadata) => this.deleteMetadata(metadata),
+          } as MetadataActionsParams,
+        },
+      ],
+    };
+    return gridOptions;
+  }
 }

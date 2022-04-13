@@ -50,7 +50,6 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   contentType$ = new BehaviorSubject<ContentType>(undefined);
   items$ = new BehaviorSubject<ContentItem[]>(undefined);
   debugEnabled$ = this.globalConfigService.getDebugEnabled$();
-
   gridOptions: GridOptions = {
     ...defaultGridOptions,
   };
@@ -238,33 +237,58 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   private buildColumnDefs(columns: Field[]) {
     const columnDefs: ColDef[] = [
       {
-        headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense',
+        headerName: 'ID',
+        field: 'Id',
+        width: 70,
+        headerClass: 'dense',
         cellClass: (params) => `${(params.data as ContentItem)._EditInfo.ReadOnly ? 'disabled' : ''} id-action no-padding no-outline`.split(' '),
-        cellRenderer: IdFieldComponent, sortable: true, filter: 'agNumberColumnFilter',
+        sortable: true,
+        filter: 'agNumberColumnFilter',
         valueGetter: (params) => (params.data as ContentItem).Id,
+        cellRenderer: IdFieldComponent,
         cellRendererParams: {
           tooltipGetter: (item: ContentItem) => `ID: ${item.Id}\nRepoID: ${item._RepositoryId}\nGUID: ${item.Guid}`,
         } as IdFieldParams,
       },
       {
-        field: 'Status', width: 82, headerClass: 'dense', cellClass: 'secondary-action no-padding'.split(' '),
-        filter: PubMetaFilterComponent, cellRenderer: ContentItemsStatusComponent, valueGetter: this.valueGetterStatus,
+        field: 'Status',
+        width: 82,
+        headerClass: 'dense',
+        cellClass: 'secondary-action no-padding'.split(' '),
+        filter: PubMetaFilterComponent,
+        valueGetter: this.valueGetterStatus,
+        cellRenderer: ContentItemsStatusComponent,
         cellRendererParams: {
           onOpenMetadata: (item) => this.openMetadata(item),
         } as ContentItemsStatusParams,
       },
       {
-        headerName: 'Item (Entity)', field: '_Title', flex: 2, minWidth: 250, cellClass: 'primary-action highlight'.split(' '),
-        sortable: true, filter: 'agTextColumnFilter', onCellClicked: (event) => this.editItem(event.data as ContentItem),
+        headerName: 'Item (Entity)',
+        field: '_Title',
+        flex: 2,
+        minWidth: 250,
+        cellClass: 'primary-action highlight'.split(' '),
+        sortable: true,
+        filter: 'agTextColumnFilter',
+        onCellClicked: (event) => this.editItem(event.data as ContentItem),
         valueGetter: (params) => (params.data as ContentItem)._Title,
       },
       {
-        headerName: 'Stats', headerTooltip: 'Used by others / uses others',
-        field: '_Used', width: 70, headerClass: 'dense', cellClass: 'no-outline',
-        sortable: true, filter: 'agTextColumnFilter', valueGetter: this.valueGetterUsage,
+        headerName: 'Stats',
+        headerTooltip: 'Used by others / uses others',
+        field: '_Used',
+        width: 70,
+        headerClass: 'dense',
+        cellClass: 'no-outline',
+        sortable: true,
+        filter: 'agTextColumnFilter',
+        valueGetter: this.valueGetterUsage,
       },
       {
-        cellClass: 'secondary-action no-padding'.split(' '), width: 122, cellRenderer: ContentItemsActionsComponent, pinned: 'right',
+        cellClass: 'secondary-action no-padding'.split(' '),
+        width: 122,
+        pinned: 'right',
+        cellRenderer: ContentItemsActionsComponent,
         cellRendererParams: {
           onClone: (item) => this.clone(item),
           onExport: (item) => this.export(item),

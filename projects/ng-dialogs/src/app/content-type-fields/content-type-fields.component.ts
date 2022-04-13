@@ -35,72 +35,10 @@ import { ContentTypesFieldsService } from './services/content-types-fields.servi
 export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
   contentType$ = new BehaviorSubject<ContentType>(undefined);
   fields$ = new BehaviorSubject<Field[]>(undefined);
-
-  gridOptions: GridOptions = {
-    ...defaultGridOptions,
-    getRowClass(params: RowClassParams) {
-      const field: Field = params.data;
-      const rowClass: string[] = [];
-      if (field.EditInfo.ReadOnly) { rowClass.push('disable-row-drag'); }
-      if (field.InputType === InputTypeConstants.EmptyDefault) { rowClass.push('group-start-row'); }
-      if (field.InputType === InputTypeConstants.EmptyEnd) { rowClass.push('group-end-row'); }
-      return rowClass;
-    },
-    columnDefs: [
-      { rowDrag: true, width: 18, cellClass: 'no-select no-padding no-outline'.split(' ') },
-      {
-        field: 'Title', width: 42, cellClass: 'secondary-action no-padding no-outline'.split(' '),
-        cellRenderer: ContentTypeFieldsTitleComponent, valueGetter: (params) => (params.data as Field).IsTitle,
-        cellRendererParams: {
-          onSetTitle: (field) => this.setTitle(field),
-        } as ContentTypeFieldsTitleParams,
-      },
-      {
-        field: 'Name', flex: 2, minWidth: 250, cellClass: 'primary-action highlight'.split(' '),
-        sortable: true, filter: 'agTextColumnFilter', onCellClicked: (params) => this.editFieldMetadata(params.data as Field),
-        cellRenderer: (params: ICellRendererParams) => this.nameCellRenderer(params),
-        valueGetter: (params) => (params.data as Field).StaticName,
-      },
-      {
-        field: 'Type', width: 70, headerClass: 'dense', cellClass: 'no-outline', sortable: true,
-        filter: 'agTextColumnFilter', cellRenderer: ContentTypeFieldsTypeComponent,
-        valueGetter: (params) => (params.data as Field).Type,
-      },
-      {
-        headerName: 'Input', field: 'InputType', width: 160,
-        // tslint:disable-next-line:max-line-length
-        cellClass: (params) => `${(params.data as Field).EditInfo.ReadOnly ? 'no-outline no-padding' : 'secondary-action no-padding'}`.split(' '),
-        sortable: true, filter: 'agTextColumnFilter', cellRenderer: ContentTypeFieldsInputTypeComponent,
-        valueGetter: (params) => this.inputTypeValueGetter(params.data as Field),
-        cellRendererParams: {
-          onChangeInputType: (field) => this.changeInputType(field),
-        } as ContentTypeFieldsInputTypeParams,
-      },
-      {
-        field: 'Label', flex: 2, minWidth: 250, cellClass: 'no-outline',
-        sortable: true, filter: 'agTextColumnFilter', valueGetter: (params) => (params.data as Field).Metadata?.All?.Name,
-      },
-      {
-        field: 'Special', width: 66, headerClass: 'dense', cellClass: 'no-outline', cellRenderer: ContentTypeFieldsSpecialComponent,
-      },
-      {
-        field: 'Notes', flex: 2, minWidth: 250, cellClass: 'no-outline',
-        sortable: true, filter: 'agTextColumnFilter', valueGetter: (params) => (params.data as Field).Metadata?.All?.Notes,
-      },
-      {
-        width: 122, cellClass: 'secondary-action no-padding'.split(' '), cellRenderer: ContentTypeFieldsActionsComponent, pinned: 'right',
-        cellRendererParams: {
-          onRename: (field) => this.rename(field),
-          onDelete: (field) => this.delete(field),
-          onOpenPermissions: (field) => this.openPermissions(field),
-          onOpenMetadata: (field) => this.openMetadata(field),
-        } as ContentTypeFieldsActionsParams,
-      },
-    ],
-  };
-
+  gridOptions = this.buildGridOptions();
   sortApplied = false;
   filterApplied = false;
+
   private gridApi: GridApi;
   private columnApi: ColumnApi;
   private rowDragSuppressed = false;
@@ -321,4 +259,107 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
     );
   }
 
+  private buildGridOptions(): GridOptions {
+    const gridOptions: GridOptions = {
+      ...defaultGridOptions,
+      getRowClass(params: RowClassParams) {
+        const field: Field = params.data;
+        const rowClass: string[] = [];
+        if (field.EditInfo.ReadOnly) { rowClass.push('disable-row-drag'); }
+        if (field.InputType === InputTypeConstants.EmptyDefault) { rowClass.push('group-start-row'); }
+        if (field.InputType === InputTypeConstants.EmptyEnd) { rowClass.push('group-end-row'); }
+        return rowClass;
+      },
+      columnDefs: [
+        {
+          rowDrag: true,
+          width: 18,
+          cellClass: 'no-select no-padding no-outline'.split(' '),
+        },
+        {
+          field: 'Title',
+          width: 42,
+          cellClass: 'secondary-action no-padding no-outline'.split(' '),
+          valueGetter: (params) => (params.data as Field).IsTitle,
+          cellRenderer: ContentTypeFieldsTitleComponent,
+          cellRendererParams: {
+            onSetTitle: (field) => this.setTitle(field),
+          } as ContentTypeFieldsTitleParams,
+        },
+        {
+          field: 'Name',
+          flex: 2,
+          minWidth: 250,
+          cellClass: 'primary-action highlight'.split(' '),
+          sortable: true,
+          filter: 'agTextColumnFilter',
+          onCellClicked: (params) => this.editFieldMetadata(params.data as Field),
+          cellRenderer: (params: ICellRendererParams) => this.nameCellRenderer(params),
+          valueGetter: (params) => (params.data as Field).StaticName,
+        },
+        {
+          field: 'Type',
+          width: 70,
+          headerClass: 'dense',
+          cellClass: 'no-outline',
+          sortable: true,
+          filter: 'agTextColumnFilter',
+          valueGetter: (params) => (params.data as Field).Type,
+          cellRenderer: ContentTypeFieldsTypeComponent,
+        },
+        {
+          headerName: 'Input',
+          field: 'InputType',
+          width: 160,
+          cellClass: (params) =>
+            `${(params.data as Field).EditInfo.ReadOnly ? 'no-outline no-padding' : 'secondary-action no-padding'}`.split(' '),
+          sortable: true,
+          filter: 'agTextColumnFilter',
+          valueGetter: (params) => this.inputTypeValueGetter(params.data as Field),
+          cellRenderer: ContentTypeFieldsInputTypeComponent,
+          cellRendererParams: {
+            onChangeInputType: (field) => this.changeInputType(field),
+          } as ContentTypeFieldsInputTypeParams,
+        },
+        {
+          field: 'Label',
+          flex: 2,
+          minWidth: 250,
+          cellClass: 'no-outline',
+          sortable: true,
+          filter: 'agTextColumnFilter',
+          valueGetter: (params) => (params.data as Field).Metadata?.All?.Name,
+        },
+        {
+          field: 'Special',
+          width: 66,
+          headerClass: 'dense',
+          cellClass: 'no-outline',
+          cellRenderer: ContentTypeFieldsSpecialComponent,
+        },
+        {
+          field: 'Notes',
+          flex: 2,
+          minWidth: 250,
+          cellClass: 'no-outline',
+          sortable: true,
+          filter: 'agTextColumnFilter',
+          valueGetter: (params) => (params.data as Field).Metadata?.All?.Notes,
+        },
+        {
+          width: 122,
+          cellClass: 'secondary-action no-padding'.split(' '),
+          pinned: 'right',
+          cellRenderer: ContentTypeFieldsActionsComponent,
+          cellRendererParams: {
+            onRename: (field) => this.rename(field),
+            onDelete: (field) => this.delete(field),
+            onOpenPermissions: (field) => this.openPermissions(field),
+            onOpenMetadata: (field) => this.openMetadata(field),
+          } as ContentTypeFieldsActionsParams,
+        },
+      ],
+    };
+    return gridOptions;
+  }
 }

@@ -12,30 +12,47 @@ import { TrueFalseParams } from '../true-false/true-false.models';
 export class DevRestApiActionParamsComponent {
   @Input() data: WebApiAction;
 
-  gridOptions: GridOptions = {
-    ...defaultGridOptions,
-    columnDefs: [
-      {
-        field: 'Required', headerClass: 'dense', width: 80, cellClass: 'no-padding no-outline'.split(' '),
-        valueGetter: (params) => (params.data as WebApiActionParameters).isOptional,
-        cellRenderer: TrueFalseComponent,
-        cellRendererParams: { reverse: true } as TrueFalseParams,
-      },
-      {
-        field: 'Name', flex: 2, minWidth: 200, cellClass: 'no-outline',
-        valueGetter: (params) => (params.data as WebApiActionParameters).name,
-      },
-      {
-        field: 'Type', flex: 2, headerClass: 'dense', cellClass: 'no-outline',
-        valueGetter: (params) => (params.data as WebApiActionParameters).type,
-      },
-      {
-        headerName: 'Default Value', field: 'DefaultValue', flex: 2, minWidth: 250, cellClass: 'no-outline',
-        valueGetter: (params) => (params.data as WebApiActionParameters).defaultValue,
-      },
-    ],
-  };
+  gridOptions = this.buildGridOptions();
 
   constructor() { }
 
+  private buildGridOptions(): GridOptions {
+    const gridOptions: GridOptions = {
+      ...defaultGridOptions,
+      columnDefs: [
+        {
+          field: 'Required',
+          headerClass: 'dense',
+          width: 80,
+          cellClass: 'no-padding no-outline'.split(' '),
+          valueGetter: (params) => (params.data as WebApiActionParameters).isOptional,
+          cellRenderer: TrueFalseComponent,
+          cellRendererParams: { reverse: true } as TrueFalseParams,
+        },
+        {
+          field: 'Name',
+          flex: 2,
+          minWidth: 200,
+          cellClass: 'no-outline',
+          valueGetter: (params) => (params.data as WebApiActionParameters).name,
+        },
+        {
+          field: 'Type',
+          flex: 2,
+          headerClass: 'dense',
+          cellClass: 'no-outline',
+          valueGetter: (params) => (params.data as WebApiActionParameters).type,
+        },
+        {
+          headerName: 'Default Value',
+          field: 'DefaultValue',
+          flex: 2,
+          minWidth: 250,
+          cellClass: 'no-outline',
+          valueGetter: (params) => (params.data as WebApiActionParameters).defaultValue,
+        },
+      ],
+    };
+    return gridOptions;
+  }
 }

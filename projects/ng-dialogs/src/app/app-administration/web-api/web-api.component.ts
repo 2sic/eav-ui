@@ -24,34 +24,7 @@ export class WebApiComponent implements OnInit, OnDestroy {
   @Input() enableCode: boolean;
 
   webApis$ = new BehaviorSubject<WebApi[]>(undefined);
-  gridOptions: GridOptions = {
-    ...defaultGridOptions,
-    columnDefs: [
-      {
-        field: 'Folder', flex: 2, minWidth: 250, cellClass: 'no-outline',
-        sortable: true, sort: 'asc', filter: 'agTextColumnFilter',
-        valueGetter: (params) => (params.data as WebApi).folder,
-      },
-      {
-        field: 'Name', flex: 2, minWidth: 250, cellClass: 'no-outline',
-        sortable: true, filter: 'agTextColumnFilter',
-        valueGetter: (params) => (params.data as WebApi).name,
-      },
-      {
-        field: 'Type', flex: 1, minWidth: 250, cellClass: 'no-outline',
-        sortable: true, filter: BooleanFilterComponent, cellRenderer: WebApiTypeComponent,
-        valueGetter: (params) => (params.data as WebApi).isShared,
-      },
-      {
-        width: 82, cellClass: 'secondary-action no-padding'.split(' '), cellRenderer: WebApiActionsComponent, pinned: 'right',
-        cellRendererParams: {
-          enableCodeGetter: () => this.enableCodeGetter(),
-          onOpenCode: (api) => this.openCode(api),
-          onOpenRestApi: (api) => this.openRestApi(api),
-        } as WebApiActionsParams,
-      },
-    ],
-  };
+  gridOptions = this.buildGridOptions();
 
   constructor(
     private sourceService: SourceService,
@@ -135,4 +108,52 @@ export class WebApiComponent implements OnInit, OnDestroy {
     this.router.navigate([GoToDevRest.getUrlWebApi(api)], { relativeTo: this.route.firstChild });
   }
 
+  private buildGridOptions(): GridOptions {
+    const gridOptions: GridOptions = {
+      ...defaultGridOptions,
+      columnDefs: [
+        {
+          field: 'Folder',
+          flex: 2,
+          minWidth: 250,
+          cellClass: 'no-outline',
+          sortable: true,
+          sort: 'asc',
+          filter: 'agTextColumnFilter',
+          valueGetter: (params) => (params.data as WebApi).folder,
+        },
+        {
+          field: 'Name',
+          flex: 2,
+          minWidth: 250,
+          cellClass: 'no-outline',
+          sortable: true,
+          filter: 'agTextColumnFilter',
+          valueGetter: (params) => (params.data as WebApi).name,
+        },
+        {
+          field: 'Type',
+          flex: 1,
+          minWidth: 250,
+          cellClass: 'no-outline',
+          sortable: true,
+          filter: BooleanFilterComponent,
+          valueGetter: (params) => (params.data as WebApi).isShared,
+          cellRenderer: WebApiTypeComponent,
+        },
+        {
+          width: 82,
+          cellClass: 'secondary-action no-padding'.split(' '),
+          pinned: 'right',
+          cellRenderer: WebApiActionsComponent,
+          cellRendererParams: {
+            enableCodeGetter: () => this.enableCodeGetter(),
+            onOpenCode: (api) => this.openCode(api),
+            onOpenRestApi: (api) => this.openRestApi(api),
+          } as WebApiActionsParams,
+        },
+      ],
+    };
+    return gridOptions;
+  }
 }

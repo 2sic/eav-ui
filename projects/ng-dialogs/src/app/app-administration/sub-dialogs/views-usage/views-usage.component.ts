@@ -22,36 +22,7 @@ export class ViewsUsageComponent implements OnInit, OnDestroy {
   viewUsage$ = new BehaviorSubject<ViewUsage>(undefined);
   viewTooltip$ = new BehaviorSubject(undefined);
   data$ = new BehaviorSubject<ViewUsageData[]>(undefined);
-
-  gridOptions: GridOptions = {
-    ...defaultGridOptions,
-    columnDefs: [
-      {
-        field: 'Block', width: 70, headerClass: 'dense', cellClass: 'id-action no-padding no-outline'.split(' '),
-        cellRenderer: ViewsUsageIdComponent, sortable: true, filter: 'agTextColumnFilter', valueGetter: blockIdValueGetter,
-      },
-      {
-        field: 'Module', width: 76, headerClass: 'dense', cellRenderer: ViewsUsageIdComponent,
-        sortable: true, filter: 'agTextColumnFilter', valueGetter: moduleIdValueGetter, cellClass: moduleIdClassGetter,
-      },
-      {
-        field: 'Page', width: 70, headerClass: 'dense', cellRenderer: ViewsUsageIdComponent,
-        sortable: true, filter: 'agTextColumnFilter', valueGetter: pageIdValueGetter, cellClass: pageIdClassGetter,
-      },
-      {
-        field: 'Name', flex: 2, minWidth: 250, sortable: true, sort: 'asc', filter: 'agTextColumnFilter',
-        valueGetter: (params) => (params.data as ViewUsageData).Name, cellClass: nameClassGetter, onCellClicked: onNameClicked,
-      },
-      {
-        field: 'Language', width: 90, cellClass: 'no-outline', sortable: true, filter: 'agTextColumnFilter',
-        valueGetter: (params) => (params.data as ViewUsageData).Language,
-      },
-      {
-        field: 'Status', width: 80, cellClass: 'icon no-outline'.split(' '), filter: ViewsUsageStatusFilterComponent,
-        cellRenderer: statusCellRenderer, valueGetter: (params) => (params.data as ViewUsageData).Status,
-      },
-    ],
-  };
+  gridOptions = this.buildGridOptions();
 
   constructor(private dialogRef: MatDialogRef<ViewsUsageComponent>, private route: ActivatedRoute, private viewsService: ViewsService) { }
 
@@ -75,5 +46,71 @@ export class ViewsUsageComponent implements OnInit, OnDestroy {
 
   closeDialog() {
     this.dialogRef.close();
+  }
+
+  private buildGridOptions(): GridOptions {
+    const gridOptions: GridOptions = {
+      ...defaultGridOptions,
+      columnDefs: [
+        {
+          field: 'Block',
+          width: 70,
+          headerClass: 'dense',
+          cellClass: 'id-action no-padding no-outline'.split(' '),
+          sortable: true,
+          filter: 'agTextColumnFilter',
+          valueGetter: blockIdValueGetter,
+          cellRenderer: ViewsUsageIdComponent,
+        },
+        {
+          field: 'Module',
+          width: 76,
+          headerClass: 'dense',
+          sortable: true,
+          filter: 'agTextColumnFilter',
+          valueGetter: moduleIdValueGetter,
+          cellClass: moduleIdClassGetter,
+          cellRenderer: ViewsUsageIdComponent,
+        },
+        {
+          field: 'Page',
+          width: 70,
+          headerClass: 'dense',
+          sortable: true,
+          filter: 'agTextColumnFilter',
+          valueGetter: pageIdValueGetter,
+          cellClass: pageIdClassGetter,
+          cellRenderer: ViewsUsageIdComponent,
+        },
+        {
+          field: 'Name',
+          flex: 2,
+          minWidth: 250,
+          sortable: true,
+          sort: 'asc',
+          filter: 'agTextColumnFilter',
+          valueGetter: (params) => (params.data as ViewUsageData).Name,
+          cellClass: nameClassGetter,
+          onCellClicked: onNameClicked,
+        },
+        {
+          field: 'Language',
+          width: 90,
+          cellClass: 'no-outline',
+          sortable: true,
+          filter: 'agTextColumnFilter',
+          valueGetter: (params) => (params.data as ViewUsageData).Language,
+        },
+        {
+          field: 'Status',
+          width: 80,
+          cellClass: 'icon no-outline'.split(' '),
+          filter: ViewsUsageStatusFilterComponent,
+          cellRenderer: statusCellRenderer,
+          valueGetter: (params) => (params.data as ViewUsageData).Status,
+        },
+      ],
+    };
+    return gridOptions;
   }
 }
