@@ -123,11 +123,17 @@ export class PermissionsComponent implements OnInit, OnDestroy {
           cellClass: 'id-action no-padding no-outline'.split(' '),
           sortable: true,
           filter: 'agNumberColumnFilter',
-          valueGetter: (params) => (params.data as Permission).Id,
+          valueGetter: (params) => {
+            const permission: Permission = params.data;
+            return permission.Id;
+          },
           cellRenderer: IdFieldComponent,
-          cellRendererParams: {
-            tooltipGetter: (permission: Permission) => `ID: ${permission.Id}\nGUID: ${permission.Guid}`,
-          } as IdFieldParams,
+          cellRendererParams: (() => {
+            const params: IdFieldParams<Permission> = {
+              tooltipGetter: (permission: Permission) => `ID: ${permission.Id}\nGUID: ${permission.Guid}`,
+            };
+            return params;
+          })(),
         },
         {
           field: 'Name',
@@ -137,8 +143,14 @@ export class PermissionsComponent implements OnInit, OnDestroy {
           sortable: true,
           sort: 'asc',
           filter: 'agTextColumnFilter',
-          onCellClicked: (event) => this.editPermission(event.data as Permission),
-          valueGetter: (params) => (params.data as Permission).Title,
+          onCellClicked: (params) => {
+            const permission: Permission = params.data;
+            this.editPermission(permission);
+          },
+          valueGetter: (params) => {
+            const permission: Permission = params.data;
+            return permission.Title;
+          },
         },
         {
           field: 'Identity',
@@ -147,7 +159,10 @@ export class PermissionsComponent implements OnInit, OnDestroy {
           cellClass: 'no-outline',
           sortable: true,
           filter: 'agTextColumnFilter',
-          valueGetter: (params) => (params.data as Permission).Identity,
+          valueGetter: (params) => {
+            const permission: Permission = params.data;
+            return permission.Identity;
+          },
         },
         {
           field: 'Condition',
@@ -156,7 +171,10 @@ export class PermissionsComponent implements OnInit, OnDestroy {
           cellClass: 'no-outline',
           sortable: true,
           filter: 'agTextColumnFilter',
-          valueGetter: (params) => (params.data as Permission).Condition,
+          valueGetter: (params) => {
+            const permission: Permission = params.data;
+            return permission.Condition;
+          },
         },
         {
           field: 'Grant',
@@ -165,16 +183,22 @@ export class PermissionsComponent implements OnInit, OnDestroy {
           cellClass: 'no-outline',
           sortable: true,
           filter: 'agTextColumnFilter',
-          valueGetter: (params) => (params.data as Permission).Grant,
+          valueGetter: (params) => {
+            const permission: Permission = params.data;
+            return permission.Grant;
+          },
         },
         {
           width: 42,
           cellClass: 'secondary-action no-padding'.split(' '),
           pinned: 'right',
           cellRenderer: PermissionsActionsComponent,
-          cellRendererParams: {
-            onDelete: (permission) => this.deletePermission(permission),
-          } as PermissionsActionsParams,
+          cellRendererParams: (() => {
+            const params: PermissionsActionsParams = {
+              onDelete: (permission) => this.deletePermission(permission),
+            };
+            return params;
+          })(),
         },
       ],
     };

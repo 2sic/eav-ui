@@ -1,4 +1,5 @@
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
+import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
 import { guidRegex } from '../../../shared/constants/guid.constants';
 import { ContentType } from '../../models/content-type.model';
@@ -12,11 +13,9 @@ import { DataActionsParams } from './data-actions.models';
 export class DataActionsComponent implements ICellRendererAngularComp {
   contentType: ContentType;
   enablePermissions: boolean;
-  private params: DataActionsParams;
+  private params: ICellRendererParams & DataActionsParams;
 
-  constructor() { }
-
-  agInit(params: DataActionsParams) {
+  agInit(params: ICellRendererParams & DataActionsParams): void {
     this.params = params;
     this.contentType = this.params.data;
     const enablePermissions = this.params.enablePermissionsGetter();
@@ -27,39 +26,39 @@ export class DataActionsComponent implements ICellRendererAngularComp {
     return true;
   }
 
-  createOrEditMetadata() {
+  createOrEditMetadata(): void {
     this.params.onCreateOrEditMetadata(this.contentType);
   }
 
-  openPermissions() {
+  openPermissions(): void {
     this.params.onOpenPermissions(this.contentType);
   }
 
-  editContentType() {
+  editContentType(): void {
     this.params.onEdit(this.contentType);
   }
 
-  openMetadata() {
+  openMetadata(): void {
     this.params.onOpenMetadata(this.contentType);
   }
 
-  openRestApi() {
+  openRestApi(): void {
     this.params.onOpenRestApi(this.contentType);
   }
 
-  exportType() {
+  exportType(): void {
     this.params.onTypeExport(this.contentType);
   }
 
-  openDataExport() {
+  openDataExport(): void {
     this.params.onOpenDataExport(this.contentType);
   }
 
-  openDataImport() {
+  openDataImport(): void {
     this.params.onOpenDataImport(this.contentType);
   }
 
-  deleteContentType() {
+  deleteContentType(): void {
     this.params.onDelete(this.contentType);
   }
 }

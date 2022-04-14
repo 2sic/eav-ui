@@ -1,4 +1,5 @@
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
+import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
 import { ContentItem } from '../models/content-item.model';
 import { PubMeta } from '../pub-meta-filter/pub-meta-filter.model';
@@ -16,9 +17,9 @@ export class ContentItemsStatusComponent implements ICellRendererAngularComp {
   metadataTooltip: string;
 
   private item: ContentItem;
-  private params: ContentItemsStatusParams;
+  private params: ICellRendererParams & ContentItemsStatusParams;
 
-  agInit(params: ContentItemsStatusParams) {
+  agInit(params: ICellRendererParams & ContentItemsStatusParams): void {
     this.value = params.value;
     this.params = params;
     this.item = params.data;
@@ -42,7 +43,7 @@ export class ContentItemsStatusComponent implements ICellRendererAngularComp {
     return true;
   }
 
-  openMetadata() {
+  openMetadata(): void {
     this.params.onOpenMetadata(this.item);
   }
 }

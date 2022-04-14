@@ -1,7 +1,6 @@
-import { ICellRendererParams } from '@ag-grid-community/core';
 import { ContentType } from '../../models/content-type.model';
 
-export interface DataActionsParams extends ICellRendererParams {
+export interface DataActionsParams {
   enablePermissionsGetter(): boolean;
   onCreateOrEditMetadata(contentType: ContentType): void;
   onOpenPermissions(contentType: ContentType): void;

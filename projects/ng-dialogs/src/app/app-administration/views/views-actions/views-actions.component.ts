@@ -1,4 +1,5 @@
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
+import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
 import { View } from '../../models/view.model';
 import { ViewActionsParams } from './views-actions.models';
@@ -12,11 +13,9 @@ export class ViewsActionsComponent implements ICellRendererAngularComp {
   view: View;
   enableCode: boolean;
   enablePermissions: boolean;
-  private params: ViewActionsParams;
+  private params: ICellRendererParams & ViewActionsParams;
 
-  constructor() { }
-
-  agInit(params: ViewActionsParams) {
+  agInit(params: ICellRendererParams & ViewActionsParams): void {
     this.params = params;
     this.view = this.params.data;
     this.enableCode = this.params.enableCodeGetter();
@@ -27,27 +26,27 @@ export class ViewsActionsComponent implements ICellRendererAngularComp {
     return true;
   }
 
-  openCode() {
+  openCode(): void {
     this.params.onOpenCode(this.view);
   }
 
-  openPermissions() {
+  openPermissions(): void {
     this.params.onOpenPermissions(this.view);
   }
 
-  openMetadata() {
+  openMetadata(): void {
     this.params.onOpenMetadata(this.view);
   }
 
-  cloneView() {
+  cloneView(): void {
     this.params.onClone(this.view);
   }
 
-  exportView() {
+  exportView(): void {
     this.params.onExport(this.view);
   }
 
-  deleteView() {
+  deleteView(): void {
     this.params.onDelete(this.view);
   }
 }

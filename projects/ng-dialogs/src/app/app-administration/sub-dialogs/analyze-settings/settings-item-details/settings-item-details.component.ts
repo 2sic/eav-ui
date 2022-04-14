@@ -57,7 +57,10 @@ export class SettingsItemDetailsComponent implements OnInit, OnDestroy {
           cellClass: 'primary-action no-padding no-outline'.split(' '),
           sortable: true,
           filter: 'agTextColumnFilter',
-          valueGetter: (params) => (params.data as SettingsStackItem)._value,
+          valueGetter: (params) => {
+            const item: SettingsStackItem = params.data;
+            return item._value;
+          },
           cellRenderer: AnalyzeSettingsValueComponent,
         },
         {
@@ -67,7 +70,10 @@ export class SettingsItemDetailsComponent implements OnInit, OnDestroy {
           cellClass: 'no-outline',
           sortable: true,
           filter: 'agTextColumnFilter',
-          valueGetter: (params) => (params.data as SettingsStackItem).Source,
+          valueGetter: (params) => {
+            const item: SettingsStackItem = params.data;
+            return item.Source;
+          },
         },
       ],
     };

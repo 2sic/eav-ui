@@ -1,7 +1,4 @@
-import { ICellRendererParams } from '@ag-grid-community/core';
-
-export interface TrueFalseParams extends ICellRendererParams {
-  value: boolean;
+export interface TrueFalseParams {
   reverse?: boolean;
   trueIcon?: string;
   falseIcon?: string;

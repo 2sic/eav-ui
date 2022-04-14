@@ -271,15 +271,23 @@ export class DataComponent implements OnInit, OnDestroy {
           field: 'Id',
           width: 70,
           headerClass: 'dense',
-          cellClass: (params) =>
-            `${(params.data as ContentType).EditInfo.ReadOnly ? 'disabled' : ''} id-action no-padding no-outline`.split(' '),
           sortable: true,
           filter: 'agNumberColumnFilter',
-          valueGetter: (params) => (params.data as ContentType).Id,
+          cellClass: (params) => {
+            const contentType: ContentType = params.data;
+            return `id-action no-padding no-outline ${contentType.EditInfo.ReadOnly ? 'disabled' : ''}`.split(' ');
+          },
+          valueGetter: (params) => {
+            const contentType: ContentType = params.data;
+            return contentType.Id;
+          },
           cellRenderer: IdFieldComponent,
-          cellRendererParams: {
-            tooltipGetter: (contentType: ContentType) => `ID: ${contentType.Id}\nGUID: ${contentType.StaticName}`,
-          } as IdFieldParams,
+          cellRendererParams: (() => {
+            const params: IdFieldParams<ContentType> = {
+              tooltipGetter: (contentType) => `ID: ${contentType.Id}\nGUID: ${contentType.StaticName}`,
+            };
+            return params;
+          })(),
         },
         {
           headerName: 'Content Type',
@@ -290,12 +298,18 @@ export class DataComponent implements OnInit, OnDestroy {
           sortable: true,
           sort: 'asc',
           filter: 'agTextColumnFilter',
-          onCellClicked: (params) => this.showContentItems(params.data as ContentType),
-          valueGetter: (params) => (params.data as ContentType).Label,
+          onCellClicked: (params) => {
+            const contentType: ContentType = params.data;
+            this.showContentItems(contentType);
+          },
+          valueGetter: (params) => {
+            const contentType: ContentType = params.data;
+            return contentType.Label;
+          },
           comparator: (valueA, valueB, nodeA, nodeB, isInverted) => {
-            const a = (nodeA.data as ContentType)._compareLabel;
-            const b = (nodeB.data as ContentType)._compareLabel;
-            return a.localeCompare(b);
+            const contentTypeA: ContentType = nodeA.data;
+            const contentTypeB: ContentType = nodeB.data;
+            return contentTypeA._compareLabel.localeCompare(contentTypeB._compareLabel);
           },
         },
         {
@@ -305,12 +319,18 @@ export class DataComponent implements OnInit, OnDestroy {
           cellClass: 'secondary-action no-padding'.split(' '),
           sortable: true,
           filter: 'agNumberColumnFilter',
-          valueGetter: (params) => (params.data as ContentType).Items,
+          valueGetter: (params) => {
+            const contentType: ContentType = params.data;
+            return contentType.Items;
+          },
           cellRenderer: DataItemsComponent,
-          cellRendererParams: {
-            onShowItems: (contentType) => this.showContentItems(contentType),
-            onAddItem: (contentType) => this.addItem(contentType),
-          } as DataItemsParams,
+          cellRendererParams: (() => {
+            const params: DataItemsParams = {
+              onShowItems: (contentType) => this.showContentItems(contentType),
+              onAddItem: (contentType) => this.addItem(contentType),
+            };
+            return params;
+          })(),
         },
         {
           field: 'Fields',
@@ -319,21 +339,36 @@ export class DataComponent implements OnInit, OnDestroy {
           cellClass: 'secondary-action no-padding'.split(' '),
           sortable: true,
           filter: 'agNumberColumnFilter',
-          valueGetter: (params) => (params.data as ContentType).Fields,
+          valueGetter: (params) => {
+            const contentType: ContentType = params.data;
+            return contentType.Fields;
+          },
           cellRenderer: DataFieldsComponent,
-          cellRendererParams: {
-            onEditFields: (contentType) => this.editFields(contentType),
-          } as DataFieldsParams,
+          cellRendererParams: (() => {
+            const params: DataFieldsParams = {
+              onEditFields: (contentType) => this.editFields(contentType),
+            };
+            return params;
+          })(),
         },
         {
           field: 'Name',
           flex: 1,
           minWidth: 100,
-          cellClass: (params) => `${(params.data as ContentType).EditInfo.ReadOnly ? 'no-outline' : 'primary-action highlight'}`.split(' '),
-          valueGetter: (params) => (params.data as ContentType).Name,
           sortable: true,
           filter: 'agTextColumnFilter',
-          onCellClicked: (event) => this.editContentType(event.data as ContentType),
+          cellClass: (params) => {
+            const contentType: ContentType = params.data;
+            return `${contentType.EditInfo.ReadOnly ? 'no-outline' : 'primary-action highlight'}`.split(' ');
+          },
+          valueGetter: (params) => {
+            const contentType: ContentType = params.data;
+            return contentType.Name;
+          },
+          onCellClicked: (params) => {
+            const contentType: ContentType = params.data;
+            this.editContentType(contentType);
+          },
         },
         {
           field: 'Description',
@@ -342,25 +377,31 @@ export class DataComponent implements OnInit, OnDestroy {
           cellClass: 'no-outline',
           sortable: true,
           filter: 'agTextColumnFilter',
-          valueGetter: (params) => (params.data as ContentType).Properties?.Description,
+          valueGetter: (params) => {
+            const contentType: ContentType = params.data;
+            return contentType.Properties?.Description;
+          },
         },
         {
           width: 162,
           cellClass: 'secondary-action no-padding'.split(' '),
           pinned: 'right',
           cellRenderer: DataActionsComponent,
-          cellRendererParams: {
-            enablePermissionsGetter: () => this.enablePermissionsGetter(),
-            onCreateOrEditMetadata: (contentType) => this.createOrEditMetadata(contentType),
-            onOpenPermissions: (contentType) => this.openPermissions(contentType),
-            onEdit: (contentType) => this.editContentType(contentType),
-            onOpenRestApi: (contentType) => this.openRestApi(contentType),
-            onOpenMetadata: (contentType) => this.openMetadata(contentType),
-            onTypeExport: (contentType) => this.exportType(contentType),
-            onOpenDataExport: (contentType) => this.openDataExport(contentType),
-            onOpenDataImport: (contentType) => this.openDataImport(contentType),
-            onDelete: (contentType) => this.deleteContentType(contentType),
-          } as DataActionsParams,
+          cellRendererParams: (() => {
+            const params: DataActionsParams = {
+              enablePermissionsGetter: () => this.enablePermissionsGetter(),
+              onCreateOrEditMetadata: (contentType) => this.createOrEditMetadata(contentType),
+              onOpenPermissions: (contentType) => this.openPermissions(contentType),
+              onEdit: (contentType) => this.editContentType(contentType),
+              onOpenRestApi: (contentType) => this.openRestApi(contentType),
+              onOpenMetadata: (contentType) => this.openMetadata(contentType),
+              onTypeExport: (contentType) => this.exportType(contentType),
+              onOpenDataExport: (contentType) => this.openDataExport(contentType),
+              onOpenDataImport: (contentType) => this.openDataImport(contentType),
+              onDelete: (contentType) => this.deleteContentType(contentType),
+            };
+            return params;
+          })(),
         },
       ],
     };

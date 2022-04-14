@@ -1,4 +1,5 @@
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
+import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
 import { WebApi } from '../../models/web-api.model';
 import { WebApiActionsParams } from './web-api-actions.models';
@@ -10,9 +11,9 @@ import { WebApiActionsParams } from './web-api-actions.models';
 })
 export class WebApiActionsComponent implements ICellRendererAngularComp {
   enableCode: boolean;
-  private params: WebApiActionsParams;
+  private params: ICellRendererParams & WebApiActionsParams;
 
-  agInit(params: WebApiActionsParams) {
+  agInit(params: ICellRendererParams & WebApiActionsParams): void {
     this.params = params;
     this.enableCode = this.params.enableCodeGetter();
   }
@@ -21,12 +22,12 @@ export class WebApiActionsComponent implements ICellRendererAngularComp {
     return true;
   }
 
-  openCode() {
+  openCode(): void {
     const api: WebApi = this.params.data;
     this.params.onOpenCode(api);
   }
 
-  openRestApi() {
+  openRestApi(): void {
     const api: WebApi = this.params.data;
     this.params.onOpenRestApi(api);
   }

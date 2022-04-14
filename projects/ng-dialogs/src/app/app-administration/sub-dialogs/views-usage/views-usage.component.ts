@@ -89,7 +89,10 @@ export class ViewsUsageComponent implements OnInit, OnDestroy {
           sortable: true,
           sort: 'asc',
           filter: 'agTextColumnFilter',
-          valueGetter: (params) => (params.data as ViewUsageData).Name,
+          valueGetter: (params) => {
+            const data: ViewUsageData = params.data;
+            return data.Name;
+          },
           cellClass: nameClassGetter,
           onCellClicked: onNameClicked,
         },
@@ -99,7 +102,10 @@ export class ViewsUsageComponent implements OnInit, OnDestroy {
           cellClass: 'no-outline',
           sortable: true,
           filter: 'agTextColumnFilter',
-          valueGetter: (params) => (params.data as ViewUsageData).Language,
+          valueGetter: (params) => {
+            const data: ViewUsageData = params.data;
+            return data.Language;
+          },
         },
         {
           field: 'Status',
@@ -107,7 +113,10 @@ export class ViewsUsageComponent implements OnInit, OnDestroy {
           cellClass: 'icon no-outline'.split(' '),
           filter: ViewsUsageStatusFilterComponent,
           cellRenderer: statusCellRenderer,
-          valueGetter: (params) => (params.data as ViewUsageData).Status,
+          valueGetter: (params) => {
+            const data: ViewUsageData = params.data;
+            return data.Status;
+          },
         },
       ],
     };

@@ -1,6 +1,5 @@
-import { ICellRendererParams } from '@ag-grid-community/core';
 import { Field } from '../models/field.model';
 
-export interface ContentTypeFieldsTitleParams extends ICellRendererParams {
+export interface ContentTypeFieldsTitleParams {
   onSetTitle(field: Field): void;
 }

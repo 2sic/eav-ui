@@ -1,4 +1,5 @@
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
+import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
 import { DataTypeConstants } from '../constants/data-type.constants';
 import { InputTypeConstants } from '../constants/input-type.constants';
@@ -14,11 +15,11 @@ export class ContentTypeFieldsActionsComponent implements ICellRendererAngularCo
   field: Field;
   metadataCount: number;
   enablePermissions: boolean;
-  private params: ContentTypeFieldsActionsParams;
+  private params: ICellRendererParams & ContentTypeFieldsActionsParams;
 
   constructor() { }
 
-  agInit(params: ContentTypeFieldsActionsParams) {
+  agInit(params: ICellRendererParams & ContentTypeFieldsActionsParams): void {
     this.params = params;
     this.field = this.params.data;
     this.metadataCount = this.field.Metadata ? Object.keys(this.field.Metadata).filter(key => key !== 'merged').length : 0;
@@ -29,19 +30,19 @@ export class ContentTypeFieldsActionsComponent implements ICellRendererAngularCo
     return true;
   }
 
-  openMetadata() {
+  openMetadata(): void {
     this.params.onOpenMetadata(this.field);
   }
 
-  rename() {
+  rename(): void {
     this.params.onRename(this.field);
   }
 
-  openPermissions() {
+  openPermissions(): void {
     this.params.onOpenPermissions(this.field);
   }
 
-  deleteField() {
+  deleteField(): void {
     this.params.onDelete(this.field);
   }
 }

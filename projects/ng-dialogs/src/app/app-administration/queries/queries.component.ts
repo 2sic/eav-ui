@@ -168,26 +168,43 @@ export class QueriesComponent implements OnInit, OnDestroy {
           field: 'Id',
           width: 70,
           headerClass: 'dense',
-          cellClass: (params) =>
-            `${(params.data as Query)._EditInfo.ReadOnly ? 'disabled' : ''} id-action no-padding no-outline`.split(' '),
           sortable: true,
           filter: 'agNumberColumnFilter',
-          valueGetter: (params) => (params.data as Query).Id,
+          cellClass: (params) => {
+            const query: Query = params.data;
+            return `id-action no-padding no-outline ${query._EditInfo.ReadOnly ? 'disabled' : ''}`.split(' ');
+          },
+          valueGetter: (params) => {
+            const query: Query = params.data;
+            return query.Id;
+          },
           cellRenderer: IdFieldComponent,
-          cellRendererParams: {
-            tooltipGetter: (query: Query) => `ID: ${query.Id}\nGUID: ${query.Guid}`,
-          } as IdFieldParams,
+          cellRendererParams: (() => {
+            const params: IdFieldParams<Query> = {
+              tooltipGetter: (query) => `ID: ${query.Id}\nGUID: ${query.Guid}`,
+            };
+            return params;
+          })(),
         },
         {
           field: 'Name',
           flex: 2,
           minWidth: 250,
           sortable: true,
-          cellClass: (params) => `${(params.data as Query)._EditInfo.ReadOnly ? 'no-outline' : 'primary-action highlight'}`.split(' '),
           sort: 'asc',
           filter: 'agTextColumnFilter',
-          onCellClicked: (params) => this.openVisualQueryDesigner(params.data as Query),
-          valueGetter: (params) => (params.data as Query).Name,
+          cellClass: (params) => {
+            const query: Query = params.data;
+            return `${query._EditInfo.ReadOnly ? 'no-outline' : 'primary-action highlight'}`.split(' ');
+          },
+          onCellClicked: (params) => {
+            const query: Query = params.data;
+            this.openVisualQueryDesigner(query);
+          },
+          valueGetter: (params) => {
+            const query: Query = params.data;
+            return query.Name;
+          },
         },
         {
           field: 'Description',
@@ -196,17 +213,23 @@ export class QueriesComponent implements OnInit, OnDestroy {
           cellClass: 'no-outline',
           sortable: true,
           filter: 'agTextColumnFilter',
-          valueGetter: (params) => (params.data as Query).Description,
+          valueGetter: (params) => {
+            const query: Query = params.data;
+            return query.Description;
+          },
         },
         {
           width: 162,
           cellClass: 'secondary-action no-padding'.split(' '),
           pinned: 'right',
           cellRenderer: QueriesActionsComponent,
-          cellRendererParams: {
-            getEnablePermissions: () => this.enablePermissionsGetter(),
-            do: (action, query) => this.doMenuAction(action, query),
-          } as QueriesActionsParams,
+          cellRendererParams: (() => {
+            const params: QueriesActionsParams = {
+              getEnablePermissions: () => this.enablePermissionsGetter(),
+              do: (action, query) => this.doMenuAction(action, query),
+            };
+            return params;
+          })(),
         },
       ],
     };

@@ -146,11 +146,17 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
           cellClass: 'id-action no-padding no-outline'.split(' '),
           sortable: true,
           filter: 'agTextColumnFilter',
-          valueGetter: (params) => (params.data as Feature).NameId,
+          valueGetter: (params) => {
+            const feature: Feature = params.data;
+            return feature.NameId;
+          },
           cellRenderer: IdFieldComponent,
-          cellRendererParams: {
-            tooltipGetter: (feature: Feature) => `NameId: ${feature.NameId}\nGUID: ${feature.Guid}`,
-          } as IdFieldParams,
+          cellRendererParams: (() => {
+            const params: IdFieldParams<Feature> = {
+              tooltipGetter: (feature: Feature) => `NameId: ${feature.NameId}\nGUID: ${feature.Guid}`,
+            };
+            return params;
+          })(),
         },
         {
           field: 'Name',
@@ -159,8 +165,14 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
           cellClass: 'primary-action highlight'.split(' '),
           sortable: true,
           filter: 'agTextColumnFilter',
-          onCellClicked: (params) => this.showFeatureDetails(params.data as Feature),
-          valueGetter: (params) => (params.data as Feature).Name,
+          onCellClicked: (params) => {
+            const feature: Feature = params.data;
+            this.showFeatureDetails(feature);
+          },
+          valueGetter: (params) => {
+            const feature: Feature = params.data;
+            return feature.Name;
+          },
         },
         {
           field: 'Enabled',
@@ -170,7 +182,10 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
           sortable: true,
           filter: BooleanFilterComponent,
           cellRenderer: FeaturesListEnabledComponent,
-          valueGetter: (params) => (params.data as Feature).Enabled,
+          valueGetter: (params) => {
+            const feature: Feature = params.data;
+            return feature.Enabled;
+          },
         },
         {
           field: 'EnabledReason',
@@ -181,7 +196,10 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
           sortable: true,
           filter: 'agTextColumnFilter',
           cellRenderer: FeaturesListEnabledReasonComponent,
-          valueGetter: (params) => (params.data as Feature).EnabledReason,
+          valueGetter: (params) => {
+            const feature: Feature = params.data;
+            return feature.EnabledReason;
+          },
         },
         {
           field: 'Expires',
@@ -190,7 +208,8 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
           sortable: true,
           filter: 'agTextColumnFilter',
           valueGetter: (params) => {
-            const expires = (params.data as Feature).Expires?.split('T')[0];
+            const feature: Feature = params.data;
+            const expires = feature.Expires?.split('T')[0];
             return expires?.startsWith('9999') ? 'never' : expires;
           },
         },
@@ -201,7 +220,10 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
           cellClass: 'secondary-action no-outline no-padding'.split(' '),
           pinned: 'right',
           cellRenderer: FeaturesStatusComponent,
-          valueGetter: (params) => (params.data as Feature).EnabledStored,
+          valueGetter: (params) => {
+            const feature: Feature = params.data;
+            return feature.EnabledStored;
+          },
           cellRendererParams: (() => {
             const params: FeaturesStatusParams = {
               isDisabled: () => this.disabled$.value,

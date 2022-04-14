@@ -1,4 +1,5 @@
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
+import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
 import { ContentType } from '../../models';
 import { DataItemsParams } from './data-items.models';
@@ -13,7 +14,7 @@ export class DataItemsComponent implements ICellRendererAngularComp {
   private params: DataItemsParams;
   private contentType: ContentType;
 
-  agInit(params: DataItemsParams): void {
+  agInit(params: ICellRendererParams & DataItemsParams): void {
     this.params = params;
     this.contentType = params.data;
     this.value = params.value;

@@ -1,6 +1,5 @@
-import { ICellRendererParams } from '@ag-grid-community/core';
 import { ContentType } from '../../models/content-type.model';
 
-export interface DataFieldsParams extends ICellRendererParams {
+export interface DataFieldsParams {
   onEditFields(contentType: ContentType): void;
 }

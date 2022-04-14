@@ -232,22 +232,34 @@ export class MetadataComponent implements OnInit, OnDestroy {
           cellClass: 'id-action no-padding no-outline'.split(' '),
           sortable: true,
           filter: 'agNumberColumnFilter',
-          valueGetter: (params) => (params.data as MetadataItem).Id,
+          valueGetter: (params) => {
+            const metadata: MetadataItem = params.data;
+            return metadata.Id;
+          },
           cellRenderer: IdFieldComponent,
-          cellRendererParams: {
-            tooltipGetter: (metadata: MetadataItem) => `ID: ${metadata.Id}\nGUID: ${metadata.Guid}`,
-          } as IdFieldParams,
+          cellRendererParams: (() => {
+            const params: IdFieldParams<MetadataItem> = {
+              tooltipGetter: (metadata: MetadataItem) => `ID: ${metadata.Id}\nGUID: ${metadata.Guid}`,
+            };
+            return params;
+          })(),
         },
         {
           field: 'Title',
           flex: 2,
           minWidth: 250,
           cellClass: 'primary-action highlight'.split(' '),
-          valueGetter: (params) => (params.data as MetadataItem).Title,
           sortable: true,
           sort: 'asc',
           filter: 'agTextColumnFilter',
-          onCellClicked: (event) => this.editMetadata(event.data as MetadataItem),
+          valueGetter: (params) => {
+            const metadata: MetadataItem = params.data;
+            return metadata.Title;
+          },
+          onCellClicked: (params) => {
+            const metadata: MetadataItem = params.data;
+            this.editMetadata(metadata);
+          },
         },
         {
           headerName: 'Content Type',
@@ -258,7 +270,7 @@ export class MetadataComponent implements OnInit, OnDestroy {
           sortable: true,
           filter: 'agTextColumnFilter',
           valueGetter: (params) => {
-            const metadata = params.data as MetadataItem;
+            const metadata: MetadataItem = params.data;
             return `${metadata._Type.Name}${metadata._Type.Title !== metadata._Type.Name ? ` (${metadata._Type.Title})` : ''}`;
           },
           cellRenderer: MetadataContentTypeComponent,
@@ -268,9 +280,12 @@ export class MetadataComponent implements OnInit, OnDestroy {
           cellClass: 'secondary-action no-padding'.split(' '),
           pinned: 'right',
           cellRenderer: MetadataActionsComponent,
-          cellRendererParams: {
-            onDelete: (metadata) => this.deleteMetadata(metadata),
-          } as MetadataActionsParams,
+          cellRendererParams: (() => {
+            const params: MetadataActionsParams = {
+              onDelete: (metadata) => this.deleteMetadata(metadata),
+            };
+            return params;
+          })(),
         },
       ],
     };

@@ -1,4 +1,5 @@
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
+import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
 import { Permission } from '../models/permission.model';
 import { PermissionsActionsParams } from './permissions-actions.models';
@@ -9,9 +10,9 @@ import { PermissionsActionsParams } from './permissions-actions.models';
   styleUrls: ['./permissions-actions.component.scss'],
 })
 export class PermissionsActionsComponent implements ICellRendererAngularComp {
-  private params: PermissionsActionsParams;
+  private params: ICellRendererParams & PermissionsActionsParams;
 
-  agInit(params: PermissionsActionsParams) {
+  agInit(params: ICellRendererParams & PermissionsActionsParams): void {
     this.params = params;
   }
 
@@ -19,7 +20,7 @@ export class PermissionsActionsComponent implements ICellRendererAngularComp {
     return true;
   }
 
-  deletePermission() {
+  deletePermission(): void {
     const permission: Permission = this.params.data;
     this.params.onDelete(permission);
   }

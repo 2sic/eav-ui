@@ -1,4 +1,5 @@
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
+import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
 import { SettingsStackItem } from '../analyze-settings.models';
 import { AnalyzeSettingsTotalResultsParams } from './analyze-settings-total-results.models';
@@ -12,11 +13,9 @@ export class AnalyzeSettingsTotalResultsComponent implements ICellRendererAngula
   totalResults: number;
 
   private stackItem: SettingsStackItem;
-  private params: AnalyzeSettingsTotalResultsParams;
+  private params: ICellRendererParams & AnalyzeSettingsTotalResultsParams;
 
-  constructor() { }
-
-  agInit(params: AnalyzeSettingsTotalResultsParams) {
+  agInit(params: ICellRendererParams & AnalyzeSettingsTotalResultsParams): void {
     this.totalResults = params.value;
     this.params = params;
     this.stackItem = this.params.data;
@@ -26,7 +25,7 @@ export class AnalyzeSettingsTotalResultsComponent implements ICellRendererAngula
     return true;
   }
 
-  openDetails() {
+  openDetails(): void {
     this.params.openDetails(this.stackItem);
   }
 }

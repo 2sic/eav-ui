@@ -1,6 +1,5 @@
-import { ICellRendererParams } from '@ag-grid-community/core';
 import { SettingsStackItem } from '../analyze-settings.models';
 
-export interface AnalyzeSettingsTotalResultsParams extends ICellRendererParams {
+export interface AnalyzeSettingsTotalResultsParams {
   openDetails(stackItem: SettingsStackItem): void;
 }

@@ -1,4 +1,5 @@
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
+import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
 import { Field } from '../models/field.model';
 import { ContentTypeFieldsInputTypeParams } from './content-type-fields-input-type.models';
@@ -12,9 +13,9 @@ export class ContentTypeFieldsInputTypeComponent implements ICellRendererAngular
   value: string;
   field: Field;
 
-  private params: ContentTypeFieldsInputTypeParams;
+  private params: ICellRendererParams & ContentTypeFieldsInputTypeParams;
 
-  agInit(params: ContentTypeFieldsInputTypeParams) {
+  agInit(params: ICellRendererParams & ContentTypeFieldsInputTypeParams): void {
     this.params = params;
     this.value = params.value;
     this.field = params.data;

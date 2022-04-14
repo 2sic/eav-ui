@@ -1,4 +1,5 @@
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
+import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
 import { SiteLanguagePermissions } from '../../../../apps-management/models/site-language.model';
 import { LanguagesPermissionsActionsParams } from './languages-permissions-actions.models';
@@ -11,11 +12,9 @@ import { LanguagesPermissionsActionsParams } from './languages-permissions-actio
 export class LanguagesPermissionsActionsComponent implements ICellRendererAngularComp {
   language: SiteLanguagePermissions;
 
-  private params: LanguagesPermissionsActionsParams;
+  private params: ICellRendererParams & LanguagesPermissionsActionsParams;
 
-  constructor() { }
-
-  agInit(params: LanguagesPermissionsActionsParams) {
+  agInit(params: ICellRendererParams & LanguagesPermissionsActionsParams): void {
     this.params = params;
     this.language = this.params.data;
   }
@@ -24,7 +23,7 @@ export class LanguagesPermissionsActionsComponent implements ICellRendererAngula
     return true;
   }
 
-  openPermissions() {
+  openPermissions(): void {
     this.params.onOpenPermissions(this.language);
   }
 }

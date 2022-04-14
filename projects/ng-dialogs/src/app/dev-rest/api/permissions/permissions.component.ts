@@ -96,7 +96,12 @@ export class DevRestApiPermissionsComponent implements OnInit, OnChanges {
       width: 80,
       cellClass: 'no-outline',
       cellRenderer: TrueFalseComponent,
-      cellRendererParams: { reverse: false } as TrueFalseParams,
+      cellRendererParams: (() => {
+        const params: TrueFalseParams = {
+          reverse: false,
+        };
+        return params;
+      })(),
     };
     const gridOptions: GridOptions = {
       ...defaultGridOptions,
@@ -106,29 +111,44 @@ export class DevRestApiPermissionsComponent implements OnInit, OnChanges {
           flex: 2,
           minWidth: 200,
           cellClass: 'no-outline',
-          valueGetter: (params) => (params.data as ApiPermissionsGridItem).requirement,
+          valueGetter: (params) => {
+            const item: ApiPermissionsGridItem = params.data;
+            return item.requirement;
+          },
         },
         {
           ...booleanColumnDef,
           field: 'Class',
-          valueGetter: (params) => (params.data as ApiPermissionsGridItem).class,
+          valueGetter: (params) => {
+            const item: ApiPermissionsGridItem = params.data;
+            return item.class;
+          },
         },
         {
           ...booleanColumnDef,
           field: 'Method',
-          valueGetter: (params) => (params.data as ApiPermissionsGridItem).method,
+          valueGetter: (params) => {
+            const item: ApiPermissionsGridItem = params.data;
+            return item.method;
+          },
         },
         {
           ...booleanColumnDef,
           field: 'Effective',
-          valueGetter: (params) => (params.data as ApiPermissionsGridItem).effective,
+          valueGetter: (params) => {
+            const item: ApiPermissionsGridItem = params.data;
+            return item.effective;
+          },
         },
         {
           field: 'Comments',
           flex: 3,
           minWidth: 250,
           cellClass: 'no-outline',
-          valueGetter: (params) => (params.data as ApiPermissionsGridItem).comments,
+          valueGetter: (params) => {
+            const item: ApiPermissionsGridItem = params.data;
+            return item.comments;
+          },
         },
       ],
     };

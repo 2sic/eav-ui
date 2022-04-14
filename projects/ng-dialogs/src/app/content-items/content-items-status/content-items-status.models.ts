@@ -1,6 +1,5 @@
-import { ICellRendererParams } from '@ag-grid-community/core';
 import { ContentItem } from '../models/content-item.model';
 
-export interface ContentItemsStatusParams extends ICellRendererParams {
+export interface ContentItemsStatusParams {
   onOpenMetadata(item: ContentItem): void;
 }

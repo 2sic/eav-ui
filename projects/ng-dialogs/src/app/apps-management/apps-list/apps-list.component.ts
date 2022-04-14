@@ -144,11 +144,17 @@ export class AppsListComponent implements OnInit, OnDestroy {
           cellClass: 'id-action no-padding no-outline'.split(' '),
           sortable: true,
           filter: 'agNumberColumnFilter',
-          valueGetter: (params) => (params.data as App).Id,
+          valueGetter: (params) => {
+            const app: App = params.data;
+            return app.Id;
+          },
           cellRenderer: IdFieldComponent,
-          cellRendererParams: {
-            tooltipGetter: (app: App) => `ID: ${app.Id}\nGUID: ${app.Guid}`,
-          } as IdFieldParams,
+          cellRendererParams: (() => {
+            const params: IdFieldParams<App> = {
+              tooltipGetter: (app) => `ID: ${app.Id}\nGUID: ${app.Guid}`,
+            };
+            return params;
+          })(),
         },
         {
           field: 'Show',
@@ -157,7 +163,10 @@ export class AppsListComponent implements OnInit, OnDestroy {
           cellClass: 'icons no-outline'.split(' '),
           sortable: true,
           filter: BooleanFilterComponent,
-          valueGetter: (params) => !(params.data as App).IsHidden,
+          valueGetter: (params) => {
+            const app: App = params.data;
+            return !app.IsHidden;
+          },
           cellRenderer: AppsListShowComponent,
         },
         {
@@ -168,8 +177,14 @@ export class AppsListComponent implements OnInit, OnDestroy {
           sortable: true,
           sort: 'asc',
           filter: 'agTextColumnFilter',
-          valueGetter: (params) => (params.data as App).Name,
-          onCellClicked: (event) => this.openApp(event.data as App),
+          valueGetter: (params) => {
+            const app: App = params.data;
+            return app.Name;
+          },
+          onCellClicked: (params) => {
+            const app: App = params.data;
+            this.openApp(app);
+          },
           cellRenderer: (params: ICellRendererParams) => {
             const app: App = params.data;
             return `
@@ -190,7 +205,10 @@ export class AppsListComponent implements OnInit, OnDestroy {
           cellClass: 'no-outline',
           sortable: true,
           filter: 'agTextColumnFilter',
-          valueGetter: (params) => (params.data as App).Folder,
+          valueGetter: (params) => {
+            const app: App = params.data;
+            return app.Folder;
+          },
         },
         {
           field: 'Version',
@@ -199,7 +217,10 @@ export class AppsListComponent implements OnInit, OnDestroy {
           cellClass: 'no-outline',
           sortable: true,
           filter: 'agTextColumnFilter',
-          valueGetter: (params) => (params.data as App).Version,
+          valueGetter: (params) => {
+            const app: App = params.data;
+            return app.Version;
+          },
         },
         {
           field: 'Items',
@@ -208,7 +229,10 @@ export class AppsListComponent implements OnInit, OnDestroy {
           cellClass: 'number-cell no-outline'.split(' '),
           sortable: true,
           filter: 'agNumberColumnFilter',
-          valueGetter: (params) => (params.data as App).Items,
+          valueGetter: (params) => {
+            const app: App = params.data;
+            return app.Items;
+          },
         },
         {
           width: 122,

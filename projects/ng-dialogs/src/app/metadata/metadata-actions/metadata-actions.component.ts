@@ -1,4 +1,5 @@
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
+import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
 import { MetadataItem } from '../models/metadata.model';
 import { MetadataActionsParams } from './metadata-actions.models';
@@ -9,9 +10,9 @@ import { MetadataActionsParams } from './metadata-actions.models';
   styleUrls: ['./metadata-actions.component.scss'],
 })
 export class MetadataActionsComponent implements ICellRendererAngularComp {
-  private params: MetadataActionsParams;
+  private params: ICellRendererParams & MetadataActionsParams;
 
-  agInit(params: MetadataActionsParams) {
+  agInit(params: ICellRendererParams & MetadataActionsParams): void {
     this.params = params;
   }
 
@@ -19,7 +20,7 @@ export class MetadataActionsComponent implements ICellRendererAngularComp {
     return true;
   }
 
-  deleteMetadata() {
+  deleteMetadata(): void {
     const metadata: MetadataItem = this.params.data;
     this.params.onDelete(metadata);
   }

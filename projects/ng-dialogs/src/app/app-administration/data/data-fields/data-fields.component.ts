@@ -1,4 +1,5 @@
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
+import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
 import { ContentType } from '../../models/content-type.model';
 import { DataFieldsParams } from './data-fields.models';
@@ -13,10 +14,10 @@ export class DataFieldsComponent implements ICellRendererAngularComp {
   tooltip: string;
   icon: string;
 
-  private params: DataFieldsParams;
+  private params: ICellRendererParams & DataFieldsParams;
   private contentType: ContentType;
 
-  agInit(params: DataFieldsParams): void {
+  agInit(params: ICellRendererParams & DataFieldsParams): void {
     this.params = params;
     this.contentType = params.data;
     this.value = params.value;

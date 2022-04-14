@@ -96,7 +96,10 @@ export class AnalyzeSettingsComponent implements OnInit, OnDestroy {
           cellClass: 'primary-action no-padding no-outline'.split(' '),
           sortable: true,
           filter: 'agTextColumnFilter',
-          valueGetter: (params) => (params.data as SettingsStackItem).Path,
+          valueGetter: (params) => {
+            const item: SettingsStackItem = params.data;
+            return item.Path;
+          },
           cellRenderer: AnalyzeSettingsKeyComponent,
         },
         {
@@ -106,7 +109,10 @@ export class AnalyzeSettingsComponent implements OnInit, OnDestroy {
           cellClass: 'primary-action no-padding no-outline'.split(' '),
           sortable: true,
           filter: 'agTextColumnFilter',
-          valueGetter: (params) => (params.data as SettingsStackItem)._value,
+          valueGetter: (params) => {
+            const item: SettingsStackItem = params.data;
+            return item._value;
+          },
           cellRenderer: AnalyzeSettingsValueComponent,
         },
         {
@@ -116,7 +122,10 @@ export class AnalyzeSettingsComponent implements OnInit, OnDestroy {
           cellClass: 'no-outline',
           sortable: true,
           filter: 'agTextColumnFilter',
-          valueGetter: (params) => (params.data as SettingsStackItem).Source,
+          valueGetter: (params) => {
+            const item: SettingsStackItem = params.data;
+            return item.Source;
+          },
         },
         {
           field: 'Total',
@@ -125,13 +134,19 @@ export class AnalyzeSettingsComponent implements OnInit, OnDestroy {
           cellClass: 'secondary-action no-padding no-outline'.split(' '),
           sortable: true,
           filter: 'agNumberColumnFilter',
-          valueGetter: (params) => (params.data as SettingsStackItem).TotalResults,
+          valueGetter: (params) => {
+            const item: SettingsStackItem = params.data;
+            return item.TotalResults;
+          },
           cellRenderer: AnalyzeSettingsTotalResultsComponent,
-          cellRendererParams: {
-            openDetails: (stackItem) => {
-              this.router.navigate([`details/${this.selectedView$.value}/${stackItem.Path}`], { relativeTo: this.route });
-            },
-          } as AnalyzeSettingsTotalResultsParams,
+          cellRendererParams: (() => {
+            const params: AnalyzeSettingsTotalResultsParams = {
+              openDetails: (stackItem) => {
+                this.router.navigate([`details/${this.selectedView$.value}/${stackItem.Path}`], { relativeTo: this.route });
+              },
+            };
+            return params;
+          })(),
         },
       ],
     };

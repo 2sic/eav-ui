@@ -58,11 +58,17 @@ export class SiteLanguagesComponent implements OnInit, OnDestroy {
           cellClass: 'id-action no-padding no-outline'.split(' '),
           sortable: true,
           filter: 'agTextColumnFilter',
-          valueGetter: (params) => (params.data as SiteLanguage).Code,
+          valueGetter: (params) => {
+            const language: SiteLanguage = params.data;
+            return language.Code;
+          },
           cellRenderer: IdFieldComponent,
-          cellRendererParams: {
-            tooltipGetter: (language: SiteLanguage) => `ID: ${language.Code}`,
-          } as IdFieldParams,
+          cellRendererParams: (() => {
+            const params: IdFieldParams<SiteLanguage> = {
+              tooltipGetter: (language: SiteLanguage) => `ID: ${language.Code}`,
+            };
+            return params;
+          })(),
         },
         {
           field: 'Name',
@@ -72,9 +78,12 @@ export class SiteLanguagesComponent implements OnInit, OnDestroy {
           sortable: true,
           sort: 'asc',
           filter: 'agTextColumnFilter',
-          valueGetter: (params) => (params.data as SiteLanguage).Culture,
-          onCellClicked: (event) => {
-            const language: SiteLanguage = event.data;
+          valueGetter: (params) => {
+            const language: SiteLanguage = params.data;
+            return language.Culture;
+          },
+          onCellClicked: (params) => {
+            const language: SiteLanguage = params.data;
             this.toggleLanguage(language, !language.IsEnabled);
           },
         },
@@ -85,7 +94,10 @@ export class SiteLanguagesComponent implements OnInit, OnDestroy {
           cellClass: 'no-padding no-outline'.split(' '),
           sortable: true,
           filter: BooleanFilterComponent,
-          valueGetter: (params) => (params.data as SiteLanguage).IsEnabled,
+          valueGetter: (params) => {
+            const language: SiteLanguage = params.data;
+            return language.IsEnabled;
+          },
           cellRenderer: SiteLanguagesStatusComponent,
           cellRendererParams: (() => {
             const params: SiteLanguagesStatusParams = {

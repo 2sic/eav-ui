@@ -1,4 +1,5 @@
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
+import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
 import { ContentItem } from '../models/content-item.model';
 import { ContentItemsActionsParams } from './content-items-actions.models';
@@ -11,11 +12,9 @@ import { ContentItemsActionsParams } from './content-items-actions.models';
 export class ContentItemsActionsComponent implements ICellRendererAngularComp {
   item: ContentItem;
 
-  private params: ContentItemsActionsParams;
+  private params: ICellRendererParams & ContentItemsActionsParams;
 
-  constructor() { }
-
-  agInit(params: ContentItemsActionsParams) {
+  agInit(params: ICellRendererParams & ContentItemsActionsParams): void {
     this.params = params;
     this.item = params.data;
   }
@@ -24,15 +23,15 @@ export class ContentItemsActionsComponent implements ICellRendererAngularComp {
     return true;
   }
 
-  clone() {
+  clone(): void {
     this.params.onClone(this.item);
   }
 
-  export() {
+  export(): void {
     this.params.onExport(this.item);
   }
 
-  deleteItem() {
+  deleteItem(): void {
     this.params.onDelete(this.item);
   }
 }

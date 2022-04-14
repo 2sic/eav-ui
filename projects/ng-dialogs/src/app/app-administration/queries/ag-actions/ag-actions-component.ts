@@ -5,9 +5,7 @@ export class AgActionsComponent<TParams extends ICellRendererParams, TData> impl
   item: TData;
   params: TParams;
 
-  constructor() { }
-
-  agInit(params: TParams) {
+  agInit(params: TParams): void {
     this.params = params;
     this.item = this.params.data;
   }

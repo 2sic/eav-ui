@@ -25,23 +25,37 @@ export class DevRestApiActionParamsComponent {
           headerClass: 'dense',
           width: 80,
           cellClass: 'no-padding no-outline'.split(' '),
-          valueGetter: (params) => (params.data as WebApiActionParameters).isOptional,
+          valueGetter: (params) => {
+            const action: WebApiActionParameters = params.data;
+            return action.isOptional;
+          },
           cellRenderer: TrueFalseComponent,
-          cellRendererParams: { reverse: true } as TrueFalseParams,
+          cellRendererParams: (() => {
+            const params: TrueFalseParams = {
+              reverse: false,
+            };
+            return params;
+          })(),
         },
         {
           field: 'Name',
           flex: 2,
           minWidth: 200,
           cellClass: 'no-outline',
-          valueGetter: (params) => (params.data as WebApiActionParameters).name,
+          valueGetter: (params) => {
+            const action: WebApiActionParameters = params.data;
+            return action.name;
+          },
         },
         {
           field: 'Type',
           flex: 2,
           headerClass: 'dense',
           cellClass: 'no-outline',
-          valueGetter: (params) => (params.data as WebApiActionParameters).type,
+          valueGetter: (params) => {
+            const action: WebApiActionParameters = params.data;
+            return action.type;
+          },
         },
         {
           headerName: 'Default Value',
@@ -49,7 +63,10 @@ export class DevRestApiActionParamsComponent {
           flex: 2,
           minWidth: 250,
           cellClass: 'no-outline',
-          valueGetter: (params) => (params.data as WebApiActionParameters).defaultValue,
+          valueGetter: (params) => {
+            const action: WebApiActionParameters = params.data;
+            return action.defaultValue;
+          },
         },
       ],
     };

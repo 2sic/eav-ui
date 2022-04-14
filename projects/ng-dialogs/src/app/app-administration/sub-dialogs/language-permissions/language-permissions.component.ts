@@ -89,11 +89,17 @@ export class LanguagePermissionsComponent implements OnInit, OnDestroy {
           cellClass: 'id-action no-padding no-outline'.split(' '),
           sortable: true,
           filter: 'agTextColumnFilter',
-          valueGetter: (params) => (params.data as SiteLanguagePermissions).Code,
+          valueGetter: (params) => {
+            const language: SiteLanguagePermissions = params.data;
+            return language.Code;
+          },
           cellRenderer: IdFieldComponent,
-          cellRendererParams: {
-            tooltipGetter: (language: SiteLanguagePermissions) => `ID: ${language.Code}`,
-          } as IdFieldParams,
+          cellRendererParams: (() => {
+            const params: IdFieldParams<SiteLanguagePermissions> = {
+              tooltipGetter: (language) => `ID: ${language.Code}`,
+            };
+            return params;
+          })(),
         },
         {
           field: 'Name',
@@ -103,16 +109,22 @@ export class LanguagePermissionsComponent implements OnInit, OnDestroy {
           sortable: true,
           sort: 'asc',
           filter: 'agTextColumnFilter',
-          valueGetter: (params) => (params.data as SiteLanguagePermissions).Culture,
+          valueGetter: (params) => {
+            const language: SiteLanguagePermissions = params.data;
+            return language.Culture;
+          },
         },
         {
           width: 42,
           cellClass: 'secondary-action no-padding'.split(' '),
           pinned: 'right',
           cellRenderer: LanguagesPermissionsActionsComponent,
-          cellRendererParams: {
-            onOpenPermissions: (language) => this.openPermissions(language),
-          } as LanguagesPermissionsActionsParams,
+          cellRendererParams: (() => {
+            const params: LanguagesPermissionsActionsParams = {
+              onOpenPermissions: (language) => this.openPermissions(language),
+            };
+            return params;
+          })(),
         },
       ],
     };

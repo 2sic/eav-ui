@@ -159,7 +159,8 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     const ids: number[] = [];
     if (hasFilters) {
       this.gridApi$.value.forEachNodeAfterFilterAndSort(rowNode => {
-        ids.push((rowNode.data as ContentItem).Id);
+        const contentItem: ContentItem = rowNode.data;
+        ids.push(contentItem.Id);
       });
     }
     this.router.navigate([`export/${this.contentTypeStaticName}${ids.length > 0 ? `/${ids}` : ''}`], { relativeTo: this.route });
@@ -241,14 +242,23 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
         field: 'Id',
         width: 70,
         headerClass: 'dense',
-        cellClass: (params) => `${(params.data as ContentItem)._EditInfo.ReadOnly ? 'disabled' : ''} id-action no-padding no-outline`.split(' '),
         sortable: true,
         filter: 'agNumberColumnFilter',
-        valueGetter: (params) => (params.data as ContentItem).Id,
+        cellClass: (params) => {
+          const contentItem: ContentItem = params.data;
+          return `id-action no-padding no-outline ${contentItem._EditInfo.ReadOnly ? 'disabled' : ''}`.split(' ');
+        },
+        valueGetter: (params) => {
+          const contentItem: ContentItem = params.data;
+          return contentItem.Id;
+        },
         cellRenderer: IdFieldComponent,
-        cellRendererParams: {
-          tooltipGetter: (item: ContentItem) => `ID: ${item.Id}\nRepoID: ${item._RepositoryId}\nGUID: ${item.Guid}`,
-        } as IdFieldParams,
+        cellRendererParams: (() => {
+          const params: IdFieldParams<ContentItem> = {
+            tooltipGetter: (item) => `ID: ${item.Id}\nRepoID: ${item._RepositoryId}\nGUID: ${item.Guid}`,
+          };
+          return params;
+        })(),
       },
       {
         field: 'Status',
@@ -256,11 +266,22 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
         headerClass: 'dense',
         cellClass: 'secondary-action no-padding'.split(' '),
         filter: PubMetaFilterComponent,
-        valueGetter: this.valueGetterStatus,
+        valueGetter: (params) => {
+          const item: ContentItem = params.data;
+          const published: PubMeta = {
+            published: item.IsPublished,
+            metadata: !!item.For,
+            hasMetadata: item.Metadata ? item.Metadata.length > 0 : false,
+          };
+          return published;
+        },
         cellRenderer: ContentItemsStatusComponent,
-        cellRendererParams: {
-          onOpenMetadata: (item) => this.openMetadata(item),
-        } as ContentItemsStatusParams,
+        cellRendererParams: (() => {
+          const params: ContentItemsStatusParams = {
+            onOpenMetadata: (item) => this.openMetadata(item),
+          };
+          return params;
+        })(),
       },
       {
         headerName: 'Item (Entity)',
@@ -270,8 +291,14 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
         cellClass: 'primary-action highlight'.split(' '),
         sortable: true,
         filter: 'agTextColumnFilter',
-        onCellClicked: (event) => this.editItem(event.data as ContentItem),
-        valueGetter: (params) => (params.data as ContentItem)._Title,
+        onCellClicked: (params) => {
+          const contentItem: ContentItem = params.data;
+          this.editItem(contentItem);
+        },
+        valueGetter: (params) => {
+          const contentItem: ContentItem = params.data;
+          return contentItem._Title;
+        },
       },
       {
         headerName: 'Stats',
@@ -282,23 +309,33 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
         cellClass: 'no-outline',
         sortable: true,
         filter: 'agTextColumnFilter',
-        valueGetter: this.valueGetterUsage,
+        valueGetter: (params) => {
+          const item: ContentItem = params.data;
+          return `${item._Used} / ${item._Uses}`;
+        },
       },
       {
         cellClass: 'secondary-action no-padding'.split(' '),
         width: 122,
         pinned: 'right',
         cellRenderer: ContentItemsActionsComponent,
-        cellRendererParams: {
-          onClone: (item) => this.clone(item),
-          onExport: (item) => this.export(item),
-          onDelete: (item) => this.delete(item),
-        } as ContentItemsActionsParams,
+        cellRendererParams: (() => {
+          const params: ContentItemsActionsParams = {
+            onClone: (item) => this.clone(item),
+            onExport: (item) => this.export(item),
+            onDelete: (item) => this.delete(item),
+          };
+          return params;
+        })(),
       },
     ];
     for (const column of columns) {
       const colDef: ExtendedColDef = {
-        headerName: column.StaticName, field: column.StaticName, flex: 2, minWidth: 250, cellClass: 'no-outline',
+        headerName: column.StaticName,
+        field: column.StaticName,
+        flex: 2,
+        minWidth: 250,
+        cellClass: 'no-outline',
         sortable: true,
       };
       switch (column.Type) {
@@ -361,21 +398,6 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
         });
       }
     });
-  }
-
-  private valueGetterStatus(params: ValueGetterParams) {
-    const item: ContentItem = params.data;
-    const published: PubMeta = {
-      published: item.IsPublished,
-      metadata: !!item.For,
-      hasMetadata: item.Metadata ? item.Metadata.length > 0 : false,
-    };
-    return published;
-  }
-
-  private valueGetterUsage(params: ValueGetterParams) {
-    const item: ContentItem = params.data;
-    return `${item._Used} / ${item._Uses}`;
   }
 
   private valueGetterEntityField(params: ValueGetterParams) {

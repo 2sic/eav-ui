@@ -116,43 +116,12 @@ export class ViewsComponent implements OnInit, OnDestroy {
     this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.firstChild });
   }
 
-  private showValueGetter(params: ValueGetterParams) {
-    const view: View = params.data;
-    return !view.IsHidden;
-  }
-
-  private typeValueGetter(params: ValueGetterParams) {
-    const view: View = params.data;
-    const type = calculateViewType(view);
-    return type.value;
-  }
-
   private enableCodeGetter() {
     return this.enableCode;
   }
 
   private enablePermissionsGetter() {
     return this.enablePermissions;
-  }
-
-  private contentDemoValueGetter(params: ValueGetterParams) {
-    const view: View = params.data;
-    return `${view.ContentType.DemoId} ${view.ContentType.DemoTitle}`;
-  }
-
-  private presentationDemoValueGetter(params: ValueGetterParams) {
-    const view: View = params.data;
-    return `${view.PresentationType.DemoId} ${view.PresentationType.DemoTitle}`;
-  }
-
-  private headerDemoValueGetter(params: ValueGetterParams) {
-    const view: View = params.data;
-    return `${view.ListContentType.DemoId} ${view.ListContentType.DemoTitle}`;
-  }
-
-  private headerPresDemoValueGetter(params: ValueGetterParams) {
-    const view: View = params.data;
-    return `${view.ListPresentationType.DemoId} ${view.ListPresentationType.DemoTitle}`;
   }
 
   private openUsage(view: View) {
@@ -220,14 +189,23 @@ export class ViewsComponent implements OnInit, OnDestroy {
           field: 'Id',
           width: 70,
           headerClass: 'dense',
-          cellClass: (params) => `${(params.data as View).EditInfo.ReadOnly ? 'disabled' : ''} id-action no-padding no-outline`.split(' '),
           sortable: true,
           filter: 'agNumberColumnFilter',
-          valueGetter: (params) => (params.data as View).Id,
+          cellClass: (params) => {
+            const view: View = params.data;
+            return `id-action no-padding no-outline ${view.EditInfo.ReadOnly ? 'disabled' : ''}`.split(' ');
+          },
+          valueGetter: (params) => {
+            const view: View = params.data;
+            return view.Id;
+          },
           cellRenderer: IdFieldComponent,
-          cellRendererParams: {
-            tooltipGetter: (view: View) => `ID: ${view.Id}\nGUID: ${view.Guid}`,
-          } as IdFieldParams,
+          cellRendererParams: (() => {
+            const params: IdFieldParams<View> = {
+              tooltipGetter: (view) => `ID: ${view.Id}\nGUID: ${view.Guid}`,
+            };
+            return params;
+          })(),
         },
         {
           field: 'Show',
@@ -236,7 +214,10 @@ export class ViewsComponent implements OnInit, OnDestroy {
           cellClass: 'no-outline',
           sortable: true,
           filter: BooleanFilterComponent,
-          valueGetter: this.showValueGetter,
+          valueGetter: (params) => {
+            const view: View = params.data;
+            return !view.IsHidden;
+          },
           cellRenderer: ViewsShowComponent,
         },
         {
@@ -247,8 +228,14 @@ export class ViewsComponent implements OnInit, OnDestroy {
           sortable: true,
           sort: 'asc',
           filter: 'agTextColumnFilter',
-          onCellClicked: (event) => this.editView(event.data as View),
-          valueGetter: (params) => (params.data as View).Name,
+          onCellClicked: (params) => {
+            const view: View = params.data;
+            this.editView(view);
+          },
+          valueGetter: (params) => {
+            const view: View = params.data;
+            return view.Name;
+          },
         },
         {
           field: 'Type',
@@ -257,7 +244,11 @@ export class ViewsComponent implements OnInit, OnDestroy {
           cellClass: 'no-padding no-outline'.split(' '),
           sortable: true,
           filter: 'agTextColumnFilter',
-          valueGetter: this.typeValueGetter,
+          valueGetter: (params) => {
+            const view: View = params.data;
+            const type = calculateViewType(view);
+            return type.value;
+          },
           cellRenderer: ViewsTypeComponent,
         },
         {
@@ -267,8 +258,14 @@ export class ViewsComponent implements OnInit, OnDestroy {
           cellClass: 'primary-action highlight'.split(' '),
           sortable: true,
           filter: 'agNumberColumnFilter',
-          onCellClicked: (event) => this.openUsage(event.data as View),
-          valueGetter: (params) => (params.data as View).Used,
+          onCellClicked: (params) => {
+            const view: View = params.data;
+            this.openUsage(view);
+          },
+          valueGetter: (params) => {
+            const view: View = params.data;
+            return view.Used;
+          },
         },
         {
           headerName: 'Url Key',
@@ -278,7 +275,10 @@ export class ViewsComponent implements OnInit, OnDestroy {
           cellClass: 'no-outline',
           sortable: true,
           filter: 'agTextColumnFilter',
-          valueGetter: (params) => (params.data as View).ViewNameInUrl,
+          valueGetter: (params) => {
+            const view: View = params.data;
+            return view.ViewNameInUrl;
+          },
         },
         {
           field: 'Path',
@@ -287,7 +287,10 @@ export class ViewsComponent implements OnInit, OnDestroy {
           cellClass: 'no-outline',
           sortable: true,
           filter: 'agTextColumnFilter',
-          valueGetter: (params) => (params.data as View).TemplatePath,
+          valueGetter: (params) => {
+            const view: View = params.data;
+            return view.TemplatePath;
+          },
         },
         {
           field: 'Content',
@@ -296,7 +299,10 @@ export class ViewsComponent implements OnInit, OnDestroy {
           cellClass: 'no-outline',
           sortable: true,
           filter: 'agTextColumnFilter',
-          valueGetter: (params) => (params.data as View).ContentType.Name,
+          valueGetter: (params) => {
+            const view: View = params.data;
+            return view.ContentType.Name;
+          },
         },
         {
           headerName: 'Default',
@@ -306,7 +312,10 @@ export class ViewsComponent implements OnInit, OnDestroy {
           cellClass: 'no-outline',
           sortable: true,
           filter: 'agTextColumnFilter',
-          valueGetter: this.contentDemoValueGetter,
+          valueGetter: (params) => {
+            const view: View = params.data;
+            return `${view.ContentType.DemoId} ${view.ContentType.DemoTitle}`;
+          },
         },
         {
           field: 'Presentation',
@@ -315,7 +324,10 @@ export class ViewsComponent implements OnInit, OnDestroy {
           cellClass: 'no-outline',
           sortable: true,
           filter: 'agTextColumnFilter',
-          valueGetter: (params) => (params.data as View).PresentationType.Name,
+          valueGetter: (params) => {
+            const view: View = params.data;
+            return view.PresentationType.Name;
+          },
         },
         {
           headerName: 'Default',
@@ -325,7 +337,10 @@ export class ViewsComponent implements OnInit, OnDestroy {
           cellClass: 'no-outline',
           sortable: true,
           filter: 'agTextColumnFilter',
-          valueGetter: this.presentationDemoValueGetter,
+          valueGetter: (params) => {
+            const view: View = params.data;
+            return `${view.PresentationType.DemoId} ${view.PresentationType.DemoTitle}`;
+          },
         },
         {
           field: 'Header',
@@ -334,7 +349,10 @@ export class ViewsComponent implements OnInit, OnDestroy {
           cellClass: 'no-outline',
           sortable: true,
           filter: 'agTextColumnFilter',
-          valueGetter: (params) => (params.data as View).ListContentType.Name,
+          valueGetter: (params) => {
+            const view: View = params.data;
+            return view.ListContentType.Name;
+          },
         },
         {
           headerName: 'Default',
@@ -344,7 +362,10 @@ export class ViewsComponent implements OnInit, OnDestroy {
           cellClass: 'no-outline',
           sortable: true,
           filter: 'agTextColumnFilter',
-          valueGetter: this.headerDemoValueGetter,
+          valueGetter: (params) => {
+            const view: View = params.data;
+            return `${view.ListContentType.DemoId} ${view.ListContentType.DemoTitle}`;
+          },
         },
         {
           headerName: 'Header Presentation',
@@ -354,7 +375,10 @@ export class ViewsComponent implements OnInit, OnDestroy {
           cellClass: 'no-outline',
           sortable: true,
           filter: 'agTextColumnFilter',
-          valueGetter: (params) => (params.data as View).ListPresentationType.Name,
+          valueGetter: (params) => {
+            const view: View = params.data;
+            return view.ListPresentationType.Name;
+          },
         },
         {
           headerName: 'Default',
@@ -364,23 +388,29 @@ export class ViewsComponent implements OnInit, OnDestroy {
           cellClass: 'no-outline',
           sortable: true,
           filter: 'agTextColumnFilter',
-          valueGetter: this.headerPresDemoValueGetter,
+          valueGetter: (params) => {
+            const view: View = params.data;
+            return `${view.ListPresentationType.DemoId} ${view.ListPresentationType.DemoTitle}`;
+          },
         },
         {
           width: 162,
           cellClass: 'secondary-action no-padding'.split(' '),
           pinned: 'right',
           cellRenderer: ViewsActionsComponent,
-          cellRendererParams: {
-            enableCodeGetter: () => this.enableCodeGetter(),
-            enablePermissionsGetter: () => this.enablePermissionsGetter(),
-            onOpenCode: (view) => this.openCode(view),
-            onOpenPermissions: (view) => this.openPermissions(view),
-            onOpenMetadata: (view) => this.openMetadata(view),
-            onClone: (view) => this.cloneView(view),
-            onExport: (view) => this.exportView(view),
-            onDelete: (view) => this.deleteView(view),
-          } as ViewActionsParams,
+          cellRendererParams: (() => {
+            const params: ViewActionsParams = {
+              enableCodeGetter: () => this.enableCodeGetter(),
+              enablePermissionsGetter: () => this.enablePermissionsGetter(),
+              onOpenCode: (view) => this.openCode(view),
+              onOpenPermissions: (view) => this.openPermissions(view),
+              onOpenMetadata: (view) => this.openMetadata(view),
+              onClone: (view) => this.cloneView(view),
+              onExport: (view) => this.exportView(view),
+              onDelete: (view) => this.deleteView(view),
+            };
+            return params;
+          })(),
         },
       ],
     };

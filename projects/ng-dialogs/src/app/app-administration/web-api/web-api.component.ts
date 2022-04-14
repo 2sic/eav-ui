@@ -120,7 +120,10 @@ export class WebApiComponent implements OnInit, OnDestroy {
           sortable: true,
           sort: 'asc',
           filter: 'agTextColumnFilter',
-          valueGetter: (params) => (params.data as WebApi).folder,
+          valueGetter: (params) => {
+            const api: WebApi = params.data;
+            return api.folder;
+          },
         },
         {
           field: 'Name',
@@ -129,7 +132,10 @@ export class WebApiComponent implements OnInit, OnDestroy {
           cellClass: 'no-outline',
           sortable: true,
           filter: 'agTextColumnFilter',
-          valueGetter: (params) => (params.data as WebApi).name,
+          valueGetter: (params) => {
+            const api: WebApi = params.data;
+            return api.name;
+          },
         },
         {
           field: 'Type',
@@ -138,7 +144,10 @@ export class WebApiComponent implements OnInit, OnDestroy {
           cellClass: 'no-outline',
           sortable: true,
           filter: BooleanFilterComponent,
-          valueGetter: (params) => (params.data as WebApi).isShared,
+          valueGetter: (params) => {
+            const api: WebApi = params.data;
+            return api.isShared;
+          },
           cellRenderer: WebApiTypeComponent,
         },
         {
@@ -146,11 +155,14 @@ export class WebApiComponent implements OnInit, OnDestroy {
           cellClass: 'secondary-action no-padding'.split(' '),
           pinned: 'right',
           cellRenderer: WebApiActionsComponent,
-          cellRendererParams: {
-            enableCodeGetter: () => this.enableCodeGetter(),
-            onOpenCode: (api) => this.openCode(api),
-            onOpenRestApi: (api) => this.openRestApi(api),
-          } as WebApiActionsParams,
+          cellRendererParams: (() => {
+            const params: WebApiActionsParams = {
+              enableCodeGetter: () => this.enableCodeGetter(),
+              onOpenCode: (api) => this.openCode(api),
+              onOpenRestApi: (api) => this.openRestApi(api),
+            };
+            return params;
+          })(),
         },
       ],
     };

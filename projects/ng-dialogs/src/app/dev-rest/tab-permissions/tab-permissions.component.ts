@@ -31,35 +31,50 @@ export class DevRestTabPermissionsComponent {
           width: 70,
           headerClass: 'dense',
           cellClass: 'no-padding no-outline'.split(' '),
-          valueGetter: (params) => (params.data as Permission).Id,
+          valueGetter: (params) => {
+            const permission: Permission = params.data;
+            return permission.Id;
+          },
         },
         {
           field: 'Name',
           flex: 2,
           minWidth: 250,
           cellClass: 'no-outline',
-          valueGetter: (params) => (params.data as Permission).Title,
+          valueGetter: (params) => {
+            const permission: Permission = params.data;
+            return permission.Title;
+          },
         },
         {
           field: 'Identity',
           flex: 2,
           minWidth: 250,
           cellClass: 'no-outline',
-          valueGetter: (params) => (params.data as Permission).Identity,
+          valueGetter: (params) => {
+            const permission: Permission = params.data;
+            return permission.Identity;
+          },
         },
         {
           field: 'Condition',
           flex: 2,
           minWidth: 250,
           cellClass: 'no-outline',
-          valueGetter: (params) => (params.data as Permission).Condition,
+          valueGetter: (params) => {
+            const permission: Permission = params.data;
+            return permission.Condition;
+          },
         },
         {
           field: 'Grant',
           width: 70,
           headerClass: 'dense',
           cellClass: 'no-outline',
-          valueGetter: (params) => (params.data as Permission).Grant,
+          valueGetter: (params) => {
+            const permission: Permission = params.data;
+            return permission.Grant;
+          },
         },
       ],
     };
