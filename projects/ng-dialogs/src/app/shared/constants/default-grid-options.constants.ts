@@ -9,5 +9,6 @@ export const defaultGridOptions: GridOptions = {
   valueCache: true,
   defaultColDef: { filterParams: { newRowsAction: 'keep' } },
   tooltipShowDelay: 0,
+  tooltipHideDelay: 100000,
   suppressMovableColumns: true,
 } as const;

@@ -216,3 +216,22 @@ ag-grid-angular {
     }
   }
 }
+
+.ag-tooltip {
+  background-color: rgba(97, 97, 97, 0.9) !important;
+  color: #fff !important;
+  font-size: 10px !important;
+  font-weight: normal !important;
+  padding: 6px 8px !important;
+  white-space: pre-line !important;
+  word-break: break-all !important;
+  border-radius: 4px !important;
+  transition: none !important;
+  box-shadow: none !important;
+  line-height: 1.4 !important;
+
+  @media (max-width: 600px) {
+    font-size: 14px !important;
+    padding: 8px 16px !important;
+  }
+}
