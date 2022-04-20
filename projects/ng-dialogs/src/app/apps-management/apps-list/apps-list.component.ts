@@ -3,8 +3,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { BehaviorSubject, catchError, filter, map, Observable, of, pairwise, share, startWith, Subject, Subscription, switchMap } from 'rxjs';
-import { ImportAppDialogData } from '../../import-app/import-app-dialog.config';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
+import { FileUploadDialogData } from '../../shared/components/file-upload-dialog';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
@@ -70,7 +70,7 @@ export class AppsListComponent implements OnInit, OnDestroy {
   }
 
   importApp(files?: File[]): void {
-    const dialogData: ImportAppDialogData = { files };
+    const dialogData: FileUploadDialogData = { files };
     this.router.navigate(['import'], { relativeTo: this.route.firstChild, state: dialogData });
   }
 

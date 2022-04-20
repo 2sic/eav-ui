@@ -11,7 +11,3 @@ export const importViewDialog: DialogConfig = {
     return ImportViewComponent;
   }
 };
-
-export interface ImportViewDialogData {
-  files?: File[];
-}

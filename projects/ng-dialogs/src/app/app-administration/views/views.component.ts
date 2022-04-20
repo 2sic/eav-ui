@@ -8,6 +8,7 @@ import { filter, map, pairwise, startWith } from 'rxjs/operators';
 import { GoToMetadata } from '../../metadata';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
+import { FileUploadDialogData } from '../../shared/components/file-upload-dialog';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
@@ -18,7 +19,6 @@ import { DialogService } from '../../shared/services/dialog.service';
 import { Polymorphism } from '../models/polymorphism.model';
 import { View } from '../models/view.model';
 import { ViewsService } from '../services/views.service';
-import { ImportViewDialogData } from '../sub-dialogs/import-view/import-view-dialog.config';
 import { ViewsActionsComponent } from './views-actions/views-actions.component';
 import { ViewActionsParams } from './views-actions/views-actions.models';
 import { ViewsShowComponent } from './views-show/views-show.component';
@@ -65,8 +65,8 @@ export class ViewsComponent implements OnInit, OnDestroy {
   }
 
   importView(files?: File[]) {
-    const importViewData: ImportViewDialogData = { files };
-    this.router.navigate(['import'], { relativeTo: this.route.firstChild, state: importViewData });
+    const dialogData: FileUploadDialogData = { files };
+    this.router.navigate(['import'], { relativeTo: this.route.firstChild, state: dialogData });
   }
 
   private fetchTemplates() {

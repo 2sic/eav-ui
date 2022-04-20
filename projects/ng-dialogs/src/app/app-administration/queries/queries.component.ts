@@ -8,6 +8,7 @@ import { ContentExportService } from '../../content-export/services/content-expo
 import { GoToDevRest } from '../../dev-rest/go-to-dev-rest';
 import { GoToMetadata } from '../../metadata';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
+import { FileUploadDialogData } from '../../shared/components/file-upload-dialog';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
@@ -17,7 +18,6 @@ import { EditForm } from '../../shared/models/edit-form.model';
 import { DialogService } from '../../shared/services/dialog.service';
 import { Query } from '../models/query.model';
 import { PipelinesService } from '../services/pipelines.service';
-import { ImportQueryDialogData } from '../sub-dialogs/import-query/import-query-dialog.config';
 import { QueriesActionsParams, QueryActions } from './queries-actions/queries-actions';
 import { QueriesActionsComponent } from './queries-actions/queries-actions.component';
 
@@ -60,7 +60,7 @@ export class QueriesComponent implements OnInit, OnDestroy {
   }
 
   importQuery(files?: File[]) {
-    const dialogData: ImportQueryDialogData = { files };
+    const dialogData: FileUploadDialogData = { files };
     this.router.navigate(['import'], { relativeTo: this.route.firstChild, state: dialogData });
   }
 

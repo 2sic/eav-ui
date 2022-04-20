@@ -16,6 +16,7 @@ import { Field } from '../content-type-fields/models/field.model';
 import { GoToMetadata } from '../metadata';
 import { BooleanFilterComponent } from '../shared/components/boolean-filter/boolean-filter.component';
 import { EntityFilterComponent } from '../shared/components/entity-filter/entity-filter.component';
+import { FileUploadDialogData } from '../shared/components/file-upload-dialog';
 import { IdFieldComponent } from '../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
@@ -24,7 +25,6 @@ import { keyFilters } from '../shared/constants/session.constants';
 import { consoleLogAngular } from '../shared/helpers/console-log-angular.helper';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 import { EditForm } from '../shared/models/edit-form.model';
-import { ContentItemImportDialogData } from './content-item-import/content-item-import-dialog.config';
 import { ContentItemsActionsComponent } from './content-items-actions/content-items-actions.component';
 import { ContentItemsActionsParams } from './content-items-actions/content-items-actions.models';
 import { ContentItemsEntityComponent } from './content-items-entity/content-items-entity.component';
@@ -185,7 +185,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   }
 
   importItem(files?: File[]) {
-    const dialogData: ContentItemImportDialogData = { files };
+    const dialogData: FileUploadDialogData = { files };
     this.router.navigate(['import'], { relativeTo: this.route, state: dialogData });
   }
 

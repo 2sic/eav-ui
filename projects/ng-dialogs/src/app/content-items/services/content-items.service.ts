@@ -1,11 +1,11 @@
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { from } from 'rxjs';
-import { mergeMap } from 'rxjs/operators';
+import { from, map, switchMap } from 'rxjs';
 import { webApiEntityList, webApiEntityRoot } from '../../../../../edit/shared/services';
 import { Field } from '../../content-type-fields/models/field.model';
 import { webApiFieldsAll } from '../../content-type-fields/services/content-types-fields.service';
+import { FileUploadResult } from '../../shared/components/file-upload-dialog';
 import { toBase64 } from '../../shared/helpers/file-to-base64.helper';
 import { Context } from '../../shared/services/context';
 import { ContentItem } from '../models/content-item.model';
@@ -28,12 +28,19 @@ export class ContentItemsService {
 
   importItem(file: File) {
     return from(toBase64(file)).pipe(
-      mergeMap(fileBase64 => {
+      switchMap(fileBase64 => {
         return this.http.post<boolean>(this.dnnContext.$2sxc.http.apiUrl(webApiEntityRoot + 'upload'), {
           AppId: this.context.appId.toString(),
           ContentBase64: fileBase64,
         });
-      })
+      }),
+      map(success => {
+        const result: FileUploadResult = {
+          Success: success,
+          Messages: [],
+        };
+        return result;
+      }),
     );
   }
 }

@@ -10,6 +10,7 @@ import { ContentImportDialogData } from '../../content-import/content-import-dia
 import { GoToDevRest } from '../../dev-rest/go-to-dev-rest';
 import { GoToMetadata } from '../../metadata';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
+import { FileUploadDialogData } from '../../shared/components/file-upload-dialog';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
@@ -20,7 +21,6 @@ import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { EditForm } from '../../shared/models/edit-form.model';
 import { ContentType } from '../models/content-type.model';
 import { ContentTypesService } from '../services/content-types.service';
-import { ImportContentTypeDialogData } from '../sub-dialogs/import-content-type/import-content-type-dialog.config';
 import { DataActionsComponent } from './data-actions/data-actions.component';
 import { DataActionsParams } from './data-actions/data-actions.models';
 import { DataFieldsComponent } from './data-fields/data-fields.component';
@@ -90,8 +90,8 @@ export class DataComponent implements OnInit, OnDestroy {
   }
 
   importType(files?: File[]) {
-    const importContentTypeData: ImportContentTypeDialogData = { files };
-    this.router.navigate(['import'], { relativeTo: this.route.firstChild, state: importContentTypeData });
+    const dialogData: FileUploadDialogData = { files };
+    this.router.navigate(['import'], { relativeTo: this.route.firstChild, state: dialogData });
   }
 
   private showContentItems(contentType: ContentType) {

@@ -1,0 +1,51 @@
+<div appDragAndDrop [allowedFileTypes]="dialogData.allowedFileTypes" (filesDropped)="filesDropped($event)" *ngIf="{
+  uploading: uploading$ | async,
+    files: files$ | async,
+    result: result$ | async
+  } as data">
+
+  <div mat-dialog-title>
+    <div class="dialog-title-box" [innerHtml]="dialogData.title | safeHtml"></div>
+  </div>
+
+  <mat-spinner *ngIf="data.uploading" mode="indeterminate" diameter="20" color="accent"></mat-spinner>
+
+  <p class="dialog-description" [innerHtml]="dialogData.description | safeHtml"></p>
+
+  <div>
+    <button mat-raised-button tippy="Open file browser" [disabled]="data.uploading" (click)="fileInput.click()">
+      <div *ngIf="!data.files.length">Select or drop file</div>
+      <div *ngFor="let file of data.files">{{ file.name }}</div>
+    </button>
+    <input #fileInput type="file" multiple (change)="filesChanged($event)" class="hide" />
+  </div>
+
+  <div class="dialog-component-content fancy-scrollbar-light result-container" *ngIf="data.result">
+    <div *ngIf="data.result.Success" class="sxc-message sxc-message-info">
+      Upload succeeded. See the messages below for more information.
+    </div>
+    <div *ngIf="!data.result.Success" class="sxc-message sxc-message-error">
+      Upload failed. See the messages below for more information.
+    </div>
+    <div *ngFor="let message of data.result.Messages" class="sxc-message" [ngClass]="{
+      'sxc-message-warning': message.MessageType === FileUploadMessageTypes.Warning,
+      'sxc-message-success': message.MessageType === FileUploadMessageTypes.Success,
+      'sxc-message-error': message.MessageType === FileUploadMessageTypes.Error
+    }">
+      {{ message.Text }}
+    </div>
+  </div>
+
+  <div class="dialog-component-actions">
+    <ng-container *ngIf="!data.result?.Success">
+      <button mat-raised-button (click)="closeDialog()">Cancel</button>
+      <button mat-raised-button color="accent" [disabled]="!data.files.length || data.uploading || !!data.result"
+        (click)="upload()">
+        Upload
+      </button>
+    </ng-container>
+    <ng-container *ngIf="data.result?.Success">
+      <button mat-raised-button color="accent" (click)="closeDialog(true)">Close</button>
+    </ng-container>
+  </div>
+</div>

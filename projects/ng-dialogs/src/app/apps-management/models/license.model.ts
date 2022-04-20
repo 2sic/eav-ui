@@ -10,7 +10,9 @@ export interface License {
   Priority: number;
 }
 
-export interface UploadInfo {
+export interface LicenseUploadInfo {
   Message: string;
   Success: boolean;
 }
+
+export type LicenseDownloadInfo = LicenseUploadInfo;
