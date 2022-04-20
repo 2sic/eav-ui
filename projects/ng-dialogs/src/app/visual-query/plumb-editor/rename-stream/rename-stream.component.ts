@@ -2,8 +2,7 @@ import { ChangeDetectorRef, Component, HostBinding, Inject, OnDestroy, OnInit } 
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
-import { Subscription } from 'rxjs';
-import { distinctUntilChanged, startWith } from 'rxjs/operators';
+import { distinctUntilChanged, startWith, Subscription } from 'rxjs';
 import { ContentTypesService } from '../../../app-administration/services';
 import { eavConstants, ScopeOption } from '../../../shared/constants/eav.constants';
 import { VisualQueryService } from '../../services/visual-query.service';

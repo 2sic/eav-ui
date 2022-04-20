@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { EntityCollectionServiceElementsFactory } from '@ngrx/data';
-import { Observable } from 'rxjs';
-import { distinctUntilChanged, map } from 'rxjs/operators';
+import { distinctUntilChanged, map, Observable } from 'rxjs';
 import { LanguageInstance } from '../../models';
 import { BaseDataService } from './base-data.service';
 

@@ -1,6 +1,5 @@
 import { AfterViewInit, Component, ElementRef, Input, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { combineLatest, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { combineLatest, map, Observable } from 'rxjs';
 import { Language } from '../../../shared/models';
 import { EavService } from '../../../shared/services';
 import { LanguageInstanceService, LanguageService } from '../../../shared/store/ngrx-data';

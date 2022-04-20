@@ -1,7 +1,6 @@
 import { Component, Input, OnDestroy, OnInit, QueryList } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, map, Observable, switchMap } from 'rxjs';
 import { EntitiesService } from '../../../../ng-dialogs/src/app/content-items/services/entities.service';
 import { InputTypeConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { eavConstants } from '../../../../ng-dialogs/src/app/shared/constants/eav.constants';

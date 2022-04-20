@@ -1,8 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { Subject, Subscription } from 'rxjs';
-import { distinctUntilChanged, filter, map, pairwise, startWith } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map, pairwise, startWith, Subject, Subscription } from 'rxjs';
 import { EavService } from '.';
 import { ItemHistoryResult } from '../../../ng-dialogs/src/app/item-history/models/item-history-result.model';
 import { convertFormToUrl } from '../../../ng-dialogs/src/app/shared/helpers/url-prep.helper';

@@ -3,8 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject, combineLatest, forkJoin, fromEvent, Observable, of, Subscription } from 'rxjs';
-import { map, mergeMap, share } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, forkJoin, fromEvent, map, mergeMap, Observable, of, share, Subscription } from 'rxjs';
 import { GeneralHelpers } from '../../../../edit/shared/helpers';
 // tslint:disable-next-line:max-line-length
 import { CreateFileDialogComponent, CreateFileDialogData, CreateFileDialogResult, FileLocationDialogComponent } from '../create-file-dialog';

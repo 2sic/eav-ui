@@ -1,6 +1,5 @@
 import { AfterViewInit, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
-import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { map, share } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, map, Observable, share } from 'rxjs';
 import { AdamItem } from '../../../../edit-types';
 import { WrappersConstants } from '../../../shared/constants';
 import { DropzoneDraggingHelper } from '../../../shared/helpers';

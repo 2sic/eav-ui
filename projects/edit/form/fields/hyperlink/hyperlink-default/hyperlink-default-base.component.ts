@@ -1,7 +1,6 @@
 import { ChangeDetectorRef, Directive, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { BehaviorSubject } from 'rxjs';
-import { distinctUntilChanged, map } from 'rxjs/operators';
+import { BehaviorSubject, distinctUntilChanged, map } from 'rxjs';
 import { AdamItem } from '../../../../../edit-types';
 import { FileTypeHelpers, GeneralHelpers, PagePicker, UrlHelpers } from '../../../../shared/helpers';
 import { AdamService, EavService, FieldsSettingsService } from '../../../../shared/services';

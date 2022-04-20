@@ -1,7 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { combineLatest, Subscription } from 'rxjs';
-import { distinctUntilChanged, map, startWith } from 'rxjs/operators';
+import { combineLatest, distinctUntilChanged, map, startWith, Subscription } from 'rxjs';
 import { InputTypeConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { GeneralHelpers, ValidationHelpers } from '../../../shared/helpers';
 import { FormValues, SxcAbstractControl } from '../../../shared/models';

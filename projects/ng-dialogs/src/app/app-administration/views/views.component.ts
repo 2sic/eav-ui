@@ -1,10 +1,9 @@
 import polymorphLogo from '!url-loader!./polymorph-logo.png';
-import { GridOptions, ValueGetterParams } from '@ag-grid-community/core';
+import { GridOptions } from '@ag-grid-community/core';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { BehaviorSubject, Subscription } from 'rxjs';
-import { filter, map, pairwise, startWith } from 'rxjs/operators';
+import { BehaviorSubject, filter, map, pairwise, startWith, Subscription } from 'rxjs';
 import { GoToMetadata } from '../../metadata';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';

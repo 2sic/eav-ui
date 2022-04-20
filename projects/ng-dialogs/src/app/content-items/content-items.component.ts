@@ -4,8 +4,7 @@ import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } fro
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { BehaviorSubject, Subscription } from 'rxjs';
-import { filter, map, pairwise, startWith, take } from 'rxjs/operators';
+import { BehaviorSubject, filter, map, pairwise, startWith, Subscription, take } from 'rxjs';
 import { GlobalConfigService } from '../../../../edit/shared/store/ngrx-data';
 import { ContentType } from '../app-administration/models/content-type.model';
 import { ContentTypesService } from '../app-administration/services/content-types.service';

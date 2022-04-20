@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { combineLatest, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { combineLatest, map, Observable } from 'rxjs';
 import { EavService, FieldsTranslateService, FormsStateService } from '../../../../shared/services';
 import { ItemService, LanguageInstanceService } from '../../../../shared/store/ngrx-data';
 import { EntityTranslateMenuTemplateVars } from './entity-translate-menu.models';

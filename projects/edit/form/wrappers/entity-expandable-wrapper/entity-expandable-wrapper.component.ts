@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { combineLatest, Observable } from 'rxjs';
-import { distinctUntilChanged, map, share } from 'rxjs/operators';
+import { combineLatest, distinctUntilChanged, map, Observable, share } from 'rxjs';
 import { WrappersConstants } from '../../../shared/constants';
 import { GeneralHelpers } from '../../../shared/helpers';
 import { EavService, EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../shared/services';

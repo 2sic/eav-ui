@@ -1,6 +1,5 @@
 import { Directive, ElementRef, OnDestroy, OnInit } from '@angular/core';
-import { fromEvent, merge, Subscription } from 'rxjs';
-import { delay, filter, map, pairwise } from 'rxjs/operators';
+import { delay, filter, fromEvent, map, merge, pairwise, Subscription } from 'rxjs';
 import { EavService } from '../../shared/services';
 import { LanguageInstanceService, LanguageService } from '../../shared/store/ngrx-data';
 

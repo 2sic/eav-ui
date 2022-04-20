@@ -1,7 +1,6 @@
 import { Directive, Input, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
-import { distinctUntilChanged, map } from 'rxjs/operators';
+import { BehaviorSubject, distinctUntilChanged, map, Observable, Subscription } from 'rxjs';
 import { FieldSettings, FieldValue } from '../../../../edit-types';
 import { ControlStatus } from '../../../shared/models';
 import { EavService, FieldsSettingsService } from '../../../shared/services';
