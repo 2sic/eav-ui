@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject, combineLatest, forkJoin, fromEvent, map, mergeMap, Observable, of, share, Subscription } from 'rxjs';
+import { BehaviorSubject, combineLatest, forkJoin, fromEvent, map, Observable, of, share, Subscription, switchMap } from 'rxjs';
 import { GeneralHelpers } from '../../../../edit/shared/helpers';
 // tslint:disable-next-line:max-line-length
 import { CreateFileDialogComponent, CreateFileDialogData, CreateFileDialogResult, FileLocationDialogComponent } from '../create-file-dialog';
@@ -101,7 +101,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
             viewInfos = [...viewInfos, newViewInfo];
 
             const view$ = this.sourceService.get(viewKey.key, viewKey.shared, this.urlItems).pipe(share());
-            const snippets$ = view$.pipe(mergeMap(view => this.snippetsService.getSnippets(view)));
+            const snippets$ = view$.pipe(switchMap(view => this.snippetsService.getSnippets(view)));
             return forkJoin([of(viewKey), view$, snippets$]);
           })
         ).subscribe(results => {
