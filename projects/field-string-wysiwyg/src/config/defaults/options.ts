@@ -1,4 +1,4 @@
-import { RawEditorSettings } from 'tinymce';
+import type { RawEditorSettings } from 'tinymce';
 
 export const DefaultOptions: RawEditorSettings = {
   skin: '2sxc-tinymce-skin',

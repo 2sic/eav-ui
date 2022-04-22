@@ -1,4 +1,4 @@
-import { Editor } from 'tinymce';
+import type { Editor } from 'tinymce';
 import { Adam } from '../../../edit-types';
 import { FieldStringWysiwygEditor, wysiwygEditorTag } from '../editor/editor';
 import { loadCustomIcons } from '../editor/load-icons.helper';

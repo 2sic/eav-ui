@@ -1,4 +1,4 @@
-import { Editor, RawEditorSettings, TinyMCE } from 'tinymce';
+import type { Editor, RawEditorSettings, TinyMCE } from 'tinymce';
 import { AddOnSettings } from './AddOnSettings';
 
 export interface WysiwygReconfigure {

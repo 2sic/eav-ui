@@ -1,6 +1,6 @@
 import 'tinymce/tinymce'; // Important! tinymce has to be imported before themes and plugins
 
-import { Subscription } from 'rxjs';
+import type { Subscription } from 'rxjs';
 import 'tinymce/icons/default';
 import 'tinymce/plugins/anchor';
 import 'tinymce/plugins/autolink';
@@ -18,9 +18,9 @@ import 'tinymce/plugins/tabfocus';
 import 'tinymce/plugins/table';
 import 'tinymce/plugins/textpattern';
 import 'tinymce/themes/silver';
-import { Editor } from 'tinymce/tinymce';
-import { Connector, EavCustomInputField } from '../../../edit-types';
-import { WysiwygReconfigure } from '../../../edit-types';
+// tslint:disable-next-line:no-duplicate-imports
+import type { Editor } from 'tinymce/tinymce';
+import { Connector, EavCustomInputField, WysiwygReconfigure } from '../../../edit-types';
 import { FeaturesConstants } from '../../../edit/shared/constants';
 import { consoleLogWebpack } from '../../../field-custom-gps/src/shared/console-log-webpack.helper';
 import { EavWindow } from '../../../ng-dialogs/src/app/shared/models/eav-window.model';

@@ -1,4 +1,4 @@
-import { RawEditorSettings } from 'tinymce';
+import type { RawEditorSettings } from 'tinymce';
 import { Adam, AdamPostResponse, Dropzone } from '../../../../edit-types';
 import { consoleLogWebpack } from '../../../../field-custom-gps/src/shared/console-log-webpack.helper';
 import { BlobInfo } from '../../shared/models';
