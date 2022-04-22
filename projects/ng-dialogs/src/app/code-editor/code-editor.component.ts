@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
+import type * as Monaco from 'monaco-editor';
 import { BehaviorSubject, combineLatest, forkJoin, fromEvent, map, Observable, of, share, Subscription, switchMap } from 'rxjs';
 import { GeneralHelpers } from '../../../../edit/shared/helpers';
 // tslint:disable-next-line:max-line-length
@@ -30,7 +31,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
 
   Explorers = Explorers;
   activeExplorer: ExplorerOption = Explorers.Templates;
-  monacoOptions = {
+  monacoOptions: Monaco.editor.IStandaloneEditorConstructionOptions = {
     theme: '2sxc-dark',
     tabSize: 2,
   };

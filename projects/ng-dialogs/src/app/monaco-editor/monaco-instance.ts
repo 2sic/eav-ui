@@ -1,4 +1,5 @@
-import { JsonComments, JsonSchema, Monaco2sxc, MonacoType } from '.';
+import type * as Monaco from 'monaco-editor';
+import { JsonSchema, Monaco2sxc } from '.';
 import { Snippet } from '../code-editor/models/snippet.model';
 
 export const voidElements = 'area, base, br, col, embed, hr, img, input, link, meta, param, source, track, wbr'
@@ -7,8 +8,8 @@ export const voidElements = 'area, base, br, col, embed, hr, img, input, link, m
 
 export class MonacoInstance {
   /** Editor instance configuration */
-  private editorInstance: MonacoType;
-  private completionItemProviders: MonacoType[];
+  private editorInstance: Monaco.editor.IStandaloneCodeEditor;
+  private completionItemProviders: Monaco.IDisposable[];
   private resizeObserver: ResizeObserver;
   private globalCache: Monaco2sxc;
   private cachedValue: string;
@@ -18,11 +19,11 @@ export class MonacoInstance {
 
   constructor(
     /** Global Monaco configuration */
-    private monaco: MonacoType,
+    private monaco: typeof Monaco,
     filename: string,
     value: string,
     container: HTMLElement,
-    options: MonacoType,
+    options: Monaco.editor.IStandaloneEditorConstructionOptions,
     private snippets: Snippet[],
   ) {
     this.globalCache = this.createGlobalCache(monaco);
@@ -38,9 +39,7 @@ export class MonacoInstance {
   destroy(): void {
     this.saveState(this.globalCache, this.editorInstance);
     this.resizeObserver.disconnect();
-    this.completionItemProviders.forEach(completionItemProvider => {
-      completionItemProvider.dispose();
-    });
+    this.completionItemProviders.forEach(completionItemProvider => completionItemProvider.dispose());
     this.editorInstance.getModel().dispose();
     this.editorInstance.dispose();
   }
@@ -68,7 +67,8 @@ export class MonacoInstance {
   }
 
   insertSnippet(snippet: string): void {
-    const snippetController = this.editorInstance.getContribution('snippetController2');
+    const snippetController = this.editorInstance
+      .getContribution<Monaco.editor.IEditorContribution & { insert(template: string, opts?: Record<string, any>): void; }>('snippetController2');
     snippetController.insert(snippet);
   }
 
@@ -76,39 +76,43 @@ export class MonacoInstance {
     this.snippets = snippets;
   }
 
-  setJsonSchema(jsonSchema: JsonSchema): void {
+  setJsonSchema(jsonSchema?: JsonSchema): void {
     const uri = this.editorInstance.getModel().uri.toString();
-    const jsonDiagnostics = {
-      ...this.monaco.languages.json.jsonDefaults.diagnosticsOptions,
+    const oldJsonDiagnostics = this.monaco.languages.json.jsonDefaults.diagnosticsOptions;
+    const exists = oldJsonDiagnostics.schemas?.some(schema => schema.fileMatch[0] === uri) ?? false;
+
+    const newSchema = jsonSchema?.type === 'link'
+      ? { uri: jsonSchema.value, fileMatch: [uri] }
+      : jsonSchema?.type === 'raw'
+        ? { uri, fileMatch: [uri], schema: JSON.parse(jsonSchema.value) }
+        : undefined;
+
+    if (!exists && !newSchema) { return; }
+
+    const newJsonDiagnostics: Monaco.languages.json.DiagnosticsOptions = {
+      ...oldJsonDiagnostics,
       enableSchemaRequest: true,
+      schemas: exists && !newSchema
+        ? oldJsonDiagnostics.schemas.filter(schema => schema.fileMatch[0] !== uri)
+        : exists
+          ? oldJsonDiagnostics.schemas.map(schema => schema.fileMatch[0] === uri ? newSchema : schema)
+          : [...(oldJsonDiagnostics.schemas ?? []), newSchema],
     };
-    const exists = jsonDiagnostics.schemas.some((schema: MonacoType) => schema.fileMatch[0] === uri);
 
-    if (jsonSchema?.value) {
-      const newSchema = jsonSchema.type === 'link'
-        ? { uri: jsonSchema.value, fileMatch: [uri] }
-        : { uri, fileMatch: [uri], schema: JSON.parse(jsonSchema.value) };
-
-      jsonDiagnostics.schemas = exists
-        ? jsonDiagnostics.schemas.map((schema: MonacoType) => schema.fileMatch[0] === uri ? newSchema : schema)
-        : [...jsonDiagnostics.schemas, newSchema];
-    } else {
-      if (!exists) { return; }
-      jsonDiagnostics.schemas = jsonDiagnostics.schemas.filter((schema: MonacoType) => schema.fileMatch[0] !== uri);
-    }
-
-    this.monaco.languages.json.jsonDefaults.setDiagnosticsOptions(jsonDiagnostics);
+    this.monaco.languages.json.jsonDefaults.setDiagnosticsOptions(newJsonDiagnostics);
   }
 
-  setJsonComments(comments: JsonComments): void {
-    const jsonDiagnostics = {
+  setJsonComments(comments?: Monaco.languages.json.SeverityLevel): void {
+    if (!comments) { return; }
+
+    const jsonDiagnostics: Monaco.languages.json.DiagnosticsOptions = {
       ...this.monaco.languages.json.jsonDefaults.diagnosticsOptions,
       comments,
     };
     this.monaco.languages.json.jsonDefaults.setDiagnosticsOptions(jsonDiagnostics);
   }
 
-  private createGlobalCache(monaco: MonacoType): Monaco2sxc {
+  private createGlobalCache(monaco: typeof Monaco & { _2sxc?: Monaco2sxc }): Monaco2sxc {
     if (monaco._2sxc == null) {
       const _2sxc: Monaco2sxc = {
         themesAreDefined: false,
@@ -120,7 +124,7 @@ export class MonacoInstance {
   }
 
   /** Registers our themes. Themes are global. Run before creating editor */
-  private defineThemes(globalCache: Monaco2sxc, monaco: MonacoType): void {
+  private defineThemes(globalCache: Monaco2sxc, monaco: typeof Monaco): void {
     // there is currently no official way to get defined themes from Monaco to check if some theme was already defined
     if (globalCache.themesAreDefined) { return; }
     globalCache.themesAreDefined = true;
@@ -131,22 +135,26 @@ export class MonacoInstance {
       rules: [
         { token: 'metatag.cs', foreground: 'ffff00' },
       ],
+      colors: {
+      },
     });
   }
 
-  private createInstance(monaco: MonacoType, filename: string, value: string, container: HTMLElement, options: MonacoType): MonacoType {
-    // https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.istandaloneeditorconstructionoptions.html
+  private createInstance(
+    monaco: typeof Monaco,
+    filename: string,
+    value: string,
+    container: HTMLElement,
+    options: Monaco.editor.IStandaloneEditorConstructionOptions,
+  ): Monaco.editor.IStandaloneCodeEditor {
     const editorInstance = monaco.editor.create(container, options);
-    // editorInstance.updateOptions({ readOnly: true })
     const editorModelUri = monaco.Uri.file(filename);
     const editorModel = monaco.editor.createModel(value, undefined, editorModelUri);
     editorInstance.setModel(editorModel);
-    // https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.itextmodelupdateoptions.html
-    // editorInstance.getModel().updateOptions({ tabSize: 2 });
     return editorInstance;
   }
 
-  private saveState(globalCache: Monaco2sxc, editorInstance: MonacoType): void {
+  private saveState(globalCache: Monaco2sxc, editorInstance: Monaco.editor.IStandaloneCodeEditor): void {
     const uri = editorInstance.getModel().uri.toString();
     const viewState = JSON.stringify(editorInstance.saveViewState());
 
@@ -157,20 +165,20 @@ export class MonacoInstance {
     }
   }
 
-  private restoreState(globalCache: Monaco2sxc, editorInstance: MonacoType): void {
+  private restoreState(globalCache: Monaco2sxc, editorInstance: Monaco.editor.IStandaloneCodeEditor): void {
     const uri = editorInstance.getModel().uri.toString();
     const savedState = globalCache.savedStates[uri];
     if (savedState == null) { return; }
 
-    const viewState = JSON.parse(savedState.viewState);
+    const viewState: Monaco.editor.ICodeEditorViewState = JSON.parse(savedState.viewState);
     editorInstance.restoreViewState(viewState);
   }
 
-  private addSnippets(monaco: MonacoType, editorInstance: MonacoType): MonacoType[] {
+  private addSnippets(monaco: typeof Monaco, editorInstance: Monaco.editor.IStandaloneCodeEditor): Monaco.IDisposable[] {
     const completionItemProviders = [
-      monaco.languages.registerCompletionItemProvider(editorInstance.getModel().getModeId(), {
+      monaco.languages.registerCompletionItemProvider(editorInstance.getModel().getLanguageId(), {
         triggerCharacters: ['>'],
-        provideCompletionItems: (model: MonacoType, position: MonacoType) => {
+        provideCompletionItems: (model, position) => {
           if (editorInstance.getModel() !== model) { return { suggestions: [] }; }
 
           const textUntilPosition: string = model.getValueInRange({
@@ -211,7 +219,7 @@ export class MonacoInstance {
           if (voidElements.includes(tag.toLocaleLowerCase())) { return { suggestions: [] }; }
           if (!/[a-zA-Z0-9_-]/.test(tag)) { return { suggestions: [] }; }
 
-          const suggestions = [{
+          const suggestions: Monaco.languages.CompletionItem[] = [{
             label: `</${tag}>`,
             kind: monaco.languages.CompletionItemKind.Snippet,
             insertText: `\$0</${tag}>`,
@@ -227,51 +235,51 @@ export class MonacoInstance {
         },
       }),
 
-      monaco.languages.registerCompletionItemProvider(editorInstance.getModel().getModeId(), {
-        provideCompletionItems: (model: MonacoType, position: MonacoType) => {
+      monaco.languages.registerCompletionItemProvider(editorInstance.getModel().getLanguageId(), {
+        provideCompletionItems: (model, position) => {
           if (this.snippets == null || editorInstance.getModel() !== model) { return { suggestions: [] }; }
 
           const word = model.getWordUntilPosition(position);
-          const range = {
-            startLineNumber: position.lineNumber,
-            endLineNumber: position.lineNumber,
-            startColumn: word.startColumn,
-            endColumn: word.endColumn
-          };
-          // kind and rule copied from:
-          // https://microsoft.github.io/monaco-editor/playground.html#extending-language-services-completion-provider-example
           const suggestions = this.snippets.map(snippet => {
             if (!snippet.content) { return; }
-            return {
+            const suggestion: Monaco.languages.CompletionItem = {
               label: snippet.name,
               kind: monaco.languages.CompletionItemKind.Snippet,
               documentation: `${snippet.title ?? ''}\n${snippet.help ?? ''}\n${snippet.links ?? ''}`,
               insertText: snippet.content,
               insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-              range,
+              range: {
+                startLineNumber: position.lineNumber,
+                endLineNumber: position.lineNumber,
+                startColumn: word.startColumn,
+                endColumn: word.endColumn
+              },
             };
-          }).filter(snippet => !!snippet);
+            return suggestion;
+          }).filter(suggestion => !!suggestion);
           return { suggestions };
         },
       }),
 
-      // monaco.languages.registerHoverProvider(editorInstance.getModel().getModeId(), {
-      //   provideHover: (model: MonacoType, position: MonacoType) => {
+      // monaco.languages.registerHoverProvider(editorInstance.getModel().getLanguageId(), {
+      //   provideHover: (model, position) => {
       //     const word = model.getWordAtPosition(position);
       //     if (!word) { return; }
-      //     // const range = {
-      //     //   startLineNumber: position.lineNumber,
-      //     //   endLineNumber: position.lineNumber,
-      //     //   startColumn: word.startColumn,
-      //     //   endColumn: word.endColumn,
-      //     // };
       //     if (word.word.toLocaleLowerCase() === '2sxc') {
       //       const contents = [
       //         { value: '2sxc - Dynamic Content and Apps for DNN' },
       //         { value: '[2sxc - Dynamic Content and Apps for DNN](https://2sxc.org)' },
       //         { value: '**BOLD**  \nLine2' },
       //       ];
-      //       return { /*range,*/ contents };
+      //       return {
+      //         contents,
+      //         range: {
+      //           startLineNumber: position.lineNumber,
+      //           endLineNumber: position.lineNumber,
+      //           startColumn: word.startColumn,
+      //           endColumn: word.endColumn,
+      //         },
+      //       };
       //     }
       //   }
       // }),
@@ -280,7 +288,7 @@ export class MonacoInstance {
     return completionItemProviders;
   }
 
-  private createResizeObserver(container: HTMLElement, editorInstance: MonacoType): ResizeObserver {
+  private createResizeObserver(container: HTMLElement, editorInstance: Monaco.editor.IStandaloneCodeEditor): ResizeObserver {
     const resizeObserver = new ResizeObserver(() => {
       editorInstance.layout();
     });
@@ -288,7 +296,7 @@ export class MonacoInstance {
     return resizeObserver;
   }
 
-  private addEvents(editorInstance: MonacoType): void {
+  private addEvents(editorInstance: Monaco.editor.IStandaloneCodeEditor): void {
     editorInstance.getModel().onDidChangeContent(() => {
       const newValue = editorInstance.getModel().getValue();
       if (newValue === this.cachedValue) { return; }
@@ -304,20 +312,20 @@ export class MonacoInstance {
       this.blurredCallback?.();
     });
 
-    // this.editorInstance.onDidChangeModelDecorations((e: any) => {
+    // this.editorInstance.onDidChangeModelDecorations(e => {
     //   const value = this.editorInstance.getModel().getValue();
-    //   const markers = this.monaco.editor.getModelMarkers({}).filter((marker: any) => marker.resource.path === `/${this.filename}`);
+    //   const markers = this.monaco.editor.getModelMarkers({}).filter(marker => marker.resource.path === `/${this.filename}`);
     //   const valid = !markers.some(
-    //     (marker: any) => marker.severity === this.monaco.MarkerSeverity.Error || marker.severity === this.monaco.MarkerSeverity.Warning
+    //     marker => marker.severity === this.monaco.MarkerSeverity.Error || marker.severity === this.monaco.MarkerSeverity.Warning
     //   );
     // });
 
     // this.monaco.editor.onDidChangeMarkers(() => {
     //   // markers updates are async and lagging behind value updates
-    //   const markers = this.monaco.editor.getModelMarkers({}).filter((marker: any) => marker.resource.path === `/${this.filename}`);
-    //   if (markers.some((marker: any) => marker.severity === this.monaco.MarkerSeverity.Error)) {
+    //   const markers = this.monaco.editor.getModelMarkers({}).filter(marker => marker.resource.path === `/${this.filename}`);
+    //   if (markers.some(marker => marker.severity === this.monaco.MarkerSeverity.Error)) {
     //     // has errors
-    //   } else if (markers.some((marker: any) => marker.severity === this.monaco.MarkerSeverity.Warning)) {
+    //   } else if (markers.some(marker => marker.severity === this.monaco.MarkerSeverity.Warning)) {
     //     // has warnings
     //   } else {
     //     // has no errors or warnings

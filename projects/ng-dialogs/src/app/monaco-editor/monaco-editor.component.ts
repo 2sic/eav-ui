@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild } from '@angular/core';
-import { JsonComments, JsonSchema, MonacoType } from '.';
+import type * as Monaco from 'monaco-editor';
+import { JsonSchema } from '.';
 import { Snippet } from '../code-editor/models/snippet.model';
 import { EavWindow } from '../shared/models/eav-window.model';
 import { MonacoInstance } from './monaco-instance';
@@ -16,15 +17,15 @@ export class MonacoEditorComponent implements AfterViewInit, OnChanges, OnDestro
   @Input() filename: string;
   @Input() value: string;
   @Input() snippets?: Snippet[];
-  @Input() options?: Record<string, any>;
+  @Input() options?: Monaco.editor.IStandaloneEditorConstructionOptions;
   @Input() jsonSchema?: JsonSchema;
-  @Input() jsonComments?: JsonComments;
+  @Input() jsonComments?: Monaco.languages.json.SeverityLevel;
   @Input() autoFocus = false;
   @Output() private valueChanged = new EventEmitter<string>();
   @Output() private focused = new EventEmitter<undefined>();
   @Output() private blurred = new EventEmitter<undefined>();
 
-  private monaco: MonacoType;
+  private monaco: typeof Monaco;
   private monacoInstance?: MonacoInstance;
 
   constructor() { }
@@ -32,11 +33,11 @@ export class MonacoEditorComponent implements AfterViewInit, OnChanges, OnDestro
   ngAfterViewInit(): void {
     window.require.config({
       paths: {
-        vs: ['https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.25.2/min/vs'],
+        vs: ['https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.33.0/min/vs'],
       },
     });
 
-    window.require(['vs/editor/editor.main'], (monaco: any) => {
+    window.require(['vs/editor/editor.main'], (monaco: typeof Monaco) => {
       this.monaco = monaco;
       this.createEditor(this.autoFocus);
     });
@@ -75,13 +76,8 @@ export class MonacoEditorComponent implements AfterViewInit, OnChanges, OnDestro
       this.monaco, this.filename, this.value, this.editorRef.nativeElement, this.options, this.snippets,
     );
 
-    if (this.jsonSchema) {
-      this.monacoInstance.setJsonSchema(this.jsonSchema);
-    }
-
-    if (this.jsonComments) {
-      this.monacoInstance.setJsonComments(this.jsonComments);
-    }
+    this.monacoInstance.setJsonSchema(this.jsonSchema);
+    this.monacoInstance.setJsonComments(this.jsonComments);
 
     this.monacoInstance.onValueChange(value => {
       this.valueChanged.emit(value);

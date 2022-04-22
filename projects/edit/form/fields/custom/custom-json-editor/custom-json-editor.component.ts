@@ -1,7 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import type * as Monaco from 'monaco-editor';
 import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { InputTypeConstants } from '../../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
-import { JsonComments, JsonSchema } from '../../../../../ng-dialogs/src/app/monaco-editor';
+import { JsonSchema } from '../../../../../ng-dialogs/src/app/monaco-editor';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { EavService, FieldsSettingsService } from '../../../../shared/services';
@@ -21,9 +22,9 @@ import { CustomJsonEditorTemplateVars } from './custom-json-editor.models';
 export class CustomJsonEditorComponent extends BaseComponent<string> implements OnInit, OnDestroy {
   templateVars$: Observable<CustomJsonEditorTemplateVars>;
   filename: string;
-  monacoOptions = {
+  monacoOptions: Monaco.editor.IStandaloneEditorConstructionOptions = {
     minimap: {
-      enabled: false
+      enabled: false,
     },
     lineHeight: 19,
     scrollBeyondLastLine: false,
@@ -54,7 +55,7 @@ export class CustomJsonEditorComponent extends BaseComponent<string> implements 
     );
     const jsonComments$ = this.settings$.pipe(
       map(settings => {
-        const jsonComments: JsonComments = settings.JsonCommentsAllowed ? 'ignore' : 'error';
+        const jsonComments: Monaco.languages.json.SeverityLevel = settings.JsonCommentsAllowed ? 'ignore' : 'error';
         return jsonComments;
       }),
       distinctUntilChanged(),

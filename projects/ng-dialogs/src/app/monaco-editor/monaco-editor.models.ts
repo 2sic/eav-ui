@@ -3,10 +3,6 @@ export interface JsonSchema {
   value: string;
 }
 
-export type JsonComments = 'error' | 'warning' | 'ignore';
-
-export type MonacoType = any;
-
 export interface Monaco2sxc {
   themesAreDefined: boolean;
   savedStates: Monaco2sxcSavedStates;
@@ -17,5 +13,5 @@ export interface Monaco2sxcSavedStates {
 }
 
 export interface Monaco2sxcSavedState {
-  viewState: MonacoType;
+  viewState: string;
 }
