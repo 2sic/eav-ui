@@ -1,4 +1,5 @@
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
+import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { copyToClipboard } from '../../helpers/copy-to-clipboard.helper';
@@ -16,7 +17,7 @@ export class IdFieldComponent implements ICellRendererAngularComp {
 
   constructor(private snackBar: MatSnackBar) { }
 
-  agInit(params: IdFieldParams) {
+  agInit(params: ICellRendererParams & IdFieldParams): void {
     this.id = params.value;
     this.align = typeof this.id === 'number' ? 'end' : 'start';
     this.tooltip = params.tooltipGetter(params.data);
@@ -26,7 +27,7 @@ export class IdFieldComponent implements ICellRendererAngularComp {
     return true;
   }
 
-  copy() {
+  copy(): void {
     copyToClipboard(this.tooltip);
     this.snackBar.open('Copied to clipboard', null, { duration: 2000 });
   }

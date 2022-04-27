@@ -1,9 +1,9 @@
-import { AllCommunityModules, ColDef, GridOptions, Module } from '@ag-grid-community/all-modules';
+import { ColDef, GridOptions } from '@ag-grid-community/core';
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { defaultGridOptions } from '../../../shared/constants/default-grid-options.constants';
-import { TrueFalseParams } from '../action-params/true-false-column-params';
-import { TrueFalseComponent } from '../action-params/true-false.component';
 import { DevRestApiTemplateVars } from '../api-template-vars';
+import { TrueFalseComponent } from '../true-false/true-false.component';
+import { TrueFalseParams } from '../true-false/true-false.models';
 
 @Component({
   selector: 'app-dev-api-permissions',
@@ -12,7 +12,6 @@ import { DevRestApiTemplateVars } from '../api-template-vars';
 export class DevRestApiPermissionsComponent implements OnInit, OnChanges {
   @Input() data: DevRestApiTemplateVars;
 
-  gridModules: Module[];
   gridOptions: GridOptions;
   gridItems: ApiPermissionsGridItem[];
   gridHeight: string;
@@ -20,27 +19,7 @@ export class DevRestApiPermissionsComponent implements OnInit, OnChanges {
   constructor() { }
 
   ngOnInit() {
-    this.gridModules = AllCommunityModules;
-    const booleanColumnDef: ColDef = {
-      headerClass: 'dense', width: 80, cellClass: 'no-outline', cellRenderer: TrueFalseComponent,
-      cellRendererParams: { reverse: false } as TrueFalseParams,
-    };
-    this.gridOptions = {
-      ...defaultGridOptions,
-      columnDefs: [
-        {
-          field: 'Requirement', flex: 2, minWidth: 200, cellClass: 'no-outline',
-          valueGetter: (params) => (params.data as ApiPermissionsGridItem).requirement,
-        },
-        { ...booleanColumnDef, field: 'Class', valueGetter: (params) => (params.data as ApiPermissionsGridItem).class },
-        { ...booleanColumnDef, field: 'Method', valueGetter: (params) => (params.data as ApiPermissionsGridItem).method },
-        { ...booleanColumnDef, field: 'Effective', valueGetter: (params) => (params.data as ApiPermissionsGridItem).effective },
-        {
-          field: 'Comments', flex: 3, minWidth: 250, cellClass: 'no-outline',
-          valueGetter: (params) => (params.data as ApiPermissionsGridItem).comments,
-        },
-      ],
-    };
+    this.gridOptions = this.buildGridOptions();
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -109,6 +88,71 @@ export class DevRestApiPermissionsComponent implements OnInit, OnChanges {
       },
     ];
     this.gridHeight = `${33 + this.gridItems.length * 48}px`;
+  }
+
+  private buildGridOptions(): GridOptions {
+    const booleanColumnDef: ColDef = {
+      headerClass: 'dense',
+      width: 80,
+      cellClass: 'no-outline',
+      cellRenderer: TrueFalseComponent,
+      cellRendererParams: (() => {
+        const params: TrueFalseParams = {
+          reverse: false,
+        };
+        return params;
+      })(),
+    };
+    const gridOptions: GridOptions = {
+      ...defaultGridOptions,
+      columnDefs: [
+        {
+          field: 'Requirement',
+          flex: 2,
+          minWidth: 200,
+          cellClass: 'no-outline',
+          valueGetter: (params) => {
+            const item: ApiPermissionsGridItem = params.data;
+            return item.requirement;
+          },
+        },
+        {
+          ...booleanColumnDef,
+          field: 'Class',
+          valueGetter: (params) => {
+            const item: ApiPermissionsGridItem = params.data;
+            return item.class;
+          },
+        },
+        {
+          ...booleanColumnDef,
+          field: 'Method',
+          valueGetter: (params) => {
+            const item: ApiPermissionsGridItem = params.data;
+            return item.method;
+          },
+        },
+        {
+          ...booleanColumnDef,
+          field: 'Effective',
+          valueGetter: (params) => {
+            const item: ApiPermissionsGridItem = params.data;
+            return item.effective;
+          },
+        },
+        {
+          field: 'Comments',
+          flex: 3,
+          minWidth: 250,
+          cellClass: 'no-outline',
+          valueGetter: (params) => {
+            const item: ApiPermissionsGridItem = params.data;
+            return item.comments;
+          },
+        },
+      ],
+    };
+    return gridOptions;
   }
 }
 

@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { combineLatest, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { combineLatest, map, Observable } from 'rxjs';
 import { EavService } from '../../../shared/services';
 import { ItemService } from '../../../shared/store/ngrx-data';
 import { DataDumpTemplateVars } from './data-dump.component.models';

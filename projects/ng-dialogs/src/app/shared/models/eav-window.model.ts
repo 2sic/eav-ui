@@ -1,5 +1,5 @@
-import { SxcRoot } from '@2sic.com/2sxc-typings';
-import { TinyMCE } from 'tinymce';
+import type { SxcRoot } from '@2sic.com/2sxc-typings';
+import type { TinyMCE } from 'tinymce';
 import { FieldLogicManager } from '../../../../../edit/form/shared/field-logic/field-logic-manager';
 import { PlumbType } from '../../visual-query/plumb-editor/plumb-editor.models';
 import { RequirejsType } from './requirejs.models';

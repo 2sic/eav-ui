@@ -1,13 +1,13 @@
-import { AllCommunityModules, GridOptions } from '@ag-grid-community/all-modules';
+import { GridOptions } from '@ag-grid-community/core';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { BehaviorSubject, Subscription } from 'rxjs';
-import { filter, map, pairwise, startWith } from 'rxjs/operators';
+import { BehaviorSubject, filter, map, pairwise, startWith, Subscription } from 'rxjs';
 import { ContentExportService } from '../../content-export/services/content-export.service';
 import { GoToDevRest } from '../../dev-rest/go-to-dev-rest';
 import { GoToMetadata } from '../../metadata';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
+import { FileUploadDialogData } from '../../shared/components/file-upload-dialog';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
@@ -15,11 +15,10 @@ import { eavConstants } from '../../shared/constants/eav.constants';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { EditForm } from '../../shared/models/edit-form.model';
 import { DialogService } from '../../shared/services/dialog.service';
-import { QueriesActionsParams, QueryActions } from '../ag-grid-components/queries-actions/queries-actions';
-import { QueriesActionsComponent } from '../ag-grid-components/queries-actions/queries-actions.component';
 import { Query } from '../models/query.model';
 import { PipelinesService } from '../services/pipelines.service';
-import { ImportQueryDialogData } from '../sub-dialogs/import-query/import-query-dialog.config';
+import { QueriesActionsParams, QueryActions } from './queries-actions/queries-actions';
+import { QueriesActionsComponent } from './queries-actions/queries-actions.component';
 
 @Component({
   selector: 'app-queries',
@@ -30,38 +29,7 @@ export class QueriesComponent implements OnInit, OnDestroy {
   @Input() enablePermissions: boolean;
 
   queries$ = new BehaviorSubject<Query[]>(undefined);
-  modules = AllCommunityModules;
-  gridOptions: GridOptions = {
-    ...defaultGridOptions,
-    columnDefs: [
-      {
-        headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense',
-        cellClass: (params) => `${(params.data as Query)._EditInfo.ReadOnly ? 'disabled' : ''} id-action no-padding no-outline`.split(' '),
-        cellRenderer: IdFieldComponent, sortable: true, filter: 'agNumberColumnFilter',
-        valueGetter: (params) => (params.data as Query).Id,
-        cellRendererParams: {
-          tooltipGetter: (query: Query) => `ID: ${query.Id}\nGUID: ${query.Guid}`,
-        } as IdFieldParams,
-      },
-      {
-        field: 'Name', flex: 2, minWidth: 250, sortable: true,
-        cellClass: (params) => `${(params.data as Query)._EditInfo.ReadOnly ? 'no-outline' : 'primary-action highlight'}`.split(' '),
-        sort: 'asc', filter: 'agTextColumnFilter', onCellClicked: (params) => this.openVisualQueryDesigner(params.data as Query),
-        valueGetter: (params) => (params.data as Query).Name,
-      },
-      {
-        field: 'Description', flex: 2, minWidth: 250, cellClass: 'no-outline', sortable: true,
-        filter: 'agTextColumnFilter', valueGetter: (params) => (params.data as Query).Description,
-      },
-      {
-        width: 162, cellClass: 'secondary-action no-padding'.split(' '), pinned: 'right',
-        cellRenderer: QueriesActionsComponent, cellRendererParams: {
-          getEnablePermissions: () => this.enablePermissionsGetter(),
-          do: (action, query) => this.doMenuAction(action, query),
-        } as QueriesActionsParams,
-      },
-    ],
-  };
+  gridOptions = this.buildGridOptions();
 
   private subscription = new Subscription();
 
@@ -91,7 +59,7 @@ export class QueriesComponent implements OnInit, OnDestroy {
   }
 
   importQuery(files?: File[]) {
-    const dialogData: ImportQueryDialogData = { files };
+    const dialogData: FileUploadDialogData = { files };
     this.router.navigate(['import'], { relativeTo: this.route.firstChild, state: dialogData });
   }
 
@@ -190,4 +158,80 @@ export class QueriesComponent implements OnInit, OnDestroy {
     );
   }
 
+  private buildGridOptions(): GridOptions {
+    const gridOptions: GridOptions = {
+      ...defaultGridOptions,
+      columnDefs: [
+        {
+          headerName: 'ID',
+          field: 'Id',
+          width: 70,
+          headerClass: 'dense',
+          sortable: true,
+          filter: 'agNumberColumnFilter',
+          cellClass: (params) => {
+            const query: Query = params.data;
+            return `id-action no-padding no-outline ${query._EditInfo.ReadOnly ? 'disabled' : ''}`.split(' ');
+          },
+          valueGetter: (params) => {
+            const query: Query = params.data;
+            return query.Id;
+          },
+          cellRenderer: IdFieldComponent,
+          cellRendererParams: (() => {
+            const params: IdFieldParams<Query> = {
+              tooltipGetter: (query) => `ID: ${query.Id}\nGUID: ${query.Guid}`,
+            };
+            return params;
+          })(),
+        },
+        {
+          field: 'Name',
+          flex: 2,
+          minWidth: 250,
+          sortable: true,
+          sort: 'asc',
+          filter: 'agTextColumnFilter',
+          cellClass: (params) => {
+            const query: Query = params.data;
+            return `${query._EditInfo.ReadOnly ? 'no-outline' : 'primary-action highlight'}`.split(' ');
+          },
+          onCellClicked: (params) => {
+            const query: Query = params.data;
+            this.openVisualQueryDesigner(query);
+          },
+          valueGetter: (params) => {
+            const query: Query = params.data;
+            return query.Name;
+          },
+        },
+        {
+          field: 'Description',
+          flex: 2,
+          minWidth: 250,
+          cellClass: 'no-outline',
+          sortable: true,
+          filter: 'agTextColumnFilter',
+          valueGetter: (params) => {
+            const query: Query = params.data;
+            return query.Description;
+          },
+        },
+        {
+          width: 162,
+          cellClass: 'secondary-action no-padding'.split(' '),
+          pinned: 'right',
+          cellRenderer: QueriesActionsComponent,
+          cellRendererParams: (() => {
+            const params: QueriesActionsParams = {
+              getEnablePermissions: () => this.enablePermissionsGetter(),
+              do: (action, query) => this.doMenuAction(action, query),
+            };
+            return params;
+          })(),
+        },
+      ],
+    };
+    return gridOptions;
+  }
 }

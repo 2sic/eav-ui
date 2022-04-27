@@ -1,12 +1,13 @@
 import { InputFieldHelpers, LocalizationHelpers } from '.';
 import { FieldSettings, FieldValue } from '../../../edit-types';
+import { Feature } from '../../../ng-dialogs/src/app/apps-management/models/feature.model';
 import { InputType } from '../../../ng-dialogs/src/app/content-type-fields/models/input-type.model';
 import { DesignerSnippet, FieldOption } from '../../dialog/footer/formula-designer/formula-designer.models';
 // tslint:disable-next-line:max-line-length
 import { FormulaCacheItem, FormulaFunction, FormulaProps, FormulaPropsV1, FormulaTargets, FormulaV1Data, FormulaV1ExperimentalEntity, FormulaVersion, FormulaVersions, FormValues, Language, SettingsFormulaPrefix } from '../models';
 import { EavHeader } from '../models/eav';
 import { EavService, FieldsSettingsService } from '../services';
-import { ItemService } from '../store/ngrx-data';
+import { FeatureService, ItemService } from '../store/ngrx-data';
 
 export class FormulaHelpers {
 
@@ -54,6 +55,7 @@ export class FormulaHelpers {
     itemService: ItemService,
     eavService: EavService,
     fieldsSettingsService: FieldsSettingsService,
+    featureService: FeatureService,
   ): FormulaProps {
 
     switch (formula.version) {
@@ -62,6 +64,7 @@ export class FormulaHelpers {
           ...formValues,
           get default() { return undefined as FieldValue; },
           get initial() { return undefined as FieldValue; },
+          get parameters() { return undefined as Record<string, any>; },
           get prefill() { return undefined as FieldValue; },
           get value() { return undefined as FieldValue; },
         };
@@ -81,6 +84,11 @@ export class FormulaHelpers {
             get(): FieldValue {
               if (formula.target !== FormulaTargets.Value) { return; }
               return initialFormValues[formula.fieldName];
+            },
+          },
+          parameters: {
+            get(): string {
+              return JSON.parse(JSON.stringify(itemHeader.Prefill));
             },
           },
           prefill: {
@@ -110,6 +118,14 @@ export class FormulaHelpers {
               name: languages.find(l => l.NameId === currentLanguage)?.Culture,
             },
             debug: debugEnabled,
+            features: {
+              get(name: string): Feature {
+                return featureService.getFeature(name);
+              },
+              isEnabled(name: string): boolean {
+                return featureService.isFeatureEnabled(name);
+              },
+            },
             target: {
               entity: {
                 guid: formula.entityGuid,
@@ -160,31 +176,15 @@ export class FormulaHelpers {
   static buildDesignerSnippets(formula: FormulaCacheItem, fieldOptions: FieldOption[]): DesignerSnippet[] {
     switch (formula.version) {
       case FormulaVersions.V1:
-        const valueSnippet: DesignerSnippet = {
-          code: 'data.value',
-          label: 'data.value',
-        };
-
-        const defaultSnippet: DesignerSnippet = {
-          code: 'data.default',
-          label: 'data.default',
-        };
-
-        const prefillSnippet: DesignerSnippet = {
-          code: 'data.prefill',
-          label: 'data.prefill',
-        };
-
-        const fieldSnippets = fieldOptions.map(field => {
-          const code = `data.${field.fieldName}`;
+        const snippets = ['value', 'default', 'prefill', 'initial', 'parameters', ...fieldOptions.map(f => f.fieldName)].map(name => {
+          const code = `data.${name}`;
           const fieldSnippet: DesignerSnippet = {
             code,
             label: code,
           };
           return fieldSnippet;
         });
-
-        return [valueSnippet, defaultSnippet, prefillSnippet, ...fieldSnippets];
+        return snippets;
       default:
         return;
     }

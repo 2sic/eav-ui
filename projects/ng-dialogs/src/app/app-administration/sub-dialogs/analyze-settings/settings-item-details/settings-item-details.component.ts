@@ -1,11 +1,11 @@
-import { AllCommunityModules, GridOptions } from '@ag-grid-community/all-modules';
+import { GridOptions } from '@ag-grid-community/core';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { defaultGridOptions } from '../../../../shared/constants/default-grid-options.constants';
-import { AnalyzeSettingsValueComponent } from '../../../ag-grid-components/analyze-settings-value/analyze-settings-value.component';
 import { AnalyzeSettingsService } from '../../../services/analyze-settings.service';
+import { AnalyzeSettingsValueComponent } from '../analyze-settings-value/analyze-settings-value.component';
 import { AnalyzePart, SettingsStackItem } from '../analyze-settings.models';
 
 @Component({
@@ -18,23 +18,7 @@ export class SettingsItemDetailsComponent implements OnInit, OnDestroy {
   selectedView: string;
   settingsItemKey: string;
   stack$: BehaviorSubject<SettingsStackItem[]>;
-
-  modules = AllCommunityModules;
-  gridOptions: GridOptions = {
-    ...defaultGridOptions,
-    columnDefs: [
-      {
-        field: 'Value', flex: 2, minWidth: 250, cellClass: 'primary-action no-padding no-outline'.split(' '),
-        cellRenderer: AnalyzeSettingsValueComponent, sortable: true, filter: 'agTextColumnFilter',
-        valueGetter: (params) => (params.data as SettingsStackItem)._value,
-      },
-      {
-        field: 'Source', flex: 1, minWidth: 150, cellClass: 'no-outline',
-        sortable: true, filter: 'agTextColumnFilter',
-        valueGetter: (params) => (params.data as SettingsStackItem).Source,
-      },
-    ],
-  };
+  gridOptions = this.buildGridOptions();
 
   constructor(
     private dialogRef: MatDialogRef<SettingsItemDetailsComponent>,
@@ -60,5 +44,39 @@ export class SettingsItemDetailsComponent implements OnInit, OnDestroy {
 
   closeDialog(): void {
     this.dialogRef.close();
+  }
+
+  private buildGridOptions(): GridOptions {
+    const gridOptions: GridOptions = {
+      ...defaultGridOptions,
+      columnDefs: [
+        {
+          field: 'Value',
+          flex: 2,
+          minWidth: 250,
+          cellClass: 'primary-action no-padding no-outline'.split(' '),
+          sortable: true,
+          filter: 'agTextColumnFilter',
+          valueGetter: (params) => {
+            const item: SettingsStackItem = params.data;
+            return item._value;
+          },
+          cellRenderer: AnalyzeSettingsValueComponent,
+        },
+        {
+          field: 'Source',
+          flex: 1,
+          minWidth: 150,
+          cellClass: 'no-outline',
+          sortable: true,
+          filter: 'agTextColumnFilter',
+          valueGetter: (params) => {
+            const item: SettingsStackItem = params.data;
+            return item.Source;
+          },
+        },
+      ],
+    };
+    return gridOptions;
   }
 }

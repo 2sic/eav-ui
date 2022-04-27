@@ -1,15 +1,15 @@
-import { AllCommunityModules, GridOptions } from '@ag-grid-community/all-modules';
+import { GridOptions } from '@ag-grid-community/core';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { BehaviorSubject, from, Subscription } from 'rxjs';
-import { distinctUntilChanged, filter, map, pairwise, startWith, take } from 'rxjs/operators';
+import { BehaviorSubject, distinctUntilChanged, filter, from, map, pairwise, startWith, Subscription, take } from 'rxjs';
 import { GlobalConfigService } from '../../../../../edit/shared/store/ngrx-data';
 import { ContentExportService } from '../../content-export/services/content-export.service';
 import { ContentImportDialogData } from '../../content-import/content-import-dialog.config';
 import { GoToDevRest } from '../../dev-rest/go-to-dev-rest';
 import { GoToMetadata } from '../../metadata';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
+import { FileUploadDialogData } from '../../shared/components/file-upload-dialog';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
@@ -18,15 +18,14 @@ import { eavConstants, ScopeOption } from '../../shared/constants/eav.constants'
 import { toString } from '../../shared/helpers/file-to-base64.helper';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { EditForm } from '../../shared/models/edit-form.model';
-import { DataActionsComponent } from '../ag-grid-components/data-actions/data-actions.component';
-import { DataActionsParams } from '../ag-grid-components/data-actions/data-actions.models';
-import { DataFieldsComponent } from '../ag-grid-components/data-fields/data-fields.component';
-import { DataFieldsParams } from '../ag-grid-components/data-fields/data-fields.models';
-import { DataItemsComponent } from '../ag-grid-components/data-items/data-items.component';
-import { DataItemsParams } from '../ag-grid-components/data-items/data-items.models';
 import { ContentType } from '../models/content-type.model';
 import { ContentTypesService } from '../services/content-types.service';
-import { ImportContentTypeDialogData } from '../sub-dialogs/import-content-type/import-content-type-dialog.config';
+import { DataActionsComponent } from './data-actions/data-actions.component';
+import { DataActionsParams } from './data-actions/data-actions.models';
+import { DataFieldsComponent } from './data-fields/data-fields.component';
+import { DataFieldsParams } from './data-fields/data-fields.models';
+import { DataItemsComponent } from './data-items/data-items.component';
+import { DataItemsParams } from './data-items/data-items.models';
 
 @Component({
   selector: 'app-data',
@@ -40,78 +39,9 @@ export class DataComponent implements OnInit, OnDestroy {
   scope$ = new BehaviorSubject<string>(undefined);
   scopeOptions$ = new BehaviorSubject<ScopeOption[]>([]);
   debugEnabled$ = this.globalConfigService.getDebugEnabled$();
-
-  modules = AllCommunityModules;
-  gridOptions: GridOptions = {
-    ...defaultGridOptions,
-    columnDefs: [
-      {
-        headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense',
-        cellClass: (params) => `${(params.data as ContentType).EditInfo.ReadOnly ? 'disabled' : ''} id-action no-padding no-outline`.split(' '),
-        cellRenderer: IdFieldComponent, sortable: true, filter: 'agNumberColumnFilter',
-        valueGetter: (params) => (params.data as ContentType).Id,
-        cellRendererParams: {
-          tooltipGetter: (contentType: ContentType) => `ID: ${contentType.Id}\nGUID: ${contentType.StaticName}`,
-        } as IdFieldParams,
-      },
-      {
-        headerName: 'Content Type', field: 'ContentType', flex: 3, minWidth: 250, cellClass: 'primary-action highlight'.split(' '),
-        sortable: true, sort: 'asc', filter: 'agTextColumnFilter',
-        onCellClicked: (params) => this.showContentItems(params.data as ContentType),
-        valueGetter: (params) => (params.data as ContentType).Label,
-        comparator: (valueA, valueB, nodeA, nodeB, isInverted) => {
-          const a = (nodeA.data as ContentType)._compareLabel;
-          const b = (nodeB.data as ContentType)._compareLabel;
-          return a.localeCompare(b);
-        },
-      },
-      {
-        field: 'Items', width: 102, headerClass: 'dense', cellClass: 'secondary-action no-padding'.split(' '),
-        sortable: true, filter: 'agNumberColumnFilter', cellRenderer: DataItemsComponent,
-        valueGetter: (params) => (params.data as ContentType).Items,
-        cellRendererParams: {
-          onShowItems: (contentType) => this.showContentItems(contentType),
-          onAddItem: (contentType) => this.addItem(contentType),
-        } as DataItemsParams,
-      },
-      {
-        field: 'Fields', width: 94, headerClass: 'dense', cellClass: 'secondary-action no-padding'.split(' '),
-        sortable: true, filter: 'agNumberColumnFilter', cellRenderer: DataFieldsComponent,
-        valueGetter: (params) => (params.data as ContentType).Fields,
-        cellRendererParams: {
-          onEditFields: (contentType) => this.editFields(contentType),
-        } as DataFieldsParams,
-      },
-      {
-        field: 'Name', flex: 1, minWidth: 100,
-        cellClass: (params) => `${(params.data as ContentType).EditInfo.ReadOnly ? 'no-outline' : 'primary-action highlight'}`.split(' '),
-        valueGetter: (params) => (params.data as ContentType).Name,
-        sortable: true, filter: 'agTextColumnFilter', onCellClicked: (event) => this.editContentType(event.data as ContentType),
-      },
-      {
-        field: 'Description', flex: 3, minWidth: 250, cellClass: 'no-outline',
-        sortable: true, filter: 'agTextColumnFilter',
-        valueGetter: (params) => (params.data as ContentType).Properties?.Description,
-      },
-      {
-        width: 162, cellClass: 'secondary-action no-padding'.split(' '), cellRenderer: DataActionsComponent, pinned: 'right',
-        cellRendererParams: {
-          enablePermissionsGetter: () => this.enablePermissionsGetter(),
-          onCreateOrEditMetadata: (contentType) => this.createOrEditMetadata(contentType),
-          onOpenPermissions: (contentType) => this.openPermissions(contentType),
-          onEdit: (contentType) => this.editContentType(contentType),
-          onOpenRestApi: (contentType) => this.openRestApi(contentType),
-          onOpenMetadata: (contentType) => this.openMetadata(contentType),
-          onTypeExport: (contentType) => this.exportType(contentType),
-          onOpenDataExport: (contentType) => this.openDataExport(contentType),
-          onOpenDataImport: (contentType) => this.openDataImport(contentType),
-          onDelete: (contentType) => this.deleteContentType(contentType),
-        } as DataActionsParams,
-      },
-    ],
-  };
-
+  gridOptions = this.buildGridOptions();
   dropdownInsertValue = dropdownInsertValue;
+
   private subscription = new Subscription();
 
   constructor(
@@ -159,8 +89,8 @@ export class DataComponent implements OnInit, OnDestroy {
   }
 
   importType(files?: File[]) {
-    const importContentTypeData: ImportContentTypeDialogData = { files };
-    this.router.navigate(['import'], { relativeTo: this.route.firstChild, state: importContentTypeData });
+    const dialogData: FileUploadDialogData = { files };
+    this.router.navigate(['import'], { relativeTo: this.route.firstChild, state: dialogData });
   }
 
   private showContentItems(contentType: ContentType) {
@@ -331,4 +261,149 @@ export class DataComponent implements OnInit, OnDestroy {
     );
   }
 
+  private buildGridOptions(): GridOptions {
+    const gridOptions: GridOptions = {
+      ...defaultGridOptions,
+      columnDefs: [
+        {
+          headerName: 'ID',
+          field: 'Id',
+          width: 70,
+          headerClass: 'dense',
+          sortable: true,
+          filter: 'agNumberColumnFilter',
+          cellClass: (params) => {
+            const contentType: ContentType = params.data;
+            return `id-action no-padding no-outline ${contentType.EditInfo.ReadOnly ? 'disabled' : ''}`.split(' ');
+          },
+          valueGetter: (params) => {
+            const contentType: ContentType = params.data;
+            return contentType.Id;
+          },
+          cellRenderer: IdFieldComponent,
+          cellRendererParams: (() => {
+            const params: IdFieldParams<ContentType> = {
+              tooltipGetter: (contentType) => `ID: ${contentType.Id}\nGUID: ${contentType.StaticName}`,
+            };
+            return params;
+          })(),
+        },
+        {
+          headerName: 'Content Type',
+          field: 'ContentType',
+          flex: 3,
+          minWidth: 250,
+          cellClass: 'primary-action highlight'.split(' '),
+          sortable: true,
+          sort: 'asc',
+          filter: 'agTextColumnFilter',
+          onCellClicked: (params) => {
+            const contentType: ContentType = params.data;
+            this.showContentItems(contentType);
+          },
+          valueGetter: (params) => {
+            const contentType: ContentType = params.data;
+            return contentType.Label;
+          },
+          comparator: (valueA, valueB, nodeA, nodeB, isInverted) => {
+            const contentTypeA: ContentType = nodeA.data;
+            const contentTypeB: ContentType = nodeB.data;
+            return contentTypeA._compareLabel.localeCompare(contentTypeB._compareLabel);
+          },
+        },
+        {
+          field: 'Items',
+          width: 102,
+          headerClass: 'dense',
+          cellClass: 'secondary-action no-padding'.split(' '),
+          sortable: true,
+          filter: 'agNumberColumnFilter',
+          valueGetter: (params) => {
+            const contentType: ContentType = params.data;
+            return contentType.Items;
+          },
+          cellRenderer: DataItemsComponent,
+          cellRendererParams: (() => {
+            const params: DataItemsParams = {
+              onShowItems: (contentType) => this.showContentItems(contentType),
+              onAddItem: (contentType) => this.addItem(contentType),
+            };
+            return params;
+          })(),
+        },
+        {
+          field: 'Fields',
+          width: 94,
+          headerClass: 'dense',
+          cellClass: 'secondary-action no-padding'.split(' '),
+          sortable: true,
+          filter: 'agNumberColumnFilter',
+          valueGetter: (params) => {
+            const contentType: ContentType = params.data;
+            return contentType.Fields;
+          },
+          cellRenderer: DataFieldsComponent,
+          cellRendererParams: (() => {
+            const params: DataFieldsParams = {
+              onEditFields: (contentType) => this.editFields(contentType),
+            };
+            return params;
+          })(),
+        },
+        {
+          field: 'Name',
+          flex: 1,
+          minWidth: 100,
+          sortable: true,
+          filter: 'agTextColumnFilter',
+          cellClass: (params) => {
+            const contentType: ContentType = params.data;
+            return `${contentType.EditInfo.ReadOnly ? 'no-outline' : 'primary-action highlight'}`.split(' ');
+          },
+          valueGetter: (params) => {
+            const contentType: ContentType = params.data;
+            return contentType.Name;
+          },
+          onCellClicked: (params) => {
+            const contentType: ContentType = params.data;
+            this.editContentType(contentType);
+          },
+        },
+        {
+          field: 'Description',
+          flex: 3,
+          minWidth: 250,
+          cellClass: 'no-outline',
+          sortable: true,
+          filter: 'agTextColumnFilter',
+          valueGetter: (params) => {
+            const contentType: ContentType = params.data;
+            return contentType.Properties?.Description;
+          },
+        },
+        {
+          width: 162,
+          cellClass: 'secondary-action no-padding'.split(' '),
+          pinned: 'right',
+          cellRenderer: DataActionsComponent,
+          cellRendererParams: (() => {
+            const params: DataActionsParams = {
+              enablePermissionsGetter: () => this.enablePermissionsGetter(),
+              onCreateOrEditMetadata: (contentType) => this.createOrEditMetadata(contentType),
+              onOpenPermissions: (contentType) => this.openPermissions(contentType),
+              onEdit: (contentType) => this.editContentType(contentType),
+              onOpenRestApi: (contentType) => this.openRestApi(contentType),
+              onOpenMetadata: (contentType) => this.openMetadata(contentType),
+              onTypeExport: (contentType) => this.exportType(contentType),
+              onOpenDataExport: (contentType) => this.openDataExport(contentType),
+              onOpenDataImport: (contentType) => this.openDataImport(contentType),
+              onDelete: (contentType) => this.deleteContentType(contentType),
+            };
+            return params;
+          })(),
+        },
+      ],
+    };
+    return gridOptions;
+  }
 }

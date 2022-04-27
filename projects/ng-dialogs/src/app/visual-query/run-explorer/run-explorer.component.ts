@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, Observable } from 'rxjs';
 import { GeneralHelpers } from '../../../../../edit/shared/helpers';
 import { GoToDevRest } from '../../dev-rest';
 import { Context } from '../../shared/services/context';

@@ -1,4 +1,4 @@
-import { Editor } from 'tinymce';
+import type { Editor } from 'tinymce';
 import * as contentBlock from '../assets/icons/2sxc/content-block.svg';
 import * as fileDnn from '../assets/icons/2sxc/file-dnn.svg';
 import * as imageH1 from '../assets/icons/2sxc/H1.svg';

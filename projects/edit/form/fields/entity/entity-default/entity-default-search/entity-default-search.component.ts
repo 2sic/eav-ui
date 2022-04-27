@@ -2,8 +2,7 @@ import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, 
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { TranslateService } from '@ngx-translate/core';
-import { combineLatest, Observable } from 'rxjs';
-import { distinctUntilChanged, map } from 'rxjs/operators';
+import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { EntityInfo } from '../../../../../../edit-types';
 import { GeneralHelpers } from '../../../../../shared/helpers';
 import { FieldsSettingsService } from '../../../../../shared/services';

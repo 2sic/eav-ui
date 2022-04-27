@@ -1,8 +1,8 @@
 import { Component, HostBinding, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { asyncScheduler, BehaviorSubject, combineLatest, forkJoin, Observable, of, Subscription, timer } from 'rxjs';
-import { distinctUntilChanged, map, startWith, switchMap, tap, throttleTime } from 'rxjs/operators';
+// tslint:disable-next-line:max-line-length
+import { asyncScheduler, BehaviorSubject, combineLatest, distinctUntilChanged, forkJoin, map, Observable, of, startWith, Subscription, switchMap, tap, throttleTime, timer } from 'rxjs';
 import { CreateFileDialogData, CreateFileDialogResult, CreateFileFormControls, CreateFileFormValues, CreateFileTemplateVars } from '.';
 import { SanitizeHelper } from '../../../../edit/shared/helpers';
 import { PredefinedTemplate } from '../code-editor/models/predefined-template.model';

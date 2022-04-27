@@ -1,6 +1,5 @@
-import { Editor, RawEditorSettings } from 'tinymce';
-import { AddOnSettings, Connector } from '../../../edit-types';
-import { WysiwygReconfigure } from '../../../edit-types';
+import type { Editor, RawEditorSettings } from 'tinymce';
+import { AddOnSettings, Connector, WysiwygReconfigure } from '../../../edit-types';
 import { FeaturesConstants } from '../../../edit/shared/constants';
 import { EavWindow } from '../../../ng-dialogs/src/app/shared/models/eav-window.model';
 import * as contentStyle from '../editor/tinymce-content.scss';

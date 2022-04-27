@@ -16,20 +16,32 @@
     </mat-expansion-panel-header>
 
     <ng-container *ngIf="panel.expanded">
-      <ag-grid-angular class="ag-theme-material" [rowData]="license.Features" [modules]="modules"
-        [gridOptions]="gridOptions" appAgGridHeight [itemsCount]="license.Features?.length">
+      <ag-grid-angular class="ag-theme-material" [rowData]="license.Features" [gridOptions]="gridOptions"
+        appAgGridHeight [itemsCount]="license.Features?.length">
       </ag-grid-angular>
     </ng-container>
   </mat-expansion-panel>
 </mat-accordion>
 
-<div class="actions-box">
-  <button mat-button color="accent" tippy="Retrieve licenses" *ngIf="debugEnabled$ | async" (click)="retrieveLicense()">
-    <mat-icon>cloud_download</mat-icon>
-    <span>License</span>
-  </button>
-  <button mat-button color="accent" tippy="Upload license" *ngIf="debugEnabled$ | async" (click)="openLicenseUpload()">
-    <mat-icon>cloud_upload</mat-icon>
-    <span>License</span>
-  </button>
+<div class="spacer"></div>
+
+<div class="actions-box" *ngIf="{
+  debugEnabled: debugEnabled$ | async,
+  systemInfoSet: systemInfoSet$ | async
+} as data">
+  <ng-container *ngIf="data.debugEnabled">
+    <button mat-button color="accent" tippy="Retrieve licenses" (click)="retrieveLicense()">
+      <mat-icon>cloud_download</mat-icon>
+      <span>License</span>
+    </button>
+    <button mat-button color="accent" tippy="Upload license" (click)="openLicenseUpload()">
+      <mat-icon>cloud_upload</mat-icon>
+      <span>License</span>
+    </button>
+    <button mat-button color="accent" tippy="Register" *ngIf="data.systemInfoSet"
+      (click)="openLicenseRegistration(data.systemInfoSet)">
+      <mat-icon>app_registration</mat-icon>
+      <span>Register</span>
+    </button>
+  </ng-container>
 </div>

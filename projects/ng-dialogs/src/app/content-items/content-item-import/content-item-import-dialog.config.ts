@@ -11,7 +11,3 @@ export const contentItemImportDialog: DialogConfig = {
     return ContentItemImportComponent;
   }
 };
-
-export interface ContentItemImportDialogData {
-  files?: File[];
-}

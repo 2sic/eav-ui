@@ -1,7 +1,6 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { distinctUntilChanged, map, share } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, share } from 'rxjs';
 import { AdamItem } from '../../../../edit-types';
 import { eavConstants } from '../../../../ng-dialogs/src/app/shared/constants/eav.constants';
 import { EditForm } from '../../../../ng-dialogs/src/app/shared/models/edit-form.model';
@@ -149,15 +148,15 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
     this.formsStateService.saveForm$.next(close);
   }
 
-  openImageConfiguration(adamItem: AdamItem) {
-    if (this.formsStateService.readOnly$.value.isReadOnly) { return; }
+  openImageConfiguration(adamItem?: AdamItem) {
+    if (this.formsStateService.readOnly$.value.isReadOnly || !adamItem?._imageConfigurationContentType) { return; }
 
     const form: EditForm = {
       items: [
         adamItem._imageConfigurationId > 0
           ? { EntityId: adamItem._imageConfigurationId }
           : {
-            ContentTypeName: eavConstants.contentTypes.imageDecorator,
+            ContentTypeName: adamItem._imageConfigurationContentType,
             For: {
               Target: eavConstants.metadata.cmsObject.target,
               TargetType: eavConstants.metadata.cmsObject.targetType,

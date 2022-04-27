@@ -1,4 +1,4 @@
-import { ColDef } from '@ag-grid-community/all-modules';
+import { ColDef } from '@ag-grid-community/core';
 
 export interface ExtendedColDef extends ColDef {
   /** For entity field */

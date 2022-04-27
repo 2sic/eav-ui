@@ -1,4 +1,4 @@
-import { Editor } from 'tinymce';
+import type { Editor } from 'tinymce';
 import { Adam, AdamItem, AdamPostResponse } from '../../../edit-types';
 
 export function attachAdam(editor: Editor, adam: Adam): void {

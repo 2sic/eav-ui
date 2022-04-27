@@ -3,8 +3,7 @@ import { NgForm } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject, forkJoin, of, Subscription } from 'rxjs';
-import { catchError, concatMap, filter, map, mergeMap, share, toArray } from 'rxjs/operators';
+import { BehaviorSubject, catchError, concatMap, filter, forkJoin, map, of, share, Subscription, switchMap, toArray } from 'rxjs';
 import { fieldNameError, fieldNamePattern } from '../../app-administration/constants/field-name.patterns';
 import { ContentType } from '../../app-administration/models/content-type.model';
 import { ContentTypesService } from '../../app-administration/services/content-types.service';
@@ -66,7 +65,7 @@ export class EditContentTypeFieldsComponent implements OnInit, OnDestroy {
 
     const contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
     const contentType$ = this.contentTypesService.retrieveContentType(contentTypeStaticName).pipe(share());
-    const fields$ = contentType$.pipe(mergeMap(contentType => this.contentTypesFieldsService.getFields(contentType.StaticName)));
+    const fields$ = contentType$.pipe(switchMap(contentType => this.contentTypesFieldsService.getFields(contentType.StaticName)));
     const dataTypes$ = this.contentTypesFieldsService.typeListRetrieve().pipe(map(rawDataTypes => calculateDataTypes(rawDataTypes)));
     const inputTypes$ = this.contentTypesFieldsService.getInputTypesList();
     const reservedNames$ = this.contentTypesFieldsService.getReservedNames();

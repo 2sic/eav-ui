@@ -1,7 +1,6 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { combineLatest, Observable } from 'rxjs';
-import { distinctUntilChanged, map } from 'rxjs/operators';
+import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { AdamItem, AdamPostResponse } from '../../../../../edit-types';
 import { InputTypeConstants } from '../../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { eavConstants } from '../../../../../ng-dialogs/src/app/shared/constants/eav.constants';
@@ -124,15 +123,15 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
     this.config.adam.toggle(usePortalRoot, showImagesOnly);
   }
 
-  openImageConfiguration(adamItem: AdamItem) {
-    if (this.formsStateService.readOnly$.value.isReadOnly) { return; }
+  openImageConfiguration(adamItem?: AdamItem) {
+    if (this.formsStateService.readOnly$.value.isReadOnly || !adamItem?._imageConfigurationContentType) { return; }
 
     const form: EditForm = {
       items: [
         adamItem._imageConfigurationId > 0
           ? { EntityId: adamItem._imageConfigurationId }
           : {
-            ContentTypeName: eavConstants.contentTypes.imageDecorator,
+            ContentTypeName: adamItem._imageConfigurationContentType,
             For: {
               Target: eavConstants.metadata.cmsObject.target,
               TargetType: eavConstants.metadata.cmsObject.targetType,

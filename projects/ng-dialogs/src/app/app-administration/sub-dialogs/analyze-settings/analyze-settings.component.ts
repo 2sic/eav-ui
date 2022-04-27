@@ -1,17 +1,16 @@
-import { AllCommunityModules, GridOptions } from '@ag-grid-community/all-modules';
+import { GridOptions } from '@ag-grid-community/core';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { defaultGridOptions } from '../../../shared/constants/default-grid-options.constants';
-import { AnalyzeSettingsKeyComponent } from '../../ag-grid-components/analyze-settings-key/analyze-settings-key.component';
-import { AnalyzeSettingsTotalResultsComponent } from '../../ag-grid-components/analyze-settings-total-results/analyze-settings-total-results.component';
-import { AnalyzeSettingsTotalResultsParams } from '../../ag-grid-components/analyze-settings-total-results/analyze-settings-total-results.models';
-import { AnalyzeSettingsValueComponent } from '../../ag-grid-components/analyze-settings-value/analyze-settings-value.component';
 import { View } from '../../models';
 import { ViewsService } from '../../services';
 import { AnalyzeSettingsService } from '../../services/analyze-settings.service';
+import { AnalyzeSettingsKeyComponent } from './analyze-settings-key/analyze-settings-key.component';
+import { AnalyzeSettingsTotalResultsComponent } from './analyze-settings-total-results/analyze-settings-total-results.component';
+import { AnalyzeSettingsTotalResultsParams } from './analyze-settings-total-results/analyze-settings-total-results.models';
+import { AnalyzeSettingsValueComponent } from './analyze-settings-value/analyze-settings-value.component';
 import { AnalyzePart, AnalyzeSettingsTemplateVars, SettingsStackItem } from './analyze-settings.models';
 
 @Component({
@@ -22,38 +21,7 @@ import { AnalyzePart, AnalyzeSettingsTemplateVars, SettingsStackItem } from './a
 export class AnalyzeSettingsComponent implements OnInit, OnDestroy {
   part: AnalyzePart;
   templateVars$: Observable<AnalyzeSettingsTemplateVars>;
-
-  modules = AllCommunityModules;
-  gridOptions: GridOptions = {
-    ...defaultGridOptions,
-    columnDefs: [
-      {
-        field: 'Key', flex: 2, minWidth: 250, cellClass: 'primary-action no-padding no-outline'.split(' '),
-        cellRenderer: AnalyzeSettingsKeyComponent, sortable: true, filter: 'agTextColumnFilter',
-        valueGetter: (params) => (params.data as SettingsStackItem).Path,
-      },
-      {
-        field: 'Value', flex: 2, minWidth: 250, cellClass: 'primary-action no-padding no-outline'.split(' '),
-        cellRenderer: AnalyzeSettingsValueComponent, sortable: true, filter: 'agTextColumnFilter',
-        valueGetter: (params) => (params.data as SettingsStackItem)._value,
-      },
-      {
-        field: 'Source', flex: 1, minWidth: 150, cellClass: 'no-outline',
-        sortable: true, filter: 'agTextColumnFilter',
-        valueGetter: (params) => (params.data as SettingsStackItem).Source,
-      },
-      {
-        field: 'Total', width: 72, headerClass: 'dense', cellClass: 'secondary-action no-padding no-outline'.split(' '),
-        cellRenderer: AnalyzeSettingsTotalResultsComponent, sortable: true, filter: 'agNumberColumnFilter',
-        valueGetter: (params) => (params.data as SettingsStackItem).TotalResults,
-        cellRendererParams: {
-          openDetails: (stackItem) => {
-            this.router.navigate([`details/${this.selectedView$.value}/${stackItem.Path}`], { relativeTo: this.route });
-          },
-        } as AnalyzeSettingsTotalResultsParams,
-      },
-    ],
-  };
+  gridOptions = this.buildGridOptions();
 
   private views$: BehaviorSubject<View[]>;
   private selectedView$: BehaviorSubject<string>;
@@ -114,5 +82,73 @@ export class AnalyzeSettingsComponent implements OnInit, OnDestroy {
     this.analyzeSettingsService.getStack(this.part, undefined, this.selectedView$.value, true).subscribe(stack => {
       this.stack$.next(stack);
     });
+  }
+
+  private buildGridOptions(): GridOptions {
+    const gridOptions: GridOptions = {
+      ...defaultGridOptions,
+      columnDefs: [
+        {
+          field: 'Key',
+          flex: 2,
+          minWidth: 250,
+          cellClass: 'primary-action no-padding no-outline'.split(' '),
+          sortable: true,
+          filter: 'agTextColumnFilter',
+          valueGetter: (params) => {
+            const item: SettingsStackItem = params.data;
+            return item.Path;
+          },
+          cellRenderer: AnalyzeSettingsKeyComponent,
+        },
+        {
+          field: 'Value',
+          flex: 2,
+          minWidth: 250,
+          cellClass: 'primary-action no-padding no-outline'.split(' '),
+          sortable: true,
+          filter: 'agTextColumnFilter',
+          valueGetter: (params) => {
+            const item: SettingsStackItem = params.data;
+            return item._value;
+          },
+          cellRenderer: AnalyzeSettingsValueComponent,
+        },
+        {
+          field: 'Source',
+          flex: 1,
+          minWidth: 150,
+          cellClass: 'no-outline',
+          sortable: true,
+          filter: 'agTextColumnFilter',
+          valueGetter: (params) => {
+            const item: SettingsStackItem = params.data;
+            return item.Source;
+          },
+        },
+        {
+          field: 'Total',
+          width: 72,
+          headerClass: 'dense',
+          cellClass: 'secondary-action no-padding no-outline'.split(' '),
+          sortable: true,
+          filter: 'agNumberColumnFilter',
+          valueGetter: (params) => {
+            const item: SettingsStackItem = params.data;
+            return item.TotalResults;
+          },
+          cellRenderer: AnalyzeSettingsTotalResultsComponent,
+          cellRendererParams: (() => {
+            const params: AnalyzeSettingsTotalResultsParams = {
+              openDetails: (stackItem) => {
+                this.router.navigate([`details/${this.selectedView$.value}/${stackItem.Path}`], { relativeTo: this.route });
+              },
+            };
+            return params;
+          })(),
+        },
+      ],
+    };
+    return gridOptions;
   }
 }

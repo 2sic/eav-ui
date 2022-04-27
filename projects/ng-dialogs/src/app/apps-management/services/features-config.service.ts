@@ -1,9 +1,10 @@
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
+import { FileUploadMessageTypes, FileUploadResult } from '../../shared/components/file-upload-dialog';
 import { FeatureState } from '../models/feature.model';
-import { License, UploadInfo } from '../models/license.model';
+import { License, LicenseDownloadInfo, LicenseUploadInfo } from '../models/license.model';
 
 const webApiFeatures = 'admin/feature/';
 const webApiLicense = 'sys/license/';
@@ -20,13 +21,24 @@ export class FeaturesConfigService {
     return this.http.get<License[]>(this.dnnContext.$2sxc.http.apiUrl(webApiLicense + 'Summary'));
   }
 
-  uploadLicense(file: File): Observable<UploadInfo> {
+  uploadLicense(file: File): Observable<FileUploadResult> {
     const formData = new FormData();
     formData.append('File', file);
-    return this.http.post<UploadInfo>(this.dnnContext.$2sxc.http.apiUrl(webApiLicense + 'Upload'), formData);
+    return this.http.post<LicenseUploadInfo>(this.dnnContext.$2sxc.http.apiUrl(webApiLicense + 'Upload'), formData).pipe(
+      map(info => {
+        const result: FileUploadResult = {
+          Success: info.Success,
+          Messages: [{
+            MessageType: info.Success ? FileUploadMessageTypes.Success : FileUploadMessageTypes.Error,
+            Text: `License ${info.Success ? 'uploaded' : 'upload failed'}: ${info.Message}`,
+          }],
+        };
+        return result;
+      }),
+    );
   }
 
-  retrieveLicense(): Observable<UploadInfo> {
-    return this.http.get<UploadInfo>(this.dnnContext.$2sxc.http.apiUrl(webApiLicense + 'Retrieve'));
+  retrieveLicense(): Observable<LicenseDownloadInfo> {
+    return this.http.get<LicenseDownloadInfo>(this.dnnContext.$2sxc.http.apiUrl(webApiLicense + 'Retrieve'));
   }
 }

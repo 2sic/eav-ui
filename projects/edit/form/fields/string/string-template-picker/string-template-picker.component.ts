@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { SourceService } from '../../../../../ng-dialogs/src/app/code-editor/services/source.service';
 import { InputTypeConstants } from '../../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { CreateFileDialogComponent, CreateFileDialogData, CreateFileDialogResult } from '../../../../../ng-dialogs/src/app/create-file-dialog';

@@ -1,8 +1,7 @@
 import { KeyValue } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
-import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { GeneralHelpers } from '../../../../../edit/shared/helpers';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { DataSource, SortedDataSources } from '../models';

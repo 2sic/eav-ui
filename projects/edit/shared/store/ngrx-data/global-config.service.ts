@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { EntityCollectionServiceElementsFactory } from '@ngrx/data';
-import { Observable } from 'rxjs';
-import { distinctUntilChanged, map } from 'rxjs/operators';
+import { distinctUntilChanged, map, Observable } from 'rxjs';
 import { keyDebug } from '../../../../ng-dialogs/src/app/shared/constants/session.constants';
 import { GlobalConfig } from '../../models';
 import { BaseDataService } from './base-data.service';

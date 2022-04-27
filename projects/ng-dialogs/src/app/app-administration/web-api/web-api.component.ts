@@ -1,4 +1,4 @@
-import { AllCommunityModules, GridOptions } from '@ag-grid-community/all-modules';
+import { GridOptions } from '@ag-grid-community/core';
 import { Component, Input, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -10,10 +10,10 @@ import { GoToDevRest } from '../../dev-rest/go-to-dev-rest';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { DialogService } from '../../shared/services/dialog.service';
-import { WebApiActionsComponent } from '../ag-grid-components/web-api-actions/web-api-actions.component';
-import { WebApiActionsParams } from '../ag-grid-components/web-api-actions/web-api-actions.models';
-import { WebApiTypeComponent } from '../ag-grid-components/web-api-type/web-api-type.component';
 import { WebApi } from '../models/web-api.model';
+import { WebApiActionsComponent } from './web-api-actions/web-api-actions.component';
+import { WebApiActionsParams } from './web-api-actions/web-api-actions.models';
+import { WebApiTypeComponent } from './web-api-type/web-api-type.component';
 
 @Component({
   selector: 'app-web-api',
@@ -24,35 +24,7 @@ export class WebApiComponent implements OnInit, OnDestroy {
   @Input() enableCode: boolean;
 
   webApis$ = new BehaviorSubject<WebApi[]>(undefined);
-  modules = AllCommunityModules;
-  gridOptions: GridOptions = {
-    ...defaultGridOptions,
-    columnDefs: [
-      {
-        field: 'Folder', flex: 2, minWidth: 250, cellClass: 'no-outline',
-        sortable: true, sort: 'asc', filter: 'agTextColumnFilter',
-        valueGetter: (params) => (params.data as WebApi).folder,
-      },
-      {
-        field: 'Name', flex: 2, minWidth: 250, cellClass: 'no-outline',
-        sortable: true, filter: 'agTextColumnFilter',
-        valueGetter: (params) => (params.data as WebApi).name,
-      },
-      {
-        field: 'Type', flex: 1, minWidth: 250, cellClass: 'no-outline',
-        sortable: true, filter: BooleanFilterComponent, cellRenderer: WebApiTypeComponent,
-        valueGetter: (params) => (params.data as WebApi).isShared,
-      },
-      {
-        width: 82, cellClass: 'secondary-action no-padding'.split(' '), cellRenderer: WebApiActionsComponent, pinned: 'right',
-        cellRendererParams: {
-          enableCodeGetter: () => this.enableCodeGetter(),
-          onOpenCode: (api) => this.openCode(api),
-          onOpenRestApi: (api) => this.openRestApi(api),
-        } as WebApiActionsParams,
-      },
-    ],
-  };
+  gridOptions = this.buildGridOptions();
 
   constructor(
     private sourceService: SourceService,
@@ -136,4 +108,64 @@ export class WebApiComponent implements OnInit, OnDestroy {
     this.router.navigate([GoToDevRest.getUrlWebApi(api)], { relativeTo: this.route.firstChild });
   }
 
+  private buildGridOptions(): GridOptions {
+    const gridOptions: GridOptions = {
+      ...defaultGridOptions,
+      columnDefs: [
+        {
+          field: 'Folder',
+          flex: 2,
+          minWidth: 250,
+          cellClass: 'no-outline',
+          sortable: true,
+          sort: 'asc',
+          filter: 'agTextColumnFilter',
+          valueGetter: (params) => {
+            const api: WebApi = params.data;
+            return api.folder;
+          },
+        },
+        {
+          field: 'Name',
+          flex: 2,
+          minWidth: 250,
+          cellClass: 'no-outline',
+          sortable: true,
+          filter: 'agTextColumnFilter',
+          valueGetter: (params) => {
+            const api: WebApi = params.data;
+            return api.name;
+          },
+        },
+        {
+          field: 'Type',
+          flex: 1,
+          minWidth: 250,
+          cellClass: 'no-outline',
+          sortable: true,
+          filter: BooleanFilterComponent,
+          valueGetter: (params) => {
+            const api: WebApi = params.data;
+            return api.isShared;
+          },
+          cellRenderer: WebApiTypeComponent,
+        },
+        {
+          width: 82,
+          cellClass: 'secondary-action no-padding'.split(' '),
+          pinned: 'right',
+          cellRenderer: WebApiActionsComponent,
+          cellRendererParams: (() => {
+            const params: WebApiActionsParams = {
+              enableCodeGetter: () => this.enableCodeGetter(),
+              onOpenCode: (api) => this.openCode(api),
+              onOpenRestApi: (api) => this.openRestApi(api),
+            };
+            return params;
+          })(),
+        },
+      ],
+    };
+    return gridOptions;
+  }
 }

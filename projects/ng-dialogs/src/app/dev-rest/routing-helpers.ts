@@ -1,5 +1,5 @@
-import { ActivatedRoute, NavigationEnd, Route, Router } from '@angular/router';
-import { filter, map, pairwise, startWith } from 'rxjs/operators';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { filter, map, pairwise, startWith } from 'rxjs';
 
 // This observable fires when a sub-dialog was openend and closed again
 export function fireOnStartAndWhenSubDialogCloses(

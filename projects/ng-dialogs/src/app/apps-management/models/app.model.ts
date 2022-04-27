@@ -9,7 +9,14 @@ export interface App {
   IsHidden: boolean;
   IsInherited: boolean;
   Items: number;
+  Lightspeed?: LightspeedEntityInfo;
   Name: string;
   Thumbnail: string | null;
   Version: string;
+}
+
+export interface LightspeedEntityInfo {
+  Id: number;
+  IsEnabled: boolean;
+  Title: string;
 }

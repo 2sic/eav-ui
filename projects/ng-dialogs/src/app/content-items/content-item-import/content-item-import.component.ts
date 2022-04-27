@@ -1,92 +1,20 @@
-import { HttpErrorResponse } from '@angular/common/http';
-import { Component, HostBinding, Inject, OnDestroy, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject, combineLatest } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { ContentType } from '../../app-administration/models/content-type.model';
-import { ContentTypesService } from '../../app-administration/services/content-types.service';
-import { ImportAppResult } from '../../import-app/models/import-app-result.model';
+import { Component, Inject } from '@angular/core';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { FileUploadDialogData } from '../../shared/components/file-upload-dialog';
 import { ContentItemsService } from '../services/content-items.service';
-import { ContentItemImportDialogData } from './content-item-import-dialog.config';
 
 @Component({
   selector: 'app-content-item-import',
   templateUrl: './content-item-import.component.html',
   styleUrls: ['./content-item-import.component.scss'],
 })
-export class ContentItemImportComponent implements OnInit, OnDestroy {
-  @HostBinding('className') hostClass = 'dialog-component';
+export class ContentItemImportComponent {
 
-  contentType$ = new BehaviorSubject<ContentType>(null);
-  private isImporting$ = new BehaviorSubject(false);
-  private importFile$ = new BehaviorSubject<File>(null);
-  private importResult$ = new BehaviorSubject<ImportAppResult>(null);
-  templateVars$ = combineLatest([this.isImporting$, this.importFile$, this.importResult$]).pipe(
-    map(([isImporting, importFile, importResult]) => ({ isImporting, importFile, importResult })),
-  );
-
-  private contentTypeStaticName = this.route.snapshot.parent.paramMap.get('contentTypeStaticName');
-
-  constructor(
-    @Inject(MAT_DIALOG_DATA) private dialogData: ContentItemImportDialogData,
-    private dialogRef: MatDialogRef<ContentItemImportComponent>,
-    private route: ActivatedRoute,
-    private contentTypesService: ContentTypesService,
-    private contentItemsService: ContentItemsService,
-    private snackBar: MatSnackBar,
-  ) { }
-
-  ngOnInit() {
-    this.contentTypesService.retrieveContentType(this.contentTypeStaticName).subscribe(contentType => {
-      this.contentType$.next(contentType);
-    });
-    if (this.dialogData.files != null) {
-      this.importFile$.next(this.dialogData.files[0]);
-      this.importContentItem();
-    }
+  constructor(@Inject(MAT_DIALOG_DATA) dialogData: FileUploadDialogData, contentItemsService: ContentItemsService) {
+    dialogData.title ??= `Import Single Item`;
+    dialogData.description ??= `Select an item file (json) from your computer to import.`;
+    dialogData.allowedFileTypes ??= 'json';
+    dialogData.upload$ ??= (files) => contentItemsService.importItem(files[0]);
   }
 
-  ngOnDestroy() {
-    this.contentType$.complete();
-    this.isImporting$.complete();
-    this.importFile$.complete();
-    this.importResult$.complete();
-  }
-
-  closeDialog() {
-    this.dialogRef.close();
-  }
-
-  filesDropped(files: File[]) {
-    const importFile = files[0];
-    this.importFile$.next(importFile);
-    this.importResult$.next(null);
-    this.importContentItem();
-  }
-
-  fileChange(event: Event) {
-    const importFile = (event.target as HTMLInputElement).files[0];
-    this.importFile$.next(importFile);
-    this.importResult$.next(null);
-  }
-
-  importContentItem() {
-    this.isImporting$.next(true);
-    this.contentItemsService.importItem(this.importFile$.value).subscribe({
-      next: res => {
-        this.isImporting$.next(false);
-        this.importResult$.next({
-          Success: true,
-          Messages: [],
-        });
-      },
-      error: (error: HttpErrorResponse) => {
-        this.isImporting$.next(false);
-        this.importResult$.next(null);
-        this.snackBar.open('Import failed. Please check console for more information', null, { duration: 3000 });
-      }
-    });
-  }
 }

@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { TranslateLoader } from '@ngx-translate/core';
-import { Observable, of } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, Observable, of } from 'rxjs';
 
 /**
  * This loader should catch a 404 if the file doesn't exist and not result in errors.

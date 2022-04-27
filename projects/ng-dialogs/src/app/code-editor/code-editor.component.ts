@@ -3,8 +3,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject, combineLatest, forkJoin, fromEvent, Observable, of, Subscription } from 'rxjs';
-import { map, mergeMap, share } from 'rxjs/operators';
+import type * as Monaco from 'monaco-editor';
+import { BehaviorSubject, combineLatest, forkJoin, fromEvent, map, Observable, of, share, Subscription, switchMap } from 'rxjs';
 import { GeneralHelpers } from '../../../../edit/shared/helpers';
 // tslint:disable-next-line:max-line-length
 import { CreateFileDialogComponent, CreateFileDialogData, CreateFileDialogResult, FileLocationDialogComponent } from '../create-file-dialog';
@@ -31,7 +31,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
 
   Explorers = Explorers;
   activeExplorer: ExplorerOption = Explorers.Templates;
-  monacoOptions = {
+  monacoOptions: Monaco.editor.IStandaloneEditorConstructionOptions = {
     theme: '2sxc-dark',
     tabSize: 2,
   };
@@ -102,7 +102,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
             viewInfos = [...viewInfos, newViewInfo];
 
             const view$ = this.sourceService.get(viewKey.key, viewKey.shared, this.urlItems).pipe(share());
-            const snippets$ = view$.pipe(mergeMap(view => this.snippetsService.getSnippets(view)));
+            const snippets$ = view$.pipe(switchMap(view => this.snippetsService.getSnippets(view)));
             return forkJoin([of(viewKey), view$, snippets$]);
           })
         ).subscribe(results => {

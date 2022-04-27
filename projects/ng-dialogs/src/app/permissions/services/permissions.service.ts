@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, Observable } from 'rxjs';
 import { EntitiesService } from '../../content-items/services/entities.service';
 import { eavConstants, MetadataKeyType } from '../../shared/constants/eav.constants';
 import { Permission } from '../models/permission.model';

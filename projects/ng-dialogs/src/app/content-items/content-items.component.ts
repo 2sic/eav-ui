@@ -1,11 +1,10 @@
-import { AllCommunityModules, ColDef, GridApi, GridOptions, GridReadyEvent, ValueGetterParams } from '@ag-grid-community/all-modules';
+import { ColDef, GridApi, GridOptions, GridReadyEvent, ValueGetterParams } from '@ag-grid-community/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { BehaviorSubject, Subscription } from 'rxjs';
-import { filter, map, pairwise, startWith, take } from 'rxjs/operators';
+import { BehaviorSubject, filter, map, pairwise, startWith, Subscription, take } from 'rxjs';
 import { GlobalConfigService } from '../../../../edit/shared/store/ngrx-data';
 import { ContentType } from '../app-administration/models/content-type.model';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
@@ -16,6 +15,7 @@ import { Field } from '../content-type-fields/models/field.model';
 import { GoToMetadata } from '../metadata';
 import { BooleanFilterComponent } from '../shared/components/boolean-filter/boolean-filter.component';
 import { EntityFilterComponent } from '../shared/components/entity-filter/entity-filter.component';
+import { FileUploadDialogData } from '../shared/components/file-upload-dialog';
 import { IdFieldComponent } from '../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
@@ -24,20 +24,19 @@ import { keyFilters } from '../shared/constants/session.constants';
 import { consoleLogAngular } from '../shared/helpers/console-log-angular.helper';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 import { EditForm } from '../shared/models/edit-form.model';
-import { ContentItemsActionsComponent } from './ag-grid-components/content-items-actions/content-items-actions.component';
-import { ContentItemsActionsParams } from './ag-grid-components/content-items-actions/content-items-actions.models';
-import { ContentItemsEntityComponent } from './ag-grid-components/content-items-entity/content-items-entity.component';
-import { ContentItemsStatusComponent } from './ag-grid-components/content-items-status/content-items-status.component';
-import { ContentItemsStatusParams } from './ag-grid-components/content-items-status/content-items-status.models';
-import { PubMetaFilterComponent } from './ag-grid-components/pub-meta-filter/pub-meta-filter.component';
-import { PubMeta } from './ag-grid-components/pub-meta-filter/pub-meta-filter.model';
-import { ContentItemImportDialogData } from './content-item-import/content-item-import-dialog.config';
+import { ContentItemsActionsComponent } from './content-items-actions/content-items-actions.component';
+import { ContentItemsActionsParams } from './content-items-actions/content-items-actions.models';
+import { ContentItemsEntityComponent } from './content-items-entity/content-items-entity.component';
+import { ContentItemsStatusComponent } from './content-items-status/content-items-status.component';
+import { ContentItemsStatusParams } from './content-items-status/content-items-status.models';
 import { buildFilterModel } from './content-items.helpers';
 import { CreateMetadataDialogComponent } from './create-metadata-dialog/create-metadata-dialog.component';
 import { MetadataInfo } from './create-metadata-dialog/create-metadata-dialog.models';
 import { AgGridFilterModel } from './models/ag-grid-filter.model';
 import { ContentItem } from './models/content-item.model';
 import { ExtendedColDef } from './models/extended-col-def.model';
+import { PubMetaFilterComponent } from './pub-meta-filter/pub-meta-filter.component';
+import { PubMeta } from './pub-meta-filter/pub-meta-filter.model';
 import { ContentItemsService } from './services/content-items.service';
 import { EntitiesService } from './services/entities.service';
 
@@ -50,8 +49,6 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   contentType$ = new BehaviorSubject<ContentType>(undefined);
   items$ = new BehaviorSubject<ContentItem[]>(undefined);
   debugEnabled$ = this.globalConfigService.getDebugEnabled$();
-
-  modules = AllCommunityModules;
   gridOptions: GridOptions = {
     ...defaultGridOptions,
   };
@@ -161,7 +158,8 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
     const ids: number[] = [];
     if (hasFilters) {
       this.gridApi$.value.forEachNodeAfterFilterAndSort(rowNode => {
-        ids.push((rowNode.data as ContentItem).Id);
+        const contentItem: ContentItem = rowNode.data;
+        ids.push(contentItem.Id);
       });
     }
     this.router.navigate([`export/${this.contentTypeStaticName}${ids.length > 0 ? `/${ids}` : ''}`], { relativeTo: this.route });
@@ -186,7 +184,7 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   }
 
   importItem(files?: File[]) {
-    const dialogData: ContentItemImportDialogData = { files };
+    const dialogData: FileUploadDialogData = { files };
     this.router.navigate(['import'], { relativeTo: this.route, state: dialogData });
   }
 
@@ -239,43 +237,104 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
   private buildColumnDefs(columns: Field[]) {
     const columnDefs: ColDef[] = [
       {
-        headerName: 'ID', field: 'Id', width: 70, headerClass: 'dense',
-        cellClass: (params) => `${(params.data as ContentItem)._EditInfo.ReadOnly ? 'disabled' : ''} id-action no-padding no-outline`.split(' '),
-        cellRenderer: IdFieldComponent, sortable: true, filter: 'agNumberColumnFilter',
-        valueGetter: (params) => (params.data as ContentItem).Id,
-        cellRendererParams: {
-          tooltipGetter: (item: ContentItem) => `ID: ${item.Id}\nRepoID: ${item._RepositoryId}\nGUID: ${item.Guid}`,
-        } as IdFieldParams,
+        headerName: 'ID',
+        field: 'Id',
+        width: 70,
+        headerClass: 'dense',
+        sortable: true,
+        filter: 'agNumberColumnFilter',
+        cellClass: (params) => {
+          const contentItem: ContentItem = params.data;
+          return `id-action no-padding no-outline ${contentItem._EditInfo.ReadOnly ? 'disabled' : ''}`.split(' ');
+        },
+        valueGetter: (params) => {
+          const contentItem: ContentItem = params.data;
+          return contentItem.Id;
+        },
+        cellRenderer: IdFieldComponent,
+        cellRendererParams: (() => {
+          const params: IdFieldParams<ContentItem> = {
+            tooltipGetter: (item) => `ID: ${item.Id}\nRepoID: ${item._RepositoryId}\nGUID: ${item.Guid}`,
+          };
+          return params;
+        })(),
       },
       {
-        field: 'Status', width: 82, headerClass: 'dense', cellClass: 'secondary-action no-padding'.split(' '),
-        filter: PubMetaFilterComponent, cellRenderer: ContentItemsStatusComponent, valueGetter: this.valueGetterStatus,
-        cellRendererParams: {
-          onOpenMetadata: (item) => this.openMetadata(item),
-        } as ContentItemsStatusParams,
+        field: 'Status',
+        width: 82,
+        headerClass: 'dense',
+        cellClass: 'secondary-action no-padding'.split(' '),
+        filter: PubMetaFilterComponent,
+        valueGetter: (params) => {
+          const item: ContentItem = params.data;
+          const published: PubMeta = {
+            published: item.IsPublished,
+            metadata: !!item.For,
+            hasMetadata: item.Metadata ? item.Metadata.length > 0 : false,
+          };
+          return published;
+        },
+        cellRenderer: ContentItemsStatusComponent,
+        cellRendererParams: (() => {
+          const params: ContentItemsStatusParams = {
+            onOpenMetadata: (item) => this.openMetadata(item),
+          };
+          return params;
+        })(),
       },
       {
-        headerName: 'Item (Entity)', field: '_Title', flex: 2, minWidth: 250, cellClass: 'primary-action highlight'.split(' '),
-        sortable: true, filter: 'agTextColumnFilter', onCellClicked: (event) => this.editItem(event.data as ContentItem),
-        valueGetter: (params) => (params.data as ContentItem)._Title,
+        headerName: 'Item (Entity)',
+        field: '_Title',
+        flex: 2,
+        minWidth: 250,
+        cellClass: 'primary-action highlight'.split(' '),
+        sortable: true,
+        filter: 'agTextColumnFilter',
+        onCellClicked: (params) => {
+          const contentItem: ContentItem = params.data;
+          this.editItem(contentItem);
+        },
+        valueGetter: (params) => {
+          const contentItem: ContentItem = params.data;
+          return contentItem._Title;
+        },
       },
       {
-        headerName: 'Stats', headerTooltip: 'Used by others / uses others',
-        field: '_Used', width: 70, headerClass: 'dense', cellClass: 'no-outline',
-        sortable: true, filter: 'agTextColumnFilter', valueGetter: this.valueGetterUsage,
+        headerName: 'Stats',
+        headerTooltip: 'Used by others / uses others',
+        field: '_Used',
+        width: 70,
+        headerClass: 'dense',
+        cellClass: 'no-outline',
+        sortable: true,
+        filter: 'agTextColumnFilter',
+        valueGetter: (params) => {
+          const item: ContentItem = params.data;
+          return `${item._Used} / ${item._Uses}`;
+        },
       },
       {
-        cellClass: 'secondary-action no-padding'.split(' '), width: 122, cellRenderer: ContentItemsActionsComponent, pinned: 'right',
-        cellRendererParams: {
-          onClone: (item) => this.clone(item),
-          onExport: (item) => this.export(item),
-          onDelete: (item) => this.delete(item),
-        } as ContentItemsActionsParams,
+        cellClass: 'secondary-action no-padding'.split(' '),
+        width: 122,
+        pinned: 'right',
+        cellRenderer: ContentItemsActionsComponent,
+        cellRendererParams: (() => {
+          const params: ContentItemsActionsParams = {
+            onClone: (item) => this.clone(item),
+            onExport: (item) => this.export(item),
+            onDelete: (item) => this.delete(item),
+          };
+          return params;
+        })(),
       },
     ];
     for (const column of columns) {
       const colDef: ExtendedColDef = {
-        headerName: column.StaticName, field: column.StaticName, flex: 2, minWidth: 250, cellClass: 'no-outline',
+        headerName: column.StaticName,
+        field: column.StaticName,
+        flex: 2,
+        minWidth: 250,
+        cellClass: 'no-outline',
         sortable: true,
       };
       switch (column.Type) {
@@ -338,21 +397,6 @@ export class ContentItemsComponent implements OnInit, OnDestroy {
         });
       }
     });
-  }
-
-  private valueGetterStatus(params: ValueGetterParams) {
-    const item: ContentItem = params.data;
-    const published: PubMeta = {
-      published: item.IsPublished,
-      metadata: !!item.For,
-      hasMetadata: item.Metadata ? item.Metadata.length > 0 : false,
-    };
-    return published;
-  }
-
-  private valueGetterUsage(params: ValueGetterParams) {
-    const item: ContentItem = params.data;
-    return `${item._Used} / ${item._Uses}`;
   }
 
   private valueGetterEntityField(params: ValueGetterParams) {

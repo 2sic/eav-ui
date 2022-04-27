@@ -1,8 +1,8 @@
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map } from 'rxjs/operators';
-import { ImportAppResult } from '../../import-app/models/import-app-result.model';
+import { map } from 'rxjs';
+import { FileUploadResult } from '../../shared/components/file-upload-dialog';
 import { ScopeOption } from '../../shared/constants/eav.constants';
 import { Context } from '../../shared/services/context';
 import { ContentType, ContentTypeEdit } from '../models/content-type.model';
@@ -57,7 +57,7 @@ export class ContentTypesService {
     for (const file of files) {
       formData.append('File', file);
     }
-    return this.http.post<ImportAppResult>(this.apiUrl(webApiTypeRoot + 'import'), formData, {
+    return this.http.post<FileUploadResult>(this.apiUrl(webApiTypeRoot + 'import'), formData, {
       params: { appId: this.context.appId.toString(), zoneId: this.context.zoneId.toString() }
     });
   }

@@ -1,4 +1,3 @@
-import { AgGridModule } from '@ag-grid-community/angular';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -10,22 +9,18 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { EcoFabSpeedDialModule } from '@ecodev/fab-speed-dial';
 import { AppDialogConfigService } from '../app-administration/services';
+import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
 import { Context } from '../shared/services/context';
 import { DialogService } from '../shared/services/dialog.service';
 import { SharedComponentsModule } from '../shared/shared-components.module';
-import { AppsListActionsComponent } from './ag-grid-components/apps-list-actions/apps-list-actions.component';
-import { AppsListShowComponent } from './ag-grid-components/apps-list-show/apps-list-show.component';
-import { FeaturesListEnabledReasonComponent } from './ag-grid-components/features-list-enabled-reason/features-list-enabled-reason.component';
-import { FeaturesListEnabledComponent } from './ag-grid-components/features-list-enabled/features-list-enabled.component';
-import { FeaturesStatusComponent } from './ag-grid-components/features-status/features-status.component';
-import { SiteLanguagesStatusComponent } from './ag-grid-components/site-languages-status/site-languages-status.component';
+import { AppsListActionsComponent } from './apps-list/apps-list-actions/apps-list-actions.component';
+import { AppsListShowComponent } from './apps-list/apps-list-show/apps-list-show.component';
 import { AppsListComponent } from './apps-list/apps-list.component';
 import { AppsManagementNavComponent } from './apps-management-nav/apps-management-nav.component';
 import { AppsManagementRoutingModule } from './apps-management-routing.module';
@@ -34,13 +29,16 @@ import { CreateInheritedAppComponent } from './create-inherited-app/create-inher
 import { ActiveFeaturesCountPipe } from './licence-info/active-features-count.pipe';
 import { AgGridHeightDirective } from './licence-info/ag-grid-height.directive';
 import { FeatureDetailsDialogComponent } from './licence-info/feature-details-dialog/feature-details-dialog.component';
+import { FeaturesListEnabledReasonComponent } from './licence-info/features-list-enabled-reason/features-list-enabled-reason.component';
+import { FeaturesListEnabledComponent } from './licence-info/features-list-enabled/features-list-enabled.component';
+import { FeaturesStatusComponent } from './licence-info/features-status/features-status.component';
 import { LicenseInfoComponent } from './licence-info/license-info.component';
 import { LicensesOrderPipe } from './licence-info/licenses-order.pipe';
-import { UploadLicenseDialogComponent } from './licence-info/upload-license-dialog/upload-license-dialog.component';
 import { AppsListService } from './services/apps-list.service';
 import { FeaturesConfigService } from './services/features-config.service';
 import { SxcInsightsService } from './services/sxc-insights.service';
 import { ZoneService } from './services/zone.service';
+import { SiteLanguagesStatusComponent } from './site-languages/site-languages-status/site-languages-status.component';
 import { SiteLanguagesComponent } from './site-languages/site-languages.component';
 import { SystemInfoComponent } from './system-info/system-info.component';
 
@@ -63,14 +61,13 @@ import { SystemInfoComponent } from './system-info/system-info.component';
     AgGridHeightDirective,
     ActiveFeaturesCountPipe,
     FeatureDetailsDialogComponent,
-    UploadLicenseDialogComponent,
   ],
   imports: [
     AppsManagementRoutingModule,
     SharedComponentsModule,
     MatDialogModule,
     CommonModule,
-    AgGridModule.withComponents([]),
+    SxcGridModule,
     MatButtonModule,
     MatIconModule,
     MatSlideToggleModule,
@@ -85,7 +82,6 @@ import { SystemInfoComponent } from './system-info/system-info.component';
     MatSelectModule,
     MatSnackBarModule,
     MatExpansionModule,
-    MatProgressSpinnerModule,
   ],
   providers: [
     Context,

@@ -1,11 +1,10 @@
 // tslint:disable-next-line:max-line-length
-import { AllCommunityModules, ColumnApi, FilterChangedEvent, GridApi, GridOptions, GridReadyEvent, ICellRendererParams, RowClassParams, RowDragEvent, SortChangedEvent } from '@ag-grid-community/all-modules';
+import { ColumnApi, FilterChangedEvent, GridApi, GridOptions, GridReadyEvent, ICellRendererParams, RowClassParams, RowDragEvent, SortChangedEvent } from '@ag-grid-community/core';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { BehaviorSubject, forkJoin, of, Subscription } from 'rxjs';
-import { filter, map, pairwise, startWith } from 'rxjs/operators';
+import { BehaviorSubject, filter, forkJoin, map, of, pairwise, startWith, Subscription } from 'rxjs';
 import { ContentType } from '../app-administration/models/content-type.model';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { GoToMetadata } from '../metadata';
@@ -14,16 +13,16 @@ import { defaultGridOptions } from '../shared/constants/default-grid-options.con
 import { eavConstants } from '../shared/constants/eav.constants';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 import { AddItem, EditForm, EditItem } from '../shared/models/edit-form.model';
-import { ContentTypeFieldsActionsComponent } from './ag-grid-components/content-type-fields-actions/content-type-fields-actions.component';
-import { ContentTypeFieldsActionsParams } from './ag-grid-components/content-type-fields-actions/content-type-fields-actions.models';
-import { ContentTypeFieldsInputTypeComponent } from './ag-grid-components/content-type-fields-input-type/content-type-fields-input-type.component';
-// tslint:disable-next-line:max-line-length
-import { ContentTypeFieldsInputTypeParams } from './ag-grid-components/content-type-fields-input-type/content-type-fields-input-type.models';
-import { ContentTypeFieldsSpecialComponent } from './ag-grid-components/content-type-fields-special/content-type-fields-special.component';
-import { ContentTypeFieldsTitleComponent } from './ag-grid-components/content-type-fields-title/content-type-fields-title.component';
-import { ContentTypeFieldsTitleParams } from './ag-grid-components/content-type-fields-title/content-type-fields-title.models';
-import { ContentTypeFieldsTypeComponent } from './ag-grid-components/content-type-fields-type/content-type-fields-type.component';
 import { InputTypeConstants } from './constants/input-type.constants';
+import { ContentTypeFieldsActionsComponent } from './content-type-fields-actions/content-type-fields-actions.component';
+import { ContentTypeFieldsActionsParams } from './content-type-fields-actions/content-type-fields-actions.models';
+import { ContentTypeFieldsInputTypeComponent } from './content-type-fields-input-type/content-type-fields-input-type.component';
+// tslint:disable-next-line:max-line-length
+import { ContentTypeFieldsInputTypeParams } from './content-type-fields-input-type/content-type-fields-input-type.models';
+import { ContentTypeFieldsSpecialComponent } from './content-type-fields-special/content-type-fields-special.component';
+import { ContentTypeFieldsTitleComponent } from './content-type-fields-title/content-type-fields-title.component';
+import { ContentTypeFieldsTitleParams } from './content-type-fields-title/content-type-fields-title.models';
+import { ContentTypeFieldsTypeComponent } from './content-type-fields-type/content-type-fields-type.component';
 import { Field } from './models/field.model';
 import { ContentTypesFieldsService } from './services/content-types-fields.service';
 
@@ -35,73 +34,10 @@ import { ContentTypesFieldsService } from './services/content-types-fields.servi
 export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
   contentType$ = new BehaviorSubject<ContentType>(undefined);
   fields$ = new BehaviorSubject<Field[]>(undefined);
-
-  modules = AllCommunityModules;
-  gridOptions: GridOptions = {
-    ...defaultGridOptions,
-    getRowClass(params: RowClassParams) {
-      const field: Field = params.data;
-      const rowClass: string[] = [];
-      if (field.EditInfo.ReadOnly) { rowClass.push('disable-row-drag'); }
-      if (field.InputType === InputTypeConstants.EmptyDefault) { rowClass.push('group-start-row'); }
-      if (field.InputType === InputTypeConstants.EmptyEnd) { rowClass.push('group-end-row'); }
-      return rowClass;
-    },
-    columnDefs: [
-      { rowDrag: true, width: 18, cellClass: 'no-select no-padding no-outline'.split(' ') },
-      {
-        field: 'Title', width: 42, cellClass: 'secondary-action no-padding no-outline'.split(' '),
-        cellRenderer: ContentTypeFieldsTitleComponent, valueGetter: (params) => (params.data as Field).IsTitle,
-        cellRendererParams: {
-          onSetTitle: (field) => this.setTitle(field),
-        } as ContentTypeFieldsTitleParams,
-      },
-      {
-        field: 'Name', flex: 2, minWidth: 250, cellClass: 'primary-action highlight'.split(' '),
-        sortable: true, filter: 'agTextColumnFilter', onCellClicked: (params) => this.editFieldMetadata(params.data as Field),
-        cellRenderer: (params: ICellRendererParams) => this.nameCellRenderer(params),
-        valueGetter: (params) => (params.data as Field).StaticName,
-      },
-      {
-        field: 'Type', width: 70, headerClass: 'dense', cellClass: 'no-outline', sortable: true,
-        filter: 'agTextColumnFilter', cellRenderer: ContentTypeFieldsTypeComponent,
-        valueGetter: (params) => (params.data as Field).Type,
-      },
-      {
-        headerName: 'Input', field: 'InputType', width: 160,
-        // tslint:disable-next-line:max-line-length
-        cellClass: (params) => `${(params.data as Field).EditInfo.ReadOnly ? 'no-outline no-padding' : 'secondary-action no-padding'}`.split(' '),
-        sortable: true, filter: 'agTextColumnFilter', cellRenderer: ContentTypeFieldsInputTypeComponent,
-        valueGetter: (params) => this.inputTypeValueGetter(params.data as Field),
-        cellRendererParams: {
-          onChangeInputType: (field) => this.changeInputType(field),
-        } as ContentTypeFieldsInputTypeParams,
-      },
-      {
-        field: 'Label', flex: 2, minWidth: 250, cellClass: 'no-outline',
-        sortable: true, filter: 'agTextColumnFilter', valueGetter: (params) => (params.data as Field).Metadata?.All?.Name,
-      },
-      {
-        field: 'Special', width: 66, headerClass: 'dense', cellClass: 'no-outline', cellRenderer: ContentTypeFieldsSpecialComponent,
-      },
-      {
-        field: 'Notes', flex: 2, minWidth: 250, cellClass: 'no-outline',
-        sortable: true, filter: 'agTextColumnFilter', valueGetter: (params) => (params.data as Field).Metadata?.All?.Notes,
-      },
-      {
-        width: 122, cellClass: 'secondary-action no-padding'.split(' '), cellRenderer: ContentTypeFieldsActionsComponent, pinned: 'right',
-        cellRendererParams: {
-          onRename: (field) => this.rename(field),
-          onDelete: (field) => this.delete(field),
-          onOpenPermissions: (field) => this.openPermissions(field),
-          onOpenMetadata: (field) => this.openMetadata(field),
-        } as ContentTypeFieldsActionsParams,
-      },
-    ],
-  };
-
+  gridOptions = this.buildGridOptions();
   sortApplied = false;
   filterApplied = false;
+
   private gridApi: GridApi;
   private columnApi: ColumnApi;
   private rowDragSuppressed = false;
@@ -228,11 +164,6 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
     return isGroupOpen ? `<span class="is-in-group">${params.value}</span>` : params.value;
   }
 
-  private inputTypeValueGetter(field: Field) {
-    const inputType = field.InputType.substring(field.InputType.indexOf('-') + 1);
-    return inputType;
-  }
-
   private fetchFields(callback?: () => void) {
     const contentType$ = this.contentType$.value == null
       ? this.contentTypesService.retrieveContentType(this.contentTypeStaticName)
@@ -322,4 +253,140 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
     );
   }
 
+  private buildGridOptions(): GridOptions {
+    const gridOptions: GridOptions = {
+      ...defaultGridOptions,
+      getRowClass(params: RowClassParams) {
+        const field: Field = params.data;
+        const rowClass: string[] = [];
+        if (field.EditInfo.ReadOnly) { rowClass.push('disable-row-drag'); }
+        if (field.InputType === InputTypeConstants.EmptyDefault) { rowClass.push('group-start-row'); }
+        if (field.InputType === InputTypeConstants.EmptyEnd) { rowClass.push('group-end-row'); }
+        return rowClass;
+      },
+      columnDefs: [
+        {
+          rowDrag: true,
+          width: 18,
+          cellClass: 'no-select no-padding no-outline'.split(' '),
+        },
+        {
+          field: 'Title',
+          width: 42,
+          cellClass: 'secondary-action no-padding no-outline'.split(' '),
+          valueGetter: (params) => {
+            const field: Field = params.data;
+            return field.IsTitle;
+          },
+          cellRenderer: ContentTypeFieldsTitleComponent,
+          cellRendererParams: (() => {
+            const params: ContentTypeFieldsTitleParams = {
+              onSetTitle: (field) => this.setTitle(field),
+            };
+            return params;
+          })(),
+        },
+        {
+          field: 'Name',
+          flex: 2,
+          minWidth: 250,
+          cellClass: 'primary-action highlight'.split(' '),
+          sortable: true,
+          filter: 'agTextColumnFilter',
+          onCellClicked: (params) => {
+            const field: Field = params.data;
+            this.editFieldMetadata(field);
+          },
+          cellRenderer: (params: ICellRendererParams) => this.nameCellRenderer(params),
+          valueGetter: (params) => {
+            const field: Field = params.data;
+            return field.StaticName;
+          },
+        },
+        {
+          field: 'Type',
+          width: 70,
+          headerClass: 'dense',
+          cellClass: 'no-outline',
+          sortable: true,
+          filter: 'agTextColumnFilter',
+          valueGetter: (params) => {
+            const field: Field = params.data;
+            return field.Type;
+          },
+          cellRenderer: ContentTypeFieldsTypeComponent,
+        },
+        {
+          headerName: 'Input',
+          field: 'InputType',
+          width: 160,
+          cellClass: (params) => {
+            const field: Field = params.data;
+            return `${field.EditInfo.ReadOnly ? 'no-outline no-padding' : 'secondary-action no-padding'}`.split(' ');
+          },
+          sortable: true,
+          filter: 'agTextColumnFilter',
+          valueGetter: (params) => {
+            const field: Field = params.data;
+            const inputType = field.InputType.substring(field.InputType.indexOf('-') + 1);
+            return inputType;
+          },
+          cellRenderer: ContentTypeFieldsInputTypeComponent,
+          cellRendererParams: (() => {
+            const params: ContentTypeFieldsInputTypeParams = {
+              onChangeInputType: (field) => this.changeInputType(field),
+            };
+            return params;
+          })(),
+        },
+        {
+          field: 'Label',
+          flex: 2,
+          minWidth: 250,
+          cellClass: 'no-outline',
+          sortable: true,
+          filter: 'agTextColumnFilter',
+          valueGetter: (params) => {
+            const field: Field = params.data;
+            return field.Metadata?.All?.Name;
+          },
+        },
+        {
+          field: 'Special',
+          width: 66,
+          headerClass: 'dense',
+          cellClass: 'no-outline',
+          cellRenderer: ContentTypeFieldsSpecialComponent,
+        },
+        {
+          field: 'Notes',
+          flex: 2,
+          minWidth: 250,
+          cellClass: 'no-outline',
+          sortable: true,
+          filter: 'agTextColumnFilter',
+          valueGetter: (params) => {
+            const field: Field = params.data;
+            return field.Metadata?.All?.Notes;
+          },
+        },
+        {
+          width: 122,
+          cellClass: 'secondary-action no-padding'.split(' '),
+          pinned: 'right',
+          cellRenderer: ContentTypeFieldsActionsComponent,
+          cellRendererParams: (() => {
+            const params: ContentTypeFieldsActionsParams = {
+              onRename: (field) => this.rename(field),
+              onDelete: (field) => this.delete(field),
+              onOpenPermissions: (field) => this.openPermissions(field),
+              onOpenMetadata: (field) => this.openMetadata(field),
+            };
+            return params;
+          })(),
+        },
+      ],
+    };
+    return gridOptions;
+  }
 }

@@ -1,4 +1,4 @@
-import { GridOptions } from '@ag-grid-community/all-modules';
+import { GridOptions } from '@ag-grid-community/core';
 
 export const defaultGridOptions: GridOptions = {
   accentedSort: true,
@@ -9,5 +9,6 @@ export const defaultGridOptions: GridOptions = {
   valueCache: true,
   defaultColDef: { filterParams: { newRowsAction: 'keep' } },
   tooltipShowDelay: 0,
+  tooltipHideDelay: 100000,
   suppressMovableColumns: true,
-};
+} as const;

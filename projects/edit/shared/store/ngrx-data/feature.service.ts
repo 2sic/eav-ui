@@ -14,6 +14,10 @@ export class FeatureService extends BaseDataService<Feature> {
     this.addAllToCache(features);
   }
 
+  getFeature(nameId: string): Feature {
+    return this.cache$.value.find(feature => [feature.Guid, feature.NameId].includes(nameId));
+  }
+
   isFeatureEnabled(nameId: string): boolean {
     return this.cache$.value.find(feature => [feature.Guid, feature.NameId].includes(nameId))?.Enabled ?? false;
   }
