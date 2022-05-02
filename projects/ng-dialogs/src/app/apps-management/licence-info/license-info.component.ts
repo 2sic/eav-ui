@@ -160,7 +160,7 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
           cellRenderer: IdFieldComponent,
           cellRendererParams: (() => {
             const params: IdFieldParams<Feature> = {
-              tooltipGetter: (feature: Feature) => `NameId: ${feature.NameId}\nGUID: ${feature.Guid}`,
+              tooltipGetter: (feature: Feature) => feature.NameId,
             };
             return params;
           })(),
