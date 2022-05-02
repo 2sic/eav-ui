@@ -87,8 +87,8 @@ export class FormulaHelpers {
             },
           },
           parameters: {
-            get(): string {
-              return JSON.parse(JSON.stringify(itemHeader.Prefill));
+            get(): Record<string, any> {
+              return FormulaHelpers.buildFormulaPropsParameters(itemHeader);
             },
           },
           prefill: {
@@ -173,10 +173,23 @@ export class FormulaHelpers {
     }
   }
 
-  static buildDesignerSnippets(formula: FormulaCacheItem, fieldOptions: FieldOption[]): DesignerSnippet[] {
+  static buildFormulaPropsParameters(itemHeader: EavHeader): Record<string, any> {
+    return JSON.parse(JSON.stringify(itemHeader.Prefill));
+  }
+
+  static buildDesignerSnippets(formula: FormulaCacheItem, fieldOptions: FieldOption[], itemHeader: EavHeader): DesignerSnippet[] {
     switch (formula.version) {
       case FormulaVersions.V1:
-        const snippets = ['value', 'default', 'prefill', 'initial', 'parameters', ...fieldOptions.map(f => f.fieldName)].map(name => {
+        const formulaPropsParameters = this.buildFormulaPropsParameters(itemHeader);
+        const snippets = [
+          'value',
+          'default',
+          'prefill',
+          'initial',
+          ...fieldOptions.map(f => f.fieldName),
+          'parameters.ChangeThis',
+          ...Object.keys(formulaPropsParameters ?? {}).map(key => `parameters.${key}`),
+        ].map(name => {
           const code = `data.${name}`;
           const fieldSnippet: DesignerSnippet = {
             code,
