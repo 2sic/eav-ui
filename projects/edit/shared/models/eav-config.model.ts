@@ -5,6 +5,7 @@ export interface EavConfig {
   zoneId: string;
   appId: string;
   appRoot: string;
+  appSharedRoot: string;
   lang: string;
   langPri: string;
   langs: Language[];

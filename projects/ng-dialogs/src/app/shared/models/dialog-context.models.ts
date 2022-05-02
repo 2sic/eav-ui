@@ -14,6 +14,7 @@ export interface DialogContextApp {
   Permissions: PermissionsCount;
   SettingsScope: AppScope;
   Url: string;
+  SharedUrl: string;
 }
 
 export const AppScopes = {

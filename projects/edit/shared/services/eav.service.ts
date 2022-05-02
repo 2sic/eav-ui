@@ -1,3 +1,4 @@
+import { appSharedRoot } from './../../../ng-dialogs/src/app/code-editor/code-templates/code-templates.models';
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -38,6 +39,7 @@ export class EavService {
       zoneId: this.context.zoneId.toString(),
       appId: this.context.appId.toString(),
       appRoot: dialogContext.App.Url,
+      appSharedRoot: dialogContext.App.SharedUrl,
       lang: dialogContext.Language.Current,
       langPri: dialogContext.Language.Primary,
       langs: dialogContext.Language.List,
