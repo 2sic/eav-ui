@@ -67,6 +67,7 @@ export interface FormulaV1Context {
   culture: FormulaV1CtxCulture;
   debug: boolean;
   features: FormulaV1CtxFeatures;
+  form: FormulaV1CtxForm;
   target: FormulaV1CtxTarget;
 }
 
@@ -78,6 +79,10 @@ export interface FormulaV1CtxCulture {
 export interface FormulaV1CtxFeatures {
   get(name: string): Feature;
   isEnabled(name: string): boolean;
+}
+
+export interface FormulaV1CtxForm {
+  runFormulas(): void;
 }
 
 export interface FormulaV1CtxTarget {

@@ -126,6 +126,11 @@ export class FormulaHelpers {
                 return featureService.isFeatureEnabled(name);
               },
             },
+            form: {
+              runFormulas(): void {
+                fieldsSettingsService.forceSettings();
+              },
+            },
             target: {
               entity: {
                 guid: formula.entityGuid,
