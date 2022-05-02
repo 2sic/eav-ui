@@ -1,7 +1,6 @@
 import type { RawEditorSettings } from 'tinymce';
 import { Adam, AdamPostResponse, Dropzone } from '../../../../edit-types';
 import { consoleLogWebpack } from '../../../../field-custom-gps/src/shared/console-log-webpack.helper';
-import { BlobInfo } from '../../shared/models';
 
 export class DefaultPaste {
 
@@ -42,7 +41,7 @@ export class DefaultPaste {
       paste_data_images: true,
       paste_filter_drop: false,
       paste_block_drop: false,
-      images_upload_handler: (blobInfo: BlobInfo, success: (url: string) => void, failure: (err: string) => void) => {
+      images_upload_handler: (blobInfo, success, failure) => {
         this.imagesUploadHandler(blobInfo, success, failure, dropzone, adam);
       },
     };
@@ -50,9 +49,9 @@ export class DefaultPaste {
   }
 
   private static imagesUploadHandler(
-    blobInfo: BlobInfo,
-    success: (url: string) => void,
-    failure: (err: string) => void,
+    blobInfo: Parameters<RawEditorSettings['images_upload_handler']>[0],
+    success: Parameters<RawEditorSettings['images_upload_handler']>[1],
+    failure: Parameters<RawEditorSettings['images_upload_handler']>[2],
     dropzone: Dropzone,
     adam: Adam,
   ): void {

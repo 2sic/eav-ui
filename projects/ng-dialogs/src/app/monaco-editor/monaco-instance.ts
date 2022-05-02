@@ -81,7 +81,7 @@ export class MonacoInstance {
     const oldJsonDiagnostics = this.monaco.languages.json.jsonDefaults.diagnosticsOptions;
     const exists = oldJsonDiagnostics.schemas?.some(schema => schema.fileMatch[0] === uri) ?? false;
 
-    const newSchema = jsonSchema?.type === 'link'
+    const newSchema: Monaco.languages.json.DiagnosticsOptions['schemas'][0] = jsonSchema?.type === 'link'
       ? { uri: jsonSchema.value, fileMatch: [uri] }
       : jsonSchema?.type === 'raw'
         ? { uri, fileMatch: [uri], schema: JSON.parse(jsonSchema.value) }
