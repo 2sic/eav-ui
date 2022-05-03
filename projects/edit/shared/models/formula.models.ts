@@ -63,12 +63,21 @@ export interface FormulaV1Data {
 }
 
 export interface FormulaV1Context {
+  app: FormulaV1CtxApp;
   cache: Record<string, any>;
   culture: FormulaV1CtxCulture;
   debug: boolean;
   features: FormulaV1CtxFeatures;
   form: FormulaV1CtxForm;
   target: FormulaV1CtxTarget;
+}
+
+export interface FormulaV1CtxApp {
+  appId: number;
+  zoneId: number;
+  isGlobal: boolean;
+  isSite: boolean;
+  isContent: boolean;
 }
 
 export interface FormulaV1CtxCulture {

@@ -102,6 +102,6 @@ export class ScriptsLoaderService {
     return url.replace(/\[System:Path\]/i, UrlHelpers.getUrlPrefix('system', this.eavService.eavConfig))
       .replace(/\[Zone:Path\]/i, UrlHelpers.getUrlPrefix('zone', this.eavService.eavConfig))
       .replace(/\[App:Path\]/i, UrlHelpers.getUrlPrefix('app', this.eavService.eavConfig))
-      .replace(/\[App:PathShared\]/i, UrlHelpers.getUrlPrefix('appShared', this.eavService.eavConfig));;
+      .replace(/\[App:PathShared\]/i, UrlHelpers.getUrlPrefix('appShared', this.eavService.eavConfig));
   }
 }

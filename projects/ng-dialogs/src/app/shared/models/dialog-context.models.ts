@@ -8,8 +8,11 @@ export interface DialogContextApp {
   GettingStartedUrl: string;
   Id: number;
   Identifier: string;
-  IsGlobal: boolean;
+  IsContentApp: boolean;
+  IsGlobalApp: boolean;
   IsInherited: boolean;
+  IsShared: boolean;
+  IsSiteApp: boolean;
   Name: string;
   Permissions: PermissionsCount;
   SettingsScope: AppScope;

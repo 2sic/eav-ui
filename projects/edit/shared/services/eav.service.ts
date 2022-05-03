@@ -1,4 +1,3 @@
-import { appSharedRoot } from './../../../ng-dialogs/src/app/code-editor/code-templates/code-templates.models';
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -60,6 +59,7 @@ export class EavService {
       enableHistory,
       enableFormulaSave: dialogContext.Enable.FormulaSave ?? false,
       overrideEditRestrictions: dialogContext.Enable.OverrideEditRestrictions ?? false,
+      dialogContext,
     };
   }
 

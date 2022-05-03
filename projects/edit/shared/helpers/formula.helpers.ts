@@ -112,6 +112,13 @@ export class FormulaHelpers {
         const propsV1: FormulaPropsV1 = {
           data,
           context: {
+            app: {
+              appId: parseInt(eavService.eavConfig.appId, 10),
+              zoneId: parseInt(eavService.eavConfig.zoneId, 10),
+              isGlobal: eavService.eavConfig.dialogContext.App.IsGlobalApp,
+              isSite: eavService.eavConfig.dialogContext.App.IsSiteApp,
+              isContent: eavService.eavConfig.dialogContext.App.IsContentApp,
+            },
             cache: formula.cache,
             culture: {
               code: currentLanguage,
