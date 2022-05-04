@@ -16,11 +16,6 @@
   }
 }
 
-.mat-expansion-panel-header-title {
-  display: flex;
-  align-items: center;
-}
-
 .panel-icon {
   margin-right: 16px;
 }
@@ -48,6 +43,10 @@
   font-size: 12px;
   color: rgba(0, 0, 0, 0.54);
   overflow: hidden;
+  text-overflow: ellipsis;
+  width: calc(100vw - 208px);
+  max-height: 3em;
+  line-height: 1em;
 }
 
 .actions-box {
