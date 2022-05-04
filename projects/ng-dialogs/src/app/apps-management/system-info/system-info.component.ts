@@ -116,6 +116,7 @@ export class SystemInfoComponent implements OnInit, OnDestroy {
           { label: 'Platform', value: `${systemInfoSet.System.Platform} v.${systemInfoSet.System.PlatformVersion}` },
           { label: 'Zones', value: systemInfoSet.System.Zones.toString() },
           { label: 'Fingerprint', value: systemInfoSet.System.Fingerprint },
+          ...(systemInfoSet.License.Owner ? [{ label: 'Registered to', value: systemInfoSet.License.Owner }] : []),
         ];
         return info;
       })

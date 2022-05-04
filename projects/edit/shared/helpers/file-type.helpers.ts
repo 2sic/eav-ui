@@ -44,6 +44,6 @@ export class FileTypeHelpers {
   }
 
   private static isImgRegex() {
-    return /(?:([^:\/?#]+):)?(?:\/\/([^\/?#]*))?([^?#]*\.(?:jpg|jpeg|gif|png))(?:\?([^#]*))?(?:#(.*))?/i;
+    return /(?:([^:\/?#]+):)?(?:\/\/([^\/?#]*))?([^?#]*\.(?:jpg|jpeg|gif|png|webp))(?:\?([^#]*))?(?:#(.*))?/i;
   }
 }

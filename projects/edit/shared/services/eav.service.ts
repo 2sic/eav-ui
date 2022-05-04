@@ -38,6 +38,7 @@ export class EavService {
       zoneId: this.context.zoneId.toString(),
       appId: this.context.appId.toString(),
       appRoot: dialogContext.App.Url,
+      appSharedRoot: dialogContext.App.SharedUrl,
       lang: dialogContext.Language.Current,
       langPri: dialogContext.Language.Primary,
       langs: dialogContext.Language.List,
@@ -58,6 +59,7 @@ export class EavService {
       enableHistory,
       enableFormulaSave: dialogContext.Enable.FormulaSave ?? false,
       overrideEditRestrictions: dialogContext.Enable.OverrideEditRestrictions ?? false,
+      dialogContext,
     };
   }
 

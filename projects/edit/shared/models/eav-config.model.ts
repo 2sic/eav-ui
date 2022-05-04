@@ -1,10 +1,12 @@
 import { Language, VersioningOptions } from '.';
+import { DialogContext } from '../../../ng-dialogs/src/app/app-administration/models';
 
 /** WARNING! These are constants that form was loaded with. They do not change while form is running */
 export interface EavConfig {
   zoneId: string;
   appId: string;
   appRoot: string;
+  appSharedRoot: string;
   lang: string;
   langPri: string;
   langs: Language[];
@@ -22,4 +24,5 @@ export interface EavConfig {
   enableHistory: boolean;
   enableFormulaSave: boolean;
   overrideEditRestrictions: boolean;
+  dialogContext: DialogContext;
 }

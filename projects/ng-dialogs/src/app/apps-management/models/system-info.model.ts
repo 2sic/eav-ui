@@ -7,6 +7,7 @@ export interface SystemInfoSet {
 export interface LicenseInfo {
   Count: number;
   Main: string;
+  Owner: string | null;
 }
 
 export interface SiteStats {

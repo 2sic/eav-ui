@@ -1,5 +1,6 @@
 export interface App {
   AppRoot: string;
+  AppSharedRoot: string;
   ConfigurationId: number;
   Folder: string;
   Guid: string;

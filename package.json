@@ -1,7 +1,7 @@
 {
   "name": "eav-ui",
   "// VERSION": "The version number is very important, as it's used for publishing the source maps",
-  "version": "13.06.00",
+  "version": "13.10.00",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -49,7 +49,6 @@
     "@ngx-translate/http-loader": "^7.0.0",
     "lodash-es": "^4.17.21",
     "moment": "^2.29.2",
-    "monaco-editor": "^0.33.0",
     "ngx-build-plus": "^13.0.1",
     "ngx-dropzone-wrapper": "^11.0.0",
     "rxjs": "^7.5.0",
@@ -81,6 +80,7 @@
     "karma-coverage": "^2.1.0",
     "karma-jasmine": "~4.0.0",
     "karma-jasmine-html-reporter": "^1.7.0",
+    "monaco-editor": "^0.33.0",
     "raw-loader": "^4.0.2",
     "rxjs-tslint": "^0.1.8",
     "ts-loader": "^9.2.8",

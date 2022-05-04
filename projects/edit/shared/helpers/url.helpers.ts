@@ -132,12 +132,13 @@ export class UrlHelpers {
     return url + (url.indexOf('?') > 0 ? '&' : '?') + paramName + '=' + paramValue;
   }
 
-  static getUrlPrefix(area: 'system' | 'zone' | 'app', eavConfig: EavConfig) {
+  static getUrlPrefix(area: 'system' | 'zone' | 'app' | 'appShared', eavConfig: EavConfig) {
     let result = '';
 
     if (area === 'system') { result = eavConfig.systemRoot; } // used to link to JS-stuff and similar
     if (area === 'zone') { result = eavConfig.portalRoot; } // used to link to the site-root (like an image)
     if (area === 'app') { result = eavConfig.appRoot; } // used to find the app-root of something inside an app
+    if (area === 'appShared') { result = eavConfig.appSharedRoot; } // used to find the app-root of something inside an app
     if (result.endsWith('/')) { result = result.substring(0, result.length - 1); }
 
     return result;

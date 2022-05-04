@@ -1,6 +1,6 @@
 import { Component, Input, OnDestroy, OnInit, QueryList } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { BehaviorSubject, combineLatest, map, Observable, switchMap } from 'rxjs';
+import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, switchMap } from 'rxjs';
 import { EntitiesService } from '../../../../ng-dialogs/src/app/content-items/services/entities.service';
 import { InputTypeConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
 import { eavConstants } from '../../../../ng-dialogs/src/app/shared/constants/eav.constants';
@@ -305,13 +305,16 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
       }),
     );
     const formula$ = designerState$.pipe(
-      switchMap(designer =>
-        this.formulaDesignerService.getFormula$(designer.entityGuid, designer.fieldName, designer.target, true)
-      ),
+      switchMap(designer => this.formulaDesignerService.getFormula$(designer.entityGuid, designer.fieldName, designer.target, true)),
     );
-    const snippets$ = combineLatest([options$, formula$]).pipe(
-      map(([options, formula]) => formula != null
-        ? FormulaHelpers.buildDesignerSnippets(formula, options.fieldOptions)
+    const itemHeader$ = designerState$.pipe(
+      map(designer => designer.entityGuid),
+      distinctUntilChanged(),
+      switchMap(entityGuid => this.itemService.getItemHeader$(entityGuid)),
+    );
+    const snippets$ = combineLatest([options$, formula$, itemHeader$]).pipe(
+      map(([options, formula, itemHeader]) => formula != null && itemHeader != null
+        ? FormulaHelpers.buildDesignerSnippets(formula, options.fieldOptions, itemHeader)
         : []
       ),
     );
