@@ -84,6 +84,7 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
         const duration = info.Success ? 3000 : 100000;
         const panelClass = info.Success ? undefined : 'snackbar-error';
         this.snackBar.open(message, undefined, { duration, panelClass });
+        this.refreshLicenses$.next();
       },
     });
   }
