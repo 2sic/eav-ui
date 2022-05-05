@@ -154,7 +154,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
   }
 
   editItemMetadata(adamItem: AdamItem, contentTypeName: string, metadataId: number) {
-    if (this.formsStateService.readOnly$.value.isReadOnly) { return; }
+    if (this.formsStateService.readOnly$.value.isReadOnly || !contentTypeName) { return; }
 
     const form: EditForm = {
       items: [
