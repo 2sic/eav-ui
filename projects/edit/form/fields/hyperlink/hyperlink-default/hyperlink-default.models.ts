@@ -22,4 +22,5 @@ export interface HyperlinkDefaultTemplateVars extends BaseFieldTemplateVars {
   showFileManager: boolean;
   preview: Preview;
   adamItem: AdamItem;
+  enableImageConfiguration: boolean;
 }

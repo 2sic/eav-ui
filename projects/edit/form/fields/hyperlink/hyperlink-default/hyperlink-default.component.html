@@ -10,7 +10,8 @@
         [ngClass]="{ 'metadata-exists': data.adamItem?._imageConfigurationId > 0 }"
         [tippy]="'Fields.Hyperlink.AdamFileManager.ImageSettings' | translate"
         (click)="openImageConfiguration(data.adamItem)">
-        <mat-icon [tippy]="'Fields.Hyperlink.AdamFileManager.NoImageSettings' | translate"
+        <mat-icon
+          [tippy]="(data.enableImageConfiguration ? 'Fields.Hyperlink.AdamFileManager.ImageSettingsUnavailable' : 'Fields.Hyperlink.AdamFileManager.ImageSettingsDisabled') | translate"
           [tippyDisabled]="data.adamItem?._imageConfigurationContentType">
           filter_center_focus
         </mat-icon>

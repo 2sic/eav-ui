@@ -2,8 +2,10 @@ import { ChangeDetectorRef, Directive, OnDestroy, OnInit, ViewContainerRef } fro
 import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, distinctUntilChanged, map } from 'rxjs';
 import { AdamItem } from '../../../../../edit-types';
+import { eavConstants } from '../../../../../ng-dialogs/src/app/shared/constants/eav.constants';
+import { EditForm } from '../../../../../ng-dialogs/src/app/shared/models/edit-form.model';
 import { FileTypeHelpers, GeneralHelpers, PagePicker, UrlHelpers } from '../../../../shared/helpers';
-import { AdamService, EavService, FieldsSettingsService } from '../../../../shared/services';
+import { AdamService, EavService, EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../../shared/services';
 import { LinkCacheService } from '../../../../shared/store/ngrx-data';
 import { BaseComponent } from '../../base/base.component';
 import { Preview } from './hyperlink-default.models';
@@ -21,6 +23,8 @@ export class HyperlinkDefaultBaseComponent extends BaseComponent<string> impleme
     public viewContainerRef: ViewContainerRef,
     public changeDetectorRef: ChangeDetectorRef,
     public linkCacheService: LinkCacheService,
+    public editRoutingService: EditRoutingService,
+    public formsStateService: FormsStateService,
   ) {
     super(eavService, fieldsSettingsService);
   }
@@ -54,6 +58,26 @@ export class HyperlinkDefaultBaseComponent extends BaseComponent<string> impleme
       if (!page) { return; }
       GeneralHelpers.patchControlValue(this.control, `page:${page.id}`);
     });
+  }
+
+  openImageConfiguration(adamItem?: AdamItem) {
+    if (this.formsStateService.readOnly$.value.isReadOnly || !adamItem?._imageConfigurationContentType) { return; }
+
+    const form: EditForm = {
+      items: [
+        adamItem._imageConfigurationId > 0
+          ? { EntityId: adamItem._imageConfigurationId }
+          : {
+            ContentTypeName: adamItem._imageConfigurationContentType,
+            For: {
+              Target: eavConstants.metadata.cmsObject.target,
+              TargetType: eavConstants.metadata.cmsObject.targetType,
+              String: `file:${adamItem.Id}`,
+            },
+          },
+      ],
+    };
+    this.editRoutingService.open(this.config.index, this.config.entityGuid, form);
   }
 
   private fetchLink(value: string) {
