@@ -44,9 +44,12 @@
   color: rgba(0, 0, 0, 0.54);
   overflow: hidden;
   text-overflow: ellipsis;
-  width: calc(100vw - 208px);
-  max-height: 3em;
+  max-height: 1em;
   line-height: 1em;
+
+  &.expanded {
+    max-height: 3em;
+  }
 }
 
 .actions-box {

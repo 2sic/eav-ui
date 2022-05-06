@@ -10,7 +10,7 @@
             <span>{{ license.Name }}</span>
             <span class="active-features-count">{{ license | activeFeaturesCount }}</span>
           </div>
-          <div class="panel-description" [style.whiteSpace]="panel.expanded ? null : 'nowrap'">
+          <div class="panel-description" [ngClass]="{ 'expanded': panel.expanded }">
             {{ license.Description }}
           </div>
         </div>
