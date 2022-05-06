@@ -1,3 +1,4 @@
+import { SxcInstance } from '@2sic.com/2sxc-typings';
 import { FormValues } from '.';
 import { FieldSettings, FieldValue } from '../../../edit-types';
 import { Feature } from '../../../ng-dialogs/src/app/apps-management/models/feature.model';
@@ -69,6 +70,7 @@ export interface FormulaV1Context {
   debug: boolean;
   features: FormulaV1CtxFeatures;
   form: FormulaV1CtxForm;
+  sxc: SxcInstance;
   target: FormulaV1CtxTarget;
 }
 

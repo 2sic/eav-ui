@@ -2,12 +2,15 @@ import { InputFieldHelpers, LocalizationHelpers } from '.';
 import { FieldSettings, FieldValue } from '../../../edit-types';
 import { Feature } from '../../../ng-dialogs/src/app/apps-management/models/feature.model';
 import { InputType } from '../../../ng-dialogs/src/app/content-type-fields/models/input-type.model';
+import { EavWindow } from '../../../ng-dialogs/src/app/shared/models/eav-window.model';
 import { DesignerSnippet, FieldOption } from '../../dialog/footer/formula-designer/formula-designer.models';
 // tslint:disable-next-line:max-line-length
 import { FormulaCacheItem, FormulaFunction, FormulaProps, FormulaPropsV1, FormulaTargets, FormulaV1Data, FormulaV1ExperimentalEntity, FormulaVersion, FormulaVersions, FormValues, Language, SettingsFormulaPrefix } from '../models';
 import { EavHeader } from '../models/eav';
 import { EavService, FieldsSettingsService } from '../services';
 import { FeatureService, ItemService } from '../store/ngrx-data';
+
+declare const window: EavWindow;
 
 export class FormulaHelpers {
 
@@ -138,6 +141,13 @@ export class FormulaHelpers {
                 fieldsSettingsService.forceSettings();
               },
             },
+            sxc: window.$2sxc({
+              zoneId: eavService.eavConfig.zoneId,
+              appId: eavService.eavConfig.appId,
+              pageId: eavService.eavConfig.tabId,
+              moduleId: eavService.eavConfig.moduleId,
+              _ignoreHeaders: true,
+            } as any),
             target: {
               entity: {
                 guid: formula.entityGuid,
