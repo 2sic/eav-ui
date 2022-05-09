@@ -116,7 +116,17 @@ export class SystemInfoComponent implements OnInit, OnDestroy {
           { label: 'Platform', value: `${systemInfoSet.System.Platform} v.${systemInfoSet.System.PlatformVersion}` },
           { label: 'Zones', value: systemInfoSet.System.Zones.toString() },
           { label: 'Fingerprint', value: systemInfoSet.System.Fingerprint },
-          ...(systemInfoSet.License.Owner ? [{ label: 'Registered to', value: systemInfoSet.License.Owner }] : []),
+          {
+            label: 'Registered to',
+            value: systemInfoSet.License.Owner || '(unregistered)',
+            link: systemInfoSet.License.Owner
+              ? undefined
+              : {
+                url: `https://patrons.2sxc.org/register?fingerprint=${systemInfoSet.System.Fingerprint}`,
+                label: 'register',
+                target: '_blank',
+              },
+          },
         ];
         return info;
       })
@@ -132,12 +142,20 @@ export class SystemInfoComponent implements OnInit, OnDestroy {
           {
             label: 'Languages',
             value: `${activeLanguages}/${allLanguages}`,
-            link: 'languages',
+            link: {
+              url: 'languages',
+              label: 'manage',
+              target: 'angular',
+            },
           },
           {
             label: 'Apps',
             value: systemInfoSet.Site.Apps.toString(),
-            link: 'list',
+            link: {
+              url: 'list',
+              label: 'manage',
+              target: 'angular',
+            },
           },
         ];
         return info;
