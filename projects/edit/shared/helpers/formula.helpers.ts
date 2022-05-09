@@ -160,6 +160,12 @@ export class FormulaHelpers {
                 ? formula.target
                 : formula.target.substring(0, formula.target.lastIndexOf('.')),
             },
+            user: {
+              id: eavService.eavConfig.dialogContext.User?.Id,
+              isAnonymous: eavService.eavConfig.dialogContext.User?.IsAnonymous,
+              isSiteAdmin: eavService.eavConfig.dialogContext.User?.IsSiteAdmin,
+              isSystemAdmin: eavService.eavConfig.dialogContext.User?.IsSystemAdmin,
+            },
           },
           experimental: {
             getEntities(): FormulaV1ExperimentalEntity[] {

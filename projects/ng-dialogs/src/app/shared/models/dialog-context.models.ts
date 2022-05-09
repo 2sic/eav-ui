@@ -68,3 +68,10 @@ export interface DialogContextSiteApp {
   ZoneId: number;
   AppId: number;
 }
+
+export interface DialogContextUser {
+  Id: number;
+  IsAnonymous: boolean;
+  IsSiteAdmin: boolean;
+  IsSystemAdmin: boolean;
+}

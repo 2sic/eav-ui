@@ -72,6 +72,7 @@ export interface FormulaV1Context {
   form: FormulaV1CtxForm;
   sxc: SxcInstance;
   target: FormulaV1CtxTarget;
+  user: FormulaV1CtxUser;
 }
 
 export interface FormulaV1CtxApp {
@@ -105,6 +106,13 @@ export interface FormulaV1CtxTarget {
 export interface FormulaV1CtxTargetEntity {
   guid: string;
   id: number;
+}
+
+export interface FormulaV1CtxUser {
+  id: number;
+  isAnonymous: boolean;
+  isSiteAdmin: boolean;
+  isSystemAdmin: boolean;
 }
 
 export interface FormulaV1Experimental {
