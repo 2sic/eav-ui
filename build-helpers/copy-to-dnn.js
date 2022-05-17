@@ -90,7 +90,7 @@ const checkIfExcluded = (paths) => {
 console.log(chalkSuccess(`Copying files from ${sourcePath} to ${outputPath}`));
 
 // Clear destination folders
-fs.readdirSync(outputPath, (err, files) => {
+fs.readdir(outputPath, (err, files) => {
   files.forEach(file => {
     // delete old files except Default.aspx
     if (file === 'Default.aspx') return;
