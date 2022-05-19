@@ -12,6 +12,7 @@
       "type": "npm",
       "script": "release",
       "problemMatcher": [],
+      // This should be the only one in group "build" so ctrl+shift+B will build the project
       "group": "build"
     },
     {
@@ -37,7 +38,6 @@
     {
       "type": "npm",
       "script": "all",
-      "group": "build",
       "problemMatcher": []
     },
     {
