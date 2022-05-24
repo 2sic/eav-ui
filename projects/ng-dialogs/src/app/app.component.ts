@@ -30,8 +30,8 @@ export class AppComponent extends DnnAppComponent implements OnInit, OnDestroy {
     super(
       el,
       dnnContext.preConfigure({
-        moduleId: parseInt(sessionStorage.getItem(keyModuleId), 10),
-        contentBlockId: parseInt(sessionStorage.getItem(keyContentBlockId), 10),
+        moduleId: parseInt(sessionStorage.getItem(keyModuleId) || '-1234', 10),
+        contentBlockId: parseInt(sessionStorage.getItem(keyContentBlockId) || '-1234', 10),
       }),
     );
     this.context.initRoot();
