@@ -85,20 +85,17 @@ export class Context {
   }
 
   initRoot() {
-    // required, global things
     this._rvt = sessionStorage.getItem(keyRequestToken);
     this._rvtHeaderName = sessionStorage.getItem(keyRequestTokenHeaderName);
     this._zoneId = this.sessionNumber(keyZoneId);
     this._tabId = this.sessionNumber(keyTabId);
     this._contentBlockId = this.sessionNumber(keyContentBlockId);
     this._moduleId = this.sessionNumber(keyModuleId);
+    this._appId = this.sessionNumber(keyAppId);
 
-    if (!this._rvt || !this._zoneId || !this._tabId || !this._contentBlockId || !this._moduleId) {
+    if (!this._rvt || !this._zoneId || !this._tabId) {
       throw new Error('Context is missing some of the required parameters');
     }
-
-    // optional global things
-    this._appId = this.sessionNumber(keyAppId);
 
     this.ready = true;
     consoleLogAngular('Context.initRoot', this);
@@ -138,6 +135,7 @@ export class Context {
     this._zoneId = null;
     this._appId = null;
     this._rvt = null;
+    this._rvtHeaderName = null;
     this._tabId = null;
     this._contentBlockId = null;
     this._moduleId = null;

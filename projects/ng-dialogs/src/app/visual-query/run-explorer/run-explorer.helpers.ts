@@ -58,7 +58,7 @@ export function calculateWarnings(pipelineModel: PipelineModel, context: Context
       const midMatch = midRegex.exec(param);
       if (midMatch) {
         const testMid = midMatch[1];
-        const urlMid = context.moduleId.toString();
+        const urlMid = context.moduleId?.toString();
         if (testMid !== urlMid) {
           warnings.push(`
             Your test ModuleId (${testMid}) is different from the current ModuleId (${urlMid}).<br>

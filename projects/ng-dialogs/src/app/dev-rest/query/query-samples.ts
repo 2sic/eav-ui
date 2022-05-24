@@ -36,7 +36,7 @@ function snippetsGet(scenario: Scenario, path: string, context: Context, streamN
   const moduleId = context.moduleId;
   const virtual = path[0] !== '/';
   const list: CodeSample[] = [];
-  const pathWithContext = `${path}?PageId=${context.tabId}&ModuleId=${context.moduleId}`;
+  const pathWithContext = `${path}?PageId=${context.tabId}&ModuleId=${moduleId}`;
 
   if (scenario.inSameContext)
     list.push(new CodeSample('Example with global $2sxc and event-context',
