@@ -156,6 +156,7 @@
         "MenuDocs": "Gestor de Ficheiros"
       },
       "AdamFileManager": {
+        "Name": "ADAM",
         "UploadLabel": "Carregar para",
         "UploadTip": "Carregar rapidamente através do ADAM",
         "UploadPasteLabel": "Colar Imagem",
@@ -174,7 +175,7 @@
         "Delete": "Apagar",
         "DeleteQuestion": "Tem a certeza que quer apagar este ficheiro?",
         "Hint": "largar os ficheiros aqui",
-        "SponsorTooltip": "ADAM é o Automatic Digital Assets Manager - clique para saber mais",
+        "HelpTooltip": "ADAM é o Automatic Digital Assets Manager - clique para saber mais",
         "SponsorLine": "é patrocinado com ♡ por"
       },
       "PagePicker": {

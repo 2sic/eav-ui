@@ -156,6 +156,7 @@
         "MenuDocs": "Dateiverwaltung"
       },
       "AdamFileManager": {
+        "Name": "ADAM",
         "UploadLabel": "Upload nach",
         "UploadTip": "Schnell upload mit ADAM",
         "UploadPasteLabel": "Bild aus Zwischenablage",
@@ -174,7 +175,7 @@
         "Delete": "Löschen",
         "DeleteQuestion": "Bist du sicher, dass die die Datei löschen möchtest?",
         "Hint": "Dateien hierher ziehen ",
-        "SponsorTooltip": "ADAM ist der Automatic Digital Assets Manager - mehr erfahren",
+        "HelpTooltip": "ADAM ist der Automatic Digital Assets Manager - mehr erfahren",
         "SponsorLine": "mit ♡ gesponsort von"
       },
       "PagePicker": {

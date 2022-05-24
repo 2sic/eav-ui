@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
+import { FeaturesConstants } from '../../../../shared/constants';
+import { FeatureService } from '../../../../shared/store/ngrx-data';
+import { AdamHintTemplateVars } from './adam-hint.models';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -8,8 +12,23 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AdamHintComponent implements OnInit {
 
-  constructor() { }
+  templateVars$: Observable<AdamHintTemplateVars>;
+
+  constructor(private featureService: FeatureService) { }
 
   ngOnInit() {
+    const showAdamSponsor$ = this.featureService.isFeatureEnabled$(FeaturesConstants.NoSponsoredByToSic).pipe(
+      map(isEnabled => !isEnabled),
+      distinctUntilChanged(),
+    );
+
+    this.templateVars$ = combineLatest([showAdamSponsor$]).pipe(
+      map(([showAdamSponsor]) => {
+        const templateVars: AdamHintTemplateVars = {
+          showAdamSponsor,
+        };
+        return templateVars;
+      }),
+    );
   }
 }

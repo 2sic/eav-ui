@@ -93,7 +93,11 @@
       <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
     </div>
     <div class="c__helper-wrapper--right c-ew__preview-hint-text" fxHide fxShow.gt-xs>
-      <span>{{ 'Fields.Hyperlink.Default.Sponsor' | translate }}</span>
+      <span>{{
+        data.showAdamSponsor
+        ? ('Fields.Hyperlink.Default.Sponsor' | translate)
+        : ('Fields.Hyperlink.AdamFileManager.Name' | translate)
+        }}</span>
     </div>
   </div>
 </div>

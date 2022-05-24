@@ -156,6 +156,7 @@
         "MenuDocs": "File Manager"
       },
       "AdamFileManager": {
+        "Name": "ADAM",
         "UploadLabel": "Upload to",
         "UploadTip": "Quick upload using ADAM",
         "UploadPasteLabel": "Paste Image",
@@ -174,7 +175,7 @@
         "Delete": "Delete",
         "DeleteQuestion": "Are you sure you want to delete this file?",
         "Hint": "drop files here",
-        "SponsorTooltip": "ADAM is the Automatic Digital Assets Manager - click to discover more",
+        "HelpTooltip": "ADAM is the Automatic Digital Assets Manager - click to discover more",
         "SponsorLine": "is sponsored with ♡ by"
       },
       "PagePicker": {
