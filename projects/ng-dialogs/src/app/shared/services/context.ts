@@ -23,13 +23,13 @@ export class Context {
 
   /** The current Zone ID */
   get zoneId(): number {
-    return this._zoneId || (this._zoneId = this.routeNum(keyZoneId) || this.parent.zoneId);
+    return this._zoneId || (this._zoneId = this.routeNum(keyZoneId) || this.parent?.zoneId);
   }
   private _zoneId: number;
 
   /** The current App ID */
   get appId(): number {
-    return (this._appId != null) ? this._appId : (this._appId = this.routeNum(keyAppId) || this.parent.appId);
+    return (this._appId != null) ? this._appId : (this._appId = this.routeNum(keyAppId) || this.parent?.appId);
   }
   private _appId: number;
 
@@ -37,30 +37,30 @@ export class Context {
    * The request verification token for http requests.
    * It's only loaded from the root, never from sub-contexts
    */
-  get requestToken(): string { return this._rvt || (this._rvt = this.parent.requestToken); }
+  get requestToken(): string { return this._rvt || (this._rvt = this.parent?.requestToken); }
   private _rvt: string;
 
   /**
    * The request verification token for http requests uses different names in Dnn and different versions of Oqtane.
    */
-  get requestTokenHeaderName(): string { return this._rvtHeaderName || (this._rvtHeaderName = this.parent.requestTokenHeaderName); }
+  get requestTokenHeaderName(): string { return this._rvtHeaderName || (this._rvtHeaderName = this.parent?.requestTokenHeaderName); }
   private _rvtHeaderName: string;
 
   /** Tab Id is global */
   get tabId(): number {
-    return this._tabId || (this._tabId = this.routeNum(keyTabId) || this.parent.tabId);
+    return this._tabId || (this._tabId = this.routeNum(keyTabId) || this.parent?.tabId);
   }
   private _tabId: number;
 
   /** Content Block Id is global */
   get contentBlockId(): number {
-    return this._contentBlockId || (this._contentBlockId = this.routeNum(keyContentBlockId) || this.parent.contentBlockId);
+    return this._contentBlockId || (this._contentBlockId = this.routeNum(keyContentBlockId) || this.parent?.contentBlockId);
   }
   private _contentBlockId: number;
 
   /** Module Id is global */
   get moduleId(): number {
-    return this._moduleId || (this._moduleId = this.routeNum(keyModuleId) || this.parent.moduleId);
+    return this._moduleId || (this._moduleId = this.routeNum(keyModuleId) || this.parent?.moduleId);
   }
   private _moduleId: number;
 
@@ -93,7 +93,7 @@ export class Context {
     this._moduleId = this.sessionNumber(keyModuleId);
     this._appId = this.sessionNumber(keyAppId);
 
-    if (!this._rvt || !this._zoneId || !this._tabId) {
+    if (!this._rvt || !this._zoneId) {
       throw new Error('Context is missing some of the required parameters');
     }
 

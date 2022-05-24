@@ -45,7 +45,7 @@ export class EavService {
       moduleId: this.context.moduleId?.toString(),
       partOfPage: sessionStorage.getItem(keyPartOfPage),
       portalRoot: dialogContext.Site.Url,
-      tabId: this.context.tabId.toString(),
+      tabId: this.context.tabId?.toString(),
       systemRoot: window.location.pathname.split('/dist/')[0] + '/',
       versioningOptions: this.getVersioningOptions(
         sessionStorage.getItem(keyPartOfPage) === 'true',
