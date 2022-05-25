@@ -1,5 +1,6 @@
 export interface SystemInfoSet {
   License: LicenseInfo;
+  Messages: WarningsCount;
   Site: SiteStats;
   System: SystemInfo;
 }
@@ -8,6 +9,11 @@ export interface LicenseInfo {
   Count: number;
   Main: string;
   Owner: string | null;
+}
+
+export interface WarningsCount {
+  WarningsObsolete: number;
+  WarningsOther: number;
 }
 
 export interface SiteStats {

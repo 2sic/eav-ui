@@ -120,4 +120,29 @@
       </form>
     </mat-card-content>
   </mat-card>
+
+  <mat-card>
+    <mat-card-header>
+      <div mat-card-avatar>
+        <mat-icon>{{ data.warningIcon }}</mat-icon>
+      </div>
+      <mat-card-title>Warnings</mat-card-title>
+      <mat-card-subtitle>System and Code Warnings</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="info-row" *ngFor="let info of data.warningInfos">
+        <div class="info-row__label">{{ info.label }}</div>
+        <div class="info-row__value">
+          <span [tippy]="info.value" (click)="copyToClipboard(info.value)">{{ info.value }}</span>
+          <ng-container *ngIf="info.link">
+            <a class="info-row__link" *ngIf="info.link.target === 'angular'" [routerLink]="info.link.url">{{
+              info.link.label
+              }}</a>
+            <a class="info-row__link" *ngIf="info.link.target !== 'angular'" [href]="info.link.url"
+              [target]="info.link.target">{{ info.link.label }}</a>
+          </ng-container>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
 </ng-container>

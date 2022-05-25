@@ -161,12 +161,53 @@ export class SystemInfoComponent implements OnInit, OnDestroy {
         return info;
       })
     );
-    this.templateVars$ = combineLatest([systemInfos$, siteInfos$, this.loading$]).pipe(
-      map(([systemInfos, siteInfos, loading]) => {
+    const warningIcon$ = this.systemInfoSet$.pipe(
+      map(systemInfoSet => {
+        if (systemInfoSet == null) { return; }
+        if (systemInfoSet.Messages.WarningsObsolete || systemInfoSet.Messages.WarningsOther) {
+          return 'warning';
+        }
+        return 'check';
+      }),
+    );
+    const warningInfos$ = this.systemInfoSet$.pipe(
+      map(systemInfoSet => {
+        if (systemInfoSet == null) { return; }
+        const info: InfoTemplate[] = [
+          {
+            label: 'Warnings Obsolete',
+            value: systemInfoSet.Messages.WarningsObsolete.toString(),
+            link: !systemInfoSet.Messages.WarningsObsolete
+              ? undefined
+              : {
+                url: window.$2sxc.http.apiUrl('sys/insights/logs?key=warnings-obsolete'),
+                label: 'review',
+                target: '_blank',
+              },
+          },
+          {
+            label: 'Warnings Other',
+            value: systemInfoSet.Messages.WarningsOther.toString(),
+            link: !systemInfoSet.Messages.WarningsOther
+              ? undefined
+              : {
+                url: window.$2sxc.http.apiUrl('sys/insights/logs'),
+                label: 'review',
+                target: '_blank',
+              },
+          },
+        ];
+        return info;
+      }),
+    );
+    this.templateVars$ = combineLatest([systemInfos$, siteInfos$, this.loading$, warningIcon$, warningInfos$]).pipe(
+      map(([systemInfos, siteInfos, loading, warningIcon, warningInfos]) => {
         const templateVars: SystemInfoTemplateVars = {
           systemInfos,
           siteInfos,
           loading,
+          warningIcon,
+          warningInfos,
         };
         return templateVars;
       }),
