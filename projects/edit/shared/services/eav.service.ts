@@ -42,10 +42,10 @@ export class EavService {
       lang: dialogContext.Language.Current,
       langPri: dialogContext.Language.Primary,
       langs: dialogContext.Language.List,
-      moduleId: this.context.moduleId.toString(),
+      moduleId: this.context.moduleId?.toString(),
       partOfPage: sessionStorage.getItem(keyPartOfPage),
       portalRoot: dialogContext.Site.Url,
-      tabId: this.context.tabId.toString(),
+      tabId: this.context.tabId?.toString(),
       systemRoot: window.location.pathname.split('/dist/')[0] + '/',
       versioningOptions: this.getVersioningOptions(
         sessionStorage.getItem(keyPartOfPage) === 'true',

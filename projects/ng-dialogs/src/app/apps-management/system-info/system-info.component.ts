@@ -116,7 +116,17 @@ export class SystemInfoComponent implements OnInit, OnDestroy {
           { label: 'Platform', value: `${systemInfoSet.System.Platform} v.${systemInfoSet.System.PlatformVersion}` },
           { label: 'Zones', value: systemInfoSet.System.Zones.toString() },
           { label: 'Fingerprint', value: systemInfoSet.System.Fingerprint },
-          ...(systemInfoSet.License.Owner ? [{ label: 'Registered to', value: systemInfoSet.License.Owner }] : []),
+          {
+            label: 'Registered to',
+            value: systemInfoSet.License.Owner || '(unregistered)',
+            link: systemInfoSet.License.Owner
+              ? undefined
+              : {
+                url: `https://patrons.2sxc.org/register?fingerprint=${systemInfoSet.System.Fingerprint}`,
+                label: 'register',
+                target: '_blank',
+              },
+          },
         ];
         return info;
       })
@@ -132,23 +142,72 @@ export class SystemInfoComponent implements OnInit, OnDestroy {
           {
             label: 'Languages',
             value: `${activeLanguages}/${allLanguages}`,
-            link: 'languages',
+            link: {
+              url: 'languages',
+              label: 'manage',
+              target: 'angular',
+            },
           },
           {
             label: 'Apps',
             value: systemInfoSet.Site.Apps.toString(),
-            link: 'list',
+            link: {
+              url: 'list',
+              label: 'manage',
+              target: 'angular',
+            },
           },
         ];
         return info;
       })
     );
-    this.templateVars$ = combineLatest([systemInfos$, siteInfos$, this.loading$]).pipe(
-      map(([systemInfos, siteInfos, loading]) => {
+    const warningIcon$ = this.systemInfoSet$.pipe(
+      map(systemInfoSet => {
+        if (systemInfoSet == null) { return; }
+        if (systemInfoSet.Messages.WarningsObsolete || systemInfoSet.Messages.WarningsOther) {
+          return 'warning';
+        }
+        return 'check';
+      }),
+    );
+    const warningInfos$ = this.systemInfoSet$.pipe(
+      map(systemInfoSet => {
+        if (systemInfoSet == null) { return; }
+        const info: InfoTemplate[] = [
+          {
+            label: 'Warnings Obsolete',
+            value: systemInfoSet.Messages.WarningsObsolete.toString(),
+            link: !systemInfoSet.Messages.WarningsObsolete
+              ? undefined
+              : {
+                url: window.$2sxc.http.apiUrl('sys/insights/logs?key=warnings-obsolete'),
+                label: 'review',
+                target: '_blank',
+              },
+          },
+          {
+            label: 'Warnings Other',
+            value: systemInfoSet.Messages.WarningsOther.toString(),
+            link: !systemInfoSet.Messages.WarningsOther
+              ? undefined
+              : {
+                url: window.$2sxc.http.apiUrl('sys/insights/logs'),
+                label: 'review',
+                target: '_blank',
+              },
+          },
+        ];
+        return info;
+      }),
+    );
+    this.templateVars$ = combineLatest([systemInfos$, siteInfos$, this.loading$, warningIcon$, warningInfos$]).pipe(
+      map(([systemInfos, siteInfos, loading, warningIcon, warningInfos]) => {
         const templateVars: SystemInfoTemplateVars = {
           systemInfos,
           siteInfos,
           loading,
+          warningIcon,
+          warningInfos,
         };
         return templateVars;
       }),

@@ -156,6 +156,7 @@
         "MenuDocs": "Gestor de Ficheiros"
       },
       "AdamFileManager": {
+        "Name": "ADAM",
         "UploadLabel": "Carregar para",
         "UploadTip": "Carregar rapidamente através do ADAM",
         "UploadPasteLabel": "Colar Imagem",
@@ -167,13 +168,14 @@
         "BackFolderTip": "Voltar à pasta anterior",
         "Show": "Abrir num novo separador",
         "ImageSettings": "Image settings",
-        "NoImageSettings": "Image settings not available. The file is not an image or it doesn't belong to this item",
+        "ImageSettingsUnavailable": "Image settings not available. The file is not an image or it doesn't belong to this item",
+        "ImageSettingsDisabled": "Image settings are disabled for this field",
         "Edit": "Renomear",
         "RenameQuestion": "Renomear ficheiro/ pasta para:",
         "Delete": "Apagar",
         "DeleteQuestion": "Tem a certeza que quer apagar este ficheiro?",
         "Hint": "largar os ficheiros aqui",
-        "SponsorTooltip": "ADAM é o Automatic Digital Assets Manager - clique para saber mais",
+        "HelpTooltip": "ADAM é o Automatic Digital Assets Manager - clique para saber mais",
         "SponsorLine": "é patrocinado com ♡ por"
       },
       "PagePicker": {

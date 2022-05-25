@@ -3,4 +3,5 @@ export const FeaturesConstants = {
   PasteImageFromClipboard: 'PasteImageFromClipboard',
   EditUiShowNotes: 'EditUiShowNotes',
   EditUiShowMetadataFor: 'EditUiShowMetadataFor',
+  NoSponsoredByToSic: 'NoSponsoredByToSic',
 } as const;

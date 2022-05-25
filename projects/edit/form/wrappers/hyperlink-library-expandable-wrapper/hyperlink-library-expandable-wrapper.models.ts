@@ -4,4 +4,5 @@ import { BaseFieldTemplateVars } from '../../fields/base/base-field-template-var
 export interface HyperlinkLibraryExpandableTemplateVars extends BaseFieldTemplateVars {
   items: AdamItem[];
   itemsNumber: number;
+  showAdamSponsor: boolean;
 }

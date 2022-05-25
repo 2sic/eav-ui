@@ -133,10 +133,12 @@
                 open_in_new
               </mat-icon>
             </a>
-            <mat-icon class="image-configuration-button" appClickStopPropagation
-              *ngIf="item._imageConfigurationContentType"
-              [ngClass]="{ 'metadata-exists': item._imageConfigurationId > 0 }"
-              [tippy]="'Fields.Hyperlink.AdamFileManager.ImageSettings' | translate"
+            <mat-icon class="image-configuration-button" appClickStopPropagation *ngIf="item.Type === 'image'"
+              [ngClass]="{
+                'adam-button-disabled': !item._imageConfigurationContentType,
+                'metadata-exists': item._imageConfigurationId > 0
+              }"
+              [tippy]="(item._imageConfigurationContentType ? 'Fields.Hyperlink.AdamFileManager.ImageSettings' : 'Fields.Hyperlink.AdamFileManager.ImageSettingsDisabled') | translate"
               (click)="editItemMetadata(item, item._imageConfigurationContentType, item._imageConfigurationId)">
               filter_center_focus
             </mat-icon>

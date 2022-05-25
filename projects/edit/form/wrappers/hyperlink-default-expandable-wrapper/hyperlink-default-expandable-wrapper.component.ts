@@ -2,12 +2,10 @@ import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, NgZone, OnDest
 import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, share } from 'rxjs';
 import { AdamItem } from '../../../../edit-types';
-import { eavConstants } from '../../../../ng-dialogs/src/app/shared/constants/eav.constants';
-import { EditForm } from '../../../../ng-dialogs/src/app/shared/models/edit-form.model';
-import { WrappersConstants } from '../../../shared/constants';
+import { FeaturesConstants, WrappersConstants } from '../../../shared/constants';
 import { DropzoneDraggingHelper, GeneralHelpers } from '../../../shared/helpers';
 import { AdamService, EavService, EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
-import { LinkCacheService } from '../../../shared/store/ngrx-data';
+import { FeatureService, LinkCacheService } from '../../../shared/store/ngrx-data';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { HyperlinkDefaultBaseComponent } from '../../fields/hyperlink/hyperlink-default/hyperlink-default-base.component';
 import { ContentExpandAnimation } from '../expandable-wrapper/content-expand.animation';
@@ -40,9 +38,10 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
     viewContainerRef: ViewContainerRef,
     changeDetectorRef: ChangeDetectorRef,
     linkCacheService: LinkCacheService,
-    private editRoutingService: EditRoutingService,
+    editRoutingService: EditRoutingService,
     private zone: NgZone,
-    private formsStateService: FormsStateService,
+    formsStateService: FormsStateService,
+    private featureService: FeatureService,
   ) {
     super(
       eavService,
@@ -52,6 +51,8 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
       viewContainerRef,
       changeDetectorRef,
       linkCacheService,
+      editRoutingService,
+      formsStateService,
     );
   }
 
@@ -64,6 +65,7 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
       map(settings => ({
         _buttonAdam: settings.Buttons.includes('adam'),
         _buttonPage: settings.Buttons.includes('page'),
+        EnableImageConfiguration: settings.EnableImageConfiguration,
       })),
       distinctUntilChanged(GeneralHelpers.objectsEqual),
     );
@@ -80,14 +82,18 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
       }),
       distinctUntilChanged(),
     );
+    const showAdamSponsor$ = this.featureService.isFeatureEnabled$(FeaturesConstants.NoSponsoredByToSic).pipe(
+      map(isEnabled => !isEnabled),
+      distinctUntilChanged(),
+    );
 
     this.templateVars$ = combineLatest([
       combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
-      combineLatest([this.preview$, settings$, adamItem$]),
+      combineLatest([this.preview$, settings$, adamItem$, showAdamSponsor$]),
     ]).pipe(
       map(([
         [controlStatus, label, placeholder, required],
-        [preview, settings, adamItem],
+        [preview, settings, adamItem, showAdamSponsor],
       ]) => {
         const templateVars: HyperlinkDefaultExpandableTemplateVars = {
           controlStatus,
@@ -98,6 +104,8 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
           buttonAdam: settings._buttonAdam,
           buttonPage: settings._buttonPage,
           adamItem,
+          enableImageConfiguration: settings.EnableImageConfiguration,
+          showAdamSponsor,
         };
         return templateVars;
       }),
@@ -146,25 +154,5 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
 
   saveAll(close: boolean) {
     this.formsStateService.saveForm$.next(close);
-  }
-
-  openImageConfiguration(adamItem?: AdamItem) {
-    if (this.formsStateService.readOnly$.value.isReadOnly || !adamItem?._imageConfigurationContentType) { return; }
-
-    const form: EditForm = {
-      items: [
-        adamItem._imageConfigurationId > 0
-          ? { EntityId: adamItem._imageConfigurationId }
-          : {
-            ContentTypeName: adamItem._imageConfigurationContentType,
-            For: {
-              Target: eavConstants.metadata.cmsObject.target,
-              TargetType: eavConstants.metadata.cmsObject.targetType,
-              String: `file:${adamItem.Id}`,
-            },
-          },
-      ],
-    };
-    this.editRoutingService.open(this.config.index, this.config.entityGuid, form);
   }
 }

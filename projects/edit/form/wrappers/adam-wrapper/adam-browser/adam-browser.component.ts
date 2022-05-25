@@ -154,7 +154,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
   }
 
   editItemMetadata(adamItem: AdamItem, contentTypeName: string, metadataId: number) {
-    if (this.formsStateService.readOnly$.value.isReadOnly) { return; }
+    if (this.formsStateService.readOnly$.value.isReadOnly || !contentTypeName) { return; }
 
     const form: EditForm = {
       items: [
@@ -182,10 +182,9 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
   private getImageConfigurationContentType(item: AdamItem) {
     // allow image configuration if file is type image and if image configuration is enabled in settings
     const settings = this.fieldsSettingsService.getFieldSettings(this.config.fieldName);
-    if (settings.EnableImageConfiguration && item.Type === 'image') {
-      return eavConstants.contentTypes.imageDecorator;
-    }
-    return null;
+    return settings.EnableImageConfiguration && item.Type === 'image'
+      ? eavConstants.contentTypes.imageDecorator
+      : null;
   }
 
   private getMetadataContentType(item: AdamItem) {

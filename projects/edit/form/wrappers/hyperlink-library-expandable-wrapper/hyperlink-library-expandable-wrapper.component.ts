@@ -1,9 +1,10 @@
 import { AfterViewInit, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
-import { BehaviorSubject, combineLatest, map, Observable, share } from 'rxjs';
+import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, share } from 'rxjs';
 import { AdamItem } from '../../../../edit-types';
-import { WrappersConstants } from '../../../shared/constants';
+import { FeaturesConstants, WrappersConstants } from '../../../shared/constants';
 import { DropzoneDraggingHelper } from '../../../shared/helpers';
 import { EavService, EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
+import { FeatureService } from '../../../shared/store/ngrx-data';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { BaseComponent } from '../../fields/base/base.component';
 import { ContentExpandAnimation } from '../expandable-wrapper/content-expand.animation';
@@ -34,6 +35,7 @@ export class HyperlinkLibraryExpandableWrapperComponent extends BaseComponent<nu
     private zone: NgZone,
     private editRoutingService: EditRoutingService,
     private formsStateService: FormsStateService,
+    private featureService: FeatureService,
   ) {
     super(eavService, fieldsSettingsService);
   }
@@ -42,14 +44,18 @@ export class HyperlinkLibraryExpandableWrapperComponent extends BaseComponent<nu
     super.ngOnInit();
     this.open$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
     this.adamItems$ = new BehaviorSubject<AdamItem[]>([]);
+    const showAdamSponsor$ = this.featureService.isFeatureEnabled$(FeaturesConstants.NoSponsoredByToSic).pipe(
+      map(isEnabled => !isEnabled),
+      distinctUntilChanged(),
+    );
 
     this.templateVars$ = combineLatest([
       combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
-      combineLatest([this.adamItems$]),
+      combineLatest([this.adamItems$, showAdamSponsor$]),
     ]).pipe(
       map(([
         [controlStatus, label, placeholder, required],
-        [adamItems],
+        [adamItems, showAdamSponsor],
       ]) => {
         const templateVars: HyperlinkLibraryExpandableTemplateVars = {
           controlStatus,
@@ -58,6 +64,7 @@ export class HyperlinkLibraryExpandableWrapperComponent extends BaseComponent<nu
           required,
           items: adamItems.slice(0, 9),
           itemsNumber: adamItems.length,
+          showAdamSponsor,
         };
         return templateVars;
       }),

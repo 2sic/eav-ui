@@ -7,4 +7,6 @@ export interface HyperlinkDefaultExpandableTemplateVars extends BaseFieldTemplat
   buttonAdam: boolean;
   buttonPage: boolean;
   adamItem: AdamItem;
+  enableImageConfiguration: boolean;
+  showAdamSponsor: boolean;
 }

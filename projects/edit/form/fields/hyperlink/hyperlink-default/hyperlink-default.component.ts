@@ -3,8 +3,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { AdamItem, AdamPostResponse } from '../../../../../edit-types';
 import { InputTypeConstants } from '../../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
-import { eavConstants } from '../../../../../ng-dialogs/src/app/shared/constants/eav.constants';
-import { EditForm } from '../../../../../ng-dialogs/src/app/shared/models/edit-form.model';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { AdamService, EavService, EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../../shared/services';
@@ -38,8 +36,8 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
     viewContainerRef: ViewContainerRef,
     changeDetectorRef: ChangeDetectorRef,
     linkCacheService: LinkCacheService,
-    private editRoutingService: EditRoutingService,
-    private formsStateService: FormsStateService,
+    editRoutingService: EditRoutingService,
+    formsStateService: FormsStateService,
   ) {
     super(
       eavService,
@@ -49,6 +47,8 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
       viewContainerRef,
       changeDetectorRef,
       linkCacheService,
+      editRoutingService,
+      formsStateService,
     );
     HyperlinkDefaultLogic.importMe();
   }
@@ -68,6 +68,7 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
         ShowPagePicker: settings.ShowPagePicker,
         ShowImageManager: settings.ShowImageManager,
         ShowFileManager: settings.ShowFileManager,
+        EnableImageConfiguration: settings.EnableImageConfiguration,
       })),
       distinctUntilChanged(GeneralHelpers.objectsEqual)
     );
@@ -109,6 +110,7 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
           showFileManager: settings.ShowFileManager,
           preview,
           adamItem,
+          enableImageConfiguration: settings.EnableImageConfiguration,
         };
         return templateVars;
       }),
@@ -121,26 +123,6 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
 
   toggleAdam(usePortalRoot: boolean, showImagesOnly: boolean) {
     this.config.adam.toggle(usePortalRoot, showImagesOnly);
-  }
-
-  openImageConfiguration(adamItem?: AdamItem) {
-    if (this.formsStateService.readOnly$.value.isReadOnly || !adamItem?._imageConfigurationContentType) { return; }
-
-    const form: EditForm = {
-      items: [
-        adamItem._imageConfigurationId > 0
-          ? { EntityId: adamItem._imageConfigurationId }
-          : {
-            ContentTypeName: adamItem._imageConfigurationContentType,
-            For: {
-              Target: eavConstants.metadata.cmsObject.target,
-              TargetType: eavConstants.metadata.cmsObject.targetType,
-              String: `file:${adamItem.Id}`,
-            },
-          },
-      ],
-    };
-    this.editRoutingService.open(this.config.index, this.config.entityGuid, form);
   }
 
   private attachAdam() {

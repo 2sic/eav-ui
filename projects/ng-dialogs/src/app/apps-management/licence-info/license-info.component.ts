@@ -4,10 +4,10 @@ import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild, ViewContain
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 // tslint:disable-next-line:max-line-length
-import { BehaviorSubject, catchError, distinctUntilChanged, forkJoin, map, Observable, of, share, startWith, Subject, Subscription, switchMap, tap, timer } from 'rxjs';
+import { BehaviorSubject, catchError, distinctUntilChanged, forkJoin, Observable, of, share, startWith, Subject, Subscription, switchMap, tap, timer } from 'rxjs';
 import { GlobalConfigService } from '../../../../../edit/shared/store/ngrx-data';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
-import { FileUploadDialogComponent, FileUploadDialogData, FileUploadMessageTypes, FileUploadResult } from '../../shared/components/file-upload-dialog';
+import { FileUploadDialogComponent, FileUploadDialogData } from '../../shared/components/file-upload-dialog';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
@@ -84,6 +84,7 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
         const duration = info.Success ? 3000 : 100000;
         const panelClass = info.Success ? undefined : 'snackbar-error';
         this.snackBar.open(message, undefined, { duration, panelClass });
+        this.refreshLicenses$.next();
       },
     });
   }
