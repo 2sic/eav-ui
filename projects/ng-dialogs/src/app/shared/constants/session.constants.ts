@@ -8,6 +8,7 @@ export const keyModuleId = prefix + 'mid';
 export const keyAppId = prefix + 'appId';
 export const keyDebug = prefix + 'debug';
 export const keyDialog = prefix + 'dialog';
+export const keyDialogTab = prefix + 'dialogTab';
 export const keyContentType = prefix + 'contentType';
 export const keyItems = prefix + 'items';
 export const keyPartOfPage = prefix + 'partOfPage';
