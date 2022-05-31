@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { UrlHelpers } from '../../../edit/shared/helpers/url.helpers';
 import { DialogTypeConstant, DialogTypeConstants } from './shared/constants/dialog-type.constants';
 // tslint:disable-next-line:max-line-length
-import { keyApi, keyAppId, keyContentType, keyDialog, keyDialogTab, keyExtras, keyItems, keyPipelineId, keyRequestToken, keyRequestTokenHeaderName, keyTabId, keyUrl, keyZoneId, prefix } from './shared/constants/session.constants';
+import { keyApi, keyAppId, keyContentType, keyDialog, keyExtras, keyItems, keyPipelineId, keyRequestToken, keyRequestTokenHeaderName, keyTabId, keyUrl, keyZoneId, prefix } from './shared/constants/session.constants';
 import { convertFormToUrl } from './shared/helpers/url-prep.helper';
 import { ExtrasParam } from './shared/models/dialog-url-params.model';
 import { EavWindow } from './shared/models/eav-window.model';
@@ -40,13 +40,15 @@ export function paramsInitFactory(injector: Injector): () => void {
       const zoneId = sessionStorage.getItem(keyZoneId);
       const appId = sessionStorage.getItem(keyAppId);
       const dialog = sessionStorage.getItem(keyDialog) as DialogTypeConstant;
-      const dialogTab = sessionStorage.getItem(keyDialogTab);
       const contentType = sessionStorage.getItem(keyContentType);
       const items = sessionStorage.getItem(keyItems);
       switch (dialog) {
         case DialogTypeConstants.Zone:
           const extrasZone: ExtrasParam = JSON.parse(sessionStorage.getItem(keyExtras));
-          router.navigate([`${zoneId}/apps${extrasZone?.tab ? `/${extrasZone.tab}` : dialogTab ? `/${dialogTab}` : ''}`]);
+          router.navigate([`${zoneId}/apps${extrasZone?.tab ? `/${extrasZone.tab}` : ''}`]);
+          break;
+        case DialogTypeConstants.Apps:
+          router.navigate([`${zoneId}/apps/list`]);
           break;
         case DialogTypeConstants.AppImport:
           router.navigate([`${zoneId}/import`]);

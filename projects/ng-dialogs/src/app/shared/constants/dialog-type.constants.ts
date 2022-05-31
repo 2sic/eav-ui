@@ -1,5 +1,6 @@
 export const DialogTypeConstants = {
   Zone: 'zone',
+  Apps: 'apps',
   AppImport: 'app-import',
   App: 'app',
   ContentType: 'contenttype',
