@@ -62,7 +62,7 @@ export class MetadataComponent implements OnInit, OnDestroy {
 
     const filteredRecommendations$ = combineLatest([this.metadata$, this.recommendations$]).pipe(
       map(([metadataItems, recommendations]) =>
-        recommendations.filter(r => r.Count === 1 && !metadataItems.some(i => i._Type.Id === r.Id))),
+        recommendations.filter(r => metadataItems.filter(i => i._Type.Id === r.Id).length < r.Count)),
     );
     this.templateVars$ = combineLatest([this.metadata$, filteredRecommendations$, this.itemFor$, this.fabOpen$]).pipe(
       map(([metadata, recommendations, itemFor, fabOpen]) => {
