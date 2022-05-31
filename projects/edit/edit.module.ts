@@ -40,6 +40,7 @@ import { EditEntryComponent } from './dialog/entry/edit-entry.component';
 import { DataDumpComponent } from './dialog/footer/data-dump/data-dump.component';
 import { EditDialogFooterComponent } from './dialog/footer/edit-dialog-footer.component';
 import { FormulaDesignerComponent } from './dialog/footer/formula-designer/formula-designer.component';
+import { SnippetLabelSizePipe } from './dialog/footer/formula-designer/snippet-label-size.pipe';
 import { LogsDumpComponent } from './dialog/footer/logs-dump/logs-dump.component';
 import { EditDialogHeaderComponent } from './dialog/header/edit-dialog-header.component';
 import { LanguageSwitcherComponent } from './dialog/header/language-switcher/language-switcher.component';
@@ -162,6 +163,7 @@ export function translateLoaderFactoryEdit(http: HttpClient): TranslateLoader {
     CustomJsonEditorComponent,
     NumberDropdownComponent,
     EmptyMessageComponent,
+    SnippetLabelSizePipe,
   ],
   imports: [
     EditRoutingModule,

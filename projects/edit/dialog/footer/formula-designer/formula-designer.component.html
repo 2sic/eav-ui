@@ -65,9 +65,14 @@
       </mat-form-field>
 
       <div class="formula-snippets fancy-scrollbar-light" [ngClass]="{ 'disabled': !data.designer.editMode }">
-        <div class="snippet" *ngFor="let snippet of data.snippets; trackBy: trackSnippets" [title]="snippet.code"
+        <div class="snippet" *ngFor="let snippet of data.dataSnippets; trackBy: trackSnippets" [title]="snippet.code"
           (click)="copyToClipboard(snippet.code)">
-          {{ snippet.label }}
+          {{ snippet.label | snippetLabelSize }}
+        </div>
+        <div class="separator" *ngIf="data.dataSnippets.length && data.contextSnippets.length"></div>
+        <div class="snippet" *ngFor="let snippet of data.contextSnippets; trackBy: trackSnippets" [title]="snippet.code"
+          (click)="copyToClipboard(snippet.code)">
+          {{ snippet.label | snippetLabelSize }}
         </div>
       </div>
     </div>

@@ -312,9 +312,15 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
       distinctUntilChanged(),
       switchMap(entityGuid => this.itemService.getItemHeader$(entityGuid)),
     );
-    const snippets$ = combineLatest([options$, formula$, itemHeader$]).pipe(
+    const dataSnippets$ = combineLatest([options$, formula$, itemHeader$]).pipe(
       map(([options, formula, itemHeader]) => formula != null && itemHeader != null
-        ? FormulaHelpers.buildDesignerSnippets(formula, options.fieldOptions, itemHeader)
+        ? FormulaHelpers.buildDesignerSnippetsData(formula, options.fieldOptions, itemHeader)
+        : []
+      ),
+    );
+    const contextSnippets$ = combineLatest([formula$]).pipe(
+      map(([formula]) => formula != null
+        ? FormulaHelpers.buildDesignerSnippetsContext(formula)
         : []
       ),
     );
@@ -324,15 +330,22 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
       ),
     );
 
-    this.templateVars$ = combineLatest([options$, formula$, snippets$, designerState$, result$, this.saving$]).pipe(
-      map(([options, formula, snippets, designer, result, saving]) => {
+    this.templateVars$ = combineLatest([
+      combineLatest([options$, formula$, dataSnippets$, contextSnippets$, designerState$]),
+      combineLatest([result$, this.saving$]),
+    ]).pipe(
+      map(([
+        [options, formula, dataSnippets, contextSnippets, designer],
+        [result, saving],
+      ]) => {
         const templateVars: FormulaDesignerTemplateVars = {
           entityOptions: options.entityOptions,
           fieldOptions: options.fieldOptions,
           targetOptions: options.targetOptions,
           formula,
           designer,
-          snippets,
+          dataSnippets,
+          contextSnippets,
           result: result?.value,
           resultExists: result != null,
           resultIsError: result?.isError ?? false,

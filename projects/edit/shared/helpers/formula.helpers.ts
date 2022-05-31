@@ -205,7 +205,7 @@ export class FormulaHelpers {
     return JSON.parse(JSON.stringify(itemHeader.Prefill));
   }
 
-  static buildDesignerSnippets(formula: FormulaCacheItem, fieldOptions: FieldOption[], itemHeader: EavHeader): DesignerSnippet[] {
+  static buildDesignerSnippetsData(formula: FormulaCacheItem, fieldOptions: FieldOption[], itemHeader: EavHeader): DesignerSnippet[] {
     switch (formula.version) {
       case FormulaVersions.V1:
         const formulaPropsParameters = this.buildFormulaPropsParameters(itemHeader);
@@ -219,6 +219,45 @@ export class FormulaHelpers {
           ...Object.keys(formulaPropsParameters ?? {}).map(key => `parameters.${key}`),
         ].map(name => {
           const code = `data.${name}`;
+          const fieldSnippet: DesignerSnippet = {
+            code,
+            label: code,
+          };
+          return fieldSnippet;
+        });
+        return snippets;
+      default:
+        return;
+    }
+  }
+
+  static buildDesignerSnippetsContext(formula: FormulaCacheItem): DesignerSnippet[] {
+    switch (formula.version) {
+      case FormulaVersions.V1:
+        const snippets = [
+          'app.appId',
+          'app.zoneId',
+          'app.isGlobal',
+          'app.isSite',
+          'app.isContent',
+          'cache.ChangeThis',
+          'culture.code',
+          'culture.name',
+          'debug',
+          'features.get(\'NameId\')',
+          'features.isEnabled(\'NameId\')',
+          'form.runFormulas()',
+          'sxc.ChangeThis',
+          'target.entity.id',
+          'target.entity.guid',
+          'target.name',
+          'target.type',
+          'user.id',
+          'user.isAnonymous',
+          'user.isSiteAdmin',
+          'user.isSystemAdmin',
+        ].map(name => {
+          const code = `context.${name}`;
           const fieldSnippet: DesignerSnippet = {
             code,
             label: code,

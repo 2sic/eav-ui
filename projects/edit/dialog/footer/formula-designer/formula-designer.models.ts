@@ -7,7 +7,8 @@ export interface FormulaDesignerTemplateVars {
   targetOptions: TargetOption[];
   formula: FormulaCacheItem;
   designer: DesignerState;
-  snippets: DesignerSnippet[];
+  dataSnippets: DesignerSnippet[];
+  contextSnippets: DesignerSnippet[];
   result: FieldValue;
   resultExists: boolean;
   resultIsError: boolean;
