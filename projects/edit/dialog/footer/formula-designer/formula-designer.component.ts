@@ -1,5 +1,6 @@
 import { Component, Input, OnDestroy, OnInit, QueryList } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import type * as Monaco from 'monaco-editor';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, switchMap } from 'rxjs';
 import { EntitiesService } from '../../../../ng-dialogs/src/app/content-items/services/entities.service';
 import { InputTypeConstants } from '../../../../ng-dialogs/src/app/content-type-fields/constants/input-type.constants';
@@ -27,6 +28,36 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
   freeTextTarget = false;
   allowSaveFormula = this.eavService.eavConfig.enableFormulaSave;
   saving$ = new BehaviorSubject(false);
+  monacoOptions: Monaco.editor.IStandaloneEditorConstructionOptions = {
+    minimap: {
+      enabled: false,
+    },
+    lineHeight: 19,
+    lineNumbers: 'off',
+    lineDecorationsWidth: 0,
+    folding: false,
+    scrollBeyondLastLine: false,
+    tabSize: 2,
+
+    // disable all suggestions and menus because there is not enough room to display them
+    quickSuggestions: false,
+    suggestOnTriggerCharacters: false,
+    acceptSuggestionOnEnter: 'off',
+    acceptSuggestionOnCommitCharacter: false,
+    wordBasedSuggestions: false,
+    snippetSuggestions: 'none',
+    contextmenu: false,
+    hover: {
+      enabled: false,
+    },
+  };
+  filename = `formula${this.eavService.eavConfig.formId}.js`;
+  placeholder = defaultFormula;
+  focused = false;
+  javascriptDiagnostics: Monaco.languages.typescript.DiagnosticsOptions = {
+    noSemanticValidation: true,
+    noSyntaxValidation: true,
+  };
   templateVars$: Observable<FormulaDesignerTemplateVars>;
 
   constructor(
@@ -94,6 +125,14 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
   formulaChanged(formula: string): void {
     const designer = this.formulaDesignerService.getDesignerState();
     this.formulaDesignerService.upsertFormula(designer.entityGuid, designer.fieldName, designer.target, formula, false);
+  }
+
+  onFocused(): void {
+    this.focused = true;
+  }
+
+  onBlurred(): void {
+    this.focused = false;
   }
 
   copyToClipboard(text: string): void {

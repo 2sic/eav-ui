@@ -112,6 +112,16 @@ export class MonacoInstance {
     this.monaco.languages.json.jsonDefaults.setDiagnosticsOptions(jsonDiagnostics);
   }
 
+  setJavascriptDiagnostics(options: Monaco.languages.typescript.DiagnosticsOptions): void {
+    if (!options) { return; }
+
+    const javascriptDiagnostics: Monaco.languages.typescript.DiagnosticsOptions = {
+      ...this.monaco.languages.typescript.javascriptDefaults.getDiagnosticsOptions(),
+      ...options,
+    };
+    this.monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions(javascriptDiagnostics);
+  }
+
   private createGlobalCache(monaco: typeof Monaco & { _2sxc?: Monaco2sxc }): Monaco2sxc {
     if (monaco._2sxc == null) {
       const _2sxc: Monaco2sxc = {

@@ -64,6 +64,13 @@ $paddingBottom: 11px;
   }
 
   &.disabled {
+    border-bottom: none;
+    padding-bottom: calc(2px + #{$paddingBottom});
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.2) 33%, transparent 0%);
+    background-position: bottom;
+    background-size: 4px 1px;
+    background-repeat: repeat-x;
+
     .editor {
       pointer-events: none;
 
@@ -71,12 +78,5 @@ $paddingBottom: 11px;
         color: rgba(0, 0, 0, 0.38);
       }
     }
-
-    border-bottom: none;
-    padding-bottom: calc(2px + #{$paddingBottom});
-    background-image: linear-gradient(to right, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.2) 33%, transparent 0%);
-    background-position: bottom;
-    background-size: 4px 1px;
-    background-repeat: repeat-x;
   }
 }

@@ -56,6 +56,13 @@
     }
   }
 
+  .formula-field {
+    flex: 0 1 auto;
+    width: 100%;
+    overflow: hidden;
+    margin-bottom: 6px;
+  }
+
   .formula-snippets {
     flex: 0 0 auto;
     max-width: 200px;
@@ -140,5 +147,72 @@
 
   .run-button {
     margin-left: 8px;
+  }
+}
+
+$paddingBottom: 11px;
+
+.formula-field {
+  padding-top: 28px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  padding-bottom: calc(1px + #{$paddingBottom});
+  position: relative;
+
+  .label {
+    display: block;
+    color: rgba(0, 0, 0, 0.6);
+    cursor: default;
+    font-size: 12px;
+    transition: none;
+    position: absolute;
+    left: 0;
+    top: 0;
+    user-select: none;
+  }
+
+  .editor {
+    ::ng-deep .monaco-editor .scroll-decoration {
+      display: none;
+    }
+  }
+
+  &:hover {
+    border-bottom: 2px solid rgba(0, 0, 0, 0.4);
+    padding-bottom: $paddingBottom;
+  }
+
+  &.focused {
+    border-bottom: 2px solid #002753;
+    padding-bottom: $paddingBottom;
+
+    .label {
+      color: #002753;
+    }
+  }
+
+  &.error {
+    border-bottom: 2px solid $error-color;
+    padding-bottom: $paddingBottom;
+
+    .label {
+      color: $error-color;
+    }
+  }
+
+  &.disabled {
+    border-bottom: none;
+    padding-bottom: calc(2px + #{$paddingBottom});
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.2) 33%, transparent 0%);
+    background-position: bottom;
+    background-size: 4px 1px;
+    background-repeat: repeat-x;
+
+    .editor {
+      pointer-events: none;
+
+      ::ng-deep * {
+        color: rgba(0, 0, 0, 0.38);
+      }
+    }
   }
 }

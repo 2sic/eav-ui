@@ -57,12 +57,17 @@
     </div>
 
     <div class="formula-box">
-      <mat-form-field color="accent" appMatFormFieldTextarea>
-        <textarea matInput spellcheck="false" class="fancy-scrollbar-light" rows="10" [ngModel]="data.formula?.source"
-          (ngModelChange)="formulaChanged($event)"
-          [disabled]="!data.designer.editMode || data.designer.entityGuid == null || data.designer.fieldName == null || data.designer.target == null"></textarea>
-        <mat-label>Function</mat-label>
-      </mat-form-field>
+      <div class="formula-field" [ngClass]="{
+        'disabled': !data.designer.editMode || data.designer.entityGuid == null || data.designer.fieldName == null || data.designer.target == null,
+        'focused': focused
+      }">
+        <mat-label class="label">Function</mat-label>
+
+        <app-monaco-editor class="editor" [filename]="filename" [value]="data.formula?.source ?? placeholder"
+          (valueChanged)="formulaChanged($event)" [options]="monacoOptions" (focused)="onFocused()"
+          (blurred)="onBlurred()" [javascriptDiagnostics]="javascriptDiagnostics">
+        </app-monaco-editor>
+      </div>
 
       <div class="formula-snippets fancy-scrollbar-light" [ngClass]="{ 'disabled': !data.designer.editMode }">
         <div class="snippet" *ngFor="let snippet of data.dataSnippets; trackBy: trackSnippets" [title]="snippet.code"

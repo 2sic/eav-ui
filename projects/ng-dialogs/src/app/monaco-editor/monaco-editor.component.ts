@@ -20,6 +20,7 @@ export class MonacoEditorComponent implements AfterViewInit, OnChanges, OnDestro
   @Input() options?: Monaco.editor.IStandaloneEditorConstructionOptions;
   @Input() jsonSchema?: JsonSchema;
   @Input() jsonComments?: Monaco.languages.json.SeverityLevel;
+  @Input() javascriptDiagnostics?: Monaco.languages.typescript.DiagnosticsOptions;
   @Input() autoFocus = false;
   @Output() private valueChanged = new EventEmitter<string>();
   @Output() private focused = new EventEmitter<undefined>();
@@ -60,6 +61,9 @@ export class MonacoEditorComponent implements AfterViewInit, OnChanges, OnDestro
     if (changes.snippets != null) {
       this.monacoInstance?.setSnippets(this.snippets);
     }
+    if (changes.disableJavascriptValidation != null) {
+      this.monacoInstance?.setJavascriptDiagnostics(this.javascriptDiagnostics);
+    }
   }
 
   insertSnippet(snippet: string): void {
@@ -78,6 +82,7 @@ export class MonacoEditorComponent implements AfterViewInit, OnChanges, OnDestro
 
     this.monacoInstance.setJsonSchema(this.jsonSchema);
     this.monacoInstance.setJsonComments(this.jsonComments);
+    this.monacoInstance.setJavascriptDiagnostics(this.javascriptDiagnostics);
 
     this.monacoInstance.onValueChange(value => {
       this.valueChanged.emit(value);
