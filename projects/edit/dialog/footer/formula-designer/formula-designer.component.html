@@ -69,7 +69,7 @@
           (click)="copyToClipboard(snippet.code)">
           {{ snippet.label | snippetLabelSize }}
         </div>
-        <div class="separator" *ngIf="data.dataSnippets.length && data.contextSnippets.length"></div>
+        <div class="separator" *ngIf="data.dataSnippets?.length && data.contextSnippets?.length"></div>
         <div class="snippet" *ngFor="let snippet of data.contextSnippets; trackBy: trackSnippets" [title]="snippet.code"
           (click)="copyToClipboard(snippet.code)">
           {{ snippet.label | snippetLabelSize }}
