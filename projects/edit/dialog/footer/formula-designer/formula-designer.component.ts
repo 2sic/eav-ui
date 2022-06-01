@@ -306,6 +306,18 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
               targetOptions.push(targetOption);
             }
           }
+          if (attribute.InputType === InputTypeConstants.StringDropdown || attribute.InputType === InputTypeConstants.NumberDropdown) {
+            for (const target of ['Field.Settings.DropdownValues']) {
+              const targetOption: TargetOption = {
+                hasFormula: formulas.some(
+                  f => f.entityGuid === designer.entityGuid && f.fieldName === designer.fieldName && f.target === target
+                ),
+                label: target.substring(target.lastIndexOf('.') + 1),
+                target: target as FormulaTarget,
+              };
+              targetOptions.push(targetOption);
+            }
+          }
 
           // targets for formulas
           const formulasForThisField = formulas.filter(f => f.entityGuid === designer.entityGuid && f.fieldName === designer.fieldName);
