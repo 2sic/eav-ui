@@ -27,6 +27,9 @@ export class CustomJsonEditorComponent extends BaseComponent<string> implements 
       enabled: false,
     },
     lineHeight: 19,
+    lineNumbers: 'off',
+    lineDecorationsWidth: 0,
+    folding: false,
     scrollBeyondLastLine: false,
     tabSize: 2,
   };
