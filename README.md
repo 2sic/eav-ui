@@ -6,7 +6,7 @@ It's built using Angular 13.
 
 ## Projects
 
-1. **edit** part of the main Angular project, but historically an own component. Build using `ng`
+1. **eav-ui** main Angular project. Build using `ng`
 1. **field-custom-gps** an extension field with gps-picker & map. Build using `webpack`
 1. **field-string-wysiwyg** an extension field for wysiwyg. Build using `webpack`
 
