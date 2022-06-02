@@ -5,7 +5,7 @@ const chalk = require('chalk');
 const chalkSuccess = chalk.green;
 
 function buildHtml(name) {
-  let htmlSourcePath = './projects/ng-dialogs/src/' + name + '.html';
+  let htmlSourcePath = './projects/eav-ui/src/' + name + '.html';
   let htmlOutputPath = './dist/' + name + '.html';
 
   fs.removeSync(htmlOutputPath);

@@ -1,7 +1,7 @@
 import type { Subscription } from 'rxjs';
+import { ElementEventListener } from '../../../eav-ui/src/app/edit/shared/models';
 import { Connector, EavCustomInputField } from '../../../edit-types';
 import { consoleLogWebpack } from '../../../field-custom-gps/src/shared/console-log-webpack.helper';
-import { ElementEventListener } from '../../../ng-dialogs/src/app/edit/shared/models';
 import { buildTemplate } from '../shared/helpers';
 import * as template from './preview.html';
 import * as styles from './preview.scss';

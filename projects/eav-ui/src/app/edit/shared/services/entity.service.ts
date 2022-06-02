@@ -1,7 +1,7 @@
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Context } from 'projects/ng-dialogs/src/app/shared/services/context';
+import { Context } from 'projects/eav-ui/src/app/shared/services/context';
 import { filter, Observable, share, switchMap } from 'rxjs';
 import { EavService, webApiEditRoot } from '.';
 import { EntityInfo } from '../../../../../../edit-types';

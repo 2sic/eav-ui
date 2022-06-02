@@ -20,10 +20,10 @@ import 'tinymce/plugins/textpattern';
 import 'tinymce/themes/silver';
 // tslint:disable-next-line:no-duplicate-imports
 import type { Editor } from 'tinymce/tinymce';
+import { FeaturesConstants } from '../../../eav-ui/src/app/edit/shared/constants';
+import { EavWindow } from '../../../eav-ui/src/app/shared/models/eav-window.model';
 import { Connector, EavCustomInputField, WysiwygReconfigure } from '../../../edit-types';
 import { consoleLogWebpack } from '../../../field-custom-gps/src/shared/console-log-webpack.helper';
-import { FeaturesConstants } from '../../../ng-dialogs/src/app/edit/shared/constants';
-import { EavWindow } from '../../../ng-dialogs/src/app/shared/models/eav-window.model';
 import { TinyMceButtons } from '../config/buttons';
 import { TinyMceConfigurator } from '../config/tinymce-configurator';
 import { TinyMceTranslations } from '../config/translations';

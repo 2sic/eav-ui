@@ -25,7 +25,7 @@ module.exports = function (config) {
       suppressAll: true // removes the duplicated traces
     },
     coverageReporter: {
-      dir: require('path').join(__dirname, '../../coverage/ng-dialogs'),
+      dir: require('path').join(__dirname, '../../coverage/eav-ui'),
       subdir: '.',
       reporters: [
         { type: 'html' },
