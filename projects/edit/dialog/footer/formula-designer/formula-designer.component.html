@@ -65,7 +65,7 @@
 
         <app-monaco-editor class="editor" [filename]="filename" [value]="data.formula?.source ?? placeholder"
           (valueChanged)="formulaChanged($event)" [options]="monacoOptions" (focused)="onFocused()"
-          (blurred)="onBlurred()" [javascriptDiagnostics]="javascriptDiagnostics">
+          (blurred)="onBlurred()">
         </app-monaco-editor>
       </div>
 

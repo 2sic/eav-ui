@@ -32,6 +32,7 @@ export class CustomJsonEditorComponent extends BaseComponent<string> implements 
     folding: false,
     scrollBeyondLastLine: false,
     tabSize: 2,
+    fixedOverflowWidgets: true,
   };
 
   constructor(eavService: EavService, fieldsSettingsService: FieldsSettingsService) {

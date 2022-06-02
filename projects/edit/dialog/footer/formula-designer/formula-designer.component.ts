@@ -7,11 +7,11 @@ import { InputTypeConstants } from '../../../../ng-dialogs/src/app/content-type-
 import { eavConstants } from '../../../../ng-dialogs/src/app/shared/constants/eav.constants';
 import { copyToClipboard } from '../../../../ng-dialogs/src/app/shared/helpers/copy-to-clipboard.helper';
 import { FormBuilderComponent } from '../../../form/builder/form-builder/form-builder.component';
+import { defaultFormulaV1 } from '../../../shared/constants';
 import { FormulaHelpers, InputFieldHelpers } from '../../../shared/helpers';
 import { DesignerState, FormulaTarget, FormulaTargets } from '../../../shared/models';
 import { EavService, FormulaDesignerService } from '../../../shared/services';
 import { ContentTypeService, ItemService } from '../../../shared/store/ngrx-data';
-import { defaultFormula } from './formula-designer.constants';
 // tslint:disable-next-line:max-line-length
 import { DesignerSnippet, EntityOption, FieldOption, FormulaDesignerTemplateVars, SelectOptions, SelectTarget, SelectTargets, TargetOption } from './formula-designer.models';
 
@@ -38,26 +38,11 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     folding: false,
     scrollBeyondLastLine: false,
     tabSize: 2,
-
-    // disable all suggestions and menus because there is not enough room to display them
-    quickSuggestions: false,
-    suggestOnTriggerCharacters: false,
-    acceptSuggestionOnEnter: 'off',
-    acceptSuggestionOnCommitCharacter: false,
-    wordBasedSuggestions: false,
-    snippetSuggestions: 'none',
-    contextmenu: false,
-    hover: {
-      enabled: false,
-    },
+    fixedOverflowWidgets: true,
   };
   filename = `formula${this.eavService.eavConfig.formId}.js`;
-  placeholder = defaultFormula;
+  placeholder = defaultFormulaV1;
   focused = false;
-  javascriptDiagnostics: Monaco.languages.typescript.DiagnosticsOptions = {
-    noSemanticValidation: true,
-    noSyntaxValidation: true,
-  };
   templateVars$: Observable<FormulaDesignerTemplateVars>;
 
   constructor(
@@ -150,7 +135,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     if (designer.editMode) {
       const formula = this.formulaDesignerService.getFormula(designer.entityGuid, designer.fieldName, designer.target, true);
       if (formula == null) {
-        this.formulaDesignerService.upsertFormula(designer.entityGuid, designer.fieldName, designer.target, defaultFormula, false);
+        this.formulaDesignerService.upsertFormula(designer.entityGuid, designer.fieldName, designer.target, defaultFormulaV1, false);
       }
     }
   }

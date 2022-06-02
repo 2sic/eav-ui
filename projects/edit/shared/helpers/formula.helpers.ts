@@ -4,6 +4,7 @@ import { Feature } from '../../../ng-dialogs/src/app/apps-management/models/feat
 import { InputType } from '../../../ng-dialogs/src/app/content-type-fields/models/input-type.model';
 import { EavWindow } from '../../../ng-dialogs/src/app/shared/models/eav-window.model';
 import { DesignerSnippet, FieldOption } from '../../dialog/footer/formula-designer/formula-designer.models';
+import { requiredFormulaPrefix } from '../constants';
 // tslint:disable-next-line:max-line-length
 import { FormulaCacheItem, FormulaFunction, FormulaProps, FormulaPropsV1, FormulaTargets, FormulaV1Data, FormulaV1ExperimentalEntity, FormulaVersion, FormulaVersions, FormValues, Language, SettingsFormulaPrefix } from '../models';
 import { EavHeader } from '../models/eav';
@@ -14,11 +15,21 @@ declare const window: EavWindow;
 
 export class FormulaHelpers {
 
-  static findFormulaVersion(formula: string): FormulaVersion {
-    const cleanFormula = formula.trim();
-    const typePart = cleanFormula.substring(0, cleanFormula.indexOf('(')).trim();
+  private static cleanFormula(formula: string): string {
+    if (!formula) { return formula; }
 
-    switch (typePart) {
+    let cleanFormula = formula.trim();
+    if (!cleanFormula.startsWith(requiredFormulaPrefix)) {
+      cleanFormula = requiredFormulaPrefix + cleanFormula;
+    }
+    return cleanFormula;
+  }
+
+  static findFormulaVersion(formula: string): FormulaVersion {
+    const cleanFormula = this.cleanFormula(formula);
+    const versionPart = cleanFormula.substring(requiredFormulaPrefix.length, cleanFormula.indexOf('(')).trim();
+
+    switch (versionPart) {
       case FormulaVersions.V1:
         return FormulaVersions.V1;
       default:
@@ -28,11 +39,12 @@ export class FormulaHelpers {
 
   static buildFormulaFunction(formula: string): FormulaFunction {
     const version = this.findFormulaVersion(formula);
-    let cleanFormula = formula.trim();
+    let cleanFormula = this.cleanFormula(formula);
 
+    // do any cleanup required for formula to be built properly
     switch (version) {
       case FormulaVersions.V1:
-        cleanFormula = `function ${cleanFormula.substring(FormulaVersions.V1.length).trim()}`;
+        cleanFormula = cleanFormula;
         break;
       default:
         break;
