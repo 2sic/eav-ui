@@ -1,4 +1,4 @@
-import { EavFor } from '../../../../../edit/shared/models/eav';
+import { EavFor } from '../../edit/shared/models/eav';
 
 /** Type for edit form. To add new item send newItem and to edit existing item send editItems */
 export interface EditForm {

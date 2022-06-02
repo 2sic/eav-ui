@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
-import { GeneralHelpers } from '../../../../../edit/shared/helpers';
+import { GeneralHelpers } from '../../edit/shared/helpers';
 import { ViewKey } from '../code-editor.models';
 import { FileAsset } from '../models/file-asset.model';
 import { SourceView } from '../models/source-view.model';

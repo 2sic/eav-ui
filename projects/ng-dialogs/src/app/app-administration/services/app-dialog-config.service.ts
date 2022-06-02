@@ -2,7 +2,7 @@ import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, tap } from 'rxjs';
-import { GlobalConfigService } from '../../../../../edit/shared/store/ngrx-data';
+import { GlobalConfigService } from '../../edit/shared/store/ngrx-data';
 import { Context } from '../../shared/services/context';
 import { DialogSettings } from '../models/dialog-settings.model';
 

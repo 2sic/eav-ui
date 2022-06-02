@@ -3,9 +3,9 @@ import { ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, OnInit, Simp
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { filter, forkJoin, map, of, pairwise, startWith, Subscription } from 'rxjs';
-import { GlobalConfigService } from '../../../../../edit/shared/store/ngrx-data';
 import { ContentItemsService } from '../../content-items/services/content-items.service';
 import { ContentTypesFieldsService } from '../../content-type-fields/services/content-types-fields.service';
+import { GlobalConfigService } from '../../edit/shared/store/ngrx-data';
 import { GoToMetadata } from '../../metadata';
 import { MetadataService } from '../../permissions';
 import { GoToPermissions } from '../../permissions/go-to-permissions';

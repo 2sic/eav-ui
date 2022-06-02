@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { edit, refreshEdit } from '../../../../edit/edit.matcher';
+import { edit, refreshEdit } from '../edit/edit.matcher';
 import { GoToMetadata } from '../metadata';
 import { GoToPermissions } from '../permissions/go-to-permissions';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
@@ -20,11 +20,11 @@ const routes: Routes = [
       GoToPermissions.route,
       {
         matcher: edit,
-        loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule)
+        loadChildren: () => import('../edit/edit.module').then(m => m.EditModule)
       },
       {
         matcher: refreshEdit,
-        loadChildren: () => import('../../../../edit/refresh-edit.module').then(m => m.RefreshEditModule)
+        loadChildren: () => import('../edit/refresh-edit.module').then(m => m.RefreshEditModule)
       },
     ]
   }

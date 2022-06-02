@@ -1,4 +1,4 @@
-import { EavFor, EavType } from '../../../../../edit/shared/models/eav';
+import { EavFor, EavType } from '../../edit/shared/models/eav';
 
 export interface Metadata {
   Items: MetadataItem[];

@@ -1,6 +1,6 @@
 import { Connector, EavCustomInputField } from '../../../edit-types';
-import { FieldMask } from '../../../edit/shared/helpers/field-mask.helper';
-import { ElementEventListener } from '../../../edit/shared/models';
+import { FieldMask } from '../../../ng-dialogs/src/app/edit/shared/helpers/field-mask.helper';
+import { ElementEventListener } from '../../../ng-dialogs/src/app/edit/shared/models';
 import { consoleLogWebpack } from '../shared/console-log-webpack.helper';
 import { defaultCoordinates, mapsApiUrl } from '../shared/constants';
 import { buildTemplate, parseLatLng, stringifyLatLng } from '../shared/helpers';

@@ -1,7 +1,7 @@
 import { JsInfo } from '@2sic.com/2sxc-typings';
 import { Injector } from '@angular/core';
 import { Router } from '@angular/router';
-import { UrlHelpers } from '../../../edit/shared/helpers/url.helpers';
+import { UrlHelpers } from './edit/shared/helpers/url.helpers';
 import { DialogTypeConstant, DialogTypeConstants } from './shared/constants/dialog-type.constants';
 // tslint:disable-next-line:max-line-length
 import { keyApi, keyAppId, keyContentType, keyDialog, keyExtras, keyItems, keyPipelineId, keyRequestToken, keyRequestTokenHeaderName, keyTabId, keyUrl, keyZoneId, prefix } from './shared/constants/session.constants';

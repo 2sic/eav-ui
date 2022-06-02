@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { edit, refreshEdit } from '../../../../edit/edit.matcher';
 import { GoToDevRest } from '../dev-rest';
+import { edit, refreshEdit } from '../edit/edit.matcher';
 import { GoToMetadata } from '../metadata';
 import { GoToPermissions } from '../permissions/go-to-permissions';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
@@ -37,11 +37,11 @@ const appAdministrationRoutes: Routes = [
           },
           {
             matcher: edit,
-            loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule)
+            loadChildren: () => import('../edit/edit.module').then(m => m.EditModule)
           },
           {
             matcher: refreshEdit,
-            loadChildren: () => import('../../../../edit/refresh-edit.module').then(m => m.RefreshEditModule)
+            loadChildren: () => import('../edit/refresh-edit.module').then(m => m.RefreshEditModule)
           },
           {
             path: 'add',
@@ -83,7 +83,7 @@ const appAdministrationRoutes: Routes = [
           },
           {
             matcher: edit,
-            loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule),
+            loadChildren: () => import('../edit/edit.module').then(m => m.EditModule),
             data: { title: 'Edit Query Name and Description', history: false },
           },
           ...GoToMetadata.getRoutes(),
@@ -102,12 +102,12 @@ const appAdministrationRoutes: Routes = [
           { path: 'usage/:guid', component: DialogEntryComponent, data: { dialog: viewsUsageDialog } },
           {
             matcher: edit,
-            loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule),
+            loadChildren: () => import('../edit/edit.module').then(m => m.EditModule),
             data: { title: 'Edit View' },
           },
           {
             matcher: refreshEdit,
-            loadChildren: () => import('../../../../edit/refresh-edit.module').then(m => m.RefreshEditModule)
+            loadChildren: () => import('../edit/refresh-edit.module').then(m => m.RefreshEditModule)
           },
           { ...GoToPermissions.route, data: { title: 'View Permissions' } },
           ...GoToMetadata.getRoutes(),
@@ -124,12 +124,12 @@ const appAdministrationRoutes: Routes = [
           ...GoToMetadata.getRoutes(),
           {
             matcher: edit,
-            loadChildren: () => import('../../../../edit/edit.module').then(m => m.EditModule),
+            loadChildren: () => import('../edit/edit.module').then(m => m.EditModule),
             data: { title: 'Edit App Properties' },
           },
           {
             matcher: refreshEdit,
-            loadChildren: () => import('../../../../edit/refresh-edit.module').then(m => m.RefreshEditModule)
+            loadChildren: () => import('../edit/refresh-edit.module').then(m => m.RefreshEditModule)
           },
           {
             path: 'fields/:contentTypeStaticName',

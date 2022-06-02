@@ -1,5 +1,5 @@
 import { Connector, EavCustomInputField } from '../../../edit-types';
-import { ElementEventListener } from '../../../edit/shared/models';
+import { ElementEventListener } from '../../../ng-dialogs/src/app/edit/shared/models';
 import { consoleLogWebpack } from '../shared/console-log-webpack.helper';
 import { defaultCoordinates } from '../shared/constants';
 import { buildTemplate, customGpsIcons, parseLatLng } from '../shared/helpers';

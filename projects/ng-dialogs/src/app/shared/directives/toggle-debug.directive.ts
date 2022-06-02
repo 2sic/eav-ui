@@ -1,5 +1,5 @@
 import { Directive, HostListener } from '@angular/core';
-import { GlobalConfigService } from '../../../../../edit/shared/store/ngrx-data';
+import { GlobalConfigService } from '../../edit/shared/store/ngrx-data';
 
 @Directive({ selector: '[appToggleDebug]' })
 export class ToggleDebugDirective {

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { GeneralHelpers } from '../../../../../edit/shared/helpers';
+import { GeneralHelpers } from '../../edit/shared/helpers';
 import { SnippetsSets } from '../models/snippet.model';
 
 @Component({

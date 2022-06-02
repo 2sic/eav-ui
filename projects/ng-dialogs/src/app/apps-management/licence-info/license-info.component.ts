@@ -5,7 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 // tslint:disable-next-line:max-line-length
 import { BehaviorSubject, catchError, distinctUntilChanged, forkJoin, Observable, of, share, startWith, Subject, Subscription, switchMap, tap, timer } from 'rxjs';
-import { GlobalConfigService } from '../../../../../edit/shared/store/ngrx-data';
+import { GlobalConfigService } from '../../edit/shared/store/ngrx-data';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { FileUploadDialogComponent, FileUploadDialogData } from '../../shared/components/file-upload-dialog';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';

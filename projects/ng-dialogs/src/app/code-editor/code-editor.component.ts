@@ -5,9 +5,9 @@ import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import type * as Monaco from 'monaco-editor';
 import { BehaviorSubject, combineLatest, forkJoin, fromEvent, map, Observable, of, share, Subscription, switchMap } from 'rxjs';
-import { GeneralHelpers } from '../../../../edit/shared/helpers';
 // tslint:disable-next-line:max-line-length
 import { CreateFileDialogComponent, CreateFileDialogData, CreateFileDialogResult, FileLocationDialogComponent } from '../create-file-dialog';
+import { GeneralHelpers } from '../edit/shared/helpers';
 import { MonacoEditorComponent } from '../monaco-editor';
 import { keyIsShared, keyItems } from '../shared/constants/session.constants';
 import { SourceItem } from '../shared/models/edit-form.model';

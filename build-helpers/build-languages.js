@@ -5,7 +5,7 @@ const chalkSuccess = chalk.green;
 
 (async function buildLanguages() {
   const languagesDirs = [
-    './projects/edit/assets/i18n',
+    './projects/ng-dialogs/src/app/edit/assets/i18n',
     './projects/ng-dialogs/src/app/code-editor/i18n',
   ];
   const languagesTempDir = './dist/i18n';

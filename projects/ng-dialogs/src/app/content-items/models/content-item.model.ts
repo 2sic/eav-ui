@@ -1,4 +1,4 @@
-import { EavFor } from '../../../../../edit/shared/models/eav';
+import { EavFor } from '../../edit/shared/models/eav';
 import { MetadataItemShort } from '../../metadata';
 import { EditInfo } from '../../shared/models/edit-info';
 

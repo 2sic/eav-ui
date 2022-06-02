@@ -1,4 +1,4 @@
-import { EavFor } from '../../../../../edit/shared/models/eav';
+import { EavFor } from '../../edit/shared/models/eav';
 import { eavConstants } from '../constants/eav.constants';
 import { AddItem, EditForm, EditItem, GroupItem, InnerItem } from '../models/edit-form.model';
 

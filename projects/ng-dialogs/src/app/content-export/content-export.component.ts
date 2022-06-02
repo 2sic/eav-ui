@@ -2,10 +2,10 @@ import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, forkJoin } from 'rxjs';
-import { Language } from '../../../../edit/shared/models';
 import { ContentType } from '../app-administration/models/content-type.model';
 import { AppDialogConfigService } from '../app-administration/services/app-dialog-config.service';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
+import { Language } from '../edit/shared/models';
 import { ContentExport } from './models/content-export.model';
 import { ContentExportService } from './services/content-export.service';
 

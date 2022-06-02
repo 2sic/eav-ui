@@ -2,8 +2,8 @@ import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { EavFor } from '../../../../../edit/shared/models/eav';
-import { webApiEntityRoot } from '../../../../../edit/shared/services';
+import { EavFor } from '../../edit/shared/models/eav';
+import { webApiEntityRoot } from '../../edit/shared/services';
 import { InnerItem } from '../../shared/models/edit-form.model';
 import { Context } from '../../shared/services/context';
 
