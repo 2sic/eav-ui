@@ -34,6 +34,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
   monacoOptions: Monaco.editor.IStandaloneEditorConstructionOptions = {
     theme: '2sxc-dark',
     tabSize: 2,
+    fixedOverflowWidgets: true,
   };
   templateVars$: Observable<CodeEditorTemplateVars>;
 
