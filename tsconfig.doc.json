@@ -1,7 +1,6 @@
 {
   "include": [
-    "projects/ng-dialogs/src/**/*.ts",
-    "projects/edit/**/*.ts",
+    "projects/eav-ui/src/**/*.ts",
     "projects/edit-types/**/*.ts",
     // "projects/field-custom-gps/src/**/*.ts",
     // "projects/field-string-wysiwyg/src/**/*.ts"
