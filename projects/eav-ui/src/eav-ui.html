@@ -11,9 +11,6 @@
   <!-- This meta-tag will be pre-filled by the backend before delivery to the browser -->
   <meta name="_jsApi-temp" content="">
 
-  <!-- Load the $2sxc script; the @... below will be replaced by the backend for cache-breaking -->
-  <script src="../../js/2sxc.api.min.js?cacheBreak=@sxcver"></script>
-
   <script>
     (function obsoleteBrowserCheck() {
       var isIE = navigator.userAgent.indexOf("MSIE") >= 0 || navigator.userAgent.indexOf("Trident") >= 0 || !!document.documentMode;
@@ -53,12 +50,14 @@
       // the version to append to each asset, to ensure reload after an upgrade
       // window.sxcVersion = cacheBreak;
       window.sxcVersion = "@sxcver";  // the version for use in dependency URls - will be replaced on the server
+
       // create an empty _jsApi so $2sxc won't look for the meta-header - must fill afterwards!
       window._jsApi = {};
-      // first load the main 2sxc because it contains some url-param methods
-      // document.write('<script src="../../js/2sxc.api.min.js?cacheBreak=' + cacheBreak + '"></scr' + 'ipt>');
     })();
   </script>
+
+  <!-- Load the $2sxc script; the @... below will be replaced by the backend for cache-breaking -->
+  <script src="../../js/2sxc.api.min.js?cacheBreak=@sxcver"></script>
 </head>
 
 <body>
