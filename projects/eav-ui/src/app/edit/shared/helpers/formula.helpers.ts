@@ -6,7 +6,7 @@ import { EavWindow } from '../../../shared/models/eav-window.model';
 import { DesignerSnippet, FieldOption } from '../../dialog/footer/formula-designer/formula-designer.models';
 import { requiredFormulaPrefix } from '../constants';
 // tslint:disable-next-line:max-line-length
-import { FormulaCacheItem, FormulaFunction, FormulaProps, FormulaPropsV1, FormulaTargets, FormulaV1Data, FormulaV1ExperimentalEntity, FormulaVersion, FormulaVersions, FormValues, Language, SettingsFormulaPrefix } from '../models';
+import { FormulaCacheItem, FormulaFieldValidation, FormulaFunction, FormulaProps, FormulaPropsV1, FormulaTargets, FormulaV1Data, FormulaV1ExperimentalEntity, FormulaVersion, FormulaVersions, FormValues, Language, SettingsFormulaPrefix } from '../models';
 import { EavHeader } from '../models/eav';
 import { EavService, FieldsSettingsService } from '../services';
 import { FeatureService, ItemService } from '../store/ngrx-data';
@@ -117,6 +117,13 @@ export class FormulaHelpers {
               if (formula.target === FormulaTargets.Value) {
                 return formValues[formula.fieldName];
               }
+              if (formula.target === FormulaTargets.Validation) {
+                const formulaValidation: FormulaFieldValidation = {
+                  severity: '',
+                  message: '',
+                };
+                return formulaValidation as unknown as FieldValue;
+              }
               if (formula.target.startsWith(SettingsFormulaPrefix)) {
                 const settingName = formula.target.substring(SettingsFormulaPrefix.length);
                 return (previousSettings as Record<string, any>)[settingName];
@@ -165,10 +172,10 @@ export class FormulaHelpers {
                 guid: formula.entityGuid,
                 id: entityId,
               },
-              name: formula.target === FormulaTargets.Value
+              name: formula.target === FormulaTargets.Value || formula.target === FormulaTargets.Validation
                 ? formula.fieldName
                 : formula.target.substring(formula.target.lastIndexOf('.') + 1),
-              type: formula.target === FormulaTargets.Value
+              type: formula.target === FormulaTargets.Value || formula.target === FormulaTargets.Validation
                 ? formula.target
                 : formula.target.substring(0, formula.target.lastIndexOf('.')),
             },

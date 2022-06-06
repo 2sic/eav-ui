@@ -24,10 +24,14 @@ export class ValidationMessagesHelpers {
     jsonError: (config: FieldConfigSet) => {
       return config ? `ValidationMessage.JsonError` : `ValidationMessage.NotValid`;
     },
+    formulaError: (config: FieldConfigSet) => {
+      return config ? `ValidationMessage.NotValid` : `ValidationMessage.NotValid`;
+    },
   };
 
   private static warningMessages: Record<string, string> = {
     jsonWarning: 'ValidationMessage.JsonWarning',
+    formulaWarning: 'ValidationMessage.NotValid',
   };
 
   /** Marks controls as touched to show errors beneath controls and collects error messages */
@@ -53,7 +57,11 @@ export class ValidationMessagesHelpers {
     if (!control.dirty && !control.touched) { return error; }
 
     for (const errorKey of Object.keys(control.errors)) {
-      error = this.validationMessages[errorKey]?.(config);
+      if (errorKey === 'formulaError') {
+        error = control.errors['formulaMessage'] ?? this.validationMessages[errorKey]?.(config);
+      } else {
+        error = this.validationMessages[errorKey]?.(config);
+      }
       if (error) { break; }
     }
 
@@ -61,12 +69,18 @@ export class ValidationMessagesHelpers {
   }
 
   static getWarningMessage(control: SxcAbstractControl): string {
-    if (!control.dirty && !control.touched) { return; }
-    if (control._warning$.value == null) { return; }
+    let warning = '';
+    if (control._warning$.value == null) { return warning; }
+    if (!control.dirty && !control.touched) { return warning; }
 
     for (const warningKey of Object.keys(control._warning$.value)) {
-      const warning = this.warningMessages[warningKey];
-      if (warning) { return warning; }
+      if (warningKey === 'formulaWarning') {
+        warning = control._warning$.value['formulaMessage'] ?? this.warningMessages[warningKey];
+      } else {
+        warning = this.warningMessages[warningKey];
+      }
+      if (warning) { break; }
     }
+    return warning;
   }
 }
