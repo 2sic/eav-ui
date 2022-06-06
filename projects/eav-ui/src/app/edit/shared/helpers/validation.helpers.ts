@@ -24,6 +24,7 @@ export class ValidationHelpers {
       this.decimals(fieldName, fieldsSettingsService),
       this.max(fieldName, fieldsSettingsService),
       this.min(fieldName, fieldsSettingsService),
+      this.formulaValidate(fieldName, fieldsSettingsService),
     ];
     if (inputType === InputTypeConstants.CustomJsonEditor) {
       validators.push(this.validJson(fieldName, fieldsSettingsService));
@@ -138,6 +139,36 @@ export class ValidationHelpers {
 
       control._warning$.next(warning ? { jsonWarning: true } : null);
       return error ? { jsonError: true } : null;
+    };
+  }
+
+  private static formulaValidate(fieldName: string, fieldsSettingsService: FieldsSettingsService): ValidatorFn {
+    return (control: SxcAbstractControl): ValidationErrors | null => {
+      this.ensureWarning(control);
+      const fieldProps = fieldsSettingsService.getFieldsProps()[fieldName];
+      const settings = fieldProps.settings;
+      const formulaValidation = fieldProps.formulaValidation;
+      let error: boolean;
+      let warning: boolean;
+
+      if (this.ignoreValidators(settings) || formulaValidation == null) {
+        error = false;
+        warning = false;
+      } else {
+        if (formulaValidation.severity === 'error') {
+          error = true;
+          warning = false;
+        } else if (formulaValidation.severity === 'warning') {
+          error = false;
+          warning = true;
+        } else {
+          error = false;
+          warning = false;
+        }
+      }
+
+      control._warning$.next(warning ? { formulaWarning: true, formulaMessage: formulaValidation.message } : null);
+      return error ? { formulaError: true, formulaMessage: formulaValidation.message } : null;
     };
   }
 

@@ -33,16 +33,22 @@ export const FormulaVersions = {
 
 export type FormulaVersion = typeof FormulaVersions[keyof typeof FormulaVersions];
 
+export const SettingsFormulaPrefix = 'Field.Settings.';
+
 export const FormulaTargets = {
-  Disabled: 'Field.Settings.Disabled',
-  Name: 'Field.Settings.Name',
-  Notes: 'Field.Settings.Notes',
-  Required: 'Field.Settings.Required',
+  Disabled: `${SettingsFormulaPrefix}Disabled`,
+  Name: `${SettingsFormulaPrefix}Name`,
+  Notes: `${SettingsFormulaPrefix}Notes`,
+  Required: `${SettingsFormulaPrefix}Required`,
   Value: 'Field.Value',
-  Visible: 'Field.Settings.Visible',
+  Visible: `${SettingsFormulaPrefix}Visible`,
+  Validation: 'Field.Validation',
 } as const;
 
-export const SettingsFormulaPrefix = FormulaTargets.Disabled.substring(0, FormulaTargets.Disabled.lastIndexOf('.') + 1);
+export interface FormulaFieldValidation {
+  severity: '' | 'error' | 'warning';
+  message?: string;
+}
 
 export type FormulaTarget = typeof FormulaTargets[keyof typeof FormulaTargets];
 
@@ -132,6 +138,7 @@ export interface FormulaV1ExperimentalEntity {
 
 export interface RunFormulasResult {
   settings: FieldSettings;
+  validation: FormulaFieldValidation;
   value: FieldValue;
 }
 

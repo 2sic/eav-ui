@@ -8,7 +8,7 @@ import { InputType } from '../../../content-type-fields/models/input-type.model'
 import { FieldLogicManager } from '../../form/shared/field-logic/field-logic-manager';
 import { FieldsSettingsHelpers, FormulaHelpers, GeneralHelpers, InputFieldHelpers, LocalizationHelpers, ValidationHelpers } from '../helpers';
 // tslint:disable-next-line:max-line-length
-import { ContentTypeSettings, FieldsProps, FormulaCacheItem, FormulaFunctionDefault, FormulaFunctionV1, FormulaTarget, FormulaTargets, FormulaVersions, FormValues, LogSeverities, RunFormulasResult, SettingsFormulaPrefix, TranslationState } from '../models';
+import { ContentTypeSettings, FieldsProps, FormulaCacheItem, FormulaFieldValidation, FormulaFunctionDefault, FormulaFunctionV1, FormulaTarget, FormulaTargets, FormulaVersions, FormValues, LogSeverities, RunFormulasResult, SettingsFormulaPrefix, TranslationState } from '../models';
 import { EavHeader } from '../models/eav';
 // tslint:disable-next-line:max-line-length
 import { ContentTypeService, FeatureService, GlobalConfigService, InputTypeService, ItemService, LanguageInstanceService, LanguageService } from '../store/ngrx-data';
@@ -114,6 +114,7 @@ export class FieldsSettingsService implements OnDestroy {
             const formulaResult = this.runFormulas(entityGuid, entityId, attribute.Name, formValues, inputType, merged, itemHeader);
             const calculated = formulaResult.settings;
             const formulaValue = formulaResult.value;
+            const formulaValidation = formulaResult.validation;
 
             // special fixes
             calculated.Name = calculated.Name || attribute.Name;
@@ -176,6 +177,7 @@ export class FieldsSettingsService implements OnDestroy {
               translationState: fieldTranslation,
               value,
               wrappers,
+              formulaValidation,
             };
           }
 
@@ -251,6 +253,7 @@ export class FieldsSettingsService implements OnDestroy {
 
     const formulas = this.formulaDesignerService.getFormulas(entityGuid, fieldName, null, false);
     let formulaValue: FieldValue;
+    let formulaValidation: FormulaFieldValidation;
     const formulaSettings: Record<string, any> = {};
     for (const formula of formulas) {
       const runResult = this.runFormula(formula, entityId, formValues, inputType, settings, previousSettings, itemHeader);
@@ -258,6 +261,11 @@ export class FieldsSettingsService implements OnDestroy {
 
       if (formula.target === FormulaTargets.Value) {
         formulaValue = runResult;
+        continue;
+      }
+
+      if (formula.target === FormulaTargets.Validation) {
+        formulaValidation = runResult as unknown as FormulaFieldValidation;
         continue;
       }
 
@@ -293,6 +301,7 @@ export class FieldsSettingsService implements OnDestroy {
         ...settings,
         ...formulaSettings,
       },
+      validation: formulaValidation,
       value: formulaValue,
     };
     return formulaResult;
