@@ -23,3 +23,11 @@ Just run `webpack --env parts=PARTNAME` where PARTNAME is `wysiwyg`, `gps`, `all
 You can also use `--watch` like `webpack --env parts=all --watch`
 
 You can also use `--mode=production` like `webpack --env parts=wysiwyg --mode=production`
+
+## Dev info
+
+- [Edit-UI](./docs/edit-ui.md)
+- [form builder](./docs/form-builder.md)
+- [router](./docs/router.md)
+- [store](./docs/store.md)
+- [localization](./docs/localization.md)
