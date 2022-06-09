@@ -79,6 +79,13 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
           // WARNING!!! Fires valueChange event for every single control
           GeneralHelpers.disableControl(control, disabled);
         }
+
+        // 4. run validators - required because formulas can recalculate validators and if value doesn't change, new validator will not run
+        for (const [fieldName, fieldProps] of Object.entries(fieldsProps)) {
+          if (!this.form.controls.hasOwnProperty(fieldName)) { continue; }
+          const control = this.form.controls[fieldName];
+          control.updateValueAndValidity();
+        }
       })
     );
 
