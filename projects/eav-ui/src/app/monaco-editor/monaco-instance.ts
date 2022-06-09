@@ -1,6 +1,7 @@
 import type * as Monaco from 'monaco-editor';
 import { JsonSchema, Monaco2sxc } from '.';
 import { Snippet } from '../code-editor/models/snippet.model';
+import { Tooltip } from '../code-editor/models/tooltip.model';
 
 export const voidElements = 'area, base, br, col, embed, hr, img, input, link, meta, param, source, track, wbr'
   .split(',')
@@ -25,6 +26,7 @@ export class MonacoInstance {
     container: HTMLElement,
     options: Monaco.editor.IStandaloneEditorConstructionOptions,
     private snippets: Snippet[],
+    private tooltips: Tooltip[],
   ) {
     this.globalCache = this.createGlobalCache(monaco);
     this.defineThemes(this.globalCache, this.monaco);
@@ -74,6 +76,10 @@ export class MonacoInstance {
 
   setSnippets(snippets: Snippet[]): void {
     this.snippets = snippets;
+  }
+
+  setTooltips(tooltips: Tooltip[]): void {
+    this.tooltips = tooltips;
   }
 
   setJsonSchema(jsonSchema?: JsonSchema): void {
@@ -271,28 +277,32 @@ export class MonacoInstance {
         },
       }),
 
-      // monaco.languages.registerHoverProvider(editorInstance.getModel().getLanguageId(), {
-      //   provideHover: (model, position) => {
-      //     const word = model.getWordAtPosition(position);
-      //     if (!word) { return; }
-      //     if (word.word.toLocaleLowerCase() === '2sxc') {
-      //       const contents = [
-      //         { value: '2sxc - Dynamic Content and Apps for DNN' },
-      //         { value: '[2sxc - Dynamic Content and Apps for DNN](https://2sxc.org)' },
-      //         { value: '**BOLD**  \nLine2' },
-      //       ];
-      //       return {
-      //         contents,
-      //         range: {
-      //           startLineNumber: position.lineNumber,
-      //           endLineNumber: position.lineNumber,
-      //           startColumn: word.startColumn,
-      //           endColumn: word.endColumn,
-      //         },
-      //       };
-      //     }
-      //   }
-      // }),
+      monaco.languages.registerHoverProvider(editorInstance.getModel().getLanguageId(), {
+        provideHover: (model, position) => {
+          if (this.tooltips == null || editorInstance.getModel() !== model) { return; }
+
+          const word = model.getWordAtPosition(position);
+          if (!word) { return; }
+
+          const tooltip = this.tooltips.find(i => i.Term === word.word);
+          if (!tooltip) { return; }
+
+          return {
+            contents: tooltip.Help.map(value => {
+              const content: Monaco.IMarkdownString = {
+                value,
+              };
+              return content;
+            }),
+            range: {
+              startLineNumber: position.lineNumber,
+              endLineNumber: position.lineNumber,
+              startColumn: word.startColumn,
+              endColumn: word.endColumn,
+            },
+          };
+        }
+      }),
     ];
 
     return completionItemProviders;

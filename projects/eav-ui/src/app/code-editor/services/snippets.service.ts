@@ -9,11 +9,22 @@ import { Field } from '../../content-type-fields/models/field.model';
 import { webApiFieldsAll } from '../../content-type-fields/services/content-types-fields.service';
 import { MoreSnippet, SetSnippet, SetSnippetLink, Snippet, SnippetsSets, SnippetsSubSubSets } from '../models/snippet.model';
 import { SourceView } from '../models/source-view.model';
+import { Tooltip } from '../models/tooltip.model';
+
+export const inlineHelp = 'admin/Code/InlineHelp';
 
 @Injectable()
 export class SnippetsService {
 
   constructor(private http: HttpClient, private dnnContext: DnnContext, private translate: TranslateService) { }
+
+  getTooltips(language: string): Observable<Tooltip[]> {
+    return this.http.get<Tooltip[]>(this.dnnContext.$2sxc.http.apiUrl(inlineHelp), {
+      params: {
+        language,
+      },
+    });
+  }
 
   getSnippets(view: SourceView): Observable<{ list: Snippet[]; sets: SnippetsSets; }> {
     return this.http.get<{ snippets: Snippet[] }>('../ng-assets/snippets.json.js').pipe(

@@ -2,6 +2,7 @@ import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, O
 import type * as Monaco from 'monaco-editor';
 import { JsonSchema } from '.';
 import { Snippet } from '../code-editor/models/snippet.model';
+import { Tooltip } from '../code-editor/models/tooltip.model';
 import { EavWindow } from '../shared/models/eav-window.model';
 import { MonacoInstance } from './monaco-instance';
 
@@ -17,6 +18,7 @@ export class MonacoEditorComponent implements AfterViewInit, OnChanges, OnDestro
   @Input() filename: string;
   @Input() value: string;
   @Input() snippets?: Snippet[];
+  @Input() tooltips?: Tooltip[];
   @Input() options?: Monaco.editor.IStandaloneEditorConstructionOptions;
   @Input() jsonSchema?: JsonSchema;
   @Input() jsonComments?: Monaco.languages.json.SeverityLevel;
@@ -61,6 +63,9 @@ export class MonacoEditorComponent implements AfterViewInit, OnChanges, OnDestro
     if (changes.snippets != null) {
       this.monacoInstance?.setSnippets(this.snippets);
     }
+    if (changes.tooltips != null) {
+      this.monacoInstance?.setTooltips(this.tooltips);
+    }
     if (changes.disableJavascriptValidation != null) {
       this.monacoInstance?.setJavascriptDiagnostics(this.javascriptDiagnostics);
     }
@@ -77,7 +82,7 @@ export class MonacoEditorComponent implements AfterViewInit, OnChanges, OnDestro
 
   private createEditor(autoFocus: boolean): void {
     this.monacoInstance = new MonacoInstance(
-      this.monaco, this.filename, this.value, this.editorRef.nativeElement, this.options, this.snippets,
+      this.monaco, this.filename, this.value, this.editorRef.nativeElement, this.options, this.snippets, this.tooltips,
     );
 
     this.monacoInstance.setJsonSchema(this.jsonSchema);

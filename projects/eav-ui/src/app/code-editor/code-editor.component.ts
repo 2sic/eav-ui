@@ -104,12 +104,13 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
 
             const view$ = this.sourceService.get(viewKey.key, viewKey.shared, this.urlItems).pipe(share());
             const snippets$ = view$.pipe(switchMap(view => this.snippetsService.getSnippets(view)));
-            return forkJoin([of(viewKey), view$, snippets$]);
+            const tooltips$ = view$.pipe(switchMap(view => this.snippetsService.getTooltips(view.Extension.substring(1))));
+            return forkJoin([of(viewKey), view$, snippets$, tooltips$]);
           })
         ).subscribe(results => {
           let viewInfos1 = this.viewInfos$.value;
 
-          results.forEach(([viewKey, view, snippets]) => {
+          results.forEach(([viewKey, view, snippets, tooltips]) => {
             const selectedIndex = viewInfos1.findIndex(v => GeneralHelpers.objectsEqual(v.viewKey, viewKey));
             if (selectedIndex < 0) { return; }
 
@@ -118,6 +119,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
               view,
               explorerSnipps: snippets.sets,
               editorSnipps: snippets.list,
+              tooltips,
               savedCode: view.Code,
             };
             viewInfos1 = [...viewInfos1.slice(0, selectedIndex), newViewInfo, ...viewInfos1.slice(selectedIndex + 1)];
@@ -166,6 +168,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
           templates,
           explorerSnipps: activeViewInfo?.explorerSnipps,
           editorSnipps: activeViewInfo?.editorSnipps,
+          tooltips: activeViewInfo?.tooltips,
         };
         return templateVars;
       }),

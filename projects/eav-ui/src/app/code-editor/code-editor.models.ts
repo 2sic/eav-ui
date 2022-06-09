@@ -1,6 +1,7 @@
 import { FileAsset } from './models/file-asset.model';
 import { Snippet, SnippetsSets } from './models/snippet.model';
 import { SourceView } from './models/source-view.model';
+import { Tooltip } from './models/tooltip.model';
 
 export interface Tab {
   viewKey: ViewKey;
@@ -18,6 +19,7 @@ export interface CodeEditorTemplateVars {
   templates: FileAsset[];
   explorerSnipps: SnippetsSets;
   editorSnipps: Snippet[];
+  tooltips?: Tooltip[];
 }
 
 export const Explorers = {
@@ -32,6 +34,7 @@ export interface ViewInfo {
   view?: SourceView;
   explorerSnipps?: SnippetsSets;
   editorSnipps?: Snippet[];
+  tooltips?: Tooltip[];
   savedCode?: string;
 }
 

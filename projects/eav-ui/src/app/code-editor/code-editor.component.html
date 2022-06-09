@@ -44,7 +44,7 @@
     </div>
     <app-monaco-editor *ngIf="data.view" [filename]="data.view.FileName" [value]="data.view.Code"
       (valueChanged)="codeChanged($event, data.viewKey)" [options]="monacoOptions" [snippets]="data.editorSnipps"
-      [autoFocus]="true">
+      [tooltips]="data.tooltips" [autoFocus]="true">
     </app-monaco-editor>
   </div>
 
