@@ -43,9 +43,9 @@ export class EntityFilterComponent implements IFilterAngularComp {
     }
 
     if (this.idFilter.length > 0) {
-      const item: { Id: number; Title: string; } | undefined = params.data[this.filterParams.colDef.headerName]?.[0];
-      if (item == null) { return false; }
-      if (!this.idFilter.includes(item.Id)) { return false; }
+      const items: { Id: number; Title: string; }[] | undefined = params.data[this.filterParams.colDef.headerName];
+      if (items == null) { return false; }
+      if (!this.idFilter.some(idFltr => items.some(itm => itm.Id === idFltr))) { return false; }
     }
 
     return true;
