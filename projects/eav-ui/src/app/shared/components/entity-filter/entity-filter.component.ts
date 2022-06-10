@@ -15,7 +15,7 @@ export class EntityFilterComponent implements IFilterAngularComp {
   idFilterString = '';
 
   private filterParams: IFilterParams;
-  private idFilter: number[];
+  private idFilter: number[] = [];
 
   agInit(params: IFilterParams): void {
     this.filterParams = params;
