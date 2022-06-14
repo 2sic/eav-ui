@@ -16,40 +16,14 @@
       var isIE = navigator.userAgent.indexOf("MSIE") >= 0 || navigator.userAgent.indexOf("Trident") >= 0 || !!document.documentMode;
       var isEdge = navigator.userAgent.indexOf("Edge") >= 0;
       if (isIE || isEdge) {
-        alert("Error: Old Browser Detected\n\nIt seems that you are using an old browser like Internet Explorer or Edge. Editing doesn't work with obsolete browsers, so please use a modern browser like Chrome instead.");
+        alert("Error: Old Browser Detected\n\nIt seems that you are using an old browser like Internet Explorer or Edge. \n\n"
+          + "Edit doesn't work with obsolete browsers. Please use a modern browser like Chrome.");
         window.parent.$2sxc.totalPopup.close();
       }
     })();
 
     (function init2sxc() {
-      // 2022-06-06 2dm - replaced this (WIP) as the version is now supplied by the backend on every call
-
-      // https://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript
-      // function getParameterByName(name, url) {
-      //   if (!url) url = window.location.href;
-      //   name = name.replace(/[\[\]]/g, '\\$&');
-      //   var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
-      //     results = regex.exec(url);
-      //   if (!results) return null;
-      //   if (!results[2]) return '';
-      //   return decodeURIComponent(results[2].replace(/\+/g, ' '));
-      // }
-
-      // Ensure that 2sxc.api.min is always reloaded to prevent caching of old code
-      // If last digit is a 0, then we're missing a real build number, so use a random one to ensure cache breaking
-      // fix https://github.com/2sic/2sxc/issues/2216
-
-      // var vBuild = getParameterByName('sxcver');
-      // if (!vBuild) vBuild = getParameterByName('sxcver', sessionStorage.getItem('eav-url'));
-      // if (!vBuild) vBuild = Math.floor(Math.random() * 99999);
-      // var vParts = vBuild.substring(vBuild.indexOf("=") + 1).split('.');
-      // for (var vi = 0; vi < vParts.length; vi++) vParts[vi] = Number(vParts[vi]);
-      // if (vParts[3] === 0) vParts[3] = Math.floor(Math.random() * 100000);
-      // var cacheBreak = vParts.join('.');
-
-      // the version to append to each asset, to ensure reload after an upgrade
-      // window.sxcVersion = cacheBreak;
-      window.sxcVersion = "@sxcver";  // the version for use in dependency URls - will be replaced on the server
+      window.sxcVersion = "@sxcver";  // the version for use in dependency URLs - will be replaced on the server
 
       // create an empty _jsApi so $2sxc won't look for the meta-header - must fill afterwards!
       window._jsApi = {};

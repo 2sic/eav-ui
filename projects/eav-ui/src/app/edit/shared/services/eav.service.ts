@@ -85,7 +85,9 @@ export class EavService {
 
   private getVersioningOptions(partOfPage: boolean, publishing: string): VersioningOptions {
     const allowAll: VersioningOptions = { show: true, hide: true, branch: true };
-    if (!partOfPage) return allowAll;
+    if (!partOfPage) {
+      return allowAll;
+    }
 
     const publish = publishing || '';
     switch (publish) {
