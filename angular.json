@@ -23,7 +23,7 @@
           "builder": "ngx-build-plus:browser",
           "options": {
             "outputPath": "dist/eav-ui",
-            "index": "projects/eav-ui/src/eav-ui.html",
+            "index": "projects/eav-ui/src/index-raw.html",
             "main": "projects/eav-ui/src/main.ts",
             "polyfills": "projects/eav-ui/src/polyfills.ts",
             "tsConfig": "projects/eav-ui/tsconfig.app.json",
