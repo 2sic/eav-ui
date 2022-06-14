@@ -93,12 +93,9 @@ export class EditInitializerService implements OnDestroy {
     }
     this.languageInstanceService.addLanguageInstance(formId, currentLanguage, defaultLanguage, currentLanguage, false);
 
-    const publishStatus: PublishStatus = {
-      formId,
-      DraftShouldBranch: formData.DraftShouldBranch,
-      IsPublished: formData.IsPublished,
-    };
-    this.publishStatusService.setPublishStatus(publishStatus);
+    // First convert to publish mode, because then it will run checks if this is allowed
+    const publishMode = this.publishStatusService.asPublishMode(formData.IsPublished, formData.DraftShouldBranch);
+    this.publishStatusService.setPublishMode(publishMode, formId, this.eavService);
   }
 
   private keepInitialValues(): void {

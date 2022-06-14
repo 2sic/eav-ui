@@ -11,7 +11,7 @@ export class PublishStatusService extends BaseDataService<PublishStatus> {
     super('PublishStatus', serviceElementsFactory);
   }
 
-  setPublishStatus(publishStatus: PublishStatus): void {
+  private setPublishStatus(publishStatus: PublishStatus): void {
     this.upsertOneInCache(publishStatus);
   }
 
@@ -28,6 +28,11 @@ export class PublishStatusService extends BaseDataService<PublishStatus> {
       map(publishStatuses => publishStatuses.find(publishStatus => publishStatus.formId === formId)),
       distinctUntilChanged(),
     );
+  }
+
+  /** Convert the booleans to the appropriate "verb" */
+  asPublishMode(isPublished: boolean, draftShouldBranch: boolean): PublishMode {
+    return draftShouldBranch ? PublishModes.Branch : isPublished ? PublishModes.Show : PublishModes.Hide;
   }
 
   setPublishMode(publishMode: PublishMode, formId: number, eavService: EavService): void {
