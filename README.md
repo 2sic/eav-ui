@@ -6,7 +6,7 @@ It's built using Angular 13.
 
 ## Projects
 
-1. **edit** part of the main Angular project, but historically an own component. Build using `ng`
+1. **eav-ui** main Angular project. Build using `ng`
 1. **field-custom-gps** an extension field with gps-picker & map. Build using `webpack`
 1. **field-string-wysiwyg** an extension field for wysiwyg. Build using `webpack`
 
@@ -23,3 +23,11 @@ Just run `webpack --env parts=PARTNAME` where PARTNAME is `wysiwyg`, `gps`, `all
 You can also use `--watch` like `webpack --env parts=all --watch`
 
 You can also use `--mode=production` like `webpack --env parts=wysiwyg --mode=production`
+
+## Dev info
+
+- [Edit-UI](./docs/edit-ui.md)
+- [form builder](./docs/form-builder.md)
+- [router](./docs/router.md)
+- [store](./docs/store.md)
+- [localization](./docs/localization.md)

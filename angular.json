@@ -8,44 +8,44 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "ng-dialogs": {
+    "eav-ui": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
           "style": "scss"
         }
       },
-      "root": "projects/ng-dialogs",
-      "sourceRoot": "projects/ng-dialogs/src",
+      "root": "projects/eav-ui",
+      "sourceRoot": "projects/eav-ui/src",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "ngx-build-plus:browser",
           "options": {
-            "outputPath": "dist/ng-dialogs",
-            "index": "projects/ng-dialogs/src/eav-ui.html",
-            "main": "projects/ng-dialogs/src/main.ts",
-            "polyfills": "projects/ng-dialogs/src/polyfills.ts",
-            "tsConfig": "projects/ng-dialogs/tsconfig.app.json",
+            "outputPath": "dist/eav-ui",
+            "index": "projects/eav-ui/src/index-raw.html",
+            "main": "projects/eav-ui/src/main.ts",
+            "polyfills": "projects/eav-ui/src/polyfills.ts",
+            "tsConfig": "projects/eav-ui/tsconfig.app.json",
             "inlineStyleLanguage": "css",
             "assets": [
-              "projects/ng-dialogs/src/assets"
+              "projects/eav-ui/src/assets"
             ],
             "styles": [
-              "projects/ng-dialogs/src/styles.scss"
+              "projects/eav-ui/src/styles.scss"
             ],
             "scripts": [
-              "projects/ng-dialogs/src/scripts/require.js",
-              "projects/edit/assets/scripts/dropzone-dragging-helper.js",
-              "projects/edit/assets/scripts/clipboard-paste/paste.js"
+              "projects/eav-ui/src/scripts/require.js",
+              "projects/eav-ui/src/app/edit/assets/scripts/dropzone-dragging-helper.js",
+              "projects/eav-ui/src/app/edit/assets/scripts/clipboard-paste/paste.js"
             ]
           },
           "configurations": {
             "production": {
               "fileReplacements": [
                 {
-                  "replace": "projects/ng-dialogs/src/environments/environment.ts",
-                  "with": "projects/ng-dialogs/src/environments/environment.prod.ts"
+                  "replace": "projects/eav-ui/src/environments/environment.ts",
+                  "with": "projects/eav-ui/src/environments/environment.prod.ts"
                 }
               ],
               "optimization": true,
@@ -70,15 +70,15 @@
         "serve": {
           "builder": "ngx-build-plus:dev-server",
           "options": {
-            "browserTarget": "ng-dialogs:build",
+            "browserTarget": "eav-ui:build",
             "publicHost": "http://localhost:4200"
           },
           "configurations": {
             "production": {
-              "browserTarget": "ng-dialogs:build:production"
+              "browserTarget": "eav-ui:build:production"
             },
             "development": {
-              "browserTarget": "ng-dialogs:build:development"
+              "browserTarget": "eav-ui:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -86,22 +86,22 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "ng-dialogs:build"
+            "browserTarget": "eav-ui:build"
           }
         },
         "test": {
           "builder": "ngx-build-plus:karma",
           "options": {
-            "main": "projects/ng-dialogs/src/test.ts",
-            "polyfills": "projects/ng-dialogs/src/polyfills.ts",
-            "tsConfig": "projects/ng-dialogs/tsconfig.spec.json",
-            "karmaConfig": "projects/ng-dialogs/karma.conf.js",
+            "main": "projects/eav-ui/src/test.ts",
+            "polyfills": "projects/eav-ui/src/polyfills.ts",
+            "tsConfig": "projects/eav-ui/tsconfig.spec.json",
+            "karmaConfig": "projects/eav-ui/karma.conf.js",
             "inlineStyleLanguage": "css",
             "assets": [
-              "projects/ng-dialogs/src/assets"
+              "projects/eav-ui/src/assets"
             ],
             "styles": [
-              "projects/ng-dialogs/src/styles.scss"
+              "projects/eav-ui/src/styles.scss"
             ],
             "scripts": []
           }
@@ -109,5 +109,5 @@
       }
     }
   },
-  "defaultProject": "ng-dialogs"
+  "defaultProject": "eav-ui"
 }

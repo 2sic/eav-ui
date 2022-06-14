@@ -1,5 +1,5 @@
 import type { TranslateService } from '@ngx-translate/core';
-import { EavWindow } from '../../../ng-dialogs/src/app/shared/models/eav-window.model';
+import { EavWindow } from '../../../eav-ui/src/app/shared/models/eav-window.model';
 
 declare const window: EavWindow;
 

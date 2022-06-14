@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Content Management</title>
+  <base href="./">
+  <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- This meta-tag will be pre-filled by the backend before delivery to the browser -->
+  <meta name="_jsApi-temp" content="">
+
+  <script>
+    (function obsoleteBrowserCheck() {
+      var isIE = navigator.userAgent.indexOf("MSIE") >= 0 || navigator.userAgent.indexOf("Trident") >= 0 || !!document.documentMode;
+      var isEdge = navigator.userAgent.indexOf("Edge") >= 0;
+      if (isIE || isEdge) {
+        alert("Error: Old Browser Detected\n\nIt seems that you are using an old browser like Internet Explorer or Edge. \n\n"
+          + "Edit doesn't work with obsolete browsers. Please use a modern browser like Chrome.");
+        window.parent.$2sxc.totalPopup.close();
+      }
+    })();
+
+    (function init2sxc() {
+      window.sxcVersion = "@sxcver";  // the version for use in dependency URLs - will be replaced on the server
+
+      // create an empty _jsApi so $2sxc won't look for the meta-header - must fill afterwards!
+      window._jsApi = {};
+    })();
+  </script>
+
+  <!-- Load the $2sxc script; the @... below will be replaced by the backend for cache-breaking -->
+  <script src="../../js/2sxc.api.min.js?cacheBreak=@sxcver"></script>
+</head>
+
+<body>
+  <app-root></app-root>
+</body>
+
+</html>

@@ -1,7 +1,7 @@
 {
   "name": "eav-ui",
   "// VERSION": "The version number is very important, as it's used for publishing the source maps",
-  "version": "14.00.00",
+  "version": "14.02.00",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -18,7 +18,8 @@
     "all": "npm run pre-build && webpack --env parts=all && ng build --configuration development && npm run copy-to-dnn",
     "all-watch": "npm run pre-build && concurrently \"webpack --env parts=all --watch\" npm:dev-main npm:copy-to-dnn-watch",
     "prod-all": "npm run pre-build && webpack --env parts=all --mode=production && npm run prod-main && npm run copy-to-dnn",
-    "release": "set NODE_ENV=production && npm run prod-all"
+    "release": "set NODE_ENV=production && npm run prod-all",
+    "documentation": "npx compodoc -p tsconfig.doc.json --disableRoutesGraph -s"
   },
   "dependencies": {
     "@2sic.com/dnn-sxc-angular": "^11.1.2",
@@ -63,6 +64,7 @@
     "@angular/cli": "^13.3.3",
     "@angular/compiler-cli": "^13.3.3",
     "@angular/language-service": "^13.3.3",
+    "@compodoc/compodoc": "^1.1.19",
     "@types/google.maps": "^3.48.5",
     "@types/jasmine": "^3.10.0",
     "@types/lodash-es": "^4.17.6",

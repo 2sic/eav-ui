@@ -1,0 +1,54 @@
+<div class="editor-root" appToggleDebug [ngClass]="{ 'sxc-dark': monacoOptions.theme === '2sxc-dark' }"
+  *ngIf="templateVars$ | async as data">
+  <div class="editor-side-toolbar">
+    <div class="button" [ngClass]="{ 'active': activeExplorer === Explorers.Templates }" tippy="Templates"
+      (click)="toggleExplorer(Explorers.Templates)">
+      <mat-icon>file_copy</mat-icon>
+    </div>
+    <div class="button" [ngClass]="{ 'active': activeExplorer === Explorers.Snippets }" tippy="Snippets"
+      (click)="toggleExplorer(Explorers.Snippets)">
+      <mat-icon>code</mat-icon>
+    </div>
+  </div>
+
+  <app-code-templates [hidden]="activeExplorer !== Explorers.Templates" [view]="data.view" [templates]="data.templates"
+    (openView)="openView($event)" (createTemplate)="createTemplate($event)">
+  </app-code-templates>
+  <app-code-snippets [hidden]="activeExplorer !== Explorers.Snippets" [snippets]="data.explorerSnipps"
+    (insertSnippet)="insertSnippet($event)">
+  </app-code-snippets>
+
+  <div class="editor-group">
+    <div class="tabs-container fancy-scrollbar-dark" *ngIf="data.tabs.length > 0">
+      <div class="tab" *ngFor="let tab of data.tabs" [ngClass]="{
+        'active': tab.isActive,
+        'modified': tab.isModified,
+        'loading': tab.isLoading
+      }" (click)="openView(tab.viewKey)">
+        <div class="tab-label-container" [tippy]="tab.label" tippyShowDelay="750">
+          <mat-icon class="icon-shared" *ngIf="tab.viewKey.shared">share</mat-icon>
+          <span class="tab-label">{{ tab.label }}</span>
+        </div>
+        <div class="tab-actions-container">
+          <mat-icon *ngIf="tab.isModified" class="tab-action icon-modified" fontSet="material-icons">
+            circle
+          </mat-icon>
+          <mat-spinner *ngIf="tab.isLoading" class="spinner" mode="indeterminate" diameter="14" color="white">
+          </mat-spinner>
+          <mat-icon class="tab-action icon-close" tippy="Close" appClickStopPropagation
+            (click)="closeEditor(tab.viewKey)">
+            close
+          </mat-icon>
+        </div>
+      </div>
+    </div>
+    <app-monaco-editor *ngIf="data.view" [filename]="data.view.FileName" [value]="data.view.Code"
+      (valueChanged)="codeChanged($event, data.viewKey)" [options]="monacoOptions" [snippets]="data.editorSnipps"
+      [tooltips]="data.tooltips" [autoFocus]="true">
+    </app-monaco-editor>
+  </div>
+
+  <button mat-fab mat-elevation-z24 tippy="Click to save or CTRL + S" *ngIf="data.activeView" (click)="save()">
+    <mat-icon>done</mat-icon>
+  </button>
+</div>

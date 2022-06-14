@@ -5,5 +5,5 @@ const chalkSuccess = chalk.green;
 
 fs.emptyDirSync('./dist');
 // create angular.json outputPath
-fs.ensureDirSync('./dist/ng-dialogs');
+fs.ensureDirSync('./dist/eav-ui');
 console.log(chalkSuccess('Dist folder emptied!'));

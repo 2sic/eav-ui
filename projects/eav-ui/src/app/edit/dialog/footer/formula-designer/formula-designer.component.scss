@@ -1,0 +1,218 @@
+@import "../../../assets/styles/_variables";
+
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  border-top: 1px solid lightgray;
+  padding-top: 8px;
+}
+
+.formula-context-box {
+  display: flex;
+  align-items: center;
+
+  .mat-form-field {
+    font-size: 14px;
+  }
+
+  .mat-form-field:not(:first-of-type) {
+    margin-left: 8px;
+  }
+
+  .mat-icon-button {
+    margin-left: 8px;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+
+    .mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+      line-height: 20px !important;
+    }
+  }
+}
+
+.has-formula {
+  font-weight: bold;
+}
+
+.formula-box {
+  flex: 1 1 auto;
+  display: flex;
+  overflow: hidden;
+
+  .mat-form-field {
+    flex: 0 1 auto;
+    font-size: 14px;
+    width: 100%;
+
+    textarea {
+      font-family: monospace;
+    }
+  }
+
+  .formula-field {
+    flex: 0 1 auto;
+    width: 100%;
+    overflow: hidden;
+    margin-bottom: 6px;
+  }
+
+  .formula-snippets {
+    flex: 0 0 auto;
+    max-width: 200px;
+    max-height: 194px;
+    overflow: hidden auto;
+    padding-left: 2px;
+
+    &.disabled .snippet {
+      pointer-events: none;
+      color: rgba($editUI-foreground-color, 0.44);
+    }
+
+    .snippet {
+      font-size: 14px;
+      cursor: pointer;
+      white-space: nowrap;
+      padding-top: 1px;
+      padding-bottom: 1px;
+
+      &:first-of-type {
+        padding-top: 0;
+      }
+
+      &:last-of-type {
+        padding-bottom: 0;
+      }
+    }
+
+    .separator {
+      margin-top: 0.5em;
+      margin-bottom: 0.5em;
+      border-bottom: 1px solid rgba($editUI-foreground-color, 0.44);
+    }
+  }
+}
+
+.formula-footer-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+.formula-result-box {
+  flex: 0 1 auto;
+  height: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+
+  .label {
+    user-select: none;
+    font-weight: 500;
+  }
+
+  .result-undefined {
+    color: red;
+  }
+
+  .result-error {
+    color: red;
+  }
+}
+
+.formula-actions-box {
+  flex: 0 0 auto;
+
+  .mat-icon-button {
+    margin-left: 0;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    flex-shrink: 0;
+
+    .mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+      line-height: 20px !important;
+    }
+  }
+
+  .run-button {
+    margin-left: 8px;
+  }
+}
+
+$paddingBottom: 11px;
+
+.formula-field {
+  padding-top: 28px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  padding-bottom: calc(1px + #{$paddingBottom});
+  position: relative;
+
+  .label {
+    display: block;
+    color: rgba(0, 0, 0, 0.6);
+    cursor: default;
+    font-size: 12px;
+    transition: none;
+    position: absolute;
+    left: 0;
+    top: 0;
+    user-select: none;
+  }
+
+  .editor {
+    ::ng-deep .monaco-editor .scroll-decoration {
+      display: none;
+    }
+  }
+
+  &:hover {
+    border-bottom: 2px solid rgba(0, 0, 0, 0.4);
+    padding-bottom: $paddingBottom;
+  }
+
+  &.focused {
+    border-bottom: 2px solid #002753;
+    padding-bottom: $paddingBottom;
+
+    .label {
+      color: #002753;
+    }
+  }
+
+  &.error {
+    border-bottom: 2px solid $error-color;
+    padding-bottom: $paddingBottom;
+
+    .label {
+      color: $error-color;
+    }
+  }
+
+  &.disabled {
+    border-bottom: none;
+    padding-bottom: calc(2px + #{$paddingBottom});
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.2) 33%, transparent 0%);
+    background-position: bottom;
+    background-size: 4px 1px;
+    background-repeat: repeat-x;
+
+    .editor {
+      pointer-events: none;
+
+      ::ng-deep * {
+        color: rgba(0, 0, 0, 0.38);
+      }
+    }
+  }
+}

@@ -35,7 +35,7 @@ console.log(
 );
 
 const sourcePath = 'dist';
-const sourcePathMain = 'dist/ng-dialogs';
+const sourcePathMain = 'dist/eav-ui';
 const outputPath = `${targetDnn}/dist/ng-edit`;
 const outputAssets = `${targetAssets}/dist/ng-edit`;
 

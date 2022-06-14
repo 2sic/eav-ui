@@ -1,7 +1,7 @@
 import type { Editor, RawEditorSettings } from 'tinymce';
+import { FeaturesConstants } from '../../../eav-ui/src/app/edit/shared/constants';
+import { EavWindow } from '../../../eav-ui/src/app/shared/models/eav-window.model';
 import { AddOnSettings, Connector, WysiwygReconfigure } from '../../../edit-types';
-import { FeaturesConstants } from '../../../edit/shared/constants';
-import { EavWindow } from '../../../ng-dialogs/src/app/shared/models/eav-window.model';
 import * as contentStyle from '../editor/tinymce-content.scss';
 import { DefaultAddOnSettings, DefaultOptions, DefaultPaste, DefaultPlugins } from './defaults';
 import { TinyMceToolbars } from './toolbars';
