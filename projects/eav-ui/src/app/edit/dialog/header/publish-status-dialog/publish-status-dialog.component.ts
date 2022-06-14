@@ -33,6 +33,7 @@ export class PublishStatusDialogComponent implements OnInit {
       map(([publishMode]) => {
         const templateVars: PublishStatusDialogTemplateVars = {
           publishMode,
+          options: this.eavService.eavConfig.versioningOptions,
         };
         return templateVars;
       }),

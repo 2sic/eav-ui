@@ -84,17 +84,20 @@ export class EavService {
   }
 
   private getVersioningOptions(partOfPage: boolean, publishing: string): VersioningOptions {
-    if (!partOfPage) {
-      return { show: true, hide: true, branch: true };
-    }
+    const allowAll: VersioningOptions = { show: true, hide: true, branch: true };
+    if (!partOfPage) return allowAll;
 
     const publish = publishing || '';
     switch (publish) {
       case '':
       case 'DraftOptional':
-        return { show: true, hide: true, branch: true };
+        return allowAll;
       case 'DraftRequired':
+        // Note: the key 'show' should not be added, as the code later picks the first property to set the default
+        // Branch should also be first, as it's the preferred option
         return { branch: true, hide: true };
+      case 'DraftForbidden':
+        return { show: true };
       default: {
         console.error(`Invalid versioning requirements: ${publish}`);
         return {};
