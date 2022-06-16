@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { DialogTypeConstants } from '../constants/dialog-type.constants';
 // tslint:disable-next-line:max-line-length
-import { keyApi, keyAppId, keyContentBlockId, keyDebug, keyDialog, keyExtras, keyIsShared, keyItems, keyModuleId, keyPartOfPage, keyPipelineId, keyRequestToken, keyRequestTokenHeaderName, keyTabId, keyUrl, keyZoneId, prefix } from '../constants/session.constants';
+import { keyAppId, keyContentBlockId, keyDebug, keyDialog, keyExtras, keyIsShared, keyItems, keyModuleId, keyPartOfPage, keyPipelineId, keyUrl, keyZoneId, prefix } from '../constants/session.constants';
 import { DialogHashParams, ExtrasParam } from '../models/dialog-url-params.model';
 import { EditForm } from '../models/edit-form.model';
 import { Context } from './context';
@@ -76,13 +76,15 @@ export class DialogService {
     const hashParams: DialogHashParams = {
       ...this.buildHashParam(keyZoneId, this.context.zoneId.toString()),
       ...this.buildHashParam(keyAppId, this.context.appId.toString()),
-      ...this.buildHashParam(keyTabId, this.context.tabId?.toString()),
+      // #reduceEnvVars
+      // ...this.buildHashParam(keyTabId, this.context.tabId?.toString()),
       ...this.buildHashParam(keyModuleId, this.context.moduleId?.toString()),
       ...this.buildHashParam(keyContentBlockId, this.context.contentBlockId?.toString()),
       ...this.buildHashParam(keyPartOfPage),
-      ...this.buildHashParam(keyRequestToken),
-      ...this.buildHashParam(keyRequestTokenHeaderName),
-      ...this.buildHashParam(keyApi),
+      // #reduceEnvVars
+      // ...this.buildHashParam(keyRequestToken),
+      // ...this.buildHashParam(keyRequestTokenHeaderName),
+      // ...this.buildHashParam(keyApi),
       ...(sessionStorage.getItem(keyDebug) ? this.buildHashParam(keyDebug) : {}),
     };
     return hashParams;

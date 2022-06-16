@@ -1,8 +1,9 @@
 export const prefix = 'eav-';
 export const keyZoneId = prefix + 'zoneId';
-export const keyRequestToken = prefix + 'rvt';
-export const keyRequestTokenHeaderName = prefix + 'rvth';
-export const keyTabId = prefix + 'tid';
+// #reduceEnvVars
+// export const keyRequestToken = prefix + 'rvt';
+// export const keyRequestTokenHeaderName = prefix + 'rvth';
+// export const keyTabId = prefix + 'tid';
 export const keyContentBlockId = prefix + 'cbid';
 export const keyModuleId = prefix + 'mid';
 export const keyAppId = prefix + 'appId';
@@ -14,7 +15,8 @@ export const keyPartOfPage = prefix + 'partOfPage';
 export const keyPublishing = prefix + 'publishing';
 export const keyFilters = prefix + 'filters';
 export const keyPipelineId = prefix + 'pipelineId';
-export const keyApi = prefix + 'api';
+// #reduceEnvVars
+// export const keyApi = prefix + 'api';
 /** Url which opened the dialog. Used for debugging */
 export const keyUrl = prefix + 'url';
 /** This is used by file editor to determine if it's editing shared files or of that portal only */
