@@ -1,10 +1,9 @@
-import { JsInfo } from '@2sic.com/2sxc-typings';
 import { Injector } from '@angular/core';
 import { Router } from '@angular/router';
 import { UrlHelpers } from './edit/shared/helpers/url.helpers';
 import { DialogTypeConstant, DialogTypeConstants } from './shared/constants/dialog-type.constants';
 // tslint:disable-next-line:max-line-length
-import { keyApi, keyAppId, keyContentType, keyDialog, keyExtras, keyItems, keyPipelineId, keyRequestToken, keyRequestTokenHeaderName, keyTabId, keyUrl, keyZoneId, prefix } from './shared/constants/session.constants';
+import { keyAppId, keyContentType, keyDialog, keyExtras, keyItems, keyPipelineId, keyUrl, keyZoneId, prefix } from './shared/constants/session.constants';
 import { convertFormToUrl } from './shared/helpers/url-prep.helper';
 import { ExtrasParam } from './shared/models/dialog-url-params.model';
 import { EavWindow } from './shared/models/eav-window.model';
@@ -110,16 +109,24 @@ export function paramsInitFactory(injector: Injector): () => void {
       console.log('Initial route:', sessionStorage.getItem(keyUrl));
     }
 
-    loadEnvironment();
+    // #reduceEnvVars
+    // 2022-06-05 not necessary any more
+    // loadEnvironment();
   };
 }
 
-function loadEnvironment() {
-  const jsInfo: Partial<JsInfo> & { rvtHeader: string } = {
-    page: parseInt(sessionStorage.getItem(keyTabId), 10),
-    rvt: sessionStorage.getItem(keyRequestToken),
-    rvtHeader: sessionStorage.getItem(keyRequestTokenHeaderName),
-    api: sessionStorage.getItem(keyApi),
-  };
-  window.$2sxc.env.load(jsInfo as JsInfo);
-}
+// function loadEnvironment() {
+//   // #reduceEnvVars
+//   // 2022-06-16 2dm - trying to switch to the new setup where the parameters are already loaded
+//   // so we should be able to just disable this for now
+//   console.log('2dm - env:', (window.$2sxc.env as any).header);
+
+//   const jsInfo: Partial<JsInfo> & { rvtHeader: string } = {
+//     page: parseInt(sessionStorage.getItem(keyTabId), 10),
+//     rvt: sessionStorage.getItem(keyRequestToken),
+//     rvtHeader: sessionStorage.getItem(keyRequestTokenHeaderName),
+//     api: sessionStorage.getItem(keyApi),
+//   };
+//   console.log('2dm - jsInfo:', jsInfo);
+//   window.$2sxc.env.load(jsInfo as JsInfo);
+// }
