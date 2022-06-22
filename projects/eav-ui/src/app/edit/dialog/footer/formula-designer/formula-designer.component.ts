@@ -360,6 +360,12 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
         : []
       ),
     );
+    const typings$ = combineLatest([options$, formula$, itemHeader$]).pipe(
+      map(([options, formula, itemHeader]) => formula != null && itemHeader != null
+        ? FormulaHelpers.buildFormulaTypings(formula, options.fieldOptions, itemHeader)
+        : ''
+      ),
+    );
     const result$ = designerState$.pipe(
       switchMap(designer =>
         this.formulaDesignerService.getFormulaResult$(designer.entityGuid, designer.fieldName, designer.target)
@@ -367,11 +373,11 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     );
 
     this.templateVars$ = combineLatest([
-      combineLatest([options$, formula$, dataSnippets$, contextSnippets$, designerState$]),
+      combineLatest([options$, formula$, dataSnippets$, contextSnippets$, typings$, designerState$]),
       combineLatest([result$, this.saving$]),
     ]).pipe(
       map(([
-        [options, formula, dataSnippets, contextSnippets, designer],
+        [options, formula, dataSnippets, contextSnippets, typings, designer],
         [result, saving],
       ]) => {
         const templateVars: FormulaDesignerTemplateVars = {
@@ -382,6 +388,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
           designer,
           dataSnippets,
           contextSnippets,
+          typings,
           result: result?.value,
           resultExists: result != null,
           resultIsError: result?.isError ?? false,

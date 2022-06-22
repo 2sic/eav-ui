@@ -128,6 +128,10 @@ export class MonacoInstance {
     this.monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions(javascriptDiagnostics);
   }
 
+  setJavascriptTypings(typings: string, fileName: string): void {
+    this.monaco.languages.typescript.javascriptDefaults.addExtraLib(typings, fileName);
+  }
+
   private createGlobalCache(monaco: typeof Monaco & { _2sxc?: Monaco2sxc }): Monaco2sxc {
     if (monaco._2sxc == null) {
       const _2sxc: Monaco2sxc = {

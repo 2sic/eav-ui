@@ -352,8 +352,9 @@ export class FieldsSettingsService implements OnDestroy {
     try {
       switch (formula.version) {
         case FormulaVersions.V1:
+        case FormulaVersions.V2:
           if (isOpenInDesigner) {
-            console.log(`Running formula${FormulaVersions.V1.toLocaleUpperCase()} for Entity: "${ctSettings._itemTitle}", Field: "${formula.fieldName}", Target: "${formula.target}" with following arguments:`, formulaProps);
+            console.log(`Running formula${formula.version.toLocaleUpperCase()} for Entity: "${ctSettings._itemTitle}", Field: "${formula.fieldName}", Target: "${formula.target}" with following arguments:`, formulaProps);
           }
           const valueV1 = this.doValueCorrection(
             formula.target,
