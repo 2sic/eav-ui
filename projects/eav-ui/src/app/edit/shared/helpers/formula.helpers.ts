@@ -350,7 +350,7 @@ export class FormulaHelpers {
                   isSystemAdmin: boolean;
                 };
               },
-            ),
+            ) => any,
           ): void;
         `;
       }

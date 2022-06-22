@@ -68,7 +68,7 @@ export class MonacoEditorComponent implements AfterViewInit, OnChanges, OnDestro
       this.monacoInstance?.setTooltips(this.tooltips);
     }
     if (changes.javascriptTypings != null) {
-      this.monacoInstance?.setJavascriptTypings(this.javascriptTypings, this.filename);
+      this.monacoInstance?.setJavascriptTypings(this.javascriptTypings);
     }
     if (changes.javascriptDiagnostics != null) {
       this.monacoInstance?.setJavascriptDiagnostics(this.javascriptDiagnostics);
@@ -91,7 +91,7 @@ export class MonacoEditorComponent implements AfterViewInit, OnChanges, OnDestro
 
     this.monacoInstance.setJsonSchema(this.jsonSchema);
     this.monacoInstance.setJsonComments(this.jsonComments);
-    this.monacoInstance.setJavascriptTypings(this.javascriptTypings, this.filename);
+    this.monacoInstance.setJavascriptTypings(this.javascriptTypings);
     this.monacoInstance.setJavascriptDiagnostics(this.javascriptDiagnostics);
 
     this.monacoInstance.onValueChange(value => {
