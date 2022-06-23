@@ -120,7 +120,7 @@ export class MonacoInstance {
     this.monaco.languages.json.jsonDefaults.setDiagnosticsOptions(jsonDiagnostics);
   }
 
-  setJavascriptDiagnostics(options: Monaco.languages.typescript.DiagnosticsOptions): void {
+  setJsDiagnostics(options: Monaco.languages.typescript.DiagnosticsOptions): void {
     if (!options) { return; }
 
     const javascriptDiagnostics: Monaco.languages.typescript.DiagnosticsOptions = {
@@ -130,7 +130,7 @@ export class MonacoInstance {
     this.monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions(javascriptDiagnostics);
   }
 
-  setJavascriptTypings(typings: string): void {
+  setJsTypings(typings: string): void {
     if (!typings) {
       this.jsTypingsLib?.dispose();
       return;

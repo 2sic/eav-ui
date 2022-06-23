@@ -64,7 +64,7 @@
         <mat-label class="label">Function</mat-label>
 
         <app-monaco-editor class="editor" [filename]="filename" [value]="data.formula?.source ?? placeholder"
-          [javascriptTypings]="data.typings" (valueChanged)="formulaChanged($event)" [options]="monacoOptions"
+          [jsTypings]="data.typings" (valueChanged)="formulaChanged($event)" [options]="monacoOptions"
           (focused)="onFocused()" (blurred)="onBlurred()">
         </app-monaco-editor>
       </div>

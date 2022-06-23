@@ -4,6 +4,7 @@ import { JsonSchema } from '.';
 import { Snippet } from '../code-editor/models/snippet.model';
 import { Tooltip } from '../code-editor/models/tooltip.model';
 import { EavWindow } from '../shared/models/eav-window.model';
+import { nameof } from '../shared/typescript-helpers';
 import { MonacoInstance } from './monaco-instance';
 
 declare const window: EavWindow;
@@ -22,14 +23,14 @@ export class MonacoEditorComponent implements AfterViewInit, OnChanges, OnDestro
   @Input() options?: Monaco.editor.IStandaloneEditorConstructionOptions;
   @Input() jsonSchema?: JsonSchema;
   @Input() jsonComments?: Monaco.languages.json.SeverityLevel;
-  @Input() javascriptTypings?: string;
-  @Input() javascriptDiagnostics?: Monaco.languages.typescript.DiagnosticsOptions;
+  @Input() jsTypings?: string;
+  @Input() jsDiagnostics?: Monaco.languages.typescript.DiagnosticsOptions;
   @Input() autoFocus = false;
   @Output() private valueChanged = new EventEmitter<string>();
   @Output() private focused = new EventEmitter<undefined>();
   @Output() private blurred = new EventEmitter<undefined>();
 
-  private monaco: typeof Monaco;
+  private monaco?: typeof Monaco;
   private monacoInstance?: MonacoInstance;
 
   constructor() { }
@@ -48,30 +49,30 @@ export class MonacoEditorComponent implements AfterViewInit, OnChanges, OnDestro
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.filename != null && this.monacoInstance != null) {
+    if (changes[nameof<MonacoEditorComponent>('filename')] != null && this.monacoInstance != null) {
       this.monacoInstance.destroy();
       this.createEditor(true);
     }
-    if (changes.value != null) {
+    if (changes[nameof<MonacoEditorComponent>('value')] != null) {
       this.monacoInstance?.updateValue(this.value);
     }
-    if (changes.jsonSchema != null) {
+    if (changes[nameof<MonacoEditorComponent>('jsonSchema')] != null) {
       this.monacoInstance?.setJsonSchema(this.jsonSchema);
     }
-    if (changes.jsonComments != null) {
+    if (changes[nameof<MonacoEditorComponent>('jsonComments')] != null) {
       this.monacoInstance?.setJsonComments(this.jsonComments);
     }
-    if (changes.snippets != null) {
+    if (changes[nameof<MonacoEditorComponent>('snippets')] != null) {
       this.monacoInstance?.setSnippets(this.snippets);
     }
-    if (changes.tooltips != null) {
+    if (changes[nameof<MonacoEditorComponent>('tooltips')] != null) {
       this.monacoInstance?.setTooltips(this.tooltips);
     }
-    if (changes.javascriptTypings != null) {
-      this.monacoInstance?.setJavascriptTypings(this.javascriptTypings);
+    if (changes[nameof<MonacoEditorComponent>('jsTypings')] != null) {
+      this.monacoInstance?.setJsTypings(this.jsTypings);
     }
-    if (changes.javascriptDiagnostics != null) {
-      this.monacoInstance?.setJavascriptDiagnostics(this.javascriptDiagnostics);
+    if (changes[nameof<MonacoEditorComponent>('jsDiagnostics')] != null) {
+      this.monacoInstance?.setJsDiagnostics(this.jsDiagnostics);
     }
   }
 
@@ -91,8 +92,8 @@ export class MonacoEditorComponent implements AfterViewInit, OnChanges, OnDestro
 
     this.monacoInstance.setJsonSchema(this.jsonSchema);
     this.monacoInstance.setJsonComments(this.jsonComments);
-    this.monacoInstance.setJavascriptTypings(this.javascriptTypings);
-    this.monacoInstance.setJavascriptDiagnostics(this.javascriptDiagnostics);
+    this.monacoInstance.setJsTypings(this.jsTypings);
+    this.monacoInstance.setJsDiagnostics(this.jsDiagnostics);
 
     this.monacoInstance.onValueChange(value => {
       this.valueChanged.emit(value);
