@@ -19,8 +19,27 @@ export class FormulaHelpers {
     if (!formula) { return formula; }
 
     let cleanFormula = formula.trim();
-    if (!cleanFormula.startsWith(requiredFormulaPrefix)) {
-      cleanFormula = requiredFormulaPrefix + cleanFormula;
+    /*
+      Valid function string:
+      function NAME (...ARGS) { BODY }
+
+      Must build function string for these inputs:
+      v1 (...ARGS) { BODY }
+      function v1 (...ARGS) { BODY }
+      v2((...ARGS) => { BODY });
+
+      Everything else is ignored.
+      TODO: do this properly with regex if it's not too slow
+    */
+
+    if (cleanFormula.startsWith('v1 ')) {
+      cleanFormula = `${requiredFormulaPrefix}${cleanFormula}`;
+    } else if (cleanFormula.startsWith(`${requiredFormulaPrefix}v1 `)) {
+      cleanFormula = cleanFormula;
+    } else if (cleanFormula.startsWith('v2(')) {
+      cleanFormula = cleanFormula.substring(3, cleanFormula.lastIndexOf('}') + 1);
+      cleanFormula = cleanFormula.replace('=>', '');
+      cleanFormula = `${requiredFormulaPrefix}v2 ${cleanFormula}`;
     }
     return cleanFormula;
   }
@@ -28,28 +47,15 @@ export class FormulaHelpers {
   static findFormulaVersion(formula: string): FormulaVersion {
     const cleanFormula = this.cleanFormula(formula);
     const versionPart = cleanFormula.substring(requiredFormulaPrefix.length, cleanFormula.indexOf('(')).trim();
+    const validVersions = Object.values(FormulaVersions);
 
-    switch (versionPart) {
-      case FormulaVersions.V1:
-        return FormulaVersions.V1;
-      default:
-        return;
-    }
+    return (validVersions).includes(versionPart as FormulaVersion)
+      ? versionPart as FormulaVersion
+      : undefined;
   }
 
   static buildFormulaFunction(formula: string): FormulaFunction {
-    const version = this.findFormulaVersion(formula);
-    let cleanFormula = this.cleanFormula(formula);
-
-    // do any cleanup required for formula to be built properly
-    switch (version) {
-      case FormulaVersions.V1:
-        cleanFormula = cleanFormula;
-        break;
-      default:
-        break;
-    }
-
+    const cleanFormula = this.cleanFormula(formula);
     const fn: FormulaFunction = new Function(`return ${cleanFormula}`)();
     return fn;
   }
@@ -75,6 +81,7 @@ export class FormulaHelpers {
 
     switch (formula.version) {
       case FormulaVersions.V1:
+      case FormulaVersions.V2:
         const data: FormulaV1Data = {
           ...formValues,
           get default() { return undefined as FieldValue; },
@@ -284,6 +291,69 @@ export class FormulaHelpers {
           return fieldSnippet;
         });
         return snippets;
+      default:
+        return;
+    }
+  }
+
+  static buildFormulaTypings(formula: FormulaCacheItem, fieldOptions: FieldOption[], itemHeader: EavHeader): string {
+    switch (formula.version) {
+      case FormulaVersions.V2: {
+        const formulaPropsParameters = this.buildFormulaPropsParameters(itemHeader);
+        return `
+          declare type function v2(
+            callback: (
+              data: {
+                value: any;
+                default: any;
+                prefill: any;
+                initial: any;
+                ${fieldOptions.map(f => `${f.fieldName}: any;`).join('\n')}
+                parameters: {
+                  ${Object.keys(formulaPropsParameters ?? {}).map(key => `${key}: any;`).join('\n')}
+                };
+              },
+              context: {
+                app: {
+                  appId: number;
+                  zoneId: number;
+                  isGlobal: boolean;
+                  isSite: boolean;
+                  isContent: boolean;
+                };
+                cache: Record<string, any>;
+                culture: {
+                  code: string;
+                  name: string;
+                };
+                debug: boolean;
+                features: {
+                  get(nameId: string): Record<string, any>;
+                  isEnabled(nameId: string): boolean;
+                };
+                form: {
+                  runFormulas(): void;
+                };
+                sxc: Record<string, any>;
+                target: {
+                  entity: {
+                    id: number;
+                    guid: string;
+                  };
+                  name: string;
+                  type: string;
+                };
+                user: {
+                  id: number;
+                  isAnonymous: boolean;
+                  isSiteAdmin: boolean;
+                  isSystemAdmin: boolean;
+                };
+              },
+            ) => any,
+          ): void;
+        `;
+      }
       default:
         return;
     }

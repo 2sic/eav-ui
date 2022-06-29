@@ -29,6 +29,7 @@ export type FormulaFunctionV1 = (data: FormulaV1Data, context: FormulaV1Context,
 
 export const FormulaVersions = {
   V1: 'v1',
+  V2: 'v2',
 } as const;
 
 export type FormulaVersion = typeof FormulaVersions[keyof typeof FormulaVersions];
