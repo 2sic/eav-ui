@@ -9,6 +9,7 @@ export interface FormulaDesignerTemplateVars {
   designer: DesignerState;
   dataSnippets: DesignerSnippet[];
   contextSnippets: DesignerSnippet[];
+  typings: string;
   result: FieldValue;
   resultExists: boolean;
   resultIsError: boolean;

@@ -11,6 +11,7 @@ export class MonacoInstance {
   /** Editor instance configuration */
   private editorInstance: Monaco.editor.IStandaloneCodeEditor;
   private completionItemProviders: Monaco.IDisposable[];
+  private jsTypingsLib?: Monaco.IDisposable;
   private resizeObserver: ResizeObserver;
   private globalCache: Monaco2sxc;
   private cachedValue: string;
@@ -21,7 +22,7 @@ export class MonacoInstance {
   constructor(
     /** Global Monaco configuration */
     private monaco: typeof Monaco,
-    filename: string,
+    private filename: string,
     value: string,
     container: HTMLElement,
     options: Monaco.editor.IStandaloneEditorConstructionOptions,
@@ -42,6 +43,7 @@ export class MonacoInstance {
     this.saveState(this.globalCache, this.editorInstance);
     this.resizeObserver.disconnect();
     this.completionItemProviders.forEach(completionItemProvider => completionItemProvider.dispose());
+    this.jsTypingsLib?.dispose();
     this.editorInstance.getModel().dispose();
     this.editorInstance.dispose();
   }
@@ -118,7 +120,7 @@ export class MonacoInstance {
     this.monaco.languages.json.jsonDefaults.setDiagnosticsOptions(jsonDiagnostics);
   }
 
-  setJavascriptDiagnostics(options: Monaco.languages.typescript.DiagnosticsOptions): void {
+  setJsDiagnostics(options: Monaco.languages.typescript.DiagnosticsOptions): void {
     if (!options) { return; }
 
     const javascriptDiagnostics: Monaco.languages.typescript.DiagnosticsOptions = {
@@ -126,6 +128,14 @@ export class MonacoInstance {
       ...options,
     };
     this.monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions(javascriptDiagnostics);
+  }
+
+  setJsTypings(typings: string): void {
+    if (!typings) {
+      this.jsTypingsLib?.dispose();
+      return;
+    }
+    this.jsTypingsLib = this.monaco.languages.typescript.javascriptDefaults.addExtraLib(typings, `js-typings-${this.filename}`);
   }
 
   private createGlobalCache(monaco: typeof Monaco & { _2sxc?: Monaco2sxc }): Monaco2sxc {
