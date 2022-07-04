@@ -12,7 +12,7 @@
       </div>
     </div>
 
-    <button #noteTrigger mat-icon-button class="note {{ data.noteProps.triggerClass }}" [disabled]="data.readOnly"
+    <button type="button" #noteTrigger mat-icon-button class="note {{ data.noteProps.triggerClass }}" [disabled]="data.readOnly"
       [tippy]="data.noteProps.tooltip | translate" [tippyDisabled]="data.readOnly || !data.noteProps.tooltip"
       [disableRipple]="data.noteProps.itemNotSaved"
       (pointerenter)="data.noteProps.note ? toggleNote($event, true) : null"
@@ -49,7 +49,7 @@
       <mat-icon>local_offer</mat-icon>
     </div>
 
-    <button mat-icon-button [tippy]="'Form.Buttons.History.Tip' | translate" *ngIf="eavService.eavConfig.enableHistory"
+    <button type="button" mat-icon-button [tippy]="'Form.Buttons.History.Tip' | translate" *ngIf="eavService.eavConfig.enableHistory"
       [disabled]="data.readOnly" (click)="openHistory()">
       <mat-icon>history</mat-icon>
     </button>
