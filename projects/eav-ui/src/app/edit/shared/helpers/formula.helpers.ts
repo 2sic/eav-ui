@@ -4,7 +4,7 @@ import { Feature } from '../../../apps-management/models/feature.model';
 import { InputType } from '../../../content-type-fields/models/input-type.model';
 import { EavWindow } from '../../../shared/models/eav-window.model';
 import { DesignerSnippet, FieldOption } from '../../dialog/footer/formula-designer/formula-designer.models';
-import { requiredFormulaPrefix } from '../constants';
+import { formV1Prefix, requiredFormulaPrefix } from '../constants';
 // tslint:disable-next-line:max-line-length
 import { FormulaCacheItem, FormulaFieldValidation, FormulaFunction, FormulaProps, FormulaPropsV1, FormulaTargets, FormulaV1Data, FormulaV1ExperimentalEntity, FormulaVersion, FormulaVersions, FormValues, Language, SettingsFormulaPrefix } from '../models';
 import { EavHeader } from '../models/eav';
@@ -32,9 +32,9 @@ export class FormulaHelpers {
       TODO: do this properly with regex if it's not too slow
     */
 
-    if (cleanFormula.startsWith('v1 ')) {
+    if (cleanFormula.startsWith(formV1Prefix)) {
       cleanFormula = `${requiredFormulaPrefix}${cleanFormula}`;
-    } else if (cleanFormula.startsWith(`${requiredFormulaPrefix}v1 `)) {
+    } else if (cleanFormula.startsWith(`${requiredFormulaPrefix}${formV1Prefix}`)) {
       cleanFormula = cleanFormula;
     } else if (cleanFormula.startsWith('v2(')) {
       cleanFormula = cleanFormula.substring(3, cleanFormula.lastIndexOf('}') + 1);
