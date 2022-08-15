@@ -180,9 +180,21 @@ export class EditInitializerService implements OnDestroy {
             defaultLanguage,
             BestValueModes.Strict,
           );
+
           if (InputFieldHelpers.isValueEmpty(defaultLanguageValue, this.eavService)) {
-            this.itemService.setDefaultValue(item, ctAttribute, inputType, fieldSettings, languages, defaultLanguage);
-            switchToDefault = true;
+            const valUsed = this.itemService.setDefaultValue(item, ctAttribute, inputType, fieldSettings, languages, defaultLanguage);
+
+            // 2022-08-15 2dm added this
+            // If we run into more problems (like required date-fields which result in null)
+            // we may have to update the logic to use FieldLogicBase and add rules for each type what would be valid
+            // or test for IsRequired as well
+
+            // If the primary language isn't ready, enforce switch-to-default
+            // Skif this for ephemeral fields as they never load with content
+            // Also switch for fields which use null as default (like boolean-tristate) as this kind of "empty" is valid
+            if (valUsed != null && !fieldSettings.IsEphemeral) {
+              switchToDefault = true;
+            }
           }
         }
       }

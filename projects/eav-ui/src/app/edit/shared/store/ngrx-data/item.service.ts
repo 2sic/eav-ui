@@ -260,7 +260,7 @@ export class ItemService extends BaseDataService<EavItem> {
     settings: FieldSettings,
     languages: Language[],
     defaultLanguage: string,
-  ): void {
+  ): FieldValue {
     const defaultValue = InputFieldHelpers.parseDefaultValue(ctAttribute.Name, inputType, settings, item.Header);
 
     const defaultLanguageValue = LocalizationHelpers.getBestValue(
@@ -283,5 +283,8 @@ export class ItemService extends BaseDataService<EavItem> {
         this.updateItemAttributeValue(item.Entity.Guid, ctAttribute.Name, defaultValue, defaultLanguage, defaultLanguage, false);
       }
     }
+
+    // return what was used, so it can be checked on form-init
+    return defaultValue;
   }
 }
