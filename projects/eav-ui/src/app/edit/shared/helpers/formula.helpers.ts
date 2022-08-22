@@ -138,16 +138,18 @@ export class FormulaHelpers {
             },
           },
         });
+
         const propsV1: FormulaPropsV1 = {
           data,
           context: {
-            app: {
-              appId: parseInt(eavService.eavConfig.appId, 10),
-              zoneId: parseInt(eavService.eavConfig.zoneId, 10),
-              isGlobal: eavService.eavConfig.dialogContext.App.IsGlobalApp,
-              isSite: eavService.eavConfig.dialogContext.App.IsSiteApp,
-              isContent: eavService.eavConfig.dialogContext.App.IsContentApp,
-            },
+            app: formula.app,
+            // {
+            //   appId: parseInt(eavService.eavConfig.appId, 10),
+            //   zoneId: parseInt(eavService.eavConfig.zoneId, 10),
+            //   isGlobal: eavService.eavConfig.dialogContext.App.IsGlobalApp,
+            //   isSite: eavService.eavConfig.dialogContext.App.IsSiteApp,
+            //   isContent: eavService.eavConfig.dialogContext.App.IsContentApp,
+            // },
             cache: formula.cache,
             culture: {
               code: currentLanguage,
@@ -175,10 +177,13 @@ export class FormulaHelpers {
               _ignoreHeaders: true,
             } as any),
             target: {
-              entity: {
-                guid: formula.entityGuid,
-                id: entityId,
-              },
+              entity: formula.targetEntity,
+              // {
+              //   guid: formula.entityGuid,
+              //   id: entityId,
+              //   type: {
+              //   },
+              // },
               name: formula.target === FormulaTargets.Value || formula.target === FormulaTargets.Validation
                 ? formula.fieldName
                 : formula.target.substring(formula.target.lastIndexOf('.') + 1),
@@ -186,12 +191,13 @@ export class FormulaHelpers {
                 ? formula.target
                 : formula.target.substring(0, formula.target.lastIndexOf('.')),
             },
-            user: {
-              id: eavService.eavConfig.dialogContext.User?.Id,
-              isAnonymous: eavService.eavConfig.dialogContext.User?.IsAnonymous,
-              isSiteAdmin: eavService.eavConfig.dialogContext.User?.IsSiteAdmin,
-              isSystemAdmin: eavService.eavConfig.dialogContext.User?.IsSystemAdmin,
-            },
+            user: formula.user,
+            // {
+            //   id: eavService.eavConfig.dialogContext.User?.Id,
+            //   isAnonymous: eavService.eavConfig.dialogContext.User?.IsAnonymous,
+            //   isSiteAdmin: eavService.eavConfig.dialogContext.User?.IsSiteAdmin,
+            //   isSystemAdmin: eavService.eavConfig.dialogContext.User?.IsSystemAdmin,
+            // },
           },
           experimental: {
             getEntities(): FormulaV1ExperimentalEntity[] {
@@ -200,7 +206,8 @@ export class FormulaHelpers {
                   guid: item.Entity.Guid,
                   id: item.Entity.Id,
                   type: {
-                    id: item.Entity.Type.Id,
+                    id: item.Entity.Type.Id,  // TODO: deprecate again, once we know it's not in use #cleanFormulaType
+                    guid: item.Entity.Type.Id,
                     name: item.Entity.Type.Name,
                   }
                 };
@@ -353,6 +360,7 @@ export class FormulaHelpers {
             ) => any,
           ): void;
         `;
+        // TODO: probably update the entity-type info which was added in v14.07.05
       }
       default:
         return;

@@ -4,8 +4,10 @@ import { BehaviorSubject, distinctUntilChanged, map, Observable } from 'rxjs';
 import { EavService, LoggingService } from '.';
 import { FieldSettings, FieldValue } from '../../../../../../edit-types';
 import { FieldsSettingsHelpers, FormulaHelpers, GeneralHelpers, InputFieldHelpers, LocalizationHelpers } from '../helpers';
-import { DesignerState, FormulaCacheItem, FormulaFunction, FormulaResult, FormulaTarget, LogSeverities } from '../models';
+import { DesignerState, FormulaCacheItem, FormulaFunction, FormulaResult, FormulaTarget, FormulaV1CtxTargetEntity, LogSeverities } from '../models';
+import { EavItem } from '../models/eav/eav-item';
 import { ContentTypeItemService, ContentTypeService, ItemService, LanguageInstanceService } from '../store/ngrx-data';
+import { FormulaV1CtxUser } from '../models/formula.models';
 
 @Injectable()
 export class FormulaDesignerService implements OnDestroy {
@@ -107,6 +109,9 @@ export class FormulaDesignerService implements OnDestroy {
     const oldFormulaIndex = oldFormulaCache.findIndex(f => f.entityGuid === entityGuid && f.fieldName === fieldName && f.target === target);
     const oldFormulaItem = oldFormulaCache[oldFormulaIndex];
 
+    // Get shared calculated properties, which we need in case the old-formula doesn't have them yet
+    const shared = this.buildItemFormulaCacheParts(null, entityGuid);
+
     const newFormulaItem: FormulaCacheItem = {
       cache: oldFormulaItem?.cache ?? {},
       entityGuid,
@@ -119,6 +124,9 @@ export class FormulaDesignerService implements OnDestroy {
       sourceId: oldFormulaItem?.sourceId,
       target,
       version: FormulaHelpers.findFormulaVersion(formula),
+      targetEntity: oldFormulaItem?.targetEntity ?? shared.targetEntity, // new 14.07.05
+      user: oldFormulaItem?.user ?? shared.user, // new 14.07.05
+      app: oldFormulaItem?.app ?? shared.app,    // new in v14.07.05
     };
 
     const newCache = oldFormulaIndex >= 0
@@ -208,6 +216,39 @@ export class FormulaDesignerService implements OnDestroy {
     return this.designerState$.pipe(distinctUntilChanged(GeneralHelpers.objectsEqual));
   }
 
+  private buildItemFormulaCacheParts(item: EavItem, entityGuid: string): Pick<FormulaCacheItem, 'targetEntity' | 'user' | 'app' > {
+    item = item ?? this.itemService.getItem(entityGuid);
+    const targetEntity: FormulaV1CtxTargetEntity = {
+      guid: item.Entity.Guid,
+      id: item.Entity.Id,
+      type: {
+        guid: item.Entity.Type.Id,
+        name: item.Entity.Type.Name,
+        // id: -999,
+      }
+    };
+    const eavService = this.eavService;
+    const user = eavService.eavConfig.dialogContext.User;
+    const eavConfig = eavService.eavConfig;
+    return {
+      targetEntity,
+      user: {
+        id: user?.Id,
+        isAnonymous: user?.IsAnonymous,
+        isSiteAdmin: user?.IsSiteAdmin,
+        isSystemAdmin: user?.IsSystemAdmin,
+      } as FormulaV1CtxUser,
+      app: {
+        appId: parseInt(eavConfig.appId, 10),
+        zoneId: parseInt(eavConfig.zoneId, 10),
+        isGlobal: eavConfig.dialogContext.App.IsGlobalApp,
+        isSite: eavConfig.dialogContext.App.IsSiteApp,
+        isContent: eavConfig.dialogContext.App.IsContentApp,
+      },
+
+    };
+  }
+
   private buildFormulaCache(): FormulaCacheItem[] {
     const formulaCache: FormulaCacheItem[] = [];
     const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
@@ -215,6 +256,9 @@ export class FormulaDesignerService implements OnDestroy {
 
     for (const entityGuid of this.eavService.eavConfig.itemGuids) {
       const item = this.itemService.getItem(entityGuid);
+
+      const sharedParts = this.buildItemFormulaCacheParts(item, entityGuid);
+
       const contentTypeId = InputFieldHelpers.getContentTypeId(item);
       const contentType = this.contentTypeService.getContentType(contentTypeId);
       for (const attribute of contentType.Attributes) {
@@ -255,6 +299,9 @@ export class FormulaDesignerService implements OnDestroy {
             sourceId: formulaItem.Id,
             target,
             version: FormulaHelpers.findFormulaVersion(formula),
+            targetEntity: sharedParts.targetEntity, // new v14.07.05
+            user: sharedParts.user,   // new in v14.07.05
+            app: sharedParts.app,   // new in v14.07.05
           };
 
           formulaCache.push(formulaCacheItem);
