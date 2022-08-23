@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, tap } from 'rxjs';
 import { DialogContext } from '../../../app-administration/models';
-import { keyPartOfPage, keyPublishing } from '../../../shared/constants/session.constants';
+import { keyPartOfPage, keyPublishing, partOfPageDefault } from '../../../shared/constants/session.constants';
 import { Context } from '../../../shared/services/context';
 import { EavFormData, SaveEavFormData } from '../../dialog/main/edit-dialog-main.models';
 import { EavConfig, SaveResult, VersioningOptions } from '../models';
@@ -43,7 +43,7 @@ export class EavService {
       langPri: dialogContext.Language.Primary,
       langs: dialogContext.Language.List,
       moduleId: this.context.moduleId?.toString(),
-      partOfPage: sessionStorage.getItem(keyPartOfPage),
+      partOfPage: sessionStorage.getItem(keyPartOfPage) ?? partOfPageDefault,
       portalRoot: dialogContext.Site.Url,
       tabId: this.context.tabId?.toString(),
       systemRoot: window.location.pathname.split('/dist/')[0] + '/',

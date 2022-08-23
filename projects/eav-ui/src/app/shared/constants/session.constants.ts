@@ -23,3 +23,6 @@ export const keyUrl = prefix + 'url';
 export const keyIsShared = prefix + 'isshared';
 /** Contains extra options for dialogs */
 export const keyExtras = prefix + 'extras';
+
+/** Fallback value in case it is missing in url */
+export const partOfPageDefault = 'false';
