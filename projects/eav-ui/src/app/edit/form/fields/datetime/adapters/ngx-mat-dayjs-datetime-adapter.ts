@@ -164,17 +164,11 @@ export class NgxMatDayjsDatetimeAdapter extends NgxMatDateAdapter<Dayjs> {
     return this.dayJs(date).clone().locale(this.locale)
   }
 
-  createDate(year: number, month: number, date: number, hour?: number, minute?: number, second?: number): Dayjs {
+  createDate(year: number, month: number, date: number): Dayjs {
     const returnDayjs = this.dayJs()
       .set('year', year)
       .set('month', month)
       .set('date', date);
-    if (hour)
-      returnDayjs.set('hour', hour);
-    if (minute)
-      returnDayjs.set('minute', minute);
-    if (second)
-      returnDayjs.set('second', second);
     return returnDayjs;
   }
 
@@ -200,15 +194,15 @@ export class NgxMatDayjsDatetimeAdapter extends NgxMatDateAdapter<Dayjs> {
     return date.locale(this.locale).format(displayFormat);
   }
 
-  addCalendarYears(date: dayjs.Dayjs, years: number): Dayjs {
+  addCalendarYears(date: Dayjs, years: number): Dayjs {
     return date.add(years, 'year');
   }
 
-  addCalendarMonths(date: dayjs.Dayjs, months: number): Dayjs {
+  addCalendarMonths(date: Dayjs, months: number): Dayjs {
     return date.add(months, 'month');
   }
 
-  addCalendarDays(date: dayjs.Dayjs, days: number): Dayjs {
+  addCalendarDays(date: Dayjs, days: number): Dayjs {
     return date.add(days, 'day');
   }
 

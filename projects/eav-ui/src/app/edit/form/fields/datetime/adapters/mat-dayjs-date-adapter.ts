@@ -1,4 +1,4 @@
-import { Optional, Inject, InjectionToken, Injectable } from '@angular/core';
+import { Optional, Inject, Injectable } from '@angular/core';
 import { DateAdapter, MAT_DATE_LOCALE } from '@angular/material/core';
 import dayjs, { Dayjs } from 'dayjs';
 import localeData from 'dayjs/plugin/localeData';
@@ -39,8 +39,6 @@ export class MatDayjsDateAdapter extends DateAdapter<Dayjs> {
     @Optional() @Inject(MAT_DATE_LOCALE) public dateLocale: string
   ) {
     super();
-
-    // this.initializeParser(dateLocale);
 
     dayjs.extend(localizedFormat);
     dayjs.extend(customParseFormat);
@@ -154,15 +152,15 @@ export class MatDayjsDateAdapter extends DateAdapter<Dayjs> {
     return date.locale(this.locale).format(displayFormat);
   }
 
-  addCalendarYears(date: dayjs.Dayjs, years: number): Dayjs {
+  addCalendarYears(date: Dayjs, years: number): Dayjs {
     return date.add(years, 'year');
   }
 
-  addCalendarMonths(date: dayjs.Dayjs, months: number): Dayjs {
+  addCalendarMonths(date: Dayjs, months: number): Dayjs {
     return date.add(months, 'month');
   }
 
-  addCalendarDays(date: dayjs.Dayjs, days: number): Dayjs {
+  addCalendarDays(date: Dayjs, days: number): Dayjs {
     return date.add(days, 'day');
   }
 
