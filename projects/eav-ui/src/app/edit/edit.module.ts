@@ -1,5 +1,8 @@
-import { NgxMatDatetimePickerModule } from '@angular-material-components/datetime-picker';
-import { NgxMatMomentModule, NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular-material-components/moment-adapter';
+import { NgxMatDatetimePickerModule, NgxMatNativeDateModule} from '@angular-material-components/datetime-picker';
+import { MatDayjsDateAdapter } from './form/fields/datetime/adapters/mat-dayjs-date-adapter'
+import { MatDayjsDateModule, MatDayjsModule } from './form/fields/datetime/adapters/mat-dayjs-date-adapter.module'
+import { NgxMatDayjsDatetimeAdapter, NGX_MAT_DAYJS_DATETIME_ADAPTER_OPTIONS } from './form/fields/datetime/adapters/ngx-mat-dayjs-datetime-adapter'
+import { NgxMatDayjsDatetimeModule, NgxMatDayjsModule } from './form/fields/datetime/adapters/ngx-mat-dayjs-datetime-adapter.module'
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { CommonModule } from '@angular/common';
@@ -7,7 +10,6 @@ import { HttpClient } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatMomentDateModule, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -176,7 +178,10 @@ export function translateLoaderFactoryEdit(http: HttpClient): TranslateLoader {
     MatSelectModule,
     ReactiveFormsModule,
     MatDatepickerModule,
-    MatMomentDateModule,
+    MatDayjsDateModule,
+    MatDayjsModule,
+    NgxMatDayjsDatetimeModule,
+    NgxMatDayjsModule,
     MatCardModule,
     MatIconModule,
     MatMenuModule,
@@ -193,7 +198,6 @@ export function translateLoaderFactoryEdit(http: HttpClient): TranslateLoader {
     MatListModule,
     MatProgressSpinnerModule,
     NgxMatDatetimePickerModule,
-    NgxMatMomentModule,
     MatRippleModule,
     ScrollingModule,
     MonacoEditorModule,
@@ -206,8 +210,9 @@ export function translateLoaderFactoryEdit(http: HttpClient): TranslateLoader {
     AdamService,
     EntityService,
     QueryService,
-    { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } },
-    { provide: NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } },
+    MatDayjsDateAdapter,
+    NgxMatDayjsDatetimeAdapter,
+    { provide: NGX_MAT_DAYJS_DATETIME_ADAPTER_OPTIONS, useValue: { useUtc: true } },
     LoadIconsService,
     SourceService,
     ScriptsLoaderService,
