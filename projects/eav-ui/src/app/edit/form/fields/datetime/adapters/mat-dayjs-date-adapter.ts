@@ -1,6 +1,7 @@
 import { Optional, Inject, Injectable } from '@angular/core';
 import { DateAdapter, MAT_DATE_LOCALE } from '@angular/material/core';
 import dayjs, { Dayjs } from 'dayjs';
+import utc from 'dayjs/plugin/utc';
 import localeData from 'dayjs/plugin/localeData';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
@@ -40,6 +41,7 @@ export class MatDayjsDateAdapter extends DateAdapter<Dayjs> {
   ) {
     super();
 
+    dayjs.extend(utc);
     dayjs.extend(localizedFormat);
     dayjs.extend(customParseFormat);
     dayjs.extend(localeData);
@@ -126,7 +128,11 @@ export class MatDayjsDateAdapter extends DateAdapter<Dayjs> {
     const returnDayjs = this.dayJs()
       .set('year', year)
       .set('month', month)
-      .set('date', date);
+      .set('date', date)
+      .set('hour', 0)
+      .set('minute', 0)
+      .set('second', 0)
+      .set('millisecond', 0);
     return returnDayjs;
   }
 
@@ -213,6 +219,6 @@ export class MatDayjsDateAdapter extends DateAdapter<Dayjs> {
   }
 
   private dayJs(input?: string | number | Date | Dayjs | null | undefined, format?: string, locale?: string): Dayjs {
-    return dayjs(input, { format, locale }, locale);
+    return dayjs(input, { format, locale }, locale).utc();
   }
 }
