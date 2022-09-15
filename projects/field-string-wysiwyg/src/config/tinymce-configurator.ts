@@ -61,13 +61,21 @@ export class TinyMceConfigurator {
       console.error(`Dropzone or ADAM Config not available, some things won't work`);
     }
 
+    // 2022-08-12 2dm
+    // The setting can be an empty string, in which case tinyMCE assumes it's the file name of a stylesheet
+    // and tries to load the current folder as a stylesheet
+    // This is useless and causes problems in DNN, because it results in logging out the user
+    // See https://github.com/2sic/2sxc/issues/2829
+    let contentCssFile = connector.field.settings?.ContentCss;
+    if (!contentCssFile) contentCssFile = null;
+
     const options: RawEditorSettings = {
       ...DefaultOptions,
       ...{ plugins: [...DefaultPlugins] },
       selector: `.${containerClass}`,
       fixed_toolbar_container: `.${fixedToolbarClass}`,
       content_style: contentStyle.default,
-      content_css: connector.field.settings?.ContentCss,
+      content_css: contentCssFile,
       setup,
       ...toolbarModes,
       ...TinyMceTranslations.getLanguageOptions(this.language),

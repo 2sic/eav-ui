@@ -33,32 +33,11 @@ export class Context {
   }
   private _appId: number;
 
-  // #reduceEnvVars
-  // This seems unused as of 2022-06-16
-  // /**
-  //  * The request verification token for http requests.
-  //  * It's only loaded from the root, never from sub-contexts
-  //  */
-  // get requestToken(): string { return window.$2sxc.env.rvt(); }
-  // // return this._rvt || (this._rvt = this.parent?.requestToken); }
-  // // private _rvt: string;
 
-  // #reduceEnvVars
-  // This seems unused as of 2022-06-16
-  // /**
-  //  * The request verification token for http requests uses different names in Dnn and different versions of Oqtane.
-  //  */
-  // get requestTokenHeaderName(): string { return (window.$2sxc.env as any).rvtHeader(); }
-  // // return this._rvtHeaderName || (this._rvtHeaderName = this.parent?.requestTokenHeaderName); }
-  // // private _rvtHeaderName: string;
-
-  // #reduceEnvVars
   /** Tab Id is global */
   get tabId(): number {
     return window.$2sxc.env.page();
-    // return this._tabId || (this._tabId = this.routeNum(keyTabId) || this.parent?.tabId);
   }
-  // private _tabId: number;
 
   /** Content Block Id is global */
   get contentBlockId(): number {
@@ -93,16 +72,12 @@ export class Context {
   }
 
   initRoot() {
-    // this._rvt = sessionStorage.getItem(keyRequestToken);
-    // this._rvtHeaderName = sessionStorage.getItem(keyRequestTokenHeaderName);
     this._zoneId = this.sessionNumber(keyZoneId);
-    // this._tabId = this.sessionNumber(keyTabId);
     this._contentBlockId = this.sessionNumber(keyContentBlockId);
     this._moduleId = this.sessionNumber(keyModuleId);
     this._appId = this.sessionNumber(keyAppId);
 
-    // #reduceEnvVars
-    if (/*!this._rvt ||*/ !this._zoneId) {
+    if (!this._zoneId) {
       throw new Error('Context is missing some of the required parameters');
     }
 
@@ -143,10 +118,6 @@ export class Context {
   private clearCachedValues() {
     this._zoneId = null;
     this._appId = null;
-    // #reduceEnvVars
-    // this._rvt = null;
-    // this._rvtHeaderName = null;
-    // this._tabId = null;
     this._contentBlockId = null;
     this._moduleId = null;
   }

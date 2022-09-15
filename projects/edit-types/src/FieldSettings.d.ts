@@ -22,6 +22,8 @@ interface All {
   ValidationRegExJavaScript: string;
   Formulas: string[];
   CustomJavaScript: string;
+  /** Determines if this field really exists or not */
+  IsEphemeral: boolean;
 }
 
 /**

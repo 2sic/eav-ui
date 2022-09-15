@@ -77,6 +77,7 @@ export class DropzoneWrapperComponent extends BaseComponent implements FieldWrap
 
   onUploadError(event: DropzoneType) {
     consoleLogAngular('Dropzone upload error. Event:', event);
+    alert(`Dropzone upload error. Event ${event}`);
     this.dropzoneRef.reset();
   }
 
@@ -91,6 +92,7 @@ export class DropzoneWrapperComponent extends BaseComponent implements FieldWrap
       }
     } else {
       consoleLogAngular(`Upload failed because: ${response.Error}`);
+      alert(`Upload failed because: ${response.Error}`);
     }
     this.dropzoneRef.reset();
   }

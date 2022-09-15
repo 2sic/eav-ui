@@ -76,15 +76,9 @@ export class DialogService {
     const hashParams: DialogHashParams = {
       ...this.buildHashParam(keyZoneId, this.context.zoneId.toString()),
       ...this.buildHashParam(keyAppId, this.context.appId.toString()),
-      // #reduceEnvVars
-      // ...this.buildHashParam(keyTabId, this.context.tabId?.toString()),
       ...this.buildHashParam(keyModuleId, this.context.moduleId?.toString()),
       ...this.buildHashParam(keyContentBlockId, this.context.contentBlockId?.toString()),
       ...this.buildHashParam(keyPartOfPage),
-      // #reduceEnvVars
-      // ...this.buildHashParam(keyRequestToken),
-      // ...this.buildHashParam(keyRequestTokenHeaderName),
-      // ...this.buildHashParam(keyApi),
       ...(sessionStorage.getItem(keyDebug) ? this.buildHashParam(keyDebug) : {}),
     };
     return hashParams;

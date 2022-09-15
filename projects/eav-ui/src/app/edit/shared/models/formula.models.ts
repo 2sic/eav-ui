@@ -19,6 +19,12 @@ export interface FormulaCacheItem {
   sourceId: number;
   target: FormulaTarget;
   version: FormulaVersion;
+  /** Target information which stays the same across cycles, new cached in 14.07.05 */
+  targetEntity: FormulaV1CtxTargetEntity;
+  /** User which stays the same across cycles, new cached in 14.07.05 */
+  user: FormulaV1CtxUser;
+  /** App which stays the same across cycles, new cached in 14.07.05 */
+  app: FormulaV1CtxApp;
 }
 
 export type FormulaFunction = FormulaFunctionDefault | FormulaFunctionV1;
@@ -113,8 +119,16 @@ export interface FormulaV1CtxTarget {
 export interface FormulaV1CtxTargetEntity {
   guid: string;
   id: number;
+  type?: FormulaV1CtxTargetEntityType;
 }
 
+// WIP
+interface FormulaV1CtxTargetEntityType {
+  guid: string;
+  name: string;
+  // Future: the int-id; ATM not available
+  id?: number;
+}
 export interface FormulaV1CtxUser {
   id: number;
   isAnonymous: boolean;
@@ -128,12 +142,14 @@ export interface FormulaV1Experimental {
   getValues(entityGuid: string): FormValues;
 }
 
+// TODO: once the id is gone, merge with the type FormulaV1CtxTargetEntityType
 export interface FormulaV1ExperimentalEntity {
   guid: string;
   id: number;
   type: {
-    id: string,
-    name: string
+    id: string, // TODO: deprecate again, once we know it's not in use #cleanFormulaType
+    name: string,
+    guid: string,
   };
 }
 

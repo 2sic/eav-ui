@@ -108,25 +108,5 @@ export function paramsInitFactory(injector: Injector): () => void {
     } else {
       console.log('Initial route:', sessionStorage.getItem(keyUrl));
     }
-
-    // #reduceEnvVars
-    // 2022-06-05 not necessary any more
-    // loadEnvironment();
   };
 }
-
-// function loadEnvironment() {
-//   // #reduceEnvVars
-//   // 2022-06-16 2dm - trying to switch to the new setup where the parameters are already loaded
-//   // so we should be able to just disable this for now
-//   console.log('2dm - env:', (window.$2sxc.env as any).header);
-
-//   const jsInfo: Partial<JsInfo> & { rvtHeader: string } = {
-//     page: parseInt(sessionStorage.getItem(keyTabId), 10),
-//     rvt: sessionStorage.getItem(keyRequestToken),
-//     rvtHeader: sessionStorage.getItem(keyRequestTokenHeaderName),
-//     api: sessionStorage.getItem(keyApi),
-//   };
-//   console.log('2dm - jsInfo:', jsInfo);
-//   window.$2sxc.env.load(jsInfo as JsInfo);
-// }
