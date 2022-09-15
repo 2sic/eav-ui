@@ -4,7 +4,7 @@
 
 <router-outlet></router-outlet>
 
-<div class="dialog-component-content fancy-scrollbar-light" *ngIf="(templateVars$ | async) as data">
+<div class="dialog-component-content fancy-scrollbar-light" cdkScrollable *ngIf="(templateVars$ | async) as data">
   <ng-container *ngIf="data.header">
     <p class="dialog-description">
       You can manage the list header here (if it is defined):
