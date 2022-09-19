@@ -8,7 +8,8 @@ export function convertFormToUrl(form: EditForm) {
   for (const item of form.items) {
     if (formUrl) { formUrl += ','; }
 
-    if ((item as InnerItem).Parent) {
+    // 2022-09-19 2dm - WIP, part of #cleanUpDuplicateGroupHeaders - had to temporarily also condition !...Group
+    if ((item as InnerItem).Parent && !(item as GroupItem).Group) {
       // Inner Item
       const innerItem = item as InnerItem;
       formUrl += 'inner:' + innerItem.EntityId + ':' + innerItem.Field
@@ -68,7 +69,11 @@ export function convertFormToUrl(form: EditForm) {
     } else if ((item as GroupItem).Group) {
       // Group Item
       const groupItem = item as GroupItem;
-      formUrl += 'group:' + groupItem.Group.Guid + ':' + groupItem.Group.Index + ':' + groupItem.Group.Part + ':' + groupItem.Group.Add;
+      // 2022-09-19 2dm - WIP, part of #cleanUpDuplicateGroupHeaders
+      formUrl += 'group:' + (groupItem.Parent || groupItem.Group.Guid)
+        + ':' + groupItem.Index /*.Group.Index */
+        + ':' + (groupItem.Field ?? groupItem.Group.Part)
+        + ':' + (groupItem.Add); // ?? groupItem.Group.Add);
       if (groupItem.Prefill) {
         for (const [key, prefill] of Object.entries(groupItem.Prefill)) {
           if (prefill == null) { continue; }
@@ -168,10 +173,15 @@ export function convertUrlToForm(formUrl: string) {
           const groupParams = option.split(':');
           groupItem.Group = {
             Guid: groupParams[1],
-            Index: parseInt(groupParams[2], 10),
+            // Index: parseInt(groupParams[2], 10),
             Part: groupParams[3],
-            Add: groupParams[4] === 'true',
+            // Add: groupParams[4] === 'true',
           };
+          // 2022-09-19 2dm - WIP, part of #cleanUpDuplicateGroupHeaders
+          groupItem.Add = groupParams[4] === 'true';
+          groupItem.Index = parseInt(groupParams[2], 10);
+          groupItem.Parent = groupParams[1];
+          groupItem.Field = groupParams[3];
         } else if (option.startsWith('prefill:')) {
           // Group Item Prefill
           if (groupItem.Prefill == null) {

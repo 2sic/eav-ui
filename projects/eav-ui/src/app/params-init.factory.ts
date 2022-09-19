@@ -81,18 +81,20 @@ export function paramsInitFactory(injector: Injector): () => void {
           break;
         case DialogTypeConstants.Replace:
           const replaceItems: GroupItem[] = JSON.parse(items);
-          const rGuid = replaceItems[0].Group.Guid;
-          const rPart = replaceItems[0].Group.Part;
-          const rIndex = replaceItems[0].Group.Index;
-          const add = replaceItems[0].Group.Add;
+          // 2022-09-19 2dm - WIP, part of #cleanUpDuplicateGroupHeaders
+          const rGuid = replaceItems[0].Parent ?? replaceItems[0].Group.Guid;
+          const rPart = replaceItems[0].Field ?? replaceItems[0].Group.Part;
+          const rIndex = replaceItems[0].Index; // .Group.Index;
+          // 2022-09-19 2dm - WIP, part of #cleanUpDuplicateGroupHeaders
+          const add = replaceItems[0].Add; // ?? replaceItems[0].Group.Add;
           const queryParams = add ? { add: true } : {};
           router.navigate([`${zoneId}/${appId}/${rGuid}/${rPart}/${rIndex}/replace`], { queryParams });
           break;
         case DialogTypeConstants.InstanceList:
           const groupItems: GroupItem[] = JSON.parse(items);
-          const gGuid = groupItems[0].Group.Guid;
-          const gPart = groupItems[0].Group.Part;
-          const gIndex = groupItems[0].Group.Index;
+          const gGuid = groupItems[0].Parent ?? groupItems[0].Group.Guid;
+          const gPart = groupItems[0].Field ?? groupItems[0].Group.Part;
+          const gIndex = groupItems[0].Index; // .Group.Index;
           router.navigate([`${zoneId}/${appId}/${gGuid}/${gPart}/${gIndex}/reorder`]);
           break;
         default:

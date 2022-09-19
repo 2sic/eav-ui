@@ -69,19 +69,29 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
     const form: EditForm = {
       items: [
         {
+          // 2022-09-19 2dm - WIP, part of #cleanUpDuplicateGroupHeaders
+          Add: this.header$.value.Id === 0,
+          Index: 0,
+          Parent: this.contentGroup.guid,
+          Field: 'listcontent',
           Group: {
             Guid: this.contentGroup.guid,
-            Index: 0,
+            // Index: 0,
             Part: 'listcontent',
-            Add: this.header$.value.Id === 0,
+            // Add: this.header$.value.Id === 0,
           },
         },
         {
+          // 2022-09-19 2dm - WIP, part of #cleanUpDuplicateGroupHeaders
+          Add: this.header$.value.Id === 0,
+          Index: 0,
+          Parent: this.contentGroup.guid,
+          Field: 'listpresentation',
           Group: {
             Guid: this.contentGroup.guid,
-            Index: 0,
+            // Index: 0,
             Part: 'listpresentation',
-            Add: this.header$.value.Id === 0,
+            // Add: this.header$.value.Id === 0,
           },
         },
       ],

@@ -59,8 +59,10 @@ export class FieldsSettingsHelpers {
     defaultSettings.Icon ??= '';
     defaultSettings.Link ??= '';
     defaultSettings._itemTitle = FieldsSettingsHelpers.getContentTypeTitle(contentType, currentLanguage, defaultLanguage);
-    defaultSettings._slotCanBeEmpty = itemHeader.Group?.SlotCanBeEmpty ?? false;
-    defaultSettings._slotIsEmpty = itemHeader.Group?.SlotIsEmpty ?? false;
+    // 2022-09-19 2dm #cleanUpDuplicateGroupHeaders - change to header.IsEmptyAllowed
+    defaultSettings._slotCanBeEmpty = itemHeader.IsEmptyAllowed /* .Group?.SlotCanBeEmpty */ ?? false;
+    // 2022-09-19 2dm #cleanUpDuplicateGroupHeaders - change to header.IsEmptyAllowed and header.IsEmpty
+    defaultSettings._slotIsEmpty = itemHeader.IsEmpty /* .Group?.SlotIsEmpty */ ?? false;
     return defaultSettings;
   }
 

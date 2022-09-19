@@ -3,7 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogRef, MatDialogState } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { combineLatest, distinctUntilChanged, map, Observable, Subscription } from 'rxjs';
+import { combineLatest, distinctUntilChanged, isEmpty, map, Observable, Subscription } from 'rxjs';
 import { eavConstants } from '../../../../shared/constants/eav.constants';
 import { EditForm, EditItem } from '../../../../shared/models/edit-form.model';
 import { FeaturesConstants } from '../../../shared/constants';
@@ -136,7 +136,12 @@ export class EntityWrapperComponent implements OnInit, AfterViewChecked, OnDestr
   }
 
   toggleSlotIsEmpty(oldHeader: EavHeader) {
-    const newHeader: EavHeader = { ...oldHeader, Group: { ...oldHeader.Group, SlotIsEmpty: !oldHeader.Group.SlotIsEmpty } };
+    // 2022-09-19 2dm #cleanUpDuplicateGroupHeaders - change to header.IsEmptyAllowed and header.IsEmpty
+    const newHeader: EavHeader = {
+      ...oldHeader,
+      IsEmpty: !oldHeader.IsEmpty,
+      // Group: { ...oldHeader.Group, SlotIsEmpty: !oldHeader.Group.SlotIsEmpty }
+    };
     this.itemService.updateItemHeader(this.entityGuid, newHeader);
   }
 

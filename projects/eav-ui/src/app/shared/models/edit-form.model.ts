@@ -23,15 +23,23 @@ export interface AddItem {
 }
 
 export interface GroupItem {
+  // 2022-09-19 2dm - WIP, part of #cleanUpDuplicateGroupHeaders
+  Add: boolean;
+  Index: number;
+  Parent: string;
+  Field: string;
+
   Group: GroupItemGroup;
   Prefill?: Record<string, string>;
 }
 
 export interface GroupItemGroup {
   Guid: string;
-  Index: number;
+  // Index: number;
   Part: string;
-  Add: boolean;
+  // 2022-09-19 2dm - WIP, part of #cleanUpDuplicateGroupHeaders
+  // trying to remove
+  // Add: boolean;
 }
 
 export interface InnerItem {
