@@ -1,8 +1,5 @@
-import { NgxMatDatetimePickerModule, NgxMatNativeDateModule} from '@angular-material-components/datetime-picker';
-import { MatDayjsDateAdapter } from './form/fields/datetime/adapters/mat-dayjs-date-adapter'
-import { MatDayjsDateModule, MatDayjsModule } from './form/fields/datetime/adapters/mat-dayjs-date-adapter.module'
-import { NgxMatDayjsDatetimeAdapter, NGX_MAT_DAYJS_DATETIME_ADAPTER_OPTIONS } from './form/fields/datetime/adapters/ngx-mat-dayjs-datetime-adapter'
-import { NgxMatDayjsDatetimeModule, NgxMatDayjsModule } from './form/fields/datetime/adapters/ngx-mat-dayjs-datetime-adapter.module'
+import { NgxMatDatetimePickerModule} from '@angular-material-components/datetime-picker';
+import { MatDayjsDateAdapter, NgxMatDayjsDatetimeAdapter, MatDayjsModule, MatDayjsDateModule, NgxMatDayjsModule, NgxMatDayjsDatetimeModule, MAT_DAYJS_DATE_ADAPTER_OPTIONS, NGX_MAT_DAYJS_DATETIME_ADAPTER_OPTIONS} from './shared/date-adapters/date-adapter-api'
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { CommonModule } from '@angular/common';
@@ -97,6 +94,7 @@ import { TranslateMenuDialogComponent } from './form/wrappers/localization-wrapp
 import { TranslateMenuComponent } from './form/wrappers/localization-wrapper/translate-menu/translate-menu.component';
 import { ChangeAnchorTargetDirective, PasteClipboardImageDirective } from './shared/directives';
 import { AdamService, EavService, EntityService, LoadIconsService, QueryService, ScriptsLoaderService } from './shared/services';
+import { Dayjs } from 'dayjs';
 
 declare const window: EavWindow;
 
@@ -211,6 +209,7 @@ export function translateLoaderFactoryEdit(http: HttpClient): TranslateLoader {
     EntityService,
     QueryService,
     MatDayjsDateAdapter,
+    { provide: MAT_DAYJS_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } },
     NgxMatDayjsDatetimeAdapter,
     { provide: NGX_MAT_DAYJS_DATETIME_ADAPTER_OPTIONS, useValue: { useUtc: true } },
     LoadIconsService,

@@ -6,14 +6,6 @@ import localeData from 'dayjs/plugin/localeData';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 // import badMutable from 'dayjs/plugin/badMutable'; // commented because it is not working with datime picker calendar as expected
-import 'dayjs/locale/en-gb';
-import 'dayjs/locale/en';
-import 'dayjs/locale/de';
-import 'dayjs/locale/fr';
-import 'dayjs/locale/it';
-import 'dayjs/locale/cs';
-import 'dayjs/locale/pt';
-import 'dayjs/locale/hr';
 import { NgxMatDateAdapter } from '@angular-material-components/datetime-picker';
 
 export interface NgxMatDayjsDatetimeAdapterOptions {
@@ -28,7 +20,7 @@ export interface NgxMatDayjsDatetimeAdapterOptions {
 /** InjectionToken for Dayjs date adapter to configure options. */
 export const NGX_MAT_DAYJS_DATETIME_ADAPTER_OPTIONS =
   new InjectionToken<NgxMatDayjsDatetimeAdapterOptions>(
-    'NGX_MAT_DAYJS_DATE_ADAPTER_OPTIONS',
+    'NGX_MAT_DAYJS_DATETIME_ADAPTER_OPTIONS',
     {
       providedIn: 'root',
       factory: NGX_MAT_DAYJS_DATETIME_ADAPTER_OPTIONS_FACTORY,
@@ -48,15 +40,6 @@ export function NGX_MAT_DAYJS_DATETIME_ADAPTER_OPTIONS_FACTORY(): NgxMatDayjsDat
  */
 interface DayjsMutableSet extends Dayjs {
   $set(unit: UnitType, value: number): void
-}
-
-/** Creates an array and fills it with values. */
-function range<T>(length: number, valueFunction: (index: number) => T): T[] {
-  const valuesArray = Array(length);
-  for (let i = 0; i < length; i++) {
-    valuesArray[i] = valueFunction(i);
-  }
-  return valuesArray;
 }
 
 /** Adapts Dayjs Dates for use with Angular Material. */
@@ -93,18 +76,15 @@ export class NgxMatDayjsDatetimeAdapter extends NgxMatDateAdapter<Dayjs> {
   setLocale(locale: string) {
     super.setLocale(locale);
 
-    let loc = locale;
-    if (loc == "en-US") loc = "en";
-    this.locale = loc;
-    dayjs.locale(loc.toLowerCase());
-    let localeData = dayjs().locale(loc.toLowerCase()).localeData();
+    dayjs.locale(locale);
+    let localeData = dayjs().locale(locale).localeData();
 
     this.localeData = {
       firstDayOfWeek: localeData.firstDayOfWeek(),
       longMonths: dayjs.months(),
       shortMonths: dayjs.monthsShort(),
-      dates: range(31, (i) => this.createDate(2017, 0, i + 1).format('D')),
-      longDaysOfWeek: range(7, (i) =>
+      dates: this.range(31, (i) => this.createDate(2017, 0, i + 1).format('D')),
+      longDaysOfWeek: this.range(7, (i) =>
         this.dayJs().set('day', i).format('dddd')
       ),
       shortDaysOfWeek: dayjs.weekdaysShort(),
@@ -237,7 +217,7 @@ export class NgxMatDayjsDatetimeAdapter extends NgxMatDateAdapter<Dayjs> {
       date = this.dayJs(value).toISOString();
     }
     if (date && this.isValid(date as Dayjs)) {
-      return this.dayJs(date); // NOTE: Is this necessary since Dayjs is immutable and Moment was not?
+      return this.dayJs(date);
     }
     return super.deserialize(value);
   }
@@ -287,6 +267,14 @@ export class NgxMatDayjsDatetimeAdapter extends NgxMatDateAdapter<Dayjs> {
       { format, locale, utc: this.shouldUseUtc },
       locale
     ).utc();
+  }
+
+  private range<T>(length: number, valueFunction: (index: number) => T): T[] {
+    const valuesArray = Array(length);
+    for (let i = 0; i < length; i++) {
+      valuesArray[i] = valueFunction(i);
+    }
+    return valuesArray;
   }
 
   private get shouldUseUtc(): boolean {

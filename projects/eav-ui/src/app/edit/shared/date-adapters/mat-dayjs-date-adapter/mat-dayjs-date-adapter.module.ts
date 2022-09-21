@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { DateAdapter, MAT_DATE_LOCALE, MAT_DATE_FORMATS } from '@angular/material/core';
-import { MatDayjsDateAdapter} from './mat-dayjs-date-adapter'
+import { MatDayjsDateAdapter, MAT_DAYJS_DATE_ADAPTER_OPTIONS} from './mat-dayjs-date-adapter'
 import { MAT_DAYJS_DATE_FORMATS } from './mat-dayjs-date-formats';
 
 @NgModule({
@@ -8,7 +8,7 @@ import { MAT_DAYJS_DATE_FORMATS } from './mat-dayjs-date-formats';
     {
       provide: DateAdapter,
       useClass: MatDayjsDateAdapter,
-      deps: [MAT_DATE_LOCALE]
+      deps: [MAT_DATE_LOCALE, MAT_DAYJS_DATE_ADAPTER_OPTIONS]
     }
   ],
 })

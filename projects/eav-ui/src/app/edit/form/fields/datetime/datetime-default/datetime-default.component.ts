@@ -1,6 +1,5 @@
 import { MatDatetimePickerInputEvent, NgxMatDatetimePicker } from '@angular-material-components/datetime-picker';
-import { NGX_MAT_DAYJS_DATETIME_ADAPTER_OPTIONS, NgxMatDayjsDatetimeAdapterOptions, NgxMatDayjsDatetimeAdapter } from '../adapters/ngx-mat-dayjs-datetime-adapter';
-import { MatDayjsDateAdapter } from '../adapters/mat-dayjs-date-adapter';
+import { MatDayjsDateAdapter, NgxMatDayjsDatetimeAdapter, NgxMatDayjsDatetimeAdapterOptions, NGX_MAT_DAYJS_DATETIME_ADAPTER_OPTIONS} from '../../../../shared/date-adapters/date-adapter-api'
 import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDatepicker, MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { TranslateService } from '@ngx-translate/core';
@@ -38,6 +37,7 @@ export class DatetimeDefaultComponent extends BaseComponent<string> implements O
   ) {
     super(eavService, fieldsSettingsService);
     const currentLang = this.translate.currentLang;
+    dayjs.locale(currentLang);
     this.matDayjsDateAdapter.setLocale(currentLang);
     this.ngxMatDayjsDatetimeAdapter.setLocale(currentLang);
   }
