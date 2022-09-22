@@ -59,8 +59,8 @@ export class FieldsSettingsHelpers {
     defaultSettings.Icon ??= '';
     defaultSettings.Link ??= '';
     defaultSettings._itemTitle = FieldsSettingsHelpers.getContentTypeTitle(contentType, currentLanguage, defaultLanguage);
-    defaultSettings._slotCanBeEmpty = itemHeader.Group?.SlotCanBeEmpty ?? false;
-    defaultSettings._slotIsEmpty = itemHeader.Group?.SlotIsEmpty ?? false;
+    defaultSettings._slotCanBeEmpty = itemHeader.IsEmptyAllowed ?? false;
+    defaultSettings._slotIsEmpty = itemHeader.IsEmpty ?? false;
     return defaultSettings;
   }
 

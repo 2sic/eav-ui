@@ -10,7 +10,7 @@ import { CreateFileDialogComponent, CreateFileDialogData, CreateFileDialogResult
 import { GeneralHelpers } from '../edit/shared/helpers';
 import { MonacoEditorComponent } from '../monaco-editor';
 import { keyIsShared, keyItems } from '../shared/constants/session.constants';
-import { SourceItem } from '../shared/models/edit-form.model';
+import { ViewOrFileIdentifier } from '../shared/models/edit-form.model';
 import { Context } from '../shared/services/context';
 import { CodeAndEditionWarningsComponent } from './code-and-edition-warnings/code-and-edition-warnings.component';
 import { CodeAndEditionWarningsSnackBarData } from './code-and-edition-warnings/code-and-edition-warnings.models';
@@ -43,7 +43,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
   private openViews$: BehaviorSubject<ViewKey[]>;
   private viewInfos$: BehaviorSubject<ViewInfo[]>;
   private subscription: Subscription;
-  private urlItems: SourceItem[];
+  private urlItems: ViewOrFileIdentifier[];
 
   constructor(
     private context: Context,
@@ -57,7 +57,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
     private viewContainerRef: ViewContainerRef,
   ) {
     this.context.init(this.route);
-    const codeItems: SourceItem[] = JSON.parse(sessionStorage.getItem(keyItems));
+    const codeItems: ViewOrFileIdentifier[] = JSON.parse(sessionStorage.getItem(keyItems));
     const isShared = sessionStorage.getItem(keyIsShared) === 'true' ?? false;
     codeItems.forEach(codeItem => {
       // remove leading "/" from path
