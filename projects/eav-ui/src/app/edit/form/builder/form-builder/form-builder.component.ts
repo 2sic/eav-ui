@@ -98,8 +98,7 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
     this.subscription.add(
       combineLatest([formValid$, itemHeader$]).pipe(
         map(([formValid, itemHeader]) => {
-          // 2022-09-19 2dm #cleanUpDuplicateGroupHeaders - change to header.IsEmptyAllowed and header.IsEmpty
-          if (itemHeader.IsEmpty /* .Group?.SlotIsEmpty */) { return true; }
+          if (itemHeader.IsEmpty) { return true; }
           return formValid;
         }),
         distinctUntilChanged(),

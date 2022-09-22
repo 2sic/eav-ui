@@ -136,11 +136,9 @@ export class EntityWrapperComponent implements OnInit, AfterViewChecked, OnDestr
   }
 
   toggleSlotIsEmpty(oldHeader: EavHeader) {
-    // 2022-09-19 2dm #cleanUpDuplicateGroupHeaders - change to header.IsEmptyAllowed and header.IsEmpty
     const newHeader: EavHeader = {
       ...oldHeader,
       IsEmpty: !oldHeader.IsEmpty,
-      // Group: { ...oldHeader.Group, SlotIsEmpty: !oldHeader.Group.SlotIsEmpty }
     };
     this.itemService.updateItemHeader(this.entityGuid, newHeader);
   }
