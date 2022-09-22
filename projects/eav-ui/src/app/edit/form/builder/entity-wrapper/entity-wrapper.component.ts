@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { combineLatest, distinctUntilChanged, isEmpty, map, Observable, Subscription } from 'rxjs';
 import { eavConstants } from '../../../../shared/constants/eav.constants';
-import { EditForm, EditItem } from '../../../../shared/models/edit-form.model';
+import { EditForm, ItemEditIdentifier } from '../../../../shared/models/edit-form.model';
 import { FeaturesConstants } from '../../../shared/constants';
 import { GeneralHelpers, LocalizationHelpers } from '../../../shared/helpers';
 import { EavEntity, EavHeader, EavItem } from '../../../shared/models/eav';
@@ -220,7 +220,7 @@ export class EntityWrapperComponent implements OnInit, AfterViewChecked, OnDestr
     const item = this.itemService.getItem(this.entityGuid);
     if (item.Entity.Id === 0) { return; }
 
-    const editItems: EditItem[] = [{ EntityId: item.Entity.Id }];
+    const editItems: ItemEditIdentifier[] = [{ EntityId: item.Entity.Id }];
     this.eavService.fetchFormData(JSON.stringify(editItems)).subscribe(formData => {
       const items = formData.Items.map(item1 => EavItem.convert(item1));
       this.itemService.updateItemMetadata(this.entityGuid, items[0].Entity.Metadata);

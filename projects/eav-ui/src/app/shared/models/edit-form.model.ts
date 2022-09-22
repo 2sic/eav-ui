@@ -1,15 +1,18 @@
 import { EavFor } from '../../edit/shared/models/eav';
 
-/** Type for edit form. To add new item send newItem and to edit existing item send editItems */
+/**
+ * Type for edit form.
+ * To add new item send newItem and to edit existing item send editItems
+ */
 export interface EditForm {
-  items: (AddItem | EditItem | GroupItem | InnerItem | SourceItem)[];
+  items: (ItemAddIdentifier | ItemEditIdentifier | ItemInListIdentifier)[];
 }
 
-export interface EditItem {
+export interface ItemEditIdentifier {
   EntityId: number;
 }
 
-export interface AddItem {
+export interface ItemAddIdentifier {
   /** Content type */
   ContentTypeName: string;
   /** Add item as metadata to another item */
@@ -22,36 +25,21 @@ export interface AddItem {
   DuplicateEntity?: number;
 }
 
-export interface GroupItem {
-  // 2022-09-19 2dm - WIP, part of #cleanUpDuplicateGroupHeaders
+/**
+ * This is both an item in a content-group, as well as an item in a list
+ */
+export interface ItemInListIdentifier {
   Add: boolean;
   Index: number;
   Parent: string;
   Field: string;
 
-  Group: GroupItemGroup;
+  EntityId?: number;
+
   Prefill?: Record<string, string>;
 }
 
-export interface GroupItemGroup {
-  Guid: string;
-  // Index: number;
-  Part: string;
-  // 2022-09-19 2dm - WIP, part of #cleanUpDuplicateGroupHeaders
-  // trying to remove
-  // Add: boolean;
-}
-
-export interface InnerItem {
-  Add: boolean;
-  EntityId: number;
-  Field: string;
-  Index: number;
-  Parent: string;
-  Prefill?: Record<string, string>;
-}
-
-export interface SourceItem {
+export interface ViewOrFileIdentifier {
   Edition?: string;
   EntityId?: number;
   IsShared: boolean;

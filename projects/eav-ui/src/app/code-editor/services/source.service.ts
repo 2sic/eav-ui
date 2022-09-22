@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { WebApi, WebApiDetails } from '../../app-administration/models';
-import { SourceItem } from '../../shared/models/edit-form.model';
+import { ViewOrFileIdentifier } from '../../shared/models/edit-form.model';
 import { Context } from '../../shared/services/context';
 import { FileAsset } from '../models/file-asset.model';
 import { PredefinedTemplatesResponse } from '../models/predefined-template.model';
@@ -23,7 +23,7 @@ export class SourceService {
   constructor(private http: HttpClient, private context: Context, private dnnContext: DnnContext) { }
 
   /** ViewKey is templateId or path */
-  get(viewKey: string, global: boolean, urlItems: SourceItem[]): Observable<SourceView> {
+  get(viewKey: string, global: boolean, urlItems: ViewOrFileIdentifier[]): Observable<SourceView> {
     return this.http.get<SourceView>(this.dnnContext.$2sxc.http.apiUrl(appFilesAsset), {
       params: {
         appId: this.context.appId,
@@ -51,7 +51,7 @@ export class SourceService {
   }
 
   /** ViewKey is templateId or path */
-  save(viewKey: string, global: boolean, view: SourceView, urlItems: SourceItem[]): Observable<boolean> {
+  save(viewKey: string, global: boolean, view: SourceView, urlItems: ViewOrFileIdentifier[]): Observable<boolean> {
     return this.http.post<boolean>(this.dnnContext.$2sxc.http.apiUrl(appFilesAsset), view, {
       params: {
         appId: this.context.appId,
@@ -131,7 +131,7 @@ export class SourceService {
     });
   }
 
-  private templateIdOrPath(viewKey: string, global: boolean, urlItems: SourceItem[]) {
+  private templateIdOrPath(viewKey: string, global: boolean, urlItems: ViewOrFileIdentifier[]) {
     if (/^[0-9]*$/g.test(viewKey)) {
       const path = urlItems.find(i => i.EntityId?.toString() === viewKey && i.IsShared === global)?.Path;
       return {

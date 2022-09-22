@@ -12,7 +12,7 @@ import { GoToPermissions } from '../permissions/go-to-permissions';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
 import { eavConstants } from '../shared/constants/eav.constants';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
-import { AddItem, EditForm, EditItem } from '../shared/models/edit-form.model';
+import { ItemAddIdentifier, EditForm, ItemEditIdentifier } from '../shared/models/edit-form.model';
 import { InputTypeConstants } from './constants/input-type.constants';
 import { ContentTypeFieldsActionsComponent } from './content-type-fields-actions/content-type-fields-actions.component';
 import { ContentTypeFieldsActionsParams } from './content-type-fields-actions/content-type-fields-actions.models';
@@ -188,7 +188,7 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
     this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
   }
 
-  private createItemDefinition(field: Field, metadataType: string): AddItem | EditItem {
+  private createItemDefinition(field: Field, metadataType: string): ItemAddIdentifier | ItemEditIdentifier {
     return field.Metadata[metadataType] != null
       ? { EntityId: field.Metadata[metadataType].Id } // if defined, return the entity-number to edit
       : {
