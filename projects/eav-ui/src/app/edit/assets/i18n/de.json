@@ -96,7 +96,8 @@
   "General": {
     "Buttons": {
       "NotSave": "Änderungen verwerfen",
-      "Save": "Speichern"
+      "Save": "Speichern",
+      "Cancel": "Cancel"
     },
     "CopyHint": "Dies ist eine Kopie und wird als neues Element gespeichert",
     "ReadOnlyHint": {

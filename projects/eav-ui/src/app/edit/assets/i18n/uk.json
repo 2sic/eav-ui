@@ -96,7 +96,8 @@
   "General": {
     "Buttons": {
       "NotSave": "Discard changes",
-      "Save": "Save"
+      "Save": "Save",
+      "Cancel": "Cancel"
     },
     "CopyHint": "This is a copy and will be saved as a new item",
     "ReadOnlyHint": {
