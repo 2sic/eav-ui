@@ -15,6 +15,7 @@ import { HttpClient } from '@angular/common/http';
 import { EavWindow } from '../shared/models/eav-window.model';
 import { buildTranslateConfiguration, TranslateLoaderWithErrorHandling } from '../shared/translation';
 import { EavService } from '../edit/shared/services';
+import { LanguageInitializerService } from '../shared/services/language-initializer.service';
 
 declare const window: EavWindow;
 
@@ -42,8 +43,8 @@ export function translateLoaderFactoryContentList(http: HttpClient): TranslateLo
   providers: [
     Context,
     ContentGroupService,
-    TranslateService,
-    EavService
+    EavService,
+    LanguageInitializerService
   ]
 })
 export class ManageContentListModule { }
