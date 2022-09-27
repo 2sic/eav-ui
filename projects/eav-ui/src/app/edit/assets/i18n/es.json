@@ -194,6 +194,13 @@
       "NewTemplate": "Create a new file"
     }
   },
+  "ManageContentList": {
+    "Title": "Manage content-item lists",
+    "Description": "You can manage the list header here (if it is defined):",
+    "NoHeader": "(this list has no header)",
+    "SortItems": "Sort the items by dragging as you need, then save:",
+    "SortLotsOfItems": "Sort the items by dragging and scrolling with mouse wheel as you need, then save:"
+  },
   "Extension.TinyMce": {
     "Link.AdamFile": "Enlace a archivo ADAM (recomendado)",
     "Link.AdamFile.Tooltip": "Enlace a archivo ADAM - solo arrastre y suelte los archivos utilizando el Automatic Digital Assets Manager",

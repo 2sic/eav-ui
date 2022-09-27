@@ -3,12 +3,15 @@ import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, combineLatest, filter, map, pairwise, startWith, Subscription } from 'rxjs';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 import { EditForm } from '../shared/models/edit-form.model';
 import { ContentGroup } from './models/content-group.model';
 import { GroupHeader } from './models/group-header.model';
 import { ContentGroupService } from './services/content-group.service';
+import { langCode2 } from './i18n';
+import { EavService } from '../edit/shared/services';
 
 @Component({
   selector: 'app-manage-content-list',
@@ -39,7 +42,14 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private snackBar: MatSnackBar,
-  ) { }
+    private translate: TranslateService,
+    public eavService: EavService,
+  ) {
+    this.eavService.fetchFormData("[]").subscribe(formData => {
+      translate.setDefaultLang(langCode2(formData.Context.Language.Primary));
+      translate.use(langCode2(formData.Context.Language.Current));
+    });
+  }
 
   ngOnInit() {
     this.fetchList();
