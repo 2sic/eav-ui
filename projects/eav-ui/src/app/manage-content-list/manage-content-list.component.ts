@@ -9,7 +9,8 @@ import { EditForm } from '../shared/models/edit-form.model';
 import { ContentGroup } from './models/content-group.model';
 import { GroupHeader } from './models/group-header.model';
 import { ContentGroupService } from './services/content-group.service';
-import { LanguageInitializerService } from '../shared/services/language-initializer.service';
+import { AppDialogConfigService } from '../app-administration/services';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-manage-content-list',
@@ -40,20 +41,31 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private snackBar: MatSnackBar,
-    private languageInitializerService: LanguageInitializerService,
+    private translate: TranslateService,
+    private appDialogConfigService: AppDialogConfigService,
   ) { }
 
   ngOnInit() {
     this.fetchList();
     this.fetchHeader();
     this.refreshOnChildClosed();
-    this.languageInitializerService.initializeLanguages.subscribe();
+    this.fetchDialogSettings();
   }
 
   ngOnDestroy() {
     this.items$.complete();
     this.header$.complete();
     this.subscription.unsubscribe();
+  }
+
+  private fetchDialogSettings() {
+    this.appDialogConfigService.getDialogSettings().pipe(
+      tap(
+        dialogSettings => {
+          this.translate.setDefaultLang(dialogSettings.Context.Language.Primary.split('-')[0]);
+          this.translate.use(dialogSettings.Context.Language.Current.split('-')[0]);
+        })
+    ).subscribe();
   }
 
   closeDialog() {

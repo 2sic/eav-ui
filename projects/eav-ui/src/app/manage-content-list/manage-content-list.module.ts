@@ -11,19 +11,10 @@ import { SharedComponentsModule } from '../shared/shared-components.module';
 import { ManageContentListRoutingModule } from './manage-content-list-routing.module';
 import { ManageContentListComponent } from './manage-content-list.component';
 import { ContentGroupService } from './services/content-group.service';
-import { HttpClient } from '@angular/common/http';
-import { EavWindow } from '../shared/models/eav-window.model';
-import { buildTranslateConfiguration, TranslateLoaderWithErrorHandling } from '../shared/translation';
+import { buildTranslateConfiguration } from '../shared/translation';
 import { EavService } from '../edit/shared/services';
-import { LanguageInitializerService } from '../shared/services/language-initializer.service';
-
-declare const window: EavWindow;
-
-// AoT requires an exported function for factories
-// at least according to https://github.com/ngx-translate/http-loader
-export function translateLoaderFactoryContentList(http: HttpClient): TranslateLoader {
-  return new TranslateLoaderWithErrorHandling(http, './i18n/', `.js?${window.sxcVersion}`);
-}
+import { AppDialogConfigService } from '../app-administration/services';
+import { translateLoaderFactory } from '../shared/translation/translate-loader-factory';
 
 @NgModule({
   declarations: [
@@ -38,13 +29,13 @@ export function translateLoaderFactoryContentList(http: HttpClient): TranslateLo
     MatIconModule,
     DragDropModule,
     MatSnackBarModule,
-    TranslateModule.forChild(buildTranslateConfiguration(translateLoaderFactoryContentList)),
+    TranslateModule.forChild(buildTranslateConfiguration(translateLoaderFactory)),
   ],
   providers: [
     Context,
     ContentGroupService,
     EavService,
-    LanguageInitializerService
+    AppDialogConfigService
   ]
 })
 export class ManageContentListModule { }
