@@ -12,8 +12,8 @@
         (click)="openImageConfiguration(data.adamItem)">
         <mat-icon
           [tippy]="(data.enableImageConfiguration ? 'Fields.Hyperlink.AdamFileManager.ImageSettingsUnavailable' : 'Fields.Hyperlink.AdamFileManager.ImageSettingsDisabled') | translate"
-          [tippyDisabled]="data.adamItem?._imageConfigurationContentType">
-          filter_center_focus
+          [tippyDisabled]="data.adamItem?._imageConfigurationContentType"
+          svgIcon="filter-center-focus">
         </mat-icon>
       </button>
       <button mat-mini-fab color="primary" [tippy]="'Fields.Hyperlink.Default.PageTip' | translate"
@@ -22,7 +22,7 @@
       </button>
       <button mat-mini-fab color="primary" [tippy]="'Fields.Hyperlink.Default.MoreOptions' | translate"
         *ngIf="data.buttonMore" [disabled]="data.controlStatus.disabled" [matMenuTriggerFor]="menu">
-        <mat-icon>more_vert</mat-icon>
+        <mat-icon svgIcon="more-vert"></mat-icon>
       </button>
     </div>
 

@@ -139,8 +139,8 @@
                 'metadata-exists': item._imageConfigurationId > 0
               }"
               [tippy]="(item._imageConfigurationContentType ? 'Fields.Hyperlink.AdamFileManager.ImageSettings' : 'Fields.Hyperlink.AdamFileManager.ImageSettingsDisabled') | translate"
-              (click)="editItemMetadata(item, item._imageConfigurationContentType, item._imageConfigurationId)">
-              filter_center_focus
+              (click)="editItemMetadata(item, item._imageConfigurationContentType, item._imageConfigurationId)"
+              svgIcon="filter-center-focus">
             </mat-icon>
           </div>
           <mat-icon class="adam-tag" appClickStopPropagation *ngIf="item._metadataContentType"

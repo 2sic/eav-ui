@@ -29,8 +29,8 @@
                 (click)="addSnippet(snippet.snip)">
                 {{ snippet.label }}
               </div>
-              <mat-icon *ngIf="snippet.more" tippy="Show More" tippyShowDelay="750" (click)="toggleMore(snippet.key)">
-                {{ toggledMores.includes(snippet.key) ? 'more_vert' : 'more_horiz' }}
+              <mat-icon *ngIf="snippet.more" tippy="Show More" tippyShowDelay="750" (click)="toggleMore(snippet.key)"
+              [svgIcon]="toggledMores.includes(snippet.key) ? 'more-vert' : 'more-horiz'">
               </mat-icon>
               <mat-icon tippy="Show Help" tippyShowDelay="750" appClickStopPropagation
                 (click)="toggleInfo(snippet.key)">
