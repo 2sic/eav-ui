@@ -1,11 +1,10 @@
-import { MatDatetimePickerInputEvent, NgxMatDateAdapter, NgxMatDatetimePicker } from '@angular-material-components/datetime-picker';
-import { NgxMatMomentDateAdapterOptions, NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular-material-components/moment-adapter';
+import { MatDatetimePickerInputEvent, NgxMatDatetimePicker } from '@angular-material-components/datetime-picker';
+import { MatDayjsDateAdapter, NgxMatDayjsDatetimeAdapter, NgxMatDayjsDatetimeAdapterOptions, NGX_MAT_DAYJS_DATETIME_ADAPTER_OPTIONS} from '../../../../shared/date-adapters/date-adapter-api'
 import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { DateAdapter } from '@angular/material/core';
 import { MatDatepicker, MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { TranslateService } from '@ngx-translate/core';
-import * as moment from 'moment';
-import { Moment } from 'moment';
+import dayjs, { Dayjs } from 'dayjs';
+import utc from 'dayjs/plugin/utc';
 import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
@@ -24,7 +23,7 @@ import { DatetimeDefaultTemplateVars } from './datetime-default.models';
   wrappers: [WrappersConstants.LocalizationWrapper],
 })
 export class DatetimeDefaultComponent extends BaseComponent<string> implements OnInit, OnDestroy {
-  @ViewChild('picker') private picker?: MatDatepicker<Moment> | NgxMatDatetimePicker<Moment>;
+  @ViewChild('picker') private picker?: MatDatepicker<Dayjs> | NgxMatDatetimePicker<Dayjs>;
 
   templateVars$: Observable<DatetimeDefaultTemplateVars>;
 
@@ -32,14 +31,15 @@ export class DatetimeDefaultComponent extends BaseComponent<string> implements O
     eavService: EavService,
     fieldsSettingsService: FieldsSettingsService,
     private translate: TranslateService,
-    private dateAdapter: DateAdapter<any>,
-    private ngxDateTimeAdapter: NgxMatDateAdapter<any>,
-    @Inject(NGX_MAT_MOMENT_DATE_ADAPTER_OPTIONS) private ngxMatMomentDateAdapterOptions?: NgxMatMomentDateAdapterOptions,
+    private matDayjsDateAdapter: MatDayjsDateAdapter,
+    private ngxMatDayjsDatetimeAdapter: NgxMatDayjsDatetimeAdapter,
+    @Inject(NGX_MAT_DAYJS_DATETIME_ADAPTER_OPTIONS) private ngxMatDayjsDatetimeAdapterOptions?: NgxMatDayjsDatetimeAdapterOptions,
   ) {
     super(eavService, fieldsSettingsService);
     const currentLang = this.translate.currentLang;
-    this.dateAdapter.setLocale(currentLang);
-    this.ngxDateTimeAdapter.setLocale(currentLang);
+    dayjs.locale(currentLang);
+    this.matDayjsDateAdapter.setLocale(currentLang);
+    this.ngxMatDayjsDatetimeAdapter.setLocale(currentLang);
   }
 
   ngOnInit() {
@@ -70,27 +70,29 @@ export class DatetimeDefaultComponent extends BaseComponent<string> implements O
     super.ngOnDestroy();
   }
 
-  updateValue(event: MatDatepickerInputEvent<Moment> | MatDatetimePickerInputEvent<Moment>) {
+  updateValue(event: MatDatepickerInputEvent<Dayjs> | MatDatetimePickerInputEvent<Dayjs>) {
     const newValue = event.value != null ? event.value.toJSON() : null;
     GeneralHelpers.patchControlValue(this.control, newValue);
   }
 
   pickerOpened(): void {
+    dayjs.extend(utc)
+
     if (!(this.picker instanceof NgxMatDatetimePicker)) { return; }
 
-    if (this.ngxMatMomentDateAdapterOptions?.useUtc) {
+    if (this.ngxMatDayjsDatetimeAdapterOptions?.useUtc) {
       if (this.control.value) {
         // Fixes visual bug where picker dialog shows incorrect time if value is changed with formula but date remains the same.
         // Probably something broken with change detection inside picker.
         // https://github.com/h2qutc/angular-material-components/issues/220
-        this.picker._selected = moment.utc(this.control.value);
+        this.picker._selected = dayjs.utc(this.control.value);
       } else {
         // Displays current time as UTC if there was no previous value.
         // This means that user initially sees the same time it sees on computer clock,
         // but when value is selected it works like UTC.
-        const dateTime = moment();
-        const dateTimeString = `${dateTime.format('YYYY-MM-DD')}T${dateTime.format('HH:mm:ss.SSSS')}Z`;
-        this.picker._selected = moment.utc(dateTimeString);
+        const dateTime = dayjs();
+        const dateTimeString = `${dateTime.format('YYYY-MM-DD')}T${dateTime.format('HH:mm:ss.SSS')}Z`;
+        this.picker._selected = dayjs.utc(dateTimeString, 'YYYY-MM-DDTHH:mm:ss.SSSZ');
       }
     }
   }
