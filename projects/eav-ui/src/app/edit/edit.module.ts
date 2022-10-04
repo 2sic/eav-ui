@@ -3,7 +3,6 @@ import { MatDayjsDateAdapter, NgxMatDayjsDatetimeAdapter, MatDayjsModule, MatDay
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -24,17 +23,17 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { RouterModule } from '@angular/router';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { DropzoneModule } from 'ngx-dropzone-wrapper';
 import { SourceService } from '../code-editor/services/source.service';
 import { EntitiesService } from '../content-items/services/entities.service';
 import { CreateFileDialogModule } from '../create-file-dialog';
 import { MonacoEditorModule } from '../monaco-editor';
-import { EavWindow } from '../shared/models/eav-window.model';
 import { ExtendedFabSpeedDialModule } from '../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.module';
 import { Context } from '../shared/services/context';
 import { SharedComponentsModule } from '../shared/shared-components.module';
-import { buildTranslateConfiguration, TranslateLoaderWithErrorHandling } from '../shared/translation';
+import { buildTranslateConfiguration } from '../shared/translation';
+import { translateLoaderFactory } from '../shared/translation/translate-loader-factory';
 import { EditEntryComponent } from './dialog/entry/edit-entry.component';
 import { DataDumpComponent } from './dialog/footer/data-dump/data-dump.component';
 import { EditDialogFooterComponent } from './dialog/footer/edit-dialog-footer.component';
@@ -95,14 +94,6 @@ import { TranslateMenuComponent } from './form/wrappers/localization-wrapper/tra
 import { ChangeAnchorTargetDirective, PasteClipboardImageDirective } from './shared/directives';
 import { AdamService, EavService, EntityService, LoadIconsService, QueryService, ScriptsLoaderService } from './shared/services';
 import { Dayjs } from 'dayjs';
-
-declare const window: EavWindow;
-
-// AoT requires an exported function for factories
-// at least according to https://github.com/ngx-translate/http-loader
-export function translateLoaderFactoryEdit(http: HttpClient): TranslateLoader {
-  return new TranslateLoaderWithErrorHandling(http, './i18n/', `.js?${window.sxcVersion}`);
-}
 
 @NgModule({
   declarations: [
@@ -169,7 +160,7 @@ export function translateLoaderFactoryEdit(http: HttpClient): TranslateLoader {
     EditRoutingModule,
     SharedComponentsModule,
     CommonModule,
-    TranslateModule.forChild(buildTranslateConfiguration(translateLoaderFactoryEdit)),
+    TranslateModule.forChild(buildTranslateConfiguration(translateLoaderFactory)),
     RouterModule,
     MatButtonModule,
     MatInputModule,

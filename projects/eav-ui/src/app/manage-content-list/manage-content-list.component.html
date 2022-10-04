@@ -1,5 +1,5 @@
 <div mat-dialog-title>
-  <div class="dialog-title-box">Manage content-item lists</div>
+  <div class="dialog-title-box">{{'ManageContentList.Title' | translate}}</div>
 </div>
 
 <router-outlet></router-outlet>
@@ -7,7 +7,7 @@
 <div class="dialog-component-content fancy-scrollbar-light" cdkScrollable *ngIf="(templateVars$ | async) as data">
   <ng-container *ngIf="data.header">
     <p class="dialog-description">
-      You can manage the list header here (if it is defined):
+      {{'ManageContentList.Description' | translate}}
     </p>
 
     <p class="dialog-description">
@@ -17,11 +17,16 @@
           <mat-icon>edit</mat-icon>
         </button>
       </ng-container>
-      <ng-container *ngIf="!data.header.Type">(this list has no header)</ng-container>
+      <ng-container *ngIf="!data.header.Type">{{'ManageContentList.NoHeader' | translate}}</ng-container>
     </p>
   </ng-container>
 
-  <p class="dialog-description sort-title">Sort the items by dragging as you need, then save:</p>
+  <p class="dialog-description sort-title" *ngIf="data.items && data.items?.length < 25 ">
+    {{'ManageContentList.SortItems' | translate}}
+  </p>
+  <p class="dialog-description sort-title" *ngIf="data.items?.length >= 25 ">
+    {{'ManageContentList.SortLotsOfItems' | translate}}
+  </p>
 
   <div class="dnd-list" cdkDropList (cdkDropListDropped)="drop($event)">
     <div *ngFor="let item of data.items; trackBy: trackByFn" class="dnd-item" cdkDrag>
@@ -41,6 +46,6 @@
 </div>
 
 <div class="dialog-component-actions">
-  <button mat-raised-button (click)="closeDialog()">Cancel</button>
-  <button mat-raised-button color="accent" (click)="saveList()">Save</button>
+  <button mat-raised-button (click)="closeDialog()">{{'General.Buttons.Cancel' | translate}}</button>
+  <button mat-raised-button color="accent" (click)="saveList()">{{'General.Buttons.Save' | translate}}</button>
 </div>
