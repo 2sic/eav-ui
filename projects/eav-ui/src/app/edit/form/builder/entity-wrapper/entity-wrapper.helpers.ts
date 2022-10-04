@@ -19,7 +19,7 @@ export function getNoteProps(note: EavEntity, currentLanguage: string, defaultLa
     note,
     tooltip: itemNotSaved ? 'Form.Buttons.Note.ItemNotSaved' : 'Form.Buttons.Note.Add',
     triggerClass: `no-note ${itemNotSaved ? 'item-not-saved' : ''}`,
-    iconName: 'sticky_note_2',
+    iconName: 'sticky-note-2',
     noteClass: '',
     noteHtml: undefined,
     itemNotSaved,

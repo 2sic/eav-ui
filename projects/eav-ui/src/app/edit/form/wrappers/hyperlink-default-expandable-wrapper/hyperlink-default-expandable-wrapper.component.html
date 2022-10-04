@@ -6,7 +6,7 @@
       <mat-card class="mat-elevation-z0" fxLayout="row">
         <button mat-icon-button class="back-arrow" fxLayoutAlign="center center"
           [tippy]="'Form.Buttons.Return.Tip' | translate" (click)="closeDialog()">
-          <mat-icon>arrow_back</mat-icon>
+          <mat-icon svgIcon="arrow-back"></mat-icon>
         </button>
         <span fxLayoutAlign="center center" class="title mat-display-1">{{ label$ | async }}</span>
       </mat-card>
@@ -23,7 +23,7 @@
         <extended-fab-speed-dial class="adam">
           <ng-template extendedFabSpeedDialTriggerContent>
             <button extended-fab-speed-dial-trigger matRipple (click)="closeDialog()">
-              <mat-icon>done</mat-icon>
+              <mat-icon svgIcon="done"></mat-icon>
               <span>{{ 'Form.Buttons.Return.Tip' | translate }}</span>
             </button>
           </ng-template>
@@ -31,12 +31,12 @@
             <button extended-fab-speed-dial-action matRipple [disabled]="saveButtonDisabled$ | async"
               (click)="saveAll(false)">
               <span>{{ 'Form.Buttons.Save' | translate }}</span>
-              <mat-icon>save</mat-icon>
+              <mat-icon svgIcon="save"></mat-icon>
             </button>
             <button extended-fab-speed-dial-action matRipple [disabled]="saveButtonDisabled$ | async"
               (click)="saveAll(true)">
               <span>{{ 'Form.Buttons.SaveAndClose' | translate }}</span>
-              <mat-icon>done_all</mat-icon>
+              <mat-icon svgIcon="done-all"></mat-icon>
             </button>
           </ng-template>
         </extended-fab-speed-dial>
@@ -96,8 +96,7 @@
               (click)="openImageConfiguration(data.adamItem)">
               <mat-icon
                 [tippy]="(data.enableImageConfiguration ? 'Fields.Hyperlink.AdamFileManager.ImageSettingsUnavailable' : 'Fields.Hyperlink.AdamFileManager.ImageSettingsDisabled') | translate"
-                [tippyDisabled]="data.adamItem?._imageConfigurationContentType"
-                svgIcon="filter-center-focus">
+                [tippyDisabled]="data.adamItem?._imageConfigurationContentType" svgIcon="filter-center-focus">
               </mat-icon>
             </button>
             <button mat-icon-button class="c-ew__preview-suffix-icon"

@@ -4,7 +4,7 @@
       <div class="dialog-title-box">
         <div>{{ title || 'Metadata' }}</div>
         <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
-          <mat-icon>close</mat-icon>
+          <mat-icon svgIcon="close"></mat-icon>
         </button>
       </div>
     </div>
@@ -32,24 +32,25 @@
 
       <button mat-fab mat-elevation-z24 class="grid-fab" *ngIf="data.recommendations.length === 0"
         tippy="Create a new metadata for this item" (click)="createMetadata()">
-        <mat-icon>add</mat-icon>
+        <mat-icon svgIcon="add"></mat-icon>
       </button>
 
       <eco-fab-speed-dial class="grid-fab" [ngClass]="{ 'fab-opened': data.fabOpen }"
         *ngIf="data.recommendations.length > 0" (openChange)="openChange($event)">
         <eco-fab-speed-dial-trigger [spin]="true">
           <button mat-fab>
-            <mat-icon class="spin180">{{ data.fabOpen ? 'close' : 'add' }}</mat-icon>
+            <mat-icon class="spin180" [svgIcon]="data.fabOpen ? 'close' : 'add'"></mat-icon>
           </button>
         </eco-fab-speed-dial-trigger>
 
         <eco-fab-speed-dial-actions>
           <button mat-mini-fab label="Other Content Type" (click)="createMetadata()">
-            <mat-icon>search</mat-icon>
+            <mat-icon svgIcon="search"></mat-icon>
           </button>
           <button mat-mini-fab *ngFor="let recommendation of data.recommendations" [attr.label]="recommendation.Title"
             (click)="createMetadata(recommendation)">
-            <mat-icon>{{ recommendation.Icon || 'add' }}</mat-icon>
+            <mat-icon *ngIf="!recommendation.Icon.includes('svg')" [svgIcon]="recommendation.Icon || 'add'"></mat-icon>
+            <div *ngIf="recommendation.Icon.includes('svg')" [innerHTML]="recommendation.Icon | safeHtml"></div>
           </button>
         </eco-fab-speed-dial-actions>
       </eco-fab-speed-dial>

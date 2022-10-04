@@ -3,8 +3,7 @@
 
     <div class="collapsible-header section" [tippy]="'SourceEditorSnippets.' + section.key + '.Help' | translate"
       tippyShowDelay="750" (click)="toggleSection(section.key)">
-      <mat-icon>
-        {{ toggledSections.includes(section.key) ? 'keyboard_arrow_down' : 'keyboard_arrow_right' }}
+      <mat-icon [svgIcon]="toggledSections.includes(section.key) ? 'keyboard_arrow_down' : 'keyboard_arrow_right'">
       </mat-icon>
       <span>{{ 'SourceEditorSnippets.' + section.key + '.Title' | translate }}</span>
     </div>
@@ -15,8 +14,7 @@
         <div class="collapsible-header folder"
           [tippy]="'SourceEditorSnippets.' + section.key + '.' + folder.key + '.Help' | translate" tippyShowDelay="750"
           (click)="toggleFolder(folder.key)">
-          <mat-icon>
-            {{ toggledFolders.includes(folder.key) ? 'keyboard_arrow_down' : 'keyboard_arrow_right' }}
+          <mat-icon [svgIcon]="toggledFolders.includes(folder.key) ? 'keyboard_arrow_down' : 'keyboard_arrow_right'">
           </mat-icon>
           <span>{{ 'SourceEditorSnippets.' + section.key + '.' + folder.key + '.Title' | translate }}</span>
         </div>
@@ -33,8 +31,7 @@
               [svgIcon]="toggledMores.includes(snippet.key) ? 'more-vert' : 'more-horiz'">
               </mat-icon>
               <mat-icon tippy="Show Help" tippyShowDelay="750" appClickStopPropagation
-                (click)="toggleInfo(snippet.key)">
-                info
+                (click)="toggleInfo(snippet.key)" svgIcon="info">
               </mat-icon>
             </div>
 
@@ -54,8 +51,7 @@
                     {{ more.label }}
                   </div>
                   <mat-icon tippy="Show Help" tippyShowDelay="750" appClickStopPropagation
-                    (click)="toggleInfo(more.key)">
-                    info
+                    (click)="toggleInfo(more.key)" svgIcon="info">
                   </mat-icon>
                 </div>
 

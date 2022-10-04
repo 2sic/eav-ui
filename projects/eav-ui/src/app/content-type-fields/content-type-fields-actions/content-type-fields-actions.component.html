@@ -1,28 +1,25 @@
 <div class="actions-component">
   <div class="like-button highlight" matRipple *ngIf="!field.EditInfo.ReadOnly" tippy="Metadata"
     (click)="openMetadata()">
-    <mat-icon [matBadge]="metadataCount" matBadgeColor="accent" matBadgeSize="small" [matBadgeHidden]="!metadataCount">
-      local_offer
+    <mat-icon [matBadge]="metadataCount" matBadgeColor="accent" matBadgeSize="small" [matBadgeHidden]="!metadataCount"
+      svgIcon="local-offer">
     </mat-icon>
   </div>
   <div class="like-button disabled" *ngIf="field.EditInfo.ReadOnly">
     <mat-icon [matBadge]="metadataCount" matBadgeColor="accent" matBadgeSize="small" matBadgeDisabled="true"
-      [matBadgeHidden]="!metadataCount">
-      local_offer
+      [matBadgeHidden]="!metadataCount" svgIcon="local-offer">
     </mat-icon>
   </div>
 
   <div class="like-button highlight" matRipple tippy="Permissions" *ngIf="!field.EditInfo.ReadOnly && enablePermissions"
     (click)="openPermissions()">
     <mat-icon [matBadge]="field.Permissions.Count" matBadgeColor="accent" matBadgeSize="small"
-      [matBadgeHidden]="!field.Permissions.Count">
-      person
+      [matBadgeHidden]="!field.Permissions.Count" svgIcon="person">
     </mat-icon>
   </div>
   <div class="like-button disabled" *ngIf="field.EditInfo.ReadOnly || !enablePermissions">
     <mat-icon [matBadge]="field.Permissions.Count" matBadgeColor="accent" matBadgeSize="small" matBadgeDisabled="true"
-      [matBadgeHidden]="!field.Permissions.Count">
-      person
+      [matBadgeHidden]="!field.Permissions.Count" svgIcon="person">
     </mat-icon>
   </div>
 
@@ -34,11 +31,11 @@
 <mat-menu #menu="matMenu" class="grid-more-menu">
   <ng-template matMenuContent>
     <button mat-menu-item [disabled]="field.EditInfo.ReadOnly" (click)="rename()">
-      <mat-icon>text_fields</mat-icon>
+      <mat-icon svgIcon="text-fields"></mat-icon>
       <span>Rename</span>
     </button>
     <button mat-menu-item [disabled]="field.EditInfo.ReadOnly || field.IsTitle" (click)="deleteField()">
-      <mat-icon>delete</mat-icon>
+      <mat-icon svgIcon="delete"></mat-icon>
       <span>Delete</span>
     </button>
   </ng-template>

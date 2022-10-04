@@ -81,7 +81,7 @@
             <a [href]="data.preview.url" target="_blank" [tippy]="data.preview.url" tippyPlacement="right"
               *ngIf="!data.preview.isImage">
               <div class="preview-icon-box">
-                <mat-icon *ngIf="data.preview.isKnownType">{{ data.preview.icon }}</mat-icon>
+                <mat-icon *ngIf="data.preview.isKnownType" [svgIcon]="data.preview.icon"></mat-icon>
                 <mat-icon *ngIf="!data.preview.isKnownType" [svgIcon]="data.preview.icon"></mat-icon>
               </div>
             </a>

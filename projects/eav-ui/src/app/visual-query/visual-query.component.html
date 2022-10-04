@@ -4,15 +4,15 @@
   <div class="editor-side-toolbar">
     <div class="button" tippy="Run" [ngClass]="{ 'active': activeExplorer === explorer.run }"
       (click)="toggleExplorer(explorer.run)">
-      <mat-icon>play_arrow</mat-icon>
+      <mat-icon svgIcon="play-arrow"></mat-icon>
     </div>
     <div class="button" tippy="Add" [ngClass]="{ 'active': activeExplorer === explorer.add }"
       (click)="toggleExplorer(explorer.add)">
-      <mat-icon>add</mat-icon>
+      <mat-icon svgIcon="add"></mat-icon>
     </div>
     <div class="spacer"></div>
     <div class="button" tippy="Help" (click)="openHelp()">
-      <mat-icon>help_outline</mat-icon>
+      <mat-icon svgIcon="help-outline"></mat-icon>
     </div>
   </div>
 

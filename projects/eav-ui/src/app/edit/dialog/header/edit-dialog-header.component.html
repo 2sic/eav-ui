@@ -1,7 +1,7 @@
 <mat-card *ngIf="templateVars$ | async as data" class="header">
   <button mat-icon-button class="header__exit-button" (click)="close()"
     [tippy]="(eavService.eavConfig.isParentDialog ? 'Form.Buttons.Exit.Tip' : 'Form.Buttons.Return.Tip') | translate">
-    <mat-icon>{{ eavService.eavConfig.isParentDialog ? 'clear' : 'arrow_back' }}</mat-icon>
+    <mat-icon [svgIcon]="eavService.eavConfig.isParentDialog ? 'clear' : 'arrow-back'"></mat-icon>
   </button>
 
   <div class="header__langs">
@@ -9,12 +9,12 @@
   </div>
 
   <mat-icon *ngIf="data.readOnly" class="header__hint-icon"
-    [tippy]="('General.ReadOnlyHint.' + data.readOnlyReason) | translate" [tippyDisabled]="!data.readOnlyReason">
-    lock
+    [tippy]="('General.ReadOnlyHint.' + data.readOnlyReason) | translate" [tippyDisabled]="!data.readOnlyReason"
+    svgIcon="lock">
   </mat-icon>
 
-  <mat-icon *ngIf="eavService.eavConfig.isCopy" class="header__hint-icon" [tippy]="'General.CopyHint' | translate">
-    file_copy
+  <mat-icon *ngIf="eavService.eavConfig.isCopy" class="header__hint-icon" [tippy]="'General.CopyHint' | translate"
+    svgIcon="file-copy">
   </mat-icon>
 
   <button mat-button class="header__publish-button" [disabled]="data.readOnly" (click)="openPublishStatusDialog()"

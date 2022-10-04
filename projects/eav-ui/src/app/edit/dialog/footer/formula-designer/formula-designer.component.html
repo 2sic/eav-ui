@@ -46,13 +46,13 @@
 
       <button mat-icon-button tippy="FreeText Target"
         [disabled]="data.designer.entityGuid == null || data.designer.fieldName == null" (click)="toggleFreeText()">
-        <mat-icon>text_fields</mat-icon>
+        <mat-icon svgIcon="text-fields"></mat-icon>
       </button>
 
       <div class="spacer"></div>
 
       <button mat-icon-button tippy="Help" (click)="openFormulasHelp()">
-        <mat-icon>help</mat-icon>
+        <mat-icon svgIcon="help"></mat-icon>
       </button>
     </div>
 
@@ -98,19 +98,19 @@
 
       <div class="formula-actions-box">
         <button mat-icon-button tippy="Edit" (click)="toggleEdit()">
-          <mat-icon>edit</mat-icon>
+          <mat-icon svgIcon="edit"></mat-icon>
         </button>
         <button mat-icon-button tippy="Reset" (click)="reset()">
-          <mat-icon>history</mat-icon>
+          <mat-icon svgIcon="history"></mat-icon>
         </button>
         <button *ngIf="allowSaveFormula" mat-icon-button tippy="Save"
           [tippyDisabled]="!data.designer.editMode || !data.formula?.source"
           [disabled]="!data.designer.editMode || !data.formula?.source || data.saving" (click)="save()">
-          <mat-icon>save</mat-icon>
+          <mat-icon svgIcon="save"></mat-icon>
         </button>
         <button mat-icon-button class="run-button" tippy="Run"
           [disabled]="!data.designer.editMode || !data.formula?.source" (click)="run()">
-          <mat-icon>play_arrow</mat-icon>
+          <mat-icon svgIcon="play-arrow"></mat-icon>
         </button>
       </div>
     </div>

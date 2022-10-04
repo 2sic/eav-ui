@@ -26,11 +26,11 @@
       </mat-autocomplete>
     </mat-form-field>
     <button mat-icon-button class="options-box__copy" tippy="Copy" [disabled]="!data.isMatch" (click)="copySelected()">
-      <mat-icon>file_copy</mat-icon>
+      <mat-icon svgIcon="file-copy"></mat-icon>
     </button>
   </div>
 
-  <div class="dialog-component-actions">
+  <div class=" dialog-component-actions">
     <button mat-raised-button (click)="closeDialog()">Cancel</button>
     <button mat-raised-button color="accent" [disabled]="!data.isMatch" (click)="save()">Save</button>
   </div>

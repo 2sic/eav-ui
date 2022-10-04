@@ -15,9 +15,6 @@ import file from '!raw-loader!../../assets/icons/font-awesome/file.svg';
 import folderPlus from '!raw-loader!../../assets/icons/font-awesome/folder-plus.svg';
 import folder from '!raw-loader!../../assets/icons/font-awesome/folder.svg';
 import sitemap from '!raw-loader!../../assets/icons/font-awesome/sitemap.svg';
-import moreVert from '!raw-loader!@material-design-icons/svg/outlined/more_vert.svg';
-import moreHoriz from '!raw-loader!@material-design-icons/svg/outlined/more_horiz.svg';
-import filterCenterFocus from '!raw-loader!@material-design-icons/svg/outlined/filter_center_focus.svg';
 import { Injectable } from '@angular/core';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -44,19 +41,10 @@ export class LoadIconsService {
     sitemap,
   };
 
-  private iconsMaterial: Record<string, string> = {
-    'more-vert': moreVert,
-    'more-horiz': moreHoriz,
-    'filter-center-focus': filterCenterFocus,
-  };
-
   constructor(private matIconRegistry: MatIconRegistry, private domSanitizer: DomSanitizer) { }
 
   load() {
     Object.entries(this.icons).forEach(([name, svg]) => {
-      this.matIconRegistry.addSvgIconLiteral(name, this.domSanitizer.bypassSecurityTrustHtml(svg));
-    });
-    Object.entries(this.iconsMaterial).forEach(([name, svg]) => {
       this.matIconRegistry.addSvgIconLiteral(name, this.domSanitizer.bypassSecurityTrustHtml(svg));
     });
   }
