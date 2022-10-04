@@ -196,11 +196,11 @@
     }
   },
   "ManageContentList": {
-    "Title": "Manage content-item lists",
-    "Description": "You can manage the list header here (if it is defined):",
+    "Title": "Manage item list",
+    "Description": "You can manage the list header here (if it is defined).",
     "NoHeader": "(this list has no header)",
-    "SortItems": "Sort the items by dragging as you need, then save:",
-    "SortLotsOfItems": "Sort the items by dragging and scrolling with mouse wheel as you need, then save:"
+    "SortItems": "Sort the items by dragging as needed.",
+    "SortLotsOfItems": "Sort the items by dragging and scrolling with mouse wheel as needed."
   },
   "Extension.TinyMce": {
     "Link.AdamFile": "Link ADAM file (recommended)",

@@ -97,7 +97,7 @@
     "Buttons": {
       "NotSave": "Änderungen verwerfen",
       "Save": "Speichern",
-      "Cancel": "Cancel"
+      "Cancel": "Abbrechen"
     },
     "CopyHint": "Dies ist eine Kopie und wird als neues Element gespeichert",
     "ReadOnlyHint": {
@@ -196,11 +196,11 @@
     }
   },
   "ManageContentList": {
-    "Title": "Manage content-item lists",
-    "Description": "You can manage the list header here (if it is defined):",
-    "NoHeader": "(this list has no header)",
-    "SortItems": "Sort the items by dragging as you need, then save:",
-    "SortLotsOfItems": "Sort the items by dragging and scrolling with mouse wheel as you need, then save:"
+    "Title": "Elementen-Liste verwalten",
+    "Description": "Hier kannst du das Titel-Element verwalten (sofern definiert):",
+    "NoHeader": "(diese Liste hat kein Titel-Element)",
+    "SortItems": "Sortier die Einträge indem du sie mit der Maus rumziehst. ",
+    "SortLotsOfItems": "Sortier die vielen Einträge indem du sie mit der Maus ziehst und dann mit dem Mausrad scrollst. "
   },
   "Extension.TinyMce": {
     "Link.AdamFile": "ADAM Datei verlinken (empfohlen)",
