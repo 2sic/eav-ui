@@ -188,7 +188,7 @@ export class AppConfigurationComponent implements OnInit, OnChanges, OnDestroy {
     this.snackBar.open('Exporting...');
     this.exportAppService.exportForVersionControl(true, false).subscribe({
       next: result => {
-        this.snackBar.open('Export done. Please check your \'.data\' folder', null, { duration: 3000 });
+        this.snackBar.open('Export completed into the \'App_Data\' folder.', null, { duration: 3000 });
       },
       error: (error: HttpErrorResponse) => {
         this.snackBar.open('Export failed. Please check console for more information', null, { duration: 3000 });
