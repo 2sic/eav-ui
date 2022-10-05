@@ -159,14 +159,16 @@ export class MetadataComponent implements OnInit, OnDestroy {
 
   private fetchMetadata() {
     this.metadataService.getMetadata(this.targetType, this.keyType, this.key).pipe(
-      tap(metadata => {
-        metadata.Recommendations.forEach(x => { 
-          if (x.Icon.startsWith("base64")) {
-            x.Icon = x.Icon.replace("base64:", "");
-            x.Icon = atob(x.Icon);
-            x.Icon = x.Icon.replace('fill="#000000"', 'fill="#FFFFFF"');
+      map(metadata => {
+        metadata.Recommendations.forEach(recommendation => { 
+          if (recommendation.Icon.startsWith("base64")) {
+            recommendation.Icon = recommendation.Icon.replace("base64:", "");
+            recommendation.Icon = atob(recommendation.Icon);//Buffer.from(recommendation.Icon, 'base64').toString('binary');
+            //this line is necessary for showing icons in white since we get them from metadata in black
+            recommendation.Icon = recommendation.Icon.replace('fill="#000000"', 'fill="#FFFFFF"');
           }
         })
+        return metadata;
       }),
       tap(metadata => {
         this.metadata$.next(metadata.Items);
