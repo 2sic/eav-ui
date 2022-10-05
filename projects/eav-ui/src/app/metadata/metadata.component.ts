@@ -161,11 +161,9 @@ export class MetadataComponent implements OnInit, OnDestroy {
     this.metadataService.getMetadata(this.targetType, this.keyType, this.key).pipe(
       map(metadata => {
         metadata.Recommendations.forEach(recommendation => { 
-          if (recommendation.Icon.startsWith("base64")) {
+          if (recommendation.Icon.startsWith("base64:")) {
             recommendation.Icon = recommendation.Icon.replace("base64:", "");
-            recommendation.Icon = atob(recommendation.Icon);//Buffer.from(recommendation.Icon, 'base64').toString('binary');
-            //this line is necessary for showing icons in white since we get them from metadata in black
-            recommendation.Icon = recommendation.Icon.replace('fill="#000000"', 'fill="#FFFFFF"');
+            recommendation.Icon = window.atob(recommendation.Icon);
           }
         })
         return metadata;

@@ -53,8 +53,9 @@
             <ng-template #svgIcon>
               <div [innerHTML]="recommendation.Icon | safeHtml"></div>
             </ng-template>
+            <!-- this ng-template is for compatibility until all icons are changed to svg -->
             <ng-template #matIcon>
-              <mat-icon [svgIcon]="recommendation.Icon || 'add'"></mat-icon>
+              <mat-icon [svgIcon]="recommendation.Icon || 'add'" style="color: red;"></mat-icon>
             </ng-template>
           </button>
         </eco-fab-speed-dial-actions>
