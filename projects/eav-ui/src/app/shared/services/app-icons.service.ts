@@ -1,4 +1,5 @@
-import codeCurly from '!raw-loader!./assets/icons/code-curly.svg';
+import codeCurly from '!raw-loader!../../assets/icons/code-curly.svg';
+
 import moreVert from '!raw-loader!@material-design-icons/svg/outlined/more_vert.svg';
 import moreHoriz from '!raw-loader!@material-design-icons/svg/outlined/more_horiz.svg';
 import filterCenterFocus from '!raw-loader!@material-design-icons/svg/outlined/filter_center_focus.svg';
