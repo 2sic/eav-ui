@@ -49,8 +49,13 @@
           </button>
           <button mat-mini-fab *ngFor="let recommendation of data.recommendations" [attr.label]="recommendation.Title"
             (click)="createMetadata(recommendation)">
-            <mat-icon *ngIf="!recommendation.Icon.includes('svg')" [svgIcon]="recommendation.Icon || 'add'"></mat-icon>
-            <div *ngIf="recommendation.Icon.includes('svg')" [innerHTML]="recommendation.Icon | safeHtml"></div>
+            <div *ngIf="recommendation.Icon.startsWith('<svg'); then svgIcon else matIcon"></div>
+            <ng-template #svgIcon>
+              <div [innerHTML]="recommendation.Icon | safeHtml"></div>
+            </ng-template>
+            <ng-template #matIcon>
+              <mat-icon [svgIcon]="recommendation.Icon || 'add'"></mat-icon>
+            </ng-template>
           </button>
         </eco-fab-speed-dial-actions>
       </eco-fab-speed-dial>
