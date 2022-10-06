@@ -49,13 +49,13 @@
           </button>
           <button mat-mini-fab *ngFor="let recommendation of data.recommendations" [attr.label]="recommendation.Title"
             (click)="createMetadata(recommendation)">
-            <div *ngIf="recommendation.Icon.startsWith('<svg'); then svgIcon else matIcon"></div>
+            <div *ngIf="recommendation.Icon; then svgIcon else matIcon"></div>
             <ng-template #svgIcon>
               <div [innerHTML]="recommendation.Icon | safeHtml"></div>
             </ng-template>
-            <!-- this ng-template is for compatibility until all icons are changed to svg -->
+            <!-- this is for all recommendations which don't have an own icon - they use the standard add-icon -->
             <ng-template #matIcon>
-              <mat-icon [svgIcon]="recommendation.Icon || 'add'" style="color: red;"></mat-icon>
+              <mat-icon svgIcon="add"></mat-icon>
             </ng-template>
           </button>
         </eco-fab-speed-dial-actions>
