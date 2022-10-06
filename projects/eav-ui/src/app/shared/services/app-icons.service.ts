@@ -88,14 +88,14 @@ import save from '!raw-loader!@material-design-icons/svg/outlined/save.svg';
 import playArrow from '!raw-loader!@material-design-icons/svg/outlined/play_arrow.svg';
 import dragHandle from '!raw-loader!@material-design-icons/svg/outlined/drag_handle.svg';
 import language from '!raw-loader!@material-design-icons/svg/outlined/language.svg';
+import cropFree from '!raw-loader!@material-design-icons/svg/outlined/crop_free.svg';
+import loyalty from '!raw-loader!@material-design-icons/svg/outlined/loyalty.svg';
+import stickyNote2 from '!raw-loader!@material-design-icons/svg/outlined/sticky_note_2.svg';
 
 //Icons only used in metadata recomendation
 import thumbUp from '!raw-loader!@material-design-icons/svg/outlined/thumb_up.svg';
-import stickyNote2 from '!raw-loader!@material-design-icons/svg/outlined/sticky_note_2.svg';
 import policy from '!raw-loader!@material-design-icons/svg/outlined/policy.svg';
 import notInterested from '!raw-loader!@material-design-icons/svg/outlined/not_interested.svg';
-import loyalty from '!raw-loader!@material-design-icons/svg/outlined/loyalty.svg';
-import cropFree from '!raw-loader!@material-design-icons/svg/outlined/crop_free.svg';
 
 import { Injectable } from '@angular/core';
 import { MatIconRegistry } from '@angular/material/icon';
@@ -130,6 +130,7 @@ export class AppIconsService {
     'cloud-download': cloudDownload,
     'cloud-upload': cloudUpload,
     code,
+    'crop-free': cropFree,
     'delete': deleteIcon,
     dns,
     'done-all': doneAll,
@@ -164,6 +165,7 @@ export class AppIconsService {
     'looks-one': looksOne,
     'lock-open': lockOpen,
     lock,
+    loyalty,
     'manage-search': manageSearch,
     'menu-book': menuBook,
     menu,
@@ -190,6 +192,7 @@ export class AppIconsService {
     'star-border': starBorder,
     'star-outline': starOutline,
     star,
+    'sticky-note-2': stickyNote2,
     'visibility-off': visibilityOff,
     'text-fields': textFields,
     'toggle-on': toggleOn,
@@ -199,12 +202,9 @@ export class AppIconsService {
     warning,
 
     //Icons only used in metadata recomendation
-    'crop-free': cropFree,
-    loyalty,
     'not-interested': notInterested,
     policy,
-    'sticky-note-2': stickyNote2,
-    'thumb-up': thumbUp,
+    'thumb_up': thumbUp,
   };
 
   constructor(private matIconRegistry: MatIconRegistry, private domSanitizer: DomSanitizer) { }
