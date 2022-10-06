@@ -1,7 +1,7 @@
 <div class="actions-component">
   <div class="like-button highlight" matRipple [tippy]="tooltip" (click)="editFields()">
-    <mat-icon [matBadge]="value" matBadgeColor="accent" matBadgeSize="small" [matBadgeHidden]="!value">
-      {{ icon }}
+    <mat-icon [matBadge]="value" matBadgeColor="accent" matBadgeSize="small" [matBadgeHidden]="!value" 
+      [svgIcon]="icon">
     </mat-icon>
   </div>
 </div>

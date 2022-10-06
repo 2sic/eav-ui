@@ -8,14 +8,14 @@
 
     <mat-list-item (click)="setPublishMode(PublishModes.Show)"  [disabled]="data.options[PublishModes.Show] !== true"
       [ngClass]="{ 'mat-list-item-focus': data.publishMode === PublishModes.Show }">
-      <mat-icon matListIcon>visibility</mat-icon>
+      <mat-icon matListIcon svgIcon="visibility"></mat-icon>
       <div matLine class="mat-list-item__title">{{ 'PublishStatus.Dialog.Show.Title' | translate }}</div>
       <div matLine class="mat-list-item__body">{{ 'PublishStatus.Dialog.Show.Body' | translate }}</div>
     </mat-list-item>
 
     <mat-list-item (click)="setPublishMode(PublishModes.Hide)" [disabled]="data.options[PublishModes.Hide] !== true"
       [ngClass]="{ 'mat-list-item-focus': data.publishMode === PublishModes.Hide }">
-      <mat-icon matListIcon>visibility_off</mat-icon>
+      <mat-icon matListIcon svgIcon="visibility-off"></mat-icon>
       <div matLine class="mat-list-item__title">{{ 'PublishStatus.Dialog.Hide.Title' | translate }}</div>
       <div matLine class="mat-list-item__body">{{ 'PublishStatus.Dialog.Hide.Body' | translate }}</div>
     </mat-list-item>

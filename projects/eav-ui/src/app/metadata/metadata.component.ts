@@ -3,7 +3,7 @@ import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } fro
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { BehaviorSubject, combineLatest, filter, map, Observable, pairwise, startWith, Subscription } from 'rxjs';
+import { BehaviorSubject, combineLatest, filter, map, Observable, pairwise, startWith, Subscription, tap } from 'rxjs';
 import { ContentItemsService } from '../content-items/services/content-items.service';
 import { EntitiesService } from '../content-items/services/entities.service';
 import { EavFor } from '../edit/shared/models/eav';
@@ -158,10 +158,20 @@ export class MetadataComponent implements OnInit, OnDestroy {
   }
 
   private fetchMetadata() {
-    this.metadataService.getMetadata(this.targetType, this.keyType, this.key).subscribe(metadata => {
-      this.metadata$.next(metadata.Items);
-      this.recommendations$.next(metadata.Recommendations);
-    });
+    this.metadataService.getMetadata(this.targetType, this.keyType, this.key).pipe(
+      map(metadata => {
+        metadata.Recommendations.forEach(recommendation => { 
+          if (recommendation.Icon.startsWith("base64:")) {
+            recommendation.Icon = recommendation.Icon.replace("base64:", "");
+            recommendation.Icon = window.atob(recommendation.Icon);
+          }
+        })
+        return metadata;
+      }),
+      tap(metadata => {
+        this.metadata$.next(metadata.Items);
+        this.recommendations$.next(metadata.Recommendations);
+      })).subscribe();
   }
 
   private editMetadata(metadata: MetadataItem) {

@@ -8,7 +8,7 @@
         Data
       </div>
       <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
-        <mat-icon>close</mat-icon>
+        <mat-icon svgIcon="close"></mat-icon>
       </button>
     </div>
   </div>
@@ -27,30 +27,30 @@
 
     <div class="grid-more-actions-box">
       <button mat-button tippy="Export xml list" (click)="exportContent()">
-        <mat-icon>cloud_download</mat-icon>
+        <mat-icon svgIcon="cloud-download"></mat-icon>
         <span>Data</span>
       </button>
       <button mat-button tippy="Import xml list" (click)="importContent()">
-        <mat-icon>cloud_upload</mat-icon>
+        <mat-icon svgIcon="cloud-upload"></mat-icon>
         <span>Data</span>
       </button>
       <button mat-button tippy="Import single json item" (click)="importItem()">
-        <mat-icon>cloud_upload</mat-icon>
+        <mat-icon svgIcon="cloud-upload"></mat-icon>
         <span>Item</span>
       </button>
       <button mat-button tippy="Create metadata" (click)="createMetadata()">
-        <mat-icon>local_offer</mat-icon>
+        <mat-icon svgIcon="local-offer"></mat-icon>
         <span>Create Metadata</span>
       </button>
       <button mat-button color="accent" tippy="Print filter to console" *ngIf="debugEnabled$ | async"
         (click)="debugFilter()">
-        <mat-icon>filter_list</mat-icon>
+        <mat-icon svgIcon="filter-list"></mat-icon>
         <span>Filter</span>
       </button>
     </div>
 
     <button mat-fab mat-elevation-z24 class="grid-fab" tippy="Add item" (click)="editItem(null)">
-      <mat-icon>add</mat-icon>
+      <mat-icon svgIcon="add"></mat-icon>
     </button>
   </div>
 </div>

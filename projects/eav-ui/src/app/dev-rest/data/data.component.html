@@ -3,7 +3,7 @@
     <div class="dialog-title-box">
       <div>Using REST with Data of <code>{{ data.name }}</code></div>
       <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
-        <mat-icon>close</mat-icon>
+        <mat-icon svgIcon="close"></mat-icon>
       </button>
     </div>
   </div>
@@ -45,7 +45,7 @@
     <!-- Permissions explained -->
     <mat-tab>
       <div *matTabLabel class="mat-tab-label-box" tippy="Permissions">
-        <mat-icon>person</mat-icon>
+        <mat-icon svgIcon="person"></mat-icon>
         <span>Permissions ({{ data.permissions.length }})</span>
         <mat-icon *ngIf="!data.permissions.length">warning</mat-icon>
       </div>

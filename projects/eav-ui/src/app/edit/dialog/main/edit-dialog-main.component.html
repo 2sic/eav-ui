@@ -26,14 +26,14 @@
     <extended-fab-speed-dial [disabled]="data.saveButtonDisabled" *ngIf="data.viewInitiated">
       <ng-template extendedFabSpeedDialTriggerContent>
         <button extended-fab-speed-dial-trigger matRipple [disabled]="data.saveButtonDisabled" (click)="saveAll(true)">
-          <mat-icon (click)="data.saveButtonDisabled && saveAll(false)">done</mat-icon>
+          <mat-icon (click)="data.saveButtonDisabled && saveAll(false)" svgIcon="done"></mat-icon>
           <span>{{ 'Form.Buttons.SaveAndClose' | translate }}</span>
         </button>
       </ng-template>
       <ng-template extendedFabSpeedDialActionsContent>
         <button extended-fab-speed-dial-action matRipple [disabled]="data.saveButtonDisabled" (click)="saveAll(false)">
           <span>{{ 'Form.Buttons.Save' | translate }}</span>
-          <mat-icon>save</mat-icon>
+          <mat-icon svgIcon="save"></mat-icon>
         </button>
       </ng-template>
     </extended-fab-speed-dial>

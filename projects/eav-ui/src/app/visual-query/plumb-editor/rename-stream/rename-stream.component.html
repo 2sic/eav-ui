@@ -2,7 +2,7 @@
   <div class="dialog-title-box">
     <div>Rename stream</div>
     <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
-      <mat-icon>close</mat-icon>
+      <mat-icon svgIcon="close"></mat-icon>
     </button>
   </div>
 </div>
@@ -60,11 +60,11 @@
         <div matSuffix class="selection-suffix">
           <button mat-icon-button type="button" [ngClass]="{ 'active': guidedLabel }" tippy="Pick existing value"
             (click)="toggleGuidedLabel(true)">
-            <mat-icon>search</mat-icon>
+            <mat-icon svgIcon="search"></mat-icon>
           </button>
           <button mat-icon-button type="button" [ngClass]="{ 'active': !guidedLabel }" tippy="Manual entry"
             (click)="toggleGuidedLabel(false)">
-            <mat-icon>text_fields</mat-icon>
+            <mat-icon svgIcon="text-fields"></mat-icon>
           </button>
         </div>
       </mat-form-field>

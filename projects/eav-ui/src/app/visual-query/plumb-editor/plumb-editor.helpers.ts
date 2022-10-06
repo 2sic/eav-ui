@@ -3,17 +3,17 @@ import { GuiTypes, TypeInfo, TypeInfos } from './plumb-editor.models';
 
 export const guiTypes: GuiTypes = {
   Cache: { Name: 'Cache', Icon: 'history', UiHint: 'Caching of data' },
-  Filter: { Name: 'Filter', Icon: 'filter_list', UiHint: 'Filter data - usually returning less items than came in' },
+  Filter: { Name: 'Filter', Icon: 'filter-list', UiHint: 'Filter data - usually returning less items than came in' },
   Logic: { Name: 'Logic', Icon: 'share', UiHint: 'Logic operations - usually choosing between different streams' },
   Lookup: { Name: 'Lookup', Icon: 'search', UiHint: 'Lookup operation - usually looking for other data based on a criteria' },
-  Modify: { Name: 'Modify', Icon: 'edit_attributes', UiHint: 'Modify data - usually changing, adding or removing values' },
-  Security: { Name: 'Security', Icon: 'account_circle', UiHint: 'Security - usually limit what the user sees based on his identity' },
+  Modify: { Name: 'Modify', Icon: 'edit-attributes', UiHint: 'Modify data - usually changing, adding or removing values' },
+  Security: { Name: 'Security', Icon: 'account-circle', UiHint: 'Security - usually limit what the user sees based on his identity' },
   Sort: { Name: 'Sort', Icon: 'sort', UiHint: 'Sort the items' },
-  Source: { Name: 'Source', Icon: 'cloud_upload', UiHint: 'Source of new data - usually SQL, CSV or similar' },
+  Source: { Name: 'Source', Icon: 'cloud-upload', UiHint: 'Source of new data - usually SQL, CSV or similar' },
   Target: { Name: 'Target', Icon: 'adjust', UiHint: 'Target - usually just a destination of data' },
-  Unknown: { Name: 'Unknown', Icon: 'fiber_manual_record', UiHint: 'Unknown type' },
-  Debug: { Name: 'Debug', Icon: 'bug_report', UiHint: 'Debugging Tools'},
-  System: { Name: 'System', Icon: 'military_tech', UiHint: 'System Data' },
+  Unknown: { Name: 'Unknown', Icon: 'fiber-manual-record', UiHint: 'Unknown type' },
+  Debug: { Name: 'Debug', Icon: 'bug-report', UiHint: 'Debugging Tools'},
+  System: { Name: 'System', Icon: 'military-tech', UiHint: 'System Data' },
 };
 
 export function calculateTypeInfos(pipelineDataSources: PipelineDataSource[], dataSources: DataSource[]) {

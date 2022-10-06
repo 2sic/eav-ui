@@ -1,49 +1,45 @@
 <div class="actions-component">
   <div class="like-button highlight" matRipple *ngIf="!contentType.EditInfo.ReadOnly || contentType.Properties"
     tippy="Description and more" (click)="createOrEditMetadata()">
-    <mat-icon>edit</mat-icon>
+    <mat-icon svgIcon="edit"></mat-icon>
   </div>
   <div class="like-button disabled" *ngIf="contentType.EditInfo.ReadOnly && !contentType.Properties">
-    <mat-icon>edit</mat-icon>
+    <mat-icon svgIcon="edit"></mat-icon>
   </div>
 
   <div class="like-button highlight" matRipple *ngIf="!contentType.EditInfo.ReadOnly" tippy="Metadata"
     (click)="openMetadata()">
     <mat-icon [matBadge]="contentType.Metadata.length" matBadgeColor="accent" matBadgeSize="small"
-      [matBadgeHidden]="!contentType.Metadata.length">
-      local_offer
+      [matBadgeHidden]="!contentType.Metadata.length" svgIcon="local-offer">
     </mat-icon>
   </div>
   <div class="like-button disabled" *ngIf="contentType.EditInfo.ReadOnly">
     <mat-icon [matBadge]="contentType.Metadata.length" matBadgeColor="accent" matBadgeSize="small"
-      matBadgeDisabled="true" [matBadgeHidden]="!contentType.Metadata.length">
-      local_offer
+      matBadgeDisabled="true" [matBadgeHidden]="!contentType.Metadata.length" svgIcon="local-offer">
     </mat-icon>
   </div>
 
   <div class="like-button highlight" matRipple *ngIf="!contentType.EditInfo.ReadOnly && enablePermissions"
     tippy="Permissions" (click)="openPermissions()">
     <mat-icon [matBadge]="contentType.Permissions.Count" matBadgeColor="accent" matBadgeSize="small"
-      [matBadgeHidden]="!contentType.Permissions.Count">
-      person
+      [matBadgeHidden]="!contentType.Permissions.Count" svgIcon="person">
     </mat-icon>
   </div>
   <div class="like-button disabled" *ngIf="contentType.EditInfo.ReadOnly || !enablePermissions">
     <mat-icon [matBadge]="contentType.Permissions.Count" matBadgeColor="accent" matBadgeSize="small"
-      matBadgeDisabled="true" [matBadgeHidden]="!contentType.Permissions.Count">
-      person
+      matBadgeDisabled="true" [matBadgeHidden]="!contentType.Permissions.Count" svgIcon="person">
     </mat-icon>
   </div>
 
   <div class="like-button highlight" matRipple tippy="More" [matMenuTriggerFor]="menu">
-    <mat-icon>more_horiz</mat-icon>
+    <mat-icon svgIcon="more-horiz"></mat-icon>
   </div>
 </div>
 
 <mat-menu #menu="matMenu" class="grid-more-menu">
   <ng-template matMenuContent>
     <button mat-menu-item [disabled]="contentType.EditInfo.ReadOnly" (click)="editContentType()">
-      <mat-icon>settings</mat-icon>
+      <mat-icon svgIcon="settings"></mat-icon>
       <span>Rename</span>
     </button>
     <button mat-menu-item (click)="openRestApi()">
@@ -51,19 +47,19 @@
       <span>REST API</span>
     </button>
     <button mat-menu-item (click)="exportType()">
-      <mat-icon>cloud_download</mat-icon>
+      <mat-icon svgIcon="cloud-download"></mat-icon>
       <span>Export content type</span>
     </button>
     <button mat-menu-item (click)="openDataExport()">
-      <mat-icon>cloud_download</mat-icon>
+      <mat-icon svgIcon="cloud-download"></mat-icon>
       <span>Export data</span>
     </button>
     <button mat-menu-item (click)="openDataImport()">
-      <mat-icon>cloud_upload</mat-icon>
+      <mat-icon svgIcon="cloud-upload"></mat-icon>
       <span>Import data</span>
     </button>
     <button mat-menu-item [disabled]="contentType.EditInfo.ReadOnly" (click)="deleteContentType()">
-      <mat-icon>delete</mat-icon>
+      <mat-icon svgIcon="delete"></mat-icon>
       <span>Delete</span>
     </button>
   </ng-template>

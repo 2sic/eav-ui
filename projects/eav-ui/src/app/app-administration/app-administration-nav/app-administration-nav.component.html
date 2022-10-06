@@ -11,7 +11,7 @@
         Admin
       </div>
       <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
-        <mat-icon>close</mat-icon>
+        <mat-icon svgIcon="close"></mat-icon>
       </button>
     </div>
   </div>
@@ -24,7 +24,7 @@
     [selectedIndex]="data.tabIndex">
     <mat-tab>
       <div *matTabLabel class="mat-tab-label-box" tippy="App Info">
-        <mat-icon>info</mat-icon>
+        <mat-icon svgIcon="info"></mat-icon>
         <span>Info</span>
       </div>
       <app-getting-started *matTabContent [gettingStartedUrl]="data.dialogSettings.Context.App.GettingStartedUrl">
@@ -33,7 +33,7 @@
 
     <mat-tab>
       <div *matTabLabel class="mat-tab-label-box" tippy="Data / Content">
-        <mat-icon>menu</mat-icon>
+        <mat-icon svgIcon="menu"></mat-icon>
         <span>Data</span>
       </div>
       <app-data *matTabContent [enablePermissions]="data.dialogSettings.Context.Enable.AppPermissions"></app-data>
@@ -41,7 +41,7 @@
 
     <mat-tab *ngIf="data.dialogSettings.Context.Enable.Query">
       <div *matTabLabel class="mat-tab-label-box" tippy="Queries / Visual Query Designer">
-        <mat-icon>filter_list</mat-icon>
+        <mat-icon svgIcon="filter-list"></mat-icon>
         <span>Queries</span>
       </div>
       <app-queries *matTabContent [enablePermissions]="data.dialogSettings.Context.Enable.AppPermissions">
@@ -50,7 +50,7 @@
 
     <mat-tab>
       <div *matTabLabel class="mat-tab-label-box" tippy="Views / Templates">
-        <mat-icon>layers</mat-icon>
+        <mat-icon svgIcon="layers"></mat-icon>
         <span>Views</span>
       </div>
       <app-views *matTabContent [enableCode]="data.dialogSettings.Context.Enable.CodeEditor"
@@ -62,7 +62,7 @@
 
     <mat-tab *ngIf="data.dialogSettings.Context.Enable.Query">
       <div *matTabLabel class="mat-tab-label-box" tippy="WebApi">
-        <mat-icon>offline_bolt</mat-icon>
+        <mat-icon svgIcon="offline-bolt"></mat-icon>
         <span>WebApi</span>
       </div>
       <app-web-api *matTabContent [enableCode]="data.dialogSettings.Context.Enable.CodeEditor">
@@ -71,7 +71,7 @@
 
     <mat-tab>
       <div *matTabLabel class="mat-tab-label-box" tippy="App Settings">
-        <mat-icon>settings_applications</mat-icon>
+        <mat-icon svgIcon="settings-applications"></mat-icon>
         <span>App</span>
       </div>
       <app-app-configuration *matTabContent [dialogSettings]="data.dialogSettings">

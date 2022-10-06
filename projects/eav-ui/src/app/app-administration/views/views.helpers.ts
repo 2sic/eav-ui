@@ -5,16 +5,16 @@ export function calculateViewType(view: View) {
   let icon = '';
   if (view.HasQuery) {
     value = 'Data (from query)';
-    icon = 'filter_list';
+    icon = 'filter-list';
   } else if (view.List) {
     value = 'Items (list)';
-    icon = 'format_list_numbered';
+    icon = 'format-list-numbered';
   } else if (!view.ContentType && !view.HasQuery) {
     value = 'Code';
-    icon = 'check_box_outline_blank';
+    icon = 'check-box-outline-blank';
   } else if (!view.List) {
     value = 'Item (one)';
-    icon = 'looks_one';
+    icon = 'looks-one';
   }
   return { value, icon };
 }
