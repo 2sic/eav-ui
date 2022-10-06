@@ -9,21 +9,23 @@
 }
 
 .type-icon {
-  width: inherit;
-  height: inherit;
   margin-right: 8px;
   font-size: inherit;
-  vertical-align: top;
+  vertical-align: middle;
   line-height: inherit;
 }
 
 .input-icon {
-  width: inherit;
-  height: inherit;
   margin-left: 8px;
   font-size: inherit;
-  vertical-align: top;
+  vertical-align: middle;
   line-height: inherit;
+}
+
+:host ::ng-deep .type-icon svg,
+:host ::ng-deep .input-icon svg {
+  width: inherit;
+  height: inherit;
 }
 
 .input-obsolete {
