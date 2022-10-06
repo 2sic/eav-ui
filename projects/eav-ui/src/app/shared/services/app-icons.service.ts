@@ -91,6 +91,10 @@ import language from '!raw-loader!@material-design-icons/svg/outlined/language.s
 import cropFree from '!raw-loader!@material-design-icons/svg/outlined/crop_free.svg';
 import loyalty from '!raw-loader!@material-design-icons/svg/outlined/loyalty.svg';
 import stickyNote2 from '!raw-loader!@material-design-icons/svg/outlined/sticky_note_2.svg';
+import dialpad from '!raw-loader!@material-design-icons/svg/outlined/dialpad.svg';
+import today from '!raw-loader!@material-design-icons/svg/outlined/today.svg';
+import extension from '!raw-loader!@material-design-icons/svg/outlined/extension.svg';
+import deviceUnknown from '!raw-loader!@material-design-icons/svg/outlined/device_unknown.svg';
 
 //Icons only used in metadata recomendation
 import thumbUp from '!raw-loader!@material-design-icons/svg/outlined/thumb_up.svg';
@@ -132,6 +136,8 @@ export class AppIconsService {
     code,
     'crop-free': cropFree,
     'delete': deleteIcon,
+    'device-unknown': deviceUnknown,
+    dialpad,
     dns,
     'done-all': doneAll,
     done,
@@ -140,6 +146,7 @@ export class AppIconsService {
     'edit-attributes': editAttributes,
     edit,
     'emoji-objects': emojiObjects,
+    extension,
     'fiber-manual-record': fiberManualRecord,
     'file-copy': fileCopy,
     'filter-center-focus': filterCenterFocus,
@@ -195,6 +202,7 @@ export class AppIconsService {
     'sticky-note-2': stickyNote2,
     'visibility-off': visibilityOff,
     'text-fields': textFields,
+    today,
     'toggle-on': toggleOn,
     translate,
     'tune': tune,

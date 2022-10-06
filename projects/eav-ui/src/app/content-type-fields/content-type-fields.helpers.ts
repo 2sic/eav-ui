@@ -11,5 +11,5 @@ export function calculateTypeIcon(typeName: string): string {
     [DataTypeConstants.Number]: 'dialpad',
     [DataTypeConstants.String]: 'text-fields',
   };
-  return typeIconMap[typeName] ?? 'device_unknown';
+  return typeIconMap[typeName] ?? 'device-unknown';
 }
