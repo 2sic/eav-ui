@@ -6,7 +6,7 @@
   </div>
 </div>
 
-<form #ngForm="ngForm" class="dialog-form" *ngIf="(loading$ | async) === false" (ngSubmit)="save()">
+<form #ngForm="ngForm" class="dialog-form custom-svg-styles" *ngIf="(loading$ | async) === false" (ngSubmit)="save()">
   <div class="dialog-form-content fancy-scrollbar-light">
     <div class="row-container" *ngFor="let field of fields; index as i">
       <div class="edit-input">
@@ -33,7 +33,7 @@
               <span>{{ field.Type }}</span>
             </mat-select-trigger>
             <mat-option *ngFor="let dataType of dataTypes" [value]="dataType.name">
-              <mat-icon [svgIcon]="dataType.icon"></mat-icon>
+              <mat-icon class="type-icon" [svgIcon]="dataType.icon"></mat-icon>
               <span>{{ dataType.label }}</span>
             </mat-option>
           </mat-select>
