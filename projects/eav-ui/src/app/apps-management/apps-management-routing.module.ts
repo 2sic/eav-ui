@@ -6,6 +6,7 @@ import { EmptyRouteComponent } from '../shared/components/empty-route/empty-rout
 import { appsManagementDialog } from './apps-management-nav/apps-management-dialog.config';
 import { createAppDialog } from './create-app/create-app-dialog.config';
 import { createInheritedAppDialog } from './create-inherited-app/create-inherited-app-dialog.config';
+import { registrationDialog } from './sub-dialogs/registration/registration-dialog.config';
 
 const appsManagementRoutes: Routes = [
   {
@@ -36,7 +37,11 @@ const appsManagementRoutes: Routes = [
         data: { title: 'Apps in this Zone' },
       },
       { path: 'languages', component: EmptyRouteComponent, data: { title: 'Zone Languages' } },
-      { path: 'license', component: EmptyRouteComponent, data: { title: 'Extensions / Features' } },
+      {
+        path: 'license', component: EmptyRouteComponent, data: { title: 'Extensions / Features' }, children: [
+          { path: 'registration', component: DialogEntryComponent, data: { dialog: registrationDialog, title: 'Registration' } },
+        ]
+      },
     ]
   },
 ];

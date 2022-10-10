@@ -3,6 +3,7 @@ import { GridOptions } from '@ag-grid-community/core';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ActivatedRoute, Router } from '@angular/router';
 // tslint:disable-next-line:max-line-length
 import { BehaviorSubject, catchError, distinctUntilChanged, forkJoin, Observable, of, share, startWith, Subject, Subscription, switchMap, tap, timer } from 'rxjs';
 import { GlobalConfigService } from '../../edit/shared/store/ngrx-data';
@@ -42,6 +43,8 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
 
   constructor(
     private featuresConfigService: FeaturesConfigService,
+    private router: Router,
+    private route: ActivatedRoute,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
@@ -111,6 +114,10 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
 
   openLicenseRegistration(systemInfoSet: SystemInfoSet): void {
     window.open(`https://patrons.2sxc.org/register?fingerprint=${systemInfoSet.System.Fingerprint}`, '_blank');
+  }
+
+  openRegistration(): void {
+    this.router.navigate([`registration`], { relativeTo: this.route.firstChild });
   }
 
   private showFeatureDetails(feature: Feature): void {
