@@ -3,7 +3,7 @@
 
     <div class="collapsible-header section" [tippy]="'SourceEditorSnippets.' + section.key + '.Help' | translate"
       tippyShowDelay="750" (click)="toggleSection(section.key)">
-      <mat-icon [svgIcon]="toggledSections.includes(section.key) ? 'keyboard_arrow_down' : 'keyboard_arrow_right'">
+      <mat-icon [svgIcon]="toggledSections.includes(section.key) ? 'keyboard-arrow-down' : 'keyboard-arrow-right'">
       </mat-icon>
       <span>{{ 'SourceEditorSnippets.' + section.key + '.Title' | translate }}</span>
     </div>
@@ -14,7 +14,7 @@
         <div class="collapsible-header folder"
           [tippy]="'SourceEditorSnippets.' + section.key + '.' + folder.key + '.Help' | translate" tippyShowDelay="750"
           (click)="toggleFolder(folder.key)">
-          <mat-icon [svgIcon]="toggledFolders.includes(folder.key) ? 'keyboard_arrow_down' : 'keyboard_arrow_right'">
+          <mat-icon [svgIcon]="toggledFolders.includes(folder.key) ? 'keyboard-arrow-down' : 'keyboard-arrow-right'">
           </mat-icon>
           <span>{{ 'SourceEditorSnippets.' + section.key + '.' + folder.key + '.Title' | translate }}</span>
         </div>

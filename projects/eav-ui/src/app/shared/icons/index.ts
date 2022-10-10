@@ -4,6 +4,7 @@ import codeCurly from '!raw-loader!../../assets/icons/code-curly.svg';
 // Material Icons
 import accountCircle from '!raw-loader!@material-design-icons/svg/outlined/account_circle.svg';
 import add from '!raw-loader!@material-design-icons/svg/outlined/add.svg';
+import addCircleOutline from '!raw-loader!@material-design-icons/svg/outlined/add_circle_outline.svg';
 import adjust from '!raw-loader!@material-design-icons/svg/outlined/adjust.svg';
 import appRegistration from '!raw-loader!@material-design-icons/svg/outlined/app_registration.svg';
 import arrowBack from '!raw-loader!@material-design-icons/svg/outlined/arrow_back.svg';
@@ -13,6 +14,7 @@ import bolt from '!raw-loader!@material-design-icons/svg/outlined/bolt.svg';
 import bugReport from '!raw-loader!@material-design-icons/svg/outlined/bug_report.svg';
 import cached from '!raw-loader!@material-design-icons/svg/outlined/cached.svg';
 import cancel from '!raw-loader!@material-design-icons/svg/outlined/cancel.svg';
+import check from '!raw-loader!@material-design-icons/svg/outlined/check.svg';
 import checkBox from '!raw-loader!@material-design-icons/svg/outlined/check_box.svg';
 import checkBoxOutlineBlank from '!raw-loader!@material-design-icons/svg/outlined/check_box_outline_blank.svg';
 import checkCircle from '!raw-loader!@material-design-icons/svg/outlined/check_circle.svg';
@@ -117,6 +119,7 @@ import warningOutline from '!raw-loader!@material-design-icons/svg/outlined/warn
 export const iconsMaterial: Record<string, string> = {
   'account-circle': accountCircle,
   add,
+  'add-circle-outline': addCircleOutline,
   adjust,
   // warning: was app-regostration before!
   'app-registration': appRegistration,
@@ -127,10 +130,11 @@ export const iconsMaterial: Record<string, string> = {
   'bug-report': bugReport,
   cached,
   cancel,
-  'check-box-outline-blank': checkBoxOutlineBlank,
+  check,
   'check-box': checkBox,
-  'check-circle-outline': checkCircleOutline,
+  'check-box-outline-blank': checkBoxOutlineBlank,
   'check-circle': checkCircle,
+  'check-circle-outline': checkCircleOutline,
   circle,
   clear,
   close,
@@ -147,22 +151,22 @@ export const iconsMaterial: Record<string, string> = {
   done,
   'download-for-offline': downloadForOffline,
   'drag-handle': dragHandle,
-  'edit-attributes': editAttributes,
   edit,
+  'edit-attributes': editAttributes,
   'emoji-objects': emojiObjects,
   extension,
   'fiber-manual-record': fiberManualRecord,
   'file-copy': fileCopy,
+  filter: filterIcon,
   'filter-center-focus': filterCenterFocus,
   'filter-list': filterList,
-  filter: filterIcon,
   'format-list-numbered': formatListNumbered,
   foundation,
   functions,
-  'help-outline': helpOutline,
   help,
-  'history-toggle-off': historyToggleOff,
+  'help-outline': helpOutline,
   history,
+  'history-toggle-off': historyToggleOff,
   'holiday-village': holidayVillage,
   'import-export': importExport,
   info,
@@ -174,8 +178,8 @@ export const iconsMaterial: Record<string, string> = {
   link,
   'local-offer': localOffer,
   'looks-one': looksOne,
-  'lock-open': lockOpen,
   lock,
+  'lock-open': lockOpen,
   loyalty,
   'manage-search': manageSearch,
   'menu-book': menuBook,
@@ -196,14 +200,14 @@ export const iconsMaterial: Record<string, string> = {
   restore,
   save,
   search,
-  'settings-applications': settingsApplications,
   settings,
+  'settings-applications': settingsApplications,
   share,
   sort,
   speed,
+  star,
   'star-border': starBorder,
   'star-outline': starOutline,
-  star,
   'sticky-note-2': stickyNote2,
   'visibility-off': visibilityOff,
   'text-fields': textFields,

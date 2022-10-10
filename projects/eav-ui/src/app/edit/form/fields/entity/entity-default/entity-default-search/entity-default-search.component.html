@@ -49,7 +49,7 @@
         <button mat-icon-button [tippy]="'Fields.Entity.New' | translate" [disabled]="disabled || disableAddNew"
           *ngIf="data.enableCreate && data.entityType && !selectedEntities.length && !data.allowMultiValue"
           (click)="openNewEntityDialog()">
-          <mat-icon>add_circle_outline</mat-icon>
+          <mat-icon svgIcon="add-circle-outline"></mat-icon>
         </button>
       </div>
     </div>
