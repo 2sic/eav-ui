@@ -1,5 +1,7 @@
+// Font-Awesome
 import codeCurly from '!raw-loader!../../assets/icons/code-curly.svg';
 
+// Material Icons
 import accountCircle from '!raw-loader!@material-design-icons/svg/outlined/account_circle.svg';
 import add from '!raw-loader!@material-design-icons/svg/outlined/add.svg';
 import adjust from '!raw-loader!@material-design-icons/svg/outlined/adjust.svg';
@@ -95,16 +97,24 @@ import tune from '!raw-loader!@material-design-icons/svg/outlined/tune.svg';
 import visibility from '!raw-loader!@material-design-icons/svg/outlined/visibility.svg';
 import visibilityOff from '!raw-loader!@material-design-icons/svg/outlined/visibility_off.svg';
 import warning from '!raw-loader!@material-design-icons/svg/outlined/warning.svg';
+import warningOutline from '!raw-loader!@material-design-icons/svg/outlined/warning_amber.svg';
 
-import { Injectable } from '@angular/core';
-import { MatIconRegistry } from '@angular/material/icon';
-import { DomSanitizer } from '@angular/platform-browser';
+// TODO: @SDV
+// This isn't quite done yet
+// Problem: it's easy to
+// - mis-type the icon name in code
+// - easy to miss when an icon isn't actually used any more, because all references are strings
+//
+// Solution
+// - Create an object with all the icon names - see export `icons`
+// - always use that to reference the names
+// - it's ok if the names are then not kebab-case, we can use warningOutline for example, because we always use the constant to reference it
+//
+// TODO: to finish
+// 1. Move all icons to the icons-lib
+// 2. change all references to use that constant
 
-const iconsFontAwesome: Record<string, string> = {
-  'code-curly': codeCurly,
-};
-
-const iconsMaterial: Record<string, string> = {
+export const iconsMaterial: Record<string, string> = {
   'account-circle': accountCircle,
   add,
   adjust,
@@ -205,18 +215,23 @@ const iconsMaterial: Record<string, string> = {
   warning,
 };
 
-@Injectable()
-export class AppIconsService {
-  constructor(private matIconRegistry: MatIconRegistry, private domSanitizer: DomSanitizer) { }
+// 2dm: New object based icon-library
+// to improve constant use of icon names
+export const iconLib = {
+  note: stickyNote2,
+  warning,
+  warningOutline,
+};
 
-  load() {
-    this.matIconRegistry.setDefaultFontSetClass('material-icons-outlined');
+/**
+ * Icon names object - to use icon-names as constants across code
+ * and therefore ensure that we don't mistype the icon names
+ */
+export const icons = Object.keys(iconLib).reduce((a, v) => ({ ...a, [v]: v}), {}) as unknown as typeof iconLib;
 
-    Object.entries(iconsFontAwesome).forEach(([name, svg]) => {
-      this.matIconRegistry.addSvgIconLiteral(name, this.domSanitizer.bypassSecurityTrustHtml(svg));
-    });
-    Object.entries(iconsMaterial).forEach(([name, svg]) => {
-      this.matIconRegistry.addSvgIconLiteral(name, this.domSanitizer.bypassSecurityTrustHtml(svg));
-    });
-  }
-}
+export const iconsFontAwesome: Record<string, string> = {
+  'code-curly': codeCurly,
+};
+
+console.warn('test 2dm');
+console.log('icon:', icons.note, icons.warning, icons.warningOutline);
