@@ -1,1 +1,74 @@
-<p>registration works!</p>
+<ng-container><!-- *ngIf="(templateVars$ | async) as data" -->
+
+  <div mat-dialog-title>
+      <div class="dialog-title-box">2sxc Registration</div>
+  </div>
+
+  <p class="dialog-description">
+    Here you can register your system (registration is free). This happens through our <a href="https://patrons.2sxc.org/" target="_blank">Patrons</a> platform.
+  </p>
+
+  <div *ngIf="{systemInfoSet: systemInfoSet$ | async} as data">
+    <p class="dialog-description" *ngIf="data.systemInfoSet">
+      <b>Status:</b> this system is registered to {{ data.systemInfoSet.License.Owner }}
+    </p>
+    <p class="dialog-description" *ngIf="!data.systemInfoSet">
+      <b>Status:</b> this system is not yet registered
+    </p>
+  </div>
+
+
+  <mat-card>
+    <mat-card-header>
+      <div mat-card-avatar>
+        <mat-icon svgIcon="settings-applications"></mat-icon>
+      </div>
+      <mat-card-title>Automatic Registration</mat-card-title>
+      <mat-card-subtitle>The simple way</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="card-actions" *ngIf="{systemInfoSet: systemInfoSet$ | async} as data">
+        <button mat-button mat-button tippy="Register" *ngIf="data.systemInfoSet" (click)="openLicenseRegistration(data.systemInfoSet)">
+          <mat-icon svgIcon="app-registration"></mat-icon>
+          <span>Register</span>
+        </button>
+        <button mat-button tippy="Retrieve license" (click)="retrieveLicense()">
+          <mat-icon svgIcon="download-for-offline"></mat-icon>
+          <span>Retrieve license</span>
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <div class="card-content-separator"></div>
+
+  <mat-card>
+    <mat-card-header>
+      <div mat-card-avatar>
+        <mat-icon svgIcon="waving-hand"></mat-icon>
+      </div>
+      <mat-card-title>Manual Registration</mat-card-title>
+      <mat-card-subtitle>Offline or special scenarios</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="card-actions" *ngIf="{debugEnabled: debugEnabled$ | async} as data">
+        <button mat-button mat-button tippy="Register"
+          (click)="registerManually()">
+          <mat-icon svgIcon="app-registration"></mat-icon>
+          <span>Register Manually</span>
+        </button>
+        <button mat-button tippy="Upload license" *ngIf="data.debugEnabled" (click)="openLicenseUpload()">
+          <mat-icon svgIcon="cloud-upload"></mat-icon>
+          <span>Upload license</span>
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <div class="dialog-component-actions">
+    <button mat-raised-button (click)="closeDialog()">
+      Cancel
+    </button>
+  </div>
+
+</ng-container>

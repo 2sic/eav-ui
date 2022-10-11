@@ -100,6 +100,7 @@ import visibility from '!raw-loader!@material-design-icons/svg/outlined/visibili
 import visibilityOff from '!raw-loader!@material-design-icons/svg/outlined/visibility_off.svg';
 import warning from '!raw-loader!@material-design-icons/svg/outlined/warning.svg';
 import warningOutline from '!raw-loader!@material-design-icons/svg/outlined/warning_amber.svg';
+import wavingHand from '!raw-loader!@material-design-icons/svg/outlined/waving_hand.svg';
 
 // TODO: @SDV
 // This isn't quite done yet
@@ -217,6 +218,7 @@ export const iconsMaterial: Record<string, string> = {
   tune,
   visibility,
   warning,
+  'waving-hand': wavingHand,
 };
 
 // 2dm: New object based icon-library

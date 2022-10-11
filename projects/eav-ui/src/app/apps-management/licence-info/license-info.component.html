@@ -27,22 +27,7 @@
 
 <div class="spacer"></div>
 
-<div class="actions-box" *ngIf="{
-  debugEnabled: debugEnabled$ | async,
-  systemInfoSet: systemInfoSet$ | async
-} as data">
-  <button mat-button tippy="Register" *ngIf="data.systemInfoSet" (click)="openLicenseRegistration(data.systemInfoSet)">
-    <mat-icon svgIcon="app-registration"></mat-icon>
-    <span>Register</span>
-  </button>
-  <button mat-button tippy="Retrieve license" (click)="retrieveLicense()">
-    <mat-icon svgIcon="download-for-offline"></mat-icon>
-    <span>Retrieve license</span>
-  </button>
-  <button mat-button color="accent" tippy="Upload license" *ngIf="data.debugEnabled" (click)="openLicenseUpload()">
-    <mat-icon svgIcon="cloud-upload"></mat-icon>
-    <span>Upload license</span>
-  </button>
+<div class="actions-box">
   <button mat-button tippy="Registration" (click)="openRegistration()">
     <mat-icon svgIcon="app-registration"></mat-icon>
     <span>Registration</span>
