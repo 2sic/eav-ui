@@ -17,6 +17,7 @@ import { License } from '../models/license.model';
 import { SystemInfoSet } from '../models/system-info.model';
 import { FeaturesConfigService } from '../services/features-config.service';
 import { ZoneService } from '../services/zone.service';
+import { GoToRegistration } from '../sub-dialogs/registration/go-to-registration';
 import { FeatureDetailsDialogComponent } from './feature-details-dialog/feature-details-dialog.component';
 import { FeatureDetailsDialogData } from './feature-details-dialog/feature-details-dialog.models';
 import { FeaturesListEnabledReasonComponent } from './features-list-enabled-reason/features-list-enabled-reason.component';
@@ -117,7 +118,7 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
   }
 
   openRegistration(): void {
-    this.router.navigate([`registration`], { relativeTo: this.route.firstChild });
+    this.router.navigate([GoToRegistration.getUrl()], { relativeTo: this.route.firstChild });
   }
 
   private showFeatureDetails(feature: Feature): void {
