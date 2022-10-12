@@ -1,7 +1,8 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { BehaviorSubject, combineLatest, filter, map, Observable, pairwise, startWith, Subscription } from 'rxjs';
 import { DialogSettings } from '../../app-administration/models';
 import { copyToClipboard } from '../../shared/helpers/copy-to-clipboard.helper';
 import { EavWindow } from '../../shared/models/eav-window.model';
@@ -10,6 +11,7 @@ import { SiteLanguage } from '../models/site-language.model';
 import { SystemInfoSet } from '../models/system-info.model';
 import { SxcInsightsService } from '../services/sxc-insights.service';
 import { ZoneService } from '../services/zone.service';
+import { GoToRegistration } from '../sub-dialogs/registration/go-to-registration';
 import { InfoTemplate, SystemInfoTemplateVars } from './system-info.models';
 
 declare const window: EavWindow;
@@ -29,12 +31,15 @@ export class SystemInfoComponent implements OnInit, OnDestroy {
   private systemInfoSet$: BehaviorSubject<SystemInfoSet | undefined>;
   private languages$: BehaviorSubject<SiteLanguage[] | undefined>;
   private loading$: BehaviorSubject<boolean>;
+  private subscription = new Subscription();
 
   constructor(
     private zoneService: ZoneService,
     private snackBar: MatSnackBar,
     private dialogService: DialogService,
     private sxcInsightsService: SxcInsightsService,
+    private router: Router,
+    private route: ActivatedRoute,
   ) { }
 
   ngOnInit(): void {
@@ -45,12 +50,14 @@ export class SystemInfoComponent implements OnInit, OnDestroy {
     this.buildTemplateVars();
     this.getSystemInfo();
     this.getLanguages();
+    this.refreshOnChildClosed();
   }
 
   ngOnDestroy(): void {
     this.systemInfoSet$.complete();
     this.languages$.complete();
     this.loading$.complete();
+    this.subscription.unsubscribe();
   }
 
   copyToClipboard(text: string): void {
@@ -111,6 +118,7 @@ export class SystemInfoComponent implements OnInit, OnDestroy {
     const systemInfos$ = this.systemInfoSet$.pipe(
       map(systemInfoSet => {
         if (systemInfoSet == null) { return; }
+        console.log(this.router.url);
         const info: InfoTemplate[] = [
           { label: 'CMS', value: `2sxc v.${systemInfoSet.System.EavVersion}` },
           { label: 'Platform', value: `${systemInfoSet.System.Platform} v.${systemInfoSet.System.PlatformVersion}` },
@@ -120,14 +128,19 @@ export class SystemInfoComponent implements OnInit, OnDestroy {
             label: 'Registered to',
             value: systemInfoSet.License.Owner || '(unregistered)',
             link: systemInfoSet.License.Owner
-              ? undefined
+              ? {
+                url: this.router.url + "/" + GoToRegistration.getUrl(),
+                label: 'manage',
+                target: 'angular',
+              }
               : {
-                url: `https://patrons.2sxc.org/register?fingerprint=${systemInfoSet.System.Fingerprint}`,
+                url: this.router.url + "/" + GoToRegistration.getUrl(),
                 label: 'register',
-                target: '_blank',
+                target: 'angular',
               },
           },
         ];
+        console.log(info);
         return info;
       })
     );
@@ -211,6 +224,22 @@ export class SystemInfoComponent implements OnInit, OnDestroy {
         };
         return templateVars;
       }),
+    );
+  }
+
+  private refreshOnChildClosed() {
+    this.subscription.add(
+      this.router.events.pipe(
+        filter(event => event instanceof NavigationEnd),
+        startWith(!!this.route.snapshot.firstChild.firstChild),
+        map(() => !!this.route.snapshot.firstChild.firstChild),
+        pairwise(),
+        filter(([hadChild, hasChild]) => hadChild && !hasChild),
+      ).subscribe(() => {
+        this.buildTemplateVars();
+        this.getSystemInfo();
+        this.getLanguages();
+      })
     );
   }
 }

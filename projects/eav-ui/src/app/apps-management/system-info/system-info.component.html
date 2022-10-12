@@ -13,10 +13,7 @@
         <div class="info-row__value">
           <span [tippy]="info.value" (click)="copyToClipboard(info.value)">{{ info.value }}</span>
           <ng-container *ngIf="info.link">
-            <a class="info-row__link" *ngIf="info.link.target === 'angular'" [routerLink]="info.link.url">{{
-              info.link.label }}</a>
-            <a class="info-row__link" *ngIf="info.link.target !== 'angular'" [href]="info.link.url"
-              [target]="info.link.target">{{ info.link.label }}</a>
+            <a class="info-row__link" [routerLink]="info.link.url">{{ info.link.label }}</a>
           </ng-container>
         </div>
       </div>
