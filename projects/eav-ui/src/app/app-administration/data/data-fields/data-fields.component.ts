@@ -1,6 +1,7 @@
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
+import { MatBadgePosition } from '@angular/material/badge';
 import { ContentType } from '../../models/content-type.model';
 import { DataFieldsParams } from './data-fields.models';
 
@@ -13,6 +14,7 @@ export class DataFieldsComponent implements ICellRendererAngularComp {
   value: number;
   tooltip: string;
   icon: string;
+  position: MatBadgePosition;
 
   private params: ICellRendererParams & DataFieldsParams;
   private contentType: ContentType;
@@ -25,6 +27,7 @@ export class DataFieldsComponent implements ICellRendererAngularComp {
       ? 'Edit fields'
       : `${this.contentType.EditInfo.ReadOnlyMessage ? `${this.contentType.EditInfo.ReadOnlyMessage}\n\n` : ''}This ContentType shares the definition of #${this.contentType.SharedDefId} so you can't edit it here. Read 2sxc.org/help?tag=shared-types`;
     this.icon = !this.contentType.EditInfo.ReadOnly ? 'dns' : 'share';
+    this.position = 'below after';
   }
 
   refresh(params?: any): boolean {
