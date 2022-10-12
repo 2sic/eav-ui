@@ -1,3 +1,4 @@
+<!-- TODO: @stv - the container only makes sense, if you prep async data here for the entire template to make it simpler -->
 <ng-container>
 
   <div mat-dialog-title>
@@ -15,9 +16,15 @@
     <p class="dialog-description" *ngIf="!data.systemInfoSet">
       <b>Status:</b> this system is not yet registered
     </p>
+
+    <!-- <p class="dialog-description">
+      <b>Status:</b> {{ data.systemInfoSet ? "this system is not yet registered" : "other stuff" }}
+    </p> -->
+    <!-- todo: also add a line with the fingerprint, ensure that it can be copied through click, and add note "(click on it to copy to clipboard)"-->
   </div>
 
 
+  <!-- TODO: PLEASE PUT cards side-by-side and ensure they are the same height -->
   <mat-card>
     <mat-card-header>
       <div mat-card-avatar>
@@ -27,6 +34,10 @@
       <mat-card-subtitle>The simple way</mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
+      <p>
+        This will open 2sxc Patrons and give it the system fingerprint,
+        so you can then log in and assign it a name and features you want to activate.
+      </p>
       <div class="card-actions" *ngIf="{systemInfoSet: systemInfoSet$ | async} as data">
         <button mat-button mat-button tippy="Register" *ngIf="data.systemInfoSet" (click)="openLicenseRegistration(data.systemInfoSet)">
           <mat-icon svgIcon="app-registration"></mat-icon>
@@ -51,6 +62,11 @@
       <mat-card-subtitle>Offline or special scenarios</mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
+      <p>
+        For offline or special scenarios you can just go to 2sxc Patrons and copy/paste the fingerprint yourself.
+        <br>
+        Click on the fingerprint above to copy it to your clipboard.
+      </p>
       <div class="card-actions">
         <button mat-button mat-button tippy="Register"
           (click)="registerManually()">
