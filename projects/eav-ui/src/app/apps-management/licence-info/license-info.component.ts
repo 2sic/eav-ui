@@ -5,7 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 // tslint:disable-next-line:max-line-length
 import { BehaviorSubject, catchError, filter, forkJoin, map, Observable, of, pairwise, share, startWith, Subject, Subscription, switchMap, tap, timer } from 'rxjs';
-import { GlobalConfigService } from '../../edit/shared/store/ngrx-data';
+import { BaseMainComponent } from '../../shared/components/base-component/baseMain.component';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
@@ -26,7 +26,7 @@ import { FeaturesStatusParams } from './features-status/features-status.models';
   templateUrl: './license-info.component.html',
   styleUrls: ['./license-info.component.scss'],
 })
-export class LicenseInfoComponent implements OnInit, OnDestroy {
+export class LicenseInfoComponent extends BaseMainComponent implements OnInit, OnDestroy {
   @ViewChild(AgGridAngular) private gridRef?: AgGridAngular;
 
   licenses$: Observable<License[]>;
@@ -34,16 +34,17 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
   gridOptions = this.buildGridOptions();
 
   private refreshLicenses$ = new Subject<void>();
-  private subscription = new Subscription();
 
   constructor(
+    router: Router,
+    route: ActivatedRoute,
     private featuresConfigService: FeaturesConfigService,
-    private router: Router,
-    private route: ActivatedRoute,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef
-  ) { }
+  ) { 
+    super(router, route);
+  }
 
   ngOnInit(): void {
     this.licenses$ = this.refreshLicenses$.pipe(
@@ -52,12 +53,12 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
       tap(() => this.disabled$.next(false)),
       share(),
     );
-    this.refreshOnChildClosed()
+    this.subscription.add(this.refreshOnChildClosed().subscribe(() => { this.refreshLicenses$.next(); }));
   }
 
   ngOnDestroy(): void {
     this.disabled$.complete();
-    this.subscription.unsubscribe();
+    super.ngOnDestroy();
   }
 
   trackLicenses(index: number, license: License): string {
@@ -198,19 +199,5 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
       ],
     };
     return gridOptions;
-  }
-
-  private refreshOnChildClosed() {
-    this.subscription.add(
-      this.router.events.pipe(
-        filter(event => event instanceof NavigationEnd),
-        startWith(!!this.route.snapshot.firstChild.firstChild),
-        map(() => !!this.route.snapshot.firstChild.firstChild),
-        pairwise(),
-        filter(([hadChild, hasChild]) => hadChild && !hasChild),
-      ).subscribe(() => {
-        this.refreshLicenses$.next();
-      })
-    );
   }
 }

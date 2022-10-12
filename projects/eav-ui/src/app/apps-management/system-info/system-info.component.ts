@@ -4,6 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, filter, map, Observable, pairwise, startWith, Subscription } from 'rxjs';
 import { DialogSettings } from '../../app-administration/models';
+import { BaseMainComponent } from '../../shared/components/base-component/baseMain.component';
 import { copyToClipboard } from '../../shared/helpers/copy-to-clipboard.helper';
 import { EavWindow } from '../../shared/models/eav-window.model';
 import { DialogService } from '../../shared/services/dialog.service';
@@ -21,7 +22,7 @@ declare const window: EavWindow;
   templateUrl: './system-info.component.html',
   styleUrls: ['./system-info.component.scss'],
 })
-export class SystemInfoComponent implements OnInit, OnDestroy {
+export class SystemInfoComponent extends BaseMainComponent implements OnInit, OnDestroy {
   @Input() dialogSettings: DialogSettings;
 
   pageLogDuration: number;
@@ -31,16 +32,17 @@ export class SystemInfoComponent implements OnInit, OnDestroy {
   private systemInfoSet$: BehaviorSubject<SystemInfoSet | undefined>;
   private languages$: BehaviorSubject<SiteLanguage[] | undefined>;
   private loading$: BehaviorSubject<boolean>;
-  private subscription = new Subscription();
 
   constructor(
+    router: Router,
+    route: ActivatedRoute,
     private zoneService: ZoneService,
     private snackBar: MatSnackBar,
     private dialogService: DialogService,
     private sxcInsightsService: SxcInsightsService,
-    private router: Router,
-    private route: ActivatedRoute,
-  ) { }
+  ) {
+    super(router, route)
+   }
 
   ngOnInit(): void {
     this.systemInfoSet$ = new BehaviorSubject<SystemInfoSet | undefined>(undefined);
@@ -50,7 +52,11 @@ export class SystemInfoComponent implements OnInit, OnDestroy {
     this.buildTemplateVars();
     this.getSystemInfo();
     this.getLanguages();
-    this.refreshOnChildClosed();
+    this.subscription.add(this.refreshOnChildClosed().subscribe(() => {
+      this.buildTemplateVars();
+      this.getSystemInfo();
+      this.getLanguages();
+    }));
   }
 
   ngOnDestroy(): void {
@@ -118,7 +124,6 @@ export class SystemInfoComponent implements OnInit, OnDestroy {
     const systemInfos$ = this.systemInfoSet$.pipe(
       map(systemInfoSet => {
         if (systemInfoSet == null) { return; }
-        console.log(this.router.url);
         const info: InfoTemplate[] = [
           { label: 'CMS', value: `2sxc v.${systemInfoSet.System.EavVersion}` },
           { label: 'Platform', value: `${systemInfoSet.System.Platform} v.${systemInfoSet.System.PlatformVersion}` },
@@ -140,7 +145,6 @@ export class SystemInfoComponent implements OnInit, OnDestroy {
               },
           },
         ];
-        console.log(info);
         return info;
       })
     );
@@ -224,22 +228,6 @@ export class SystemInfoComponent implements OnInit, OnDestroy {
         };
         return templateVars;
       }),
-    );
-  }
-
-  private refreshOnChildClosed() {
-    this.subscription.add(
-      this.router.events.pipe(
-        filter(event => event instanceof NavigationEnd),
-        startWith(!!this.route.snapshot.firstChild.firstChild),
-        map(() => !!this.route.snapshot.firstChild.firstChild),
-        pairwise(),
-        filter(([hadChild, hasChild]) => hadChild && !hasChild),
-      ).subscribe(() => {
-        this.buildTemplateVars();
-        this.getSystemInfo();
-        this.getLanguages();
-      })
     );
   }
 }
