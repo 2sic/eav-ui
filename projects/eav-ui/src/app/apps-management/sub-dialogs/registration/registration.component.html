@@ -1,4 +1,4 @@
-<ng-container><!-- *ngIf="(templateVars$ | async) as data" -->
+<ng-container>
 
   <div mat-dialog-title>
       <div class="dialog-title-box">2sxc Registration</div>
@@ -51,13 +51,13 @@
       <mat-card-subtitle>Offline or special scenarios</mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
-      <div class="card-actions" *ngIf="{debugEnabled: debugEnabled$ | async} as data">
+      <div class="card-actions">
         <button mat-button mat-button tippy="Register"
           (click)="registerManually()">
           <mat-icon svgIcon="app-registration"></mat-icon>
           <span>Register Manually</span>
         </button>
-        <button mat-button tippy="Upload license" *ngIf="data.debugEnabled" (click)="openLicenseUpload()">
+        <button mat-button tippy="Upload license" (click)="openLicenseUpload()">
           <mat-icon svgIcon="cloud-upload"></mat-icon>
           <span>Upload license</span>
         </button>
@@ -67,7 +67,7 @@
 
   <div class="dialog-component-actions">
     <button mat-raised-button (click)="closeDialog()">
-      Cancel
+      Close
     </button>
   </div>
 
