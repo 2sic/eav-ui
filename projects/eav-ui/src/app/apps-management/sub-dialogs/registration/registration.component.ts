@@ -1,9 +1,10 @@
-import { Component, HostBinding, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { Component, HostBinding, OnInit, ViewContainerRef } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { catchError, Observable, of, share,  Subject} from 'rxjs';
+import { catchError, Observable, of, share} from 'rxjs';
 import { GlobalConfigService } from '../../../edit/shared/store/ngrx-data/global-config.service';
 import { FileUploadDialogComponent, FileUploadDialogData } from '../../../shared/components/file-upload-dialog';
+import { copyToClipboard } from '../../../shared/helpers/copy-to-clipboard.helper';
 import { SystemInfoSet } from '../../models/system-info.model';
 import { FeaturesConfigService } from '../../services/features-config.service';
 import { ZoneService } from '../../services/zone.service';
@@ -35,6 +36,11 @@ export class RegistrationComponent implements OnInit {
 
   closeDialog() {
     this.dialogRef.close();
+  }
+
+  copyToClipboard(text: string): void {
+    copyToClipboard(text);
+    this.snackBar.open('Copied to clipboard', null, { duration: 2000 });
   }
 
   openLicenseRegistration(systemInfoSet: SystemInfoSet): void {

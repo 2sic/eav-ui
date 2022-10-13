@@ -1,3 +1,19 @@
+.mat-cards-div {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+
+.mat-card-left {
+  width: 50%;
+  margin-right: 4px;
+}
+
+.mat-card-right {
+  width: 50%;
+  margin-left: 4px;
+}
+
 .mat-card-title {
   font-size: 20px;
   font-weight: 500;
@@ -10,10 +26,6 @@
 .mat-card-content {
   font-size: 14px;
   margin-top: 12px;
-}
-
-.card-content-separator {
-  height: 8px;
 }
 
 button .mat-icon {
