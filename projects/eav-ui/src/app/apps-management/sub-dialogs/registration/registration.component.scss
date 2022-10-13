@@ -1,0 +1,33 @@
+.mat-cards-div {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+
+.mat-card-left {
+  width: 50%;
+  margin-right: 4px;
+}
+
+.mat-card-right {
+  width: 50%;
+  margin-left: 4px;
+}
+
+.mat-card-title {
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.mat-card-subtitle {
+  font-size: 14px;
+}
+
+.mat-card-content {
+  font-size: 14px;
+  margin-top: 12px;
+}
+
+button .mat-icon {
+  margin-right: 4px;
+}

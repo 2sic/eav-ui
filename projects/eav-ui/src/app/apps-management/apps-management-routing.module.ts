@@ -6,12 +6,17 @@ import { EmptyRouteComponent } from '../shared/components/empty-route/empty-rout
 import { appsManagementDialog } from './apps-management-nav/apps-management-dialog.config';
 import { createAppDialog } from './create-app/create-app-dialog.config';
 import { createInheritedAppDialog } from './create-inherited-app/create-inherited-app-dialog.config';
+import { GoToRegistration } from './sub-dialogs/registration/go-to-registration';
 
 const appsManagementRoutes: Routes = [
   {
     path: '', component: DialogEntryComponent, data: { dialog: appsManagementDialog }, children: [
       { path: '', redirectTo: 'system', pathMatch: 'full' },
-      { path: 'system', component: EmptyRouteComponent, data: { title: 'System Info' } },
+      {
+        path: 'system', component: EmptyRouteComponent, data: { title: 'System Info' }, children: [
+          GoToRegistration.getRoute()
+        ]
+      },
       {
         path: 'list', component: EmptyRouteComponent, children: [
           {
@@ -36,7 +41,11 @@ const appsManagementRoutes: Routes = [
         data: { title: 'Apps in this Zone' },
       },
       { path: 'languages', component: EmptyRouteComponent, data: { title: 'Zone Languages' } },
-      { path: 'license', component: EmptyRouteComponent, data: { title: 'Extensions / Features' } },
+      {
+        path: 'license', component: EmptyRouteComponent, data: { title: 'Extensions / Features' }, children: [
+          GoToRegistration.getRoute()
+        ]
+      },
     ]
   },
 ];

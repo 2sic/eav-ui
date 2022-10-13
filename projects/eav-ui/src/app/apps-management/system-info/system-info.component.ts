@@ -1,8 +1,10 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { BehaviorSubject, combineLatest, filter, map, Observable, pairwise, startWith, Subscription } from 'rxjs';
 import { DialogSettings } from '../../app-administration/models';
+import { BaseMainComponent } from '../../shared/components/base-component/baseMain.component';
 import { copyToClipboard } from '../../shared/helpers/copy-to-clipboard.helper';
 import { EavWindow } from '../../shared/models/eav-window.model';
 import { DialogService } from '../../shared/services/dialog.service';
@@ -10,6 +12,7 @@ import { SiteLanguage } from '../models/site-language.model';
 import { SystemInfoSet } from '../models/system-info.model';
 import { SxcInsightsService } from '../services/sxc-insights.service';
 import { ZoneService } from '../services/zone.service';
+import { GoToRegistration } from '../sub-dialogs/registration/go-to-registration';
 import { InfoTemplate, SystemInfoTemplateVars } from './system-info.models';
 
 declare const window: EavWindow;
@@ -19,7 +22,7 @@ declare const window: EavWindow;
   templateUrl: './system-info.component.html',
   styleUrls: ['./system-info.component.scss'],
 })
-export class SystemInfoComponent implements OnInit, OnDestroy {
+export class SystemInfoComponent extends BaseMainComponent implements OnInit, OnDestroy {
   @Input() dialogSettings: DialogSettings;
 
   pageLogDuration: number;
@@ -31,11 +34,15 @@ export class SystemInfoComponent implements OnInit, OnDestroy {
   private loading$: BehaviorSubject<boolean>;
 
   constructor(
+    router: Router,
+    route: ActivatedRoute,
     private zoneService: ZoneService,
     private snackBar: MatSnackBar,
     private dialogService: DialogService,
     private sxcInsightsService: SxcInsightsService,
-  ) { }
+  ) {
+    super(router, route)
+   }
 
   ngOnInit(): void {
     this.systemInfoSet$ = new BehaviorSubject<SystemInfoSet | undefined>(undefined);
@@ -45,12 +52,18 @@ export class SystemInfoComponent implements OnInit, OnDestroy {
     this.buildTemplateVars();
     this.getSystemInfo();
     this.getLanguages();
+    this.subscription.add(this.refreshOnChildClosed().subscribe(() => {
+      this.buildTemplateVars();
+      this.getSystemInfo();
+      this.getLanguages();
+    }));
   }
 
   ngOnDestroy(): void {
     this.systemInfoSet$.complete();
     this.languages$.complete();
     this.loading$.complete();
+    this.subscription.unsubscribe();
   }
 
   copyToClipboard(text: string): void {
@@ -120,11 +133,15 @@ export class SystemInfoComponent implements OnInit, OnDestroy {
             label: 'Registered to',
             value: systemInfoSet.License.Owner || '(unregistered)',
             link: systemInfoSet.License.Owner
-              ? undefined
+              ? {
+                url: this.router.url + "/" + GoToRegistration.getUrl(),
+                label: 'manage',
+                target: 'angular',
+              }
               : {
-                url: `https://patrons.2sxc.org/register?fingerprint=${systemInfoSet.System.Fingerprint}`,
+                url: this.router.url + "/" + GoToRegistration.getUrl(),
                 label: 'register',
-                target: '_blank',
+                target: 'angular',
               },
           },
         ];

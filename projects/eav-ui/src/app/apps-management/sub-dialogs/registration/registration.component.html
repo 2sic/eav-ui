@@ -1,0 +1,79 @@
+<ng-container *ngIf="{systemInfoSet: systemInfoSet$ | async} as data">
+
+  <div mat-dialog-title>
+      <div class="dialog-title-box">2sxc Registration</div>
+  </div>
+
+  <p class="dialog-description">
+    Here you can register your system (registration is free). This happens through our <a href="https://patrons.2sxc.org/" target="_blank">Patrons</a> platform.
+  </p>
+
+  <p class="dialog-description">
+    <b>Status:</b> {{ data.systemInfoSet ? "this system is registered to " + data.systemInfoSet.License.Owner : "this system is not yet registered" }}<br>
+    <b>Fingerprint:</b> <span [tippy]="data.systemInfoSet.System.Fingerprint"
+      (click)="copyToClipboard(data.systemInfoSet.System.Fingerprint)"> {{ data.systemInfoSet.System.Fingerprint }}</span>
+  </p>
+    
+  <div class="mat-cards-div">
+    <mat-card class="mat-card-left">
+      <mat-card-header>
+        <div mat-card-avatar>
+          <mat-icon svgIcon="settings-applications"></mat-icon>
+        </div>
+        <mat-card-title>Automatic Registration</mat-card-title>
+        <mat-card-subtitle>The simple way</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <p>
+          This will open 2sxc Patrons and give it the system fingerprint,
+          so you can then log in and assign it a name and features you want to activate.
+        </p>
+        <div class="card-actions">
+          <button mat-button mat-button tippy="Register" *ngIf="data.systemInfoSet" (click)="openLicenseRegistration(data.systemInfoSet)">
+            <mat-icon svgIcon="app-registration"></mat-icon>
+            <span>Register</span>
+          </button>
+          <button mat-button tippy="Retrieve license" (click)="retrieveLicense()">
+            <mat-icon svgIcon="download-for-offline"></mat-icon>
+            <span>Retrieve license</span>
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="mat-card-right">
+      <mat-card-header>
+        <div mat-card-avatar>
+          <mat-icon svgIcon="waving-hand"></mat-icon>
+        </div>
+        <mat-card-title>Manual Registration</mat-card-title>
+        <mat-card-subtitle>Offline or special scenarios</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <p>
+          For offline or special scenarios you can just go to 2sxc Patrons and copy/paste the fingerprint yourself.
+          <br>
+          Click on the fingerprint above to copy it to your clipboard.
+        </p>
+        <div class="card-actions">
+          <button mat-button mat-button tippy="Register"
+            (click)="registerManually()">
+            <mat-icon svgIcon="app-registration"></mat-icon>
+            <span>Register Manually</span>
+          </button>
+          <button mat-button tippy="Upload license" (click)="openLicenseUpload()">
+            <mat-icon svgIcon="cloud-upload"></mat-icon>
+            <span>Upload license</span>
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div class="dialog-component-actions">
+    <button mat-raised-button (click)="closeDialog()">
+      Close
+    </button>
+  </div>
+
+</ng-container>
