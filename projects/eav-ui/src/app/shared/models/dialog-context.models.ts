@@ -70,8 +70,13 @@ export interface DialogContextSiteApp {
 }
 
 export interface DialogContextUser {
+  Email: string;
   Id: number;
+  Guid: string;
   IsAnonymous: boolean;
   IsSiteAdmin: boolean;
+  IsContentAdmin: boolean;
   IsSystemAdmin: boolean;
+  Name: string;
+  Username: string;
 }
