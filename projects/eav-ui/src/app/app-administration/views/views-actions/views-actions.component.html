@@ -10,24 +10,24 @@
   <div class="like-button highlight" matRipple *ngIf="!view.EditInfo.ReadOnly" tippy="Metadata"
     (click)="openMetadata()">
     <mat-icon [matBadge]="view.Metadata.length" matBadgeColor="accent" matBadgeSize="small"
-      [matBadgeHidden]="!view.Metadata.length" svgIcon="local-offer">
+      [matBadgeHidden]="!view.Metadata.length" matBadgePosition="below after" svgIcon="local-offer">
     </mat-icon>
   </div>
   <div class="like-button disabled" *ngIf="view.EditInfo.ReadOnly">
     <mat-icon [matBadge]="view.Metadata.length" matBadgeColor="accent" matBadgeSize="small" matBadgeDisabled="true"
-      [matBadgeHidden]="!view.Metadata.length" svgIcon="local-offer">
+      [matBadgeHidden]="!view.Metadata.length" matBadgePosition="below after" svgIcon="local-offer">
     </mat-icon>
   </div>
 
   <div class="like-button highlight" matRipple *ngIf="!view.EditInfo.ReadOnly && enablePermissions" tippy="Permissions"
     (click)="openPermissions()">
     <mat-icon [matBadge]="view.Permissions.Count" matBadgeColor="accent" matBadgeSize="small"
-      [matBadgeHidden]="!view.Permissions.Count" svgIcon="person">
+      [matBadgeHidden]="!view.Permissions.Count" matBadgePosition="below after" svgIcon="person">
     </mat-icon>
   </div>
   <div class="like-button disabled" *ngIf="view.EditInfo.ReadOnly || !enablePermissions">
     <mat-icon [matBadge]="view.Permissions.Count" matBadgeColor="accent" matBadgeSize="small" matBadgeDisabled="true"
-      [matBadgeHidden]="!view.Permissions.Count" svgIcon="person">
+      [matBadgeHidden]="!view.Permissions.Count" matBadgePosition="below after" svgIcon="person">
     </mat-icon>
   </div>
 

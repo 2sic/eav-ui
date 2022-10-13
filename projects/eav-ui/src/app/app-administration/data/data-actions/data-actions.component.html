@@ -9,25 +9,25 @@
 
   <div class="like-button highlight" matRipple *ngIf="!contentType.EditInfo.ReadOnly" tippy="Metadata"
     (click)="openMetadata()">
-    <mat-icon [matBadge]="contentType.Metadata.length" matBadgeColor="accent" matBadgeSize="small"
-      [matBadgeHidden]="!contentType.Metadata.length" svgIcon="local-offer">
+    <mat-icon [matBadge]="contentType.Metadata.length" matBadgePosition="below after" matBadgeColor="accent"
+      matBadgeSize="small" [matBadgeHidden]="!contentType.Metadata.length" svgIcon="local-offer">
     </mat-icon>
   </div>
   <div class="like-button disabled" *ngIf="contentType.EditInfo.ReadOnly">
-    <mat-icon [matBadge]="contentType.Metadata.length" matBadgeColor="accent" matBadgeSize="small"
-      matBadgeDisabled="true" [matBadgeHidden]="!contentType.Metadata.length" svgIcon="local-offer">
+    <mat-icon [matBadge]="contentType.Metadata.length" matBadgePosition="below after" matBadgeColor="accent" 
+      matBadgeSize="small" matBadgeDisabled="true" [matBadgeHidden]="!contentType.Metadata.length" svgIcon="local-offer">
     </mat-icon>
   </div>
 
   <div class="like-button highlight" matRipple *ngIf="!contentType.EditInfo.ReadOnly && enablePermissions"
     tippy="Permissions" (click)="openPermissions()">
-    <mat-icon [matBadge]="contentType.Permissions.Count" matBadgeColor="accent" matBadgeSize="small"
-      [matBadgeHidden]="!contentType.Permissions.Count" svgIcon="person">
+    <mat-icon [matBadge]="contentType.Permissions.Count" matBadgePosition="below after" matBadgeColor="accent" 
+      matBadgeSize="small" [matBadgeHidden]="!contentType.Permissions.Count" svgIcon="person">
     </mat-icon>
   </div>
   <div class="like-button disabled" *ngIf="contentType.EditInfo.ReadOnly || !enablePermissions">
-    <mat-icon [matBadge]="contentType.Permissions.Count" matBadgeColor="accent" matBadgeSize="small"
-      matBadgeDisabled="true" [matBadgeHidden]="!contentType.Permissions.Count" svgIcon="person">
+    <mat-icon [matBadge]="contentType.Permissions.Count" matBadgePosition="below after" matBadgeColor="accent" 
+      matBadgeSize="small" matBadgeDisabled="true" [matBadgeHidden]="!contentType.Permissions.Count" svgIcon="person">
     </mat-icon>
   </div>
 
