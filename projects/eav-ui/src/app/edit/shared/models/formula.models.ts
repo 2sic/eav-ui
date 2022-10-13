@@ -130,10 +130,15 @@ interface FormulaV1CtxTargetEntityType {
   id?: number;
 }
 export interface FormulaV1CtxUser {
+  email: string;
+  guid: string;
   id: number;
   isAnonymous: boolean;
   isSiteAdmin: boolean;
   isSystemAdmin: boolean;
+  isContentAdmin: boolean;
+  name: string;
+  username: string;
 }
 
 export interface FormulaV1Experimental {

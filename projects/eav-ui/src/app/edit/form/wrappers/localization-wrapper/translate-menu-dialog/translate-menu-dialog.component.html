@@ -13,7 +13,7 @@
       *ngTemplateOutlet="item;context:{ link: TranslationLinks.DontTranslate, icon: 'lock', i18nKey: I18nKeys.NoTranslate }">
     </ng-container>
     <ng-container
-      *ngTemplateOutlet="item;context:{ link: TranslationLinks.Translate, icon: 'lock_open', i18nKey: I18nKeys.FromPrimary }">
+      *ngTemplateOutlet="item;context:{ link: TranslationLinks.Translate, icon: 'lock-open', i18nKey: I18nKeys.FromPrimary }">
     </ng-container>
     <ng-container
       *ngTemplateOutlet="item;context:{ link: TranslationLinks.LinkCopyFrom, icon: 'translate', i18nKey: I18nKeys.FromOther }">
@@ -30,7 +30,7 @@
     <mat-list-item [ngClass]="{ 'mat-list-item-focus': data.translationState.linkType === link }"
       (click)="setLinkType(link)">
 
-      <mat-icon matListIcon color="accent">{{ icon }}</mat-icon>
+      <mat-icon matListIcon color="accent" [svgIcon]="icon"></mat-icon>
       <div matLine class="mat-list-item__title">
         {{ ('LangMenu.Dialog.' + i18nKey + '.Title') | translate : { primary: data.defaultLanguage } }}
       </div>
@@ -56,7 +56,7 @@
         'mat-list-item-focus': data.translationState.language === language.key,
         'mat-list-item--disabled': language.disabled
       }">
-        <mat-icon matListIcon color="accent">language</mat-icon>
+        <mat-icon matListIcon color="accent" svgIcon="language"></mat-icon>
         {{ language.key }}
       </button>
     </mat-action-list>

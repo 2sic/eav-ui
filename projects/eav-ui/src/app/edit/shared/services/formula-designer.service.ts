@@ -233,10 +233,15 @@ export class FormulaDesignerService implements OnDestroy {
     return {
       targetEntity,
       user: {
+        email: user?.Email,
+        guid: user?.Guid,
         id: user?.Id,
         isAnonymous: user?.IsAnonymous,
         isSiteAdmin: user?.IsSiteAdmin,
+        isContentAdmin: user?.IsContentAdmin,
         isSystemAdmin: user?.IsSystemAdmin,
+        name: user?.Name,
+        username: user?.Username,
       } as FormulaV1CtxUser,
       app: {
         appId: parseInt(eavConfig.appId, 10),

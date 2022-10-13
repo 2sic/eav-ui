@@ -7,7 +7,7 @@ import { keyAppId, keyContentType, keyDialog, keyExtras, keyItems, keyPipelineId
 import { convertFormToUrl } from './shared/helpers/url-prep.helper';
 import { ExtrasParam } from './shared/models/dialog-url-params.model';
 import { EavWindow } from './shared/models/eav-window.model';
-import { EditForm, EditItem, GroupItem } from './shared/models/edit-form.model';
+import { EditForm, ItemEditIdentifier, ItemInListIdentifier } from './shared/models/edit-form.model';
 
 declare const window: EavWindow;
 
@@ -63,13 +63,13 @@ export function paramsInitFactory(injector: Injector): () => void {
           router.navigate([`${zoneId}/${appId}/items/${contentType}`]);
           break;
         case DialogTypeConstants.Edit:
-          const editItems: EditItem[] = JSON.parse(items);
+          const editItems: ItemEditIdentifier[] = JSON.parse(items);
           const form: EditForm = { items: editItems };
           const formUrl = convertFormToUrl(form);
           router.navigate([`${zoneId}/${appId}/edit/${formUrl}`]);
           break;
         case DialogTypeConstants.ItemHistory:
-          const historyItems: EditItem[] = JSON.parse(items);
+          const historyItems: ItemEditIdentifier[] = JSON.parse(items);
           router.navigate([`${zoneId}/${appId}/versions/${historyItems[0].EntityId}`]);
           break;
         case DialogTypeConstants.Develop:
@@ -80,19 +80,19 @@ export function paramsInitFactory(injector: Injector): () => void {
           router.navigate([`${zoneId}/${appId}/query/${pipelineId}`]);
           break;
         case DialogTypeConstants.Replace:
-          const replaceItems: GroupItem[] = JSON.parse(items);
-          const rGuid = replaceItems[0].Group.Guid;
-          const rPart = replaceItems[0].Group.Part;
-          const rIndex = replaceItems[0].Group.Index;
-          const add = replaceItems[0].Group.Add;
+          const repItem = (JSON.parse(items) as ItemInListIdentifier[])[0];
+          const rGuid = repItem.Parent;
+          const rPart = repItem.Field;
+          const rIndex = repItem.Index;
+          const add = repItem.Add;
           const queryParams = add ? { add: true } : {};
           router.navigate([`${zoneId}/${appId}/${rGuid}/${rPart}/${rIndex}/replace`], { queryParams });
           break;
         case DialogTypeConstants.InstanceList:
-          const groupItems: GroupItem[] = JSON.parse(items);
-          const gGuid = groupItems[0].Group.Guid;
-          const gPart = groupItems[0].Group.Part;
-          const gIndex = groupItems[0].Group.Index;
+          const grpItem = (JSON.parse(items) as ItemInListIdentifier[])[0];
+          const gGuid = grpItem.Parent;
+          const gPart = grpItem.Field;
+          const gIndex = grpItem.Index;
           router.navigate([`${zoneId}/${appId}/${gGuid}/${gPart}/${gIndex}/reorder`]);
           break;
         default:

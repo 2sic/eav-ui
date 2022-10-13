@@ -2,20 +2,18 @@ import { AgGridAngular } from '@ag-grid-community/angular';
 import { GridOptions } from '@ag-grid-community/core';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 // tslint:disable-next-line:max-line-length
-import { BehaviorSubject, catchError, distinctUntilChanged, forkJoin, Observable, of, share, startWith, Subject, Subscription, switchMap, tap, timer } from 'rxjs';
-import { GlobalConfigService } from '../../edit/shared/store/ngrx-data';
+import { BehaviorSubject, catchError, filter, forkJoin, map, Observable, of, pairwise, share, startWith, Subject, Subscription, switchMap, tap, timer } from 'rxjs';
+import { BaseMainComponent } from '../../shared/components/base-component/baseMain.component';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
-import { FileUploadDialogComponent, FileUploadDialogData } from '../../shared/components/file-upload-dialog';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { Feature, FeatureState } from '../models/feature.model';
 import { License } from '../models/license.model';
-import { SystemInfoSet } from '../models/system-info.model';
 import { FeaturesConfigService } from '../services/features-config.service';
-import { ZoneService } from '../services/zone.service';
+import { GoToRegistration } from '../sub-dialogs/registration/go-to-registration';
 import { FeatureDetailsDialogComponent } from './feature-details-dialog/feature-details-dialog.component';
 import { FeatureDetailsDialogData } from './feature-details-dialog/feature-details-dialog.models';
 import { FeaturesListEnabledReasonComponent } from './features-list-enabled-reason/features-list-enabled-reason.component';
@@ -28,27 +26,25 @@ import { FeaturesStatusParams } from './features-status/features-status.models';
   templateUrl: './license-info.component.html',
   styleUrls: ['./license-info.component.scss'],
 })
-export class LicenseInfoComponent implements OnInit, OnDestroy {
+export class LicenseInfoComponent extends BaseMainComponent implements OnInit, OnDestroy {
   @ViewChild(AgGridAngular) private gridRef?: AgGridAngular;
 
   licenses$: Observable<License[]>;
   disabled$ = new BehaviorSubject(false);
-  debugEnabled$ = this.globalConfigService.getDebugEnabled$();
-  systemInfoSet$: Observable<SystemInfoSet>;
   gridOptions = this.buildGridOptions();
 
   private refreshLicenses$ = new Subject<void>();
-  private subscription = new Subscription();
 
   constructor(
+    router: Router,
+    route: ActivatedRoute,
     private featuresConfigService: FeaturesConfigService,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
-    private changeDetectorRef: ChangeDetectorRef,
-    private globalConfigService: GlobalConfigService,
-    private snackBar: MatSnackBar,
-    private zoneService: ZoneService,
-  ) { }
+    private changeDetectorRef: ChangeDetectorRef
+  ) { 
+    super(router, route);
+  }
 
   ngOnInit(): void {
     this.licenses$ = this.refreshLicenses$.pipe(
@@ -57,60 +53,20 @@ export class LicenseInfoComponent implements OnInit, OnDestroy {
       tap(() => this.disabled$.next(false)),
       share(),
     );
-    this.systemInfoSet$ = this.zoneService.getSystemInfo().pipe(catchError(() => of(undefined)), share());
-    this.subscription.add(
-      this.disabled$.pipe(distinctUntilChanged()).subscribe(() => {
-        this.gridRef?.api.refreshCells({ force: true, columns: ['Status'] });
-      })
-    );
+    this.subscription.add(this.refreshOnChildClosed().subscribe(() => { this.refreshLicenses$.next(); }));
   }
 
   ngOnDestroy(): void {
     this.disabled$.complete();
-    this.subscription.unsubscribe();
+    super.ngOnDestroy();
   }
 
   trackLicenses(index: number, license: License): string {
     return license.Guid;
   }
 
-  retrieveLicense(): void {
-    this.featuresConfigService.retrieveLicense().subscribe({
-      error: () => {
-        this.snackBar.open('Failed to retrieve license. Please check console for more information', undefined, { duration: 3000 });
-      },
-      next: (info) => {
-        const message = `License ${info.Success ? 'Info' : 'Error'}: ${info.Message}`;
-        const duration = info.Success ? 3000 : 100000;
-        const panelClass = info.Success ? undefined : 'snackbar-error';
-        this.snackBar.open(message, undefined, { duration, panelClass });
-        this.refreshLicenses$.next();
-      },
-    });
-  }
-
-  openLicenseUpload(): void {
-    const data: FileUploadDialogData = {
-      title: 'Upload license',
-      description: '',
-      allowedFileTypes: 'json',
-      upload$: (files) => this.featuresConfigService.uploadLicense(files[0]),
-    };
-    const dialogRef = this.dialog.open(FileUploadDialogComponent, {
-      data,
-      autoFocus: false,
-      viewContainerRef: this.viewContainerRef,
-      width: '650px',
-    });
-    dialogRef.afterClosed().subscribe((refresh?: boolean) => {
-      if (refresh) {
-        this.refreshLicenses$.next();
-      }
-    });
-  }
-
-  openLicenseRegistration(systemInfoSet: SystemInfoSet): void {
-    window.open(`https://patrons.2sxc.org/register?fingerprint=${systemInfoSet.System.Fingerprint}`, '_blank');
+  openRegistration(): void {
+    this.router.navigate([GoToRegistration.getUrl()], { relativeTo: this.route.firstChild });
   }
 
   private showFeatureDetails(feature: Feature): void {

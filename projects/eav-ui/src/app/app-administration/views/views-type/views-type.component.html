@@ -1,8 +1,8 @@
 <div class="icon-container">
   <div class="like-button icon" [tippy]="value">
-    <mat-icon>{{ icon }}</mat-icon>
+    <mat-icon [svgIcon]="icon"></mat-icon>
   </div>
   <div class="like-button icon" tippy="View is shared" *ngIf="isShared">
-    <mat-icon>share</mat-icon>
+    <mat-icon svgIcon="share"></mat-icon>
   </div>
 </div>

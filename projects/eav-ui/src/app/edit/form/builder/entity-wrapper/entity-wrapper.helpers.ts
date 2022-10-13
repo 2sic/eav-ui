@@ -1,4 +1,5 @@
 import { TranslateService } from '@ngx-translate/core';
+import { icons } from 'projects/eav-ui/src/app/shared/icons';
 import { LocalizationHelpers } from '../../../shared/helpers';
 import { EavEntity, EavFor } from '../../../shared/models/eav';
 import { NoteProps } from './entity-wrapper.models';
@@ -19,7 +20,7 @@ export function getNoteProps(note: EavEntity, currentLanguage: string, defaultLa
     note,
     tooltip: itemNotSaved ? 'Form.Buttons.Note.ItemNotSaved' : 'Form.Buttons.Note.Add',
     triggerClass: `no-note ${itemNotSaved ? 'item-not-saved' : ''}`,
-    iconName: 'sticky_note_2',
+    iconName: icons.note, // 'sticky-note-2',
     noteClass: '',
     noteHtml: undefined,
     itemNotSaved,
@@ -34,7 +35,7 @@ export function getNoteProps(note: EavEntity, currentLanguage: string, defaultLa
     noteProps.triggerClass = 'has-note';
   } else if (noteType === 'warning') {
     noteProps.triggerClass = 'has-warning';
-    noteProps.iconName = 'warning_amber';
+    noteProps.iconName = icons.warning; // // 'warning_amber';
     noteProps.noteClass = 'warning';
   }
   return noteProps;

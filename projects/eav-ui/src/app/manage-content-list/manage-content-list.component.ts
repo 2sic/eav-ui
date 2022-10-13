@@ -3,12 +3,14 @@ import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { BehaviorSubject, combineLatest, filter, map, pairwise, startWith, Subscription } from 'rxjs';
+import { BehaviorSubject, combineLatest, filter, map, pairwise, startWith, Subscription, tap } from 'rxjs';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 import { EditForm } from '../shared/models/edit-form.model';
 import { ContentGroup } from './models/content-group.model';
 import { GroupHeader } from './models/group-header.model';
 import { ContentGroupService } from './services/content-group.service';
+import { AppDialogConfigService } from '../app-administration/services';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-manage-content-list',
@@ -39,18 +41,31 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private snackBar: MatSnackBar,
+    private translate: TranslateService,
+    private appDialogConfigService: AppDialogConfigService,
   ) { }
 
   ngOnInit() {
     this.fetchList();
     this.fetchHeader();
     this.refreshOnChildClosed();
+    this.fetchDialogSettings();
   }
 
   ngOnDestroy() {
     this.items$.complete();
     this.header$.complete();
     this.subscription.unsubscribe();
+  }
+
+  private fetchDialogSettings() {
+    this.appDialogConfigService.getDialogSettings().pipe(
+      tap(
+        dialogSettings => {
+          this.translate.setDefaultLang(dialogSettings.Context.Language.Primary.split('-')[0]);
+          this.translate.use(dialogSettings.Context.Language.Current.split('-')[0]);
+        })
+    ).subscribe();
   }
 
   closeDialog() {
@@ -69,20 +84,16 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
     const form: EditForm = {
       items: [
         {
-          Group: {
-            Guid: this.contentGroup.guid,
-            Index: 0,
-            Part: 'listcontent',
-            Add: this.header$.value.Id === 0,
-          },
+          Add: this.header$.value.Id === 0,
+          Index: 0,
+          Parent: this.contentGroup.guid,
+          Field: 'listcontent',
         },
         {
-          Group: {
-            Guid: this.contentGroup.guid,
-            Index: 0,
-            Part: 'listpresentation',
-            Add: this.header$.value.Id === 0,
-          },
+          Add: this.header$.value.Id === 0,
+          Index: 0,
+          Parent: this.contentGroup.guid,
+          Field: 'listpresentation',
         },
       ],
     };

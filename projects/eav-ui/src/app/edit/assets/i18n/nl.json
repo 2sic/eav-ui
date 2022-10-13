@@ -96,7 +96,8 @@
   "General": {
     "Buttons": {
       "NotSave": "Discard changes",
-      "Save": "Save"
+      "Save": "Save",
+      "Cancel": "Cancel"
     },
     "CopyHint": "This is a copy and will be saved as a new item",
     "ReadOnlyHint": {
@@ -193,6 +194,13 @@
       "NotSelected": "(no file selected)",
       "NewTemplate": "Create a new file"
     }
+  },
+  "ManageContentList": {
+    "Title": "Manage content-item lists",
+    "Description": "You can manage the list header here (if it is defined):",
+    "NoHeader": "(this list has no header)",
+    "SortItems": "Sort the items by dragging as you need, then save:",
+    "SortLotsOfItems": "Sort the items by dragging and scrolling with mouse wheel as you need, then save:"
   },
   "Extension.TinyMce": {
     "Link.AdamFile": "ADAM bestand linken (aanbevolen)",

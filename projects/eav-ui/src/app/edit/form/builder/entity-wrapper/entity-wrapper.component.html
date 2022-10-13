@@ -3,8 +3,7 @@
 
     <div fxFlex="auto" fxLayoutAlign="start center" (click)="toggleCollapse()">
       <div fxLayoutAlign="start center" class="mat-card-title-group mat-display-1">
-        <mat-icon class="title-arrow">
-          {{ collapse ? 'keyboard_arrow_down' : 'keyboard_arrow_up' }}
+        <mat-icon class="title-arrow" [svgIcon]="collapse ? 'keyboard-arrow-down' : 'keyboard-arrow-up'">
         </mat-icon>
         <span class="title">
           {{ data.itemTitle || ('ItemCard.DefaultTitle' | translate) }}
@@ -12,12 +11,12 @@
       </div>
     </div>
 
-    <button type="button" #noteTrigger mat-icon-button class="note {{ data.noteProps.triggerClass }}" [disabled]="data.readOnly"
-      [tippy]="data.noteProps.tooltip | translate" [tippyDisabled]="data.readOnly || !data.noteProps.tooltip"
-      [disableRipple]="data.noteProps.itemNotSaved"
+    <button type="button" #noteTrigger mat-icon-button class="note {{ data.noteProps.triggerClass }}"
+      [disabled]="data.readOnly" [tippy]="data.noteProps.tooltip | translate"
+      [tippyDisabled]="data.readOnly || !data.noteProps.tooltip" [disableRipple]="data.noteProps.itemNotSaved"
       (pointerenter)="data.noteProps.note ? toggleNote($event, true) : null"
       (click)="data.noteProps.note ? toggleNote($event) : editNote()" *ngIf="data.showNotes">
-      <mat-icon>{{ data.noteProps.iconName }}</mat-icon>
+      <mat-icon [svgIcon]="data.noteProps.iconName"></mat-icon>
     </button>
 
     <ng-template #noteTemplate>
@@ -26,13 +25,13 @@
         (pointerleave)="noteTouched ? null : toggleNote($event, false)">
         <div class="note-actions" cdkDragHandle>
           <button mat-icon-button appMousedownStopPropagation (click)="editNote(data.noteProps.note)">
-            <mat-icon>edit</mat-icon>
+            <mat-icon svgIcon="edit"></mat-icon>
           </button>
           <button mat-icon-button appMousedownStopPropagation (click)="deleteNote(data.noteProps.note)">
-            <mat-icon>delete</mat-icon>
+            <mat-icon svgIcon="delete"></mat-icon>
           </button>
           <button mat-icon-button appMousedownStopPropagation (click)="toggleNote($event, false)">
-            <mat-icon>close</mat-icon>
+            <mat-icon svgIcon="close"></mat-icon>
           </button>
         </div>
         <div class="note-content hide-scrollbar" [innerHtml]="data.noteProps.noteHtml | safeHtml"></div>
@@ -46,12 +45,12 @@
     </mat-slide-toggle>
 
     <div class="icon-box" [tippy]="data.itemForTooltip" *ngIf="data.showMetadataFor && data.itemForTooltip">
-      <mat-icon>local_offer</mat-icon>
+      <mat-icon svgIcon="local-offer"></mat-icon>
     </div>
 
-    <button type="button" mat-icon-button [tippy]="'Form.Buttons.History.Tip' | translate" *ngIf="eavService.eavConfig.enableHistory"
-      [disabled]="data.readOnly" (click)="openHistory()">
-      <mat-icon>history</mat-icon>
+    <button type="button" mat-icon-button [tippy]="'Form.Buttons.History.Tip' | translate"
+      *ngIf="eavService.eavConfig.enableHistory" [disabled]="data.readOnly" (click)="openHistory()">
+      <mat-icon svgIcon="history"></mat-icon>
     </button>
 
     <app-entity-translate-menu fxLayoutAlign="end center" [entityGuid]="entityGuid">
@@ -61,7 +60,7 @@
   <mat-card-content class="mat-card-content-group-parent" [style.display]="collapse ? 'none' : 'block'">
     <div class="mdc-layout-grid">
       <div class="mdc-layout-grid__inner">
-        <div class="mdc-layout-grid__cell--span-12 mat-body-1" align="start" *ngIf="data.editInstructions">
+        <div class="mdc-layout-grid__cell--span-12 mat-body-1" allign="start" *ngIf="data.editInstructions">
           <div class="description" appChangeAnchorTarget [innerHtml]="data.editInstructions | safeHtml"></div>
         </div>
         <div class="mdc-layout-grid__cell--span-12">

@@ -3,11 +3,11 @@
   <div class="editor-side-toolbar">
     <div class="button" [ngClass]="{ 'active': activeExplorer === Explorers.Templates }" tippy="Templates"
       (click)="toggleExplorer(Explorers.Templates)">
-      <mat-icon>file_copy</mat-icon>
+      <mat-icon svgIcon="file-copy"></mat-icon>
     </div>
-    <div class="button" [ngClass]="{ 'active': activeExplorer === Explorers.Snippets }" tippy="Snippets"
+    <div class=" button" [ngClass]="{ 'active': activeExplorer === Explorers.Snippets }" tippy="Snippets"
       (click)="toggleExplorer(Explorers.Snippets)">
-      <mat-icon>code</mat-icon>
+      <mat-icon svgIcon="code"></mat-icon>
     </div>
   </div>
 
@@ -26,18 +26,17 @@
         'loading': tab.isLoading
       }" (click)="openView(tab.viewKey)">
         <div class="tab-label-container" [tippy]="tab.label" tippyShowDelay="750">
-          <mat-icon class="icon-shared" *ngIf="tab.viewKey.shared">share</mat-icon>
+          <mat-icon class="icon-shared" *ngIf="tab.viewKey.shared" svgIcon="share"></mat-icon>
           <span class="tab-label">{{ tab.label }}</span>
         </div>
         <div class="tab-actions-container">
-          <mat-icon *ngIf="tab.isModified" class="tab-action icon-modified" fontSet="material-icons">
-            circle
+          <mat-icon *ngIf="tab.isModified" class="tab-action icon-modified" fontSet="material-icons"
+            svgIcon="circle">
           </mat-icon>
           <mat-spinner *ngIf="tab.isLoading" class="spinner" mode="indeterminate" diameter="14" color="white">
           </mat-spinner>
           <mat-icon class="tab-action icon-close" tippy="Close" appClickStopPropagation
-            (click)="closeEditor(tab.viewKey)">
-            close
+            (click)="closeEditor(tab.viewKey)" svgIcon="close">
           </mat-icon>
         </div>
       </div>
@@ -49,6 +48,6 @@
   </div>
 
   <button mat-fab mat-elevation-z24 tippy="Click to save or CTRL + S" *ngIf="data.activeView" (click)="save()">
-    <mat-icon>done</mat-icon>
+    <mat-icon svgIcon="done"></mat-icon>
   </button>
 </div>

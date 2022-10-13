@@ -96,7 +96,8 @@
   "General": {
     "Buttons": {
       "NotSave": "Änderungen verwerfen",
-      "Save": "Speichern"
+      "Save": "Speichern",
+      "Cancel": "Abbrechen"
     },
     "CopyHint": "Dies ist eine Kopie und wird als neues Element gespeichert",
     "ReadOnlyHint": {
@@ -193,6 +194,13 @@
       "NotSelected": "(no file selected)",
       "NewTemplate": "Create a new file"
     }
+  },
+  "ManageContentList": {
+    "Title": "Elementen-Liste verwalten",
+    "Description": "Hier kannst du das Titel-Element verwalten (sofern definiert):",
+    "NoHeader": "(diese Liste hat kein Titel-Element)",
+    "SortItems": "Sortier die Einträge indem du sie mit der Maus rumziehst. ",
+    "SortLotsOfItems": "Sortier die vielen Einträge indem du sie mit der Maus ziehst und dann mit dem Mausrad scrollst. "
   },
   "Extension.TinyMce": {
     "Link.AdamFile": "ADAM Datei verlinken (empfohlen)",

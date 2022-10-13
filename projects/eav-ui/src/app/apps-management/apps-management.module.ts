@@ -40,6 +40,7 @@ import { SxcInsightsService } from './services/sxc-insights.service';
 import { ZoneService } from './services/zone.service';
 import { SiteLanguagesStatusComponent } from './site-languages/site-languages-status/site-languages-status.component';
 import { SiteLanguagesComponent } from './site-languages/site-languages.component';
+import { RegistrationComponent } from './sub-dialogs/registration/registration.component';
 import { SystemInfoComponent } from './system-info/system-info.component';
 
 @NgModule({
@@ -61,6 +62,7 @@ import { SystemInfoComponent } from './system-info/system-info.component';
     AgGridHeightDirective,
     ActiveFeaturesCountPipe,
     FeatureDetailsDialogComponent,
+    RegistrationComponent,
   ],
   imports: [
     AppsManagementRoutingModule,

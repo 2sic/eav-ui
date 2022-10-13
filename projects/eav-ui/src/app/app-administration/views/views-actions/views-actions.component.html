@@ -1,57 +1,53 @@
 <div class="actions-component">
   <div class="like-button highlight" matRipple *ngIf="!view.EditInfo.ReadOnly && enableCode" tippy="Code"
     (click)="openCode()">
-    <mat-icon>code</mat-icon>
+    <mat-icon svgIcon="code"></mat-icon>
   </div>
   <div class="like-button disabled" *ngIf="view.EditInfo.ReadOnly || !enableCode">
-    <mat-icon>code</mat-icon>
+    <mat-icon svgIcon="code"></mat-icon>
   </div>
 
   <div class="like-button highlight" matRipple *ngIf="!view.EditInfo.ReadOnly" tippy="Metadata"
     (click)="openMetadata()">
     <mat-icon [matBadge]="view.Metadata.length" matBadgeColor="accent" matBadgeSize="small"
-      [matBadgeHidden]="!view.Metadata.length">
-      local_offer
+      [matBadgeHidden]="!view.Metadata.length" matBadgePosition="below after" svgIcon="local-offer">
     </mat-icon>
   </div>
   <div class="like-button disabled" *ngIf="view.EditInfo.ReadOnly">
     <mat-icon [matBadge]="view.Metadata.length" matBadgeColor="accent" matBadgeSize="small" matBadgeDisabled="true"
-      [matBadgeHidden]="!view.Metadata.length">
-      local_offer
+      [matBadgeHidden]="!view.Metadata.length" matBadgePosition="below after" svgIcon="local-offer">
     </mat-icon>
   </div>
 
   <div class="like-button highlight" matRipple *ngIf="!view.EditInfo.ReadOnly && enablePermissions" tippy="Permissions"
     (click)="openPermissions()">
     <mat-icon [matBadge]="view.Permissions.Count" matBadgeColor="accent" matBadgeSize="small"
-      [matBadgeHidden]="!view.Permissions.Count">
-      person
+      [matBadgeHidden]="!view.Permissions.Count" matBadgePosition="below after" svgIcon="person">
     </mat-icon>
   </div>
   <div class="like-button disabled" *ngIf="view.EditInfo.ReadOnly || !enablePermissions">
     <mat-icon [matBadge]="view.Permissions.Count" matBadgeColor="accent" matBadgeSize="small" matBadgeDisabled="true"
-      [matBadgeHidden]="!view.Permissions.Count">
-      person
+      [matBadgeHidden]="!view.Permissions.Count" matBadgePosition="below after" svgIcon="person">
     </mat-icon>
   </div>
 
   <div class="like-button highlight" matRipple tippy="More" [matMenuTriggerFor]="menu">
-    <mat-icon>more_horiz</mat-icon>
+    <mat-icon svgIcon="more-horiz"></mat-icon>
   </div>
 </div>
 
 <mat-menu #menu="matMenu" class="grid-more-menu">
   <ng-template matMenuContent>
     <button mat-menu-item (click)="cloneView()">
-      <mat-icon>file_copy</mat-icon>
+      <mat-icon svgIcon="file-copy"></mat-icon>
       <span>Copy</span>
     </button>
-    <button mat-menu-item (click)="exportView()">
-      <mat-icon>cloud_download</mat-icon>
+    <button mat-menu-item (click)=" exportView()">
+      <mat-icon svgIcon="cloud-download"></mat-icon>
       <span>Export</span>
     </button>
     <button mat-menu-item [disabled]="view.EditInfo.ReadOnly" (click)="deleteView()">
-      <mat-icon>delete</mat-icon>
+      <mat-icon svgIcon="delete"></mat-icon>
       <span>Delete</span>
     </button>
   </ng-template>

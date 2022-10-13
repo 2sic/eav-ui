@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { EavFor } from '../../edit/shared/models/eav';
 import { webApiEntityRoot } from '../../edit/shared/services';
-import { InnerItem } from '../../shared/models/edit-form.model';
+import { ItemInListIdentifier } from '../../shared/models/edit-form.model';
 import { Context } from '../../shared/services/context';
 
 @Injectable()
@@ -34,7 +34,7 @@ export interface QuickEntityRequest {
   /** Metadata target */
   For?: EavFor;
   /** Parent linking target (add to this entity) */
-  ParentRelationship?: InnerItem;
+  ParentRelationship?: ItemInListIdentifier;
   [field: string]: any;
 }
 

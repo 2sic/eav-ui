@@ -2,8 +2,8 @@
   <mat-expansion-panel #panel *ngFor="let license of licenses | licensesOrder; trackBy: trackLicenses">
     <mat-expansion-panel-header>
       <mat-panel-title>
-        <mat-icon class="panel-icon" [tippy]="license.IsEnabled ? 'License is active' : 'License is not active'">
-          {{ license.IsEnabled ? 'check_circle_outline' : 'cancel' }}
+        <mat-icon class="panel-icon" [tippy]="license.IsEnabled ? 'License is active' : 'License is not active'"
+          [svgIcon]="license.IsEnabled ? 'check-circle-outline' : 'cancel'">
         </mat-icon>
         <div>
           <div class="panel-title">
@@ -27,20 +27,9 @@
 
 <div class="spacer"></div>
 
-<div class="actions-box" *ngIf="{
-  debugEnabled: debugEnabled$ | async,
-  systemInfoSet: systemInfoSet$ | async
-} as data">
-  <button mat-button tippy="Register" *ngIf="data.systemInfoSet" (click)="openLicenseRegistration(data.systemInfoSet)">
-    <mat-icon>app_registration</mat-icon>
-    <span>Register</span>
-  </button>
-  <button mat-button tippy="Retrieve license" (click)="retrieveLicense()">
-    <mat-icon>download_for_offline</mat-icon>
-    <span>Retrieve license</span>
-  </button>
-  <button mat-button color="accent" tippy="Upload license" *ngIf="data.debugEnabled" (click)="openLicenseUpload()">
-    <mat-icon>cloud_upload</mat-icon>
-    <span>Upload license</span>
+<div class="actions-box">
+  <button mat-button tippy="Registration" (click)="openRegistration()">
+    <mat-icon svgIcon="app-registration"></mat-icon>
+    <span>Registration</span>
   </button>
 </div>

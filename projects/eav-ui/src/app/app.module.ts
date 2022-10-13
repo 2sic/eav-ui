@@ -10,6 +10,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { TranslateModule } from '@ngx-translate/core';
+import { AppIconsService } from './shared/icons/app-icons.service';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { metaReducers, reducers } from './edit/shared/store';
@@ -43,6 +44,7 @@ import { Context } from './shared/services/context';
     { provide: HTTP_INTERCEPTORS, useClass: HandleErrorsInterceptor, multi: true },
     Context,
     Title,
+    AppIconsService,
   ],
   bootstrap: [AppComponent],
 })

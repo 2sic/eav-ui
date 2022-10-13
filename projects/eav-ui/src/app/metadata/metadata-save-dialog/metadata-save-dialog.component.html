@@ -43,11 +43,11 @@
         <div matSuffix class="selection-suffix">
           <button mat-icon-button type="button" [ngClass]="{ 'active': guidedContentType }" tippy="Pick existing value"
             (click)="toggleGuidedContentType(true)">
-            <mat-icon>search</mat-icon>
+            <mat-icon svgIcon="search"></mat-icon>
           </button>
           <button mat-icon-button type="button" [ngClass]="{ 'active': !guidedContentType }" tippy="Manual entry"
             (click)="toggleGuidedContentType(false)">
-            <mat-icon>text_fields</mat-icon>
+            <mat-icon svgIcon="text-fields"></mat-icon>
           </button>
         </div>
       </mat-form-field>

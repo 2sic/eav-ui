@@ -22,8 +22,7 @@
           <mat-option [value]="dropdownInsertValue">Other...</mat-option>
         </mat-select>
         <button mat-icon-button matSuffix [tippy]="lockScope ? 'Unlock' : 'Lock'">
-          <mat-icon appClickStopPropagation (click)="unlockScope()">
-            {{ lockScope ? 'lock' : 'lock_open' }}
+          <mat-icon appClickStopPropagation (click)="unlockScope()" [svgIcon]="lockScope ? 'lock' : 'lock-open'">
           </mat-icon>
         </button>
       </mat-form-field>

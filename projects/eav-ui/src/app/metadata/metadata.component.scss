@@ -1,0 +1,4 @@
+// this style is used for svg paths to be filled with white and override fill black on svg
+:host ::ng-deep .mat-button-wrapper div svg *:not([fill]) {
+    fill: white;
+}
