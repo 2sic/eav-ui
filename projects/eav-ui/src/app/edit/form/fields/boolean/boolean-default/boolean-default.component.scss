@@ -1,0 +1,15 @@
+:host ::ng-deep .changable-mat-slide-togle.mat-checked:not(.mat-disabled) .mat-slide-toggle-bar {
+  background-color: #000f83;
+}
+
+:host ::ng-deep .changable-mat-slide-togle.mat-checked:not(.mat-disabled) .mat-slide-toggle-thumb {
+  background-color: white;
+}
+
+:host ::ng-deep .changable-mat-slide-togle:not(.mat-checked):not(.mat-disabled) .mat-slide-toggle-bar {
+  background-color: #20bc00;
+}
+
+:host ::ng-deep .changable-mat-slide-togle:not(.mat-checked):not(.mat-disabled) .mat-slide-toggle-thumb {
+  background-color: white;
+}
