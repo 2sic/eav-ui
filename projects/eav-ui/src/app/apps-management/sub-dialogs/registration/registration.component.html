@@ -8,8 +8,8 @@
     Here you can register your system (registration is free). This happens through our <a href="https://patrons.2sxc.org/" target="_blank">Patrons</a> platform.
   </p>
 
-  <p class="dialog-description">
-    <b>Status:</b> {{ data.systemInfoSet ? "this system is registered to " + data.systemInfoSet.License.Owner : "this system is not yet registered" }}
+  <p class="dialog-description" *ngIf="data.systemInfoSet">
+    <b>Status:</b> {{ data.systemInfoSet.License.Owner ? "this system is registered to " + data.systemInfoSet.License.Owner : "this system is not yet registered" }}
     <br>
     <b>Fingerprint:</b> <span [tippy]="'Click to copy to clipboard'"
       (click)="copyToClipboard(data.systemInfoSet.System.Fingerprint)"> {{ data.systemInfoSet.System.Fingerprint }}</span>
