@@ -1,10 +1,28 @@
-::ng-deep .toggle-false {
+:host ::ng-deep .toggle-false {
   .mat-slide-toggle-bar {
-    background-color: orange;
+    background-color: rgba(0, 128, 0, 0.5);
   }
 }
 
-::ng-deep .toggle-null {
+:host ::ng-deep .toggle-true {
+  .mat-slide-toggle-bar {
+    background-color: rgba(0, 0, 255, 0.5);
+  }
+}
+
+:host ::ng-deep .toggle-true {
+  .mat-slide-toggle-thumb {
+    background-color: #fafafa;
+  }
+}
+
+:host ::ng-deep .toggle-null {
+  .mat-slide-toggle-bar {
+    background-image: linear-gradient(to right, rgba(0, 0, 255, 0.5), rgba(0, 128, 0, 0.5));
+  }
+}
+
+:host ::ng-deep .toggle-null {
   .mat-slide-toggle-thumb-container {
     margin-left: 8px;
   }

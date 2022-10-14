@@ -2,6 +2,7 @@
   <mat-slide-toggle [disabled]="data.controlStatus.disabled" [checked]="data.checked" (change)="updateValue()"
     [ngClass]="{
     'toggle-false': data.checked === false,
+    'toggle-true': data.checked === true,
     'toggle-null': data.checked === null
   }">
     {{ data.label }}
