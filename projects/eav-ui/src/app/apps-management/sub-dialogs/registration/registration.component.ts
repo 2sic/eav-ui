@@ -9,6 +9,9 @@ import { SystemInfoSet } from '../../models/system-info.model';
 import { FeaturesConfigService } from '../../services/features-config.service';
 import { ZoneService } from '../../services/zone.service';
 
+// Images/Icons
+import patronsLogo from '!raw-loader!./assets/2sxc-patrons.svg';
+
 @Component({
   selector: 'app-registration',
   templateUrl: './registration.component.html',
@@ -19,8 +22,11 @@ export class RegistrationComponent implements OnInit {
 
   debugEnabled$ = this.globalConfigService.getDebugEnabled$();
   systemInfoSet$: Observable<SystemInfoSet>;
-  
+
   private refreshsystemInfoSet$ = new Subject<void>();
+
+  // patrons logo
+  logo = patronsLogo;
 
   constructor(
     private dialogRef: MatDialogRef<RegistrationComponent>,
@@ -38,7 +44,7 @@ export class RegistrationComponent implements OnInit {
       switchMap(() => this.zoneService.getSystemInfo().pipe(catchError(() => of(undefined)))),
       share(),
     );
-      
+
   }
 
   closeDialog() {

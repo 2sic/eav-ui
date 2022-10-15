@@ -1,21 +1,36 @@
 <ng-container *ngIf="{systemInfoSet: systemInfoSet$ | async} as data">
 
   <div mat-dialog-title>
-      <div class="dialog-title-box">2sxc Registration</div>
+      <div class="dialog-title-box">Register this System on 2sxc Patrons</div>
   </div>
 
-  <p class="dialog-description">
-    Here you can register your system (registration is free). This happens through our <a href="https://patrons.2sxc.org/" target="_blank">Patrons</a> platform.
-  </p>
+  <div class="dialog-description">
+    <h2>Basic Mode: Free Registration with Goodies</h2>
+    <p>
+      You can just register for free to unlock some features.
+      They are mainly enhancements for which we wish to contact you in case of critical security issues.
+    </p>
+    <a [innerHtml]="logo | safeHtml" href="https://patrons.2sxc.org/" target="_blank" style="width: 50%; float: right;"></a>
+    <h2>Hero Mode: Support 2sxc, get Awesome Stuff</h2>
+    <p>
+      If you want to become a champion and pay a monthly contribution
+      to support the open-source development of 2sxc, you will get some
+      <a href="https://r.2sxc.org/bundles" target="_blank">really nice features</a>  as well 🚀.
+    </p>
+    <p>
+      Thanks for loving and supporting 2sxc 💖
+    </p>
 
-  <p class="dialog-description" *ngIf="data.systemInfoSet">
-    <b>Status:</b> {{ data.systemInfoSet.License.Owner ? "this system is registered to " + data.systemInfoSet.License.Owner : "this system is not yet registered" }}
-    <br>
-    <b>Fingerprint:</b> <span [tippy]="'Click to copy to clipboard'"
-      (click)="copyToClipboard(data.systemInfoSet.System.Fingerprint)"> {{ data.systemInfoSet.System.Fingerprint }}</span>
-    <br>
-    <br>
-  </p>
+    <h2>System Specs</h2>
+    <p *ngIf="data.systemInfoSet">
+      <b>Status:</b> {{ data.systemInfoSet.License.Owner ? "this system is registered to " + data.systemInfoSet.License.Owner : "this system is not yet registered" }}
+      <br>
+      <b>Fingerprint:</b> <span [tippy]="'Click to copy to clipboard'"
+        (click)="copyToClipboard(data.systemInfoSet.System.Fingerprint)"> {{ data.systemInfoSet.System.Fingerprint }}</span>
+      <br>
+      <br>
+    </p>
+  </div>
 
   <div class="mat-cards-div">
     <mat-card class="mat-card-left">
