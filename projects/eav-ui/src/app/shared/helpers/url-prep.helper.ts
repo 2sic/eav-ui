@@ -1,6 +1,6 @@
 import { EavFor } from '../../edit/shared/models/eav';
 import { eavConstants } from '../constants/eav.constants';
-import { ItemAddIdentifier, EditForm, ItemEditIdentifier, ItemInListIdentifier } from '../models/edit-form.model';
+import { EditForm, ItemAddIdentifier, ItemEditIdentifier, ItemInListIdentifier } from '../models/edit-form.model';
 
 const PREFILL_PREFIX = 'prefill:';
 const GROUP_PREFIX = 'group:';
@@ -103,12 +103,16 @@ function prefillFromUrlParams(url: string, addTo: Record<string, string>): Recor
   return result;
 }
 
+function isNumber(maybeNumber: string): boolean {
+  // The regex must be re-created for each test
+  return /^[0-9]*$/g.test(maybeNumber);
+}
+
 export function convertUrlToForm(formUrl: string) {
   const form: EditForm = { items: [] };
   const items = formUrl.split(ITEM_SEPARATOR);
 
   for (const item of items) {
-    const isNumber = /^[0-9]*$/g;
     if (item.startsWith(GROUP_PREFIX)) {
       // Inner Item / Group Item
       const innerItem = {} as ItemInListIdentifier;
@@ -116,21 +120,19 @@ export function convertUrlToForm(formUrl: string) {
 
       for (const option of options) {
         if (option.startsWith(GROUP_PREFIX)) {
-          const innerItemParams = item.split(':');
-          innerItem.Parent = innerItemParams[1];
-          innerItem.Field = innerItemParams[2];
-          innerItem.Index = parseInt(innerItemParams[3], 10);
-          innerItem.Add = innerItemParams[4] === 'true';
-          if (innerItemParams.length > 4) {
-            const maybeEntityId = innerItemParams[5];
-            if (maybeEntityId) innerItem.EntityId = parseInt(innerItemParams[5], 10);
-          }
+          const parms = option.split(':');
+          innerItem.Parent = parms[1];
+          innerItem.Field = parms[2];
+          innerItem.Index = parseInt(parms[3], 10);
+          innerItem.Add = parms[4] === 'true';
+          if (parms.length > 4 && parms[5] && isNumber(parms[5]))
+            innerItem.EntityId = parseInt(parms[5], 10);
         } else if (option.startsWith(PREFILL_PREFIX)) {
           innerItem.Prefill = prefillFromUrlParams(option, innerItem.Prefill);
         }
       }
       form.items.push(innerItem);
-    } else if (isNumber.test(item)) {
+    } else if (isNumber(item)) {
       // Edit Item
       const editItem: ItemEditIdentifier = { EntityId: parseInt(item, 10) };
       form.items.push(editItem);
@@ -172,7 +174,6 @@ export function convertUrlToForm(formUrl: string) {
       form.items.push(addItem);
     }
   }
-
   return form;
 }
 
