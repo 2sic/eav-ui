@@ -29,6 +29,15 @@ export class BooleanTristateComponent extends BaseComponent<boolean | ''> implem
     super.ngOnInit();
     this.label$ = this.settings$.pipe(map(settings => settings._label), distinctUntilChanged());
 
+    const changable$: Observable<boolean> = combineLatest([
+      this.settings$.pipe(map(settings => settings.TitleTrue), distinctUntilChanged()),
+      this.settings$.pipe(map(settings => settings.TitleIndeterminate), distinctUntilChanged()),
+      this.settings$.pipe(map(settings => settings.TitleFalse), distinctUntilChanged())
+    ]).pipe(
+      map(([TitleTrue, TitleIndeterminate, TitleFalse]) => !!(TitleTrue && TitleIndeterminate && TitleFalse)),
+      distinctUntilChanged(),
+    );
+
     const checked$ = combineLatest([
       this.controlStatus$.pipe(map(controlStatus => (controlStatus.value === '') ? null : controlStatus.value), distinctUntilChanged()),
       this.settings$.pipe(map(settings => settings.ReverseToggle), distinctUntilChanged()),
@@ -39,10 +48,12 @@ export class BooleanTristateComponent extends BaseComponent<boolean | ''> implem
 
     this.templateVars$ = combineLatest([
       combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
+      combineLatest([changable$]),
       combineLatest([checked$]),
     ]).pipe(
       map(([
         [controlStatus, label, placeholder, required],
+        [changable],
         [checked],
       ]) => {
         const templateVars: BooleanTristateTemplateVars = {
@@ -50,6 +61,7 @@ export class BooleanTristateComponent extends BaseComponent<boolean | ''> implem
           label,
           placeholder,
           required,
+          changable,
           checked,
         };
         return templateVars;
