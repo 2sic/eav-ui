@@ -1,24 +1,39 @@
-:host ::ng-deep .toggle-false {
+// When true (checked)
+:host ::ng-deep .toggle-true.changable-label-tristate-mat-slide-togle {
   .mat-slide-toggle-bar {
-    background-color: rgba(0, 128, 0, 0.5);
+    background-color: #7fc3f9;
   }
 }
 
-:host ::ng-deep .toggle-true {
-  .mat-slide-toggle-bar {
-    background-color: rgba(0, 0, 255, 0.5);
-  }
-}
-
-:host ::ng-deep .toggle-true {
+:host ::ng-deep .toggle-true.changable-label-tristate-mat-slide-togle {
   .mat-slide-toggle-thumb {
-    background-color: #fafafa;
+    background-color: #0088f4;
   }
 }
 
-:host ::ng-deep .toggle-null {
+// When false (unchecked)
+:host ::ng-deep .toggle-false.changable-label-tristate-mat-slide-togle {
   .mat-slide-toggle-bar {
-    background-image: linear-gradient(to right, rgba(0, 0, 255, 0.5), rgba(0, 128, 0, 0.5));
+    background-color: #bfe1fc;
+  }
+}
+
+:host ::ng-deep .toggle-false.changable-label-tristate-mat-slide-togle {
+  .mat-slide-toggle-thumb {
+    background-color: #7fc3f9;
+  }
+}
+
+// When null (middle)
+:host ::ng-deep .toggle-null.changable-label-tristate-mat-slide-togle {
+  .mat-slide-toggle-bar {
+    background-image: linear-gradient(to right, #7fc3f9, #bfe1fc);
+  }
+}
+
+:host ::ng-deep .toggle-null.changable-label-tristate-mat-slide-togle {
+  .mat-slide-toggle-thumb {
+    background-color: #40a6f6;
   }
 }
 
