@@ -1,11 +1,17 @@
-:host ::ng-deep .changable-mat-slide-togle.mat-checked .mat-slide-toggle-bar {
-  background-color: rgba(0, 0, 255, 0.5);
+// When true (checked)
+:host ::ng-deep .changable-label-mat-slide-togle.mat-checked .mat-slide-toggle-bar {
+  background-color: #7fc3f9;
 }
 
-:host ::ng-deep .changable-mat-slide-togle:not(.mat-checked) .mat-slide-toggle-bar {
-  background-color: rgba(0, 128, 0, 0.5);
+:host ::ng-deep .changable-label-mat-slide-togle.mat-checked .mat-slide-toggle-thumb {
+  background-color: #0088f4;
 }
 
-:host ::ng-deep .changable-mat-slide-togle .mat-slide-toggle-thumb {
-  background-color: #fafafa;
+// When false (unchecked)
+:host ::ng-deep .changable-label-mat-slide-togle:not(.mat-checked) .mat-slide-toggle-bar {
+  background-color: #bfe1fc;
+}
+
+:host ::ng-deep .changable-label-mat-slide-togle:not(.mat-checked) .mat-slide-toggle-thumb {
+  background-color: #7fc3f9;
 }
