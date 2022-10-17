@@ -63,7 +63,6 @@ export class BooleanDefaultComponent extends BaseComponent<boolean> implements O
           changable,
           checked,
         };
-        console.log(templateVars);
         return templateVars;
       }),
     );
