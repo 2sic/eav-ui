@@ -1,10 +1,43 @@
-::ng-deep .toggle-false {
+// When true (checked)
+:host ::ng-deep .toggle-true.changable-label-tristate-mat-slide-togle {
   .mat-slide-toggle-bar {
-    background-color: orange;
+    background-color: #7fc3f9;
   }
 }
 
-::ng-deep .toggle-null {
+:host ::ng-deep .toggle-true.changable-label-tristate-mat-slide-togle {
+  .mat-slide-toggle-thumb {
+    background-color: #0088f4;
+  }
+}
+
+// When false (unchecked)
+:host ::ng-deep .toggle-false.changable-label-tristate-mat-slide-togle {
+  .mat-slide-toggle-bar {
+    background-color: #bfe1fc;
+  }
+}
+
+:host ::ng-deep .toggle-false.changable-label-tristate-mat-slide-togle {
+  .mat-slide-toggle-thumb {
+    background-color: #7fc3f9;
+  }
+}
+
+// When null (middle)
+:host ::ng-deep .toggle-null.changable-label-tristate-mat-slide-togle {
+  .mat-slide-toggle-bar {
+    background-image: linear-gradient(to right, #7fc3f9, #bfe1fc);
+  }
+}
+
+:host ::ng-deep .toggle-null.changable-label-tristate-mat-slide-togle {
+  .mat-slide-toggle-thumb {
+    background-color: #7fc3f9;
+  }
+}
+
+:host ::ng-deep .toggle-null {
   .mat-slide-toggle-thumb-container {
     margin-left: 8px;
   }

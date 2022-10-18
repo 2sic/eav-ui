@@ -29,6 +29,14 @@ export class BooleanDefaultComponent extends BaseComponent<boolean> implements O
     super.ngOnInit();
     this.label$ = this.settings$.pipe(map(settings => settings._label), distinctUntilChanged());
 
+    const changable$: Observable<boolean> = combineLatest([
+      this.settings$.pipe(map(settings => settings.TitleTrue), distinctUntilChanged()),
+      this.settings$.pipe(map(settings => settings.TitleFalse), distinctUntilChanged())
+    ]).pipe(
+      map(([TitleTrue, TitleFalse]) => !!(TitleTrue && TitleFalse)),
+      distinctUntilChanged(),
+    );
+
     const checked$ = combineLatest([
       this.controlStatus$.pipe(map(controlStatus => controlStatus.value), distinctUntilChanged()),
       this.settings$.pipe(map(settings => settings.ReverseToggle), distinctUntilChanged())
@@ -39,10 +47,12 @@ export class BooleanDefaultComponent extends BaseComponent<boolean> implements O
 
     this.templateVars$ = combineLatest([
       combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
-      combineLatest([checked$]),
+      combineLatest([changable$]),
+      combineLatest([checked$])
     ]).pipe(
       map(([
         [controlStatus, label, placeholder, required],
+        [changable],
         [checked],
       ]) => {
         const templateVars: BooleanDefaultTemplateVars = {
@@ -50,6 +60,7 @@ export class BooleanDefaultComponent extends BaseComponent<boolean> implements O
           label,
           placeholder,
           required,
+          changable,
           checked,
         };
         return templateVars;
