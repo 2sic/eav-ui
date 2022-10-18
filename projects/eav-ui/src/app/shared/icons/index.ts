@@ -43,6 +43,7 @@ import fileCopy from '!raw-loader!@material-design-icons/svg/outlined/file_copy.
 import filterIcon from '!raw-loader!@material-design-icons/svg/outlined/filter.svg';
 import filterCenterFocus from '!raw-loader!@material-design-icons/svg/outlined/filter_center_focus.svg';
 import filterList from '!raw-loader!@material-design-icons/svg/outlined/filter_list.svg';
+import findInPage from '!raw-loader!@material-design-icons/svg/outlined/find_in_page.svg';
 import formatListNumbered from '!raw-loader!@material-design-icons/svg/outlined/format_list_numbered.svg';
 import foundation from '!raw-loader!@material-design-icons/svg/outlined/foundation.svg';
 import functions from '!raw-loader!@material-design-icons/svg/outlined/functions.svg';
@@ -161,6 +162,7 @@ export const iconsMaterial: Record<string, string> = {
   filter: filterIcon,
   'filter-center-focus': filterCenterFocus,
   'filter-list': filterList,
+  'find-in-page': findInPage,
   'format-list-numbered': formatListNumbered,
   foundation,
   functions,
