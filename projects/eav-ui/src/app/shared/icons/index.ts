@@ -227,6 +227,7 @@ export const iconsMaterial: Record<string, string> = {
 // to improve constant use of icon names
 export const iconLib = {
   note: stickyNote2,
+  starBorder,
   warning,
   warningOutline,
 };

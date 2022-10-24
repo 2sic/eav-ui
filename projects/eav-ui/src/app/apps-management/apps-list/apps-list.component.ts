@@ -9,6 +9,7 @@ import { IdFieldComponent } from '../../shared/components/id-field/id-field.comp
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
+import { iconLib } from '../../shared/icons';
 import { EditForm } from '../../shared/models/edit-form.model';
 import { Context } from '../../shared/services/context';
 import { App } from '../models/app.model';
@@ -133,7 +134,6 @@ export class AppsListComponent implements OnInit, OnDestroy {
   }
 
   private buildGridOptions(): GridOptions {
-    const starBorderSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="m22 9.24-7.19-.62L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27 18.18 21l-1.63-7.03L22 9.24zM12 15.4l-3.76 2.27 1-4.28-3.32-2.88 4.38-.38L12 6.1l1.71 4.04 4.38.38-3.32 2.88 1 4.28L12 15.4z"/></svg>`
     const gridOptions: GridOptions = {
       ...defaultGridOptions,
       columnDefs: [
@@ -192,7 +192,7 @@ export class AppsListComponent implements OnInit, OnDestroy {
             <div class="container">
               ${app.Thumbnail
                 ? `<img class="image logo" src="${app.Thumbnail}?w=40&h=40&mode=crop"></img>`
-              : `<div class="image logo">${starBorderSvg}</div>`
+              : `<div class="image logo">${iconLib.starBorder}</div>`
               }
               <div class="text">${params.value}</div>
             </div>
