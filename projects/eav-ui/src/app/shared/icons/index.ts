@@ -242,5 +242,5 @@ export const iconsFontAwesome: Record<string, string> = {
   'code-curly': codeCurly,
 };
 
-console.warn('test 2dm');
-console.log('icon:', icons.note, icons.warning, icons.warningOutline);
+// console.warn('test 2dm');
+// console.log('icon:', icons.note, icons.warning, icons.warningOutline);
