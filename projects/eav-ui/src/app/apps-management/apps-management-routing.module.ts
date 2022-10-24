@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { editRoot, refreshEditRoot } from '../edit/edit.matcher';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
 import { EmptyRouteComponent } from '../shared/components/empty-route/empty-route.component';
+import { addAppFromFolderDialog } from './add-app-from-folder/add-app-from-folder-dialog.config';
 import { appsManagementDialog } from './apps-management-nav/apps-management-dialog.config';
 import { createAppDialog } from './create-app/create-app-dialog.config';
 import { createInheritedAppDialog } from './create-inherited-app/create-inherited-app-dialog.config';
@@ -25,6 +26,7 @@ const appsManagementRoutes: Routes = [
           },
           { path: 'create', component: DialogEntryComponent, data: { dialog: createAppDialog } },
           { path: 'create-inherited', component: DialogEntryComponent, data: { dialog: createInheritedAppDialog } },
+          { path: 'add-app-from-folder', component: DialogEntryComponent, data: { dialog: addAppFromFolderDialog } },
           {
             path: ':appId',
             loadChildren: () => import('../app-administration/app-administration.module').then(m => m.AppAdministrationModule)

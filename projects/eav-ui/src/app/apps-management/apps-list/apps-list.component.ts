@@ -70,6 +70,10 @@ export class AppsListComponent implements OnInit, OnDestroy {
     this.router.navigate(['create-inherited'], { relativeTo: this.route.firstChild });
   }
 
+  addFromFolder(): void {
+    this.router.navigate(['add-app-from-folder'], { relativeTo: this.route.firstChild });
+  }
+
   importApp(files?: File[]): void {
     const dialogData: FileUploadDialogData = { files };
     this.router.navigate(['import'], { relativeTo: this.route.firstChild, state: dialogData });
