@@ -379,14 +379,28 @@
       This file can then also be versioned using git.
     </mat-card-content>
     <mat-card-actions>
-      <button mat-button (click)="exportAppXml()">
-        <mat-icon svgIcon="more-time"></mat-icon>
-        <span>Save state</span>
-      </button>
-      <button mat-button (click)="resetApp()">
-        <mat-icon svgIcon="restore"></mat-icon>
-        <span>Restore state</span>
-      </button>
+      <ng-container *ngIf="!(debugEnabled$ | async)">
+        <button mat-button (click)="exportAppXml(false)">
+          <mat-icon svgIcon="more-time"></mat-icon>
+          <span>Save state</span>
+        </button>
+        <button mat-button (click)="resetApp(false)">
+          <mat-icon svgIcon="restore"></mat-icon>
+          <span>Restore state</span>
+        </button>
+      </ng-container>
+      <ng-container *ngIf="debugEnabled$ | async">
+        <div>Warning: BETA feature! - requires Patron Basic</div>
+        <button mat-button (click)="exportAppXml(true)">
+          <mat-icon svgIcon="more-time"></mat-icon>
+          <span>Save ADV (beta)</span>
+        </button>
+          <button mat-button (click)="resetApp(true)">
+          <mat-icon svgIcon="restore"></mat-icon>
+          <span>Restore ADV (beta)</span>
+        </button>
+      </ng-container>
+
     </mat-card-actions>
   </mat-card>
 </div>

@@ -20,9 +20,13 @@ export class ImportAppPartsService {
   }
 
   /** Reset the App back to the state it was in the last xml export */
-  resetApp() {
+  resetApp(withFiles: boolean) {
     return this.http.post<FileUploadResult>(this.dnnContext.$2sxc.http.apiUrl(webApiAppRoot + 'Reset'), {}, {
-      params: { appId: this.context.appId.toString(), zoneId: this.context.zoneId.toString() }
+      params: {
+        appId: this.context.appId.toString(),
+        zoneId: this.context.zoneId.toString(),
+        withPortalFiles: withFiles.toString(),
+      }
     });
   }
 }

@@ -184,9 +184,9 @@ export class AppConfigurationComponent implements OnInit, OnChanges, OnDestroy {
     this.router.navigate([`import/parts`], { relativeTo: this.route.firstChild });
   }
 
-  exportAppXml() {
+  exportAppXml(withFiles: boolean) {
     this.snackBar.open('Exporting...');
-    this.exportAppService.exportForVersionControl(true, false).subscribe({
+    this.exportAppService.exportForVersionControl({ includeContentGroups: true, resetAppGuid: false, withFiles }).subscribe({
       next: result => {
         this.snackBar.open('Export completed into the \'App_Data\' folder.', null, { duration: 3000 });
       },
@@ -196,10 +196,10 @@ export class AppConfigurationComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
-  resetApp() {
+  resetApp(withFiles: boolean) {
     if (!confirm('Are you sure? All changes since last xml export will be lost')) { return; }
     this.snackBar.open('Resetting...');
-    this.importAppPartsService.resetApp().subscribe({
+    this.importAppPartsService.resetApp(withFiles).subscribe({
       next: result => {
         this.snackBar.open(
           'Reset worked! Since this is a complex operation, please restart the Website to ensure all caches are correct',
