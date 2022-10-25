@@ -25,6 +25,7 @@ import close from '!raw-loader!@material-design-icons/svg/outlined/close.svg';
 import cloudDownload from '!raw-loader!@material-design-icons/svg/outlined/cloud_download.svg';
 import cloudUpload from '!raw-loader!@material-design-icons/svg/outlined/cloud_upload.svg';
 import code from '!raw-loader!@material-design-icons/svg/outlined/code.svg';
+import copy from '!raw-loader!@material-design-icons/svg/outlined/content_copy.svg';
 import cropFree from '!raw-loader!@material-design-icons/svg/outlined/crop_free.svg';
 import deleteIcon from '!raw-loader!@material-design-icons/svg/outlined/delete.svg';
 import deviceUnknown from '!raw-loader!@material-design-icons/svg/outlined/device_unknown.svg';
@@ -226,6 +227,7 @@ export const iconsMaterial: Record<string, string> = {
 // 2dm: New object based icon-library
 // to improve constant use of icon names
 export const iconLib = {
+  copy,
   note: stickyNote2,
   starBorder,
   warning,
