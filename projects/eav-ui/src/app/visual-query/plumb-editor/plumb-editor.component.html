@@ -62,15 +62,13 @@
         Type: {{ getTypeName(dataSource.PartAssemblyAndType) }}
       </div>
 
-      <mat-icon class="add-endpoint" title="Drag a new Out-Connection"
-        *ngIf="templateModel.allowEdit && templateModel.typeInfos[dataSource.EntityGuid].DynamicOut"
-        svgIcon="arrow-drop-up">
-      </mat-icon>
+      <div class="add-endpoint sourceEndpoint dynamic" title="Drag a new Out-Connection"
+        *ngIf="templateModel.allowEdit && templateModel.typeInfos[dataSource.EntityGuid].DynamicOut">
+      </div>
 
-      <mat-icon class="many-in" title="This data source supports multiple In-Connections"
-        *ngIf="templateModel.allowEdit && templateModel.typeInfos[dataSource.EntityGuid].DynamicIn"
-        svgIcon="arrow-drop-up">
-      </mat-icon>
+      <div class="many-in targetEndpoint dynamic" title="This data source supports multiple In-Connections"
+        *ngIf="templateModel.allowEdit && templateModel.typeInfos[dataSource.EntityGuid].DynamicIn">
+      </div>
     </div>
   </ng-container>
 </div>

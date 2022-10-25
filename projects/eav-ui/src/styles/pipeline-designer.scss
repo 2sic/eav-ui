@@ -130,32 +130,36 @@ $warning: url('data: image/svg+xml; utf8,<svg xmlns="http://www.w3.org/2000/svg"
     display: none;
   }
 
+  // Special Endpoint for add and in
   .dataSource .add-endpoint {
     position: absolute;
     top: -17px;
     right: -8px;
     cursor: pointer;
-    color: orange;
     display: none;
     font-size: 32px;
     width: 32px;
     height: 32px;
-  }
-
-  .dataSource .add-endpoint:hover {
-    color: #D98D00;
   }
 
   .dataSource .many-in {
     display: none;
     position: absolute;
-    color: orange;
     right: -8px;
     bottom: -18px;
+    cursor: help;
     font-size: 32px;
     width: 32px;
     height: 32px;
     z-index: 100;
+  }
+
+  // Endpoint add/in hover
+  .dataSource .add-endpoint:hover,
+  .dataSource .many-in:hover {
+    &::after {
+      background-color: #D98D00;
+    }
   }
 
   .dataSource .actions {
@@ -221,20 +225,36 @@ $warning: url('data: image/svg+xml; utf8,<svg xmlns="http://www.w3.org/2000/svg"
     border: 1px solid $data-source-color;
   }
 
+  // SVG coloring using mask/background
+  // inspired by https://stackoverflow.com/questions/21509982/change-svg-fill-color-in-before-or-after-css
   .sourceEndpoint,
   .targetEndpoint {
     &.dynamic {
-      color: orange;
+      &::after {
+        background-color: orange;
+      }
     }
 
     &.required {
-      color: red;
+      &::after {
+        background-color: red;
+      }
     }
 
     &::after {
-      @include materialIcon($arrow-drop-up, 32px);
+      width: 32px;
+      height: 32px;
+      display: inline-block;
+      content: '';
+      // -webkit-mask: url(https://gh.max.ax/heart.svg) no-repeat 50% 50%;
+      mask: $arrow-drop-up no-repeat 50% 50%;
+      // -webkit-mask-size: cover;
+      mask-size: cover;
+      background-color: black;
     }
+
   }
+
 
   .jtk-endpoint,
   .endpointTargetLabel,
