@@ -143,13 +143,6 @@ export class FormulaHelpers {
           data,
           context: {
             app: formula.app,
-            // {
-            //   appId: parseInt(eavService.eavConfig.appId, 10),
-            //   zoneId: parseInt(eavService.eavConfig.zoneId, 10),
-            //   isGlobal: eavService.eavConfig.dialogContext.App.IsGlobalApp,
-            //   isSite: eavService.eavConfig.dialogContext.App.IsSiteApp,
-            //   isContent: eavService.eavConfig.dialogContext.App.IsContentApp,
-            // },
             cache: formula.cache,
             culture: {
               code: currentLanguage,
@@ -169,21 +162,10 @@ export class FormulaHelpers {
                 fieldsSettingsService.forceSettings();
               },
             },
-            sxc: window.$2sxc({
-              zoneId: eavService.eavConfig.zoneId,
-              appId: eavService.eavConfig.appId,
-              pageId: eavService.eavConfig.tabId,
-              moduleId: eavService.eavConfig.moduleId,
-              _ignoreHeaders: true,
-            } as any),
+            // WIP v14.11 move sxc to cache like app - must watch a bit till ca. Dec 2022 to ensure caching is ok for this
+            sxc: formula.sxc,
             target: {
               entity: formula.targetEntity,
-              // {
-              //   guid: formula.entityGuid,
-              //   id: entityId,
-              //   type: {
-              //   },
-              // },
               name: formula.target === FormulaTargets.Value || formula.target === FormulaTargets.Validation
                 ? formula.fieldName
                 : formula.target.substring(formula.target.lastIndexOf('.') + 1),
@@ -192,12 +174,6 @@ export class FormulaHelpers {
                 : formula.target.substring(0, formula.target.lastIndexOf('.')),
             },
             user: formula.user,
-            // {
-            //   id: eavService.eavConfig.dialogContext.User?.Id,
-            //   isAnonymous: eavService.eavConfig.dialogContext.User?.IsAnonymous,
-            //   isSiteAdmin: eavService.eavConfig.dialogContext.User?.IsSiteAdmin,
-            //   isSystemAdmin: eavService.eavConfig.dialogContext.User?.IsSystemAdmin,
-            // },
           },
           experimental: {
             getEntities(): FormulaV1ExperimentalEntity[] {

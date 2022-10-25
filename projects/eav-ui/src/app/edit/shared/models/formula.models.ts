@@ -3,7 +3,20 @@ import { FormValues } from '.';
 import { FieldSettings, FieldValue } from '../../../../../../edit-types';
 import { Feature } from '../../../apps-management/models/feature.model';
 
-export interface FormulaCacheItem {
+/**
+ * Formula Cached Values which are re-used across formulas of the same entity
+ */
+export interface FormulaCacheItemShared {
+  /** Target information which stays the same across cycles, new cached in 14.07.05 */
+  targetEntity: FormulaV1CtxTargetEntity;
+  /** User which stays the same across cycles, new cached in 14.07.05 */
+  user: FormulaV1CtxUser;
+  /** App which stays the same across cycles, new cached in 14.07.05 */
+  app: FormulaV1CtxApp;
+  sxc: SxcInstance;
+}
+
+export interface FormulaCacheItem extends FormulaCacheItemShared {
   cache: Record<string, any>;
   entityGuid: string;
   fieldName: string;
@@ -19,12 +32,6 @@ export interface FormulaCacheItem {
   sourceId: number;
   target: FormulaTarget;
   version: FormulaVersion;
-  /** Target information which stays the same across cycles, new cached in 14.07.05 */
-  targetEntity: FormulaV1CtxTargetEntity;
-  /** User which stays the same across cycles, new cached in 14.07.05 */
-  user: FormulaV1CtxUser;
-  /** App which stays the same across cycles, new cached in 14.07.05 */
-  app: FormulaV1CtxApp;
 }
 
 export type FormulaFunction = FormulaFunctionDefault | FormulaFunctionV1;
