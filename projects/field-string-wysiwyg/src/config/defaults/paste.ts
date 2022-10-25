@@ -1,11 +1,11 @@
-import type { RawEditorSettings } from 'tinymce';
+import type { RawEditorOptions } from 'tinymce';
 import { Adam, AdamItem, Dropzone } from '../../../../edit-types';
 import { consoleLogWebpack } from '../../../../field-custom-gps/src/shared/console-log-webpack.helper';
 
 export class DefaultPaste {
 
   /** Paste formatted text, e.g. text copied from MS Word */
-  static formattedText: RawEditorSettings = {
+  static formattedText: RawEditorOptions = {
     paste_as_text: false,
     paste_enable_default_filters: true,
     paste_create_paragraphs: true,
@@ -34,8 +34,8 @@ export class DefaultPaste {
   };
 
   /** Paste image */
-  static images(dropzone: Dropzone, adam: Adam): RawEditorSettings {
-    const imageUploadSettings: RawEditorSettings = {
+  static images(dropzone: Dropzone, adam: Adam): RawEditorOptions {
+    const imageUploadSettings: RawEditorOptions = {
       automatic_uploads: true,
       images_reuse_filename: true,
       paste_data_images: true,
@@ -49,9 +49,9 @@ export class DefaultPaste {
   }
 
   private static imagesUploadHandler(
-    blobInfo: Parameters<RawEditorSettings['images_upload_handler']>[0],
-    success: Parameters<RawEditorSettings['images_upload_handler']>[1],
-    failure: Parameters<RawEditorSettings['images_upload_handler']>[2],
+    blobInfo: Parameters<RawEditorOptions['images_upload_handler']>[0],
+    success: Parameters<RawEditorOptions['images_upload_handler']>[1],
+    failure: Parameters<RawEditorOptions['images_upload_handler']>[2],
     dropzone: Dropzone,
     adam: Adam,
   ): void {

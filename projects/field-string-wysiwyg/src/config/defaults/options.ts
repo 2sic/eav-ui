@@ -1,6 +1,6 @@
-import type { RawEditorSettings } from 'tinymce';
+import type { RawEditorOptions } from 'tinymce';
 
-export const DefaultOptions: RawEditorSettings = {
+export const DefaultOptions: RawEditorOptions = {
   skin: '2sxc-tinymce-skin',
   theme: 'silver',
   suffix: '.min', // force minified skin, theme, plugins, etc.
@@ -27,5 +27,5 @@ export const DefaultOptions: RawEditorSettings = {
   object_resizing: false, // don't allow manual scaling of images
   debounce: false, // DONT slow-down model updates - otherwise we sometimes miss the last changes
   toolbar_persist: true,
-  deprecation_warnings: false, // spm TODO: remove after upgrading to TinyMCE 6
+  // deprecation_warnings: false, // spm TODO: remove after upgrading to TinyMCE 6
 };

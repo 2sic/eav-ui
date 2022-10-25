@@ -1,4 +1,4 @@
-import type { Editor, RawEditorSettings } from 'tinymce';
+import type { Editor, RawEditorOptions } from 'tinymce';
 import { FeaturesConstants } from '../../../eav-ui/src/app/edit/shared/constants';
 import { EavWindow } from '../../../eav-ui/src/app/shared/models/eav-window.model';
 import { AddOnSettings, Connector, WysiwygReconfigure } from '../../../edit-types';
@@ -46,7 +46,7 @@ export class TinyMceConfigurator {
   }
 
   /** Construct TinyMCE options */
-  buildOptions(containerClass: string, fixedToolbarClass: string, inlineMode: boolean, setup: (editor: Editor) => void): RawEditorSettings {
+  buildOptions(containerClass: string, fixedToolbarClass: string, inlineMode: boolean, setup: (editor: Editor) => void): RawEditorOptions {
     const connector = this.connector;
     const exp = connector._experimental;
     const buttonSource = connector.field.settings.ButtonSource;
@@ -69,7 +69,7 @@ export class TinyMceConfigurator {
     let contentCssFile = connector.field.settings?.ContentCss;
     if (!contentCssFile) contentCssFile = null;
 
-    const options: RawEditorSettings = {
+    const options: RawEditorOptions = {
       ...DefaultOptions,
       ...{ plugins: [...DefaultPlugins] },
       selector: `.${containerClass}`,
