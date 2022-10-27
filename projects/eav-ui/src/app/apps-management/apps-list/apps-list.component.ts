@@ -1,8 +1,9 @@
 import { GridOptions, ICellRendererParams } from '@ag-grid-community/core';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { BehaviorSubject, catchError, filter, map, Observable, of, pairwise, share, startWith, Subject, Subscription, switchMap } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
+import { BehaviorSubject, catchError, Observable, of, share, startWith, Subject, switchMap } from 'rxjs';
+import { BaseMainComponent } from '../../shared/components/base-component/baseMain.component';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { FileUploadDialogData } from '../../shared/components/file-upload-dialog';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
@@ -23,21 +24,22 @@ import { AppsListShowComponent } from './apps-list-show/apps-list-show.component
   templateUrl: './apps-list.component.html',
   styleUrls: ['./apps-list.component.scss'],
 })
-export class AppsListComponent implements OnInit, OnDestroy {
+export class AppsListComponent extends BaseMainComponent implements OnInit, OnDestroy {
   apps$: Observable<App[]>;
   fabOpen$ = new BehaviorSubject(false);
   gridOptions = this.buildGridOptions();
 
   private refreshApps$ = new Subject<void>();
-  private subscription = new Subscription();
 
   constructor(
-    private router: Router,
-    private route: ActivatedRoute,
+    router: Router,
+    route: ActivatedRoute,
     private appsListService: AppsListService,
     private snackBar: MatSnackBar,
     private context: Context,
-  ) { }
+  ) { 
+    super(router, route)
+  }
 
   ngOnInit(): void {
     this.apps$ = this.refreshApps$.pipe(
@@ -45,13 +47,13 @@ export class AppsListComponent implements OnInit, OnDestroy {
       switchMap(() => this.appsListService.getAll().pipe(catchError(() => of(undefined)))),
       share(),
     );
-    this.refreshOnChildClosed();
+    this.subscription.add(this.refreshOnChildClosed().subscribe(() => { this.refreshApps$.next(); }));
   }
 
   ngOnDestroy(): void {
     this.fabOpen$.complete();
     this.refreshApps$.complete();
-    this.subscription.unsubscribe();
+    super.ngOnDestroy();
   }
 
   openChange(open: boolean): void {
@@ -121,20 +123,6 @@ export class AppsListComponent implements OnInit, OnDestroy {
 
   private openApp(app: App): void {
     this.router.navigate([app.Id.toString()], { relativeTo: this.route.firstChild });
-  }
-
-  private refreshOnChildClosed(): void {
-    this.subscription.add(
-      this.router.events.pipe(
-        filter(event => event instanceof NavigationEnd),
-        startWith(!!this.route.snapshot.firstChild.firstChild),
-        map(() => !!this.route.snapshot.firstChild.firstChild),
-        pairwise(),
-        filter(([hadChild, hasChild]) => hadChild && !hasChild),
-      ).subscribe(() => {
-        this.refreshApps$.next();
-      })
-    );
   }
 
   private buildGridOptions(): GridOptions {

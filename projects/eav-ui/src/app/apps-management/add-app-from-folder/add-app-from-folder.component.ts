@@ -1,11 +1,11 @@
 import { GridOptions } from '@ag-grid-community/core';
-import { Component, HostBinding, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit } from "@angular/core";
 import { MatDialogRef } from "@angular/material/dialog";
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { catchError, Observable, of, share, startWith, Subject, switchMap, map } from "rxjs";
+import { catchError, Observable, of, share, startWith, Subject, switchMap } from "rxjs";
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from "../../shared/constants/default-grid-options.constants";
-import { PendingApp, PendingAppChecked } from "../models/app.model";
+import { PendingApp } from "../models/app.model";
 import { AppsListService } from "../services/apps-list.service";
 import { AppNameShowComponent } from './app-name-show/app-name-show.component';
 import { CheckboxCellComponent } from './checkbox-cell/checkbox-cell.component';
@@ -17,7 +17,6 @@ import { CheckboxCellParams } from './checkbox-cell/checkbox-cell.model';
   styleUrls: ['./add-app-from-folder.component.scss'],
 })
 export class AddAppFromFolderComponent implements OnInit, OnDestroy {
-  @HostBinding('className') hostClass = 'dialog-component';
 
   pendingApps$: Observable<PendingApp[]>;
   gridOptions = this.buildGridOptions();
