@@ -218,69 +218,84 @@ export class AppConfigurationComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private fetchSettings() {
-    this.contentTypesService.retrieveContentTypes(eavConstants.scopes.configuration.value).subscribe(contentTypes => {
-      const settingsCustomExists = contentTypes.some(ct => ct.Name === eavConstants.contentTypes.customSettings);
-      const resourcesCustomExists = contentTypes.some(ct => ct.Name === eavConstants.contentTypes.customResources);
-
-      forkJoin([
-        forkJoin([
-          this.contentItemsService.getAll(eavConstants.contentTypes.systemSettings),
-          this.isGlobal || this.isPrimary
-            ? settingsCustomExists
-              ? this.contentItemsService.getAll(eavConstants.contentTypes.customSettings) : of(undefined)
-            : this.contentItemsService.getAll(eavConstants.contentTypes.settings),
-          this.isGlobal || this.isPrimary
-            ? settingsCustomExists
-              ? this.contentTypesFieldsService.getFields(eavConstants.contentTypes.customSettings) : of(undefined)
-            : this.contentTypesFieldsService.getFields(eavConstants.contentTypes.settings),
-        ]),
-        forkJoin([
-          this.contentItemsService.getAll(eavConstants.contentTypes.systemResources),
-          this.isGlobal || this.isPrimary
-            ? resourcesCustomExists
-              ? this.contentItemsService.getAll(eavConstants.contentTypes.customResources) : of(undefined)
-            : this.contentItemsService.getAll(eavConstants.contentTypes.resources),
-          this.isGlobal || this.isPrimary
-            ? resourcesCustomExists
-              ? this.contentTypesFieldsService.getFields(eavConstants.contentTypes.customResources) : of(undefined)
-            : this.contentTypesFieldsService.getFields(eavConstants.contentTypes.resources),
-        ]),
-        forkJoin([
-          this.contentItemsService.getAll(eavConstants.contentTypes.appConfiguration),
-          this.metadataService.getMetadata(eavConstants.metadata.app.targetType, eavConstants.metadata.app.keyType, this.context.appId),
-        ]),
-      ]).subscribe(([
-        [
-          systemSettingsItems,
-          customSettingsItems,
-          customSettingsFields,
-        ],
-        [
-          systemResourcesItems,
-          customResourcesItems,
-          customResourcesFields,
-        ],
-        [
-          appConfigurations,
-          appMetadata,
-        ],
-      ]) => {
+    this.metadataService.getAppInternals(eavConstants.metadata.app.targetType, eavConstants.metadata.app.keyType, this.context.appId)
+      .subscribe(x => {
+        const settingsCustomExists = x.SystemConfiguration.some((ct: { Name: string; }) => ct.Name === eavConstants.contentTypes.customSettings);
+        const resourcesCustomExists = x.SystemConfiguration.some((ct: { Name: string; }) => ct.Name === eavConstants.contentTypes.customResources);
         this.systemSettingsCount = this.isPrimary
-          ? systemSettingsItems.filter(i => i.SettingsEntityScope === SystemSettingsScopes.Site).length
-          : systemSettingsItems.filter(i => !i.SettingsEntityScope).length;
-        this.customSettingsCount = customSettingsItems?.length;
-        this.customSettingsFieldsCount = customSettingsFields?.length;
+          ? x.EntityLists.SettingsSystem.filter((i: { SettingsEntityScope: string; }) => i.SettingsEntityScope === SystemSettingsScopes.Site).length
+          : x.EntityLists.SettingsSystem.filter((i: { SettingsEntityScope: any; }) => !i.SettingsEntityScope).length;
+        this.customSettingsCount = x.EntityLists.AppSettings?.length;
+        this.customSettingsFieldsCount = x.FieldAll.AppSettings?.length;
         this.systemResourcesCount = this.isPrimary
-          ? systemResourcesItems.filter(i => i.SettingsEntityScope === SystemSettingsScopes.Site).length
-          : systemResourcesItems.filter(i => !i.SettingsEntityScope).length;
-        this.customResourcesCount = customResourcesItems?.length;
-        this.customResourcesFieldsCount = customResourcesFields?.length;
-        this.appConfigurationsCount = appConfigurations.length;
-        this.appMetadataCount = appMetadata.Items.length;
-
-        this.changeDetectorRef.markForCheck();
+          ? x.EntityLists.ResourcesSystem.filter((i: { SettingsEntityScope: string; }) => i.SettingsEntityScope === SystemSettingsScopes.Site).length
+          : x.EntityLists.ResourcesSystem.filter((i: { SettingsEntityScope: any; }) => !i.SettingsEntityScope).length;
+        this.customResourcesCount = x.EntityLists.AppResources?.length;
+        this.customResourcesFieldsCount = x.FieldAll.AppResources?.length;
+        this.appConfigurationsCount = x.EntityLists.ToSxcContentApp.length;
+        this.appMetadataCount = x.MetadataList.Items.length;
       });
-    });
+
+    // this.contentTypesService.retrieveContentTypes(eavConstants.scopes.configuration.value).subscribe(contentTypes => {
+    //   const settingsCustomExists = contentTypes.some(ct => ct.Name === eavConstants.contentTypes.customSettings);
+    //   const resourcesCustomExists = contentTypes.some(ct => ct.Name === eavConstants.contentTypes.customResources);
+
+    //   forkJoin([
+    //     forkJoin([
+    //       this.contentItemsService.getAll(eavConstants.contentTypes.systemSettings),
+    //       this.isGlobal || this.isPrimary  ? (settingsCustomExists ? this.contentItemsService.getAll(eavConstants.contentTypes.customSettings) : of(undefined)) : this.contentItemsService.getAll(eavConstants.contentTypes.settings),
+    //       this.isGlobal || this.isPrimary
+    //         ? settingsCustomExists
+    //           ? this.contentTypesFieldsService.getFields(eavConstants.contentTypes.customSettings) : of(undefined)
+    //         : this.contentTypesFieldsService.getFields(eavConstants.contentTypes.settings),
+    //     ]),
+    //     forkJoin([
+    //       this.contentItemsService.getAll(eavConstants.contentTypes.systemResources),
+    //       this.isGlobal || this.isPrimary
+    //         ? resourcesCustomExists
+    //           ? this.contentItemsService.getAll(eavConstants.contentTypes.customResources) : of(undefined)
+    //         : this.contentItemsService.getAll(eavConstants.contentTypes.resources),
+    //       this.isGlobal || this.isPrimary
+    //         ? resourcesCustomExists
+    //           ? this.contentTypesFieldsService.getFields(eavConstants.contentTypes.customResources) : of(undefined)
+    //         : this.contentTypesFieldsService.getFields(eavConstants.contentTypes.resources),
+    //     ]),
+    //     forkJoin([
+    //       this.contentItemsService.getAll(eavConstants.contentTypes.appConfiguration),
+    //       this.metadataService.getMetadata(eavConstants.metadata.app.targetType, eavConstants.metadata.app.keyType, this.context.appId),
+    //     ]),
+    //   ]).subscribe(([
+    //     [
+    //       systemSettingsItems,
+    //       customSettingsItems,
+    //       customSettingsFields,
+    //     ],
+    //     [
+    //       systemResourcesItems,
+    //       customResourcesItems,
+    //       customResourcesFields,
+    //     ],
+    //     [
+    //       appConfigurations,
+    //       appMetadata,
+    //     ],
+    //   ]) => {
+    //     this.systemSettingsCount = this.isPrimary
+    //       ? systemSettingsItems.filter(i => i.SettingsEntityScope === SystemSettingsScopes.Site).length
+    //       : systemSettingsItems.filter(i => !i.SettingsEntityScope).length;
+    //     this.customSettingsCount = customSettingsItems?.length;
+    //     this.customSettingsFieldsCount = customSettingsFields?.length;
+    //     this.systemResourcesCount = this.isPrimary
+    //       ? systemResourcesItems.filter(i => i.SettingsEntityScope === SystemSettingsScopes.Site).length
+    //       : systemResourcesItems.filter(i => !i.SettingsEntityScope).length;
+    //     this.customResourcesCount = customResourcesItems?.length;
+    //     this.customResourcesFieldsCount = customResourcesFields?.length;
+    //     this.appConfigurationsCount = appConfigurations.length;
+    //     this.appMetadataCount = appMetadata.Items.length;
+
+    //     this.changeDetectorRef.markForCheck();
+    //   });
+    // });
   }
 
   private refreshOnChildClosed() {

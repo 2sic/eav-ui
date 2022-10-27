@@ -38,3 +38,9 @@ export interface MetadataItemShort {
   Id: number;
   Title: string;
 }
+
+// export interface AppInternals {
+//   SystemConfiguration
+//   MetadataList
+//   FieldAll
+// }
