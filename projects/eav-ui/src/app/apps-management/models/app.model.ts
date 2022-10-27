@@ -35,8 +35,3 @@ export interface PendingApp {
   Folder: string;
 }
 
-export interface PendingAppChecked {
-  PendingApp: PendingApp;
-  IsChecked: boolean;
-}
-

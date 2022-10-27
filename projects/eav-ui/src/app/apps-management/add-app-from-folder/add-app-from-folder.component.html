@@ -7,13 +7,15 @@
     Select an app from the apps-folder which has been copied there (or git-cloned) but not installed yet.
   </p>
 
-  <ag-grid-angular *ngIf="data.pendingApps != []" style="width: 450px; height: 200px;" class="ag-theme-material"
-    [rowData]="data.pendingApps" [gridOptions]="gridOptions">
-  </ag-grid-angular>
-
-  <p class="dialog-description" *ngIf="data.pendingApps == []">
+  <p class="dialog-description" *ngIf="data.pendingApps?.length == 0">
     No apps found which are not already installed.
   </p>
+
+  <div class="grid-wrapper" *ngIf="data.pendingApps?.length > 0">
+    <ag-grid-angular style="height: 200px; width: auto;" class="ag-theme-material"
+      [rowData]="data.pendingApps" [gridOptions]="gridOptions">
+    </ag-grid-angular>
+  </div>
 
   <div class="dialog-component-actions">
     <button type="button" mat-raised-button (click)="closeDialog()">
