@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { webApiAppRoot } from '../../import-app/services/import-app.service';
 import { Context } from '../../shared/services/context';
-import { App } from '../models/app.model';
+import { App, PendingApp } from '../models/app.model';
 
 @Injectable()
 export class AppsListService {
@@ -25,12 +25,26 @@ export class AppsListService {
     });
   }
 
+  getPendingApps() {
+    return this.http.get<PendingApp[]>(this.apiUrl(webApiAppRoot + 'GetPendingApps'), {
+      params: { zoneId: this.context.zoneId.toString() },
+    });
+  }
+
   create(name: string, inheritAppId?: number) {
     return this.http.post<null>(this.apiUrl(webApiAppRoot + 'app'), {}, {
       params: {
         zoneId: this.context.zoneId.toString(),
         name,
         ...(inheritAppId != null && { inheritAppId }),
+      },
+    });
+  }
+
+  installPendingApps(pendingApps: PendingApp[]) {
+    return this.http.post<null>(this.apiUrl(webApiAppRoot + 'InstallPendingApps'), pendingApps, {
+      params: {
+        zoneId: this.context.zoneId.toString(),
       },
     });
   }

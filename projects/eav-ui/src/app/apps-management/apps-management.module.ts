@@ -43,13 +43,17 @@ import { SiteLanguagesStatusComponent } from './site-languages/site-languages-st
 import { SiteLanguagesComponent } from './site-languages/site-languages.component';
 import { RegistrationComponent } from './sub-dialogs/registration/registration.component';
 import { SystemInfoComponent } from './system-info/system-info.component';
+import { AppNameShowComponent } from './add-app-from-folder/app-name-show/app-name-show.component';
+import { CheckboxCellComponent } from './add-app-from-folder/checkbox-cell/checkbox-cell.component';
 
 @NgModule({
   declarations: [
+    AppNameShowComponent,
     AppsManagementNavComponent,
     AppsListComponent,
     AppsListShowComponent,
     AppsListActionsComponent,
+    CheckboxCellComponent,
     FeaturesListEnabledComponent,
     SiteLanguagesComponent,
     SiteLanguagesStatusComponent,
