@@ -39,6 +39,7 @@ import { QueriesActionsComponent } from './queries/queries-actions/queries-actio
 import { QueriesComponent } from './queries/queries.component';
 import { AnalyzeSettingsService } from './services/analyze-settings.service';
 import { AppDialogConfigService } from './services/app-dialog-config.service';
+import { AppInternalsService } from './services/app-internals.service';
 import { ContentTypesService } from './services/content-types.service';
 import { ExportAppPartsService } from './services/export-app-parts.service';
 import { ExportAppService } from './services/export-app.service';
@@ -132,6 +133,7 @@ import { WebApiComponent } from './web-api/web-api.component';
   providers: [
     Context,
     AppDialogConfigService,
+    AppInternalsService,
     ContentTypesService,
     PipelinesService,
     ViewsService,
