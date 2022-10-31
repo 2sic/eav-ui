@@ -26,6 +26,7 @@ import { AppsManagementNavComponent } from './apps-management-nav/apps-managemen
 import { AppsManagementRoutingModule } from './apps-management-routing.module';
 import { CreateAppComponent } from './create-app/create-app.component';
 import { CreateInheritedAppComponent } from './create-inherited-app/create-inherited-app.component';
+import { AddAppFromFolderComponent } from './add-app-from-folder/add-app-from-folder.component';
 import { ActiveFeaturesCountPipe } from './licence-info/active-features-count.pipe';
 import { AgGridHeightDirective } from './licence-info/ag-grid-height.directive';
 import { FeatureDetailsDialogComponent } from './licence-info/feature-details-dialog/feature-details-dialog.component';
@@ -42,18 +43,23 @@ import { SiteLanguagesStatusComponent } from './site-languages/site-languages-st
 import { SiteLanguagesComponent } from './site-languages/site-languages.component';
 import { RegistrationComponent } from './sub-dialogs/registration/registration.component';
 import { SystemInfoComponent } from './system-info/system-info.component';
+import { AppNameShowComponent } from './add-app-from-folder/app-name-show/app-name-show.component';
+import { CheckboxCellComponent } from './add-app-from-folder/checkbox-cell/checkbox-cell.component';
 
 @NgModule({
   declarations: [
+    AppNameShowComponent,
     AppsManagementNavComponent,
     AppsListComponent,
     AppsListShowComponent,
     AppsListActionsComponent,
+    CheckboxCellComponent,
     FeaturesListEnabledComponent,
     SiteLanguagesComponent,
     SiteLanguagesStatusComponent,
     CreateAppComponent,
     CreateInheritedAppComponent,
+    AddAppFromFolderComponent,
     SystemInfoComponent,
     FeaturesListEnabledReasonComponent,
     FeaturesStatusComponent,

@@ -1,8 +1,8 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { BehaviorSubject, combineLatest, filter, map, Observable, pairwise, startWith, Subscription } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
+import { BehaviorSubject, combineLatest, map, Observable} from 'rxjs';
 import { DialogSettings } from '../../app-administration/models';
 import { BaseMainComponent } from '../../shared/components/base-component/baseMain.component';
 import { copyToClipboard } from '../../shared/helpers/copy-to-clipboard.helper';
@@ -63,7 +63,7 @@ export class SystemInfoComponent extends BaseMainComponent implements OnInit, On
     this.systemInfoSet$.complete();
     this.languages$.complete();
     this.loading$.complete();
-    this.subscription.unsubscribe();
+    super.ngOnDestroy();
   }
 
   copyToClipboard(text: string): void {

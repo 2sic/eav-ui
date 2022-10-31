@@ -21,3 +21,17 @@ export interface LightspeedEntityInfo {
   IsEnabled: boolean;
   Title: string;
 }
+
+export interface PendingApp {
+  // folder as it's stored on the server
+  ServerFolder: string;
+  // taken from the app.xml
+  Name: string;
+  // taken from the app.xml
+  Description: string;
+  // taken from the app.xml
+  Version: string;
+  // taken from the app.xml
+  Folder: string;
+}
+
