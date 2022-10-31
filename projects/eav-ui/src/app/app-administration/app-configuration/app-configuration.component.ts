@@ -2,7 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { filter, forkJoin, map, of, pairwise, startWith, Subscription } from 'rxjs';
+import { filter, map, pairwise, startWith, Subscription } from 'rxjs';
 import { ContentItemsService } from '../../content-items/services/content-items.service';
 import { ContentTypesFieldsService } from '../../content-type-fields/services/content-types-fields.service';
 import { GlobalConfigService } from '../../edit/shared/store/ngrx-data';
@@ -18,6 +18,7 @@ import { DialogService } from '../../shared/services/dialog.service';
 import { ContentTypeEdit } from '../models';
 import { DialogSettings } from '../models/dialog-settings.model';
 import { ContentTypesService } from '../services';
+import { AppInternalsService } from '../services/app-internals.service';
 import { ExportAppService } from '../services/export-app.service';
 import { ImportAppPartsService } from '../services/import-app-parts.service';
 import { AnalyzePart, AnalyzeParts } from '../sub-dialogs/analyze-settings/analyze-settings.models';
@@ -61,6 +62,7 @@ export class AppConfigurationComponent implements OnInit, OnChanges, OnDestroy {
     private changeDetectorRef: ChangeDetectorRef,
     private contentTypesFieldsService: ContentTypesFieldsService,
     private metadataService: MetadataService,
+    private appInternalsService: AppInternalsService,
     private contentTypesService: ContentTypesService,
     private globalConfigService: GlobalConfigService,
   ) { }
@@ -218,69 +220,21 @@ export class AppConfigurationComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private fetchSettings() {
-    this.contentTypesService.retrieveContentTypes(eavConstants.scopes.configuration.value).subscribe(contentTypes => {
-      const settingsCustomExists = contentTypes.some(ct => ct.Name === eavConstants.contentTypes.customSettings);
-      const resourcesCustomExists = contentTypes.some(ct => ct.Name === eavConstants.contentTypes.customResources);
-
-      forkJoin([
-        forkJoin([
-          this.contentItemsService.getAll(eavConstants.contentTypes.systemSettings),
-          this.isGlobal || this.isPrimary
-            ? settingsCustomExists
-              ? this.contentItemsService.getAll(eavConstants.contentTypes.customSettings) : of(undefined)
-            : this.contentItemsService.getAll(eavConstants.contentTypes.settings),
-          this.isGlobal || this.isPrimary
-            ? settingsCustomExists
-              ? this.contentTypesFieldsService.getFields(eavConstants.contentTypes.customSettings) : of(undefined)
-            : this.contentTypesFieldsService.getFields(eavConstants.contentTypes.settings),
-        ]),
-        forkJoin([
-          this.contentItemsService.getAll(eavConstants.contentTypes.systemResources),
-          this.isGlobal || this.isPrimary
-            ? resourcesCustomExists
-              ? this.contentItemsService.getAll(eavConstants.contentTypes.customResources) : of(undefined)
-            : this.contentItemsService.getAll(eavConstants.contentTypes.resources),
-          this.isGlobal || this.isPrimary
-            ? resourcesCustomExists
-              ? this.contentTypesFieldsService.getFields(eavConstants.contentTypes.customResources) : of(undefined)
-            : this.contentTypesFieldsService.getFields(eavConstants.contentTypes.resources),
-        ]),
-        forkJoin([
-          this.contentItemsService.getAll(eavConstants.contentTypes.appConfiguration),
-          this.metadataService.getMetadata(eavConstants.metadata.app.targetType, eavConstants.metadata.app.keyType, this.context.appId),
-        ]),
-      ]).subscribe(([
-        [
-          systemSettingsItems,
-          customSettingsItems,
-          customSettingsFields,
-        ],
-        [
-          systemResourcesItems,
-          customResourcesItems,
-          customResourcesFields,
-        ],
-        [
-          appConfigurations,
-          appMetadata,
-        ],
-      ]) => {
+    this.appInternalsService.getAppInternals(eavConstants.metadata.app.targetType, eavConstants.metadata.app.keyType, this.context.appId)
+      .subscribe(x => {
         this.systemSettingsCount = this.isPrimary
-          ? systemSettingsItems.filter(i => i.SettingsEntityScope === SystemSettingsScopes.Site).length
-          : systemSettingsItems.filter(i => !i.SettingsEntityScope).length;
-        this.customSettingsCount = customSettingsItems?.length;
-        this.customSettingsFieldsCount = customSettingsFields?.length;
+          ? x.EntityLists.SettingsSystem.filter(i => i.SettingsEntityScope === SystemSettingsScopes.Site).length
+          : x.EntityLists.SettingsSystem.filter(i => !i.SettingsEntityScope).length;
+        this.customSettingsCount = x.EntityLists.AppSettings?.length;
+        this.customSettingsFieldsCount = x.FieldAll.AppSettings?.length;
         this.systemResourcesCount = this.isPrimary
-          ? systemResourcesItems.filter(i => i.SettingsEntityScope === SystemSettingsScopes.Site).length
-          : systemResourcesItems.filter(i => !i.SettingsEntityScope).length;
-        this.customResourcesCount = customResourcesItems?.length;
-        this.customResourcesFieldsCount = customResourcesFields?.length;
-        this.appConfigurationsCount = appConfigurations.length;
-        this.appMetadataCount = appMetadata.Items.length;
-
-        this.changeDetectorRef.markForCheck();
+          ? x.EntityLists.ResourcesSystem.filter(i => i.SettingsEntityScope === SystemSettingsScopes.Site).length
+          : x.EntityLists.ResourcesSystem.filter(i => !i.SettingsEntityScope).length;
+        this.customResourcesCount = x.EntityLists.AppResources?.length;
+        this.customResourcesFieldsCount = x.FieldAll.AppResources?.length;
+        this.appConfigurationsCount = x.EntityLists.ToSxcContentApp.length;
+        this.appMetadataCount = x.MetadataList.Items.length;
       });
-    });
   }
 
   private refreshOnChildClosed() {
