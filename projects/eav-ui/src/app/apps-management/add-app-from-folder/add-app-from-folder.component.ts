@@ -72,8 +72,7 @@ export class AddAppFromFolderComponent implements OnInit, OnDestroy {
       columnDefs: [
         {
           field: '',
-          flex: 1,
-          minWidth: 200,
+          width: 40,
           cellClass: 'no-outline',
           sortable: true,
           cellRenderer: CheckboxCellComponent,
@@ -86,8 +85,7 @@ export class AddAppFromFolderComponent implements OnInit, OnDestroy {
         },
         {
           field: 'Name',
-          flex: 2,
-          minWidth: 200,
+          flex: 1,
           cellClass: 'no-outline',
           sortable: true,
           sort: 'asc',
