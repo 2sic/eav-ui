@@ -72,7 +72,7 @@ export class HyperlinkDefaultBaseComponent extends BaseComponent<string> impleme
             For: {
               Target: eavConstants.metadata.cmsObject.target,
               TargetType: eavConstants.metadata.cmsObject.targetType,
-              String: `file:${adamItem.Id}`,
+              String: adamItem.ReferenceId,
             },
           },
       ],

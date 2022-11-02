@@ -1,11 +1,10 @@
 import { Observable } from 'rxjs';
 import { AdamItem } from './AdamItem';
 import { AdamConfig } from './AdamConfig';
-import { AdamPostResponse } from './AdamPostResponse';
 
 export interface Adam {
   /**
-   * Stream of filtered ADAM items 
+   * Stream of filtered ADAM items
    */
   items$: Observable<AdamItem[]>;
   /**
@@ -31,7 +30,7 @@ export interface Adam {
   /**
    * Runs when item is uploaded
    */
-  onItemUpload(item: AdamPostResponse): void;
+  onItemUpload(item: AdamItem): void;
   /**
    * Forces items refresh
    */

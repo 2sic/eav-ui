@@ -1,5 +1,5 @@
 import type { RawEditorSettings } from 'tinymce';
-import { Adam, AdamPostResponse, Dropzone } from '../../../../edit-types';
+import { Adam, AdamItem, Dropzone } from '../../../../edit-types';
 import { consoleLogWebpack } from '../../../../field-custom-gps/src/shared/console-log-webpack.helper';
 
 export class DefaultPaste {
@@ -69,13 +69,13 @@ export class DefaultPaste {
       body: formData,
     }).then(response =>
       response.json()
-    ).then((response: AdamPostResponse) => {
+    ).then((response: AdamItem) => {
       consoleLogWebpack('TinyMCE upload data', response);
-      if (!response.Success) {
+      if (response.Error) {
         alert(`Upload failed because: ${response.Error}`);
         return;
       }
-      success(response.Path);
+      success(response.Url);
       adam.refresh();
     }).catch(error => {
       consoleLogWebpack('TinyMCE upload error:', error);
