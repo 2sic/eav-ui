@@ -14,6 +14,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ZoneService } from '../apps-management/services/zone.service';
@@ -125,6 +126,7 @@ import { WebApiComponent } from './web-api/web-api.component';
     MatExpansionModule,
     MatCardModule,
     MatRippleModule,
+    MatSlideToggleModule,
     MatSnackBarModule,
     MatMenuModule,
     MatBadgeModule,

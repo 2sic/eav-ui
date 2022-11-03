@@ -367,6 +367,7 @@
   <mat-card class="mat-elevation-z2">
     <mat-card-header>
       <mat-card-title>App-State Versioning</mat-card-title>
+      <mat-slide-toggle [(ngModel)]="appStateAdvanced">{{ appStateAdvanced ? "advanced" : "basic" }}</mat-slide-toggle>
       <div class="mat-card-header-icon">
         <mat-icon>history_toggle_off</mat-icon>
       </div>
@@ -374,9 +375,18 @@
     <mat-card-content>
       You can save / restore the app with data and configuration in <code>.data/app.xml</code>.
       This file can then also be versioned using git.
+      <div *ngIf="appStateAdvanced">
+        <br>
+        In Advanced mode you can also sync all the site files used by this app.
+        They will be placed in a folder inside <code>App_Data</code> and allow sync/restore with git or another server.
+      </div>
+      <div *ngIf='appStateAdvanced && !features.isEnabled("AppSyncWithSiteFiles")'>
+        <mat-icon style="color: red">warning</mat-icon>
+        Feature <strong>AppSyncWithSiteFiles</strong> is not enabled.
+      </div>
     </mat-card-content>
     <mat-card-actions>
-      <ng-container *ngIf="!(debugEnabled$ | async)">
+      <ng-container *ngIf="!appStateAdvanced">
         <button mat-button (click)="exportAppXml(false)">
           <mat-icon>more_time</mat-icon>
           <span>Save state</span>
@@ -386,15 +396,14 @@
           <span>Restore state</span>
         </button>
       </ng-container>
-      <ng-container *ngIf="debugEnabled$ | async">
-        <div>Warning: BETA feature! - requires Patron Basic</div>
+      <ng-container *ngIf="appStateAdvanced">
         <button mat-button (click)="exportAppXml(true)">
           <mat-icon>more_time</mat-icon>
-          <span>Save ADV (beta)</span>
+          <span>Save with Assets</span>
         </button>
         <button mat-button (click)="resetApp(true)">
           <mat-icon>restore</mat-icon>
-          <span>Restore ADV (beta)</span>
+          <span>Restore with Assets</span>
         </button>
       </ng-container>
 

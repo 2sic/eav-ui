@@ -1,23 +1,22 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { filter, map, pairwise, startWith, Subscription } from 'rxjs';
 import { ContentItemsService } from '../../content-items/services/content-items.service';
-import { ContentTypesFieldsService } from '../../content-type-fields/services/content-types-fields.service';
 import { GlobalConfigService } from '../../edit/shared/store/ngrx-data';
 import { GoToMetadata } from '../../metadata';
-import { MetadataService } from '../../permissions';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
 import { eavConstants, SystemSettingsScope, SystemSettingsScopes } from '../../shared/constants/eav.constants';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { AppScopes } from '../../shared/models/dialog-context.models';
+import { DialogSettings } from '../../shared/models/dialog-settings.model';
 import { EditForm } from '../../shared/models/edit-form.model';
 import { Context } from '../../shared/services/context';
 import { DialogService } from '../../shared/services/dialog.service';
+import { FeaturesService } from '../../shared/services/features.service';
 import { ContentTypeEdit } from '../models';
-import { DialogSettings } from '../models/dialog-settings.model';
-import { ContentTypesService } from '../services';
+import { AppDialogConfigService, ContentTypesService } from '../services';
 import { AppInternalsService } from '../services/app-internals.service';
 import { ExportAppService } from '../services/export-app.service';
 import { ImportAppPartsService } from '../services/import-app-parts.service';
@@ -48,7 +47,11 @@ export class AppConfigurationComponent implements OnInit, OnChanges, OnDestroy {
   appMetadataCount: number;
   debugEnabled$ = this.globalConfigService.getDebugEnabled$();
 
+  public appStateAdvanced = false;
+
   private subscription: Subscription;
+
+  public features: FeaturesService = new FeaturesService();
 
   constructor(
     private contentItemsService: ContentItemsService,
@@ -59,13 +62,14 @@ export class AppConfigurationComponent implements OnInit, OnChanges, OnDestroy {
     private importAppPartsService: ImportAppPartsService,
     private snackBar: MatSnackBar,
     private dialogService: DialogService,
-    private changeDetectorRef: ChangeDetectorRef,
-    private contentTypesFieldsService: ContentTypesFieldsService,
-    private metadataService: MetadataService,
     private appInternalsService: AppInternalsService,
     private contentTypesService: ContentTypesService,
     private globalConfigService: GlobalConfigService,
-  ) { }
+    appDialogConfigService: AppDialogConfigService,
+  ) {
+    this.features.loadFromService(appDialogConfigService);
+  }
+
 
   ngOnInit() {
     this.subscription = new Subscription();
