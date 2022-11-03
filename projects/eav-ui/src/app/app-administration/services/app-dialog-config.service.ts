@@ -3,8 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable, shareReplay, tap } from 'rxjs';
 import { GlobalConfigService } from '../../edit/shared/store/ngrx-data';
+import { DialogSettings } from '../../shared/models/dialog-settings.model';
 import { Context } from '../../shared/services/context';
-import { DialogSettings } from '../models/dialog-settings.model';
 
 const webApiDialogRoot = 'admin/dialog/';
 
