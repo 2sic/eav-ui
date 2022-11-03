@@ -59,7 +59,7 @@ export class ManageContentListComponent implements OnInit, OnDestroy {
   }
 
   private fetchDialogSettings() {
-    this.appDialogConfigService.getDialogSettings().pipe(
+    this.appDialogConfigService.getShared$() /*.getDialogSettings() */ .pipe(
       tap(
         dialogSettings => {
           this.translate.setDefaultLang(dialogSettings.Context.Language.Primary.split('-')[0]);

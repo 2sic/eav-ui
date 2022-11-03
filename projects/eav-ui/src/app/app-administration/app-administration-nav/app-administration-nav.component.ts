@@ -71,7 +71,7 @@ export class AppAdministrationNavComponent implements OnInit, OnDestroy {
   }
 
   private fetchDialogSettings() {
-    this.appDialogConfigService.getDialogSettings().subscribe(dialogSettings => {
+    this.appDialogConfigService.getShared$()/*.getDialogSettings()*/.subscribe(dialogSettings => {
       UpdateEnvVarsFromDialogSettings(dialogSettings.Context.App);
       this.dialogSettings$.next(dialogSettings);
 

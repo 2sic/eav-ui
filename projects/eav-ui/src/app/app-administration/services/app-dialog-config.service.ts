@@ -1,7 +1,7 @@
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, tap } from 'rxjs';
+import { map, Observable, shareReplay, tap } from 'rxjs';
 import { GlobalConfigService } from '../../edit/shared/store/ngrx-data';
 import { Context } from '../../shared/services/context';
 import { DialogSettings } from '../models/dialog-settings.model';
@@ -16,6 +16,16 @@ export class AppDialogConfigService {
     private dnnContext: DnnContext,
     private globalConfigService: GlobalConfigService,
   ) { }
+
+  private dialogSettings$: Record<number, Observable<DialogSettings>> = {};
+
+  getShared$(appId?: number) {
+    appId ??= this.context.appId;
+    if (!this.dialogSettings$[appId])
+      this.dialogSettings$[appId] = this.getDialogSettings(appId).pipe(shareReplay({ refCount: false }));
+    return this.dialogSettings$[appId];
+    // TODO: probably should add an onDestroy and ensure all subscriptions are killed
+  }
 
   getDialogSettings(appId?: number) {
     return this.http.get<DialogSettings>(this.dnnContext.$2sxc.http.apiUrl(webApiDialogRoot + 'settings'), {

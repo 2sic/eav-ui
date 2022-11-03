@@ -22,11 +22,6 @@
     },
     {
       "type": "npm",
-      "script": "dev-main",
-      "problemMatcher": []
-    },
-    {
-      "type": "npm",
       "script": "dev-all",
       "problemMatcher": []
     },
