@@ -2,7 +2,7 @@ export type InfoBoxType = 'alert' | 'info' | 'tip' | 'warning';
 
 export const infoBoxIconMap: { [name in InfoBoxType]: string } = {
   alert: 'warning',
-  info: 'menu-book',
+  info: 'menu_book',
   tip: 'star',
   warning: 'warning',
 };

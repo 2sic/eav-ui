@@ -12,16 +12,16 @@
               (input)="filterSelectionList()">
             <button mat-icon-button matSuffix class="entity-dropdown-button" disableRipple="true"
               [disabled]="disabled || !data.enableAddExisting" *ngIf="!data.enableTextEntry">
-              <mat-icon svgIcon="arrow-drop-down"></mat-icon>
+              <mat-icon>arrow_drop_down</mat-icon>
             </button>
             <div matSuffix class="selection-suffix" *ngIf="data.enableTextEntry">
               <button mat-icon-button [tippy]="'Fields.String.Dropdown' | translate" [disabled]="disabled"
                 class="active">
-                <mat-icon svgIcon="search"></mat-icon>
+                <mat-icon>search</mat-icon>
               </button>
               <button mat-icon-button [tippy]="'Fields.String.Freetext' | translate" [disabled]="disabled"
                 appClickStopPropagation (click)="toggleFreeText()">
-                <mat-icon svgIcon="text-fields"></mat-icon>
+                <mat-icon>text_fields</mat-icon>
               </button>
             </div>
             <mat-label [ngClass]="{ 'mat-error': invalid && touched }">
@@ -49,7 +49,7 @@
         <button mat-icon-button [tippy]="'Fields.Entity.New' | translate" [disabled]="disabled || disableAddNew"
           *ngIf="data.enableCreate && data.entityType && !selectedEntities.length && !data.allowMultiValue"
           (click)="openNewEntityDialog()">
-          <mat-icon svgIcon="add-circle-outline"></mat-icon>
+          <mat-icon>add_circle_outline</mat-icon>
         </button>
       </div>
     </div>
@@ -61,10 +61,10 @@
     <div matSuffix class="selection-suffix">
       <button mat-icon-button [tippy]="'Fields.String.Dropdown' | translate" [disabled]="disabled"
         appClickStopPropagation (click)="toggleFreeText()">
-        <mat-icon svgIcon="search"></mat-icon>
+        <mat-icon>search</mat-icon>
       </button>
       <button mat-icon-button [tippy]="'Fields.String.Freetext' | translate" [disabled]="disabled" class="active">
-        <mat-icon svgIcon="text-fields"></mat-icon>
+        <mat-icon>text_fields</mat-icon>
       </button>
     </div>
     <mat-label>{{ label }}</mat-label>
@@ -80,7 +80,7 @@
   <div *ngIf="!freeTextMode && data.enableCreate && data.entityType && data.allowMultiValue">
     <button mat-mini-fab color="accent" [tippy]="'Fields.Entity.New' | translate" [disabled]="disabled || disableAddNew"
       (click)="openNewEntityDialog()">
-      <mat-icon svgIcon="add"></mat-icon>
+      <mat-icon>add</mat-icon>
     </button>
   </div>
 </ng-container>

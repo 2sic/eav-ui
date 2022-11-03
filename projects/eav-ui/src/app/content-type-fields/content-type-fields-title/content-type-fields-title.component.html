@@ -1,9 +1,9 @@
 <div class="actions-component">
   <div class="like-button highlight" matRipple *ngIf="!field.EditInfo.ReadOnly" tippy="Use as title field"
     (click)="setTitle()">
-    <mat-icon [svgIcon]="isTitle ? 'star' : 'star-outline'"></mat-icon>
+    <mat-icon>{{ isTitle ? 'star' : 'star_outline' }}</mat-icon>
   </div>
   <div class="like-button disabled" *ngIf="field.EditInfo.ReadOnly">
-    <mat-icon [svgIcon]="isTitle ? 'star' : 'star-outline'"></mat-icon>
+    <mat-icon>{{ isTitle ? 'star' : 'star_outline' }}</mat-icon>
   </div>
 </div>

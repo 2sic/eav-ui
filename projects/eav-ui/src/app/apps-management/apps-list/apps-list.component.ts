@@ -10,7 +10,6 @@ import { IdFieldComponent } from '../../shared/components/id-field/id-field.comp
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
-import { iconLib } from '../../shared/icons';
 import { EditForm } from '../../shared/models/edit-form.model';
 import { Context } from '../../shared/services/context';
 import { App } from '../models/app.model';
@@ -184,7 +183,7 @@ export class AppsListComponent extends BaseMainComponent implements OnInit, OnDe
             <div class="container">
               ${app.Thumbnail
                 ? `<img class="image logo" src="${app.Thumbnail}?w=40&h=40&mode=crop"></img>`
-              : `<div class="image logo">${iconLib.starBorder}</div>`
+              : `<div class="image logo"><span class="material-icons-outlined">star_border</span></div>`
               }
               <div class="text">${params.value}</div>
             </div>

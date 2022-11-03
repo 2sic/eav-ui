@@ -10,7 +10,7 @@ import { TrueFalseParams } from './true-false.models';
 export class TrueFalseComponent implements ICellRendererAngularComp {
   icon: string;
 
-  private trueIcon = 'check-circle';
+  private trueIcon = 'check_circle';
   private falseIcon = 'circle';
 
   agInit(params: ICellRendererParams & TrueFalseParams): void {

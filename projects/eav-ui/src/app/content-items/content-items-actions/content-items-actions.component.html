@@ -1,19 +1,19 @@
 <div class="actions-component">
   <div class="like-button highlight" matRipple tippy="Copy" (click)="clone()">
-    <mat-icon svgIcon="file-copy"></mat-icon>
+    <mat-icon>file_copy</mat-icon>
   </div>
   <div class=" like-button highlight" matRipple tippy="Export" (click)="export()">
-    <mat-icon svgIcon="cloud-download"></mat-icon>
+    <mat-icon>cloud_download</mat-icon>
   </div>
   <div class="like-button highlight" matRipple tippy="More" [matMenuTriggerFor]="menu">
-    <mat-icon svgIcon="more-horiz"></mat-icon>
+    <mat-icon>more_horiz</mat-icon>
   </div>
 </div>
 
 <mat-menu #menu="matMenu" class="grid-more-menu">
   <ng-template matMenuContent>
     <button mat-menu-item [disabled]="item._EditInfo.ReadOnly" (click)="deleteItem()">
-      <mat-icon svgIcon="delete"></mat-icon>
+      <mat-icon>delete</mat-icon>
       <span>Delete</span>
     </button>
   </ng-template>
