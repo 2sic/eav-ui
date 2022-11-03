@@ -3,7 +3,7 @@
     <div class="dialog-title-box">
       <div>Manage Zone {{ zoneId }}</div>
       <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
-        <mat-icon svgIcon="close"></mat-icon>
+        <mat-icon>close</mat-icon>
       </button>
     </div>
   </div>
@@ -16,7 +16,7 @@
     [selectedIndex]="tabIndex$ | async">
     <mat-tab>
       <div *matTabLabel class="mat-tab-label-box" tippy="System Info">
-        <mat-icon svgIcon="settings"></mat-icon>
+        <mat-icon>settings</mat-icon>
         <span>System</span>
       </div>
       <app-system-info *matTabContent [dialogSettings]="dialogSettings"></app-system-info>
@@ -24,7 +24,7 @@
 
     <mat-tab>
       <div *matTabLabel class="mat-tab-label-box" tippy="Apps">
-        <mat-icon svgIcon="star-border"></mat-icon>
+        <mat-icon>star_border</mat-icon>
         <span>Apps</span>
       </div>
       <app-apps-list *matTabContent></app-apps-list>
@@ -32,7 +32,7 @@
 
     <mat-tab>
       <div *matTabLabel class="mat-tab-label-box" tippy="Languages">
-        <mat-icon svgIcon="translate"></mat-icon>
+        <mat-icon>translate</mat-icon>
         <span>Languages</span>
       </div>
       <app-site-languages *matTabContent></app-site-languages>
@@ -40,7 +40,7 @@
 
     <mat-tab>
       <div *matTabLabel class="mat-tab-label-box" tippy="Extensions and Features">
-        <mat-icon svgIcon="tune"></mat-icon>
+        <mat-icon>tune</mat-icon>
         <span>Extensions / Features</span>
       </div>
       <app-license-info *matTabContent></app-license-info>

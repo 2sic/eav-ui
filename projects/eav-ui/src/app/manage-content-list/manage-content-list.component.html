@@ -14,7 +14,7 @@
       <ng-container *ngIf="data.header.Type">
         <span>{{ data.header.Title }}</span>
         <button mat-icon-button tippy="Edit header" (click)="editHeader()">
-          <mat-icon svgIcon="edit"></mat-icon>
+          <mat-icon>edit</mat-icon>
         </button>
       </ng-container>
       <ng-container *ngIf="!data.header.Type">{{'ManageContentList.NoHeader' | translate}}</ng-container>
@@ -31,14 +31,14 @@
   <div class="dnd-list" cdkDropList (cdkDropListDropped)="drop($event)">
     <div *ngFor="let item of data.items; trackBy: trackByFn" class="dnd-item" cdkDrag>
       <div class="dnd-item__title">
-        <mat-icon class="dnd-item__title-icon" tippy="Drag to reorder the list" svgIcon="drag-handle"></mat-icon>
+        <mat-icon class="dnd-item__title-icon" tippy="Drag to reorder the list">drag_handle</mat-icon>
         <span class="dnd-item__title-text" tippy="{{ item.Title }} ({{ item.Id }})">
           {{ item.Title }} ({{ item.Id }})
         </span>
       </div>
       <div *ngIf="item.Id !== 0">
         <button mat-icon-button tippy="Edit item" appMousedownStopPropagation (click)="editItem(item.Id)">
-          <mat-icon svgIcon="edit"></mat-icon>
+          <mat-icon>edit</mat-icon>
         </button>
       </div>
     </div>

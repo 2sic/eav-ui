@@ -3,7 +3,7 @@
     <div class="dialog-title-box">
       <div>Using REST with Query <code>{{ data.name }}</code></div>
       <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
-        <mat-icon svgIcon="close"></mat-icon>
+        <mat-icon>close</mat-icon>
       </button>
     </div>
   </div>
@@ -22,7 +22,7 @@
     <!-- Introduction -->
     <mat-tab>
       <div *matTabLabel class="mat-tab-label-box" tippy="Introduction">
-        <mat-icon svgIcon="emoji-objects"></mat-icon>
+        <mat-icon>emoji_objects</mat-icon>
         <span>Introduction</span>
       </div>
 
@@ -35,7 +35,7 @@
     <mat-tab>
       <div *matTabLabel class="mat-tab-label-box"
         [tippy]="(data.scenario.useVirtual ? 'Virtual ' : 'Absolute ') + 'REST URLs'">
-        <mat-icon svgIcon="code-curly"></mat-icon>
+        <mat-icon>code_curly</mat-icon>
         <span>Call {{ data.scenario.useVirtual ? 'Virtual' : 'Absolute' }} REST URLs</span>
       </div>
 
@@ -61,9 +61,9 @@
     <!-- Permissions explained -->
     <mat-tab>
       <div *matTabLabel class="mat-tab-label-box" tippy="Permissions">
-        <mat-icon svgIcon="person"></mat-icon>
+        <mat-icon>person</mat-icon>
         <span>Permissions ({{ data.permissions.length }})</span>
-        <mat-icon *ngIf="!data.permissions.length" svgIcon="warning"></mat-icon>
+        <mat-icon *ngIf="!data.permissions.length">warning</mat-icon>
       </div>
       <app-dev-rest-tab-permissions [data]="data"></app-dev-rest-tab-permissions>
     </mat-tab>
@@ -71,7 +71,7 @@
     <!-- HTTP Headers Explained -->
     <mat-tab>
       <div *matTabLabel class="mat-tab-label-box" tippy="HTTP headers and auto">
-        <mat-icon svgIcon="permDeviceInformation"></mat-icon>
+        <mat-icon>perm_device_information</mat-icon>
         <span>HTTP headers & &nbsp;<code>/auto/</code></span>
       </div>
       <app-dev-rest-tab-headers [data]="data"></app-dev-rest-tab-headers>

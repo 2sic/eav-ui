@@ -41,7 +41,7 @@ export class ContentTypesFieldsService {
               isObsolete: config.IsObsolete,
               isRecommended: config.IsRecommended,
               obsoleteMessage: config.ObsoleteMessage,
-              icon: config.IsDefault ? 'star' : config.IsRecommended ? 'star-outline' : null,
+              icon: config.IsDefault ? 'star' : config.IsRecommended ? 'star_outline' : null,
             };
             return option;
           });

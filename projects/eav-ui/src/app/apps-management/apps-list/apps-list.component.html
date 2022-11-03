@@ -9,25 +9,25 @@
     (openChange)="openChange($event)">
     <eco-fab-speed-dial-trigger [spin]="true">
       <button mat-fab>
-        <mat-icon class="spin180" [svgIcon]="(fabOpen$ | async) ? 'close' : 'add'"></mat-icon>
+        <mat-icon class="spin180">{{ (fabOpen$ | async) ? 'close' : 'add' }}</mat-icon>
       </button>
     </eco-fab-speed-dial-trigger>
 
     <eco-fab-speed-dial-actions>
       <button mat-mini-fab label="Find more apps" (click)="browseCatalog()">
-        <mat-icon svgIcon="search"></mat-icon>
+        <mat-icon>search</mat-icon>
       </button>
       <button mat-mini-fab label="Create inherited app" (click)="createInheritedApp()">
-        <mat-icon svgIcon="holiday-village"></mat-icon>
+        <mat-icon>holiday_village</mat-icon>
       </button>
       <button mat-mini-fab label="Add from folder (beta)" (click)="addFromFolder()">
-        <mat-icon svgIcon="add"></mat-icon>
+        <mat-icon>add</mat-icon>
       </button>
       <button mat-mini-fab label="Import app" (click)="importApp()">
-        <mat-icon svgIcon="cloud-upload"></mat-icon>
+        <mat-icon>cloud_upload</mat-icon>
       </button>
       <button mat-mini-fab label="Create app" (click)="createApp()">
-        <mat-icon svgIcon="add"></mat-icon>
+        <mat-icon>add</mat-icon>
       </button>
     </eco-fab-speed-dial-actions>
   </eco-fab-speed-dial>

@@ -20,7 +20,7 @@ export function getNoteProps(note: EavEntity, currentLanguage: string, defaultLa
     note,
     tooltip: itemNotSaved ? 'Form.Buttons.Note.ItemNotSaved' : 'Form.Buttons.Note.Add',
     triggerClass: `no-note ${itemNotSaved ? 'item-not-saved' : ''}`,
-    iconName: icons.note, // 'sticky-note-2',
+    iconName: 'sticky_note_2',
     noteClass: '',
     noteHtml: undefined,
     itemNotSaved,
@@ -35,7 +35,7 @@ export function getNoteProps(note: EavEntity, currentLanguage: string, defaultLa
     noteProps.triggerClass = 'has-note';
   } else if (noteType === 'warning') {
     noteProps.triggerClass = 'has-warning';
-    noteProps.iconName = icons.warning; // // 'warning_amber';
+    noteProps.iconName = 'warning';
     noteProps.noteClass = 'warning';
   }
   return noteProps;

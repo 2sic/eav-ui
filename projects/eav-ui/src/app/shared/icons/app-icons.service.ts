@@ -14,13 +14,13 @@ export class AppIconsService {
     Object.entries(iconsFontAwesome).forEach(([name, svg]) => {
       this.matIconRegistry.addSvgIconLiteral(name, this.domSanitizer.bypassSecurityTrustHtml(svg));
     });
-    Object.entries(iconsMaterial).forEach(([name, svg]) => {
-      this.matIconRegistry.addSvgIconLiteral(name, this.domSanitizer.bypassSecurityTrustHtml(svg));
-    });
+    // Object.entries(iconsMaterial).forEach(([name, svg]) => {
+    //   this.matIconRegistry.addSvgIconLiteral(name, this.domSanitizer.bypassSecurityTrustHtml(svg));
+    // });
 
     // 2dm: New api with object syntax
-    Object.entries(iconLib).forEach(([name, svg]) => {
-      this.matIconRegistry.addSvgIconLiteral(name, this.domSanitizer.bypassSecurityTrustHtml(svg));
-    });
+    // Object.entries(iconLib).forEach(([name, svg]) => {
+    //   this.matIconRegistry.addSvgIconLiteral(name, this.domSanitizer.bypassSecurityTrustHtml(svg));
+    // });
   }
 }

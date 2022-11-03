@@ -1,7 +1,7 @@
 <ng-container *ngIf="{systemInfoSet: systemInfoSet$ | async} as data">
 
   <div mat-dialog-title>
-      <div class="dialog-title-box">Register this System on 2sxc Patrons</div>
+    <div class="dialog-title-box">Register this System on 2sxc Patrons</div>
   </div>
 
   <div class="dialog-description">
@@ -10,12 +10,13 @@
       You can just register for free to unlock some features.
       They are mainly enhancements for which we wish to contact you in case of critical security issues.
     </p>
-    <a [innerHtml]="logo | safeHtml" href="https://patrons.2sxc.org/" target="_blank" style="width: 50%; float: right;"></a>
+    <a [innerHtml]="logo | safeHtml" href="https://patrons.2sxc.org/" target="_blank"
+      style="width: 50%; float: right;"></a>
     <h2>Hero Mode: Support 2sxc, get Awesome Stuff</h2>
     <p>
       If you want to become a champion and pay a monthly contribution
       to support the open-source development of 2sxc, you will get some
-      <a href="https://r.2sxc.org/bundles" target="_blank">really nice features</a>  as well 🚀.
+      <a href="https://r.2sxc.org/bundles" target="_blank">really nice features</a> as well 🚀.
     </p>
     <p>
       Thanks for loving and supporting 2sxc 💖
@@ -23,10 +24,12 @@
 
     <h2>System Specs</h2>
     <p *ngIf="data.systemInfoSet">
-      <b>Status:</b> {{ data.systemInfoSet.License.Owner ? "this system is registered to " + data.systemInfoSet.License.Owner : "this system is not yet registered" }}
+      <b>Status:</b> {{ data.systemInfoSet.License.Owner ? "this system is registered to " +
+      data.systemInfoSet.License.Owner : "this system is not yet registered" }}
       <br>
       <b>Fingerprint:</b> <span [tippy]="'Click to copy to clipboard'"
-        (click)="copyToClipboard(data.systemInfoSet.System.Fingerprint)"> {{ data.systemInfoSet.System.Fingerprint }}</span>
+        (click)="copyToClipboard(data.systemInfoSet.System.Fingerprint)"> {{ data.systemInfoSet.System.Fingerprint
+        }}</span>
       <br>
       <br>
     </p>
@@ -36,7 +39,7 @@
     <mat-card class="mat-card-left">
       <mat-card-header>
         <div mat-card-avatar>
-          <mat-icon svgIcon="settings-applications"></mat-icon>
+          <mat-icon>settings_applications</mat-icon>
         </div>
         <mat-card-title>Automatic Registration</mat-card-title>
         <mat-card-subtitle>The simple way</mat-card-subtitle>
@@ -47,12 +50,13 @@
           so you can then log in and assign it a name and features you want to activate.
         </p>
         <div class="card-actions">
-          <button mat-button mat-button tippy="Register" *ngIf="data.systemInfoSet" (click)="openLicenseRegistration(data.systemInfoSet)">
-            <mat-icon svgIcon="app-registration"></mat-icon>
+          <button mat-button mat-button tippy="Register" *ngIf="data.systemInfoSet"
+            (click)="openLicenseRegistration(data.systemInfoSet)">
+            <mat-icon>app_registration</mat-icon>
             <span>Register</span>
           </button>
           <button mat-button tippy="Retrieve license" (click)="retrieveLicense()">
-            <mat-icon svgIcon="download-for-offline"></mat-icon>
+            <mat-icon>download_for_offline</mat-icon>
             <span>Retrieve license</span>
           </button>
         </div>
@@ -62,7 +66,7 @@
     <mat-card class="mat-card-right">
       <mat-card-header>
         <div mat-card-avatar>
-          <mat-icon svgIcon="waving-hand"></mat-icon>
+          <mat-icon>waving_hand</mat-icon>
         </div>
         <mat-card-title>Manual Registration</mat-card-title>
         <mat-card-subtitle>Offline or special scenarios</mat-card-subtitle>
@@ -74,13 +78,12 @@
           Click on the fingerprint above to copy it to your clipboard.
         </p>
         <div class="card-actions">
-          <button mat-button mat-button tippy="Register"
-            (click)="registerManually()">
-            <mat-icon svgIcon="app-registration"></mat-icon>
+          <button mat-button mat-button tippy="Register" (click)="registerManually()">
+            <mat-icon>app_registration</mat-icon>
             <span>Register Manually</span>
           </button>
           <button mat-button tippy="Upload license" (click)="openLicenseUpload()">
-            <mat-icon svgIcon="cloud-upload"></mat-icon>
+            <mat-icon>cloud_upload</mat-icon>
             <span>Upload license</span>
           </button>
         </div>

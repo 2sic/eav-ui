@@ -2,7 +2,7 @@
   <div fxLayout="row" fxLayoutAlign="start center" class="mat-card-header-group-child">
     <div fxFlex="auto" fxLayoutAlign="start center" (click)="toggleCollapse()">
       <div fxLayoutAlign="start center" class="mat-card-title-group mat-body-1">
-        <mat-icon class="title-arrow" [svgIcon]="(collapsed$ | async) ? 'keyboard-arrow-down' : 'keyboard-arrow-up'">
+        <mat-icon class="title-arrow">{{ (collapsed$ | async) ? 'keyboard_arrow_down' : 'keyboard_arrow_up' }}
         </mat-icon>
         <span class="title">
           {{ (label$ | async) || config.fieldName }}
