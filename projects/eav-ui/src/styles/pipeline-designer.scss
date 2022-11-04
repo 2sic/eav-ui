@@ -5,10 +5,6 @@ $data-source-color: #eeeeef;
 $data-source-padding: 0.5em;
 $icon-size: 22px;
 
-$arrow-drop-up: url('data: image/svg+xml; utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="m7 14 5-5 5 5H7z" /></svg>');
-$find-in-page: url('data: image/svg+xml; utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zM6 4h7l5 5v8.58l-1.84-1.84a4.992 4.992 0 0 0-.64-6.28A4.96 4.96 0 0 0 12 8a5 5 0 0 0-3.53 1.46 4.98 4.98 0 0 0 0 7.05 4.982 4.982 0 0 0 6.28.63L17.6 20H6V4zm8.11 11.1c-.56.56-1.31.88-2.11.88s-1.55-.31-2.11-.88c-.56-.56-.88-1.31-.88-2.11s.31-1.55.88-2.11c.56-.57 1.31-.88 2.11-.88s1.55.31 2.11.88c.56.56.88 1.31.88 2.11s-.31 1.55-.88 2.11z" /></svg>');
-$warning: url('data: image/svg+xml; utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z" /></svg>');
-
 #pipeline-root {
   width: 100%;
   height: 100%;
@@ -158,7 +154,7 @@ $warning: url('data: image/svg+xml; utf8,<svg xmlns="http://www.w3.org/2000/svg"
   .dataSource .add-endpoint:hover,
   .dataSource .many-in:hover {
     &::after {
-      background-color: #D98D00;
+      color: #D98D00;
     }
   }
 
@@ -225,32 +221,22 @@ $warning: url('data: image/svg+xml; utf8,<svg xmlns="http://www.w3.org/2000/svg"
     border: 1px solid $data-source-color;
   }
 
-  // SVG coloring using mask/background
-  // inspired by https://stackoverflow.com/questions/21509982/change-svg-fill-color-in-before-or-after-css
   .sourceEndpoint,
   .targetEndpoint {
     &.dynamic {
       &::after {
-        background-color: orange;
+        color: orange;
       }
     }
 
     &.required {
       &::after {
-        background-color: red;
+        color: red;
       }
     }
 
     &::after {
-      width: 32px;
-      height: 32px;
-      display: inline-block;
-      content: '';
-      // -webkit-mask: url(https://gh.max.ax/heart.svg) no-repeat 50% 50%;
-      mask: $arrow-drop-up no-repeat 50% 50%;
-      // -webkit-mask-size: cover;
-      mask-size: cover;
-      background-color: black;
+      @include materialIcon("arrow_drop_up", 32px);
     }
 
   }
@@ -329,14 +315,14 @@ $warning: url('data: image/svg+xml; utf8,<svg xmlns="http://www.w3.org/2000/svg"
     justify-content: center;
 
     &:not(.streamEntitiesError):hover::after {
-      @include materialIcon($find-in-page, 18px);
+      @include materialIcon("find_in_page", 18px);
     }
 
     &.streamEntitiesError {
       width: 32px;
 
       &::after {
-        @include materialIcon($warning, 18px);
+        @include materialIcon("warning", 18px);
       }
     }
   }
