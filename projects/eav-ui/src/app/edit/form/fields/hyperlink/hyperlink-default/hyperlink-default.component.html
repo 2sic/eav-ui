@@ -4,7 +4,7 @@
     <div class="fabs-box">
       <button mat-mini-fab color="accent" [tippy]="'Fields.Hyperlink.Default.AdamTip' | translate"
         *ngIf="data.buttonAdam" [disabled]="data.controlStatus.disabled" (click)="toggleAdam(false, false)">
-        <mat-icon>apple_outlined</mat-icon>
+        <mat-icon svgIcon="apple-outlined"></mat-icon>
       </button>
       <button mat-mini-fab color="primary" [disabled]="!data.adamItem?._imageConfigurationContentType"
         [ngClass]="{ 'metadata-exists': data.adamItem?._imageConfigurationId > 0 }"
@@ -16,7 +16,7 @@
       </button>
       <button mat-mini-fab color="primary" [tippy]="'Fields.Hyperlink.Default.PageTip' | translate"
         *ngIf="data.buttonPage" [disabled]="data.controlStatus.disabled" (click)="openPagePicker()">
-        <mat-icon>sitemap</mat-icon>
+        <mat-icon svgIcon="sitemap"></mat-icon>
       </button>
       <button mat-mini-fab color="primary" [tippy]="'Fields.Hyperlink.Default.MoreOptions' | translate"
         *ngIf="data.buttonMore" [disabled]="data.controlStatus.disabled" [matMenuTriggerFor]="menu">
@@ -27,19 +27,19 @@
     <mat-menu #menu="matMenu" class="menu-box">
       <ng-template matMenuContent>
         <button mat-menu-item *ngIf="data.showAdam" (click)="toggleAdam(false, false)">
-          <mat-icon>apple_outlined</mat-icon>
+          <mat-icon svgIcon="apple-outlined"></mat-icon>
           <span>{{ 'Fields.Hyperlink.Default.MenuAdam' | translate }}</span>
         </button>
         <button mat-menu-item *ngIf="data.showPagePicker" (click)="openPagePicker()">
-          <mat-icon>sitemap</mat-icon>
+          <mat-icon svgIcon="sitemap"></mat-icon>
           <span>{{ 'Fields.Hyperlink.Default.MenuPage' | translate }}</span>
         </button>
         <button mat-menu-item *ngIf="data.showImageManager" (click)="toggleAdam(true, true)">
-          <mat-icon>file_image</mat-icon>
+          <mat-icon svgIcon="file-image"></mat-icon>
           <span>{{ 'Fields.Hyperlink.Default.MenuImage' | translate }}</span>
         </button>
         <button mat-menu-item *ngIf="data.showFileManager" (click)="toggleAdam(true, false)">
-          <mat-icon>file</mat-icon>
+          <mat-icon svgIcon="file"></mat-icon>
           <span>{{ 'Fields.Hyperlink.Default.MenuDocs' | translate }}</span>
         </button>
       </ng-template>

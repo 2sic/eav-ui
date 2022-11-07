@@ -9,22 +9,21 @@
 }
 
 .type-icon {
-  margin-right: 6px;
+  width: inherit;
+  height: inherit;
+  margin-right: 8px;
   font-size: inherit;
-  vertical-align: middle;
+  vertical-align: top;
   line-height: inherit;
 }
 
 .input-icon {
-  margin-left: 6px;
+  width: inherit;
+  height: inherit;
+  margin-left: 8px;
   font-size: inherit;
-  vertical-align: middle;
+  vertical-align: top;
   line-height: inherit;
-}
-
-:host ::ng-deep .custom-svg-styles .type-icon svg,
-:host ::ng-deep .custom-svg-styles .input-icon svg {
-  transform: scale(0.75);
 }
 
 .input-obsolete {

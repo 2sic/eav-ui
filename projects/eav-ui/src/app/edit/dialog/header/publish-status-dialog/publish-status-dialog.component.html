@@ -22,7 +22,7 @@
 
     <mat-list-item (click)="setPublishMode(PublishModes.Branch)" [disabled]="data.options[PublishModes.Branch] !== true"
       [ngClass]="{ 'mat-list-item-focus': data.publishMode === PublishModes.Branch }">
-      <mat-icon matListIcon>draft_branch</mat-icon>
+      <mat-icon matListIcon svgIcon="draft-branch"></mat-icon>
       <div matLine class="mat-list-item__title">{{ 'PublishStatus.Dialog.Branch.Title' | translate }}</div>
       <div matLine class="mat-list-item__body">{{ 'PublishStatus.Dialog.Branch.Body' | translate }}</div>
     </mat-list-item>

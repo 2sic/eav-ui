@@ -29,7 +29,7 @@
         <div class="page-row">
           <div class="no-toggle"></div>
           <div class="page-label" [ngClass]="page.id === selected ? 'selected' : ''" (click)="select(page.id)">
-            <mat-icon class="page-icon">file</mat-icon>
+            <mat-icon class="page-icon" svgIcon="file"></mat-icon>
             <span class="page-path" *ngIf="page.path">{{ page.path }}&nbsp;>&nbsp;</span>
             <span>{{ page.name }}</span>
           </div>
@@ -46,7 +46,7 @@
           {{ toggled.includes(page.id) ? 'keyboard_arrow_down' : 'keyboard_arrow_right' }}
         </mat-icon>
         <div class="page-label" [ngClass]="page.id === selected ? 'selected' : ''" (click)="select(page.id)">
-          <mat-icon class="page-icon">file</mat-icon>
+          <mat-icon class="page-icon" svgIcon="file"></mat-icon>
           <span>{{ page.name }}</span>
         </div>
       </div>

@@ -88,7 +88,7 @@
             <button mat-icon-button class="c-ew__preview-suffix-icon"
               [tippy]="'Fields.Hyperlink.Default.Fullscreen' | translate" appClickStopPropagation
               *ngIf="data.buttonAdam" [disabled]="data.controlStatus.disabled" (click)="expandDialog()">
-              <mat-icon>apple_outlined</mat-icon>
+              <mat-icon svgIcon="apple-outlined"></mat-icon>
             </button>
             <button mat-icon-button class="c-ew__preview-suffix-icon" appClickStopPropagation
               [disabled]="!data.adamItem?._imageConfigurationContentType"
@@ -102,7 +102,7 @@
             <button mat-icon-button class="c-ew__preview-suffix-icon"
               [tippy]="'Fields.Hyperlink.Default.PageTip' | translate" appClickStopPropagation *ngIf="data.buttonPage"
               [disabled]="data.controlStatus.disabled" (click)="openPagePicker()">
-              <mat-icon>sitemap</mat-icon>
+              <mat-icon svgIcon="sitemap"></mat-icon>
             </button>
           </div>
           <mat-label [ngClass]="{ 'mat-error' : data.controlStatus.invalid && data.controlStatus.touched }">
