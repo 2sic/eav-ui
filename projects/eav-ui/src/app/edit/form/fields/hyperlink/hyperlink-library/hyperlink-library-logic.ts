@@ -7,7 +7,7 @@ export class HyperlinkLibraryLogic extends FieldLogicBase {
 
   update(settings: FieldSettings, value: undefined): FieldSettings {
     const fixedSettings: FieldSettings = { ...settings };
-    fixedSettings.EnableImageConfiguration ??= false;
+    fixedSettings.EnableImageConfiguration ??= true; // 2022-11-08 v14.12 changed default to true // false;
     return fixedSettings;
   }
 }
