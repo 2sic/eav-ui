@@ -224,6 +224,7 @@
     "H5": "H5",
     "H6": "H6",
     "Paragraph": "Paragraph",
-    "ContentBlock.Add": "Add app or content block"
+    "ContentBlock.Add": "Add app or content block",
+    "ContentDivision.Add": "Dodaj razdjeljenje u sadržaju"
   }
 }

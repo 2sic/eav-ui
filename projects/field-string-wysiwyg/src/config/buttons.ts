@@ -35,6 +35,8 @@ export class TinyMceButtons {
 
     this.contentBlock(editor);
 
+    this.contentDivision(editor);
+
     this.imageContextMenu(editor, instSettings.imgSizes);
 
     this.contextMenus(editor);
@@ -391,6 +393,17 @@ export class TinyMceButtons {
       onAction: (api) => {
         const guid = Guid.uuid().toLowerCase();
         editor.insertContent(`<hr sxc="sxc-content-block" guid="${guid}" />`);
+      },
+    });
+  }
+
+  /** Inside content (contentdivision) */
+  private static contentDivision(editor: Editor): void {
+    editor.ui.registry.addButton('contentdivision', {
+      icon: 'custom-dashed-box',
+      tooltip: 'ContentDivision.Add',
+      onAction: (api) => {
+        editor.insertContent(`<div class="content-division"></div>`);
       },
     });
   }

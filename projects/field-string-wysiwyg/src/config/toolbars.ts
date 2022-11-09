@@ -1,10 +1,10 @@
 export class TinyMceToolbars {
 
-  static build(contentBlocksEnabled: boolean, inlineMode: boolean, buttonSource: string, buttonAdvanced: string) {
+  static build(contentBlocksEnabled: boolean, inlineMode: boolean, buttonSource: string, buttonAdvanced: string, contentDivisions: string) {
     const modes = {
-      inline: this.inline(contentBlocksEnabled, buttonSource, buttonAdvanced),
-      standard: this.standard(contentBlocksEnabled, buttonSource, buttonAdvanced),
-      advanced: this.advanced(inlineMode, contentBlocksEnabled),
+      inline: this.inline(contentBlocksEnabled, buttonSource, buttonAdvanced, contentDivisions),
+      standard: this.standard(contentBlocksEnabled, buttonSource, buttonAdvanced, contentDivisions),
+      advanced: this.advanced(inlineMode, contentBlocksEnabled, contentDivisions),
     };
     return {
       modes,
@@ -14,13 +14,15 @@ export class TinyMceToolbars {
     };
   }
 
-  private static advanced(inlineMode: boolean, contentBlocksEnabled: boolean) {
+  private static advanced(inlineMode: boolean, contentBlocksEnabled: boolean, contentDivisions: string) {
     return {
       menubar: true,
       toolbar: ' undo redo removeformat '
         + '| styles '
         + '| bold italic '
         + '| h2 h3 hgroup '
+        + '| '
+        + (contentDivisions === 'false' ? '' : ' contentdivision ')
         + '| numlist bullist outdent indent '
         + '| ' + (!inlineMode ? ' images linkfiles' : '') + ' linkgrouppro '
         + '| '
@@ -31,12 +33,14 @@ export class TinyMceToolbars {
     };
   }
 
-  private static standard(contentBlocksEnabled: boolean, source: string, advanced: string) {
+  private static standard(contentBlocksEnabled: boolean, source: string, advanced: string, contentDivisions: string) {
     return {
       menubar: false,
       toolbar: ' undo redo removeformat '
         + '| bold formatgroup '
         + '| h2 h3 hgroup '
+        + '| '
+        + (contentDivisions === 'false' ? '' : ' contentdivision ')
         + '| numlist listgroup '
         + '| linkfiles linkgroup '
         + '| '
@@ -47,12 +51,14 @@ export class TinyMceToolbars {
     };
   }
 
-  private static inline(contentBlocksEnabled: boolean, source: string, advanced: string) {
+  private static inline(contentBlocksEnabled: boolean, source: string, advanced: string, contentDivisions: string) {
     return {
       menubar: false,
       toolbar: ' undo redo removeformat '
         + '| bold formatgroup '
         + '| h2 h3 hgroup '
+        + '| '
+        + (contentDivisions === 'false' ? '' : ' contentdivision ')
         + '| numlist listgroup '
         + '| linkgroup '
         + '| '
