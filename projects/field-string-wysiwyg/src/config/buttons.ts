@@ -1,4 +1,4 @@
-import type { Editor } from 'tinymce';
+import type { Editor, RawEditorOptions } from 'tinymce';
 import { Adam } from '../../../edit-types';
 import { FieldStringWysiwygEditor, wysiwygEditorTag } from '../editor/editor';
 import { loadCustomIcons } from '../editor/load-icons.helper';
@@ -8,7 +8,7 @@ import { ImageFormats } from '../shared/models';
 /** Register all kinds of buttons on TinyMCE */
 export class TinyMceButtons {
 
-  static registerAll(fieldStringWysiwyg: FieldStringWysiwygEditor, editor: Editor, adam: Adam): void {
+  static registerAll(fieldStringWysiwyg: FieldStringWysiwygEditor, editor: Editor, adam: Adam, rawEditorOptions: RawEditorOptions): void {
     const instSettings = fieldStringWysiwyg.configurator.addOnSettings;
 
     if (!instSettings.enabled) { return; }
@@ -27,7 +27,7 @@ export class TinyMceButtons {
 
     this.listButtons(editor);
 
-    this.switchModes(editor);
+    this.switchModes(editor, rawEditorOptions);
 
     this.openDialog(editor, fieldStringWysiwyg);
 
@@ -264,26 +264,26 @@ export class TinyMceButtons {
   }
 
   /** Switch normal / advanced mode */
-  private static switchModes(editor: Editor): void {
+  private static switchModes(editor: Editor, rawEditorOptions: RawEditorOptions): void {
     editor.ui.registry.addButton('modestandard', {
       icon: 'close',
       tooltip: 'SwitchMode.Standard',
       onAction: (api) => {
-        switchModes('standard', editor);
+        switchModes('standard', editor, rawEditorOptions);
       },
     });
     editor.ui.registry.addButton('modeinline', {
       icon: 'close',
       tooltip: 'SwitchMode.Standard',
       onAction: (api) => {
-        switchModes('inline', editor);
+        switchModes('inline', editor, rawEditorOptions);
       },
     });
     editor.ui.registry.addButton('modeadvanced', {
       icon: 'custom-school',
       tooltip: 'SwitchMode.Pro',
       onAction: (api) => {
-        switchModes('advanced', editor);
+        switchModes('advanced', editor, rawEditorOptions);
       },
     });
   }
@@ -306,7 +306,7 @@ export class TinyMceButtons {
 
   /** Group of buttons with an h3 to start and showing h4-6 + p */
   private static headingsGroup(editor: Editor): void {
-    const isGerman = editor.settings.language === 'de';
+    const isGerman = editor.options.get("language") === 'de';
     const buttons = editor.ui.registry.getAll().buttons;
 
     const h1Button = buttons.h1;
@@ -470,11 +470,12 @@ function openPagePicker(editor: Editor, fieldStringWysiwyg: FieldStringWysiwygEd
 }
 
 // Mode switching and the buttons for it
-function switchModes(mode: 'standard' | 'inline' | 'advanced', editor: Editor): void {
-  editor.settings.toolbar = editor.settings.modes[mode].toolbar;
-  editor.settings.menubar = editor.settings.modes[mode].menubar;
+function switchModes(mode: 'standard' | 'inline' | 'advanced', editor: Editor, rawEditorOptions: RawEditorOptions): void {
+  var newRawEditorOptions: RawEditorOptions = rawEditorOptions;
+  newRawEditorOptions.toolbar = rawEditorOptions.modes[mode].toolbar;
+  newRawEditorOptions.menubar = rawEditorOptions.modes[mode].menubar;
 
   // refresh editor toolbar
   editor.editorManager.remove(editor);
-  editor.editorManager.init(editor.settings);
+  editor.editorManager.init(newRawEditorOptions);
 }

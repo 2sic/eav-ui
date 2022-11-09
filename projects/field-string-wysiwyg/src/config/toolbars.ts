@@ -18,7 +18,7 @@ export class TinyMceToolbars {
     return {
       menubar: true,
       toolbar: ' undo redo removeformat '
-        + '| styleselect '
+        + '| styles '
         + '| bold italic '
         + '| h2 h3 hgroup '
         + '| numlist bullist outdent indent '

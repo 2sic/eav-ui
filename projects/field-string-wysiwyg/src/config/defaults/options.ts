@@ -23,9 +23,9 @@ export const DefaultOptions: RawEditorOptions = {
   // convert_urls: false,  // don't use this, would keep the domain which is often a test-domain
   // keep urls with full path so starting with a '/' - otherwise it would rewrite them to a '../../..' syntax
   relative_urls: false,
-  default_link_target: '_blank', // auto-use blank as default link-target
+  link_default_target: '_blank', // auto-use blank as default link-target
   object_resizing: false, // don't allow manual scaling of images
-  debounce: false, // DONT slow-down model updates - otherwise we sometimes miss the last changes
+  // debounce: false, // DONT slow-down model updates - otherwise we sometimes miss the last changes
   toolbar_persist: true,
   // deprecation_warnings: false, // spm TODO: remove after upgrading to TinyMCE 6
 };

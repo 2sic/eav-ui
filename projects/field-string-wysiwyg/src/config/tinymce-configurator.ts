@@ -81,6 +81,7 @@ export class TinyMceConfigurator {
       ...TinyMceTranslations.getLanguageOptions(this.language),
       ...(exp.isFeatureEnabled(FeaturesConstants.WysiwygPasteFormatted) ? DefaultPaste.formattedText : {}),
       ...(exp.isFeatureEnabled(FeaturesConstants.PasteImageFromClipboard) ? DefaultPaste.images(dropzone, adam) : {}),
+      promotion: false,
     };
 
     if (this.reconfigure?.configureOptions) {

@@ -1,4 +1,5 @@
 import 'tinymce/tinymce'; // Important! tinymce has to be imported before themes and plugins
+import 'tinymce/models/dom'
 
 import type { Subscription } from 'rxjs';
 import 'tinymce/icons/default';
@@ -6,20 +7,16 @@ import 'tinymce/plugins/anchor';
 import 'tinymce/plugins/autolink';
 import 'tinymce/plugins/charmap';
 import 'tinymce/plugins/code';
-import 'tinymce/plugins/hr';
 import 'tinymce/plugins/image';
 import 'tinymce/plugins/link';
 import 'tinymce/plugins/lists';
 import 'tinymce/plugins/media';
 import 'tinymce/plugins/nonbreaking';
-import 'tinymce/plugins/paste';
 import 'tinymce/plugins/searchreplace';
-import 'tinymce/plugins/tabfocus';
 import 'tinymce/plugins/table';
-import 'tinymce/plugins/textpattern';
 import 'tinymce/themes/silver';
 // tslint:disable-next-line:no-duplicate-imports
-import type { Editor } from 'tinymce/tinymce';
+import type { Editor, RawEditorOptions } from 'tinymce/tinymce';
 import { FeaturesConstants } from '../../../eav-ui/src/app/edit/shared/constants';
 import { EavWindow } from '../../../eav-ui/src/app/shared/models/eav-window.model';
 import { Connector, EavCustomInputField, WysiwygReconfigure } from '../../../edit-types';
@@ -102,7 +99,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
       this.containerClass,
       this.toolbarContainerClass,
       this.mode === 'inline',
-      (editor: Editor) => { this.tinyMceSetup(editor); },
+      (editor: Editor) => { this.tinyMceSetup(editor, tinyOptions); },
     );
     this.firstInit = true;
     this.configurator.addTranslations();
@@ -111,12 +108,12 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   }
 
   /** This will initialized an instance of an editor. Everything else is kind of global. */
-  private tinyMceSetup(editor: Editor): void {
+  private tinyMceSetup(editor: Editor, rawEditorOptions: RawEditorOptions): void {
     this.editor = editor;
     editor.on('init', _event => {
       consoleLogWebpack(`${wysiwygEditorTag} TinyMCE initialized`, editor);
       this.reconfigure?.editorOnInit?.(editor);
-      TinyMceButtons.registerAll(this, editor, this.connector._experimental.adam);
+      TinyMceButtons.registerAll(this, editor, this.connector._experimental.adam, rawEditorOptions);
       if (!this.reconfigure?.disableAdam) {
         attachAdam(editor, this.connector._experimental.adam);
       }
