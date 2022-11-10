@@ -25,13 +25,15 @@ export class ExportAppService {
     window.open(url, '_blank', '');
   }
 
-  exportForVersionControl(includeContentGroups: boolean, resetAppGuid: boolean) {
+  exportForVersionControl({ includeContentGroups, resetAppGuid, withFiles }:
+    { includeContentGroups: boolean; resetAppGuid: boolean; withFiles: boolean; }) {
     return this.http.get<boolean>(this.dnnContext.$2sxc.http.apiUrl(webApiAppRoot + 'SaveData'), {
       params: {
         appid: this.context.appId.toString(),
         zoneId: this.context.zoneId.toString(),
         includeContentGroups: includeContentGroups.toString(),
         resetAppGuid: resetAppGuid.toString(),
+        withPortalFiles: withFiles.toString(),
       },
     });
   }

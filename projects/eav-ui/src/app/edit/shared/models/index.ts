@@ -13,7 +13,7 @@ export * from './form-values.model';
 export * from './formula.models';
 export * from './global-config.model';
 export * from './language-instance.model';
-export * from './language.model';
+export * from '../../../shared/models/language.model';
 export * from './link-cache.model';
 export * from './link-info.model';
 export * from './log-entry.model';

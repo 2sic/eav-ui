@@ -1,5 +1,5 @@
 import type { Editor } from 'tinymce';
-import { Adam, AdamItem, AdamPostResponse } from '../../../edit-types';
+import { Adam, AdamItem } from '../../../edit-types';
 
 export function attachAdam(editor: Editor, adam: Adam): void {
   adam.onItemClick = (item) => {
@@ -17,7 +17,7 @@ export function attachAdam(editor: Editor, adam: Adam): void {
   }
 }
 
-function insertContent(item: AdamItem | AdamPostResponse, editor: Editor, imageMode: boolean): void {
+function insertContent(item: AdamItem, editor: Editor, imageMode: boolean): void {
   const selected = editor.selection.getContent();
 
   let fileName = item.Name;
@@ -26,7 +26,7 @@ function insertContent(item: AdamItem | AdamPostResponse, editor: Editor, imageM
     fileName = fileName.substring(0, extIndex);
   }
 
-  const imageOrFileUrl = (item as AdamItem).Url ?? (item as AdamPostResponse).Path;
+  const imageOrFileUrl = item.Url; // (item as AdamItem).Url ?? (item as AdamPostResponse).Path;
   const content = imageMode
     ? `${selected}<img src="${imageOrFileUrl}" alt="${fileName}">`
     : `<a href="${imageOrFileUrl}">${selected || fileName}</a>`;

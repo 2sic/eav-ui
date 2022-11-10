@@ -12,9 +12,7 @@
         (click)="openImageConfiguration(data.adamItem)">
         <mat-icon
           [tippy]="(data.enableImageConfiguration ? 'Fields.Hyperlink.AdamFileManager.ImageSettingsUnavailable' : 'Fields.Hyperlink.AdamFileManager.ImageSettingsDisabled') | translate"
-          [tippyDisabled]="data.adamItem?._imageConfigurationContentType"
-          svgIcon="filter-center-focus">
-        </mat-icon>
+          [tippyDisabled]="data.adamItem?._imageConfigurationContentType">filter_center_focus</mat-icon>
       </button>
       <button mat-mini-fab color="primary" [tippy]="'Fields.Hyperlink.Default.PageTip' | translate"
         *ngIf="data.buttonPage" [disabled]="data.controlStatus.disabled" (click)="openPagePicker()">
@@ -22,7 +20,7 @@
       </button>
       <button mat-mini-fab color="primary" [tippy]="'Fields.Hyperlink.Default.MoreOptions' | translate"
         *ngIf="data.buttonMore" [disabled]="data.controlStatus.disabled" [matMenuTriggerFor]="menu">
-        <mat-icon svgIcon="more-vert"></mat-icon>
+        <mat-icon>more_vert</mat-icon>
       </button>
     </div>
 
@@ -81,8 +79,8 @@
             <a [href]="data.preview.url" target="_blank" [tippy]="data.preview.url" tippyPlacement="right"
               *ngIf="!data.preview.isImage">
               <div class="preview-icon-box">
-                <mat-icon *ngIf="data.preview.isKnownType" [svgIcon]="data.preview.icon"></mat-icon>
-                <mat-icon *ngIf="!data.preview.isKnownType" [svgIcon]="data.preview.icon"></mat-icon>
+                <mat-icon *ngIf="data.preview.isKnownType">{{ data.preview.icon }}</mat-icon>
+                <mat-icon *ngIf="!data.preview.isKnownType">{{ data.preview.icon }}</mat-icon>
               </div>
             </a>
           </div>

@@ -3,7 +3,8 @@
 
     <div fxFlex="auto" fxLayoutAlign="start center" (click)="toggleCollapse()">
       <div fxLayoutAlign="start center" class="mat-card-title-group mat-display-1">
-        <mat-icon class="title-arrow" [svgIcon]="collapse ? 'keyboard-arrow-down' : 'keyboard-arrow-up'">
+        <mat-icon class="title-arrow">
+          {{ collapse ? 'keyboard_arrow_down' : 'keyboard_arrow_up' }}
         </mat-icon>
         <span class="title">
           {{ data.itemTitle || ('ItemCard.DefaultTitle' | translate) }}
@@ -16,7 +17,7 @@
       [tippyDisabled]="data.readOnly || !data.noteProps.tooltip" [disableRipple]="data.noteProps.itemNotSaved"
       (pointerenter)="data.noteProps.note ? toggleNote($event, true) : null"
       (click)="data.noteProps.note ? toggleNote($event) : editNote()" *ngIf="data.showNotes">
-      <mat-icon [svgIcon]="data.noteProps.iconName"></mat-icon>
+      <mat-icon>{{ data.noteProps.iconName }}</mat-icon>
     </button>
 
     <ng-template #noteTemplate>
@@ -25,13 +26,13 @@
         (pointerleave)="noteTouched ? null : toggleNote($event, false)">
         <div class="note-actions" cdkDragHandle>
           <button mat-icon-button appMousedownStopPropagation (click)="editNote(data.noteProps.note)">
-            <mat-icon svgIcon="edit"></mat-icon>
+            <mat-icon>edit</mat-icon>
           </button>
           <button mat-icon-button appMousedownStopPropagation (click)="deleteNote(data.noteProps.note)">
-            <mat-icon svgIcon="delete"></mat-icon>
+            <mat-icon>delete</mat-icon>
           </button>
           <button mat-icon-button appMousedownStopPropagation (click)="toggleNote($event, false)">
-            <mat-icon svgIcon="close"></mat-icon>
+            <mat-icon>close</mat-icon>
           </button>
         </div>
         <div class="note-content hide-scrollbar" [innerHtml]="data.noteProps.noteHtml | safeHtml"></div>
@@ -45,12 +46,12 @@
     </mat-slide-toggle>
 
     <div class="icon-box" [tippy]="data.itemForTooltip" *ngIf="data.showMetadataFor && data.itemForTooltip">
-      <mat-icon svgIcon="local-offer"></mat-icon>
+      <mat-icon>local_offer</mat-icon>
     </div>
 
     <button type="button" mat-icon-button [tippy]="'Form.Buttons.History.Tip' | translate"
       *ngIf="eavService.eavConfig.enableHistory" [disabled]="data.readOnly" (click)="openHistory()">
-      <mat-icon svgIcon="history"></mat-icon>
+      <mat-icon>history</mat-icon>
     </button>
 
     <app-entity-translate-menu fxLayoutAlign="end center" [entityGuid]="entityGuid">

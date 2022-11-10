@@ -170,7 +170,7 @@
         "Show": "In neuem Fenster öffnen",
         "ImageSettings": "Bildeinstellungen",
         "ImageSettingsUnavailable": "Bildeinstellungen nicht verfügbar. Diese Datei ist kein Bild oder sie gehört nicht zu diesem Element",
-        "ImageSettingsDisabled": "Bildeinstellungen sind für dieses Feld deaktiviert",
+        "ImageSettingsDisabled": "Bei diesem Feld sind Bildeinstellungen deaktiviert",
         "Edit": "Umbenennen",
         "RenameQuestion": "Umbenennen:",
         "Delete": "Löschen",

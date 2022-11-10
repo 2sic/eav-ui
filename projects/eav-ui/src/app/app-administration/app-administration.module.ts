@@ -14,6 +14,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ZoneService } from '../apps-management/services/zone.service';
@@ -39,6 +40,7 @@ import { QueriesActionsComponent } from './queries/queries-actions/queries-actio
 import { QueriesComponent } from './queries/queries.component';
 import { AnalyzeSettingsService } from './services/analyze-settings.service';
 import { AppDialogConfigService } from './services/app-dialog-config.service';
+import { AppInternalsService } from './services/app-internals.service';
 import { ContentTypesService } from './services/content-types.service';
 import { ExportAppPartsService } from './services/export-app-parts.service';
 import { ExportAppService } from './services/export-app.service';
@@ -124,6 +126,7 @@ import { WebApiComponent } from './web-api/web-api.component';
     MatExpansionModule,
     MatCardModule,
     MatRippleModule,
+    MatSlideToggleModule,
     MatSnackBarModule,
     MatMenuModule,
     MatBadgeModule,
@@ -132,6 +135,7 @@ import { WebApiComponent } from './web-api/web-api.component';
   providers: [
     Context,
     AppDialogConfigService,
+    AppInternalsService,
     ContentTypesService,
     PipelinesService,
     ViewsService,

@@ -20,11 +20,11 @@
       <button mat-icon-button [ngClass]="{ 'active': !data.freeTextMode }"
         [tippy]="'Fields.String.Dropdown' | translate" [disabled]="data.controlStatus.disabled"
         (click)="toggleFreeTextMode(false)">
-        <mat-icon svgIcon="search"></mat-icon>
+        <mat-icon>search</mat-icon>
       </button>
       <button mat-icon-button [ngClass]="{ 'active': data.freeTextMode }" [tippy]="'Fields.String.Freetext' | translate"
         [disabled]="data.controlStatus.disabled" (click)="toggleFreeTextMode(true)">
-        <mat-icon svgIcon="text-fields"></mat-icon>
+        <mat-icon>text_fields</mat-icon>
       </button>
     </div>
 

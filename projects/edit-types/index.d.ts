@@ -7,7 +7,6 @@
 export * from './src/Adam';
 export * from './src/AdamConfig';
 export * from './src/AdamItem';
-export * from './src/AdamPostResponse';
 export * from './src/AddOnSettings';
 export * from './src/Connector';
 export * from './src/ConnectorData';

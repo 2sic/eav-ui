@@ -6,7 +6,7 @@ import { BehaviorSubject, combineLatest, filter, map, pairwise, startWith, Subsc
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { UpdateEnvVarsFromDialogSettings } from '../../shared/helpers/update-env-vars-from-dialog-settings.helper';
 import { AppScopes } from '../../shared/models/dialog-context.models';
-import { DialogSettings } from '../models/dialog-settings.model';
+import { DialogSettings } from '../../shared/models/dialog-settings.model';
 import { AppDialogConfigService } from '../services/app-dialog-config.service';
 
 @Component({
@@ -71,7 +71,7 @@ export class AppAdministrationNavComponent implements OnInit, OnDestroy {
   }
 
   private fetchDialogSettings() {
-    this.appDialogConfigService.getDialogSettings().subscribe(dialogSettings => {
+    this.appDialogConfigService.getShared$()/*.getDialogSettings()*/.subscribe(dialogSettings => {
       UpdateEnvVarsFromDialogSettings(dialogSettings.Context.App);
       this.dialogSettings$.next(dialogSettings);
 

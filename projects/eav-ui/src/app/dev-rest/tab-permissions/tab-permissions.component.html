@@ -4,13 +4,12 @@
   configured.
   <button mat-icon-button tippy="Open permissions" (click)="openPermissions()">
     <mat-icon [matBadge]="data.permissions.length" matBadgeColor="accent" matBadgeSize="small"
-      *ngIf="data.permissions.length" matBadgePosition="below after" svgIcon="person">
-    </mat-icon>
-    <mat-icon *ngIf="!data.permissions.length" svgIcon="person"></mat-icon>
+      *ngIf="data.permissions.length" matBadgePosition="below after">person</mat-icon>
+    <mat-icon *ngIf="!data.permissions.length">person</mat-icon>
   </button>
 </p>
 <p *ngIf="!data.permissions.length" class="warning info-box">
-  <mat-icon svgIcon="warning"></mat-icon>
+  <mat-icon>warning</mat-icon>
   Warning: you don't have any permissions configured. So only Super-Users (Host) will be able to use the API
   endpoints.
 </p>

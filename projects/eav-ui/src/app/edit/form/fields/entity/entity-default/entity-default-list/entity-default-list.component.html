@@ -16,8 +16,7 @@
     }">
       <div class="item-title" [ngClass]="{ 'disabled': disabled }">
         <mat-icon class="item-title__icon" *ngIf="data.allowMultiValue" [tippy]="'Fields.Entity.DragMove' | translate"
-          [tippyDisabled]="disabled" svgIcon="drag-handle">
-        </mat-icon>
+          [tippyDisabled]="disabled">drag_handle</mat-icon>
         <span class="item-title__text" [tippy]="item.tooltip">
           {{ item.label }}
         </span>
@@ -27,16 +26,16 @@
         <button mat-icon-button *ngIf="data.enableEdit && !item.isFreeTextOrNotFound"
           [tippy]="'Fields.Entity.Edit' | translate" [disabled]="config.initialDisabled" appMousedownStopPropagation
           (click)="edit(item.value)">
-          <mat-icon svgIcon="edit"></mat-icon>
+          <mat-icon>edit</mat-icon>
         </button>
         <button mat-icon-button *ngIf="data.enableDelete && !item.isFreeTextOrNotFound"
           [tippy]="'Fields.Entity.Delete' | translate" [disabled]="disabled" appMousedownStopPropagation
           (click)="deleteItem(index, item.value)">
-          <mat-icon svgIcon="delete"></mat-icon>
+          <mat-icon>delete</mat-icon>
         </button>
         <button mat-icon-button *ngIf="data.enableRemove" [tippy]="'Fields.Entity.Remove' | translate"
           [disabled]="disabled" appMousedownStopPropagation (click)="removeItem(index)">
-          <mat-icon svgIcon="clear"></mat-icon>
+          <mat-icon>clear</mat-icon>
         </button>
       </div>
     </div>

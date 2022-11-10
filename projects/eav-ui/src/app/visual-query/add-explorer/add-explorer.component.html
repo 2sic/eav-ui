@@ -7,14 +7,14 @@
   <ng-container *ngFor="let group of sorted | keyvalue; trackBy: trackGroups">
     <div class="collapsible" [tippy]="guiTypes[group.key].UiHint || group.key" tippyShowDelay="750"
       (click)="toggleItem(group.key)">
-      <mat-icon [svgIcon]="guiTypes[group.key].Icon || guiTypes.Unknown.Icon"></mat-icon>
+      <mat-icon>{{ guiTypes[group.key].Icon || guiTypes.Unknown.Icon }}</mat-icon>
       <span>{{ group.key }}</span>
     </div>
 
     <div class="list" *ngIf="toggledItems.includes(group.key)">
       <div class="list-item" *ngFor="let dataSource of group.value; trackBy: trackDataSources"
         [tippy]="dataSource.UiHint || dataSource.Name" tippyShowDelay="750" (click)="addDataSource(dataSource)">
-        <mat-icon [svgIcon]="dataSource.Icon || guiTypes.Unknown.Icon"></mat-icon>
+        <mat-icon>{{ dataSource.Icon || guiTypes.Unknown.Icon }}</mat-icon>
         <span>{{ dataSource.Name }}</span>
       </div>
     </div>

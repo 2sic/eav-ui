@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
-import { AdamItem, AdamPostResponse } from '../../../../../../../../edit-types';
+import { AdamItem } from '../../../../../../../../edit-types';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { GeneralHelpers } from '../../../../shared/helpers';
@@ -135,7 +135,7 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
         distinctUntilChanged(GeneralHelpers.objectsEqual),
       ).subscribe(settings => {
         this.config.adam.onItemClick = (item: AdamItem) => { this.setValue(item); };
-        this.config.adam.onItemUpload = (item: AdamPostResponse) => { this.setValue(item); };
+        this.config.adam.onItemUpload = (item: AdamItem) => { this.setValue(item); };
         this.config.adam.setConfig({
           rootSubfolder: settings.Paths,
           fileFilter: settings.FileFilter,
@@ -145,9 +145,9 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
     );
   }
 
-  private setValue(item: AdamItem | AdamPostResponse) {
+  private setValue(item: AdamItem) {
     const usePath = this.settings$.value.ServerResourceMapping === 'url';
-    const newValue = !usePath ? `file:${item.Id}` : (item as AdamItem).Url ?? (item as AdamPostResponse).Path;
+    const newValue = !usePath ? item.ReferenceId : item.Url;
     GeneralHelpers.patchControlValue(this.control, newValue);
   }
 }

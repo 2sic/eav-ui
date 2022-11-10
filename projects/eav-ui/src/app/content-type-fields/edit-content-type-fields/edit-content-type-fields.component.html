@@ -6,7 +6,7 @@
   </div>
 </div>
 
-<form #ngForm="ngForm" class="dialog-form custom-svg-styles" *ngIf="(loading$ | async) === false" (ngSubmit)="save()">
+<form #ngForm="ngForm" class="dialog-form" *ngIf="(loading$ | async) === false" (ngSubmit)="save()">
   <div class="dialog-form-content fancy-scrollbar-light">
     <div class="row-container" *ngFor="let field of fields; index as i">
       <div class="edit-input">
@@ -29,11 +29,11 @@
           <mat-select (selectionChange)="filterInputTypeOptions(i); resetInputType(i); calculateHints(i)"
             [(ngModel)]="field.Type" [name]="'Type' + i" [disabled]="editMode != null">
             <mat-select-trigger>
-              <mat-icon class="type-icon" [svgIcon]="findIcon(field.Type)"></mat-icon>
+              <mat-icon class="type-icon">{{ findIcon(field.Type) }}</mat-icon>
               <span>{{ field.Type }}</span>
             </mat-select-trigger>
             <mat-option *ngFor="let dataType of dataTypes" [value]="dataType.name">
-              <mat-icon class="type-icon" [svgIcon]="dataType.icon"></mat-icon>
+              <mat-icon class="type-icon">{{ dataType.icon }}</mat-icon>
               <span>{{ dataType.label }}</span>
             </mat-option>
           </mat-select>
@@ -48,12 +48,12 @@
             [disabled]="editMode === 'name'">
             <mat-select-trigger>
               <span>{{ getInputTypeOption(field.InputType)?.label }}</span>
-              <mat-icon class="input-icon" [svgIcon]="getInputTypeOption(field.InputType)?.icon"></mat-icon>
+              <mat-icon class="input-icon">{{ getInputTypeOption(field.InputType)?.icon }}</mat-icon>
             </mat-select-trigger>
             <mat-option *ngFor="let option of filteredInputTypeOptions[i]" [value]="option.inputType"
               [ngClass]="{ 'input-obsolete': option.isObsolete }">
               <span>{{ option.label }}</span>
-              <mat-icon class="input-icon" *ngIf="option.icon" [svgIcon]="option.icon"></mat-icon>
+              <mat-icon class="input-icon" *ngIf="option.icon">{{ option.icon }}</mat-icon>
             </mat-option>
           </mat-select>
         </mat-form-field>

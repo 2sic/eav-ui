@@ -11,39 +11,41 @@
       }">
 
       <div class="actions left">
-        <mat-icon class="type-info" [title]="templateModel.typeInfos[dataSource.EntityGuid].UiHint"
-          [svgIcon]="templateModel.typeInfos[dataSource.EntityGuid].Icon">
+        <mat-icon class="type-info" [title]="templateModel.typeInfos[dataSource.EntityGuid].UiHint">
+          {{ templateModel.typeInfos[dataSource.EntityGuid].Icon }}
         </mat-icon>
 
         <mat-icon class="configure" title="Configure data source" appMousedownStopPropagation
           *ngIf="templateModel.allowEdit && templateModel.typeInfos[dataSource.EntityGuid].EnableConfig"
-          (click)="configureDataSource(dataSource)" svgIcon="settings">
+          (click)="configureDataSource(dataSource)">
+          settings
         </mat-icon>
 
         <mat-icon class="help" title="Help for this data source" appMousedownStopPropagation
           *ngIf="templateModel.typeInfos[dataSource.EntityGuid].HelpLink"
-          (click)="openHelp(templateModel.typeInfos[dataSource.EntityGuid].HelpLink)" svgIcon="help-outline">
+          (click)="openHelp(templateModel.typeInfos[dataSource.EntityGuid].HelpLink)">
+          help_outline
         </mat-icon>
       </div>
 
       <div class="actions right">
         <mat-icon class="delete" title="Delete" appMousedownStopPropagation
-          *ngIf="templateModel.allowEdit && !isOutDataSource(dataSource)" (click)="remove(dataSource)"
-          svgIcon="delete">
+          *ngIf="templateModel.allowEdit && !isOutDataSource(dataSource)" (click)="remove(dataSource)">
+          delete
         </mat-icon>
       </div>
 
       <div class="name" title="Click to edit name" appMousedownStopPropagation
         (click)="templateModel.allowEdit && editName(dataSource)">
         <span>{{ dataSource.Name || '(no name)' }}</span>
-        <mat-icon class="show-hover-inline" svgIcon="edit"></mat-icon>
+        <mat-icon class="show-hover-inline">edit</mat-icon>
       </div>
       <br>
 
       <div class="description" title="Click to edit description" appMousedownStopPropagation
         (click)="templateModel.allowEdit && editDescription(dataSource)">
         <span>{{ dataSource.Description }}</span>
-        <mat-icon class="show-hover-inline" svgIcon="edit"></mat-icon>
+        <mat-icon class="show-hover-inline">edit</mat-icon>
       </div>
       <br>
 
@@ -62,15 +64,13 @@
         Type: {{ getTypeName(dataSource.PartAssemblyAndType) }}
       </div>
 
-      <mat-icon class="add-endpoint" title="Drag a new Out-Connection"
-        *ngIf="templateModel.allowEdit && templateModel.typeInfos[dataSource.EntityGuid].DynamicOut"
-        svgIcon="arrow-drop-up">
-      </mat-icon>
+      <div class="add-endpoint sourceEndpoint dynamic" title="Drag a new Out-Connection"
+        *ngIf="templateModel.allowEdit && templateModel.typeInfos[dataSource.EntityGuid].DynamicOut">
+      </div>
 
-      <mat-icon class="many-in" title="This data source supports multiple In-Connections"
-        *ngIf="templateModel.allowEdit && templateModel.typeInfos[dataSource.EntityGuid].DynamicIn"
-        svgIcon="arrow-drop-up">
-      </mat-icon>
+      <div class="many-in targetEndpoint dynamic" title="This data source supports multiple In-Connections"
+        *ngIf="templateModel.allowEdit && templateModel.typeInfos[dataSource.EntityGuid].DynamicIn">
+      </div>
     </div>
   </ng-container>
 </div>

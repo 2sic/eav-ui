@@ -53,7 +53,7 @@ export class AppsManagementNavComponent implements OnInit, OnDestroy {
   }
 
   private fetchDialogSettings() {
-    this.appDialogConfigService.getDialogSettings(0).subscribe(dialogSettings => {
+    this.appDialogConfigService.getShared$(0)/*.getDialogSettings(0)*/.subscribe(dialogSettings => {
       this.dialogSettings$.next(dialogSettings);
     });
   }

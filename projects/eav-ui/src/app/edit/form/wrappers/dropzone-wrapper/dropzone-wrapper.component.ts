@@ -2,7 +2,7 @@ import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { AfterViewInit, Component, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { DropzoneDirective } from 'ngx-dropzone-wrapper';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
-import { AdamPostResponse, DropzoneConfigExt } from '../../../../../../../edit-types';
+import { AdamItem, DropzoneConfigExt } from '../../../../../../../edit-types';
 import { consoleLogAngular } from '../../../../shared/helpers/console-log-angular.helper';
 import { WrappersConstants } from '../../../shared/constants';
 import { EavService, FieldsSettingsService } from '../../../shared/services';
@@ -82,8 +82,8 @@ export class DropzoneWrapperComponent extends BaseComponent implements FieldWrap
   }
 
   onUploadSuccess(event: DropzoneType) {
-    const response: AdamPostResponse = event[1]; // gets the server response as second argument.
-    if (response.Success) {
+    const response: AdamItem = event[1]; // gets the server response as second argument.
+    if (!response.Error) {
       if (this.config.adam) {
         this.config.adam.onItemUpload(response);
         this.config.adam.refresh();

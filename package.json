@@ -1,7 +1,7 @@
 {
   "name": "eav-ui",
   "// VERSION": "The version number is very important, as it's used for publishing the source maps",
-  "version": "14.10.00",
+  "version": "14.12.00",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -38,7 +38,6 @@
     "@angular/platform-browser-dynamic": "^13.3.3",
     "@angular/router": "^13.3.3",
     "@ecodev/fab-speed-dial": "^10.0.0",
-    "@material-design-icons/svg": "^0.12.1",
     "@material/layout-grid": "^13.0.0",
     "@ngrx/data": "^13.1.0",
     "@ngrx/effects": "^13.1.0",
