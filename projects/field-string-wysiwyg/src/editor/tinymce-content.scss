@@ -68,4 +68,12 @@
     margin-right: 1.5rem;
     padding-right: 1rem;
   }
+
+  .content-division {
+    background: repeating-linear-gradient(45deg,
+          #ffffff,
+          #ffffff 5px,
+          #f5f5f5 5px,
+          #f5f5f5 10px);
+  }
 }

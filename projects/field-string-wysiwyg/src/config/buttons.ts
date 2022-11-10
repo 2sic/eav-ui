@@ -400,7 +400,7 @@ export class TinyMceButtons {
   /** Inside content (contentdivision) */
   private static contentDivision(editor: Editor): void {
     editor.ui.registry.addButton('contentdivision', {
-      icon: 'custom-dashed-box',
+      icon: 'custom-branding-watermark',
       tooltip: 'ContentDivision.Add',
       onAction: (api) => {
         editor.insertContent(`<div class="content-division"></div>`);

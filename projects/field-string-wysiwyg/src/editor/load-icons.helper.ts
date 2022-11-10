@@ -19,7 +19,7 @@ import * as filePdf from '../assets/icons/font-awesome/file-pdf.svg';
 import * as file from '../assets/icons/font-awesome/file.svg';
 import * as sitemap from '../assets/icons/font-awesome/sitemap.svg';
 import * as school from '../assets/icons/google-material/baseline-school-24px.svg';
-import * as dashedBox from '../assets/icons/google-material/dashed-box-24px.svg';
+import * as brandingWatermark from '../assets/icons/google-material/branding-watermark-24px.svg';
 import * as paragraph from '../assets/icons/tinymce/paragraph.svg';
 
 const customTinyMceIcons: Record<string, string> = {
@@ -42,7 +42,7 @@ const customTinyMceIcons: Record<string, string> = {
   'custom-image-u5': imageU5.default,
   'custom-image-u6': imageU6.default,
   'custom-school': school.default,
-  'custom-dashed-box': dashedBox.default,
+  'custom-branding-watermark': brandingWatermark.default,
   'custom-sitemap': sitemap.default,
   'custom-paragraph': paragraph.default,
 };
