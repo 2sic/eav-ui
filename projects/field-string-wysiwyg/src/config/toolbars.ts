@@ -1,3 +1,5 @@
+import { ItalicWithMore, SxcImages } from './buttons';
+
 export class TinyMceToolbars {
 
   static build(contentBlocksEnabled: boolean, inlineMode: boolean, buttonSource: string, buttonAdvanced: string, contentDivisions: string) {
@@ -24,7 +26,7 @@ export class TinyMceToolbars {
         + '| '
         + (contentDivisions === 'false' ? '' : ' contentdivision ')
         + '| numlist bullist outdent indent '
-        + '| ' + (!inlineMode ? ' images linkfiles' : '') + ' linkgrouppro '
+        + `| ' + (!inlineMode ? ' ${SxcImages} linkfiles' : '') + ' linkgrouppro `
         + '| '
         + (contentBlocksEnabled ? ' addcontentblock ' : '')
         + ' code '
@@ -37,7 +39,7 @@ export class TinyMceToolbars {
     return {
       menubar: false,
       toolbar: ' undo redo removeformat '
-        + '| bold formatgroup '
+        + `| bold ${ItalicWithMore} `
         + '| h2 h3 hgroup '
         + '| '
         + (contentDivisions === 'false' ? '' : ' contentdivision ')
@@ -55,7 +57,7 @@ export class TinyMceToolbars {
     return {
       menubar: false,
       toolbar: ' undo redo removeformat '
-        + '| bold formatgroup '
+        + `| bold ${ItalicWithMore} `
         + '| h2 h3 hgroup '
         + '| '
         + (contentDivisions === 'false' ? '' : ' contentdivision ')

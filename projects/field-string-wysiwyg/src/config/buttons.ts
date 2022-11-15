@@ -5,10 +5,28 @@ import { loadCustomIcons } from '../editor/load-icons.helper';
 import { Guid } from '../shared/guid';
 import { ImageFormats } from '../shared/models';
 
+// Export Constant names because these will become standardized
+// So people can use them in their custom toolbars
+export const ItalicWithMore = 'italic-more'; // used to be 'formatgroup'
+export const SxcImages = 'images-cms'; // used to be 'images'
+
+// TODO: @SDV - move all names which are used elsewhele - like button names etc.
+// to exports above, and use these in the toolbars.ts
+// so I can rename then later on before publishing
+// As the names will have to become public terms so I must control them exactly
+
+type FuncVoid = () => void | unknown;
+
 /** Register all kinds of buttons on TinyMCE */
 export class TinyMceButtons {
 
-  static registerAll(fieldStringWysiwyg: FieldStringWysiwygEditor, editor: Editor, adam: Adam, rawEditorOptions: RawEditorOptions): void {
+  // TODO: @SDV - CHANGE THIS CLASS
+  // to use these values from the object, and remove all params from registerAll()
+  constructor(private field: FieldStringWysiwygEditor, private editor: Editor, private adam: Adam, private options: RawEditorOptions) {
+
+  }
+
+  registerAll(fieldStringWysiwyg: FieldStringWysiwygEditor, editor: Editor, adam: Adam, rawEditorOptions: RawEditorOptions): void {
     const instSettings = fieldStringWysiwyg.configurator.addOnSettings;
 
     if (!instSettings.enabled) { return; }
@@ -17,11 +35,14 @@ export class TinyMceButtons {
 
     loadCustomIcons(editor);
 
-    this.linkFiles(editor, adam);
+    // @SDV - example what to change
+    // before: this.linkFiles(editor, adam);
+    this.linkFiles();
 
     this.linksGroups(editor, fieldStringWysiwyg);
 
-    this.images(editor, adam);
+    // this.images(editor, adam);
+    this.images();
 
     this.dropDownItalicAndMore(editor);
 
@@ -42,45 +63,84 @@ export class TinyMceButtons {
     this.contextMenus(editor);
   }
 
+  /** Inner call for most onItemAction commands */
+  private runOrExecCommand(api: unknown, value: unknown) {
+    // If it's a function, call it with params (the params are usually not used)
+    if (typeof(value) === 'function') value(api, value);
+
+    // If it's a string, it must be a command the editor knows
+    if (typeof(value) === 'string') this.editor.execCommand(value);
+  }
+
+  /** Create a common default structure for most SplitButtonSpecs */
+  private splitButtonSpecs(initialCommand: string | FuncVoid) {
+
+    return {
+      onAction: (api: unknown) => {
+        this.runOrExecCommand(api, initialCommand);
+      },
+
+      onItemAction: (api: unknown, value: unknown) => {
+        this.runOrExecCommand(api, value);
+      },
+    };
+  }
+
+  /**
+   * Compact way to create a SplitButtonChoiceItem
+   * @param icon The icon
+   * @param text The label
+   * @param action In basic cases it's just a string - the name of the command, or the method
+   */
+  private splitButtonItem(icon: string, text: string, action: string | FuncVoid) {
+    return { icon, text, type: 'choiceitem' as 'choiceitem', value: action as string }; // pretend action is as string
+  }
+
   /** Group with adam-link, dnn-link */
-  private static linkFiles(editor: Editor, adam: Adam): void {
-    editor.ui.registry.addSplitButton('linkfiles', {
+  private linkFiles(): void {
+    const adam = this.adam;
+    this.editor.ui.registry.addSplitButton('linkfiles', {
+      // TODO @SDV - example with function
+      ...this.splitButtonSpecs(() => adam.toggle(false, false)),
       columns: 3,
       icon: 'custom-file-pdf',
       presets: 'listpreview',
       tooltip: 'Link.AdamFile.Tooltip',
-      onAction: (api) => {
-        adam.toggle(false, false);
-      },
-      onItemAction: (api, value: any) => {
-        value();
-      },
+      // onAction: (api) => {
+      //   adam.toggle(false, false);
+      // },
+      // onItemAction: (api, value: any) => {
+      //   value();
+      // },
       fetch: (callback) => {
         callback([
-          {
-            icon: 'custom-file-pdf',
-            text: 'Link.AdamFile.Tooltip',
-            type: 'choiceitem',
-            value: (() => { adam.toggle(false, false); }) as any,
-          },
-          {
-            icon: 'custom-file-dnn',
-            text: 'Link.DnnFile.Tooltip',
-            type: 'choiceitem',
-            value: (() => { adam.toggle(true, false); }) as any,
-          },
+          // TODO @SDV - example with function
+          this.splitButtonItem('custom-file-pdf', 'Link.AdamFile.Tooltip', () => adam.toggle(false, false)),
+          this.splitButtonItem('custom-file-dnn', 'Link.DnnFile.Tooltip', () => adam.toggle(true, false)),
+          // {
+          //   icon: 'custom-file-pdf',
+          //   text: 'Link.AdamFile.Tooltip',
+          //   type: 'choiceitem',
+          //   value: (() => { adam.toggle(false, false); }) as any,
+          // },
+          // {
+          //   icon: 'custom-file-dnn',
+          //   text: 'Link.DnnFile.Tooltip',
+          //   type: 'choiceitem',
+          //   value: (() => { adam.toggle(true, false); }) as any,
+          // },
         ]);
       },
     });
   }
 
   /** Button groups for links (simple and pro) with web-link, page-link, unlink, anchor */
-  private static linksGroups(editor: Editor, fieldStringWysiwyg: FieldStringWysiwygEditor): void {
+  private linksGroups(editor: Editor, fieldStringWysiwyg: FieldStringWysiwygEditor): void {
     this.addLinkGroup(editor, fieldStringWysiwyg, false);
     this.addLinkGroup(editor, fieldStringWysiwyg, true);
   }
 
-  private static addLinkGroup(editor: Editor, fieldStringWysiwyg: FieldStringWysiwygEditor, isPro: boolean): void {
+  private addLinkGroup(editor: Editor, fieldStringWysiwyg: FieldStringWysiwygEditor, isPro: boolean): void {
     const linkButton = editor.ui.registry.getAll().buttons.link;
 
     editor.ui.registry.addSplitButton(!isPro ? 'linkgroup' : 'linkgrouppro', {
@@ -120,8 +180,10 @@ export class TinyMceButtons {
   }
 
   /** Images menu */
-  private static images(editor: Editor, adam: Adam): void {
-    const buttons = editor.ui.registry.getAll().buttons;
+  private images(): void {
+    const adam = this.adam;
+    const editor = this.editor;
+    const buttons = this.editor.ui.registry.getAll().buttons;
     const imageButton = buttons.image;
     const linkButton = buttons.link;
     const alignleftButton = buttons.alignleft;
@@ -129,17 +191,18 @@ export class TinyMceButtons {
     const alignrightButton = buttons.alignright;
 
     // Group with images (adam) - only in PRO mode
-    editor.ui.registry.addSplitButton('images', {
+    this.editor.ui.registry.addSplitButton(SxcImages, {
+      ...this.splitButtonSpecs(() => adam.toggle(false, true)),
       columns: 3,
       icon: imageButton.icon,
       presets: 'listpreview',
       tooltip: 'Image.AdamImage.Tooltip',
-      onAction: (api) => {
-        adam.toggle(false, true);
-      },
-      onItemAction: (api, value: any) => {
-        value();
-      },
+      // onAction: (api) => {
+      //   adam.toggle(false, true);
+      // },
+      // onItemAction: (api, value: any) => {
+      //   value();
+      // },
       fetch: (callback) => {
         callback([
           {
@@ -184,32 +247,37 @@ export class TinyMceButtons {
   }
 
   /** Drop-down with italic, strikethrough, ... */
-  private static dropDownItalicAndMore(editor: Editor): void {
+  private dropDownItalicAndMore(editor: Editor): void {
     const buttons = editor.ui.registry.getAll().buttons;
     const italicButton = buttons.italic;
-    const strikethroughButton = buttons.strikethrough;
+    // const strikethroughButton = buttons.strikethrough;
     const superscriptButton = buttons.superscript;
     const subscriptButton = buttons.subscript;
 
-    editor.ui.registry.addSplitButton('formatgroup', {
+    editor.ui.registry.addSplitButton(ItalicWithMore, {
+      // TODO: @SDV use this...
+      ...this.splitButtonSpecs('Italic'),
       columns: 3,
       icon: italicButton.icon,
       presets: 'listpreview',
       tooltip: italicButton.tooltip,
-      onAction: (api) => {
-        editor.execCommand('Italic');
-      },
-      onItemAction: (api, value: any) => {
-        value();
-      },
+      // @STV ...instead of this
+      // onAction: (api) => {
+      //   editor.execCommand('Italic');
+      // },
+      // onItemAction: (api, value: any) => {
+      //   value();
+      // },
       fetch: (callback) => {
         callback([
-          {
-            icon: strikethroughButton.icon,
-            text: strikethroughButton.tooltip,
-            type: 'choiceitem',
-            value: (() => { editor.execCommand('Strikethrough'); }) as any,
-          },
+          // TODO: @SDV - use this instead of below
+          this.splitButtonItem(buttons.strikethrough.icon, buttons.strikethrough.tooltip, 'Strikethrough'),
+          // {
+          //   icon: strikethroughButton.icon,
+          //   text: strikethroughButton.tooltip,
+          //   type: 'choiceitem',
+          //   value: (() => { editor.execCommand('Strikethrough'); }) as any,
+          // },
           {
             icon: superscriptButton.icon,
             text: superscriptButton.tooltip,
@@ -228,7 +296,7 @@ export class TinyMceButtons {
   }
 
   /** Lists / Indent / Outdent etc. */
-  private static listButtons(editor: Editor): void {
+  private listButtons(editor: Editor): void {
     const buttons = editor.ui.registry.getAll().buttons;
     const bullistButton = buttons.bullist;
     const outdentButton = buttons.outdent;
@@ -266,7 +334,7 @@ export class TinyMceButtons {
   }
 
   /** Switch normal / advanced mode */
-  private static switchModes(editor: Editor, rawEditorOptions: RawEditorOptions): void {
+  private switchModes(editor: Editor, rawEditorOptions: RawEditorOptions): void {
     editor.ui.registry.addButton('modestandard', {
       icon: 'close',
       tooltip: 'SwitchMode.Standard',
@@ -291,7 +359,7 @@ export class TinyMceButtons {
   }
 
   /** Switch to Dialog Mode */
-  private static openDialog(editor: Editor, fieldStringWysiwyg: FieldStringWysiwygEditor): void {
+  private openDialog(editor: Editor, fieldStringWysiwyg: FieldStringWysiwygEditor): void {
     editor.ui.registry.addButton('expandfulleditor', {
       icon: 'browse',
       tooltip: 'SwitchMode.Expand',
@@ -307,8 +375,8 @@ export class TinyMceButtons {
   }
 
   /** Group of buttons with an h3 to start and showing h4-6 + p */
-  private static headingsGroup(editor: Editor): void {
-    const isGerman = editor.options.get("language") === 'de';
+  private headingsGroup(editor: Editor): void {
+    const isGerman = editor.options.get('language') === 'de';
     const buttons = editor.ui.registry.getAll().buttons;
 
     const h1Button = buttons.h1;
@@ -386,7 +454,7 @@ export class TinyMceButtons {
   }
 
   /** Inside content (contentblocks) */
-  private static contentBlock(editor: Editor): void {
+  private contentBlock(editor: Editor): void {
     editor.ui.registry.addButton('addcontentblock', {
       icon: 'custom-content-block',
       tooltip: 'ContentBlock.Add',
@@ -398,7 +466,7 @@ export class TinyMceButtons {
   }
 
   /** Inside content (contentdivision) */
-  private static contentDivision(editor: Editor): void {
+  private contentDivision(editor: Editor): void {
     editor.ui.registry.addButton('contentdivision', {
       icon: 'custom-branding-watermark',
       tooltip: 'ContentDivision.Add',
@@ -409,7 +477,7 @@ export class TinyMceButtons {
   }
 
   /** Image alignment / size buttons in context menu */
-  private static imageContextMenu(editor: Editor, imgSizes: number[]): void {
+  private imageContextMenu(editor: Editor, imgSizes: number[]): void {
     editor.ui.registry.addSplitButton('imgresponsive', {
       icon: 'resize',
       tooltip: '100%',
@@ -434,7 +502,7 @@ export class TinyMceButtons {
   }
 
   /** Add Context toolbars */
-  private static contextMenus(editor: Editor): void {
+  private contextMenus(editor: Editor): void {
     const rangeSelected = () => document.getSelection().rangeCount > 0 && !document.getSelection().getRangeAt(0).collapsed;
 
     editor.ui.registry.addContextToolbar('linkContextToolbar', {
@@ -484,7 +552,7 @@ function openPagePicker(editor: Editor, fieldStringWysiwyg: FieldStringWysiwygEd
 
 // Mode switching and the buttons for it
 function switchModes(mode: 'standard' | 'inline' | 'advanced', editor: Editor, rawEditorOptions: RawEditorOptions): void {
-  var newRawEditorOptions: RawEditorOptions = rawEditorOptions;
+  const newRawEditorOptions: RawEditorOptions = rawEditorOptions;
   newRawEditorOptions.toolbar = rawEditorOptions.modes[mode].toolbar;
   newRawEditorOptions.menubar = rawEditorOptions.modes[mode].menubar;
 
