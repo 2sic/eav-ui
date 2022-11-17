@@ -113,7 +113,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
     editor.on('init', _event => {
       consoleLogWebpack(`${wysiwygEditorTag} TinyMCE initialized`, editor);
       this.reconfigure?.editorOnInit?.(editor);
-      new TinyMceButtons(this, editor, this.connector._experimental.adam, rawEditorOptions).registerAll(editor);
+      new TinyMceButtons(this, editor, this.connector._experimental.adam, rawEditorOptions).registerAll();
       if (!this.reconfigure?.disableAdam) {
         attachAdam(editor, this.connector._experimental.adam);
       }

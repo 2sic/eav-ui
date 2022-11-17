@@ -36,14 +36,14 @@ export class TinyMceButtons {
 
   }
 
-  registerAll(editor: Editor): void {
+  registerAll(): void {
     const instSettings = this.field.configurator.addOnSettings;
 
     if (!instSettings.enabled) { return; }
 
-    registerTinyMceFormats(editor, instSettings.imgSizes);
+    registerTinyMceFormats(this.editor, instSettings.imgSizes);
 
-    loadCustomIcons(editor);
+    loadCustomIcons(this.editor);
 
     this.linkFiles();
 
