@@ -33,7 +33,7 @@ import * as skinOverrides from './skin-overrides.scss';
 
 declare const window: EavWindow;
 export const wysiwygEditorTag = 'field-string-wysiwyg-dialog';
-const extWhitelist = '.doc, .docx, .dot, .xls, .xlsx, .ppt, .pptx, .pdf, .txt, .htm, .html, .md, .rtf, .xml, .xsl, .xsd, .css, .zip, .csv';
+const extWhitelist = '.doc, .docx, .dot, .xls, .xlsx, .ppt, .pptx, .pdf, .txt, .htm, .html, .md, .rtf, .xml, .xsl, .xsd, .css, .zip, .csv, .jpg, .png';
 const tinyMceBaseUrl = '../../system/field-string-wysiwyg';
 
 export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomInputField<string> {
@@ -113,7 +113,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
     editor.on('init', _event => {
       consoleLogWebpack(`${wysiwygEditorTag} TinyMCE initialized`, editor);
       this.reconfigure?.editorOnInit?.(editor);
-      new TinyMceButtons(this, editor, this.connector._experimental.adam, rawEditorOptions).registerAll(this, editor, this.connector._experimental.adam, rawEditorOptions);
+      new TinyMceButtons(this, editor, this.connector._experimental.adam, rawEditorOptions).registerAll(editor);
       if (!this.reconfigure?.disableAdam) {
         attachAdam(editor, this.connector._experimental.adam);
       }

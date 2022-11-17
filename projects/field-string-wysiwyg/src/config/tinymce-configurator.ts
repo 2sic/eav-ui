@@ -83,6 +83,7 @@ export class TinyMceConfigurator {
       ...(exp.isFeatureEnabled(FeaturesConstants.WysiwygPasteFormatted) ? DefaultPaste.formattedText : {}),
       ...(exp.isFeatureEnabled(FeaturesConstants.PasteImageFromClipboard) ? DefaultPaste.images(dropzone, adam) : {}),
       promotion: false,
+      block_unsupported_drop: false,
     };
 
     if (this.reconfigure?.configureOptions) {

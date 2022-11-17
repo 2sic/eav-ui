@@ -9,6 +9,18 @@ import { ImageFormats } from '../shared/models';
 // So people can use them in their custom toolbars
 export const ItalicWithMore = 'italic-more'; // used to be 'formatgroup'
 export const SxcImages = 'images-cms'; // used to be 'images'
+export const LinkGroup = 'linkgroup';
+export const LinkGroupPro = 'linkgrouppro';
+export const LinkFiles = 'linkfiles';
+export const ListGroup = 'listgroup';
+export const ModeStandard = 'modestandard';
+export const ModeInline = 'modeinline';
+export const ModeAdvanced = 'modeadvanced';
+export const HGroup = 'hgroup';
+export const AddContentBlock = 'addcontentblock';
+export const ContentDivision = 'contentdivision';
+export const ExpandFullEditor = 'expandfulleditor';
+export const ImgResponsive = 'imgresponsive';
 
 // TODO: @SDV - move all names which are used elsewhele - like button names etc.
 // to exports above, and use these in the toolbars.ts
@@ -20,14 +32,12 @@ type FuncVoid = () => void | unknown;
 /** Register all kinds of buttons on TinyMCE */
 export class TinyMceButtons {
 
-  // TODO: @SDV - CHANGE THIS CLASS
-  // to use these values from the object, and remove all params from registerAll()
   constructor(private field: FieldStringWysiwygEditor, private editor: Editor, private adam: Adam, private options: RawEditorOptions) {
 
   }
 
-  registerAll(fieldStringWysiwyg: FieldStringWysiwygEditor, editor: Editor, adam: Adam, rawEditorOptions: RawEditorOptions): void {
-    const instSettings = fieldStringWysiwyg.configurator.addOnSettings;
+  registerAll(editor: Editor): void {
+    const instSettings = this.field.configurator.addOnSettings;
 
     if (!instSettings.enabled) { return; }
 
@@ -35,32 +45,29 @@ export class TinyMceButtons {
 
     loadCustomIcons(editor);
 
-    // @SDV - example what to change
-    // before: this.linkFiles(editor, adam);
     this.linkFiles();
 
-    this.linksGroups(editor, fieldStringWysiwyg);
+    this.linksGroups();
 
-    // this.images(editor, adam);
     this.images();
 
-    this.dropDownItalicAndMore(editor);
+    this.dropDownItalicAndMore();
 
-    this.listButtons(editor);
+    this.listButtons();
 
-    this.switchModes(editor, rawEditorOptions);
+    this.switchModes();
 
-    this.openDialog(editor, fieldStringWysiwyg);
+    this.openDialog();
 
-    this.headingsGroup(editor);
+    this.headingsGroup();
 
-    this.contentBlock(editor);
+    this.contentBlock();
 
-    this.contentDivision(editor);
+    this.contentDivision();
 
-    this.imageContextMenu(editor, instSettings.imgSizes);
+    this.imageContextMenu(instSettings.imgSizes);
 
-    this.contextMenus(editor);
+    this.contextMenus();
   }
 
   /** Inner call for most onItemAction commands */
@@ -99,81 +106,43 @@ export class TinyMceButtons {
   /** Group with adam-link, dnn-link */
   private linkFiles(): void {
     const adam = this.adam;
-    this.editor.ui.registry.addSplitButton('linkfiles', {
-      // TODO @SDV - example with function
+    this.editor.ui.registry.addSplitButton(LinkFiles, {
       ...this.splitButtonSpecs(() => adam.toggle(false, false)),
       columns: 3,
       icon: 'custom-file-pdf',
       presets: 'listpreview',
       tooltip: 'Link.AdamFile.Tooltip',
-      // onAction: (api) => {
-      //   adam.toggle(false, false);
-      // },
-      // onItemAction: (api, value: any) => {
-      //   value();
-      // },
       fetch: (callback) => {
         callback([
-          // TODO @SDV - example with function
           this.splitButtonItem('custom-file-pdf', 'Link.AdamFile.Tooltip', () => adam.toggle(false, false)),
           this.splitButtonItem('custom-file-dnn', 'Link.DnnFile.Tooltip', () => adam.toggle(true, false)),
-          // {
-          //   icon: 'custom-file-pdf',
-          //   text: 'Link.AdamFile.Tooltip',
-          //   type: 'choiceitem',
-          //   value: (() => { adam.toggle(false, false); }) as any,
-          // },
-          // {
-          //   icon: 'custom-file-dnn',
-          //   text: 'Link.DnnFile.Tooltip',
-          //   type: 'choiceitem',
-          //   value: (() => { adam.toggle(true, false); }) as any,
-          // },
         ]);
       },
     });
   }
 
   /** Button groups for links (simple and pro) with web-link, page-link, unlink, anchor */
-  private linksGroups(editor: Editor, fieldStringWysiwyg: FieldStringWysiwygEditor): void {
-    this.addLinkGroup(editor, fieldStringWysiwyg, false);
-    this.addLinkGroup(editor, fieldStringWysiwyg, true);
+  private linksGroups(): void {
+    this.addLinkGroup(false);
+    this.addLinkGroup(true);
   }
 
-  private addLinkGroup(editor: Editor, fieldStringWysiwyg: FieldStringWysiwygEditor, isPro: boolean): void {
-    const linkButton = editor.ui.registry.getAll().buttons.link;
+  private addLinkGroup(isPro: boolean): void {
+    const linkButton = this.editor.ui.registry.getAll().buttons.link;
 
-    editor.ui.registry.addSplitButton(!isPro ? 'linkgroup' : 'linkgrouppro', {
+    this.editor.ui.registry.addSplitButton(!isPro ? LinkGroup : LinkGroupPro, {
+      ...this.splitButtonSpecs('mceLink'),
       columns: 3,
       icon: linkButton.icon,
       presets: 'listpreview',
       tooltip: linkButton.tooltip,
-      onAction: (api) => {
-        editor.execCommand('mceLink');
-      },
-      onItemAction: (api, value: any) => {
-        value();
-      },
       fetch: (callback) => {
         callback([
-          {
-            icon: linkButton.icon,
-            text: linkButton.tooltip,
-            type: 'choiceitem',
-            value: (() => { editor.execCommand('mceLink'); }) as any,
-          },
-          {
-            icon: 'custom-sitemap',
-            text: 'Link.Page.Tooltip',
-            type: 'choiceitem',
-            value: (() => { openPagePicker(editor, fieldStringWysiwyg); }) as any,
-          },
-          ...(!isPro ? [] : [{
-            icon: 'custom-anchor',
-            text: 'Link.Anchor.Tooltip',
-            type: 'choiceitem' as 'choiceitem',
-            value: (() => { editor.execCommand('mceAnchor'); }) as any,
-          }]),
+          this.splitButtonItem(linkButton.icon, linkButton.tooltip, 'mceLink'),
+          this.splitButtonItem('custom-sitemap', 'Link.Page.Tooltip', () => openPagePicker(this.field)),
+          ...(!isPro ? [] : [
+            this.splitButtonItem('custom-anchor', 'Link.Anchor.Tooltip', 'mceAnchor')
+          ]),
         ]);
       },
     });
@@ -197,187 +166,111 @@ export class TinyMceButtons {
       icon: imageButton.icon,
       presets: 'listpreview',
       tooltip: 'Image.AdamImage.Tooltip',
-      // onAction: (api) => {
-      //   adam.toggle(false, true);
-      // },
-      // onItemAction: (api, value: any) => {
-      //   value();
-      // },
       fetch: (callback) => {
         callback([
-          {
-            icon: imageButton.icon,
-            text: 'Image.AdamImage.Tooltip',
-            type: 'choiceitem',
-            value: (() => { adam.toggle(false, true); }) as any,
-          },
-          {
-            icon: 'custom-image-dnn',
-            text: 'Image.DnnImage.Tooltip',
-            type: 'choiceitem',
-            value: (() => { adam.toggle(true, true); }) as any,
-          },
-          {
-            icon: linkButton.icon,
-            text: imageButton.tooltip,
-            type: 'choiceitem',
-            value: (() => { editor.execCommand('mceImage'); }) as any,
-          },
-          {
-            icon: alignleftButton.icon,
-            text: alignleftButton.tooltip,
-            type: 'choiceitem',
-            value: (() => { editor.execCommand('JustifyLeft'); }) as any,
-          },
-          {
-            icon: aligncenterButton.icon,
-            text: aligncenterButton.tooltip,
-            type: 'choiceitem',
-            value: (() => { editor.execCommand('JustifyCenter'); }) as any,
-          },
-          {
-            icon: alignrightButton.icon,
-            text: alignrightButton.tooltip,
-            type: 'choiceitem',
-            value: (() => { editor.execCommand('JustifyRight'); }) as any,
-          },
+          this.splitButtonItem(imageButton.icon, 'Image.AdamImage.Tooltip', () => adam.toggle(false, true)),
+          this.splitButtonItem('custom-file-dnn', 'Image.DnnImage.Tooltip', () => adam.toggle(true, true)),
+          this.splitButtonItem(linkButton.icon, imageButton.tooltip, () => 'mceImage'),
+          this.splitButtonItem(alignleftButton.icon, alignleftButton.tooltip, () => 'JustifyLeft'),
+          this.splitButtonItem(aligncenterButton.icon, aligncenterButton.tooltip, () => 'JustifyCenter'),
+          this.splitButtonItem(alignrightButton.icon, alignrightButton.tooltip, () => 'JustifyRight'),
         ]);
       },
     });
   }
 
   /** Drop-down with italic, strikethrough, ... */
-  private dropDownItalicAndMore(editor: Editor): void {
-    const buttons = editor.ui.registry.getAll().buttons;
+  private dropDownItalicAndMore(): void {
+    const buttons = this.editor.ui.registry.getAll().buttons;
     const italicButton = buttons.italic;
     // const strikethroughButton = buttons.strikethrough;
     const superscriptButton = buttons.superscript;
     const subscriptButton = buttons.subscript;
 
-    editor.ui.registry.addSplitButton(ItalicWithMore, {
-      // TODO: @SDV use this...
+    this.editor.ui.registry.addSplitButton(ItalicWithMore, {
       ...this.splitButtonSpecs('Italic'),
       columns: 3,
       icon: italicButton.icon,
       presets: 'listpreview',
       tooltip: italicButton.tooltip,
-      // @STV ...instead of this
-      // onAction: (api) => {
-      //   editor.execCommand('Italic');
-      // },
-      // onItemAction: (api, value: any) => {
-      //   value();
-      // },
       fetch: (callback) => {
         callback([
-          // TODO: @SDV - use this instead of below
           this.splitButtonItem(buttons.strikethrough.icon, buttons.strikethrough.tooltip, 'Strikethrough'),
-          // {
-          //   icon: strikethroughButton.icon,
-          //   text: strikethroughButton.tooltip,
-          //   type: 'choiceitem',
-          //   value: (() => { editor.execCommand('Strikethrough'); }) as any,
-          // },
-          {
-            icon: superscriptButton.icon,
-            text: superscriptButton.tooltip,
-            type: 'choiceitem',
-            value: (() => { editor.execCommand('Superscript'); }) as any,
-          },
-          {
-            icon: subscriptButton.icon,
-            text: subscriptButton.tooltip,
-            type: 'choiceitem',
-            value: (() => { editor.execCommand('Subscript'); }) as any,
-          },
+          this.splitButtonItem(superscriptButton.icon, superscriptButton.tooltip, 'Superscript'),
+          this.splitButtonItem(subscriptButton.icon, subscriptButton.tooltip, 'Subscript'),
         ]);
       },
     });
   }
 
   /** Lists / Indent / Outdent etc. */
-  private listButtons(editor: Editor): void {
-    const buttons = editor.ui.registry.getAll().buttons;
+  private listButtons(): void {
+    const buttons = this.editor.ui.registry.getAll().buttons;
     const bullistButton = buttons.bullist;
     const outdentButton = buttons.outdent;
     const indentButton = buttons.indent;
 
     // Drop-down with numbered list, bullet list, ...
-    editor.ui.registry.addSplitButton('listgroup', {
+    this.editor.ui.registry.addSplitButton(ListGroup, {
+      ...this.splitButtonSpecs('InsertUnorderedList'),
       columns: 3,
       icon: bullistButton.icon,
       presets: 'listpreview',
       tooltip: bullistButton.tooltip,
-      onAction: (api) => {
-        editor.execCommand('InsertUnorderedList');
-      },
-      onItemAction: (api, value: any) => {
-        value();
-      },
       fetch: (callback) => {
         callback([
-          {
-            icon: outdentButton.icon,
-            text: outdentButton.tooltip,
-            type: 'choiceitem',
-            value: (() => { editor.execCommand('Outdent'); }) as any,
-          },
-          {
-            icon: indentButton.icon,
-            text: indentButton.tooltip,
-            type: 'choiceitem',
-            value: (() => { editor.execCommand('Indent'); }) as any,
-          },
+          this.splitButtonItem(outdentButton.icon, outdentButton.tooltip, 'Outdent'),
+          this.splitButtonItem(indentButton.icon, indentButton.tooltip, 'Indent'),
         ]);
       },
     });
   }
 
   /** Switch normal / advanced mode */
-  private switchModes(editor: Editor, rawEditorOptions: RawEditorOptions): void {
-    editor.ui.registry.addButton('modestandard', {
+  private switchModes(): void {
+    this.editor.ui.registry.addButton(ModeStandard, {
       icon: 'close',
       tooltip: 'SwitchMode.Standard',
       onAction: (api) => {
-        switchModes('standard', editor, rawEditorOptions);
+        switchModes('standard');
       },
     });
-    editor.ui.registry.addButton('modeinline', {
+    this.editor.ui.registry.addButton(ModeInline, {
       icon: 'close',
       tooltip: 'SwitchMode.Standard',
       onAction: (api) => {
-        switchModes('inline', editor, rawEditorOptions);
+        switchModes('inline');
       },
     });
-    editor.ui.registry.addButton('modeadvanced', {
+    this.editor.ui.registry.addButton(ModeAdvanced, {
       icon: 'custom-school',
       tooltip: 'SwitchMode.Pro',
       onAction: (api) => {
-        switchModes('advanced', editor, rawEditorOptions);
+        switchModes('advanced');
       },
     });
   }
 
   /** Switch to Dialog Mode */
-  private openDialog(editor: Editor, fieldStringWysiwyg: FieldStringWysiwygEditor): void {
-    editor.ui.registry.addButton('expandfulleditor', {
+  private openDialog(): void {
+    this.editor.ui.registry.addButton(ExpandFullEditor, {
       icon: 'browse',
       tooltip: 'SwitchMode.Expand',
       onAction: (api) => {
         // fixes bug where toolbar drawer is shown above full mode tinymce
-        const toolbarDrawerOpen = editor.queryCommandState('ToggleToolbarDrawer');
+        const toolbarDrawerOpen = this.editor.queryCommandState('ToggleToolbarDrawer');
         if (toolbarDrawerOpen) {
-          editor.execCommand('ToggleToolbarDrawer');
+          this.editor.execCommand('ToggleToolbarDrawer');
         }
-        fieldStringWysiwyg.connector.dialog.open(wysiwygEditorTag);
+        this.field.connector.dialog.open(wysiwygEditorTag);
       },
     });
   }
 
   /** Group of buttons with an h3 to start and showing h4-6 + p */
-  private headingsGroup(editor: Editor): void {
-    const isGerman = editor.options.get('language') === 'de';
-    const buttons = editor.ui.registry.getAll().buttons;
+  private headingsGroup(): void {
+    const isGerman = this.editor.options.get('language') === 'de';
+    const buttons = this.editor.ui.registry.getAll().buttons;
 
     const h1Button = buttons.h1;
     const h2Button = buttons.h2;
@@ -387,106 +280,56 @@ export class TinyMceButtons {
     const h6Button = buttons.h6;
     const blockquoteButton = buttons.blockquote;
 
-    editor.ui.registry.addSplitButton('hgroup', {
+    this.editor.ui.registry.addSplitButton(HGroup, {
+      ...this.splitButtonSpecs(() => this.editor.execCommand('mceToggleFormat', false, 'h4')),
       columns: 4,
       presets: 'listpreview',
       text: h4Button.text,
       tooltip: h4Button.tooltip,
-      onAction: (api) => {
-        editor.execCommand('mceToggleFormat', false, 'h4');
-      },
-      onItemAction: (api, value: any) => {
-        value();
-      },
       fetch: (callback) => {
         callback([
-          {
-            icon: !isGerman ? 'custom-image-h1' : 'custom-image-u1',
-            text: h1Button.text,
-            type: 'choiceitem',
-            value: (() => { editor.execCommand('mceToggleFormat', false, 'h1'); }) as any,
-          },
-          {
-            icon: !isGerman ? 'custom-image-h2' : 'custom-image-u2',
-            text: h2Button.text,
-            type: 'choiceitem',
-            value: (() => { editor.execCommand('mceToggleFormat', false, 'h2'); }) as any,
-          },
-          {
-            icon: !isGerman ? 'custom-image-h3' : 'custom-image-u3',
-            text: h3Button.text,
-            type: 'choiceitem',
-            value: (() => { editor.execCommand('mceToggleFormat', false, 'h3'); }) as any,
-          },
-          {
-            icon: 'custom-paragraph',
-            text: 'Paragraph',
-            type: 'choiceitem',
-            value: (() => { editor.execCommand('mceToggleFormat', false, 'p'); }) as any,
-          },
-          {
-            icon: !isGerman ? 'custom-image-h4' : 'custom-image-u4',
-            text: h4Button.text,
-            type: 'choiceitem',
-            value: (() => { editor.execCommand('mceToggleFormat', false, 'h4'); }) as any,
-          },
-          {
-            icon: !isGerman ? 'custom-image-h5' : 'custom-image-u5',
-            text: h5Button.text,
-            type: 'choiceitem',
-            value: (() => { editor.execCommand('mceToggleFormat', false, 'h5'); }) as any,
-          },
-          {
-            icon: !isGerman ? 'custom-image-h6' : 'custom-image-u6',
-            text: h6Button.text,
-            type: 'choiceitem',
-            value: (() => { editor.execCommand('mceToggleFormat', false, 'h6'); }) as any,
-          },
-          {
-            icon: blockquoteButton.icon,
-            text: blockquoteButton.tooltip,
-            type: 'choiceitem',
-            value: (() => { editor.execCommand('mceToggleFormat', false, 'blockquote'); }) as any,
-          },
+          this.splitButtonItem(!isGerman ? 'custom-image-h1' : 'custom-image-u1', h1Button.text, () => this.editor.execCommand('mceToggleFormat', false, 'h1')),
+          this.splitButtonItem(!isGerman ? 'custom-image-h2' : 'custom-image-u2', h2Button.text, () => this.editor.execCommand('mceToggleFormat', false, 'h2')),
+          this.splitButtonItem(!isGerman ? 'custom-image-h3' : 'custom-image-u3', h3Button.text, () => this.editor.execCommand('mceToggleFormat', false, 'h3')),
+          this.splitButtonItem('custom-paragraph', 'Paragraph', () => this.editor.execCommand('mceToggleFormat', false, 'p')),
+          this.splitButtonItem(!isGerman ? 'custom-image-h4' : 'custom-image-u4', h4Button.text, () => this.editor.execCommand('mceToggleFormat', false, 'h4')),
+          this.splitButtonItem(!isGerman ? 'custom-image-h5' : 'custom-image-u5', h5Button.text, () => this.editor.execCommand('mceToggleFormat', false, 'h5')),
+          this.splitButtonItem(!isGerman ? 'custom-image-h6' : 'custom-image-u6', h6Button.text, () => this.editor.execCommand('mceToggleFormat', false, 'h6')),
+          this.splitButtonItem(blockquoteButton.icon, blockquoteButton.tooltip, () => this.editor.execCommand('mceToggleFormat', false, 'blockquote')),
         ]);
       },
     });
   }
 
   /** Inside content (contentblocks) */
-  private contentBlock(editor: Editor): void {
-    editor.ui.registry.addButton('addcontentblock', {
+  private contentBlock(): void {
+    this.editor.ui.registry.addButton(AddContentBlock, {
       icon: 'custom-content-block',
       tooltip: 'ContentBlock.Add',
       onAction: (api) => {
         const guid = Guid.uuid().toLowerCase();
-        editor.insertContent(`<hr sxc="sxc-content-block" guid="${guid}" />`);
+        this.editor.insertContent(`<hr sxc="sxc-content-block" guid="${guid}" />`);
       },
     });
   }
 
   /** Inside content (contentdivision) */
-  private contentDivision(editor: Editor): void {
-    editor.ui.registry.addButton('contentdivision', {
+  private contentDivision(): void {
+    this.editor.ui.registry.addButton(ContentDivision, {
       icon: 'custom-branding-watermark',
       tooltip: 'ContentDivision.Add',
       onAction: (api) => {
-        editor.insertContent(`<div class="content-division"></div>`);
+        this.editor.insertContent(`<div class="content-division"></div>`);
       },
     });
   }
 
   /** Image alignment / size buttons in context menu */
-  private imageContextMenu(editor: Editor, imgSizes: number[]): void {
-    editor.ui.registry.addSplitButton('imgresponsive', {
+  private imageContextMenu(imgSizes: number[]): void {
+    this.editor.ui.registry.addSplitButton(ImgResponsive, {
+      ...this.splitButtonSpecs(() => this.editor.formatter.apply('imgwidth100')),
       icon: 'resize',
       tooltip: '100%',
-      onAction: (api) => {
-        editor.formatter.apply('imgwidth100');
-      },
-      onItemAction: (api, value: any) => {
-        value();
-      },
       fetch: (callback) => {
         callback(
           // WARNING! This part is not fully type safe
@@ -494,7 +337,7 @@ export class TinyMceButtons {
             icon: 'resize',
             text: `${imgSize}%`,
             type: 'choiceitem',
-            value: (() => { editor.formatter.apply(`imgwidth${imgSize}`); }) as any,
+            value: (() => { this.editor.formatter.apply(`imgwidth${imgSize}`); }) as any,
           })),
         );
       },
@@ -502,18 +345,18 @@ export class TinyMceButtons {
   }
 
   /** Add Context toolbars */
-  private contextMenus(editor: Editor): void {
+  private contextMenus(): void {
     const rangeSelected = () => document.getSelection().rangeCount > 0 && !document.getSelection().getRangeAt(0).collapsed;
 
-    editor.ui.registry.addContextToolbar('linkContextToolbar', {
+    this.editor.ui.registry.addContextToolbar('linkContextToolbar', {
       items: 'link unlink',
       predicate: (elem) => elem.nodeName.toLocaleLowerCase() === 'a' && rangeSelected(),
     });
-    editor.ui.registry.addContextToolbar('imgContextToolbar', {
+    this.editor.ui.registry.addContextToolbar('imgContextToolbar', {
       items: 'image | alignleft aligncenter alignright imgresponsive | removeformat | remove',
       predicate: (elem) => elem.nodeName.toLocaleLowerCase() === 'img' && rangeSelected(),
     });
-    editor.ui.registry.addContextToolbar('listContextToolbar', {
+    this.editor.ui.registry.addContextToolbar('listContextToolbar', {
       items: 'numlist bullist | outdent indent',
       predicate: (elem) => ['li', 'ol', 'ul'].includes(elem.nodeName.toLocaleLowerCase()) && rangeSelected(),
     });
@@ -537,26 +380,26 @@ function registerTinyMceFormats(editor: Editor, imgSizes: number[]): void {
   editor.formatter.register(imageFormats);
 }
 
-function openPagePicker(editor: Editor, fieldStringWysiwyg: FieldStringWysiwygEditor): void {
+function openPagePicker(fieldStringWysiwyg: FieldStringWysiwygEditor): void {
   const connector = fieldStringWysiwyg.connector._experimental;
 
   connector.openPagePicker(page => {
     if (!page) { return; }
 
     connector.getUrlOfId(`page:${page.id}`, (path) => {
-      const previouslySelected = editor.selection.getContent();
-      editor.insertContent(`<a href="${path}">${(previouslySelected || page.name)}</a>`);
+      const previouslySelected = this.editor.selection.getContent();
+      this.editor.insertContent(`<a href="${path}">${(previouslySelected || page.name)}</a>`);
     });
   });
 }
 
 // Mode switching and the buttons for it
-function switchModes(mode: 'standard' | 'inline' | 'advanced', editor: Editor, rawEditorOptions: RawEditorOptions): void {
-  const newRawEditorOptions: RawEditorOptions = rawEditorOptions;
-  newRawEditorOptions.toolbar = rawEditorOptions.modes[mode].toolbar;
-  newRawEditorOptions.menubar = rawEditorOptions.modes[mode].menubar;
+function switchModes(mode: 'standard' | 'inline' | 'advanced'): void {
+  const newRawEditorOptions: RawEditorOptions = this.options;
+  newRawEditorOptions.toolbar = this.options.modes[mode].toolbar;
+  newRawEditorOptions.menubar = this.options.modes[mode].menubar;
 
   // refresh editor toolbar
-  editor.editorManager.remove(editor);
-  editor.editorManager.init(newRawEditorOptions);
+  this.editor.editorManager.remove(this.editor);
+  this.editor.editorManager.init(newRawEditorOptions);
 }

@@ -1,4 +1,4 @@
-import { ItalicWithMore, SxcImages } from './buttons';
+import { AddContentBlock, ContentDivision, ExpandFullEditor, HGroup, ItalicWithMore, LinkFiles, LinkGroup, LinkGroupPro, ListGroup, ModeAdvanced, ModeInline, ModeStandard, SxcImages } from './buttons';
 
 export class TinyMceToolbars {
 
@@ -22,16 +22,16 @@ export class TinyMceToolbars {
       toolbar: ' undo redo removeformat '
         + '| styles '
         + '| bold italic '
-        + '| h2 h3 hgroup '
+        + `| h2 h3 ${HGroup} `
         + '| '
-        + (contentDivisions === 'false' ? '' : ' contentdivision ')
+        + (contentDivisions === 'false' ? '' : ` ${ContentDivision} `)
         + '| numlist bullist outdent indent '
-        + `| ' + (!inlineMode ? ' ${SxcImages} linkfiles' : '') + ' linkgrouppro `
+        + '| ' + (!inlineMode ? ` ${SxcImages} ${LinkFiles} ` : '') + ` ${LinkGroupPro} `
         + '| '
-        + (contentBlocksEnabled ? ' addcontentblock ' : '')
+        + (contentBlocksEnabled ? ` ${AddContentBlock} ` : '')
         + ' code '
-        + (inlineMode ? ' modeinline expandfulleditor ' : ' modestandard '),
-      contextmenu: 'link image | charmap hr adamimage' + (contentBlocksEnabled ? ' addcontentblock' : '')
+        + (inlineMode ? ` ${ModeInline} ${ExpandFullEditor} ` : ` ${ModeStandard} `),
+      contextmenu: 'link image | charmap hr adamimage' + (contentBlocksEnabled ? ` ${AddContentBlock} ` : '')
     };
   }
 
@@ -40,16 +40,16 @@ export class TinyMceToolbars {
       menubar: false,
       toolbar: ' undo redo removeformat '
         + `| bold ${ItalicWithMore} `
-        + '| h2 h3 hgroup '
+        + `| h2 h3 ${HGroup} `
         + '| '
-        + (contentDivisions === 'false' ? '' : ' contentdivision ')
-        + '| numlist listgroup '
-        + '| linkfiles linkgroup '
+        + (contentDivisions === 'false' ? '' : ` ${ContentDivision} `)
+        + `| numlist ${ListGroup} `
+        + `| ${LinkFiles} ${LinkGroup} `
         + '| '
-        + (contentBlocksEnabled ? ' addcontentblock ' : '')
+        + (contentBlocksEnabled ? ` ${AddContentBlock} ` : '')
         + (source === 'false' ? '' : ' code ')
-        + (advanced === 'false' ? '' : ' modeadvanced '),
-      contextmenu: 'charmap hr' + (contentBlocksEnabled ? ' addcontentblock' : '')
+        + (advanced === 'false' ? '' : ` ${ModeAdvanced} `),
+      contextmenu: 'charmap hr' + (contentBlocksEnabled ? ` ${AddContentBlock} ` : '')
     };
   }
 
@@ -58,17 +58,17 @@ export class TinyMceToolbars {
       menubar: false,
       toolbar: ' undo redo removeformat '
         + `| bold ${ItalicWithMore} `
-        + '| h2 h3 hgroup '
+        + `| h2 h3 ${HGroup} `
         + '| '
-        + (contentDivisions === 'false' ? '' : ' contentdivision ')
-        + '| numlist listgroup '
-        + '| linkgroup '
+        + (contentDivisions === 'false' ? '' : ` ${ContentDivision} `)
+        + `| numlist ${ListGroup} `
+        + `| ${LinkGroup} `
         + '| '
-        + (contentBlocksEnabled ? ' addcontentblock ' : '')
+        + (contentBlocksEnabled ? ` ${AddContentBlock} ` : '')
         + (source === 'true' ? ' code ' : '')
-        + (advanced === 'true' ? ' modeadvanced ' : '')
-        + ' expandfulleditor ',
-      contextmenu: 'charmap hr' + (contentBlocksEnabled ? ' addcontentblock' : '')
+        + (advanced === 'true' ? ` ${ModeAdvanced} ` : '')
+        + ` ${ExpandFullEditor} `,
+      contextmenu: 'charmap hr' + (contentBlocksEnabled ? ` ${AddContentBlock} ` : '')
     };
   }
 }
