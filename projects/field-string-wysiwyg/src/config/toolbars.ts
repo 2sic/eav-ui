@@ -1,5 +1,5 @@
-import * as tiny from 'tinymce';
 import { AddContentBlock, ContentDivision, ExpandFullEditor, HGroup, ItalicWithMore, LinkFiles, LinkGroup, LinkGroupPro, ListGroup, ModeAdvanced, ModeInline, ModeStandard, SxcImages } from './buttons';
+import type { RawEditorOptions } from 'tinymce';
 
 export const TinyModeStandard = 'standard';
 export const TinyModeInline = 'inline';
@@ -18,7 +18,7 @@ export interface TinyMceModes {
   contextmenu: string
 }
 
-export interface RawEditorOptionsWithModes extends tiny.RawEditorOptions, Omit<TinyMceModes, 'menubar' | 'toolbar' | 'contextmenu'> {
+export interface RawEditorOptionsWithModes extends RawEditorOptions, Omit<TinyMceModes, 'menubar' | 'toolbar' | 'contextmenu'> {
 
 }
 
