@@ -1,8 +1,32 @@
+import * as tiny from 'tinymce';
 import { AddContentBlock, ContentDivision, ExpandFullEditor, HGroup, ItalicWithMore, LinkFiles, LinkGroup, LinkGroupPro, ListGroup, ModeAdvanced, ModeInline, ModeStandard, SxcImages } from './buttons';
 
+export const TinyModeStandard = 'standard';
+export const TinyModeInline = 'inline';
+export const TinyModeAdvanced = 'advanced';
+export type TinyModeNames = typeof TinyModeStandard | typeof TinyModeInline | typeof TinyModeAdvanced;
+
+export interface TinyMceMode  {
+  menubar: boolean,
+  toolbar: string,
+  contextmenu: string
+}
+export interface TinyMceModes {
+  modes: Record<TinyModeNames, TinyMceMode>,
+  menubar: boolean | string, // must match TinyMCE
+  toolbar: string,
+  contextmenu: string
+}
+
+export interface RawEditorOptionsWithModes extends tiny.RawEditorOptions, Omit<TinyMceModes, 'menubar' | 'toolbar' | 'contextmenu'> {
+
+}
+
 export class TinyMceToolbars {
-  // @SDV - buttonAdvanced and contentDivision should be bools right from where they were retrieved first, possibly bool?, but not strings
-  static build(contentBlocksEnabled: boolean, inlineMode: boolean, buttonSource: string, buttonAdvanced: string, contentDivisions: string) {
+  // Todo @SDV 
+  // - buttonAdvanced and contentDivision should be bools right from where they were retrieved first, possibly bool?, but not strings
+  static build(contentBlocksEnabled: boolean, inlineMode: boolean, buttonSource: string, buttonAdvanced: string, contentDivisions: string): TinyMceModes {
+    // contentDivisions = 'false';
     const modes = {
       inline: this.inline(contentBlocksEnabled, buttonSource, buttonAdvanced, contentDivisions),
       standard: this.standard(contentBlocksEnabled, buttonSource, buttonAdvanced, contentDivisions),
@@ -16,7 +40,7 @@ export class TinyMceToolbars {
     };
   }
 
-  private static advanced(inlineMode: boolean, contentBlocksEnabled: boolean, contentDivisions: string) {
+  private static advanced(inlineMode: boolean, contentBlocksEnabled: boolean, contentDivisions: string): TinyMceMode {
     return {
       menubar: true,
       toolbar: ' undo redo removeformat '
@@ -35,7 +59,7 @@ export class TinyMceToolbars {
     };
   }
 
-  private static standard(contentBlocksEnabled: boolean, source: string, advanced: string, contentDivisions: string) {
+  private static standard(contentBlocksEnabled: boolean, source: string, advanced: string, contentDivisions: string): TinyMceMode {
     return {
       menubar: false,
       toolbar: ' undo redo removeformat '
@@ -53,7 +77,7 @@ export class TinyMceToolbars {
     };
   }
 
-  private static inline(contentBlocksEnabled: boolean, source: string, advanced: string, contentDivisions: string) {
+  private static inline(contentBlocksEnabled: boolean, source: string, advanced: string, contentDivisions: string): TinyMceMode {
     return {
       menubar: false,
       toolbar: ' undo redo removeformat '

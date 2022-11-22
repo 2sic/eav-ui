@@ -1,9 +1,10 @@
-import type { Editor, RawEditorOptions } from 'tinymce';
+import type { Editor } from 'tinymce';
 import { Adam } from '../../../edit-types';
 import { FieldStringWysiwygEditor, wysiwygEditorTag } from '../editor/editor';
 import { loadCustomIcons } from '../editor/load-icons.helper';
 import { Guid } from '../shared/guid';
 import { ImageFormats } from '../shared/models';
+import { RawEditorOptionsWithModes, TinyModeAdvanced, TinyModeInline, TinyModeNames, TinyModeStandard } from './toolbars';
 
 // Export Constant names because these will become standardized
 // So people can use them in their custom toolbars
@@ -32,7 +33,7 @@ type FuncVoid = () => void | unknown;
 /** Register all kinds of buttons on TinyMCE */
 export class TinyMceButtons {
 
-  constructor(private field: FieldStringWysiwygEditor, private editor: Editor, private adam: Adam, private options: RawEditorOptions) {
+  constructor(private field: FieldStringWysiwygEditor, private editor: Editor, private adam: Adam, private options: RawEditorOptionsWithModes) {
 
   }
 
@@ -232,23 +233,17 @@ export class TinyMceButtons {
     this.editor.ui.registry.addButton(ModeStandard, {
       icon: 'close',
       tooltip: 'SwitchMode.Standard',
-      onAction: (api) => {
-        switchModes('standard');
-      },
+      onAction: (api) => { switchModes(TinyModeStandard); },
     });
     this.editor.ui.registry.addButton(ModeInline, {
       icon: 'close',
       tooltip: 'SwitchMode.Standard',
-      onAction: (api) => {
-        switchModes('inline');
-      },
+      onAction: (api) => { switchModes(TinyModeInline); },
     });
     this.editor.ui.registry.addButton(ModeAdvanced, {
       icon: 'custom-school',
       tooltip: 'SwitchMode.Pro',
-      onAction: (api) => {
-        switchModes('advanced');
-      },
+      onAction: (api) => { switchModes(TinyModeAdvanced); },
     });
   }
 
@@ -403,12 +398,13 @@ function openPagePicker(fieldStringWysiwyg: FieldStringWysiwygEditor): void {
 }
 
 // Mode switching and the buttons for it
-function switchModes(mode: 'standard' | 'inline' | 'advanced'): void {
-  const newRawEditorOptions: RawEditorOptions = this.options;
-  newRawEditorOptions.toolbar = this.options.modes[mode].toolbar;
-  newRawEditorOptions.menubar = this.options.modes[mode].menubar;
+function switchModes(mode: TinyModeNames): void {
+  // Note from 2dm: I find it unclear why this.options works. Some docs link would be nice
+  const editorOptions: RawEditorOptionsWithModes = this.options;
+  editorOptions.toolbar = editorOptions.modes[mode].toolbar;
+  editorOptions.menubar = editorOptions.modes[mode].menubar;
 
   // refresh editor toolbar
   this.editor.editorManager.remove(this.editor);
-  this.editor.editorManager.init(newRawEditorOptions);
+  this.editor.editorManager.init(editorOptions);
 }

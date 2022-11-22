@@ -1,4 +1,5 @@
-import type { Editor, RawEditorOptions, TinyMCE } from 'tinymce';
+import { RawEditorOptionsWithModes } from 'projects/field-string-wysiwyg/src/config/toolbars';
+import type { Editor, TinyMCE } from 'tinymce';
 import { AddOnSettings } from './AddOnSettings';
 
 export interface WysiwygReconfigure {
@@ -25,7 +26,7 @@ export interface WysiwygReconfigure {
   /**
    * Review / modify the options after they have been completely initialized and expanded
    */
-  configureOptions?(options: RawEditorOptions): RawEditorOptions;
+  configureOptions?(options: RawEditorOptionsWithModes): RawEditorOptionsWithModes;
   /**
    * Called when the editor was created, but before we added events etc.
    */

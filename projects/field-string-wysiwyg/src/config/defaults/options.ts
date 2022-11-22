@@ -28,4 +28,7 @@ export const DefaultOptions: RawEditorOptions = {
   // debounce: false, // DONT slow-down model updates - otherwise we sometimes miss the last changes
   toolbar_persist: true,
   // deprecation_warnings: false, // spm TODO: remove after upgrading to TinyMCE 6
+
+  // experimental #content-divisions - https://www.tiny.cloud/docs/configure/content-filtering/#valid_children
+  valid_children: '+div[p|h1|h2|h3|h4|h5|6h|blockquote]'
 };

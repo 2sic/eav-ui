@@ -23,6 +23,7 @@ import { Connector, EavCustomInputField, WysiwygReconfigure } from '../../../edi
 import { consoleLogWebpack } from '../../../field-custom-gps/src/shared/console-log-webpack.helper';
 import { TinyMceButtons } from '../config/buttons';
 import { TinyMceConfigurator } from '../config/tinymce-configurator';
+import { RawEditorOptionsWithModes } from '../config/toolbars';
 import { TinyMceTranslations } from '../config/translations';
 import { attachAdam } from '../connector/adam';
 import { buildTemplate } from '../shared/helpers';
@@ -113,7 +114,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
     editor.on('init', _event => {
       consoleLogWebpack(`${wysiwygEditorTag} TinyMCE initialized`, editor);
       this.reconfigure?.editorOnInit?.(editor);
-      new TinyMceButtons(this, editor, this.connector._experimental.adam, rawEditorOptions).registerAll();
+      new TinyMceButtons(this, editor, this.connector._experimental.adam, rawEditorOptions as unknown as RawEditorOptionsWithModes).registerAll();
       if (!this.reconfigure?.disableAdam) {
         attachAdam(editor, this.connector._experimental.adam);
       }

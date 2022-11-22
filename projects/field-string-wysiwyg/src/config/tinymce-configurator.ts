@@ -1,10 +1,10 @@
-import type { Editor, RawEditorOptions } from 'tinymce';
+import type { Editor } from 'tinymce';
 import { FeaturesConstants } from '../../../eav-ui/src/app/edit/shared/constants';
 import { EavWindow } from '../../../eav-ui/src/app/shared/models/eav-window.model';
 import { AddOnSettings, Connector, WysiwygReconfigure } from '../../../edit-types';
 import * as contentStyle from '../editor/tinymce-content.scss';
 import { DefaultAddOnSettings, DefaultOptions, DefaultPaste, DefaultPlugins } from './defaults';
-import { TinyMceToolbars } from './toolbars';
+import { RawEditorOptionsWithModes, TinyMceToolbars } from './toolbars';
 import { TinyMceTranslations } from './translations';
 
 declare const window: EavWindow;
@@ -46,16 +46,19 @@ export class TinyMceConfigurator {
   }
 
   /** Construct TinyMCE options */
-  buildOptions(containerClass: string, fixedToolbarClass: string, inlineMode: boolean, setup: (editor: Editor) => void): RawEditorOptions {
+  buildOptions(containerClass: string, fixedToolbarClass: string, inlineMode: boolean, setup: (editor: Editor) => void): RawEditorOptionsWithModes {
     const connector = this.connector;
     const exp = connector._experimental;
     // TODO: @SDV - I think you should already convert them to bool here
+    // Create a TinyMceModeConfig object with bool only
+    // Then pass this object into the build(...) below, replacing the original 3 parameters
     const buttonSource = connector.field.settings.ButtonSource;
     const buttonAdvanced = connector.field.settings.ButtonAdvanced;
-    const contentDivisions = connector.field.settings.ContentDivisions;
+    const contentDivisions = connector.field.settings.ContentDivisions; // for now, make the default (if not set) to be true
     const dropzone = exp.dropzone;
     const adam = exp.adam;
 
+    // @SDV also put this in the new TinyMceModeConfig object on features.contentBlocks
     const contentBlocksEnabled = exp.allInputTypeNames[connector.field.index + 1]?.inputType === 'entity-content-blocks';
     const toolbarModes = TinyMceToolbars.build(contentBlocksEnabled, inlineMode, buttonSource, buttonAdvanced, contentDivisions);
 
@@ -71,7 +74,7 @@ export class TinyMceConfigurator {
     let contentCssFile = connector.field.settings?.ContentCss;
     if (!contentCssFile) contentCssFile = null;
 
-    const options: RawEditorOptions = {
+    const options: RawEditorOptionsWithModes = {
       ...DefaultOptions,
       ...{ plugins: [...DefaultPlugins] },
       selector: `.${containerClass}`,
