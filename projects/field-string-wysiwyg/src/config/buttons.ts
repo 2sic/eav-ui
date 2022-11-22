@@ -55,7 +55,7 @@ export class TinyMceButtons {
 
     this.listButtons();
 
-    this.switchModes();
+    this.addSwitchModeButtons();
 
     this.openDialog();
 
@@ -151,7 +151,6 @@ export class TinyMceButtons {
   /** Images menu */
   private images(): void {
     const adam = this.adam;
-    const editor = this.editor;
     const buttons = this.editor.ui.registry.getAll().buttons;
     const imageButton = buttons.image;
     const linkButton = buttons.link;
@@ -170,6 +169,8 @@ export class TinyMceButtons {
         callback([
           this.splitButtonItem(imageButton.icon, 'Image.AdamImage.Tooltip', () => adam.toggle(false, true)),
           this.splitButtonItem('custom-file-dnn', 'Image.DnnImage.Tooltip', () => adam.toggle(true, true)),
+          // @SDV - the methods here look wrong, I assume it should just be the string, not a function
+          // similar to the examples further down with 'Strikethrough' etc.
           this.splitButtonItem(linkButton.icon, imageButton.tooltip, () => 'mceImage'),
           this.splitButtonItem(alignleftButton.icon, alignleftButton.tooltip, () => 'JustifyLeft'),
           this.splitButtonItem(aligncenterButton.icon, aligncenterButton.tooltip, () => 'JustifyCenter'),
@@ -227,7 +228,7 @@ export class TinyMceButtons {
   }
 
   /** Switch normal / advanced mode */
-  private switchModes(): void {
+  private addSwitchModeButtons(): void {
     this.editor.ui.registry.addButton(ModeStandard, {
       icon: 'close',
       tooltip: 'SwitchMode.Standard',
@@ -267,6 +268,10 @@ export class TinyMceButtons {
     });
   }
 
+  private toggleFormat(tag: string) {
+    this.editor.execCommand('mceToggleFormat', false, tag);
+  }
+
   /** Group of buttons with an h3 to start and showing h4-6 + p */
   private headingsGroup(): void {
     const isGerman = this.editor.options.get('language') === 'de';
@@ -280,22 +285,24 @@ export class TinyMceButtons {
     const h6Button = buttons.h6;
     const blockquoteButton = buttons.blockquote;
 
+    const imgName = isGerman ? 'custom-image-u' : 'custom-image-h';
+
     this.editor.ui.registry.addSplitButton(HGroup, {
-      ...this.splitButtonSpecs(() => this.editor.execCommand('mceToggleFormat', false, 'h4')),
+      ...this.splitButtonSpecs(() => this.toggleFormat('h4')),
       columns: 4,
       presets: 'listpreview',
       text: h4Button.text,
       tooltip: h4Button.tooltip,
       fetch: (callback) => {
         callback([
-          this.splitButtonItem(!isGerman ? 'custom-image-h1' : 'custom-image-u1', h1Button.text, () => this.editor.execCommand('mceToggleFormat', false, 'h1')),
-          this.splitButtonItem(!isGerman ? 'custom-image-h2' : 'custom-image-u2', h2Button.text, () => this.editor.execCommand('mceToggleFormat', false, 'h2')),
-          this.splitButtonItem(!isGerman ? 'custom-image-h3' : 'custom-image-u3', h3Button.text, () => this.editor.execCommand('mceToggleFormat', false, 'h3')),
-          this.splitButtonItem('custom-paragraph', 'Paragraph', () => this.editor.execCommand('mceToggleFormat', false, 'p')),
-          this.splitButtonItem(!isGerman ? 'custom-image-h4' : 'custom-image-u4', h4Button.text, () => this.editor.execCommand('mceToggleFormat', false, 'h4')),
-          this.splitButtonItem(!isGerman ? 'custom-image-h5' : 'custom-image-u5', h5Button.text, () => this.editor.execCommand('mceToggleFormat', false, 'h5')),
-          this.splitButtonItem(!isGerman ? 'custom-image-h6' : 'custom-image-u6', h6Button.text, () => this.editor.execCommand('mceToggleFormat', false, 'h6')),
-          this.splitButtonItem(blockquoteButton.icon, blockquoteButton.tooltip, () => this.editor.execCommand('mceToggleFormat', false, 'blockquote')),
+          this.splitButtonItem(`${imgName}1`, h1Button.text, () => this.toggleFormat('h1')),
+          this.splitButtonItem(`${imgName}2`, h2Button.text, () => this.toggleFormat('h2')),
+          this.splitButtonItem(`${imgName}3`, h3Button.text, () => this.toggleFormat('h3')),
+          this.splitButtonItem('custom-paragraph', 'Paragraph', () => this.toggleFormat('p')),
+          this.splitButtonItem(`${imgName}4`, h4Button.text, () => this.toggleFormat('h4')),
+          this.splitButtonItem(`${imgName}5`, h5Button.text, () => this.toggleFormat('h5')),
+          this.splitButtonItem(`${imgName}6`, h6Button.text, () => this.toggleFormat('h6')),
+          this.splitButtonItem(blockquoteButton.icon, blockquoteButton.tooltip, () => this.toggleFormat('blockquote')),
         ]);
       },
     });
