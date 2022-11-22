@@ -342,13 +342,9 @@ export class MatDayjsDateAdapter extends DateAdapter<Dayjs> {
    */
   private dayJs(input?: string | number | Date | Dayjs | null | undefined, format?: string, locale?: string): Dayjs {
     if (!this.shouldUseUtc) {
-      return dayjs(input, { format, locale }, locale);
+      return dayjs(input, format);
     }
-    return dayjs(
-      input,
-      { format, locale, utc: this.shouldUseUtc },
-      locale
-    ).utc();
+    return dayjs(input, format).utc();
   }
 
   private range<T>(length: number, valueFunction: (index: number) => T): T[] {
