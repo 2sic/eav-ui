@@ -323,9 +323,11 @@ export class TinyMceButtons {
   /** Inside content (contentdivision) */
   private contentDivision(): void {
     this.editor.ui.registry.addButton(ContentDivision, {
+      // todo: strange name, mut review @SDV
       icon: 'custom-branding-watermark',
       tooltip: 'ContentDivision.Add',
       onAction: (api) => {
+        // Important: the class "content-division" must match the css
         this.editor.insertContent(`<div class="content-division"></div>`);
       },
     });

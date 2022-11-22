@@ -69,11 +69,20 @@
     padding-right: 1rem;
   }
 
-  .content-division {
-    background: repeating-linear-gradient(45deg,
-          #ffffff,
-          #ffffff 5px,
-          #f5f5f5 5px,
-          #f5f5f5 10px);
+  // Sections in the WYSIWYG
+  div.content-division {
+    // background: repeating-linear-gradient(45deg,
+    //       #ffffff,
+    //       #ffffff 5px,
+    //       #f5f5f5 5px,
+    //       #f5f5f5 10px);
+    border: darkgray 1px dashed;
+    // clear: both;
+  }
+  // inspired by https://stackoverflow.com/questions/16568272/why-doesnt-the-height-of-a-container-element-increase-if-it-contains-floated-el
+  div.content-division:after {
+    content: "";
+    clear: both;
+    display: table;
   }
 }

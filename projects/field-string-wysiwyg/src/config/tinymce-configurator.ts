@@ -49,6 +49,7 @@ export class TinyMceConfigurator {
   buildOptions(containerClass: string, fixedToolbarClass: string, inlineMode: boolean, setup: (editor: Editor) => void): RawEditorOptions {
     const connector = this.connector;
     const exp = connector._experimental;
+    // TODO: @SDV - I think you should already convert them to bool here
     const buttonSource = connector.field.settings.ButtonSource;
     const buttonAdvanced = connector.field.settings.ButtonAdvanced;
     const contentDivisions = connector.field.settings.ContentDivisions;

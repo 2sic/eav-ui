@@ -1,7 +1,7 @@
 import { AddContentBlock, ContentDivision, ExpandFullEditor, HGroup, ItalicWithMore, LinkFiles, LinkGroup, LinkGroupPro, ListGroup, ModeAdvanced, ModeInline, ModeStandard, SxcImages } from './buttons';
 
 export class TinyMceToolbars {
-
+  // @SDV - buttonAdvanced and contentDivision should be bools right from where they were retrieved first, possibly bool?, but not strings
   static build(contentBlocksEnabled: boolean, inlineMode: boolean, buttonSource: string, buttonAdvanced: string, contentDivisions: string) {
     const modes = {
       inline: this.inline(contentBlocksEnabled, buttonSource, buttonAdvanced, contentDivisions),
