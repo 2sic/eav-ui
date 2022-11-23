@@ -344,6 +344,12 @@ export class MatDayjsDateAdapter extends DateAdapter<Dayjs> {
     if (!this.shouldUseUtc) {
       return dayjs(input, format);
     }
+    // when user writes date
+    if (typeof (input) == "string") {
+      const date = new Date(dayjs(input, format).toDate());
+      return dayjs(new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()))).utc();
+    }
+    // when user picks date in date picker
     return dayjs(input, format).utc();
   }
 
