@@ -93,9 +93,7 @@ export class TinyMceConfigurator {
 
     if (this.reconfigure?.configureOptions) {
       const newOptions = this.reconfigure.configureOptions(options);
-      if (newOptions) {
-        return newOptions as RawEditorOptionsWithModes;
-      }
+      if (newOptions) return newOptions;
       console.error(`reconfigure.configureOptions(options) didn't return an options object. ${reconfigErr}`);
     }
     return options;
