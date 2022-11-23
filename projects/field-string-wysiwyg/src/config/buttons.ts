@@ -23,6 +23,9 @@ export const ContentDivision = 'contentdivision';
 export const ExpandFullEditor = 'expandfulleditor';
 export const ImgResponsive = 'imgresponsive';
 
+export const AddContentSplit = 'contentsplit';
+const ContentDivisionClass = 'content-division';
+
 // TODO: @SDV - move all names which are used elsewhele - like button names etc.
 // to exports above, and use these in the toolbars.ts
 // so I can rename then later on before publishing
@@ -62,7 +65,8 @@ export class TinyMceButtons {
 
     this.headingsGroup();
 
-    this.contentBlock();
+    this.addButtonContentBlock();
+    this.addButtonContentSplitter();
 
     this.contentDivision();
 
@@ -304,7 +308,7 @@ export class TinyMceButtons {
   }
 
   /** Inside content (contentblocks) */
-  private contentBlock(): void {
+  private addButtonContentBlock(): void {
     this.editor.ui.registry.addButton(AddContentBlock, {
       icon: 'custom-content-block',
       tooltip: 'ContentBlock.Add',
@@ -315,6 +319,20 @@ export class TinyMceButtons {
     });
   }
 
+  private addButtonContentSplitter(): void {
+    const buttons = this.editor.ui.registry.getAll().buttons;
+    console.log('2dm buttons', buttons);
+    this.editor.ui.registry.addButton(AddContentSplit, {
+      icon: buttons.hr.icon, // 'custom-content-block',
+      tooltip: 'ContentBlock.Add',
+      onAction: (api) => {
+        const guid = Guid.uuid().toLowerCase();
+        this.editor.insertContent(`<hr class="${ContentDivisionClass}"/>`);
+      },
+    });
+  }
+
+
   /** Inside content (contentdivision) */
   private contentDivision(): void {
     this.editor.ui.registry.addButton(ContentDivision, {
@@ -323,7 +341,7 @@ export class TinyMceButtons {
       tooltip: 'ContentDivision.Add',
       onAction: (api) => {
         // Important: the class "content-division" must match the css
-        this.editor.insertContent(`<div class="content-division"></div>`);
+        this.editor.insertContent(`<div class="${ContentDivisionClass}"><p></p></div>`);
       },
     });
   }

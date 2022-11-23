@@ -1,4 +1,4 @@
-import { AddContentBlock, ContentDivision, ExpandFullEditor, HGroup, ItalicWithMore, LinkFiles, LinkGroup, LinkGroupPro, ListGroup, ModeAdvanced, ModeInline, ModeStandard, SxcImages } from './buttons';
+import { AddContentBlock, ContentDivision, ExpandFullEditor, HGroup, ItalicWithMore, LinkFiles, LinkGroup, LinkGroupPro, ListGroup, ModeAdvanced, ModeInline, ModeStandard, SxcImages, AddContentSplit } from './buttons';
 import { TinyMceMode, TinyMceModes } from './tinymce-helper-types';
 
 
@@ -29,7 +29,7 @@ export class TinyMceToolbars {
         + '| bold italic '
         + `| h2 h3 ${HGroup} `
         + '| '
-        + (contentDivisions === 'false' ? '' : ` ${ContentDivision} `)
+        + (contentDivisions === 'false' ? '' : ` ${ContentDivision} ${AddContentSplit} `)
         + '| numlist bullist outdent indent '
         + '| ' + (!inlineMode ? ` ${SxcImages} ${LinkFiles} ` : '') + ` ${LinkGroupPro} `
         + '| '
@@ -47,7 +47,7 @@ export class TinyMceToolbars {
         + `| bold ${ItalicWithMore} `
         + `| h2 h3 ${HGroup} `
         + '| '
-        + (contentDivisions === 'false' ? '' : ` ${ContentDivision} `)
+        + (contentDivisions === 'false' ? '' : ` ${ContentDivision} ${AddContentSplit} `)
         + `| numlist ${ListGroup} `
         + `| ${LinkFiles} ${LinkGroup} `
         + '| '
@@ -65,7 +65,7 @@ export class TinyMceToolbars {
         + `| bold ${ItalicWithMore} `
         + `| h2 h3 ${HGroup} `
         + '| '
-        + (contentDivisions === 'false' ? '' : ` ${ContentDivision} `)
+        + (contentDivisions === 'false' ? '' : ` ${ContentDivision} ${AddContentSplit} `)
         + `| numlist ${ListGroup} `
         + `| ${LinkGroup} `
         + '| '
