@@ -23,7 +23,7 @@ import { Connector, EavCustomInputField, WysiwygReconfigure } from '../../../edi
 import { consoleLogWebpack } from '../../../field-custom-gps/src/shared/console-log-webpack.helper';
 import { TinyMceButtons } from '../config/buttons';
 import { TinyMceConfigurator } from '../config/tinymce-configurator';
-import { RawEditorOptionsWithModes } from '../config/toolbars';
+import { RawEditorOptionsWithModes } from '../config/tinymce-helper-types';
 import { TinyMceTranslations } from '../config/translations';
 import { attachAdam } from '../connector/adam';
 import { buildTemplate } from '../shared/helpers';

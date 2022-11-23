@@ -4,7 +4,7 @@ import { FieldStringWysiwygEditor, wysiwygEditorTag } from '../editor/editor';
 import { loadCustomIcons } from '../editor/load-icons.helper';
 import { Guid } from '../shared/guid';
 import { ImageFormats } from '../shared/models';
-import { RawEditorOptionsWithModes, TinyModeAdvanced, TinyModeInline, TinyModeNames, TinyModeStandard } from './toolbars';
+import { RawEditorOptionsWithModes, TinyModeAdvanced, TinyModeInline, TinyModeNames, TinyModeStandard } from './tinymce-helper-types';
 
 // Export Constant names because these will become standardized
 // So people can use them in their custom toolbars

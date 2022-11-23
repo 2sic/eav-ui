@@ -4,7 +4,8 @@ import { EavWindow } from '../../../eav-ui/src/app/shared/models/eav-window.mode
 import { AddOnSettings, Connector, WysiwygReconfigure } from '../../../edit-types';
 import * as contentStyle from '../editor/tinymce-content.scss';
 import { DefaultAddOnSettings, DefaultOptions, DefaultPaste, DefaultPlugins } from './defaults';
-import { RawEditorOptionsWithModes, TinyMceToolbars } from './toolbars';
+import { RawEditorOptionsWithModes } from './tinymce-helper-types';
+import { TinyMceToolbars } from './toolbars';
 import { TinyMceTranslations } from './translations';
 
 declare const window: EavWindow;

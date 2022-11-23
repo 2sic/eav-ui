@@ -1,26 +1,7 @@
 import { AddContentBlock, ContentDivision, ExpandFullEditor, HGroup, ItalicWithMore, LinkFiles, LinkGroup, LinkGroupPro, ListGroup, ModeAdvanced, ModeInline, ModeStandard, SxcImages } from './buttons';
-import type { RawEditorOptions } from 'tinymce';
+import { TinyMceMode, TinyMceModes } from './tinymce-helper-types';
 
-export const TinyModeStandard = 'standard';
-export const TinyModeInline = 'inline';
-export const TinyModeAdvanced = 'advanced';
-export type TinyModeNames = typeof TinyModeStandard | typeof TinyModeInline | typeof TinyModeAdvanced;
 
-export interface TinyMceMode  {
-  menubar: boolean,
-  toolbar: string,
-  contextmenu: string
-}
-export interface TinyMceModes {
-  modes: Record<TinyModeNames, TinyMceMode>,
-  menubar: boolean | string, // must match TinyMCE
-  toolbar: string,
-  contextmenu: string
-}
-
-export interface RawEditorOptionsWithModes extends RawEditorOptions, Omit<TinyMceModes, 'menubar' | 'toolbar' | 'contextmenu'> {
-
-}
 
 export class TinyMceToolbars {
   // Todo @SDV 
