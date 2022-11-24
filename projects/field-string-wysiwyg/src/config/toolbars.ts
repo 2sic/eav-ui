@@ -51,7 +51,7 @@ export class TinyMceToolbars {
         + '| '
         + (contentBlocksEnabled ? ` ${AddContentBlock} ` : '')
         + (source ? ' code ' : '')
-        + (advanced ? '' : ` ${ModeAdvanced} `),
+        + (advanced ? ` ${ModeAdvanced} ` : ''),
       contextmenu: 'charmap hr' + (contentBlocksEnabled ? ` ${AddContentBlock} ` : '')
     };
   }

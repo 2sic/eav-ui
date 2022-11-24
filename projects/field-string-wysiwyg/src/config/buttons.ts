@@ -169,8 +169,6 @@ export class TinyMceButtons {
         callback([
           this.splitButtonItem(imageButton.icon, 'Image.AdamImage.Tooltip', () => adam.toggle(false, true)),
           this.splitButtonItem('custom-file-dnn', 'Image.DnnImage.Tooltip', () => adam.toggle(true, true)),
-          // @SDV - the methods here look wrong, I assume it should just be the string, not a function
-          // similar to the examples further down with 'Strikethrough' etc.
           this.splitButtonItem(linkButton.icon, imageButton.tooltip, () => 'mceImage'),
           this.splitButtonItem(alignleftButton.icon, alignleftButton.tooltip, () => 'JustifyLeft'),
           this.splitButtonItem(aligncenterButton.icon, aligncenterButton.tooltip, () => 'JustifyCenter'),
