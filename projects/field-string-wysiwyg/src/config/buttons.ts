@@ -1,4 +1,5 @@
 import type { Editor } from 'tinymce';
+import type { Ui } from 'tinymce';
 import { Adam } from '../../../edit-types';
 import { FieldStringWysiwygEditor, wysiwygEditorTag } from '../editor/editor';
 import { loadCustomIcons } from '../editor/load-icons.helper';
@@ -27,6 +28,8 @@ export const AddContentSplit = 'contentsplit';
 const ContentDivisionClass = 'content-division';
 
 type FuncVoid = () => void | unknown;
+
+
 
 /** Register all kinds of buttons on TinyMCE */
 export class TinyMceButtons {
@@ -180,23 +183,18 @@ export class TinyMceButtons {
 
   /** Drop-down with italic, strikethrough, ... */
   private dropDownItalicAndMore(): void {
-    const buttons = this.editor.ui.registry.getAll().buttons;
-    const italicButton = buttons.italic;
-    // const strikethroughButton = buttons.strikethrough;
-    const superscriptButton = buttons.superscript;
-    const subscriptButton = buttons.subscript;
-
+    const btns = this.editor.ui.registry.getAll().buttons;
     this.editor.ui.registry.addSplitButton(ItalicWithMore, {
       ...this.splitButtonSpecs('Italic'),
       columns: 3,
-      icon: italicButton.icon,
+      icon: btns.italic.icon,
       presets: 'listpreview',
-      tooltip: italicButton.tooltip,
+      tooltip: btns.italic.tooltip,
       fetch: (callback) => {
         callback([
-          this.splitButtonItem(buttons.strikethrough.icon, buttons.strikethrough.tooltip, 'Strikethrough'),
-          this.splitButtonItem(superscriptButton.icon, superscriptButton.tooltip, 'Superscript'),
-          this.splitButtonItem(subscriptButton.icon, subscriptButton.tooltip, 'Subscript'),
+          this.splitButtonItem(btns.strikethrough.icon, btns.strikethrough.tooltip, 'Strikethrough'),
+          this.splitButtonItem(btns.superscript.icon, btns.superscript.tooltip, 'Superscript'),
+          this.splitButtonItem(btns.subscript.icon, btns.subscript.tooltip, 'Subscript'),
         ]);
       },
     });
@@ -314,7 +312,6 @@ export class TinyMceButtons {
 
   private addButtonContentSplitter(): void {
     const buttons = this.editor.ui.registry.getAll().buttons;
-    console.log('2dm buttons', buttons);
     this.editor.ui.registry.addButton(AddContentSplit, {
       icon: buttons.hr.icon, // 'custom-content-block',
       tooltip: 'ContentBlock.Add',

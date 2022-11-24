@@ -7,6 +7,8 @@ import { DefaultAddOnSettings, DefaultOptions, DefaultPaste, DefaultPlugins } fr
 import { RawEditorOptionsWithModes } from './tinymce-helper-types';
 import { TinyMceToolbars } from './toolbars';
 import { TinyMceTranslations } from './translations';
+import { TinyMceModeConfig } from './tinymce-config';
+import badMutable from 'dayjs/plugin/badMutable';
 
 declare const window: EavWindow;
 const reconfigErr = `Very likely an error in your reconfigure code. Check http://r.2sxc.org/field-wysiwyg`;
@@ -50,19 +52,36 @@ export class TinyMceConfigurator {
   buildOptions(containerClass: string, fixedToolbarClass: string, inlineMode: boolean, setup: (editor: Editor) => void): RawEditorOptionsWithModes {
     const connector = this.connector;
     const exp = connector._experimental;
-    // TODO @SDV
+    // TODO @SDV - done by 2dm
     // Create a TinyMceModeConfig object with bool only
     // Then pass this object into the build(...) below, replacing the original 3 parameters
     const fsettings = connector.field.settings;
-    const buttonSource = fsettings.ButtonSource?.toLowerCase() == "true";
-    const buttonAdvanced = fsettings.ButtonAdvanced?.toLowerCase() == "true";
-    const contentDivisions = fsettings.ContentDivisions?.toLowerCase() != "false";
+    const bSource = fsettings.ButtonSource?.toLowerCase();
+    const bAdvanced = fsettings.ButtonAdvanced?.toLowerCase();
+    const bContDiv = "true"; // fsettings.ContentDivisions?.toLowerCase(); // WIP for now just true
     const dropzone = exp.dropzone;
     const adam = exp.adam;
 
-    // @SDV also put this in the new TinyMceModeConfig object on features.contentBlocks
-    const contentBlocksEnabled = exp.allInputTypeNames[connector.field.index + 1]?.inputType === 'entity-content-blocks';
-    const toolbarModes = TinyMceToolbars.build(contentBlocksEnabled, inlineMode, buttonSource, buttonAdvanced, contentDivisions);
+    // @SDV this is what I had expected
+    const modeConfig: TinyMceModeConfig = {
+      features: {
+        contentBlocks: exp.allInputTypeNames[connector.field.index + 1]?.inputType === 'entity-content-blocks',
+      },
+      buttons: {
+        inline: {
+          source: bSource == "true",
+          advanced: bAdvanced == "true",
+          contentDivisions: bContDiv == "true",
+        },
+        dialog: {
+          source: bSource != "false",
+          advanced: bAdvanced != "false",
+          contentDivisions: bContDiv == "true",
+        }
+      }
+    }
+
+    const toolbarModes = new TinyMceToolbars(modeConfig).build(inlineMode);
 
     if (dropzone == null || adam == null) {
       console.error(`Dropzone or ADAM Config not available, some things won't work`);

@@ -1,20 +1,20 @@
 
 export type KnownModes = 'blank' | 'default' | 'inline' | 'dialog' | 'advanced';
+export type ViewModes = 'inline' | 'dialog';
 
 
 
-
-
+interface TinyMceButtonsConfig {
+  source: boolean;
+  advanced: boolean;
+  contentDivisions: boolean;
+}
 export interface TinyMceModeConfig {
   features: {
     contentBlocks: boolean,
   };
 
-  buttons: {
-    source: boolean,
-    advanced: boolean,
-    contentDivisions: boolean,
-  }
+  buttons: Record<ViewModes, TinyMceButtonsConfig>
 }
 
 export const DefaultTinyMceModeConfig: TinyMceModeConfig = {
@@ -22,10 +22,18 @@ export const DefaultTinyMceModeConfig: TinyMceModeConfig = {
     contentBlocks: false,
   },
   buttons: {
-    source: false,
-    advanced: false,
-    contentDivisions: true  // temporary, as we are still in dev. will be false later on
+    inline:   {
+      source: false,
+      advanced: false,
+      contentDivisions: true  // temporary, as we are still in dev. will be false later on
+    },
+    dialog:   {
+      source: true,
+      advanced: true,
+      contentDivisions: true  // temporary, as we are still in dev. will be false later on
+    }  
   }
+
 }
 
 // This is stil WIP for 2dm - would be the JSON that comes from the field configuration

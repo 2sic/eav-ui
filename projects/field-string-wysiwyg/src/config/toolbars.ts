@@ -1,15 +1,20 @@
 import { AddContentBlock, ContentDivision, ExpandFullEditor, HGroup, ItalicWithMore, LinkFiles, LinkGroup, LinkGroupPro, ListGroup, ModeAdvanced, ModeInline, ModeStandard, SxcImages, AddContentSplit } from './buttons';
+import { TinyMceModeConfig } from './tinymce-config';
 import { TinyMceMode, TinyMceModes } from './tinymce-helper-types';
 
 
 
 export class TinyMceToolbars {
-  static build(contentBlocksEnabled: boolean, inlineMode: boolean, buttonSource: boolean, buttonAdvanced: boolean, contentDivisions: boolean): TinyMceModes {
-    // contentDivisions = 'false';
+  
+  constructor(private config: TinyMceModeConfig) {
+
+  }
+
+  public build(inlineMode: boolean): TinyMceModes {
     const modes = {
-      inline: this.inline(contentBlocksEnabled, buttonSource, buttonAdvanced, contentDivisions),
-      standard: this.standard(contentBlocksEnabled, buttonSource, buttonAdvanced, contentDivisions),
-      advanced: this.advanced(inlineMode, contentBlocksEnabled, contentDivisions),
+      inline: this.inline(),
+      standard: this.dialog(),
+      advanced: this.advanced(inlineMode),
     };
     return {
       modes,
@@ -19,7 +24,8 @@ export class TinyMceToolbars {
     };
   }
 
-  private static advanced(inlineMode: boolean, contentBlocksEnabled: boolean, contentDivisions: boolean): TinyMceMode {
+  private advanced(inlineMode: boolean): TinyMceMode {
+    var cnf = inlineMode ?  this.config.buttons.inline : this.config.buttons.dialog;
     return {
       menubar: true,
       toolbar: ' undo redo removeformat '
@@ -27,51 +33,55 @@ export class TinyMceToolbars {
         + '| bold italic '
         + `| h2 h3 ${HGroup} `
         + '| '
-        + (contentDivisions ? ` ${ContentDivision} ${AddContentSplit} ` : '')
+        + (cnf.contentDivisions ? ` ${ContentDivision} ${AddContentSplit} ` : '')
         + '| numlist bullist outdent indent '
         + '| ' + (!inlineMode ? ` ${SxcImages} ${LinkFiles} ` : '') + ` ${LinkGroupPro} `
         + '| '
-        + (contentBlocksEnabled ? ` ${AddContentBlock} ` : '')
+        + (this.config.features.contentBlocks ? ` ${AddContentBlock} ` : '')
         + ' code '
         + (inlineMode ? ` ${ModeInline} ${ExpandFullEditor} ` : ` ${ModeStandard} `),
-      contextmenu: 'link image | charmap hr adamimage' + (contentBlocksEnabled ? ` ${AddContentBlock} ` : '')
+      contextmenu: 'link image | charmap hr adamimage ' + (this.config.features.contentBlocks ? ` ${AddContentBlock} ` : '')
     };
   }
 
-  private static standard(contentBlocksEnabled: boolean, source: boolean, advanced: boolean, contentDivisions: boolean): TinyMceMode {
+  private dialog(): TinyMceMode {
+    var cnf = this.config.buttons.dialog;
     return {
       menubar: false,
       toolbar: ' undo redo removeformat '
         + `| bold ${ItalicWithMore} `
         + `| h2 h3 ${HGroup} `
         + '| '
-        + (contentDivisions ? ` ${ContentDivision} ${AddContentSplit} ` : '')
+        + (cnf.contentDivisions ? ` ${ContentDivision} ${AddContentSplit} ` : '')
         + `| numlist ${ListGroup} `
         + `| ${LinkFiles} ${LinkGroup} `
         + '| '
-        + (contentBlocksEnabled ? ` ${AddContentBlock} ` : '')
-        + (source ? ' code ' : '')
-        + (advanced ? ` ${ModeAdvanced} ` : ''),
-      contextmenu: 'charmap hr' + (contentBlocksEnabled ? ` ${AddContentBlock} ` : '')
+        + (this.config.features.contentBlocks ? ` ${AddContentBlock} ` : '')
+        + (cnf.source ? ' code ' : '')
+        + (cnf.advanced ? ` ${ModeAdvanced} ` : ''),
+      contextmenu: 'charmap hr' + (this.config.features.contentBlocks ? ` ${AddContentBlock} ` : '')
     };
   }
 
-  private static inline(contentBlocksEnabled: boolean, source: boolean, advanced: boolean, contentDivisions: boolean): TinyMceMode {
+  private inline(): TinyMceMode {
+    var cnf = this.config.buttons.inline;
     return {
       menubar: false,
-      toolbar: ' undo redo removeformat '
+      toolbar: 
+        ` abcdefg ${SxcImages} `
+        + ' undo redo removeformat '
         + `| bold ${ItalicWithMore} `
         + `| h2 h3 ${HGroup} `
         + '| '
-        + (contentDivisions ? ` ${ContentDivision} ${AddContentSplit} ` : '')
+        + (cnf.contentDivisions ? ` ${ContentDivision} ${AddContentSplit} ` : '')
         + `| numlist ${ListGroup} `
         + `| ${LinkGroup} `
         + '| '
-        + (contentBlocksEnabled ? ` ${AddContentBlock} ` : '')
-        + (source ? ' code ' : '')
-        + (advanced ? ` ${ModeAdvanced} ` : '')
+        + (this.config.features.contentBlocks ? ` ${AddContentBlock} ` : '')
+        + (cnf.source ? ' code ' : '')
+        + (cnf.advanced ? ` ${ModeAdvanced} ` : '')
         + ` ${ExpandFullEditor} `,
-      contextmenu: 'charmap hr' + (contentBlocksEnabled ? ` ${AddContentBlock} ` : '')
+      contextmenu: 'charmap hr' + (this.config.features.contentBlocks ? ` ${AddContentBlock} ` : '')
     };
   }
 }
