@@ -50,9 +50,9 @@ export class TinyMceConfigurator {
   buildOptions(containerClass: string, fixedToolbarClass: string, inlineMode: boolean, setup: (editor: Editor) => void): RawEditorOptionsWithModes {
     const connector = this.connector;
     const exp = connector._experimental;
-    const buttonSource = connector.field.settings.ButtonSource.toLowerCase() == "true";
-    const buttonAdvanced = connector.field.settings.ButtonAdvanced.toLowerCase() == "true";
-    const contentDivisions = connector.field.settings.ContentDivisions === "" ? true : connector.field.settings.ContentDivisions.toLowerCase() == "true";
+    const buttonSource = connector.field.settings.ButtonSource?.toLowerCase() == "true";
+    const buttonAdvanced = connector.field.settings.ButtonAdvanced?.toLowerCase() == "true";
+    const contentDivisions = connector.field.settings.ContentDivisions === "" ? true : connector.field.settings.ContentDivisions?.toLowerCase() == "true";
     const dropzone = exp.dropzone;
     const adam = exp.adam;
 
