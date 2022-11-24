@@ -1,7 +1,4 @@
-
-export type KnownModes = 'blank' | 'default' | 'inline' | 'dialog' | 'advanced';
-export type ViewModes = 'inline' | 'dialog';
-
+import { WysiwygMode, WysiwygView } from './tinymce-helper-types';
 
 
 interface TinyMceButtonsConfig {
@@ -12,14 +9,16 @@ interface TinyMceButtonsConfig {
 export interface TinyMceModeConfig {
   features: {
     contentBlocks: boolean,
+    richContent: boolean,
   };
 
-  buttons: Record<ViewModes, TinyMceButtonsConfig>
+  buttons: Record<WysiwygView, TinyMceButtonsConfig>
 }
 
 export const DefaultTinyMceModeConfig: TinyMceModeConfig = {
   features: {
     contentBlocks: false,
+    richContent: true, // temporary, as we are still in dev. will be false later on
   },
   buttons: {
     inline:   {
@@ -39,7 +38,7 @@ export const DefaultTinyMceModeConfig: TinyMceModeConfig = {
 // This is stil WIP for 2dm - would be the JSON that comes from the field configuration
 export interface TinyMceModeConfigJson extends TinyMceModeConfig {
   /** The foundation for filling in the configuration */
-  inherits?: KnownModes;
+  inherits?: WysiwygMode;
   contextmenu?: string;
   toolbar?: string | string[]
 }
@@ -55,4 +54,4 @@ export interface TinyMceModeConfigJson extends TinyMceModeConfig {
  * ...but still just pass one object to all the helper functions,
  * ...and keep things simple as more configs are added.
  */
-export type TinyMceConfigJson = Record<KnownModes, TinyMceModeConfigJson>;
+export type TinyMceConfigJson = Record<WysiwygMode, TinyMceModeConfigJson>;

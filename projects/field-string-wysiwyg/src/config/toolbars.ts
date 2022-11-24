@@ -1,45 +1,65 @@
-import { AddContentBlock, ContentDivision, ExpandFullEditor, HGroup, ItalicWithMore, LinkFiles, LinkGroup, LinkGroupPro, ListGroup, ModeAdvanced, ModeInline, ModeStandard, SxcImages, AddContentSplit } from './buttons';
+import { AddContentBlock, ContentDivision, ToFullscreen, ItalicWithMore, LinkFiles, LinkGroup, LinkGroupPro, ListGroup, ModeAdvanced, ModeDefault, SxcImages, AddContentSplit, H3Group } from './buttons';
 import { TinyMceModeConfig } from './tinymce-config';
-import { TinyMceMode, TinyMceModes } from './tinymce-helper-types';
+import { TinyMceMode, TinyMceModes, ToolbarSwitcher, WysiwygMode, WysiwygView, WysiwygInline, WysiwygDialog, WysiwygDefault, WysiwygAdvanced } from './tinymce-helper-types';
 
+const StdUndoRedo = ' undo redo removeformat ';
+const StdFormat = `| bold ${ItalicWithMore} `;
+const StdHeadings = `| h2 ${H3Group} `;
+const StdNumList = `| numlist ${ListGroup} `;
 
+export class TinyMceToolbars implements ToolbarSwitcher {
 
-export class TinyMceToolbars {
-  
   constructor(private config: TinyMceModeConfig) {
 
   }
 
-  public build(inlineMode: boolean): TinyMceModes {
+  switch(view: WysiwygView, operationMode: WysiwygMode): TinyMceMode {
+    return (view == WysiwygInline)
+      ? operationMode == WysiwygDefault ? this.inline() : this.advanced(true)
+      : operationMode == WysiwygDefault ? this.dialog() : this.advanced(false);
+  }
+
+  public build(isInline: boolean): TinyMceModes {
     const modes = {
       inline: this.inline(),
       standard: this.dialog(),
-      advanced: this.advanced(inlineMode),
+      advanced: this.advanced(isInline),
     };
+    const initial = isInline ? modes.inline : modes.standard;
     return {
+      modeSwitcher: this,
       modes,
-      menubar: inlineMode ? modes.inline.menubar : modes.standard.menubar,
-      toolbar: inlineMode ? modes.inline.toolbar : modes.standard.toolbar,
-      contextmenu: inlineMode ? modes.inline.contextmenu : modes.standard.contextmenu,
+      ...initial
     };
   }
 
-  private advanced(inlineMode: boolean): TinyMceMode {
-    var cnf = inlineMode ?  this.config.buttons.inline : this.config.buttons.dialog;
+  private richContent(): string {
+    return '| ' + (this.config.features.richContent ? ` ${ContentDivision} ${AddContentSplit} ` : '')
+  }
+
+  private contentBlocks(): string {
+    return '| '+ (this.config.features.contentBlocks ? ` ${AddContentBlock} ` : '')
+  }
+
+  private advanced(isInline: boolean): TinyMceMode {
     return {
+      currentMode: {
+        view: isInline ? WysiwygInline : WysiwygDialog,
+        level: WysiwygAdvanced,
+      },
       menubar: true,
-      toolbar: ' undo redo removeformat '
+      toolbar: ''
+        +  StdUndoRedo
         + '| styles '
-        + '| bold italic '
-        + `| h2 h3 ${HGroup} `
-        + '| '
-        + (cnf.contentDivisions ? ` ${ContentDivision} ${AddContentSplit} ` : '')
+        + StdFormat
+        + StdHeadings
+        + this.richContent()
         + '| numlist bullist outdent indent '
-        + '| ' + (!inlineMode ? ` ${SxcImages} ${LinkFiles} ` : '') + ` ${LinkGroupPro} `
-        + '| '
-        + (this.config.features.contentBlocks ? ` ${AddContentBlock} ` : '')
+        + '| ' + (!isInline ? ` ${SxcImages} ${LinkFiles} ` : '') + ` ${LinkGroupPro} `
+        + this.contentBlocks()
         + ' code '
-        + (inlineMode ? ` ${ModeInline} ${ExpandFullEditor} ` : ` ${ModeStandard} `),
+        // must check - this looks wrong isInline shows ToInlineMode ?
+        + (isInline ? ` ${ModeDefault} ${ToFullscreen} ` : ` ${ModeDefault} `),
       contextmenu: 'link image | charmap hr adamimage ' + (this.config.features.contentBlocks ? ` ${AddContentBlock} ` : '')
     };
   }
@@ -47,16 +67,19 @@ export class TinyMceToolbars {
   private dialog(): TinyMceMode {
     var cnf = this.config.buttons.dialog;
     return {
+      currentMode: {
+        view: WysiwygDialog,
+        level: WysiwygDefault,
+      },
       menubar: false,
-      toolbar: ' undo redo removeformat '
-        + `| bold ${ItalicWithMore} `
-        + `| h2 h3 ${HGroup} `
-        + '| '
-        + (cnf.contentDivisions ? ` ${ContentDivision} ${AddContentSplit} ` : '')
-        + `| numlist ${ListGroup} `
+      toolbar: ''
+        + StdUndoRedo
+        + StdFormat
+        + StdHeadings
+        + this.richContent()
+        + StdNumList
         + `| ${LinkFiles} ${LinkGroup} `
-        + '| '
-        + (this.config.features.contentBlocks ? ` ${AddContentBlock} ` : '')
+        + this.contentBlocks()
         + (cnf.source ? ' code ' : '')
         + (cnf.advanced ? ` ${ModeAdvanced} ` : ''),
       contextmenu: 'charmap hr' + (this.config.features.contentBlocks ? ` ${AddContentBlock} ` : '')
@@ -66,21 +89,22 @@ export class TinyMceToolbars {
   private inline(): TinyMceMode {
     var cnf = this.config.buttons.inline;
     return {
+      currentMode: {
+        view: WysiwygInline,
+        level: WysiwygDefault,
+      },
       menubar: false,
-      toolbar: 
-        ` abcdefg ${SxcImages} `
-        + ' undo redo removeformat '
-        + `| bold ${ItalicWithMore} `
-        + `| h2 h3 ${HGroup} `
-        + '| '
-        + (cnf.contentDivisions ? ` ${ContentDivision} ${AddContentSplit} ` : '')
-        + `| numlist ${ListGroup} `
+      toolbar: ''
+        + StdUndoRedo
+        + StdFormat
+        + StdHeadings
+        + this.richContent()
+        + StdNumList
         + `| ${LinkGroup} `
-        + '| '
-        + (this.config.features.contentBlocks ? ` ${AddContentBlock} ` : '')
+        + this.contentBlocks()
         + (cnf.source ? ' code ' : '')
         + (cnf.advanced ? ` ${ModeAdvanced} ` : '')
-        + ` ${ExpandFullEditor} `,
+        + ` ${ToFullscreen} `,
       contextmenu: 'charmap hr' + (this.config.features.contentBlocks ? ` ${AddContentBlock} ` : '')
     };
   }

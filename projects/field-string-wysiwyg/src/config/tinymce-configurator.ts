@@ -66,6 +66,7 @@ export class TinyMceConfigurator {
     const modeConfig: TinyMceModeConfig = {
       features: {
         contentBlocks: exp.allInputTypeNames[connector.field.index + 1]?.inputType === 'entity-content-blocks',
+        richContent: bContDiv == "true",
       },
       buttons: {
         inline: {

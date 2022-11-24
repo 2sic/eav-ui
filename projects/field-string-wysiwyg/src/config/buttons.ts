@@ -1,11 +1,11 @@
 import type { Editor } from 'tinymce';
-import type { Ui } from 'tinymce';
+import { Ui } from 'tinymce';
 import { Adam } from '../../../edit-types';
 import { FieldStringWysiwygEditor, wysiwygEditorTag } from '../editor/editor';
 import { loadCustomIcons } from '../editor/load-icons.helper';
 import { Guid } from '../shared/guid';
 import { ImageFormats } from '../shared/models';
-import { RawEditorOptionsWithModes, TinyModeAdvanced, TinyModeInline, TinyModeNames, TinyModeStandard } from './tinymce-helper-types';
+import { RawEditorOptionsWithModes, WysiwygAdvanced, WysiwygInline, WysiwygMode, WysiwygView, WysiwygDefault } from './tinymce-helper-types';
 
 // Export Constant names because these will become standardized
 // So people can use them in their custom toolbars
@@ -15,13 +15,16 @@ export const LinkGroup = 'linkgroup';
 export const LinkGroupPro = 'linkgrouppro';
 export const LinkFiles = 'linkfiles';
 export const ListGroup = 'listgroup';
-export const ModeStandard = 'modestandard';
-export const ModeInline = 'modeinline';
+export const ModeDefault = 'modestandard';
+// export const ToModeInline = 'modeinline';
 export const ModeAdvanced = 'modeadvanced';
-export const HGroup = 'hgroup';
+export const H1Group = 'h1group';
+export const H2Group = 'h2group';
+export const H3Group = 'h3group';
+export const H4Group = 'h4group';
 export const AddContentBlock = 'addcontentblock';
 export const ContentDivision = 'contentdivision';
-export const ExpandFullEditor = 'expandfulleditor';
+export const ToFullscreen = 'expandfulleditor'; // not sure what this does
 export const ImgResponsive = 'imgresponsive';
 
 export const AddContentSplit = 'contentsplit';
@@ -48,28 +51,17 @@ export class TinyMceButtons {
     loadCustomIcons(this.editor);
 
     this.linkFiles();
-
     this.linksGroups();
-
     this.images();
-
     this.dropDownItalicAndMore();
-
     this.listButtons();
-
     this.addSwitchModeButtons();
-
     this.openDialog();
-
-    this.headingsGroup();
-
+    this.headingGroups1to4();
     this.addButtonContentBlock();
     this.addButtonContentSplitter();
-
     this.contentDivision();
-
     this.imageContextMenu(instSettings.imgSizes);
-
     this.contextMenus();
   }
 
@@ -84,12 +76,10 @@ export class TinyMceButtons {
 
   /** Create a common default structure for most SplitButtonSpecs */
   private splitButtonSpecs(initialCommand: string | FuncVoid) {
-
     return {
       onAction: (api: unknown) => {
         this.runOrExecCommand(api, initialCommand);
       },
-
       onItemAction: (api: unknown, value: unknown) => {
         this.runOrExecCommand(api, value);
       },
@@ -225,26 +215,26 @@ export class TinyMceButtons {
 
   /** Switch normal / advanced mode */
   private addSwitchModeButtons(): void {
-    this.editor.ui.registry.addButton(ModeStandard, {
+    this.editor.ui.registry.addButton(ModeDefault, {
       icon: 'close',
       tooltip: 'SwitchMode.Standard',
-      onAction: (api) => { this.switchModes(TinyModeStandard); },
+      onAction: (api) => { this.switchModeNew(WysiwygDefault); },
     });
-    this.editor.ui.registry.addButton(ModeInline, {
-      icon: 'close',
-      tooltip: 'SwitchMode.Standard',
-      onAction: (api) => { this.switchModes(TinyModeInline); },
-    });
+    // this.editor.ui.registry.addButton(ToModeInline, {
+    //   icon: 'close',
+    //   tooltip: 'SwitchMode.Standard',
+    //   onAction: (api) => { this.switchModeNew(WysiwygDefault, WysiwygInline); },
+    // });
     this.editor.ui.registry.addButton(ModeAdvanced, {
       icon: 'custom-school',
       tooltip: 'SwitchMode.Pro',
-      onAction: (api) => { this.switchModes(TinyModeAdvanced); },
+      onAction: (api) => { this.switchModeNew(WysiwygAdvanced); },
     });
   }
 
   /** Switch to Dialog Mode */
   private openDialog(): void {
-    this.editor.ui.registry.addButton(ExpandFullEditor, {
+    this.editor.ui.registry.addButton(ToFullscreen, {
       icon: 'browse',
       tooltip: 'SwitchMode.Expand',
       onAction: (api) => {
@@ -263,38 +253,52 @@ export class TinyMceButtons {
   }
 
   /** Group of buttons with an h3 to start and showing h4-6 + p */
-  private headingsGroup(): void {
+  private headingGroups1to4(): void {
     const isGerman = this.editor.options.get('language') === 'de';
-    const buttons = this.editor.ui.registry.getAll().buttons;
-
-    const h1Button = buttons.h1;
-    const h2Button = buttons.h2;
-    const h3Button = buttons.h3;
-    const h4Button = buttons.h4;
-    const h5Button = buttons.h5;
-    const h6Button = buttons.h6;
-    const blockquoteButton = buttons.blockquote;
-
+    const btns = this.editor.ui.registry.getAll().buttons;
+    const blockquote = btns.blockquote;
     const imgName = isGerman ? 'custom-image-u' : 'custom-image-h';
 
-    this.editor.ui.registry.addSplitButton(HGroup, {
-      ...this.splitButtonSpecs(() => this.toggleFormat('h4')),
+    const HButtons = [
+      this.splitButtonItem(`${imgName}1`, btns.h1.text, () => this.toggleFormat('h1')),
+      this.splitButtonItem(`${imgName}2`, btns.h2.text, () => this.toggleFormat('h2')),
+      this.splitButtonItem(`${imgName}3`, btns.h3.text, () => this.toggleFormat('h3')),
+      this.splitButtonItem('custom-paragraph', 'Paragraph', () => this.toggleFormat('p')),
+      this.splitButtonItem(`${imgName}4`, btns.h4.text, () => this.toggleFormat('h4')),
+      this.splitButtonItem(`${imgName}5`, btns.h5.text, () => this.toggleFormat('h5')),
+      this.splitButtonItem(`${imgName}6`, btns.h6.text, () => this.toggleFormat('h6')),
+      this.splitButtonItem(blockquote.icon, blockquote.tooltip, () => this.toggleFormat('blockquote')),
+    ];
+    this.headingsGroup(H1Group, 'h1', btns.h1 as Ui.Toolbar.ToolbarSplitButtonSpec, HButtons);
+    this.headingsGroup(H2Group, 'h2', btns.h2 as Ui.Toolbar.ToolbarSplitButtonSpec, HButtons);
+    this.headingsGroup(H3Group, 'h3', btns.h3 as Ui.Toolbar.ToolbarSplitButtonSpec, HButtons);
+    this.headingsGroup(H4Group, 'h4', btns.h4 as Ui.Toolbar.ToolbarSplitButtonSpec, HButtons);
+  }
+
+  private headingsGroup(groupName: string, mainFormat: string, button: Ui.Toolbar.ToolbarSplitButtonSpec, buttons: Ui.Menu.ChoiceMenuItemSpec[]): void {
+    // const isGerman = this.editor.options.get('language') === 'de';
+    // const btns = this.editor.ui.registry.getAll().buttons;
+    // const blockquote = btns.blockquote;
+    // const imgName = isGerman ? 'custom-image-u' : 'custom-image-h';
+
+    // const HButtons = [
+    //   this.splitButtonItem(`${imgName}1`, btns.h1.text, () => this.toggleFormat('h1')),
+    //   this.splitButtonItem(`${imgName}2`, btns.h2.text, () => this.toggleFormat('h2')),
+    //   this.splitButtonItem(`${imgName}3`, btns.h3.text, () => this.toggleFormat('h3')),
+    //   this.splitButtonItem('custom-paragraph', 'Paragraph', () => this.toggleFormat('p')),
+    //   this.splitButtonItem(`${imgName}4`, btns.h4.text, () => this.toggleFormat('h4')),
+    //   this.splitButtonItem(`${imgName}5`, btns.h5.text, () => this.toggleFormat('h5')),
+    //   this.splitButtonItem(`${imgName}6`, btns.h6.text, () => this.toggleFormat('h6')),
+    //   this.splitButtonItem(blockquote.icon, blockquote.tooltip, () => this.toggleFormat('blockquote')),
+    // ];
+
+    this.editor.ui.registry.addSplitButton(groupName, {
+      ...this.splitButtonSpecs(() => this.toggleFormat(mainFormat)),
       columns: 4,
       presets: 'listpreview',
-      text: h4Button.text,
-      tooltip: h4Button.tooltip,
-      fetch: (callback) => {
-        callback([
-          this.splitButtonItem(`${imgName}1`, h1Button.text, () => this.toggleFormat('h1')),
-          this.splitButtonItem(`${imgName}2`, h2Button.text, () => this.toggleFormat('h2')),
-          this.splitButtonItem(`${imgName}3`, h3Button.text, () => this.toggleFormat('h3')),
-          this.splitButtonItem('custom-paragraph', 'Paragraph', () => this.toggleFormat('p')),
-          this.splitButtonItem(`${imgName}4`, h4Button.text, () => this.toggleFormat('h4')),
-          this.splitButtonItem(`${imgName}5`, h5Button.text, () => this.toggleFormat('h5')),
-          this.splitButtonItem(`${imgName}6`, h6Button.text, () => this.toggleFormat('h6')),
-          this.splitButtonItem(blockquoteButton.icon, blockquoteButton.tooltip, () => this.toggleFormat('blockquote')),
-        ]);
-      },
+      text: button.text,
+      tooltip: button.tooltip,
+      fetch: (callback) => { callback(buttons); },
     });
   }
 
@@ -374,17 +378,17 @@ export class TinyMceButtons {
     });
   }
 
-  // Mode switching and the buttons for it
-  private switchModes(mode: TinyModeNames): void {
-    // Note from 2dm: I find it unclear why this.options works. Some docs link would be nice
-    const editorOptions: RawEditorOptionsWithModes = this.options;
-    editorOptions.toolbar = editorOptions.modes[mode].toolbar;
-    editorOptions.menubar = editorOptions.modes[mode].menubar;
-
-    // refresh editor toolbar
-    this.editor.editorManager.remove(this.editor);
-    this.editor.editorManager.init(editorOptions);
-  }
+  /** Mode switching to inline/dialog and advanced/normal */
+  private switchModeNew(mode: WysiwygMode, viewMode?: WysiwygView): void {
+      viewMode ??= this.options.currentMode.view;
+      const newSettings = this.options.modeSwitcher.switch(viewMode, mode);
+      const editorOptions = {...this.options, ...newSettings};
+  
+      // refresh editor toolbar
+      this.editor.editorManager.remove(this.editor);
+      this.editor.editorManager.init(editorOptions);
+    }
+  
 }
 
 /** Register all formats - like img-sizes */
