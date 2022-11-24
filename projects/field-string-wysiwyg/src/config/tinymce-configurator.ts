@@ -50,9 +50,13 @@ export class TinyMceConfigurator {
   buildOptions(containerClass: string, fixedToolbarClass: string, inlineMode: boolean, setup: (editor: Editor) => void): RawEditorOptionsWithModes {
     const connector = this.connector;
     const exp = connector._experimental;
-    const buttonSource = connector.field.settings.ButtonSource?.toLowerCase() == "true";
-    const buttonAdvanced = connector.field.settings.ButtonAdvanced?.toLowerCase() == "true";
-    const contentDivisions = connector.field.settings.ContentDivisions === "" ? true : connector.field.settings.ContentDivisions?.toLowerCase() == "true";
+    // TODO @SDV
+    // Create a TinyMceModeConfig object with bool only
+    // Then pass this object into the build(...) below, replacing the original 3 parameters
+    const fsettings = connector.field.settings;
+    const buttonSource = fsettings.ButtonSource?.toLowerCase() == "true";
+    const buttonAdvanced = fsettings.ButtonAdvanced?.toLowerCase() == "true";
+    const contentDivisions = fsettings.ContentDivisions?.toLowerCase() != "false";
     const dropzone = exp.dropzone;
     const adam = exp.adam;
 
@@ -69,7 +73,7 @@ export class TinyMceConfigurator {
     // and tries to load the current folder as a stylesheet
     // This is useless and causes problems in DNN, because it results in logging out the user
     // See https://github.com/2sic/2sxc/issues/2829
-    let contentCssFile = connector.field.settings?.ContentCss;
+    let contentCssFile = fsettings.ContentCss;
     if (!contentCssFile) contentCssFile = null;
 
     const options: RawEditorOptionsWithModes = {
