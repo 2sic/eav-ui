@@ -232,17 +232,17 @@ export class TinyMceButtons {
     this.editor.ui.registry.addButton(ModeStandard, {
       icon: 'close',
       tooltip: 'SwitchMode.Standard',
-      onAction: (api) => { switchModes(TinyModeStandard); },
+      onAction: (api) => { this.switchModes(TinyModeStandard); },
     });
     this.editor.ui.registry.addButton(ModeInline, {
       icon: 'close',
       tooltip: 'SwitchMode.Standard',
-      onAction: (api) => { switchModes(TinyModeInline); },
+      onAction: (api) => { this.switchModes(TinyModeInline); },
     });
     this.editor.ui.registry.addButton(ModeAdvanced, {
       icon: 'custom-school',
       tooltip: 'SwitchMode.Pro',
-      onAction: (api) => { switchModes(TinyModeAdvanced); },
+      onAction: (api) => { this.switchModes(TinyModeAdvanced); },
     });
   }
 
@@ -378,6 +378,18 @@ export class TinyMceButtons {
       predicate: (elem) => ['li', 'ol', 'ul'].includes(elem.nodeName.toLocaleLowerCase()) && rangeSelected(),
     });
   }
+
+  // Mode switching and the buttons for it
+  private switchModes(mode: TinyModeNames): void {
+    // Note from 2dm: I find it unclear why this.options works. Some docs link would be nice
+    const editorOptions: RawEditorOptionsWithModes = this.options;
+    editorOptions.toolbar = editorOptions.modes[mode].toolbar;
+    editorOptions.menubar = editorOptions.modes[mode].menubar;
+
+    // refresh editor toolbar
+    this.editor.editorManager.remove(this.editor);
+    this.editor.editorManager.init(editorOptions);
+  }
 }
 
 /** Register all formats - like img-sizes */
@@ -408,16 +420,4 @@ function openPagePicker(fieldStringWysiwyg: FieldStringWysiwygEditor): void {
       this.editor.insertContent(`<a href="${path}">${(previouslySelected || page.name)}</a>`);
     });
   });
-}
-
-// Mode switching and the buttons for it
-function switchModes(mode: TinyModeNames): void {
-  // Note from 2dm: I find it unclear why this.options works. Some docs link would be nice
-  const editorOptions: RawEditorOptionsWithModes = this.options;
-  editorOptions.toolbar = editorOptions.modes[mode].toolbar;
-  editorOptions.menubar = editorOptions.modes[mode].menubar;
-
-  // refresh editor toolbar
-  this.editor.editorManager.remove(this.editor);
-  this.editor.editorManager.init(editorOptions);
 }
