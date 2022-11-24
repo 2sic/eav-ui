@@ -50,12 +50,9 @@ export class TinyMceConfigurator {
   buildOptions(containerClass: string, fixedToolbarClass: string, inlineMode: boolean, setup: (editor: Editor) => void): RawEditorOptionsWithModes {
     const connector = this.connector;
     const exp = connector._experimental;
-    // TODO: @SDV - I think you should already convert them to bool here
-    // Create a TinyMceModeConfig object with bool only
-    // Then pass this object into the build(...) below, replacing the original 3 parameters
-    const buttonSource = connector.field.settings.ButtonSource;
-    const buttonAdvanced = connector.field.settings.ButtonAdvanced;
-    const contentDivisions = connector.field.settings.ContentDivisions; // for now, make the default (if not set) to be true
+    const buttonSource = connector.field.settings.ButtonSource.includes("true");
+    const buttonAdvanced = connector.field.settings.ButtonAdvanced.includes("true");
+    const contentDivisions = connector.field.settings.ContentDivisions === "" ? true : connector.field.settings.ContentDivisions.includes("true"); // for now, make the default (if not set) to be true
     const dropzone = exp.dropzone;
     const adam = exp.adam;
 

@@ -26,11 +26,6 @@ export const ImgResponsive = 'imgresponsive';
 export const AddContentSplit = 'contentsplit';
 const ContentDivisionClass = 'content-division';
 
-// TODO: @SDV - move all names which are used elsewhele - like button names etc.
-// to exports above, and use these in the toolbars.ts
-// so I can rename then later on before publishing
-// As the names will have to become public terms so I must control them exactly
-
 type FuncVoid = () => void | unknown;
 
 /** Register all kinds of buttons on TinyMCE */

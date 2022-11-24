@@ -4,9 +4,7 @@ import { TinyMceMode, TinyMceModes } from './tinymce-helper-types';
 
 
 export class TinyMceToolbars {
-  // Todo @SDV 
-  // - buttonAdvanced and contentDivision should be bools right from where they were retrieved first, possibly bool?, but not strings
-  static build(contentBlocksEnabled: boolean, inlineMode: boolean, buttonSource: string, buttonAdvanced: string, contentDivisions: string): TinyMceModes {
+  static build(contentBlocksEnabled: boolean, inlineMode: boolean, buttonSource: boolean, buttonAdvanced: boolean, contentDivisions: boolean): TinyMceModes {
     // contentDivisions = 'false';
     const modes = {
       inline: this.inline(contentBlocksEnabled, buttonSource, buttonAdvanced, contentDivisions),
@@ -21,7 +19,7 @@ export class TinyMceToolbars {
     };
   }
 
-  private static advanced(inlineMode: boolean, contentBlocksEnabled: boolean, contentDivisions: string): TinyMceMode {
+  private static advanced(inlineMode: boolean, contentBlocksEnabled: boolean, contentDivisions: boolean): TinyMceMode {
     return {
       menubar: true,
       toolbar: ' undo redo removeformat '
@@ -29,7 +27,7 @@ export class TinyMceToolbars {
         + '| bold italic '
         + `| h2 h3 ${HGroup} `
         + '| '
-        + (contentDivisions === 'false' ? '' : ` ${ContentDivision} ${AddContentSplit} `)
+        + (contentDivisions ? ` ${ContentDivision} ${AddContentSplit} ` : '')
         + '| numlist bullist outdent indent '
         + '| ' + (!inlineMode ? ` ${SxcImages} ${LinkFiles} ` : '') + ` ${LinkGroupPro} `
         + '| '
@@ -40,38 +38,38 @@ export class TinyMceToolbars {
     };
   }
 
-  private static standard(contentBlocksEnabled: boolean, source: string, advanced: string, contentDivisions: string): TinyMceMode {
+  private static standard(contentBlocksEnabled: boolean, source: boolean, advanced: boolean, contentDivisions: boolean): TinyMceMode {
     return {
       menubar: false,
       toolbar: ' undo redo removeformat '
         + `| bold ${ItalicWithMore} `
         + `| h2 h3 ${HGroup} `
         + '| '
-        + (contentDivisions === 'false' ? '' : ` ${ContentDivision} ${AddContentSplit} `)
+        + (contentDivisions ? ` ${ContentDivision} ${AddContentSplit} ` : '')
         + `| numlist ${ListGroup} `
         + `| ${LinkFiles} ${LinkGroup} `
         + '| '
         + (contentBlocksEnabled ? ` ${AddContentBlock} ` : '')
-        + (source === 'false' ? '' : ' code ')
-        + (advanced === 'false' ? '' : ` ${ModeAdvanced} `),
+        + (source ? ' code ' : '')
+        + (advanced ? '' : ` ${ModeAdvanced} `),
       contextmenu: 'charmap hr' + (contentBlocksEnabled ? ` ${AddContentBlock} ` : '')
     };
   }
 
-  private static inline(contentBlocksEnabled: boolean, source: string, advanced: string, contentDivisions: string): TinyMceMode {
+  private static inline(contentBlocksEnabled: boolean, source: boolean, advanced: boolean, contentDivisions: boolean): TinyMceMode {
     return {
       menubar: false,
       toolbar: ' undo redo removeformat '
         + `| bold ${ItalicWithMore} `
         + `| h2 h3 ${HGroup} `
         + '| '
-        + (contentDivisions === 'false' ? '' : ` ${ContentDivision} ${AddContentSplit} `)
+        + (contentDivisions ? ` ${ContentDivision} ${AddContentSplit} ` : '')
         + `| numlist ${ListGroup} `
         + `| ${LinkGroup} `
         + '| '
         + (contentBlocksEnabled ? ` ${AddContentBlock} ` : '')
-        + (source === 'true' ? ' code ' : '')
-        + (advanced === 'true' ? ` ${ModeAdvanced} ` : '')
+        + (source ? ' code ' : '')
+        + (advanced ? ` ${ModeAdvanced} ` : '')
         + ` ${ExpandFullEditor} `,
       contextmenu: 'charmap hr' + (contentBlocksEnabled ? ` ${AddContentBlock} ` : '')
     };
