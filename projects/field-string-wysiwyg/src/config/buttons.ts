@@ -169,10 +169,10 @@ export class TinyMceButtons {
         callback([
           this.splitButtonItem(imageButton.icon, 'Image.AdamImage.Tooltip', () => adam.toggle(false, true)),
           this.splitButtonItem('custom-file-dnn', 'Image.DnnImage.Tooltip', () => adam.toggle(true, true)),
-          this.splitButtonItem(linkButton.icon, imageButton.tooltip, () => 'mceImage'),
-          this.splitButtonItem(alignleftButton.icon, alignleftButton.tooltip, () => 'JustifyLeft'),
-          this.splitButtonItem(aligncenterButton.icon, aligncenterButton.tooltip, () => 'JustifyCenter'),
-          this.splitButtonItem(alignrightButton.icon, alignrightButton.tooltip, () => 'JustifyRight'),
+          this.splitButtonItem(linkButton.icon, imageButton.tooltip, 'mceImage'),
+          this.splitButtonItem(alignleftButton.icon, alignleftButton.tooltip,'JustifyLeft'),
+          this.splitButtonItem(aligncenterButton.icon, aligncenterButton.tooltip, 'JustifyCenter'),
+          this.splitButtonItem(alignrightButton.icon, alignrightButton.tooltip, 'JustifyRight'),
         ]);
       },
     });
