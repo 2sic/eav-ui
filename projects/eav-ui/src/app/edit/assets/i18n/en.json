@@ -214,6 +214,7 @@
     "Link.Page": "Link to another page",
     "Link.Page.Tooltip": "Link a page from the current site",
     "Link.Anchor.Tooltip": "Anchor to link to using .../page#anchorname",
+    "SwitchMode.Tooltip": "Switch work mode",
     "SwitchMode.Pro": "Switch to advanced mode",
     "SwitchMode.Standard": "Switch to standard mode",
     "SwitchMode.Expand": "Fullscreen",

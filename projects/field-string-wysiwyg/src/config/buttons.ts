@@ -252,13 +252,13 @@ export class TinyMceButtons {
   // - finalize toolbars
   // - see if we can right-align the last toolbar part
   private addModes(): void {
-    this.regBtn(ToolbarModeToggle, 'settings', 'Switch work mode',
+    this.regBtn(ToolbarModeToggle, 'settings', 'SwitchMode.Tooltip',
       () => { this.cycleMode(); });
 
     this.editor.ui.registry.addSplitButton(ToolbarModes, {
       ...this.splitButtonSpecs(() => this.cycleMode()),
       icon: 'settings',
-      tooltip: 'Switch work mode',
+      tooltip: 'SwitchMode.Tooltip',
       fetch: (callback) => {
         callback([
           this.splitButtonItem('info', 'Default / Balanced', () => { this.cycleMode(WysiwygDefault)}),
