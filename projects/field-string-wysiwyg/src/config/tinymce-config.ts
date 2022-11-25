@@ -1,7 +1,7 @@
 import { WysiwygMode, WysiwygView } from './tinymce-helper-types';
 
 
-interface TinyMceButtonsConfig {
+export interface TinyMceButtonsConfig {
   source: boolean;
   advanced: boolean;
   contentDivisions: boolean;

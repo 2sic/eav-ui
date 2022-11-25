@@ -17,7 +17,8 @@ export const LinkFiles = 'linkfiles';
 export const ListGroup = 'listgroup';
 export const ModeDefault = 'modestandard';
 // export const ToModeInline = 'modeinline';
-export const ToolbarModes = 'cms-modes';
+export const ToolbarModeToggle = 'wysiwyg-toolbar-mode';
+export const ToolbarModes = 'wysiwyg-toolbar-modes';
 export const ModeAdvanced = 'modeadvanced';
 export const H1Group = 'h1group';
 export const H2Group = 'h2group';
@@ -236,16 +237,28 @@ export class TinyMceButtons {
     });
   }
 
+  // TODO: @SDV pls change wherever possible to use this as it's quite a bit shorter
+  private regBtn(name: string, icon: string, tooltip: string, action: () => void) {
+    this.editor.ui.registry.addButton(name, {
+      icon,
+      tooltip,
+      onAction: action,
+    });    
+  }
+
   // TODO: @2dm / @SDV
   // - i18n
   // - icons
   // - finalize toolbars
   // - see if we can right-align the last toolbar part
   private addModes(): void {
+    this.regBtn(ToolbarModeToggle, 'settings', 'Switch work mode',
+      () => { this.cycleMode(); });
+
     this.editor.ui.registry.addSplitButton(ToolbarModes, {
       ...this.splitButtonSpecs(() => this.cycleMode()),
-      icon: 'info',
-      tooltip: 'Switch work modes',
+      icon: 'settings',
+      tooltip: 'Switch work mode',
       fetch: (callback) => {
         callback([
           this.splitButtonItem('info', 'Default / Balanced', () => { this.cycleMode(WysiwygDefault)}),
@@ -271,6 +284,9 @@ export class TinyMceButtons {
   }
 
   /** Switch to Dialog Mode */
+  // todo: docs say that Drawer is being deprecated ? but I don't think this has to do
+  // with drawer?
+  // https://www.tiny.cloud/docs/configure/editor-appearance/#toolbar_mode
   private openDialog(): void {
     this.editor.ui.registry.addButton(ToFullscreen, {
       icon: 'browse',
