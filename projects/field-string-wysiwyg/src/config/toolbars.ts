@@ -1,6 +1,6 @@
-import { AddContentBlock, ContentDivision, ToFullscreen, ItalicWithMore, LinkFiles, LinkGroup, LinkGroupPro, ListGroup, ModeAdvanced, ModeDefault, SxcImages, AddContentSplit, H3Group } from './buttons';
+import { AddContentBlock, ContentDivision, ToFullscreen, ItalicWithMore, LinkFiles, LinkGroup, LinkGroupPro, ListGroup, ModeAdvanced, ModeDefault, SxcImages, AddContentSplit, H3Group, ToolbarModes } from './buttons';
 import { TinyMceModeConfig } from './tinymce-config';
-import { TinyMceMode, TinyMceModes, ToolbarSwitcher, WysiwygMode, WysiwygView, WysiwygInline, WysiwygDialog, WysiwygDefault, WysiwygAdvanced } from './tinymce-helper-types';
+import { TinyMceMode, TinyMceModes, ToolbarSwitcher, WysiwygMode, WysiwygView, WysiwygInline, WysiwygDialog, WysiwygDefault, WysiwygAdvanced, WysiwygModeText, WysiwygModeMedia } from './tinymce-helper-types';
 
 const StdUndoRedo = ' undo redo removeformat ';
 const StdFormat = `| bold ${ItalicWithMore} `;
@@ -13,22 +13,16 @@ export class TinyMceToolbars implements ToolbarSwitcher {
 
   }
 
-  switch(view: WysiwygView, operationMode: WysiwygMode): TinyMceMode {
+  switch(view: WysiwygView, mode: WysiwygMode): TinyMceMode {
     return (view == WysiwygInline)
-      ? operationMode == WysiwygDefault ? this.inline() : this.advanced(true)
-      : operationMode == WysiwygDefault ? this.dialog() : this.advanced(false);
+      ? mode == WysiwygAdvanced ? this.advanced(true) : this.inline(mode)
+      : mode == WysiwygAdvanced ? this.advanced(false) : this.dialog(mode);
   }
 
   public build(isInline: boolean): TinyMceModes {
-    const modes = {
-      inline: this.inline(),
-      standard: this.dialog(),
-      advanced: this.advanced(isInline),
-    };
-    const initial = isInline ? modes.inline : modes.standard;
+    const initial = isInline ? this.inline(WysiwygDefault) : this.dialog(WysiwygDefault);
     return {
       modeSwitcher: this,
-      modes,
       ...initial
     };
   }
@@ -41,11 +35,36 @@ export class TinyMceToolbars implements ToolbarSwitcher {
     return '| '+ (this.config.features.contentBlocks ? ` ${AddContentBlock} ` : '')
   }
 
+  private toolbarBasis(mode: WysiwygMode): string {
+    switch (mode) {
+      case WysiwygModeText: return ''
+        + StdUndoRedo
+        + StdFormat
+        + StdHeadings
+        // + this.richContent()
+        + StdNumList;
+      case WysiwygModeMedia: return ''
+        + StdUndoRedo
+        // + StdFormat
+        // + StdHeadings
+        + this.richContent()
+        // + StdNumList
+        ;
+      default: return ''
+        + StdUndoRedo
+        + StdFormat
+        + StdHeadings
+        + this.richContent()
+        + StdNumList;
+    }
+
+  }
+
   private advanced(isInline: boolean): TinyMceMode {
     return {
       currentMode: {
         view: isInline ? WysiwygInline : WysiwygDialog,
-        level: WysiwygAdvanced,
+        mode: WysiwygAdvanced,
       },
       menubar: true,
       toolbar: ''
@@ -58,26 +77,21 @@ export class TinyMceToolbars implements ToolbarSwitcher {
         + '| ' + (!isInline ? ` ${SxcImages} ${LinkFiles} ` : '') + ` ${LinkGroupPro} `
         + this.contentBlocks()
         + ' code '
-        // must check - this looks wrong isInline shows ToInlineMode ?
-        + (isInline ? ` ${ModeDefault} ${ToFullscreen} ` : ` ${ModeDefault} `),
+        + ` ${ModeDefault} ` + (isInline ? ` ${ToFullscreen} ` : ''),
       contextmenu: 'link image | charmap hr adamimage ' + (this.config.features.contentBlocks ? ` ${AddContentBlock} ` : '')
     };
   }
 
-  private dialog(): TinyMceMode {
+  private dialog(mode: WysiwygMode): TinyMceMode {
     var cnf = this.config.buttons.dialog;
     return {
       currentMode: {
         view: WysiwygDialog,
-        level: WysiwygDefault,
+        mode: mode,
       },
       menubar: false,
       toolbar: ''
-        + StdUndoRedo
-        + StdFormat
-        + StdHeadings
-        + this.richContent()
-        + StdNumList
+        + this.toolbarBasis(mode)
         + `| ${LinkFiles} ${LinkGroup} `
         + this.contentBlocks()
         + (cnf.source ? ' code ' : '')
@@ -86,22 +100,19 @@ export class TinyMceToolbars implements ToolbarSwitcher {
     };
   }
 
-  private inline(): TinyMceMode {
+  private inline(mode: WysiwygMode): TinyMceMode {
     var cnf = this.config.buttons.inline;
     return {
       currentMode: {
         view: WysiwygInline,
-        level: WysiwygDefault,
+        mode: mode,
       },
       menubar: false,
       toolbar: ''
-        + StdUndoRedo
-        + StdFormat
-        + StdHeadings
-        + this.richContent()
-        + StdNumList
+        + this.toolbarBasis(mode)
         + `| ${LinkGroup} `
         + this.contentBlocks()
+        + ` ${ToolbarModes} `
         + (cnf.source ? ' code ' : '')
         + (cnf.advanced ? ` ${ModeAdvanced} ` : '')
         + ` ${ToFullscreen} `,

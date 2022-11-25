@@ -10,11 +10,19 @@ export const TinyModeStandard = 'standard';
 export const WysiwygInline = 'inline';
 export const WysiwygDialog = 'dialog';
 export const WysiwygDefault = 'default';
+export const WysiwygModeText = 'text';
+export const WysiwygModeMedia = 'media';
 export const WysiwygAdvanced = 'advanced';
 export type TinyModeNames = typeof TinyModeStandard | typeof WysiwygInline | typeof WysiwygAdvanced;
 
-export type WysiwygMode = typeof WysiwygDefault | typeof WysiwygAdvanced;
+export type WysiwygMode = typeof WysiwygDefault | typeof WysiwygModeText | typeof WysiwygModeMedia | typeof WysiwygAdvanced;
 export type WysiwygView = typeof WysiwygInline | typeof WysiwygDialog;
+
+export const WysiwygModeCycle: WysiwygMode[] = [
+  WysiwygDefault,
+  WysiwygModeText,
+  WysiwygModeMedia
+];
 
 export interface RawEditorOptionsWithModes extends RawEditorOptions, Omit<TinyMceModes, 'menubar' | 'toolbar' | 'contextmenu'> {
 
@@ -23,7 +31,7 @@ export interface RawEditorOptionsWithModes extends RawEditorOptions, Omit<TinyMc
 export interface TinyMceMode {
   currentMode: {
     view: WysiwygView,
-    level: WysiwygMode,
+    mode: WysiwygMode,
   },
   menubar: boolean | string; // should match TinyMCE
   toolbar: string;
@@ -32,7 +40,7 @@ export interface TinyMceMode {
 
 export interface TinyMceModes extends TinyMceMode {
   modeSwitcher: ToolbarSwitcher,
-  modes: Record<TinyModeNames, TinyMceMode>;
+  // modes: Record<TinyModeNames, TinyMceMode>;
 }
 
 export interface ToolbarSwitcher {

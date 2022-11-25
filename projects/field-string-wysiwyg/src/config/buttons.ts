@@ -5,7 +5,7 @@ import { FieldStringWysiwygEditor, wysiwygEditorTag } from '../editor/editor';
 import { loadCustomIcons } from '../editor/load-icons.helper';
 import { Guid } from '../shared/guid';
 import { ImageFormats } from '../shared/models';
-import { RawEditorOptionsWithModes, WysiwygAdvanced, WysiwygInline, WysiwygMode, WysiwygView, WysiwygDefault } from './tinymce-helper-types';
+import { RawEditorOptionsWithModes, WysiwygAdvanced, WysiwygInline, WysiwygMode, WysiwygView, WysiwygDefault, WysiwygModeText, WysiwygModeMedia, WysiwygModeCycle } from './tinymce-helper-types';
 
 // Export Constant names because these will become standardized
 // So people can use them in their custom toolbars
@@ -17,6 +17,7 @@ export const LinkFiles = 'linkfiles';
 export const ListGroup = 'listgroup';
 export const ModeDefault = 'modestandard';
 // export const ToModeInline = 'modeinline';
+export const ToolbarModes = 'cms-modes';
 export const ModeAdvanced = 'modeadvanced';
 export const H1Group = 'h1group';
 export const H2Group = 'h2group';
@@ -63,6 +64,9 @@ export class TinyMceButtons {
     this.contentDivision();
     this.imageContextMenu(instSettings.imgSizes);
     this.contextMenus();
+
+    // experimental
+    this.addModes();
   }
 
   /** Inner call for most onItemAction commands */
@@ -218,7 +222,7 @@ export class TinyMceButtons {
     this.editor.ui.registry.addButton(ModeDefault, {
       icon: 'close',
       tooltip: 'SwitchMode.Standard',
-      onAction: (api) => { this.switchModeNew(WysiwygDefault); },
+      onAction: (api) => { this.switchMode(WysiwygDefault); },
     });
     // this.editor.ui.registry.addButton(ToModeInline, {
     //   icon: 'close',
@@ -228,8 +232,42 @@ export class TinyMceButtons {
     this.editor.ui.registry.addButton(ModeAdvanced, {
       icon: 'custom-school',
       tooltip: 'SwitchMode.Pro',
-      onAction: (api) => { this.switchModeNew(WysiwygAdvanced); },
+      onAction: (api) => { this.switchMode(WysiwygAdvanced); },
     });
+  }
+
+  // TODO: @2dm / @SDV
+  // - i18n
+  // - icons
+  // - finalize toolbars
+  // - see if we can right-align the last toolbar part
+  private addModes(): void {
+    this.editor.ui.registry.addSplitButton(ToolbarModes, {
+      ...this.splitButtonSpecs(() => this.cycleMode()),
+      icon: 'info',
+      tooltip: 'Switch work modes',
+      fetch: (callback) => {
+        callback([
+          this.splitButtonItem('info', 'Default / Balanced', () => { this.cycleMode(WysiwygDefault)}),
+          this.splitButtonItem('info', 'Writing Mode', () => { this.cycleMode(WysiwygModeText)}),
+          this.splitButtonItem('info', 'Rich Media Mode', () => { this.cycleMode(WysiwygModeMedia)}),
+        ])
+      }
+    });
+  }
+
+  private cycleMode(newMode?: WysiwygMode): void {
+    if (!newMode) {
+      const current = this.options.currentMode.mode;
+      const idx = WysiwygModeCycle.indexOf(current) + 1; // will be a number or 0 afterwards
+      newMode = (idx < WysiwygModeCycle.length)
+        ? WysiwygModeCycle[idx]
+        : WysiwygModeCycle[0];
+      console.log('2dm idx ' + idx + '; length' + WysiwygModeCycle.length + ';' + current);
+
+    }
+    console.log('2dm new ' + newMode);
+    this.switchMode(newMode);
   }
 
   /** Switch to Dialog Mode */
@@ -276,22 +314,6 @@ export class TinyMceButtons {
   }
 
   private headingsGroup(groupName: string, mainFormat: string, button: Ui.Toolbar.ToolbarSplitButtonSpec, buttons: Ui.Menu.ChoiceMenuItemSpec[]): void {
-    // const isGerman = this.editor.options.get('language') === 'de';
-    // const btns = this.editor.ui.registry.getAll().buttons;
-    // const blockquote = btns.blockquote;
-    // const imgName = isGerman ? 'custom-image-u' : 'custom-image-h';
-
-    // const HButtons = [
-    //   this.splitButtonItem(`${imgName}1`, btns.h1.text, () => this.toggleFormat('h1')),
-    //   this.splitButtonItem(`${imgName}2`, btns.h2.text, () => this.toggleFormat('h2')),
-    //   this.splitButtonItem(`${imgName}3`, btns.h3.text, () => this.toggleFormat('h3')),
-    //   this.splitButtonItem('custom-paragraph', 'Paragraph', () => this.toggleFormat('p')),
-    //   this.splitButtonItem(`${imgName}4`, btns.h4.text, () => this.toggleFormat('h4')),
-    //   this.splitButtonItem(`${imgName}5`, btns.h5.text, () => this.toggleFormat('h5')),
-    //   this.splitButtonItem(`${imgName}6`, btns.h6.text, () => this.toggleFormat('h6')),
-    //   this.splitButtonItem(blockquote.icon, blockquote.tooltip, () => this.toggleFormat('blockquote')),
-    // ];
-
     this.editor.ui.registry.addSplitButton(groupName, {
       ...this.splitButtonSpecs(() => this.toggleFormat(mainFormat)),
       columns: 4,
@@ -379,14 +401,19 @@ export class TinyMceButtons {
   }
 
   /** Mode switching to inline/dialog and advanced/normal */
-  private switchModeNew(mode: WysiwygMode, viewMode?: WysiwygView): void {
+  private switchMode(mode: WysiwygMode, viewMode?: WysiwygView): void {
       viewMode ??= this.options.currentMode.view;
       const newSettings = this.options.modeSwitcher.switch(viewMode, mode);
-      const editorOptions = {...this.options, ...newSettings};
-  
+      // don't create a new object, we must keep a refernec to the old
+      // don't do this: this.options = {...this.options, ...newSettings};
+      this.options.toolbar = newSettings.toolbar;
+      this.options.menubar = newSettings.menubar;
+      this.options.currentMode = newSettings.currentMode;
+      this.options.contextmenu = newSettings.contextmenu;
+
       // refresh editor toolbar
       this.editor.editorManager.remove(this.editor);
-      this.editor.editorManager.init(editorOptions);
+      this.editor.editorManager.init(this.options);
     }
   
 }
