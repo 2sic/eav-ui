@@ -24,7 +24,7 @@ export const WysiwygModeCycle: WysiwygMode[] = [
   WysiwygModeMedia
 ];
 
-export interface RawEditorOptionsWithModes extends RawEditorOptions, Omit<TinyMceModes, 'menubar' | 'toolbar' | 'contextmenu'> {
+export interface RawEditorOptionsWithModes extends RawEditorOptions, Omit<TinyMceModeWithSwitcher, 'menubar' | 'toolbar' | 'contextmenu'> {
 
 }
 
@@ -38,9 +38,8 @@ export interface TinyMceMode {
   contextmenu: string;
 }
 
-export interface TinyMceModes extends TinyMceMode {
+export interface TinyMceModeWithSwitcher extends TinyMceMode {
   modeSwitcher: ToolbarSwitcher,
-  // modes: Record<TinyModeNames, TinyMceMode>;
 }
 
 export interface ToolbarSwitcher {

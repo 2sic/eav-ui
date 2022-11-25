@@ -1,6 +1,6 @@
-import { AddContentBlock, ContentDivision, ToFullscreen, ItalicWithMore, LinkFiles, LinkGroup, LinkGroupPro, ListGroup, ModeAdvanced, ModeDefault, SxcImages, AddContentSplit, H3Group, ToolbarModes, ToolbarModeToggle, H4Group } from './buttons';
+import { AddContentBlock, ContentDivision, ToFullscreen, ItalicWithMore, LinkFiles, LinkGroup, LinkGroupPro, ListGroup, ModeAdvanced, ModeDefault, SxcImages, AddContentSplit, H3Group, ToolbarModeToggle, H4Group } from './buttons';
 import { TinyMceButtonsConfig, TinyMceModeConfig } from './tinymce-config';
-import { TinyMceMode, TinyMceModes, ToolbarSwitcher, WysiwygMode, WysiwygView, WysiwygInline, WysiwygDialog, WysiwygDefault, WysiwygAdvanced } from './tinymce-helper-types';
+import { TinyMceMode, TinyMceModeWithSwitcher, ToolbarSwitcher, WysiwygMode, WysiwygView, WysiwygInline, WysiwygDialog, WysiwygDefault, WysiwygAdvanced } from './tinymce-helper-types';
 
 type ButtonSet = Record<WysiwygMode, string>;
 type ButtonSetConfig = Record<WysiwygMode, boolean>;
@@ -62,6 +62,12 @@ const Bs92Advanced: ButtonSet = {
   text: NoButtons,
   media: NoButtons,
 };
+const Bs93CloseAdvanced: ButtonSet = {
+  default: NoButtons,
+  advanced: ModeDefault,
+  text: NoButtons,
+  media: NoButtons,
+}
 const Bs99FullScreen: ButtonSet = {
   default: ToFullscreen,
   advanced: ToFullscreen,
@@ -73,44 +79,42 @@ const BsContextMenu: ButtonSet = {
   default: 'charmap hr',
   advanced: 'charmap hr',
   text: 'charmap hr | link',
-  media: 'charmap hr | link image adamimage'// hat is adamimage?
+  media: 'charmap hr | link image adamimage'// TODO: what is adamimage?
 }
 
 
 function selectFromSet(set: ButtonSet | ButtonSetConfig, mode: WysiwygMode) {
-  console.log('2dm', mode, set);
   return set?.[mode];
 }
 
 export class TinyMceToolbars implements ToolbarSwitcher {
 
   constructor(private config: TinyMceModeConfig) {
-
   }
 
-  switch(view: WysiwygView, mode: WysiwygMode): TinyMceMode {
-    return (view == WysiwygInline)
-      ? mode == WysiwygAdvanced ? this.advanced(true) : this.inline(mode)
-      : mode == WysiwygAdvanced ? this.advanced(false) : this.dialog(mode);
-  }
-
-  public build(isInline: boolean): TinyMceModes {
-    const initial = isInline ? this.inline(WysiwygDefault) : this.dialog(WysiwygDefault);
+  public build(isInline: boolean): TinyMceModeWithSwitcher {
+    const initial = this.switch(isInline ? WysiwygInline : WysiwygDialog, WysiwygDefault);
     return {
       modeSwitcher: this,
       ...initial
     };
   }
 
-  private richContent(): string {
-    return '| ' + (this.config.features.richContent ? ` ${ContentDivision} ${AddContentSplit} ` : '')
+  public switch(view: WysiwygView, mode: WysiwygMode): TinyMceMode {
+    var config = this.config.buttons[view];
+    return {
+      currentMode: {
+        view: view,
+        mode: mode,
+      },
+      menubar: mode === WysiwygAdvanced,
+      toolbar: this.toolbar(mode, config),
+      contextmenu: selectFromSet(BsContextMenu, WysiwygAdvanced) 
+        + (this.config.features.contentBlocks ? ` ${AddContentBlock} ` : ''),
+    };
   }
 
-  private contentBlocks(): string {
-    return '| '+ (this.config.features.contentBlocks ? ` ${AddContentBlock} ` : '')
-  }
-
-  private toolbarBasis(mode: WysiwygMode, cnf: TinyMceButtonsConfig): string {
+  private toolbar(mode: WysiwygMode, cnf: TinyMceButtonsConfig): string {
     const list = [
       selectFromSet(Bs1Intro, mode),
       selectFromSet(Bs2Format, mode),
@@ -122,46 +126,18 @@ export class TinyMceToolbars implements ToolbarSwitcher {
       [
         cnf.source && Bs91Code,
         cnf.advanced && selectFromSet(Bs92Advanced, mode),
+        cnf.advanced && selectFromSet(Bs93CloseAdvanced, mode),
         selectFromSet(Bs99FullScreen, mode),
       ].join(' '),
     ];
     return list.join(' | ');
   }
 
-  private advanced(isInline: boolean): TinyMceMode {
-    var cnf = isInline ? this.config.buttons.inline : this.config.buttons.dialog;
-    return {
-      currentMode: {
-        view: isInline ? WysiwygInline : WysiwygDialog,
-        mode: WysiwygAdvanced,
-      },
-      menubar: true,
-      toolbar: this.toolbarBasis(WysiwygAdvanced, cnf),
-      contextmenu: selectFromSet(BsContextMenu, WysiwygAdvanced) + ' ' + (this.config.features.contentBlocks ? ` ${AddContentBlock} ` : '')
-    };
+  private richContent(): string {
+    return this.config.features.richContent ? `${ContentDivision} ${AddContentSplit}` : null;
   }
 
-  private dialog(mode: WysiwygMode): TinyMceMode {
-    return {
-      currentMode: {
-        view: WysiwygDialog,
-        mode: mode,
-      },
-      menubar: false,
-      toolbar: this.toolbarBasis(mode, this.config.buttons.dialog),
-      contextmenu: selectFromSet(BsContextMenu, mode) + ' ' + (this.config.features.contentBlocks ? ` ${AddContentBlock} ` : '')
-    };
-  }
-
-  private inline(mode: WysiwygMode): TinyMceMode {
-    return {
-      currentMode: {
-        view: WysiwygInline,
-        mode: mode,
-      },
-      menubar: false,
-      toolbar: this.toolbarBasis(mode, this.config.buttons.dialog),
-      contextmenu: selectFromSet(BsContextMenu, mode) + ' ' + (this.config.features.contentBlocks ? ` ${AddContentBlock} ` : '')
-    };
+  private contentBlocks(): string {
+    return this.config.features.contentBlocks ? AddContentBlock : null;
   }
 }
