@@ -5,7 +5,7 @@ import { FieldStringWysiwygEditor, wysiwygEditorTag } from '../editor/editor';
 import { loadCustomIcons } from '../editor/load-icons.helper';
 import { Guid } from '../shared/guid';
 import { ImageFormats } from '../shared/models';
-import { RawEditorOptionsWithModes, WysiwygAdvanced, WysiwygInline, WysiwygMode, WysiwygView, WysiwygDefault, WysiwygModeText, WysiwygModeMedia, WysiwygModeCycle } from './tinymce-helper-types';
+import { RawEditorOptionsWithModes, WysiwygAdvanced, WysiwygMode, WysiwygView, WysiwygDefault, WysiwygModeText, WysiwygModeMedia, WysiwygModeCycle } from './tinymce-helper-types';
 
 // Export Constant names because these will become standardized
 // So people can use them in their custom toolbars
@@ -29,8 +29,22 @@ export const ContentDivision = 'contentdivision';
 export const ToFullscreen = 'expandfulleditor'; // not sure what this does
 export const ImgResponsive = 'imgresponsive';
 
+
+export const ImgEnhancedAlignLeft = 'wysiwyg-img-left';
+export const ImgEnhancedAlignCenter = 'wysiwyg-img-center';
+export const ImgEnhancedAlignRight = 'wysiwyg-img-right';
+// New wysiwyg alignments
+const ImgAligmentsEnhanced = [
+  ImgEnhancedAlignLeft,
+  ImgEnhancedAlignCenter,
+  ImgEnhancedAlignRight,
+];
 export const AddContentSplit = 'contentsplit';
-const ContentDivisionClass = 'content-division';
+
+
+const richPrefix = 'wysiwyg';
+const ContentDivisionClass = `${richPrefix}-division`;
+
 
 type FuncVoid = () => void | unknown;
 
@@ -39,7 +53,11 @@ type FuncVoid = () => void | unknown;
 /** Register all kinds of buttons on TinyMCE */
 export class TinyMceButtons {
 
-  constructor(private field: FieldStringWysiwygEditor, private editor: Editor, private adam: Adam, private options: RawEditorOptionsWithModes) {
+  constructor(
+    private field: FieldStringWysiwygEditor,
+    private editor: Editor,
+    private adam: Adam,
+    private options: RawEditorOptionsWithModes) {
 
   }
 
@@ -168,7 +186,7 @@ export class TinyMceButtons {
           this.splitButtonItem(imageButton.icon, 'Image.AdamImage.Tooltip', () => adam.toggle(false, true)),
           this.splitButtonItem('custom-file-dnn', 'Image.DnnImage.Tooltip', () => adam.toggle(true, true)),
           this.splitButtonItem(linkButton.icon, imageButton.tooltip, 'mceImage'),
-          this.splitButtonItem(alignleftButton.icon, alignleftButton.tooltip,'JustifyLeft'),
+          this.splitButtonItem(alignleftButton.icon, alignleftButton.tooltip, 'JustifyLeft'),
           this.splitButtonItem(aligncenterButton.icon, aligncenterButton.tooltip, 'JustifyCenter'),
           this.splitButtonItem(alignrightButton.icon, alignrightButton.tooltip, 'JustifyRight'),
         ]);
@@ -243,7 +261,7 @@ export class TinyMceButtons {
       icon,
       tooltip,
       onAction: action,
-    });    
+    });
   }
 
   // TODO: @2dm / @SDV
@@ -261,10 +279,10 @@ export class TinyMceButtons {
       tooltip: 'SwitchMode.Tooltip',
       fetch: (callback) => {
         callback([
-          this.splitButtonItem('info', 'Default / Balanced', () => { this.cycleMode(WysiwygDefault)}),
-          this.splitButtonItem('info', 'Writing Mode', () => { this.cycleMode(WysiwygModeText)}),
-          this.splitButtonItem('info', 'Rich Media Mode', () => { this.cycleMode(WysiwygModeMedia)}),
-        ])
+          this.splitButtonItem('info', 'Default / Balanced', () => { this.cycleMode(WysiwygDefault); }),
+          this.splitButtonItem('info', 'Writing Mode', () => { this.cycleMode(WysiwygModeText); }),
+          this.splitButtonItem('info', 'Rich Media Mode', () => { this.cycleMode(WysiwygModeMedia); }),
+        ]);
       }
     });
   }
@@ -276,10 +294,8 @@ export class TinyMceButtons {
       newMode = (idx < WysiwygModeCycle.length)
         ? WysiwygModeCycle[idx]
         : WysiwygModeCycle[0];
-      console.log('2dm idx ' + idx + '; length' + WysiwygModeCycle.length + ';' + current);
 
     }
-    console.log('2dm new ' + newMode);
     this.switchMode(newMode);
   }
 
@@ -329,7 +345,12 @@ export class TinyMceButtons {
     this.headingsGroup(H4Group, 'h4', btns.h4 as Ui.Toolbar.ToolbarSplitButtonSpec, HButtons);
   }
 
-  private headingsGroup(groupName: string, mainFormat: string, button: Ui.Toolbar.ToolbarSplitButtonSpec, buttons: Ui.Menu.ChoiceMenuItemSpec[]): void {
+  private headingsGroup(
+    groupName: string,
+    mainFormat: string,
+    button: Ui.Toolbar.ToolbarSplitButtonSpec,
+    buttons: Ui.Menu.ChoiceMenuItemSpec[]
+  ): void {
     this.editor.ui.registry.addSplitButton(groupName, {
       ...this.splitButtonSpecs(() => this.toggleFormat(mainFormat)),
       columns: 4,
@@ -355,7 +376,7 @@ export class TinyMceButtons {
   private addButtonContentSplitter(): void {
     const buttons = this.editor.ui.registry.getAll().buttons;
     this.editor.ui.registry.addButton(AddContentSplit, {
-      icon: buttons.hr.icon, // 'custom-content-block',
+      icon: buttons.hr.icon,
       tooltip: 'ContentBlock.Add',
       onAction: (api) => {
         const guid = Guid.uuid().toLowerCase();
@@ -380,7 +401,9 @@ export class TinyMceButtons {
 
   /** Image alignment / size buttons in context menu */
   private imageContextMenu(imgSizes: number[]): void {
-    this.editor.ui.registry.addSplitButton(ImgResponsive, {
+    const reg = this.editor.ui.registry;
+    const formatter = this.editor.formatter;
+    reg.addSplitButton(ImgResponsive, {
       ...this.splitButtonSpecs(() => this.editor.formatter.apply('imgwidth100')),
       icon: 'resize',
       tooltip: '100%',
@@ -391,11 +414,21 @@ export class TinyMceButtons {
             icon: 'resize',
             text: `${imgSize}%`,
             type: 'choiceitem',
-            value: (() => { this.editor.formatter.apply(`imgwidth${imgSize}`); }) as any,
+            value: (() => { formatter.apply(`imgwidth${imgSize}`); }) as any,
           })),
         );
       },
     });
+
+    // New wysiwyg alignments
+    const tglImgAlign = (alignment: string) => {
+      ImgAligmentsEnhanced.filter((v) => v !== alignment).forEach((v) => formatter.remove(v));
+      formatter.toggle(alignment);
+    };
+    const btns = this.editor.ui.registry.getAll().buttons;
+    this.regBtn(ImgEnhancedAlignLeft, btns.alignleft?.icon, btns.alignleft?.tooltip, () => { tglImgAlign(ImgEnhancedAlignLeft); });
+    this.regBtn(ImgEnhancedAlignCenter, btns.aligncenter?.icon, btns.aligncenter?.tooltip, () => { tglImgAlign(ImgEnhancedAlignCenter); });
+    this.regBtn(ImgEnhancedAlignRight, btns.alignright?.icon, btns.alignright?.tooltip, () => { tglImgAlign(ImgEnhancedAlignRight); });
   }
 
   /** Add Context toolbars */
@@ -406,8 +439,12 @@ export class TinyMceButtons {
       items: 'link unlink',
       predicate: (elem) => elem.nodeName.toLocaleLowerCase() === 'a' && rangeSelected(),
     });
+    // TODO: DIFFERENT DEPENDING ON WysiwygMode
+    const imgAlign = this.options.eavConfig.features.wysiwygEnhanced
+      ? `${ImgEnhancedAlignLeft} ${ImgEnhancedAlignCenter} ${ImgEnhancedAlignRight}`
+      : 'alignleft aligncenter alignright';
     this.editor.ui.registry.addContextToolbar('imgContextToolbar', {
-      items: 'image | alignleft aligncenter alignright imgresponsive | removeformat | remove',
+      items: `image | ${imgAlign} ${ImgResponsive} | removeformat | remove`,
       predicate: (elem) => elem.nodeName.toLocaleLowerCase() === 'img' && rangeSelected(),
     });
     this.editor.ui.registry.addContextToolbar('listContextToolbar', {
@@ -431,7 +468,6 @@ export class TinyMceButtons {
       this.editor.editorManager.remove(this.editor);
       this.editor.editorManager.init(this.options);
     }
-  
 }
 
 /** Register all formats - like img-sizes */
@@ -449,6 +485,11 @@ function registerTinyMceFormats(editor: Editor, imgSizes: number[]): void {
     ];
   }
   editor.formatter.register(imageFormats);
+
+  // New enhanced mode
+  editor.formatter.register(ImgEnhancedAlignLeft, { selector: 'img', classes: 'wysiwyg-left'  });
+  editor.formatter.register(ImgEnhancedAlignCenter, { selector: 'img', classes: 'wysiwyg-center'  });
+  editor.formatter.register(ImgEnhancedAlignRight, { selector: 'img', classes: 'wysiwyg-right'  });
 }
 
 function openPagePicker(fieldStringWysiwyg: FieldStringWysiwygEditor): void {

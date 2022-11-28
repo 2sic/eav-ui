@@ -109,12 +109,12 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   }
 
   /** This will initialized an instance of an editor. Everything else is kind of global. */
-  private tinyMceSetup(editor: Editor, rawEditorOptions: RawEditorOptions): void {
+  private tinyMceSetup(editor: Editor, rawEditorOptions: RawEditorOptionsWithModes): void {
     this.editor = editor;
     editor.on('init', _event => {
       consoleLogWebpack(`${wysiwygEditorTag} TinyMCE initialized`, editor);
       this.reconfigure?.editorOnInit?.(editor);
-      new TinyMceButtons(this, editor, this.connector._experimental.adam, rawEditorOptions as unknown as RawEditorOptionsWithModes).registerAll();
+      new TinyMceButtons(this, editor, this.connector._experimental.adam, rawEditorOptions).registerAll();
       if (!this.reconfigure?.disableAdam) {
         attachAdam(editor, this.connector._experimental.adam);
       }

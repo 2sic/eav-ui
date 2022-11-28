@@ -70,7 +70,7 @@
   }
 
   // Sections in the WYSIWYG
-  div.content-division {
+  div.wysiwyg-division {
     border: lightblue 1px dashed;
     display: flex;
     justify-content: start;
@@ -109,7 +109,7 @@
     }
   }
 
-  hr.content-division {
+  hr.wysiwyg-division {
     border: 1px dashed lightblue;
     display: block;
     width: 100%;

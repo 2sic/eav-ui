@@ -1,5 +1,5 @@
 import { AddContentBlock, ContentDivision, ToFullscreen, ItalicWithMore, LinkFiles, LinkGroup, LinkGroupPro, ListGroup, ModeAdvanced, ModeDefault, SxcImages, AddContentSplit, H3Group, ToolbarModeToggle, H4Group } from './buttons';
-import { TinyMceButtonsConfig, TinyMceModeConfig } from './tinymce-config';
+import { TinyEavButtons, TinyEavConfig } from './tinymce-config';
 import { TinyMceMode, TinyMceModeWithSwitcher, ToolbarSwitcher, WysiwygMode, WysiwygView, WysiwygInline, WysiwygDialog, WysiwygDefault, WysiwygAdvanced } from './tinymce-helper-types';
 
 type ButtonSet = Record<WysiwygMode, string>;
@@ -7,7 +7,7 @@ type ButtonSetConfig = Record<WysiwygMode, boolean>;
 const NoButtons = ''; // must be empty string
 
 const Bs1Intro: ButtonSet = {
-  default: ` ${ToolbarModeToggle} undo pastetext`,
+  default: ` ${ToolbarModeToggle} undo redo pastetext`,
   advanced: ` ${ToolbarModeToggle} undo pastetext`,
   text: ` ${ToolbarModeToggle} undo redo pastetext paste removeformat`,
   media: ` ${ToolbarModeToggle} undo pastimage-todo `  // TODO: create pasteimage
@@ -18,42 +18,42 @@ const Bs2Format: ButtonSet = {
   advanced: `styles bold ${ItalicWithMore}`,
   text: `bold ${ItalicWithMore}`,
   media: NoButtons,
-}
+};
 
 const Bs3Headings: ButtonSet = {
   default: `h2 ${H3Group}`,
   advanced: `h2 ${H3Group}`,
   text: `h2 h3 ${H4Group}`,
   media: NoButtons,
-}
+};
 
 const Bs4NumList: ButtonSet = {
   default: `numlist ${ListGroup}`,
   advanced: `numlist ${ListGroup}`,
   text: 'numlist bullist outdent indent',
   media: NoButtons
-}
+};
 
 const Bs5Links: ButtonSet = {
   default: `${LinkGroup}`,
   advanced: `${LinkGroupPro}`,
   text: `${LinkGroup}`,
   media: `${SxcImages} ${LinkFiles}`
-}
+};
 
 const Bs6RichMedia: ButtonSetConfig = {
   default: false,
   advanced: false,
   text: false,
   media: true,
-}
+};
 
 const Bs7ContentBlocks: ButtonSetConfig = {
   default: true,
   advanced: false,
   text: false,
   media: true,
-}
+};
 
 const Bs91Code = 'code';
 const Bs92Advanced: ButtonSet = {
@@ -67,7 +67,7 @@ const Bs93CloseAdvanced: ButtonSet = {
   advanced: ModeDefault,
   text: NoButtons,
   media: NoButtons,
-}
+};
 const Bs99FullScreen: ButtonSet = {
   default: ToFullscreen,
   advanced: ToFullscreen,
@@ -80,7 +80,7 @@ const BsContextMenu: ButtonSet = {
   advanced: 'charmap hr',
   text: 'charmap hr | link',
   media: 'charmap hr | link image adamimage'// TODO: what is adamimage?
-}
+};
 
 
 function selectFromSet(set: ButtonSet | ButtonSetConfig, mode: WysiwygMode) {
@@ -89,7 +89,7 @@ function selectFromSet(set: ButtonSet | ButtonSetConfig, mode: WysiwygMode) {
 
 export class TinyMceToolbars implements ToolbarSwitcher {
 
-  constructor(private config: TinyMceModeConfig) {
+  constructor(private config: TinyEavConfig) {
   }
 
   public build(isInline: boolean): TinyMceModeWithSwitcher {
@@ -101,20 +101,20 @@ export class TinyMceToolbars implements ToolbarSwitcher {
   }
 
   public switch(view: WysiwygView, mode: WysiwygMode): TinyMceMode {
-    var config = this.config.buttons[view];
+    const config = this.config.buttons[view];
     return {
       currentMode: {
-        view: view,
-        mode: mode,
+        view,
+        mode,
       },
       menubar: mode === WysiwygAdvanced,
       toolbar: this.toolbar(mode, config),
-      contextmenu: selectFromSet(BsContextMenu, WysiwygAdvanced) 
+      contextmenu: selectFromSet(BsContextMenu, WysiwygAdvanced)
         + (this.config.features.contentBlocks ? ` ${AddContentBlock} ` : ''),
     };
   }
 
-  private toolbar(mode: WysiwygMode, cnf: TinyMceButtonsConfig): string {
+  private toolbar(mode: WysiwygMode, cnf: TinyEavButtons): string {
     const list = [
       selectFromSet(Bs1Intro, mode),
       selectFromSet(Bs2Format, mode),
@@ -134,7 +134,7 @@ export class TinyMceToolbars implements ToolbarSwitcher {
   }
 
   private richContent(): string {
-    return this.config.features.richContent ? `${ContentDivision} ${AddContentSplit}` : null;
+    return this.config.features.wysiwygEnhanced ? `${ContentDivision} ${AddContentSplit}` : null;
   }
 
   private contentBlocks(): string {

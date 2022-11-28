@@ -1,14 +1,14 @@
 import type { Editor } from 'tinymce';
 import { FeaturesConstants } from '../../../eav-ui/src/app/edit/shared/constants';
 import { EavWindow } from '../../../eav-ui/src/app/shared/models/eav-window.model';
-import { AddOnSettings, Connector, WysiwygReconfigure } from '../../../edit-types';
+import { AddOnSettings, Connector, StringWysiwyg, WysiwygReconfigure } from '../../../edit-types';
 import * as contentStyle from '../editor/tinymce-content.scss';
 import { DefaultAddOnSettings, DefaultOptions, DefaultPaste, DefaultPlugins } from './defaults';
 import { RawEditorOptionsWithModes } from './tinymce-helper-types';
 import { TinyMceToolbars } from './toolbars';
 import { TinyMceTranslations } from './translations';
-import { TinyMceModeConfig } from './tinymce-config';
-import badMutable from 'dayjs/plugin/badMutable';
+import { TinyEavConfig } from './tinymce-config';
+import { InputTypeConstants } from '../../../eav-ui/src/app/content-type-fields/constants/input-type.constants';
 
 declare const window: EavWindow;
 const reconfigErr = `Very likely an error in your reconfigure code. Check http://r.2sxc.org/field-wysiwyg`;
@@ -49,40 +49,43 @@ export class TinyMceConfigurator {
   }
 
   /** Construct TinyMCE options */
-  buildOptions(containerClass: string, fixedToolbarClass: string, inlineMode: boolean, setup: (editor: Editor) => void): RawEditorOptionsWithModes {
+  buildOptions(containerClass: string, fixedToolbarClass: string, inlineMode: boolean,
+    setup: (editor: Editor) => void
+  ): RawEditorOptionsWithModes {
     const connector = this.connector;
     const exp = connector._experimental;
     // TODO @SDV - done by 2dm
     // Create a TinyMceModeConfig object with bool only
     // Then pass this object into the build(...) below, replacing the original 3 parameters
-    const fsettings = connector.field.settings;
+    const fsettings = connector.field.settings as StringWysiwyg;
     const bSource = fsettings.ButtonSource?.toLowerCase();
     const bAdvanced = fsettings.ButtonAdvanced?.toLowerCase();
-    const bContDiv = "true"; // fsettings.ContentDivisions?.toLowerCase(); // WIP for now just true
+    const bContDiv = 'true'; // fsettings.ContentDivisions?.toLowerCase(); // WIP for now just true
     const dropzone = exp.dropzone;
     const adam = exp.adam;
 
     // @SDV this is what I had expected
-    const modeConfig: TinyMceModeConfig = {
+    const eavConfig: TinyEavConfig = {
       features: {
-        contentBlocks: exp.allInputTypeNames[connector.field.index + 1]?.inputType === 'entity-content-blocks',
-        richContent: bContDiv == "true",
+        // contentBlocks is on if the following field can hold inner-content items
+        contentBlocks: exp.allInputTypeNames[connector.field.index + 1]?.inputType === InputTypeConstants.EntityContentBlocks,
+        wysiwygEnhanced: bContDiv === 'true',
       },
       buttons: {
         inline: {
-          source: bSource == "true",
-          advanced: bAdvanced == "true",
-          contentDivisions: bContDiv == "true",
+          source: bSource === 'true',
+          advanced: bAdvanced === 'true',
+          contentDivisions: bContDiv === 'true',
         },
         dialog: {
-          source: bSource != "false",
-          advanced: bAdvanced != "false",
-          contentDivisions: bContDiv == "true",
+          source: bSource !== 'false',
+          advanced: bAdvanced !== 'false',
+          contentDivisions: bContDiv === 'true',
         }
       }
-    }
+    };
 
-    const toolbarModes = new TinyMceToolbars(modeConfig).build(inlineMode);
+    const toolbarModes = new TinyMceToolbars(eavConfig).build(inlineMode);
 
     if (dropzone == null || adam == null) {
       console.error(`Dropzone or ADAM Config not available, some things won't work`);
@@ -104,6 +107,7 @@ export class TinyMceConfigurator {
       content_style: contentStyle.default,
       content_css: contentCssFile,
       setup,
+      eavConfig,
       ...toolbarModes,
       ...TinyMceTranslations.getLanguageOptions(this.language),
       ...(exp.isFeatureEnabled(FeaturesConstants.WysiwygPasteFormatted) ? DefaultPaste.formattedText : {}),
