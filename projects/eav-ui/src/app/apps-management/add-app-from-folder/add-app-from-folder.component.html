@@ -21,7 +21,7 @@
     <button type="button" mat-raised-button (click)="closeDialog()">
       Cancel
     </button>
-    <button type="button" mat-raised-button color="accent" [disabled]="pendingApps.length === 0" (click)="install()">
+    <button type="button" mat-raised-button color="accent" [disabled]="pendingApps.length === 0 || installing" (click)="install()">
       Install
     </button>
   </div> 

@@ -24,6 +24,7 @@ export class AddAppFromFolderComponent implements OnInit, OnDestroy {
 
   private refreshApps$ = new Subject<void>();
   pendingApps: PendingApp[] = [];
+  installing: boolean = false;
 
   constructor(
     private dialogRef: MatDialogRef<AddAppFromFolderComponent>,
@@ -55,11 +56,14 @@ export class AddAppFromFolderComponent implements OnInit, OnDestroy {
   }
 
   install(): void {
+    this.installing = true;
+    this.snackBar.open('Installing', undefined, { duration: 2000 });
     this.appsListService.installPendingApps(this.pendingApps).subscribe({
       error: () => {
         this.snackBar.open('Failed to install app. Please check console for more information', undefined, { duration: 3000 });
       },
       next: () => {
+        this.installing = false;
         this.snackBar.open('Installed app', undefined, { duration: 2000 });
         this.closeDialog();
       },
