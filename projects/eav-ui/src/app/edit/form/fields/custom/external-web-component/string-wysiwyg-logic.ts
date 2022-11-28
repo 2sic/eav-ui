@@ -12,6 +12,7 @@ export class StringWysiwygLogic extends FieldLogicBase {
     fixedSettings.ButtonAdvanced ||= '';
     fixedSettings.ContentCss ||= '';
     fixedSettings.InlineInitialHeight ||= '3';
+    fixedSettings.WysiwygMode ||= 'basic';
     return fixedSettings;
   }
 }

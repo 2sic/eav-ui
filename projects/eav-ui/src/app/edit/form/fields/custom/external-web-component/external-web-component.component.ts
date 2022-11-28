@@ -6,7 +6,7 @@ import { EavService, EditRoutingService, FieldsSettingsService, ScriptsLoaderSer
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { BaseComponent } from '../../base/base.component';
 import { ExternalWebComponentTemplateVars } from './external-web-component.models';
-import { StringWysiwygLogic } from './external-web-components-logics';
+import { StringWysiwygLogic } from './string-wysiwyg-logic';
 
 @Component({
   selector: InputTypeConstants.ExternalWebComponent,
