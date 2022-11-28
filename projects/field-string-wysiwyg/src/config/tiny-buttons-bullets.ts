@@ -1,3 +1,4 @@
+import { ListGroup } from './public';
 import { ButtonsMakerParams, TinyButtonsBase } from './tiny-buttons-base';
 
 export class TinyButtonsBullets extends TinyButtonsBase {
@@ -6,9 +7,30 @@ export class TinyButtonsBullets extends TinyButtonsBase {
   }
 
   register(): void {
+    this.listButtons();
     this.contextMenus();
   }
 
+
+  /** Lists / Indent / Outdent etc. */
+  private listButtons(): void {
+    const btns = this.getButtons();
+
+    // Drop-down with numbered list, bullet list, ...
+    this.editor.ui.registry.addSplitButton(ListGroup, {
+      ...this.splitButtonSpecs('InsertUnorderedList'),
+      columns: 3,
+      icon: btns.bullist.icon,
+      presets: 'listpreview',
+      tooltip: btns.bullist.tooltip,
+      fetch: (callback) => {
+        callback([
+          this.splitButtonItem(btns.outdent.icon, btns.outdent.tooltip, 'Outdent'),
+          this.splitButtonItem(btns.indent.icon, btns.indent.tooltip, 'Indent'),
+        ]);
+      },
+    });
+  }
 
   /** Add Context toolbars */
   private contextMenus(): void {

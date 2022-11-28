@@ -32,7 +32,7 @@ export const ToolbarModes = 'wysiwyg-toolbar-modes';
 export const ModeAdvanced = 'modeadvanced';
 export const AddContentBlock = 'addcontentblock';
 export const ContentDivision = 'contentdivision';
-export const ToFullscreen = 'expandfulleditor'; // not sure what this does
+export const ToFullscreen = 'expandfulleditor';
 
 export const AddContentSplit = 'contentsplit';
 

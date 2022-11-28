@@ -95,6 +95,7 @@ export class TinyMceToolbars implements ToolbarSwitcher {
   }
 
   public build(isInline: boolean): TinyMceModeWithSwitcher {
+console.log('2dm inline', isInline);
     const initial = this.switch(isInline ? WysiwygInline : WysiwygDialog, WysiwygDefault);
     return {
       modeSwitcher: this,
@@ -110,13 +111,14 @@ export class TinyMceToolbars implements ToolbarSwitcher {
         mode,
       },
       menubar: mode === WysiwygAdvanced,
-      toolbar: this.toolbar(mode, config),
+      toolbar: this.toolbar(mode, view, config),
       contextmenu: selectFromSet(BsContextMenu, WysiwygAdvanced)
         + (this.config.features.contentBlocks ? ` ${AddContentBlock} ` : ''),
     };
   }
 
-  private toolbar(mode: WysiwygMode, cnf: TinyEavButtons): string {
+  private toolbar(mode: WysiwygMode, view: WysiwygView, config: TinyEavButtons): string {
+console.log('2dm advanced', config.advanced, config, mode);
     const list = [
       selectFromSet(Bs1Intro, mode),
       selectFromSet(Bs2Format, mode),
@@ -126,10 +128,12 @@ export class TinyMceToolbars implements ToolbarSwitcher {
       (selectFromSet(Bs6RichMedia, mode) ? this.richContent() : null),
       (selectFromSet(Bs7ContentBlocks, mode) ? this.contentBlocks() : null),
       [
-        cnf.source && Bs91Code,
-        cnf.advanced && selectFromSet(Bs92Advanced, mode),
-        cnf.advanced && selectFromSet(Bs93CloseAdvanced, mode),
-        selectFromSet(Bs99FullScreen, mode),
+        config.source && Bs91Code,
+        config.advanced && selectFromSet(Bs92Advanced, mode),
+        config.advanced && selectFromSet(Bs93CloseAdvanced, mode),
+        // must only allow full screen if allowed
+        view !== 'dialog' && selectFromSet(Bs99FullScreen, mode),
+
       ].join(' '),
     ];
     return list.join(' | ');
