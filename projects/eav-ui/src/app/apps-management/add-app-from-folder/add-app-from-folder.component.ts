@@ -60,6 +60,7 @@ export class AddAppFromFolderComponent implements OnInit, OnDestroy {
     this.snackBar.open('Installing', undefined, { duration: 2000 });
     this.appsListService.installPendingApps(this.pendingApps).subscribe({
       error: () => {
+        this.installing = false;
         this.snackBar.open('Failed to install app. Please check console for more information', undefined, { duration: 3000 });
       },
       next: () => {
