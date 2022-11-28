@@ -1,6 +1,8 @@
-import { AddContentBlock, ContentDivision, ToFullscreen, ItalicWithMore, LinkFiles, LinkGroup, LinkGroupPro, ListGroup, ModeAdvanced, ModeDefault, SxcImages, AddContentSplit, H3Group, ToolbarModeToggle, H4Group } from './buttons';
+// tslint:disable-next-line: max-line-length
+import { AddContentBlock, AddContentSplit, ContentDivision, HGroups, ItalicWithMore, LinkFiles, LinkGroup, LinkGroupPro, ListGroup, ModeAdvanced, ModeDefault, SxcImages, ToFullscreen, ToolbarModeToggle } from './public';
 import { TinyEavButtons, TinyEavConfig } from './tinymce-config';
-import { TinyMceMode, TinyMceModeWithSwitcher, ToolbarSwitcher, WysiwygMode, WysiwygView, WysiwygInline, WysiwygDialog, WysiwygDefault, WysiwygAdvanced } from './tinymce-helper-types';
+// tslint:disable-next-line: max-line-length
+import { TinyMceMode, TinyMceModeWithSwitcher, ToolbarSwitcher, WysiwygAdvanced, WysiwygDefault, WysiwygDialog, WysiwygInline, WysiwygMode, WysiwygView } from './tinymce-helper-types';
 
 type ButtonSet = Record<WysiwygMode, string>;
 type ButtonSetConfig = Record<WysiwygMode, boolean>;
@@ -21,9 +23,9 @@ const Bs2Format: ButtonSet = {
 };
 
 const Bs3Headings: ButtonSet = {
-  default: `h2 ${H3Group}`,
-  advanced: `h2 ${H3Group}`,
-  text: `h2 h3 ${H4Group}`,
+  default: `h2 ${HGroups.h3}`,
+  advanced: `h2 ${HGroups.h3}`,
+  text: `h2 h3 ${HGroups.h4}`,
   media: NoButtons,
 };
 

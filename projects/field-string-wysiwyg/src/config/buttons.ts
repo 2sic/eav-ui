@@ -1,123 +1,52 @@
-import type { Editor } from 'tinymce';
-import { Ui } from 'tinymce';
-import { Adam } from '../../../edit-types';
 import { FieldStringWysiwygEditor, wysiwygEditorTag } from '../editor/editor';
 import { loadCustomIcons } from '../editor/load-icons.helper';
 import { Guid } from '../shared/guid';
-import { ImageFormats } from '../shared/models';
-import { RawEditorOptionsWithModes, WysiwygAdvanced, WysiwygMode, WysiwygView, WysiwygDefault, WysiwygModeText, WysiwygModeMedia, WysiwygModeCycle } from './tinymce-helper-types';
-
-// Export Constant names because these will become standardized
-// So people can use them in their custom toolbars
-export const ItalicWithMore = 'italic-more'; // used to be 'formatgroup'
-export const SxcImages = 'images-cms'; // used to be 'images'
-export const LinkGroup = 'linkgroup';
-export const LinkGroupPro = 'linkgrouppro';
-export const LinkFiles = 'linkfiles';
-export const ListGroup = 'listgroup';
-export const ModeDefault = 'modestandard';
-// export const ToModeInline = 'modeinline';
-export const ToolbarModeToggle = 'wysiwyg-toolbar-mode';
-export const ToolbarModes = 'wysiwyg-toolbar-modes';
-export const ModeAdvanced = 'modeadvanced';
-export const H1Group = 'h1group';
-export const H2Group = 'h2group';
-export const H3Group = 'h3group';
-export const H4Group = 'h4group';
-export const AddContentBlock = 'addcontentblock';
-export const ContentDivision = 'contentdivision';
-export const ToFullscreen = 'expandfulleditor'; // not sure what this does
-export const ImgResponsive = 'imgresponsive';
-
-
-export const ImgEnhancedAlignLeft = 'wysiwyg-img-left';
-export const ImgEnhancedAlignCenter = 'wysiwyg-img-center';
-export const ImgEnhancedAlignRight = 'wysiwyg-img-right';
-// New wysiwyg alignments
-const ImgAligmentsEnhanced = [
-  ImgEnhancedAlignLeft,
-  ImgEnhancedAlignCenter,
-  ImgEnhancedAlignRight,
-];
-export const AddContentSplit = 'contentsplit';
-
-
-const richPrefix = 'wysiwyg';
-const ContentDivisionClass = `${richPrefix}-division`;
-
-
-type FuncVoid = () => void | unknown;
+// tslint:disable-next-line: max-line-length
+import { AddContentBlock, AddContentSplit, ContentDivision, ContentDivisionClass, ItalicWithMore, LinkFiles, LinkGroup, LinkGroupPro, ListGroup, ModeAdvanced, ModeDefault, ToFullscreen, ToolbarModes, ToolbarModeToggle } from './public';
+import { ButtonsMakerParams, TinyButtonsBase } from './tiny-buttons-base';
+import { TinyButtonsBullets } from './tiny-buttons-bullets';
+import { TinyButtonsHeadings } from './tiny-buttons-headings';
+import { TinyButtonsImg } from './tiny-buttons-img';
+import { WysiwygAdvanced, WysiwygDefault, WysiwygMode, WysiwygModeCycle, WysiwygModeMedia, WysiwygModeText, WysiwygView } from './tinymce-helper-types';
 
 
 
 /** Register all kinds of buttons on TinyMCE */
-export class TinyMceButtons {
+export class TinyMceButtons extends TinyButtonsBase {
 
-  constructor(
-    private field: FieldStringWysiwygEditor,
-    private editor: Editor,
-    private adam: Adam,
-    private options: RawEditorOptionsWithModes) {
-
+  constructor(private makerParams: ButtonsMakerParams) {
+    super(makerParams);
   }
 
-  registerAll(): void {
+  register(): void {
     const instSettings = this.field.configurator.addOnSettings;
 
     if (!instSettings.enabled) { return; }
 
-    registerTinyMceFormats(this.editor, instSettings.imgSizes);
+    new TinyButtonsImg(this.makerParams).register();
+    new TinyButtonsBullets(this.makerParams).register();
+    new TinyButtonsHeadings(this.makerParams).register();
 
     loadCustomIcons(this.editor);
 
     this.linkFiles();
     this.linksGroups();
-    this.images();
     this.dropDownItalicAndMore();
     this.listButtons();
     this.addSwitchModeButtons();
     this.openDialog();
-    this.headingGroups1to4();
     this.addButtonContentBlock();
     this.addButtonContentSplitter();
     this.contentDivision();
-    this.imageContextMenu(instSettings.imgSizes);
     this.contextMenus();
 
     // experimental
     this.addModes();
   }
 
-  /** Inner call for most onItemAction commands */
-  private runOrExecCommand(api: unknown, value: unknown) {
-    // If it's a function, call it with params (the params are usually not used)
-    if (typeof(value) === 'function') value(api, value);
 
-    // If it's a string, it must be a command the editor knows
-    if (typeof(value) === 'string') this.editor.execCommand(value);
-  }
 
-  /** Create a common default structure for most SplitButtonSpecs */
-  private splitButtonSpecs(initialCommand: string | FuncVoid) {
-    return {
-      onAction: (api: unknown) => {
-        this.runOrExecCommand(api, initialCommand);
-      },
-      onItemAction: (api: unknown, value: unknown) => {
-        this.runOrExecCommand(api, value);
-      },
-    };
-  }
 
-  /**
-   * Compact way to create a SplitButtonChoiceItem
-   * @param icon The icon
-   * @param text The label
-   * @param action In basic cases it's just a string - the name of the command, or the method
-   */
-  private splitButtonItem(icon: string, text: string, action: string | FuncVoid) {
-    return { icon, text, type: 'choiceitem' as 'choiceitem', value: action as string }; // pretend action is as string
-  }
 
   /** Group with adam-link, dnn-link */
   private linkFiles(): void {
@@ -144,7 +73,7 @@ export class TinyMceButtons {
   }
 
   private addLinkGroup(isPro: boolean): void {
-    const linkButton = this.editor.ui.registry.getAll().buttons.link;
+    const linkButton = this.getButtons().link;
 
     this.editor.ui.registry.addSplitButton(!isPro ? LinkGroup : LinkGroupPro, {
       ...this.splitButtonSpecs('mceLink'),
@@ -164,39 +93,10 @@ export class TinyMceButtons {
     });
   }
 
-  /** Images menu */
-  private images(): void {
-    const adam = this.adam;
-    const buttons = this.editor.ui.registry.getAll().buttons;
-    const imageButton = buttons.image;
-    const linkButton = buttons.link;
-    const alignleftButton = buttons.alignleft;
-    const aligncenterButton = buttons.aligncenter;
-    const alignrightButton = buttons.alignright;
-
-    // Group with images (adam) - only in PRO mode
-    this.editor.ui.registry.addSplitButton(SxcImages, {
-      ...this.splitButtonSpecs(() => adam.toggle(false, true)),
-      columns: 3,
-      icon: imageButton.icon,
-      presets: 'listpreview',
-      tooltip: 'Image.AdamImage.Tooltip',
-      fetch: (callback) => {
-        callback([
-          this.splitButtonItem(imageButton.icon, 'Image.AdamImage.Tooltip', () => adam.toggle(false, true)),
-          this.splitButtonItem('custom-file-dnn', 'Image.DnnImage.Tooltip', () => adam.toggle(true, true)),
-          this.splitButtonItem(linkButton.icon, imageButton.tooltip, 'mceImage'),
-          this.splitButtonItem(alignleftButton.icon, alignleftButton.tooltip, 'JustifyLeft'),
-          this.splitButtonItem(aligncenterButton.icon, aligncenterButton.tooltip, 'JustifyCenter'),
-          this.splitButtonItem(alignrightButton.icon, alignrightButton.tooltip, 'JustifyRight'),
-        ]);
-      },
-    });
-  }
 
   /** Drop-down with italic, strikethrough, ... */
   private dropDownItalicAndMore(): void {
-    const btns = this.editor.ui.registry.getAll().buttons;
+    const btns = this.getButtons();
     this.editor.ui.registry.addSplitButton(ItalicWithMore, {
       ...this.splitButtonSpecs('Italic'),
       columns: 3,
@@ -215,22 +115,19 @@ export class TinyMceButtons {
 
   /** Lists / Indent / Outdent etc. */
   private listButtons(): void {
-    const buttons = this.editor.ui.registry.getAll().buttons;
-    const bullistButton = buttons.bullist;
-    const outdentButton = buttons.outdent;
-    const indentButton = buttons.indent;
+    const btns = this.getButtons();
 
     // Drop-down with numbered list, bullet list, ...
     this.editor.ui.registry.addSplitButton(ListGroup, {
       ...this.splitButtonSpecs('InsertUnorderedList'),
       columns: 3,
-      icon: bullistButton.icon,
+      icon: btns.bullist.icon,
       presets: 'listpreview',
-      tooltip: bullistButton.tooltip,
+      tooltip: btns.bullist.tooltip,
       fetch: (callback) => {
         callback([
-          this.splitButtonItem(outdentButton.icon, outdentButton.tooltip, 'Outdent'),
-          this.splitButtonItem(indentButton.icon, indentButton.tooltip, 'Indent'),
+          this.splitButtonItem(btns.outdent.icon, btns.outdent.tooltip, 'Outdent'),
+          this.splitButtonItem(btns.indent.icon, btns.indent.tooltip, 'Indent'),
         ]);
       },
     });
@@ -255,14 +152,6 @@ export class TinyMceButtons {
     });
   }
 
-  // TODO: @SDV pls change wherever possible to use this as it's quite a bit shorter
-  private regBtn(name: string, icon: string, tooltip: string, action: () => void) {
-    this.editor.ui.registry.addButton(name, {
-      icon,
-      tooltip,
-      onAction: action,
-    });
-  }
 
   // TODO: @2dm / @SDV
   // - i18n
@@ -318,48 +207,6 @@ export class TinyMceButtons {
     });
   }
 
-  private toggleFormat(tag: string) {
-    this.editor.execCommand('mceToggleFormat', false, tag);
-  }
-
-  /** Group of buttons with an h3 to start and showing h4-6 + p */
-  private headingGroups1to4(): void {
-    const isGerman = this.editor.options.get('language') === 'de';
-    const btns = this.editor.ui.registry.getAll().buttons;
-    const blockquote = btns.blockquote;
-    const imgName = isGerman ? 'custom-image-u' : 'custom-image-h';
-
-    const HButtons = [
-      this.splitButtonItem(`${imgName}1`, btns.h1.text, () => this.toggleFormat('h1')),
-      this.splitButtonItem(`${imgName}2`, btns.h2.text, () => this.toggleFormat('h2')),
-      this.splitButtonItem(`${imgName}3`, btns.h3.text, () => this.toggleFormat('h3')),
-      this.splitButtonItem('custom-paragraph', 'Paragraph', () => this.toggleFormat('p')),
-      this.splitButtonItem(`${imgName}4`, btns.h4.text, () => this.toggleFormat('h4')),
-      this.splitButtonItem(`${imgName}5`, btns.h5.text, () => this.toggleFormat('h5')),
-      this.splitButtonItem(`${imgName}6`, btns.h6.text, () => this.toggleFormat('h6')),
-      this.splitButtonItem(blockquote.icon, blockquote.tooltip, () => this.toggleFormat('blockquote')),
-    ];
-    this.headingsGroup(H1Group, 'h1', btns.h1 as Ui.Toolbar.ToolbarSplitButtonSpec, HButtons);
-    this.headingsGroup(H2Group, 'h2', btns.h2 as Ui.Toolbar.ToolbarSplitButtonSpec, HButtons);
-    this.headingsGroup(H3Group, 'h3', btns.h3 as Ui.Toolbar.ToolbarSplitButtonSpec, HButtons);
-    this.headingsGroup(H4Group, 'h4', btns.h4 as Ui.Toolbar.ToolbarSplitButtonSpec, HButtons);
-  }
-
-  private headingsGroup(
-    groupName: string,
-    mainFormat: string,
-    button: Ui.Toolbar.ToolbarSplitButtonSpec,
-    buttons: Ui.Menu.ChoiceMenuItemSpec[]
-  ): void {
-    this.editor.ui.registry.addSplitButton(groupName, {
-      ...this.splitButtonSpecs(() => this.toggleFormat(mainFormat)),
-      columns: 4,
-      presets: 'listpreview',
-      text: button.text,
-      tooltip: button.tooltip,
-      fetch: (callback) => { callback(buttons); },
-    });
-  }
 
   /** Inside content (contentblocks) */
   private addButtonContentBlock(): void {
@@ -374,7 +221,7 @@ export class TinyMceButtons {
   }
 
   private addButtonContentSplitter(): void {
-    const buttons = this.editor.ui.registry.getAll().buttons;
+    const buttons = this.getButtons();
     this.editor.ui.registry.addButton(AddContentSplit, {
       icon: buttons.hr.icon,
       tooltip: 'ContentBlock.Add',
@@ -399,37 +246,6 @@ export class TinyMceButtons {
     });
   }
 
-  /** Image alignment / size buttons in context menu */
-  private imageContextMenu(imgSizes: number[]): void {
-    const reg = this.editor.ui.registry;
-    const formatter = this.editor.formatter;
-    reg.addSplitButton(ImgResponsive, {
-      ...this.splitButtonSpecs(() => this.editor.formatter.apply('imgwidth100')),
-      icon: 'resize',
-      tooltip: '100%',
-      fetch: (callback) => {
-        callback(
-          // WARNING! This part is not fully type safe
-          imgSizes.map(imgSize => ({
-            icon: 'resize',
-            text: `${imgSize}%`,
-            type: 'choiceitem',
-            value: (() => { formatter.apply(`imgwidth${imgSize}`); }) as any,
-          })),
-        );
-      },
-    });
-
-    // New wysiwyg alignments
-    const tglImgAlign = (alignment: string) => {
-      ImgAligmentsEnhanced.filter((v) => v !== alignment).forEach((v) => formatter.remove(v));
-      formatter.toggle(alignment);
-    };
-    const btns = this.editor.ui.registry.getAll().buttons;
-    this.regBtn(ImgEnhancedAlignLeft, btns.alignleft?.icon, btns.alignleft?.tooltip, () => { tglImgAlign(ImgEnhancedAlignLeft); });
-    this.regBtn(ImgEnhancedAlignCenter, btns.aligncenter?.icon, btns.aligncenter?.tooltip, () => { tglImgAlign(ImgEnhancedAlignCenter); });
-    this.regBtn(ImgEnhancedAlignRight, btns.alignright?.icon, btns.alignright?.tooltip, () => { tglImgAlign(ImgEnhancedAlignRight); });
-  }
 
   /** Add Context toolbars */
   private contextMenus(): void {
@@ -438,18 +254,6 @@ export class TinyMceButtons {
     this.editor.ui.registry.addContextToolbar('linkContextToolbar', {
       items: 'link unlink',
       predicate: (elem) => elem.nodeName.toLocaleLowerCase() === 'a' && rangeSelected(),
-    });
-    // TODO: DIFFERENT DEPENDING ON WysiwygMode
-    const imgAlign = this.options.eavConfig.features.wysiwygEnhanced
-      ? `${ImgEnhancedAlignLeft} ${ImgEnhancedAlignCenter} ${ImgEnhancedAlignRight}`
-      : 'alignleft aligncenter alignright';
-    this.editor.ui.registry.addContextToolbar('imgContextToolbar', {
-      items: `image | ${imgAlign} ${ImgResponsive} | removeformat | remove`,
-      predicate: (elem) => elem.nodeName.toLocaleLowerCase() === 'img' && rangeSelected(),
-    });
-    this.editor.ui.registry.addContextToolbar('listContextToolbar', {
-      items: 'numlist bullist | outdent indent',
-      predicate: (elem) => ['li', 'ol', 'ul'].includes(elem.nodeName.toLocaleLowerCase()) && rangeSelected(),
     });
   }
 
@@ -470,27 +274,6 @@ export class TinyMceButtons {
     }
 }
 
-/** Register all formats - like img-sizes */
-function registerTinyMceFormats(editor: Editor, imgSizes: number[]): void {
-  const imageFormats: ImageFormats = {};
-  for (const imgSize of imgSizes) {
-    imageFormats[`imgwidth${imgSize}`] = [
-      {
-        selector: 'img',
-        collapsed: false,
-        styles: {
-          width: `${imgSize}%`,
-        },
-      },
-    ];
-  }
-  editor.formatter.register(imageFormats);
-
-  // New enhanced mode
-  editor.formatter.register(ImgEnhancedAlignLeft, { selector: 'img', classes: 'wysiwyg-left'  });
-  editor.formatter.register(ImgEnhancedAlignCenter, { selector: 'img', classes: 'wysiwyg-center'  });
-  editor.formatter.register(ImgEnhancedAlignRight, { selector: 'img', classes: 'wysiwyg-right'  });
-}
 
 function openPagePicker(fieldStringWysiwyg: FieldStringWysiwygEditor): void {
   const connector = fieldStringWysiwyg.connector._experimental;
