@@ -60,12 +60,10 @@
       [ngStyle]="{ 'background-image': data.controlStatus.value && data.preview.isImage ? data.preview.thumbnailUrl : '' }"
       (click)="expandDialog()">
       <mat-icon *ngIf="data.controlStatus.value && !data.preview.isImage && data.preview.isKnownType"
-        [tippy]="data.preview.url" tippyPlacement="right">
-        {{ data.preview.icon }}
+        [tippy]="data.preview.url" tippyPlacement="right" [svgIcon]="data.preview.icon">
       </mat-icon>
       <mat-icon *ngIf="data.controlStatus.value && !data.preview.isImage && !data.preview.isKnownType"
-        [tippy]="data.preview.url" tippyPlacement="right">
-        {{ data.preview.icon }}
+        [tippy]="data.preview.url" tippyPlacement="right" [svgIcon]="data.preview.icon">
       </mat-icon>
     </div>
     <!-- field -->
