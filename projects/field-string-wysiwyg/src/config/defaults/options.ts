@@ -7,7 +7,12 @@ export const DefaultOptions: RawEditorOptions = {
   // body_class: 'field-string-wysiwyg-mce-box',
   height: '100%',
   branding: false,
+
+  // experimental - not working
   // statusbar: true, // doesn't work in inline
+  // elementpath: true,
+  // resize: true,
+
   inline: true, // use the div, not an iframe
   toolbar_mode: 'floating',
   automatic_uploads: false, // we're using our own upload mechanism

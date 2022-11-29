@@ -1,13 +1,9 @@
 import { ImageFormats } from '../shared/models';
-import { ImgEnhancedAlignCenter, ImgEnhancedAlignLeft, ImgEnhancedAlignRight, ImgResponsive, SxcImages } from './public';
+import * as IMG from './public';
 import { ButtonsMakerParams, TinyButtonsBase } from './tiny-buttons-base';
+import { FormatDefinition } from './public';
 
-// New wysiwyg alignments
-const ImgAligmentsEnhanced = [
-  ImgEnhancedAlignLeft,
-  ImgEnhancedAlignCenter,
-  ImgEnhancedAlignRight,
-];
+
 
 export class TinyButtonsImg extends TinyButtonsBase {
   constructor(makerParams: ButtonsMakerParams) {
@@ -16,8 +12,11 @@ export class TinyButtonsImg extends TinyButtonsBase {
 
   register(): void {
     const imgSizes = this.field.configurator.addOnSettings.imgSizes;
-    this.registerTinyMceFormats(imgSizes);
-    this.imageContextMenu(imgSizes);
+    this.registerBasicFormats(imgSizes);
+    this.registerEnhancedFormats();
+    this.registerFormattingWidths(imgSizes);
+    this.registerEnhancedFormattingRatios();
+    this.buttonsEnhancedAlignment();
     this.contextMenus();
     this.images();
   }
@@ -28,7 +27,7 @@ export class TinyButtonsImg extends TinyButtonsBase {
     const btns = this.getButtons();
 
     // Group with images (adam) - only in PRO mode
-    this.editor.ui.registry.addSplitButton(SxcImages, {
+    this.editor.ui.registry.addSplitButton(IMG.SxcImages, {
       ...this.splitButtonSpecs(() => adam.toggle(false, true)),
       columns: 3,
       icon: btns.image.icon,
@@ -55,53 +54,74 @@ export class TinyButtonsImg extends TinyButtonsBase {
 
     // Different behavior depending on WysiwygMode
     const imgAlign = this.options.eavConfig.features.wysiwygEnhanced
-      ? `${ImgEnhancedAlignLeft} ${ImgEnhancedAlignCenter} ${ImgEnhancedAlignRight}`
-      : 'alignleft aligncenter alignright';
+      ? `${IMG.ImgEnhancedLeft} ${IMG.ImgEnhancedCenter} ${IMG.ImgEnhancedRight} ${IMG.ImgButtonGroupRatios}`
+      : `alignleft aligncenter alignright ${IMG.ImgButtonGroupWidth}`;
 
     this.editor.ui.registry.addContextToolbar('imgContextToolbar', {
-      items: `image | ${imgAlign} ${ImgResponsive} | removeformat | remove`,
+      items: `image | ${imgAlign} ${IMG.ImgButtonGroupWidth} | removeformat | remove`,
       predicate: (elem) => elem.nodeName.toLocaleLowerCase() === 'img' && rangeSelected(),
     });
   }
 
   /** Image alignment / size buttons in context menu */
-  private imageContextMenu(imgSizes: number[]): void {
-    const reg = this.editor.ui.registry;
+  private registerFormattingWidths(imgSizes: number[]): void {
     const formatter = this.editor.formatter;
-    reg.addSplitButton(ImgResponsive, {
-      ...this.splitButtonSpecs(() => this.editor.formatter.apply('imgwidth100')),
+    const sButItem = this.splitButtonItem;
+    this.editor.ui.registry.addSplitButton(IMG.ImgButtonGroupWidth, {
+      ...this.splitButtonSpecs(() => formatter.apply(`${IMG.ImgWidthPrefix}100`)),
       icon: 'resize',
       tooltip: '100%',
       fetch: (callback) => {
         callback(
-          // WARNING! This part is not fully type safe
-          imgSizes.map(imgSize => ({
-            icon: 'resize',
-            text: `${imgSize}%`,
-            type: 'choiceitem',
-            value: (() => { formatter.apply(`imgwidth${imgSize}`); }) as any,
-          })),
+          imgSizes.map(imgSize => sButItem('resize', `${imgSize}%`,
+            (() => { formatter.apply(`${IMG.ImgWidthPrefix}${imgSize}`); }))),
         );
       },
     });
-
-    // New wysiwyg alignments
-    const tglImgAlign = (alignment: string) => {
-      ImgAligmentsEnhanced.filter((v) => v !== alignment).forEach((v) => formatter.remove(v));
-      formatter.toggle(alignment);
-    };
-    const btns = this.getButtons();
-    this.regBtn(ImgEnhancedAlignLeft, btns.alignleft?.icon, btns.alignleft?.tooltip, () => { tglImgAlign(ImgEnhancedAlignLeft); });
-    this.regBtn(ImgEnhancedAlignCenter, btns.aligncenter?.icon, btns.aligncenter?.tooltip, () => { tglImgAlign(ImgEnhancedAlignCenter); });
-    this.regBtn(ImgEnhancedAlignRight, btns.alignright?.icon, btns.alignright?.tooltip, () => { tglImgAlign(ImgEnhancedAlignRight); });
   }
 
+  /** Image alignment / size buttons in context menu */
+  private registerEnhancedFormattingRatios(): void {
+    const sButItem = this.splitButtonItem;
+    const tog = (current: IMG.FormatDefinition) => this.toggleOneOfClassList(IMG.ImgEnhancedRatios, current);
+    this.editor.ui.registry.addSplitButton(IMG.ImgButtonGroupRatios, {
+      ...this.splitButtonSpecs(() => tog(IMG.ImgEnhancedRatioDefault)),
+      icon: 'resize',
+      tooltip: IMG.ImgEnhancedRatioDefault.name, // TODO: i18n
+      fetch: (callback) => {
+        callback(
+          IMG.ImgEnhancedRatios.map(imgR => sButItem('resize', `${imgR.name}`, // TODO: i18n
+            () => { tog(imgR); })),
+        );
+      },
+    });
+  }
+
+  private toggleOneOfClassList(all: IMG.FormatDefinition[], current: IMG.FormatDefinition) {
+    const formatter = this.editor.formatter;
+    all.filter((v) => v.name !== current.name).forEach((v) => formatter.remove(v.name));
+    formatter.toggle(current.name);
+  }
+
+  // New wysiwyg alignments
+  private buttonsEnhancedAlignment(): void {
+    const btns = this.getButtons();
+    IMG.ImgEnhancedAlignments.forEach((ai) => {
+      this.regBtn(ai.name,
+        ai.icon ?? btns[ai.inherit]?.icon,
+        ai.tooltip ?? btns[ai.inherit]?.tooltip,
+        () => { this.toggleOneOfClassList(IMG.ImgEnhancedAlignments, ai); });
+    });
+  }
+
+
   /** Register all formats - like img-sizes */
-  registerTinyMceFormats(imgSizes: number[]): void {
+  registerBasicFormats(imgSizes: number[]): void {
     const editor = this.editor;
+    // TODO: @SDV - rewrite as imgSizes.map(...)
     const imageFormats: ImageFormats = {};
     for (const imgSize of imgSizes) {
-      imageFormats[`imgwidth${imgSize}`] = [
+      imageFormats[`${IMG.ImgWidthPrefix}${imgSize}`] = [
         {
           selector: 'img',
           collapsed: false,
@@ -112,10 +132,14 @@ export class TinyButtonsImg extends TinyButtonsBase {
       ];
     }
     editor.formatter.register(imageFormats);
+  }
 
-    // New enhanced mode
-    editor.formatter.register(ImgEnhancedAlignLeft, { selector: 'img', classes: 'wysiwyg-left'  });
-    editor.formatter.register(ImgEnhancedAlignCenter, { selector: 'img', classes: 'wysiwyg-center'  });
-    editor.formatter.register(ImgEnhancedAlignRight, { selector: 'img', classes: 'wysiwyg-right'  });
+  /** Register all formats for enhanced modes - like img-sizes */
+  registerEnhancedFormats(): void {
+    const formatter = this.editor.formatter;
+    [IMG.ImgEnhancedAlignments, IMG.ImgEnhancedRatios, IMG.ImgEnhancedWidths]
+      .map(set => set.forEach(def => {
+        formatter.register(def.name, { selector: 'img', classes: def.class });
+      }));
   }
 }

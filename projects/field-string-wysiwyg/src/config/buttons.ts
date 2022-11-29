@@ -1,5 +1,4 @@
 import { loadCustomIcons } from '../editor/load-icons.helper';
-// tslint:disable-next-line: max-line-length
 import { ButtonsMakerParams, TinyButtonsBase } from './tiny-buttons-base';
 import { TinyButtonsBullets } from './tiny-buttons-bullets';
 import { TinyButtonsContentBlocks } from './tiny-buttons-content-blocks';
