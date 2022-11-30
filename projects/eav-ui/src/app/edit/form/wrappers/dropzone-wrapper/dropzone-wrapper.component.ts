@@ -21,6 +21,8 @@ export class DropzoneWrapperComponent extends BaseComponent implements FieldWrap
 
   dropzoneConfig$ = new BehaviorSubject<DropzoneConfigExt>(null);
   dropzoneDisabled$: Observable<boolean>;
+  imageTypes: string[] = ["image/jpeg", "image/png"];
+  isStringWysiwyg = false;
 
   constructor(
     eavService: EavService,
@@ -73,6 +75,23 @@ export class DropzoneWrapperComponent extends BaseComponent implements FieldWrap
   ngOnDestroy() {
     this.dropzoneConfig$.complete();
     super.ngOnDestroy();
+  }
+
+  // on onDrop we check if drop is on wysiwyg or not
+  onDrop(event: any) {
+    if ((event.path as HTMLElement[])
+      .some(x => x.classList?.contains("class-distinguish-from-adam-dropzone"))) {
+      this.isStringWysiwyg = true;
+    } else {
+      this.isStringWysiwyg = false;
+    }
+  }
+  
+  // here we check if file is image type so we can cancel upload if it is also uploaded on wysiwyg
+  onAddedFile(file: any) {
+    if (this.isStringWysiwyg && this.imageTypes.some(x => x === file.type)) {
+      this.dropzoneRef.dropzone().removeFile(file);
+    }
   }
 
   onUploadError(event: DropzoneType) {

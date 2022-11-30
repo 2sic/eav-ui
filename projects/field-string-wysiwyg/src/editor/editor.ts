@@ -34,7 +34,6 @@ import * as skinOverrides from './skin-overrides.scss';
 
 declare const window: EavWindow;
 export const wysiwygEditorTag = 'field-string-wysiwyg-dialog';
-const extWhitelist = '.doc, .docx, .dot, .dotx, .xls, .xlsx, .ppt, .pptx, .pdf, .txt, .htm, .html, .md, .rtf, .xml, .xsl, .xsd, .css, .zip, .csv, .jpg, .jpeg, .png';
 const tinyMceBaseUrl = '../../system/field-string-wysiwyg';
 
 export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomInputField<string> {
@@ -160,11 +159,6 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
       if (!this.reconfigure?.disableAdam) {
         attachAdam(editor, this.connector._experimental.adam);
       }
-      if (this.pasteClipboardImage) {
-        // When tiny is in focus, let it handle image uploads by removing image types from accepted files in dropzone.
-        // Files will be handled by dropzone
-        this.connector._experimental.dropzone.setConfig({ acceptedFiles: extWhitelist });
-      }
       if (this.mode === 'inline') {
         this.connector._experimental.setFocused(true);
       }
@@ -173,10 +167,6 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
     editor.on('blur', _event => {
       this.classList.remove('focused');
       consoleLogWebpack(`${wysiwygEditorTag} TinyMCE blurred`, _event);
-      if (this.pasteClipboardImage) {
-        // Dropzone will handle image uploads again
-        this.connector._experimental.dropzone.setConfig({ acceptedFiles: '' });
-      }
       if (this.mode === 'inline') {
         this.connector._experimental.setFocused(false);
       }
