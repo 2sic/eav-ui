@@ -153,6 +153,18 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
       this.clearData();
     });
 
+    // called before actual image upload
+    // this is needed so drag and drop will function even if pasteClipboardImage feature is false
+    editor.on('drop', _event => {
+      editor.options.set("paste_data_images", true);
+    });
+
+    // called before actual image upload
+    // this is needed so paste will only work depending on pasteClipboardImage feature
+    editor.on('paste', _event => {
+        editor.options.set("paste_data_images", this.pasteClipboardImage);
+    });
+
     editor.on('focus', _event => {
       this.classList.add('focused');
       consoleLogWebpack(`${wysiwygEditorTag} TinyMCE focused`, _event);
