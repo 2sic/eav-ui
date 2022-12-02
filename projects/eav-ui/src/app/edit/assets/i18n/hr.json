@@ -227,5 +227,8 @@
     "Paragraph": "Paragraph",
     "ContentBlock.Add": "Add app or content block",
     "ContentDivision.Add": "Dodaj razdjeljenje u sadržaju"
+  },
+  "Features": {
+    "NotActivated": "Ova značajka nije aktivirana - doznaj više"
   }
 }

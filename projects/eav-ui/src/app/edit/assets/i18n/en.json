@@ -227,5 +227,8 @@
     "Paragraph": "Paragraph",
     "ContentBlock.Add": "Add app or content block",
     "ContentDivision.Add": "Add content division"
+  },
+  "Features": {
+    "NotActivated": "This feature is not activated - find out more"
   }
 }

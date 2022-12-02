@@ -126,6 +126,7 @@
         </app-field-helper-text>
         <div *ngIf="data.buttonAdam" align="end" class="c-ew__preview-field-hint c__helper-wrapper--right" fxHide
           fxShow.gt-xs>
+          <app-feature-icon [featureName]="'NoSponsoredByToSic'"></app-feature-icon>
           <span>{{
             data.showAdamSponsor
             ? ('Fields.Hyperlink.Default.Sponsor' | translate)

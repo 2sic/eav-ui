@@ -225,5 +225,8 @@
     "H6": "Ü6",
     "Paragraph": "Absatz",
     "ContentBlock.Add": "App oder Inhaltsbaustein einfügen"
+  },
+  "Features": {
+    "NotActivated": "Diese Funktion ist nicht aktiviert - mehr erfahren"
   }
 }
