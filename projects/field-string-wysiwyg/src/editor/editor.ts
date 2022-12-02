@@ -191,8 +191,21 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   }
 
   private saveValue(): void {
-    const newContent = this.editor.getContent();
+    let newContent = this.editor.getContent();
     if (newContent.includes('<img src="data:image')) { return; }
+
+    // this is necessary for adding data-cmsid attribute to image attributes
+    if (newContent.includes("?tododata-cmsid=")) {
+      let imageStrings = newContent.split("?tododata-cmsid=file:");
+      newContent = "";
+      imageStrings.forEach((x, i) => {
+        if (i != imageStrings.length - 1)
+          newContent += x + '" data-cmsid="file:';
+        else
+          newContent += x;
+      });
+      this.editor.setContent(newContent);
+    }
 
     this.editorContent = newContent;
     this.connector.data.update(this.editorContent);

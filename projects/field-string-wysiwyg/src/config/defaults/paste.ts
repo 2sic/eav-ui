@@ -75,7 +75,8 @@ export class DefaultPaste {
       }
       progress(100);
       adam.refresh();
-      return response.Url;
+      //tododata... is added so onChange it can be changed to special data-cmsid attribute which containes reference id
+      return response.Url + `?tododata-cmsid=${response.ReferenceId}`;
     }).catch(error => {
       consoleLogWebpack('TinyMCE upload error:', error);
       return error;
