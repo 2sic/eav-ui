@@ -1,37 +1,44 @@
 <div mat-dialog-title>
   <div class="dialog-title-box">
-    <!-- <div>{{ dialogData.feature.Name }}</div> -->
-    <div>No Sponsored-By-2sic messages</div>
+    <div>{{ dialogData.feature.Name }}</div>
     <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
       <mat-icon>close</mat-icon>
     </button>
   </div>
 </div>
 
-<p class="dialog-description">Hide 'Sponsored by 2sic' messages - for example on the ADAM field.</p>
-<!-- [innerHtml]="dialogData.feature.Description | safeHtml" -->
+<p class="dialog-description" [innerHtml]="dialogData.feature.Description | safeHtml"></p>
 
 <div class="info-box">
-  <div class="info-row"> <!--*ngIf="dialogData.feature.NameId as id">-->
+  <div class="info-row">
+    <div class="info-row__label">Status</div>
+    <div class="info-row__value">
+      <span>{{ dialogData.feature.Enabled ? "Active" : "Not active" }}</span>
+    </div>
+  </div>
+  <div class="info-row" *ngIf="dialogData.feature.NameId as id">
     <div class="info-row__label">ID</div>
     <div class="info-row__value click">
-      <!-- <span [tippy]="id" (click)="copyToClipboard(id)">{{ id }}</span> -->
-      <span>1234</span>
+      <span [tippy]="id" (click)="copyToClipboard(id)">{{ id }}</span>
     </div>
   </div>
-  <div class="info-row"> <!--*ngIf="dialogData.feature.Guid as guid">-->
+  <div class="info-row" *ngIf="dialogData.feature.Guid as guid">
     <div class="info-row__label">GUID</div>
     <div class="info-row__value click">
-      <!-- <span [tippy]="guid" (click)="copyToClipboard(guid)">{{ guid }}</span> -->
-      <span>1234</span>
+      <span [tippy]="guid" (click)="copyToClipboard(guid)">{{ guid }}</span>
     </div>
   </div>
-  <div class="info-row">
-    <!-- *ngIf="(dialogData.feature.Security.Impact + ': ' + dialogData.feature.Security.Message) as security"> -->
+  <div class="info-row"
+    *ngIf="(dialogData.feature.Security.Impact + ': ' + dialogData.feature.Security.Message) as security">
     <div class="info-row__label">Security Rating</div>
     <div class="info-row__value">
-      <!-- <span>{{ security }}</span> -->
-      <span>0</span>
+      <span>{{ security }}</span>
     </div>
   </div>
+  <!-- <div class="info-row" *ngIf="dialogData.feature.libraryLink as link">
+    <div class="info-row__label">More info</div>
+    <div class="info-row__value click">
+      <a [href]="link"></a>
+    </div>
+  </div> -->
 </div>

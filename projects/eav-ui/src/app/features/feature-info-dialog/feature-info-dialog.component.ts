@@ -12,7 +12,7 @@ import { copyToClipboard } from '../../shared/helpers/copy-to-clipboard.helper';
 export class FeatureInfoDialogComponent implements OnInit {
 
   constructor(
-    // @Inject(MAT_DIALOG_DATA) public dialogData: FeatureDetailsDialogData,
+    @Inject(MAT_DIALOG_DATA) public dialogData: FeatureDetailsDialogData,
     private dialogRef: MatDialogRef<FeatureInfoDialogComponent>,
     private snackBar: MatSnackBar,
   ) { }

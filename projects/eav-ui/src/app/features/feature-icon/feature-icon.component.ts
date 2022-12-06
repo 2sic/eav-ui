@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ActivatedRoute, Router } from '@angular/router';
 import { FeatureDetailsDialogData } from '../../apps-management/licence-info/feature-details-dialog/feature-details-dialog.models';
+import { FeatureService } from '../../edit/shared/store/ngrx-data';
 import { FeatureInfoDialogComponent } from '../feature-info-dialog/feature-info-dialog.component';
 
 @Component({
@@ -10,33 +10,29 @@ import { FeatureInfoDialogComponent } from '../feature-info-dialog/feature-info-
   styleUrls: ['./feature-icon.component.scss']
 })
 export class FeatureIconComponent implements OnInit {
-  @Input() featureName: string;
-  // @Input() featureName: string;
+  @Input() featureNameId: string;
 
-  isFeatureActivated: boolean = false;
+  featureOn: boolean = true;
 
   constructor(
-    private router: Router,
-    private route: ActivatedRoute,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
+    private featureService: FeatureService
   ) { }
 
   ngOnInit(): void {
+    this.featureOn = this.featureService.isFeatureEnabled(this.featureNameId);
   }
 
   openFeatureInfo() {
-    // this.editRoutingService.expand(true, this.config.index, this.config.entityGuid);
-    // this.router.navigate(['features/NoSponsoredByToSic'], { relativeTo: this.route });
-    // const data: FeatureDetailsDialogData = {
-    //   feature,
-    // };
+    const data: FeatureDetailsDialogData = {
+      feature: this.featureService.getFeature(this.featureNameId)
+    };
     this.dialog.open(FeatureInfoDialogComponent, {
       autoFocus: false,
-      // data,
+      data,
       viewContainerRef: this.viewContainerRef,
       width: '650px',
     });
   }
-
 }
