@@ -11,9 +11,9 @@
 
 <div class="info-box">
   <div class="info-row">
-    <div class="info-row__label">Status</div>
+    <div class="info-row__label">{{ "Features.Status" | translate }}</div>
     <div class="info-row__value">
-      <span>{{ dialogData.feature.Enabled ? "Active" : "Not active" }}</span>
+      <span>{{ dialogData.feature.Enabled ? "Features.Active" : "Features.NotActive" | translate }}</span>
     </div>
   </div>
   <div class="info-row" *ngIf="dialogData.feature.NameId as id">
@@ -30,7 +30,7 @@
   </div>
   <div class="info-row"
     *ngIf="(dialogData.feature.Security.Impact + ': ' + dialogData.feature.Security.Message) as security">
-    <div class="info-row__label">Security Rating</div>
+    <div class="info-row__label">{{ "Features.SecurityRating" | translate }}</div>
     <div class="info-row__value">
       <span>{{ security }}</span>
     </div>

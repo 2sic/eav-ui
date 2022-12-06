@@ -229,6 +229,10 @@
     "ContentDivision.Add": "Add content division"
   },
   "Features": {
-    "NotActivated": "This feature is not activated - find out more"
+    "NotActivated": "This feature is not activated - find out more",
+    "NotActive": "Not active",
+    "Active": "Active",
+    "Status": "Status",
+    "SecurityRating": "Security rating"
   }
 }

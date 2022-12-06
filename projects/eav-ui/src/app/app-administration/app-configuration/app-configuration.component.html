@@ -380,6 +380,7 @@
         In Advanced mode you can also sync all the site files used by this app.
         They will be placed in a folder inside <code>App_Data</code> and allow sync/restore with git or another server.
       </div>
+      <!-- <app-feature-icon [featureNameId]="'AppSyncWithSiteFiles'"></app-feature-icon> -->
       <div *ngIf='appStateAdvanced && !features.isEnabled("AppSyncWithSiteFiles")'>
         <mat-icon style="color: red">warning</mat-icon>
         Feature <strong>AppSyncWithSiteFiles</strong> is not enabled.

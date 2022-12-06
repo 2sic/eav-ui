@@ -229,6 +229,10 @@
     "ContentDivision.Add": "Dodaj razdjeljenje u sadržaju"
   },
   "Features": {
-    "NotActivated": "Ova značajka nije aktivirana - doznaj više"
+    "NotActivated": "Ova značajka nije aktivirana - doznaj više",
+    "NotActive": "Nije aktivirano",
+    "Active": "Aktivirano",
+    "Status": "Status",
+    "SecurityRating": "Sigurnosna ocjena"
   }
 }

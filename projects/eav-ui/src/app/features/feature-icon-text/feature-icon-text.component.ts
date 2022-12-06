@@ -5,11 +5,11 @@ import { FeatureService } from '../../edit/shared/store/ngrx-data';
 import { openFeatureInfo } from '../shared/features-shared';
 
 @Component({
-  selector: 'app-feature-icon',
-  templateUrl: './feature-icon.component.html',
-  styleUrls: ['./feature-icon.component.scss']
+  selector: 'app-feature-icon-text',
+  templateUrl: './feature-icon-text.component.html',
+  styleUrls: ['./feature-icon-text.component.scss']
 })
-export class FeatureIconComponent implements OnInit {
+export class FeatureIconTextComponent implements OnInit {
   @Input() featureNameId: string;
 
   featureOn: boolean = true;
