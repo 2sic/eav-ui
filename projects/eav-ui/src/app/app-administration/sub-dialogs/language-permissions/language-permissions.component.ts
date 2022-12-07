@@ -1,11 +1,12 @@
 import { GridOptions } from '@ag-grid-community/core';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { BehaviorSubject, filter, map, pairwise, startWith, Subscription } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
+import { BehaviorSubject } from 'rxjs';
 import { SiteLanguagePermissions } from '../../../apps-management/models/site-language.model';
 import { ZoneService } from '../../../apps-management/services/zone.service';
 import { GoToPermissions } from '../../../permissions';
+import { BaseComponent } from '../../../shared/components/base-component/base.component';
 import { IdFieldComponent } from '../../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../../../shared/constants/default-grid-options.constants';
@@ -17,31 +18,29 @@ import { LanguagesPermissionsActionsParams } from './languages-permissions-actio
   templateUrl: './language-permissions.component.html',
   styleUrls: ['./language-permissions.component.scss'],
 })
-export class LanguagePermissionsComponent implements OnInit, OnDestroy {
+export class LanguagePermissionsComponent extends BaseComponent implements OnInit, OnDestroy {
   languages$: BehaviorSubject<SiteLanguagePermissions[] | undefined>;
   gridOptions: GridOptions;
-
-  private subscription: Subscription;
 
   constructor(
     private dialogRef: MatDialogRef<LanguagePermissionsComponent>,
     private zoneService: ZoneService,
-    private router: Router,
-    private route: ActivatedRoute,
+    router: Router,
+    route: ActivatedRoute,
   ) {
-    this.subscription = new Subscription();
+    super(router, route);
     this.languages$ = new BehaviorSubject<SiteLanguagePermissions[] | undefined>(undefined);
     this.gridOptions = this.buildGridOptions();
   }
 
   ngOnInit(): void {
     this.getLanguages();
-    this.refreshOnChildClosed();
+    this.subscription.add(this.refreshOnChildClosed().subscribe(() => { this.getLanguages(); }));
   }
 
   ngOnDestroy(): void {
     this.languages$.complete();
-    this.subscription.unsubscribe();
+    super.ngOnDestroy();
   }
 
   closeDialog(): void {
@@ -61,20 +60,6 @@ export class LanguagePermissionsComponent implements OnInit, OnDestroy {
         this.languages$.next(languages);
       },
     });
-  }
-
-  private refreshOnChildClosed() {
-    this.subscription.add(
-      this.router.events.pipe(
-        filter(event => event instanceof NavigationEnd),
-        startWith(!!this.route.snapshot.firstChild),
-        map(() => !!this.route.snapshot.firstChild),
-        pairwise(),
-        filter(([hadChild, hasChild]) => hadChild && !hasChild),
-      ).subscribe(() => {
-        this.getLanguages();
-      })
-    );
   }
 
   private buildGridOptions(): GridOptions {

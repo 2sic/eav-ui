@@ -2,10 +2,11 @@ import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { BehaviorSubject, combineLatest, filter, map, Observable, pairwise, startWith, Subscription } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
+import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { ContentGroupAdd } from '../manage-content-list/models/content-group.model';
 import { ContentGroupService } from '../manage-content-list/services/content-group.service';
+import { BaseComponent } from '../shared/components/base-component/base.component';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 import { EditForm } from '../shared/models/edit-form.model';
 import { ReplaceOption } from './models/replace-option.model';
@@ -16,7 +17,7 @@ import { ReplaceContentTemplateVars } from './replace-content.models';
   templateUrl: './replace-content.component.html',
   styleUrls: ['./replace-content.component.scss'],
 })
-export class ReplaceContentComponent implements OnInit, OnDestroy {
+export class ReplaceContentComponent extends BaseComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
   templateVars$: Observable<ReplaceContentTemplateVars>;
@@ -28,15 +29,16 @@ export class ReplaceContentComponent implements OnInit, OnDestroy {
   private filterText$: BehaviorSubject<string>;
   private options$: BehaviorSubject<ReplaceOption[]>;
   private contentTypeName: string;
-  private subscription: Subscription;
 
   constructor(
     private dialogRef: MatDialogRef<ReplaceContentComponent>,
     private contentGroupService: ContentGroupService,
-    private router: Router,
-    private route: ActivatedRoute,
+    router: Router,
+    route: ActivatedRoute,
     private snackBar: MatSnackBar,
-  ) { }
+  ) { 
+    super(router, route);
+  }
 
   ngOnInit() {
     this.guid = this.route.snapshot.paramMap.get('guid');
@@ -44,7 +46,6 @@ export class ReplaceContentComponent implements OnInit, OnDestroy {
     this.index = parseInt(this.route.snapshot.paramMap.get('index'), 10);
     this.add = !!this.route.snapshot.queryParamMap.get('add');
 
-    this.subscription = new Subscription();
     this.filterText$ = new BehaviorSubject('');
     this.options$ = new BehaviorSubject([]);
 
@@ -66,13 +67,18 @@ export class ReplaceContentComponent implements OnInit, OnDestroy {
     );
 
     this.fetchConfig(false, null);
-    this.refreshOnChildClosed();
+    this.subscription.add(this.refreshOnChildClosed().subscribe(() => { 
+      const navigation = this.router.getCurrentNavigation();
+      const editResult = navigation.extras?.state;
+      const cloneId: number = editResult?.[Object.keys(editResult)[0]];
+      this.fetchConfig(true, cloneId);
+     }));
   }
 
   ngOnDestroy() {
     this.filterText$.complete();
     this.options$.complete();
-    this.subscription.unsubscribe();
+    super.ngOnDestroy();
   }
 
   closeDialog() {
@@ -125,23 +131,6 @@ export class ReplaceContentComponent implements OnInit, OnDestroy {
       }
       this.contentTypeName = replaceConfig.ContentTypeName;
     });
-  }
-
-  private refreshOnChildClosed() {
-    this.subscription.add(
-      this.router.events.pipe(
-        filter(event => event instanceof NavigationEnd),
-        startWith(!!this.route.snapshot.firstChild),
-        map(() => !!this.route.snapshot.firstChild),
-        pairwise(),
-        filter(([hadChild, hasChild]) => hadChild && !hasChild),
-      ).subscribe(() => {
-        const navigation = this.router.getCurrentNavigation();
-        const editResult = navigation.extras?.state;
-        const cloneId: number = editResult?.[Object.keys(editResult)[0]];
-        this.fetchConfig(true, cloneId);
-      })
-    );
   }
 
   private buildContentGroup() {
