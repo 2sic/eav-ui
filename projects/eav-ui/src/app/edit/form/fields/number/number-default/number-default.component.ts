@@ -5,7 +5,7 @@ import { WrappersConstants } from '../../../../shared/constants/wrappers.constan
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { EavService, FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
-import { BaseComponent } from '../../base/base.component';
+import { BaseFieldComponent } from '../../base/base-field.component';
 import { NumberDefaultTemplateVars } from './number-default.models';
 
 @Component({
@@ -16,7 +16,7 @@ import { NumberDefaultTemplateVars } from './number-default.models';
 @FieldMetadata({
   wrappers: [WrappersConstants.LocalizationWrapper],
 })
-export class NumberDefaultComponent extends BaseComponent<number> implements OnInit, OnDestroy {
+export class NumberDefaultComponent extends BaseFieldComponent<number> implements OnInit, OnDestroy {
   templateVars$: Observable<NumberDefaultTemplateVars>;
 
   constructor(eavService: EavService, fieldsSettingsService: FieldsSettingsService) {

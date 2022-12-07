@@ -4,14 +4,14 @@ import { InputTypeConstants } from '../../../../content-type-fields/constants/in
 import { WrappersConstants } from '../../../shared/constants';
 import { EavService, FieldsSettingsService } from '../../../shared/services';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
-import { BaseComponent } from '../../fields/base/base.component';
+import { BaseFieldComponent } from '../../fields/base/base-field.component';
 
 @Component({
   selector: WrappersConstants.AdamWrapper,
   templateUrl: './adam-wrapper.component.html',
   styleUrls: ['./adam-wrapper.component.scss'],
 })
-export class AdamWrapperComponent extends BaseComponent implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
+export class AdamWrapperComponent extends BaseFieldComponent implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild('invisibleClickable') invisibleClickableRef: ElementRef;
 

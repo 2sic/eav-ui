@@ -11,7 +11,7 @@ import { FieldMask, GeneralHelpers } from '../../../../shared/helpers';
 import { EavService, EditRoutingService, EntityService, FieldsSettingsService } from '../../../../shared/services';
 import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
-import { BaseComponent } from '../../base/base.component';
+import { BaseFieldComponent } from '../../base/base-field.component';
 import { ReorderIndexes } from './entity-default-list/entity-default-list.models';
 import { EntityDefaultLogic } from './entity-default-logic';
 import { EntityDefaultSearchComponent } from './entity-default-search/entity-default-search.component';
@@ -24,7 +24,7 @@ import { DeleteEntityProps, EntityTemplateVars, SelectedEntity } from './entity-
   styleUrls: ['./entity-default.component.scss'],
 })
 @FieldMetadata({})
-export class EntityDefaultComponent extends BaseComponent<string | string[]> implements OnInit, AfterViewInit, OnDestroy {
+export class EntityDefaultComponent extends BaseFieldComponent<string | string[]> implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(EntityDefaultSearchComponent) private entitySearchComponent: EntityDefaultSearchComponent;
 
   isQuery: boolean;

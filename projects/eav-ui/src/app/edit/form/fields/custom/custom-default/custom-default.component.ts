@@ -3,7 +3,7 @@ import { InputTypeConstants } from '../../../../../content-type-fields/constants
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { EavService, FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
-import { BaseComponent } from '../../base/base.component';
+import { BaseFieldComponent } from '../../base/base-field.component';
 
 @Component({
   selector: InputTypeConstants.CustomDefault,
@@ -13,7 +13,7 @@ import { BaseComponent } from '../../base/base.component';
 @FieldMetadata({
   wrappers: [WrappersConstants.LocalizationWrapper],
 })
-export class CustomDefaultComponent extends BaseComponent<null> implements OnInit, OnDestroy {
+export class CustomDefaultComponent extends BaseFieldComponent<null> implements OnInit, OnDestroy {
 
   constructor(eavService: EavService, fieldsSettingsService: FieldsSettingsService) {
     super(eavService, fieldsSettingsService);

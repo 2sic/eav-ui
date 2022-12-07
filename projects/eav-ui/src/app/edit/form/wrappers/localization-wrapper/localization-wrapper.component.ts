@@ -4,7 +4,7 @@ import { WrappersConstants } from '../../../shared/constants';
 import { EavService, EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
-import { BaseComponent } from '../../fields/base/base.component';
+import { BaseFieldComponent } from '../../fields/base/base-field.component';
 import { TranslateMenuComponent } from './translate-menu/translate-menu.component';
 
 @Component({
@@ -12,7 +12,7 @@ import { TranslateMenuComponent } from './translate-menu/translate-menu.componen
   templateUrl: './localization-wrapper.component.html',
   styleUrls: ['./localization-wrapper.component.scss'],
 })
-export class LocalizationWrapperComponent extends BaseComponent implements FieldWrapper, OnInit, OnDestroy {
+export class LocalizationWrapperComponent extends BaseFieldComponent implements FieldWrapper, OnInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild(TranslateMenuComponent) private translateMenu: TranslateMenuComponent;
 

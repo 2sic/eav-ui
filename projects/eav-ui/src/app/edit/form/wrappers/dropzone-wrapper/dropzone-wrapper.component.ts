@@ -7,7 +7,7 @@ import { consoleLogAngular } from '../../../../shared/helpers/console-log-angula
 import { WrappersConstants } from '../../../shared/constants';
 import { EavService, FieldsSettingsService } from '../../../shared/services';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
-import { BaseComponent } from '../../fields/base/base.component';
+import { BaseFieldComponent } from '../../fields/base/base-field.component';
 import { DropzoneConfigInstance, DropzoneType } from './dropzone-wrapper.models';
 
 @Component({
@@ -15,7 +15,7 @@ import { DropzoneConfigInstance, DropzoneType } from './dropzone-wrapper.models'
   templateUrl: './dropzone-wrapper.component.html',
   styleUrls: ['./dropzone-wrapper.component.scss'],
 })
-export class DropzoneWrapperComponent extends BaseComponent implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
+export class DropzoneWrapperComponent extends BaseFieldComponent implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild(DropzoneDirective) dropzoneRef: DropzoneDirective;
 
@@ -86,7 +86,7 @@ export class DropzoneWrapperComponent extends BaseComponent implements FieldWrap
       this.isStringWysiwyg = false;
     }
   }
-  
+
   // here we check if file is image type so we can cancel upload if it is also uploaded on wysiwyg
   onAddedFile(file: any) {
     if (this.isStringWysiwyg && this.imageTypes.some(x => x === file.type)) {

@@ -3,7 +3,7 @@ import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { filter, map, pairwise, startWith, Subscription } from 'rxjs';
 
 @Directive()
-// sdv TODO rename this class to BaseComponent when BaseComponent gets renamed to BaseFieldComponent
+// sdv TODO rename this class to BaseFieldComponent when BaseFieldComponent gets renamed to BaseFieldComponent
 // tslint:disable-next-line:directive-class-suffix
 export class BaseMainComponent implements OnDestroy {
   subscription: Subscription;
@@ -13,7 +13,7 @@ export class BaseMainComponent implements OnDestroy {
     public route: ActivatedRoute,
   ) {
     this.subscription = new Subscription();
-   }
+  }
 
   ngOnDestroy() {
     this.subscription.unsubscribe();

@@ -9,7 +9,7 @@ import { Field } from '../../builder/fields-builder/field.model';
 
 @Directive()
 // tslint:disable-next-line:directive-class-suffix
-export class BaseComponent<T = FieldValue> implements Field, OnInit, OnDestroy {
+export class BaseFieldComponent<T = FieldValue> implements Field, OnInit, OnDestroy {
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
 

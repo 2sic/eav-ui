@@ -4,7 +4,7 @@ import { InputTypeConstants } from '../../../../../content-type-fields/constants
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
 import { EavService, FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
-import { BaseComponent } from '../../base/base.component';
+import { BaseFieldComponent } from '../../base/base-field.component';
 import { StringDropdownLogic } from './string-dropdown-logic';
 import { StringDropdownTemplateVars } from './string-dropdown.models';
 
@@ -16,7 +16,7 @@ import { StringDropdownTemplateVars } from './string-dropdown.models';
 @FieldMetadata({
   wrappers: [WrappersConstants.LocalizationWrapper],
 })
-export class StringDropdownComponent extends BaseComponent<string | number> implements OnInit, OnDestroy {
+export class StringDropdownComponent extends BaseFieldComponent<string | number> implements OnInit, OnDestroy {
   type: 'string' | 'number';
   templateVars$: Observable<StringDropdownTemplateVars>;
 

@@ -7,12 +7,12 @@ import { EditForm } from '../../../../../shared/models/edit-form.model';
 import { FileTypeHelpers, GeneralHelpers, PagePicker, UrlHelpers } from '../../../../shared/helpers';
 import { AdamService, EavService, EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../../shared/services';
 import { LinkCacheService } from '../../../../shared/store/ngrx-data';
-import { BaseComponent } from '../../base/base.component';
+import { BaseFieldComponent } from '../../base/base-field.component';
 import { Preview } from './hyperlink-default.models';
 
 @Directive()
 // tslint:disable-next-line:directive-class-suffix
-export class HyperlinkDefaultBaseComponent extends BaseComponent<string> implements OnInit, OnDestroy {
+export class HyperlinkDefaultBaseComponent extends BaseFieldComponent<string> implements OnInit, OnDestroy {
   preview$: BehaviorSubject<Preview>;
 
   constructor(

@@ -6,7 +6,7 @@ import { GeneralHelpers } from '../../../shared/helpers';
 import { EavService, EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
 import { EntityCacheService, StringQueryCacheService } from '../../../shared/store/ngrx-data';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
-import { BaseComponent } from '../../fields/base/base.component';
+import { BaseFieldComponent } from '../../fields/base/base-field.component';
 import { calculateSelectedEntities } from '../../fields/entity/entity-default/entity-default.helpers';
 import { SelectedEntity } from '../../fields/entity/entity-default/entity-default.models';
 import { ContentExpandAnimation } from '../expandable-wrapper/content-expand.animation';
@@ -18,7 +18,7 @@ import { EntityExpandableTemplateVars } from './entity-expandable-wrapper.models
   styleUrls: ['./entity-expandable-wrapper.component.scss'],
   animations: [ContentExpandAnimation],
 })
-export class EntityExpandableWrapperComponent extends BaseComponent<string | string[]> implements FieldWrapper, OnInit, OnDestroy {
+export class EntityExpandableWrapperComponent extends BaseFieldComponent<string | string[]> implements FieldWrapper, OnInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
 
   dialogIsOpen$: Observable<boolean>;

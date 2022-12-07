@@ -4,7 +4,7 @@ import { InputTypeConstants } from '../../../../../content-type-fields/constants
 import { consoleLogAngular } from '../../../../../shared/helpers/console-log-angular.helper';
 import { EavService, EditRoutingService, FieldsSettingsService, ScriptsLoaderService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
-import { BaseComponent } from '../../base/base.component';
+import { BaseFieldComponent } from '../../base/base-field.component';
 import { ExternalWebComponentTemplateVars } from './external-web-component.models';
 import { StringWysiwygLogic } from './string-wysiwyg-logic';
 
@@ -14,7 +14,7 @@ import { StringWysiwygLogic } from './string-wysiwyg-logic';
   styleUrls: ['./external-web-component.component.scss'],
 })
 @FieldMetadata({})
-export class ExternalWebComponentComponent extends BaseComponent<string> implements OnInit, OnDestroy {
+export class ExternalWebComponentComponent extends BaseFieldComponent<string> implements OnInit, OnDestroy {
   templateVars$: Observable<ExternalWebComponentTemplateVars>;
 
   private loading$: BehaviorSubject<boolean>;

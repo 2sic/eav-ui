@@ -8,7 +8,7 @@ import { WrappersConstants } from '../../../../shared/constants/wrappers.constan
 import { FieldMask, GeneralHelpers } from '../../../../shared/helpers';
 import { EavService, FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
-import { BaseComponent } from '../../base/base.component';
+import { BaseFieldComponent } from '../../base/base-field.component';
 import { templateTypes } from './string-template-picker.constants';
 import { StringTemplatePickerTemplateVars } from './string-template-picker.models';
 
@@ -20,7 +20,7 @@ import { StringTemplatePickerTemplateVars } from './string-template-picker.model
 @FieldMetadata({
   wrappers: [WrappersConstants.LocalizationWrapper],
 })
-export class StringTemplatePickerComponent extends BaseComponent<string> implements OnInit, OnDestroy {
+export class StringTemplatePickerComponent extends BaseFieldComponent<string> implements OnInit, OnDestroy {
   templateVars$: Observable<StringTemplatePickerTemplateVars>;
 
   private templateOptions$: BehaviorSubject<string[]>;

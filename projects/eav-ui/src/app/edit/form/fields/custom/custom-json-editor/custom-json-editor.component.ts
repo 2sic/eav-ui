@@ -7,7 +7,7 @@ import { WrappersConstants } from '../../../../shared/constants/wrappers.constan
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { EavService, FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
-import { BaseComponent } from '../../base/base.component';
+import { BaseFieldComponent } from '../../base/base-field.component';
 import { CustomJsonEditorLogic, StringJsonLogic } from './custom-json-editor-logic';
 import { CustomJsonEditorTemplateVars } from './custom-json-editor.models';
 
@@ -19,7 +19,7 @@ import { CustomJsonEditorTemplateVars } from './custom-json-editor.models';
 @FieldMetadata({
   wrappers: [WrappersConstants.LocalizationWrapper],
 })
-export class CustomJsonEditorComponent extends BaseComponent<string> implements OnInit, OnDestroy {
+export class CustomJsonEditorComponent extends BaseFieldComponent<string> implements OnInit, OnDestroy {
   templateVars$: Observable<CustomJsonEditorTemplateVars>;
   filename: string;
   monacoOptions: Monaco.editor.IStandaloneEditorConstructionOptions = {

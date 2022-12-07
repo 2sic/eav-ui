@@ -1,5 +1,5 @@
 import { MatDatetimePickerInputEvent, NgxMatDatetimePicker } from '@angular-material-components/datetime-picker';
-import { MatDayjsDateAdapter, NgxMatDayjsDatetimeAdapter, NgxMatDayjsDatetimeAdapterOptions, NGX_MAT_DAYJS_DATETIME_ADAPTER_OPTIONS} from '../../../../shared/date-adapters/date-adapter-api'
+import { MatDayjsDateAdapter, NgxMatDayjsDatetimeAdapter, NgxMatDayjsDatetimeAdapterOptions, NGX_MAT_DAYJS_DATETIME_ADAPTER_OPTIONS } from '../../../../shared/date-adapters/date-adapter-api'
 import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDatepicker, MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { TranslateService } from '@ngx-translate/core';
@@ -11,7 +11,7 @@ import { WrappersConstants } from '../../../../shared/constants/wrappers.constan
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { EavService, FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
-import { BaseComponent } from '../../base/base.component';
+import { BaseFieldComponent } from '../../base/base-field.component';
 import { DatetimeDefaultTemplateVars } from './datetime-default.models';
 
 @Component({
@@ -22,7 +22,7 @@ import { DatetimeDefaultTemplateVars } from './datetime-default.models';
 @FieldMetadata({
   wrappers: [WrappersConstants.LocalizationWrapper],
 })
-export class DatetimeDefaultComponent extends BaseComponent<string> implements OnInit, OnDestroy {
+export class DatetimeDefaultComponent extends BaseFieldComponent<string> implements OnInit, OnDestroy {
   @ViewChild('picker') private picker?: MatDatepicker<Dayjs> | NgxMatDatetimePicker<Dayjs>;
 
   templateVars$: Observable<DatetimeDefaultTemplateVars>;
