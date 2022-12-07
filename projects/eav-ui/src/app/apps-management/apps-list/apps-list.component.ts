@@ -3,7 +3,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, catchError, Observable, of, share, startWith, Subject, switchMap } from 'rxjs';
-import { BaseMainComponent } from '../../shared/components/base-component/baseMain.component';
+import { BaseComponent } from '../../shared/components/base-component/base.component';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { FileUploadDialogData } from '../../shared/components/file-upload-dialog';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
@@ -23,7 +23,7 @@ import { AppsListShowComponent } from './apps-list-show/apps-list-show.component
   templateUrl: './apps-list.component.html',
   styleUrls: ['./apps-list.component.scss'],
 })
-export class AppsListComponent extends BaseMainComponent implements OnInit, OnDestroy {
+export class AppsListComponent extends BaseComponent implements OnInit, OnDestroy {
   apps$: Observable<App[]>;
   fabOpen$ = new BehaviorSubject(false);
   gridOptions = this.buildGridOptions();
@@ -36,7 +36,7 @@ export class AppsListComponent extends BaseMainComponent implements OnInit, OnDe
     private appsListService: AppsListService,
     private snackBar: MatSnackBar,
     private context: Context,
-  ) { 
+  ) {
     super(router, route)
   }
 
@@ -183,7 +183,7 @@ export class AppsListComponent extends BaseMainComponent implements OnInit, OnDe
             <div class="container">
               ${app.Thumbnail
                 ? `<img class="image logo" src="${app.Thumbnail}?w=40&h=40&mode=crop"></img>`
-              : `<div class="image logo"><span class="material-icons-outlined">star_border</span></div>`
+                : `<div class="image logo"><span class="material-icons-outlined">star_border</span></div>`
               }
               <div class="text">${params.value}</div>
             </div>

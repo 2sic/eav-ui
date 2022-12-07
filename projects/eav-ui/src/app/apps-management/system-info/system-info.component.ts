@@ -2,9 +2,9 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject, combineLatest, map, Observable} from 'rxjs';
+import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { DialogSettings } from '../../app-administration/models';
-import { BaseMainComponent } from '../../shared/components/base-component/baseMain.component';
+import { BaseComponent } from '../../shared/components/base-component/base.component';
 import { copyToClipboard } from '../../shared/helpers/copy-to-clipboard.helper';
 import { EavWindow } from '../../shared/models/eav-window.model';
 import { DialogService } from '../../shared/services/dialog.service';
@@ -22,7 +22,7 @@ declare const window: EavWindow;
   templateUrl: './system-info.component.html',
   styleUrls: ['./system-info.component.scss'],
 })
-export class SystemInfoComponent extends BaseMainComponent implements OnInit, OnDestroy {
+export class SystemInfoComponent extends BaseComponent implements OnInit, OnDestroy {
   @Input() dialogSettings: DialogSettings;
 
   pageLogDuration: number;
@@ -42,7 +42,7 @@ export class SystemInfoComponent extends BaseMainComponent implements OnInit, On
     private sxcInsightsService: SxcInsightsService,
   ) {
     super(router, route)
-   }
+  }
 
   ngOnInit(): void {
     this.systemInfoSet$ = new BehaviorSubject<SystemInfoSet | undefined>(undefined);
