@@ -37,7 +37,7 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
     private snackBar: MatSnackBar,
     private context: Context,
   ) {
-    super(router, route);
+    super(router, route)
   }
 
   ngOnInit(): void {

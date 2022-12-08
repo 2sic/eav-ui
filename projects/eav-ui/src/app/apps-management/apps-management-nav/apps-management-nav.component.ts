@@ -2,10 +2,9 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { BehaviorSubject, filter, map, startWith } from 'rxjs';
+import { BehaviorSubject, filter, map, pairwise, startWith, Subscription } from 'rxjs';
 import { DialogSettings } from '../../app-administration/models';
 import { AppDialogConfigService } from '../../app-administration/services';
-import { BaseComponent } from '../../shared/components/base-component/base.component';
 import { Context } from '../../shared/services/context';
 
 @Component({
@@ -13,7 +12,7 @@ import { Context } from '../../shared/services/context';
   templateUrl: './apps-management-nav.component.html',
   styleUrls: ['./apps-management-nav.component.scss'],
 })
-export class AppsManagementNavComponent extends BaseComponent implements OnInit, OnDestroy {
+export class AppsManagementNavComponent implements OnInit, OnDestroy {
   zoneId = this.context.zoneId;
   dialogSettings$ = new BehaviorSubject<DialogSettings>(undefined);
 
@@ -24,25 +23,24 @@ export class AppsManagementNavComponent extends BaseComponent implements OnInit,
     filter(tabIndex => tabIndex >= 0),
     startWith(this.tabs.indexOf(this.route.snapshot.firstChild.url[0].path)),
   );
+  private subscription = new Subscription();
 
   constructor(
     private dialogRef: MatDialogRef<AppsManagementNavComponent>,
-    router: Router,
-    route: ActivatedRoute,
+    private router: Router,
+    private route: ActivatedRoute,
     private context: Context,
     private appDialogConfigService: AppDialogConfigService,
-  ) {
-    super(router, route);
-   }
+  ) { }
 
   ngOnInit() {
     this.fetchDialogSettings();
-    this.subscription.add(this.refreshOnChildClosed().subscribe(() => { this.fetchDialogSettings(); }));
+    this.refreshOnChildClosed();
   }
 
   ngOnDestroy() {
     this.dialogSettings$.complete();
-    super.ngOnDestroy();
+    this.subscription.unsubscribe();
   }
 
   closeDialog() {
@@ -58,5 +56,19 @@ export class AppsManagementNavComponent extends BaseComponent implements OnInit,
     this.appDialogConfigService.getShared$(0)/*.getDialogSettings(0)*/.subscribe(dialogSettings => {
       this.dialogSettings$.next(dialogSettings);
     });
+  }
+
+  private refreshOnChildClosed() {
+    this.subscription.add(
+      this.router.events.pipe(
+        filter(event => event instanceof NavigationEnd),
+        startWith(!!this.route.snapshot.firstChild.firstChild),
+        map(() => !!this.route.snapshot.firstChild.firstChild),
+        pairwise(),
+        filter(([hadChild, hasChild]) => hadChild && !hasChild),
+      ).subscribe(() => {
+        this.fetchDialogSettings();
+      })
+    );
   }
 }

@@ -3,8 +3,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject, filter, take } from 'rxjs';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { BehaviorSubject, filter, map, pairwise, startWith, Subscription, take } from 'rxjs';
 import { ContentType } from '../app-administration/models/content-type.model';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { ContentExportService } from '../content-export/services/content-export.service';
@@ -13,7 +13,6 @@ import { DataTypeConstants } from '../content-type-fields/constants/data-type.co
 import { Field } from '../content-type-fields/models/field.model';
 import { GlobalConfigService } from '../edit/shared/store/ngrx-data';
 import { GoToMetadata } from '../metadata';
-import { BaseComponent } from '../shared/components/base-component/base.component';
 import { BooleanFilterComponent } from '../shared/components/boolean-filter/boolean-filter.component';
 import { EntityFilterComponent } from '../shared/components/entity-filter/entity-filter.component';
 import { FileUploadDialogData } from '../shared/components/file-upload-dialog';
@@ -46,7 +45,7 @@ import { EntitiesService } from './services/entities.service';
   templateUrl: './content-items.component.html',
   styleUrls: ['./content-items.component.scss'],
 })
-export class ContentItemsComponent extends BaseComponent implements OnInit, OnDestroy {
+export class ContentItemsComponent implements OnInit, OnDestroy {
   contentType$ = new BehaviorSubject<ContentType>(undefined);
   items$ = new BehaviorSubject<ContentItem[]>(undefined);
   debugEnabled$ = this.globalConfigService.getDebugEnabled$();
@@ -56,12 +55,13 @@ export class ContentItemsComponent extends BaseComponent implements OnInit, OnDe
 
   private gridApi$ = new BehaviorSubject<GridApi>(null);
   private contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
+  private subscription = new Subscription();
 
   constructor(
     private dialogRef: MatDialogRef<ContentItemsComponent>,
     private contentTypesService: ContentTypesService,
-    router: Router,
-    route: ActivatedRoute,
+    private router: Router,
+    private route: ActivatedRoute,
     private contentItemsService: ContentItemsService,
     private entitiesService: EntitiesService,
     private contentExportService: ContentExportService,
@@ -70,22 +70,20 @@ export class ContentItemsComponent extends BaseComponent implements OnInit, OnDe
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
-  ) { 
-    super(router, route);
-  }
+  ) { }
 
   ngOnInit() {
     this.fetchContentType();
     this.fetchItems();
     this.fetchColumns();
-    this.subscription.add(this.refreshOnChildClosed().subscribe(() => { this.fetchItems(); }));
+    this.refreshOnChildClosed();
   }
 
   ngOnDestroy() {
     this.contentType$.complete();
     this.items$.complete();
     this.gridApi$.complete();
-    super.ngOnDestroy();
+    this.subscription.unsubscribe();
   }
 
   closeDialog() {
@@ -220,6 +218,20 @@ export class ContentItemsComponent extends BaseComponent implements OnInit, OnDe
   debugFilter() {
     console.warn('Current filter:', this.gridApi$.value.getFilterModel());
     this.snackBar.open('Check console for filter information', undefined, { duration: 3000 });
+  }
+
+  private refreshOnChildClosed() {
+    this.subscription.add(
+      this.router.events.pipe(
+        filter(event => event instanceof NavigationEnd),
+        startWith(!!this.route.snapshot.firstChild),
+        map(() => !!this.route.snapshot.firstChild),
+        pairwise(),
+        filter(([hadChild, hasChild]) => hadChild && !hasChild),
+      ).subscribe(() => {
+        this.fetchItems();
+      })
+    );
   }
 
   private buildColumnDefs(columns: Field[]) {

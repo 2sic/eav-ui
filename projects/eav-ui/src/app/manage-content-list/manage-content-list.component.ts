@@ -2,8 +2,8 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject, combineLatest, map, tap } from 'rxjs';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { BehaviorSubject, combineLatest, filter, map, pairwise, startWith, Subscription, tap } from 'rxjs';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 import { EditForm } from '../shared/models/edit-form.model';
 import { ContentGroup } from './models/content-group.model';
@@ -11,14 +11,13 @@ import { GroupHeader } from './models/group-header.model';
 import { ContentGroupService } from './services/content-group.service';
 import { AppDialogConfigService } from '../app-administration/services';
 import { TranslateService } from '@ngx-translate/core';
-import { BaseComponent } from '../shared/components/base-component/base.component';
 
 @Component({
   selector: 'app-manage-content-list',
   templateUrl: './manage-content-list.component.html',
   styleUrls: ['./manage-content-list.component.scss'],
 })
-export class ManageContentListComponent extends BaseComponent implements OnInit, OnDestroy {
+export class ManageContentListComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
   private items$ = new BehaviorSubject<GroupHeader[]>(null);
@@ -34,33 +33,29 @@ export class ManageContentListComponent extends BaseComponent implements OnInit,
     index: parseInt(this.route.snapshot.paramMap.get('index'), 10),
   };
   private reordered = false;
+  private subscription = new Subscription();
 
   constructor(
     private dialogRef: MatDialogRef<ManageContentListComponent>,
     private contentGroupService: ContentGroupService,
-    route: ActivatedRoute,
-    router: Router,
+    private route: ActivatedRoute,
+    private router: Router,
     private snackBar: MatSnackBar,
     private translate: TranslateService,
     private appDialogConfigService: AppDialogConfigService,
-  ) { 
-    super(router, route);
-  }
+  ) { }
 
   ngOnInit() {
     this.fetchList();
     this.fetchHeader();
-    this.subscription.add(this.refreshOnChildClosed().subscribe(() => { 
-      this.fetchList();
-      this.fetchHeader();
-     }));
+    this.refreshOnChildClosed();
     this.fetchDialogSettings();
   }
 
   ngOnDestroy() {
     this.items$.complete();
     this.header$.complete();
-    super.ngOnDestroy();
+    this.subscription.unsubscribe();
   }
 
   private fetchDialogSettings() {
@@ -152,4 +147,20 @@ export class ManageContentListComponent extends BaseComponent implements OnInit,
       this.header$.next(header);
     });
   }
+
+  private refreshOnChildClosed() {
+    this.subscription.add(
+      this.router.events.pipe(
+        filter(event => event instanceof NavigationEnd),
+        startWith(!!this.route.snapshot.firstChild),
+        map(() => !!this.route.snapshot.firstChild),
+        pairwise(),
+        filter(([hadChild, hasChild]) => hadChild && !hasChild),
+      ).subscribe(() => {
+        this.fetchList();
+        this.fetchHeader();
+      })
+    );
+  }
+
 }

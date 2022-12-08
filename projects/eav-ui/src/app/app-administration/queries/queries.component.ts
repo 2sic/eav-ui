@@ -1,13 +1,12 @@
 import { GridOptions } from '@ag-grid-community/core';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { BehaviorSubject, filter, map, pairwise, startWith, Subscription } from 'rxjs';
 import { ContentExportService } from '../../content-export/services/content-export.service';
 import { GoToDevRest } from '../../dev-rest/go-to-dev-rest';
 import { GoToMetadata } from '../../metadata';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
-import { BaseComponent } from '../../shared/components/base-component/base.component';
 import { FileUploadDialogData } from '../../shared/components/file-upload-dialog';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
@@ -26,31 +25,31 @@ import { QueriesActionsComponent } from './queries-actions/queries-actions.compo
   templateUrl: './queries.component.html',
   styleUrls: ['./queries.component.scss'],
 })
-export class QueriesComponent extends BaseComponent implements OnInit, OnDestroy {
+export class QueriesComponent implements OnInit, OnDestroy {
   @Input() enablePermissions: boolean;
 
   queries$ = new BehaviorSubject<Query[]>(undefined);
   gridOptions = this.buildGridOptions();
 
+  private subscription = new Subscription();
+
   constructor(
-    router: Router,
-    route: ActivatedRoute,
+    private router: Router,
+    private route: ActivatedRoute,
     private pipelinesService: PipelinesService,
     private contentExportService: ContentExportService,
     private snackBar: MatSnackBar,
     private dialogService: DialogService,
-  ) {
-    super(router, route);
-   }
+  ) { }
 
   ngOnInit() {
     this.fetchQueries();
-    this.subscription.add(this.refreshOnChildClosed().subscribe(() => { this.fetchQueries(); }));
+    this.refreshOnChildClosed();
   }
 
   ngOnDestroy() {
     this.queries$.complete();
-    super.ngOnDestroy();
+    this.subscription.unsubscribe();
   }
 
   private fetchQueries() {
@@ -143,6 +142,20 @@ export class QueriesComponent extends BaseComponent implements OnInit, OnDestroy
       this.snackBar.open('Deleted', null, { duration: 2000 });
       this.fetchQueries();
     });
+  }
+
+  private refreshOnChildClosed() {
+    this.subscription.add(
+      this.router.events.pipe(
+        filter(event => event instanceof NavigationEnd),
+        startWith(!!this.route.snapshot.firstChild.firstChild),
+        map(() => !!this.route.snapshot.firstChild.firstChild),
+        pairwise(),
+        filter(([hadChild, hasChild]) => hadChild && !hasChild),
+      ).subscribe(() => {
+        this.fetchQueries();
+      })
+    );
   }
 
   private buildGridOptions(): GridOptions {

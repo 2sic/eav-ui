@@ -2,8 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { BehaviorSubject, combineLatest, filter, map, startWith } from 'rxjs';
-import { BaseComponent } from '../../shared/components/base-component/base.component';
+import { BehaviorSubject, combineLatest, filter, map, pairwise, startWith, Subscription } from 'rxjs';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { UpdateEnvVarsFromDialogSettings } from '../../shared/helpers/update-env-vars-from-dialog-settings.helper';
 import { AppScopes } from '../../shared/models/dialog-context.models';
@@ -15,7 +14,7 @@ import { AppDialogConfigService } from '../services/app-dialog-config.service';
   templateUrl: './app-administration-nav.component.html',
   styleUrls: ['./app-administration-nav.component.scss'],
 })
-export class AppAdministrationNavComponent extends BaseComponent implements OnInit, OnDestroy {
+export class AppAdministrationNavComponent implements OnInit, OnDestroy {
   AppScopes = AppScopes;
 
   private dialogSettings$ = new BehaviorSubject<DialogSettings>(undefined);
@@ -39,24 +38,24 @@ export class AppAdministrationNavComponent extends BaseComponent implements OnIn
     map(([dialogSettings, tabIndex]) => ({ dialogSettings, tabIndex })),
   );
 
+  private subscription = new Subscription();
+
   constructor(
     private dialogRef: MatDialogRef<AppAdministrationNavComponent>,
     private appDialogConfigService: AppDialogConfigService,
-    router: Router,
-    route: ActivatedRoute,
-  ) { 
-    super(router, route);
-  }
+    private router: Router,
+    private route: ActivatedRoute,
+  ) { }
 
   ngOnInit() {
     this.fetchDialogSettings();
-    this.subscription.add(this.refreshOnChildClosed().subscribe(() => { this.fetchDialogSettings(); }));
+    this.refreshOnChildClosed();
   }
 
   ngOnDestroy() {
     this.dialogSettings$.complete();
     this.tabs$.complete();
-    super.ngOnDestroy();
+    this.subscription.unsubscribe();
   }
 
   closeDialog() {
@@ -82,5 +81,19 @@ export class AppAdministrationNavComponent extends BaseComponent implements OnIn
       }
       this.tabs$.next(tabs);
     });
+  }
+
+  private refreshOnChildClosed() {
+    this.subscription.add(
+      this.router.events.pipe(
+        filter(event => event instanceof NavigationEnd),
+        startWith(!!this.route.snapshot.firstChild.firstChild),
+        map(() => !!this.route.snapshot.firstChild.firstChild),
+        pairwise(),
+        filter(([hadChild, hasChild]) => hadChild && !hasChild),
+      ).subscribe(() => {
+        this.fetchDialogSettings();
+      })
+    );
   }
 }

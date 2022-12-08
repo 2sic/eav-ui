@@ -2,11 +2,10 @@ import polymorphLogo from '!url-loader!./polymorph-logo.png';
 import { GridOptions } from '@ag-grid-community/core';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { BehaviorSubject, filter, map, pairwise, startWith, Subscription } from 'rxjs';
 import { GoToMetadata } from '../../metadata';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
-import { BaseComponent } from '../../shared/components/base-component/base.component';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { FileUploadDialogData } from '../../shared/components/file-upload-dialog';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
@@ -30,7 +29,7 @@ import { calculateViewType } from './views.helpers';
   templateUrl: './views.component.html',
   styleUrls: ['./views.component.scss'],
 })
-export class ViewsComponent extends BaseComponent implements OnInit, OnDestroy {
+export class ViewsComponent implements OnInit, OnDestroy {
   @Input() enableCode: boolean;
   @Input() enablePermissions: boolean;
   @Input() appIsGlobal: boolean;
@@ -41,31 +40,27 @@ export class ViewsComponent extends BaseComponent implements OnInit, OnDestroy {
   polymorphLogo = polymorphLogo;
   gridOptions = this.buildGridOptions();
 
+  private subscription = new Subscription();
   private polymorphism: Polymorphism;
 
   constructor(
     private viewsService: ViewsService,
-    router: Router,
-    route: ActivatedRoute,
+    private router: Router,
+    private route: ActivatedRoute,
     private snackBar: MatSnackBar,
     private dialogService: DialogService,
-  ) {
-    super(router, route);
-   }
+  ) { }
 
   ngOnInit() {
     this.fetchTemplates();
     this.fetchPolymorphism();
-    this.subscription.add(this.refreshOnChildClosed().subscribe(() => { 
-      this.fetchTemplates();
-      this.fetchPolymorphism();
-     }));
+    this.refreshOnChildClosed();
   }
 
   ngOnDestroy() {
     this.views$.complete();
     this.polymorphStatus$.complete();
-    super.ngOnDestroy();
+    this.subscription.unsubscribe();
   }
 
   importView(files?: File[]) {
@@ -167,6 +162,21 @@ export class ViewsComponent extends BaseComponent implements OnInit, OnDestroy {
       this.snackBar.open('Deleted', null, { duration: 2000 });
       this.fetchTemplates();
     });
+  }
+
+  private refreshOnChildClosed() {
+    this.subscription.add(
+      this.router.events.pipe(
+        filter(event => event instanceof NavigationEnd),
+        startWith(!!this.route.snapshot.firstChild.firstChild),
+        map(() => !!this.route.snapshot.firstChild.firstChild),
+        pairwise(),
+        filter(([hadChild, hasChild]) => hadChild && !hasChild),
+      ).subscribe(() => {
+        this.fetchTemplates();
+        this.fetchPolymorphism();
+      })
+    );
   }
 
   private buildGridOptions(): GridOptions {
