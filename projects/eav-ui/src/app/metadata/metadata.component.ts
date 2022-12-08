@@ -160,12 +160,12 @@ export class MetadataComponent implements OnInit, OnDestroy {
   private fetchMetadata() {
     this.metadataService.getMetadata(this.targetType, this.keyType, this.key).pipe(
       map(metadata => {
-        metadata.Recommendations.forEach(recommendation => { 
-          if (recommendation.Icon.startsWith("base64:")) {
-            recommendation.Icon = recommendation.Icon.replace("base64:", "");
+        metadata.Recommendations.forEach(recommendation => {
+          if (recommendation.Icon?.startsWith('base64:')) {
+            recommendation.Icon = recommendation.Icon.replace('base64:', '');
             recommendation.Icon = window.atob(recommendation.Icon);
           }
-        })
+        });
         return metadata;
       }),
       tap(metadata => {
