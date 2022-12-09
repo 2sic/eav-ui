@@ -7,6 +7,7 @@ import { TranslationState } from '../../../../shared/models';
 import { EavService, FieldsSettingsService, FieldsTranslateService, FormsStateService } from '../../../../shared/services';
 import { LanguageInstanceService } from '../../../../shared/store/ngrx-data';
 import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
+import { TranslateFromMenuDialogComponent } from '../translate-from-menu-dialog/translate-from-menu-dialog.component';
 import { TranslateMenuDialogComponent } from '../translate-menu-dialog/translate-menu-dialog.component';
 import { TranslateMenuDialogData } from '../translate-menu-dialog/translate-menu-dialog.models';
 import { TranslateMenuHelpers } from './translate-menu.helpers';
@@ -86,6 +87,23 @@ export class TranslateMenuComponent implements OnInit {
       },
     };
     this.dialog.open(TranslateMenuDialogComponent, {
+      autoFocus: false,
+      data: dialogData,
+      panelClass: 'translate-menu-dialog',
+      viewContainerRef: this.viewContainerRef,
+      width: '350px',
+    });
+  }
+
+  openTranslateFromMenuDialog(translationState: TranslationState): void {
+    const dialogData: TranslateMenuDialogData = {
+      config: this.config,
+      translationState: {
+        language: translationState.language,
+        linkType: translationState.linkType,
+      },
+    };
+    this.dialog.open(TranslateFromMenuDialogComponent, {
       autoFocus: false,
       data: dialogData,
       panelClass: 'translate-menu-dialog',

@@ -50,6 +50,7 @@
   "LangMenu": {
     "Translate": "Translate",
     "TranslateAll": "Translate all",
+    "TranslateFrom": "Translate from",
     "NoTranslate": "Don't translate",
     "NoTranslateAll": "Don't translate any",
     "Link": "Link to other language",

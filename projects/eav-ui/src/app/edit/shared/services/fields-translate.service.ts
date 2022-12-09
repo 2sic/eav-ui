@@ -1,4 +1,6 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { tap } from 'rxjs';
 import { EavService, FieldsSettingsService } from '.';
 import { consoleLogAngular } from '../../../shared/helpers/console-log-angular.helper';
 import { InputFieldHelpers, LocalizationHelpers } from '../helpers';
@@ -11,6 +13,7 @@ export class FieldsTranslateService {
   private contentTypeId: string;
 
   constructor(
+    private http: HttpClient,
     private itemService: ItemService,
     private languageInstanceService: LanguageInstanceService,
     private eavService: EavService,
@@ -40,6 +43,26 @@ export class FieldsTranslateService {
       this.entityGuid, fieldName, defaultValue.Value, currentLanguage, false, ctAttribute.Type, isTransaction, transactionItem,
     );
     return transactionItem;
+  }
+
+  translateFrom(fieldName: string, translateFromLanguageKey: string) {
+    const translateToLanuageKey = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
+    const attributes = this.itemService.getItemAttributes(this.entityGuid);
+    const textForTranslation = attributes[fieldName].Values.find(v => v.Dimensions.find(x => x.Value === translateFromLanguageKey)).Value;
+    const translationData = {
+      q: textForTranslation,
+      target: translateToLanuageKey,
+      source: translateFromLanguageKey
+    }
+    this.http.post('https://translation.googleapis.com/language/translate/v2?key=AIzaSyBEZ-zTKEmWvARdwN4W1aJ1MRLEgUCZ98k', translationData)
+      .pipe(tap(
+        (response: any) => {
+          const contentType = this.contentTypeService.getContentType(this.contentTypeId);
+          const ctAttribute = contentType.Attributes.find(a => a.Name === fieldName);
+          this.itemService.addItemAttributeValue(
+            this.entityGuid, fieldName, response.data.translations[0].translatedText, translateToLanuageKey, false, ctAttribute.Type,
+          ); }
+      )).subscribe();
   }
 
   dontTranslate(fieldName: string, isTransaction = false, transactionItem?: EavItem): EavItem {

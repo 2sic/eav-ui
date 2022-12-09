@@ -48,10 +48,11 @@
     "CantSwitchLanguage": "Can't switch languages until current language has all required values"
   },
   "LangMenu": {
-    "Translate": "Translate",
-    "TranslateAll": "Translate all",
-    "NoTranslate": "Don't translate",
-    "NoTranslateAll": "Don't translate any",
+    "Translate": "Prevedi",
+    "TranslateAll": "Prevedi sve",
+    "TranslateFrom": "Prevedi iz",
+    "NoTranslate": "Ne prevodi",
+    "NoTranslateAll": "Ne prevodi sve",
     "Link": "Link to other language",
     "UseDefault": "auto (default)",
     "InAllLanguages": "in all languages",

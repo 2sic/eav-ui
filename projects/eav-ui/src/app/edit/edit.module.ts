@@ -95,6 +95,7 @@ import { ChangeAnchorTargetDirective, PasteClipboardImageDirective } from './sha
 import { AdamService, EavService, EntityService, LoadIconsService, QueryService, ScriptsLoaderService } from './shared/services';
 import { FeaturesModule } from "../features/features.module";
 import { Dayjs } from 'dayjs';
+import { TranslateFromMenuDialogComponent } from './form/wrappers/localization-wrapper/translate-from-menu-dialog/translate-from-menu-dialog.component';
 
 @NgModule({
     declarations: [
@@ -141,6 +142,7 @@ import { Dayjs } from 'dayjs';
         EntityTranslateMenuComponent,
         TranslateMenuComponent,
         TranslateMenuDialogComponent,
+        TranslateFromMenuDialogComponent,
         EntityExpandableWrapperComponent,
         EntityDefaultListComponent,
         EntityDefaultSearchComponent,
