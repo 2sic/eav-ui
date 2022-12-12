@@ -45,6 +45,16 @@ export class FieldsTranslateService {
     return transactionItem;
   }
 
+  dontTranslate(fieldName: string, isTransaction = false, transactionItem?: EavItem): EavItem {
+    if (this.isTranslationDisabled(fieldName)) { return; }
+
+    const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
+    transactionItem = this.itemService.removeItemAttributeDimension(
+      this.entityGuid, fieldName, currentLanguage, isTransaction, transactionItem,
+    );
+    return transactionItem;
+  }
+
   translateFrom(fieldName: string, translateFromLanguageKey: string) {
     const translateToLanuageKey = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
     const attributes = this.itemService.getItemAttributes(this.entityGuid);
@@ -54,25 +64,16 @@ export class FieldsTranslateService {
       target: translateToLanuageKey,
       source: translateFromLanguageKey
     }
-    this.http.post('https://translation.googleapis.com/language/translate/v2?key=AIzaSyBEZ-zTKEmWvARdwN4W1aJ1MRLEgUCZ98k', translationData)
+    this.http.post(`https://translation.googleapis.com/language/translate/v2?key=${this.eavService.eavConfig.dialogContext.ApiKeys.find(x => x.NameId === "google-translate").ApiKey }`, translationData)
       .pipe(tap(
         (response: any) => {
           const contentType = this.contentTypeService.getContentType(this.contentTypeId);
           const ctAttribute = contentType.Attributes.find(a => a.Name === fieldName);
           this.itemService.addItemAttributeValue(
             this.entityGuid, fieldName, response.data.translations[0].translatedText, translateToLanuageKey, false, ctAttribute.Type,
-          ); }
+          );
+        }
       )).subscribe();
-  }
-
-  dontTranslate(fieldName: string, isTransaction = false, transactionItem?: EavItem): EavItem {
-    if (this.isTranslationDisabled(fieldName)) { return; }
-
-    const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
-    transactionItem = this.itemService.removeItemAttributeDimension(
-      this.entityGuid, fieldName, currentLanguage, isTransaction, transactionItem,
-    );
-    return transactionItem;
   }
 
   copyFrom(fieldName: string, copyFromLanguageKey: string): void {

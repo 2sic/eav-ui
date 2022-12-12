@@ -1,3 +1,4 @@
+import { ComponentType } from '@angular/cdk/portal';
 import { Component, Input, OnInit, ViewContainerRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -79,23 +80,14 @@ export class TranslateMenuComponent implements OnInit {
   }
 
   openTranslateMenuDialog(translationState: TranslationState): void {
-    const dialogData: TranslateMenuDialogData = {
-      config: this.config,
-      translationState: {
-        language: translationState.language,
-        linkType: translationState.linkType,
-      },
-    };
-    this.dialog.open(TranslateMenuDialogComponent, {
-      autoFocus: false,
-      data: dialogData,
-      panelClass: 'translate-menu-dialog',
-      viewContainerRef: this.viewContainerRef,
-      width: '350px',
-    });
+    this.openDialog(translationState, TranslateMenuDialogComponent);
   }
 
   openTranslateFromMenuDialog(translationState: TranslationState): void {
+    this.openDialog(translationState, TranslateFromMenuDialogComponent);
+  }
+
+  private openDialog(translationState: TranslationState, component: any): void {
     const dialogData: TranslateMenuDialogData = {
       config: this.config,
       translationState: {
@@ -103,7 +95,7 @@ export class TranslateMenuComponent implements OnInit {
         linkType: translationState.linkType,
       },
     };
-    this.dialog.open(TranslateFromMenuDialogComponent, {
+    this.dialog.open(component, {
       autoFocus: false,
       data: dialogData,
       panelClass: 'translate-menu-dialog',

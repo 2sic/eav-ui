@@ -78,19 +78,15 @@ export class TranslateFromMenuDialogComponent implements OnInit, OnDestroy {
   setLanguage(language: string): void {
     const newTranslationState: TranslationStateCore = { ...this.translationState$.value, language };
     this.translationState$.next(newTranslationState);
-  }
 
-  save(): void {
     const oldState = this.dialogData.translationState;
-    const newState = this.translationState$.value;
-
-    const isEqual = oldState.language === newState.language;
+    const isEqual = oldState.language === newTranslationState.language;
     if (isEqual) {
       this.closeDialog();
       return;
     }
 
-    this.fieldsTranslateService.translateFrom(this.dialogData.config.name, newState.language);
+    this.fieldsTranslateService.translateFrom(this.dialogData.config.name, newTranslationState.language);
 
     this.closeDialog();
   }

@@ -20,6 +20,12 @@ export interface DialogContextApp {
   SharedUrl: string;
 }
 
+export interface DialogContextApiKeys {
+  NameId: string;
+  ApiKey: string;
+  IsDemo: boolean;
+}
+
 export const AppScopes = {
   App: 'App',
   Site: 'Site',

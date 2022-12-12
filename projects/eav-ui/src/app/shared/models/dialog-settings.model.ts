@@ -1,5 +1,5 @@
 // tslint:disable-next-line:max-line-length
-import { DialogContextApp, DialogContextEnable, DialogContextFeature, DialogContextLanguage, DialogContextPage, DialogContextSite, DialogContextSystem, DialogContextUser } from './dialog-context.models';
+import { DialogContextApiKeys, DialogContextApp, DialogContextEnable, DialogContextFeature, DialogContextLanguage, DialogContextPage, DialogContextSite, DialogContextSystem, DialogContextUser } from './dialog-context.models';
 
 export interface DialogSettings {
   Context: DialogContext;
@@ -7,6 +7,7 @@ export interface DialogSettings {
 
 export interface DialogContext {
   App: DialogContextApp;
+  ApiKeys: DialogContextApiKeys[];
   Enable: DialogContextEnable;
   Language: DialogContextLanguage;
   Page?: DialogContextPage;
