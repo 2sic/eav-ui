@@ -37,12 +37,7 @@ export class FieldsTranslateService {
     const attributes = this.itemService.getItemAttributes(this.entityGuid);
     const values = attributes[fieldName];
     const defaultValue = LocalizationHelpers.getValueTranslation(values, defaultLanguage, defaultLanguage);
-    const contentType = this.contentTypeService.getContentType(this.contentTypeId);
-    const ctAttribute = contentType.Attributes.find(a => a.Name === fieldName);
-    transactionItem = this.itemService.addItemAttributeValue(
-      this.entityGuid, fieldName, defaultValue.Value, currentLanguage, false, ctAttribute.Type, isTransaction, transactionItem,
-    );
-    return transactionItem;
+    return this.addItemAttributeValueHelper(fieldName, defaultValue.Value, currentLanguage, false);
   }
 
   dontTranslate(fieldName: string, isTransaction = false, transactionItem?: EavItem): EavItem {
@@ -56,22 +51,21 @@ export class FieldsTranslateService {
   }
 
   translateFrom(fieldName: string, translateFromLanguageKey: string) {
-    const translateToLanuageKey = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
+    const apiKeyInfo = this.eavService.eavConfig.dialogContext.ApiKeys.find(x => x.NameId === "google-translate");
+    const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
     const attributes = this.itemService.getItemAttributes(this.entityGuid);
     const textForTranslation = attributes[fieldName].Values.find(v => v.Dimensions.find(x => x.Value === translateFromLanguageKey)).Value;
     const translationData = {
       q: textForTranslation,
-      target: translateToLanuageKey,
+      target: currentLanguage,
       source: translateFromLanguageKey
     }
-    this.http.post(`https://translation.googleapis.com/language/translate/v2?key=${this.eavService.eavConfig.dialogContext.ApiKeys.find(x => x.NameId === "google-translate").ApiKey }`, translationData)
+    if (apiKeyInfo.IsDemo)
+      alert("This translation is a demo. Please provide your own Google Translate API key in the EAV configuration.");
+    this.http.post(`https://translation.googleapis.com/language/translate/v2?key=${apiKeyInfo.ApiKey }`, translationData)
       .pipe(tap(
         (response: any) => {
-          const contentType = this.contentTypeService.getContentType(this.contentTypeId);
-          const ctAttribute = contentType.Attributes.find(a => a.Name === fieldName);
-          this.itemService.addItemAttributeValue(
-            this.entityGuid, fieldName, response.data.translations[0].translatedText, translateToLanuageKey, false, ctAttribute.Type,
-          );
+          this.addItemAttributeValueHelper(fieldName, response.data.translations[0].translatedText, currentLanguage, false);
         }
       )).subscribe();
   }
@@ -96,11 +90,7 @@ export class FieldsTranslateService {
         );
       } else {
         // Copy attribute value where language is languageKey to new attribute with current language
-        const contentType = this.contentTypeService.getContentType(this.contentTypeId);
-        const ctAttribute = contentType.Attributes.find(a => a.Name === fieldName);
-        this.itemService.addItemAttributeValue(
-          this.entityGuid, fieldName, attributeValueTranslation.Value, currentLanguage, false, ctAttribute.Type,
-        );
+        this.addItemAttributeValueHelper(fieldName, attributeValueTranslation.Value, currentLanguage, false);
       }
     } else {
       consoleLogAngular(`${currentLanguage}: Cant copy value from ${copyFromLanguageKey} because that value does not exist.`);
@@ -156,5 +146,13 @@ export class FieldsTranslateService {
   private isTranslationDisabled(fieldName: string) {
     const fieldsProps = this.fieldsSettingsService.getFieldsProps();
     return fieldsProps[fieldName].settings.DisableTranslation;
+  }
+
+  private addItemAttributeValueHelper(fieldName: string, value: any, currentLanguage: string, isReadOnly: boolean): EavItem {
+    const contentType = this.contentTypeService.getContentType(this.contentTypeId);
+    const ctAttribute = contentType.Attributes.find(a => a.Name === fieldName);
+    return this.itemService.addItemAttributeValue(
+      this.entityGuid, fieldName, value, currentLanguage, isReadOnly, ctAttribute.Type,
+    );
   }
 }
