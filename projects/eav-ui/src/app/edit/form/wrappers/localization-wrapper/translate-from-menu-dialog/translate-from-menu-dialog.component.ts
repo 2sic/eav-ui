@@ -7,7 +7,7 @@ import { EavService, FieldsTranslateService } from '../../../../shared/services'
 import { ItemService, LanguageInstanceService, LanguageService } from '../../../../shared/store/ngrx-data';
 import { TranslationStateCore } from '../translate-menu/translate-menu.models';
 import { I18nKeys } from '../translate-menu-dialog/translate-menu-dialog.constants';
-import { findI18nKey, getTemplateLanguages } from '../translate-menu-dialog/translate-menu-dialog.helpers';
+import { findI18nKey, getTemplateLanguages, getTemplateLanguagesWithContent } from '../translate-menu-dialog/translate-menu-dialog.helpers';
 
 @Component({
   selector: 'app-translate-from-menu-dialog',
@@ -52,8 +52,10 @@ export class TranslateFromMenuDialogComponent implements OnInit, OnDestroy {
       attributes$,
       this.translationState$,
     ]).pipe(
-      map(([languages, currentLanguage, defaultLanguage, attributes, translationState]) =>
-        getTemplateLanguages(this.dialogData.config, currentLanguage, defaultLanguage, languages, attributes, translationState.linkType)),
+      map(([languages, currentLanguage, defaultLanguage, attributes, translationState]) => {
+        return this.dialogData.isTranslateMany ? getTemplateLanguagesWithContent(currentLanguage, defaultLanguage, languages, attributes, translationState.linkType, this.dialogData.translatableFields)
+          : getTemplateLanguages(this.dialogData.config, currentLanguage, defaultLanguage, languages, attributes, translationState.linkType);
+      }),
     );
 
     this.templateVars$ = combineLatest([defaultLanguage$, languages$, this.translationState$]).pipe(
@@ -86,7 +88,8 @@ export class TranslateFromMenuDialogComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.fieldsTranslateService.translateFrom(this.dialogData.config.name, newTranslationState.language);
+    this.dialogData.isTranslateMany ? this.fieldsTranslateService.translateFromManyWithContent(newTranslationState.language)
+      : this.fieldsTranslateService.translateFrom(this.dialogData.config.name, newTranslationState.language, true);
 
     this.closeDialog();
   }

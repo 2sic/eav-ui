@@ -50,6 +50,7 @@
   "LangMenu": {
     "Translate": "Prevedi",
     "TranslateAll": "Prevedi sve",
+    "TranslateAllFrom": "Prevedi sve iz",
     "TranslateFrom": "Prevedi iz",
     "NoTranslate": "Ne prevodi",
     "NoTranslateAll": "Ne prevodi sve",

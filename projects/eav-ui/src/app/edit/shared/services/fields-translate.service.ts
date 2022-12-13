@@ -50,7 +50,9 @@ export class FieldsTranslateService {
     return transactionItem;
   }
 
-  translateFrom(fieldName: string, translateFromLanguageKey: string) {
+  translateFrom(fieldName: string, translateFromLanguageKey: string, showAlert: boolean): void {
+    if (this.isTranslationDisabled(fieldName)) { return; }
+
     const apiKeyInfo = this.eavService.eavConfig.dialogContext.ApiKeys.find(x => x.NameId === "google-translate");
     const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
     const attributes = this.itemService.getItemAttributes(this.entityGuid);
@@ -60,8 +62,8 @@ export class FieldsTranslateService {
       target: currentLanguage,
       source: translateFromLanguageKey
     }
-    if (apiKeyInfo.IsDemo)
-      alert("This translation is a demo. Please provide your own Google Translate API key in the EAV configuration.");
+    if (apiKeyInfo.IsDemo && showAlert)
+      alert(`This translation is a demo. Please provide your own Google Translate API key in the EAV configuration.`);
     this.http.post(`https://translation.googleapis.com/language/translate/v2?key=${apiKeyInfo.ApiKey }`, translationData)
       .pipe(tap(
         (response: any) => {
@@ -120,8 +122,7 @@ export class FieldsTranslateService {
   }
 
   translateMany(): void {
-    const attributes = this.itemService.getItemAttributes(this.entityGuid);
-    const translateable = Object.keys(attributes).filter(fieldName => !this.isTranslationDisabled(fieldName));
+    const translateable = this.findTranslatableFields();
 
     let transactionItem: EavItem;
     for (const fieldName of translateable) {
@@ -132,8 +133,7 @@ export class FieldsTranslateService {
   }
 
   dontTranslateMany(): void {
-    const attributes = this.itemService.getItemAttributes(this.entityGuid);
-    const translateable = Object.keys(attributes).filter(fieldName => !this.isTranslationDisabled(fieldName));
+    const translateable = this.findTranslatableFields();
 
     let transactionItem: EavItem;
     for (const fieldName of translateable) {
@@ -141,6 +141,32 @@ export class FieldsTranslateService {
       const isTransaction = fieldName !== translateable[translateable.length - 1];
       transactionItem = this.dontTranslate(fieldName, isTransaction, transactionItem);
     }
+  }
+
+  translateFromManyWithContent(translateFromLanguageKey: string): void {
+    if (this.eavService.eavConfig.dialogContext.ApiKeys.find(x => x.NameId === "google-translate").IsDemo)
+      alert(`This translation is a demo. Please provide your own Google Translate API key in the EAV configuration.`);
+    const translateable = this.findTranslatableFielsWithContent(translateFromLanguageKey);
+    for (const fieldName of translateable) {
+      this.translateFrom(fieldName, translateFromLanguageKey, false);
+    }
+  }
+
+  findTranslatableFielsWithContent(translateFromLanguageKey: string): string[] {
+    const attributes = this.itemService.getItemAttributes(this.entityGuid);
+    const translatebleFieldNames = this.findTranslatableFields();
+    const fieldNames: string[] = [];
+    translatebleFieldNames.forEach(fieldName => { 
+      let value = attributes[fieldName].Values.find(v => v.Dimensions.find(x => x.Value === translateFromLanguageKey)).Value;
+      if (value != "" && value != null && value != undefined)
+        fieldNames.push(fieldName);
+    });
+    return fieldNames;
+  }
+
+  findTranslatableFields(): string[] { 
+    const attributes = this.itemService.getItemAttributes(this.entityGuid);
+    return Object.keys(attributes).filter(fieldName => !this.isTranslationDisabled(fieldName));
   }
 
   private isTranslationDisabled(fieldName: string) {
