@@ -60,6 +60,8 @@
     "MissingDefaultLangValue": "please create value in the default language {{languages}} before translating",
     "In": "in {{languages}}",
     "From": "from {{languages}}",
+    "Field": "Field",
+    "Fields": "Fields",
     "Dialog": {
       "Title": "Translate {{name}}",
       "Intro": "You can do many things when translating, like linking languages together.",

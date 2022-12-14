@@ -16,7 +16,12 @@
     }">
       <mat-icon matListIcon color="accent">language</mat-icon>
       {{ language.key }}
-      <p *ngIf="dialogData.isTranslateMany && language.noFieldsThatHaveContent != 0"> {{ " (" + language.noFieldsThatHaveContent + " field)" }}</p>
+      <p *ngIf="dialogData.isTranslateMany && language.noFieldsThatHaveContent == 1">
+        &nbsp;({{ language.noFieldsThatHaveContent }} {{"LangMenu.Field" | translate}})
+      </p>
+      <p *ngIf="dialogData.isTranslateMany && language.noFieldsThatHaveContent > 1">
+        &nbsp;({{language.noFieldsThatHaveContent}} {{"LangMenu.Fields" | translate}})
+      </p>
     </button>
   </mat-action-list>
 </mat-card>
