@@ -44,6 +44,10 @@ export class TranslateFromMenuDialogComponent implements OnInit, OnDestroy {
     this.snackBar.open("Warning: You are using the demo Google Translate API key. This can fail if too many websites use this. Please register your own API key, it's free for about 500 thousand words per month.", "See Docs").onAction().subscribe(() => { 
       window.open("https://docs.2sxc.org", "_blank");
     });
+    this.dialogRef.afterClosed().subscribe(() => { 
+      this.snackBar.dismiss();
+    });
+
     this.translationState$ = new BehaviorSubject(this.dialogData.translationState);
     this.noLanguageRequired = [TranslationLinks.Translate, TranslationLinks.DontTranslate];
 
@@ -100,7 +104,6 @@ export class TranslateFromMenuDialogComponent implements OnInit, OnDestroy {
   }
 
   private closeDialog() {
-    this.snackBar.dismiss();
     this.dialogRef.close();
   }
 }
