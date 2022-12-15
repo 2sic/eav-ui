@@ -125,6 +125,7 @@ export class ConnectorHelper {
       getUrlOfId: (value, callback) => {
         this.zone.run(() => { this.getUrlOfId(value, callback); });
       },
+      getApiKeys: () => this.eavService.eavConfig.dialogContext.ApiKeys,
       getEntityCache: (guids?) => this.entityCacheService.getEntities(guids),
       getEntityCache$: (guids?) => this.entityCacheService.getEntities$(guids),
     };

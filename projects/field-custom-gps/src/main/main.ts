@@ -2,7 +2,7 @@ import { FieldMask } from '../../../eav-ui/src/app/edit/shared/helpers/field-mas
 import { ElementEventListener } from '../../../eav-ui/src/app/edit/shared/models';
 import { Connector, EavCustomInputField } from '../../../edit-types';
 import { consoleLogWebpack } from '../shared/console-log-webpack.helper';
-import { defaultCoordinates, mapsApiUrl } from '../shared/constants';
+import { defaultCoordinates } from '../shared/constants';
 import { buildTemplate, parseLatLng, stringifyLatLng } from '../shared/helpers';
 import * as template from './main.html';
 import * as styles from './main.scss';
@@ -21,7 +21,6 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
   private lngFieldName: string;
   private lngInput: HTMLInputElement;
   private map: google.maps.Map;
-  private mapApiUrl: string;
   private mapContainer: HTMLDivElement;
   private marker: google.maps.Marker;
   private eventListeners: ElementEventListener[];
@@ -38,7 +37,6 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
     consoleLogWebpack(`${gpsDialogTag} connectedCallback called`);
 
     this.eventListeners = [];
-    this.mapApiUrl = mapsApiUrl();
 
     this.innerHTML = buildTemplate(template.default, styles.default);
     this.latInput = this.querySelector<HTMLInputElement>('#lat');
@@ -64,7 +62,7 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
       formattedAddressContainer.innerText = this.addressMask.resolve();
     }
 
-    this.connector.loadScript('google', this.mapApiUrl, () => { this.mapScriptLoaded(); });
+    this.connector.loadScript('google', `https://maps.googleapis.com/maps/api/js?key=${this.connector._experimental.getApiKeys().find(x => x.NameId == "google-maps").ApiKey}`, () => { this.mapScriptLoaded(); });
   }
 
   private mapScriptLoaded(): void {
