@@ -40,18 +40,21 @@ export function getTemplateLanguagesWithContent(
   const templateLanguages = languages
     .filter(language => language.NameId !== currentLanguage)
     .map(language => {
-      let noEditableTranslationWithContent: number = 0;
+      let noTranslatableFields: number = 0;
+      let noTranslatableFieldsThatHaveContent: number = 0;
       let isDisabled: boolean = false;
       translatableFields.forEach(field => {
         const values = attributes[field];
-        noEditableTranslationWithContent += LocalizationHelpers.noEditableTranslationWithContent(values, language.NameId, defaultLanguage)
+        noTranslatableFields += LocalizationHelpers.noEditableTranslationFields(values, language.NameId, defaultLanguage);
+        noTranslatableFieldsThatHaveContent += LocalizationHelpers.noEditableTranslationableFieldsWithContent(values, language.NameId, defaultLanguage)
         isDisabled = (linkType === TranslationLinks.LinkReadWrite && !language.IsAllowed)
-          || noEditableTranslationWithContent == 0;
+          || noTranslatableFields == 0;
       });
       const templateLanguage: TranslateMenuDialogTemplateLanguage = {
         key: language.NameId,
         disabled: isDisabled,
-        noFieldsThatHaveContent: noEditableTranslationWithContent
+        noTranslatableFields: noTranslatableFields,
+        noTranslatableFieldsThatHaveContent: noTranslatableFieldsThatHaveContent,
       };
       return templateLanguage;
     });

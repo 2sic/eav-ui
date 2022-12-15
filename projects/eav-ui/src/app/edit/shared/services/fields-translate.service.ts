@@ -157,7 +157,7 @@ export class FieldsTranslateService {
     const translatebleFieldNames = this.findTranslatableFields();
     const fieldNames: string[] = [];
     translatebleFieldNames.forEach(fieldName => { 
-      let value = attributes[fieldName].Values.find(v => v.Dimensions.find(x => x.Value === translateFromLanguageKey)).Value;
+      let value = attributes[fieldName].Values.find(v => v.Dimensions.find(x => x.Value === translateFromLanguageKey))?.Value;
       if (value != "" && value != null && value != undefined)
         fieldNames.push(fieldName);
     });

@@ -11,7 +11,8 @@ export interface TranslateMenuDialogData {
 export interface TranslateMenuDialogTemplateLanguage {
   key: string;
   disabled: boolean;
-  noFieldsThatHaveContent?: number;
+  noTranslatableFields?: number;
+  noTranslatableFieldsThatHaveContent?: number;
 }
 
 export interface TranslateMenuDialogTemplateVars {

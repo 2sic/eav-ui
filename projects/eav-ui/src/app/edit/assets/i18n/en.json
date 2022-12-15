@@ -60,8 +60,6 @@
     "MissingDefaultLangValue": "please create value in the default language {{languages}} before translating",
     "In": "in {{languages}}",
     "From": "from {{languages}}",
-    "Field": "Field",
-    "Fields": "Fields",
     "Dialog": {
       "Title": "Translate {{name}}",
       "Intro": "You can do many things when translating, like linking languages together.",
@@ -88,7 +86,16 @@
         "Body": "Link languages together to use the same editable value",
         "Subtitle": "Language to share with"
       },
-      "PickLanguageIntro": "Only languages with content can be selected."
+      "PickLanguageIntro": "Only languages with content can be selected.",
+      "TranslateFromAll": {
+        "Title": "Translate from all",
+        "Body": "Only fields that are not already marked as translated will be auto translated",
+        "NoContent": "no content",
+        "AllTranslatableFields": "all translatable fields",
+        "Of": "of",
+        "TranslatableFields": "translatable fields",
+        "Empty": "empty"
+      }
     }
   },
   "Errors": {

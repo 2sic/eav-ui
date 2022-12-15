@@ -80,7 +80,7 @@ export class EntityTranslateMenuComponent implements OnInit, OnDestroy {
       data: dialogData,
       panelClass: 'translate-menu-dialog',
       viewContainerRef: this.viewContainerRef,
-      width: '350px',
+      width: '400px',
     });
   }
 
