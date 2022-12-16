@@ -19,6 +19,7 @@ export interface EavFormData extends EavPublishStatus {
   InputTypes: InputType[];
   Items: Item1[];
   Prefetch?: Prefetch;
+  Settings: Object[];
 }
 
 export interface SaveEavFormData extends EavPublishStatus {

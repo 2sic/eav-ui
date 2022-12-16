@@ -77,7 +77,7 @@ export class EditInitializerService implements OnDestroy {
     const createMode = items[0].Entity.Id === 0;
     const isCopy = items[0].Header.DuplicateEntity != null;
     const enableHistory = !createMode && this.route.snapshot.data.history !== false;
-    this.eavService.setEavConfig(formData.Context, formId, isParentDialog, itemGuids, createMode, isCopy, enableHistory);
+    this.eavService.setEavConfig(formData.Context, formId, isParentDialog, itemGuids, createMode, isCopy, enableHistory, formData.Settings);
 
     const currentLanguage = this.eavService.eavConfig.lang;
     const defaultLanguage = this.eavService.eavConfig.langPri;
