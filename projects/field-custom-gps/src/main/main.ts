@@ -62,7 +62,7 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
       formattedAddressContainer.innerText = this.addressMask.resolve();
     }
 
-    const defaultCoordinates = this.connector._experimental.getGpsDefaultCoordinates();
+    const defaultCoordinates = this.connector._experimental.getSettings("gps-default-coordinates");
     this.defaultCoordinates = {
       lat: defaultCoordinates.GpsLat,
       lng: defaultCoordinates.GpsLng,

@@ -23,7 +23,7 @@ export interface ExperimentalProps {
   openPagePicker(callback: (value: PagePickerResult) => void): void;
   getUrlOfId(value: string, callback: (value: string) => void): void;
   getApiKeys(): DialogContextApiKeys[];
-  getGpsDefaultCoordinates(): any;
+  getSettings(name: string): any;
   getEntityCache(guids?: string[]): EntityInfo[];
   getEntityCache$(guids?: string[]): Observable<EntityInfo[]>;
 }

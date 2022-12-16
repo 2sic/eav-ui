@@ -126,7 +126,7 @@ export class ConnectorHelper {
         this.zone.run(() => { this.getUrlOfId(value, callback); });
       },
       getApiKeys: () => this.eavService.eavConfig.dialogContext.ApiKeys,
-      getGpsDefaultCoordinates: () => this.eavService.eavConfig.settings["gps-default-coordinates"],
+      getSettings: (name) => this.eavService.eavConfig.settings[name],
       getEntityCache: (guids?) => this.entityCacheService.getEntities(guids),
       getEntityCache$: (guids?) => this.entityCacheService.getEntities$(guids),
     };
