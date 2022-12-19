@@ -18,7 +18,7 @@ export class EntityTranslateMenuComponent implements OnInit, OnDestroy {
   @Input() entityGuid: string;
 
   templateVars$: Observable<EntityTranslateMenuTemplateVars>;
-  translatableFields: string[];
+  translatableFromFields: string[];
   translationState: TranslationState;
   private subscription: Subscription;
 
@@ -51,8 +51,8 @@ export class EntityTranslateMenuComponent implements OnInit, OnDestroy {
         return templateVars;
       }),
     );
-    this.translatableFields = this.fieldsTranslateService.findTranslatableFields();
-    this.subscription = this.fieldsSettingsService.getTranslationState$(this.translatableFields[0]).subscribe(x => this.translationState = x);
+    this.translatableFromFields = this.fieldsTranslateService.findTranslatableAndAutotranslatableFields();
+    this.subscription = this.fieldsSettingsService.getTranslationState$(this.translatableFromFields[0]).subscribe(x => this.translationState = x);
   }
 
   translateMany() {
@@ -62,7 +62,7 @@ export class EntityTranslateMenuComponent implements OnInit, OnDestroy {
   translateFromMany(): void {
     const config: FieldConfigSet = {
       entityGuid: this.entityGuid,
-      fieldName: this.translatableFields[0],
+      fieldName: this.translatableFromFields[0],
       name: '',
       focused$: undefined
     }
@@ -73,7 +73,7 @@ export class EntityTranslateMenuComponent implements OnInit, OnDestroy {
         linkType: this.translationState.linkType,
       },
       isTranslateMany: true,
-      translatableFields: this.translatableFields,
+      translatableFields: this.translatableFromFields,
     };
     this.dialog.open(TranslateFromMenuDialogComponent, {
       autoFocus: false,

@@ -45,6 +45,10 @@ export class TranslateMenuComponent implements OnInit {
       map(settings => settings.DisableTranslation),
       distinctUntilChanged(),
     );
+    const disableAutoTranslation$ = this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).pipe(
+      map(settings => settings.DisableAutoTranslation),
+      distinctUntilChanged(),
+    );
 
     const control = this.group.controls[this.config.fieldName];
     const disabled$ = control.valueChanges.pipe(
@@ -54,9 +58,9 @@ export class TranslateMenuComponent implements OnInit {
     );
 
     this.templateVars$ = combineLatest([
-      readOnly$, currentLanguage$, defaultLanguage$, translationState$, disableTranslation$, disabled$,
+      readOnly$, currentLanguage$, defaultLanguage$, translationState$, disableTranslation$, disableAutoTranslation$, disabled$,
     ]).pipe(
-      map(([readOnly, currentLanguage, defaultLanguage, translationState, disableTranslation, disabled]) => {
+      map(([readOnly, currentLanguage, defaultLanguage, translationState, disableTranslation, disableAutoTranslation, disabled]) => {
         const templateVars: TranslateMenuTemplateVars = {
           readOnly: readOnly.isReadOnly,
           currentLanguage,
@@ -64,6 +68,7 @@ export class TranslateMenuComponent implements OnInit {
           translationState,
           translationStateClass: TranslateMenuHelpers.getTranslationStateClass(translationState.linkType),
           disableTranslation,
+          disableAutoTranslation,
           disabled,
         };
         return templateVars;

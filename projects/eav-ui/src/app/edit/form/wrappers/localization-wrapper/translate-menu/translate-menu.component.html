@@ -17,7 +17,8 @@
           [ngClass]="{ 'menu-item-selected': data.translationState.linkType === TranslationLinks.Translate }">
           {{ 'LangMenu.Translate' | translate }}
         </button>
-        <button mat-menu-item (click)="openTranslateFromMenuDialog(data.translationState)"
+        <button mat-menu-item *ngIf="data.disableAutoTranslation == false"
+          (click)="openTranslateFromMenuDialog(data.translationState)"
           [ngClass]="{ 'menu-item-selected': data.translationState.linkType === TranslationLinks.Translate }">
           {{ 'LangMenu.TranslateFrom' | translate }}
         </button>

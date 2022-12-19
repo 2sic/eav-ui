@@ -146,15 +146,15 @@ export class FieldsTranslateService {
   translateFromManyWithContent(translateFromLanguageKey: string): void {
     if (this.eavService.eavConfig.dialogContext.ApiKeys.find(x => x.NameId === "google-translate").IsDemo)
       alert(`This translation is a demo. Please provide your own Google Translate API key in the EAV configuration.`);
-    const translateable = this.findTranslatableFielsWithContent(translateFromLanguageKey);
+    const translateable = this.findTranslatableAndAutotranslatableFieldsWithContent(translateFromLanguageKey);
     for (const fieldName of translateable) {
       this.translateFrom(fieldName, translateFromLanguageKey, false);
     }
   }
 
-  findTranslatableFielsWithContent(translateFromLanguageKey: string): string[] {
+  findTranslatableAndAutotranslatableFieldsWithContent(translateFromLanguageKey: string): string[] {
     const attributes = this.itemService.getItemAttributes(this.entityGuid);
-    const translatebleFieldNames = this.findTranslatableFields();
+    const translatebleFieldNames = this.findTranslatableAndAutotranslatableFields();
     const fieldNames: string[] = [];
     translatebleFieldNames.forEach(fieldName => { 
       let value = attributes[fieldName].Values.find(v => v.Dimensions.find(x => x.Value === translateFromLanguageKey))?.Value;
@@ -169,9 +169,19 @@ export class FieldsTranslateService {
     return Object.keys(attributes).filter(fieldName => !this.isTranslationDisabled(fieldName));
   }
 
+  findTranslatableAndAutotranslatableFields(): string[] {
+    const attributes = this.itemService.getItemAttributes(this.entityGuid);
+    return Object.keys(attributes).filter(fieldName => !this.isTranslationDisabled(fieldName) && !this.isAutoTranslationDisabled(fieldName));
+  }
+
   private isTranslationDisabled(fieldName: string) {
     const fieldsProps = this.fieldsSettingsService.getFieldsProps();
     return fieldsProps[fieldName].settings.DisableTranslation;
+  }
+
+  private isAutoTranslationDisabled(fieldName: string) {
+    const fieldsProps = this.fieldsSettingsService.getFieldsProps();
+    return fieldsProps[fieldName].settings.DisableAutoTranslation;
   }
 
   private addItemAttributeValueHelper(fieldName: string, value: any, currentLanguage: string, isReadOnly: boolean): EavItem {
