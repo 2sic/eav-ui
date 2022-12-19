@@ -4,6 +4,7 @@ import { consoleLogWebpack } from '../shared/console-log-webpack.helper';
 import { buildTemplate, customGpsIcons, parseLatLng } from '../shared/helpers';
 import * as template from './preview.html';
 import * as styles from './preview.scss';
+import { CoordinatesDto } from './coordinates';
 
 const gpsTag = 'field-custom-gps';
 
@@ -37,10 +38,10 @@ class FieldCustomGps extends HTMLElement implements EavCustomInputField<string> 
     this.addEventListener('click', expand);
     this.eventListeners.push({ element: this, type: 'click', listener: expand });
 
-    const defaultCoordinates = this.connector._experimental.getSettings("gps-default-coordinates");
+    const defaultCoordinates = this.connector._experimental.getSettings("gps-default-coordinates") as CoordinatesDto;
     this.defaultCoordinates = {
-      lat: defaultCoordinates.GpsLat,
-      lng: defaultCoordinates.GpsLng,
+      lat: defaultCoordinates.Latitude,
+      lng: defaultCoordinates.Longitude,
     }
 
     // set initial value

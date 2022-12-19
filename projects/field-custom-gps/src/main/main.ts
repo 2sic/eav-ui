@@ -1,10 +1,12 @@
 import { FieldMask } from '../../../eav-ui/src/app/edit/shared/helpers/field-mask.helper';
 import { ElementEventListener } from '../../../eav-ui/src/app/edit/shared/models';
 import { Connector, EavCustomInputField } from '../../../edit-types';
+import { CoordinatesDto } from '../preview/coordinates';
 import { consoleLogWebpack } from '../shared/console-log-webpack.helper';
 import { buildTemplate, parseLatLng, stringifyLatLng } from '../shared/helpers';
 import * as template from './main.html';
 import * as styles from './main.scss';
+import { loadCustomIcons } from '../../../field-string-wysiwyg/src/editor/load-icons.helper';
 
 const gpsDialogTag = 'field-custom-gps-dialog';
 
@@ -62,10 +64,10 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
       formattedAddressContainer.innerText = this.addressMask.resolve();
     }
 
-    const defaultCoordinates = this.connector._experimental.getSettings("gps-default-coordinates");
+    const defaultCoordinates = this.connector._experimental.getSettings("gps-default-coordinates") as CoordinatesDto;
     this.defaultCoordinates = {
-      lat: defaultCoordinates.GpsLat,
-      lng: defaultCoordinates.GpsLng,
+      lat: defaultCoordinates.Latitude,
+      lng: defaultCoordinates.Longitude,
     }
 
     this.connector.loadScript('google', `https://maps.googleapis.com/maps/api/js?key=${this.connector._experimental.getApiKeys().find(x => x.NameId == "google-maps").ApiKey}`, () => { this.mapScriptLoaded(); });
