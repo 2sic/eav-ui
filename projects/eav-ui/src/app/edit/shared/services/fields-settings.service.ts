@@ -131,6 +131,7 @@ export class FieldsSettingsService implements OnDestroy {
             );
             calculated.Disabled = disabledBecauseTranslations || calculated.Disabled;
             calculated.Disabled = readOnly.isReadOnly || calculated.Disabled;
+            calculated.DisableAutoTranslation = calculated.DisableAutoTranslation || calculated.DisableTranslation;
             // update settings with respective FieldLogics
             const logic = FieldLogicManager.singleton().get(attribute.InputType);
             const fixed = logic?.update(calculated, value, this.eavService.eavConfig, debugEnabled) ?? calculated;

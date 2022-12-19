@@ -74,6 +74,7 @@ export class FieldsSettingsHelpers {
     defaultSettings.Required ??= false;
     defaultSettings.Disabled ??= false;
     defaultSettings.DisableTranslation ??= false;
+    defaultSettings.DisableAutoTranslation ??= false;
     defaultSettings.Visible = defaultSettings.VisibleInEditUI;
     delete defaultSettings.VisibleInEditUI;
     if (defaultSettings.DefaultCollapsed != null) {

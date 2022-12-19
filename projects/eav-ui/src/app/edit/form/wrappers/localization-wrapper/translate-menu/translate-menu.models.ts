@@ -13,5 +13,6 @@ export interface TranslateMenuTemplateVars {
   translationState: TranslationState;
   translationStateClass: string;
   disableTranslation: boolean;
+  disableAutoTranslation: boolean;
   disabled: boolean;
 }
