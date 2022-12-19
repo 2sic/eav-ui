@@ -9,6 +9,7 @@ export class BooleanDefaultLogic extends FieldLogicBase {
     const fixedSettings: FieldSettings = { ...settings };
     fixedSettings.ReverseToggle ??= false;
     fixedSettings._label = this.calculateLabel(value, fixedSettings);
+    fixedSettings.DisableAutoTranslation = true;
     return fixedSettings;
   }
 
