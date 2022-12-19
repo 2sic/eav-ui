@@ -5,6 +5,7 @@ import { consoleLogAngular } from '../../../../../shared/helpers/console-log-ang
 import { EavService, EditRoutingService, FieldsSettingsService, ScriptsLoaderService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { BaseFieldComponent } from '../../base/base-field.component';
+import { CustomGpsLogic } from './custom-gps-logic';
 import { ExternalWebComponentTemplateVars } from './external-web-component.models';
 import { StringWysiwygLogic } from './string-wysiwyg-logic';
 
@@ -27,6 +28,7 @@ export class ExternalWebComponentComponent extends BaseFieldComponent<string> im
   ) {
     super(eavService, fieldsSettingsService);
     StringWysiwygLogic.importMe();
+    CustomGpsLogic.importMe();
   }
 
   ngOnInit() {

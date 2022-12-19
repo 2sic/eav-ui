@@ -2,6 +2,7 @@ export const InputTypeConstants = {
   BooleanDefault: 'boolean-default',
   BooleanTristate: 'boolean-tristate',
   CustomDefault: 'custom-default',
+  CustomGps: 'custom-gps',
   CustomJsonEditor: 'custom-json-editor',
   DatetimeDefault: 'datetime-default',
   DefaultSuffix: '-default',
