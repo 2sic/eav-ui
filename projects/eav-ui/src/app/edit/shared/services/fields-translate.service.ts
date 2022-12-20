@@ -57,6 +57,7 @@ export class FieldsTranslateService {
     const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
     const attributes = this.itemService.getItemAttributes(this.entityGuid);
     const textForTranslation = attributes[fieldName].Values.find(v => v.Dimensions.find(x => x.Value === translateFromLanguageKey)).Value;
+    console.log("SDV", textForTranslation);
     const translationData = {
       q: textForTranslation,
       target: currentLanguage,

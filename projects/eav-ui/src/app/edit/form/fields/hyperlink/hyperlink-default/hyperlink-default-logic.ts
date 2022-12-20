@@ -12,7 +12,7 @@ export class HyperlinkDefaultLogic extends FieldLogicBase {
     fixedSettings.Paths ??= '';
     fixedSettings.ServerResourceMapping ??= '';
     fixedSettings.EnableImageConfiguration ??= false;
-    fixedSettings.DisableAutoTranslation = true;
+    // fixedSettings.DisableAutoTranslation = true;
     return fixedSettings;
   }
 }

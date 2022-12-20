@@ -2,6 +2,7 @@ import { LocalizationHelpers } from '.';
 import { FieldSettings } from '../../../../../../edit-types';
 import { InputTypeConstants } from '../../../content-type-fields/constants/input-type.constants';
 import { InputType } from '../../../content-type-fields/models/input-type.model';
+import { FieldLogicManager } from '../../form/shared/field-logic/field-logic-manager';
 import { TranslateMenuHelpers } from '../../form/wrappers/localization-wrapper/translate-menu/translate-menu.helpers';
 import { TranslationStateCore } from '../../form/wrappers/localization-wrapper/translate-menu/translate-menu.models';
 import { MetadataDecorators, TranslationLink, TranslationLinks } from '../constants';
@@ -74,7 +75,6 @@ export class FieldsSettingsHelpers {
     defaultSettings.Required ??= false;
     defaultSettings.Disabled ??= false;
     defaultSettings.DisableTranslation ??= false;
-    defaultSettings.DisableAutoTranslation ??= false;
     defaultSettings.Visible = defaultSettings.VisibleInEditUI;
     delete defaultSettings.VisibleInEditUI;
     if (defaultSettings.DefaultCollapsed != null) {
@@ -82,6 +82,9 @@ export class FieldsSettingsHelpers {
       delete defaultSettings.DefaultCollapsed;
     }
     defaultSettings.Formulas ??= [];
+    // if()
+    let logic = FieldLogicManager.singleton().get(settings.InputType);
+    defaultSettings.DisableAutoTranslation ??= !logic?.canAutoTranslate;//false;
     return defaultSettings;
   }
 

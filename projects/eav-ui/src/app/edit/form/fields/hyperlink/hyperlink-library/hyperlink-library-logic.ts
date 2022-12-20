@@ -8,7 +8,7 @@ export class HyperlinkLibraryLogic extends FieldLogicBase {
   update(settings: FieldSettings, value: undefined): FieldSettings {
     const fixedSettings: FieldSettings = { ...settings };
     fixedSettings.EnableImageConfiguration ??= false;
-    fixedSettings.DisableAutoTranslation = true;
+    // fixedSettings.DisableAutoTranslation = true;
     return fixedSettings;
   }
 }
