@@ -13,7 +13,7 @@
     <mat-menu #menu="matMenu">
       <ng-template matMenuContent>
         <button mat-menu-item (click)="translateMany()">{{ 'LangMenu.TranslateAll' | translate }}</button>
-        <button mat-menu-item (click)="translateFromMany()">{{ 'LangMenu.TranslateAllFrom' | translate }}</button>
+        <button mat-menu-item *ngIf="translatableFromFields.length > 0" (click)="translateFromMany()">{{ 'LangMenu.TranslateAllFrom' | translate }}</button>
         <button mat-menu-item (click)="dontTranslateMany()">{{ 'LangMenu.NoTranslateAll' | translate }}</button>
       </ng-template>
     </mat-menu>

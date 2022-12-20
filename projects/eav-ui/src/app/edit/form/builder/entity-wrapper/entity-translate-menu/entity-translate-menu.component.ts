@@ -52,7 +52,8 @@ export class EntityTranslateMenuComponent implements OnInit, OnDestroy {
       }),
     );
     this.translatableFromFields = this.fieldsTranslateService.findTranslatableAndAutotranslatableFields();
-    this.subscription = this.fieldsSettingsService.getTranslationState$(this.translatableFromFields[0]).subscribe(x => this.translationState = x);
+    if (this.translatableFromFields.length > 0)
+      this.subscription = this.fieldsSettingsService.getTranslationState$(this.translatableFromFields[0]).subscribe(x => this.translationState = x);
   }
 
   translateMany() {
@@ -87,7 +88,9 @@ export class EntityTranslateMenuComponent implements OnInit, OnDestroy {
   dontTranslateMany() {
     this.fieldsTranslateService.dontTranslateMany();
   }
+
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    if (this.translatableFromFields.length > 0)
+      this.subscription.unsubscribe();
   }
 }
