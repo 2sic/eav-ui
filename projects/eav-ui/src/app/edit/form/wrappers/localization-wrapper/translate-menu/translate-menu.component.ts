@@ -1,4 +1,3 @@
-import { ComponentType } from '@angular/cdk/portal';
 import { Component, Input, OnInit, ViewContainerRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -8,6 +7,7 @@ import { TranslationState } from '../../../../shared/models';
 import { EavService, FieldsSettingsService, FieldsTranslateService, FormsStateService } from '../../../../shared/services';
 import { LanguageInstanceService } from '../../../../shared/store/ngrx-data';
 import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
+import { AutoTranslateDisabledWarningDialog } from '../auto-translate-disabled-warning-dialog/auto-translate-disabled-warning-dialog.component';
 import { TranslateFromMenuDialogComponent } from '../translate-from-menu-dialog/translate-from-menu-dialog.component';
 import { TranslateMenuDialogComponent } from '../translate-menu-dialog/translate-menu-dialog.component';
 import { TranslateMenuDialogData } from '../translate-menu-dialog/translate-menu-dialog.models';
@@ -89,7 +89,17 @@ export class TranslateMenuComponent implements OnInit {
   }
 
   openTranslateFromMenuDialog(translationState: TranslationState): void {
-    this.openDialog(translationState, TranslateFromMenuDialogComponent);
+    if (this.fieldsSettingsService.getFieldSettings(this.config.fieldName).DisableAutoTranslation) {
+      this.dialog.open(AutoTranslateDisabledWarningDialog, {
+        autoFocus: false,
+        panelClass: 'translate-menu-dialog',
+        viewContainerRef: this.viewContainerRef,
+        width: '350px',
+      });
+    } else {
+      this.openDialog(translationState, TranslateFromMenuDialogComponent);
+    }
+    
   }
 
   private openDialog(translationState: TranslationState, component: any): void {

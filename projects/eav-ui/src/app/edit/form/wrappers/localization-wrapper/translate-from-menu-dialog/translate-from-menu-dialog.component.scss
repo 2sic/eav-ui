@@ -9,6 +9,10 @@
   background: $edit-ui-selected-option;
 }
 
+.mat-list-item-focus2 {
+  background: $edit-ui-selected-option;
+}
+
 .mat-list-item--disabled {
   cursor: default;
   color: $editUI-label-disabled-color;

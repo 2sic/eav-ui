@@ -1,9 +1,11 @@
 import { Component, Input, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { combineLatest, map, Observable, Subscription } from 'rxjs';
+import { FeaturesConstants } from '../../../../shared/constants';
 import { TranslationState } from '../../../../shared/models/fields-configs.model';
 import { EavService, FieldsSettingsService, FieldsTranslateService, FormsStateService } from '../../../../shared/services';
-import { ItemService, LanguageInstanceService } from '../../../../shared/store/ngrx-data';
+import { FeatureService, ItemService, LanguageInstanceService } from '../../../../shared/store/ngrx-data';
+import { AutoTranslateDisabledWarningDialog } from '../../../wrappers/localization-wrapper/auto-translate-disabled-warning-dialog/auto-translate-disabled-warning-dialog.component';
 import { TranslateFromMenuDialogComponent } from '../../../wrappers/localization-wrapper/translate-from-menu-dialog/translate-from-menu-dialog.component';
 import { TranslateMenuDialogData } from '../../../wrappers/localization-wrapper/translate-menu-dialog/translate-menu-dialog.models';
 import { FieldConfigSet } from '../../fields-builder/field-config-set.model';
@@ -20,6 +22,7 @@ export class EntityTranslateMenuComponent implements OnInit, OnDestroy {
   templateVars$: Observable<EntityTranslateMenuTemplateVars>;
   translatableFromFields: string[];
   translationState: TranslationState;
+  isTranslateWithGoogleFeatureEnabled: boolean;
   private subscription: Subscription;
 
   constructor(
@@ -31,6 +34,7 @@ export class EntityTranslateMenuComponent implements OnInit, OnDestroy {
     private formsStateService: FormsStateService,
     private viewContainerRef: ViewContainerRef,
     private fieldsSettingsService: FieldsSettingsService,
+    private featureService: FeatureService,
   ) { }
 
   ngOnInit() {
@@ -51,6 +55,7 @@ export class EntityTranslateMenuComponent implements OnInit, OnDestroy {
         return templateVars;
       }),
     );
+    this.isTranslateWithGoogleFeatureEnabled = this.featureService.isFeatureEnabled(FeaturesConstants.EditUiTranslateWithGoogle);
     this.translatableFromFields = this.fieldsTranslateService.findTranslatableAndAutotranslatableFields();
     if (this.translatableFromFields.length > 0)
       this.subscription = this.fieldsSettingsService.getTranslationState$(this.translatableFromFields[0]).subscribe(x => this.translationState = x);
@@ -61,28 +66,37 @@ export class EntityTranslateMenuComponent implements OnInit, OnDestroy {
   }
 
   translateFromMany(): void {
-    const config: FieldConfigSet = {
-      entityGuid: this.entityGuid,
-      fieldName: this.translatableFromFields[0],
-      name: '',
-      focused$: undefined
+    if (this.translatableFromFields.length > 0) {
+      const config: FieldConfigSet = {
+        entityGuid: this.entityGuid,
+        fieldName: this.translatableFromFields[0],
+        name: '',
+        focused$: undefined
+      }
+      const dialogData: TranslateMenuDialogData = {
+        config: config,
+        translationState: {
+          language: this.translationState.language,
+          linkType: this.translationState.linkType,
+        },
+        isTranslateMany: true,
+        translatableFields: this.translatableFromFields,
+      };
+      this.dialog.open(TranslateFromMenuDialogComponent, {
+        autoFocus: false,
+        data: dialogData,
+        panelClass: 'translate-menu-dialog',
+        viewContainerRef: this.viewContainerRef,
+        width: '400px',
+      });
+    } else {
+      this.dialog.open(AutoTranslateDisabledWarningDialog, {
+        autoFocus: false,
+        panelClass: 'translate-menu-dialog',
+        viewContainerRef: this.viewContainerRef,
+        width: '400px',
+      });
     }
-    const dialogData: TranslateMenuDialogData = {
-      config: config,
-      translationState: {
-        language: this.translationState.language,
-        linkType: this.translationState.linkType,
-      },
-      isTranslateMany: true,
-      translatableFields: this.translatableFromFields,
-    };
-    this.dialog.open(TranslateFromMenuDialogComponent, {
-      autoFocus: false,
-      data: dialogData,
-      panelClass: 'translate-menu-dialog',
-      viewContainerRef: this.viewContainerRef,
-      width: '400px',
-    });
   }
 
   dontTranslateMany() {

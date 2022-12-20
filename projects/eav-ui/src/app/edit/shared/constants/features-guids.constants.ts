@@ -4,4 +4,5 @@ export const FeaturesConstants = {
   EditUiShowNotes: 'EditUiShowNotes',
   EditUiShowMetadataFor: 'EditUiShowMetadataFor',
   NoSponsoredByToSic: 'NoSponsoredByToSic',
+  EditUiTranslateWithGoogle: 'EditUiTranslateWithGoogle',
 } as const;

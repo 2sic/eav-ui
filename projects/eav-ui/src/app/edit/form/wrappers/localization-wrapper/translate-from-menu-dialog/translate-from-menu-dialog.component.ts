@@ -2,9 +2,9 @@ import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { TranslateMenuDialogData, TranslateMenuDialogTemplateVars } from '../translate-menu-dialog/translate-menu-dialog.models';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
-import { TranslationLink, TranslationLinks } from '../../../../shared/constants';
+import { FeaturesConstants, TranslationLink, TranslationLinks } from '../../../../shared/constants';
 import { EavService, FieldsTranslateService } from '../../../../shared/services';
-import { ItemService, LanguageInstanceService, LanguageService } from '../../../../shared/store/ngrx-data';
+import { FeatureService, ItemService, LanguageInstanceService, LanguageService } from '../../../../shared/store/ngrx-data';
 import { TranslationStateCore } from '../translate-menu/translate-menu.models';
 import { I18nKeys } from '../translate-menu-dialog/translate-menu-dialog.constants';
 import { findI18nKey, getTemplateLanguages, getTemplateLanguagesWithContent } from '../translate-menu-dialog/translate-menu-dialog.helpers';
@@ -20,6 +20,7 @@ export class TranslateFromMenuDialogComponent implements OnInit, OnDestroy {
   TranslationLinks = TranslationLinks;
   I18nKeys = I18nKeys;
   templateVars$: Observable<TranslateMenuDialogTemplateVars>;
+  isTranslateWithGoogleFeatureEnabled: boolean;
 
   private translationState$: BehaviorSubject<TranslationStateCore>;
   private noLanguageRequired: TranslationLink[];
@@ -33,6 +34,7 @@ export class TranslateFromMenuDialogComponent implements OnInit, OnDestroy {
     private eavService: EavService,
     private fieldsTranslateService: FieldsTranslateService,
     private snackBar: MatSnackBar,
+    private featureService: FeatureService,
   ) {
     this.dialogRef.keydownEvents().subscribe(event => {
       const CTRL_S = event.keyCode === 83 && (navigator.platform.match('Mac') ? event.metaKey : event.ctrlKey);
@@ -46,6 +48,7 @@ export class TranslateFromMenuDialogComponent implements OnInit, OnDestroy {
     this.dialogRef.afterClosed().subscribe(() => { 
       this.snackBar.dismiss();
     });
+    this.isTranslateWithGoogleFeatureEnabled = this.featureService.isFeatureEnabled(FeaturesConstants.EditUiTranslateWithGoogle);
 
     this.translationState$ = new BehaviorSubject(this.dialogData.translationState);
     this.noLanguageRequired = [TranslationLinks.Translate, TranslationLinks.DontTranslate];
