@@ -50,7 +50,7 @@
   "LangMenu": {
     "Translate": "Translate",
     "TranslateAll": "Translate all",
-    "TranslateAllFrom": "Translate all from",
+    "TranslateAllFrom": "Auto-Translate all",
     "TranslateFrom": "Translate from",
     "NoTranslate": "Don't translate",
     "NoTranslateAll": "Don't translate any",
@@ -88,8 +88,8 @@
       },
       "PickLanguageIntro": "Only languages with content can be selected.",
       "TranslateFromAll": {
-        "Title": "Translate from all",
-        "Body": "Only fields that are not already marked as translated will be auto translated",
+        "Title": "Auto-Translate all Fields using Google Translate",
+        "Body": "Only fields that are not yet translated will be auto-translated. Note that not all fields will be translated - see <a href='https://2sxc.org/translate' target='_blank'>docs</a>.",
         "NoContent": "no content",
         "AllTranslatableFields": "all translatable fields",
         "Of": "of",
