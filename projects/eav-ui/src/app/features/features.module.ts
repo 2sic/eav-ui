@@ -10,6 +10,8 @@ import { translateLoaderFactory } from '../shared/translation/translate-loader-f
 import { FeatureService } from '../edit/shared/store/ngrx-data';
 import { FeatureInfoDialogComponent } from './feature-info-dialog/feature-info-dialog.component';
 import { FeatureIconComponent } from './feature-icon/feature-icon.component';
+import { FeatureTextInfoComponent } from './feature-text-info/feature-text-info.component';
+import { FeatureIconIndicatorComponent } from './feature-icon-indicator/feature-icon-indicator.component';
 
 
 @NgModule({
@@ -17,6 +19,8 @@ import { FeatureIconComponent } from './feature-icon/feature-icon.component';
     FeatureIconComponent,
     FeatureIconTextComponent,
     FeatureInfoDialogComponent,
+    FeatureTextInfoComponent,
+    FeatureIconIndicatorComponent,
   ],
   imports: [
     CommonModule,
@@ -29,6 +33,8 @@ import { FeatureIconComponent } from './feature-icon/feature-icon.component';
     FeatureIconComponent,
     FeatureIconTextComponent,
     FeatureInfoDialogComponent,
+    FeatureTextInfoComponent,
+    FeatureIconIndicatorComponent,
   ],
   providers: [
     FeatureService,
