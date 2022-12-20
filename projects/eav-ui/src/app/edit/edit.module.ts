@@ -96,6 +96,7 @@ import { AdamService, EavService, EntityService, LoadIconsService, QueryService,
 import { FeaturesModule } from "../features/features.module";
 import { Dayjs } from 'dayjs';
 import { TranslateFromMenuDialogComponent } from './form/wrappers/localization-wrapper/translate-from-menu-dialog/translate-from-menu-dialog.component';
+import { SnackBarWarningDemoComponent } from './form/wrappers/localization-wrapper/snack-bar-warning-demo/snack-bar-warning-demo.component';
 
 @NgModule({
     declarations: [
@@ -138,6 +139,7 @@ import { TranslateFromMenuDialogComponent } from './form/wrappers/localization-w
         ExpandableWrapperComponent,
         SnackBarUnsavedChangesComponent,
         SnackBarSaveErrorsComponent,
+        SnackBarWarningDemoComponent,
         FieldHelperTextComponent,
         EntityTranslateMenuComponent,
         TranslateMenuComponent,

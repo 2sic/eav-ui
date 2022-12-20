@@ -9,6 +9,7 @@ import { TranslationStateCore } from '../translate-menu/translate-menu.models';
 import { I18nKeys } from '../translate-menu-dialog/translate-menu-dialog.constants';
 import { findI18nKey, getTemplateLanguages, getTemplateLanguagesWithContent } from '../translate-menu-dialog/translate-menu-dialog.helpers';
 import { MatSnackBar} from '@angular/material/snack-bar';
+import { SnackBarWarningDemoComponent } from '../snack-bar-warning-demo/snack-bar-warning-demo.component';
 
 @Component({
   selector: 'app-translate-from-menu-dialog',
@@ -41,9 +42,7 @@ export class TranslateFromMenuDialogComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.snackBar.open("Warning: You are using the demo Google Translate API key. This can fail if too many websites use this. Please register your own API key, it's free for about 500 thousand words per month.", "See Docs").onAction().subscribe(() => { 
-      window.open("https://docs.2sxc.org", "_blank");
-    });
+    this.snackBar.openFromComponent(SnackBarWarningDemoComponent);
     this.dialogRef.afterClosed().subscribe(() => { 
       this.snackBar.dismiss();
     });
