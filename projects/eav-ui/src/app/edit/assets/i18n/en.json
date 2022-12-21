@@ -62,7 +62,7 @@
     "From": "from {{languages}}",
     "SnackBar": {
       "Title": "⚠️ Warning: You are using a test account",
-      "Body": "You are using a demo Google Account to translate. This can stop working at any time. <br>You <strong>must</strong> register your own API key. It's free for 500'000 words per month. See <a style='color: white; text-decoration: underline;' href='https://r.2sxc.org/translate-api-key' target='_blank'>docs</a>."
+      "Body": "You are using a demo Google Account to translate. This can stop working at any time. <br>You <strong>must</strong> register your own API key. It's free for 500'000 words per month. See <a class='snack-bar-warning-demo-white-hyperlink' href='https://r.2sxc.org/translate-api-key' target='_blank'>docs</a>."
     },
     "Dialog": {
       "Title": "Translate {{name}}",
