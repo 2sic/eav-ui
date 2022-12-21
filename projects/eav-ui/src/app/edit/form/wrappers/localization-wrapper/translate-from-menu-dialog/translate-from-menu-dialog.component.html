@@ -1,4 +1,5 @@
 <mat-card *ngIf="templateVars$ | async as data" class="translate-menu-dialog-card u-hide-scrollbar">
+
   <div class="mat-card__header">
     <div class="mat-card__title">
       {{ 'LangMenu.Dialog.TranslateFromAll.Title' | translate }}
@@ -46,4 +47,6 @@
       </div>
     </button>
   </mat-action-list>
+  <mat-dialog-actions>
+  </mat-dialog-actions>
 </mat-card>

@@ -116,7 +116,7 @@ export class TranslateMenuComponent implements OnInit {
       data: dialogData,
       panelClass: 'translate-menu-dialog',
       viewContainerRef: this.viewContainerRef,
-      width: '350px',
+      width: '400px',
     });
   }
 }
