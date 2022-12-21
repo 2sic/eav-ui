@@ -56,7 +56,7 @@ export class EntityTranslateMenuComponent implements OnInit, OnDestroy {
       }),
     );
     this.isTranslateWithGoogleFeatureEnabled = this.featureService.isFeatureEnabled(FeaturesConstants.EditUiTranslateWithGoogle);
-    this.translatableFromFields = this.fieldsTranslateService.findTranslatableAndAutotranslatableFields();
+    this.translatableFromFields = this.fieldsTranslateService.findAutotranslatableFields();
     if (this.translatableFromFields.length > 0)
       this.subscription = this.fieldsSettingsService.getTranslationState$(this.translatableFromFields[0]).subscribe(x => this.translationState = x);
   }

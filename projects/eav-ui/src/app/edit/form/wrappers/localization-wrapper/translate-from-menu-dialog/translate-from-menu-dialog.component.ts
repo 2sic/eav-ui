@@ -97,7 +97,7 @@ export class TranslateFromMenuDialogComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.dialogData.isTranslateMany ? this.fieldsTranslateService.translateFromManyWithContent(newTranslationState.language)
+    this.dialogData.isTranslateMany ? this.fieldsTranslateService.translateFromMany(newTranslationState.language)
       : this.fieldsTranslateService.translateFrom(this.dialogData.config.name, newTranslationState.language, true);
 
     this.closeDialog();

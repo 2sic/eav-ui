@@ -82,9 +82,8 @@ export class FieldsSettingsHelpers {
       delete defaultSettings.DefaultCollapsed;
     }
     defaultSettings.Formulas ??= [];
-    // if()
     let logic = FieldLogicManager.singleton().get(settings.InputType);
-    defaultSettings.DisableAutoTranslation ??= !logic?.canAutoTranslate;//false;
+    defaultSettings.DisableAutoTranslation ??= !logic?.canAutoTranslate;
     return defaultSettings;
   }
 
