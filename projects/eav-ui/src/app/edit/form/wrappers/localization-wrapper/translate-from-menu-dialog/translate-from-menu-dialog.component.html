@@ -4,9 +4,7 @@
       {{ 'LangMenu.Dialog.TranslateFromAll.Title' | translate }}
     </div>
     <app-feature-text-info [featureNameId]="'EditUiTranslateWithGoogle'"></app-feature-text-info>
-    <div class="mat-card__description">
-      {{'LangMenu.Dialog.TranslateFromAll.Body' | translate }}
-    </div>
+    <div class="mat-card__description" [innerHTML]="'LangMenu.Dialog.TranslateFromAll.Body' | translate | safeHtml"></div>
   </div>
 
   <mat-action-list>

@@ -1,9 +1,2 @@
-<h3>⚠️ Warning: You are using a test account</h3>
-<p>
-  You are using a demo Google Account to translate.
-  This can stop working at any time.
-  <br>
-  You <strong>must</strong> register your own API key.
-  It's free for 500'000 words per month.
-  See <a class="white-link" href="https://r.2sxc.org/translate-api-key" target="_blank">docs</a>.
-</p>
+<h3 [innerHTML]="'LangMenu.SnackBar.Title' | translate | safeHtml"></h3>
+<p [innerHTML]="'LangMenu.SnackBar.Body' | translate | safeHtml"></p>
