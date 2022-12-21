@@ -1,3 +1,3 @@
-<div *ngIf="!featureOn" class="feature-text-info" (click)="openDialog()">
-  {{ 'Features.NotActivated' | translate }}
+<div *ngIf="!featureOn" class="feature-text-info">
+  <p>{{ 'Features.NotActivated' | translate }}</p>&nbsp;<p class="feature-clickable-text" (click)="openDialog()">{{ 'Features.Here' | translate }}</p>
 </div>
