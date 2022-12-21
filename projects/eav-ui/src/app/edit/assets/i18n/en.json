@@ -51,7 +51,7 @@
     "Translate": "Translate",
     "TranslateAll": "Translate all",
     "TranslateAllFrom": "Auto-Translate all",
-    "TranslateFrom": "Translate from",
+    "TranslateFrom": "Auto-Translate",
     "NoTranslate": "Don't translate",
     "NoTranslateAll": "Don't translate any",
     "Link": "Link to other language",
@@ -95,7 +95,10 @@
         "Of": "of",
         "TranslatableFields": "translatable fields",
         "Empty": "empty"
-      }
+      },
+      "CantAutoTranslate": "Can't auto-translate",
+      "NoAutoTranslatableFields": "There are no auto-translatable fields in this form",
+      "ThisFieldIsNotAutoTranslatable": "This field is not auto-translatable"
     }
   },
   "Errors": {

@@ -92,6 +92,7 @@ export class TranslateMenuComponent implements OnInit {
     if (this.fieldsSettingsService.getFieldSettings(this.config.fieldName).DisableAutoTranslation) {
       this.dialog.open(AutoTranslateDisabledWarningDialog, {
         autoFocus: false,
+        data: { isAutoTranslateAll: false },
         panelClass: 'translate-menu-dialog',
         viewContainerRef: this.viewContainerRef,
         width: '350px',

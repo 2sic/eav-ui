@@ -97,6 +97,7 @@ import { FeaturesModule } from "../features/features.module";
 import { Dayjs } from 'dayjs';
 import { TranslateFromMenuDialogComponent } from './form/wrappers/localization-wrapper/translate-from-menu-dialog/translate-from-menu-dialog.component';
 import { SnackBarWarningDemoComponent } from './form/wrappers/localization-wrapper/snack-bar-warning-demo/snack-bar-warning-demo.component';
+import { AutoTranslateDisabledWarningDialog } from './form/wrappers/localization-wrapper/auto-translate-disabled-warning-dialog/auto-translate-disabled-warning-dialog.component';
 
 @NgModule({
     declarations: [
@@ -145,6 +146,7 @@ import { SnackBarWarningDemoComponent } from './form/wrappers/localization-wrapp
         TranslateMenuComponent,
         TranslateMenuDialogComponent,
         TranslateFromMenuDialogComponent,
+        AutoTranslateDisabledWarningDialog,
         EntityExpandableWrapperComponent,
         EntityDefaultListComponent,
         EntityDefaultSearchComponent,
