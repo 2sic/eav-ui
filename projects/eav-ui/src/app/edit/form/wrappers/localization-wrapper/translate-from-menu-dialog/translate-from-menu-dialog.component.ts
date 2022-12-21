@@ -44,11 +44,13 @@ export class TranslateFromMenuDialogComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.snackBar.openFromComponent(SnackBarWarningDemoComponent);
-    this.dialogRef.afterClosed().subscribe(() => { 
-      this.snackBar.dismiss();
-    });
     this.isTranslateWithGoogleFeatureEnabled = this.featureService.isFeatureEnabled(FeaturesConstants.EditUiTranslateWithGoogle);
+    if (this.isTranslateWithGoogleFeatureEnabled) {
+      this.snackBar.openFromComponent(SnackBarWarningDemoComponent);
+      this.dialogRef.afterClosed().subscribe(() => {
+        this.snackBar.dismiss();
+      });
+    }
 
     this.translationState$ = new BehaviorSubject(this.dialogData.translationState);
     this.noLanguageRequired = [TranslationLinks.Translate, TranslationLinks.DontTranslate];
@@ -84,10 +86,6 @@ export class TranslateFromMenuDialogComponent implements OnInit, OnDestroy {
     );
   }
 
-  ngOnDestroy(): void {
-    this.translationState$.complete();
-  }
-
   setLanguage(language: string): void {
     const newTranslationState: TranslationStateCore = { ...this.translationState$.value, language };
     this.translationState$.next(newTranslationState);
@@ -107,5 +105,9 @@ export class TranslateFromMenuDialogComponent implements OnInit, OnDestroy {
 
   private closeDialog() {
     this.dialogRef.close();
+  }
+
+  ngOnDestroy(): void {
+    this.translationState$.complete();
   }
 }
