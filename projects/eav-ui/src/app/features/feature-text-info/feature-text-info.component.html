@@ -1,3 +1,5 @@
-<div *ngIf="!featureOn" class="feature-text-info">
-  <p>{{ 'Features.NotActivated' | translate }}</p>&nbsp;<p class="feature-clickable-text" (click)="openDialog()">{{ 'Features.Here' | translate }}</p>
-</div>
+<mat-card-header *ngIf="!featureOn" class="feature-card" (click)="openDialog()">
+  <mat-icon mat-card-avatar class="feature-card-icon">warning</mat-icon>
+  <mat-card-title class="feature-card-title">{{ 'Features.FeatureNotActivated' | translate }}</mat-card-title>
+  <mat-card-subtitle class="feature-card-subtitle">{{ 'Features.ClickToFindOutMore' | translate }}</mat-card-subtitle>
+</mat-card-header>

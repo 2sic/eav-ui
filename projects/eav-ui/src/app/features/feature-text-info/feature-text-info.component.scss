@@ -1,15 +1,17 @@
-.feature-text-info {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
-
-  font-weight: bold;
-  color: red;
-  margin-bottom: 15px;
+.feature-card {
+  cursor: pointer;
 }
 
-.feature-clickable-text {
-  text-decoration: underline;
-  cursor: pointer;
+.feature-card-icon {
+  font-size: 50px;
+  color: red;
+}
+
+.feature-card-title {
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.feature-card-subtitle {
+  font-size: 15px;
 }

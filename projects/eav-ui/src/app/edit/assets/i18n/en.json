@@ -252,6 +252,7 @@
     "Active": "Active",
     "Status": "Status",
     "SecurityRating": "Security rating",
-    "Here": "here"
+    "FeatureNotActivated": "This feature is not activated",
+    "ClickToFindOutMore": "Click here to find out more"
   }
 }

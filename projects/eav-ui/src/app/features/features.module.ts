@@ -12,6 +12,7 @@ import { FeatureInfoDialogComponent } from './feature-info-dialog/feature-info-d
 import { FeatureIconComponent } from './feature-icon/feature-icon.component';
 import { FeatureTextInfoComponent } from './feature-text-info/feature-text-info.component';
 import { FeatureIconIndicatorComponent } from './feature-icon-indicator/feature-icon-indicator.component';
+import { MatCardModule } from '@angular/material/card';
 
 
 @NgModule({
@@ -26,6 +27,7 @@ import { FeatureIconIndicatorComponent } from './feature-icon-indicator/feature-
     CommonModule,
     MatButtonModule,
     MatIconModule,
+    MatCardModule,
     SharedComponentsModule,
     TranslateModule.forChild(buildTranslateConfiguration(translateLoaderFactory)),
   ],
