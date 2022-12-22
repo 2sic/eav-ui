@@ -1,6 +1,6 @@
 import { AdamItem, EntityInfo } from '../../../../../../edit-types';
 import { DialogContext } from '../../../app-administration/models';
-import { Feature } from '../../../apps-management/models/feature.model';
+import { Feature } from '../../../features/models/feature.model';
 import { InputType } from '../../../content-type-fields/models/input-type.model';
 import { LinkInfo } from '../../shared/models';
 import { EavItem } from '../../shared/models/eav';

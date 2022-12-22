@@ -5,12 +5,13 @@ import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 // tslint:disable-next-line:max-line-length
 import { BehaviorSubject, catchError, filter, forkJoin, map, Observable, of, pairwise, share, startWith, Subject, Subscription, switchMap, tap, timer } from 'rxjs';
+import { FeatureState } from '../../features/models';
 import { BaseComponent } from '../../shared/components/base-component/base.component';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
-import { Feature, FeatureState } from '../models/feature.model';
+import { Feature } from '../../features/models/feature.model';
 import { License } from '../models/license.model';
 import { FeaturesConfigService } from '../services/features-config.service';
 import { GoToRegistration } from '../sub-dialogs/registration/go-to-registration';

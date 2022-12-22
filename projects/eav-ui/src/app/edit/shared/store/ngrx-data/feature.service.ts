@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { EntityCollectionServiceElementsFactory } from '@ngrx/data';
 import { distinctUntilChanged, map, Observable } from 'rxjs';
 import { BaseDataService } from '.';
-import { Feature } from '../../../../apps-management/models/feature.model';
+import { Feature } from '../../../../features/models/feature.model';
 
 @Injectable({ providedIn: 'root' })
 export class FeatureService extends BaseDataService<Feature> {

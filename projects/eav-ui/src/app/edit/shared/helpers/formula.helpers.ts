@@ -1,6 +1,6 @@
 import { InputFieldHelpers, LocalizationHelpers } from '.';
 import { FieldSettings, FieldValue } from '../../../../../../edit-types';
-import { Feature } from '../../../apps-management/models/feature.model';
+import { Feature } from '../../../features/models/feature.model';
 import { InputType } from '../../../content-type-fields/models/input-type.model';
 import { EavWindow } from '../../../shared/models/eav-window.model';
 import { DesignerSnippet, FieldOption } from '../../dialog/footer/formula-designer/formula-designer.models';

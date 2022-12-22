@@ -1,7 +1,7 @@
 import { SxcInstance } from '@2sic.com/2sxc-typings';
 import { FormValues } from '.';
 import { FieldSettings, FieldValue } from '../../../../../../edit-types';
-import { Feature } from '../../../apps-management/models/feature.model';
+import { Feature } from '../../../features/models/feature.model';
 
 /**
  * Formula Cached Values which are re-used across formulas of the same entity

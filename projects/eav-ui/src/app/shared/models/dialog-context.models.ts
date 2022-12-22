@@ -87,7 +87,7 @@ export interface DialogContextUser {
   Username: string;
 }
 
-export interface DialogContextFeature {
-  NameId: string;
-  Enabled: boolean;
-}
+// export interface DialogContextFeature {
+//   NameId: string;
+//   Enabled: boolean;
+// }
