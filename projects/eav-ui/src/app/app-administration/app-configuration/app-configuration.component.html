@@ -381,6 +381,7 @@
         They will be placed in a folder inside <code>App_Data</code> and allow sync/restore with git or another server.
       </div>
       <!-- <app-feature-icon [featureNameId]="'AppSyncWithSiteFiles'"></app-feature-icon> -->
+      <!-- @SDV - use the FeatureNames.AppSyncWithSiteFiles here -->
       <div *ngIf='appStateAdvanced && !features.isEnabled("AppSyncWithSiteFiles")'>
         <mat-icon style="color: red">warning</mat-icon>
         Feature <strong>AppSyncWithSiteFiles</strong> is not enabled.
