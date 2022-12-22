@@ -12,7 +12,7 @@ import { FeatureIconComponent } from './feature-icon/feature-icon.component';
 import { FeatureTextInfoComponent } from './feature-text-info/feature-text-info.component';
 import { FeatureIconIndicatorComponent } from './feature-icon-indicator/feature-icon-indicator.component';
 import { MatCardModule } from '@angular/material/card';
-
+import { FeatureDetailService } from './services/feature-detail.service';
 
 @NgModule({
   declarations: [
@@ -38,6 +38,7 @@ import { MatCardModule } from '@angular/material/card';
     FeatureIconIndicatorComponent,
   ],
   providers: [
+    FeatureDetailService
   ]
 })
 export class FeaturesModule { }
