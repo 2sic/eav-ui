@@ -1,5 +1,5 @@
 // ng-deep is necesary beacuse class is in html stored in i18n file
-::ng-deep .snack-bar-warning-demo-white-hyperlink {
+::ng-deep .snack-bar-warning-demo-white-hyperlink a {
   color: white;
   text-decoration: underline;
 }
