@@ -8,6 +8,7 @@ import { FieldSettings } from '../../../../../../edit-types';
 import { InputTypeConstants } from '../../../content-type-fields/constants/input-type.constants';
 import { UpdateEnvVarsFromDialogSettings } from '../../../shared/helpers/update-env-vars-from-dialog-settings.helper';
 import { convertUrlToForm } from '../../../shared/helpers/url-prep.helper';
+import { FeaturesService } from '../../../shared/services/features.service';
 import { calculateIsParentDialog, sortLanguages } from '../../dialog/main/edit-dialog-main.helpers';
 import { EavFormData } from '../../dialog/main/edit-dialog-main.models';
 import { EditParams } from '../../edit-matcher.models';
@@ -39,6 +40,7 @@ export class EditInitializerService implements OnDestroy {
     private entityCacheService: EntityCacheService,
     private adamCacheService: AdamCacheService,
     private linkCacheService: LinkCacheService,
+    private featuresService: FeaturesService,
   ) { }
 
   ngOnDestroy(): void {
@@ -49,6 +51,8 @@ export class EditInitializerService implements OnDestroy {
     const form = convertUrlToForm((this.route.snapshot.params as EditParams).items);
     const editItems = JSON.stringify(form.items);
     this.eavService.fetchFormData(editItems).subscribe(formData => {
+      // SDV: comment it 
+      this.featuresService.load(formData.Context);
       UpdateEnvVarsFromDialogSettings(formData.Context.App);
       this.saveFormData(formData);
       this.keepInitialValues();

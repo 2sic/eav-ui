@@ -1,5 +1,6 @@
 import { Directive, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
 import { consoleLogAngular } from '../../../shared/helpers/console-log-angular.helper';
+import { FeaturesService } from '../../../shared/services/features.service';
 import { FieldConfigSet } from '../../form/builder/fields-builder/field-config-set.model';
 import { FeaturesConstants } from '../constants';
 import { ElementEventListener, PasteClipboardImageEventDetail } from '../models';
@@ -11,10 +12,10 @@ export class PasteClipboardImageDirective implements OnInit, OnDestroy {
   @Input() elementType: string;
   private eventListeners: ElementEventListener[] = [];
 
-  constructor(private elementRef: ElementRef, private featureService: FeatureService) { }
+  constructor(private elementRef: ElementRef, private featuresService: FeaturesService) { }
 
   ngOnInit() {
-    if (!this.featureService.isFeatureEnabled(FeaturesConstants.PasteImageFromClipboard)) { return; }
+    if (!this.featuresService.isEnabled(FeaturesConstants.PasteImageFromClipboard)) { return; }
 
     switch (this.elementType) {
       case 'input':

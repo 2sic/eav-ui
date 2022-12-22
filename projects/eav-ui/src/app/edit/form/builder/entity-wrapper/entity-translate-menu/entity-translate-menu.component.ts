@@ -1,10 +1,11 @@
 import { Component, Input, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/features.service';
 import { combineLatest, map, Observable, Subscription } from 'rxjs';
 import { FeaturesConstants } from '../../../../shared/constants';
 import { TranslationState } from '../../../../shared/models/fields-configs.model';
 import { EavService, FieldsSettingsService, FieldsTranslateService, FormsStateService } from '../../../../shared/services';
-import { FeatureService, ItemService, LanguageInstanceService } from '../../../../shared/store/ngrx-data';
+import { ItemService, LanguageInstanceService } from '../../../../shared/store/ngrx-data';
 import { AutoTranslateDisabledWarningDialog } from '../../../wrappers/localization-wrapper/auto-translate-disabled-warning-dialog/auto-translate-disabled-warning-dialog.component';
 import { TranslateFromMenuDialogComponent } from '../../../wrappers/localization-wrapper/translate-from-menu-dialog/translate-from-menu-dialog.component';
 import { TranslateMenuDialogData } from '../../../wrappers/localization-wrapper/translate-menu-dialog/translate-menu-dialog.models';
@@ -34,7 +35,7 @@ export class EntityTranslateMenuComponent implements OnInit, OnDestroy {
     private formsStateService: FormsStateService,
     private viewContainerRef: ViewContainerRef,
     private fieldsSettingsService: FieldsSettingsService,
-    private featureService: FeatureService,
+    private featuresService: FeaturesService,
   ) { }
 
   ngOnInit() {
@@ -55,7 +56,7 @@ export class EntityTranslateMenuComponent implements OnInit, OnDestroy {
         return templateVars;
       }),
     );
-    this.isTranslateWithGoogleFeatureEnabled = this.featureService.isFeatureEnabled(FeaturesConstants.EditUiTranslateWithGoogle);
+    this.isTranslateWithGoogleFeatureEnabled = this.featuresService.isEnabled(FeaturesConstants.EditUiTranslateWithGoogle);
     this.translatableFromFields = this.fieldsTranslateService.findAutotranslatableFields();
     if (this.translatableFromFields.length > 0)
       this.subscription = this.fieldsSettingsService.getTranslationState$(this.translatableFromFields[0]).subscribe(x => this.translationState = x);

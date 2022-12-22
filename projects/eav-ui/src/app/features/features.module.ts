@@ -7,7 +7,6 @@ import { SharedComponentsModule } from '../shared/shared-components.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { buildTranslateConfiguration } from '../shared/translation';
 import { translateLoaderFactory } from '../shared/translation/translate-loader-factory';
-import { FeatureService } from '../edit/shared/store/ngrx-data';
 import { FeatureInfoDialogComponent } from './feature-info-dialog/feature-info-dialog.component';
 import { FeatureIconComponent } from './feature-icon/feature-icon.component';
 import { FeatureTextInfoComponent } from './feature-text-info/feature-text-info.component';
@@ -39,7 +38,6 @@ import { MatCardModule } from '@angular/material/card';
     FeatureIconIndicatorComponent,
   ],
   providers: [
-    FeatureService,
   ]
 })
 export class FeaturesModule { }

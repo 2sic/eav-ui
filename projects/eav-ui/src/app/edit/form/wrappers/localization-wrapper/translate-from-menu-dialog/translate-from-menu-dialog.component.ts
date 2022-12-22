@@ -4,12 +4,13 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { FeaturesConstants, TranslationLink, TranslationLinks } from '../../../../shared/constants';
 import { EavService, FieldsTranslateService } from '../../../../shared/services';
-import { FeatureService, ItemService, LanguageInstanceService, LanguageService } from '../../../../shared/store/ngrx-data';
+import { ItemService, LanguageInstanceService, LanguageService } from '../../../../shared/store/ngrx-data';
 import { TranslationStateCore } from '../translate-menu/translate-menu.models';
 import { I18nKeys } from '../translate-menu-dialog/translate-menu-dialog.constants';
 import { findI18nKey, getTemplateLanguages, getTemplateLanguagesWithContent } from '../translate-menu-dialog/translate-menu-dialog.helpers';
 import { MatSnackBar} from '@angular/material/snack-bar';
 import { SnackBarWarningDemoComponent } from '../snack-bar-warning-demo/snack-bar-warning-demo.component';
+import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/features.service';
 
 @Component({
   selector: 'app-translate-from-menu-dialog',
@@ -34,7 +35,7 @@ export class TranslateFromMenuDialogComponent implements OnInit, OnDestroy {
     private eavService: EavService,
     private fieldsTranslateService: FieldsTranslateService,
     private snackBar: MatSnackBar,
-    private featureService: FeatureService,
+    private featuresService: FeaturesService,
   ) {
     this.dialogRef.keydownEvents().subscribe(event => {
       const CTRL_S = event.keyCode === 83 && (navigator.platform.match('Mac') ? event.metaKey : event.ctrlKey);
@@ -44,7 +45,7 @@ export class TranslateFromMenuDialogComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.isTranslateWithGoogleFeatureEnabled = this.featureService.isFeatureEnabled(FeaturesConstants.EditUiTranslateWithGoogle);
+    this.isTranslateWithGoogleFeatureEnabled = this.featuresService.isEnabled(FeaturesConstants.EditUiTranslateWithGoogle);
     if (this.isTranslateWithGoogleFeatureEnabled) {
       this.snackBar.openFromComponent(SnackBarWarningDemoComponent);
       this.dialogRef.afterClosed().subscribe(() => {

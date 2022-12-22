@@ -2,6 +2,7 @@ import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
+import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/features.service';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, startWith, Subscription } from 'rxjs';
 import { AdamConfig, AdamItem, DropzoneConfigExt } from '../../../../../../../../edit-types';
 import { eavConstants } from '../../../../../shared/constants/eav.constants';
@@ -9,7 +10,7 @@ import { EditForm } from '../../../../../shared/models/edit-form.model';
 import { FeaturesConstants } from '../../../../shared/constants';
 import { FileTypeHelpers, UrlHelpers } from '../../../../shared/helpers';
 import { AdamService, EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../../shared/services';
-import { AdamCacheService, FeatureService, LinkCacheService } from '../../../../shared/store/ngrx-data';
+import { AdamCacheService, LinkCacheService } from '../../../../shared/store/ngrx-data';
 import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
 import { AdamBrowserTemplateVars, AdamConfigInstance } from './adam-browser.models';
 
@@ -51,7 +52,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
 
   constructor(
     private adamService: AdamService,
-    private featureService: FeatureService,
+    private featuresService: FeaturesService,
     private dnnContext: DnnContext,
     private editRoutingService: EditRoutingService,
     private zone: NgZone,
@@ -70,7 +71,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
     const entityGuid = this.config.entityGuid;
     const field = this.config.fieldName;
     this.url = this.dnnContext.$2sxc.http.apiUrl(`app/auto/data/${contentType}/${entityGuid}/${field}`);
-    this.pasteClipboardImage = this.featureService.isFeatureEnabled(FeaturesConstants.PasteImageFromClipboard);
+    this.pasteClipboardImage = this.featuresService.isEnabled(FeaturesConstants.PasteImageFromClipboard);
 
     // run inside zone to detect changes when called from custom components
     this.config.adam = {

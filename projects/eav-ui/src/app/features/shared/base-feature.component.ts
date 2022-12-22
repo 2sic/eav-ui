@@ -5,13 +5,15 @@ import { FeaturesService } from '../../shared/services/features.service';
 export class BaseFeatureComponent implements OnInit {
   @Input() featureNameId: string;
 
-  public features: FeaturesService = new FeaturesService();
+  // public features: FeaturesService = new FeaturesService();
 
   featureOn: boolean = true;
 
-  constructor() { }
+  constructor(
+    protected featuresService: FeaturesService
+  ) { }
 
   ngOnInit(): void {
-    this.featureOn = this.features.isEnabled(this.featureNameId);
+    this.featureOn = this.featuresService.isEnabled(this.featureNameId);
   }
 }

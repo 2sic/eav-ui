@@ -1,6 +1,7 @@
 import { Component, Input, OnInit, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { FeatureService } from '../../edit/shared/store/ngrx-data';
+import { FeaturesService } from '../../shared/services/features.service';
 import { BaseFeatureWithDialogComponent } from '../shared/base-feature-with-dialog.component';
 
 @Component({
@@ -13,8 +14,9 @@ export class FeatureIconComponent extends BaseFeatureWithDialogComponent impleme
     dialog: MatDialog,
     viewContainerRef: ViewContainerRef,
     featureService: FeatureService,
+    featuresService: FeaturesService
   ) {
-    super(dialog, viewContainerRef, featureService);
+    super(dialog, viewContainerRef, featureService, featuresService);
   }
 
   ngOnInit(): void {

@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { FeatureService } from '../../edit/shared/store/ngrx-data';
+import { FeaturesService } from '../../shared/services/features.service';
 import { FeatureSummary } from '../models';
 import { BaseFeatureWithDialogComponent } from '../shared/base-feature-with-dialog.component';
 
@@ -18,8 +19,9 @@ export class FeatureTextInfoComponent extends BaseFeatureWithDialogComponent imp
     dialog: MatDialog,
     viewContainerRef: ViewContainerRef,
     featureService: FeatureService,
+    featuresService: FeaturesService
   ) {
-    super(dialog, viewContainerRef, featureService);
+    super(dialog, viewContainerRef, featureService, featuresService);
 
     this.featureSummary = {
       NameId: 'test',

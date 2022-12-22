@@ -65,10 +65,7 @@ export class AppConfigurationComponent implements OnInit, OnChanges, OnDestroy {
     private appInternalsService: AppInternalsService,
     private contentTypesService: ContentTypesService,
     private globalConfigService: GlobalConfigService,
-    appDialogConfigService: AppDialogConfigService,
-  ) {
-    this.features.loadFromService(appDialogConfigService);
-  }
+  ) {}
 
 
   ngOnInit() {

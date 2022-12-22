@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FeatureService } from '../../edit/shared/store/ngrx-data/feature.service';
+import { FeaturesService } from '../../shared/services/features.service';
 import { BaseFeatureComponent } from '../shared/base-feature.component';
 
 @Component({
@@ -9,12 +9,11 @@ import { BaseFeatureComponent } from '../shared/base-feature.component';
 })
 export class FeatureIconIndicatorComponent extends BaseFeatureComponent implements OnInit {
 
-  constructor() {
-    super();
+  constructor(featuresService: FeaturesService) {
+    super(featuresService);
    }
 
   ngOnInit(): void {
     super.ngOnInit();
   }
-
 }
