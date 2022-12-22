@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewContainerRef } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { FeaturesService } from '../../shared/services/features.service';
 import { BaseFeatureComponent } from '../shared/base-feature.component';
 
@@ -9,9 +10,13 @@ import { BaseFeatureComponent } from '../shared/base-feature.component';
 })
 export class FeatureIconIndicatorComponent extends BaseFeatureComponent implements OnInit {
 
-  constructor(featuresService: FeaturesService) {
-    super(featuresService);
-   }
+  constructor(
+    dialog: MatDialog,
+    viewContainerRef: ViewContainerRef,
+    featuresService: FeaturesService
+  ) {
+    super(dialog, viewContainerRef, featuresService);
+  }
 
   ngOnInit(): void {
     super.ngOnInit();

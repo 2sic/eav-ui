@@ -1,8 +1,10 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { FeatureDetailsDialogData } from '../../apps-management/licence-info/feature-details-dialog/feature-details-dialog.models';
+import { Observable } from 'rxjs';
 import { copyToClipboard } from '../../shared/helpers/copy-to-clipboard.helper';
+import { Feature } from '../models';
+import { FeatureDetailService } from '../services/feature-detail.service';
 
 @Component({
   selector: 'app-feature-info-dialog',
@@ -10,15 +12,18 @@ import { copyToClipboard } from '../../shared/helpers/copy-to-clipboard.helper';
   styleUrls: ['./feature-info-dialog.component.scss']
 })
 export class FeatureInfoDialogComponent implements OnInit {
+  feature$: Observable<Feature>;
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public dialogData: FeatureDetailsDialogData,
+    @Inject(MAT_DIALOG_DATA) public dialogData: string,
     private dialogRef: MatDialogRef<FeatureInfoDialogComponent>,
     private snackBar: MatSnackBar,
-  ) { }
+    private featureDetailService: FeatureDetailService,
+  ) {
+    this.feature$ = this.featureDetailService.getFeatureDetails(dialogData);
+   }
 
-  closeDialog(): void {
-    this.dialogRef.close();
+  ngOnInit(): void {
   }
 
   copyToClipboard(text: string): void {
@@ -26,7 +31,8 @@ export class FeatureInfoDialogComponent implements OnInit {
     this.snackBar.open('Copied to clipboard', null, { duration: 2000 });
   }
 
-  ngOnInit(): void {
+  closeDialog(): void {
+    this.dialogRef.close();
   }
 
 }

@@ -1,44 +1,46 @@
-<div mat-dialog-title>
-  <div class="dialog-title-box">
-    <div>{{ dialogData.feature.Name }}</div>
-    <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
-      <mat-icon>close</mat-icon>
-    </button>
+<div *ngIf="(feature$ | async) as feature">
+  <div mat-dialog-title>
+    <div class="dialog-title-box">
+      <div>{{ feature.Name }}</div>
+      <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
   </div>
-</div>
 
-<p class="dialog-description" [innerHtml]="dialogData.feature.Description | safeHtml"></p>
+  <p class="dialog-description" [innerHtml]="feature.Description | safeHtml"></p>
 
-<div class="info-box">
-  <div class="info-row">
-    <div class="info-row__label">{{ "Features.Status" | translate }}</div>
-    <div class="info-row__value">
-      <span>{{ dialogData.feature.Enabled ? "Features.Active" : "Features.NotActive" | translate }}</span>
+  <div class="info-box">
+    <div class="info-row">
+      <div class="info-row__label">{{ "Features.Status" | translate }}</div>
+      <div class="info-row__value">
+        <span>{{ feature.Enabled ? "Features.Active" : "Features.NotActive" | translate }}</span>
+      </div>
     </div>
+    <div class="info-row" *ngIf="feature.NameId as id">
+      <div class="info-row__label">ID</div>
+      <div class="info-row__value click">
+        <span [tippy]="id" (click)="copyToClipboard(id)">{{ id }}</span>
+      </div>
+    </div>
+    <div class="info-row" *ngIf="feature.Guid as guid">
+      <div class="info-row__label">GUID</div>
+      <div class="info-row__value click">
+        <span [tippy]="guid" (click)="copyToClipboard(guid)">{{ guid }}</span>
+      </div>
+    </div>
+    <div class="info-row"
+      *ngIf="(feature.Security.Impact + ': ' + feature.Security.Message) as security">
+      <div class="info-row__label">{{ "Features.SecurityRating" | translate }}</div>
+      <div class="info-row__value">
+        <span>{{ security }}</span>
+      </div>
+    </div>
+    <!-- <div class="info-row" *ngIf="feature.libraryLink as link">
+      <div class="info-row__label">More info</div>
+      <div class="info-row__value click">
+        <a [href]="link"></a>
+      </div>
+    </div> -->
   </div>
-  <div class="info-row" *ngIf="dialogData.feature.NameId as id">
-    <div class="info-row__label">ID</div>
-    <div class="info-row__value click">
-      <span [tippy]="id" (click)="copyToClipboard(id)">{{ id }}</span>
-    </div>
-  </div>
-  <div class="info-row" *ngIf="dialogData.feature.Guid as guid">
-    <div class="info-row__label">GUID</div>
-    <div class="info-row__value click">
-      <span [tippy]="guid" (click)="copyToClipboard(guid)">{{ guid }}</span>
-    </div>
-  </div>
-  <div class="info-row"
-    *ngIf="(dialogData.feature.Security.Impact + ': ' + dialogData.feature.Security.Message) as security">
-    <div class="info-row__label">{{ "Features.SecurityRating" | translate }}</div>
-    <div class="info-row__value">
-      <span>{{ security }}</span>
-    </div>
-  </div>
-  <!-- <div class="info-row" *ngIf="dialogData.feature.libraryLink as link">
-    <div class="info-row__label">More info</div>
-    <div class="info-row__value click">
-      <a [href]="link"></a>
-    </div>
-  </div> -->
 </div>
