@@ -1,17 +1,17 @@
 import { Directive, Input, OnInit } from '@angular/core';
-import { FeatureService } from '../../edit/shared/store/ngrx-data';
+import { FeaturesService } from '../../shared/services/features.service';
 
 @Directive()
 export class BaseFeatureComponent implements OnInit {
   @Input() featureNameId: string;
 
+  public features: FeaturesService = new FeaturesService();
+
   featureOn: boolean = true;
 
-  constructor(
-    protected featureService: FeatureService,
-  ) { }
+  constructor() { }
 
   ngOnInit(): void {
-    this.featureOn = this.featureService.isFeatureEnabled(this.featureNameId);
+    this.featureOn = this.features.isEnabled(this.featureNameId);
   }
 }

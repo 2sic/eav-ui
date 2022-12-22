@@ -9,11 +9,9 @@ import { BaseFeatureComponent } from '../shared/base-feature.component';
 })
 export class FeatureIconIndicatorComponent extends BaseFeatureComponent implements OnInit {
 
-  constructor(
-    featureService: FeatureService,
-  ) {
-    super(featureService);
-  }
+  constructor() {
+    super();
+   }
 
   ngOnInit(): void {
     super.ngOnInit();

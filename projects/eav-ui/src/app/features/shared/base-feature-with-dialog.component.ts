@@ -13,9 +13,9 @@ export class BaseFeatureWithDialogComponent extends BaseFeatureComponent impleme
   constructor(
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
-    featureService: FeatureService,
+    protected featureService: FeatureService,
   ) {
-    super(featureService);
+    super();
    }
 
   ngOnInit(): void {
