@@ -3,6 +3,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, catchError, Observable, of, share, startWith, Subject, switchMap } from 'rxjs';
+import { FeatureNames } from '../../features/feature-names';
 import { BaseComponent } from '../../shared/components/base-component/base.component';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { FileUploadDialogData } from '../../shared/components/file-upload-dialog';
@@ -12,6 +13,7 @@ import { defaultGridOptions } from '../../shared/constants/default-grid-options.
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { EditForm } from '../../shared/models/edit-form.model';
 import { Context } from '../../shared/services/context';
+import { FeaturesService } from '../../shared/services/features.service';
 import { App } from '../models/app.model';
 import { AppsListService } from '../services/apps-list.service';
 import { AppsListActionsComponent } from './apps-list-actions/apps-list-actions.component';
@@ -27,6 +29,7 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
   apps$: Observable<App[]>;
   fabOpen$ = new BehaviorSubject(false);
   gridOptions = this.buildGridOptions();
+  isAddFromFolderEnabled: boolean;
 
   private refreshApps$ = new Subject<void>();
 
@@ -36,6 +39,7 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
     private appsListService: AppsListService,
     private snackBar: MatSnackBar,
     private context: Context,
+    private featuresService: FeaturesService,
   ) {
     super(router, route)
   }
@@ -47,6 +51,7 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
       share(),
     );
     this.subscription.add(this.refreshOnChildClosed().subscribe(() => { this.refreshApps$.next(); }));
+    this.isAddFromFolderEnabled = this.featuresService.isEnabled(FeatureNames.AppSyncWithSiteFiles);
   }
 
   ngOnDestroy(): void {

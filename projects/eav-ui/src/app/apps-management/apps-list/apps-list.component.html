@@ -21,7 +21,9 @@
         <mat-icon>holiday_village</mat-icon>
       </button>
       <button mat-mini-fab label="Add from folder (beta)" (click)="addFromFolder()">
-        <mat-icon>add</mat-icon>
+        <mat-icon [matBadgeHidden]="isAddFromFolderEnabled" matBadgeColor="accent" matBadgeSize="small" matBadge="💎" matBadgePosition="below after">
+          add
+        </mat-icon>
       </button>
       <button mat-mini-fab label="Import app" (click)="importApp()">
         <mat-icon>cloud_upload</mat-icon>
