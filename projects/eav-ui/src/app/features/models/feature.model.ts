@@ -1,7 +1,7 @@
-import { FeatureSecurity, FeatureStatus } from '.';
+import { FeatureSecurity, FeatureSummary } from '.';
 
 
-export interface Feature extends FeatureStatus {
+export interface Feature extends FeatureSummary {
   /** Internal GUID of the feature, usually not used */
   Guid: string;
 

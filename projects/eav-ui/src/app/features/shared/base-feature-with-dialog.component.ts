@@ -1,9 +1,9 @@
 import { Directive, Input, OnInit, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { FeatureDetailsDialogData } from '../../apps-management/licence-info/feature-details-dialog/feature-details-dialog.models';
-import { Feature } from '../models/feature.model';
 import { FeatureService } from '../../edit/shared/store/ngrx-data';
 import { FeatureInfoDialogComponent } from '../feature-info-dialog/feature-info-dialog.component';
+import { Feature } from '../models/feature.model';
 import { BaseFeatureComponent } from './base-feature.component';
 
 @Directive()

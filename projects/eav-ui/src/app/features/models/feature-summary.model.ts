@@ -2,7 +2,7 @@
  * A brief summary about a feature / State etc.
  * It's provided in the context
  */
-export interface FeatureStatus {
+export interface FeatureSummary {
   /** Key / Name like EditUiGoogleTranslate */
   NameId: string;
   /** State if it is enabled or not */

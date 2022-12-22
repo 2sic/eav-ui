@@ -1,5 +1,5 @@
 import { AppDialogConfigService } from '../../app-administration/services';
-import { FeatureStatus } from '../../features/models/feature-status.model';
+import { FeatureSummary } from '../../features/models/feature-summary.model';
 import { DialogContext } from '../models/dialog-settings.model';
 
 // TODO:
@@ -19,7 +19,7 @@ export class FeaturesService {
     this.dialogContext = dialogContext;
   }
 
-  getAll(): FeatureStatus[] {
+  getAll(): FeatureSummary[] {
     return this.dialogContext?.Features ?? [];
   }
 

@@ -1,4 +1,7 @@
-<mat-card-header *ngIf="!featureOn" class="feature-card" (click)="openDialog()">
+<mat-card-header *ngIf="!featureOn" class="feature-card"
+  (click)="openDialog()"
+  [tippy]="'Features.Tooltip' | translate: featureSummary"
+  >
   <mat-icon mat-card-avatar class="feature-card-icon">warning</mat-icon>
   <mat-card-title class="feature-card-title">{{ 'Features.FeatureNotActivated' | translate }}</mat-card-title>
   <mat-card-subtitle class="feature-card-subtitle">{{ 'Features.ClickToFindOutMore' | translate }}</mat-card-subtitle>

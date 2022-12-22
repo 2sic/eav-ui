@@ -252,7 +252,8 @@
     "Active": "Active",
     "Status": "Status",
     "SecurityRating": "Security rating",
-    "FeatureNotActivated": "This feature is not activated",
-    "ClickToFindOutMore": "Click here to find out more"
+    "FeatureNotActivated": "This cool feature is not enabled",
+    "ClickToFindOutMore": "Click to find out more...",
+    "Tooltip": "Feature: {{Name}} ({{NameId}})"
   }
 }
