@@ -23,6 +23,10 @@ export class FeaturesService {
     return this.dialogContext?.Features ?? [];
   }
 
+  getFeature(featureNameId: string): FeatureSummary {
+    return this.dialogContext?.Features.find(f => f.NameId === featureNameId);
+  }
+
   isEnabled(nameId: string) {
     const found = this.getAll().find(f => f.NameId === nameId);
     return found?.Enabled ?? false;

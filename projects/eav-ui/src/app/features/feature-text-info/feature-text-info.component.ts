@@ -10,8 +10,6 @@ import { BaseFeatureComponent } from '../shared/base-feature.component';
   styleUrls: ['./feature-text-info.component.scss']
 })
 export class FeatureTextInfoComponent extends BaseFeatureComponent implements OnInit {
-
-  // TODO: SHOULD later use the normal 'feature' property, but that's still of the complex type which we won't always have
   featureSummary: FeatureSummary;
 
   constructor(
@@ -20,16 +18,11 @@ export class FeatureTextInfoComponent extends BaseFeatureComponent implements On
     featuresService: FeaturesService
   ) {
     super(dialog, viewContainerRef, featuresService);
-
-    this.featureSummary = {
-      NameId: 'test',
-      Enabled: false,
-      Name: 'longer name'
-    };
   }
 
   ngOnInit(): void {
     super.ngOnInit();
+    this.featureSummary = this.featuresService.getFeature(this.featureNameId);
   }
 
 }
