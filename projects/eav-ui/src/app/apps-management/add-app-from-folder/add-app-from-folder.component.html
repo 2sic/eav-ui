@@ -1,6 +1,6 @@
 <ng-container *ngIf="{pendingApps: pendingApps$ | async} as data">
   <div mat-dialog-title>
-    <div class="dialog-title-box">Add App from Folder BETA</div>
+    <div class="dialog-title-box">Add App from Folder</div>
   </div>
 
   <app-feature-text-info [featureNameId]="'AppSyncWithSiteFiles'"></app-feature-text-info>
@@ -10,7 +10,7 @@
   </p>
 
   <p class="dialog-description" *ngIf="data.pendingApps?.length == 0">
-    No apps found which are not already installed.
+    Nothing to show. All apps in the 2sxc folder are already installed.
   </p>
 
   <div class="grid-wrapper" *ngIf="data.pendingApps?.length > 0">
