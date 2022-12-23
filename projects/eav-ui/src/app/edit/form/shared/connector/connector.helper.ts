@@ -2,11 +2,12 @@ import { ChangeDetectorRef, ElementRef, NgZone, ViewContainerRef } from '@angula
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
+import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/features.service';
 import { BehaviorSubject, distinctUntilChanged, map, Subscription } from 'rxjs';
 import { EavCustomInputField, ExperimentalProps, FieldConfig, FieldSettings, FieldValue } from '../../../../../../../edit-types';
 import { GeneralHelpers, InputFieldHelpers, PagePicker } from '../../../shared/helpers';
 import { AdamService, EavService, EditRoutingService, FieldsSettingsService } from '../../../shared/services';
-import { ContentTypeService, EntityCacheService, WipFeatureService, InputTypeService } from '../../../shared/store/ngrx-data';
+import { ContentTypeService, EntityCacheService, InputTypeService } from '../../../shared/store/ngrx-data';
 import { FieldConfigSet } from '../../builder/fields-builder/field-config-set.model';
 import { ConnectorHost, ConnectorInstance } from './connector-instance.model';
 
@@ -26,7 +27,7 @@ export class ConnectorHelper {
     private translateService: TranslateService,
     private contentTypeService: ContentTypeService,
     private inputTypeService: InputTypeService,
-    private featureService: WipFeatureService,
+    private featuresService: FeaturesService,
     private editRoutingService: EditRoutingService,
     private adamService: AdamService,
     private dialog: MatDialog,
@@ -113,7 +114,7 @@ export class ConnectorHelper {
       updateField: (name, value) => {
         this.zone.run(() => { this.updateControl(this.group.controls[name], value); });
       },
-      isFeatureEnabled: (nameId) => this.featureService.isFeatureEnabled(nameId),
+      isFeatureEnabled: (nameId) => this.featuresService.isEnabled(nameId),
       setFocused: (focused) => {
         this.zone.run(() => { this.config.focused$.next(focused); });
       },

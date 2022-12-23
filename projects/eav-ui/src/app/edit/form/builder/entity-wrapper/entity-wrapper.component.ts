@@ -3,6 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogRef, MatDialogState } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
+import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/features.service';
 import { combineLatest, distinctUntilChanged, isEmpty, map, Observable, Subscription } from 'rxjs';
 import { eavConstants } from '../../../../shared/constants/eav.constants';
 import { EditForm, ItemEditIdentifier } from '../../../../shared/models/edit-form.model';
@@ -10,7 +11,7 @@ import { FeaturesConstants } from '../../../shared/constants';
 import { GeneralHelpers, LocalizationHelpers } from '../../../shared/helpers';
 import { EavEntity, EavHeader, EavItem } from '../../../shared/models/eav';
 import { EavService, EditRoutingService, EntityService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
-import { WipFeatureService, ItemService, LanguageInstanceService } from '../../../shared/store/ngrx-data';
+import { ItemService, LanguageInstanceService } from '../../../shared/store/ngrx-data';
 import { buildContentTypeFeatures, getItemForTooltip, getNoteProps } from './entity-wrapper.helpers';
 import { ContentTypeTemplateVars } from './entity-wrapper.models';
 
@@ -46,7 +47,7 @@ export class EntityWrapperComponent implements OnInit, AfterViewChecked, OnDestr
     private entityService: EntityService,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
-    private featureService: WipFeatureService,
+    private featuresService: FeaturesService,
   ) { }
 
   ngAfterViewChecked() {
@@ -83,14 +84,14 @@ export class EntityWrapperComponent implements OnInit, AfterViewChecked, OnDestr
       map(([note, currentLanguage, defaultLanguage, itemNotSaved]) => getNoteProps(note, currentLanguage, defaultLanguage, itemNotSaved)),
     );
     const showNotes$ = combineLatest([
-      this.featureService.isFeatureEnabled$(FeaturesConstants.EditUiShowNotes),
+      this.featuresService.isEnabled$(FeaturesConstants.EditUiShowNotes),
       settings$.pipe(map(settings => buildContentTypeFeatures(settings.Features))),
     ]).pipe(
       map(([featureEnabled, contentTypeFeatures]) => contentTypeFeatures[FeaturesConstants.EditUiShowNotes] ?? featureEnabled),
       distinctUntilChanged(),
     );
     const showMetadataFor$ = combineLatest([
-      this.featureService.isFeatureEnabled$(FeaturesConstants.EditUiShowMetadataFor),
+      this.featuresService.isEnabled$(FeaturesConstants.EditUiShowMetadataFor),
       settings$.pipe(map(settings => buildContentTypeFeatures(settings.Features))),
     ]).pipe(
       map(([featureEnabled, contentTypeFeatures]) => contentTypeFeatures[FeaturesConstants.EditUiShowMetadataFor] ?? featureEnabled),

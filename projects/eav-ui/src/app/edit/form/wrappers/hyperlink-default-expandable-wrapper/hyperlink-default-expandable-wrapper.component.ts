@@ -1,11 +1,12 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/features.service';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, share } from 'rxjs';
 import { AdamItem } from '../../../../../../../edit-types';
 import { FeaturesConstants, WrappersConstants } from '../../../shared/constants';
 import { DropzoneDraggingHelper, GeneralHelpers } from '../../../shared/helpers';
 import { AdamService, EavService, EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
-import { WipFeatureService, LinkCacheService } from '../../../shared/store/ngrx-data';
+import { LinkCacheService } from '../../../shared/store/ngrx-data';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { HyperlinkDefaultBaseComponent } from '../../fields/hyperlink/hyperlink-default/hyperlink-default-base.component';
 import { ContentExpandAnimation } from '../expandable-wrapper/content-expand.animation';
@@ -41,7 +42,7 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
     editRoutingService: EditRoutingService,
     private zone: NgZone,
     formsStateService: FormsStateService,
-    private featureService: WipFeatureService,
+    private featuresService: FeaturesService,
   ) {
     super(
       eavService,
@@ -82,7 +83,7 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
       }),
       distinctUntilChanged(),
     );
-    const showAdamSponsor$ = this.featureService.isFeatureEnabled$(FeaturesConstants.NoSponsoredByToSic).pipe(
+    const showAdamSponsor$ = this.featuresService.isEnabled$(FeaturesConstants.NoSponsoredByToSic).pipe(
       map(isEnabled => !isEnabled),
       distinctUntilChanged(),
     );

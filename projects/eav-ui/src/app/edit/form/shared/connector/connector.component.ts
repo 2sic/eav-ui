@@ -2,9 +2,10 @@ import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, Input, NgZone,
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
+import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/features.service';
 import { consoleLogAngular } from '../../../../shared/helpers/console-log-angular.helper';
 import { AdamService, EavService, EditRoutingService, FieldsSettingsService } from '../../../shared/services';
-import { ContentTypeService, EntityCacheService, WipFeatureService, InputTypeService } from '../../../shared/store/ngrx-data';
+import { ContentTypeService, EntityCacheService, InputTypeService } from '../../../shared/store/ngrx-data';
 import { FieldConfigSet } from '../../builder/fields-builder/field-config-set.model';
 import { ConnectorHelper } from './connector.helper';
 
@@ -26,7 +27,7 @@ export class ConnectorComponent implements AfterViewInit, OnDestroy {
     private translateService: TranslateService,
     private contentTypeService: ContentTypeService,
     private inputTypeService: InputTypeService,
-    private featureService: WipFeatureService,
+    private featuresService: FeaturesService,
     private editRoutingService: EditRoutingService,
     private adamService: AdamService,
     private dialog: MatDialog,
@@ -49,7 +50,7 @@ export class ConnectorComponent implements AfterViewInit, OnDestroy {
       this.translateService,
       this.contentTypeService,
       this.inputTypeService,
-      this.featureService,
+      this.featuresService,
       this.editRoutingService,
       this.adamService,
       this.dialog,
