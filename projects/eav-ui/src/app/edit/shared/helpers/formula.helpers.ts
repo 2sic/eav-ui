@@ -9,7 +9,8 @@ import { formV1Prefix, requiredFormulaPrefix } from '../constants';
 import { FormulaCacheItem, FormulaFieldValidation, FormulaFunction, FormulaProps, FormulaPropsV1, FormulaTargets, FormulaV1Data, FormulaV1ExperimentalEntity, FormulaVersion, FormulaVersions, FormValues, Language, SettingsFormulaPrefix } from '../models';
 import { EavHeader } from '../models/eav';
 import { EavService, FieldsSettingsService } from '../services';
-import { WipFeatureService, ItemService } from '../store/ngrx-data';
+import { ItemService } from '../store/ngrx-data';
+import { FeaturesService } from '../../../shared/services/features.service';
 
 declare const window: EavWindow;
 
@@ -76,7 +77,7 @@ export class FormulaHelpers {
     itemService: ItemService,
     eavService: EavService,
     fieldsSettingsService: FieldsSettingsService,
-    featureService: WipFeatureService,
+    featuresService: FeaturesService,
   ): FormulaProps {
 
     switch (formula.version) {
@@ -151,7 +152,7 @@ export class FormulaHelpers {
             debug: debugEnabled,
             features: {
               isEnabled(name: string): boolean {
-                return featureService.isFeatureEnabled(name);
+                return featuresService.isEnabled(name);
               },
             },
             form: {
