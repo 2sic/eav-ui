@@ -4,7 +4,7 @@ import { AdamItem } from '../../../../../../../edit-types';
 import { FeaturesConstants, WrappersConstants } from '../../../shared/constants';
 import { DropzoneDraggingHelper } from '../../../shared/helpers';
 import { EavService, EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
-import { FeatureService } from '../../../shared/store/ngrx-data';
+import { WipFeatureService } from '../../../shared/store/ngrx-data';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { BaseFieldComponent } from '../../fields/base/base-field.component';
 import { ContentExpandAnimation } from '../expandable-wrapper/content-expand.animation';
@@ -35,7 +35,7 @@ export class HyperlinkLibraryExpandableWrapperComponent extends BaseFieldCompone
     private zone: NgZone,
     private editRoutingService: EditRoutingService,
     private formsStateService: FormsStateService,
-    private featureService: FeatureService,
+    private featureService: WipFeatureService,
   ) {
     super(eavService, fieldsSettingsService);
   }

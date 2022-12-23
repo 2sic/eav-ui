@@ -4,7 +4,6 @@ import { FeaturesService } from '../../../shared/services/features.service';
 import { FieldConfigSet } from '../../form/builder/fields-builder/field-config-set.model';
 import { FeaturesConstants } from '../constants';
 import { ElementEventListener, PasteClipboardImageEventDetail } from '../models';
-import { FeatureService } from '../store/ngrx-data';
 
 @Directive({ selector: '[appPasteClipboardImage]' })
 export class PasteClipboardImageDirective implements OnInit, OnDestroy {

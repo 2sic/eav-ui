@@ -14,9 +14,9 @@ import { EavFormData } from '../../dialog/main/edit-dialog-main.models';
 import { EditParams } from '../../edit-matcher.models';
 import { BestValueModes } from '../constants';
 import { FieldsSettingsHelpers, InputFieldHelpers, LocalizationHelpers } from '../helpers';
-import { FormValues, PublishStatus } from '../models';
+import { FormValues } from '../models';
 // tslint:disable-next-line:max-line-length
-import { AdamCacheService, ContentTypeItemService, ContentTypeService, EntityCacheService, FeatureService, InputTypeService, ItemService, LanguageInstanceService, LanguageService, LinkCacheService, PublishStatusService } from '../store/ngrx-data';
+import { AdamCacheService, ContentTypeItemService, ContentTypeService, EntityCacheService, WipFeatureService, InputTypeService, ItemService, LanguageInstanceService, LanguageService, LinkCacheService, PublishStatusService } from '../store/ngrx-data';
 
 @Injectable()
 export class EditInitializerService implements OnDestroy {
@@ -31,7 +31,7 @@ export class EditInitializerService implements OnDestroy {
     private inputTypeService: InputTypeService,
     private contentTypeItemService: ContentTypeItemService,
     private contentTypeService: ContentTypeService,
-    private featureService: FeatureService,
+    private featureService: WipFeatureService,
     private publishStatusService: PublishStatusService,
     private translate: TranslateService,
     private languageService: LanguageService,

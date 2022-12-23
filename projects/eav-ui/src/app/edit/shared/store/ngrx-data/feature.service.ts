@@ -5,7 +5,7 @@ import { BaseDataService } from '.';
 import { Feature } from '../../../../features/models/feature.model';
 
 @Injectable({ providedIn: 'root' })
-export class FeatureService extends BaseDataService<Feature> {
+export class WipFeatureService extends BaseDataService<Feature> {
   constructor(serviceElementsFactory: EntityCollectionServiceElementsFactory) {
     super('Feature', serviceElementsFactory);
   }

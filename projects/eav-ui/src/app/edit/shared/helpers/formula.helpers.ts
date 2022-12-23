@@ -9,7 +9,7 @@ import { formV1Prefix, requiredFormulaPrefix } from '../constants';
 import { FormulaCacheItem, FormulaFieldValidation, FormulaFunction, FormulaProps, FormulaPropsV1, FormulaTargets, FormulaV1Data, FormulaV1ExperimentalEntity, FormulaVersion, FormulaVersions, FormValues, Language, SettingsFormulaPrefix } from '../models';
 import { EavHeader } from '../models/eav';
 import { EavService, FieldsSettingsService } from '../services';
-import { FeatureService, ItemService } from '../store/ngrx-data';
+import { WipFeatureService, ItemService } from '../store/ngrx-data';
 
 declare const window: EavWindow;
 
@@ -76,7 +76,7 @@ export class FormulaHelpers {
     itemService: ItemService,
     eavService: EavService,
     fieldsSettingsService: FieldsSettingsService,
-    featureService: FeatureService,
+    featureService: WipFeatureService,
   ): FormulaProps {
 
     switch (formula.version) {
@@ -211,7 +211,7 @@ export class FormulaHelpers {
   }
 
   static buildFormulaPropsParameters(itemHeader: EavHeader): Record<string, any> {
-    return JSON.parse(JSON.stringify(itemHeader.Prefill )) ?? {};
+    return JSON.parse(JSON.stringify(itemHeader.Prefill)) ?? {};
   }
 
   static buildDesignerSnippetsData(formula: FormulaCacheItem, fieldOptions: FieldOption[], itemHeader: EavHeader): DesignerSnippet[] {

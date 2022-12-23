@@ -8,7 +8,7 @@ import { vh } from '../../../../shared/helpers/viewport.helpers';
 import { WrappersConstants } from '../../../shared/constants';
 import { DropzoneDraggingHelper, GeneralHelpers } from '../../../shared/helpers';
 import { AdamService, EavService, EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
-import { ContentTypeService, EntityCacheService, FeatureService, InputTypeService } from '../../../shared/store/ngrx-data';
+import { ContentTypeService, EntityCacheService, WipFeatureService, InputTypeService } from '../../../shared/store/ngrx-data';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { BaseFieldComponent } from '../../fields/base/base-field.component';
 import { ConnectorHelper } from '../../shared/connector/connector.helper';
@@ -41,7 +41,7 @@ export class ExpandableWrapperComponent extends BaseFieldComponent<string> imple
     private translateService: TranslateService,
     private contentTypeService: ContentTypeService,
     private inputTypeService: InputTypeService,
-    private featureService: FeatureService,
+    private featureService: WipFeatureService,
     private editRoutingService: EditRoutingService,
     private adamService: AdamService,
     private dialog: MatDialog,

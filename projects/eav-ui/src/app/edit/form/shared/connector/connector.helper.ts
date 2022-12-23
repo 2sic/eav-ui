@@ -6,7 +6,7 @@ import { BehaviorSubject, distinctUntilChanged, map, Subscription } from 'rxjs';
 import { EavCustomInputField, ExperimentalProps, FieldConfig, FieldSettings, FieldValue } from '../../../../../../../edit-types';
 import { GeneralHelpers, InputFieldHelpers, PagePicker } from '../../../shared/helpers';
 import { AdamService, EavService, EditRoutingService, FieldsSettingsService } from '../../../shared/services';
-import { ContentTypeService, EntityCacheService, FeatureService, InputTypeService } from '../../../shared/store/ngrx-data';
+import { ContentTypeService, EntityCacheService, WipFeatureService, InputTypeService } from '../../../shared/store/ngrx-data';
 import { FieldConfigSet } from '../../builder/fields-builder/field-config-set.model';
 import { ConnectorHost, ConnectorInstance } from './connector-instance.model';
 
@@ -26,7 +26,7 @@ export class ConnectorHelper {
     private translateService: TranslateService,
     private contentTypeService: ContentTypeService,
     private inputTypeService: InputTypeService,
-    private featureService: FeatureService,
+    private featureService: WipFeatureService,
     private editRoutingService: EditRoutingService,
     private adamService: AdamService,
     private dialog: MatDialog,

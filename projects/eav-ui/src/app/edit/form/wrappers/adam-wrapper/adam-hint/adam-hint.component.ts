@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { FeaturesConstants } from '../../../../shared/constants';
-import { FeatureService } from '../../../../shared/store/ngrx-data';
+import { WipFeatureService } from '../../../../shared/store/ngrx-data';
 import { AdamHintTemplateVars } from './adam-hint.models';
 
 @Component({
@@ -14,7 +14,7 @@ export class AdamHintComponent implements OnInit {
 
   templateVars$: Observable<AdamHintTemplateVars>;
 
-  constructor(private featureService: FeatureService) { }
+  constructor(private featureService: WipFeatureService) { }
 
   ngOnInit() {
     const showAdamSponsor$ = this.featureService.isFeatureEnabled$(FeaturesConstants.NoSponsoredByToSic).pipe(

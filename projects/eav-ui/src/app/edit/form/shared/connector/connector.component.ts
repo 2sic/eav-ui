@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { consoleLogAngular } from '../../../../shared/helpers/console-log-angular.helper';
 import { AdamService, EavService, EditRoutingService, FieldsSettingsService } from '../../../shared/services';
-import { ContentTypeService, EntityCacheService, FeatureService, InputTypeService } from '../../../shared/store/ngrx-data';
+import { ContentTypeService, EntityCacheService, WipFeatureService, InputTypeService } from '../../../shared/store/ngrx-data';
 import { FieldConfigSet } from '../../builder/fields-builder/field-config-set.model';
 import { ConnectorHelper } from './connector.helper';
 
@@ -26,7 +26,7 @@ export class ConnectorComponent implements AfterViewInit, OnDestroy {
     private translateService: TranslateService,
     private contentTypeService: ContentTypeService,
     private inputTypeService: InputTypeService,
-    private featureService: FeatureService,
+    private featureService: WipFeatureService,
     private editRoutingService: EditRoutingService,
     private adamService: AdamService,
     private dialog: MatDialog,

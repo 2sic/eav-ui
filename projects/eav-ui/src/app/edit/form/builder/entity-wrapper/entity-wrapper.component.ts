@@ -10,7 +10,7 @@ import { FeaturesConstants } from '../../../shared/constants';
 import { GeneralHelpers, LocalizationHelpers } from '../../../shared/helpers';
 import { EavEntity, EavHeader, EavItem } from '../../../shared/models/eav';
 import { EavService, EditRoutingService, EntityService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
-import { FeatureService, ItemService, LanguageInstanceService } from '../../../shared/store/ngrx-data';
+import { WipFeatureService, ItemService, LanguageInstanceService } from '../../../shared/store/ngrx-data';
 import { buildContentTypeFeatures, getItemForTooltip, getNoteProps } from './entity-wrapper.helpers';
 import { ContentTypeTemplateVars } from './entity-wrapper.models';
 
@@ -46,7 +46,7 @@ export class EntityWrapperComponent implements OnInit, AfterViewChecked, OnDestr
     private entityService: EntityService,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
-    private featureService: FeatureService,
+    private featureService: WipFeatureService,
   ) { }
 
   ngAfterViewChecked() {

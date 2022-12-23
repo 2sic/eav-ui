@@ -12,7 +12,7 @@ import { FieldsSettingsHelpers, FormulaHelpers, GeneralHelpers, InputFieldHelper
 import { ContentTypeSettings, FieldsProps, FormulaCacheItem, FormulaFieldValidation, FormulaFunctionDefault, FormulaFunctionV1, FormulaTarget, FormulaTargets, FormulaVersions, FormValues, LogSeverities, RunFormulasResult, SettingsFormulaPrefix, TranslationState } from '../models';
 import { EavHeader } from '../models/eav';
 // tslint:disable-next-line:max-line-length
-import { ContentTypeService, FeatureService, GlobalConfigService, InputTypeService, ItemService, LanguageInstanceService, LanguageService } from '../store/ngrx-data';
+import { ContentTypeService, WipFeatureService, GlobalConfigService, InputTypeService, ItemService, LanguageInstanceService, LanguageService } from '../store/ngrx-data';
 import { FormsStateService } from './forms-state.service';
 import { FormulaDesignerService } from './formula-designer.service';
 
@@ -39,7 +39,7 @@ export class FieldsSettingsService implements OnDestroy {
     private globalConfigService: GlobalConfigService,
     private editInitializerService: EditInitializerService,
     private formsStateService: FormsStateService,
-    private featureService: FeatureService,
+    private featureService: WipFeatureService,
   ) { }
 
   ngOnDestroy(): void {
@@ -410,9 +410,9 @@ export class FieldsSettingsService implements OnDestroy {
 
       date.setMilliseconds(0);
       return date.toJSON();
-    } else if (typeof(value) !== 'string' && (inputType?.Type?.startsWith(DataTypeConstants.String.toLocaleLowerCase())
+    } else if (typeof (value) !== 'string' && (inputType?.Type?.startsWith(DataTypeConstants.String.toLocaleLowerCase())
       || inputType?.Type?.startsWith(DataTypeConstants.Hyperlink.toLocaleLowerCase()))) {
-        return value.toString();
+      return value.toString();
     }
 
     return value;
