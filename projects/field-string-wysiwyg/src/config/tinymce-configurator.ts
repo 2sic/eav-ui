@@ -8,7 +8,7 @@ import { TinyMceToolbars } from './toolbars';
 import { TinyMceTranslations } from './translations';
 import { TinyEavConfig } from './tinymce-config';
 import { InputTypeConstants } from '../../../eav-ui/src/app/content-type-fields/constants/input-type.constants';
-import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
+// import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
 
 declare const window: EavWindow;
 const reconfigErr = `Very likely an error in your reconfigure code. Check http://r.2sxc.org/field-wysiwyg`;
@@ -110,7 +110,7 @@ export class TinyMceConfigurator {
       eavConfig,
       ...toolbarModes,
       ...TinyMceTranslations.getLanguageOptions(this.language),
-      ...(exp.isFeatureEnabled(FeatureNames.WysiwygPasteFormatted) ? DefaultPaste.formattedText : {}),
+      ...(exp.isFeatureEnabled('WysiwygPasteFormatted') ? DefaultPaste.formattedText : {}),
       ...DefaultPaste.images(dropzone, adam),
       promotion: false,
       block_unsupported_drop: false,

@@ -30,7 +30,7 @@ import * as template from './editor.html';
 import * as styles from './editor.scss';
 import { fixMenuPositions } from './fix-menu-positions.helper';
 import * as skinOverrides from './skin-overrides.scss';
-import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
+// import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
 
 declare const window: EavWindow;
 export const wysiwygEditorTag = 'field-string-wysiwyg-dialog';
@@ -74,7 +74,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
     this.querySelector<HTMLDivElement>('.tinymce-container').classList.add(this.containerClass);
     this.querySelector<HTMLDivElement>('.tinymce-toolbar-container').classList.add(this.toolbarContainerClass);
     this.classList.add(this.mode === 'inline' ? 'inline-wysiwyg' : 'full-wysiwyg');
-    this.pasteClipboardImage = this.connector._experimental.isFeatureEnabled(FeatureNames.PasteImageFromClipboard);
+    this.pasteClipboardImage = this.connector._experimental.isFeatureEnabled('PasteImageFromClipboard');
 
     const tinyLang = TinyMceTranslations.fixTranslationKey(this.connector._experimental.translateService.currentLang);
     this.connector.loadScript(
