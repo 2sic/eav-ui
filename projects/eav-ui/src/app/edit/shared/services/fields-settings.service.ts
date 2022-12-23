@@ -6,6 +6,7 @@ import { FieldSettings, FieldValue } from '../../../../../../edit-types';
 import { DataTypeConstants } from '../../../content-type-fields/constants/data-type.constants';
 import { InputTypeConstants } from '../../../content-type-fields/constants/input-type.constants';
 import { InputType } from '../../../content-type-fields/models/input-type.model';
+import { consoleLogAngular } from '../../../shared/helpers/console-log-angular.helper';
 import { FeaturesService } from '../../../shared/services/features.service';
 import { FieldLogicManager } from '../../form/shared/field-logic/field-logic-manager';
 import { FieldsSettingsHelpers, FormulaHelpers, GeneralHelpers, InputFieldHelpers, LocalizationHelpers, ValidationHelpers } from '../helpers';
@@ -108,9 +109,11 @@ export class FieldsSettingsService implements OnDestroy {
             // custom-default has no inputType
             const inputType = inputTypes.find(i => i.Type === attribute.InputType);
 
-            const merged = FieldsSettingsHelpers.setDefaultFieldSettings(
-              FieldsSettingsHelpers.mergeSettings<FieldSettings>(attribute.Metadata, currentLanguage, defaultLanguage),
-            );
+            const mergeRaw = FieldsSettingsHelpers.mergeSettings<FieldSettings>(attribute.Metadata, currentLanguage, defaultLanguage);
+            // Sometimes the metadata doesn't have the input type (empty string), so we'll add the attribute.InputType just in case...
+            mergeRaw.InputType = attribute.InputType;
+            const merged = FieldsSettingsHelpers.setDefaultFieldSettings(mergeRaw);
+            consoleLogAngular('merged', JSON.parse(JSON.stringify(merged)));
 
             // run formulas
             const formulaResult = this.runFormulas(entityGuid, entityId, attribute.Name, formValues, inputType, merged, itemHeader);
@@ -136,6 +139,7 @@ export class FieldsSettingsService implements OnDestroy {
             // update settings with respective FieldLogics
             const logic = FieldLogicManager.singleton().get(attribute.InputType);
             const fixed = logic?.update(calculated, value, this.eavService.eavConfig, debugEnabled) ?? calculated;
+            consoleLogAngular('calculated', JSON.parse(JSON.stringify(calculated)));
 
             // important to compare with undefined because null is allowed value
             if (!slotIsEmpty && !disabledBecauseTranslations && value !== undefined && formulaValue !== undefined) {
