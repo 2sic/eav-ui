@@ -9,8 +9,11 @@ type ButtonSetConfig = Record<WysiwygMode, boolean>;
 const NoButtons = ''; // must be empty string
 
 const Bs1Intro: ButtonSet = {
-  default: ` ${ToolbarModeToggle} undo redo pastetext`,
-  advanced: ` ${ToolbarModeToggle} undo pastetext`,
+  // #v1500-not-ready
+  // default: ` ${ToolbarModeToggle} undo redo pastetext`,
+  // advanced: ` ${ToolbarModeToggle} undo pastetext`,
+  default: `  undo redo pastetext paste removeformat`,
+  advanced: ` undo redo pastetext paste removeformat`,
   text: ` ${ToolbarModeToggle} undo redo pastetext paste removeformat`,
   media: ` ${ToolbarModeToggle} undo pastimage-todo `  // TODO: create pasteimage
 };
