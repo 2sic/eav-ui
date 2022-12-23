@@ -1,8 +1,9 @@
 import { AfterViewInit, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
 import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/features.service';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, share } from 'rxjs';
 import { AdamItem } from '../../../../../../../edit-types';
-import { FeaturesConstants, WrappersConstants } from '../../../shared/constants';
+import { WrappersConstants } from '../../../shared/constants';
 import { DropzoneDraggingHelper } from '../../../shared/helpers';
 import { EavService, EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
@@ -44,7 +45,7 @@ export class HyperlinkLibraryExpandableWrapperComponent extends BaseFieldCompone
     super.ngOnInit();
     this.open$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
     this.adamItems$ = new BehaviorSubject<AdamItem[]>([]);
-    const showAdamSponsor$ = this.featuresService.isEnabled$(FeaturesConstants.NoSponsoredByToSic).pipe(
+    const showAdamSponsor$ = this.featuresService.isEnabled$(FeatureNames.NoSponsoredByToSic).pipe(
       map(isEnabled => !isEnabled),
       distinctUntilChanged(),
     );

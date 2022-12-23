@@ -2,7 +2,7 @@ import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { TranslateMenuDialogData, TranslateMenuDialogTemplateVars } from '../translate-menu-dialog/translate-menu-dialog.models';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
-import { FeaturesConstants, TranslationLink, TranslationLinks } from '../../../../shared/constants';
+import { TranslationLink, TranslationLinks } from '../../../../shared/constants';
 import { EavService, FieldsTranslateService } from '../../../../shared/services';
 import { ItemService, LanguageInstanceService, LanguageService } from '../../../../shared/store/ngrx-data';
 import { TranslationStateCore } from '../translate-menu/translate-menu.models';
@@ -11,6 +11,7 @@ import { findI18nKey, getTemplateLanguages, getTemplateLanguagesWithContent } fr
 import { MatSnackBar} from '@angular/material/snack-bar';
 import { SnackBarWarningDemoComponent } from '../snack-bar-warning-demo/snack-bar-warning-demo.component';
 import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/features.service';
+import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
 
 @Component({
   selector: 'app-translate-from-menu-dialog',
@@ -45,7 +46,7 @@ export class TranslateFromMenuDialogComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.isTranslateWithGoogleFeatureEnabled = this.featuresService.isEnabled(FeaturesConstants.EditUiTranslateWithGoogle);
+    this.isTranslateWithGoogleFeatureEnabled = this.featuresService.isEnabled(FeatureNames.EditUiTranslateWithGoogle);
     if (this.isTranslateWithGoogleFeatureEnabled) {
       this.snackBar.openFromComponent(SnackBarWarningDemoComponent);
       this.dialogRef.afterClosed().subscribe(() => {

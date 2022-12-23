@@ -2,12 +2,12 @@ import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
+import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
 import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/features.service';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, startWith, Subscription } from 'rxjs';
 import { AdamConfig, AdamItem, DropzoneConfigExt } from '../../../../../../../../edit-types';
 import { eavConstants } from '../../../../../shared/constants/eav.constants';
 import { EditForm } from '../../../../../shared/models/edit-form.model';
-import { FeaturesConstants } from '../../../../shared/constants';
 import { FileTypeHelpers, UrlHelpers } from '../../../../shared/helpers';
 import { AdamService, EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../../shared/services';
 import { AdamCacheService, LinkCacheService } from '../../../../shared/store/ngrx-data';
@@ -71,7 +71,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
     const entityGuid = this.config.entityGuid;
     const field = this.config.fieldName;
     this.url = this.dnnContext.$2sxc.http.apiUrl(`app/auto/data/${contentType}/${entityGuid}/${field}`);
-    this.pasteClipboardImage = this.featuresService.isEnabled(FeaturesConstants.PasteImageFromClipboard);
+    this.pasteClipboardImage = this.featuresService.isEnabled(FeatureNames.PasteImageFromClipboard);
 
     // run inside zone to detect changes when called from custom components
     this.config.adam = {

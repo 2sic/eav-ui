@@ -3,4 +3,10 @@
 
 export const FeatureNames = {
   AppSyncWithSiteFiles: 'AppSyncWithSiteFiles',
+  WysiwygPasteFormatted: 'WysiwygPasteFormatted',
+  PasteImageFromClipboard: 'PasteImageFromClipboard',
+  EditUiShowNotes: 'EditUiShowNotes',
+  EditUiShowMetadataFor: 'EditUiShowMetadataFor',
+  NoSponsoredByToSic: 'NoSponsoredByToSic',
+  EditUiTranslateWithGoogle: 'EditUiTranslateWithGoogle',
 };

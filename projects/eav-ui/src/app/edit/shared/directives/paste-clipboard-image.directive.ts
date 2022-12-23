@@ -1,8 +1,8 @@
 import { Directive, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
+import { FeatureNames } from '../../../features/feature-names';
 import { consoleLogAngular } from '../../../shared/helpers/console-log-angular.helper';
 import { FeaturesService } from '../../../shared/services/features.service';
 import { FieldConfigSet } from '../../form/builder/fields-builder/field-config-set.model';
-import { FeaturesConstants } from '../constants';
 import { ElementEventListener, PasteClipboardImageEventDetail } from '../models';
 
 @Directive({ selector: '[appPasteClipboardImage]' })
@@ -14,7 +14,7 @@ export class PasteClipboardImageDirective implements OnInit, OnDestroy {
   constructor(private elementRef: ElementRef, private featuresService: FeaturesService) { }
 
   ngOnInit() {
-    if (!this.featuresService.isEnabled(FeaturesConstants.PasteImageFromClipboard)) { return; }
+    if (!this.featuresService.isEnabled(FeatureNames.PasteImageFromClipboard)) { return; }
 
     switch (this.elementType) {
       case 'input':
