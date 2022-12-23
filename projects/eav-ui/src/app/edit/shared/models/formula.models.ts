@@ -109,7 +109,6 @@ export interface FormulaV1CtxCulture {
 }
 
 export interface FormulaV1CtxFeatures {
-  get(name: string): Feature;
   isEnabled(name: string): boolean;
 }
 

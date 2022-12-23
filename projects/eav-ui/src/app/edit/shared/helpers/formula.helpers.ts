@@ -150,9 +150,6 @@ export class FormulaHelpers {
             },
             debug: debugEnabled,
             features: {
-              get(name: string): Feature {
-                return featureService.getFeature(name);
-              },
               isEnabled(name: string): boolean {
                 return featureService.isFeatureEnabled(name);
               },
