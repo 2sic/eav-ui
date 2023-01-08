@@ -81,7 +81,9 @@ export class FieldsTranslateService {
     this.http.post(`https://translation.googleapis.com/language/translate/v2?key=${apiKeyInfo.ApiKey }`, translationData)
       .pipe(tap(
         (response: any) => {
-          this.addItemAttributeValueHelper(fieldName, response.data.translations[0].translatedText, currentLanguage, false);
+          let elem = document.createElement("textarea");
+          elem.innerHTML = response.data.translations[0].translatedText;
+          this.addItemAttributeValueHelper(fieldName, elem.value, currentLanguage, false);
         }
       )).subscribe();
   }
