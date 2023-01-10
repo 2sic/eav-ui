@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { tap } from 'rxjs';
 import { EavService, FieldsSettingsService } from '.';
+import { DialogContextApiKeyTypes } from '../../../shared/constants/eav.constants';
 import { consoleLogAngular } from '../../../shared/helpers/console-log-angular.helper';
 import { FieldLogicManager } from '../../form/shared/field-logic/field-logic-manager';
 import { InputFieldHelpers, LocalizationHelpers } from '../helpers';
@@ -57,7 +58,7 @@ export class FieldsTranslateService {
    */
   autoTranslate(fieldNames: string[], autoTranslateLanguageKey: string, showAlert: boolean, areAllChecksKnown: boolean = false): void {
     let textsForTranslation: string[] = [];
-    const apiKeyInfo = this.eavService.eavConfig.dialogContext.ApiKeys.find(x => x.NameId === "google-translate");
+    const apiKeyInfo = this.eavService.eavConfig.dialogContext.ApiKeys.find(x => x.NameId === DialogContextApiKeyTypes.GoogleTranslate);
     const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
     const attributes = this.itemService.getItemAttributes(this.entityGuid);
     fieldNames.forEach(field => {
@@ -169,7 +170,7 @@ export class FieldsTranslateService {
    * Auto-translates all field that have auto-translate enabled and are not empty, empty ones are unlocked.
    */
   autoTranslateMany(autoTranslateLanguageKey: string): void {
-    if (this.eavService.eavConfig.dialogContext.ApiKeys.find(x => x.NameId === "google-translate").IsDemo)
+    if (this.eavService.eavConfig.dialogContext.ApiKeys.find(x => x.NameId === DialogContextApiKeyTypes.GoogleTranslate).IsDemo)
       alert(`This translation is a demo. Please provide your own Google Translate API key in the EAV configuration.`);
     const attributes = this.itemService.getItemAttributes(this.entityGuid);
     // fields that have auto-translate enabled and are not empty
