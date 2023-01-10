@@ -1,5 +1,5 @@
-import { NgxMatDatetimePickerModule} from '@angular-material-components/datetime-picker';
-import { MatDayjsDateAdapter, NgxMatDayjsDatetimeAdapter, MatDayjsModule, MatDayjsDateModule, NgxMatDayjsModule, NgxMatDayjsDatetimeModule, MAT_DAYJS_DATE_ADAPTER_OPTIONS, NGX_MAT_DAYJS_DATETIME_ADAPTER_OPTIONS} from './shared/date-adapters/date-adapter-api'
+import { NgxMatDatetimePickerModule } from '@angular-material-components/datetime-picker';
+import { MatDayjsDateAdapter, NgxMatDayjsDatetimeAdapter, MatDayjsModule, MatDayjsDateModule, NgxMatDayjsModule, NgxMatDayjsDatetimeModule, MAT_DAYJS_DATE_ADAPTER_OPTIONS, NGX_MAT_DAYJS_DATETIME_ADAPTER_OPTIONS } from './shared/date-adapters/date-adapter-api'
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { CommonModule } from '@angular/common';
@@ -95,7 +95,7 @@ import { ChangeAnchorTargetDirective, PasteClipboardImageDirective } from './sha
 import { AdamService, EavService, EntityService, LoadIconsService, QueryService, ScriptsLoaderService } from './shared/services';
 import { FeaturesModule } from "../features/features.module";
 import { Dayjs } from 'dayjs';
-import { TranslateFromMenuDialogComponent } from './form/wrappers/localization-wrapper/translate-from-menu-dialog/translate-from-menu-dialog.component';
+import { AutoTranslateMenuDialogComponent } from './form/wrappers/localization-wrapper/auto-translate-menu-dialog/auto-translate-menu-dialog.component';
 import { SnackBarWarningDemoComponent } from './form/wrappers/localization-wrapper/snack-bar-warning-demo/snack-bar-warning-demo.component';
 import { AutoTranslateDisabledWarningDialog } from './form/wrappers/localization-wrapper/auto-translate-disabled-warning-dialog/auto-translate-disabled-warning-dialog.component';
 
@@ -145,7 +145,7 @@ import { AutoTranslateDisabledWarningDialog } from './form/wrappers/localization
         EntityTranslateMenuComponent,
         TranslateMenuComponent,
         TranslateMenuDialogComponent,
-        TranslateFromMenuDialogComponent,
+        AutoTranslateMenuDialogComponent,
         AutoTranslateDisabledWarningDialog,
         EntityExpandableWrapperComponent,
         EntityDefaultListComponent,
