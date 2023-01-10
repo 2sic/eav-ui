@@ -8,7 +8,7 @@ import { EavService, FieldsSettingsService, FieldsTranslateService, FormsStateSe
 import { LanguageInstanceService } from '../../../../shared/store/ngrx-data';
 import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
 import { AutoTranslateDisabledWarningDialog } from '../auto-translate-disabled-warning-dialog/auto-translate-disabled-warning-dialog.component';
-import { TranslateFromMenuDialogComponent } from '../translate-from-menu-dialog/translate-from-menu-dialog.component';
+import { AutoTranslateMenuDialogComponent } from '../auto-translate-menu-dialog/auto-translate-menu-dialog.component';
 import { TranslateMenuDialogComponent } from '../translate-menu-dialog/translate-menu-dialog.component';
 import { TranslateMenuDialogData } from '../translate-menu-dialog/translate-menu-dialog.models';
 import { TranslateMenuHelpers } from './translate-menu.helpers';
@@ -88,7 +88,7 @@ export class TranslateMenuComponent implements OnInit {
     this.openDialog(translationState, TranslateMenuDialogComponent);
   }
 
-  openTranslateFromMenuDialog(translationState: TranslationState): void {
+  openAutoTranslateMenuDialog(translationState: TranslationState): void {
     if (this.fieldsSettingsService.getFieldSettings(this.config.fieldName).DisableAutoTranslation) {
       this.dialog.open(AutoTranslateDisabledWarningDialog, {
         autoFocus: false,
@@ -98,9 +98,9 @@ export class TranslateMenuComponent implements OnInit {
         width: '350px',
       });
     } else {
-      this.openDialog(translationState, TranslateFromMenuDialogComponent);
+      this.openDialog(translationState, AutoTranslateMenuDialogComponent);
     }
-    
+
   }
 
   private openDialog(translationState: TranslationState, component: any): void {

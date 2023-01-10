@@ -50,8 +50,8 @@
   "LangMenu": {
     "Translate": "Prevedi",
     "TranslateAll": "Prevedi sve",
-    "TranslateAllFrom": "Prevedi sve iz",
-    "TranslateFrom": "Prevedi iz",
+    "AutoTranslateAll": "Prevedi sve automatski",
+    "AutoTranslate": "Automatski prevedi",
     "NoTranslate": "Ne prevodi",
     "NoTranslateAll": "Ne prevodi sve",
     "Link": "Link to other language",
@@ -86,7 +86,16 @@
         "Body": "Link languages together to use the same editable value",
         "Subtitle": "Language to share with"
       },
-      "PickLanguageIntro": "Only languages with content can be selected."
+      "PickLanguageIntro": "Only languages with content can be selected.",
+      "AutoTranslateAll": {
+        "Title": "Automatski prijevod svih polja koristeći Google Translate",
+        "Body": "Samo polja koja nisu već prevedena će biti automatski prevedena. Neće sva polja biti prevedena, pogledajte <a href='https://2sxc.org/translate' target='_blank'>dokument</a>.",
+        "NoContent": "nema sadržaja",
+        "AllTranslatableFields": "sva prevodiva polja",
+        "Of": "od",
+        "TranslatableFields": "prevodivih polja",
+        "Empty": "prazno"
+      }
     }
   },
   "Errors": {
