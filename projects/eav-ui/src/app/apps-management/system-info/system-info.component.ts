@@ -34,8 +34,8 @@ export class SystemInfoComponent extends BaseComponent implements OnInit, OnDest
   private loading$: BehaviorSubject<boolean>;
 
   constructor(
-    router: Router,
-    route: ActivatedRoute,
+    protected router: Router,
+    protected route: ActivatedRoute,
     private zoneService: ZoneService,
     private snackBar: MatSnackBar,
     private dialogService: DialogService,
@@ -52,7 +52,7 @@ export class SystemInfoComponent extends BaseComponent implements OnInit, OnDest
     this.buildTemplateVars();
     this.getSystemInfo();
     this.getLanguages();
-    this.subscription.add(this.refreshOnChildClosed().subscribe(() => {
+    this.subscription.add(this.refreshOnChildClosedDeep().subscribe(() => {
       this.buildTemplateVars();
       this.getSystemInfo();
       this.getLanguages();

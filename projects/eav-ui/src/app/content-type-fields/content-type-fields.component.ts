@@ -3,12 +3,13 @@ import { ColumnApi, FilterChangedEvent, GridApi, GridOptions, GridReadyEvent, IC
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { BehaviorSubject, filter, forkJoin, map, of, pairwise, startWith, Subscription } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
+import { BehaviorSubject, forkJoin, of } from 'rxjs';
 import { ContentType } from '../app-administration/models/content-type.model';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { GoToMetadata } from '../metadata';
 import { GoToPermissions } from '../permissions/go-to-permissions';
+import { BaseComponent } from '../shared/components/base-component/base.component';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
 import { eavConstants } from '../shared/constants/eav.constants';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
@@ -31,7 +32,7 @@ import { ContentTypesFieldsService } from './services/content-types-fields.servi
   templateUrl: './content-type-fields.component.html',
   styleUrls: ['./content-type-fields.component.scss'],
 })
-export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
+export class ContentTypeFieldsComponent extends BaseComponent implements OnInit, OnDestroy {
   contentType$ = new BehaviorSubject<ContentType>(undefined);
   fields$ = new BehaviorSubject<Field[]>(undefined);
   gridOptions = this.buildGridOptions();
@@ -42,26 +43,27 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
   private columnApi: ColumnApi;
   private rowDragSuppressed = false;
   private contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
-  private subscription = new Subscription();
 
   constructor(
+    protected router: Router,
+    protected route: ActivatedRoute,
     private dialogRef: MatDialogRef<ContentTypeFieldsComponent>,
-    private route: ActivatedRoute,
-    private router: Router,
     private contentTypesService: ContentTypesService,
     private contentTypesFieldsService: ContentTypesFieldsService,
     private snackBar: MatSnackBar,
-  ) { }
+  ) {
+    super(router, route);
+   }
 
   ngOnInit() {
     this.fetchFields();
-    this.refreshOnChildClosed();
+    this.subscription.add(this.refreshOnChildClosedShallow().subscribe(() => { this.fetchFields(); }));
   }
 
   ngOnDestroy() {
     this.contentType$.complete();
     this.fields$.complete();
-    this.subscription.unsubscribe();
+    super.ngOnDestroy();
   }
 
   closeDialog() {
@@ -237,20 +239,6 @@ export class ContentTypeFieldsComponent implements OnInit, OnDestroy {
       `Metadata for Field: ${field.StaticName} (${field.Id})`,
     );
     this.router.navigate([url], { relativeTo: this.route });
-  }
-
-  private refreshOnChildClosed() {
-    this.subscription.add(
-      this.router.events.pipe(
-        filter(event => event instanceof NavigationEnd),
-        startWith(!!this.route.snapshot.firstChild),
-        map(() => !!this.route.snapshot.firstChild),
-        pairwise(),
-        filter(([hadChild, hasChild]) => hadChild && !hasChild),
-      ).subscribe(() => {
-        this.fetchFields();
-      })
-    );
   }
 
   private buildGridOptions(): GridOptions {

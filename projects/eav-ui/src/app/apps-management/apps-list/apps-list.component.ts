@@ -34,14 +34,14 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
   private refreshApps$ = new Subject<void>();
 
   constructor(
-    router: Router,
-    route: ActivatedRoute,
+    protected router: Router,
+    protected route: ActivatedRoute,
     private appsListService: AppsListService,
     private snackBar: MatSnackBar,
     private context: Context,
     private featuresService: FeaturesService,
   ) {
-    super(router, route)
+    super(router, route);
   }
 
   ngOnInit(): void {
@@ -50,7 +50,7 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
       switchMap(() => this.appsListService.getAll().pipe(catchError(() => of(undefined)))),
       share(),
     );
-    this.subscription.add(this.refreshOnChildClosed().subscribe(() => { this.refreshApps$.next(); }));
+    this.subscription.add(this.refreshOnChildClosedDeep().subscribe(() => { this.refreshApps$.next(); }));
     this.isAddFromFolderEnabled = this.featuresService.isEnabled(FeatureNames.AppSyncWithSiteFiles);
   }
 
