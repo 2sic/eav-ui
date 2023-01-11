@@ -78,7 +78,7 @@ export class LicenseInfoComponent extends BaseComponent implements OnInit, OnDes
       autoFocus: false,
       data,
       viewContainerRef: this.viewContainerRef,
-      width: '650px',
+      width: '600px',
     });
     this.changeDetectorRef.markForCheck();
   }

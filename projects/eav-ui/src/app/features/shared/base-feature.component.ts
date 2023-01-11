@@ -24,7 +24,7 @@ export class BaseFeatureComponent implements OnInit {
       autoFocus: false,
       data: this.featureNameId,
       viewContainerRef: this.viewContainerRef,
-      width: '650px',
+      width: '600px',
     });
   }
 }
