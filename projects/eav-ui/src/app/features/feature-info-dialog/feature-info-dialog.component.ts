@@ -31,8 +31,11 @@ export class FeatureInfoDialogComponent implements OnInit {
     this.snackBar.open('Copied to clipboard', null, { duration: 2000 });
   }
 
+  findOutMore(link: string): void { 
+    window.open(link, '_blank');
+  }
+
   closeDialog(): void {
     this.dialogRef.close();
   }
-
 }

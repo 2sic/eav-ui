@@ -2,9 +2,6 @@
   <div mat-dialog-title>
     <div class="dialog-title-box">
       <div>{{ feature.Name }}</div>
-      <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
-        <mat-icon>close</mat-icon>
-      </button>
     </div>
   </div>
 
@@ -23,27 +20,16 @@
         <span [tippy]="id" (click)="copyToClipboard(id)">{{ id }}</span>
       </div>
     </div>
-    <!-- <div class="info-row" *ngIf="feature.Guid as guid">
-      <div class="info-row__label">GUID</div>
-      <div class="info-row__value click">
-        <span [tippy]="guid" (click)="copyToClipboard(guid)">{{ guid }}</span>
-      </div>
-    </div>
-    <div class="info-row"
-      *ngIf="(feature.Security.Impact + ': ' + feature.Security.Message) as security">
-      <div class="info-row__label">{{ "Features.SecurityRating" | translate }}</div>
-      <div class="info-row__value">
-        <span>{{ security }}</span>
-      </div>
-    </div> -->
-    <!-- <div class="info-row" *ngIf="feature.libraryLink as link">
-      <div class="info-row__label">More info</div>
-      <div class="info-row__value click">
-        <a [href]="link"></a>
-      </div>
-    </div> -->
   </div>
 
-  
+  <div class="dialog-component-actions">
+    <button *ngIf="feature.Link as link" mat-raised-button class="dialog-component-button" color="accent" (click)="findOutMore(link)">
+      <mat-icon>open_in_new</mat-icon>
+      {{ "Features.FindOutMore" | translate }}
+    </button>
+    <button mat-raised-button class="dialog-component-button" (click)="closeDialog()">
+      {{ "Features.Close" | translate }}
+    </button>
+  </div>
 
 </div>

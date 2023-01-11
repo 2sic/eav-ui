@@ -254,6 +254,8 @@
     "SecurityRating": "Security rating",
     "FeatureNotActivated": "This cool feature is not enabled",
     "ClickToFindOutMore": "Click to find out more...",
-    "Tooltip": "Feature: {{Name}} ({{NameId}})"
+    "FindOutMore": "Find out more",
+    "Tooltip": "Feature: {{Name}} ({{NameId}})",
+    "Close": "Close"
   }
 }

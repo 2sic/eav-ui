@@ -21,6 +21,10 @@ export class FeatureDetailsDialogComponent {
     this.dialogRef.close();
   }
 
+  findOutMore(link: string): void {
+    window.open(link, '_blank');
+  }
+
   copyToClipboard(text: string): void {
     copyToClipboard(text);
     this.snackBar.open('Copied to clipboard', null, { duration: 2000 });
