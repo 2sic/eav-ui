@@ -23,7 +23,7 @@
         <span [tippy]="id" (click)="copyToClipboard(id)">{{ id }}</span>
       </div>
     </div>
-    <div class="info-row" *ngIf="feature.Guid as guid">
+    <!-- <div class="info-row" *ngIf="feature.Guid as guid">
       <div class="info-row__label">GUID</div>
       <div class="info-row__value click">
         <span [tippy]="guid" (click)="copyToClipboard(guid)">{{ guid }}</span>
@@ -35,7 +35,7 @@
       <div class="info-row__value">
         <span>{{ security }}</span>
       </div>
-    </div>
+    </div> -->
     <!-- <div class="info-row" *ngIf="feature.libraryLink as link">
       <div class="info-row__label">More info</div>
       <div class="info-row__value click">
@@ -43,4 +43,7 @@
       </div>
     </div> -->
   </div>
+
+  
+
 </div>
