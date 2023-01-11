@@ -1,4 +1,4 @@
-@import "../../../../assets/styles/variables.scss";
+@import "../../../../assets/styles/_variables.scss";
 
 .translate-menu-dialog-card {
   max-height: 99vh;
@@ -12,4 +12,5 @@
 .mat-list-item--disabled {
   cursor: default;
   color: $editUI-label-disabled-color;
+  background: $primary-color;
 }

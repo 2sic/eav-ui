@@ -1,0 +1,20 @@
+@import "../../../../assets/styles/_variables.scss";
+
+.translate-menu-dialog-card {
+  max-height: 99vh;
+  overflow-y: scroll;
+}
+
+.mat-list-item-focus {
+  background: $edit-ui-selected-option;
+}
+
+.mat-list-item-focus2 {
+  background: $edit-ui-selected-option;
+}
+
+.mat-list-item--disabled {
+  cursor: default;
+  color: $editUI-label-disabled-color;
+  background: $primary-color;
+}

@@ -53,6 +53,21 @@ export class LocalizationHelpers {
         || (languageKey === defaultLanguage && d.Value === '*'))).length > 0 : false;
   }
 
+  // Number of editable translationable fields that
+  static noEditableTranslationFields(allAttributesValues: EavValues<any>, languageKey: string, defaultLanguage: string): number {
+    return allAttributesValues ? allAttributesValues.Values.filter(eavValue =>
+      eavValue.Dimensions.find(d => (d.Value === languageKey)
+        || (languageKey === defaultLanguage && d.Value === '*'))).length : 0;
+  }
+
+  // Number of editable translationable fields that have some content
+  static noEditableTranslationableFieldsWithContent(allAttributesValues: EavValues<any>, languageKey: string, defaultLanguage: string): number {
+    return allAttributesValues ? allAttributesValues.Values.filter(eavValue =>
+      eavValue.Dimensions.find(d => (d.Value === languageKey)
+        || (languageKey === defaultLanguage && d.Value === '*')))
+      .filter(v => v.Value != "" && v.Value != null && v.Value != undefined)?.length : 0;
+  }
+
   static isReadonlyTranslationExist(allAttributesValues: EavValues<any>, languageKey: string): boolean {
     return allAttributesValues ? allAttributesValues.Values.filter(eavValue =>
       eavValue.Dimensions.find(d => d.Value === `~${languageKey}`)).length > 0 : false;

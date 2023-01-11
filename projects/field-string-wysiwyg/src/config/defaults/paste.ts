@@ -1,13 +1,13 @@
-import type { RawEditorSettings } from 'tinymce';
+import type { RawEditorOptions } from 'tinymce';
 import { Adam, AdamItem, Dropzone } from '../../../../edit-types';
 import { consoleLogWebpack } from '../../../../field-custom-gps/src/shared/console-log-webpack.helper';
 
 export class DefaultPaste {
 
   /** Paste formatted text, e.g. text copied from MS Word */
-  static formattedText: RawEditorSettings = {
+  static formattedText: RawEditorOptions = {
     paste_as_text: false,
-    paste_enable_default_filters: true,
+    // paste_enable_default_filters: true,
     paste_create_paragraphs: true,
     paste_create_linebreaks: false,
     paste_force_cleanup_wordpaste: true,
@@ -34,51 +34,52 @@ export class DefaultPaste {
   };
 
   /** Paste image */
-  static images(dropzone: Dropzone, adam: Adam): RawEditorSettings {
-    const imageUploadSettings: RawEditorSettings = {
+  static images(dropzone: Dropzone, adam: Adam): RawEditorOptions {
+    const imageUploadSettings: RawEditorOptions = {
       automatic_uploads: true,
       images_reuse_filename: true,
       paste_data_images: true,
-      paste_filter_drop: false,
+      // paste_filter_drop: false,
       paste_block_drop: false,
-      images_upload_handler: (blobInfo, success, failure) => {
-        this.imagesUploadHandler(blobInfo, success, failure, dropzone, adam);
-      },
+      images_upload_handler: (blobInfo, progress) => this.imagesUploadHandler(blobInfo, progress, dropzone, adam)
     };
     return imageUploadSettings;
   }
 
   private static imagesUploadHandler(
-    blobInfo: Parameters<RawEditorSettings['images_upload_handler']>[0],
-    success: Parameters<RawEditorSettings['images_upload_handler']>[1],
-    failure: Parameters<RawEditorSettings['images_upload_handler']>[2],
+    blobInfo: Parameters<RawEditorOptions['images_upload_handler']>[0],
+    progress: Parameters<RawEditorOptions['images_upload_handler']>[1],
     dropzone: Dropzone,
     adam: Adam,
-  ): void {
+  ): Promise<string> {
     consoleLogWebpack('TinyMCE upload');
 
     const formData = new FormData();
     formData.append('file', blobInfo.blob(), blobInfo.filename());
 
     const dropzoneConfig = dropzone.getConfig();
-
-    fetch(dropzoneConfig.url as string, {
+    progress(0);
+    return fetch(dropzoneConfig.url as string, {
       method: 'POST',
       // mode: 'cors',
       headers: dropzoneConfig.headers,
       body: formData,
-    }).then(response =>
-      response.json()
-    ).then((response: AdamItem) => {
+    }).then(response => {
+      progress(50);
+      return response.json();
+    }).then((response: AdamItem) => {
       consoleLogWebpack('TinyMCE upload data', response);
       if (response.Error) {
         alert(`Upload failed because: ${response.Error}`);
-        return;
+        return response.Error;
       }
-      success(response.Url);
+      progress(100);
       adam.refresh();
+      //tododata... is added so onChange it can be changed to special data-cmsid attribute which containes reference id
+      return response.Url + `?tododata-cmsid=${response.ReferenceId}`;
     }).catch(error => {
       consoleLogWebpack('TinyMCE upload error:', error);
+      return error;
     });
   }
 }

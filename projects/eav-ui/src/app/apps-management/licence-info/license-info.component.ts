@@ -5,12 +5,13 @@ import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 // tslint:disable-next-line:max-line-length
 import { BehaviorSubject, catchError, filter, forkJoin, map, Observable, of, pairwise, share, startWith, Subject, Subscription, switchMap, tap, timer } from 'rxjs';
-import { BaseMainComponent } from '../../shared/components/base-component/baseMain.component';
+import { FeatureState } from '../../features/models';
+import { BaseComponent } from '../../shared/components/base-component/base.component';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
-import { Feature, FeatureState } from '../models/feature.model';
+import { Feature } from '../../features/models/feature.model';
 import { License } from '../models/license.model';
 import { FeaturesConfigService } from '../services/features-config.service';
 import { GoToRegistration } from '../sub-dialogs/registration/go-to-registration';
@@ -26,7 +27,7 @@ import { FeaturesStatusParams } from './features-status/features-status.models';
   templateUrl: './license-info.component.html',
   styleUrls: ['./license-info.component.scss'],
 })
-export class LicenseInfoComponent extends BaseMainComponent implements OnInit, OnDestroy {
+export class LicenseInfoComponent extends BaseComponent implements OnInit, OnDestroy {
   @ViewChild(AgGridAngular) private gridRef?: AgGridAngular;
 
   licenses$: Observable<License[]>;
@@ -36,13 +37,13 @@ export class LicenseInfoComponent extends BaseMainComponent implements OnInit, O
   private refreshLicenses$ = new Subject<void>();
 
   constructor(
-    router: Router,
-    route: ActivatedRoute,
+    protected router: Router,
+    protected route: ActivatedRoute,
     private featuresConfigService: FeaturesConfigService,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef
-  ) { 
+  ) {
     super(router, route);
   }
 
@@ -53,7 +54,7 @@ export class LicenseInfoComponent extends BaseMainComponent implements OnInit, O
       tap(() => this.disabled$.next(false)),
       share(),
     );
-    this.subscription.add(this.refreshOnChildClosed().subscribe(() => { this.refreshLicenses$.next(); }));
+    this.subscription.add(this.refreshOnChildClosedDeep().subscribe(() => { this.refreshLicenses$.next(); }));
   }
 
   ngOnDestroy(): void {

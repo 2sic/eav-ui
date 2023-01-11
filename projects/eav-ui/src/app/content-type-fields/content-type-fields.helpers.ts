@@ -13,3 +13,17 @@ export function calculateTypeIcon(typeName: string): string {
   };
   return typeIconMap[typeName] ?? 'device_unknown';
 }
+
+export function calculateTypeLabel(typeName: string): string {
+  const typeLabelMap: Record<string, string> = {
+    [DataTypeConstants.Boolean]: 'Boolean (yes/no)',
+    [DataTypeConstants.Custom]: 'Custom - ui-tools or custom types',
+    [DataTypeConstants.DateTime]: 'Date and/or time',
+    [DataTypeConstants.Empty]: 'Empty - for form-titles etc.',
+    [DataTypeConstants.Entity]: 'Entity (other content-items)',
+    [DataTypeConstants.Hyperlink]: 'Link / file reference',
+    [DataTypeConstants.Number]: 'Number',
+    [DataTypeConstants.String]: 'Text / string',
+  };
+  return typeLabelMap[typeName] ?? 'device_unknown';
+}

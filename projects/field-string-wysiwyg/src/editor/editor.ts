@@ -1,4 +1,5 @@
 import 'tinymce/tinymce'; // Important! tinymce has to be imported before themes and plugins
+import 'tinymce/models/dom'
 
 import type { Subscription } from 'rxjs';
 import 'tinymce/icons/default';
@@ -6,26 +7,22 @@ import 'tinymce/plugins/anchor';
 import 'tinymce/plugins/autolink';
 import 'tinymce/plugins/charmap';
 import 'tinymce/plugins/code';
-import 'tinymce/plugins/hr';
 import 'tinymce/plugins/image';
 import 'tinymce/plugins/link';
 import 'tinymce/plugins/lists';
 import 'tinymce/plugins/media';
 import 'tinymce/plugins/nonbreaking';
-import 'tinymce/plugins/paste';
 import 'tinymce/plugins/searchreplace';
-import 'tinymce/plugins/tabfocus';
 import 'tinymce/plugins/table';
-import 'tinymce/plugins/textpattern';
 import 'tinymce/themes/silver';
 // tslint:disable-next-line:no-duplicate-imports
-import type { Editor } from 'tinymce/tinymce';
-import { FeaturesConstants } from '../../../eav-ui/src/app/edit/shared/constants';
+import type { Editor, RawEditorOptions } from 'tinymce/tinymce';
 import { EavWindow } from '../../../eav-ui/src/app/shared/models/eav-window.model';
 import { Connector, EavCustomInputField, WysiwygReconfigure } from '../../../edit-types';
 import { consoleLogWebpack } from '../../../field-custom-gps/src/shared/console-log-webpack.helper';
 import { TinyMceButtons } from '../config/buttons';
 import { TinyMceConfigurator } from '../config/tinymce-configurator';
+import { RawEditorOptionsWithModes, WysiwygInline } from '../config/tinymce-helper-types';
 import { TinyMceTranslations } from '../config/translations';
 import { attachAdam } from '../connector/adam';
 import { buildTemplate } from '../shared/helpers';
@@ -33,10 +30,10 @@ import * as template from './editor.html';
 import * as styles from './editor.scss';
 import { fixMenuPositions } from './fix-menu-positions.helper';
 import * as skinOverrides from './skin-overrides.scss';
+// import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
 
 declare const window: EavWindow;
 export const wysiwygEditorTag = 'field-string-wysiwyg-dialog';
-const extWhitelist = '.doc, .docx, .dot, .xls, .xlsx, .ppt, .pptx, .pdf, .txt, .htm, .html, .md, .rtf, .xml, .xsl, .xsd, .css, .zip, .csv';
 const tinyMceBaseUrl = '../../system/field-string-wysiwyg';
 
 export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomInputField<string> {
@@ -77,7 +74,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
     this.querySelector<HTMLDivElement>('.tinymce-container').classList.add(this.containerClass);
     this.querySelector<HTMLDivElement>('.tinymce-toolbar-container').classList.add(this.toolbarContainerClass);
     this.classList.add(this.mode === 'inline' ? 'inline-wysiwyg' : 'full-wysiwyg');
-    this.pasteClipboardImage = this.connector._experimental.isFeatureEnabled(FeaturesConstants.PasteImageFromClipboard);
+    this.pasteClipboardImage = this.connector._experimental.isFeatureEnabled('PasteImageFromClipboard');
 
     const tinyLang = TinyMceTranslations.fixTranslationKey(this.connector._experimental.translateService.currentLang);
     this.connector.loadScript(
@@ -102,7 +99,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
       this.containerClass,
       this.toolbarContainerClass,
       this.mode === 'inline',
-      (editor: Editor) => { this.tinyMceSetup(editor); },
+      (editor: Editor) => { this.tinyMceSetup(editor, tinyOptions); },
     );
     this.firstInit = true;
     this.configurator.addTranslations();
@@ -111,12 +108,12 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   }
 
   /** This will initialized an instance of an editor. Everything else is kind of global. */
-  private tinyMceSetup(editor: Editor): void {
+  private tinyMceSetup(editor: Editor, rawEditorOptions: RawEditorOptionsWithModes): void {
     this.editor = editor;
     editor.on('init', _event => {
       consoleLogWebpack(`${wysiwygEditorTag} TinyMCE initialized`, editor);
       this.reconfigure?.editorOnInit?.(editor);
-      TinyMceButtons.registerAll(this, editor, this.connector._experimental.adam);
+      new TinyMceButtons({ field: this, editor, adam: this.connector._experimental.adam, options: rawEditorOptions }).register();
       if (!this.reconfigure?.disableAdam) {
         attachAdam(editor, this.connector._experimental.adam);
       }
@@ -136,7 +133,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
           }
         }),
       );
-      if (this.mode !== 'inline') {
+      if (this.mode !== WysiwygInline) {
         setTimeout(() => { editor.focus(false); }, 100); // If not inline mode always focus on init
       } else {
         if (!this.firstInit) { setTimeout(() => { editor.focus(false); }, 100); } // If is inline mode skip focus on first init
@@ -156,16 +153,23 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
       this.clearData();
     });
 
+    // called before actual image upload
+    // this is needed so drag and drop will function even if pasteClipboardImage feature is false
+    editor.on('drop', _event => {
+      editor.options.set("paste_data_images", true);
+    });
+
+    // called before actual image upload
+    // this is needed so paste will only work depending on pasteClipboardImage feature
+    editor.on('paste', _event => {
+        editor.options.set("paste_data_images", this.pasteClipboardImage);
+    });
+
     editor.on('focus', _event => {
       this.classList.add('focused');
       consoleLogWebpack(`${wysiwygEditorTag} TinyMCE focused`, _event);
       if (!this.reconfigure?.disableAdam) {
         attachAdam(editor, this.connector._experimental.adam);
-      }
-      if (this.pasteClipboardImage) {
-        // When tiny is in focus, let it handle image uploads by removing image types from accepted files in dropzone.
-        // Files will be handled by dropzone
-        this.connector._experimental.dropzone.setConfig({ acceptedFiles: extWhitelist });
       }
       if (this.mode === 'inline') {
         this.connector._experimental.setFocused(true);
@@ -175,10 +179,6 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
     editor.on('blur', _event => {
       this.classList.remove('focused');
       consoleLogWebpack(`${wysiwygEditorTag} TinyMCE blurred`, _event);
-      if (this.pasteClipboardImage) {
-        // Dropzone will handle image uploads again
-        this.connector._experimental.dropzone.setConfig({ acceptedFiles: '' });
-      }
       if (this.mode === 'inline') {
         this.connector._experimental.setFocused(false);
       }
@@ -191,8 +191,21 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   }
 
   private saveValue(): void {
-    const newContent = this.editor.getContent();
+    let newContent = this.editor.getContent();
     if (newContent.includes('<img src="data:image')) { return; }
+
+    // this is necessary for adding data-cmsid attribute to image attributes
+    if (newContent.includes("?tododata-cmsid=")) {
+      let imageStrings = newContent.split("?tododata-cmsid=file:");
+      newContent = "";
+      imageStrings.forEach((x, i) => {
+        if (i != imageStrings.length - 1)
+          newContent += x + '" data-cmsid="file:';
+        else
+          newContent += x;
+      });
+      this.editor.setContent(newContent);
+    }
 
     this.editorContent = newContent;
     this.connector.data.update(this.editorContent);

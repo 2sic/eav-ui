@@ -5,7 +5,7 @@ import { WrappersConstants } from '../../../../shared/constants/wrappers.constan
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { EavService, FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
-import { BaseComponent } from '../../base/base.component';
+import { BaseFieldComponent } from '../../base/base-field.component';
 import { BooleanDefaultLogic } from './boolean-default-logic';
 import { BooleanDefaultTemplateVars } from './boolean-default.models';
 
@@ -17,7 +17,7 @@ import { BooleanDefaultTemplateVars } from './boolean-default.models';
 @FieldMetadata({
   wrappers: [WrappersConstants.LocalizationWrapper],
 })
-export class BooleanDefaultComponent extends BaseComponent<boolean> implements OnInit, OnDestroy {
+export class BooleanDefaultComponent extends BaseFieldComponent<boolean> implements OnInit, OnDestroy {
   templateVars$: Observable<BooleanDefaultTemplateVars>;
 
   constructor(eavService: EavService, fieldsSettingsService: FieldsSettingsService) {

@@ -1,12 +1,13 @@
 import { AfterViewInit, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
+import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/features.service';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, share } from 'rxjs';
 import { AdamItem } from '../../../../../../../edit-types';
-import { FeaturesConstants, WrappersConstants } from '../../../shared/constants';
+import { WrappersConstants } from '../../../shared/constants';
 import { DropzoneDraggingHelper } from '../../../shared/helpers';
 import { EavService, EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
-import { FeatureService } from '../../../shared/store/ngrx-data';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
-import { BaseComponent } from '../../fields/base/base.component';
+import { BaseFieldComponent } from '../../fields/base/base-field.component';
 import { ContentExpandAnimation } from '../expandable-wrapper/content-expand.animation';
 import { HyperlinkLibraryExpandableTemplateVars } from './hyperlink-library-expandable-wrapper.models';
 
@@ -17,7 +18,7 @@ import { HyperlinkLibraryExpandableTemplateVars } from './hyperlink-library-expa
   animations: [ContentExpandAnimation],
 })
 // tslint:disable-next-line:max-line-length
-export class HyperlinkLibraryExpandableWrapperComponent extends BaseComponent<null> implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
+export class HyperlinkLibraryExpandableWrapperComponent extends BaseFieldComponent<null> implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild('backdrop') private backdropRef: ElementRef;
   @ViewChild('dialog') private dialogRef: ElementRef;
@@ -35,7 +36,7 @@ export class HyperlinkLibraryExpandableWrapperComponent extends BaseComponent<nu
     private zone: NgZone,
     private editRoutingService: EditRoutingService,
     private formsStateService: FormsStateService,
-    private featureService: FeatureService,
+    private featuresService: FeaturesService,
   ) {
     super(eavService, fieldsSettingsService);
   }
@@ -44,7 +45,7 @@ export class HyperlinkLibraryExpandableWrapperComponent extends BaseComponent<nu
     super.ngOnInit();
     this.open$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
     this.adamItems$ = new BehaviorSubject<AdamItem[]>([]);
-    const showAdamSponsor$ = this.featureService.isFeatureEnabled$(FeaturesConstants.NoSponsoredByToSic).pipe(
+    const showAdamSponsor$ = this.featuresService.isEnabled$(FeatureNames.NoSponsoredByToSic).pipe(
       map(isEnabled => !isEnabled),
       distinctUntilChanged(),
     );

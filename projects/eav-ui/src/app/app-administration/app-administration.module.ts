@@ -23,6 +23,7 @@ import { ContentExportService } from '../content-export/services/content-export.
 import { ContentItemsService } from '../content-items/services/content-items.service';
 import { ContentTypesFieldsService } from '../content-type-fields/services/content-types-fields.service';
 import { CreateFileDialogModule } from '../create-file-dialog';
+import { FeaturesModule } from '../features/features.module';
 import { MetadataService } from '../permissions';
 import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
 import { Context } from '../shared/services/context';
@@ -131,6 +132,7 @@ import { WebApiComponent } from './web-api/web-api.component';
     MatMenuModule,
     MatBadgeModule,
     CreateFileDialogModule,
+    FeaturesModule,
   ],
   providers: [
     Context,

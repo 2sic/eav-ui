@@ -1,6 +1,7 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
+import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/features.service';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, fromEvent, map, Observable, share, startWith } from 'rxjs';
 import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
 import { consoleLogAngular } from '../../../../shared/helpers/console-log-angular.helper';
@@ -8,9 +9,9 @@ import { vh } from '../../../../shared/helpers/viewport.helpers';
 import { WrappersConstants } from '../../../shared/constants';
 import { DropzoneDraggingHelper, GeneralHelpers } from '../../../shared/helpers';
 import { AdamService, EavService, EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
-import { ContentTypeService, EntityCacheService, FeatureService, InputTypeService } from '../../../shared/store/ngrx-data';
+import { ContentTypeService, EntityCacheService, InputTypeService } from '../../../shared/store/ngrx-data';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
-import { BaseComponent } from '../../fields/base/base.component';
+import { BaseFieldComponent } from '../../fields/base/base-field.component';
 import { ConnectorHelper } from '../../shared/connector/connector.helper';
 import { ContentExpandAnimation } from './content-expand.animation';
 import { ExpandableWrapperTemplateVars, PreviewHeight } from './expandable-wrapper.models';
@@ -21,7 +22,7 @@ import { ExpandableWrapperTemplateVars, PreviewHeight } from './expandable-wrapp
   styleUrls: ['./expandable-wrapper.component.scss'],
   animations: [ContentExpandAnimation],
 })
-export class ExpandableWrapperComponent extends BaseComponent<string> implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
+export class ExpandableWrapperComponent extends BaseFieldComponent<string> implements FieldWrapper, OnInit, AfterViewInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @ViewChild('previewContainer') private previewContainerRef: ElementRef;
   @ViewChild('backdrop') private backdropRef: ElementRef;
@@ -41,7 +42,7 @@ export class ExpandableWrapperComponent extends BaseComponent<string> implements
     private translateService: TranslateService,
     private contentTypeService: ContentTypeService,
     private inputTypeService: InputTypeService,
-    private featureService: FeatureService,
+    private featuresService: FeaturesService,
     private editRoutingService: EditRoutingService,
     private adamService: AdamService,
     private dialog: MatDialog,
@@ -127,7 +128,7 @@ export class ExpandableWrapperComponent extends BaseComponent<string> implements
       this.translateService,
       this.contentTypeService,
       this.inputTypeService,
-      this.featureService,
+      this.featuresService,
       this.editRoutingService,
       this.adamService,
       this.dialog,

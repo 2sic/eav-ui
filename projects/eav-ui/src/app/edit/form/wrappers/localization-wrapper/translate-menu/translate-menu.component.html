@@ -17,6 +17,12 @@
           [ngClass]="{ 'menu-item-selected': data.translationState.linkType === TranslationLinks.Translate }">
           {{ 'LangMenu.Translate' | translate }}
         </button>
+        <button mat-menu-item 
+          (click)="openAutoTranslateMenuDialog(data.translationState)"
+          [ngClass]="{ 'menu-item-selected': data.translationState.linkType === TranslationLinks.Translate }">
+          {{ 'LangMenu.AutoTranslate' | translate }}
+          <app-feature-icon-indicator [featureNameId]="'EditUiTranslateWithGoogle'"></app-feature-icon-indicator>
+        </button>
         <button mat-menu-item (click)="dontTranslate()"
           [ngClass]="{ 'menu-item-selected': data.translationState.linkType === TranslationLinks.DontTranslate }">
           {{ 'LangMenu.NoTranslate' | translate }}

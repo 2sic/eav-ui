@@ -5,6 +5,7 @@ import { map, Observable, shareReplay, tap } from 'rxjs';
 import { GlobalConfigService } from '../../edit/shared/store/ngrx-data';
 import { DialogSettings } from '../../shared/models/dialog-settings.model';
 import { Context } from '../../shared/services/context';
+import { FeaturesService } from '../../shared/services/features.service';
 
 const webApiDialogRoot = 'admin/dialog/';
 
@@ -15,7 +16,10 @@ export class AppDialogConfigService {
     private context: Context,
     private dnnContext: DnnContext,
     private globalConfigService: GlobalConfigService,
-  ) { }
+    featuresService: FeaturesService,
+  ) {
+    featuresService.loadFromService(this);
+   }
 
   private dialogSettings$: Record<number, Observable<DialogSettings>> = {};
 

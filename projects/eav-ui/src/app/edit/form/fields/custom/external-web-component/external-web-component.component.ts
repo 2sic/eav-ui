@@ -4,9 +4,10 @@ import { InputTypeConstants } from '../../../../../content-type-fields/constants
 import { consoleLogAngular } from '../../../../../shared/helpers/console-log-angular.helper';
 import { EavService, EditRoutingService, FieldsSettingsService, ScriptsLoaderService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
-import { BaseComponent } from '../../base/base.component';
+import { BaseFieldComponent } from '../../base/base-field.component';
+import { CustomGpsLogic } from './custom-gps-logic';
 import { ExternalWebComponentTemplateVars } from './external-web-component.models';
-import { StringWysiwygLogic } from './external-web-components-logics';
+import { StringWysiwygLogic } from './string-wysiwyg-logic';
 
 @Component({
   selector: InputTypeConstants.ExternalWebComponent,
@@ -14,7 +15,7 @@ import { StringWysiwygLogic } from './external-web-components-logics';
   styleUrls: ['./external-web-component.component.scss'],
 })
 @FieldMetadata({})
-export class ExternalWebComponentComponent extends BaseComponent<string> implements OnInit, OnDestroy {
+export class ExternalWebComponentComponent extends BaseFieldComponent<string> implements OnInit, OnDestroy {
   templateVars$: Observable<ExternalWebComponentTemplateVars>;
 
   private loading$: BehaviorSubject<boolean>;
@@ -27,6 +28,7 @@ export class ExternalWebComponentComponent extends BaseComponent<string> impleme
   ) {
     super(eavService, fieldsSettingsService);
     StringWysiwygLogic.importMe();
+    CustomGpsLogic.importMe();
   }
 
   ngOnInit() {

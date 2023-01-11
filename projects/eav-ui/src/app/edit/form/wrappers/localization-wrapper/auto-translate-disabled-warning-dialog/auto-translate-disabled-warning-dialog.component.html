@@ -1,0 +1,13 @@
+<div class="dialog-card">
+  <div mat-dialog-title>
+    <div class="dialog-title-box">
+      <div>{{ 'LangMenu.Dialog.CantAutoTranslate' | translate }}</div>
+      <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <p class="dialog-description" *ngIf="dialogData.isAutoTranslateAll">{{'LangMenu.Dialog.NoAutoTranslatableFields' | translate }}</p>
+  <p class="dialog-description" *ngIf="!dialogData.isAutoTranslateAll">{{'LangMenu.Dialog.ThisFieldIsNotAutoTranslatable' | translate }}</p>
+</div>

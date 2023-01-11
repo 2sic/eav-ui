@@ -3,8 +3,10 @@ import { Component, HostBinding, OnDestroy, OnInit } from "@angular/core";
 import { MatDialogRef } from "@angular/material/dialog";
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { catchError, Observable, of, share, startWith, Subject, switchMap } from "rxjs";
+import { FeatureNames } from '../../features/feature-names';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from "../../shared/constants/default-grid-options.constants";
+import { FeaturesService } from '../../shared/services/features.service';
 import { PendingApp } from "../models/app.model";
 import { AppsListService } from "../services/apps-list.service";
 import { AppNameShowComponent } from './app-name-show/app-name-show.component';
@@ -24,11 +26,14 @@ export class AddAppFromFolderComponent implements OnInit, OnDestroy {
 
   private refreshApps$ = new Subject<void>();
   pendingApps: PendingApp[] = [];
+  installing: boolean = false;
+  isAddFromFolderEnabled: boolean;
 
   constructor(
     private dialogRef: MatDialogRef<AddAppFromFolderComponent>,
     private appsListService: AppsListService,
     private snackBar: MatSnackBar,
+    private featuresService: FeaturesService,
   ) { }
   
   ngOnInit(): void {
@@ -37,6 +42,7 @@ export class AddAppFromFolderComponent implements OnInit, OnDestroy {
       switchMap(() => this.appsListService.getPendingApps().pipe(catchError(() => of(undefined)))),
       share()
     );
+    this.isAddFromFolderEnabled = this.featuresService.isEnabled(FeatureNames.AppSyncWithSiteFiles);
   }
 
   ngOnDestroy(): void {
@@ -55,11 +61,15 @@ export class AddAppFromFolderComponent implements OnInit, OnDestroy {
   }
 
   install(): void {
+    this.installing = true;
+    this.snackBar.open('Installing', undefined, { duration: 2000 });
     this.appsListService.installPendingApps(this.pendingApps).subscribe({
       error: () => {
+        this.installing = false;
         this.snackBar.open('Failed to install app. Please check console for more information', undefined, { duration: 3000 });
       },
       next: () => {
+        this.installing = false;
         this.snackBar.open('Installed app', undefined, { duration: 2000 });
         this.closeDialog();
       },
@@ -78,6 +88,7 @@ export class AddAppFromFolderComponent implements OnInit, OnDestroy {
           cellRenderer: CheckboxCellComponent,
           cellRendererParams: (() => {
             const params: CheckboxCellParams = {
+              isDisabled: !this.isAddFromFolderEnabled,
               onChange: (app, enabled) => this.onChange(app, enabled),
             };
             return params;

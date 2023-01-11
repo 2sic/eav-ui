@@ -1,6 +1,6 @@
 import { InputFieldHelpers, LocalizationHelpers } from '.';
 import { FieldSettings, FieldValue } from '../../../../../../edit-types';
-import { Feature } from '../../../apps-management/models/feature.model';
+import { Feature } from '../../../features/models/feature.model';
 import { InputType } from '../../../content-type-fields/models/input-type.model';
 import { EavWindow } from '../../../shared/models/eav-window.model';
 import { DesignerSnippet, FieldOption } from '../../dialog/footer/formula-designer/formula-designer.models';
@@ -9,7 +9,8 @@ import { formV1Prefix, requiredFormulaPrefix } from '../constants';
 import { FormulaCacheItem, FormulaFieldValidation, FormulaFunction, FormulaProps, FormulaPropsV1, FormulaTargets, FormulaV1Data, FormulaV1ExperimentalEntity, FormulaVersion, FormulaVersions, FormValues, Language, SettingsFormulaPrefix } from '../models';
 import { EavHeader } from '../models/eav';
 import { EavService, FieldsSettingsService } from '../services';
-import { FeatureService, ItemService } from '../store/ngrx-data';
+import { ItemService } from '../store/ngrx-data';
+import { FeaturesService } from '../../../shared/services/features.service';
 
 declare const window: EavWindow;
 
@@ -76,7 +77,7 @@ export class FormulaHelpers {
     itemService: ItemService,
     eavService: EavService,
     fieldsSettingsService: FieldsSettingsService,
-    featureService: FeatureService,
+    featuresService: FeaturesService,
   ): FormulaProps {
 
     switch (formula.version) {
@@ -150,11 +151,8 @@ export class FormulaHelpers {
             },
             debug: debugEnabled,
             features: {
-              get(name: string): Feature {
-                return featureService.getFeature(name);
-              },
               isEnabled(name: string): boolean {
-                return featureService.isFeatureEnabled(name);
+                return featuresService.isEnabled(name);
               },
             },
             form: {
@@ -211,7 +209,7 @@ export class FormulaHelpers {
   }
 
   static buildFormulaPropsParameters(itemHeader: EavHeader): Record<string, any> {
-    return JSON.parse(JSON.stringify(itemHeader.Prefill )) ?? {};
+    return JSON.parse(JSON.stringify(itemHeader.Prefill)) ?? {};
   }
 
   static buildDesignerSnippetsData(formula: FormulaCacheItem, fieldOptions: FieldOption[], itemHeader: EavHeader): DesignerSnippet[] {

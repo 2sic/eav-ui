@@ -29,6 +29,38 @@ export function getTemplateLanguages(
   return templateLanguages;
 }
 
+export function getTemplateLanguagesWithContent(
+  currentLanguage: string,
+  defaultLanguage: string,
+  languages: Language[],
+  attributes: EavEntityAttributes,
+  linkType: TranslationLink,
+  translatableFields?: string[],
+): TranslateMenuDialogTemplateLanguage[] {
+  const templateLanguages = languages
+    .filter(language => language.NameId !== currentLanguage)
+    .map(language => {
+      let noTranslatableFields: number = 0;
+      let noTranslatableFieldsThatHaveContent: number = 0;
+      let isDisabled: boolean = false;
+      translatableFields.forEach(field => {
+        const values = attributes[field];
+        noTranslatableFields += LocalizationHelpers.noEditableTranslationFields(values, language.NameId, defaultLanguage);
+        noTranslatableFieldsThatHaveContent += LocalizationHelpers.noEditableTranslationableFieldsWithContent(values, language.NameId, defaultLanguage)
+        isDisabled = (linkType === TranslationLinks.LinkReadWrite && !language.IsAllowed)
+          || noTranslatableFields == 0;
+      });
+      const templateLanguage: TranslateMenuDialogTemplateLanguage = {
+        key: language.NameId,
+        disabled: isDisabled,
+        noTranslatableFields: noTranslatableFields,
+        noTranslatableFieldsThatHaveContent: noTranslatableFieldsThatHaveContent,
+      };
+      return templateLanguage;
+    });
+  return templateLanguages;
+}
+
 export function findI18nKey(translationLink: TranslationLink): I18nKey {
   switch (translationLink) {
     case TranslationLinks.Translate:

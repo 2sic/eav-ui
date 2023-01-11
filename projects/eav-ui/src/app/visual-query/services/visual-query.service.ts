@@ -3,12 +3,13 @@ import { ChangeDetectorRef, Injectable, NgZone, OnDestroy, ViewContainerRef } fr
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Title } from '@angular/platform-browser';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import cloneDeep from 'lodash-es/cloneDeep';
-import { BehaviorSubject, filter, fromEvent, map, pairwise, startWith, Subject, Subscription } from 'rxjs';
+import { BehaviorSubject, filter, fromEvent, Subject } from 'rxjs';
 import { ContentTypesService } from '../../app-administration/services/content-types.service';
 import { GeneralHelpers } from '../../edit/shared/helpers';
 import { MetadataService } from '../../permissions/services/metadata.service';
+import { BaseComponent } from '../../shared/components/base-component/base.component';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { EditForm } from '../../shared/models/edit-form.model';
@@ -21,7 +22,7 @@ import { StreamErrorResultDialogData } from '../stream-error-result/stream-error
 import { QueryDefinitionService } from './query-definition.service';
 
 @Injectable()
-export class VisualQueryService implements OnDestroy {
+export class VisualQueryService extends BaseComponent implements OnDestroy {
   pipelineModel$ = new BehaviorSubject<PipelineModel>(null);
   dataSources$ = new BehaviorSubject<DataSource[]>(null);
   putEntityCountOnConnections$ = new Subject<PipelineResult>();
@@ -31,11 +32,10 @@ export class VisualQueryService implements OnDestroy {
   private pipelineId = parseInt(this.route.snapshot.paramMap.get('pipelineId'), 10);
   private refreshPipeline = false;
   private refreshDataSourceConfigs = false;
-  private subscription = new Subscription();
 
   constructor(
-    private router: Router,
-    private route: ActivatedRoute,
+    protected router: Router,
+    protected route: ActivatedRoute,
     private queryDefinitionService: QueryDefinitionService,
     private titleService: Title,
     private snackBar: MatSnackBar,
@@ -45,19 +45,27 @@ export class VisualQueryService implements OnDestroy {
     private metadataService: MetadataService,
     private contentTypesService: ContentTypesService,
     private changeDetectorRef: ChangeDetectorRef,
-  ) { }
+  ) { 
+    super(router, route);
+  }
 
   ngOnDestroy() {
     this.pipelineModel$.complete();
     this.dataSources$.complete();
     this.putEntityCountOnConnections$.complete();
-    this.subscription.unsubscribe();
+    super.ngOnDestroy();
   }
 
   init() {
     this.fetchDataSources(() => this.fetchPipeline(true, true, false));
     this.attachKeyboardSave();
-    this.refreshOnChildClosed();
+    this.subscription.add(this.refreshOnChildClosedShallow().subscribe(() => { 
+      if (this.refreshPipeline || this.refreshDataSourceConfigs) {
+        this.fetchPipeline(this.refreshPipeline, this.refreshDataSourceConfigs, this.refreshPipeline);
+      }
+      this.refreshPipeline = false;
+      this.refreshDataSourceConfigs = false;
+     }));
   }
 
   editPipelineEntity() {
@@ -358,23 +366,4 @@ export class VisualQueryService implements OnDestroy {
       );
     });
   }
-
-  private refreshOnChildClosed() {
-    this.subscription.add(
-      this.router.events.pipe(
-        filter(event => event instanceof NavigationEnd),
-        startWith(!!this.route.snapshot.firstChild),
-        map(() => !!this.route.snapshot.firstChild),
-        pairwise(),
-        filter(([hadChild, hasChild]) => hadChild && !hasChild),
-      ).subscribe(() => {
-        if (this.refreshPipeline || this.refreshDataSourceConfigs) {
-          this.fetchPipeline(this.refreshPipeline, this.refreshDataSourceConfigs, this.refreshPipeline);
-        }
-        this.refreshPipeline = false;
-        this.refreshDataSourceConfigs = false;
-      })
-    );
-  }
-
 }

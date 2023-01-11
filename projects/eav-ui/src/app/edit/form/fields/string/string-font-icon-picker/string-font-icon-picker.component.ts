@@ -5,7 +5,7 @@ import { WrappersConstants } from '../../../../shared/constants/wrappers.constan
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { EavService, FieldsSettingsService, ScriptsLoaderService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
-import { BaseComponent } from '../../base/base.component';
+import { BaseFieldComponent } from '../../base/base-field.component';
 import { StringFontIconPickerLogic } from './string-font-icon-picker-logic';
 import { findAllIconsInCss } from './string-font-icon-picker.helpers';
 import { IconOption, StringFontIconPickerTemplateVars } from './string-font-icon-picker.models';
@@ -18,7 +18,7 @@ import { IconOption, StringFontIconPickerTemplateVars } from './string-font-icon
 @FieldMetadata({
   wrappers: [WrappersConstants.LocalizationWrapper],
 })
-export class StringFontIconPickerComponent extends BaseComponent<string> implements OnInit, OnDestroy {
+export class StringFontIconPickerComponent extends BaseFieldComponent<string> implements OnInit, OnDestroy {
   templateVars$: Observable<StringFontIconPickerTemplateVars>;
 
   private iconOptions$: BehaviorSubject<IconOption[]>;

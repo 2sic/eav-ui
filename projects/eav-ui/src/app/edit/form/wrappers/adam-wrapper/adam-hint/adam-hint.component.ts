@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
+import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/features.service';
 import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
-import { FeaturesConstants } from '../../../../shared/constants';
-import { FeatureService } from '../../../../shared/store/ngrx-data';
 import { AdamHintTemplateVars } from './adam-hint.models';
 
 @Component({
@@ -14,10 +14,10 @@ export class AdamHintComponent implements OnInit {
 
   templateVars$: Observable<AdamHintTemplateVars>;
 
-  constructor(private featureService: FeatureService) { }
+  constructor(private featuresService: FeaturesService) { }
 
   ngOnInit() {
-    const showAdamSponsor$ = this.featureService.isFeatureEnabled$(FeaturesConstants.NoSponsoredByToSic).pipe(
+    const showAdamSponsor$ = this.featuresService.isEnabled$(FeatureNames.NoSponsoredByToSic).pipe(
       map(isEnabled => !isEnabled),
       distinctUntilChanged(),
     );

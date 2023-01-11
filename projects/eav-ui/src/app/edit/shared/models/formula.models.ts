@@ -1,7 +1,7 @@
 import { SxcInstance } from '@2sic.com/2sxc-typings';
 import { FormValues } from '.';
 import { FieldSettings, FieldValue } from '../../../../../../edit-types';
-import { Feature } from '../../../apps-management/models/feature.model';
+import { Feature } from '../../../features/models/feature.model';
 
 /**
  * Formula Cached Values which are re-used across formulas of the same entity
@@ -109,7 +109,6 @@ export interface FormulaV1CtxCulture {
 }
 
 export interface FormulaV1CtxFeatures {
-  get(name: string): Feature;
   isEnabled(name: string): boolean;
 }
 

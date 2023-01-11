@@ -1,11 +1,12 @@
 import { FieldMask } from '../../../eav-ui/src/app/edit/shared/helpers/field-mask.helper';
 import { ElementEventListener } from '../../../eav-ui/src/app/edit/shared/models';
 import { Connector, EavCustomInputField } from '../../../edit-types';
+import { CoordinatesDto } from '../preview/coordinates';
 import { consoleLogWebpack } from '../shared/console-log-webpack.helper';
-import { defaultCoordinates, mapsApiUrl } from '../shared/constants';
 import { buildTemplate, parseLatLng, stringifyLatLng } from '../shared/helpers';
 import * as template from './main.html';
 import * as styles from './main.scss';
+import { loadCustomIcons } from '../../../field-string-wysiwyg/src/editor/load-icons.helper';
 
 const gpsDialogTag = 'field-custom-gps-dialog';
 
@@ -21,10 +22,10 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
   private lngFieldName: string;
   private lngInput: HTMLInputElement;
   private map: google.maps.Map;
-  private mapApiUrl: string;
   private mapContainer: HTMLDivElement;
   private marker: google.maps.Marker;
   private eventListeners: ElementEventListener[];
+  private defaultCoordinates: google.maps.LatLngLiteral;
 
   constructor() {
     super();
@@ -38,7 +39,6 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
     consoleLogWebpack(`${gpsDialogTag} connectedCallback called`);
 
     this.eventListeners = [];
-    this.mapApiUrl = mapsApiUrl();
 
     this.innerHTML = buildTemplate(template.default, styles.default);
     this.latInput = this.querySelector<HTMLInputElement>('#lat');
@@ -64,14 +64,20 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
       formattedAddressContainer.innerText = this.addressMask.resolve();
     }
 
-    this.connector.loadScript('google', this.mapApiUrl, () => { this.mapScriptLoaded(); });
+    const defaultCoordinates = this.connector._experimental.getSettings("gps-default-coordinates") as CoordinatesDto;
+    this.defaultCoordinates = {
+      lat: defaultCoordinates.Latitude,
+      lng: defaultCoordinates.Longitude,
+    }
+
+    this.connector.loadScript('google', `https://maps.googleapis.com/maps/api/js?key=${this.connector._experimental.getApiKeys().find(x => x.NameId == "google-maps").ApiKey}`, () => { this.mapScriptLoaded(); });
   }
 
   private mapScriptLoaded(): void {
     consoleLogWebpack(`${gpsDialogTag} mapScriptLoaded called`);
     this.map = new google.maps.Map(this.mapContainer, {
       zoom: 15,
-      center: defaultCoordinates,
+      center: this.defaultCoordinates,
       gestureHandling: 'greedy',
       streetViewControlOptions: {
         position: google.maps.ControlPosition.RIGHT_CENTER,
@@ -80,12 +86,12 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
         position: google.maps.ControlPosition.RIGHT_CENTER,
       },
     });
-    this.marker = new google.maps.Marker({ position: defaultCoordinates, map: this.map, draggable: true });
+    this.marker = new google.maps.Marker({ position: this.defaultCoordinates, map: this.map, draggable: true });
     this.geocoder = new google.maps.Geocoder();
 
     // set initial values
     if (!this.connector.data.value) {
-      this.updateHtml(defaultCoordinates);
+      this.updateHtml(this.defaultCoordinates);
     } else {
       this.updateHtml(parseLatLng(this.connector.data.value));
     }

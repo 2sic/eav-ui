@@ -1,3 +1,6 @@
+
+@use './tinymce-wysiwyg-enhanced.scss';
+
 /* Custom stuff */
 .mce-content-body {
 
@@ -68,4 +71,66 @@
     margin-right: 1.5rem;
     padding-right: 1rem;
   }
+
+  // Sections in the WYSIWYG
+  div.wysiwyg-division {
+    border: lightblue 1px dashed;
+    display: flex;
+    justify-content: start;
+
+    // Default case - left img
+    p {
+      order: 1;
+      margin-block-start: 0;
+      margin-block-end: 0;
+    }
+
+    img {
+      order: 0;
+      padding-right: 30px;
+      padding-left: 0;
+    }
+
+    // Alternate case, with image to the right
+    &.content-img-right {
+      justify-content: space-between;
+
+      img {
+        order: 1;
+        padding-left: 30px;
+        padding-right: 0;
+      }
+
+      p {
+        order: 0;
+      }
+    }
+
+    // Optional vertical align
+    &.content-align-center {
+      align-items: center;
+    }
+  }
+
+  // hr.wysiwyg-division {
+  //   border: 1px dashed lightblue;
+  //   display: block;
+  //   width: 100%;
+  // }
+
+  // img.wysiwyg-right {
+  //   float: right;
+  //   margin-left: 20px;
+  // }
+  // img.wysiwyg-left {
+  //   float: left;
+  //   margin-right: 20px;
+  // }
+  // // TODO: this doesn't quite work yet
+  // img.wysiwyg-center {
+  //   margin-left: auto;
+  //   margin-right: auto;
+  // }
+
 }
+

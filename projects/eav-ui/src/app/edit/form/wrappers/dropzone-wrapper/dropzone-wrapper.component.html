@@ -1,5 +1,5 @@
 <div class="dropzone dropzone-container" [ngClass]="{ 'dropzone-disabled': dropzoneDisabled$ | async }"
   [dropzone]="dropzoneConfig$ | async" [disabled]="dropzoneDisabled$ | async" (error)="onUploadError($event)"
-  (success)="onUploadSuccess($event)">
+  (success)="onUploadSuccess($event)" (addedFile)="onAddedFile($event)" (drop)="onDrop($event)">
   <ng-container #fieldComponent></ng-container>
 </div>

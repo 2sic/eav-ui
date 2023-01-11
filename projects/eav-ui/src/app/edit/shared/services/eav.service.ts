@@ -33,6 +33,7 @@ export class EavService {
     createMode: boolean,
     isCopy: boolean,
     enableHistory: boolean,
+    settings: Object[],
   ) {
     this.eavConfig = {
       zoneId: this.context.zoneId.toString(),
@@ -60,6 +61,7 @@ export class EavService {
       enableFormulaSave: dialogContext.Enable.FormulaSave ?? false,
       overrideEditRestrictions: dialogContext.Enable.OverrideEditRestrictions ?? false,
       dialogContext,
+      settings
     };
   }
 

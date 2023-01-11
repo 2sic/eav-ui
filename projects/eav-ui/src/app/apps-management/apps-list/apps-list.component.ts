@@ -3,7 +3,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, catchError, Observable, of, share, startWith, Subject, switchMap } from 'rxjs';
-import { BaseMainComponent } from '../../shared/components/base-component/baseMain.component';
+import { FeatureNames } from '../../features/feature-names';
+import { BaseComponent } from '../../shared/components/base-component/base.component';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { FileUploadDialogData } from '../../shared/components/file-upload-dialog';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
@@ -12,6 +13,7 @@ import { defaultGridOptions } from '../../shared/constants/default-grid-options.
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { EditForm } from '../../shared/models/edit-form.model';
 import { Context } from '../../shared/services/context';
+import { FeaturesService } from '../../shared/services/features.service';
 import { App } from '../models/app.model';
 import { AppsListService } from '../services/apps-list.service';
 import { AppsListActionsComponent } from './apps-list-actions/apps-list-actions.component';
@@ -23,21 +25,23 @@ import { AppsListShowComponent } from './apps-list-show/apps-list-show.component
   templateUrl: './apps-list.component.html',
   styleUrls: ['./apps-list.component.scss'],
 })
-export class AppsListComponent extends BaseMainComponent implements OnInit, OnDestroy {
+export class AppsListComponent extends BaseComponent implements OnInit, OnDestroy {
   apps$: Observable<App[]>;
   fabOpen$ = new BehaviorSubject(false);
   gridOptions = this.buildGridOptions();
+  isAddFromFolderEnabled: boolean;
 
   private refreshApps$ = new Subject<void>();
 
   constructor(
-    router: Router,
-    route: ActivatedRoute,
+    protected router: Router,
+    protected route: ActivatedRoute,
     private appsListService: AppsListService,
     private snackBar: MatSnackBar,
     private context: Context,
-  ) { 
-    super(router, route)
+    private featuresService: FeaturesService,
+  ) {
+    super(router, route);
   }
 
   ngOnInit(): void {
@@ -46,7 +50,8 @@ export class AppsListComponent extends BaseMainComponent implements OnInit, OnDe
       switchMap(() => this.appsListService.getAll().pipe(catchError(() => of(undefined)))),
       share(),
     );
-    this.subscription.add(this.refreshOnChildClosed().subscribe(() => { this.refreshApps$.next(); }));
+    this.subscription.add(this.refreshOnChildClosedDeep().subscribe(() => { this.refreshApps$.next(); }));
+    this.isAddFromFolderEnabled = this.featuresService.isEnabled(FeatureNames.AppSyncWithSiteFiles);
   }
 
   ngOnDestroy(): void {
@@ -183,7 +188,7 @@ export class AppsListComponent extends BaseMainComponent implements OnInit, OnDe
             <div class="container">
               ${app.Thumbnail
                 ? `<img class="image logo" src="${app.Thumbnail}?w=40&h=40&mode=crop"></img>`
-              : `<div class="image logo"><span class="material-icons-outlined">star_border</span></div>`
+                : `<div class="image logo"><span class="material-icons-outlined">star_border</span></div>`
               }
               <div class="text">${params.value}</div>
             </div>

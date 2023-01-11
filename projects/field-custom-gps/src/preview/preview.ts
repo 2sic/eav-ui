@@ -1,10 +1,10 @@
 import { ElementEventListener } from '../../../eav-ui/src/app/edit/shared/models';
 import { Connector, EavCustomInputField } from '../../../edit-types';
 import { consoleLogWebpack } from '../shared/console-log-webpack.helper';
-import { defaultCoordinates } from '../shared/constants';
 import { buildTemplate, customGpsIcons, parseLatLng } from '../shared/helpers';
 import * as template from './preview.html';
 import * as styles from './preview.scss';
+import { CoordinatesDto } from './coordinates';
 
 const gpsTag = 'field-custom-gps';
 
@@ -15,6 +15,7 @@ class FieldCustomGps extends HTMLElement implements EavCustomInputField<string> 
   private latContainer: HTMLSpanElement;
   private lngContainer: HTMLSpanElement;
   private eventListeners: ElementEventListener[];
+  private defaultCoordinates: google.maps.LatLngLiteral;
 
   constructor() {
     super();
@@ -37,9 +38,15 @@ class FieldCustomGps extends HTMLElement implements EavCustomInputField<string> 
     this.addEventListener('click', expand);
     this.eventListeners.push({ element: this, type: 'click', listener: expand });
 
+    const defaultCoordinates = this.connector._experimental.getSettings("gps-default-coordinates") as CoordinatesDto;
+    this.defaultCoordinates = {
+      lat: defaultCoordinates.Latitude,
+      lng: defaultCoordinates.Longitude,
+    }
+
     // set initial value
     if (!this.connector.data.value) {
-      this.updateHtml(defaultCoordinates);
+      this.updateHtml(this.defaultCoordinates);
     } else {
       this.updateHtml(parseLatLng(this.connector.data.value));
     }
@@ -47,7 +54,7 @@ class FieldCustomGps extends HTMLElement implements EavCustomInputField<string> 
     // update on value change
     this.connector.data.onValueChange(value => {
       if (!value) {
-        this.updateHtml(defaultCoordinates);
+        this.updateHtml(this.defaultCoordinates);
       } else {
         const latLng = parseLatLng(value);
         this.updateHtml(latLng);

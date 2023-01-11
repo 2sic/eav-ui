@@ -5,7 +5,7 @@ import { WrappersConstants } from '../../../../shared/constants/wrappers.constan
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { EavService, FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
-import { BaseComponent } from '../../base/base.component';
+import { BaseFieldComponent } from '../../base/base-field.component';
 import { HyperlinkLibraryLogic } from './hyperlink-library-logic';
 import { AdamControl } from './hyperlink-library.models';
 
@@ -22,7 +22,7 @@ import { AdamControl } from './hyperlink-library.models';
     WrappersConstants.AdamWrapper,
   ],
 })
-export class HyperlinkLibraryComponent extends BaseComponent<null> implements OnInit, OnDestroy {
+export class HyperlinkLibraryComponent extends BaseFieldComponent<null> implements OnInit, OnDestroy {
 
   constructor(eavService: EavService, fieldsSettingsService: FieldsSettingsService) {
     super(eavService, fieldsSettingsService);

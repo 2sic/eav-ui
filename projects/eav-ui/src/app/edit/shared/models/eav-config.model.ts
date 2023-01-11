@@ -25,4 +25,5 @@ export interface EavConfig {
   enableFormulaSave: boolean;
   overrideEditRestrictions: boolean;
   dialogContext: DialogContext;
+  settings: any;
 }

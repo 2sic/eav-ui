@@ -2,8 +2,9 @@ import { GridOptions } from '@ag-grid-community/core';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { BehaviorSubject, filter, map, pairwise, startWith, Subscription } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
+import { BehaviorSubject } from 'rxjs';
+import { BaseComponent } from '../shared/components/base-component/base.component';
 import { IdFieldComponent } from '../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
@@ -20,11 +21,10 @@ import { PermissionsService } from './services/permissions.service';
   templateUrl: './permissions.component.html',
   styleUrls: ['./permissions.component.scss'],
 })
-export class PermissionsComponent implements OnInit, OnDestroy {
+export class PermissionsComponent extends BaseComponent implements OnInit, OnDestroy {
   permissions$ = new BehaviorSubject<Permission[]>(undefined);
   gridOptions = this.buildGridOptions();
 
-  private subscription = new Subscription();
   private targetType = parseInt(this.route.snapshot.paramMap.get('targetType'), 10);
   private keyType = this.route.snapshot.paramMap.get('keyType') as MetadataKeyType;
   private key = this.route.snapshot.paramMap.get('key');
@@ -35,21 +35,24 @@ export class PermissionsComponent implements OnInit, OnDestroy {
   };
 
   constructor(
+    protected router: Router,
+    protected route: ActivatedRoute,
     private dialogRef: MatDialogRef<PermissionsComponent>,
-    private router: Router,
-    private route: ActivatedRoute,
+
     private permissionsService: PermissionsService,
     private snackBar: MatSnackBar,
-  ) { }
+  ) { 
+    super(router, route);
+  }
 
   ngOnInit() {
     this.fetchPermissions();
-    this.refreshOnChildClosed();
+    this.subscription.add(this.refreshOnChildClosedShallow().subscribe(() => { this.fetchPermissions(); }));
   }
 
   ngOnDestroy() {
     this.permissions$.complete();
-    this.subscription.unsubscribe();
+    super.ngOnDestroy();
   }
 
   closeDialog() {
@@ -94,20 +97,6 @@ export class PermissionsComponent implements OnInit, OnDestroy {
       this.snackBar.open('Deleted', null, { duration: 2000 });
       this.fetchPermissions();
     });
-  }
-
-  private refreshOnChildClosed() {
-    this.subscription.add(
-      this.router.events.pipe(
-        filter(event => event instanceof NavigationEnd),
-        startWith(!!this.route.snapshot.firstChild),
-        map(() => !!this.route.snapshot.firstChild),
-        pairwise(),
-        filter(([hadChild, hasChild]) => hadChild && !hasChild),
-      ).subscribe(() => {
-        this.fetchPermissions();
-      })
-    );
   }
 
   private buildGridOptions(): GridOptions {

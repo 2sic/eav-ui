@@ -19,6 +19,7 @@ interface All {
   Required: boolean;
   Disabled: boolean;
   DisableTranslation: boolean;
+  DisableAutoTranslation: boolean;
   ValidationRegExJavaScript: string;
   Formulas: string[];
   CustomJavaScript: string;
@@ -76,6 +77,8 @@ interface StringWysiwyg extends String {
   Dialog: "" | "dialog" | "inline";
   ButtonSource: "" | "true" | "false";
   ButtonAdvanced: "" | "true" | "false";
+  ContentDivisions: "" | "true" | "false";
+  WysiwygMode: "" | "basic" | "enhanced"; // new v15
   /**
    * CSS file to be used for content styling. New in 11.03. Must be a real path to work, not file:xx
    */
@@ -226,21 +229,22 @@ interface Boolean extends All {
   _label: string;
 }
 
-export interface FieldSettings
-  extends StringDefault,
-  StringDropdown,
-  StringUrlPath,
-  StringTemplatePicker,
-  StringWysiwyg,
-  StringDropdownQuery,
-  StringFontIconPicker,
-  Number,
-  Hyperlink,
-  HyperlinkLibrary,
+export interface FieldSettings extends
+  Boolean,
+  CustomGps,
+  CustomJsonEditor,
+  DateTime,
+  EmptyDefault,
   Entity,
   EntityQuery,
-  EmptyDefault,
-  DateTime,
-  CustomJsonEditor,
-  CustomGps,
-  Boolean { }
+  Hyperlink,
+  HyperlinkLibrary,
+  Number,
+  StringDefault,
+  StringDropdown,
+  StringDropdownQuery,
+  StringFontIconPicker,
+  StringTemplatePicker,
+  StringUrlPath,
+  StringWysiwyg
+  { }

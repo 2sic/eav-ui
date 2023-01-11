@@ -1,5 +1,6 @@
-import type { Editor, RawEditorSettings, TinyMCE } from 'tinymce';
+import type { Editor, RawEditorOptions, TinyMCE } from 'tinymce';
 import { AddOnSettings } from './AddOnSettings';
+import { RawEditorOptionsWithModes } from '../../field-string-wysiwyg/src/config/tinymce-helper-types';
 
 export interface WysiwygReconfigure {
   /**
@@ -22,10 +23,14 @@ export interface WysiwygReconfigure {
    * Configure
    */
   configureAddOns(addOnSettings: AddOnSettings): AddOnSettings;
+
+
   /**
    * Review / modify the options after they have been completely initialized and expanded
+   * 
+   * Note: real type is actually RawEditorOptionsWithModes but including it here in the pure types causes compile problems
    */
-  configureOptions?(options: RawEditorSettings): RawEditorSettings;
+  configureOptions?(options: RawEditorOptionsWithModes): RawEditorOptionsWithModes;
   /**
    * Called when the editor was created, but before we added events etc.
    */

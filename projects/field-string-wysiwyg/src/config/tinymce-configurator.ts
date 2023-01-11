@@ -1,11 +1,14 @@
-import type { Editor, RawEditorSettings } from 'tinymce';
-import { FeaturesConstants } from '../../../eav-ui/src/app/edit/shared/constants';
+import type { Editor } from 'tinymce';
 import { EavWindow } from '../../../eav-ui/src/app/shared/models/eav-window.model';
-import { AddOnSettings, Connector, WysiwygReconfigure } from '../../../edit-types';
+import { AddOnSettings, Connector, StringWysiwyg, WysiwygReconfigure } from '../../../edit-types';
 import * as contentStyle from '../editor/tinymce-content.scss';
 import { DefaultAddOnSettings, DefaultOptions, DefaultPaste, DefaultPlugins } from './defaults';
+import { RawEditorOptionsWithModes } from './tinymce-helper-types';
 import { TinyMceToolbars } from './toolbars';
 import { TinyMceTranslations } from './translations';
+import { TinyEavConfig } from './tinymce-config';
+import { InputTypeConstants } from '../../../eav-ui/src/app/content-type-fields/constants/input-type.constants';
+// import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
 
 declare const window: EavWindow;
 const reconfigErr = `Very likely an error in your reconfigure code. Check http://r.2sxc.org/field-wysiwyg`;
@@ -46,16 +49,43 @@ export class TinyMceConfigurator {
   }
 
   /** Construct TinyMCE options */
-  buildOptions(containerClass: string, fixedToolbarClass: string, inlineMode: boolean, setup: (editor: Editor) => void): RawEditorSettings {
+  buildOptions(containerClass: string, fixedToolbarClass: string, inlineMode: boolean,
+    setup: (editor: Editor) => void
+  ): RawEditorOptionsWithModes {
     const connector = this.connector;
     const exp = connector._experimental;
-    const buttonSource = connector.field.settings.ButtonSource;
-    const buttonAdvanced = connector.field.settings.ButtonAdvanced;
+    // TODO @SDV - done by 2dm
+    // Create a TinyMceModeConfig object with bool only
+    // Then pass this object into the build(...) below, replacing the original 3 parameters
+    const fsettings = connector.field.settings as StringWysiwyg;
+    const bSource = fsettings.ButtonSource?.toLowerCase();
+    const bAdvanced = fsettings.ButtonAdvanced?.toLowerCase();
+    const bContDiv = 'true'; // fsettings.ContentDivisions?.toLowerCase(); // WIP for now just true
     const dropzone = exp.dropzone;
     const adam = exp.adam;
 
-    const contentBlocksEnabled = exp.allInputTypeNames[connector.field.index + 1]?.inputType === 'entity-content-blocks';
-    const toolbarModes = TinyMceToolbars.build(contentBlocksEnabled, inlineMode, buttonSource, buttonAdvanced);
+    // @SDV this is what I had expected
+    const eavConfig: TinyEavConfig = {
+      features: {
+        // contentBlocks is on if the following field can hold inner-content items
+        contentBlocks: exp.allInputTypeNames[connector.field.index + 1]?.inputType === InputTypeConstants.EntityContentBlocks,
+        wysiwygEnhanced: bContDiv === 'true',
+      },
+      buttons: {
+        inline: {
+          source: bSource === 'true',
+          advanced: bAdvanced === 'true',
+          contentDivisions: bContDiv === 'true',
+        },
+        dialog: {
+          source: bSource !== 'false',
+          advanced: bAdvanced !== 'false',
+          contentDivisions: bContDiv === 'true',
+        }
+      }
+    };
+
+    const toolbarModes = new TinyMceToolbars(eavConfig).build(inlineMode);
 
     if (dropzone == null || adam == null) {
       console.error(`Dropzone or ADAM Config not available, some things won't work`);
@@ -66,10 +96,10 @@ export class TinyMceConfigurator {
     // and tries to load the current folder as a stylesheet
     // This is useless and causes problems in DNN, because it results in logging out the user
     // See https://github.com/2sic/2sxc/issues/2829
-    let contentCssFile = connector.field.settings?.ContentCss;
+    let contentCssFile = fsettings.ContentCss;
     if (!contentCssFile) contentCssFile = null;
 
-    const options: RawEditorSettings = {
+    const options: RawEditorOptionsWithModes = {
       ...DefaultOptions,
       ...{ plugins: [...DefaultPlugins] },
       selector: `.${containerClass}`,
@@ -77,17 +107,18 @@ export class TinyMceConfigurator {
       content_style: contentStyle.default,
       content_css: contentCssFile,
       setup,
+      eavConfig,
       ...toolbarModes,
       ...TinyMceTranslations.getLanguageOptions(this.language),
-      ...(exp.isFeatureEnabled(FeaturesConstants.WysiwygPasteFormatted) ? DefaultPaste.formattedText : {}),
-      ...(exp.isFeatureEnabled(FeaturesConstants.PasteImageFromClipboard) ? DefaultPaste.images(dropzone, adam) : {}),
+      ...(exp.isFeatureEnabled('WysiwygPasteFormatted') ? DefaultPaste.formattedText : {}),
+      ...DefaultPaste.images(dropzone, adam),
+      promotion: false,
+      block_unsupported_drop: false,
     };
 
     if (this.reconfigure?.configureOptions) {
       const newOptions = this.reconfigure.configureOptions(options);
-      if (newOptions) {
-        return newOptions;
-      }
+      if (newOptions) return newOptions;
       console.error(`reconfigure.configureOptions(options) didn't return an options object. ${reconfigErr}`);
     }
     return options;

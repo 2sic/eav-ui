@@ -16,6 +16,11 @@ export const SystemSettingsScopes = {
 } as const;
 export type SystemSettingsScope = typeof SystemSettingsScopes[keyof typeof SystemSettingsScopes];
 
+export const DialogContextApiKeyTypes = {
+  GoogleTranslate: 'google-translate',
+  GoogleMaps: 'google-maps',
+} as const;
+
 export const eavConstants = {
   metadata: {
     /** Metadata of Attribute */

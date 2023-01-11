@@ -8,14 +8,15 @@ import { FieldSettings } from '../../../../../../edit-types';
 import { InputTypeConstants } from '../../../content-type-fields/constants/input-type.constants';
 import { UpdateEnvVarsFromDialogSettings } from '../../../shared/helpers/update-env-vars-from-dialog-settings.helper';
 import { convertUrlToForm } from '../../../shared/helpers/url-prep.helper';
+import { FeaturesService } from '../../../shared/services/features.service';
 import { calculateIsParentDialog, sortLanguages } from '../../dialog/main/edit-dialog-main.helpers';
 import { EavFormData } from '../../dialog/main/edit-dialog-main.models';
 import { EditParams } from '../../edit-matcher.models';
 import { BestValueModes } from '../constants';
 import { FieldsSettingsHelpers, InputFieldHelpers, LocalizationHelpers } from '../helpers';
-import { FormValues, PublishStatus } from '../models';
+import { FormValues } from '../models';
 // tslint:disable-next-line:max-line-length
-import { AdamCacheService, ContentTypeItemService, ContentTypeService, EntityCacheService, FeatureService, InputTypeService, ItemService, LanguageInstanceService, LanguageService, LinkCacheService, PublishStatusService } from '../store/ngrx-data';
+import { AdamCacheService, ContentTypeItemService, ContentTypeService, EntityCacheService, InputTypeService, ItemService, LanguageInstanceService, LanguageService, LinkCacheService, PublishStatusService } from '../store/ngrx-data';
 
 @Injectable()
 export class EditInitializerService implements OnDestroy {
@@ -30,7 +31,6 @@ export class EditInitializerService implements OnDestroy {
     private inputTypeService: InputTypeService,
     private contentTypeItemService: ContentTypeItemService,
     private contentTypeService: ContentTypeService,
-    private featureService: FeatureService,
     private publishStatusService: PublishStatusService,
     private translate: TranslateService,
     private languageService: LanguageService,
@@ -39,6 +39,7 @@ export class EditInitializerService implements OnDestroy {
     private entityCacheService: EntityCacheService,
     private adamCacheService: AdamCacheService,
     private linkCacheService: LinkCacheService,
+    private featuresService: FeaturesService,
   ) { }
 
   ngOnDestroy(): void {
@@ -49,6 +50,8 @@ export class EditInitializerService implements OnDestroy {
     const form = convertUrlToForm((this.route.snapshot.params as EditParams).items);
     const editItems = JSON.stringify(form.items);
     this.eavService.fetchFormData(editItems).subscribe(formData => {
+      // SDV: comment it 
+      this.featuresService.load(formData.Context);
       UpdateEnvVarsFromDialogSettings(formData.Context.App);
       this.saveFormData(formData);
       this.keepInitialValues();
@@ -68,7 +71,6 @@ export class EditInitializerService implements OnDestroy {
     this.inputTypeService.addInputTypes(formData.InputTypes);
     this.contentTypeItemService.addContentTypeItems(formData.ContentTypeItems);
     this.contentTypeService.addContentTypes(formData.ContentTypes);
-    this.featureService.loadFeatures(formData.Features);
     this.adamCacheService.loadPrefetch(formData.Prefetch?.Adam);
     this.entityCacheService.loadEntities(formData.Prefetch?.Entities);
     this.linkCacheService.loadPrefetch(formData.Prefetch?.Links, formData.Prefetch?.Adam);
@@ -77,7 +79,7 @@ export class EditInitializerService implements OnDestroy {
     const createMode = items[0].Entity.Id === 0;
     const isCopy = items[0].Header.DuplicateEntity != null;
     const enableHistory = !createMode && this.route.snapshot.data.history !== false;
-    this.eavService.setEavConfig(formData.Context, formId, isParentDialog, itemGuids, createMode, isCopy, enableHistory);
+    this.eavService.setEavConfig(formData.Context, formId, isParentDialog, itemGuids, createMode, isCopy, enableHistory, formData.Settings);
 
     const currentLanguage = this.eavService.eavConfig.lang;
     const defaultLanguage = this.eavService.eavConfig.langPri;

@@ -30,7 +30,7 @@
             [(ngModel)]="field.Type" [name]="'Type' + i" [disabled]="editMode != null">
             <mat-select-trigger>
               <mat-icon class="type-icon">{{ findIcon(field.Type) }}</mat-icon>
-              <span>{{ field.Type }}</span>
+              <span>{{ findLabel(field.Type) }}</span>
             </mat-select-trigger>
             <mat-option *ngFor="let dataType of dataTypes" [value]="dataType.name">
               <mat-icon class="type-icon">{{ dataType.icon }}</mat-icon>

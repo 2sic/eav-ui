@@ -5,7 +5,7 @@ import { WrappersConstants } from '../../../../shared/constants/wrappers.constan
 import { FieldMask, GeneralHelpers, UrlHelpers } from '../../../../shared/helpers';
 import { EavService, FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
-import { BaseComponent } from '../../base/base.component';
+import { BaseFieldComponent } from '../../base/base-field.component';
 import { StringUrlPathLogic } from './string-url-path-logic';
 import { StringUrlPathTemplateVars } from './string-url-path.models';
 
@@ -17,7 +17,7 @@ import { StringUrlPathTemplateVars } from './string-url-path.models';
 @FieldMetadata({
   wrappers: [WrappersConstants.LocalizationWrapper],
 })
-export class StringUrlPathComponent extends BaseComponent<string> implements OnInit, OnDestroy {
+export class StringUrlPathComponent extends BaseFieldComponent<string> implements OnInit, OnDestroy {
   templateVars$: Observable<StringUrlPathTemplateVars>;
 
   private fieldMask: FieldMask;

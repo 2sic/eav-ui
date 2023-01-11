@@ -5,6 +5,8 @@ import { FieldLogicBase } from '../../../shared/field-logic/field-logic-base';
 export class StringWysiwygLogic extends FieldLogicBase {
   name = InputTypeConstants.StringWysiwyg;
 
+  canAutoTranslate = true;
+
   update(settings: FieldSettings, value: string): FieldSettings {
     const fixedSettings: FieldSettings = { ...settings };
     fixedSettings.Dialog ||= 'inline';
@@ -12,6 +14,7 @@ export class StringWysiwygLogic extends FieldLogicBase {
     fixedSettings.ButtonAdvanced ||= '';
     fixedSettings.ContentCss ||= '';
     fixedSettings.InlineInitialHeight ||= '3';
+    fixedSettings.WysiwygMode ||= 'basic';
     return fixedSettings;
   }
 }

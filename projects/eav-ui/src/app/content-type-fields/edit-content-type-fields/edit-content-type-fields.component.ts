@@ -9,7 +9,7 @@ import { ContentType } from '../../app-administration/models/content-type.model'
 import { ContentTypesService } from '../../app-administration/services/content-types.service';
 import { DataTypeConstants } from '../constants/data-type.constants';
 import { InputTypeConstants } from '../constants/input-type.constants';
-import { calculateTypeIcon } from '../content-type-fields.helpers';
+import { calculateTypeIcon, calculateTypeLabel } from '../content-type-fields.helpers';
 import { Field, FieldInputTypeOption } from '../models/field.model';
 import { ReservedNames } from '../models/reserved-names.model';
 import { ContentTypesFieldsService } from '../services/content-types-fields.service';
@@ -34,6 +34,7 @@ export class EditContentTypeFieldsComponent implements OnInit, OnDestroy {
   fieldNamePattern = fieldNamePattern;
   fieldNameError = fieldNameError;
   findIcon = calculateTypeIcon;
+  findLabel = calculateTypeLabel;
   loading$ = new BehaviorSubject(true);
   saving$ = new BehaviorSubject(false);
 

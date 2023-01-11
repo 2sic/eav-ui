@@ -1,0 +1,7 @@
+<div class="feature-text-info" *ngIf="!featureOn" (click)="openDialog()" [tippy]="'Features.Tooltip' | translate: featureSummary">
+  <mat-icon class="feature-text-info-icon">warning</mat-icon>
+  <div class="feature-text-info-content">
+    <div class="feature-text-info-title">{{ 'Features.FeatureNotActivated' | translate }}</div>
+    <div class="feature-text-info-subtitle">{{ 'Features.ClickToFindOutMore' | translate }}</div>
+  </div>
+</div>

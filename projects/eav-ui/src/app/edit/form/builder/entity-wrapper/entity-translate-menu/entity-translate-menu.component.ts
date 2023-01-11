@@ -1,7 +1,15 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { combineLatest, map, Observable } from 'rxjs';
-import { EavService, FieldsTranslateService, FormsStateService } from '../../../../shared/services';
+import { Component, Input, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
+import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/features.service';
+import { combineLatest, map, Observable, Subscription } from 'rxjs';
+import { TranslationState } from '../../../../shared/models/fields-configs.model';
+import { EavService, FieldsSettingsService, FieldsTranslateService, FormsStateService } from '../../../../shared/services';
 import { ItemService, LanguageInstanceService } from '../../../../shared/store/ngrx-data';
+import { AutoTranslateDisabledWarningDialog } from '../../../wrappers/localization-wrapper/auto-translate-disabled-warning-dialog/auto-translate-disabled-warning-dialog.component';
+import { AutoTranslateMenuDialogComponent } from '../../../wrappers/localization-wrapper/auto-translate-menu-dialog/auto-translate-menu-dialog.component';
+import { TranslateMenuDialogData } from '../../../wrappers/localization-wrapper/translate-menu-dialog/translate-menu-dialog.models';
+import { FieldConfigSet } from '../../fields-builder/field-config-set.model';
 import { EntityTranslateMenuTemplateVars } from './entity-translate-menu.models';
 
 @Component({
@@ -9,17 +17,25 @@ import { EntityTranslateMenuTemplateVars } from './entity-translate-menu.models'
   templateUrl: './entity-translate-menu.component.html',
   styleUrls: ['./entity-translate-menu.component.scss'],
 })
-export class EntityTranslateMenuComponent implements OnInit {
+export class EntityTranslateMenuComponent implements OnInit, OnDestroy {
   @Input() entityGuid: string;
 
   templateVars$: Observable<EntityTranslateMenuTemplateVars>;
+  translatableFromFields: string[];
+  translationState: TranslationState;
+  isTranslateWithGoogleFeatureEnabled: boolean;
+  private subscription: Subscription;
 
   constructor(
+    private dialog: MatDialog,
     private languageInstanceService: LanguageInstanceService,
     private itemService: ItemService,
     private eavService: EavService,
     private fieldsTranslateService: FieldsTranslateService,
     private formsStateService: FormsStateService,
+    private viewContainerRef: ViewContainerRef,
+    private fieldsSettingsService: FieldsSettingsService,
+    private featuresService: FeaturesService,
   ) { }
 
   ngOnInit() {
@@ -40,13 +56,57 @@ export class EntityTranslateMenuComponent implements OnInit {
         return templateVars;
       }),
     );
+    this.isTranslateWithGoogleFeatureEnabled = this.featuresService.isEnabled(FeatureNames.EditUiTranslateWithGoogle);
+    this.translatableFromFields = this.fieldsTranslateService.findAutotranslatableFields();
+    if (this.translatableFromFields.length > 0)
+      this.subscription = this.fieldsSettingsService.getTranslationState$(this.translatableFromFields[0]).subscribe(x => this.translationState = x);
   }
 
   translateMany() {
     this.fieldsTranslateService.translateMany();
   }
 
+  autoTranslateMany(): void {
+    if (this.translatableFromFields.length > 0) {
+      const config: FieldConfigSet = {
+        entityGuid: this.entityGuid,
+        fieldName: this.translatableFromFields[0],
+        name: '',
+        focused$: undefined
+      }
+      const dialogData: TranslateMenuDialogData = {
+        config: config,
+        translationState: {
+          language: this.translationState.language,
+          linkType: this.translationState.linkType,
+        },
+        isTranslateMany: true,
+        translatableFields: this.translatableFromFields,
+      };
+      this.dialog.open(AutoTranslateMenuDialogComponent, {
+        autoFocus: false,
+        data: dialogData,
+        panelClass: 'translate-menu-dialog',
+        viewContainerRef: this.viewContainerRef,
+        width: '400px',
+      });
+    } else {
+      this.dialog.open(AutoTranslateDisabledWarningDialog, {
+        autoFocus: false,
+        data: { isAutoTranslateAll: true },
+        panelClass: 'translate-menu-dialog',
+        viewContainerRef: this.viewContainerRef,
+        width: '400px',
+      });
+    }
+  }
+
   dontTranslateMany() {
     this.fieldsTranslateService.dontTranslateMany();
+  }
+
+  ngOnDestroy(): void {
+    if (this.translatableFromFields.length > 0)
+      this.subscription.unsubscribe();
   }
 }

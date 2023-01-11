@@ -7,6 +7,7 @@ import { Adam } from './Adam';
 import { PagePickerResult } from './PagePickerResult';
 import { FieldValue } from './FieldValue';
 import { EntityInfo } from './EntityInfo';
+import { DialogContextApiKeys } from 'projects/eav-ui/src/app/shared/models/dialog-context.models';
 
 export interface ExperimentalProps {
   entityGuid: string;
@@ -21,6 +22,8 @@ export interface ExperimentalProps {
   isFeatureEnabled(nameId: string): boolean;
   openPagePicker(callback: (value: PagePickerResult) => void): void;
   getUrlOfId(value: string, callback: (value: string) => void): void;
+  getApiKeys(): DialogContextApiKeys[];
+  getSettings(name: string): any;
   getEntityCache(guids?: string[]): EntityInfo[];
   getEntityCache$(guids?: string[]): Observable<EntityInfo[]>;
 }

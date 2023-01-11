@@ -1,4 +1,4 @@
-import { Feature } from './feature.model';
+import { Feature } from '../../features/models/feature.model';
 
 export interface License {
   AutoEnable: boolean;

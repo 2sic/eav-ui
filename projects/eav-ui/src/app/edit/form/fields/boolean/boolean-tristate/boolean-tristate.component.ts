@@ -5,7 +5,7 @@ import { WrappersConstants } from '../../../../shared/constants/wrappers.constan
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { EavService, FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
-import { BaseComponent } from '../../base/base.component';
+import { BaseFieldComponent } from '../../base/base-field.component';
 import { BooleanTristateLogic } from './boolean-tristate-logic';
 import { BooleanTristateTemplateVars } from './boolean-tristate.models';
 
@@ -17,7 +17,7 @@ import { BooleanTristateTemplateVars } from './boolean-tristate.models';
 @FieldMetadata({
   wrappers: [WrappersConstants.LocalizationWrapper],
 })
-export class BooleanTristateComponent extends BaseComponent<boolean | ''> implements OnInit, OnDestroy {
+export class BooleanTristateComponent extends BaseFieldComponent<boolean | ''> implements OnInit, OnDestroy {
   templateVars$: Observable<BooleanTristateTemplateVars>;
 
   constructor(eavService: EavService, fieldsSettingsService: FieldsSettingsService) {

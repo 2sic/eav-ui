@@ -13,7 +13,7 @@ import { EavItem } from '../../shared/models/eav';
 import { Item1 } from '../../shared/models/json-format-v1';
 import { EavService, EditRoutingService, FormsStateService, FormulaDesignerService, LoadIconsService } from '../../shared/services';
 // tslint:disable-next-line:max-line-length
-import { AdamCacheService, ContentTypeItemService, ContentTypeService, EntityCacheService, FeatureService, GlobalConfigService, InputTypeService, ItemService, LanguageInstanceService, LanguageService, LinkCacheService, PublishStatusService, StringQueryCacheService } from '../../shared/store/ngrx-data';
+import { AdamCacheService, ContentTypeItemService, ContentTypeService, EntityCacheService, GlobalConfigService, InputTypeService, ItemService, LanguageInstanceService, LanguageService, LinkCacheService, PublishStatusService, StringQueryCacheService } from '../../shared/store/ngrx-data';
 import { EditEntryComponent } from '../entry/edit-entry.component';
 import { EditDialogMainTemplateVars, SaveEavFormData } from './edit-dialog-main.models';
 import { SnackBarSaveErrorsComponent } from './snack-bar-save-errors/snack-bar-save-errors.component';
@@ -43,7 +43,6 @@ export class EditDialogMainComponent implements OnInit, AfterViewInit, OnDestroy
     private contentTypeService: ContentTypeService,
     private globalConfigService: GlobalConfigService,
     private eavService: EavService,
-    private featureService: FeatureService,
     private inputTypeService: InputTypeService,
     private itemService: ItemService,
     private languageService: LanguageService,
@@ -127,7 +126,6 @@ export class EditDialogMainComponent implements OnInit, AfterViewInit, OnDestroy
       this.languageService.clearCache();
       this.itemService.clearCache();
       this.inputTypeService.clearCache();
-      this.featureService.clearCache();
       this.contentTypeItemService.clearCache();
       this.contentTypeService.clearCache();
       this.publishStatusService.clearCache();

@@ -6,13 +6,15 @@ import { FieldSettings, FieldValue } from '../../../../../../edit-types';
 import { DataTypeConstants } from '../../../content-type-fields/constants/data-type.constants';
 import { InputTypeConstants } from '../../../content-type-fields/constants/input-type.constants';
 import { InputType } from '../../../content-type-fields/models/input-type.model';
+import { consoleLogAngular } from '../../../shared/helpers/console-log-angular.helper';
+import { FeaturesService } from '../../../shared/services/features.service';
 import { FieldLogicManager } from '../../form/shared/field-logic/field-logic-manager';
 import { FieldsSettingsHelpers, FormulaHelpers, GeneralHelpers, InputFieldHelpers, LocalizationHelpers, ValidationHelpers } from '../helpers';
 // tslint:disable-next-line:max-line-length
 import { ContentTypeSettings, FieldsProps, FormulaCacheItem, FormulaFieldValidation, FormulaFunctionDefault, FormulaFunctionV1, FormulaTarget, FormulaTargets, FormulaVersions, FormValues, LogSeverities, RunFormulasResult, SettingsFormulaPrefix, TranslationState } from '../models';
 import { EavHeader } from '../models/eav';
 // tslint:disable-next-line:max-line-length
-import { ContentTypeService, FeatureService, GlobalConfigService, InputTypeService, ItemService, LanguageInstanceService, LanguageService } from '../store/ngrx-data';
+import { ContentTypeService, GlobalConfigService, InputTypeService, ItemService, LanguageInstanceService, LanguageService } from '../store/ngrx-data';
 import { FormsStateService } from './forms-state.service';
 import { FormulaDesignerService } from './formula-designer.service';
 
@@ -39,7 +41,7 @@ export class FieldsSettingsService implements OnDestroy {
     private globalConfigService: GlobalConfigService,
     private editInitializerService: EditInitializerService,
     private formsStateService: FormsStateService,
-    private featureService: FeatureService,
+    private featuresService: FeaturesService,
   ) { }
 
   ngOnDestroy(): void {
@@ -107,9 +109,11 @@ export class FieldsSettingsService implements OnDestroy {
             // custom-default has no inputType
             const inputType = inputTypes.find(i => i.Type === attribute.InputType);
 
-            const merged = FieldsSettingsHelpers.setDefaultFieldSettings(
-              FieldsSettingsHelpers.mergeSettings<FieldSettings>(attribute.Metadata, currentLanguage, defaultLanguage),
-            );
+            const mergeRaw = FieldsSettingsHelpers.mergeSettings<FieldSettings>(attribute.Metadata, currentLanguage, defaultLanguage);
+            // Sometimes the metadata doesn't have the input type (empty string), so we'll add the attribute.InputType just in case...
+            mergeRaw.InputType = attribute.InputType;
+            const merged = FieldsSettingsHelpers.setDefaultFieldSettings(mergeRaw);
+            consoleLogAngular('merged', JSON.parse(JSON.stringify(merged)));
 
             // run formulas
             const formulaResult = this.runFormulas(entityGuid, entityId, attribute.Name, formValues, inputType, merged, itemHeader);
@@ -131,9 +135,11 @@ export class FieldsSettingsService implements OnDestroy {
             );
             calculated.Disabled = disabledBecauseTranslations || calculated.Disabled;
             calculated.Disabled = readOnly.isReadOnly || calculated.Disabled;
+            calculated.DisableAutoTranslation = calculated.DisableAutoTranslation || calculated.DisableTranslation;
             // update settings with respective FieldLogics
             const logic = FieldLogicManager.singleton().get(attribute.InputType);
             const fixed = logic?.update(calculated, value, this.eavService.eavConfig, debugEnabled) ?? calculated;
+            consoleLogAngular('calculated', JSON.parse(JSON.stringify(calculated)));
 
             // important to compare with undefined because null is allowed value
             if (!slotIsEmpty && !disabledBecauseTranslations && value !== undefined && formulaValue !== undefined) {
@@ -342,7 +348,7 @@ export class FieldsSettingsService implements OnDestroy {
       this.itemService,
       this.eavService,
       this,
-      this.featureService,
+      this.featuresService,
     );
     const designerState = this.formulaDesignerService.getDesignerState();
     const isOpenInDesigner = designerState.isOpen
@@ -409,9 +415,9 @@ export class FieldsSettingsService implements OnDestroy {
 
       date.setMilliseconds(0);
       return date.toJSON();
-    } else if (typeof(value) !== 'string' && (inputType?.Type?.startsWith(DataTypeConstants.String.toLocaleLowerCase())
+    } else if (typeof (value) !== 'string' && (inputType?.Type?.startsWith(DataTypeConstants.String.toLocaleLowerCase())
       || inputType?.Type?.startsWith(DataTypeConstants.Hyperlink.toLocaleLowerCase()))) {
-        return value.toString();
+      return value.toString();
     }
 
     return value;

@@ -9,7 +9,7 @@
           }">
             <input matInput #autocomplete [placeholder]="getPlaceholder()" [matAutocomplete]="auto"
               [disabled]="disabled || !data.enableAddExisting" (focus)="fetchEntities()" (blur)="markAsTouched()"
-              (input)="filterSelectionList()">
+              (input)="filterSelectionList()" (click)="filterSelectionList()">
             <button mat-icon-button matSuffix class="entity-dropdown-button" disableRipple="true"
               [disabled]="disabled || !data.enableAddExisting" *ngIf="!data.enableTextEntry">
               <mat-icon>arrow_drop_down</mat-icon>

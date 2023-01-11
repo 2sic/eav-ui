@@ -9,6 +9,7 @@ export class NumberDropdownLogic extends StringDropdownLogic {
 
   update(settings: FieldSettings, value: string): FieldSettings {
     const fixedSettings: FieldSettings = { ...super.update(settings, value) };
+    // fixedSettings.DisableAutoTranslation = true;
     return fixedSettings;
   }
 }

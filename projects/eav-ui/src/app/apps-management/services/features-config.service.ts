@@ -2,8 +2,8 @@ import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
+import { FeatureState } from '../../features/models';
 import { FileUploadMessageTypes, FileUploadResult } from '../../shared/components/file-upload-dialog';
-import { FeatureState } from '../models/feature.model';
 import { License, LicenseDownloadInfo, LicenseUploadInfo } from '../models/license.model';
 
 const webApiFeatures = 'admin/feature/';

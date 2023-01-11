@@ -1,12 +1,12 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { filter, map, pairwise, startWith, Subscription } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ContentItemsService } from '../../content-items/services/content-items.service';
 import { GlobalConfigService } from '../../edit/shared/store/ngrx-data';
 import { GoToMetadata } from '../../metadata';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
+import { BaseComponent } from '../../shared/components/base-component/base.component';
 import { eavConstants, SystemSettingsScope, SystemSettingsScopes } from '../../shared/constants/eav.constants';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
 import { AppScopes } from '../../shared/models/dialog-context.models';
@@ -27,7 +27,7 @@ import { AnalyzePart, AnalyzeParts } from '../sub-dialogs/analyze-settings/analy
   templateUrl: './app-configuration.component.html',
   styleUrls: ['./app-configuration.component.scss'],
 })
-export class AppConfigurationComponent implements OnInit, OnChanges, OnDestroy {
+export class AppConfigurationComponent extends BaseComponent implements OnInit, OnChanges, OnDestroy {
   @Input() dialogSettings: DialogSettings;
 
   eavConstants = eavConstants;
@@ -49,14 +49,12 @@ export class AppConfigurationComponent implements OnInit, OnChanges, OnDestroy {
 
   public appStateAdvanced = false;
 
-  private subscription: Subscription;
-
   public features: FeaturesService = new FeaturesService();
 
   constructor(
+    protected router: Router,
+    protected route: ActivatedRoute,
     private contentItemsService: ContentItemsService,
-    private router: Router,
-    private route: ActivatedRoute,
     private context: Context,
     private exportAppService: ExportAppService,
     private importAppPartsService: ImportAppPartsService,
@@ -67,14 +65,14 @@ export class AppConfigurationComponent implements OnInit, OnChanges, OnDestroy {
     private globalConfigService: GlobalConfigService,
     appDialogConfigService: AppDialogConfigService,
   ) {
+    super(router, route);
     this.features.loadFromService(appDialogConfigService);
   }
 
 
   ngOnInit() {
-    this.subscription = new Subscription();
     this.fetchSettings();
-    this.refreshOnChildClosed();
+    this.subscription.add(this.refreshOnChildClosedDeep().subscribe(() => { this.fetchSettings(); }));
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -87,7 +85,7 @@ export class AppConfigurationComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnDestroy() {
     this.snackBar.dismiss();
-    this.subscription.unsubscribe();
+    super.ngOnDestroy();
   }
 
   edit(staticName: string, systemSettingsScope?: SystemSettingsScope) {
@@ -239,20 +237,6 @@ export class AppConfigurationComponent implements OnInit, OnChanges, OnDestroy {
         this.appConfigurationsCount = x.EntityLists.ToSxcContentApp.length;
         this.appMetadataCount = x.MetadataList.Items.length;
       });
-  }
-
-  private refreshOnChildClosed() {
-    this.subscription.add(
-      this.router.events.pipe(
-        filter(event => event instanceof NavigationEnd),
-        startWith(!!this.route.snapshot.firstChild.firstChild),
-        map(() => !!this.route.snapshot.firstChild.firstChild),
-        pairwise(),
-        filter(([hadChild, hasChild]) => hadChild && !hasChild),
-      ).subscribe(() => {
-        this.fetchSettings();
-      })
-    );
   }
 
   fixContentType(staticName: string, action: 'edit' | 'config') {

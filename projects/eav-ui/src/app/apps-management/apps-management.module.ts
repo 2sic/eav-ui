@@ -45,6 +45,8 @@ import { RegistrationComponent } from './sub-dialogs/registration/registration.c
 import { SystemInfoComponent } from './system-info/system-info.component';
 import { AppNameShowComponent } from './add-app-from-folder/app-name-show/app-name-show.component';
 import { CheckboxCellComponent } from './add-app-from-folder/checkbox-cell/checkbox-cell.component';
+import { MatBadgeModule } from '@angular/material/badge';
+import { FeaturesModule } from '../features/features.module';
 
 @NgModule({
   declarations: [
@@ -90,6 +92,8 @@ import { CheckboxCellComponent } from './add-app-from-folder/checkbox-cell/check
     MatSelectModule,
     MatSnackBarModule,
     MatExpansionModule,
+    MatBadgeModule,
+    FeaturesModule
   ],
   providers: [
     Context,

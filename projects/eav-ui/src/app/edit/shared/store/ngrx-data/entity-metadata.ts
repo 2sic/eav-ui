@@ -1,5 +1,5 @@
 import { EntityMetadataMap } from '@ngrx/data';
-import { Feature } from 'projects/eav-ui/src/app/apps-management/models/feature.model';
+import { Feature } from 'projects/eav-ui/src/app/features/models/feature.model';
 import { EntityInfo } from '../../../../../../../edit-types';
 import { InputType } from '../../../../content-type-fields/models/input-type.model';
 import { Prefetch } from '../../../dialog/main/edit-dialog-main.models';
