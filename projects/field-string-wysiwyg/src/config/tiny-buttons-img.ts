@@ -58,7 +58,7 @@ export class TinyButtonsImg extends TinyButtonsBase {
       : `alignleft aligncenter alignright ${IMG.ImgButtonGroupWidth}`;
 
     this.editor.ui.registry.addContextToolbar('imgContextToolbar', {
-      items: `image | ${imgAlign} ${IMG.ImgButtonGroupWidth} | removeformat | remove`,
+      items: `image | ${imgAlign} | removeformat | remove`,
       predicate: (elem) => elem.nodeName.toLocaleLowerCase() === 'img' && rangeSelected(),
     });
   }
