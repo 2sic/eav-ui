@@ -15,10 +15,11 @@ export interface TinyEavConfig {
   buttons: Record<WysiwygView, TinyEavButtons>;
 }
 
+// TODO: @2dm doesn't seem to be in use ATM
 export const TinyEavConfigDefault: TinyEavConfig = {
   features: {
     contentBlocks: false,
-    wysiwygEnhanced: true, // temporary, as we are still in dev. will be false later on
+    wysiwygEnhanced: false, // temporary, as we are still in dev. will be false later on
   },
   buttons: {
     inline:   {

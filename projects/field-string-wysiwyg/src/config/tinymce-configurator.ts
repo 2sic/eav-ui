@@ -69,7 +69,7 @@ export class TinyMceConfigurator {
       features: {
         // contentBlocks is on if the following field can hold inner-content items
         contentBlocks: exp.allInputTypeNames[connector.field.index + 1]?.inputType === InputTypeConstants.EntityContentBlocks,
-        wysiwygEnhanced: bContDiv === 'true',
+        wysiwygEnhanced: false, // bContDiv === 'true',
       },
       buttons: {
         inline: {

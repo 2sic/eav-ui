@@ -121,7 +121,7 @@ console.log('2dm inline', isInline);
   }
 
   private toolbar(mode: WysiwygMode, view: WysiwygView, config: TinyEavButtons): string {
-console.log('2dm advanced', config.advanced, config, mode);
+// console.log('2dm advanced', config.advanced, config, mode);
     const list = [
       selectFromSet(Bs1Intro, mode),
       selectFromSet(Bs2Format, mode),
