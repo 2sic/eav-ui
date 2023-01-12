@@ -29,7 +29,7 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
   apps$: Observable<App[]>;
   fabOpen$ = new BehaviorSubject(false);
   gridOptions = this.buildGridOptions();
-  isAddFromFolderEnabled: boolean;
+  isAddFromFolderEnabled$: Observable<boolean>;
 
   private refreshApps$ = new Subject<void>();
 
@@ -51,7 +51,7 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
       share(),
     );
     this.subscription.add(this.refreshOnChildClosedDeep().subscribe(() => { this.refreshApps$.next(); }));
-    this.isAddFromFolderEnabled = this.featuresService.isEnabled(FeatureNames.AppSyncWithSiteFiles);
+    this.isAddFromFolderEnabled$ = this.featuresService.isEnabled$(FeatureNames.AppSyncWithSiteFiles);
   }
 
   ngOnDestroy(): void {
