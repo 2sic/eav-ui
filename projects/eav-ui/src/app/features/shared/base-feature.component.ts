@@ -38,13 +38,6 @@ export class FeatureComponentBase {
 
   openDialog() {
     FeatureComponentBase.openDialog(this.dialog, this.featureNameId$.value, this.viewContainerRef);
-    // this.dialog.open(FeatureInfoDialogComponent, {
-    //   autoFocus: false,
-    //   data: this.featureNameId$.value,
-    //   viewContainerRef: this.viewContainerRef,
-    //   // TODO: this looks wrong. I believe we have some way to standardize dialog sizes...
-    //   width: '600px',
-    // });
   }
 
   /** Public/Static so it can be called from elsewhere */

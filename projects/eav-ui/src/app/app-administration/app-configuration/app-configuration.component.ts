@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewContainerRef } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ContentItemsService } from '../../content-items/services/content-items.service';
@@ -22,9 +22,11 @@ import { AppInternalsService } from '../services/app-internals.service';
 import { ExportAppService } from '../services/export-app.service';
 import { ImportAppPartsService } from '../services/import-app-parts.service';
 import { AnalyzePart, AnalyzeParts } from '../sub-dialogs/analyze-settings/analyze-settings.models';
-import { BehaviorSubject, Subject, Observable, combineLatest, map, tap } from 'rxjs';
+import { Subject, Observable, combineLatest, map, tap } from 'rxjs';
 import { AppInternals } from '../models/app-internals.model';
 import { FeatureNames } from '../../features/feature-names';
+import { FeatureComponentBase } from '../../features/shared/base-feature.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-app-configuration',
@@ -72,6 +74,8 @@ export class AppConfigurationComponent extends BaseComponent implements OnInit, 
     private contentTypesService: ContentTypesService,
     private globalConfigService: GlobalConfigService,
     appDialogConfigService: AppDialogConfigService,
+    private dialog: MatDialog,
+    private viewContainerRef: ViewContainerRef,
   ) {
     super(router, route);
     this.features.loadFromService(appDialogConfigService);
@@ -81,12 +85,15 @@ export class AppConfigurationComponent extends BaseComponent implements OnInit, 
     this.data$ = combineLatest([
       this.appSettingsInternal$,
       this.features.isEnabled$(FeatureNames.LightSpeed),
-      this.features.isEnabled$(FeatureNames.ContentSecurityPolicy)
-    ]).pipe(map(([settings, ls, csp]) => {
+      this.features.isEnabled$(FeatureNames.ContentSecurityPolicy),
+      this.features.isEnabled$(FeatureNames.PermissionsByLanguage)
+    ]).pipe(map(([settings, lightSpeedEnabled, cspEnabled, langPermsEnabled]) => {
+      const appMetadata = settings.MetadataList.Items;
       const result: ViewModel = {
-        lightSpeedEnabled: ls,
-        cspEnabled: csp,
-        appLightSpeedCount: settings.MetadataList.Items.filter(i => i._Type.Name == eavConstants.appMetadata.LightSpeed.ContentTypeName).length,
+        lightSpeedEnabled,
+        cspEnabled,
+        langPermsEnabled,
+        appLightSpeedCount: appMetadata.filter(i => i._Type.Name == eavConstants.appMetadata.LightSpeed.ContentTypeName).length,
       }
       return result;
     }));
@@ -198,8 +205,11 @@ export class AppConfigurationComponent extends BaseComponent implements OnInit, 
     this.router.navigate([GoToPermissions.getUrlApp(this.context.appId)], { relativeTo: this.route.firstChild });
   }
 
-  openLanguagePermissions() {
-    this.router.navigate(['language-permissions'], { relativeTo: this.route.firstChild });
+  openLanguagePermissions(enabled: boolean) {
+    if (enabled)
+      this.router.navigate(['language-permissions'], { relativeTo: this.route.firstChild });
+    else
+      FeatureComponentBase.openDialog(this.dialog, FeatureNames.PermissionsByLanguage, this.viewContainerRef);
   }
 
   exportApp() {
@@ -309,4 +319,7 @@ class ViewModel {
 
   // CSP
   cspEnabled: boolean;
+
+  // Language Permissions
+  langPermsEnabled: boolean;
 }

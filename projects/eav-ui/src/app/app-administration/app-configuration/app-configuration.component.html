@@ -117,6 +117,7 @@
 
       <mat-card-actions>
         <div class="actions-row">
+          <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://r.2sxc.org/settings' }"></ng-container>
           <button mat-button (click)="analyze(AnalyzeParts.Settings)" tippy="See the result of combining all settings">
             <mat-icon>manage_search</mat-icon>
             <span>Analyze Combined Settings</span>
@@ -232,6 +233,7 @@
       </mat-card-content>
       <mat-card-actions>
         <div class="actions-row">
+          <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://r.2sxc.org/settings' }"></ng-container>
           <button mat-button (click)="analyze(AnalyzeParts.Resources)" tippy="See the result of combining all resources">
             <mat-icon>manage_search</mat-icon>
             <span>Analyze Combined Resources</span>
@@ -269,7 +271,7 @@
     <!-- App Config -->
     <mat-card class="mat-elevation-z2">
       <mat-card-header>
-        <mat-card-title>App Configuration</mat-card-title>
+        <mat-card-title>Configuration</mat-card-title>
         <div class="mat-card-header-icon">
           <mat-icon>redeem</mat-icon>
         </div>
@@ -278,10 +280,11 @@
         App name, folder, version and more.
       </mat-card-content>
       <mat-card-actions>
+        <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://docs.2sxc.org/basics/app/configuration.html' }"></ng-container>
         <button mat-button (click)="edit(eavConstants.contentTypes.appConfiguration)">
           <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="appConfigurationsCount || null"
             matBadgePosition="below after">edit</mat-icon>
-          <span>Edit Configuration</span>
+          <span>Edit</span>
         </button>
         <button mat-button (click)="openMetadata()">
           <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="appMetadataCount || null"
@@ -294,7 +297,7 @@
     <!-- LightSpeed -->
     <mat-card class="mat-elevation-z2">
       <mat-card-header>
-        <mat-card-title>App Performance</mat-card-title>
+        <mat-card-title>Performance</mat-card-title>
         <div class="mat-card-header-icon">
           <mat-icon>bolt</mat-icon>
         </div>
@@ -317,7 +320,7 @@
     <!-- Security / CSP -->
     <mat-card class="mat-elevation-z2">
       <mat-card-header>
-        <mat-card-title>App Security</mat-card-title>
+        <mat-card-title>Security</mat-card-title>
         <div class="mat-card-header-icon">
           <mat-icon>local_police</mat-icon>
         </div>
@@ -325,7 +328,7 @@
       <mat-card-content>
         ContentSecurityPolicy features in this App - for maximum control.
 
-        <app-feature-text-info [featureNameId]="'LightSpeedOutputCache'" [asInfo]="true"></app-feature-text-info>
+        <app-feature-text-info [featureNameId]="'ContentSecurityPolicy'" [asInfo]="true"></app-feature-text-info>
       </mat-card-content>
       <mat-card-actions>
         <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://r.2sxc.org/csp' }"></ng-container>
@@ -335,7 +338,7 @@
     <!-- Permissions -->
     <mat-card class="mat-elevation-z2">
       <mat-card-header>
-        <mat-card-title>App Permissions</mat-card-title>
+        <mat-card-title>Permissions</mat-card-title>
         <div class="mat-card-header-icon">
           <mat-icon>person</mat-icon>
         </div>
@@ -344,25 +347,33 @@
         Give access to the entire app (all data). Use with care.
       </mat-card-content>
       <mat-card-actions>
-        <button mat-button [disabled]="!dialogSettings.Context.Enable.AppPermissions" (click)="openPermissions()">
-          <mat-icon matBadgeColor="accent" matBadgeSize="small" matBadgePosition="below after"
-            [matBadge]="dialogSettings.Context.App.Permissions.Count || null">person</mat-icon>
-          <span>
-            Edit Permissions
-            <ng-container *ngIf="!dialogSettings.Context.Enable.AppPermissions">
-              <ng-container *ngIf="isGlobal">
-                (not available on Global App)
+        <div class="actions-row">
+          <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://docs.2sxc.org/basics/app/permissions.html' }"></ng-container>
+          <button mat-button [disabled]="!dialogSettings.Context.Enable.AppPermissions" (click)="openPermissions()">
+            <mat-icon matBadgeColor="accent" matBadgeSize="small" matBadgePosition="below after"
+              [matBadge]="dialogSettings.Context.App.Permissions.Count || null">person</mat-icon>
+            <span>
+              Edit Permissions
+              <ng-container *ngIf="!dialogSettings.Context.Enable.AppPermissions">
+                <ng-container *ngIf="isGlobal">
+                  (not on Global App)
+                </ng-container>
+                <ng-container *ngIf="isApp">
+                  (not on Content)
+                </ng-container>
               </ng-container>
-              <ng-container *ngIf="isApp">
-                (not available on Content App)
-              </ng-container>
-            </ng-container>
-          </span>
-        </button>
-        <button mat-button *ngIf="debugEnabled$ | async" (click)="openLanguagePermissions()">
-          <mat-icon>person</mat-icon>
-          <span>Language Permissions</span>
-        </button>
+            </span>
+          </button>
+        </div>
+        <div class="actions-row">
+          <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://patrons.2sxc.org/features/feat/PermissionsByLanguage' }"></ng-container>
+          <button mat-button (click)="openLanguagePermissions(data.langPermsEnabled)">
+            <mat-icon [matBadgeHidden]="data.langPermsEnabled" matBadgeSize="small" matBadge="💎" matBadgePosition="below after">
+              person
+            </mat-icon>
+            <span>Language Permissions</span>
+          </button>
+        </div>
       </mat-card-actions>
     </mat-card>
   </div>

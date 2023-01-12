@@ -11,4 +11,5 @@ export const FeatureNames = {
   EditUiTranslateWithGoogle: 'EditUiTranslateWithGoogle',
   LightSpeed: 'LightSpeedOutputCache',
   ContentSecurityPolicy: 'ContentSecurityPolicy',
+  PermissionsByLanguage: 'PermissionsByLanguage',
 };
