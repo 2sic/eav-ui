@@ -219,16 +219,21 @@ export class SystemInfoComponent extends BaseComponent implements OnInit, OnDest
         return info;
       }),
     );
-    this.templateVars$ = combineLatest([systemInfos$, siteInfos$, this.loading$, warningIcon$, warningInfos$]).pipe(
-      map(([systemInfos, siteInfos, loading, warningIcon, warningInfos]) => {
-        const templateVars: SystemInfoTemplateVars = {
+    var lsEnabled$ = this.featuresService.isEnabled$('LightSpeedOutputCache');
+    var cspEnabled$ = this.featuresService.isEnabled$('ContentSecurityPolicy');
+    this.templateVars$ = combineLatest([systemInfos$, siteInfos$, this.loading$, warningIcon$, warningInfos$, lsEnabled$, cspEnabled$]).pipe(
+      map(([systemInfos, siteInfos, loading, warningIcon, warningInfos, lsEnabled, cspEnabled]) => {
+        const viewModel: SystemInfoTemplateVars = {
           systemInfos,
           siteInfos,
           loading,
           warningIcon,
           warningInfos,
+          lsEnabled,
+          cspEnabled
         };
-        return templateVars;
+        console.log('2dm VM', viewModel);
+        return viewModel;
       }),
     );
   }

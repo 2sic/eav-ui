@@ -86,7 +86,7 @@
       <app-feature-text-info [featureNameId]="'LightSpeedOutputCache'" [asInfo]="true"></app-feature-text-info>
   
       <!-- TODO: HIDE IF NOT ENABLED -->
-      <div>
+      <div *ngIf="data.lsEnabled">
         LightSpeed is enabled.
         Configure it in each site/app as you need.
       </div>
@@ -109,7 +109,7 @@
       <app-feature-text-info [featureNameId]="'ContentSecurityPolicy'" [asInfo]="true"></app-feature-text-info>
   
       <!-- TODO: HIDE IF NOT ENABLED -->
-      <div>
+      <div *ngIf="data.cspEnabled">
         ContentSecurityPolicy is enabled.
         Configure it in each site/app as you need.
       </div>
