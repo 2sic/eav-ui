@@ -1,16 +1,21 @@
-import { Component, OnInit, ViewContainerRef } from '@angular/core';
+import { Component, Input, OnInit, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { FeaturesService } from '../../shared/services/features.service';
 import { FeatureSummary } from '../models';
 import { BaseFeatureComponent } from '../shared/base-feature.component';
+import { BehaviorSubject, map, Observable, combineLatest, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-feature-text-info',
   templateUrl: './feature-text-info.component.html',
   styleUrls: ['./feature-text-info.component.scss']
 })
-export class FeatureTextInfoComponent extends BaseFeatureComponent implements OnInit {
-  featureSummary: FeatureSummary;
+export class FeatureTextInfoComponent extends BaseFeatureComponent {
+  @Input()
+  public set asInfo(value: boolean) { this.asInfo$.next(value); }
+  asInfo$ = new BehaviorSubject<boolean>(false);
+
+  data$: Observable<viewModel>;
 
   constructor(
     dialog: MatDialog,
@@ -18,11 +23,18 @@ export class FeatureTextInfoComponent extends BaseFeatureComponent implements On
     featuresService: FeaturesService
   ) {
     super(dialog, viewContainerRef, featuresService);
+    this.data$ = combineLatest([this.feature$, this.asInfo$, this.show$]).pipe(map(([feature, asInfo, show]) => 
+      ({
+        feature,
+        icon: asInfo ? 'info' : 'warning',
+        show
+      })));
   }
 
-  ngOnInit(): void {
-    super.ngOnInit();
-    this.featureSummary = this.featuresService.getFeature(this.featureNameId);
-  }
+}
 
+interface viewModel {
+  feature: FeatureSummary;
+  icon: string;
+  show: boolean;
 }

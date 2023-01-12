@@ -43,6 +43,11 @@
   }
 }
 
+// Make sure icons (before the text) have extra padding
+.mat-button .mat-icon {
+  margin-right: 4px; 
+}
+
 .info-row {
   display: flex;
   overflow-wrap: anywhere;

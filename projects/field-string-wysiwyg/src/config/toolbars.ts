@@ -98,7 +98,7 @@ export class TinyMceToolbars implements ToolbarSwitcher {
   }
 
   public build(isInline: boolean): TinyMceModeWithSwitcher {
-console.log('2dm inline', isInline);
+// console.log('2dm inline', isInline);
     const initial = this.switch(isInline ? WysiwygInline : WysiwygDialog, WysiwygDefault);
     return {
       modeSwitcher: this,

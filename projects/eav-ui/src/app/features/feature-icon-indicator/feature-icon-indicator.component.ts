@@ -8,7 +8,7 @@ import { BaseFeatureComponent } from '../shared/base-feature.component';
   templateUrl: './feature-icon-indicator.component.html',
   styleUrls: ['./feature-icon-indicator.component.scss']
 })
-export class FeatureIconIndicatorComponent extends BaseFeatureComponent implements OnInit {
+export class FeatureIconIndicatorComponent extends BaseFeatureComponent /* implements OnInit */ {
 
   constructor(
     dialog: MatDialog,
@@ -18,7 +18,7 @@ export class FeatureIconIndicatorComponent extends BaseFeatureComponent implemen
     super(dialog, viewContainerRef, featuresService);
   }
 
-  ngOnInit(): void {
-    super.ngOnInit();
-  }
+  // ngOnInit(): void {
+  //   super.ngOnInit();
+  // }
 }

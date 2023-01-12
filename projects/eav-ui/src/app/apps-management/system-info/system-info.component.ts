@@ -8,6 +8,7 @@ import { BaseComponent } from '../../shared/components/base-component/base.compo
 import { copyToClipboard } from '../../shared/helpers/copy-to-clipboard.helper';
 import { EavWindow } from '../../shared/models/eav-window.model';
 import { DialogService } from '../../shared/services/dialog.service';
+import { FeaturesService } from '../../shared/services/features.service';
 import { SiteLanguage } from '../models/site-language.model';
 import { SystemInfoSet } from '../models/system-info.model';
 import { SxcInsightsService } from '../services/sxc-insights.service';
@@ -40,6 +41,7 @@ export class SystemInfoComponent extends BaseComponent implements OnInit, OnDest
     private snackBar: MatSnackBar,
     private dialogService: DialogService,
     private sxcInsightsService: SxcInsightsService,
+    private featuresService: FeaturesService,
   ) {
     super(router, route)
   }
