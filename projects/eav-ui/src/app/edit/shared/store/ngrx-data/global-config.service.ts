@@ -43,7 +43,10 @@ export class GlobalConfigService extends BaseDataService<GlobalConfig> {
 
   toggleDebugEnabled(): void {
     const oldConfig = this.cache$.value[0];
-    if (!oldConfig.allowDebugMode) { return; }
+    if (!oldConfig.allowDebugMode) {
+      this.snackBar.open('You do not have permissions to enter debug mode', null, { duration: 3000 });
+      return;
+    }
 
     const newConfig: GlobalConfig = {
       ...oldConfig,
