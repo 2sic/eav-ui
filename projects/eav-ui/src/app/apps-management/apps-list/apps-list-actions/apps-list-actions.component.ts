@@ -12,7 +12,7 @@ import { AppsListActionsParams } from './apps-list-actions.models';
 export class AppsListActionsComponent implements ICellRendererAngularComp {
   app: App;
 
-  private params: ICellRendererParams & AppsListActionsParams;
+  public params: ICellRendererParams & AppsListActionsParams;
 
   agInit(params: ICellRendererParams & AppsListActionsParams): void {
     this.params = params;
@@ -25,6 +25,10 @@ export class AppsListActionsComponent implements ICellRendererAngularComp {
 
   openLightspeed(): void {
     this.params.onOpenLightspeed(this.app);
+  }
+
+  openLightspeedFeatureInfo(): void {
+    this.params.openLightspeedFeatureInfo();
   }
 
   flushCache(): void {

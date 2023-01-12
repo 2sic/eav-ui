@@ -1,5 +1,5 @@
 import { GridOptions, ICellRendererParams } from '@ag-grid-community/core';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, catchError, Observable, of, share, startWith, Subject, switchMap } from 'rxjs';
@@ -19,6 +19,9 @@ import { AppsListService } from '../services/apps-list.service';
 import { AppsListActionsComponent } from './apps-list-actions/apps-list-actions.component';
 import { AppsListActionsParams } from './apps-list-actions/apps-list-actions.models';
 import { AppsListShowComponent } from './apps-list-show/apps-list-show.component';
+import { publishStatusSelectId } from '../../edit/shared/store/ngrx-data/entity-metadata';
+import { FeatureComponentBase } from '../../features/shared/base-feature.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-apps-list',
@@ -30,6 +33,7 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
   fabOpen$ = new BehaviorSubject(false);
   gridOptions = this.buildGridOptions();
   isAddFromFolderEnabled$: Observable<boolean>;
+  lightspeedEnabled$ = new BehaviorSubject<boolean>(false);
 
   private refreshApps$ = new Subject<void>();
 
@@ -39,7 +43,10 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
     private appsListService: AppsListService,
     private snackBar: MatSnackBar,
     private context: Context,
+    // Services for showing features in the menu
     private featuresService: FeaturesService,
+    private dialog: MatDialog,
+    private viewContainerRef: ViewContainerRef,
   ) {
     super(router, route);
   }
@@ -52,6 +59,7 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
     );
     this.subscription.add(this.refreshOnChildClosedDeep().subscribe(() => { this.refreshApps$.next(); }));
     this.isAddFromFolderEnabled$ = this.featuresService.isEnabled$(FeatureNames.AppSyncWithSiteFiles);
+    this.subscription.add(this.featuresService.isEnabled$(FeatureNames.LightSpeed).subscribe(this.lightspeedEnabled$));
   }
 
   ngOnDestroy(): void {
@@ -241,6 +249,8 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
               onDelete: (app) => this.deleteApp(app),
               onFlush: (app) => this.flushApp(app),
               onOpenLightspeed: (app) => this.openLightspeed(app),
+              lightspeedEnabled: () => this.lightspeedEnabled$.value,
+              openLightspeedFeatureInfo: () => this.openLightSpeed(),
             };
             return params;
           })(),
@@ -248,5 +258,9 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
       ],
     };
     return gridOptions;
+  }
+
+  openLightSpeed() {
+    FeatureComponentBase.openDialog(this.dialog, FeatureNames.LightSpeed, this.viewContainerRef);
   }
 }

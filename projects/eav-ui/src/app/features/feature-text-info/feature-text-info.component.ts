@@ -2,7 +2,7 @@ import { Component, Input, OnInit, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { FeaturesService } from '../../shared/services/features.service';
 import { FeatureSummary } from '../models';
-import { BaseFeatureComponent } from '../shared/base-feature.component';
+import { FeatureComponentBase } from '../shared/base-feature.component';
 import { BehaviorSubject, map, Observable, combineLatest, switchMap } from 'rxjs';
 
 @Component({
@@ -10,7 +10,7 @@ import { BehaviorSubject, map, Observable, combineLatest, switchMap } from 'rxjs
   templateUrl: './feature-text-info.component.html',
   styleUrls: ['./feature-text-info.component.scss']
 })
-export class FeatureTextInfoComponent extends BaseFeatureComponent {
+export class FeatureTextInfoComponent extends FeatureComponentBase {
   @Input()
   public set asInfo(value: boolean) { this.asInfo$.next(value); }
   asInfo$ = new BehaviorSubject<boolean>(false);

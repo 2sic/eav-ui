@@ -7,10 +7,15 @@
   </div>
   <div class="like-button" *ngIf="app.Lightspeed?.IsEnabled" matRipple [tippy]="app.Lightspeed.Title"
     (click)="openLightspeed()">
-    <mat-icon>bolt</mat-icon>
+    <mat-icon [matBadgeHidden]="params.lightspeedEnabled()" matBadgeSize="small" matBadge="💎" matBadgePosition="below after">
+      bolt
+    </mat-icon>
   </div>
-  <div class="like-button disabled" tippy="Lightspeed is disabled" *ngIf="!app.Lightspeed?.IsEnabled">
-    <mat-icon>bolt</mat-icon>
+  <div class="like-button disabled" *ngIf="!app.Lightspeed?.IsEnabled" tippy="Lightspeed is disabled"
+    (click)="openLightspeedFeatureInfo()">
+    <mat-icon [matBadgeHidden]="params.lightspeedEnabled()" matBadgeSize="small" matBadge="💎" matBadgePosition="below after">
+      bolt
+    </mat-icon>
   </div>
   <div class="like-button highlight" matRipple tippy="More" [matMenuTriggerFor]="menu">
     <mat-icon>more_horiz</mat-icon>

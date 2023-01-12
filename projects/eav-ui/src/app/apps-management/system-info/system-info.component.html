@@ -73,7 +73,7 @@
     </mat-card-content>
   </mat-card>
 
-  <!-- TODO: Performance / Lightspeed -->
+  <!-- Performance / Lightspeed -->
   <mat-card>
     <mat-card-header>
       <div mat-card-avatar>
@@ -85,7 +85,6 @@
     <mat-card-content>
       <app-feature-text-info [featureNameId]="'LightSpeedOutputCache'" [asInfo]="true"></app-feature-text-info>
   
-      <!-- TODO: HIDE IF NOT ENABLED -->
       <div *ngIf="data.lsEnabled">
         LightSpeed is enabled.
         Configure it in each site/app as you need.
@@ -96,7 +95,7 @@
     </mat-card-actions>
   </mat-card>
 
-  <!-- TODO: Security -->
+  <!-- Security -->
   <mat-card>
     <mat-card-header>
       <div mat-card-avatar>
@@ -108,7 +107,6 @@
     <mat-card-content>
       <app-feature-text-info [featureNameId]="'ContentSecurityPolicy'" [asInfo]="true"></app-feature-text-info>
   
-      <!-- TODO: HIDE IF NOT ENABLED -->
       <div *ngIf="data.cspEnabled">
         ContentSecurityPolicy is enabled.
         Configure it in each site/app as you need.

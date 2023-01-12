@@ -1,13 +1,12 @@
-import { Directive, Input, OnInit, ViewContainerRef } from '@angular/core';
+import { Directive, Input, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { FeaturesService } from '../../shared/services/features.service';
 import { FeatureInfoDialogComponent } from '../feature-info-dialog/feature-info-dialog.component';
-import { BehaviorSubject, switchMap, Observable, map, tap, combineLatest } from 'rxjs';
+import { BehaviorSubject, switchMap, Observable, map, combineLatest } from 'rxjs';
 import { FeatureSummary } from '../models';
 
-// TODO: rename to FeatureComponentBase (naming)
 @Directive()
-export class BaseFeatureComponent /* implements OnInit */ {
+export class FeatureComponentBase {
   /** Feature NameId to check */
   @Input()
   public set featureNameId(value: string) { this.featureNameId$.next(value); }
@@ -37,15 +36,23 @@ export class BaseFeatureComponent /* implements OnInit */ {
     );
   }
 
-  // ngOnInit(): void {
-  //   this.featureOn = this.featuresService.isEnabled(this.featureNameId);
-  // }
-
   openDialog() {
-    this.dialog.open(FeatureInfoDialogComponent, {
+    FeatureComponentBase.openDialog(this.dialog, this.featureNameId$.value, this.viewContainerRef);
+    // this.dialog.open(FeatureInfoDialogComponent, {
+    //   autoFocus: false,
+    //   data: this.featureNameId$.value,
+    //   viewContainerRef: this.viewContainerRef,
+    //   // TODO: this looks wrong. I believe we have some way to standardize dialog sizes...
+    //   width: '600px',
+    // });
+  }
+
+  /** Public/Static so it can be called from elsewhere */
+  public static openDialog(dialog: MatDialog, featureId: string, viewContainerRef: ViewContainerRef) {
+    dialog.open(FeatureInfoDialogComponent, {
       autoFocus: false,
-      data: this.featureNameId$.value,
-      viewContainerRef: this.viewContainerRef,
+      data: featureId,
+      viewContainerRef: viewContainerRef,
       // TODO: this looks wrong. I believe we have some way to standardize dialog sizes...
       width: '600px',
     });

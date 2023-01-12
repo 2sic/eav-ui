@@ -9,4 +9,5 @@ export const FeatureNames = {
   EditUiShowMetadataFor: 'EditUiShowMetadataFor',
   NoSponsoredByToSic: 'NoSponsoredByToSic',
   EditUiTranslateWithGoogle: 'EditUiTranslateWithGoogle',
+  LightSpeed: 'LightSpeedOutputCache',
 };
