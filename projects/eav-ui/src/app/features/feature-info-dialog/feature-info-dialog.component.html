@@ -11,7 +11,7 @@
     <div class="info-row">
       <div class="info-row__label">{{ "Features.Status" | translate }}</div>
       <div class="info-row__value">
-        <span>{{ feature.Enabled ? "Features.Active" : "Features.NotActive" | translate }}</span>
+        <span>{{ (feature.Enabled ? "Features.Active" : "Features.NotActive") | translate }}</span>
       </div>
     </div>
     <div class="info-row" *ngIf="feature.NameId as id">
