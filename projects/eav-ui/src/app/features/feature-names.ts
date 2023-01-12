@@ -10,4 +10,5 @@ export const FeatureNames = {
   NoSponsoredByToSic: 'NoSponsoredByToSic',
   EditUiTranslateWithGoogle: 'EditUiTranslateWithGoogle',
   LightSpeed: 'LightSpeedOutputCache',
+  ContentSecurityPolicy: 'ContentSecurityPolicy',
 };

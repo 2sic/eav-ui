@@ -15,12 +15,16 @@ import { EditForm } from '../../shared/models/edit-form.model';
 import { Context } from '../../shared/services/context';
 import { DialogService } from '../../shared/services/dialog.service';
 import { FeaturesService } from '../../shared/services/features.service';
+import { AppAdminHelpers } from '../app-admin-helpers';
 import { ContentTypeEdit } from '../models';
 import { AppDialogConfigService, ContentTypesService } from '../services';
 import { AppInternalsService } from '../services/app-internals.service';
 import { ExportAppService } from '../services/export-app.service';
 import { ImportAppPartsService } from '../services/import-app-parts.service';
 import { AnalyzePart, AnalyzeParts } from '../sub-dialogs/analyze-settings/analyze-settings.models';
+import { BehaviorSubject, Subject, Observable, combineLatest, map, tap } from 'rxjs';
+import { AppInternals } from '../models/app-internals.model';
+import { FeatureNames } from '../../features/feature-names';
 
 @Component({
   selector: 'app-app-configuration',
@@ -47,6 +51,10 @@ export class AppConfigurationComponent extends BaseComponent implements OnInit, 
   appMetadataCount: number;
   debugEnabled$ = this.globalConfigService.getDebugEnabled$();
 
+  // More proper ViewModel
+  appSettingsInternal$ = new Subject<AppInternals>();
+  data$: Observable<ViewModel>;
+
   public appStateAdvanced = false;
 
   public features: FeaturesService = new FeaturesService();
@@ -67,6 +75,21 @@ export class AppConfigurationComponent extends BaseComponent implements OnInit, 
   ) {
     super(router, route);
     this.features.loadFromService(appDialogConfigService);
+
+    // New with proper ViewModel
+    // TODO: @SDV - pls convert everything in here to use this pattern
+    this.data$ = combineLatest([
+      this.appSettingsInternal$,
+      this.features.isEnabled$(FeatureNames.LightSpeed),
+      this.features.isEnabled$(FeatureNames.ContentSecurityPolicy)
+    ]).pipe(map(([settings, ls, csp]) => {
+      const result: ViewModel = {
+        lightSpeedEnabled: ls,
+        cspEnabled: csp,
+        appLightSpeedCount: settings.MetadataList.Items.filter(i => i._Type.Name == eavConstants.appMetadata.LightSpeed.ContentTypeName).length,
+      }
+      return result;
+    }));
   }
 
 
@@ -77,9 +100,10 @@ export class AppConfigurationComponent extends BaseComponent implements OnInit, 
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.dialogSettings != null) {
-      this.isGlobal = this.dialogSettings.Context.App.SettingsScope === AppScopes.Global;
-      this.isPrimary = this.dialogSettings.Context.App.SettingsScope === AppScopes.Site;
-      this.isApp = this.dialogSettings.Context.App.SettingsScope === AppScopes.App;
+      const appScope = this.dialogSettings.Context.App.SettingsScope;
+      this.isGlobal = appScope === AppScopes.Global;
+      this.isPrimary = appScope === AppScopes.Site;
+      this.isApp = appScope === AppScopes.App;
     }
   }
 
@@ -130,12 +154,8 @@ export class AppConfigurationComponent extends BaseComponent implements OnInit, 
           };
           break;
         default:
-          if (contentItems.length < 1) {
-            throw new Error(`Found no settings for type ${staticName}`);
-          }
-          if (contentItems.length > 1) {
-            throw new Error(`Found too many settings for type ${staticName}`);
-          }
+          if (contentItems.length < 1) throw new Error(`Found no settings for type ${staticName}`);
+          if (contentItems.length > 1) throw new Error(`Found too many settings for type ${staticName}`);
           form = {
             items: [{ EntityId: contentItems[0].Id }],
           };
@@ -152,6 +172,12 @@ export class AppConfigurationComponent extends BaseComponent implements OnInit, 
       `Metadata for App: ${this.dialogSettings.Context.App.Name} (${this.context.appId})`,
     );
     this.router.navigate([url], { relativeTo: this.route.firstChild });
+  }
+
+  openLightSpeed() {
+    const form = AppAdminHelpers.getLightSpeedEditParams(this.context.appId);
+    const formUrl = convertFormToUrl(form);
+    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.firstChild });
   }
 
   openSiteSettings() {
@@ -222,8 +248,13 @@ export class AppConfigurationComponent extends BaseComponent implements OnInit, 
   }
 
   private fetchSettings() {
-    this.appInternalsService.getAppInternals(eavConstants.metadata.app.targetType, eavConstants.metadata.app.keyType, this.context.appId)
-      .subscribe(x => {
+    const getObservable = this.appInternalsService.getAppInternals(eavConstants.metadata.app.targetType, eavConstants.metadata.app.keyType, this.context.appId);
+    getObservable.subscribe(x => {
+      // 2dm - New mode for Reactive UI
+      this.appSettingsInternal$.next(x);
+
+      // TODO: @SDV - move all these variables into data$ with the code in the constructor
+      // then remove this code
         this.systemSettingsCount = this.isPrimary
           ? x.EntityLists.SettingsSystem.filter(i => i.SettingsEntityScope === SystemSettingsScopes.Site).length
           : x.EntityLists.SettingsSystem.filter(i => !i.SettingsEntityScope).length;
@@ -269,4 +300,13 @@ export class AppConfigurationComponent extends BaseComponent implements OnInit, 
       }
     });
   }
+}
+
+class ViewModel {
+  // Lightspeed
+  lightSpeedEnabled: boolean;
+  appLightSpeedCount: number;
+
+  // CSP
+  cspEnabled: boolean;
 }

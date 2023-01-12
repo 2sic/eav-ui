@@ -15,6 +15,7 @@ import { SxcInsightsService } from '../services/sxc-insights.service';
 import { ZoneService } from '../services/zone.service';
 import { GoToRegistration } from '../sub-dialogs/registration/go-to-registration';
 import { InfoTemplate, SystemInfoTemplateVars } from './system-info.models';
+import { FeatureNames } from '../../features/feature-names';
 
 declare const window: EavWindow;
 
@@ -219,8 +220,8 @@ export class SystemInfoComponent extends BaseComponent implements OnInit, OnDest
         return info;
       }),
     );
-    var lsEnabled$ = this.featuresService.isEnabled$('LightSpeedOutputCache');
-    var cspEnabled$ = this.featuresService.isEnabled$('ContentSecurityPolicy');
+    var lsEnabled$ = this.featuresService.isEnabled$(FeatureNames.LightSpeed);
+    var cspEnabled$ = this.featuresService.isEnabled$(FeatureNames.ContentSecurityPolicy);
     this.templateVars$ = combineLatest([systemInfos$, siteInfos$, this.loading$, warningIcon$, warningInfos$, lsEnabled$, cspEnabled$]).pipe(
       map(([systemInfos, siteInfos, loading, warningIcon, warningInfos, lsEnabled, cspEnabled]) => {
         const viewModel: SystemInfoTemplateVars = {

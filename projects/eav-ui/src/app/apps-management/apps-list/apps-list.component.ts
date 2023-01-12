@@ -23,6 +23,7 @@ import { publishStatusSelectId } from '../../edit/shared/store/ngrx-data/entity-
 import { FeatureComponentBase } from '../../features/shared/base-feature.component';
 import { MatDialog } from '@angular/material/dialog';
 import { eavConstants } from '../../shared/constants/eav.constants';
+import { AppAdminHelpers } from '../../app-administration/app-admin-helpers';
 
 @Component({
   selector: 'app-apps-list',
@@ -128,24 +129,7 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
   }
 
   private openLightspeed(app: App): void {
-    if (!app.Lightspeed) {
-      console.log("LightSpeed data doesn't exist yes, must create");
-      // TODO:
-      // 1. OPEN NEW METADATA DIALOG FOR THE APP
-      // 2. AFTER RETURN, refresh
-      // return;
-    }
-    const form: EditForm = app.Lightspeed
-      ? { items: [{ EntityId: app.Lightspeed.Id }] }
-      : { items: [{
-        ContentTypeName: 'LightSpeedOutputDecorator',
-        For: {
-          Target: eavConstants.metadata.app.target,
-          TargetType: eavConstants.metadata.app.targetType,
-          Number: app.Id,
-        }
-      }] };
-    const formUrl = convertFormToUrl(form);
+    const formUrl = convertFormToUrl(AppAdminHelpers.getLightSpeedEditParams(app.Id));
     this.router.navigate([`${this.context.zoneId}/${app.Id}/edit/${formUrl}`], { relativeTo: this.route.firstChild });
   }
 
