@@ -135,12 +135,15 @@
         It's intended for extensive debugging - see also
         <a href="https://2sxc.org/en/blog/post/using-2sxc-insights" target="_blank">this blog post</a>.
       </p>
-      <div class="card-actions">
+      <mat-card-actions>
+      <!-- <div class="card-actions"> -->
+        <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://r.2sxc.org/insights' }"></ng-container>
         <button mat-button (click)="openInsights()">
           <mat-icon>open_in_new</mat-icon>
           <span>Open 2sxc Insights</span>
         </button>
-      </div>
+      <!-- </div> -->
+      </mat-card-actions>
       <div class="card-content-separator"></div>
       <h4>Activate Page Level Logging</h4>
       <form #activateLogForm="ngForm" class="activate-log-form" (ngSubmit)="activatePageLog(activateLogForm)">
@@ -196,8 +199,8 @@
 
 
 <ng-template #docsLink let-icon let-label let-link="link">
-  <a mat-button href="{{link}}" target="_blank">
+  <a mat-button href="{{link}}" target="_blank" [tippy]="'online documentation'">
     <mat-icon>{{ icon ?? "menu_book" }}</mat-icon>
-    <span>{{ label ?? "docs"}}</span>
+    <span>{{ label }}</span>
   </a>
 </ng-template>
