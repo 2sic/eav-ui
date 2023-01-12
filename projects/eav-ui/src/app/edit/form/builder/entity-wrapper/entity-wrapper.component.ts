@@ -28,7 +28,7 @@ export class EntityWrapperComponent implements OnInit, AfterViewChecked, OnDestr
   @Input() group: FormGroup;
 
   collapse = false;
-  noteTouched: boolean;
+  noteTouched: boolean = false;
   templateVars$: Observable<ContentTypeTemplateVars>;
 
   private noteRef?: MatDialogRef<undefined, any>;
@@ -149,22 +149,20 @@ export class EntityWrapperComponent implements OnInit, AfterViewChecked, OnDestr
     this.router.navigate([`versions/${item.Entity.Id}`], { relativeTo: this.route });
   }
 
-  toggleNote(event?: PointerEvent | MouseEvent, open?: boolean) {
-    if (
-      event instanceof PointerEvent && event.pointerType === 'touch'
-      && (event.type === 'pointerenter' || event.type === 'pointerleave')
-    ) { return; }
-
+  toggleNote(event: Event) {
     const isOpen = this.noteRef?.getState() === MatDialogState.OPEN;
-    open ??= this.noteRef?.getState() !== MatDialogState.OPEN;
-    if (isOpen === open) { return; }
-
-    this.noteTouched = false;
-    if (!open) {
-      this.noteRef?.close();
-      return;
+    if (event.type === 'pointerenter' && this.noteTouched == false) this.openNote();
+    else if (event.type === 'pointerleave' && this.noteTouched == false) this.noteRef?.close();
+    else if (event.type === 'click' && isOpen) {
+      if (this.noteTouched == false) this.noteTouched = true;
+      else {
+        this.noteRef?.close();
+        this.noteTouched = false;
+      }
     }
+  }
 
+  openNote() {
     const triggerPosition = this.noteTriggerRef.nativeElement.getBoundingClientRect();
     this.noteRef = this.dialog.open(this.noteTemplateRef, {
       autoFocus: false,
@@ -210,7 +208,7 @@ export class EntityWrapperComponent implements OnInit, AfterViewChecked, OnDestr
     const id = note.Id;
     if (!confirm(this.translate.instant('Data.Delete.Question', { title, id }))) { return; }
     this.entityService.delete(eavConstants.contentTypes.notes, note.Id, false).subscribe(() => {
-      this.toggleNote(undefined, false);
+      this.noteRef?.close();
       this.fetchNote();
     });
   }

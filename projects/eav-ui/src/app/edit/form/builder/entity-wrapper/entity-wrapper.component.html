@@ -15,15 +15,15 @@
     <button type="button" #noteTrigger mat-icon-button class="note {{ data.noteProps.triggerClass }}"
       [disabled]="data.readOnly" [tippy]="data.noteProps.tooltip | translate"
       [tippyDisabled]="data.readOnly || !data.noteProps.tooltip" [disableRipple]="data.noteProps.itemNotSaved"
-      (pointerenter)="data.noteProps.note ? toggleNote($event, true) : null"
+      (pointerenter)="data.noteProps.note ? toggleNote($event) : null"
+      (pointerleave)="data.noteProps.note ? toggleNote($event) : null"
       (click)="data.noteProps.note ? toggleNote($event) : editNote()" *ngIf="data.showNotes">
       <mat-icon>{{ data.noteProps.iconName }}</mat-icon>
     </button>
 
     <ng-template #noteTemplate>
       <div class="note-wrapper {{ data.noteProps.noteClass }}" cdkDrag cdkDragRootElement=".cdk-overlay-pane"
-        cdkDragBoundary="body" (pointerdown)="noteTouched = true"
-        (pointerleave)="noteTouched ? null : toggleNote($event, false)">
+        cdkDragBoundary="body" (pointerdown)="noteTouched = true">
         <div class="note-actions" cdkDragHandle>
           <button mat-icon-button appMousedownStopPropagation (click)="editNote(data.noteProps.note)">
             <mat-icon>edit</mat-icon>
@@ -31,7 +31,7 @@
           <button mat-icon-button appMousedownStopPropagation (click)="deleteNote(data.noteProps.note)">
             <mat-icon>delete</mat-icon>
           </button>
-          <button mat-icon-button appMousedownStopPropagation (click)="toggleNote($event, false)">
+          <button mat-icon-button appMousedownStopPropagation (click)="toggleNote($event)">
             <mat-icon>close</mat-icon>
           </button>
         </div>
