@@ -98,6 +98,7 @@ import { Dayjs } from 'dayjs';
 import { AutoTranslateMenuDialogComponent } from './form/wrappers/localization-wrapper/auto-translate-menu-dialog/auto-translate-menu-dialog.component';
 import { SnackBarWarningDemoComponent } from './form/wrappers/localization-wrapper/snack-bar-warning-demo/snack-bar-warning-demo.component';
 import { AutoTranslateDisabledWarningDialog } from './form/wrappers/localization-wrapper/auto-translate-disabled-warning-dialog/auto-translate-disabled-warning-dialog.component';
+import { MatBadgeModule } from '@angular/material/badge';
 
 @NgModule({
     declarations: [
@@ -184,6 +185,7 @@ import { AutoTranslateDisabledWarningDialog } from './form/wrappers/localization
         MatSnackBarModule,
         MatDialogModule,
         MatDividerModule,
+        MatBadgeModule,
         FlexLayoutModule,
         FormsModule,
         MatFormFieldModule,

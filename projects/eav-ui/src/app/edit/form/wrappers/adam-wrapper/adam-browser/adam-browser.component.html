@@ -23,16 +23,22 @@
 
     <!-- paste image from clipboard -->
     <div #pasteDiv
-      *ngIf="data.allowPasteImageFromClipboard && !data.disabled && data.adamConfig.allowEdit && !((data.adamConfig.subfolder === '' || data.adamConfig.usePortalRoot && data.adamConfig.subfolder === data.adamConfig.rootSubfolder) && !data.adamConfig.allowAssetsInRoot)"
+      *ngIf="!data.disabled && data.adamConfig.allowEdit && !((data.adamConfig.subfolder === '' || data.adamConfig.usePortalRoot && data.adamConfig.subfolder === data.adamConfig.rootSubfolder) && !data.adamConfig.allowAssetsInRoot)"
       appPasteClipboardImage [config]="config" [elementType]="'element'" class="dz-preview dropzone-adam paste-image"
-      [tippy]="'Fields.Hyperlink.AdamFileManager.UploadPasteTip' | translate">
+      [tippy]="'Fields.Hyperlink.AdamFileManager.UploadPasteTip' | translate" (click)="openFeatureInfoDialog()">
       <div class="dz-image adam-browse-background-icon adam-browse-background">
-        <mat-icon>filter</mat-icon>
-        <div *ngIf="!pasteDiv.classList.contains('pastable-focus')" class="adam-upload-label">
+        <mat-icon class="adam-filter-mat-icon-with-grey-mat-badge" [matBadgeHidden]="data.allowPasteImageFromClipboard" 
+          matBadgeSize="large" matBadge="💎" matBadgePosition="below after" matBadgeOverlap="true">
+          filter
+        </mat-icon>
+        <div *ngIf="!pasteDiv.classList.contains('pastable-focus') && data.allowPasteImageFromClipboard" class="adam-upload-label">
           {{ 'Fields.Hyperlink.AdamFileManager.UploadPasteLabel' | translate }}
         </div>
-        <div *ngIf="pasteDiv.classList.contains('pastable-focus')" class="adam-upload-label">
+        <div *ngIf="pasteDiv.classList.contains('pastable-focus') && data.allowPasteImageFromClipboard" class="adam-upload-label">
           {{ 'Fields.Hyperlink.AdamFileManager.UploadPasteFocusedLabel' | translate }}
+        </div>
+        <div *ngIf="!data.allowPasteImageFromClipboard" class="adam-upload-label">
+          {{ 'Fields.Hyperlink.AdamFileManager.UploadPasteLabel' | translate }}
         </div>
       </div>
     </div>

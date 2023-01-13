@@ -1,8 +1,10 @@
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output, ViewContainerRef } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
+import { FeatureComponentBase } from 'projects/eav-ui/src/app/features/shared/base-feature.component';
 import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/features.service';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, startWith, Subscription } from 'rxjs';
 import { AdamConfig, AdamItem, DropzoneConfigExt } from '../../../../../../../../edit-types';
@@ -48,6 +50,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
   private url: string;
   private subscription = new Subscription();
   private firstFetch = true;
+  private isPasteImageFromClipboardEnabled$ = new BehaviorSubject<boolean>(false);
 
   constructor(
     private adamService: AdamService,
@@ -59,6 +62,8 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
     private linkCacheService: LinkCacheService,
     private formsStateService: FormsStateService,
     private fieldsSettingsService: FieldsSettingsService,
+    private dialog: MatDialog,
+    private viewContainerRef: ViewContainerRef,
   ) { }
 
   ngOnInit() {
@@ -102,6 +107,8 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
     const allowPasteImageFromClipboard$ = this.featuresService.isEnabled$(FeatureNames.PasteImageFromClipboard).pipe(
       distinctUntilChanged(),
     );
+    this.subscription.add(allowPasteImageFromClipboard$.pipe(distinctUntilChanged())
+      .subscribe(this.isPasteImageFromClipboardEnabled$));
     const expanded$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
     const value$ = this.control.valueChanges.pipe(
       startWith(this.control.value),
@@ -264,6 +271,11 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
     this.adamService.getAll(this.url, adamConfig).subscribe(items => {
       this.processFetchedItems(items, adamConfig);
     });
+  }
+
+  openFeatureInfoDialog() {
+    if (!this.isPasteImageFromClipboardEnabled$.value)
+      FeatureComponentBase.openDialog(this.dialog, FeatureNames.PasteImageFromClipboard, this.viewContainerRef);
   }
 
   private processFetchedItems(items: AdamItem[], adamConfig: AdamConfig): void {
