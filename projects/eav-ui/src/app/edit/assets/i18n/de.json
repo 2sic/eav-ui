@@ -45,7 +45,9 @@
     "Deleting": "Löschen...",
     "DeleteError": "Löschen hat versagt. Bitte genauen Grund aus der Konsole entnehmen. ",
     "SwitchedLanguageToDefault": "Es fehlen Werte in der Primärsprache, deshalb wurde auf die Standardsprache {{language}} umgestellt.",
-    "CantSwitchLanguage": "Sprachwechsel erst möglich wenn alle Pflichtfelder in der aktuellen Sprache befüllt sind"
+    "CantSwitchLanguage": "Sprachwechsel erst möglich wenn alle Pflichtfelder in der aktuellen Sprache befüllt sind",
+    "PastingFilesIsNotEnabled": "Dateien einfügen ist nicht verfügbar.",
+    "FindOutMore": "mehr"
   },
   "LangMenu": {
     "Translate": "Übersetzen",

@@ -45,7 +45,9 @@
     "Deleting": "Deleting...",
     "DeleteError": "Delete failed. Please check console for more information",
     "SwitchedLanguageToDefault": "We have switched language to default {{language}} because it's missing some or all values",
-    "CantSwitchLanguage": "Can't switch languages until current language has all required values"
+    "CantSwitchLanguage": "Can't switch languages until current language has all required values",
+    "PastingFilesIsNotEnabled": "Pasting files is not enabled.",
+    "FindOutMore": "Find out more"
   },
   "LangMenu": {
     "Translate": "Translate",
