@@ -1,7 +1,5 @@
 import { Component, Input, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
-import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/features.service';
 import { combineLatest, map, Observable, Subscription } from 'rxjs';
 import { TranslationState } from '../../../../shared/models/fields-configs.model';
 import { EavService, FieldsSettingsService, FieldsTranslateService, FormsStateService } from '../../../../shared/services';
@@ -23,7 +21,6 @@ export class EntityTranslateMenuComponent implements OnInit, OnDestroy {
   templateVars$: Observable<EntityTranslateMenuTemplateVars>;
   translatableFromFields: string[];
   translationState: TranslationState;
-  isTranslateWithGoogleFeatureEnabled: boolean;
   private subscription: Subscription;
 
   constructor(
@@ -35,7 +32,6 @@ export class EntityTranslateMenuComponent implements OnInit, OnDestroy {
     private formsStateService: FormsStateService,
     private viewContainerRef: ViewContainerRef,
     private fieldsSettingsService: FieldsSettingsService,
-    private featuresService: FeaturesService,
   ) { }
 
   ngOnInit() {
@@ -56,7 +52,6 @@ export class EntityTranslateMenuComponent implements OnInit, OnDestroy {
         return templateVars;
       }),
     );
-    this.isTranslateWithGoogleFeatureEnabled = this.featuresService.isEnabled(FeatureNames.EditUiTranslateWithGoogle);
     this.translatableFromFields = this.fieldsTranslateService.findAutotranslatableFields();
     if (this.translatableFromFields.length > 0)
       this.subscription = this.fieldsSettingsService.getTranslationState$(this.translatableFromFields[0]).subscribe(x => this.translationState = x);

@@ -6,6 +6,7 @@ import { FieldSettings, FieldValue } from '../../../../../../edit-types';
 import { DataTypeConstants } from '../../../content-type-fields/constants/data-type.constants';
 import { InputTypeConstants } from '../../../content-type-fields/constants/input-type.constants';
 import { InputType } from '../../../content-type-fields/models/input-type.model';
+import { FeatureSummary } from '../../../features/models';
 import { consoleLogAngular } from '../../../shared/helpers/console-log-angular.helper';
 import { FeaturesService } from '../../../shared/services/features.service';
 import { FieldLogicManager } from '../../form/shared/field-logic/field-logic-manager';
@@ -27,6 +28,7 @@ export class FieldsSettingsService implements OnDestroy {
   private valueFormulaCounter = 0;
   private maxValueFormulaCycles = 5;
   private formulaSettingsCache: Record<string, FieldSettings> = {};
+  private featuresCache$ = new BehaviorSubject<FeatureSummary[]>([]);
 
   constructor(
     private contentTypeService: ContentTypeService,
@@ -64,6 +66,8 @@ export class FieldsSettingsService implements OnDestroy {
     const itemHeader$ = this.itemService.getItemHeader$(entityGuid);
     const currentLanguage$ = this.languageInstanceService.getCurrentLanguage$(this.eavService.eavConfig.formId);
     const defaultLanguage$ = this.languageInstanceService.getDefaultLanguage$(this.eavService.eavConfig.formId);
+
+    this.subscription.add(this.featuresService.getAll$().subscribe(this.featuresCache$));
 
     this.subscription.add(
       combineLatest([contentType$, itemHeader$, currentLanguage$, defaultLanguage$]).pipe(
@@ -348,7 +352,7 @@ export class FieldsSettingsService implements OnDestroy {
       this.itemService,
       this.eavService,
       this,
-      this.featuresService,
+      this.featuresCache$.value,
     );
     const designerState = this.formulaDesignerService.getDesignerState();
     const isOpenInDesigner = designerState.isOpen

@@ -1,7 +1,7 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { TranslateMenuDialogData, TranslateMenuDialogTemplateVars } from '../translate-menu-dialog/translate-menu-dialog.models';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
+import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, Subscription } from 'rxjs';
 import { TranslationLink, TranslationLinks } from '../../../../shared/constants';
 import { EavService, FieldsTranslateService } from '../../../../shared/services';
 import { ItemService, LanguageInstanceService, LanguageService } from '../../../../shared/store/ngrx-data';
@@ -22,10 +22,11 @@ export class AutoTranslateMenuDialogComponent implements OnInit, OnDestroy {
   TranslationLinks = TranslationLinks;
   I18nKeys = I18nKeys;
   templateVars$: Observable<TranslateMenuDialogTemplateVars>;
-  isTranslateWithGoogleFeatureEnabled: boolean;
 
   private translationState$: BehaviorSubject<TranslationStateCore>;
   private noLanguageRequired: TranslationLink[];
+  private isTranslateWithGoogleFeatureEnabled$ = new BehaviorSubject<boolean>(false);
+  private subscription: Subscription;
 
   constructor(
     private dialogRef: MatDialogRef<AutoTranslateMenuDialogComponent>,
@@ -46,8 +47,12 @@ export class AutoTranslateMenuDialogComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.isTranslateWithGoogleFeatureEnabled = this.featuresService.isEnabled(FeatureNames.EditUiTranslateWithGoogle);
-    if (this.isTranslateWithGoogleFeatureEnabled) {
+    const isTranslateWithGoogleFeatureEnabled$ = this.featuresService.isEnabled$(FeatureNames.EditUiTranslateWithGoogle);
+    this.subscription.add(isTranslateWithGoogleFeatureEnabled$
+      .pipe(distinctUntilChanged())
+      .subscribe(this.isTranslateWithGoogleFeatureEnabled$
+      ));
+    if (this.isTranslateWithGoogleFeatureEnabled$.value) {
       this.snackBar.openFromComponent(SnackBarWarningDemoComponent);
       this.dialogRef.afterClosed().subscribe(() => {
         this.snackBar.dismiss();
@@ -73,8 +78,8 @@ export class AutoTranslateMenuDialogComponent implements OnInit, OnDestroy {
       }),
     );
 
-    this.templateVars$ = combineLatest([defaultLanguage$, languages$, this.translationState$]).pipe(
-      map(([defaultLanguage, languages, translationState]) => {
+    this.templateVars$ = combineLatest([defaultLanguage$, languages$, this.translationState$, isTranslateWithGoogleFeatureEnabled$]).pipe(
+      map(([defaultLanguage, languages, translationState, isTranslateWithGoogleFeatureEnabled]) => {
         const templateVars: TranslateMenuDialogTemplateVars = {
           defaultLanguage,
           languages,
@@ -82,6 +87,7 @@ export class AutoTranslateMenuDialogComponent implements OnInit, OnDestroy {
           showLanguageSelection: !this.noLanguageRequired.includes(translationState.linkType),
           i18nRoot: `LangMenu.Dialog.${findI18nKey(translationState.linkType)}`,
           submitDisabled: translationState.language === '' && !this.noLanguageRequired.includes(translationState.linkType),
+          isTranslateWithGoogleFeatureEnabled
         };
         return templateVars;
       }),

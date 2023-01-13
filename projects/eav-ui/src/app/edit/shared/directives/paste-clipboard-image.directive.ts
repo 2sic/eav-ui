@@ -1,4 +1,5 @@
 import { Directive, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
+import { BehaviorSubject, distinctUntilChanged, Subscription } from 'rxjs';
 import { FeatureNames } from '../../../features/feature-names';
 import { consoleLogAngular } from '../../../shared/helpers/console-log-angular.helper';
 import { FeaturesService } from '../../../shared/services/features.service';
@@ -10,11 +11,17 @@ export class PasteClipboardImageDirective implements OnInit, OnDestroy {
   @Input() config: FieldConfigSet;
   @Input() elementType: string;
   private eventListeners: ElementEventListener[] = [];
+  private pasteImageEnabled$ = new BehaviorSubject<boolean>(false);
+  private subscription: Subscription = new Subscription();
 
   constructor(private elementRef: ElementRef, private featuresService: FeaturesService) { }
 
   ngOnInit() {
-    if (!this.featuresService.isEnabled(FeatureNames.PasteImageFromClipboard)) { return; }
+    this.subscription.add(this.featuresService.isEnabled$(FeatureNames.PasteImageFromClipboard)
+      .pipe(distinctUntilChanged())
+      .subscribe(this.pasteImageEnabled$));
+    
+    if (!this.pasteImageEnabled$.value) { return; }
 
     switch (this.elementType) {
       case 'input':
@@ -37,9 +44,11 @@ export class PasteClipboardImageDirective implements OnInit, OnDestroy {
     this.eventListeners.forEach(({ element, type, listener }) => {
       element.removeEventListener(type, listener);
     });
+    this.subscription.unsubscribe();
   }
 
   private handleImage(event: CustomEvent) {
+    if (!this.pasteImageEnabled$.value) { return; }
     consoleLogAngular('PASTE IMAGE', 'event:', event);
     // todo: convert png to jpg to reduce file size
     const image = this.getFile(event.detail as PasteClipboardImageEventDetail);

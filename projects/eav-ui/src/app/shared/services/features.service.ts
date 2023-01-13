@@ -6,8 +6,6 @@ import { DialogContext } from '../models/dialog-settings.model';
 
 @Injectable({ providedIn: 'root' })
 export class FeaturesService {
-  // TODO: @SDV - stop using this
-  dialogContext: DialogContext;
   // new 2dm WIP
   // Provide context information and ensure that previously added data is always available
   private dialogContext$ = new ReplaySubject<DialogContext>(1);
@@ -19,18 +17,14 @@ export class FeaturesService {
   }
 
   load(dialogContext: DialogContext) {
-    this.dialogContext = dialogContext;
     // new 2dm WIP
     this.dialogContext$.next(dialogContext);
   }
 
-  private getAll(): FeatureSummary[] {
-    return this.dialogContext?.Features ?? [];
+  // new 2dm WIP
+  getAll$() {
+    return this.dialogContext$.pipe(map(dc => dc?.Features));
   }
-
-  // getFeature(featureNameId: string): FeatureSummary {
-  //   return this.dialogContext?.Features.find(f => f.NameId === featureNameId);
-  // }
 
   // new 2dm WIP
   get$(featureNameId: string) {
@@ -38,12 +32,6 @@ export class FeaturesService {
       // tap(f => console.log('2dm', f, featureNameId)),
       map(dc => dc?.Features.find(f => f.NameId === featureNameId))
     );
-  }
-
-  // TODO: @SDV - make sure we stop using this and use the reactive only below
-  isEnabled(nameId: string) {
-    const found = this.getAll().find(f => f.NameId === nameId);
-    return found?.Enabled ?? false;
   }
 
   isEnabled$(nameId: string) {

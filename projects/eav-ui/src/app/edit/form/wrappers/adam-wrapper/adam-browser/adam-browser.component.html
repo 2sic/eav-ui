@@ -23,7 +23,7 @@
 
     <!-- paste image from clipboard -->
     <div #pasteDiv
-      *ngIf="pasteClipboardImage && !data.disabled && data.adamConfig.allowEdit && !((data.adamConfig.subfolder === '' || data.adamConfig.usePortalRoot && data.adamConfig.subfolder === data.adamConfig.rootSubfolder) && !data.adamConfig.allowAssetsInRoot)"
+      *ngIf="data.allowPasteImageFromClipboard && !data.disabled && data.adamConfig.allowEdit && !((data.adamConfig.subfolder === '' || data.adamConfig.usePortalRoot && data.adamConfig.subfolder === data.adamConfig.rootSubfolder) && !data.adamConfig.allowAssetsInRoot)"
       appPasteClipboardImage [config]="config" [elementType]="'element'" class="dz-preview dropzone-adam paste-image"
       [tippy]="'Fields.Hyperlink.AdamFileManager.UploadPasteTip' | translate">
       <div class="dz-image adam-browse-background-icon adam-browse-background">

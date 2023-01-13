@@ -41,7 +41,6 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
   @Output() openUpload = new EventEmitter<null>();
 
   templateVars$: Observable<AdamBrowserTemplateVars>;
-  pasteClipboardImage: boolean;
 
   private adamConfig$: BehaviorSubject<AdamConfig>;
   private items$: BehaviorSubject<AdamItem[]>;
@@ -71,7 +70,6 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
     const entityGuid = this.config.entityGuid;
     const field = this.config.fieldName;
     this.url = this.dnnContext.$2sxc.http.apiUrl(`app/auto/data/${contentType}/${entityGuid}/${field}`);
-    this.pasteClipboardImage = this.featuresService.isEnabled(FeatureNames.PasteImageFromClipboard);
 
     // run inside zone to detect changes when called from custom components
     this.config.adam = {
@@ -101,6 +99,9 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
         this.fetchItems();
       })
     );
+    const allowPasteImageFromClipboard$ = this.featuresService.isEnabled$(FeatureNames.PasteImageFromClipboard).pipe(
+      distinctUntilChanged(),
+    );
     const expanded$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
     const value$ = this.control.valueChanges.pipe(
       startWith(this.control.value),
@@ -112,14 +113,15 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
       distinctUntilChanged(),
     );
 
-    this.templateVars$ = combineLatest([this.adamConfig$, expanded$, this.items$, value$, disabled$]).pipe(
-      map(([adamConfig, expanded, items, value, disabled]) => {
+    this.templateVars$ = combineLatest([this.adamConfig$, expanded$, this.items$, value$, disabled$, allowPasteImageFromClipboard$]).pipe(
+      map(([adamConfig, expanded, items, value, disabled, allowPasteImageFromClipboard]) => {
         const templateVars: AdamBrowserTemplateVars = {
           adamConfig,
           expanded,
           items,
           value,
           disabled,
+          allowPasteImageFromClipboard
         };
         return templateVars;
       }),

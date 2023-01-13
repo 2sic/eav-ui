@@ -8,6 +8,7 @@ import { TinyMceToolbars } from './toolbars';
 import { TinyMceTranslations } from './translations';
 import { TinyEavConfig } from './tinymce-config';
 import { InputTypeConstants } from '../../../eav-ui/src/app/content-type-fields/constants/input-type.constants';
+import { BehaviorSubject, distinctUntilChanged, Subscription } from 'rxjs';
 // import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
 
 declare const window: EavWindow;
@@ -18,9 +19,12 @@ export class TinyMceConfigurator {
   addOnSettings: AddOnSettings = { ...DefaultAddOnSettings };
 
   private language: string;
+  private isWysiwygPasteFormatted$ = new BehaviorSubject<boolean>(false);
+  private subscription: Subscription;
 
   constructor(private connector: Connector<string>, private reconfigure: WysiwygReconfigure) {
     this.language = this.connector._experimental.translateService.currentLang;
+    this.subscription = new Subscription();
 
     // call optional reconfiguration
     if (reconfigure) {
@@ -39,6 +43,12 @@ export class TinyMceConfigurator {
     }
 
     this.warnAboutCommonSettingsIssues();
+
+    this.subscription.add(this.connector._experimental.isFeatureEnabled$('WysiwygPasteFormatted')
+      .pipe(distinctUntilChanged())
+      .subscribe(this.isWysiwygPasteFormatted$)
+    );
+    
   }
 
   private warnAboutCommonSettingsIssues(): void {
@@ -110,7 +120,7 @@ export class TinyMceConfigurator {
       eavConfig,
       ...toolbarModes,
       ...TinyMceTranslations.getLanguageOptions(this.language),
-      ...(exp.isFeatureEnabled('WysiwygPasteFormatted') ? DefaultPaste.formattedText : {}),
+      ...(this.isWysiwygPasteFormatted$.value ? DefaultPaste.formattedText : {}),
       ...DefaultPaste.images(dropzone, adam),
       promotion: false,
       block_unsupported_drop: false,

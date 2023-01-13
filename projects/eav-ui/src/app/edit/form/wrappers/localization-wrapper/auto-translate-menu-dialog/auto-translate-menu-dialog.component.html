@@ -10,9 +10,9 @@
 
   <mat-action-list>
     <button mat-list-item *ngFor="let language of data.languages" (click)="setLanguage(language.key)"
-      [disabled]="language.disabled || !isTranslateWithGoogleFeatureEnabled" [ngClass]="{
+      [disabled]="language.disabled || !data.isTranslateWithGoogleFeatureEnabled" [ngClass]="{
       'mat-list-item-focus': data.translationState.language === language.key,
-      'mat-list-item--disabled': language.disabled || !isTranslateWithGoogleFeatureEnabled
+      'mat-list-item--disabled': language.disabled || !data.isTranslateWithGoogleFeatureEnabled
     }">
       <mat-icon matListIcon color="accent">language</mat-icon>
       {{ language.key }}

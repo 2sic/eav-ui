@@ -1,6 +1,5 @@
 import { InputFieldHelpers, LocalizationHelpers } from '.';
 import { FieldSettings, FieldValue } from '../../../../../../edit-types';
-import { Feature } from '../../../features/models/feature.model';
 import { InputType } from '../../../content-type-fields/models/input-type.model';
 import { EavWindow } from '../../../shared/models/eav-window.model';
 import { DesignerSnippet, FieldOption } from '../../dialog/footer/formula-designer/formula-designer.models';
@@ -10,7 +9,7 @@ import { FormulaCacheItem, FormulaFieldValidation, FormulaFunction, FormulaProps
 import { EavHeader } from '../models/eav';
 import { EavService, FieldsSettingsService } from '../services';
 import { ItemService } from '../store/ngrx-data';
-import { FeaturesService } from '../../../shared/services/features.service';
+import { FeatureSummary } from '../../../features/models';
 
 declare const window: EavWindow;
 
@@ -77,7 +76,7 @@ export class FormulaHelpers {
     itemService: ItemService,
     eavService: EavService,
     fieldsSettingsService: FieldsSettingsService,
-    featuresService: FeaturesService,
+    features: FeatureSummary[],
   ): FormulaProps {
 
     switch (formula.version) {
@@ -152,7 +151,7 @@ export class FormulaHelpers {
             debug: debugEnabled,
             features: {
               isEnabled(name: string): boolean {
-                return featuresService.isEnabled(name);
+                return features.find(f => f.Name === name)?.Enabled ?? false;
               },
             },
             form: {

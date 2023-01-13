@@ -19,7 +19,7 @@ export interface ExperimentalProps {
   adam: Adam;
   updateField(name: string, value: FieldValue): void;
   setFocused(focused: boolean): void;
-  isFeatureEnabled(nameId: string): boolean;
+  isFeatureEnabled$(nameId: string): Observable<boolean>;
   openPagePicker(callback: (value: PagePickerResult) => void): void;
   getUrlOfId(value: string, callback: (value: string) => void): void;
   getApiKeys(): DialogContextApiKeys[];

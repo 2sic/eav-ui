@@ -1,7 +1,7 @@
 import 'tinymce/tinymce'; // Important! tinymce has to be imported before themes and plugins
 import 'tinymce/models/dom'
 
-import type { Subscription } from 'rxjs';
+import { BehaviorSubject, distinctUntilChanged, Subscription } from 'rxjs';
 import 'tinymce/icons/default';
 import 'tinymce/plugins/anchor';
 import 'tinymce/plugins/autolink';
@@ -49,7 +49,8 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   private toolbarContainerClass: string;
   private subscriptions: Subscription[];
   private editorContent: string; // saves editor content to prevent slow update when first using editor
-  private pasteClipboardImage: boolean;
+  private pasteClipboardImage$ = new BehaviorSubject<boolean>(false);
+  private subscription: Subscription = new Subscription();
   private editor: Editor;
   private firstInit: boolean;
   private dialogIsOpen: boolean;
@@ -74,7 +75,10 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
     this.querySelector<HTMLDivElement>('.tinymce-container').classList.add(this.containerClass);
     this.querySelector<HTMLDivElement>('.tinymce-toolbar-container').classList.add(this.toolbarContainerClass);
     this.classList.add(this.mode === 'inline' ? 'inline-wysiwyg' : 'full-wysiwyg');
-    this.pasteClipboardImage = this.connector._experimental.isFeatureEnabled('PasteImageFromClipboard');
+    this.subscription.add(this.connector._experimental.isFeatureEnabled$('PasteImageFromClipboard')
+      .pipe(distinctUntilChanged())
+      .subscribe(this.pasteClipboardImage$)
+    );
 
     const tinyLang = TinyMceTranslations.fixTranslationKey(this.connector._experimental.translateService.currentLang);
     this.connector.loadScript(
@@ -162,7 +166,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
     // called before actual image upload
     // this is needed so paste will only work depending on pasteClipboardImage feature
     editor.on('paste', _event => {
-        editor.options.set("paste_data_images", this.pasteClipboardImage);
+        editor.options.set("paste_data_images", this.pasteClipboardImage$.value);
     });
 
     editor.on('focus', _event => {
@@ -226,6 +230,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   disconnectedCallback(): void {
     consoleLogWebpack(`${wysiwygEditorTag} disconnectedCallback called`);
     this.clearData();
+    this.subscription.unsubscribe();
   }
 }
 
