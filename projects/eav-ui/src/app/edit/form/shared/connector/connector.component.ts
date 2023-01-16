@@ -1,6 +1,7 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, Input, NgZone, OnDestroy, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/features.service';
 import { consoleLogAngular } from '../../../../shared/helpers/console-log-angular.helper';
@@ -35,6 +36,7 @@ export class ConnectorComponent implements AfterViewInit, OnDestroy {
     private changeDetectorRef: ChangeDetectorRef,
     private fieldsSettingsService: FieldsSettingsService,
     private entityCacheService: EntityCacheService,
+    private snackBar: MatSnackBar,
     private zone: NgZone,
   ) { }
 
@@ -58,6 +60,7 @@ export class ConnectorComponent implements AfterViewInit, OnDestroy {
       this.changeDetectorRef,
       this.fieldsSettingsService,
       this.entityCacheService,
+      this.snackBar,
       this.zone,
     );
   }

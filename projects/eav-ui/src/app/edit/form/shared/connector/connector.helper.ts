@@ -1,7 +1,10 @@
 import { ChangeDetectorRef, ElementRef, NgZone, ViewContainerRef } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
+import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
+import { FeatureComponentBase } from 'projects/eav-ui/src/app/features/shared/base-feature.component';
 import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/features.service';
 import { BehaviorSubject, distinctUntilChanged, map, Subscription } from 'rxjs';
 import { EavCustomInputField, ExperimentalProps, FieldConfig, FieldSettings, FieldValue } from '../../../../../../../edit-types';
@@ -35,6 +38,7 @@ export class ConnectorHelper {
     private changeDetectorRef: ChangeDetectorRef,
     private fieldsSettingsService: FieldsSettingsService,
     private entityCacheService: EntityCacheService,
+    private snackBar: MatSnackBar,
     private zone: NgZone,
   ) {
     this.control = this.group.controls[this.config.fieldName];
@@ -123,6 +127,11 @@ export class ConnectorHelper {
           PagePicker.open(this.config, this.group, this.dialog, this.viewContainerRef, this.changeDetectorRef, callback);
         });
       },
+      featureDisabledWarning: (featureNameId) => {
+        this.zone.run(() => {
+          this.openFeatureDisabledWarning(featureNameId);
+        });
+      },
       getUrlOfId: (value, callback) => {
         this.zone.run(() => { this.getUrlOfId(value, callback); });
       },
@@ -166,5 +175,13 @@ export class ConnectorHelper {
   private updateControl(control: AbstractControl, value: FieldValue) {
     if (control.disabled) { return; }
     GeneralHelpers.patchControlValue(control, value);
+  }
+
+  private openFeatureDisabledWarning(featureNameId: string) { 
+    if (featureNameId === FeatureNames.PasteImageFromClipboard) {
+      this.snackBar.open(this.translateService.instant('Message.PastingFilesIsNotEnabled'), this.translateService.instant('Message.FindOutMore'), { duration: 3000 }).onAction().subscribe(() => {
+        FeatureComponentBase.openDialog(this.dialog, FeatureNames.PasteImageFromClipboard, this.viewContainerRef, this.changeDetectorRef);
+      });
+    }
   }
 }

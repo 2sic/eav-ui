@@ -1,6 +1,6 @@
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output, ViewContainerRef } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
@@ -64,6 +64,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
     private fieldsSettingsService: FieldsSettingsService,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
+    private changeDetectorRef: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
@@ -275,7 +276,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
 
   openFeatureInfoDialog() {
     if (!this.isPasteImageFromClipboardEnabled$.value)
-      FeatureComponentBase.openDialog(this.dialog, FeatureNames.PasteImageFromClipboard, this.viewContainerRef);
+      FeatureComponentBase.openDialog(this.dialog, FeatureNames.PasteImageFromClipboard, this.viewContainerRef, this.changeDetectorRef);
   }
 
   private processFetchedItems(items: AdamItem[], adamConfig: AdamConfig): void {

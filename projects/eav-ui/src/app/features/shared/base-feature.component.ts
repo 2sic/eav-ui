@@ -1,4 +1,4 @@
-import { Directive, Input, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Directive, Input, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { FeaturesService } from '../../shared/services/features.service';
 import { FeatureInfoDialogComponent } from '../feature-info-dialog/feature-info-dialog.component';
@@ -25,6 +25,7 @@ export class FeatureComponentBase {
   constructor(
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
+    private changeDetectorRef: ChangeDetectorRef,
     protected featuresService: FeaturesService
   ) {
     this.feature$ = this.featureNameId$.pipe(
@@ -37,11 +38,11 @@ export class FeatureComponentBase {
   }
 
   openDialog() {
-    FeatureComponentBase.openDialog(this.dialog, this.featureNameId$.value, this.viewContainerRef);
+    FeatureComponentBase.openDialog(this.dialog, this.featureNameId$.value, this.viewContainerRef, this.changeDetectorRef);
   }
 
   /** Public/Static so it can be called from elsewhere */
-  public static openDialog(dialog: MatDialog, featureId: string, viewContainerRef: ViewContainerRef) {
+  public static openDialog(dialog: MatDialog, featureId: string, viewContainerRef: ViewContainerRef, changeDetectorRef: ChangeDetectorRef) {
     dialog.open(FeatureInfoDialogComponent, {
       autoFocus: false,
       data: featureId,
@@ -49,5 +50,7 @@ export class FeatureComponentBase {
       // TODO: this looks wrong. I believe we have some way to standardize dialog sizes...
       width: '600px',
     });
+
+    changeDetectorRef.markForCheck();
   }
 }

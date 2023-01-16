@@ -1,5 +1,5 @@
 import { GridOptions, ICellRendererParams } from '@ag-grid-community/core';
-import { Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, catchError, Observable, of, share, startWith, Subject, switchMap } from 'rxjs';
@@ -11,7 +11,6 @@ import { IdFieldComponent } from '../../shared/components/id-field/id-field.comp
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
-import { EditForm } from '../../shared/models/edit-form.model';
 import { Context } from '../../shared/services/context';
 import { FeaturesService } from '../../shared/services/features.service';
 import { App } from '../models/app.model';
@@ -19,10 +18,8 @@ import { AppsListService } from '../services/apps-list.service';
 import { AppsListActionsComponent } from './apps-list-actions/apps-list-actions.component';
 import { AppsListActionsParams } from './apps-list-actions/apps-list-actions.models';
 import { AppsListShowComponent } from './apps-list-show/apps-list-show.component';
-import { publishStatusSelectId } from '../../edit/shared/store/ngrx-data/entity-metadata';
 import { FeatureComponentBase } from '../../features/shared/base-feature.component';
 import { MatDialog } from '@angular/material/dialog';
-import { eavConstants } from '../../shared/constants/eav.constants';
 import { AppAdminHelpers } from '../../app-administration/app-admin-helpers';
 
 @Component({
@@ -49,6 +46,7 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
     private featuresService: FeaturesService,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
+    private changeDetectorRef: ChangeDetectorRef
   ) {
     super(router, route);
   }
@@ -261,6 +259,6 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
   }
 
   openLightSpeed() {
-    FeatureComponentBase.openDialog(this.dialog, FeatureNames.LightSpeed, this.viewContainerRef);
+    FeatureComponentBase.openDialog(this.dialog, FeatureNames.LightSpeed, this.viewContainerRef, this.changeDetectorRef);
   }
 }

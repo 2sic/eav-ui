@@ -21,6 +21,7 @@ export interface ExperimentalProps {
   setFocused(focused: boolean): void;
   isFeatureEnabled$(nameId: string): Observable<boolean>;
   openPagePicker(callback: (value: PagePickerResult) => void): void;
+  featureDisabledWarning(featureNameId: string): void;
   getUrlOfId(value: string, callback: (value: string) => void): void;
   getApiKeys(): DialogContextApiKeys[];
   getSettings(name: string): any;

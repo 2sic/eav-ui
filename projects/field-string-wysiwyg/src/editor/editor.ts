@@ -166,7 +166,10 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
     // called before actual image upload
     // this is needed so paste will only work depending on pasteClipboardImage feature
     editor.on('paste', _event => {
-        editor.options.set("paste_data_images", this.pasteClipboardImage$.value);
+      editor.options.set("paste_data_images", this.pasteClipboardImage$.value);
+      if (!this.pasteClipboardImage$.value) {
+        this.connector._experimental.featureDisabledWarning('PasteImageFromClipboard');
+      }
     });
 
     editor.on('focus', _event => {

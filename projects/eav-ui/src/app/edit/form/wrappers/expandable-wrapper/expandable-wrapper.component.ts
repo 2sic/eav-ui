@@ -1,5 +1,6 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/features.service';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, fromEvent, map, Observable, share, startWith } from 'rxjs';
@@ -49,6 +50,7 @@ export class ExpandableWrapperComponent extends BaseFieldComponent<string> imple
     private changeDetectorRef: ChangeDetectorRef,
     private viewContainerRef: ViewContainerRef,
     private entityCacheService: EntityCacheService,
+    private snackBar: MatSnackBar,
     private zone: NgZone,
     private formsStateService: FormsStateService,
   ) {
@@ -136,6 +138,7 @@ export class ExpandableWrapperComponent extends BaseFieldComponent<string> imple
       this.changeDetectorRef,
       this.fieldsSettingsService,
       this.entityCacheService,
+      this.snackBar,
       this.zone,
     );
 

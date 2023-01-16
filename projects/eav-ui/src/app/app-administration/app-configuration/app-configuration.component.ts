@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewContainerRef } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ContentItemsService } from '../../content-items/services/content-items.service';
@@ -76,6 +76,7 @@ export class AppConfigurationComponent extends BaseComponent implements OnInit, 
     appDialogConfigService: AppDialogConfigService,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
+    private changeDetectorRef: ChangeDetectorRef
   ) {
     super(router, route);
     this.features.loadFromService(appDialogConfigService);
@@ -209,7 +210,7 @@ export class AppConfigurationComponent extends BaseComponent implements OnInit, 
     if (enabled)
       this.router.navigate(['language-permissions'], { relativeTo: this.route.firstChild });
     else
-      FeatureComponentBase.openDialog(this.dialog, FeatureNames.PermissionsByLanguage, this.viewContainerRef);
+      FeatureComponentBase.openDialog(this.dialog, FeatureNames.PermissionsByLanguage, this.viewContainerRef, this.changeDetectorRef);
   }
 
   exportApp() {

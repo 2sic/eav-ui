@@ -67,9 +67,7 @@ export class PasteClipboardImageDirective implements OnInit, OnDestroy {
       this.config.dropzone.uploadFile(image);
     } else {
       this.snackBar.open(this.translate.instant('Message.PastingFilesIsNotEnabled'), this.translate.instant('Message.FindOutMore'), { duration: 3000 }).onAction().subscribe(() => {
-        FeatureComponentBase.openDialog(this.dialog, FeatureNames.PasteImageFromClipboard, this.viewContainerRef);
-        // without this change detection is not triggered and dialog is not rendered correctly
-        this.changeDetectorRef.detectChanges();
+        FeatureComponentBase.openDialog(this.dialog, FeatureNames.PasteImageFromClipboard, this.viewContainerRef, this.changeDetectorRef);
       });
     }
   }

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { FeaturesService } from '../../shared/services/features.service';
 import { FeatureComponentBase } from '../shared/base-feature.component';
@@ -12,9 +12,10 @@ export class FeatureIconTextComponent extends FeatureComponentBase /* implements
   constructor(
     dialog: MatDialog,
     viewContainerRef: ViewContainerRef,
-    featuresService: FeaturesService
+    featuresService: FeaturesService,
+    changeDetectorRef: ChangeDetectorRef
   ) {
-    super(dialog, viewContainerRef, featuresService);
+    super(dialog, viewContainerRef, changeDetectorRef, featuresService);
   }
 
   // ngOnInit(): void {

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnInit, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { FeaturesService } from '../../shared/services/features.service';
 import { FeatureSummary } from '../models';
@@ -20,9 +20,10 @@ export class FeatureTextInfoComponent extends FeatureComponentBase {
   constructor(
     dialog: MatDialog,
     viewContainerRef: ViewContainerRef,
-    featuresService: FeaturesService
+    featuresService: FeaturesService,
+    changeDetectorRef: ChangeDetectorRef
   ) {
-    super(dialog, viewContainerRef, featuresService);
+    super(dialog, viewContainerRef, changeDetectorRef , featuresService);
     this.data$ = combineLatest([this.feature$, this.asInfo$, this.show$]).pipe(map(([feature, asInfo, show]) => 
       ({
         feature,
