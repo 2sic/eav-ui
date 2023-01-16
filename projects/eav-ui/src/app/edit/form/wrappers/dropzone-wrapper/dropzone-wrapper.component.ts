@@ -79,8 +79,7 @@ export class DropzoneWrapperComponent extends BaseFieldComponent implements Fiel
 
   // on onDrop we check if drop is on wysiwyg or not
   onDrop(event: any) {
-    if ((event.path as HTMLElement[])
-      .some(x => x.classList?.contains("class-distinguish-from-adam-dropzone"))) {
+    if ((event.toElement as HTMLElement).classList.contains("class-distinguish-from-adam-dropzone")) {
       this.isStringWysiwyg = true;
     } else {
       this.isStringWysiwyg = false;
