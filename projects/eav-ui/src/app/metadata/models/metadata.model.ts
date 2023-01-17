@@ -24,6 +24,8 @@ export interface MetadataRecommendation {
   Id: string;
   Name: string;
   Title: string;
+  Enabled: boolean;
+  MissingFeature?: string;
 }
 
 export interface MetadataTemplateVars {

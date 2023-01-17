@@ -22,6 +22,7 @@ import { MetadataActionsParams } from './metadata-actions/metadata-actions.model
 import { MetadataContentTypeComponent } from './metadata-content-type/metadata-content-type.component';
 import { MetadataSaveDialogComponent } from './metadata-save-dialog/metadata-save-dialog.component';
 import { MetadataItem, MetadataRecommendation, MetadataTemplateVars } from './models/metadata.model';
+import { FeatureComponentBase } from '../features/shared/base-feature.component';
 
 @Component({
   selector: 'app-metadata',
@@ -98,6 +99,12 @@ export class MetadataComponent extends BaseComponent implements OnInit, OnDestro
 
   createMetadata(recommendation?: MetadataRecommendation) {
     if (recommendation) {
+      // If the feature is not enabled, open the info dialog instead of metadata
+      if (!recommendation.Enabled) {
+        FeatureComponentBase.openDialog(this.dialog, recommendation.MissingFeature, this.viewContainerRef, this.changeDetectorRef);
+        return;
+      }
+      // Feature is enabled, check if it's an empty metadata
       if (recommendation.CreateEmpty) {
         this.snackBar.open(`Creating ${recommendation.Name}...`);
         this.entitiesService.create(recommendation.Id, { For: this.calculateItemFor() }).subscribe({
@@ -111,6 +118,7 @@ export class MetadataComponent extends BaseComponent implements OnInit, OnDestro
           },
         });
       } else {
+        // Default case - open new-metadata dialog
         this.createMetadataForm(recommendation.Id);
       }
       return;
