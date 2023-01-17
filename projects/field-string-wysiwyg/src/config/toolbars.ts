@@ -1,35 +1,11 @@
 // tslint:disable-next-line: max-line-length
+import { expandSet, expandSetByView, NoButtons, selectFromSet } from './button-set-helpers';
 import { AddContentBlock, AddContentSplit, ContentDivision, HGroups, ItalicWithMore, LinkFiles, LinkGroup, LinkGroupPro, ListGroup, ModeAdvanced, ModeDefault, SxcImages, ToFullscreen, ToolbarModeToggle } from './public';
 import { TinyEavButtons, TinyEavConfig } from './tinymce-config';
 // tslint:disable-next-line: max-line-length
 import { TinyMceMode, TinyMceModeWithSwitcher, ToolbarSwitcher, WysiwygAdvanced, WysiwygDefault, WysiwygDialog, WysiwygInline, WysiwygMode, WysiwygView } from './tinymce-helper-types';
 
-type ButtonSet = Record<WysiwygMode, string | boolean>;
-type ButtonSetByView = Record<WysiwygView | 'default', ButtonSet>;
-const NoButtons = ''; // must be empty string
-
-function expandSet(original: Partial<ButtonSet>): ButtonSetByView {
-  return expandSetByView({ default: original });
-}
-
-function expandSetByView(original: Partial<Record<WysiwygView | 'default', Partial<ButtonSet>>>): ButtonSetByView {
-  const origSet = original.default;
-  const defSet = buildSet(origSet.default, origSet);
-  return {
-    default: defSet,
-    inline: { ...defSet, ...original.inline },
-    dialog: { ...defSet, ...original.dialog }
-  };
-}
-
-function buildSet(def: string | boolean, defSet: Partial<ButtonSet>): ButtonSet {
-  return {
-    default: def,
-    advanced: defSet.advanced ?? def,
-    text: defSet.text ?? def,
-    media: defSet.media ?? def,
-  };
-}
+// #region Button Sets that define what buttons appear in what view / mode
 
 const BSet1Intro = expandSet({
   // #v1500-not-ready
@@ -121,12 +97,8 @@ const ButtonSetContextMenu = expandSet({
   media: 'charmap hr | link image'
 });
 
+// #endregion
 
-
-function selectFromSet(groups: ButtonSetByView, mode: WysiwygMode, view: WysiwygView) {
-  const set = groups[view] ?? groups.default;
-  return set?.[mode];
-}
 export class TinyMceToolbars implements ToolbarSwitcher {
 
   constructor(private config: TinyEavConfig) {
@@ -167,8 +139,8 @@ export class TinyMceToolbars implements ToolbarSwitcher {
       (selectFromSet(BSet7ContentBlocks, mode, view) ? this.contentBlocks() : null),
       [
         config.source && BSet91Code,
-        config.advanced && selectFromSet(BSet92Advanced, mode, view),
-        config.advanced && selectFromSet(BSet93CloseAdvanced, mode, view),
+        selectFromSet(BSet92Advanced, mode, view),
+        selectFromSet(BSet93CloseAdvanced, mode, view),
         // must only allow full screen if allowed
         selectFromSet(BSet99FullScreen, mode, view),
       ].join(' '),
