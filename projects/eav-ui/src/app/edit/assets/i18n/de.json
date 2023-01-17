@@ -160,9 +160,9 @@
       },
       "AdamFileManager": {
         "Name": "ADAM",
-        "UploadLabel": "Upload nach",
+        "UploadLabel": "Hochladen",
         "UploadTip": "Schnell upload mit ADAM",
-        "UploadPasteLabel": "Bild aus Zwischenablage",
+        "UploadPasteLabel": "Einfügen",
         "UploadPasteFocusedLabel": "CTRL + V drücken",
         "UploadPasteTip": "Klick hier und drück CTRL + V um aus der Zwischenablage einzufügen",
         "NewFolder": "Neuer Ordner",
