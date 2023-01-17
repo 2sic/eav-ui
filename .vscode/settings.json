@@ -5,6 +5,11 @@
     "typescript.tsdk": "node_modules\\typescript\\lib",
     "cSpell.words": [
       "btns",
-      "listpreview"
+      "bullist",
+      "listpreview",
+      "numlist",
+      "pastetext",
+      "removeformat",
+      "tinymce"
     ],
 }
