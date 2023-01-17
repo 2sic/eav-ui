@@ -4,7 +4,7 @@
 // Export Constant names because these will become standardized
 // So people can use them in their custom toolbars
 export const ItalicWithMore = 'italic-more'; // used to be 'formatgroup'
-export const SxcImages = 'images-cms'; // used to be 'images' - or maybe adamimages?
+export const SxcImages = 'images-cms'; // used to be 'images'
 export const LinkGroup = 'linkgroup';
 export const LinkGroupPro = 'linkgrouppro';
 export const LinkFiles = 'linkfiles';

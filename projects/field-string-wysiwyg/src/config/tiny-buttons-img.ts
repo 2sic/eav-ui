@@ -1,9 +1,6 @@
 import { ImageFormats } from '../shared/models';
 import * as IMG from './public';
 import { ButtonsMakerParams, TinyButtonsBase } from './tiny-buttons-base';
-import { FormatDefinition } from './public';
-
-
 
 export class TinyButtonsImg extends TinyButtonsBase {
   constructor(makerParams: ButtonsMakerParams) {

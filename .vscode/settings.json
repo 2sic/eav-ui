@@ -3,4 +3,8 @@
         140
     ],
     "typescript.tsdk": "node_modules\\typescript\\lib",
+    "cSpell.words": [
+      "btns",
+      "listpreview"
+    ],
 }

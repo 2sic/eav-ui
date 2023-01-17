@@ -5,6 +5,7 @@ import { TinyEavButtons, TinyEavConfig } from './tinymce-config';
 import { TinyMceMode, TinyMceModeWithSwitcher, ToolbarSwitcher, WysiwygAdvanced, WysiwygDefault, WysiwygDialog, WysiwygInline, WysiwygMode, WysiwygView } from './tinymce-helper-types';
 
 type ButtonSet = Record<WysiwygMode, string>;
+type ButtonSetWithDialog = Record<WysiwygMode | 'dialog', string>;
 type ButtonSetConfig = Record<WysiwygMode, boolean>;
 const NoButtons = ''; // must be empty string
 
@@ -39,9 +40,10 @@ const Bs4NumList: ButtonSet = {
   media: NoButtons
 };
 
-const Bs5Links: ButtonSet = {
+const Bs5Links: ButtonSetWithDialog = {
   default: `${LinkGroup}`,
-  advanced: `${LinkGroupPro}`,
+  dialog: `${SxcImages} ${LinkGroupPro}`,
+  advanced: `${LinkGroupPro}`, // test
   text: `${LinkGroup}`,
   media: `${SxcImages} ${LinkFiles}`
 };
@@ -84,11 +86,16 @@ const BsContextMenu: ButtonSet = {
   default: 'charmap hr',
   advanced: 'charmap hr',
   text: 'charmap hr | link',
-  media: 'charmap hr | link image adamimage'// TODO: what is adamimage?
+  media: 'charmap hr | link image'
 };
 
 
-function selectFromSet(set: ButtonSet | ButtonSetConfig, mode: WysiwygMode) {
+function selectFromSet(set: ButtonSet | ButtonSetConfig, mode: WysiwygMode, view: WysiwygView) {
+  if (view == 'dialog')
+  {
+    var found = (set as ButtonSetWithDialog)?.['dialog'];
+    if (found) return found;
+  }
   return set?.[mode];
 }
 
@@ -115,7 +122,7 @@ export class TinyMceToolbars implements ToolbarSwitcher {
       },
       menubar: mode === WysiwygAdvanced,
       toolbar: this.toolbar(mode, view, config),
-      contextmenu: selectFromSet(BsContextMenu, WysiwygAdvanced)
+      contextmenu: selectFromSet(BsContextMenu, WysiwygAdvanced, view)
         + (this.config.features.contentBlocks ? ` ${AddContentBlock} ` : ''),
     };
   }
@@ -123,19 +130,19 @@ export class TinyMceToolbars implements ToolbarSwitcher {
   private toolbar(mode: WysiwygMode, view: WysiwygView, config: TinyEavButtons): string {
 // console.log('2dm advanced', config.advanced, config, mode);
     const list = [
-      selectFromSet(Bs1Intro, mode),
-      selectFromSet(Bs2Format, mode),
-      selectFromSet(Bs3Headings, mode),
-      selectFromSet(Bs4NumList, mode),
-      selectFromSet(Bs5Links, mode),
-      (selectFromSet(Bs6RichMedia, mode) ? this.richContent() : null),
-      (selectFromSet(Bs7ContentBlocks, mode) ? this.contentBlocks() : null),
+      selectFromSet(Bs1Intro, mode, view),
+      selectFromSet(Bs2Format, mode, view),
+      selectFromSet(Bs3Headings, mode, view),
+      selectFromSet(Bs4NumList, mode, view),
+      selectFromSet(Bs5Links, mode, view),
+      (selectFromSet(Bs6RichMedia, mode, view) ? this.richContent() : null),
+      (selectFromSet(Bs7ContentBlocks, mode, view) ? this.contentBlocks() : null),
       [
         config.source && Bs91Code,
-        config.advanced && selectFromSet(Bs92Advanced, mode),
-        config.advanced && selectFromSet(Bs93CloseAdvanced, mode),
+        config.advanced && selectFromSet(Bs92Advanced, mode, view),
+        config.advanced && selectFromSet(Bs93CloseAdvanced, mode, view),
         // must only allow full screen if allowed
-        view !== 'dialog' && selectFromSet(Bs99FullScreen, mode),
+        view !== 'dialog' && selectFromSet(Bs99FullScreen, mode, view),
 
       ].join(' '),
     ];
