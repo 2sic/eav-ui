@@ -316,7 +316,7 @@ export class MatDayjsDateAdapter extends DateAdapter<Dayjs> {
       if (!value) {
         return null;
       }
-      date = this.dayJs(value).toISOString();
+      date = (this.dayJs(value) as unknown as string);
     }
     if (date && this.isValid(date as Dayjs)) {
       return this.dayJs(date); 
@@ -347,6 +347,8 @@ export class MatDayjsDateAdapter extends DateAdapter<Dayjs> {
     // when user writes date
     if (typeof (input) == "string") {
       const date = new Date(dayjs(input, format).toDate());
+      // this is necesary because for -(minus) timezones getDate returns date for previous day
+      if (date.toString().includes("-")) return dayjs(new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()))).add(1, 'day').utc();
       return dayjs(new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()))).utc();
     }
     // when user picks date in date picker
