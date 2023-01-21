@@ -1,9 +1,9 @@
 import { SelectSettings } from './tinymce-config';
 import { WysiwygMode, WysiwygView } from './tinymce-helper-types';
 
-type ButtonSetValue = string | boolean | ((settings: SelectSettings) => string | boolean);
+type ButtonSetValue = string | ((settings: SelectSettings) => string | boolean);
 type ButtonSet = Record<WysiwygMode, ButtonSetValue>;
-type ButtonSetByView = Record<WysiwygView | 'default', ButtonSet>;
+type ButtonSetByView = Record<WysiwygView | 'default', ButtonSet | null>;
 export const NoButtons = ''; // must be empty string
 
 
@@ -14,7 +14,7 @@ export function expandSet(original: Partial<ButtonSet>): ButtonSetByView {
 
 export function expandSetByView(original: Partial<Record<WysiwygView | 'default', Partial<ButtonSet>>>): ButtonSetByView {
   const origSet = original.default;
-  const defSet = buildSet(origSet.default, origSet);
+  const defSet = origSet?.default ? buildSet(origSet.default, origSet) : null;
   return {
     default: defSet,
     inline: { ...defSet, ...original.inline },
