@@ -59,7 +59,7 @@ export class TinyMceConfigurator {
   }
 
   /** Construct TinyMCE options */
-  buildOptions(containerClass: string, fixedToolbarClass: string, inlineMode: boolean,
+  buildOptions(containerClass: string, fixedToolbarClass: string, modeIsInline: boolean,
     setup: (editor: Editor) => void
   ): RawEditorOptionsWithModes {
     const connector = this.connector;
@@ -70,7 +70,6 @@ export class TinyMceConfigurator {
     const fieldSettings = connector.field.settings as StringWysiwyg;
     const bSource = fieldSettings.ButtonSource?.toLowerCase();
     const bAdvanced = fieldSettings.ButtonAdvanced?.toLowerCase();
-    console.log('2dm - fsettings', fieldSettings.Dialog);
     const bToDialog = fieldSettings.Dialog === 'inline'; // WysiwygDisplayModeInlineWithDialog;
     const bContDiv = 'true'; // fsettings.ContentDivisions?.toLowerCase(); // WIP for now just true
     const dropzone = exp.dropzone;
@@ -99,7 +98,7 @@ export class TinyMceConfigurator {
       }
     };
 
-    const toolbarModes = new TinyMceToolbars(eavConfig).build(inlineMode);
+    const toolbarModes = new TinyMceToolbars(eavConfig).build(modeIsInline);
 
     if (dropzone == null || adam == null) {
       console.error(`Dropzone or ADAM Config not available, some things won't work`);

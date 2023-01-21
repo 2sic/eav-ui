@@ -4,7 +4,7 @@ import { WysiwygDefault, WysiwygAdvanced, WysiwygModeText, WysiwygModeMedia, Wys
 
 export class TinyButtonsModes extends AddToRegistryBase {
   constructor(makerParams: AddToRegistryParams) {
-      super(makerParams);
+    super(makerParams);
   }
 
   register(): void {

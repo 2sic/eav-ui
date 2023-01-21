@@ -1,83 +1,19 @@
 // tslint:disable-next-line: max-line-length
-import { expandSet, NoButtons, ButtonSetSelector, NewRow } from './button-set-helpers';
-import { AddContentBlock, AddContentSplit, ContentDivision, HGroups, ItalicWithMore, LinkFiles, LinkGroup, LinkGroupPro, ListGroup, ModeAdvanced, ModeDefault, SxcImages, ToFullscreen, ToolbarModeToggle } from './public';
+import { ButtonGroupSelector } from './button-group-selector';
+import { toButtonGroupByView, NewRow } from './button-groups';
+import { DefaultContextMenu, DefaultToolbarConfig } from './defaults';
+import { AddContentBlock, AddContentSplit, ContentDivision, ModeAdvanced, ModeDefault, ToFullscreen } from './public';
 import { TinyEavConfig, SelectSettings } from './tinymce-config';
 // tslint:disable-next-line: max-line-length
 import { TinyMceMode, TinyMceModeWithSwitcher, ToolbarSwitcher, WysiwygAdvanced, WysiwygDefault, WysiwygDialog, WysiwygInline, WysiwygMode, WysiwygView } from './tinymce-helper-types';
 
 // #region Button Sets that define what buttons appear in what view / mode
 
-const DefaultToolbars = expandSet({
-  all: {
-    // #v1500-not-ready
-    // default: ` ${ToolbarModeToggle} undo redo pastetext`,
-    // advanced: ` ${ToolbarModeToggle} undo pastetext`,
-    default: [
-      /* initial w/undo   */ `undo redo pastetext paste removeformat`,
-      /* format text      */ `bold ${ItalicWithMore}`,
-      /* paragraph types  */ `h2 ${HGroups.h3}`,
-      /* bullets          */ `numlist ${ListGroup}`,
-      /* links/media      */ `${LinkGroup}`,
-      /* rich media       */ NoButtons,
-      /* content block    */ AddContentBlock,
-      /* tools/mode switch*/ `code ${ModeAdvanced} ${ModeDefault} ${ToFullscreen}`,
-      /* Experiment. split*/ NewRow,
-      /* Experiment. split*/ `undo`
-    ],
-    advanced: [
-      /* initial w/undo   */ `undo redo pastetext paste removeformat`,
-      /* format text      */ `styles bold ${ItalicWithMore}`,
-      /* paragraph types  */ `h2 ${HGroups.h3}`,
-      /* bullets          */ `numlist ${ListGroup}`,
-      /* links/media      */ `${LinkGroupPro}`, // test
-      /* rich media       */ NoButtons,
-      /* content block    */ NoButtons,
-      /* tools/mode switch*/ `code ${ModeAdvanced} ${ModeDefault} ${ToFullscreen}`,
-    ],
-    text: [
-      /* initial w/undo   */ `${ToolbarModeToggle} undo redo pastetext paste removeformat`,
-      /* format text      */ `bold ${ItalicWithMore}`,
-      /* paragraph types  */ `h2 h3 ${HGroups.h4}`,
-      /* bullets          */ 'numlist bullist outdent indent',
-      /* links/media      */ `${LinkGroup}`,
-      /* rich media       */ NoButtons,
-      /* content block    */ NoButtons,
-      /* tools/mode switch*/ `code ${ModeAdvanced} ${ModeDefault} ${ToFullscreen}`,
-    ],
-    media: [
-      /* initial w/undo   */ `${ToolbarModeToggle} undo pastimage-todo`,  // TODO: create pasteimage
-      /* format text      */ NoButtons,
-      /* paragraph types  */ NoButtons,
-      /* bullets          */ NoButtons,
-      /* links/media      */ `${SxcImages} ${LinkFiles}`,
-      /* rich media       */ `${ContentDivision} ${AddContentSplit}`,
-      /* content block    */ AddContentBlock,
-      /* tools/mode switch*/ `code ${ModeAdvanced} ${ModeDefault} ${ToFullscreen}`,
-    ],
-  },
-  dialog: {
-    default: [
-      /* initial w/undo   */ `undo redo pastetext paste removeformat`,
-      /* format text      */ `bold ${ItalicWithMore}`,
-      /* paragraph types  */ `h2 ${HGroups.h3}`,
-      /* bullets          */ `numlist ${ListGroup}`,
-      /* links/media      */ `${SxcImages} ${LinkGroupPro}`, // different from other default
-      /* rich media       */ NoButtons,
-      /* content block    */ AddContentBlock,
-      /* tools/mode switch*/ `code ${ModeAdvanced} ${ModeDefault} ${ToFullscreen}`,
-    ],
-  }
-});
+
+const toolbarConfig = toButtonGroupByView(DefaultToolbarConfig);
 
 
-const ButtonSetContextMenu = expandSet({
-  all: {
-    default: 'charmap hr',
-    // advanced: 'charmap hr',
-    text: 'charmap hr | link',
-    media: 'charmap hr | link image'
-  }
-});
+const ButtonSetContextMenu = toButtonGroupByView(DefaultContextMenu);
 
 // #endregion
 
@@ -96,8 +32,7 @@ export class TinyMceToolbars implements ToolbarSwitcher {
 
   public switch(view: WysiwygView, mode: WysiwygMode): TinyMceMode {
     const config = this.config.buttons[view];
-    const selector = new ButtonSetSelector({ mode, view, buttons: config, features: this.config.features });
-    const selectorContextWip = new ButtonSetSelector({ mode: WysiwygAdvanced, view, buttons: config, features: this.config.features });
+    const selector = new ButtonGroupSelector({ mode, view, buttons: config, features: this.config.features });
     return {
       currentMode: {
         view,
@@ -105,15 +40,13 @@ export class TinyMceToolbars implements ToolbarSwitcher {
       },
       menubar: mode === WysiwygAdvanced,
       toolbar: this.toolbar(selector),
-      contextmenu: selectorContextWip.select(ButtonSetContextMenu)
-        + (this.config.features.contentBlocks ? ` ${AddContentBlock} ` : ''),
+      contextmenu: selector.select(ButtonSetContextMenu)[0],
     };
   }
 
-  private toolbar(selector: ButtonSetSelector): string[] {
-    const list = selector.select(DefaultToolbars).flat();
-
-    const toolbarRows = list.reduce((acc, cur) => {
+  private toolbar(selector: ButtonGroupSelector): string[] {
+    const allButtonGroups = selector.select(toolbarConfig).flat();
+    const rows = allButtonGroups.reduce((acc, cur) => {
       if (cur === NewRow)
         acc.push([]);
       else
@@ -121,9 +54,7 @@ export class TinyMceToolbars implements ToolbarSwitcher {
       return acc;
     }, [new Array<string>()]);
 
-    return this.cleanUpDisabledButtons(selector.settings,
-      toolbarRows.map(t => t.join(' | '))
-    );
+    return this.cleanUpDisabledButtons(selector.settings, rows.map(t => t.join(' | ')));
   }
 
   private cleanUpDisabledButtons(settings: SelectSettings, toolbar: string[]): string[] {
