@@ -1,7 +1,8 @@
 // tslint:disable-next-line: max-line-length
-import { expandSet, expandSetByView, NoButtons, selectFromSet } from './button-set-helpers';
+import { select } from '@ngrx/store';
+import { expandSet, expandSetByView, NoButtons, ButtonSetSelector } from './button-set-helpers';
 import { AddContentBlock, AddContentSplit, ContentDivision, HGroups, ItalicWithMore, LinkFiles, LinkGroup, LinkGroupPro, ListGroup, ModeAdvanced, ModeDefault, SxcImages, ToFullscreen, ToolbarModeToggle } from './public';
-import { TinyEavButtons, TinyEavConfig } from './tinymce-config';
+import { TinyEavButtons, TinyEavConfig, SelectSettings } from './tinymce-config';
 // tslint:disable-next-line: max-line-length
 import { TinyMceMode, TinyMceModeWithSwitcher, ToolbarSwitcher, WysiwygAdvanced, WysiwygDefault, WysiwygDialog, WysiwygInline, WysiwygMode, WysiwygView } from './tinymce-helper-types';
 
@@ -65,30 +66,19 @@ const BSet7ContentBlocks = expandSet({
   media: true,
 });
 
-const BSet91Code = 'code';
-const BSet92Advanced = expandSet({
-  default: ModeAdvanced,
-  advanced: NoButtons,
-  text: NoButtons,
-  media: NoButtons,
+const BSet9ToolsAndDialog = expandSet({
+  default: settings => [
+    'code',
+    ModeAdvanced,
+    ToFullscreen,
+  ].join(' '),
+  advanced: settings => [
+    'code',
+    ModeDefault,
+    ToFullscreen,
+  ].join(' '),
 });
-const BSet93CloseAdvanced = expandSet({
-  default: NoButtons,
-  advanced: ModeDefault,
-  text: NoButtons,
-  media: NoButtons,
-});
-const BSet99FullScreen = expandSetByView({
-  default: {
-    default: ToFullscreen,
-    advanced: NoButtons,
-    text: NoButtons,
-    media: NoButtons,
-  },
-  dialog: {
-    default: NoButtons,
-  }
-});
+
 
 const ButtonSetContextMenu = expandSet({
   default: 'charmap hr',
@@ -115,6 +105,8 @@ export class TinyMceToolbars implements ToolbarSwitcher {
 
   public switch(view: WysiwygView, mode: WysiwygMode): TinyMceMode {
     const config = this.config.buttons[view];
+    const selector = new ButtonSetSelector({ mode, view, buttons: config, features: this.config.features });
+    const selectorContextWip = new ButtonSetSelector({ mode: WysiwygAdvanced, view, buttons: config, features: this.config.features });
     return {
       currentMode: {
         view,
@@ -122,30 +114,42 @@ export class TinyMceToolbars implements ToolbarSwitcher {
       },
       menubar: mode === WysiwygAdvanced,
       toolbar: this.toolbar(mode, view, config),
-      contextmenu: selectFromSet(ButtonSetContextMenu, WysiwygAdvanced, view)
+      contextmenu: selectorContextWip.select(ButtonSetContextMenu)
         + (this.config.features.contentBlocks ? ` ${AddContentBlock} ` : ''),
     };
   }
 
-  private toolbar(mode: WysiwygMode, view: WysiwygView, config: TinyEavButtons): string {
+  private toolbar(mode: WysiwygMode, view: WysiwygView, config: TinyEavButtons): string[] {
 // console.log('2dm advanced', config.advanced, config, mode);
+    var selector = new ButtonSetSelector({ mode, view, buttons: config, features: this.config.features });
     const list = [
-      selectFromSet(BSet1Intro, mode, view),
-      selectFromSet(BSet2Format, mode, view),
-      selectFromSet(BSet3Headings, mode, view),
-      selectFromSet(BSet4NumList, mode, view),
-      selectFromSet(BSet5Links, mode, view),
-      (selectFromSet(BSet6RichMedia, mode, view) ? this.richContent() : null),
-      (selectFromSet(BSet7ContentBlocks, mode, view) ? this.contentBlocks() : null),
-      [
-        config.source && BSet91Code,
-        selectFromSet(BSet92Advanced, mode, view),
-        selectFromSet(BSet93CloseAdvanced, mode, view),
-        // must only allow full screen if allowed
-        selectFromSet(BSet99FullScreen, mode, view),
-      ].join(' '),
+      selector.select(BSet1Intro),
+      selector.select(BSet2Format),
+      selector.select(BSet3Headings),
+      selector.select(BSet4NumList),
+      selector.select(BSet5Links),
+      (selector.select(BSet6RichMedia) ? this.richContent() : null),
+      (selector.select(BSet7ContentBlocks) ? this.contentBlocks() : null),
+      selector.select(BSet9ToolsAndDialog),
     ];
-    return list.join(' | ');
+    return this.cleanUpDisabledButtons(selector.settings, [ list.join(' | '), list.join(' | ') ]);
+  }
+
+  private cleanUpDisabledButtons(settings: SelectSettings, toolbar: string[]): string[] {
+    return toolbar.map(t => {
+      t = this.removeButtonIfNotEnabled(t, 'code', settings.buttons.source);
+      t = this.removeButtonIfNotEnabled(t, ToFullscreen, settings.buttons.dialog);
+      t = this.removeButtonIfNotEnabled(t, 'advanced', settings.buttons.advanced);
+      t = this.removeButtonIfNotEnabled(t, 'AddContentBlock', settings.features.contentBlocks);
+      return t;
+    });
+  }
+
+  private removeButtonIfNotEnabled(toolbar: string, button: string, enabled: boolean): string {
+    // console.log('2dm button remove', button, enabled, toolbar);
+    return (toolbar.indexOf(` ${button} `) > -1 && !enabled)
+      ? toolbar.replace(button, '')
+      : toolbar;
   }
 
   private richContent(): string {

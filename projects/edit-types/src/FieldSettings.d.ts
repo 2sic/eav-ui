@@ -70,11 +70,16 @@ interface StringTemplatePicker extends String {
   FileType: string;
 }
 
+// export const WysiwygDisplayModeDialogOnly = 'dialog';
+// export const WysiwygDisplayModeInlineOnly = 'inline';
+// export const WysiwygDisplayModeInlineWithDialog = '';
+// export type WysiwygDisplayModes = typeof WysiwygDisplayModeDialogOnly | typeof WysiwygDisplayModeInlineOnly | typeof WysiwygDisplayModeInlineWithDialog; 
+
 /**
  * @string-wysiwyg
  */
 interface StringWysiwyg extends String {
-  Dialog: "" | "dialog" | "inline";
+  Dialog: '' | 'dialog' | 'inline';
   ButtonSource: "" | "true" | "false";
   ButtonAdvanced: "" | "true" | "false";
   ContentDivisions: "" | "true" | "false";

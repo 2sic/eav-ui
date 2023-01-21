@@ -1,39 +1,48 @@
 import { WysiwygMode, WysiwygView } from './tinymce-helper-types';
 
+export interface SelectSettings {
+  mode: WysiwygMode;
+  view: WysiwygView;
+  buttons: TinyEavButtons;
+  features: TinyEavFeatures;
+}
+
+export interface TinyEavFeatures {
+  contentBlocks: boolean,
+  wysiwygEnhanced: boolean,
+}
 
 export interface TinyEavButtons {
   source: boolean;
   advanced: boolean;
+  dialog: boolean;
   contentDivisions: boolean;
 }
 export interface TinyEavConfig {
-  features: {
-    contentBlocks: boolean,
-    wysiwygEnhanced: boolean,
-  };
+  features: TinyEavFeatures;
 
   buttons: Record<WysiwygView, TinyEavButtons>;
 }
 
 // TODO: @2dm doesn't seem to be in use ATM
-export const TinyEavConfigDefault: TinyEavConfig = {
-  features: {
-    contentBlocks: false,
-    wysiwygEnhanced: false, // temporary, as we are still in dev. will be false later on
-  },
-  buttons: {
-    inline:   {
-      source: false,
-      advanced: false,
-      contentDivisions: true  // temporary, as we are still in dev. will be false later on
-    },
-    dialog:   {
-      source: true,
-      advanced: true,
-      contentDivisions: true  // temporary, as we are still in dev. will be false later on
-    }
-  }
-};
+// export const TinyEavConfigDefault: TinyEavConfig = {
+//   features: {
+//     contentBlocks: false,
+//     wysiwygEnhanced: false, // temporary, as we are still in dev. will be false later on
+//   },
+//   buttons: {
+//     inline:   {
+//       source: false,
+//       advanced: false,
+//       contentDivisions: true  // temporary, as we are still in dev. will be false later on
+//     },
+//     dialog:   {
+//       source: true,
+//       advanced: true,
+//       contentDivisions: true  // temporary, as we are still in dev. will be false later on
+//     }
+//   }
+// };
 
 // This is stil WIP for 2dm - would be the JSON that comes from the field configuration
 export interface TinyMceModeConfigJson extends TinyEavConfig {

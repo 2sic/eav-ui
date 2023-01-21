@@ -35,9 +35,10 @@ export interface TinyMceMode {
     mode: WysiwygMode,
   };
   menubar: boolean | string; // should match TinyMCE
-  toolbar: string;
+  toolbar: string | string[]; // should match TinyMCE
   contextmenu: string;
 }
+
 
 export interface TinyMceModeWithSwitcher extends TinyMceMode {
   modeSwitcher: ToolbarSwitcher;

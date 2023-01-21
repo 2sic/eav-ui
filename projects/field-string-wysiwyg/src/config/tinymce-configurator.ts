@@ -1,6 +1,6 @@
 import type { Editor } from 'tinymce';
 import { EavWindow } from '../../../eav-ui/src/app/shared/models/eav-window.model';
-import { AddOnSettings, Connector, StringWysiwyg, WysiwygReconfigure } from '../../../edit-types';
+import { AddOnSettings, Connector, StringWysiwyg, WysiwygReconfigure, /* WysiwygDisplayModeInlineWithDialog */ } from '../../../edit-types';
 import * as contentStyle from '../editor/tinymce-content.scss';
 import { DefaultAddOnSettings, DefaultOptions, DefaultPaste, DefaultPlugins } from './defaults';
 import { RawEditorOptionsWithModes } from './tinymce-helper-types';
@@ -67,9 +67,11 @@ export class TinyMceConfigurator {
     // TODO @SDV - done by 2dm
     // Create a TinyMceModeConfig object with bool only
     // Then pass this object into the build(...) below, replacing the original 3 parameters
-    const fsettings = connector.field.settings as StringWysiwyg;
-    const bSource = fsettings.ButtonSource?.toLowerCase();
-    const bAdvanced = fsettings.ButtonAdvanced?.toLowerCase();
+    const fieldSettings = connector.field.settings as StringWysiwyg;
+    const bSource = fieldSettings.ButtonSource?.toLowerCase();
+    const bAdvanced = fieldSettings.ButtonAdvanced?.toLowerCase();
+    console.log('2dm - fsettings', fieldSettings.Dialog);
+    const bToDialog = fieldSettings.Dialog === 'inline'; // WysiwygDisplayModeInlineWithDialog;
     const bContDiv = 'true'; // fsettings.ContentDivisions?.toLowerCase(); // WIP for now just true
     const dropzone = exp.dropzone;
     const adam = exp.adam;
@@ -85,11 +87,13 @@ export class TinyMceConfigurator {
         inline: {
           source: bSource === 'true',
           advanced: bAdvanced === 'true',
+          dialog: bToDialog,
           contentDivisions: bContDiv === 'true',
         },
         dialog: {
           source: bSource !== 'false',
           advanced: bAdvanced !== 'false',
+          dialog: false,
           contentDivisions: bContDiv === 'true',
         }
       }
@@ -106,7 +110,7 @@ export class TinyMceConfigurator {
     // and tries to load the current folder as a stylesheet
     // This is useless and causes problems in DNN, because it results in logging out the user
     // See https://github.com/2sic/2sxc/issues/2829
-    let contentCssFile = fsettings.ContentCss;
+    let contentCssFile = fieldSettings.ContentCss;
     if (!contentCssFile) contentCssFile = null;
 
     const options: RawEditorOptionsWithModes = {

@@ -1,6 +1,8 @@
+import { SelectSettings } from './tinymce-config';
 import { WysiwygMode, WysiwygView } from './tinymce-helper-types';
 
-type ButtonSet = Record<WysiwygMode, string | boolean>;
+type ButtonSetValue = string | boolean | ((settings: SelectSettings) => string | boolean);
+type ButtonSet = Record<WysiwygMode, ButtonSetValue>;
 type ButtonSetByView = Record<WysiwygView | 'default', ButtonSet>;
 export const NoButtons = ''; // must be empty string
 
@@ -20,7 +22,7 @@ export function expandSetByView(original: Partial<Record<WysiwygView | 'default'
   };
 }
 
-function buildSet(def: string | boolean, defSet: Partial<ButtonSet>): ButtonSet {
+function buildSet(def: ButtonSetValue, defSet: Partial<ButtonSet>): ButtonSet {
   return {
     default: def,
     advanced: defSet.advanced ?? def,
@@ -29,8 +31,19 @@ function buildSet(def: string | boolean, defSet: Partial<ButtonSet>): ButtonSet 
   };
 }
 
+export class ButtonSetSelector {
+  constructor(public settings: SelectSettings) {
+  }
 
-export function selectFromSet(groups: ButtonSetByView, mode: WysiwygMode, view: WysiwygView) {
-  const set = groups[view] ?? groups.default;
-  return set?.[mode];
+  public select(groups: ButtonSetByView) {
+    const set = groups[this.settings.view] ?? groups.default;
+    const result = set?.[this.settings.mode];
+    return ' ' + this.runOrReturn(result) + ' ';
+  }
+
+  public runOrReturn(value: ButtonSetValue) {
+    if (typeof value === 'function')
+      return value(this.settings);
+    return value;
+  }
 }
