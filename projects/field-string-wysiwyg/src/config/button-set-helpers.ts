@@ -1,28 +1,26 @@
 import { SelectSettings } from './tinymce-config';
 import { WysiwygMode, WysiwygView } from './tinymce-helper-types';
 
-type ButtonSetValue = string | ((settings: SelectSettings) => string | boolean);
-type ButtonSet = Record<WysiwygMode, ButtonSetValue>;
-type ButtonSetByView = Record<WysiwygView | 'default', ButtonSet | null>;
+type ButtonGroupValue = string | string[] | ((settings: SelectSettings) => string | string[]);
+type ButtonGroup = Record<WysiwygMode, ButtonGroupValue>;
+type ButtonGroupByView = Record<WysiwygView, ButtonGroup | null>;
 export const NoButtons = ''; // must be empty string
+export const NewRow = "\n";  // must be newline
 
 
-
-export function expandSet(original: Partial<ButtonSet>): ButtonSetByView {
-  return expandSetByView({ default: original });
-}
-
-export function expandSetByView(original: Partial<Record<WysiwygView | 'default', Partial<ButtonSet>>>): ButtonSetByView {
-  const origSet = original.default;
-  const defSet = origSet?.default ? buildSet(origSet.default, origSet) : null;
+export function expandSet(
+  //defaults: Partial<ButtonGroup>,
+  original: Partial<Record<WysiwygView | 'all', Partial<ButtonGroup>>>
+): ButtonGroupByView {
+  const all = original.all;
+  const defSet = all?.default ? buildOneButtonGroup(all.default, all) : null;
   return {
-    default: defSet,
     inline: { ...defSet, ...original.inline },
     dialog: { ...defSet, ...original.dialog }
   };
 }
 
-function buildSet(def: ButtonSetValue, defSet: Partial<ButtonSet>): ButtonSet {
+function buildOneButtonGroup(def: ButtonGroupValue, defSet: Partial<ButtonGroup>): ButtonGroup {
   return {
     default: def,
     advanced: defSet.advanced ?? def,
@@ -35,13 +33,13 @@ export class ButtonSetSelector {
   constructor(public settings: SelectSettings) {
   }
 
-  public select(groups: ButtonSetByView) {
-    const set = groups[this.settings.view] ?? groups.default;
+  public select(groups: ButtonGroupByView) {
+    const set = groups[this.settings.view];
     const result = set?.[this.settings.mode];
-    return ' ' + this.runOrReturn(result) + ' ';
+    return [this.runOrReturn(result)].flat(); //.map(r => ' ' + r + ' ');
   }
 
-  public runOrReturn(value: ButtonSetValue) {
+  public runOrReturn(value: ButtonGroupValue) {
     if (typeof value === 'function')
       return value(this.settings);
     return value;

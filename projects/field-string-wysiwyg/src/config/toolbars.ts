@@ -1,5 +1,5 @@
 // tslint:disable-next-line: max-line-length
-import { expandSet, expandSetByView, NoButtons, ButtonSetSelector } from './button-set-helpers';
+import { expandSet, NoButtons, ButtonSetSelector, NewRow } from './button-set-helpers';
 import { AddContentBlock, AddContentSplit, ContentDivision, HGroups, ItalicWithMore, LinkFiles, LinkGroup, LinkGroupPro, ListGroup, ModeAdvanced, ModeDefault, SxcImages, ToFullscreen, ToolbarModeToggle } from './public';
 import { TinyEavConfig, SelectSettings } from './tinymce-config';
 // tslint:disable-next-line: max-line-length
@@ -7,101 +7,76 @@ import { TinyMceMode, TinyMceModeWithSwitcher, ToolbarSwitcher, WysiwygAdvanced,
 
 // #region Button Sets that define what buttons appear in what view / mode
 
-// WIP Notes
-const finalStruture = {
-  inline: {
-    default: ['undo redo pastetext paste removeformat bold italic h2 h3 h4 numlist bullist outdent indent link image'],
-    advanced: ['undo redo pastetext paste removeformat bold italic h2 h3 h4 numlist bullist outdent indent link image', 'styles'],
-    text: ['undo redo pastetext paste removeformat bold italic h2 h3 h4 numlist bullist outdent indent link image'],
+const DefaultToolbars = expandSet({
+  all: {
+    // #v1500-not-ready
+    // default: ` ${ToolbarModeToggle} undo redo pastetext`,
+    // advanced: ` ${ToolbarModeToggle} undo pastetext`,
+    default: [
+      /* initial w/undo   */ `undo redo pastetext paste removeformat`,
+      /* format text      */ `bold ${ItalicWithMore}`,
+      /* paragraph types  */ `h2 ${HGroups.h3}`,
+      /* bullets          */ `numlist ${ListGroup}`,
+      /* links/media      */ `${LinkGroup}`,
+      /* rich media       */ NoButtons,
+      /* content block    */ AddContentBlock,
+      /* tools/mode switch*/ `code ${ModeAdvanced} ${ModeDefault} ${ToFullscreen}`,
+      /* Experiment. split*/ NewRow,
+      /* Experiment. split*/ `undo`
+    ],
+    advanced: [
+      /* initial w/undo   */ `undo redo pastetext paste removeformat`,
+      /* format text      */ `styles bold ${ItalicWithMore}`,
+      /* paragraph types  */ `h2 ${HGroups.h3}`,
+      /* bullets          */ `numlist ${ListGroup}`,
+      /* links/media      */ `${LinkGroupPro}`, // test
+      /* rich media       */ NoButtons,
+      /* content block    */ NoButtons,
+      /* tools/mode switch*/ `code ${ModeAdvanced} ${ModeDefault} ${ToFullscreen}`,
+    ],
+    text: [
+      /* initial w/undo   */ `${ToolbarModeToggle} undo redo pastetext paste removeformat`,
+      /* format text      */ `bold ${ItalicWithMore}`,
+      /* paragraph types  */ `h2 h3 ${HGroups.h4}`,
+      /* bullets          */ 'numlist bullist outdent indent',
+      /* links/media      */ `${LinkGroup}`,
+      /* rich media       */ NoButtons,
+      /* content block    */ NoButtons,
+      /* tools/mode switch*/ `code ${ModeAdvanced} ${ModeDefault} ${ToFullscreen}`,
+    ],
+    media: [
+      /* initial w/undo   */ `${ToolbarModeToggle} undo pastimage-todo`,  // TODO: create pasteimage
+      /* format text      */ NoButtons,
+      /* paragraph types  */ NoButtons,
+      /* bullets          */ NoButtons,
+      /* links/media      */ `${SxcImages} ${LinkFiles}`,
+      /* rich media       */ `${ContentDivision} ${AddContentSplit}`,
+      /* content block    */ AddContentBlock,
+      /* tools/mode switch*/ `code ${ModeAdvanced} ${ModeDefault} ${ToFullscreen}`,
+    ],
   },
   dialog: {
-    default: ['undo redo pastetext paste removeformat bold italic h2 h3 h4 numlist bullist outdent indent link image'],
-    advanced: ['undo redo pastetext paste removeformat bold italic h2 h3 h4 numlist bullist outdent indent link image', 'styles'],
-    text: ['undo redo pastetext paste removeformat bold italic h2 h3 h4 numlist bullist outdent indent link image'],
-  },
-};
-
-const DefaultToolbars = [
-  [
-    // Set #1 with undo/redo etc.
-    expandSet({
-      // #v1500-not-ready
-      // default: ` ${ToolbarModeToggle} undo redo pastetext`,
-      // advanced: ` ${ToolbarModeToggle} undo pastetext`,
-      default: `  undo redo pastetext paste removeformat`,
-      // advanced: ` undo redo pastetext paste removeformat`,
-      text: `${ToolbarModeToggle} undo redo pastetext paste removeformat`,
-      media: `${ToolbarModeToggle} undo pastimage-todo `  // TODO: create pasteimage
-    }),
-    // Set #2 with bold/italic etc.
-    expandSet({
-      default: `bold ${ItalicWithMore}`,
-      advanced: `styles bold ${ItalicWithMore}`,
-      text: `bold ${ItalicWithMore}`,
-      media: NoButtons,
-    }),
-    // Set #3 with h2/h3 etc.
-    expandSet({
-      default: `h2 ${HGroups.h3}`,
-      // advanced: `h2 ${HGroups.h3}`,
-      text: `h2 h3 ${HGroups.h4}`,
-      media: NoButtons,
-    }),
-    // Set #4 with numlist/bullist etc.
-    expandSet({
-      default: `numlist ${ListGroup}`,
-      // advanced: `numlist ${ListGroup}`,
-      text: 'numlist bullist outdent indent',
-      media: NoButtons
-    }),
-    // Set #5 with link/files etc.
-    expandSetByView({
-      default: {
-        default: `${LinkGroup}`,
-        advanced: `${LinkGroupPro}`, // test
-        // text: `${LinkGroup}`,
-        media: `${SxcImages} ${LinkFiles}`,
-      },
-      dialog: {
-        default: `${SxcImages} ${LinkGroupPro}`,
-        // advanced: `${SxcImages} ${LinkGroupPro}`,
-      }
-    }),
-    // Set #6 with add-content etc.
-    expandSet({
-      default: NoButtons,
-      media: `${ContentDivision} ${AddContentSplit}`,
-    }),
-    // Set #7 with add-content-block etc.
-    expandSet({
-      default: AddContentBlock,
-      advanced: NoButtons,
-      text: NoButtons,
-      media: NoButtons,
-    }),
-    // Set #9 with code/advanced etc.
-    expandSet({
-      default: `code ${ModeAdvanced} ${ToFullscreen}`,
-      advanced: `code ${ModeDefault} ${ToFullscreen}`,
-    }),
-  ],
-  [
-    expandSetByView(
-      {
-        inline: {
-          default: `h2 ${HGroups.h3}`,
-        }
-      }
-    )
-  ]
-];
+    default: [
+      /* initial w/undo   */ `undo redo pastetext paste removeformat`,
+      /* format text      */ `bold ${ItalicWithMore}`,
+      /* paragraph types  */ `h2 ${HGroups.h3}`,
+      /* bullets          */ `numlist ${ListGroup}`,
+      /* links/media      */ `${SxcImages} ${LinkGroupPro}`, // different from other default
+      /* rich media       */ NoButtons,
+      /* content block    */ AddContentBlock,
+      /* tools/mode switch*/ `code ${ModeAdvanced} ${ModeDefault} ${ToFullscreen}`,
+    ],
+  }
+});
 
 
 const ButtonSetContextMenu = expandSet({
-  default: 'charmap hr',
-  // advanced: 'charmap hr',
-  text: 'charmap hr | link',
-  media: 'charmap hr | link image'
+  all: {
+    default: 'charmap hr',
+    // advanced: 'charmap hr',
+    text: 'charmap hr | link',
+    media: 'charmap hr | link image'
+  }
 });
 
 // #endregion
@@ -136,39 +111,42 @@ export class TinyMceToolbars implements ToolbarSwitcher {
   }
 
   private toolbar(selector: ButtonSetSelector): string[] {
-    const list = DefaultToolbars
-      .map(row => row.map(set => selector.select(set)));
-    // const maxLength = list.reduce((a, b) => Math.max(a, b.length), 0);
-    // const allToolbars = list.reduce((prevArr: string[], currSet) => 
-    //   {
-    //     currSet.forEach((bval: string, i: number) => prevArr[i] += bval);
-    //     return prevArr;
-    //   }, Array(maxLength).fill(''));
-    // console.log('2dm, list', list);
+    const list = selector.select(DefaultToolbars).flat();
+
+    const toolbarRows = list.reduce((acc, cur) => {
+      if (cur === NewRow)
+        acc.push([]);
+      else
+        acc[acc.length - 1].push(cur);
+      return acc;
+    }, [new Array<string>()]);
+
     return this.cleanUpDisabledButtons(selector.settings,
-      // allToolbars.map(t => t.trim())
-      list.map(t => t.join(' | '))
-    // [
-    //   list.join(' | '),
-    //   list.join(' | ')
-    // ]
+      toolbarRows.map(t => t.join(' | '))
     );
   }
 
   private cleanUpDisabledButtons(settings: SelectSettings, toolbar: string[]): string[] {
-    const removeMap = [
-      { button: 'code', enabled: settings.buttons.source },
-      { button: ToFullscreen, enabled: settings.buttons.dialog },
-      { button: ModeAdvanced, enabled: settings.buttons.advanced },
-      { button: AddContentBlock, enabled: settings.features.contentBlocks },
-      { button: ContentDivision, enabled: settings.features.wysiwygEnhanced },
-      { button: AddContentSplit, enabled: settings.features.wysiwygEnhanced },
-    ];
+    // make sure each button is separated by a space, so we can easily remove it
+    toolbar = toolbar.map(t => ` ${t.replace(/\|/g, ' | ')} `);
+    const removeMap = this.createRemoveMap(settings);
     return toolbar.map(toolbar =>
       removeMap.reduce((t, rm) => (t.indexOf(` ${rm.button} `) > -1 && !rm.enabled)
         ? t.replace(rm.button, '')
         : t
       , toolbar)
     );
+  }
+
+  private createRemoveMap(settings: SelectSettings): { button: string, enabled: boolean }[] {
+    return [
+      { button: 'code', enabled: settings.buttons.source },
+      { button: ToFullscreen, enabled: settings.buttons.dialog },
+      { button: ModeAdvanced, enabled: settings.buttons.advanced },
+      { button: ModeDefault, enabled: !settings.buttons.advanced },
+      { button: AddContentBlock, enabled: settings.features.contentBlocks },
+      { button: ContentDivision, enabled: settings.features.wysiwygEnhanced },
+      { button: AddContentSplit, enabled: settings.features.wysiwygEnhanced },
+    ];
   }
 }
