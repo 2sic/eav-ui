@@ -172,7 +172,9 @@ export class EntityDefaultComponent extends BaseFieldComponent<string | string[]
       )
       : null;
 
-    this.entityService.getAvailableEntities(contentTypeName, entitiesFilter).subscribe(items => {
+    // 2dm 2023-01-22 #maybeSupportIncludeParentApps
+    // const includeParentApps = this.settings$.value?.IncludeParentApps == true;
+    this.entityService.getAvailableEntities(contentTypeName, entitiesFilter/*, includeParentApps */).subscribe(items => {
       this.entityCacheService.loadEntities(items);
       if (!clearAvailableEntitiesAndOnlyUpdateCache) {
         this.availableEntities$.next(items);

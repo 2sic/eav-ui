@@ -15,6 +15,8 @@ export class EntityDefaultLogic extends FieldLogicBase {
     fixedSettings.EnableAddExisting ??= true;
     fixedSettings.EnableRemove ??= true;
     fixedSettings.EnableDelete ??= false;
+    // 2dm 2023-01-22 #maybeSupportIncludeParentApps
+    // fixedSettings.IncludeParentApps ??= false;
 
     if (eavConfig.overrideEditRestrictions && debugEnabled) {
       fixedSettings.EnableEdit = true;

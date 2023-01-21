@@ -171,6 +171,9 @@ interface Entity extends All {
    * Prefill values / mask - new in 11.11.03
    */
   Prefill: string;
+
+  // 2dm 2023-01-22 #maybeSupportIncludeParentApps
+  // IncludeParentApps: boolean;
 }
 
 /**

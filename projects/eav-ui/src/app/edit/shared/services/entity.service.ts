@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Context } from 'projects/eav-ui/src/app/shared/services/context';
 import { filter, Observable, share, switchMap } from 'rxjs';
-import { EavService, webApiEditRoot } from '.';
+import { EavService, webApiEntityPicker } from '.';
 import { EntityInfo } from '../../../../../../edit-types';
 
 export const webApiEntityRoot = 'admin/entity/';
@@ -13,11 +13,17 @@ export const webApiEntityList = 'admin/entity/list';
 export class EntityService {
   constructor(private http: HttpClient, private eavService: EavService, private context: Context, private dnnContext: DnnContext) { }
 
-  getAvailableEntities(contentTypeName: string, entitiesFilter?: string[]): Observable<EntityInfo[]> {
+  // 2dm 2023-01-22 #maybeSupportIncludeParentApps
+  getAvailableEntities(contentTypeName: string, entitiesFilter?: string[]/*, includeParentApps: boolean = null*/): Observable<EntityInfo[]> {
     // eavConfig for edit ui and context for other calls
     const context = this.eavService.eavConfig ?? this.context;
-    return this.http.post<EntityInfo[]>(this.dnnContext.$2sxc.http.apiUrl(webApiEditRoot + 'EntityPicker'), entitiesFilter, {
-      params: { contentTypeName, appId: context.appId.toString() },
+    return this.http.post<EntityInfo[]>(this.dnnContext.$2sxc.http.apiUrl(webApiEntityPicker), entitiesFilter, {
+      params: {
+        contentTypeName,
+        appId: context.appId.toString(),
+        // 2dm 2023-01-22 #maybeSupportIncludeParentApps
+        // ...(includeParentApps ? { includeParentApps: includeParentApps } : {}),
+      },
     });
   }
 

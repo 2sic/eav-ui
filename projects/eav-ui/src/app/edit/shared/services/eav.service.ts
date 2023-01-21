@@ -10,6 +10,7 @@ import { EavConfig, SaveResult, VersioningOptions } from '../models';
 import { GlobalConfigService } from '../store/ngrx-data';
 
 export const webApiEditRoot = 'cms/edit/';
+export const webApiEntityPicker = 'cms/edit/EntityPicker';
 
 @Injectable()
 export class EavService {
