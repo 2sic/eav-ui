@@ -1,8 +1,8 @@
-import { ListGroup } from './public';
-import { ButtonsMakerParams, TinyButtonsBase } from './tiny-buttons-base';
+import { ListGroup } from '../public';
+import { AddToRegistryParams, AddToRegistryBase } from './add-to-registry-base';
 
-export class TinyButtonsBullets extends TinyButtonsBase {
-  constructor(makerParams: ButtonsMakerParams) {
+export class TinyButtonsBullets extends AddToRegistryBase {
+  constructor(makerParams: AddToRegistryParams) {
       super(makerParams);
   }
 

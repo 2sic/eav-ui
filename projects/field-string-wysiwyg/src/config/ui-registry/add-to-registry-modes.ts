@@ -1,9 +1,9 @@
-import { ModeDefault, ModeAdvanced, ToolbarModeToggle, ToolbarModes } from './public';
-import { ButtonsMakerParams, TinyButtonsBase } from './tiny-buttons-base';
-import { WysiwygDefault, WysiwygAdvanced, WysiwygModeText, WysiwygModeMedia, WysiwygMode, WysiwygModeCycle, WysiwygView } from './tinymce-helper-types';
+import { ModeDefault, ModeAdvanced, ToolbarModeToggle, ToolbarModes } from '../public';
+import { AddToRegistryParams, AddToRegistryBase } from './add-to-registry-base';
+import { WysiwygDefault, WysiwygAdvanced, WysiwygModeText, WysiwygModeMedia, WysiwygMode, WysiwygModeCycle, WysiwygView } from '../tinymce-helper-types';
 
-export class TinyButtonsModes extends TinyButtonsBase {
-  constructor(makerParams: ButtonsMakerParams) {
+export class TinyButtonsModes extends AddToRegistryBase {
+  constructor(makerParams: AddToRegistryParams) {
       super(makerParams);
   }
 

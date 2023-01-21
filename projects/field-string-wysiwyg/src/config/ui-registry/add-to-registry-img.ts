@@ -1,9 +1,9 @@
-import { ImageFormats } from '../shared/models';
-import * as IMG from './public';
-import { ButtonsMakerParams, TinyButtonsBase } from './tiny-buttons-base';
+import { ImageFormats } from '../../shared/models';
+import * as IMG from '../public';
+import { AddToRegistryParams, AddToRegistryBase } from './add-to-registry-base';
 
-export class TinyButtonsImg extends TinyButtonsBase {
-  constructor(makerParams: ButtonsMakerParams) {
+export class TinyButtonsImg extends AddToRegistryBase {
+  constructor(makerParams: AddToRegistryParams) {
     super(makerParams);
   }
 

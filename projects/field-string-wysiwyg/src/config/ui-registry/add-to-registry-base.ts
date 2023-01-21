@@ -1,11 +1,12 @@
 import { Adam } from 'projects/edit-types';
 import { Editor } from 'tinymce';
-import { FieldStringWysiwygEditor } from '../editor/editor';
-import { RawEditorOptionsWithModes } from './tinymce-helper-types';
+import { FieldStringWysiwygEditor } from '../../editor/editor';
+import { RawEditorOptionsWithModes } from '../tinymce-helper-types';
 
 type FuncVoid = () => void | unknown;
 
-export interface ButtonsMakerParams {
+/** Helper to ensure add-to-registry params don't always change on every implementing class */
+export interface AddToRegistryParams {
   field: FieldStringWysiwygEditor;
   editor: Editor;
   adam: Adam;
@@ -16,14 +17,14 @@ export interface ButtonsMakerParams {
  * Base class for tools which add buttons to tinymce
  * Important to split code a bit
  */
-export abstract class TinyButtonsBase {
+export abstract class AddToRegistryBase {
 
   field: FieldStringWysiwygEditor;
   editor: Editor;
   adam: Adam;
   options: RawEditorOptionsWithModes;
 
-  constructor(makerParams: ButtonsMakerParams) {
+  constructor(makerParams: AddToRegistryParams) {
       this.field = makerParams.field;
       this.editor = makerParams.editor;
       this.adam = makerParams.adam;

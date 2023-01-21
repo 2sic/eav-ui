@@ -1,9 +1,9 @@
-import { FieldStringWysiwygEditor } from '../editor/editor';
-import { LinkFiles, LinkGroup, LinkGroupPro } from './public';
-import { ButtonsMakerParams, TinyButtonsBase } from './tiny-buttons-base';
+import { FieldStringWysiwygEditor } from '../../editor/editor';
+import { LinkFiles, LinkGroup, LinkGroupPro } from '../public';
+import { AddToRegistryParams, AddToRegistryBase } from './add-to-registry-base';
 
-export class TinyButtonsLinks extends TinyButtonsBase {
-  constructor(makerParams: ButtonsMakerParams) {
+export class TinyButtonsLinks extends AddToRegistryBase {
+  constructor(makerParams: AddToRegistryParams) {
       super(makerParams);
   }
 

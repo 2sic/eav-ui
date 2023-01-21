@@ -20,7 +20,7 @@ import type { Editor, RawEditorOptions } from 'tinymce/tinymce';
 import { EavWindow } from '../../../eav-ui/src/app/shared/models/eav-window.model';
 import { Connector, EavCustomInputField, WysiwygReconfigure } from '../../../edit-types';
 import { consoleLogWebpack } from '../../../field-custom-gps/src/shared/console-log-webpack.helper';
-import { TinyMceButtons } from '../config/buttons';
+import { AddEverythingToRegistry } from '../config/ui-registry/add-everything-to-registry';
 import { TinyMceConfigurator } from '../config/tinymce-configurator';
 import { RawEditorOptionsWithModes, WysiwygInline } from '../config/tinymce-helper-types';
 import { TinyMceTranslations } from '../config/translations';
@@ -117,7 +117,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
     editor.on('init', _event => {
       consoleLogWebpack(`${wysiwygEditorTag} TinyMCE initialized`, editor);
       this.reconfigure?.editorOnInit?.(editor);
-      new TinyMceButtons({ field: this, editor, adam: this.connector._experimental.adam, options: rawEditorOptions }).register();
+      new AddEverythingToRegistry({ field: this, editor, adam: this.connector._experimental.adam, options: rawEditorOptions }).register();
       if (!this.reconfigure?.disableAdam) {
         attachAdam(editor, this.connector._experimental.adam);
       }

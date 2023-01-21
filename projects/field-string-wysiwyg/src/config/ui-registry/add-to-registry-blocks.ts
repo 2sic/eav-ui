@@ -1,9 +1,9 @@
-import { Guid } from '../shared/guid';
-import { AddContentBlock } from './public';
-import { ButtonsMakerParams, TinyButtonsBase } from './tiny-buttons-base';
+import { Guid } from '../../shared/guid';
+import { AddContentBlock } from '../public';
+import { AddToRegistryParams, AddToRegistryBase } from './add-to-registry-base';
 
-export class TinyButtonsContentBlocks extends TinyButtonsBase {
-  constructor(makerParams: ButtonsMakerParams) {
+export class TinyButtonsContentBlocks extends AddToRegistryBase {
+  constructor(makerParams: AddToRegistryParams) {
       super(makerParams);
   }
 

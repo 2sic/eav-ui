@@ -1,9 +1,9 @@
 import { Ui } from 'tinymce';
-import { HGroups } from './public';
-import { ButtonsMakerParams, TinyButtonsBase } from './tiny-buttons-base';
+import { HGroups } from '../public';
+import { AddToRegistryParams, AddToRegistryBase } from './add-to-registry-base';
 
-export class TinyButtonsHeadings extends TinyButtonsBase {
-  constructor(makerParams: ButtonsMakerParams) {
+export class TinyButtonsHeadings extends AddToRegistryBase {
+  constructor(makerParams: AddToRegistryParams) {
       super(makerParams);
   }
 

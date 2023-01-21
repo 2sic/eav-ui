@@ -1,9 +1,9 @@
-import { wysiwygEditorTag } from '../editor/editor';
-import { ToFullscreen } from './public';
-import { ButtonsMakerParams, TinyButtonsBase } from './tiny-buttons-base';
+import { wysiwygEditorTag } from '../../editor/editor';
+import { ToFullscreen } from '../public';
+import { AddToRegistryParams, AddToRegistryBase } from './add-to-registry-base';
 
-export class TinyButtonsDialog extends TinyButtonsBase {
-  constructor(makerParams: ButtonsMakerParams) {
+export class TinyButtonsDialog extends AddToRegistryBase {
+  constructor(makerParams: AddToRegistryParams) {
       super(makerParams);
   }
 

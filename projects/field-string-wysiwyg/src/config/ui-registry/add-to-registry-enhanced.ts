@@ -1,9 +1,9 @@
-import { Guid } from '../shared/guid';
-import { AddContentSplit, ContentDivision, ContentDivisionClass } from './public';
-import { ButtonsMakerParams, TinyButtonsBase } from './tiny-buttons-base';
+import { Guid } from '../../shared/guid';
+import { AddContentSplit, ContentDivision, ContentDivisionClass } from '../public';
+import { AddToRegistryParams, AddToRegistryBase } from './add-to-registry-base';
 
-export class TinyButtonsWysiwygEnhanced extends TinyButtonsBase {
-  constructor(makerParams: ButtonsMakerParams) {
+export class TinyButtonsWysiwygEnhanced extends AddToRegistryBase {
+  constructor(makerParams: AddToRegistryParams) {
       super(makerParams);
   }
 
