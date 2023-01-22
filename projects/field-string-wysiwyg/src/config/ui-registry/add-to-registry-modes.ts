@@ -58,6 +58,17 @@ export class TinyButtonsModes extends AddToRegistryBase {
   }
 
   private cycleMode(newMode?: WysiwygMode): void {
+
+    console.log('2dm tiny', this.editor);
+    console.log('2dm tiny editorContainer', this.editor.editorContainer);
+
+    // const ec = this.editor.editorContainer;
+    const ec = this.editor.getContainer();
+    console.log('2dm 1', ec.getElementsByClassName('tox-toolbar'));
+    console.log('2dm 2', ec.querySelector('.tox-toolbar'));
+
+    return;
+
     if (!newMode) {
       const current = this.options.currentMode.mode;
       const idx = WysiwygModeCycle.indexOf(current) + 1; // will be a number or 0 afterwards

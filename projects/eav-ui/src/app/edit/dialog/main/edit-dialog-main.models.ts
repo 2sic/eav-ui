@@ -1,9 +1,9 @@
 import { AdamItem, EntityInfo } from '../../../../../../edit-types';
 import { DialogContext } from '../../../app-administration/models';
-import { Feature } from '../../../features/models/feature.model';
 import { InputType } from '../../../content-type-fields/models/input-type.model';
+import { Feature } from '../../../features/models/feature.model';
 import { LinkInfo } from '../../shared/models';
-import { EavItem } from '../../shared/models/eav';
+import { EavEntity, EavItem } from '../../shared/models/eav';
 import { ContentType1, Entity1, Item1 } from '../../shared/models/json-format-v1';
 
 export interface EavPublishStatus {
@@ -19,7 +19,12 @@ export interface EavFormData extends EavPublishStatus {
   InputTypes: InputType[];
   Items: Item1[];
   Prefetch?: Prefetch;
-  Settings: Object[];
+  Settings: EditSettings;
+}
+
+export interface EditSettings {
+  Values: Record<string, unknown>;
+  Entities: EavEntity[];
 }
 
 export interface SaveEavFormData extends EavPublishStatus {
