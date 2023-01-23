@@ -8,7 +8,7 @@ export const DefaultToolbarConfig: ButtonGroupByViewRaw = {
     // default: ` ${ToolbarModeToggle} undo redo pastetext`,
     // advanced: ` ${ToolbarModeToggle} undo pastetext`,
     default: [
-      /* initial w/undo   */ `${ToolbarModeToggle} undo redo pastetext paste removeformat`,
+      /* initial w/undo   */ `undo redo pastetext paste removeformat`,
       /* format text      */ `bold ${ItalicWithMore}`,
       /* paragraph types  */ `h2 ${HGroups.h3}`,
       /* bullets          */ `numlist ${ListGroup}`,
@@ -16,8 +16,8 @@ export const DefaultToolbarConfig: ButtonGroupByViewRaw = {
       /* rich media       */ NoButtons,
       /* content block    */ AddContentBlock,
       /* tools/mode switch*/ `code ${ModeAdvanced} ${ModeDefault} ${ToFullscreen}`,
-      /* Experiment. split*/ NewRow,
-      /* Experiment. split*/ `undo`
+      // /* Experiment. split*/ NewRow,
+      // /* Experiment. split*/ `undo`
     ],
     advanced: [
       /* initial w/undo   */ `undo redo pastetext paste removeformat`,
@@ -30,7 +30,7 @@ export const DefaultToolbarConfig: ButtonGroupByViewRaw = {
       /* tools/mode switch*/ `code ${ModeAdvanced} ${ModeDefault} ${ToFullscreen}`,
     ],
     text: [
-      /* initial w/undo   */ `${ToolbarModeToggle} undo redo pastetext paste removeformat`,
+      /* initial w/undo   */ `undo redo pastetext paste removeformat`,
       /* format text      */ `bold ${ItalicWithMore}`,
       /* paragraph types  */ `h2 h3 ${HGroups.h4}`,
       /* bullets          */ 'numlist bullist outdent indent',
@@ -39,8 +39,18 @@ export const DefaultToolbarConfig: ButtonGroupByViewRaw = {
       /* content block    */ NoButtons,
       /* tools/mode switch*/ `code ${ModeAdvanced} ${ModeDefault} ${ToFullscreen}`,
     ],
+    'text-light': [
+      /* initial w/undo   */ `undo redo pastetext paste removeformat`,
+      /* format text      */ `bold italic`,
+      /* paragraph types  */ NoButtons,
+      /* bullets          */ NoButtons,
+      /* links/media      */ `${LinkGroup}`,
+      /* rich media       */ NoButtons,
+      /* content block    */ NoButtons,
+      /* tools/mode switch*/ `code ${ModeAdvanced} ${ModeDefault} ${ToFullscreen}`,
+    ],
     media: [
-      /* initial w/undo   */ `${ToolbarModeToggle} undo pasteimage-todo`,  // TODO: create pasteimage
+      /* initial w/undo   */ `undo pasteimage-todo`,  // TODO: create pasteimage
       /* format text      */ NoButtons,
       /* paragraph types  */ NoButtons,
       /* bullets          */ NoButtons,

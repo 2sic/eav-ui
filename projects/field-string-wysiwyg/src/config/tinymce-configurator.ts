@@ -9,6 +9,7 @@ import { TinyMceTranslations } from './translations';
 import { TinyEavConfig } from './tinymce-config';
 import { InputTypeConstants } from '../../../eav-ui/src/app/content-type-fields/constants/input-type.constants';
 import { BehaviorSubject, distinctUntilChanged, Subscription } from 'rxjs';
+import { toConfigForViewModes } from './config-for-view-modes';
 // import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
 
 declare const window: EavWindow;
@@ -75,8 +76,9 @@ export class TinyMceConfigurator {
     const dropzone = exp.dropzone;
     const adam = exp.adam;
 
-    // @SDV this is what I had expected
+    // WIP
     const eavConfig: TinyEavConfig = {
+      mode: toConfigForViewModes(fieldSettings._advanced.Mode),
       features: {
         // contentBlocks is on if the following field can hold inner-content items
         contentBlocks: exp.allInputTypeNames[connector.field.index + 1]?.inputType === InputTypeConstants.EntityContentBlocks,

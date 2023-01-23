@@ -85,10 +85,12 @@ export const HGroups = {
 
 export const ToolbarModeToggle = 'wysiwyg-toolbar-mode';
 export const ToolbarModes = 'wysiwyg-toolbar-modes';
+// TODO: need better convention so we can use different names for mode switch
+// same for `modestandard`
 export const ModeAdvanced = 'modeadvanced';
 export const AddContentBlock = 'addcontentblock';
 export const ContentDivision = 'contentdivision';
-export const ToFullscreen = 'expandfulleditor';
+export const ToFullscreen = 'fullscreen';
 
 export const AddContentSplit = 'contentsplit';
 

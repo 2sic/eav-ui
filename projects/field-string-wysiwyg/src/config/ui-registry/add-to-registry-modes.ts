@@ -1,6 +1,6 @@
 import { ModeDefault, ModeAdvanced, ToolbarModeToggle, ToolbarModes } from '../public';
 import { AddToRegistryParams, AddToRegistryBase } from './add-to-registry-base';
-import { WysiwygDefault, WysiwygAdvanced, WysiwygModeText, WysiwygModeMedia, WysiwygMode, WysiwygModeCycle, WysiwygView } from '../tinymce-helper-types';
+import { WysiwygDefault, WysiwygAdvanced, WysiwygModeText, WysiwygModeMedia, WysiwygEditMode, WysiwygModeCycle, WysiwygDisplayMode } from '../tinymce-helper-types';
 
 export class TinyButtonsModes extends AddToRegistryBase {
   constructor(makerParams: AddToRegistryParams) {
@@ -57,7 +57,7 @@ export class TinyButtonsModes extends AddToRegistryBase {
     });
   }
 
-  private cycleMode(newMode?: WysiwygMode): void {
+  private cycleMode(newMode?: WysiwygEditMode): void {
 
     console.log('2dm tiny', this.editor);
     console.log('2dm tiny editorContainer', this.editor.editorContainer);
@@ -86,7 +86,7 @@ export class TinyButtonsModes extends AddToRegistryBase {
 
 
   /** Mode switching to inline/dialog and advanced/normal */
-  private switchMode(mode: WysiwygMode, viewMode?: WysiwygView): void {
+  private switchMode(mode: WysiwygEditMode, viewMode?: WysiwygDisplayMode): void {
     viewMode ??= this.options.currentMode.view;
     const newSettings = this.options.modeSwitcher.switch(viewMode, mode);
     // don't create a new object, we must keep a refernec to the old

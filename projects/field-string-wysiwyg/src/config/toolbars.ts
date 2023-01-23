@@ -5,7 +5,7 @@ import { DefaultContextMenu, DefaultToolbarConfig } from './defaults';
 import { AddContentBlock, AddContentSplit, ContentDivision, ModeAdvanced, ModeDefault, ToFullscreen } from './public';
 import { TinyEavConfig, SelectSettings } from './tinymce-config';
 // tslint:disable-next-line: max-line-length
-import { TinyMceMode, TinyMceModeWithSwitcher, ToolbarSwitcher, WysiwygAdvanced, WysiwygDefault, WysiwygDialog, WysiwygInline, WysiwygMode, WysiwygView } from './tinymce-helper-types';
+import { TinyMceMode, TinyMceModeWithSwitcher, ToolbarSwitcher, WysiwygAdvanced, WysiwygDefault, WysiwygDialog, WysiwygInline, WysiwygEditMode, WysiwygDisplayMode } from './tinymce-helper-types';
 
 // #region Button Sets that define what buttons appear in what view / mode
 
@@ -23,29 +23,30 @@ export class TinyMceToolbars implements ToolbarSwitcher {
   }
 
   public build(isInline: boolean): TinyMceModeWithSwitcher {
-    const initial = this.switch(isInline ? WysiwygInline : WysiwygDialog, WysiwygDefault);
+    const displayMode = isInline ? WysiwygInline : WysiwygDialog;
+    const initial = this.switch(displayMode, this.config.mode?.[displayMode] || WysiwygDefault);
     return {
       modeSwitcher: this,
       ...initial
     };
   }
 
-  public switch(view: WysiwygView, mode: WysiwygMode): TinyMceMode {
-    const config = this.config.buttons[view];
-    const selector = new ButtonGroupSelector({ mode, view, buttons: config, features: this.config.features });
+  public switch(displayMode: WysiwygDisplayMode, mode: WysiwygEditMode): TinyMceMode {
+    const buttons = this.config.buttons[displayMode];
+    const selector = new ButtonGroupSelector({ editMode: mode, displayMode: displayMode, buttons, features: this.config.features });
     return {
       currentMode: {
-        view,
+        view: displayMode,
         mode,
       },
       menubar: mode === WysiwygAdvanced,
       toolbar: this.toolbar(selector),
-      contextmenu: selector.select(ButtonSetContextMenu)[0],
+      contextmenu: selector.selectButtonGroup(ButtonSetContextMenu)[0],
     };
   }
 
   private toolbar(selector: ButtonGroupSelector): string[] {
-    const allButtonGroups = selector.select(toolbarConfig).flat();
+    const allButtonGroups = selector.selectButtonGroup(toolbarConfig).flat();
     const rows = allButtonGroups.reduce((acc, cur) => {
       if (cur === NewRow)
         acc.push([]);
@@ -70,14 +71,16 @@ export class TinyMceToolbars implements ToolbarSwitcher {
   }
 
   private createRemoveMap(settings: SelectSettings): { button: string, enabled: boolean }[] {
-    return [
+    const map = [
       { button: 'code', enabled: settings.buttons.source },
       { button: ToFullscreen, enabled: settings.buttons.dialog },
       { button: ModeAdvanced, enabled: settings.buttons.advanced },
-      { button: ModeDefault, enabled: !settings.buttons.advanced },
+      { button: ModeDefault, enabled: settings.editMode === WysiwygAdvanced },
       { button: AddContentBlock, enabled: settings.features.contentBlocks },
       { button: ContentDivision, enabled: settings.features.wysiwygEnhanced },
       { button: AddContentSplit, enabled: settings.features.wysiwygEnhanced },
     ];
+    console.log('2dm remove map', map);
+    return map;
   }
 }

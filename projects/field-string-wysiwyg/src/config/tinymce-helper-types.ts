@@ -16,10 +16,10 @@ export const WysiwygModeMedia = 'media';
 export const WysiwygAdvanced = 'advanced';
 export type TinyModeNames = typeof TinyModeStandard | typeof WysiwygInline | typeof WysiwygAdvanced;
 
-export type WysiwygMode = typeof WysiwygDefault | typeof WysiwygModeText | typeof WysiwygModeMedia | typeof WysiwygAdvanced;
-export type WysiwygView = typeof WysiwygInline | typeof WysiwygDialog;
+export type WysiwygEditMode = typeof WysiwygDefault | typeof WysiwygAdvanced| typeof WysiwygModeText | typeof WysiwygModeMedia | string;
+export type WysiwygDisplayMode = typeof WysiwygInline | typeof WysiwygDialog;
 
-export const WysiwygModeCycle: WysiwygMode[] = [
+export const WysiwygModeCycle: WysiwygEditMode[] = [
   WysiwygDefault,
   WysiwygModeText,
   WysiwygModeMedia
@@ -31,8 +31,8 @@ export interface RawEditorOptionsWithModes extends RawEditorOptions, Omit<TinyMc
 
 export interface TinyMceMode {
   currentMode: {
-    view: WysiwygView,
-    mode: WysiwygMode,
+    view: WysiwygDisplayMode,
+    mode: WysiwygEditMode,
   };
   menubar: boolean | string; // should match TinyMCE
   toolbar: string | string[]; // should match TinyMCE
@@ -45,5 +45,5 @@ export interface TinyMceModeWithSwitcher extends TinyMceMode {
 }
 
 export interface ToolbarSwitcher {
-  switch(view: WysiwygView, mode: WysiwygMode): TinyMceMode;
+  switch(view: WysiwygDisplayMode, mode: WysiwygEditMode): TinyMceMode;
 }
