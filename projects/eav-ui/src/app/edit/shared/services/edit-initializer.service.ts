@@ -10,11 +10,12 @@ import { UpdateEnvVarsFromDialogSettings } from '../../../shared/helpers/update-
 import { convertUrlToForm } from '../../../shared/helpers/url-prep.helper';
 import { FeaturesService } from '../../../shared/services/features.service';
 import { calculateIsParentDialog, sortLanguages } from '../../dialog/main/edit-dialog-main.helpers';
-import { EavFormData } from '../../dialog/main/edit-dialog-main.models';
+import { EavEditLoadDto } from '../../dialog/main/edit-dialog-main.models';
 import { EditParams } from '../../edit-matcher.models';
 import { BestValueModes } from '../constants';
-import { FieldsSettingsHelpers, InputFieldHelpers, LocalizationHelpers } from '../helpers';
+import { EntityReader, FieldsSettingsHelpers, InputFieldHelpers, LocalizationHelpers } from '../helpers';
 import { FormValues } from '../models';
+import { EavEntity } from '../models/eav/eav-entity';
 // tslint:disable-next-line:max-line-length
 import { AdamCacheService, ContentTypeItemService, ContentTypeService, EntityCacheService, InputTypeService, ItemService, LanguageInstanceService, LanguageService, LinkCacheService, PublishStatusService } from '../store/ngrx-data';
 
@@ -50,10 +51,10 @@ export class EditInitializerService implements OnDestroy {
     const form = convertUrlToForm((this.route.snapshot.params as EditParams).items);
     const editItems = JSON.stringify(form.items);
     this.eavService.fetchFormData(editItems).subscribe(formData => {
-      // SDV: comment it 
+      // SDV: comment it
       this.featuresService.load(formData.Context);
       UpdateEnvVarsFromDialogSettings(formData.Context.App);
-      this.saveFormData(formData);
+      this.importLoadedData(formData);
       this.keepInitialValues();
       this.setMissingValues();
 
@@ -61,25 +62,26 @@ export class EditInitializerService implements OnDestroy {
     });
   }
 
-  private saveFormData(formData: EavFormData): void {
+  private importLoadedData(loadDto: EavEditLoadDto): void {
     const formId = Math.floor(Math.random() * 99999);
     const isParentDialog = calculateIsParentDialog(this.route);
-    const itemGuids = formData.Items.map(item => item.Entity.Guid);
+    const itemGuids = loadDto.Items.map(item => item.Entity.Guid);
 
-    this.itemService.loadItems(formData.Items);
+    this.itemService.loadItems(loadDto.Items);
     // we assume that input type and content type data won't change between loading parent and child forms
-    this.inputTypeService.addInputTypes(formData.InputTypes);
-    this.contentTypeItemService.addContentTypeItems(formData.ContentTypeItems);
-    this.contentTypeService.addContentTypes(formData.ContentTypes);
-    this.adamCacheService.loadPrefetch(formData.Prefetch?.Adam);
-    this.entityCacheService.loadEntities(formData.Prefetch?.Entities);
-    this.linkCacheService.loadPrefetch(formData.Prefetch?.Links, formData.Prefetch?.Adam);
+    this.inputTypeService.addInputTypes(loadDto.InputTypes);
+    this.contentTypeItemService.addContentTypeItems(loadDto.ContentTypeItems);
+    this.contentTypeService.addContentTypes(loadDto.ContentTypes);
+    this.adamCacheService.loadPrefetch(loadDto.Prefetch?.Adam);
+    this.entityCacheService.loadEntities(loadDto.Prefetch?.Entities);
+    this.linkCacheService.loadPrefetch(loadDto.Prefetch?.Links, loadDto.Prefetch?.Adam);
 
     const items = this.itemService.getItems(itemGuids);
     const createMode = items[0].Entity.Id === 0;
     const isCopy = items[0].Header.DuplicateEntity != null;
     const enableHistory = !createMode && this.route.snapshot.data.history !== false;
-    this.eavService.setEavConfig(formData.Context, formId, isParentDialog, itemGuids, createMode, isCopy, enableHistory, formData.Settings);
+    const settingsAsEav = { Values: loadDto.Settings.Values, Entities: EavEntity.convertMany(loadDto.Settings.Entities) };
+    this.eavService.setEavConfig(loadDto.Context, formId, isParentDialog, itemGuids, createMode, isCopy, enableHistory, settingsAsEav);
 
     const currentLanguage = this.eavService.eavConfig.lang;
     const defaultLanguage = this.eavService.eavConfig.langPri;
@@ -96,7 +98,7 @@ export class EditInitializerService implements OnDestroy {
     this.languageInstanceService.addLanguageInstance(formId, currentLanguage, defaultLanguage, currentLanguage, false);
 
     // First convert to publish mode, because then it will run checks if this is allowed
-    const publishMode = this.publishStatusService.asPublishMode(formData.IsPublished, formData.DraftShouldBranch);
+    const publishMode = this.publishStatusService.asPublishMode(loadDto.IsPublished, loadDto.DraftShouldBranch);
     this.publishStatusService.setPublishMode(publishMode, formId, this.eavService);
   }
 
@@ -150,6 +152,7 @@ export class EditInitializerService implements OnDestroy {
 
         const attributeValues = item.Entity.Attributes[ctAttribute.Name];
         const fieldSettings = FieldsSettingsHelpers.setDefaultFieldSettings(
+          // new EntityReader(defaultLanguage, defaultLanguage).mergeSettings(ctAttribute.Metadata)
           FieldsSettingsHelpers.mergeSettings<FieldSettings>(ctAttribute.Metadata, defaultLanguage, defaultLanguage),
         );
 

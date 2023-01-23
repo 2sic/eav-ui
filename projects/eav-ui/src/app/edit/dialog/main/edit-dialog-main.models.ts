@@ -4,14 +4,14 @@ import { InputType } from '../../../content-type-fields/models/input-type.model'
 import { Feature } from '../../../features/models/feature.model';
 import { LinkInfo } from '../../shared/models';
 import { EavEntity, EavItem } from '../../shared/models/eav';
-import { EavContentTypeDto, EavEntityDto, EavEntityBundleDto } from '../../shared/models/json-format-v1';
+import { EavContentTypeDto, EavEntityBundleDto, EavEntityDto } from '../../shared/models/json-format-v1';
 
 export interface EavPublishStatus {
   DraftShouldBranch: boolean;
   IsPublished: boolean;
 }
 
-export interface EavFormData extends EavPublishStatus {
+export interface EavEditLoadDto extends EavPublishStatus {
   ContentTypeItems: EavEntityDto[];
   ContentTypes: EavContentTypeDto[];
   Context: DialogContext;
@@ -19,7 +19,7 @@ export interface EavFormData extends EavPublishStatus {
   InputTypes: InputType[];
   Items: EavEntityBundleDto[];
   Prefetch?: Prefetch;
-  Settings: EditSettings;
+  Settings: EditSettingsDto;
 }
 
 export interface EditSettings {
@@ -27,6 +27,11 @@ export interface EditSettings {
   // note: added by 2dm 2023-01-21 but not used yet
   // will probably contain special wysiwyg-edit configs and similar...
   Entities: EavEntity[];
+}
+
+export interface EditSettingsDto {
+  Values: Record<string, unknown>;
+  Entities: EavEntityDto[];
 }
 
 export interface SaveEavFormData extends EavPublishStatus {
