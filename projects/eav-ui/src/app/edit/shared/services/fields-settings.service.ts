@@ -106,7 +106,7 @@ export class FieldsSettingsService implements OnDestroy {
         ]) => {
           const formValues: FormValues = {};
           for (const [fieldName, fieldValues] of Object.entries(itemAttributes)) {
-            formValues[fieldName] = LocalizationHelpers.translate(currentLanguage, defaultLanguage, fieldValues, null);
+            formValues[fieldName] = entityReader.getBestValue(fieldValues, null);
           }
 
           const fieldsProps: FieldsProps = {};
