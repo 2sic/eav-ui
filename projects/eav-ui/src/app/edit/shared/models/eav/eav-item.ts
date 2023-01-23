@@ -1,16 +1,16 @@
 import { EavEntity, EavHeader } from '.';
-import { Item1 } from '../json-format-v1';
+import { EavEntityBundleDto } from '../json-format-v1';
 
 export class EavItem {
   Entity: EavEntity;
   Header: EavHeader;
 
-  static convert(item1: Item1): EavItem {
-    const entity = EavEntity.convertOne(item1.Entity);
+  static convert(entityBundleDto: EavEntityBundleDto): EavItem {
+    const entity = EavEntity.convertOne(entityBundleDto.Entity);
 
     const item: EavItem = {
       Entity: entity,
-      Header: item1.Header,
+      Header: entityBundleDto.Header,
     };
     return item;
   }

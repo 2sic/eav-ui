@@ -10,7 +10,7 @@ import { MetadataDecorators } from '../../shared/constants';
 import { InputFieldHelpers, ValidationMessagesHelpers } from '../../shared/helpers';
 import { FieldErrorMessage, SaveResult } from '../../shared/models';
 import { EavItem } from '../../shared/models/eav';
-import { Item1 } from '../../shared/models/json-format-v1';
+import { EavEntityBundleDto } from '../../shared/models/json-format-v1';
 import { EavService, EditRoutingService, FormsStateService, FormulaDesignerService, LoadIconsService } from '../../shared/services';
 // tslint:disable-next-line:max-line-length
 import { AdamCacheService, ContentTypeItemService, ContentTypeService, EntityCacheService, GlobalConfigService, InputTypeService, ItemService, LanguageInstanceService, LanguageService, LinkCacheService, PublishStatusService, StringQueryCacheService } from '../../shared/store/ngrx-data';
@@ -167,7 +167,7 @@ export class EditDialogMainComponent implements OnInit, AfterViewInit, OnDestroy
           const saveIfEmpty = contentType.Metadata.some(m => m.Type.Name === MetadataDecorators.SaveEmptyDecorator);
           if (!hasAttributes && !saveIfEmpty) { return; }
 
-          const item = Item1.convert(eavItem);
+          const item = EavEntityBundleDto.bundleToDto(eavItem);
           return item;
         })
         .filter(item => item != null);

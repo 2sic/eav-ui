@@ -1,5 +1,5 @@
 import { EavEntity, EavEntityAttributes } from '.';
-import { ContentTypeAttribute1 } from '../json-format-v1';
+import { EavContentTypeAttributesDto } from '../json-format-v1';
 
 export class EavContentTypeAttribute {
   InputType: string;
@@ -9,25 +9,25 @@ export class EavContentTypeAttribute {
   Settings: EavEntityAttributes;
   Type: string;
 
-  private static convertOne(attribute1: ContentTypeAttribute1): EavContentTypeAttribute {
-    const metadata = EavEntity.convertMany(attribute1.Metadata);
+  private static convertOne(ctAttributeDto: EavContentTypeAttributesDto): EavContentTypeAttribute {
+    const metadata = EavEntity.convertMany(ctAttributeDto.Metadata);
     const settings = EavEntityAttributes.mergeSettings(metadata);
 
     const attribute: EavContentTypeAttribute = {
-      InputType: attribute1.InputType,
-      IsTitle: attribute1.IsTitle,
+      InputType: ctAttributeDto.InputType,
+      IsTitle: ctAttributeDto.IsTitle,
       Metadata: metadata,
-      Name: attribute1.Name,
+      Name: ctAttributeDto.Name,
       Settings: settings,
-      Type: attribute1.Type,
+      Type: ctAttributeDto.Type,
     };
     return attribute;
   }
 
-  static convertMany(attributes1: ContentTypeAttribute1[]): EavContentTypeAttribute[] {
-    if (attributes1 == null) { return []; }
+  static convertMany(ctAttributesDto: EavContentTypeAttributesDto[]): EavContentTypeAttribute[] {
+    if (ctAttributesDto == null) { return []; }
 
-    const attributes = attributes1.map(attribute1 => EavContentTypeAttribute.convertOne(attribute1));
+    const attributes = ctAttributesDto.map(attribute1 => EavContentTypeAttribute.convertOne(attribute1));
     return attributes;
   }
 }

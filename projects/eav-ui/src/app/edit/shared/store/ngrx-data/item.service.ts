@@ -8,7 +8,7 @@ import { BestValueModes } from '../../constants';
 import { GeneralHelpers, InputFieldHelpers, LocalizationHelpers } from '../../helpers';
 import { FormValues, Language, SaveResult } from '../../models';
 import { EavContentTypeAttribute, EavDimension, EavEntity, EavEntityAttributes, EavFor, EavHeader, EavItem, EavValue } from '../../models/eav';
-import { Item1 } from '../../models/json-format-v1';
+import { EavEntityBundleDto } from '../../models/json-format-v1';
 import { BaseDataService } from './base-data.service';
 
 @Injectable({ providedIn: 'root' })
@@ -17,7 +17,7 @@ export class ItemService extends BaseDataService<EavItem> {
     super('Item', serviceElementsFactory);
   }
 
-  loadItems(items1: Item1[]): void {
+  loadItems(items1: EavEntityBundleDto[]): void {
     const items = items1.map(item1 => EavItem.convert(item1));
     this.upsertManyInCache(items);
   }

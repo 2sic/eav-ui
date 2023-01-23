@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { EntityCollectionServiceElementsFactory } from '@ngrx/data';
 import { EavEntity } from '../../models/eav';
-import { Entity1 } from '../../models/json-format-v1';
+import { EavEntityDto } from '../../models/json-format-v1';
 import { BaseDataService } from './base-data.service';
 
 @Injectable({ providedIn: 'root' })
@@ -10,7 +10,7 @@ export class ContentTypeItemService extends BaseDataService<EavEntity> {
     super('ContentTypeItem', serviceElementsFactory);
   }
 
-  addContentTypeItems(contentTypeItems1: Entity1[]): void {
+  addContentTypeItems(contentTypeItems1: EavEntityDto[]): void {
     const contentTypeItems = EavEntity.convertMany(contentTypeItems1);
     this.upsertManyInCache(contentTypeItems);
   }

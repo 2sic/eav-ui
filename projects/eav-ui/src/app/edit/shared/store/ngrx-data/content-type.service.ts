@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { EntityCollectionServiceElementsFactory } from '@ngrx/data';
 import { distinctUntilChanged, map, Observable } from 'rxjs';
 import { EavContentType } from '../../models/eav';
-import { ContentType1 } from '../../models/json-format-v1';
+import { EavContentTypeDto } from '../../models/json-format-v1';
 import { BaseDataService } from './base-data.service';
 
 @Injectable({ providedIn: 'root' })
@@ -11,7 +11,7 @@ export class ContentTypeService extends BaseDataService<EavContentType> {
     super('ContentType', serviceElementsFactory);
   }
 
-  addContentTypes(contentTypes1: ContentType1[]): void {
+  addContentTypes(contentTypes1: EavContentTypeDto[]): void {
     const contentTypes = contentTypes1.map(contentType1 => EavContentType.convert(contentType1));
     this.addManyToCache(contentTypes);
   }
