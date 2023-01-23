@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { EntityCollectionServiceElementsFactory } from '@ngrx/data';
-import { distinctUntilChanged, map, Observable } from 'rxjs';
+import { combineLatest, distinctUntilChanged, map, Observable, shareReplay } from 'rxjs';
+import { EntityReader } from '../../helpers';
 import { LanguageInstance } from '../../models';
 import { BaseDataService } from './base-data.service';
 
@@ -26,6 +27,24 @@ export class LanguageInstanceService extends BaseDataService<LanguageInstance> {
 
   getCurrentLanguage(formId: number): string {
     return this.cache$.value.find(languageInstance => languageInstance.formId === formId)?.currentLanguage;
+  }
+
+  /**
+   * Get an EntityReader for the current form
+   */
+  getEntityReader$(formId: number) {
+    return combineLatest([
+      this.getCurrentLanguage$(formId),
+      this.getDefaultLanguage$(formId),
+    ]).pipe(
+      map(([currentLanguage, defaultLanguage]) => {
+        return new EntityReader(currentLanguage, defaultLanguage);
+      }),
+      // Ensure we don't fire too often
+      distinctUntilChanged(),
+      // Ensure the EntityReader is reused and not recreated every time
+      shareReplay(1)
+    );
   }
 
   getCurrentLanguage$(formId: number): Observable<string> {
