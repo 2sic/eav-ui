@@ -6,10 +6,10 @@ export class EntityReader {
   }
 
   public flatten<T>(metadataItem: EavEntity): T {
-    return this.mergeSettings<T>([metadataItem]);
+    return this.flattenAll<T>([metadataItem]);
   }
 
-  mergeSettings<T>(metadataItems: EavEntity[]): T {
+  flattenAll<T>(metadataItems: EavEntity[]): T {
     if (metadataItems == null) { return {} as T; }
 
     const merged: Record<string, any> = {};
