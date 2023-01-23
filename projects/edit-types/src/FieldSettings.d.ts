@@ -92,6 +92,17 @@ interface StringWysiwyg extends String {
 
   /** Reference to a external configuration */
   WysiwygConfiguration: string; // new v15
+
+  _advanced: StringWysiwygAdvanced;
+}
+
+/**
+ * New for v15 - advanced settings which actually come from another entity
+ */
+interface StringWysiwygAdvanced {
+  /** The initial mode, like 'default' or 'text' */
+  Mode: 'default' | 'text';
+  Json: string;
 }
 
 /**
