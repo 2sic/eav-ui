@@ -4,6 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { DialogSettings } from '../../app-administration/models';
+import { FeatureNames } from '../../features/feature-names';
 import { BaseComponent } from '../../shared/components/base-component/base.component';
 import { copyToClipboard } from '../../shared/helpers/copy-to-clipboard.helper';
 import { EavWindow } from '../../shared/models/eav-window.model';
@@ -15,7 +16,6 @@ import { SxcInsightsService } from '../services/sxc-insights.service';
 import { ZoneService } from '../services/zone.service';
 import { GoToRegistration } from '../sub-dialogs/registration/go-to-registration';
 import { InfoTemplate, SystemInfoTemplateVars } from './system-info.models';
-import { FeatureNames } from '../../features/feature-names';
 
 declare const window: EavWindow;
 
@@ -44,7 +44,7 @@ export class SystemInfoComponent extends BaseComponent implements OnInit, OnDest
     private sxcInsightsService: SxcInsightsService,
     private featuresService: FeaturesService,
   ) {
-    super(router, route)
+    super(router, route);
   }
 
   ngOnInit(): void {
@@ -137,12 +137,12 @@ export class SystemInfoComponent extends BaseComponent implements OnInit, OnDest
             value: systemInfoSet.License.Owner || '(unregistered)',
             link: systemInfoSet.License.Owner
               ? {
-                url: this.router.url + "/" + GoToRegistration.getUrl(),
+                url: this.router.url + '/' + GoToRegistration.getUrl(),
                 label: 'manage',
                 target: 'angular',
               }
               : {
-                url: this.router.url + "/" + GoToRegistration.getUrl(),
+                url: this.router.url + '/' + GoToRegistration.getUrl(),
                 label: 'register',
                 target: 'angular',
               },
@@ -220,8 +220,8 @@ export class SystemInfoComponent extends BaseComponent implements OnInit, OnDest
         return info;
       }),
     );
-    var lsEnabled$ = this.featuresService.isEnabled$(FeatureNames.LightSpeed);
-    var cspEnabled$ = this.featuresService.isEnabled$(FeatureNames.ContentSecurityPolicy);
+    const lsEnabled$ = this.featuresService.isEnabled$(FeatureNames.LightSpeed);
+    const cspEnabled$ = this.featuresService.isEnabled$(FeatureNames.ContentSecurityPolicy);
     this.templateVars$ = combineLatest([systemInfos$, siteInfos$, this.loading$, warningIcon$, warningInfos$, lsEnabled$, cspEnabled$]).pipe(
       map(([systemInfos, siteInfos, loading, warningIcon, warningInfos, lsEnabled, cspEnabled]) => {
         const viewModel: SystemInfoTemplateVars = {
