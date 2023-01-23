@@ -19,6 +19,7 @@ import { EavHeader } from '../models/eav';
 import { ContentTypeService, GlobalConfigService, InputTypeService, ItemService, LanguageInstanceService, LanguageService } from '../store/ngrx-data';
 import { FormsStateService } from './forms-state.service';
 import { FormulaDesignerService } from './formula-designer.service';
+import { FieldLogicTools } from '../../form/shared/field-logic/field-logic-tools';
 
 @Injectable()
 export class FieldsSettingsService implements OnDestroy {
@@ -111,6 +112,11 @@ export class FieldsSettingsService implements OnDestroy {
 
           const fieldsProps: FieldsProps = {};
           const formulaUpdates: FormValues = {};
+          const logicTools: FieldLogicTools = {
+            eavConfig: this.eavService.eavConfig,
+            entityReader: entityReader,
+            debug: debugEnabled,
+          };
           for (const attribute of contentType.Attributes) {
             const attributeValues = itemAttributes[attribute.Name];
             // empty-default and empty-message have no value
@@ -148,7 +154,7 @@ export class FieldsSettingsService implements OnDestroy {
 
             // update settings with respective FieldLogics
             const logic = FieldLogicManager.singleton().get(attribute.InputType);
-            const fixed = logic?.update(calculated, value, this.eavService.eavConfig, debugEnabled) ?? calculated;
+            const fixed = logic?.update(calculated, value, logicTools) ?? calculated;
             consoleLogAngular('calculated', JSON.parse(JSON.stringify(calculated)));
 
             // important to compare with undefined because null is allowed value

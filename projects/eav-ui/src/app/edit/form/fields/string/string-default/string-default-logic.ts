@@ -7,7 +7,7 @@ export class StringDefaultLogic extends FieldLogicBase {
 
   canAutoTranslate = true;
 
-  update(settings: FieldSettings, value: string): FieldSettings {
+  update(settings: FieldSettings): FieldSettings {
     const fixedSettings: FieldSettings = { ...settings };
     fixedSettings.InputFontFamily ??= '';
     fixedSettings.RowCount ||= 1;
