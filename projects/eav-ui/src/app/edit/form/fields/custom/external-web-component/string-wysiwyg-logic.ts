@@ -18,23 +18,13 @@ export class StringWysiwygLogic extends FieldLogicBase {
     fixedSettings.WysiwygMode ||= 'basic';
 
     // New - configuration bundles
-    fixedSettings._advanced = buildAdvanced(fixedSettings.WysiwygConfiguration, tools);
+    fixedSettings._advanced = this.findAndMergeAdvanced(tools, fixedSettings.WysiwygConfiguration, {
+      Mode: 'default',
+      Json: '',
+    });
     return fixedSettings as FieldSettings;
   }
 }
 
 FieldLogicBase.add(StringWysiwygLogic);
 
-function buildAdvanced(possibleGuid: string, tools: FieldLogicTools) {
-  const defaults: StringWysiwygAdvanced = {
-    Mode: 'default',
-    Json: '',
-  };
-  if (!possibleGuid) return defaults;
-
-  const wysiwygConfig = tools.eavConfig.settings.Entities.find(e => e.Guid === possibleGuid);
-  if (!wysiwygConfig) return defaults;
-
-  const advanced = tools.entityReader.flatten(wysiwygConfig) as StringWysiwygAdvanced;
-  return { ...defaults, ...advanced };
-}
