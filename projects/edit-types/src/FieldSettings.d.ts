@@ -89,6 +89,9 @@ interface StringWysiwyg extends String {
    */
   ContentCss: string;
   InlineInitialHeight: string;
+
+  /** Reference to a external configuration */
+  WysiwygConfiguration: string; // new v15
 }
 
 /**

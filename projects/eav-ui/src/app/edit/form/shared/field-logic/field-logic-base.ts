@@ -8,7 +8,7 @@ export abstract class FieldLogicBase {
   /** Input type name */
   abstract name: string;
 
-  public canAutoTranslate: boolean = false;
+  public canAutoTranslate = false;
 
   /** Adds Logic to FieldLogicManager */
   static add(logic: LogicConstructor) {

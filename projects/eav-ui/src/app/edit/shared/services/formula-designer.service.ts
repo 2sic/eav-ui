@@ -268,6 +268,7 @@ export class FormulaDesignerService implements OnDestroy {
     const formulaCache: FormulaCacheItem[] = [];
     const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
     const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
+    // const entityReader = new EntityReader(currentLanguage, defaultLanguage);
 
     for (const entityGuid of this.eavService.eavConfig.itemGuids) {
       const item = this.itemService.getItem(entityGuid);
@@ -278,6 +279,7 @@ export class FormulaDesignerService implements OnDestroy {
       const contentType = this.contentTypeService.getContentType(contentTypeId);
       for (const attribute of contentType.Attributes) {
         const settings = FieldsSettingsHelpers.setDefaultFieldSettings(
+          // entityReader.mergeSettings<FieldSettings>(attribute.Metadata),
           FieldsSettingsHelpers.mergeSettings<FieldSettings>(attribute.Metadata, defaultLanguage, defaultLanguage),
         );
         const formulaItems = this.contentTypeItemService.getContentTypeItems(settings.Formulas).filter(formulaItem => {
