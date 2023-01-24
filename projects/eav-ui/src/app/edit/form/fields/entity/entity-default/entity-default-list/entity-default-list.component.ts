@@ -31,22 +31,17 @@ export class EntityDefaultListComponent implements OnInit {
   ngOnInit(): void {
     const settings$ = this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).pipe(
       map(settings => ({
-        AllowMultiValue: settings.AllowMultiValue,
-        EnableEdit: settings.EnableEdit,
-        EnableDelete: settings.EnableDelete,
-        EnableRemove: settings.EnableRemove,
-      })),
+        allowMultiValue: settings.AllowMultiValue,
+        enableEdit: settings.EnableEdit,
+        enableDelete: settings.EnableDelete,
+        enableRemove: settings.EnableRemove,
+      } as EntityListTemplateVars)),
       distinctUntilChanged(GeneralHelpers.objectsEqual),
     );
     this.templateVars$ = combineLatest([settings$]).pipe(
       map(([settings]) => {
-        const templateVars: EntityListTemplateVars = {
-          allowMultiValue: settings.AllowMultiValue,
-          enableEdit: settings.EnableEdit,
-          enableDelete: settings.EnableDelete,
-          enableRemove: settings.EnableRemove,
-        };
-        return templateVars;
+        console.log('2dm - check delete', settings);
+        return settings;
       }),
     );
   }
