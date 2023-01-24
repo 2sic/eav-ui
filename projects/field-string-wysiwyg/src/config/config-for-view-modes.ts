@@ -18,20 +18,9 @@ export function toConfigForViewModes<TData>(
   expander?: (data: TData, nodeName: WysiwygDisplayMode) => TData
 ): ConfigForDisplayModes<TData> {
 
-  function build(inline: TData, dialog: TData): ConfigForDisplayModes<TData> {
-    // if (defaults != null) {
-    //   inline = { ...defaults, ...inline };
-    //   dialog = { ...defaults, ...dialog };
-    // }
-    return {
-      inline: expander == null ? inline : expander(inline, 'inline'),
-      dialog: expander == null ? dialog : expander(dialog, 'dialog')
-    };
-  }
-
   // Case 1 & 2: null, undefined or array
-  if (original == null || Array.isArray(original)) 
-    return build(original as TData, original as TData);
+  if (original == null || Array.isArray(original))
+    return build(expander, original as TData, original as TData);
 
   const maybeRealConfig = original as ConfigForDisplayModesRaw<TData>;
   const all = maybeRealConfig.all;
@@ -40,14 +29,25 @@ export function toConfigForViewModes<TData>(
 
   // Case 3: Whatever it is, it doesn't have the expected sub-properties
   // so it must itself be the config
-  if (all == undefined && inline == undefined && dialog == undefined)
-    return build(original as TData, original as TData);
+  if (all === undefined && inline === undefined && dialog === undefined)
+    return build(expander, original as TData, original as TData);
+
+  // Case 4: It has some of the expected sub-properties
+  return build(expander, (all ?? inline) as TData, (all ?? dialog) as TData);
+
+}
 
 
-
-
-  if (original as ConfigForDisplayModesRaw<TData> == null) return {
-    inline: original as TData,
-    dialog: original as TData
+function build<TData>(expander: ((data: TData, nodeName: WysiwygDisplayMode) => TData) | undefined,
+  newInline: TData,
+  newDialog: TData
+): ConfigForDisplayModes<TData> {
+  // if (defaults != null) {
+  //   inline = { ...defaults, ...inline };
+  //   dialog = { ...defaults, ...dialog };
+  // }
+  return {
+    inline: expander == null ? newInline : expander(newInline, 'inline'),
+    dialog: expander == null ? newDialog : expander(newDialog, 'dialog')
   };
 }

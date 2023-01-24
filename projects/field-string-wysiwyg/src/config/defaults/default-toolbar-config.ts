@@ -1,6 +1,8 @@
 import { ButtonGroupByViewRaw, NewRow, NoButtons } from '../button-groups';
-import { ItalicWithMore, HGroups, ListGroup, LinkGroup, AddContentBlock, ModeAdvanced, ModeDefault, ToFullscreen, LinkGroupPro, ToolbarModeToggle, SxcImages, LinkFiles, ContentDivision, AddContentSplit } from '../public';
+import { AddContentBlock, AddContentSplit, ContentDivision, HGroups, ItalicWithMore, LinkFiles, LinkGroup, LinkGroupPro,
+   LinkPage, ListGroup, ModeAdvanced, ModeDefault, SxcImages, ToFullscreen } from '../public';
 
+const finalLineWithCodeAndMore = `code ${ModeAdvanced} ${ModeDefault} ${ToFullscreen}`;
 
 export const DefaultToolbarConfig: ButtonGroupByViewRaw = {
   all: {
@@ -15,7 +17,7 @@ export const DefaultToolbarConfig: ButtonGroupByViewRaw = {
       /* links/media      */ `${LinkGroup}`,
       /* rich media       */ NoButtons,
       /* content block    */ AddContentBlock,
-      /* tools/mode switch*/ `code ${ModeAdvanced} ${ModeDefault} ${ToFullscreen}`,
+      /* tools/mode switch*/ finalLineWithCodeAndMore,
       // /* Experiment. split*/ NewRow,
       // /* Experiment. split*/ `undo`
     ],
@@ -27,7 +29,7 @@ export const DefaultToolbarConfig: ButtonGroupByViewRaw = {
       /* links/media      */ `${LinkGroupPro}`, // test
       /* rich media       */ NoButtons,
       /* content block    */ NoButtons,
-      /* tools/mode switch*/ `code ${ModeAdvanced} ${ModeDefault} ${ToFullscreen}`,
+      /* tools/mode switch*/ finalLineWithCodeAndMore,
     ],
     text: [
       /* initial w/undo   */ `undo redo pastetext paste removeformat`,
@@ -37,17 +39,27 @@ export const DefaultToolbarConfig: ButtonGroupByViewRaw = {
       /* links/media      */ `${LinkGroup}`,
       /* rich media       */ NoButtons,
       /* content block    */ NoButtons,
-      /* tools/mode switch*/ `code ${ModeAdvanced} ${ModeDefault} ${ToFullscreen}`,
+      /* tools/mode switch*/ finalLineWithCodeAndMore,
     ],
-    'text-light': [
+    'text-minimal': [
       /* initial w/undo   */ `undo redo pastetext paste removeformat`,
       /* format text      */ `bold italic`,
       /* paragraph types  */ NoButtons,
       /* bullets          */ NoButtons,
+      /* links/media      */ `link ${LinkPage}`,
+      /* rich media       */ NoButtons,
+      /* content block    */ NoButtons,
+      /* tools/mode switch*/ finalLineWithCodeAndMore,
+    ],
+    'text-basic': [
+      /* initial w/undo   */ `undo redo pastetext paste removeformat`,
+      /* format text      */ `bold ${ItalicWithMore}`,
+      /* paragraph types  */ NoButtons,
+      /* bullets          */ 'numlist bullist outdent indent',
       /* links/media      */ `${LinkGroup}`,
       /* rich media       */ NoButtons,
       /* content block    */ NoButtons,
-      /* tools/mode switch*/ `code ${ModeAdvanced} ${ModeDefault} ${ToFullscreen}`,
+      /* tools/mode switch*/ finalLineWithCodeAndMore,
     ],
     media: [
       /* initial w/undo   */ `undo pasteimage-todo`,  // TODO: create pasteimage
@@ -57,7 +69,7 @@ export const DefaultToolbarConfig: ButtonGroupByViewRaw = {
       /* links/media      */ `${SxcImages} ${LinkFiles}`,
       /* rich media       */ `${ContentDivision} ${AddContentSplit}`,
       /* content block    */ AddContentBlock,
-      /* tools/mode switch*/ `code ${ModeAdvanced} ${ModeDefault} ${ToFullscreen}`,
+      /* tools/mode switch*/ finalLineWithCodeAndMore,
     ],
   },
   dialog: {
@@ -69,7 +81,7 @@ export const DefaultToolbarConfig: ButtonGroupByViewRaw = {
       /* links/media      */ `${SxcImages} ${LinkGroupPro}`, // different from other default
       /* rich media       */ NoButtons,
       /* content block    */ AddContentBlock,
-      /* tools/mode switch*/ `code ${ModeAdvanced} ${ModeDefault} ${ToFullscreen}`,
+      /* tools/mode switch*/ finalLineWithCodeAndMore,
     ],
   }
 };

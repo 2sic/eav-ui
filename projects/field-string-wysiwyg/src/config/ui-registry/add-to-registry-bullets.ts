@@ -1,5 +1,5 @@
 import { ListGroup } from '../public';
-import { AddToRegistryParams, AddToRegistryBase } from './add-to-registry-base';
+import { AddToRegistryBase, AddToRegistryParams } from './add-to-registry-base';
 
 export class TinyButtonsBullets extends AddToRegistryBase {
   constructor(makerParams: AddToRegistryParams) {

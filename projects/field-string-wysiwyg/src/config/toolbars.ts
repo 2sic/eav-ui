@@ -1,11 +1,11 @@
 // tslint:disable-next-line: max-line-length
 import { ButtonGroupSelector } from './button-group-selector';
-import { toButtonGroupByView, NewRow } from './button-groups';
+import { NewRow, toButtonGroupByView } from './button-groups';
 import { DefaultContextMenu, DefaultToolbarConfig } from './defaults';
 import { AddContentBlock, AddContentSplit, ContentDivision, ModeAdvanced, ModeDefault, ToFullscreen } from './public';
-import { TinyEavConfig, SelectSettings } from './tinymce-config';
+import { SelectSettings, TinyEavConfig } from './tinymce-config';
 // tslint:disable-next-line: max-line-length
-import { TinyMceMode, TinyMceModeWithSwitcher, ToolbarSwitcher, WysiwygAdvanced, WysiwygDefault, WysiwygDialog, WysiwygInline, WysiwygEditMode, WysiwygDisplayMode } from './tinymce-helper-types';
+import { TinyMceMode, TinyMceModeWithSwitcher, ToolbarSwitcher, WysiwygAdvanced, WysiwygDefault, WysiwygDialog, WysiwygDisplayMode, WysiwygEditMode, WysiwygInline } from './tinymce-helper-types';
 
 // #region Button Sets that define what buttons appear in what view / mode
 
@@ -33,7 +33,7 @@ export class TinyMceToolbars implements ToolbarSwitcher {
 
   public switch(displayMode: WysiwygDisplayMode, mode: WysiwygEditMode): TinyMceMode {
     const buttons = this.config.buttons[displayMode];
-    const selector = new ButtonGroupSelector({ editMode: mode, displayMode: displayMode, buttons, features: this.config.features });
+    const selector = new ButtonGroupSelector({ editMode: mode, displayMode, buttons, features: this.config.features });
     return {
       currentMode: {
         view: displayMode,
@@ -62,11 +62,11 @@ export class TinyMceToolbars implements ToolbarSwitcher {
     // make sure each button is separated by a space, so we can easily remove it
     toolbar = toolbar.map(t => ` ${t.replace(/\|/g, ' | ')} `);
     const removeMap = this.createRemoveMap(settings);
-    return toolbar.map(toolbar =>
+    return toolbar.map(row =>
       removeMap.reduce((t, rm) => (t.indexOf(` ${rm.button} `) > -1 && !rm.enabled)
         ? t.replace(rm.button, '')
         : t
-      , toolbar)
+      , row)
     );
   }
 

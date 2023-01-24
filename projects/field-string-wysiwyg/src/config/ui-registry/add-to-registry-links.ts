@@ -1,6 +1,6 @@
 import { FieldStringWysiwygEditor } from '../../editor/editor';
-import { LinkFiles, LinkGroup, LinkGroupPro } from '../public';
-import { AddToRegistryParams, AddToRegistryBase } from './add-to-registry-base';
+import { LinkFiles, LinkGroup, LinkGroupPro, LinkPage } from '../public';
+import { AddToRegistryBase, AddToRegistryParams } from './add-to-registry-base';
 
 export class TinyButtonsLinks extends AddToRegistryBase {
   constructor(makerParams: AddToRegistryParams) {
@@ -8,6 +8,7 @@ export class TinyButtonsLinks extends AddToRegistryBase {
   }
 
   register(): void {
+    this.addLinkPage();
     this.contextMenus();
     this.linkFiles();
     this.linksGroups();
@@ -68,6 +69,10 @@ export class TinyButtonsLinks extends AddToRegistryBase {
         ]);
       },
     });
+  }
+
+  private addLinkPage(): void {
+    this.regBtn(LinkPage, 'custom-sitemap', 'Link.Page.Tooltip', () => openPagePicker(this.field));
   }
 
 }

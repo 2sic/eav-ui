@@ -11,6 +11,7 @@ import { InputTypeConstants } from '../../../eav-ui/src/app/content-type-fields/
 import { BehaviorSubject, distinctUntilChanged, Subscription } from 'rxjs';
 import { toConfigForViewModes } from './config-for-view-modes';
 // import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
+import { consoleLogWebpack } from '../../../field-custom-gps/src/shared/console-log-webpack.helper';
 
 declare const window: EavWindow;
 const reconfigErr = `Very likely an error in your reconfigure code. Check http://r.2sxc.org/field-wysiwyg`;
@@ -77,6 +78,7 @@ export class TinyMceConfigurator {
     const adam = exp.adam;
 
     // WIP
+    consoleLogWebpack('2dm fieldSettings', fieldSettings);
     const eavConfig: TinyEavConfig = {
       mode: toConfigForViewModes(fieldSettings._advanced.Mode),
       features: {
@@ -99,6 +101,7 @@ export class TinyMceConfigurator {
         }
       }
     };
+    consoleLogWebpack('2dm eavConfig', eavConfig);
 
     const toolbarModes = new TinyMceToolbars(eavConfig).build(modeIsInline);
 

@@ -1,5 +1,5 @@
-import { WysiwygEditMode, WysiwygDisplayMode } from './tinymce-helper-types';
 import { ConfigForDisplayModes, ConfigForDisplayModesRaw } from './config-for-view-modes';
+import { WysiwygDisplayMode, WysiwygEditMode } from './tinymce-helper-types';
 
 export interface SelectSettings {
   /** The mode like 'default', 'text', etc. */
@@ -13,8 +13,8 @@ export interface SelectSettings {
 }
 
 export interface TinyEavFeatures {
-  contentBlocks: boolean,
-  wysiwygEnhanced: boolean,
+  contentBlocks: boolean;
+  wysiwygEnhanced: boolean;
 }
 
 export interface TinyEavButtons {
@@ -24,7 +24,7 @@ export interface TinyEavButtons {
   contentDivisions: boolean;
 }
 export interface TinyEavConfig {
-  mode: ConfigForDisplayModes<WysiwygEditMode>,
+  mode: ConfigForDisplayModes<WysiwygEditMode>;
   features: TinyEavFeatures;
   buttons: ConfigForDisplayModes<TinyEavButtons>;
 }

@@ -5,11 +5,11 @@ export type ButtonGroup = ConfigForEditModes<ButtonGroupValue>;
 export type ButtonGroupByView = ConfigForDisplayEditModes<ButtonGroupValue>;
 export type ButtonGroupByViewRaw = ConfigForDisplayModesRaw<ButtonGroup>;
 export const NoButtons = ''; // must be empty string
-export const NewRow = "\n";  // must be newline
+export const NewRow = '\n';  // must be newline
 
 // TODO: this is not well designed yet, as the final form isn't decided
 // Still WIP 2023-01-23 2dm
-// Goal is to probably merge with the code 
+// Goal is to probably merge with the code
 
 export function toButtonGroupByView(original: ButtonGroupByViewRaw): ButtonGroupByView {
   const all = original.all;
@@ -21,10 +21,7 @@ export function toButtonGroupByView(original: ButtonGroupByViewRaw): ButtonGroup
 }
 
 function buildOneButtonGroup(def: ButtonGroupValue, defSet: Partial<ButtonGroup>): ButtonGroup {
-  return {
-    default: def,
-    advanced: defSet.advanced ?? def,
-    text: defSet.text ?? def,
-    media: defSet.media ?? def,
-  };
+  const newValues: ButtonGroup = {};
+  Object.entries(defSet).forEach(([fieldName, fieldProps]) => { newValues[fieldName] = fieldProps ?? def; });
+  return newValues;
 }

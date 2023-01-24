@@ -5,11 +5,12 @@
 // So people can use them in their custom toolbars
 export const ItalicWithMore = 'italic-more'; // used to be 'formatgroup'
 export const SxcImages = 'images-cms'; // used to be 'images'
-export const LinkGroup = 'linkgroup';
-export const LinkGroupPro = 'linkgrouppro';
-export const LinkFiles = 'linkfiles';
-export const ListGroup = 'listgroup';
-export const ModeDefault = 'modestandard';
+export const LinkGroup = 'link-group';
+export const LinkGroupPro = 'link-group-pro';
+export const LinkFiles = 'link-files';
+export const ListGroup = 'list-group';
+export const ModeDefault = 'mode-standard';
+export const LinkPage = 'link-page';
 // export const ToModeInline = 'modeinline';
 
 export const ImgButtonGroupWidth = 'image-widths';

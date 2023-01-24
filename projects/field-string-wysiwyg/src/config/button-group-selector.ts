@@ -1,3 +1,4 @@
+import { consoleLogWebpack } from '../../../field-custom-gps/src/shared/console-log-webpack.helper';
 import { ButtonGroupByView } from './button-groups';
 import { ConfigForDisplayModes, ConfigForEditModes } from './config-for-view-modes';
 import { SelectSettings } from './tinymce-config';
@@ -6,6 +7,7 @@ import { SelectSettings } from './tinymce-config';
 // Still WIP 2023-01-23 2dm
 export class ButtonGroupSelector {
   constructor(public settings: SelectSettings) {
+    console.log('2dm ButtonGroupSelector', settings);
   }
 
   public selectDisplayMode<T>(groups: ConfigForDisplayModes<T>): T {
@@ -13,7 +15,17 @@ export class ButtonGroupSelector {
   }
 
   public selectEditMode<T>(groups: ConfigForEditModes<T>): T {
-    const result = groups?.[this.settings.editMode] ?? groups?.default;
+    let key = this.settings.editMode ?? 'default';
+    let result = groups?.[key];
+    if (!result) {
+      consoleLogWebpack(`2dm result not found for '${key}', will try next`, groups);
+      key = key?.split('-')[0];
+      result = groups?.[key];
+    }
+    if (!result) {
+      consoleLogWebpack(`2dm result not found for '${key}', will use default`);
+      result = groups?.default;
+    }
     return this.runOrReturn(result);
   }
 
