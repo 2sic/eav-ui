@@ -82,6 +82,7 @@ export class EntityDefaultComponent extends BaseFieldComponent<string | string[]
 
     this.isExpanded$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
 
+    // Update/Build Content-Type Mask which is used for loading the data/new etc.
     this.subscription.add(
       this.settings$.pipe(
         map(settings => settings.EntityType),
@@ -92,6 +93,7 @@ export class EntityDefaultComponent extends BaseFieldComponent<string | string[]
           entityType,
           this.group.controls,
           () => {
+            // Re-Trigger fetch data, but only on type-based pickers, not Queries
             // for EntityQuery we don't have to refetch entities because entities come from settings.Query, not settings.EntityType
             if (!this.isQuery) {
               this.availableEntities$.next(null);
@@ -199,19 +201,29 @@ export class EntityDefaultComponent extends BaseFieldComponent<string | string[]
     this.updateValue('delete', index);
   }
 
-  editEntity(entityGuid: string): void {
+  // Note: 2dm 2023-01-24 added entityId as parameter #maybeRemoveGuidOnEditEntity
+  // not even sure if the guid would still be needed, as I assume the entityId
+  // should always be available.
+  // Must test all use cases and then probably simplify again.
+  editEntity(editParams: { entityGuid: string, entityId: number }): void {
     let form: EditForm;
-    if (entityGuid == null) {
+    if (editParams?.entityGuid == null) {
       const contentTypeName = this.contentTypeMask.resolve();
       const prefill = this.getPrefill();
       form = {
         items: [{ ContentTypeName: contentTypeName, Prefill: prefill }],
       };
     } else {
-      const entity = this.entityCacheService.getEntity(entityGuid);
-      form = {
-        items: [{ EntityId: entity.Id }],
-      };
+      const entity = this.entityCacheService.getEntity(editParams.entityGuid);
+      if (entity != null) {
+        form = {
+            items: [{ EntityId: entity.Id }],
+        };
+      } else {
+        form = {
+          items: [{ EntityId: editParams.entityId }],
+        }
+      }
     }
     this.editRoutingService.open(this.config.index, this.config.entityGuid, form);
   }

@@ -25,7 +25,7 @@
         <!-- Disable edit only if it was disabled in the settings, not if disabled by language change -->
         <button mat-icon-button *ngIf="data.enableEdit && !item.isFreeTextOrNotFound"
           [tippy]="'Fields.Entity.Edit' | translate" [disabled]="config.initialDisabled" appMousedownStopPropagation
-          (click)="edit(item.value)">
+          (click)="edit(item.value, item.entityId)">
           <mat-icon>edit</mat-icon>
         </button>
         <button mat-icon-button *ngIf="data.enableDelete && !item.isFreeTextOrNotFound"

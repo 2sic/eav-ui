@@ -21,7 +21,7 @@ export class EntityDefaultListComponent implements OnInit {
 
   @Output() private reorder = new EventEmitter<ReorderIndexes>();
   @Output() private removeSelected = new EventEmitter<number>();
-  @Output() private editEntity = new EventEmitter<string>();
+  @Output() private editEntity = new EventEmitter<{ entityGuid: string, entityId: number }>();
   @Output() private deleteEntity = new EventEmitter<DeleteEntityProps>();
 
   templateVars$: Observable<EntityListTemplateVars>;
@@ -64,8 +64,8 @@ export class EntityDefaultListComponent implements OnInit {
     this.reorder.emit(reorderIndexes);
   }
 
-  edit(entityGuid: string): void {
-    this.editEntity.emit(entityGuid);
+  edit(entityGuid: string, entityId: number): void {
+    this.editEntity.emit({ entityGuid, entityId });
   }
 
   removeItem(index: number): void {

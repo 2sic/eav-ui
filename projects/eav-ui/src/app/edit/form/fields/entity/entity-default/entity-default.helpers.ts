@@ -16,21 +16,30 @@ export function calculateSelectedEntities(
   // name is guid or freetext
   const names = typeof fieldValue === 'string' ? convertValueToArray(fieldValue, separator) : fieldValue;
   const selectedEntities = names.map(name => {
-    const entity = entityCache.find(e => e.Value === name);
-    const stringEntity = stringQueryCache.find(e => `${e[stringQueryValueField]}` === name);
+    const entityFromType = entityCache.find(e => e.Value === name);
+    const entityFromQuery = stringQueryCache.find(e => `${e[stringQueryValueField]}` === name);
     let label: string;
+    let idForEdit: number;
     if (name == null) {
       label = translate.instant('Fields.Entity.EmptySlot');
+      idForEdit = null;
     } else if (typeof fieldValue === 'string') {
-      label = stringEntity?.[stringQueryLabelField] ?? name;
+      label = entityFromQuery?.[stringQueryLabelField] ?? name;
+      idForEdit = entityFromQuery?.Id;
     } else {
-      label = entity?.Text ?? translate.instant('Fields.Entity.EntityNotFound');
+      label = entityFromType?.Text ?? translate.instant('Fields.Entity.EntityNotFound');
+      idForEdit = entityFromType?.Id;
     }
     const selectedEntity: SelectedEntity = {
+      entityId: idForEdit,
       value: name,
       label,
       tooltip: `${label} (${name})`,
-      isFreeTextOrNotFound: entity == null,
+      // 2023-01-24 2dm - also added condition entityFromQuery == null
+      // to ensure it can also be used on entities from query
+      // must find out if this has a side-effect
+      isFreeTextOrNotFound: entityFromType == null && entityFromQuery == null,
+      _sourceIsQuery: entityFromQuery != null,
     };
     return selectedEntity;
   });

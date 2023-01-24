@@ -2,10 +2,13 @@ import { EntityInfo } from '../../../../../../../../edit-types';
 import { BaseFieldTemplateVars } from '../../base/base-field-template-vars.model';
 
 export interface SelectedEntity {
+  entityId: number;
   value: string;
   label: string;
   tooltip: string;
   isFreeTextOrNotFound: boolean;
+  /** debug info only */
+  _sourceIsQuery: boolean;
 }
 
 export interface EntityTemplateVars extends BaseFieldTemplateVars {
