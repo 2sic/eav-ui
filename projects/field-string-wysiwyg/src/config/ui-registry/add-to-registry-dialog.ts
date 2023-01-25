@@ -12,10 +12,8 @@ export class TinyButtonsDialog extends AddToRegistryBase {
 
   /** Switch to Dialog Mode */
   private registerOpenDialog(): void {
-    this.editor.ui.registry.addButton(DialogOpenButton, {
-      icon: 'browse',
-      tooltip: 'SwitchMode.Expand',
-      onAction: (api) => { this.openInDialog(); },
+    this.regBtn(DialogOpenButton, 'browse', 'SwitchMode.Expand', () => {
+      this.openInDialog();
     });
   }
 }

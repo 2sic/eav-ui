@@ -118,7 +118,6 @@ export abstract class AddToRegistryBase {
     return { icon, text, type: 'choiceitem' as 'choiceitem', value: action as string }; // pretend action is as string
   }
 
-  // TODO: @SDV pls change wherever possible to use this as it's quite a bit shorter
   protected regBtn(name: string, icon: string, tooltip: string, action: () => void) {
     this.editor.ui.registry.addButton(name, {
       icon,
