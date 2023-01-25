@@ -3,7 +3,7 @@ import * as Reg from '../public';
 
 
 const standardGroupUndoRedoPaste = `undo redo pastetext paste removeformat`;
-const standardGroupFinal = `${Reg.CodeButton} ${Reg.ModeAdvanced} ${Reg.ModeDefault} ${Reg.ToFullscreen}`;
+const standardGroupFinal = `${Reg.CodeButton} ${Reg.ModeAdvanced} ${Reg.ModeDefault} ${Reg.DialogOpenButton}`;
 
 const defaultToolbar = [
   /* initial w/undo   */ standardGroupUndoRedoPaste,

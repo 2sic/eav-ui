@@ -1,7 +1,8 @@
 import { Adam } from 'projects/edit-types';
 import { Editor } from 'tinymce';
+import { wysiwygEditorHtmlTag } from '../../constants';
 import { FieldStringWysiwygEditor } from '../../editor/editor';
-import { RawEditorOptionsWithModes, WysiwygDefault, WysiwygDialog, WysiwygDisplayMode, WysiwygEditMode } from '../tinymce-helper-types';
+import { RawEditorOptionsWithModes, WysiwygDialog, WysiwygDisplayMode, WysiwygEditMode } from '../tinymce-helper-types';
 
 type FuncVoid = () => void | unknown;
 
@@ -30,25 +31,18 @@ export abstract class AddToRegistryBase {
     this.adam = makerParams.adam;
     this.options = makerParams.options;
 
-    if (message) console.log('2dm - debug AddToRegistryBase', message, makerParams, this);
+    // if (message) console.log('2dm - debug AddToRegistryBase', message, makerParams, this);
   }
 
   protected toggleAdam(usePortalRoot: boolean, showImagesOnly: boolean) {
     // Toggle Adam in the Dialog
-    // this.adam.toggle(usePortalRoot, showImagesOnly);
+    this.adam.toggle(usePortalRoot, showImagesOnly);
 
     // Switch to Dialog if we are still inline
-    const isDialog = this.options.currentMode.displayMode === WysiwygDialog;
-
-
     // TODO: VERIFY DIALOG ALLOWED
-
-    // Check if we are in dialog mode
-    console.log('2dm toggleAdam', isDialog);
-    console.log('2dm options', this.options);
+    const isDialog = this.options.currentMode.displayMode === WysiwygDialog;
     if (!isDialog)
-      this.switchMode(WysiwygDialog);
-
+      this.openInDialog();
   }
 
   /** Mode switching to inline/dialog and advanced/normal */
@@ -56,7 +50,7 @@ export abstract class AddToRegistryBase {
     displayMode ??= this.options.currentMode.displayMode;
     editMode ??= this.options.currentMode.editMode;
     const newSettings = this.options.modeSwitcher.switch(displayMode, editMode);
-    // don't create a new object, we must keep a refernec to the old
+    // don't create a new object, we must keep a reference to the old
     // don't do this: this.options = {...this.options, ...newSettings};
     this.options.toolbar = newSettings.toolbar;
     this.options.menubar = newSettings.menubar;
@@ -67,6 +61,18 @@ export abstract class AddToRegistryBase {
     this.editor.editorManager.remove(this.editor);
     this.editor.editorManager.init(this.options);
   }
+
+  protected openInDialog() {
+    // fixes bug where toolbar drawer is shown above full mode tinymce
+    // todo: docs say that Drawer is being deprecated ? but I don't think this has to do with drawer?
+    // https://www.tiny.cloud/docs/configure/editor-appearance/#toolbar_mode
+    const toolbarDrawerOpen = this.editor.queryCommandState('ToggleToolbarDrawer');
+    if (toolbarDrawerOpen) this.editor.execCommand('ToggleToolbarDrawer');
+
+    // Open the Dialog
+    this.field.connector.dialog.open(wysiwygEditorHtmlTag);
+  }
+
 
   abstract register(): void;
 

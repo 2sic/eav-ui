@@ -93,7 +93,7 @@ export const ToolbarModes = 'wysiwyg-toolbar-modes';
 export const ModeAdvanced = 'modeadvanced';
 export const AddContentBlock = 'addcontentblock';
 export const ContentDivision = 'contentdivision';
-export const ToFullscreen = 'fullscreen';
+export const DialogOpenButton = 'dialog-open';
 
 export const AddContentSplit = 'contentsplit';
 

@@ -1,8 +1,11 @@
-import 'tinymce/tinymce'; // Important! tinymce has to be imported before themes and plugins
-import 'tinymce/models/dom'
+// Important! tinymce has to be imported before themes and plugins
+// So this group of imports has to be first
+import 'tinymce/tinymce';
+// Keep at least one empty line after this, to ensure order of imports!
 
 import { BehaviorSubject, distinctUntilChanged, Subscription } from 'rxjs';
 import 'tinymce/icons/default';
+import 'tinymce/models/dom';
 import 'tinymce/plugins/anchor';
 import 'tinymce/plugins/autolink';
 import 'tinymce/plugins/charmap';
@@ -16,25 +19,23 @@ import 'tinymce/plugins/searchreplace';
 import 'tinymce/plugins/table';
 import 'tinymce/themes/silver';
 // tslint:disable-next-line:no-duplicate-imports
-import type { Editor, RawEditorOptions } from 'tinymce/tinymce';
+import type { Editor } from 'tinymce/tinymce';
 import { EavWindow } from '../../../eav-ui/src/app/shared/models/eav-window.model';
 import { Connector, EavCustomInputField, WysiwygReconfigure } from '../../../edit-types';
 import { consoleLogWebpack } from '../../../field-custom-gps/src/shared/console-log-webpack.helper';
-import { AddEverythingToRegistry } from '../config/ui-registry/add-everything-to-registry';
 import { TinyMceConfigurator } from '../config/tinymce-configurator';
 import { RawEditorOptionsWithModes, WysiwygInline } from '../config/tinymce-helper-types';
 import { TinyMceTranslations } from '../config/translations';
+import { AddEverythingToRegistry } from '../config/ui-registry/add-everything-to-registry';
 import { attachAdam } from '../connector/adam';
+import { tinyMceBaseUrl, wysiwygEditorHtmlTag } from '../constants';
 import { buildTemplate } from '../shared/helpers';
 import * as template from './editor.html';
 import * as styles from './editor.scss';
 import { fixMenuPositions } from './fix-menu-positions.helper';
 import * as skinOverrides from './skin-overrides.scss';
-// import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
 
 declare const window: EavWindow;
-export const wysiwygEditorTag = 'field-string-wysiwyg-dialog';
-const tinyMceBaseUrl = '../../system/field-string-wysiwyg';
 
 export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomInputField<string> {
   fieldInitialized: boolean;
@@ -58,7 +59,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
 
   constructor() {
     super();
-    consoleLogWebpack(`${wysiwygEditorTag} constructor called`);
+    consoleLogWebpack(`${wysiwygEditorHtmlTag} constructor called`);
     this.subscriptions = [];
     this.fieldInitialized = false;
     this.instanceId = `${Math.floor(Math.random() * 99999)}`;
@@ -69,7 +70,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   connectedCallback(): void {
     if (this.fieldInitialized) { return; }
     this.fieldInitialized = true;
-    consoleLogWebpack(`${wysiwygEditorTag} connectedCallback called`);
+    consoleLogWebpack(`${wysiwygEditorHtmlTag} connectedCallback called`);
 
     this.innerHTML = buildTemplate(template.default, styles.default + skinOverrides.default);
     this.querySelector<HTMLDivElement>('.tinymce-container').classList.add(this.containerClass);
@@ -97,7 +98,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   }
 
   private tinyMceScriptLoaded(): void {
-    consoleLogWebpack(`${wysiwygEditorTag} tinyMceScriptLoaded called`);
+    consoleLogWebpack(`${wysiwygEditorHtmlTag} tinyMceScriptLoaded called`);
     this.configurator = new TinyMceConfigurator(this.connector, this.reconfigure);
     const tinyOptions = this.configurator.buildOptions(
       this.containerClass,
@@ -115,7 +116,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   private tinyMceSetup(editor: Editor, rawEditorOptions: RawEditorOptionsWithModes): void {
     this.editor = editor;
     editor.on('init', _event => {
-      consoleLogWebpack(`${wysiwygEditorTag} TinyMCE initialized`, editor);
+      consoleLogWebpack(`${wysiwygEditorHtmlTag} TinyMCE initialized`, editor);
       this.reconfigure?.editorOnInit?.(editor);
       new AddEverythingToRegistry({ field: this, editor, adam: this.connector._experimental.adam, options: rawEditorOptions }).register();
       if (!this.reconfigure?.disableAdam) {
@@ -153,7 +154,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
 
     // called after TinyMCE editor is removed
     editor.on('remove', _event => {
-      consoleLogWebpack(`${wysiwygEditorTag} TinyMCE removed`, _event);
+      consoleLogWebpack(`${wysiwygEditorHtmlTag} TinyMCE removed`, _event);
       this.clearData();
     });
 
@@ -174,7 +175,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
 
     editor.on('focus', _event => {
       this.classList.add('focused');
-      consoleLogWebpack(`${wysiwygEditorTag} TinyMCE focused`, _event);
+      consoleLogWebpack(`${wysiwygEditorHtmlTag} TinyMCE focused`, _event);
       if (!this.reconfigure?.disableAdam) {
         attachAdam(editor, this.connector._experimental.adam);
       }
@@ -185,7 +186,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
 
     editor.on('blur', _event => {
       this.classList.remove('focused');
-      consoleLogWebpack(`${wysiwygEditorTag} TinyMCE blurred`, _event);
+      consoleLogWebpack(`${wysiwygEditorHtmlTag} TinyMCE blurred`, _event);
       if (this.mode === 'inline') {
         this.connector._experimental.setFocused(false);
       }
@@ -231,12 +232,12 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   }
 
   disconnectedCallback(): void {
-    consoleLogWebpack(`${wysiwygEditorTag} disconnectedCallback called`);
+    consoleLogWebpack(`${wysiwygEditorHtmlTag} disconnectedCallback called`);
     this.clearData();
     this.subscription.unsubscribe();
   }
 }
 
-if (!customElements.get(wysiwygEditorTag)) {
-  customElements.define(wysiwygEditorTag, FieldStringWysiwygEditor);
+if (!customElements.get(wysiwygEditorHtmlTag)) {
+  customElements.define(wysiwygEditorHtmlTag, FieldStringWysiwygEditor);
 }

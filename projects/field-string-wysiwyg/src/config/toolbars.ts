@@ -3,7 +3,7 @@ import { Editor } from 'tinymce';
 import { ButtonGroupSelector } from './button-group-selector';
 import { NewRow, toButtonGroupByView } from './button-groups';
 import { DefaultContextMenu, DefaultToolbarConfig } from './defaults';
-import { AddContentBlock, AddContentSplit, CodeButton, ContentDivision, ModeAdvanced, ModeDefault, ToFullscreen } from './public';
+import { AddContentBlock, AddContentSplit, CodeButton, ContentDivision, ModeAdvanced, ModeDefault, DialogOpenButton } from './public';
 import { SelectSettings, TinyEavConfig } from './tinymce-config';
 // tslint:disable-next-line: max-line-length
 import { RawEditorOptionsWithModes, TinyMceMode, TinyMceModeWithSwitcher, ToolbarSwitcher, WysiwygAdvanced, WysiwygDefault, WysiwygDialog, WysiwygDisplayMode, WysiwygEditMode, WysiwygInline } from './tinymce-helper-types';
@@ -83,7 +83,7 @@ export class TinyMceToolbars implements ToolbarSwitcher {
   private createRemoveMap(settings: SelectSettings): { button: string, enabled: boolean }[] {
     const map = [
       { button: CodeButton, enabled: settings.buttons.source },
-      { button: ToFullscreen, enabled: settings.buttons.dialog },
+      { button: DialogOpenButton, enabled: settings.buttons.dialog },
       { button: ModeAdvanced, enabled: settings.buttons.advanced },
       { button: ModeDefault, enabled: settings.editMode === WysiwygAdvanced },
       { button: AddContentBlock, enabled: settings.features.contentBlocks },
