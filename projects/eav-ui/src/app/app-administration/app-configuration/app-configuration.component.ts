@@ -43,14 +43,6 @@ export class AppConfigurationComponent extends BaseComponent implements OnInit, 
   isGlobal: boolean;
   isPrimary: boolean;
   isApp: boolean;
-  systemSettingsCount: number;
-  customSettingsCount: number;
-  customSettingsFieldsCount: number;
-  systemResourcesCount: number;
-  customResourcesCount: number;
-  customResourcesFieldsCount: number;
-  appConfigurationsCount: number;
-  appMetadataCount: number;
   debugEnabled$ = this.globalConfigService.getDebugEnabled$();
 
   // More proper ViewModel
@@ -82,19 +74,29 @@ export class AppConfigurationComponent extends BaseComponent implements OnInit, 
     this.features.loadFromService(appDialogConfigService);
 
     // New with proper ViewModel
-    // TODO: @SDV - pls convert everything in here to use this pattern
     this.data$ = combineLatest([
       this.appSettingsInternal$,
       this.features.isEnabled$(FeatureNames.LightSpeed),
       this.features.isEnabled$(FeatureNames.ContentSecurityPolicy),
-      this.features.isEnabled$(FeatureNames.PermissionsByLanguage)
+      this.features.isEnabled$(FeatureNames.PermissionsByLanguage),
     ]).pipe(map(([settings, lightSpeedEnabled, cspEnabled, langPermsEnabled]) => {
-      const appMetadata = settings.MetadataList.Items;
       const result: ViewModel = {
         lightSpeedEnabled,
         cspEnabled,
         langPermsEnabled,
-        appLightSpeedCount: appMetadata.filter(i => i._Type.Name == eavConstants.appMetadata.LightSpeed.ContentTypeName).length,
+        appLightSpeedCount: settings.MetadataList.Items.filter(i => i._Type.Name == eavConstants.appMetadata.LightSpeed.ContentTypeName).length,
+        systemSettingsCount: this.isPrimary
+          ? settings.EntityLists.SettingsSystem.filter(i => i.SettingsEntityScope === SystemSettingsScopes.Site).length
+          : settings.EntityLists.SettingsSystem.filter(i => !i.SettingsEntityScope).length,
+        customSettingsCount: settings.EntityLists.AppSettings?.length,
+        customSettingsFieldsCount: settings.FieldAll.AppSettings?.length,
+        systemResourcesCount: this.isPrimary
+          ? settings.EntityLists.ResourcesSystem.filter(i => i.SettingsEntityScope === SystemSettingsScopes.Site).length
+          : settings.EntityLists.ResourcesSystem.filter(i => !i.SettingsEntityScope).length,
+        customResourcesCount: settings.EntityLists.AppResources?.length,
+        customResourcesFieldsCount: settings.FieldAll.AppResources?.length,
+        appConfigurationsCount: settings.EntityLists.ToSxcContentApp.length,
+        appMetadataCount: settings.MetadataList.Items.length,
       }
       return result;
     }));
@@ -263,21 +265,6 @@ export class AppConfigurationComponent extends BaseComponent implements OnInit, 
     getObservable.subscribe(x => {
       // 2dm - New mode for Reactive UI
       this.appSettingsInternal$.next(x);
-
-      // TODO: @SDV - move all these variables into data$ with the code in the constructor
-      // then remove this code
-        this.systemSettingsCount = this.isPrimary
-          ? x.EntityLists.SettingsSystem.filter(i => i.SettingsEntityScope === SystemSettingsScopes.Site).length
-          : x.EntityLists.SettingsSystem.filter(i => !i.SettingsEntityScope).length;
-        this.customSettingsCount = x.EntityLists.AppSettings?.length;
-        this.customSettingsFieldsCount = x.FieldAll.AppSettings?.length;
-        this.systemResourcesCount = this.isPrimary
-          ? x.EntityLists.ResourcesSystem.filter(i => i.SettingsEntityScope === SystemSettingsScopes.Site).length
-          : x.EntityLists.ResourcesSystem.filter(i => !i.SettingsEntityScope).length;
-        this.customResourcesCount = x.EntityLists.AppResources?.length;
-        this.customResourcesFieldsCount = x.FieldAll.AppResources?.length;
-        this.appConfigurationsCount = x.EntityLists.ToSxcContentApp.length;
-        this.appMetadataCount = x.MetadataList.Items.length;
       });
   }
 
@@ -323,4 +310,13 @@ class ViewModel {
 
   // Language Permissions
   langPermsEnabled: boolean;
+
+  systemSettingsCount: number;
+  customSettingsCount: number;
+  customSettingsFieldsCount: number;
+  systemResourcesCount: number;
+  customResourcesCount: number;
+  customResourcesFieldsCount: number;
+  appConfigurationsCount: number;
+  appMetadataCount: number;
 }

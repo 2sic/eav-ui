@@ -124,19 +124,16 @@ export class TinyButtonsImg extends AddToRegistryBase {
   /** Register all formats - like img-sizes */
   registerBasicFormats(imgSizes: number[]): void {
     const editor = this.editor;
-    // TODO: @SDV - rewrite as imgSizes.map(...)
     const imageFormats: ImageFormats = {};
-    for (const imgSize of imgSizes) {
-      imageFormats[`${IMG.ImgWidthPrefix}${imgSize}`] = [
-        {
-          selector: 'img',
-          collapsed: false,
-          styles: {
-            width: `${imgSize}%`,
-          },
+    imgSizes.map((imgSize) => { 
+      imageFormats[`${IMG.ImgWidthPrefix}${imgSize}`] = [{
+        selector: 'img',
+        collapsed: false,
+        styles: {
+          width: `${imgSize}%`,
         },
-      ];
-    }
+      }];
+    });
     editor.formatter.register(imageFormats);
   }
 
