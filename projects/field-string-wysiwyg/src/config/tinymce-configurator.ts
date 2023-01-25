@@ -4,6 +4,7 @@ import { InputTypeConstants } from '../../../eav-ui/src/app/content-type-fields/
 import { EavWindow } from '../../../eav-ui/src/app/shared/models/eav-window.model';
 import { AddOnSettings, Connector, StringWysiwyg, WysiwygReconfigure } from '../../../edit-types';
 import { consoleLogWebpack } from '../../../field-custom-gps/src/shared/console-log-webpack.helper';
+import * as WysiwygDisplayModes from '../constants/display-modes'
 import * as contentStyle from '../editor/tinymce-content.scss';
 import { toConfigForViewModes } from './config-for-view-modes';
 import { DefaultAddOnSettings, DefaultOptions, DefaultPaste, DefaultPlugins } from './defaults';
@@ -64,20 +65,18 @@ export class TinyMceConfigurator {
   ): RawEditorOptionsWithEav {
     const connector = this.connector;
     const exp = connector._experimental;
-    // TODO @SDV - done by 2dm
     // Create a TinyMceModeConfig object with bool only
     // Then pass this object into the build(...) below, replacing the original 3 parameters
     const fieldSettings = connector.field.settings as StringWysiwyg;
     const bSource = fieldSettings.ButtonSource?.toLowerCase();
     const bAdvanced = fieldSettings.ButtonAdvanced?.toLowerCase();
-    const bToDialog = fieldSettings.Dialog === 'inline'; // WysiwygDisplayModeInlineWithDialog;
-    const bContDiv = 'true'; // fsettings.ContentDivisions?.toLowerCase(); // WIP for now just true
+    const bToDialog = fieldSettings.Dialog === WysiwygDisplayModes.DisplayInline;
     const dropzone = exp.dropzone;
     const adam = exp.adam;
 
     // Feature detection
     const useContentBlocks = exp.allInputTypeNames[connector.field.index + 1]?.inputType === InputTypeConstants.EntityContentBlocks;
-    const useResponsiveImages = fieldSettings._advanced.Mode === 'rich';
+    const responsiveImages = fieldSettings._advanced.Mode === 'rich';
 
     // WIP
     consoleLogWebpack('2dm fieldSettings', fieldSettings);
@@ -87,21 +86,19 @@ export class TinyMceConfigurator {
         // contentBlocks is on if the following field can hold inner-content items
         contentBlocks: useContentBlocks,
         wysiwygEnhanced: false, // bContDiv === 'true',
-        responsiveImages: useResponsiveImages,
-        contentSeparators: useResponsiveImages,
+        responsiveImages,
+        contentSeparators: responsiveImages,
       },
       buttons: {
         inline: {
           source: bSource === 'true',
           advanced: bAdvanced === 'true',
           dialog: bToDialog,
-          contentDivisions: bContDiv === 'true',
         },
         dialog: {
           source: bSource !== 'false',
           advanced: bAdvanced !== 'false',
           dialog: false,
-          contentDivisions: bContDiv === 'true',
         }
       }
     };

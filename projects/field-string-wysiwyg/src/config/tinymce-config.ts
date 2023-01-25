@@ -24,7 +24,6 @@ export interface TinyEavButtons {
   source: boolean;
   advanced: boolean;
   dialog: boolean;
-  contentDivisions: boolean;
 }
 export interface TinyEavConfig {
   mode: ConfigForDisplayModes<EditModes.WysiwygEditMode>;

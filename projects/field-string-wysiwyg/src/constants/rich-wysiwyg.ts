@@ -65,6 +65,7 @@ function createFormatDefinition(n: number, max: number, label?: string, tooltip?
   });
 }
 
+// Note: as of 2023-01-25 this is not actually in use, not sure if we need it
 export const ImgEnhancedWidths: ImageFormatDefinition[]
   = [10, 20, 25, 30, 33, 40, 50, 60, 66, 75, 80]
     .map(percent => ({

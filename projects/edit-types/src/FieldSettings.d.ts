@@ -82,7 +82,6 @@ interface StringWysiwyg extends String {
   Dialog: '' | 'dialog' | 'inline';
   ButtonSource: "" | "true" | "false";
   ButtonAdvanced: "" | "true" | "false";
-  ContentDivisions: "" | "true" | "false";
   WysiwygMode: "" | "basic" | "enhanced"; // new v15
   /**
    * CSS file to be used for content styling. New in 11.03. Must be a real path to work, not file:xx
