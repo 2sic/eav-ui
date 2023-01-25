@@ -4,7 +4,7 @@ import { AddToRegistryBase, AddToRegistryParams } from './add-to-registry-base';
 
 export class TinyButtonsImg extends AddToRegistryBase {
   constructor(makerParams: AddToRegistryParams) {
-    super(makerParams);
+    super(makerParams, 'img');
   }
 
   register(): void {
@@ -29,20 +29,20 @@ export class TinyButtonsImg extends AddToRegistryBase {
 
   /** Images menu */
   private groupImages(): void {
-    const adam = this.adam;
+    const thisForLater = this;
     const btns = this.getButtons();
 
     // Group with images (adam) - only in PRO mode
     this.editor.ui.registry.addSplitButton(IMG.ImagesGroupPro, {
-      ...this.splitButtonSpecs(() => adam.toggle(false, true)),
+      ...this.splitButtonSpecs(() => thisForLater.toggleAdam(false, true)),
       columns: 3,
       icon: btns.image.icon,
       presets: 'listpreview',
       tooltip: 'Image.AdamImage.Tooltip',
       fetch: (callback) => {
         callback([
-          this.splitButtonItem(btns.image.icon, 'Image.AdamImage.Tooltip', () => adam.toggle(false, true)),
-          this.splitButtonItem('custom-file-dnn', 'Image.DnnImage.Tooltip', () => adam.toggle(true, true)),
+          this.splitButtonItem(btns.image.icon, 'Image.AdamImage.Tooltip', () => thisForLater.toggleAdam(false, true)),
+          this.splitButtonItem('custom-file-dnn', 'Image.DnnImage.Tooltip', () => thisForLater.toggleAdam(true, true)),
           this.splitButtonItem(btns.link.icon, btns.link.tooltip, 'mceImage'),
           // TODO: MAKE BEHAVE differently depending on the WysiwygMode
           this.splitButtonItem(btns.alignleft.icon, btns.alignleft.tooltip, 'JustifyLeft'),

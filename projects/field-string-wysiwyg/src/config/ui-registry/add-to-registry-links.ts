@@ -28,17 +28,17 @@ export class TinyButtonsLinks extends AddToRegistryBase {
 
   /** Group with adam-link, dnn-link */
   private linkFiles(): void {
-    const adam = this.adam;
+    const thisForLater = this;
     this.editor.ui.registry.addSplitButton(LinkFiles, {
-      ...this.splitButtonSpecs(() => adam.toggle(false, false)),
+      ...this.splitButtonSpecs(() => thisForLater.toggleAdam(false, false)),
       columns: 3,
       icon: 'custom-file-pdf',
       presets: 'listpreview',
       tooltip: 'Link.AdamFile.Tooltip',
       fetch: (callback) => {
         callback([
-          this.splitButtonItem('custom-file-pdf', 'Link.AdamFile.Tooltip', () => adam.toggle(false, false)),
-          this.splitButtonItem('custom-file-dnn', 'Link.DnnFile.Tooltip', () => adam.toggle(true, false)),
+          this.splitButtonItem('custom-file-pdf', 'Link.AdamFile.Tooltip', () => thisForLater.toggleAdam(false, false)),
+          this.splitButtonItem('custom-file-dnn', 'Link.DnnFile.Tooltip', () => thisForLater.toggleAdam(true, false)),
         ]);
       },
     });

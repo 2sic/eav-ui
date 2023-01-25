@@ -1,6 +1,6 @@
-import { ModeDefault, ModeAdvanced, ToolbarModeToggle, ToolbarModes } from '../public';
-import { AddToRegistryParams, AddToRegistryBase } from './add-to-registry-base';
-import { WysiwygDefault, WysiwygAdvanced, WysiwygModeText, WysiwygModeMedia, WysiwygEditMode, WysiwygModeCycle, WysiwygDisplayMode } from '../tinymce-helper-types';
+import { ModeAdvanced, ModeDefault, ToolbarModes, ToolbarModeToggle } from '../public';
+import { WysiwygAdvanced, WysiwygDefault, WysiwygDisplayMode, WysiwygEditMode, WysiwygModeCycle, WysiwygModeMedia, WysiwygModeText } from '../tinymce-helper-types';
+import { AddToRegistryBase, AddToRegistryParams } from './add-to-registry-base';
 
 export class TinyButtonsModes extends AddToRegistryBase {
   constructor(makerParams: AddToRegistryParams) {
@@ -19,7 +19,7 @@ export class TinyButtonsModes extends AddToRegistryBase {
     this.editor.ui.registry.addButton(ModeDefault, {
       icon: 'close',
       tooltip: 'SwitchMode.Standard',
-      onAction: (api) => { this.switchMode(WysiwygDefault); },
+      onAction: (api) => { this.switchMode(null, WysiwygDefault); },
     });
     // this.editor.ui.registry.addButton(ToModeInline, {
     //   icon: 'close',
@@ -29,7 +29,7 @@ export class TinyButtonsModes extends AddToRegistryBase {
     this.editor.ui.registry.addButton(ModeAdvanced, {
       icon: 'custom-school',
       tooltip: 'SwitchMode.Pro',
-      onAction: (api) => { this.switchMode(WysiwygAdvanced); },
+      onAction: (api) => { this.switchMode(null, WysiwygAdvanced); },
     });
   }
 
@@ -70,34 +70,14 @@ export class TinyButtonsModes extends AddToRegistryBase {
     return;
 
     if (!newMode) {
-      const current = this.options.currentMode.mode;
+      const current = this.options.currentMode.editMode;
       const idx = WysiwygModeCycle.indexOf(current) + 1; // will be a number or 0 afterwards
       newMode = (idx < WysiwygModeCycle.length)
         ? WysiwygModeCycle[idx]
         : WysiwygModeCycle[0];
 
     }
-    this.switchMode(newMode);
+    this.switchMode(null, newMode);
   }
 
-
-
-
-
-
-  /** Mode switching to inline/dialog and advanced/normal */
-  private switchMode(mode: WysiwygEditMode, viewMode?: WysiwygDisplayMode): void {
-    viewMode ??= this.options.currentMode.view;
-    const newSettings = this.options.modeSwitcher.switch(viewMode, mode);
-    // don't create a new object, we must keep a refernec to the old
-    // don't do this: this.options = {...this.options, ...newSettings};
-    this.options.toolbar = newSettings.toolbar;
-    this.options.menubar = newSettings.menubar;
-    this.options.currentMode = newSettings.currentMode;
-    this.options.contextmenu = newSettings.contextmenu;
-
-    // refresh editor toolbar
-    this.editor.editorManager.remove(this.editor);
-    this.editor.editorManager.init(this.options);
-  }
 }

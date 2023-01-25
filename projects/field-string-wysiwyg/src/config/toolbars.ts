@@ -1,11 +1,13 @@
 // tslint:disable-next-line: max-line-length
+import { Editor } from 'tinymce';
 import { ButtonGroupSelector } from './button-group-selector';
 import { NewRow, toButtonGroupByView } from './button-groups';
 import { DefaultContextMenu, DefaultToolbarConfig } from './defaults';
 import { AddContentBlock, AddContentSplit, CodeButton, ContentDivision, ModeAdvanced, ModeDefault, ToFullscreen } from './public';
 import { SelectSettings, TinyEavConfig } from './tinymce-config';
 // tslint:disable-next-line: max-line-length
-import { TinyMceMode, TinyMceModeWithSwitcher, ToolbarSwitcher, WysiwygAdvanced, WysiwygDefault, WysiwygDialog, WysiwygDisplayMode, WysiwygEditMode, WysiwygInline } from './tinymce-helper-types';
+import { RawEditorOptionsWithModes, TinyMceMode, TinyMceModeWithSwitcher, ToolbarSwitcher, WysiwygAdvanced, WysiwygDefault, WysiwygDialog, WysiwygDisplayMode, WysiwygEditMode, WysiwygInline } from './tinymce-helper-types';
+import { consoleLogWebpack } from '../../../field-custom-gps/src/shared/console-log-webpack.helper';
 
 // #region Button Sets that define what buttons appear in what view / mode
 
@@ -31,15 +33,22 @@ export class TinyMceToolbars implements ToolbarSwitcher {
     };
   }
 
-  public switch(displayMode: WysiwygDisplayMode, mode: WysiwygEditMode): TinyMceMode {
+  // public isDialog(editor: Editor): boolean {
+  //   const options = editor.options as unknown as RawEditorOptionsWithModes;
+  //   console.log('2dm isDialog options', options);
+  //   return options.currentMode.displayMode === WysiwygDialog; // TODO: implement
+  // }
+
+  public switch(displayMode: WysiwygDisplayMode, editMode: WysiwygEditMode): TinyMceMode {
+    consoleLogWebpack(`TinyMceToolbars.switch(${displayMode}, ${editMode})`, this.config);
     const buttons = this.config.buttons[displayMode];
-    const selector = new ButtonGroupSelector({ editMode: mode, displayMode, buttons, features: this.config.features });
+    const selector = new ButtonGroupSelector({ editMode, displayMode, buttons, features: this.config.features });
     return {
       currentMode: {
-        view: displayMode,
-        mode,
+        displayMode,
+        editMode,
       },
-      menubar: mode === WysiwygAdvanced,
+      menubar: editMode === WysiwygAdvanced,
       toolbar: this.toolbar(selector) as any,
       contextmenu: selector.selectButtonGroup(ButtonSetContextMenu)[0],
     };

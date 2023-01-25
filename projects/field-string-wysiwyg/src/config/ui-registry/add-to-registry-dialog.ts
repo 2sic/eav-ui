@@ -1,6 +1,6 @@
-import { wysiwygEditorTag } from '../../editor/editor';
+import { wysiwygEditorHtmlTag } from '../../constants';
 import { ToFullscreen } from '../public';
-import { AddToRegistryParams, AddToRegistryBase } from './add-to-registry-base';
+import { AddToRegistryBase, AddToRegistryParams } from './add-to-registry-base';
 
 export class TinyButtonsDialog extends AddToRegistryBase {
   constructor(makerParams: AddToRegistryParams) {
@@ -8,26 +8,36 @@ export class TinyButtonsDialog extends AddToRegistryBase {
   }
 
   register(): void {
-    this.openDialog();
+    this.registerOpenDialog();
   }
 
   /** Switch to Dialog Mode */
   // todo: docs say that Drawer is being deprecated ? but I don't think this has to do
   // with drawer?
   // https://www.tiny.cloud/docs/configure/editor-appearance/#toolbar_mode
-  private openDialog(): void {
+  private registerOpenDialog(): void {
     this.editor.ui.registry.addButton(ToFullscreen, {
       icon: 'browse',
       tooltip: 'SwitchMode.Expand',
       onAction: (api) => {
+        // this.openInDialog();
         // fixes bug where toolbar drawer is shown above full mode tinymce
         const toolbarDrawerOpen = this.editor.queryCommandState('ToggleToolbarDrawer');
         if (toolbarDrawerOpen) {
           this.editor.execCommand('ToggleToolbarDrawer');
         }
-        this.field.connector.dialog.open(wysiwygEditorTag);
+        this.field.connector.dialog.open(wysiwygEditorHtmlTag);
       },
     });
   }
+
+  // protected openInDialog() {
+  //   // fixes bug where toolbar drawer is shown above full mode tinymce
+  //   const toolbarDrawerOpen = this.editor.queryCommandState('ToggleToolbarDrawer');
+  //   if (toolbarDrawerOpen) {
+  //     this.editor.execCommand('ToggleToolbarDrawer');
+  //   }
+  //   this.field.connector.dialog.open(wysiwygEditorHtmlTag);
+  // }
 
 }

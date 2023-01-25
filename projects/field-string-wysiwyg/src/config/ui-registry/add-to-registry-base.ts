@@ -1,7 +1,7 @@
 import { Adam } from 'projects/edit-types';
 import { Editor } from 'tinymce';
 import { FieldStringWysiwygEditor } from '../../editor/editor';
-import { RawEditorOptionsWithModes } from '../tinymce-helper-types';
+import { RawEditorOptionsWithModes, WysiwygDefault, WysiwygDialog, WysiwygDisplayMode, WysiwygEditMode } from '../tinymce-helper-types';
 
 type FuncVoid = () => void | unknown;
 
@@ -24,11 +24,48 @@ export abstract class AddToRegistryBase {
   adam: Adam;
   options: RawEditorOptionsWithModes;
 
-  constructor(makerParams: AddToRegistryParams) {
-      this.field = makerParams.field;
-      this.editor = makerParams.editor;
-      this.adam = makerParams.adam;
-      this.options = makerParams.options;
+  constructor(makerParams: AddToRegistryParams, message?: string) {
+    this.field = makerParams.field;
+    this.editor = makerParams.editor;
+    this.adam = makerParams.adam;
+    this.options = makerParams.options;
+
+    if (message) console.log('2dm - debug AddToRegistryBase', message, makerParams, this);
+  }
+
+  protected toggleAdam(usePortalRoot: boolean, showImagesOnly: boolean) {
+    // Toggle Adam in the Dialog
+    // this.adam.toggle(usePortalRoot, showImagesOnly);
+
+    // Switch to Dialog if we are still inline
+    const isDialog = this.options.currentMode.displayMode === WysiwygDialog;
+
+
+    // TODO: VERIFY DIALOG ALLOWED
+
+    // Check if we are in dialog mode
+    console.log('2dm toggleAdam', isDialog);
+    console.log('2dm options', this.options);
+    if (!isDialog)
+      this.switchMode(WysiwygDialog);
+
+  }
+
+  /** Mode switching to inline/dialog and advanced/normal */
+  protected switchMode(displayMode?: WysiwygDisplayMode, editMode?: WysiwygEditMode): void {
+    displayMode ??= this.options.currentMode.displayMode;
+    editMode ??= this.options.currentMode.editMode;
+    const newSettings = this.options.modeSwitcher.switch(displayMode, editMode);
+    // don't create a new object, we must keep a refernec to the old
+    // don't do this: this.options = {...this.options, ...newSettings};
+    this.options.toolbar = newSettings.toolbar;
+    this.options.menubar = newSettings.menubar;
+    this.options.currentMode = newSettings.currentMode;
+    this.options.contextmenu = newSettings.contextmenu;
+
+    // refresh editor toolbar
+    this.editor.editorManager.remove(this.editor);
+    this.editor.editorManager.init(this.options);
   }
 
   abstract register(): void;

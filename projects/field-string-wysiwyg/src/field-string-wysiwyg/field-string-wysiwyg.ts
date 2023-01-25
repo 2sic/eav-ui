@@ -1,6 +1,7 @@
 import { Connector, EavCustomInputField, WysiwygReconfigure } from '../../../edit-types';
 import { consoleLogWebpack } from '../../../field-custom-gps/src/shared/console-log-webpack.helper';
-import { FieldStringWysiwygEditor, wysiwygEditorTag } from '../editor/editor';
+import { wysiwygEditorHtmlTag } from '../constants';
+import { FieldStringWysiwygEditor } from '../editor/editor';
 import { FieldStringWysiwygPreview, wysiwygPreviewTag } from '../preview/preview';
 import * as styles from './field-string-wysiwyg.scss';
 
@@ -52,8 +53,8 @@ class FieldStringWysiwyg extends HTMLElement implements EavCustomInputField<stri
   }
 
   private createEditor(): void {
-    const editorName = wysiwygEditorTag;
-    const editorEl = document.createElement(editorName) as FieldStringWysiwygEditor;
+    const editorTagName = wysiwygEditorHtmlTag;
+    const editorEl = document.createElement(editorTagName) as FieldStringWysiwygEditor;
     editorEl.connector = this.connector;
     editorEl.mode = 'inline';
     editorEl.reconfigure = this.reconfigure;

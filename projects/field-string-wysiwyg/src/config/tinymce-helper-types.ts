@@ -5,7 +5,7 @@
 
   We may also end up moving this type to there later on.
 */
-import type { RawEditorOptions } from 'tinymce';
+import type { Editor, RawEditorOptions } from 'tinymce';
 import { TinyEavConfig } from './tinymce-config';
 export const TinyModeStandard = 'standard';
 export const WysiwygInline = 'inline';
@@ -31,8 +31,8 @@ export interface RawEditorOptionsWithModes extends RawEditorOptions, Omit<TinyMc
 
 export interface TinyMceMode {
   currentMode: {
-    view: WysiwygDisplayMode,
-    mode: WysiwygEditMode,
+    displayMode: WysiwygDisplayMode,
+    editMode: WysiwygEditMode,
   };
   menubar: boolean | string; // should match TinyMCE
   toolbar: string | string[]; // should match TinyMCE
@@ -45,5 +45,6 @@ export interface TinyMceModeWithSwitcher extends TinyMceMode {
 }
 
 export interface ToolbarSwitcher {
-  switch(view: WysiwygDisplayMode, mode: WysiwygEditMode): TinyMceMode;
+  // isDialog(editor: Editor): boolean;
+  switch(displayMode: WysiwygDisplayMode, editMode: WysiwygEditMode): TinyMceMode;
 }

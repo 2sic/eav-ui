@@ -1,17 +1,16 @@
+import { BehaviorSubject, distinctUntilChanged, Subscription } from 'rxjs';
 import type { Editor } from 'tinymce';
+import { InputTypeConstants } from '../../../eav-ui/src/app/content-type-fields/constants/input-type.constants';
 import { EavWindow } from '../../../eav-ui/src/app/shared/models/eav-window.model';
-import { AddOnSettings, Connector, StringWysiwyg, WysiwygReconfigure, /* WysiwygDisplayModeInlineWithDialog */ } from '../../../edit-types';
+import { AddOnSettings, Connector, StringWysiwyg, WysiwygReconfigure } from '../../../edit-types';
+import { consoleLogWebpack } from '../../../field-custom-gps/src/shared/console-log-webpack.helper';
 import * as contentStyle from '../editor/tinymce-content.scss';
+import { toConfigForViewModes } from './config-for-view-modes';
 import { DefaultAddOnSettings, DefaultOptions, DefaultPaste, DefaultPlugins } from './defaults';
+import { TinyEavConfig } from './tinymce-config';
 import { RawEditorOptionsWithModes } from './tinymce-helper-types';
 import { TinyMceToolbars } from './toolbars';
 import { TinyMceTranslations } from './translations';
-import { TinyEavConfig } from './tinymce-config';
-import { InputTypeConstants } from '../../../eav-ui/src/app/content-type-fields/constants/input-type.constants';
-import { BehaviorSubject, distinctUntilChanged, Subscription } from 'rxjs';
-import { toConfigForViewModes } from './config-for-view-modes';
-// import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
-import { consoleLogWebpack } from '../../../field-custom-gps/src/shared/console-log-webpack.helper';
 
 declare const window: EavWindow;
 const reconfigErr = `Very likely an error in your reconfigure code. Check http://r.2sxc.org/field-wysiwyg`;
@@ -50,7 +49,6 @@ export class TinyMceConfigurator {
       .pipe(distinctUntilChanged())
       .subscribe(this.isWysiwygPasteFormatted$)
     );
-    
   }
 
   private warnAboutCommonSettingsIssues(): void {
