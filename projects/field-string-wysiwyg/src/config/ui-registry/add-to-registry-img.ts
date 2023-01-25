@@ -1,6 +1,6 @@
 import * as Buttons from '../../constants/buttons';
+import * as RichSpecs from '../../constants/rich-wysiwyg';
 import { ImageFormats } from '../../shared/models';
-import * as IMG from '../public';
 import { AddToRegistryBase, AddToRegistryParams } from './add-to-registry-base';
 
 export class TinyButtonsImg extends AddToRegistryBase {
@@ -34,7 +34,7 @@ export class TinyButtonsImg extends AddToRegistryBase {
     const btns = this.getButtons();
 
     // Group with images (adam) - only in PRO mode
-    this.editor.ui.registry.addSplitButton(IMG.ImagesGroupPro, {
+    this.editor.ui.registry.addSplitButton(Buttons.ImagesCmsGroup, {
       ...this.splitButtonSpecs(() => thisForLater.toggleAdam(false, true)),
       columns: 3,
       icon: btns.image.icon,
@@ -61,8 +61,8 @@ export class TinyButtonsImg extends AddToRegistryBase {
 
     // Different behavior depending on WysiwygMode
     const imgAlign = this.options.eavConfig.features.responsiveImages
-      ? `${IMG.ImgEnhancedLeft} ${IMG.ImgEnhancedCenter} ${IMG.ImgEnhancedRight} ${IMG.ImgButtonGroupRatios}`
-      : `alignleft aligncenter alignright ${IMG.ImgButtonGroupWidth}`;
+      ? `${RichSpecs.ImgLeftClass} ${RichSpecs.ImgCenterClass} ${RichSpecs.ImgRightClass} ${Buttons.ImgRatiosGroup}`
+      : `alignleft aligncenter alignright ${Buttons.ImgWidthsGroup}`;
 
     this.editor.ui.registry.addContextToolbar('imgContextToolbar', {
       items: `image | ${imgAlign} | removeformat | remove`,
@@ -74,14 +74,14 @@ export class TinyButtonsImg extends AddToRegistryBase {
   private registerFormattingWidths(imgSizes: number[]): void {
     const formatter = this.editor.formatter;
     const sButItem = this.splitButtonItem;
-    this.editor.ui.registry.addSplitButton(IMG.ImgButtonGroupWidth, {
-      ...this.splitButtonSpecs(() => formatter.apply(`${IMG.ImgWidthPrefix}100`)),
+    this.editor.ui.registry.addSplitButton(Buttons.ImgWidthsGroup, {
+      ...this.splitButtonSpecs(() => formatter.apply(`${RichSpecs.ImgWidthPrefix}100`)),
       icon: 'resize',
       tooltip: '100%',
       fetch: (callback) => {
         callback(
           imgSizes.map(imgSize => sButItem('resize', `${imgSize}%`,
-            (() => { formatter.apply(`${IMG.ImgWidthPrefix}${imgSize}`); }))),
+            (() => { formatter.apply(`${RichSpecs.ImgWidthPrefix}${imgSize}`); }))),
         );
       },
     });
@@ -90,21 +90,21 @@ export class TinyButtonsImg extends AddToRegistryBase {
   /** Image alignment / size buttons in context menu */
   private registerEnhancedFormattingRatios(): void {
     const sButItem = this.splitButtonItem;
-    const tog = (current: IMG.FormatDefinition) => this.toggleOneOfClassList(IMG.ImgEnhancedRatios, current);
-    this.editor.ui.registry.addSplitButton(IMG.ImgButtonGroupRatios, {
-      ...this.splitButtonSpecs(() => tog(IMG.ImgEnhancedRatioDefault)),
+    const tog = (current: RichSpecs.ImageFormatDefinition) => this.toggleOneOfClassList(RichSpecs.ImgRatios, current);
+    this.editor.ui.registry.addSplitButton(Buttons.ImgRatiosGroup, {
+      ...this.splitButtonSpecs(() => tog(RichSpecs.ImgEnhancedRatioDefault)),
       icon: 'resize',
-      tooltip: IMG.ImgEnhancedRatioDefault.name, // TODO: i18n
+      tooltip: RichSpecs.ImgEnhancedRatioDefault.name, // TODO: i18n
       fetch: (callback) => {
         callback(
-          IMG.ImgEnhancedRatios.map(imgR => sButItem('resize', `${imgR.name}`, // TODO: i18n
+          RichSpecs.ImgRatios.map(imgR => sButItem('resize', `${imgR.name}`, // TODO: i18n
             () => { tog(imgR); })),
         );
       },
     });
   }
 
-  private toggleOneOfClassList(all: IMG.FormatDefinition[], current: IMG.FormatDefinition) {
+  private toggleOneOfClassList(all: RichSpecs.ImageFormatDefinition[], current: RichSpecs.ImageFormatDefinition) {
     const formatter = this.editor.formatter;
     all.filter((v) => v.name !== current.name).forEach((v) => formatter.remove(v.name));
     formatter.toggle(current.name);
@@ -113,11 +113,11 @@ export class TinyButtonsImg extends AddToRegistryBase {
   // New wysiwyg alignments
   private buttonsEnhancedAlignment(): void {
     const btns = this.getButtons();
-    IMG.ImgEnhancedAlignments.forEach((ai) => {
+    RichSpecs.ImgAlignments.forEach((ai) => {
       this.regBtn(ai.name,
         ai.icon ?? btns[ai.inherit]?.icon,
         ai.tooltip ?? btns[ai.inherit]?.tooltip,
-        () => { this.toggleOneOfClassList(IMG.ImgEnhancedAlignments, ai); });
+        () => { this.toggleOneOfClassList(RichSpecs.ImgAlignments, ai); });
     });
   }
 
@@ -126,8 +126,8 @@ export class TinyButtonsImg extends AddToRegistryBase {
   registerBasicFormats(imgSizes: number[]): void {
     const editor = this.editor;
     const imageFormats: ImageFormats = {};
-    imgSizes.map((imgSize) => { 
-      imageFormats[`${IMG.ImgWidthPrefix}${imgSize}`] = [{
+    imgSizes.map((imgSize) => {
+      imageFormats[`${RichSpecs.ImgWidthPrefix}${imgSize}`] = [{
         selector: 'img',
         collapsed: false,
         styles: {
@@ -141,8 +141,11 @@ export class TinyButtonsImg extends AddToRegistryBase {
   /** Register all formats for enhanced modes - like img-sizes */
   registerEnhancedFormats(): void {
     const formatter = this.editor.formatter;
-    [IMG.ImgEnhancedAlignments, IMG.ImgEnhancedRatios, IMG.ImgEnhancedWidths]
-      .map(set => set.forEach(def => {
+    [
+      RichSpecs.ImgAlignments,
+      RichSpecs.ImgRatios,
+      RichSpecs.ImgEnhancedWidths
+    ].map(set => set.forEach(def => {
         formatter.register(def.name, { selector: 'img', classes: def.class });
       }));
   }

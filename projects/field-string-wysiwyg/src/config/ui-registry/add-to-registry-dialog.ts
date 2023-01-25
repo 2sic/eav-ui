@@ -12,7 +12,7 @@ export class TinyButtonsDialog extends AddToRegistryBase {
 
   /** Switch to Dialog Mode */
   private registerOpenDialog(): void {
-    this.regBtn(Buttons.DialogOpenButton, 'browse', 'SwitchMode.Expand', () => {
+    this.regBtn(Buttons.DialogOpen, 'browse', 'SwitchMode.Expand', () => {
       this.openInDialog();
     });
   }

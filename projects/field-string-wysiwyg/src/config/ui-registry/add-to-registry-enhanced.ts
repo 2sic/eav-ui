@@ -1,5 +1,5 @@
 import * as Buttons from '../../constants/buttons';
-import { ContentDivisionClass } from '../public';
+import * as RichSpecs from '../../constants/rich-wysiwyg';
 import { AddToRegistryBase, AddToRegistryParams } from './add-to-registry-base';
 
 export class TinyButtonsWysiwygEnhanced extends AddToRegistryBase {
@@ -15,8 +15,8 @@ export class TinyButtonsWysiwygEnhanced extends AddToRegistryBase {
 
   private addButtonContentSplitter(): void {
     const buttons = this.getButtons();
-    this.regBtn(Buttons.AddContentSplit, buttons.hr.icon, 'ContentBlock.Add', () => {
-      this.editor.insertContent(`<hr class="${ContentDivisionClass}"/>`);
+    this.regBtn(Buttons.ContentSectionSplitter, buttons.hr.icon, 'ContentBlock.Add', () => {
+      this.editor.insertContent(`<hr class="${RichSpecs.ContentSplitterClass}"/>`);
     });
   }
 
@@ -25,7 +25,7 @@ export class TinyButtonsWysiwygEnhanced extends AddToRegistryBase {
   private contentDivision(): void {
     this.regBtn(Buttons.XXXContentDivision, 'custom-branding-watermark', 'ContentDivision.Add', () => {
       // Important: the class "content-division" must match the css
-      this.editor.insertContent(`<div class="${ContentDivisionClass}"><p></p></div>`);
+      this.editor.insertContent(`<div class="${RichSpecs.ContentSplitterClass}"><p></p></div>`);
     });
   }
 }

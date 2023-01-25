@@ -1,5 +1,5 @@
+import * as Buttons from '../../constants/buttons';
 import { FieldStringWysiwygEditor } from '../../editor/editor';
-import { LinkFiles, LinkGroup, LinkGroupPro, LinkPageButton } from '../public';
 import { AddToRegistryBase, AddToRegistryParams } from './add-to-registry-base';
 
 export class TinyButtonsLinks extends AddToRegistryBase {
@@ -29,7 +29,7 @@ export class TinyButtonsLinks extends AddToRegistryBase {
   /** Group with adam-link, dnn-link */
   private linkFiles(): void {
     const thisForLater = this;
-    this.editor.ui.registry.addSplitButton(LinkFiles, {
+    this.editor.ui.registry.addSplitButton(Buttons.LinkFiles, {
       ...this.splitButtonSpecs(() => thisForLater.toggleAdam(false, false)),
       columns: 3,
       icon: 'custom-file-pdf',
@@ -53,7 +53,7 @@ export class TinyButtonsLinks extends AddToRegistryBase {
   private addLinkGroup(isPro: boolean): void {
     const linkButton = this.getButtons().link;
 
-    this.editor.ui.registry.addSplitButton(!isPro ? LinkGroup : LinkGroupPro, {
+    this.editor.ui.registry.addSplitButton(!isPro ? Buttons.LinkGroup : Buttons.LinkGroupPro, {
       ...this.splitButtonSpecs('mceLink'),
       columns: 3,
       icon: linkButton.icon,
@@ -72,7 +72,7 @@ export class TinyButtonsLinks extends AddToRegistryBase {
   }
 
   private addLinkPage(): void {
-    this.regBtn(LinkPageButton, 'custom-sitemap', 'Link.Page.Tooltip', () => openPagePicker(this.field));
+    this.regBtn(Buttons.LinkPageButton, 'custom-sitemap', 'Link.Page.Tooltip', () => openPagePicker(this.field));
   }
 
 }

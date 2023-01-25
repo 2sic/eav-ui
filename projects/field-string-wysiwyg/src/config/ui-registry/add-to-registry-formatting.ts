@@ -1,5 +1,5 @@
-import { StylesGroup } from '../public';
-import { AddToRegistryParams, AddToRegistryBase } from './add-to-registry-base';
+import * as Buttons from '../../constants/buttons';
+import { AddToRegistryBase, AddToRegistryParams } from './add-to-registry-base';
 
 export class TinyButtonsFormatting extends AddToRegistryBase {
   constructor(makerParams: AddToRegistryParams) {
@@ -14,7 +14,7 @@ export class TinyButtonsFormatting extends AddToRegistryBase {
   /** Drop-down with italic, strikethrough, ... */
   private dropDownItalicAndMore(): void {
     const btns = this.getButtons();
-    this.editor.ui.registry.addSplitButton(StylesGroup, {
+    this.editor.ui.registry.addSplitButton(Buttons.StylesGroup, {
       ...this.splitButtonSpecs('Italic'),
       columns: 3,
       icon: btns.italic.icon,

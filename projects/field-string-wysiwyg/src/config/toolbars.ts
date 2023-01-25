@@ -77,12 +77,12 @@ export class TinyMceToolbars implements ToolbarSwitcher {
   private createRemoveMap(settings: SelectSettings): { button: string, enabled: boolean }[] {
     const map = [
       { button: Buttons.Code, enabled: settings.buttons.source },
-      { button: Buttons.DialogOpenButton, enabled: settings.buttons.dialog },
+      { button: Buttons.DialogOpen, enabled: settings.buttons.dialog },
       { button: Buttons.ModeAdvanced, enabled: settings.buttons.advanced },
       { button: Buttons.ModeDefault, enabled: settings.editMode === EditModes.WysiwygAdvanced },
       { button: Buttons.AddContentBlock, enabled: settings.features.contentBlocks },
       { button: Buttons.XXXContentDivision, enabled: false /* settings.features.contentSeparators */ },
-      { button: Buttons.AddContentSplit, enabled: settings.features.contentSeparators },
+      { button: Buttons.ContentSectionSplitter, enabled: settings.features.contentSeparators },
     ];
     console.log('2dm remove map', map);
     return map;

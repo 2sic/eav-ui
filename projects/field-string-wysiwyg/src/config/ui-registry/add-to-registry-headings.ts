@@ -1,6 +1,6 @@
 import { Ui } from 'tinymce';
-import { HGroups } from '../public';
-import { AddToRegistryParams, AddToRegistryBase } from './add-to-registry-base';
+import * as Buttons from '../../constants/buttons';
+import { AddToRegistryBase, AddToRegistryParams } from './add-to-registry-base';
 
 export class TinyButtonsHeadings extends AddToRegistryBase {
   constructor(makerParams: AddToRegistryParams) {
@@ -29,10 +29,10 @@ export class TinyButtonsHeadings extends AddToRegistryBase {
       this.splitButtonItem(`${imgName}6`, btns.h6.text, () => this.toggleFormat('h6')),
       this.splitButtonItem(blockquote.icon, blockquote.tooltip, () => this.toggleFormat('blockquote')),
     ];
-    this.headingsGroup(HGroups.h1, 'h1', btns.h1 as Ui.Toolbar.ToolbarSplitButtonSpec, HButtons);
-    this.headingsGroup(HGroups.h2, 'h2', btns.h2 as Ui.Toolbar.ToolbarSplitButtonSpec, HButtons);
-    this.headingsGroup(HGroups.h3, 'h3', btns.h3 as Ui.Toolbar.ToolbarSplitButtonSpec, HButtons);
-    this.headingsGroup(HGroups.h4, 'h4', btns.h4 as Ui.Toolbar.ToolbarSplitButtonSpec, HButtons);
+    this.headingsGroup(Buttons.HGroups.h1, 'h1', btns.h1 as Ui.Toolbar.ToolbarSplitButtonSpec, HButtons);
+    this.headingsGroup(Buttons.HGroups.h2, 'h2', btns.h2 as Ui.Toolbar.ToolbarSplitButtonSpec, HButtons);
+    this.headingsGroup(Buttons.HGroups.h3, 'h3', btns.h3 as Ui.Toolbar.ToolbarSplitButtonSpec, HButtons);
+    this.headingsGroup(Buttons.HGroups.h4, 'h4', btns.h4 as Ui.Toolbar.ToolbarSplitButtonSpec, HButtons);
   }
 
   private headingsGroup(

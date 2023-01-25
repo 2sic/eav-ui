@@ -1,4 +1,4 @@
-import { ListGroup } from '../public';
+import * as Buttons from '../../constants/buttons';
 import { AddToRegistryBase, AddToRegistryParams } from './add-to-registry-base';
 
 export class TinyButtonsBullets extends AddToRegistryBase {
@@ -17,7 +17,7 @@ export class TinyButtonsBullets extends AddToRegistryBase {
     const btns = this.getButtons();
 
     // Drop-down with numbered list, bullet list, ...
-    this.editor.ui.registry.addSplitButton(ListGroup, {
+    this.editor.ui.registry.addSplitButton(Buttons.ListGroup, {
       ...this.splitButtonSpecs('InsertUnorderedList'),
       columns: 3,
       icon: btns.bullist.icon,
