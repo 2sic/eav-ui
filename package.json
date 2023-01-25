@@ -9,6 +9,7 @@
   },
   "scripts": {
     "pre-build": "node ./build-helpers/clear-dist && node ./build-helpers/build-languages",
+    "dev-languages": "node ./build-helpers/build-languages",
     "copy-to-dnn": "node ./build-helpers/copy-to-dnn",
     "copy-to-dnn-watch": "node ./build-helpers/copy-to-dnn --watch",
     "dev-main": "ng build --configuration development --watch",

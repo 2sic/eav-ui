@@ -249,7 +249,11 @@
     "H6": "H6",
     "Paragraph": "Paragraph",
     "ContentBlock.Add": "Add app or content block",
-    "ContentDivision.Add": "Add content division"
+    "ContentDivision.Add": "Add content division",
+    "RichImages.Ratio100.Label": "Make width cover entire area",
+    "RichImages.Ratio100.Tooltip": "Make width cover entire area of screen (desktop and mobile)",
+    "RichImages.RatioXofY.Label": "Make width {0}/{1} of screen",
+    "RichImages.RatioXofY.Tooltip": "Make width {0}/{1} of the desktop width; mobile will auto-adjust"
   },
   "Features": {
     "NotActivated": "This feature is not activated - find out more",

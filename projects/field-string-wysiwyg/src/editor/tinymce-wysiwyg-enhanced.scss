@@ -21,6 +21,10 @@
     margin-right: auto;
   }
 
+  img.wysiwyg-100 {
+    width: 100%;
+  }
+
   img.wysiwyg-1of2 {
     width: 50%;
   }
@@ -30,6 +34,12 @@
   }
   img.wysiwyg-2of3 {
     width: 66%;
+  }
+  img.wysiwyg-1of4 {
+    width: 25%;
+  }
+  img.wysiwyg-3of4 {
+    width: 75%;
   }
 
 }

@@ -89,15 +89,18 @@ export class TinyButtonsImg extends AddToRegistryBase {
 
   /** Image alignment / size buttons in context menu */
   private registerEnhancedFormattingRatios(): void {
-    const sButItem = this.splitButtonItem;
+    const that = this;
+    const main = RichSpecs.ImgRatioDefault;
     const tog = (current: RichSpecs.ImageFormatDefinition) => this.toggleOneOfClassList(RichSpecs.ImgRatios, current);
     this.editor.ui.registry.addSplitButton(Buttons.ImgRatiosGroup, {
-      ...this.splitButtonSpecs(() => tog(RichSpecs.ImgEnhancedRatioDefault)),
+      ...that.splitButtonSpecs(() => tog(main)),
       icon: 'resize',
-      tooltip: RichSpecs.ImgEnhancedRatioDefault.name, // TODO: i18n
+      tooltip: this.editor.translate([main.tooltip, main.fraction, main.fractionOf]),
       fetch: (callback) => {
         callback(
-          RichSpecs.ImgRatios.map(imgR => sButItem('resize', `${imgR.name}`, // TODO: i18n
+          RichSpecs.ImgRatios.map(imgR => that.splitButtonItemTipped('resize',
+            this.editor.translate([imgR.label, imgR.fraction, imgR.fractionOf]),
+            this.editor.translate([imgR.tooltip, imgR.fraction, imgR.fractionOf]),
             () => { tog(imgR); })),
         );
       },
@@ -113,10 +116,11 @@ export class TinyButtonsImg extends AddToRegistryBase {
   // New wysiwyg alignments
   private buttonsEnhancedAlignment(): void {
     const btns = this.getButtons();
+    const editor = this.editor;
     RichSpecs.ImgAlignments.forEach((ai) => {
       this.regBtn(ai.name,
         ai.icon ?? btns[ai.inherit]?.icon,
-        ai.tooltip ?? btns[ai.inherit]?.tooltip,
+        editor.translate([ai.tooltip ?? btns[ai.inherit]?.tooltip]),
         () => { this.toggleOneOfClassList(RichSpecs.ImgAlignments, ai); });
     });
   }

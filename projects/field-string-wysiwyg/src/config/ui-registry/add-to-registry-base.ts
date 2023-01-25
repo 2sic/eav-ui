@@ -118,6 +118,11 @@ export abstract class AddToRegistryBase {
     return { icon, text, type: 'choiceitem' as 'choiceitem', value: action as string }; // pretend action is as string
   }
 
+  protected splitButtonItemTipped(icon: string, text: string, tooltip: string, action: string | FuncVoid) {
+    const sbi = this.splitButtonItem(icon, text, action);
+    return { ...sbi, tooltip }; // pretend action is as string
+  }
+
   protected regBtn(name: string, icon: string, tooltip: string, action: () => void) {
     this.editor.ui.registry.addButton(name, {
       icon,

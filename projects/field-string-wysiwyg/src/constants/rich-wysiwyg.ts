@@ -11,7 +11,10 @@ export interface ImageFormatDefinition {
   class: string;
   inherit?: string;
   icon?: string;
+  label?: string;
   tooltip?: string;
+  fraction?: number;
+  fractionOf?: number;
 }
 
 // New wysiwyg alignments
@@ -25,8 +28,18 @@ export const ImgAlignments: ImageFormatDefinition[] = [
   { name: ImgRightClass, class: `${WysiwygClassPrefix}-right`, inherit: 'alignright' },
 ];
 
+const i18nRatioPrefix = 'RichImages.Ratio';
+
 // New wysiwyg sizes
+// export const ImgRatioDefault = createFormatDefinition(1, 1, `${i18nRatioPrefix}100.Label`, `${i18nRatioPrefix}100.Tooltip`);
+export const ImgRatioDefault: ImageFormatDefinition = {
+  name: 'width100',
+  class: `${WysiwygClassPrefix}-100`,
+  label: `${i18nRatioPrefix}100.Label`,
+  tooltip: `${i18nRatioPrefix}100.Tooltip`,
+};
 export const ImgRatios: ImageFormatDefinition[] = [
+  ImgRatioDefault,
   ...buildFormatSizesDefinitions(2),
   ...buildFormatSizesDefinitions(3),
   ...buildFormatSizesDefinitions(4, [1, 3]),
@@ -35,16 +48,21 @@ export const ImgRatios: ImageFormatDefinition[] = [
   // { name: 'width20per', class: `${WysiwygClassPrefix}-w20per` },
   // { name: 'width30per', class: `${WysiwygClassPrefix}-w30per` },
 ];
-export const ImgEnhancedRatioDefault = ImgRatios[0];
 
 function buildFormatSizesDefinitions(max: number, keys?: number[]): ImageFormatDefinition[] {
   keys ??= [...[...Array(max).keys()].slice(1)]; // get keys from 1...max-1
-  return keys.map((n) => ({
-    name: `width${n}of${max}`,                    // eg 'width1of2' - important for i18n
-    class: `${WysiwygClassPrefix}-${n}of${max}`,  // eg 'wysiwyg-1of2' - important for CSS
-    tooltip: `${n} of ${max}`,                    // eg '1 of 2' - important for i18n
-  })
-  );
+  return keys.map(n => createFormatDefinition(n, max));
+}
+
+function createFormatDefinition(n: number, max: number, label?: string, tooltip?: string): ImageFormatDefinition {
+  return ({
+    name: `width${n}of${max}`,
+    class: `${WysiwygClassPrefix}-${n}of${max}`,
+    label: label ?? `${i18nRatioPrefix}XofY.Label`,
+    tooltip: tooltip ?? `${i18nRatioPrefix}XofY.Tooltip`,
+    fraction: n,
+    fractionOf: max,
+  });
 }
 
 export const ImgEnhancedWidths: ImageFormatDefinition[]
