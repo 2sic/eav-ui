@@ -28,7 +28,7 @@ import { Connector, EavCustomInputField, WysiwygReconfigure } from '../../../edi
 import { consoleLogWebpack } from '../../../field-custom-gps/src/shared/console-log-webpack.helper';
 import { TinyMceConfigurator } from '../config/tinymce-configurator';
 import * as WysiwygDialogModes from '../constants/display-modes';
-import { RawEditorOptionsWithModes } from '../config/tinymce-helper-types';
+import { RawEditorOptionsWithEav } from '../config/tinymce-helper-types';
 import { TinyMceTranslations } from '../config/translations';
 import { AddEverythingToRegistry } from '../config/ui-registry/add-everything-to-registry';
 import { attachAdam } from '../connector/adam';
@@ -117,7 +117,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   }
 
   /** This will initialized an instance of an editor. Everything else is kind of global. */
-  private tinyMceSetup(editor: Editor, rawEditorOptions: RawEditorOptionsWithModes): void {
+  private tinyMceSetup(editor: Editor, rawEditorOptions: RawEditorOptionsWithEav): void {
     this.editor = editor;
     editor.on('init', _event => {
       consoleLogWebpack(`${wysiwygEditorHtmlTag} TinyMCE initialized`, editor);

@@ -1,6 +1,6 @@
+import * as Buttons from '../../constants/buttons';
 import { Guid } from '../../shared/guid';
-import { AddContentBlock } from '../public';
-import { AddToRegistryParams, AddToRegistryBase } from './add-to-registry-base';
+import { AddToRegistryBase, AddToRegistryParams } from './add-to-registry-base';
 
 export class TinyButtonsContentBlocks extends AddToRegistryBase {
   constructor(makerParams: AddToRegistryParams) {
@@ -14,7 +14,7 @@ export class TinyButtonsContentBlocks extends AddToRegistryBase {
 
   /** Inside content (contentblocks) */
   private addButtonContentBlock(): void {
-    this.editor.ui.registry.addButton(AddContentBlock, {
+    this.editor.ui.registry.addButton(Buttons.AddContentBlock, {
       icon: 'custom-content-block',
       tooltip: 'ContentBlock.Add',
       onAction: (api) => {

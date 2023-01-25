@@ -8,7 +8,7 @@ import * as contentStyle from '../editor/tinymce-content.scss';
 import { toConfigForViewModes } from './config-for-view-modes';
 import { DefaultAddOnSettings, DefaultOptions, DefaultPaste, DefaultPlugins } from './defaults';
 import { TinyEavConfig } from './tinymce-config';
-import { RawEditorOptionsWithModes } from './tinymce-helper-types';
+import { RawEditorOptionsWithEav } from './tinymce-helper-types';
 import { TinyMceToolbars } from './toolbars';
 import { TinyMceTranslations } from './translations';
 
@@ -61,7 +61,7 @@ export class TinyMceConfigurator {
   /** Construct TinyMCE options */
   buildOptions(containerClass: string, fixedToolbarClass: string, modeIsInline: boolean,
     setup: (editor: Editor) => void
-  ): RawEditorOptionsWithModes {
+  ): RawEditorOptionsWithEav {
     const connector = this.connector;
     const exp = connector._experimental;
     // TODO @SDV - done by 2dm
@@ -121,7 +121,7 @@ export class TinyMceConfigurator {
     let contentCssFile = fieldSettings.ContentCss;
     if (!contentCssFile) contentCssFile = null;
 
-    const options: RawEditorOptionsWithModes = {
+    const options: RawEditorOptionsWithEav = {
       ...DefaultOptions,
       ...{ plugins: [...DefaultPlugins] },
       selector: `.${containerClass}`,

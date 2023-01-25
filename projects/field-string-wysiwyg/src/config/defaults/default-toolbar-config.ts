@@ -1,9 +1,10 @@
+import * as Buttons from '../../constants/buttons';
 import { ButtonGroupByViewRaw, NewRow, NoButtons } from '../button-groups';
 import * as Reg from '../public';
 
 
 const standardGroupUndoRedoPaste = `undo redo pastetext paste removeformat`;
-const standardGroupFinal = `${Reg.CodeButton} ${Reg.ModeAdvanced} ${Reg.ModeDefault} ${Reg.DialogOpenButton}`;
+const standardGroupFinal = `${Buttons.Code} ${Buttons.ModeAdvanced} ${Buttons.ModeDefault} ${Buttons.DialogOpenButton}`;
 
 const defaultToolbar = [
   /* initial w/undo   */ standardGroupUndoRedoPaste,
@@ -12,7 +13,7 @@ const defaultToolbar = [
   /* bullets          */ `numlist ${Reg.ListGroup}`,
   /* links/media      */ `${Reg.LinkGroup}`,
   /* rich media       */ NoButtons,
-  /* content block    */ Reg.AddContentBlock,
+  /* content block    */ Buttons.AddContentBlock,
   /* tools/mode switch*/ standardGroupFinal,
   // /* Experiment. split*/ NewRow,
   // /* Experiment. split*/ `undo`
@@ -63,11 +64,11 @@ export const DefaultToolbarConfig: ButtonGroupByViewRaw = {
     rich: [
       /* default toolbar  */ ...defaultToolbar,
       /* -                */ NewRow,
-      /* initial w/undo   */ `${Reg.PasteImageButton}`,  // TODO: create pasteimage
+      /* initial w/undo   */ `${Buttons.PasteImage}`,  // TODO: create pasteimage
 
       /* links/media      */ `${Reg.ImagesGroupPro} ${Reg.LinkFiles}`,
-      /* rich media       */ `${Reg.ContentDivision} ${Reg.AddContentSplit}`,
-      /* content block    */ Reg.AddContentBlock,
+      /* rich media       */ `${Buttons.XXXContentDivision} ${Buttons.AddContentSplit}`,
+      /* content block    */ Buttons.AddContentBlock,
     ],
   },
   dialog: {
@@ -77,7 +78,7 @@ export const DefaultToolbarConfig: ButtonGroupByViewRaw = {
       /* paragraph types  */ `h2 ${Reg.HGroups.h3}`,
       /* bullets          */ `numlist ${Reg.ListGroup}`,
       /* links/media      */ `${Reg.ImagesGroupPro} ${Reg.LinkGroupPro}`, // different from other default
-      /* content block    */ Reg.AddContentBlock,
+      /* content block    */ Buttons.AddContentBlock,
       /* tools/mode switch*/ standardGroupFinal,
     ],
   }

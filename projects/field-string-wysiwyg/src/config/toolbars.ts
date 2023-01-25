@@ -1,12 +1,12 @@
 import { consoleLogWebpack } from '../../../field-custom-gps/src/shared/console-log-webpack.helper';
+import * as Buttons from '../constants/buttons';
 import * as DialogModes from '../constants/display-modes';
 import * as EditModes from '../constants/edit-modes';
 import { ButtonGroupSelector } from './button-group-selector';
 import { NewRow, toButtonGroupByView } from './button-groups';
 import { DefaultContextMenu, DefaultToolbarConfig } from './defaults';
-import { AddContentBlock, AddContentSplit, CodeButton, ContentDivision, DialogOpenButton, ModeAdvanced, ModeDefault } from './public';
 import { SelectSettings, TinyEavConfig } from './tinymce-config';
-import { TinyMceMode, TinyMceModeWithSwitcher, ToolbarSwitcher } from './tinymce-helper-types';
+import { TinyMceMode, ToolbarSwitcher } from './tinymce-helper-types';
 
 // #region Button Sets that define what buttons appear in what view / mode
 
@@ -23,7 +23,7 @@ export class TinyMceToolbars implements ToolbarSwitcher {
   constructor(private config: TinyEavConfig) {
   }
 
-  public build(isInline: boolean): TinyMceModeWithSwitcher {
+  public build(isInline: boolean): TinyMceMode {
     const displayMode = isInline ? DialogModes.DisplayInline : DialogModes.DisplayDialog;
     const initial = this.switch(displayMode, this.config.mode?.[displayMode] || EditModes.Default);
     return {
@@ -31,12 +31,6 @@ export class TinyMceToolbars implements ToolbarSwitcher {
       ...initial
     };
   }
-
-  // public isDialog(editor: Editor): boolean {
-  //   const options = editor.options as unknown as RawEditorOptionsWithModes;
-  //   console.log('2dm isDialog options', options);
-  //   return options.currentMode.displayMode === WysiwygDialog; // TODO: implement
-  // }
 
   public switch(displayMode: DialogModes.DisplayModes, editMode: EditModes.WysiwygEditMode): TinyMceMode {
     consoleLogWebpack(`TinyMceToolbars.switch(${displayMode}, ${editMode})`, this.config);
@@ -50,6 +44,7 @@ export class TinyMceToolbars implements ToolbarSwitcher {
       menubar: editMode === EditModes.WysiwygAdvanced,
       toolbar: this.toolbar(selector) as any,
       contextmenu: selector.selectButtonGroup(ButtonSetContextMenu)[0],
+      modeSwitcher: this,
     };
   }
 
@@ -81,13 +76,13 @@ export class TinyMceToolbars implements ToolbarSwitcher {
 
   private createRemoveMap(settings: SelectSettings): { button: string, enabled: boolean }[] {
     const map = [
-      { button: CodeButton, enabled: settings.buttons.source },
-      { button: DialogOpenButton, enabled: settings.buttons.dialog },
-      { button: ModeAdvanced, enabled: settings.buttons.advanced },
-      { button: ModeDefault, enabled: settings.editMode === EditModes.WysiwygAdvanced },
-      { button: AddContentBlock, enabled: settings.features.contentBlocks },
-      { button: ContentDivision, enabled: false /* settings.features.contentSeparators */ },
-      { button: AddContentSplit, enabled: settings.features.contentSeparators },
+      { button: Buttons.Code, enabled: settings.buttons.source },
+      { button: Buttons.DialogOpenButton, enabled: settings.buttons.dialog },
+      { button: Buttons.ModeAdvanced, enabled: settings.buttons.advanced },
+      { button: Buttons.ModeDefault, enabled: settings.editMode === EditModes.WysiwygAdvanced },
+      { button: Buttons.AddContentBlock, enabled: settings.features.contentBlocks },
+      { button: Buttons.XXXContentDivision, enabled: false /* settings.features.contentSeparators */ },
+      { button: Buttons.AddContentSplit, enabled: settings.features.contentSeparators },
     ];
     console.log('2dm remove map', map);
     return map;

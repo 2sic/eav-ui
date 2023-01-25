@@ -1,5 +1,6 @@
+import * as Buttons from '../../constants/buttons';
 import { Guid } from '../../shared/guid';
-import { AddContentSplit, ContentDivision, ContentDivisionClass } from '../public';
+import { ContentDivisionClass } from '../public';
 import { AddToRegistryBase, AddToRegistryParams } from './add-to-registry-base';
 
 export class TinyButtonsWysiwygEnhanced extends AddToRegistryBase {
@@ -15,9 +16,9 @@ export class TinyButtonsWysiwygEnhanced extends AddToRegistryBase {
 
   private addButtonContentSplitter(): void {
     const buttons = this.getButtons();
-    this.editor.ui.registry.addButton(AddContentSplit, {
-      icon: buttons.hr.icon,
-      tooltip: 'ContentBlock.Add',
+    this.editor.ui.registry.addButton(Buttons.AddContentSplit, {
+      icon: buttons.hr.icon, // TODO: use a custom icon
+      tooltip: 'TODO',
       onAction: (api) => {
         const guid = Guid.uuid().toLowerCase();
         this.editor.insertContent(`<hr class="${ContentDivisionClass}"/>`);
@@ -28,7 +29,7 @@ export class TinyButtonsWysiwygEnhanced extends AddToRegistryBase {
 
   /** Inside content (contentdivision) */
   private contentDivision(): void {
-    this.editor.ui.registry.addButton(ContentDivision, {
+    this.editor.ui.registry.addButton(Buttons.XXXContentDivision, {
       // todo: strange name, mut review @SDV
       icon: 'custom-branding-watermark',
       tooltip: 'ContentDivision.Add',

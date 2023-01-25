@@ -9,11 +9,8 @@ export const LinkGroup = 'link-group';
 export const LinkGroupPro = 'link-group-pro';
 export const LinkFiles = 'link-files';
 export const ListGroup = 'list-group';
-export const ModeDefault = 'mode-standard';
 export const LinkPageButton = 'link-page';
 // export const ToModeInline = 'modeinline';
-export const PasteImageButton = 'paste-image';
-export const CodeButton = 'code';
 
 export const ImgButtonGroupWidth = 'image-widths';
 export const ImgButtonGroupRatios = 'image-ratios';
@@ -90,10 +87,4 @@ export const ToolbarModeToggle = 'wysiwyg-toolbar-mode';
 export const ToolbarModes = 'wysiwyg-toolbar-modes';
 // TODO: need better convention so we can use different names for mode switch
 // same for `modestandard`
-export const ModeAdvanced = 'modeadvanced';
-export const AddContentBlock = 'addcontentblock';
-export const ContentDivision = 'contentdivision';
-export const DialogOpenButton = 'dialog-open';
-
-export const AddContentSplit = 'contentsplit';
 

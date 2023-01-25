@@ -10,7 +10,7 @@ import * as DialogModes from '../constants/display-modes';
 import * as EditModes from '../constants/edit-modes';
 import { TinyEavConfig } from './tinymce-config';
 
-export interface RawEditorOptionsWithModes extends RawEditorOptions, Omit<TinyMceModeWithSwitcher, 'menubar' | 'toolbar' | 'contextmenu'> {
+export interface RawEditorOptionsWithEav extends RawEditorOptions, Omit<TinyMceMode, 'menubar' | 'toolbar' | 'contextmenu'> {
   eavConfig: TinyEavConfig;
 }
 
@@ -22,10 +22,6 @@ export interface TinyMceMode {
   menubar: boolean | string; // should match TinyMCE
   toolbar: string | string[]; // should match TinyMCE
   contextmenu: string;
-}
-
-
-export interface TinyMceModeWithSwitcher extends TinyMceMode {
   modeSwitcher: ToolbarSwitcher;
 }
 

@@ -1,5 +1,5 @@
+import * as Buttons from '../../constants/buttons';
 import * as EditModes from '../../constants/edit-modes';
-import { ModeAdvanced, ModeDefault } from '../public';
 import { AddToRegistryBase, AddToRegistryParams } from './add-to-registry-base';
 
 export class TinyButtonsModes extends AddToRegistryBase {
@@ -16,7 +16,7 @@ export class TinyButtonsModes extends AddToRegistryBase {
 
   /** Switch normal / advanced mode */
   private addSwitchModeButtons(): void {
-    this.editor.ui.registry.addButton(ModeDefault, {
+    this.editor.ui.registry.addButton(Buttons.ModeDefault, {
       icon: 'close',
       tooltip: 'SwitchMode.Standard',
       onAction: (api) => { this.switchMode(null, EditModes.Default); },
@@ -26,7 +26,7 @@ export class TinyButtonsModes extends AddToRegistryBase {
     //   tooltip: 'SwitchMode.Standard',
     //   onAction: (api) => { this.switchModeNew(WysiwygDefault, WysiwygInline); },
     // });
-    this.editor.ui.registry.addButton(ModeAdvanced, {
+    this.editor.ui.registry.addButton(Buttons.ModeAdvanced, {
       icon: 'custom-school',
       tooltip: 'SwitchMode.Pro',
       onAction: (api) => { this.switchMode(null, EditModes.WysiwygAdvanced); },

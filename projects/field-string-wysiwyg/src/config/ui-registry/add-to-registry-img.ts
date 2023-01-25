@@ -1,3 +1,4 @@
+import * as Buttons from '../../constants/buttons';
 import { ImageFormats } from '../../shared/models';
 import * as IMG from '../public';
 import { AddToRegistryBase, AddToRegistryParams } from './add-to-registry-base';
@@ -20,7 +21,7 @@ export class TinyButtonsImg extends AddToRegistryBase {
   }
 
   private pasteImageButton() {
-    this.editor.ui.registry.addButton(IMG.PasteImageButton, {
+    this.editor.ui.registry.addButton(Buttons.PasteImage, {
       icon: 'paste-row-after',
       tooltip: 'Image.PasteImage.Tooltip',
       onAction: () => alert(this.editor.translate('Image.PasteImage.Message')),

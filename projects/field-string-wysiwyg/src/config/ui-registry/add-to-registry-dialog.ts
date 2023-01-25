@@ -1,4 +1,4 @@
-import { DialogOpenButton } from '../public';
+import * as Buttons from '../../constants/buttons';
 import { AddToRegistryBase, AddToRegistryParams } from './add-to-registry-base';
 
 export class TinyButtonsDialog extends AddToRegistryBase {
@@ -12,7 +12,7 @@ export class TinyButtonsDialog extends AddToRegistryBase {
 
   /** Switch to Dialog Mode */
   private registerOpenDialog(): void {
-    this.editor.ui.registry.addButton(DialogOpenButton, {
+    this.editor.ui.registry.addButton(Buttons.DialogOpenButton, {
       icon: 'browse',
       tooltip: 'SwitchMode.Expand',
       onAction: (api) => { this.openInDialog(); },
