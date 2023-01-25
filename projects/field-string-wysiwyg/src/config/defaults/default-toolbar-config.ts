@@ -1,87 +1,84 @@
 import { ButtonGroupByViewRaw, NewRow, NoButtons } from '../button-groups';
-import { AddContentBlock, AddContentSplit, ContentDivision, HGroups, ItalicWithMore, LinkFiles, LinkGroup, LinkGroupPro,
-   LinkPage, ListGroup, ModeAdvanced, ModeDefault, SxcImages, ToFullscreen } from '../public';
+import * as Reg from '../public';
 
-const finalLineWithCodeAndMore = `code ${ModeAdvanced} ${ModeDefault} ${ToFullscreen}`;
+
+const standardGroupUndoRedoPaste = `undo redo pastetext paste removeformat`;
+const standardGroupFinal = `${Reg.CodeButton} ${Reg.ModeAdvanced} ${Reg.ModeDefault} ${Reg.ToFullscreen}`;
+
+const defaultToolbar = [
+  /* initial w/undo   */ standardGroupUndoRedoPaste,
+  /* format text      */ `bold ${Reg.StylesGroup}`,
+  /* paragraph types  */ `h2 ${Reg.HGroups.h3}`,
+  /* bullets          */ `numlist ${Reg.ListGroup}`,
+  /* links/media      */ `${Reg.LinkGroup}`,
+  /* rich media       */ NoButtons,
+  /* content block    */ Reg.AddContentBlock,
+  /* tools/mode switch*/ standardGroupFinal,
+  // /* Experiment. split*/ NewRow,
+  // /* Experiment. split*/ `undo`
+];
 
 export const DefaultToolbarConfig: ButtonGroupByViewRaw = {
   all: {
     // #v1500-not-ready
-    // default: ` ${ToolbarModeToggle} undo redo pastetext`,
-    // advanced: ` ${ToolbarModeToggle} undo pastetext`,
-    default: [
-      /* initial w/undo   */ `undo redo pastetext paste removeformat`,
-      /* format text      */ `bold ${ItalicWithMore}`,
-      /* paragraph types  */ `h2 ${HGroups.h3}`,
-      /* bullets          */ `numlist ${ListGroup}`,
-      /* links/media      */ `${LinkGroup}`,
-      /* rich media       */ NoButtons,
-      /* content block    */ AddContentBlock,
-      /* tools/mode switch*/ finalLineWithCodeAndMore,
-      // /* Experiment. split*/ NewRow,
-      // /* Experiment. split*/ `undo`
-    ],
+    // default: ` ${C.ToolbarModeToggle} undo redo pastetext`,
+    // advanced: ` ${C.ToolbarModeToggle} undo pastetext`,
+    default: defaultToolbar,
     advanced: [
-      /* initial w/undo   */ `undo redo pastetext paste removeformat`,
-      /* format text      */ `styles bold ${ItalicWithMore}`,
-      /* paragraph types  */ `h2 ${HGroups.h3}`,
-      /* bullets          */ `numlist ${ListGroup}`,
-      /* links/media      */ `${LinkGroupPro}`, // test
-      /* rich media       */ NoButtons,
+      /* initial w/undo   */ standardGroupUndoRedoPaste,
+      /* format text      */ `styles bold ${Reg.StylesGroup}`,
+      /* paragraph types  */ `h2 ${Reg.HGroups.h3}`,
+      /* bullets          */ `numlist ${Reg.ListGroup}`,
+      /* links/media      */ `${Reg.LinkGroupPro}`, // test
       /* content block    */ NoButtons,
-      /* tools/mode switch*/ finalLineWithCodeAndMore,
+      /* tools/mode switch*/ standardGroupFinal,
     ],
     text: [
-      /* initial w/undo   */ `undo redo pastetext paste removeformat`,
-      /* format text      */ `bold ${ItalicWithMore}`,
-      /* paragraph types  */ `h2 h3 ${HGroups.h4}`,
+      /* initial w/undo   */ standardGroupUndoRedoPaste,
+      /* format text      */ `bold ${Reg.StylesGroup}`,
+      /* paragraph types  */ `h2 h3 ${Reg.HGroups.h4}`,
       /* bullets          */ 'numlist bullist outdent indent',
-      /* links/media      */ `${LinkGroup}`,
-      /* rich media       */ NoButtons,
+      /* links/media      */ `${Reg.LinkGroup}`,
       /* content block    */ NoButtons,
-      /* tools/mode switch*/ finalLineWithCodeAndMore,
+      /* tools/mode switch*/ standardGroupFinal,
     ],
     'text-minimal': [
-      /* initial w/undo   */ `undo redo pastetext paste removeformat`,
+      /* initial w/undo   */ standardGroupUndoRedoPaste,
       /* format text      */ `bold italic`,
       /* paragraph types  */ NoButtons,
       /* bullets          */ NoButtons,
-      /* links/media      */ `link ${LinkPage}`,
-      /* rich media       */ NoButtons,
+      /* links/media      */ `link ${Reg.LinkPageButton}`,
       /* content block    */ NoButtons,
-      /* tools/mode switch*/ finalLineWithCodeAndMore,
+      /* tools/mode switch*/ standardGroupFinal,
     ],
     'text-basic': [
-      /* initial w/undo   */ `undo redo pastetext paste removeformat`,
-      /* format text      */ `bold ${ItalicWithMore}`,
+      /* initial w/undo   */ standardGroupUndoRedoPaste,
+      /* format text      */ `bold ${Reg.StylesGroup}`,
       /* paragraph types  */ NoButtons,
       /* bullets          */ 'numlist bullist outdent indent',
-      /* links/media      */ `${LinkGroup}`,
-      /* rich media       */ NoButtons,
+      /* links/media      */ `${Reg.LinkGroup}`,
       /* content block    */ NoButtons,
-      /* tools/mode switch*/ finalLineWithCodeAndMore,
+      /* tools/mode switch*/ standardGroupFinal,
     ],
-    media: [
-      /* initial w/undo   */ `undo pasteimage-todo`,  // TODO: create pasteimage
-      /* format text      */ NoButtons,
-      /* paragraph types  */ NoButtons,
-      /* bullets          */ NoButtons,
-      /* links/media      */ `${SxcImages} ${LinkFiles}`,
-      /* rich media       */ `${ContentDivision} ${AddContentSplit}`,
-      /* content block    */ AddContentBlock,
-      /* tools/mode switch*/ finalLineWithCodeAndMore,
+    rich: [
+      /* default toolbar  */ ...defaultToolbar,
+      /* -                */ NewRow,
+      /* initial w/undo   */ `${Reg.PasteImageButton}`,  // TODO: create pasteimage
+
+      /* links/media      */ `${Reg.ImagesGroupPro} ${Reg.LinkFiles}`,
+      /* rich media       */ `${Reg.ContentDivision} ${Reg.AddContentSplit}`,
+      /* content block    */ Reg.AddContentBlock,
     ],
   },
   dialog: {
     default: [
-      /* initial w/undo   */ `undo redo pastetext paste removeformat`,
-      /* format text      */ `bold ${ItalicWithMore}`,
-      /* paragraph types  */ `h2 ${HGroups.h3}`,
-      /* bullets          */ `numlist ${ListGroup}`,
-      /* links/media      */ `${SxcImages} ${LinkGroupPro}`, // different from other default
-      /* rich media       */ NoButtons,
-      /* content block    */ AddContentBlock,
-      /* tools/mode switch*/ finalLineWithCodeAndMore,
+      /* initial w/undo   */ standardGroupUndoRedoPaste,
+      /* format text      */ `bold ${Reg.StylesGroup}`,
+      /* paragraph types  */ `h2 ${Reg.HGroups.h3}`,
+      /* bullets          */ `numlist ${Reg.ListGroup}`,
+      /* links/media      */ `${Reg.ImagesGroupPro} ${Reg.LinkGroupPro}`, // different from other default
+      /* content block    */ Reg.AddContentBlock,
+      /* tools/mode switch*/ standardGroupFinal,
     ],
   }
 };

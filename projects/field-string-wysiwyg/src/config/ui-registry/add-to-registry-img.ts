@@ -1,6 +1,6 @@
 import { ImageFormats } from '../../shared/models';
 import * as IMG from '../public';
-import { AddToRegistryParams, AddToRegistryBase } from './add-to-registry-base';
+import { AddToRegistryBase, AddToRegistryParams } from './add-to-registry-base';
 
 export class TinyButtonsImg extends AddToRegistryBase {
   constructor(makerParams: AddToRegistryParams) {
@@ -15,16 +15,25 @@ export class TinyButtonsImg extends AddToRegistryBase {
     this.registerEnhancedFormattingRatios();
     this.buttonsEnhancedAlignment();
     this.contextMenus();
-    this.images();
+    this.groupImages();
+    this.pasteImageButton();
+  }
+
+  private pasteImageButton() {
+    this.editor.ui.registry.addButton(IMG.PasteImageButton, {
+      icon: 'paste-row-after',
+      tooltip: 'Image.PasteImage.Tooltip',
+      onAction: () => alert(this.editor.translate('Image.PasteImage.Message')),
+    });
   }
 
   /** Images menu */
-  private images(): void {
+  private groupImages(): void {
     const adam = this.adam;
     const btns = this.getButtons();
 
     // Group with images (adam) - only in PRO mode
-    this.editor.ui.registry.addSplitButton(IMG.SxcImages, {
+    this.editor.ui.registry.addSplitButton(IMG.ImagesGroupPro, {
       ...this.splitButtonSpecs(() => adam.toggle(false, true)),
       columns: 3,
       icon: btns.image.icon,
@@ -50,7 +59,7 @@ export class TinyButtonsImg extends AddToRegistryBase {
     const rangeSelected = () => document.getSelection().rangeCount > 0 && !document.getSelection().getRangeAt(0).collapsed;
 
     // Different behavior depending on WysiwygMode
-    const imgAlign = this.options.eavConfig.features.wysiwygEnhanced
+    const imgAlign = this.options.eavConfig.features.responsiveImages
       ? `${IMG.ImgEnhancedLeft} ${IMG.ImgEnhancedCenter} ${IMG.ImgEnhancedRight} ${IMG.ImgButtonGroupRatios}`
       : `alignleft aligncenter alignright ${IMG.ImgButtonGroupWidth}`;
 

@@ -3,15 +3,17 @@
 
 // Export Constant names because these will become standardized
 // So people can use them in their custom toolbars
-export const ItalicWithMore = 'italic-more'; // used to be 'formatgroup'
-export const SxcImages = 'images-cms'; // used to be 'images'
+export const StylesGroup = 'styles-group'; // used to be 'formatgroup'
+export const ImagesGroupPro = 'images-cms'; // used to be 'images'
 export const LinkGroup = 'link-group';
 export const LinkGroupPro = 'link-group-pro';
 export const LinkFiles = 'link-files';
 export const ListGroup = 'list-group';
 export const ModeDefault = 'mode-standard';
-export const LinkPage = 'link-page';
+export const LinkPageButton = 'link-page';
 // export const ToModeInline = 'modeinline';
+export const PasteImageButton = 'paste-image';
+export const CodeButton = 'code';
 
 export const ImgButtonGroupWidth = 'image-widths';
 export const ImgButtonGroupRatios = 'image-ratios';

@@ -77,14 +77,20 @@ export class TinyMceConfigurator {
     const dropzone = exp.dropzone;
     const adam = exp.adam;
 
+    // Feature detection
+    const useContentBlocks = exp.allInputTypeNames[connector.field.index + 1]?.inputType === InputTypeConstants.EntityContentBlocks;
+    const useResponsiveImages = fieldSettings._advanced.Mode === 'rich';
+
     // WIP
     consoleLogWebpack('2dm fieldSettings', fieldSettings);
     const eavConfig: TinyEavConfig = {
       mode: toConfigForViewModes(fieldSettings._advanced.Mode),
       features: {
         // contentBlocks is on if the following field can hold inner-content items
-        contentBlocks: exp.allInputTypeNames[connector.field.index + 1]?.inputType === InputTypeConstants.EntityContentBlocks,
+        contentBlocks: useContentBlocks,
         wysiwygEnhanced: false, // bContDiv === 'true',
+        responsiveImages: useResponsiveImages,
+        contentSeparators: useResponsiveImages,
       },
       buttons: {
         inline: {

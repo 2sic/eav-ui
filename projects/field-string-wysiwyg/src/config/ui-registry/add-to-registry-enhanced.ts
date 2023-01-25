@@ -1,6 +1,6 @@
 import { Guid } from '../../shared/guid';
 import { AddContentSplit, ContentDivision, ContentDivisionClass } from '../public';
-import { AddToRegistryParams, AddToRegistryBase } from './add-to-registry-base';
+import { AddToRegistryBase, AddToRegistryParams } from './add-to-registry-base';
 
 export class TinyButtonsWysiwygEnhanced extends AddToRegistryBase {
   constructor(makerParams: AddToRegistryParams) {

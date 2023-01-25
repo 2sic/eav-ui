@@ -15,6 +15,8 @@ export interface SelectSettings {
 export interface TinyEavFeatures {
   contentBlocks: boolean;
   wysiwygEnhanced: boolean;
+  responsiveImages: boolean;
+  contentSeparators: boolean;
 }
 
 export interface TinyEavButtons {

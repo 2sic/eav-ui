@@ -2,7 +2,7 @@
 import { ButtonGroupSelector } from './button-group-selector';
 import { NewRow, toButtonGroupByView } from './button-groups';
 import { DefaultContextMenu, DefaultToolbarConfig } from './defaults';
-import { AddContentBlock, AddContentSplit, ContentDivision, ModeAdvanced, ModeDefault, ToFullscreen } from './public';
+import { AddContentBlock, AddContentSplit, CodeButton, ContentDivision, ModeAdvanced, ModeDefault, ToFullscreen } from './public';
 import { SelectSettings, TinyEavConfig } from './tinymce-config';
 // tslint:disable-next-line: max-line-length
 import { TinyMceMode, TinyMceModeWithSwitcher, ToolbarSwitcher, WysiwygAdvanced, WysiwygDefault, WysiwygDialog, WysiwygDisplayMode, WysiwygEditMode, WysiwygInline } from './tinymce-helper-types';
@@ -40,12 +40,12 @@ export class TinyMceToolbars implements ToolbarSwitcher {
         mode,
       },
       menubar: mode === WysiwygAdvanced,
-      toolbar: this.toolbar(selector),
+      toolbar: this.toolbar(selector) as any,
       contextmenu: selector.selectButtonGroup(ButtonSetContextMenu)[0],
     };
   }
 
-  private toolbar(selector: ButtonGroupSelector): string[] {
+  private toolbar(selector: ButtonGroupSelector) : string[] {
     const allButtonGroups = selector.selectButtonGroup(toolbarConfig).flat();
     const rows = allButtonGroups.reduce((acc, cur) => {
       if (cur === NewRow)
@@ -55,7 +55,8 @@ export class TinyMceToolbars implements ToolbarSwitcher {
       return acc;
     }, [new Array<string>()]);
 
-    return this.cleanUpDisabledButtons(selector.settings, rows.map(t => t.join(' | ')));
+    const cleaned = this.cleanUpDisabledButtons(selector.settings, rows.map(t => t.join(' | ')));
+    return cleaned;
   }
 
   private cleanUpDisabledButtons(settings: SelectSettings, toolbar: string[]): string[] {
@@ -63,8 +64,8 @@ export class TinyMceToolbars implements ToolbarSwitcher {
     toolbar = toolbar.map(t => ` ${t.replace(/\|/g, ' | ')} `);
     const removeMap = this.createRemoveMap(settings);
     return toolbar.map(row =>
-      removeMap.reduce((t, rm) => (t.indexOf(` ${rm.button} `) > -1 && !rm.enabled)
-        ? t.replace(rm.button, '')
+      removeMap.reduce((t, rmvRule) => !rmvRule.enabled && t.indexOf(` ${rmvRule.button} `) > -1
+        ? t.replace(rmvRule.button, '')
         : t
       , row)
     );
@@ -72,13 +73,13 @@ export class TinyMceToolbars implements ToolbarSwitcher {
 
   private createRemoveMap(settings: SelectSettings): { button: string, enabled: boolean }[] {
     const map = [
-      { button: 'code', enabled: settings.buttons.source },
+      { button: CodeButton, enabled: settings.buttons.source },
       { button: ToFullscreen, enabled: settings.buttons.dialog },
       { button: ModeAdvanced, enabled: settings.buttons.advanced },
       { button: ModeDefault, enabled: settings.editMode === WysiwygAdvanced },
       { button: AddContentBlock, enabled: settings.features.contentBlocks },
-      { button: ContentDivision, enabled: settings.features.wysiwygEnhanced },
-      { button: AddContentSplit, enabled: settings.features.wysiwygEnhanced },
+      { button: ContentDivision, enabled: false /* settings.features.contentSeparators */ },
+      { button: AddContentSplit, enabled: settings.features.contentSeparators },
     ];
     console.log('2dm remove map', map);
     return map;

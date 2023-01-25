@@ -1,5 +1,5 @@
 import { FieldStringWysiwygEditor } from '../../editor/editor';
-import { LinkFiles, LinkGroup, LinkGroupPro, LinkPage } from '../public';
+import { LinkFiles, LinkGroup, LinkGroupPro, LinkPageButton } from '../public';
 import { AddToRegistryBase, AddToRegistryParams } from './add-to-registry-base';
 
 export class TinyButtonsLinks extends AddToRegistryBase {
@@ -72,7 +72,7 @@ export class TinyButtonsLinks extends AddToRegistryBase {
   }
 
   private addLinkPage(): void {
-    this.regBtn(LinkPage, 'custom-sitemap', 'Link.Page.Tooltip', () => openPagePicker(this.field));
+    this.regBtn(LinkPageButton, 'custom-sitemap', 'Link.Page.Tooltip', () => openPagePicker(this.field));
   }
 
 }

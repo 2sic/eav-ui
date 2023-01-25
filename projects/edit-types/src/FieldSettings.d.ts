@@ -101,7 +101,7 @@ interface StringWysiwyg extends String {
  */
 interface StringWysiwygAdvanced {
   /** The initial mode, like 'default' or 'text' */
-  Mode: 'default' | 'text';
+  Mode: 'default' | 'text' | 'rich';
   Json: string;
 }
 
