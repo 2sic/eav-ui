@@ -3,7 +3,7 @@
 import 'tinymce/tinymce';
 // Keep at least one empty line after this, to ensure order of imports!
 
-import { BehaviorSubject, distinctUntilChanged, Subscription } from 'rxjs';
+// Import all the plugins and themes to ensure it's in the bundle
 import 'tinymce/icons/default';
 import 'tinymce/models/dom';
 import 'tinymce/plugins/anchor';
@@ -18,17 +18,21 @@ import 'tinymce/plugins/nonbreaking';
 import 'tinymce/plugins/searchreplace';
 import 'tinymce/plugins/table';
 import 'tinymce/themes/silver';
-// tslint:disable-next-line:no-duplicate-imports
+// Keep at least one empty line after this, to ensure order of imports!
+
+import { BehaviorSubject, distinctUntilChanged, Subscription } from 'rxjs';
+// tslint:disable-next-line: no-duplicate-imports
 import type { Editor } from 'tinymce/tinymce';
 import { EavWindow } from '../../../eav-ui/src/app/shared/models/eav-window.model';
 import { Connector, EavCustomInputField, WysiwygReconfigure } from '../../../edit-types';
 import { consoleLogWebpack } from '../../../field-custom-gps/src/shared/console-log-webpack.helper';
 import { TinyMceConfigurator } from '../config/tinymce-configurator';
-import { RawEditorOptionsWithModes, WysiwygInline } from '../config/tinymce-helper-types';
+import * as WysiwygDialogModes from '../constants/display-modes';
+import { RawEditorOptionsWithModes } from '../config/tinymce-helper-types';
 import { TinyMceTranslations } from '../config/translations';
 import { AddEverythingToRegistry } from '../config/ui-registry/add-everything-to-registry';
 import { attachAdam } from '../connector/adam';
-import { tinyMceBaseUrl, wysiwygEditorHtmlTag } from '../constants';
+import { tinyMceBaseUrl, wysiwygEditorHtmlTag } from '../../internal-constants';
 import { buildTemplate } from '../shared/helpers';
 import * as template from './editor.html';
 import * as styles from './editor.scss';
@@ -138,7 +142,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
           }
         }),
       );
-      if (this.mode !== WysiwygInline) {
+      if (this.mode !== WysiwygDialogModes.DisplayInline) {
         setTimeout(() => { editor.focus(false); }, 100); // If not inline mode always focus on init
       } else {
         if (!this.firstInit) { setTimeout(() => { editor.focus(false); }, 100); } // If is inline mode skip focus on first init

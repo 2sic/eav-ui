@@ -1,6 +1,6 @@
 import { Connector, EavCustomInputField, WysiwygReconfigure } from '../../../edit-types';
 import { consoleLogWebpack } from '../../../field-custom-gps/src/shared/console-log-webpack.helper';
-import { wysiwygEditorHtmlTag } from '../constants';
+import { wysiwygEditorHtmlTag } from '../../internal-constants';
 import { FieldStringWysiwygEditor } from '../editor/editor';
 import { FieldStringWysiwygPreview, wysiwygPreviewTag } from '../preview/preview';
 import * as styles from './field-string-wysiwyg.scss';

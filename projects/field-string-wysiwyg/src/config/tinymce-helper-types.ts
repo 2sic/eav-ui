@@ -5,25 +5,10 @@
 
   We may also end up moving this type to there later on.
 */
-import type { Editor, RawEditorOptions } from 'tinymce';
+import type { RawEditorOptions } from 'tinymce';
+import * as DialogModes from '../constants/display-modes';
+import * as EditModes from '../constants/edit-modes';
 import { TinyEavConfig } from './tinymce-config';
-export const TinyModeStandard = 'standard';
-export const WysiwygInline = 'inline';
-export const WysiwygDialog = 'dialog';
-export const WysiwygDefault = 'default';
-export const WysiwygModeText = 'text';
-export const WysiwygModeMedia = 'media';
-export const WysiwygAdvanced = 'advanced';
-export type TinyModeNames = typeof TinyModeStandard | typeof WysiwygInline | typeof WysiwygAdvanced;
-
-export type WysiwygEditMode = typeof WysiwygDefault | typeof WysiwygAdvanced| typeof WysiwygModeText | typeof WysiwygModeMedia | string;
-export type WysiwygDisplayMode = typeof WysiwygInline | typeof WysiwygDialog;
-
-export const WysiwygModeCycle: WysiwygEditMode[] = [
-  WysiwygDefault,
-  WysiwygModeText,
-  WysiwygModeMedia
-];
 
 export interface RawEditorOptionsWithModes extends RawEditorOptions, Omit<TinyMceModeWithSwitcher, 'menubar' | 'toolbar' | 'contextmenu'> {
   eavConfig: TinyEavConfig;
@@ -31,8 +16,8 @@ export interface RawEditorOptionsWithModes extends RawEditorOptions, Omit<TinyMc
 
 export interface TinyMceMode {
   currentMode: {
-    displayMode: WysiwygDisplayMode,
-    editMode: WysiwygEditMode,
+    displayMode: DialogModes.DisplayModes,
+    editMode: EditModes.WysiwygEditMode,
   };
   menubar: boolean | string; // should match TinyMCE
   toolbar: string | string[]; // should match TinyMCE
@@ -46,5 +31,5 @@ export interface TinyMceModeWithSwitcher extends TinyMceMode {
 
 export interface ToolbarSwitcher {
   // isDialog(editor: Editor): boolean;
-  switch(displayMode: WysiwygDisplayMode, editMode: WysiwygEditMode): TinyMceMode;
+  switch(displayMode: DialogModes.DisplayModes, editMode: EditModes.WysiwygEditMode): TinyMceMode;
 }

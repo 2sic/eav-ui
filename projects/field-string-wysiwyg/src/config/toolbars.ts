@@ -1,13 +1,12 @@
-// tslint:disable-next-line: max-line-length
-import { Editor } from 'tinymce';
+import { consoleLogWebpack } from '../../../field-custom-gps/src/shared/console-log-webpack.helper';
+import * as DialogModes from '../constants/display-modes';
+import * as EditModes from '../constants/edit-modes';
 import { ButtonGroupSelector } from './button-group-selector';
 import { NewRow, toButtonGroupByView } from './button-groups';
 import { DefaultContextMenu, DefaultToolbarConfig } from './defaults';
-import { AddContentBlock, AddContentSplit, CodeButton, ContentDivision, ModeAdvanced, ModeDefault, DialogOpenButton } from './public';
+import { AddContentBlock, AddContentSplit, CodeButton, ContentDivision, DialogOpenButton, ModeAdvanced, ModeDefault } from './public';
 import { SelectSettings, TinyEavConfig } from './tinymce-config';
-// tslint:disable-next-line: max-line-length
-import { RawEditorOptionsWithModes, TinyMceMode, TinyMceModeWithSwitcher, ToolbarSwitcher, WysiwygAdvanced, WysiwygDefault, WysiwygDialog, WysiwygDisplayMode, WysiwygEditMode, WysiwygInline } from './tinymce-helper-types';
-import { consoleLogWebpack } from '../../../field-custom-gps/src/shared/console-log-webpack.helper';
+import { TinyMceMode, TinyMceModeWithSwitcher, ToolbarSwitcher } from './tinymce-helper-types';
 
 // #region Button Sets that define what buttons appear in what view / mode
 
@@ -25,8 +24,8 @@ export class TinyMceToolbars implements ToolbarSwitcher {
   }
 
   public build(isInline: boolean): TinyMceModeWithSwitcher {
-    const displayMode = isInline ? WysiwygInline : WysiwygDialog;
-    const initial = this.switch(displayMode, this.config.mode?.[displayMode] || WysiwygDefault);
+    const displayMode = isInline ? DialogModes.DisplayInline : DialogModes.DisplayDialog;
+    const initial = this.switch(displayMode, this.config.mode?.[displayMode] || EditModes.Default);
     return {
       modeSwitcher: this,
       ...initial
@@ -39,7 +38,7 @@ export class TinyMceToolbars implements ToolbarSwitcher {
   //   return options.currentMode.displayMode === WysiwygDialog; // TODO: implement
   // }
 
-  public switch(displayMode: WysiwygDisplayMode, editMode: WysiwygEditMode): TinyMceMode {
+  public switch(displayMode: DialogModes.DisplayModes, editMode: EditModes.WysiwygEditMode): TinyMceMode {
     consoleLogWebpack(`TinyMceToolbars.switch(${displayMode}, ${editMode})`, this.config);
     const buttons = this.config.buttons[displayMode];
     const selector = new ButtonGroupSelector({ editMode, displayMode, buttons, features: this.config.features });
@@ -48,13 +47,13 @@ export class TinyMceToolbars implements ToolbarSwitcher {
         displayMode,
         editMode,
       },
-      menubar: editMode === WysiwygAdvanced,
+      menubar: editMode === EditModes.WysiwygAdvanced,
       toolbar: this.toolbar(selector) as any,
       contextmenu: selector.selectButtonGroup(ButtonSetContextMenu)[0],
     };
   }
 
-  private toolbar(selector: ButtonGroupSelector) : string[] {
+  private toolbar(selector: ButtonGroupSelector): string[] {
     const allButtonGroups = selector.selectButtonGroup(toolbarConfig).flat();
     const rows = allButtonGroups.reduce((acc, cur) => {
       if (cur === NewRow)
@@ -85,7 +84,7 @@ export class TinyMceToolbars implements ToolbarSwitcher {
       { button: CodeButton, enabled: settings.buttons.source },
       { button: DialogOpenButton, enabled: settings.buttons.dialog },
       { button: ModeAdvanced, enabled: settings.buttons.advanced },
-      { button: ModeDefault, enabled: settings.editMode === WysiwygAdvanced },
+      { button: ModeDefault, enabled: settings.editMode === EditModes.WysiwygAdvanced },
       { button: AddContentBlock, enabled: settings.features.contentBlocks },
       { button: ContentDivision, enabled: false /* settings.features.contentSeparators */ },
       { button: AddContentSplit, enabled: settings.features.contentSeparators },

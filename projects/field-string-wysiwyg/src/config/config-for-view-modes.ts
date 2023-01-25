@@ -1,9 +1,11 @@
-import { WysiwygDisplayMode, WysiwygEditMode } from './tinymce-helper-types';
+import * as DialogModes from '../constants/display-modes';
+import * as EditModes from '../constants/edit-modes';
 
-export type ConfigForDisplayModes<TData> = Record<WysiwygDisplayMode, TData>;
-export type ConfigForDisplayModesRaw<TData> = Partial<Record<WysiwygDisplayMode | 'all', Partial<TData>>>;
 
-export type ConfigForEditModes<TData> = Record<WysiwygEditMode, TData>;
+export type ConfigForDisplayModes<TData> = Record<DialogModes.DisplayModes, TData>;
+export type ConfigForDisplayModesRaw<TData> = Partial<Record<DialogModes.DisplayModes | 'all', Partial<TData>>>;
+
+export type ConfigForEditModes<TData> = Record<EditModes.WysiwygEditMode, TData>;
 export type ConfigForDisplayEditModes<TData> = ConfigForDisplayModes<ConfigForEditModes<TData>>;
 
 export type ConfigForViewModeVariations<TData> = TData | ConfigForDisplayModesRaw<TData>;
@@ -15,7 +17,7 @@ export type ConfigForViewModeVariations<TData> = TData | ConfigForDisplayModesRa
 export function toConfigForViewModes<TData>(
   original: ConfigForViewModeVariations<TData>,
   // defaults: TData,
-  expander?: (data: TData, nodeName: WysiwygDisplayMode) => TData
+  expander?: (data: TData, nodeName: DialogModes.DisplayModes) => TData
 ): ConfigForDisplayModes<TData> {
 
   // Case 1 & 2: null, undefined or array
@@ -38,7 +40,7 @@ export function toConfigForViewModes<TData>(
 }
 
 
-function build<TData>(expander: ((data: TData, nodeName: WysiwygDisplayMode) => TData) | undefined,
+function build<TData>(expander: ((data: TData, nodeName: DialogModes.DisplayModes) => TData) | undefined,
   newInline: TData,
   newDialog: TData
 ): ConfigForDisplayModes<TData> {

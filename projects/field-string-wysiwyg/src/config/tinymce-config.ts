@@ -1,11 +1,12 @@
+import * as DialogModes from '../constants/display-modes';
+import * as EditModes from '../constants/edit-modes';
 import { ConfigForDisplayModes, ConfigForDisplayModesRaw } from './config-for-view-modes';
-import { WysiwygDisplayMode, WysiwygEditMode } from './tinymce-helper-types';
 
 export interface SelectSettings {
   /** The mode like 'default', 'text', etc. */
-  editMode: WysiwygEditMode;
+  editMode: EditModes.WysiwygEditMode;
   /** inline / dialog */
-  displayMode: WysiwygDisplayMode;
+  displayMode: DialogModes.DisplayModes;
   /** What buttons are enabled by configuration */
   buttons: TinyEavButtons;
   /** which features are currently enabled */
@@ -26,7 +27,7 @@ export interface TinyEavButtons {
   contentDivisions: boolean;
 }
 export interface TinyEavConfig {
-  mode: ConfigForDisplayModes<WysiwygEditMode>;
+  mode: ConfigForDisplayModes<EditModes.WysiwygEditMode>;
   features: TinyEavFeatures;
   buttons: ConfigForDisplayModes<TinyEavButtons>;
 }
@@ -41,7 +42,7 @@ export interface TinyEavConfigRaw {
 // This is still WIP for 2dm - would be the JSON that comes from the field configuration
 export interface TinyMceModeConfigJson extends TinyEavConfig {
   /** The foundation for filling in the configuration */
-  inherits?: WysiwygEditMode;
+  inherits?: EditModes.WysiwygEditMode;
   contextmenu?: string;
   toolbar?: string | string[];
 }
@@ -57,4 +58,4 @@ export interface TinyMceModeConfigJson extends TinyEavConfig {
  * ...but still just pass one object to all the helper functions,
  * ...and keep things simple as more configs are added.
  */
-export type TinyMceConfigJson = Record<WysiwygEditMode, TinyMceModeConfigJson>;
+export type TinyMceConfigJson = Record<EditModes.WysiwygEditMode, TinyMceModeConfigJson>;

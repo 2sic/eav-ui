@@ -1,5 +1,5 @@
-import { ModeAdvanced, ModeDefault, ToolbarModes, ToolbarModeToggle } from '../public';
-import { WysiwygAdvanced, WysiwygDefault, WysiwygDisplayMode, WysiwygEditMode, WysiwygModeCycle, WysiwygModeMedia, WysiwygModeText } from '../tinymce-helper-types';
+import * as EditModes from '../../constants/edit-modes';
+import { ModeAdvanced, ModeDefault } from '../public';
 import { AddToRegistryBase, AddToRegistryParams } from './add-to-registry-base';
 
 export class TinyButtonsModes extends AddToRegistryBase {
@@ -11,7 +11,7 @@ export class TinyButtonsModes extends AddToRegistryBase {
     this.addSwitchModeButtons();
 
     // experimental
-    this.addModes();
+    // this.addModes();
   }
 
   /** Switch normal / advanced mode */
@@ -19,7 +19,7 @@ export class TinyButtonsModes extends AddToRegistryBase {
     this.editor.ui.registry.addButton(ModeDefault, {
       icon: 'close',
       tooltip: 'SwitchMode.Standard',
-      onAction: (api) => { this.switchMode(null, WysiwygDefault); },
+      onAction: (api) => { this.switchMode(null, EditModes.Default); },
     });
     // this.editor.ui.registry.addButton(ToModeInline, {
     //   icon: 'close',
@@ -29,55 +29,58 @@ export class TinyButtonsModes extends AddToRegistryBase {
     this.editor.ui.registry.addButton(ModeAdvanced, {
       icon: 'custom-school',
       tooltip: 'SwitchMode.Pro',
-      onAction: (api) => { this.switchMode(null, WysiwygAdvanced); },
+      onAction: (api) => { this.switchMode(null, EditModes.WysiwygAdvanced); },
     });
   }
 
 
-  // TODO: @2dm / @SDV
-  // - i18n
-  // - icons
-  // - finalize toolbars
-  // - see if we can right-align the last toolbar part
-  private addModes(): void {
-    this.regBtn(ToolbarModeToggle, 'settings', 'SwitchMode.Tooltip',
-      () => { this.cycleMode(); });
+  // // - i18n
+  // // - icons
+  // // - finalize toolbars
+  // // - see if we can right-align the last toolbar part
+  // private addModes(): void {
+  //   this.regBtn(ToolbarModeToggle, 'settings', 'SwitchMode.Tooltip',
+  //     () => { this.cycleMode(); });
 
-    this.editor.ui.registry.addSplitButton(ToolbarModes, {
-      ...this.splitButtonSpecs(() => this.cycleMode()),
-      icon: 'settings',
-      tooltip: 'SwitchMode.Tooltip',
-      fetch: (callback) => {
-        callback([
-          this.splitButtonItem('info', 'Default / Balanced', () => { this.cycleMode(WysiwygDefault); }),
-          this.splitButtonItem('info', 'Writing Mode', () => { this.cycleMode(WysiwygModeText); }),
-          this.splitButtonItem('info', 'Rich Media Mode', () => { this.cycleMode(WysiwygModeMedia); }),
-        ]);
-      }
-    });
-  }
+  //   this.editor.ui.registry.addSplitButton(ToolbarModes, {
+  //     ...this.splitButtonSpecs(() => this.cycleMode()),
+  //     icon: 'settings',
+  //     tooltip: 'SwitchMode.Tooltip',
+  //     fetch: (callback) => {
+  //       callback([
+  //         this.splitButtonItem('info', 'Default / Balanced', () => { this.cycleMode(WysiwygDefault); }),
+  //         this.splitButtonItem('info', 'Writing Mode', () => { this.cycleMode(WysiwygModeText); }),
+  //         this.splitButtonItem('info', 'Rich Media Mode', () => { this.cycleMode(WysiwygModeMedia); }),
+  //       ]);
+  //     }
+  //   });
+  // }
 
-  private cycleMode(newMode?: WysiwygEditMode): void {
+  // private cycleMode(newMode?: WysiwygEditMode): void {
 
-    console.log('2dm tiny', this.editor);
-    console.log('2dm tiny editorContainer', this.editor.editorContainer);
+  //   console.log('2dm tiny', this.editor);
+  //   console.log('2dm tiny editorContainer', this.editor.editorContainer);
 
-    // const ec = this.editor.editorContainer;
-    const ec = this.editor.getContainer();
-    console.log('2dm 1', ec.getElementsByClassName('tox-toolbar'));
-    console.log('2dm 2', ec.querySelector('.tox-toolbar'));
+  //   // const ec = this.editor.editorContainer;
+  //   const ec = this.editor.getContainer();
+  //   console.log('2dm 1', ec.getElementsByClassName('tox-toolbar'));
+  //   console.log('2dm 2', ec.querySelector('.tox-toolbar'));
 
-    return;
+  //   return;
 
-    if (!newMode) {
-      const current = this.options.currentMode.editMode;
-      const idx = WysiwygModeCycle.indexOf(current) + 1; // will be a number or 0 afterwards
-      newMode = (idx < WysiwygModeCycle.length)
-        ? WysiwygModeCycle[idx]
-        : WysiwygModeCycle[0];
+  //   if (!newMode) {
+  //     const current = this.options.currentMode.editMode;
+  //     const idx = WysiwygModeCycle.indexOf(current) + 1; // will be a number or 0 afterwards
+  //     newMode = (idx < WysiwygModeCycle.length)
+  //       ? WysiwygModeCycle[idx]
+  //       : WysiwygModeCycle[0];
 
-    }
-    this.switchMode(null, newMode);
-  }
-
+  //   }
+  //   this.switchMode(null, newMode);
+  // }
+  // export const WysiwygModeCycle: WysiwygEditMode[] = [
+  //   WysiwygDefault,
+  //   WysiwygModeText,
+  //   WysiwygModeMedia
+  // ];
 }

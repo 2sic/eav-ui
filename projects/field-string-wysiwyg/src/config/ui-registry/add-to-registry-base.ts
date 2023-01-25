@@ -1,8 +1,10 @@
 import { Adam } from 'projects/edit-types';
 import { Editor } from 'tinymce';
-import { wysiwygEditorHtmlTag } from '../../constants';
+import { wysiwygEditorHtmlTag } from '../../../internal-constants';
+import * as DialogModes from '../../constants/display-modes';
+import * as EditModes from '../../constants/edit-modes';
 import { FieldStringWysiwygEditor } from '../../editor/editor';
-import { RawEditorOptionsWithModes, WysiwygDialog, WysiwygDisplayMode, WysiwygEditMode } from '../tinymce-helper-types';
+import { RawEditorOptionsWithModes } from '../tinymce-helper-types';
 
 type FuncVoid = () => void | unknown;
 
@@ -40,13 +42,13 @@ export abstract class AddToRegistryBase {
 
     // Switch to Dialog if we are still inline
     // TODO: VERIFY DIALOG ALLOWED
-    const isDialog = this.options.currentMode.displayMode === WysiwygDialog;
+    const isDialog = this.options.currentMode.displayMode === DialogModes.DisplayDialog;
     if (!isDialog)
       this.openInDialog();
   }
 
   /** Mode switching to inline/dialog and advanced/normal */
-  protected switchMode(displayMode?: WysiwygDisplayMode, editMode?: WysiwygEditMode): void {
+  protected switchMode(displayMode?: DialogModes.DisplayModes, editMode?: EditModes.WysiwygEditMode): void {
     displayMode ??= this.options.currentMode.displayMode;
     editMode ??= this.options.currentMode.editMode;
     const newSettings = this.options.modeSwitcher.switch(displayMode, editMode);
