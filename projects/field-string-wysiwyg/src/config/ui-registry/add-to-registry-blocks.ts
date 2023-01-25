@@ -14,14 +14,9 @@ export class TinyButtonsContentBlocks extends AddToRegistryBase {
 
   /** Inside content (contentblocks) */
   private addButtonContentBlock(): void {
-    this.editor.ui.registry.addButton(Buttons.AddContentBlock, {
-      icon: 'custom-content-block',
-      tooltip: 'ContentBlock.Add',
-      onAction: (api) => {
-        const guid = Guid.uuid().toLowerCase();
-        this.editor.insertContent(`<hr sxc="sxc-content-block" guid="${guid}" />`);
-      },
+    this.regBtn(Buttons.AddContentBlock,  'custom-content-block', 'ContentBlock.Add', () => {
+      const guid = Guid.uuid().toLowerCase();
+      this.editor.insertContent(`<hr sxc="sxc-content-block" guid="${guid}" />`);
     });
   }
-
 }
