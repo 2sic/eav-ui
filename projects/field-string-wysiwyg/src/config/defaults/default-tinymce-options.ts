@@ -35,5 +35,5 @@ export const DefaultOptions: RawEditorOptions = {
   // deprecation_warnings: false, // spm TODO: remove after upgrading to TinyMCE 6
 
   // experimental #content-divisions - https://www.tiny.cloud/docs/configure/content-filtering/#valid_children
-  valid_children: '+div[p|h1|h2|h3|h4|h5|6h|blockquote]'
+  // valid_children: '+div[p|h1|h2|h3|h4|h5|6h|blockquote]'
 };
