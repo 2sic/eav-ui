@@ -5,22 +5,24 @@ export interface QueryStreams {
 }
 
 export interface QueryEntity extends EntityForPicker {
-  // /** New in v15, sometimes included to indicate if it's from the current app */
-  // AppId: number;
   Guid: string;
-  Id: number;
   Modified: string;
-  Title: string;
   [key: string]: any;
-  _2sxcEditInformation: QuerySxcEditInformation;
 
-  // /** Prevent edit of this item for whatever reason, v15 */
-  // _disableEdit?: boolean;
+  // 2023-01-26 2dm doesn't seem to be in use, commented out
+  // Remove in Feb when confirmed not used
+  // _2sxcEditInformation: QuerySxcEditInformation;
 
+  // 2023-01-26 2dm moved to EntityForPicker (parent)
+  // remove this end of Feb when confirmed not used
+  // Id: number;
+  // Title: string;
 }
 
-export interface QuerySxcEditInformation {
-  entityId: number;
-  isPublished: boolean;
-  title: string;
-}
+// 2023-01-26 2dm doesn't seem to be in use, commented out
+// Remove in Feb when confirmed not used
+// export interface QuerySxcEditInformation {
+//   entityId: number;
+//   isPublished: boolean;
+//   title: string;
+// }

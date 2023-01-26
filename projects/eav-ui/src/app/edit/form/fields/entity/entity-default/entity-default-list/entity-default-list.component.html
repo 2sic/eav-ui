@@ -23,12 +23,12 @@
       </div>
       <div class="item-actions">
         <!-- Disable edit only if it was disabled in the settings, not if disabled by language change -->
-        <button mat-icon-button *ngIf="data.enableEdit && !item.isFreeTextOrNotFound"
+        <button mat-icon-button *ngIf="data.enableEdit && !item.disableEdit"
           [tippy]="'Fields.Entity.Edit' | translate" [disabled]="config.initialDisabled" appMousedownStopPropagation
           (click)="edit(item.value, item.entityId)">
           <mat-icon>edit</mat-icon>
         </button>
-        <button mat-icon-button *ngIf="data.enableDelete && !item.isFreeTextOrNotFound"
+        <button mat-icon-button *ngIf="data.enableDelete && !item.disableDelete"
           [tippy]="'Fields.Entity.Delete' | translate" [disabled]="disabled" appMousedownStopPropagation
           (click)="deleteItem(index, item.value)">
           <mat-icon>delete</mat-icon>
