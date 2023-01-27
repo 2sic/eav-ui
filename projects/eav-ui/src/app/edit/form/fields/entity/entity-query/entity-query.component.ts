@@ -95,6 +95,7 @@ export class EntityQueryComponent extends EntityDefaultComponent implements OnIn
     const settings = this.settings$.value;
     if (!settings.Query) {
       alert(`No query defined for ${this.config.fieldName} - can't load entities`);
+      this.availableEntities$.next([]);
       return;
     }
 
