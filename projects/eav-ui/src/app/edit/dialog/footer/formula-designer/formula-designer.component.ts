@@ -350,7 +350,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     );
     const dataSnippets$ = combineLatest([options$, formula$, itemHeader$]).pipe(
       map(([options, formula, itemHeader]) => formula != null && itemHeader != null
-        ? FormulaHelpers.buildDesignerSnippetsData(formula, options.fieldOptions, itemHeader)
+        ? FormulaHelpers.buildDesignerSnippetsData(this.eavService.eavConfig.settings, formula, options.fieldOptions, itemHeader)
         : []
       ),
     );
@@ -362,7 +362,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     );
     const typings$ = combineLatest([options$, formula$, itemHeader$]).pipe(
       map(([options, formula, itemHeader]) => formula != null && itemHeader != null
-        ? FormulaHelpers.buildFormulaTypings(formula, options.fieldOptions, itemHeader)
+        ? FormulaHelpers.buildFormulaTypings(this.eavService.eavConfig.settings, formula, options.fieldOptions, itemHeader)
         : ''
       ),
     );
