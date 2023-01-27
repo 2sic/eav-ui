@@ -64,13 +64,15 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
       formattedAddressContainer.innerText = this.addressMask.resolve();
     }
 
-    const defaultCoordinates = this.connector._experimental.getSettings("gps-default-coordinates") as CoordinatesDto;
+    // TODO: TRY to refactor to use the new context.app.getSetting(...) in the formulas-data
+    const defaultCoordinates = this.connector._experimental.getSettings("Settings.GoogleMaps.DefaultCoordinates") as CoordinatesDto;
     this.defaultCoordinates = {
       lat: defaultCoordinates.Latitude,
       lng: defaultCoordinates.Longitude,
     }
 
-    this.connector.loadScript('google', `https://maps.googleapis.com/maps/api/js?key=${this.connector._experimental.getApiKeys().find(x => x.NameId == "google-maps").ApiKey}`, () => { this.mapScriptLoaded(); });
+    const googleMapsParams = this.connector._experimental.getApiKeys().find(x => x.NameId == "google-maps").ApiKey;
+    this.connector.loadScript('google', `https://maps.googleapis.com/maps/api/js?key=${googleMapsParams}`, () => { this.mapScriptLoaded(); });
   }
 
   private mapScriptLoaded(): void {

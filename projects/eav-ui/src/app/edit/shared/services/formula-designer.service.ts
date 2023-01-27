@@ -252,6 +252,7 @@ export class FormulaDesignerService implements OnDestroy {
         isGlobal: eavConfig.dialogContext.App.IsGlobalApp,
         isSite: eavConfig.dialogContext.App.IsSiteApp,
         isContent: eavConfig.dialogContext.App.IsContentApp,
+        getSetting: (key: string) => undefined,
       },
       sxc: window.$2sxc({
         zoneId: eavConfig.zoneId,

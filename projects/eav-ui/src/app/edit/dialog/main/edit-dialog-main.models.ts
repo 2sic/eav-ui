@@ -27,22 +27,11 @@ export interface EditSettings {
   // note: added by 2dm 2023-01-21 but not used yet
   // will probably contain special wysiwyg-edit configs and similar...
   Entities: EavEntity[];
-
-  /**
-   * Parameters for the formulas
-   * New in v15.01
-   */
-  Parameters?: Record<string, unknown>;
 }
 
 export interface EditSettingsDto {
   Values: Record<string, unknown>;
   Entities: EavEntityDto[];
-  /**
-   * Parameters for the formulas
-   * New in v15.01
-   */
-  Parameters: Record<string, unknown>;
 }
 
 export interface SaveEavFormData extends EavPublishStatus {

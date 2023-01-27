@@ -1,17 +1,16 @@
 import { InputFieldHelpers, LocalizationHelpers } from '.';
 import { FieldSettings, FieldValue } from '../../../../../../edit-types';
 import { InputType } from '../../../content-type-fields/models/input-type.model';
+import { FeatureSummary } from '../../../features/models';
 import { EavWindow } from '../../../shared/models/eav-window.model';
 import { DesignerSnippet, FieldOption } from '../../dialog/footer/formula-designer/formula-designer.models';
 import { formV1Prefix, requiredFormulaPrefix } from '../constants';
-// tslint:disable-next-line:max-line-length
-import { FormulaCacheItem, FormulaFieldValidation, FormulaFunction, FormulaProps, FormulaPropsV1, FormulaTargets, FormulaV1Data, FormulaV1ExperimentalEntity, FormulaVersion, FormulaVersions, FormValues, Language, SettingsFormulaPrefix } from '../models';
+import { FormulaCacheItem, FormulaFieldValidation, FormulaFunction, FormulaProps, FormulaPropsV1, FormulaTargets,
+  FormulaV1Data, FormulaV1ExperimentalEntity, FormulaVersion, FormulaVersions, FormValues, Language, SettingsFormulaPrefix } from '../models';
 import { EavHeader } from '../models/eav';
 import { EavService, FieldsSettingsService } from '../services';
 import { ItemService } from '../store/ngrx-data';
-import { FeatureSummary } from '../../../features/models';
-import { EavConfig } from '../models/eav-config.model';
-import { EditSettings } from '../../dialog/main/edit-dialog-main.models';
+
 
 declare const window: EavWindow;
 
@@ -91,6 +90,7 @@ export class FormulaHelpers {
           get parameters() { return undefined as Record<string, any>; },
           get prefill() { return undefined as FieldValue; },
           get value() { return undefined as FieldValue; },
+          get settings() { return undefined as unknown; },
         };
         Object.defineProperties(data, {
           default: {
@@ -112,7 +112,7 @@ export class FormulaHelpers {
           },
           parameters: {
             get(): Record<string, any> {
-              return FormulaHelpers.buildFormulaPropsParameters(itemHeader, eavService.eavConfig.settings);
+              return FormulaHelpers.buildFormulaPropsParameters(itemHeader);
             },
           },
           prefill: {
@@ -144,7 +144,12 @@ export class FormulaHelpers {
         const propsV1: FormulaPropsV1 = {
           data,
           context: {
-            app: formula.app,
+            app: {
+              ...formula.app,
+              getSetting: (settingPath: string) => eavService.eavConfig.settings.Values[settingPath]
+                ?? `Error: Setting '${settingPath}' not found. Did you configure it in the ContentType to be included? ` +
+                   `See TODO: link to docs`,
+            },
             cache: formula.cache,
             culture: {
               code: currentLanguage,
@@ -209,17 +214,14 @@ export class FormulaHelpers {
     }
   }
 
-  static buildFormulaPropsParameters(itemHeader: EavHeader, editSettings: EditSettings): Record<string, any> {
-    const fromHeader = JSON.parse(JSON.stringify(itemHeader.Prefill)) ?? {};
-    const fromConfig = editSettings.Parameters ?? {};
-    console.log('2dm', editSettings, fromHeader, fromConfig, { ...fromHeader, ...fromConfig });
-    return { ...fromHeader, ...fromConfig };
+  static buildFormulaPropsParameters(itemHeader: EavHeader): Record<string, any> {
+    return JSON.parse(JSON.stringify(itemHeader.Prefill)) ?? {};
   }
 
-  static buildDesignerSnippetsData(editSettings: EditSettings, formula: FormulaCacheItem, fieldOptions: FieldOption[], itemHeader: EavHeader): DesignerSnippet[] {
+  static buildDesignerSnippetsData(formula: FormulaCacheItem, fieldOptions: FieldOption[], itemHeader: EavHeader): DesignerSnippet[] {
     switch (formula.version) {
       case FormulaVersions.V1:
-        const formulaPropsParameters = this.buildFormulaPropsParameters(itemHeader, editSettings);
+        const formulaPropsParameters = this.buildFormulaPropsParameters(itemHeader);
         const snippets = [
           'value',
           'default',
@@ -227,10 +229,7 @@ export class FormulaHelpers {
           'initial',
           ...fieldOptions.map(f => f.fieldName),
           'parameters.ChangeThis',
-          ...Object.keys(formulaPropsParameters).map(key => (key.indexOf('.') > -1 || key.indexOf(' ') > -1)
-            ? `parameters['${key}']`
-            : `parameters.${key}`
-          ),
+          ...Object.keys(formulaPropsParameters).map(key => `parameters.${key}`),
         ].map(name => {
           const code = `data.${name}`;
           const fieldSnippet: DesignerSnippet = {
@@ -284,10 +283,10 @@ export class FormulaHelpers {
     }
   }
 
-  static buildFormulaTypings(editSettings: EditSettings, formula: FormulaCacheItem, fieldOptions: FieldOption[], itemHeader: EavHeader): string {
+  static buildFormulaTypings(formula: FormulaCacheItem, fieldOptions: FieldOption[], itemHeader: EavHeader): string {
     switch (formula.version) {
       case FormulaVersions.V2: {
-        const formulaPropsParameters = this.buildFormulaPropsParameters(itemHeader, editSettings);
+        const formulaPropsParameters = this.buildFormulaPropsParameters(itemHeader);
         return `
           declare type function v2(
             callback: (
