@@ -57,7 +57,7 @@ export class FieldsTranslateService {
    * @param areAllChecksKnown If true, the function will not check if the field value is empty, or if the field auto-translate was disabled by default.
    */
   autoTranslate(fieldNames: string[], autoTranslateLanguageKey: string, showAlert: boolean, areAllChecksKnown: boolean = false): void {
-    let textsForTranslation: string[] = [];
+    const textsForTranslation: string[] = [];
     const apiKeyInfo = this.eavService.eavConfig.dialogContext.ApiKeys.find(x => x.NameId === DialogContextApiKeyTypes.GoogleTranslate);
     const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
     const attributes = this.itemService.getItemAttributes(this.entityGuid);
@@ -68,9 +68,9 @@ export class FieldsTranslateService {
     });
 
     if (!areAllChecksKnown) {
-      fieldNames.forEach((field, i) => { 
+      fieldNames.forEach((field, i) => {
         const isAutoTranslationEnabledButWasDisabledByDefault = this.isAutoTranslationEnabledButWasDisabledByDefault(field);
-        if (textsForTranslation[i] === undefined || textsForTranslation[i] === null || textsForTranslation[i] === "" || isAutoTranslationEnabledButWasDisabledByDefault) {
+        if (textsForTranslation[i] == null || textsForTranslation[i] === '' || isAutoTranslationEnabledButWasDisabledByDefault) {
           this.translate(field);
         }
       });
@@ -80,14 +80,14 @@ export class FieldsTranslateService {
       q: textsForTranslation,
       target: currentLanguage,
       source: autoTranslateLanguageKey
-    }
+    };
     if (apiKeyInfo.IsDemo && showAlert)
       alert(`This translation is a demo. Please provide your own Google Translate API key in the EAV configuration.`);
     this.http.post(`https://translation.googleapis.com/language/translate/v2?key=${apiKeyInfo.ApiKey }`, translationData)
       .pipe(tap(
         (response: any) => {
           response.data.translations.forEach((translation: any, i: number) => {
-            let elem = document.createElement("textarea");
+            const elem = document.createElement('textarea');
             elem.innerHTML = translation.translatedText;
             this.addItemAttributeValueHelper(fieldNames[i], elem.value, currentLanguage, false);
            });
@@ -174,15 +174,15 @@ export class FieldsTranslateService {
       alert(`This translation is a demo. Please provide your own Google Translate API key in the EAV configuration.`);
     const attributes = this.itemService.getItemAttributes(this.entityGuid);
     // fields that have auto-translate enabled and are not empty
-    let canTranslate: string[] = [];
+    const canTranslate: string[] = [];
     // fields that have auto-translate enabled but didn't have it by default or are empty
-    let cantTranslateAndEmpty: string[] = this.findAutotranslatableFieldsThatWereNotAutotranslatableByDefault();
+    const cantTranslateAndEmpty: string[] = this.findAutotranslatableFieldsThatWereNotAutotranslatableByDefault();
     // fields that have auto-translate enabled and can be empty
-    let canTranslateWithEmpty = this.findAutotranslatableFields().filter(x => !cantTranslateAndEmpty.includes(x));
+    const canTranslateWithEmpty = this.findAutotranslatableFields().filter(x => !cantTranslateAndEmpty.includes(x));
     // separate fields that have auto-translate enabled and are empty
-    canTranslateWithEmpty.forEach(fieldName => { 
-      let value = attributes[fieldName].Values.find(v => v.Dimensions.find(x => x.Value === autoTranslateLanguageKey))?.Value;
-      if (value != "" && value != null && value != undefined)
+    canTranslateWithEmpty.forEach(fieldName => {
+      const value = attributes[fieldName].Values.find(v => v.Dimensions.find(x => x.Value === autoTranslateLanguageKey))?.Value;
+      if (value !== '' && value != null && value !== undefined)
         canTranslate.push(fieldName);
       else
         cantTranslateAndEmpty.push(fieldName);
@@ -191,21 +191,21 @@ export class FieldsTranslateService {
     this.autoTranslate(canTranslate, autoTranslateLanguageKey, false, true);
     let transactionItem: EavItem;
     // unlock fields that have auto-translate enabled but didn't have it by default or are empty
-    cantTranslateAndEmpty.forEach(fieldName => { 
-      this.translate(fieldName, false, transactionItem)
+    cantTranslateAndEmpty.forEach(fieldName => {
+      this.translate(fieldName, false, transactionItem);
     });
   }
 
   /**
    * Returns all fields that can be translated.
    */
-  findTranslatableFields(): string[] { 
+  findTranslatableFields(): string[] {
     const attributes = this.itemService.getItemAttributes(this.entityGuid);
     return Object.keys(attributes).filter(fieldName => !this.isTranslationDisabled(fieldName));
   }
 
   /**
-   * Returns all fields that can be translated and autotranslated. 
+   * Returns all fields that can be translated and autotranslated.
    */
   findAutotranslatableFields(): string[] {
     const attributes = this.itemService.getItemAttributes(this.entityGuid);
@@ -213,7 +213,7 @@ export class FieldsTranslateService {
   }
 
   /**
-   * Returns all fields that can be translated and autotranslated, but were not autotranslatable by default. 
+   * Returns all fields that can be translated and autotranslated, but were not autotranslatable by default.
    */
   findAutotranslatableFieldsThatWereNotAutotranslatableByDefault(): string[] {
     const attributes = this.itemService.getItemAttributes(this.entityGuid);
