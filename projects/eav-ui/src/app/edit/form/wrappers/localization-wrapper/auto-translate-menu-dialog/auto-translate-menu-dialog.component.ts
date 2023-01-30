@@ -26,7 +26,7 @@ export class AutoTranslateMenuDialogComponent implements OnInit, OnDestroy {
   private translationState$: BehaviorSubject<TranslationStateCore>;
   private noLanguageRequired: TranslationLink[];
   private isTranslateWithGoogleFeatureEnabled$ = new BehaviorSubject<boolean>(false);
-  private subscription: Subscription;
+  private subscription: Subscription = new Subscription();
 
   constructor(
     private dialogRef: MatDialogRef<AutoTranslateMenuDialogComponent>,
