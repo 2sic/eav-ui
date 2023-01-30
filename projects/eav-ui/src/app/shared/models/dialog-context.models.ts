@@ -20,7 +20,7 @@ export interface DialogContextApp {
   SharedUrl: string;
 }
 
-export interface DialogContextApiKeys {
+export interface ApiKeySpecs {
   NameId: string;
   ApiKey: string;
   IsDemo: boolean;

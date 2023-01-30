@@ -6,7 +6,8 @@ import { consoleLogWebpack } from '../shared/console-log-webpack.helper';
 import { buildTemplate, parseLatLng, stringifyLatLng } from '../shared/helpers';
 import * as template from './main.html';
 import * as styles from './main.scss';
-import { loadCustomIcons } from '../../../field-string-wysiwyg/src/editor/load-icons.helper';
+import { EditApiKeyPaths } from '../../../eav-ui/src/app/shared/constants/eav.constants';
+import { ApiKeySpecs } from '../../../eav-ui/src/app/shared/models/dialog-context.models';
 
 const gpsDialogTag = 'field-custom-gps-dialog';
 
@@ -48,7 +49,8 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
     const formattedAddressContainer = this.querySelector<HTMLSpanElement>('#formatted-address-container');
     this.mapContainer = this.querySelector<HTMLDivElement>('#map');
 
-    const allInputNames = this.connector._experimental.allInputTypeNames.map(inputType => inputType.name);
+    const expConnector = this.connector._experimental;
+    const allInputNames = expConnector.allInputTypeNames.map(inputType => inputType.name);
     if (allInputNames.includes(this.connector.field.settings.LatField)) {
       this.latFieldName = this.connector.field.settings.LatField;
     }
@@ -57,7 +59,7 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
     }
 
     const addressMaskSetting = this.connector.field.settings.AddressMask || this.connector.field.settings['Address Mask'];
-    this.addressMask = new FieldMask(addressMaskSetting, this.connector._experimental.formGroup.controls, null, null);
+    this.addressMask = new FieldMask(addressMaskSetting, expConnector.formGroup.controls, null, null);
     consoleLogWebpack(`${gpsDialogTag} addressMask:`, addressMaskSetting);
     if (addressMaskSetting) {
       addressMaskContainer.classList.remove('hidden');
@@ -65,13 +67,13 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
     }
 
     // TODO: TRY to refactor to use the new context.app.getSetting(...) in the formulas-data
-    const defaultCoordinates = this.connector._experimental.getSettings("Settings.GoogleMaps.DefaultCoordinates") as CoordinatesDto;
+    const defaultCoordinates = expConnector.getSettings("Settings.GoogleMaps.DefaultCoordinates") as CoordinatesDto;
     this.defaultCoordinates = {
       lat: defaultCoordinates.Latitude,
       lng: defaultCoordinates.Longitude,
     }
 
-    const googleMapsParams = this.connector._experimental.getApiKeys().find(x => x.NameId == "google-maps").ApiKey;
+    const googleMapsParams = (expConnector.getSettings(EditApiKeyPaths.GoogleMaps) as ApiKeySpecs).ApiKey;
     this.connector.loadScript('google', `https://maps.googleapis.com/maps/api/js?key=${googleMapsParams}`, () => { this.mapScriptLoaded(); });
   }
 

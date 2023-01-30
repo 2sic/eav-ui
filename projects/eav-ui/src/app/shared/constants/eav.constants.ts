@@ -16,9 +16,9 @@ export const SystemSettingsScopes = {
 } as const;
 export type SystemSettingsScope = typeof SystemSettingsScopes[keyof typeof SystemSettingsScopes];
 
-export const DialogContextApiKeyTypes = {
-  GoogleTranslate: 'google-translate',
-  GoogleMaps: 'google-maps',
+export const EditApiKeyPaths = {
+  GoogleTranslate: 'Settings.GoogleTranslate.ApiKey',
+  GoogleMaps: 'Settings.GoogleMaps.ApiKey',
 } as const;
 
 

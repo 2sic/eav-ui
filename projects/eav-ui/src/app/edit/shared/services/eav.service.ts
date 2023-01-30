@@ -17,6 +17,8 @@ export class EavService {
   /** WARNING! These are constants that form was loaded with. They do not change while form is running */
   eavConfig: EavConfig;
 
+  settings: EditSettings;
+
   constructor(
     private http: HttpClient,
     private dnnContext: DnnContext,
@@ -36,6 +38,7 @@ export class EavService {
     enableHistory: boolean,
     settings: EditSettings,
   ) {
+    this.settings = settings;
     this.eavConfig = {
       zoneId: this.context.zoneId.toString(),
       appId: this.context.appId.toString(),
