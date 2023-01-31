@@ -4,6 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import 'reflect-metadata';
 import { BehaviorSubject, combineLatest, delay, fromEvent, map, Observable, of, startWith, Subscription, tap } from 'rxjs';
+import { BaseSubsinkComponent } from '../../../shared/components/base-subsink-component/base-subsink.component';
 import { consoleLogAngular } from '../../../shared/helpers/console-log-angular.helper';
 import { FormBuilderComponent } from '../../form/builder/form-builder/form-builder.component';
 import { MetadataDecorators } from '../../shared/constants';
@@ -27,14 +28,13 @@ import { UnsavedChangesSnackBarData } from './snack-bar-unsaved-changes/snack-ba
   styleUrls: ['./edit-dialog-main.component.scss'],
   providers: [EditRoutingService, FormsStateService, FormulaDesignerService],
 })
-export class EditDialogMainComponent implements OnInit, AfterViewInit, OnDestroy {
+export class EditDialogMainComponent extends BaseSubsinkComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChildren(FormBuilderComponent) formBuilderRefs: QueryList<FormBuilderComponent>;
 
   templateVars$: Observable<EditDialogMainTemplateVars>;
 
   private viewInitiated$: BehaviorSubject<boolean>;
   private debugInfoIsOpen$: BehaviorSubject<boolean>;
-  private subscription: Subscription;
   private saveResult: SaveResult;
 
   constructor(
@@ -59,13 +59,13 @@ export class EditDialogMainComponent implements OnInit, AfterViewInit, OnDestroy
     private stringQueryCacheService: StringQueryCacheService,
     private formulaDesignerService: FormulaDesignerService,
   ) {
+    super();
     this.dialogRef.disableClose = true;
   }
 
   ngOnInit() {
     this.viewInitiated$ = new BehaviorSubject(false);
     this.debugInfoIsOpen$ = new BehaviorSubject(false);
-    this.subscription = new Subscription();
     this.editRoutingService.init();
     this.loadIconsService.load();
     this.formsStateService.init();
@@ -116,7 +116,6 @@ export class EditDialogMainComponent implements OnInit, AfterViewInit, OnDestroy
   ngOnDestroy() {
     this.viewInitiated$.complete();
     this.debugInfoIsOpen$.complete();
-    this.subscription.unsubscribe();
     this.languageInstanceService.removeLanguageInstance(this.eavService.eavConfig.formId);
     this.publishStatusService.removePublishStatus(this.eavService.eavConfig.formId);
 
@@ -134,6 +133,7 @@ export class EditDialogMainComponent implements OnInit, AfterViewInit, OnDestroy
       this.linkCacheService.clearCache();
       this.stringQueryCacheService.clearCache();
     }
+    super.ngOnDestroy();
   }
 
   closeDialog(forceClose?: boolean) {

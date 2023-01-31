@@ -4,6 +4,7 @@ import { MatDialog, MatDialogRef, MatDialogState } from '@angular/material/dialo
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
+import { BaseSubsinkComponent } from 'projects/eav-ui/src/app/shared/components/base-subsink-component/base-subsink.component';
 import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/features.service';
 import { combineLatest, distinctUntilChanged, map, Observable, Subscription } from 'rxjs';
 import { eavConstants } from '../../../../shared/constants/eav.constants';
@@ -20,7 +21,7 @@ import { ContentTypeTemplateVars } from './entity-wrapper.models';
   templateUrl: './entity-wrapper.component.html',
   styleUrls: ['./entity-wrapper.component.scss'],
 })
-export class EntityWrapperComponent implements OnInit, AfterViewChecked, OnDestroy {
+export class EntityWrapperComponent extends BaseSubsinkComponent implements OnInit, AfterViewChecked, OnDestroy {
   @ViewChild('noteTrigger', { read: ElementRef }) private noteTriggerRef?: ElementRef<HTMLButtonElement>;
   @ViewChild('noteTemplate') private noteTemplateRef?: TemplateRef<undefined>;
 
@@ -32,7 +33,6 @@ export class EntityWrapperComponent implements OnInit, AfterViewChecked, OnDestr
   templateVars$: Observable<ContentTypeTemplateVars>;
 
   private noteRef?: MatDialogRef<undefined, any>;
-  private subscription: Subscription;
 
   constructor(
     private languageInstanceService: LanguageInstanceService,
@@ -48,7 +48,9 @@ export class EntityWrapperComponent implements OnInit, AfterViewChecked, OnDestr
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private featuresService: FeaturesService,
-  ) { }
+  ) { 
+    super();
+  }
 
   ngAfterViewChecked() {
     // change detection inside note template seems to be independent of this component and without forcing checks
@@ -57,7 +59,6 @@ export class EntityWrapperComponent implements OnInit, AfterViewChecked, OnDestr
   }
 
   ngOnInit() {
-    this.subscription = new Subscription();
     const readOnly$ = this.formsStateService.readOnly$;
     const currentLanguage$ = this.languageInstanceService.getCurrentLanguage$(this.eavService.eavConfig.formId);
     const defaultLanguage$ = this.languageInstanceService.getDefaultLanguage$(this.eavService.eavConfig.formId);
@@ -129,7 +130,7 @@ export class EntityWrapperComponent implements OnInit, AfterViewChecked, OnDestr
 
   ngOnDestroy() {
     this.noteRef?.close();
-    this.subscription.unsubscribe();
+    super.ngOnDestroy();
   }
 
   toggleCollapse() {

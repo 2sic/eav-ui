@@ -5,18 +5,18 @@ import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, distinctUntilChanged, pipe, Subscription } from 'rxjs';
 import { FeatureNames } from '../../../features/feature-names';
 import { FeatureComponentBase } from '../../../features/shared/base-feature.component';
+import { BaseSubsinkComponent } from '../../../shared/components/base-subsink-component/base-subsink.component';
 import { consoleLogAngular } from '../../../shared/helpers/console-log-angular.helper';
 import { FeaturesService } from '../../../shared/services/features.service';
 import { FieldConfigSet } from '../../form/builder/fields-builder/field-config-set.model';
 import { ElementEventListener, PasteClipboardImageEventDetail } from '../models';
 
 @Directive({ selector: '[appPasteClipboardImage]' })
-export class PasteClipboardImageDirective implements OnInit, OnDestroy {
+export class PasteClipboardImageDirective extends BaseSubsinkComponent implements OnInit, OnDestroy {
   @Input() config: FieldConfigSet;
   @Input() elementType: string;
   private eventListeners: ElementEventListener[] = [];
   private pasteImageEnabled$ = new BehaviorSubject<boolean>(false);
-  private subscription: Subscription = new Subscription();
 
   constructor(
     private elementRef: ElementRef,
@@ -26,7 +26,9 @@ export class PasteClipboardImageDirective implements OnInit, OnDestroy {
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
-  ) { }
+  ) {
+    super();
+   }
 
   ngOnInit() {
     this.subscription.add(this.featuresService.isEnabled$(FeatureNames.PasteImageFromClipboard)
@@ -56,7 +58,7 @@ export class PasteClipboardImageDirective implements OnInit, OnDestroy {
     this.eventListeners.forEach(({ element, type, listener }) => {
       element.removeEventListener(type, listener);
     });
-    this.subscription.unsubscribe();
+    super.ngOnDestroy();
   }
 
   private handleImage(event: CustomEvent) {

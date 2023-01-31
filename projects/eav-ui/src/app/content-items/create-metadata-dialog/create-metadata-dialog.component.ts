@@ -6,6 +6,7 @@ import { BehaviorSubject, combineLatest, distinctUntilChanged, map, merge, Obser
 import { ContentType } from '../../app-administration/models';
 import { ContentTypesService } from '../../app-administration/services';
 import { GeneralHelpers } from '../../edit/shared/helpers';
+import { BaseSubsinkComponent } from '../../shared/components/base-subsink-component/base-subsink.component';
 import { dropdownInsertValue } from '../../shared/constants/dropdown-insert-value.constant';
 import { eavConstants, MetadataKeyType, ScopeOption } from '../../shared/constants/eav.constants';
 import { Context } from '../../shared/services/context';
@@ -19,7 +20,7 @@ import { metadataKeyValidator } from './metadata-key.validator';
   templateUrl: './create-metadata-dialog.component.html',
   styleUrls: ['./create-metadata-dialog.component.scss']
 })
-export class CreateMetadataDialogComponent implements OnInit, OnDestroy {
+export class CreateMetadataDialogComponent extends BaseSubsinkComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
   eavConstants = eavConstants;
@@ -37,17 +38,17 @@ export class CreateMetadataDialogComponent implements OnInit, OnDestroy {
   private contentItems$: BehaviorSubject<ContentItem[]>;
   private contentTypes$: BehaviorSubject<ContentType[]>;
   private guidedKey$: BehaviorSubject<boolean>;
-  private subscription: Subscription;
 
   constructor(
     private dialogRef: MatDialogRef<CreateMetadataDialogComponent>,
     private context: Context,
     private contentItemsService: ContentItemsService,
     private contentTypesService: ContentTypesService,
-  ) { }
+  ) { 
+    super();
+  }
 
   ngOnInit(): void {
-    this.subscription = new Subscription();
     this.targetTypeOptions = Object.values(eavConstants.metadata).map(option => ({ ...option }));
     this.keyTypeOptions = Object.values(eavConstants.keyTypes);
 
@@ -199,7 +200,7 @@ export class CreateMetadataDialogComponent implements OnInit, OnDestroy {
     this.contentItems$.complete();
     this.contentTypes$.complete();
     this.guidedKey$.complete();
-    this.subscription.unsubscribe();
+    super.ngOnDestroy();
   }
 
   closeDialog(result?: MetadataInfo): void {
