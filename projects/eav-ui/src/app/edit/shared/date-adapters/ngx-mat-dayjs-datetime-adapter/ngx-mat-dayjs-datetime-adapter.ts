@@ -214,7 +214,7 @@ export class NgxMatDayjsDatetimeAdapter extends NgxMatDateAdapter<Dayjs> {
       if (!value) {
         return null;
       }
-      date = this.dayJs(value).toISOString();
+      date = (this.dayJs(value) as unknown as string);
     }
     if (date && this.isValid(date as Dayjs)) {
       return this.dayJs(date);

@@ -22,4 +22,5 @@ export interface TranslateMenuDialogTemplateVars {
   showLanguageSelection: boolean;
   i18nRoot: string;
   submitDisabled: boolean;
+  isTranslateWithGoogleFeatureEnabled?: boolean;
 }

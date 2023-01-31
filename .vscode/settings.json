@@ -3,4 +3,16 @@
         140
     ],
     "typescript.tsdk": "node_modules\\typescript\\lib",
+    "cSpell.words": [
+      "btns",
+      "bullist",
+      "charmap",
+      "endregion",
+      "guids",
+      "listpreview",
+      "numlist",
+      "pastetext",
+      "removeformat",
+      "tinymce"
+    ],
 }

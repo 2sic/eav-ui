@@ -1,16 +1,16 @@
 import { InputFieldHelpers, LocalizationHelpers } from '.';
 import { FieldSettings, FieldValue } from '../../../../../../edit-types';
-import { Feature } from '../../../features/models/feature.model';
 import { InputType } from '../../../content-type-fields/models/input-type.model';
+import { FeatureSummary } from '../../../features/models';
 import { EavWindow } from '../../../shared/models/eav-window.model';
 import { DesignerSnippet, FieldOption } from '../../dialog/footer/formula-designer/formula-designer.models';
 import { formV1Prefix, requiredFormulaPrefix } from '../constants';
-// tslint:disable-next-line:max-line-length
-import { FormulaCacheItem, FormulaFieldValidation, FormulaFunction, FormulaProps, FormulaPropsV1, FormulaTargets, FormulaV1Data, FormulaV1ExperimentalEntity, FormulaVersion, FormulaVersions, FormValues, Language, SettingsFormulaPrefix } from '../models';
+import { FormulaCacheItem, FormulaFieldValidation, FormulaFunction, FormulaProps, FormulaPropsV1, FormulaTargets,
+  FormulaV1Data, FormulaV1ExperimentalEntity, FormulaVersion, FormulaVersions, FormValues, Language, SettingsFormulaPrefix } from '../models';
 import { EavHeader } from '../models/eav';
 import { EavService, FieldsSettingsService } from '../services';
 import { ItemService } from '../store/ngrx-data';
-import { FeaturesService } from '../../../shared/services/features.service';
+
 
 declare const window: EavWindow;
 
@@ -77,9 +77,9 @@ export class FormulaHelpers {
     itemService: ItemService,
     eavService: EavService,
     fieldsSettingsService: FieldsSettingsService,
-    featuresService: FeaturesService,
+    features: FeatureSummary[],
   ): FormulaProps {
-
+    console.log('2dm - buildFormulaProps()');
     switch (formula.version) {
       case FormulaVersions.V1:
       case FormulaVersions.V2:
@@ -90,6 +90,7 @@ export class FormulaHelpers {
           get parameters() { return undefined as Record<string, any>; },
           get prefill() { return undefined as FieldValue; },
           get value() { return undefined as FieldValue; },
+          get settings() { return undefined as unknown; },
         };
         Object.defineProperties(data, {
           default: {
@@ -143,7 +144,12 @@ export class FormulaHelpers {
         const propsV1: FormulaPropsV1 = {
           data,
           context: {
-            app: formula.app,
+            app: {
+              ...formula.app,
+              getSetting: (settingPath: string) => eavService.eavConfig.settings.Values[settingPath]
+                ?? `Error: Setting '${settingPath}' not found. Did you configure it in the ContentType to be included? ` +
+                   `See TODO: link to docs`,
+            },
             cache: formula.cache,
             culture: {
               code: currentLanguage,
@@ -152,7 +158,7 @@ export class FormulaHelpers {
             debug: debugEnabled,
             features: {
               isEnabled(name: string): boolean {
-                return featuresService.isEnabled(name);
+                return features.find(f => f.NameId === name)?.Enabled ?? false;
               },
             },
             form: {

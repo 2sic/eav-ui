@@ -37,8 +37,8 @@ export class LicenseInfoComponent extends BaseComponent implements OnInit, OnDes
   private refreshLicenses$ = new Subject<void>();
 
   constructor(
-    router: Router,
-    route: ActivatedRoute,
+    protected router: Router,
+    protected route: ActivatedRoute,
     private featuresConfigService: FeaturesConfigService,
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
@@ -54,7 +54,7 @@ export class LicenseInfoComponent extends BaseComponent implements OnInit, OnDes
       tap(() => this.disabled$.next(false)),
       share(),
     );
-    this.subscription.add(this.refreshOnChildClosed().subscribe(() => { this.refreshLicenses$.next(); }));
+    this.subscription.add(this.refreshOnChildClosedDeep().subscribe(() => { this.refreshLicenses$.next(); }));
   }
 
   ngOnDestroy(): void {
@@ -78,7 +78,7 @@ export class LicenseInfoComponent extends BaseComponent implements OnInit, OnDes
       autoFocus: false,
       data,
       viewContainerRef: this.viewContainerRef,
-      width: '650px',
+      width: '600px',
     });
     this.changeDetectorRef.markForCheck();
   }

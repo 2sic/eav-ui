@@ -1,23 +1,24 @@
-import { Component, OnInit, ViewContainerRef } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { FeaturesService } from '../../shared/services/features.service';
-import { BaseFeatureComponent } from '../shared/base-feature.component';
+import { FeatureComponentBase } from '../shared/base-feature.component';
 
 @Component({
   selector: 'app-feature-icon',
   templateUrl: './feature-icon.component.html',
   styleUrls: ['./feature-icon.component.scss']
 })
-export class FeatureIconComponent extends BaseFeatureComponent implements OnInit {
+export class FeatureIconComponent extends FeatureComponentBase /* implements OnInit */ {
   constructor(
     dialog: MatDialog,
     viewContainerRef: ViewContainerRef,
-    featuresService: FeaturesService
+    featuresService: FeaturesService,
+    changeDetectorRef: ChangeDetectorRef
   ) {
-    super(dialog, viewContainerRef, featuresService);
+    super(dialog, viewContainerRef, changeDetectorRef, featuresService);
   }
 
-  ngOnInit(): void {
-    super.ngOnInit();
-  }
+  // ngOnInit(): void {
+  //   super.ngOnInit();
+  // }
 }

@@ -1,13 +1,14 @@
-import { FieldStringWysiwygEditor } from '../editor/editor';
-import { LinkFiles, LinkGroup, LinkGroupPro } from './public';
-import { ButtonsMakerParams, TinyButtonsBase } from './tiny-buttons-base';
+import * as Buttons from '../../constants/buttons';
+import { FieldStringWysiwygEditor } from '../../editor/editor';
+import { AddToRegistryBase, AddToRegistryParams } from './add-to-registry-base';
 
-export class TinyButtonsLinks extends TinyButtonsBase {
-  constructor(makerParams: ButtonsMakerParams) {
+export class TinyButtonsLinks extends AddToRegistryBase {
+  constructor(makerParams: AddToRegistryParams) {
       super(makerParams);
   }
 
   register(): void {
+    this.addLinkPage();
     this.contextMenus();
     this.linkFiles();
     this.linksGroups();
@@ -27,17 +28,17 @@ export class TinyButtonsLinks extends TinyButtonsBase {
 
   /** Group with adam-link, dnn-link */
   private linkFiles(): void {
-    const adam = this.adam;
-    this.editor.ui.registry.addSplitButton(LinkFiles, {
-      ...this.splitButtonSpecs(() => adam.toggle(false, false)),
+    const thisForLater = this;
+    this.editor.ui.registry.addSplitButton(Buttons.LinkFiles, {
+      ...this.splitButtonSpecs(() => thisForLater.toggleAdam(false, false)),
       columns: 3,
       icon: 'custom-file-pdf',
       presets: 'listpreview',
       tooltip: 'Link.AdamFile.Tooltip',
       fetch: (callback) => {
         callback([
-          this.splitButtonItem('custom-file-pdf', 'Link.AdamFile.Tooltip', () => adam.toggle(false, false)),
-          this.splitButtonItem('custom-file-dnn', 'Link.DnnFile.Tooltip', () => adam.toggle(true, false)),
+          this.splitButtonItem('custom-file-pdf', 'Link.AdamFile.Tooltip', () => thisForLater.toggleAdam(false, false)),
+          this.splitButtonItem('custom-file-dnn', 'Link.DnnFile.Tooltip', () => thisForLater.toggleAdam(true, false)),
         ]);
       },
     });
@@ -52,7 +53,7 @@ export class TinyButtonsLinks extends TinyButtonsBase {
   private addLinkGroup(isPro: boolean): void {
     const linkButton = this.getButtons().link;
 
-    this.editor.ui.registry.addSplitButton(!isPro ? LinkGroup : LinkGroupPro, {
+    this.editor.ui.registry.addSplitButton(!isPro ? Buttons.LinkGroup : Buttons.LinkGroupPro, {
       ...this.splitButtonSpecs('mceLink'),
       columns: 3,
       icon: linkButton.icon,
@@ -68,6 +69,10 @@ export class TinyButtonsLinks extends TinyButtonsBase {
         ]);
       },
     });
+  }
+
+  private addLinkPage(): void {
+    this.regBtn(Buttons.LinkPageButton, 'custom-sitemap', 'Link.Page.Tooltip', () => openPagePicker(this.field));
   }
 
 }

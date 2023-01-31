@@ -36,7 +36,7 @@ export class EntityDefaultSearchComponent implements OnInit, OnChanges {
   @Output() private fetchAvailableEntities = new EventEmitter<undefined>();
   @Output() private toggleFreeTextMode = new EventEmitter<undefined>();
   @Output() private addSelected = new EventEmitter<string>();
-  @Output() private editEntity = new EventEmitter<string>();
+  @Output() private editEntity = new EventEmitter<{ entityGuid: string, entityId: number }>();
 
   filteredEntities: EntityInfo[] = [];
   templateVars$: Observable<EntitySearchTemplateVars>;

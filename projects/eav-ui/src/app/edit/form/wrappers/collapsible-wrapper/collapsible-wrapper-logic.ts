@@ -5,7 +5,7 @@ import { FieldLogicBase } from '../../shared/field-logic/field-logic-base';
 export class EmptyDefaultLogic extends FieldLogicBase {
   name = InputTypeConstants.EmptyDefault;
 
-  update(settings: FieldSettings, value: undefined): FieldSettings {
+  update(settings: FieldSettings): FieldSettings {
     const fixedSettings: FieldSettings = { ...settings };
     fixedSettings.Visible ??= true;
     fixedSettings.Collapsed ??= false;

@@ -1,14 +1,17 @@
+import { BehaviorSubject, distinctUntilChanged, Subscription } from 'rxjs';
 import type { Editor } from 'tinymce';
+import { InputTypeConstants } from '../../../eav-ui/src/app/content-type-fields/constants/input-type.constants';
 import { EavWindow } from '../../../eav-ui/src/app/shared/models/eav-window.model';
 import { AddOnSettings, Connector, StringWysiwyg, WysiwygReconfigure } from '../../../edit-types';
+import { consoleLogWebpack } from '../../../field-custom-gps/src/shared/console-log-webpack.helper';
+import * as WysiwygDisplayModes from '../constants/display-modes'
 import * as contentStyle from '../editor/tinymce-content.scss';
+import { toConfigForViewModes } from './config-for-view-modes';
 import { DefaultAddOnSettings, DefaultOptions, DefaultPaste, DefaultPlugins } from './defaults';
-import { RawEditorOptionsWithModes } from './tinymce-helper-types';
+import { TinyEavConfig } from './tinymce-config';
+import { RawEditorOptionsWithEav } from './tinymce-helper-types';
 import { TinyMceToolbars } from './toolbars';
 import { TinyMceTranslations } from './translations';
-import { TinyEavConfig } from './tinymce-config';
-import { InputTypeConstants } from '../../../eav-ui/src/app/content-type-fields/constants/input-type.constants';
-// import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
 
 declare const window: EavWindow;
 const reconfigErr = `Very likely an error in your reconfigure code. Check http://r.2sxc.org/field-wysiwyg`;
@@ -18,9 +21,12 @@ export class TinyMceConfigurator {
   addOnSettings: AddOnSettings = { ...DefaultAddOnSettings };
 
   private language: string;
+  private isWysiwygPasteFormatted$ = new BehaviorSubject<boolean>(false);
+  private subscription: Subscription;
 
   constructor(private connector: Connector<string>, private reconfigure: WysiwygReconfigure) {
     this.language = this.connector._experimental.translateService.currentLang;
+    this.subscription = new Subscription();
 
     // call optional reconfiguration
     if (reconfigure) {
@@ -39,6 +45,11 @@ export class TinyMceConfigurator {
     }
 
     this.warnAboutCommonSettingsIssues();
+
+    this.subscription.add(this.connector._experimental.isFeatureEnabled$('WysiwygPasteFormatted')
+      .pipe(distinctUntilChanged())
+      .subscribe(this.isWysiwygPasteFormatted$)
+    );
   }
 
   private warnAboutCommonSettingsIssues(): void {
@@ -49,43 +60,51 @@ export class TinyMceConfigurator {
   }
 
   /** Construct TinyMCE options */
-  buildOptions(containerClass: string, fixedToolbarClass: string, inlineMode: boolean,
+  buildOptions(containerClass: string, fixedToolbarClass: string, modeIsInline: boolean,
     setup: (editor: Editor) => void
-  ): RawEditorOptionsWithModes {
+  ): RawEditorOptionsWithEav {
     const connector = this.connector;
     const exp = connector._experimental;
-    // TODO @SDV - done by 2dm
     // Create a TinyMceModeConfig object with bool only
     // Then pass this object into the build(...) below, replacing the original 3 parameters
-    const fsettings = connector.field.settings as StringWysiwyg;
-    const bSource = fsettings.ButtonSource?.toLowerCase();
-    const bAdvanced = fsettings.ButtonAdvanced?.toLowerCase();
-    const bContDiv = 'true'; // fsettings.ContentDivisions?.toLowerCase(); // WIP for now just true
+    const fieldSettings = connector.field.settings as StringWysiwyg;
+    const bSource = fieldSettings.ButtonSource?.toLowerCase();
+    const bAdvanced = fieldSettings.ButtonAdvanced?.toLowerCase();
+    const bToDialog = fieldSettings.Dialog === WysiwygDisplayModes.DisplayInline;
     const dropzone = exp.dropzone;
     const adam = exp.adam;
 
-    // @SDV this is what I had expected
+    // Feature detection
+    const useContentBlocks = exp.allInputTypeNames[connector.field.index + 1]?.inputType === InputTypeConstants.EntityContentBlocks;
+    const responsiveImages = fieldSettings._advanced.Mode === 'rich';
+
+    // WIP
+    consoleLogWebpack('2dm fieldSettings', fieldSettings);
     const eavConfig: TinyEavConfig = {
+      mode: toConfigForViewModes(fieldSettings._advanced.Mode),
       features: {
         // contentBlocks is on if the following field can hold inner-content items
-        contentBlocks: exp.allInputTypeNames[connector.field.index + 1]?.inputType === InputTypeConstants.EntityContentBlocks,
-        wysiwygEnhanced: bContDiv === 'true',
+        contentBlocks: useContentBlocks,
+        wysiwygEnhanced: false, // bContDiv === 'true',
+        responsiveImages,
+        contentSeparators: responsiveImages,
       },
       buttons: {
         inline: {
           source: bSource === 'true',
           advanced: bAdvanced === 'true',
-          contentDivisions: bContDiv === 'true',
+          dialog: bToDialog,
         },
         dialog: {
           source: bSource !== 'false',
           advanced: bAdvanced !== 'false',
-          contentDivisions: bContDiv === 'true',
+          dialog: false,
         }
       }
     };
+    consoleLogWebpack('2dm eavConfig', eavConfig);
 
-    const toolbarModes = new TinyMceToolbars(eavConfig).build(inlineMode);
+    const toolbarModes = new TinyMceToolbars(eavConfig).build(modeIsInline);
 
     if (dropzone == null || adam == null) {
       console.error(`Dropzone or ADAM Config not available, some things won't work`);
@@ -96,10 +115,10 @@ export class TinyMceConfigurator {
     // and tries to load the current folder as a stylesheet
     // This is useless and causes problems in DNN, because it results in logging out the user
     // See https://github.com/2sic/2sxc/issues/2829
-    let contentCssFile = fsettings.ContentCss;
+    let contentCssFile = fieldSettings.ContentCss;
     if (!contentCssFile) contentCssFile = null;
 
-    const options: RawEditorOptionsWithModes = {
+    const options: RawEditorOptionsWithEav = {
       ...DefaultOptions,
       ...{ plugins: [...DefaultPlugins] },
       selector: `.${containerClass}`,
@@ -110,7 +129,7 @@ export class TinyMceConfigurator {
       eavConfig,
       ...toolbarModes,
       ...TinyMceTranslations.getLanguageOptions(this.language),
-      ...(exp.isFeatureEnabled('WysiwygPasteFormatted') ? DefaultPaste.formattedText : {}),
+      ...(this.isWysiwygPasteFormatted$.value ? DefaultPaste.formattedText : {}),
       ...DefaultPaste.images(dropzone, adam),
       promotion: false,
       block_unsupported_drop: false,

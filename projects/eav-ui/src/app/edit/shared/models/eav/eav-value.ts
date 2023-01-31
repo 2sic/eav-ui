@@ -1,5 +1,5 @@
 import { EavDimension } from '.';
-import { Value1 } from '../json-format-v1';
+import { EavValuesDto } from '../json-format-v1';
 
 export class EavValue<T> {
   Value: T;
@@ -13,8 +13,8 @@ export class EavValue<T> {
     return eavValue;
   }
 
-  static convert<T>(value1: Value1<T>): EavValue<T>[] {
-    const values = Object.entries(value1).map(([langs, value]) => {
+  static convert<T>(valuesDto: EavValuesDto<T>): EavValue<T>[] {
+    const values = Object.entries(valuesDto).map(([langs, value]) => {
       const dimensions = langs.split(',').map(lang => EavDimension.create(lang));
       return this.create(value, dimensions);
     });

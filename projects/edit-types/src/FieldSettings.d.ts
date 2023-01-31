@@ -70,20 +70,38 @@ interface StringTemplatePicker extends String {
   FileType: string;
 }
 
+// export const WysiwygDisplayModeDialogOnly = 'dialog';
+// export const WysiwygDisplayModeInlineOnly = 'inline';
+// export const WysiwygDisplayModeInlineWithDialog = '';
+// export type WysiwygDisplayModes = typeof WysiwygDisplayModeDialogOnly | typeof WysiwygDisplayModeInlineOnly | typeof WysiwygDisplayModeInlineWithDialog; 
+
 /**
  * @string-wysiwyg
  */
 interface StringWysiwyg extends String {
-  Dialog: "" | "dialog" | "inline";
+  Dialog: '' | 'dialog' | 'inline';
   ButtonSource: "" | "true" | "false";
   ButtonAdvanced: "" | "true" | "false";
-  ContentDivisions: "" | "true" | "false";
   WysiwygMode: "" | "basic" | "enhanced"; // new v15
   /**
    * CSS file to be used for content styling. New in 11.03. Must be a real path to work, not file:xx
    */
   ContentCss: string;
   InlineInitialHeight: string;
+
+  /** Reference to a external configuration */
+  WysiwygConfiguration: string; // new v15
+
+  _advanced: StringWysiwygAdvanced;
+}
+
+/**
+ * New for v15 - advanced settings which actually come from another entity
+ */
+interface StringWysiwygAdvanced {
+  /** The initial mode, like 'default' or 'text' */
+  Mode: 'default' | 'text' | 'rich';
+  Json: string;
 }
 
 /**
@@ -166,6 +184,9 @@ interface Entity extends All {
    * Prefill values / mask - new in 11.11.03
    */
   Prefill: string;
+
+  // 2dm 2023-01-22 #maybeSupportIncludeParentApps
+  // IncludeParentApps: boolean;
 }
 
 /**

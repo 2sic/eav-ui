@@ -2,12 +2,13 @@ import { GridOptions } from '@ag-grid-community/core';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { BehaviorSubject, combineLatest, filter, map, Observable, pairwise, startWith, Subscription, tap } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
+import { BehaviorSubject, combineLatest, map, Observable, tap } from 'rxjs';
 import { ContentItemsService } from '../content-items/services/content-items.service';
 import { EntitiesService } from '../content-items/services/entities.service';
 import { EavFor } from '../edit/shared/models/eav';
 import { MetadataService } from '../permissions';
+import { BaseComponent } from '../shared/components/base-component/base.component';
 import { IdFieldComponent } from '../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../shared/constants/default-grid-options.constants';
@@ -21,20 +22,20 @@ import { MetadataActionsParams } from './metadata-actions/metadata-actions.model
 import { MetadataContentTypeComponent } from './metadata-content-type/metadata-content-type.component';
 import { MetadataSaveDialogComponent } from './metadata-save-dialog/metadata-save-dialog.component';
 import { MetadataItem, MetadataRecommendation, MetadataTemplateVars } from './models/metadata.model';
+import { FeatureComponentBase } from '../features/shared/base-feature.component';
 
 @Component({
   selector: 'app-metadata',
   templateUrl: './metadata.component.html',
   styleUrls: ['./metadata.component.scss'],
 })
-export class MetadataComponent implements OnInit, OnDestroy {
+export class MetadataComponent extends BaseComponent implements OnInit, OnDestroy {
   gridOptions = this.buildGridOptions();
 
   private metadata$ = new BehaviorSubject<MetadataItem[]>([]);
   private recommendations$ = new BehaviorSubject<MetadataRecommendation[]>([]);
   private itemFor$ = new BehaviorSubject<EavFor | undefined>(undefined);
   private fabOpen$ = new BehaviorSubject(false);
-  private subscription = new Subscription();
   private targetType = parseInt(this.route.snapshot.paramMap.get('targetType'), 10);
   private keyType = this.route.snapshot.paramMap.get('keyType') as MetadataKeyType;
   private key = this.route.snapshot.paramMap.get('key');
@@ -43,9 +44,10 @@ export class MetadataComponent implements OnInit, OnDestroy {
   templateVars$: Observable<MetadataTemplateVars>;
 
   constructor(
+    protected router: Router,
+    protected route: ActivatedRoute,
     private dialogRef: MatDialogRef<MetadataComponent>,
-    private router: Router,
-    private route: ActivatedRoute,
+
     private metadataService: MetadataService,
     private snackBar: MatSnackBar,
     private entitiesService: EntitiesService,
@@ -53,12 +55,14 @@ export class MetadataComponent implements OnInit, OnDestroy {
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
-  ) { }
+  ) { 
+    super(router, route);
+  }
 
   ngOnInit() {
     this.fetchFor();
     this.fetchMetadata();
-    this.refreshOnChildClosed();
+    this.subscription.add(this.refreshOnChildClosedShallow().subscribe(() => { this.fetchMetadata(); }));
 
     const filteredRecommendations$ = combineLatest([this.metadata$, this.recommendations$]).pipe(
       map(([metadataItems, recommendations]) =>
@@ -82,7 +86,7 @@ export class MetadataComponent implements OnInit, OnDestroy {
     this.recommendations$.complete();
     this.itemFor$.complete();
     this.fabOpen$.complete();
-    this.subscription.unsubscribe();
+    super.ngOnDestroy();
   }
 
   closeDialog() {
@@ -95,6 +99,12 @@ export class MetadataComponent implements OnInit, OnDestroy {
 
   createMetadata(recommendation?: MetadataRecommendation) {
     if (recommendation) {
+      // If the feature is not enabled, open the info dialog instead of metadata
+      if (!recommendation.Enabled) {
+        FeatureComponentBase.openDialog(this.dialog, recommendation.MissingFeature, this.viewContainerRef, this.changeDetectorRef);
+        return;
+      }
+      // Feature is enabled, check if it's an empty metadata
       if (recommendation.CreateEmpty) {
         this.snackBar.open(`Creating ${recommendation.Name}...`);
         this.entitiesService.create(recommendation.Id, { For: this.calculateItemFor() }).subscribe({
@@ -108,6 +118,7 @@ export class MetadataComponent implements OnInit, OnDestroy {
           },
         });
       } else {
+        // Default case - open new-metadata dialog
         this.createMetadataForm(recommendation.Id);
       }
       return;
@@ -213,20 +224,6 @@ export class MetadataComponent implements OnInit, OnDestroy {
         this.snackBar.open('Delete failed. Please check console for more information', null, { duration: 3000 });
       }
     });
-  }
-
-  private refreshOnChildClosed() {
-    this.subscription.add(
-      this.router.events.pipe(
-        filter(event => event instanceof NavigationEnd),
-        startWith(!!this.route.snapshot.firstChild),
-        map(() => !!this.route.snapshot.firstChild),
-        pairwise(),
-        filter(([hadChild, hasChild]) => hadChild && !hasChild),
-      ).subscribe(() => {
-        this.fetchMetadata();
-      })
-    );
   }
 
   private buildGridOptions(): GridOptions {

@@ -1,34 +1,35 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { TranslateMenuDialogData, TranslateMenuDialogTemplateVars } from '../translate-menu-dialog/translate-menu-dialog.models';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
+import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, Subscription } from 'rxjs';
 import { TranslationLink, TranslationLinks } from '../../../../shared/constants';
 import { EavService, FieldsTranslateService } from '../../../../shared/services';
 import { ItemService, LanguageInstanceService, LanguageService } from '../../../../shared/store/ngrx-data';
 import { TranslationStateCore } from '../translate-menu/translate-menu.models';
 import { I18nKeys } from '../translate-menu-dialog/translate-menu-dialog.constants';
 import { findI18nKey, getTemplateLanguages, getTemplateLanguagesWithContent } from '../translate-menu-dialog/translate-menu-dialog.helpers';
-import { MatSnackBar} from '@angular/material/snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { SnackBarWarningDemoComponent } from '../snack-bar-warning-demo/snack-bar-warning-demo.component';
 import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/features.service';
 import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
 
 @Component({
-  selector: 'app-translate-from-menu-dialog',
-  templateUrl: './translate-from-menu-dialog.component.html',
-  styleUrls: ['./translate-from-menu-dialog.component.scss'],
+  selector: 'app-auto-translate-menu-dialog',
+  templateUrl: './auto-translate-menu-dialog.component.html',
+  styleUrls: ['./auto-translate-menu-dialog.component.scss'],
 })
-export class TranslateFromMenuDialogComponent implements OnInit, OnDestroy {
+export class AutoTranslateMenuDialogComponent implements OnInit, OnDestroy {
   TranslationLinks = TranslationLinks;
   I18nKeys = I18nKeys;
   templateVars$: Observable<TranslateMenuDialogTemplateVars>;
-  isTranslateWithGoogleFeatureEnabled: boolean;
 
   private translationState$: BehaviorSubject<TranslationStateCore>;
   private noLanguageRequired: TranslationLink[];
+  private isTranslateWithGoogleFeatureEnabled$ = new BehaviorSubject<boolean>(false);
+  private subscription: Subscription = new Subscription();
 
   constructor(
-    private dialogRef: MatDialogRef<TranslateFromMenuDialogComponent>,
+    private dialogRef: MatDialogRef<AutoTranslateMenuDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public dialogData: TranslateMenuDialogData,
     private languageService: LanguageService,
     private languageInstanceService: LanguageInstanceService,
@@ -46,8 +47,12 @@ export class TranslateFromMenuDialogComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.isTranslateWithGoogleFeatureEnabled = this.featuresService.isEnabled(FeatureNames.EditUiTranslateWithGoogle);
-    if (this.isTranslateWithGoogleFeatureEnabled) {
+    const isTranslateWithGoogleFeatureEnabled$ = this.featuresService.isEnabled$(FeatureNames.EditUiTranslateWithGoogle);
+    this.subscription.add(isTranslateWithGoogleFeatureEnabled$
+      .pipe(distinctUntilChanged())
+      .subscribe(this.isTranslateWithGoogleFeatureEnabled$
+      ));
+    if (this.isTranslateWithGoogleFeatureEnabled$.value) {
       this.snackBar.openFromComponent(SnackBarWarningDemoComponent);
       this.dialogRef.afterClosed().subscribe(() => {
         this.snackBar.dismiss();
@@ -73,8 +78,8 @@ export class TranslateFromMenuDialogComponent implements OnInit, OnDestroy {
       }),
     );
 
-    this.templateVars$ = combineLatest([defaultLanguage$, languages$, this.translationState$]).pipe(
-      map(([defaultLanguage, languages, translationState]) => {
+    this.templateVars$ = combineLatest([defaultLanguage$, languages$, this.translationState$, isTranslateWithGoogleFeatureEnabled$]).pipe(
+      map(([defaultLanguage, languages, translationState, isTranslateWithGoogleFeatureEnabled]) => {
         const templateVars: TranslateMenuDialogTemplateVars = {
           defaultLanguage,
           languages,
@@ -82,6 +87,7 @@ export class TranslateFromMenuDialogComponent implements OnInit, OnDestroy {
           showLanguageSelection: !this.noLanguageRequired.includes(translationState.linkType),
           i18nRoot: `LangMenu.Dialog.${findI18nKey(translationState.linkType)}`,
           submitDisabled: translationState.language === '' && !this.noLanguageRequired.includes(translationState.linkType),
+          isTranslateWithGoogleFeatureEnabled
         };
         return templateVars;
       }),
@@ -99,8 +105,9 @@ export class TranslateFromMenuDialogComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.dialogData.isTranslateMany ? this.fieldsTranslateService.translateFromMany(newTranslationState.language)
-      : this.fieldsTranslateService.translateFrom(this.dialogData.config.name, newTranslationState.language, true);
+    this.dialogData.isTranslateMany ? this.fieldsTranslateService.autoTranslateMany(newTranslationState.language)
+      : this.fieldsTranslateService.autoTranslate([this.dialogData.config.name], newTranslationState.language, true);
+  
 
     this.closeDialog();
   }

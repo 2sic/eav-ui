@@ -1,7 +1,6 @@
 import { SxcInstance } from '@2sic.com/2sxc-typings';
 import { FormValues } from '.';
 import { FieldSettings, FieldValue } from '../../../../../../edit-types';
-import { Feature } from '../../../features/models/feature.model';
 
 /**
  * Formula Cached Values which are re-used across formulas of the same entity
@@ -101,6 +100,12 @@ export interface FormulaV1CtxApp {
   isGlobal: boolean;
   isSite: boolean;
   isContent: boolean;
+
+  /**
+   * WIP new v15.01
+   * @param settingPath eg "Settings.GoogleMaps.DefaultCoordinates"
+   */
+  getSetting: (settingPath: string) => unknown;
 }
 
 export interface FormulaV1CtxCulture {
@@ -149,6 +154,10 @@ export interface FormulaV1CtxUser {
 
 export interface FormulaV1Experimental {
   getEntities(): FormulaV1ExperimentalEntity[];
+  /**
+   * This gets FIELD settings.
+   * TODO: @2dm Must find out if it's used anywhere, and probably rename to getFieldSettings
+   */
   getSettings(fieldName: string): FieldSettings;
   getValues(entityGuid: string): FormValues;
 }

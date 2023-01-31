@@ -1,0 +1,17 @@
+{
+  "mode": "text",
+  "modes": [
+    "text,icon-name",
+    "advanced,icon-name",
+    "standard"
+  ],
+  "toolbars": {
+    "all": {
+      "text": [
+        "undo redo pastetext paste removeformat",
+        "bold italic",
+        "code modeadvanced modestandard fullscreen"
+      ]
+    }      
+  }
+}

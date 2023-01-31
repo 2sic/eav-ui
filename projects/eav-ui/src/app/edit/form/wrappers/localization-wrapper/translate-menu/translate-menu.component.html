@@ -18,9 +18,9 @@
           {{ 'LangMenu.Translate' | translate }}
         </button>
         <button mat-menu-item 
-          (click)="openTranslateFromMenuDialog(data.translationState)"
+          (click)="openAutoTranslateMenuDialog(data.translationState)"
           [ngClass]="{ 'menu-item-selected': data.translationState.linkType === TranslationLinks.Translate }">
-          {{ 'LangMenu.TranslateFrom' | translate }}
+          {{ 'LangMenu.AutoTranslate' | translate }}
           <app-feature-icon-indicator [featureNameId]="'EditUiTranslateWithGoogle'"></app-feature-icon-indicator>
         </button>
         <button mat-menu-item (click)="dontTranslate()"

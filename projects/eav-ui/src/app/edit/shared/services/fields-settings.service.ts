@@ -1,15 +1,18 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { BehaviorSubject, combineLatest, distinctUntilChanged, filter, map, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, combineLatest, distinctUntilChanged, filter, map, Observable, Subscription, shareReplay } from 'rxjs';
 import { EavService, EditInitializerService, LoggingService } from '.';
 import { FieldSettings, FieldValue } from '../../../../../../edit-types';
 import { DataTypeConstants } from '../../../content-type-fields/constants/data-type.constants';
 import { InputTypeConstants } from '../../../content-type-fields/constants/input-type.constants';
 import { InputType } from '../../../content-type-fields/models/input-type.model';
+import { FeatureSummary } from '../../../features/models';
 import { consoleLogAngular } from '../../../shared/helpers/console-log-angular.helper';
 import { FeaturesService } from '../../../shared/services/features.service';
 import { FieldLogicManager } from '../../form/shared/field-logic/field-logic-manager';
-import { FieldsSettingsHelpers, FormulaHelpers, GeneralHelpers, InputFieldHelpers, LocalizationHelpers, ValidationHelpers } from '../helpers';
+import { FieldLogicTools } from '../../form/shared/field-logic/field-logic-tools';
+// tslint:disable-next-line:max-line-length
+import { EntityReader, FieldsSettingsHelpers, FormulaHelpers, GeneralHelpers, InputFieldHelpers, LocalizationHelpers, ValidationHelpers } from '../helpers';
 // tslint:disable-next-line:max-line-length
 import { ContentTypeSettings, FieldsProps, FormulaCacheItem, FormulaFieldValidation, FormulaFunctionDefault, FormulaFunctionV1, FormulaTarget, FormulaTargets, FormulaVersions, FormValues, LogSeverities, RunFormulasResult, SettingsFormulaPrefix, TranslationState } from '../models';
 import { EavHeader } from '../models/eav';
@@ -22,11 +25,12 @@ import { FormulaDesignerService } from './formula-designer.service';
 export class FieldsSettingsService implements OnDestroy {
   private contentTypeSettings$: BehaviorSubject<ContentTypeSettings>;
   private fieldsProps$: BehaviorSubject<FieldsProps>;
-  private forceSettings$: BehaviorSubject<void>;
+  private forceRefreshSettings$: BehaviorSubject<void>;
   private subscription: Subscription;
   private valueFormulaCounter = 0;
   private maxValueFormulaCycles = 5;
   private formulaSettingsCache: Record<string, FieldSettings> = {};
+  private featuresCache$ = new BehaviorSubject<FeatureSummary[]>([]);
 
   constructor(
     private contentTypeService: ContentTypeService,
@@ -47,7 +51,7 @@ export class FieldsSettingsService implements OnDestroy {
   ngOnDestroy(): void {
     this.contentTypeSettings$?.complete();
     this.fieldsProps$?.complete();
-    this.forceSettings$?.complete();
+    this.forceRefreshSettings$?.complete();
     this.subscription?.unsubscribe();
   }
 
@@ -55,24 +59,25 @@ export class FieldsSettingsService implements OnDestroy {
     this.subscription = new Subscription();
     this.contentTypeSettings$ = new BehaviorSubject(null);
     this.fieldsProps$ = new BehaviorSubject(null);
-    this.forceSettings$ = new BehaviorSubject(null);
+    this.forceRefreshSettings$ = new BehaviorSubject(null);
 
     const item = this.itemService.getItem(entityGuid);
     const entityId = item.Entity.Id;
     const contentTypeId = InputFieldHelpers.getContentTypeId(item);
     const contentType$ = this.contentTypeService.getContentType$(contentTypeId);
     const itemHeader$ = this.itemService.getItemHeader$(entityGuid);
-    const currentLanguage$ = this.languageInstanceService.getCurrentLanguage$(this.eavService.eavConfig.formId);
-    const defaultLanguage$ = this.languageInstanceService.getDefaultLanguage$(this.eavService.eavConfig.formId);
+
+    this.subscription.add(this.featuresService.getAll$().subscribe(this.featuresCache$));
+    const entityReader$ = this.languageInstanceService.getEntityReader$(this.eavService.eavConfig.formId);
 
     this.subscription.add(
-      combineLatest([contentType$, itemHeader$, currentLanguage$, defaultLanguage$]).pipe(
-        map(([contentType, itemHeader, currentLanguage, defaultLanguage]) => {
+      combineLatest([contentType$, itemHeader$, entityReader$]).pipe(
+        map(([contentType, itemHeader, entityReader]) => {
           const ctSettings = FieldsSettingsHelpers.setDefaultContentTypeSettings(
-            FieldsSettingsHelpers.mergeSettings<ContentTypeSettings>(contentType.Metadata, currentLanguage, defaultLanguage),
+            entityReader.flattenAll<ContentTypeSettings>(contentType.Metadata),
             contentType,
-            currentLanguage,
-            defaultLanguage,
+            entityReader.currentLanguage,
+            entityReader.defaultLanguage,
             itemHeader,
           );
           return ctSettings;
@@ -88,20 +93,25 @@ export class FieldsSettingsService implements OnDestroy {
     const debugEnabled$ = this.globalConfigService.getDebugEnabled$();
     this.subscription.add(
       combineLatest([
-        combineLatest([contentType$, currentLanguage$, defaultLanguage$, itemAttributes$, itemHeader$, inputTypes$]),
-        combineLatest([readOnly$, this.forceSettings$, debugEnabled$]),
+        combineLatest([contentType$, itemAttributes$, itemHeader$, inputTypes$]),
+        combineLatest([entityReader$, readOnly$, this.forceRefreshSettings$, debugEnabled$]),
       ]).pipe(
         map(([
-          [contentType, currentLanguage, defaultLanguage, itemAttributes, itemHeader, inputTypes],
-          [readOnly, forceSettings, debugEnabled],
+          [contentType, itemAttributes, itemHeader, inputTypes],
+          [entityReader, readOnly, _, debugEnabled],
         ]) => {
           const formValues: FormValues = {};
           for (const [fieldName, fieldValues] of Object.entries(itemAttributes)) {
-            formValues[fieldName] = LocalizationHelpers.translate(currentLanguage, defaultLanguage, fieldValues, null);
+            formValues[fieldName] = entityReader.getBestValue(fieldValues, null);
           }
 
           const fieldsProps: FieldsProps = {};
           const formulaUpdates: FormValues = {};
+          const logicTools: FieldLogicTools = {
+            eavConfig: this.eavService.eavConfig,
+            entityReader,
+            debug: debugEnabled,
+          };
           for (const attribute of contentType.Attributes) {
             const attributeValues = itemAttributes[attribute.Name];
             // empty-default and empty-message have no value
@@ -109,7 +119,7 @@ export class FieldsSettingsService implements OnDestroy {
             // custom-default has no inputType
             const inputType = inputTypes.find(i => i.Type === attribute.InputType);
 
-            const mergeRaw = FieldsSettingsHelpers.mergeSettings<FieldSettings>(attribute.Metadata, currentLanguage, defaultLanguage);
+            const mergeRaw = entityReader.flattenAll<FieldSettings>(attribute.Metadata);
             // Sometimes the metadata doesn't have the input type (empty string), so we'll add the attribute.InputType just in case...
             mergeRaw.InputType = attribute.InputType;
             const merged = FieldsSettingsHelpers.setDefaultFieldSettings(mergeRaw);
@@ -125,26 +135,27 @@ export class FieldsSettingsService implements OnDestroy {
             calculated.Name = calculated.Name || attribute.Name;
             calculated.Required = ValidationHelpers.isRequired(calculated);
             calculated.DisableTranslation = FieldsSettingsHelpers.findDisableTranslation(
-              contentType.Metadata, inputType, attributeValues, defaultLanguage, attribute.Metadata,
+              contentType.Metadata, inputType, attributeValues, entityReader.defaultLanguage, attribute.Metadata,
             );
             const slotIsEmpty = itemHeader.IsEmptyAllowed && itemHeader.IsEmpty;
             calculated.DisableTranslation = slotIsEmpty || calculated.DisableTranslation;
             calculated.Disabled = slotIsEmpty || calculated.Disabled;
             const disabledBecauseTranslations = FieldsSettingsHelpers.getDisabledBecauseTranslations(
-              attributeValues, calculated.DisableTranslation, currentLanguage, defaultLanguage,
+              attributeValues, calculated.DisableTranslation, entityReader.currentLanguage, entityReader.defaultLanguage,
             );
             calculated.Disabled = disabledBecauseTranslations || calculated.Disabled;
             calculated.Disabled = readOnly.isReadOnly || calculated.Disabled;
             calculated.DisableAutoTranslation = calculated.DisableAutoTranslation || calculated.DisableTranslation;
+
             // update settings with respective FieldLogics
             const logic = FieldLogicManager.singleton().get(attribute.InputType);
-            const fixed = logic?.update(calculated, value, this.eavService.eavConfig, debugEnabled) ?? calculated;
+            const fixed = logic?.update(calculated, value, logicTools) ?? calculated;
             consoleLogAngular('calculated', JSON.parse(JSON.stringify(calculated)));
 
             // important to compare with undefined because null is allowed value
             if (!slotIsEmpty && !disabledBecauseTranslations && value !== undefined && formulaValue !== undefined) {
               let valuesNotEqual = value !== formulaValue;
-              // do a more in depth comparisson in case of calculated entity fields
+              // do a more in depth comparison in case of calculated entity fields
               if (valuesNotEqual && Array.isArray(value) && Array.isArray(formulaValue)) {
                 valuesNotEqual = !GeneralHelpers.arraysEqual(value as string[], formulaValue as string[]);
               }
@@ -156,11 +167,13 @@ export class FieldsSettingsService implements OnDestroy {
             const calculatedInputType = InputFieldHelpers.calculateInputType(attribute, inputTypes);
             const wrappers = InputFieldHelpers.getWrappers(fixed, calculatedInputType);
             const initialSettings = FieldsSettingsHelpers.setDefaultFieldSettings(
-              FieldsSettingsHelpers.mergeSettings<FieldSettings>(attribute.Metadata, this.eavService.eavConfig.lang, defaultLanguage),
+              // TODO: unclear why we're not using the current language but the default
+              new EntityReader(this.eavService.eavConfig.lang, entityReader.defaultLanguage).flattenAll<FieldSettings>(attribute.Metadata)
+              // FieldsSettingsHelpers.mergeSettings<FieldSettings>(attribute.Metadata, this.eavService.eavConfig.lang, defaultLanguage),
             );
             const initialDisabled = initialSettings.Disabled ?? false;
             const fieldTranslation = FieldsSettingsHelpers.getTranslationState(
-              attributeValues, fixed.DisableTranslation, currentLanguage, defaultLanguage,
+              attributeValues, fixed.DisableTranslation, entityReader.currentLanguage, entityReader.defaultLanguage,
             );
             const index = contentType.Attributes.indexOf(attribute);
 
@@ -190,7 +203,7 @@ export class FieldsSettingsService implements OnDestroy {
 
           if (Object.keys(formulaUpdates).length > 0 && this.maxValueFormulaCycles > this.valueFormulaCounter) {
             this.valueFormulaCounter++;
-            this.itemService.updateItemAttributesValues(entityGuid, formulaUpdates, currentLanguage, defaultLanguage);
+            this.itemService.updateItemAttributesValues(entityGuid, formulaUpdates, entityReader.currentLanguage, entityReader.defaultLanguage);
             return;
           }
           this.valueFormulaCounter = 0;
@@ -238,7 +251,7 @@ export class FieldsSettingsService implements OnDestroy {
   }
 
   forceSettings(): void {
-    this.forceSettings$.next();
+    this.forceRefreshSettings$.next();
   }
 
   private runFormulas(
@@ -348,7 +361,7 @@ export class FieldsSettingsService implements OnDestroy {
       this.itemService,
       this.eavService,
       this,
-      this.featuresService,
+      this.featuresCache$.value,
     );
     const designerState = this.formulaDesignerService.getDesignerState();
     const isOpenInDesigner = designerState.isOpen
@@ -408,7 +421,7 @@ export class FieldsSettingsService implements OnDestroy {
     if (inputType?.Type === InputTypeConstants.DatetimeDefault) {
       const date = new Date(value as string | number | Date);
 
-      // if value is not ISO string, nor miliseconds, correct timezone
+      // if value is not ISO string, nor milliseconds, correct timezone
       if (!(typeof value === 'string' && value.endsWith('Z')) && date.getTime() !== value) {
         date.setTime(date.getTime() - date.getTimezoneOffset() * 60000);
       }

@@ -18,4 +18,5 @@ export interface Feature extends FeatureSummary {
   Security: FeatureSecurity;
   /** Does this feature apply to UIs (like the edit-form) */
   Ui: boolean;
+  Link: string;
 }

@@ -2,7 +2,7 @@ import { GridOptions } from '@ag-grid-community/core';
 import { Component, HostBinding, OnDestroy, OnInit } from "@angular/core";
 import { MatDialogRef } from "@angular/material/dialog";
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { catchError, Observable, of, share, startWith, Subject, switchMap } from "rxjs";
+import { BehaviorSubject, catchError, distinctUntilChanged, Observable, of, share, startWith, Subject, Subscription, switchMap } from "rxjs";
 import { FeatureNames } from '../../features/feature-names';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from "../../shared/constants/default-grid-options.constants";
@@ -23,11 +23,13 @@ export class AddAppFromFolderComponent implements OnInit, OnDestroy {
 
   pendingApps$: Observable<PendingApp[]>;
   gridOptions = this.buildGridOptions();
-
-  private refreshApps$ = new Subject<void>();
   pendingApps: PendingApp[] = [];
   installing: boolean = false;
-  isAddFromFolderEnabled: boolean;
+
+  private refreshApps$ = new Subject<void>();
+  private isAddFromFolderEnabled$ = new BehaviorSubject<boolean>(false);
+  private subscription: Subscription = new Subscription();
+
 
   constructor(
     private dialogRef: MatDialogRef<AddAppFromFolderComponent>,
@@ -42,11 +44,15 @@ export class AddAppFromFolderComponent implements OnInit, OnDestroy {
       switchMap(() => this.appsListService.getPendingApps().pipe(catchError(() => of(undefined)))),
       share()
     );
-    this.isAddFromFolderEnabled = this.featuresService.isEnabled(FeatureNames.AppSyncWithSiteFiles);
+    this.subscription.add(this.featuresService.isEnabled$(FeatureNames.AppSyncWithSiteFiles)
+      .pipe(distinctUntilChanged())
+      .subscribe(this.isAddFromFolderEnabled$)
+    ); 
   }
 
   ngOnDestroy(): void {
     this.refreshApps$.complete();
+    this.subscription.unsubscribe();
   } 
 
   closeDialog(): void {
@@ -88,7 +94,7 @@ export class AddAppFromFolderComponent implements OnInit, OnDestroy {
           cellRenderer: CheckboxCellComponent,
           cellRendererParams: (() => {
             const params: CheckboxCellParams = {
-              isDisabled: !this.isAddFromFolderEnabled,
+              isDisabled: !this.isAddFromFolderEnabled$.value,
               onChange: (app, enabled) => this.onChange(app, enabled),
             };
             return params;

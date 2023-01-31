@@ -4,10 +4,12 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { DialogSettings } from '../../app-administration/models';
+import { FeatureNames } from '../../features/feature-names';
 import { BaseComponent } from '../../shared/components/base-component/base.component';
 import { copyToClipboard } from '../../shared/helpers/copy-to-clipboard.helper';
 import { EavWindow } from '../../shared/models/eav-window.model';
 import { DialogService } from '../../shared/services/dialog.service';
+import { FeaturesService } from '../../shared/services/features.service';
 import { SiteLanguage } from '../models/site-language.model';
 import { SystemInfoSet } from '../models/system-info.model';
 import { SxcInsightsService } from '../services/sxc-insights.service';
@@ -34,14 +36,15 @@ export class SystemInfoComponent extends BaseComponent implements OnInit, OnDest
   private loading$: BehaviorSubject<boolean>;
 
   constructor(
-    router: Router,
-    route: ActivatedRoute,
+    protected router: Router,
+    protected route: ActivatedRoute,
     private zoneService: ZoneService,
     private snackBar: MatSnackBar,
     private dialogService: DialogService,
     private sxcInsightsService: SxcInsightsService,
+    private featuresService: FeaturesService,
   ) {
-    super(router, route)
+    super(router, route);
   }
 
   ngOnInit(): void {
@@ -52,7 +55,7 @@ export class SystemInfoComponent extends BaseComponent implements OnInit, OnDest
     this.buildTemplateVars();
     this.getSystemInfo();
     this.getLanguages();
-    this.subscription.add(this.refreshOnChildClosed().subscribe(() => {
+    this.subscription.add(this.refreshOnChildClosedDeep().subscribe(() => {
       this.buildTemplateVars();
       this.getSystemInfo();
       this.getLanguages();
@@ -134,12 +137,12 @@ export class SystemInfoComponent extends BaseComponent implements OnInit, OnDest
             value: systemInfoSet.License.Owner || '(unregistered)',
             link: systemInfoSet.License.Owner
               ? {
-                url: this.router.url + "/" + GoToRegistration.getUrl(),
+                url: this.router.url + '/' + GoToRegistration.getUrl(),
                 label: 'manage',
                 target: 'angular',
               }
               : {
-                url: this.router.url + "/" + GoToRegistration.getUrl(),
+                url: this.router.url + '/' + GoToRegistration.getUrl(),
                 label: 'register',
                 target: 'angular',
               },
@@ -217,16 +220,21 @@ export class SystemInfoComponent extends BaseComponent implements OnInit, OnDest
         return info;
       }),
     );
-    this.templateVars$ = combineLatest([systemInfos$, siteInfos$, this.loading$, warningIcon$, warningInfos$]).pipe(
-      map(([systemInfos, siteInfos, loading, warningIcon, warningInfos]) => {
-        const templateVars: SystemInfoTemplateVars = {
+    const lsEnabled$ = this.featuresService.isEnabled$(FeatureNames.LightSpeed);
+    const cspEnabled$ = this.featuresService.isEnabled$(FeatureNames.ContentSecurityPolicy);
+    this.templateVars$ = combineLatest([systemInfos$, siteInfos$, this.loading$, warningIcon$, warningInfos$, lsEnabled$, cspEnabled$]).pipe(
+      map(([systemInfos, siteInfos, loading, warningIcon, warningInfos, lsEnabled, cspEnabled]) => {
+        const viewModel: SystemInfoTemplateVars = {
           systemInfos,
           siteInfos,
           loading,
           warningIcon,
           warningInfos,
+          lsEnabled,
+          cspEnabled
         };
-        return templateVars;
+        console.log('2dm VM', viewModel);
+        return viewModel;
       }),
     );
   }

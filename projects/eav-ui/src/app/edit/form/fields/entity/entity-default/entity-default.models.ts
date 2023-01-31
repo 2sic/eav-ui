@@ -2,10 +2,16 @@ import { EntityInfo } from '../../../../../../../../edit-types';
 import { BaseFieldTemplateVars } from '../../base/base-field-template-vars.model';
 
 export interface SelectedEntity {
+  entityId: number;
   value: string;
   label: string;
   tooltip: string;
-  isFreeTextOrNotFound: boolean;
+  // 2023-01-26 2dm - moved to disableEdit / disableDelete
+  // isFreeTextOrNotFound: boolean;
+  disableEdit: boolean;
+  disableDelete: boolean;
+  /** debug info only */
+  _sourceIsQuery: boolean;
 }
 
 export interface EntityTemplateVars extends BaseFieldTemplateVars {

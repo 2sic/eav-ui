@@ -1,4 +1,3 @@
-// TODO: @SDV - USE THIS
 // This will make it easier for us to see where certain feature names are in use
 
 export const FeatureNames = {
@@ -9,4 +8,7 @@ export const FeatureNames = {
   EditUiShowMetadataFor: 'EditUiShowMetadataFor',
   NoSponsoredByToSic: 'NoSponsoredByToSic',
   EditUiTranslateWithGoogle: 'EditUiTranslateWithGoogle',
+  LightSpeed: 'LightSpeedOutputCache',
+  ContentSecurityPolicy: 'ContentSecurityPolicy',
+  PermissionsByLanguage: 'PermissionsByLanguage',
 };

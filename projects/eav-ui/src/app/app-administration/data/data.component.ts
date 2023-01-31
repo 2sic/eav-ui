@@ -9,6 +9,7 @@ import { GoToDevRest } from '../../dev-rest/go-to-dev-rest';
 import { GlobalConfigService } from '../../edit/shared/store/ngrx-data';
 import { GoToMetadata } from '../../metadata';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
+import { BaseComponent } from '../../shared/components/base-component/base.component';
 import { FileUploadDialogData } from '../../shared/components/file-upload-dialog';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
@@ -32,7 +33,7 @@ import { DataItemsParams } from './data-items/data-items.models';
   templateUrl: './data.component.html',
   styleUrls: ['./data.component.scss'],
 })
-export class DataComponent implements OnInit, OnDestroy {
+export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
   @Input() enablePermissions: boolean;
 
   contentTypes$ = new BehaviorSubject<ContentType[]>(undefined);
@@ -42,28 +43,28 @@ export class DataComponent implements OnInit, OnDestroy {
   gridOptions = this.buildGridOptions();
   dropdownInsertValue = dropdownInsertValue;
 
-  private subscription = new Subscription();
-
   constructor(
-    private router: Router,
-    private route: ActivatedRoute,
+    protected router: Router,
+    protected route: ActivatedRoute,
     private contentTypesService: ContentTypesService,
     private globalConfigService: GlobalConfigService,
     private snackBar: MatSnackBar,
     private contentExportService: ContentExportService,
-  ) { }
+  ) { 
+    super(router, route);
+  }
 
   ngOnInit() {
     this.fetchScopes();
     this.refreshScopeOnRouteChange();
-    this.refreshOnChildClosed();
+    this.subscription.add(this.refreshOnChildClosedDeep().subscribe(() => { this.fetchContentTypes(); }));
   }
 
   ngOnDestroy() {
     this.contentTypes$.complete();
     this.scope$.complete();
     this.scopeOptions$.complete();
-    this.subscription.unsubscribe();
+    super.ngOnDestroy();
   }
 
   filesDropped(files: File[]) {
@@ -242,20 +243,6 @@ export class DataComponent implements OnInit, OnDestroy {
           };
           this.scopeOptions$.next([...this.scopeOptions$.value, newScopeOption]);
         }
-        this.fetchContentTypes();
-      })
-    );
-  }
-
-  private refreshOnChildClosed() {
-    this.subscription.add(
-      this.router.events.pipe(
-        filter(event => event instanceof NavigationEnd),
-        startWith(!!this.route.snapshot.firstChild.firstChild),
-        map(() => !!this.route.snapshot.firstChild.firstChild),
-        pairwise(),
-        filter(([hadChild, hasChild]) => hadChild && !hasChild),
-      ).subscribe(() => {
         this.fetchContentTypes();
       })
     );

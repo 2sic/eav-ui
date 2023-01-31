@@ -21,7 +21,7 @@ _This is still Work-In-Progress_
     * `settings: Dictionary<any>` - field settings as they were configured
   * `form` - supporting API for common operations and talking with the form
     * `loadScript(...)` make sure a Js or css is loaded
-    * `isFeatureEnabled(nameId: string): boolean` - check if a feature is enabled
+    * `isFeatureEnabled$(nameId: string): boolean` - an observable reporting if a feature is enabled
     * `translator` - the translation service
   * `item` - anything related to the item that's currently being edited
     * `guid`

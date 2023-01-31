@@ -43,7 +43,7 @@ export function convertFormToUrl(form: EditForm) {
           '', // empty string to ensure it will start with a ":"
           itemFor.Target,
           itemFor.TargetType,
-          (itemFor.Singleton ? ':' + itemFor.Singleton.toString() : '')
+          (itemFor.Singleton ? itemFor.Singleton.toString() : '')
         ]);
 
       if (addItem.For?.String) {

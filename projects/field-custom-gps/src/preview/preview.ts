@@ -38,7 +38,8 @@ class FieldCustomGps extends HTMLElement implements EavCustomInputField<string> 
     this.addEventListener('click', expand);
     this.eventListeners.push({ element: this, type: 'click', listener: expand });
 
-    const defaultCoordinates = this.connector._experimental.getSettings("gps-default-coordinates") as CoordinatesDto;
+    // TODO: TRY to refactor to use the new context.app.getSetting(...) in the formulas-data
+    const defaultCoordinates = this.connector._experimental.getSettings("Settings.GoogleMaps.DefaultCoordinates") as CoordinatesDto;
     this.defaultCoordinates = {
       lat: defaultCoordinates.Latitude,
       lng: defaultCoordinates.Longitude,

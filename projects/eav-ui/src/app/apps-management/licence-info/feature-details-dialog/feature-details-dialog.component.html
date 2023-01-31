@@ -1,9 +1,6 @@
 <div mat-dialog-title>
   <div class="dialog-title-box">
     <div>{{ dialogData.feature.Name }}</div>
-    <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
-      <mat-icon>close</mat-icon>
-    </button>
   </div>
 </div>
 
@@ -29,4 +26,15 @@
       <span>{{ security }}</span>
     </div>
   </div>
+</div>
+
+<div class="dialog-component-actions">
+  <button *ngIf="dialogData.feature.Link as link" mat-raised-button class="dialog-component-button" color="accent"
+    (click)="findOutMore(link)">
+    <mat-icon>open_in_new</mat-icon>
+    Find out more
+  </button>
+  <button mat-raised-button class="dialog-component-button" (click)="closeDialog()">
+    Close
+  </button>
 </div>

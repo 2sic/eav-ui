@@ -1,18 +1,28 @@
+import { EntityForPicker } from 'projects/edit-types';
+
 export interface QueryStreams {
   [stream: string]: QueryEntity[];
 }
 
-export interface QueryEntity {
+export interface QueryEntity extends EntityForPicker {
   Guid: string;
-  Id: number;
   Modified: string;
-  Title: string;
   [key: string]: any;
-  _2sxcEditInformation: QuerySxcEditInformation;
+
+  // 2023-01-26 2dm doesn't seem to be in use, commented out
+  // Remove in Feb when confirmed not used
+  // _2sxcEditInformation: QuerySxcEditInformation;
+
+  // 2023-01-26 2dm moved to EntityForPicker (parent)
+  // remove this end of Feb when confirmed not used
+  // Id: number;
+  // Title: string;
 }
 
-export interface QuerySxcEditInformation {
-  entityId: number;
-  isPublished: boolean;
-  title: string;
-}
+// 2023-01-26 2dm doesn't seem to be in use, commented out
+// Remove in Feb when confirmed not used
+// export interface QuerySxcEditInformation {
+//   entityId: number;
+//   isPublished: boolean;
+//   title: string;
+// }

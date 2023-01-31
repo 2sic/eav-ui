@@ -1,5 +1,5 @@
 import { GridOptions, ICellRendererParams } from '@ag-grid-community/core';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, catchError, Observable, of, share, startWith, Subject, switchMap } from 'rxjs';
@@ -11,7 +11,6 @@ import { IdFieldComponent } from '../../shared/components/id-field/id-field.comp
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
-import { EditForm } from '../../shared/models/edit-form.model';
 import { Context } from '../../shared/services/context';
 import { FeaturesService } from '../../shared/services/features.service';
 import { App } from '../models/app.model';
@@ -19,6 +18,9 @@ import { AppsListService } from '../services/apps-list.service';
 import { AppsListActionsComponent } from './apps-list-actions/apps-list-actions.component';
 import { AppsListActionsParams } from './apps-list-actions/apps-list-actions.models';
 import { AppsListShowComponent } from './apps-list-show/apps-list-show.component';
+import { FeatureComponentBase } from '../../features/shared/base-feature.component';
+import { MatDialog } from '@angular/material/dialog';
+import { AppAdminHelpers } from '../../app-administration/app-admin-helpers';
 
 @Component({
   selector: 'app-apps-list',
@@ -29,19 +31,24 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
   apps$: Observable<App[]>;
   fabOpen$ = new BehaviorSubject(false);
   gridOptions = this.buildGridOptions();
-  isAddFromFolderEnabled: boolean;
+  isAddFromFolderEnabled$: Observable<boolean>;
+  lightspeedEnabled$ = new BehaviorSubject<boolean>(false);
 
   private refreshApps$ = new Subject<void>();
 
   constructor(
-    router: Router,
-    route: ActivatedRoute,
+    protected router: Router,
+    protected route: ActivatedRoute,
     private appsListService: AppsListService,
     private snackBar: MatSnackBar,
     private context: Context,
+    // Services for showing features in the menu
     private featuresService: FeaturesService,
+    private dialog: MatDialog,
+    private viewContainerRef: ViewContainerRef,
+    private changeDetectorRef: ChangeDetectorRef
   ) {
-    super(router, route)
+    super(router, route);
   }
 
   ngOnInit(): void {
@@ -50,8 +57,9 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
       switchMap(() => this.appsListService.getAll().pipe(catchError(() => of(undefined)))),
       share(),
     );
-    this.subscription.add(this.refreshOnChildClosed().subscribe(() => { this.refreshApps$.next(); }));
-    this.isAddFromFolderEnabled = this.featuresService.isEnabled(FeatureNames.AppSyncWithSiteFiles);
+    this.subscription.add(this.refreshOnChildClosedDeep().subscribe(() => { this.refreshApps$.next(); }));
+    this.isAddFromFolderEnabled$ = this.featuresService.isEnabled$(FeatureNames.AppSyncWithSiteFiles);
+    this.subscription.add(this.featuresService.isEnabled$(FeatureNames.LightSpeed).subscribe(this.lightspeedEnabled$));
   }
 
   ngOnDestroy(): void {
@@ -119,9 +127,7 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
   }
 
   private openLightspeed(app: App): void {
-    if (!app.Lightspeed) { return; }
-    const form: EditForm = { items: [{ EntityId: app.Lightspeed.Id }] };
-    const formUrl = convertFormToUrl(form);
+    const formUrl = convertFormToUrl(AppAdminHelpers.getLightSpeedEditParams(app.Id));
     this.router.navigate([`${this.context.zoneId}/${app.Id}/edit/${formUrl}`], { relativeTo: this.route.firstChild });
   }
 
@@ -241,6 +247,8 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
               onDelete: (app) => this.deleteApp(app),
               onFlush: (app) => this.flushApp(app),
               onOpenLightspeed: (app) => this.openLightspeed(app),
+              lightspeedEnabled: () => this.lightspeedEnabled$.value,
+              openLightspeedFeatureInfo: () => this.openLightSpeed(),
             };
             return params;
           })(),
@@ -248,5 +256,9 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
       ],
     };
     return gridOptions;
+  }
+
+  openLightSpeed() {
+    FeatureComponentBase.openDialog(this.dialog, FeatureNames.LightSpeed, this.viewContainerRef, this.changeDetectorRef);
   }
 }

@@ -1,5 +1,10 @@
-import { Directive, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Directive, ElementRef, Input, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { TranslateService } from '@ngx-translate/core';
+import { BehaviorSubject, distinctUntilChanged, pipe, Subscription } from 'rxjs';
 import { FeatureNames } from '../../../features/feature-names';
+import { FeatureComponentBase } from '../../../features/shared/base-feature.component';
 import { consoleLogAngular } from '../../../shared/helpers/console-log-angular.helper';
 import { FeaturesService } from '../../../shared/services/features.service';
 import { FieldConfigSet } from '../../form/builder/fields-builder/field-config-set.model';
@@ -10,11 +15,23 @@ export class PasteClipboardImageDirective implements OnInit, OnDestroy {
   @Input() config: FieldConfigSet;
   @Input() elementType: string;
   private eventListeners: ElementEventListener[] = [];
+  private pasteImageEnabled$ = new BehaviorSubject<boolean>(false);
+  private subscription: Subscription = new Subscription();
 
-  constructor(private elementRef: ElementRef, private featuresService: FeaturesService) { }
+  constructor(
+    private elementRef: ElementRef,
+    private featuresService: FeaturesService,
+    private snackBar: MatSnackBar,
+    private translate: TranslateService,
+    private dialog: MatDialog,
+    private viewContainerRef: ViewContainerRef,
+    private changeDetectorRef: ChangeDetectorRef,
+  ) { }
 
   ngOnInit() {
-    if (!this.featuresService.isEnabled(FeatureNames.PasteImageFromClipboard)) { return; }
+    this.subscription.add(this.featuresService.isEnabled$(FeatureNames.PasteImageFromClipboard)
+      .pipe(distinctUntilChanged())
+      .subscribe(this.pasteImageEnabled$));
 
     switch (this.elementType) {
       case 'input':
@@ -24,6 +41,8 @@ export class PasteClipboardImageDirective implements OnInit, OnDestroy {
         this.elementRef.nativeElement.pastableNonInputable();
         break;
     }
+
+
     const handleImage = (event: CustomEvent) => { this.handleImage(event); };
     this.elementRef.nativeElement.addEventListener('handleImage', handleImage);
 
@@ -37,13 +56,20 @@ export class PasteClipboardImageDirective implements OnInit, OnDestroy {
     this.eventListeners.forEach(({ element, type, listener }) => {
       element.removeEventListener(type, listener);
     });
+    this.subscription.unsubscribe();
   }
 
   private handleImage(event: CustomEvent) {
-    consoleLogAngular('PASTE IMAGE', 'event:', event);
-    // todo: convert png to jpg to reduce file size
-    const image = this.getFile(event.detail as PasteClipboardImageEventDetail);
-    this.config.dropzone.uploadFile(image);
+    if (this.pasteImageEnabled$.value) {
+      consoleLogAngular('PASTE IMAGE', 'event:', event);
+      // todo: convert png to jpg to reduce file size
+      const image = this.getFile(event.detail as PasteClipboardImageEventDetail);
+      this.config.dropzone.uploadFile(image);
+    } else {
+      this.snackBar.open(this.translate.instant('Message.PastingFilesIsNotEnabled'), this.translate.instant('Message.FindOutMore'), { duration: 3000 }).onAction().subscribe(() => {
+        FeatureComponentBase.openDialog(this.dialog, FeatureNames.PasteImageFromClipboard, this.viewContainerRef, this.changeDetectorRef);
+      });
+    }
   }
 
   private getFile(data: PasteClipboardImageEventDetail) {

@@ -1,152 +1,90 @@
-// tslint:disable-next-line: max-line-length
-import { AddContentBlock, AddContentSplit, ContentDivision, HGroups, ItalicWithMore, LinkFiles, LinkGroup, LinkGroupPro, ListGroup, ModeAdvanced, ModeDefault, SxcImages, ToFullscreen, ToolbarModeToggle } from './public';
-import { TinyEavButtons, TinyEavConfig } from './tinymce-config';
-// tslint:disable-next-line: max-line-length
-import { TinyMceMode, TinyMceModeWithSwitcher, ToolbarSwitcher, WysiwygAdvanced, WysiwygDefault, WysiwygDialog, WysiwygInline, WysiwygMode, WysiwygView } from './tinymce-helper-types';
+import { consoleLogWebpack } from '../../../field-custom-gps/src/shared/console-log-webpack.helper';
+import * as Buttons from '../constants/buttons';
+import * as DialogModes from '../constants/display-modes';
+import * as EditModes from '../constants/edit-modes';
+import { ButtonGroupSelector } from './button-group-selector';
+import { NewRow, toButtonGroupByView } from './button-groups';
+import { DefaultContextMenu, DefaultToolbarConfig } from './defaults';
+import { SelectSettings, TinyEavConfig } from './tinymce-config';
+import { TinyMceMode, ToolbarSwitcher } from './tinymce-helper-types';
 
-type ButtonSet = Record<WysiwygMode, string>;
-type ButtonSetConfig = Record<WysiwygMode, boolean>;
-const NoButtons = ''; // must be empty string
-
-const Bs1Intro: ButtonSet = {
-  // #v1500-not-ready
-  // default: ` ${ToolbarModeToggle} undo redo pastetext`,
-  // advanced: ` ${ToolbarModeToggle} undo pastetext`,
-  default: `  undo redo pastetext paste removeformat`,
-  advanced: ` undo redo pastetext paste removeformat`,
-  text: ` ${ToolbarModeToggle} undo redo pastetext paste removeformat`,
-  media: ` ${ToolbarModeToggle} undo pastimage-todo `  // TODO: create pasteimage
-};
-
-const Bs2Format: ButtonSet = {
-  default: `bold ${ItalicWithMore}`,
-  advanced: `styles bold ${ItalicWithMore}`,
-  text: `bold ${ItalicWithMore}`,
-  media: NoButtons,
-};
-
-const Bs3Headings: ButtonSet = {
-  default: `h2 ${HGroups.h3}`,
-  advanced: `h2 ${HGroups.h3}`,
-  text: `h2 h3 ${HGroups.h4}`,
-  media: NoButtons,
-};
-
-const Bs4NumList: ButtonSet = {
-  default: `numlist ${ListGroup}`,
-  advanced: `numlist ${ListGroup}`,
-  text: 'numlist bullist outdent indent',
-  media: NoButtons
-};
-
-const Bs5Links: ButtonSet = {
-  default: `${LinkGroup}`,
-  advanced: `${LinkGroupPro}`,
-  text: `${LinkGroup}`,
-  media: `${SxcImages} ${LinkFiles}`
-};
-
-const Bs6RichMedia: ButtonSetConfig = {
-  default: false,
-  advanced: false,
-  text: false,
-  media: true,
-};
-
-const Bs7ContentBlocks: ButtonSetConfig = {
-  default: true,
-  advanced: false,
-  text: false,
-  media: true,
-};
-
-const Bs91Code = 'code';
-const Bs92Advanced: ButtonSet = {
-  default: ModeAdvanced,
-  advanced: NoButtons,
-  text: NoButtons,
-  media: NoButtons,
-};
-const Bs93CloseAdvanced: ButtonSet = {
-  default: NoButtons,
-  advanced: ModeDefault,
-  text: NoButtons,
-  media: NoButtons,
-};
-const Bs99FullScreen: ButtonSet = {
-  default: ToFullscreen,
-  advanced: ToFullscreen,
-  text: NoButtons,
-  media: NoButtons,
-};
-
-const BsContextMenu: ButtonSet = {
-  default: 'charmap hr',
-  advanced: 'charmap hr',
-  text: 'charmap hr | link',
-  media: 'charmap hr | link image adamimage'// TODO: what is adamimage?
-};
+// #region Button Sets that define what buttons appear in what view / mode
 
 
-function selectFromSet(set: ButtonSet | ButtonSetConfig, mode: WysiwygMode) {
-  return set?.[mode];
-}
+const toolbarConfig = toButtonGroupByView(DefaultToolbarConfig);
+
+
+const ButtonSetContextMenu = toButtonGroupByView(DefaultContextMenu);
+
+// #endregion
 
 export class TinyMceToolbars implements ToolbarSwitcher {
 
   constructor(private config: TinyEavConfig) {
   }
 
-  public build(isInline: boolean): TinyMceModeWithSwitcher {
-console.log('2dm inline', isInline);
-    const initial = this.switch(isInline ? WysiwygInline : WysiwygDialog, WysiwygDefault);
+  public build(isInline: boolean): TinyMceMode {
+    const displayMode = isInline ? DialogModes.DisplayInline : DialogModes.DisplayDialog;
+    const initial = this.switch(displayMode, this.config.mode?.[displayMode] || EditModes.Default);
     return {
       modeSwitcher: this,
       ...initial
     };
   }
 
-  public switch(view: WysiwygView, mode: WysiwygMode): TinyMceMode {
-    const config = this.config.buttons[view];
+  public switch(displayMode: DialogModes.DisplayModes, editMode: EditModes.WysiwygEditMode): TinyMceMode {
+    consoleLogWebpack(`TinyMceToolbars.switch(${displayMode}, ${editMode})`, this.config);
+    const buttons = this.config.buttons[displayMode];
+    const selector = new ButtonGroupSelector({ editMode, displayMode, buttons, features: this.config.features });
     return {
       currentMode: {
-        view,
-        mode,
+        displayMode,
+        editMode,
       },
-      menubar: mode === WysiwygAdvanced,
-      toolbar: this.toolbar(mode, view, config),
-      contextmenu: selectFromSet(BsContextMenu, WysiwygAdvanced)
-        + (this.config.features.contentBlocks ? ` ${AddContentBlock} ` : ''),
+      menubar: editMode === EditModes.WysiwygAdvanced,
+      toolbar: this.toolbar(selector) as any,
+      contextmenu: selector.selectButtonGroup(ButtonSetContextMenu)[0],
+      modeSwitcher: this,
     };
   }
 
-  private toolbar(mode: WysiwygMode, view: WysiwygView, config: TinyEavButtons): string {
-console.log('2dm advanced', config.advanced, config, mode);
-    const list = [
-      selectFromSet(Bs1Intro, mode),
-      selectFromSet(Bs2Format, mode),
-      selectFromSet(Bs3Headings, mode),
-      selectFromSet(Bs4NumList, mode),
-      selectFromSet(Bs5Links, mode),
-      (selectFromSet(Bs6RichMedia, mode) ? this.richContent() : null),
-      (selectFromSet(Bs7ContentBlocks, mode) ? this.contentBlocks() : null),
-      [
-        config.source && Bs91Code,
-        config.advanced && selectFromSet(Bs92Advanced, mode),
-        config.advanced && selectFromSet(Bs93CloseAdvanced, mode),
-        // must only allow full screen if allowed
-        view !== 'dialog' && selectFromSet(Bs99FullScreen, mode),
+  private toolbar(selector: ButtonGroupSelector): string[] {
+    const allButtonGroups = selector.selectButtonGroup(toolbarConfig).flat();
+    const rows = allButtonGroups.reduce((acc, cur) => {
+      if (cur === NewRow)
+        acc.push([]);
+      else
+        acc[acc.length - 1].push(cur);
+      return acc;
+    }, [new Array<string>()]);
 
-      ].join(' '),
+    const cleaned = this.cleanUpDisabledButtons(selector.settings, rows.map(t => t.join(' | ')));
+    return cleaned;
+  }
+
+  private cleanUpDisabledButtons(settings: SelectSettings, toolbar: string[]): string[] {
+    // make sure each button is separated by a space, so we can easily remove it
+    toolbar = toolbar.map(t => ` ${t.replace(/\|/g, ' | ')} `);
+    const removeMap = this.createRemoveMap(settings);
+    return toolbar.map(row =>
+      removeMap.reduce((t, rmvRule) => !rmvRule.enabled && t.indexOf(` ${rmvRule.button} `) > -1
+        ? t.replace(rmvRule.button, '')
+        : t
+      , row)
+    );
+  }
+
+  private createRemoveMap(settings: SelectSettings): { button: string, enabled: boolean }[] {
+    const map = [
+      { button: Buttons.Code, enabled: settings.buttons.source },
+      { button: Buttons.DialogOpen, enabled: settings.buttons.dialog },
+      { button: Buttons.ModeAdvanced, enabled: settings.buttons.advanced },
+      { button: Buttons.ModeDefault, enabled: settings.editMode === EditModes.WysiwygAdvanced },
+      { button: Buttons.AddContentBlock, enabled: settings.features.contentBlocks },
+      { button: Buttons.XXXContentDivision, enabled: false /* settings.features.contentSeparators */ },
+      { button: Buttons.ContentSectionSplitter, enabled: settings.features.contentSeparators },
     ];
-    return list.join(' | ');
-  }
-
-  private richContent(): string {
-    return this.config.features.wysiwygEnhanced ? `${ContentDivision} ${AddContentSplit}` : null;
-  }
-
-  private contentBlocks(): string {
-    return this.config.features.contentBlocks ? AddContentBlock : null;
+    console.log('2dm remove map', map);
+    return map;
   }
 }

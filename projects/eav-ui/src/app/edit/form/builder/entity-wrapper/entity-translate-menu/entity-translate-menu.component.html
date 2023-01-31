@@ -13,8 +13,8 @@
     <mat-menu #menu="matMenu">
       <ng-template matMenuContent>
         <button mat-menu-item (click)="translateMany()">{{ 'LangMenu.TranslateAll' | translate }}</button>
-        <button mat-menu-item  (click)="translateFromMany()">
-          {{ 'LangMenu.TranslateAllFrom' | translate }}
+        <button mat-menu-item (click)="autoTranslateMany()">
+          {{ 'LangMenu.AutoTranslateAll' | translate }}
           <app-feature-icon-indicator [featureNameId]="'EditUiTranslateWithGoogle'"></app-feature-icon-indicator>
         </button>
         <button mat-menu-item (click)="dontTranslateMany()">{{ 'LangMenu.NoTranslateAll' | translate }}</button>

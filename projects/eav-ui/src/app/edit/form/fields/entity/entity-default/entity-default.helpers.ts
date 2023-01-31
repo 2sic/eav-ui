@@ -13,26 +13,35 @@ export function calculateSelectedEntities(
   stringQueryLabelField: string,
   translate: TranslateService,
 ): SelectedEntity[] {
-  // name is guid or freetext
-  const names = typeof fieldValue === 'string' ? convertValueToArray(fieldValue, separator) : fieldValue;
-  const selectedEntities = names.map(name => {
-    const entity = entityCache.find(e => e.Value === name);
-    const stringEntity = stringQueryCache.find(e => `${e[stringQueryValueField]}` === name);
-    let label: string;
-    if (name == null) {
-      label = translate.instant('Fields.Entity.EmptySlot');
-    } else if (typeof fieldValue === 'string') {
-      label = stringEntity?.[stringQueryLabelField] ?? name;
-    } else {
-      label = entity?.Text ?? translate.instant('Fields.Entity.EntityNotFound');
-    }
-    const selectedEntity: SelectedEntity = {
-      value: name,
+  // name is either [guid] or simply free-text - convert to array for further processing
+  const currentValueAsArray = typeof fieldValue === 'string' ? convertValueToArray(fieldValue, separator) : fieldValue;
+
+  // Convert each value to SelectedEntity so the UI has everything it needs
+  const selectedEntities = currentValueAsArray.map(name => {
+    const entityFromType = entityCache.find(e => e.Value === name);
+    const entityFromQuery = stringQueryCache.find(e => `${e[stringQueryValueField]}` === name);
+    const entity = entityFromType || entityFromQuery;
+
+    const disableEdit = entity?._disableEdit === true || (entity == null); // compensate for null/undefined
+    const label = (name == null)
+        ? translate.instant('Fields.Entity.EmptySlot')
+        : (typeof fieldValue === 'string')
+          ? entityFromQuery?.[stringQueryLabelField] ?? name
+          : entityFromType?.Text ?? translate.instant('Fields.Entity.EntityNotFound');
+
+    const result: SelectedEntity = {
+      // debug info
+      _sourceIsQuery: entityFromQuery != null,
+      // if it's a free text value or not found, disable edit and delete
+      disableEdit,
+      disableDelete: disableEdit,
+      // either the real value or null if text-field or not found
+      entityId: entity?.Id,
       label,
       tooltip: `${label} (${name})`,
-      isFreeTextOrNotFound: entity == null,
+      value: name,
     };
-    return selectedEntity;
+    return result;
   });
 
   return selectedEntities;

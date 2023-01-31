@@ -1,43 +1,47 @@
-import { WysiwygMode, WysiwygView } from './tinymce-helper-types';
+import * as DialogModes from '../constants/display-modes';
+import * as EditModes from '../constants/edit-modes';
+import { ConfigForDisplayModes, ConfigForDisplayModesRaw } from './config-for-view-modes';
 
+export interface SelectSettings {
+  /** The mode like 'default', 'text', etc. */
+  editMode: EditModes.WysiwygEditMode;
+  /** inline / dialog */
+  displayMode: DialogModes.DisplayModes;
+  /** What buttons are enabled by configuration */
+  buttons: TinyEavButtons;
+  /** which features are currently enabled */
+  features: TinyEavFeatures;
+}
+
+export interface TinyEavFeatures {
+  contentBlocks: boolean;
+  wysiwygEnhanced: boolean;
+  responsiveImages: boolean;
+  contentSeparators: boolean;
+}
 
 export interface TinyEavButtons {
   source: boolean;
   advanced: boolean;
-  contentDivisions: boolean;
+  dialog: boolean;
 }
 export interface TinyEavConfig {
-  features: {
-    contentBlocks: boolean,
-    wysiwygEnhanced: boolean,
-  };
-
-  buttons: Record<WysiwygView, TinyEavButtons>;
+  mode: ConfigForDisplayModes<EditModes.WysiwygEditMode>;
+  features: TinyEavFeatures;
+  buttons: ConfigForDisplayModes<TinyEavButtons>;
+}
+// TODO: this is not well designed yet, as the final form isn't decided
+// Still WIP 2023-01-23 2dm
+// Naming is still unclear too
+export interface TinyEavConfigRaw {
+  features: TinyEavFeatures;
+  buttons: ConfigForDisplayModesRaw<TinyEavButtons>;
 }
 
-export const TinyEavConfigDefault: TinyEavConfig = {
-  features: {
-    contentBlocks: false,
-    wysiwygEnhanced: true, // temporary, as we are still in dev. will be false later on
-  },
-  buttons: {
-    inline:   {
-      source: false,
-      advanced: false,
-      contentDivisions: true  // temporary, as we are still in dev. will be false later on
-    },
-    dialog:   {
-      source: true,
-      advanced: true,
-      contentDivisions: true  // temporary, as we are still in dev. will be false later on
-    }
-  }
-};
-
-// This is stil WIP for 2dm - would be the JSON that comes from the field configuration
+// This is still WIP for 2dm - would be the JSON that comes from the field configuration
 export interface TinyMceModeConfigJson extends TinyEavConfig {
   /** The foundation for filling in the configuration */
-  inherits?: WysiwygMode;
+  inherits?: EditModes.WysiwygEditMode;
   contextmenu?: string;
   toolbar?: string | string[];
 }
@@ -53,4 +57,4 @@ export interface TinyMceModeConfigJson extends TinyEavConfig {
  * ...but still just pass one object to all the helper functions,
  * ...and keep things simple as more configs are added.
  */
-export type TinyMceConfigJson = Record<WysiwygMode, TinyMceModeConfigJson>;
+export type TinyMceConfigJson = Record<EditModes.WysiwygEditMode, TinyMceModeConfigJson>;

@@ -26,9 +26,12 @@
   font-size: medium;
 }
 
-.feature-text-info-icon {
+.icon {
   font-size: 45px;
-  color: red;
   height: fit-content;
   width: fit-content;
+}
+
+.icon-warning {
+  color: red;
 }

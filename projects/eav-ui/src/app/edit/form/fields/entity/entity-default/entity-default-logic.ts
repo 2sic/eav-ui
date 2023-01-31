@@ -1,12 +1,12 @@
 import { FieldSettings } from '../../../../../../../../edit-types';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
-import { EavConfig } from '../../../../shared/models';
 import { FieldLogicBase } from '../../../shared/field-logic/field-logic-base';
+import { FieldLogicTools } from '../../../shared/field-logic/field-logic-tools';
 
 export class EntityDefaultLogic extends FieldLogicBase {
   name = InputTypeConstants.EntityDefault;
 
-  update(settings: FieldSettings, value: string[], eavConfig: EavConfig, debugEnabled: boolean): FieldSettings {
+  update(settings: FieldSettings, value: string[], tools: FieldLogicTools): FieldSettings {
     const fixedSettings: FieldSettings = { ...settings };
     fixedSettings.EntityType ??= '';
     fixedSettings.AllowMultiValue ??= false;
@@ -15,8 +15,11 @@ export class EntityDefaultLogic extends FieldLogicBase {
     fixedSettings.EnableAddExisting ??= true;
     fixedSettings.EnableRemove ??= true;
     fixedSettings.EnableDelete ??= false;
+    // 2dm 2023-01-22 #maybeSupportIncludeParentApps
+    // fixedSettings.IncludeParentApps ??= false;
 
-    if (eavConfig.overrideEditRestrictions && debugEnabled) {
+    if (tools.eavConfig.overrideEditRestrictions && tools.debug) {
+      console.log("SystemAdmin + Debug: Overriding edit restrictions for field '" + settings.Name + "' (EntityType: '" + settings.EntityType + "').");
       fixedSettings.EnableEdit = true;
       fixedSettings.EnableCreate = true;
       fixedSettings.EnableAddExisting = true;

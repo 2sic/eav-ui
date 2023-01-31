@@ -51,7 +51,10 @@
             (click)="createMetadata(recommendation)">
             <div *ngIf="recommendation.Icon; then svgIcon else matIcon"></div>
             <ng-template #svgIcon>
-              <div [innerHTML]="recommendation.Icon | safeHtml"></div>
+              <div
+                [innerHTML]="recommendation.Icon | safeHtml"
+                [matBadgeHidden]="recommendation.Enabled" matBadgeColor="accent" matBadgeSize="small" matBadge="💎" matBadgePosition="below after"
+              ></div>
             </ng-template>
             <!-- this is for all recommendations which don't have an own icon - they use the standard add-icon -->
             <ng-template #matIcon>

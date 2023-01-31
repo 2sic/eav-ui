@@ -5,16 +5,19 @@ import { map, tap } from 'rxjs';
 import { DialogContext } from '../../../app-administration/models';
 import { keyPartOfPage, keyPublishing, partOfPageDefault } from '../../../shared/constants/session.constants';
 import { Context } from '../../../shared/services/context';
-import { EavFormData, SaveEavFormData } from '../../dialog/main/edit-dialog-main.models';
+import { EavEditLoadDto, EditSettings, SaveEavFormData } from '../../dialog/main/edit-dialog-main.models';
 import { EavConfig, SaveResult, VersioningOptions } from '../models';
 import { GlobalConfigService } from '../store/ngrx-data';
 
 export const webApiEditRoot = 'cms/edit/';
+export const webApiEntityPicker = 'cms/edit/EntityPicker';
 
 @Injectable()
 export class EavService {
   /** WARNING! These are constants that form was loaded with. They do not change while form is running */
   eavConfig: EavConfig;
+
+  settings: EditSettings;
 
   constructor(
     private http: HttpClient,
@@ -33,8 +36,9 @@ export class EavService {
     createMode: boolean,
     isCopy: boolean,
     enableHistory: boolean,
-    settings: Object[],
+    settings: EditSettings,
   ) {
+    this.settings = settings;
     this.eavConfig = {
       zoneId: this.context.zoneId.toString(),
       appId: this.context.appId.toString(),
@@ -66,7 +70,7 @@ export class EavService {
   }
 
   fetchFormData(items: string) {
-    return this.http.post<EavFormData>(this.dnnContext.$2sxc.http.apiUrl(webApiEditRoot + 'load'), items, {
+    return this.http.post<EavEditLoadDto>(this.dnnContext.$2sxc.http.apiUrl(webApiEditRoot + 'load'), items, {
       params: { appId: this.context.appId.toString() }
     }).pipe(
       map(formData => {

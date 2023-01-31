@@ -1,20 +1,20 @@
 import { EavEntity, EavValues } from '.';
-import { EntityAttributes1 } from '../json-format-v1';
+import { EavAttributesDto } from '../json-format-v1';
 
 export class EavEntityAttributes {
   [attributeName: string]: EavValues<any>;
 
-  static convert(attributes1: EntityAttributes1): EavEntityAttributes {
-    const atributes: EavEntityAttributes = {};
+  static convert(attributesDto: EavAttributesDto): EavEntityAttributes {
+    const attributes: EavEntityAttributes = {};
 
     // loop attribute types - String, Boolean, ...
-    for (const [type1, attribute1] of Object.entries(attributes1)) {
+    for (const [typeName, attributeDto] of Object.entries(attributesDto)) {
       // loop attribute names - Description, Name, ...
-      for (const [name1, value1] of Object.entries(attribute1)) {
-        atributes[name1] = EavValues.convert(value1, type1);
+      for (const [attributeName, valueDto] of Object.entries(attributeDto)) {
+        attributes[attributeName] = EavValues.convert(valueDto, typeName);
       }
     }
-    return atributes;
+    return attributes;
   }
 
   static mergeSettings(metadataItems: EavEntity[]): EavEntityAttributes {

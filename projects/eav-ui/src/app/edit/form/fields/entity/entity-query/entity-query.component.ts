@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { distinctUntilChanged, map } from 'rxjs';
-import { EntityInfo } from '../../../../../../../../edit-types';
+import { EntityForPicker, EntityInfo } from '../../../../../../../../edit-types';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { FieldMask, GeneralHelpers } from '../../../../shared/helpers';
 import { EavService, EditRoutingService, EntityService, FieldsSettingsService, QueryService } from '../../../../shared/services';
@@ -95,6 +95,7 @@ export class EntityQueryComponent extends EntityDefaultComponent implements OnIn
     const settings = this.settings$.value;
     if (!settings.Query) {
       alert(`No query defined for ${this.config.fieldName} - can't load entities`);
+      this.availableEntities$.next([]);
       return;
     }
 
@@ -121,9 +122,12 @@ export class EntityQueryComponent extends EntityDefaultComponent implements OnIn
         }
         const items: EntityInfo[] = data[streamName].map(entity => this.queryEntityMapping(entity));
         if (!this.isStringQuery) {
-          this.entityCacheService.loadEntities(items);
+          const entities = this.setDisableEdit(items);
+          this.entityCacheService.loadEntities(entities);
         } else {
-          this.stringQueryCacheService.loadEntities(this.config.entityGuid, this.config.fieldName, data[streamName]);
+          // If the data belongs to another app, mark it as not editable
+          const entities = this.setDisableEdit(data[streamName]);
+          this.stringQueryCacheService.loadEntities(this.config.entityGuid, this.config.fieldName, entities);
         }
         if (!clearAvailableEntitiesAndOnlyUpdateCache) {
           this.availableEntities$.next(items);
@@ -134,6 +138,13 @@ export class EntityQueryComponent extends EntityDefaultComponent implements OnIn
         console.error(`${this.translate.instant('Fields.EntityQuery.QueryError')} - ${error.data}`);
       }
     });
+  }
+
+  private setDisableEdit<T extends EntityForPicker>(queryEntities: T[]): T[] {
+    if (queryEntities)
+      queryEntities.forEach(e => e._disableEdit = e.AppId != null && e.AppId.toString() !== this.eavService.eavConfig.appId);
+    console.log('2dm queryEntities', queryEntities, this.eavService.eavConfig.appId);
+    return queryEntities;
   }
 
   /** WARNING! Overridden in subclass */

@@ -1,8 +1,11 @@
-import 'tinymce/tinymce'; // Important! tinymce has to be imported before themes and plugins
-import 'tinymce/models/dom'
+// Important! tinymce has to be imported before themes and plugins
+// So this group of imports has to be first
+import 'tinymce/tinymce';
+// Keep at least one empty line after this, to ensure order of imports!
 
-import type { Subscription } from 'rxjs';
+// Import all the plugins and themes to ensure it's in the bundle
 import 'tinymce/icons/default';
+import 'tinymce/models/dom';
 import 'tinymce/plugins/anchor';
 import 'tinymce/plugins/autolink';
 import 'tinymce/plugins/charmap';
@@ -15,26 +18,28 @@ import 'tinymce/plugins/nonbreaking';
 import 'tinymce/plugins/searchreplace';
 import 'tinymce/plugins/table';
 import 'tinymce/themes/silver';
-// tslint:disable-next-line:no-duplicate-imports
-import type { Editor, RawEditorOptions } from 'tinymce/tinymce';
+// Keep at least one empty line after this, to ensure order of imports!
+
+import { BehaviorSubject, distinctUntilChanged, Subscription } from 'rxjs';
+// tslint:disable-next-line: no-duplicate-imports
+import type { Editor } from 'tinymce/tinymce';
 import { EavWindow } from '../../../eav-ui/src/app/shared/models/eav-window.model';
 import { Connector, EavCustomInputField, WysiwygReconfigure } from '../../../edit-types';
 import { consoleLogWebpack } from '../../../field-custom-gps/src/shared/console-log-webpack.helper';
-import { TinyMceButtons } from '../config/buttons';
 import { TinyMceConfigurator } from '../config/tinymce-configurator';
-import { RawEditorOptionsWithModes, WysiwygInline } from '../config/tinymce-helper-types';
+import * as WysiwygDialogModes from '../constants/display-modes';
+import { RawEditorOptionsWithEav } from '../config/tinymce-helper-types';
 import { TinyMceTranslations } from '../config/translations';
+import { AddEverythingToRegistry } from '../config/ui-registry/add-everything-to-registry';
 import { attachAdam } from '../connector/adam';
+import { tinyMceBaseUrl, wysiwygEditorHtmlTag } from '../../internal-constants';
 import { buildTemplate } from '../shared/helpers';
 import * as template from './editor.html';
 import * as styles from './editor.scss';
 import { fixMenuPositions } from './fix-menu-positions.helper';
 import * as skinOverrides from './skin-overrides.scss';
-// import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
 
 declare const window: EavWindow;
-export const wysiwygEditorTag = 'field-string-wysiwyg-dialog';
-const tinyMceBaseUrl = '../../system/field-string-wysiwyg';
 
 export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomInputField<string> {
   fieldInitialized: boolean;
@@ -49,7 +54,8 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   private toolbarContainerClass: string;
   private subscriptions: Subscription[];
   private editorContent: string; // saves editor content to prevent slow update when first using editor
-  private pasteClipboardImage: boolean;
+  private pasteClipboardImage$ = new BehaviorSubject<boolean>(false);
+  private subscription: Subscription = new Subscription();
   private editor: Editor;
   private firstInit: boolean;
   private dialogIsOpen: boolean;
@@ -57,7 +63,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
 
   constructor() {
     super();
-    consoleLogWebpack(`${wysiwygEditorTag} constructor called`);
+    consoleLogWebpack(`${wysiwygEditorHtmlTag} constructor called`);
     this.subscriptions = [];
     this.fieldInitialized = false;
     this.instanceId = `${Math.floor(Math.random() * 99999)}`;
@@ -68,13 +74,16 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   connectedCallback(): void {
     if (this.fieldInitialized) { return; }
     this.fieldInitialized = true;
-    consoleLogWebpack(`${wysiwygEditorTag} connectedCallback called`);
+    consoleLogWebpack(`${wysiwygEditorHtmlTag} connectedCallback called`);
 
     this.innerHTML = buildTemplate(template.default, styles.default + skinOverrides.default);
     this.querySelector<HTMLDivElement>('.tinymce-container').classList.add(this.containerClass);
     this.querySelector<HTMLDivElement>('.tinymce-toolbar-container').classList.add(this.toolbarContainerClass);
     this.classList.add(this.mode === 'inline' ? 'inline-wysiwyg' : 'full-wysiwyg');
-    this.pasteClipboardImage = this.connector._experimental.isFeatureEnabled('PasteImageFromClipboard');
+    this.subscription.add(this.connector._experimental.isFeatureEnabled$('PasteImageFromClipboard')
+      .pipe(distinctUntilChanged())
+      .subscribe(this.pasteClipboardImage$)
+    );
 
     const tinyLang = TinyMceTranslations.fixTranslationKey(this.connector._experimental.translateService.currentLang);
     this.connector.loadScript(
@@ -93,7 +102,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   }
 
   private tinyMceScriptLoaded(): void {
-    consoleLogWebpack(`${wysiwygEditorTag} tinyMceScriptLoaded called`);
+    consoleLogWebpack(`${wysiwygEditorHtmlTag} tinyMceScriptLoaded called`);
     this.configurator = new TinyMceConfigurator(this.connector, this.reconfigure);
     const tinyOptions = this.configurator.buildOptions(
       this.containerClass,
@@ -108,12 +117,12 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   }
 
   /** This will initialized an instance of an editor. Everything else is kind of global. */
-  private tinyMceSetup(editor: Editor, rawEditorOptions: RawEditorOptionsWithModes): void {
+  private tinyMceSetup(editor: Editor, rawEditorOptions: RawEditorOptionsWithEav): void {
     this.editor = editor;
     editor.on('init', _event => {
-      consoleLogWebpack(`${wysiwygEditorTag} TinyMCE initialized`, editor);
+      consoleLogWebpack(`${wysiwygEditorHtmlTag} TinyMCE initialized`, editor);
       this.reconfigure?.editorOnInit?.(editor);
-      new TinyMceButtons({ field: this, editor, adam: this.connector._experimental.adam, options: rawEditorOptions }).register();
+      new AddEverythingToRegistry({ field: this, editor, adam: this.connector._experimental.adam, options: rawEditorOptions }).register();
       if (!this.reconfigure?.disableAdam) {
         attachAdam(editor, this.connector._experimental.adam);
       }
@@ -133,7 +142,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
           }
         }),
       );
-      if (this.mode !== WysiwygInline) {
+      if (this.mode !== WysiwygDialogModes.DisplayInline) {
         setTimeout(() => { editor.focus(false); }, 100); // If not inline mode always focus on init
       } else {
         if (!this.firstInit) { setTimeout(() => { editor.focus(false); }, 100); } // If is inline mode skip focus on first init
@@ -149,7 +158,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
 
     // called after TinyMCE editor is removed
     editor.on('remove', _event => {
-      consoleLogWebpack(`${wysiwygEditorTag} TinyMCE removed`, _event);
+      consoleLogWebpack(`${wysiwygEditorHtmlTag} TinyMCE removed`, _event);
       this.clearData();
     });
 
@@ -162,12 +171,15 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
     // called before actual image upload
     // this is needed so paste will only work depending on pasteClipboardImage feature
     editor.on('paste', _event => {
-        editor.options.set("paste_data_images", this.pasteClipboardImage);
+      editor.options.set("paste_data_images", this.pasteClipboardImage$.value);
+      if (!this.pasteClipboardImage$.value) {
+        this.connector._experimental.featureDisabledWarning('PasteImageFromClipboard');
+      }
     });
 
     editor.on('focus', _event => {
       this.classList.add('focused');
-      consoleLogWebpack(`${wysiwygEditorTag} TinyMCE focused`, _event);
+      consoleLogWebpack(`${wysiwygEditorHtmlTag} TinyMCE focused`, _event);
       if (!this.reconfigure?.disableAdam) {
         attachAdam(editor, this.connector._experimental.adam);
       }
@@ -178,7 +190,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
 
     editor.on('blur', _event => {
       this.classList.remove('focused');
-      consoleLogWebpack(`${wysiwygEditorTag} TinyMCE blurred`, _event);
+      consoleLogWebpack(`${wysiwygEditorHtmlTag} TinyMCE blurred`, _event);
       if (this.mode === 'inline') {
         this.connector._experimental.setFocused(false);
       }
@@ -224,11 +236,12 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   }
 
   disconnectedCallback(): void {
-    consoleLogWebpack(`${wysiwygEditorTag} disconnectedCallback called`);
+    consoleLogWebpack(`${wysiwygEditorHtmlTag} disconnectedCallback called`);
     this.clearData();
+    this.subscription.unsubscribe();
   }
 }
 
-if (!customElements.get(wysiwygEditorTag)) {
-  customElements.define(wysiwygEditorTag, FieldStringWysiwygEditor);
+if (!customElements.get(wysiwygEditorHtmlTag)) {
+  customElements.define(wysiwygEditorHtmlTag, FieldStringWysiwygEditor);
 }

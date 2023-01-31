@@ -16,6 +16,12 @@ export const SystemSettingsScopes = {
 } as const;
 export type SystemSettingsScope = typeof SystemSettingsScopes[keyof typeof SystemSettingsScopes];
 
+export const EditApiKeyPaths = {
+  GoogleTranslate: 'Settings.GoogleTranslate.ApiKey',
+  GoogleMaps: 'Settings.GoogleMaps.ApiKey',
+} as const;
+
+
 export const eavConstants = {
   metadata: {
     /** Metadata of Attribute */
@@ -33,6 +39,10 @@ export const eavConstants = {
     language: { targetType: 8, target: 'Dimension', label: 'Language (8)', keyType: MetadataKeyTypes.String },
     /** Metadata of CmsObject */
     cmsObject: { targetType: 10, target: 'CmsObject', label: 'Cms Object (10)', keyType: MetadataKeyTypes.String, hint: 'Usually this is "file:400" or "folder:4030"' },
+  },
+
+  appMetadata: {
+    LightSpeed: { ContentTypeName: 'LightSpeedOutputDecorator' }
   },
 
   /** Lookup type for the metadata, e.g. key=80adb152-efad-4aa4-855e-74c5ef230e1f is keyType=guid */

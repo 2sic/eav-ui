@@ -21,7 +21,7 @@ export class EntityDefaultListComponent implements OnInit {
 
   @Output() private reorder = new EventEmitter<ReorderIndexes>();
   @Output() private removeSelected = new EventEmitter<number>();
-  @Output() private editEntity = new EventEmitter<string>();
+  @Output() private editEntity = new EventEmitter<{ entityGuid: string, entityId: number }>();
   @Output() private deleteEntity = new EventEmitter<DeleteEntityProps>();
 
   templateVars$: Observable<EntityListTemplateVars>;
@@ -31,22 +31,17 @@ export class EntityDefaultListComponent implements OnInit {
   ngOnInit(): void {
     const settings$ = this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).pipe(
       map(settings => ({
-        AllowMultiValue: settings.AllowMultiValue,
-        EnableEdit: settings.EnableEdit,
-        EnableDelete: settings.EnableDelete,
-        EnableRemove: settings.EnableRemove,
-      })),
+        allowMultiValue: settings.AllowMultiValue,
+        enableEdit: settings.EnableEdit,
+        enableDelete: settings.EnableDelete,
+        enableRemove: settings.EnableRemove,
+      } as EntityListTemplateVars)),
       distinctUntilChanged(GeneralHelpers.objectsEqual),
     );
     this.templateVars$ = combineLatest([settings$]).pipe(
       map(([settings]) => {
-        const templateVars: EntityListTemplateVars = {
-          allowMultiValue: settings.AllowMultiValue,
-          enableEdit: settings.EnableEdit,
-          enableDelete: settings.EnableDelete,
-          enableRemove: settings.EnableRemove,
-        };
-        return templateVars;
+        console.log('2dm - check delete', settings);
+        return settings;
       }),
     );
   }
@@ -64,8 +59,8 @@ export class EntityDefaultListComponent implements OnInit {
     this.reorder.emit(reorderIndexes);
   }
 
-  edit(entityGuid: string): void {
-    this.editEntity.emit(entityGuid);
+  edit(entityGuid: string, entityId: number): void {
+    this.editEntity.emit({ entityGuid, entityId });
   }
 
   removeItem(index: number): void {
