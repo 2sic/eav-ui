@@ -74,7 +74,7 @@ class FieldCustomGpsDialog extends HTMLElement implements EavCustomInputField<st
     }
 
     const googleMapsParams = (expConnector.getSettings(EditApiKeyPaths.GoogleMaps) as ApiKeySpecs).ApiKey;
-    this.connector.loadScript('google', `https://maps.googleapis.com/maps/api/js?key=${googleMapsParams}`, () => { this.mapScriptLoaded(); });
+    this.connector.loadScript('google', `https://maps.googleapis.com/maps/api/js?key=${googleMapsParams}&callback=Function.prototype`, () => { this.mapScriptLoaded(); });
   }
 
   private mapScriptLoaded(): void {
