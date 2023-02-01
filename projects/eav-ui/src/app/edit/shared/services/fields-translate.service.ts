@@ -68,6 +68,10 @@ export class FieldsTranslateService {
     const textsForTranslation: string[] = [];
     const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
     const attributes = this.itemService.getItemAttributes(this.entityGuid);
+
+    // TODO: @STV - THIS LOOKS very fishy
+    // You're looping on fieldNames and changing it inside the loop
+    // This is almost certainly bad - pls check what it should do and fix
     fieldNames.forEach(field => {
       this.isTranslationDisabled(field) ?
         fieldNames = fieldNames.filter(x => x !== field) :
