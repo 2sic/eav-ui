@@ -65,18 +65,12 @@ export class FieldsTranslateService {
     if (apiKeyInfo.IsDemo)
       alert(apiKeyInDemoModeAlert);
 
-    const textsForTranslation: string[] = [];
+    let textsForTranslation: string[] = [];
     const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
     const attributes = this.itemService.getItemAttributes(this.entityGuid);
 
-    // TODO: @STV - THIS LOOKS very fishy
-    // You're looping on fieldNames and changing it inside the loop
-    // This is almost certainly bad - pls check what it should do and fix
-    fieldNames.forEach(field => {
-      this.isTranslationDisabled(field) ?
-        fieldNames = fieldNames.filter(x => x !== field) :
-        textsForTranslation.push(attributes[field].Values.find(v => v.Dimensions.find(x => x.Value === autoTranslateLanguageKey)).Value);
-    });
+    fieldNames = fieldNames.filter(field => !this.isTranslationDisabled(field));
+    textsForTranslation = fieldNames.map(field => attributes[field].Values.find(v => v.Dimensions.find(x => x.Value === autoTranslateLanguageKey)).Value);
 
     if (!areAllChecksKnown) {
       fieldNames.forEach((field, i) => {
