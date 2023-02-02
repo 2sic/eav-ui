@@ -65,12 +65,11 @@ export class FieldsTranslateService {
     if (apiKeyInfo.IsDemo)
       alert(apiKeyInDemoModeAlert);
 
-    let textsForTranslation: string[] = [];
     const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
     const attributes = this.itemService.getItemAttributes(this.entityGuid);
 
     fieldNames = fieldNames.filter(field => !this.isTranslationDisabled(field));
-    textsForTranslation = fieldNames.map(field => attributes[field].Values.find(v => v.Dimensions.find(x => x.Value === autoTranslateLanguageKey)).Value);
+    const textsForTranslation = fieldNames.map(field => attributes[field].Values.find(v => v.Dimensions.find(x => x.Value === autoTranslateLanguageKey)).Value);
 
     if (!areAllChecksKnown) {
       fieldNames.forEach((field, i) => {
