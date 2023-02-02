@@ -7,6 +7,7 @@ import { BehaviorSubject, catchError, concatMap, filter, forkJoin, map, of, shar
 import { fieldNameError, fieldNamePattern } from '../../app-administration/constants/field-name.patterns';
 import { ContentType } from '../../app-administration/models/content-type.model';
 import { ContentTypesService } from '../../app-administration/services/content-types.service';
+import { BaseSubsinkComponent } from '../../shared/components/base-subsink-component/base-subsink.component';
 import { DataTypeConstants } from '../constants/data-type.constants';
 import { InputTypeConstants } from '../constants/input-type.constants';
 import { calculateTypeIcon, calculateTypeLabel } from '../content-type-fields.helpers';
@@ -20,7 +21,7 @@ import { calculateDataTypes, DataType } from './edit-content-type-fields.helpers
   templateUrl: './edit-content-type-fields.component.html',
   styleUrls: ['./edit-content-type-fields.component.scss'],
 })
-export class EditContentTypeFieldsComponent implements OnInit, OnDestroy {
+export class EditContentTypeFieldsComponent extends BaseSubsinkComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
   @ViewChild('ngForm', { read: NgForm }) private form: NgForm;
 
@@ -40,7 +41,6 @@ export class EditContentTypeFieldsComponent implements OnInit, OnDestroy {
 
   private contentType: ContentType;
   private inputTypeOptions: FieldInputTypeOption[];
-  private subscription = new Subscription();
 
   constructor(
     private dialogRef: MatDialogRef<EditContentTypeFieldsComponent>,
@@ -49,6 +49,7 @@ export class EditContentTypeFieldsComponent implements OnInit, OnDestroy {
     private contentTypesFieldsService: ContentTypesFieldsService,
     private snackBar: MatSnackBar,
   ) {
+    super();
     this.dialogRef.disableClose = true;
     this.subscription.add(
       this.dialogRef.backdropClick().subscribe(event => {
@@ -118,7 +119,7 @@ export class EditContentTypeFieldsComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.loading$.complete();
     this.saving$.complete();
-    this.subscription.unsubscribe();
+    super.ngOnDestroy();
   }
 
   closeDialog() {

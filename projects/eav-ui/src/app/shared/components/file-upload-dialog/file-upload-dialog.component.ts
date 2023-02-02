@@ -2,6 +2,7 @@ import { Component, HostBinding, Inject, OnDestroy, OnInit } from '@angular/core
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BehaviorSubject, Subscription, take } from 'rxjs';
+import { BaseSubsinkComponent } from '../base-subsink-component/base-subsink.component';
 import { FileUploadDialogData, FileUploadMessageTypes, FileUploadResult } from './file-upload-dialog.models';
 
 @Component({
@@ -9,7 +10,7 @@ import { FileUploadDialogData, FileUploadMessageTypes, FileUploadResult } from '
   templateUrl: './file-upload-dialog.component.html',
   styleUrls: ['./file-upload-dialog.component.scss'],
 })
-export class FileUploadDialogComponent implements OnInit, OnDestroy {
+export class FileUploadDialogComponent extends BaseSubsinkComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
   uploading$ = new BehaviorSubject<boolean>(false);
@@ -17,13 +18,14 @@ export class FileUploadDialogComponent implements OnInit, OnDestroy {
   result$ = new BehaviorSubject<FileUploadResult>(undefined);
   FileUploadMessageTypes = FileUploadMessageTypes;
 
-  private subscription = new Subscription();
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public dialogData: FileUploadDialogData,
     private dialogRef: MatDialogRef<FileUploadDialogComponent>,
     private snackBar: MatSnackBar,
-  ) { }
+  ) { 
+    super();
+  }
 
   ngOnInit(): void {
     this.subscription.add(
@@ -43,7 +45,7 @@ export class FileUploadDialogComponent implements OnInit, OnDestroy {
     this.uploading$.complete();
     this.files$.complete();
     this.result$.complete();
-    this.subscription.unsubscribe();
+    super.ngOnDestroy();
   }
 
   closeDialog(refresh?: boolean): void {

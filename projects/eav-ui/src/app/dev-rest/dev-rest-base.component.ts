@@ -7,6 +7,7 @@ import { AllScenarios, DevRestBaseTemplateVars, fireOnStartAndWhenSubDialogClose
 import { DialogSettings } from '../app-administration/models';
 import { AppDialogConfigService } from '../app-administration/services';
 import { Permission, PermissionsService } from '../permissions';
+import { BaseSubsinkComponent } from '../shared/components/base-subsink-component/base-subsink.component';
 import { eavConstants } from '../shared/constants/eav.constants';
 import { Context } from '../shared/services/context';
 
@@ -15,13 +16,10 @@ import { Context } from '../shared/services/context';
   template: ''
 })
 // tslint:disable-next-line:component-class-suffix
-export class DevRestBase<TemplateVarType> implements OnDestroy {
+export class DevRestBase<TemplateVarType> extends BaseSubsinkComponent implements OnDestroy {
 
   /** Template variables for the HTML template */
   public templateVars$: Observable<TemplateVarType>;
-
-  /** Subscription Sink */
-  subscription = new Subscription();
 
   /** List of scenarios */
   scenarios = AllScenarios;
@@ -44,6 +42,7 @@ export class DevRestBase<TemplateVarType> implements OnDestroy {
     protected route: ActivatedRoute,
     private permissionsService: PermissionsService,
   ) {
+    super();
 
     // Build Dialog Settings Stream
     // Note: this is probably already loaded somewhere, so I'm not sure why we're getting it again
@@ -100,7 +99,7 @@ export class DevRestBase<TemplateVarType> implements OnDestroy {
 
   ngOnDestroy() {
     this.scenario$.complete();
-    this.subscription.unsubscribe();
+    super.ngOnDestroy();
   }
 
   closeDialog() {

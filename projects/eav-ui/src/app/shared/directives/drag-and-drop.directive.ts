@@ -1,9 +1,10 @@
 import { Directive, ElementRef, EventEmitter, HostListener, Input, NgZone, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { fromEvent, Subscription } from 'rxjs';
+import { BaseSubsinkComponent } from '../components/base-subsink-component/base-subsink.component';
 
 @Directive({ selector: '[appDragAndDrop]' })
-export class DragAndDropDirective implements OnInit, OnDestroy {
+export class DragAndDropDirective extends BaseSubsinkComponent implements OnInit, OnDestroy {
   @Input() markStyle: 'outline' | 'fill' | 'shadow' = 'outline';
   /** Comma separated file types, e.g. 'txt,doc,docx' */
   @Input() allowedFileTypes = '';
@@ -14,9 +15,9 @@ export class DragAndDropDirective implements OnInit, OnDestroy {
   private markStyleClass: string;
   private dragClass = 'eav-dragover';
   private timeouts: number[] = [];
-  private subscription = new Subscription();
 
   constructor(elementRef: ElementRef, private zone: NgZone, private snackBar: MatSnackBar) {
+    super();
     this.element = elementRef.nativeElement;
   }
 
@@ -47,7 +48,7 @@ export class DragAndDropDirective implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.clearTimeouts();
     this.element.classList.remove(this.dropAreaClass, this.markStyleClass, this.dragClass);
-    this.subscription.unsubscribe();
+    super.ngOnDestroy();
   }
 
   @HostListener('drop', ['$event'])

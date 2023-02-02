@@ -8,13 +8,14 @@ import { PredefinedTemplate } from '../code-editor/models/predefined-template.mo
 import { Preview } from '../code-editor/models/preview.models';
 import { SourceService } from '../code-editor/services/source.service';
 import { SanitizeHelper } from '../edit/shared/helpers';
+import { BaseSubsinkComponent } from '../shared/components/base-subsink-component/base-subsink.component';
 
 @Component({
   selector: 'app-create-file-dialog',
   templateUrl: './create-file-dialog.component.html',
   styleUrls: ['./create-file-dialog.component.scss']
 })
-export class CreateFileDialogComponent implements OnInit, OnDestroy {
+export class CreateFileDialogComponent extends BaseSubsinkComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
   form: FormGroup;
@@ -24,16 +25,16 @@ export class CreateFileDialogComponent implements OnInit, OnDestroy {
   private all = 'All' as const;
   private templates$: BehaviorSubject<PredefinedTemplate[]>;
   private loadingPreview$: BehaviorSubject<boolean>;
-  private subscription: Subscription;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) private dialogData: CreateFileDialogData,
     private dialogRef: MatDialogRef<CreateFileDialogComponent>,
     private sourceService: SourceService,
-  ) { }
+  ) { 
+    super();
+  }
 
   ngOnInit(): void {
-    this.subscription = new Subscription();
     this.templates$ = new BehaviorSubject<PredefinedTemplate[]>([]);
     this.loadingPreview$ = new BehaviorSubject(false);
 
@@ -45,7 +46,7 @@ export class CreateFileDialogComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.templates$.complete();
     this.loadingPreview$.complete();
-    this.subscription.unsubscribe();
+    super.ngOnDestroy();
   }
 
   closeDialog(result?: CreateFileDialogResult): void {

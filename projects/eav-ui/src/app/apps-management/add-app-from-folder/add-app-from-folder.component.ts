@@ -4,6 +4,7 @@ import { MatDialogRef } from "@angular/material/dialog";
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BehaviorSubject, catchError, distinctUntilChanged, Observable, of, share, startWith, Subject, Subscription, switchMap } from "rxjs";
 import { FeatureNames } from '../../features/feature-names';
+import { BaseSubsinkComponent } from '../../shared/components/base-subsink-component/base-subsink.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from "../../shared/constants/default-grid-options.constants";
 import { FeaturesService } from '../../shared/services/features.service';
@@ -18,7 +19,7 @@ import { CheckboxCellParams } from './checkbox-cell/checkbox-cell.model';
   templateUrl: './add-app-from-folder.component.html',
   styleUrls: ['./add-app-from-folder.component.scss'],
 })
-export class AddAppFromFolderComponent implements OnInit, OnDestroy {
+export class AddAppFromFolderComponent extends BaseSubsinkComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
   pendingApps$: Observable<PendingApp[]>;
@@ -28,7 +29,6 @@ export class AddAppFromFolderComponent implements OnInit, OnDestroy {
 
   private refreshApps$ = new Subject<void>();
   private isAddFromFolderEnabled$ = new BehaviorSubject<boolean>(false);
-  private subscription: Subscription = new Subscription();
 
 
   constructor(
@@ -36,7 +36,9 @@ export class AddAppFromFolderComponent implements OnInit, OnDestroy {
     private appsListService: AppsListService,
     private snackBar: MatSnackBar,
     private featuresService: FeaturesService,
-  ) { }
+  ) { 
+    super();
+  }
   
   ngOnInit(): void {
     this.pendingApps$ = this.refreshApps$.pipe(
@@ -52,7 +54,7 @@ export class AddAppFromFolderComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.refreshApps$.complete();
-    this.subscription.unsubscribe();
+    super.ngOnDestroy();
   } 
 
   closeDialog(): void {
