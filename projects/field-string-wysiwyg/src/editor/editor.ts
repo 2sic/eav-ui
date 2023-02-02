@@ -57,6 +57,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   private pasteClipboardImage$ = new BehaviorSubject<boolean>(false);
   private subscription: Subscription = new Subscription();
   private editor: Editor;
+  private isDrop: boolean = false;
   private firstInit: boolean;
   private dialogIsOpen: boolean;
   private menuObserver: MutationObserver;
@@ -162,17 +163,23 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
       this.clearData();
     });
 
-    // called before actual image upload
+    // called before PastePreProcess
     // this is needed so drag and drop will function even if pasteClipboardImage feature is false
     editor.on('drop', _event => {
-      editor.options.set("paste_data_images", true);
+      this.isDrop = true;
     });
 
-    // called before actual image upload
+    // called before PastePreProcess
     // this is needed so paste will only work depending on pasteClipboardImage feature
     editor.on('paste', _event => {
-      editor.options.set("paste_data_images", this.pasteClipboardImage$.value);
-      if (!this.pasteClipboardImage$.value) {
+      this.isDrop = false;
+    });
+
+    // called before actual image upload so _event.preventDefault(); can stop pasting
+    // this is needed beacuse only here we can read clipboard content
+    editor.on('PastePreProcess', _event => {
+      if (!this.pasteClipboardImage$.value && _event.content.startsWith('<img src=') && !this.isDrop) {
+        _event.preventDefault();
         this.connector._experimental.featureDisabledWarning('PasteImageFromClipboard');
       }
     });

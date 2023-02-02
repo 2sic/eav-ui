@@ -79,7 +79,7 @@ export class DropzoneWrapperComponent extends BaseFieldComponent implements Fiel
 
   // on onDrop we check if drop is on wysiwyg or not
   onDrop(event: any) {
-    if ((event.toElement as HTMLElement).classList.contains("class-distinguish-from-adam-dropzone")) {
+    if (this.isParentWysiwyg((event.toElement as HTMLElement))) {
       this.isStringWysiwyg = true;
     } else {
       this.isStringWysiwyg = false;
@@ -155,4 +155,12 @@ export class DropzoneWrapperComponent extends BaseFieldComponent implements Fiel
     dropzone.processFile(file);
   }
 
+  private isParentWysiwyg(element: HTMLElement): boolean {
+    do {
+      if (element == null) return false;
+      if (element?.classList.contains("class-distinguish-from-adam-dropzone")) return true;
+      element = element.parentElement;
+    } while (!element?.classList.contains("class-distinguish-from-adam-dropzone") || element.parentElement != document.body);
+    return false;
+  }
 }
