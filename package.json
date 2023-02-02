@@ -1,7 +1,7 @@
 {
   "name": "eav-ui",
   "// VERSION": "The version number is very important, as it's used for publishing the source maps",
-  "version": "15.02.00",
+  "version": "15.03.00",
   "license": "MIT",
   "repository": {
     "type": "git",
