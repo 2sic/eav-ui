@@ -1,8 +1,8 @@
-import { AbstractControl, FormGroup, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { AbstractControl, UntypedFormGroup, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { eavConstants, MetadataKeyType } from '../../shared/constants/eav.constants';
 import { guidRegex } from '../../shared/constants/guid.constants';
 
-export function metadataKeyValidator(form: FormGroup): ValidatorFn {
+export function metadataKeyValidator(form: UntypedFormGroup): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
     if (!control.value) { return null; }
 

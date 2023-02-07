@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, HostBinding, Inject, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { distinctUntilChanged, startWith, Subscription } from 'rxjs';
@@ -17,7 +17,7 @@ import { RenameStreamDialogControls, RenameStreamDialogData, RenameStreamDialogF
 export class RenameStreamComponent extends BaseSubsinkComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
-  form: FormGroup;
+  form: UntypedFormGroup;
   controls: RenameStreamDialogControls;
   isSource = this.dialogData.isSource;
   pipelineResultExists = this.visualQueryService.pipelineResult != null;
@@ -62,9 +62,9 @@ export class RenameStreamComponent extends BaseSubsinkComponent implements OnIni
   }
 
   private buildForm(): void {
-    this.form = new FormGroup({
-      label: new FormControl(this.dialogData.label, Validators.required),
-      scope: new FormControl(eavConstants.scopes.default.value),
+    this.form = new UntypedFormGroup({
+      label: new UntypedFormControl(this.dialogData.label, Validators.required),
+      scope: new UntypedFormControl(eavConstants.scopes.default.value),
     });
     this.controls = this.form.controls as any;
 

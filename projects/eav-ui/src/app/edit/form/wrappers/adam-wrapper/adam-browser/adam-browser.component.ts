@@ -1,7 +1,7 @@
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { ChangeDetectorRef, Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output, ViewContainerRef } from '@angular/core';
-import { AbstractControl, FormGroup } from '@angular/forms';
+import { AbstractControl, UntypedFormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
 import { FeatureComponentBase } from 'projects/eav-ui/src/app/features/shared/base-feature.component';
@@ -40,7 +40,7 @@ import { AdamBrowserTemplateVars, AdamConfigInstance } from './adam-browser.mode
 })
 export class AdamBrowserComponent extends BaseSubsinkComponent implements OnInit, OnDestroy {
   @Input() config: FieldConfigSet;
-  @Input() group: FormGroup;
+  @Input() group: UntypedFormGroup;
   @Output() openUpload = new EventEmitter<null>();
 
   templateVars$: Observable<AdamBrowserTemplateVars>;

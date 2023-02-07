@@ -1,5 +1,5 @@
 import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map, merge, Observable, startWith, Subscription } from 'rxjs';
@@ -25,7 +25,7 @@ export class CreateMetadataDialogComponent extends BaseSubsinkComponent implemen
 
   eavConstants = eavConstants;
   dropdownInsertValue = dropdownInsertValue;
-  form: FormGroup;
+  form: UntypedFormGroup;
   templateVars$: Observable<MetadataDialogTemplateVars>;
   targetTypeOptions: TargetTypeOption[];
 
@@ -61,12 +61,12 @@ export class CreateMetadataDialogComponent extends BaseSubsinkComponent implemen
 
     this.fetchScopes();
 
-    this.form = new FormGroup({});
-    this.form.addControl('targetType', new FormControl(eavConstants.metadata.entity.targetType, [Validators.required, Validators.pattern(/^[0-9]+$/)]));
-    this.form.addControl('keyType', new FormControl(eavConstants.metadata.entity.keyType, [Validators.required]));
-    this.form.addControl('contentTypeForContentItems', new FormControl(null));
-    this.form.addControl('scopeForContentTypes', new FormControl(eavConstants.scopes.default.value));
-    this.form.addControl('key', new FormControl(null, [Validators.required, metadataKeyValidator(this.form)]));
+    this.form = new UntypedFormGroup({});
+    this.form.addControl('targetType', new UntypedFormControl(eavConstants.metadata.entity.targetType, [Validators.required, Validators.pattern(/^[0-9]+$/)]));
+    this.form.addControl('keyType', new UntypedFormControl(eavConstants.metadata.entity.keyType, [Validators.required]));
+    this.form.addControl('contentTypeForContentItems', new UntypedFormControl(null));
+    this.form.addControl('scopeForContentTypes', new UntypedFormControl(eavConstants.scopes.default.value));
+    this.form.addControl('key', new UntypedFormControl(null, [Validators.required, metadataKeyValidator(this.form)]));
 
     this.subscription.add(
       this.form.controls['scopeForContentTypes'].valueChanges.pipe(
