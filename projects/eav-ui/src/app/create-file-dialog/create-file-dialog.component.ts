@@ -1,5 +1,5 @@
 import { Component, HostBinding, Inject, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 // tslint:disable-next-line:max-line-length
 import { asyncScheduler, BehaviorSubject, combineLatest, distinctUntilChanged, forkJoin, map, Observable, of, startWith, Subscription, switchMap, tap, throttleTime, timer } from 'rxjs';
@@ -18,7 +18,7 @@ import { BaseSubsinkComponent } from '../shared/components/base-subsink-componen
 export class CreateFileDialogComponent extends BaseSubsinkComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
-  form: FormGroup;
+  form: UntypedFormGroup;
   controls: CreateFileFormControls;
   templateVars$: Observable<CreateFileTemplateVars>;
 
@@ -73,13 +73,13 @@ export class CreateFileDialogComponent extends BaseSubsinkComponent implements O
   }
 
   private buildForm(): void {
-    this.form = new FormGroup({
-      platform: new FormControl(this.all),
-      purpose: new FormControl({ value: this.dialogData.purpose ?? this.all, disabled: this.dialogData.purpose != null }),
-      templateKey: new FormControl(null, Validators.required),
-      name: new FormControl(this.dialogData.name ?? null, Validators.required),
-      finalName: new FormControl({ value: null, disabled: true }),
-      folder: new FormControl({ value: this.dialogData.folder ?? '', disabled: true }),
+    this.form = new UntypedFormGroup({
+      platform: new UntypedFormControl(this.all),
+      purpose: new UntypedFormControl({ value: this.dialogData.purpose ?? this.all, disabled: this.dialogData.purpose != null }),
+      templateKey: new UntypedFormControl(null, Validators.required),
+      name: new UntypedFormControl(this.dialogData.name ?? null, Validators.required),
+      finalName: new UntypedFormControl({ value: null, disabled: true }),
+      folder: new UntypedFormControl({ value: this.dialogData.folder ?? '', disabled: true }),
     });
 
     this.controls = this.form.controls as any;

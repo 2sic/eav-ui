@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, ElementRef, NgZone, ViewContainerRef } from '@angular/core';
-import { AbstractControl, FormGroup } from '@angular/forms';
+import { AbstractControl, UntypedFormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
@@ -23,7 +23,7 @@ export class ConnectorHelper {
 
   constructor(
     private config: FieldConfigSet,
-    private group: FormGroup,
+    private group: UntypedFormGroup,
     private customElContainerRef: ElementRef,
     private customElName: string,
     private eavService: EavService,
