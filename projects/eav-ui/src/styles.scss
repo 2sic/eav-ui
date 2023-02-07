@@ -11,7 +11,7 @@
 //    `@include mat.legacy-typography-hierarchy(mat.define-legacy-typography-config());`
 @include mat.all-legacy-component-typographies();
 @include mat.legacy-core();
-@import '~@material/layout-grid/mdc-layout-grid';
+@import '@material/layout-grid/mdc-layout-grid';
 @import '@ag-grid-community/core/dist/styles/ag-grid.css';
 @import '@ag-grid-community/core/dist/styles/ag-theme-material.css';
 @import 'https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap';
