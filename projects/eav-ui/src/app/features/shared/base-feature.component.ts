@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Directive, Input, ViewContainerRef } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { FeaturesService } from '../../shared/services/features.service';
 import { FeatureInfoDialogComponent } from '../feature-info-dialog/feature-info-dialog.component';
 import { BehaviorSubject, switchMap, Observable, map, combineLatest } from 'rxjs';
