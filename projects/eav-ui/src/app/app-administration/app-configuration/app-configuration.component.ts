@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewContainerRef } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ContentItemsService } from '../../content-items/services/content-items.service';
 import { GlobalConfigService } from '../../edit/shared/store/ngrx-data';
@@ -26,7 +26,7 @@ import { Subject, Observable, combineLatest, map, tap } from 'rxjs';
 import { AppInternals } from '../models/app-internals.model';
 import { FeatureNames } from '../../features/feature-names';
 import { FeatureComponentBase } from '../../features/shared/base-feature.component';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 
 @Component({
   selector: 'app-app-configuration',
