@@ -1,4 +1,4 @@
-import { FieldSettings, StringWysiwyg, StringWysiwygAdvanced } from '../../../../../../../../edit-types';
+import { FieldSettings, StringWysiwyg } from '../../../../../../../../edit-types';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { FieldLogicBase } from '../../../shared/field-logic/field-logic-base';
 import { FieldLogicTools } from '../../../shared/field-logic/field-logic-tools';
