@@ -10,7 +10,7 @@
   <div class="dialog-form-content fancy-scrollbar-light">
     <div class="row-container" *ngFor="let field of fields; index as i">
       <div class="edit-input">
-        <mat-form-field appearance="standard" color="accent">
+        <mat-form-field color="accent">
           <mat-label>Name</mat-label>
           <input matInput [pattern]="fieldNamePattern" [appReservedNames]="reservedNames" [(ngModel)]="field.StaticName"
             [name]="'StaticName' + i" #staticName="ngModel" [disabled]="editMode === 'inputType'">
@@ -24,7 +24,7 @@
       </div>
 
       <div class="edit-input">
-        <mat-form-field appearance="standard" color="accent">
+        <mat-form-field color="accent">
           <mat-label>Data Type</mat-label>
           <mat-select (selectionChange)="filterInputTypeOptions(i); resetInputType(i); calculateHints(i)"
             [(ngModel)]="field.Type" [name]="'Type' + i" [disabled]="editMode != null">
@@ -42,7 +42,7 @@
       </div>
 
       <div class="edit-input">
-        <mat-form-field appearance="standard" color="accent">
+        <mat-form-field color="accent">
           <mat-label>Input Type</mat-label>
           <mat-select (selectionChange)="calculateHints(i)" [(ngModel)]="field.InputType" [name]="'InputType' + i"
             [disabled]="editMode === 'name'">

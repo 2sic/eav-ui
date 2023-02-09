@@ -1,5 +1,5 @@
 import { Component, Inject } from '@angular/core';
-import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FileUploadDialogData } from '../../../shared/components/file-upload-dialog';
 import { ImportAppPartsService } from '../../services/import-app-parts.service';
 

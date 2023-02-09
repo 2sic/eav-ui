@@ -65,11 +65,11 @@
       font-size: 12px;
       line-height: 14px;
 
-      &:not(.mat-error) {
+      &:not(.mat-mdc-form-field-error) {
         color: rgba($editUI-foreground-color, 0.44);
       }
 
-      &--focused:not(.mat-error) {
+      &--focused:not(.mat-mdc-form-field-error) {
         color: map_get($mat-eav-item-dialog-secondary, 500) !important;
       }
     }
@@ -155,7 +155,7 @@
 
     padding: 0;
 
-    .mat-dialog-actions {
+    .mat-mdc-dialog-actions {
       padding: 16px;
     }
 

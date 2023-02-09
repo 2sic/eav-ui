@@ -69,11 +69,11 @@
 
           <mat-panel-description style="display: block;">
             <div class="form-with-textarea">
-              <mat-form-field appearance="standard" color="accent">
+              <mat-form-field color="accent">
                 <mat-label>Additional Url Parameters</mat-label>
                 <input matInput placeholder="?id=27" [value]="urlParams$.value" (input)="updateParams($event)">
               </mat-form-field>
-              <mat-form-field appearance="standard" color="accent">
+              <mat-form-field color="accent">
                 <mat-label>Post body</mat-label>
                 <textarea matInput [rows]="10" placeholder="Placeholder" [value]="urlParams$.value"
                   (input)="updateParams($event)">

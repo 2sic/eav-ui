@@ -6,17 +6,19 @@
   align-items: center;
 }
 
-.mat-slide-toggle {
+.mat-mdc-slide-toggle {
   padding-top: 0;
 }
 
 ::ng-deep .toggle-false {
+  /* TODO(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version. */
   .mat-slide-toggle-bar {
     background-color: orange;
   }
 }
 
 ::ng-deep .toggle-null {
+  /* TODO(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version. */
   .mat-slide-toggle-thumb-container {
     margin-left: 8px;
   }

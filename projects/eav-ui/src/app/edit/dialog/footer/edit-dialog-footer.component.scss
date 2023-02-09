@@ -1,6 +1,6 @@
 @import "../../assets/styles/variables.scss";
 
-.mat-card {
+.mat-mdc-card {
   padding: 0;
   margin: 0;
   border-top-left-radius: 0;
@@ -18,7 +18,7 @@
   box-sizing: border-box;
 }
 
-.mat-card.debug-enabled {
+.mat-mdc-card.debug-enabled {
   height: auto;
 }
 
@@ -30,7 +30,7 @@
   box-sizing: border-box;
   align-items: center;
 
-  .mat-button {
+  .mat-mdc-button {
     margin-left: 0;
 
     .mat-icon {

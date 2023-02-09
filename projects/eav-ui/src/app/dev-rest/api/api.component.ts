@@ -1,6 +1,6 @@
 import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { Component, HostBinding, OnDestroy } from '@angular/core';
-import { MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
+import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, filter, map, share, switchMap, take } from 'rxjs';
 import { DevRestBase } from '..';

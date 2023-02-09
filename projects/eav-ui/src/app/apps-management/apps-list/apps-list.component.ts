@@ -1,6 +1,6 @@
 import { GridOptions, ICellRendererParams } from '@ag-grid-community/core';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, catchError, Observable, of, share, startWith, Subject, switchMap } from 'rxjs';
 import { FeatureNames } from '../../features/feature-names';
@@ -19,7 +19,7 @@ import { AppsListActionsComponent } from './apps-list-actions/apps-list-actions.
 import { AppsListActionsParams } from './apps-list-actions/apps-list-actions.models';
 import { AppsListShowComponent } from './apps-list-show/apps-list-show.component';
 import { FeatureComponentBase } from '../../features/shared/base-feature.component';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { AppAdminHelpers } from '../../app-administration/app-admin-helpers';
 
 @Component({

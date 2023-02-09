@@ -1,6 +1,6 @@
 <ng-container *ngIf="templateVars$ | async as data">
 
-  <mat-form-field [formGroup]="group" appearance="standard" color="accent" *ngIf="!data.useTimePicker">
+  <mat-form-field [formGroup]="group" color="accent" *ngIf="!data.useTimePicker">
     <input matInput [disabled]="data.controlStatus.disabled" [matDatepicker]="picker" [placeholder]="data.placeholder"
       [required]="data.required" [value]="data.controlStatus.value" (dateChange)="updateValue($event)">
     <mat-datepicker-toggle matSuffix [for]="picker" [tippy]="'Fields.DateTime.Open' | translate">
@@ -9,7 +9,7 @@
     <mat-label>{{ data.label }}</mat-label>
   </mat-form-field>
 
-  <mat-form-field [formGroup]="group" appearance="standard" color="accent" *ngIf="data.useTimePicker">
+  <mat-form-field [formGroup]="group" color="accent" *ngIf="data.useTimePicker">
     <input matInput [disabled]="data.controlStatus.disabled" [ngxMatDatetimePicker]="picker"
       [placeholder]="data.placeholder" [required]="data.required" [value]="data.controlStatus.value"
       (dateChange)="updateValue($event)">

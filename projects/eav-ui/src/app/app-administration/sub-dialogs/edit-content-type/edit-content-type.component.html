@@ -7,7 +7,7 @@
   <form class="dialog-form" *ngIf="data.contentType" #ngForm="ngForm" (ngSubmit)="save()">
     <div class="dialog-form-content fancy-scrollbar-light">
       <div class="edit-input">
-        <mat-form-field appearance="standard" color="accent">
+        <mat-form-field color="accent">
           <mat-label>Name</mat-label>
           <input matInput type="text" required [pattern]="contentTypeNamePattern" [ngModel]="data.contentType.Name"
             (ngModelChange)="changeContentTypeName($event)" name="Name" #name="ngModel">
@@ -25,7 +25,7 @@
           </mat-expansion-panel-header>
 
           <div class="edit-input">
-            <mat-form-field appearance="standard" color="accent">
+            <mat-form-field color="accent">
               <mat-label>Scope</mat-label>
               <mat-select [ngModel]="data.contentType.Scope" name="Scope" (ngModelChange)="changeScope($event)"
                 [disabled]="data.lockScope">
@@ -47,7 +47,7 @@
           </div>
 
           <div class="edit-input">
-            <mat-form-field appearance="standard" color="accent">
+            <mat-form-field color="accent">
               <mat-label>Static Name</mat-label>
               <input matInput type="text" [ngModel]="data.contentType.StaticName" name="StaticName" disabled>
             </mat-form-field>

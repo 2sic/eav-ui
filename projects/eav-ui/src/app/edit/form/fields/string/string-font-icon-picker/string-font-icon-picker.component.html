@@ -1,6 +1,6 @@
 <ng-container *ngIf="templateVars$ | async as data">
 
-  <mat-form-field [formGroup]="group" appearance="standard" color="accent">
+  <mat-form-field [formGroup]="group" color="accent">
     <div class="icon-option">
       <i *ngIf="data.controlStatus.value" class="icon-preview {{ data.previewCss }} {{ data.controlStatus.value }}"></i>
       <input matInput [formControlName]="config.fieldName" [placeholder]="data.placeholder" [required]="data.required"

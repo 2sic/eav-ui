@@ -14,21 +14,21 @@ $eav-ui-accent: mat.define-palette($mat-eav-item-dialog-secondary);
 // The warn palette is optional (defaults to red).
 $eav-ui-warn: mat.define-palette($mat-eav-item-dialog-error);
 
-$eav-ui-typography: mat.define-legacy-typography-config($font-family: '"Roboto", sans-serif',
-  $display-4: mat.define-typography-level(112px, 112px, 300),
-  $display-3: mat.define-typography-level(56px, 56px, 400),
-  $display-2: mat.define-typography-level(45px, 48px, 400),
-  $display-1: mat.define-typography-level(20px, 24px, 500),
-  $headline: mat.define-typography-level(96px, 108px, 300),
-  $title: mat.define-typography-level(60px, 64px, 300),
-  $subheading-2: mat.define-typography-level(14px, 20px, 500),
-  $subheading-1: mat.define-typography-level(16px, 20px, 400),
-  $body-2: mat.define-typography-level(14px, 20px, 400),
+$eav-ui-typography: mat.define-typography-config($font-family: '"Roboto", sans-serif',
+  $headline-1: mat.define-typography-level(112px, 112px, 300),
+  $headline-2: mat.define-typography-level(56px, 56px, 400),
+  $headline-3: mat.define-typography-level(45px, 48px, 400),
+  $headline-4: mat.define-typography-level(20px, 24px, 500),
+  $headline-5: mat.define-typography-level(96px, 108px, 300),
+  $headline-6: mat.define-typography-level(60px, 64px, 300),
+  $subtitle-1: mat.define-typography-level(14px, 20px, 500),
   $body-1: mat.define-typography-level(16px, 20px, 400),
+  $subtitle-2: mat.define-typography-level(14px, 20px, 400),
+  $body-2: mat.define-typography-level(16px, 20px, 400),
   $button: mat.define-typography-level(14px, 20px, 500),
   $caption: mat.define-typography-level(12px, 16px, 400),
-  $input: mat.define-typography-level(inherit, 1.25, 400));
-
+  $in/* TODO(mdc-migration): No longer supported. Use `body-1` instead. put: mat.define-typography-level(inherit, 1.25, 400));
+ */
 // Create the theme object. A theme consists of configurations for individual
 // theming systems such as "color" or "typography".
 $eav-ui-theme: mat.define-light-theme((color: (primary: $eav-ui-primary,
@@ -38,5 +38,5 @@ $eav-ui-theme: mat.define-light-theme((color: (primary: $eav-ui-primary,
     // typography: $eav-ui-typography doesn't seem to work so I'm using old all-component-typographies
   ));
 
-@include mat.all-legacy-component-themes($eav-ui-theme);
-@include mat.all-legacy-component-typographies($eav-ui-typography);
+@include mat.all-component-themes($eav-ui-theme);
+@include mat.all-component-typographies($eav-ui-typography);

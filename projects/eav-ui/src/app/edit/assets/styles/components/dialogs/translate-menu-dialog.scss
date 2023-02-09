@@ -1,9 +1,9 @@
 .translate-menu-dialog {
-  .mat-dialog-container {
+  .mat-mdc-dialog-container {
     padding: 0;
     border-radius: $edit-ui-dialog-border-radius;
 
-    .mat-card {
+    .mat-mdc-card {
       padding: 0;
 
       &__header {
@@ -22,7 +22,7 @@
       .mat-nav-list {
         padding-bottom: 24px;
 
-        .mat-list-item {
+        .mat-mdc-list-item {
           height: auto;
 
           &__title {
@@ -34,15 +34,16 @@
             white-space: normal;
             font-size: 14px;
           }
-
+          /* TODO(mdc-migration): The following rule targets internal classes of list that may no longer apply for the MDC version. */
+          /* TODO(mdc-migration): The following rule targets internal classes of list that may no longer apply for the MDC version. */
           .mat-list-item-content {
             align-items: initial;
 
-            .mat-list-icon {
+            .mat-mdc-list-item-icon {
               padding-top: 8px;
               padding-bottom: 8px;
             }
-
+            /* TODO(mdc-migration): The following rule targets internal classes of list that may no longer apply for the MDC version. */
             .mat-list-text {
               padding-top: 8px;
               padding-bottom: 8px;
@@ -52,7 +53,7 @@
       }
 
       .mat-action-list {
-        .mat-list-icon {
+        .mat-mdc-list-item-icon {
           margin-right: 16px;
         }
       }

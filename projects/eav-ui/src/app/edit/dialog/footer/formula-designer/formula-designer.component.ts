@@ -1,5 +1,5 @@
 import { Component, Input, OnDestroy, OnInit, QueryList } from '@angular/core';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import type * as Monaco from 'monaco-editor';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, switchMap } from 'rxjs';
 import { EntitiesService } from '../../../../content-items/services/entities.service';

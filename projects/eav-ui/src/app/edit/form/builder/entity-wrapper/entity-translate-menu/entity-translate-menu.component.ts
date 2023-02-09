@@ -1,5 +1,5 @@
 import { Component, Input, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { combineLatest, map, Observable, Subscription } from 'rxjs';
 import { TranslationState } from '../../../../shared/models/fields-configs.model';
 import { EavService, FieldsSettingsService, FieldsTranslateService, FormsStateService } from '../../../../shared/services';

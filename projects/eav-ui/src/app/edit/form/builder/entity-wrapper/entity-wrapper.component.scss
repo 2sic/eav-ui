@@ -1,5 +1,6 @@
 $border-radius: 8px;
 
+/* TODO(mdc-migration): The following rule targets internal classes of card that may no longer apply for the MDC version. */
 .mat-card-group-parent {
   padding: 0;
   margin: 0;
@@ -10,6 +11,7 @@ $border-radius: 8px;
   }
 }
 
+/* TODO(mdc-migration): The following rule targets internal classes of card that may no longer apply for the MDC version. */
 .mat-card-header-group-parent {
   padding: 24px 32px;
   border-radius: $border-radius;
@@ -29,6 +31,7 @@ $border-radius: 8px;
   }
 }
 
+/* TODO(mdc-migration): The following rule targets internal classes of card that may no longer apply for the MDC version. */
 .mat-card-content-group-parent {
   border-radius: $border-radius;
   padding-bottom: 0;
@@ -40,7 +43,7 @@ $border-radius: 8px;
   }
 }
 
-.mat-card-title-group {
+.mat-mdc-card-title-group {
   margin: 0;
   cursor: pointer;
   line-height: 20px;

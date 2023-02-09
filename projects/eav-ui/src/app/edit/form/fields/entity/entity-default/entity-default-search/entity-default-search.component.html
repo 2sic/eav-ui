@@ -4,7 +4,7 @@
       <div
         [ngClass]="(data.enableCreate && data.entityType && !selectedEntities.length && !data.allowMultiValue) ? 'ed-field__field-short' : 'ed-field__field'">
         <div [hidden]="(!data.allowMultiValue && selectedEntities.length) || !data.enableAddExisting">
-          <mat-form-field [formGroup]="group" appearance="standard" color="accent" [ngClass]="{
+          <mat-form-field [formGroup]="group" color="accent" [ngClass]="{
             'mat-form-field-invalid': invalid && touched
           }">
             <input matInput #autocomplete [placeholder]="getPlaceholder()" [matAutocomplete]="auto"
@@ -38,7 +38,7 @@
           </mat-autocomplete>
         </div>
         <div *ngIf="!data.enableAddExisting && !selectedEntities.length">
-          <mat-form-field appearance="standard" color="accent">
+          <mat-form-field color="accent">
             <input matInput [placeholder]="'Fields.Entity.Empty' | translate" disabled>
           </mat-form-field>
         </div>
@@ -55,7 +55,7 @@
     </div>
   </div>
 
-  <mat-form-field *ngIf="freeTextMode" [formGroup]="group" appearance="standard" color="accent">
+  <mat-form-field *ngIf="freeTextMode" [formGroup]="group" color="accent">
     <input matInput [required]="required" [formControlName]="config.fieldName" [placeholder]="placeholder">
 
     <div matSuffix class="selection-suffix">

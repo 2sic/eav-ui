@@ -1,6 +1,6 @@
 <ng-container *ngIf="templateVars$ | async as data">
   <!-- Platform Info -->
-  <mat-card>
+  <mat-card appearance="outlined">
     <mat-card-header>
       <div mat-card-avatar>
         <mat-icon>settings_applications</mat-icon>
@@ -35,7 +35,7 @@
   </mat-card>
 
   <!-- Site Info -->
-  <mat-card>
+  <mat-card appearance="outlined">
     <mat-card-header>
       <div mat-card-avatar>
         <mat-icon>public</mat-icon>
@@ -74,7 +74,7 @@
   </mat-card>
 
   <!-- Performance / Lightspeed -->
-  <mat-card>
+  <mat-card appearance="outlined">
     <mat-card-header>
       <div mat-card-avatar>
         <mat-icon>bolt</mat-icon>
@@ -96,7 +96,7 @@
   </mat-card>
 
   <!-- Security -->
-  <mat-card>
+  <mat-card appearance="outlined">
     <mat-card-header>
       <div mat-card-avatar>
         <mat-icon>local_police</mat-icon>
@@ -118,7 +118,7 @@
   </mat-card>
 
   <!-- Insights -->
-  <mat-card>
+  <mat-card appearance="outlined">
     <mat-card-header>
       <div mat-card-avatar>
         <mat-icon>speed</mat-icon>
@@ -149,7 +149,7 @@
           This will place insights-logs in the HTML of the user output for users with ?debug=true in the url.
           It can only be activated for short periods of time.
         </div>
-        <mat-form-field appearance="standard" color="accent">
+        <mat-form-field color="accent">
           <mat-label>Duration in Minutes</mat-label>
           <input matInput type="number" min="0" required [pattern]="positiveWholeNumber" [(ngModel)]="pageLogDuration"
             name="Duration" #duration="ngModel" [disabled]="data.loading">
@@ -169,7 +169,7 @@
   </mat-card>
 
   <!-- Warnings -->
-  <mat-card>
+  <mat-card appearance="outlined">
     <mat-card-header>
       <div mat-card-avatar>
         <mat-icon>{{ data.warningIcon }}</mat-icon>

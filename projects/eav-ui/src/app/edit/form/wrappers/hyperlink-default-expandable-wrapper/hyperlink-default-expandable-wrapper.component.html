@@ -3,12 +3,12 @@
   <div #backdrop class="c-ew__backdrop" (click)="closeDialog()"></div>
   <div #dialog fxLayout="column" class="c-ew__dialog mat-elevation-z24 u-border-radius">
     <div [ngClass]="{ 'c-ew__dialog-header mat-elevation-z2': (open$ | async) }">
-      <mat-card class="mat-elevation-z0" fxLayout="row">
+      <mat-card appearance="outlined" class="mat-elevation-z0" fxLayout="row">
         <button mat-icon-button class="back-arrow" fxLayoutAlign="center center"
           [tippy]="'Form.Buttons.Return.Tip' | translate" (click)="closeDialog()">
           <mat-icon>arrow_back</mat-icon>
         </button>
-        <span fxLayoutAlign="center center" class="title mat-display-1">{{ label$ | async }}</span>
+        <span fxLayoutAlign="center center" class="title mat-headline-4">{{ label$ | async }}</span>
       </mat-card>
     </div>
     <div>
@@ -70,7 +70,7 @@
     <div class="c-ew__preview-field--short" fxFlex="auto">
       <!-- input -->
       <div class="hyperlink-input-link-wrapper">
-        <mat-form-field appearance="standard" color="accent" [ngClass]="{
+        <mat-form-field color="accent" [ngClass]="{
           'mat-form-field-invalid': data.controlStatus.invalid && data.controlStatus.touched
         }">
           <input matInput [tippy]="'Fields.Hyperlink.Default.Tooltip' | translate" tippyPlacement="top"

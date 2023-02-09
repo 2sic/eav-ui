@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, ViewContainerRef } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { take } from 'rxjs';
 import { PagePickerResult } from '../../../../../../edit-types';
 import { FieldConfigSet } from '../../form/builder/fields-builder/field-config-set.model';

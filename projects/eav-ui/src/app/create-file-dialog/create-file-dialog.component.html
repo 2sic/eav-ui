@@ -15,7 +15,7 @@
       <div class="field-container multiple">
         <!-- Platform -->
         <div class="multiple-field">
-          <mat-form-field appearance="standard" color="accent">
+          <mat-form-field color="accent">
             <mat-label>Platform</mat-label>
             <mat-select formControlName="platform">
               <mat-option *ngFor="let platform of data.platforms" [value]="platform">
@@ -27,7 +27,7 @@
 
         <!-- Purpose -->
         <div class="multiple-field">
-          <mat-form-field appearance="standard" color="accent">
+          <mat-form-field color="accent">
             <mat-label>Purpose</mat-label>
             <mat-select formControlName="purpose">
               <mat-option *ngFor="let purpose of data.purposes" [value]="purpose">
@@ -40,7 +40,7 @@
 
       <!-- Template -->
       <div class="field-container">
-        <mat-form-field appearance="standard" color="accent">
+        <mat-form-field color="accent">
           <mat-label>Template</mat-label>
           <mat-select formControlName="templateKey">
             <mat-option *ngFor="let template of data.templates" [value]="template.Key">
@@ -52,7 +52,7 @@
 
       <!-- Name -->
       <div class="field-container">
-        <mat-form-field appearance="standard" color="accent">
+        <mat-form-field color="accent">
           <mat-label>Name</mat-label>
           <input matInput type="text" formControlName="name" required appMatInputAutofocus autofocusSelectValue="true">
         </mat-form-field>

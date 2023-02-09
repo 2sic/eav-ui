@@ -1,6 +1,6 @@
 <ng-container *ngIf="templateVars$ | async as data">
 
-  <mat-form-field [formGroup]="group" appearance="standard" color="accent" [ngClass]="{
+  <mat-form-field [formGroup]="group" color="accent" [ngClass]="{
     'textarea-field': data.rowCount > 1
   }">
     <input *ngIf="data.rowCount <= 1" matInput [formControlName]="config.fieldName" [placeholder]="data.placeholder"

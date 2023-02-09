@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Input } from '@angular/core';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { DevRestBaseTemplateVars, DevRestDataTemplateVars } from '..';
 import { copyToClipboard } from '../../shared/helpers/copy-to-clipboard.helper';
 
