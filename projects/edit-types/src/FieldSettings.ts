@@ -38,7 +38,7 @@ interface String extends All {
 /**
  * @string-default
  */
-interface StringDefault extends String {
+export interface StringDefault extends String {
   InputFontFamily: '' | 'monospace';
   RowCount: number;
 }
@@ -46,7 +46,7 @@ interface StringDefault extends String {
 /**
  * @string-dropdown
  */
-interface StringDropdown extends String {
+export interface StringDropdown extends String {
   DropdownValues: string;
   DropdownValuesFormat: '' | 'value-label';
   EnableTextEntry: boolean;
@@ -56,7 +56,7 @@ interface StringDropdown extends String {
 /**
  * @string-url-path
  */
-interface StringUrlPath extends String {
+export interface StringUrlPath extends String {
   AutoGenerateMask: string;
   AllowSlashes: boolean;
 }
@@ -65,7 +65,7 @@ interface StringUrlPath extends String {
  * @string-template-picker
  * New in 12.02
  */
-interface StringTemplatePicker extends String {
+export interface StringTemplatePicker extends String {
   /** Contains the extension for which the file picker should filter. If not set, use preset mechanisms */
   FileType: string;
 }
@@ -78,7 +78,7 @@ interface StringTemplatePicker extends String {
 /**
  * @string-wysiwyg
  */
-interface StringWysiwyg extends String {
+export interface StringWysiwyg extends String {
   Dialog: '' | 'dialog' | 'inline';
   ButtonSource: "" | "true" | "false";
   ButtonAdvanced: "" | "true" | "false";
@@ -98,7 +98,7 @@ interface StringWysiwyg extends String {
 /**
  * New for v15 - advanced settings which actually come from another entity
  */
-interface StringWysiwygAdvanced {
+export interface StringWysiwygAdvanced {
   /** The initial mode, like 'default' or 'text' */
   Mode: 'default' | 'text' | 'rich';
   Json: string;
@@ -107,7 +107,7 @@ interface StringWysiwygAdvanced {
 /**
  * @string-dropdown-query
  */
-interface StringDropdownQuery extends String {
+export interface StringDropdownQuery extends String {
   Query: string;
   StreamName: string;
   Value: string;
@@ -123,7 +123,7 @@ interface StringDropdownQuery extends String {
 /**
  * @string-font-icon-picker
  */
-interface StringFontIconPicker extends String {
+export interface StringFontIconPicker extends String {
   CssPrefix: string;
   PreviewCss: string;
   Files: string;
@@ -133,7 +133,7 @@ interface StringFontIconPicker extends String {
 /**
  * @Number
  */
-interface Number extends All {
+export interface Number extends All {
   Decimals: number;
   Min: number;
   Max: number;
@@ -146,7 +146,7 @@ interface Number extends All {
 /**
  * @Hyperlink
  */
-interface Hyperlink extends All {
+export interface Hyperlink extends All {
   FileFilter: string;
   /** @deprecated */
   DefaultDialog: string;
@@ -163,7 +163,7 @@ interface Hyperlink extends All {
 /**
  * @hyperlink-library
  */
-interface HyperlinkLibrary extends Hyperlink {
+export interface HyperlinkLibrary extends Hyperlink {
   FolderDepth: number;
   AllowAssetsInRoot: boolean;
   MetadataContentTypes: string;
@@ -172,7 +172,7 @@ interface HyperlinkLibrary extends Hyperlink {
 /**
  * @Entity
  */
-interface Entity extends All {
+export interface Entity extends All {
   EntityType: string;
   AllowMultiValue: boolean;
   EnableEdit: boolean;
@@ -192,7 +192,7 @@ interface Entity extends All {
 /**
  * @entity-query
  */
-interface EntityQuery extends Entity {
+export interface EntityQuery extends Entity {
   Query: string;
   StreamName: string;
   UrlParameters: string;
@@ -201,7 +201,7 @@ interface EntityQuery extends Entity {
 /**
  * @empty-default
  */
-interface EmptyDefault extends All {
+export interface EmptyDefault extends All {
   /** @deprecated */
   DefaultCollapsed: boolean;
   /** DefaultCollapsed is copied to Collapsed and then deleted  */
@@ -211,14 +211,14 @@ interface EmptyDefault extends All {
 /**
  * @DateTime
  */
-interface DateTime extends All {
+export interface DateTime extends All {
   UseTimePicker: boolean;
 }
 
 /**
  * @custom-json-editor
  */
-interface CustomJsonEditor extends All {
+export interface CustomJsonEditor extends All {
   Rows: number;
   JsonValidation: 'strict' | 'light' | 'none';
   JsonSchemaMode: 'strict' | 'light' | 'none';
@@ -231,7 +231,7 @@ interface CustomJsonEditor extends All {
 /**
  * @custom-gps
  */
-interface CustomGps extends All {
+export interface CustomGps extends All {
   LatField: string;
   LongField: string;
   AddressMask: string;
@@ -241,7 +241,7 @@ interface CustomGps extends All {
 /**
  * @Boolean
  */
-interface Boolean extends All {
+export interface Boolean extends All {
   TitleTrue: string;
   TitleFalse: string;
   TitleIndeterminate: string;
