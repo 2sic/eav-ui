@@ -187,7 +187,7 @@ export class LicenseInfoComponent extends BaseComponent implements OnInit, OnDes
           cellRenderer: FeaturesStatusComponent,
           valueGetter: (params) => {
             const feature: Feature = params.data;
-            return feature.EnabledStored;
+            return feature.EnabledInConfiguration;
           },
           cellRendererParams: (() => {
             const params: FeaturesStatusParams = {
