@@ -1,6 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { BehaviorSubject, combineLatest, distinctUntilChanged, filter, map, Observable, Subscription, shareReplay } from 'rxjs';
+import { BehaviorSubject, combineLatest, distinctUntilChanged, filter, map, Observable, Subscription } from 'rxjs';
 import { EavService, EditInitializerService, LoggingService } from '.';
 import { FieldSettings, FieldValue } from '../../../../../../edit-types';
 import { DataTypeConstants } from '../../../content-type-fields/constants/data-type.constants';
@@ -12,10 +12,10 @@ import { FeaturesService } from '../../../shared/services/features.service';
 import { FieldLogicManager } from '../../form/shared/field-logic/field-logic-manager';
 import { FieldLogicTools } from '../../form/shared/field-logic/field-logic-tools';
 // tslint:disable-next-line:max-line-length
-import { EntityReader, FieldsSettingsHelpers, FormulaHelpers, GeneralHelpers, InputFieldHelpers, LocalizationHelpers, ValidationHelpers } from '../helpers';
+import { EntityReader, FieldsSettingsHelpers, FormulaHelpers, GeneralHelpers, InputFieldHelpers, ValidationHelpers } from '../helpers';
 // tslint:disable-next-line:max-line-length
 import { CalculatedInputType, ContentTypeSettings, FieldConstants, FieldsProps, FormulaCacheItem, FormulaFieldValidation, FormulaFunctionDefault, FormulaFunctionV1, FormulaTarget, FormulaTargets, FormulaVersions, FormValues, LogSeverities, RunFormulasResult, SettingsFormulaPrefix, TranslationState } from '../models';
-import { EavContentType, EavContentTypeAttribute, EavHeader } from '../models/eav';
+import { EavHeader } from '../models/eav';
 // tslint:disable-next-line:max-line-length
 import { ContentTypeService, GlobalConfigService, InputTypeService, ItemService, LanguageInstanceService, LanguageService } from '../store/ngrx-data';
 import { FormsStateService } from './forms-state.service';
@@ -91,14 +91,49 @@ export class FieldsSettingsService implements OnDestroy {
     const inputTypes$ = this.inputTypeService.getInputTypes$();
     const readOnly$ = this.formsStateService.readOnly$;
     const debugEnabled$ = this.globalConfigService.getDebugEnabled$();
+    const fieldConstantsAndCalculatedInput$ = combineLatest([inputTypes$, contentType$, entityReader$]).pipe(
+      map(([inputTypes, contentType, entityReader]) => {
+        const fieldConstantsAndCalculatedInput: { calculatedInputType: CalculatedInputType, constants: FieldConstants }[] = [];
+        for (const attribute of contentType.Attributes) {
+          const initialSettings = FieldsSettingsHelpers.setDefaultFieldSettings(
+            // TODO: unclear why we're not using the current language but the default
+            new EntityReader(this.eavService.eavConfig.lang, entityReader.defaultLanguage).flattenAll<FieldSettings>(attribute.Metadata)
+            // FieldsSettingsHelpers.mergeSettings<FieldSettings>(attribute.Metadata, this.eavService.eavConfig.lang, defaultLanguage),
+          );
+          const initialDisabled = initialSettings.Disabled ?? false;
+          const calculatedInputType = InputFieldHelpers.calculateInputType(attribute, inputTypes);
+          const inputType = inputTypes.find(i => i.Type === attribute.InputType);
+          const index = contentType.Attributes.indexOf(attribute);
+          fieldConstantsAndCalculatedInput.push({
+            calculatedInputType,
+            constants: {
+              angularAssets: inputType?.AngularAssets,
+              contentTypeId,
+              dropzonePreviewsClass: `dropzone-previews-${this.eavService.eavConfig.formId}-${index}`,
+              entityGuid,
+              entityId,
+              fieldName: attribute.Name,
+              index,
+              initialDisabled,
+              inputType: calculatedInputType.inputType,
+              isExternal: calculatedInputType.isExternal,
+              isLastInGroup: FieldsSettingsHelpers.findIsLastInGroup(contentType, attribute),
+              type: attribute.Type,
+            }
+          });
+        }
+        return fieldConstantsAndCalculatedInput;
+      }),
+    );
+
     this.subscription.add(
       combineLatest([
-        combineLatest([contentType$, itemAttributes$, itemHeader$, inputTypes$]),
-        combineLatest([entityReader$, readOnly$, this.forceRefreshSettings$, debugEnabled$]),
+        contentType$, itemAttributes$, itemHeader$, inputTypes$, entityReader$,
+        readOnly$, this.forceRefreshSettings$, debugEnabled$, fieldConstantsAndCalculatedInput$
       ]).pipe(
         map(([
-          [contentType, itemAttributes, itemHeader, inputTypes],
-          [entityReader, readOnly, _, debugEnabled],
+          contentType, itemAttributes, itemHeader, inputTypes, entityReader,
+          readOnly, _, debugEnabled, fieldConstantsAndCalculatedInput
         ]) => {
           const formValues: FormValues = {};
           for (const [fieldName, fieldValues] of Object.entries(itemAttributes)) {
@@ -167,21 +202,25 @@ export class FieldsSettingsService implements OnDestroy {
             const fieldTranslation = FieldsSettingsHelpers.getTranslationState(
               attributeValues, fixed.DisableTranslation, entityReader.currentLanguage, entityReader.defaultLanguage,
             );
+            const wrappers = InputFieldHelpers.getWrappers(
+              fixed, fieldConstantsAndCalculatedInput.find(f => f.constants.fieldName === attribute.Name).calculatedInputType
+            );
 
             fieldsProps[attribute.Name] = {
-              ...this.getFieldConstantsAndCalculatedInputType(
-                inputTypes, inputType, contentTypeId, entityGuid, entityId, contentType, attribute, entityReader, fixed,
-              ),
+              ...fieldConstantsAndCalculatedInput.find(f => f.constants.fieldName === attribute.Name),
               settings: fixed,
               translationState: fieldTranslation,
               value,
+              wrappers,
               formulaValidation,
             };
           }
 
           if (Object.keys(formulaUpdates).length > 0 && this.maxValueFormulaCycles > this.valueFormulaCounter) {
             this.valueFormulaCounter++;
-            this.itemService.updateItemAttributesValues(entityGuid, formulaUpdates, entityReader.currentLanguage, entityReader.defaultLanguage);
+            this.itemService.updateItemAttributesValues(
+              entityGuid, formulaUpdates, entityReader.currentLanguage, entityReader.defaultLanguage
+            );
             return;
           }
           this.valueFormulaCounter = 0;
@@ -230,39 +269,6 @@ export class FieldsSettingsService implements OnDestroy {
 
   forceSettings(): void {
     this.forceRefreshSettings$.next();
-  }
-
-  private getFieldConstantsAndCalculatedInputType(
-    inputTypes: InputType[], inputType: InputType, contentTypeId: string, entityGuid: string, entityId: number,
-    contentType: EavContentType, attribute: EavContentTypeAttribute, entityReader: EntityReader, fixed: FieldSettings):
-    { calculatedInputType: CalculatedInputType, constants: FieldConstants, wrappers: string[] } {
-    const initialSettings = FieldsSettingsHelpers.setDefaultFieldSettings(
-      // TODO: unclear why we're not using the current language but the default
-      new EntityReader(this.eavService.eavConfig.lang, entityReader.defaultLanguage).flattenAll<FieldSettings>(attribute.Metadata)
-      // FieldsSettingsHelpers.mergeSettings<FieldSettings>(attribute.Metadata, this.eavService.eavConfig.lang, defaultLanguage),
-    );
-    const index = contentType.Attributes.indexOf(attribute);
-    const initialDisabled = initialSettings.Disabled ?? false;
-    const calculatedInputType = InputFieldHelpers.calculateInputType(attribute, inputTypes);
-    const wrappers = InputFieldHelpers.getWrappers(fixed, calculatedInputType);
-    return {
-      calculatedInputType,
-      constants: {
-        angularAssets: inputType?.AngularAssets,
-        contentTypeId,
-        dropzonePreviewsClass: `dropzone-previews-${this.eavService.eavConfig.formId}-${index}`,
-        entityGuid,
-        entityId,
-        fieldName: attribute.Name,
-        index,
-        initialDisabled,
-        inputType: calculatedInputType.inputType,
-        isExternal: calculatedInputType.isExternal,
-        isLastInGroup: FieldsSettingsHelpers.findIsLastInGroup(contentType, attribute),
-        type: attribute.Type,
-      },
-      wrappers
-    };
   }
 
   private runFormulas(
