@@ -171,6 +171,8 @@ export interface FormulaV1Experimental {
    */
   getSettings(fieldName: string): FieldSettings;
   getValues(entityGuid: string): FormValues;
+  fieldAndValueWIP: Record<string, FieldValue>;
+  pushValueWIP(field: string, value: FieldValue): void;
 }
 
 // TODO: once the id is gone, merge with the type FormulaV1CtxTargetEntityType
@@ -188,6 +190,7 @@ export interface RunFormulasResult {
   settings: FieldSettings;
   validation: FormulaFieldValidation;
   value: FieldValue;
+  additionalValues: Record<string, FieldValue>;
 }
 
 export interface FormulaResult {

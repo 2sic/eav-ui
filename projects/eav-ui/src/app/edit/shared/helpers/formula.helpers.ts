@@ -209,6 +209,10 @@ export class FormulaHelpers {
               }
               return values;
             },
+            fieldAndValueWIP: {},
+            pushValueWIP(field: string, value: FieldValue): void {
+              (this.fieldAndValueWIP as Record<string, FieldValue>)[field] = value as FieldValue;
+            },
           }
         };
         return propsV1;
