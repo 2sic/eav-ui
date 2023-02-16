@@ -12,7 +12,6 @@ import { RawEditorOptionsWithEav } from './tinymce-helper-types';
 import { TinyMceToolbars } from './toolbars';
 import { TinyMceTranslations } from './translations';
 import { WysiwygConfigurationManager } from './defaults/wysiwyg-configuration-manager';
-import { DisplayInline } from '../constants/display-modes';
 
 declare const window: EavWindow;
 const reconfigErr = `Very likely an error in your reconfigure code. Check http://r.2sxc.org/field-wysiwyg`;
@@ -71,40 +70,18 @@ export class TinyMceConfigurator {
     const fieldSettings = connector.field.settings as StringWysiwyg;
 
     // 2. Get the preset configuration for this mode
-    const wysiwygConfiguration = WysiwygConfigurationManager.singleton().getSettings(connector, fieldSettings, DisplayInline);
+    const configManager = new WysiwygConfigurationManager(connector, fieldSettings);
+    const wysiwygConfiguration = configManager.getSettings(modeIsInline ? WysiwygDisplayModes.DisplayInline : WysiwygDisplayModes.DisplayDialog);
 
     // TODO
     // Add current toolbar
     // change code when mode changes to re-run through wysiwygconfigurationmanager
 
-    const bSource = fieldSettings.ButtonSource?.toLowerCase();
-    const bAdvanced = fieldSettings.ButtonAdvanced?.toLowerCase();
-    const bToDialog = fieldSettings.Dialog === WysiwygDisplayModes.DisplayInline;
+    // 3. Build the toolbar
+    const manyOptionsInclToolbar = configManager.toolbarMaker.build(modeIsInline);
+
     const dropzone = exp.dropzone;
     const adam = exp.adam;
-
-    // WIP
-    consoleLogWebpack('2dm fieldSettings', fieldSettings);
-    const eavConfig: TinyEavConfig = {
-      mode: toConfigForViewModes(wysiwygConfiguration.editMode),
-      features: wysiwygConfiguration.features,
-      buttons: {
-        inline: {
-          source: bSource === 'true',
-          advanced: bAdvanced === 'true',
-          dialog: bToDialog,
-        },
-        dialog: {
-          source: bSource !== 'false',
-          advanced: bAdvanced !== 'false',
-          dialog: false,
-        }
-      }
-    };
-    consoleLogWebpack('2dm eavConfig', eavConfig);
-
-    const toolbarModes = new TinyMceToolbars(eavConfig).build(modeIsInline);
-
     if (dropzone == null || adam == null) {
       console.error(`Dropzone or ADAM Config not available, some things won't work`);
     }
@@ -118,15 +95,14 @@ export class TinyMceConfigurator {
     if (!contentCssFile) contentCssFile = null;
 
     const options: RawEditorOptionsWithEav = {
-      ...wysiwygConfiguration.tinyMceOptions,
-      ...{ plugins: [...wysiwygConfiguration.tinyMcePlugins] },
+      ...wysiwygConfiguration.tinyMce,
       selector: `.${containerClass}`,
       fixed_toolbar_container: `.${fixedToolbarClass}`,
       content_style: contentStyle.default,
       content_css: contentCssFile,
       setup,
-      eavConfig,
-      ...toolbarModes,
+      configManager: configManager,
+      ...manyOptionsInclToolbar,
       ...TinyMceTranslations.getLanguageOptions(this.language),
       ...(this.isWysiwygPasteFormatted$.value ? DefaultPaste.formattedText : {}),
       ...DefaultPaste.images(dropzone, adam),
@@ -134,6 +110,7 @@ export class TinyMceConfigurator {
       block_unsupported_drop: false,
     };
 
+    // If this is inherited by a customized field, then call it's configureOptions (if available)
     if (this.reconfigure?.configureOptions) {
       const newOptions = this.reconfigure.configureOptions(options);
       if (newOptions) return newOptions;

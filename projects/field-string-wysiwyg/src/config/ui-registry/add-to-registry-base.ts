@@ -51,8 +51,8 @@ export abstract class AddToRegistryBase {
   protected switchMode(displayMode?: DialogModes.DisplayModes, editMode?: EditModes.WysiwygEditMode): void {
     displayMode ??= this.options.currentMode.displayMode;
     editMode ??= this.options.currentMode.editMode;
-    const newSettings = this.options.modeSwitcher.switch(displayMode, editMode);
-    // don't create a new object, we must keep a reference to the old
+    const newSettings = this.options.configManager.switch(editMode, displayMode);// .modeSwitcher.switch(displayMode, editMode);
+    // don't create a new object, we must keep a reference to the previous parent `this.options`.
     // don't do this: this.options = {...this.options, ...newSettings};
     this.options.toolbar = newSettings.toolbar;
     this.options.menubar = newSettings.menubar;

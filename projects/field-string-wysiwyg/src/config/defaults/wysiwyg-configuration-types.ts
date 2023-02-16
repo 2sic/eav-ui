@@ -40,6 +40,14 @@ export interface WysiwygConfiguration {
   contextMenu: string[];
 
   /**
+   * Any standard tinyMce options which are already in the correct format
+   */
+  tinyMce: RawEditorOptions;
+  //  {
+  //   options: RawEditorOptions;
+  //   plugins: string[];
+  // };
+  /**
    * Options which apply to this mode
    */
   tinyMceOptions: RawEditorOptions;

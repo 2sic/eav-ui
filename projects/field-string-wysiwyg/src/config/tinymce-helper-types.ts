@@ -8,10 +8,13 @@
 import type { RawEditorOptions } from 'tinymce';
 import * as DialogModes from '../constants/display-modes';
 import * as EditModes from '../constants/edit-modes';
-import { TinyEavConfig } from './tinymce-config';
+import { WysiwygConfigurationManager } from './defaults/wysiwyg-configuration-manager';
 
 export interface RawEditorOptionsWithEav extends RawEditorOptions, Omit<TinyMceMode, 'menubar' | 'toolbar' | 'contextmenu'> {
-  eavConfig: TinyEavConfig;
+  /**
+   * The new configuration manager which should take care of everything.
+   */
+  configManager: WysiwygConfigurationManager;
 }
 
 export interface TinyMceMode {
@@ -21,11 +24,4 @@ export interface TinyMceMode {
   };
   menubar: boolean | string; // should match TinyMCE
   toolbar: string | string[]; // should match TinyMCE
-  contextmenu: string;
-  modeSwitcher: ToolbarSwitcher;
-}
-
-export interface ToolbarSwitcher {
-  // isDialog(editor: Editor): boolean;
-  switch(displayMode: DialogModes.DisplayModes, editMode: EditModes.WysiwygEditMode): TinyMceMode;
 }

@@ -60,7 +60,7 @@ export class TinyButtonsImg extends AddToRegistryBase {
     const rangeSelected = () => document.getSelection().rangeCount > 0 && !document.getSelection().getRangeAt(0).collapsed;
 
     // Different behavior depending on WysiwygMode
-    const imgAlign = this.options.eavConfig.features.responsiveImages
+    const imgAlign = this.options.configManager.current.features.responsiveImages
       ? `${RichSpecs.ImgLeftClass} ${RichSpecs.ImgCenterClass} ${RichSpecs.ImgRightClass} ${Buttons.ImgRatiosGroup}`
       : `alignleft aligncenter alignright ${Buttons.ImgWidthsGroup}`;
 

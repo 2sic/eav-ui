@@ -6,7 +6,7 @@ import { ButtonGroupSelector } from './button-group-selector';
 import { NewRow, toButtonGroupByView } from './button-groups';
 import { DefaultContextMenu, DefaultToolbarConfig } from './defaults';
 import { SelectSettings, TinyEavConfig } from './tinymce-config';
-import { TinyMceMode, ToolbarSwitcher } from './tinymce-helper-types';
+import { TinyMceMode } from './tinymce-helper-types';
 
 // #region Button Sets that define what buttons appear in what view / mode
 
@@ -18,7 +18,7 @@ const ButtonSetContextMenu = toButtonGroupByView(DefaultContextMenu);
 
 // #endregion
 
-export class TinyMceToolbars implements ToolbarSwitcher {
+export class TinyMceToolbars { // } implements ToolbarSwitcher {
 
   constructor(private config: TinyEavConfig) {
   }
@@ -27,7 +27,7 @@ export class TinyMceToolbars implements ToolbarSwitcher {
     const displayMode = isInline ? DialogModes.DisplayInline : DialogModes.DisplayDialog;
     const initial = this.switch(displayMode, this.config.mode?.[displayMode] || EditModes.Default);
     return {
-      modeSwitcher: this,
+      // modeSwitcher: this,
       ...initial
     };
   }
@@ -43,8 +43,6 @@ export class TinyMceToolbars implements ToolbarSwitcher {
       },
       menubar: editMode === EditModes.WysiwygAdvanced,
       toolbar: this.toolbar(selector) as any,
-      contextmenu: selector.selectButtonGroup(ButtonSetContextMenu)[0],
-      modeSwitcher: this,
     };
   }
 
