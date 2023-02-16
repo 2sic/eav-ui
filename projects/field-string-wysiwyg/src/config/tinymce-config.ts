@@ -1,6 +1,5 @@
 import * as DialogModes from '../constants/display-modes';
 import * as EditModes from '../constants/edit-modes';
-import { ConfigForDisplayModes, ConfigForDisplayModesRaw } from './config-for-view-modes';
 
 export interface SelectSettings {
   /** The mode like 'default', 'text', etc. */
@@ -24,9 +23,4 @@ export interface TinyEavButtons {
   source: boolean;
   advanced: boolean;
   dialog: boolean;
-}
-export interface TinyEavConfig {
-  mode: ConfigForDisplayModes<EditModes.WysiwygEditMode>;
-  features: TinyEavFeatures;
-  buttons: ConfigForDisplayModes<TinyEavButtons>;
 }

@@ -5,10 +5,9 @@ import { DefaultOptions } from './default-tinymce-options';
 import { DefaultPlugins } from './default-tinymce-plugins';
 import { StringWysiwyg } from '../../../../edit-types/src/FieldSettings';
 import { Connector } from 'projects/edit-types';
-import { TinyEavFeatures, TinyEavButtons, TinyEavConfig } from '../tinymce-config';
+import { TinyEavFeatures, TinyEavButtons } from '../tinymce-config';
 import { consoleLogWebpack } from '../../../../field-custom-gps/src/shared/console-log-webpack.helper';
 import { DefaultToolbarConfig } from './default-toolbar-config';
-import { toConfigForViewModes } from '../config-for-view-modes';
 import { TinyMceToolbars } from '../toolbars';
 import * as DialogModes from '../../constants/display-modes';
 import * as EditModes from '../../constants/edit-modes';
@@ -55,7 +54,6 @@ const defaultConfigurationSet: WysiwygConfigurationSet = {
         dialog: false,
       },
       toolbar: DefaultToolbarConfig.all.dialog as string[],
-      contextMenu: ['link image'], // experimental
     }
   ],
 };
@@ -73,16 +71,19 @@ const ConfigurationPresets: Record<string, WysiwygConfigurationSet> = {
   },
   advanced: {
     ...defaultConfigurationSet,
+    editMode: 'advanced',
     toolbar: DefaultToolbarConfig.all.advanced as string[],
     menubar: true,
   },
   text: configurationText,
   'text-basic': {
     ...configurationText,
+    editMode: 'text-basic',
     toolbar: DefaultToolbarConfig.all['text-basic'] as string[],
   },
   'text-minimal': {
     ...configurationText,
+    editMode: 'text-minimal',
     toolbar: DefaultToolbarConfig.all['text-minimal'] as string[],
   },
   rich: {
@@ -105,9 +106,6 @@ export class WysiwygConfigurationManager {
     private fieldSettings: StringWysiwyg) {
   }
 
-  toolbarMaker: TinyMceToolbars;
-  eavConfigTemp: TinyEavConfig;
-
   current: WysiwygConfiguration;
 
   public getSettings(editMode: EditModes.WysiwygEditMode, displayMode: DialogModes.DisplayModes): WysiwygConfiguration {
@@ -120,6 +118,7 @@ export class WysiwygConfigurationManager {
 
     // 2. Get the preset for this mode
     var preset = this.getPreset(editMode, displayMode);
+    // console.error('preset', preset, 'editMode', editMode, 'displayMode', displayMode);
     editMode = preset.editMode;
     displayMode = preset.displayMode; // reset, in case it had to change / was not an available option
 
@@ -132,64 +131,30 @@ export class WysiwygConfigurationManager {
     };
 
     // 3. Buttons reconfiguration
-console.error('2dm preset', preset.buttons);
     const buttons: TinyEavButtons = {
       ...preset.buttons,
       source: nullOrBool(fieldSettings.ButtonSource) ?? preset.buttons.source,
       advanced: nullOrBool(fieldSettings.ButtonAdvanced) ?? preset.buttons.advanced,
     };
-console.error('2dm post', preset.buttons, fieldSettings);
     
     const wysiwygConfiguration = {
       ...preset,
       buttons,
       features,
     };
-console.warn('2dm wysiwygConfiguration', wysiwygConfiguration);
 
-    // WIP
-    const bSource = fieldSettings.ButtonSource?.toLowerCase();
-    const bAdvanced = fieldSettings.ButtonAdvanced?.toLowerCase();
-    const bToDialog = fieldSettings.Dialog === DialogModes.DisplayInline;
-
-    consoleLogWebpack('2dm fieldSettings', fieldSettings);
-    const eavConfig: TinyEavConfig = {
-      mode: toConfigForViewModes(wysiwygConfiguration.editMode),
-      features: wysiwygConfiguration.features,
-      buttons: {
-        inline: {
-          source: bSource === 'true',
-          advanced: bAdvanced === 'true',
-          dialog: bToDialog,
-        },
-        dialog: {
-          source: bSource !== 'false',
-          advanced: bAdvanced !== 'false',
-          dialog: false,
-        }
-      }
-    };
-    consoleLogWebpack('2dm eavConfig', eavConfig);
-
-    // Build and attach the toolbar
-    this.eavConfigTemp = eavConfig;
-    this.toolbarMaker = new TinyMceToolbars(eavConfig);
-    const toolbar = this.toolbarMaker.switch(displayMode, editMode, wysiwygConfiguration.buttons);
+    // Build and attach the final toolbar
+    const toolbar = new TinyMceToolbars().switch(wysiwygConfiguration);
     wysiwygConfiguration.tinyMce.toolbar = toolbar;
 
     this.current = wysiwygConfiguration;
     return wysiwygConfiguration;
   }
 
-  public switch(editMode: EditModes.WysiwygEditMode, displayMode: DialogModes.DisplayModes)
-  : { toolbar: string[], contextmenu: string, menubar: string | boolean } {
+  public switch(editMode: EditModes.WysiwygEditMode, displayMode: DialogModes.DisplayModes) {
     // temp/wip - rebuild settings and toolbarMaker as sideEffect - this is not good
-    this.getSettings(editMode, displayMode);
-    return {
-      toolbar: this.toolbarMaker.switch(displayMode, editMode, this.current.buttons),
-      contextmenu: this.current.contextMenu[0],
-      menubar: this.current.menubar,
-    };
+    const updated = this.getSettings(editMode, displayMode);
+    return updated.tinyMce;
   }
 
   public getPreset(editMode: EditModes.WysiwygEditMode, displayMode: DialogModes.DisplayModes): WysiwygConfiguration {
@@ -205,10 +170,11 @@ console.warn('2dm wysiwygConfiguration', wysiwygConfiguration);
 }
 
 function getPresetInternal(editMode: EditModes.WysiwygEditMode, displayMode: DialogModes.DisplayModes): WysiwygConfiguration {
-  consoleLogWebpack('2dm editMode', editMode, 'displayMode', displayMode);
+  consoleLogWebpack('2dm editMode', editMode, 'displayMode', displayMode, ConfigurationPresets);
   // Find best match for modeConfig, if not found, rename and use default
   const defConfig = ConfigurationPresets[DefaultMode];
   let currConfig = ConfigurationPresets[editMode];
+  // console.warn('2dm currConfig', currConfig, 'defConfig', defConfig, 'editMode', editMode, 'displayMode', displayMode);
   if (!currConfig) {
     editMode = DefaultMode;
     currConfig = defConfig;
@@ -219,7 +185,7 @@ function getPresetInternal(editMode: EditModes.WysiwygEditMode, displayMode: Dia
 
   // Find best match for variation. If found, mix with defaults
   const variation = currConfig.variations.find(v => v.displayMode === displayMode);
-  consoleLogWebpack('2dm variationPartial', variation, 'currConfig', currConfig, 'defConfig', defConfig);
+  // consoleLogWebpack('2dm variationPartial', variation, 'currConfig', currConfig, 'defConfig', defConfig);
   const merged: WysiwygConfiguration = variation ? {
     editMode: currConfig.editMode || defConfig.editMode,
     displayMode: variation.displayMode || currConfig.displayMode || defConfig.displayMode,
@@ -247,7 +213,7 @@ function getPresetInternal(editMode: EditModes.WysiwygEditMode, displayMode: Dia
     contextmenu: merged.contextMenu[0],
     menubar: merged.menubar,
   };
-  consoleLogWebpack('2dm merged', merged);
+  // consoleLogWebpack('2dm merged', merged);
 
   return merged;
 }

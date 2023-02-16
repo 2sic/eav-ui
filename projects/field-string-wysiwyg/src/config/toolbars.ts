@@ -1,11 +1,10 @@
-import { consoleLogWebpack } from '../../../field-custom-gps/src/shared/console-log-webpack.helper';
 import * as Buttons from '../constants/buttons';
-import * as DialogModes from '../constants/display-modes';
 import * as EditModes from '../constants/edit-modes';
 import { ButtonGroupSelector } from './button-group-selector';
 import { NewRow, toButtonGroupByView } from './button-groups';
 import { DefaultToolbarConfig } from './defaults';
-import { SelectSettings, TinyEavConfig, TinyEavButtons } from './tinymce-config';
+import { SelectSettings } from './tinymce-config';
+import { WysiwygConfiguration } from './defaults/wysiwyg-configuration-types';
 
 // #region Button Sets that define what buttons appear in what view / mode
 
@@ -17,12 +16,15 @@ const toolbarConfig = toButtonGroupByView(DefaultToolbarConfig);
 
 export class TinyMceToolbars {
 
-  constructor(private config: TinyEavConfig) {
+  constructor() {
   }
 
-  public switch(displayMode: DialogModes.DisplayModes, editMode: EditModes.WysiwygEditMode, buttons: TinyEavButtons) {
-    consoleLogWebpack(`TinyMceToolbars.switch(${displayMode}, ${editMode})`, this.config);
-    const selector = new ButtonGroupSelector({ editMode, displayMode, buttons, features: this.config.features });
+  public switch(cnf: WysiwygConfiguration) {
+    const selector = new ButtonGroupSelector({
+      editMode: cnf.editMode,
+      displayMode: cnf.displayMode,
+      buttons: cnf.buttons,
+      features: cnf.features });
     return this.toolbar(selector)
   }
 
@@ -53,16 +55,16 @@ export class TinyMceToolbars {
   }
 
   private createRemoveMap(settings: SelectSettings): { button: string, enabled: boolean }[] {
+    const editModeAdvanced = settings.editMode === EditModes.WysiwygAdvanced;
     const map = [
       { button: Buttons.Code, enabled: settings.buttons.source },
       { button: Buttons.DialogOpen, enabled: settings.buttons.dialog },
-      { button: Buttons.ModeAdvanced, enabled: settings.buttons.advanced },
-      { button: Buttons.ModeDefault, enabled: settings.editMode === EditModes.WysiwygAdvanced },
+      { button: Buttons.ModeAdvanced, enabled: settings.buttons.advanced && !editModeAdvanced },
+      { button: Buttons.ModeDefault, enabled: editModeAdvanced },
       { button: Buttons.AddContentBlock, enabled: settings.features.contentBlocks },
       { button: Buttons.XXXContentDivision, enabled: false /* settings.features.contentSeparators */ },
       { button: Buttons.ContentSectionSplitter, enabled: settings.features.contentSeparators },
     ];
-    console.log('2dm remove map', map);
     return map;
   }
 }
