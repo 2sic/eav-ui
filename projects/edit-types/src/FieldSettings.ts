@@ -250,6 +250,10 @@ export interface Boolean extends All {
   _label: string;
 }
 
+interface InternalSettings {
+  _disabledBecauseOfTranslation?: boolean;
+}
+
 export interface FieldSettings extends
   Boolean,
   CustomGps,
@@ -267,5 +271,6 @@ export interface FieldSettings extends
   StringFontIconPicker,
   StringTemplatePicker,
   StringUrlPath,
-  StringWysiwyg
+  StringWysiwyg,
+  InternalSettings
   { }
