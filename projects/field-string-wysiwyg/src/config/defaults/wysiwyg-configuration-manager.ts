@@ -132,9 +132,12 @@ export class WysiwygConfigurationManager {
 
     // 3. Buttons reconfiguration
     const buttons: TinyEavButtons = {
-      ...preset.buttons,
+      // ...preset.buttons,
       source: nullOrBool(fieldSettings.ButtonSource) ?? preset.buttons.source,
       advanced: nullOrBool(fieldSettings.ButtonAdvanced) ?? preset.buttons.advanced,
+      dialog: !fieldSettings.Dialog 
+        ? preset.buttons.dialog // not set / empty - use default
+        : fieldSettings.Dialog === DialogModes.DisplayInline, // set, activate if 'inline'
     };
     
     const wysiwygConfiguration = {
