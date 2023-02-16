@@ -4,25 +4,20 @@ import { ButtonGroupByViewRaw, NewRow, NoButtons } from '../button-groups';
 const standardGroupUndoRedoPaste = `undo redo pastetext paste removeformat`;
 const standardGroupFinal = `${Buttons.Code} ${Buttons.ModeAdvanced} ${Buttons.ModeDefault} ${Buttons.DialogOpen}`;
 
-const defaultToolbar = [
-  /* initial w/undo   */ standardGroupUndoRedoPaste,
-  /* format text      */ `bold ${Buttons.StylesGroup}`,
-  /* paragraph types  */ `h2 ${Buttons.HGroups.h3}`,
-  /* bullets          */ `numlist ${Buttons.ListGroup}`,
-  /* links/media      */ `${Buttons.LinkGroup}`,
-  /* rich media       */ NoButtons,
-  /* content block    */ Buttons.AddContentBlock,
-  /* tools/mode switch*/ standardGroupFinal,
-  // /* Experiment. split*/ NewRow,
-  // /* Experiment. split*/ `undo`
-];
-
 export const DefaultToolbarConfig: ButtonGroupByViewRaw = {
   all: {
     // #v1500-not-ready
     // default: ` ${C.ToolbarModeToggle} undo redo pastetext`,
     // advanced: ` ${C.ToolbarModeToggle} undo pastetext`,
-    default: defaultToolbar,
+    default: [
+      /* initial w/undo   */ standardGroupUndoRedoPaste,
+      /* format text      */ `bold ${Buttons.StylesGroup}`,
+      /* paragraph types  */ `h2 ${Buttons.HGroups.h3}`,
+      /* bullets          */ `numlist ${Buttons.ListGroup}`,
+      /* links/media      */ `${Buttons.LinkGroup}`,
+      /* content block    */ Buttons.AddContentBlock,
+      /* tools/mode switch*/ standardGroupFinal,
+    ],
     advanced: [
       /* initial w/undo   */ standardGroupUndoRedoPaste,
       /* format text      */ `styles bold ${Buttons.StylesGroup}`,
@@ -60,7 +55,15 @@ export const DefaultToolbarConfig: ButtonGroupByViewRaw = {
       /* tools/mode switch*/ standardGroupFinal,
     ],
     rich: [
-      /* default toolbar  */ ...defaultToolbar,
+      // Almost Default Toolbar at first
+      /* initial w/undo   */ standardGroupUndoRedoPaste,
+      /* format text      */ `bold ${Buttons.StylesGroup}`,
+      /* paragraph types  */ `h2 ${Buttons.HGroups.h3}`,
+      /* bullets          */ `numlist ${Buttons.ListGroup}`,
+      /* links/media      */ `${Buttons.LinkGroup}`,
+      /* content block    */ // Buttons.AddContentBlock, // Without the content-block as it will be in the second line
+      /* tools/mode switch*/ standardGroupFinal,
+    
       /* -                */ NewRow,
       /* initial w/undo   */ `${Buttons.PasteImage}`,
 

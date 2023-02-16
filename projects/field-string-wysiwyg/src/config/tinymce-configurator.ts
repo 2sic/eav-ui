@@ -1,17 +1,18 @@
 import { BehaviorSubject, distinctUntilChanged, Subscription } from 'rxjs';
 import type { Editor } from 'tinymce';
-import { InputTypeConstants } from '../../../eav-ui/src/app/content-type-fields/constants/input-type.constants';
 import { EavWindow } from '../../../eav-ui/src/app/shared/models/eav-window.model';
 import { AddOnSettings, Connector, StringWysiwyg, WysiwygReconfigure } from '../../../edit-types';
 import { consoleLogWebpack } from '../../../field-custom-gps/src/shared/console-log-webpack.helper';
 import * as WysiwygDisplayModes from '../constants/display-modes'
 import * as contentStyle from '../editor/tinymce-content.scss';
 import { toConfigForViewModes } from './config-for-view-modes';
-import { DefaultAddOnSettings, DefaultOptions, DefaultPaste, DefaultPlugins } from './defaults';
+import { DefaultAddOnSettings, DefaultPaste } from './defaults';
 import { TinyEavConfig } from './tinymce-config';
 import { RawEditorOptionsWithEav } from './tinymce-helper-types';
 import { TinyMceToolbars } from './toolbars';
 import { TinyMceTranslations } from './translations';
+import { WysiwygConfigurationManager } from './defaults/wysiwyg-configuration-manager';
+import { DisplayInline } from '../constants/display-modes';
 
 declare const window: EavWindow;
 const reconfigErr = `Very likely an error in your reconfigure code. Check http://r.2sxc.org/field-wysiwyg`;
@@ -68,27 +69,25 @@ export class TinyMceConfigurator {
     // Create a TinyMceModeConfig object with bool only
     // Then pass this object into the build(...) below, replacing the original 3 parameters
     const fieldSettings = connector.field.settings as StringWysiwyg;
+
+    // 2. Get the preset configuration for this mode
+    const wysiwygConfiguration = WysiwygConfigurationManager.singleton().getSettings(connector, fieldSettings, DisplayInline);
+
+    // TODO
+    // Add current toolbar
+    // change code when mode changes to re-run through wysiwygconfigurationmanager
+
     const bSource = fieldSettings.ButtonSource?.toLowerCase();
     const bAdvanced = fieldSettings.ButtonAdvanced?.toLowerCase();
     const bToDialog = fieldSettings.Dialog === WysiwygDisplayModes.DisplayInline;
     const dropzone = exp.dropzone;
     const adam = exp.adam;
 
-    // Feature detection
-    const useContentBlocks = exp.allInputTypeNames[connector.field.index + 1]?.inputType === InputTypeConstants.EntityContentBlocks;
-    const responsiveImages = fieldSettings._advanced.Mode === 'rich';
-
     // WIP
     consoleLogWebpack('2dm fieldSettings', fieldSettings);
     const eavConfig: TinyEavConfig = {
-      mode: toConfigForViewModes(fieldSettings._advanced.Mode),
-      features: {
-        // contentBlocks is on if the following field can hold inner-content items
-        contentBlocks: useContentBlocks,
-        wysiwygEnhanced: false, // bContDiv === 'true',
-        responsiveImages,
-        contentSeparators: responsiveImages,
-      },
+      mode: toConfigForViewModes(wysiwygConfiguration.editMode),
+      features: wysiwygConfiguration.features,
       buttons: {
         inline: {
           source: bSource === 'true',
@@ -119,8 +118,8 @@ export class TinyMceConfigurator {
     if (!contentCssFile) contentCssFile = null;
 
     const options: RawEditorOptionsWithEav = {
-      ...DefaultOptions,
-      ...{ plugins: [...DefaultPlugins] },
+      ...wysiwygConfiguration.tinyMceOptions,
+      ...{ plugins: [...wysiwygConfiguration.tinyMcePlugins] },
       selector: `.${containerClass}`,
       fixed_toolbar_container: `.${fixedToolbarClass}`,
       content_style: contentStyle.default,
