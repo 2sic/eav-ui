@@ -1,13 +1,17 @@
 import type { RawEditorOptions } from 'tinymce';
-import { TinyEavFeatures, TinyEavButtons } from '../tinymce-config';
 import { WysiwygEditMode } from '../../constants/edit-modes';
 import { DisplayModes } from '../../constants/display-modes';
+import { WysiwygButtons, WysiwygFeatures } from '.';
 
 export interface WysiwygConfigurationSet extends WysiwygConfiguration {
-  variations: Partial<WysiwygConfigurationVariation>[],
+  variations: WysiwygConfigurationVariation[],
 }
 
-export interface WysiwygConfigurationVariation extends Omit<WysiwygConfiguration, "editMode" | "displayMode"> {
+/**
+ * Basically a partial of the main configuration.
+ * This is used to create variations of the main configuration.
+ */
+export interface WysiwygConfigurationVariation extends Partial<Omit<WysiwygConfiguration, "editMode" | "displayMode">> {
   /**
    * The view name this variation is for.
    */
@@ -32,12 +36,12 @@ export interface WysiwygConfiguration {
   /**
    * The buttons which are active/inactive
    */
-  buttons: TinyEavButtons;
+  buttons: WysiwygButtons;
 
   /**
    * The features which are active/inactive
    */
-  features: TinyEavFeatures;
+  features: WysiwygFeatures;
   
   /**
    * The context menu in this mode

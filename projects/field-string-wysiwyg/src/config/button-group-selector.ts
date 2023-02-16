@@ -1,7 +1,7 @@
 import { consoleLogWebpack } from '../../../field-custom-gps/src/shared/console-log-webpack.helper';
 import { ButtonGroupByView } from './button-groups';
 import { ConfigForDisplayModes, ConfigForEditModes } from './config-for-view-modes';
-import { SelectSettings } from './tinymce-config';
+import { SelectSettings } from './types/select-settings';
 
 // TODO: this is not well designed yet, as the final form isn't decided
 // Still WIP 2023-01-23 2dm

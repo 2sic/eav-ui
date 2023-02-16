@@ -3,8 +3,8 @@ import * as EditModes from '../constants/edit-modes';
 import { ButtonGroupSelector } from './button-group-selector';
 import { NewRow, toButtonGroupByView } from './button-groups';
 import { DefaultToolbarConfig } from './defaults';
-import { SelectSettings } from './tinymce-config';
-import { WysiwygConfiguration } from './defaults/wysiwyg-configuration-types';
+import { SelectSettings } from './types/select-settings';
+import { WysiwygConfiguration } from './types/wysiwyg-configurations';
 
 // #region Button Sets that define what buttons appear in what view / mode
 

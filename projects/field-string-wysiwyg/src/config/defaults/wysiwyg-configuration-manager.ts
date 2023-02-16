@@ -1,11 +1,11 @@
 import { InputTypeConstants } from '../../../../eav-ui/src/app/content-type-fields/constants/input-type.constants';
 import { DefaultContextMenu } from './default-context-menu';
-import { WysiwygConfiguration, WysiwygConfigurationSet } from './wysiwyg-configuration-types';
+import { WysiwygConfiguration, WysiwygConfigurationSet } from '../types/wysiwyg-configurations';
 import { DefaultOptions } from './default-tinymce-options';
 import { DefaultPlugins } from './default-tinymce-plugins';
 import { StringWysiwyg } from '../../../../edit-types/src/FieldSettings';
 import { Connector } from 'projects/edit-types';
-import { TinyEavFeatures, TinyEavButtons } from '../tinymce-config';
+import { WysiwygFeatures, WysiwygButtons } from '../types';
 import { consoleLogWebpack } from '../../../../field-custom-gps/src/shared/console-log-webpack.helper';
 import { DefaultToolbarConfig } from './default-toolbar-config';
 import { TinyMceToolbars } from '../toolbars';
@@ -125,13 +125,13 @@ export class WysiwygConfigurationManager {
     // 2. Feature detection
     // contentBlocks is on if the following field can hold inner-content items
     const useContentBlocks = exp.allInputTypeNames[this.connector.field.index + 1]?.inputType === InputTypeConstants.EntityContentBlocks;
-    const features: TinyEavFeatures = {
+    const features: WysiwygFeatures = {
       ...preset.features,
       contentBlocks: useContentBlocks,
     };
 
     // 3. Buttons reconfiguration
-    const buttons: TinyEavButtons = {
+    const buttons: WysiwygButtons = {
       // ...preset.buttons,
       source: nullOrBool(fieldSettings.ButtonSource) ?? preset.buttons.source,
       advanced: nullOrBool(fieldSettings.ButtonAdvanced) ?? preset.buttons.advanced,
