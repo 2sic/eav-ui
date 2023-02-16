@@ -91,10 +91,10 @@ export class FieldsSettingsService implements OnDestroy {
     const inputTypes$ = this.inputTypeService.getInputTypes$();
     const readOnly$ = this.formsStateService.readOnly$;
     const debugEnabled$ = this.globalConfigService.getDebugEnabled$();
-    const fieldConstantsAndCalculatedInput$ = combineLatest([inputTypes$, contentType$, entityReader$]).pipe(
+
+    const constantFieldParts$ = combineLatest([inputTypes$, contentType$, entityReader$]).pipe(
       map(([inputTypes, contentType, entityReader]) => {
-        const fieldConstantsAndCalculatedInput: { calculatedInputType: CalculatedInputType, constants: FieldConstants }[] = [];
-        for (const attribute of contentType.Attributes) {
+        return contentType.Attributes.map((attribute, index) => {
           const initialSettings = FieldsSettingsHelpers.setDefaultFieldSettings(
             // TODO: unclear why we're not using the current language but the default
             new EntityReader(this.eavService.eavConfig.lang, entityReader.defaultLanguage).flattenAll<FieldSettings>(attribute.Metadata)
@@ -103,8 +103,19 @@ export class FieldsSettingsService implements OnDestroy {
           const initialDisabled = initialSettings.Disabled ?? false;
           const calculatedInputType = InputFieldHelpers.calculateInputType(attribute, inputTypes);
           const inputType = inputTypes.find(i => i.Type === attribute.InputType);
-          const index = contentType.Attributes.indexOf(attribute);
-          fieldConstantsAndCalculatedInput.push({
+
+          const mergeRaw = entityReader.flattenAll<FieldSettings>(attribute.Metadata);
+          // Sometimes the metadata doesn't have the input type (empty string), so we'll add the attribute.InputType just in case...
+          mergeRaw.InputType = attribute.InputType;
+          const merged = FieldsSettingsHelpers.setDefaultFieldSettings(mergeRaw);
+          consoleLogAngular('merged', JSON.parse(JSON.stringify(merged)));
+
+          const logic = FieldLogicManager.singleton().get(attribute.InputType);
+
+          return ({
+            logic,
+            merged,
+            inputType,
             calculatedInputType,
             constants: {
               angularAssets: inputType?.AngularAssets,
@@ -121,19 +132,17 @@ export class FieldsSettingsService implements OnDestroy {
               type: attribute.Type,
             }
           });
-        }
-        return fieldConstantsAndCalculatedInput;
-      }),
-    );
+        });
+      }));
 
     this.subscription.add(
       combineLatest([
-        contentType$, itemAttributes$, itemHeader$, inputTypes$, entityReader$,
-        readOnly$, this.forceRefreshSettings$, debugEnabled$, fieldConstantsAndCalculatedInput$
+        contentType$, itemAttributes$, itemHeader$, entityReader$,
+        readOnly$, this.forceRefreshSettings$, debugEnabled$, constantFieldParts$
       ]).pipe(
         map(([
-          contentType, itemAttributes, itemHeader, inputTypes, entityReader,
-          readOnly, _, debugEnabled, fieldConstantsAndCalculatedInput
+          contentType, itemAttributes, itemHeader, entityReader,
+          readOnly, _, debugEnabled, constantFieldParts
         ]) => {
           const formValues: FormValues = {};
           for (const [fieldName, fieldValues] of Object.entries(itemAttributes)) {
@@ -150,69 +159,53 @@ export class FieldsSettingsService implements OnDestroy {
           for (const attribute of contentType.Attributes) {
             const attributeValues = itemAttributes[attribute.Name];
             // empty-default and empty-message have no value
-            const value = formValues[attribute.Name];
-            // custom-default has no inputType
-            const inputType = inputTypes.find(i => i.Type === attribute.InputType);
+            const valueBefore = formValues[attribute.Name];
 
-            const mergeRaw = entityReader.flattenAll<FieldSettings>(attribute.Metadata);
-            // Sometimes the metadata doesn't have the input type (empty string), so we'll add the attribute.InputType just in case...
-            mergeRaw.InputType = attribute.InputType;
-            const merged = FieldsSettingsHelpers.setDefaultFieldSettings(mergeRaw);
-            consoleLogAngular('merged', JSON.parse(JSON.stringify(merged)));
+            const constantFieldPart = constantFieldParts.find(f => f.constants.fieldName === attribute.Name);
 
             // run formulas
-            const formulaResult = this.runFormulas(entityGuid, entityId, attribute.Name, formValues, inputType, merged, itemHeader);
-            const calculated = formulaResult.settings;
-            const formulaValue = formulaResult.value;
-            const formulaValidation = formulaResult.validation;
+            const formulaResult = this.runFormulas(entityGuid, entityId, attribute.Name, formValues, constantFieldPart.inputType, constantFieldPart.merged, itemHeader);
 
-            // special fixes
-            calculated.Name = calculated.Name || attribute.Name;
-            calculated.Required = ValidationHelpers.isRequired(calculated);
-            calculated.DisableTranslation = FieldsSettingsHelpers.findDisableTranslation(
-              contentType.Metadata, inputType, attributeValues, entityReader.defaultLanguage, attribute.Metadata,
-            );
+            // ensure new settings match requirements
+            const newSettings = formulaResult.settings;
+            newSettings.Name = newSettings.Name || attribute.Name;
+            newSettings.Required = ValidationHelpers.isRequired(newSettings);
             const slotIsEmpty = itemHeader.IsEmptyAllowed && itemHeader.IsEmpty;
-            calculated.DisableTranslation = slotIsEmpty || calculated.DisableTranslation;
-            calculated.Disabled = slotIsEmpty || calculated.Disabled;
-            const disabledBecauseTranslations = FieldsSettingsHelpers.getDisabledBecauseTranslations(
-              attributeValues, calculated.DisableTranslation, entityReader.currentLanguage, entityReader.defaultLanguage,
+            const disableTranslation = FieldsSettingsHelpers.findDisableTranslation(
+              contentType.Metadata, constantFieldPart.inputType, attributeValues, entityReader.defaultLanguage, attribute.Metadata,
             );
-            calculated.Disabled = disabledBecauseTranslations || calculated.Disabled;
-            calculated.Disabled = readOnly.isReadOnly || calculated.Disabled;
-            calculated.DisableAutoTranslation = calculated.DisableAutoTranslation || calculated.DisableTranslation;
+            newSettings.DisableTranslation = slotIsEmpty || disableTranslation;
+            const disabledBecauseTranslations = FieldsSettingsHelpers.getDisabledBecauseTranslations(
+              attributeValues, newSettings.DisableTranslation, entityReader.currentLanguage, entityReader.defaultLanguage,
+            );
+            newSettings.Disabled = newSettings.Disabled || slotIsEmpty || disabledBecauseTranslations || readOnly.isReadOnly;
+            newSettings.DisableAutoTranslation = newSettings.DisableAutoTranslation || newSettings.DisableTranslation;
 
             // update settings with respective FieldLogics
-            const logic = FieldLogicManager.singleton().get(attribute.InputType);
-            const fixed = logic?.update(calculated, value, logicTools) ?? calculated;
-            consoleLogAngular('calculated', JSON.parse(JSON.stringify(calculated)));
+            const fixed = constantFieldPart.logic?.update(newSettings, valueBefore, logicTools) ?? newSettings;
+            consoleLogAngular('newSettings', JSON.parse(JSON.stringify(newSettings)));
 
+            const valueFromFormula = formulaResult.value;
             // important to compare with undefined because null is allowed value
-            if (!slotIsEmpty && !disabledBecauseTranslations && value !== undefined && formulaValue !== undefined) {
-              let valuesNotEqual = value !== formulaValue;
-              // do a more in depth comparison in case of calculated entity fields
-              if (valuesNotEqual && Array.isArray(value) && Array.isArray(formulaValue)) {
-                valuesNotEqual = !GeneralHelpers.arraysEqual(value as string[], formulaValue as string[]);
-              }
-              if (valuesNotEqual) {
-                formulaUpdates[attribute.Name] = formulaValue;
-              }
+            if ((!slotIsEmpty && !disabledBecauseTranslations
+              && valueBefore !== undefined && valueFromFormula !== undefined)
+              && !this.areValuesEqual(valueBefore, valueFromFormula)) {
+              formulaUpdates[attribute.Name] = valueFromFormula;
             }
 
             const fieldTranslation = FieldsSettingsHelpers.getTranslationState(
               attributeValues, fixed.DisableTranslation, entityReader.currentLanguage, entityReader.defaultLanguage,
             );
-            const wrappers = InputFieldHelpers.getWrappers(
-              fixed, fieldConstantsAndCalculatedInput.find(f => f.constants.fieldName === attribute.Name).calculatedInputType
-            );
+            const wrappers = InputFieldHelpers.getWrappers(fixed, constantFieldPart.calculatedInputType);
 
             fieldsProps[attribute.Name] = {
-              ...fieldConstantsAndCalculatedInput.find(f => f.constants.fieldName === attribute.Name),
+              calculatedInputType: constantFieldPart.calculatedInputType,
+              constants: constantFieldPart.constants,
               settings: fixed,
               translationState: fieldTranslation,
-              value,
+              value: valueBefore,
               wrappers,
-              formulaValidation,
+              formulaValidation: formulaResult.validation,
             };
           }
 
@@ -269,6 +262,15 @@ export class FieldsSettingsService implements OnDestroy {
 
   forceSettings(): void {
     this.forceRefreshSettings$.next();
+  }
+
+  private areValuesEqual(valueBefore: FieldValue, valueFromFormula: FieldValue): boolean { 
+    let valuesEqual = valueBefore == valueFromFormula;
+    // do a more in depth comparison in case of calculated entity fields
+    if (!valuesEqual && Array.isArray(valueBefore) && Array.isArray(valueFromFormula)) {
+      valuesEqual = GeneralHelpers.arraysEqual(valueBefore as string[], valueFromFormula as string[]);
+    }
+    return valuesEqual;
   }
 
   private runFormulas(
