@@ -43,10 +43,6 @@ export const ImgRatios: ImageFormatDefinition[] = [
   ...buildFormatSizesDefinitions(2),
   ...buildFormatSizesDefinitions(3),
   ...buildFormatSizesDefinitions(4, [1, 3]),
-  // ...buildMapOfEnhancedSizes(5),
-  // { name: 'width10per', class: `${WysiwygClassPrefix}-w10per` },
-  // { name: 'width20per', class: `${WysiwygClassPrefix}-w20per` },
-  // { name: 'width30per', class: `${WysiwygClassPrefix}-w30per` },
 ];
 
 function buildFormatSizesDefinitions(max: number, keys?: number[]): ImageFormatDefinition[] {

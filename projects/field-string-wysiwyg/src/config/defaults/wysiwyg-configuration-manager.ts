@@ -28,7 +28,7 @@ const defaultConfigurationSet: WysiwygConfigurationSet = {
     responsiveImages: false,
     contentSeparators: false,
   },
-  contextMenu: DefaultContextMenu.all.default as string[],
+  contextMenu: DefaultContextMenu.default,
   menubar: false,
   tinyMce: {
     options: DefaultOptions,
@@ -36,7 +36,7 @@ const defaultConfigurationSet: WysiwygConfigurationSet = {
   },
   tinyMceOptions: DefaultOptions,
   tinyMcePlugins: DefaultPlugins,
-  toolbar: DefaultToolbarConfig.all.default as string[],
+  toolbar: DefaultToolbarConfig.default,
   variations: [
     {
       displayMode: DialogModes.DisplayInline,
@@ -53,7 +53,7 @@ const defaultConfigurationSet: WysiwygConfigurationSet = {
         advanced: true,
         dialog: false,
       },
-      toolbar: DefaultToolbarConfig.all.dialog as string[],
+      toolbar: DefaultToolbarConfig.dialogDefault,
     }
   ],
 };
@@ -61,8 +61,8 @@ const defaultConfigurationSet: WysiwygConfigurationSet = {
 const configurationText: WysiwygConfigurationSet = {
   ...defaultConfigurationSet,
   editMode: 'text',
-  contextMenu: DefaultContextMenu.all.text as string[],
-  toolbar: DefaultToolbarConfig.all.text as string[],
+  contextMenu: DefaultContextMenu.text,
+  toolbar: DefaultToolbarConfig.text,
 }
 
 const ConfigurationPresets: Record<string, WysiwygConfigurationSet> = {
@@ -72,30 +72,30 @@ const ConfigurationPresets: Record<string, WysiwygConfigurationSet> = {
   advanced: {
     ...defaultConfigurationSet,
     editMode: 'advanced',
-    toolbar: DefaultToolbarConfig.all.advanced as string[],
+    toolbar: DefaultToolbarConfig.advanced,
     menubar: true,
   },
   text: configurationText,
   'text-basic': {
     ...configurationText,
     editMode: 'text-basic',
-    toolbar: DefaultToolbarConfig.all['text-basic'] as string[],
+    toolbar: DefaultToolbarConfig['text-basic'],
   },
   'text-minimal': {
     ...configurationText,
     editMode: 'text-minimal',
-    toolbar: DefaultToolbarConfig.all['text-minimal'] as string[],
+    toolbar: DefaultToolbarConfig['text-minimal'],
   },
   rich: {
     ...defaultConfigurationSet,
     editMode: 'rich',
-    contextMenu: DefaultContextMenu.all.rich as string[],
+    contextMenu: DefaultContextMenu.rich,
     features: {
       ...defaultConfigurationSet.features,
       responsiveImages: true,
       contentSeparators: true,
     },
-    toolbar: DefaultToolbarConfig.all.rich as string[],
+    toolbar: DefaultToolbarConfig.rich,
   }
 };
 
