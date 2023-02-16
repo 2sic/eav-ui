@@ -1,8 +1,9 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { consoleLogWebpack } from 'projects/field-custom-gps/src/shared/console-log-webpack.helper';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, filter, map, Observable, Subscription } from 'rxjs';
 import { EavService, EditInitializerService, LoggingService } from '.';
-import { FieldSettings, FieldValue } from '../../../../../../edit-types';
+import { FieldSettings, FieldValue, FormulaResultRaw } from '../../../../../../edit-types';
 import { DataTypeConstants } from '../../../content-type-fields/constants/data-type.constants';
 import { InputTypeConstants } from '../../../content-type-fields/constants/input-type.constants';
 import { InputType } from '../../../content-type-fields/models/input-type.model';
@@ -14,7 +15,7 @@ import { FieldLogicTools } from '../../form/shared/field-logic/field-logic-tools
 // tslint:disable-next-line:max-line-length
 import { EntityReader, FieldsSettingsHelpers, FormulaHelpers, GeneralHelpers, InputFieldHelpers, ValidationHelpers } from '../helpers';
 // tslint:disable-next-line:max-line-length
-import { CalculatedInputType, ContentTypeSettings, FieldConstants, FieldsProps, FormulaCacheItem, FormulaFieldValidation, FormulaFunctionDefault, FormulaFunctionV1, FormulaTarget, FormulaTargets, FormulaVersions, FormValues, LogSeverities, RunFormulasResult, SettingsFormulaPrefix, TranslationState } from '../models';
+import { ContentTypeSettings, FieldsProps, FormulaCacheItem, FormulaFieldValidation, FormulaFunctionDefault, FormulaFunctionV1, FormulaTarget, FormulaTargets, FormulaVersions, FormValues, LogSeverities, RunFormulasResult, SettingsFormulaPrefix, TranslationState } from '../models';
 import { EavHeader } from '../models/eav';
 // tslint:disable-next-line:max-line-length
 import { ContentTypeService, GlobalConfigService, InputTypeService, ItemService, LanguageInstanceService, LanguageService } from '../store/ngrx-data';
@@ -150,12 +151,15 @@ export class FieldsSettingsService implements OnDestroy {
           }
 
           const fieldsProps: FieldsProps = {};
-          const formulaUpdates: FormValues = {};
+          const valueUpdates: FormValues = {};
+          const possibleValueUpdates: FormValues = {};
+          const possibleAditionalValueUpdates: FormValues = {};
           const logicTools: FieldLogicTools = {
             eavConfig: this.eavService.eavConfig,
             entityReader,
             debug: debugEnabled,
           };
+          const slotIsEmpty = itemHeader.IsEmptyAllowed && itemHeader.IsEmpty;
           for (const attribute of contentType.Attributes) {
             const attributeValues = itemAttributes[attribute.Name];
             // empty-default and empty-message have no value
@@ -170,27 +174,25 @@ export class FieldsSettingsService implements OnDestroy {
             const newSettings = formulaResult.settings;
             newSettings.Name = newSettings.Name || attribute.Name;
             newSettings.Required = ValidationHelpers.isRequired(newSettings);
-            const slotIsEmpty = itemHeader.IsEmptyAllowed && itemHeader.IsEmpty;
             const disableTranslation = FieldsSettingsHelpers.findDisableTranslation(
               contentType.Metadata, constantFieldPart.inputType, attributeValues, entityReader.defaultLanguage, attribute.Metadata,
             );
             newSettings.DisableTranslation = slotIsEmpty || disableTranslation;
-            const disabledBecauseTranslations = FieldsSettingsHelpers.getDisabledBecauseTranslations(
+            newSettings._disabledBecauseOfTranslation = FieldsSettingsHelpers.getDisabledBecauseTranslations(
               attributeValues, newSettings.DisableTranslation, entityReader.currentLanguage, entityReader.defaultLanguage,
             );
-            newSettings.Disabled = newSettings.Disabled || slotIsEmpty || disabledBecauseTranslations || readOnly.isReadOnly;
+            newSettings.Disabled = newSettings.Disabled || slotIsEmpty || newSettings._disabledBecauseOfTranslation || readOnly.isReadOnly;
             newSettings.DisableAutoTranslation = newSettings.DisableAutoTranslation || newSettings.DisableTranslation;
 
             // update settings with respective FieldLogics
             const fixed = constantFieldPart.logic?.update(newSettings, valueBefore, logicTools) ?? newSettings;
             consoleLogAngular('newSettings', JSON.parse(JSON.stringify(newSettings)));
 
-            const valueFromFormula = formulaResult.value;
-            // important to compare with undefined because null is allowed value
-            if ((!slotIsEmpty && !disabledBecauseTranslations
-              && valueBefore !== undefined && valueFromFormula !== undefined)
-              && !this.areValuesEqual(valueBefore, valueFromFormula)) {
-              formulaUpdates[attribute.Name] = valueFromFormula;
+            possibleValueUpdates[attribute.Name] = formulaResult.value;
+            if (Object.keys(formulaResult.additionalValues).length > 0) {
+              for (const field in formulaResult.additionalValues) {
+                possibleAditionalValueUpdates[field] = formulaResult.additionalValues[field];
+              }
             }
 
             const fieldTranslation = FieldsSettingsHelpers.getTranslationState(
@@ -209,12 +211,30 @@ export class FieldsSettingsService implements OnDestroy {
             };
           }
 
-          if (Object.keys(formulaUpdates).length > 0 && this.maxValueFormulaCycles > this.valueFormulaCounter) {
-            this.valueFormulaCounter++;
-            this.itemService.updateItemAttributesValues(
-              entityGuid, formulaUpdates, entityReader.currentLanguage, entityReader.defaultLanguage
-            );
-            return;
+          for (const attribute of contentType.Attributes) {
+            const valueBefore = formValues[attribute.Name];
+            const valueFromFormula = possibleValueUpdates[attribute.Name];
+            const aditionalValueFromFormula = possibleAditionalValueUpdates[attribute.Name];
+            const newValue = aditionalValueFromFormula ? aditionalValueFromFormula : valueFromFormula;
+            // console.log('SDV attribute:', attribute.Name, 'valueBefore:', valueBefore, 'valueFromFormula:', valueFromFormula, 'aditionalValueFromFormula:', aditionalValueFromFormula, 'newValue:', newValue);
+            if (this.shouldUpdate(valueBefore, newValue, slotIsEmpty, fieldsProps[attribute.Name].settings._disabledBecauseOfTranslation)) {
+              valueUpdates[attribute.Name] = newValue;
+            }
+          }
+
+          // console.log('SDV valueUpdates', valueUpdates);
+
+          if (Object.keys(valueUpdates).length > 0) {
+            if (this.maxValueFormulaCycles > this.valueFormulaCounter) {
+              this.valueFormulaCounter++;
+              this.itemService.updateItemAttributesValues(
+                entityGuid, valueUpdates, entityReader.currentLanguage, entityReader.defaultLanguage
+              );
+              // return nothing to make sure fieldProps are not updated yet
+              return null;
+            } else {
+              consoleLogWebpack('Max value formula cycles reached');
+            }
           }
           this.valueFormulaCounter = 0;
           return fieldsProps;
@@ -264,13 +284,17 @@ export class FieldsSettingsService implements OnDestroy {
     this.forceRefreshSettings$.next();
   }
 
-  private areValuesEqual(valueBefore: FieldValue, valueFromFormula: FieldValue): boolean { 
-    let valuesEqual = valueBefore == valueFromFormula;
+  private shouldUpdate(valueBefore: FieldValue, valueFromFormula: FieldValue, slotIsEmpty: boolean, disabledBecauseTranslations: boolean): boolean {
+    // important to compare with undefined because null is allowed value
+    if (slotIsEmpty || disabledBecauseTranslations || valueBefore === undefined || valueFromFormula === undefined)
+      return false;
+    
+    let valuesNotEqual = valueBefore !== valueFromFormula;
     // do a more in depth comparison in case of calculated entity fields
-    if (!valuesEqual && Array.isArray(valueBefore) && Array.isArray(valueFromFormula)) {
-      valuesEqual = GeneralHelpers.arraysEqual(valueBefore as string[], valueFromFormula as string[]);
+    if (valuesNotEqual && Array.isArray(valueBefore) && Array.isArray(valueFromFormula)) {
+      valuesNotEqual = !GeneralHelpers.arraysEqual(valueBefore as string[], valueFromFormula as string[]);
     }
-    return valuesEqual;
+    return valuesNotEqual;
   }
 
   private runFormulas(
@@ -293,18 +317,25 @@ export class FieldsSettingsService implements OnDestroy {
     const formulas = this.formulaDesignerService.getFormulas(entityGuid, fieldName, null, false);
     let formulaValue: FieldValue;
     let formulaValidation: FormulaFieldValidation;
+    let formulaResultAdditionalValues: Record<string, FieldValue> = {};
     const formulaSettings: Record<string, any> = {};
     for (const formula of formulas) {
-      const runResult = this.runFormula(formula, entityId, formValues, inputType, settings, previousSettings, itemHeader);
-      if (runResult === undefined) { continue; }
+      const formulaResult = this.runFormula(formula, entityId, formValues, inputType, settings, previousSettings, itemHeader);
+      if (Object.keys(formulaResult.additionalValues).length > 0) {
+        for (const field in formulaResult.additionalValues) {
+          formulaResultAdditionalValues[field] = formulaResult.additionalValues[field];
+        }
+      }
+
+      if (formulaResult.value === undefined) { continue; }
 
       if (formula.target === FormulaTargets.Value) {
-        formulaValue = runResult;
+        formulaValue = formulaResult.value;
         continue;
       }
 
       if (formula.target === FormulaTargets.Validation) {
-        formulaValidation = runResult as unknown as FormulaFieldValidation;
+        formulaValidation = formulaResult.value as unknown as FormulaFieldValidation;
         continue;
       }
 
@@ -312,21 +343,21 @@ export class FieldsSettingsService implements OnDestroy {
         const settingName = formula.target.substring(SettingsFormulaPrefix.length);
         const defaultSetting = (settings as Record<string, any>)[settingName];
 
-        if (defaultSetting == null || runResult == null) {
+        if (defaultSetting == null || formulaResult.value == null) {
           // can't check types, hope for the best
-          formulaSettings[settingName] = runResult;
+          formulaSettings[settingName] = formulaResult.value;
           continue;
         }
 
-        if (Array.isArray(defaultSetting) && Array.isArray(runResult)) {
+        if (Array.isArray(defaultSetting) && Array.isArray(formulaResult)) {
           // can't check types of items in array, hope for the best
-          formulaSettings[settingName] = runResult;
+          formulaSettings[settingName] = formulaResult.value;
           continue;
         }
 
-        if (typeof defaultSetting === typeof runResult) {
+        if (typeof defaultSetting === typeof formulaResult.value) {
           // maybe typesafe
-          formulaSettings[settingName] = runResult;
+          formulaSettings[settingName] = formulaResult.value;
           continue;
         }
       }
@@ -342,6 +373,7 @@ export class FieldsSettingsService implements OnDestroy {
       },
       validation: formulaValidation,
       value: formulaValue,
+      additionalValues: formulaResultAdditionalValues,
     };
     return formulaResult;
   }
@@ -358,7 +390,7 @@ export class FieldsSettingsService implements OnDestroy {
     settings: FieldSettings,
     previousSettings: FieldSettings,
     itemHeader: EavHeader,
-  ): FieldValue {
+  ): FormulaResultRaw {
     const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
     const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
     const languages = this.languageService.getLanguages();
@@ -395,30 +427,24 @@ export class FieldsSettingsService implements OnDestroy {
           if (isOpenInDesigner) {
             console.log(`Running formula${formula.version.toLocaleUpperCase()} for Entity: "${ctSettings._itemTitle}", Field: "${formula.fieldName}", Target: "${formula.target}" with following arguments:`, formulaProps);
           }
-          const valueV1 = this.doValueCorrection(
-            formula.target,
-            (formula.fn as FormulaFunctionV1)(formulaProps.data, formulaProps.context, formulaProps.experimental),
-            inputType,
-          );
+          const formulaV1Result = (formula.fn as FormulaFunctionV1)(formulaProps.data, formulaProps.context, formulaProps.experimental);
+          const valueV1 = this.doValueCorrection( formula.target, formulaV1Result, inputType);
           this.formulaDesignerService.upsertFormulaResult(formula.entityGuid, formula.fieldName, formula.target, valueV1, false);
           if (isOpenInDesigner) {
             console.log('Formula result:', valueV1);
           }
-          return valueV1;
+          return { value: valueV1, additionalValues: formulaProps.experimental.fieldAndValueWIP };
         default:
           if (isOpenInDesigner) {
             console.log(`Running formula for Entity: "${ctSettings._itemTitle}", Field: "${formula.fieldName}", Target: "${formula.target}" with following arguments:`, undefined);
           }
-          const valueDefault = this.doValueCorrection(
-            formula.target,
-            (formula.fn as FormulaFunctionDefault)(),
-            inputType,
-          );
+          const formulaDefaultResult = (formula.fn as FormulaFunctionDefault)();
+          const valueDefault = this.doValueCorrection(formula.target, formulaDefaultResult, inputType);
           this.formulaDesignerService.upsertFormulaResult(formula.entityGuid, formula.fieldName, formula.target, valueDefault, false);
           if (isOpenInDesigner) {
             console.log('Formula result:', valueDefault);
           }
-          return valueDefault;
+          return { value: valueV1 };
       }
     } catch (error) {
       const errorLabel = `Error in formula calculation for Entity: "${ctSettings._itemTitle}", Field: "${formula.fieldName}", Target: "${formula.target}"`;
