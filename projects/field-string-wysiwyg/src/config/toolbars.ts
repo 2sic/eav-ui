@@ -4,9 +4,8 @@ import * as DialogModes from '../constants/display-modes';
 import * as EditModes from '../constants/edit-modes';
 import { ButtonGroupSelector } from './button-group-selector';
 import { NewRow, toButtonGroupByView } from './button-groups';
-import { DefaultContextMenu, DefaultToolbarConfig } from './defaults';
-import { SelectSettings, TinyEavConfig } from './tinymce-config';
-import { TinyMceMode } from './tinymce-helper-types';
+import { DefaultToolbarConfig } from './defaults';
+import { SelectSettings, TinyEavConfig, TinyEavButtons } from './tinymce-config';
 
 // #region Button Sets that define what buttons appear in what view / mode
 
@@ -14,36 +13,17 @@ import { TinyMceMode } from './tinymce-helper-types';
 const toolbarConfig = toButtonGroupByView(DefaultToolbarConfig);
 
 
-const ButtonSetContextMenu = toButtonGroupByView(DefaultContextMenu);
-
 // #endregion
 
-export class TinyMceToolbars { // } implements ToolbarSwitcher {
+export class TinyMceToolbars {
 
   constructor(private config: TinyEavConfig) {
   }
 
-  public build(isInline: boolean): TinyMceMode {
-    const displayMode = isInline ? DialogModes.DisplayInline : DialogModes.DisplayDialog;
-    const initial = this.switch(displayMode, this.config.mode?.[displayMode] || EditModes.Default);
-    return {
-      // modeSwitcher: this,
-      ...initial
-    };
-  }
-
-  public switch(displayMode: DialogModes.DisplayModes, editMode: EditModes.WysiwygEditMode): TinyMceMode {
+  public switch(displayMode: DialogModes.DisplayModes, editMode: EditModes.WysiwygEditMode, buttons: TinyEavButtons) {
     consoleLogWebpack(`TinyMceToolbars.switch(${displayMode}, ${editMode})`, this.config);
-    const buttons = this.config.buttons[displayMode];
     const selector = new ButtonGroupSelector({ editMode, displayMode, buttons, features: this.config.features });
-    return {
-      currentMode: {
-        displayMode,
-        editMode,
-      },
-      menubar: editMode === EditModes.WysiwygAdvanced,
-      toolbar: this.toolbar(selector) as any,
-    };
+    return this.toolbar(selector)
   }
 
   private toolbar(selector: ButtonGroupSelector): string[] {

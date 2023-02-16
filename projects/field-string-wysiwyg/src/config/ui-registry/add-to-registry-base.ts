@@ -41,24 +41,25 @@ export abstract class AddToRegistryBase {
     this.adam.toggle(usePortalRoot, showImagesOnly);
 
     // Switch to Dialog if we are still inline
-    // TODO: VERIFY DIALOG ALLOWED
-    const isDialog = this.options.currentMode.displayMode === DialogModes.DisplayDialog;
+    // TODO: VERIFY DIALOG ALLOWED once the option exits
+    const currMode = this.options.configManager.current;
+    const isDialog = currMode.displayMode === DialogModes.DisplayDialog;
     if (!isDialog)
       this.openInDialog();
   }
 
   /** Mode switching to inline/dialog and advanced/normal */
   protected switchMode(displayMode?: DialogModes.DisplayModes, editMode?: EditModes.WysiwygEditMode): void {
-    displayMode ??= this.options.currentMode.displayMode;
-    editMode ??= this.options.currentMode.editMode;
+    const currMode = this.options.configManager.current;
+    displayMode ??= currMode.displayMode;
+    editMode ??= currMode.editMode;
     const newSettings = this.options.configManager.switch(editMode, displayMode);// .modeSwitcher.switch(displayMode, editMode);
     // don't create a new object, we must keep a reference to the previous parent `this.options`.
     // don't do this: this.options = {...this.options, ...newSettings};
     this.options.toolbar = newSettings.toolbar;
     this.options.menubar = newSettings.menubar;
-    this.options.currentMode = newSettings.currentMode;
     this.options.contextmenu = newSettings.contextmenu;
-
+console.warn('2dm menubar', newSettings);
     // refresh editor toolbar
     this.editor.editorManager.remove(this.editor);
     this.editor.editorManager.init(this.options);

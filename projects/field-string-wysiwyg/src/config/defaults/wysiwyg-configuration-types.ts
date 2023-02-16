@@ -7,7 +7,7 @@ export interface WysiwygConfigurationSet extends WysiwygConfiguration {
   variations: Partial<WysiwygConfigurationVariation>[],
 }
 
-export interface WysiwygConfigurationVariation extends Omit<WysiwygConfiguration, "mode"> {
+export interface WysiwygConfigurationVariation extends Omit<WysiwygConfiguration, "editMode" | "displayMode"> {
   /**
    * The view name this variation is for.
    */
@@ -25,6 +25,11 @@ export interface WysiwygConfiguration {
   editMode: WysiwygEditMode,
 
   /**
+   * The view name this variation is for.
+   */
+  displayMode?: DisplayModes;
+
+  /**
    * The buttons which are active/inactive
    */
   buttons: TinyEavButtons;
@@ -40,13 +45,16 @@ export interface WysiwygConfiguration {
   contextMenu: string[];
 
   /**
+   * Show the menu bar (the dropdowns)
+   */
+  menubar: boolean | string; // should match TinyMCE
+
+  /**
    * Any standard tinyMce options which are already in the correct format
+   * Will be created by the configuration manager
    */
   tinyMce: RawEditorOptions;
-  //  {
-  //   options: RawEditorOptions;
-  //   plugins: string[];
-  // };
+
   /**
    * Options which apply to this mode
    */

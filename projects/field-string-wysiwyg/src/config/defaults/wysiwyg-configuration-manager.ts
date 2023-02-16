@@ -12,7 +12,6 @@ import { toConfigForViewModes } from '../config-for-view-modes';
 import { TinyMceToolbars } from '../toolbars';
 import * as DialogModes from '../../constants/display-modes';
 import * as EditModes from '../../constants/edit-modes';
-import { TinyMceMode } from '../tinymce-helper-types';
 
 const debug = true;
 
@@ -31,6 +30,7 @@ const defaultConfigurationSet: WysiwygConfigurationSet = {
     contentSeparators: false,
   },
   contextMenu: DefaultContextMenu.all.default as string[],
+  menubar: false,
   tinyMce: {
     options: DefaultOptions,
     plugins: DefaultPlugins,
@@ -74,6 +74,7 @@ const ConfigurationPresets: Record<string, WysiwygConfigurationSet> = {
   advanced: {
     ...defaultConfigurationSet,
     toolbar: DefaultToolbarConfig.all.advanced as string[],
+    menubar: true,
   },
   text: configurationText,
   'text-basic': {
@@ -109,17 +110,18 @@ export class WysiwygConfigurationManager {
 
   current: WysiwygConfiguration;
 
-  public getSettings(displayMode: DialogModes.DisplayModes): WysiwygConfiguration {
+  public getSettings(editMode: EditModes.WysiwygEditMode, displayMode: DialogModes.DisplayModes): WysiwygConfiguration {
     // 0. Shorten some variables
     const exp = this.connector._experimental;
     const fieldSettings = this.fieldSettings;
 
     // 1. Figure out the mode to use. This can be `text`, `rich` or `default`
-    let editMode = this.fieldSettings._advanced.Mode as string;
+    editMode = editMode || this.fieldSettings._advanced.Mode as string;
 
     // 2. Get the preset for this mode
     var preset = this.getPreset(editMode, displayMode);
     editMode = preset.editMode;
+    displayMode = preset.displayMode; // reset, in case it had to change / was not an available option
 
     // 2. Feature detection
     // contentBlocks is on if the following field can hold inner-content items
@@ -130,17 +132,20 @@ export class WysiwygConfigurationManager {
     };
 
     // 3. Buttons reconfiguration
+console.error('2dm preset', preset.buttons);
     const buttons: TinyEavButtons = {
       ...preset.buttons,
       source: nullOrBool(fieldSettings.ButtonSource) ?? preset.buttons.source,
       advanced: nullOrBool(fieldSettings.ButtonAdvanced) ?? preset.buttons.advanced,
     };
+console.error('2dm post', preset.buttons, fieldSettings);
     
     const wysiwygConfiguration = {
       ...preset,
       buttons,
       features,
     };
+console.warn('2dm wysiwygConfiguration', wysiwygConfiguration);
 
     // WIP
     const bSource = fieldSettings.ButtonSource?.toLowerCase();
@@ -165,19 +170,25 @@ export class WysiwygConfigurationManager {
       }
     };
     consoleLogWebpack('2dm eavConfig', eavConfig);
+
+    // Build and attach the toolbar
     this.eavConfigTemp = eavConfig;
     this.toolbarMaker = new TinyMceToolbars(eavConfig);
+    const toolbar = this.toolbarMaker.switch(displayMode, editMode, wysiwygConfiguration.buttons);
+    wysiwygConfiguration.tinyMce.toolbar = toolbar;
 
     this.current = wysiwygConfiguration;
     return wysiwygConfiguration;
   }
 
   public switch(editMode: EditModes.WysiwygEditMode, displayMode: DialogModes.DisplayModes)
-  : TinyMceMode & { contextmenu: string } {
-    this.getSettings(displayMode);
-    return { 
-      ...this.toolbarMaker.switch(displayMode, editMode),
+  : { toolbar: string[], contextmenu: string, menubar: string | boolean } {
+    // temp/wip - rebuild settings and toolbarMaker as sideEffect - this is not good
+    this.getSettings(editMode, displayMode);
+    return {
+      toolbar: this.toolbarMaker.switch(displayMode, editMode, this.current.buttons),
       contextmenu: this.current.contextMenu[0],
+      menubar: this.current.menubar,
     };
   }
 
@@ -210,7 +221,8 @@ function getPresetInternal(editMode: EditModes.WysiwygEditMode, displayMode: Dia
   const variation = currConfig.variations.find(v => v.displayMode === displayMode);
   consoleLogWebpack('2dm variationPartial', variation, 'currConfig', currConfig, 'defConfig', defConfig);
   const merged: WysiwygConfiguration = variation ? {
-    editMode: variation.editMode || currConfig.editMode || defConfig.editMode,
+    editMode: currConfig.editMode || defConfig.editMode,
+    displayMode: variation.displayMode || currConfig.displayMode || defConfig.displayMode,
     buttons: {
       ...defConfig.buttons,
       ...currConfig.buttons,
@@ -222,6 +234,7 @@ function getPresetInternal(editMode: EditModes.WysiwygEditMode, displayMode: Dia
       ...currConfig.features,
       ...variation.features,
     },
+    menubar: variation.menubar || currConfig.menubar || defConfig.menubar,
     tinyMce: null,
     tinyMceOptions: variation.tinyMceOptions || currConfig.tinyMceOptions || defConfig.tinyMceOptions,
     tinyMcePlugins: variation.tinyMcePlugins || currConfig.tinyMcePlugins || defConfig.tinyMcePlugins,
@@ -232,6 +245,7 @@ function getPresetInternal(editMode: EditModes.WysiwygEditMode, displayMode: Dia
     ...merged.tinyMceOptions,
     plugins: merged.tinyMcePlugins,
     contextmenu: merged.contextMenu[0],
+    menubar: merged.menubar,
   };
   consoleLogWebpack('2dm merged', merged);
 
@@ -239,5 +253,5 @@ function getPresetInternal(editMode: EditModes.WysiwygEditMode, displayMode: Dia
 }
 
 function nullOrBool(value: string): boolean | null {
-  return value == null ? null : value.toLowerCase() === 'true';
+  return value == null || value.trim() === '' ? null : value.toLowerCase() === 'true';
 }

@@ -2,14 +2,10 @@ import { BehaviorSubject, distinctUntilChanged, Subscription } from 'rxjs';
 import type { Editor } from 'tinymce';
 import { EavWindow } from '../../../eav-ui/src/app/shared/models/eav-window.model';
 import { AddOnSettings, Connector, StringWysiwyg, WysiwygReconfigure } from '../../../edit-types';
-import { consoleLogWebpack } from '../../../field-custom-gps/src/shared/console-log-webpack.helper';
-import * as WysiwygDisplayModes from '../constants/display-modes'
+import * as DisplayModes from '../constants/display-modes'
 import * as contentStyle from '../editor/tinymce-content.scss';
-import { toConfigForViewModes } from './config-for-view-modes';
 import { DefaultAddOnSettings, DefaultPaste } from './defaults';
-import { TinyEavConfig } from './tinymce-config';
 import { RawEditorOptionsWithEav } from './tinymce-helper-types';
-import { TinyMceToolbars } from './toolbars';
 import { TinyMceTranslations } from './translations';
 import { WysiwygConfigurationManager } from './defaults/wysiwyg-configuration-manager';
 
@@ -71,18 +67,10 @@ export class TinyMceConfigurator {
 
     // 2. Get the preset configuration for this mode
     const configManager = new WysiwygConfigurationManager(connector, fieldSettings);
-    const wysiwygConfiguration = configManager.getSettings(modeIsInline ? WysiwygDisplayModes.DisplayInline : WysiwygDisplayModes.DisplayDialog);
+    const wysiwygConfiguration = configManager.getSettings(null, modeIsInline ? DisplayModes.DisplayInline : DisplayModes.DisplayDialog);
 
-    // TODO
-    // Add current toolbar
-    // change code when mode changes to re-run through wysiwygconfigurationmanager
-
-    // 3. Build the toolbar
-    const manyOptionsInclToolbar = configManager.toolbarMaker.build(modeIsInline);
-
-    const dropzone = exp.dropzone;
-    const adam = exp.adam;
-    if (dropzone == null || adam == null) {
+    // 3. Dropzone / adam checks
+    if (exp.dropzone == null || exp.adam == null) {
       console.error(`Dropzone or ADAM Config not available, some things won't work`);
     }
 
@@ -102,10 +90,9 @@ export class TinyMceConfigurator {
       content_css: contentCssFile,
       setup,
       configManager: configManager,
-      ...manyOptionsInclToolbar,
       ...TinyMceTranslations.getLanguageOptions(this.language),
       ...(this.isWysiwygPasteFormatted$.value ? DefaultPaste.formattedText : {}),
-      ...DefaultPaste.images(dropzone, adam),
+      ...DefaultPaste.images(exp.dropzone, exp.adam),
       promotion: false,
       block_unsupported_drop: false,
     };
