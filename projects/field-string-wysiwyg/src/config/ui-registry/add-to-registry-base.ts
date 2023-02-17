@@ -4,7 +4,7 @@ import { wysiwygEditorHtmlTag } from '../../../internal-constants';
 import * as DialogModes from '../../constants/display-modes';
 import * as EditModes from '../../constants/edit-modes';
 import { FieldStringWysiwygEditor } from '../../editor/editor';
-import { RawEditorOptionsWithEav } from '../tinymce-helper-types';
+import { RawEditorOptionsExtended } from '../raw-editor-options-extended';
 
 type FuncVoid = () => void | unknown;
 
@@ -13,7 +13,7 @@ export interface AddToRegistryParams {
   field: FieldStringWysiwygEditor;
   editor: Editor;
   adam: Adam;
-  options: RawEditorOptionsWithEav;
+  options: RawEditorOptionsExtended;
 }
 
 /**
@@ -25,7 +25,7 @@ export abstract class AddToRegistryBase {
   field: FieldStringWysiwygEditor;
   editor: Editor;
   adam: Adam;
-  options: RawEditorOptionsWithEav;
+  options: RawEditorOptionsExtended;
 
   constructor(makerParams: AddToRegistryParams, message?: string) {
     this.field = makerParams.field;

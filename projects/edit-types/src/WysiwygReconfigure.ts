@@ -1,6 +1,6 @@
 import type { Editor, RawEditorOptions, TinyMCE } from 'tinymce';
 import { AddOnSettings } from './AddOnSettings';
-import { RawEditorOptionsWithEav } from '../../field-string-wysiwyg/src/config/tinymce-helper-types';
+import { RawEditorOptionsExtended } from '../../field-string-wysiwyg/src/config/raw-editor-options-extended';
 
 export interface WysiwygReconfigure {
   /**
@@ -30,7 +30,7 @@ export interface WysiwygReconfigure {
    * 
    * Note: real type is actually RawEditorOptionsWithModes but including it here in the pure types causes compile problems
    */
-  configureOptions?(options: RawEditorOptionsWithEav): RawEditorOptionsWithEav;
+  configureOptions?(options: RawEditorOptionsExtended): RawEditorOptionsExtended;
   /**
    * Called when the editor was created, but before we added events etc.
    */

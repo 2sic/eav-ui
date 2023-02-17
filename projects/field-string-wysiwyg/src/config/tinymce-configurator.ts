@@ -5,9 +5,9 @@ import { AddOnSettings, Connector, StringWysiwyg, WysiwygReconfigure } from '../
 import * as DisplayModes from '../constants/display-modes'
 import * as contentStyle from '../editor/tinymce-content.scss';
 import { DefaultAddOnSettings, DefaultPaste } from './defaults';
-import { RawEditorOptionsWithEav } from './tinymce-helper-types';
+import { RawEditorOptionsExtended } from './raw-editor-options-extended';
 import { TinyMceTranslations } from './translations';
-import { WysiwygConfigurationManager } from './defaults/wysiwyg-configuration-manager';
+import { WysiwygConfigurationManager } from './wysiwyg-configuration-manager';
 
 declare const window: EavWindow;
 const reconfigErr = `Very likely an error in your reconfigure code. Check http://r.2sxc.org/field-wysiwyg`;
@@ -58,7 +58,7 @@ export class TinyMceConfigurator {
   /** Construct TinyMCE options */
   buildOptions(containerClass: string, fixedToolbarClass: string, modeIsInline: boolean,
     setup: (editor: Editor) => void
-  ): RawEditorOptionsWithEav {
+  ): RawEditorOptionsExtended {
     const connector = this.connector;
     const exp = connector._experimental;
     // Create a TinyMceModeConfig object with bool only
@@ -82,7 +82,7 @@ export class TinyMceConfigurator {
     let contentCssFile = fieldSettings.ContentCss;
     if (!contentCssFile) contentCssFile = null;
 
-    const options: RawEditorOptionsWithEav = {
+    const options: RawEditorOptionsExtended = {
       ...wysiwygConfiguration.tinyMce,
       selector: `.${containerClass}`,
       fixed_toolbar_container: `.${fixedToolbarClass}`,

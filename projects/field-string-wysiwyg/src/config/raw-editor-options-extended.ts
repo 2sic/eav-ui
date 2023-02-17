@@ -6,9 +6,9 @@
   We may also end up moving this type to there later on.
 */
 import type { RawEditorOptions } from 'tinymce';
-import { WysiwygConfigurationManager } from './defaults/wysiwyg-configuration-manager';
+import { WysiwygConfigurationManager } from './wysiwyg-configuration-manager';
 
-export interface RawEditorOptionsWithEav extends RawEditorOptions {
+export interface RawEditorOptionsExtended extends RawEditorOptions {
   /**
    * The new configuration manager which should take care of everything.
    */

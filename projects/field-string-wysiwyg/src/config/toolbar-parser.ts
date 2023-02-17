@@ -2,7 +2,13 @@ import * as Buttons from '../constants/buttons';
 import * as EditModes from '../constants/edit-modes';
 import { WysiwygConfiguration } from './types/wysiwyg-configurations';
 
-export class TinyMceToolbars {
+/**
+ * Processes a toolbar configuration for eg.
+ * 
+ * - creates groups of of array items
+ * - removes buttons that are disabled.
+ */
+export class ToolbarParser {
 
   constructor() {
   }
