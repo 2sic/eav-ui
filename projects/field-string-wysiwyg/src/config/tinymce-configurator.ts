@@ -6,7 +6,7 @@ import * as DisplayModes from '../constants/display-modes'
 import * as contentStyle from '../editor/tinymce-content.scss';
 import { DefaultAddOnSettings, DefaultPaste } from './defaults';
 import { RawEditorOptionsExtended } from './raw-editor-options-extended';
-import { TinyMceTranslations } from './translations';
+import { TranslationsLoader } from './translation-loader';
 import { WysiwygConfigurationManager } from './wysiwyg-configuration-manager';
 
 declare const window: EavWindow;
@@ -56,9 +56,7 @@ export class TinyMceConfigurator {
   }
 
   /** Construct TinyMCE options */
-  buildOptions(containerClass: string, fixedToolbarClass: string, modeIsInline: boolean,
-    setup: (editor: Editor) => void
-  ): RawEditorOptionsExtended {
+  buildOptions(containerClass: string, fixedToolbarClass: string, modeIsInline: boolean, setup: (editor: Editor) => void): RawEditorOptionsExtended {
     const connector = this.connector;
     const exp = connector._experimental;
     // Create a TinyMceModeConfig object with bool only
@@ -90,7 +88,7 @@ export class TinyMceConfigurator {
       content_css: contentCssFile,
       setup,
       configManager: configManager,
-      ...TinyMceTranslations.getLanguageOptions(this.language),
+      ...TranslationsLoader.getLanguageOptions(this.language),
       ...(this.isWysiwygPasteFormatted$.value ? DefaultPaste.formattedText : {}),
       ...DefaultPaste.images(exp.dropzone, exp.adam),
       promotion: false,
@@ -107,7 +105,7 @@ export class TinyMceConfigurator {
   }
 
   addTranslations(): void {
-    TinyMceTranslations.addTranslations(this.language, this.connector._experimental.translateService);
+    TranslationsLoader.addTranslations(this.language, this.connector._experimental.translateService);
     this.reconfigure?.addTranslations?.(window.tinymce, this.language);
   }
 }

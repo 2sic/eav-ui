@@ -148,7 +148,6 @@ export class TinyButtonsImg extends AddToRegistryBase {
     [
       RichSpecs.ImgAlignments,
       RichSpecs.ImgRatios,
-      RichSpecs.ImgEnhancedWidths
     ].map(set => set.forEach(def => {
         formatter.register(def.name, { selector: 'img', classes: def.class });
       }));

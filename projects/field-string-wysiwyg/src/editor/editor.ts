@@ -29,7 +29,7 @@ import { consoleLogWebpack } from '../../../field-custom-gps/src/shared/console-
 import { TinyMceConfigurator } from '../config/tinymce-configurator';
 import * as WysiwygDialogModes from '../constants/display-modes';
 import { RawEditorOptionsExtended } from '../config/raw-editor-options-extended';
-import { TinyMceTranslations } from '../config/translations';
+import { TranslationsLoader } from '../config/translation-loader';
 import { AddEverythingToRegistry } from '../config/ui-registry/add-everything-to-registry';
 import { attachAdam } from '../connector/adam';
 import { tinyMceBaseUrl, wysiwygEditorHtmlTag } from '../../internal-constants';
@@ -86,7 +86,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
       .subscribe(this.pasteClipboardImage$)
     );
 
-    const tinyLang = TinyMceTranslations.fixTranslationKey(this.connector._experimental.translateService.currentLang);
+    const tinyLang = TranslationsLoader.fixTranslationKey(this.connector._experimental.translateService.currentLang);
     this.connector.loadScript(
       [
         {

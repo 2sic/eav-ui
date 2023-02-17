@@ -53,7 +53,7 @@ export abstract class AddToRegistryBase {
     const currMode = this.options.configManager.current;
     displayMode ??= currMode.displayMode;
     editMode ??= currMode.editMode;
-    const newSettings = this.options.configManager.switch(editMode, displayMode);// .modeSwitcher.switch(displayMode, editMode);
+    const newSettings = this.options.configManager.switch(editMode, displayMode);
     // don't create a new object, we must keep a reference to the previous parent `this.options`.
     // don't do this: this.options = {...this.options, ...newSettings};
     this.options.toolbar = newSettings.toolbar;
