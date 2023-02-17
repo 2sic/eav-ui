@@ -82,7 +82,6 @@ export interface StringWysiwyg extends String {
   Dialog: '' | 'dialog' | 'inline';
   ButtonSource: "" | "true" | "false";
   ButtonAdvanced: "" | "true" | "false";
-  WysiwygMode: "" | "basic" | "enhanced"; // new v15
   /**
    * CSS file to be used for content styling. New in 11.03. Must be a real path to work, not file:xx
    */
@@ -93,6 +92,7 @@ export interface StringWysiwyg extends String {
   WysiwygConfiguration: string; // new v15
 
   _advanced: StringWysiwygAdvanced;
+  _allowDialog: boolean;
 }
 
 /**

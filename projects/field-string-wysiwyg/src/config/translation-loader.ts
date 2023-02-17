@@ -3,7 +3,7 @@ import { EavWindow } from '../../../eav-ui/src/app/shared/models/eav-window.mode
 
 declare const window: EavWindow;
 
-export class TinyMceTranslations {
+export class TranslationsLoader {
   private static i18nPrefix = 'Extension.TinyMce';
   private static defaultLanguage = 'en';
   private static translatedLanguages = 'de,es,fr_FR,it,nl,pt_PT,uk'.split(',');

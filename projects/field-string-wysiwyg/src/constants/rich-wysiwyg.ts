@@ -43,10 +43,6 @@ export const ImgRatios: ImageFormatDefinition[] = [
   ...buildFormatSizesDefinitions(2),
   ...buildFormatSizesDefinitions(3),
   ...buildFormatSizesDefinitions(4, [1, 3]),
-  // ...buildMapOfEnhancedSizes(5),
-  // { name: 'width10per', class: `${WysiwygClassPrefix}-w10per` },
-  // { name: 'width20per', class: `${WysiwygClassPrefix}-w20per` },
-  // { name: 'width30per', class: `${WysiwygClassPrefix}-w30per` },
 ];
 
 function buildFormatSizesDefinitions(max: number, keys?: number[]): ImageFormatDefinition[] {
@@ -64,15 +60,5 @@ function createFormatDefinition(n: number, max: number, label?: string, tooltip?
     fractionOf: max,
   });
 }
-
-// Note: as of 2023-01-25 this is not actually in use, not sure if we need it
-export const ImgEnhancedWidths: ImageFormatDefinition[]
-  = [10, 20, 25, 30, 33, 40, 50, 60, 66, 75, 80]
-    .map(percent => ({
-      name: `width${percent}per`,
-      class: `${WysiwygClassPrefix}-w${percent}per`,
-      tooltip: `${percent}%`
-    }
-  ));
 
 // console.log('2dm - sizes', ImgEnhancedRatios);

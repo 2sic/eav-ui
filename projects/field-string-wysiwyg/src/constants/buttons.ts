@@ -31,3 +31,7 @@ export const LinkPageButton = 'link-page';
 
 // Styles
 export const StylesGroup = 'styles-group'; // used to be 'formatgroup'
+
+// Special row markers
+export const NoButtons = ''; // must be empty string
+export const NewRow = '\n';  // must be newline

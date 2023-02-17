@@ -45,7 +45,7 @@ export class TinyButtonsImg extends AddToRegistryBase {
           this.splitButtonItem(btns.image.icon, 'Image.AdamImage.Tooltip', () => thisForLater.toggleAdam(false, true)),
           this.splitButtonItem('custom-file-dnn', 'Image.DnnImage.Tooltip', () => thisForLater.toggleAdam(true, true)),
           this.splitButtonItem(btns.link.icon, btns.link.tooltip, 'mceImage'),
-          // TODO: MAKE BEHAVE differently depending on the WysiwygMode
+          // TODO: MAKE BEHAVE differently depending on the responsiveImages mode
           this.splitButtonItem(btns.alignleft.icon, btns.alignleft.tooltip, 'JustifyLeft'),
           this.splitButtonItem(btns.aligncenter.icon, btns.aligncenter.tooltip, 'JustifyCenter'),
           this.splitButtonItem(btns.alignright.icon, btns.alignright.tooltip, 'JustifyRight'),
@@ -59,8 +59,8 @@ export class TinyButtonsImg extends AddToRegistryBase {
   private contextMenus(): void {
     const rangeSelected = () => document.getSelection().rangeCount > 0 && !document.getSelection().getRangeAt(0).collapsed;
 
-    // Different behavior depending on WysiwygMode
-    const imgAlign = this.options.eavConfig.features.responsiveImages
+    // Different behavior depending on responsiveImages mode
+    const imgAlign = this.options.configManager.current.features.responsiveImages
       ? `${RichSpecs.ImgLeftClass} ${RichSpecs.ImgCenterClass} ${RichSpecs.ImgRightClass} ${Buttons.ImgRatiosGroup}`
       : `alignleft aligncenter alignright ${Buttons.ImgWidthsGroup}`;
 
@@ -148,7 +148,6 @@ export class TinyButtonsImg extends AddToRegistryBase {
     [
       RichSpecs.ImgAlignments,
       RichSpecs.ImgRatios,
-      RichSpecs.ImgEnhancedWidths
     ].map(set => set.forEach(def => {
         formatter.register(def.name, { selector: 'img', classes: def.class });
       }));

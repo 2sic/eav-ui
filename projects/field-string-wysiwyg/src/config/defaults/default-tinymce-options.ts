@@ -18,8 +18,7 @@ export const DefaultOptions: RawEditorOptions = {
   automatic_uploads: false, // we're using our own upload mechanism
   autosave_ask_before_unload: false,
   paste_as_text: true,
-  // 2020-04-17 2dm - plugins now added later
-  // plugins: DefaultPlugins,
+  // plugins: // Note that plugins are managed separately,
   extended_valid_elements: '@[class]' // allow classes on all elements,
     + ',i' // allow i elements (allows icon-font tags like <i class='fa fa-...'>),
     + ',hr[sxc|guid]', // allow inline content-blocks
@@ -32,7 +31,6 @@ export const DefaultOptions: RawEditorOptions = {
   object_resizing: false, // don't allow manual scaling of images
   // debounce: false, // DONT slow-down model updates - otherwise we sometimes miss the last changes
   toolbar_persist: true,
-  // deprecation_warnings: false, // spm TODO: remove after upgrading to TinyMCE 6
 
   // experimental #content-divisions - https://www.tiny.cloud/docs/configure/content-filtering/#valid_children
   // valid_children: '+div[p|h1|h2|h3|h4|h5|6h|blockquote]'
