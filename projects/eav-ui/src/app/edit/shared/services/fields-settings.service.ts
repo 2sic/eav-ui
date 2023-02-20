@@ -3,7 +3,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { consoleLogWebpack } from 'projects/field-custom-gps/src/shared/console-log-webpack.helper';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, filter, map, Observable, Subscription } from 'rxjs';
 import { EavService, EditInitializerService, LoggingService } from '.';
-import { FieldSettings, FieldValue, FormulaResultRaw } from '../../../../../../edit-types';
+import { FieldSettings, FieldValue, FieldValuePair, FormulaResultRaw } from '../../../../../../edit-types';
 import { DataTypeConstants } from '../../../content-type-fields/constants/data-type.constants';
 import { InputTypeConstants } from '../../../content-type-fields/constants/input-type.constants';
 import { InputType } from '../../../content-type-fields/models/input-type.model';
@@ -153,7 +153,7 @@ export class FieldsSettingsService implements OnDestroy {
           const fieldsProps: FieldsProps = {};
           const valueUpdates: FormValues = {};
           const possibleValueUpdates: FormValues = {};
-          const possibleAditionalValueUpdates: FormValues = {};
+          const possibleAditionalValueUpdates: FieldValuePair[] = [];
           const logicTools: FieldLogicTools = {
             eavConfig: this.eavService.eavConfig,
             entityReader,
@@ -168,7 +168,10 @@ export class FieldsSettingsService implements OnDestroy {
             const constantFieldPart = constantFieldParts.find(f => f.constants.fieldName === attribute.Name);
 
             // run formulas
-            const formulaResult = this.runFormulas(entityGuid, entityId, attribute.Name, formValues, constantFieldPart.inputType, constantFieldPart.merged, itemHeader);
+            const formulaResult = this.runFormulas(
+              entityGuid, entityId, attribute.Name, formValues,
+              constantFieldPart.inputType, constantFieldPart.merged, itemHeader
+            );
 
             // ensure new settings match requirements
             const newSettings = formulaResult.settings;
@@ -189,11 +192,7 @@ export class FieldsSettingsService implements OnDestroy {
             consoleLogAngular('newSettings', JSON.parse(JSON.stringify(newSettings)));
 
             possibleValueUpdates[attribute.Name] = formulaResult.value;
-            if (Object.keys(formulaResult.additionalValues).length > 0) {
-              for (const field in formulaResult.additionalValues) {
-                possibleAditionalValueUpdates[field] = formulaResult.additionalValues[field];
-              }
-            }
+            possibleAditionalValueUpdates.push(...formulaResult.additionalValues);
 
             const fieldTranslation = FieldsSettingsHelpers.getTranslationState(
               attributeValues, fixed.DisableTranslation, entityReader.currentLanguage, entityReader.defaultLanguage,
@@ -212,11 +211,12 @@ export class FieldsSettingsService implements OnDestroy {
           }
 
           for (const attribute of contentType.Attributes) {
+            const possibleAditionalValueUpdatesForAttribute = possibleAditionalValueUpdates.filter(f => f.field === attribute.Name);
             const valueBefore = formValues[attribute.Name];
             const valueFromFormula = possibleValueUpdates[attribute.Name];
-            const aditionalValueFromFormula = possibleAditionalValueUpdates[attribute.Name];
+            const aditionalValueFromFormula =
+              possibleAditionalValueUpdatesForAttribute[possibleAditionalValueUpdatesForAttribute.length - 1]?.value;
             const newValue = aditionalValueFromFormula ? aditionalValueFromFormula : valueFromFormula;
-            // console.log('SDV attribute:', attribute.Name, 'valueBefore:', valueBefore, 'valueFromFormula:', valueFromFormula, 'aditionalValueFromFormula:', aditionalValueFromFormula, 'newValue:', newValue);
             if (this.shouldUpdate(valueBefore, newValue, slotIsEmpty, fieldsProps[attribute.Name].settings._disabledBecauseOfTranslation)) {
               valueUpdates[attribute.Name] = newValue;
             }
@@ -284,11 +284,14 @@ export class FieldsSettingsService implements OnDestroy {
     this.forceRefreshSettings$.next();
   }
 
-  private shouldUpdate(valueBefore: FieldValue, valueFromFormula: FieldValue, slotIsEmpty: boolean, disabledBecauseTranslations: boolean): boolean {
+  private shouldUpdate(
+    valueBefore: FieldValue, valueFromFormula: FieldValue,
+    slotIsEmpty: boolean, disabledBecauseTranslations: boolean
+  ): boolean {
     // important to compare with undefined because null is allowed value
     if (slotIsEmpty || disabledBecauseTranslations || valueBefore === undefined || valueFromFormula === undefined)
       return false;
-    
+
     let valuesNotEqual = valueBefore !== valueFromFormula;
     // do a more in depth comparison in case of calculated entity fields
     if (valuesNotEqual && Array.isArray(valueBefore) && Array.isArray(valueFromFormula)) {
@@ -317,15 +320,11 @@ export class FieldsSettingsService implements OnDestroy {
     const formulas = this.formulaDesignerService.getFormulas(entityGuid, fieldName, null, false);
     let formulaValue: FieldValue;
     let formulaValidation: FormulaFieldValidation;
-    let formulaResultAdditionalValues: Record<string, FieldValue> = {};
+    const formulaResultAdditionalValues: FieldValuePair[] = [];
     const formulaSettings: Record<string, any> = {};
     for (const formula of formulas) {
       const formulaResult = this.runFormula(formula, entityId, formValues, inputType, settings, previousSettings, itemHeader);
-      if (Object.keys(formulaResult.additionalValues).length > 0) {
-        for (const field in formulaResult.additionalValues) {
-          formulaResultAdditionalValues[field] = formulaResult.additionalValues[field];
-        }
-      }
+      formulaResultAdditionalValues.push(...formulaResult.additionalValues);
 
       if (formulaResult.value === undefined) { continue; }
 
@@ -366,7 +365,7 @@ export class FieldsSettingsService implements OnDestroy {
     // save settings for the next cycle
     this.formulaSettingsCache[this.getFormulaSettingsKey(fieldName, currentLanguage, defaultLanguage)] = formulaSettings as FieldSettings;
 
-    const formulaResult: RunFormulasResult = {
+    const runFormulaResult: RunFormulasResult = {
       settings: {
         ...settings,
         ...formulaSettings,
@@ -375,7 +374,7 @@ export class FieldsSettingsService implements OnDestroy {
       value: formulaValue,
       additionalValues: formulaResultAdditionalValues,
     };
-    return formulaResult;
+    return runFormulaResult;
   }
 
   private getFormulaSettingsKey(fieldName: string, currentLanguage: string, defaultLanguage: string): string {
@@ -429,22 +428,22 @@ export class FieldsSettingsService implements OnDestroy {
           }
           const formulaV1Result = (formula.fn as FormulaFunctionV1)(formulaProps.data, formulaProps.context, formulaProps.experimental);
           const valueV1 = this.doValueCorrection( formula.target, formulaV1Result, inputType);
-          this.formulaDesignerService.upsertFormulaResult(formula.entityGuid, formula.fieldName, formula.target, valueV1, false);
+          this.formulaDesignerService.upsertFormulaResult(formula.entityGuid, formula.fieldName, formula.target, valueV1.value, false);
           if (isOpenInDesigner) {
-            console.log('Formula result:', valueV1);
+            console.log('Formula result:', valueV1.value);
           }
-          return { value: valueV1, additionalValues: formulaProps.experimental.fieldAndValueWIP };
+          return valueV1;
         default:
           if (isOpenInDesigner) {
             console.log(`Running formula for Entity: "${ctSettings._itemTitle}", Field: "${formula.fieldName}", Target: "${formula.target}" with following arguments:`, undefined);
           }
           const formulaDefaultResult = (formula.fn as FormulaFunctionDefault)();
           const valueDefault = this.doValueCorrection(formula.target, formulaDefaultResult, inputType);
-          this.formulaDesignerService.upsertFormulaResult(formula.entityGuid, formula.fieldName, formula.target, valueDefault, false);
+          this.formulaDesignerService.upsertFormulaResult(formula.entityGuid, formula.fieldName, formula.target, valueDefault.value, false);
           if (isOpenInDesigner) {
             console.log('Formula result:', valueDefault);
           }
-          return { value: valueV1 };
+          return valueDefault;
       }
     } catch (error) {
       const errorLabel = `Error in formula calculation for Entity: "${ctSettings._itemTitle}", Field: "${formula.fieldName}", Target: "${formula.target}"`;
@@ -458,26 +457,31 @@ export class FieldsSettingsService implements OnDestroy {
     }
   }
 
-  private doValueCorrection(target: FormulaTarget, value: FieldValue, inputType: InputType): FieldValue {
-    // atm we are only correcting Value formulas
-    if (target !== FormulaTargets.Value) { return value; }
-    if (value == null) { return value; }
+  private doValueCorrection(target: FormulaTarget, formulaResultValue: FormulaResultRaw, inputType: InputType): FormulaResultRaw {
+    if (typeof formulaResultValue === 'object' && formulaResultValue !== null) {
+      // for now will ignore if is maybe date and will ignore that values shoud also be corrected
+      return formulaResultValue;
+    } else {
+      const value: FormulaResultRaw = { value: formulaResultValue as unknown as FieldValue };
 
-    if (inputType?.Type === InputTypeConstants.DatetimeDefault) {
-      const date = new Date(value as string | number | Date);
+      // atm we are only correcting Value formulas
+      if (target !== FormulaTargets.Value) { return value; }
+      if (value == null) { return value; }
 
-      // if value is not ISO string, nor milliseconds, correct timezone
-      if (!(typeof value === 'string' && value.endsWith('Z')) && date.getTime() !== value) {
-        date.setTime(date.getTime() - date.getTimezoneOffset() * 60000);
+      if (inputType?.Type === InputTypeConstants.DatetimeDefault) {
+        const date = new Date(value.value as string | number | Date);
+
+        // if value is not ISO string, nor milliseconds, correct timezone
+        if (!(typeof value.value === 'string' && value.value.endsWith('Z')) && date.getTime() !== value.value) {
+          date.setTime(date.getTime() - date.getTimezoneOffset() * 60000);
+        }
+
+        date.setMilliseconds(0);
+        return { value: date.toJSON() };
+      } else if (typeof (value) !== 'string' && (inputType?.Type?.startsWith(DataTypeConstants.String.toLocaleLowerCase())
+        || inputType?.Type?.startsWith(DataTypeConstants.Hyperlink.toLocaleLowerCase()))) {
+        return { value: value.toString() };
       }
-
-      date.setMilliseconds(0);
-      return date.toJSON();
-    } else if (typeof (value) !== 'string' && (inputType?.Type?.startsWith(DataTypeConstants.String.toLocaleLowerCase())
-      || inputType?.Type?.startsWith(DataTypeConstants.Hyperlink.toLocaleLowerCase()))) {
-      return value.toString();
     }
-
-    return value;
   }
 }

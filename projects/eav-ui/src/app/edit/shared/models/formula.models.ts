@@ -1,6 +1,6 @@
 import { SxcInstance } from '@2sic.com/2sxc-typings';
 import { FormValues } from '.';
-import { FieldSettings, FieldValue } from '../../../../../../edit-types';
+import { FieldSettings, FieldValue, FieldValuePair, FormulaResultRaw } from '../../../../../../edit-types';
 
 /**
  * Formula Cached Values which are re-used across formulas of the same entity
@@ -35,9 +35,9 @@ export interface FormulaCacheItem extends FormulaCacheItemShared {
 
 export type FormulaFunction = FormulaFunctionDefault | FormulaFunctionV1;
 
-export type FormulaFunctionDefault = () => FieldValue;
+export type FormulaFunctionDefault = () => FormulaResultRaw;
 
-export type FormulaFunctionV1 = (data: FormulaV1Data, context: FormulaV1Context, experimental: FormulaV1Experimental) => FieldValue;
+export type FormulaFunctionV1 = (data: FormulaV1Data, context: FormulaV1Context, experimental: FormulaV1Experimental) => FormulaResultRaw;
 
 export const FormulaVersions = {
   V1: 'v1',
@@ -190,7 +190,7 @@ export interface RunFormulasResult {
   settings: FieldSettings;
   validation: FormulaFieldValidation;
   value: FieldValue;
-  additionalValues: Record<string, FieldValue>;
+  additionalValues: FieldValuePair[];
 }
 
 export interface FormulaResult {
