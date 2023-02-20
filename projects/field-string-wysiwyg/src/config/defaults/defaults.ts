@@ -1,9 +1,9 @@
-import { DefaultContextMenu } from './default-context-menu';
+import * as DialogModes from '../../constants/display-modes';
 import { WysiwygConfigurationSet } from '../types/wysiwyg-configurations';
+import { DefaultContextMenu } from './default-context-menu';
 import { DefaultOptions } from './default-tinymce-options';
 import { DefaultPlugins } from './default-tinymce-plugins';
 import { DefaultToolbarConfig } from './default-toolbar-config';
-import * as DialogModes from '../../constants/display-modes';
 
 
 export const DefaultMode = 'default';
@@ -52,7 +52,7 @@ const configurationText: WysiwygConfigurationSet = {
   editMode: 'text',
   contextMenu: DefaultContextMenu.text,
   toolbar: DefaultToolbarConfig.text,
-}
+};
 
 export const ConfigurationPresets: Record<string, WysiwygConfigurationSet> = {
   default: {

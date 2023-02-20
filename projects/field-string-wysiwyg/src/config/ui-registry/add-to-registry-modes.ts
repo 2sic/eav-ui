@@ -9,21 +9,16 @@ export class TinyButtonsModes extends AddToRegistryBase {
 
   register(): void {
     this.addSwitchModeButtons();
-
-    // experimental
-    // this.addModes();
   }
 
   /** Switch normal / advanced mode */
   private addSwitchModeButtons(): void {
     this.regBtn(Buttons.ModeDefault, 'close', 'SwitchMode.Standard', () => {
-      this.switchMode(null, EditModes.Default);
+
+      const initialMode = this.options.configManager.getInitialMode();
+      this.switchMode(null, initialMode);
     });
-    // this.editor.ui.registry.addButton(ToModeInline, {
-    //   icon: 'close',
-    //   tooltip: 'SwitchMode.Standard',
-    //   onAction: (api) => { this.switchModeNew(WysiwygDefault, WysiwygInline); },
-    // });
+
     this.regBtn(Buttons.ModeAdvanced, 'custom-school', 'SwitchMode.Pro', () => {
       this.switchMode(null, EditModes.WysiwygAdvanced);
     });
