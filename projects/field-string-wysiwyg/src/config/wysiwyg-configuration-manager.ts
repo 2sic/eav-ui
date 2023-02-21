@@ -65,7 +65,7 @@ export class WysiwygConfigurationManager {
     };
 
     // Build and attach the final toolbar
-    const toolbar = new ToolbarParser().switch(wysiwygConfiguration);
+    const toolbar = new ToolbarParser().toolbar(wysiwygConfiguration);
     wysiwygConfiguration.tinyMce = {
       ...wysiwygConfiguration.tinyMceOptions,
       plugins: wysiwygConfiguration.tinyMcePlugins,

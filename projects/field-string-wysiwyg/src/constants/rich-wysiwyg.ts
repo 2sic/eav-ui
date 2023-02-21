@@ -17,8 +17,17 @@ export interface ImageFormatDefinition {
   fractionOf?: number;
 }
 
-// New wysiwyg alignments
+// Content Splitters
 export const ContentSplitterClass = `${WysiwygClassPrefix}-division`;
+export const ContentSplitterSizes = [
+  `wysiwyg-height-0`,
+  `wysiwyg-height-s`,
+  `wysiwyg-height-m`,
+  `wysiwyg-height-l`,
+  `wysiwyg-height-xl`,
+];
+
+// New wysiwyg alignments
 export const ImgLeftClass = `${WysiwygClassPrefix}-img-left`;
 export const ImgCenterClass = `${WysiwygClassPrefix}-img-center`;
 export const ImgRightClass = `${WysiwygClassPrefix}-img-right`;

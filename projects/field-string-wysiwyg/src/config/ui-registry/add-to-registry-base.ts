@@ -36,6 +36,21 @@ export abstract class AddToRegistryBase {
     // if (message) console.log('2dm - debug AddToRegistryBase', message, makerParams, this);
   }
 
+  /**
+   * Get the current selection in the DOM
+   * Note that this was copied from somewhere, so we don't really know what it does ;)
+   */
+  protected rangeSelected() {
+    return document.getSelection().rangeCount > 0 && !document.getSelection().getRangeAt(0).collapsed;
+  }
+
+  protected toggleOneClassFromList(toBeApplied: string, all: string[]) {
+    const formatter = this.editor.formatter;
+    all.filter((v) => v !== toBeApplied).forEach((v) => formatter.remove(v));
+    formatter.toggle(toBeApplied);
+  }
+
+
   protected toggleAdam(usePortalRoot: boolean, showImagesOnly: boolean) {
     // Toggle Adam in the Dialog
     this.adam.toggle(usePortalRoot, showImagesOnly);

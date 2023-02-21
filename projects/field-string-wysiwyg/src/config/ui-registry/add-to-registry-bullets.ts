@@ -34,7 +34,7 @@ export class TinyButtonsBullets extends AddToRegistryBase {
 
   /** Add Context toolbars */
   private contextMenus(): void {
-    const rangeSelected = () => document.getSelection().rangeCount > 0 && !document.getSelection().getRangeAt(0).collapsed;
+    const rangeSelected = this.rangeSelected;
 
     this.editor.ui.registry.addContextToolbar('listContextToolbar', {
       items: 'numlist bullist | outdent indent',

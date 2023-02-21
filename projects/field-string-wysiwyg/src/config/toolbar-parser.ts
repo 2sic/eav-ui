@@ -10,14 +10,7 @@ import { WysiwygConfiguration } from './types/wysiwyg-configurations';
  */
 export class ToolbarParser {
 
-  constructor() {
-  }
-
-  public switch(wysiwygConfiguration: WysiwygConfiguration) {
-    return this.toolbar(wysiwygConfiguration)
-  }
-
-  private toolbar(wysiwygConfiguration: WysiwygConfiguration): string[] {
+  public toolbar(wysiwygConfiguration: WysiwygConfiguration): string[] {
     const allButtonGroups = wysiwygConfiguration.toolbar;
     const rows = allButtonGroups.reduce((acc, cur) => {
       if (cur === Buttons.NewRow)
@@ -51,7 +44,7 @@ export class ToolbarParser {
       { button: Buttons.ModeAdvanced, enabled: settings.buttons.advanced && !editModeAdvanced },
       { button: Buttons.ModeDefault, enabled: editModeAdvanced },
       { button: Buttons.AddContentBlock, enabled: settings.features.contentBlocks },
-      { button: Buttons.XXXContentDivision, enabled: false /* settings.features.contentSeparators */ },
+      // { button: Buttons.XXXContentDivision, enabled: false /* settings.features.contentSeparators */ },
       { button: Buttons.ContentSectionSplitter, enabled: settings.features.contentSeparators },
     ];
     return map;

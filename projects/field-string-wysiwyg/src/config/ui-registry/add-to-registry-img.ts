@@ -57,7 +57,7 @@ export class TinyButtonsImg extends AddToRegistryBase {
 
   /** Add Context toolbars */
   private contextMenus(): void {
-    const rangeSelected = () => document.getSelection().rangeCount > 0 && !document.getSelection().getRangeAt(0).collapsed;
+    const rangeSelected = this.rangeSelected;
 
     // Different behavior depending on responsiveImages mode
     const imgAlign = this.options.configManager.current.features.responsiveImages
@@ -91,7 +91,7 @@ export class TinyButtonsImg extends AddToRegistryBase {
   private registerEnhancedFormattingRatios(): void {
     const that = this;
     const main = RichSpecs.ImgRatioDefault;
-    const tog = (current: RichSpecs.ImageFormatDefinition) => this.toggleOneOfClassList(RichSpecs.ImgRatios, current);
+    const tog = (current: RichSpecs.ImageFormatDefinition) => this.toggleOneImgFormatDefinition(RichSpecs.ImgRatios, current);
     this.editor.ui.registry.addSplitButton(Buttons.ImgRatiosGroup, {
       ...that.splitButtonSpecs(() => tog(main)),
       icon: 'resize',
@@ -107,11 +107,10 @@ export class TinyButtonsImg extends AddToRegistryBase {
     });
   }
 
-  private toggleOneOfClassList(all: RichSpecs.ImageFormatDefinition[], current: RichSpecs.ImageFormatDefinition) {
-    const formatter = this.editor.formatter;
-    all.filter((v) => v.name !== current.name).forEach((v) => formatter.remove(v.name));
-    formatter.toggle(current.name);
+  private toggleOneImgFormatDefinition(all: RichSpecs.ImageFormatDefinition[], current: RichSpecs.ImageFormatDefinition) {
+    this.toggleOneClassFromList(current.name, all.map((v) => v.name));
   }
+
 
   // New wysiwyg alignments
   private buttonsEnhancedAlignment(): void {
@@ -121,7 +120,7 @@ export class TinyButtonsImg extends AddToRegistryBase {
       this.regBtn(ai.name,
         ai.icon ?? btns[ai.inherit]?.icon,
         editor.translate([ai.tooltip ?? btns[ai.inherit]?.tooltip]),
-        () => { this.toggleOneOfClassList(RichSpecs.ImgAlignments, ai); });
+        () => { this.toggleOneImgFormatDefinition(RichSpecs.ImgAlignments, ai); });
     });
   }
 

@@ -64,7 +64,7 @@ export const DefaultToolbarConfig = {
     /* initial w/undo   */ `${Buttons.PasteImage}`,
 
     /* links/media      */ `${Buttons.ImagesCmsGroup} ${Buttons.LinkFiles}`,
-    /* rich media       */ `${Buttons.XXXContentDivision} ${Buttons.ContentSectionSplitter}`,
+    /* rich media       */ `${Buttons.ContentSectionSplitter}`,
     /* content block    */ Buttons.AddContentBlock,
   ],
   dialogDefault: [

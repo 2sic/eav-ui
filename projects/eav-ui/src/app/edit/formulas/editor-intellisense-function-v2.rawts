@@ -1,8 +1,10 @@
 /*
   This is a special file which is not compiled as a normal TypeScript.
   Instead it's loaded as raw text, to hand over to Monaco.
-
   It ensures that v2 functions have intellisense.
+
+  TIP: To edit this file, briefly rename it to ...raw.ts, then back to ...rawts
+       This will make VSCode load it as a normal TypeScript file, so you can edit it.
 
   - Try to keep in sync with the real code in the 2sxc project.
   - The comments are _documentation_ for the user, so they can see what's available
