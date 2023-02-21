@@ -2,24 +2,27 @@ import { InputFieldHelpers, LocalizationHelpers } from '.';
 import { FieldSettings, FieldValue } from '../../../../../../edit-types';
 import { InputType } from '../../../content-type-fields/models/input-type.model';
 import { FeatureSummary } from '../../../features/models';
-import { EavWindow } from '../../../shared/models/eav-window.model';
 import { DesignerSnippet, FieldOption } from '../../dialog/footer/formula-designer/formula-designer.models';
-import { formV1Prefix, requiredFormulaPrefix } from '../constants';
 import { FormulaCacheItem, FormulaFieldValidation, FormulaFunction, FormulaProps, FormulaPropsV1, FormulaTargets,
   FormulaV1Data, FormulaV1ExperimentalEntity, FormulaVersion, FormulaVersions, FormValues, Language, SettingsFormulaPrefix } from '../models';
 import { EavHeader } from '../models/eav';
 import { EavService, FieldsSettingsService } from '../services';
 import { ItemService } from '../store/ngrx-data';
 
-
-declare const window: EavWindow;
+// Import the type definitions for intellisense
+import editorTypesForIntellisense from '!raw-loader!../../formulas/editor-intellisense-function-v2.rawts';
+import { formV1Prefix, requiredFormulaPrefix } from '../../formulas/formula.constants';
 
 export class FormulaHelpers {
 
   private static cleanFormula(formula: string): string {
     if (!formula) { return formula; }
 
+    // Clean and remove any leading single-line comments
     let cleanFormula = formula.trim();
+    if (cleanFormula.startsWith('//')) {
+      cleanFormula = cleanFormula.replace(/^\/\/.*\n/gm, '').trim();
+    }
     /*
       Valid function string:
       function NAME (...ARGS) { BODY }
@@ -287,59 +290,15 @@ export class FormulaHelpers {
     switch (formula.version) {
       case FormulaVersions.V2: {
         const formulaPropsParameters = this.buildFormulaPropsParameters(itemHeader);
-        return `
-          declare type function v2(
-            callback: (
-              data: {
-                value: any;
-                default: any;
-                prefill: any;
-                initial: any;
-                ${fieldOptions.map(f => `${f.fieldName}: any;`).join('\n')}
-                parameters: {
-                  ${Object.keys(formulaPropsParameters).map(key => `${key}: any;`).join('\n')}
-                };
-              },
-              context: {
-                app: {
-                  appId: number;
-                  zoneId: number;
-                  isGlobal: boolean;
-                  isSite: boolean;
-                  isContent: boolean;
-                };
-                cache: Record<string, any>;
-                culture: {
-                  code: string;
-                  name: string;
-                };
-                debug: boolean;
-                features: {
-                  get(nameId: string): Record<string, any>;
-                  isEnabled(nameId: string): boolean;
-                };
-                form: {
-                  runFormulas(): void;
-                };
-                sxc: Record<string, any>;
-                target: {
-                  entity: {
-                    id: number;
-                    guid: string;
-                  };
-                  name: string;
-                  type: string;
-                };
-                user: {
-                  id: number;
-                  isAnonymous: boolean;
-                  isSiteAdmin: boolean;
-                  isSystemAdmin: boolean;
-                };
-              },
-            ) => any,
-          ): void;
-        `;
+        const allFields = fieldOptions.map(f => `${f.fieldName}: any;`).join('\n');
+        const allParameters = Object.keys(formulaPropsParameters).map(key => `${key}: any;`).join('\n');
+        const final = editorTypesForIntellisense
+          .replace('/* [inject:AllFields] */', allFields)
+          .replace('/* [inject:AllParameters] */', allParameters);
+
+        // console.error('test 2dm', final);
+        return final;
+
         // TODO: probably update the entity-type info which was added in v14.07.05
       }
       default:

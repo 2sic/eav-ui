@@ -7,7 +7,7 @@ import { InputTypeConstants } from '../../../../content-type-fields/constants/in
 import { eavConstants } from '../../../../shared/constants/eav.constants';
 import { copyToClipboard } from '../../../../shared/helpers/copy-to-clipboard.helper';
 import { FormBuilderComponent } from '../../../form/builder/form-builder/form-builder.component';
-import { defaultFormulaV1 } from '../../../shared/constants';
+import { defaultFormulaNow } from '../../../formulas/formula.constants';
 import { FormulaHelpers, InputFieldHelpers } from '../../../shared/helpers';
 import { DesignerState, FormulaTarget, FormulaTargets } from '../../../shared/models';
 import { EavService, FormulaDesignerService } from '../../../shared/services';
@@ -41,7 +41,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     fixedOverflowWidgets: true,
   };
   filename = `formula${this.eavService.eavConfig.formId}.js`;
-  placeholder = defaultFormulaV1;
+  placeholder = defaultFormulaNow;
   focused = false;
   templateVars$: Observable<FormulaDesignerTemplateVars>;
 
@@ -135,7 +135,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     if (designer.editMode) {
       const formula = this.formulaDesignerService.getFormula(designer.entityGuid, designer.fieldName, designer.target, true);
       if (formula == null) {
-        this.formulaDesignerService.upsertFormula(designer.entityGuid, designer.fieldName, designer.target, defaultFormulaV1, false);
+        this.formulaDesignerService.upsertFormula(designer.entityGuid, designer.fieldName, designer.target, defaultFormulaNow, false);
       }
     }
   }
