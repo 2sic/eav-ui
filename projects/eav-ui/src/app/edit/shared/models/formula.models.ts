@@ -1,4 +1,5 @@
 import { SxcInstance } from '@2sic.com/2sxc-typings';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { FormValues } from '.';
 import { FieldSettings, FieldValue, FieldValuePair, FormulaResultRaw } from '../../../../../../edit-types';
 
@@ -31,6 +32,9 @@ export interface FormulaCacheItem extends FormulaCacheItemShared {
   sourceId: number;
   target: FormulaTarget;
   version: FormulaVersion;
+  disableFormula: boolean;
+  promises$: BehaviorSubject<Promise<FieldValue>>;
+  // updateCallback$: Subject<() => void>;
 }
 
 export type FormulaFunction = FormulaFunctionDefault | FormulaFunctionV1;

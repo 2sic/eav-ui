@@ -1,9 +1,10 @@
 export type FieldValue = string | boolean | number | string[];
 
 export interface FormulaResultRaw {
-  value: FieldValue;
+  value?: FieldValue;
   promise?: Promise<FieldValue>;
   additionalValues?: FieldValuePair[];
+  openInDesigner?: boolean;
 }
 
 export interface FieldValuePair {

@@ -1,6 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { BehaviorSubject, distinctUntilChanged, map, Observable } from 'rxjs';
+import { BehaviorSubject, distinctUntilChanged, from, map, Observable, of, Subject, switchMap, tap } from 'rxjs';
 import { EavService, LoggingService } from '.';
 import { FieldSettings, FieldValue } from '../../../../../../edit-types';
 import { EavWindow } from '../../../shared/models/eav-window.model';
@@ -81,13 +81,13 @@ export class FormulaDesignerService implements OnDestroy {
     return this.formulaCache$.asObservable();
   }
 
-  upsertFormula(entityGuid: string, fieldName: string, target: FormulaTarget, formula: string, run: boolean): void {
+  updateFormulaFromEditor(entityGuid: string, fieldName: string, target: FormulaTarget, formula: string, run: boolean): void {
     let formulaFunction: FormulaFunction;
     if (run) {
       try {
         formulaFunction = FormulaHelpers.buildFormulaFunction(formula);
       } catch (error) {
-        this.upsertFormulaResult(entityGuid, fieldName, target, undefined, true);
+        this.sendFormulaResultToUi(entityGuid, fieldName, target, undefined, true);
         const item = this.itemService.getItem(entityGuid);
         const contentTypeId = InputFieldHelpers.getContentTypeId(item);
         const contentType = this.contentTypeService.getContentType(contentTypeId);
@@ -130,6 +130,8 @@ export class FormulaDesignerService implements OnDestroy {
       user: oldFormulaItem?.user ?? shared.user, // new 14.07.05
       app: oldFormulaItem?.app ?? shared.app,    // new in v14.07.05
       sxc: oldFormulaItem?.sxc ?? shared.sxc,    // new in 14.11
+      disableFormula: false,
+      promises$: oldFormulaItem?.promises$ ?? this.createPromises$(),
     };
 
     const newCache = oldFormulaIndex >= 0
@@ -168,14 +170,14 @@ export class FormulaDesignerService implements OnDestroy {
     const oldFormulaItem = oldFormulaCache[oldFormulaIndex];
 
     if (oldFormulaItem?.sourceFromSettings != null) {
-      this.upsertFormula(entityGuid, fieldName, target, oldFormulaItem.sourceFromSettings, true);
+      this.updateFormulaFromEditor(entityGuid, fieldName, target, oldFormulaItem.sourceFromSettings, true);
     } else if (oldFormulaIndex >= 0) {
       const newCache = [...oldFormulaCache.slice(0, oldFormulaIndex), ...oldFormulaCache.slice(oldFormulaIndex + 1)];
       this.formulaCache$.next(newCache);
     }
   }
 
-  upsertFormulaResult(entityGuid: string, fieldName: string, target: FormulaTarget, value: FieldValue, isError: boolean): void {
+  sendFormulaResultToUi(entityGuid: string, fieldName: string, target: FormulaTarget, value: FieldValue, isError: boolean): void {
     const newResult: FormulaResult = {
       entityGuid,
       fieldName,
@@ -309,7 +311,7 @@ export class FormulaDesignerService implements OnDestroy {
           try {
             formulaFunction = FormulaHelpers.buildFormulaFunction(formula);
           } catch (error) {
-            this.upsertFormulaResult(entityGuid, attribute.Name, target, undefined, true);
+            this.sendFormulaResultToUi(entityGuid, attribute.Name, target, undefined, true);
             const itemTitle = FieldsSettingsHelpers.getContentTypeTitle(contentType, currentLanguage, defaultLanguage);
             this.loggingService.addLog(LogSeverities.Error, `Error building formula for Entity: "${itemTitle}", Field: "${attribute.Name}", Target: "${target}"`, error);
             this.loggingService.showMessage(this.translate.instant('Errors.FormulaConfiguration'), 2000);
@@ -331,6 +333,8 @@ export class FormulaDesignerService implements OnDestroy {
             user: sharedParts.user,   // new in v14.07.05
             app: sharedParts.app,   // new in v14.07.05
             sxc: sharedParts.sxc,   // put in shared in 14.11
+            disableFormula: false,
+            promises$: this.createPromises$(),
           };
 
           formulaCache.push(formulaCacheItem);
@@ -339,5 +343,19 @@ export class FormulaDesignerService implements OnDestroy {
     }
 
     return formulaCache;
+  }
+
+  private createPromises$() {
+    const promises$ = new BehaviorSubject<Promise<FieldValue>>(null);
+
+    promises$.pipe(
+      tap(p => {
+        console.log('SDV tap added', p);
+      }),
+      switchMap(promise => promise ? from(promise) : of(null)),
+      tap(p => console.log('SDV tap resolved', p)),
+    ).subscribe();
+
+    return promises$;
   }
 }

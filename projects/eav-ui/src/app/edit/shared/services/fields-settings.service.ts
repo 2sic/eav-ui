@@ -192,7 +192,8 @@ export class FieldsSettingsService implements OnDestroy {
             consoleLogAngular('newSettings', JSON.parse(JSON.stringify(newSettings)));
 
             possibleValueUpdates[attribute.Name] = formulaResult.value;
-            possibleAditionalValueUpdates.push(...formulaResult.additionalValues);
+            if (formulaResult.additionalValues)
+              possibleAditionalValueUpdates.push(...formulaResult.additionalValues);
 
             const fieldTranslation = FieldsSettingsHelpers.getTranslationState(
               attributeValues, fixed.DisableTranslation, entityReader.currentLanguage, entityReader.defaultLanguage,
@@ -317,14 +318,24 @@ export class FieldsSettingsService implements OnDestroy {
       ...this.formulaSettingsCache[this.getFormulaSettingsKey(fieldName, currentLanguage, defaultLanguage)],
     };
 
-    const formulas = this.formulaDesignerService.getFormulas(entityGuid, fieldName, null, false);
+    const formulas = this.formulaDesignerService.getFormulas(entityGuid, fieldName, null, false)
+      .filter(f => !f.disableFormula);
     let formulaValue: FieldValue;
     let formulaValidation: FormulaFieldValidation;
     const formulaResultAdditionalValues: FieldValuePair[] = [];
     const formulaSettings: Record<string, any> = {};
     for (const formula of formulas) {
+      // console.log('SDV before formula');
       const formulaResult = this.runFormula(formula, entityId, formValues, inputType, settings, previousSettings, itemHeader);
-      formulaResultAdditionalValues.push(...formulaResult.additionalValues);
+      if (formulaResult.promise) {
+        // SDV TODO: verify it is a promise
+        formula.promises$.next(formulaResult.promise);
+        formula.disableFormula = true;
+        
+      }
+      // console.log('SDV runFormulas formulaResult.additionalValues', formulaResult.additionalValues);
+      if (formulaResult.additionalValues)
+        formulaResultAdditionalValues.push(...formulaResult.additionalValues);
 
       if (formulaResult.value === undefined) { continue; }
 
@@ -374,6 +385,7 @@ export class FieldsSettingsService implements OnDestroy {
       value: formulaValue,
       additionalValues: formulaResultAdditionalValues,
     };
+    // console.log('SDV runFormulas runFormulaResult', runFormulaResult);
     return runFormulaResult;
   }
 
@@ -413,11 +425,7 @@ export class FieldsSettingsService implements OnDestroy {
       this,
       this.featuresCache$.value,
     );
-    const designerState = this.formulaDesignerService.getDesignerState();
-    const isOpenInDesigner = designerState.isOpen
-      && designerState.entityGuid === formula.entityGuid
-      && designerState.fieldName === formula.fieldName
-      && designerState.target === formula.target;
+    const isOpenInDesigner = this.isDesignerOpen(formula);
     const ctSettings = this.getContentTypeSettings();
     try {
       switch (formula.version) {
@@ -426,20 +434,26 @@ export class FieldsSettingsService implements OnDestroy {
           if (isOpenInDesigner) {
             console.log(`Running formula${formula.version.toLocaleUpperCase()} for Entity: "${ctSettings._itemTitle}", Field: "${formula.fieldName}", Target: "${formula.target}" with following arguments:`, formulaProps);
           }
+          // console.log('SDV runFormula formulaProps', formula);
           const formulaV1Result = (formula.fn as FormulaFunctionV1)(formulaProps.data, formulaProps.context, formulaProps.experimental);
-          const valueV1 = this.doValueCorrection( formula.target, formulaV1Result, inputType);
-          this.formulaDesignerService.upsertFormulaResult(formula.entityGuid, formula.fieldName, formula.target, valueV1.value, false);
+          console.log('SDV runFormula formulaV1Result', formulaV1Result);
+          const valueV1 = this.correctAllValues(formula.target, formulaV1Result, inputType);
+          valueV1.openInDesigner = isOpenInDesigner;
+          console.log('SDV runFormula valueV1', valueV1);
+          this.formulaDesignerService.sendFormulaResultToUi(formula.entityGuid, formula.fieldName, formula.target, valueV1.value, false);
           if (isOpenInDesigner) {
             console.log('Formula result:', valueV1.value);
           }
+          // console.log('SDV runFormula valueV1:', valueV1);
           return valueV1;
         default:
           if (isOpenInDesigner) {
             console.log(`Running formula for Entity: "${ctSettings._itemTitle}", Field: "${formula.fieldName}", Target: "${formula.target}" with following arguments:`, undefined);
           }
           const formulaDefaultResult = (formula.fn as FormulaFunctionDefault)();
-          const valueDefault = this.doValueCorrection(formula.target, formulaDefaultResult, inputType);
-          this.formulaDesignerService.upsertFormulaResult(formula.entityGuid, formula.fieldName, formula.target, valueDefault.value, false);
+          const valueDefault = this.correctAllValues(formula.target, formulaDefaultResult, inputType);
+          valueDefault.openInDesigner = isOpenInDesigner;
+          this.formulaDesignerService.sendFormulaResultToUi(formula.entityGuid, formula.fieldName, formula.target, valueDefault.value, false);
           if (isOpenInDesigner) {
             console.log('Formula result:', valueDefault);
           }
@@ -447,7 +461,7 @@ export class FieldsSettingsService implements OnDestroy {
       }
     } catch (error) {
       const errorLabel = `Error in formula calculation for Entity: "${ctSettings._itemTitle}", Field: "${formula.fieldName}", Target: "${formula.target}"`;
-      this.formulaDesignerService.upsertFormulaResult(formula.entityGuid, formula.fieldName, formula.target, undefined, true);
+      this.formulaDesignerService.sendFormulaResultToUi(formula.entityGuid, formula.fieldName, formula.target, undefined, true);
       this.loggingService.addLog(LogSeverities.Error, errorLabel, error);
       if (isOpenInDesigner) {
         console.error(errorLabel, error);
@@ -457,31 +471,77 @@ export class FieldsSettingsService implements OnDestroy {
     }
   }
 
-  private doValueCorrection(target: FormulaTarget, formulaResultValue: FormulaResultRaw, inputType: InputType): FormulaResultRaw {
-    if (typeof formulaResultValue === 'object' && formulaResultValue !== null) {
-      // for now will ignore if is maybe date and will ignore that values shoud also be corrected
-      return formulaResultValue;
+  private isDesignerOpen(formula: FormulaCacheItem): boolean {
+    const designerState = this.formulaDesignerService.getDesignerState();
+    const isOpenInDesigner = designerState.isOpen
+      && designerState.entityGuid === formula.entityGuid
+      && designerState.fieldName === formula.fieldName
+      && designerState.target === formula.target;
+    return isOpenInDesigner;
+  }
+
+  private correctAllValues(target: FormulaTarget, formulaResultValue: FormulaResultRaw, inputType: InputType): FormulaResultRaw {
+    console.log('SDV correctAllValues', formulaResultValue);
+    if (formulaResultValue === null || formulaResultValue === undefined) {
+      return { value: formulaResultValue as unknown as FieldValue };
+    } else if (typeof formulaResultValue === 'object') {
+      if (formulaResultValue instanceof Date && target === FormulaTargets.Value) {
+        return { value: this.valueCorrection(formulaResultValue as unknown as FieldValue, inputType) };
+      } else if (formulaResultValue instanceof Promise) {
+        console.log('SDV correctAllValues Promise', formulaResultValue);
+        // (formulaResultValue as Promise<FieldValue>).then((value) => {
+        //   // this.forceSettings();
+        //   // console.log('SDV correctAllValues Promise value', value);
+        //   // return { value };
+        // });
+        return { value: undefined, promise: formulaResultValue as Promise<FieldValue> };
+      } else if (formulaResultValue.promise) {
+        console.log('SDV correctAllValues Promise promise', formulaResultValue);
+        // formulaResultValue.promise.then((value) => {
+        //   // this.forceSettings();
+        //   // console.log('SDV correctAllValues Promise promise value', value);
+        //   // return { value };
+        //  });
+        return { value: undefined, promise: formulaResultValue.promise };
+      } else {
+        const correctedValue: FormulaResultRaw = formulaResultValue;
+        if (formulaResultValue.value && target === FormulaTargets.Value) {
+          correctedValue.value = this.valueCorrection(formulaResultValue.value, inputType);
+        }
+        if (formulaResultValue.additionalValues) {
+          correctedValue.additionalValues = formulaResultValue.additionalValues?.map((additionalValue) => {
+            additionalValue.value = this.valueCorrection(additionalValue.value, inputType);
+            return additionalValue;
+          });
+        }
+        return correctedValue;
+      }
     } else {
       const value: FormulaResultRaw = { value: formulaResultValue as unknown as FieldValue };
 
       // atm we are only correcting Value formulas
-      if (target !== FormulaTargets.Value) { return value; }
-      if (value == null) { return value; }
-
-      if (inputType?.Type === InputTypeConstants.DatetimeDefault) {
-        const date = new Date(value.value as string | number | Date);
-
-        // if value is not ISO string, nor milliseconds, correct timezone
-        if (!(typeof value.value === 'string' && value.value.endsWith('Z')) && date.getTime() !== value.value) {
-          date.setTime(date.getTime() - date.getTimezoneOffset() * 60000);
-        }
-
-        date.setMilliseconds(0);
-        return { value: date.toJSON() };
-      } else if (typeof (value) !== 'string' && (inputType?.Type?.startsWith(DataTypeConstants.String.toLocaleLowerCase())
-        || inputType?.Type?.startsWith(DataTypeConstants.Hyperlink.toLocaleLowerCase()))) {
-        return { value: value.toString() };
-      }
+      if (target === FormulaTargets.Value) { return { value: this.valueCorrection(value.value, inputType) }; }
+      return value;
     }
+  }
+
+  private valueCorrection(value: FieldValue, inputType: InputType): FieldValue {
+    if (value == null) {
+      return value;
+    } else if (inputType?.Type === InputTypeConstants.DatetimeDefault) {
+      const date = new Date(value as string | number | Date);
+
+      // if value is not ISO string, nor milliseconds, correct timezone
+      if (!(typeof value === 'string' && value.endsWith('Z')) && date.getTime() !== value) {
+        date.setTime(date.getTime() - date.getTimezoneOffset() * 60000);
+      }
+
+      date.setMilliseconds(0);
+      return date.toJSON();
+    } else if (typeof (value) !== 'string' && (inputType?.Type?.startsWith(DataTypeConstants.String.toLocaleLowerCase())
+      || inputType?.Type?.startsWith(DataTypeConstants.Hyperlink.toLocaleLowerCase()))) {
+      return value.toString();
+    }
+    return value;
   }
 }
