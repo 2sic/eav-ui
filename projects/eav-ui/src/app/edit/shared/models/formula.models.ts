@@ -132,14 +132,7 @@ export interface FormulaV1CtxTargetEntity {
   id: number;
   type?: FormulaV1CtxTargetEntityType;
   /**
-   * New 15.04
-   *
-   * @type {boolean}
-   * @memberof FormulaV1CtxTargetEntity
-   */
-  isMetadataFor: boolean;
-  /**
-   * New 15.04
+   * New 15.04 - metadata for information
    */
   for: FormulaV1CtxMetadataFor;
 }

@@ -22,32 +22,32 @@
 declare interface FormulaData {
   /**
    * The value of the current field/setting when the formula runs.
-   * 
+   *
    * _It's exact type depends on the underlying type._
    */
   value: string | boolean | number | string[];
   /**
    * The _default_ value of the current field/setting as defined in the field settings.
-   * 
+   *
    * _It's exact type depends on the underlying type._
    */
   default: string | boolean | number | string[];
   /**
    * A prefill value that was passed into the form when it was loaded.
-   * 
+   *
    * _It's exact type depends on the underlying type._
    */
   prefill: string | boolean | number | string[];
   /**
    * The value of the current field/setting when the form initially loaded.
-   * 
+   *
    * _It's exact type depends on the underlying type._
    */
   initial: string | boolean | number | string[];
   /* [inject:AllFields] */
   /**
    * All parameters which were passed to the form when it was loaded
-   * 
+   *
    * _It's exact type depends on the parameter, but it's usually a string._
    */
   parameters: {
@@ -105,7 +105,7 @@ declare interface FormulaContext {
   /**
    * The standard sxc object for the current App.
    * It's the same as the sxc-instance in the page.
-   * 
+   *
    * You can use it to make API calls to the server.
    */
   // sxc: Record<string, any>;
@@ -143,6 +143,17 @@ declare interface FormulaContext {
       id: number;
       /** The entity GUID */
       guid: string;
+      /** Metadata For information */
+      for: {
+        /** The target type like `4` (Entity). `0` if it's not metadata  */
+        targetType: number;
+        /** The int-key if it uses number keys, otherwise null */
+        number?: number;
+        /** The string-key if it uses string keys, otherwise null */
+        string?: string;
+        /** The GUID-key if it uses GUIDs, otherwise null */
+        guid?: string;
+      }
     };
     name: string;
     /** The entity type name */

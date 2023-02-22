@@ -233,8 +233,7 @@ export class FormulaDesignerService implements OnDestroy {
         // id: -999,
       },
       // New v15.04
-      isMetadataFor: mdFor != null,
-      for: { 
+      for: {
         targetType: mdFor?.TargetType ?? 0,
         guid: mdFor?.Guid,
         number: mdFor?.Number,
