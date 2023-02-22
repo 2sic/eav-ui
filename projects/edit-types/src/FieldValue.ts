@@ -5,6 +5,7 @@ export interface FormulaResultRaw {
   promise?: Promise<FieldValue>;
   additionalValues?: FieldValuePair[];
   openInDesigner?: boolean;
+  stopFormula?: boolean | null;
 }
 
 export interface FieldValuePair {

@@ -2,7 +2,7 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, distinctUntilChanged, from, map, Observable, of, Subject, Subscription, switchMap, tap } from 'rxjs';
 import { EavService, LoggingService } from '.';
-import { FieldSettings, FieldValue } from '../../../../../../edit-types';
+import { FieldSettings, FieldValue, FormulaResultRaw } from '../../../../../../edit-types';
 import { EavWindow } from '../../../shared/models/eav-window.model';
 import { EntityReader, FieldsSettingsHelpers, FormulaHelpers, GeneralHelpers, InputFieldHelpers, LocalizationHelpers } from '../helpers';
 import { DesignerState, FormulaCacheItem, FormulaFunction, FormulaResult, FormulaTarget, FormulaV1CtxTargetEntity, LogSeverities } from '../models';
@@ -132,8 +132,9 @@ export class FormulaDesignerService implements OnDestroy {
       user: oldFormulaItem?.user ?? shared.user, // new 14.07.05
       app: oldFormulaItem?.app ?? shared.app,    // new in v14.07.05
       sxc: oldFormulaItem?.sxc ?? shared.sxc,    // new in 14.11
-      disableFormula: false,
+      stopFormula: false,
       promises$: oldFormulaItem?.promises$ ?? this.createPromises$(),
+      updateCallback$: oldFormulaItem?.updateCallback$ ?? this.createUpdateCallback$(),
     };
 
     const newCache = oldFormulaIndex >= 0
@@ -335,8 +336,9 @@ export class FormulaDesignerService implements OnDestroy {
             user: sharedParts.user,   // new in v14.07.05
             app: sharedParts.app,   // new in v14.07.05
             sxc: sharedParts.sxc,   // put in shared in 14.11
-            disableFormula: false,
+            stopFormula: false,
             promises$: this.createPromises$(),
+            updateCallback$: this.createUpdateCallback$(),
           };
 
           formulaCache.push(formulaCacheItem);
@@ -348,7 +350,7 @@ export class FormulaDesignerService implements OnDestroy {
   }
 
   private createPromises$() {
-    const promises$ = new BehaviorSubject<Promise<FieldValue>>(null);
+    const promises$ = new BehaviorSubject<Promise<FieldValue | FormulaResultRaw>>(null);
 
     this.subscription = promises$.pipe(
       tap(p => { console.log('SDV tap added', p); }),
@@ -357,5 +359,13 @@ export class FormulaDesignerService implements OnDestroy {
     ).subscribe();
 
     return promises$;
+  }
+
+  private createUpdateCallback$() {
+    const callback$ = new Subject<() => void>();
+
+    this.subscription = callback$.subscribe();
+
+    return callback$;
   }
 }
