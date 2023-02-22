@@ -131,6 +131,24 @@ export interface FormulaV1CtxTargetEntity {
   guid: string;
   id: number;
   type?: FormulaV1CtxTargetEntityType;
+  /**
+   * New 15.04
+   *
+   * @type {boolean}
+   * @memberof FormulaV1CtxTargetEntity
+   */
+  isMetadataFor: boolean;
+  /**
+   * New 15.04
+   */
+  for: FormulaV1CtxMetadataFor;
+}
+
+export interface FormulaV1CtxMetadataFor {
+  targetType: number;
+  number?: number;
+  string?: string;
+  guid?: string;
 }
 
 // WIP

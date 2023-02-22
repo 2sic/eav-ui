@@ -221,14 +221,25 @@ export class FormulaDesignerService implements OnDestroy {
 
   private buildItemFormulaCacheSharedParts(item: EavItem, entityGuid: string): FormulaCacheItemShared {
     item = item ?? this.itemService.getItem(entityGuid);
+    var entity = item.Entity;
+    var mdFor = entity.For;
+    debugger;
     const targetEntity: FormulaV1CtxTargetEntity = {
-      guid: item.Entity.Guid,
-      id: item.Entity.Id,
+      guid: entity.Guid,
+      id: entity.Id,
       type: {
-        guid: item.Entity.Type.Id,
-        name: item.Entity.Type.Name,
+        guid: entity.Type.Id,
+        name: entity.Type.Name,
         // id: -999,
-      }
+      },
+      // New v15.04
+      isMetadataFor: mdFor != null,
+      for: { 
+        targetType: mdFor?.TargetType ?? 0,
+        guid: mdFor?.Guid,
+        number: mdFor?.Number,
+        string: mdFor?.String,
+      },
     };
     const eavService = this.eavService;
     const user = eavService.eavConfig.dialogContext.User;
