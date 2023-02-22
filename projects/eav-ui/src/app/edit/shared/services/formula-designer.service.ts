@@ -1,6 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { BehaviorSubject, distinctUntilChanged, from, map, Observable, of, Subject, switchMap, tap } from 'rxjs';
+import { BehaviorSubject, distinctUntilChanged, from, map, Observable, of, Subject, Subscription, switchMap, tap } from 'rxjs';
 import { EavService, LoggingService } from '.';
 import { FieldSettings, FieldValue } from '../../../../../../edit-types';
 import { EavWindow } from '../../../shared/models/eav-window.model';
@@ -16,6 +16,7 @@ export class FormulaDesignerService implements OnDestroy {
   private formulaCache$: BehaviorSubject<FormulaCacheItem[]>;
   private formulaResults$: BehaviorSubject<FormulaResult[]>;
   private designerState$: BehaviorSubject<DesignerState>;
+  private subscription = new Subscription();
 
   constructor(
     private eavService: EavService,
@@ -31,6 +32,7 @@ export class FormulaDesignerService implements OnDestroy {
     this.formulaCache$?.complete();
     this.formulaResults$?.complete();
     this.designerState$?.complete();
+    this.subscription.unsubscribe();
   }
 
   init(): void {
@@ -348,10 +350,8 @@ export class FormulaDesignerService implements OnDestroy {
   private createPromises$() {
     const promises$ = new BehaviorSubject<Promise<FieldValue>>(null);
 
-    promises$.pipe(
-      tap(p => {
-        console.log('SDV tap added', p);
-      }),
+    this.subscription = promises$.pipe(
+      tap(p => { console.log('SDV tap added', p); }),
       switchMap(promise => promise ? from(promise) : of(null)),
       tap(p => console.log('SDV tap resolved', p)),
     ).subscribe();
