@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+  <g id="image-centerd" transform="translate(-485 -448)">
+    <g id="Gruppe_22" data-name="Gruppe 22">
+      <rect id="Rechteck_38" data-name="Rechteck 38" width="24" height="24" transform="translate(485 448)" fill="#fff"/>
+      <g id="Gruppe_14" data-name="Gruppe 14" transform="translate(0 1)">
+        <line id="Linie_32" data-name="Linie 32" x2="18" transform="translate(488.5 465)" fill="none" stroke="#000" stroke-linecap="round" stroke-width="1"/>
+        <line id="Linie_35" data-name="Linie 35" x2="18" transform="translate(488.5 454)" fill="none" stroke="#000" stroke-linecap="round" stroke-width="1"/>
+      </g>
+      <g id="Gruppe_15" data-name="Gruppe 15" transform="translate(-1.25)">
+        <path id="imagesmode_FILL0_wght400_GRAD0_opsz48_1_" data-name="imagesmode_FILL0_wght400_GRAD0_opsz48 (1)" d="M84.875,188.5A1.867,1.867,0,0,1,83,186.625v-4a1.867,1.867,0,0,1,1.875-1.875h5.75a1.867,1.867,0,0,1,1.875,1.875v4a1.867,1.867,0,0,1-1.875,1.875Zm0-.938h5.75a.921.921,0,0,0,.938-.937v-4a.921.921,0,0,0-.937-.937h-5.75a.921.921,0,0,0-.937.938v4a.921.921,0,0,0,.938.938Zm1.063-.937,2.125-2.125,1.141,1.125,1.359-1.719v2.719Z" transform="translate(411 276)"/>
+        <circle id="Ellipse_7" data-name="Ellipse 7" cx="1" cy="1" r="1" transform="translate(496 459)"/>
+      </g>
+    </g>
+  </g>
+</svg>

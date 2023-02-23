@@ -25,19 +25,18 @@ export class AddToRegistryWysiwygSections extends AddToRegistryBase {
 
   
   private splitterSizeButtons(): void {
-    RichSpecs.ContentSplitterSizes.forEach((ai) => {
-      this.regBtn(Buttons.SplitterSizeButtonPrefix + ai,
-        'image', // ai.icon ?? btns[ai.inherit]?.icon,
+    RichSpecs.ContentSplitters.forEach((cs) => {
+      this.regBtn(cs.name, cs.icon,
         'todo', // editor.translate([ai.tooltip ?? btns[ai.inherit]?.tooltip]),
-        () => { this.toggleOneClassFromList(ai, RichSpecs.ContentSplitterSizes); });
+        () => { this.toggleOneClassFromList(cs.class, RichSpecs.ContentSplitters.map(x => x.class)); });
     });
   }
 
     /** Register all formats - like img-sizes */
    private splitterSizeFormats(): void {
       const formatter = this.editor.formatter;
-      RichSpecs.ContentSplitterSizes.forEach(sizeClass => {
-        formatter.register(sizeClass, { selector: 'hr', classes: sizeClass });
+      RichSpecs.ContentSplitters.forEach(cs => {
+        formatter.register(cs.class, { selector: 'hr', classes: cs.class });
       })
     }
 
@@ -47,7 +46,7 @@ export class AddToRegistryWysiwygSections extends AddToRegistryBase {
     const rangeSelected = this.rangeSelected;
 
     this.editor.ui.registry.addContextToolbar('wysiwygSectionContextToolbar', {
-      items: RichSpecs.ContentSplitterSizes.map(s => Buttons.SplitterSizeButtonPrefix + s).join(' '), // 'numlist numlist | numlist numlist | numlist numlist',
+      items: RichSpecs.ContentSplitters.map(cs => cs.name).join(' '), // 'numlist numlist | numlist numlist | numlist numlist',
       // TODO: ONLY detect HRs with a wysiwyg-class
       predicate: (elem) => ['hr'].includes(elem.nodeName.toLocaleLowerCase()) && rangeSelected(),
     });

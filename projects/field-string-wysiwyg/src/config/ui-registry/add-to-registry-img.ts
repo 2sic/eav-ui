@@ -61,7 +61,7 @@ export class TinyButtonsImg extends AddToRegistryBase {
 
     // Different behavior depending on responsiveImages mode
     const imgAlign = this.options.configManager.current.features.responsiveImages
-      ? `${RichSpecs.ImgLeftClass} ${RichSpecs.ImgCenterClass} ${RichSpecs.ImgRightClass} ${Buttons.ImgRatiosGroup}`
+      ? `${RichSpecs.ImgLeft} ${RichSpecs.ImgCenter} ${RichSpecs.ImgRight} ${Buttons.ImgRatiosGroup}`
       : `alignleft aligncenter alignright ${Buttons.ImgWidthsGroup}`;
 
     this.editor.ui.registry.addContextToolbar('imgContextToolbar', {

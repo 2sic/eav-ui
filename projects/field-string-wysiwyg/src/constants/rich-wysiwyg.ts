@@ -18,23 +18,24 @@ export interface ImageFormatDefinition {
 }
 
 // Content Splitters
+const SplitterName = 'split';
 export const ContentSplitterClass = `${WysiwygClassPrefix}-division`;
-export const ContentSplitterSizes = [
-  `wysiwyg-height-0`,
-  `wysiwyg-height-s`,
-  `wysiwyg-height-m`,
-  `wysiwyg-height-l`,
-  `wysiwyg-height-xl`,
+export const ContentSplitters: ImageFormatDefinition[] = [
+  { name: SplitterName + "0", class: `wysiwyg-height-0`, icon: `rich-${SplitterName}-0` },
+  { name: SplitterName + "s", class: `wysiwyg-height-s`, icon: `rich-${SplitterName}-s` },
+  { name: SplitterName + "m", class: `wysiwyg-height-m`, icon: `rich-${SplitterName}-m` },
+  { name: SplitterName + "l", class: `wysiwyg-height-l`, icon: `rich-${SplitterName}-l` },
+  { name: SplitterName + "xl", class: `wysiwyg-height-xl`, icon: `rich-${SplitterName}-xl` },
 ];
 
 // New wysiwyg alignments
-export const ImgLeftClass = `${WysiwygClassPrefix}-img-left`;
-export const ImgCenterClass = `${WysiwygClassPrefix}-img-center`;
-export const ImgRightClass = `${WysiwygClassPrefix}-img-right`;
+export const ImgLeft = `${WysiwygClassPrefix}-img-left`;
+export const ImgCenter = `${WysiwygClassPrefix}-img-center`;
+export const ImgRight = `${WysiwygClassPrefix}-img-right`;
 export const ImgAlignments: ImageFormatDefinition[] = [
-  { name: ImgLeftClass, class: `${WysiwygClassPrefix}-left`, inherit: 'alignleft' },
-  { name: ImgCenterClass, class: `${WysiwygClassPrefix}-center`, inherit: 'aligncenter' },
-  { name: ImgRightClass, class: `${WysiwygClassPrefix}-right`, inherit: 'alignright' },
+  { name: ImgLeft, class: `${WysiwygClassPrefix}-left`, icon: `rich-image-left`, inherit: 'alignleft' },
+  { name: ImgCenter, class: `${WysiwygClassPrefix}-center`, icon: `rich-image-center`, inherit: 'aligncenter' },
+  { name: ImgRight, class: `${WysiwygClassPrefix}-right`, icon: `rich-image-right`, inherit: 'alignright' },
 ];
 
 const i18nRatioPrefix = 'RichImages.Ratio';
