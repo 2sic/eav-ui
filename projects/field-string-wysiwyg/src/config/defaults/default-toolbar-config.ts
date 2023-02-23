@@ -50,6 +50,10 @@ export const DefaultToolbarConfig = {
     /* content block    */ NoButtons,
     /* tools/mode switch*/ standardGroupFinal,
   ],
+  'text-plain': [
+    /* initial w/undo   */ `undo redo pastetext removeformat`,
+    /* tools/mode switch*/ standardGroupFinal,
+  ],
   rich: [
     // Almost Default Toolbar at first
     /* initial w/undo   */ standardGroupUndoRedoPaste,

@@ -19,6 +19,8 @@ const defaultConfigurationSet: WysiwygConfigurationSet = {
     contentBlocks: false,
     responsiveImages: false,
     contentSeparators: false,
+    pasteFormatted: true,
+    addImage: true,
   },
   contextMenu: DefaultContextMenu.default,
   menubar: false,
@@ -49,6 +51,10 @@ const defaultConfigurationSet: WysiwygConfigurationSet = {
 
 const configurationText: WysiwygConfigurationSet = {
   ...defaultConfigurationSet,
+  features: {
+    ...defaultConfigurationSet.features,
+    addImage: false,
+  },
   editMode: 'text',
   contextMenu: DefaultContextMenu.text,
   toolbar: DefaultToolbarConfig.text,
@@ -74,6 +80,15 @@ export const ConfigurationPresets: Record<string, WysiwygConfigurationSet> = {
     ...configurationText,
     editMode: 'text-minimal',
     toolbar: DefaultToolbarConfig['text-minimal'],
+  },
+  'text-plain': {
+    ...configurationText,
+    features: {
+      ...configurationText.features,
+      pasteFormatted: false,
+    },
+    editMode: 'text-plain',
+    toolbar: DefaultToolbarConfig['text-plain'],
   },
   rich: {
     ...defaultConfigurationSet,
