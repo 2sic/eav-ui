@@ -22,16 +22,6 @@ import * as school from '../assets/icons/google-material/baseline-school-24px.sv
 import * as brandingWatermark from '../assets/icons/google-material/branding-watermark-24px.svg';
 import * as paragraph from '../assets/icons/tinymce/paragraph.svg';
 
-// Rich Text Editor Icons
-import * as imageLeft from '../assets/icons/rich/image-left.svg';
-import * as imageRight from '../assets/icons/rich/image-right.svg';
-import * as imageCenter from '../assets/icons/rich/image-center.svg';
-import * as split from '../assets/icons/rich/split.svg';
-import * as splitm from '../assets/icons/rich/split-m.svg';
-import * as splitl from '../assets/icons/rich/split-l.svg';
-import * as splitxl from '../assets/icons/rich/split-xl.svg';
-
-
 const customTinyMceIcons: Record<string, string> = {
   'custom-anchor': anchor.default,
   'custom-content-block': contentBlock.default,
@@ -56,19 +46,40 @@ const customTinyMceIcons: Record<string, string> = {
   'custom-sitemap': sitemap.default,
   'custom-paragraph': paragraph.default,
 
-  // Rich Text Editor Icons
-  'rich-image-left': imageLeft.default,
-  'rich-image-right': imageRight.default,
-  'rich-image-center': imageCenter.default,
-  'rich-split-0': split.default,
-  'rich-split-s': split.default, // TODO: add small icon
-  'rich-split-m': splitm.default,
-  'rich-split-l': splitl.default,
-  'rich-split-xl': splitxl.default,
+};
+
+// Rich Text Editor Icons
+import imageLeft from '!raw-loader!../assets/icons/rich/image-left.svg';
+import imageRight from '!raw-loader!../assets/icons/rich/image-right.svg';
+import imageCenter from '!raw-loader!../assets/icons/rich/image-center.svg';
+import splitter0 from '!raw-loader!../assets/icons/rich/split.svg';
+import splitters from '!raw-loader!../assets/icons/rich/split.svg'; // todo
+import splitterm from '!raw-loader!../assets/icons/rich/split-m.svg';
+import splitterl from '!raw-loader!../assets/icons/rich/split-l.svg';
+import splitterxl from '!raw-loader!../assets/icons/rich/split-xl.svg';
+
+// Rich Text Editor Icons
+const richIcons = {
+  // Splitters
+  splitter0,
+  splitters,// TODO: add small icon
+  splitterm,
+  splitterl,
+  splitterxl,
+
+  // Image alignment
+  'rich-image-left': imageLeft,
+  'rich-image-right': imageRight,
+  'rich-image-center': imageCenter,
 };
 
 export function loadCustomIcons(editor: Editor): void {
   Object.entries(customTinyMceIcons).forEach(([name, svg]) => {
+    editor.ui.registry.addIcon(name, svg);
+  });
+
+  Object.entries(richIcons).forEach(([name, svg]) => {
+    console.log('2dm add', name, svg);
     editor.ui.registry.addIcon(name, svg);
   });
 }

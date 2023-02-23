@@ -3,10 +3,9 @@ export const Code = 'code';
 
 export const ModeAdvanced = 'mode-advanced';
 export const AddContentBlock = 'contentblock-add';
-// export const XXXContentDivision = 'contentdivision';
 export const DialogOpen = 'dialog-open';
 
-export const ContentSectionSplitter = 'contentsplit';
+export const toggleSuffix = '-toggle';
 export const ModeDefault = 'mode-default';
 
 // Heading Groups

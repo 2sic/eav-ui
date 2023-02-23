@@ -1,5 +1,6 @@
 import * as Buttons from '../../constants/buttons';
 import { NewRow, NoButtons } from '../../constants/buttons';
+import * as Rich from '../../constants/rich-wysiwyg';
 
 const standardGroupUndoRedoPaste = `undo redo pastetext paste removeformat`;
 const standardGroupFinal = `${Buttons.Code} ${Buttons.ModeAdvanced} ${Buttons.ModeDefault} ${Buttons.DialogOpen}`;
@@ -68,7 +69,7 @@ export const DefaultToolbarConfig = {
     /* initial w/undo   */ `${Buttons.PasteImage}`,
 
     /* links/media      */ `${Buttons.ImagesCmsGroup} ${Buttons.LinkFiles}`,
-    /* rich media       */ `${Buttons.ContentSectionSplitter}`,
+    /* rich media       */ Rich.ContentSplitters.map(cs => cs.name).join(' '),
     /* content block    */ Buttons.AddContentBlock,
   ],
   dialogDefault: [

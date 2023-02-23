@@ -1,3 +1,4 @@
+import * as Rich from '../constants/rich-wysiwyg';
 import * as Buttons from '../constants/buttons';
 import * as EditModes from '../constants/edit-modes';
 import { WysiwygConfiguration } from './types/wysiwyg-configurations';
@@ -44,9 +45,11 @@ export class ToolbarParser {
       { button: Buttons.ModeAdvanced, enabled: settings.buttons.advanced && !editModeAdvanced },
       { button: Buttons.ModeDefault, enabled: editModeAdvanced },
       { button: Buttons.AddContentBlock, enabled: settings.features.contentBlocks },
-      // { button: Buttons.XXXContentDivision, enabled: false /* settings.features.contentSeparators */ },
-      { button: Buttons.ContentSectionSplitter, enabled: settings.features.contentSeparators },
     ];
-    return map;
+
+    // Add rules for all spacers / splitter buttons
+    const splitters = Rich.ContentSplitters.map(cs => ({button: cs.name, enabled: settings.features.contentSeparators}));
+
+    return [...map, ...splitters];
   }
 }

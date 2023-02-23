@@ -18,15 +18,13 @@ export interface ImageFormatDefinition {
 }
 
 // Content Splitters
-const SplitterName = 'split';
-export const ContentSplitterClass = `${WysiwygClassPrefix}-division`;
-export const ContentSplitters: ImageFormatDefinition[] = [
-  { name: SplitterName + "0", class: `wysiwyg-height-0`, icon: `rich-${SplitterName}-0` },
-  { name: SplitterName + "s", class: `wysiwyg-height-s`, icon: `rich-${SplitterName}-s` },
-  { name: SplitterName + "m", class: `wysiwyg-height-m`, icon: `rich-${SplitterName}-m` },
-  { name: SplitterName + "l", class: `wysiwyg-height-l`, icon: `rich-${SplitterName}-l` },
-  { name: SplitterName + "xl", class: `wysiwyg-height-xl`, icon: `rich-${SplitterName}-xl` },
-];
+export const SplitterName = 'splitter';
+export const ContentSplitterClass = `${WysiwygClassPrefix}-${SplitterName}`;
+export const ContentSplitters: ImageFormatDefinition[] = ["0", "s", "m", "l", "xl"].map((v) => ({
+  name: `${SplitterName}${v}`,
+  class: `${WysiwygClassPrefix}-spacer-${v}`,
+  icon: `${SplitterName}${v}`,
+}));
 
 // New wysiwyg alignments
 export const ImgLeft = `${WysiwygClassPrefix}-img-left`;
