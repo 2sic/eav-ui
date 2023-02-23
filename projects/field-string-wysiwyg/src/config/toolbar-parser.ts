@@ -48,7 +48,7 @@ export class ToolbarParser {
     ];
 
     // Add rules for all spacers / splitter buttons
-    const splitters = Rich.ContentSplitters.map(cs => ({button: cs.name, enabled: settings.features.contentSeparators}));
+    const splitters = Rich.ContentSplitters.map(cs => ({button: cs.name, enabled: settings.features.contentSplitters}));
 
     return [...map, ...splitters];
   }

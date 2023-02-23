@@ -1,7 +1,7 @@
 export interface WysiwygFeatures {
   contentBlocks: boolean;
   responsiveImages: boolean;
-  contentSeparators: boolean;
+  contentSplitters: boolean;
   /**
    * Allow paste formatted.
    * Basically true all the time, but we should be able to turn it off for `text-plain`
@@ -14,7 +14,7 @@ export interface WysiwygFeatures {
    * We should be able to turn this off in text-modes, but not implemented yet.
    * TODO: not implemented yet
    */
-  addImage: boolean;
+  addImages: boolean;
 
   /**
    * Allow users to open the dialog.
