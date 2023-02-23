@@ -2,7 +2,7 @@ export type FieldValue = string | boolean | number | string[];
 
 export interface FormulaResultRaw {
   value?: FieldValue;
-  promise?: Promise<FieldValue>;
+  promise?: Promise<FormulaResultRaw>;
   additionalValues?: FieldValuePair[];
   openInDesigner?: boolean;
   stopFormula?: boolean | null;

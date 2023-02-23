@@ -228,7 +228,6 @@ export class FormulaDesignerService implements OnDestroy {
     item = item ?? this.itemService.getItem(entityGuid);
     var entity = item.Entity;
     var mdFor = entity.For;
-    debugger;
     const targetEntity: FormulaV1CtxTargetEntity = {
       guid: entity.Guid,
       id: entity.Id,
@@ -350,22 +349,18 @@ export class FormulaDesignerService implements OnDestroy {
   }
 
   private createPromises$() {
-    const promises$ = new BehaviorSubject<Promise<FieldValue | FormulaResultRaw>>(null);
-
+    const promises$ = new BehaviorSubject<Promise<FormulaResultRaw>>(null);
     this.subscription = promises$.pipe(
       tap(p => { console.log('SDV tap added', p); }),
       switchMap(promise => promise ? from(promise) : of(null)),
       tap(p => console.log('SDV tap resolved', p)),
     ).subscribe();
-
     return promises$;
   }
 
   private createUpdateCallback$() {
     const callback$ = new Subject<() => void>();
-
     this.subscription = callback$.subscribe();
-
     return callback$;
   }
 }

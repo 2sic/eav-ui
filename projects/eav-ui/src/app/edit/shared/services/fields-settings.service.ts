@@ -330,6 +330,11 @@ export class FieldsSettingsService implements OnDestroy {
           console.log(`This promise will loop formulas only once, if you want it to continue looping return stopFormula: false`);
         }
         formula.promises$.next(formulaResult.promise);
+        // formulaResult.promise.then((result: any) => {
+        //   console.log('SDV formulaResult.promise.then', result);
+        //   formula.updateCallback$.next(result);
+        //   // this.forceSettings();
+        // });
       }
 
       formula.stopFormula = formulaResult.stopFormula ?? true;
@@ -448,7 +453,8 @@ export class FieldsSettingsService implements OnDestroy {
           const formulaDefaultResult = (formula.fn as FormulaFunctionDefault)();
           const valueDefault = this.correctAllValues(formula.target, formulaDefaultResult, inputType);
           valueDefault.openInDesigner = isOpenInDesigner;
-          this.formulaDesignerService.sendFormulaResultToUi(formula.entityGuid, formula.fieldName, formula.target, valueDefault.value, false);
+          this.formulaDesignerService.sendFormulaResultToUi(
+            formula.entityGuid, formula.fieldName, formula.target, valueDefault.value, false);
           if (isOpenInDesigner) {
             console.log('Formula result:', valueDefault);
           }
@@ -477,34 +483,32 @@ export class FieldsSettingsService implements OnDestroy {
 
   private correctAllValues(target: FormulaTarget, formulaResultValue: FormulaResultRaw, inputType: InputType): FormulaResultRaw {
     const stopFormula = formulaResultValue?.stopFormula ?? null;
-    if (formulaResultValue === null || formulaResultValue === undefined) 
-      return { value: formulaResultValue as unknown as FieldValue, stopFormula: stopFormula };
+    if (formulaResultValue === null || formulaResultValue === undefined)
+      return { value: formulaResultValue as unknown as FieldValue, stopFormula };
     if (typeof formulaResultValue === 'object') {
-      if (formulaResultValue instanceof Date && target === FormulaTargets.Value) 
-        return { value: this.valueCorrection(formulaResultValue as unknown as FieldValue, inputType), stopFormula: stopFormula };
-      if (formulaResultValue instanceof Promise) 
-        return { value: undefined, promise: formulaResultValue as Promise<FieldValue>, stopFormula: stopFormula };
-      else {
-        const correctedValue: FormulaResultRaw = formulaResultValue;
-        correctedValue.stopFormula = stopFormula;
-        if (formulaResultValue.value && target === FormulaTargets.Value) {
-          correctedValue.value = this.valueCorrection(formulaResultValue.value, inputType);
-        }
-        if (formulaResultValue.additionalValues) {
-          correctedValue.additionalValues = formulaResultValue.additionalValues?.map((additionalValue) => {
-            additionalValue.value = this.valueCorrection(additionalValue.value, inputType);
-            return additionalValue;
-          });
-        }
+      if (formulaResultValue instanceof Date && target === FormulaTargets.Value)
+        return { value: this.valueCorrection(formulaResultValue as unknown as FieldValue, inputType), stopFormula };
+      if (formulaResultValue instanceof Promise)
+        return { value: undefined, promise: formulaResultValue as Promise<FormulaResultRaw>, stopFormula };
+
+      const correctedValue: FormulaResultRaw = formulaResultValue;
+      correctedValue.stopFormula = stopFormula;
+      if (formulaResultValue.value && target === FormulaTargets.Value) {
+        correctedValue.value = this.valueCorrection(formulaResultValue.value, inputType);
+      }
+      if (formulaResultValue.additionalValues) {
+        correctedValue.additionalValues = formulaResultValue.additionalValues?.map((additionalValue) => {
+          additionalValue.value = this.valueCorrection(additionalValue.value, inputType);
+          return additionalValue;
+        });
         return correctedValue;
       }
-    } else {
-      const value: FormulaResultRaw = { value: formulaResultValue as unknown as FieldValue };
-
-      // atm we are only correcting Value formulas
-      if (target === FormulaTargets.Value) { return { value: this.valueCorrection(value.value, inputType), stopFormula: stopFormula }; }
-      return value;
     }
+    const value: FormulaResultRaw = { value: formulaResultValue as unknown as FieldValue };
+
+    // atm we are only correcting Value formulas
+    if (target === FormulaTargets.Value) { return { value: this.valueCorrection(value.value, inputType), stopFormula }; }
+    return value;
   }
 
   private valueCorrection(value: FieldValue, inputType: InputType): FieldValue {

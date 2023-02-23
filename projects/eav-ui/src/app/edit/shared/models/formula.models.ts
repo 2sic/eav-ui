@@ -33,7 +33,7 @@ export interface FormulaCacheItem extends FormulaCacheItemShared {
   target: FormulaTarget;
   version: FormulaVersion;
   stopFormula: boolean;
-  promises$: BehaviorSubject<Promise<FieldValue | FormulaResultRaw>>;
+  promises$: BehaviorSubject<Promise<FormulaResultRaw>>;
   updateCallback$: Subject<() => void>;
 }
 
