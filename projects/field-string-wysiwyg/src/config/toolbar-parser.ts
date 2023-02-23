@@ -40,7 +40,7 @@ export class ToolbarParser {
     const editModeAdvanced = settings.editMode === EditModes.WysiwygAdvanced;
     const map = [
       { button: Buttons.Code, enabled: settings.buttons.source },
-      { button: Buttons.DialogOpen, enabled: settings.buttons.dialog },
+      { button: Buttons.DialogOpen, enabled: settings.buttons.dialog && settings.features.editInDialog },
       { button: Buttons.ModeAdvanced, enabled: settings.buttons.advanced && !editModeAdvanced },
       { button: Buttons.ModeDefault, enabled: editModeAdvanced },
       { button: Buttons.AddContentBlock, enabled: settings.features.contentBlocks },

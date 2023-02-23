@@ -21,6 +21,7 @@ const defaultConfigurationSet: WysiwygConfigurationSet = {
     contentSeparators: false,
     pasteFormatted: true,
     addImage: true,
+    editInDialog: true,
   },
   contextMenu: DefaultContextMenu.default,
   menubar: false,
@@ -86,6 +87,7 @@ export const ConfigurationPresets: Record<string, WysiwygConfigurationSet> = {
     features: {
       ...configurationText.features,
       pasteFormatted: false,
+      editInDialog: false,
     },
     editMode: 'text-plain',
     toolbar: DefaultToolbarConfig['text-plain'],

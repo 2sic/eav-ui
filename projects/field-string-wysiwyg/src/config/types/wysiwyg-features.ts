@@ -15,4 +15,11 @@ export interface WysiwygFeatures {
    * TODO: not implemented yet
    */
   addImage: boolean;
+
+  /**
+   * Allow users to open the dialog.
+   * By default it's possible to do this, and it shows the button for it as well.
+   * TODO: 
+   */
+  editInDialog: boolean;
 }

@@ -46,7 +46,7 @@ export const DefaultToolbarConfig = {
     /* format text      */ `bold ${Buttons.StylesGroup}`,
     /* paragraph types  */ NoButtons,
     /* bullets          */ 'numlist bullist outdent indent',
-    /* links/media      */ `${Buttons.LinkGroup}`,
+    /* links/media      */ `link ${Buttons.LinkPageButton}`,
     /* content block    */ NoButtons,
     /* tools/mode switch*/ standardGroupFinal,
   ],
