@@ -16,7 +16,7 @@ import { FieldLogicTools } from '../../form/shared/field-logic/field-logic-tools
 import { EntityReader, FieldsSettingsHelpers, FormulaHelpers, GeneralHelpers, InputFieldHelpers, ValidationHelpers } from '../helpers';
 // tslint:disable-next-line:max-line-length
 import { ContentTypeSettings, FieldsProps, FormulaCacheItem, FormulaFieldValidation, FormulaFunctionDefault, FormulaFunctionV1, FormulaTarget, FormulaTargets, FormulaVersions, FormValues, LogSeverities, RunFormulasResult, SettingsFormulaPrefix, TranslationState } from '../models';
-import { EavHeader } from '../models/eav';
+import { EavContentType, EavHeader } from '../models/eav';
 // tslint:disable-next-line:max-line-length
 import { ContentTypeService, GlobalConfigService, InputTypeService, ItemService, LanguageInstanceService, LanguageService } from '../store/ngrx-data';
 import { FormsStateService } from './forms-state.service';
@@ -32,6 +32,8 @@ export class FieldsSettingsService implements OnDestroy {
   private maxValueFormulaCycles = 5;
   private formulaSettingsCache: Record<string, FieldSettings> = {};
   private featuresCache$ = new BehaviorSubject<FeatureSummary[]>([]);
+  private updateValueQueue: Record<string, { possibleValueUpdates: FormValues, possibleAditionalValueUpdates: FieldValuePair[] }> = {};
+  private fieldsProps: FieldsProps = {};
 
   constructor(
     private contentTypeService: ContentTypeService,
@@ -151,7 +153,6 @@ export class FieldsSettingsService implements OnDestroy {
           }
 
           const fieldsProps: FieldsProps = {};
-          const valueUpdates: FormValues = {};
           const possibleValueUpdates: FormValues = {};
           const possibleAditionalValueUpdates: FieldValuePair[] = [];
           const logicTools: FieldLogicTools = {
@@ -160,6 +161,17 @@ export class FieldsSettingsService implements OnDestroy {
             debug: debugEnabled,
           };
           const slotIsEmpty = itemHeader.IsEmptyAllowed && itemHeader.IsEmpty;
+
+          if (this.updateValueQueue[entityGuid]?.possibleValueUpdates || this.updateValueQueue[entityGuid]?.possibleAditionalValueUpdates) {
+            this.applyValueChangesFromFormulas(
+              entityGuid, contentType, formValues, this.fieldsProps,
+              this.updateValueQueue[entityGuid].possibleValueUpdates,
+              this.updateValueQueue[entityGuid].possibleAditionalValueUpdates,
+              slotIsEmpty, entityReader
+            );
+            this.updateValueQueue[entityGuid] = { possibleValueUpdates: {}, possibleAditionalValueUpdates: [] };
+          }
+
           for (const attribute of contentType.Attributes) {
             const attributeValues = itemAttributes[attribute.Name];
             // empty-default and empty-message have no value
@@ -210,31 +222,12 @@ export class FieldsSettingsService implements OnDestroy {
               formulaValidation: formulaResult.validation,
             };
           }
+          this.fieldsProps = fieldsProps;
 
-          for (const attribute of contentType.Attributes) {
-            const possibleAditionalValueUpdatesForAttribute = possibleAditionalValueUpdates.filter(f => f.field === attribute.Name);
-            const valueBefore = formValues[attribute.Name];
-            const valueFromFormula = possibleValueUpdates[attribute.Name];
-            const aditionalValueFromFormula =
-              possibleAditionalValueUpdatesForAttribute[possibleAditionalValueUpdatesForAttribute.length - 1]?.value;
-            const newValue = aditionalValueFromFormula ? aditionalValueFromFormula : valueFromFormula;
-            if (this.shouldUpdate(valueBefore, newValue, slotIsEmpty, fieldsProps[attribute.Name].settings._disabledBecauseOfTranslation)) {
-              valueUpdates[attribute.Name] = newValue;
-            }
-          }
-
-          if (Object.keys(valueUpdates).length > 0) {
-            if (this.maxValueFormulaCycles > this.valueFormulaCounter) {
-              this.valueFormulaCounter++;
-              this.itemService.updateItemAttributesValues(
-                entityGuid, valueUpdates, entityReader.currentLanguage, entityReader.defaultLanguage
-              );
-              // return nothing to make sure fieldProps are not updated yet
-              return null;
-            } else {
-              consoleLogWebpack('Max value formula cycles reached');
-            }
-          }
+          this.applyValueChangesFromFormulas(
+            entityGuid, contentType, formValues, fieldsProps,
+            possibleValueUpdates, possibleAditionalValueUpdates,
+            slotIsEmpty, entityReader);
           this.valueFormulaCounter = 0;
           return fieldsProps;
         }),
@@ -243,6 +236,42 @@ export class FieldsSettingsService implements OnDestroy {
         this.fieldsProps$.next(fieldsProps);
       })
     );
+  }
+
+  private applyValueChangesFromFormulas(
+    entityGuid: string,
+    contentType: EavContentType,
+    formValues: FormValues,
+    fieldsProps: FieldsProps,
+    possibleValueUpdates: FormValues,
+    possibleAditionalValueUpdates: FieldValuePair[],
+    slotIsEmpty: boolean,
+    entityReader: EntityReader): void {
+    const valueUpdates: FormValues = {};
+    for (const attribute of contentType.Attributes) {
+      const possibleAditionalValueUpdatesForAttribute = possibleAditionalValueUpdates.filter(f => f.field === attribute.Name);
+      const valueBefore = formValues[attribute.Name];
+      const valueFromFormula = possibleValueUpdates[attribute.Name];
+      const aditionalValueFromFormula =
+        possibleAditionalValueUpdatesForAttribute[possibleAditionalValueUpdatesForAttribute.length - 1]?.value;
+      const newValue = aditionalValueFromFormula ? aditionalValueFromFormula : valueFromFormula;
+      if (this.shouldUpdate(valueBefore, newValue, slotIsEmpty, fieldsProps[attribute.Name]?.settings._disabledBecauseOfTranslation)) {
+        valueUpdates[attribute.Name] = newValue;
+      }
+    }
+
+    if (Object.keys(valueUpdates).length > 0) {
+      if (this.maxValueFormulaCycles > this.valueFormulaCounter) {
+        this.valueFormulaCounter++;
+        this.itemService.updateItemAttributesValues(
+          entityGuid, valueUpdates, entityReader.currentLanguage, entityReader.defaultLanguage
+        );
+        // return nothing to make sure fieldProps are not updated yet
+        return null;
+      } else {
+        consoleLogWebpack('Max value formula cycles reached');
+      }
+    }
   }
 
   getContentTypeSettings(): ContentTypeSettings {
@@ -330,14 +359,24 @@ export class FieldsSettingsService implements OnDestroy {
           console.log(`This promise will loop formulas only once, if you want it to continue looping return stopFormula: false`);
         }
         formula.promises$.next(formulaResult.promise);
-        // formulaResult.promise.then((result: any) => {
-        //   console.log('SDV formulaResult.promise.then', result);
-        //   formula.updateCallback$.next(result);
-        //   // this.forceSettings();
-        // });
+        if (!formula.updateCallback$.value)
+          formula.updateCallback$.next((result: FieldValue | FormulaResultRaw) => {
+            this.updateValueQueue[entityGuid] = { possibleValueUpdates: null, possibleAditionalValueUpdates: null };
+            const correctedValue = this.correctAllValues(formula.target, result, inputType);
+            if (!this.updateValueQueue[entityGuid])
+              this.updateValueQueue[entityGuid] = { possibleValueUpdates: {}, possibleAditionalValueUpdates: [] };
+            const possibleValueUpdates = this.updateValueQueue[entityGuid].possibleValueUpdates ?? {};
+            possibleValueUpdates[formula.fieldName] = correctedValue.value;
+            const possibleAditionalValueUpdates = this.updateValueQueue[entityGuid].possibleAditionalValueUpdates ?? [];
+            if (correctedValue.additionalValues)
+              possibleAditionalValueUpdates.push(...correctedValue.additionalValues);
+            this.updateValueQueue[entityGuid] = { possibleValueUpdates, possibleAditionalValueUpdates };
+            this.forceSettings();
+          });
+        formula.stopFormula = formulaResult.stopFormula ?? true;
+      } else {
+        formula.stopFormula = formulaResult.stopFormula ?? false;
       }
-
-      formula.stopFormula = formulaResult.stopFormula ?? true;
 
       if (formulaResult.additionalValues)
         formulaResultAdditionalValues.push(...formulaResult.additionalValues);
@@ -481,35 +520,73 @@ export class FieldsSettingsService implements OnDestroy {
     return isOpenInDesigner;
   }
 
-  private correctAllValues(target: FormulaTarget, formulaResultValue: FormulaResultRaw, inputType: InputType): FormulaResultRaw {
-    const stopFormula = formulaResultValue?.stopFormula ?? null;
+  private correctAllValues(
+    target: FormulaTarget,
+    formulaResultValue: FieldValue | FormulaResultRaw,
+    inputType: InputType): FormulaResultRaw {
+    const stopFormula = (formulaResultValue as FormulaResultRaw)?.stopFormula ?? null;
     if (formulaResultValue === null || formulaResultValue === undefined)
-      return { value: formulaResultValue as unknown as FieldValue, stopFormula };
+      return { value: formulaResultValue as FieldValue, additionalValues: [], stopFormula };
     if (typeof formulaResultValue === 'object') {
       if (formulaResultValue instanceof Date && target === FormulaTargets.Value)
-        return { value: this.valueCorrection(formulaResultValue as unknown as FieldValue, inputType), stopFormula };
+        return { value: this.valueCorrection(formulaResultValue as FieldValue, inputType), additionalValues: [], stopFormula };
       if (formulaResultValue instanceof Promise)
-        return { value: undefined, promise: formulaResultValue as Promise<FormulaResultRaw>, stopFormula };
+        return { value: undefined, promise: formulaResultValue as Promise<FormulaResultRaw>, additionalValues: [], stopFormula };
 
-      const correctedValue: FormulaResultRaw = formulaResultValue;
+      const correctedValue: FormulaResultRaw = (formulaResultValue as FormulaResultRaw);
       correctedValue.stopFormula = stopFormula;
-      if (formulaResultValue.value && target === FormulaTargets.Value) {
-        correctedValue.value = this.valueCorrection(formulaResultValue.value, inputType);
+      if ((formulaResultValue as FormulaResultRaw).value && target === FormulaTargets.Value) {
+        correctedValue.value = this.valueCorrection((formulaResultValue as FormulaResultRaw).value, inputType);
       }
-      if (formulaResultValue.additionalValues) {
-        correctedValue.additionalValues = formulaResultValue.additionalValues?.map((additionalValue) => {
+      if ((formulaResultValue as FormulaResultRaw).additionalValues) {
+        correctedValue.additionalValues = (formulaResultValue as FormulaResultRaw).additionalValues?.map((additionalValue) => {
           additionalValue.value = this.valueCorrection(additionalValue.value, inputType);
           return additionalValue;
         });
         return correctedValue;
       }
     }
-    const value: FormulaResultRaw = { value: formulaResultValue as unknown as FieldValue };
+    const value: FormulaResultRaw = { value: formulaResultValue as FieldValue };
 
     // atm we are only correcting Value formulas
-    if (target === FormulaTargets.Value) { return { value: this.valueCorrection(value.value, inputType), stopFormula }; }
+    if (target === FormulaTargets.Value) {
+      return { value: this.valueCorrection(value.value, inputType), additionalValues: [], stopFormula };
+    }
     return value;
   }
+
+  // private correctAllValues(
+  //   target: FormulaTarget,
+  //   formulaResultValue: /*FieldValue |*/ FormulaResultRaw,
+  //   inputType: InputType): FormulaResultRaw {
+  //   const stopFormula = formulaResultValue?.stopFormula ?? null;
+  //   if (formulaResultValue === null || formulaResultValue === undefined)
+  //     return { value: formulaResultValue as unknown as FieldValue, stopFormula };
+  //   if (typeof formulaResultValue === 'object') {
+  //     if (formulaResultValue instanceof Date && target === FormulaTargets.Value)
+  //       return { value: this.valueCorrection(formulaResultValue as unknown as FieldValue, inputType), stopFormula };
+  //     if (formulaResultValue instanceof Promise)
+  //       return { value: undefined, promise: formulaResultValue as Promise<FormulaResultRaw>, stopFormula };
+
+  //     const correctedValue: FormulaResultRaw = formulaResultValue;
+  //     correctedValue.stopFormula = stopFormula;
+  //     if (formulaResultValue.value && target === FormulaTargets.Value) {
+  //       correctedValue.value = this.valueCorrection(formulaResultValue.value, inputType);
+  //     }
+  //     if (formulaResultValue.additionalValues) {
+  //       correctedValue.additionalValues = formulaResultValue.additionalValues?.map((additionalValue) => {
+  //         additionalValue.value = this.valueCorrection(additionalValue.value, inputType);
+  //         return additionalValue;
+  //       });
+  //       return correctedValue;
+  //     }
+  //   }
+  //   const value: FormulaResultRaw = { value: formulaResultValue as unknown as FieldValue };
+
+  //   // atm we are only correcting Value formulas
+  //   if (target === FormulaTargets.Value) { return { value: this.valueCorrection(value.value, inputType), stopFormula }; }
+  //   return value;
+  // }
 
   private valueCorrection(value: FieldValue, inputType: InputType): FieldValue {
     if (value == null) {

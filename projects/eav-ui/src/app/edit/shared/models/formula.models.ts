@@ -34,14 +34,15 @@ export interface FormulaCacheItem extends FormulaCacheItemShared {
   version: FormulaVersion;
   stopFormula: boolean;
   promises$: BehaviorSubject<Promise<FormulaResultRaw>>;
-  updateCallback$: Subject<() => void>;
+  updateCallback$: BehaviorSubject<(result: FieldValue | FormulaResultRaw) => void>;
 }
 
 export type FormulaFunction = FormulaFunctionDefault | FormulaFunctionV1;
 
-export type FormulaFunctionDefault = () => FormulaResultRaw;
+export type FormulaFunctionDefault = () => FieldValue | FormulaResultRaw;
 
-export type FormulaFunctionV1 = (data: FormulaV1Data, context: FormulaV1Context, experimental: FormulaV1Experimental) => FormulaResultRaw;
+export type FormulaFunctionV1 = (data: FormulaV1Data, context: FormulaV1Context, experimental: FormulaV1Experimental)
+  => FieldValue | FormulaResultRaw;
 
 export const FormulaVersions = {
   V1: 'v1',
@@ -175,8 +176,6 @@ export interface FormulaV1Experimental {
    */
   getSettings(fieldName: string): FieldSettings;
   getValues(entityGuid: string): FormValues;
-  fieldAndValueWIP: Record<string, FieldValue>;
-  pushValueWIP(field: string, value: FieldValue): void;
 }
 
 // TODO: once the id is gone, merge with the type FormulaV1CtxTargetEntityType
