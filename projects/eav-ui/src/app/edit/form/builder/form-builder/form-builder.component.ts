@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { BaseSubsinkComponent } from 'projects/eav-ui/src/app/shared/components/base-subsink-component/base-subsink.component';
 import { combineLatest, distinctUntilChanged, map, startWith, Subscription } from 'rxjs';
 import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
+import { FormulaEngine } from '../../../formulas/formula-engine';
 import { GeneralHelpers, ValidationHelpers } from '../../../shared/helpers';
 import { FormValues, SxcAbstractControl } from '../../../shared/models';
 import { EavService, FieldsSettingsService, FieldsTranslateService, FormsStateService } from '../../../shared/services';
@@ -12,7 +13,7 @@ import { ItemService, LanguageInstanceService } from '../../../shared/store/ngrx
   selector: 'app-form-builder',
   templateUrl: './form-builder.component.html',
   styleUrls: ['./form-builder.component.scss'],
-  providers: [FieldsSettingsService, FieldsTranslateService],
+  providers: [FieldsSettingsService, FieldsTranslateService, FormulaEngine],
 })
 export class FormBuilderComponent extends BaseSubsinkComponent implements OnInit, OnDestroy {
   @Input() entityGuid: string;
