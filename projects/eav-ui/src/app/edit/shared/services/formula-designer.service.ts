@@ -363,7 +363,7 @@ export class FormulaDesignerService implements OnDestroy {
     const lastPromise = promises$.pipe(
       // tap(p => { console.log('SDV tap added', p); }),
       switchMap(promise => promise ? from(promise) : of(null)),
-      tap(p => console.log('SDV tap resolved', p)),
+      // tap(p => console.log('SDV tap resolved', p)),
     );
     this.subscription.add(combineLatest([lastPromise, callback$.pipe(filter(x => !!x))]).subscribe(
       ([result, callback]) => {

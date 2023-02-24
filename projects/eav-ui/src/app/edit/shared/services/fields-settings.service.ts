@@ -532,7 +532,6 @@ export class FieldsSettingsService implements OnDestroy {
         return { value: this.valueCorrection(formulaResultValue as FieldValue, inputType), additionalValues: [], stopFormula };
       if (formulaResultValue instanceof Promise)
         return { value: undefined, promise: formulaResultValue as Promise<FormulaResultRaw>, additionalValues: [], stopFormula };
-
       const correctedValue: FormulaResultRaw = (formulaResultValue as FormulaResultRaw);
       correctedValue.stopFormula = stopFormula;
       if ((formulaResultValue as FormulaResultRaw).value && target === FormulaTargets.Value) {
@@ -545,6 +544,7 @@ export class FieldsSettingsService implements OnDestroy {
         });
         return correctedValue;
       }
+      return correctedValue;
     }
     const value: FormulaResultRaw = { value: formulaResultValue as FieldValue };
 
@@ -554,39 +554,6 @@ export class FieldsSettingsService implements OnDestroy {
     }
     return value;
   }
-
-  // private correctAllValues(
-  //   target: FormulaTarget,
-  //   formulaResultValue: /*FieldValue |*/ FormulaResultRaw,
-  //   inputType: InputType): FormulaResultRaw {
-  //   const stopFormula = formulaResultValue?.stopFormula ?? null;
-  //   if (formulaResultValue === null || formulaResultValue === undefined)
-  //     return { value: formulaResultValue as unknown as FieldValue, stopFormula };
-  //   if (typeof formulaResultValue === 'object') {
-  //     if (formulaResultValue instanceof Date && target === FormulaTargets.Value)
-  //       return { value: this.valueCorrection(formulaResultValue as unknown as FieldValue, inputType), stopFormula };
-  //     if (formulaResultValue instanceof Promise)
-  //       return { value: undefined, promise: formulaResultValue as Promise<FormulaResultRaw>, stopFormula };
-
-  //     const correctedValue: FormulaResultRaw = formulaResultValue;
-  //     correctedValue.stopFormula = stopFormula;
-  //     if (formulaResultValue.value && target === FormulaTargets.Value) {
-  //       correctedValue.value = this.valueCorrection(formulaResultValue.value, inputType);
-  //     }
-  //     if (formulaResultValue.additionalValues) {
-  //       correctedValue.additionalValues = formulaResultValue.additionalValues?.map((additionalValue) => {
-  //         additionalValue.value = this.valueCorrection(additionalValue.value, inputType);
-  //         return additionalValue;
-  //       });
-  //       return correctedValue;
-  //     }
-  //   }
-  //   const value: FormulaResultRaw = { value: formulaResultValue as unknown as FieldValue };
-
-  //   // atm we are only correcting Value formulas
-  //   if (target === FormulaTargets.Value) { return { value: this.valueCorrection(value.value, inputType), stopFormula }; }
-  //   return value;
-  // }
 
   private valueCorrection(value: FieldValue, inputType: InputType): FieldValue {
     if (value == null) {
