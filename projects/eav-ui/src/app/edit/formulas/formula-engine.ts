@@ -92,7 +92,7 @@ export class FormulaEngine {
         }
         formula.stopFormula = formulaResult.stopFormula ?? true;
       } else {
-        formula.stopFormula = formulaResult.stopFormula ?? false;
+        formula.stopFormula = formulaResult.stopFormula ?? formula.stopFormula;
       }
 
       if (formulaResult.additionalValues)

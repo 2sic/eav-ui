@@ -231,42 +231,6 @@ export class FieldsSettingsService implements OnDestroy {
     );
   }
 
-  private applyValueChangesFromFormulas(
-    entityGuid: string,
-    contentType: EavContentType,
-    formValues: FormValues,
-    fieldsProps: FieldsProps,
-    possibleValueUpdates: FormValues,
-    possibleAditionalValueUpdates: FieldValuePair[],
-    slotIsEmpty: boolean,
-    entityReader: EntityReader): void {
-    const valueUpdates: FormValues = {};
-    for (const attribute of contentType.Attributes) {
-      const possibleAditionalValueUpdatesForAttribute = possibleAditionalValueUpdates.filter(f => f.field === attribute.Name);
-      const valueBefore = formValues[attribute.Name];
-      const valueFromFormula = possibleValueUpdates[attribute.Name];
-      const aditionalValueFromFormula =
-        possibleAditionalValueUpdatesForAttribute[possibleAditionalValueUpdatesForAttribute.length - 1]?.value;
-      const newValue = aditionalValueFromFormula ? aditionalValueFromFormula : valueFromFormula;
-      if (this.shouldUpdate(valueBefore, newValue, slotIsEmpty, fieldsProps[attribute.Name]?.settings._disabledBecauseOfTranslation)) {
-        valueUpdates[attribute.Name] = newValue;
-      }
-    }
-
-    if (Object.keys(valueUpdates).length > 0) {
-      if (this.maxValueFormulaCycles > this.valueFormulaCounter) {
-        this.valueFormulaCounter++;
-        this.itemService.updateItemAttributesValues(
-          entityGuid, valueUpdates, entityReader.currentLanguage, entityReader.defaultLanguage
-        );
-        // return nothing to make sure fieldProps are not updated yet
-        return null;
-      } else {
-        consoleLogWebpack('Max value formula cycles reached');
-      }
-    }
-  }
-
   getContentTypeSettings(): ContentTypeSettings {
     return this.contentTypeSettings$.value;
   }
@@ -303,6 +267,43 @@ export class FieldsSettingsService implements OnDestroy {
 
   forceSettings(): void {
     this.forceRefreshSettings$.next();
+  }
+
+
+  private applyValueChangesFromFormulas(
+    entityGuid: string,
+    contentType: EavContentType,
+    formValues: FormValues,
+    fieldsProps: FieldsProps,
+    possibleValueUpdates: FormValues,
+    possibleAditionalValueUpdates: FieldValuePair[],
+    slotIsEmpty: boolean,
+    entityReader: EntityReader): void {
+    const valueUpdates: FormValues = {};
+    for (const attribute of contentType.Attributes) {
+      const possibleAditionalValueUpdatesForAttribute = possibleAditionalValueUpdates.filter(f => f.field === attribute.Name);
+      const valueBefore = formValues[attribute.Name];
+      const valueFromFormula = possibleValueUpdates[attribute.Name];
+      const aditionalValueFromFormula =
+        possibleAditionalValueUpdatesForAttribute[possibleAditionalValueUpdatesForAttribute.length - 1]?.value;
+      const newValue = aditionalValueFromFormula ? aditionalValueFromFormula : valueFromFormula;
+      if (this.shouldUpdate(valueBefore, newValue, slotIsEmpty, fieldsProps[attribute.Name]?.settings._disabledBecauseOfTranslation)) {
+        valueUpdates[attribute.Name] = newValue;
+      }
+    }
+
+    if (Object.keys(valueUpdates).length > 0) {
+      if (this.maxValueFormulaCycles > this.valueFormulaCounter) {
+        this.valueFormulaCounter++;
+        this.itemService.updateItemAttributesValues(
+          entityGuid, valueUpdates, entityReader.currentLanguage, entityReader.defaultLanguage
+        );
+        // return nothing to make sure fieldProps are not updated yet
+        return null;
+      } else {
+        consoleLogWebpack('Max value formula cycles reached');
+      }
+    }
   }
 
   private shouldUpdate(
