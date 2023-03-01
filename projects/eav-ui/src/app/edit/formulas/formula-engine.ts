@@ -66,7 +66,7 @@ export class FormulaEngine {
     const formulaSettings: Record<string, any> = {};
     for (const formula of formulas) {
       const formulaResult = this.runFormula(formula, entityId, formValues, inputType, settings, previousSettings, itemHeader);
-      if (formulaResult.promise && formulaResult.promise instanceof Promise) {
+      if (formulaResult && formulaResult.promise && formulaResult.promise instanceof Promise) {
         if (formulaResult.openInDesigner && formulaResult.stopFormula === null) {
           // TODO: @2dm improve this message
           console.warn(`This promise will loop formulas only once, if you want it to continue looping return stopFormula: false`);
@@ -190,18 +190,38 @@ export class FormulaEngine {
     try {
       switch (formula.version) {
         case FormulaVersions.V1:
-        case FormulaVersions.V2:
           if (isOpenInDesigner) {
             console.log(`Running formula${formula.version.toLocaleUpperCase()} for Entity: "${ctSettings._itemTitle}", Field: "${formula.fieldName}", Target: "${formula.target}" with following arguments:`, formulaProps);
           }
           const formulaV1Result = (formula.fn as FormulaFunctionV1)(formulaProps.data, formulaProps.context, formulaProps.experimental);
-          const valueV1 = this.correctAllValues(formula.target, formulaV1Result, inputType);
-          valueV1.openInDesigner = isOpenInDesigner;
-          this.formulaDesignerService.sendFormulaResultToUi(formula.entityGuid, formula.fieldName, formula.target, valueV1.value, false);
+          const isArray = formulaV1Result && Array.isArray(formulaV1Result) && (formulaV1Result as any).every((r: any) => typeof r === 'string');
+          if (typeof formulaV1Result === 'string' || typeof formulaV1Result === 'number' || typeof formulaV1Result === 'boolean' || isArray || formulaV1Result === null) {
+            if (formula.target === FormulaTargets.Value) {
+              const valueV1 = { value: this.valueCorrection(formulaV1Result as FieldValue, inputType), additionalValues: [], stopFormula: null } as FormulaResultRaw;
+              valueV1.openInDesigner = isOpenInDesigner;
+              this.formulaDesignerService.sendFormulaResultToUi(formula.entityGuid, formula.fieldName, formula.target, valueV1.value, false);
+              if (isOpenInDesigner) {
+                console.log('Formula result:', valueV1);
+              }
+              return valueV1;
+            }
+            return { value: formulaV1Result, additionalValues: [], stopFormula: null } as FormulaResultRaw
+          } 
+          // TODO: @2dm improve this message
+          console.error("V1 formulas accept only simple values in return statements. If you need to return an complex object, use V2 formulas.");
+          return { value: undefined, additionalValues: [], stopFormula: null } as FormulaResultRaw;
+        case FormulaVersions.V2:
           if (isOpenInDesigner) {
-            console.log('Formula result:', valueV1.value);
+            console.log(`Running formula${formula.version.toLocaleUpperCase()} for Entity: "${ctSettings._itemTitle}", Field: "${formula.fieldName}", Target: "${formula.target}" with following arguments:`, formulaProps);
           }
-          return valueV1;
+          const formulaV2Result = (formula.fn as FormulaFunctionV1)(formulaProps.data, formulaProps.context, formulaProps.experimental);
+          const valueV2 = this.correctAllValues(formula.target, formulaV2Result, inputType);
+          valueV2.openInDesigner = isOpenInDesigner;
+          this.formulaDesignerService.sendFormulaResultToUi(formula.entityGuid, formula.fieldName, formula.target, valueV2.value, false);
+          if (isOpenInDesigner) {
+            console.log('Formula result:', valueV2.value);
+          }
+          return valueV2;
         default:
           if (isOpenInDesigner) {
             console.log(`Running formula for Entity: "${ctSettings._itemTitle}", Field: "${formula.fieldName}", Target: "${formula.target}" with following arguments:`, undefined);
