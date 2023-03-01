@@ -67,10 +67,9 @@ export class FormulaEngine {
     for (const formula of formulas) {
       const formulaResult = this.runFormula(formula, entityId, formValues, inputType, settings, previousSettings, itemHeader);
       if (formulaResult.promise && formulaResult.promise instanceof Promise) {
-        if (formulaResult.openInDesigner) {
-          // SDV TODO - only if stop is not set
+        if (formulaResult.openInDesigner && formulaResult.stopFormula === null) {
           // 2DM TODO - improve this message
-          console.log(`This promise will loop formulas only once, if you want it to continue looping return stopFormula: false`);
+          console.warn(`This promise will loop formulas only once, if you want it to continue looping return stopFormula: false`);
         }
         formula.promises$.next(formulaResult.promise);
         if (!formula.updateCallback$.value) {
