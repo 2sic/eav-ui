@@ -68,12 +68,12 @@ export class FormulaEngine {
       const formulaResult = this.runFormula(formula, entityId, formValues, inputType, settings, previousSettings, itemHeader);
       if (formulaResult.promise && formulaResult.promise instanceof Promise) {
         if (formulaResult.openInDesigner && formulaResult.stopFormula === null) {
-          // 2DM TODO - improve this message
+          // TODO: @2dm improve this message
           console.warn(`This promise will loop formulas only once, if you want it to continue looping return stopFormula: false`);
         }
         formula.promises$.next(formulaResult.promise);
         if (!formula.updateCallback$.value) {
-          // SDV todo - move queue from parent to here
+          // TODO: @SDV - move queue from parent to here
           const queue = this.fieldsSettingsService.updateValueQueue;
           formula.updateCallback$.next((result: FieldValue | FormulaResultRaw) => {
             queue[entityGuid] = { possibleValueUpdates: {}, possibleAditionalValueUpdates: [] };

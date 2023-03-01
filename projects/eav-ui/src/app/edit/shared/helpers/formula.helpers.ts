@@ -151,7 +151,7 @@ export class FormulaHelpers {
               ...formula.app,
               getSetting: (settingPath: string) => eavService.eavConfig.settings.Values[settingPath]
                 ?? `Error: Setting '${settingPath}' not found. Did you configure it in the ContentType to be included? ` +
-                   `See TODO: link to docs`,
+                `See TODO: link to docs`,
             },
             cache: formula.cache,
             culture: {
@@ -166,7 +166,14 @@ export class FormulaHelpers {
             },
             form: {
               runFormulas(): void {
-                fieldsSettingsService.forceSettings();
+                if (formula.version === FormulaVersions.V1) {
+                  // TODO: @2dm improve this message
+                  console.warn('form.runFormulas() is the deprecated way of running formulas, use V2 formulas instead with implemented promises in return statement');
+                  fieldsSettingsService.forceSettings();
+                } else if (formula.version === FormulaVersions.V2) {
+                  // TODO: @2dm improve this message
+                  console.error('form.runFormulas() is not supported in V2 formulas, instead use promise and stopFormula in return statement');
+                }
               },
             },
             // WIP v14.11 move sxc to cache like app - must watch a bit till ca. Dec 2022 to ensure caching is ok for this
