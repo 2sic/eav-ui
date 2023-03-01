@@ -77,7 +77,7 @@ export class FormulaEngine {
           // SDV todo - move queue from parent to here
           const queue = this.fieldsSettingsService.updateValueQueue;
           formula.updateCallback$.next((result: FieldValue | FormulaResultRaw) => {
-            queue[entityGuid] = { possibleValueUpdates: null, possibleAditionalValueUpdates: null };
+            queue[entityGuid] = { possibleValueUpdates: {}, possibleAditionalValueUpdates: [] };
             const correctedValue = this.correctAllValues(formula.target, result, inputType);
             if (!queue[entityGuid])
               queue[entityGuid] = { possibleValueUpdates: {}, possibleAditionalValueUpdates: [] };
@@ -87,6 +87,7 @@ export class FormulaEngine {
             if (correctedValue.additionalValues)
               possibleAditionalValueUpdates.push(...correctedValue.additionalValues);
             queue[entityGuid] = { possibleValueUpdates, possibleAditionalValueUpdates };
+            formula.stopFormula = correctedValue.stopFormula ?? formula.stopFormula;
             this.fieldsSettingsService.forceSettings();
           });
         }

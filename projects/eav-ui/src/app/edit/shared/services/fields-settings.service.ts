@@ -128,7 +128,7 @@ export class FieldsSettingsService implements OnDestroy {
           });
         });
       }));
-
+    
     this.subscription.add(
       combineLatest([
         contentType$, itemAttributes$, itemHeader$, entityReader$,
@@ -155,14 +155,19 @@ export class FieldsSettingsService implements OnDestroy {
 
           // SDV TODO move queue to formula engine
           const queue = this.updateValueQueue;
-          if (queue[entityGuid]?.possibleValueUpdates || queue[entityGuid]?.possibleAditionalValueUpdates) {
+          if (queue[entityGuid] && (Object.keys(queue[entityGuid]?.possibleValueUpdates).length !== 0 || queue[entityGuid]?.possibleAditionalValueUpdates.length !== 0)) {
+            const values = queue[entityGuid].possibleValueUpdates;
+            const additionalValues = queue[entityGuid].possibleAditionalValueUpdates;
+            queue[entityGuid] = { possibleValueUpdates: {}, possibleAditionalValueUpdates: [] };
             this.applyValueChangesFromFormulas(
               entityGuid, contentType, formValues, this.fieldsProps,
-              queue[entityGuid].possibleValueUpdates,
-              queue[entityGuid].possibleAditionalValueUpdates,
+              values,
+              additionalValues,
               slotIsEmpty, entityReader
             );
-            queue[entityGuid] = { possibleValueUpdates: {}, possibleAditionalValueUpdates: [] };
+            // we only updated values from promise, don't triger property updates
+            // NOTE: if any value changes then the entire cycle will automatically retrigger 
+            return null;
           }
 
           for (const attribute of contentType.Attributes) {
@@ -217,10 +222,13 @@ export class FieldsSettingsService implements OnDestroy {
           }
           this.fieldsProps = fieldsProps;
 
-          this.applyValueChangesFromFormulas(
+          const changesWereApplied = this.applyValueChangesFromFormulas(
             entityGuid, contentType, formValues, fieldsProps,
             possibleValueUpdates, possibleAditionalValueUpdates,
             slotIsEmpty, entityReader);
+          // if changes were applied do not trigger field property updates
+          if (changesWereApplied) return null;
+          // if no chnages were applied then we trigger field property updates and reset the loop counter
           this.valueFormulaCounter = 0;
           return fieldsProps;
         }),
@@ -278,7 +286,7 @@ export class FieldsSettingsService implements OnDestroy {
     possibleValueUpdates: FormValues,
     possibleAditionalValueUpdates: FieldValuePair[],
     slotIsEmpty: boolean,
-    entityReader: EntityReader): void {
+    entityReader: EntityReader): boolean {
     const valueUpdates: FormValues = {};
     for (const attribute of contentType.Attributes) {
       const possibleAditionalValueUpdatesForAttribute = possibleAditionalValueUpdates.filter(f => f.field === attribute.Name);
@@ -299,9 +307,10 @@ export class FieldsSettingsService implements OnDestroy {
           entityGuid, valueUpdates, entityReader.currentLanguage, entityReader.defaultLanguage
         );
         // return nothing to make sure fieldProps are not updated yet
-        return null;
+        return false;
       } else {
         consoleLogWebpack('Max value formula cycles reached');
+        return true;
       }
     }
   }

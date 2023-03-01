@@ -1,6 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { BehaviorSubject, combineLatest, distinctUntilChanged, filter, from, map, Observable, of, Subscription, switchMap } from 'rxjs';
+import { BehaviorSubject, combineLatest, distinctUntilChanged, filter, from, map, Observable, Subscription, switchMap } from 'rxjs';
 import { EavService, LoggingService } from '.';
 import { FieldSettings, FieldValue, FormulaResultRaw } from '../../../../../../edit-types';
 import { EavWindow } from '../../../shared/models/eav-window.model';
@@ -359,9 +359,8 @@ export class FormulaDesignerService implements OnDestroy {
     const promises$ = new BehaviorSubject<Promise<FieldValue | FormulaResultRaw>>(null);
     const callback$ = new BehaviorSubject<(result: FieldValue | FormulaResultRaw) => void>(null);
     const lastPromise = promises$.pipe(
-      // tap(p => { console.log('SDV tap added', p); }),
-      switchMap(promise => promise ? from(promise) : of(null)),
-      // tap(p => console.log('SDV tap resolved', p)),
+      filter(x => !!x),
+      switchMap(promise => from(promise)),
     );
     this.subscription.add(combineLatest([lastPromise, callback$.pipe(filter(x => !!x))]).subscribe(
       ([result, callback]) => {
