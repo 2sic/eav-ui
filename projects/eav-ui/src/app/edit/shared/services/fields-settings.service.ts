@@ -145,7 +145,7 @@ export class FieldsSettingsService implements OnDestroy {
 
           const fieldsProps: FieldsProps = {};
           const possibleValueUpdates: FormValues = {};
-          const possibleAditionalValueUpdates: FieldValuePair[] = [];
+          const possibleAdditionalValueUpdates: FieldValuePair[] = [];
           const logicTools: FieldLogicTools = {
             eavConfig: this.eavService.eavConfig,
             entityReader,
@@ -165,7 +165,7 @@ export class FieldsSettingsService implements OnDestroy {
               additionalValues,
               slotIsEmpty, entityReader
             );
-            // we only updated values from promise, don't triger property updates
+            // we only updated values from promise, don't trigger property updates
             // NOTE: if any value changes then the entire cycle will automatically retrigger 
             return null;
           }
@@ -203,7 +203,7 @@ export class FieldsSettingsService implements OnDestroy {
 
             possibleValueUpdates[attribute.Name] = formulaResult.value;
             if (formulaResult.additionalValues)
-              possibleAditionalValueUpdates.push(...formulaResult.additionalValues);
+              possibleAdditionalValueUpdates.push(...formulaResult.additionalValues);
 
             const fieldTranslation = FieldsSettingsHelpers.getTranslationState(
               attributeValues, fixed.DisableTranslation, entityReader.currentLanguage, entityReader.defaultLanguage,
@@ -224,11 +224,11 @@ export class FieldsSettingsService implements OnDestroy {
 
           const changesWereApplied = this.applyValueChangesFromFormulas(
             entityGuid, contentType, formValues, fieldsProps,
-            possibleValueUpdates, possibleAditionalValueUpdates,
+            possibleValueUpdates, possibleAdditionalValueUpdates,
             slotIsEmpty, entityReader);
           // if changes were applied do not trigger field property updates
           if (changesWereApplied) return null;
-          // if no chnages were applied then we trigger field property updates and reset the loop counter
+          // if no changes were applied then we trigger field property updates and reset the loop counter
           this.valueFormulaCounter = 0;
           return fieldsProps;
         }),
@@ -284,17 +284,17 @@ export class FieldsSettingsService implements OnDestroy {
     formValues: FormValues,
     fieldsProps: FieldsProps,
     possibleValueUpdates: FormValues,
-    possibleAditionalValueUpdates: FieldValuePair[],
+    possibleAdditionalValueUpdates: FieldValuePair[],
     slotIsEmpty: boolean,
     entityReader: EntityReader): boolean {
     const valueUpdates: FormValues = {};
     for (const attribute of contentType.Attributes) {
-      const possibleAditionalValueUpdatesForAttribute = possibleAditionalValueUpdates.filter(f => f.field === attribute.Name);
+      const possibleAdditionalValueUpdatesForAttribute = possibleAdditionalValueUpdates.filter(f => f.field === attribute.Name);
       const valueBefore = formValues[attribute.Name];
       const valueFromFormula = possibleValueUpdates[attribute.Name];
-      const aditionalValueFromFormula =
-        possibleAditionalValueUpdatesForAttribute[possibleAditionalValueUpdatesForAttribute.length - 1]?.value;
-      const newValue = aditionalValueFromFormula ? aditionalValueFromFormula : valueFromFormula;
+      const additionalValueFromFormula =
+        possibleAdditionalValueUpdatesForAttribute[possibleAdditionalValueUpdatesForAttribute.length - 1]?.value;
+      const newValue = additionalValueFromFormula ? additionalValueFromFormula : valueFromFormula;
       if (this.shouldUpdate(valueBefore, newValue, slotIsEmpty, fieldsProps[attribute.Name]?.settings._disabledBecauseOfTranslation)) {
         valueUpdates[attribute.Name] = newValue;
       }
