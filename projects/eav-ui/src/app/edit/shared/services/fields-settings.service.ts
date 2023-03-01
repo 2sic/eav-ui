@@ -27,7 +27,7 @@ export class FieldsSettingsService implements OnDestroy {
   private valueFormulaCounter = 0;
   private maxValueFormulaCycles = 5;
   private featuresCache$ = new BehaviorSubject<FeatureSummary[]>([]);
-  public updateValueQueue: Record<string, { possibleValueUpdates: FormValues, possibleAditionalValueUpdates: FieldValuePair[] }> = {};
+  public updateValueQueue: Record<string, { possibleValueUpdates: FormValues, possibleAdditionalValueUpdates: FieldValuePair[] }> = {};
   private fieldsProps: FieldsProps = {};
 
   constructor(
@@ -42,7 +42,7 @@ export class FieldsSettingsService implements OnDestroy {
     private formulaEngine: FormulaEngine,
   ) {
     formulaEngine.init(this, this.featuresCache$, this.contentTypeSettings$);
-   }
+  }
 
   ngOnDestroy(): void {
     this.contentTypeSettings$?.complete();
@@ -128,7 +128,7 @@ export class FieldsSettingsService implements OnDestroy {
           });
         });
       }));
-    
+
     this.subscription.add(
       combineLatest([
         contentType$, itemAttributes$, itemHeader$, entityReader$,
@@ -155,10 +155,10 @@ export class FieldsSettingsService implements OnDestroy {
 
           // SDV TODO move queue to formula engine
           const queue = this.updateValueQueue;
-          if (queue[entityGuid] && (Object.keys(queue[entityGuid]?.possibleValueUpdates).length !== 0 || queue[entityGuid]?.possibleAditionalValueUpdates.length !== 0)) {
+          if (queue[entityGuid] && (Object.keys(queue[entityGuid]?.possibleValueUpdates).length !== 0 || queue[entityGuid]?.possibleAdditionalValueUpdates.length !== 0)) {
             const values = queue[entityGuid].possibleValueUpdates;
-            const additionalValues = queue[entityGuid].possibleAditionalValueUpdates;
-            queue[entityGuid] = { possibleValueUpdates: {}, possibleAditionalValueUpdates: [] };
+            const additionalValues = queue[entityGuid].possibleAdditionalValueUpdates;
+            queue[entityGuid] = { possibleValueUpdates: {}, possibleAdditionalValueUpdates: [] };
             this.applyValueChangesFromFormulas(
               entityGuid, contentType, formValues, this.fieldsProps,
               values,
