@@ -3,9 +3,7 @@ import { consoleLogWebpack } from 'projects/field-custom-gps/src/shared/console-
 import { BehaviorSubject, combineLatest, distinctUntilChanged, filter, map, Observable, Subscription } from 'rxjs';
 import { EavService } from '.';
 import { FieldSettings, FieldValue, FieldValuePair } from '../../../../../../edit-types';
-import { FeatureSummary } from '../../../features/models';
 import { consoleLogAngular } from '../../../shared/helpers/console-log-angular.helper';
-import { FeaturesService } from '../../../shared/services/features.service';
 import { FieldLogicManager } from '../../form/shared/field-logic/field-logic-manager';
 import { FieldLogicTools } from '../../form/shared/field-logic/field-logic-tools';
 import { FormulaEngine } from '../../formulas/formula-engine';
@@ -26,7 +24,6 @@ export class FieldsSettingsService implements OnDestroy {
   private subscription: Subscription;
   private valueFormulaCounter = 0;
   private maxValueFormulaCycles = 5;
-  private featuresCache$ = new BehaviorSubject<FeatureSummary[]>([]);
   public updateValueQueue: Record<string, { possibleValueUpdates: FormValues, possibleAdditionalValueUpdates: FieldValuePair[] }> = {};
   private fieldsProps: FieldsProps = {};
 
@@ -38,10 +35,9 @@ export class FieldsSettingsService implements OnDestroy {
     private inputTypeService: InputTypeService,
     private globalConfigService: GlobalConfigService,
     private formsStateService: FormsStateService,
-    private featuresService: FeaturesService,
     private formulaEngine: FormulaEngine,
   ) {
-    formulaEngine.init(this, this.featuresCache$, this.contentTypeSettings$);
+    formulaEngine.init(this, this.contentTypeSettings$);
   }
 
   ngOnDestroy(): void {
@@ -59,9 +55,6 @@ export class FieldsSettingsService implements OnDestroy {
     const contentTypeId = InputFieldHelpers.getContentTypeId(item);
     const contentType$ = this.contentTypeService.getContentType$(contentTypeId);
     const itemHeader$ = this.itemService.getItemHeader$(entityGuid);
-
-    // TODO: SDV move to formula engine and check for subscription and destroy
-    this.subscription.add(this.featuresService.getAll$().subscribe(this.featuresCache$));
     const entityReader$ = this.languageInstanceService.getEntityReader$(this.eavService.eavConfig.formId);
 
     this.subscription.add(
@@ -153,24 +146,11 @@ export class FieldsSettingsService implements OnDestroy {
           };
           const slotIsEmpty = itemHeader.IsEmptyAllowed && itemHeader.IsEmpty;
 
-          // SDV TODO move queue to formula engine
-          const queue = this.updateValueQueue;
-          if (queue[entityGuid]
-              && (Object.keys(queue[entityGuid]?.possibleValueUpdates).length !== 0
-              || queue[entityGuid]?.possibleAdditionalValueUpdates.length !== 0)) {
-            const values = queue[entityGuid].possibleValueUpdates;
-            const additionalValues = queue[entityGuid].possibleAdditionalValueUpdates;
-            queue[entityGuid] = { possibleValueUpdates: {}, possibleAdditionalValueUpdates: [] };
-            this.applyValueChangesFromFormulas(
-              entityGuid, contentType, formValues, this.fieldsProps,
-              values,
-              additionalValues,
-              slotIsEmpty, entityReader
-            );
-            // we only updated values from promise, don't trigger property updates
-            // NOTE: if any value changes then the entire cycle will automatically retrigger
-            return null;
-          }
+          const areValuesFromPromiseUpdated = this.formulaEngine.updateValuesFromQueue(
+            entityGuid, this.updateValueQueue, contentType, formValues, this.fieldsProps, slotIsEmpty, entityReader);
+          // we only updated values from promise, don't trigger property updates
+          // NOTE: if any value changes then the entire cycle will automatically retrigger
+          if (areValuesFromPromiseUpdated) return null;
 
           for (const attribute of contentType.Attributes) {
             const attributeValues = itemAttributes[attribute.Name];
@@ -280,7 +260,7 @@ export class FieldsSettingsService implements OnDestroy {
   }
 
 
-  private applyValueChangesFromFormulas(
+  applyValueChangesFromFormulas(
     entityGuid: string,
     contentType: EavContentType,
     formValues: FormValues,

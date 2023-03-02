@@ -1,22 +1,24 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { FieldSettings, FieldValue, FieldValuePair, FormulaResultRaw } from 'projects/edit-types';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { DataTypeConstants } from '../../content-type-fields/constants/data-type.constants';
 import { InputTypeConstants } from '../../content-type-fields/constants/input-type.constants';
 import { InputType } from '../../content-type-fields/models/input-type.model';
 import { FeatureSummary } from '../../features/models';
-import { FormulaHelpers } from '../shared/helpers';
+import { FeaturesService } from '../../shared/services/features.service';
+import { EntityReader, FormulaHelpers } from '../shared/helpers';
 // tslint:disable-next-line: max-line-length
-import { ContentTypeSettings, FormulaCacheItem, FormulaFieldValidation, FormulaFunctionDefault, FormulaFunctionV1, FormulaTarget, FormulaTargets, FormulaVersions, FormValues, LogSeverities, RunFormulasResult, SettingsFormulaPrefix } from '../shared/models';
-import { EavHeader } from '../shared/models/eav';
+import { ContentTypeSettings, FieldsProps, FormulaCacheItem, FormulaFieldValidation, FormulaFunctionDefault, FormulaFunctionV1, FormulaTarget, FormulaTargets, FormulaVersions, FormValues, LogSeverities, RunFormulasResult, SettingsFormulaPrefix } from '../shared/models';
+import { EavContentType, EavHeader } from '../shared/models/eav';
 import { EavService, EditInitializerService, FieldsSettingsService, FormulaDesignerService, LoggingService } from '../shared/services';
 import { GlobalConfigService, ItemService, LanguageInstanceService, LanguageService } from '../shared/store/ngrx-data';
 
 @Injectable()
-export class FormulaEngine {
+export class FormulaEngine implements OnDestroy {
+  private subscription: Subscription = new Subscription();
   private formulaSettingsCache: Record<string, FieldSettings> = {};
-  private featuresCache$: BehaviorSubject<FeatureSummary[]>;
+  private featuresCache$ = new BehaviorSubject<FeatureSummary[]>([]);
   private contentTypeSettings$: BehaviorSubject<ContentTypeSettings>;
   private fieldsSettingsService: FieldsSettingsService = null;
 
@@ -30,15 +32,42 @@ export class FormulaEngine {
     private translate: TranslateService,
     private globalConfigService: GlobalConfigService,
     private editInitializerService: EditInitializerService,
+    private featuresService: FeaturesService,
   ) { }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
 
   init(
     fieldsSettingsService: FieldsSettingsService,
-    featuresCache$: BehaviorSubject<FeatureSummary[]>,
     contentTypeSettings$: BehaviorSubject<ContentTypeSettings>) {
     this.fieldsSettingsService = fieldsSettingsService;
-    this.featuresCache$ = featuresCache$;
     this.contentTypeSettings$ = contentTypeSettings$;
+    this.subscription.add(this.featuresService.getAll$().subscribe(this.featuresCache$));
+  }
+
+  updateValuesFromQueue(
+    entityGuid: string,
+    queue: Record<string, { possibleValueUpdates: FormValues, possibleAdditionalValueUpdates: FieldValuePair[] }>,
+    contentType: EavContentType,
+    formValues: FormValues,
+    fieldsProps: FieldsProps,
+    slotIsEmpty: boolean,
+    entityReader: EntityReader
+  ): boolean {
+    if (queue[entityGuid]
+      && (Object.keys(queue[entityGuid]?.possibleValueUpdates).length !== 0
+        || queue[entityGuid]?.possibleAdditionalValueUpdates.length !== 0)) {
+      const values = queue[entityGuid].possibleValueUpdates;
+      const additionalValues = queue[entityGuid].possibleAdditionalValueUpdates;
+      queue[entityGuid] = { possibleValueUpdates: {}, possibleAdditionalValueUpdates: [] };
+      this.fieldsSettingsService.applyValueChangesFromFormulas(
+        entityGuid, contentType, formValues, fieldsProps, values, additionalValues, slotIsEmpty, entityReader
+      );
+      return true;
+    }
+    return false;
   }
 
   runFormulas(
@@ -73,7 +102,6 @@ export class FormulaEngine {
         }
         formula.promises$.next(formulaResult.promise);
         if (!formula.updateCallback$.value) {
-          // TODO: @SDV - move queue from parent to here
           const queue = this.fieldsSettingsService.updateValueQueue;
           formula.updateCallback$.next((result: FieldValue | FormulaResultRaw) => {
             queue[entityGuid] = { possibleValueUpdates: {}, possibleAdditionalValueUpdates: [] };
