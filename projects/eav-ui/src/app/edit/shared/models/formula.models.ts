@@ -202,6 +202,7 @@ export interface FormulaResult {
   target: FormulaTarget;
   value: FieldValue;
   isError: boolean;
+  isOnlyPromise: boolean;
 }
 
 export interface DesignerState {

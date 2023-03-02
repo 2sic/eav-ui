@@ -89,7 +89,7 @@ export class FormulaDesignerService implements OnDestroy {
       try {
         formulaFunction = FormulaHelpers.buildFormulaFunction(formula);
       } catch (error) {
-        this.sendFormulaResultToUi(entityGuid, fieldName, target, undefined, true);
+        this.sendFormulaResultToUi(entityGuid, fieldName, target, undefined, true, false);
         const item = this.itemService.getItem(entityGuid);
         const contentTypeId = InputFieldHelpers.getContentTypeId(item);
         const contentType = this.contentTypeService.getContentType(contentTypeId);
@@ -185,13 +185,16 @@ export class FormulaDesignerService implements OnDestroy {
     }
   }
 
-  sendFormulaResultToUi(entityGuid: string, fieldName: string, target: FormulaTarget, value: FieldValue, isError: boolean): void {
+  sendFormulaResultToUi(
+    entityGuid: string, fieldName: string, target: FormulaTarget, value: FieldValue, isError: boolean, isOnlyPromise: boolean
+  ): void {
     const newResult: FormulaResult = {
       entityGuid,
       fieldName,
       target,
       value,
       isError,
+      isOnlyPromise,
     };
 
     const oldResults = this.formulaResults$.value;
@@ -318,7 +321,7 @@ export class FormulaDesignerService implements OnDestroy {
           try {
             formulaFunction = FormulaHelpers.buildFormulaFunction(formula);
           } catch (error) {
-            this.sendFormulaResultToUi(entityGuid, attribute.Name, target, undefined, true);
+            this.sendFormulaResultToUi(entityGuid, attribute.Name, target, undefined, true, false);
             const itemTitle = FieldsSettingsHelpers.getContentTypeTitle(contentType, currentLanguage, defaultLanguage);
             this.loggingService.addLog(LogSeverities.Error, `Error building formula for Entity: "${itemTitle}", Field: "${attribute.Name}", Target: "${target}"`, error);
             this.loggingService.showMessage(this.translate.instant('Errors.FormulaConfiguration'), 2000);

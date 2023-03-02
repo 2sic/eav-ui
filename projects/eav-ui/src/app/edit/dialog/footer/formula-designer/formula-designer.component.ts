@@ -392,6 +392,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
           result: result?.value,
           resultExists: result != null,
           resultIsError: result?.isError ?? false,
+          resultIsOnlyPromise: result?.isOnlyPromise ?? false,
           saving,
         };
         return templateVars;

@@ -206,7 +206,7 @@ export class FormulaEngine {
               } as FormulaResultRaw;
               valueV1.openInDesigner = isOpenInDesigner;
               this.formulaDesignerService.sendFormulaResultToUi(
-                formula.entityGuid, formula.fieldName, formula.target, valueV1.value, false);
+                formula.entityGuid, formula.fieldName, formula.target, valueV1.value, false, false);
               if (isOpenInDesigner) {
                 console.log('Formula result:', valueV1);
               }
@@ -226,9 +226,10 @@ export class FormulaEngine {
           valueV2.openInDesigner = isOpenInDesigner;
           if (valueV2.value === undefined && valueV2.promise)
             this.formulaDesignerService.sendFormulaResultToUi(
-              formula.entityGuid, formula.fieldName, formula.target, 'promise(🤞🏽)', false);
+              formula.entityGuid, formula.fieldName, formula.target, null, false, true);
           else
-            this.formulaDesignerService.sendFormulaResultToUi(formula.entityGuid, formula.fieldName, formula.target, valueV2.value, false);
+            this.formulaDesignerService.sendFormulaResultToUi(
+              formula.entityGuid, formula.fieldName, formula.target, valueV2.value, false, false);
           if (isOpenInDesigner) {
             console.log('Formula result:', valueV2.value);
           }
@@ -241,7 +242,7 @@ export class FormulaEngine {
           const valueDefault = this.correctAllValues(formula.target, formulaDefaultResult, inputType);
           valueDefault.openInDesigner = isOpenInDesigner;
           this.formulaDesignerService.sendFormulaResultToUi(
-            formula.entityGuid, formula.fieldName, formula.target, valueDefault.value, false);
+            formula.entityGuid, formula.fieldName, formula.target, valueDefault.value, false, false);
           if (isOpenInDesigner) {
             console.log('Formula result:', valueDefault);
           }
@@ -249,7 +250,7 @@ export class FormulaEngine {
       }
     } catch (error) {
       const errorLabel = `Error in formula calculation for Entity: "${ctSettings._itemTitle}", Field: "${formula.fieldName}", Target: "${formula.target}"`;
-      this.formulaDesignerService.sendFormulaResultToUi(formula.entityGuid, formula.fieldName, formula.target, undefined, true);
+      this.formulaDesignerService.sendFormulaResultToUi(formula.entityGuid, formula.fieldName, formula.target, undefined, true, false);
       this.loggingService.addLog(LogSeverities.Error, errorLabel, error);
       if (isOpenInDesigner) {
         console.error(errorLabel, error);

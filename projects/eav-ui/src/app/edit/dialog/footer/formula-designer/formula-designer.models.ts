@@ -13,6 +13,8 @@ export interface FormulaDesignerTemplateVars {
   result: FieldValue;
   resultExists: boolean;
   resultIsError: boolean;
+  // currently used only for UI to know when to display Result: promise(...)
+  resultIsOnlyPromise: boolean;
   saving: boolean;
 }
 
