@@ -308,13 +308,14 @@ export class FieldsSettingsService implements OnDestroy {
         this.itemService.updateItemAttributesValues(
           entityGuid, valueUpdates, entityReader.currentLanguage, entityReader.defaultLanguage
         );
-        // return nothing to make sure fieldProps are not updated yet
-        return false;
+        // return true to make sure fieldProps are not updated yet
+        return true;
       } else {
         consoleLogWebpack('Max value formula cycles reached');
-        return true;
+        return false;
       }
     }
+    return false;
   }
 
   private shouldUpdate(
