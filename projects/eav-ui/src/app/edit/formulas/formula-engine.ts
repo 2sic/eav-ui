@@ -85,7 +85,7 @@ export class FormulaEngine {
             const possibleAdditionalValueUpdates = queue[entityGuid].possibleAdditionalValueUpdates ?? [];
             if (correctedValue.additionalValues)
               possibleAdditionalValueUpdates.push(...correctedValue.additionalValues);
-            queue[entityGuid] = { possibleValueUpdates, possibleAdditionalValueUpdates: possibleAdditionalValueUpdates };
+            queue[entityGuid] = { possibleValueUpdates, possibleAdditionalValueUpdates };
             formula.stopFormula = correctedValue.stopFormula ?? formula.stopFormula;
             this.fieldsSettingsService.forceSettings();
           });
@@ -195,20 +195,27 @@ export class FormulaEngine {
           }
           const formulaV1Result = (formula.fn as FormulaFunctionV1)(formulaProps.data, formulaProps.context, formulaProps.experimental);
           const isArray = formulaV1Result && Array.isArray(formulaV1Result) && (formulaV1Result as any).every((r: any) => typeof r === 'string');
-          if (typeof formulaV1Result === 'string' || typeof formulaV1Result === 'number' || typeof formulaV1Result === 'boolean' || isArray || formulaV1Result === null) {
+          if (typeof formulaV1Result === 'string'
+            || typeof formulaV1Result === 'number'
+            || typeof formulaV1Result === 'boolean'
+            || isArray
+            || formulaV1Result === null) {
             if (formula.target === FormulaTargets.Value) {
-              const valueV1 = { value: this.valueCorrection(formulaV1Result as FieldValue, inputType), additionalValues: [], stopFormula: null } as FormulaResultRaw;
+              const valueV1 = {
+                value: this.valueCorrection(formulaV1Result as FieldValue, inputType), additionalValues: [], stopFormula: null
+              } as FormulaResultRaw;
               valueV1.openInDesigner = isOpenInDesigner;
-              this.formulaDesignerService.sendFormulaResultToUi(formula.entityGuid, formula.fieldName, formula.target, valueV1.value, false);
+              this.formulaDesignerService.sendFormulaResultToUi(
+                formula.entityGuid, formula.fieldName, formula.target, valueV1.value, false);
               if (isOpenInDesigner) {
                 console.log('Formula result:', valueV1);
               }
               return valueV1;
             }
-            return { value: formulaV1Result, additionalValues: [], stopFormula: null } as FormulaResultRaw
-          } 
+            return { value: formulaV1Result, additionalValues: [], stopFormula: null } as FormulaResultRaw;
+          }
           // TODO: @2dm improve this message
-          console.error("V1 formulas accept only simple values in return statements. If you need to return an complex object, use V2 formulas.");
+          console.error('V1 formulas accept only simple values in return statements. If you need to return an complex object, use V2 formulas.');
           return { value: undefined, additionalValues: [], stopFormula: null } as FormulaResultRaw;
         case FormulaVersions.V2:
           if (isOpenInDesigner) {
@@ -217,7 +224,11 @@ export class FormulaEngine {
           const formulaV2Result = (formula.fn as FormulaFunctionV1)(formulaProps.data, formulaProps.context, formulaProps.experimental);
           const valueV2 = this.correctAllValues(formula.target, formulaV2Result, inputType);
           valueV2.openInDesigner = isOpenInDesigner;
-          this.formulaDesignerService.sendFormulaResultToUi(formula.entityGuid, formula.fieldName, formula.target, valueV2.value, false);
+          if (valueV2.value === undefined && valueV2.promise)
+            this.formulaDesignerService.sendFormulaResultToUi(
+              formula.entityGuid, formula.fieldName, formula.target, 'promise(🤞🏽)', false);
+          else
+            this.formulaDesignerService.sendFormulaResultToUi(formula.entityGuid, formula.fieldName, formula.target, valueV2.value, false);
           if (isOpenInDesigner) {
             console.log('Formula result:', valueV2.value);
           }

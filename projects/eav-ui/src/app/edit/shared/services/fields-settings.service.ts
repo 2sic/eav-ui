@@ -155,7 +155,9 @@ export class FieldsSettingsService implements OnDestroy {
 
           // SDV TODO move queue to formula engine
           const queue = this.updateValueQueue;
-          if (queue[entityGuid] && (Object.keys(queue[entityGuid]?.possibleValueUpdates).length !== 0 || queue[entityGuid]?.possibleAdditionalValueUpdates.length !== 0)) {
+          if (queue[entityGuid]
+              && (Object.keys(queue[entityGuid]?.possibleValueUpdates).length !== 0
+              || queue[entityGuid]?.possibleAdditionalValueUpdates.length !== 0)) {
             const values = queue[entityGuid].possibleValueUpdates;
             const additionalValues = queue[entityGuid].possibleAdditionalValueUpdates;
             queue[entityGuid] = { possibleValueUpdates: {}, possibleAdditionalValueUpdates: [] };
@@ -166,7 +168,7 @@ export class FieldsSettingsService implements OnDestroy {
               slotIsEmpty, entityReader
             );
             // we only updated values from promise, don't trigger property updates
-            // NOTE: if any value changes then the entire cycle will automatically retrigger 
+            // NOTE: if any value changes then the entire cycle will automatically retrigger
             return null;
           }
 

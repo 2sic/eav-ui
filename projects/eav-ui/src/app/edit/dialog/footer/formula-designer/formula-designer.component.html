@@ -88,7 +88,8 @@
         <ng-container *ngIf="data.resultExists">
           <ng-container *ngIf="!data.resultIsError">
             <span *ngIf="data.result === undefined" class="result-undefined">undefined</span>
-            <span *ngIf="data.result !== undefined">{{ data.result | json }}</span>
+            <span *ngIf="data.result === 'promise(🤞🏽)'">promise(🤞🏽)</span>
+            <span *ngIf="data.result !== undefined && data.result !== 'promise(🤞🏽)'">{{ data.result | json }}</span>
           </ng-container>
           <span class="result-error" *ngIf="data.resultIsError">
             Calculation failed. Please check logs for more info
