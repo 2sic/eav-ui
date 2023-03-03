@@ -148,7 +148,7 @@ export class FieldsSettingsService implements OnDestroy {
 
           const areValuesFromPromiseUpdated = this.formulaEngine.updateValuesFromQueue(
             entityGuid, this.updateValueQueue, contentType, formValues, this.fieldsProps, slotIsEmpty, entityReader);
-          // we only updated values from promise, don't trigger property updates
+          // we only updated values from promise (queue), don't trigger property regular updates
           // NOTE: if any value changes then the entire cycle will automatically retrigger
           if (areValuesFromPromiseUpdated) return null;
 
@@ -291,7 +291,7 @@ export class FieldsSettingsService implements OnDestroy {
         // return true to make sure fieldProps are not updated yet
         return true;
       } else {
-        consoleLogWebpack('Max value formula cycles reached');
+        // consoleLogWebpack('Max value formula cycles reached');
         return false;
       }
     }

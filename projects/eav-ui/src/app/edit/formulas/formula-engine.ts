@@ -227,7 +227,7 @@ export class FormulaEngine implements OnDestroy {
             || typeof formulaV1Result === 'number'
             || typeof formulaV1Result === 'boolean'
             || isArray
-            || formulaV1Result === null) {
+            || !formulaV1Result) {
             if (formula.target === FormulaTargets.Value) {
               const valueV1 = {
                 value: this.valueCorrection(formulaV1Result as FieldValue, inputType), additionalValues: [], stopFormula: null

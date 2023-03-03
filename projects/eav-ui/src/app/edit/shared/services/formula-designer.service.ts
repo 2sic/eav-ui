@@ -365,6 +365,7 @@ export class FormulaDesignerService implements OnDestroy {
       filter(x => !!x),
       switchMap(promise => from(promise)),
     );
+    // This combineLatest triggers the callback for the first time when the last promise is resolved
     this.subscription.add(combineLatest([lastPromise, callback$.pipe(filter(x => !!x))]).subscribe(
       ([result, callback]) => {
         callback(result);
