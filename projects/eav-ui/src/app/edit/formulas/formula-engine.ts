@@ -230,9 +230,9 @@ export class FormulaEngine implements OnDestroy {
             || !formulaV1Result) {
             if (formula.target === FormulaTargets.Value) {
               const valueV1 = {
-                value: this.valueCorrection(formulaV1Result as FieldValue, inputType), additionalValues: [], stopFormula: null
+                value: this.valueCorrection(formulaV1Result as FieldValue, inputType),
+                additionalValues: [], stopFormula: null, openInDesigner: isOpenInDesigner
               } as FormulaResultRaw;
-              valueV1.openInDesigner = isOpenInDesigner;
               this.formulaDesignerService.sendFormulaResultToUi(
                 formula.entityGuid, formula.fieldName, formula.target, valueV1.value, false, false);
               if (isOpenInDesigner) {
@@ -240,11 +240,14 @@ export class FormulaEngine implements OnDestroy {
               }
               return valueV1;
             }
-            return { value: formulaV1Result, additionalValues: [], stopFormula: null } as FormulaResultRaw;
+            return {
+              value: formulaV1Result, additionalValues: [],
+              stopFormula: null, openInDesigner: isOpenInDesigner
+            } as FormulaResultRaw;
           }
           // TODO: @2dm improve this message
           console.error('V1 formulas accept only simple values in return statements. If you need to return an complex object, use V2 formulas.');
-          return { value: undefined, additionalValues: [], stopFormula: null } as FormulaResultRaw;
+          return { value: undefined, additionalValues: [], stopFormula: null, openInDesigner: isOpenInDesigner } as FormulaResultRaw;
         case FormulaVersions.V2:
           if (isOpenInDesigner) {
             console.log(`Running formula${formula.version.toLocaleUpperCase()} for Entity: "${ctSettings._itemTitle}", Field: "${formula.fieldName}", Target: "${formula.target}" with following arguments:`, formulaProps);
@@ -285,6 +288,7 @@ export class FormulaEngine implements OnDestroy {
       } else {
         this.loggingService.showMessage(this.translate.instant('Errors.FormulaCalculation'), 2000);
       }
+      return { value: undefined, additionalValues: [], stopFormula: null, openInDesigner: isOpenInDesigner } as FormulaResultRaw;
     }
   }
 
