@@ -149,9 +149,17 @@ export class FormulaHelpers {
           context: {
             app: {
               ...formula.app,
-              getSetting: (settingPath: string) => eavService.eavConfig.settings.Values[settingPath]
-                ?? `Error: Setting '${settingPath}' not found. Did you configure it in the ContentType to be included? ` +
-                `See TODO: link to docs`,
+              getSetting: (settingPath: string) => {
+                if (formula.version === FormulaVersions.V1) {
+                  console.warn('app.getSetting() is not available in v1 formulas, please use v2.');
+                  return '⚠️ error - see console';
+                }
+                const result = eavService.eavConfig.settings.Values[settingPath];
+                if (result != null) return result;
+                console.warn(`Error: Setting '${settingPath}' not found. Did you configure it in the ContentType to be included? ` +
+                  `See TODO: link to docs`);
+                return '⚠️ error - see console';
+              },
             },
             cache: formula.cache,
             culture: {
@@ -167,12 +175,10 @@ export class FormulaHelpers {
             form: {
               runFormulas(): void {
                 if (formula.version === FormulaVersions.V1) {
-                  // TODO: @2dm improve this message
-                  console.warn('form.runFormulas() is the deprecated way of running formulas, use V2 formulas instead with implemented promises in return statement');
+                  console.warn('form.runFormulas() is being deprecated. Use V2 formulas and return the promise. Formulas will auto-run when it completes.');
                   fieldsSettingsService.forceSettings();
                 } else if (formula.version === FormulaVersions.V2) {
-                  // TODO: @2dm improve this message
-                  console.error('form.runFormulas() is not supported in V2 formulas, instead use promise and stopFormula in return statement');
+                  console.error('form.runFormulas() is not supported in V2 formulas. Just return the promise. Formulas will auto-run when it completes.');
                 }
               },
             },
