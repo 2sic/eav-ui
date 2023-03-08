@@ -87,7 +87,8 @@
         <span class="label">Result:&nbsp;</span>
         <ng-container *ngIf="data.resultExists">
           <ng-container *ngIf="!data.resultIsError">
-            <span *ngIf="data.result === undefined" class="result-undefined">undefined</span>
+            <span *ngIf="data.result === undefined && !data.resultIsOnlyPromise" class="result-undefined">undefined</span>
+            <span *ngIf="data.result === undefined && data.resultIsOnlyPromise">promise(🤞🏽)</span>
             <span *ngIf="data.result !== undefined">{{ data.result | json }}</span>
           </ng-container>
           <span class="result-error" *ngIf="data.resultIsError">

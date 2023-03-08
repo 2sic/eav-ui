@@ -44,7 +44,7 @@ export class GlobalConfigService extends BaseDataService<GlobalConfig> {
   toggleDebugEnabled(): void {
     const oldConfig = this.cache$.value[0];
     if (!oldConfig.allowDebugMode) {
-      this.snackBar.open('You do not have permissions to enter debug mode', null, { duration: 3000 });
+      this.snackBar.open('You do not have permissions to enter developer mode', null, { duration: 3000 });
       return;
     }
 
@@ -53,6 +53,6 @@ export class GlobalConfigService extends BaseDataService<GlobalConfig> {
       debugEnabled: !oldConfig.debugEnabled,
     };
     this.updateOneInCache(newConfig);
-    this.snackBar.open(newConfig.debugEnabled ? 'Debug mode enabled' : 'Debug mode disabled', null, { duration: 3000 });
+    this.snackBar.open(newConfig.debugEnabled ? 'developer mode on' : 'developer mode off', null, { duration: 3000 });
   }
 }

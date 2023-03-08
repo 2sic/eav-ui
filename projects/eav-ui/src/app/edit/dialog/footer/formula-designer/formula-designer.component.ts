@@ -109,7 +109,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
 
   formulaChanged(formula: string): void {
     const designer = this.formulaDesignerService.getDesignerState();
-    this.formulaDesignerService.upsertFormula(designer.entityGuid, designer.fieldName, designer.target, formula, false);
+    this.formulaDesignerService.updateFormulaFromEditor(designer.entityGuid, designer.fieldName, designer.target, formula, false);
   }
 
   onFocused(): void {
@@ -135,7 +135,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     if (designer.editMode) {
       const formula = this.formulaDesignerService.getFormula(designer.entityGuid, designer.fieldName, designer.target, true);
       if (formula == null) {
-        this.formulaDesignerService.upsertFormula(designer.entityGuid, designer.fieldName, designer.target, defaultFormulaNow, false);
+        this.formulaDesignerService.updateFormulaFromEditor(designer.entityGuid, designer.fieldName, designer.target, defaultFormulaNow, false);
       }
     }
   }
@@ -155,7 +155,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
   run(): void {
     const designer = this.formulaDesignerService.getDesignerState();
     const formula = this.formulaDesignerService.getFormula(designer.entityGuid, designer.fieldName, designer.target, true);
-    this.formulaDesignerService.upsertFormula(designer.entityGuid, designer.fieldName, designer.target, formula.source, true);
+    this.formulaDesignerService.updateFormulaFromEditor(designer.entityGuid, designer.fieldName, designer.target, formula.source, true);
     this.formBuilderRefs
       .find(formBuilderRef => formBuilderRef.entityGuid === designer.entityGuid)
       .fieldsSettingsService.forceSettings();
@@ -392,6 +392,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
           result: result?.value,
           resultExists: result != null,
           resultIsError: result?.isError ?? false,
+          resultIsOnlyPromise: result?.isOnlyPromise ?? false,
           saving,
         };
         return templateVars;

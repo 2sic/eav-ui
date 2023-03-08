@@ -149,9 +149,17 @@ export class FormulaHelpers {
           context: {
             app: {
               ...formula.app,
-              getSetting: (settingPath: string) => eavService.eavConfig.settings.Values[settingPath]
-                ?? `Error: Setting '${settingPath}' not found. Did you configure it in the ContentType to be included? ` +
-                   `See TODO: link to docs`,
+              getSetting: (settingPath: string) => {
+                if (formula.version === FormulaVersions.V1) {
+                  console.warn('app.getSetting() is not available in v1 formulas, please use v2.');
+                  return '⚠️ error - see console';
+                }
+                const result = eavService.eavConfig.settings.Values[settingPath];
+                if (result != null) return result;
+                console.warn(`Error: Setting '${settingPath}' not found. Did you configure it in the ContentType to be included? ` +
+                  `See TODO: link to docs`);
+                return '⚠️ error - see console';
+              },
             },
             cache: formula.cache,
             culture: {
@@ -166,7 +174,12 @@ export class FormulaHelpers {
             },
             form: {
               runFormulas(): void {
-                fieldsSettingsService.forceSettings();
+                if (formula.version === FormulaVersions.V1) {
+                  console.warn('form.runFormulas() is being deprecated. Use V2 formulas and return the promise. Formulas will auto-run when it completes.');
+                  fieldsSettingsService.forceSettings();
+                } else if (formula.version === FormulaVersions.V2) {
+                  console.error('form.runFormulas() is not supported in V2 formulas. Just return the promise. Formulas will auto-run when it completes.');
+                }
               },
             },
             // WIP v14.11 move sxc to cache like app - must watch a bit till ca. Dec 2022 to ensure caching is ok for this
@@ -208,7 +221,7 @@ export class FormulaHelpers {
                 values[fieldName] = LocalizationHelpers.translate(currentLanguage, defaultLanguage, fieldValues, null);
               }
               return values;
-            },
+            }
           }
         };
         return propsV1;
@@ -260,7 +273,6 @@ export class FormulaHelpers {
           'culture.code',
           'culture.name',
           'debug',
-          'features.get(\'NameId\')',
           'features.isEnabled(\'NameId\')',
           'form.runFormulas()',
           'sxc.ChangeThis',
@@ -290,15 +302,58 @@ export class FormulaHelpers {
     switch (formula.version) {
       case FormulaVersions.V2: {
         const formulaPropsParameters = this.buildFormulaPropsParameters(itemHeader);
-        const allFields = fieldOptions.map(f => `${f.fieldName}: any;`).join('\n');
-        const allParameters = Object.keys(formulaPropsParameters).map(key => `${key}: any;`).join('\n');
-        const final = editorTypesForIntellisense
-          .replace('/* [inject:AllFields] */', allFields)
-          .replace('/* [inject:AllParameters] */', allParameters);
-
-        // console.error('test 2dm', final);
-        return final;
-
+        return `
+          declare type function v2(
+            callback: (
+              data: {
+                value: any;
+                default: any;
+                prefill: any;
+                initial: any;
+                ${fieldOptions.map(f => `${f.fieldName}: any;`).join('\n')}
+                parameters: {
+                  ${Object.keys(formulaPropsParameters).map(key => `${key}: any;`).join('\n')}
+                };
+              },
+              context: {
+                app: {
+                  appId: number;
+                  zoneId: number;
+                  isGlobal: boolean;
+                  isSite: boolean;
+                  isContent: boolean;
+                };
+                cache: Record<string, any>;
+                culture: {
+                  code: string;
+                  name: string;
+                };
+                debug: boolean;
+                features: {
+                  isEnabled(nameId: string): boolean;
+                };
+                form: {
+                  runFormulas(): void;
+                };
+                sxc: Record<string, any>;
+                target: {
+                  entity: {
+                    id: number;
+                    guid: string;
+                  };
+                  name: string;
+                  type: string;
+                };
+                user: {
+                  id: number;
+                  isAnonymous: boolean;
+                  isSiteAdmin: boolean;
+                  isSystemAdmin: boolean;
+                };
+              },
+            ) => any,
+          ): void;
+        `;
         // TODO: probably update the entity-type info which was added in v14.07.05
       }
       default:

@@ -70,6 +70,13 @@ declare interface FormulaContext {
     isSite: boolean;
     /** Determines if the current App is a content App */
     isContent: boolean;
+    /**
+     * Retrieve a setting like an App setting.
+     * You need the full path like `Settings.ShowCategories`.
+     * 
+     * Important: For security reasons formulas will only get settings which where configured in the ContentType for use in Formulas.
+     */
+    getSetting(settingPath: string): string;
   };
   /**
    * Cache for this formula. You can store any data here and it will be available in the next run.
@@ -87,11 +94,11 @@ declare interface FormulaContext {
    * API to detect what features are currently enabled/available
    */
   features: {
-    /**
-     * Get internal information about a feature if it's available. This is rarely used.
-     * @param nameId The name of the feature, eg. `PasteImageFromClipboard`
-     */
-    get(nameId: string): Record<string, any>;
+    // /**
+    //  * Get internal information about a feature if it's available. This is rarely used.
+    //  * @param nameId The name of the feature, eg. `PasteImageFromClipboard`
+    //  */
+    // get(nameId: string): Record<string, any>;
     /** Find out if the feature is enabled. Eg. `...isEnabled('PasteImageFromClipboard')` */
     isEnabled(nameId: string): boolean;
   };

@@ -1,8 +1,8 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { BehaviorSubject, distinctUntilChanged, map, Observable } from 'rxjs';
+import { BehaviorSubject, combineLatest, distinctUntilChanged, filter, from, map, Observable, Subscription, switchMap } from 'rxjs';
 import { EavService, LoggingService } from '.';
-import { FieldSettings, FieldValue } from '../../../../../../edit-types';
+import { FieldSettings, FieldValue, FormulaResultRaw } from '../../../../../../edit-types';
 import { EavWindow } from '../../../shared/models/eav-window.model';
 import { EntityReader, FieldsSettingsHelpers, FormulaHelpers, GeneralHelpers, InputFieldHelpers, LocalizationHelpers } from '../helpers';
 import { DesignerState, FormulaCacheItem, FormulaFunction, FormulaResult, FormulaTarget, FormulaV1CtxTargetEntity, LogSeverities } from '../models';
@@ -16,6 +16,7 @@ export class FormulaDesignerService implements OnDestroy {
   private formulaCache$: BehaviorSubject<FormulaCacheItem[]>;
   private formulaResults$: BehaviorSubject<FormulaResult[]>;
   private designerState$: BehaviorSubject<DesignerState>;
+  private subscription = new Subscription();
 
   constructor(
     private eavService: EavService,
@@ -31,6 +32,7 @@ export class FormulaDesignerService implements OnDestroy {
     this.formulaCache$?.complete();
     this.formulaResults$?.complete();
     this.designerState$?.complete();
+    this.subscription.unsubscribe();
   }
 
   init(): void {
@@ -81,13 +83,13 @@ export class FormulaDesignerService implements OnDestroy {
     return this.formulaCache$.asObservable();
   }
 
-  upsertFormula(entityGuid: string, fieldName: string, target: FormulaTarget, formula: string, run: boolean): void {
+  updateFormulaFromEditor(entityGuid: string, fieldName: string, target: FormulaTarget, formula: string, run: boolean): void {
     let formulaFunction: FormulaFunction;
     if (run) {
       try {
         formulaFunction = FormulaHelpers.buildFormulaFunction(formula);
       } catch (error) {
-        this.upsertFormulaResult(entityGuid, fieldName, target, undefined, true);
+        this.sendFormulaResultToUi(entityGuid, fieldName, target, undefined, true, false);
         const item = this.itemService.getItem(entityGuid);
         const contentTypeId = InputFieldHelpers.getContentTypeId(item);
         const contentType = this.contentTypeService.getContentType(contentTypeId);
@@ -114,6 +116,11 @@ export class FormulaDesignerService implements OnDestroy {
     // Get shared calculated properties, which we need in case the old-formula doesn't have them yet
     const shared = this.buildItemFormulaCacheSharedParts(null, entityGuid);
 
+
+    const streams = (oldFormulaItem?.promises$ && oldFormulaItem?.updateCallback$)
+      ? { promises$: oldFormulaItem.promises$, callback$: oldFormulaItem.updateCallback$ }
+      : this.createPromisedParts();
+
     const newFormulaItem: FormulaCacheItem = {
       cache: oldFormulaItem?.cache ?? {},
       entityGuid,
@@ -130,6 +137,9 @@ export class FormulaDesignerService implements OnDestroy {
       user: oldFormulaItem?.user ?? shared.user, // new 14.07.05
       app: oldFormulaItem?.app ?? shared.app,    // new in v14.07.05
       sxc: oldFormulaItem?.sxc ?? shared.sxc,    // new in 14.11
+      stopFormula: false,
+      promises$: oldFormulaItem?.promises$ ?? streams.promises$,
+      updateCallback$: oldFormulaItem?.updateCallback$ ?? streams.callback$,
     };
 
     const newCache = oldFormulaIndex >= 0
@@ -168,20 +178,23 @@ export class FormulaDesignerService implements OnDestroy {
     const oldFormulaItem = oldFormulaCache[oldFormulaIndex];
 
     if (oldFormulaItem?.sourceFromSettings != null) {
-      this.upsertFormula(entityGuid, fieldName, target, oldFormulaItem.sourceFromSettings, true);
+      this.updateFormulaFromEditor(entityGuid, fieldName, target, oldFormulaItem.sourceFromSettings, true);
     } else if (oldFormulaIndex >= 0) {
       const newCache = [...oldFormulaCache.slice(0, oldFormulaIndex), ...oldFormulaCache.slice(oldFormulaIndex + 1)];
       this.formulaCache$.next(newCache);
     }
   }
 
-  upsertFormulaResult(entityGuid: string, fieldName: string, target: FormulaTarget, value: FieldValue, isError: boolean): void {
+  sendFormulaResultToUi(
+    entityGuid: string, fieldName: string, target: FormulaTarget, value: FieldValue, isError: boolean, isOnlyPromise: boolean
+  ): void {
     const newResult: FormulaResult = {
       entityGuid,
       fieldName,
       target,
       value,
       isError,
+      isOnlyPromise,
     };
 
     const oldResults = this.formulaResults$.value;
@@ -223,7 +236,6 @@ export class FormulaDesignerService implements OnDestroy {
     item = item ?? this.itemService.getItem(entityGuid);
     var entity = item.Entity;
     var mdFor = entity.For;
-    debugger;
     const targetEntity: FormulaV1CtxTargetEntity = {
       guid: entity.Guid,
       id: entity.Id,
@@ -309,11 +321,13 @@ export class FormulaDesignerService implements OnDestroy {
           try {
             formulaFunction = FormulaHelpers.buildFormulaFunction(formula);
           } catch (error) {
-            this.upsertFormulaResult(entityGuid, attribute.Name, target, undefined, true);
+            this.sendFormulaResultToUi(entityGuid, attribute.Name, target, undefined, true, false);
             const itemTitle = FieldsSettingsHelpers.getContentTypeTitle(contentType, currentLanguage, defaultLanguage);
             this.loggingService.addLog(LogSeverities.Error, `Error building formula for Entity: "${itemTitle}", Field: "${attribute.Name}", Target: "${target}"`, error);
             this.loggingService.showMessage(this.translate.instant('Errors.FormulaConfiguration'), 2000);
           }
+
+          const streams = this.createPromisedParts();
 
           const formulaCacheItem: FormulaCacheItem = {
             cache: {},
@@ -331,6 +345,9 @@ export class FormulaDesignerService implements OnDestroy {
             user: sharedParts.user,   // new in v14.07.05
             app: sharedParts.app,   // new in v14.07.05
             sxc: sharedParts.sxc,   // put in shared in 14.11
+            stopFormula: false,
+            promises$: streams.promises$,
+            updateCallback$: streams.callback$,
           };
 
           formulaCache.push(formulaCacheItem);
@@ -339,5 +356,22 @@ export class FormulaDesignerService implements OnDestroy {
     }
 
     return formulaCache;
+  }
+
+  private createPromisedParts() {
+    const promises$ = new BehaviorSubject<Promise<FieldValue | FormulaResultRaw>>(null);
+    const callback$ = new BehaviorSubject<(result: FieldValue | FormulaResultRaw) => void>(null);
+    const lastPromise = promises$.pipe(
+      filter(x => !!x),
+      switchMap(promise => from(promise)),
+    );
+    // This combineLatest triggers the callback for the first time when the last promise is resolved
+    this.subscription.add(combineLatest([lastPromise, callback$.pipe(filter(x => !!x))]).subscribe(
+      ([result, callback]) => {
+        callback(result);
+      },
+    ));
+
+    return { promises$, callback$ };
   }
 }
