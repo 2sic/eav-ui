@@ -257,7 +257,7 @@ export class FormulaEngine implements OnDestroy {
           valueV2.openInDesigner = isOpenInDesigner;
           if (valueV2.value === undefined && valueV2.promise)
             this.formulaDesignerService.sendFormulaResultToUi(
-              formula.entityGuid, formula.fieldName, formula.target, null, false, true);
+              formula.entityGuid, formula.fieldName, formula.target, undefined, false, true);
           else
             this.formulaDesignerService.sendFormulaResultToUi(
               formula.entityGuid, formula.fieldName, formula.target, valueV2.value, false, false);
