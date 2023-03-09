@@ -272,7 +272,7 @@ export class FieldsSettingsService implements OnDestroy {
     entityReader: EntityReader): boolean {
     const valueUpdates: FormValues = {};
     for (const attribute of contentType.Attributes) {
-      const possibleFieldsUpdatesForAttribute = possibleFieldsUpdates.filter(f => f.field === attribute.Name);
+      const possibleFieldsUpdatesForAttribute = possibleFieldsUpdates.filter(f => f.name === attribute.Name);
       const valueBefore = formValues[attribute.Name];
       const valueFromFormula = possibleValueUpdates[attribute.Name];
       const fieldsFromFormula =

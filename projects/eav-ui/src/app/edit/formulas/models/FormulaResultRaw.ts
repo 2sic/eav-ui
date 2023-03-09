@@ -9,6 +9,6 @@ export interface FormulaResultRaw {
 }
 
 export interface FieldValuePair {
-  field: string;
+  name: string;
   value: FieldValue;
 }
