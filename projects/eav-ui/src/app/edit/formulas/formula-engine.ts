@@ -52,7 +52,7 @@ export class FormulaEngine implements OnDestroy {
 
   updateValuesFromQueue(
     entityGuid: string,
-    queue: Record<string, { possibleValueUpdates: FormValues, possibleAdditionalValueUpdates: FieldValuePair[] }>,
+    queue: Record<string, { possibleValueUpdates: FormValues, possibleFieldsUpdates: FieldValuePair[] }>,
     contentType: EavContentType,
     formValues: FormValues,
     fieldsProps: FieldsProps,
@@ -61,12 +61,12 @@ export class FormulaEngine implements OnDestroy {
   ): boolean {
     if (queue[entityGuid]
       && (Object.keys(queue[entityGuid]?.possibleValueUpdates).length !== 0
-        || queue[entityGuid]?.possibleAdditionalValueUpdates.length !== 0)) {
+        || queue[entityGuid]?.possibleFieldsUpdates.length !== 0)) {
       const values = queue[entityGuid].possibleValueUpdates;
-      const additionalValues = queue[entityGuid].possibleAdditionalValueUpdates;
-      queue[entityGuid] = { possibleValueUpdates: {}, possibleAdditionalValueUpdates: [] };
+      const fields = queue[entityGuid].possibleFieldsUpdates;
+      queue[entityGuid] = { possibleValueUpdates: {}, possibleFieldsUpdates: [] };
       this.fieldsSettingsService.applyValueChangesFromFormulas(
-        entityGuid, contentType, formValues, fieldsProps, values, additionalValues, slotIsEmpty, entityReader
+        entityGuid, contentType, formValues, fieldsProps, values, fields, slotIsEmpty, entityReader
       );
       return true;
     }
@@ -94,39 +94,39 @@ export class FormulaEngine implements OnDestroy {
       .filter(f => !f.stopFormula);
     let formulaValue: FieldValue;
     let formulaValidation: FormulaFieldValidation;
-    const formulaResultAdditionalValues: FieldValuePair[] = [];
+    const formulaResultFields: FieldValuePair[] = [];
     const formulaSettings: Record<string, any> = {};
     for (const formula of formulas) {
       const formulaResult = this.runFormula(formula, entityId, formValues, inputType, settings, previousSettings, itemHeader);
       if (formulaResult && formulaResult.promise && formulaResult.promise instanceof Promise) {
-        if (formulaResult.openInDesigner && formulaResult.stopFormula === null) {
+        if (formulaResult.openInDesigner && formulaResult.stop === null) {
           console.log(`FYI: formula returned a promise. This automatically stops this formula from running again. If you want it to continue running, return stop: false`);
         }
         formula.promises$.next(formulaResult.promise);
         if (!formula.updateCallback$.value) {
           const queue = this.fieldsSettingsService.updateValueQueue;
           formula.updateCallback$.next((result: FieldValue | FormulaResultRaw) => {
-            queue[entityGuid] = { possibleValueUpdates: {}, possibleAdditionalValueUpdates: [] };
+            queue[entityGuid] = { possibleValueUpdates: {}, possibleFieldsUpdates: [] };
             const correctedValue = this.correctAllValues(formula.target, result, inputType);
             if (!queue[entityGuid])
-              queue[entityGuid] = { possibleValueUpdates: {}, possibleAdditionalValueUpdates: [] };
+              queue[entityGuid] = { possibleValueUpdates: {}, possibleFieldsUpdates: [] };
             const possibleValueUpdates = queue[entityGuid].possibleValueUpdates ?? {};
             possibleValueUpdates[formula.fieldName] = correctedValue.value;
-            const possibleAdditionalValueUpdates = queue[entityGuid].possibleAdditionalValueUpdates ?? [];
-            if (correctedValue.additionalValues)
-              possibleAdditionalValueUpdates.push(...correctedValue.additionalValues);
-            queue[entityGuid] = { possibleValueUpdates, possibleAdditionalValueUpdates };
-            formula.stopFormula = correctedValue.stopFormula ?? formula.stopFormula;
+            const possibleFieldsUpdates = queue[entityGuid].possibleFieldsUpdates ?? [];
+            if (correctedValue.fields)
+              possibleFieldsUpdates.push(...correctedValue.fields);
+            queue[entityGuid] = { possibleValueUpdates, possibleFieldsUpdates: possibleFieldsUpdates };
+            formula.stopFormula = correctedValue.stop ?? formula.stopFormula;
             this.fieldsSettingsService.forceSettings();
           });
         }
-        formula.stopFormula = formulaResult.stopFormula ?? true;
+        formula.stopFormula = formulaResult.stop ?? true;
       } else {
-        formula.stopFormula = formulaResult.stopFormula ?? formula.stopFormula;
+        formula.stopFormula = formulaResult.stop ?? formula.stopFormula;
       }
 
-      if (formulaResult.additionalValues)
-        formulaResultAdditionalValues.push(...formulaResult.additionalValues);
+      if (formulaResult.fields)
+        formulaResultFields.push(...formulaResult.fields);
 
       if (formulaResult.value === undefined) { continue; }
 
@@ -174,7 +174,7 @@ export class FormulaEngine implements OnDestroy {
       },
       validation: formulaValidation,
       value: formulaValue,
-      additionalValues: formulaResultAdditionalValues,
+      fields: formulaResultFields,
     };
     return runFormulaResult;
   }
@@ -233,7 +233,7 @@ export class FormulaEngine implements OnDestroy {
             if (formula.target === FormulaTargets.Value) {
               const valueV1 = {
                 value: this.valueCorrection(formulaV1Result as FieldValue, inputType),
-                additionalValues: [], stopFormula: null, openInDesigner: isOpenInDesigner
+                fields: [], stop: null, openInDesigner: isOpenInDesigner
               } as FormulaResultRaw;
               this.formulaDesignerService.sendFormulaResultToUi(
                 formula.entityGuid, formula.fieldName, formula.target, valueV1.value, false, false);
@@ -243,12 +243,12 @@ export class FormulaEngine implements OnDestroy {
               return valueV1;
             }
             return {
-              value: formulaV1Result, additionalValues: [],
-              stopFormula: null, openInDesigner: isOpenInDesigner
+              value: formulaV1Result, fields: [],
+              stop: null, openInDesigner: isOpenInDesigner
             } as FormulaResultRaw;
           }
           console.error('V1 formulas accept only simple values in return statements. If you need to return an complex object, use V2 formulas.');
-          return { value: undefined, additionalValues: [], stopFormula: null, openInDesigner: isOpenInDesigner } as FormulaResultRaw;
+          return { value: undefined, fields: [], stop: null, openInDesigner: isOpenInDesigner } as FormulaResultRaw;
         case FormulaVersions.V2:
           if (isOpenInDesigner) {
             console.log(`Running formula${formula.version.toLocaleUpperCase()} for Entity: "${ctSettings._itemTitle}", Field: "${formula.fieldName}", Target: "${formula.target}" with following arguments:`, formulaProps);
@@ -289,7 +289,7 @@ export class FormulaEngine implements OnDestroy {
       } else {
         this.loggingService.showMessage(this.translate.instant('Errors.FormulaCalculation'), 2000);
       }
-      return { value: undefined, additionalValues: [], stopFormula: null, openInDesigner: isOpenInDesigner } as FormulaResultRaw;
+      return { value: undefined, fields: [], stop: null, openInDesigner: isOpenInDesigner } as FormulaResultRaw;
     }
   }
 
@@ -303,23 +303,23 @@ export class FormulaEngine implements OnDestroy {
   }
 
   private correctAllValues(target: FormulaTarget, result: FieldValue | FormulaResultRaw, inputType: InputType): FormulaResultRaw {
-    const stop = (result as FormulaResultRaw)?.stopFormula ?? null;
+    const stop = (result as FormulaResultRaw)?.stop ?? null;
     if (result === null || result === undefined)
-      return { value: result as FieldValue, additionalValues: [], stopFormula: stop };
+      return { value: result as FieldValue, fields: [], stop: stop };
     if (typeof result === 'object') {
       if (result instanceof Date && target === FormulaTargets.Value)
-        return { value: this.valueCorrection(result as FieldValue, inputType), additionalValues: [], stopFormula: stop };
+        return { value: this.valueCorrection(result as FieldValue, inputType), fields: [], stop: stop };
       if (result instanceof Promise)
-        return { value: undefined, promise: result as Promise<FormulaResultRaw>, additionalValues: [], stopFormula: stop };
+        return { value: undefined, promise: result as Promise<FormulaResultRaw>, fields: [], stop: stop };
       const corrected: FormulaResultRaw = (result as FormulaResultRaw);
-      corrected.stopFormula = stop;
+      corrected.stop = stop;
       if ((result as FormulaResultRaw).value && target === FormulaTargets.Value) {
         corrected.value = this.valueCorrection((result as FormulaResultRaw).value, inputType);
       }
-      if ((result as FormulaResultRaw).additionalValues) {
-        corrected.additionalValues = (result as FormulaResultRaw).additionalValues?.map((additionalValue) => {
-          additionalValue.value = this.valueCorrection(additionalValue.value, inputType);
-          return additionalValue;
+      if ((result as FormulaResultRaw).fields) {
+        corrected.fields = (result as FormulaResultRaw).fields?.map((fields) => {
+          fields.value = this.valueCorrection(fields.value, inputType);
+          return fields;
         });
         return corrected;
       }
@@ -329,7 +329,7 @@ export class FormulaEngine implements OnDestroy {
 
     // atm we are only correcting Value formulas
     if (target === FormulaTargets.Value) {
-      return { value: this.valueCorrection(value.value, inputType), additionalValues: [], stopFormula: stop };
+      return { value: this.valueCorrection(value.value, inputType), fields: [], stop: stop };
     }
     return value;
   }

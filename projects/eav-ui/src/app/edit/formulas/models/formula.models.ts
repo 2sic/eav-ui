@@ -194,7 +194,7 @@ export interface RunFormulasResult {
   settings: FieldSettings;
   validation: FormulaFieldValidation;
   value: FieldValue;
-  additionalValues: FieldValuePair[];
+  fields: FieldValuePair[];
 }
 
 export interface FormulaResult {

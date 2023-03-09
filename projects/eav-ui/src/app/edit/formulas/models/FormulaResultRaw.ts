@@ -3,9 +3,9 @@ import { FieldValue } from "projects/edit-types";
 export interface FormulaResultRaw {
   value?: FieldValue;
   promise?: Promise<FormulaResultRaw>;
-  additionalValues?: FieldValuePair[];
+  fields?: FieldValuePair[];
   openInDesigner?: boolean;
-  stopFormula?: boolean | null;
+  stop?: boolean | null;
 }
 
 export interface FieldValuePair {
