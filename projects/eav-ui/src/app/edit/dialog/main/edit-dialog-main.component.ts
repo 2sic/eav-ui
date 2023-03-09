@@ -7,12 +7,13 @@ import { BehaviorSubject, combineLatest, delay, fromEvent, map, Observable, of, 
 import { BaseSubsinkComponent } from '../../../shared/components/base-subsink-component/base-subsink.component';
 import { consoleLogAngular } from '../../../shared/helpers/console-log-angular.helper';
 import { FormBuilderComponent } from '../../form/builder/form-builder/form-builder.component';
+import { FormulaDesignerService } from '../../formulas/services/formula-designer.service';
 import { MetadataDecorators } from '../../shared/constants';
 import { InputFieldHelpers, ValidationMessagesHelpers } from '../../shared/helpers';
 import { FieldErrorMessage, SaveResult } from '../../shared/models';
 import { EavItem } from '../../shared/models/eav';
 import { EavEntityBundleDto } from '../../shared/models/json-format-v1';
-import { EavService, EditRoutingService, FormsStateService, FormulaDesignerService, LoadIconsService } from '../../shared/services';
+import { EavService, EditRoutingService, FormsStateService, LoadIconsService } from '../../shared/services';
 // tslint:disable-next-line:max-line-length
 import { AdamCacheService, ContentTypeItemService, ContentTypeService, EntityCacheService, GlobalConfigService, InputTypeService, ItemService, LanguageInstanceService, LanguageService, LinkCacheService, PublishStatusService, StringQueryCacheService } from '../../shared/store/ngrx-data';
 import { EditEntryComponent } from '../entry/edit-entry.component';

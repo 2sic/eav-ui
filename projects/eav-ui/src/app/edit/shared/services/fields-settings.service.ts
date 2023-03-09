@@ -2,11 +2,12 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { consoleLogWebpack } from 'projects/field-custom-gps/src/shared/console-log-webpack.helper';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, filter, map, Observable, Subscription } from 'rxjs';
 import { EavService } from '.';
-import { FieldSettings, FieldValue, FieldValuePair } from '../../../../../../edit-types';
+import { FieldSettings, FieldValue } from '../../../../../../edit-types';
 import { consoleLogAngular } from '../../../shared/helpers/console-log-angular.helper';
 import { FieldLogicManager } from '../../form/shared/field-logic/field-logic-manager';
 import { FieldLogicTools } from '../../form/shared/field-logic/field-logic-tools';
 import { FormulaEngine } from '../../formulas/formula-engine';
+import { FieldValuePair } from '../../formulas/models/FormulaResultRaw';
 // tslint:disable-next-line:max-line-length
 import { EntityReader, FieldsSettingsHelpers, GeneralHelpers, InputFieldHelpers, ValidationHelpers } from '../helpers';
 // tslint:disable-next-line:max-line-length

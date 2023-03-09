@@ -1,14 +1,15 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, filter, from, map, Observable, Subscription, switchMap } from 'rxjs';
-import { EavService, LoggingService } from '.';
-import { FieldSettings, FieldValue, FormulaResultRaw } from '../../../../../../edit-types';
+import { EavService, LoggingService } from '../../shared/services';
+import { FieldSettings, FieldValue } from '../../../../../../edit-types';
 import { EavWindow } from '../../../shared/models/eav-window.model';
-import { EntityReader, FieldsSettingsHelpers, FormulaHelpers, GeneralHelpers, InputFieldHelpers, LocalizationHelpers } from '../helpers';
-import { DesignerState, FormulaCacheItem, FormulaFunction, FormulaResult, FormulaTarget, FormulaV1CtxTargetEntity, LogSeverities } from '../models';
-import { EavItem } from '../models/eav/eav-item';
-import { FormulaCacheItemShared, FormulaV1CtxUser } from '../models/formula.models';
-import { ContentTypeItemService, ContentTypeService, ItemService, LanguageInstanceService } from '../store/ngrx-data';
+import { FormulaResultRaw } from '../models/FormulaResultRaw';
+import { EntityReader, FieldsSettingsHelpers, FormulaHelpers, GeneralHelpers, InputFieldHelpers, LocalizationHelpers } from '../../shared/helpers';
+import { LogSeverities } from '../../shared/models';
+import { EavItem } from '../../shared/models/eav/eav-item';
+import { DesignerState, FormulaCacheItem, FormulaCacheItemShared, FormulaFunction, FormulaResult, FormulaTarget, FormulaV1CtxTargetEntity, FormulaV1CtxUser } from '../models/formula.models';
+import { ContentTypeItemService, ContentTypeService, ItemService, LanguageInstanceService } from '../../shared/store/ngrx-data';
 
 declare const window: EavWindow;
 @Injectable()

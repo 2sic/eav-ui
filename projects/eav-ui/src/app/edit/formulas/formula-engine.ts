@@ -1,6 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { FieldSettings, FieldValue, FieldValuePair, FormulaResultRaw } from 'projects/edit-types';
+import { FieldSettings, FieldValue } from 'projects/edit-types';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { DataTypeConstants } from '../../content-type-fields/constants/data-type.constants';
 import { InputTypeConstants } from '../../content-type-fields/constants/input-type.constants';
@@ -9,10 +9,13 @@ import { FeatureSummary } from '../../features/models';
 import { FeaturesService } from '../../shared/services/features.service';
 import { EntityReader, FormulaHelpers } from '../shared/helpers';
 // tslint:disable-next-line: max-line-length
-import { ContentTypeSettings, FieldsProps, FormulaCacheItem, FormulaFieldValidation, FormulaFunctionDefault, FormulaFunctionV1, FormulaTarget, FormulaTargets, FormulaVersions, FormValues, LogSeverities, RunFormulasResult, SettingsFormulaPrefix } from '../shared/models';
+import { ContentTypeSettings, FieldsProps, FormValues, LogSeverities } from '../shared/models';
 import { EavContentType, EavHeader } from '../shared/models/eav';
-import { EavService, EditInitializerService, FieldsSettingsService, FormulaDesignerService, LoggingService } from '../shared/services';
+import { EavService, EditInitializerService, FieldsSettingsService, LoggingService } from '../shared/services';
 import { GlobalConfigService, ItemService, LanguageInstanceService, LanguageService } from '../shared/store/ngrx-data';
+import { RunFormulasResult, FormulaFieldValidation, FormulaTargets, SettingsFormulaPrefix, FormulaCacheItem, FormulaVersions, FormulaFunctionV1, FormulaFunctionDefault, FormulaTarget } from './models/formula.models';
+import { FieldValuePair, FormulaResultRaw } from './models/FormulaResultRaw';
+import { FormulaDesignerService } from './services/formula-designer.service';
 
 @Injectable()
 export class FormulaEngine implements OnDestroy {

@@ -8,9 +8,10 @@ import { eavConstants } from '../../../../shared/constants/eav.constants';
 import { copyToClipboard } from '../../../../shared/helpers/copy-to-clipboard.helper';
 import { FormBuilderComponent } from '../../../form/builder/form-builder/form-builder.component';
 import { defaultFormulaNow } from '../../../formulas/formula.constants';
+import { FormulaTarget, DesignerState, FormulaTargets } from '../../../formulas/models/formula.models';
+import { FormulaDesignerService } from '../../../formulas/services/formula-designer.service';
 import { FormulaHelpers, InputFieldHelpers } from '../../../shared/helpers';
-import { DesignerState, FormulaTarget, FormulaTargets } from '../../../shared/models';
-import { EavService, FormulaDesignerService } from '../../../shared/services';
+import { EavService } from '../../../shared/services';
 import { ContentTypeService, ItemService } from '../../../shared/store/ngrx-data';
 // tslint:disable-next-line:max-line-length
 import { DesignerSnippet, EntityOption, FieldOption, FormulaDesignerTemplateVars, SelectOptions, SelectTarget, SelectTargets, TargetOption } from './formula-designer.models';

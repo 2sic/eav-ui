@@ -1,5 +1,5 @@
 import { FieldValue } from '../../../../../../../edit-types';
-import { DesignerState, FormulaCacheItem, FormulaTarget } from '../../../shared/models';
+import { FormulaCacheItem, DesignerState, FormulaTarget } from '../../../formulas/models/formula.models';
 
 export interface FormulaDesignerTemplateVars {
   entityOptions: EntityOption[];

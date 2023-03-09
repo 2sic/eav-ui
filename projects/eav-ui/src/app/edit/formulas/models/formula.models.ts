@@ -1,7 +1,8 @@
 import { SxcInstance } from '@2sic.com/2sxc-typings';
-import { BehaviorSubject, Subject } from 'rxjs';
-import { FormValues } from '.';
-import { FieldSettings, FieldValue, FieldValuePair, FormulaResultRaw } from '../../../../../../edit-types';
+import { BehaviorSubject } from 'rxjs';
+import { FormValues } from '../../shared/models';
+import { FieldSettings, FieldValue } from '../../../../../../edit-types';
+import { FieldValuePair, FormulaResultRaw } from './FormulaResultRaw';
 
 /**
  * Formula Cached Values which are re-used across formulas of the same entity
