@@ -97,8 +97,7 @@ export class FormulaEngine implements OnDestroy {
       const formulaResult = this.runFormula(formula, entityId, formValues, inputType, settings, previousSettings, itemHeader);
       if (formulaResult && formulaResult.promise && formulaResult.promise instanceof Promise) {
         if (formulaResult.openInDesigner && formulaResult.stopFormula === null) {
-          // TODO: @2dm improve this message
-          console.warn(`This promise will loop formulas only once, if you want it to continue looping return stopFormula: false`);
+          console.log(`FYI: formula returned a promise. This automatically stops this formula from running again. If you want it to continue running, return stop: false`);
         }
         formula.promises$.next(formulaResult.promise);
         if (!formula.updateCallback$.value) {
@@ -245,7 +244,6 @@ export class FormulaEngine implements OnDestroy {
               stopFormula: null, openInDesigner: isOpenInDesigner
             } as FormulaResultRaw;
           }
-          // TODO: @2dm improve this message
           console.error('V1 formulas accept only simple values in return statements. If you need to return an complex object, use V2 formulas.');
           return { value: undefined, additionalValues: [], stopFormula: null, openInDesigner: isOpenInDesigner } as FormulaResultRaw;
         case FormulaVersions.V2:
