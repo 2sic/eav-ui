@@ -7,7 +7,7 @@ import { consoleLogAngular } from '../../../shared/helpers/console-log-angular.h
 import { FieldLogicManager } from '../../form/shared/field-logic/field-logic-manager';
 import { FieldLogicTools } from '../../form/shared/field-logic/field-logic-tools';
 import { FormulaEngine } from '../../formulas/formula-engine';
-import { FieldValuePair } from '../../formulas/models/FormulaResultRaw';
+import { FieldValuePair } from '../../formulas/formula.models';
 // tslint:disable-next-line:max-line-length
 import { EntityReader, FieldsSettingsHelpers, GeneralHelpers, InputFieldHelpers, ValidationHelpers } from '../helpers';
 // tslint:disable-next-line:max-line-length

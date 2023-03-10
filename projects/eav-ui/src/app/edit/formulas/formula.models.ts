@@ -1,8 +1,7 @@
 import { SxcInstance } from '@2sic.com/2sxc-typings';
 import { BehaviorSubject } from 'rxjs';
-import { FormValues } from '../../shared/models';
-import { FieldSettings, FieldValue } from '../../../../../../edit-types';
-import { FieldValuePair, FormulaResultRaw } from './FormulaResultRaw';
+import { FieldSettings, FieldValue } from '../../../../../edit-types';
+import { FormValues } from '../shared/models';
 
 /**
  * Formula Cached Values which are re-used across formulas of the same entity
@@ -212,4 +211,17 @@ export interface DesignerState {
   fieldName: string;
   isOpen: boolean;
   target: FormulaTarget;
+}
+
+export interface FormulaResultRaw {
+  value?: FieldValue;
+  promise?: Promise<FormulaResultRaw>;
+  fields?: FieldValuePair[];
+  openInDesigner?: boolean;
+  stop?: boolean | null;
+}
+
+export interface FieldValuePair {
+  name: string;
+  value: FieldValue;
 }

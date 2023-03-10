@@ -7,7 +7,7 @@ import { BehaviorSubject, combineLatest, delay, fromEvent, map, Observable, of, 
 import { BaseSubsinkComponent } from '../../../shared/components/base-subsink-component/base-subsink.component';
 import { consoleLogAngular } from '../../../shared/helpers/console-log-angular.helper';
 import { FormBuilderComponent } from '../../form/builder/form-builder/form-builder.component';
-import { FormulaDesignerService } from '../../formulas/services/formula-designer.service';
+import { FormulaDesignerService } from '../../formulas/formula-designer.service';
 import { MetadataDecorators } from '../../shared/constants';
 import { InputFieldHelpers, ValidationMessagesHelpers } from '../../shared/helpers';
 import { FieldErrorMessage, SaveResult } from '../../shared/models';

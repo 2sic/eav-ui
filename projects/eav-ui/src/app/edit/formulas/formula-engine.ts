@@ -7,15 +7,15 @@ import { InputTypeConstants } from '../../content-type-fields/constants/input-ty
 import { InputType } from '../../content-type-fields/models/input-type.model';
 import { FeatureSummary } from '../../features/models';
 import { FeaturesService } from '../../shared/services/features.service';
-import { EntityReader, FormulaHelpers } from '../shared/helpers';
-// tslint:disable-next-line: max-line-length
+import { EntityReader } from '../shared/helpers';
 import { ContentTypeSettings, FieldsProps, FormValues, LogSeverities } from '../shared/models';
 import { EavContentType, EavHeader } from '../shared/models/eav';
 import { EavService, EditInitializerService, FieldsSettingsService, LoggingService } from '../shared/services';
 import { GlobalConfigService, ItemService, LanguageInstanceService, LanguageService } from '../shared/store/ngrx-data';
-import { RunFormulasResult, FormulaFieldValidation, FormulaTargets, SettingsFormulaPrefix, FormulaCacheItem, FormulaVersions, FormulaFunctionV1, FormulaFunctionDefault, FormulaTarget } from './models/formula.models';
-import { FieldValuePair, FormulaResultRaw } from './models/FormulaResultRaw';
-import { FormulaDesignerService } from './services/formula-designer.service';
+import { FormulaDesignerService } from './formula-designer.service';
+import { FormulaHelpers } from './formula.helpers';
+// tslint:disable-next-line: max-line-length
+import { FieldValuePair, FormulaCacheItem, FormulaFieldValidation, FormulaFunctionDefault, FormulaFunctionV1, FormulaResultRaw, FormulaTarget, FormulaTargets, FormulaVersions, RunFormulasResult, SettingsFormulaPrefix } from './formula.models';
 
 @Injectable()
 export class FormulaEngine implements OnDestroy {
@@ -115,7 +115,7 @@ export class FormulaEngine implements OnDestroy {
             const possibleFieldsUpdates = queue[entityGuid].possibleFieldsUpdates ?? [];
             if (correctedValue.fields)
               possibleFieldsUpdates.push(...correctedValue.fields);
-            queue[entityGuid] = { possibleValueUpdates, possibleFieldsUpdates: possibleFieldsUpdates };
+            queue[entityGuid] = { possibleValueUpdates, possibleFieldsUpdates };
             formula.stopFormula = correctedValue.stop ?? formula.stopFormula;
             this.fieldsSettingsService.forceSettings();
           });
@@ -305,12 +305,12 @@ export class FormulaEngine implements OnDestroy {
   private correctAllValues(target: FormulaTarget, result: FieldValue | FormulaResultRaw, inputType: InputType): FormulaResultRaw {
     const stop = (result as FormulaResultRaw)?.stop ?? null;
     if (result === null || result === undefined)
-      return { value: result as FieldValue, fields: [], stop: stop };
+      return { value: result as FieldValue, fields: [], stop };
     if (typeof result === 'object') {
       if (result instanceof Date && target === FormulaTargets.Value)
-        return { value: this.valueCorrection(result as FieldValue, inputType), fields: [], stop: stop };
+        return { value: this.valueCorrection(result as FieldValue, inputType), fields: [], stop };
       if (result instanceof Promise)
-        return { value: undefined, promise: result as Promise<FormulaResultRaw>, fields: [], stop: stop };
+        return { value: undefined, promise: result as Promise<FormulaResultRaw>, fields: [], stop };
       const corrected: FormulaResultRaw = (result as FormulaResultRaw);
       corrected.stop = stop;
       if ((result as FormulaResultRaw).value && target === FormulaTargets.Value) {
@@ -329,7 +329,7 @@ export class FormulaEngine implements OnDestroy {
 
     // atm we are only correcting Value formulas
     if (target === FormulaTargets.Value) {
-      return { value: this.valueCorrection(value.value, inputType), fields: [], stop: stop };
+      return { value: this.valueCorrection(value.value, inputType), fields: [], stop };
     }
     return value;
   }
