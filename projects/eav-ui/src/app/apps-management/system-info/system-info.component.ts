@@ -233,7 +233,7 @@ export class SystemInfoComponent extends BaseComponent implements OnInit, OnDest
           lsEnabled,
           cspEnabled
         };
-        console.log('2dm VM', viewModel);
+        // console.log('2dm VM', viewModel);
         return viewModel;
       }),
     );

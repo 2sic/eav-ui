@@ -143,7 +143,7 @@ export class EntityQueryComponent extends EntityDefaultComponent implements OnIn
   private setDisableEdit<T extends EntityForPicker>(queryEntities: T[]): T[] {
     if (queryEntities)
       queryEntities.forEach(e => e._disableEdit = e.AppId != null && e.AppId.toString() !== this.eavService.eavConfig.appId);
-    console.log('2dm queryEntities', queryEntities, this.eavService.eavConfig.appId);
+    // console.log('2dm queryEntities', queryEntities, this.eavService.eavConfig.appId);
     return queryEntities;
   }
 

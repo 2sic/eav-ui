@@ -79,7 +79,7 @@ export function loadCustomIcons(editor: Editor): void {
   });
 
   Object.entries(richIcons).forEach(([name, svg]) => {
-    console.log('2dm add', name, svg);
+    // console.log('2dm add', name, svg);
     editor.ui.registry.addIcon(name, svg);
   });
 }
