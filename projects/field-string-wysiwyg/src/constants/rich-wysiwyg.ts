@@ -20,7 +20,7 @@ export interface ImageFormatDefinition {
 // Content Splitters
 export const SplitterName = 'splitter';
 export const ContentSplitterClass = `${WysiwygClassPrefix}-${SplitterName}`;
-export const ContentSplitters: ImageFormatDefinition[] = ["0", "s", "m", "l", "xl"].map((v) => ({
+export const ContentSplitters: ImageFormatDefinition[] = ["0", "s", "m", "l" /*, "xl" */].map((v) => ({
   name: `${SplitterName}${v}`,
   class: `${WysiwygClassPrefix}-spacer-${v}`,
   icon: `${SplitterName}${v}`,

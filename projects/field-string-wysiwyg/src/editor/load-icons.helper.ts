@@ -52,11 +52,11 @@ const customTinyMceIcons: Record<string, string> = {
 import imageLeft from '!raw-loader!../assets/icons/rich/image-left.svg';
 import imageRight from '!raw-loader!../assets/icons/rich/image-right.svg';
 import imageCenter from '!raw-loader!../assets/icons/rich/image-center.svg';
-import splitter0 from '!raw-loader!../assets/icons/rich/split.svg';
-import splitters from '!raw-loader!../assets/icons/rich/split.svg'; // todo
+import splitter0 from '!raw-loader!../assets/icons/rich/split-0.svg';
+import splitters from '!raw-loader!../assets/icons/rich/split-s.svg'; // todo
 import splitterm from '!raw-loader!../assets/icons/rich/split-m.svg';
 import splitterl from '!raw-loader!../assets/icons/rich/split-l.svg';
-import splitterxl from '!raw-loader!../assets/icons/rich/split-xl.svg';
+// import splitterxl from '!raw-loader!../assets/icons/rich/split-xl.svg';
 
 // Rich Text Editor Icons
 const richIcons = {
@@ -65,7 +65,7 @@ const richIcons = {
   splitters,// TODO: add small icon
   splitterm,
   splitterl,
-  splitterxl,
+  // splitterxl,
 
   // Image alignment
   'rich-image-left': imageLeft,

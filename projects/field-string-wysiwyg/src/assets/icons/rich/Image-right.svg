@@ -1,15 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
   <g id="image-right" transform="translate(-543 -448)">
     <g id="Gruppe_20" data-name="Gruppe 20">
-      <rect id="Rechteck_40" data-name="Rechteck 40" width="24" height="24" transform="translate(543 448)" fill="#fff"/>
+      <rect id="Rechteck_40" data-name="Rechteck 40" width="24" height="24" transform="translate(543 448)" fill="none"/>
       <g id="Gruppe_19" data-name="Gruppe 19" transform="translate(27)">
         <g id="Gruppe_16" data-name="Gruppe 16" transform="translate(30.5 1)">
-          <line id="Linie_32" data-name="Linie 32" x2="18" transform="translate(488.5 465)" fill="none" stroke="#000" stroke-linecap="round" stroke-width="1"/>
-          <line id="Linie_35" data-name="Linie 35" x2="18" transform="translate(488.5 454)" fill="none" stroke="#000" stroke-linecap="round" stroke-width="1"/>
+          <line id="Linie_32" data-name="Linie 32" x2="18" transform="translate(488.5 465)" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="1"/>
+          <line id="Linie_35" data-name="Linie 35" x2="18" transform="translate(488.5 454)" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="1"/>
         </g>
         <g id="Gruppe_17" data-name="Gruppe 17" transform="translate(33.5)">
-          <path id="imagesmode_FILL0_wght400_GRAD0_opsz48_1_" data-name="imagesmode_FILL0_wght400_GRAD0_opsz48 (1)" d="M84.875,188.5A1.867,1.867,0,0,1,83,186.625v-4a1.867,1.867,0,0,1,1.875-1.875h5.75a1.867,1.867,0,0,1,1.875,1.875v4a1.867,1.867,0,0,1-1.875,1.875Zm0-.938h5.75a.921.921,0,0,0,.938-.937v-4a.921.921,0,0,0-.937-.937h-5.75a.921.921,0,0,0-.937.938v4a.921.921,0,0,0,.938.938Zm1.063-.937,2.125-2.125,1.141,1.125,1.359-1.719v2.719Z" transform="translate(411 276)"/>
-          <circle id="Ellipse_7" data-name="Ellipse 7" cx="1" cy="1" r="1" transform="translate(496 459)"/>
+          <path id="imagesmode_FILL0_wght400_GRAD0_opsz48_1_" data-name="imagesmode_FILL0_wght400_GRAD0_opsz48 (1)" d="M84.875,188.5A1.867,1.867,0,0,1,83,186.625v-4a1.867,1.867,0,0,1,1.875-1.875h5.75a1.867,1.867,0,0,1,1.875,1.875v4a1.867,1.867,0,0,1-1.875,1.875Zm0-.938h5.75a.921.921,0,0,0,.938-.937v-4a.921.921,0,0,0-.937-.937h-5.75a.921.921,0,0,0-.937.938v4a.921.921,0,0,0,.938.938Zm1.063-.937,2.125-2.125,1.141,1.125,1.359-1.719v2.719Z" transform="translate(411 276)" fill="#fff"/>
+          <circle id="Ellipse_7" data-name="Ellipse 7" cx="1" cy="1" r="1" transform="translate(496 459)" fill="#fff"/>
         </g>
       </g>
     </g>
