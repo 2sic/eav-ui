@@ -15,7 +15,7 @@ import { FormulaHelpers } from '../../../formulas/formula.helpers';
 import { DesignerState, FormulaTarget, FormulaTargets } from '../../../formulas/formula.models';
 import { InputFieldHelpers } from '../../../shared/helpers';
 import { EavService } from '../../../shared/services';
-import { ContentTypeService, EntityCacheService, ItemService } from '../../../shared/store/ngrx-data';
+import { ContentTypeService, ItemService } from '../../../shared/store/ngrx-data';
 // tslint:disable-next-line:max-line-length
 import { DesignerSnippet, EntityOption, FieldOption, FormulaDesignerTemplateVars, SelectOptions, SelectTarget, SelectTargets, TargetOption } from './formula-designer.models';
 
@@ -31,6 +31,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
   loadError = false;
   freeTextTarget = false;
   allowSaveFormula = this.eavService.eavConfig.enableFormulaSave;
+  isDeleted$ = new BehaviorSubject(false);
   saving$ = new BehaviorSubject(false);
   monacoOptions: Monaco.editor.IStandaloneEditorConstructionOptions = {
     minimap: {
@@ -56,7 +57,6 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     private entitiesService: EntitiesService,
     private itemService: ItemService,
     private contentTypeService: ContentTypeService,
-    private entityCacheService: EntityCacheService,
     private translate: TranslateService,
   ) { }
 
@@ -167,6 +167,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     this.formBuilderRefs
       .find(formBuilderRef => formBuilderRef.entityGuid === designer.entityGuid)
       .fieldsSettingsService.forceSettings();
+    this.isDeleted$.next(false);
   }
 
   save(): void {
@@ -233,7 +234,9 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
       next: () => {
         this.formulaDesignerService.delete(formula.entityGuid, formula.fieldName, formula.target);
         this.snackBar.open(this.translate.instant('Message.Deleted'), null, { duration: 2000 });
-        this.saving$.next(false);
+        this.isDeleted$.next(true);
+        if (designer.editMode)
+          this.toggleEdit();
       },
       error: (error: HttpErrorResponse) => {
         this.snackBar.open(this.translate.instant('Message.DeleteError'), null, { duration: 2000 });
@@ -404,11 +407,11 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
 
     this.templateVars$ = combineLatest([
       combineLatest([options$, formula$, dataSnippets$, contextSnippets$, typings$, designerState$]),
-      combineLatest([result$, this.saving$]),
+      combineLatest([result$, this.saving$, this.isDeleted$]),
     ]).pipe(
       map(([
         [options, formula, dataSnippets, contextSnippets, typings, designer],
-        [result, saving],
+        [result, saving, isDeleted],
       ]) => {
         const templateVars: FormulaDesignerTemplateVars = {
           entityOptions: options.entityOptions,
@@ -420,7 +423,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
           contextSnippets,
           typings,
           result: result?.value,
-          resultExists: result != null,
+          resultExists: result != null && !isDeleted,
           resultIsError: result?.isError ?? false,
           resultIsOnlyPromise: result?.isOnlyPromise ?? false,
           saving,
