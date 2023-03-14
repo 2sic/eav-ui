@@ -1,15 +1,16 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, filter, from, map, Observable, Subscription, switchMap } from 'rxjs';
-import { EavService, LoggingService } from '../../shared/services';
-import { FieldSettings, FieldValue } from '../../../../../../edit-types';
-import { EavWindow } from '../../../shared/models/eav-window.model';
-import { FormulaResultRaw } from '../models/FormulaResultRaw';
-import { EntityReader, FieldsSettingsHelpers, FormulaHelpers, GeneralHelpers, InputFieldHelpers, LocalizationHelpers } from '../../shared/helpers';
-import { LogSeverities } from '../../shared/models';
-import { EavItem } from '../../shared/models/eav/eav-item';
-import { DesignerState, FormulaCacheItem, FormulaCacheItemShared, FormulaFunction, FormulaResult, FormulaTarget, FormulaV1CtxTargetEntity, FormulaV1CtxUser } from '../models/formula.models';
-import { ContentTypeItemService, ContentTypeService, ItemService, LanguageInstanceService } from '../../shared/store/ngrx-data';
+import { FieldSettings, FieldValue } from '../../../../../edit-types';
+import { EavWindow } from '../../shared/models/eav-window.model';
+import { EntityReader, FieldsSettingsHelpers, GeneralHelpers, InputFieldHelpers, LocalizationHelpers } from '../shared/helpers';
+import { LogSeverities } from '../shared/models';
+import { EavItem } from '../shared/models/eav/eav-item';
+import { EavService, LoggingService } from '../shared/services';
+import { ContentTypeItemService, ContentTypeService, ItemService, LanguageInstanceService } from '../shared/store/ngrx-data';
+import { FormulaHelpers } from './formula.helpers';
+// tslint:disable-next-line: max-line-length
+import { DesignerState, FormulaCacheItem, FormulaCacheItemShared, FormulaFunction, FormulaResult, FormulaResultRaw, FormulaTarget, FormulaV1CtxTargetEntity, FormulaV1CtxUser } from './formula.models';
 
 declare const window: EavWindow;
 @Injectable()
@@ -235,8 +236,8 @@ export class FormulaDesignerService implements OnDestroy {
 
   private buildItemFormulaCacheSharedParts(item: EavItem, entityGuid: string): FormulaCacheItemShared {
     item = item ?? this.itemService.getItem(entityGuid);
-    var entity = item.Entity;
-    var mdFor = entity.For;
+    const entity = item.Entity;
+    const mdFor = entity.For;
     const targetEntity: FormulaV1CtxTargetEntity = {
       guid: entity.Guid,
       id: entity.Id,

@@ -7,10 +7,11 @@ import { InputTypeConstants } from '../../../../content-type-fields/constants/in
 import { eavConstants } from '../../../../shared/constants/eav.constants';
 import { copyToClipboard } from '../../../../shared/helpers/copy-to-clipboard.helper';
 import { FormBuilderComponent } from '../../../form/builder/form-builder/form-builder.component';
+import { FormulaDesignerService } from '../../../formulas/formula-designer.service';
 import { defaultFormulaNow } from '../../../formulas/formula.constants';
-import { FormulaTarget, DesignerState, FormulaTargets } from '../../../formulas/models/formula.models';
-import { FormulaDesignerService } from '../../../formulas/services/formula-designer.service';
-import { FormulaHelpers, InputFieldHelpers } from '../../../shared/helpers';
+import { FormulaHelpers } from '../../../formulas/formula.helpers';
+import { DesignerState, FormulaTarget, FormulaTargets } from '../../../formulas/formula.models';
+import { InputFieldHelpers } from '../../../shared/helpers';
 import { EavService } from '../../../shared/services';
 import { ContentTypeService, ItemService } from '../../../shared/store/ngrx-data';
 // tslint:disable-next-line:max-line-length
@@ -136,7 +137,9 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     if (designer.editMode) {
       const formula = this.formulaDesignerService.getFormula(designer.entityGuid, designer.fieldName, designer.target, true);
       if (formula == null) {
-        this.formulaDesignerService.updateFormulaFromEditor(designer.entityGuid, designer.fieldName, designer.target, defaultFormulaNow, false);
+        this.formulaDesignerService.updateFormulaFromEditor(
+          designer.entityGuid, designer.fieldName, designer.target, defaultFormulaNow, false
+        );
       }
     }
   }

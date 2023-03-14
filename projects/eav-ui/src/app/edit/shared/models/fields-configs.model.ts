@@ -1,7 +1,7 @@
 import { CalculatedInputType } from '.';
-import { FormulaFieldValidation } from '../../formulas/models/formula.models';
 import { FieldSettings, FieldValue } from '../../../../../../edit-types';
 import { TranslationStateCore } from '../../form/wrappers/localization-wrapper/translate-menu/translate-menu.models';
+import { FormulaFieldValidation } from '../../formulas/formula.models';
 
 export interface FieldsProps {
   [attributeName: string]: FieldProps;
