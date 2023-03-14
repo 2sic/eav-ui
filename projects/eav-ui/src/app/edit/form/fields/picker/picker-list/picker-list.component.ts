@@ -5,14 +5,14 @@ import { GeneralHelpers } from '../../../../shared/helpers';
 import { FieldsSettingsService } from '../../../../shared/services';
 import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
 import { DeleteEntityProps, SelectedEntity } from '../../entity/entity-default/entity-default.models';
-import { EntityListViewModel, ReorderIndexes } from './entity-default-list.models';
+import { EntityListViewModel, ReorderIndexes } from './picker-list.models';
 
 @Component({
-  selector: 'app-entity-default-list',
-  templateUrl: './entity-default-list.component.html',
-  styleUrls: ['./entity-default-list.component.scss'],
+  selector: 'app-picker-list',
+  templateUrl: './picker-list.component.html',
+  styleUrls: ['./picker-list.component.scss'],
 })
-export class EntityDefaultListComponent implements OnInit {
+export class PickerListComponent implements OnInit {
   @Input() config: FieldConfigSet;
   @Input() label: string;
   @Input() required: boolean;

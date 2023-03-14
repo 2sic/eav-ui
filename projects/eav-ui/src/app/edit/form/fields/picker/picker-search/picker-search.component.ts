@@ -9,14 +9,14 @@ import { FieldsSettingsService } from '../../../../shared/services';
 import { GlobalConfigService } from '../../../../shared/store/ngrx-data';
 import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
 import { SelectedEntity } from '../../entity/entity-default/entity-default.models';
-import { EntitySearchViewModel } from './entity-default-search.models';
+import { EntitySearchViewModel } from './picker-search.models';
 
 @Component({
-  selector: 'app-entity-default-search',
-  templateUrl: './entity-default-search.component.html',
-  styleUrls: ['./entity-default-search.component.scss'],
+  selector: 'app-picker-search',
+  templateUrl: './picker-search.component.html',
+  styleUrls: ['./picker-search.component.scss'],
 })
-export class EntityDefaultSearchComponent implements OnInit, OnChanges {
+export class PickerSearchComponent implements OnInit, OnChanges {
   @ViewChild('autocomplete') autocompleteRef?: ElementRef;
 
   @Input() config: FieldConfigSet;

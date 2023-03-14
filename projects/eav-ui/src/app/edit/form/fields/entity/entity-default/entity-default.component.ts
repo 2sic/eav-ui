@@ -12,8 +12,8 @@ import { EavService, EditRoutingService, EntityService, FieldsSettingsService } 
 import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { BaseFieldComponent } from '../../base/base-field.component';
-import { ReorderIndexes } from '../../picker/entity-default-list/entity-default-list.models';
-import { EntityDefaultSearchComponent } from '../../picker/entity-default-search/entity-default-search.component';
+import { ReorderIndexes } from '../../picker/picker-list/picker-list.models';
+import { PickerSearchComponent } from '../../picker/picker-search/picker-search.component';
 import { EntityDefaultLogic } from './entity-default-logic';
 import { calculateSelectedEntities, convertArrayToString, convertValueToArray, filterGuids } from './entity-default.helpers';
 import { DeleteEntityProps, EntityViewModel, SelectedEntity } from './entity-default.models';
@@ -25,7 +25,7 @@ import { DeleteEntityProps, EntityViewModel, SelectedEntity } from './entity-def
 })
 @FieldMetadata({})
 export class EntityDefaultComponent extends BaseFieldComponent<string | string[]> implements OnInit, AfterViewInit, OnDestroy {
-  @ViewChild(EntityDefaultSearchComponent) private entitySearchComponent: EntityDefaultSearchComponent;
+  @ViewChild(PickerSearchComponent) private entitySearchComponent: PickerSearchComponent;
 
   isQuery: boolean;
   isStringQuery: boolean;

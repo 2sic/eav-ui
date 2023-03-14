@@ -61,8 +61,8 @@ import { DatetimeDefaultComponent } from './form/fields/datetime/datetime-defaul
 import { EmptyDefaultComponent } from './form/fields/empty/empty-default/empty-default.component';
 import { EmptyMessageComponent } from './form/fields/empty/empty-message/empty-message.component';
 import { EntityContentBlockComponent } from './form/fields/entity/entity-content-blocks/entity-content-blocks.component';
-import { EntityDefaultListComponent } from './form/fields/picker/entity-default-list/entity-default-list.component';
-import { EntityDefaultSearchComponent } from './form/fields/picker/entity-default-search/entity-default-search.component';
+import { PickerListComponent } from './form/fields/picker/picker-list/picker-list.component';
+import { PickerSearchComponent } from './form/fields/picker/picker-search/picker-search.component';
 import { EntityDefaultComponent } from './form/fields/entity/entity-default/entity-default.component';
 import { EntityQueryComponent } from './form/fields/entity/entity-query/entity-query.component';
 import { HyperlinkDefaultComponent } from './form/fields/hyperlink/hyperlink-default/hyperlink-default.component';
@@ -149,8 +149,8 @@ import { MatBadgeModule } from '@angular/material/badge';
         AutoTranslateMenuDialogComponent,
         AutoTranslateDisabledWarningDialog,
         EntityExpandableWrapperComponent,
-        EntityDefaultListComponent,
-        EntityDefaultSearchComponent,
+        PickerListComponent,
+        PickerSearchComponent,
         EntityQueryComponent,
         HyperlinkDefaultExpandableWrapperComponent,
         DropzoneWrapperComponent,
