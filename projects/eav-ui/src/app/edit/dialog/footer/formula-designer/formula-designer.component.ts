@@ -1,5 +1,7 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, Input, OnDestroy, OnInit, QueryList } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { TranslateService } from '@ngx-translate/core';
 import type * as Monaco from 'monaco-editor';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, switchMap } from 'rxjs';
 import { EntitiesService } from '../../../../content-items/services/entities.service';
@@ -13,7 +15,7 @@ import { FormulaHelpers } from '../../../formulas/formula.helpers';
 import { DesignerState, FormulaTarget, FormulaTargets } from '../../../formulas/formula.models';
 import { InputFieldHelpers } from '../../../shared/helpers';
 import { EavService } from '../../../shared/services';
-import { ContentTypeService, ItemService } from '../../../shared/store/ngrx-data';
+import { ContentTypeService, EntityCacheService, ItemService } from '../../../shared/store/ngrx-data';
 // tslint:disable-next-line:max-line-length
 import { DesignerSnippet, EntityOption, FieldOption, FormulaDesignerTemplateVars, SelectOptions, SelectTarget, SelectTargets, TargetOption } from './formula-designer.models';
 
@@ -54,6 +56,8 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     private entitiesService: EntitiesService,
     private itemService: ItemService,
     private contentTypeService: ContentTypeService,
+    private entityCacheService: EntityCacheService,
+    private translate: TranslateService,
   ) { }
 
   ngOnInit(): void {
@@ -212,6 +216,28 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
       );
       this.snackBar.open('Formula saved', null, { duration: 2000 });
       this.saving$.next(false);
+    });
+  }
+
+  deleteFormula(): void {
+    const designer = this.formulaDesignerService.getDesignerState();
+    const formula = this.formulaDesignerService.getFormula(designer.entityGuid, designer.fieldName, designer.target, true);
+
+    const id = formula.sourceId;
+    const title = formula.fieldName + ' - ' + formula.target;
+
+    const confirmed = confirm(this.translate.instant('Data.Delete.Question', { title, id }));
+    if (!confirmed) { return; }
+
+    this.entitiesService.delete(eavConstants.contentTypes.formulas, formula.sourceId, true).subscribe({
+      next: () => {
+        this.formulaDesignerService.delete(formula.entityGuid, formula.fieldName, formula.target);
+        this.snackBar.open(this.translate.instant('Message.Deleted'), null, { duration: 2000 });
+        this.saving$.next(false);
+      },
+      error: (error: HttpErrorResponse) => {
+        this.snackBar.open(this.translate.instant('Message.DeleteError'), null, { duration: 2000 });
+      }
     });
   }
 
