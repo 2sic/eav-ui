@@ -8,18 +8,18 @@ import { FieldMask, GeneralHelpers } from '../../../../shared/helpers';
 import { EavService, EditRoutingService, EntityService, FieldsSettingsService, QueryService } from '../../../../shared/services';
 import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
-import { EntityDefaultComponent } from '../entity-default/entity-default.component';
+import { PickerComponent } from '../../picker/picker.component';
 import { filterGuids } from '../entity-default/entity-default.helpers';
 import { EntityQueryLogic } from './entity-query-logic';
 import { QueryEntity } from './entity-query.models';
 
 @Component({
   selector: InputTypeConstants.EntityQuery,
-  templateUrl: '../entity-default/entity-default.component.html',
-  styleUrls: ['../entity-default/entity-default.component.scss'],
+  templateUrl: '../../picker/picker.component.html',
+  styleUrls: ['../../picker/picker.component.scss'],
 })
 @FieldMetadata({})
-export class EntityQueryComponent extends EntityDefaultComponent implements OnInit, OnDestroy {
+export class EntityQueryComponent extends PickerComponent implements OnInit, OnDestroy {
   private paramsMask: FieldMask;
 
   constructor(

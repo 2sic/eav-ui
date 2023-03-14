@@ -14,8 +14,8 @@ import { StringDropdownQueryLogic } from './string-dropdown-query-logic';
 
 @Component({
   selector: InputTypeConstants.StringDropdownQuery,
-  templateUrl: '../../entity/entity-default/entity-default.component.html',
-  styleUrls: ['../../entity/entity-default/entity-default.component.scss'],
+  templateUrl: '../../picker/picker.component.html',
+  styleUrls: ['../../picker/picker.component.scss'],
 })
 @FieldMetadata({})
 export class StringDropdownQueryComponent extends EntityQueryComponent implements OnInit, OnDestroy {

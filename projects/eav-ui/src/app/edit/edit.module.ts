@@ -63,7 +63,6 @@ import { EmptyMessageComponent } from './form/fields/empty/empty-message/empty-m
 import { EntityContentBlockComponent } from './form/fields/entity/entity-content-blocks/entity-content-blocks.component';
 import { PickerListComponent } from './form/fields/picker/picker-list/picker-list.component';
 import { PickerSearchComponent } from './form/fields/picker/picker-search/picker-search.component';
-import { EntityDefaultComponent } from './form/fields/entity/entity-default/entity-default.component';
 import { EntityQueryComponent } from './form/fields/entity/entity-query/entity-query.component';
 import { HyperlinkDefaultComponent } from './form/fields/hyperlink/hyperlink-default/hyperlink-default.component';
 import { HyperlinkLibraryComponent } from './form/fields/hyperlink/hyperlink-library/hyperlink-library.component';
@@ -99,6 +98,7 @@ import { AutoTranslateMenuDialogComponent } from './form/wrappers/localization-w
 import { SnackBarWarningDemoComponent } from './form/wrappers/localization-wrapper/snack-bar-warning-demo/snack-bar-warning-demo.component';
 import { AutoTranslateDisabledWarningDialog } from './form/wrappers/localization-wrapper/auto-translate-disabled-warning-dialog/auto-translate-disabled-warning-dialog.component';
 import { MatBadgeModule } from '@angular/material/badge';
+import { PickerComponent } from './form/fields/picker/picker.component';
 
 @NgModule({
     declarations: [
@@ -126,7 +126,7 @@ import { MatBadgeModule } from '@angular/material/badge';
         EmptyDefaultComponent,
         NumberDefaultComponent,
         LocalizationWrapperComponent,
-        EntityDefaultComponent,
+        PickerComponent,
         HyperlinkDefaultComponent,
         AdamBrowserComponent,
         AdamHintComponent,

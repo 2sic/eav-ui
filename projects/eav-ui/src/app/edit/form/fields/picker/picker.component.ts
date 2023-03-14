@@ -3,28 +3,29 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
+import { InputTypeConstants } from 'projects/eav-ui/src/app/content-type-fields/constants/input-type.constants';
+import { EditForm } from 'projects/eav-ui/src/app/shared/models/edit-form.model';
+import { EntityInfo } from 'projects/edit-types';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
-import { EntityInfo } from '../../../../../../../../edit-types';
-import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
-import { EditForm } from '../../../../../shared/models/edit-form.model';
-import { FieldMask, GeneralHelpers } from '../../../../shared/helpers';
-import { EavService, EditRoutingService, EntityService, FieldsSettingsService } from '../../../../shared/services';
-import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
-import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
-import { BaseFieldComponent } from '../../base/base-field.component';
-import { ReorderIndexes } from '../../picker/picker-list/picker-list.models';
-import { PickerSearchComponent } from '../../picker/picker-search/picker-search.component';
-import { EntityDefaultLogic } from './entity-default-logic';
-import { calculateSelectedEntities, convertArrayToString, convertValueToArray, filterGuids } from './entity-default.helpers';
-import { DeleteEntityProps, EntityViewModel, SelectedEntity } from './entity-default.models';
+import { FieldMask, GeneralHelpers } from '../../../shared/helpers';
+import { EavService, EditRoutingService, EntityService, FieldsSettingsService } from '../../../shared/services';
+import { EntityCacheService, StringQueryCacheService } from '../../../shared/store/ngrx-data';
+import { FieldMetadata } from '../../builder/fields-builder/field-metadata.decorator';
+import { BaseFieldComponent } from '../base/base-field.component';
+import { EntityDefaultLogic } from '../entity/entity-default/entity-default-logic';
+import { calculateSelectedEntities, convertArrayToString, convertValueToArray, filterGuids } from '../entity/entity-default/entity-default.helpers';
+import { DeleteEntityProps, EntityViewModel } from './picker.models';
+import { ReorderIndexes } from './picker-list/picker-list.models';
+import { PickerSearchComponent } from './picker-search/picker-search.component';
+import { SelectedEntity } from '../entity/entity-default/entity-default.models';
 
 @Component({
   selector: InputTypeConstants.EntityDefault,
-  templateUrl: './entity-default.component.html',
-  styleUrls: ['./entity-default.component.scss'],
+  templateUrl: './picker.component.html',
+  styleUrls: ['./picker.component.scss'],
 })
 @FieldMetadata({})
-export class EntityDefaultComponent extends BaseFieldComponent<string | string[]> implements OnInit, AfterViewInit, OnDestroy {
+export class PickerComponent extends BaseFieldComponent<string | string[]> implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(PickerSearchComponent) private entitySearchComponent: PickerSearchComponent;
 
   isQuery: boolean;
@@ -222,7 +223,7 @@ export class EntityDefaultComponent extends BaseFieldComponent<string | string[]
       } else {
         form = {
           items: [{ EntityId: editParams.entityId }],
-        }
+        };
       }
     }
     this.editRoutingService.open(this.config.index, this.config.entityGuid, form);

@@ -5,16 +5,16 @@ import { InputTypeConstants } from '../../../../../content-type-fields/constants
 import { EavService, EditRoutingService, EntityService, FieldsSettingsService } from '../../../../shared/services';
 import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
-import { EntityDefaultComponent } from '../entity-default/entity-default.component';
+import { PickerComponent } from '../../picker/picker.component';
 import { EntityContentBlocksLogic } from './entity-content-blocks-logic';
 
 @Component({
   selector: InputTypeConstants.EntityContentBlocks,
-  templateUrl: '../entity-default/entity-default.component.html',
-  styleUrls: ['../entity-default/entity-default.component.scss'],
+  templateUrl: '../../picker/picker.component.html',
+  styleUrls: ['../../picker/picker.component.scss'],
 })
 @FieldMetadata({})
-export class EntityContentBlockComponent extends EntityDefaultComponent implements OnInit, OnDestroy {
+export class EntityContentBlockComponent extends PickerComponent implements OnInit, OnDestroy {
 
   constructor(
     eavService: EavService,

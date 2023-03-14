@@ -19,7 +19,8 @@ export class EntityDefaultLogic extends FieldLogicBase {
     // fixedSettings.IncludeParentApps ??= false;
 
     if (tools.eavConfig.overrideEditRestrictions && tools.debug) {
-      console.log("SystemAdmin + Debug: Overriding edit restrictions for field '" + settings.Name + "' (EntityType: '" + settings.EntityType + "').");
+      // tslint:disable-next-line: max-line-length
+      console.log('SystemAdmin + Debug: Overriding edit restrictions for field \'' + settings.Name + '\' (EntityType: \'' + settings.EntityType + '\').');
       fixedSettings.EnableEdit = true;
       fixedSettings.EnableCreate = true;
       fixedSettings.EnableAddExisting = true;

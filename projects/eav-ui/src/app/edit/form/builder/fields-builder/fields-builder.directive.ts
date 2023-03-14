@@ -14,12 +14,12 @@ import { DatetimeDefaultComponent } from '../../fields/datetime/datetime-default
 import { EmptyDefaultComponent } from '../../fields/empty/empty-default/empty-default.component';
 import { EmptyMessageComponent } from '../../fields/empty/empty-message/empty-message.component';
 import { EntityContentBlockComponent } from '../../fields/entity/entity-content-blocks/entity-content-blocks.component';
-import { EntityDefaultComponent } from '../../fields/entity/entity-default/entity-default.component';
 import { EntityQueryComponent } from '../../fields/entity/entity-query/entity-query.component';
 import { HyperlinkDefaultComponent } from '../../fields/hyperlink/hyperlink-default/hyperlink-default.component';
 import { HyperlinkLibraryComponent } from '../../fields/hyperlink/hyperlink-library/hyperlink-library.component';
 import { NumberDefaultComponent } from '../../fields/number/number-default/number-default.component';
 import { NumberDropdownComponent } from '../../fields/number/number-dropdown/number-dropdown.component';
+import { PickerComponent } from '../../fields/picker/picker.component';
 import { StringDefaultComponent } from '../../fields/string/string-default/string-default.component';
 import { StringDropdownQueryComponent } from '../../fields/string/string-dropdown-query/string-dropdown-query.component';
 import { StringDropdownComponent } from '../../fields/string/string-dropdown/string-dropdown.component';
@@ -63,7 +63,8 @@ export class FieldsBuilderDirective implements OnInit, OnDestroy {
     [InputTypeConstants.EmptyDefault]: EmptyDefaultComponent,
     [InputTypeConstants.EmptyMessage]: EmptyMessageComponent,
     [InputTypeConstants.EntityContentBlocks]: EntityContentBlockComponent,
-    [InputTypeConstants.EntityDefault]: EntityDefaultComponent,
+    // [InputTypeConstants.EntityDefault]: EntityDefaultComponent,
+    [InputTypeConstants.EntityDefault]: PickerComponent,
     [InputTypeConstants.EntityQuery]: EntityQueryComponent,
     [InputTypeConstants.ExternalWebComponent]: ExternalWebComponentComponent,
     [InputTypeConstants.HyperlinkDefault]: HyperlinkDefaultComponent,

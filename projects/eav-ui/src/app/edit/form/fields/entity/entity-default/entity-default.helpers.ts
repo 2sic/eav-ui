@@ -1,6 +1,7 @@
 import { TranslateService } from '@ngx-translate/core';
 import { EntityInfo } from '../../../../../../../../edit-types';
 import { guidRegex } from '../../../../../shared/constants/guid.constants';
+
 import { QueryEntity } from '../entity-query/entity-query.models';
 import { SelectedEntity } from './entity-default.models';
 
@@ -24,10 +25,10 @@ export function calculateSelectedEntities(
 
     const disableEdit = entity?._disableEdit === true || (entity == null); // compensate for null/undefined
     const label = (name == null)
-        ? translate.instant('Fields.Entity.EmptySlot')
-        : (typeof fieldValue === 'string')
-          ? entityFromQuery?.[stringQueryLabelField] ?? name
-          : entityFromType?.Text ?? translate.instant('Fields.Entity.EntityNotFound');
+      ? translate.instant('Fields.Entity.EmptySlot')
+      : (typeof fieldValue === 'string')
+        ? entityFromQuery?.[stringQueryLabelField] ?? name
+        : entityFromType?.Text ?? translate.instant('Fields.Entity.EntityNotFound');
 
     const result: SelectedEntity = {
       // debug info
