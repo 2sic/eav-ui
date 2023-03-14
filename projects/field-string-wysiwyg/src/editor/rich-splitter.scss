@@ -53,6 +53,7 @@ $background: repeating-linear-gradient(135deg, $pattern-color 0, $pattern-color 
         height: $grid-gutter-width*1.25;
       }
     }
+    // Note: ATM not in use
     &.wysiwyg-spacer-xl {
       background-image: $background;
       // height: $grid-gutter-width*2.5;

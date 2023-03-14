@@ -83,7 +83,7 @@ export class FormulaHelpers {
     fieldsSettingsService: FieldsSettingsService,
     features: FeatureSummary[],
   ): FormulaProps {
-    console.log('2dm - buildFormulaProps()');
+    // console.log('2dm - buildFormulaProps()');
     switch (formula.version) {
       case FormulaVersions.V1:
       case FormulaVersions.V2:

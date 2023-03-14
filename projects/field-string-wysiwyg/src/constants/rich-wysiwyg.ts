@@ -38,11 +38,14 @@ export const ImgAlignments: ImageFormatDefinition[] = [
 
 const i18nRatioPrefix = 'RichImages.Ratio';
 
+const WysiwygWidthClassPrefix = `${WysiwygClassPrefix}-`;
+
 // New wysiwyg sizes
 // export const ImgRatioDefault = createFormatDefinition(1, 1, `${i18nRatioPrefix}100.Label`, `${i18nRatioPrefix}100.Tooltip`);
 export const ImgRatioDefault: ImageFormatDefinition = {
   name: 'width100',
-  class: `${WysiwygClassPrefix}-100`,
+  // class: `${WysiwygClassPrefix}-100`,
+  class: `${WysiwygWidthClassPrefix}100`,
   label: `${i18nRatioPrefix}100.Label`,
   tooltip: `${i18nRatioPrefix}100.Tooltip`,
 };
@@ -59,9 +62,12 @@ function buildFormatSizesDefinitions(max: number, keys?: number[]): ImageFormatD
 }
 
 function createFormatDefinition(n: number, max: number, label?: string, tooltip?: string): ImageFormatDefinition {
+  const fraction = Math.round(100 * n/max);
   return ({
-    name: `width${n}of${max}`,
-    class: `${WysiwygClassPrefix}-${n}of${max}`,
+    // name: `width${n}of${max}`,
+    name: `width-lg-${fraction}`,
+    // class: `${WysiwygClassPrefix}-${n}of${max}`,
+    class: `${WysiwygWidthClassPrefix}${fraction}`,
     label: label ?? `${i18nRatioPrefix}XofY.Label`,
     tooltip: tooltip ?? `${i18nRatioPrefix}XofY.Tooltip`,
     fraction: n,

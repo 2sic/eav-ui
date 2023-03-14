@@ -1,3 +1,4 @@
+$gutter: 20px;
 
 /* Custom stuff */
 .mce-content-body {
@@ -20,21 +21,45 @@
     width: 100%;
   }
 
-  img.wysiwyg-1of2 {
-    width: 50%;
+  img.wysiwyg-50 {
+    width: calc(50% - (#{$gutter} / 2));
   }
 
-  img.wysiwyg-1of3 {
-    width: 33%;
+  img.wysiwyg-33 {
+    width: calc(33% - (#{$gutter} * 2 / 3));
+    &.wysiwyg-right {
+      margin-left: #{$gutter} / 2;
+    }
+    &.wysiwyg-left {
+      margin-right: #{$gutter} / 2;
+    }
   }
-  img.wysiwyg-2of3 {
-    width: 66%;
+  img.wysiwyg-66 {
+    width: calc(66% - (#{$gutter} * 2 / 3));
+    &.wysiwyg-right {
+      margin-left: #{$gutter} / 2;
+    }
+    &.wysiwyg-left {
+      margin-right: #{$gutter} / 2;
+    }
   }
-  img.wysiwyg-1of4 {
-    width: 25%;
+  img.wysiwyg-25 {
+    width: calc(25% - (#{$gutter} * 3 / 4));
+    &.wysiwyg-right {
+      margin-left: #{$gutter} / 2;
+    }
+    &.wysiwyg-left {
+      margin-right: #{$gutter} / 2;
+    }
   }
-  img.wysiwyg-3of4 {
-    width: 75%;
+  img.wysiwyg-75 {
+    width: calc(75% - (#{$gutter} * 3 / 4));
+    &.wysiwyg-right {
+      margin-left: #{$gutter} / 2;
+    }
+    &.wysiwyg-left {
+      margin-right: #{$gutter} / 2;
+    }
   }
 
 }
