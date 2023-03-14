@@ -2,13 +2,13 @@ import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, 
 import { AbstractControl, UntypedFormGroup } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { TranslateService } from '@ngx-translate/core';
+import { EntityInfo } from 'projects/edit-types';
 import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
-import { EntityInfo } from '../../../../../../../../../edit-types';
-import { GeneralHelpers } from '../../../../../shared/helpers';
-import { FieldsSettingsService } from '../../../../../shared/services';
-import { GlobalConfigService } from '../../../../../shared/store/ngrx-data';
-import { FieldConfigSet } from '../../../../builder/fields-builder/field-config-set.model';
-import { SelectedEntity } from '../entity-default.models';
+import { GeneralHelpers } from '../../../../shared/helpers';
+import { FieldsSettingsService } from '../../../../shared/services';
+import { GlobalConfigService } from '../../../../shared/store/ngrx-data';
+import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
+import { SelectedEntity } from '../../entity/entity-default/entity-default.models';
 import { EntitySearchViewModel } from './entity-default-search.models';
 
 @Component({

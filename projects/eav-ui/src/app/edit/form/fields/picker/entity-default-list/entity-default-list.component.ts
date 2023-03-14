@@ -1,10 +1,10 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
-import { GeneralHelpers } from '../../../../../shared/helpers';
-import { FieldsSettingsService } from '../../../../../shared/services';
-import { FieldConfigSet } from '../../../../builder/fields-builder/field-config-set.model';
-import { DeleteEntityProps, SelectedEntity } from '../entity-default.models';
+import { GeneralHelpers } from '../../../../shared/helpers';
+import { FieldsSettingsService } from '../../../../shared/services';
+import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
+import { DeleteEntityProps, SelectedEntity } from '../../entity/entity-default/entity-default.models';
 import { EntityListViewModel, ReorderIndexes } from './entity-default-list.models';
 
 @Component({

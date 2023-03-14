@@ -12,9 +12,9 @@ import { EavService, EditRoutingService, EntityService, FieldsSettingsService } 
 import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { BaseFieldComponent } from '../../base/base-field.component';
-import { ReorderIndexes } from './entity-default-list/entity-default-list.models';
+import { ReorderIndexes } from '../../picker/entity-default-list/entity-default-list.models';
+import { EntityDefaultSearchComponent } from '../../picker/entity-default-search/entity-default-search.component';
 import { EntityDefaultLogic } from './entity-default-logic';
-import { EntityDefaultSearchComponent } from './entity-default-search/entity-default-search.component';
 import { calculateSelectedEntities, convertArrayToString, convertValueToArray, filterGuids } from './entity-default.helpers';
 import { DeleteEntityProps, EntityViewModel, SelectedEntity } from './entity-default.models';
 
