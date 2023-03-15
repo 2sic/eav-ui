@@ -48,6 +48,8 @@ export abstract class AddToRegistryBase {
     const formatter = this.editor.formatter;
     all.filter((v) => v !== toBeApplied).forEach((v) => formatter.remove(v));
     formatter.toggle(toBeApplied);
+    // Set dirty, because formatter.toggle doesn't do it
+    this.editor.setDirty(true);
   }
 
 

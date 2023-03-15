@@ -28,23 +28,21 @@ export const ContentSplitters: ImageFormatDefinition[] = ["0", "s", "m", "l" /*,
 
 // New wysiwyg alignments
 export const ImgLeft = `${WysiwygClassPrefix}-img-left`;
-export const ImgCenter = `${WysiwygClassPrefix}-img-center`;
+export const ImgCenter = `${WysiwygClassPrefix}-img-middle`;
 export const ImgRight = `${WysiwygClassPrefix}-img-right`;
 export const ImgAlignments: ImageFormatDefinition[] = [
   { name: ImgLeft, class: `${WysiwygClassPrefix}-left`, icon: `rich-image-left`, inherit: 'alignleft' },
-  { name: ImgCenter, class: `${WysiwygClassPrefix}-center`, icon: `rich-image-center`, inherit: 'aligncenter' },
+  { name: ImgCenter, class: `${WysiwygClassPrefix}-middle`, icon: `rich-image-center`, inherit: 'aligncenter' },
   { name: ImgRight, class: `${WysiwygClassPrefix}-right`, icon: `rich-image-right`, inherit: 'alignright' },
 ];
 
 const i18nRatioPrefix = 'RichImages.Ratio';
 
-const WysiwygWidthClassPrefix = `${WysiwygClassPrefix}-`;
 
 // New wysiwyg sizes
-// export const ImgRatioDefault = createFormatDefinition(1, 1, `${i18nRatioPrefix}100.Label`, `${i18nRatioPrefix}100.Tooltip`);
+const WysiwygWidthClassPrefix = `${WysiwygClassPrefix}-`;
 export const ImgRatioDefault: ImageFormatDefinition = {
   name: 'width100',
-  // class: `${WysiwygClassPrefix}-100`,
   class: `${WysiwygWidthClassPrefix}100`,
   label: `${i18nRatioPrefix}100.Label`,
   tooltip: `${i18nRatioPrefix}100.Tooltip`,
@@ -62,11 +60,9 @@ function buildFormatSizesDefinitions(max: number, keys?: number[]): ImageFormatD
 }
 
 function createFormatDefinition(n: number, max: number, label?: string, tooltip?: string): ImageFormatDefinition {
-  const fraction = Math.round(100 * n/max);
+  const fraction = Math.floor(100 * n / max);
   return ({
-    // name: `width${n}of${max}`,
-    name: `width-lg-${fraction}`,
-    // class: `${WysiwygClassPrefix}-${n}of${max}`,
+    name: `width-${fraction}`,
     class: `${WysiwygWidthClassPrefix}${fraction}`,
     label: label ?? `${i18nRatioPrefix}XofY.Label`,
     tooltip: tooltip ?? `${i18nRatioPrefix}XofY.Tooltip`,
@@ -74,5 +70,3 @@ function createFormatDefinition(n: number, max: number, label?: string, tooltip?
     fractionOf: max,
   });
 }
-
-// console.log('2dm - sizes', ImgEnhancedRatios);

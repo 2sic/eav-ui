@@ -38,7 +38,7 @@ export class AddToRegistryWysiwygSections extends AddToRegistryBase {
       const formatter = this.editor.formatter;
       RichSpecs.ContentSplitters.forEach(cs => {
         formatter.register(cs.class, { selector: 'hr', classes: cs.class });
-      })
+      });
     }
 
 

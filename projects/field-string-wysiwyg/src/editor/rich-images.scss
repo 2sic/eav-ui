@@ -1,64 +1,67 @@
-$gutter: 20px;
+$gutter: 30px;
 
 /* Custom stuff */
 .mce-content-body {
 
-  img.wysiwyg-right {
-    float: right;
-    margin-left: 20px;
-  }
-  img.wysiwyg-left {
-    float: left;
-    margin-right: 20px;
-  }
-  // TODO: this doesn't quite work yet
-  img.wysiwyg-center {
-    margin-left: auto;
-    margin-right: auto;
-  }
+  img {
+    box-sizing: border-box;
 
-  img.wysiwyg-100 {
-    width: 100%;
-  }
+    &.wysiwyg-right {
+      float: right;
+      // margin-left: #{$gutter} / 2;
+      padding-left:$gutter/2;
+    }
+    &.wysiwyg-left {
+      float: left;
+      // margin-right: #{$gutter} / 2;
+      padding-right:$gutter/2;
+    }
+    // TODO: this doesn't quite work yet
+    &.wysiwyg-middle {
+      padding-left: $gutter/2;
+      padding-right: $gutter/2;
+      // margin-left: auto;
+      // margin-right: auto;
+    }
 
-  img.wysiwyg-50 {
-    width: calc(50% - (#{$gutter} / 2));
-  }
-
-  img.wysiwyg-33 {
-    width: calc(33% - (#{$gutter} * 2 / 3));
-    &.wysiwyg-right {
-      margin-left: #{$gutter} / 2;
+    &.wysiwyg-100 {
+      width: 100%;
     }
-    &.wysiwyg-left {
-      margin-right: #{$gutter} / 2;
+    &.wysiwyg-50 {
+      width: 50%; // calc(50% - ($gutter / 2));
+      // &.wysiwyg-middle {
+      //   // This is the correct formula - below the shortened version
+      //   width: calc(50% + $gutter / 2);
+      // }
     }
-  }
-  img.wysiwyg-66 {
-    width: calc(66% - (#{$gutter} * 2 / 3));
-    &.wysiwyg-right {
-      margin-left: #{$gutter} / 2;
+    &.wysiwyg-33 {
+      // This is the correct formula
+      // 1. take 100% and remove 2 gutters
+      // 2. divide by 3 - that's the width of an image without gutter
+      // 3. add half a gutter to the width of the image
+      width: calc((100% - ($gutter * 2)) / 3 + $gutter/2);
+      &.wysiwyg-middle {
+        // This is the correct formula - below the shortened version
+        width: calc((100% - ($gutter * 2)) / 3 + $gutter);
+        // width: calc(33.3% + ($gutter / 3));
+      }
     }
-    &.wysiwyg-left {
-      margin-right: #{$gutter} / 2;
+    &.wysiwyg-66 {
+      width: calc((100% - ($gutter * 2)) / 3 * 2 + ($gutter / 2 * 3));
     }
-  }
-  img.wysiwyg-25 {
-    width: calc(25% - (#{$gutter} * 3 / 4));
-    &.wysiwyg-right {
-      margin-left: #{$gutter} / 2;
+    &.wysiwyg-25 {
+      // This is the correct formula - below the shortened version
+      width: calc((100% - ($gutter * 3)) / 4 + $gutter/2);
+      // width: calc(25% - ($gutter / 4));
+      &.wysiwyg-middle {
+        // This is the correct formula - below the shortened version
+        width: calc((100% - ($gutter * 3)) / 4 + $gutter);
+        // width: calc(25% + ($gutter / 4));
+      }
     }
-    &.wysiwyg-left {
-      margin-right: #{$gutter} / 2;
-    }
-  }
-  img.wysiwyg-75 {
-    width: calc(75% - (#{$gutter} * 3 / 4));
-    &.wysiwyg-right {
-      margin-left: #{$gutter} / 2;
-    }
-    &.wysiwyg-left {
-      margin-right: #{$gutter} / 2;
+    &.wysiwyg-75 {
+      width: calc((100% - ($gutter * 3)) / 4 * 3 + ($gutter / 2 * 5));
+      // width: calc(75% - (#{$gutter} * 3 / 4));
     }
   }
 
