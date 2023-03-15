@@ -12,6 +12,7 @@ $width33-middle: calc((100% - ($gutter * 2)) / 3 + $gutter);
 $width25-standard: calc((100% - ($gutter * 3)) / 4 + $gutter/2);
 $width25-middle: calc((100% - ($gutter * 3)) / 4 + $gutter);
 
+$width50: 50%;
 $width66: calc((100% - ($gutter * 2)) / 3 * 2 + ($gutter / 2 * 3));
 $width75: calc((100% - ($gutter * 3)) / 4 * 3 + ($gutter / 2 * 5));
 
@@ -44,11 +45,59 @@ $width75: calc((100% - ($gutter * 3)) / 4 * 3 + ($gutter / 2 * 5));
       width: 100%;
     }
     &.wysiwyg-50 {
-      width: 50%;
-      &.wysiwyg-left + img.wysiwyg-left.wysiwyg-50 {
+      width: $width50;
+      &.wysiwyg-left {
+        + img.wysiwyg-left.wysiwyg-50 {
+          padding-right: 0;
+        }
+        + img.wysiwyg-left.wysiwyg-25 {
+          width: $width25-middle;
+        }
+        + img.wysiwyg-left.wysiwyg-25 + img.wysiwyg-left.wysiwyg-25 {
+          width: $width25-standard;
+          padding-right: 0;
+        }
+      }
+    }
+    &.wysiwyg-75 {
+      width: $width75;
+      // If followed by a 25% image, it should behave as right
+      &.wysiwyg-left + img.wysiwyg-left.wysiwyg-25 {
         padding-right: 0;
       }
     }
+
+
+    &.wysiwyg-25 {
+      width: $width25-standard;
+      &.wysiwyg-left + img.wysiwyg-left.wysiwyg-25,
+      &.wysiwyg-middle {
+        width: $width25-middle;
+      }
+      // the 4th one should behave as right, or third if 50 is in the middle
+      &.wysiwyg-left {
+        + img.wysiwyg-left.wysiwyg-25 + img.wysiwyg-left.wysiwyg-25 + img.wysiwyg-left.wysiwyg-25,
+        + img.wysiwyg-left.wysiwyg-50 + img.wysiwyg-left.wysiwyg-25 {
+          padding-right: 0;
+          width: $width25-standard;
+        }
+        // the middle 50% item needs to be wider
+        + img.wysiwyg-left.wysiwyg-50 {
+          width: calc($width50 + $gutter/2);
+        }
+        // the 50% last should behave as right
+        + img.wysiwyg-left.wysiwyg-25 + img.wysiwyg-left.wysiwyg-50 {
+          padding-right: 0;
+          width: $width50;
+        }
+        // If followed by a 75% image, it should behave as right
+        + img.wysiwyg-left.wysiwyg-75 {
+          padding-right: 0;
+          width: $width75;
+        }
+      }
+    }
+
     &.wysiwyg-33 {
       width: $width33-standard;
       &.wysiwyg-left + img.wysiwyg-left,
@@ -71,29 +120,8 @@ $width75: calc((100% - ($gutter * 3)) / 4 * 3 + ($gutter / 2 * 5));
         padding-right: 0;
       }
     }
-    &.wysiwyg-25 {
-      width: $width25-standard;
-      &.wysiwyg-left + img.wysiwyg-left,
-      &.wysiwyg-middle {
-        width: $width25-middle;
-      }
-      // the 4th one should behave as right
-      &.wysiwyg-left + img.wysiwyg-left + img.wysiwyg-left + img.wysiwyg-left{
-        padding-right: 0;
-        width: $width25-standard;
-      }
-      // If followed by a 75% image, it should behave as right
-      &.wysiwyg-left + img.wysiwyg-left.wysiwyg-75 {
-        padding-right: 0;
-        width: $width75;
-      }
-    }
-    &.wysiwyg-75 {
-      width: $width75;
-      &.wysiwyg-left + img.wysiwyg-left.wysiwyg-25 {
-        padding-right: 0;
-      }
-    }
+
+
   }
 
 }
