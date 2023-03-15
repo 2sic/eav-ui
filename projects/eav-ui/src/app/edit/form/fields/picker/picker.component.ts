@@ -12,12 +12,11 @@ import { EavService, EditRoutingService, EntityService, FieldsSettingsService } 
 import { EntityCacheService, StringQueryCacheService } from '../../../shared/store/ngrx-data';
 import { FieldMetadata } from '../../builder/fields-builder/field-metadata.decorator';
 import { BaseFieldComponent } from '../base/base-field.component';
-import { EntityDefaultLogic } from '../entity/entity-default/entity-default-logic';
-import { calculateSelectedEntities, convertArrayToString, convertValueToArray, filterGuids } from '../entity/entity-default/entity-default.helpers';
-import { DeleteEntityProps, EntityViewModel } from './picker.models';
+import { calculateSelectedEntities, convertArrayToString, convertValueToArray } from '../entity/entity-default/entity-default.helpers';
+import { SelectedEntity } from '../entity/entity-default/entity-default.models';
 import { ReorderIndexes } from './picker-list/picker-list.models';
 import { PickerSearchComponent } from './picker-search/picker-search.component';
-import { SelectedEntity } from '../entity/entity-default/entity-default.models';
+import { DeleteEntityProps, EntityViewModel } from './picker.models';
 
 @Component({
   selector: InputTypeConstants.EntityDefault,
@@ -43,7 +42,7 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
   constructor(
     eavService: EavService,
     fieldsSettingsService: FieldsSettingsService,
-    private entityService: EntityService,
+    protected entityService: EntityService,
     public translate: TranslateService,
     private editRoutingService: EditRoutingService,
     private snackBar: MatSnackBar,
@@ -51,9 +50,6 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
     public stringQueryCacheService: StringQueryCacheService,
   ) {
     super(eavService, fieldsSettingsService);
-    EntityDefaultLogic.importMe();
-    this.isQuery = false;
-    this.isStringQuery = false;
   }
 
   ngOnInit(): void {
@@ -82,33 +78,6 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
     );
 
     this.isExpanded$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
-
-    // Update/Build Content-Type Mask which is used for loading the data/new etc.
-    this.subscription.add(
-      this.settings$.pipe(
-        map(settings => settings.EntityType),
-        distinctUntilChanged(),
-      ).subscribe(entityType => {
-        this.contentTypeMask?.destroy();
-        this.contentTypeMask = new FieldMask(
-          entityType,
-          this.group.controls,
-          () => {
-            // Re-Trigger fetch data, but only on type-based pickers, not Queries
-            // for EntityQuery we don't have to refetch entities because entities come from settings.Query, not settings.EntityType
-            if (!this.isQuery) {
-              this.availableEntities$.next(null);
-            }
-            this.updateAddNew();
-          },
-          null,
-          this.eavService.eavConfig,
-        );
-
-        this.availableEntities$.next(null);
-        this.updateAddNew();
-      })
-    );
 
     const allowMultiValue$ = this.settings$.pipe(map(settings => settings.AllowMultiValue), distinctUntilChanged());
     this.viewModel$ = combineLatest([
@@ -161,34 +130,7 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
    * @param clearAvailableEntitiesAndOnlyUpdateCache - clears availableEntities and fetches only items which are selected
    * to update names in entityCache
    */
-  fetchEntities(clearAvailableEntitiesAndOnlyUpdateCache: boolean): void {
-    if (clearAvailableEntitiesAndOnlyUpdateCache) {
-      this.availableEntities$.next(null);
-    }
-
-    const contentTypeName = this.contentTypeMask.resolve();
-    const entitiesFilter: string[] = (clearAvailableEntitiesAndOnlyUpdateCache || !this.settings$.value.EnableAddExisting)
-      ? filterGuids(
-        this.fieldsSettingsService.getContentTypeSettings()._itemTitle,
-        this.config.fieldName,
-        (this.control.value as string[]).filter(guid => !!guid),
-      )
-      : null;
-
-    // 2dm 2023-01-22 #maybeSupportIncludeParentApps
-    // const includeParentApps = this.settings$.value?.IncludeParentApps == true;
-    this.entityService.getAvailableEntities(contentTypeName, entitiesFilter/*, includeParentApps */).subscribe(items => {
-      this.entityCacheService.loadEntities(items);
-      if (!clearAvailableEntitiesAndOnlyUpdateCache) {
-        this.availableEntities$.next(items);
-      }
-    });
-  }
-
-  private updateAddNew(): void {
-    const contentTypeName = this.contentTypeMask.resolve();
-    this.disableAddNew$.next(!contentTypeName);
-  }
+  fetchEntities(clearAvailableEntitiesAndOnlyUpdateCache: boolean): void { }
 
   reorder(reorderIndexes: ReorderIndexes): void {
     this.updateValue('reorder', reorderIndexes);

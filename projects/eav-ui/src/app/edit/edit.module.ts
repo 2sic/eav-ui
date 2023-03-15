@@ -1,5 +1,4 @@
 import { NgxMatDatetimePickerModule } from '@angular-material-components/datetime-picker';
-import { MatDayjsDateAdapter, NgxMatDayjsDatetimeAdapter, MatDayjsModule, MatDayjsDateModule, NgxMatDayjsModule, NgxMatDayjsDatetimeModule, MAT_DAYJS_DATE_ADAPTER_OPTIONS, NGX_MAT_DAYJS_DATETIME_ADAPTER_OPTIONS } from './shared/date-adapters/date-adapter-api'
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { CommonModule } from '@angular/common';
@@ -7,6 +6,7 @@ import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatRippleModule } from '@angular/material/core';
@@ -24,10 +24,12 @@ import { MAT_SLIDE_TOGGLE_DEFAULT_OPTIONS, MatSlideToggleModule } from '@angular
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
+import { Dayjs } from 'dayjs';
 import { DropzoneModule } from 'ngx-dropzone-wrapper';
 import { SourceService } from '../code-editor/services/source.service';
 import { EntitiesService } from '../content-items/services/entities.service';
 import { CreateFileDialogModule } from '../create-file-dialog';
+import { FeaturesModule } from '../features/features.module';
 import { MonacoEditorModule } from '../monaco-editor';
 import { ExtendedFabSpeedDialModule } from '../shared/modules/extended-fab-speed-dial/extended-fab-speed-dial.module';
 import { Context } from '../shared/services/context';
@@ -61,13 +63,15 @@ import { DatetimeDefaultComponent } from './form/fields/datetime/datetime-defaul
 import { EmptyDefaultComponent } from './form/fields/empty/empty-default/empty-default.component';
 import { EmptyMessageComponent } from './form/fields/empty/empty-message/empty-message.component';
 import { EntityContentBlockComponent } from './form/fields/entity/entity-content-blocks/entity-content-blocks.component';
-import { PickerListComponent } from './form/fields/picker/picker-list/picker-list.component';
-import { PickerSearchComponent } from './form/fields/picker/picker-search/picker-search.component';
+import { EntityDefaultComponent } from './form/fields/entity/entity-default/entity-default.component';
 import { EntityQueryComponent } from './form/fields/entity/entity-query/entity-query.component';
 import { HyperlinkDefaultComponent } from './form/fields/hyperlink/hyperlink-default/hyperlink-default.component';
 import { HyperlinkLibraryComponent } from './form/fields/hyperlink/hyperlink-library/hyperlink-library.component';
 import { NumberDefaultComponent } from './form/fields/number/number-default/number-default.component';
 import { NumberDropdownComponent } from './form/fields/number/number-dropdown/number-dropdown.component';
+import { PickerListComponent } from './form/fields/picker/picker-list/picker-list.component';
+import { PickerSearchComponent } from './form/fields/picker/picker-search/picker-search.component';
+import { PickerComponent } from './form/fields/picker/picker.component';
 import { StringDefaultComponent } from './form/fields/string/string-default/string-default.component';
 import { StringDropdownQueryComponent } from './form/fields/string/string-dropdown-query/string-dropdown-query.component';
 import { StringDropdownComponent } from './form/fields/string/string-dropdown/string-dropdown.component';
@@ -87,18 +91,16 @@ import { ExpandableWrapperComponent } from './form/wrappers/expandable-wrapper/e
 import { HiddenWrapperComponent } from './form/wrappers/hidden-wrapper/hidden-wrapper.component';
 import { HyperlinkDefaultExpandableWrapperComponent } from './form/wrappers/hyperlink-default-expandable-wrapper/hyperlink-default-expandable-wrapper.component';
 import { HyperlinkLibraryExpandableWrapperComponent } from './form/wrappers/hyperlink-library-expandable-wrapper/hyperlink-library-expandable-wrapper.component';
+import { AutoTranslateDisabledWarningDialog } from './form/wrappers/localization-wrapper/auto-translate-disabled-warning-dialog/auto-translate-disabled-warning-dialog.component';
+import { AutoTranslateMenuDialogComponent } from './form/wrappers/localization-wrapper/auto-translate-menu-dialog/auto-translate-menu-dialog.component';
 import { LocalizationWrapperComponent } from './form/wrappers/localization-wrapper/localization-wrapper.component';
+import { SnackBarWarningDemoComponent } from './form/wrappers/localization-wrapper/snack-bar-warning-demo/snack-bar-warning-demo.component';
 import { TranslateMenuDialogComponent } from './form/wrappers/localization-wrapper/translate-menu-dialog/translate-menu-dialog.component';
 import { TranslateMenuComponent } from './form/wrappers/localization-wrapper/translate-menu/translate-menu.component';
+// tslint:disable-next-line: max-line-length
+import { MatDayjsDateAdapter, MatDayjsDateModule, MatDayjsModule, MAT_DAYJS_DATE_ADAPTER_OPTIONS, NgxMatDayjsDatetimeAdapter, NgxMatDayjsDatetimeModule, NgxMatDayjsModule, NGX_MAT_DAYJS_DATETIME_ADAPTER_OPTIONS } from './shared/date-adapters/date-adapter-api'
 import { ChangeAnchorTargetDirective, PasteClipboardImageDirective } from './shared/directives';
 import { AdamService, EavService, EntityService, LoadIconsService, QueryService, ScriptsLoaderService } from './shared/services';
-import { FeaturesModule } from "../features/features.module";
-import { Dayjs } from 'dayjs';
-import { AutoTranslateMenuDialogComponent } from './form/wrappers/localization-wrapper/auto-translate-menu-dialog/auto-translate-menu-dialog.component';
-import { SnackBarWarningDemoComponent } from './form/wrappers/localization-wrapper/snack-bar-warning-demo/snack-bar-warning-demo.component';
-import { AutoTranslateDisabledWarningDialog } from './form/wrappers/localization-wrapper/auto-translate-disabled-warning-dialog/auto-translate-disabled-warning-dialog.component';
-import { MatBadgeModule } from '@angular/material/badge';
-import { PickerComponent } from './form/fields/picker/picker.component';
 
 @NgModule({
     declarations: [
@@ -152,6 +154,7 @@ import { PickerComponent } from './form/fields/picker/picker.component';
         PickerListComponent,
         PickerSearchComponent,
         EntityQueryComponent,
+        EntityDefaultComponent,
         HyperlinkDefaultExpandableWrapperComponent,
         DropzoneWrapperComponent,
         HyperlinkLibraryExpandableWrapperComponent,
