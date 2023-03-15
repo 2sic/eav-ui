@@ -98,10 +98,17 @@ export class TinyButtonsImg extends AddToRegistryBase {
       tooltip: this.editor.translate([main.tooltip, main.fraction, main.fractionOf]),
       fetch: (callback) => {
         callback(
-          RichSpecs.ImgRatios.map(imgR => that.splitButtonItemTipped('resize',
-            this.editor.translate([imgR.label, imgR.fraction, imgR.fractionOf]),
-            this.editor.translate([imgR.tooltip, imgR.fraction, imgR.fractionOf]),
-            () => { tog(imgR); })),
+          RichSpecs.ImgRatios.map(imgR =>
+            ({ ...that.splitButtonItemTipped('resize',
+              this.editor.translate([imgR.label, imgR.fraction, imgR.fractionOf]),
+              this.editor.translate([imgR.tooltip, imgR.fraction, imgR.fractionOf]),
+              () => { tog(imgR); }),
+              // wip, doesn't work
+              onSetup: (api: any /* ToolbarButtonInstanceApi */) => {
+                console.log('2dm, api', api);
+              },
+           })
+          ),
         );
       },
     });
@@ -117,10 +124,18 @@ export class TinyButtonsImg extends AddToRegistryBase {
     const btns = this.getButtons();
     const editor = this.editor;
     RichSpecs.ImgAlignments.forEach((ai) => {
-      this.regBtn(ai.name,
-        ai.icon ?? btns[ai.inherit]?.icon,
-        editor.translate([ai.tooltip ?? btns[ai.inherit]?.tooltip]),
-        () => { this.toggleOneImgFormatDefinition(RichSpecs.ImgAlignments, ai); });
+      editor.ui.registry.addToggleButton(ai.name, {
+        icon: ai.icon ?? btns[ai.inherit]?.icon,
+        tooltip: editor.translate([ai.tooltip ?? btns[ai.inherit]?.tooltip]),
+        onAction: () => { this.toggleOneImgFormatDefinition(RichSpecs.ImgAlignments, ai); },
+        onSetup: (api) => {
+            // Sample used from here: https://www.tiny.cloud/docs/tinymce/6/custom-toggle-toolbar-button/
+            api.setActive(editor.formatter.match(ai.name));
+            const changed = editor.formatter.formatChanged(ai.name, (state) => api.setActive(state));
+            return () => changed.unbind();
+          }
+        }
+      );
     });
   }
 

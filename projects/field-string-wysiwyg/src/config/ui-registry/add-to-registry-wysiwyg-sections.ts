@@ -16,20 +16,37 @@ export class AddToRegistryWysiwygSections extends AddToRegistryBase {
   }
 
   private splitterAddButtons(): void {
+    const editor = this.editor;
     RichSpecs.ContentSplitters.forEach((cs) => {
-      this.regBtn(cs.name, cs.icon,
-        'TODO:', // editor.translate([ai.tooltip ?? btns[ai.inherit]?.tooltip]),
-        () => { this.editor.insertContent(`<hr class="${RichSpecs.ContentSplitterClass} ${cs.class}"/>`); });
+      editor.ui.registry.addToggleButton(cs.name, {
+        icon: cs.icon,
+        tooltip: 'TODO:', // editor.translate([ai.tooltip ?? btns[ai.inherit]?.tooltip]),
+        onAction: () => { this.editor.insertContent(`<hr class="${RichSpecs.ContentSplitterClass} ${cs.class}"/>`); },
+        onSetup: (api) => {
+          console.log('2dm, api', api);
+          api.setActive(editor.formatter.match(cs.class));
+          const changed = editor.formatter.formatChanged(cs.class, (state) => api.setActive(state));
+          return () => changed.unbind();
+        }
+      });
     });
   }
 
-  
+
   private splitterResizeButtons(): void {
+    const editor = this.editor;
     RichSpecs.ContentSplitters.forEach((cs) => {
-      // TODO: @sdv - improve registered button so it toggles as "active" if the class is present
-      this.regBtn(cs.name + Buttons.toggleSuffix, cs.icon,
-        'TODO:', // editor.translate([ai.tooltip ?? btns[ai.inherit]?.tooltip]),
-        () => { this.toggleOneClassFromList(cs.class, RichSpecs.ContentSplitters.map(x => x.class)); });
+      editor.ui.registry.addToggleButton(cs.name + Buttons.toggleSuffix, {
+        icon: cs.icon,
+        tooltip: 'TODO:', // editor.translate([ai.tooltip ?? btns[ai.inherit]?.tooltip]),
+        onAction: () => { this.toggleOneClassFromList(cs.class, RichSpecs.ContentSplitters.map(x => x.class)); },
+        onSetup: (api) => {
+          api.setActive(editor.formatter.match(cs.class));
+          const changed = editor.formatter.formatChanged(cs.class, (state) => api.setActive(state));
+          return () => changed.unbind();
+        }
+      }
+      );
     });
   }
 

@@ -20,7 +20,7 @@ export interface ImageFormatDefinition {
 // Content Splitters
 export const SplitterName = 'splitter';
 export const ContentSplitterClass = `${WysiwygClassPrefix}-${SplitterName}`;
-export const ContentSplitters: ImageFormatDefinition[] = ["0", "s", "m", "l" /*, "xl" */].map((v) => ({
+export const ContentSplitters: ImageFormatDefinition[] = ['0', 's', 'm', 'l' /*, "xl" */].map((v) => ({
   name: `${SplitterName}${v}`,
   class: `${WysiwygClassPrefix}-spacer-${v}`,
   icon: `${SplitterName}${v}`,
@@ -32,7 +32,7 @@ export const ImgCenter = `${WysiwygClassPrefix}-img-middle`;
 export const ImgRight = `${WysiwygClassPrefix}-img-right`;
 export const ImgAlignments: ImageFormatDefinition[] = [
   { name: ImgLeft, class: `${WysiwygClassPrefix}-left`, icon: `rich-image-left`, inherit: 'alignleft' },
-  { name: ImgCenter, class: `${WysiwygClassPrefix}-middle`, icon: `rich-image-center`, inherit: 'aligncenter' },
+  // { name: ImgCenter, class: `${WysiwygClassPrefix}-middle`, icon: `rich-image-center`, inherit: 'aligncenter' },
   { name: ImgRight, class: `${WysiwygClassPrefix}-right`, icon: `rich-image-right`, inherit: 'alignright' },
 ];
 
