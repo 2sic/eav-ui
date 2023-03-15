@@ -101,9 +101,19 @@
         <button mat-icon-button tippy="Edit" (click)="toggleEdit()">
           <mat-icon>edit</mat-icon>
         </button>
-        <button mat-icon-button tippy="Reset" (click)="reset()">
-          <mat-icon>history</mat-icon>
+        <button mat-icon-button tippy="Menu" [matMenuTriggerFor]="menu">
+          <mat-icon>more_vert</mat-icon>
         </button>
+        <mat-menu #menu="matMenu" class="grid-more-menu">
+          <button mat-menu-item (click)="deleteFormula()" [disabled]="!data.formula?.sourceId">
+            <mat-icon>delete</mat-icon>
+            <span>Delete</span>
+          </button>
+          <button mat-menu-item (click)="reset()">
+            <mat-icon>history</mat-icon>
+            <span>Reset</span>
+          </button>
+        </mat-menu>
         <button *ngIf="allowSaveFormula" mat-icon-button tippy="Save"
           [tippyDisabled]="!data.designer.editMode || !data.formula?.source"
           [disabled]="!data.designer.editMode || !data.formula?.source || data.saving" (click)="save()">

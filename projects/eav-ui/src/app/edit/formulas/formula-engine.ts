@@ -94,7 +94,7 @@ export class FormulaEngine implements OnDestroy {
       .filter(f => !f.stopFormula);
     let formulaValue: FieldValue;
     let formulaValidation: FormulaFieldValidation;
-    const formulaResultFields: FieldValuePair[] = [];
+    const formulaFields: FieldValuePair[] = [];
     const formulaSettings: Record<string, any> = {};
     for (const formula of formulas) {
       const formulaResult = this.runFormula(formula, entityId, formValues, inputType, settings, previousSettings, itemHeader);
@@ -107,16 +107,16 @@ export class FormulaEngine implements OnDestroy {
           const queue = this.fieldsSettingsService.updateValueQueue;
           formula.updateCallback$.next((result: FieldValue | FormulaResultRaw) => {
             queue[entityGuid] = { possibleValueUpdates: {}, possibleFieldsUpdates: [] };
-            const correctedValue = this.correctAllValues(formula.target, result, inputType);
+            const corrected = this.correctAllValues(formula.target, result, inputType);
             if (!queue[entityGuid])
               queue[entityGuid] = { possibleValueUpdates: {}, possibleFieldsUpdates: [] };
             const possibleValueUpdates = queue[entityGuid].possibleValueUpdates ?? {};
-            possibleValueUpdates[formula.fieldName] = correctedValue.value;
+            possibleValueUpdates[formula.fieldName] = corrected.value;
             const possibleFieldsUpdates = queue[entityGuid].possibleFieldsUpdates ?? [];
-            if (correctedValue.fields)
-              possibleFieldsUpdates.push(...correctedValue.fields);
+            if (corrected.fields)
+              possibleFieldsUpdates.push(...corrected.fields);
             queue[entityGuid] = { possibleValueUpdates, possibleFieldsUpdates };
-            formula.stopFormula = correctedValue.stop ?? formula.stopFormula;
+            formula.stopFormula = corrected.stop ?? formula.stopFormula;
             this.fieldsSettingsService.forceSettings();
           });
         }
@@ -126,7 +126,7 @@ export class FormulaEngine implements OnDestroy {
       }
 
       if (formulaResult.fields)
-        formulaResultFields.push(...formulaResult.fields);
+        formulaFields.push(...formulaResult.fields);
 
       if (formulaResult.value === undefined) { continue; }
 
@@ -174,7 +174,7 @@ export class FormulaEngine implements OnDestroy {
       },
       validation: formulaValidation,
       value: formulaValue,
-      fields: formulaResultFields,
+      fields: formulaFields,
     };
     return runFormulaResult;
   }
