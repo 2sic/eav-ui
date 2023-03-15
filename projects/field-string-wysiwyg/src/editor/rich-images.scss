@@ -1,8 +1,24 @@
 $gutter: 30px;
 
-/* Custom stuff */
+// ---- Prepare formulas for re-use ----
+// With 33% - This is the correct formula
+// 1. take 100% and remove 2 gutters
+// 2. divide by 3 - that's the width of an image without gutter
+// 3. add half a gutter to the width of the image
+$width33-standard: calc((100% - ($gutter * 2)) / 3 + $gutter/2);
+$width33-middle: calc((100% - ($gutter * 2)) / 3 + $gutter);
+
+// These are the correct formulas
+$width25-standard: calc((100% - ($gutter * 3)) / 4 + $gutter/2);
+$width25-middle: calc((100% - ($gutter * 3)) / 4 + $gutter);
+
+$width66: calc((100% - ($gutter * 2)) / 3 * 2 + ($gutter / 2 * 3));
+$width75: calc((100% - ($gutter * 3)) / 4 * 3 + ($gutter / 2 * 5));
+
+/* Responsive Images stuff */
 .mce-content-body {
 
+  // Just the image directly
   img {
     box-sizing: border-box;
 
@@ -16,7 +32,7 @@ $gutter: 30px;
       // margin-right: #{$gutter} / 2;
       padding-right:$gutter/2;
     }
-    // TODO: this doesn't quite work yet
+    &.wysiwyg-left + img.wysiwyg-left,
     &.wysiwyg-middle {
       padding-left: $gutter/2;
       padding-right: $gutter/2;
@@ -28,40 +44,55 @@ $gutter: 30px;
       width: 100%;
     }
     &.wysiwyg-50 {
-      width: 50%; // calc(50% - ($gutter / 2));
-      // &.wysiwyg-middle {
-      //   // This is the correct formula - below the shortened version
-      //   width: calc(50% + $gutter / 2);
-      // }
+      width: 50%;
+      &.wysiwyg-left + img.wysiwyg-left.wysiwyg-50 {
+        padding-right: 0;
+      }
     }
     &.wysiwyg-33 {
-      // This is the correct formula
-      // 1. take 100% and remove 2 gutters
-      // 2. divide by 3 - that's the width of an image without gutter
-      // 3. add half a gutter to the width of the image
-      width: calc((100% - ($gutter * 2)) / 3 + $gutter/2);
+      width: $width33-standard;
+      &.wysiwyg-left + img.wysiwyg-left,
       &.wysiwyg-middle {
-        // This is the correct formula - below the shortened version
-        width: calc((100% - ($gutter * 2)) / 3 + $gutter);
-        // width: calc(33.3% + ($gutter / 3));
+        width: $width33-middle;
+      }
+      // the 3rd one should behave as right
+      &.wysiwyg-left + img.wysiwyg-left.wysiwyg-33 + img.wysiwyg-left.wysiwyg-33 {
+        padding-right: 0;
+        width: $width33-standard;
+      }
+      &.wysiwyg-left + img.wysiwyg-left.wysiwyg-66 {
+        padding-right: 0;
+        width: $width66;
       }
     }
     &.wysiwyg-66 {
-      width: calc((100% - ($gutter * 2)) / 3 * 2 + ($gutter / 2 * 3));
+      width: $width66;
+      &.wysiwyg-left + img.wysiwyg-left.wysiwyg-33 {
+        padding-right: 0;
+      }
     }
     &.wysiwyg-25 {
-      // This is the correct formula - below the shortened version
-      width: calc((100% - ($gutter * 3)) / 4 + $gutter/2);
-      // width: calc(25% - ($gutter / 4));
+      width: $width25-standard;
+      &.wysiwyg-left + img.wysiwyg-left,
       &.wysiwyg-middle {
-        // This is the correct formula - below the shortened version
-        width: calc((100% - ($gutter * 3)) / 4 + $gutter);
-        // width: calc(25% + ($gutter / 4));
+        width: $width25-middle;
+      }
+      // the 4th one should behave as right
+      &.wysiwyg-left + img.wysiwyg-left + img.wysiwyg-left + img.wysiwyg-left{
+        padding-right: 0;
+        width: $width25-standard;
+      }
+      // If followed by a 75% image, it should behave as right
+      &.wysiwyg-left + img.wysiwyg-left.wysiwyg-75 {
+        padding-right: 0;
+        width: $width75;
       }
     }
     &.wysiwyg-75 {
-      width: calc((100% - ($gutter * 3)) / 4 * 3 + ($gutter / 2 * 5));
-      // width: calc(75% - (#{$gutter} * 3 / 4));
+      width: $width75;
+      &.wysiwyg-left + img.wysiwyg-left.wysiwyg-25 {
+        padding-right: 0;
+      }
     }
   }
 
