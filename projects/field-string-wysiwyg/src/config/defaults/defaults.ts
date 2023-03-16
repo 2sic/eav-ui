@@ -113,7 +113,7 @@ export const ConfigurationPresets: Record<string, WysiwygConfigurationSet> = {
       ...TinyMceOptionsDefault,
       // in rich mode, images should not be inside P-Tags
       // so that they can be floated and that p-tags can be beside the image
-      valid_children: '-p[img]',
+      valid_children: '-p[img],-p[picture]',
     },
     contextMenu: DefaultContextMenu.rich,
     features: {
