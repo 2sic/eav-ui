@@ -1,12 +1,30 @@
 import * as DialogModes from '../../constants/display-modes';
-import { WysiwygConfigurationSet } from '../types/wysiwyg-configurations';
+import { WysiwygConfigurationSet, WysiwygConfigurationVariation } from '../types/wysiwyg-configurations';
 import { DefaultContextMenu } from './default-context-menu';
 import { TinyMceOptionsDefault, TinyMceOptionsText, TinyMceOptionsTextBasic, TinyMceOptionsTextMinimal, TinyMceOptionsTextPlain } from './default-tinymce-options';
 import { DefaultPlugins } from './default-tinymce-plugins';
 import { DefaultToolbarConfig } from './default-toolbar-config';
 
-
+/** Standard wysiwyg mode */
 export const DefaultMode = 'default';
+
+const VariationInline: WysiwygConfigurationVariation = {
+  displayMode: DialogModes.DisplayInline,
+  buttons: {
+    source: false,
+    advanced: false,
+    dialog: true,
+  }
+};
+
+const VariationDialog: WysiwygConfigurationVariation = {
+  displayMode: DialogModes.DisplayDialog,
+  buttons: {
+    source: true,
+    advanced: true,
+    dialog: false,
+  },
+};
 
 const defaultConfigurationSet: WysiwygConfigurationSet = {
   editMode: DefaultMode,
@@ -30,23 +48,8 @@ const defaultConfigurationSet: WysiwygConfigurationSet = {
   tinyMcePlugins: DefaultPlugins,
   toolbar: DefaultToolbarConfig.default,
   variations: [
-    {
-      displayMode: DialogModes.DisplayInline,
-      buttons: {
-        source: false,
-        advanced: false,
-        dialog: true,
-      }
-    },
-    {
-      displayMode: DialogModes.DisplayDialog,
-      buttons: {
-        source: true,
-        advanced: true,
-        dialog: false,
-      },
-      toolbar: DefaultToolbarConfig.dialogDefault,
-    }
+    VariationInline,
+    VariationDialog,
   ],
 };
 
@@ -64,7 +67,14 @@ const configurationText: WysiwygConfigurationSet = {
 
 export const ConfigurationPresets: Record<string, WysiwygConfigurationSet> = {
   default: {
-    ...defaultConfigurationSet
+    ...defaultConfigurationSet,
+    variations: [
+      VariationInline,
+      {
+        ...VariationDialog,
+        toolbar: DefaultToolbarConfig.dialogDefault,
+      },
+    ],
   },
   advanced: {
     ...defaultConfigurationSet,
