@@ -1,6 +1,6 @@
 import type { RawEditorOptions } from 'tinymce';
 
-export const DefaultOptions: RawEditorOptions = {
+export const TinyMceOptionsDefault: RawEditorOptions = {
   skin: '2sxc-tinymce-skin',
   theme: 'silver',
   suffix: '.min', // force minified skin, theme, plugins, etc.
@@ -37,4 +37,35 @@ export const DefaultOptions: RawEditorOptions = {
 
   // experimental #content-divisions - https://www.tiny.cloud/docs/configure/content-filtering/#valid_children
   // valid_children: '+div[p|h1|h2|h3|h4|h5|6h|blockquote]'
+};
+
+export const TinyMceOptionsText: RawEditorOptions = {
+  ...TinyMceOptionsDefault,
+  paste_as_text: true,
+  paste_block_drop: true,
+  paste_data_images: false,
+  // extended_valid_elements: '-strong,-ul,-ol,-li',
+  invalid_elements: [
+    'div',
+    'table,tr,td,th,thead,tbody,caption,col,colgroup,tfoot',
+    'font,section,article,aside,header,footer,nav,hgroup,address',
+    'object,iframe,video,audio,source,track,embed',
+    'figure,figcaption',
+    'img,picture,map,area,canvas,svg,math',
+  ].join(','),
+};
+
+export const TinyMceOptionsTextBasic: RawEditorOptions = {
+  ...TinyMceOptionsText,
+  invalid_elements: TinyMceOptionsText.invalid_elements + ',h1,h2,h3,h4,h5,h6',
+};
+
+export const TinyMceOptionsTextMinimal: RawEditorOptions = {
+  ...TinyMceOptionsTextBasic,
+  invalid_elements: TinyMceOptionsTextBasic.invalid_elements + ',ul,ol,li',
+};
+
+export const TinyMceOptionsTextPlain: RawEditorOptions = {
+  ...TinyMceOptionsTextMinimal,
+  invalid_elements: TinyMceOptionsTextMinimal.invalid_elements + ',strong,b,em,i,a',
 };

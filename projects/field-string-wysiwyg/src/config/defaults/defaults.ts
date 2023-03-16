@@ -1,7 +1,7 @@
 import * as DialogModes from '../../constants/display-modes';
 import { WysiwygConfigurationSet } from '../types/wysiwyg-configurations';
 import { DefaultContextMenu } from './default-context-menu';
-import { DefaultOptions } from './default-tinymce-options';
+import { TinyMceOptionsDefault, TinyMceOptionsText, TinyMceOptionsTextBasic, TinyMceOptionsTextMinimal, TinyMceOptionsTextPlain } from './default-tinymce-options';
 import { DefaultPlugins } from './default-tinymce-plugins';
 import { DefaultToolbarConfig } from './default-toolbar-config';
 
@@ -26,7 +26,7 @@ const defaultConfigurationSet: WysiwygConfigurationSet = {
   contextMenu: DefaultContextMenu.default,
   menubar: false,
   tinyMce: null,  // this is set at runtime
-  tinyMceOptions: DefaultOptions,
+  tinyMceOptions: TinyMceOptionsDefault,
   tinyMcePlugins: DefaultPlugins,
   toolbar: DefaultToolbarConfig.default,
   variations: [
@@ -52,6 +52,7 @@ const defaultConfigurationSet: WysiwygConfigurationSet = {
 
 const configurationText: WysiwygConfigurationSet = {
   ...defaultConfigurationSet,
+  tinyMceOptions: TinyMceOptionsText,
   features: {
     ...defaultConfigurationSet.features,
     addImages: false,
@@ -75,28 +76,31 @@ export const ConfigurationPresets: Record<string, WysiwygConfigurationSet> = {
   'text-basic': {
     ...configurationText,
     editMode: 'text-basic',
+    tinyMceOptions: TinyMceOptionsTextBasic,
     toolbar: DefaultToolbarConfig['text-basic'],
   },
   'text-minimal': {
     ...configurationText,
     editMode: 'text-minimal',
+    tinyMceOptions: TinyMceOptionsTextMinimal,
     toolbar: DefaultToolbarConfig['text-minimal'],
   },
   'text-plain': {
     ...configurationText,
+    editMode: 'text-plain',
     features: {
       ...configurationText.features,
       pasteFormatted: false,
       editInDialog: false,
     },
-    editMode: 'text-plain',
+    tinyMceOptions: TinyMceOptionsTextPlain,
     toolbar: DefaultToolbarConfig['text-plain'],
   },
   rich: {
     ...defaultConfigurationSet,
     editMode: 'rich',
     tinyMceOptions: {
-      ...DefaultOptions,
+      ...TinyMceOptionsDefault,
       // in rich mode, images should not be inside P-Tags
       // so that they can be floated and that p-tags can be beside the image
       valid_children: '-p[img]',

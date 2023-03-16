@@ -33,20 +33,20 @@ export const DefaultToolbarConfig = {
     /* content block    */ NoButtons,
     /* tools/mode switch*/ standardGroupFinal,
   ],
-  'text-minimal': [
-    /* initial w/undo   */ standardGroupUndoRedoPaste,
-    /* format text      */ `bold italic`,
-    /* paragraph types  */ NoButtons,
-    /* bullets          */ NoButtons,
-    /* links/media      */ `link ${Buttons.LinkPageButton}`,
-    /* content block    */ NoButtons,
-    /* tools/mode switch*/ standardGroupFinal,
-  ],
   'text-basic': [
     /* initial w/undo   */ standardGroupUndoRedoPaste,
     /* format text      */ `bold ${Buttons.StylesGroup}`,
     /* paragraph types  */ NoButtons,
     /* bullets          */ 'numlist bullist outdent indent',
+    /* links/media      */ `link ${Buttons.LinkPageButton}`,
+    /* content block    */ NoButtons,
+    /* tools/mode switch*/ standardGroupFinal,
+  ],
+  'text-minimal': [
+    /* initial w/undo   */ standardGroupUndoRedoPaste,
+    /* format text      */ `bold italic`,
+    /* paragraph types  */ NoButtons,
+    /* bullets          */ NoButtons,
     /* links/media      */ `link ${Buttons.LinkPageButton}`,
     /* content block    */ NoButtons,
     /* tools/mode switch*/ standardGroupFinal,
@@ -64,7 +64,7 @@ export const DefaultToolbarConfig = {
     /* links/media      */ `${Buttons.LinkGroup}`,
     /* content block    */ // Buttons.AddContentBlock, // Without the content-block as it will be in the second line
     /* tools/mode switch*/ standardGroupFinal,
-  
+
     /* -                */ NewRow,
     /* initial w/undo   */ `${Buttons.PasteImage}`,
 
