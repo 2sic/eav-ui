@@ -22,7 +22,10 @@ export const DefaultOptions: RawEditorOptions = {
   extended_valid_elements: '@[class]' // allow classes on all elements,
     + ',i' // allow i elements (allows icon-font tags like <i class='fa fa-...'>),
     + ',hr[sxc|guid]', // allow inline content-blocks
-  custom_elements: 'hr',
+
+  // 2023-03-16 2dm - don't think we need this, disabled
+  // custom_elements: 'hr',
+
   // Url Rewriting in images and pages
   // convert_urls: false,  // don't use this, would keep the domain which is often a test-domain
   // keep urls with full path so starting with a '/' - otherwise it would rewrite them to a '../../..' syntax

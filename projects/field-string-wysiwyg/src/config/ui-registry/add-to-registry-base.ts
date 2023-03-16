@@ -76,7 +76,6 @@ export abstract class AddToRegistryBase {
     this.options.toolbar = newSettings.toolbar;
     this.options.menubar = newSettings.menubar;
     this.options.contextmenu = newSettings.contextmenu;
-console.warn('2dm menubar', newSettings);
     // refresh editor toolbar
     this.editor.editorManager.remove(this.editor);
     this.editor.editorManager.init(this.options);

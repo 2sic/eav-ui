@@ -45,7 +45,6 @@ export class TinyButtonsImg extends AddToRegistryBase {
           this.splitButtonItem(btns.image.icon, 'Image.AdamImage.Tooltip', () => thisForLater.toggleAdam(false, true)),
           this.splitButtonItem('custom-file-dnn', 'Image.DnnImage.Tooltip', () => thisForLater.toggleAdam(true, true)),
           this.splitButtonItem(btns.link.icon, btns.link.tooltip, 'mceImage'),
-          // TODO: MAKE BEHAVE differently depending on the responsiveImages mode
           this.splitButtonItem(btns.alignleft.icon, btns.alignleft.tooltip, 'JustifyLeft'),
           this.splitButtonItem(btns.aligncenter.icon, btns.aligncenter.tooltip, 'JustifyCenter'),
           this.splitButtonItem(btns.alignright.icon, btns.alignright.tooltip, 'JustifyRight'),
