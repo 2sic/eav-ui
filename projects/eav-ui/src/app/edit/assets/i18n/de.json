@@ -230,9 +230,9 @@
     "H6": "Ü6",
     "Paragraph": "Absatz",
     "ContentBlock.Add": "App oder Inhaltsbaustein einfügen",
-    "RichImages.Ratio100.Label": "Bild auf ganze Breite anpassen",
+    "RichImages.Ratio100.Label": "Bildbreite 100%",
     "RichImages.Ratio100.Tooltip": "Bild auf ganze Breite (desktop/mobile) anpassen",
-    "RichImages.RatioXofY.Label": "Bildbreite {0}/{1} der Fläche",
+    "RichImages.RatioXofY.Label": "Bildbreite {0}/{1}",
     "RichImages.RatioXofY.Tooltip": "Bildbreite {0}/{1} der verfügbaren Fläche auf Desktop; Mobil wird automatisch angepasst"
   },
   "Features": {

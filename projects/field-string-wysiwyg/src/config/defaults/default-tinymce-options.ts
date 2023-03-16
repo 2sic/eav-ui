@@ -34,9 +34,6 @@ export const TinyMceOptionsDefault: RawEditorOptions = {
   object_resizing: false, // don't allow manual scaling of images
   // debounce: false, // DONT slow-down model updates - otherwise we sometimes miss the last changes
   toolbar_persist: true,
-
-  // experimental #content-divisions - https://www.tiny.cloud/docs/configure/content-filtering/#valid_children
-  // valid_children: '+div[p|h1|h2|h3|h4|h5|6h|blockquote]'
 };
 
 export const TinyMceOptionsText: RawEditorOptions = {
@@ -44,7 +41,6 @@ export const TinyMceOptionsText: RawEditorOptions = {
   paste_as_text: true,
   paste_block_drop: true,
   paste_data_images: false,
-  // extended_valid_elements: '-strong,-ul,-ol,-li',
   invalid_elements: [
     'div',
     'table,tr,td,th,thead,tbody,caption,col,colgroup,tfoot',
