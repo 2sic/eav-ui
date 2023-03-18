@@ -5,7 +5,9 @@
 @import '~@material/layout-grid/mdc-layout-grid';
 @import '@ag-grid-community/core/dist/styles/ag-grid.css';
 @import '@ag-grid-community/core/dist/styles/ag-theme-material.css';
-@import 'https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap';
+// 2023-03-18 2dm - disabling these resources as they should be loaded from CDN
+// @import 'https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap';
+// @import './styles/icons.scss';
 
 @import './styles/variables.scss';
 @import './styles/theme.scss';
@@ -27,7 +29,6 @@
 @import './styles/tippy.styles.scss';
 @import './styles/mat-snackbar.styles.scss';
 @import './styles/eco-fab-speed-dial.styles.scss';
-@import './styles/icons.scss';
 
 html,
 body {
