@@ -67,7 +67,12 @@ export class QueryDefinitionService {
   }
 
   fetchDataSources() {
-    return this.http.get<DataSource[]>(this.dnnContext.$2sxc.http.apiUrl(webApiQueryDataSources)).pipe(
+    return this.http.get<DataSource[]>(this.dnnContext.$2sxc.http.apiUrl(webApiQueryDataSources), {
+      params: {
+        appid: this.context.appId,
+        zoneId: this.context.zoneId,
+      },
+    }).pipe(
       map(dataSources => {
         const outDs = eavConstants.pipelineDesigner.outDataSource;
         const outDsConst: DataSource = {

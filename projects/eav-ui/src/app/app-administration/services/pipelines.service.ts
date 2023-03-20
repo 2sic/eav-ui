@@ -8,15 +8,14 @@ import { toBase64 } from '../../shared/helpers/file-to-base64.helper';
 import { Context } from '../../shared/services/context';
 import { Query } from '../models/query.model';
 
-const webApiQueryRoot = 'admin/query/';
-const webApiQueryImport = webApiQueryRoot + 'import';
-const webApiQueryClone = webApiQueryRoot + 'Clone';
-const webApiQueryDelete = webApiQueryRoot + 'Delete';
-export const webApiQueryRun = webApiQueryRoot + 'Run';
-export const webApiQueryDebugStream = webApiQueryRoot + 'DebugStream';
-export const webApiQuerySave = webApiQueryRoot + 'Save';
-export const webApiQueryGet = webApiQueryRoot + 'Get';
-export const webApiQueryDataSources = webApiQueryRoot + 'DataSources';
+const webApiQueryImport = 'admin/query/import';
+const webApiQueryClone = 'admin/query/Clone';
+const webApiQueryDelete = 'admin/query/Delete';
+export const webApiQueryRun = 'admin/query/Run';
+export const webApiQueryDebugStream = 'admin/query/DebugStream';
+export const webApiQuerySave = 'admin/query/Save';
+export const webApiQueryGet = 'admin/query/Get';
+export const webApiQueryDataSources = 'admin/query/DataSources';
 
 @Injectable()
 export class PipelinesService {
