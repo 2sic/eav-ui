@@ -30,6 +30,7 @@ export interface GuiTypes {
 
 export interface GuiType {
   Icon: string;
+  Label?: string;
   Name: string;
   UiHint: string;
 }
