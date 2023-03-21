@@ -2,6 +2,7 @@ import { DataSource, PipelineDataSource } from '../models';
 import { GuiTypes, TypeInfo, TypeInfos } from './plumb-editor.models';
 
 export const guiTypes: GuiTypes = {
+  App: { Name: 'App', Icon: 'star', UiHint: 'DataSources from the current App' },
   Cache: { Name: 'Cache', Icon: 'history', UiHint: 'Caching of data' },
   Filter: { Name: 'Filter', Icon: 'filter_list', UiHint: 'Filter data - usually returning less items than came in' },
   Logic: { Name: 'Logic', Icon: 'share', UiHint: 'Logic operations - usually choosing between different streams' },
