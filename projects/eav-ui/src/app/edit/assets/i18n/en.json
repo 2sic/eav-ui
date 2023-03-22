@@ -250,9 +250,9 @@
     "Paragraph": "Paragraph",
     "ContentBlock.Add": "Add app or content block",
     "ContentDivision.Add": "Add content division",
-    "RichImages.Ratio100.Label": "Make width cover entire area",
+    "RichImages.Ratio100.Label": "Width 100%",
     "RichImages.Ratio100.Tooltip": "Make width cover entire area of screen (desktop and mobile)",
-    "RichImages.RatioXofY.Label": "Make width {0}/{1} of screen",
+    "RichImages.RatioXofY.Label": "Width {0}/{1}",
     "RichImages.RatioXofY.Tooltip": "Make width {0}/{1} of the desktop width; mobile will auto-adjust"
   },
   "Features": {

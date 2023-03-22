@@ -1,25 +1,29 @@
-import { InputFieldHelpers, LocalizationHelpers } from '.';
-import { FieldSettings, FieldValue } from '../../../../../../edit-types';
-import { InputType } from '../../../content-type-fields/models/input-type.model';
-import { FeatureSummary } from '../../../features/models';
-import { EavWindow } from '../../../shared/models/eav-window.model';
-import { DesignerSnippet, FieldOption } from '../../dialog/footer/formula-designer/formula-designer.models';
-import { formV1Prefix, requiredFormulaPrefix } from '../constants';
-import { FormulaCacheItem, FormulaFieldValidation, FormulaFunction, FormulaProps, FormulaPropsV1, FormulaTargets,
-  FormulaV1Data, FormulaV1ExperimentalEntity, FormulaVersion, FormulaVersions, FormValues, Language, SettingsFormulaPrefix } from '../models';
-import { EavHeader } from '../models/eav';
-import { EavService, FieldsSettingsService } from '../services';
-import { ItemService } from '../store/ngrx-data';
+import { FieldSettings, FieldValue } from '../../../../../edit-types';
+import { InputType } from '../../content-type-fields/models/input-type.model';
+import { FeatureSummary } from '../../features/models';
+import { DesignerSnippet, FieldOption } from '../dialog/footer/formula-designer/formula-designer.models';
+import { InputFieldHelpers, LocalizationHelpers } from '../shared/helpers';
+import { FormValues, Language } from '../shared/models';
+import { EavHeader } from '../shared/models/eav';
+import { EavService, FieldsSettingsService } from '../shared/services';
+import { ItemService } from '../shared/store/ngrx-data';
 
-
-declare const window: EavWindow;
+// Import the type definitions for intellisense
+import editorTypesForIntellisense from '!raw-loader!../../formulas/editor-intellisense-function-v2.rawts';
+import { formV1Prefix, requiredFormulaPrefix } from './formula.constants';
+// tslint:disable-next-line: max-line-length
+import { FormulaCacheItem, FormulaFieldValidation, FormulaFunction, FormulaProps, FormulaPropsV1, FormulaTargets, FormulaV1Data, FormulaV1ExperimentalEntity, FormulaVersion, FormulaVersions, SettingsFormulaPrefix } from './formula.models';
 
 export class FormulaHelpers {
 
   private static cleanFormula(formula: string): string {
     if (!formula) { return formula; }
 
+    // Clean and remove any leading single-line comments
     let cleanFormula = formula.trim();
+    if (cleanFormula.startsWith('//')) {
+      cleanFormula = cleanFormula.replace(/^\/\/.*\n/gm, '').trim();
+    }
     /*
       Valid function string:
       function NAME (...ARGS) { BODY }
@@ -79,7 +83,7 @@ export class FormulaHelpers {
     fieldsSettingsService: FieldsSettingsService,
     features: FeatureSummary[],
   ): FormulaProps {
-    console.log('2dm - buildFormulaProps()');
+    // console.log('2dm - buildFormulaProps()');
     switch (formula.version) {
       case FormulaVersions.V1:
       case FormulaVersions.V2:
@@ -146,9 +150,17 @@ export class FormulaHelpers {
           context: {
             app: {
               ...formula.app,
-              getSetting: (settingPath: string) => eavService.eavConfig.settings.Values[settingPath]
-                ?? `Error: Setting '${settingPath}' not found. Did you configure it in the ContentType to be included? ` +
-                   `See TODO: link to docs`,
+              getSetting: (settingPath: string) => {
+                if (formula.version === FormulaVersions.V1) {
+                  console.warn('app.getSetting() is not available in v1 formulas, please use v2.');
+                  return '⚠️ error - see console';
+                }
+                const result = eavService.eavConfig.settings.Values[settingPath];
+                if (result != null) return result;
+                console.warn(`Error: Setting '${settingPath}' not found. Did you configure it in the ContentType to be included? ` +
+                  `See TODO: link to docs`);
+                return '⚠️ error - see console';
+              },
             },
             cache: formula.cache,
             culture: {
@@ -163,7 +175,12 @@ export class FormulaHelpers {
             },
             form: {
               runFormulas(): void {
-                fieldsSettingsService.forceSettings();
+                if (formula.version === FormulaVersions.V1) {
+                  console.warn('form.runFormulas() is being deprecated. Use V2 formulas and return the promise. Formulas will auto-run when it completes.');
+                  fieldsSettingsService.forceSettings();
+                } else if (formula.version === FormulaVersions.V2) {
+                  console.error('form.runFormulas() is not supported in V2 formulas. Just return the promise. Formulas will auto-run when it completes.');
+                }
               },
             },
             // WIP v14.11 move sxc to cache like app - must watch a bit till ca. Dec 2022 to ensure caching is ok for this
@@ -205,7 +222,7 @@ export class FormulaHelpers {
                 values[fieldName] = LocalizationHelpers.translate(currentLanguage, defaultLanguage, fieldValues, null);
               }
               return values;
-            },
+            }
           }
         };
         return propsV1;
@@ -257,7 +274,6 @@ export class FormulaHelpers {
           'culture.code',
           'culture.name',
           'debug',
-          'features.get(\'NameId\')',
           'features.isEnabled(\'NameId\')',
           'form.runFormulas()',
           'sxc.ChangeThis',
@@ -315,7 +331,6 @@ export class FormulaHelpers {
                 };
                 debug: boolean;
                 features: {
-                  get(nameId: string): Record<string, any>;
                   isEnabled(nameId: string): boolean;
                 };
                 form: {

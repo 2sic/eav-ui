@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24" height="24" viewBox="0 0 24 24">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="Rechteck_32" data-name="Rechteck 32" width="20" height="20" transform="translate(617 496)" fill="none"/>
+    </clipPath>
+  </defs>
+  <g id="space03" transform="translate(-615 -494)">
+    <rect id="space03-2" data-name="space03" width="24" height="24" transform="translate(615 494)" fill="none"/>
+    <g id="Gruppe_8" data-name="Gruppe 8" transform="translate(-33.5 -0.5)">
+      <path id="Linie_1" data-name="Linie 1" d="M2,.5H0A.5.5,0,0,1-.5,0,.5.5,0,0,1,0-.5H2a.5.5,0,0,1,.5.5A.5.5,0,0,1,2,.5Z" transform="translate(651.5 506.5)" fill="#fff"/>
+      <path id="Linie_1-2" data-name="Linie 1" d="M2,.5H0A.5.5,0,0,1-.5,0,.5.5,0,0,1,0-.5H2a.5.5,0,0,1,.5.5A.5.5,0,0,1,2,.5Z" transform="translate(655.5 506.5)" fill="#fff"/>
+      <path id="Linie_1-3" data-name="Linie 1" d="M2,.5H0A.5.5,0,0,1-.5,0,.5.5,0,0,1,0-.5H2a.5.5,0,0,1,.5.5A.5.5,0,0,1,2,.5Z" transform="translate(659.5 506.5)" fill="#fff"/>
+      <path id="Linie_1-4" data-name="Linie 1" d="M2,.5H0A.5.5,0,0,1-.5,0,.5.5,0,0,1,0-.5H2a.5.5,0,0,1,.5.5A.5.5,0,0,1,2,.5Z" transform="translate(663.5 506.5)" fill="#fff"/>
+      <path id="Linie_1-5" data-name="Linie 1" d="M2,.5H0A.5.5,0,0,1-.5,0,.5.5,0,0,1,0-.5H2a.5.5,0,0,1,.5.5A.5.5,0,0,1,2,.5Z" transform="translate(667.5 506.5)" fill="#fff"/>
+    </g>
+    <g id="space03-3" data-name="space03" clip-path="url(#clip-path)">
+      <g id="Gruppe_9" data-name="Gruppe 9" transform="translate(-33 -1.5)">
+        <g id="Rechteck_27" data-name="Rechteck 27" transform="translate(661.5 497)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1">
+          <rect width="8" height="6" rx="2" stroke="none"/>
+          <rect x="0.5" y="0.5" width="7" height="5" rx="1.5" fill="none"/>
+        </g>
+        <line id="Linie_20" data-name="Linie 20" x2="8" transform="translate(651 498)" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="1"/>
+        <line id="Linie_21" data-name="Linie 21" x2="7" transform="translate(651 499.5)" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="1"/>
+        <line id="Linie_22" data-name="Linie 22" x2="8" transform="translate(651 501)" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="1"/>
+      </g>
+      <g id="Gruppe_10" data-name="Gruppe 10" transform="translate(-33.25 2.5)">
+        <g id="Rechteck_28" data-name="Rechteck 28" transform="translate(651 509)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1">
+          <rect width="8" height="6" rx="2" stroke="none"/>
+          <rect x="0.5" y="0.5" width="7" height="5" rx="1.5" fill="none"/>
+        </g>
+        <line id="Linie_23" data-name="Linie 23" x2="8" transform="translate(661.5 510)" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="1"/>
+        <line id="Linie_24" data-name="Linie 24" x2="7" transform="translate(661.5 511.5)" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="1"/>
+        <line id="Linie_25" data-name="Linie 25" x2="8" transform="translate(661.5 513)" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="1"/>
+      </g>
+    </g>
+  </g>
+</svg>

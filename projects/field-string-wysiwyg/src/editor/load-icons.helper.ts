@@ -45,10 +45,41 @@ const customTinyMceIcons: Record<string, string> = {
   'custom-branding-watermark': brandingWatermark.default,
   'custom-sitemap': sitemap.default,
   'custom-paragraph': paragraph.default,
+
+};
+
+// Rich Text Editor Icons
+import imageLeft from '!raw-loader!../assets/icons/rich/image-left.svg';
+import imageRight from '!raw-loader!../assets/icons/rich/image-right.svg';
+import imageCenter from '!raw-loader!../assets/icons/rich/image-center.svg';
+import splitter0 from '!raw-loader!../assets/icons/rich/split-0.svg';
+import splitters from '!raw-loader!../assets/icons/rich/split-s.svg'; // todo
+import splitterm from '!raw-loader!../assets/icons/rich/split-m.svg';
+import splitterl from '!raw-loader!../assets/icons/rich/split-l.svg';
+// import splitterxl from '!raw-loader!../assets/icons/rich/split-xl.svg';
+
+// Rich Text Editor Icons
+const richIcons = {
+  // Splitters
+  splitter0,
+  splitters,// TODO: add small icon
+  splitterm,
+  splitterl,
+  // splitterxl,
+
+  // Image alignment
+  'rich-image-left': imageLeft,
+  'rich-image-right': imageRight,
+  'rich-image-center': imageCenter,
 };
 
 export function loadCustomIcons(editor: Editor): void {
   Object.entries(customTinyMceIcons).forEach(([name, svg]) => {
+    editor.ui.registry.addIcon(name, svg);
+  });
+
+  Object.entries(richIcons).forEach(([name, svg]) => {
+    // console.log('2dm add', name, svg);
     editor.ui.registry.addIcon(name, svg);
   });
 }

@@ -4,7 +4,7 @@ import { wysiwygEditorHtmlTag } from '../../../internal-constants';
 import * as DialogModes from '../../constants/display-modes';
 import * as EditModes from '../../constants/edit-modes';
 import { FieldStringWysiwygEditor } from '../../editor/editor';
-import { RawEditorOptionsWithEav } from '../tinymce-helper-types';
+import { RawEditorOptionsExtended } from '../raw-editor-options-extended';
 
 type FuncVoid = () => void | unknown;
 
@@ -13,7 +13,7 @@ export interface AddToRegistryParams {
   field: FieldStringWysiwygEditor;
   editor: Editor;
   adam: Adam;
-  options: RawEditorOptionsWithEav;
+  options: RawEditorOptionsExtended;
 }
 
 /**
@@ -25,7 +25,7 @@ export abstract class AddToRegistryBase {
   field: FieldStringWysiwygEditor;
   editor: Editor;
   adam: Adam;
-  options: RawEditorOptionsWithEav;
+  options: RawEditorOptionsExtended;
 
   constructor(makerParams: AddToRegistryParams, message?: string) {
     this.field = makerParams.field;
@@ -36,29 +36,46 @@ export abstract class AddToRegistryBase {
     // if (message) console.log('2dm - debug AddToRegistryBase', message, makerParams, this);
   }
 
+  /**
+   * Get the current selection in the DOM
+   * Note that this was copied from somewhere, so we don't really know what it does ;)
+   */
+  protected rangeSelected() {
+    return document.getSelection().rangeCount > 0 && !document.getSelection().getRangeAt(0).collapsed;
+  }
+
+  protected toggleOneClassFromList(toBeApplied: string, all: string[]) {
+    const formatter = this.editor.formatter;
+    all.filter((v) => v !== toBeApplied).forEach((v) => formatter.remove(v));
+    formatter.toggle(toBeApplied);
+    // Set dirty, because formatter.toggle doesn't do it
+    this.editor.setDirty(true);
+  }
+
+
   protected toggleAdam(usePortalRoot: boolean, showImagesOnly: boolean) {
     // Toggle Adam in the Dialog
     this.adam.toggle(usePortalRoot, showImagesOnly);
 
     // Switch to Dialog if we are still inline
-    // TODO: VERIFY DIALOG ALLOWED
-    const isDialog = this.options.currentMode.displayMode === DialogModes.DisplayDialog;
+    // TODO: VERIFY DIALOG ALLOWED once the option exits
+    const currMode = this.options.configManager.current;
+    const isDialog = currMode.displayMode === DialogModes.DisplayDialog;
     if (!isDialog)
       this.openInDialog();
   }
 
   /** Mode switching to inline/dialog and advanced/normal */
   protected switchMode(displayMode?: DialogModes.DisplayModes, editMode?: EditModes.WysiwygEditMode): void {
-    displayMode ??= this.options.currentMode.displayMode;
-    editMode ??= this.options.currentMode.editMode;
-    const newSettings = this.options.modeSwitcher.switch(displayMode, editMode);
-    // don't create a new object, we must keep a reference to the old
+    const currMode = this.options.configManager.current;
+    displayMode ??= currMode.displayMode;
+    editMode ??= currMode.editMode;
+    const newSettings = this.options.configManager.switch(editMode, displayMode);
+    // don't create a new object, we must keep a reference to the previous parent `this.options`.
     // don't do this: this.options = {...this.options, ...newSettings};
     this.options.toolbar = newSettings.toolbar;
     this.options.menubar = newSettings.menubar;
-    this.options.currentMode = newSettings.currentMode;
     this.options.contextmenu = newSettings.contextmenu;
-
     // refresh editor toolbar
     this.editor.editorManager.remove(this.editor);
     this.editor.editorManager.init(this.options);

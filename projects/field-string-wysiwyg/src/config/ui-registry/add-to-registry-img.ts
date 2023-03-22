@@ -45,7 +45,6 @@ export class TinyButtonsImg extends AddToRegistryBase {
           this.splitButtonItem(btns.image.icon, 'Image.AdamImage.Tooltip', () => thisForLater.toggleAdam(false, true)),
           this.splitButtonItem('custom-file-dnn', 'Image.DnnImage.Tooltip', () => thisForLater.toggleAdam(true, true)),
           this.splitButtonItem(btns.link.icon, btns.link.tooltip, 'mceImage'),
-          // TODO: MAKE BEHAVE differently depending on the WysiwygMode
           this.splitButtonItem(btns.alignleft.icon, btns.alignleft.tooltip, 'JustifyLeft'),
           this.splitButtonItem(btns.aligncenter.icon, btns.aligncenter.tooltip, 'JustifyCenter'),
           this.splitButtonItem(btns.alignright.icon, btns.alignright.tooltip, 'JustifyRight'),
@@ -57,11 +56,11 @@ export class TinyButtonsImg extends AddToRegistryBase {
 
   /** Add Context toolbars */
   private contextMenus(): void {
-    const rangeSelected = () => document.getSelection().rangeCount > 0 && !document.getSelection().getRangeAt(0).collapsed;
+    const rangeSelected = this.rangeSelected;
 
-    // Different behavior depending on WysiwygMode
-    const imgAlign = this.options.eavConfig.features.responsiveImages
-      ? `${RichSpecs.ImgLeftClass} ${RichSpecs.ImgCenterClass} ${RichSpecs.ImgRightClass} ${Buttons.ImgRatiosGroup}`
+    // Different behavior depending on responsiveImages mode
+    const imgAlign = this.options.configManager.current.features.responsiveImages
+      ? `${RichSpecs.ImgLeft} ${RichSpecs.ImgCenter} ${RichSpecs.ImgRight} ${Buttons.ImgRatiosGroup}`
       : `alignleft aligncenter alignright ${Buttons.ImgWidthsGroup}`;
 
     this.editor.ui.registry.addContextToolbar('imgContextToolbar', {
@@ -91,37 +90,51 @@ export class TinyButtonsImg extends AddToRegistryBase {
   private registerEnhancedFormattingRatios(): void {
     const that = this;
     const main = RichSpecs.ImgRatioDefault;
-    const tog = (current: RichSpecs.ImageFormatDefinition) => this.toggleOneOfClassList(RichSpecs.ImgRatios, current);
+    const tog = (current: RichSpecs.ImageFormatDefinition) => this.toggleOneImgFormatDefinition(RichSpecs.ImgRatios, current);
     this.editor.ui.registry.addSplitButton(Buttons.ImgRatiosGroup, {
       ...that.splitButtonSpecs(() => tog(main)),
       icon: 'resize',
       tooltip: this.editor.translate([main.tooltip, main.fraction, main.fractionOf]),
       fetch: (callback) => {
         callback(
-          RichSpecs.ImgRatios.map(imgR => that.splitButtonItemTipped('resize',
-            this.editor.translate([imgR.label, imgR.fraction, imgR.fractionOf]),
-            this.editor.translate([imgR.tooltip, imgR.fraction, imgR.fractionOf]),
-            () => { tog(imgR); })),
+          RichSpecs.ImgRatios.map(imgR =>
+            ({ ...that.splitButtonItemTipped('resize',
+              this.editor.translate([imgR.label, imgR.fraction, imgR.fractionOf]),
+              this.editor.translate([imgR.tooltip, imgR.fraction, imgR.fractionOf]),
+              () => { tog(imgR); }),
+              // wip, doesn't work
+              onSetup: (api: any /* ToolbarButtonInstanceApi */) => {
+                console.log('2dm, api', api);
+              },
+           })
+          ),
         );
       },
     });
   }
 
-  private toggleOneOfClassList(all: RichSpecs.ImageFormatDefinition[], current: RichSpecs.ImageFormatDefinition) {
-    const formatter = this.editor.formatter;
-    all.filter((v) => v.name !== current.name).forEach((v) => formatter.remove(v.name));
-    formatter.toggle(current.name);
+  private toggleOneImgFormatDefinition(all: RichSpecs.ImageFormatDefinition[], current: RichSpecs.ImageFormatDefinition) {
+    this.toggleOneClassFromList(current.name, all.map((v) => v.name));
   }
+
 
   // New wysiwyg alignments
   private buttonsEnhancedAlignment(): void {
     const btns = this.getButtons();
     const editor = this.editor;
     RichSpecs.ImgAlignments.forEach((ai) => {
-      this.regBtn(ai.name,
-        ai.icon ?? btns[ai.inherit]?.icon,
-        editor.translate([ai.tooltip ?? btns[ai.inherit]?.tooltip]),
-        () => { this.toggleOneOfClassList(RichSpecs.ImgAlignments, ai); });
+      editor.ui.registry.addToggleButton(ai.name, {
+        icon: ai.icon ?? btns[ai.inherit]?.icon,
+        tooltip: editor.translate([ai.tooltip ?? btns[ai.inherit]?.tooltip]),
+        onAction: () => { this.toggleOneImgFormatDefinition(RichSpecs.ImgAlignments, ai); },
+        onSetup: (api) => {
+            // Sample used from here: https://www.tiny.cloud/docs/tinymce/6/custom-toggle-toolbar-button/
+            api.setActive(editor.formatter.match(ai.name));
+            const changed = editor.formatter.formatChanged(ai.name, (state) => api.setActive(state));
+            return () => changed.unbind();
+          }
+        }
+      );
     });
   }
 
@@ -148,7 +161,6 @@ export class TinyButtonsImg extends AddToRegistryBase {
     [
       RichSpecs.ImgAlignments,
       RichSpecs.ImgRatios,
-      RichSpecs.ImgEnhancedWidths
     ].map(set => set.forEach(def => {
         formatter.register(def.name, { selector: 'img', classes: def.class });
       }));

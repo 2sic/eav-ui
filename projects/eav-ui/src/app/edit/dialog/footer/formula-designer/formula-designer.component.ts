@@ -1,5 +1,7 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, Input, OnDestroy, OnInit, QueryList } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { TranslateService } from '@ngx-translate/core';
 import type * as Monaco from 'monaco-editor';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, switchMap } from 'rxjs';
 import { EntitiesService } from '../../../../content-items/services/entities.service';
@@ -7,10 +9,12 @@ import { InputTypeConstants } from '../../../../content-type-fields/constants/in
 import { eavConstants } from '../../../../shared/constants/eav.constants';
 import { copyToClipboard } from '../../../../shared/helpers/copy-to-clipboard.helper';
 import { FormBuilderComponent } from '../../../form/builder/form-builder/form-builder.component';
-import { defaultFormulaV1 } from '../../../shared/constants';
-import { FormulaHelpers, InputFieldHelpers } from '../../../shared/helpers';
-import { DesignerState, FormulaTarget, FormulaTargets } from '../../../shared/models';
-import { EavService, FormulaDesignerService } from '../../../shared/services';
+import { FormulaDesignerService } from '../../../formulas/formula-designer.service';
+import { defaultFormulaNow } from '../../../formulas/formula.constants';
+import { FormulaHelpers } from '../../../formulas/formula.helpers';
+import { DesignerState, FormulaTarget, FormulaTargets } from '../../../formulas/formula.models';
+import { InputFieldHelpers } from '../../../shared/helpers';
+import { EavService } from '../../../shared/services';
 import { ContentTypeService, ItemService } from '../../../shared/store/ngrx-data';
 // tslint:disable-next-line:max-line-length
 import { DesignerSnippet, EntityOption, FieldOption, FormulaDesignerTemplateVars, SelectOptions, SelectTarget, SelectTargets, TargetOption } from './formula-designer.models';
@@ -27,6 +31,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
   loadError = false;
   freeTextTarget = false;
   allowSaveFormula = this.eavService.eavConfig.enableFormulaSave;
+  isDeleted$ = new BehaviorSubject(false);
   saving$ = new BehaviorSubject(false);
   monacoOptions: Monaco.editor.IStandaloneEditorConstructionOptions = {
     minimap: {
@@ -41,7 +46,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     fixedOverflowWidgets: true,
   };
   filename = `formula${this.eavService.eavConfig.formId}.js`;
-  placeholder = defaultFormulaV1;
+  placeholder = defaultFormulaNow;
   focused = false;
   templateVars$: Observable<FormulaDesignerTemplateVars>;
 
@@ -52,6 +57,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     private entitiesService: EntitiesService,
     private itemService: ItemService,
     private contentTypeService: ContentTypeService,
+    private translate: TranslateService,
   ) { }
 
   ngOnInit(): void {
@@ -109,7 +115,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
 
   formulaChanged(formula: string): void {
     const designer = this.formulaDesignerService.getDesignerState();
-    this.formulaDesignerService.upsertFormula(designer.entityGuid, designer.fieldName, designer.target, formula, false);
+    this.formulaDesignerService.updateFormulaFromEditor(designer.entityGuid, designer.fieldName, designer.target, formula, false);
   }
 
   onFocused(): void {
@@ -135,7 +141,9 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     if (designer.editMode) {
       const formula = this.formulaDesignerService.getFormula(designer.entityGuid, designer.fieldName, designer.target, true);
       if (formula == null) {
-        this.formulaDesignerService.upsertFormula(designer.entityGuid, designer.fieldName, designer.target, defaultFormulaV1, false);
+        this.formulaDesignerService.updateFormulaFromEditor(
+          designer.entityGuid, designer.fieldName, designer.target, defaultFormulaNow, false
+        );
       }
     }
   }
@@ -155,10 +163,11 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
   run(): void {
     const designer = this.formulaDesignerService.getDesignerState();
     const formula = this.formulaDesignerService.getFormula(designer.entityGuid, designer.fieldName, designer.target, true);
-    this.formulaDesignerService.upsertFormula(designer.entityGuid, designer.fieldName, designer.target, formula.source, true);
+    this.formulaDesignerService.updateFormulaFromEditor(designer.entityGuid, designer.fieldName, designer.target, formula.source, true);
     this.formBuilderRefs
       .find(formBuilderRef => formBuilderRef.entityGuid === designer.entityGuid)
       .fieldsSettingsService.forceSettings();
+    this.isDeleted$.next(false);
   }
 
   save(): void {
@@ -208,6 +217,30 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
       );
       this.snackBar.open('Formula saved', null, { duration: 2000 });
       this.saving$.next(false);
+    });
+  }
+
+  deleteFormula(): void {
+    const designer = this.formulaDesignerService.getDesignerState();
+    const formula = this.formulaDesignerService.getFormula(designer.entityGuid, designer.fieldName, designer.target, true);
+
+    const id = formula.sourceId;
+    const title = formula.fieldName + ' - ' + formula.target;
+
+    const confirmed = confirm(this.translate.instant('Data.Delete.Question', { title, id }));
+    if (!confirmed) { return; }
+
+    this.entitiesService.delete(eavConstants.contentTypes.formulas, formula.sourceId, true).subscribe({
+      next: () => {
+        this.formulaDesignerService.delete(formula.entityGuid, formula.fieldName, formula.target);
+        this.snackBar.open(this.translate.instant('Message.Deleted'), null, { duration: 2000 });
+        this.isDeleted$.next(true);
+        if (designer.editMode)
+          this.toggleEdit();
+      },
+      error: (error: HttpErrorResponse) => {
+        this.snackBar.open(this.translate.instant('Message.DeleteError'), null, { duration: 2000 });
+      }
     });
   }
 
@@ -374,11 +407,11 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
 
     this.templateVars$ = combineLatest([
       combineLatest([options$, formula$, dataSnippets$, contextSnippets$, typings$, designerState$]),
-      combineLatest([result$, this.saving$]),
+      combineLatest([result$, this.saving$, this.isDeleted$]),
     ]).pipe(
       map(([
         [options, formula, dataSnippets, contextSnippets, typings, designer],
-        [result, saving],
+        [result, saving, isDeleted],
       ]) => {
         const templateVars: FormulaDesignerTemplateVars = {
           entityOptions: options.entityOptions,
@@ -390,8 +423,9 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
           contextSnippets,
           typings,
           result: result?.value,
-          resultExists: result != null,
+          resultExists: result != null && !isDeleted,
           resultIsError: result?.isError ?? false,
+          resultIsOnlyPromise: result?.isOnlyPromise ?? false,
           saving,
         };
         return templateVars;

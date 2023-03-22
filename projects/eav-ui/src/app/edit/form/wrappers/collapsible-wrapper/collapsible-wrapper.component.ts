@@ -1,5 +1,6 @@
 import { Component, Input, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { BaseSubsinkComponent } from 'projects/eav-ui/src/app/shared/components/base-subsink-component/base-subsink.component';
 import { BehaviorSubject, distinctUntilChanged, map, Observable, Subscription } from 'rxjs';
 import { FieldSettings } from '../../../../../../../edit-types';
 import { WrappersConstants } from '../../../shared/constants';
@@ -14,7 +15,7 @@ import { EmptyDefaultLogic } from './collapsible-wrapper-logic';
   templateUrl: './collapsible-wrapper.component.html',
   styleUrls: ['./collapsible-wrapper.component.scss'],
 })
-export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDestroy {
+export class CollapsibleWrapperComponent extends BaseSubsinkComponent implements FieldWrapper, OnInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
@@ -25,18 +26,17 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
   notes$: Observable<string>;
 
   private settings$: BehaviorSubject<FieldSettings>;
-  private subscription: Subscription;
 
   constructor(
     private fieldsSettingsService: FieldsSettingsService,
     private languageInstanceService: LanguageInstanceService,
     private eavService: EavService,
   ) {
+    super();
     EmptyDefaultLogic.importMe();
   }
 
   ngOnInit(): void {
-    this.subscription = new Subscription();
     this.collapsed$ = new BehaviorSubject(false);
     this.settings$ = new BehaviorSubject(null);
 
@@ -67,7 +67,7 @@ export class CollapsibleWrapperComponent implements FieldWrapper, OnInit, OnDest
   ngOnDestroy(): void {
     this.settings$.complete();
     this.collapsed$.complete();
-    this.subscription.unsubscribe();
+    super.ngOnDestroy();
   }
 
   toggleCollapse(): void {

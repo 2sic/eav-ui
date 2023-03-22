@@ -5,6 +5,7 @@ import { AbstractControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
 import { FeatureComponentBase } from 'projects/eav-ui/src/app/features/shared/base-feature.component';
+import { BaseSubsinkComponent } from 'projects/eav-ui/src/app/shared/components/base-subsink-component/base-subsink.component';
 import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/features.service';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, startWith, Subscription } from 'rxjs';
 import { AdamConfig, AdamItem, DropzoneConfigExt } from '../../../../../../../../edit-types';
@@ -37,7 +38,7 @@ import { AdamBrowserTemplateVars, AdamConfigInstance } from './adam-browser.mode
     ]),
   ]
 })
-export class AdamBrowserComponent implements OnInit, OnDestroy {
+export class AdamBrowserComponent extends BaseSubsinkComponent implements OnInit, OnDestroy {
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
   @Output() openUpload = new EventEmitter<null>();
@@ -48,7 +49,6 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
   private items$: BehaviorSubject<AdamItem[]>;
   private control: AbstractControl;
   private url: string;
-  private subscription = new Subscription();
   private firstFetch = true;
   private isPasteImageFromClipboardEnabled$ = new BehaviorSubject<boolean>(false);
 
@@ -65,7 +65,9 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef
-  ) { }
+  ) { 
+    super();
+  }
 
   ngOnInit() {
     this.control = this.group.controls[this.config.fieldName];
@@ -139,7 +141,7 @@ export class AdamBrowserComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.adamConfig$.complete();
     this.items$.complete();
-    this.subscription.unsubscribe();
+    super.ngOnDestroy();
   }
 
   addFolder() {

@@ -3,10 +3,9 @@ export const Code = 'code';
 
 export const ModeAdvanced = 'mode-advanced';
 export const AddContentBlock = 'contentblock-add';
-export const XXXContentDivision = 'contentdivision';
 export const DialogOpen = 'dialog-open';
 
-export const ContentSectionSplitter = 'contentsplit';
+export const toggleSuffix = '-toggle';
 export const ModeDefault = 'mode-default';
 
 // Heading Groups
@@ -31,3 +30,10 @@ export const LinkPageButton = 'link-page';
 
 // Styles
 export const StylesGroup = 'styles-group'; // used to be 'formatgroup'
+
+// Special row markers
+export const NoButtons = ''; // must be empty string
+export const NewRow = '\n';  // must be newline
+
+
+export const SplitterSizeButtonPrefix = 'content-split-size-';

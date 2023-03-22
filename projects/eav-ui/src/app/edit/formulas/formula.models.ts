@@ -1,6 +1,7 @@
 import { SxcInstance } from '@2sic.com/2sxc-typings';
-import { FormValues } from '.';
-import { FieldSettings, FieldValue } from '../../../../../../edit-types';
+import { BehaviorSubject } from 'rxjs';
+import { FieldSettings, FieldValue } from '../../../../../edit-types';
+import { FormValues } from '../shared/models';
 
 /**
  * Formula Cached Values which are re-used across formulas of the same entity
@@ -31,13 +32,17 @@ export interface FormulaCacheItem extends FormulaCacheItemShared {
   sourceId: number;
   target: FormulaTarget;
   version: FormulaVersion;
+  stopFormula: boolean;
+  promises$: BehaviorSubject<Promise<FieldValue | FormulaResultRaw>>;
+  updateCallback$: BehaviorSubject<(result: FieldValue | FormulaResultRaw) => void>;
 }
 
 export type FormulaFunction = FormulaFunctionDefault | FormulaFunctionV1;
 
-export type FormulaFunctionDefault = () => FieldValue;
+export type FormulaFunctionDefault = () => FieldValue | FormulaResultRaw;
 
-export type FormulaFunctionV1 = (data: FormulaV1Data, context: FormulaV1Context, experimental: FormulaV1Experimental) => FieldValue;
+export type FormulaFunctionV1 = (data: FormulaV1Data, context: FormulaV1Context, experimental: FormulaV1Experimental)
+  => FieldValue | FormulaResultRaw;
 
 export const FormulaVersions = {
   V1: 'v1',
@@ -131,6 +136,17 @@ export interface FormulaV1CtxTargetEntity {
   guid: string;
   id: number;
   type?: FormulaV1CtxTargetEntityType;
+  /**
+   * New 15.04 - metadata for information
+   */
+  for: FormulaV1CtxMetadataFor;
+}
+
+export interface FormulaV1CtxMetadataFor {
+  targetType: number;
+  number?: number;
+  string?: string;
+  guid?: string;
 }
 
 // WIP
@@ -177,6 +193,7 @@ export interface RunFormulasResult {
   settings: FieldSettings;
   validation: FormulaFieldValidation;
   value: FieldValue;
+  fields: FieldValuePair[];
 }
 
 export interface FormulaResult {
@@ -185,6 +202,7 @@ export interface FormulaResult {
   target: FormulaTarget;
   value: FieldValue;
   isError: boolean;
+  isOnlyPromise: boolean;
 }
 
 export interface DesignerState {
@@ -193,4 +211,17 @@ export interface DesignerState {
   fieldName: string;
   isOpen: boolean;
   target: FormulaTarget;
+}
+
+export interface FormulaResultRaw {
+  value?: FieldValue;
+  promise?: Promise<FormulaResultRaw>;
+  fields?: FieldValuePair[];
+  openInDesigner?: boolean;
+  stop?: boolean | null;
+}
+
+export interface FieldValuePair {
+  name: string;
+  value: FieldValue;
 }

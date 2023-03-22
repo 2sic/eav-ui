@@ -8,7 +8,9 @@ export interface Feature extends FeatureSummary {
   Description: string;
   EnabledReason: string;
   EnabledReasonDetailed: string;
-  EnabledStored: boolean;
+  Enabled: boolean;
+  EnabledByDefault: boolean;
+  EnabledInConfiguration: boolean | null;
   Expires: string;
   License: string;
   LicenseEnabled: boolean;

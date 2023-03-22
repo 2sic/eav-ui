@@ -4,6 +4,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { distinctUntilChanged, startWith, Subscription } from 'rxjs';
 import { ContentTypesService } from '../../../app-administration/services';
+import { BaseSubsinkComponent } from '../../../shared/components/base-subsink-component/base-subsink.component';
 import { eavConstants, ScopeOption } from '../../../shared/constants/eav.constants';
 import { VisualQueryService } from '../../services/visual-query.service';
 import { RenameStreamDialogControls, RenameStreamDialogData, RenameStreamDialogFormValue } from './rename-stream.models';
@@ -13,7 +14,7 @@ import { RenameStreamDialogControls, RenameStreamDialogData, RenameStreamDialogF
   templateUrl: './rename-stream.component.html',
   styleUrls: ['./rename-stream.component.scss']
 })
-export class RenameStreamComponent implements OnInit, OnDestroy {
+export class RenameStreamComponent extends BaseSubsinkComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
   form: FormGroup;
@@ -25,22 +26,22 @@ export class RenameStreamComponent implements OnInit, OnDestroy {
   guidedLabel = true;
   advancedMode = false;
 
-  private subscription = new Subscription();
-
   constructor(
     @Inject(MAT_DIALOG_DATA) private dialogData: RenameStreamDialogData,
     private dialogRef: MatDialogRef<RenameStreamComponent>,
     private visualQueryService: VisualQueryService,
     private contentTypesService: ContentTypesService,
     private changeDetectorRef: ChangeDetectorRef,
-  ) { }
+  ) {
+    super();
+   }
 
   ngOnInit(): void {
     this.buildForm();
   }
 
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    super.ngOnDestroy();
   }
 
   closeDialog(label?: string): void {

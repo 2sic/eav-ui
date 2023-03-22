@@ -1,0 +1,207 @@
+/*
+  This is a special file which is not compiled as a normal TypeScript.
+  Instead it's loaded as raw text, to hand over to Monaco.
+  It ensures that v2 functions have intellisense.
+
+  TIP: To edit this file, briefly rename it to ...raw.ts, then back to ...rawts
+       This will make VSCode load it as a normal TypeScript file, so you can edit it.
+
+  - Try to keep in sync with the real code in the 2sxc project.
+  - The comments are _documentation_ for the user, so they can see what's available
+  - If you need any "internal" comments, use // instead
+  - Note that the [inject:...] comments are replaced by the build process
+*/
+
+/**
+ * The data object is the main object for figuring out what the field or setting contained and what other fields currently store.
+ * It has properties such as `.value` etc.
+ * Just start typing to see the intellisense.
+ */
+// Note that the type must be explicitly like `string | boolean | number | string[]`
+// Otherwise it won't show the details to the user
+declare interface FormulaData {
+  /**
+   * The value of the current field/setting when the formula runs.
+   *
+   * _It's exact type depends on the underlying type._
+   */
+  value: string | boolean | number | string[];
+  /**
+   * The _default_ value of the current field/setting as defined in the field settings.
+   *
+   * _It's exact type depends on the underlying type._
+   */
+  default: string | boolean | number | string[];
+  /**
+   * A prefill value that was passed into the form when it was loaded.
+   *
+   * _It's exact type depends on the underlying type._
+   */
+  prefill: string | boolean | number | string[];
+  /**
+   * The value of the current field/setting when the form initially loaded.
+   *
+   * _It's exact type depends on the underlying type._
+   */
+  initial: string | boolean | number | string[];
+  /* [inject:AllFields] */
+  /**
+   * All parameters which were passed to the form when it was loaded
+   *
+   * _It's exact type depends on the parameter, but it's usually a string._
+   */
+  parameters: {
+    /* [inject:AllParameters] */
+  };
+}
+
+declare interface FormulaContext {
+  /**
+   * Information about the current App
+   */
+  app: {
+    /** The current App ID */
+    appId: number;
+    /** The current Zone ID */
+    zoneId: number;
+    /** Determines if the current App is the global App */
+    isGlobal: boolean;
+    /** Determines if the current App is the primary (main) App on the site */
+    isSite: boolean;
+    /** Determines if the current App is a content App */
+    isContent: boolean;
+    /**
+     * Retrieve a setting like an App setting.
+     * You need the full path like `Settings.ShowCategories`.
+     * 
+     * Important: For security reasons formulas will only get settings which where configured in the ContentType for use in Formulas.
+     */
+    getSetting(settingPath: string): string;
+  };
+  /**
+   * Cache for this formula. You can store any data here and it will be available in the next run.
+   */
+  cache: Record<string, any>;
+  /**
+   * Information about the current language
+   */
+  culture: {
+    code: string;
+    name: string;
+  };
+  debug: boolean;
+  /**
+   * API to detect what features are currently enabled/available
+   */
+  features: {
+    // /**
+    //  * Get internal information about a feature if it's available. This is rarely used.
+    //  * @param nameId The name of the feature, eg. `PasteImageFromClipboard`
+    //  */
+    // get(nameId: string): Record<string, any>;
+    /** Find out if the feature is enabled. Eg. `...isEnabled('PasteImageFromClipboard')` */
+    isEnabled(nameId: string): boolean;
+  };
+  /**
+   * Work with the current form
+   */
+  form: {
+    /** Re-trigger all formulas. Usually used inside promises when they complete. */
+    runFormulas(): void;
+  };
+  /**
+   * The standard sxc object for the current App.
+   * It's the same as the sxc-instance in the page.
+   *
+   * You can use it to make API calls to the server.
+   */
+  // sxc: Record<string, any>;
+  sxc: {
+    /** The module ID */
+    id: number;
+    /** The Content-Block ID - matches the module ID unless it's an inner-content block inside another module */
+    cbid: number;
+    /** The sxc WebAPI object. Check the docs: https://docs.2sxc.org/api/js/SxcWebApi.html */
+    webApi: {
+      /**
+       * Get data from a url and return the json-object
+       * @param url Url to call. It's usually a virtual url such as `app/auto/api/basic/hello`
+       * @param data Optional data. If provided, it will use a POST
+       * @param method Optional method, default is `GET` unless you specify data, then it's `POST`
+       */
+      fetchJson<TData>(url: string, data?: string | Record<string, any>, method?: string): Promise<TData>;
+      /**
+       * Get data from a url and return the response (not a nice object)
+       * @param url Url to call. It's usually a virtual url such as `app/auto/api/basic/hello`
+       * @param data Optional data. If provided, it will use a POST
+       * @param method Optional method, default is `GET` unless you specify data, then it's `POST`
+       */
+      fetchRaw<TData>(url: string, data?: string | Record<string, any>, method?: string): Promise<TData>;
+    };
+    [key: string]: any;
+  };
+  /**
+   * Information about the item this formula targets.
+   */
+  target: {
+    /** The entity the current formula affects */
+    entity: {
+      /** The entity ID */
+      id: number;
+      /** The entity GUID */
+      guid: string;
+      /** Metadata For information */
+      for: {
+        /** The target type like `4` (Entity). `0` if it's not metadata  */
+        targetType: number;
+        /** The int-key if it uses number keys, otherwise null */
+        number?: number;
+        /** The string-key if it uses string keys, otherwise null */
+        string?: string;
+        /** The GUID-key if it uses GUIDs, otherwise null */
+        guid?: string;
+      }
+    };
+    name: string;
+    /** The entity type name */
+    type: string;
+  };
+  /**
+   * Information about the current user
+   */
+  user: {
+    /** The current user ID */
+    id: number;
+    /** Check if the current user is anonymous eg. not logged in */
+    isAnonymous: boolean;
+    /** Check if the current user is a site admin */
+    isSiteAdmin: boolean;
+    /** Check if the current user is a system admin */
+    isSystemAdmin: boolean;
+  };
+}
+
+// /**
+//  * Test docs
+//  * @param data The data object
+//  */
+// declare function callbackV2(data: FormulaData): string | string[];
+
+// /**
+//  * test docs 3
+//  * @param callback The real code of the formula
+//  */
+// declare function v3(callback: typeof callbackV2);
+
+/**
+ * This `v2` wrapper is required for the intellisense to work.
+ * @param callback The real code of the formula
+ * @returns A string, boolean, number or array of strings - or an advanced object
+ */
+declare function v2(
+  // The main function - adding comments here does not show up, so we don't have them ATM
+  callback: (
+    data: FormulaData,
+    context: FormulaContext,
+  ) => string | boolean | number | string[],
+): void;

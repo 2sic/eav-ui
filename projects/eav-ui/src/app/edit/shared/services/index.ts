@@ -6,7 +6,6 @@ export * from './entity.service';
 export * from './fields-settings.service';
 export * from './fields-translate.service';
 export * from './forms-state.service';
-export * from './formula-designer.service';
 export * from './logging.service';
 export * from './load-icons.service';
 export * from './query.service';

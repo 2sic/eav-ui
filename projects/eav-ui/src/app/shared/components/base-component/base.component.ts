@@ -1,21 +1,21 @@
 import { Directive, OnDestroy } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { filter, map, pairwise, startWith, Subscription } from 'rxjs';
+import { BaseSubsinkComponent } from '../base-subsink-component/base-subsink.component';
 
 @Directive()
 // tslint:disable-next-line:directive-class-suffix
-export class BaseComponent implements OnDestroy {
-  subscription: Subscription;
-
+export class BaseComponent extends BaseSubsinkComponent implements OnDestroy {
+  
   constructor(
     protected router: Router,
     protected route: ActivatedRoute,
   ) {
-    this.subscription = new Subscription();
+    super();
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+    super.ngOnDestroy();
   }
 
   protected refreshOnChildClosedDeep() {

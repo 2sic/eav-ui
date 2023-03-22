@@ -1,5 +1,5 @@
 import { FieldValue } from '../../../../../../../edit-types';
-import { DesignerState, FormulaCacheItem, FormulaTarget } from '../../../shared/models';
+import { DesignerState, FormulaCacheItem, FormulaTarget } from '../../../formulas/formula.models';
 
 export interface FormulaDesignerTemplateVars {
   entityOptions: EntityOption[];
@@ -13,6 +13,8 @@ export interface FormulaDesignerTemplateVars {
   result: FieldValue;
   resultExists: boolean;
   resultIsError: boolean;
+  // currently used only for UI to know when to display Result: promise(...)
+  resultIsOnlyPromise: boolean;
   saving: boolean;
 }
 

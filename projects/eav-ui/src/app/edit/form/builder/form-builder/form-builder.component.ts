@@ -1,7 +1,9 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { BaseSubsinkComponent } from 'projects/eav-ui/src/app/shared/components/base-subsink-component/base-subsink.component';
 import { combineLatest, distinctUntilChanged, map, startWith, Subscription } from 'rxjs';
 import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
+import { FormulaEngine } from '../../../formulas/formula-engine';
 import { GeneralHelpers, ValidationHelpers } from '../../../shared/helpers';
 import { FormValues, SxcAbstractControl } from '../../../shared/models';
 import { EavService, FieldsSettingsService, FieldsTranslateService, FormsStateService } from '../../../shared/services';
@@ -11,13 +13,12 @@ import { ItemService, LanguageInstanceService } from '../../../shared/store/ngrx
   selector: 'app-form-builder',
   templateUrl: './form-builder.component.html',
   styleUrls: ['./form-builder.component.scss'],
-  providers: [FieldsSettingsService, FieldsTranslateService],
+  providers: [FieldsSettingsService, FieldsTranslateService, FormulaEngine],
 })
-export class FormBuilderComponent implements OnInit, OnDestroy {
+export class FormBuilderComponent extends BaseSubsinkComponent implements OnInit, OnDestroy {
   @Input() entityGuid: string;
 
   form: FormGroup;
-  private subscription: Subscription;
 
   constructor(
     public fieldsSettingsService: FieldsSettingsService,
@@ -27,14 +28,15 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
     private formsStateService: FormsStateService,
     private itemService: ItemService,
     private languageInstanceService: LanguageInstanceService,
-  ) { }
+  ) {
+    super();
+   }
 
   ngOnInit() {
     this.fieldsSettingsService.init(this.entityGuid);
     this.fieldsTranslateService.init(this.entityGuid);
 
     this.form = new FormGroup({});
-    this.subscription = new Subscription();
     this.subscription.add(
       this.fieldsSettingsService.getFieldsProps$().subscribe(fieldsProps => {
         // 1. create missing controls
@@ -132,6 +134,6 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
     Object.values(this.form.controls).forEach((control: SxcAbstractControl) => {
       control._warning$.complete();
     });
-    this.subscription.unsubscribe();
+    super.ngOnDestroy();
   }
 }

@@ -17,7 +17,7 @@ export class TinyButtonsLinks extends AddToRegistryBase {
 
   /** Add Context toolbars */
   private contextMenus(): void {
-    const rangeSelected = () => document.getSelection().rangeCount > 0 && !document.getSelection().getRangeAt(0).collapsed;
+    const rangeSelected = this.rangeSelected;
 
     this.editor.ui.registry.addContextToolbar('linkContextToolbar', {
       items: 'link unlink',

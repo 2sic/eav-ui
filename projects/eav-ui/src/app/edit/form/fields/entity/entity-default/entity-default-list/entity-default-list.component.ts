@@ -40,7 +40,7 @@ export class EntityDefaultListComponent implements OnInit {
     );
     this.templateVars$ = combineLatest([settings$]).pipe(
       map(([settings]) => {
-        console.log('2dm - check delete', settings);
+        // console.log('2dm - check delete', settings);
         return settings;
       }),
     );

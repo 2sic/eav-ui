@@ -28,8 +28,8 @@ import { Connector, EavCustomInputField, WysiwygReconfigure } from '../../../edi
 import { consoleLogWebpack } from '../../../field-custom-gps/src/shared/console-log-webpack.helper';
 import { TinyMceConfigurator } from '../config/tinymce-configurator';
 import * as WysiwygDialogModes from '../constants/display-modes';
-import { RawEditorOptionsWithEav } from '../config/tinymce-helper-types';
-import { TinyMceTranslations } from '../config/translations';
+import { RawEditorOptionsExtended } from '../config/raw-editor-options-extended';
+import { TranslationsLoader } from '../config/translation-loader';
 import { AddEverythingToRegistry } from '../config/ui-registry/add-everything-to-registry';
 import { attachAdam } from '../connector/adam';
 import { tinyMceBaseUrl, wysiwygEditorHtmlTag } from '../../internal-constants';
@@ -57,6 +57,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   private pasteClipboardImage$ = new BehaviorSubject<boolean>(false);
   private subscription: Subscription = new Subscription();
   private editor: Editor;
+  private isDrop: boolean = false;
   private firstInit: boolean;
   private dialogIsOpen: boolean;
   private menuObserver: MutationObserver;
@@ -85,7 +86,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
       .subscribe(this.pasteClipboardImage$)
     );
 
-    const tinyLang = TinyMceTranslations.fixTranslationKey(this.connector._experimental.translateService.currentLang);
+    const tinyLang = TranslationsLoader.fixTranslationKey(this.connector._experimental.translateService.currentLang);
     this.connector.loadScript(
       [
         {
@@ -117,7 +118,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
   }
 
   /** This will initialized an instance of an editor. Everything else is kind of global. */
-  private tinyMceSetup(editor: Editor, rawEditorOptions: RawEditorOptionsWithEav): void {
+  private tinyMceSetup(editor: Editor, rawEditorOptions: RawEditorOptionsExtended): void {
     this.editor = editor;
     editor.on('init', _event => {
       consoleLogWebpack(`${wysiwygEditorHtmlTag} TinyMCE initialized`, editor);
@@ -162,17 +163,23 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
       this.clearData();
     });
 
-    // called before actual image upload
+    // called before PastePreProcess
     // this is needed so drag and drop will function even if pasteClipboardImage feature is false
     editor.on('drop', _event => {
-      editor.options.set("paste_data_images", true);
+      this.isDrop = true;
     });
 
-    // called before actual image upload
+    // called before PastePreProcess
     // this is needed so paste will only work depending on pasteClipboardImage feature
     editor.on('paste', _event => {
-      editor.options.set("paste_data_images", this.pasteClipboardImage$.value);
-      if (!this.pasteClipboardImage$.value) {
+      this.isDrop = false;
+    });
+
+    // called before actual image upload so _event.preventDefault(); can stop pasting
+    // this is needed beacuse only here we can read clipboard content
+    editor.on('PastePreProcess', _event => {
+      if (!this.pasteClipboardImage$.value && _event.content.startsWith('<img src=') && !this.isDrop) {
+        _event.preventDefault();
         this.connector._experimental.featureDisabledWarning('PasteImageFromClipboard');
       }
     });

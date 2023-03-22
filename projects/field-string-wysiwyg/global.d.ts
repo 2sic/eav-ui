@@ -17,3 +17,12 @@ declare module "*.scss" {
   const scss: string;
   export default scss;
 }
+
+/**
+ * This is so we can import formula typings which we edit like a .ts file
+ * into the system as a string for giving to Monaco
+ */
+declare module "*.rawts" {
+  const content: string;
+  export default content;
+}

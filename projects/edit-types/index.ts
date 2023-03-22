@@ -1,9 +1,3 @@
-/// <reference types="@angular/forms" />
-/// <reference types="@ngx-translate/core" />
-/// <reference types="ngx-dropzone-wrapper" />
-/// <reference types="rxjs" />
-/// <reference types="tinymce" />
-
 export * from './src/Adam';
 export * from './src/AdamConfig';
 export * from './src/AdamItem';

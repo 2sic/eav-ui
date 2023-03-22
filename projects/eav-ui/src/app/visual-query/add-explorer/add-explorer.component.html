@@ -8,7 +8,7 @@
     <div class="collapsible" [tippy]="guiTypes[group.key].UiHint || group.key" tippyShowDelay="750"
       (click)="toggleItem(group.key)">
       <mat-icon>{{ guiTypes[group.key].Icon || guiTypes.Unknown.Icon }}</mat-icon>
-      <span>{{ group.key }}</span>
+      <span>{{ guiTypes[group.key].Label ?? guiTypes[group.key].Name ?? group.key }}</span>
     </div>
 
     <div class="list" *ngIf="toggledItems.includes(group.key)">

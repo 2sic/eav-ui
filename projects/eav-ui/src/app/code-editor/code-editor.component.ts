@@ -9,6 +9,7 @@ import { BehaviorSubject, combineLatest, forkJoin, fromEvent, map, Observable, o
 import { CreateFileDialogComponent, CreateFileDialogData, CreateFileDialogResult, FileLocationDialogComponent } from '../create-file-dialog';
 import { GeneralHelpers } from '../edit/shared/helpers';
 import { MonacoEditorComponent } from '../monaco-editor';
+import { BaseSubsinkComponent } from '../shared/components/base-subsink-component/base-subsink.component';
 import { keyIsShared, keyItems } from '../shared/constants/session.constants';
 import { ViewOrFileIdentifier } from '../shared/models/edit-form.model';
 import { Context } from '../shared/services/context';
@@ -26,7 +27,7 @@ import { SourceService } from './services/source.service';
   templateUrl: './code-editor.component.html',
   styleUrls: ['./code-editor.component.scss'],
 })
-export class CodeEditorComponent implements OnInit, OnDestroy {
+export class CodeEditorComponent extends BaseSubsinkComponent implements OnInit, OnDestroy {
   @ViewChild(MonacoEditorComponent) private monacoEditorRef: MonacoEditorComponent;
 
   Explorers = Explorers;
@@ -42,7 +43,6 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
   private activeView$: BehaviorSubject<ViewKey>;
   private openViews$: BehaviorSubject<ViewKey[]>;
   private viewInfos$: BehaviorSubject<ViewInfo[]>;
-  private subscription: Subscription;
   private urlItems: ViewOrFileIdentifier[];
 
   constructor(
@@ -56,6 +56,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
   ) {
+    super();
     this.context.init(this.route);
     const codeItems: ViewOrFileIdentifier[] = JSON.parse(sessionStorage.getItem(keyItems));
     const isShared = sessionStorage.getItem(keyIsShared) === 'true' ?? false;
@@ -70,7 +71,6 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.subscription = new Subscription();
     this.templates$ = new BehaviorSubject<FileAsset[]>([]);
     const initialViews = this.urlItems.map(item => {
       const viewKey: ViewKey = { key: item.EntityId?.toString() ?? item.Path, shared: item.IsShared };
@@ -180,7 +180,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
     this.activeView$.complete();
     this.openViews$.complete();
     this.viewInfos$.complete();
-    this.subscription.unsubscribe();
+    super.ngOnDestroy();
   }
 
   toggleExplorer(explorer: ExplorerOption): void {

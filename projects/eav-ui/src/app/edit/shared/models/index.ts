@@ -10,7 +10,6 @@ export * from './field-error-message.model';
 export * from './fields-configs.model';
 export * from './form-read-only.model';
 export * from './form-values.model';
-export * from './formula.models';
 export * from './global-config.model';
 export * from './language-instance.model';
 export * from '../../../shared/models/language.model';

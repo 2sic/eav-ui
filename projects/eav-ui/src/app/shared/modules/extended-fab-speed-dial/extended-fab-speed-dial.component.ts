@@ -1,6 +1,7 @@
 // tslint:disable-next-line:max-line-length
 import { AfterContentInit, Component, ContentChild, ContentChildren, ElementRef, Input, OnDestroy, QueryList, ViewEncapsulation } from '@angular/core';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, startWith, Subscription } from 'rxjs';
+import { BaseSubsinkComponent } from '../../components/base-subsink-component/base-subsink.component';
 import { ExtendedFabSpeedDialActionDirective } from './extended-fab-speed-dial-action.directive';
 import { ExtendedFabSpeedDialActionsContentDirective } from './extended-fab-speed-dial-actions-content.directive';
 import { ExtendedFabSpeedDialTriggerContentDirective } from './extended-fab-speed-dial-trigger-content.directive';
@@ -12,7 +13,7 @@ import { ExtendedFabSpeedDialTriggerContentDirective } from './extended-fab-spee
   styleUrls: ['./extended-fab-speed-dial.component.scss'],
   encapsulation: ViewEncapsulation.None,
 })
-export class ExtendedFabSpeedDialComponent implements AfterContentInit, OnDestroy {
+export class ExtendedFabSpeedDialComponent extends BaseSubsinkComponent implements AfterContentInit, OnDestroy {
   @ContentChild(ExtendedFabSpeedDialTriggerContentDirective) trigger: ExtendedFabSpeedDialTriggerContentDirective;
   @ContentChild(ExtendedFabSpeedDialActionsContentDirective) actions: ExtendedFabSpeedDialActionsContentDirective;
   @ContentChildren(ExtendedFabSpeedDialActionDirective, { read: ElementRef }) actionButtons: QueryList<ElementRef<HTMLButtonElement>>;
@@ -21,9 +22,9 @@ export class ExtendedFabSpeedDialComponent implements AfterContentInit, OnDestro
 
   open$ = new BehaviorSubject(false);
 
-  private subscription = new Subscription();
-
-  constructor() { }
+  constructor() {
+    super();
+   }
 
   ngAfterContentInit(): void {
     this.subscription.add(
@@ -46,7 +47,7 @@ export class ExtendedFabSpeedDialComponent implements AfterContentInit, OnDestro
 
   ngOnDestroy(): void {
     this.open$.complete();
-    this.subscription.unsubscribe();
+    super.ngOnDestroy();
   }
 
   setOpen(event: PointerEvent, open: boolean): void {

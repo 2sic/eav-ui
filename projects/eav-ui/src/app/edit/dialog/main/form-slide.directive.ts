@@ -1,21 +1,22 @@
 import { Directive, ElementRef, OnDestroy, OnInit } from '@angular/core';
 import { delay, filter, fromEvent, map, merge, pairwise, Subscription } from 'rxjs';
+import { BaseSubsinkComponent } from '../../../shared/components/base-subsink-component/base-subsink.component';
 import { EavService } from '../../shared/services';
 import { LanguageInstanceService, LanguageService } from '../../shared/store/ngrx-data';
 
 @Directive({ selector: '[appFormSlide]' })
-export class FormSlideDirective implements OnInit, OnDestroy {
-  private subscription: Subscription;
+export class FormSlideDirective extends BaseSubsinkComponent implements OnInit, OnDestroy {
 
   constructor(
     private elementRef: ElementRef<HTMLElement>,
     private languageInstanceService: LanguageInstanceService,
     private languageService: LanguageService,
     private eavService: EavService,
-  ) { }
+  ) {
+    super();
+   }
 
   ngOnInit() {
-    this.subscription = new Subscription();
     this.subscription.add(
       merge(
         this.languageInstanceService.getCurrentLanguage$(this.eavService.eavConfig.formId).pipe(
@@ -45,6 +46,6 @@ export class FormSlideDirective implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+    super.ngOnDestroy();
   }
 }
