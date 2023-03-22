@@ -3,18 +3,9 @@
   e.g. EntityDefault, EntityContentBlocks, EntityQuery, StringDropdownQuery
 -->
 <ng-container *ngIf="viewModel$ | async as vm">
-  <app-picker-list
-    *ngIf="!vm.freeTextMode && vm.selectedEntities.length && (!vm.allowMultiValue || (vm.allowMultiValue && vm.isExpanded))"
-    [config]="config" [label]="vm.label" [required]="vm.required" [disabled]="vm.controlStatus.disabled"
-    [selectedEntities]="vm.selectedEntities" (reorder)="reorder($event)" (removeSelected)="removeSelected($event)"
-    (editEntity)="editEntity($event)" (deleteEntity)="deleteEntity($event)">
+  <app-picker-list *ngIf="!vm.freeTextMode && vm.selectedEntities.length && (!vm.allowMultiValue || (vm.allowMultiValue && vm.isExpanded))"
+    [pickerSourceAdapter]="pickerSourceAdapter" [pickerStateAdapter]="pickerStateAdapter">
   </app-picker-list>
 
-  <app-picker-search [config]="config" [group]="group" [label]="vm.label" [placeholder]="vm.placeholder"
-    [required]="vm.required" [invalid]="vm.controlStatus.invalid" [touched]="vm.controlStatus.touched"
-    [disabled]="vm.controlStatus.disabled" [freeTextMode]="vm.freeTextMode"
-    [selectedEntities]="vm.selectedEntities" [availableEntities]="vm.availableEntities"
-    [disableAddNew]="vm.disableAddNew" [error]="vm.error" (fetchAvailableEntities)="fetchEntities(false)"
-    (toggleFreeTextMode)="toggleFreeTextMode()" (addSelected)="addSelected($event)" (editEntity)="editEntity($event)">
-  </app-picker-search>
+  <app-picker-search [pickerSourceAdapter]="pickerSourceAdapter" [pickerStateAdapter]="pickerStateAdapter"></app-picker-search>
 </ng-container>

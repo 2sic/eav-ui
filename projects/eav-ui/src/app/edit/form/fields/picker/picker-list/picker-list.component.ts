@@ -1,11 +1,11 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { FieldsSettingsService } from '../../../../shared/services';
-import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
 import { SelectedEntity } from '../../entity/entity-default/entity-default.models';
-import { DeleteEntityProps } from '../picker.models';
+import { PickerSourceAdapter } from '../picker-source-adapter';
+import { PickerStateAdapter } from '../picker-state-adapter';
 import { EntityListViewModel, ReorderIndexes } from './picker-list.models';
 
 @Component({
@@ -14,35 +14,45 @@ import { EntityListViewModel, ReorderIndexes } from './picker-list.models';
   styleUrls: ['./picker-list.component.scss'],
 })
 export class PickerListComponent implements OnInit {
-  @Input() config: FieldConfigSet;
-  @Input() label: string;
-  @Input() required: boolean;
-  @Input() disabled: boolean;
-  @Input() selectedEntities: SelectedEntity[];
-
-  @Output() private reorder = new EventEmitter<ReorderIndexes>();
-  @Output() private removeSelected = new EventEmitter<number>();
-  @Output() private editEntity = new EventEmitter<{ entityGuid: string, entityId: number }>();
-  @Output() private deleteEntity = new EventEmitter<DeleteEntityProps>();
+  @Input() pickerSourceAdapter: PickerSourceAdapter;
+  @Input() pickerStateAdapter: PickerStateAdapter;
 
   viewModel$: Observable<EntityListViewModel>;
 
   constructor(private fieldsSettingsService: FieldsSettingsService) { }
 
   ngOnInit(): void {
-    const settings$ = this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).pipe(
+    const label$ = this.pickerStateAdapter.label$;
+    const required$ = this.pickerStateAdapter.required$;
+    const controlStatus$ = this.pickerStateAdapter.controlStatus$;
+    const selectedEntities$ = this.pickerStateAdapter.selectedEntities$;
+
+    const settings$ = this.fieldsSettingsService.getFieldSettings$(this.pickerStateAdapter.config.fieldName).pipe(
       map(settings => ({
         allowMultiValue: settings.AllowMultiValue,
         enableEdit: settings.EnableEdit,
         enableDelete: settings.EnableDelete,
         enableRemove: settings.EnableRemove,
-      } as EntityListViewModel)),
+      })),
       distinctUntilChanged(GeneralHelpers.objectsEqual),
     );
-    this.viewModel$ = combineLatest([settings$]).pipe(
-      map(([settings]) => {
-        // console.log('2dm - check delete', settings);
-        return settings;
+    this.viewModel$ = combineLatest([
+      settings$, label$, required$, controlStatus$, selectedEntities$
+    ]).pipe(
+      map(([
+        settings, label, required, controlStatus, selectedEntities
+      ]) => {
+        const viewModel: EntityListViewModel = {
+          allowMultiValue: settings.allowMultiValue,
+          enableEdit: settings.enableEdit,
+          enableDelete: settings.enableDelete,
+          enableRemove: settings.enableRemove,
+          label,
+          required,
+          controlStatus,
+          selectedEntities
+        };
+        return viewModel;
       }),
     );
   }
@@ -51,24 +61,24 @@ export class PickerListComponent implements OnInit {
     return item.value;
   }
 
-  drop(event: CdkDragDrop<SelectedEntity[]>): void {
-    moveItemInArray(this.selectedEntities, event.previousIndex, event.currentIndex);
+  drop(event: CdkDragDrop<SelectedEntity[]>, selectedEntities: SelectedEntity[]): void {
+    moveItemInArray(selectedEntities, event.previousIndex, event.currentIndex);
     const reorderIndexes: ReorderIndexes = {
       previousIndex: event.previousIndex,
       currentIndex: event.currentIndex,
     };
-    this.reorder.emit(reorderIndexes);
+    this.pickerStateAdapter.reorder(reorderIndexes);
   }
 
   edit(entityGuid: string, entityId: number): void {
-    this.editEntity.emit({ entityGuid, entityId });
+    this.pickerSourceAdapter.editEntity({ entityGuid, entityId });
   }
 
   removeItem(index: number): void {
-    this.removeSelected.emit(index);
+    this.pickerStateAdapter.removeSelected(index);
   }
 
   deleteItem(index: number, entityGuid: string): void {
-    this.deleteEntity.emit({ index, entityGuid });
+    this.pickerSourceAdapter.deleteEntity({ index, entityGuid });
   }
 }

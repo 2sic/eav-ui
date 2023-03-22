@@ -16,6 +16,8 @@ import { calculateSelectedEntities, convertArrayToString, convertValueToArray } 
 import { SelectedEntity } from '../entity/entity-default/entity-default.models';
 import { ReorderIndexes } from './picker-list/picker-list.models';
 import { PickerSearchComponent } from './picker-search/picker-search.component';
+import { PickerSourceAdapter } from './picker-source-adapter';
+import { PickerStateAdapter } from './picker-state-adapter';
 import { DeleteEntityProps, EntityViewModel } from './picker.models';
 
 @Component({
@@ -26,6 +28,9 @@ import { DeleteEntityProps, EntityViewModel } from './picker.models';
 @FieldMetadata({})
 export class PickerComponent extends BaseFieldComponent<string | string[]> implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(PickerSearchComponent) private entitySearchComponent: PickerSearchComponent;
+
+  pickerSourceAdapter: PickerSourceAdapter = new PickerSourceAdapter();
+  pickerStateAdapter: PickerStateAdapter = new PickerStateAdapter();
 
   isQuery: boolean;
   isStringQuery: boolean;
@@ -104,6 +109,27 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
         return viewModel;
       }),
     );
+
+    this.pickerSourceAdapter.group = this.group;
+    this.pickerSourceAdapter.availableEntities$ = this.availableEntities$;
+    this.pickerSourceAdapter.editEntity = (entity: { entityGuid: string, entityId: number }) => this.editEntity(entity);
+    this.pickerSourceAdapter.deleteEntity = (entity: { index: number, entityGuid: string }) => this.deleteEntity(entity);
+    this.pickerSourceAdapter.fetchAvailableEntities =
+      (clearAvailableEntitiesAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableEntitiesAndOnlyUpdateCache);
+
+    this.pickerStateAdapter.config = this.config;
+    this.pickerStateAdapter.freeTextMode$ = this.freeTextMode$;
+    this.pickerStateAdapter.disableAddNew$ = this.disableAddNew$;
+    this.pickerStateAdapter.controlStatus$ = this.controlStatus$;
+    this.pickerStateAdapter.error$ = this.error$;
+    this.pickerStateAdapter.selectedEntities$ = this.selectedEntities$;
+    this.pickerStateAdapter.label$ = this.label$;
+    this.pickerStateAdapter.placeholder$ = this.placeholder$;
+    this.pickerStateAdapter.required$ = this.required$;
+    this.pickerStateAdapter.addSelected = (guid: string) => this.addSelected(guid);
+    this.pickerStateAdapter.removeSelected = (index: number) => this.removeSelected(index);
+    this.pickerStateAdapter.reorder = (reorderIndexes: ReorderIndexes) => this.reorder(reorderIndexes);
+    this.pickerStateAdapter.toggleFreeTextMode = () => this.toggleFreeTextMode();
 
     this.refreshOnChildClosed();
   }

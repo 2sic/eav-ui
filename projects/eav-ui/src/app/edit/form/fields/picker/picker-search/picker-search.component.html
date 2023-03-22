@@ -1,52 +1,53 @@
-<ng-container *ngIf="viewModel | async as vm">
-  <div [hidden]="freeTextMode">
+<ng-container *ngIf="viewModel$ | async as vm">
+  <div [hidden]="vm.freeTextMode">
     <div class="ed-field" fxLayout="row" fxLayoutAlign="start end">
       <div
-        [ngClass]="(vm.enableCreate && vm.entityType && !selectedEntities.length && !vm.allowMultiValue) ? 'ed-field__field-short' : 'ed-field__field'">
-        <div [hidden]="(!vm.allowMultiValue && selectedEntities.length) || !vm.enableAddExisting">
-          <mat-form-field [formGroup]="group" color="accent" class="eav-form-field"
-            [ngClass]="{'mat-form-field-invalid': invalid && touched}">
-            <input matInput #autocomplete [placeholder]="getPlaceholder()" [matAutocomplete]="auto"
-              [disabled]="disabled || !vm.enableAddExisting" (focus)="fetchEntities()" (blur)="markAsTouched()"
-              (input)="filterSelectionList()" (click)="filterSelectionList()">
-            <button mat-icon-button matTextSuffix class="entity-dropdown-button" disableRipple="true"
-              [disabled]="disabled || !vm.enableAddExisting" *ngIf="!vm.enableTextEntry">
+        [ngClass]="(vm.enableCreate && vm.entityType && !vm.selectedEntities.length && !vm.allowMultiValue) ? 'ed-field__field-short' : 'ed-field__field'">
+        <div [hidden]="(!vm.allowMultiValue && vm.selectedEntities.length) || !vm.enableAddExisting">
+          <mat-form-field [formGroup]="pickerSourceAdapter.group" class="eav-form-field" color="accent" [ngClass]="{
+            'mat-form-field-invalid': vm.controlStatus.invalid && vm.controlStatus.touched
+          }">
+            <input matInput #autocomplete [placeholder]="getPlaceholder(vm.availableEntities, vm.error)" [matAutocomplete]="auto"
+              [disabled]="vm.controlStatus.disabled || !vm.enableAddExisting" (focus)="fetchEntities(vm.availableEntities)" (blur)="markAsTouched()"
+              (input)="filterSelectionList(vm.availableEntities)" (click)="filterSelectionList(vm.availableEntities)">
+            <button mat-icon-button matSuffix class="entity-dropdown-button" disableRipple="true"
+              [disabled]="vm.controlStatus.disabled || !vm.enableAddExisting" *ngIf="!vm.enableTextEntry">
               <mat-icon>arrow_drop_down</mat-icon>
             </button>
-            <div matTextSuffix class="eav-selection-suffix" *ngIf="vm.enableTextEntry">
-              <button mat-icon-button class="eav-selection-suffix-button" [tippy]="'Fields.String.Dropdown' | translate"
-                [disabled]="disabled" class="active">
-                <mat-icon class="eav-icon">search</mat-icon>
+            <div matSuffix class="selection-suffix" *ngIf="vm.enableTextEntry">
+              <button mat-icon-button [tippy]="'Fields.String.Dropdown' | translate" [disabled]="vm.controlStatus.disabled"
+                class="active">
+                <mat-icon>search</mat-icon>
               </button>
-              <button mat-icon-button class="eav-selection-suffix-button" [tippy]="'Fields.String.Freetext' | translate"
-                [disabled]="disabled" appClickStopPropagation (click)="toggleFreeText()">
-                <mat-icon class="eav-icon">text_fields</mat-icon>
+              <button mat-icon-button [tippy]="'Fields.String.Freetext' | translate" [disabled]="vm.controlStatus.disabled"
+                appClickStopPropagation (click)="toggleFreeText(vm.controlStatus.disabled)">
+                <mat-icon>text_fields</mat-icon>
               </button>
             </div>
-            <mat-label [ngClass]="{ 'mat-error': invalid && touched }">
-              {{ vm.allowMultiValue ? ('Fields.Entity.Choose' | translate) : label }}
-              {{ required ? '*': '' }}
+            <mat-label [ngClass]="{ 'mat-error': vm.controlStatus.invalid && vm.controlStatus.touched }">
+              {{ vm.allowMultiValue ? ('Fields.Entity.Choose' | translate) : vm.label }}
+              {{ vm.required ? '*': '' }}
             </mat-label>
           </mat-form-field>
 
           <mat-autocomplete #auto="matAutocomplete" (optionSelected)="optionSelected($event)">
             <mat-option *ngFor="let item of filteredEntities" [value]="item.Value"
-              [disabled]="isOptionDisabled(item.Value)">
+              [disabled]="isOptionDisabled(item.Value, vm.selectedEntities)">
               <span>{{ item.Text ? item.Text : item.Value }}</span>
             </mat-option>
           </mat-autocomplete>
         </div>
-        <div *ngIf="!vm.enableAddExisting && !selectedEntities.length">
+        <div *ngIf="!vm.enableAddExisting && !vm.selectedEntities.length">
           <mat-form-field color="accent">
             <input matInput [placeholder]="'Fields.Entity.Empty' | translate" disabled>
           </mat-form-field>
         </div>
       </div>
       <div fxLayoutAlign="end center"
-        [ngClass]="(vm.enableCreate && vm.entityType && !selectedEntities.length && !vm.allowMultiValue) ? 'ed-field__create-icon' : 'ed-field__create-icon-hide'">
+        [ngClass]="(vm.enableCreate && vm.entityType && !vm.selectedEntities.length && !vm.allowMultiValue) ? 'ed-field__create-icon' : 'ed-field__create-icon-hide'">
         <!-- create new entity to add to this list -->
-        <button mat-icon-button [tippy]="'Fields.Entity.New' | translate" [disabled]="disabled || disableAddNew"
-          *ngIf="vm.enableCreate && vm.entityType && !selectedEntities.length && !vm.allowMultiValue"
+        <button mat-icon-button [tippy]="'Fields.Entity.New' | translate" [disabled]="vm.controlStatus.disabled || vm.disableAddNew"
+          *ngIf="vm.enableCreate && vm.entityType && !vm.selectedEntities.length && !vm.allowMultiValue"
           (click)="openNewEntityDialog()">
           <mat-icon>add_circle_outline</mat-icon>
         </button>
@@ -54,30 +55,30 @@
     </div>
   </div>
 
-  <mat-form-field *ngIf="freeTextMode" [formGroup]="group" color="accent">
-    <input matInput [required]="required" [formControlName]="config.fieldName" [placeholder]="placeholder">
+  <mat-form-field *ngIf="vm.freeTextMode" [formGroup]="pickerSourceAdapter.group" class="eav-form-field" color="accent">
+    <input matInput [required]="vm.required" [formControlName]="pickerStateAdapter.config.fieldName" [placeholder]="vm.placeholder">
 
-    <div matTextSuffix class="eav-selection-suffix">
-      <button mat-icon-button [tippy]="'Fields.String.Dropdown' | translate" [disabled]="disabled"
-        appClickStopPropagation (click)="toggleFreeText()">
+    <div matSuffix class="selection-suffix">
+      <button mat-icon-button [tippy]="'Fields.String.Dropdown' | translate" [disabled]="vm.controlStatus.disabled"
+        appClickStopPropagation (click)="toggleFreeText(vm.controlStatus.disabled)">
         <mat-icon>search</mat-icon>
       </button>
-      <button mat-icon-button [tippy]="'Fields.String.Freetext' | translate" [disabled]="disabled" class="active">
+      <button mat-icon-button [tippy]="'Fields.String.Freetext' | translate" [disabled]="vm.controlStatus.disabled" class="active">
         <mat-icon>text_fields</mat-icon>
       </button>
     </div>
-    <mat-label>{{ label }}</mat-label>
+    <mat-label>{{ vm.label }}</mat-label>
   </mat-form-field>
 
   <div *ngIf="vm.debugEnabled" class="null-box">
     debug: <span class="null-button" tippy="Add null-item" (click)="insertNull()">add null-item</span>
   </div>
 
-  <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
+  <app-field-helper-text [config]="pickerStateAdapter.config" [group]="pickerSourceAdapter.group"></app-field-helper-text>
 
   <!-- add new entity -->
-  <div *ngIf="!freeTextMode && vm.enableCreate && vm.entityType && vm.allowMultiValue" class="eav-add-new-entity">
-    <button mat-mini-fab color="accent" [tippy]="'Fields.Entity.New' | translate" [disabled]="disabled || disableAddNew"
+  <div *ngIf="!vm.freeTextMode && vm.enableCreate && vm.entityType && vm.allowMultiValue">
+    <button mat-mini-fab color="accent" [tippy]="'Fields.Entity.New' | translate" [disabled]="vm.controlStatus.disabled || vm.disableAddNew"
       (click)="openNewEntityDialog()">
       <mat-icon>add</mat-icon>
     </button>

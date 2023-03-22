@@ -1,14 +1,15 @@
-import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
-import { AbstractControl, UntypedFormGroup } from '@angular/forms';
+import { Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { AbstractControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { TranslateService } from '@ngx-translate/core';
 import { EntityInfo } from 'projects/edit-types';
-import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
+import { combineLatest, distinctUntilChanged, map, Observable, Subscription } from 'rxjs';
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { FieldsSettingsService } from '../../../../shared/services';
 import { GlobalConfigService } from '../../../../shared/store/ngrx-data';
-import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
 import { SelectedEntity } from '../../entity/entity-default/entity-default.models';
+import { PickerSourceAdapter } from '../picker-source-adapter';
+import { PickerStateAdapter } from '../picker-state-adapter';
 import { EntitySearchViewModel } from './picker-search.models';
 
 @Component({
@@ -16,31 +17,17 @@ import { EntitySearchViewModel } from './picker-search.models';
   templateUrl: './picker-search.component.html',
   styleUrls: ['./picker-search.component.scss'],
 })
-export class PickerSearchComponent implements OnInit, OnChanges {
+export class PickerSearchComponent implements OnInit, OnChanges, OnDestroy {
   @ViewChild('autocomplete') autocompleteRef?: ElementRef;
 
-  @Input() config: FieldConfigSet;
-  @Input() group: UntypedFormGroup;
-  @Input() label: string;
-  @Input() placeholder: string;
-  @Input() required: boolean;
-  @Input() invalid: boolean;
-  @Input() touched: boolean;
-  @Input() disabled: boolean;
-  @Input() freeTextMode: boolean;
-  @Input() selectedEntities: SelectedEntity[];
-  @Input() availableEntities?: EntityInfo[];
-  @Input() disableAddNew: boolean;
-  @Input() error: string;
+  @Input() pickerSourceAdapter: PickerSourceAdapter;
+  @Input() pickerStateAdapter: PickerStateAdapter;
 
-  @Output() private fetchAvailableEntities = new EventEmitter<undefined>();
-  @Output() private toggleFreeTextMode = new EventEmitter<undefined>();
-  @Output() private addSelected = new EventEmitter<string>();
-  @Output() private editEntity = new EventEmitter<{ entityGuid: string, entityId: number }>();
-
+  private subscriptions: Subscription = new Subscription();
   filteredEntities: EntityInfo[] = [];
-  viewModel: Observable<EntitySearchViewModel>;
+  viewModel$: Observable<EntitySearchViewModel>;
   private control: AbstractControl;
+  private availableEntities: EntityInfo[] = [];
 
   constructor(
     private translate: TranslateService,
@@ -49,10 +36,23 @@ export class PickerSearchComponent implements OnInit, OnChanges {
   ) { }
 
   ngOnInit(): void {
-    this.control = this.group.controls[this.config.fieldName];
+    this.control = this.pickerSourceAdapter.group.controls[this.pickerStateAdapter.config.fieldName];
+
+    const availableEntities$ = this.pickerSourceAdapter.availableEntities$;
+
+    const freeTextMode$ = this.pickerStateAdapter.freeTextMode$;
+    const disableAddNew$ = this.pickerStateAdapter.disableAddNew$;
+    const controlStatus$ = this.pickerStateAdapter.controlStatus$;
+    const error$ = this.pickerStateAdapter.error$;
+    const selectedEntities$ = this.pickerStateAdapter.selectedEntities$;
+    const label$ = this.pickerStateAdapter.label$;
+    const placeholder$ = this.pickerStateAdapter.placeholder$;
+    const required$ = this.pickerStateAdapter.required$;
+
+    this.subscriptions.add(availableEntities$.subscribe(entities => this.availableEntities = entities));
 
     const debugEnabled$ = this.globalConfigService.getDebugEnabled$();
-    const settings$ = this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).pipe(
+    const settings$ = this.fieldsSettingsService.getFieldSettings$(this.pickerStateAdapter.config.fieldName).pipe(
       map(settings => ({
         AllowMultiValue: settings.AllowMultiValue,
         EnableCreate: settings.EnableCreate,
@@ -62,8 +62,14 @@ export class PickerSearchComponent implements OnInit, OnChanges {
       })),
       distinctUntilChanged(GeneralHelpers.objectsEqual),
     );
-    this.viewModel = combineLatest([debugEnabled$, settings$]).pipe(
-      map(([debugEnabled, settings]) => {
+    this.viewModel$ = combineLatest([
+      debugEnabled$, settings$, selectedEntities$, availableEntities$, error$,
+      controlStatus$, freeTextMode$, disableAddNew$, label$, placeholder$, required$
+    ]).pipe(
+      map(([
+        debugEnabled, settings, selectedEntities, availableEntities, error,
+        controlStatus, freeTextMode, disableAddNew, label, placeholder, required
+      ]) => {
         const viewModel: EntitySearchViewModel = {
           debugEnabled,
           allowMultiValue: settings.AllowMultiValue,
@@ -71,6 +77,15 @@ export class PickerSearchComponent implements OnInit, OnChanges {
           entityType: settings.EntityType,
           enableAddExisting: settings.EnableAddExisting,
           enableTextEntry: settings.EnableTextEntry,
+          selectedEntities,
+          availableEntities,
+          error,
+          controlStatus,
+          freeTextMode,
+          disableAddNew,
+          label,
+          placeholder,
+          required
         };
         return viewModel;
       }),
@@ -79,47 +94,51 @@ export class PickerSearchComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.availableEntities != null) {
-      this.filterSelectionList();
+      this.filterSelectionList(this.availableEntities);
     }
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 
   markAsTouched(): void {
     GeneralHelpers.markControlTouched(this.control);
   }
 
-  fetchEntities(): void {
-    if (this.availableEntities != null) { return; }
-    this.fetchAvailableEntities.emit();
+  fetchEntities(availableEntities: EntityInfo[]): void {
+    if (availableEntities != null) { return; }
+    this.pickerSourceAdapter.fetchAvailableEntities(false);
   }
 
-  getPlaceholder(): string {
-    if (this.availableEntities == null) {
+  getPlaceholder(availableEntities: EntityInfo[], error: string): string {
+    if (availableEntities == null) {
       return this.translate.instant('Fields.Entity.Loading');
     }
-    if (this.availableEntities.length > 0) {
+    if (availableEntities.length > 0) {
       return this.translate.instant('Fields.Entity.Search');
     }
-    if (this.error) {
-      return this.error;
+    if (error) {
+      return error;
     }
     return this.translate.instant('Fields.EntityQuery.QueryNoItems');
   }
 
-  toggleFreeText(): void {
-    if (this.disabled) { return; }
-    this.toggleFreeTextMode.emit();
+  toggleFreeText(disabled: boolean): void {
+    if (disabled) { return; }
+    this.pickerStateAdapter.toggleFreeTextMode();
   }
 
-  filterSelectionList(): EntityInfo[] {
-    if (this.availableEntities == null) { return []; }
+  filterSelectionList(availableEntities: EntityInfo[]): EntityInfo[] {
+    if (availableEntities == null) { return []; }
 
     const filter = this.autocompleteRef?.nativeElement.value;
     if (!filter) {
-      this.filteredEntities = this.availableEntities;
+      this.filteredEntities = availableEntities;
       return;
     }
 
-    this.filteredEntities = this.availableEntities.filter(option =>
+    this.filteredEntities = availableEntities.filter(option =>
       option.Text
         ? option.Text.toLocaleLowerCase().includes(filter.toLocaleLowerCase())
         : option.Value.toLocaleLowerCase().includes(filter.toLocaleLowerCase())
@@ -128,21 +147,21 @@ export class PickerSearchComponent implements OnInit, OnChanges {
 
   optionSelected(event: MatAutocompleteSelectedEvent): void {
     const selected: string = event.option.value;
-    this.addSelected.emit(selected);
+    this.pickerStateAdapter.addSelected(selected);
     this.autocompleteRef.nativeElement.value = '';
     this.autocompleteRef.nativeElement.blur();
   }
 
   insertNull(): void {
-    this.addSelected.emit(null);
+    this.pickerStateAdapter.addSelected(null);
   }
 
-  isOptionDisabled(value: string): boolean {
-    const isSelected = this.selectedEntities.some(entity => entity.value === value);
+  isOptionDisabled(value: string, selectedEntities: SelectedEntity[]): boolean {
+    const isSelected = selectedEntities.some(entity => entity.value === value);
     return isSelected;
   }
 
   openNewEntityDialog(): void {
-    this.editEntity.emit(null);
+    this.pickerSourceAdapter.editEntity(null);
   }
 }
