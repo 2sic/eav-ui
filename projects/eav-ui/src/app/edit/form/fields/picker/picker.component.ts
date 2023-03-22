@@ -85,26 +85,18 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
     this.isExpanded$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
 
     const allowMultiValue$ = this.settings$.pipe(map(settings => settings.AllowMultiValue), distinctUntilChanged());
-    this.viewModel$ = combineLatest([
-      combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$, this.freeTextMode$, allowMultiValue$]),
-      combineLatest([this.selectedEntities$, this.availableEntities$, this.disableAddNew$, this.isExpanded$, this.error$]),
-    ]).pipe(
-      map(([
-        [controlStatus, label, placeholder, required, freeTextMode, allowMultiValue],
-        [selectedEntities, availableEntities, disableAddNew, isExpanded, error],
-      ]) => {
+    this.viewModel$ =
+      combineLatest([this.freeTextMode$, allowMultiValue$, this.selectedEntities$, this.availableEntities$, this.isExpanded$])
+    .pipe(
+      map((
+        [freeTextMode, allowMultiValue, selectedEntities, availableEntities, isExpanded]
+      ) => {
         const viewModel: EntityViewModel = {
-          controlStatus,
-          label,
-          placeholder,
-          required,
           freeTextMode,
           allowMultiValue,
           selectedEntities,
           availableEntities,
-          disableAddNew,
           isExpanded,
-          error,
         };
         return viewModel;
       }),
@@ -126,9 +118,9 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
     this.pickerStateAdapter.label$ = this.label$;
     this.pickerStateAdapter.placeholder$ = this.placeholder$;
     this.pickerStateAdapter.required$ = this.required$;
-    this.pickerStateAdapter.addSelected = (guid: string) => this.addSelected(guid);
-    this.pickerStateAdapter.removeSelected = (index: number) => this.removeSelected(index);
-    this.pickerStateAdapter.reorder = (reorderIndexes: ReorderIndexes) => this.reorder(reorderIndexes);
+    this.pickerStateAdapter.addSelected = (guid: string) => this.updateValue('add', guid);
+    this.pickerStateAdapter.removeSelected = (index: number) => this.updateValue('delete', index);
+    this.pickerStateAdapter.reorder = (reorderIndexes: ReorderIndexes) => this.updateValue('reorder', reorderIndexes);
     this.pickerStateAdapter.toggleFreeTextMode = () => this.toggleFreeTextMode();
 
     this.refreshOnChildClosed();
@@ -157,18 +149,6 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
    * to update names in entityCache
    */
   fetchEntities(clearAvailableEntitiesAndOnlyUpdateCache: boolean): void { }
-
-  reorder(reorderIndexes: ReorderIndexes): void {
-    this.updateValue('reorder', reorderIndexes);
-  }
-
-  addSelected(guid: string): void {
-    this.updateValue('add', guid);
-  }
-
-  removeSelected(index: number): void {
-    this.updateValue('delete', index);
-  }
 
   // Note: 2dm 2023-01-24 added entityId as parameter #maybeRemoveGuidOnEditEntity
   // not even sure if the guid would still be needed, as I assume the entityId
@@ -240,7 +220,7 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
     this.entityService.delete(contentType, id, false, parentId, parentField).subscribe({
       next: () => {
         this.snackBar.open(this.translate.instant('Message.Deleted'), null, { duration: 2000 });
-        this.removeSelected(props.index);
+        this.updateValue('delete', props.index);
         this.fetchEntities(true);
       },
       error: (error1: HttpErrorResponse) => {
@@ -250,7 +230,7 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
         this.entityService.delete(contentType, id, true, parentId, parentField).subscribe({
           next: () => {
             this.snackBar.open(this.translate.instant('Message.Deleted'), null, { duration: 2000 });
-            this.removeSelected(props.index);
+            this.updateValue('delete', props.index);
             this.fetchEntities(true);
           },
           error: (error2: HttpErrorResponse) => {
@@ -281,7 +261,7 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
     this.subscription.add(
       this.editRoutingService.childFormResult(this.config.index, this.config.entityGuid).subscribe(result => {
         const newItemGuid = Object.keys(result)[0];
-        this.addSelected(newItemGuid);
+        this.updateValue('add', newItemGuid);
       })
     );
     this.subscription.add(
