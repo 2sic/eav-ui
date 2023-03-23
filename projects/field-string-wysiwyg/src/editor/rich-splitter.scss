@@ -1,11 +1,8 @@
-$grid-gutter-width: 30px;
+@import './rich-variables.scss';
 
 $border-color-top: #00275388;
 $border-color: #00275327;
-$pattern-color: $border-color;
-$pattern-background: #ffffff;
-
-$background: repeating-linear-gradient(135deg, $pattern-color 0, $pattern-color 1px, $pattern-background 0, $pattern-background 50%);
+$background: repeating-linear-gradient(135deg, $spacer-pattern-lines 0, $spacer-pattern-lines 1px, $spacer-pattern-background 0, $spacer-pattern-background 50%);
 
 /* Custom stuff */
 .mce-content-body {
@@ -32,35 +29,35 @@ $background: repeating-linear-gradient(135deg, $pattern-color 0, $pattern-color 
     }
     &.wysiwyg-spacer-s {
       background-image: $background;
-      height: $grid-gutter-width/2;
+      height: $gutter/2;
       // @media screen and (max-width: 768px) {
-      //   height: $grid-gutter-width/2;
+      //   height: $gutter/2;
       // }  
     }
     &.wysiwyg-spacer-m {
       background-image: $background;
-      // height: $grid-gutter-width*1.5;
-      height: $grid-gutter-width*1;
+      // height: $gutter*1.5;
+      height: $gutter*1;
       @media screen and (max-width: 768px) {
-        // height: $grid-gutter-width;
-        height: $grid-gutter-width*.75;
+        // height: $gutter;
+        height: $gutter*.75;
       }
     }
     &.wysiwyg-spacer-l {
       background-image: $background;
-      height: $grid-gutter-width*2;
+      height: $gutter*2;
       @media screen and (max-width: 768px) {
-        height: $grid-gutter-width*1.25;
+        height: $gutter*1.25;
       }
     }
     // Note: ATM not in use
     &.wysiwyg-spacer-xl {
       background-image: $background;
-      // height: $grid-gutter-width*2.5;
-      height: $grid-gutter-width*3;
+      // height: $gutter*2.5;
+      height: $gutter*3;
       @media screen and (max-width: 768px) {
-        // height: $grid-gutter-width*1.75;
-        height: $grid-gutter-width*1.75;
+        // height: $gutter*1.75;
+        height: $gutter*1.75;
       }
     }
   }
