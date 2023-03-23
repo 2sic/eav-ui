@@ -12,13 +12,13 @@ import { EavService, EditRoutingService, EntityService, FieldsSettingsService } 
 import { EntityCacheService, StringQueryCacheService } from '../../../shared/store/ngrx-data';
 import { FieldMetadata } from '../../builder/fields-builder/field-metadata.decorator';
 import { BaseFieldComponent } from '../base/base-field.component';
-import { calculateSelectedEntities, convertArrayToString, convertValueToArray } from '../entity/entity-default/entity-default.helpers';
 import { SelectedEntity } from '../entity/entity-default/entity-default.models';
 import { ReorderIndexes } from './picker-list/picker-list.models';
 import { PickerSearchComponent } from './picker-search/picker-search.component';
 import { PickerSourceAdapter } from './picker-source-adapter';
 import { PickerStateAdapter } from './picker-state-adapter';
-import { DeleteEntityProps, EntityViewModel } from './picker.models';
+import { calculateSelectedEntities, convertArrayToString, convertValueToArray } from './picker.helpers';
+import { DeleteEntityProps, PickerViewModel } from './picker.models';
 
 @Component({
   selector: InputTypeConstants.EntityDefault,
@@ -42,7 +42,7 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
   isExpanded$: Observable<boolean>;
   selectedEntities$: Observable<SelectedEntity[]>;
   availableEntities$: BehaviorSubject<EntityInfo[]>;
-  viewModel$: Observable<EntityViewModel>;
+  viewModel$: Observable<PickerViewModel>;
 
   constructor(
     eavService: EavService,
@@ -87,20 +87,20 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
     const allowMultiValue$ = this.settings$.pipe(map(settings => settings.AllowMultiValue), distinctUntilChanged());
     this.viewModel$ =
       combineLatest([this.freeTextMode$, allowMultiValue$, this.selectedEntities$, this.availableEntities$, this.isExpanded$])
-    .pipe(
-      map((
-        [freeTextMode, allowMultiValue, selectedEntities, availableEntities, isExpanded]
-      ) => {
-        const viewModel: EntityViewModel = {
-          freeTextMode,
-          allowMultiValue,
-          selectedEntities,
-          availableEntities,
-          isExpanded,
-        };
-        return viewModel;
-      }),
-    );
+        .pipe(
+          map((
+            [freeTextMode, allowMultiValue, selectedEntities, availableEntities, isExpanded]
+          ) => {
+            const viewModel: PickerViewModel = {
+              freeTextMode,
+              allowMultiValue,
+              selectedEntities,
+              availableEntities,
+              isExpanded,
+            };
+            return viewModel;
+          }),
+        );
 
     this.refreshOnChildClosed();
   }

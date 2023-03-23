@@ -7,23 +7,23 @@ import { EavService, EditRoutingService, FieldsSettingsService, FormsStateServic
 import { EntityCacheService, StringQueryCacheService } from '../../../shared/store/ngrx-data';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { BaseFieldComponent } from '../../fields/base/base-field.component';
-import { calculateSelectedEntities } from '../../fields/entity/entity-default/entity-default.helpers';
 import { SelectedEntity } from '../../fields/entity/entity-default/entity-default.models';
+import { calculateSelectedEntities } from '../../fields/picker/picker.helpers';
 import { ContentExpandAnimation } from '../expandable-wrapper/content-expand.animation';
-import { EntityExpandableViewModel } from './entity-expandable-wrapper.models';
+import { PickerExpandableViewModel } from './picker-expandable-wrapper.models';
 
 @Component({
-  selector: WrappersConstants.EntityExpandableWrapper,
-  templateUrl: './entity-expandable-wrapper.component.html',
-  styleUrls: ['./entity-expandable-wrapper.component.scss'],
+  selector: WrappersConstants.PickerExpandableWrapper,
+  templateUrl: './picker-expandable-wrapper.component.html',
+  styleUrls: ['./picker-expandable-wrapper.component.scss'],
   animations: [ContentExpandAnimation],
 })
-export class EntityExpandableWrapperComponent extends BaseFieldComponent<string | string[]> implements FieldWrapper, OnInit, OnDestroy {
+export class PickerExpandableWrapperComponent extends BaseFieldComponent<string | string[]> implements FieldWrapper, OnInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
 
   dialogIsOpen$: Observable<boolean>;
   saveButtonDisabled$ = this.formsStateService.saveButtonDisabled$.pipe(share());
-  viewModel$: Observable<EntityExpandableViewModel>;
+  viewModel$: Observable<PickerExpandableViewModel>;
 
   constructor(
     eavService: EavService,
@@ -67,7 +67,7 @@ export class EntityExpandableWrapperComponent extends BaseFieldComponent<string 
         [controlStatus, label, placeholder, required],
         [selectedEntities],
       ]) => {
-        const viewModel: EntityExpandableViewModel = {
+        const viewModel: PickerExpandableViewModel = {
           controlStatus,
           label,
           placeholder,

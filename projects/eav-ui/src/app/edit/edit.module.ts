@@ -88,7 +88,6 @@ import { AdamHintComponent } from './form/wrappers/adam-wrapper/adam-hint/adam-h
 import { AdamWrapperComponent } from './form/wrappers/adam-wrapper/adam-wrapper.component';
 import { CollapsibleWrapperComponent } from './form/wrappers/collapsible-wrapper/collapsible-wrapper.component';
 import { DropzoneWrapperComponent } from './form/wrappers/dropzone-wrapper/dropzone-wrapper.component';
-import { EntityExpandableWrapperComponent } from './form/wrappers/entity-expandable-wrapper/entity-expandable-wrapper.component';
 import { ExpandableWrapperComponent } from './form/wrappers/expandable-wrapper/expandable-wrapper.component';
 import { HiddenWrapperComponent } from './form/wrappers/hidden-wrapper/hidden-wrapper.component';
 import { HyperlinkDefaultExpandableWrapperComponent } from './form/wrappers/hyperlink-default-expandable-wrapper/hyperlink-default-expandable-wrapper.component';
@@ -99,6 +98,7 @@ import { LocalizationWrapperComponent } from './form/wrappers/localization-wrapp
 import { SnackBarWarningDemoComponent } from './form/wrappers/localization-wrapper/snack-bar-warning-demo/snack-bar-warning-demo.component';
 import { TranslateMenuDialogComponent } from './form/wrappers/localization-wrapper/translate-menu-dialog/translate-menu-dialog.component';
 import { TranslateMenuComponent } from './form/wrappers/localization-wrapper/translate-menu/translate-menu.component';
+import { PickerExpandableWrapperComponent } from './form/wrappers/picker-expandable-wrapper/picker-expandable-wrapper.component';
 // tslint:disable-next-line: max-line-length
 import { MatDayjsDateAdapter, MatDayjsDateModule, MatDayjsModule, MAT_DAYJS_DATE_ADAPTER_OPTIONS, NgxMatDayjsDatetimeAdapter, NgxMatDayjsDatetimeModule, NgxMatDayjsModule, NGX_MAT_DAYJS_DATETIME_ADAPTER_OPTIONS } from './shared/date-adapters/date-adapter-api';
 import { ChangeAnchorTargetDirective, PasteClipboardImageDirective } from './shared/directives';
@@ -152,7 +152,7 @@ import { AdamService, EavService, EntityService, LoadIconsService, QueryService,
         TranslateMenuDialogComponent,
         AutoTranslateMenuDialogComponent,
         AutoTranslateDisabledWarningDialog,
-        EntityExpandableWrapperComponent,
+        PickerExpandableWrapperComponent,
         PickerListComponent,
         PickerSearchComponent,
         EntityQueryComponent,

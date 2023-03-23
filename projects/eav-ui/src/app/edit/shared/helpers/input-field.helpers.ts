@@ -56,7 +56,7 @@ export class InputFieldHelpers {
       wrappers.push(WrappersConstants.LocalizationWrapper);
       const allowMultiValue = settings.AllowMultiValue ?? false;
       if (allowMultiValue || inputType === InputTypeConstants.EntityContentBlocks) {
-        wrappers.push(WrappersConstants.EntityExpandableWrapper);
+        wrappers.push(WrappersConstants.PickerExpandableWrapper);
       }
     }
 

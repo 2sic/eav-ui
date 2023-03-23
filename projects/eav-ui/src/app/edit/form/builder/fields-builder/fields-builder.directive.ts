@@ -29,12 +29,12 @@ import { StringUrlPathComponent } from '../../fields/string/string-url-path/stri
 import { AdamWrapperComponent } from '../../wrappers/adam-wrapper/adam-wrapper.component';
 import { CollapsibleWrapperComponent } from '../../wrappers/collapsible-wrapper/collapsible-wrapper.component';
 import { DropzoneWrapperComponent } from '../../wrappers/dropzone-wrapper/dropzone-wrapper.component';
-import { EntityExpandableWrapperComponent } from '../../wrappers/entity-expandable-wrapper/entity-expandable-wrapper.component';
 import { ExpandableWrapperComponent } from '../../wrappers/expandable-wrapper/expandable-wrapper.component';
 import { HiddenWrapperComponent } from '../../wrappers/hidden-wrapper/hidden-wrapper.component';
 import { HyperlinkDefaultExpandableWrapperComponent } from '../../wrappers/hyperlink-default-expandable-wrapper/hyperlink-default-expandable-wrapper.component';
 import { HyperlinkLibraryExpandableWrapperComponent } from '../../wrappers/hyperlink-library-expandable-wrapper/hyperlink-library-expandable-wrapper.component';
 import { LocalizationWrapperComponent } from '../../wrappers/localization-wrapper/localization-wrapper.component';
+import { PickerExpandableWrapperComponent } from '../../wrappers/picker-expandable-wrapper/picker-expandable-wrapper.component';
 import { FieldConfigSet } from './field-config-set.model';
 import { FieldWrapper } from './field-wrapper.model';
 import { Field } from './field.model';
@@ -49,7 +49,7 @@ export class FieldsBuilderDirective implements OnInit, OnDestroy {
     [WrappersConstants.AdamWrapper]: AdamWrapperComponent,
     [WrappersConstants.CollapsibleWrapper]: CollapsibleWrapperComponent,
     [WrappersConstants.DropzoneWrapper]: DropzoneWrapperComponent,
-    [WrappersConstants.EntityExpandableWrapper]: EntityExpandableWrapperComponent,
+    [WrappersConstants.PickerExpandableWrapper]: PickerExpandableWrapperComponent,
     [WrappersConstants.ExpandableWrapper]: ExpandableWrapperComponent,
     [WrappersConstants.HiddenWrapper]: HiddenWrapperComponent,
     [WrappersConstants.HyperlinkDefaultExpandableWrapper]: HyperlinkDefaultExpandableWrapperComponent,

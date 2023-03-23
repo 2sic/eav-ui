@@ -11,7 +11,7 @@ import { ReorderIndexes } from '../../picker/picker-list/picker-list.models';
 import { PickerSourceAdapterFactoryService } from '../../picker/picker-source-adapter-factory.service';
 import { PickerStateAdapterFactoryService } from '../../picker/picker-state-adapter-factory.service';
 import { PickerComponent } from '../../picker/picker.component';
-import { filterGuids } from '../entity-default/entity-default.helpers';
+import { filterGuids } from '../../picker/picker.helpers';
 import { EntityDefaultLogic } from './entity-default-logic';
 
 @Component({
