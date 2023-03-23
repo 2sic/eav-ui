@@ -1,21 +1,11 @@
 @import './rich-variables.scss';
 
-$debug-background: repeating-linear-gradient(135deg, $spacer-pattern-lines 0, $spacer-pattern-lines 1px, $spacer-pattern-background 0, $spacer-pattern-background 7px);
+$img-background: repeating-linear-gradient(135deg, $spacer-pattern-lines 0, $spacer-pattern-lines 1px, $spacer-pattern-background 0, $spacer-pattern-background 7px);
 
 @if $debug {
   .mce-content-body {
     img {
       box-shadow: inset 0 0 15px rgb(0, 255, 0);
-      background-image: $debug-background;
-    }
-  }
-}
-@else {
-  .mce-content-body {
-    img {
-      // background: rgb(221, 218, 218);
-      // box-shadow: inset 0 0 5px rgb(32, 69, 138);
-      background-image: $debug-background;
     }
   }
 }
@@ -95,7 +85,7 @@ $sub-tag: '';
   // Just the image directly
   img {
     box-sizing: border-box;
-
+    background-image: $img-background;
 
     &.wysiwyg-left {
 
