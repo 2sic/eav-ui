@@ -1,12 +1,5 @@
-import { EntityInfo } from 'projects/edit-types';
-import { SelectedEntity } from '../entity/entity-default/entity-default.models';
-
 export interface PickerViewModel {
-  freeTextMode: boolean;
-  allowMultiValue: boolean;
-  selectedEntities: SelectedEntity[];
-  availableEntities: EntityInfo[];
-  isExpanded: boolean;
+  shouldPickerListBeShown: boolean;
 }
 
 export interface DeleteEntityProps {

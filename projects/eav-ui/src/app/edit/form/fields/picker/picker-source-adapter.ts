@@ -3,6 +3,15 @@ import { EntityInfo } from 'projects/edit-types';
 import { BehaviorSubject } from 'rxjs';
 
 export class PickerSourceAdapter {
+  constructor() {
+  }
+
+  init() {
+
+  }
+
+  destroy() { }
+
   group: FormGroup;
 
   availableEntities$: BehaviorSubject<EntityInfo[]>;

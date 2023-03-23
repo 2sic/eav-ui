@@ -22,6 +22,7 @@ export class PickerSourceAdapterFactoryService {
     pickerSourceAdapter.deleteEntity = (entity: { index: number, entityGuid: string }) => deleteEntity(entity);
     pickerSourceAdapter.fetchAvailableEntities =
       (clearAvailableEntitiesAndOnlyUpdateCache: boolean) => fetchEntities(clearAvailableEntitiesAndOnlyUpdateCache);
+    pickerSourceAdapter.init();
 
     return pickerSourceAdapter;
   }

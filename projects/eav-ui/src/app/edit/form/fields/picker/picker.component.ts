@@ -6,18 +6,17 @@ import { TranslateService } from '@ngx-translate/core';
 import { InputTypeConstants } from 'projects/eav-ui/src/app/content-type-fields/constants/input-type.constants';
 import { EditForm } from 'projects/eav-ui/src/app/shared/models/edit-form.model';
 import { EntityInfo } from 'projects/edit-types';
-import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
+import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { FieldMask, GeneralHelpers } from '../../../shared/helpers';
 import { EavService, EditRoutingService, EntityService, FieldsSettingsService } from '../../../shared/services';
 import { EntityCacheService, StringQueryCacheService } from '../../../shared/store/ngrx-data';
 import { FieldMetadata } from '../../builder/fields-builder/field-metadata.decorator';
 import { BaseFieldComponent } from '../base/base-field.component';
-import { SelectedEntity } from '../entity/entity-default/entity-default.models';
 import { ReorderIndexes } from './picker-list/picker-list.models';
 import { PickerSearchComponent } from './picker-search/picker-search.component';
 import { PickerSourceAdapter } from './picker-source-adapter';
 import { PickerStateAdapter } from './picker-state-adapter';
-import { calculateSelectedEntities, convertArrayToString, convertValueToArray } from './picker.helpers';
+import { convertArrayToString, convertValueToArray } from './picker.helpers';
 import { DeleteEntityProps, PickerViewModel } from './picker.models';
 
 @Component({
@@ -37,10 +36,7 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
   contentTypeMask?: FieldMask;
 
   error$: BehaviorSubject<string>;
-  freeTextMode$: BehaviorSubject<boolean>;
   disableAddNew$: BehaviorSubject<boolean>;
-  isExpanded$: Observable<boolean>;
-  selectedEntities$: Observable<SelectedEntity[]>;
   availableEntities$: BehaviorSubject<EntityInfo[]>;
   viewModel$: Observable<PickerViewModel>;
 
@@ -49,7 +45,7 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
     fieldsSettingsService: FieldsSettingsService,
     protected entityService: EntityService,
     public translate: TranslateService,
-    private editRoutingService: EditRoutingService,
+    protected editRoutingService: EditRoutingService,
     private snackBar: MatSnackBar,
     public entityCacheService: EntityCacheService,
     public stringQueryCacheService: StringQueryCacheService,
@@ -60,47 +56,8 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
   ngOnInit(): void {
     super.ngOnInit();
     this.error$ = new BehaviorSubject('');
-    this.freeTextMode$ = new BehaviorSubject(false);
     this.disableAddNew$ = new BehaviorSubject(true);
     this.availableEntities$ = new BehaviorSubject<EntityInfo[]>(null);
-
-    this.selectedEntities$ = combineLatest([
-      this.controlStatus$.pipe(map(controlStatus => controlStatus.value), distinctUntilChanged()),
-      this.entityCacheService.getEntities$(),
-      this.stringQueryCacheService.getEntities$(this.config.entityGuid, this.config.fieldName),
-      this.settings$.pipe(
-        map(settings => ({
-          Separator: settings.Separator,
-          Value: settings.Value,
-          Label: settings.Label,
-        })),
-        distinctUntilChanged(GeneralHelpers.objectsEqual),
-      ),
-    ]).pipe(
-      map(([value, entityCache, stringQueryCache, settings]) =>
-        calculateSelectedEntities(value, settings.Separator, entityCache, stringQueryCache, settings.Value, settings.Label, this.translate)
-      ),
-    );
-
-    this.isExpanded$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
-
-    const allowMultiValue$ = this.settings$.pipe(map(settings => settings.AllowMultiValue), distinctUntilChanged());
-    this.viewModel$ =
-      combineLatest([this.freeTextMode$, allowMultiValue$, this.selectedEntities$, this.availableEntities$, this.isExpanded$])
-        .pipe(
-          map((
-            [freeTextMode, allowMultiValue, selectedEntities, availableEntities, isExpanded]
-          ) => {
-            const viewModel: PickerViewModel = {
-              freeTextMode,
-              allowMultiValue,
-              selectedEntities,
-              availableEntities,
-              isExpanded,
-            };
-            return viewModel;
-          }),
-        );
 
     this.refreshOnChildClosed();
   }
@@ -111,15 +68,21 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
 
   ngOnDestroy(): void {
     this.error$.complete();
-    this.freeTextMode$.complete();
     this.disableAddNew$.complete();
     this.availableEntities$.complete();
     this.contentTypeMask?.destroy();
     super.ngOnDestroy();
   }
 
-  toggleFreeTextMode(): void {
-    this.freeTextMode$.next(!this.freeTextMode$.value);
+  createTemplateVariables() {
+    this.viewModel$ = combineLatest([this.pickerStateAdapter.shouldPickerListBeShown$])
+      .pipe(map(([shouldPickerListBeShown]) => {
+        const viewModel: PickerViewModel = {
+          shouldPickerListBeShown,
+        };
+        return viewModel;
+      }),
+    );
   }
 
   /**

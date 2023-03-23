@@ -57,21 +57,24 @@ export class EntityContentBlockComponent extends PickerComponent implements OnIn
 
     this.pickerStateAdapter = this.pickerStateAdapterFactoryService.fillPickerStateAdapter(
       this.pickerStateAdapter,
+      this.editRoutingService,
       this.config,
-      this.freeTextMode$,
+      this.settings$,
       this.disableAddNew$,
       this.controlStatus$,
       this.error$,
-      this.selectedEntities$,
       this.label$,
       this.placeholder$,
       this.required$,
       (action: 'add' | 'delete' | 'reorder', value: string | number | ReorderIndexes) => this.updateValue(action, value),
-      () => this.toggleFreeTextMode()
     );
+
+    this.createTemplateVariables();
   }
 
   ngOnDestroy(): void {
+    this.pickerSourceAdapter.destroy();
+    this.pickerStateAdapter.destroy();
     super.ngOnDestroy();
   }
 }
