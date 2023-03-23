@@ -8,8 +8,9 @@ import { FieldMask, GeneralHelpers } from '../../../../shared/helpers';
 import { EavService, EditRoutingService, EntityService, FieldsSettingsService, QueryService } from '../../../../shared/services';
 import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
-import { PickerAdapterFactoryService } from '../../picker/picker-adapter-factory.service';
 import { ReorderIndexes } from '../../picker/picker-list/picker-list.models';
+import { PickerSourceAdapterFactoryService } from '../../picker/picker-source-adapter-factory.service';
+import { PickerStateAdapterFactoryService } from '../../picker/picker-state-adapter-factory.service';
 import { PickerComponent } from '../../picker/picker.component';
 import { filterGuids } from '../entity-default/entity-default.helpers';
 import { EntityQueryLogic } from './entity-query-logic';
@@ -34,7 +35,8 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
     entityCacheService: EntityCacheService,
     stringQueryCacheService: StringQueryCacheService,
     private queryService: QueryService,
-    protected pickerAdapterFactoryService: PickerAdapterFactoryService,
+    protected pickerSourceAdapterFactoryService: PickerSourceAdapterFactoryService,
+    protected pickerStateAdapterFactoryService: PickerStateAdapterFactoryService,
   ) {
     super(
       eavService,
@@ -83,7 +85,7 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
       })
     );
 
-    this.pickerSourceAdapter = this.pickerAdapterFactoryService.fillPickerSourceAdapter(
+    this.pickerSourceAdapter = this.pickerSourceAdapterFactoryService.fillPickerSourceAdapter(
       this.pickerSourceAdapter,
       this.group,
       this.availableEntities$,
@@ -92,7 +94,7 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
       (clearAvailableEntitiesAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableEntitiesAndOnlyUpdateCache)
     );
 
-    this.pickerStateAdapter = this.pickerAdapterFactoryService.fillPickerStateAdapter(
+    this.pickerStateAdapter = this.pickerStateAdapterFactoryService.fillPickerStateAdapter(
       this.pickerStateAdapter,
       this.config,
       this.freeTextMode$,

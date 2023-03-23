@@ -69,9 +69,10 @@ import { HyperlinkDefaultComponent } from './form/fields/hyperlink/hyperlink-def
 import { HyperlinkLibraryComponent } from './form/fields/hyperlink/hyperlink-library/hyperlink-library.component';
 import { NumberDefaultComponent } from './form/fields/number/number-default/number-default.component';
 import { NumberDropdownComponent } from './form/fields/number/number-dropdown/number-dropdown.component';
-import { PickerAdapterFactoryService } from './form/fields/picker/picker-adapter-factory.service';
 import { PickerListComponent } from './form/fields/picker/picker-list/picker-list.component';
 import { PickerSearchComponent } from './form/fields/picker/picker-search/picker-search.component';
+import { PickerSourceAdapterFactoryService } from './form/fields/picker/picker-source-adapter-factory.service';
+import { PickerStateAdapterFactoryService } from './form/fields/picker/picker-state-adapter-factory.service';
 import { PickerComponent } from './form/fields/picker/picker.component';
 import { StringDefaultComponent } from './form/fields/string/string-default/string-default.component';
 import { StringDropdownQueryComponent } from './form/fields/string/string-dropdown-query/string-dropdown-query.component';
@@ -99,7 +100,7 @@ import { SnackBarWarningDemoComponent } from './form/wrappers/localization-wrapp
 import { TranslateMenuDialogComponent } from './form/wrappers/localization-wrapper/translate-menu-dialog/translate-menu-dialog.component';
 import { TranslateMenuComponent } from './form/wrappers/localization-wrapper/translate-menu/translate-menu.component';
 // tslint:disable-next-line: max-line-length
-import { MatDayjsDateAdapter, MatDayjsDateModule, MatDayjsModule, MAT_DAYJS_DATE_ADAPTER_OPTIONS, NgxMatDayjsDatetimeAdapter, NgxMatDayjsDatetimeModule, NgxMatDayjsModule, NGX_MAT_DAYJS_DATETIME_ADAPTER_OPTIONS } from './shared/date-adapters/date-adapter-api'
+import { MatDayjsDateAdapter, MatDayjsDateModule, MatDayjsModule, MAT_DAYJS_DATE_ADAPTER_OPTIONS, NgxMatDayjsDatetimeAdapter, NgxMatDayjsDatetimeModule, NgxMatDayjsModule, NGX_MAT_DAYJS_DATETIME_ADAPTER_OPTIONS } from './shared/date-adapters/date-adapter-api';
 import { ChangeAnchorTargetDirective, PasteClipboardImageDirective } from './shared/directives';
 import { AdamService, EavService, EntityService, LoadIconsService, QueryService, ScriptsLoaderService } from './shared/services';
 
@@ -223,8 +224,9 @@ import { AdamService, EavService, EntityService, LoadIconsService, QueryService,
         EntitiesService,
         { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { subscriptSizing: 'dynamic' } },
         { provide: MAT_SELECT_CONFIG, useValue: { hideSingleSelectionIndicator: true } },
-        { provide: MAT_SLIDE_TOGGLE_DEFAULT_OPTIONS, useValue: { hideIcon: true } }
-        PickerAdapterFactoryService,
+        { provide: MAT_SLIDE_TOGGLE_DEFAULT_OPTIONS, useValue: { hideIcon: true } },
+        PickerSourceAdapterFactoryService,
+        PickerStateAdapterFactoryService,
     ],
 })
 export class EditModule { }

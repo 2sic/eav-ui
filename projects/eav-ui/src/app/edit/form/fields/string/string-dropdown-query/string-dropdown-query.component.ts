@@ -10,8 +10,9 @@ import { EntityCacheService, StringQueryCacheService } from '../../../../shared/
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { EntityQueryComponent } from '../../entity/entity-query/entity-query.component';
 import { QueryEntity } from '../../entity/entity-query/entity-query.models';
-import { PickerAdapterFactoryService } from '../../picker/picker-adapter-factory.service';
 import { ReorderIndexes } from '../../picker/picker-list/picker-list.models';
+import { PickerSourceAdapterFactoryService } from '../../picker/picker-source-adapter-factory.service';
+import { PickerStateAdapterFactoryService } from '../../picker/picker-state-adapter-factory.service';
 import { StringDropdownQueryLogic } from './string-dropdown-query-logic';
 
 @Component({
@@ -32,7 +33,8 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
     entityCacheService: EntityCacheService,
     stringQueryCacheService: StringQueryCacheService,
     queryService: QueryService,
-    pickerAdapterFactoryService: PickerAdapterFactoryService,
+    pickerSourceAdapterFactoryService: PickerSourceAdapterFactoryService,
+    pickerStateAdapterFactoryService: PickerStateAdapterFactoryService,
   ) {
     super(
       eavService,
@@ -44,7 +46,8 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
       entityCacheService,
       stringQueryCacheService,
       queryService,
-      pickerAdapterFactoryService
+      pickerSourceAdapterFactoryService,
+      pickerStateAdapterFactoryService
     );
     StringDropdownQueryLogic.importMe();
     this.isStringQuery = true;
@@ -65,7 +68,7 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
       })
     );
 
-    this.pickerSourceAdapter = this.pickerAdapterFactoryService.fillPickerSourceAdapter(
+    this.pickerSourceAdapter = this.pickerSourceAdapterFactoryService.fillPickerSourceAdapter(
       this.pickerSourceAdapter,
       this.group,
       this.availableEntities$,
@@ -74,7 +77,7 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
       (clearAvailableEntitiesAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableEntitiesAndOnlyUpdateCache)
     );
 
-    this.pickerStateAdapter = this.pickerAdapterFactoryService.fillPickerStateAdapter(
+    this.pickerStateAdapter = this.pickerStateAdapterFactoryService.fillPickerStateAdapter(
       this.pickerStateAdapter,
       this.config,
       this.freeTextMode$,

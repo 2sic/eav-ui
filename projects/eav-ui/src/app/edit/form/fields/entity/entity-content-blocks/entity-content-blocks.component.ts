@@ -5,8 +5,9 @@ import { InputTypeConstants } from '../../../../../content-type-fields/constants
 import { EavService, EditRoutingService, EntityService, FieldsSettingsService } from '../../../../shared/services';
 import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
-import { PickerAdapterFactoryService } from '../../picker/picker-adapter-factory.service';
 import { ReorderIndexes } from '../../picker/picker-list/picker-list.models';
+import { PickerSourceAdapterFactoryService } from '../../picker/picker-source-adapter-factory.service';
+import { PickerStateAdapterFactoryService } from '../../picker/picker-state-adapter-factory.service';
 import { PickerComponent } from '../../picker/picker.component';
 import { EntityContentBlocksLogic } from './entity-content-blocks-logic';
 
@@ -27,7 +28,8 @@ export class EntityContentBlockComponent extends PickerComponent implements OnIn
     snackBar: MatSnackBar,
     entityCacheService: EntityCacheService,
     stringQueryCacheService: StringQueryCacheService,
-    private pickerAdapterFactoryService: PickerAdapterFactoryService,
+    private pickerSourceAdapterFactoryService: PickerSourceAdapterFactoryService,
+    private pickerStateAdapterFactoryService: PickerStateAdapterFactoryService,
   ) {
     super(
       eavService,
@@ -44,7 +46,7 @@ export class EntityContentBlockComponent extends PickerComponent implements OnIn
   ngOnInit(): void {
     super.ngOnInit();
 
-    this.pickerSourceAdapter = this.pickerAdapterFactoryService.fillPickerSourceAdapter(
+    this.pickerSourceAdapter = this.pickerSourceAdapterFactoryService.fillPickerSourceAdapter(
       this.pickerSourceAdapter,
       this.group,
       this.availableEntities$,
@@ -53,7 +55,7 @@ export class EntityContentBlockComponent extends PickerComponent implements OnIn
       (clearAvailableEntitiesAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableEntitiesAndOnlyUpdateCache)
     );
 
-    this.pickerStateAdapter = this.pickerAdapterFactoryService.fillPickerStateAdapter(
+    this.pickerStateAdapter = this.pickerStateAdapterFactoryService.fillPickerStateAdapter(
       this.pickerStateAdapter,
       this.config,
       this.freeTextMode$,
