@@ -69,6 +69,7 @@ import { HyperlinkDefaultComponent } from './form/fields/hyperlink/hyperlink-def
 import { HyperlinkLibraryComponent } from './form/fields/hyperlink/hyperlink-library/hyperlink-library.component';
 import { NumberDefaultComponent } from './form/fields/number/number-default/number-default.component';
 import { NumberDropdownComponent } from './form/fields/number/number-dropdown/number-dropdown.component';
+import { PickerAdapterFactoryService } from './form/fields/picker/picker-adapter-factory.service';
 import { PickerListComponent } from './form/fields/picker/picker-list/picker-list.component';
 import { PickerSearchComponent } from './form/fields/picker/picker-search/picker-search.component';
 import { PickerComponent } from './form/fields/picker/picker.component';
@@ -223,6 +224,7 @@ import { AdamService, EavService, EntityService, LoadIconsService, QueryService,
         { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { subscriptSizing: 'dynamic' } },
         { provide: MAT_SELECT_CONFIG, useValue: { hideSingleSelectionIndicator: true } },
         { provide: MAT_SLIDE_TOGGLE_DEFAULT_OPTIONS, useValue: { hideIcon: true } }
+        PickerAdapterFactoryService,
     ],
 })
 export class EditModule { }

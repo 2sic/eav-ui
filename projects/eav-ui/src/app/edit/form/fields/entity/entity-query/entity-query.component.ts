@@ -8,6 +8,8 @@ import { FieldMask, GeneralHelpers } from '../../../../shared/helpers';
 import { EavService, EditRoutingService, EntityService, FieldsSettingsService, QueryService } from '../../../../shared/services';
 import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
+import { PickerAdapterFactoryService } from '../../picker/picker-adapter-factory.service';
+import { ReorderIndexes } from '../../picker/picker-list/picker-list.models';
 import { PickerComponent } from '../../picker/picker.component';
 import { filterGuids } from '../entity-default/entity-default.helpers';
 import { EntityQueryLogic } from './entity-query-logic';
@@ -32,6 +34,7 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
     entityCacheService: EntityCacheService,
     stringQueryCacheService: StringQueryCacheService,
     private queryService: QueryService,
+    protected pickerAdapterFactoryService: PickerAdapterFactoryService,
   ) {
     super(
       eavService,
@@ -78,6 +81,30 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
       ).subscribe(() => {
         this.availableEntities$.next(null);
       })
+    );
+
+    this.pickerSourceAdapter = this.pickerAdapterFactoryService.fillPickerSourceAdapter(
+      this.pickerSourceAdapter,
+      this.group,
+      this.availableEntities$,
+      (entity: { entityGuid: string, entityId: number }) => this.editEntity(entity),
+      (entity: { index: number, entityGuid: string }) => this.deleteEntity(entity),
+      (clearAvailableEntitiesAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableEntitiesAndOnlyUpdateCache)
+    );
+
+    this.pickerStateAdapter = this.pickerAdapterFactoryService.fillPickerStateAdapter(
+      this.pickerStateAdapter,
+      this.config,
+      this.freeTextMode$,
+      this.disableAddNew$,
+      this.controlStatus$,
+      this.error$,
+      this.selectedEntities$,
+      this.label$,
+      this.placeholder$,
+      this.required$,
+      (action: 'add' | 'delete' | 'reorder', value: string | number | ReorderIndexes) => this.updateValue(action, value),
+      () => this.toggleFreeTextMode()
     );
   }
 

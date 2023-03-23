@@ -102,27 +102,6 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
       }),
     );
 
-    this.pickerSourceAdapter.group = this.group;
-    this.pickerSourceAdapter.availableEntities$ = this.availableEntities$;
-    this.pickerSourceAdapter.editEntity = (entity: { entityGuid: string, entityId: number }) => this.editEntity(entity);
-    this.pickerSourceAdapter.deleteEntity = (entity: { index: number, entityGuid: string }) => this.deleteEntity(entity);
-    this.pickerSourceAdapter.fetchAvailableEntities =
-      (clearAvailableEntitiesAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableEntitiesAndOnlyUpdateCache);
-
-    this.pickerStateAdapter.config = this.config;
-    this.pickerStateAdapter.freeTextMode$ = this.freeTextMode$;
-    this.pickerStateAdapter.disableAddNew$ = this.disableAddNew$;
-    this.pickerStateAdapter.controlStatus$ = this.controlStatus$;
-    this.pickerStateAdapter.error$ = this.error$;
-    this.pickerStateAdapter.selectedEntities$ = this.selectedEntities$;
-    this.pickerStateAdapter.label$ = this.label$;
-    this.pickerStateAdapter.placeholder$ = this.placeholder$;
-    this.pickerStateAdapter.required$ = this.required$;
-    this.pickerStateAdapter.addSelected = (guid: string) => this.updateValue('add', guid);
-    this.pickerStateAdapter.removeSelected = (index: number) => this.updateValue('delete', index);
-    this.pickerStateAdapter.reorder = (reorderIndexes: ReorderIndexes) => this.updateValue('reorder', reorderIndexes);
-    this.pickerStateAdapter.toggleFreeTextMode = () => this.toggleFreeTextMode();
-
     this.refreshOnChildClosed();
   }
 
@@ -271,7 +250,7 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
     );
   }
 
-  private updateValue(action: 'add' | 'delete' | 'reorder', value: string | number | ReorderIndexes): void {
+  updateValue(action: 'add' | 'delete' | 'reorder', value: string | number | ReorderIndexes): void {
     const valueArray: string[] = (typeof this.control.value === 'string')
       ? convertValueToArray(this.control.value, this.settings$.value.Separator)
       : [...this.control.value];

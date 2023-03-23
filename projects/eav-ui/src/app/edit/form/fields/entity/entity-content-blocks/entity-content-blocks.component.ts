@@ -5,6 +5,8 @@ import { InputTypeConstants } from '../../../../../content-type-fields/constants
 import { EavService, EditRoutingService, EntityService, FieldsSettingsService } from '../../../../shared/services';
 import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
+import { PickerAdapterFactoryService } from '../../picker/picker-adapter-factory.service';
+import { ReorderIndexes } from '../../picker/picker-list/picker-list.models';
 import { PickerComponent } from '../../picker/picker.component';
 import { EntityContentBlocksLogic } from './entity-content-blocks-logic';
 
@@ -25,6 +27,7 @@ export class EntityContentBlockComponent extends PickerComponent implements OnIn
     snackBar: MatSnackBar,
     entityCacheService: EntityCacheService,
     stringQueryCacheService: StringQueryCacheService,
+    private pickerAdapterFactoryService: PickerAdapterFactoryService,
   ) {
     super(
       eavService,
@@ -40,6 +43,30 @@ export class EntityContentBlockComponent extends PickerComponent implements OnIn
 
   ngOnInit(): void {
     super.ngOnInit();
+
+    this.pickerSourceAdapter = this.pickerAdapterFactoryService.fillPickerSourceAdapter(
+      this.pickerSourceAdapter,
+      this.group,
+      this.availableEntities$,
+      (entity: { entityGuid: string, entityId: number }) => this.editEntity(entity),
+      (entity: { index: number, entityGuid: string }) => this.deleteEntity(entity),
+      (clearAvailableEntitiesAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableEntitiesAndOnlyUpdateCache)
+    );
+
+    this.pickerStateAdapter = this.pickerAdapterFactoryService.fillPickerStateAdapter(
+      this.pickerStateAdapter,
+      this.config,
+      this.freeTextMode$,
+      this.disableAddNew$,
+      this.controlStatus$,
+      this.error$,
+      this.selectedEntities$,
+      this.label$,
+      this.placeholder$,
+      this.required$,
+      (action: 'add' | 'delete' | 'reorder', value: string | number | ReorderIndexes) => this.updateValue(action, value),
+      () => this.toggleFreeTextMode()
+    );
   }
 
   ngOnDestroy(): void {
