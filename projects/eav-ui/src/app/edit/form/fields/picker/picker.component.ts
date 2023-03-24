@@ -33,7 +33,6 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
 
   isQuery: boolean;
   isStringQuery: boolean;
-  contentTypeMask?: FieldMask;
 
   error$: BehaviorSubject<string>;
   disableAddNew$: BehaviorSubject<boolean>;
@@ -70,7 +69,6 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
     this.error$.complete();
     this.disableAddNew$.complete();
     this.availableEntities$.complete();
-    this.contentTypeMask?.destroy();
     super.ngOnDestroy();
   }
 
@@ -99,7 +97,7 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
   editEntity(editParams: { entityGuid: string, entityId: number }): void {
     let form: EditForm;
     if (editParams?.entityGuid == null) {
-      const contentTypeName = this.contentTypeMask.resolve();
+      const contentTypeName = this.pickerSourceAdapter.contentTypeMask.resolve();
       const prefill = this.getPrefill();
       form = {
         items: [{ ContentTypeName: contentTypeName, Prefill: prefill }],
@@ -151,7 +149,7 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
     const entity = this.entityCacheService.getEntity(props.entityGuid);
     const id = entity.Id;
     const title = entity.Text;
-    const contentType = this.contentTypeMask.resolve();
+    const contentType = this.pickerSourceAdapter.contentTypeMask.resolve();
     const parentId = this.config.entityId;
     const parentField = this.config.fieldName;
 

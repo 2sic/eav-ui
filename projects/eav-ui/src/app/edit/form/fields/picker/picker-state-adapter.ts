@@ -1,17 +1,21 @@
 import { TranslateService } from '@ngx-translate/core/public_api';
 import { EntityInfo, FieldSettings } from 'projects/edit-types';
-import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
-import { GeneralHelpers } from '../../../shared/helpers';
+import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, Subscription } from 'rxjs';
+import { FieldMask, GeneralHelpers } from '../../../shared/helpers';
 import { ControlStatus } from '../../../shared/models';
 import { FieldConfigSet } from '../../builder/fields-builder/field-config-set.model';
 import { SelectedEntity } from '../entity/entity-default/entity-default.models';
 import { QueryEntity } from '../entity/entity-query/entity-query.models';
 import { ReorderIndexes } from './picker-list/picker-list.models';
+import { PickerSourceAdapter } from './picker-source-adapter';
 import { calculateSelectedEntities } from './picker.helpers';
 
 export class PickerStateAdapter {
+  pickerSourceAdapter: PickerSourceAdapter;
+
   constructor() {
   }
+
   shouldPickerListBeShown$: Observable<boolean>;
   isExpanded$: Observable<boolean>;
   freeTextMode$: BehaviorSubject<boolean> = new BehaviorSubject(false);
@@ -63,6 +67,11 @@ export class PickerStateAdapter {
 
   destroy() {
     this.freeTextMode$.complete();
+  }
+
+  updateAddNew(): void {
+    const contentTypeName = this.pickerSourceAdapter.contentTypeMask.resolve();
+    this.disableAddNew$.next(!contentTypeName);
   }
 
   addSelected(guid: string) { }

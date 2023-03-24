@@ -7,6 +7,7 @@ import { EditRoutingService } from '../../../shared/services';
 import { EntityCacheService, StringQueryCacheService } from '../../../shared/store/ngrx-data';
 import { FieldConfigSet } from '../../builder/fields-builder/field-config-set.model';
 import { ReorderIndexes } from './picker-list/picker-list.models';
+import { PickerSourceAdapter } from './picker-source-adapter';
 import { PickerStateAdapter } from './picker-state-adapter';
 
 @Injectable()
@@ -45,8 +46,19 @@ export class PickerStateAdapterFactoryService {
     pickerStateAdapter.addSelected = (guid: string) => updateValue('add', guid);
     pickerStateAdapter.removeSelected = (index: number) => updateValue('delete', index);
     pickerStateAdapter.reorder = (reorderIndexes: ReorderIndexes) => updateValue('reorder', reorderIndexes);
-    pickerStateAdapter.init();
 
     return pickerStateAdapter;
+  }
+
+  getDataFromPickerSourceAdapter(
+    pickerStateAdapter: PickerStateAdapter,
+    pickerSourceAdapter: PickerSourceAdapter
+  ): PickerStateAdapter {
+    pickerStateAdapter.pickerSourceAdapter = pickerSourceAdapter;
+    return pickerStateAdapter;
+  }
+
+  init(pickerStateAdapter: PickerStateAdapter): void {
+    pickerStateAdapter.init();
   }
 }

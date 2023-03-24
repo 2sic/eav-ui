@@ -89,6 +89,7 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
       this.pickerSourceAdapter,
       this.group,
       this.availableEntities$,
+      true,
       (entity: { entityGuid: string, entityId: number }) => this.editEntity(entity),
       (entity: { index: number, entityGuid: string }) => this.deleteEntity(entity),
       (clearAvailableEntitiesAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableEntitiesAndOnlyUpdateCache)
@@ -107,6 +108,19 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
       this.required$,
       (action: 'add' | 'delete' | 'reorder', value: string | number | ReorderIndexes) => this.updateValue(action, value),
     );
+
+    this.pickerSourceAdapter = this.pickerSourceAdapterFactoryService.getDataFromPickerStateAdapter(
+      this.pickerSourceAdapter,
+      this.pickerStateAdapter
+    );
+
+    this.pickerStateAdapter = this.pickerStateAdapterFactoryService.getDataFromPickerSourceAdapter(
+      this.pickerStateAdapter,
+      this.pickerSourceAdapter
+    );
+
+    this.pickerSourceAdapterFactoryService.init(this.pickerSourceAdapter);
+    this.pickerStateAdapterFactoryService.init(this.pickerStateAdapter);
 
     this.createTemplateVariables();
   }
