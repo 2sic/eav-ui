@@ -1,12 +1,12 @@
-import { Optional, Inject, InjectionToken, Injectable } from '@angular/core';
+// import badMutable from 'dayjs/plugin/badMutable'; // commented because it is not working with datetime picker calendar as expected
+import { NgxMatDateAdapter } from '@angular-material-components/datetime-picker';
+import { Inject, Injectable, InjectionToken, Optional } from '@angular/core';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import dayjs, { Dayjs, UnitType } from 'dayjs';
-import utc from 'dayjs/plugin/utc';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
 import localeData from 'dayjs/plugin/localeData';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
-import customParseFormat from 'dayjs/plugin/customParseFormat';
-// import badMutable from 'dayjs/plugin/badMutable'; // commented because it is not working with datime picker calendar as expected
-import { NgxMatDateAdapter } from '@angular-material-components/datetime-picker';
+import utc from 'dayjs/plugin/utc';
 
 export interface NgxMatDayjsDatetimeAdapterOptions {
   /**
@@ -36,10 +36,10 @@ export function NGX_MAT_DAYJS_DATETIME_ADAPTER_OPTIONS_FACTORY(): NgxMatDayjsDat
 /**
  * dayjs-adapter is used with datetime picker control that is made to work with mutable Moment type
  * use private $set to mutate internal dayjs property, so that timepicker still works as expected
- * this was necesery hack to avoid use of badMutable
+ * this was necessary hack to avoid use of badMutable
  */
 interface DayjsMutableSet extends Dayjs {
-  $set(unit: UnitType, value: number): void
+  $set(unit: UnitType, value: number): void;
 }
 
 /** Adapts Dayjs Dates for use with Angular Material. */
@@ -68,7 +68,7 @@ export class NgxMatDayjsDatetimeAdapter extends NgxMatDateAdapter<Dayjs> {
     dayjs.extend(localizedFormat);
     dayjs.extend(customParseFormat);
     dayjs.extend(localeData);
-    // dayjs.extend(badMutable); // commented because it is not working with datime picker calendar as expected
+    // dayjs.extend(badMutable); // commented because it is not working with datetime picker calendar as expected
 
     this.setLocale(dayjs().locale());
   }
@@ -77,7 +77,7 @@ export class NgxMatDayjsDatetimeAdapter extends NgxMatDateAdapter<Dayjs> {
     super.setLocale(locale);
 
     dayjs.locale(locale);
-    let localeData = dayjs().locale(locale).localeData();
+    const localeData = dayjs().locale(locale).localeData();
 
     this.localeData = {
       firstDayOfWeek: localeData.firstDayOfWeek(),
@@ -141,7 +141,7 @@ export class NgxMatDayjsDatetimeAdapter extends NgxMatDateAdapter<Dayjs> {
   }
 
   clone(date: Dayjs): Dayjs {
-    return this.dayJs(date).clone().locale(this.locale)
+    return this.dayJs(date).clone().locale(this.locale);
   }
 
   createDate(year: number, month: number, date: number): Dayjs {
@@ -160,8 +160,9 @@ export class NgxMatDayjsDatetimeAdapter extends NgxMatDateAdapter<Dayjs> {
     if (value && typeof value === 'string') {
       return this.dayJs(
         value,
-        dayjs().localeData().longDateFormat(parseFormat),
-        this.locale
+        parseFormat,
+        this.locale,
+        true
       );
     }
     return value ? this.dayJs(value).locale(this.locale) : null;
@@ -258,12 +259,17 @@ export class NgxMatDayjsDatetimeAdapter extends NgxMatDateAdapter<Dayjs> {
     date.$set('second', value);
   }
 
-  private dayJs(input?: string | number | Date | Dayjs | null | undefined, format?: string, locale?: string): Dayjs {
+  private dayJs(input?: string | number | Date | Dayjs | null | undefined, format?: string, locale?: string, isTyped?: boolean): Dayjs {
     if (!this.shouldUseUtc) {
       return dayjs(input, { format, locale }, locale);
     }
+    isTyped = isTyped || false;
+    const date = new Date(dayjs(input, format).toDate());
+    if (isTyped) {
+      date.setUTCHours(date.getUTCHours() - date.getTimezoneOffset() / 60);
+    }
     return dayjs(
-      input,
+      date,
       { format, locale, utc: this.shouldUseUtc },
       locale
     ).utc();
