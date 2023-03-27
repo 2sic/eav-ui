@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { EavService } from '../../../shared/services';
+import { EavService, EditRoutingService } from '../../../shared/services';
+import { EntityCacheService } from '../../../shared/store/ngrx-data';
 import { PickerSourceAdapter } from './picker-source-adapter';
 import { PickerStateAdapter } from './picker-state-adapter';
 
@@ -8,20 +9,22 @@ import { PickerStateAdapter } from './picker-state-adapter';
 export class PickerSourceAdapterFactoryService {
   constructor(
     private eavService: EavService,
+    private entityCacheService: EntityCacheService,
   ) { }
 
   fillPickerSourceAdapter(
     pickerSourceAdapter: PickerSourceAdapter,
+    editRoutingService: EditRoutingService,
     group: FormGroup,
     isQuery: boolean,
-    editEntity: (entity: { entityGuid: string, entityId: number }) => void,
     deleteEntity: (entity: { index: number, entityGuid: string }) => void,
     fetchEntities: (clearAvailableEntitiesAndOnlyUpdateCache: boolean) => void,
   ): PickerSourceAdapter {
     pickerSourceAdapter.eavService = this.eavService;
+    pickerSourceAdapter.entityCacheService = this.entityCacheService;
+    pickerSourceAdapter.editRoutingService = editRoutingService;
     pickerSourceAdapter.group = group;
     pickerSourceAdapter.isQuery = isQuery;
-    pickerSourceAdapter.editEntity = (entity: { entityGuid: string, entityId: number }) => editEntity(entity);
     pickerSourceAdapter.deleteEntity = (entity: { index: number, entityGuid: string }) => deleteEntity(entity);
     pickerSourceAdapter.fetchAvailableEntities =
       (clearAvailableEntitiesAndOnlyUpdateCache: boolean) => fetchEntities(clearAvailableEntitiesAndOnlyUpdateCache);
