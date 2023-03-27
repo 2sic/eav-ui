@@ -20,12 +20,12 @@ export class PickerStateAdapter {
   isExpanded$: Observable<boolean>;
   freeTextMode$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   settings$: BehaviorSubject<FieldSettings> = new BehaviorSubject(null);
+  error$: BehaviorSubject<string> = new BehaviorSubject('');
+  disableAddNew$: BehaviorSubject<boolean> = new BehaviorSubject(true);
 
   config: FieldConfigSet;
 
-  disableAddNew$: BehaviorSubject<boolean>;
   controlStatus$: BehaviorSubject<ControlStatus<string | string[]>>;
-  error$: BehaviorSubject<string>;
 
   selectedEntities$: Observable<SelectedEntity[]>;
   label$: Observable<string>;
@@ -67,6 +67,8 @@ export class PickerStateAdapter {
 
   destroy() {
     this.freeTextMode$.complete();
+    this.error$.complete();
+    this.disableAddNew$.complete();
   }
 
   updateAddNew(): void {

@@ -34,9 +34,6 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
   isQuery: boolean;
   isStringQuery: boolean;
 
-  error$: BehaviorSubject<string>;
-  disableAddNew$: BehaviorSubject<boolean>;
-  availableEntities$: BehaviorSubject<EntityInfo[]>;
   viewModel$: Observable<PickerViewModel>;
 
   constructor(
@@ -54,9 +51,6 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
 
   ngOnInit(): void {
     super.ngOnInit();
-    this.error$ = new BehaviorSubject('');
-    this.disableAddNew$ = new BehaviorSubject(true);
-    this.availableEntities$ = new BehaviorSubject<EntityInfo[]>(null);
 
     this.refreshOnChildClosed();
   }
@@ -66,9 +60,6 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
   }
 
   ngOnDestroy(): void {
-    this.error$.complete();
-    this.disableAddNew$.complete();
-    this.availableEntities$.complete();
     super.ngOnDestroy();
   }
 

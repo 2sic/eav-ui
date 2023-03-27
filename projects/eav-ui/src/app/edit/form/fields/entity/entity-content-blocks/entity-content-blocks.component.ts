@@ -49,7 +49,6 @@ export class EntityContentBlockComponent extends PickerComponent implements OnIn
     this.pickerSourceAdapter = this.pickerSourceAdapterFactoryService.fillPickerSourceAdapter(
       this.pickerSourceAdapter,
       this.group,
-      this.availableEntities$,
       false,
       (entity: { entityGuid: string, entityId: number }) => this.editEntity(entity),
       (entity: { index: number, entityGuid: string }) => this.deleteEntity(entity),
@@ -61,9 +60,7 @@ export class EntityContentBlockComponent extends PickerComponent implements OnIn
       this.editRoutingService,
       this.config,
       this.settings$,
-      this.disableAddNew$,
       this.controlStatus$,
-      this.error$,
       this.label$,
       this.placeholder$,
       this.required$,

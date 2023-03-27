@@ -23,9 +23,7 @@ export class PickerStateAdapterFactoryService {
     editRoutingService: EditRoutingService,
     config: FieldConfigSet,
     settings$: BehaviorSubject<FieldSettings>,
-    disableAddNew$: BehaviorSubject<boolean>,
     controlStatus$: BehaviorSubject<ControlStatus<string | string[]>>,
-    error$: BehaviorSubject<string>,
     label$: Observable<string>,
     placeholder$: Observable<string>,
     required$: Observable<boolean>,
@@ -37,9 +35,7 @@ export class PickerStateAdapterFactoryService {
     pickerStateAdapter.stringQueryCache$ = this.stringQueryCacheService.getEntities$(config.entityGuid, config.fieldName);
     pickerStateAdapter.settings$ = settings$;
     pickerStateAdapter.isExpanded$ = editRoutingService.isExpanded$(config.index, config.entityGuid);
-    pickerStateAdapter.disableAddNew$ = disableAddNew$;
     pickerStateAdapter.controlStatus$ = controlStatus$;
-    pickerStateAdapter.error$ = error$;
     pickerStateAdapter.label$ = label$;
     pickerStateAdapter.placeholder$ = placeholder$;
     pickerStateAdapter.required$ = required$;

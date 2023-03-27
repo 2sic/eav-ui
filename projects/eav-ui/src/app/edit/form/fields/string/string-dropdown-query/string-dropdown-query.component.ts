@@ -64,14 +64,13 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
         })),
         distinctUntilChanged(GeneralHelpers.objectsEqual),
       ).subscribe(() => {
-        this.availableEntities$.next(null);
+        this.pickerSourceAdapter.availableEntities$.next(null);
       })
     );
 
     this.pickerSourceAdapter = this.pickerSourceAdapterFactoryService.fillPickerSourceAdapter(
       this.pickerSourceAdapter,
       this.group,
-      this.availableEntities$,
       true,
       (entity: { entityGuid: string, entityId: number }) => this.editEntity(entity),
       (entity: { index: number, entityGuid: string }) => this.deleteEntity(entity),
@@ -83,9 +82,7 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
       this.editRoutingService,
       this.config,
       this.settings$,
-      this.disableAddNew$,
       this.controlStatus$,
-      this.error$,
       this.label$,
       this.placeholder$,
       this.required$,

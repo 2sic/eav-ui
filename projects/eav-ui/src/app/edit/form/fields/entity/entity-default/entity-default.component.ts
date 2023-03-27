@@ -55,7 +55,6 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
     this.pickerSourceAdapter = this.pickerSourceAdapterFactoryService.fillPickerSourceAdapter(
       this.pickerSourceAdapter,
       this.group,
-      this.availableEntities$,
       false,
       (entity: { entityGuid: string, entityId: number }) => this.editEntity(entity),
       (entity: { index: number, entityGuid: string }) => this.deleteEntity(entity),
@@ -67,9 +66,7 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
       this.editRoutingService,
       this.config,
       this.settings$,
-      this.disableAddNew$,
       this.controlStatus$,
-      this.error$,
       this.label$,
       this.placeholder$,
       this.required$,
@@ -102,7 +99,7 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
   /** WARNING! Overrides function in superclass */
   fetchEntities(clearAvailableEntitiesAndOnlyUpdateCache: boolean): void {
     if (clearAvailableEntitiesAndOnlyUpdateCache) {
-      this.availableEntities$.next(null);
+      this.pickerSourceAdapter.availableEntities$.next(null);
     }
 
     const contentTypeName = this.pickerSourceAdapter.contentTypeMask.resolve();
@@ -119,7 +116,7 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
     this.entityService.getAvailableEntities(contentTypeName, entitiesFilter/*, includeParentApps */).subscribe(items => {
       this.entityCacheService.loadEntities(items);
       if (!clearAvailableEntitiesAndOnlyUpdateCache) {
-        this.availableEntities$.next(items);
+        this.pickerSourceAdapter.availableEntities$.next(items);
       }
     });
   }

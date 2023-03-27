@@ -14,11 +14,10 @@ export class PickerSourceAdapter {
 
   ) {}
   private subscriptions = new Subscription();
+  availableEntities$: BehaviorSubject<EntityInfo[]> = new BehaviorSubject<EntityInfo[]>(null);
 
   group: FormGroup;
   contentTypeMask?: FieldMask;
-
-  availableEntities$: BehaviorSubject<EntityInfo[]>;
 
   init() {
     // Update/Build Content-Type Mask which is used for loading the data/new etc.
@@ -51,6 +50,7 @@ export class PickerSourceAdapter {
 
   destroy() {
     this.contentTypeMask?.destroy();
+    this.availableEntities$.complete();
 
     this.subscriptions.unsubscribe();
    }

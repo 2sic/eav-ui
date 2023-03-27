@@ -64,12 +64,12 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
         this.paramsMask = new FieldMask(
           urlParameters,
           this.group.controls,
-          () => { this.availableEntities$.next(null); },
+          () => { this.pickerSourceAdapter.availableEntities$.next(null); },
           null,
           this.eavService.eavConfig,
         );
 
-        this.availableEntities$.next(null);
+        this.pickerSourceAdapter.availableEntities$.next(null);
       })
     );
 
@@ -81,14 +81,13 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
         })),
         distinctUntilChanged(GeneralHelpers.objectsEqual),
       ).subscribe(() => {
-        this.availableEntities$.next(null);
+        this.pickerSourceAdapter.availableEntities$.next(null);
       })
     );
 
     this.pickerSourceAdapter = this.pickerSourceAdapterFactoryService.fillPickerSourceAdapter(
       this.pickerSourceAdapter,
       this.group,
-      this.availableEntities$,
       true,
       (entity: { entityGuid: string, entityId: number }) => this.editEntity(entity),
       (entity: { index: number, entityGuid: string }) => this.deleteEntity(entity),
@@ -100,9 +99,7 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
       this.editRoutingService,
       this.config,
       this.settings$,
-      this.disableAddNew$,
       this.controlStatus$,
-      this.error$,
       this.label$,
       this.placeholder$,
       this.required$,
@@ -135,13 +132,13 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
   /** WARNING! Overrides function in superclass */
   fetchEntities(clearAvailableEntitiesAndOnlyUpdateCache: boolean): void {
     if (clearAvailableEntitiesAndOnlyUpdateCache) {
-      this.availableEntities$.next(null);
+      this.pickerSourceAdapter.availableEntities$.next(null);
     }
 
     const settings = this.settings$.value;
     if (!settings.Query) {
       alert(`No query defined for ${this.config.fieldName} - can't load entities`);
-      this.availableEntities$.next([]);
+      this.pickerSourceAdapter.availableEntities$.next([]);
       return;
     }
 
@@ -159,11 +156,11 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
     this.queryService.getAvailableEntities(queryUrl, true, params, entitiesFilter).subscribe({
       next: (data) => {
         if (!data) {
-          this.error$.next(this.translate.instant('Fields.EntityQuery.QueryError'));
+          this.pickerStateAdapter.error$.next(this.translate.instant('Fields.EntityQuery.QueryError'));
           return;
         }
         if (!data[streamName]) {
-          this.error$.next(this.translate.instant('Fields.EntityQuery.QueryStreamNotFound') + ' ' + streamName);
+          this.pickerStateAdapter.error$.next(this.translate.instant('Fields.EntityQuery.QueryStreamNotFound') + ' ' + streamName);
           return;
         }
         const items: EntityInfo[] = data[streamName].map(entity => this.queryEntityMapping(entity));
@@ -176,7 +173,7 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
           this.stringQueryCacheService.loadEntities(this.config.entityGuid, this.config.fieldName, entities);
         }
         if (!clearAvailableEntitiesAndOnlyUpdateCache) {
-          this.availableEntities$.next(items);
+          this.pickerSourceAdapter.availableEntities$.next(items);
         }
       },
       error: (error) => {
