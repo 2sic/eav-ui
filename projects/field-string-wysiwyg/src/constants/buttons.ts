@@ -22,9 +22,13 @@ export const ImgRatiosGroup = 'image-ratios';
 export const ImagesCmsGroup = 'images-cms'; // used to be 'images'
 
 // Links
+/** Basic link group with links and pages  */
 export const LinkGroup = 'link-group';
-export const LinkGroupPro = 'link-group-pro';
-export const LinkFiles = 'link-files';
+/** Extended link group with links, pages and anchors */
+export const LinkGroupWithAnchors = 'link-group-pro';
+
+/** Link to adam and site files */
+export const LinkAssets = 'link-files';
 export const ListGroup = 'list-group';
 export const LinkPageButton = 'link-page';
 

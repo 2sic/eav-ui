@@ -1,6 +1,9 @@
+import * as tinymce from 'tinymce';
 import * as Buttons from '../../constants/buttons';
 import { FieldStringWysiwygEditor } from '../../editor/editor';
 import { AddToRegistryBase, AddToRegistryParams } from './add-to-registry-base';
+
+type CallbackParams = Parameters<Parameters<tinymce.Ui.Toolbar.ToolbarSplitButtonSpec['fetch']>[0]>[0];
 
 export class TinyButtonsLinks extends AddToRegistryBase {
   constructor(makerParams: AddToRegistryParams) {
@@ -29,7 +32,7 @@ export class TinyButtonsLinks extends AddToRegistryBase {
   /** Group with adam-link, dnn-link */
   private linkFiles(): void {
     const thisForLater = this;
-    this.editor.ui.registry.addSplitButton(Buttons.LinkFiles, {
+    this.editor.ui.registry.addSplitButton(Buttons.LinkAssets, {
       ...this.splitButtonSpecs(() => thisForLater.toggleAdam(false, false)),
       columns: 3,
       icon: 'custom-file-pdf',
@@ -46,28 +49,29 @@ export class TinyButtonsLinks extends AddToRegistryBase {
 
   /** Button groups for links (simple and pro) with web-link, page-link, unlink, anchor */
   private linksGroups(): void {
-    this.addLinkGroup(false);
-    this.addLinkGroup(true);
+    const linkButton = this.getButtons().link;
+    const basicGroup: CallbackParams = [
+      this.splitButtonItem(linkButton.icon, linkButton.tooltip, 'mceLink'),
+      this.splitButtonItem('custom-sitemap', 'Link.Page.Tooltip', () => openPagePicker(this.field)),
+    ];
+    const proGroup: CallbackParams = [
+      ...basicGroup,
+      this.splitButtonItem('custom-anchor', 'Link.Anchor.Tooltip', 'mceAnchor'),
+    ];
+    this.addLinkGroup(Buttons.LinkGroup, basicGroup);
+    this.addLinkGroup(Buttons.LinkGroupWithAnchors, proGroup);
   }
 
-  private addLinkGroup(isPro: boolean): void {
+  private addLinkGroup( name: string, callbackData: CallbackParams): void {
     const linkButton = this.getButtons().link;
 
-    this.editor.ui.registry.addSplitButton(!isPro ? Buttons.LinkGroup : Buttons.LinkGroupPro, {
+    this.editor.ui.registry.addSplitButton(name, {
       ...this.splitButtonSpecs('mceLink'),
       columns: 3,
       icon: linkButton.icon,
       presets: 'listpreview',
       tooltip: linkButton.tooltip,
-      fetch: (callback) => {
-        callback([
-          this.splitButtonItem(linkButton.icon, linkButton.tooltip, 'mceLink'),
-          this.splitButtonItem('custom-sitemap', 'Link.Page.Tooltip', () => openPagePicker(this.field)),
-          ...(!isPro ? [] : [
-            this.splitButtonItem('custom-anchor', 'Link.Anchor.Tooltip', 'mceAnchor')
-          ]),
-        ]);
-      },
+      fetch: (callback) => { callback(callbackData); },
     });
   }
 
