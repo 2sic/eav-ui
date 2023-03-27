@@ -1,7 +1,7 @@
 import { NgxMatDateAdapter, NGX_MAT_DATE_FORMATS } from '@angular-material-components/datetime-picker';
 import { NgModule } from '@angular/core';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
-import { NgxMatDayjsDatetimeAdapter, NGX_MAT_DAYJS_DATETIME_ADAPTER_OPTIONS } from './ngx-mat-dayjs-datetime-adapter'
+import { NgxMatDayjsDatetimeAdapter, NGX_MAT_DAYJS_DATETIME_ADAPTER_OPTIONS } from './ngx-mat-dayjs-datetime-adapter';
 import { NGX_MAT_DAYJS_DATETIME_FORMATS } from './ngx-mat-dayjs-datetime-formats';
 
 @NgModule({
