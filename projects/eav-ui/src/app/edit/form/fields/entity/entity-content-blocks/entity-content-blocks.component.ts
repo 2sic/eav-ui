@@ -5,7 +5,6 @@ import { InputTypeConstants } from '../../../../../content-type-fields/constants
 import { EavService, EditRoutingService, EntityService, FieldsSettingsService } from '../../../../shared/services';
 import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
-import { ReorderIndexes } from '../../picker/picker-list/picker-list.models';
 import { PickerSourceAdapterFactoryService } from '../../picker/picker-source-adapter-factory.service';
 import { PickerStateAdapterFactoryService } from '../../picker/picker-state-adapter-factory.service';
 import { PickerComponent } from '../../picker/picker.component';
@@ -51,7 +50,6 @@ export class EntityContentBlockComponent extends PickerComponent implements OnIn
       this.editRoutingService,
       this.group,
       false,
-      (entity: { index: number, entityGuid: string }) => this.deleteEntity(entity),
       (clearAvailableEntitiesAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableEntitiesAndOnlyUpdateCache)
     );
 
@@ -59,12 +57,13 @@ export class EntityContentBlockComponent extends PickerComponent implements OnIn
       this.pickerStateAdapter,
       this.editRoutingService,
       this.config,
+      this.control,
+      this.entitySearchComponent,
       this.settings$,
       this.controlStatus$,
       this.label$,
       this.placeholder$,
       this.required$,
-      (action: 'add' | 'delete' | 'reorder', value: string | number | ReorderIndexes) => this.updateValue(action, value),
     );
 
     this.pickerSourceAdapter = this.pickerSourceAdapterFactoryService.getDataFromPickerStateAdapter(

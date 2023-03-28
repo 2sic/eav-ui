@@ -8,7 +8,6 @@ import { FieldMask, GeneralHelpers } from '../../../../shared/helpers';
 import { EavService, EditRoutingService, EntityService, FieldsSettingsService, QueryService } from '../../../../shared/services';
 import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
-import { ReorderIndexes } from '../../picker/picker-list/picker-list.models';
 import { PickerSourceAdapterFactoryService } from '../../picker/picker-source-adapter-factory.service';
 import { PickerStateAdapterFactoryService } from '../../picker/picker-state-adapter-factory.service';
 import { PickerComponent } from '../../picker/picker.component';
@@ -90,7 +89,6 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
       this.editRoutingService,
       this.group,
       true,
-      (entity: { index: number, entityGuid: string }) => this.deleteEntity(entity),
       (clearAvailableEntitiesAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableEntitiesAndOnlyUpdateCache)
     );
 
@@ -98,12 +96,13 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
       this.pickerStateAdapter,
       this.editRoutingService,
       this.config,
+      this.control,
+      this.entitySearchComponent,
       this.settings$,
       this.controlStatus$,
       this.label$,
       this.placeholder$,
       this.required$,
-      (action: 'add' | 'delete' | 'reorder', value: string | number | ReorderIndexes) => this.updateValue(action, value),
     );
 
     this.pickerSourceAdapter = this.pickerSourceAdapterFactoryService.getDataFromPickerStateAdapter(

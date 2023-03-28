@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { EavService, EditRoutingService } from '../../../shared/services';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { TranslateService } from '@ngx-translate/core';
+import { EavService, EditRoutingService, EntityService } from '../../../shared/services';
 import { EntityCacheService } from '../../../shared/store/ngrx-data';
 import { PickerSourceAdapter } from './picker-source-adapter';
 import { PickerStateAdapter } from './picker-state-adapter';
@@ -10,6 +12,9 @@ export class PickerSourceAdapterFactoryService {
   constructor(
     private eavService: EavService,
     private entityCacheService: EntityCacheService,
+    private entityService: EntityService,
+    private translate: TranslateService,
+    private snackBar: MatSnackBar,
   ) { }
 
   fillPickerSourceAdapter(
@@ -17,15 +22,16 @@ export class PickerSourceAdapterFactoryService {
     editRoutingService: EditRoutingService,
     group: FormGroup,
     isQuery: boolean,
-    deleteEntity: (entity: { index: number, entityGuid: string }) => void,
     fetchEntities: (clearAvailableEntitiesAndOnlyUpdateCache: boolean) => void,
   ): PickerSourceAdapter {
     pickerSourceAdapter.eavService = this.eavService;
     pickerSourceAdapter.entityCacheService = this.entityCacheService;
+    pickerSourceAdapter.entityService = this.entityService;
     pickerSourceAdapter.editRoutingService = editRoutingService;
+    pickerSourceAdapter.translate = this.translate;
+    pickerSourceAdapter.snackBar = this.snackBar;
     pickerSourceAdapter.group = group;
     pickerSourceAdapter.isQuery = isQuery;
-    pickerSourceAdapter.deleteEntity = (entity: { index: number, entityGuid: string }) => deleteEntity(entity);
     pickerSourceAdapter.fetchAvailableEntities =
       (clearAvailableEntitiesAndOnlyUpdateCache: boolean) => fetchEntities(clearAvailableEntitiesAndOnlyUpdateCache);
 

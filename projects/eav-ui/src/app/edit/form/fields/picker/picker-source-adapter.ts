@@ -1,17 +1,24 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { FormGroup } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { TranslateService } from '@ngx-translate/core/public_api';
 import { EditForm } from 'projects/eav-ui/src/app/shared/models/edit-form.model';
 import { EntityInfo } from 'projects/edit-types';
 import { BehaviorSubject, distinctUntilChanged, map, Subscription } from 'rxjs';
 import { FieldMask } from '../../../shared/helpers';
-import { EavService, EditRoutingService } from '../../../shared/services';
+import { EavService, EditRoutingService, EntityService } from '../../../shared/services';
 import { EntityCacheService } from '../../../shared/store/ngrx-data';
 import { PickerStateAdapter } from './picker-state-adapter';
+import { DeleteEntityProps } from './picker.models';
 
 export class PickerSourceAdapter {
   pickerStateAdapter: PickerStateAdapter;
   eavService: EavService;
   entityCacheService: EntityCacheService;
+  entityService: EntityService;
   editRoutingService: EditRoutingService;
+  translate: TranslateService;
+  snackBar: MatSnackBar;
   isQuery: boolean;
 
   constructor(
@@ -59,7 +66,6 @@ export class PickerSourceAdapter {
     this.subscriptions.unsubscribe();
    }
 
-  deleteEntity(entity: { index: number, entityGuid: string }) { }
   fetchAvailableEntities(clearAvailableEntitiesAndOnlyUpdateCache: boolean) { }
 
   // Note: 2dm 2023-01-24 added entityId as parameter #maybeRemoveGuidOnEditEntity
@@ -87,6 +93,42 @@ export class PickerSourceAdapter {
       }
     }
     this.editRoutingService.open(this.pickerStateAdapter.config.index, this.pickerStateAdapter.config.entityGuid, form);
+  }
+
+  deleteEntity(props: DeleteEntityProps): void {
+    const entity = this.entityCacheService.getEntity(props.entityGuid);
+    const id = entity.Id;
+    const title = entity.Text;
+    const contentType = this.contentTypeMask.resolve();
+    const parentId = this.pickerStateAdapter.config.entityId;
+    const parentField = this.pickerStateAdapter.config.fieldName;
+
+    const confirmed = confirm(this.translate.instant('Data.Delete.Question', { title, id }));
+    if (!confirmed) { return; }
+
+    this.snackBar.open(this.translate.instant('Message.Deleting'));
+    this.entityService.delete(contentType, id, false, parentId, parentField).subscribe({
+      next: () => {
+        this.snackBar.open(this.translate.instant('Message.Deleted'), null, { duration: 2000 });
+        this.pickerStateAdapter.updateValue('delete', props.index);
+        this.fetchAvailableEntities(true);
+      },
+      error: (error1: HttpErrorResponse) => {
+        this.snackBar.dismiss();
+        if (!confirm(this.translate.instant('Data.Delete.Question', { title, id }))) { return; }
+        this.snackBar.open(this.translate.instant('Message.Deleting'));
+        this.entityService.delete(contentType, id, true, parentId, parentField).subscribe({
+          next: () => {
+            this.snackBar.open(this.translate.instant('Message.Deleted'), null, { duration: 2000 });
+            this.pickerStateAdapter.updateValue('delete', props.index);
+            this.fetchAvailableEntities(true);
+          },
+          error: (error2: HttpErrorResponse) => {
+            this.snackBar.open(this.translate.instant('Message.DeleteError'), null, { duration: 2000 });
+          }
+        });
+      }
+    });
   }
 
   /**
