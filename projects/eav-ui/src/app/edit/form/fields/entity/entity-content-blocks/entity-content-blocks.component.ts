@@ -1,5 +1,4 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { EavService, EditRoutingService, EntityService, FieldsSettingsService } from '../../../../shared/services';
@@ -24,7 +23,6 @@ export class EntityContentBlockComponent extends PickerComponent implements OnIn
     entityService: EntityService,
     translate: TranslateService,
     editRoutingService: EditRoutingService,
-    snackBar: MatSnackBar,
     entityCacheService: EntityCacheService,
     stringQueryCacheService: StringQueryCacheService,
     private pickerSourceAdapterFactoryService: PickerSourceAdapterFactoryService,
@@ -35,7 +33,6 @@ export class EntityContentBlockComponent extends PickerComponent implements OnIn
       fieldsSettingsService,
       entityService, translate,
       editRoutingService,
-      snackBar,
       entityCacheService,
       stringQueryCacheService,
     );

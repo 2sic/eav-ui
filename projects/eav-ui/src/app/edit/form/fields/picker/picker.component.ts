@@ -1,5 +1,4 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { InputTypeConstants } from 'projects/eav-ui/src/app/content-type-fields/constants/input-type.constants';
 import { combineLatest, map, Observable } from 'rxjs';
@@ -10,7 +9,6 @@ import { BaseFieldComponent } from '../base/base-field.component';
 import { PickerSearchComponent } from './picker-search/picker-search.component';
 import { PickerSourceAdapter } from './picker-source-adapter';
 import { PickerStateAdapter } from './picker-state-adapter';
-import { convertValueToArray } from './picker.helpers';
 import { PickerViewModel } from './picker.models';
 
 @Component({
@@ -36,7 +34,6 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
     protected entityService: EntityService,
     public translate: TranslateService,
     protected editRoutingService: EditRoutingService,
-    private snackBar: MatSnackBar,
     public entityCacheService: EntityCacheService,
     public stringQueryCacheService: StringQueryCacheService,
   ) {
@@ -50,7 +47,7 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
   }
 
   ngAfterViewInit(): void {
-    this.fixPrefillAndStringQueryCache();
+    this.pickerSourceAdapter.fixPrefillAndStringQueryCache();
   }
 
   ngOnDestroy(): void {
@@ -74,22 +71,6 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
    * to update names in entityCache
    */
   fetchEntities(clearAvailableEntitiesAndOnlyUpdateCache: boolean): void { }
-
-  /**
-   * If guid is initially in value, but not in cache, it is either prefilled or entity is deleted,
-   * or in case of StringDropdownQuery, backend doesn't provide entities initially.
-   * This will fetch data once to figure out missing guids.
-   */
-  private fixPrefillAndStringQueryCache(): void {
-    // filter out null items
-    const guids = convertValueToArray(this.control.value, this.settings$.value.Separator).filter(guid => !!guid);
-    if (guids.length === 0) { return; }
-
-    const cached = this.entityCacheService.getEntities(guids);
-    if (guids.length !== cached.length) {
-      this.fetchEntities(true);
-    }
-  }
 
   private refreshOnChildClosed(): void {
     this.subscription.add(

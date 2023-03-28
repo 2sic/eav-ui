@@ -9,6 +9,7 @@ import { FieldMask } from '../../../shared/helpers';
 import { EavService, EditRoutingService, EntityService } from '../../../shared/services';
 import { EntityCacheService } from '../../../shared/store/ngrx-data';
 import { PickerStateAdapter } from './picker-state-adapter';
+import { convertValueToArray } from './picker.helpers';
 import { DeleteEntityProps } from './picker.models';
 
 export class PickerSourceAdapter {
@@ -129,6 +130,23 @@ export class PickerSourceAdapter {
         });
       }
     });
+  }
+
+  /**
+   * If guid is initially in value, but not in cache, it is either prefilled or entity is deleted,
+   * or in case of StringDropdownQuery, backend doesn't provide entities initially.
+   * This will fetch data once to figure out missing guids.
+   */
+  fixPrefillAndStringQueryCache(): void {
+    // filter out null items
+    const guids = convertValueToArray(this.pickerStateAdapter.control.value, this.pickerStateAdapter.settings$.value.Separator)
+      .filter(guid => !!guid);
+    if (guids.length === 0) { return; }
+
+    const cached = this.entityCacheService.getEntities(guids);
+    if (guids.length !== cached.length) {
+      this.fetchAvailableEntities(true);
+    }
   }
 
   /**

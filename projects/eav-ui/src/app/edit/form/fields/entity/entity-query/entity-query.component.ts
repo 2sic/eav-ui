@@ -1,5 +1,4 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { distinctUntilChanged, map } from 'rxjs';
 import { EntityForPicker, EntityInfo } from '../../../../../../../../edit-types';
@@ -30,7 +29,6 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
     entityService: EntityService,
     translate: TranslateService,
     editRoutingService: EditRoutingService,
-    snackBar: MatSnackBar,
     entityCacheService: EntityCacheService,
     stringQueryCacheService: StringQueryCacheService,
     private queryService: QueryService,
@@ -43,7 +41,6 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
       entityService,
       translate,
       editRoutingService,
-      snackBar,
       entityCacheService,
       stringQueryCacheService,
     );
