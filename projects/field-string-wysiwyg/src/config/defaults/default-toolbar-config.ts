@@ -20,7 +20,7 @@ export const DefaultToolbarConfig = {
     /* format text      */ `styles bold ${Buttons.StylesGroup}`,
     /* paragraph types  */ `h2 ${Buttons.HGroups.h3}`,
     /* bullets          */ `numlist ${Buttons.ListGroup}`,
-    /* links/media      */ `${Buttons.LinkGroupPro}`, // test
+    /* links/media      */ `${Buttons.LinkGroupWithAnchors}`, // test
     /* content block    */ NoButtons,
     /* tools/mode switch*/ standardGroupFinal,
   ],
@@ -68,7 +68,7 @@ export const DefaultToolbarConfig = {
     /* -                */ NewRow,
     /* initial w/undo   */ `${Buttons.PasteImage}`,
 
-    /* links/media      */ `${Buttons.ImagesCmsGroup} ${Buttons.LinkFiles}`,
+    /* links/media      */ `${Buttons.ImagesCmsGroup} ${Buttons.LinkAssets}`,
     /* rich media       */ Rich.ContentSplitters.map(cs => cs.name).join(' '),
     /* content block    */ Buttons.AddContentBlock,
   ],
@@ -77,7 +77,7 @@ export const DefaultToolbarConfig = {
     /* format text      */ `bold ${Buttons.StylesGroup}`,
     /* paragraph types  */ `h2 ${Buttons.HGroups.h3}`,
     /* bullets          */ `numlist ${Buttons.ListGroup}`,
-    /* links/media      */ `${Buttons.ImagesCmsGroup} ${Buttons.LinkGroupPro}`, // different from other default
+    /* links/media      */ `${Buttons.ImagesCmsGroup}  ${Buttons.LinkAssets} ${Buttons.LinkGroupWithAnchors}`, // different from default
     /* content block    */ Buttons.AddContentBlock,
     /* tools/mode switch*/ standardGroupFinal,
   ],

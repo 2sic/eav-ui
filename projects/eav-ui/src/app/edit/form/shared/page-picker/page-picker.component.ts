@@ -65,10 +65,14 @@ export class PagePickerComponent implements OnInit, OnDestroy {
     this.filterText$.next(filterText);
   }
 
-  select(pageId: number): void {
+  select(page: PageTreeItem | PageSearchItem): void {
     // filters out pages without parent (broken)
-    if (pageId == null) { return; }
-    this.closeDialog(pageId);
+    if (page.id == null) { return; }
+    if (!page.isClickable || !page.isVisible) {
+      const ok = window.confirm('This appears to not be a real page, are you sure you want to link to it?'); // // TODO: @SDV i18n
+      if (!ok) { return; }
+    }
+    this.closeDialog(page.id);
   }
 
   toggle(pageId: number): void {
@@ -92,8 +96,10 @@ export class PagePickerComponent implements OnInit, OnDestroy {
   private fetchPages(): void {
     const query = 'Eav.Queries.Global.Pages';
     const stream = 'Default';
-    this.queryService.getAvailableEntities(`${query}/${stream}`, true, null, null).subscribe({
+    const params = 'includehidden=true';
+    this.queryService.getAvailableEntities(`${query}/${stream}`, true, params, null).subscribe({
       next: (data) => {
+        console.log('SDV', data);
         if (!data) {
           console.error(this.translate.instant('Fields.EntityQuery.QueryError'));
           return;

@@ -1,6 +1,6 @@
 import { MatDateFormats } from '@angular/material/core';
 
-const DEFAULT_DATE_INPUT = 'l'//, LTS';
+const DEFAULT_DATE_INPUT = 'l';
 
 export const MAT_DAYJS_DATE_FORMATS: MatDateFormats = {
   parse: {

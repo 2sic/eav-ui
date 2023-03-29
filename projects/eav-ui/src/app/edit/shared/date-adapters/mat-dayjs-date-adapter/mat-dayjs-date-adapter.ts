@@ -1,10 +1,10 @@
-import { Optional, Inject, Injectable, InjectionToken } from '@angular/core';
+import { Inject, Injectable, InjectionToken, Optional } from '@angular/core';
 import { DateAdapter, MAT_DATE_LOCALE } from '@angular/material/core';
 import dayjs, { Dayjs } from 'dayjs';
-import utc from 'dayjs/plugin/utc';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
 import localeData from 'dayjs/plugin/localeData';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
-import customParseFormat from 'dayjs/plugin/customParseFormat';
+import utc from 'dayjs/plugin/utc';
 
 export interface MatDayjsDateAdapterOptions {
   /**
@@ -34,7 +34,7 @@ export function MAT_DAYJS_DATE_ADAPTER_OPTIONS_FACTORY(): MatDayjsDateAdapterOpt
 /**
  * This Date Adapter was inspired by @vanrossumict/material-dayjs-adapter
  * https://github.com/vanrossumict/material-dayjs-adapter/tree/localization/projects/material-dayjs-adapter
- * This adapter wasn't made as a fork beacuse @vanrossumict/material-dayjs-adapter is a fork of @tabuckner/material-dayjs-adapter
+ * This adapter wasn't made as a fork because @vanrossumict/material-dayjs-adapter is a fork of @tabuckner/material-dayjs-adapter
  * witch since continued to be updated and forked so we didn't want to add to the complexity
  */
 @Injectable()
@@ -73,7 +73,7 @@ export class MatDayjsDateAdapter extends DateAdapter<Dayjs> {
     super.setLocale(locale);
 
     dayjs.locale(locale);
-    let localeData = dayjs().locale(locale).localeData();
+    const localeData = dayjs().locale(locale).localeData();
 
     this.localeData = {
       firstDayOfWeek: localeData.firstDayOfWeek(),
@@ -137,11 +137,11 @@ export class MatDayjsDateAdapter extends DateAdapter<Dayjs> {
   }
 
   clone(date: Dayjs): Dayjs {
-    return this.dayJs(date).clone().locale(this.locale)
+    return this.dayJs(date).clone().locale(this.locale);
   }
 
   /**
-   * @vanrossumict/material-dayjs-adapter didn't set hours, minutes, seconds and miliseconds to zero but we expect
+   * @vanrossumict/material-dayjs-adapter didn't set hours, minutes, seconds and milliseconds to zero but we expect
    * dates to have time set as midnight
    */
   createDate(year: number, month: number, date: number): Dayjs {
@@ -164,7 +164,7 @@ export class MatDayjsDateAdapter extends DateAdapter<Dayjs> {
     if (value && typeof value === 'string') {
       const longDateFormat = dayjs().localeData().longDateFormat(parseFormat) as string; // MM/DD/YYY or DD-MM-YYYY, etc.
 
-      let parsed = this.dayJs(value, longDateFormat, this.locale);
+      let parsed = this.dayJs(value, longDateFormat, this.locale, true);
 
       if (parsed.isValid()) {
         // string value is exactly like long date format
@@ -175,7 +175,7 @@ export class MatDayjsDateAdapter extends DateAdapter<Dayjs> {
         // user might have typed 1-12-2020 or 12/1/2020
         // try to parse with D-MM-YYYY or MM/D/YYYY (based on long date format)
         const formatWithSmallDay = longDateFormat.replace('DD', 'D');
-        parsed = this.dayJs(value, formatWithSmallDay, this.locale);
+        parsed = this.dayJs(value, formatWithSmallDay, this.locale, true);
         if (parsed.isValid()) {
           return parsed;
         }
@@ -183,7 +183,7 @@ export class MatDayjsDateAdapter extends DateAdapter<Dayjs> {
         // user might have typed 25-1-2020 or 1/25/2020
         // try to parse with DD-M-YYYY or M/DD/YYYY (based on long date format)
         const formatWithSmallMonth = longDateFormat.replace('MM', 'M');
-        parsed = this.dayJs(value, formatWithSmallMonth, this.locale);
+        parsed = this.dayJs(value, formatWithSmallMonth, this.locale, true);
         if (parsed.isValid()) {
           return parsed;
         }
@@ -193,7 +193,7 @@ export class MatDayjsDateAdapter extends DateAdapter<Dayjs> {
         // user might have typed 24012020 or 01242020
         // strip long date format of non-alphabetic characters so we get MMDDYYYY or DDMMYYYY
         const formatWithoutSeparators = longDateFormat.replace(/[\W_]+/g, '');
-        parsed = this.dayJs(value, formatWithoutSeparators, this.locale);
+        parsed = this.dayJs(value, formatWithoutSeparators, this.locale, true);
         if (parsed.isValid()) {
           return parsed;
         }
@@ -201,7 +201,7 @@ export class MatDayjsDateAdapter extends DateAdapter<Dayjs> {
         // user might have typed 1-2-2020 or 2/1/2020
         // try to parse with D-M-YYYY or M/D/YYYY (based on long date format)
         const formatWithSmallDayAndMonth = longDateFormat.replace('DD', 'D').replace('MM', 'M');
-        parsed = this.dayJs(value, formatWithSmallDayAndMonth, this.locale);
+        parsed = this.dayJs(value, formatWithSmallDayAndMonth, this.locale, true);
         if (parsed.isValid()) {
           return parsed;
         }
@@ -236,7 +236,7 @@ export class MatDayjsDateAdapter extends DateAdapter<Dayjs> {
           if (dayPart.length === 1) {
             dayPart = 0 + dayPart;
           }
-          parsed = this.dayJs(dayPart + monthPart, 'DDMM', this.locale);
+          parsed = this.dayJs(dayPart + monthPart, 'DDMM', this.locale, true);
           if (parsed.isValid()) {
             return parsed;
           }
@@ -246,7 +246,7 @@ export class MatDayjsDateAdapter extends DateAdapter<Dayjs> {
       if (value.length === 2) {
         // user might have typed 01, parse DD only
         const format = 'DD';
-        parsed = this.dayJs(value, format, this.locale);
+        parsed = this.dayJs(value, format, this.locale, true);
         if (parsed.isValid()) {
           return parsed;
         }
@@ -255,7 +255,7 @@ export class MatDayjsDateAdapter extends DateAdapter<Dayjs> {
       if (value.length === 1) {
         // user might have typed 1, parse D only
         const format = 'D';
-        parsed = this.dayJs(value, format, this.locale);
+        parsed = this.dayJs(value, format, this.locale, true);
 
         if (parsed.isValid()) {
           return parsed;
@@ -319,7 +319,7 @@ export class MatDayjsDateAdapter extends DateAdapter<Dayjs> {
       date = (this.dayJs(value) as unknown as string);
     }
     if (date && this.isValid(date as Dayjs)) {
-      return this.dayJs(date); 
+      return this.dayJs(date);
     }
     return super.deserialize(value);
   }
@@ -337,18 +337,24 @@ export class MatDayjsDateAdapter extends DateAdapter<Dayjs> {
   }
 
   /**
-   * @vanrossumict/material-dayjs-adapter didn't actually used this.shouldUseUtc function and no matter the coosed option
+   * @vanrossumict/material-dayjs-adapter didn't actually used this.shouldUseUtc function and no matter the chosen option
    * no date used UTC
    */
-  private dayJs(input?: string | number | Date | Dayjs | null | undefined, format?: string, locale?: string): Dayjs {
+  private dayJs(input?: string | number | Date | Dayjs | null | undefined, format?: string, locale?: string, isTyped?: boolean): Dayjs {
+    isTyped = isTyped || false;
     if (!this.shouldUseUtc) {
       return dayjs(input, format);
     }
     // when user writes date
-    if (typeof (input) == "string") {
+    if (typeof (input) === 'string') {
       const date = new Date(dayjs(input, format).toDate());
-      // this is necesary because for -(minus) timezones getDate returns date for previous day
-      if (date.toString().includes("-")) return dayjs(new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()))).add(1, 'day').utc();
+      // this is necessary because for typed dates time is set to midnight, not to the appropriate UTC time
+      if (isTyped) {
+        date.setUTCHours(date.getUTCHours() - date.getTimezoneOffset() / 60);
+      }
+      // this is necessary because for -(minus) timezones getDate returns date for previous day
+      if (date.toString().includes('-'))
+        return dayjs(new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()))).add(1, 'day').utc();
       return dayjs(new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()))).utc();
     }
     // when user picks date in date picker
