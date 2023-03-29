@@ -55,6 +55,11 @@ $icon-size: 20px;
   flex-shrink: 0;
 }
 
+.page-visible-clickable-icon {
+  margin-left: 4px;
+  flex-shrink: 0;
+}
+
 .page-label {
   cursor: pointer;
   display: flex;

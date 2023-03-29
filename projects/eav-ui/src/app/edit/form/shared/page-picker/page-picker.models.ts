@@ -30,6 +30,8 @@ export interface PageSearchItem {
   id: number;
   name: string;
   path: string;
+  isVisible: boolean;
+  isClickable: boolean;
 }
 
 export interface PageTreeItem {
@@ -37,4 +39,6 @@ export interface PageTreeItem {
   id: number;
   name: string;
   parentId: number;
+  isVisible: boolean;
+  isClickable: boolean;
 }

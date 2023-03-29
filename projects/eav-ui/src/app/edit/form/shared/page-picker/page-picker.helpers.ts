@@ -14,6 +14,8 @@ export function buildPageSearch(pages: PageEntity[]): PageSearchItem[] {
       id: page.Id,
       name: page.Name,
       path,
+      isVisible: page.Visible,
+      isClickable: page.Clickable,
     };
     return item;
   });
@@ -30,12 +32,13 @@ export function buildPageTree(pages: PageEntity[]): PageTreeItem[] {
       id: page.Id,
       name: page.Name,
       parentId: page.ParentId,
+      isVisible: page.Visible,
+      isClickable: page.Clickable,
     };
     return item;
   });
 
   const tree: PageTreeItem[] = [];
-  const broken: PageTreeItem[] = [];
   for (const item of items) {
     if (item.parentId === -1) {
       tree.push(item);
@@ -44,21 +47,10 @@ export function buildPageTree(pages: PageEntity[]): PageTreeItem[] {
 
     const parent = items.find(i => i.id === item.parentId);
     if (!parent) {
-      broken.push(item);
+      tree.push(item);
     } else {
       parent.children.push(item);
     }
-  }
-
-  if (broken.length > 0) {
-    /** Fake entry to place all pages which are missing parent */
-    const item: PageTreeItem = {
-      children: broken,
-      id: null,
-      name: 'Missing Parent',
-      parentId: null,
-    };
-    tree.push(item);
   }
 
   return tree;
