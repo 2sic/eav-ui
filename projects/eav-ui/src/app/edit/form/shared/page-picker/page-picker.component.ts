@@ -69,7 +69,7 @@ export class PagePickerComponent implements OnInit, OnDestroy {
     // filters out pages without parent (broken)
     if (page.id == null) { return; }
     if (!page.isClickable || !page.isVisible) {
-      const ok = window.confirm('This appears to not be a real page, are you sure you want to link to it?'); // // TODO: @SDV i18n
+      const ok = window.confirm('This seems to be a hidden or system page, are you sure you want to link to it?'); // // TODO: @SDV i18n
       if (!ok) { return; }
     }
     this.closeDialog(page.id);
@@ -94,7 +94,7 @@ export class PagePickerComponent implements OnInit, OnDestroy {
   }
 
   private fetchPages(): void {
-    const query = 'Eav.Queries.Global.Pages';
+    const query = 'System.Pages';
     const stream = 'Default';
     const params = 'includehidden=true';
     this.queryService.getAvailableEntities(`${query}/${stream}`, true, params, null).subscribe({

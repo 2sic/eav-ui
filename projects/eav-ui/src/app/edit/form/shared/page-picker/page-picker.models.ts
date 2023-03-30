@@ -34,11 +34,7 @@ export interface PageSearchItem {
   isClickable: boolean;
 }
 
-export interface PageTreeItem {
+export interface PageTreeItem extends Omit<PageSearchItem, 'path'> {
   children: PageTreeItem[];
-  id: number;
-  name: string;
   parentId: number;
-  isVisible: boolean;
-  isClickable: boolean;
 }
