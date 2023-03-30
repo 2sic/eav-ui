@@ -18,12 +18,12 @@ export class PickerSourceAdapterFactoryService {
   ) { }
 
   fillPickerSourceAdapter(
-    pickerSourceAdapter: PickerSourceAdapter,
     editRoutingService: EditRoutingService,
     group: FormGroup,
     isQuery: boolean,
     fetchEntities: (clearAvailableEntitiesAndOnlyUpdateCache: boolean) => void,
   ): PickerSourceAdapter {
+    const pickerSourceAdapter = new PickerSourceAdapter();
     pickerSourceAdapter.eavService = this.eavService;
     pickerSourceAdapter.entityCacheService = this.entityCacheService;
     pickerSourceAdapter.entityService = this.entityService;

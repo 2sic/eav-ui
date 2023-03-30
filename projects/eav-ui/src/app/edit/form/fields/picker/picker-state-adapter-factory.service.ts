@@ -20,7 +20,6 @@ export class PickerStateAdapterFactoryService {
   ) { }
 
   fillPickerStateAdapter(
-    pickerStateAdapter: PickerStateAdapter,
     editRoutingService: EditRoutingService,
     config: FieldConfigSet,
     control: AbstractControl,
@@ -31,6 +30,7 @@ export class PickerStateAdapterFactoryService {
     placeholder$: Observable<string>,
     required$: Observable<boolean>,
   ): PickerStateAdapter {
+    const pickerStateAdapter = new PickerStateAdapter();
     pickerStateAdapter.config = config;
     pickerStateAdapter.control = control;
     pickerStateAdapter.entitySearchComponent = entitySearchComponent;

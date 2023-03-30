@@ -42,8 +42,19 @@ export class EntityContentBlockComponent extends PickerComponent implements OnIn
   ngOnInit(): void {
     super.ngOnInit();
 
+    this.createPickerAdapters();
+
+    this.createTemplateVariables();
+  }
+
+  ngOnDestroy(): void {
+    this.pickerSourceAdapter.destroy();
+    this.pickerStateAdapter.destroy();
+    super.ngOnDestroy();
+  }
+
+  private createPickerAdapters(): void { 
     this.pickerSourceAdapter = this.pickerSourceAdapterFactoryService.fillPickerSourceAdapter(
-      this.pickerSourceAdapter,
       this.editRoutingService,
       this.group,
       false,
@@ -51,7 +62,6 @@ export class EntityContentBlockComponent extends PickerComponent implements OnIn
     );
 
     this.pickerStateAdapter = this.pickerStateAdapterFactoryService.fillPickerStateAdapter(
-      this.pickerStateAdapter,
       this.editRoutingService,
       this.config,
       this.control,
@@ -75,13 +85,5 @@ export class EntityContentBlockComponent extends PickerComponent implements OnIn
 
     this.pickerSourceAdapterFactoryService.init(this.pickerSourceAdapter);
     this.pickerStateAdapterFactoryService.init(this.pickerStateAdapter);
-
-    this.createTemplateVariables();
-  }
-
-  ngOnDestroy(): void {
-    this.pickerSourceAdapter.destroy();
-    this.pickerStateAdapter.destroy();
-    super.ngOnDestroy();
   }
 }

@@ -51,6 +51,8 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
   ngOnInit(): void {
     super.ngOnInit();
 
+    this.createPickerAdapters();
+
     this.subscription.add(
       this.settings$.pipe(
         map(settings => settings.UrlParameters),
@@ -81,16 +83,25 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
       })
     );
 
+    this.createTemplateVariables();
+  }
+
+  ngOnDestroy(): void {
+    this.pickerSourceAdapter.destroy();
+    this.pickerStateAdapter.destroy();
+    this.paramsMask?.destroy();
+    super.ngOnDestroy();
+  }
+
+  protected createPickerAdapters(): void {
     this.pickerSourceAdapter = this.pickerSourceAdapterFactoryService.fillPickerSourceAdapter(
-      this.pickerSourceAdapter,
       this.editRoutingService,
       this.group,
-      true,
+      false,
       (clearAvailableEntitiesAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableEntitiesAndOnlyUpdateCache)
     );
 
     this.pickerStateAdapter = this.pickerStateAdapterFactoryService.fillPickerStateAdapter(
-      this.pickerStateAdapter,
       this.editRoutingService,
       this.config,
       this.control,
@@ -114,15 +125,6 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
 
     this.pickerSourceAdapterFactoryService.init(this.pickerSourceAdapter);
     this.pickerStateAdapterFactoryService.init(this.pickerStateAdapter);
-
-    this.createTemplateVariables();
-  }
-
-  ngOnDestroy(): void {
-    this.pickerSourceAdapter.destroy();
-    this.pickerStateAdapter.destroy();
-    this.paramsMask?.destroy();
-    super.ngOnDestroy();
   }
 
   /** WARNING! Overrides function in superclass */

@@ -47,8 +47,20 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
   ngOnInit(): void {
     super.ngOnInit();
 
+    this.createPickerAdapters();
+
+    this.createTemplateVariables();
+  }
+
+  ngOnDestroy(): void {
+    this.pickerSourceAdapter.destroy();
+    this.pickerStateAdapter.destroy();
+    this.paramsMask?.destroy();
+    super.ngOnDestroy();
+  }
+
+  private createPickerAdapters(): void {
     this.pickerSourceAdapter = this.pickerSourceAdapterFactoryService.fillPickerSourceAdapter(
-      this.pickerSourceAdapter,
       this.editRoutingService,
       this.group,
       false,
@@ -56,7 +68,6 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
     );
 
     this.pickerStateAdapter = this.pickerStateAdapterFactoryService.fillPickerStateAdapter(
-      this.pickerStateAdapter,
       this.editRoutingService,
       this.config,
       this.control,
@@ -80,15 +91,6 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
 
     this.pickerSourceAdapterFactoryService.init(this.pickerSourceAdapter);
     this.pickerStateAdapterFactoryService.init(this.pickerStateAdapter);
-
-    this.createTemplateVariables();
-  }
-
-  ngOnDestroy(): void {
-    this.pickerSourceAdapter.destroy();
-    this.pickerStateAdapter.destroy();
-    this.paramsMask?.destroy();
-    super.ngOnDestroy();
   }
 
   /** WARNING! Overrides function in superclass */

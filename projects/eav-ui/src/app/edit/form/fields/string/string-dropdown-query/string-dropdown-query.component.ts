@@ -52,6 +52,8 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
   ngOnInit(): void {
     super.ngOnInit();
 
+    this.createPickerAdapters();
+
     this.subscription.add(
       this.settings$.pipe(
         map(settings => ({
@@ -63,40 +65,6 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
         this.pickerSourceAdapter.availableEntities$.next(null);
       })
     );
-
-    this.pickerSourceAdapter = this.pickerSourceAdapterFactoryService.fillPickerSourceAdapter(
-      this.pickerSourceAdapter,
-      this.editRoutingService,
-      this.group,
-      true,
-      (clearAvailableEntitiesAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableEntitiesAndOnlyUpdateCache)
-    );
-
-    this.pickerStateAdapter = this.pickerStateAdapterFactoryService.fillPickerStateAdapter(
-      this.pickerStateAdapter,
-      this.editRoutingService,
-      this.config,
-      this.control,
-      this.entitySearchComponent,
-      this.settings$,
-      this.controlStatus$,
-      this.label$,
-      this.placeholder$,
-      this.required$,
-    );
-
-    this.pickerSourceAdapter = this.pickerSourceAdapterFactoryService.getDataFromPickerStateAdapter(
-      this.pickerSourceAdapter,
-      this.pickerStateAdapter
-    );
-
-    this.pickerStateAdapter = this.pickerStateAdapterFactoryService.getDataFromPickerSourceAdapter(
-      this.pickerStateAdapter,
-      this.pickerSourceAdapter
-    );
-
-    this.pickerSourceAdapterFactoryService.init(this.pickerSourceAdapter);
-    this.pickerStateAdapterFactoryService.init(this.pickerStateAdapter);
 
     this.createTemplateVariables();
   }

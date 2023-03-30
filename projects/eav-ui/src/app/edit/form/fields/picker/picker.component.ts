@@ -20,8 +20,8 @@ import { PickerViewModel } from './picker.models';
 export class PickerComponent extends BaseFieldComponent<string | string[]> implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(PickerSearchComponent) protected entitySearchComponent: PickerSearchComponent;
 
-  pickerSourceAdapter: PickerSourceAdapter = new PickerSourceAdapter();
-  pickerStateAdapter: PickerStateAdapter = new PickerStateAdapter();
+  pickerSourceAdapter: PickerSourceAdapter;// = new PickerSourceAdapter();
+  pickerStateAdapter: PickerStateAdapter;// = new PickerStateAdapter();
 
   isQuery: boolean;
   isStringQuery: boolean;
