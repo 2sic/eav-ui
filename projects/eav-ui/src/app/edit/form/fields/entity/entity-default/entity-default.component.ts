@@ -11,6 +11,7 @@ import { PickerComponent } from '../../picker/picker.component';
 import { filterGuids } from '../../picker/picker.helpers';
 import { EntityDefaultLogic } from './entity-default-logic';
 import { PickerAdapterBaseFactoryService } from '../../picker/picker-adapter-base-factory.service';
+import { distinctUntilChanged, map } from 'rxjs';
 
 @Component({
   selector: InputTypeConstants.EntityDefault,
@@ -19,7 +20,7 @@ import { PickerAdapterBaseFactoryService } from '../../picker/picker-adapter-bas
 })
 @FieldMetadata({})
 export class EntityDefaultComponent extends PickerComponent implements OnInit, OnDestroy {
-  private paramsMask: FieldMask;
+  private contentTypeMask: FieldMask;
 
   constructor(
     eavService: EavService,
@@ -51,6 +52,32 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
 
     this.createPickerAdapters();
 
+    // Update/Build Content-Type Mask which is used for loading the data/new etc.
+    this.subscription.add(
+      this.settings$.pipe(
+        map(settings => settings.EntityType),
+        distinctUntilChanged(),
+      ).subscribe(entityType => {
+        this.contentTypeMask?.destroy();
+        this.contentTypeMask = new FieldMask(
+          entityType,
+          this.group.controls,
+          () => {
+            // Re-Trigger fetch data, but only on type-based pickers, not Queries
+            // for EntityQuery we don't have to refetch entities because entities come from settings.Query, not settings.EntityType
+            if (!this.isQuery) {
+              this.pickerSourceAdapter.availableEntities$.next(null);
+            }
+            this.updateAddNew();
+          },
+          null,
+          this.eavService.eavConfig,
+        );
+        this.pickerSourceAdapter.availableEntities$.next(null);
+        this.updateAddNew();
+      })
+    );
+
     this.createTemplateVariables();
   }
 
@@ -58,13 +85,19 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
     super.ngAfterViewInit();
 
     this.pickerAdapterBase.entitySearchComponent = this.entitySearchComponent;
+    this.pickerSourceAdapter.contentType = this.contentTypeMask.resolve();
   }
 
   ngOnDestroy(): void {
     this.pickerSourceAdapter.destroy();
     this.pickerStateAdapter.destroy();
-    this.paramsMask?.destroy();
+    this.contentTypeMask.destroy();
     super.ngOnDestroy();
+  }
+
+  updateAddNew(): void {
+    const contentTypeName = this.contentTypeMask.resolve();
+    this.pickerStateAdapter.disableAddNew$.next(!contentTypeName);
   }
 
   private createPickerAdapters(): void {
@@ -101,7 +134,7 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
       this.pickerSourceAdapter.availableEntities$.next(null);
     }
 
-    const contentTypeName = this.pickerSourceAdapter.contentTypeMask.resolve();
+    const contentTypeName = this.contentTypeMask.resolve();
     const entitiesFilter: string[] = (clearAvailableEntitiesAndOnlyUpdateCache || !this.settings$.value.EnableAddExisting)
       ? filterGuids(
         this.fieldsSettingsService.getContentTypeSettings()._itemTitle,

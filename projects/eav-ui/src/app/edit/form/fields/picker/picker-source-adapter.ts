@@ -18,7 +18,7 @@ export class PickerSourceAdapter extends PickerAdapterBase {
   entityService: EntityService;
   editRoutingService: EditRoutingService;
   translate: TranslateService;
-  contentTypeMask?: FieldMask;
+  contentType: string;
   snackBar: MatSnackBar;
   isQuery: boolean;
 
@@ -30,47 +30,14 @@ export class PickerSourceAdapter extends PickerAdapterBase {
 
   group: FormGroup;
 
-  init() {
-    // Update/Build Content-Type Mask which is used for loading the data/new etc.
-    this.subscriptions.add(
-      this.settings$.pipe(
-        map(settings => settings.EntityType),
-        distinctUntilChanged(),
-      ).subscribe(entityType => {
-        this.contentTypeMask?.destroy();
-        this.contentTypeMask = new FieldMask(
-          entityType,
-          this.group.controls,
-          () => {
-            // Re-Trigger fetch data, but only on type-based pickers, not Queries
-            // for EntityQuery we don't have to refetch entities because entities come from settings.Query, not settings.EntityType
-            if (!this.isQuery) {
-              this.availableEntities$.next(null);
-            }
-            this.updateAddNew();
-          },
-          null,
-          this.eavService.eavConfig,
-        );
-        this.availableEntities$.next(null);
-        this.updateAddNew();
-      })
-    );
-  }
+  init() { }
 
   destroy() {
     super.destroy();
 
     this.availableEntities$.complete();
 
-    this.contentTypeMask.destroy();
-
     this.subscriptions.unsubscribe();
-  }
-  
-  updateAddNew(): void {
-    const contentTypeName = this.contentTypeMask.resolve();
-    this.disableAddNew$.next(!contentTypeName);
   }
 
   fetchAvailableEntities(clearAvailableEntitiesAndOnlyUpdateCache: boolean) { }
@@ -82,7 +49,7 @@ export class PickerSourceAdapter extends PickerAdapterBase {
   editEntity(editParams: { entityGuid: string, entityId: number }): void {
     let form: EditForm;
     if (editParams?.entityGuid == null) {
-      const contentTypeName = this.contentTypeMask.resolve();
+      const contentTypeName = this.contentType;
       const prefill = this.getPrefill();
       form = {
         items: [{ ContentTypeName: contentTypeName, Prefill: prefill }],
@@ -106,7 +73,7 @@ export class PickerSourceAdapter extends PickerAdapterBase {
     const entity = this.entityCacheService.getEntity(props.entityGuid);
     const id = entity.Id;
     const title = entity.Text;
-    const contentType = this.contentTypeMask.resolve();
+    const contentType = this.contentType;
     const parentId = this.config.entityId;
     const parentField = this.config.fieldName;
 

@@ -53,6 +53,7 @@ export class EntityContentBlockComponent extends PickerComponent implements OnIn
     super.ngAfterViewInit();
 
     this.pickerAdapterBase.entitySearchComponent = this.entitySearchComponent;
+    this.pickerSourceAdapter.contentType = null;
   }
 
   ngOnDestroy(): void {
