@@ -1,15 +1,12 @@
 import { Injectable } from '@angular/core';
-import { AbstractControl } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
-import { FieldSettings } from 'projects/edit-types';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ControlStatus } from '../../../shared/models';
 import { EditRoutingService } from '../../../shared/services';
 import { EntityCacheService, StringQueryCacheService } from '../../../shared/store/ngrx-data';
-import { FieldConfigSet } from '../../builder/fields-builder/field-config-set.model';
-import { PickerSearchComponent } from './picker-search/picker-search.component';
 import { PickerStateAdapter } from './picker-state-adapter';
 import { PickerAdapterBase } from './picker-adapter-base';
+import { ReorderIndexes } from './picker-list/picker-list.models';
 
 @Injectable()
 export class PickerStateAdapterFactoryService {
@@ -28,7 +25,11 @@ export class PickerStateAdapterFactoryService {
     required$: Observable<boolean>,
   ): PickerStateAdapter {
     const pickerStateAdapter = new PickerStateAdapter();
-    pickerStateAdapter.pickerAdapterBase = pickerAdapterBase;
+    pickerStateAdapter.updateValue =
+      (action: 'add' | 'delete' | 'reorder', value: string | number | ReorderIndexes) => pickerAdapterBase.updateValue(action, value);
+    pickerStateAdapter.settings$ = pickerAdapterBase.settings$;
+    pickerStateAdapter.config = pickerAdapterBase.config;
+    pickerStateAdapter.disableAddNew$ = pickerAdapterBase.disableAddNew$;
     pickerStateAdapter.translate = this.translateService;
     pickerStateAdapter.cacheEntities$ = this.entityCacheService.getEntities$();
     pickerStateAdapter.stringQueryCache$ = this.stringQueryCacheService.getEntities$(pickerAdapterBase.config.entityGuid, pickerAdapterBase.config.fieldName);

@@ -9,9 +9,10 @@ import { PickerAdapterBase } from './picker-adapter-base';
 import { ReorderIndexes } from './picker-list/picker-list.models';
 import { calculateSelectedEntities } from './picker.helpers';
 
-export class PickerStateAdapter {
-  pickerAdapterBase: PickerAdapterBase;
-  constructor() { }
+export class PickerStateAdapter extends PickerAdapterBase {
+  constructor() {
+    super();
+   }
 
   shouldPickerListBeShown$: Observable<boolean>;
   isExpanded$: Observable<boolean>;
@@ -35,7 +36,7 @@ export class PickerStateAdapter {
       this.controlStatus$.pipe(map(controlStatus => controlStatus.value), distinctUntilChanged()),
       this.cacheEntities$,
       this.stringQueryCache$,
-      this.pickerAdapterBase.settings$.pipe(
+      this.settings$.pipe(
         map(settings => ({
           Separator: settings.Separator,
           Value: settings.Value,
@@ -48,7 +49,7 @@ export class PickerStateAdapter {
         calculateSelectedEntities(value, settings.Separator, entityCache, stringQueryCache, settings.Value, settings.Label, this.translate)
       ),
     );
-    this.allowMultiValue$ = this.pickerAdapterBase.settings$.pipe(map(settings => settings.AllowMultiValue), distinctUntilChanged());
+    this.allowMultiValue$ = this.settings$.pipe(map(settings => settings.AllowMultiValue), distinctUntilChanged());
     this.shouldPickerListBeShown$ = combineLatest([
       this.freeTextMode$, this.isExpanded$, this.allowMultiValue$, this.selectedEntities$
     ]).pipe(map(([
@@ -59,13 +60,15 @@ export class PickerStateAdapter {
   }
 
   destroy() {
+    super.destroy();
+
     this.freeTextMode$.complete();
     this.error$.complete();
   }
 
-  addSelected(guid: string) { this.pickerAdapterBase.updateValue('add', guid); }
-  removeSelected(index: number) { this.pickerAdapterBase.updateValue('delete', index); }
-  reorder(reorderIndexes: ReorderIndexes) { this.pickerAdapterBase.updateValue('reorder', reorderIndexes); }
+  addSelected(guid: string) { this.updateValue('add', guid); }
+  removeSelected(index: number) { this.updateValue('delete', index); }
+  reorder(reorderIndexes: ReorderIndexes) { this.updateValue('reorder', reorderIndexes); }
 
   toggleFreeTextMode(): void {
     this.freeTextMode$.next(!this.freeTextMode$.value);

@@ -1,16 +1,12 @@
 import { Injectable } from '@angular/core';
-import { AbstractControl, FormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
-import { FieldSettings } from 'projects/edit-types';
-import { BehaviorSubject, config } from 'rxjs';
 import { EavService, EditRoutingService, EntityService } from '../../../shared/services';
 import { EntityCacheService } from '../../../shared/store/ngrx-data';
-import { FieldConfigSet } from '../../builder/fields-builder/field-config-set.model';
-import { PickerSearchComponent } from './picker-search/picker-search.component';
 import { PickerSourceAdapter } from './picker-source-adapter';
-import { PickerStateAdapter } from './picker-state-adapter';
 import { PickerAdapterBase } from './picker-adapter-base';
+import { ReorderIndexes } from './picker-list/picker-list.models';
 
 @Injectable()
 export class PickerSourceAdapterFactoryService {
@@ -30,7 +26,12 @@ export class PickerSourceAdapterFactoryService {
     fetchEntities: (clearAvailableEntitiesAndOnlyUpdateCache: boolean) => void,
   ): PickerSourceAdapter {
     const pickerSourceAdapter = new PickerSourceAdapter();
-    pickerSourceAdapter.pickerAdapterBase = pickerAdapterBase;
+    pickerSourceAdapter.settings$ = pickerAdapterBase.settings$;
+    pickerSourceAdapter.disableAddNew$ = pickerAdapterBase.disableAddNew$;
+    pickerSourceAdapter.config = pickerAdapterBase.config;
+    pickerSourceAdapter.control = pickerAdapterBase.control;
+    pickerSourceAdapter.updateValue =
+      (action: 'add' | 'delete' | 'reorder', value: string | number | ReorderIndexes) => pickerAdapterBase.updateValue(action, value);
     pickerSourceAdapter.eavService = this.eavService;
     pickerSourceAdapter.entityCacheService = this.entityCacheService;
     pickerSourceAdapter.entityService = this.entityService;

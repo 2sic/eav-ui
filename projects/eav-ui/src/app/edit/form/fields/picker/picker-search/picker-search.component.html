@@ -56,7 +56,7 @@
   </div>
 
   <mat-form-field *ngIf="vm.freeTextMode" [formGroup]="pickerSourceAdapter.group" class="eav-form-field" color="accent">
-    <input matInput [required]="vm.required" [formControlName]="pickerStateAdapter.pickerAdapterBase.config.fieldName" [placeholder]="vm.placeholder">
+    <input matInput [required]="vm.required" [formControlName]="pickerStateAdapter.config.fieldName" [placeholder]="vm.placeholder">
 
     <div matSuffix class="selection-suffix">
       <button mat-icon-button [tippy]="'Fields.String.Dropdown' | translate" [disabled]="vm.controlStatus.disabled"
@@ -74,7 +74,7 @@
     debug: <span class="null-button" tippy="Add null-item" (click)="insertNull()">add null-item</span>
   </div>
 
-  <app-field-helper-text [config]="pickerStateAdapter.pickerAdapterBase.config" [group]="pickerSourceAdapter.group"></app-field-helper-text>
+  <app-field-helper-text [config]="pickerStateAdapter.config" [group]="pickerSourceAdapter.group"></app-field-helper-text>
 
   <!-- add new entity -->
   <div *ngIf="!vm.freeTextMode && vm.enableCreate && vm.entityType && vm.allowMultiValue">

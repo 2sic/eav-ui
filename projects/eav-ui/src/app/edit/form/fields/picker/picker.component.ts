@@ -23,7 +23,7 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
 
   pickerSourceAdapter: PickerSourceAdapter;// = new PickerSourceAdapter();
   pickerStateAdapter: PickerStateAdapter;// = new PickerStateAdapter();
-  pickerAdapterBase: PickerAdapterBase = new PickerAdapterBase();
+  pickerAdapterBase: PickerAdapterBase;// = new PickerAdapterBase();
 
   isQuery: boolean;
   isStringQuery: boolean;
@@ -78,7 +78,7 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
     this.subscription.add(
       this.editRoutingService.childFormResult(this.config.index, this.config.entityGuid).subscribe(result => {
         const newItemGuid = Object.keys(result)[0];
-        this.pickerStateAdapter.pickerAdapterBase.updateValue('add', newItemGuid);
+        this.pickerStateAdapter.updateValue('add', newItemGuid);
       })
     );
     this.subscription.add(

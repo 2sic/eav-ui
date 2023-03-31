@@ -107,7 +107,7 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
       this.pickerAdapterBase,
       this.editRoutingService,
       this.group,
-      false,
+      true,
       (clearAvailableEntitiesAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableEntitiesAndOnlyUpdateCache)
     );
 

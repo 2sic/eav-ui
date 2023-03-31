@@ -96,7 +96,7 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
       this.pickerSourceAdapter.availableEntities$.next(null);
     }
 
-    const contentTypeName = this.pickerSourceAdapter.pickerAdapterBase.contentTypeMask.resolve();
+    const contentTypeName = this.pickerSourceAdapter.contentTypeMask.resolve();
     const entitiesFilter: string[] = (clearAvailableEntitiesAndOnlyUpdateCache || !this.settings$.value.EnableAddExisting)
       ? filterGuids(
         this.fieldsSettingsService.getContentTypeSettings()._itemTitle,
