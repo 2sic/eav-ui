@@ -24,6 +24,7 @@ export class PagePicker {
       autoFocus: false,
       data: dialogData,
       viewContainerRef,
+      height: '80%',
       width: '650px',
     });
 

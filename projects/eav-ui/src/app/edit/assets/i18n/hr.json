@@ -190,7 +190,8 @@
         "SponsorLine": "is sponsored with ♡ by"
       },
       "PagePicker": {
-        "Title": "Select a web page"
+        "Title": "Odaberi web stranicu",
+        "HiddenOrSystemPageWarning": "Ovo je skrivena ili sistemska stranica, jeste li sigurni da je želite povezati?"
       }
     },
     "DateTime": {
