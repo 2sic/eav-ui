@@ -21,9 +21,9 @@ import { PickerAdapterBase } from './picker-adapter-base';
 export class PickerComponent extends BaseFieldComponent<string | string[]> implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(PickerSearchComponent) protected entitySearchComponent: PickerSearchComponent;
 
-  pickerSourceAdapter: PickerSourceAdapter;// = new PickerSourceAdapter();
-  pickerStateAdapter: PickerStateAdapter;// = new PickerStateAdapter();
-  pickerAdapterBase: PickerAdapterBase;// = new PickerAdapterBase();
+  pickerSourceAdapter: PickerSourceAdapter;
+  pickerStateAdapter: PickerStateAdapter;
+  pickerAdapterBase: PickerAdapterBase;
 
   isQuery: boolean;
   isStringQuery: boolean;
