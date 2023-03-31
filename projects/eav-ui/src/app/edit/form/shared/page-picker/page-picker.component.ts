@@ -94,7 +94,7 @@ export class PagePickerComponent implements OnInit, OnDestroy {
   }
 
   private fetchPages(): void {
-    const query = 'Eav.Queries.Global.Pages'; // 'System.Pages';
+    const query = 'System.Pages';
     const stream = 'Default';
     const params = 'includehidden=true';
     this.queryService.getAvailableEntities(`${query}/${stream}`, true, params, null).subscribe({
