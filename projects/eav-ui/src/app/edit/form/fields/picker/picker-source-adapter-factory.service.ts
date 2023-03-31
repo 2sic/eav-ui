@@ -18,7 +18,7 @@ export class PickerSourceAdapterFactoryService {
     private snackBar: MatSnackBar,
   ) { }
 
-  fillPickerSourceAdapter(
+  createPickerSourceAdapter(
     pickerAdapterBase: PickerAdapterBase,
     editRoutingService: EditRoutingService,
     group: FormGroup,

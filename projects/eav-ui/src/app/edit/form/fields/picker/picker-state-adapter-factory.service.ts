@@ -16,7 +16,7 @@ export class PickerStateAdapterFactoryService {
     private translateService: TranslateService,
   ) { }
 
-  fillPickerStateAdapter(
+  createPickerStateAdapter(
     pickerAdapterBase: PickerAdapterBase,
     editRoutingService: EditRoutingService,
     controlStatus$: BehaviorSubject<ControlStatus<string | string[]>>,

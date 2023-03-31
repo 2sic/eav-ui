@@ -54,6 +54,12 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
     this.createTemplateVariables();
   }
 
+  ngAfterViewInit(): void {
+    super.ngAfterViewInit();
+
+    this.pickerAdapterBase.entitySearchComponent = this.entitySearchComponent;
+  }
+
   ngOnDestroy(): void {
     this.pickerSourceAdapter.destroy();
     this.pickerStateAdapter.destroy();
@@ -62,14 +68,13 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
   }
 
   private createPickerAdapters(): void {
-    this.pickerAdapterBase = this.pickerAdapterBaseFactoryService.fillPickerAdapterBase(
+    this.pickerAdapterBase = this.pickerAdapterBaseFactoryService.createPickerAdapterBase(
       this.control,
       this.config,
-      this.entitySearchComponent,
       this.settings$,
     );
 
-    this.pickerSourceAdapter = this.pickerSourceAdapterFactoryService.fillPickerSourceAdapter(
+    this.pickerSourceAdapter = this.pickerSourceAdapterFactoryService.createPickerSourceAdapter(
       this.pickerAdapterBase,
       this.editRoutingService,
       this.group,
@@ -77,7 +82,7 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
       (clearAvailableEntitiesAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableEntitiesAndOnlyUpdateCache)
     );
 
-    this.pickerStateAdapter = this.pickerStateAdapterFactoryService.fillPickerStateAdapter(
+    this.pickerStateAdapter = this.pickerStateAdapterFactoryService.createPickerStateAdapter(
       this.pickerAdapterBase,
       this.editRoutingService,
       this.controlStatus$,
