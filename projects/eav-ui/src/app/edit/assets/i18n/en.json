@@ -201,7 +201,7 @@
       },
       "PagePicker": {
         "Title": "Select a web page",
-        "HiddenOrSystemPageWarning": "This seems to be a hidden or system page, are you sure you want to link to it?"
+        "HiddenOrSystemPageWarning": "This page is hidden or a system page. Are you sure you want to link to it?"
       }
     },
     "DateTime": {

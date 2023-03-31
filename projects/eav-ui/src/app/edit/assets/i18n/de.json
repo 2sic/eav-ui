@@ -182,7 +182,8 @@
         "SponsorLine": "mit ♡ gesponsort von"
       },
       "PagePicker": {
-        "Title": "Seite auswählen"
+        "Title": "Seite auswählen",
+        "HiddenOrSystemPageWarning": "Die Seite ist versteckt oder eine Systemseite. Möchtest du sie wirklich verlinken?"
       }
     },
     "DateTime": {
