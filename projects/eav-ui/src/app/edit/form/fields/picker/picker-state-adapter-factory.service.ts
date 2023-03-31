@@ -8,8 +8,8 @@ import { EditRoutingService } from '../../../shared/services';
 import { EntityCacheService, StringQueryCacheService } from '../../../shared/store/ngrx-data';
 import { FieldConfigSet } from '../../builder/fields-builder/field-config-set.model';
 import { PickerSearchComponent } from './picker-search/picker-search.component';
-import { PickerSourceAdapter } from './picker-source-adapter';
 import { PickerStateAdapter } from './picker-state-adapter';
+import { PickerAdapterBase } from './picker-adapter-base';
 
 @Injectable()
 export class PickerStateAdapterFactoryService {
@@ -20,38 +20,24 @@ export class PickerStateAdapterFactoryService {
   ) { }
 
   fillPickerStateAdapter(
+    pickerAdapterBase: PickerAdapterBase,
     editRoutingService: EditRoutingService,
-    config: FieldConfigSet,
-    control: AbstractControl,
-    entitySearchComponent: PickerSearchComponent,
-    settings$: BehaviorSubject<FieldSettings>,
     controlStatus$: BehaviorSubject<ControlStatus<string | string[]>>,
     label$: Observable<string>,
     placeholder$: Observable<string>,
     required$: Observable<boolean>,
   ): PickerStateAdapter {
     const pickerStateAdapter = new PickerStateAdapter();
-    pickerStateAdapter.config = config;
-    pickerStateAdapter.control = control;
-    pickerStateAdapter.entitySearchComponent = entitySearchComponent;
+    pickerStateAdapter.pickerAdapterBase = pickerAdapterBase;
     pickerStateAdapter.translate = this.translateService;
     pickerStateAdapter.cacheEntities$ = this.entityCacheService.getEntities$();
-    pickerStateAdapter.stringQueryCache$ = this.stringQueryCacheService.getEntities$(config.entityGuid, config.fieldName);
-    pickerStateAdapter.settings$ = settings$;
-    pickerStateAdapter.isExpanded$ = editRoutingService.isExpanded$(config.index, config.entityGuid);
+    pickerStateAdapter.stringQueryCache$ = this.stringQueryCacheService.getEntities$(pickerAdapterBase.config.entityGuid, pickerAdapterBase.config.fieldName);
+    pickerStateAdapter.isExpanded$ = editRoutingService.isExpanded$(pickerAdapterBase.config.index, pickerAdapterBase.config.entityGuid);
     pickerStateAdapter.controlStatus$ = controlStatus$;
     pickerStateAdapter.label$ = label$;
     pickerStateAdapter.placeholder$ = placeholder$;
     pickerStateAdapter.required$ = required$;
 
-    return pickerStateAdapter;
-  }
-
-  getDataFromPickerSourceAdapter(
-    pickerStateAdapter: PickerStateAdapter,
-    pickerSourceAdapter: PickerSourceAdapter
-  ): PickerStateAdapter {
-    pickerStateAdapter.pickerSourceAdapter = pickerSourceAdapter;
     return pickerStateAdapter;
   }
 

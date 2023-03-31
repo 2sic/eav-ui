@@ -27,7 +27,7 @@ export class PickerListComponent implements OnInit {
     const controlStatus$ = this.pickerStateAdapter.controlStatus$;
     const selectedEntities$ = this.pickerStateAdapter.selectedEntities$;
 
-    const settings$ = this.fieldsSettingsService.getFieldSettings$(this.pickerStateAdapter.config.fieldName).pipe(
+    const settings$ = this.fieldsSettingsService.getFieldSettings$(this.pickerStateAdapter.pickerAdapterBase.config.fieldName).pipe(
       map(settings => ({
         allowMultiValue: settings.AllowMultiValue,
         enableEdit: settings.EnableEdit,

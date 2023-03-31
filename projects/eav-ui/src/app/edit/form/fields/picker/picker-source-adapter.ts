@@ -8,12 +8,12 @@ import { BehaviorSubject, distinctUntilChanged, map, Subscription } from 'rxjs';
 import { FieldMask } from '../../../shared/helpers';
 import { EavService, EditRoutingService, EntityService } from '../../../shared/services';
 import { EntityCacheService } from '../../../shared/store/ngrx-data';
-import { PickerStateAdapter } from './picker-state-adapter';
+import { PickerAdapterBase } from './picker-adapter-base';
 import { convertValueToArray } from './picker.helpers';
 import { DeleteEntityProps } from './picker.models';
 
 export class PickerSourceAdapter {
-  pickerStateAdapter: PickerStateAdapter;
+  pickerAdapterBase: PickerAdapterBase;
   eavService: EavService;
   entityCacheService: EntityCacheService;
   entityService: EntityService;
@@ -22,24 +22,21 @@ export class PickerSourceAdapter {
   snackBar: MatSnackBar;
   isQuery: boolean;
 
-  constructor(
-
-  ) {}
+  constructor() { }
   private subscriptions = new Subscription();
   availableEntities$: BehaviorSubject<EntityInfo[]> = new BehaviorSubject<EntityInfo[]>(null);
 
   group: FormGroup;
-  contentTypeMask?: FieldMask;
 
   init() {
     // Update/Build Content-Type Mask which is used for loading the data/new etc.
     this.subscriptions.add(
-      this.pickerStateAdapter.settings$.pipe(
+      this.pickerAdapterBase.settings$.pipe(
         map(settings => settings.EntityType),
         distinctUntilChanged(),
       ).subscribe(entityType => {
-        this.contentTypeMask?.destroy();
-        this.contentTypeMask = new FieldMask(
+        this.pickerAdapterBase.contentTypeMask?.destroy();
+        this.pickerAdapterBase.contentTypeMask = new FieldMask(
           entityType,
           this.group.controls,
           () => {
@@ -48,20 +45,19 @@ export class PickerSourceAdapter {
             if (!this.isQuery) {
               this.availableEntities$.next(null);
             }
-            this.pickerStateAdapter.updateAddNew();
+            this.pickerAdapterBase.updateAddNew();
           },
           null,
           this.eavService.eavConfig,
         );
 
         this.availableEntities$.next(null);
-        this.pickerStateAdapter.updateAddNew();
+        this.pickerAdapterBase.updateAddNew();
       })
     );
   }
 
   destroy() {
-    this.contentTypeMask?.destroy();
     this.availableEntities$.complete();
 
     this.subscriptions.unsubscribe();
@@ -76,7 +72,7 @@ export class PickerSourceAdapter {
   editEntity(editParams: { entityGuid: string, entityId: number }): void {
     let form: EditForm;
     if (editParams?.entityGuid == null) {
-      const contentTypeName = this.contentTypeMask.resolve();
+      const contentTypeName = this.pickerAdapterBase.contentTypeMask.resolve();
       const prefill = this.getPrefill();
       form = {
         items: [{ ContentTypeName: contentTypeName, Prefill: prefill }],
@@ -93,16 +89,16 @@ export class PickerSourceAdapter {
         };
       }
     }
-    this.editRoutingService.open(this.pickerStateAdapter.config.index, this.pickerStateAdapter.config.entityGuid, form);
+    this.editRoutingService.open(this.pickerAdapterBase.config.index, this.pickerAdapterBase.config.entityGuid, form);
   }
 
   deleteEntity(props: DeleteEntityProps): void {
     const entity = this.entityCacheService.getEntity(props.entityGuid);
     const id = entity.Id;
     const title = entity.Text;
-    const contentType = this.contentTypeMask.resolve();
-    const parentId = this.pickerStateAdapter.config.entityId;
-    const parentField = this.pickerStateAdapter.config.fieldName;
+    const contentType = this.pickerAdapterBase.contentTypeMask.resolve();
+    const parentId = this.pickerAdapterBase.config.entityId;
+    const parentField = this.pickerAdapterBase.config.fieldName;
 
     const confirmed = confirm(this.translate.instant('Data.Delete.Question', { title, id }));
     if (!confirmed) { return; }
@@ -111,7 +107,7 @@ export class PickerSourceAdapter {
     this.entityService.delete(contentType, id, false, parentId, parentField).subscribe({
       next: () => {
         this.snackBar.open(this.translate.instant('Message.Deleted'), null, { duration: 2000 });
-        this.pickerStateAdapter.updateValue('delete', props.index);
+        this.pickerAdapterBase.updateValue('delete', props.index);
         this.fetchAvailableEntities(true);
       },
       error: (error1: HttpErrorResponse) => {
@@ -121,7 +117,7 @@ export class PickerSourceAdapter {
         this.entityService.delete(contentType, id, true, parentId, parentField).subscribe({
           next: () => {
             this.snackBar.open(this.translate.instant('Message.Deleted'), null, { duration: 2000 });
-            this.pickerStateAdapter.updateValue('delete', props.index);
+            this.pickerAdapterBase.updateValue('delete', props.index);
             this.fetchAvailableEntities(true);
           },
           error: (error2: HttpErrorResponse) => {
@@ -139,7 +135,7 @@ export class PickerSourceAdapter {
    */
   fixPrefillAndStringQueryCache(): void {
     // filter out null items
-    const guids = convertValueToArray(this.pickerStateAdapter.control.value, this.pickerStateAdapter.settings$.value.Separator)
+    const guids = convertValueToArray(this.pickerAdapterBase.control.value, this.pickerAdapterBase.settings$.value.Separator)
       .filter(guid => !!guid);
     if (guids.length === 0) { return; }
 
@@ -160,7 +156,7 @@ export class PickerSourceAdapter {
     // still very experimental, and to avoid errors try to catch any mistakes
     try {
       const prefillMask =
-        new FieldMask(this.pickerStateAdapter.settings$.value.Prefill, this.group.controls, null, null, this.eavService.eavConfig);
+        new FieldMask(this.pickerAdapterBase.settings$.value.Prefill, this.group.controls, null, null, this.eavService.eavConfig);
       const prefill = prefillMask.resolve();
       prefillMask.destroy();
       if (!prefill || !prefill.trim()) { return null; }

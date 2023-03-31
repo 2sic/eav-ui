@@ -10,6 +10,7 @@ import { PickerStateAdapterFactoryService } from '../../picker/picker-state-adap
 import { PickerComponent } from '../../picker/picker.component';
 import { filterGuids } from '../../picker/picker.helpers';
 import { EntityDefaultLogic } from './entity-default-logic';
+import { PickerAdapterBaseFactoryService } from '../../picker/picker-adapter-base-factory.service';
 
 @Component({
   selector: InputTypeConstants.EntityDefault,
@@ -28,6 +29,7 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
     editRoutingService: EditRoutingService,
     entityCacheService: EntityCacheService,
     stringQueryCacheService: StringQueryCacheService,
+    private pickerAdapterBaseFactoryService: PickerAdapterBaseFactoryService,
     private pickerSourceAdapterFactoryService: PickerSourceAdapterFactoryService,
     private pickerStateAdapterFactoryService: PickerStateAdapterFactoryService,
   ) {
@@ -60,7 +62,15 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
   }
 
   private createPickerAdapters(): void {
+    this.pickerAdapterBase = this.pickerAdapterBaseFactoryService.fillPickerAdapterBase(
+      this.control,
+      this.config,
+      this.entitySearchComponent,
+      this.settings$,
+    );
+
     this.pickerSourceAdapter = this.pickerSourceAdapterFactoryService.fillPickerSourceAdapter(
+      this.pickerAdapterBase,
       this.editRoutingService,
       this.group,
       false,
@@ -68,25 +78,12 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
     );
 
     this.pickerStateAdapter = this.pickerStateAdapterFactoryService.fillPickerStateAdapter(
+      this.pickerAdapterBase,
       this.editRoutingService,
-      this.config,
-      this.control,
-      this.entitySearchComponent,
-      this.settings$,
       this.controlStatus$,
       this.label$,
       this.placeholder$,
       this.required$,
-    );
-
-    this.pickerSourceAdapter = this.pickerSourceAdapterFactoryService.getDataFromPickerStateAdapter(
-      this.pickerSourceAdapter,
-      this.pickerStateAdapter
-    );
-
-    this.pickerStateAdapter = this.pickerStateAdapterFactoryService.getDataFromPickerSourceAdapter(
-      this.pickerStateAdapter,
-      this.pickerSourceAdapter
     );
 
     this.pickerSourceAdapterFactoryService.init(this.pickerSourceAdapter);
@@ -99,7 +96,7 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
       this.pickerSourceAdapter.availableEntities$.next(null);
     }
 
-    const contentTypeName = this.pickerSourceAdapter.contentTypeMask.resolve();
+    const contentTypeName = this.pickerSourceAdapter.pickerAdapterBase.contentTypeMask.resolve();
     const entitiesFilter: string[] = (clearAvailableEntitiesAndOnlyUpdateCache || !this.settings$.value.EnableAddExisting)
       ? filterGuids(
         this.fieldsSettingsService.getContentTypeSettings()._itemTitle,

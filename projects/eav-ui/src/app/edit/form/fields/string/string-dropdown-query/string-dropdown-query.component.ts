@@ -12,6 +12,7 @@ import { QueryEntity } from '../../entity/entity-query/entity-query.models';
 import { PickerSourceAdapterFactoryService } from '../../picker/picker-source-adapter-factory.service';
 import { PickerStateAdapterFactoryService } from '../../picker/picker-state-adapter-factory.service';
 import { StringDropdownQueryLogic } from './string-dropdown-query-logic';
+import { PickerAdapterBaseFactoryService } from '../../picker/picker-adapter-base-factory.service';
 
 @Component({
   selector: InputTypeConstants.StringDropdownQuery,
@@ -30,6 +31,7 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
     entityCacheService: EntityCacheService,
     stringQueryCacheService: StringQueryCacheService,
     queryService: QueryService,
+    pickerAdapterBaseFactoryService: PickerAdapterBaseFactoryService,
     pickerSourceAdapterFactoryService: PickerSourceAdapterFactoryService,
     pickerStateAdapterFactoryService: PickerStateAdapterFactoryService,
   ) {
@@ -42,6 +44,7 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
       entityCacheService,
       stringQueryCacheService,
       queryService,
+      pickerAdapterBaseFactoryService,
       pickerSourceAdapterFactoryService,
       pickerStateAdapterFactoryService
     );

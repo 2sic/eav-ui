@@ -8,6 +8,7 @@ import { PickerSourceAdapterFactoryService } from '../../picker/picker-source-ad
 import { PickerStateAdapterFactoryService } from '../../picker/picker-state-adapter-factory.service';
 import { PickerComponent } from '../../picker/picker.component';
 import { EntityContentBlocksLogic } from './entity-content-blocks-logic';
+import { PickerAdapterBaseFactoryService } from '../../picker/picker-adapter-base-factory.service';
 
 @Component({
   selector: InputTypeConstants.EntityContentBlocks,
@@ -25,6 +26,7 @@ export class EntityContentBlockComponent extends PickerComponent implements OnIn
     editRoutingService: EditRoutingService,
     entityCacheService: EntityCacheService,
     stringQueryCacheService: StringQueryCacheService,
+    private pickerAdapterBaseFactoryService: PickerAdapterBaseFactoryService,
     private pickerSourceAdapterFactoryService: PickerSourceAdapterFactoryService,
     private pickerStateAdapterFactoryService: PickerStateAdapterFactoryService,
   ) {
@@ -53,8 +55,16 @@ export class EntityContentBlockComponent extends PickerComponent implements OnIn
     super.ngOnDestroy();
   }
 
-  private createPickerAdapters(): void { 
+  private createPickerAdapters(): void {
+    this.pickerAdapterBase = this.pickerAdapterBaseFactoryService.fillPickerAdapterBase(
+      this.control,
+      this.config,
+      this.entitySearchComponent,
+      this.settings$,
+    );
+
     this.pickerSourceAdapter = this.pickerSourceAdapterFactoryService.fillPickerSourceAdapter(
+      this.pickerAdapterBase,
       this.editRoutingService,
       this.group,
       false,
@@ -62,25 +72,12 @@ export class EntityContentBlockComponent extends PickerComponent implements OnIn
     );
 
     this.pickerStateAdapter = this.pickerStateAdapterFactoryService.fillPickerStateAdapter(
+      this.pickerAdapterBase,
       this.editRoutingService,
-      this.config,
-      this.control,
-      this.entitySearchComponent,
-      this.settings$,
       this.controlStatus$,
       this.label$,
       this.placeholder$,
       this.required$,
-    );
-
-    this.pickerSourceAdapter = this.pickerSourceAdapterFactoryService.getDataFromPickerStateAdapter(
-      this.pickerSourceAdapter,
-      this.pickerStateAdapter
-    );
-
-    this.pickerStateAdapter = this.pickerStateAdapterFactoryService.getDataFromPickerSourceAdapter(
-      this.pickerStateAdapter,
-      this.pickerSourceAdapter
     );
 
     this.pickerSourceAdapterFactoryService.init(this.pickerSourceAdapter);

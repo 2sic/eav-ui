@@ -1,11 +1,16 @@
 import { Injectable } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { AbstractControl, FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
+import { FieldSettings } from 'projects/edit-types';
+import { BehaviorSubject, config } from 'rxjs';
 import { EavService, EditRoutingService, EntityService } from '../../../shared/services';
 import { EntityCacheService } from '../../../shared/store/ngrx-data';
+import { FieldConfigSet } from '../../builder/fields-builder/field-config-set.model';
+import { PickerSearchComponent } from './picker-search/picker-search.component';
 import { PickerSourceAdapter } from './picker-source-adapter';
 import { PickerStateAdapter } from './picker-state-adapter';
+import { PickerAdapterBase } from './picker-adapter-base';
 
 @Injectable()
 export class PickerSourceAdapterFactoryService {
@@ -18,12 +23,14 @@ export class PickerSourceAdapterFactoryService {
   ) { }
 
   fillPickerSourceAdapter(
+    pickerAdapterBase: PickerAdapterBase,
     editRoutingService: EditRoutingService,
     group: FormGroup,
     isQuery: boolean,
     fetchEntities: (clearAvailableEntitiesAndOnlyUpdateCache: boolean) => void,
   ): PickerSourceAdapter {
     const pickerSourceAdapter = new PickerSourceAdapter();
+    pickerSourceAdapter.pickerAdapterBase = pickerAdapterBase;
     pickerSourceAdapter.eavService = this.eavService;
     pickerSourceAdapter.entityCacheService = this.entityCacheService;
     pickerSourceAdapter.entityService = this.entityService;
@@ -35,14 +42,6 @@ export class PickerSourceAdapterFactoryService {
     pickerSourceAdapter.fetchAvailableEntities =
       (clearAvailableEntitiesAndOnlyUpdateCache: boolean) => fetchEntities(clearAvailableEntitiesAndOnlyUpdateCache);
 
-    return pickerSourceAdapter;
-  }
-
-  getDataFromPickerStateAdapter(
-    pickerSourceAdapter: PickerSourceAdapter,
-    pickerStateAdapter: PickerStateAdapter
-  ): PickerSourceAdapter {
-    pickerSourceAdapter.pickerStateAdapter = pickerStateAdapter;
     return pickerSourceAdapter;
   }
 

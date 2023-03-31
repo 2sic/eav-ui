@@ -24,7 +24,7 @@
       <div class="item-actions">
         <!-- Disable edit only if it was disabled in the settings, not if disabled by language change -->
         <button mat-icon-button *ngIf="vm.enableEdit && !item.disableEdit"
-          [tippy]="'Fields.Entity.Edit' | translate" [disabled]="pickerStateAdapter.config.initialDisabled" appMousedownStopPropagation
+          [tippy]="'Fields.Entity.Edit' | translate" [disabled]="pickerStateAdapter.pickerAdapterBase.config.initialDisabled" appMousedownStopPropagation
           (click)="edit(item.value, item.entityId)">
           <mat-icon>edit</mat-icon>
         </button>

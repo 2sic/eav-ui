@@ -36,12 +36,12 @@ export class PickerSearchComponent implements OnInit, OnChanges, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.control = this.pickerSourceAdapter.group.controls[this.pickerStateAdapter.config.fieldName];
+    this.control = this.pickerSourceAdapter.group.controls[this.pickerStateAdapter.pickerAdapterBase.config.fieldName];
 
     const availableEntities$ = this.pickerSourceAdapter.availableEntities$;
 
     const freeTextMode$ = this.pickerStateAdapter.freeTextMode$;
-    const disableAddNew$ = this.pickerStateAdapter.disableAddNew$;
+    const disableAddNew$ = this.pickerStateAdapter.pickerAdapterBase.disableAddNew$;
     const controlStatus$ = this.pickerStateAdapter.controlStatus$;
     const error$ = this.pickerStateAdapter.error$;
     const selectedEntities$ = this.pickerStateAdapter.selectedEntities$;
@@ -52,7 +52,7 @@ export class PickerSearchComponent implements OnInit, OnChanges, OnDestroy {
     this.subscriptions.add(availableEntities$.subscribe(entities => this.availableEntities = entities));
 
     const debugEnabled$ = this.globalConfigService.getDebugEnabled$();
-    const settings$ = this.fieldsSettingsService.getFieldSettings$(this.pickerStateAdapter.config.fieldName).pipe(
+    const settings$ = this.fieldsSettingsService.getFieldSettings$(this.pickerStateAdapter.pickerAdapterBase.config.fieldName).pipe(
       map(settings => ({
         AllowMultiValue: settings.AllowMultiValue,
         EnableCreate: settings.EnableCreate,
