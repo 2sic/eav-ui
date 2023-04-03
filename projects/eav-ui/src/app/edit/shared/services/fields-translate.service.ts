@@ -41,8 +41,12 @@ export class FieldsTranslateService {
 
     const attributes = this.itemService.getItemAttributes(this.entityGuid);
     const values = attributes[fieldName];
+    const doesFieldHaveExistingDimension = values.Values.find(v => v.Dimensions.find(x => x.Value === currentLanguage)) !== undefined;
     const defaultValue = LocalizationHelpers.getValueTranslation(values, defaultLanguage, defaultLanguage);
-    return this.addItemAttributeValueHelper(fieldName, defaultValue.Value, currentLanguage, false);
+    if (!doesFieldHaveExistingDimension) 
+      return this.addItemAttributeValueHelper(fieldName, defaultValue.Value, currentLanguage, false);
+    else
+      return null;
   }
 
   dontTranslate(fieldName: string, isTransaction = false, transactionItem?: EavItem): EavItem {
@@ -71,7 +75,7 @@ export class FieldsTranslateService {
 
     fieldNames = fieldNames.filter(field => !this.isTranslationDisabled(field));
     const textsForTranslation = fieldNames.map(field => attributes[field].Values.find(v => v.Dimensions.find(x => x.Value === autoTranslateLanguageKey)).Value);
-    const isFieldTranslateUnlocked = fieldNames.map(field => attributes[field].Values.find(v => v.Dimensions.find(x => x.Value === currentLanguage)) !== undefined);
+    const doFieldsHaveExistingDimension = fieldNames.map(field => attributes[field].Values.find(v => v.Dimensions.find(x => x.Value === currentLanguage)) !== undefined);
 
     if (!areAllChecksKnown) {
       fieldNames.forEach((field, i) => {
@@ -93,12 +97,13 @@ export class FieldsTranslateService {
           response.data.translations.forEach((translation: any, i: number) => {
             const elem = document.createElement('textarea');
             elem.innerHTML = translation.translatedText;
-            if (!isMany && isFieldTranslateUnlocked[i])
+            if (!isMany && doFieldsHaveExistingDimension[i]) {
               this.itemService.updateItemAttributeValue(
                 this.entityGuid, fieldNames[i], elem.value, currentLanguage, defaultLanguage, false
               );
-            else
+            } else if (!doFieldsHaveExistingDimension[i]) {
               this.addItemAttributeValueHelper(fieldNames[i], elem.value, currentLanguage, false);
+            }
           });
         }
       )).subscribe();
@@ -154,23 +159,23 @@ export class FieldsTranslateService {
   }
 
   translateMany(): void {
-    const translateable = this.findTranslatableFields();
+    const translatable = this.findTranslatableFields();
 
     let transactionItem: EavItem;
-    for (const fieldName of translateable) {
+    for (const fieldName of translatable) {
       // will finish the transaction when last field is being translated
-      const isTransaction = fieldName !== translateable[translateable.length - 1];
+      const isTransaction = fieldName !== translatable[translatable.length - 1];
       transactionItem = this.translate(fieldName, isTransaction, transactionItem);
     }
   }
 
   dontTranslateMany(): void {
-    const translateable = this.findTranslatableFields();
+    const translatable = this.findTranslatableFields();
 
     let transactionItem: EavItem;
-    for (const fieldName of translateable) {
+    for (const fieldName of translatable) {
       // will finish the transaction when last field is being translated
-      const isTransaction = fieldName !== translateable[translateable.length - 1];
+      const isTransaction = fieldName !== translatable[translatable.length - 1];
       transactionItem = this.dontTranslate(fieldName, isTransaction, transactionItem);
     }
   }
@@ -213,7 +218,7 @@ export class FieldsTranslateService {
   }
 
   /**
-   * Returns all fields that can be translated and autotranslated.
+   * Returns all fields that can be translated and autoTranslated.
    */
   findAutoTranslatableFields(): string[] {
     const attributes = this.itemService.getItemAttributes(this.entityGuid);
@@ -221,7 +226,7 @@ export class FieldsTranslateService {
   }
 
   /**
-   * Returns all fields that can be translated and autotranslated, but were not autotranslatable by default.
+   * Returns all fields that can be translated and autoTranslated, but were not autoTranslatable by default.
    */
   findAutoTranslatableFieldsThatWereNotAutoTranslatableByDefault(): string[] {
     const attributes = this.itemService.getItemAttributes(this.entityGuid);
@@ -260,10 +265,4 @@ export class FieldsTranslateService {
       this.entityGuid, fieldName, value, currentLanguage, isReadOnly, ctAttribute.Type
     );
   }
-
-  // private updateItemAttributeValueHelper(fieldName: string, value: any, currentLanguage: string, defaultLanguage: string, isReadOnly: boolean) {
-  //   this.itemService.updateItemAttributeValue(
-  //     this.entityGuid, fieldName, value, currentLanguage, defaultLanguage, isReadOnly
-  //   );
-  // }
 }

@@ -46,15 +46,15 @@ export function getTemplateLanguagesWithContent(
       translatableFields.forEach(field => {
         const values = attributes[field];
         noTranslatableFields += LocalizationHelpers.noEditableTranslationFields(values, language.NameId, defaultLanguage);
-        noTranslatableFieldsThatHaveContent += LocalizationHelpers.noEditableTranslationableFieldsWithContent(values, language.NameId, defaultLanguage)
+        noTranslatableFieldsThatHaveContent += LocalizationHelpers.noEditableTranslatableFieldsWithContent(values, language.NameId, defaultLanguage)
         isDisabled = (linkType === TranslationLinks.LinkReadWrite && !language.IsAllowed)
           || noTranslatableFields == 0;
       });
       const templateLanguage: TranslateMenuDialogTemplateLanguage = {
         key: language.NameId,
         disabled: isDisabled,
-        noTranslatableFields: noTranslatableFields,
-        noTranslatableFieldsThatHaveContent: noTranslatableFieldsThatHaveContent,
+        noTranslatableFields,
+        noTranslatableFieldsThatHaveContent,
       };
       return templateLanguage;
     });
