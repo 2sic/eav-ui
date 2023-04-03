@@ -19,7 +19,7 @@ export class EntityTranslateMenuComponent implements OnInit, OnDestroy {
   @Input() entityGuid: string;
 
   templateVars$: Observable<EntityTranslateMenuTemplateVars>;
-  translatableFromFields: string[];
+  autoTranslatableFields: string[];
   translationState: TranslationState;
   private subscription: Subscription;
 
@@ -52,9 +52,9 @@ export class EntityTranslateMenuComponent implements OnInit, OnDestroy {
         return templateVars;
       }),
     );
-    this.translatableFromFields = this.fieldsTranslateService.findAutotranslatableFields();
-    if (this.translatableFromFields.length > 0)
-      this.subscription = this.fieldsSettingsService.getTranslationState$(this.translatableFromFields[0]).subscribe(x => this.translationState = x);
+    this.autoTranslatableFields = this.fieldsTranslateService.findAutoTranslatableFields();
+    if (this.autoTranslatableFields.length > 0)
+      this.subscription = this.fieldsSettingsService.getTranslationState$(this.autoTranslatableFields[0]).subscribe(x => this.translationState = x);
   }
 
   translateMany() {
@@ -62,10 +62,10 @@ export class EntityTranslateMenuComponent implements OnInit, OnDestroy {
   }
 
   autoTranslateMany(): void {
-    if (this.translatableFromFields.length > 0) {
+    if (this.autoTranslatableFields.length > 0) {
       const config: FieldConfigSet = {
         entityGuid: this.entityGuid,
-        fieldName: this.translatableFromFields[0],
+        fieldName: this.autoTranslatableFields[0],
         name: '',
         focused$: undefined
       }
@@ -76,7 +76,7 @@ export class EntityTranslateMenuComponent implements OnInit, OnDestroy {
           linkType: this.translationState.linkType,
         },
         isTranslateMany: true,
-        translatableFields: this.translatableFromFields,
+        translatableFields: this.autoTranslatableFields,
       };
       this.dialog.open(AutoTranslateMenuDialogComponent, {
         autoFocus: false,
@@ -101,7 +101,7 @@ export class EntityTranslateMenuComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.translatableFromFields.length > 0)
+    if (this.autoTranslatableFields.length > 0)
       this.subscription.unsubscribe();
   }
 }
