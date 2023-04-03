@@ -47,7 +47,6 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
       stringQueryCacheService,
     );
     EntityQueryLogic.importMe();
-    this.isQuery = true;
   }
 
   ngOnInit(): void {

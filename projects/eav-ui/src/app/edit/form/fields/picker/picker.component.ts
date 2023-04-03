@@ -25,7 +25,6 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
   pickerStateAdapter: PickerStateAdapter;
   pickerAdapterBase: PickerAdapterBase;
 
-  isQuery: boolean;
   isStringQuery: boolean;
 
   viewModel$: Observable<PickerViewModel>;

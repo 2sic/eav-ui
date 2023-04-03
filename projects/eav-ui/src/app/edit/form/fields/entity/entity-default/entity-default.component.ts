@@ -44,7 +44,6 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
       stringQueryCacheService,
     );
     EntityDefaultLogic.importMe();
-    this.isQuery = false;
   }
 
   ngOnInit(): void {
@@ -65,9 +64,7 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
           () => {
             // Re-Trigger fetch data, but only on type-based pickers, not Queries
             // for EntityQuery we don't have to refetch entities because entities come from settings.Query, not settings.EntityType
-            if (!this.isQuery) {
-              this.pickerSourceAdapter.availableEntities$.next(null);
-            }
+            this.pickerSourceAdapter.availableEntities$.next(null);
             this.updateAddNew();
           },
           null,
