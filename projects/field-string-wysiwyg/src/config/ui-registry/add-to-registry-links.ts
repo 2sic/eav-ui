@@ -52,7 +52,7 @@ export class TinyButtonsLinks extends AddToRegistryBase {
     const linkButton = this.getButtons().link;
     const basicGroup: CallbackParams = [
       this.splitButtonItem(linkButton.icon, linkButton.tooltip, 'mceLink'),
-      this.splitButtonItem('custom-sitemap', 'Link.Page.Tooltip', () => openPagePicker(this.field)),
+      this.splitButtonItem('custom-sitemap', 'Link.Page.Tooltip', () => this.openPagePicker(this.field)),
     ];
     const proGroup: CallbackParams = [
       ...basicGroup,
@@ -76,21 +76,20 @@ export class TinyButtonsLinks extends AddToRegistryBase {
   }
 
   private addLinkPage(): void {
-    this.regBtn(Buttons.LinkPageButton, 'custom-sitemap', 'Link.Page.Tooltip', () => openPagePicker(this.field));
+    this.regBtn(Buttons.LinkPageButton, 'custom-sitemap', 'Link.Page.Tooltip', () => this.openPagePicker(this.field));
   }
 
-}
+  private openPagePicker(fieldStringWysiwyg: FieldStringWysiwygEditor): void {
+    const connector = fieldStringWysiwyg.connector._experimental;
 
+    connector.openPagePicker(page => {
+      if (!page) { return; }
 
-function openPagePicker(fieldStringWysiwyg: FieldStringWysiwygEditor): void {
-  const connector = fieldStringWysiwyg.connector._experimental;
-
-  connector.openPagePicker(page => {
-    if (!page) { return; }
-
-    connector.getUrlOfId(`page:${page.id}`, (path) => {
-      const previouslySelected = this.editor.selection.getContent();
-      this.editor.insertContent(`<a href="${path}">${(previouslySelected || page.name)}</a>`);
+      connector.getUrlOfId(`page:${page.id}`, (path) => {
+        const previouslySelected = this.editor.selection.getContent();
+        this.editor.insertContent(`<a href="${path}">${(previouslySelected || page.name)}</a>`);
+      });
     });
-  });
+  }
+
 }
