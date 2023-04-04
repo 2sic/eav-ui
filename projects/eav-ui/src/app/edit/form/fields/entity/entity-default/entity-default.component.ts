@@ -80,7 +80,6 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
   ngAfterViewInit(): void {
     super.ngAfterViewInit();
 
-    this.pickerStateAdapter.entitySearchComponent = this.entitySearchComponent;
     this.pickerSourceAdapter.contentType = this.contentTypeMask.resolve();
   }
 
@@ -106,6 +105,7 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
       this.label$,
       this.placeholder$,
       this.required$,
+      () => this.focusOnSearchComponent,
     );
 
     this.pickerSourceAdapter = this.pickerSourceAdapterFactoryService.createPickerSourceAdapter(

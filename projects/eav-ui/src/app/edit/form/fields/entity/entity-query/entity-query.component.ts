@@ -89,7 +89,6 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
   ngAfterViewInit(): void {
     super.ngAfterViewInit();
 
-    this.pickerStateAdapter.entitySearchComponent = this.entitySearchComponent;
     this.pickerSourceAdapter.contentType = this.paramsMask.resolve();
   }
 
@@ -111,6 +110,7 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
       this.label$,
       this.placeholder$,
       this.required$,
+      () => this.focusOnSearchComponent,
     );
 
     this.pickerSourceAdapter = this.pickerSourceAdapterFactoryService.createPickerSourceAdapter(

@@ -14,8 +14,6 @@ import { FieldConfigSet } from '../../builder/fields-builder/field-config-set.mo
 
 export class PickerSourceAdapter {
   constructor(
-    public deleteCallback: (props: DeleteEntityProps) => void,
-
     public settings$: BehaviorSubject<FieldSettings> = new BehaviorSubject(null),
 
     public entityCacheService: EntityCacheService,
@@ -29,6 +27,9 @@ export class PickerSourceAdapter {
 
     public snackBar: MatSnackBar,
     public control: AbstractControl,
+
+    public fetchAvailableEntities: (clearAvailableEntitiesAndOnlyUpdateCache: boolean) => void,
+    private deleteCallback: (props: DeleteEntityProps) => void,
   ) { }
 
   availableEntities$: BehaviorSubject<EntityInfo[]> = new BehaviorSubject<EntityInfo[]>(null);
@@ -45,8 +46,6 @@ export class PickerSourceAdapter {
     this.settings$.complete();
     this.subscriptions.unsubscribe();
   }
-
-  fetchAvailableEntities(clearAvailableEntitiesAndOnlyUpdateCache: boolean) { }
 
   // Note: 2dm 2023-01-24 added entityId as parameter #maybeRemoveGuidOnEditEntity
   // not even sure if the guid would still be needed, as I assume the entityId

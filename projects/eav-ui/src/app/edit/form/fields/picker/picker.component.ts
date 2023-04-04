@@ -63,6 +63,10 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
     );
   }
 
+  focusOnSearchComponent(): void { 
+    this.entitySearchComponent.autocompleteRef?.nativeElement.focus();
+  }
+
   /**
    * WARNING! Overridden in subclass.
    * @param clearAvailableEntitiesAndOnlyUpdateCache - clears availableEntities and fetches only items which are selected

@@ -30,7 +30,6 @@ export class PickerSourceAdapterFactoryService {
     deleteCallback: (props: DeleteEntityProps) => void,
   ): PickerSourceAdapter {
     const pickerSourceAdapter = new PickerSourceAdapter(
-      deleteCallback,
       settings$,
       this.entityCacheService,
       this.entityService,
@@ -41,9 +40,9 @@ export class PickerSourceAdapterFactoryService {
       group,
       this.snackBar,
       control,
+      fetchEntities,
+      deleteCallback,
     );
-    pickerSourceAdapter.fetchAvailableEntities =
-      (clearAvailableEntitiesAndOnlyUpdateCache: boolean) => fetchEntities(clearAvailableEntitiesAndOnlyUpdateCache);
 
     return pickerSourceAdapter;
   }

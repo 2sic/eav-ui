@@ -26,6 +26,7 @@ export class PickerStateAdapterFactoryService {
     label$: Observable<string>,
     placeholder$: Observable<string>,
     required$: Observable<boolean>,
+    focusOnSearchComponent: () => void,
   ): PickerStateAdapter {
     const pickerStateAdapter = new PickerStateAdapter(
       settings$,
@@ -39,6 +40,7 @@ export class PickerStateAdapterFactoryService {
       this.translateService,
       config,
       control,
+      focusOnSearchComponent,
     );
 
     return pickerStateAdapter;

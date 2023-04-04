@@ -8,7 +8,6 @@ import { QueryEntity } from '../entity/entity-query/entity-query.models';
 import { ReorderIndexes } from './picker-list/picker-list.models';
 import { calculateSelectedEntities, convertArrayToString, convertValueToArray } from './picker.helpers';
 import { DeleteEntityProps } from './picker.models';
-import { PickerSearchComponent } from './picker-search/picker-search.component';
 import { FieldConfigSet } from '../../builder/fields-builder/field-config-set.model';
 import { AbstractControl } from '@angular/forms';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
@@ -27,8 +26,9 @@ export class PickerStateAdapter {
     public translate: TranslateService,
 
     public config: FieldConfigSet,
-
     public control: AbstractControl,
+
+    private focusOnSearchComponent: () => void,
   ) { }
 
   disableAddNew$: BehaviorSubject<boolean> = new BehaviorSubject(true);
@@ -38,10 +38,6 @@ export class PickerStateAdapter {
   shouldPickerListBeShown$: Observable<boolean>;
   selectedEntities$: Observable<SelectedEntity[]>;
   allowMultiValue$: Observable<boolean>;
-
-  entitySearchComponent: PickerSearchComponent;
-
-  
 
   init() {
     this.selectedEntities$ = combineLatest([
@@ -107,7 +103,7 @@ export class PickerStateAdapter {
     if (action === 'delete' && !valueArray.length) {
       // move back to component
       setTimeout(() => {
-        this.entitySearchComponent.autocompleteRef?.nativeElement.focus();
+        this.focusOnSearchComponent();
       });
     }
   }
