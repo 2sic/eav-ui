@@ -1,42 +1,48 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { FormGroup } from '@angular/forms';
+import { AbstractControl, FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core/public_api';
 import { EditForm } from 'projects/eav-ui/src/app/shared/models/edit-form.model';
-import { EntityInfo } from 'projects/edit-types';
-import { BehaviorSubject, distinctUntilChanged, map, Subscription } from 'rxjs';
+import { EntityInfo, FieldSettings } from 'projects/edit-types';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { FieldMask } from '../../../shared/helpers';
 import { EavService, EditRoutingService, EntityService } from '../../../shared/services';
 import { EntityCacheService } from '../../../shared/store/ngrx-data';
-import { PickerAdapterBase } from './picker-adapter-base';
 import { convertValueToArray } from './picker.helpers';
 import { DeleteEntityProps } from './picker.models';
+import { FieldConfigSet } from '../../builder/fields-builder/field-config-set.model';
 
-export class PickerSourceAdapter extends PickerAdapterBase {
-  eavService: EavService;
-  entityCacheService: EntityCacheService;
-  entityService: EntityService;
-  editRoutingService: EditRoutingService;
-  translate: TranslateService;
-  contentType: string;
-  snackBar: MatSnackBar;
-  isQuery: boolean;
+export class PickerSourceAdapter {
+  constructor(
+    public deleteCallback: (props: DeleteEntityProps) => void,
 
-  constructor() {
-    super();
-   }
-  private subscriptions = new Subscription();
+    public settings$: BehaviorSubject<FieldSettings> = new BehaviorSubject(null),
+
+    public entityCacheService: EntityCacheService,
+    public entityService: EntityService,
+    public eavService: EavService,
+    public editRoutingService: EditRoutingService,
+    public translate: TranslateService,
+
+    public config: FieldConfigSet,
+    public group: FormGroup,
+
+    public snackBar: MatSnackBar,
+    public control: AbstractControl,
+  ) { }
+
   availableEntities$: BehaviorSubject<EntityInfo[]> = new BehaviorSubject<EntityInfo[]>(null);
 
-  group: FormGroup;
+  contentType: string;
+  
+  private subscriptions = new Subscription();
 
   init() { }
 
   destroy() {
-    super.destroy();
-
+    this.settings$.complete();
     this.availableEntities$.complete();
-
+    this.settings$.complete();
     this.subscriptions.unsubscribe();
   }
 
@@ -84,7 +90,7 @@ export class PickerSourceAdapter extends PickerAdapterBase {
     this.entityService.delete(contentType, id, false, parentId, parentField).subscribe({
       next: () => {
         this.snackBar.open(this.translate.instant('Message.Deleted'), null, { duration: 2000 });
-        this.updateValue('delete', props.index);
+        this.deleteCallback(props);
         this.fetchAvailableEntities(true);
       },
       error: (error1: HttpErrorResponse) => {
@@ -94,7 +100,7 @@ export class PickerSourceAdapter extends PickerAdapterBase {
         this.entityService.delete(contentType, id, true, parentId, parentField).subscribe({
           next: () => {
             this.snackBar.open(this.translate.instant('Message.Deleted'), null, { duration: 2000 });
-            this.updateValue('delete', props.index);
+            this.deleteCallback(props);
             this.fetchAvailableEntities(true);
           },
           error: (error2: HttpErrorResponse) => {

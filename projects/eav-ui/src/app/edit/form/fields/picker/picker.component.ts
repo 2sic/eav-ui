@@ -10,7 +10,6 @@ import { PickerSearchComponent } from './picker-search/picker-search.component';
 import { PickerSourceAdapter } from './picker-source-adapter';
 import { PickerStateAdapter } from './picker-state-adapter';
 import { PickerViewModel } from './picker.models';
-import { PickerAdapterBase } from './picker-adapter-base';
 
 @Component({
   selector: InputTypeConstants.EntityDefault,
@@ -23,8 +22,6 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
 
   pickerSourceAdapter: PickerSourceAdapter;
   pickerStateAdapter: PickerStateAdapter;
-  pickerAdapterBase: PickerAdapterBase;
-
   isStringQuery: boolean;
 
   viewModel$: Observable<PickerViewModel>;

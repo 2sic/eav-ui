@@ -103,7 +103,6 @@ import { PickerExpandableWrapperComponent } from './form/wrappers/picker-expanda
 import { MatDayjsDateAdapter, MatDayjsDateModule, MatDayjsModule, MAT_DAYJS_DATE_ADAPTER_OPTIONS, NgxMatDayjsDatetimeAdapter, NgxMatDayjsDatetimeModule, NgxMatDayjsModule, NGX_MAT_DAYJS_DATETIME_ADAPTER_OPTIONS } from './shared/date-adapters/date-adapter-api';
 import { ChangeAnchorTargetDirective, PasteClipboardImageDirective } from './shared/directives';
 import { AdamService, EavService, EntityService, LoadIconsService, QueryService, ScriptsLoaderService } from './shared/services';
-import { PickerAdapterBaseFactoryService } from './form/fields/picker/picker-adapter-base-factory.service';
 
 @NgModule({
     declarations: [
@@ -226,7 +225,6 @@ import { PickerAdapterBaseFactoryService } from './form/fields/picker/picker-ada
         { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { subscriptSizing: 'dynamic' } },
         { provide: MAT_SELECT_CONFIG, useValue: { hideSingleSelectionIndicator: true } },
         { provide: MAT_SLIDE_TOGGLE_DEFAULT_OPTIONS, useValue: { hideIcon: true } },
-        PickerAdapterBaseFactoryService,
         PickerSourceAdapterFactoryService,
         PickerStateAdapterFactoryService,
     ],

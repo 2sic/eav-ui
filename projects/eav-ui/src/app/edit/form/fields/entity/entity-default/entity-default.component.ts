@@ -10,8 +10,8 @@ import { PickerStateAdapterFactoryService } from '../../picker/picker-state-adap
 import { PickerComponent } from '../../picker/picker.component';
 import { filterGuids } from '../../picker/picker.helpers';
 import { EntityDefaultLogic } from './entity-default-logic';
-import { PickerAdapterBaseFactoryService } from '../../picker/picker-adapter-base-factory.service';
 import { distinctUntilChanged, map } from 'rxjs';
+import { DeleteEntityProps } from '../../picker/picker.models';
 
 @Component({
   selector: InputTypeConstants.EntityDefault,
@@ -30,7 +30,6 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
     editRoutingService: EditRoutingService,
     entityCacheService: EntityCacheService,
     stringQueryCacheService: StringQueryCacheService,
-    private pickerAdapterBaseFactoryService: PickerAdapterBaseFactoryService,
     private pickerSourceAdapterFactoryService: PickerSourceAdapterFactoryService,
     private pickerStateAdapterFactoryService: PickerStateAdapterFactoryService,
   ) {
@@ -81,7 +80,7 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
   ngAfterViewInit(): void {
     super.ngAfterViewInit();
 
-    this.pickerAdapterBase.entitySearchComponent = this.entitySearchComponent;
+    this.pickerStateAdapter.entitySearchComponent = this.entitySearchComponent;
     this.pickerSourceAdapter.contentType = this.contentTypeMask.resolve();
   }
 
@@ -98,27 +97,25 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
   }
 
   private createPickerAdapters(): void {
-    this.pickerAdapterBase = this.pickerAdapterBaseFactoryService.createPickerAdapterBase(
+    this.pickerStateAdapter = this.pickerStateAdapterFactoryService.createPickerStateAdapter(
       this.control,
       this.config,
       this.settings$,
-    );
-
-    this.pickerSourceAdapter = this.pickerSourceAdapterFactoryService.createPickerSourceAdapter(
-      this.pickerAdapterBase,
-      this.editRoutingService,
-      this.group,
-      false,
-      (clearAvailableEntitiesAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableEntitiesAndOnlyUpdateCache)
-    );
-
-    this.pickerStateAdapter = this.pickerStateAdapterFactoryService.createPickerStateAdapter(
-      this.pickerAdapterBase,
       this.editRoutingService,
       this.controlStatus$,
       this.label$,
       this.placeholder$,
       this.required$,
+    );
+
+    this.pickerSourceAdapter = this.pickerSourceAdapterFactoryService.createPickerSourceAdapter(
+      this.pickerStateAdapter.control,
+      this.pickerStateAdapter.config,
+      this.pickerStateAdapter.settings$,
+      this.editRoutingService,
+      this.group,
+      (clearAvailableEntitiesAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableEntitiesAndOnlyUpdateCache),
+      (props: DeleteEntityProps) => this.pickerStateAdapter.doAfterDelete(props)
     );
 
     this.pickerSourceAdapterFactoryService.init(this.pickerSourceAdapter);

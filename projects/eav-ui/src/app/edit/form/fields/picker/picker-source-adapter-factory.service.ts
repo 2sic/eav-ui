@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { AbstractControl, FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { EavService, EditRoutingService, EntityService } from '../../../shared/services';
 import { EntityCacheService } from '../../../shared/store/ngrx-data';
 import { PickerSourceAdapter } from './picker-source-adapter';
-import { PickerAdapterBase } from './picker-adapter-base';
-import { ReorderIndexes } from './picker-list/picker-list.models';
+import { DeleteEntityProps } from './picker.models';
+import { BehaviorSubject } from 'rxjs';
+import { FieldSettings } from 'projects/edit-types';
+import { FieldConfigSet } from '../../builder/fields-builder/field-config-set.model';
 
 @Injectable()
 export class PickerSourceAdapterFactoryService {
@@ -19,27 +21,27 @@ export class PickerSourceAdapterFactoryService {
   ) { }
 
   createPickerSourceAdapter(
-    pickerAdapterBase: PickerAdapterBase,
+    control: AbstractControl,
+    config: FieldConfigSet,
+    settings$: BehaviorSubject<FieldSettings>,
     editRoutingService: EditRoutingService,
     group: FormGroup,
-    isQuery: boolean,
     fetchEntities: (clearAvailableEntitiesAndOnlyUpdateCache: boolean) => void,
+    deleteCallback: (props: DeleteEntityProps) => void,
   ): PickerSourceAdapter {
-    const pickerSourceAdapter = new PickerSourceAdapter();
-    pickerSourceAdapter.settings$ = pickerAdapterBase.settings$;
-    pickerSourceAdapter.disableAddNew$ = pickerAdapterBase.disableAddNew$;
-    pickerSourceAdapter.config = pickerAdapterBase.config;
-    pickerSourceAdapter.control = pickerAdapterBase.control;
-    pickerSourceAdapter.updateValue =
-      (action: 'add' | 'delete' | 'reorder', value: string | number | ReorderIndexes) => pickerAdapterBase.updateValue(action, value);
-    pickerSourceAdapter.eavService = this.eavService;
-    pickerSourceAdapter.entityCacheService = this.entityCacheService;
-    pickerSourceAdapter.entityService = this.entityService;
-    pickerSourceAdapter.editRoutingService = editRoutingService;
-    pickerSourceAdapter.translate = this.translate;
-    pickerSourceAdapter.snackBar = this.snackBar;
-    pickerSourceAdapter.group = group;
-    pickerSourceAdapter.isQuery = isQuery;
+    const pickerSourceAdapter = new PickerSourceAdapter(
+      deleteCallback,
+      settings$,
+      this.entityCacheService,
+      this.entityService,
+      this.eavService,
+      editRoutingService,
+      this.translate,
+      config,
+      group,
+      this.snackBar,
+      control,
+    );
     pickerSourceAdapter.fetchAvailableEntities =
       (clearAvailableEntitiesAndOnlyUpdateCache: boolean) => fetchEntities(clearAvailableEntitiesAndOnlyUpdateCache);
 
