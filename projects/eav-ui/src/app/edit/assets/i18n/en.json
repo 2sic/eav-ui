@@ -200,7 +200,8 @@
         "SponsorLine": "is sponsored with ♡ by"
       },
       "PagePicker": {
-        "Title": "Select a web page"
+        "Title": "Select a web page",
+        "HiddenOrSystemPageWarning": "This page is hidden or a system page. Are you sure you want to link to it?"
       }
     },
     "DateTime": {

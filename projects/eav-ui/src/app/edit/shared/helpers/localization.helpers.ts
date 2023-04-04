@@ -46,22 +46,22 @@ export class LocalizationHelpers {
         || (languageKey === defaultLanguage && d.Value === '*'))).length > 0 : false;
   }
 
-  /** Language is editable if langageKey exist or on default language * exist */
+  /** Language is editable if languageKey exist or on default language * exist */
   static isEditableTranslationExist(allAttributesValues: EavValues<any>, languageKey: string, defaultLanguage: string): boolean {
     return allAttributesValues ? allAttributesValues.Values.filter(eavValue =>
       eavValue.Dimensions.find(d => (d.Value === languageKey)
         || (languageKey === defaultLanguage && d.Value === '*'))).length > 0 : false;
   }
 
-  // Number of editable translationable fields that
+  // Number of editable translatable fields that
   static noEditableTranslationFields(allAttributesValues: EavValues<any>, languageKey: string, defaultLanguage: string): number {
     return allAttributesValues ? allAttributesValues.Values.filter(eavValue =>
       eavValue.Dimensions.find(d => (d.Value === languageKey)
         || (languageKey === defaultLanguage && d.Value === '*'))).length : 0;
   }
 
-  // Number of editable translationable fields that have some content
-  static noEditableTranslationableFieldsWithContent(allAttributesValues: EavValues<any>, languageKey: string, defaultLanguage: string): number {
+  // Number of editable translatable fields that have some content
+  static noEditableTranslatableFieldsWithContent(allAttributesValues: EavValues<any>, languageKey: string, defaultLanguage: string): number {
     return allAttributesValues ? allAttributesValues.Values.filter(eavValue =>
       eavValue.Dimensions.find(d => (d.Value === languageKey)
         || (languageKey === defaultLanguage && d.Value === '*')))

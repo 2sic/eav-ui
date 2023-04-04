@@ -29,9 +29,15 @@
         <div class="page-row">
           <div class="no-toggle"></div>
           <div class="page-label" [ngClass]="page.id === selected ? 'selected' : ''" (click)="select(page)">
-            <mat-icon class="page-icon" svgIcon="file"></mat-icon>
-            <span class="page-path" *ngIf="page.path">{{ page.path }}&nbsp;>&nbsp;</span>
-            <span>{{ page.name }}</span>
+            <div class="page-icon-and-text">
+              <mat-icon class="page-icon" svgIcon="file"></mat-icon>
+              <span class="page-path" [tippy]="page.path" *ngIf="page.path">{{ page.path }}&nbsp;>&nbsp;</span>
+              <span class="page-name" [tippy]="page.name">{{ page.name }}</span>
+            </div>
+            <div class="page-icons">
+              <mat-icon class="page-visible-clickable-icon" *ngIf="!page.isVisible">visibility_off</mat-icon>
+              <mat-icon class="page-visible-clickable-icon" *ngIf="!page.isClickable">cancel</mat-icon>
+            </div>
           </div>
         </div>
       </li>
@@ -46,10 +52,14 @@
           {{ toggled.includes(page.id) ? 'keyboard_arrow_down' : 'keyboard_arrow_right' }}
         </mat-icon>
         <div class="page-label" [ngClass]="page.id === selected ? 'selected' : ''" (click)="select(page)">
-          <mat-icon class="page-icon" svgIcon="file"></mat-icon>
-          <span>{{ page.name }}</span>
-          <mat-icon class="page-visible-clickable-icon" *ngIf="!page.isVisible" >visibility_off</mat-icon>
-          <mat-icon class="page-visible-clickable-icon" *ngIf="!page.isClickable" >cancel</mat-icon>
+          <div class="page-icon-and-text">
+            <mat-icon class="page-icon" svgIcon="file"></mat-icon>
+            <span>{{ page.name }}</span>
+          </div>
+          <div class="page-icons">
+            <mat-icon class="page-visible-clickable-icon" *ngIf="!page.isVisible">visibility_off</mat-icon>
+            <mat-icon class="page-visible-clickable-icon" *ngIf="!page.isClickable">cancel</mat-icon>
+          </div>
         </div>
       </div>
 

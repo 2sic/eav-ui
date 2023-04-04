@@ -11,7 +11,7 @@ $icon-size: 20px;
 }
 
 .page-tree-box {
-  height: 300px;
+  height: 82%;
   max-width: 100%;
   overflow: auto;
 
@@ -64,13 +64,39 @@ $icon-size: 20px;
   cursor: pointer;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
   padding: 4px;
   padding-left: 2px;
   border-radius: 4px;
+  width: 100%;
+
+  .page-icon-and-text {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+  }
+
+  .page-icons {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
 
   .page-path {
     color: map_get($mat-eav-item-dialog-background, 200);
+    text-overflow: ellipsis;
+    max-width: 270px;
+    white-space: nowrap;
+    overflow: hidden;
+    padding-right: 0.5em;
+  }
+
+  .page-name {
+    text-overflow: ellipsis;
+    max-width: 225px;
+    white-space: nowrap;
+    overflow: hidden;
   }
 
   &:hover {
