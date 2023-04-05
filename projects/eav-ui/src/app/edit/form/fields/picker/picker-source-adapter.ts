@@ -28,23 +28,27 @@ export class PickerSourceAdapter {
     public snackBar: MatSnackBar,
     public control: AbstractControl,
 
-    public fetchAvailableEntities: (clearAvailableEntitiesAndOnlyUpdateCache: boolean) => void,
-    private deleteCallback: (props: DeleteEntityProps) => void,
+    // public fetchAvailableEntities: (clearAvailableEntitiesAndOnlyUpdateCache: boolean) => void,
+    public deleteCallback: (props: DeleteEntityProps) => void,
   ) { }
 
   availableEntities$: BehaviorSubject<EntityInfo[]> = new BehaviorSubject<EntityInfo[]>(null);
 
   contentType: string;
-  
-  private subscriptions = new Subscription();
+
+  protected subscription = new Subscription();
 
   init() { }
+
+  onAfterViewInit(): void {
+    this.fixPrefillAndStringQueryCache();
+  }
 
   destroy() {
     this.settings$.complete();
     this.availableEntities$.complete();
     this.settings$.complete();
-    this.subscriptions.unsubscribe();
+    this.subscription.unsubscribe();
   }
 
   // Note: 2dm 2023-01-24 added entityId as parameter #maybeRemoveGuidOnEditEntity
@@ -90,7 +94,7 @@ export class PickerSourceAdapter {
       next: () => {
         this.snackBar.open(this.translate.instant('Message.Deleted'), null, { duration: 2000 });
         this.deleteCallback(props);
-        this.fetchAvailableEntities(true);
+        this.fetchEntities(true);
       },
       error: (error1: HttpErrorResponse) => {
         this.snackBar.dismiss();
@@ -100,7 +104,7 @@ export class PickerSourceAdapter {
           next: () => {
             this.snackBar.open(this.translate.instant('Message.Deleted'), null, { duration: 2000 });
             this.deleteCallback(props);
-            this.fetchAvailableEntities(true);
+            this.fetchEntities(true);
           },
           error: (error2: HttpErrorResponse) => {
             this.snackBar.open(this.translate.instant('Message.DeleteError'), null, { duration: 2000 });
@@ -123,7 +127,7 @@ export class PickerSourceAdapter {
 
     const cached = this.entityCacheService.getEntities(guids);
     if (guids.length !== cached.length) {
-      this.fetchAvailableEntities(true);
+      this.fetchEntities(true);
     }
   }
 
@@ -155,4 +159,6 @@ export class PickerSourceAdapter {
       return null;
     }
   }
+
+  fetchEntities(clearAvailableEntitiesAndOnlyUpdateCache: boolean): void { }
 }

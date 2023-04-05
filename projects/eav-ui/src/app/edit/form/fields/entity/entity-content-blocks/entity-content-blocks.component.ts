@@ -50,13 +50,9 @@ export class EntityContentBlockComponent extends PickerComponent implements OnIn
 
   ngAfterViewInit(): void {
     super.ngAfterViewInit();
-
-    this.pickerSourceAdapter.contentType = null;
   }
 
   ngOnDestroy(): void {
-    this.pickerSourceAdapter.destroy();
-    this.pickerStateAdapter.destroy();
     super.ngOnDestroy();
   }
 
@@ -79,11 +75,11 @@ export class EntityContentBlockComponent extends PickerComponent implements OnIn
       this.pickerStateAdapter.settings$,
       this.editRoutingService,
       this.group,
-      (clearAvailableEntitiesAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableEntitiesAndOnlyUpdateCache),
+      // (clearAvailableEntitiesAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableEntitiesAndOnlyUpdateCache),
       (props: DeleteEntityProps) => this.pickerStateAdapter.doAfterDelete(props)
     );
 
-    this.pickerSourceAdapterFactoryService.init(this.pickerSourceAdapter);
     this.pickerStateAdapterFactoryService.init(this.pickerStateAdapter);
+    this.pickerSourceAdapterFactoryService.init(this.pickerSourceAdapter);
   }
 }

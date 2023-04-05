@@ -29,7 +29,6 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
     editRoutingService: EditRoutingService,
     entityCacheService: EntityCacheService,
     stringQueryCacheService: StringQueryCacheService,
-    queryService: QueryService,
     pickerSourceAdapterFactoryService: PickerSourceAdapterFactoryService,
     pickerStateAdapterFactoryService: PickerStateAdapterFactoryService,
   ) {
@@ -41,7 +40,6 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
       editRoutingService,
       entityCacheService,
       stringQueryCacheService,
-      queryService,
       pickerSourceAdapterFactoryService,
       pickerStateAdapterFactoryService
     );
@@ -51,22 +49,6 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
 
   ngOnInit(): void {
     super.ngOnInit();
-
-    this.createPickerAdapters();
-
-    this.subscription.add(
-      this.settings$.pipe(
-        map(settings => ({
-          Value: settings.Value,
-          Label: settings.Label,
-        })),
-        distinctUntilChanged(GeneralHelpers.objectsEqual),
-      ).subscribe(() => {
-        this.pickerSourceAdapter.availableEntities$.next(null);
-      })
-    );
-
-    this.createTemplateVariables();
   }
 
   ngAfterViewInit(): void {
@@ -75,19 +57,6 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
 
 
   ngOnDestroy(): void {
-    this.pickerSourceAdapter.destroy();
-    this.pickerStateAdapter.destroy();
     super.ngOnDestroy();
-  }
-
-  /** WARNING! Overrides function in superclass */
-  queryEntityMapping(entity: QueryEntity): EntityInfo {
-    const settings = this.settings$.value;
-    const entityInfo: EntityInfo = {
-      Id: entity.Id,
-      Value: entity[settings.Value] ? `${entity[settings.Value]}` : entity[settings.Value],
-      Text: entity[settings.Label] ? `${entity[settings.Label]}` : entity[settings.Label],
-    };
-    return entityInfo;
   }
 }

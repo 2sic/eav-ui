@@ -108,7 +108,7 @@ export class PickerSearchComponent implements OnInit, OnChanges, OnDestroy {
 
   fetchEntities(availableEntities: EntityInfo[]): void {
     if (availableEntities != null) { return; }
-    this.pickerSourceAdapter.fetchAvailableEntities(false);
+    this.pickerSourceAdapter.fetchEntities(false);
   }
 
   getPlaceholder(availableEntities: EntityInfo[], error: string): string {

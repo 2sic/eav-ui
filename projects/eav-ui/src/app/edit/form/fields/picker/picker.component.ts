@@ -45,10 +45,13 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
   }
 
   ngAfterViewInit(): void {
-    this.pickerSourceAdapter.fixPrefillAndStringQueryCache();
+    this.pickerSourceAdapter.onAfterViewInit();
   }
 
   ngOnDestroy(): void {
+    this.pickerSourceAdapter.destroy();
+    this.pickerStateAdapter.destroy();
+
     super.ngOnDestroy();
   }
 
