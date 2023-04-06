@@ -80,32 +80,7 @@ export class PickerQuerySourceAdapter extends PickerSourceAdapter {
       })
     );
 
-    if (!this.isStringQuery) {
-      this.subscription.add(
-        this.settings$.pipe(
-          map(settings => ({
-            Query: settings.Query,
-            StreamName: settings.StreamName,
-          })),
-          distinctUntilChanged(GeneralHelpers.objectsEqual),
-        ).subscribe(() => {
-          this.availableEntities$.next(null);
-        })
-      );
-    } else {
-      // to method "flushAvailableEntities..."
-      this.subscription.add(
-        this.settings$.pipe(
-          map(settings => ({
-            Value: settings.Value,
-            Label: settings.Label,
-          })),
-          distinctUntilChanged(GeneralHelpers.objectsEqual),
-        ).subscribe(() => {
-          this.availableEntities$.next(null);
-        })
-      );
-    }
+    this.flushAvailableEntities();
   }
 
   onAfterViewInit(): void {
@@ -200,4 +175,31 @@ export class PickerQuerySourceAdapter extends PickerSourceAdapter {
     return entityInfo;
   }
 
+  flushAvailableEntities(): void { 
+    if (!this.isStringQuery) {
+      this.subscription.add(
+        this.settings$.pipe(
+          map(settings => ({
+            Query: settings.Query,
+            StreamName: settings.StreamName,
+          })),
+          distinctUntilChanged(GeneralHelpers.objectsEqual),
+        ).subscribe(() => {
+          this.availableEntities$.next(null);
+        })
+      );
+    } else {
+      this.subscription.add(
+        this.settings$.pipe(
+          map(settings => ({
+            Value: settings.Value,
+            Label: settings.Label,
+          })),
+          distinctUntilChanged(GeneralHelpers.objectsEqual),
+        ).subscribe(() => {
+          this.availableEntities$.next(null);
+        })
+      );
+    }
+  }
 }
