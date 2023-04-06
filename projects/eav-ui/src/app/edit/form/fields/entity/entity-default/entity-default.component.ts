@@ -10,6 +10,7 @@ import { PickerComponent } from '../../picker/picker.component';
 import { EntityDefaultLogic } from './entity-default-logic';
 import { DeleteEntityProps } from '../../picker/picker.models';
 import { PickerEntitySourceAdapter } from '../../picker/picker-entity-source-adapter';
+import { PickerEntityStateAdapter } from '../../picker/picker-entity-state-adapter';
 
 @Component({
   selector: InputTypeConstants.EntityDefault,
@@ -58,7 +59,7 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
   }
 
   private createPickerAdapters(): void {
-    this.pickerStateAdapter = this.pickerStateAdapterFactoryService.createPickerStateAdapter(
+    this.pickerStateAdapter = this.pickerStateAdapterFactoryService.createPickerEntityStateAdapter(
       this.control,
       this.config,
       this.settings$,
@@ -83,7 +84,7 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
       (props: DeleteEntityProps) => this.pickerStateAdapter.doAfterDelete(props)
     );
 
-    this.pickerStateAdapterFactoryService.init(this.pickerStateAdapter);
+    this.pickerStateAdapterFactoryService.initEntity(this.pickerStateAdapter as PickerEntityStateAdapter);
     this.pickerSourceAdapterFactoryService.initEntity(this.pickerSourceAdapter as PickerEntitySourceAdapter);
   }
 }

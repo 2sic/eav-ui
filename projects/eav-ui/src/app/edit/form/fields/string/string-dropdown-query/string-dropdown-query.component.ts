@@ -12,6 +12,9 @@ import { QueryEntity } from '../../entity/entity-query/entity-query.models';
 import { PickerSourceAdapterFactoryService } from '../../picker/picker-source-adapter-factory.service';
 import { PickerStateAdapterFactoryService } from '../../picker/picker-state-adapter-factory.service';
 import { StringDropdownQueryLogic } from './string-dropdown-query-logic';
+import { DeleteEntityProps } from '../../picker/picker.models';
+import { PickerStringStateAdapter } from '../../picker/picker-string-state-adapter';
+import { PickerQuerySourceAdapter } from '../../picker/picker-query-source-adapter';
 
 @Component({
   selector: InputTypeConstants.StringDropdownQuery,
@@ -49,6 +52,11 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
 
   ngOnInit(): void {
     super.ngOnInit();
+    if (this.isStringQuery) {
+      this.createPickerAdapters();
+      this.createTemplateVariables();
+    }
+
   }
 
   ngAfterViewInit(): void {
@@ -58,5 +66,36 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
 
   ngOnDestroy(): void {
     super.ngOnDestroy();
+  }
+
+  protected createPickerAdapters(): void {
+    this.pickerStateAdapter = this.pickerStateAdapterFactoryService.createPickerStringStateAdapter(
+      this.control,
+      this.config,
+      this.settings$,
+      this.editRoutingService,
+      this.controlStatus$,
+      this.label$,
+      this.placeholder$,
+      this.required$,
+      () => this.focusOnSearchComponent,
+    );
+
+    this.pickerSourceAdapter = this.pickerSourceAdapterFactoryService.createPickerQuerySourceAdapter(
+      this.pickerStateAdapter.error$,
+      this.fieldsSettingsService,
+      this.isStringQuery,
+
+      this.pickerStateAdapter.control,
+      this.pickerStateAdapter.config,
+      this.pickerStateAdapter.settings$,
+      this.editRoutingService,
+      this.group,
+      // (clearAvailableEntitiesAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableEntitiesAndOnlyUpdateCache),
+      (props: DeleteEntityProps) => this.pickerStateAdapter.doAfterDelete(props)
+    );
+
+    this.pickerStateAdapterFactoryService.initString(this.pickerStateAdapter as PickerStringStateAdapter);
+    this.pickerSourceAdapterFactoryService.initQuery(this.pickerSourceAdapter as PickerQuerySourceAdapter);
   }
 }

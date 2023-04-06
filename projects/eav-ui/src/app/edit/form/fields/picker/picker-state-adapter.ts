@@ -76,9 +76,10 @@ export class PickerStateAdapter {
   }
 
   updateValue(action: 'add' | 'delete' | 'reorder', value: string | number | ReorderIndexes): void {
-    const valueArray: string[] = (typeof this.control.value === 'string')
-      ? convertValueToArray(this.control.value, this.settings$.value.Separator)
-      : [...this.control.value];
+    const valueArray: string[] = this.createValueArray();
+      // (typeof this.control.value === 'string')
+      // ? convertValueToArray(this.control.value, this.settings$.value.Separator)
+      // : [...this.control.value];
 
     switch (action) {
       case 'add':
@@ -95,9 +96,10 @@ export class PickerStateAdapter {
         break;
     }
 
-    const newValue = typeof this.control.value === 'string'
-      ? convertArrayToString(valueArray, this.settings$.value.Separator)
-      : valueArray;
+    const newValue = this.createNewValue(valueArray);
+      // typeof this.control.value === 'string'
+      // ? convertArrayToString(valueArray, this.settings$.value.Separator)
+      // : valueArray;
     GeneralHelpers.patchControlValue(this.control, newValue);
 
     if (action === 'delete' && !valueArray.length) {
@@ -106,6 +108,19 @@ export class PickerStateAdapter {
         this.focusOnSearchComponent();
       });
     }
+  }
+
+  protected createValueArray(): string[] {
+    if (typeof this.control.value === 'string') {
+      return convertValueToArray(this.control.value, this.settings$.value.Separator);
+    }
+    return [...this.control.value];
+  }
+
+  protected createNewValue(valueArray: string[]): string | string[] { 
+    return typeof this.control.value === 'string'
+      ? convertArrayToString(valueArray, this.settings$.value.Separator)
+      : valueArray;
   }
 
   doAfterDelete(props: DeleteEntityProps) {

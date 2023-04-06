@@ -10,6 +10,7 @@ import { PickerComponent } from '../../picker/picker.component';
 import { EntityQueryLogic } from './entity-query-logic';
 import { DeleteEntityProps } from '../../picker/picker.models';
 import { PickerQuerySourceAdapter } from '../../picker/picker-query-source-adapter';
+import { PickerEntityStateAdapter } from '../../picker/picker-entity-state-adapter';
 
 @Component({
   selector: InputTypeConstants.EntityQuery,
@@ -45,10 +46,10 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
 
   ngOnInit(): void {
     super.ngOnInit();
-    
-    this.createPickerAdapters();
-
-    this.createTemplateVariables();
+    if (!this.isStringQuery) {
+      this.createPickerAdapters();
+      this.createTemplateVariables();
+    }
   }
 
   ngAfterViewInit(): void {
@@ -61,7 +62,7 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
   }
 
   protected createPickerAdapters(): void {
-    this.pickerStateAdapter = this.pickerStateAdapterFactoryService.createPickerStateAdapter(
+    this.pickerStateAdapter = this.pickerStateAdapterFactoryService.createPickerEntityStateAdapter(
       this.control,
       this.config,
       this.settings$,
@@ -87,7 +88,7 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
       (props: DeleteEntityProps) => this.pickerStateAdapter.doAfterDelete(props)
     );
 
-    this.pickerStateAdapterFactoryService.init(this.pickerStateAdapter);
+    this.pickerStateAdapterFactoryService.initEntity(this.pickerStateAdapter as PickerEntityStateAdapter);
     this.pickerSourceAdapterFactoryService.initQuery(this.pickerSourceAdapter as PickerQuerySourceAdapter);
   }
 }
