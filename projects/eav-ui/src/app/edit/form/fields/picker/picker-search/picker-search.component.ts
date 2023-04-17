@@ -114,15 +114,6 @@ export class PickerSearchComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    // this.selectedEntity = this.selectedEntities.length > 0 ? this.selectedEntities[0] : null;
-    // if (this.autocompleteRef)
-    //   if (this.selectedEntity && !this.fieldsSettingsService.getFieldSettings(this.pickerStateAdapter.config.fieldName).AllowMultiValue) {
-    //     this.autocompleteRef.nativeElement.value = this.selectedEntity.label;
-    //     // this.autocompleteRef.nativeElement.blur();
-    //   } else {
-    //     this.autocompleteRef.nativeElement.value = '';
-    //     // this.autocompleteRef.nativeElement.blur();
-    //   }
     if (changes.availableEntities != null) {
       this.filterSelectionList(this.availableEntities);
     }
@@ -140,6 +131,7 @@ export class PickerSearchComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   fetchEntities(availableEntities: EntityInfo[]): void {
+    console.log('SDV7');
     this.autocompleteRef.nativeElement.value = '';
     if (availableEntities != null) { return; }
     this.pickerSourceAdapter.fetchEntities(false);
@@ -183,7 +175,10 @@ export class PickerSearchComponent implements OnInit, OnChanges, OnDestroy {
     if (!allowMultiValue && this.selectedEntity) this.removeItem(0);
     const selected: string = event.option.value;
     this.pickerStateAdapter.addSelected(selected);
-    this.autocompleteRef.nativeElement.blur();
+    // TODO: @SDV - This is needed so after choosing option element is not focused (it gets focused by default so if blur is outside of setTimeout it will happen before refocus)
+    setTimeout(() => {
+      this.autocompleteRef.nativeElement.blur();
+     });
   }
 
   insertNull(): void {
