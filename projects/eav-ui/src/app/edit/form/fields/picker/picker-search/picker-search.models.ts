@@ -9,6 +9,9 @@ export interface EntitySearchViewModel {
   entityType: string;
   enableAddExisting: boolean;
   enableTextEntry: boolean;
+  enableEdit: boolean;
+  enableDelete: boolean;
+  enableRemove: boolean;
   selectedEntities: SelectedEntity[];
   availableEntities: EntityInfo[];
   error: string;

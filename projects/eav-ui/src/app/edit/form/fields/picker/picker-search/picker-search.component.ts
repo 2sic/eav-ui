@@ -23,6 +23,9 @@ export class PickerSearchComponent implements OnInit, OnChanges, OnDestroy {
   @Input() pickerSourceAdapter: PickerSourceAdapter;
   @Input() pickerStateAdapter: PickerStateAdapter;
 
+  selectedEntity: SelectedEntity | null = null;
+  selectedEntities: SelectedEntity[] = [];
+
   private subscriptions: Subscription = new Subscription();
   filteredEntities: EntityInfo[] = [];
   viewModel$: Observable<EntitySearchViewModel>;
@@ -49,7 +52,19 @@ export class PickerSearchComponent implements OnInit, OnChanges, OnDestroy {
     const placeholder$ = this.pickerStateAdapter.placeholder$;
     const required$ = this.pickerStateAdapter.required$;
 
-    this.subscriptions.add(availableEntities$.subscribe(entities => this.availableEntities = entities));
+    this.subscriptions.add(availableEntities$.subscribe(entities => {
+      this.availableEntities = entities;
+    }));
+    this.subscriptions.add(selectedEntities$.subscribe(entities => {
+      this.selectedEntities = entities;
+      this.selectedEntity = this.selectedEntities.length > 0 ? this.selectedEntities[0] : null;
+      if (this.autocompleteRef)
+        if (this.selectedEntity && !this.fieldsSettingsService.getFieldSettings(this.pickerStateAdapter.config.fieldName).AllowMultiValue) {
+          this.autocompleteRef.nativeElement.value = this.selectedEntity.label;
+        } else {
+          this.autocompleteRef.nativeElement.value = '';
+        }
+    }));
 
     const debugEnabled$ = this.globalConfigService.getDebugEnabled$();
     const settings$ = this.fieldsSettingsService.getFieldSettings$(this.pickerStateAdapter.config.fieldName).pipe(
@@ -59,6 +74,9 @@ export class PickerSearchComponent implements OnInit, OnChanges, OnDestroy {
         EntityType: settings.EntityType,
         EnableAddExisting: settings.EnableAddExisting,
         EnableTextEntry: settings.EnableTextEntry,
+        EnableEdit: settings.EnableEdit,
+        EnableDelete: settings.EnableDelete,
+        EnableRemove: settings.EnableRemove,
       })),
       distinctUntilChanged(GeneralHelpers.objectsEqual),
     );
@@ -77,6 +95,9 @@ export class PickerSearchComponent implements OnInit, OnChanges, OnDestroy {
           entityType: settings.EntityType,
           enableAddExisting: settings.EnableAddExisting,
           enableTextEntry: settings.EnableTextEntry,
+          enableEdit: settings.EnableEdit,
+          enableDelete: settings.EnableDelete,
+          enableRemove: settings.EnableRemove,
           selectedEntities,
           availableEntities,
           error,
@@ -85,7 +106,7 @@ export class PickerSearchComponent implements OnInit, OnChanges, OnDestroy {
           disableAddNew,
           label,
           placeholder,
-          required
+          required,
         };
         return viewModel;
       }),
@@ -93,6 +114,15 @@ export class PickerSearchComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    // this.selectedEntity = this.selectedEntities.length > 0 ? this.selectedEntities[0] : null;
+    // if (this.autocompleteRef)
+    //   if (this.selectedEntity && !this.fieldsSettingsService.getFieldSettings(this.pickerStateAdapter.config.fieldName).AllowMultiValue) {
+    //     this.autocompleteRef.nativeElement.value = this.selectedEntity.label;
+    //     // this.autocompleteRef.nativeElement.blur();
+    //   } else {
+    //     this.autocompleteRef.nativeElement.value = '';
+    //     // this.autocompleteRef.nativeElement.blur();
+    //   }
     if (changes.availableEntities != null) {
       this.filterSelectionList(this.availableEntities);
     }
@@ -103,10 +133,14 @@ export class PickerSearchComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   markAsTouched(): void {
+    if (this.selectedEntity) {
+      this.autocompleteRef.nativeElement.value = this.selectedEntity.label;
+    }
     GeneralHelpers.markControlTouched(this.control);
   }
 
   fetchEntities(availableEntities: EntityInfo[]): void {
+    this.autocompleteRef.nativeElement.value = '';
     if (availableEntities != null) { return; }
     this.pickerSourceAdapter.fetchEntities(false);
   }
@@ -145,10 +179,10 @@ export class PickerSearchComponent implements OnInit, OnChanges, OnDestroy {
     );
   }
 
-  optionSelected(event: MatAutocompleteSelectedEvent): void {
+  optionSelected(event: MatAutocompleteSelectedEvent, allowMultiValue: boolean): void {
+    if (!allowMultiValue && this.selectedEntity) this.removeItem(0);
     const selected: string = event.option.value;
     this.pickerStateAdapter.addSelected(selected);
-    this.autocompleteRef.nativeElement.value = '';
     this.autocompleteRef.nativeElement.blur();
   }
 
@@ -163,5 +197,17 @@ export class PickerSearchComponent implements OnInit, OnChanges, OnDestroy {
 
   openNewEntityDialog(): void {
     this.pickerSourceAdapter.editEntity(null);
+  }
+
+  edit(entityGuid: string, entityId: number): void {
+    this.pickerSourceAdapter.editEntity({ entityGuid, entityId });
+  }
+
+  removeItem(index: number): void {
+    this.pickerStateAdapter.removeSelected(index);
+  }
+
+  deleteItem(index: number, entityGuid: string): void {
+    this.pickerSourceAdapter.deleteEntity({ index, entityGuid });
   }
 }

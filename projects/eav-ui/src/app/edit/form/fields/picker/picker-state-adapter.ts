@@ -63,7 +63,7 @@ export class PickerStateAdapter {
     ]).pipe(map(([
       freeTextMode, isExpanded, allowMultiValue, selectedEntities
     ]) => {
-      return !freeTextMode && selectedEntities.length > 0 && (!allowMultiValue || (allowMultiValue && isExpanded));
+      return !freeTextMode && ((selectedEntities.length > 0 && allowMultiValue) || (selectedEntities.length > 1 && !allowMultiValue)) && (!allowMultiValue || (allowMultiValue && isExpanded));
     }));
   }
 
