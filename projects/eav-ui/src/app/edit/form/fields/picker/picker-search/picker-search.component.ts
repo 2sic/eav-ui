@@ -131,7 +131,6 @@ export class PickerSearchComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   fetchEntities(availableEntities: EntityInfo[]): void {
-    console.log('SDV7');
     this.autocompleteRef.nativeElement.value = '';
     if (availableEntities != null) { return; }
     this.pickerSourceAdapter.fetchEntities(false);
