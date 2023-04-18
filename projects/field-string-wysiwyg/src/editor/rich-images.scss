@@ -1,3 +1,4 @@
+@use "sass:math";
 @import './rich-variables.scss';
 
 $img-background: repeating-linear-gradient(135deg, $spacer-pattern-lines 0, $spacer-pattern-lines 1px, $spacer-pattern-background 0, $spacer-pattern-background 7px);
@@ -14,25 +15,25 @@ $img-background: repeating-linear-gradient(135deg, $spacer-pattern-lines 0, $spa
 // 1. take 100% and remove 2 gutters
 // 2. divide by 3 - that's the width of an image without gutter
 // 3. add half a gutter to the width of the image
-// width: calc((100% - ($gutter * 2)) / 3 + $gutter/2);
+// width: calc((100% - ($gutter * 2)) / 3 + math.div($gutter, 2));
 
-$width33-wg: calc(33.33% + ($gutter / 3));
-$width33-last: calc(33.33% - ($gutter / 3 * 2));
+$width33-wg: calc(33.33% + math.div($gutter, 3));
+$width33-last: calc(33.33% - (math.div($gutter, 3) * 2));
 
 $width66-wg: calc(66.66% + ($gutter * 2 / 3));
-$width66-last: calc(66.66% - $gutter / 3);
+$width66-last: calc(66.66% - math.div($gutter, 3));
 
 
-$width25-wg: calc(25% + ($gutter / 4));
+$width25-wg: calc(25% + math.div($gutter, 4));
 $width25-last: calc(25% - $gutter * 3 / 4);
 
-$width50-wg: calc(50% + $gutter/2);
-$width50-last: calc(50% - $gutter/2);
+$width50-wg: calc(50% + math.div($gutter, 2));
+$width50-last: calc(50% - math.div($gutter, 2));
 
 $width75-wg: calc(75% + ($gutter * 3 / 4));
-$width75-last: calc(75% - ($gutter / 4));
+$width75-last: calc(75% - math.div($gutter, 4));
 
-$half-gutter: $gutter/2;
+$half-gutter: math.div($gutter, 2);
 
 $main-tag: 'img';
 $sub-tag: '';
