@@ -3,8 +3,8 @@
 // Include the common styles for Angular Material. Be sure that you only ever include this mixin once!
 @include mat.core();
 @import '~@material/layout-grid/mdc-layout-grid';
-@import '@ag-grid-community/core/dist/styles/ag-grid.css';
-@import '@ag-grid-community/core/dist/styles/ag-theme-material.css';
+@import '@ag-grid-community/styles/ag-grid.css';
+@import '@ag-grid-community/styles/ag-theme-material.css';
 
 @import './styles/variables.scss';
 @import './styles/theme.scss';
