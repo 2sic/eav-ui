@@ -27,7 +27,7 @@ export class EditContentTypeComponent implements OnInit, OnDestroy, AfterViewIni
   private scopeOptions$ = new BehaviorSubject<ScopeOption[]>(null);
   private disableAnimation$ = new BehaviorSubject(true);
   private loading$ = new BehaviorSubject(false);
-  templateVars$ = combineLatest([this.contentType$, this.lockScope$, this.scopeOptions$, this.disableAnimation$, this.loading$]).pipe(
+  viewModel$ = combineLatest([this.contentType$, this.lockScope$, this.scopeOptions$, this.disableAnimation$, this.loading$]).pipe(
     map(([contentType, lockScope, scopeOptions, disableAnimation, loading]) =>
       ({ contentType, lockScope, scopeOptions, disableAnimation, loading })),
   );

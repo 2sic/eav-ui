@@ -1,4 +1,4 @@
-<ng-container *ngIf="data$ | async as data">
+<ng-container *ngIf="viewModel$ | async as data">
 
   <div class="alert alert-info scope-info" *ngIf="isGlobal || isPrimary">
     <ng-container *ngIf="isGlobal">

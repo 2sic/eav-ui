@@ -44,7 +44,7 @@ export class AppConfigurationComponent extends BaseComponent implements OnInit, 
 
   // More proper ViewModel
   appSettingsInternal$ = new Subject<AppInternals>();
-  data$: Observable<ViewModel>;
+  viewModel$: Observable<ViewModel>;
 
   public appStateAdvanced = false;
 
@@ -70,7 +70,7 @@ export class AppConfigurationComponent extends BaseComponent implements OnInit, 
     this.features.loadFromService(appDialogConfigService);
 
     // New with proper ViewModel
-    this.data$ = combineLatest([
+    this.viewModel$ = combineLatest([
       this.appSettingsInternal$,
       this.features.isEnabled$(FeatureNames.LightSpeed),
       this.features.isEnabled$(FeatureNames.ContentSecurityPolicy),

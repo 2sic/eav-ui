@@ -2,7 +2,7 @@
   <div class="dialog-title-box">{{ contentTypeStaticName ? 'Edit Content Type' : 'New Content Type' }}</div>
 </div>
 
-<ng-container *ngIf="(templateVars$ | async) as data">
+<ng-container *ngIf="(viewModel$ | async) as data">
 
   <form class="dialog-form" *ngIf="data.contentType" #ngForm="ngForm" (ngSubmit)="save()">
     <div class="dialog-form-content fancy-scrollbar-light">

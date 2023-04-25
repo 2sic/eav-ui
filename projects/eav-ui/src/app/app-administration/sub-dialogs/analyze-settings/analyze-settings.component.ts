@@ -20,7 +20,7 @@ import { AnalyzePart, AnalyzeSettingsTemplateVars, SettingsStackItem } from './a
 })
 export class AnalyzeSettingsComponent implements OnInit, OnDestroy {
   part: AnalyzePart;
-  templateVars$: Observable<AnalyzeSettingsTemplateVars>;
+  viewModel$: Observable<AnalyzeSettingsTemplateVars>;
   gridOptions = this.buildGridOptions();
 
   private views$: BehaviorSubject<View[]>;
@@ -45,7 +45,7 @@ export class AnalyzeSettingsComponent implements OnInit, OnDestroy {
     this.getViews();
     this.getStack();
 
-    this.templateVars$ = combineLatest([this.views$, this.selectedView$, this.stack$]).pipe(
+    this.viewModel$ = combineLatest([this.views$, this.selectedView$, this.stack$]).pipe(
       map(([views, selectedView, stack]) => {
         const templateVars: AnalyzeSettingsTemplateVars = {
           views,
