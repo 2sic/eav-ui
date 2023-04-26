@@ -1,5 +1,5 @@
-<div class="grid-wrapper mat-tab-grid-wrapper">
-  <ag-grid-angular class="ag-theme-material" [rowData]="views$ | async" [gridOptions]="gridOptions" appDragAndDrop
+<div class="grid-wrapper mat-tab-grid-wrapper" *ngIf="viewModel$ | async as vm">
+  <ag-grid-angular class="ag-theme-material" [rowData]="vm.views" [gridOptions]="gridOptions" appDragAndDrop
     [allowedFileTypes]="'json'" (filesDropped)="importView($event)">
   </ag-grid-angular>
 
@@ -7,7 +7,7 @@
     <button mat-button class="polymorph-button" tippy="Configure polymorphism" [disabled]="appIsInherited"
       (click)="editPolymorphisms()">
       <img class="polymorph-logo" [src]="polymorphLogo">
-      <span>Polymorphism {{ polymorphStatus$ | async }}</span>
+      <span>Polymorphism {{ vm.polymorphStatus }}</span>
     </button>
 
     <button mat-button tippy="Import view" (click)="importView()">

@@ -1,5 +1,5 @@
-<div class="grid-wrapper mat-tab-grid-wrapper">
-  <ag-grid-angular class="ag-theme-material" [rowData]="webApis$ | async" [gridOptions]="gridOptions">
+<div class="grid-wrapper mat-tab-grid-wrapper"  *ngIf="viewModel$ | async as vm">
+  <ag-grid-angular class="ag-theme-material" [rowData]="vm.webApis" [gridOptions]="gridOptions">
   </ag-grid-angular>
 
   <div class="grid-more-actions-box"></div>

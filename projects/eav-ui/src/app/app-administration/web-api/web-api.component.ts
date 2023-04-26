@@ -3,7 +3,7 @@ import { Component, Input, OnDestroy, OnInit, ViewContainerRef } from '@angular/
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
 import { SourceService } from '../../code-editor/services/source.service';
 import { CreateFileDialogComponent, CreateFileDialogData, CreateFileDialogResult, FileLocationDialogComponent } from '../../create-file-dialog';
 import { GoToDevRest } from '../../dev-rest/go-to-dev-rest';
@@ -26,6 +26,8 @@ export class WebApiComponent implements OnInit, OnDestroy {
   webApis$ = new BehaviorSubject<WebApi[]>(undefined);
   gridOptions = this.buildGridOptions();
 
+  viewModel$: Observable<WebApiViewModel>;
+
   constructor(
     private sourceService: SourceService,
     private snackBar: MatSnackBar,
@@ -38,6 +40,9 @@ export class WebApiComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.fetchWebApis();
+    this.viewModel$ = combineLatest([this.webApis$]).pipe(
+      map(([webApis]) => ({ webApis }))
+    );
   }
 
   ngOnDestroy() {
@@ -168,4 +173,8 @@ export class WebApiComponent implements OnInit, OnDestroy {
     };
     return gridOptions;
   }
+}
+
+interface WebApiViewModel { 
+  webApis: WebApi[];
 }

@@ -1,7 +1,7 @@
-<div class="nav-component-wrapper">
+<div class="nav-component-wrapper" *ngIf="viewModel$ | async as vm">
   <div mat-dialog-title>
     <div class="dialog-title-box">
-      <div [tippy]="viewTooltip$ | async">View: {{ (viewUsage$ | async)?.Name }}</div>
+      <div [tippy]="vm.viewTooltip">View: {{ vm.viewUsage?.Name }}</div>
       <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
         <mat-icon>close</mat-icon>
       </button>
@@ -18,7 +18,7 @@
   <router-outlet></router-outlet>
 
   <div class="grid-wrapper">
-    <ag-grid-angular class="ag-theme-material" [rowData]="data$ | async" [gridOptions]="gridOptions">
+    <ag-grid-angular class="ag-theme-material" [rowData]="vm.data" [gridOptions]="gridOptions">
     </ag-grid-angular>
 
     <div class="grid-more-actions-box"></div>

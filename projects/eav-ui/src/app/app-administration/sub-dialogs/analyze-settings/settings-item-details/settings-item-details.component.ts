@@ -2,7 +2,7 @@ import { GridOptions } from '@ag-grid-community/core';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
 import { defaultGridOptions } from '../../../../shared/constants/default-grid-options.constants';
 import { AnalyzeSettingsService } from '../../../services/analyze-settings.service';
 import { AnalyzeSettingsValueComponent } from '../analyze-settings-value/analyze-settings-value.component';
@@ -20,6 +20,8 @@ export class SettingsItemDetailsComponent implements OnInit, OnDestroy {
   stack$: BehaviorSubject<SettingsStackItem[]>;
   gridOptions = this.buildGridOptions();
 
+  viewModel$: Observable<SettingsItemDetailsViewModel>;
+
   constructor(
     private dialogRef: MatDialogRef<SettingsItemDetailsComponent>,
     private route: ActivatedRoute,
@@ -36,6 +38,9 @@ export class SettingsItemDetailsComponent implements OnInit, OnDestroy {
     this.analyzeSettingsService.getStack(this.part, this.settingsItemKey, this.selectedView, true).subscribe(stack => {
       this.stack$.next(stack);
     });
+    this.viewModel$ = combineLatest([this.stack$]).pipe(
+      map(([stack]) => ({ stack }))
+    );
   }
 
   ngOnDestroy(): void {
@@ -79,4 +84,8 @@ export class SettingsItemDetailsComponent implements OnInit, OnDestroy {
     };
     return gridOptions;
   }
+}
+
+interface SettingsItemDetailsViewModel { 
+  stack: SettingsStackItem[];
 }
