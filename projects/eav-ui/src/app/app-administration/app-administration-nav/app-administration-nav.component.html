@@ -1,12 +1,12 @@
-<div class="nav-component-wrapper" appToggleDebug *ngIf="viewModel$ | async as data">
+<div class="nav-component-wrapper" appToggleDebug *ngIf="viewModel$ | async as vm">
   <div mat-dialog-title>
     <div class="dialog-title-box">
       <div>
-        <ng-container *ngIf="data.dialogSettings?.Context.App.SettingsScope === AppScopes.Global">
+        <ng-container *ngIf="vm.dialogSettings?.Context.App.SettingsScope === AppScopes.Global">
           Global
         </ng-container>
-        <ng-container *ngIf="data.dialogSettings?.Context.App.SettingsScope !== AppScopes.Global">
-          {{ data.dialogSettings?.Context.App.Name }}
+        <ng-container *ngIf="vm.dialogSettings?.Context.App.SettingsScope !== AppScopes.Global">
+          {{ vm.dialogSettings?.Context.App.Name }}
         </ng-container>
         Admin
       </div>
@@ -20,14 +20,14 @@
 
   <!-- spm NOTE: we use mat-tab-group because mat-tab-nav-bar doesn't have animations and doesn't look pretty -->
   <mat-tab-group class="mat-tab-group-max-height" dynamicHeight color="accent"
-    *ngIf="data.dialogSettings && data.tabIndex != null" (selectedTabChange)="changeTab($event)"
-    [selectedIndex]="data.tabIndex">
+    *ngIf="vm.dialogSettings && vm.tabIndex != null" (selectedTabChange)="changeTab($event)"
+    [selectedIndex]="vm.tabIndex">
     <mat-tab>
       <div *matTabLabel class="mat-tab-label-box" tippy="App Info">
         <mat-icon>info</mat-icon>
         <span>Info</span>
       </div>
-      <app-getting-started *matTabContent [gettingStartedUrl]="data.dialogSettings.Context.App.GettingStartedUrl">
+      <app-getting-started *matTabContent [gettingStartedUrl]="vm.dialogSettings.Context.App.GettingStartedUrl">
       </app-getting-started>
     </mat-tab>
 
@@ -36,15 +36,15 @@
         <mat-icon>menu</mat-icon>
         <span>Data</span>
       </div>
-      <app-data *matTabContent [enablePermissions]="data.dialogSettings.Context.Enable.AppPermissions"></app-data>
+      <app-data *matTabContent [enablePermissions]="vm.dialogSettings.Context.Enable.AppPermissions"></app-data>
     </mat-tab>
 
-    <mat-tab *ngIf="data.dialogSettings.Context.Enable.Query">
+    <mat-tab *ngIf="vm.dialogSettings.Context.Enable.Query">
       <div *matTabLabel class="mat-tab-label-box" tippy="Queries / Visual Query Designer">
         <mat-icon>filter_list</mat-icon>
         <span>Queries</span>
       </div>
-      <app-queries *matTabContent [enablePermissions]="data.dialogSettings.Context.Enable.AppPermissions">
+      <app-queries *matTabContent [enablePermissions]="vm.dialogSettings.Context.Enable.AppPermissions">
       </app-queries>
     </mat-tab>
 
@@ -53,19 +53,19 @@
         <mat-icon>layers</mat-icon>
         <span>Views</span>
       </div>
-      <app-views *matTabContent [enableCode]="data.dialogSettings.Context.Enable.CodeEditor"
-        [enablePermissions]="data.dialogSettings.Context.Enable.AppPermissions"
-        [appIsGlobal]="data.dialogSettings.Context.App.IsShared"
-        [appIsInherited]="data.dialogSettings.Context.App.IsInherited">
+      <app-views *matTabContent [enableCode]="vm.dialogSettings.Context.Enable.CodeEditor"
+        [enablePermissions]="vm.dialogSettings.Context.Enable.AppPermissions"
+        [appIsGlobal]="vm.dialogSettings.Context.App.IsShared"
+        [appIsInherited]="vm.dialogSettings.Context.App.IsInherited">
       </app-views>
     </mat-tab>
 
-    <mat-tab *ngIf="data.dialogSettings.Context.Enable.Query">
+    <mat-tab *ngIf="vm.dialogSettings.Context.Enable.Query">
       <div *matTabLabel class="mat-tab-label-box" tippy="WebApi">
         <mat-icon>offline_bolt</mat-icon>
         <span>WebApi</span>
       </div>
-      <app-web-api *matTabContent [enableCode]="data.dialogSettings.Context.Enable.CodeEditor">
+      <app-web-api *matTabContent [enableCode]="vm.dialogSettings.Context.Enable.CodeEditor">
       </app-web-api>
     </mat-tab>
 
@@ -74,7 +74,7 @@
         <mat-icon>settings_applications</mat-icon>
         <span>App</span>
       </div>
-      <app-app-configuration *matTabContent [dialogSettings]="data.dialogSettings">
+      <app-app-configuration *matTabContent [dialogSettings]="vm.dialogSettings">
       </app-app-configuration>
     </mat-tab>
 

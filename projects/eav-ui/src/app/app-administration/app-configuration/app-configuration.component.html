@@ -1,4 +1,4 @@
-<ng-container *ngIf="viewModel$ | async as data">
+<ng-container *ngIf="viewModel$ | async as vm">
 
   <div class="alert alert-info scope-info" *ngIf="isGlobal || isPrimary">
     <ng-container *ngIf="isGlobal">
@@ -42,19 +42,19 @@
                 <td>
                   <button mat-button (click)="edit(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.App)"
                     tippy="Edit global system settings">
-                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="data.systemSettingsCount || null"
+                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="vm.systemSettingsCount || null"
                       matBadgePosition="below after">edit</mat-icon>
                   </button>
                 </td>
                 <td>
                   <button mat-button (click)="fixContentType(eavConstants.contentTypes.customSettings, 'edit')"
                     tippy="Edit custom global settings">
-                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="data.customSettingsCount || null"
+                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="vm.customSettingsCount || null"
                       matBadgePosition="below after">edit</mat-icon>
                   </button>
                   <button mat-button (click)="fixContentType(eavConstants.contentTypes.customSettings, 'config')"
                     tippy="Configure fields of the custom global settings">
-                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="data.customSettingsFieldsCount || null"
+                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="vm.customSettingsFieldsCount || null"
                       matBadgePosition="below after">dns</mat-icon>
                   </button>
                 </td>
@@ -66,19 +66,19 @@
                 <td>
                   <button mat-button (click)="edit(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.Site)"
                     tippy="Edit site system settings">
-                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="data.systemSettingsCount || null"
+                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="vm.systemSettingsCount || null"
                       matBadgePosition="below after">edit</mat-icon>
                   </button>
                 </td>
                 <td>
                   <button mat-button (click)="fixContentType(eavConstants.contentTypes.customSettings, 'edit')"
                     tippy="Edit custom site settings">
-                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="data.customSettingsCount || null"
+                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="vm.customSettingsCount || null"
                       matBadgePosition="below after">edit</mat-icon>
                   </button>
                   <button mat-button (click)="fixContentType(eavConstants.contentTypes.customSettings, 'config')"
                     tippy="Configure fields of the custom site settings">
-                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="data.customSettingsFieldsCount || null"
+                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="vm.customSettingsFieldsCount || null"
                       matBadgePosition="below after">dns</mat-icon>
                   </button>
                 </td>
@@ -92,18 +92,18 @@
                 <td>
                   <button mat-button (click)="edit(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.App)"
                     tippy="Edit app system settings">
-                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="data.systemSettingsCount || null"
+                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="vm.systemSettingsCount || null"
                       matBadgePosition="below after">edit</mat-icon>
                   </button>
                 </td>
                 <td>
                   <button mat-button (click)="edit(eavConstants.contentTypes.settings)" tippy="Edit custom app settings">
-                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="data.customSettingsCount || null"
+                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="vm.customSettingsCount || null"
                       matBadgePosition="below after">edit</mat-icon>
                   </button>
                   <button mat-button (click)="config(eavConstants.contentTypes.settings)"
                     tippy="Configure fields of the custom app settings">
-                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="data.customSettingsFieldsCount || null"
+                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="vm.customSettingsFieldsCount || null"
                       matBadgePosition="below after">dns</mat-icon>
                   </button>
                 </td>
@@ -157,19 +157,19 @@
                 <td>
                   <button mat-button (click)="edit(eavConstants.contentTypes.systemResources, SystemSettingsScopes.App)"
                     tippy="Edit global system resources">
-                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="data.systemResourcesCount || null"
+                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="vm.systemResourcesCount || null"
                       matBadgePosition="below after">edit</mat-icon>
                   </button>
                 </td>
                 <td>
                   <button mat-button (click)="fixContentType(eavConstants.contentTypes.customResources, 'edit')"
                     tippy="Edit custom global resources">
-                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="data.customResourcesCount || null"
+                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="vm.customResourcesCount || null"
                       matBadgePosition="below after">edit</mat-icon>
                   </button>
                   <button mat-button (click)="fixContentType(eavConstants.contentTypes.customResources, 'config')"
                     tippy="Configure fields of the custom global resources">
-                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="data.customResourcesFieldsCount || null"
+                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="vm.customResourcesFieldsCount || null"
                       matBadgePosition="below after">dns</mat-icon>
                   </button>
                 </td>
@@ -182,19 +182,19 @@
                 <td>
                   <button mat-button (click)="edit(eavConstants.contentTypes.systemResources, SystemSettingsScopes.Site)"
                     tippy="Edit site system resources">
-                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="data.systemResourcesCount || null"
+                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="vm.systemResourcesCount || null"
                       matBadgePosition="below after">edit</mat-icon>
                   </button>
                 </td>
                 <td>
                   <button mat-button (click)="fixContentType(eavConstants.contentTypes.customResources, 'edit')"
                     tippy="Edit custom site resources">
-                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="data.customResourcesCount || null"
+                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="vm.customResourcesCount || null"
                       matBadgePosition="below after">edit</mat-icon>
                   </button>
                   <button mat-button (click)="fixContentType(eavConstants.contentTypes.customResources, 'config')"
                     tippy="Configure fields of the custom site resources">
-                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="data.customResourcesFieldsCount || null"
+                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="vm.customResourcesFieldsCount || null"
                       matBadgePosition="below after">dns</mat-icon>
                   </button>
                 </td>
@@ -208,19 +208,19 @@
                 <td>
                   <button mat-button (click)="edit(eavConstants.contentTypes.systemResources, SystemSettingsScopes.App)"
                     tippy="Edit app system resources">
-                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="data.systemResourcesCount || null"
+                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="vm.systemResourcesCount || null"
                       matBadgePosition="below after">edit</mat-icon>
                   </button>
                 </td>
                 <td>
                   <button mat-button (click)="edit(eavConstants.contentTypes.resources)"
                     tippy="Edit custom app resources">
-                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="data.customResourcesCount || null"
+                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="vm.customResourcesCount || null"
                       matBadgePosition="below after">edit</mat-icon>
                   </button>
                   <button mat-button (click)="config(eavConstants.contentTypes.resources)"
                     tippy="Configure fields of the custom app resources">
-                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="data.customResourcesFieldsCount || null"
+                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="vm.customResourcesFieldsCount || null"
                       matBadgePosition="below after">dns</mat-icon>
                   </button>
                 </td>
@@ -287,8 +287,8 @@
       </mat-card-content>
       <mat-card-actions>
         <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://go.2sxc.org/lightspeed' }"></ng-container>
-        <button mat-button (click)="openLightSpeed()" disabled="{{!data.lightSpeedEnabled}}">
-          <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="data.appLightSpeedCount || null"
+        <button mat-button (click)="openLightSpeed()" disabled="{{!vm.lightSpeedEnabled}}">
+          <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="vm.appLightSpeedCount || null"
             matBadgePosition="below after">bolt</mat-icon>
           <span>Edit LightSpeed</span>
         </button>
@@ -345,8 +345,8 @@
         </div>
         <div class="actions-row">
           <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://patrons.2sxc.org/features/feat/PermissionsByLanguage' }"></ng-container>
-          <button mat-button (click)="openLanguagePermissions(data.langPermsEnabled)">
-            <mat-icon [matBadgeHidden]="data.langPermsEnabled" matBadgeSize="small" matBadge="💎" matBadgePosition="below after">
+          <button mat-button (click)="openLanguagePermissions(vm.langPermsEnabled)">
+            <mat-icon [matBadgeHidden]="vm.langPermsEnabled" matBadgeSize="small" matBadge="💎" matBadgePosition="below after">
               person
             </mat-icon>
             <span>Language Permissions</span>

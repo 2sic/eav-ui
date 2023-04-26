@@ -52,11 +52,11 @@ export class SystemInfoComponent extends BaseComponent implements OnInit, OnDest
     this.languages$ = new BehaviorSubject<SiteLanguage[] | undefined>(undefined);
     this.loading$ = new BehaviorSubject<boolean>(false);
 
-    this.buildTemplateVars();
+    this.buildViewModel();
     this.getSystemInfo();
     this.getLanguages();
     this.subscription.add(this.refreshOnChildClosedDeep().subscribe(() => {
-      this.buildTemplateVars();
+      this.buildViewModel();
       this.getSystemInfo();
       this.getLanguages();
     }));
@@ -123,7 +123,7 @@ export class SystemInfoComponent extends BaseComponent implements OnInit, OnDest
     });
   }
 
-  private buildTemplateVars(): void {
+  private buildViewModel(): void {
     const systemInfos$ = this.systemInfoSet$.pipe(
       map(systemInfoSet => {
         if (systemInfoSet == null) { return; }

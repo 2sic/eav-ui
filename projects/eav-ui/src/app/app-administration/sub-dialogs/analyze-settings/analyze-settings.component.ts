@@ -11,7 +11,7 @@ import { AnalyzeSettingsKeyComponent } from './analyze-settings-key/analyze-sett
 import { AnalyzeSettingsTotalResultsComponent } from './analyze-settings-total-results/analyze-settings-total-results.component';
 import { AnalyzeSettingsTotalResultsParams } from './analyze-settings-total-results/analyze-settings-total-results.models';
 import { AnalyzeSettingsValueComponent } from './analyze-settings-value/analyze-settings-value.component';
-import { AnalyzePart, AnalyzeSettingsTemplateVars, SettingsStackItem } from './analyze-settings.models';
+import { AnalyzePart, AnalyzeSettingsViewModel, SettingsStackItem } from './analyze-settings.models';
 
 @Component({
   selector: 'app-analyze-settings',
@@ -20,7 +20,7 @@ import { AnalyzePart, AnalyzeSettingsTemplateVars, SettingsStackItem } from './a
 })
 export class AnalyzeSettingsComponent implements OnInit, OnDestroy {
   part: AnalyzePart;
-  viewModel$: Observable<AnalyzeSettingsTemplateVars>;
+  viewModel$: Observable<AnalyzeSettingsViewModel>;
   gridOptions = this.buildGridOptions();
 
   private views$: BehaviorSubject<View[]>;
@@ -47,7 +47,7 @@ export class AnalyzeSettingsComponent implements OnInit, OnDestroy {
 
     this.viewModel$ = combineLatest([this.views$, this.selectedView$, this.stack$]).pipe(
       map(([views, selectedView, stack]) => {
-        const templateVars: AnalyzeSettingsTemplateVars = {
+        const templateVars: AnalyzeSettingsViewModel = {
           views,
           selectedView,
           stack,
