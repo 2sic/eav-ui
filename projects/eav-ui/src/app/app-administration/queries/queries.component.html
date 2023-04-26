@@ -1,5 +1,5 @@
-<div class="grid-wrapper mat-tab-grid-wrapper">
-  <ag-grid-angular class="ag-theme-material" [rowData]="queries$ | async" [gridOptions]="gridOptions" appDragAndDrop
+<div class="grid-wrapper mat-tab-grid-wrapper" *ngIf="viewModel$ | async as vm">
+  <ag-grid-angular class="ag-theme-material" [rowData]="vm.queries" [gridOptions]="gridOptions" appDragAndDrop
     [allowedFileTypes]="'json'" (filesDropped)="importQuery($event)">
   </ag-grid-angular>
 

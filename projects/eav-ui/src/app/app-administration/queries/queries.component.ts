@@ -2,7 +2,7 @@ import { GridOptions } from '@ag-grid-community/core';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, combineLatest, map } from 'rxjs';
 import { ContentExportService } from '../../content-export/services/content-export.service';
 import { GoToDevRest } from '../../dev-rest/go-to-dev-rest';
 import { GoToMetadata } from '../../metadata';
@@ -31,6 +31,10 @@ export class QueriesComponent extends BaseComponent implements OnInit, OnDestroy
 
   queries$ = new BehaviorSubject<Query[]>(undefined);
   gridOptions = this.buildGridOptions();
+
+  viewModel$ = combineLatest([this.queries$]).pipe(
+    map(([queries]) => ({ queries }))
+  );
 
   constructor(
     protected router: Router,
