@@ -15,7 +15,7 @@ import { SystemInfoSet } from '../models/system-info.model';
 import { SxcInsightsService } from '../services/sxc-insights.service';
 import { ZoneService } from '../services/zone.service';
 import { GoToRegistration } from '../sub-dialogs/registration/go-to-registration';
-import { InfoTemplate, SystemInfoTemplateVars } from './system-info.models';
+import { InfoTemplate, SystemInfoViewModel } from './system-info.models';
 
 declare const window: EavWindow;
 
@@ -29,7 +29,7 @@ export class SystemInfoComponent extends BaseComponent implements OnInit, OnDest
 
   pageLogDuration: number;
   positiveWholeNumber = /^[1-9][0-9]*$/;
-  templateVars$: Observable<SystemInfoTemplateVars>;
+  viewModel$: Observable<SystemInfoViewModel>;
 
   private systemInfoSet$: BehaviorSubject<SystemInfoSet | undefined>;
   private languages$: BehaviorSubject<SiteLanguage[] | undefined>;
@@ -222,9 +222,9 @@ export class SystemInfoComponent extends BaseComponent implements OnInit, OnDest
     );
     const lsEnabled$ = this.featuresService.isEnabled$(FeatureNames.LightSpeed);
     const cspEnabled$ = this.featuresService.isEnabled$(FeatureNames.ContentSecurityPolicy);
-    this.templateVars$ = combineLatest([systemInfos$, siteInfos$, this.loading$, warningIcon$, warningInfos$, lsEnabled$, cspEnabled$]).pipe(
+    this.viewModel$ = combineLatest([systemInfos$, siteInfos$, this.loading$, warningIcon$, warningInfos$, lsEnabled$, cspEnabled$]).pipe(
       map(([systemInfos, siteInfos, loading, warningIcon, warningInfos, lsEnabled, cspEnabled]) => {
-        const viewModel: SystemInfoTemplateVars = {
+        const viewModel: SystemInfoViewModel = {
           systemInfos,
           siteInfos,
           loading,
