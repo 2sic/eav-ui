@@ -1,6 +1,6 @@
 import { GridOptions } from '@ag-grid-community/core';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { catchError, Observable, of, share, startWith, Subject, switchMap } from 'rxjs';
+import { catchError, combineLatest, map, Observable, of, share, startWith, Subject, switchMap } from 'rxjs';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
@@ -16,18 +16,25 @@ import { SiteLanguagesStatusParams } from './site-languages-status/site-language
   styleUrls: ['./site-languages.component.scss'],
 })
 export class SiteLanguagesComponent implements OnInit, OnDestroy {
-  languages$: Observable<SiteLanguage[]>;
   gridOptions = this.buildGridOptions();
 
   private refreshLanguages$ = new Subject<void>();
 
+  viewModel$: Observable<SiteLanguagesViewModel>;
+
   constructor(private zoneService: ZoneService) { }
 
   ngOnInit(): void {
-    this.languages$ = this.refreshLanguages$.pipe(
-      startWith(undefined),
-      switchMap(() => this.zoneService.getLanguages().pipe(catchError(() => of(undefined)))),
-      share(),
+    this.viewModel$ = combineLatest([
+      this.refreshLanguages$.pipe(
+        startWith(undefined),
+        switchMap(() => this.zoneService.getLanguages().pipe(catchError(() => of(undefined)))),
+        share(),
+      )
+    ]).pipe(
+      map(([languages]) => {
+        return { languages };
+      }),
     );
   }
 
@@ -110,4 +117,8 @@ export class SiteLanguagesComponent implements OnInit, OnDestroy {
     };
     return gridOptions;
   }
+}
+
+interface SiteLanguagesViewModel {
+  languages: SiteLanguage[];
 }

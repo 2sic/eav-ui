@@ -1,4 +1,4 @@
-<ng-container *ngIf="templateVars$ | async as data">
+<ng-container *ngIf="viewModel$ | async as vm">
   <div mat-dialog-title>
     <div class="dialog-title-box">Create Metadata</div>
   </div>
@@ -15,24 +15,24 @@
       <mat-form-field appearance="standard" color="accent">
         <mat-label>Target</mat-label>
 
-        <mat-select *ngIf="data.guidedMode" formControlName="targetType" required>
+        <mat-select *ngIf="vm.guidedMode" formControlName="targetType" required>
           <mat-option *ngFor="let option of targetTypeOptions" [value]="option.targetType">
             {{ option.label }}
           </mat-option>
-          <mat-option *ngIf="data.unknownTargetType" [value]="data.formValues.targetType">
-            {{ data.formValues.targetType }}
+          <mat-option *ngIf="vm.unknownTargetType" [value]="vm.formValues.targetType">
+            {{ vm.formValues.targetType }}
           </mat-option>
         </mat-select>
 
-        <input matInput type="number" min="0" *ngIf="!data.guidedMode" formControlName="targetType" required>
+        <input matInput type="number" min="0" *ngIf="!vm.guidedMode" formControlName="targetType" required>
       </mat-form-field>
 
       <app-field-hint
-        *ngIf="form.controls['targetType'].touched && !form.controls['targetType'].invalid && data.unknownTargetType"
+        *ngIf="form.controls['targetType'].touched && !form.controls['targetType'].invalid && vm.unknownTargetType"
         [isError]="false">
         Warning: you entered an unknown target type. This may work or may not. Please be sure you know what you're doing
       </app-field-hint>
-      <app-field-hint *ngIf="data.targetTypeHint" [isError]="false">{{ data.targetTypeHint }}</app-field-hint>
+      <app-field-hint *ngIf="vm.targetTypeHint" [isError]="false">{{ vm.targetTypeHint }}</app-field-hint>
       <app-field-hint *ngIf="form.controls['targetType'].touched && form.controls['targetType'].errors?.required"
         [isError]="true">
         This field is required
@@ -47,7 +47,7 @@
         <mat-label>Key type</mat-label>
 
         <mat-select formControlName="keyType" required>
-          <mat-option *ngFor="let option of data.keyTypeOptions" [value]="option">
+          <mat-option *ngFor="let option of vm.keyTypeOptions" [value]="option">
             {{ option }}
           </mat-option>
         </mat-select>
@@ -60,12 +60,12 @@
 
       <!-- Content Type for Content Items -->
       <mat-form-field appearance="standard" color="accent"
-        *ngIf="data.guidedMode && data.formValues.targetType === eavConstants.metadata.entity.targetType">
+        *ngIf="vm.guidedMode && vm.formValues.targetType === eavConstants.metadata.entity.targetType">
         <mat-label>Content Type</mat-label>
 
         <mat-select formControlName="contentTypeForContentItems"
-          [placeholder]="!data.contentTypes.length ? 'No items found' : ''">
-          <mat-option *ngFor="let contentType of data.contentTypes" [value]="contentType.StaticName">
+          [placeholder]="!vm.contentTypes.length ? 'No items found' : ''">
+          <mat-option *ngFor="let contentType of vm.contentTypes" [value]="contentType.StaticName">
             {{ contentType.Label }}
           </mat-option>
         </mat-select>
@@ -73,12 +73,12 @@
 
       <!-- Scope for Content Types -->
       <mat-form-field appearance="standard" color="accent"
-        *ngIf="data.guidedMode && (data.formValues.targetType === eavConstants.metadata.entity.targetType || data.formValues.targetType === eavConstants.metadata.contentType.targetType)">
+        *ngIf="vm.guidedMode && (vm.formValues.targetType === eavConstants.metadata.entity.targetType || vm.formValues.targetType === eavConstants.metadata.contentType.targetType)">
         <mat-label>Scope</mat-label>
 
         <mat-select formControlName="scopeForContentTypes"
-          [placeholder]="!data.scopeOptions.length ? 'No items found' : ''">
-          <mat-option *ngFor="let scopeOption of data.scopeOptions" [value]="scopeOption.value">
+          [placeholder]="!vm.scopeOptions.length ? 'No items found' : ''">
+          <mat-option *ngFor="let scopeOption of vm.scopeOptions" [value]="scopeOption.value">
             {{ scopeOption.name }}
           </mat-option>
           <mat-option [value]="dropdownInsertValue">Other...</mat-option>
@@ -94,31 +94,31 @@
       <mat-form-field appearance="standard" color="accent">
         <mat-label>Key</mat-label>
 
-        <ng-container *ngIf="data.guidedMode; then specialKeyInputs else defaultKeyInput">
+        <ng-container *ngIf="vm.guidedMode; then specialKeyInputs else defaultKeyInput">
         </ng-container>
 
         <ng-template #specialKeyInputs>
-          <ng-container [ngSwitch]="data.formValues.targetType">
+          <ng-container [ngSwitch]="vm.formValues.targetType">
             <ng-container *ngSwitchCase="eavConstants.metadata.entity.targetType">
-              <mat-select *ngIf="data.guidedKey" formControlName="key" required
-                [placeholder]="!data.contentItems.length ? 'No items found' : ''">
-                <mat-option *ngFor="let item of data.contentItems" [value]="item.Guid">
+              <mat-select *ngIf="vm.guidedKey" formControlName="key" required
+                [placeholder]="!vm.contentItems.length ? 'No items found' : ''">
+                <mat-option *ngFor="let item of vm.contentItems" [value]="item.Guid">
                   {{ item.Title }} ({{ item.Id }})
                 </mat-option>
               </mat-select>
 
-              <input matInput type="text" *ngIf="!data.guidedKey" formControlName="key" required>
+              <input matInput type="text" *ngIf="!vm.guidedKey" formControlName="key" required>
             </ng-container>
 
             <ng-container *ngSwitchCase="eavConstants.metadata.contentType.targetType">
-              <mat-select *ngIf="data.guidedKey" formControlName="key" required
-                [placeholder]="!data.contentTypes.length ? 'No items found' : ''">
-                <mat-option *ngFor="let contentType of data.contentTypes" [value]="contentType.StaticName">
+              <mat-select *ngIf="vm.guidedKey" formControlName="key" required
+                [placeholder]="!vm.contentTypes.length ? 'No items found' : ''">
+                <mat-option *ngFor="let contentType of vm.contentTypes" [value]="contentType.StaticName">
                   {{ contentType.Label }}
                 </mat-option>
               </mat-select>
 
-              <input matInput type="text" *ngIf="!data.guidedKey" formControlName="key" required>
+              <input matInput type="text" *ngIf="!vm.guidedKey" formControlName="key" required>
             </ng-container>
 
             <ng-container *ngSwitchDefault>
@@ -128,18 +128,18 @@
         </ng-template>
 
         <ng-template #defaultKeyInput>
-          <input matInput type="text" *ngIf="data.formValues.keyType !== eavConstants.keyTypes.number"
+          <input matInput type="text" *ngIf="vm.formValues.keyType !== eavConstants.keyTypes.number"
             formControlName="key" required>
-          <input matInput type="number" *ngIf="data.formValues.keyType === eavConstants.keyTypes.number"
+          <input matInput type="number" *ngIf="vm.formValues.keyType === eavConstants.keyTypes.number"
             formControlName="key" required>
         </ng-template>
 
-        <div matSuffix class="selection-suffix" *ngIf="data.guidedMode && data.guidedKeyExists">
-          <button mat-icon-button type="button" [ngClass]="{ 'active': data.guidedKey }" tippy="Pick existing value"
+        <div matSuffix class="selection-suffix" *ngIf="vm.guidedMode && vm.guidedKeyExists">
+          <button mat-icon-button type="button" [ngClass]="{ 'active': vm.guidedKey }" tippy="Pick existing value"
             (click)="toggleGuidedKey(true)">
             <mat-icon>search</mat-icon>
           </button>
-          <button mat-icon-button type="button" [ngClass]="{ 'active': !data.guidedKey }" tippy="Manual entry"
+          <button mat-icon-button type="button" [ngClass]="{ 'active': !vm.guidedKey }" tippy="Manual entry"
             (click)="toggleGuidedKey(false)">
             <mat-icon>text_fields</mat-icon>
           </button>
@@ -160,9 +160,9 @@
 
     <div class="dialog-form-actions">
       <mat-slide-toggle color="accent"
-        [tippy]="data.guidedMode ? 'Guided mode helps you select options that work' : 'Manual mode is for advanced uses and allows you to insert any values'"
-        [checked]="data.guidedMode" (change)="toggleGuidedMode($event)">
-        {{ data.guidedMode ? 'Guided' : 'Manual' }}
+        [tippy]="vm.guidedMode ? 'Guided mode helps you select options that work' : 'Manual mode is for advanced uses and allows you to insert any values'"
+        [checked]="vm.guidedMode" (change)="toggleGuidedMode($event)">
+        {{ vm.guidedMode ? 'Guided' : 'Manual' }}
       </mat-slide-toggle>
       <div class="spacer"></div>
       <button mat-raised-button type="button" (click)="closeDialog()">Cancel</button>

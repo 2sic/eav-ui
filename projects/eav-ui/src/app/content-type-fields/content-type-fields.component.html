@@ -1,9 +1,9 @@
-<div class="nav-component-wrapper">
+<div class="nav-component-wrapper" *ngIf="viewModel$ | async as vm">
   <div mat-dialog-title>
     <div class="dialog-title-box">
       <div>
-        <ng-container *ngIf="contentType$ | async as contentType">
-          {{ contentType.Label || contentType.Name }}
+        <ng-container>
+          {{ vm.contentType.Label || vm.contentType.Name }}
         </ng-container>
         Fields
       </div>
@@ -16,7 +16,7 @@
   <router-outlet></router-outlet>
 
   <div class="grid-wrapper">
-    <ag-grid-angular class="ag-theme-material" [rowData]="fields$ | async" [gridOptions]="gridOptions"
+    <ag-grid-angular class="ag-theme-material" [rowData]="vm.fields" [gridOptions]="gridOptions"
       (rowDragEnter)="onRowDragEnter($event)" (rowDragEnd)="onRowDragEnd($event)" (rowDragMove)="onRowDragMove($event)"
       (gridReady)="onGridReady($event)" (sortChanged)="onSortChanged($event)" (filterChanged)="onFilterChanged($event)"
       [ngClass]="{
@@ -28,7 +28,7 @@
     <div class="grid-more-actions-box"></div>
 
     <button mat-fab mat-elevation-z24 class="grid-fab" tippy="Add fields"
-      [disabled]="(contentType$ | async) == null || (contentType$ | async).EditInfo.ReadOnly" (click)="add()">
+      [disabled]="vm.contentType == null || vm.contentType.EditInfo.ReadOnly" (click)="add()">
       <mat-icon>add</mat-icon>
     </button>
   </div>

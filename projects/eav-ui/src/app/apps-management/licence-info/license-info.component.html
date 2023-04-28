@@ -1,5 +1,5 @@
-<mat-accordion multi *ngIf="licenses$ | async as licenses">
-  <mat-expansion-panel #panel *ngFor="let license of licenses | licensesOrder; trackBy: trackLicenses">
+<mat-accordion multi *ngIf="viewModel$ | async as vm">
+  <mat-expansion-panel #panel *ngFor="let license of vm.licenses | licensesOrder; trackBy: trackLicenses">
     <mat-expansion-panel-header>
       <mat-panel-title>
         <mat-icon class="panel-icon" [tippy]="license.IsEnabled ? 'License is active' : 'License is not active'">{{

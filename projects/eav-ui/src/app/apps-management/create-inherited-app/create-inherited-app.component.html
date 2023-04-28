@@ -1,7 +1,4 @@
-<ng-container *ngIf="{
-  loading: loading$ | async,
-  inheritableApps: inheritableApps$ | async
-} as data">
+<ng-container *ngIf="viewModel$ | async as vm">
   <div mat-dialog-title>
     <div class="dialog-title-box">Create inherited App</div>
   </div>
@@ -18,8 +15,8 @@
     <mat-form-field appearance="standard" color="accent">
       <mat-label>Inherit App</mat-label>
       <mat-select formControlName="inheritId"
-        [placeholder]="data.inheritableApps === undefined ? 'Loading...' : data.inheritableApps === null || data.inheritableApps.length === 0 ? 'No inheritable apps found' : ''">
-        <mat-option *ngFor="let app of data.inheritableApps" [value]="app.Id">
+        [placeholder]="vm.inheritableApps === undefined ? 'Loading...' : vm.inheritableApps === null || vm.inheritableApps.length === 0 ? 'No inheritable apps found' : ''">
+        <mat-option *ngFor="let app of vm.inheritableApps" [value]="app.Id">
           {{ app.Name }}
         </mat-option>
       </mat-select>
@@ -31,10 +28,10 @@
   </form>
 
   <div class="dialog-component-actions">
-    <button type="button" mat-raised-button [disabled]="data.loading" (click)="closeDialog()">
+    <button type="button" mat-raised-button [disabled]="vm.loading" (click)="closeDialog()">
       Cancel
     </button>
-    <button type="button" mat-raised-button color="accent" [disabled]="data.loading || !form.valid" (click)="create()">
+    <button type="button" mat-raised-button color="accent" [disabled]="vm.loading || !form.valid" (click)="create()">
       Create
     </button>
   </div>
