@@ -15,7 +15,7 @@ import { ViewOrFileIdentifier } from '../shared/models/edit-form.model';
 import { Context } from '../shared/services/context';
 import { CodeAndEditionWarningsComponent } from './code-and-edition-warnings/code-and-edition-warnings.component';
 import { CodeAndEditionWarningsSnackBarData } from './code-and-edition-warnings/code-and-edition-warnings.models';
-import { CodeEditorTemplateVars, ExplorerOption, Explorers, Tab, ViewInfo, ViewKey } from './code-editor.models';
+import { CodeEditorViewModel, ExplorerOption, Explorers, Tab, ViewInfo, ViewKey } from './code-editor.models';
 import { CreateTemplateParams } from './code-templates/code-templates.models';
 import { FileAsset } from './models/file-asset.model';
 import { SourceView } from './models/source-view.model';
@@ -37,7 +37,7 @@ export class CodeEditorComponent extends BaseSubsinkComponent implements OnInit,
     tabSize: 2,
     fixedOverflowWidgets: true,
   };
-  templateVars$: Observable<CodeEditorTemplateVars>;
+  viewModel$: Observable<CodeEditorViewModel>;
 
   private templates$: BehaviorSubject<FileAsset[]>;
   private activeView$: BehaviorSubject<ViewKey>;
@@ -145,7 +145,7 @@ export class CodeEditorComponent extends BaseSubsinkComponent implements OnInit,
       })
     );
 
-    this.templateVars$ = combineLatest([this.templates$, this.activeView$, this.openViews$, this.viewInfos$]).pipe(
+    this.viewModel$ = combineLatest([this.templates$, this.activeView$, this.openViews$, this.viewInfos$]).pipe(
       map(([templates, activeView, openViews, viewInfos]) => {
         const tabs = openViews.map(viewKey => {
           const viewInfo = viewInfos.find(v => GeneralHelpers.objectsEqual(v.viewKey, viewKey));
@@ -160,7 +160,7 @@ export class CodeEditorComponent extends BaseSubsinkComponent implements OnInit,
         });
         const activeViewInfo = viewInfos.find(v => GeneralHelpers.objectsEqual(v.viewKey, activeView));
 
-        const templateVars: CodeEditorTemplateVars = {
+        const viewModel: CodeEditorViewModel = {
           activeView,
           tabs,
           viewKey: activeViewInfo?.viewKey,
@@ -170,7 +170,7 @@ export class CodeEditorComponent extends BaseSubsinkComponent implements OnInit,
           editorSnipps: activeViewInfo?.editorSnipps,
           tooltips: activeViewInfo?.tooltips,
         };
-        return templateVars;
+        return viewModel;
       }),
     );
   }

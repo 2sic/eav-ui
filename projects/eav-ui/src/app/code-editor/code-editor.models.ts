@@ -11,7 +11,7 @@ export interface Tab {
   isLoading: boolean;
 }
 
-export interface CodeEditorTemplateVars {
+export interface CodeEditorViewModel {
   activeView: ViewKey;
   tabs: Tab[];
   viewKey: ViewKey;

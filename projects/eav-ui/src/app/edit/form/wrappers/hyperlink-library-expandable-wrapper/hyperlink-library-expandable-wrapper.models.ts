@@ -1,7 +1,7 @@
 import { AdamItem } from '../../../../../../../edit-types';
-import { BaseFieldTemplateVars } from '../../fields/base/base-field-template-vars.model';
+import { BaseFieldViewModel } from '../../fields/base/base-field-template-vars.model';
 
-export interface HyperlinkLibraryExpandableTemplateVars extends BaseFieldTemplateVars {
+export interface HyperlinkLibraryExpandableTemplateVars extends BaseFieldViewModel {
   items: AdamItem[];
   itemsNumber: number;
   showAdamSponsor: boolean;

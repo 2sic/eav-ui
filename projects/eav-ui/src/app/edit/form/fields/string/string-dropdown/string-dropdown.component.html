@@ -1,34 +1,34 @@
 <!-- This template is used for StringDropdown and NumberDropdown -->
 
-<ng-container *ngIf="templateVars$ | async as data">
+<ng-container *ngIf="viewModel$ | async as vm">
   <mat-form-field [formGroup]="group" appearance="standard" color="accent">
 
-    <mat-select *ngIf="!data.freeTextMode" [formControlName]="config.fieldName" [required]="data.required"
-      [placeholder]="data.placeholder">
-      <mat-option *ngFor="let option of data.dropdownOptions" [value]="option.value">
+    <mat-select *ngIf="!vm.freeTextMode" [formControlName]="config.fieldName" [required]="vm.required"
+      [placeholder]="vm.placeholder">
+      <mat-option *ngFor="let option of vm.dropdownOptions" [value]="option.value">
         {{ option.label }}
       </mat-option>
     </mat-select>
 
-    <input matInput *ngIf="data.freeTextMode && type === 'string'" [formControlName]="config.fieldName"
-      [required]="data.required" [placeholder]="data.placeholder">
+    <input matInput *ngIf="vm.freeTextMode && type === 'string'" [formControlName]="config.fieldName"
+      [required]="vm.required" [placeholder]="vm.placeholder">
 
-    <input matInput type="number" *ngIf="data.freeTextMode && type === 'number'" [formControlName]="config.fieldName"
-      [required]="data.required" [placeholder]="data.placeholder">
+    <input matInput type="number" *ngIf="vm.freeTextMode && type === 'number'" [formControlName]="config.fieldName"
+      [required]="vm.required" [placeholder]="vm.placeholder">
 
-    <div matSuffix class="selection-suffix" *ngIf="data.enableTextEntry">
-      <button mat-icon-button [ngClass]="{ 'active': !data.freeTextMode }"
-        [tippy]="'Fields.String.Dropdown' | translate" [disabled]="data.controlStatus.disabled"
+    <div matSuffix class="selection-suffix" *ngIf="vm.enableTextEntry">
+      <button mat-icon-button [ngClass]="{ 'active': !vm.freeTextMode }"
+        [tippy]="'Fields.String.Dropdown' | translate" [disabled]="vm.controlStatus.disabled"
         (click)="toggleFreeTextMode(false)">
         <mat-icon>search</mat-icon>
       </button>
-      <button mat-icon-button [ngClass]="{ 'active': data.freeTextMode }" [tippy]="'Fields.String.Freetext' | translate"
-        [disabled]="data.controlStatus.disabled" (click)="toggleFreeTextMode(true)">
+      <button mat-icon-button [ngClass]="{ 'active': vm.freeTextMode }" [tippy]="'Fields.String.Freetext' | translate"
+        [disabled]="vm.controlStatus.disabled" (click)="toggleFreeTextMode(true)">
         <mat-icon>text_fields</mat-icon>
       </button>
     </div>
 
-    <mat-label>{{ data.label }}</mat-label>
+    <mat-label>{{ vm.label }}</mat-label>
   </mat-form-field>
 
   <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>

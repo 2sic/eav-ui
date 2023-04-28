@@ -1,7 +1,7 @@
 import { ApiCall, Scenario } from '.';
 import { Permission } from '../permissions/models/permission.model';
 
-export interface DevRestBaseTemplateVars {
+export interface DevRestBaseViewModel {
   /** The name used in dialogs etc. to show what we're working on */
   name: string;
   currentScenario: Scenario;

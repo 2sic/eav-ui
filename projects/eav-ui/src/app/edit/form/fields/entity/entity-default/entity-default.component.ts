@@ -16,7 +16,7 @@ import { ReorderIndexes } from './entity-default-list/entity-default-list.models
 import { EntityDefaultLogic } from './entity-default-logic';
 import { EntityDefaultSearchComponent } from './entity-default-search/entity-default-search.component';
 import { calculateSelectedEntities, convertArrayToString, convertValueToArray, filterGuids } from './entity-default.helpers';
-import { DeleteEntityProps, EntityTemplateVars, SelectedEntity } from './entity-default.models';
+import { DeleteEntityProps, EntityViewModel, SelectedEntity } from './entity-default.models';
 
 @Component({
   selector: InputTypeConstants.EntityDefault,
@@ -37,7 +37,7 @@ export class EntityDefaultComponent extends BaseFieldComponent<string | string[]
   isExpanded$: Observable<boolean>;
   selectedEntities$: Observable<SelectedEntity[]>;
   availableEntities$: BehaviorSubject<EntityInfo[]>;
-  templateVars$: Observable<EntityTemplateVars>;
+  viewModel$: Observable<EntityViewModel>;
 
   constructor(
     eavService: EavService,
@@ -110,7 +110,7 @@ export class EntityDefaultComponent extends BaseFieldComponent<string | string[]
     );
 
     const allowMultiValue$ = this.settings$.pipe(map(settings => settings.AllowMultiValue), distinctUntilChanged());
-    this.templateVars$ = combineLatest([
+    this.viewModel$ = combineLatest([
       combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$, this.freeTextMode$, allowMultiValue$]),
       combineLatest([this.selectedEntities$, this.availableEntities$, this.disableAddNew$, this.isExpanded$, this.error$]),
     ]).pipe(
@@ -118,7 +118,7 @@ export class EntityDefaultComponent extends BaseFieldComponent<string | string[]
         [controlStatus, label, placeholder, required, freeTextMode, allowMultiValue],
         [selectedEntities, availableEntities, disableAddNew, isExpanded, error],
       ]) => {
-        const templateVars: EntityTemplateVars = {
+        const viewModel: EntityViewModel = {
           controlStatus,
           label,
           placeholder,
@@ -131,7 +131,7 @@ export class EntityDefaultComponent extends BaseFieldComponent<string | string[]
           isExpanded,
           error,
         };
-        return templateVars;
+        return viewModel;
       }),
     );
 
@@ -217,7 +217,7 @@ export class EntityDefaultComponent extends BaseFieldComponent<string | string[]
       const entity = this.entityCacheService.getEntity(editParams.entityGuid);
       if (entity != null) {
         form = {
-            items: [{ EntityId: entity.Id }],
+          items: [{ EntityId: entity.Id }],
         };
       } else {
         form = {

@@ -1,6 +1,6 @@
-import { BaseFieldTemplateVars } from '../../base/base-field-template-vars.model';
+import { BaseFieldViewModel } from '../../base/base-field-template-vars.model';
 
-export interface StringTemplatePickerTemplateVars extends BaseFieldTemplateVars {
+export interface StringTemplatePickerTemplateVars extends BaseFieldViewModel {
   templateOptions: string[];
 }
 

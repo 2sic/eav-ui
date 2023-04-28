@@ -1,7 +1,7 @@
 import { ColDef, GridOptions } from '@ag-grid-community/core';
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { defaultGridOptions } from '../../../shared/constants/default-grid-options.constants';
-import { DevRestApiTemplateVars } from '../api-template-vars';
+import { DevRestApiViewModel } from '../api-template-vars';
 import { TrueFalseComponent } from '../true-false/true-false.component';
 import { TrueFalseParams } from '../true-false/true-false.models';
 
@@ -10,7 +10,7 @@ import { TrueFalseParams } from '../true-false/true-false.models';
   templateUrl: './permissions.component.html',
 })
 export class DevRestApiPermissionsComponent implements OnInit, OnChanges {
-  @Input() data: DevRestApiTemplateVars;
+  @Input() data: DevRestApiViewModel;
 
   gridOptions: GridOptions;
   gridItems: ApiPermissionsGridItem[];

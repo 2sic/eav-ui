@@ -1,5 +1,5 @@
-import { BaseFieldTemplateVars } from '../../base/base-field-template-vars.model';
+import { BaseFieldViewModel } from '../../base/base-field-template-vars.model';
 
-export interface DatetimeDefaultTemplateVars extends BaseFieldTemplateVars {
+export interface DatetimeDefaultTemplateVars extends BaseFieldViewModel {
   useTimePicker: boolean;
 }

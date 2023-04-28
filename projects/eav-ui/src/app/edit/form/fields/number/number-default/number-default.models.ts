@@ -1,6 +1,6 @@
-import { BaseFieldTemplateVars } from '../../base/base-field-template-vars.model';
+import { BaseFieldViewModel } from '../../base/base-field-template-vars.model';
 
-export interface NumberDefaultTemplateVars extends BaseFieldTemplateVars {
+export interface NumberDefaultTemplateVars extends BaseFieldViewModel {
   min: number;
   max: number;
 }

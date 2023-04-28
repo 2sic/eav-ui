@@ -1,6 +1,6 @@
-import { BaseFieldTemplateVars } from '../../base/base-field-template-vars.model';
+import { BaseFieldViewModel } from '../../base/base-field-template-vars.model';
 
-export interface BooleanDefaultTemplateVars extends BaseFieldTemplateVars {
+export interface BooleanDefaultViewModel extends BaseFieldViewModel {
   checked: boolean;
   changable: boolean;
 }

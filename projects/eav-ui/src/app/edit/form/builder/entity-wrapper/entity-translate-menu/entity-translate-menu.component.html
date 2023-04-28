@@ -1,7 +1,7 @@
-<ng-container *ngIf="templateVars$ | async as data">
+<ng-container *ngIf="viewModel$ | async as vm">
 
-  <div fxLayoutAlign="end center" *ngIf="data.currentLanguage !== data.defaultLanguage">
-    <button mat-button fxLayoutAlign="end center" [disabled]="data.readOnly || data.slotIsEmpty"
+  <div fxLayoutAlign="end center" *ngIf="vm.currentLanguage !== vm.defaultLanguage">
+    <button mat-button fxLayoutAlign="end center" [disabled]="vm.readOnly || vm.slotIsEmpty"
       [matMenuTriggerFor]="menu">
       <span fxLayoutAlign="end center">
         {{ 'LangMenu.Translate' | translate | uppercase }}

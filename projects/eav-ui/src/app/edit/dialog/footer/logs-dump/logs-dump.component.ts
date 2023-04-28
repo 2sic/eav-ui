@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { combineLatest, map, Observable } from 'rxjs';
 import { LogEntry, LogSeverities } from '../../../shared/models';
 import { LoggingService } from '../../../shared/services';
-import { LogsDumpTemplateVars } from './logs-dump.component.models';
+import { LogsDumpViewModel } from './logs-dump.component.models';
 
 @Component({
   selector: 'app-logs-dump',
@@ -11,18 +11,18 @@ import { LogsDumpTemplateVars } from './logs-dump.component.models';
 })
 export class LogsDumpComponent implements OnInit {
   LogSeverities = LogSeverities;
-  templateVars$: Observable<LogsDumpTemplateVars>;
+  viewModel$: Observable<LogsDumpViewModel>;
 
   constructor(private loggingService: LoggingService) { }
 
   ngOnInit(): void {
     const logs$ = this.loggingService.getLogs$();
-    this.templateVars$ = combineLatest([logs$]).pipe(
+    this.viewModel$ = combineLatest([logs$]).pipe(
       map(([logs]) => {
-        const templateVars: LogsDumpTemplateVars = {
+        const viewModel: LogsDumpViewModel = {
           logs,
         };
-        return templateVars;
+        return viewModel;
       }),
     );
   }

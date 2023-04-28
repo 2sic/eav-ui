@@ -176,7 +176,7 @@ export class CreateMetadataDialogComponent extends BaseSubsinkComponent implemen
         [guidedMode, keyTypeOptions, scopeOptions, contentItems, contentTypes],
         [formValues, guidedKey],
       ]) => {
-        const templateVars: MetadataDialogViewModel = {
+        const viewModel: MetadataDialogViewModel = {
           guidedMode,
           unknownTargetType: !this.targetTypeOptions.some(option => option.targetType === formValues.targetType),
           targetTypeHint: guidedMode && this.targetTypeOptions.find(option => option.targetType === formValues.targetType)?.hint,
@@ -189,7 +189,7 @@ export class CreateMetadataDialogComponent extends BaseSubsinkComponent implemen
           contentItems,
           contentTypes,
         };
-        return templateVars;
+        return viewModel;
       }),
     );
   }

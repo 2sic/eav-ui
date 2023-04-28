@@ -47,12 +47,12 @@ export class AnalyzeSettingsComponent implements OnInit, OnDestroy {
 
     this.viewModel$ = combineLatest([this.views$, this.selectedView$, this.stack$]).pipe(
       map(([views, selectedView, stack]) => {
-        const templateVars: AnalyzeSettingsViewModel = {
+        const viewModel: AnalyzeSettingsViewModel = {
           views,
           selectedView,
           stack,
         };
-        return templateVars;
+        return viewModel;
       }),
     );
   }

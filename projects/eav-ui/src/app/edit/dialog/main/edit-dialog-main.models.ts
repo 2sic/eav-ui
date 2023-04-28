@@ -38,7 +38,7 @@ export interface SaveEavFormData extends EavPublishStatus {
   Items: EavEntityBundleDto[];
 }
 
-export interface EditDialogMainTemplateVars {
+export interface EditDialogMainViewModel {
   items: EavItem[];
   formsValid: boolean;
   delayForm: boolean;

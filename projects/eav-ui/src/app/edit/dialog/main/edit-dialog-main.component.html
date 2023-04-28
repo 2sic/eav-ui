@@ -1,7 +1,7 @@
-<div *ngIf="templateVars$ | async as data" style="position: relative" mat-dialog-container appToggleDebug>
+<div *ngIf="viewModel$ | async as vm" style="position: relative" mat-dialog-container appToggleDebug>
 
-  <div mat-dialog-actions class="form-header-container" [ngClass]="{ 'u-display-none': data.hideHeader }">
-    <app-edit-dialog-header class="multi-item-edit-form-header" [disabled]="!data.formsValid"
+  <div mat-dialog-actions class="form-header-container" [ngClass]="{ 'u-display-none': vm.hideHeader }">
+    <app-edit-dialog-header class="multi-item-edit-form-header" [disabled]="!vm.formsValid"
       (closeDialog)="closeDialog()">
     </app-edit-dialog-header>
   </div>
@@ -9,29 +9,29 @@
   <div style="position: relative">
     <!-- cdkScrollable is required when using matAutocomplete with scrollable element that is not body. Fixes matAutocomplete not following input  -->
     <div mat-dialog-content cdkScrollable class="u-hide-scrollbar" [ngClass]="{
-      'debug-enabled': data.debugEnabled,
-      'debug-info-is-open': data.debugInfoIsOpen,
-      'hide-header-height-fix': data.hideHeader
+      'debug-enabled': vm.debugEnabled,
+      'debug-info-is-open': vm.debugInfoIsOpen,
+      'hide-header-height-fix': vm.hideHeader
     }">
       <div class="mdc-layout-grid">
         <div class="mdc-layout-grid__inner">
-          <div class="mdc-layout-grid__cell--span-12" appFormSlide *ngIf="!data.delayForm">
-            <div *ngFor="let item of data.items; trackBy: trackByFn">
+          <div class="mdc-layout-grid__cell--span-12" appFormSlide *ngIf="!vm.delayForm">
+            <div *ngFor="let item of vm.items; trackBy: trackByFn">
               <app-form-builder [entityGuid]="item.Entity.Guid"></app-form-builder>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <extended-fab-speed-dial [disabled]="data.saveButtonDisabled" *ngIf="data.viewInitiated">
+    <extended-fab-speed-dial [disabled]="vm.saveButtonDisabled" *ngIf="vm.viewInitiated">
       <ng-template extendedFabSpeedDialTriggerContent>
-        <button extended-fab-speed-dial-trigger matRipple [disabled]="data.saveButtonDisabled" (click)="saveAll(true)">
-          <mat-icon (click)="data.saveButtonDisabled && saveAll(false)">done</mat-icon>
+        <button extended-fab-speed-dial-trigger matRipple [disabled]="vm.saveButtonDisabled" (click)="saveAll(true)">
+          <mat-icon (click)="vm.saveButtonDisabled && saveAll(false)">done</mat-icon>
           <span>{{ 'Form.Buttons.SaveAndClose' | translate }}</span>
         </button>
       </ng-template>
       <ng-template extendedFabSpeedDialActionsContent>
-        <button extended-fab-speed-dial-action matRipple [disabled]="data.saveButtonDisabled" (click)="saveAll(false)">
+        <button extended-fab-speed-dial-action matRipple [disabled]="vm.saveButtonDisabled" (click)="saveAll(false)">
           <span>{{ 'Form.Buttons.Save' | translate }}</span>
           <mat-icon>save</mat-icon>
         </button>
@@ -39,7 +39,7 @@
     </extended-fab-speed-dial>
   </div>
 
-  <app-edit-dialog-footer mat-dialog-actions *ngIf="data.debugEnabled" [formBuilderRefs]="formBuilderRefs"
+  <app-edit-dialog-footer mat-dialog-actions *ngIf="vm.debugEnabled" [formBuilderRefs]="formBuilderRefs"
     (debugInfoOpened)="debugInfoOpened($event)">
   </app-edit-dialog-footer>
 </div>

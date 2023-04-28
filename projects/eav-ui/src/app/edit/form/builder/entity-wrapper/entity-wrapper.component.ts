@@ -14,7 +14,7 @@ import { EavEntity, EavItem } from '../../../shared/models/eav';
 import { EavService, EditRoutingService, EntityService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
 import { ItemService, LanguageInstanceService } from '../../../shared/store/ngrx-data';
 import { buildContentTypeFeatures, getItemForTooltip, getNoteProps } from './entity-wrapper.helpers';
-import { ContentTypeTemplateVars } from './entity-wrapper.models';
+import { ContentTypeViewModel } from './entity-wrapper.models';
 
 @Component({
   selector: 'app-entity-wrapper',
@@ -30,7 +30,7 @@ export class EntityWrapperComponent extends BaseSubsinkComponent implements OnIn
 
   collapse = false;
   noteTouched: boolean = false;
-  templateVars$: Observable<ContentTypeTemplateVars>;
+  viewModel$: Observable<ContentTypeViewModel>;
 
   private noteRef?: MatDialogRef<undefined, any>;
 
@@ -48,7 +48,7 @@ export class EntityWrapperComponent extends BaseSubsinkComponent implements OnIn
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private featuresService: FeaturesService,
-  ) { 
+  ) {
     super();
   }
 
@@ -99,7 +99,7 @@ export class EntityWrapperComponent extends BaseSubsinkComponent implements OnIn
       distinctUntilChanged(),
     );
 
-    this.templateVars$ = combineLatest([
+    this.viewModel$ = combineLatest([
       combineLatest([readOnly$, currentLanguage$, defaultLanguage$, showNotes$, showMetadataFor$]),
       combineLatest([itemForTooltip$, header$, settings$, noteProps$]),
     ]).pipe(
@@ -107,7 +107,7 @@ export class EntityWrapperComponent extends BaseSubsinkComponent implements OnIn
         [readOnly, currentLanguage, defaultLanguage, showNotes, showMetadataFor],
         [itemForTooltip, header, settings, noteProps],
       ]) => {
-        const templateVars: ContentTypeTemplateVars = {
+        const viewModel: ContentTypeViewModel = {
           readOnly: readOnly.isReadOnly,
           currentLanguage,
           defaultLanguage,
@@ -121,7 +121,7 @@ export class EntityWrapperComponent extends BaseSubsinkComponent implements OnIn
           showNotes,
           showMetadataFor,
         };
-        return templateVars;
+        return viewModel;
       }),
     );
 

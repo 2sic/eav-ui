@@ -6,7 +6,7 @@ import { EavService, FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { BaseFieldComponent } from '../../base/base-field.component';
 import { StringDropdownLogic } from './string-dropdown-logic';
-import { StringDropdownTemplateVars } from './string-dropdown.models';
+import { StringDropdownViewModel } from './string-dropdown.models';
 
 @Component({
   selector: InputTypeConstants.StringDropdown,
@@ -18,7 +18,7 @@ import { StringDropdownTemplateVars } from './string-dropdown.models';
 })
 export class StringDropdownComponent extends BaseFieldComponent<string | number> implements OnInit, OnDestroy {
   type: 'string' | 'number';
-  templateVars$: Observable<StringDropdownTemplateVars>;
+  viewModel$: Observable<StringDropdownViewModel>;
 
   private toggleFreeText$: BehaviorSubject<boolean>;
 
@@ -39,7 +39,7 @@ export class StringDropdownComponent extends BaseFieldComponent<string | number>
     );
     const dropdownOptions$ = this.settings$.pipe(map(settings => settings._options), distinctUntilChanged());
 
-    this.templateVars$ = combineLatest([
+    this.viewModel$ = combineLatest([
       combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
       combineLatest([enableTextEntry$, dropdownOptions$, freeTextMode$]),
     ]).pipe(
@@ -47,7 +47,7 @@ export class StringDropdownComponent extends BaseFieldComponent<string | number>
         [controlStatus, label, placeholder, required],
         [enableTextEntry, dropdownOptions, freeTextMode],
       ]) => {
-        const templateVars: StringDropdownTemplateVars = {
+        const viewModel: StringDropdownViewModel = {
           controlStatus,
           label,
           placeholder,
@@ -56,7 +56,7 @@ export class StringDropdownComponent extends BaseFieldComponent<string | number>
           dropdownOptions,
           freeTextMode,
         };
-        return templateVars;
+        return viewModel;
       }),
     );
   }

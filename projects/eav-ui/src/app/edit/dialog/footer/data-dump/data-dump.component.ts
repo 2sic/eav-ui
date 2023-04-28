@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { combineLatest, map, Observable } from 'rxjs';
 import { EavService } from '../../../shared/services';
 import { ItemService } from '../../../shared/store/ngrx-data';
-import { DataDumpTemplateVars } from './data-dump.component.models';
+import { DataDumpViewModel } from './data-dump.component.models';
 
 @Component({
   selector: 'app-data-dump',
@@ -10,18 +10,18 @@ import { DataDumpTemplateVars } from './data-dump.component.models';
   styleUrls: ['./data-dump.component.scss'],
 })
 export class DataDumpComponent implements OnInit {
-  templateVars$: Observable<DataDumpTemplateVars>;
+  viewModel$: Observable<DataDumpViewModel>;
 
   constructor(private itemService: ItemService, private eavService: EavService) { }
 
   ngOnInit(): void {
     const items$ = this.itemService.getItems$(this.eavService.eavConfig.itemGuids);
-    this.templateVars$ = combineLatest([items$]).pipe(
+    this.viewModel$ = combineLatest([items$]).pipe(
       map(([items]) => {
-        const templateVars: DataDumpTemplateVars = {
+        const viewModel: DataDumpViewModel = {
           items,
         };
-        return templateVars;
+        return viewModel;
       }),
     );
   }

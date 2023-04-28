@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { DevRestBaseTemplateVars } from '..';
+import { DevRestBaseViewModel } from '..';
 
 @Component({
   selector: 'app-dev-rest-tab-examples-intro',
@@ -7,6 +7,6 @@ import { DevRestBaseTemplateVars } from '..';
   styleUrls: ['./tab-examples.component.scss']
 })
 export class DevRestTabExamplesComponent {
-  @Input() data: DevRestBaseTemplateVars;
+  @Input() data: DevRestBaseViewModel;
   constructor() { }
 }

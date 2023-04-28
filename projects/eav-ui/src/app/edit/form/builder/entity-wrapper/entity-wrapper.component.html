@@ -1,4 +1,4 @@
-<mat-card *ngIf="templateVars$ | async as data" class="mat-card-group-parent shadow-bottom-z-1">
+<mat-card *ngIf="viewModel$ | async as vm" class="mat-card-group-parent shadow-bottom-z-1">
   <div class="mat-card-header-group-parent" fxLayout="row" fxLayoutAlign="start center">
 
     <div fxFlex="auto" fxLayoutAlign="start center" (click)="toggleCollapse()">
@@ -7,50 +7,50 @@
           {{ collapse ? 'keyboard_arrow_down' : 'keyboard_arrow_up' }}
         </mat-icon>
         <span class="title">
-          {{ data.itemTitle || ('ItemCard.DefaultTitle' | translate) }}
+          {{ vm.itemTitle || ('ItemCard.DefaultTitle' | translate) }}
         </span>
       </div>
     </div>
 
-    <button type="button" #noteTrigger mat-icon-button class="note {{ data.noteProps.triggerClass }}"
-      [disabled]="data.readOnly" [tippy]="data.noteProps.tooltip | translate"
-      [tippyDisabled]="data.readOnly || !data.noteProps.tooltip" [disableRipple]="data.noteProps.itemNotSaved"
-      (pointerenter)="data.noteProps.note ? toggleNote($event) : null"
-      (pointerleave)="data.noteProps.note ? toggleNote($event) : null"
-      (click)="data.noteProps.note ? toggleNote($event) : editNote()" *ngIf="data.showNotes">
-      <mat-icon>{{ data.noteProps.iconName }}</mat-icon>
+    <button type="button" #noteTrigger mat-icon-button class="note {{ vm.noteProps.triggerClass }}"
+      [disabled]="vm.readOnly" [tippy]="vm.noteProps.tooltip | translate"
+      [tippyDisabled]="vm.readOnly || !vm.noteProps.tooltip" [disableRipple]="vm.noteProps.itemNotSaved"
+      (pointerenter)="vm.noteProps.note ? toggleNote($event) : null"
+      (pointerleave)="vm.noteProps.note ? toggleNote($event) : null"
+      (click)="vm.noteProps.note ? toggleNote($event) : editNote()" *ngIf="vm.showNotes">
+      <mat-icon>{{ vm.noteProps.iconName }}</mat-icon>
     </button>
 
     <ng-template #noteTemplate>
-      <div class="note-wrapper {{ data.noteProps.noteClass }}" cdkDrag cdkDragRootElement=".cdk-overlay-pane"
+      <div class="note-wrapper {{ vm.noteProps.noteClass }}" cdkDrag cdkDragRootElement=".cdk-overlay-pane"
         cdkDragBoundary="body" (pointerdown)="noteTouched = true">
         <div class="note-actions" cdkDragHandle>
-          <button mat-icon-button appMousedownStopPropagation (click)="editNote(data.noteProps.note)">
+          <button mat-icon-button appMousedownStopPropagation (click)="editNote(vm.noteProps.note)">
             <mat-icon>edit</mat-icon>
           </button>
-          <button mat-icon-button appMousedownStopPropagation (click)="deleteNote(data.noteProps.note)">
+          <button mat-icon-button appMousedownStopPropagation (click)="deleteNote(vm.noteProps.note)">
             <mat-icon>delete</mat-icon>
           </button>
           <button mat-icon-button appMousedownStopPropagation (click)="toggleNote($event)">
             <mat-icon>close</mat-icon>
           </button>
         </div>
-        <div class="note-content hide-scrollbar" [innerHtml]="data.noteProps.noteHtml | safeHtml"></div>
+        <div class="note-content hide-scrollbar" [innerHtml]="vm.noteProps.noteHtml | safeHtml"></div>
       </div>
     </ng-template>
 
-    <mat-slide-toggle class="empty-slot-toggle" *ngIf="data.slotCanBeEmpty" (change)="toggleSlotIsEmpty(data.header)"
-      [checked]="!data.slotIsEmpty" [disabled]="data.readOnly || (data.currentLanguage !== data.defaultLanguage)"
-      [tippy]="(!data.slotIsEmpty ? 'ItemCard.SlotUsedTrue' : 'ItemCard.SlotUsedFalse') | translate"
-      [tippyDisabled]="data.readOnly || (data.currentLanguage !== data.defaultLanguage)">
+    <mat-slide-toggle class="empty-slot-toggle" *ngIf="vm.slotCanBeEmpty" (change)="toggleSlotIsEmpty(vm.header)"
+      [checked]="!vm.slotIsEmpty" [disabled]="vm.readOnly || (vm.currentLanguage !== vm.defaultLanguage)"
+      [tippy]="(!vm.slotIsEmpty ? 'ItemCard.SlotUsedTrue' : 'ItemCard.SlotUsedFalse') | translate"
+      [tippyDisabled]="vm.readOnly || (vm.currentLanguage !== vm.defaultLanguage)">
     </mat-slide-toggle>
 
-    <div class="icon-box" [tippy]="data.itemForTooltip" *ngIf="data.showMetadataFor && data.itemForTooltip">
+    <div class="icon-box" [tippy]="vm.itemForTooltip" *ngIf="vm.showMetadataFor && vm.itemForTooltip">
       <mat-icon>local_offer</mat-icon>
     </div>
 
     <button type="button" mat-icon-button [tippy]="'Form.Buttons.History.Tip' | translate"
-      *ngIf="eavService.eavConfig.enableHistory" [disabled]="data.readOnly" (click)="openHistory()">
+      *ngIf="eavService.eavConfig.enableHistory" [disabled]="vm.readOnly" (click)="openHistory()">
       <mat-icon>history</mat-icon>
     </button>
 
@@ -61,8 +61,8 @@
   <mat-card-content class="mat-card-content-group-parent" [style.display]="collapse ? 'none' : 'block'">
     <div class="mdc-layout-grid">
       <div class="mdc-layout-grid__inner">
-        <div class="mdc-layout-grid__cell--span-12 mat-body-1" allign="start" *ngIf="data.editInstructions">
-          <div class="description" appChangeAnchorTarget [innerHtml]="data.editInstructions | safeHtml"></div>
+        <div class="mdc-layout-grid__cell--span-12 mat-body-1" allign="start" *ngIf="vm.editInstructions">
+          <div class="description" appChangeAnchorTarget [innerHtml]="vm.editInstructions | safeHtml"></div>
         </div>
         <div class="mdc-layout-grid__cell--span-12">
           <ng-container appFieldsBuilder [group]="group"></ng-container>

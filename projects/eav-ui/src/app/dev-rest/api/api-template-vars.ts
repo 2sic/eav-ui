@@ -1,7 +1,7 @@
-import { DevRestBaseTemplateVars } from '..';
+import { DevRestBaseViewModel } from '..';
 import { WebApi, WebApiAction, WebApiDetails } from '../../app-administration/models';
 
-export interface DevRestApiTemplateVars extends DevRestBaseTemplateVars {
+export interface DevRestApiViewModel extends DevRestBaseViewModel {
   webApi: WebApi;
   details: WebApiDetails;
   selected: WebApiAction;

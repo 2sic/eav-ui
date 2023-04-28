@@ -1,5 +1,5 @@
 import { EavItem } from '../../../shared/models/eav';
 
-export interface DataDumpTemplateVars {
+export interface DataDumpViewModel {
   items: EavItem[];
 }
