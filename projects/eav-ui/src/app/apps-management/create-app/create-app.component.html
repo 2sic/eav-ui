@@ -1,6 +1,4 @@
-<ng-container *ngIf="{
-  loading: loading$ | async
-} as data">
+<ng-container *ngIf="viewModel$ | async as vm">
   <div mat-dialog-title>
     <div class="dialog-title-box">Create App</div>
   </div>
@@ -26,10 +24,10 @@
   </form>
 
   <div class="dialog-component-actions">
-    <button type="button" mat-raised-button [disabled]="data.loading" (click)="closeDialog()">
+    <button type="button" mat-raised-button [disabled]="vm.loading" (click)="closeDialog()">
       Cancel
     </button>
-    <button type="button" mat-raised-button color="accent" [disabled]="data.loading || !form.valid" (click)="create()">
+    <button type="button" mat-raised-button color="accent" [disabled]="vm.loading || !form.valid" (click)="create()">
       Create
     </button>
   </div>

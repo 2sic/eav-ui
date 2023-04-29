@@ -2,7 +2,7 @@ import { GridOptions } from '@ag-grid-community/core';
 import { Component, HostBinding, OnDestroy, OnInit } from "@angular/core";
 import { MatDialogRef } from "@angular/material/dialog";
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { BehaviorSubject, catchError, distinctUntilChanged, Observable, of, share, startWith, Subject, Subscription, switchMap } from "rxjs";
+import { BehaviorSubject, catchError, combineLatest, distinctUntilChanged, map, Observable, of, share, startWith, Subject, Subscription, switchMap } from "rxjs";
 import { FeatureNames } from '../../features/feature-names';
 import { BaseSubsinkComponent } from '../../shared/components/base-subsink-component/base-subsink.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
@@ -22,7 +22,6 @@ import { CheckboxCellParams } from './checkbox-cell/checkbox-cell.model';
 export class AddAppFromFolderComponent extends BaseSubsinkComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
-  pendingApps$: Observable<PendingApp[]>;
   gridOptions = this.buildGridOptions();
   pendingApps: PendingApp[] = [];
   installing: boolean = false;
@@ -30,6 +29,7 @@ export class AddAppFromFolderComponent extends BaseSubsinkComponent implements O
   private refreshApps$ = new Subject<void>();
   private isAddFromFolderEnabled$ = new BehaviorSubject<boolean>(false);
 
+  viewModel$: Observable<AddAppFromFolderViewModel>;
 
   constructor(
     private dialogRef: MatDialogRef<AddAppFromFolderComponent>,
@@ -41,15 +41,19 @@ export class AddAppFromFolderComponent extends BaseSubsinkComponent implements O
   }
   
   ngOnInit(): void {
-    this.pendingApps$ = this.refreshApps$.pipe(
-      startWith(undefined),
-      switchMap(() => this.appsListService.getPendingApps().pipe(catchError(() => of(undefined)))),
-      share()
-    );
     this.subscription.add(this.featuresService.isEnabled$(FeatureNames.AppSyncWithSiteFiles)
       .pipe(distinctUntilChanged())
       .subscribe(this.isAddFromFolderEnabled$)
     ); 
+    this.viewModel$ = combineLatest([
+      this.refreshApps$.pipe(
+        startWith(undefined),
+        switchMap(() => this.appsListService.getPendingApps().pipe(catchError(() => of(undefined)))),
+        share()
+      )
+    ]).pipe(
+      map(([pendingApps]) => ({ pendingApps })),
+    );
   }
 
   ngOnDestroy(): void {
@@ -121,4 +125,8 @@ export class AddAppFromFolderComponent extends BaseSubsinkComponent implements O
     }
     return gridOptions;
   }
+}
+
+interface AddAppFromFolderViewModel {
+  pendingApps: PendingApp[];
 }

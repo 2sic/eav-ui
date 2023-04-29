@@ -2,7 +2,7 @@
   <div class="dialog-title-box">{{ contentTypeStaticName ? 'Edit Content Type' : 'New Content Type' }}</div>
 </div>
 
-<ng-container *ngIf="(viewModel$ | async) as vm">
+<ng-container *ngIf="viewModel$ | async as vm">
 
   <form class="dialog-form" *ngIf="vm.contentType" #ngForm="ngForm" (ngSubmit)="save()">
     <div class="dialog-form-content fancy-scrollbar-light">
