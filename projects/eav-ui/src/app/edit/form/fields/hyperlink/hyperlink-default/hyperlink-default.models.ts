@@ -11,7 +11,7 @@ export interface Preview {
   icon: string;
 }
 
-export interface HyperlinkDefaultTemplateVars extends BaseFieldViewModel {
+export interface HyperlinkDefaultViewModel extends BaseFieldViewModel {
   open: boolean;
   buttonAdam: boolean;
   buttonPage: boolean;

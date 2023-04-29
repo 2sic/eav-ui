@@ -9,7 +9,7 @@ export interface IconOption {
   label: string;
 }
 
-export interface StringFontIconPickerTemplateVars extends BaseFieldViewModel {
+export interface StringFontIconPickerViewModel extends BaseFieldViewModel {
   filteredIcons: IconOption[];
   previewCss: string;
 }

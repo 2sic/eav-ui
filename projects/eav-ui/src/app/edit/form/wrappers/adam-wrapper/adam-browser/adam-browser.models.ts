@@ -1,6 +1,6 @@
 import { AdamConfig, AdamItem } from '../../../../../../../../edit-types';
 
-export interface AdamBrowserTemplateVars {
+export interface AdamBrowserViewModel {
   adamConfig: AdamConfig;
   expanded: boolean;
   items: AdamItem[];

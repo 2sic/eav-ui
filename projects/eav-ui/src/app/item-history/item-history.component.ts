@@ -30,7 +30,7 @@ export class ItemHistoryComponent implements OnInit, OnDestroy {
   private historyItems$ = combineLatest([this.versions$, this.page$, this.pageSize$, this.compareWith$]).pipe(
     map(([versions, page, pageSize, compareWith]) => getHistoryItems(versions, page, pageSize, compareWith)),
   );
-  templateVars$ = combineLatest([this.versions$, this.historyItems$, this.pageSize$, this.compareWith$]).pipe(
+  viewModel$ = combineLatest([this.versions$, this.historyItems$, this.pageSize$, this.compareWith$]).pipe(
     map(([versions, historyItems, pageSize, compareWith]) => ({
       length: versions?.length,
       historyItems,

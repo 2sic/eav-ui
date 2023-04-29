@@ -1,6 +1,6 @@
 import { BaseFieldViewModel } from '../../fields/base/base-field-template-vars.model';
 
-export interface ExpandableWrapperTemplateVars extends BaseFieldViewModel {
+export interface ExpandableWrapperViewModel extends BaseFieldViewModel {
   focused: boolean;
   previewHeight: PreviewHeight;
 }

@@ -4,32 +4,32 @@
 
 <router-outlet></router-outlet>
 
-<div class="dialog-component-content fancy-scrollbar-light" cdkScrollable *ngIf="(templateVars$ | async) as data">
-  <ng-container *ngIf="data.header">
+<div class="dialog-component-content fancy-scrollbar-light" cdkScrollable *ngIf="viewModel$ | async as vm">
+  <ng-container *ngIf="vm.header">
     <p class="dialog-description">
       {{'ManageContentList.Description' | translate}}
     </p>
 
     <p class="dialog-description">
-      <ng-container *ngIf="data.header.Type">
-        <span>{{ data.header.Title }}</span>
+      <ng-container *ngIf="vm.header.Type">
+        <span>{{ vm.header.Title }}</span>
         <button mat-icon-button tippy="Edit header" (click)="editHeader()">
           <mat-icon>edit</mat-icon>
         </button>
       </ng-container>
-      <ng-container *ngIf="!data.header.Type">{{'ManageContentList.NoHeader' | translate}}</ng-container>
+      <ng-container *ngIf="!vm.header.Type">{{'ManageContentList.NoHeader' | translate}}</ng-container>
     </p>
   </ng-container>
 
-  <p class="dialog-description sort-title" *ngIf="data.items && data.items?.length < 25 ">
+  <p class="dialog-description sort-title" *ngIf="vm.items && vm.items?.length < 25 ">
     {{'ManageContentList.SortItems' | translate}}
   </p>
-  <p class="dialog-description sort-title" *ngIf="data.items?.length >= 25 ">
+  <p class="dialog-description sort-title" *ngIf="vm.items?.length >= 25 ">
     {{'ManageContentList.SortLotsOfItems' | translate}}
   </p>
 
   <div class="dnd-list" cdkDropList (cdkDropListDropped)="drop($event)">
-    <div *ngFor="let item of data.items; trackBy: trackByFn" class="dnd-item" cdkDrag>
+    <div *ngFor="let item of vm.items; trackBy: trackByFn" class="dnd-item" cdkDrag>
       <div class="dnd-item__title">
         <mat-icon class="dnd-item__title-icon" tippy="Drag to reorder the list">drag_handle</mat-icon>
         <span class="dnd-item__title-text" tippy="{{ item.Title }} ({{ item.Id }})">

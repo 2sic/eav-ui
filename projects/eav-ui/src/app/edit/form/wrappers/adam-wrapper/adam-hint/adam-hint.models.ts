@@ -1,3 +1,3 @@
-export interface AdamHintTemplateVars {
+export interface AdamHintViewModel {
   showAdamSponsor: boolean;
 }

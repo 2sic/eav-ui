@@ -6,7 +6,7 @@ import { FieldValue, PagePickerResult } from '../../../../../../../edit-types';
 import { GeneralHelpers } from '../../../shared/helpers';
 import { QueryService } from '../../../shared/services';
 import { buildPageSearch, buildPageTree } from './page-picker.helpers';
-import { PageEntity, PagePickerDialogData, PagePickerTemplateVars, PageSearchItem, PageTreeItem } from './page-picker.models';
+import { PageEntity, PagePickerDialogData, PagePickerViewModel, PageSearchItem, PageTreeItem } from './page-picker.models';
 
 @Component({
   selector: 'app-page-picker',
@@ -16,7 +16,7 @@ import { PageEntity, PagePickerDialogData, PagePickerTemplateVars, PageSearchIte
 export class PagePickerComponent implements OnInit, OnDestroy {
   selected: number;
   toggled: number[];
-  templateVars$: Observable<PagePickerTemplateVars>;
+  viewModel$: Observable<PagePickerViewModel>;
 
   private filterText$: BehaviorSubject<string>;
   private searchItems$: BehaviorSubject<PageSearchItem[]>;
@@ -41,14 +41,14 @@ export class PagePickerComponent implements OnInit, OnDestroy {
         searchItems.filter(item => item.name.toLocaleLowerCase().includes(filterText.toLocaleLowerCase()))
       ),
     );
-    this.templateVars$ = combineLatest([this.filterText$, filteredSearch$, this.tree$]).pipe(
+    this.viewModel$ = combineLatest([this.filterText$, filteredSearch$, this.tree$]).pipe(
       map(([filterText, filteredSearch, tree]) => {
-        const templateVars: PagePickerTemplateVars = {
+        const viewModel: PagePickerViewModel = {
           filterText,
           filteredSearch,
           tree,
         };
-        return templateVars;
+        return viewModel;
       }),
     );
 

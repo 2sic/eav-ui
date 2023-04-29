@@ -1,6 +1,6 @@
 import { FieldSettings } from '../../../../../../../edit-types';
 
-export interface FieldHelperTextTemplateVars {
+export interface FieldHelperTextViewModel {
   invalid: boolean;
   disabled: boolean;
   description: string;

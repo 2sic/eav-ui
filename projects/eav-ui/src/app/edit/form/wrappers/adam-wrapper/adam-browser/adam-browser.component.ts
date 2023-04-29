@@ -15,7 +15,7 @@ import { FileTypeHelpers, UrlHelpers } from '../../../../shared/helpers';
 import { AdamService, EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../../shared/services';
 import { AdamCacheService, LinkCacheService } from '../../../../shared/store/ngrx-data';
 import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
-import { AdamBrowserTemplateVars, AdamConfigInstance } from './adam-browser.models';
+import { AdamBrowserViewModel, AdamConfigInstance } from './adam-browser.models';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -43,7 +43,7 @@ export class AdamBrowserComponent extends BaseSubsinkComponent implements OnInit
   @Input() group: FormGroup;
   @Output() openUpload = new EventEmitter<null>();
 
-  templateVars$: Observable<AdamBrowserTemplateVars>;
+  viewModel$: Observable<AdamBrowserViewModel>;
 
   private adamConfig$: BehaviorSubject<AdamConfig>;
   private items$: BehaviorSubject<AdamItem[]>;
@@ -65,7 +65,7 @@ export class AdamBrowserComponent extends BaseSubsinkComponent implements OnInit
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef
-  ) { 
+  ) {
     super();
   }
 
@@ -123,9 +123,9 @@ export class AdamBrowserComponent extends BaseSubsinkComponent implements OnInit
       distinctUntilChanged(),
     );
 
-    this.templateVars$ = combineLatest([this.adamConfig$, expanded$, this.items$, value$, disabled$, allowPasteImageFromClipboard$]).pipe(
+    this.viewModel$ = combineLatest([this.adamConfig$, expanded$, this.items$, value$, disabled$, allowPasteImageFromClipboard$]).pipe(
       map(([adamConfig, expanded, items, value, disabled, allowPasteImageFromClipboard]) => {
-        const templateVars: AdamBrowserTemplateVars = {
+        const viewModel: AdamBrowserViewModel = {
           adamConfig,
           expanded,
           items,
@@ -133,7 +133,7 @@ export class AdamBrowserComponent extends BaseSubsinkComponent implements OnInit
           disabled,
           allowPasteImageFromClipboard
         };
-        return templateVars;
+        return viewModel;
       }),
     );
   }

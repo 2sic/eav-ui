@@ -10,7 +10,7 @@ import { LinkCacheService } from '../../../../shared/store/ngrx-data';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { HyperlinkDefaultBaseComponent } from './hyperlink-default-base.component';
 import { HyperlinkDefaultLogic } from './hyperlink-default-logic';
-import { HyperlinkDefaultTemplateVars } from './hyperlink-default.models';
+import { HyperlinkDefaultViewModel } from './hyperlink-default.models';
 
 @Component({
   selector: InputTypeConstants.HyperlinkDefault,
@@ -26,7 +26,7 @@ import { HyperlinkDefaultTemplateVars } from './hyperlink-default.models';
   ],
 })
 export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent implements OnInit, OnDestroy {
-  templateVars$: Observable<HyperlinkDefaultTemplateVars>;
+  viewModel: Observable<HyperlinkDefaultViewModel>;
 
   constructor(
     eavService: EavService,
@@ -87,7 +87,7 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
       distinctUntilChanged(),
     );
 
-    this.templateVars$ = combineLatest([
+    this.viewModel = combineLatest([
       combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
       combineLatest([open$, this.preview$, settings$, adamItem$]),
     ]).pipe(
@@ -95,7 +95,7 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
         [controlStatus, label, placeholder, required],
         [open, preview, settings, adamItem],
       ]) => {
-        const templateVars: HyperlinkDefaultTemplateVars = {
+        const viewModel: HyperlinkDefaultViewModel = {
           controlStatus,
           label,
           placeholder,
@@ -112,7 +112,7 @@ export class HyperlinkDefaultComponent extends HyperlinkDefaultBaseComponent imp
           adamItem,
           enableImageConfiguration: settings.EnableImageConfiguration,
         };
-        return templateVars;
+        return viewModel;
       }),
     );
   }

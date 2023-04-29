@@ -6,7 +6,7 @@ export interface TranslationStateCore {
   language: string;
 }
 
-export interface TranslateMenuTemplateVars {
+export interface TranslateMenuViewModel {
   readOnly: boolean;
   currentLanguage: string;
   defaultLanguage: string;

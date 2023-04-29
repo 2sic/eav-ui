@@ -8,7 +8,7 @@ import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.de
 import { BaseFieldComponent } from '../../base/base-field.component';
 import { StringFontIconPickerLogic } from './string-font-icon-picker-logic';
 import { findAllIconsInCss } from './string-font-icon-picker.helpers';
-import { IconOption, StringFontIconPickerTemplateVars } from './string-font-icon-picker.models';
+import { IconOption, StringFontIconPickerViewModel } from './string-font-icon-picker.models';
 
 @Component({
   selector: InputTypeConstants.StringFontIconPicker,
@@ -19,7 +19,7 @@ import { IconOption, StringFontIconPickerTemplateVars } from './string-font-icon
   wrappers: [WrappersConstants.LocalizationWrapper],
 })
 export class StringFontIconPickerComponent extends BaseFieldComponent<string> implements OnInit, OnDestroy {
-  templateVars$: Observable<StringFontIconPickerTemplateVars>;
+  viewModel: Observable<StringFontIconPickerViewModel>;
 
   private iconOptions$: BehaviorSubject<IconOption[]>;
 
@@ -63,7 +63,7 @@ export class StringFontIconPickerComponent extends BaseFieldComponent<string> im
       }),
     );
 
-    this.templateVars$ = combineLatest([
+    this.viewModel = combineLatest([
       combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
       combineLatest([filteredIcons$, previewCss$]),
     ]).pipe(
@@ -71,7 +71,7 @@ export class StringFontIconPickerComponent extends BaseFieldComponent<string> im
         [controlStatus, label, placeholder, required],
         [filteredIcons, previewCss],
       ]) => {
-        const templateVars: StringFontIconPickerTemplateVars = {
+        const viewModel: StringFontIconPickerViewModel = {
           controlStatus,
           label,
           placeholder,
@@ -79,7 +79,7 @@ export class StringFontIconPickerComponent extends BaseFieldComponent<string> im
           filteredIcons,
           previewCss,
         };
-        return templateVars;
+        return viewModel;
       }),
     );
   }

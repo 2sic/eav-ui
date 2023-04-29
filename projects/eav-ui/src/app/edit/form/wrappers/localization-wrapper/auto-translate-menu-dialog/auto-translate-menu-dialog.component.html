@@ -1,18 +1,19 @@
-<mat-card *ngIf="templateVars$ | async as data" class="translate-menu-dialog-card u-hide-scrollbar">
+<mat-card *ngIf="viewModel$ | async as vm" class="translate-menu-dialog-card u-hide-scrollbar">
 
   <div class="mat-card__header">
     <div class="mat-card__title">
       {{ 'LangMenu.Dialog.AutoTranslateAll.Title' | translate }}
     </div>
     <app-feature-text-info [featureNameId]="'EditUiTranslateWithGoogle'"></app-feature-text-info>
-    <div class="mat-card__description" [innerHTML]="'LangMenu.Dialog.AutoTranslateAll.Body' | translate | safeHtml"></div>
+    <div class="mat-card__description" [innerHTML]="'LangMenu.Dialog.AutoTranslateAll.Body' | translate | safeHtml">
+    </div>
   </div>
 
   <mat-action-list>
-    <button mat-list-item *ngFor="let language of data.languages" (click)="setLanguage(language.key)"
-      [disabled]="language.disabled || !data.isTranslateWithGoogleFeatureEnabled" [ngClass]="{
-      'mat-list-item-focus': data.translationState.language === language.key,
-      'mat-list-item--disabled': language.disabled || !data.isTranslateWithGoogleFeatureEnabled
+    <button mat-list-item *ngFor="let language of vm.languages" (click)="setLanguage(language.key)"
+      [disabled]="language.disabled || !vm.isTranslateWithGoogleFeatureEnabled" [ngClass]="{
+      'mat-list-item-focus': vm.translationState.language === language.key,
+      'mat-list-item--disabled': language.disabled || !vm.isTranslateWithGoogleFeatureEnabled
     }">
       <mat-icon matListIcon color="accent">language</mat-icon>
       {{ language.key }}
@@ -26,7 +27,7 @@
               &nbsp;({{"LangMenu.Dialog.AutoTranslateAll.AllTranslatableFields" | translate}})
             </div>
             <div *ngIf="dialogData.translatableFields.length - language.noTranslatableFieldsThatHaveContent != 0">
-              &nbsp;({{"LangMenu.Dialog.AutoTranslateAll.AllTranslatableFields" | translate}}, 
+              &nbsp;({{"LangMenu.Dialog.AutoTranslateAll.AllTranslatableFields" | translate}},
               {{dialogData.translatableFields.length - language.noTranslatableFieldsThatHaveContent}}
               {{"LangMenu.Dialog.AutoTranslateAll.Empty" | translate}})
             </div>
@@ -34,11 +35,13 @@
           <div *ngIf="language.noTranslatableFields != dialogData.translatableFields.length">
             <div *ngIf="dialogData.translatableFields.length - language.noTranslatableFieldsThatHaveContent == 0">
               &nbsp;({{language.noTranslatableFields}} {{"LangMenu.Dialog.AutoTranslateAll.Of" | translate}}
-              {{dialogData.translatableFields.length}} {{"LangMenu.Dialog.AutoTranslateAll.TranslatableFields" | translate}})
+              {{dialogData.translatableFields.length}} {{"LangMenu.Dialog.AutoTranslateAll.TranslatableFields" |
+              translate}})
             </div>
             <div *ngIf="dialogData.translatableFields.length - language.noTranslatableFieldsThatHaveContent != 0">
               &nbsp;({{language.noTranslatableFields}} {{"LangMenu.Dialog.AutoTranslateAll.Of" | translate}}
-              {{dialogData.translatableFields.length}} {{"LangMenu.Dialog.AutoTranslateAll.TranslatableFields" | translate}}
+              {{dialogData.translatableFields.length}} {{"LangMenu.Dialog.AutoTranslateAll.TranslatableFields" |
+              translate}}
               , {{dialogData.translatableFields.length - language.noTranslatableFieldsThatHaveContent}}
               {{"LangMenu.Dialog.AutoTranslateAll.Empty" | translate}})
             </div>

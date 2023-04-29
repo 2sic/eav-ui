@@ -1,3 +1,3 @@
-<ng-container *ngIf="templateVars$ | async as data">
-  <div *ngIf="data.visible" class="message-box" [innerHtml]="data.notes | safeHtml"></div>
+<ng-container *ngIf="viewModel | async as vm">
+  <div *ngIf="vm.visible" class="message-box" [innerHtml]="vm.notes | safeHtml"></div>
 </ng-container>

@@ -23,7 +23,7 @@ export class ManageContentListComponent extends BaseComponent implements OnInit,
 
   private items$ = new BehaviorSubject<GroupHeader[]>(null);
   private header$ = new BehaviorSubject<GroupHeader>(null);
-  templateVars$ = combineLatest([this.items$, this.header$]).pipe(
+  viewModel$ = combineLatest([this.items$, this.header$]).pipe(
     map(([items, header]) => ({ items, header })),
   );
 
@@ -46,7 +46,7 @@ export class ManageContentListComponent extends BaseComponent implements OnInit,
     private appDialogConfigService: AppDialogConfigService,
   ) {
     super(router, route);
-   }
+  }
 
   ngOnInit() {
     this.fetchList();
@@ -65,7 +65,7 @@ export class ManageContentListComponent extends BaseComponent implements OnInit,
   }
 
   private fetchDialogSettings() {
-    this.appDialogConfigService.getShared$() /*.getDialogSettings() */ .pipe(
+    this.appDialogConfigService.getShared$() /*.getDialogSettings() */.pipe(
       tap(
         dialogSettings => {
           this.translate.setDefaultLang(dialogSettings.Context.Language.Primary.split('-')[0]);

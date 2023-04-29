@@ -9,7 +9,7 @@ import { EavService, EditRoutingService, FieldsSettingsService, FormsStateServic
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { BaseFieldComponent } from '../../fields/base/base-field.component';
 import { ContentExpandAnimation } from '../expandable-wrapper/content-expand.animation';
-import { HyperlinkLibraryExpandableTemplateVars } from './hyperlink-library-expandable-wrapper.models';
+import { HyperlinkLibraryExpandableViewModel } from './hyperlink-library-expandable-wrapper.models';
 
 @Component({
   selector: WrappersConstants.HyperlinkLibraryExpandableWrapper,
@@ -25,7 +25,7 @@ export class HyperlinkLibraryExpandableWrapperComponent extends BaseFieldCompone
 
   open$: Observable<boolean>;
   saveButtonDisabled$ = this.formsStateService.saveButtonDisabled$.pipe(share());
-  templateVars$: Observable<HyperlinkLibraryExpandableTemplateVars>;
+  viewModel$: Observable<HyperlinkLibraryExpandableViewModel>;
 
   private adamItems$: BehaviorSubject<AdamItem[]>;
   private dropzoneDraggingHelper: DropzoneDraggingHelper;
@@ -50,7 +50,7 @@ export class HyperlinkLibraryExpandableWrapperComponent extends BaseFieldCompone
       distinctUntilChanged(),
     );
 
-    this.templateVars$ = combineLatest([
+    this.viewModel$ = combineLatest([
       combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
       combineLatest([this.adamItems$, showAdamSponsor$]),
     ]).pipe(
@@ -58,7 +58,7 @@ export class HyperlinkLibraryExpandableWrapperComponent extends BaseFieldCompone
         [controlStatus, label, placeholder, required],
         [adamItems, showAdamSponsor],
       ]) => {
-        const templateVars: HyperlinkLibraryExpandableTemplateVars = {
+        const viewModel: HyperlinkLibraryExpandableViewModel = {
           controlStatus,
           label,
           placeholder,
@@ -67,7 +67,7 @@ export class HyperlinkLibraryExpandableWrapperComponent extends BaseFieldCompone
           itemsNumber: adamItems.length,
           showAdamSponsor,
         };
-        return templateVars;
+        return viewModel;
       }),
     );
   }

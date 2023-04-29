@@ -1,22 +1,22 @@
-<div *ngIf="templateVars$ | async as data" class="c-fht__container" [ngClass]="{
-  'c-fht__container--no-hint': !data.description && !(data.invalid && !disableError),
+<div *ngIf="viewModel$ | async as vm" class="c-fht__container" [ngClass]="{
+  'c-fht__container--no-hint': !vm.description && !(vm.invalid && !disableError),
   'c-fht__container--last': config.isLastInGroup,
-  'c-fht__container--last--no-hint': config.isLastInGroup && !data.description && !(data.invalid && !disableError),
+  'c-fht__container--last--no-hint': config.isLastInGroup && !vm.description && !(vm.invalid && !disableError),
   'c-fht__container--hyperlink-default-wrapper-fix': hyperlinkDefaultWrapperFix && !config.isLastInGroup
 }">
-  <mat-hint *ngIf="data.description" class="mat-caption" (click)="toggleHint($event)"
-    [ngClass]="data.disabled ? 'c-fht__container-hint--disabled' : 'c-fht__container-hint'" align="start" fxLayout="row"
+  <mat-hint *ngIf="vm.description" class="mat-caption" (click)="toggleHint($event)"
+    [ngClass]="vm.disabled ? 'c-fht__container-hint--disabled' : 'c-fht__container-hint'" align="start" fxLayout="row"
     fxLayoutAlign="start start">
     <span class="notes-container" [ngClass]="{ 'c-fht__container-hint--ellipsis': !isFullText }" appChangeAnchorTarget
-      [innerHtml]="data.description | safeHtml">
+      [innerHtml]="vm.description | safeHtml">
     </span>
   </mat-hint>
 
-  <ng-container *ngIf="data.invalid && !disableError && getErrorMessage() as error">
-    <mat-error class="mat-caption">{{ error | translate:{ param:data.settings } }}</mat-error>
+  <ng-container *ngIf="vm.invalid && !disableError && getErrorMessage() as error">
+    <mat-error class="mat-caption">{{ error | translate:{ param:vm.settings } }}</mat-error>
   </ng-container>
 
-  <ng-container *ngIf="!data.invalid && !disableError && getWarningMessage() as warning">
+  <ng-container *ngIf="!vm.invalid && !disableError && getWarningMessage() as warning">
     <mat-error class="mat-caption warning">{{ warning | translate }}</mat-error>
   </ng-container>
 </div>

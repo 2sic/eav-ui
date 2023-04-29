@@ -6,7 +6,7 @@ import { GeneralHelpers } from '../../../../shared/helpers';
 import { EavService, FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { BaseFieldComponent } from '../../base/base-field.component';
-import { NumberDefaultTemplateVars } from './number-default.models';
+import { NumberDefaultViewModel } from './number-default.models';
 
 @Component({
   selector: InputTypeConstants.NumberDefault,
@@ -17,7 +17,7 @@ import { NumberDefaultTemplateVars } from './number-default.models';
   wrappers: [WrappersConstants.LocalizationWrapper],
 })
 export class NumberDefaultComponent extends BaseFieldComponent<number> implements OnInit, OnDestroy {
-  templateVars$: Observable<NumberDefaultTemplateVars>;
+  viewModel: Observable<NumberDefaultViewModel>;
 
   constructor(eavService: EavService, fieldsSettingsService: FieldsSettingsService) {
     super(eavService, fieldsSettingsService);
@@ -33,7 +33,7 @@ export class NumberDefaultComponent extends BaseFieldComponent<number> implement
       distinctUntilChanged(GeneralHelpers.objectsEqual),
     );
 
-    this.templateVars$ = combineLatest([
+    this.viewModel = combineLatest([
       combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
       combineLatest([settings$]),
     ]).pipe(
@@ -41,7 +41,7 @@ export class NumberDefaultComponent extends BaseFieldComponent<number> implement
         [controlStatus, label, placeholder, required],
         [settings],
       ]) => {
-        const templateVars: NumberDefaultTemplateVars = {
+        const viewModel: NumberDefaultViewModel = {
           controlStatus,
           label,
           placeholder,
@@ -49,7 +49,7 @@ export class NumberDefaultComponent extends BaseFieldComponent<number> implement
           min: settings.Min,
           max: settings.Max,
         };
-        return templateVars;
+        return viewModel;
       }),
     );
   }

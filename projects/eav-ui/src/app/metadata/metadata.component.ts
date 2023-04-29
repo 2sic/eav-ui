@@ -21,7 +21,7 @@ import { MetadataActionsComponent } from './metadata-actions/metadata-actions.co
 import { MetadataActionsParams } from './metadata-actions/metadata-actions.models';
 import { MetadataContentTypeComponent } from './metadata-content-type/metadata-content-type.component';
 import { MetadataSaveDialogComponent } from './metadata-save-dialog/metadata-save-dialog.component';
-import { MetadataItem, MetadataRecommendation, MetadataTemplateVars } from './models/metadata.model';
+import { MetadataItem, MetadataRecommendation, MetadataViewModel } from './models/metadata.model';
 import { FeatureComponentBase } from '../features/shared/base-feature.component';
 
 @Component({
@@ -41,7 +41,7 @@ export class MetadataComponent extends BaseComponent implements OnInit, OnDestro
   private key = this.route.snapshot.paramMap.get('key');
   title = decodeURIComponent(this.route.snapshot.paramMap.get('title') ?? '');
   private contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
-  templateVars$: Observable<MetadataTemplateVars>;
+  viewModel$: Observable<MetadataViewModel>;
 
   constructor(
     protected router: Router,
@@ -55,7 +55,7 @@ export class MetadataComponent extends BaseComponent implements OnInit, OnDestro
     private dialog: MatDialog,
     private viewContainerRef: ViewContainerRef,
     private changeDetectorRef: ChangeDetectorRef,
-  ) { 
+  ) {
     super(router, route);
   }
 
@@ -68,15 +68,15 @@ export class MetadataComponent extends BaseComponent implements OnInit, OnDestro
       map(([metadataItems, recommendations]) =>
         recommendations.filter(r => metadataItems.filter(i => i._Type.Id === r.Id).length < r.Count)),
     );
-    this.templateVars$ = combineLatest([this.metadata$, filteredRecommendations$, this.itemFor$, this.fabOpen$]).pipe(
+    this.viewModel$ = combineLatest([this.metadata$, filteredRecommendations$, this.itemFor$, this.fabOpen$]).pipe(
       map(([metadata, recommendations, itemFor, fabOpen]) => {
-        const templateVars: MetadataTemplateVars = {
+        const viewModel: MetadataViewModel = {
           metadata,
           recommendations,
           itemFor,
           fabOpen,
         };
-        return templateVars;
+        return viewModel;
       }),
     );
   }
