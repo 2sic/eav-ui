@@ -1,59 +1,59 @@
-<div #domRoot id="pipeline-root" *ngIf="(templateModel$ | async) as templateModel">
+<div #domRoot id="pipeline-root" *ngIf="(viewModel$ | async) as vm">
   <!-- do not use trackBy, jsPlumb drag stops working properly after delete -->
   <ng-container *ngIf="!hardReset">
-    <div #domDataSource *ngFor="let dataSource of templateModel.pipelineDataSources"
+    <div #domDataSource *ngFor="let dataSource of vm.pipelineDataSources"
       [id]="dataSrcIdPrefix + dataSource.EntityGuid" class="dataSource" [ngStyle]="{
         'top': dataSource.VisualDesignerData.Top + 'px',
         'left': dataSource.VisualDesignerData.Left + 'px',
         'min-width': dataSource.VisualDesignerData.Width ? dataSource.VisualDesignerData.Width + 'px' : null
       }" [ngClass]="{
-        'show-details': templateModel.showDataSourceDetails && templateModel.dataSourceConfigs[dataSource.EntityId]?.length
+        'show-details': vm.showDataSourceDetails && vm.dataSourceConfigs[dataSource.EntityId]?.length
       }">
 
       <div class="actions left">
-        <mat-icon class="type-info" [title]="templateModel.typeInfos[dataSource.EntityGuid].UiHint">
-          {{ templateModel.typeInfos[dataSource.EntityGuid].Icon }}
+        <mat-icon class="type-info" [title]="vm.typeInfos[dataSource.EntityGuid].UiHint">
+          {{ vm.typeInfos[dataSource.EntityGuid].Icon }}
         </mat-icon>
 
         <mat-icon class="configure" title="Configure data source" appMousedownStopPropagation
-          *ngIf="templateModel.allowEdit && templateModel.typeInfos[dataSource.EntityGuid].EnableConfig"
+          *ngIf="vm.allowEdit && vm.typeInfos[dataSource.EntityGuid].EnableConfig"
           (click)="configureDataSource(dataSource)">
           settings
         </mat-icon>
 
         <mat-icon class="help" title="Help for this data source" appMousedownStopPropagation
-          *ngIf="templateModel.typeInfos[dataSource.EntityGuid].HelpLink"
-          (click)="openHelp(templateModel.typeInfos[dataSource.EntityGuid].HelpLink)">
+          *ngIf="vm.typeInfos[dataSource.EntityGuid].HelpLink"
+          (click)="openHelp(vm.typeInfos[dataSource.EntityGuid].HelpLink)">
           help_outline
         </mat-icon>
       </div>
 
       <div class="actions right">
         <mat-icon class="delete" title="Delete" appMousedownStopPropagation
-          *ngIf="templateModel.allowEdit && !isOutDataSource(dataSource)" (click)="remove(dataSource)">
+          *ngIf="vm.allowEdit && !isOutDataSource(dataSource)" (click)="remove(dataSource)">
           delete
         </mat-icon>
       </div>
 
       <div class="name" title="Click to edit name" appMousedownStopPropagation
-        (click)="templateModel.allowEdit && editName(dataSource)">
+        (click)="vm.allowEdit && editName(dataSource)">
         <span>{{ dataSource.Name || '(no name)' }}</span>
         <mat-icon class="show-hover-inline">edit</mat-icon>
       </div>
       <br>
 
       <div class="description" title="Click to edit description" appMousedownStopPropagation
-        (click)="templateModel.allowEdit && editDescription(dataSource)">
+        (click)="vm.allowEdit && editDescription(dataSource)">
         <span>{{ dataSource.Description }}</span>
         <mat-icon class="show-hover-inline">edit</mat-icon>
       </div>
       <br>
 
       <ng-container
-        *ngIf="templateModel.showDataSourceDetails && templateModel.dataSourceConfigs[dataSource.EntityId]?.length">
+        *ngIf="vm.showDataSourceDetails && vm.dataSourceConfigs[dataSource.EntityId]?.length">
         <hr style="margin: 0">
         <table class="configs">
-          <tr class="config" *ngFor="let config of templateModel.dataSourceConfigs[dataSource.EntityId]">
+          <tr class="config" *ngFor="let config of vm.dataSourceConfigs[dataSource.EntityId]">
             <td class="config-name" [title]="config.name">{{ config.name }}</td>
             <td class="config-value" [title]="config.value">{{ config.value }}</td>
           </tr>
@@ -65,11 +65,11 @@
       </div>
 
       <div class="add-endpoint sourceEndpoint dynamic" title="Drag a new Out-Connection"
-        *ngIf="templateModel.allowEdit && templateModel.typeInfos[dataSource.EntityGuid].DynamicOut">
+        *ngIf="vm.allowEdit && vm.typeInfos[dataSource.EntityGuid].DynamicOut">
       </div>
 
       <div class="many-in targetEndpoint dynamic" title="This data source supports multiple In-Connections"
-        *ngIf="templateModel.allowEdit && templateModel.typeInfos[dataSource.EntityGuid].DynamicIn">
+        *ngIf="vm.allowEdit && vm.typeInfos[dataSource.EntityGuid].DynamicIn">
       </div>
     </div>
   </ng-container>

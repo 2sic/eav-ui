@@ -1,20 +1,20 @@
-<div *ngIf="(feature$ | async) as feature">
+<div *ngIf="viewModel$ | async as vm">
   <div mat-dialog-title>
     <div class="dialog-title-box">
-      <div>{{ feature.Name }}</div>
+      <div>{{ vm.feature.Name }}</div>
     </div>
   </div>
 
-  <p class="dialog-description" [innerHtml]="feature.Description | safeHtml"></p>
+  <p class="dialog-description" [innerHtml]="vm.feature.Description | safeHtml"></p>
 
   <div class="info-box">
     <div class="info-row">
       <div class="info-row__label">{{ "Features.Status" | translate }}</div>
       <div class="info-row__value">
-        <span>{{ (feature.Enabled ? "Features.Active" : "Features.NotActive") | translate }}</span>
+        <span>{{ (vm.feature.Enabled ? "Features.Active" : "Features.NotActive") | translate }}</span>
       </div>
     </div>
-    <div class="info-row" *ngIf="feature.NameId as id">
+    <div class="info-row" *ngIf="vm.feature.NameId as id">
       <div class="info-row__label">ID</div>
       <div class="info-row__value click">
         <span [tippy]="id" (click)="copyToClipboard(id)">{{ id }}</span>
@@ -23,7 +23,7 @@
   </div>
 
   <div class="dialog-component-actions">
-    <button *ngIf="feature.Link as link" mat-raised-button class="dialog-component-button" color="accent" (click)="findOutMore(link)">
+    <button *ngIf="vm.feature.Link as link" mat-raised-button class="dialog-component-button" color="accent" (click)="findOutMore(link)">
       <mat-icon>open_in_new</mat-icon>
       {{ "Features.FindOutMore" | translate }}
     </button>

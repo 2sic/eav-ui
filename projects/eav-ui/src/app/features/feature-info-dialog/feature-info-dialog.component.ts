@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Observable } from 'rxjs';
+import { Observable, combineLatest, map } from 'rxjs';
 import { copyToClipboard } from '../../shared/helpers/copy-to-clipboard.helper';
 import { Feature } from '../models';
 import { FeatureDetailService } from '../services/feature-detail.service';
@@ -12,18 +12,19 @@ import { FeatureDetailService } from '../services/feature-detail.service';
   styleUrls: ['./feature-info-dialog.component.scss']
 })
 export class FeatureInfoDialogComponent implements OnInit {
-  feature$: Observable<Feature>;
+  viewModel$: Observable<FeatureInfoViewModel>;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public dialogData: string,
     private dialogRef: MatDialogRef<FeatureInfoDialogComponent>,
     private snackBar: MatSnackBar,
     private featureDetailService: FeatureDetailService,
-  ) {
-    this.feature$ = this.featureDetailService.getFeatureDetails(dialogData);
-   }
+  ) { }
 
   ngOnInit(): void {
+    this.viewModel$ = combineLatest([
+      this.featureDetailService.getFeatureDetails(this.dialogData)
+    ]).pipe(map(([feature]) => ({ feature })));
   }
 
   copyToClipboard(text: string): void {
@@ -38,4 +39,8 @@ export class FeatureInfoDialogComponent implements OnInit {
   closeDialog(): void {
     this.dialogRef.close();
   }
+}
+
+interface FeatureInfoViewModel {
+  feature: Feature;
 }
