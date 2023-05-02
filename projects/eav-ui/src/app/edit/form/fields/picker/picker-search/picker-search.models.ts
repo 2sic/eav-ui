@@ -2,7 +2,7 @@ import { EntityInfo } from 'projects/edit-types';
 import { ControlStatus } from '../../../../shared/models';
 import { SelectedEntity } from '../../entity/entity-default/entity-default.models';
 
-export interface EntitySearchViewModel {
+export interface PickerSearchViewModel {
   debugEnabled: boolean;
   allowMultiValue: boolean;
   enableCreate: boolean;

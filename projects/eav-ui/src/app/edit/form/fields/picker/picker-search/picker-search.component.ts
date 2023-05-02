@@ -10,7 +10,7 @@ import { GlobalConfigService } from '../../../../shared/store/ngrx-data';
 import { SelectedEntity } from '../../entity/entity-default/entity-default.models';
 import { PickerSourceAdapter } from '../picker-source-adapter';
 import { PickerStateAdapter } from '../picker-state-adapter';
-import { EntitySearchViewModel } from './picker-search.models';
+import { PickerSearchViewModel } from './picker-search.models';
 
 @Component({
   selector: 'app-picker-search',
@@ -28,7 +28,7 @@ export class PickerSearchComponent implements OnInit, OnChanges, OnDestroy {
 
   private subscriptions: Subscription = new Subscription();
   filteredEntities: EntityInfo[] = [];
-  viewModel$: Observable<EntitySearchViewModel>;
+  viewModel$: Observable<PickerSearchViewModel>;
   private control: AbstractControl;
   private availableEntities: EntityInfo[] = [];
 
@@ -90,7 +90,13 @@ export class PickerSearchComponent implements OnInit, OnChanges, OnDestroy {
         debugEnabled, settings, selectedEntities, availableEntities, error, controlStatus,
         freeTextMode, disableAddNew, label, placeholder, required, tooltip, information
       ]) => {
-        const viewModel: EntitySearchViewModel = {
+        const div = document.createElement("div");
+        div.innerHTML = tooltip;
+        const cleanTooltip = div.innerText || '';
+        div.innerHTML = information;
+        const cleanInformation = div.innerText || '';
+
+        const viewModel: PickerSearchViewModel = {
           debugEnabled,
           allowMultiValue: settings.AllowMultiValue,
           enableCreate: settings.EnableCreate,
@@ -109,8 +115,8 @@ export class PickerSearchComponent implements OnInit, OnChanges, OnDestroy {
           label,
           placeholder,
           required,
-          tooltip,
-          information,
+          tooltip: cleanTooltip,
+          information: cleanInformation,
         };
         return viewModel;
       }),
@@ -181,7 +187,7 @@ export class PickerSearchComponent implements OnInit, OnChanges, OnDestroy {
     // TODO: @SDV - This is needed so after choosing option element is not focused (it gets focused by default so if blur is outside of setTimeout it will happen before refocus)
     setTimeout(() => {
       this.autocompleteRef.nativeElement.blur();
-     });
+    });
   }
 
   insertNull(): void {
