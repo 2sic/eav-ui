@@ -9,10 +9,17 @@ export class StringDropdownLogic extends FieldLogicBase {
 
   update(settings: FieldSettings, value: string): FieldSettings {
     const fixedSettings: FieldSettings = { ...settings };
-    fixedSettings.EnableTextEntry ??= false;
-    fixedSettings.DropdownValues ??= '';
-    fixedSettings.DropdownValuesFormat ??= '';
+    // fixedSettings.EnableTextEntry ??= false;
+    // fixedSettings.DropdownValues ??= '';
+    // fixedSettings.DropdownValuesFormat ??= '';
     fixedSettings._options = calculateDropdownOptions(value, this.type, fixedSettings.DropdownValuesFormat, fixedSettings.DropdownValues);
+    fixedSettings.EntityType ??= '';
+    fixedSettings.AllowMultiValue ??= false;
+    fixedSettings.EnableEdit ??= true;
+    fixedSettings.EnableCreate ??= true;
+    fixedSettings.EnableAddExisting ??= true;
+    fixedSettings.EnableRemove ??= true;
+    fixedSettings.EnableDelete ??= false;
     return fixedSettings;
   }
 }

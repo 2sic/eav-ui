@@ -22,7 +22,7 @@ export class FieldMask {
   private subscriptions: Subscription[] = [];
 
   constructor(
-    mask: string,
+    mask: string | null,
     model: Record<string, AbstractControl>,
     private changeEvent: (newValue: string) => void,
     overloadPreCleanValues: (key: string, value: string) => string,

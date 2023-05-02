@@ -1,74 +1,95 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { WrappersConstants } from '../../../../shared/constants/wrappers.constants';
-import { EavService, FieldsSettingsService } from '../../../../shared/services';
+import { EavService, EditRoutingService, EntityService, FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
-import { BaseFieldComponent } from '../../base/base-field.component';
-import { StringDropdownLogic } from './string-dropdown-logic';
-import { StringDropdownViewModel } from './string-dropdown.models';
+import { PickerComponent } from '../../picker/picker.component';
+import { TranslateService } from '@ngx-translate/core';
+import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
+import { EntityDefaultLogic } from '../../entity/entity-default/entity-default-logic';
+import { PickerEntitySourceAdapter } from '../../picker/picker-entity-source-adapter';
+import { PickerSourceAdapterFactoryService } from '../../picker/picker-source-adapter-factory.service';
+import { PickerStateAdapterFactoryService } from '../../picker/picker-state-adapter-factory.service';
+import { DeleteEntityProps } from '../../picker/picker.models';
+import { PickerStringStateAdapter } from '../../picker/picker-string-state-adapter';
 
 @Component({
   selector: InputTypeConstants.StringDropdown,
-  templateUrl: './string-dropdown.component.html',
-  styleUrls: ['./string-dropdown.component.scss'],
+  templateUrl: '../../picker/picker.component.html',
+  styleUrls: ['../../picker/picker.component.scss'],
 })
 @FieldMetadata({
   wrappers: [WrappersConstants.LocalizationWrapper],
 })
-export class StringDropdownComponent extends BaseFieldComponent<string | number> implements OnInit, OnDestroy {
-  type: 'string' | 'number';
-  viewModel$: Observable<StringDropdownViewModel>;
-
-  private toggleFreeText$: BehaviorSubject<boolean>;
-
-  constructor(eavService: EavService, fieldsSettingsService: FieldsSettingsService) {
-    super(eavService, fieldsSettingsService);
-    this.type = 'string';
-    StringDropdownLogic.importMe();
+export class StringDropdownComponent extends PickerComponent implements OnInit, OnDestroy {
+  constructor(
+    eavService: EavService,
+    fieldsSettingsService: FieldsSettingsService,
+    entityService: EntityService,
+    translate: TranslateService,
+    editRoutingService: EditRoutingService,
+    entityCacheService: EntityCacheService,
+    stringQueryCacheService: StringQueryCacheService,
+    private pickerSourceAdapterFactoryService: PickerSourceAdapterFactoryService,
+    private pickerStateAdapterFactoryService: PickerStateAdapterFactoryService,
+  ) {
+    super(
+      eavService,
+      fieldsSettingsService,
+      entityService,
+      translate,
+      editRoutingService,
+      entityCacheService,
+      stringQueryCacheService,
+    );
+    EntityDefaultLogic.importMe();
+    this.isString = true;
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     super.ngOnInit();
-    this.toggleFreeText$ = new BehaviorSubject(false);
 
-    const enableTextEntry$ = this.settings$.pipe(map(settings => settings.EnableTextEntry), distinctUntilChanged());
-    const freeTextMode$ = combineLatest([enableTextEntry$, this.toggleFreeText$]).pipe(
-      map(([enableTextEntry, freeTextMode]) => enableTextEntry ? freeTextMode : false),
-      distinctUntilChanged(),
-    );
-    const dropdownOptions$ = this.settings$.pipe(map(settings => settings._options), distinctUntilChanged());
+    this.createPickerAdapters();
 
-    this.viewModel$ = combineLatest([
-      combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
-      combineLatest([enableTextEntry$, dropdownOptions$, freeTextMode$]),
-    ]).pipe(
-      map(([
-        [controlStatus, label, placeholder, required],
-        [enableTextEntry, dropdownOptions, freeTextMode],
-      ]) => {
-        const viewModel: StringDropdownViewModel = {
-          controlStatus,
-          label,
-          placeholder,
-          required,
-          enableTextEntry,
-          dropdownOptions,
-          freeTextMode,
-        };
-        return viewModel;
-      }),
-    );
+    this.createTemplateVariables();
   }
 
-  ngOnDestroy() {
-    this.toggleFreeText$.complete();
+  ngAfterViewInit(): void {
+    super.ngAfterViewInit();
+  }
+
+  ngOnDestroy(): void {
     super.ngOnDestroy();
   }
 
-  toggleFreeTextMode(freeTextMode: boolean) {
-    if (this.toggleFreeText$.value !== freeTextMode) {
-      this.toggleFreeText$.next(freeTextMode);
-    }
+  private createPickerAdapters(): void {
+    this.pickerStateAdapter = this.pickerStateAdapterFactoryService.createPickerStringStateAdapter(
+      this.control,
+      this.config,
+      this.settings$,
+      this.editRoutingService,
+      this.controlStatus$,
+      this.label$,
+      this.placeholder$,
+      this.required$,
+      () => this.focusOnSearchComponent,
+    );
+
+    this.pickerSourceAdapter = this.pickerSourceAdapterFactoryService.createPickerEntitySourceAdapter(
+      this.pickerStateAdapter.disableAddNew$,
+      this.fieldsSettingsService,
+      this.isString,
+
+      this.pickerStateAdapter.control,
+      this.pickerStateAdapter.config,
+      this.pickerStateAdapter.settings$,
+      this.editRoutingService,
+      this.group,
+      // (clearAvailableEntitiesAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableEntitiesAndOnlyUpdateCache),
+      (props: DeleteEntityProps) => this.pickerStateAdapter.doAfterDelete(props)
+    );
+
+    this.pickerStateAdapterFactoryService.initString(this.pickerStateAdapter as PickerStringStateAdapter);
+    this.pickerSourceAdapterFactoryService.initEntity(this.pickerSourceAdapter as PickerEntitySourceAdapter);
   }
 }

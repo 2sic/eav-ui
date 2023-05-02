@@ -1,7 +1,7 @@
 import { FormGroup, AbstractControl } from "@angular/forms";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
-import { FieldSettings } from "projects/edit-types";
+import { DropdownOption, EntityInfo, FieldSettings } from "projects/edit-types";
 import { BehaviorSubject, distinctUntilChanged, map } from "rxjs";
 import { EntityService, EavService, EditRoutingService, FieldsSettingsService } from "../../../shared/services";
 import { EntityCacheService } from "../../../shared/store/ngrx-data";
@@ -16,6 +16,8 @@ export class PickerEntitySourceAdapter extends PickerSourceAdapter {
     public disableAddNew$: BehaviorSubject<boolean> = new BehaviorSubject(true),
 
     public fieldsSettingsService: FieldsSettingsService,
+
+    public isString: boolean,
 
     // Below this is needed for base class
     public settings$: BehaviorSubject<FieldSettings> = new BehaviorSubject(null),
@@ -64,11 +66,9 @@ export class PickerEntitySourceAdapter extends PickerSourceAdapter {
       ).subscribe(entityType => {
         this.contentTypeMask?.destroy();
         this.contentTypeMask = new FieldMask(
-          entityType,
+          this.isString ? null : entityType,
           this.group.controls,
           () => {
-            // Re-Trigger fetch data, but only on type-based pickers, not Queries
-            // for EntityQuery we don't have to refetch entities because entities come from settings.Query, not settings.EntityType
             this.availableEntities$.next(null);
             this.updateAddNew();
           },
@@ -97,6 +97,14 @@ export class PickerEntitySourceAdapter extends PickerSourceAdapter {
   }
 
   fetchEntities(clearAvailableEntitiesAndOnlyUpdateCache: boolean): void {
+    if (this.isString) { 
+      this.settings$.pipe(map(settings => settings._options.map(option => this.stringEntityMapping(option))), distinctUntilChanged())
+        .subscribe(items => {
+          return this.availableEntities$.next(items);
+        });
+      return;
+    }
+
     if (clearAvailableEntitiesAndOnlyUpdateCache) {
       this.availableEntities$.next(null);
     }
@@ -118,5 +126,13 @@ export class PickerEntitySourceAdapter extends PickerSourceAdapter {
         this.availableEntities$.next(items);
       }
     });
+  }
+
+  stringEntityMapping(dropdownOption: DropdownOption): EntityInfo {
+    const entityInfo: EntityInfo = {
+      Value: dropdownOption.value as string,
+      Text: dropdownOption.label,
+    };
+    return entityInfo;
   }
 }

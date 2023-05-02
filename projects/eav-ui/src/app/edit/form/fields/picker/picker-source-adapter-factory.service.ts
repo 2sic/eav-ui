@@ -68,6 +68,7 @@ export class PickerSourceAdapterFactoryService {
   createPickerEntitySourceAdapter(
     disableAddNew$: BehaviorSubject<boolean>,
     fieldsSettingsService: FieldsSettingsService,
+    isString: boolean,
     control: AbstractControl,
     config: FieldConfigSet,
     settings$: BehaviorSubject<FieldSettings>,
@@ -79,6 +80,7 @@ export class PickerSourceAdapterFactoryService {
     const pickerEntitySourceAdapter = new PickerEntitySourceAdapter(
       disableAddNew$,
       fieldsSettingsService,
+      isString,
 
       settings$,
       this.entityCacheService,
@@ -100,7 +102,6 @@ export class PickerSourceAdapterFactoryService {
   initEntity(pickerEntitySourceAdapter: PickerEntitySourceAdapter): void {
     pickerEntitySourceAdapter.init();
   }
-
 
   createPickerSourceAdapter(
     control: AbstractControl,

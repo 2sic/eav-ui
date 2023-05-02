@@ -52,7 +52,6 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
       this.createPickerAdapters();
       this.createTemplateVariables();
     }
-
   }
 
   ngAfterViewInit(): void {

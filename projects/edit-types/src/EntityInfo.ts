@@ -10,7 +10,7 @@ export interface EntityForPicker {
   AppId?: number;
 
   /** The EntityId */
-  Id: number;
+  Id?: number;
 
   /** The title to show in the dropdown */
   Text: string;
