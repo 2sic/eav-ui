@@ -217,8 +217,10 @@ export interface FormulaResultRaw {
   value?: FieldValue;
   promise?: Promise<FormulaResultRaw>;
   fields?: FieldValuePair[];
-  openInDesigner?: boolean;
   stop?: boolean | null;
+
+  /** Note: not a real result, for internal use only */
+  openInDesigner?: boolean;
 }
 
 export interface FieldValuePair {
