@@ -47,7 +47,7 @@
 
           <mat-autocomplete #auto="matAutocomplete" (optionSelected)="optionSelected($event, vm.allowMultiValue)">
             <mat-option *ngFor="let item of filteredEntities" [value]="item.Value"
-              [disabled]="isOptionDisabled(item.Value, vm.selectedEntities)" [tippy]="vm.tooltip">
+              [disabled]="isOptionDisabled(item.Value, vm.selectedEntities)" [tippy]="vm.tooltip" tippyShowDelay="500" [tippyDisabled]="vm.tooltip === ''">
               <div class="dropdown-option">
                 <span>{{ item.Text ? item.Text : item.Value }}</span>
                 <mat-icon *ngIf="vm.information !== ''" [tippy]="vm.information">info</mat-icon>
