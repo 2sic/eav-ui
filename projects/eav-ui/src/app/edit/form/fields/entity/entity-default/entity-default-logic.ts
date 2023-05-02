@@ -18,6 +18,9 @@ export class EntityDefaultLogic extends FieldLogicBase {
     // 2dm 2023-01-22 #maybeSupportIncludeParentApps
     // fixedSettings.IncludeParentApps ??= false;
 
+    fixedSettings.Information ??= '';
+    fixedSettings.Tooltip ??= '';
+
     if (tools.eavConfig.overrideEditRestrictions && tools.debug) {
       // tslint:disable-next-line: max-line-length
       console.log('SystemAdmin + Debug: Overriding edit restrictions for field \'' + settings.Name + '\' (EntityType: \'' + settings.EntityType + '\').');
@@ -27,6 +30,7 @@ export class EntityDefaultLogic extends FieldLogicBase {
       fixedSettings.EnableRemove = true;
       fixedSettings.EnableDelete = true;
     }
+    console.log('SDV fixedSettings: ', fixedSettings);
     return fixedSettings;
   }
 }

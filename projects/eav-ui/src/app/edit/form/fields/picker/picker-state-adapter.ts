@@ -38,6 +38,8 @@ export class PickerStateAdapter {
   shouldPickerListBeShown$: Observable<boolean>;
   selectedEntities$: Observable<SelectedEntity[]>;
   allowMultiValue$: Observable<boolean>;
+  tooltip$: Observable<string>;
+  information$: Observable<string>;
 
   init() {
     this.selectedEntities$ = combineLatest([
@@ -58,6 +60,8 @@ export class PickerStateAdapter {
       ),
     );
     this.allowMultiValue$ = this.settings$.pipe(map(settings => settings.AllowMultiValue), distinctUntilChanged());
+    this.tooltip$ = this.settings$.pipe(map(settings => settings.Tooltip), distinctUntilChanged());
+    this.information$ = this.settings$.pipe(map(settings => settings.Information), distinctUntilChanged());
     this.shouldPickerListBeShown$ = combineLatest([
       this.freeTextMode$, this.isExpanded$, this.allowMultiValue$, this.selectedEntities$
     ]).pipe(map(([

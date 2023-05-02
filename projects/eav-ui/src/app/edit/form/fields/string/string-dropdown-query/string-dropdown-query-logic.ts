@@ -14,6 +14,9 @@ export class StringDropdownQueryLogic extends FieldLogicBase {
     fixedSettings.Label ??= '';
     fixedSettings.EnableTextEntry ??= false;
     fixedSettings.Separator ||= ',';
+
+    fixedSettings.Information ??= '';
+    fixedSettings.Tooltip ??= '';
     return fixedSettings;
   }
 }

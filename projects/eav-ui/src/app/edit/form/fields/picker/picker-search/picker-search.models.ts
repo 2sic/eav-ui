@@ -21,4 +21,6 @@ export interface EntitySearchViewModel {
   label: string;
   placeholder: string;
   required: boolean;
+  tooltip: string;
+  information: string;
 }

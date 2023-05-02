@@ -51,6 +51,8 @@ export class PickerSearchComponent implements OnInit, OnChanges, OnDestroy {
     const label$ = this.pickerStateAdapter.label$;
     const placeholder$ = this.pickerStateAdapter.placeholder$;
     const required$ = this.pickerStateAdapter.required$;
+    const tooltip$ = this.pickerStateAdapter.tooltip$;
+    const information$ = this.pickerStateAdapter.information$;
 
     this.subscriptions.add(availableEntities$.subscribe(entities => {
       this.availableEntities = entities;
@@ -81,12 +83,12 @@ export class PickerSearchComponent implements OnInit, OnChanges, OnDestroy {
       distinctUntilChanged(GeneralHelpers.objectsEqual),
     );
     this.viewModel$ = combineLatest([
-      debugEnabled$, settings$, selectedEntities$, availableEntities$, error$,
-      controlStatus$, freeTextMode$, disableAddNew$, label$, placeholder$, required$
+      debugEnabled$, settings$, selectedEntities$, availableEntities$, error$, controlStatus$,
+      freeTextMode$, disableAddNew$, label$, placeholder$, required$, tooltip$, information$
     ]).pipe(
       map(([
-        debugEnabled, settings, selectedEntities, availableEntities, error,
-        controlStatus, freeTextMode, disableAddNew, label, placeholder, required
+        debugEnabled, settings, selectedEntities, availableEntities, error, controlStatus,
+        freeTextMode, disableAddNew, label, placeholder, required, tooltip, information
       ]) => {
         const viewModel: EntitySearchViewModel = {
           debugEnabled,
@@ -107,6 +109,8 @@ export class PickerSearchComponent implements OnInit, OnChanges, OnDestroy {
           label,
           placeholder,
           required,
+          tooltip,
+          information,
         };
         return viewModel;
       }),

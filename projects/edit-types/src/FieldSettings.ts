@@ -185,6 +185,8 @@ export interface Entity extends All {
    */
   Prefill: string;
 
+  Information: string;
+  Tooltip: string;
   // 2dm 2023-01-22 #maybeSupportIncludeParentApps
   // IncludeParentApps: boolean;
 }
