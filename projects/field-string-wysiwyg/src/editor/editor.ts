@@ -136,7 +136,7 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
           editor.setContent(this.editorContent);
         }),
         this.connector.field$.subscribe(fieldConfig => {
-          if (fieldConfig.settings.Disabled) {
+          if (fieldConfig.settings.Disabled || fieldConfig.settings.ForcedDisabled) {
             this.classList.add('disabled');
           } else {
             this.classList.remove('disabled');

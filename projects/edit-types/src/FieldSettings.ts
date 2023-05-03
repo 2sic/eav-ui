@@ -18,6 +18,7 @@ interface All {
   Visible: boolean;
   Required: boolean;
   Disabled: boolean;
+  ForcedDisabled: boolean;
   DisableTranslation: boolean;
   DisableAutoTranslation: boolean;
   ValidationRegExJavaScript: string;

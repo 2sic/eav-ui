@@ -95,14 +95,14 @@ export class FieldsSettingsService implements OnDestroy {
           const mergeRaw = entityReader.flattenAll<FieldSettings>(attribute.Metadata);
           // Sometimes the metadata doesn't have the input type (empty string), so we'll add the attribute.InputType just in case...
           mergeRaw.InputType = attribute.InputType;
-          const merged = FieldsSettingsHelpers.setDefaultFieldSettings(mergeRaw);
-          consoleLogAngular('merged', JSON.parse(JSON.stringify(merged)));
+          const settingsInitial = FieldsSettingsHelpers.setDefaultFieldSettings(mergeRaw);
+          consoleLogAngular('merged', JSON.parse(JSON.stringify(settingsInitial)));
 
           const logic = FieldLogicManager.singleton().get(attribute.InputType);
 
           return ({
             logic,
-            merged,
+            settingsInitial,
             inputType,
             calculatedInputType,
             constants: {
@@ -147,7 +147,7 @@ export class FieldsSettingsService implements OnDestroy {
           if (Object.keys(this.latestFieldProps).length) {
             const status = this.formulaEngine.updateValuesFromQueue(
               entityGuid, this.updateValueQueue, contentType, formValues, this.latestFieldProps, slotIsEmpty, entityReader,
-              this.latestFieldProps, contentType.Attributes, contentType.Metadata, constantFieldParts as unknown as ConstantFieldParts,
+              this.latestFieldProps, contentType.Attributes, contentType.Metadata, constantFieldParts as ConstantFieldParts[],
               itemAttributes, formReadOnly.isReadOnly, logicTools);
             // we only updated values from promise (queue), don't trigger property regular updates
             // NOTE: if any value changes then the entire cycle will automatically retrigger
@@ -168,12 +168,12 @@ export class FieldsSettingsService implements OnDestroy {
             const constantFieldPart = constantFieldParts.find(f => f.constants.fieldName === attribute.Name);
 
             const latestSettings = this.latestFieldProps[attribute.Name]?.settings
-              ?? { ...constantFieldPart.merged };
+              ?? { ...constantFieldPart.settingsInitial };
 
             // run formulas
             const formulaResult = this.formulaEngine.runAllFormulas(
               entityGuid, entityId, attribute, formValues,
-              constantFieldPart.inputType, constantFieldPart.logic, constantFieldPart.merged, latestSettings,
+              constantFieldPart.inputType, constantFieldPart.logic, constantFieldPart.settingsInitial, latestSettings,
               itemHeader, contentType.Metadata, attributeValues, entityReader, slotIsEmpty,
               formReadOnly.isReadOnly, valueBefore, logicTools
             );

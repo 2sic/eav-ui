@@ -11,7 +11,8 @@ import { FormulaResultRaw, SettingsFormulaPrefix } from "./formula.models";
 export class FormulaSettingsHelper {
 
   static ensureNewSettingsMatchRequirements(
-    newSettings: FieldSettings,
+    settingsInitial: FieldSettings,
+    settingsCurrent: FieldSettings,
     attribute: EavContentTypeAttribute,
     contentTypeMetadata: EavEntity[],
     fieldInputType: InputType,
@@ -23,20 +24,21 @@ export class FormulaSettingsHelper {
     valueBefore: FieldValue,
     logicTools: FieldLogicTools,
   ): FieldSettings {
-    newSettings.Name = newSettings.Name || attribute.Name;
-    newSettings.Required = ValidationHelpers.isRequired(newSettings);
+    settingsCurrent.Name = settingsCurrent.Name || attribute.Name;
+    settingsCurrent.Required = ValidationHelpers.isRequired(settingsCurrent);
     const disableTranslation = FieldsSettingsHelpers.findDisableTranslation(
       contentTypeMetadata, fieldInputType, attributeValues, languages.defaultLanguage, attribute.Metadata,
     );
-    newSettings.DisableTranslation = slotIsEmpty || disableTranslation;
-    newSettings._disabledBecauseOfTranslation = FieldsSettingsHelpers.getDisabledBecauseTranslations(
-      attributeValues, newSettings.DisableTranslation, languages.currentLanguage, languages.defaultLanguage,
+    settingsCurrent.DisableTranslation = slotIsEmpty || disableTranslation;
+    settingsCurrent._disabledBecauseOfTranslation = FieldsSettingsHelpers.getDisabledBecauseTranslations(
+      attributeValues, settingsCurrent.DisableTranslation, languages.currentLanguage, languages.defaultLanguage,
     );
-    newSettings.Disabled = newSettings.Disabled || slotIsEmpty || newSettings._disabledBecauseOfTranslation || formReadOnly;
-    newSettings.DisableAutoTranslation = newSettings.DisableAutoTranslation || newSettings.DisableTranslation;
+    settingsCurrent.ForcedDisabled = slotIsEmpty || settingsCurrent._disabledBecauseOfTranslation || formReadOnly;
+    // newSettings.Disabled = newSettings.Disabled || slotIsEmpty || newSettings._disabledBecauseOfTranslation || formReadOnly;
+    settingsCurrent.DisableAutoTranslation = settingsInitial.DisableAutoTranslation || settingsCurrent.DisableTranslation;
 
     // update settings with respective FieldLogics
-    const fixed = fieldLogic?.update(newSettings, valueBefore, logicTools) ?? newSettings;
+    const fixed = fieldLogic?.update(settingsCurrent, valueBefore, logicTools) ?? settingsCurrent;
     consoleLogAngular('fixed', JSON.parse(JSON.stringify(fixed)));
 
     return fixed;

@@ -65,7 +65,7 @@ export class FormulaEngine implements OnDestroy {
     latestFieldProps: FieldsProps,
     attributes: EavContentTypeAttribute[],
     contentTypeMetadata: EavEntity[],
-    constantFieldParts: ConstantFieldParts,
+    constantFieldParts: ConstantFieldParts[],
     itemAttributes: EavEntityAttributes,
     formReadOnly: boolean,
     logicTools: FieldLogicTools,
@@ -90,31 +90,33 @@ export class FormulaEngine implements OnDestroy {
     let newFieldProps: FieldsProps = null;
     if (allSettings.length) {
       newFieldProps = { ...fieldsProps };
-      allSettings.forEach(settings => { 
+      allSettings.forEach(valueSet => { 
         const settingsNew: Record<string, any> = {};
-        const settingsCurrent = latestFieldProps[settings.name]?.settings;
-        settings.settings.forEach(setting => {
+        const settingsCurrent = latestFieldProps[valueSet.name]?.settings;
+        const constantFieldPart = constantFieldParts.find(f => f.constants.fieldName === valueSet.name);
+        valueSet.settings.forEach(setting => {
           FormulaSettingsHelper.keepSettingsIfTypeMatches(SettingsFormulaPrefix + setting.settingName, settingsCurrent, setting.value, settingsNew);
         });
 
         const updatedSettings = FormulaSettingsHelper.ensureNewSettingsMatchRequirements(
+          constantFieldPart.settingsInitial,
           {
             ...settingsCurrent,
             ...settingsNew,
           },
-          attributes.find(a => a.Name === settings.name),
+          attributes.find(a => a.Name === valueSet.name),
           contentTypeMetadata,
-          constantFieldParts.inputType,
-          constantFieldParts.logic,
-          itemAttributes[settings.name],
+          constantFieldPart.inputType,
+          constantFieldPart.logic,
+          itemAttributes[valueSet.name],
           entityReader,
           slotIsEmpty,
           formReadOnly,
-          formValues[settings.name],
+          formValues[valueSet.name],
           logicTools,
         );
 
-        newFieldProps[settings.name] = { ...newFieldProps[settings.name], settings: updatedSettings };
+        newFieldProps[valueSet.name] = { ...newFieldProps[valueSet.name], settings: updatedSettings };
       });
     }
 
@@ -170,10 +172,13 @@ export class FormulaEngine implements OnDestroy {
         continue;
       }
 
+      // { "Disab"}
+
       FormulaSettingsHelper.keepSettingsIfTypeMatches(formula.target, settingsCurrent, formulaResult.value, settingsNew);
     }
 
     const updatedSettings = FormulaSettingsHelper.ensureNewSettingsMatchRequirements(
+      settingsInitial,
       {
         ...settingsCurrent,
         ...settingsNew,
