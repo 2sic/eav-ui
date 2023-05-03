@@ -157,7 +157,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     this.formulaDesignerService.resetFormula(designer.entityGuid, designer.fieldName, designer.target);
     this.formBuilderRefs
       .find(formBuilderRef => formBuilderRef.entityGuid === designer.entityGuid)
-      .fieldsSettingsService.forceSettings();
+      .fieldsSettingsService.retriggerFormulas();
   }
 
   run(): void {
@@ -166,7 +166,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     this.formulaDesignerService.updateFormulaFromEditor(designer.entityGuid, designer.fieldName, designer.target, formula.source, true);
     this.formBuilderRefs
       .find(formBuilderRef => formBuilderRef.entityGuid === designer.entityGuid)
-      .fieldsSettingsService.forceSettings();
+      .fieldsSettingsService.retriggerFormulas();
     this.isDeleted$.next(false);
   }
 

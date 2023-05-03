@@ -9,18 +9,22 @@ import { FeatureSummary } from '../../features/models';
 import { FeaturesService } from '../../shared/services/features.service';
 import { EntityReader } from '../shared/helpers';
 import { ContentTypeSettings, FieldsProps, FormValues, LogSeverities } from '../shared/models';
-import { EavContentType, EavHeader } from '../shared/models/eav';
+import { EavContentType, EavContentTypeAttribute, EavEntity, EavEntityAttributes, EavHeader, EavValues } from '../shared/models/eav';
 import { EavService, EditInitializerService, FieldsSettingsService, LoggingService } from '../shared/services';
 import { GlobalConfigService, ItemService, LanguageInstanceService, LanguageService } from '../shared/store/ngrx-data';
 import { FormulaDesignerService } from './formula-designer.service';
 import { FormulaHelpers } from './formula.helpers';
 // tslint:disable-next-line: max-line-length
-import { FieldValuePair, FormulaCacheItem, FormulaFieldValidation, FormulaFunctionDefault, FormulaFunctionV1, FormulaResultRaw, FormulaTarget, FormulaTargets, FormulaVersions, RunFormulasResult, SettingsFormulaPrefix } from './formula.models';
+import { FieldSettingPair, FieldValuePair, FormulaCacheItem, FormulaFieldValidation, FormulaFunctionDefault, FormulaFunctionV1, FormulaResultRaw, FormulaTarget, FormulaTargets, FormulaVersions, RunFormulasResult, SettingsFormulaPrefix } from './formula.models';
+import { FormulaSettingsHelper } from './formula-settings.helper';
+import { FieldLogicBase } from '../form/shared/field-logic/field-logic-base';
+import { FieldLogicTools } from '../form/shared/field-logic/field-logic-tools';
+import { ConstantFieldParts } from './constant-field-parts';
+import { consoleLogAngular } from '../../shared/helpers/console-log-angular.helper';
 
 @Injectable()
 export class FormulaEngine implements OnDestroy {
   private subscription: Subscription = new Subscription();
-  private formulaSettingsCache: Record<string, FieldSettings> = {};
   private featuresCache$ = new BehaviorSubject<FeatureSummary[]>([]);
   private contentTypeSettings$: BehaviorSubject<ContentTypeSettings>;
   private fieldsSettingsService: FieldsSettingsService = null;
@@ -52,74 +56,100 @@ export class FormulaEngine implements OnDestroy {
 
   updateValuesFromQueue(
     entityGuid: string,
-    queue: Record<string, { possibleValueUpdates: FormValues, possibleFieldsUpdates: FieldValuePair[] }>,
+    queue: Record<string, { possibleValueUpdates: FormValues, possibleFieldsUpdates: FieldValuePair[], possibleSettingUpdate: FieldSettingPair[] }>,
     contentType: EavContentType,
     formValues: FormValues,
     fieldsProps: FieldsProps,
     slotIsEmpty: boolean,
-    entityReader: EntityReader
-  ): boolean {
-    if (queue[entityGuid]
-      && (Object.keys(queue[entityGuid]?.possibleValueUpdates).length !== 0
-        || queue[entityGuid]?.possibleFieldsUpdates.length !== 0)) {
-      const values = queue[entityGuid].possibleValueUpdates;
-      const fields = queue[entityGuid].possibleFieldsUpdates;
-      queue[entityGuid] = { possibleValueUpdates: {}, possibleFieldsUpdates: [] };
+    entityReader: EntityReader,
+    latestFieldProps: FieldsProps,
+    attributes: EavContentTypeAttribute[],
+    contentTypeMetadata: EavEntity[],
+    constantFieldParts: ConstantFieldParts,
+    itemAttributes: EavEntityAttributes,
+    formReadOnly: boolean,
+    logicTools: FieldLogicTools,
+  ): { valuesUpdated: boolean, newFieldProps: FieldsProps } {
+    if (queue[entityGuid] == null) return { valuesUpdated: false, newFieldProps: null };
+    const toProcess = queue[entityGuid];
+    queue[entityGuid] = { possibleValueUpdates: {}, possibleFieldsUpdates: [], possibleSettingUpdate: [] };
+    // extract updates and flush queue
+    const values = toProcess.possibleValueUpdates;
+    const fields = toProcess.possibleFieldsUpdates;
+    const allSettings = toProcess.possibleSettingUpdate;
+
+    let valuesUpdated = false;
+    if (Object.keys(values).length !== 0 || fields.length !== 0) {
+
       this.fieldsSettingsService.applyValueChangesFromFormulas(
         entityGuid, contentType, formValues, fieldsProps, values, fields, slotIsEmpty, entityReader
       );
-      return true;
+      valuesUpdated = true;
     }
-    return false;
+
+    let newFieldProps: FieldsProps = null;
+    if (allSettings.length) {
+      newFieldProps = { ...fieldsProps };
+      allSettings.forEach(settings => { 
+        const settingsNew: Record<string, any> = {};
+        const settingsCurrent = latestFieldProps[settings.name]?.settings;
+        settings.settings.forEach(setting => {
+          FormulaSettingsHelper.keepSettingsIfTypeMatches(SettingsFormulaPrefix + setting.settingName, settingsCurrent, setting.value, settingsNew);
+        });
+
+        const updatedSettings = FormulaSettingsHelper.ensureNewSettingsMatchRequirements(
+          {
+            ...settingsCurrent,
+            ...settingsNew,
+          },
+          attributes.find(a => a.Name === settings.name),
+          contentTypeMetadata,
+          constantFieldParts.inputType,
+          constantFieldParts.logic,
+          itemAttributes[settings.name],
+          entityReader,
+          slotIsEmpty,
+          formReadOnly,
+          formValues[settings.name],
+          logicTools,
+        );
+
+        newFieldProps[settings.name] = { ...newFieldProps[settings.name], settings: updatedSettings };
+      });
+    }
+
+    return { valuesUpdated, newFieldProps };
   }
 
-  runFormulas(
+  runAllFormulas(
     entityGuid: string,
     entityId: number,
-    fieldName: string,
+    attribute: EavContentTypeAttribute,
     formValues: FormValues,
     inputType: InputType,
-    settings: FieldSettings,
+    logic: FieldLogicBase,
+    settingsInitial: FieldSettings,
+    settingsCurrent: FieldSettings,
     itemHeader: EavHeader,
+    contentTypeMetadata: EavEntity[],
+    attributeValues: EavValues<any>,
+    entityReader: EntityReader,
+    slotIsEmpty: boolean,
+    formReadOnly: boolean,
+    valueBefore: FieldValue,
+    logicTools: FieldLogicTools,
   ): RunFormulasResult {
-    const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
-    const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
-
-    const previousSettings: FieldSettings = {
-      ...settings,
-      ...this.formulaSettingsCache[this.getFormulaSettingsKey(fieldName, currentLanguage, defaultLanguage)],
-    };
-
-    const formulas = this.formulaDesignerService.getFormulas(entityGuid, fieldName, null, false)
+    const formulas = this.formulaDesignerService.getFormulas(entityGuid, attribute.Name, null, false)
       .filter(f => !f.stopFormula);
     let formulaValue: FieldValue;
     let formulaValidation: FormulaFieldValidation;
     const formulaFields: FieldValuePair[] = [];
-    const formulaSettings: Record<string, any> = {};
+    const settingsNew: Record<string, any> = {};
+
     for (const formula of formulas) {
-      const formulaResult = this.runFormula(formula, entityId, formValues, inputType, settings, previousSettings, itemHeader);
-      if (formulaResult && formulaResult.promise && formulaResult.promise instanceof Promise) {
-        if (formulaResult.openInDesigner && formulaResult.stop === null) {
-          console.log(`FYI: formula returned a promise. This automatically stops this formula from running again. If you want it to continue running, return stop: false`);
-        }
-        formula.promises$.next(formulaResult.promise);
-        if (!formula.updateCallback$.value) {
-          const queue = this.fieldsSettingsService.updateValueQueue;
-          formula.updateCallback$.next((result: FieldValue | FormulaResultRaw) => {
-            queue[entityGuid] = { possibleValueUpdates: {}, possibleFieldsUpdates: [] };
-            const corrected = this.correctAllValues(formula.target, result, inputType);
-            if (!queue[entityGuid])
-              queue[entityGuid] = { possibleValueUpdates: {}, possibleFieldsUpdates: [] };
-            const possibleValueUpdates = queue[entityGuid].possibleValueUpdates ?? {};
-            possibleValueUpdates[formula.fieldName] = corrected.value;
-            const possibleFieldsUpdates = queue[entityGuid].possibleFieldsUpdates ?? [];
-            if (corrected.fields)
-              possibleFieldsUpdates.push(...corrected.fields);
-            queue[entityGuid] = { possibleValueUpdates, possibleFieldsUpdates };
-            formula.stopFormula = corrected.stop ?? formula.stopFormula;
-            this.fieldsSettingsService.forceSettings();
-          });
-        }
+      const formulaResult = this.runFormula(formula, entityId, formValues, inputType, settingsInitial, settingsCurrent, itemHeader);
+      if (formulaResult?.promise instanceof Promise) {
+        this.handleFormulaPromises(entityGuid, formulaResult, formula, inputType);
         formula.stopFormula = formulaResult.stop ?? true;
       } else {
         formula.stopFormula = formulaResult.stop ?? formula.stopFormula;
@@ -140,43 +170,75 @@ export class FormulaEngine implements OnDestroy {
         continue;
       }
 
-      if (formula.target.startsWith(SettingsFormulaPrefix)) {
-        const settingName = formula.target.substring(SettingsFormulaPrefix.length);
-        const defaultSetting = (settings as Record<string, any>)[settingName];
-
-        if (defaultSetting == null || formulaResult.value == null) {
-          // can't check types, hope for the best
-          formulaSettings[settingName] = formulaResult.value;
-          continue;
-        }
-
-        if (Array.isArray(defaultSetting) && Array.isArray(formulaResult)) {
-          // can't check types of items in array, hope for the best
-          formulaSettings[settingName] = formulaResult.value;
-          continue;
-        }
-
-        if (typeof defaultSetting === typeof formulaResult.value) {
-          // maybe typesafe
-          formulaSettings[settingName] = formulaResult.value;
-          continue;
-        }
-      }
+      FormulaSettingsHelper.keepSettingsIfTypeMatches(formula.target, settingsCurrent, formulaResult.value, settingsNew);
     }
 
-    // save settings for the next cycle
-    this.formulaSettingsCache[this.getFormulaSettingsKey(fieldName, currentLanguage, defaultLanguage)] = formulaSettings as FieldSettings;
+    const updatedSettings = FormulaSettingsHelper.ensureNewSettingsMatchRequirements(
+      {
+        ...settingsCurrent,
+        ...settingsNew,
+      },
+      attribute,
+      contentTypeMetadata,
+      inputType,
+      logic,
+      attributeValues,
+      entityReader,
+      slotIsEmpty,
+      formReadOnly,
+      valueBefore,
+      logicTools,
+    );
 
     const runFormulaResult: RunFormulasResult = {
-      settings: {
-        ...settings,
-        ...formulaSettings,
-      },
+      settings: updatedSettings,
       validation: formulaValidation,
       value: formulaValue,
       fields: formulaFields,
     };
     return runFormulaResult;
+  }
+
+  private handleFormulaPromises(
+    entityGuid: string,
+    formulaResult: FormulaResultRaw,
+    formula: FormulaCacheItem,
+    inputType: InputType,
+  ) {
+    consoleLogAngular("formula promise", formula.target, formulaResult);
+    if (formulaResult.openInDesigner && formulaResult.stop === null) {
+      console.log(`FYI: formula returned a promise. This automatically stops this formula from running again. If you want it to continue running, return stop: false`);
+    }
+    formula.promises$.next(formulaResult.promise);
+    if (!formula.updateCallback$.value) {
+      const queue = this.fieldsSettingsService.updateValueQueue;
+      formula.updateCallback$.next((result: FieldValue | FormulaResultRaw) => {
+        queue[entityGuid] = queue[entityGuid] ?? { possibleValueUpdates: {}, possibleFieldsUpdates: [], possibleSettingUpdate: [] };
+        let possibleValueUpdates: FormValues = {};
+        let possibleSettingUpdate: FieldSettingPair[] = [];
+        const corrected = this.correctAllValues(formula.target, result, inputType);
+
+        if (formula.target === FormulaTargets.Value) {
+          possibleValueUpdates = queue[entityGuid].possibleValueUpdates ?? {};
+          possibleValueUpdates[formula.fieldName] = corrected.value;
+
+        } else if (formula.target.startsWith(SettingsFormulaPrefix)) {
+          consoleLogAngular("formula promise settings");
+          const settingName = formula.target.substring(SettingsFormulaPrefix.length);
+          possibleSettingUpdate = queue[entityGuid].possibleSettingUpdate ?? [];
+          const newSetting = { name: formula.fieldName, settings: [{ settingName, value: result as FieldValue }] };
+          possibleSettingUpdate = possibleSettingUpdate.filter(s => s.name !== formula.fieldName && !s.settings.find(ss => ss.settingName === settingName));
+          possibleSettingUpdate.push(newSetting);
+        }
+
+        const possibleFieldsUpdates = queue[entityGuid].possibleFieldsUpdates ?? [];
+        if (corrected.fields)
+          possibleFieldsUpdates.push(...corrected.fields);
+        queue[entityGuid] = { possibleValueUpdates, possibleFieldsUpdates, possibleSettingUpdate };
+        formula.stopFormula = corrected.stop ?? formula.stopFormula;
+        this.fieldsSettingsService.retriggerFormulas();
+      });
+    }
   }
 
   private getFormulaSettingsKey(fieldName: string, currentLanguage: string, defaultLanguage: string): string {
@@ -188,8 +250,8 @@ export class FormulaEngine implements OnDestroy {
     entityId: number,
     formValues: FormValues,
     inputType: InputType,
-    settings: FieldSettings,
-    previousSettings: FieldSettings,
+    settingsInitial: FieldSettings,
+    settingsCurrent: FieldSettings,
     itemHeader: EavHeader,
   ): FormulaResultRaw {
     const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
@@ -201,8 +263,8 @@ export class FormulaEngine implements OnDestroy {
       formula,
       entityId,
       inputType,
-      settings,
-      previousSettings,
+      settingsInitial,
+      settingsCurrent,
       formValues,
       initialFormValues,
       currentLanguage,

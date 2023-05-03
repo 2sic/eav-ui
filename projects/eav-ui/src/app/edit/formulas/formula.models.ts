@@ -227,3 +227,13 @@ export interface FieldValuePair {
   name: string;
   value: FieldValue;
 }
+
+export interface FieldSettingPair {
+  name: string;
+  settings: SettingPair[];
+}
+
+export interface SettingPair { 
+  settingName: string;
+  value: FieldValue;
+}

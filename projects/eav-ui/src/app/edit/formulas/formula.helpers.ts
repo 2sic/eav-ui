@@ -69,8 +69,8 @@ export class FormulaHelpers {
     formula: FormulaCacheItem,
     entityId: number,
     inputType: InputType,
-    settings: FieldSettings,
-    previousSettings: FieldSettings,
+    settingsInitial: FieldSettings,
+    settingsCurrent: FieldSettings,
     formValues: FormValues,
     initialFormValues: FormValues,
     currentLanguage: string,
@@ -100,11 +100,11 @@ export class FormulaHelpers {
           default: {
             get(): FieldValue {
               if (formula.target === FormulaTargets.Value) {
-                return InputFieldHelpers.parseDefaultValue(formula.fieldName, inputType, settings);
+                return InputFieldHelpers.parseDefaultValue(formula.fieldName, inputType, settingsInitial);
               }
               if (formula.target.startsWith(SettingsFormulaPrefix)) {
                 const settingName = formula.target.substring(SettingsFormulaPrefix.length);
-                return (settings as Record<string, any>)[settingName];
+                return (settingsInitial as Record<string, any>)[settingName];
               }
             },
           },
@@ -122,7 +122,7 @@ export class FormulaHelpers {
           prefill: {
             get(): FieldValue {
               if (formula.target !== FormulaTargets.Value) { return; }
-              return InputFieldHelpers.parseDefaultValue(formula.fieldName, inputType, settings, itemHeader, true);
+              return InputFieldHelpers.parseDefaultValue(formula.fieldName, inputType, settingsInitial, itemHeader, true);
             },
           },
           value: {
@@ -139,7 +139,7 @@ export class FormulaHelpers {
               }
               if (formula.target.startsWith(SettingsFormulaPrefix)) {
                 const settingName = formula.target.substring(SettingsFormulaPrefix.length);
-                return (previousSettings as Record<string, any>)[settingName];
+                return (settingsCurrent as Record<string, any>)[settingName];
               }
             },
           },
@@ -177,7 +177,7 @@ export class FormulaHelpers {
               runFormulas(): void {
                 if (formula.version === FormulaVersions.V1) {
                   console.warn('form.runFormulas() is being deprecated. Use V2 formulas and return the promise. Formulas will auto-run when it completes.');
-                  fieldsSettingsService.forceSettings();
+                  fieldsSettingsService.retriggerFormulas();
                 } else if (formula.version === FormulaVersions.V2) {
                   console.error('form.runFormulas() is not supported in V2 formulas. Just return the promise. Formulas will auto-run when it completes.');
                 }
