@@ -9,7 +9,7 @@ import { EavService, FieldsSettingsService } from '../shared/services';
 import { ItemService } from '../shared/store/ngrx-data';
 
 // Import the type definitions for intellisense
-import editorTypesForIntellisense from '!raw-loader!../../formulas/editor-intellisense-function-v2.rawts';
+import editorTypesForIntellisense from '!raw-loader!./editor-intellisense-function-v2.rawts';
 import { formV1Prefix, requiredFormulaPrefix } from './formula.constants';
 // tslint:disable-next-line: max-line-length
 import { FormulaCacheItem, FormulaFieldValidation, FormulaFunction, FormulaProps, FormulaPropsV1, FormulaTargets, FormulaV1Data, FormulaV1ExperimentalEntity, FormulaVersion, FormulaVersions, SettingsFormulaPrefix } from './formula.models';
@@ -303,58 +303,16 @@ export class FormulaHelpers {
     switch (formula.version) {
       case FormulaVersions.V2: {
         const formulaPropsParameters = this.buildFormulaPropsParameters(itemHeader);
-        return `
-          declare type function v2(
-            callback: (
-              data: {
-                value: any;
-                default: any;
-                prefill: any;
-                initial: any;
-                ${fieldOptions.map(f => `${f.fieldName}: any;`).join('\n')}
-                parameters: {
-                  ${Object.keys(formulaPropsParameters).map(key => `${key}: any;`).join('\n')}
-                };
-              },
-              context: {
-                app: {
-                  appId: number;
-                  zoneId: number;
-                  isGlobal: boolean;
-                  isSite: boolean;
-                  isContent: boolean;
-                };
-                cache: Record<string, any>;
-                culture: {
-                  code: string;
-                  name: string;
-                };
-                debug: boolean;
-                features: {
-                  isEnabled(nameId: string): boolean;
-                };
-                form: {
-                  runFormulas(): void;
-                };
-                sxc: Record<string, any>;
-                target: {
-                  entity: {
-                    id: number;
-                    guid: string;
-                  };
-                  name: string;
-                  type: string;
-                };
-                user: {
-                  id: number;
-                  isAnonymous: boolean;
-                  isSiteAdmin: boolean;
-                  isSystemAdmin: boolean;
-                };
-              },
-            ) => any,
-          ): void;
-        `;
+
+        const allFields = fieldOptions.map(f => `${f.fieldName}: any;`).join('\n');
+        const allParameters = Object.keys(formulaPropsParameters).map(key => `${key}: any;`).join('\n');
+        const final = editorTypesForIntellisense
+          .replace('/* [inject:AllFields] */', allFields)
+          .replace('/* [inject:AllParameters] */', allParameters);
+
+        // console.error('test 2dm', final);
+        return final;
+
         // TODO: probably update the entity-type info which was added in v14.07.05
       }
       default:

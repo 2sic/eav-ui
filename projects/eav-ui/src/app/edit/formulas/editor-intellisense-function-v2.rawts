@@ -106,8 +106,9 @@ declare interface FormulaContext {
    * Work with the current form
    */
   form: {
-    /** Re-trigger all formulas. Usually used inside promises when they complete. */
-    runFormulas(): void;
+    // v16 Deprecated for v2
+    // /** Re-trigger all formulas. Usually used inside promises when they complete. */
+    // runFormulas(): void;
   };
   /**
    * The standard sxc object for the current App.
@@ -115,7 +116,6 @@ declare interface FormulaContext {
    *
    * You can use it to make API calls to the server.
    */
-  // sxc: Record<string, any>;
   sxc: {
     /** The module ID */
     id: number;
@@ -138,7 +138,8 @@ declare interface FormulaContext {
        */
       fetchRaw<TData>(url: string, data?: string | Record<string, any>, method?: string): Promise<TData>;
     };
-    [key: string]: any;
+    // turn off for now v16.00 - confusing
+    // [key: string]: any;
   };
   /**
    * Information about the item this formula targets.
@@ -196,12 +197,20 @@ declare interface FormulaContext {
 /**
  * This `v2` wrapper is required for the intellisense to work.
  * @param callback The real code of the formula
- * @returns A string, boolean, number or array of strings - or an advanced object
+ * @returns A string, boolean, number, date or an advanced object
  */
 declare function v2(
   // The main function - adding comments here does not show up, so we don't have them ATM
   callback: (
     data: FormulaData,
     context: FormulaContext,
-  ) => string | boolean | number | string[],
+  ) => string | boolean | number | Date | {
+    value?: string | boolean | number | Date | { severity: 'warning' | 'error', message: string },
+    fields?: {
+      name: string,
+      value: string | boolean | number | Date
+    }[],
+    promise?: Promise<any>,
+    stop?: boolean,
+  },
 ): void;
