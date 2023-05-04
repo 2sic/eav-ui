@@ -1,3 +1,4 @@
+@use "sass:math";
 @import './rich-variables.scss';
 
 $border-color-top: #00275388;
@@ -29,9 +30,9 @@ $background: repeating-linear-gradient(135deg, $spacer-pattern-lines 0, $spacer-
     }
     &.wysiwyg-spacer-s {
       background-image: $background;
-      height: $gutter/2;
+      height: math.div($gutter, 2);
       // @media screen and (max-width: 768px) {
-      //   height: $gutter/2;
+      //   height: math.div($gutter, 2);
       // }  
     }
     &.wysiwyg-spacer-m {

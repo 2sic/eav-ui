@@ -43,7 +43,7 @@ export class FieldStringWysiwygPreview extends HTMLElement implements EavCustomI
           .replace(/<a[^>]*>(.*?)<\/a>/g, '$1'); // remove href from A tag
       }),
       this.connector.field$.subscribe(fieldConfig => {
-        if (fieldConfig.settings.Disabled) {
+        if (fieldConfig.settings.Disabled || fieldConfig.settings.ForcedDisabled) {
           previewContainer.classList.add('disabled');
         } else {
           previewContainer.classList.remove('disabled');

@@ -1,7 +1,7 @@
 {
   "name": "eav-ui",
   "// VERSION": "The version number is very important, as it's used for publishing the source maps",
-  "version": "15.08.00",
+  "version": "16.00.00",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -24,8 +24,9 @@
   },
   "dependencies": {
     "@2sic.com/dnn-sxc-angular": "^11.1.2",
-    "@ag-grid-community/angular": "^27.1.1",
-    "@ag-grid-community/client-side-row-model": "^27.1.0",
+    "@ag-grid-community/angular": "^29.2.0",
+    "@ag-grid-community/client-side-row-model": "^29.2.0",
+    "@ag-grid-community/styles": "^29.2.0",
     "@angular-material-components/datetime-picker": "^7.0.1",
     "@angular/animations": "^13.3.3",
     "@angular/cdk": "^13.3.3",

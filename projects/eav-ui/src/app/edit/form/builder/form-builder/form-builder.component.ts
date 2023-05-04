@@ -48,7 +48,7 @@ export class FormBuilderComponent extends BaseSubsinkComponent implements OnInit
           if (this.form.controls.hasOwnProperty(fieldName)) { continue; }
 
           const value = fieldProps.value;
-          const disabled = fieldProps.settings.Disabled;
+          const disabled = fieldProps.settings.Disabled || fieldProps.settings.ForcedDisabled;
           const validators = ValidationHelpers.getValidators(fieldName, inputType, this.fieldsSettingsService);
           const newControl = this.formBuilder.control({ disabled, value }, validators);
           // TODO: build all fields at once. That should be faster
@@ -77,7 +77,7 @@ export class FormBuilderComponent extends BaseSubsinkComponent implements OnInit
         for (const [fieldName, fieldProps] of Object.entries(fieldsProps)) {
           if (!this.form.controls.hasOwnProperty(fieldName)) { continue; }
           const control = this.form.controls[fieldName];
-          const disabled = fieldProps.settings.Disabled;
+          const disabled = fieldProps.settings.Disabled || fieldProps.settings.ForcedDisabled;
           // WARNING!!! Fires valueChange event for every single control
           GeneralHelpers.disableControl(control, disabled);
         }
