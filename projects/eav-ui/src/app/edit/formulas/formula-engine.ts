@@ -22,6 +22,22 @@ import { FieldLogicTools } from '../form/shared/field-logic/field-logic-tools';
 import { ConstantFieldParts } from './constant-field-parts';
 import { consoleLogAngular } from '../../shared/helpers/console-log-angular.helper';
 
+// TODO: @stv
+// We must refactor again, because this is much too big
+// Should be just ca. 1h or so, and not change any functionality
+// Basically SoC must be preserved - and each file should be < 200 lines
+//
+// 1. First create class FormulaValueCorrections (see below) w/static methods - I think it doesn't have any dependencies to other code here
+// 2. Make the queue-data type a class FormulaPromiseResult, make nicer names
+//    basically the: { possibleValueUpdates: FormValues, possibleFieldsUpdates: FieldValuePair[], possibleSettingUpdate: FieldSettingPair[] }
+//    ca. { valueUpdates: FormValues, fieldUpdates: FieldValuePair[], settingUpdates: FieldSettingPair[] }
+// 3. Create a new class FormulaPromiseHandler and move the two main methods there
+//    - the handleFormulaPromises method
+//    - the updateValuesFromQueue method
+//    To make it work, you should probably create it as a child object here in the `init(...)`, and give it the services it needs 
+//
+// Then also check the field-settings-service which is still too heavy - see comment ca. line 260
+
 @Injectable()
 export class FormulaEngine implements OnDestroy {
   private subscription: Subscription = new Subscription();
@@ -369,6 +385,7 @@ export class FormulaEngine implements OnDestroy {
     return isOpenInDesigner;
   }
 
+  // TODO: @STV - move to class FormulaValueCorrections with method "correctAllValues"
   private correctAllValues(target: FormulaTarget, result: FieldValue | FormulaResultRaw, inputType: InputType): FormulaResultRaw {
     const stop = (result as FormulaResultRaw)?.stop ?? null;
     if (result === null || result === undefined)
@@ -401,6 +418,7 @@ export class FormulaEngine implements OnDestroy {
     return value;
   }
 
+  // TODO: @STV - move to class FormulaValueCorrections with private method "correctValue"
   private valueCorrection(value: FieldValue, inputType: InputType): FieldValue {
     if (value == null) {
       return value;

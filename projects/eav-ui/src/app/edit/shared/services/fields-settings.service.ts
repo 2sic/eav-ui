@@ -105,7 +105,7 @@ export class FieldsSettingsService implements OnDestroy {
             settingsInitial,
             inputType,
             calculatedInputType,
-            constants: {
+            constants: { // TODO: @SDV this should probably be of type FieldConstants
               angularAssets: inputType?.AngularAssets,
               contentTypeId,
               dropzonePreviewsClass: `dropzone-previews-${this.eavService.eavConfig.formId}-${index}`,
@@ -256,6 +256,11 @@ export class FieldsSettingsService implements OnDestroy {
   retriggerFormulas(): void {
     this.forceRefreshSettings$.next();
   }
+
+  // TODO: @SDV - move this and `shouldUpdate` to a new class into the formulas server FormFormulasService 'form-formula-service.ts'
+  // You should also move the formulaCount variables etc. to that
+  // Goal is that the SettingsService is slimmed down to have almost no more formulas work
+  // Note that each field-settings-service should probably get it's own FormFormulasService so it behaves as before (so singleton)
 
   applyValueChangesFromFormulas(
     entityGuid: string,
