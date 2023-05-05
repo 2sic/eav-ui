@@ -24,6 +24,13 @@ export class ContentGroupService {
     });
   }
 
+  // TODO: @2DM 
+  removeItem(contentGroup: ContentGroup, index: number) {
+    return this.http.delete<null>(this.dnnContext.$2sxc.http.apiUrl('cms/list/delete'), {
+      params: { index: index, parent: contentGroup.guid, fields: 'content,presentation' }
+    });
+  }
+
   getList(contentGroup: ContentGroup) {
     return this.http.get<GroupHeader[]>(this.dnnContext.$2sxc.http.apiUrl(webApiContentGroup + 'itemlist'), {
       params: { appId: this.context.appId.toString(), guid: contentGroup.guid, part: contentGroup.part }

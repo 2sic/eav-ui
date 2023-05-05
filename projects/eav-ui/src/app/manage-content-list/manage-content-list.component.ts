@@ -33,7 +33,7 @@ export class ManageContentListComponent extends BaseComponent implements OnInit,
     part: this.route.snapshot.paramMap.get('part'),
     index: parseInt(this.route.snapshot.paramMap.get('index'), 10),
   };
-  private reordered = false;
+  reordered = false;
 
   constructor(
     protected router: Router,
@@ -82,6 +82,13 @@ export class ManageContentListComponent extends BaseComponent implements OnInit,
     this.snackBar.open('Saving...');
     this.contentGroupService.saveList(this.contentGroup, this.items$.value).subscribe(res => {
       this.snackBar.open('Saved');
+    });
+  }
+
+  saveAndCloseList() {
+    this.snackBar.open('Saving...');
+    this.contentGroupService.saveList(this.contentGroup, this.items$.value).subscribe(res => {
+      this.snackBar.open('Saved');
       this.closeDialog();
     });
   }
@@ -113,6 +120,26 @@ export class ManageContentListComponent extends BaseComponent implements OnInit,
     };
     const formUrl = convertFormToUrl(form);
     this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
+  }
+
+  addFromExisting(index: number) {
+    const queryParams = { add: true };
+    this.router.navigate([`${this.contentGroup.guid}/${this.contentGroup.part}/${index + 1}/replace`], { relativeTo: this.route, queryParams });
+  }
+
+  addBelow(index: number) {
+    const form: EditForm = {
+      items: [{ Add: true, Index: index + 1, Parent: this.contentGroup.guid, Field: this.contentGroup.part }],
+    };
+    const formUrl = convertFormToUrl(form);
+    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
+  }
+
+  remove(item: GroupHeader) {
+    const items = [...this.items$.value];
+    this.contentGroupService.removeItem(this.contentGroup, item.Index).subscribe(() => { 
+      // this.items$.next(items.filter(item => item.Id !== item.Id));
+    });
   }
 
   drop(event: CdkDragDrop<GroupHeader[]>) {

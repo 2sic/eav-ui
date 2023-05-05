@@ -4,4 +4,8 @@ export interface GroupHeader {
   Guid: string;
   Title: string;
   Type: string;
+  TypeWip: {
+    Name: string;
+    Id: string;
+  }
 }

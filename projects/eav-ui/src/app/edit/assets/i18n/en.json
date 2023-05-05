@@ -156,7 +156,9 @@
       "Remove": "Remove from list",
       "Delete": "Delete",
       "Loading": "Loading...",
-      "Search": "Search"
+      "Search": "Search",
+      "AddItemBelow": "Add item below",
+      "AddExistingItem": "Add existing item"
     },
     "EntityQuery": {
       "QueryNoItems": "No items found",
