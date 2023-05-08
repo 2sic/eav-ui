@@ -20,6 +20,7 @@ import { FieldLogicTools } from '../form/shared/field-logic/field-logic-tools';
 import { ConstantFieldParts } from './constant-field-parts';
 import { consoleLogAngular } from '../../shared/helpers/console-log-angular.helper';
 import { FormulaValueCorrections } from './formula-value-corrections.helper';
+import { FormulaPromiseResult } from './formula-promise-result.model';
 
 // TODO: @stv
 // We must refactor again, because this is much too big
@@ -71,7 +72,7 @@ export class FormulaEngine implements OnDestroy {
 
   updateValuesFromQueue(
     entityGuid: string,
-    queue: Record<string, { possibleValueUpdates: FormValues, possibleFieldsUpdates: FieldValuePair[], possibleSettingUpdate: FieldSettingPair[] }>,
+    queue: Record<string, FormulaPromiseResult>,
     contentType: EavContentType,
     formValues: FormValues,
     fieldsProps: FieldsProps,
@@ -87,11 +88,11 @@ export class FormulaEngine implements OnDestroy {
   ): { valuesUpdated: boolean, newFieldProps: FieldsProps } {
     if (queue[entityGuid] == null) return { valuesUpdated: false, newFieldProps: null };
     const toProcess = queue[entityGuid];
-    queue[entityGuid] = { possibleValueUpdates: {}, possibleFieldsUpdates: [], possibleSettingUpdate: [] };
+    queue[entityGuid] = { valueUpdates: {}, fieldUpdates: [], settingUpdates: [] };
     // extract updates and flush queue
-    const values = toProcess.possibleValueUpdates;
-    const fields = toProcess.possibleFieldsUpdates;
-    const allSettings = toProcess.possibleSettingUpdate;
+    const values = toProcess.valueUpdates;
+    const fields = toProcess.fieldUpdates;
+    const allSettings = toProcess.settingUpdates;
 
     let valuesUpdated = false;
     if (Object.keys(values).length !== 0 || fields.length !== 0) {
@@ -231,28 +232,28 @@ export class FormulaEngine implements OnDestroy {
     if (!formula.updateCallback$.value) {
       const queue = this.fieldsSettingsService.updateValueQueue;
       formula.updateCallback$.next((result: FieldValue | FormulaResultRaw) => {
-        queue[entityGuid] = queue[entityGuid] ?? { possibleValueUpdates: {}, possibleFieldsUpdates: [], possibleSettingUpdate: [] };
-        let possibleValueUpdates: FormValues = {};
-        let possibleSettingUpdate: FieldSettingPair[] = [];
+        queue[entityGuid] = queue[entityGuid] ?? new FormulaPromiseResult({}, [], []);
+        let valueUpdates: FormValues = {};
+        let settingUpdate: FieldSettingPair[] = [];
         const corrected = FormulaValueCorrections.correctAllValues(formula.target, result, inputType);
 
         if (formula.target === FormulaTargets.Value) {
-          possibleValueUpdates = queue[entityGuid].possibleValueUpdates ?? {};
-          possibleValueUpdates[formula.fieldName] = corrected.value;
+          valueUpdates = queue[entityGuid].valueUpdates ?? {};
+          valueUpdates[formula.fieldName] = corrected.value;
 
         } else if (formula.target.startsWith(SettingsFormulaPrefix)) {
           consoleLogAngular("formula promise settings");
           const settingName = formula.target.substring(SettingsFormulaPrefix.length);
-          possibleSettingUpdate = queue[entityGuid].possibleSettingUpdate ?? [];
+          settingUpdate = queue[entityGuid].settingUpdates ?? [];
           const newSetting = { name: formula.fieldName, settings: [{ settingName, value: result as FieldValue }] };
-          possibleSettingUpdate = possibleSettingUpdate.filter(s => s.name !== formula.fieldName && !s.settings.find(ss => ss.settingName === settingName));
-          possibleSettingUpdate.push(newSetting);
+          settingUpdate = settingUpdate.filter(s => s.name !== formula.fieldName && !s.settings.find(ss => ss.settingName === settingName));
+          settingUpdate.push(newSetting);
         }
 
-        const possibleFieldsUpdates = queue[entityGuid].possibleFieldsUpdates ?? [];
+        const fieldsUpdates = queue[entityGuid].fieldUpdates ?? [];
         if (corrected.fields)
-          possibleFieldsUpdates.push(...corrected.fields);
-        queue[entityGuid] = { possibleValueUpdates, possibleFieldsUpdates, possibleSettingUpdate };
+          fieldsUpdates.push(...corrected.fields);
+        queue[entityGuid] = new FormulaPromiseResult(valueUpdates, fieldsUpdates, settingUpdate);
         formula.stopFormula = corrected.stop ?? formula.stopFormula;
         this.fieldsSettingsService.retriggerFormulas();
       });

@@ -6,7 +6,7 @@ import { consoleLogAngular } from '../../../shared/helpers/console-log-angular.h
 import { FieldLogicManager } from '../../form/shared/field-logic/field-logic-manager';
 import { FieldLogicTools } from '../../form/shared/field-logic/field-logic-tools';
 import { FormulaEngine } from '../../formulas/formula-engine';
-import { FieldSettingPair, FieldValuePair } from '../../formulas/formula.models';
+import { FieldValuePair } from '../../formulas/formula.models';
 // tslint:disable-next-line:max-line-length
 import { EntityReader, FieldsSettingsHelpers, GeneralHelpers, InputFieldHelpers } from '../helpers';
 // tslint:disable-next-line:max-line-length
@@ -16,6 +16,7 @@ import { EavContentType } from '../models/eav';
 import { ContentTypeService, GlobalConfigService, InputTypeService, ItemService, LanguageInstanceService } from '../store/ngrx-data';
 import { FormsStateService } from './forms-state.service';
 import { ConstantFieldParts } from '../../formulas/constant-field-parts';
+import { FormulaPromiseResult } from '../../formulas/formula-promise-result.model';
 
 @Injectable()
 export class FieldsSettingsService implements OnDestroy {
@@ -25,7 +26,7 @@ export class FieldsSettingsService implements OnDestroy {
   private subscription: Subscription;
   private valueFormulaCounter = 0;
   private maxValueFormulaCycles = 5;
-  public updateValueQueue: Record<string, { possibleValueUpdates: FormValues, possibleFieldsUpdates: FieldValuePair[], possibleSettingUpdate: FieldSettingPair[] }> = {};
+  public updateValueQueue: Record<string, FormulaPromiseResult> = {};
   private latestFieldProps: FieldsProps = {};
 
   constructor(
