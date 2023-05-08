@@ -9,12 +9,13 @@ import { FormValues, SxcAbstractControl } from '../../../shared/models';
 import { EavService, FieldsSettingsService, FieldsTranslateService, FormsStateService } from '../../../shared/services';
 import { ItemService, LanguageInstanceService } from '../../../shared/store/ngrx-data';
 import { FormulaPromiseHandler } from '../../../formulas/formula-promise-handler';
+import { FormFormulaService } from '../../../formulas/form-formula.service';
 
 @Component({
   selector: 'app-form-builder',
   templateUrl: './form-builder.component.html',
   styleUrls: ['./form-builder.component.scss'],
-  providers: [FieldsSettingsService, FieldsTranslateService, FormulaEngine, FormulaPromiseHandler],
+  providers: [FieldsSettingsService, FieldsTranslateService, FormFormulaService, FormulaEngine, FormulaPromiseHandler],
 })
 export class FormBuilderComponent extends BaseSubsinkComponent implements OnInit, OnDestroy {
   @Input() entityGuid: string;

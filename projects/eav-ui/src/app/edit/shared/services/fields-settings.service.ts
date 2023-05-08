@@ -1,7 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, filter, map, Observable, Subscription } from 'rxjs';
 import { EavService } from '.';
-import { FieldSettings, FieldValue } from '../../../../../../edit-types';
+import { FieldSettings } from '../../../../../../edit-types';
 import { consoleLogAngular } from '../../../shared/helpers/console-log-angular.helper';
 import { FieldLogicManager } from '../../form/shared/field-logic/field-logic-manager';
 import { FieldLogicTools } from '../../form/shared/field-logic/field-logic-tools';
@@ -9,14 +9,14 @@ import { FormulaEngine } from '../../formulas/formula-engine';
 // tslint:disable-next-line:max-line-length
 import { EntityReader, FieldsSettingsHelpers, GeneralHelpers, InputFieldHelpers } from '../helpers';
 // tslint:disable-next-line:max-line-length
-import { ContentTypeSettings, FieldsProps, FormValues, TranslationState } from '../models';
-import { EavContentType } from '../models/eav';
+import { ContentTypeSettings, FieldConstants, FieldsProps, FormValues, TranslationState } from '../models';
 // tslint:disable-next-line:max-line-length
 import { ContentTypeService, GlobalConfigService, InputTypeService, ItemService, LanguageInstanceService } from '../store/ngrx-data';
 import { FormsStateService } from './forms-state.service';
 import { ConstantFieldParts } from '../../formulas/models/constant-field-parts.model';
 import { FormulaPromiseResult } from '../../formulas/models/formula-promise-result.model';
 import { FieldValuePair } from '../../formulas/models/formula-results.models';
+import { FormFormulaService } from '../../formulas/form-formula.service';
 
 @Injectable()
 export class FieldsSettingsService implements OnDestroy {
@@ -24,8 +24,6 @@ export class FieldsSettingsService implements OnDestroy {
   private fieldsProps$ = new BehaviorSubject<FieldsProps>(null);
   private forceRefreshSettings$ = new BehaviorSubject<void>(null);
   private subscription: Subscription;
-  private valueFormulaCounter = 0;
-  private maxValueFormulaCycles = 5;
   public updateValueQueue: Record<string, FormulaPromiseResult> = {};
   private latestFieldProps: FieldsProps = {};
 
@@ -38,8 +36,10 @@ export class FieldsSettingsService implements OnDestroy {
     private globalConfigService: GlobalConfigService,
     private formsStateService: FormsStateService,
     private formulaEngine: FormulaEngine,
+    public formFormulaService: FormFormulaService,
   ) {
     formulaEngine.init(this, this.contentTypeSettings$);
+    formFormulaService.init(this.itemService);
   }
 
   ngOnDestroy(): void {
@@ -101,25 +101,27 @@ export class FieldsSettingsService implements OnDestroy {
 
           const logic = FieldLogicManager.singleton().get(attribute.InputType);
 
+          const constants: FieldConstants = {
+            angularAssets: inputType?.AngularAssets,
+            contentTypeId,
+            dropzonePreviewsClass: `dropzone-previews-${this.eavService.eavConfig.formId}-${index}`,
+            entityGuid,
+            entityId,
+            fieldName: attribute.Name,
+            index,
+            initialDisabled,
+            inputType: calculatedInputType.inputType,
+            isExternal: calculatedInputType.isExternal,
+            isLastInGroup: FieldsSettingsHelpers.findIsLastInGroup(contentType, attribute),
+            type: attribute.Type,
+          }
+
           return ({
             logic,
             settingsInitial,
             inputType,
             calculatedInputType,
-            constants: { // TODO: @SDV this should probably be of type FieldConstants
-              angularAssets: inputType?.AngularAssets,
-              contentTypeId,
-              dropzonePreviewsClass: `dropzone-previews-${this.eavService.eavConfig.formId}-${index}`,
-              entityGuid,
-              entityId,
-              fieldName: attribute.Name,
-              index,
-              initialDisabled,
-              inputType: calculatedInputType.inputType,
-              isExternal: calculatedInputType.isExternal,
-              isLastInGroup: FieldsSettingsHelpers.findIsLastInGroup(contentType, attribute),
-              type: attribute.Type,
-            }
+            constants
           });
         });
       }));
@@ -202,14 +204,14 @@ export class FieldsSettingsService implements OnDestroy {
           }
           this.latestFieldProps = fieldsProps;
 
-          const changesWereApplied = this.applyValueChangesFromFormulas(
+          const changesWereApplied = this.formFormulaService.applyValueChangesFromFormulas(
             entityGuid, contentType, formValues, fieldsProps,
             possibleValueUpdates, possibleFieldsUpdates,
             slotIsEmpty, entityReader);
           // if changes were applied do not trigger field property updates
           if (changesWereApplied) return null;
           // if no changes were applied then we trigger field property updates and reset the loop counter
-          this.valueFormulaCounter = 0;
+          this.formFormulaService.valueFormulaCounter = 0;
           return fieldsProps;
         }),
         filter(fieldsProps => !!fieldsProps),
@@ -256,64 +258,5 @@ export class FieldsSettingsService implements OnDestroy {
 
   retriggerFormulas(): void {
     this.forceRefreshSettings$.next();
-  }
-
-  // TODO: @SDV - move this and `shouldUpdate` to a new class into the formulas server FormFormulasService 'form-formula-service.ts'
-  // You should also move the formulaCount variables etc. to that
-  // Goal is that the SettingsService is slimmed down to have almost no more formulas work
-  // Note that each field-settings-service should probably get it's own FormFormulasService so it behaves as before (so singleton)
-
-  applyValueChangesFromFormulas(
-    entityGuid: string,
-    contentType: EavContentType,
-    formValues: FormValues,
-    fieldsProps: FieldsProps,
-    possibleValueUpdates: FormValues,
-    possibleFieldsUpdates: FieldValuePair[],
-    slotIsEmpty: boolean,
-    entityReader: EntityReader): boolean {
-    const valueUpdates: FormValues = {};
-    for (const attribute of contentType.Attributes) {
-      const possibleFieldsUpdatesForAttribute = possibleFieldsUpdates.filter(f => f.name === attribute.Name);
-      const valueBefore = formValues[attribute.Name];
-      const valueFromFormula = possibleValueUpdates[attribute.Name];
-      const fieldsFromFormula =
-        possibleFieldsUpdatesForAttribute[possibleFieldsUpdatesForAttribute.length - 1]?.value;
-      const newValue = fieldsFromFormula ? fieldsFromFormula : valueFromFormula;
-      if (this.shouldUpdate(valueBefore, newValue, slotIsEmpty, fieldsProps[attribute.Name]?.settings._disabledBecauseOfTranslation)) {
-        valueUpdates[attribute.Name] = newValue;
-      }
-    }
-
-    if (Object.keys(valueUpdates).length > 0) {
-      if (this.maxValueFormulaCycles > this.valueFormulaCounter) {
-        this.valueFormulaCounter++;
-        this.itemService.updateItemAttributesValues(
-          entityGuid, valueUpdates, entityReader.currentLanguage, entityReader.defaultLanguage
-        );
-        // return true to make sure fieldProps are not updated yet
-        return true;
-      } else {
-        // consoleLogWebpack('Max value formula cycles reached');
-        return false;
-      }
-    }
-    return false;
-  }
-
-  private shouldUpdate(
-    valueBefore: FieldValue, valueFromFormula: FieldValue,
-    slotIsEmpty: boolean, disabledBecauseTranslations: boolean
-  ): boolean {
-    // important to compare with undefined because null is allowed value
-    if (slotIsEmpty || disabledBecauseTranslations || valueBefore === undefined || valueFromFormula === undefined)
-      return false;
-
-    let valuesNotEqual = valueBefore !== valueFromFormula;
-    // do a more in depth comparison in case of calculated entity fields
-    if (valuesNotEqual && Array.isArray(valueBefore) && Array.isArray(valueFromFormula)) {
-      valuesNotEqual = !GeneralHelpers.arraysEqual(valueBefore as string[], valueFromFormula as string[]);
-    }
-    return valuesNotEqual;
   }
 }

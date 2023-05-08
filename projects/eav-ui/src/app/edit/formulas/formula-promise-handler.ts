@@ -92,8 +92,7 @@ export class FormulaPromiseHandler {
 
     let valuesUpdated = false;
     if (Object.keys(values).length !== 0 || fields.length !== 0) {
-
-      this.fieldsSettingsService.applyValueChangesFromFormulas(
+      this.fieldsSettingsService.formFormulaService.applyValueChangesFromFormulas(
         entityGuid, contentType, formValues, fieldsProps, values, fields, slotIsEmpty, entityReader
       );
       valuesUpdated = true;
