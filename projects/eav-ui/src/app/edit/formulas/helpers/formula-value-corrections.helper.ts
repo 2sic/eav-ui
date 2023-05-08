@@ -1,11 +1,12 @@
 import { FieldValue } from "projects/edit-types";
-import { DataTypeConstants } from "../../content-type-fields/constants/data-type.constants";
-import { InputTypeConstants } from "../../content-type-fields/constants/input-type.constants";
-import { InputType } from "../../content-type-fields/models/input-type.model";
-import { FormulaTarget, FormulaResultRaw, FormulaTargets } from "./formula.models";
+import { DataTypeConstants } from "../../../content-type-fields/constants/data-type.constants";
+import { InputTypeConstants } from "../../../content-type-fields/constants/input-type.constants";
+import { InputType } from "../../../content-type-fields/models/input-type.model";
+import { FormulaTarget, FormulaTargets } from "../models/formula.models";
+import { FormulaResultRaw } from "../models/formula-results.models";
 
 export class FormulaValueCorrections {
-  
+
   static correctAllValues(target: FormulaTarget, result: FieldValue | FormulaResultRaw, inputType: InputType): FormulaResultRaw {
     const stop = (result as FormulaResultRaw)?.stop ?? null;
     if (result === null || result === undefined)
@@ -39,22 +40,22 @@ export class FormulaValueCorrections {
   }
 
   static valueCorrection(value: FieldValue, inputType: InputType): FieldValue {
-  if (value == null) {
-    return value;
-  } else if (inputType?.Type === InputTypeConstants.DatetimeDefault) {
-    const date = new Date(value as string | number | Date);
+    if (value == null) {
+      return value;
+    } else if (inputType?.Type === InputTypeConstants.DatetimeDefault) {
+      const date = new Date(value as string | number | Date);
 
-    // if value is not ISO string, nor milliseconds, correct timezone
-    if (!(typeof value === 'string' && value.endsWith('Z')) && date.getTime() !== value) {
-      date.setTime(date.getTime() - date.getTimezoneOffset() * 60000);
+      // if value is not ISO string, nor milliseconds, correct timezone
+      if (!(typeof value === 'string' && value.endsWith('Z')) && date.getTime() !== value) {
+        date.setTime(date.getTime() - date.getTimezoneOffset() * 60000);
+      }
+
+      date.setMilliseconds(0);
+      return date.toJSON();
+    } else if (typeof (value) !== 'string' && (inputType?.Type?.startsWith(DataTypeConstants.String.toLocaleLowerCase())
+      || inputType?.Type?.startsWith(DataTypeConstants.Hyperlink.toLocaleLowerCase()))) {
+      return value.toString();
     }
-
-    date.setMilliseconds(0);
-    return date.toJSON();
-  } else if (typeof (value) !== 'string' && (inputType?.Type?.startsWith(DataTypeConstants.String.toLocaleLowerCase())
-    || inputType?.Type?.startsWith(DataTypeConstants.Hyperlink.toLocaleLowerCase()))) {
-    return value.toString();
+    return value;
   }
-  return value;
-}
 }

@@ -8,9 +8,10 @@ import { LogSeverities } from '../shared/models';
 import { EavItem } from '../shared/models/eav/eav-item';
 import { EavService, LoggingService } from '../shared/services';
 import { ContentTypeItemService, ContentTypeService, ItemService, LanguageInstanceService } from '../shared/store/ngrx-data';
-import { FormulaHelpers } from './formula.helpers';
+import { FormulaHelpers } from './helpers/formula.helpers';
 // tslint:disable-next-line: max-line-length
-import { DesignerState, FormulaCacheItem, FormulaCacheItemShared, FormulaFunction, FormulaResult, FormulaResultRaw, FormulaTarget, FormulaV1CtxTargetEntity, FormulaV1CtxUser } from './formula.models';
+import { FormulaCacheItem, FormulaCacheItemShared, FormulaFunction, FormulaTarget, FormulaV1CtxTargetEntity, FormulaV1CtxUser } from './models/formula.models';
+import { FormulaResult, DesignerState, FormulaResultRaw } from './models/formula-results.models';
 
 declare const window: EavWindow;
 @Injectable()

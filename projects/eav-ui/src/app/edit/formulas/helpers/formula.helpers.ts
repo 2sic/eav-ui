@@ -1,18 +1,18 @@
-import { FieldSettings, FieldValue } from '../../../../../edit-types';
-import { InputType } from '../../content-type-fields/models/input-type.model';
-import { FeatureSummary } from '../../features/models';
-import { DesignerSnippet, FieldOption } from '../dialog/footer/formula-designer/formula-designer.models';
-import { InputFieldHelpers, LocalizationHelpers } from '../shared/helpers';
-import { FormValues, Language } from '../shared/models';
-import { EavHeader } from '../shared/models/eav';
-import { EavService, FieldsSettingsService } from '../shared/services';
-import { ItemService } from '../shared/store/ngrx-data';
+import { FieldSettings, FieldValue } from '../../../../../../edit-types';
+import { InputType } from '../../../content-type-fields/models/input-type.model';
+import { FeatureSummary } from '../../../features/models';
+import { DesignerSnippet, FieldOption } from '../../dialog/footer/formula-designer/formula-designer.models';
+import { InputFieldHelpers, LocalizationHelpers } from '../../shared/helpers';
+import { FormValues, Language } from '../../shared/models';
+import { EavHeader } from '../../shared/models/eav';
+import { EavService, FieldsSettingsService } from '../../shared/services';
+import { ItemService } from '../../shared/store/ngrx-data';
 
 // Import the type definitions for intellisense
 import editorTypesForIntellisense from '!raw-loader!./editor-intellisense-function-v2.rawts';
-import { formV1Prefix, requiredFormulaPrefix } from './formula.constants';
+import { formV1Prefix, requiredFormulaPrefix } from '../formula.constants';
 // tslint:disable-next-line: max-line-length
-import { FormulaCacheItem, FormulaFieldValidation, FormulaFunction, FormulaProps, FormulaPropsV1, FormulaTargets, FormulaV1Data, FormulaV1ExperimentalEntity, FormulaVersion, FormulaVersions, SettingsFormulaPrefix } from './formula.models';
+import { FormulaCacheItem, FormulaFieldValidation, FormulaFunction, FormulaProps, FormulaPropsV1, FormulaTargets, FormulaV1Data, FormulaV1ExperimentalEntity, FormulaVersion, FormulaVersions, SettingsFormulaPrefix } from '../models/formula.models';
 
 export class FormulaHelpers {
 

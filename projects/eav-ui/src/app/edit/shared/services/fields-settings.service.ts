@@ -6,7 +6,6 @@ import { consoleLogAngular } from '../../../shared/helpers/console-log-angular.h
 import { FieldLogicManager } from '../../form/shared/field-logic/field-logic-manager';
 import { FieldLogicTools } from '../../form/shared/field-logic/field-logic-tools';
 import { FormulaEngine } from '../../formulas/formula-engine';
-import { FieldValuePair } from '../../formulas/formula.models';
 // tslint:disable-next-line:max-line-length
 import { EntityReader, FieldsSettingsHelpers, GeneralHelpers, InputFieldHelpers } from '../helpers';
 // tslint:disable-next-line:max-line-length
@@ -15,8 +14,9 @@ import { EavContentType } from '../models/eav';
 // tslint:disable-next-line:max-line-length
 import { ContentTypeService, GlobalConfigService, InputTypeService, ItemService, LanguageInstanceService } from '../store/ngrx-data';
 import { FormsStateService } from './forms-state.service';
-import { ConstantFieldParts } from '../../formulas/constant-field-parts';
-import { FormulaPromiseResult } from '../../formulas/formula-promise-result.model';
+import { ConstantFieldParts } from '../../formulas/models/constant-field-parts.model';
+import { FormulaPromiseResult } from '../../formulas/models/formula-promise-result.model';
+import { FieldValuePair } from '../../formulas/models/formula-results.models';
 
 @Injectable()
 export class FieldsSettingsService implements OnDestroy {
@@ -146,13 +146,13 @@ export class FieldsSettingsService implements OnDestroy {
           };
 
           if (Object.keys(this.latestFieldProps).length) {
-            const status = this.formulaEngine.updateValuesFromQueue(
+            const status = this.formulaEngine.formulaPromiseHandler.updateValuesFromQueue(
               entityGuid, this.updateValueQueue, contentType, formValues, this.latestFieldProps, slotIsEmpty, entityReader,
               this.latestFieldProps, contentType.Attributes, contentType.Metadata, constantFieldParts as ConstantFieldParts[],
               itemAttributes, formReadOnly.isReadOnly, logicTools);
             // we only updated values from promise (queue), don't trigger property regular updates
             // NOTE: if any value changes then the entire cycle will automatically retrigger
-            if (status.newFieldProps) 
+            if (status.newFieldProps)
               this.latestFieldProps = status.newFieldProps;
             if (status.valuesUpdated) return null;
           }

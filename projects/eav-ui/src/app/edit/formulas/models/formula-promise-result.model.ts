@@ -1,5 +1,5 @@
-import { FormValues } from "../shared/models";
-import { FieldValuePair, FieldSettingPair } from "./formula.models";
+import { FormValues } from "../../shared/models";
+import { FieldValuePair, FieldSettingPair } from "./formula-results.models";
 
 export class FormulaPromiseResult {
   constructor(

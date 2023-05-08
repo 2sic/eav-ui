@@ -1,12 +1,12 @@
 import { FieldSettings, FieldValue } from "projects/edit-types";
-import { InputType } from "../../content-type-fields/models/input-type.model";
-import { consoleLogAngular } from "../../shared/helpers/console-log-angular.helper";
-import { LanguageState } from "../../shared/models/language-state";
-import { FieldLogicBase } from "../form/shared/field-logic/field-logic-base";
-import { FieldLogicTools } from "../form/shared/field-logic/field-logic-tools";
-import { ValidationHelpers, FieldsSettingsHelpers } from "../shared/helpers";
-import { EavContentTypeAttribute, EavEntity, EavValues } from "../shared/models/eav";
-import { FormulaResultRaw, SettingsFormulaPrefix } from "./formula.models";
+import { InputType } from "../../../content-type-fields/models/input-type.model";
+import { consoleLogAngular } from "../../../shared/helpers/console-log-angular.helper";
+import { LanguageState } from "../../../shared/models/language-state";
+import { FieldLogicBase } from "../../form/shared/field-logic/field-logic-base";
+import { FieldLogicTools } from "../../form/shared/field-logic/field-logic-tools";
+import { ValidationHelpers, FieldsSettingsHelpers } from "../../shared/helpers";
+import { EavContentTypeAttribute, EavEntity, EavValues } from "../../shared/models/eav";
+import { SettingsFormulaPrefix } from "../models/formula.models";
 
 export class FormulaSettingsHelper {
 
