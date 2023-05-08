@@ -26,8 +26,9 @@ export class ContentGroupService {
 
   // TODO: @2DM 
   removeItem(contentGroup: ContentGroup, index: number) {
+    // note: the server checks if the part == 'content' and will automatically treat it as a pair with presentation
     return this.http.delete<null>(this.dnnContext.$2sxc.http.apiUrl('cms/list/delete'), {
-      params: { index: index, parent: contentGroup.guid, fields: 'content,presentation' }
+      params: { index: index, parent: contentGroup.guid, fields: contentGroup.part }
     });
   }
 

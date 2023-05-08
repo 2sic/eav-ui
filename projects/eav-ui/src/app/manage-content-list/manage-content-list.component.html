@@ -36,17 +36,18 @@
           {{ item.Title }} ({{ item.Id }})
         </span>
       </div>
-      <div *ngIf="item.Id !== 0">
-        <button mat-icon-button [tippy]="'Fields.Entity.AddExistingItem' | translate" appMousedownStopPropagation (click)="addFromExisting(item.Index)">
+      <div>
+        <!-- most buttons should only exist if it has a real ID, except for remove - which should also remove null-entries -->
+        <button *ngIf="item.Id !== 0" mat-icon-button [tippy]="'Fields.Entity.AddExistingItem' | translate" appMousedownStopPropagation (click)="addFromExisting(item.Index)">
           <mat-icon>playlist_add</mat-icon>
         </button>
-        <button mat-icon-button [tippy]="'Fields.Entity.AddItemBelow' | translate" appMousedownStopPropagation [disabled]="reordered" (click)="addBelow(item.Index)">
+        <button *ngIf="item.Id !== 0" mat-icon-button [tippy]="'Fields.Entity.AddItemBelow' | translate" appMousedownStopPropagation [disabled]="reordered" (click)="addBelow(item.Index)">
           <mat-icon>add_circle_outline</mat-icon>
         </button>
         <button mat-icon-button [tippy]="'Fields.Entity.Remove' | translate" appMousedownStopPropagation [disabled]="reordered" (click)="remove(item)">
           <mat-icon>remove_circle_outline</mat-icon>
         </button>
-        <button mat-icon-button [tippy]="'Fields.Entity.Edit' | translate" appMousedownStopPropagation (click)="editItem(item.Id)">
+        <button *ngIf="item.Id !== 0" mat-icon-button [tippy]="'Fields.Entity.Edit' | translate" appMousedownStopPropagation (click)="editItem(item.Id)">
           <mat-icon>edit</mat-icon>
         </button>
       </div>
