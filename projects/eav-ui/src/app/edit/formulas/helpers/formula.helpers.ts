@@ -9,7 +9,7 @@ import { EavService, FieldsSettingsService } from '../../shared/services';
 import { ItemService } from '../../shared/store/ngrx-data';
 
 // Import the type definitions for intellisense
-import editorTypesForIntellisense from '!raw-loader!./editor-intellisense-function-v2.rawts';
+import editorTypesForIntellisense from '!raw-loader!../editor-intellisense-function-v2.rawts';
 import { formV1Prefix, requiredFormulaPrefix } from '../formula.constants';
 // tslint:disable-next-line: max-line-length
 import { FormulaCacheItem, FormulaFieldValidation, FormulaFunction, FormulaProps, FormulaPropsV1, FormulaTargets, FormulaV1Data, FormulaV1ExperimentalEntity, FormulaVersion, FormulaVersions, SettingsFormulaPrefix } from '../models/formula.models';
