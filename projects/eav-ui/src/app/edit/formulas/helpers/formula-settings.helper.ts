@@ -9,12 +9,12 @@ import { EavContentTypeAttribute, EavEntity, EavValues } from "../../shared/mode
 import { SettingsFormulaPrefix } from "../models/formula.models";
 
 /**
- * Contains methods for updating settings from formulas
+ * Contains methods for updating settings from formulas.
  */
 export class FormulaSettingsHelper {
 
   /**
-   * Used for calculating new settings
+   * Used for calculating new settings.
    * @param settingsInitial Default settings
    * @param settingsCurrent Last settings
    * @param attribute 
@@ -64,7 +64,7 @@ export class FormulaSettingsHelper {
   }
 
   /**
-   * Possibly updates setting with formula result if target and type matches
+   * Possibly updates setting with formula result if target and type matches.
    * @param target Formula target
    * @param settings Last/Current settings
    * @param formulaResult Formula result needed for type checking

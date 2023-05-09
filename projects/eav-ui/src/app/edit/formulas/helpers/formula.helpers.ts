@@ -14,9 +14,16 @@ import { formV1Prefix, requiredFormulaPrefix } from '../formula.constants';
 // tslint:disable-next-line: max-line-length
 import { FormulaCacheItem, FormulaFieldValidation, FormulaFunction, FormulaProps, FormulaPropsV1, FormulaTargets, FormulaV1Data, FormulaV1ExperimentalEntity, FormulaVersion, FormulaVersions, SettingsFormulaPrefix } from '../models/formula.models';
 
-// TODO: @SDV - ADD short TSDoc for the class and the methods
+/**
+ * Contains methods for building formulas.
+ */
 export class FormulaHelpers {
 
+  /**
+   * Used to clean formula text.
+   * @param formula Formula text to clean
+   * @returns Cleaned formula text
+   */
   private static cleanFormula(formula: string): string {
     if (!formula) { return formula; }
 
@@ -50,6 +57,11 @@ export class FormulaHelpers {
     return cleanFormula;
   }
 
+  /**
+   * Used to find formula version.
+   * @param formula Formula text
+   * @returns If formula is V1 or V2
+   */
   static findFormulaVersion(formula: string): FormulaVersion {
     const cleanFormula = this.cleanFormula(formula);
     const versionPart = cleanFormula.substring(requiredFormulaPrefix.length, cleanFormula.indexOf('(')).trim();
@@ -60,12 +72,37 @@ export class FormulaHelpers {
       : undefined;
   }
 
+  /**
+   * Used to build executable formula function from formula text.
+   * @param formula Formula text
+   * @returns Executable formula function
+   */
   static buildFormulaFunction(formula: string): FormulaFunction {
     const cleanFormula = this.cleanFormula(formula);
     const fn: FormulaFunction = new Function(`return ${cleanFormula}`)();
     return fn;
   }
 
+  /**
+   * Used to build formula props parameters.
+   * @param formula 
+   * @param entityId 
+   * @param inputType 
+   * @param settingsInitial 
+   * @param settingsCurrent 
+   * @param formValues 
+   * @param initialFormValues 
+   * @param currentLanguage 
+   * @param defaultLanguage 
+   * @param languages 
+   * @param itemHeader 
+   * @param debugEnabled 
+   * @param itemService 
+   * @param eavService 
+   * @param fieldsSettingsService 
+   * @param features 
+   * @returns Formula properties
+   */
   static buildFormulaProps(
     formula: FormulaCacheItem,
     entityId: number,
@@ -232,10 +269,22 @@ export class FormulaHelpers {
     }
   }
 
+  /**
+   * Used to build the formula props parameters as a record of key-value pairs.
+   * @param itemHeader 
+   * @returns 
+   */
   static buildFormulaPropsParameters(itemHeader: EavHeader): Record<string, any> {
     return JSON.parse(JSON.stringify(itemHeader.Prefill)) ?? {};
   }
 
+  /**
+   * Used to build the designer snippets for use in formulas.
+   * @param formula 
+   * @param fieldOptions 
+   * @param itemHeader 
+   * @returns Designer snippets for use in formulas
+   */
   static buildDesignerSnippetsData(formula: FormulaCacheItem, fieldOptions: FieldOption[], itemHeader: EavHeader): DesignerSnippet[] {
     switch (formula.version) {
       case FormulaVersions.V1:
@@ -262,6 +311,11 @@ export class FormulaHelpers {
     }
   }
 
+  /**
+   * Used to build the designer snippets context for use in formulas.
+   * @param formula 
+   * @returns Designer snippets context for use in formulas
+   */
   static buildDesignerSnippetsContext(formula: FormulaCacheItem): DesignerSnippet[] {
     switch (formula.version) {
       case FormulaVersions.V1:
@@ -300,6 +354,13 @@ export class FormulaHelpers {
     }
   }
 
+  /**
+   * Used to build the formula typings for use in intellisense.
+   * @param formula 
+   * @param fieldOptions 
+   * @param itemHeader 
+   * @returns Formula typings for use in intellisense
+   */
   static buildFormulaTypings(formula: FormulaCacheItem, fieldOptions: FieldOption[], itemHeader: EavHeader): string {
     switch (formula.version) {
       case FormulaVersions.V2: {

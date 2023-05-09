@@ -5,18 +5,17 @@ import { InputType } from "../../../content-type-fields/models/input-type.model"
 import { FormulaTarget, FormulaTargets } from "../models/formula.models";
 import { FormulaResultRaw } from "../models/formula-results.models";
 
-// TODO: @SDV - ADD short TSDoc for the class and the methods
 /**
- * Contains methods for correcting formula results
+ * Contains methods for correcting formula results.
  */
 export class FormulaValueCorrections {
 
   /**
-   * 
+   * This method is used to support ducktyping in the formula result and from it to fill FormulaResultRaw object with corrected values.
    * @param target Formula target
    * @param result Formula result
-   * @param inputType 
-   * @returns 
+   * @param inputType InputType is needed to check if the result is a date which needs to be corrected
+   * @returns Strongly typed FormulaResultRaw object
    */
   static correctAllValues(target: FormulaTarget, result: FieldValue | FormulaResultRaw, inputType: InputType): FormulaResultRaw {
     const stop = (result as FormulaResultRaw)?.stop ?? null;
@@ -50,6 +49,12 @@ export class FormulaValueCorrections {
     return value;
   }
 
+  /**
+   * Used to correct datetime field value from formula result.
+   * @param value Field value from formula result
+   * @param inputType InputType is needed to check if the result is a date which needs to be corrected
+   * @returns Corrected field value
+   */
   static valueCorrection(value: FieldValue, inputType: InputType): FieldValue {
     if (value == null) {
       return value;

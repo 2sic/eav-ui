@@ -6,7 +6,9 @@ import { EavContentType } from "../shared/models/eav";
 import { FieldValuePair } from "./models/formula-results.models";
 import { ItemService } from "../shared/store/ngrx-data";
 
-// TODO: @SDV - ADD short TSDoc for the class and the methods
+/**
+ * Contains methods for updating value changes from formulas.
+ */
 @Injectable()
 export class FormItemFormulaService {
   private itemService: ItemService = null;
@@ -18,6 +20,18 @@ export class FormItemFormulaService {
     this.itemService = itemService;
   }
 
+  /**
+   * Used to check if the value of a field should be updated with the value from a formula and if so, updates it.
+   * @param entityGuid 
+   * @param contentType 
+   * @param formValues 
+   * @param fieldsProps 
+   * @param possibleValueUpdates 
+   * @param possibleFieldsUpdates 
+   * @param slotIsEmpty 
+   * @param entityReader 
+   * @returns true if values are updated, false otherwise
+   */
   applyValueChangesFromFormulas(
     entityGuid: string,
     contentType: EavContentType,
@@ -56,9 +70,19 @@ export class FormItemFormulaService {
     return false;
   }
 
+  /**
+   * Used to check if the value of a field should be updated with the value from a formula.
+   * @param valueBefore 
+   * @param valueFromFormula 
+   * @param slotIsEmpty 
+   * @param disabledBecauseTranslations 
+   * @returns true if value should be updated, false otherwise
+   */
   private shouldUpdate(
-    valueBefore: FieldValue, valueFromFormula: FieldValue,
-    slotIsEmpty: boolean, disabledBecauseTranslations: boolean
+    valueBefore: FieldValue,
+    valueFromFormula: FieldValue,
+    slotIsEmpty: boolean,
+    disabledBecauseTranslations: boolean
   ): boolean {
     // important to compare with undefined because null is allowed value
     if (slotIsEmpty || disabledBecauseTranslations || valueBefore === undefined || valueFromFormula === undefined)
