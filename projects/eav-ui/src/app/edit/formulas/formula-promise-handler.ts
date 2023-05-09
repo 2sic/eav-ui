@@ -14,6 +14,7 @@ import { Injectable } from "@angular/core";
 import { FieldsSettingsService } from "../shared/services";
 import { FormulaResultRaw, FieldSettingPair } from "./models/formula-results.models";
 
+// TODO: @SDV - ADD short TSDoc for the class and the methods
 @Injectable()
 export class FormulaPromiseHandler {
   private fieldsSettingsService: FieldsSettingsService = null;
@@ -92,6 +93,9 @@ export class FormulaPromiseHandler {
 
     let valuesUpdated = false;
     if (Object.keys(values).length !== 0 || fields.length !== 0) {
+      // TODO: @STV THIS is a deep dependency = bad dependency
+      // please give the formFormulaService into this call, so you don't access it through the fieldSettingsService
+      // on the fieldSettingsService it must be private - this is a bad dependency
       this.fieldsSettingsService.formFormulaService.applyValueChangesFromFormulas(
         entityGuid, contentType, formValues, fieldsProps, values, fields, slotIsEmpty, entityReader
       );

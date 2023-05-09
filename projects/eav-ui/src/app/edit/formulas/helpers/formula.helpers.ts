@@ -14,6 +14,7 @@ import { formV1Prefix, requiredFormulaPrefix } from '../formula.constants';
 // tslint:disable-next-line: max-line-length
 import { FormulaCacheItem, FormulaFieldValidation, FormulaFunction, FormulaProps, FormulaPropsV1, FormulaTargets, FormulaV1Data, FormulaV1ExperimentalEntity, FormulaVersion, FormulaVersions, SettingsFormulaPrefix } from '../models/formula.models';
 
+// TODO: @SDV - ADD short TSDoc for the class and the methods
 export class FormulaHelpers {
 
   private static cleanFormula(formula: string): string {

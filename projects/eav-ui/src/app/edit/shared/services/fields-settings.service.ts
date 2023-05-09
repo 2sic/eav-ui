@@ -18,6 +18,7 @@ import { FormulaPromiseResult } from '../../formulas/models/formula-promise-resu
 import { FieldValuePair } from '../../formulas/models/formula-results.models';
 import { FormFormulaService } from '../../formulas/form-formula.service';
 
+// TODO: @SDV - ADD short TSDoc for the class and the methods
 @Injectable()
 export class FieldsSettingsService implements OnDestroy {
   private contentTypeSettings$ = new BehaviorSubject<ContentTypeSettings>(null);
@@ -36,6 +37,7 @@ export class FieldsSettingsService implements OnDestroy {
     private globalConfigService: GlobalConfigService,
     private formsStateService: FormsStateService,
     private formulaEngine: FormulaEngine,
+    // TODO: @SDV this must be private - it's not good to reference a service from another service
     public formFormulaService: FormFormulaService,
   ) {
     formulaEngine.init(this, this.contentTypeSettings$);
@@ -53,7 +55,6 @@ export class FieldsSettingsService implements OnDestroy {
     this.subscription = new Subscription();
 
     const item = this.itemService.getItem(entityGuid);
-    const entityId = item.Entity.Id;
     const contentTypeId = InputFieldHelpers.getContentTypeId(item);
     const contentType$ = this.contentTypeService.getContentType$(contentTypeId);
     const itemHeader$ = this.itemService.getItemHeader$(entityGuid);
@@ -76,11 +77,13 @@ export class FieldsSettingsService implements OnDestroy {
       })
     );
 
+    // TODO: @SDV at least 3 of these variables are not used for at least 30 lines - so pls move down
     const itemAttributes$ = this.itemService.getItemAttributes$(entityGuid);
     const inputTypes$ = this.inputTypeService.getInputTypes$();
     const formReadOnly$ = this.formsStateService.readOnly$;
     const debugEnabled$ = this.globalConfigService.getDebugEnabled$();
-
+    const entityId = item.Entity.Id;
+          
     const constantFieldParts$ = combineLatest([inputTypes$, contentType$, entityReader$]).pipe(
       map(([inputTypes, contentType, entityReader]) => {
         return contentType.Attributes.map((attribute, index) => {

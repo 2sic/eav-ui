@@ -8,6 +8,7 @@ import { ValidationHelpers, FieldsSettingsHelpers } from "../../shared/helpers";
 import { EavContentTypeAttribute, EavEntity, EavValues } from "../../shared/models/eav";
 import { SettingsFormulaPrefix } from "../models/formula.models";
 
+// TODO: @SDV - ADD short TSDoc for the class and the methods
 export class FormulaSettingsHelper {
 
   static ensureNewSettingsMatchRequirements(

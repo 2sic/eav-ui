@@ -14,6 +14,8 @@ import { FormulaCacheItem, FormulaCacheItemShared, FormulaFunction, FormulaTarge
 import { FormulaResult, DesignerState, FormulaResultRaw } from './models/formula-results.models';
 
 declare const window: EavWindow;
+
+// TODO: @SDV - ADD short TSDoc for the class and the methods
 @Injectable()
 export class FormulaDesignerService implements OnDestroy {
   private formulaCache$: BehaviorSubject<FormulaCacheItem[]>;

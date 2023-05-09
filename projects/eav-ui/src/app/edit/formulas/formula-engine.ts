@@ -37,6 +37,7 @@ import { RunFormulasResult, FormulaResultRaw, FieldValuePair } from './models/fo
 //
 // Then also check the field-settings-service which is still too heavy - see comment ca. line 260
 
+// TODO: @SDV - ADD short TSDoc for the class and the methods
 @Injectable()
 export class FormulaEngine implements OnDestroy {
   private subscription: Subscription = new Subscription();

@@ -11,6 +11,8 @@ import { ItemService } from "../shared/store/ngrx-data";
 // Goal is that the SettingsService is slimmed down to have almost no more formulas work
 // Note that each field-settings-service should probably get it's own FormFormulasService so it behaves as before (so singleton)
 
+// TODO: @SDV - rename to FormItemFormulaService as it's per item
+// TODO: @SDV - ADD short TSDoc for the class and the methods
 @Injectable()
 export class FormFormulaService {
   private itemService: ItemService = null;
