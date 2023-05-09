@@ -55,7 +55,7 @@ export class ManageContentListComponent extends BaseComponent implements OnInit,
     this.subscription.add(this.refreshOnChildClosedShallow().subscribe(() => { 
       this.fetchList();
       this.fetchHeader();
-     }));
+    }));
   }
 
   ngOnDestroy() {
@@ -81,14 +81,15 @@ export class ManageContentListComponent extends BaseComponent implements OnInit,
   saveList() {
     this.snackBar.open('Saving...');
     this.contentGroupService.saveList(this.contentGroup, this.items$.value).subscribe(res => {
-      this.snackBar.open('Saved');
+      this.snackBar.open('Saved', null, { duration: 2000 });
+      this.reordered = false;
     });
   }
 
   saveAndCloseList() {
     this.snackBar.open('Saving...');
     this.contentGroupService.saveList(this.contentGroup, this.items$.value).subscribe(res => {
-      this.snackBar.open('Saved');
+      this.snackBar.open('Saved', null, { duration: 2000 });
       this.closeDialog();
     });
   }
@@ -136,9 +137,11 @@ export class ManageContentListComponent extends BaseComponent implements OnInit,
   }
 
   remove(item: GroupHeader) {
-    const items = [...this.items$.value];
+    if (!confirm(this.translate.instant('ManageContentList.ConfirmRemove'))) { return; }
+    this.snackBar.open('Removing...');
     this.contentGroupService.removeItem(this.contentGroup, item.Index).subscribe(() => { 
-      // this.items$.next(items.filter(item => item.Id !== item.Id));
+      this.snackBar.open('Removed', null, { duration: 2000 });
+      this.fetchList();
     });
   }
 
@@ -172,6 +175,7 @@ export class ManageContentListComponent extends BaseComponent implements OnInit,
         }
       }
       this.items$.next(items);
+      this.reordered = false;
     });
   }
 
