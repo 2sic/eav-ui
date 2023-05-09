@@ -33,7 +33,7 @@ export class ManageContentListComponent extends BaseComponent implements OnInit,
     part: this.route.snapshot.paramMap.get('part'),
     index: parseInt(this.route.snapshot.paramMap.get('index'), 10),
   };
-  private reordered = false;
+  reordered = false;
 
   constructor(
     protected router: Router,
@@ -53,9 +53,9 @@ export class ManageContentListComponent extends BaseComponent implements OnInit,
     this.fetchHeader();
     this.fetchDialogSettings();
     this.subscription.add(this.refreshOnChildClosedShallow().subscribe(() => { 
-      this.fetchList();
+      this.fetchList(true);
       this.fetchHeader();
-     }));
+    }));
   }
 
   ngOnDestroy() {
@@ -80,8 +80,17 @@ export class ManageContentListComponent extends BaseComponent implements OnInit,
 
   saveList() {
     this.snackBar.open('Saving...');
-    this.contentGroupService.saveList(this.contentGroup, this.items$.value).subscribe(res => {
-      this.snackBar.open('Saved');
+    this.contentGroupService.saveList(this.contentGroup, this.items$.value).subscribe(() => {
+      this.snackBar.open('Saved', null, { duration: 2000 });
+      this.fetchList();
+      this.fetchHeader();
+    });
+  }
+
+  saveAndCloseList() {
+    this.snackBar.open('Saving...');
+    this.contentGroupService.saveList(this.contentGroup, this.items$.value).subscribe(() => {
+      this.snackBar.open('Saved', null, { duration: 2000 });
       this.closeDialog();
     });
   }
@@ -115,6 +124,28 @@ export class ManageContentListComponent extends BaseComponent implements OnInit,
     this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
   }
 
+  addFromExisting(index: number) {
+    const queryParams = { add: true };
+    this.router.navigate([`${this.contentGroup.guid}/${this.contentGroup.part}/${index + 1}/replace`], { relativeTo: this.route, queryParams });
+  }
+
+  addBelow(index: number) {
+    const form: EditForm = {
+      items: [{ Add: true, Index: index + 1, Parent: this.contentGroup.guid, Field: this.contentGroup.part }],
+    };
+    const formUrl = convertFormToUrl(form);
+    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
+  }
+
+  remove(item: GroupHeader) {
+    if (!confirm(this.translate.instant('ManageContentList.ConfirmRemove'))) { return; }
+    this.snackBar.open('Removing...');
+    this.contentGroupService.removeItem(this.contentGroup, item.Index).subscribe(() => { 
+      this.snackBar.open('Removed', null, { duration: 2000 });
+      this.fetchList();
+    });
+  }
+
   drop(event: CdkDragDrop<GroupHeader[]>) {
     const items = [...this.items$.value];
     moveItemInArray(items, event.previousIndex, event.currentIndex);
@@ -127,12 +158,13 @@ export class ManageContentListComponent extends BaseComponent implements OnInit,
     return `${item.Index}+${item.Id}`;
   }
 
-  private fetchList() {
+  private fetchList(keepOrder = false) {
     this.contentGroupService.getList(this.contentGroup).subscribe(items => {
       if (this.reordered) {
         const oldIds = this.items$.value.map(item => item.Id);
         const idsChanged = this.items$.value.length !== items.length || items.some(item => !oldIds.includes(item.Id));
-        if (!idsChanged) {
+        // for usecase where list is fetched on child closed and wasn't changed in the meantime keeps the order before child was opened
+        if (!idsChanged && keepOrder) {
           const sortOrder = this.items$.value.map(item => item.Index);
           items.sort((a, b) => {
             const aIndex = sortOrder.indexOf(a.Index);
@@ -140,11 +172,12 @@ export class ManageContentListComponent extends BaseComponent implements OnInit,
             if (aIndex === -1 || bIndex === -1) { return 0; }
             return aIndex - bIndex;
           });
-        } else {
+        } else if (keepOrder) {
           this.snackBar.open('List was changed from somewhere else. Order of items is reset', null, { duration: 5000 });
         }
       }
       this.items$.next(items);
+      this.reordered = false;
     });
   }
 

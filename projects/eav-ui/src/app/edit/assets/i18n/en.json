@@ -156,7 +156,9 @@
       "Remove": "Remove from list",
       "Delete": "Delete",
       "Loading": "Loading...",
-      "Search": "Search"
+      "Search": "Search",
+      "AddItemBelow": "Add item below",
+      "AddExistingItem": "Add existing item"
     },
     "EntityQuery": {
       "QueryNoItems": "No items found",
@@ -221,7 +223,8 @@
     "Description": "You can manage the list header here (if it is defined).",
     "NoHeader": "(this list has no header)",
     "SortItems": "Sort the items by dragging as needed.",
-    "SortLotsOfItems": "Sort the items by dragging and scrolling with mouse wheel as needed."
+    "SortLotsOfItems": "Sort the items by dragging and scrolling with mouse wheel as needed.",
+    "ConfirmRemove": "This will remove this content-item from this list, but not delete it (so you can add it again later). \nSee 2sxc.org/help for more. \n\nOk to remove?"
   },
   "Extension.TinyMce": {
     "Link.AdamFile": "Link ADAM file (recommended)",
