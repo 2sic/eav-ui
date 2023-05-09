@@ -16,7 +16,8 @@ import { FormsStateService } from './forms-state.service';
 import { ConstantFieldParts } from '../../formulas/models/constant-field-parts.model';
 import { FormulaPromiseResult } from '../../formulas/models/formula-promise-result.model';
 import { FieldValuePair } from '../../formulas/models/formula-results.models';
-import { FormFormulaService } from '../../formulas/form-formula.service';
+import { FormItemFormulaService } from '../../formulas/form-item-formula.service';
+import { FormulaPromiseHandler } from '../../formulas/formula-promise-handler';
 
 // TODO: @SDV - ADD short TSDoc for the class and the methods
 @Injectable()
@@ -37,11 +38,12 @@ export class FieldsSettingsService implements OnDestroy {
     private globalConfigService: GlobalConfigService,
     private formsStateService: FormsStateService,
     private formulaEngine: FormulaEngine,
-    // TODO: @SDV this must be private - it's not good to reference a service from another service
-    public formFormulaService: FormFormulaService,
+    private formItemFormulaService: FormItemFormulaService,
+    private formulaPromiseHandler: FormulaPromiseHandler,
   ) {
-    formulaEngine.init(this, this.contentTypeSettings$);
-    formFormulaService.init(this.itemService);
+    formulaPromiseHandler.init(this);
+    formItemFormulaService.init(this.itemService);
+    formulaEngine.init(this, this.formulaPromiseHandler, this.contentTypeSettings$);
   }
 
   ngOnDestroy(): void {
@@ -77,13 +79,9 @@ export class FieldsSettingsService implements OnDestroy {
       })
     );
 
-    // TODO: @SDV at least 3 of these variables are not used for at least 30 lines - so pls move down
-    const itemAttributes$ = this.itemService.getItemAttributes$(entityGuid);
     const inputTypes$ = this.inputTypeService.getInputTypes$();
-    const formReadOnly$ = this.formsStateService.readOnly$;
-    const debugEnabled$ = this.globalConfigService.getDebugEnabled$();
     const entityId = item.Entity.Id;
-          
+
     const constantFieldParts$ = combineLatest([inputTypes$, contentType$, entityReader$]).pipe(
       map(([inputTypes, contentType, entityReader]) => {
         return contentType.Attributes.map((attribute, index) => {
@@ -117,17 +115,24 @@ export class FieldsSettingsService implements OnDestroy {
             isExternal: calculatedInputType.isExternal,
             isLastInGroup: FieldsSettingsHelpers.findIsLastInGroup(contentType, attribute),
             type: attribute.Type,
-          }
+          };
 
-          return ({
+          const constantFieldParts: ConstantFieldParts = {
             logic,
             settingsInitial,
             inputType,
             calculatedInputType,
             constants
-          });
+          };
+
+          return (constantFieldParts);
         });
-      }));
+      })
+    );
+    
+    const itemAttributes$ = this.itemService.getItemAttributes$(entityGuid);
+    const formReadOnly$ = this.formsStateService.readOnly$;
+    const debugEnabled$ = this.globalConfigService.getDebugEnabled$();
 
     this.subscription.add(
       combineLatest([
@@ -151,10 +156,10 @@ export class FieldsSettingsService implements OnDestroy {
           };
 
           if (Object.keys(this.latestFieldProps).length) {
-            const status = this.formulaEngine.formulaPromiseHandler.updateValuesFromQueue(
+            const status = this.formulaPromiseHandler.updateValuesFromQueue(
               entityGuid, this.updateValueQueue, contentType, formValues, this.latestFieldProps, slotIsEmpty, entityReader,
-              this.latestFieldProps, contentType.Attributes, contentType.Metadata, constantFieldParts as ConstantFieldParts[],
-              itemAttributes, formReadOnly.isReadOnly, logicTools);
+              this.latestFieldProps, contentType.Attributes, contentType.Metadata, constantFieldParts,
+              itemAttributes, formReadOnly.isReadOnly, logicTools, this.formItemFormulaService);
             // we only updated values from promise (queue), don't trigger property regular updates
             // NOTE: if any value changes then the entire cycle will automatically retrigger
             if (status.newFieldProps)
@@ -207,14 +212,14 @@ export class FieldsSettingsService implements OnDestroy {
           }
           this.latestFieldProps = fieldsProps;
 
-          const changesWereApplied = this.formFormulaService.applyValueChangesFromFormulas(
+          const changesWereApplied = this.formItemFormulaService.applyValueChangesFromFormulas(
             entityGuid, contentType, formValues, fieldsProps,
             possibleValueUpdates, possibleFieldsUpdates,
             slotIsEmpty, entityReader);
           // if changes were applied do not trigger field property updates
           if (changesWereApplied) return null;
           // if no changes were applied then we trigger field property updates and reset the loop counter
-          this.formFormulaService.valueFormulaCounter = 0;
+          this.formItemFormulaService.valueFormulaCounter = 0;
           return fieldsProps;
         }),
         filter(fieldsProps => !!fieldsProps),

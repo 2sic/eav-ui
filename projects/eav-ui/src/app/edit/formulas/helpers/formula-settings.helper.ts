@@ -8,9 +8,27 @@ import { ValidationHelpers, FieldsSettingsHelpers } from "../../shared/helpers";
 import { EavContentTypeAttribute, EavEntity, EavValues } from "../../shared/models/eav";
 import { SettingsFormulaPrefix } from "../models/formula.models";
 
-// TODO: @SDV - ADD short TSDoc for the class and the methods
+/**
+ * Contains methods for updating settings from formulas
+ */
 export class FormulaSettingsHelper {
 
+  /**
+   * Used for calculating new settings
+   * @param settingsInitial Default settings
+   * @param settingsCurrent Last settings
+   * @param attribute 
+   * @param contentTypeMetadata 
+   * @param fieldInputType 
+   * @param fieldLogic 
+   * @param attributeValues 
+   * @param languages 
+   * @param slotIsEmpty If slot is empty
+   * @param formReadOnly Is form read only
+   * @param valueBefore 
+   * @param logicTools 
+   * @returns Calculated settings
+   */
   static ensureNewSettingsMatchRequirements(
     settingsInitial: FieldSettings,
     settingsCurrent: FieldSettings,
@@ -45,6 +63,14 @@ export class FormulaSettingsHelper {
     return fixed;
   }
 
+  /**
+   * Possibly updates setting with formula result if target and type matches
+   * @param target Formula target
+   * @param settings Last/Current settings
+   * @param formulaResult Formula result needed for type checking
+   * @param settingsNew Settings that are possibly updated
+   * @returns True if setting is updated, false if it is not
+   */
   static keepSettingsIfTypeMatches(
     target: string,
     settings: FieldSettings,

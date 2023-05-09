@@ -13,6 +13,7 @@ import { FormulaCacheItem, FormulaTargets, SettingsFormulaPrefix } from "./model
 import { Injectable } from "@angular/core";
 import { FieldsSettingsService } from "../shared/services";
 import { FormulaResultRaw, FieldSettingPair } from "./models/formula-results.models";
+import { FormItemFormulaService } from "./form-item-formula.service";
 
 // TODO: @SDV - ADD short TSDoc for the class and the methods
 @Injectable()
@@ -25,43 +26,45 @@ export class FormulaPromiseHandler {
     this.fieldsSettingsService = fieldsSettingsService;
   }
 
-  handleFormulaPromises(
+  handleFormulaPromise(
     entityGuid: string,
-    formulaResult: FormulaResultRaw,
-    formula: FormulaCacheItem,
+    resultWithPromise: FormulaResultRaw,
+    formulaCache: FormulaCacheItem,
     inputType: InputType,
   ) {
-    consoleLogAngular("formula promise", formula.target, formulaResult);
-    if (formulaResult.openInDesigner && formulaResult.stop === null) {
+    consoleLogAngular("formula promise", formulaCache.target, resultWithPromise);
+    if (resultWithPromise.openInDesigner && resultWithPromise.stop === null) {
       console.log(`FYI: formula returned a promise. This automatically stops this formula from running again. If you want it to continue running, return stop: false`);
     }
-    formula.promises$.next(formulaResult.promise);
-    if (!formula.updateCallback$.value) {
+    formulaCache.promises$.next(resultWithPromise.promise);
+    // extract to DefineCallbackHandlerIfMissing method
+    if (!formulaCache.updateCallback$.value) {
       const queue = this.fieldsSettingsService.updateValueQueue;
-      formula.updateCallback$.next((result: FieldValue | FormulaResultRaw) => {
-        queue[entityGuid] = queue[entityGuid] ?? new FormulaPromiseResult({}, [], []);
+      formulaCache.updateCallback$.next((result: FieldValue | FormulaResultRaw) => {
+        const corrected = FormulaValueCorrections.correctAllValues(formulaCache.target, result, inputType);
+
+        const queueItem = queue[entityGuid] ?? new FormulaPromiseResult({}, [], []);
         let valueUpdates: FormValues = {};
         let settingUpdate: FieldSettingPair[] = [];
-        const corrected = FormulaValueCorrections.correctAllValues(formula.target, result, inputType);
 
-        if (formula.target === FormulaTargets.Value) {
-          valueUpdates = queue[entityGuid].valueUpdates ?? {};
-          valueUpdates[formula.fieldName] = corrected.value;
+        if (formulaCache.target === FormulaTargets.Value) {
+          valueUpdates = queueItem.valueUpdates ?? {};
+          valueUpdates[formulaCache.fieldName] = corrected.value;
 
-        } else if (formula.target.startsWith(SettingsFormulaPrefix)) {
+        } else if (formulaCache.target.startsWith(SettingsFormulaPrefix)) {
           consoleLogAngular("formula promise settings");
-          const settingName = formula.target.substring(SettingsFormulaPrefix.length);
-          settingUpdate = queue[entityGuid].settingUpdates ?? [];
-          const newSetting = { name: formula.fieldName, settings: [{ settingName, value: result as FieldValue }] };
-          settingUpdate = settingUpdate.filter(s => s.name !== formula.fieldName && !s.settings.find(ss => ss.settingName === settingName));
+          const settingName = formulaCache.target.substring(SettingsFormulaPrefix.length);
+          settingUpdate = queueItem.settingUpdates ?? [];
+          const newSetting = { name: formulaCache.fieldName, settings: [{ settingName, value: result as FieldValue }] };
+          settingUpdate = settingUpdate.filter(s => s.name !== formulaCache.fieldName && !s.settings.find(ss => ss.settingName === settingName));
           settingUpdate.push(newSetting);
         }
 
-        const fieldsUpdates = queue[entityGuid].fieldUpdates ?? [];
+        const fieldsUpdates = queueItem.fieldUpdates ?? [];
         if (corrected.fields)
           fieldsUpdates.push(...corrected.fields);
         queue[entityGuid] = new FormulaPromiseResult(valueUpdates, fieldsUpdates, settingUpdate);
-        formula.stopFormula = corrected.stop ?? formula.stopFormula;
+        formulaCache.stopFormula = corrected.stop ?? formulaCache.stopFormula;
         this.fieldsSettingsService.retriggerFormulas();
       });
     }
@@ -82,6 +85,7 @@ export class FormulaPromiseHandler {
     itemAttributes: EavEntityAttributes,
     formReadOnly: boolean,
     logicTools: FieldLogicTools,
+    formItemFormulaService: FormItemFormulaService,
   ): { valuesUpdated: boolean, newFieldProps: FieldsProps } {
     if (queue[entityGuid] == null) return { valuesUpdated: false, newFieldProps: null };
     const toProcess = queue[entityGuid];
@@ -93,10 +97,7 @@ export class FormulaPromiseHandler {
 
     let valuesUpdated = false;
     if (Object.keys(values).length !== 0 || fields.length !== 0) {
-      // TODO: @STV THIS is a deep dependency = bad dependency
-      // please give the formFormulaService into this call, so you don't access it through the fieldSettingsService
-      // on the fieldSettingsService it must be private - this is a bad dependency
-      this.fieldsSettingsService.formFormulaService.applyValueChangesFromFormulas(
+      formItemFormulaService.applyValueChangesFromFormulas(
         entityGuid, contentType, formValues, fieldsProps, values, fields, slotIsEmpty, entityReader
       );
       valuesUpdated = true;

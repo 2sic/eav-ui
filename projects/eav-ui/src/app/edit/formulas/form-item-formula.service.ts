@@ -6,15 +6,9 @@ import { EavContentType } from "../shared/models/eav";
 import { FieldValuePair } from "./models/formula-results.models";
 import { ItemService } from "../shared/store/ngrx-data";
 
-// TODO: @SDV - move this and `shouldUpdate` to a new class into the formulas server FormFormulasService 'form-formula-service.ts'
-// You should also move the formulaCount variables etc. to that
-// Goal is that the SettingsService is slimmed down to have almost no more formulas work
-// Note that each field-settings-service should probably get it's own FormFormulasService so it behaves as before (so singleton)
-
-// TODO: @SDV - rename to FormItemFormulaService as it's per item
 // TODO: @SDV - ADD short TSDoc for the class and the methods
 @Injectable()
-export class FormFormulaService {
+export class FormItemFormulaService {
   private itemService: ItemService = null;
 
   valueFormulaCounter = 0;

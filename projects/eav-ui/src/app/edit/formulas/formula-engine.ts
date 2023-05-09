@@ -21,22 +21,6 @@ import { FormulaValueCorrections } from './helpers/formula-value-corrections.hel
 import { FormulaPromiseHandler } from './formula-promise-handler';
 import { RunFormulasResult, FormulaResultRaw, FieldValuePair } from './models/formula-results.models';
 
-// TODO: @stv
-// We must refactor again, because this is much too big
-// Should be just ca. 1h or so, and not change any functionality
-// Basically SoC must be preserved - and each file should be < 200 lines
-//
-// 1. First create class FormulaValueCorrections (see below) w/static methods - I think it doesn't have any dependencies to other code here
-// 2. Make the queue-data type a class FormulaPromiseResult, make nicer names
-//    basically the: { possibleValueUpdates: FormValues, possibleFieldsUpdates: FieldValuePair[], possibleSettingUpdate: FieldSettingPair[] }
-//    ca. { valueUpdates: FormValues, fieldUpdates: FieldValuePair[], settingUpdates: FieldSettingPair[] }
-// 3. Create a new class FormulaPromiseHandler and move the two main methods there
-//    - the handleFormulaPromises method
-//    - the updateValuesFromQueue method
-//    To make it work, you should probably create it as a child object here in the `init(...)`, and give it the services it needs 
-//
-// Then also check the field-settings-service which is still too heavy - see comment ca. line 260
-
 // TODO: @SDV - ADD short TSDoc for the class and the methods
 @Injectable()
 export class FormulaEngine implements OnDestroy {
@@ -44,6 +28,7 @@ export class FormulaEngine implements OnDestroy {
   private featuresCache$ = new BehaviorSubject<FeatureSummary[]>([]);
   private contentTypeSettings$: BehaviorSubject<ContentTypeSettings>;
   private fieldsSettingsService: FieldsSettingsService = null;
+  private formulaPromiseHandler: FormulaPromiseHandler = null;
 
   constructor(
     private languageInstanceService: LanguageInstanceService,
@@ -56,7 +41,6 @@ export class FormulaEngine implements OnDestroy {
     private globalConfigService: GlobalConfigService,
     private editInitializerService: EditInitializerService,
     private featuresService: FeaturesService,
-    public formulaPromiseHandler: FormulaPromiseHandler,
   ) { }
 
   ngOnDestroy(): void {
@@ -65,11 +49,12 @@ export class FormulaEngine implements OnDestroy {
 
   init(
     fieldsSettingsService: FieldsSettingsService,
+    formulaPromiseHandler: FormulaPromiseHandler,
     contentTypeSettings$: BehaviorSubject<ContentTypeSettings>) {
     this.fieldsSettingsService = fieldsSettingsService;
+    this.formulaPromiseHandler = formulaPromiseHandler;
     this.contentTypeSettings$ = contentTypeSettings$;
     this.subscription.add(this.featuresService.getAll$().subscribe(this.featuresCache$));
-    this.formulaPromiseHandler.init(this.fieldsSettingsService);
   }
 
   runAllFormulas(
@@ -100,7 +85,7 @@ export class FormulaEngine implements OnDestroy {
     for (const formula of formulas) {
       const formulaResult = this.runFormula(formula, entityId, formValues, inputType, settingsInitial, settingsCurrent, itemHeader);
       if (formulaResult?.promise instanceof Promise) {
-        this.formulaPromiseHandler.handleFormulaPromises(entityGuid, formulaResult, formula, inputType);
+        this.formulaPromiseHandler.handleFormulaPromise(entityGuid, formulaResult, formula, inputType);
         formula.stopFormula = formulaResult.stop ?? true;
       } else {
         formula.stopFormula = formulaResult.stop ?? formula.stopFormula;

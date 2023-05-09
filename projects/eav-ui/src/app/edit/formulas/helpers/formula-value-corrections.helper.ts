@@ -6,8 +6,18 @@ import { FormulaTarget, FormulaTargets } from "../models/formula.models";
 import { FormulaResultRaw } from "../models/formula-results.models";
 
 // TODO: @SDV - ADD short TSDoc for the class and the methods
+/**
+ * Contains methods for correcting formula results
+ */
 export class FormulaValueCorrections {
 
+  /**
+   * 
+   * @param target Formula target
+   * @param result Formula result
+   * @param inputType 
+   * @returns 
+   */
   static correctAllValues(target: FormulaTarget, result: FieldValue | FormulaResultRaw, inputType: InputType): FormulaResultRaw {
     const stop = (result as FormulaResultRaw)?.stop ?? null;
     if (result === null || result === undefined)
