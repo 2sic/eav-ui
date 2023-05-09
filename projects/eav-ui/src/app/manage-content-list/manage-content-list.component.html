@@ -38,16 +38,16 @@
       </div>
       <div>
         <!-- most buttons should only exist if it has a real ID, except for remove - which should also remove null-entries -->
-        <button *ngIf="item.Id !== 0" mat-icon-button [tippy]="'Fields.Entity.AddExistingItem' | translate" appMousedownStopPropagation (click)="addFromExisting(item.Index)">
+        <button mat-icon-button [tippy]="'Fields.Entity.AddExistingItem' | translate" appMousedownStopPropagation [disabled]="item.Id === 0" (click)="addFromExisting(item.Index)">
           <mat-icon>playlist_add</mat-icon>
         </button>
-        <button *ngIf="item.Id !== 0" mat-icon-button [tippy]="'Fields.Entity.AddItemBelow' | translate" appMousedownStopPropagation [disabled]="reordered" (click)="addBelow(item.Index)">
-          <mat-icon>add_circle_outline</mat-icon>
+        <button mat-icon-button [tippy]="'Fields.Entity.AddItemBelow' | translate" appMousedownStopPropagation [disabled]="item.Id === 0 || reordered" (click)="addBelow(item.Index)">
+          <mat-icon>add</mat-icon>
         </button>
         <button mat-icon-button [tippy]="'Fields.Entity.Remove' | translate" appMousedownStopPropagation [disabled]="reordered" (click)="remove(item)">
-          <mat-icon>remove_circle_outline</mat-icon>
+          <mat-icon>remove</mat-icon>
         </button>
-        <button *ngIf="item.Id !== 0" mat-icon-button [tippy]="'Fields.Entity.Edit' | translate" appMousedownStopPropagation (click)="editItem(item.Id)">
+        <button mat-icon-button [tippy]="'Fields.Entity.Edit' | translate" appMousedownStopPropagation [disabled]="item.Id === 0" (click)="editItem(item.Id)">
           <mat-icon>edit</mat-icon>
         </button>
       </div>
