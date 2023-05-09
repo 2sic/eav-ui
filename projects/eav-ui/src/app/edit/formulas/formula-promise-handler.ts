@@ -37,7 +37,14 @@ export class FormulaPromiseHandler {
       console.log(`FYI: formula returned a promise. This automatically stops this formula from running again. If you want it to continue running, return stop: false`);
     }
     formulaCache.promises$.next(resultWithPromise.promise);
-    // extract to DefineCallbackHandlerIfMissing method
+    this.DefineCallbackHandlerIfMissing(formulaCache, inputType, entityGuid);
+  }
+
+  private DefineCallbackHandlerIfMissing(
+    formulaCache: FormulaCacheItem,
+    inputType: InputType,
+    entityGuid: string,
+  ) {
     if (!formulaCache.updateCallback$.value) {
       const queue = this.fieldsSettingsService.updateValueQueue;
       formulaCache.updateCallback$.next((result: FieldValue | FormulaResultRaw) => {
