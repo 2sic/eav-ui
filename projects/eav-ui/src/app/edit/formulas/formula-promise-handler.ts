@@ -15,7 +15,9 @@ import { FieldsSettingsService } from "../shared/services";
 import { FormulaResultRaw, FieldSettingPair } from "./models/formula-results.models";
 import { FormItemFormulaService } from "./form-item-formula.service";
 
-// TODO: @SDV - ADD short TSDoc for the class and the methods
+/**
+ * FormulaPromiseHandler is responsible for handling the promise parts of formula results.
+ */
 @Injectable()
 export class FormulaPromiseHandler {
   private fieldsSettingsService: FieldsSettingsService = null;
@@ -26,6 +28,13 @@ export class FormulaPromiseHandler {
     this.fieldsSettingsService = fieldsSettingsService;
   }
 
+  /**
+   * Used for filling queue and triggering next run.
+   * @param entityGuid 
+   * @param resultWithPromise 
+   * @param formulaCache 
+   * @param inputType 
+   */
   handleFormulaPromise(
     entityGuid: string,
     resultWithPromise: FormulaResultRaw,
@@ -40,6 +49,12 @@ export class FormulaPromiseHandler {
     this.DefineCallbackHandlerIfMissing(formulaCache, inputType, entityGuid);
   }
 
+  /**
+   * Used for defining the callback handler for the promise if it doesn't already exist and filling queue for the next run.
+   * @param formulaCache 
+   * @param inputType 
+   * @param entityGuid 
+   */
   private DefineCallbackHandlerIfMissing(
     formulaCache: FormulaCacheItem,
     inputType: InputType,
@@ -77,6 +92,25 @@ export class FormulaPromiseHandler {
     }
   }
 
+  /**
+   * Used for updating values and cleaning settings from queue.
+   * @param entityGuid 
+   * @param queue 
+   * @param contentType 
+   * @param formValues 
+   * @param fieldsProps 
+   * @param slotIsEmpty 
+   * @param entityReader 
+   * @param latestFieldProps 
+   * @param attributes 
+   * @param contentTypeMetadata 
+   * @param constantFieldParts 
+   * @param itemAttributes 
+   * @param formReadOnly 
+   * @param logicTools 
+   * @param formItemFormulaService 
+   * @returns true if values were updated, false otherwise and new field props
+   */
   updateValuesFromQueue(
     entityGuid: string,
     queue: Record<string, FormulaPromiseResult>,

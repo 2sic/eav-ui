@@ -21,7 +21,9 @@ import { FormulaValueCorrections } from './helpers/formula-value-corrections.hel
 import { FormulaPromiseHandler } from './formula-promise-handler';
 import { RunFormulasResult, FormulaResultRaw, FieldValuePair } from './models/formula-results.models';
 
-// TODO: @SDV - ADD short TSDoc for the class and the methods
+/**
+ * Formula engine is responsible for running formulas and returning the result.
+ */
 @Injectable()
 export class FormulaEngine implements OnDestroy {
   private subscription: Subscription = new Subscription();
@@ -57,6 +59,26 @@ export class FormulaEngine implements OnDestroy {
     this.subscription.add(this.featuresService.getAll$().subscribe(this.featuresCache$));
   }
 
+  /**
+   * Used for running all formulas for a given attribute/field.
+   * @param entityGuid 
+   * @param entityId 
+   * @param attribute 
+   * @param formValues 
+   * @param inputType 
+   * @param logic 
+   * @param settingsInitial 
+   * @param settingsCurrent 
+   * @param itemHeader 
+   * @param contentTypeMetadata 
+   * @param attributeValues 
+   * @param entityReader 
+   * @param slotIsEmpty 
+   * @param formReadOnly 
+   * @param valueBefore 
+   * @param logicTools 
+   * @returns Object with all changes that formulas should make
+   */
   runAllFormulas(
     entityGuid: string,
     entityId: number,
@@ -136,10 +158,28 @@ export class FormulaEngine implements OnDestroy {
     return runFormulaResult;
   }
 
+  /**
+   * Used for getting formula setting key.
+   * @param fieldName 
+   * @param currentLanguage 
+   * @param defaultLanguage 
+   * @returns formula setting key
+   */
   private getFormulaSettingsKey(fieldName: string, currentLanguage: string, defaultLanguage: string): string {
     return `fieldName:${fieldName}:currentLanguage:${currentLanguage}:defaultLanguage:${defaultLanguage}`;
   }
 
+  /**
+   * Used for running a single formula and returning the result.
+   * @param formula 
+   * @param entityId 
+   * @param formValues 
+   * @param inputType 
+   * @param settingsInitial 
+   * @param settingsCurrent 
+   * @param itemHeader 
+   * @returns Result of a single formula.
+   */
   private runFormula(
     formula: FormulaCacheItem,
     entityId: number,
@@ -250,6 +290,11 @@ export class FormulaEngine implements OnDestroy {
     }
   }
 
+  /**
+   * Used for checking if formula is open in designer.
+   * @param formula 
+   * @returns True if formula is open in designer, otherwise false
+   */
   private isDesignerOpen(formula: FormulaCacheItem): boolean {
     const designerState = this.formulaDesignerService.getDesignerState();
     const isOpenInDesigner = designerState.isOpen

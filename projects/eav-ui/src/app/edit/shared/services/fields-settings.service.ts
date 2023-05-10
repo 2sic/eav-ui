@@ -19,7 +19,10 @@ import { FieldValuePair } from '../../formulas/models/formula-results.models';
 import { FormItemFormulaService } from '../../formulas/form-item-formula.service';
 import { FormulaPromiseHandler } from '../../formulas/formula-promise-handler';
 
-// TODO: @SDV - ADD short TSDoc for the class and the methods
+
+/**
+ * FieldsSettingsService is responsible for handling the settings, values and validations of fields.
+ */
 @Injectable()
 export class FieldsSettingsService implements OnDestroy {
   private contentTypeSettings$ = new BehaviorSubject<ContentTypeSettings>(null);
@@ -230,26 +233,52 @@ export class FieldsSettingsService implements OnDestroy {
     );
   }
 
+  /**
+   * Used to get content type settings.
+   * @returns Content type settings
+   */
   getContentTypeSettings(): ContentTypeSettings {
     return this.contentTypeSettings$.value;
   }
 
+  /**
+   * Used to get content type settings stream.
+   * @returns Stream of content type settings
+   */
   getContentTypeSettings$(): Observable<ContentTypeSettings> {
     return this.contentTypeSettings$.asObservable();
   }
 
+  /**
+   * Used to get field properties for all fields.
+   * @returns Object that has attribute name as a key and all of its field properties as a value
+   */
   getFieldsProps(): FieldsProps {
     return this.fieldsProps$.value;
   }
 
+  /**
+   * Used to get field properties stream for all fields.
+   * @returns Stream of objects that has attribute name as a key and all of its field properties as a value
+   */
   getFieldsProps$(): Observable<FieldsProps> {
     return this.fieldsProps$.asObservable();
   }
 
+  /**
+   * Used for getting field settings for a specific field.
+   * @param fieldName 
+   * @returns Field settings
+   */
   getFieldSettings(fieldName: string): FieldSettings {
     return this.fieldsProps$.value[fieldName].settings;
   }
 
+  /**
+   * Used for getting field settings stream for a specific field.
+   * @param fieldName 
+   * @returns Field settings stream
+   */
   getFieldSettings$(fieldName: string): Observable<FieldSettings> {
     return this.fieldsProps$.pipe(
       map(fieldsSettings => fieldsSettings[fieldName].settings),
@@ -257,6 +286,11 @@ export class FieldsSettingsService implements OnDestroy {
     );
   }
 
+  /**
+   * Used for translation state stream for a specific field.
+   * @param fieldName 
+   * @returns Translation state stream
+   */
   getTranslationState$(fieldName: string): Observable<TranslationState> {
     return this.fieldsProps$.pipe(
       map(fieldsSettings => fieldsSettings[fieldName].translationState),
@@ -264,6 +298,9 @@ export class FieldsSettingsService implements OnDestroy {
     );
   }
 
+  /**
+   * Triggers a reevaluation of all formulas.
+   */
   retriggerFormulas(): void {
     this.forceRefreshSettings$.next();
   }
