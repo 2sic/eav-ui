@@ -11,13 +11,14 @@ import { copyToClipboard } from '../../../../shared/helpers/copy-to-clipboard.he
 import { FormBuilderComponent } from '../../../form/builder/form-builder/form-builder.component';
 import { FormulaDesignerService } from '../../../formulas/formula-designer.service';
 import { defaultFormulaNow } from '../../../formulas/formula.constants';
-import { FormulaHelpers } from '../../../formulas/formula.helpers';
-import { DesignerState, FormulaTarget, FormulaTargets } from '../../../formulas/formula.models';
+import { FormulaHelpers } from '../../../formulas/helpers/formula.helpers';
+import { FormulaTarget, FormulaTargets } from '../../../formulas/models/formula.models';
 import { InputFieldHelpers } from '../../../shared/helpers';
 import { EavService } from '../../../shared/services';
 import { ContentTypeService, ItemService } from '../../../shared/store/ngrx-data';
 // tslint:disable-next-line:max-line-length
 import { DesignerSnippet, EntityOption, FieldOption, FormulaDesignerTemplateVars, SelectOptions, SelectTarget, SelectTargets, TargetOption } from './formula-designer.models';
+import { DesignerState } from '../../../formulas/models/formula-results.models';
 
 @Component({
   selector: 'app-formula-designer',

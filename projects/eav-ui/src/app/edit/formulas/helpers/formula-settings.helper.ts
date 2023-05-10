@@ -1,15 +1,34 @@
 import { FieldSettings, FieldValue } from "projects/edit-types";
-import { InputType } from "../../content-type-fields/models/input-type.model";
-import { consoleLogAngular } from "../../shared/helpers/console-log-angular.helper";
-import { LanguageState } from "../../shared/models/language-state";
-import { FieldLogicBase } from "../form/shared/field-logic/field-logic-base";
-import { FieldLogicTools } from "../form/shared/field-logic/field-logic-tools";
-import { ValidationHelpers, FieldsSettingsHelpers } from "../shared/helpers";
-import { EavContentTypeAttribute, EavEntity, EavValues } from "../shared/models/eav";
-import { FormulaResultRaw, SettingsFormulaPrefix } from "./formula.models";
+import { InputType } from "../../../content-type-fields/models/input-type.model";
+import { consoleLogAngular } from "../../../shared/helpers/console-log-angular.helper";
+import { LanguageState } from "../../../shared/models/language-state";
+import { FieldLogicBase } from "../../form/shared/field-logic/field-logic-base";
+import { FieldLogicTools } from "../../form/shared/field-logic/field-logic-tools";
+import { ValidationHelpers, FieldsSettingsHelpers } from "../../shared/helpers";
+import { EavContentTypeAttribute, EavEntity, EavValues } from "../../shared/models/eav";
+import { SettingsFormulaPrefix } from "../models/formula.models";
 
+/**
+ * Contains methods for updating settings from formulas.
+ */
 export class FormulaSettingsHelper {
 
+  /**
+   * Used for calculating new settings.
+   * @param settingsInitial Default settings
+   * @param settingsCurrent Last settings
+   * @param attribute 
+   * @param contentTypeMetadata 
+   * @param fieldInputType 
+   * @param fieldLogic 
+   * @param attributeValues 
+   * @param languages 
+   * @param slotIsEmpty If slot is empty
+   * @param formReadOnly Is form read only
+   * @param valueBefore 
+   * @param logicTools 
+   * @returns Calculated settings
+   */
   static ensureNewSettingsMatchRequirements(
     settingsInitial: FieldSettings,
     settingsCurrent: FieldSettings,
@@ -44,6 +63,14 @@ export class FormulaSettingsHelper {
     return fixed;
   }
 
+  /**
+   * Possibly updates setting with formula result if target and type matches.
+   * @param target Formula target
+   * @param settings Last/Current settings
+   * @param formulaResult Formula result needed for type checking
+   * @param settingsNew Settings that are possibly updated
+   * @returns True if setting is updated, false if it is not
+   */
   static keepSettingsIfTypeMatches(
     target: string,
     settings: FieldSettings,

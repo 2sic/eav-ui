@@ -8,12 +8,14 @@ import { GeneralHelpers, ValidationHelpers } from '../../../shared/helpers';
 import { FormValues, SxcAbstractControl } from '../../../shared/models';
 import { EavService, FieldsSettingsService, FieldsTranslateService, FormsStateService } from '../../../shared/services';
 import { ItemService, LanguageInstanceService } from '../../../shared/store/ngrx-data';
+import { FormulaPromiseHandler } from '../../../formulas/formula-promise-handler';
+import { FormItemFormulaService } from '../../../formulas/form-item-formula.service';
 
 @Component({
   selector: 'app-form-builder',
   templateUrl: './form-builder.component.html',
   styleUrls: ['./form-builder.component.scss'],
-  providers: [FieldsSettingsService, FieldsTranslateService, FormulaEngine],
+  providers: [FieldsSettingsService, FieldsTranslateService, FormItemFormulaService, FormulaEngine, FormulaPromiseHandler],
 })
 export class FormBuilderComponent extends BaseSubsinkComponent implements OnInit, OnDestroy {
   @Input() entityGuid: string;
@@ -30,7 +32,7 @@ export class FormBuilderComponent extends BaseSubsinkComponent implements OnInit
     private languageInstanceService: LanguageInstanceService,
   ) {
     super();
-   }
+  }
 
   ngOnInit() {
     this.fieldsSettingsService.init(this.entityGuid);

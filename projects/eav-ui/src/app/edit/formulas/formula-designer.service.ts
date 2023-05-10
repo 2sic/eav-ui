@@ -8,11 +8,16 @@ import { LogSeverities } from '../shared/models';
 import { EavItem } from '../shared/models/eav/eav-item';
 import { EavService, LoggingService } from '../shared/services';
 import { ContentTypeItemService, ContentTypeService, ItemService, LanguageInstanceService } from '../shared/store/ngrx-data';
-import { FormulaHelpers } from './formula.helpers';
+import { FormulaHelpers } from './helpers/formula.helpers';
 // tslint:disable-next-line: max-line-length
-import { DesignerState, FormulaCacheItem, FormulaCacheItemShared, FormulaFunction, FormulaResult, FormulaResultRaw, FormulaTarget, FormulaV1CtxTargetEntity, FormulaV1CtxUser } from './formula.models';
+import { FormulaCacheItem, FormulaCacheItemShared, FormulaFunction, FormulaTarget, FormulaV1CtxTargetEntity, FormulaV1CtxUser } from './models/formula.models';
+import { FormulaResult, DesignerState, FormulaResultRaw } from './models/formula-results.models';
 
 declare const window: EavWindow;
+
+/**
+ * Contains methods for extended CRUD operations for formulas.
+ */
 @Injectable()
 export class FormulaDesignerService implements OnDestroy {
   private formulaCache$: BehaviorSubject<FormulaCacheItem[]>;
@@ -51,6 +56,14 @@ export class FormulaDesignerService implements OnDestroy {
     this.formulaCache$ = new BehaviorSubject(formulaCache);
   }
 
+  /**
+   * Used for returning formula with specific target on specific field of specific entity.
+   * @param entityGuid Specific entity guid
+   * @param fieldName Specific field
+   * @param target Specific target
+   * @param allowDraft 
+   * @returns Formula
+   */
   getFormula(entityGuid: string, fieldName: string, target: FormulaTarget, allowDraft: boolean): FormulaCacheItem {
     return this.formulaCache$.value.find(
       f =>
@@ -61,6 +74,14 @@ export class FormulaDesignerService implements OnDestroy {
     );
   }
 
+  /**
+   * Used for returning formula stream with specific target on specific field of specific entity.
+   * @param entityGuid Specific entity guid
+   * @param fieldName Specific field
+   * @param target Specific target
+   * @param allowDraft 
+   * @returns Formula stream
+   */
   getFormula$(entityGuid: string, fieldName: string, target: FormulaTarget, allowDraft: boolean): Observable<FormulaCacheItem> {
     const isDraft = allowDraft ? [true, false] : [false];
     return this.formulaCache$.pipe(
@@ -71,6 +92,14 @@ export class FormulaDesignerService implements OnDestroy {
     );
   }
 
+  /**
+   * Used for returning formulas filtered by optional entity, field or target.
+   * @param entityGuid Optional entity guid
+   * @param fieldName Optional field
+   * @param target Optional target
+   * @param allowDraft 
+   * @returns Filtered formula array
+   */
   getFormulas(entityGuid?: string, fieldName?: string, target?: FormulaTarget, allowDraft?: boolean): FormulaCacheItem[] {
     return this.formulaCache$.value.filter(
       f =>
@@ -81,10 +110,22 @@ export class FormulaDesignerService implements OnDestroy {
     );
   }
 
+  /**
+   * Used for returning all formulas stream from formulaCache$.
+   * @returns Formula cache array stream
+   */
   getFormulas$(): Observable<FormulaCacheItem[]> {
     return this.formulaCache$.asObservable();
   }
 
+  /**
+   * Used for updating formula from editor.
+   * @param entityGuid 
+   * @param fieldName 
+   * @param target 
+   * @param formula 
+   * @param run 
+   */
   updateFormulaFromEditor(entityGuid: string, fieldName: string, target: FormulaTarget, formula: string, run: boolean): void {
     let formulaFunction: FormulaFunction;
     if (run) {
@@ -150,6 +191,16 @@ export class FormulaDesignerService implements OnDestroy {
     this.formulaCache$.next(newCache);
   }
 
+  /**
+   * Used for saving updated formula from editor.
+   * @param entityGuid 
+   * @param fieldName 
+   * @param target 
+   * @param formula 
+   * @param sourceGuid 
+   * @param sourceId 
+   * @returns 
+   */
   updateSaved(entityGuid: string, fieldName: string, target: FormulaTarget, formula: string, sourceGuid: string, sourceId: number): void {
     const oldFormulaCache = this.formulaCache$.value;
     const oldFormulaIndex = oldFormulaCache.findIndex(f => f.entityGuid === entityGuid && f.fieldName === fieldName && f.target === target);
@@ -167,6 +218,12 @@ export class FormulaDesignerService implements OnDestroy {
     this.formulaCache$.next(newCache);
   }
 
+  /**
+   * Used for deleting formula.
+   * @param entityGuid 
+   * @param fieldName 
+   * @param target 
+   */
   delete(entityGuid: string, fieldName: string, target: FormulaTarget): void {
     const oldFormulaCache = this.formulaCache$.value;
     const oldFormulaIndex = oldFormulaCache.findIndex(f => f.entityGuid === entityGuid && f.fieldName === fieldName && f.target === target);
@@ -175,6 +232,12 @@ export class FormulaDesignerService implements OnDestroy {
     this.formulaCache$.next(newCache);
   }
 
+  /**
+   * Used for resetting formula.
+   * @param entityGuid 
+   * @param fieldName 
+   * @param target 
+   */
   resetFormula(entityGuid: string, fieldName: string, target: FormulaTarget): void {
     const oldResults = this.formulaResults$.value;
     const oldResultIndex = oldResults.findIndex(r => r.entityGuid === entityGuid && r.fieldName === fieldName && r.target === target);
@@ -195,6 +258,15 @@ export class FormulaDesignerService implements OnDestroy {
     }
   }
 
+  /**
+   * Used for showing formula result in editor.
+   * @param entityGuid 
+   * @param fieldName 
+   * @param target 
+   * @param value 
+   * @param isError 
+   * @param isOnlyPromise 
+   */
   sendFormulaResultToUi(
     entityGuid: string, fieldName: string, target: FormulaTarget, value: FieldValue, isError: boolean, isOnlyPromise: boolean
   ): void {
@@ -215,6 +287,13 @@ export class FormulaDesignerService implements OnDestroy {
     this.formulaResults$.next(newResults);
   }
 
+  /**
+   * Used for getting formula result stream.
+   * @param entityGuid 
+   * @param fieldName 
+   * @param target 
+   * @returns Formula result stream
+   */
   getFormulaResult$(entityGuid: string, fieldName: string, target: FormulaTarget): Observable<FormulaResult> {
     return this.formulaResults$.pipe(
       map(results => results.find(r => r.entityGuid === entityGuid && r.fieldName === fieldName && r.target === target)),
@@ -222,6 +301,10 @@ export class FormulaDesignerService implements OnDestroy {
     );
   }
 
+  /**
+   * Used for opening or closing designer
+   * @param isOpen 
+   */
   setDesignerOpen(isOpen: boolean): void {
     const newState: DesignerState = {
       ...this.getDesignerState(),
@@ -230,18 +313,36 @@ export class FormulaDesignerService implements OnDestroy {
     this.setDesignerState(newState);
   }
 
+  /**
+   * Used for setting designer state.
+   * @param activeDesigner 
+   */
   setDesignerState(activeDesigner: DesignerState): void {
     this.designerState$.next(activeDesigner);
   }
 
+  /**
+   * Used for getting designer state.
+   * @returns Designer state
+   */
   getDesignerState(): DesignerState {
     return this.designerState$.value;
   }
 
+  /**
+   * Used for getting designer state stream.
+   * @returns Designer state stream
+   */
   getDesignerState$(): Observable<DesignerState> {
     return this.designerState$.pipe(distinctUntilChanged(GeneralHelpers.objectsEqual));
   }
 
+  /**
+   * Used for building shared parts of formula cache item.
+   * @param item 
+   * @param entityGuid 
+   * @returns 
+   */
   private buildItemFormulaCacheSharedParts(item: EavItem, entityGuid: string): FormulaCacheItemShared {
     item = item ?? this.itemService.getItem(entityGuid);
     const entity = item.Entity;
@@ -297,6 +398,10 @@ export class FormulaDesignerService implements OnDestroy {
     };
   }
 
+  /**
+   * Used for building formula cache.
+   * @returns 
+   */
   private buildFormulaCache(): FormulaCacheItem[] {
     const formulaCache: FormulaCacheItem[] = [];
     const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
@@ -368,6 +473,10 @@ export class FormulaDesignerService implements OnDestroy {
     return formulaCache;
   }
 
+  /**
+   * Used for pacing promises$ and callback$ triggers. Callback$ triggers for the first time when the last promise is resolved.
+   * @returns 
+   */
   private createPromisedParts() {
     const promises$ = new BehaviorSubject<Promise<FieldValue | FormulaResultRaw>>(null);
     const callback$ = new BehaviorSubject<(result: FieldValue | FormulaResultRaw) => void>(null);
