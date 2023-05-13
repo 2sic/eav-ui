@@ -6,6 +6,7 @@ import { FieldsSettingsService } from '../../../../shared/services';
 import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { EmptyMessageTemplateVars } from './empty-message.models';
+import { ItemFieldVisibility } from '../../../../shared/services/item-field-visibility';
 
 @Component({
   selector: InputTypeConstants.EmptyMessage,
@@ -24,7 +25,7 @@ export class EmptyMessageComponent implements OnInit {
     const settings$ = this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).pipe(
       map(settings => ({
         Notes: settings.Notes,
-        Visible: settings.Visible,
+        Visible: ItemFieldVisibility.mergedVisible(settings),
       })),
       distinctUntilChanged(GeneralHelpers.objectsEqual),
     );

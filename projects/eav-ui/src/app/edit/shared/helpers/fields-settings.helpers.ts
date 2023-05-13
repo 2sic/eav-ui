@@ -34,17 +34,17 @@ export class FieldsSettingsHelpers {
   }
 
   static setDefaultFieldSettings(settings: FieldSettings): FieldSettings {
-    const defaultSettings = { ...settings };
+    const defaultSettings = AllDeprecated.moveDeprecatedSettings({ ...settings });
     // update @All settings
     defaultSettings.Name ??= '';
     defaultSettings.Placeholder ??= '';
     defaultSettings.Notes ??= '';
-    defaultSettings.VisibleInEditUI ??= true;
+    // defaultSettings.VisibleInEditUI ??= true;
     defaultSettings.Required ??= false;
     defaultSettings.Disabled ??= false;
     defaultSettings.DisableTranslation ??= false;
-    defaultSettings.Visible = defaultSettings.VisibleInEditUI;
-    delete defaultSettings.VisibleInEditUI;
+    defaultSettings.Visible ??= true; // defaultSettings.VisibleInEditUI;
+    // delete defaultSettings.VisibleInEditUI;
     if (defaultSettings.DefaultCollapsed != null) {
       defaultSettings.Collapsed = defaultSettings.DefaultCollapsed;
       delete defaultSettings.DefaultCollapsed;
@@ -216,5 +216,18 @@ export class FieldsSettingsHelpers {
       linkType,
     };
     return translationState;
+  }
+}
+
+class AllDeprecated {
+  /** @deprecated */
+  VisibleInEditUI: boolean;
+  /** VisibleInEditUi is copied Visible and then deleted */
+  static moveDeprecatedSettings(settings: FieldSettings): FieldSettings {
+    var asDeprecated = settings as unknown as AllDeprecated;
+    if (asDeprecated.VisibleInEditUI == null) return settings;
+    settings.Visible = asDeprecated.VisibleInEditUI;
+    delete asDeprecated.VisibleInEditUI;
+    return settings;
   }
 }
