@@ -18,6 +18,7 @@ import { FormulaPromiseResult } from '../../formulas/models/formula-promise-resu
 import { FieldValuePair } from '../../formulas/models/formula-results.models';
 import { FormItemFormulaService } from '../../formulas/form-item-formula.service';
 import { FormulaPromiseHandler } from '../../formulas/formula-promise-handler';
+import { ItemFieldVisibility } from './item-field-visibility';
 
 
 /**
@@ -31,6 +32,7 @@ export class FieldsSettingsService implements OnDestroy {
   private subscription: Subscription;
   public updateValueQueue: Record<string, FormulaPromiseResult> = {};
   private latestFieldProps: FieldsProps = {};
+  private itemFieldVisibility: ItemFieldVisibility;
 
   constructor(
     private contentTypeService: ContentTypeService,
@@ -60,8 +62,11 @@ export class FieldsSettingsService implements OnDestroy {
     this.subscription = new Subscription();
 
     const item = this.itemService.getItem(entityGuid);
+    this.itemFieldVisibility = new ItemFieldVisibility(item.Header);
     const contentTypeId = InputFieldHelpers.getContentTypeId(item);
     const contentType$ = this.contentTypeService.getContentType$(contentTypeId);
+    // todo: @STV unsure why we have a stream for the header, isn't it the same as item.Header?
+    // pls find out and either clarify or fix
     const itemHeader$ = this.itemService.getItemHeader$(entityGuid);
     const entityReader$ = this.languageInstanceService.getEntityReader$(this.eavService.eavConfig.formId);
 
@@ -100,6 +105,7 @@ export class FieldsSettingsService implements OnDestroy {
           const mergeRaw = entityReader.flattenAll<FieldSettings>(attribute.Metadata);
           // Sometimes the metadata doesn't have the input type (empty string), so we'll add the attribute.InputType just in case...
           mergeRaw.InputType = attribute.InputType;
+          mergeRaw.VisibleDisabled = this.itemFieldVisibility.isVisibleDisabled(attribute.Name);
           const settingsInitial = FieldsSettingsHelpers.setDefaultFieldSettings(mergeRaw);
           consoleLogAngular('merged', JSON.parse(JSON.stringify(settingsInitial)));
 

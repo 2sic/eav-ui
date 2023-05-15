@@ -22,7 +22,10 @@ export class HiddenWrapperComponent extends BaseFieldComponent implements FieldW
 
   ngOnInit() {
     super.ngOnInit();
-    this.hidden$ = this.settings$.pipe(map(settings => !ItemFieldVisibility.mergedVisible(settings)), distinctUntilChanged());
+    this.hidden$ = this.settings$.pipe(
+      map(settings => !ItemFieldVisibility.mergedVisible(settings)),
+      distinctUntilChanged(),
+    );
   }
 
   ngOnDestroy() {

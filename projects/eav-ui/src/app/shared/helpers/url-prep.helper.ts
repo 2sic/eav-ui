@@ -47,42 +47,6 @@ export function convertFormToUrl(form: EditForm, fields?: string) {
       formUrl += 'new:' + addItem.ContentTypeName;
 
       formUrl += getParamForMetadata(addItem);
-
-      // const buildForSuffix = (itemFor: EavFor) => toOrderedParams([
-      //     '', // empty string to ensure it will start with a ":"
-      //     itemFor.Target,
-      //     itemFor.TargetType,
-      //     (itemFor.Singleton ? itemFor.Singleton.toString() : '')
-      //   ]);
-
-      // if (addItem.For?.String) {
-      //   formUrl += '&for:s~' + paramEncode(addItem.For.String) + buildForSuffix(addItem.For);
-      // } else if (addItem.For?.Number) {
-      //   formUrl += '&for:n~' + addItem.For.Number + buildForSuffix(addItem.For);
-      // } else if (addItem.For?.Guid) {
-      //   formUrl += '&for:g~' + addItem.For.Guid + buildForSuffix(addItem.For);
-      // } else if (addItem.Metadata) {
-      //   let keyType: string;
-      //   switch (addItem.Metadata.keyType.toLocaleLowerCase()) {
-      //     case eavConstants.keyTypes.string:
-      //       keyType = 's';
-      //       break;
-      //     case eavConstants.keyTypes.number:
-      //       keyType = 'n';
-      //       break;
-      //     case eavConstants.keyTypes.guid:
-      //       keyType = 'g';
-      //       break;
-      //   }
-      //   const target = Object.values(eavConstants.metadata)
-      //     .find(m => m.targetType === addItem.Metadata.targetType)?.target;
-      //   formUrl += '&for:' + keyType + '~' + toOrderedParams([
-      //     paramEncode(addItem.Metadata.key),
-      //     target,
-      //     addItem.Metadata.targetType
-      //   ]);
-      // }
-
       formUrl += prefill2UrlParams(addItem.Prefill, fields);
       formUrl += fields2UrlParams(fields);
 
@@ -178,9 +142,7 @@ export function convertUrlToForm(formUrl: string) {
           innerItem.Add = parms[4] === 'true';
           if (parms.length > 4 && parms[5] && isNumber(parms[5]))
             innerItem.EntityId = parseInt(parms[5], 10);
-        } else /* if (option.startsWith(PREFILL_PREFIX)) {
-          innerItem.Prefill = prefillFromUrlParams(option, innerItem.Prefill);
-        } else */{ 
+        } else { 
           addParamToItemIdentifier(innerItem, option);
         }
       }
@@ -192,13 +154,6 @@ export function convertUrlToForm(formUrl: string) {
       for (const part of parts) {
         addParamToItemIdentifier(editItem, part);
       }
-      // TODO: unclear what to do with this, I feel like `edit` would be missing prefill parameters
-      // const maybePrefill = parts[1];
-      // if (maybePrefill) {
-      //   const temp = editItem as unknown as ItemAddIdentifier;
-      //   temp.Prefill = prefillFromUrlParams(maybePrefill, temp.Prefill);
-      // }
-        
       form.items.push(editItem);
     } else if (item.startsWith('new:')) {
       // Add Item
@@ -226,10 +181,7 @@ export function convertUrlToForm(formUrl: string) {
             ...(forKeyType === 's' && { String: paramDecode(forKey) }),
             ...(forSingleton != null && { Singleton: forSingleton }),
           };
-        } /* else if (option.startsWith(PREFILL_PREFIX)) {
-          // Add Item Prefill
-          addItem.Prefill = prefillFromUrlParams(option, addItem.Prefill);
-        } */ else if (option.startsWith('copy:')) {
+        } else if (option.startsWith('copy:')) {
           // Add Item Copy
           const copyParams = option.split(':');
           addItem.DuplicateEntity = parseInt(copyParams[1], 10);
@@ -243,6 +195,7 @@ export function convertUrlToForm(formUrl: string) {
   return form;
 }
 
+/** add prefill and filter to url parameters */
 function addParamToItemIdentifier(item: ItemIdentifierShared, part: string) {
   if (part.startsWith(FIELDS_PREFIX)) {
     var _fields = paramDecode(part.split(':')[1]);
