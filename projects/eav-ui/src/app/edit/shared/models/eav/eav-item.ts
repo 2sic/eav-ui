@@ -1,9 +1,10 @@
-import { EavEntity, EavHeader } from '.';
+import { ItemIdentifierHeader } from 'projects/eav-ui/src/app/shared/models/edit-form.model';
+import { EavEntity } from '.';
 import { EavEntityBundleDto } from '../json-format-v1';
 
 export class EavItem {
   Entity: EavEntity;
-  Header: EavHeader;
+  Header: ItemIdentifierHeader;
 
   static convert(entityBundleDto: EavEntityBundleDto): EavItem {
     const entity = EavEntity.convertOne(entityBundleDto.Entity);

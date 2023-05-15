@@ -4,7 +4,6 @@ import { FeatureSummary } from '../../../features/models';
 import { DesignerSnippet, FieldOption } from '../../dialog/footer/formula-designer/formula-designer.models';
 import { InputFieldHelpers, LocalizationHelpers } from '../../shared/helpers';
 import { FormValues, Language } from '../../shared/models';
-import { EavHeader } from '../../shared/models/eav';
 import { EavService, FieldsSettingsService } from '../../shared/services';
 import { ItemService } from '../../shared/store/ngrx-data';
 
@@ -13,6 +12,7 @@ import editorTypesForIntellisense from '!raw-loader!../editor-intellisense-funct
 import { formV1Prefix, requiredFormulaPrefix } from '../formula.constants';
 // tslint:disable-next-line: max-line-length
 import { FormulaCacheItem, FormulaFieldValidation, FormulaFunction, FormulaProps, FormulaPropsV1, FormulaTargets, FormulaV1Data, FormulaV1ExperimentalEntity, FormulaVersion, FormulaVersions, SettingsFormulaPrefix } from '../models/formula.models';
+import { ItemIdentifierShared } from '../../../shared/models/edit-form.model';
 
 /**
  * Contains methods for building formulas.
@@ -114,7 +114,7 @@ export class FormulaHelpers {
     currentLanguage: string,
     defaultLanguage: string,
     languages: Language[],
-    itemHeader: EavHeader,
+    itemHeader: ItemIdentifierShared,
     debugEnabled: boolean,
     itemService: ItemService,
     eavService: EavService,
@@ -154,7 +154,7 @@ export class FormulaHelpers {
           },
           parameters: {
             get(): Record<string, any> {
-              return FormulaHelpers.buildFormulaPropsParameters(itemHeader);
+              return FormulaHelpers.buildFormulaPropsParameters(itemHeader.Prefill);
             },
           },
           prefill: {
@@ -271,11 +271,11 @@ export class FormulaHelpers {
 
   /**
    * Used to build the formula props parameters as a record of key-value pairs.
-   * @param itemHeader 
+   * @param prefillAsParameters 
    * @returns 
    */
-  static buildFormulaPropsParameters(itemHeader: EavHeader): Record<string, any> {
-    return JSON.parse(JSON.stringify(itemHeader.Prefill)) ?? {};
+  static buildFormulaPropsParameters(prefillAsParameters: Record<string, unknown>): Record<string, any> {
+    return prefillAsParameters ? JSON.parse(JSON.stringify(prefillAsParameters)) : {};
   }
 
   /**
@@ -285,10 +285,10 @@ export class FormulaHelpers {
    * @param itemHeader 
    * @returns Designer snippets for use in formulas
    */
-  static buildDesignerSnippetsData(formula: FormulaCacheItem, fieldOptions: FieldOption[], itemHeader: EavHeader): DesignerSnippet[] {
+  static buildDesignerSnippetsData(formula: FormulaCacheItem, fieldOptions: FieldOption[], prefillAsParameters: Record<string, unknown>): DesignerSnippet[] {
     switch (formula.version) {
       case FormulaVersions.V1:
-        const formulaPropsParameters = this.buildFormulaPropsParameters(itemHeader);
+        const formulaPropsParameters = this.buildFormulaPropsParameters(prefillAsParameters);
         const snippets = [
           'value',
           'default',
@@ -361,10 +361,10 @@ export class FormulaHelpers {
    * @param itemHeader 
    * @returns Formula typings for use in intellisense
    */
-  static buildFormulaTypings(formula: FormulaCacheItem, fieldOptions: FieldOption[], itemHeader: EavHeader): string {
+  static buildFormulaTypings(formula: FormulaCacheItem, fieldOptions: FieldOption[], prefillAsParameters: Record<string, unknown>): string {
     switch (formula.version) {
       case FormulaVersions.V2: {
-        const formulaPropsParameters = this.buildFormulaPropsParameters(itemHeader);
+        const formulaPropsParameters = this.buildFormulaPropsParameters(prefillAsParameters);
 
         const allFields = fieldOptions.map(f => `${f.fieldName}: any;`).join('\n');
         const allParameters = Object.keys(formulaPropsParameters).map(key => `${key}: any;`).join('\n');

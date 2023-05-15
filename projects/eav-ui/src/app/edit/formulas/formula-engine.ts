@@ -7,7 +7,7 @@ import { FeatureSummary } from '../../features/models';
 import { FeaturesService } from '../../shared/services/features.service';
 import { EntityReader } from '../shared/helpers';
 import { ContentTypeSettings, FormValues, LogSeverities } from '../shared/models';
-import { EavContentTypeAttribute, EavEntity, EavHeader, EavValues } from '../shared/models/eav';
+import { EavContentTypeAttribute, EavEntity, EavValues } from '../shared/models/eav';
 import { EavService, EditInitializerService, FieldsSettingsService, LoggingService } from '../shared/services';
 import { GlobalConfigService, ItemService, LanguageInstanceService, LanguageService } from '../shared/store/ngrx-data';
 import { FormulaDesignerService } from './formula-designer.service';
@@ -20,6 +20,7 @@ import { FieldLogicTools } from '../form/shared/field-logic/field-logic-tools';
 import { FormulaValueCorrections } from './helpers/formula-value-corrections.helper';
 import { FormulaPromiseHandler } from './formula-promise-handler';
 import { RunFormulasResult, FormulaResultRaw, FieldValuePair } from './models/formula-results.models';
+import { ItemIdentifierShared } from '../../shared/models/edit-form.model';
 
 /**
  * Formula engine is responsible for running formulas and returning the result.
@@ -69,7 +70,7 @@ export class FormulaEngine implements OnDestroy {
    * @param logic 
    * @param settingsInitial 
    * @param settingsCurrent 
-   * @param itemHeader 
+   * @param itemIdWithPrefill 
    * @param contentTypeMetadata 
    * @param attributeValues 
    * @param entityReader 
@@ -88,7 +89,7 @@ export class FormulaEngine implements OnDestroy {
     logic: FieldLogicBase,
     settingsInitial: FieldSettings,
     settingsCurrent: FieldSettings,
-    itemHeader: EavHeader,
+    itemIdWithPrefill: ItemIdentifierShared,
     contentTypeMetadata: EavEntity[],
     attributeValues: EavValues<any>,
     entityReader: EntityReader,
@@ -105,7 +106,7 @@ export class FormulaEngine implements OnDestroy {
     const settingsNew: Record<string, any> = {};
 
     for (const formula of formulas) {
-      const formulaResult = this.runFormula(formula, entityId, formValues, inputType, settingsInitial, settingsCurrent, itemHeader);
+      const formulaResult = this.runFormula(formula, entityId, formValues, inputType, settingsInitial, settingsCurrent, itemIdWithPrefill);
       if (formulaResult?.promise instanceof Promise) {
         this.formulaPromiseHandler.handleFormulaPromise(entityGuid, formulaResult, formula, inputType);
         formula.stopFormula = formulaResult.stop ?? true;
@@ -177,7 +178,7 @@ export class FormulaEngine implements OnDestroy {
    * @param inputType 
    * @param settingsInitial 
    * @param settingsCurrent 
-   * @param itemHeader 
+   * @param itemIdWithPrefill 
    * @returns Result of a single formula.
    */
   private runFormula(
@@ -187,7 +188,7 @@ export class FormulaEngine implements OnDestroy {
     inputType: InputType,
     settingsInitial: FieldSettings,
     settingsCurrent: FieldSettings,
-    itemHeader: EavHeader,
+    itemIdWithPrefill: ItemIdentifierShared,
   ): FormulaResultRaw {
     const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
     const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
@@ -205,7 +206,7 @@ export class FormulaEngine implements OnDestroy {
       currentLanguage,
       defaultLanguage,
       languages,
-      itemHeader,
+      itemIdWithPrefill,
       debugEnabled,
       this.itemService,
       this.eavService,

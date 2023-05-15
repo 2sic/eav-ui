@@ -18,6 +18,7 @@ import { FormValues } from '../models';
 import { EavEntity } from '../models/eav/eav-entity';
 // tslint:disable-next-line:max-line-length
 import { AdamCacheService, ContentTypeItemService, ContentTypeService, EntityCacheService, InputTypeService, ItemService, LanguageInstanceService, LanguageService, LinkCacheService, PublishStatusService } from '../store/ngrx-data';
+import { ItemAddIdentifier } from '../../../shared/models/edit-form.model';
 
 @Injectable()
 export class EditInitializerService implements OnDestroy {
@@ -78,7 +79,7 @@ export class EditInitializerService implements OnDestroy {
 
     const items = this.itemService.getItems(itemGuids);
     const createMode = items[0].Entity.Id === 0;
-    const isCopy = items[0].Header.DuplicateEntity != null;
+    const isCopy = (items[0].Header as ItemAddIdentifier).DuplicateEntity != null;
     const enableHistory = !createMode && this.route.snapshot.data.history !== false;
     const settingsAsEav = {
       ...loadDto.Settings,

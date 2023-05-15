@@ -1,19 +1,52 @@
 import { EavFor } from '../../edit/shared/models/eav';
+import { EditInfo } from './edit-info';
 
 /**
  * Type for edit form.
  * To add new item send newItem and to edit existing item send editItems
  */
 export interface EditForm {
-  items: (ItemAddIdentifier | ItemEditIdentifier | ItemInListIdentifier)[];
+  items: (ItemIdentifier)[];
 }
+
+export type ItemIdentifier = ItemAddIdentifier | ItemEditIdentifier | ItemInListIdentifier;
+
+export type ItemIdentifierHeader = ItemIdentifier & ItemIdentifierEditConfig;
+
+// export interface ItemIdentifierHeader extends ItemIdentifierShared, ItemIdentifierEditConfig {
+//   // 2023-05-15 seems unused - TODO: probably remove from backend as well
+//   // Add?: boolean;
+//   ContentTypeName: string;
+//   DuplicateEntity?: number;
+//   EntityId: number;
+//   // 2023-05-15 seems unused - TODO: probably remove from backend as well
+//   // For?: EavFor;
+//   // 2023-05-15 seems unused - TODO: probably remove from backend as well
+//   // Guid: string;
+//   // 2023-05-15 seems unused - TODO: probably remove from backend as well
+//   // Index?: number;
+  
+//   // 2023-05-15 seems unused
+//   // Metadata?: EavEntity[];
+//   // 2023-05-15 now in base interface
+//   // Prefill?: Record<string, any>;
+
+//   // 2023-05-15 seems unused - TODO: probably remove from backend as well
+//   // Title?: string;
+// }
+
 
 export interface ItemIdentifierShared {
 
   /** Prefill form with data */
   Prefill?: Record<string, string>;
 
-  Fields?: string;
+  /** New way to transport a random amount of properties back and forth */
+  ClientData?: {
+    fields?: string;
+    parameters?: Record<string, string>;
+    [key: string]: unknown;
+  };
 }
 
 export interface ItemEditIdentifier extends ItemIdentifierShared {
@@ -42,8 +75,6 @@ export interface ItemInListIdentifier extends ItemIdentifierShared {
   Field: string;
 
   EntityId?: number;
-
-  // Prefill?: Record<string, string>;
 }
 
 export interface ViewOrFileIdentifier {
@@ -58,4 +89,14 @@ export interface LegacyMetadata {
   key: string;
   keyType: string;
   targetType: number;
+}
+
+
+export interface ItemIdentifierEditConfig {
+  /** Information if this item is read-only */
+  EditInfo?: EditInfo;
+  /** Determines if this item is currently non-existing / empty - so if this doesn't change it should also save empty */
+  IsEmpty: boolean;
+  /** Determines if this item can be empty, so it is allowed to be removed */
+  IsEmptyAllowed: boolean;
 }

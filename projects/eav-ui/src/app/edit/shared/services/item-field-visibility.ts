@@ -1,12 +1,13 @@
 import { FieldSettings } from 'projects/edit-types';
-import { EavHeader } from '../models/eav';
 import { consoleLogAngular } from '../../../shared/helpers/console-log-angular.helper';
+import { ItemIdentifierShared } from '../../../shared/models/edit-form.model';
 
 export class ItemFieldVisibility {
   private defaultIsShow = true;
   private fields: Record<string, boolean> = null;
-  constructor(identifier: EavHeader) {
-    var fields = identifier.Prefill?._fields as string;
+  constructor(identifier: ItemIdentifierShared) {
+console.log('2dm ItemFieldVisibility', identifier);
+    var fields = identifier.ClientData?.fields as string;
     if (fields == null || fields == '') return;
     
     // If the first character is a minus, then default is show all and just hide mentions

@@ -2,12 +2,13 @@ import { LocalizationHelpers } from '.';
 import { FieldSettings } from '../../../../../../edit-types';
 import { InputTypeConstants } from '../../../content-type-fields/constants/input-type.constants';
 import { InputType } from '../../../content-type-fields/models/input-type.model';
+import { ItemIdentifierEditConfig } from '../../../shared/models/edit-form.model';
 import { FieldLogicManager } from '../../form/shared/field-logic/field-logic-manager';
 import { TranslateMenuHelpers } from '../../form/wrappers/localization-wrapper/translate-menu/translate-menu.helpers';
 import { TranslationStateCore } from '../../form/wrappers/localization-wrapper/translate-menu/translate-menu.models';
 import { MetadataDecorators, TranslationLink, TranslationLinks } from '../constants';
 import { ContentTypeSettings, TranslationState } from '../models';
-import { EavContentType, EavContentTypeAttribute, EavEntity, EavHeader, EavValues } from '../models/eav';
+import { EavContentType, EavContentTypeAttribute, EavEntity, EavValues } from '../models/eav';
 
 export class FieldsSettingsHelpers {
 
@@ -16,7 +17,7 @@ export class FieldsSettingsHelpers {
     contentType: EavContentType,
     currentLanguage: string,
     defaultLanguage: string,
-    itemHeader: EavHeader,
+    itemHeader: ItemIdentifierEditConfig,
   ): ContentTypeSettings {
     const defaultSettings = { ...settings };
     defaultSettings.Description ??= '';

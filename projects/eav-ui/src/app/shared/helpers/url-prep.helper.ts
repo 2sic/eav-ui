@@ -198,11 +198,11 @@ export function convertUrlToForm(formUrl: string) {
 /** add prefill and filter to url parameters */
 function addParamToItemIdentifier(item: ItemIdentifierShared, part: string) {
   if (part.startsWith(FIELDS_PREFIX)) {
-    var _fields = paramDecode(part.split(':')[1]);
-    item.Fields = _fields;
+    const fields = paramDecode(part.split(':')[1]);
     // temp hacky workaround - put it prefill so it's still there after round-trip
     // should later be on the re-added after the round-trip on the Fields property
-    item.Prefill = prefillFromUrlParams(part, { _fields });
+    item.Prefill = prefillFromUrlParams(part, { fields });
+    item.ClientData = { ...item.ClientData, fields };
   } if (part.startsWith(PREFILL_PREFIX)) {
     // Add Item Prefill
     item.Prefill = prefillFromUrlParams(part, item.Prefill);

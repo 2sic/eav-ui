@@ -7,9 +7,10 @@ import { eavConstants } from '../../../../shared/constants/eav.constants';
 import { BestValueModes } from '../../constants';
 import { GeneralHelpers, InputFieldHelpers, LocalizationHelpers } from '../../helpers';
 import { FormValues, Language, SaveResult } from '../../models';
-import { EavContentTypeAttribute, EavDimension, EavEntity, EavEntityAttributes, EavFor, EavHeader, EavItem, EavValue } from '../../models/eav';
+import { EavContentTypeAttribute, EavDimension, EavEntity, EavEntityAttributes, EavFor, EavItem, EavValue } from '../../models/eav';
 import { EavEntityBundleDto } from '../../models/json-format-v1';
 import { BaseDataService } from './base-data.service';
+import { ItemEditIdentifier, ItemIdentifierHeader } from 'projects/eav-ui/src/app/shared/models/edit-form.model';
 
 @Injectable({ providedIn: 'root' })
 export class ItemService extends BaseDataService<EavItem> {
@@ -26,7 +27,7 @@ export class ItemService extends BaseDataService<EavItem> {
     const entityGuid = Object.keys(itemData)[0];
     const entityId = itemData[entityGuid];
     const oldItem = this.cache$.value.find(item => item.Entity.Guid === entityGuid);
-    if (!oldItem || (oldItem.Header.EntityId !== 0 && oldItem.Entity.Id !== 0)) { return; }
+    if (!oldItem || ((oldItem.Header as ItemEditIdentifier).EntityId !== 0 && oldItem.Entity.Id !== 0)) { return; }
 
     const newItem: EavItem = {
       ...oldItem,
@@ -173,7 +174,7 @@ export class ItemService extends BaseDataService<EavItem> {
     return newItem;
   }
 
-  updateItemHeader(entityGuid: string, header: EavHeader): void {
+  updateItemHeader(entityGuid: string, header: ItemIdentifierHeader): void {
     const oldItem = this.cache$.value.find(item => item.Entity.Guid === entityGuid);
     if (!oldItem) { return; }
 
@@ -231,7 +232,7 @@ export class ItemService extends BaseDataService<EavItem> {
     );
   }
 
-  getItemHeader$(entityGuid: string): Observable<EavHeader> {
+  getItemHeader$(entityGuid: string): Observable<ItemIdentifierHeader> {
     return this.cache$.pipe(
       map(items => items.find(item => item.Entity.Guid === entityGuid)?.Header),
       distinctUntilChanged(),
