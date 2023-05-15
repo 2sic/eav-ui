@@ -6,7 +6,6 @@ export class ItemFieldVisibility {
   private defaultIsShow = true;
   private fields: Record<string, boolean> = null;
   constructor(identifier: ItemIdentifierShared) {
-console.log('2dm ItemFieldVisibility', identifier);
     var fields = identifier.ClientData?.fields as string;
     if (fields == null || fields == '') return;
     
