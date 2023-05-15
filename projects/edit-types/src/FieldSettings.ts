@@ -14,7 +14,7 @@ interface All {
   Notes: string;
   Visible: boolean;
   /** new v16.01 2dm - WIP */
-  hideOverride: boolean;
+  VisibleDisabled: boolean;
   Required: boolean;
   Disabled: boolean;
   ForcedDisabled: boolean;

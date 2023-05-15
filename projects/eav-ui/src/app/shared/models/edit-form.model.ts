@@ -8,19 +8,26 @@ export interface EditForm {
   items: (ItemAddIdentifier | ItemEditIdentifier | ItemInListIdentifier)[];
 }
 
-export interface ItemEditIdentifier {
+export interface ItemIdentifierShared {
+
+  /** Prefill form with data */
+  Prefill?: Record<string, string>;
+
+  Fields?: string;
+}
+
+export interface ItemEditIdentifier extends ItemIdentifierShared {
   EntityId: number;
 }
 
-export interface ItemAddIdentifier {
+export interface ItemAddIdentifier extends ItemIdentifierShared {
   /** Content type */
   ContentTypeName: string;
   /** Add item as metadata to another item */
   For?: EavFor;
   /** @deprecated 2sxc 9 Metadata object */
   Metadata?: LegacyMetadata;
-  /** Prefill form with data */
-  Prefill?: Record<string, string>;
+
   /** Prefill form with data from another entity */
   DuplicateEntity?: number;
 }
@@ -28,7 +35,7 @@ export interface ItemAddIdentifier {
 /**
  * This is both an item in a content-group, as well as an item in a list
  */
-export interface ItemInListIdentifier {
+export interface ItemInListIdentifier extends ItemIdentifierShared {
   Add: boolean;
   Index: number;
   Parent: string;
@@ -36,7 +43,7 @@ export interface ItemInListIdentifier {
 
   EntityId?: number;
 
-  Prefill?: Record<string, string>;
+  // Prefill?: Record<string, string>;
 }
 
 export interface ViewOrFileIdentifier {
