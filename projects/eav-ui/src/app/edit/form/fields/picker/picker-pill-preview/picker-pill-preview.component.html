@@ -1,0 +1,31 @@
+<div *ngIf="templateVars$ | async as data" class="c-ew__preview-holder">
+  <mat-label class="c-ew__preview-label" [ngClass]="{
+    'mat-caption' : data.entitiesNumber,
+    'mat-empty' : !data.entitiesNumber,
+    'mat-error' : data.controlStatus.invalid && data.controlStatus.touched && !config.initialDisabled,
+    'color__primary' : !(data.controlStatus.invalid && data.controlStatus.touched) && !config.initialDisabled,
+    'color__label-disabled' : config.initialDisabled
+  }">
+    {{ data.label }} {{ data.required ? '*': '' }}
+  </mat-label>
+  <div matRipple [matRippleAnimation]="{ enterDuration: 360 }" class="c-ew__preview mat-ripple" (click)="expandDialog()"
+    [ngClass]="{
+      'c-ew__preview--invalid' : data.controlStatus.invalid && data.controlStatus.touched,
+      'c-ew__preview--disabled': config.initialDisabled
+    }">
+    <div [ngClass]="data.entitiesNumber ? 'c-ew__preview-container' : 'c-ew__preview-container--empty'">
+      <div fxLayout="row" fxLayoutAlign="start center">
+        <mat-list *ngIf="data.entitiesNumber" fxLayout="row">
+          <mat-list-item role="listitem" *ngFor="let item of data.selectedEntities; trackBy: trackByFn">
+            <span mat-line>{{ item.label }}</span>
+          </mat-list-item>
+        </mat-list>
+        <span *ngIf="data.entitiesNumber > 5" class="more-entities mat-body-1">
+          {{ data.entitiesNumber }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
+</div>

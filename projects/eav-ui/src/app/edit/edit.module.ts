@@ -103,6 +103,7 @@ import { PickerExpandableWrapperComponent } from './form/wrappers/picker-expanda
 import { MatDayjsDateAdapter, MatDayjsDateModule, MatDayjsModule, MAT_DAYJS_DATE_ADAPTER_OPTIONS, NgxMatDayjsDatetimeAdapter, NgxMatDayjsDatetimeModule, NgxMatDayjsModule, NGX_MAT_DAYJS_DATETIME_ADAPTER_OPTIONS } from './shared/date-adapters/date-adapter-api';
 import { ChangeAnchorTargetDirective, PasteClipboardImageDirective } from './shared/directives';
 import { AdamService, EavService, EntityService, LoadIconsService, QueryService, ScriptsLoaderService } from './shared/services';
+import { PickerPillPreviewComponent } from './form/fields/picker/picker-pill-preview/picker-pill-preview.component';
 
 @NgModule({
     declarations: [
@@ -155,6 +156,7 @@ import { AdamService, EavService, EntityService, LoadIconsService, QueryService,
         PickerExpandableWrapperComponent,
         PickerListComponent,
         PickerSearchComponent,
+        PickerPillPreviewComponent,
         EntityQueryComponent,
         EntityDefaultComponent,
         HyperlinkDefaultExpandableWrapperComponent,

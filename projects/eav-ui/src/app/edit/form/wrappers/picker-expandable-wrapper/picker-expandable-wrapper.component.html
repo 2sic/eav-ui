@@ -49,34 +49,4 @@
     </div>
   </div>
 </div>
-<div *ngIf="viewModel$ | async as vm" class="c-ew__preview-holder">
-  <mat-label class="c-ew__preview-label" [ngClass]="{
-    'mat-caption' : vm.entitiesNumber,
-    'mat-empty' : !vm.entitiesNumber,
-    'mat-error' : vm.controlStatus.invalid && vm.controlStatus.touched && !config.initialDisabled,
-    'color__primary' : !(vm.controlStatus.invalid && vm.controlStatus.touched) && !config.initialDisabled,
-    'color__label-disabled' : config.initialDisabled
-  }">
-    {{ vm.label }} {{ vm.required ? '*': '' }}
-  </mat-label>
-  <div matRipple [matRippleAnimation]="{ enterDuration: 360 }" class="c-ew__preview mat-ripple" (click)="expandDialog()"
-    [ngClass]="{
-      'c-ew__preview--invalid' : vm.controlStatus.invalid && vm.controlStatus.touched,
-      'c-ew__preview--disabled': config.initialDisabled
-    }">
-    <div [ngClass]="vm.entitiesNumber ? 'c-ew__preview-container' : 'c-ew__preview-container--empty'">
-      <div fxLayout="row" fxLayoutAlign="start center">
-        <mat-list *ngIf="vm.entitiesNumber" fxLayout="row">
-          <mat-list-item role="listitem" *ngFor="let item of vm.selectedEntities; trackBy: trackByFn">
-            <span mat-line>{{ item.label }}</span>
-          </mat-list-item>
-        </mat-list>
-        <span *ngIf="vm.entitiesNumber > 5" class="more-entities mat-body-2">
-          {{ vm.entitiesNumber }}
-        </span>
-      </div>
-    </div>
-  </div>
-
-  <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
-</div>
+<app-picker-pill-preview [config]="config" [group]="group"></app-picker-pill-preview>
