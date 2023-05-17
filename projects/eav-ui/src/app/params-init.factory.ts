@@ -65,8 +65,8 @@ export function paramsInitFactory(injector: Injector): () => void {
         case DialogTypeConstants.Edit:
           const editItems: ItemEditIdentifier[] = JSON.parse(items);
           const form: EditForm = { items: editItems };
-          const fields = sessionStorage.getItem(keyEditFields);
-          const formUrl = convertFormToUrl(form, fields);
+          // const fields = sessionStorage.getItem(keyEditFields);
+          const formUrl = convertFormToUrl(form);
           router.navigate([`${zoneId}/${appId}/edit/${formUrl}`]);
           break;
         case DialogTypeConstants.ItemHistory:

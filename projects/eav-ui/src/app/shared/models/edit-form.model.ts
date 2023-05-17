@@ -35,6 +35,10 @@ export type ItemIdentifierHeader = ItemIdentifier & ItemIdentifierEditConfig;
 //   // Title?: string;
 // }
 
+export interface ItemIdentifierInbound {
+  /** inbound fields, coming from the toolbar */
+  Fields?: string;
+}
 
 export interface ItemIdentifierShared {
 

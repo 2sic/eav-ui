@@ -1,45 +1,51 @@
 import { EavFor } from '../../edit/shared/models/eav';
 import { eavConstants } from '../constants/eav.constants';
-import { EditForm, ItemAddIdentifier, ItemEditIdentifier, ItemIdentifierShared, ItemInListIdentifier } from '../models/edit-form.model';
+import { EditForm, ItemAddIdentifier, ItemEditIdentifier, ItemIdentifierInbound, ItemIdentifierShared, ItemInListIdentifier } from '../models/edit-form.model';
 
 const PREFILL_PREFIX = 'prefill:';
 const GROUP_PREFIX = 'group:';
 const FIELDS_PREFIX = 'fields:';
 const ITEM_SEPARATOR = ',';
+const VAL_SEPARATOR = '&';
+const LIST_SEPARATOR = ':';
 
 function toOrderedParams(values: unknown[]): string {
-  return values.join(':');
+  return values.join(LIST_SEPARATOR);
 }
 
-export function convertFormToUrl(form: EditForm, fields?: string) {
+export function convertFormToUrl(form: EditForm) {
   let formUrl = '';
 
   for (const item of form.items) {
     // If we already have one, the next must be separated
     if (formUrl) formUrl += ITEM_SEPARATOR;
 
-    const groupItem = item as ItemInListIdentifier;
-    const editItem = item as ItemEditIdentifier;
+    const asGroup = item as ItemInListIdentifier;
+    const asItem = item as ItemEditIdentifier;
+    const asInboundParams = item as ItemIdentifierInbound;
+    const fields = asInboundParams.Fields;
     // Group- or Inner-Item
-    if (groupItem.Parent) {
+    if (asGroup.Parent) {
       formUrl += GROUP_PREFIX + toOrderedParams([
-        groupItem.Parent,
-        groupItem.Field,
-        groupItem.Index,
-        groupItem.Add,
-        groupItem.EntityId
+        asGroup.Parent,
+        asGroup.Field,
+        asGroup.Index,
+        asGroup.Add,
+        asGroup.EntityId
       ]);
-      formUrl += prefill2UrlParams(groupItem.Prefill, fields);
+      formUrl += prefill2UrlParams(asGroup.Prefill);
       formUrl += fields2UrlParams(fields);
 
-    } else if (editItem.EntityId) {
+    } else if (asItem.EntityId) {
       // Edit Item
-      formUrl += editItem.EntityId;
+      formUrl += asItem.EntityId;
+
+      // New: fields
+      formUrl += fields2UrlParams(fields);
 
       // 2023-05-11 in edit-id mode, prefill isn't supported, but we want the fields
       // I actually think that prefill should be supported, because it can also transport more parameters
       // formUrl += prefill2UrlParams(groupItem.Prefill, fields);
-      formUrl += fields2UrlParams(fields);
 
     } else if ((item as ItemAddIdentifier).ContentTypeName) {
       // Add Item
@@ -47,10 +53,10 @@ export function convertFormToUrl(form: EditForm, fields?: string) {
       formUrl += 'new:' + addItem.ContentTypeName;
 
       formUrl += getParamForMetadata(addItem);
-      formUrl += prefill2UrlParams(addItem.Prefill, fields);
+      formUrl += prefill2UrlParams(addItem.Prefill);
       formUrl += fields2UrlParams(fields);
 
-      if (addItem.DuplicateEntity) formUrl += '&copy:' + addItem.DuplicateEntity;
+      if (addItem.DuplicateEntity) formUrl += `${VAL_SEPARATOR}copy:` + addItem.DuplicateEntity;
     }
   }
 
@@ -65,9 +71,9 @@ function getParamForMetadata(addItem: ItemAddIdentifier) {
     (itemFor.Singleton ? itemFor.Singleton.toString() : '')
   ]);
 
-  if (addItem.For?.String) return '&for:s~' + paramEncode(addItem.For.String) + buildForSuffix(addItem.For);
-  if (addItem.For?.Number) return '&for:n~' + addItem.For.Number + buildForSuffix(addItem.For);
-  if (addItem.For?.Guid) return '&for:g~' + addItem.For.Guid + buildForSuffix(addItem.For);
+  if (addItem.For?.String) return `${VAL_SEPARATOR}for:s~` + paramEncode(addItem.For.String) + buildForSuffix(addItem.For);
+  if (addItem.For?.Number) return `${VAL_SEPARATOR}for:n~` + addItem.For.Number + buildForSuffix(addItem.For);
+  if (addItem.For?.Guid) return `${VAL_SEPARATOR}for:g~` + addItem.For.Guid + buildForSuffix(addItem.For);
   if (addItem.Metadata) return getParamForOldMetadata(addItem);
   return '';
 }
@@ -87,19 +93,19 @@ function getParamForOldMetadata(addItem: ItemAddIdentifier) {
   }
   const target = Object.values(eavConstants.metadata)
     .find(m => m.targetType === addItem.Metadata.targetType)?.target;
-  return '&for:' + keyType + '~' + toOrderedParams([
+  return `${VAL_SEPARATOR}for:` + keyType + '~' + toOrderedParams([
     paramEncode(addItem.Metadata.key),
     target,
     addItem.Metadata.targetType
   ]);
 }
 
-function prefill2UrlParams(prefill: Record<string, string>, fields: string) {
+function prefill2UrlParams(prefill: Record<string, string>) {
   let result = '';
   if (!prefill) return result;
   for (const [key, value] of Object.entries(prefill)) {
     if (value == null) continue;
-    result += `&${PREFILL_PREFIX}${key}~${paramEncode(value.toString())}`;
+    result += `${VAL_SEPARATOR}${PREFILL_PREFIX}${key}~${paramEncode(value.toString())}`;
   }
   return result;
 }
@@ -107,7 +113,7 @@ function prefill2UrlParams(prefill: Record<string, string>, fields: string) {
 function prefillFromUrlParams(url: string, addTo: Record<string, string>): Record<string, string> {
   const result = addTo ?? {} as Record<string, string>;
   if (url == null) return result;
-  const prefillParams = url.split(':');
+  const prefillParams = url.split(LIST_SEPARATOR);
   const key = prefillParams[1].split('~')[0];
   const value = paramDecode(prefillParams[1].split('~')[1]);
   result[key] = value;
@@ -115,7 +121,7 @@ function prefillFromUrlParams(url: string, addTo: Record<string, string>): Recor
 }
 
 function fields2UrlParams(fields: string) {
-  return fields ? `&${FIELDS_PREFIX}${paramEncode(fields)}` : '';
+  return fields ? `${VAL_SEPARATOR}${FIELDS_PREFIX}${paramEncode(fields)}` : '';
 }
 
 function isNumber(maybeNumber: string): boolean {
@@ -131,11 +137,11 @@ export function convertUrlToForm(formUrl: string) {
     if (item.startsWith(GROUP_PREFIX)) {
       // Inner Item / Group Item
       const innerItem = {} as ItemInListIdentifier;
-      const options = item.split('&');
+      const options = item.split(VAL_SEPARATOR);
 
       for (const option of options) {
         if (option.startsWith(GROUP_PREFIX)) {
-          const parms = option.split(':');
+          const parms = option.split(LIST_SEPARATOR);
           innerItem.Parent = parms[1];
           innerItem.Field = parms[2];
           innerItem.Index = parseInt(parms[3], 10);
@@ -147,9 +153,9 @@ export function convertUrlToForm(formUrl: string) {
         }
       }
       form.items.push(innerItem);
-    } else if (isNumber((item ?? "").split("&")[0])) {
+    } else if (isNumber((item ?? '').split(VAL_SEPARATOR)[0])) {
       // Edit Item
-      const parts = item.split('&');
+      const parts = item.split(VAL_SEPARATOR);
       const editItem: ItemEditIdentifier = { EntityId: parseInt(parts[0], 10) };
       for (const part of parts) {
         addParamToItemIdentifier(editItem, part);
@@ -158,16 +164,16 @@ export function convertUrlToForm(formUrl: string) {
     } else if (item.startsWith('new:')) {
       // Add Item
       const addItem = {} as ItemAddIdentifier;
-      const options = item.split('&');
+      const options = item.split(VAL_SEPARATOR);
 
       for (const option of options) {
         if (option.startsWith('new:')) {
           // Add Item ContentType
-          const newParams = option.split(':');
+          const newParams = option.split(LIST_SEPARATOR);
           addItem.ContentTypeName = newParams[1];
         } else if (option.startsWith('for:')) {
           // Add Item For
-          const forParams = option.split(':');
+          const forParams = option.split(LIST_SEPARATOR);
           const forKeyType = forParams[1].split('~')[0];
           const forKey = forParams[1].split('~')[1];
           const forTarget = forParams[2];
@@ -183,7 +189,7 @@ export function convertUrlToForm(formUrl: string) {
           };
         } else if (option.startsWith('copy:')) {
           // Add Item Copy
-          const copyParams = option.split(':');
+          const copyParams = option.split(LIST_SEPARATOR);
           addItem.DuplicateEntity = parseInt(copyParams[1], 10);
         } else {
           addParamToItemIdentifier(addItem, option);
