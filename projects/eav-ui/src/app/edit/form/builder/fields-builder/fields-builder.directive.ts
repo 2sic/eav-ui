@@ -35,10 +35,10 @@ import { HyperlinkDefaultExpandableWrapperComponent } from '../../wrappers/hyper
 import { HyperlinkLibraryExpandableWrapperComponent } from '../../wrappers/hyperlink-library-expandable-wrapper/hyperlink-library-expandable-wrapper.component';
 import { LocalizationWrapperComponent } from '../../wrappers/localization-wrapper/localization-wrapper.component';
 import { PickerExpandableWrapperComponent } from '../../wrappers/picker-expandable-wrapper/picker-expandable-wrapper.component';
-import { FieldConfigSet } from './field-config-set.model';
+import { FieldConfigSet, FieldConfigSetExpandable } from './field-config-set.model';
 import { FieldWrapper } from './field-wrapper.model';
 import { Field } from './field.model';
-import { EmptyFieldHelpers } from '../../fields/empty/empty-field-helpers';
+import { PickerPillPreviewComponent } from '../../fields/picker/picker-pill-preview/picker-pill-preview.component';
 
 @Directive({ selector: '[appFieldsBuilder]' })
 export class FieldsBuilderDirective implements OnInit, OnDestroy {
@@ -80,16 +80,16 @@ export class FieldsBuilderDirective implements OnInit, OnDestroy {
   };
 
   constructor(
-    private mainContainerRef: ViewContainerRef,
+    private resolver: ComponentFactoryResolver,
+    private topLevelContainerRef: ViewContainerRef,
     private fieldsSettingsService: FieldsSettingsService,
   ) { }
 
   ngOnInit() {
     // clear container
-    this.mainContainerRef.clear();
+    this.topLevelContainerRef.clear();
 
-    // Set the current wrapper to be the main one (not a specific group)
-    let currentContainer = this.mainContainerRef;
+    let containerRef = this.topLevelContainerRef;
     const fieldsProps = this.fieldsSettingsService.getFieldsProps();
 
     // Loop through each field and create the component
@@ -103,15 +103,16 @@ export class FieldsBuilderDirective implements OnInit, OnDestroy {
       this.fieldConfigs.push(fieldConfig);
       const inputType = fieldProps.calculatedInputType.inputType;
 
-      if (EmptyFieldHelpers.isGroupStart(inputType)) {
-        // If we encounter an empty-start (group-start) then create a new container based on the main container
-        currentContainer = this.createGroup(this.mainContainerRef, fieldProps, fieldConfig);
-      } else if (EmptyFieldHelpers.isGroupEnd(inputType)) {
-        // If we encounter a group-end, set the main container to be the default one again
-        currentContainer = this.mainContainerRef;
+      if (fieldProps.calculatedInputType.inputType === InputTypeConstants.EmptyDefault) {
+        // If we open any field group, remember the container for all the fields inside it
+        // containerRef = this.topLevelContainerRef;
+        containerRef = this.createGroup(this.topLevelContainerRef, fieldProps, fieldConfig);
+      } else if (fieldProps.calculatedInputType.inputType === InputTypeConstants.EmptyEnd) {
+        // If we close any field group, use the outside most container again
+        containerRef = this.topLevelContainerRef;
       } else {
         // Just create the normal component within the current container
-        this.createComponent(currentContainer, fieldProps, fieldConfig);
+        this.createComponent(containerRef, fieldProps, fieldConfig);
       }
     }
   }
@@ -123,15 +124,17 @@ export class FieldsBuilderDirective implements OnInit, OnDestroy {
   }
 
   private createGroup(containerRef: ViewContainerRef, fieldProps: FieldProps, fieldConfig: FieldConfigSet): ViewContainerRef {
+    let wrapperInfo = new WrapperInfo(null, containerRef);
     if (fieldProps.wrappers) {
-      containerRef = this.createWrappers(containerRef, fieldProps.wrappers, fieldConfig);
+      wrapperInfo = this.createWrappers(wrapperInfo.contentsRef, fieldProps.wrappers, fieldConfig);
     }
-    return containerRef;
+    return wrapperInfo.contentsRef;
   }
 
-  private createComponent(containerRef: ViewContainerRef, fieldProps: FieldProps, fieldConfig: FieldConfigSet): ComponentRef<Field> {
+  private createComponent(containerRef: ViewContainerRef, fieldProps: FieldProps, fieldConfig: FieldConfigSet) {
+    let wrapperInfo = new WrapperInfo(null, containerRef);
     if (fieldProps.wrappers) {
-      containerRef = this.createWrappers(containerRef, fieldProps.wrappers, fieldConfig);
+      wrapperInfo = this.createWrappers(wrapperInfo.contentsRef, fieldProps.wrappers, fieldConfig);
     }
 
     const componentType = fieldProps.calculatedInputType.isExternal
@@ -143,27 +146,40 @@ export class FieldsBuilderDirective implements OnInit, OnDestroy {
     if (fieldMetadata == null) { return; }
 
     if (fieldMetadata.wrappers) {
-      containerRef = this.createWrappers(containerRef, fieldMetadata.wrappers, fieldConfig);
+      wrapperInfo = this.createWrappers(wrapperInfo.contentsRef, fieldMetadata.wrappers, fieldConfig);
     }
 
-    const ref = containerRef.createComponent(componentType);
+    // generate the real input field component
+    this.generateAndAttachField(componentType, wrapperInfo.contentsRef, fieldConfig);
 
-    Object.assign<Field, Field>(ref.instance, {
-      config: fieldConfig,
+    if ((wrapperInfo.wrapperRef.instance as PickerExpandableWrapperComponent).previewComponent) {
+      const previewType = this.readComponentType(fieldProps.calculatedInputType.inputType);
+      this.generateAndAttachField(previewType, (wrapperInfo.wrapperRef.instance as PickerExpandableWrapperComponent).previewComponent, fieldConfig, true);
+    }
+
+    // return ref;
+  }
+
+  private generateAndAttachField(componentType: Type<any>, targetRef: ViewContainerRef, fieldConfig: FieldConfigSet, isPreview: boolean = false) {
+    const factory = this.resolver.resolveComponentFactory<Field>(componentType);
+    const realFieldRef = targetRef.createComponent(factory);
+
+    Object.assign<Field, Field>(realFieldRef.instance, {
+      config: {...(fieldConfig as FieldConfigSetExpandable), ...{isPreview: isPreview}},
       group: this.group,
     });
-
-    return ref;
+    return realFieldRef;
   }
 
-  private createWrappers(containerRef: ViewContainerRef, wrappers: string[], fieldConfig: FieldConfigSet): ViewContainerRef {
+  private createWrappers(containerRef: ViewContainerRef, wrappers: string[], fieldConfig: FieldConfigSet): WrapperInfo {
+    let wrapperInfo = new WrapperInfo(null, containerRef);
     for (const wrapper of wrappers) {
-      containerRef = this.createWrapper(containerRef, wrapper, fieldConfig);
+      wrapperInfo = this.createWrapper(wrapperInfo.contentsRef, wrapper, fieldConfig);
     }
-    return containerRef;
+    return wrapperInfo;
   }
 
-  private createWrapper(containerRef: ViewContainerRef, wrapper: string, fieldConfig: FieldConfigSet): ViewContainerRef {
+  private createWrapper(containerRef: ViewContainerRef, wrapper: string, fieldConfig: FieldConfigSet): WrapperInfo {
     const componentType = this.readComponentType(wrapper);
     const ref = containerRef.createComponent(componentType);
 
@@ -172,7 +188,7 @@ export class FieldsBuilderDirective implements OnInit, OnDestroy {
       group: this.group,
     });
 
-    return ref.instance.fieldComponent;
+    return new WrapperInfo(ref, ref.instance.fieldComponent);
   }
 
   private readComponentType(selector: string): Type<any> {
@@ -183,4 +199,11 @@ export class FieldsBuilderDirective implements OnInit, OnDestroy {
     }
     return componentType;
   }
+}
+
+class WrapperInfo {
+  constructor(
+    public wrapperRef: ComponentRef<FieldWrapper>,
+    public contentsRef: ViewContainerRef,
+  ) {}
 }

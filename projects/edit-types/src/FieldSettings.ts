@@ -254,6 +254,7 @@ export interface Boolean extends All {
 
 interface InternalSettings {
   _disabledBecauseOfTranslation?: boolean;
+  _isDialog?: boolean;
 }
 
 export interface FieldSettings extends

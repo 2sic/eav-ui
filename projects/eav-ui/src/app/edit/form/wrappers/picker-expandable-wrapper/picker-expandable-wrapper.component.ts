@@ -1,11 +1,10 @@
 import { Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
-import { Observable, share } from 'rxjs';
+import { Observable, distinctUntilChanged, share } from 'rxjs';
 import { WrappersConstants } from '../../../shared/constants';
 import { EavService, EditRoutingService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { BaseFieldComponent } from '../../fields/base/base-field.component';
 import { ContentExpandAnimation } from '../expandable-wrapper/content-expand.animation';
-import { PickerExpandableViewModel } from './picker-expandable-wrapper.models';
 
 @Component({
   selector: WrappersConstants.PickerExpandableWrapper,
@@ -15,10 +14,10 @@ import { PickerExpandableViewModel } from './picker-expandable-wrapper.models';
 })
 export class PickerExpandableWrapperComponent extends BaseFieldComponent<string | string[]> implements FieldWrapper, OnInit, OnDestroy {
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
+  @ViewChild('previewComponent', { static: true, read: ViewContainerRef }) previewComponent: ViewContainerRef;
 
   dialogIsOpen$: Observable<boolean>;
   saveButtonDisabled$ = this.formsStateService.saveButtonDisabled$.pipe(share());
-  viewModel$: Observable<PickerExpandableViewModel>;
 
   constructor(
     eavService: EavService,
@@ -32,6 +31,9 @@ export class PickerExpandableWrapperComponent extends BaseFieldComponent<string 
   ngOnInit() {
     super.ngOnInit();
     this.dialogIsOpen$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
+    this.dialogIsOpen$.pipe(distinctUntilChanged()).subscribe(isOpen => {
+      this.fieldsSettingsService.updateSetting(this.config.fieldName, { _isDialog: isOpen });
+     });
   }
 
   ngOnDestroy() {

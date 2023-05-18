@@ -3,8 +3,16 @@
   e.g. EntityDefault, EntityContentBlocks, EntityQuery, StringDropdownQuery
 -->
 <ng-container *ngIf="viewModel$ | async as vm">
-  <app-picker-list *ngIf="vm.shouldPickerListBeShown" [pickerSourceAdapter]="pickerSourceAdapter" [pickerStateAdapter]="pickerStateAdapter">
-  </app-picker-list>
+  <ng-container *ngIf="!vm.isDialog && isPreview && vm.noSelectedEntities > 1; else searchAndList">
+    <app-picker-pill-preview [config]="config" [group]="group"></app-picker-pill-preview>
+  </ng-container>
 
-  <app-picker-search [pickerSourceAdapter]="pickerSourceAdapter" [pickerStateAdapter]="pickerStateAdapter"></app-picker-search>
+  <ng-template #searchAndList>
+    <app-picker-list *ngIf="vm.shouldPickerListBeShown" [pickerSourceAdapter]="pickerSourceAdapter"
+      [pickerStateAdapter]="pickerStateAdapter">
+    </app-picker-list>
+  
+    <app-picker-search [pickerSourceAdapter]="pickerSourceAdapter"
+      [pickerStateAdapter]="pickerStateAdapter"></app-picker-search>
+  </ng-template>
 </ng-container>

@@ -346,4 +346,10 @@ export class FieldsSettingsService implements OnDestroy {
   retriggerFormulas(): void {
     this.forceRefreshSettings$.next();
   }
+
+  updateSetting(fieldName: string, update: Partial<FieldSettings>): void {
+    const props = this.latestFieldProps[fieldName];
+    const newSettings = { ...props.settings, ...update };
+    this.fieldsProps$.next({ ...this.latestFieldProps, [fieldName]: { ...props, settings: newSettings } });
+  }
 }

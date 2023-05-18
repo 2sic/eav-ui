@@ -8,3 +8,7 @@ export interface FieldConfigSet extends FieldConstants {
   adam?: Adam;
   dropzone?: Dropzone;
 }
+
+export interface FieldConfigSetExpandable extends FieldConfigSet {
+  isPreview?: boolean;
+}

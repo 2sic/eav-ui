@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { InputTypeConstants } from 'projects/eav-ui/src/app/content-type-fields/constants/input-type.constants';
-import { combineLatest, map, Observable } from 'rxjs';
+import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { EavService, EditRoutingService, EntityService, FieldsSettingsService } from '../../../shared/services';
 import { EntityCacheService, StringQueryCacheService } from '../../../shared/store/ngrx-data';
 import { FieldMetadata } from '../../builder/fields-builder/field-metadata.decorator';
@@ -10,6 +10,7 @@ import { PickerSearchComponent } from './picker-search/picker-search.component';
 import { PickerSourceAdapter } from './picker-source-adapter';
 import { PickerStateAdapter } from './picker-state-adapter';
 import { PickerViewModel } from './picker.models';
+import { FieldConfigSetExpandable } from '../../builder/fields-builder/field-config-set.model';
 
 @Component({
   selector: InputTypeConstants.EntityDefault,
@@ -24,6 +25,7 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
   pickerStateAdapter: PickerStateAdapter;
   isStringQuery: boolean;
   isString: boolean;
+  isPreview: boolean;
 
   viewModel$: Observable<PickerViewModel>;
 
@@ -42,6 +44,7 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
   ngOnInit(): void {
     super.ngOnInit();
 
+    this.isPreview = (this.config as FieldConfigSetExpandable).isPreview
     this.refreshOnChildClosed();
   }
 
@@ -57,17 +60,23 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
   }
 
   createTemplateVariables() {
-    this.viewModel$ = combineLatest([this.pickerStateAdapter.shouldPickerListBeShown$])
-      .pipe(map(([shouldPickerListBeShown]) => {
+    this.viewModel$ = combineLatest([
+      this.pickerStateAdapter.shouldPickerListBeShown$,
+      this.settings$.pipe(map(settings => settings._isDialog), distinctUntilChanged()),
+      this.pickerStateAdapter.selectedEntities$.pipe(map(selectedEntities => selectedEntities.length), distinctUntilChanged()),
+    ])
+      .pipe(map(([shouldPickerListBeShown, isDialog, noSelectedEntities]) => {
         const viewModel: PickerViewModel = {
           shouldPickerListBeShown,
+          isDialog,
+          noSelectedEntities,
         };
         return viewModel;
       }),
     );
   }
 
-  focusOnSearchComponent(): void { 
+  focusOnSearchComponent(): void {
     this.entitySearchComponent.autocompleteRef?.nativeElement.focus();
   }
 

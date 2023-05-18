@@ -2,13 +2,13 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Observable, combineLatest, distinctUntilChanged, map } from 'rxjs';
 import { PickerPillPreviewTemplateVars } from './picker-pill-preview.models';
 import { GeneralHelpers } from '../../../../shared/helpers';
-import { PickerExpandableTemplateVars } from '../../../wrappers/picker-expandable-wrapper/picker-expandable-wrapper.models';
 import { calculateSelectedEntities } from '../picker.helpers';
 import { TranslateService } from '@ngx-translate/core';
 import { EavService, FieldsSettingsService, EditRoutingService } from '../../../../shared/services';
 import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
 import { BaseFieldComponent } from '../../base/base-field.component';
 import { SelectedEntity } from '../../entity/entity-default/entity-default.models';
+import { FieldConfigSetExpandable } from '../../../builder/fields-builder/field-config-set.model';
 
 @Component({
   selector: 'app-picker-pill-preview',
@@ -33,6 +33,7 @@ export class PickerPillPreviewComponent extends BaseFieldComponent<string | stri
   ngOnInit(): void {
     super.ngOnInit();
 
+    const isOpen$ = this.settings$.pipe(map(settings => settings._isDialog), distinctUntilChanged());
     const selectedEntities$ = combineLatest([
       this.controlStatus$.pipe(map(controlStatus => controlStatus.value), distinctUntilChanged()),
       this.entityCacheService.getEntities$(),
@@ -53,19 +54,20 @@ export class PickerPillPreviewComponent extends BaseFieldComponent<string | stri
 
     this.templateVars$ = combineLatest([
       combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
-      combineLatest([selectedEntities$]),
+      combineLatest([selectedEntities$, isOpen$]),
     ]).pipe(
       map(([
         [controlStatus, label, placeholder, required],
-        [selectedEntities],
+        [selectedEntities, isOpen],
       ]) => {
-        const templateVars: PickerExpandableTemplateVars = {
+        const templateVars: PickerPillPreviewTemplateVars = {
           controlStatus,
           label,
           placeholder,
           required,
           selectedEntities: selectedEntities?.slice(0, 9) || [],
           entitiesNumber: selectedEntities?.length || 0,
+          isOpen,
         };
         return templateVars;
       }),

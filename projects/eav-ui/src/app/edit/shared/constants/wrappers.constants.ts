@@ -3,6 +3,7 @@ export const WrappersConstants = {
   CollapsibleWrapper: 'app-collapsible-wrapper', // empty specific
   DropzoneWrapper: 'app-dropzone-wrapper', // default
   PickerExpandableWrapper: 'app-picker-expandable-wrapper', // entity specific
+  PickerPreviewWrapper: 'app-picker-preview-wrapper', // entity specific
   ExpandableWrapper: 'app-expandable-wrapper', // default
   HiddenWrapper: 'app-hidden-wrapper', // default
   HyperlinkDefaultExpandableWrapper: 'app-hyperlink-default-expandable-wrapper', // hyperlink specific
