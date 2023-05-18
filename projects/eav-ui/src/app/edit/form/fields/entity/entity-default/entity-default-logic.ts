@@ -30,7 +30,6 @@ export class EntityDefaultLogic extends FieldLogicBase {
       fixedSettings.EnableRemove = true;
       fixedSettings.EnableDelete = true;
     }
-    console.log('SDV fixedSettings: ', fixedSettings);
     return fixedSettings;
   }
 }
