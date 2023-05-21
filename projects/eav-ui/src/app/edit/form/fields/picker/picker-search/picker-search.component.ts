@@ -53,6 +53,7 @@ export class PickerSearchComponent implements OnInit, OnChanges, OnDestroy {
     const required$ = this.pickerStateAdapter.required$;
     const tooltip$ = this.pickerStateAdapter.tooltip$;
     const information$ = this.pickerStateAdapter.information$;
+    const isDialog$ = this.pickerStateAdapter.isDialog$;
 
     this.subscriptions.add(availableEntities$.subscribe(entities => {
       this.availableEntities = entities;
@@ -84,11 +85,11 @@ export class PickerSearchComponent implements OnInit, OnChanges, OnDestroy {
     );
     this.viewModel$ = combineLatest([
       debugEnabled$, settings$, selectedEntities$, availableEntities$, error$, controlStatus$,
-      freeTextMode$, disableAddNew$, label$, placeholder$, required$, tooltip$, information$
+      freeTextMode$, disableAddNew$, label$, placeholder$, required$, tooltip$, information$, isDialog$
     ]).pipe(
       map(([
         debugEnabled, settings, selectedEntities, availableEntities, error, controlStatus,
-        freeTextMode, disableAddNew, label, placeholder, required, tooltip, information
+        freeTextMode, disableAddNew, label, placeholder, required, tooltip, information, isDialog
       ]) => {
         const div = document.createElement("div");
         div.innerHTML = tooltip;
@@ -117,6 +118,7 @@ export class PickerSearchComponent implements OnInit, OnChanges, OnDestroy {
           required,
           tooltip: cleanTooltip,
           information: cleanInformation,
+          isDialog,
         };
         return viewModel;
       }),

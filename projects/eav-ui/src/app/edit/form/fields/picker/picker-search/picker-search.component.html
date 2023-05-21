@@ -95,7 +95,7 @@
   <app-field-helper-text [config]="pickerStateAdapter.config" [group]="pickerSourceAdapter.group"></app-field-helper-text>
 
   <!-- add new entity -->
-  <div *ngIf="!vm.freeTextMode && vm.enableCreate && vm.entityType && vm.allowMultiValue">
+  <div *ngIf="!vm.freeTextMode && vm.enableCreate && vm.entityType && vm.allowMultiValue && vm.isDialog">
     <button mat-mini-fab color="accent" [tippy]="'Fields.Entity.New' | translate" [disabled]="vm.controlStatus.disabled || vm.disableAddNew"
       (click)="openNewEntityDialog()">
       <mat-icon>add</mat-icon>

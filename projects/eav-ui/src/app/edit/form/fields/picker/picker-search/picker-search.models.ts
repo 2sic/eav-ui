@@ -23,4 +23,5 @@ export interface PickerSearchViewModel {
   required: boolean;
   tooltip: string;
   information: string;
+  isDialog: boolean;
 }

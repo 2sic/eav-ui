@@ -8,7 +8,7 @@ import { QueryEntity } from '../entity/entity-query/entity-query.models';
 import { ReorderIndexes } from './picker-list/picker-list.models';
 import { calculateSelectedEntities, convertArrayToString, convertValueToArray } from './picker.helpers';
 import { DeleteEntityProps } from './picker.models';
-import { FieldConfigSet } from '../../builder/fields-builder/field-config-set.model';
+import { FieldConfigSet, FieldConfigSetExpandable } from '../../builder/fields-builder/field-config-set.model';
 import { AbstractControl } from '@angular/forms';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 
@@ -40,6 +40,8 @@ export class PickerStateAdapter {
   allowMultiValue$: Observable<boolean>;
   tooltip$: Observable<string>;
   information$: Observable<string>;
+  isDialog$: Observable<boolean>;
+  isPreview = (this.config as FieldConfigSetExpandable).isPreview;
 
   init() {
     this.selectedEntities$ = combineLatest([
@@ -62,6 +64,7 @@ export class PickerStateAdapter {
     this.allowMultiValue$ = this.settings$.pipe(map(settings => settings.AllowMultiValue), distinctUntilChanged());
     this.tooltip$ = this.settings$.pipe(map(settings => settings.Tooltip), distinctUntilChanged());
     this.information$ = this.settings$.pipe(map(settings => settings.Information), distinctUntilChanged());
+    this.isDialog$ = this.settings$.pipe(map(settings => settings._isDialog), distinctUntilChanged());
     this.shouldPickerListBeShown$ = combineLatest([
       this.freeTextMode$, this.isExpanded$, this.allowMultiValue$, this.selectedEntities$
     ]).pipe(map(([
