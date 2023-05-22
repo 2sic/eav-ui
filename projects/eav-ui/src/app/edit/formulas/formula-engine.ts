@@ -226,6 +226,7 @@ export class FormulaEngine implements OnDestroy {
           if (typeof formulaV1Result === 'string'
             || typeof formulaV1Result === 'number'
             || typeof formulaV1Result === 'boolean'
+            || formulaV1Result instanceof Date
             || isArray
             || !formulaV1Result) {
             if (formula.target === FormulaTargets.Value) {
