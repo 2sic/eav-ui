@@ -158,7 +158,8 @@
       "Loading": "Loading...",
       "Search": "Search",
       "AddItemBelow": "Add item below",
-      "AddExistingItem": "Add existing item"
+      "AddExistingItem": "Add existing item",
+      "OpenMultiselect": "Open multiselect"
     },
     "EntityQuery": {
       "QueryNoItems": "No items found",

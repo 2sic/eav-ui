@@ -61,12 +61,20 @@
         </div>
       </div>
       <div fxLayoutAlign="end center"
-        [ngClass]="(vm.enableCreate && vm.entityType && !(vm.selectedEntities.length > 1)) ? 'ed-field__create-icon' : 'ed-field__create-icon-hide'">
+        [ngClass]="(vm.enableCreate && vm.entityType && !(vm.selectedEntities.length > 1)) && (vm.allowMultiValue && pickerStateAdapter.isPreview) 
+        ? 'ed-field__create-two-icon' 
+        : (vm.enableCreate && vm.entityType && !(vm.selectedEntities.length > 1)) || (vm.allowMultiValue &&  pickerStateAdapter.isPreview) 
+          ? 'ed-field__create-icon' 
+          : 'ed-field__create-icon-hide'">
         <!-- create new entity to add to this list -->
         <button mat-icon-button [tippy]="'Fields.Entity.New' | translate" [disabled]="vm.controlStatus.disabled || vm.disableAddNew"
           *ngIf="vm.enableCreate && vm.entityType && !(vm.selectedEntities.length > 1)"
           (click)="openNewEntityDialog()">
           <mat-icon>add_circle_outline</mat-icon>
+        </button>
+        <button mat-icon-button [tippy]="'Fields.Entity.OpenMultiselect' | translate"
+          *ngIf="vm.allowMultiValue && pickerStateAdapter.isPreview" (click)="expandDialog()">
+          <mat-icon>post_add</mat-icon>
         </button>
       </div>
     </div>
@@ -99,5 +107,17 @@
       (click)="openNewEntityDialog()">
       <mat-icon>add</mat-icon>
     </button>
+  </div>
+  <div *ngIf="vm.isDialog">
+    is dialog
+  </div>
+  <div *ngIf="!vm.isDialog">
+    not dialog
+  </div>
+  <div *ngIf="pickerStateAdapter.isPreview">
+    is preview
+  </div>
+  <div *ngIf="!pickerStateAdapter.isPreview">
+    not preview
   </div>
 </ng-container>

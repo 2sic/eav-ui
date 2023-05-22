@@ -5,7 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { EntityInfo } from 'projects/edit-types';
 import { combineLatest, distinctUntilChanged, map, Observable, Subscription } from 'rxjs';
 import { GeneralHelpers } from '../../../../shared/helpers';
-import { FieldsSettingsService } from '../../../../shared/services';
+import { EditRoutingService, FieldsSettingsService } from '../../../../shared/services';
 import { GlobalConfigService } from '../../../../shared/store/ngrx-data';
 import { SelectedEntity } from '../../entity/entity-default/entity-default.models';
 import { PickerSourceAdapter } from '../picker-source-adapter';
@@ -36,6 +36,7 @@ export class PickerSearchComponent implements OnInit, OnChanges, OnDestroy {
     private translate: TranslateService,
     private globalConfigService: GlobalConfigService,
     private fieldsSettingsService: FieldsSettingsService,
+    private editRoutingService: EditRoutingService,
   ) { }
 
   ngOnInit(): void {
@@ -215,5 +216,10 @@ export class PickerSearchComponent implements OnInit, OnChanges, OnDestroy {
 
   deleteItem(index: number, entityGuid: string): void {
     this.pickerSourceAdapter.deleteEntity({ index, entityGuid });
+  }
+
+  expandDialog() {
+    if (this.pickerStateAdapter.config.initialDisabled) { return; }
+    this.editRoutingService.expand(true, this.pickerStateAdapter.config.index, this.pickerStateAdapter.config.entityGuid);
   }
 }

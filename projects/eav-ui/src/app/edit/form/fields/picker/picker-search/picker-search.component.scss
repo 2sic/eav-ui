@@ -12,6 +12,17 @@
   width: 38px;
 }
 
+.ed-field__create-two-icon {
+  width: 72px;
+  padding-bottom: 4px;
+
+  .mat-icon-button {
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+  }
+}
+
 .ed-field__create-icon-hide {
   width: 0;
 }
