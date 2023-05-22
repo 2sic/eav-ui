@@ -40,8 +40,7 @@
               </button>
             </div>
             <mat-label [ngClass]="{ 'mat-error': vm.controlStatus.invalid && vm.controlStatus.touched }">
-              {{ vm.allowMultiValue ? ('Fields.Entity.Choose' | translate) : vm.label }}
-              {{ vm.required ? '*': '' }}
+              {{ vm.label }} {{ vm.required ? '*': '' }}
             </mat-label>
           </mat-form-field>
 
