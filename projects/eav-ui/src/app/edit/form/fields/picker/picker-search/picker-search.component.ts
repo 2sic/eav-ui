@@ -62,12 +62,6 @@ export class PickerSearchComponent implements OnInit, OnChanges, OnDestroy {
     this.subscriptions.add(selectedEntities$.subscribe(entities => {
       this.selectedEntities = entities;
       this.selectedEntity = this.selectedEntities.length > 0 ? this.selectedEntities[0] : null;
-      if (this.autocompleteRef)
-        if (this.selectedEntity && !this.fieldsSettingsService.getFieldSettings(this.pickerStateAdapter.config.fieldName).AllowMultiValue) {
-          this.autocompleteRef.nativeElement.value = this.selectedEntity.label;
-        } else {
-          this.autocompleteRef.nativeElement.value = '';
-        }
     }));
 
     const debugEnabled$ = this.globalConfigService.getDebugEnabled$();
@@ -124,6 +118,15 @@ export class PickerSearchComponent implements OnInit, OnChanges, OnDestroy {
         return viewModel;
       }),
     );
+  }
+
+  ngAfterViewInit(): void { 
+    if (this.autocompleteRef)
+      if (this.selectedEntity) {
+        this.autocompleteRef.nativeElement.value = this.selectedEntity.label;
+      } else {
+        this.autocompleteRef.nativeElement.value = '';
+      }
   }
 
   ngOnChanges(changes: SimpleChanges): void {

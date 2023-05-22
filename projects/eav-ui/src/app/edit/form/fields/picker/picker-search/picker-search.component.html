@@ -14,18 +14,18 @@
               <mat-icon>arrow_drop_down</mat-icon>
             </button>
             <button mat-icon-button matSuffix
-              *ngIf="selectedEntity && vm.enableEdit && !selectedEntity?.disableEdit && (vm.allowMultiValue && pickerStateAdapter.isPreview)"
+              *ngIf="selectedEntity && vm.enableEdit && !selectedEntity?.disableEdit && (!vm.allowMultiValue || (vm.allowMultiValue && pickerStateAdapter.isPreview))"
               [tippy]="'Fields.Entity.Edit' | translate" [disabled]="pickerStateAdapter.config.initialDisabled"
               (click)="edit(selectedEntity?.value, selectedEntity?.entityId)">
               <mat-icon>edit</mat-icon>
             </button>
             <button mat-icon-button matSuffix
-              *ngIf="selectedEntity && vm.enableDelete && !selectedEntity?.disableDelete && (vm.allowMultiValue && pickerStateAdapter.isPreview)"
+              *ngIf="selectedEntity && vm.enableDelete && !selectedEntity?.disableDelete && (!vm.allowMultiValue || (vm.allowMultiValue && pickerStateAdapter.isPreview))"
               [tippy]="'Fields.Entity.Delete' | translate" [disabled]="vm.controlStatus.disabled"
               (click)="deleteItem(0, selectedEntity?.value)">
               <mat-icon>delete</mat-icon>
             </button>
-            <button mat-icon-button matSuffix *ngIf="selectedEntity && vm.enableRemove && (vm.allowMultiValue && pickerStateAdapter.isPreview)"
+            <button mat-icon-button matSuffix *ngIf="selectedEntity && vm.enableRemove && (!vm.allowMultiValue || (vm.allowMultiValue && pickerStateAdapter.isPreview))"
               [tippy]="'Fields.Entity.Remove' | translate" [disabled]="vm.controlStatus.disabled" (click)="removeItem(0)">
               <mat-icon>clear</mat-icon>
             </button>
