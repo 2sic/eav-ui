@@ -84,9 +84,6 @@ export class PickerStateAdapter {
 
   updateValue(action: 'add' | 'delete' | 'reorder', value: string | number | ReorderIndexes): void {
     const valueArray: string[] = this.createValueArray();
-      // (typeof this.control.value === 'string')
-      // ? convertValueToArray(this.control.value, this.settings$.value.Separator)
-      // : [...this.control.value];
 
     switch (action) {
       case 'add':
@@ -104,9 +101,6 @@ export class PickerStateAdapter {
     }
 
     const newValue = this.createNewValue(valueArray);
-      // typeof this.control.value === 'string'
-      // ? convertArrayToString(valueArray, this.settings$.value.Separator)
-      // : valueArray;
     GeneralHelpers.patchControlValue(this.control, newValue);
 
     if (action === 'delete' && !valueArray.length) {

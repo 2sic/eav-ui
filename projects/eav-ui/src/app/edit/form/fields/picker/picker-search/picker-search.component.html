@@ -61,10 +61,10 @@
         </div>
       </div>
       <div fxLayoutAlign="end center"
-        [ngClass]="(vm.enableCreate && vm.entityType && !(vm.selectedEntities.length > 1) && !vm.allowMultiValue) ? 'ed-field__create-icon' : 'ed-field__create-icon-hide'">
+        [ngClass]="(vm.enableCreate && vm.entityType && !(vm.selectedEntities.length > 1)) ? 'ed-field__create-icon' : 'ed-field__create-icon-hide'">
         <!-- create new entity to add to this list -->
         <button mat-icon-button [tippy]="'Fields.Entity.New' | translate" [disabled]="vm.controlStatus.disabled || vm.disableAddNew"
-          *ngIf="vm.enableCreate && vm.entityType && !(vm.selectedEntities.length > 1) && !vm.allowMultiValue"
+          *ngIf="vm.enableCreate && vm.entityType && !(vm.selectedEntities.length > 1)"
           (click)="openNewEntityDialog()">
           <mat-icon>add_circle_outline</mat-icon>
         </button>
