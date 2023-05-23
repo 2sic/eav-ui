@@ -15,10 +15,10 @@ export class StringDropdownLogic extends FieldLogicBase {
     fixedSettings._options = calculateDropdownOptions(value, this.type, fixedSettings.DropdownValuesFormat, fixedSettings.DropdownValues);
     fixedSettings.EntityType ??= '';
     fixedSettings.AllowMultiValue ??= false;
-    fixedSettings.EnableEdit ??= true;
-    fixedSettings.EnableCreate ??= true;
+    fixedSettings.EnableEdit ??= false;
+    fixedSettings.EnableCreate ??= false;
     fixedSettings.EnableAddExisting ??= true;
-    fixedSettings.EnableRemove ??= true;
+    fixedSettings.EnableRemove ??= false;
     fixedSettings.EnableDelete ??= false;
     return fixedSettings;
   }

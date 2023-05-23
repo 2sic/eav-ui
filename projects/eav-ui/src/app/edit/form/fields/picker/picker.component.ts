@@ -44,7 +44,7 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
   ngOnInit(): void {
     super.ngOnInit();
 
-    this.isPreview = (this.config as FieldConfigSetExpandable).isPreview
+    this.isPreview = (this.config as FieldConfigSetExpandable).isPreview;
     this.refreshOnChildClosed();
   }
 

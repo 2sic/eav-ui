@@ -46,15 +46,17 @@ export class InputFieldHelpers {
     // default wrappers
     const wrappers: WrappersConstant[] = [WrappersConstants.HiddenWrapper];
 
-    // entity-default wrappers
-    const isEntityType = (inputType === InputTypeConstants.EntityDefault)
+    // entity-default/string-dropdown wrappers
+    const isEntityOrStringDropdownType = (inputType === InputTypeConstants.EntityDefault)
       || (inputType === InputTypeConstants.StringDropdownQuery)
       || (inputType === InputTypeConstants.EntityQuery)
-      || (inputType === InputTypeConstants.EntityContentBlocks);
+      || (inputType === InputTypeConstants.EntityContentBlocks)
+      || (inputType === InputTypeConstants.StringDropdown);
+    
+    const allowMultiValue = settings.AllowMultiValue ?? false;
 
-    if (isEntityType) {
+    if (isEntityOrStringDropdownType) {
       wrappers.push(WrappersConstants.LocalizationWrapper);
-      const allowMultiValue = settings.AllowMultiValue ?? false;
       if (allowMultiValue || inputType === InputTypeConstants.EntityContentBlocks) {
         wrappers.push(WrappersConstants.PickerExpandableWrapper);
       }

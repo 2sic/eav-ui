@@ -19,7 +19,7 @@ import { PickerStringStateAdapter } from '../../picker/picker-string-state-adapt
   styleUrls: ['../../picker/picker.component.scss'],
 })
 @FieldMetadata({
-  wrappers: [WrappersConstants.LocalizationWrapper],
+  // wrappers: [WrappersConstants.LocalizationWrapper],
 })
 export class StringDropdownComponent extends PickerComponent implements OnInit, OnDestroy {
   constructor(
