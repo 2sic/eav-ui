@@ -140,24 +140,28 @@ export class FieldsSettingsService implements OnDestroy {
         });
 
         // Make sure that groups, which have a forced-visible-field are also visible
-        if (this.itemFieldVisibility.hasRules())
-          allConstFieldParts.forEach((groupField, index) => {
-            // Only work on group-starts
-            if (!EmptyFieldHelpers.isGroupStart(groupField.calculatedInputType)) return;
-            // Ignore if visible-disabled is already ok
-            if (groupField.settingsInitial.VisibleDisabled == false) return;
-            // Check if any of the following fields is forced visible - before another group-start/end
-            for (let i = index + 1; i < allConstFieldParts.length; i++) {
-              const innerField = allConstFieldParts[i];
-              // Stop checking the current group if we found another group start/end
-              if (EmptyFieldHelpers.isGroup(innerField.calculatedInputType)) return;
-              if (innerField.settingsInitial.VisibleDisabled == false) {
-                consoleLogAngular('Forced visible', groupField.constants.fieldName, 'because of', innerField.constants.fieldName)
-                groupField.settingsInitial.VisibleDisabled = false;
-                return;
+        try { // ATM in try-catch, to ensure we don't break anything
+          if (this.itemFieldVisibility.hasRules())
+            allConstFieldParts.forEach((groupField, index) => {
+              // Only work on group-starts
+              if (!EmptyFieldHelpers.isGroupStart(groupField.calculatedInputType)) return;
+              // Ignore if visible-disabled is already ok
+              if (groupField.settingsInitial.VisibleDisabled == false) return;
+              // Check if any of the following fields is forced visible - before another group-start/end
+              for (let i = index + 1; i < allConstFieldParts.length; i++) {
+                const innerField = allConstFieldParts[i];
+                // Stop checking the current group if we found another group start/end
+                if (EmptyFieldHelpers.isGroup(innerField.calculatedInputType)) return;
+                if (innerField.settingsInitial.VisibleDisabled == false) {
+                  consoleLogAngular('Forced visible', groupField.constants.fieldName, 'because of', innerField.constants.fieldName)
+                  groupField.settingsInitial.VisibleDisabled = false;
+                  return;
+                }
               }
-            }
-          });
+            });
+        } catch (e) {
+          console.error('Error trying to set item field visibility', e);
+        }
 
         return allConstFieldParts;
       })
