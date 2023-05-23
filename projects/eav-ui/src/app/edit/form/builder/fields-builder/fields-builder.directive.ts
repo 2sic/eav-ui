@@ -38,6 +38,7 @@ import { LocalizationWrapperComponent } from '../../wrappers/localization-wrappe
 import { FieldConfigSet } from './field-config-set.model';
 import { FieldWrapper } from './field-wrapper.model';
 import { Field } from './field.model';
+import { EmptyFieldHelpers } from '../../fields/empty/empty-field-helpers';
 
 @Directive({ selector: '[appFieldsBuilder]' })
 export class FieldsBuilderDirective implements OnInit, OnDestroy {
@@ -80,16 +81,20 @@ export class FieldsBuilderDirective implements OnInit, OnDestroy {
 
   constructor(
     private resolver: ComponentFactoryResolver,
-    private containerRef: ViewContainerRef,
+    private mainContainerRef: ViewContainerRef,
     private fieldsSettingsService: FieldsSettingsService,
   ) { }
 
   ngOnInit() {
     // clear container
-    this.containerRef.clear();
+    this.mainContainerRef.clear();
 
-    let containerRef = this.containerRef;
+    // Set the current wrapper to be the main one (not a specific group)
+    let currentContainer = this.mainContainerRef;
     const fieldsProps = this.fieldsSettingsService.getFieldsProps();
+
+    // Loop through each field and create the component
+    // If we encounter a group, we create a new container and set it as the main one
     for (const [fieldName, fieldProps] of Object.entries(fieldsProps)) {
       const fieldConfig: FieldConfigSet = {
         ...fieldProps.constants,
@@ -98,13 +103,15 @@ export class FieldsBuilderDirective implements OnInit, OnDestroy {
       };
       this.fieldConfigs.push(fieldConfig);
 
-      if (fieldProps.calculatedInputType.inputType === InputTypeConstants.EmptyDefault) {
-        containerRef = this.containerRef;
-        containerRef = this.createGroup(containerRef, fieldProps, fieldConfig);
-      } else if (fieldProps.calculatedInputType.inputType === InputTypeConstants.EmptyEnd) {
-        containerRef = this.containerRef;
+      if (EmptyFieldHelpers.isGroupStart(fieldProps.calculatedInputType)) {
+        // If we encounter an empty-start (group-start) then create a new container based on the main container
+        currentContainer = this.createGroup(this.mainContainerRef, fieldProps, fieldConfig);
+      } else if (EmptyFieldHelpers.isGroupEnd(fieldProps.calculatedInputType)) {
+        // If we encounter a group-end, set the main container to be the default one again
+        currentContainer = this.mainContainerRef;
       } else {
-        this.createComponent(containerRef, fieldProps, fieldConfig);
+        // Just create the normal component within the current container
+        this.createComponent(currentContainer, fieldProps, fieldConfig);
       }
     }
   }
