@@ -22,6 +22,10 @@ export class ItemFieldVisibility {
     consoleLogAngular('ItemFieldVisibility', this.fields, 'default', this.defaultIsShow);
   }
 
+  hasRules(): boolean {
+    return this.fields != null;
+  }
+
   isVisibleDisabled(fieldName: string): boolean {
     // check if we have no rules at all - in which case never override
     if (this.fields == null) return false;

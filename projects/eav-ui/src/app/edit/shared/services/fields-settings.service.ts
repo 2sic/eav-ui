@@ -19,6 +19,7 @@ import { FieldValuePair } from '../../formulas/models/formula-results.models';
 import { FormItemFormulaService } from '../../formulas/form-item-formula.service';
 import { FormulaPromiseHandler } from '../../formulas/formula-promise-handler';
 import { ItemFieldVisibility } from './item-field-visibility';
+import { EmptyFieldHelpers } from '../../form/fields/empty/empty-field-helpers';
 
 
 /**
@@ -90,31 +91,23 @@ export class FieldsSettingsService implements OnDestroy {
     const inputTypes$ = this.inputTypeService.getInputTypes$();
     const entityId = item.Entity.Id;
 
+    const eavConfig = this.eavService.eavConfig;
     const constantFieldParts$ = combineLatest([inputTypes$, contentType$, entityReader$]).pipe(
       map(([inputTypes, contentType, entityReader]) => {
-        return contentType.Attributes.map((attribute, index) => {
-          const initialSettings = FieldsSettingsHelpers.setDefaultFieldSettings(
-            // TODO: unclear why we're not using the current language but the default
-            new EntityReader(this.eavService.eavConfig.lang, entityReader.defaultLanguage).flattenAll<FieldSettings>(attribute.Metadata)
-            // FieldsSettingsHelpers.mergeSettings<FieldSettings>(attribute.Metadata, this.eavService.eavConfig.lang, defaultLanguage),
-          );
+        // When merging metadata, the primary language must be the real primary, not the current
+        const mdMerger = new EntityReader(eavConfig.lang, entityReader.defaultLanguage);
+
+        const allConstFieldParts = contentType.Attributes.map((attribute, index) => {
+          const initialSettings = FieldsSettingsHelpers.setDefaultFieldSettings(mdMerger.flattenAll<FieldSettings>(attribute.Metadata));
           const initialDisabled = initialSettings.Disabled ?? false;
           const calculatedInputType = InputFieldHelpers.calculateInputType(attribute, inputTypes);
           const inputType = inputTypes.find(i => i.Type === attribute.InputType);
 
-          const mergeRaw = entityReader.flattenAll<FieldSettings>(attribute.Metadata);
-          // Sometimes the metadata doesn't have the input type (empty string), so we'll add the attribute.InputType just in case...
-          mergeRaw.InputType = attribute.InputType;
-          mergeRaw.VisibleDisabled = this.itemFieldVisibility.isVisibleDisabled(attribute.Name);
-          const settingsInitial = FieldsSettingsHelpers.setDefaultFieldSettings(mergeRaw);
-          consoleLogAngular('merged', JSON.parse(JSON.stringify(settingsInitial)));
-
-          const logic = FieldLogicManager.singleton().get(attribute.InputType);
-
+          // Construct the constants / unchanging aspects of the field
           const constants: FieldConstants = {
             angularAssets: inputType?.AngularAssets,
             contentTypeId,
-            dropzonePreviewsClass: `dropzone-previews-${this.eavService.eavConfig.formId}-${index}`,
+            dropzonePreviewsClass: `dropzone-previews-${eavConfig.formId}-${index}`,
             entityGuid,
             entityId,
             fieldName: attribute.Name,
@@ -126,6 +119,15 @@ export class FieldsSettingsService implements OnDestroy {
             type: attribute.Type,
           };
 
+          // Construct the constants with settings and everything
+          // TODO: unclear why we're doing this again (see `initialSettings`) - with different languages in the flattening
+          const mergeRaw = entityReader.flattenAll<FieldSettings>(attribute.Metadata);
+          // Sometimes the metadata doesn't have the input type (empty string), so we'll add the attribute.InputType just in case...
+          mergeRaw.InputType = attribute.InputType;
+          mergeRaw.VisibleDisabled = this.itemFieldVisibility.isVisibleDisabled(attribute.Name);
+          const settingsInitial = FieldsSettingsHelpers.setDefaultFieldSettings(mergeRaw);
+          consoleLogAngular('merged', JSON.parse(JSON.stringify(settingsInitial)));
+          const logic = FieldLogicManager.singleton().get(attribute.InputType);
           const constantFieldParts: ConstantFieldParts = {
             logic,
             settingsInitial,
@@ -134,8 +136,30 @@ export class FieldsSettingsService implements OnDestroy {
             constants
           };
 
-          return (constantFieldParts);
+          return constantFieldParts;
         });
+
+        // Make sure that groups, which have a forced-visible-field are also visible
+        if (this.itemFieldVisibility.hasRules())
+          allConstFieldParts.forEach((groupField, index) => {
+            // Only work on group-starts
+            if (!EmptyFieldHelpers.isGroupStart(groupField.calculatedInputType)) return;
+            // Ignore if visible-disabled is already ok
+            if (groupField.settingsInitial.VisibleDisabled == false) return;
+            // Check if any of the following fields is forced visible - before another group-start/end
+            for (let i = index + 1; i < allConstFieldParts.length; i++) {
+              const innerField = allConstFieldParts[i];
+              // Stop checking the current group if we found another group start/end
+              if (EmptyFieldHelpers.isGroup(innerField.calculatedInputType)) return;
+              if (innerField.settingsInitial.VisibleDisabled == false) {
+                consoleLogAngular('Forced visible', groupField.constants.fieldName, 'because of', innerField.constants.fieldName)
+                groupField.settingsInitial.VisibleDisabled = false;
+                return;
+              }
+            }
+          });
+
+        return allConstFieldParts;
       })
     );
     
