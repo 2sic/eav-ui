@@ -30,16 +30,17 @@
               appClickStopPropagation (click)="removeItem(0)">
               <mat-icon>clear</mat-icon>
             </button>
-            <div matSuffix class="selection-suffix" *ngIf="vm.enableTextEntry">
-              <button mat-icon-button [tippy]="'Fields.String.Dropdown' | translate" [disabled]="vm.controlStatus.disabled"
-                class="active">
+            <span matSuffix class="selection-suffix-inline" *ngIf="vm.enableTextEntry">
+              <button mat-icon-button [tippy]="'Fields.String.Dropdown' | translate"
+                [disabled]="vm.controlStatus.disabled" appClickStopPropagation class="active">
                 <mat-icon>search</mat-icon>
               </button>
-              <button mat-icon-button [tippy]="'Fields.String.Freetext' | translate" [disabled]="vm.controlStatus.disabled"
-                appClickStopPropagation (click)="toggleFreeText(vm.controlStatus.disabled)">
+              <button mat-icon-button [tippy]="'Fields.String.Freetext' | translate"
+                [disabled]="vm.controlStatus.disabled" appClickStopPropagation
+                (click)="toggleFreeText(vm.controlStatus.disabled)">
                 <mat-icon>text_fields</mat-icon>
               </button>
-            </div>
+            </span>
             <mat-label [ngClass]="{ 'mat-error': vm.controlStatus.invalid && vm.controlStatus.touched }">
               {{ vm.label }} {{ vm.required ? '*': '' }}
             </mat-label>
@@ -84,15 +85,16 @@
   <mat-form-field *ngIf="vm.freeTextMode" [formGroup]="pickerSourceAdapter.group" class="eav-form-field" color="accent">
     <input matInput [required]="vm.required" [formControlName]="pickerStateAdapter.config.fieldName" [placeholder]="vm.placeholder">
 
-    <div matSuffix class="selection-suffix">
+    <span matSuffix class="selection-suffix-inline">
       <button mat-icon-button [tippy]="'Fields.String.Dropdown' | translate" [disabled]="vm.controlStatus.disabled"
         appClickStopPropagation (click)="toggleFreeText(vm.controlStatus.disabled)">
         <mat-icon>search</mat-icon>
       </button>
-      <button mat-icon-button [tippy]="'Fields.String.Freetext' | translate" [disabled]="vm.controlStatus.disabled" class="active">
+      <button mat-icon-button [tippy]="'Fields.String.Freetext' | translate" [disabled]="vm.controlStatus.disabled" 
+        appClickStopPropagation class="active">
         <mat-icon>text_fields</mat-icon>
       </button>
-    </div>
+    </span>
     <mat-label>{{ vm.label }}</mat-label>
   </mat-form-field>
 

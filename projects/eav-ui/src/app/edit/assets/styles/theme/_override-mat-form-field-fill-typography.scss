@@ -70,9 +70,61 @@
     background-color: transparent;
   }
 
-  //used so form-field doesn't change background color on hover
-  .mat-mdc-form-field-focus-overlay {
-    background-color: transparent;
+  .mat-form-field-suffix {
+    .mat-icon-button {
+      top: 6px;
+      width: 30px !important;
+      height: 30px !important;
+      line-height: 30px;
+    }
+
+    .entity-dropdown-button {
+      cursor: text;
+
+      &.mat-button-disabled {
+        cursor: default;
+      }
+    }
+
+    .selection-suffix {
+      display: flex;
+
+      .mat-icon-button {
+        top: 0;
+
+        .mat-icon {
+          font-size: 18px;
+        }
+      }
+
+      .active {
+        background-color: $accent-color;
+        color: white;
+
+        &.mat-button-disabled {
+          background-color: $editUI-label-disabled-color;
+        }
+      }
+    }
+
+    .selection-suffix-inline {
+      .mat-icon-button {
+        top: 3px;
+
+        .mat-icon {
+          font-size: 18px;
+        }
+      }
+
+      .active {
+        background-color: $accent-color;
+        color: white;
+
+        &.mat-button-disabled {
+          background-color: $editUI-label-disabled-color;
+        }
+      }
+    }
   }
 
   .mat-mdc-icon-button {
