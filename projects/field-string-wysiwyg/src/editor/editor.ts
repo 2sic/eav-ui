@@ -215,9 +215,11 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
 
     // this is necessary for adding data-cmsid attribute to image attributes
     if (newContent.includes("?tododata-cmsid=")) {
+      // imageStrings becomes array of strings where every string except first starts with 'imageName"'
       let imageStrings = newContent.split("?tododata-cmsid=");
       newContent = "";
       imageStrings.forEach((x, i) => {
+        // after each string in array except last one we add '" data-cmsid="file:' attribute
         if (i != imageStrings.length - 1)
           newContent += x + '" data-cmsid="file:';
         else
