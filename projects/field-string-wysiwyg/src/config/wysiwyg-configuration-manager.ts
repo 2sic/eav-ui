@@ -7,6 +7,7 @@ import { ConfigurationPresets, DefaultMode } from './defaults/defaults';
 import { ToolbarParser } from './toolbar-parser';
 import { WysiwygButtons, WysiwygFeatures } from './types';
 import { WysiwygConfiguration } from './types/wysiwyg-configurations';
+import { consoleLogWebpack } from '../../../field-custom-gps/src/shared/console-log-webpack.helper';
 
 const debug = true;
 
@@ -35,9 +36,6 @@ export class WysiwygConfigurationManager {
 
     // 2. Get the preset for this mode
     const preset = this.getPreset(editMode, displayMode);
-    // console.error('preset', preset, 'editMode', editMode, 'displayMode', displayMode);
-    editMode = preset.editMode;
-    displayMode = preset.displayMode; // reset, in case it had to change / was not an available option
 
     // 2. Feature detection
     // contentBlocks is on if the following field can hold inner-content items
@@ -54,9 +52,8 @@ export class WysiwygConfigurationManager {
       advanced: nullOrBool(fieldSettings.ButtonAdvanced) ?? preset.buttons.advanced,
       dialog: !fieldSettings.Dialog
         ? preset.buttons.dialog // not set / empty - use default
-        : displayMode === DialogModes.DisplayInline && fieldSettings._allowDialog, // set, activate if 'inline'
+        : preset.displayMode === DialogModes.DisplayInline && fieldSettings._allowDialog, // set, activate if 'inline'
     };
-    // console.error('2dm', buttons, fieldSettings, 'preset', preset.buttons);
 
     const wysiwygConfiguration = {
       ...preset,
@@ -75,6 +72,7 @@ export class WysiwygConfigurationManager {
     };
 
     this.current = wysiwygConfiguration;
+    consoleLogWebpack('wysiwyg: getSettings result: ', wysiwygConfiguration);
     return wysiwygConfiguration;
   }
 
@@ -97,7 +95,8 @@ export class WysiwygConfigurationManager {
 }
 
 function getPresetConfiguration(editMode: EditModes.WysiwygEditMode, displayMode: DialogModes.DisplayModes): WysiwygConfiguration {
-  // consoleLogWebpack('2dm editMode', editMode, 'displayMode', displayMode, ConfigurationPresets);
+
+  consoleLogWebpack('wysiwyg: getPresetConfiguration', editMode, 'displayMode', displayMode, ConfigurationPresets);
   // Find best match for modeConfig, if not found, rename and use default
   const defConfig = ConfigurationPresets[DefaultMode];
   let currConfig = ConfigurationPresets[editMode];
@@ -134,7 +133,7 @@ function getPresetConfiguration(editMode: EditModes.WysiwygEditMode, displayMode
     toolbar: variation.toolbar || currConfig.toolbar || defConfig.toolbar,
   } : { ...currConfig };
 
-  // consoleLogWebpack('2dm merged', merged);
+  consoleLogWebpack('wysiwyg: getPresetConfiguration merged', merged);
 
   return merged;
 }
