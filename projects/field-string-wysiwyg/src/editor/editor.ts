@@ -215,16 +215,24 @@ export class FieldStringWysiwygEditor extends HTMLElement implements EavCustomIn
 
     // this is necessary for adding data-cmsid attribute to image attributes
     if (newContent.includes("?tododata-cmsid=")) {
-      let imageStrings = newContent.split("?tododata-cmsid=file:");
-      newContent = "";
-      imageStrings.forEach((x, i) => {
-        if (i != imageStrings.length - 1)
-          newContent += x + '" data-cmsid="file:';
-        else
-          newContent += x;
-      });
+      const firstPart = newContent.split("?tododata-cmsid=")[0];
+      const dataCmsId = newContent.split("?tododata-cmsid=")[1].split('"')[0];
+      const lastPart = newContent.split("?tododata-cmsid=")[1].split('"')[1];
+
+      newContent = firstPart + '" data-cmsid="file:' + dataCmsId + '"' + lastPart;
       this.editor.setContent(newContent);
     }
+
+    // this was shortly used when it was needed to add data-cmsid and file name attribute
+    // if (newContent.includes("?tododata-cmsid=") && newContent.includes("&amp;tododata-temp=")) {
+    //   const firstPart = newContent.split("?tododata-cmsid=file:")[0];
+    //   const dataCmsId = newContent.split("?tododata-cmsid=file:")[1].split("&amp;tododata-temp=")[0];
+    //   const dataTemp = newContent.split("?tododata-cmsid=file:")[1].split("&amp;tododata-temp=")[1].split('"')[0];
+    //   const lastPart = newContent.split("?tododata-cmsid=file:")[1].split("&amp;tododata-temp=")[1].split('"')[1];
+
+    //   newContent = firstPart + '" data-cmsid="file:' + dataCmsId + '" data-temp="file:' + dataTemp + '"' + lastPart;
+    //   this.editor.setContent(newContent);
+    // }
 
     this.editorContent = newContent;
     this.connector.data.update(this.editorContent);
