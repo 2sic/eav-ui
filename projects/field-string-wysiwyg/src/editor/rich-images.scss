@@ -41,6 +41,11 @@ $sub-tag: '';
 /* Responsive Images stuff */
 .mce-content-body {
 
+  // new 2023-05-08 v16.01 - fix bug 100%
+  img.wysiwyg-100 {
+    width: 100%;
+  }
+
   // This section is identical in the 2sxc-ui/cms and eav-ui as of 2023-03-23 v15.05
   // It comes first, because rules below should have higher precedence
   // In 2sxc-ui/cms this would work by default, because the selector also has 'picture' which is a longer selector

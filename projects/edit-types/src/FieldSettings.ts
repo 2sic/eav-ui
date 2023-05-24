@@ -12,10 +12,9 @@ interface All {
   DefaultValue: string;
   Placeholder: string;
   Notes: string;
-  /** @deprecated */
-  VisibleInEditUI: boolean;
-  /** VisibleInEditUi is copied Visible and then deleted */
   Visible: boolean;
+  /** new v16.01 2dm - WIP */
+  VisibleDisabled: boolean;
   Required: boolean;
   Disabled: boolean;
   ForcedDisabled: boolean;

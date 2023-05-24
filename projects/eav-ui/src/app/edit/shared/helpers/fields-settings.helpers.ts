@@ -2,12 +2,13 @@ import { LocalizationHelpers } from '.';
 import { FieldSettings } from '../../../../../../edit-types';
 import { InputTypeConstants } from '../../../content-type-fields/constants/input-type.constants';
 import { InputType } from '../../../content-type-fields/models/input-type.model';
+import { ItemIdentifierEditConfig } from '../../../shared/models/edit-form.model';
 import { FieldLogicManager } from '../../form/shared/field-logic/field-logic-manager';
 import { TranslateMenuHelpers } from '../../form/wrappers/localization-wrapper/translate-menu/translate-menu.helpers';
 import { TranslationStateCore } from '../../form/wrappers/localization-wrapper/translate-menu/translate-menu.models';
 import { MetadataDecorators, TranslationLink, TranslationLinks } from '../constants';
 import { ContentTypeSettings, TranslationState } from '../models';
-import { EavContentType, EavContentTypeAttribute, EavEntity, EavHeader, EavValues } from '../models/eav';
+import { EavContentType, EavContentTypeAttribute, EavEntity, EavValues } from '../models/eav';
 
 export class FieldsSettingsHelpers {
 
@@ -16,7 +17,7 @@ export class FieldsSettingsHelpers {
     contentType: EavContentType,
     currentLanguage: string,
     defaultLanguage: string,
-    itemHeader: EavHeader,
+    itemHeader: ItemIdentifierEditConfig,
   ): ContentTypeSettings {
     const defaultSettings = { ...settings };
     defaultSettings.Description ??= '';
@@ -34,17 +35,17 @@ export class FieldsSettingsHelpers {
   }
 
   static setDefaultFieldSettings(settings: FieldSettings): FieldSettings {
-    const defaultSettings = { ...settings };
+    const defaultSettings = AllDeprecated.moveDeprecatedSettings({ ...settings });
     // update @All settings
     defaultSettings.Name ??= '';
     defaultSettings.Placeholder ??= '';
     defaultSettings.Notes ??= '';
-    defaultSettings.VisibleInEditUI ??= true;
+    // defaultSettings.VisibleInEditUI ??= true;
     defaultSettings.Required ??= false;
     defaultSettings.Disabled ??= false;
     defaultSettings.DisableTranslation ??= false;
-    defaultSettings.Visible = defaultSettings.VisibleInEditUI;
-    delete defaultSettings.VisibleInEditUI;
+    defaultSettings.Visible ??= true; // defaultSettings.VisibleInEditUI;
+    // delete defaultSettings.VisibleInEditUI;
     if (defaultSettings.DefaultCollapsed != null) {
       defaultSettings.Collapsed = defaultSettings.DefaultCollapsed;
       delete defaultSettings.DefaultCollapsed;
@@ -216,5 +217,18 @@ export class FieldsSettingsHelpers {
       linkType,
     };
     return translationState;
+  }
+}
+
+class AllDeprecated {
+  /** @deprecated */
+  VisibleInEditUI: boolean;
+  /** VisibleInEditUi is copied Visible and then deleted */
+  static moveDeprecatedSettings(settings: FieldSettings): FieldSettings {
+    var asDeprecated = settings as unknown as AllDeprecated;
+    if (asDeprecated.VisibleInEditUI == null) return settings;
+    settings.Visible = asDeprecated.VisibleInEditUI;
+    delete asDeprecated.VisibleInEditUI;
+    return settings;
   }
 }

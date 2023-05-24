@@ -1,5 +1,6 @@
+import { ItemIdentifierHeader } from 'projects/eav-ui/src/app/shared/models/edit-form.model';
 import { EavEntityDto } from '.';
-import { EavHeader, EavItem } from '../eav';
+import { EavItem } from '../eav';
 
 /**
  * A bundle/set for an Entity.
@@ -8,7 +9,7 @@ import { EavHeader, EavItem } from '../eav';
  */
 export class EavEntityBundleDto {
   Entity: EavEntityDto;
-  Header: EavHeader;
+  Header: ItemIdentifierHeader;
 
   static bundleToDto(item: EavItem): EavEntityBundleDto {
     const entity1 = EavEntityDto.entityToDto(item.Entity);

@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { UrlHelpers } from './edit/shared/helpers/url.helpers';
 import { DialogTypeConstant, DialogTypeConstants } from './shared/constants/dialog-type.constants';
 // tslint:disable-next-line:max-line-length
-import { keyAppId, keyContentType, keyDialog, keyExtras, keyItems, keyPipelineId, keyUrl, keyZoneId, prefix } from './shared/constants/session.constants';
+import { keyAppId, keyContentType, keyDialog, keyEditFields, keyExtras, keyItems, keyPipelineId, keyUrl, keyZoneId, prefix } from './shared/constants/session.constants';
 import { convertFormToUrl } from './shared/helpers/url-prep.helper';
 import { ExtrasParam } from './shared/models/dialog-url-params.model';
 import { EavWindow } from './shared/models/eav-window.model';
@@ -65,6 +65,7 @@ export function paramsInitFactory(injector: Injector): () => void {
         case DialogTypeConstants.Edit:
           const editItems: ItemEditIdentifier[] = JSON.parse(items);
           const form: EditForm = { items: editItems };
+          // const fields = sessionStorage.getItem(keyEditFields);
           const formUrl = convertFormToUrl(form);
           router.navigate([`${zoneId}/${appId}/edit/${formUrl}`]);
           break;

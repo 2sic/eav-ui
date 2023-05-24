@@ -1,7 +1,8 @@
 import { SxcInstance } from '@2sic.com/2sxc-typings';
 import { BehaviorSubject } from 'rxjs';
-import { FieldSettings, FieldValue } from '../../../../../edit-types';
-import { FormValues } from '../shared/models';
+import { FieldSettings, FieldValue } from '../../../../../../edit-types';
+import { FormValues } from '../../shared/models';
+import { FormulaResultRaw } from './formula-results.models';
 
 /**
  * Formula Cached Values which are re-used across formulas of the same entity
@@ -187,53 +188,4 @@ export interface FormulaV1ExperimentalEntity {
     name: string,
     guid: string,
   };
-}
-
-export interface RunFormulasResult {
-  settings: FieldSettings;
-  validation: FormulaFieldValidation;
-  value: FieldValue;
-  fields: FieldValuePair[];
-}
-
-export interface FormulaResult {
-  entityGuid: string;
-  fieldName: string;
-  target: FormulaTarget;
-  value: FieldValue;
-  isError: boolean;
-  isOnlyPromise: boolean;
-}
-
-export interface DesignerState {
-  editMode: boolean;
-  entityGuid: string;
-  fieldName: string;
-  isOpen: boolean;
-  target: FormulaTarget;
-}
-
-export interface FormulaResultRaw {
-  value?: FieldValue;
-  promise?: Promise<FormulaResultRaw>;
-  fields?: FieldValuePair[];
-  stop?: boolean | null;
-
-  /** Note: not a real result, for internal use only */
-  openInDesigner?: boolean;
-}
-
-export interface FieldValuePair {
-  name: string;
-  value: FieldValue;
-}
-
-export interface FieldSettingPair {
-  name: string;
-  settings: SettingPair[];
-}
-
-export interface SettingPair { 
-  settingName: string;
-  value: FieldValue;
 }

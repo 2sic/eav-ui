@@ -11,13 +11,14 @@ import { copyToClipboard } from '../../../../shared/helpers/copy-to-clipboard.he
 import { FormBuilderComponent } from '../../../form/builder/form-builder/form-builder.component';
 import { FormulaDesignerService } from '../../../formulas/formula-designer.service';
 import { defaultFormulaNow } from '../../../formulas/formula.constants';
-import { FormulaHelpers } from '../../../formulas/formula.helpers';
-import { DesignerState, FormulaTarget, FormulaTargets } from '../../../formulas/formula.models';
+import { FormulaHelpers } from '../../../formulas/helpers/formula.helpers';
+import { FormulaTarget, FormulaTargets } from '../../../formulas/models/formula.models';
 import { InputFieldHelpers } from '../../../shared/helpers';
 import { EavService } from '../../../shared/services';
 import { ContentTypeService, ItemService } from '../../../shared/store/ngrx-data';
 // tslint:disable-next-line:max-line-length
 import { DesignerSnippet, EntityOption, FieldOption, FormulaDesignerTemplateVars, SelectOptions, SelectTarget, SelectTargets, TargetOption } from './formula-designer.models';
+import { DesignerState } from '../../../formulas/models/formula-results.models';
 
 @Component({
   selector: 'app-formula-designer',
@@ -383,7 +384,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     );
     const dataSnippets$ = combineLatest([options$, formula$, itemHeader$]).pipe(
       map(([options, formula, itemHeader]) => formula != null && itemHeader != null
-        ? FormulaHelpers.buildDesignerSnippetsData(formula, options.fieldOptions, itemHeader)
+        ? FormulaHelpers.buildDesignerSnippetsData(formula, options.fieldOptions, itemHeader.Prefill)
         : []
       ),
     );
@@ -395,7 +396,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     );
     const typings$ = combineLatest([options$, formula$, itemHeader$]).pipe(
       map(([options, formula, itemHeader]) => formula != null && itemHeader != null
-        ? FormulaHelpers.buildFormulaTypings(formula, options.fieldOptions, itemHeader)
+        ? FormulaHelpers.buildFormulaTypings(formula, options.fieldOptions, itemHeader.Prefill)
         : ''
       ),
     );

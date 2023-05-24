@@ -12,6 +12,9 @@ export const keyPublishing = prefix + 'publishing';
 export const keyFilters = prefix + 'filters';
 export const keyPipelineId = prefix + 'pipelineId';
 
+/** WIP v16.01 */
+export const keyEditFields = prefix + 'fields';
+
 /** Url which opened the dialog. Used for debugging */
 export const keyUrl = prefix + 'url';
 

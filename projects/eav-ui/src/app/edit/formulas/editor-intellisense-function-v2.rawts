@@ -175,10 +175,20 @@ declare interface FormulaContext {
     id: number;
     /** Check if the current user is anonymous eg. not logged in */
     isAnonymous: boolean;
+    /** Check if the current user is a content admin */
+    isContentAdmin: boolean;
     /** Check if the current user is a site admin */
     isSiteAdmin: boolean;
     /** Check if the current user is a system admin */
     isSystemAdmin: boolean;
+    /** current user e-mail */
+    email: string;
+    /** The user GUID */
+    guid: string;
+    /** the name usually shown in greetings */
+    name: string;
+    /** The user name used for login */
+    username: string;
   };
 }
 

@@ -1,15 +1,16 @@
 import { FieldSettings, FieldValue, InputTypeName } from '../../../../../../edit-types';
 import { InputTypeConstants } from '../../../content-type-fields/constants/input-type.constants';
 import { InputType } from '../../../content-type-fields/models/input-type.model';
+import { ItemAddIdentifier, ItemIdentifierShared } from '../../../shared/models/edit-form.model';
 import { WrappersConstant, WrappersConstants } from '../constants/wrappers.constants';
 import { CalculatedInputType } from '../models';
-import { EavContentTypeAttribute, EavHeader, EavItem } from '../models/eav';
+import { EavContentTypeAttribute, EavItem } from '../models/eav';
 import { EavService } from '../services';
 
 export class InputFieldHelpers {
 
   static getContentTypeId(item: EavItem): string {
-    return item.Entity.Type?.Id ?? item.Header.ContentTypeName;
+    return item.Entity.Type?.Id ?? (item.Header as ItemAddIdentifier).ContentTypeName;
   }
 
   static getInputTypeNames(attributes: EavContentTypeAttribute[], inputTypes: InputType[]): InputTypeName[] {
@@ -75,7 +76,7 @@ export class InputFieldHelpers {
     attributeKey: string,
     inputType: InputType,
     settings: FieldSettings,
-    itemHeader?: EavHeader,
+    itemHeader?: ItemIdentifierShared,
     onlyPrefill?: boolean,
   ): FieldValue {
     if (onlyPrefill && itemHeader?.Prefill?.[attributeKey] === undefined) { return; }

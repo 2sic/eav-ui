@@ -6,11 +6,11 @@ import { TranslateService } from '@ngx-translate/core';
 import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
 import { BaseSubsinkComponent } from 'projects/eav-ui/src/app/shared/components/base-subsink-component/base-subsink.component';
 import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/features.service';
-import { combineLatest, distinctUntilChanged, map, Observable, Subscription } from 'rxjs';
+import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { eavConstants } from '../../../../shared/constants/eav.constants';
-import { EditForm, ItemEditIdentifier } from '../../../../shared/models/edit-form.model';
+import { EditForm, ItemEditIdentifier, ItemIdentifierHeader } from '../../../../shared/models/edit-form.model';
 import { GeneralHelpers, LocalizationHelpers } from '../../../shared/helpers';
-import { EavEntity, EavHeader, EavItem } from '../../../shared/models/eav';
+import { EavEntity, EavItem } from '../../../shared/models/eav';
 import { EavService, EditRoutingService, EntityService, FieldsSettingsService, FormsStateService } from '../../../shared/services';
 import { ItemService, LanguageInstanceService } from '../../../shared/store/ngrx-data';
 import { buildContentTypeFeatures, getItemForTooltip, getNoteProps } from './entity-wrapper.helpers';
@@ -137,8 +137,8 @@ export class EntityWrapperComponent extends BaseSubsinkComponent implements OnIn
     this.collapse = !this.collapse;
   }
 
-  toggleSlotIsEmpty(oldHeader: EavHeader) {
-    const newHeader: EavHeader = {
+  toggleSlotIsEmpty(oldHeader: ItemIdentifierHeader) {
+    const newHeader: ItemIdentifierHeader = {
       ...oldHeader,
       IsEmpty: !oldHeader.IsEmpty,
     };

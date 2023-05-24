@@ -9,6 +9,7 @@ import { LanguageInstanceService } from '../../../shared/store/ngrx-data';
 import { FieldConfigSet } from '../../builder/fields-builder/field-config-set.model';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { EmptyDefaultLogic } from './collapsible-wrapper-logic';
+import { ItemFieldVisibility } from '../../../shared/services/item-field-visibility';
 
 @Component({
   selector: WrappersConstants.CollapsibleWrapper,
@@ -46,7 +47,7 @@ export class CollapsibleWrapperComponent extends BaseSubsinkComponent implements
       })
     );
 
-    this.visible$ = this.settings$.pipe(map(settings => settings.Visible), distinctUntilChanged());
+    this.visible$ = this.settings$.pipe(map(settings => ItemFieldVisibility.mergedVisible(settings)), distinctUntilChanged());
     this.label$ = this.settings$.pipe(map(settings => settings.Name), distinctUntilChanged());
     this.notes$ = this.settings$.pipe(map(settings => settings.Notes), distinctUntilChanged());
 

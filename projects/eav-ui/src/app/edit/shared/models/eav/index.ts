@@ -4,7 +4,6 @@ export * from './eav-dimension';
 export * from './eav-entity-attributes';
 export * from './eav-entity';
 export * from './eav-for';
-export * from './eav-header';
 export * from './eav-item';
 export * from './eav-type';
 export * from './eav-value';

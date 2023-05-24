@@ -4,6 +4,7 @@ import { WrappersConstants } from '../../../shared/constants';
 import { EavService, FieldsSettingsService } from '../../../shared/services';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { BaseFieldComponent } from '../../fields/base/base-field.component';
+import { ItemFieldVisibility } from '../../../shared/services/item-field-visibility';
 
 @Component({
   selector: WrappersConstants.HiddenWrapper,
@@ -21,7 +22,10 @@ export class HiddenWrapperComponent extends BaseFieldComponent implements FieldW
 
   ngOnInit() {
     super.ngOnInit();
-    this.hidden$ = this.settings$.pipe(map(settings => !settings.Visible), distinctUntilChanged());
+    this.hidden$ = this.settings$.pipe(
+      map(settings => !ItemFieldVisibility.mergedVisible(settings)),
+      distinctUntilChanged(),
+    );
   }
 
   ngOnDestroy() {

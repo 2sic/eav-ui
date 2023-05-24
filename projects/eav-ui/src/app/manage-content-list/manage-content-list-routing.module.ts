@@ -15,6 +15,10 @@ const routes: Routes = [
         matcher: refreshEdit,
         loadChildren: () => import('../edit/refresh-edit.module').then(m => m.RefreshEditModule)
       },
+      {
+        path: ':guid/:part/:index/replace',
+        loadChildren: () => import('../replace-content/replace-content.module').then(m => m.ReplaceContentModule)
+      },
     ]
   },
 ];

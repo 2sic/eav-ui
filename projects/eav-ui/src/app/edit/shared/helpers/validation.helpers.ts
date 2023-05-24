@@ -5,13 +5,14 @@ import { InputTypeConstants } from '../../../content-type-fields/constants/input
 import { AdamControl } from '../../form/fields/hyperlink/hyperlink-library/hyperlink-library.models';
 import { SxcAbstractControl } from '../models';
 import { FieldsSettingsService } from '../services';
+import { ItemFieldVisibility } from '../services/item-field-visibility';
 
 /** Validators here are copied from https://github.com/angular/angular/blob/master/packages/forms/src/validators.ts */
 export class ValidationHelpers {
 
   static isRequired(settings: FieldSettings): boolean {
     // hidden field can't be required
-    return settings.Visible ? settings.Required : false;
+    return this.ignoreValidators(settings) ? false : settings.Required;
   }
 
   static getValidators(fieldName: string, inputType: string, fieldsSettingsService: FieldsSettingsService): ValidatorFn[] {
@@ -174,6 +175,6 @@ export class ValidationHelpers {
 
   /** Hidden fields can't have validators */
   private static ignoreValidators(settings: FieldSettings): boolean {
-    return !settings.Visible;
+    return !ItemFieldVisibility.mergedVisible(settings);
   }
 }

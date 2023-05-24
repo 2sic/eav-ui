@@ -11,7 +11,7 @@ export class StringWysiwygLogic extends FieldLogicBase {
   update(settings: StringWysiwyg, _: unknown, tools: FieldLogicTools): FieldSettings {
     const fixedSettings: StringWysiwyg = { ...settings };
     // If the `Dialog` setting is blank, it means start inline (default) and allow switching to dialog.
-    fixedSettings._allowDialog = fixedSettings.Dialog == null || fixedSettings.Dialog === '';
+    fixedSettings._allowDialog ??= fixedSettings.Dialog == null || fixedSettings.Dialog === '';
     fixedSettings.Dialog ||= 'inline';
     fixedSettings.ButtonSource ||= '';
     fixedSettings.ButtonAdvanced ||= '';
