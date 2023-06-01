@@ -154,7 +154,11 @@ export class FormulaHelpers {
           },
           parameters: {
             get(): Record<string, any> {
-              return FormulaHelpers.buildFormulaPropsParameters(itemHeader.Prefill);
+              // NOTE 2023-06-01 2dm - changed this to only take the new parameters
+              // For a while it took the prefill, but that was a bad choice
+              // I hope/assume that it's not used in the wild yet, so we can change it
+              // But we could end up causing trouble for 1-2 developers
+              return FormulaHelpers.buildFormulaPropsParameters(itemHeader.ClientData?.parameters /* itemHeader.Prefill */);
             },
           },
           prefill: {
