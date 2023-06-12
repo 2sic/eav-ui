@@ -13,7 +13,7 @@ export const keyFilters = prefix + 'filters';
 export const keyPipelineId = prefix + 'pipelineId';
 
 /** WIP v16.01 */
-export const keyEditFields = prefix + 'fields';
+export const keyEditFields = prefix + 'uifields';
 
 /** Url which opened the dialog. Used for debugging */
 export const keyUrl = prefix + 'url';

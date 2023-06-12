@@ -4,7 +4,7 @@ import { EditForm, ItemAddIdentifier, ItemEditIdentifier, ItemIdentifierInbound,
 
 const PREFILL_PREFIX = 'prefill:';
 const GROUP_PREFIX = 'group:';
-const FIELDS_PREFIX = 'fields:';
+const FIELDS_PREFIX = 'uifields:';
 const PARAM_PREFIX = 'parameters:';
 const ITEM_SEPARATOR = ',';
 const VAL_SEPARATOR = '&';
@@ -24,7 +24,7 @@ export function convertFormToUrl(form: EditForm) {
     const asGroup = item as ItemInListIdentifier;
     const asItem = item as ItemEditIdentifier;
     const asInboundParams = item as ItemIdentifierInbound;
-    const fields = asInboundParams.Fields;
+    const fields = asInboundParams.UiFields;
     const parameters = asInboundParams.Parameters;
     // Group- or Inner-Item
     if (asGroup.Parent) {
