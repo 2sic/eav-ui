@@ -136,7 +136,7 @@ export class PickerSearchComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   markAsTouched(): void {
-    if (this.selectedEntity) 
+    if (this.selectedEntity && this.selectedEntities.length < 2) 
       this.autocompleteRef.nativeElement.value = this.selectedEntity.label;
     GeneralHelpers.markControlTouched(this.control);
   }
@@ -223,7 +223,7 @@ export class PickerSearchComponent implements OnInit, OnChanges, OnDestroy {
 
   private fillValue(): void {
     if (this.autocompleteRef)
-      if (this.selectedEntity) {
+      if (this.selectedEntity && this.selectedEntities.length < 2) {
         this.autocompleteRef.nativeElement.value = this.selectedEntity.label;
       } else {
         this.autocompleteRef.nativeElement.value = '';
