@@ -62,6 +62,7 @@ export class PickerSearchComponent implements OnInit, OnChanges, OnDestroy {
     this.subscriptions.add(selectedEntities$.subscribe(entities => {
       this.selectedEntities = entities;
       this.selectedEntity = this.selectedEntities.length > 0 ? this.selectedEntities[0] : null;
+      this.fillValue();
     }));
 
     const debugEnabled$ = this.globalConfigService.getDebugEnabled$();
@@ -121,12 +122,7 @@ export class PickerSearchComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngAfterViewInit(): void { 
-    if (this.autocompleteRef)
-      if (this.selectedEntity) {
-        this.autocompleteRef.nativeElement.value = this.selectedEntity.label;
-      } else {
-        this.autocompleteRef.nativeElement.value = '';
-      }
+    this.fillValue();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -140,9 +136,8 @@ export class PickerSearchComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   markAsTouched(): void {
-    if (this.selectedEntity) {
+    if (this.selectedEntity) 
       this.autocompleteRef.nativeElement.value = this.selectedEntity.label;
-    }
     GeneralHelpers.markControlTouched(this.control);
   }
 
@@ -224,5 +219,14 @@ export class PickerSearchComponent implements OnInit, OnChanges, OnDestroy {
   expandDialog() {
     if (this.pickerStateAdapter.config.initialDisabled) { return; }
     this.editRoutingService.expand(true, this.pickerStateAdapter.config.index, this.pickerStateAdapter.config.entityGuid);
+  }
+
+  private fillValue(): void {
+    if (this.autocompleteRef)
+      if (this.selectedEntity) {
+        this.autocompleteRef.nativeElement.value = this.selectedEntity.label;
+      } else {
+        this.autocompleteRef.nativeElement.value = '';
+      }
   }
 }
