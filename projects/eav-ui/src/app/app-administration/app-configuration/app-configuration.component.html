@@ -7,7 +7,7 @@
     <ng-container *ngIf="isPrimary">
       This is the Primary App of this Site. You can also configure sitewide settings and resources here.
     </ng-container>
-    See <a href="http://r.2sxc.org/settings" target="_blank">docs</a>.
+    See <a href="https://go.2sxc.org/settings" target="_blank">docs</a>.
   </div>
 
   <div class="cards-box">
@@ -23,7 +23,7 @@
         <p>
           Settings are things like SQL-connection strings, default "items-to-show" numbers and similar.
           If necessary, settings like a link to an RSS-Feed could be different in each language.
-          <a href="http://r.2sxc.org/settings" target="_blank">docs</a>
+          <a href="https://go.2sxc.org/settings" target="_blank">docs</a>
         </p>
 
         <table class="settings">
@@ -117,7 +117,7 @@
 
       <mat-card-actions>
         <div class="actions-row">
-          <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://r.2sxc.org/settings' }"></ng-container>
+          <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://go.2sxc.org/settings' }"></ng-container>
           <button mat-button (click)="analyze(AnalyzeParts.Settings)" tippy="See the result of combining all settings">
             <mat-icon>manage_search</mat-icon>
             <span>Analyze Combined Settings</span>
@@ -138,7 +138,7 @@
         <p>
           Resources are used for labels and things like that in the App.
           They are usually needed to create multi-lingual views and such, and should not be used for App-Settings.
-          <a href="http://r.2sxc.org/settings" target="_blank">docs</a>
+          <a href="https://go.2sxc.org/settings" target="_blank">docs</a>
         </p>
 
         <table class="settings">
@@ -233,7 +233,7 @@
       </mat-card-content>
       <mat-card-actions>
         <div class="actions-row">
-          <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://r.2sxc.org/settings' }"></ng-container>
+          <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://go.2sxc.org/settings' }"></ng-container>
           <button mat-button (click)="analyze(AnalyzeParts.Resources)" tippy="See the result of combining all resources">
             <mat-icon>manage_search</mat-icon>
             <span>Analyze Combined Resources</span>
@@ -308,7 +308,7 @@
         <app-feature-text-info [featureNameId]="'LightSpeedOutputCache'" [asInfo]="true"></app-feature-text-info>
       </mat-card-content>
       <mat-card-actions>
-        <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://r.2sxc.org/lightspeed' }"></ng-container>
+        <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://go.2sxc.org/lightspeed' }"></ng-container>
         <button mat-button (click)="openLightSpeed()" disabled="{{!data.lightSpeedEnabled}}">
           <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="data.appLightSpeedCount || null"
             matBadgePosition="below after">bolt</mat-icon>
@@ -331,7 +331,7 @@
         <app-feature-text-info [featureNameId]="'ContentSecurityPolicy'" [asInfo]="true"></app-feature-text-info>
       </mat-card-content>
       <mat-card-actions>
-        <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://r.2sxc.org/csp' }"></ng-container>
+        <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://go.2sxc.org/csp' }"></ng-container>
       </mat-card-actions>
     </mat-card>
     

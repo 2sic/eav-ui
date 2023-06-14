@@ -200,7 +200,7 @@ export class FormulaHelpers {
                 const result = eavService.eavConfig.settings.Values[settingPath];
                 if (result != null) return result;
                 console.warn(`Error: Setting '${settingPath}' not found. Did you configure it in the ContentType to be included? ` +
-                  `See https://r.2sxc.org/formulas`);
+                  `See https://go.2sxc.org/formulas`);
                 return '⚠️ error - see console';
               },
             },
