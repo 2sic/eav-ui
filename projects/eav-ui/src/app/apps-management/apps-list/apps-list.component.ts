@@ -17,10 +17,11 @@ import { App } from '../models/app.model';
 import { AppsListService } from '../services/apps-list.service';
 import { AppsListActionsComponent } from './apps-list-actions/apps-list-actions.component';
 import { AppsListActionsParams } from './apps-list-actions/apps-list-actions.models';
-import { AppsListShowComponent } from './apps-list-show/apps-list-show.component';
 import { FeatureComponentBase } from '../../features/shared/base-feature.component';
 import { MatDialog } from '@angular/material/dialog';
 import { AppAdminHelpers } from '../../app-administration/app-admin-helpers';
+import { AppListCodeErrorIcons, AppListShowIcons } from './app-list-grid-config';
+import { AgBoolIconRenderer } from '../../shared/ag-grid/apps-list-show/ag-bool-icon-renderer.component';
 
 @Component({
   selector: 'app-apps-list',
@@ -170,7 +171,8 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
             const app: App = params.data;
             return !app.IsHidden;
           },
-          cellRenderer: AppsListShowComponent,
+          cellRenderer: AgBoolIconRenderer,
+          cellRendererParams: (() => ({ settings: () => AppListShowIcons }))(),
         },
         {
           field: 'Name',
@@ -236,6 +238,17 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
             const app: App = params.data;
             return app.Items;
           },
+        },
+        {
+          field: 'HasCodeWarnings',
+          headerName: 'Code',
+          width: 70,
+          headerClass: 'dense',
+          cellClass: 'icons no-outline'.split(' '),
+          sortable: true,
+          filter: BooleanFilterComponent,
+          cellRenderer: AgBoolIconRenderer,
+          cellRendererParams: (() => ({ settings: () => AppListCodeErrorIcons }))(),
         },
         {
           width: 122,

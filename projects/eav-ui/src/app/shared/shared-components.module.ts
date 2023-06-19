@@ -26,10 +26,15 @@ import { TippyDirective } from './directives/tippy.directive';
 import { ToggleDebugDirective } from './directives/toggle-debug.directive';
 import { SafeHtmlPipe } from './pipes/safe-html.pipe';
 import { SafeResourceUrlPipe } from './pipes/safe-resource-url';
+import { AgBoolIconRenderer } from './ag-grid/apps-list-show/ag-bool-icon-renderer.component';
 
 /** Stuff that is shared and only has to be initialized once */
 @NgModule({
   declarations: [
+    // AG Grid Components - started creation by 2dm to be more generic / less code 2023-06-19
+    AgBoolIconRenderer,
+
+    
     EmptyRouteComponent,
     DialogEntryComponent,
     FieldHintComponent,
