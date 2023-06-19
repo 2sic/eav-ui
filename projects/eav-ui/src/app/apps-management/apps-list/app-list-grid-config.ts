@@ -1,25 +1,33 @@
 import { AgBoolCellIconSettings } from '../../shared/ag-grid/apps-list-show/ag-bool-icon-params';
+import { EavWindow } from '../../shared/models/eav-window.model';
+import { App } from '../models/app.model';
+
+declare const window: EavWindow;
 
 export const AppListShowIcons: AgBoolCellIconSettings = {
-  tooltips: {
-    true: 'Show this app to users',
-    false: 'Hide this app from users',
-  },
-
-  icons: {
-    true: 'visibility',
-    false: 'visibility_off',
-  },
+  states: {
+    true: {
+      tooltip: 'Show this app to users',
+      icon: 'visibility',
+    },
+    false: {
+      tooltip: 'Hide this app from users',
+      icon: 'visibility_off',
+    }
+  }
 };
 
 export const AppListCodeErrorIcons: AgBoolCellIconSettings = {
-  tooltips: {
-    true: 'This App uses obsolete code which will cause problems on future upgrades. Click to see details.',
-    false: 'Hide this app from users',
-  },
-
-  icons: {
-    true: 'bug_report',
-    false: '',
-  },
+  states: {
+    true: {
+      clickable: true,
+      tooltip: 'This App uses obsolete code which will cause problems on future upgrades. Click to see details.',
+      icon: 'bug_report',
+      getUrl: (data: App) => window.$2sxc.http.apiUrl('sys/insights/logs?key=warnings-obsolete&filter=AppId=' + data.Id),
+    },
+    false: {
+      tooltip: 'Hide this app from users',
+      icon: '',
+    }
+  }
 };

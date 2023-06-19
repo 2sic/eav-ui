@@ -1,5 +1,11 @@
 <div class="icon-container">
-  <div class="like-button icon" [tippy]="tooltips[value.toString()]">
-    <mat-icon>{{ icons[value.toString()] }}</mat-icon>
-  </div>
+  <a *ngIf="data.url else showIcon" [href]="data.url" target="_blank">
+    <ng-container *ngTemplateOutlet="showIcon"></ng-container>
+  </a>
 </div>
+
+<ng-template #showIcon>
+  <div class="icon-cell icon" [ngClass]="{'clickable': data.clickable }" [tippy]="data.tooltip">
+    <mat-icon>{{ data.icon }}</mat-icon>
+  </div>
+</ng-template>

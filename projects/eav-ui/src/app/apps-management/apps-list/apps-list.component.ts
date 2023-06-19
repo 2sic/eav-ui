@@ -22,6 +22,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { AppAdminHelpers } from '../../app-administration/app-admin-helpers';
 import { AppListCodeErrorIcons, AppListShowIcons } from './app-list-grid-config';
 import { AgBoolIconRenderer } from '../../shared/ag-grid/apps-list-show/ag-bool-icon-renderer.component';
+import { AgBoolCellIconsParams } from '../../shared/ag-grid/apps-list-show/ag-bool-icon-params';
 
 @Component({
   selector: 'app-apps-list',
@@ -127,13 +128,17 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
     });
   }
 
-  private openLightspeed(app: App): void {
+  private openLightSpeed(app: App): void {
     const formUrl = convertFormToUrl(AppAdminHelpers.getLightSpeedEditParams(app.Id));
     this.router.navigate([`${this.context.zoneId}/${app.Id}/edit/${formUrl}`], { relativeTo: this.route.firstChild });
   }
 
   private openApp(app: App): void {
     this.router.navigate([app.Id.toString()], { relativeTo: this.route.firstChild });
+  }
+
+  openLightSpeedFeatInfo() {
+    FeatureComponentBase.openDialog(this.dialog, FeatureNames.LightSpeed, this.viewContainerRef, this.changeDetectorRef);
   }
 
   private buildGridOptions(): GridOptions {
@@ -248,7 +253,7 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
           sortable: true,
           filter: BooleanFilterComponent,
           cellRenderer: AgBoolIconRenderer,
-          cellRendererParams: (() => ({ settings: () => AppListCodeErrorIcons }))(),
+          cellRendererParams: (() => ({ settings: (app) => AppListCodeErrorIcons } as AgBoolCellIconsParams<App>))(),
         },
         {
           width: 122,
@@ -259,9 +264,9 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
             const params: AppsListActionsParams = {
               onDelete: (app) => this.deleteApp(app),
               onFlush: (app) => this.flushApp(app),
-              onOpenLightspeed: (app) => this.openLightspeed(app),
+              onOpenLightspeed: (app) => this.openLightSpeed(app),
               lightspeedEnabled: () => this.lightspeedEnabled$.value,
-              openLightspeedFeatureInfo: () => this.openLightSpeed(),
+              openLightspeedFeatureInfo: () => this.openLightSpeedFeatInfo(),
             };
             return params;
           })(),
@@ -269,9 +274,5 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
       ],
     };
     return gridOptions;
-  }
-
-  openLightSpeed() {
-    FeatureComponentBase.openDialog(this.dialog, FeatureNames.LightSpeed, this.viewContainerRef, this.changeDetectorRef);
   }
 }

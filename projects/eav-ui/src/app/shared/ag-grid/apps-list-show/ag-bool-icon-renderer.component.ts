@@ -1,28 +1,29 @@
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { ICellRendererParams } from '@ag-grid-community/core';
 import { Component } from '@angular/core';
-import { AgBoolCellIconSettings, AgBoolCellIconsDefault, AgBoolCellIconsParams } from './ag-bool-icon-params';
-
-
+import { AgBoolCellIconSetting, AgBoolCellIconSettings, AgBoolCellIconsDefault, AgBoolCellIconsParams } from './ag-bool-icon-params';
 
 @Component({
   selector: 'app-ag-bool-icon-renderer',
   templateUrl: './ag-bool-icon-renderer.html',
 })
-export class AgBoolIconRenderer implements ICellRendererAngularComp, AgBoolCellIconSettings {
+export class AgBoolIconRenderer implements ICellRendererAngularComp {
   value: boolean;
 
-  tooltips: Record<'true' | 'false' | string, string> = {};
+  private allSettings: AgBoolCellIconSettings;
 
-  icons: Record<'true' | 'false' | string, string> = {};
+  data: AgBoolCellIconSetting; // | { link: boolean  };
 
   agInit(params: ICellRendererParams & AgBoolCellIconsParams): void {
     this.value = params.value;
 
-    const settings = params.settings?.();
-console.log('2dm - params', params, settings);
-    this.tooltips = settings?.tooltips ?? AgBoolCellIconsDefault.tooltips;
-    this.icons = settings?.icons ?? AgBoolCellIconsDefault.icons;
+    this.allSettings = params.settings?.(params.data) ?? AgBoolCellIconsDefault;
+    const d = this.allSettings.states[this.value ? 'true' : 'false'];
+    this.data = { 
+      ...d,
+      url: d.url ?? d.getUrl?.(params.data),
+      // link: !!(d.url || d.getUrl),
+    };
   }
 
   refresh(params?: any): boolean {
