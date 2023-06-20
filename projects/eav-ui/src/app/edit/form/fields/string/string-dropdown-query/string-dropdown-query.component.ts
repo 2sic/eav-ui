@@ -82,7 +82,7 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
       this.isStringQuery,
 
       this.pickerStateAdapter.control,
-      this.pickerStateAdapter.config,
+      this.config,
       this.pickerStateAdapter.settings$,
       this.editRoutingService,
       this.group,

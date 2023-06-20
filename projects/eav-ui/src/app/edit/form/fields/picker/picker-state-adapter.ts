@@ -25,7 +25,7 @@ export class PickerStateAdapter {
 
     public translate: TranslateService,
 
-    public config: FieldConfigSet,
+    protected config: FieldConfigSet,
     public control: AbstractControl,
 
     private focusOnSearchComponent: () => void,

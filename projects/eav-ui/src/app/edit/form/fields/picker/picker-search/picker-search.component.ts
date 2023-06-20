@@ -1,5 +1,5 @@
 import { Component, ElementRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
-import { AbstractControl } from '@angular/forms';
+import { AbstractControl, FormGroup } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { TranslateService } from '@ngx-translate/core';
 import { EntityInfo } from 'projects/edit-types';
@@ -11,6 +11,7 @@ import { SelectedEntity } from '../../entity/entity-default/entity-default.model
 import { PickerSourceAdapter } from '../picker-source-adapter';
 import { PickerStateAdapter } from '../picker-state-adapter';
 import { PickerSearchViewModel } from './picker-search.models';
+import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
 
 @Component({
   selector: 'app-picker-search',
@@ -22,6 +23,8 @@ export class PickerSearchComponent implements OnInit, OnChanges, OnDestroy {
 
   @Input() pickerSourceAdapter: PickerSourceAdapter;
   @Input() pickerStateAdapter: PickerStateAdapter;
+  @Input() config: FieldConfigSet;
+  @Input() group: FormGroup;
 
   selectedEntity: SelectedEntity | null = null;
   selectedEntities: SelectedEntity[] = [];
@@ -40,7 +43,7 @@ export class PickerSearchComponent implements OnInit, OnChanges, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.control = this.pickerSourceAdapter.group.controls[this.pickerStateAdapter.config.fieldName];
+    this.control = this.group.controls[this.config.fieldName];
 
     const availableEntities$ = this.pickerSourceAdapter.availableEntities$;
 
@@ -66,7 +69,7 @@ export class PickerSearchComponent implements OnInit, OnChanges, OnDestroy {
     }));
 
     const debugEnabled$ = this.globalConfigService.getDebugEnabled$();
-    const settings$ = this.fieldsSettingsService.getFieldSettings$(this.pickerStateAdapter.config.fieldName).pipe(
+    const settings$ = this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).pipe(
       map(settings => ({
         AllowMultiValue: settings.AllowMultiValue,
         EnableCreate: settings.EnableCreate,
@@ -217,8 +220,8 @@ export class PickerSearchComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   expandDialog() {
-    if (this.pickerStateAdapter.config.initialDisabled) { return; }
-    this.editRoutingService.expand(true, this.pickerStateAdapter.config.index, this.pickerStateAdapter.config.entityGuid);
+    if (this.config.initialDisabled) { return; }
+    this.editRoutingService.expand(true, this.config.index, this.config.entityGuid);
   }
 
   private fillValue(): void {

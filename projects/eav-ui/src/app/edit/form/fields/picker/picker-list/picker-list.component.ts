@@ -7,6 +7,8 @@ import { SelectedEntity } from '../../entity/entity-default/entity-default.model
 import { PickerSourceAdapter } from '../picker-source-adapter';
 import { PickerStateAdapter } from '../picker-state-adapter';
 import { EntityListViewModel, ReorderIndexes } from './picker-list.models';
+import { FormGroup } from '@angular/forms';
+import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
 
 @Component({
   selector: 'app-picker-list',
@@ -16,6 +18,8 @@ import { EntityListViewModel, ReorderIndexes } from './picker-list.models';
 export class PickerListComponent implements OnInit {
   @Input() pickerSourceAdapter: PickerSourceAdapter;
   @Input() pickerStateAdapter: PickerStateAdapter;
+  @Input() config: FieldConfigSet;
+  @Input() group: FormGroup;
 
   viewModel$: Observable<EntityListViewModel>;
 
@@ -27,7 +31,7 @@ export class PickerListComponent implements OnInit {
     const controlStatus$ = this.pickerStateAdapter.controlStatus$;
     const selectedEntities$ = this.pickerStateAdapter.selectedEntities$;
 
-    const settings$ = this.fieldsSettingsService.getFieldSettings$(this.pickerStateAdapter.config.fieldName).pipe(
+    const settings$ = this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).pipe(
       map(settings => ({
         allowMultiValue: settings.AllowMultiValue,
         enableEdit: settings.EnableEdit,

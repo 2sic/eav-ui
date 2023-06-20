@@ -80,7 +80,7 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
       this.isStringQuery,
 
       this.pickerStateAdapter.control,
-      this.pickerStateAdapter.config,
+      this.config,
       this.pickerStateAdapter.settings$,
       this.editRoutingService,
       this.group,

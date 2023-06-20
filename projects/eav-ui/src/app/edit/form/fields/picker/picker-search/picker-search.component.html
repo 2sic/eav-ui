@@ -1,10 +1,11 @@
+<!--for complex tags every prop in its own row-->
 <ng-container *ngIf="viewModel$ | async as vm">
   <div [hidden]="vm.freeTextMode">
     <div class="ed-field" fxLayout="row" fxLayoutAlign="start end">
       <div
         [ngClass]="(vm.enableCreate && vm.entityType && !(vm.selectedEntities.length > 1) && !vm.allowMultiValue) ? 'ed-field__field-short' : 'ed-field__field'">
         <div [hidden]="(!vm.allowMultiValue && (vm.selectedEntities.length > 1)) || !vm.enableAddExisting">
-          <mat-form-field [formGroup]="pickerSourceAdapter.group" class="eav-form-field" color="accent" 
+          <mat-form-field [formGroup]="group" class="eav-form-field" color="accent" 
           [ngClass]="{ 'mat-form-field-invalid': vm.controlStatus.invalid && vm.controlStatus.touched }">
             <input id="autocomplete" matInput #autocomplete [placeholder]="getPlaceholder(vm.availableEntities, vm.error)" [matAutocomplete]="auto"
               [disabled]="vm.controlStatus.disabled || !vm.enableAddExisting" (focus)="fetchEntities(vm.availableEntities)" (blur)="markAsTouched()"
@@ -15,7 +16,7 @@
             </button>
             <button mat-icon-button matSuffix
               *ngIf="selectedEntity && vm.enableEdit && !selectedEntity?.disableEdit && (!vm.allowMultiValue || (vm.allowMultiValue && pickerStateAdapter.isPreview))"
-              [tippy]="'Fields.Entity.Edit' | translate" [disabled]="pickerStateAdapter.config.initialDisabled"
+              [tippy]="'Fields.Entity.Edit' | translate" [disabled]="config.initialDisabled"
               appClickStopPropagation (click)="edit(selectedEntity?.value, selectedEntity?.entityId)">
               <mat-icon>edit</mat-icon>
             </button>
@@ -82,8 +83,9 @@
     </div>
   </div>
 
-  <mat-form-field *ngIf="vm.freeTextMode" [formGroup]="pickerSourceAdapter.group" class="eav-form-field" color="accent">
-    <input matInput [required]="vm.required" [formControlName]="pickerStateAdapter.config.fieldName" [placeholder]="vm.placeholder">
+  <!-- move/copy to its own component picker-text -->
+  <mat-form-field *ngIf="vm.freeTextMode" [formGroup]="group" class="eav-form-field" color="accent">
+    <input matInput [required]="vm.required" [formControlName]="config.fieldName" [placeholder]="vm.placeholder">
 
     <span matSuffix class="selection-suffix-inline">
       <button mat-icon-button [tippy]="'Fields.String.Dropdown' | translate" [disabled]="vm.controlStatus.disabled"
@@ -102,7 +104,7 @@
     debug: <span class="null-button" tippy="Add null-item" (click)="insertNull()">add null-item</span>
   </div>
 
-  <app-field-helper-text [config]="pickerStateAdapter.config" [group]="pickerSourceAdapter.group"></app-field-helper-text>
+  <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
 
   <!-- add new entity -->
   <div *ngIf="!vm.freeTextMode && vm.enableCreate && vm.entityType && vm.allowMultiValue && !pickerStateAdapter.isPreview">

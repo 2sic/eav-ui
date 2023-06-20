@@ -28,8 +28,8 @@ export class PickerEntitySourceAdapter extends PickerSourceAdapter {
     public editRoutingService: EditRoutingService,
     public translate: TranslateService,
 
-    public config: FieldConfigSet,
-    public group: FormGroup,
+    protected config: FieldConfigSet,
+    protected group: FormGroup,
 
     public snackBar: MatSnackBar,
     public control: AbstractControl,

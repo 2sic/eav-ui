@@ -21,7 +21,7 @@ export class PickerStringStateAdapter extends PickerStateAdapter {
 
     public translate: TranslateService,
 
-    public config: FieldConfigSet,
+    protected config: FieldConfigSet,
     public control: AbstractControl,
 
     focusOnSearchComponent: () => void,

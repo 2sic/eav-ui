@@ -78,7 +78,7 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
       this.isString,
 
       this.pickerStateAdapter.control,
-      this.pickerStateAdapter.config,
+      this.config,
       this.pickerStateAdapter.settings$,
       this.editRoutingService,
       this.group,

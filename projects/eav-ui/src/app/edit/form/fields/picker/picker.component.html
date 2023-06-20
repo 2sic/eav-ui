@@ -9,10 +9,10 @@
 
   <ng-template #searchAndList>
     <app-picker-list *ngIf="vm.shouldPickerListBeShown" [pickerSourceAdapter]="pickerSourceAdapter"
-      [pickerStateAdapter]="pickerStateAdapter">
+      [pickerStateAdapter]="pickerStateAdapter" [config]="config" [group]="group">
     </app-picker-list>
   
     <app-picker-search [pickerSourceAdapter]="pickerSourceAdapter"
-      [pickerStateAdapter]="pickerStateAdapter"></app-picker-search>
+      [pickerStateAdapter]="pickerStateAdapter" [config]="config" [group]="group"></app-picker-search>
   </ng-template>
 </ng-container>

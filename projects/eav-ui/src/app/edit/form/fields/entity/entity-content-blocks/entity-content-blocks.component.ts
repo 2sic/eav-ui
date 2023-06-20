@@ -71,7 +71,7 @@ export class EntityContentBlockComponent extends PickerComponent implements OnIn
 
     this.pickerSourceAdapter = this.pickerSourceAdapterFactoryService.createPickerSourceAdapter(
       this.pickerStateAdapter.control,
-      this.pickerStateAdapter.config,
+      this.config,
       this.pickerStateAdapter.settings$,
       this.editRoutingService,
       this.group,

@@ -81,7 +81,7 @@ export class StringDropdownComponent extends PickerComponent implements OnInit, 
       this.isString,
 
       this.pickerStateAdapter.control,
-      this.pickerStateAdapter.config,
+      this.config,
       this.pickerStateAdapter.settings$,
       this.editRoutingService,
       this.group,
