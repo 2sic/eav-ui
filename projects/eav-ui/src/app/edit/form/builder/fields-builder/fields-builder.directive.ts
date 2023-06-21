@@ -163,9 +163,11 @@ export class FieldsBuilderDirective implements OnInit, OnDestroy {
   private generateAndAttachField(componentType: Type<any>, targetRef: ViewContainerRef, fieldConfig: FieldConfigSet, isPreview: boolean = false) {
     const factory = this.resolver.resolveComponentFactory<Field>(componentType);
     const realFieldRef = targetRef.createComponent(factory);
+    const fieldConfigExtended: FieldConfigSetExpandable = fieldConfig as FieldConfigSetExpandable;
+    fieldConfigExtended.isPreview = isPreview;
 
     Object.assign<Field, Field>(realFieldRef.instance, {
-      config: {...(fieldConfig as FieldConfigSetExpandable), ...{isPreview: isPreview}},
+      config: fieldConfigExtended,
       group: this.group,
     });
     return realFieldRef;
