@@ -1,0 +1,26 @@
+<ng-container *ngIf="templateVars$ | async as data">
+  <mat-form-field *ngIf="data.freeTextMode" [formGroup]="group" appearance="standard" color="accent">
+    <input matInput 
+      [required]="data.required" 
+      [formControlName]="config.fieldName" 
+      [placeholder]="data.placeholder">
+
+    <span matSuffix class="selection-suffix-inline">
+      <button mat-icon-button 
+        [tippy]="'Fields.String.Dropdown' | translate" 
+        [disabled]="data.controlStatus.disabled"
+        appClickStopPropagation 
+        (click)="toggleFreeText(data.controlStatus.disabled)">
+        <mat-icon>search</mat-icon>
+      </button>
+      <button mat-icon-button 
+        [tippy]="'Fields.String.Freetext' | translate" 
+        [disabled]="data.controlStatus.disabled" 
+        appClickStopPropagation 
+        class="active">
+        <mat-icon>text_fields</mat-icon>
+      </button>
+    </span>
+    <mat-label>{{ data.label }}</mat-label>
+  </mat-form-field>
+</ng-container>

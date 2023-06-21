@@ -106,31 +106,12 @@
     </div>
   </div>
 
-  <!-- move/copy to its own component picker-text -->
-  <mat-form-field *ngIf="vm.freeTextMode" [formGroup]="group" class="eav-form-field" color="accent">
-    <input matInput 
-      [required]="vm.required" 
-      [formControlName]="config.fieldName" 
-      [placeholder]="vm.placeholder">
-
-    <span matSuffix class="selection-suffix-inline">
-      <button mat-icon-button 
-        [tippy]="'Fields.String.Dropdown' | translate" 
-        [disabled]="vm.controlStatus.disabled"
-        appClickStopPropagation 
-        (click)="toggleFreeText(vm.controlStatus.disabled)">
-        <mat-icon>search</mat-icon>
-      </button>
-      <button mat-icon-button 
-        [tippy]="'Fields.String.Freetext' | translate" 
-        [disabled]="vm.controlStatus.disabled" 
-        appClickStopPropagation 
-        class="active">
-        <mat-icon>text_fields</mat-icon>
-      </button>
-    </span>
-    <mat-label>{{ vm.label }}</mat-label>
-  </mat-form-field>
+  <app-picker-text 
+    [pickerSourceAdapter]="pickerSourceAdapter"
+    [pickerStateAdapter]="pickerStateAdapter"
+    [config]="config" 
+    [group]="group">
+  </app-picker-text>
 
   <div *ngIf="vm.debugEnabled" class="null-box">
     debug: <span class="null-button" tippy="Add null-item" (click)="insertNull()">add null-item</span>

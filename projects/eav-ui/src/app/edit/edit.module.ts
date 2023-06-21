@@ -104,6 +104,7 @@ import { MatDayjsDateAdapter, MatDayjsDateModule, MatDayjsModule, MAT_DAYJS_DATE
 import { ChangeAnchorTargetDirective, PasteClipboardImageDirective } from './shared/directives';
 import { AdamService, EavService, EntityService, LoadIconsService, QueryService, ScriptsLoaderService } from './shared/services';
 import { PickerPillPreviewComponent } from './form/fields/picker/picker-pill-preview/picker-pill-preview.component';
+import { PickerTextComponent } from './form/fields/picker/picker-text/picker-text.component';
 
 @NgModule({
     declarations: [
@@ -156,6 +157,7 @@ import { PickerPillPreviewComponent } from './form/fields/picker/picker-pill-pre
         PickerExpandableWrapperComponent,
         PickerListComponent,
         PickerSearchComponent,
+        PickerTextComponent,
         PickerPillPreviewComponent,
         EntityQueryComponent,
         EntityDefaultComponent,
