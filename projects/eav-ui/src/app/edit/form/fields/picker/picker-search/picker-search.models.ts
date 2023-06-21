@@ -24,4 +24,13 @@ export interface PickerSearchViewModel {
   tooltip: string;
   information: string;
   isDialog: boolean;
+
+  // added for easier readability
+  isPickerInPreview: boolean;
+  showAddNewEntityButtonInPreview: boolean;
+  showGoToListDialogButton: boolean;
+  showAddNewEntityButtonInDialog: boolean;
+  showEmpty: boolean;
+  hideDropdown: boolean;
+  leavePlaceForButtons: boolean;
 }

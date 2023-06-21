@@ -96,6 +96,14 @@ export class PickerSearchComponent implements OnInit, OnChanges, OnDestroy {
         div.innerHTML = information;
         const cleanInformation = div.innerText || '';
 
+        const isPickerInPreview = !settings.AllowMultiValue || (settings.AllowMultiValue && this.pickerStateAdapter.isPreview);
+        const showAddNewEntityButtonInPreview = settings.EnableCreate && settings.EntityType && !(selectedEntities.length > 1);
+        const showGoToListDialogButton = settings.AllowMultiValue && this.pickerStateAdapter.isPreview;
+        const showAddNewEntityButtonInDialog = !freeTextMode && settings.EnableCreate && settings.EntityType && settings.AllowMultiValue && !this.pickerStateAdapter.isPreview
+        const showEmpty = !settings.EnableAddExisting && !(selectedEntities.length > 1);
+        const hideDropdown = (!settings.AllowMultiValue && (selectedEntities.length > 1)) || !settings.EnableAddExisting;
+        const leavePlaceForButtons = settings.EnableCreate && settings.EntityType && !(selectedEntities.length > 1) && !settings.AllowMultiValue;
+
         const viewModel: PickerSearchViewModel = {
           debugEnabled,
           allowMultiValue: settings.AllowMultiValue,
@@ -118,6 +126,15 @@ export class PickerSearchComponent implements OnInit, OnChanges, OnDestroy {
           tooltip: cleanTooltip,
           information: cleanInformation,
           isDialog,
+
+          // additional properties for easier readability in the template
+          isPickerInPreview,
+          showAddNewEntityButtonInPreview,
+          showGoToListDialogButton,
+          showAddNewEntityButtonInDialog,
+          showEmpty,
+          hideDropdown,
+          leavePlaceForButtons
         };
         return viewModel;
       }),
