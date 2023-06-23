@@ -3,6 +3,9 @@
   e.g. EntityDefault, EntityContentBlocks, EntityQuery, StringDropdownQuery
 -->
 <ng-container *ngIf="viewModel$ | async as vm">
+  <!-- use just isPreview -->
+  <!-- create previewComponent that decides do we show search/pill/text -->
+  <!-- create dialogComponent that shows search and shows additional "add" button and stuff-->
   <ng-container *ngIf="!vm.isDialog && isPreview && vm.noSelectedEntities > 1; else searchAndList">
     <app-picker-pill-preview [config]="config" [group]="group"></app-picker-pill-preview>
   </ng-container>

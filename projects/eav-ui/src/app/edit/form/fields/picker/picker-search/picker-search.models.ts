@@ -26,7 +26,7 @@ export interface PickerSearchViewModel {
   isDialog: boolean;
 
   // added for easier readability
-  isPickerInPreview: boolean;
+  allowItemEditButtons: boolean;
   showAddNewEntityButtonInPreview: boolean;
   showGoToListDialogButton: boolean;
   showAddNewEntityButtonInDialog: boolean;

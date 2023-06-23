@@ -19,7 +19,6 @@ export class PickerSourceAdapterFactoryService {
     private entityCacheService: EntityCacheService,
     private entityService: EntityService,
     private translate: TranslateService,
-    // private fieldsSettingsService: FieldsSettingsService,
     private queryService: QueryService,
     private stringQueryCacheService: StringQueryCacheService,
     private snackBar: MatSnackBar,
@@ -34,7 +33,6 @@ export class PickerSourceAdapterFactoryService {
     settings$: BehaviorSubject<FieldSettings>,
     editRoutingService: EditRoutingService,
     group: FormGroup,
-    // fetchEntities: (clearAvailableEntitiesAndOnlyUpdateCache: boolean) => void,
     deleteCallback: (props: DeleteEntityProps) => void,
   ): PickerQuerySourceAdapter {
     const pickerQuerySourceAdapter = new PickerQuerySourceAdapter(
@@ -54,7 +52,6 @@ export class PickerSourceAdapterFactoryService {
       group,
       this.snackBar,
       control,
-      // fetchEntities,
       deleteCallback,
     );
 
@@ -74,7 +71,6 @@ export class PickerSourceAdapterFactoryService {
     settings$: BehaviorSubject<FieldSettings>,
     editRoutingService: EditRoutingService,
     group: FormGroup,
-    // fetchEntities: (clearAvailableEntitiesAndOnlyUpdateCache: boolean) => void,
     deleteCallback: (props: DeleteEntityProps) => void,
   ): PickerEntitySourceAdapter {
     const pickerEntitySourceAdapter = new PickerEntitySourceAdapter(
@@ -92,7 +88,6 @@ export class PickerSourceAdapterFactoryService {
       group,
       this.snackBar,
       control,
-      // fetchEntities,
       deleteCallback,
     );
 
@@ -109,7 +104,6 @@ export class PickerSourceAdapterFactoryService {
     settings$: BehaviorSubject<FieldSettings>,
     editRoutingService: EditRoutingService,
     group: FormGroup,
-    // fetchEntities: (clearAvailableEntitiesAndOnlyUpdateCache: boolean) => void,
     deleteCallback: (props: DeleteEntityProps) => void,
   ): PickerSourceAdapter {
     const pickerSourceAdapter = new PickerSourceAdapter(
@@ -123,7 +117,6 @@ export class PickerSourceAdapterFactoryService {
       group,
       this.snackBar,
       control,
-      // fetchEntities,
       deleteCallback,
     );
 

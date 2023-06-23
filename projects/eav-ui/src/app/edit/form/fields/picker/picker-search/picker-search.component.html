@@ -1,4 +1,5 @@
 <ng-container *ngIf="viewModel$ | async as vm">
+  <!-- check if we need this many divs -->
   <div [hidden]="vm.freeTextMode">
     <div class="ed-field" fxLayout="row" fxLayoutAlign="start end">
       <div [ngClass]="vm.leavePlaceForButtons ? 'ed-field__field-short' : 'ed-field__field'">
@@ -19,7 +20,7 @@
               <mat-icon>arrow_drop_down</mat-icon>
             </button>
             <button mat-icon-button matSuffix
-              *ngIf="selectedEntity && vm.enableEdit && !selectedEntity?.disableEdit && vm.isPickerInPreview"
+              *ngIf="selectedEntity && vm.enableEdit && !selectedEntity?.disableEdit && vm.allowItemEditButtons"
               [tippy]="'Fields.Entity.Edit' | translate" 
               [disabled]="config.initialDisabled"
               appClickStopPropagation 
@@ -27,7 +28,7 @@
               <mat-icon>edit</mat-icon>
             </button>
             <button mat-icon-button matSuffix
-              *ngIf="selectedEntity && vm.enableDelete && !selectedEntity?.disableDelete && vm.isPickerInPreview"
+              *ngIf="selectedEntity && vm.enableDelete && !selectedEntity?.disableDelete && vm.allowItemEditButtons"
               [tippy]="'Fields.Entity.Delete' | translate" 
               [disabled]="vm.controlStatus.disabled"
               appClickStopPropagation 
@@ -35,7 +36,7 @@
               <mat-icon>delete</mat-icon>
             </button>
             <button mat-icon-button matSuffix 
-              *ngIf="selectedEntity && vm.enableRemove && vm.isPickerInPreview"
+              *ngIf="selectedEntity && vm.enableRemove && vm.allowItemEditButtons"
               [tippy]="'Fields.Entity.Remove' | translate" 
               [disabled]="vm.controlStatus.disabled" 
               appClickStopPropagation 

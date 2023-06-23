@@ -29,9 +29,11 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   @Input() group: FormGroup;
   @Input() controlConfig: FieldControlConfig;
 
+  // @2SDV TODO make this selectedEntity, selectedEntities an observable
   selectedEntity: SelectedEntity | null = null;
   selectedEntities: SelectedEntity[] = [];
 
+  // @2SDV TODO make this filteredEntities an observable
   filteredEntities: EntityInfo[] = [];
   viewModel$: Observable<PickerSearchViewModel>;
   private control: AbstractControl;
@@ -100,7 +102,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
         div.innerHTML = information;
         const cleanInformation = div.innerText || '';
 
-        const isPickerInPreview = !settings.AllowMultiValue || (settings.AllowMultiValue && this.controlConfig.isPreview);
+        const allowItemEditButtons = !settings.AllowMultiValue || (settings.AllowMultiValue && this.controlConfig.isPreview);
         const showAddNewEntityButtonInPreview = settings.EnableCreate && settings.EntityType && !(selectedEntities.length > 1);
         const showGoToListDialogButton = settings.AllowMultiValue && this.controlConfig.isPreview;
         const showAddNewEntityButtonInDialog = !freeTextMode && settings.EnableCreate && settings.EntityType && settings.AllowMultiValue && !this.controlConfig.isPreview;
@@ -132,7 +134,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
           isDialog,
 
           // additional properties for easier readability in the template
-          isPickerInPreview,
+          allowItemEditButtons,
           showAddNewEntityButtonInPreview,
           showGoToListDialogButton,
           showAddNewEntityButtonInDialog,
@@ -197,6 +199,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
       this.filteredEntities = availableEntities;
       return;
     }
+
 
     this.filteredEntities = availableEntities.filter(option =>
       option.Text

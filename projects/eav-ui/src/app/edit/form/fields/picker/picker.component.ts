@@ -1,10 +1,8 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { InputTypeConstants } from 'projects/eav-ui/src/app/content-type-fields/constants/input-type.constants';
 import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { EavService, EditRoutingService, EntityService, FieldsSettingsService } from '../../../shared/services';
 import { EntityCacheService, StringQueryCacheService } from '../../../shared/store/ngrx-data';
-import { FieldMetadata } from '../../builder/fields-builder/field-metadata.decorator';
 import { BaseFieldComponent } from '../base/base-field.component';
 import { PickerSearchComponent } from './picker-search/picker-search.component';
 import { PickerSourceAdapter } from './picker-source-adapter';
@@ -12,11 +10,11 @@ import { PickerStateAdapter } from './picker-state-adapter';
 import { PickerViewModel } from './picker.models';
 
 @Component({
-  selector: InputTypeConstants.EntityDefault,
+  // selector: InputTypeConstants.EntityDefault,
   templateUrl: './picker.component.html',
   styleUrls: ['./picker.component.scss'],
 })
-@FieldMetadata({})
+// @FieldMetadata({})
 export class PickerComponent extends BaseFieldComponent<string | string[]> implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(PickerSearchComponent) protected entitySearchComponent: PickerSearchComponent;
 
@@ -79,23 +77,18 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
     this.entitySearchComponent.autocompleteRef?.nativeElement.focus();
   }
 
-  /**
-   * WARNING! Overridden in subclass.
-   * @param clearAvailableEntitiesAndOnlyUpdateCache - clears availableEntities and fetches only items which are selected
-   * to update names in entityCache
-   */
-  fetchEntities(clearAvailableEntitiesAndOnlyUpdateCache: boolean): void { }
-
   private refreshOnChildClosed(): void {
+    // @2SDV TODO check what it does and add comments
     this.subscription.add(
       this.editRoutingService.childFormResult(this.config.index, this.config.entityGuid).subscribe(result => {
         const newItemGuid = Object.keys(result)[0];
         this.pickerStateAdapter.updateValue('add', newItemGuid);
       })
     );
+    // @2SDV TODO check what it does and add comments
     this.subscription.add(
       this.editRoutingService.childFormClosed().subscribe(() => {
-        this.fetchEntities(true);
+        this.pickerSourceAdapter.fetchEntities(true);
       })
     );
   }
