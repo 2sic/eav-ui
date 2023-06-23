@@ -8,7 +8,6 @@ import { EavService, FieldsSettingsService, EditRoutingService } from '../../../
 import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
 import { BaseFieldComponent } from '../../base/base-field.component';
 import { SelectedEntity } from '../../entity/entity-default/entity-default.models';
-import { FieldConfigSetExpandable } from '../../../builder/fields-builder/field-config-set.model';
 
 @Component({
   selector: 'app-picker-pill-preview',

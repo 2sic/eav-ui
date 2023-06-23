@@ -35,7 +35,7 @@ import { HyperlinkDefaultExpandableWrapperComponent } from '../../wrappers/hyper
 import { HyperlinkLibraryExpandableWrapperComponent } from '../../wrappers/hyperlink-library-expandable-wrapper/hyperlink-library-expandable-wrapper.component';
 import { LocalizationWrapperComponent } from '../../wrappers/localization-wrapper/localization-wrapper.component';
 import { PickerExpandableWrapperComponent } from '../../wrappers/picker-expandable-wrapper/picker-expandable-wrapper.component';
-import { FieldConfigSet, FieldConfigSetExpandable } from './field-config-set.model';
+import { FieldConfigSet } from './field-config-set.model';
 import { FieldWrapper } from './field-wrapper.model';
 import { Field } from './field.model';
 import { EmptyFieldHelpers } from '../../fields/empty/empty-field-helpers';
@@ -163,14 +163,16 @@ export class FieldsBuilderDirective implements OnInit, OnDestroy {
   private generateAndAttachField(componentType: Type<any>, targetRef: ViewContainerRef, fieldConfig: FieldConfigSet, isPreview: boolean = false) {
     const factory = this.resolver.resolveComponentFactory<Field>(componentType);
     const realFieldRef = targetRef.createComponent(factory);
-    const fieldConfigExtended: FieldConfigSetExpandable = fieldConfig as FieldConfigSetExpandable;
-    fieldConfigExtended.isPreview = isPreview;
+    // used for passing data to controls when fields have multiple controls (e.g. field and a preview)
+    const controlConfig = { isPreview };
 
     Object.assign<Field, Field>(realFieldRef.instance, {
-      config: fieldConfigExtended,
+      config: fieldConfig,
+      controlConfig,
       group: this.group,
     });
-    return realFieldRef;
+
+    // return realFieldRef;
   }
 
   private createWrappers(containerRef: ViewContainerRef, wrappers: string[], fieldConfig: FieldConfigSet): WrapperInfo {

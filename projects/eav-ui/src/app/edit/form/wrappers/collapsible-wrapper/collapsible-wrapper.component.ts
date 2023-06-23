@@ -6,7 +6,7 @@ import { FieldSettings } from '../../../../../../../edit-types';
 import { WrappersConstants } from '../../../shared/constants';
 import { EavService, FieldsSettingsService } from '../../../shared/services';
 import { LanguageInstanceService } from '../../../shared/store/ngrx-data';
-import { FieldConfigSet } from '../../builder/fields-builder/field-config-set.model';
+import { FieldConfigSet, FieldControlConfig } from '../../builder/fields-builder/field-config-set.model';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { EmptyDefaultLogic } from './collapsible-wrapper-logic';
 import { ItemFieldVisibility } from '../../../shared/services/item-field-visibility';
@@ -20,6 +20,8 @@ export class CollapsibleWrapperComponent extends BaseSubsinkComponent implements
   @ViewChild('fieldComponent', { static: true, read: ViewContainerRef }) fieldComponent: ViewContainerRef;
   @Input() config: FieldConfigSet;
   @Input() group: UntypedFormGroup;
+  
+  controlConfig: FieldControlConfig = {};
 
   visible$: Observable<boolean>;
   collapsed$: BehaviorSubject<boolean>;

@@ -10,7 +10,6 @@ import { PickerSearchComponent } from './picker-search/picker-search.component';
 import { PickerSourceAdapter } from './picker-source-adapter';
 import { PickerStateAdapter } from './picker-state-adapter';
 import { PickerViewModel } from './picker.models';
-import { FieldConfigSetExpandable } from '../../builder/fields-builder/field-config-set.model';
 
 @Component({
   selector: InputTypeConstants.EntityDefault,
@@ -44,7 +43,7 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
   ngOnInit(): void {
     super.ngOnInit();
 
-    this.isPreview = (this.config as FieldConfigSetExpandable).isPreview;
+    this.isPreview = this.controlConfig.isPreview;
     this.refreshOnChildClosed();
   }
 

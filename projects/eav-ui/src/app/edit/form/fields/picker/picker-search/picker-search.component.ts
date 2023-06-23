@@ -11,25 +11,27 @@ import { SelectedEntity } from '../../entity/entity-default/entity-default.model
 import { PickerSourceAdapter } from '../picker-source-adapter';
 import { PickerStateAdapter } from '../picker-state-adapter';
 import { PickerSearchViewModel } from './picker-search.models';
-import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
+import { FieldConfigSet, FieldControlConfig } from '../../../builder/fields-builder/field-config-set.model';
+import { Field } from '../../../builder/fields-builder/field.model';
+import { BaseSubsinkComponent } from 'projects/eav-ui/src/app/shared/components/base-subsink-component/base-subsink.component';
 
 @Component({
   selector: 'app-picker-search',
   templateUrl: './picker-search.component.html',
   styleUrls: ['./picker-search.component.scss'],
 })
-export class PickerSearchComponent implements OnInit, OnChanges, OnDestroy {
+export class PickerSearchComponent extends BaseSubsinkComponent implements OnInit, OnChanges, OnDestroy, Field {
   @ViewChild('autocomplete') autocompleteRef?: ElementRef;
 
   @Input() pickerSourceAdapter: PickerSourceAdapter;
   @Input() pickerStateAdapter: PickerStateAdapter;
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
+  @Input() controlConfig: FieldControlConfig;
 
   selectedEntity: SelectedEntity | null = null;
   selectedEntities: SelectedEntity[] = [];
 
-  private subscriptions: Subscription = new Subscription();
   filteredEntities: EntityInfo[] = [];
   viewModel$: Observable<PickerSearchViewModel>;
   private control: AbstractControl;
@@ -40,7 +42,9 @@ export class PickerSearchComponent implements OnInit, OnChanges, OnDestroy {
     private globalConfigService: GlobalConfigService,
     private fieldsSettingsService: FieldsSettingsService,
     private editRoutingService: EditRoutingService,
-  ) { }
+  ) {
+    super();
+   }
 
   ngOnInit(): void {
     this.control = this.group.controls[this.config.fieldName];
@@ -59,10 +63,10 @@ export class PickerSearchComponent implements OnInit, OnChanges, OnDestroy {
     const information$ = this.pickerStateAdapter.information$;
     const isDialog$ = this.pickerStateAdapter.isDialog$;
 
-    this.subscriptions.add(availableEntities$.subscribe(entities => {
+    this.subscription.add(availableEntities$.subscribe(entities => {
       this.availableEntities = entities;
     }));
-    this.subscriptions.add(selectedEntities$.subscribe(entities => {
+    this.subscription.add(selectedEntities$.subscribe(entities => {
       this.selectedEntities = entities;
       this.selectedEntity = this.selectedEntities.length > 0 ? this.selectedEntities[0] : null;
       this.fillValue();
@@ -96,10 +100,10 @@ export class PickerSearchComponent implements OnInit, OnChanges, OnDestroy {
         div.innerHTML = information;
         const cleanInformation = div.innerText || '';
 
-        const isPickerInPreview = !settings.AllowMultiValue || (settings.AllowMultiValue && this.pickerStateAdapter.isPreview);
+        const isPickerInPreview = !settings.AllowMultiValue || (settings.AllowMultiValue && this.controlConfig.isPreview);
         const showAddNewEntityButtonInPreview = settings.EnableCreate && settings.EntityType && !(selectedEntities.length > 1);
-        const showGoToListDialogButton = settings.AllowMultiValue && this.pickerStateAdapter.isPreview;
-        const showAddNewEntityButtonInDialog = !freeTextMode && settings.EnableCreate && settings.EntityType && settings.AllowMultiValue && !this.pickerStateAdapter.isPreview
+        const showGoToListDialogButton = settings.AllowMultiValue && this.controlConfig.isPreview;
+        const showAddNewEntityButtonInDialog = !freeTextMode && settings.EnableCreate && settings.EntityType && settings.AllowMultiValue && !this.controlConfig.isPreview;
         const showEmpty = !settings.EnableAddExisting && !(selectedEntities.length > 1);
         const hideDropdown = (!settings.AllowMultiValue && (selectedEntities.length > 1)) || !settings.EnableAddExisting;
         const leavePlaceForButtons = settings.EnableCreate && settings.EntityType && !(selectedEntities.length > 1) && !settings.AllowMultiValue;
@@ -152,7 +156,7 @@ export class PickerSearchComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
+    super.ngOnDestroy();
   }
 
   markAsTouched(): void {

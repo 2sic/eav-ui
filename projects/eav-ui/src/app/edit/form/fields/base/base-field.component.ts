@@ -5,7 +5,7 @@ import { BehaviorSubject, distinctUntilChanged, map, Observable, Subscription } 
 import { FieldSettings, FieldValue } from '../../../../../../../edit-types';
 import { ControlStatus } from '../../../shared/models';
 import { EavService, FieldsSettingsService } from '../../../shared/services';
-import { FieldConfigSet } from '../../builder/fields-builder/field-config-set.model';
+import { FieldConfigSet, FieldControlConfig } from '../../builder/fields-builder/field-config-set.model';
 import { Field } from '../../builder/fields-builder/field.model';
 
 @Directive()
@@ -13,6 +13,8 @@ import { Field } from '../../builder/fields-builder/field.model';
 export class BaseFieldComponent<T = FieldValue> extends BaseSubsinkComponent implements Field, OnInit, OnDestroy {
   @Input() config: FieldConfigSet;
   @Input() group: UntypedFormGroup;
+
+  controlConfig: FieldControlConfig = {};
 
   control: AbstractControl;
   controlStatus$: BehaviorSubject<ControlStatus<T>>;
