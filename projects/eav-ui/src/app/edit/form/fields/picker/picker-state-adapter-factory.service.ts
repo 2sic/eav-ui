@@ -40,7 +40,6 @@ export class PickerStateAdapterFactoryService {
       this.entityCacheService.getEntities$(),
       this.stringQueryCacheService.getEntities$(config.entityGuid, config.fieldName),
       this.translateService,
-      config,
       control,
       focusOnSearchComponent,
     );
@@ -73,7 +72,6 @@ export class PickerStateAdapterFactoryService {
       this.entityCacheService.getEntities$(),
       this.stringQueryCacheService.getEntities$(config.entityGuid, config.fieldName),
       this.translateService,
-      config,
       control,
       focusOnSearchComponent,
     );
@@ -106,7 +104,6 @@ export class PickerStateAdapterFactoryService {
       this.entityCacheService.getEntities$(),
       this.stringQueryCacheService.getEntities$(config.entityGuid, config.fieldName),
       this.translateService,
-      config,
       control,
       focusOnSearchComponent,
     );

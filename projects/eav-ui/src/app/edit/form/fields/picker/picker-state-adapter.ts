@@ -8,7 +8,6 @@ import { QueryEntity } from '../entity/entity-query/entity-query.models';
 import { ReorderIndexes } from './picker-list/picker-list.models';
 import { calculateSelectedEntities, convertArrayToString, convertValueToArray } from './picker.helpers';
 import { DeleteEntityProps } from './picker.models';
-import { FieldConfigSet, FieldConfigSetExpandable } from '../../builder/fields-builder/field-config-set.model';
 import { AbstractControl } from '@angular/forms';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 
@@ -25,7 +24,6 @@ export class PickerStateAdapter {
 
     public translate: TranslateService,
 
-    protected config: FieldConfigSet,
     public control: AbstractControl,
 
     private focusOnSearchComponent: () => void,
@@ -41,7 +39,6 @@ export class PickerStateAdapter {
   tooltip$: Observable<string>;
   information$: Observable<string>;
   isDialog$: Observable<boolean>;
-  isPreview = (this.config as FieldConfigSetExpandable).isPreview;
 
   init() {
     this.selectedEntities$ = combineLatest([

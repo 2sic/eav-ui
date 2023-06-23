@@ -3,7 +3,6 @@ import { TranslateService } from "@ngx-translate/core";
 import { FieldSettings, EntityInfo } from "projects/edit-types";
 import { BehaviorSubject, Observable } from "rxjs";
 import { ControlStatus } from "../../../shared/models";
-import { FieldConfigSet } from "../../builder/fields-builder/field-config-set.model";
 import { QueryEntity } from "../entity/entity-query/entity-query.models";
 import { PickerStateAdapter } from "./picker-state-adapter";
 
@@ -20,7 +19,6 @@ export class PickerEntityStateAdapter extends PickerStateAdapter {
 
     public translate: TranslateService,
 
-    protected config: FieldConfigSet,
     public control: AbstractControl,
 
     focusOnSearchComponent: () => void,
@@ -35,7 +33,6 @@ export class PickerEntityStateAdapter extends PickerStateAdapter {
       cacheEntities$,
       stringQueryCache$,
       translate,
-      config,
       control,
       focusOnSearchComponent,
     );
