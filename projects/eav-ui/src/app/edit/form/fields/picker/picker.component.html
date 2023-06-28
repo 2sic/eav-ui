@@ -3,19 +3,18 @@
   e.g. EntityDefault, EntityContentBlocks, EntityQuery, StringDropdownQuery
 -->
 <ng-container *ngIf="viewModel$ | async as vm">
-  <!-- use just isPreview -->
-  <!-- create previewComponent that decides do we show search/pill/text -->
-  <!-- create dialogComponent that shows search and shows additional "add" button and stuff-->
-  <ng-container *ngIf="!vm.isDialog && isPreview && vm.noSelectedEntities > 1; else searchAndList">
-    <app-picker-pill-preview [config]="config" [group]="group"></app-picker-pill-preview>
-  </ng-container>
-
-  <ng-template #searchAndList>
-    <app-picker-list *ngIf="vm.shouldPickerListBeShown" [pickerSourceAdapter]="pickerSourceAdapter"
-      [pickerStateAdapter]="pickerStateAdapter" [config]="config" [group]="group">
-    </app-picker-list>
-  
-    <app-picker-search [pickerSourceAdapter]="pickerSourceAdapter"
-      [pickerStateAdapter]="pickerStateAdapter" [config]="config" [group]="group" [controlConfig]="controlConfig"></app-picker-search>
-  </ng-template>
+  <app-picker-preview *ngIf="isPreview" 
+    [pickerSourceAdapter]="pickerSourceAdapter"
+    [pickerStateAdapter]="pickerStateAdapter"
+    [config]="config" 
+    [group]="group" 
+    [controlConfig]="controlConfig">
+  </app-picker-preview>
+  <app-picker-dialog *ngIf="!isPreview" 
+    [pickerSourceAdapter]="pickerSourceAdapter"
+    [pickerStateAdapter]="pickerStateAdapter"
+    [config]="config" 
+    [group]="group" 
+    [controlConfig]="controlConfig">
+  </app-picker-dialog>
 </ng-container>

@@ -105,6 +105,8 @@ import { ChangeAnchorTargetDirective, PasteClipboardImageDirective } from './sha
 import { AdamService, EavService, EntityService, LoadIconsService, QueryService, ScriptsLoaderService } from './shared/services';
 import { PickerPillPreviewComponent } from './form/fields/picker/picker-pill-preview/picker-pill-preview.component';
 import { PickerTextComponent } from './form/fields/picker/picker-text/picker-text.component';
+import { PickerDialogComponent } from './form/fields/picker/picker-dialog/picker-dialog.component';
+import { PickerPreviewComponent } from './form/fields/picker/picker-preview/picker-preview.component';
 
 @NgModule({
     declarations: [
@@ -157,6 +159,8 @@ import { PickerTextComponent } from './form/fields/picker/picker-text/picker-tex
         PickerExpandableWrapperComponent,
         PickerListComponent,
         PickerSearchComponent,
+        PickerDialogComponent,
+        PickerPreviewComponent,
         PickerTextComponent,
         PickerPillPreviewComponent,
         EntityQueryComponent,
