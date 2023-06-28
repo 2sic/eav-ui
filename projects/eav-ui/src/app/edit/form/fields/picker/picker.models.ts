@@ -1,5 +1,6 @@
 export interface PickerViewModel {
   shouldPickerListBeShown: boolean;
+  allowMultiValue: boolean;
   isDialog: boolean;
   noSelectedEntities: number;
 }

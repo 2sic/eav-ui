@@ -59,12 +59,14 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
   createTemplateVariables() {
     this.viewModel$ = combineLatest([
       this.pickerStateAdapter.shouldPickerListBeShown$,
-      this.settings$.pipe(map(settings => settings._isDialog), distinctUntilChanged()),
+      this.pickerStateAdapter.allowMultiValue$,
+      this.pickerStateAdapter.isDialog$,
       this.pickerStateAdapter.selectedEntities$.pipe(map(selectedEntities => selectedEntities.length), distinctUntilChanged()),
     ])
-      .pipe(map(([shouldPickerListBeShown, isDialog, noSelectedEntities]) => {
+      .pipe(map(([shouldPickerListBeShown, allowMultiValue, isDialog, noSelectedEntities]) => {
         const viewModel: PickerViewModel = {
           shouldPickerListBeShown,
+          allowMultiValue,
           isDialog,
           noSelectedEntities,
         };
