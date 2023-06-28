@@ -24,6 +24,8 @@ export interface PickerSearchViewModel {
   tooltip: string;
   information: string;
   isDialog: boolean;
+  selectedEntity: SelectedEntity;
+  filteredEntities: EntityInfo[];
 
   // added for easier readability
   allowItemEditButtons: boolean;
@@ -33,4 +35,5 @@ export interface PickerSearchViewModel {
   showEmpty: boolean;
   hideDropdown: boolean;
   leavePlaceForButtons: boolean;
+  showEmptyInputInDialog: boolean;
 }

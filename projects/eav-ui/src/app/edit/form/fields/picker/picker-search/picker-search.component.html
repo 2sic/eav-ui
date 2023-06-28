@@ -10,33 +10,34 @@
               [placeholder]="getPlaceholder(vm.availableEntities, vm.error)" 
               [matAutocomplete]="auto"
               [disabled]="vm.controlStatus.disabled || !vm.enableAddExisting" 
+              [value]="vm.showEmptyInputInDialog ? '' : vm.selectedEntity?.label"
               (focus)="fetchEntities(vm.availableEntities)" 
-              (blur)="markAsTouched()"
-              (input)="filterSelectionList(vm.availableEntities)" 
-              (click)="filterSelectionList(vm.availableEntities)">
+              (blur)="markAsTouched(vm.selectedEntity, vm.selectedEntities, vm.showEmptyInputInDialog)"
+              (input)="filterSelectionList()" 
+              (click)="filterSelectionList()">
             <button mat-icon-button matSuffix class="entity-dropdown-button" disableRipple="true"
               [disabled]="vm.controlStatus.disabled || !vm.enableAddExisting" 
               *ngIf="!vm.enableTextEntry">
               <mat-icon>arrow_drop_down</mat-icon>
             </button>
             <button mat-icon-button matSuffix
-              *ngIf="selectedEntity && vm.enableEdit && !selectedEntity?.disableEdit && vm.allowItemEditButtons"
+              *ngIf="vm.selectedEntity && vm.enableEdit && !vm.selectedEntity?.disableEdit && vm.allowItemEditButtons"
               [tippy]="'Fields.Entity.Edit' | translate" 
               [disabled]="config.initialDisabled"
               appClickStopPropagation 
-              (click)="edit(selectedEntity?.value, selectedEntity?.entityId)">
+              (click)="edit(vm.selectedEntity?.value, vm.selectedEntity?.entityId)">
               <mat-icon>edit</mat-icon>
             </button>
             <button mat-icon-button matSuffix
-              *ngIf="selectedEntity && vm.enableDelete && !selectedEntity?.disableDelete && vm.allowItemEditButtons"
+              *ngIf="vm.selectedEntity && vm.enableDelete && !vm.selectedEntity?.disableDelete && vm.allowItemEditButtons"
               [tippy]="'Fields.Entity.Delete' | translate" 
               [disabled]="vm.controlStatus.disabled"
               appClickStopPropagation 
-              (click)="deleteItem(0, selectedEntity?.value)">
+              (click)="deleteItem(0, vm.selectedEntity?.value)">
               <mat-icon>delete</mat-icon>
             </button>
             <button mat-icon-button matSuffix 
-              *ngIf="selectedEntity && vm.enableRemove && vm.allowItemEditButtons"
+              *ngIf="vm.selectedEntity && vm.enableRemove && vm.allowItemEditButtons"
               [tippy]="'Fields.Entity.Remove' | translate" 
               [disabled]="vm.controlStatus.disabled" 
               appClickStopPropagation 
@@ -63,8 +64,8 @@
             </mat-label>
           </mat-form-field>
 
-          <mat-autocomplete #auto="matAutocomplete" (optionSelected)="optionSelected($event, vm.allowMultiValue)">
-            <mat-option *ngFor="let item of filteredEntities" 
+          <mat-autocomplete #auto="matAutocomplete" (optionSelected)="optionSelected($event, vm.allowMultiValue, vm.selectedEntity)">
+            <mat-option *ngFor="let item of vm.filteredEntities" 
               [value]="item.Value"
               [disabled]="isOptionDisabled(item.Value, vm.selectedEntities)" 
               [tippy]="vm.tooltip" 

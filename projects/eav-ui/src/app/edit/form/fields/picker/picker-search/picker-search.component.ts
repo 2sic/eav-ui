@@ -1,9 +1,9 @@
-import { Component, ElementRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { TranslateService } from '@ngx-translate/core';
 import { EntityInfo } from 'projects/edit-types';
-import { combineLatest, distinctUntilChanged, map, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { EditRoutingService, FieldsSettingsService } from '../../../../shared/services';
 import { GlobalConfigService } from '../../../../shared/store/ngrx-data';
@@ -20,7 +20,7 @@ import { BaseSubsinkComponent } from 'projects/eav-ui/src/app/shared/components/
   templateUrl: './picker-search.component.html',
   styleUrls: ['./picker-search.component.scss'],
 })
-export class PickerSearchComponent extends BaseSubsinkComponent implements OnInit, OnChanges, OnDestroy, Field {
+export class PickerSearchComponent extends BaseSubsinkComponent implements OnInit, OnDestroy, Field {
   @ViewChild('autocomplete') autocompleteRef?: ElementRef;
 
   @Input() pickerSourceAdapter: PickerSourceAdapter;
@@ -29,15 +29,10 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   @Input() group: FormGroup;
   @Input() controlConfig: FieldControlConfig;
 
-  // @2SDV TODO make this selectedEntity, selectedEntities an observable
-  selectedEntity: SelectedEntity | null = null;
-  selectedEntities: SelectedEntity[] = [];
-
-  // @2SDV TODO make this filteredEntities an observable
-  filteredEntities: EntityInfo[] = [];
   viewModel$: Observable<PickerSearchViewModel>;
   private control: AbstractControl;
-  private availableEntities: EntityInfo[] = [];
+
+  private filter$ = new BehaviorSubject(false);
 
   constructor(
     private translate: TranslateService,
@@ -65,15 +60,6 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     const information$ = this.pickerStateAdapter.information$;
     const isDialog$ = this.pickerStateAdapter.isDialog$;
 
-    this.subscription.add(availableEntities$.subscribe(entities => {
-      this.availableEntities = entities;
-    }));
-    this.subscription.add(selectedEntities$.subscribe(entities => {
-      this.selectedEntities = entities;
-      this.selectedEntity = this.selectedEntities.length > 0 ? this.selectedEntities[0] : null;
-      this.fillValue();
-    }));
-
     const debugEnabled$ = this.globalConfigService.getDebugEnabled$();
     const settings$ = this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).pipe(
       map(settings => ({
@@ -89,18 +75,27 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
       distinctUntilChanged(GeneralHelpers.objectsEqual),
     );
     this.viewModel$ = combineLatest([
-      debugEnabled$, settings$, selectedEntities$, availableEntities$, error$, controlStatus$,
-      freeTextMode$, disableAddNew$, label$, placeholder$, required$, tooltip$, information$, isDialog$
+      debugEnabled$, settings$, selectedEntities$, availableEntities$, error$, controlStatus$, freeTextMode$,
+      disableAddNew$, label$, placeholder$, required$, tooltip$, information$, isDialog$, this.filter$
     ]).pipe(
       map(([
-        debugEnabled, settings, selectedEntities, availableEntities, error, controlStatus,
-        freeTextMode, disableAddNew, label, placeholder, required, tooltip, information, isDialog
+        debugEnabled, settings, selectedEntities, availableEntities, error, controlStatus, freeTextMode,
+        disableAddNew, label, placeholder, required, tooltip, information, isDialog, filter
       ]) => {
         const div = document.createElement("div");
         div.innerHTML = tooltip;
         const cleanTooltip = div.innerText || '';
         div.innerHTML = information;
         const cleanInformation = div.innerText || '';
+
+        const selectedEntity = selectedEntities.length > 0 ? selectedEntities[0] : null;
+        let filteredEntities: EntityInfo[] = [];
+        const elemValue = this.autocompleteRef?.nativeElement.value;
+        filteredEntities = !elemValue ? availableEntities : availableEntities?.filter(option =>
+          option.Text
+            ? option.Text.toLocaleLowerCase().includes(elemValue.toLocaleLowerCase())
+            : option.Value.toLocaleLowerCase().includes(elemValue.toLocaleLowerCase())
+        );
 
         const allowItemEditButtons = !settings.AllowMultiValue || (settings.AllowMultiValue && this.controlConfig.isPreview);
         const showAddNewEntityButtonInPreview = settings.EnableCreate && settings.EntityType && !(selectedEntities.length > 1);
@@ -109,6 +104,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
         const showEmpty = !settings.EnableAddExisting && !(selectedEntities.length > 1);
         const hideDropdown = (!settings.AllowMultiValue && (selectedEntities.length > 1)) || !settings.EnableAddExisting;
         const leavePlaceForButtons = settings.EnableCreate && settings.EntityType && !(selectedEntities.length > 1) && !settings.AllowMultiValue;
+        const showEmptyInputInDialog = settings.AllowMultiValue && !this.controlConfig.isPreview;
 
         const viewModel: PickerSearchViewModel = {
           debugEnabled,
@@ -132,6 +128,8 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
           tooltip: cleanTooltip,
           information: cleanInformation,
           isDialog,
+          selectedEntity,
+          filteredEntities,
 
           // additional properties for easier readability in the template
           allowItemEditButtons,
@@ -140,30 +138,21 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
           showAddNewEntityButtonInDialog,
           showEmpty,
           hideDropdown,
-          leavePlaceForButtons
+          leavePlaceForButtons,
+          showEmptyInputInDialog,
         };
         return viewModel;
       }),
     );
   }
 
-  ngAfterViewInit(): void { 
-    this.fillValue();
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes.availableEntities != null) {
-      this.filterSelectionList(this.availableEntities);
-    }
-  }
-
   ngOnDestroy(): void {
     super.ngOnDestroy();
   }
 
-  markAsTouched(): void {
-    if (this.selectedEntity && this.selectedEntities.length < 2) 
-      this.autocompleteRef.nativeElement.value = this.selectedEntity.label;
+  markAsTouched(selectedEntity: SelectedEntity, selectedEntities: SelectedEntity[], showEmptyInputInDialog: boolean): void {
+    if (selectedEntity && selectedEntities.length < 2 && !showEmptyInputInDialog)
+      this.autocompleteRef.nativeElement.value = selectedEntity.label;
     GeneralHelpers.markControlTouched(this.control);
   }
 
@@ -191,25 +180,13 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     this.pickerStateAdapter.toggleFreeTextMode();
   }
 
-  filterSelectionList(availableEntities: EntityInfo[]): EntityInfo[] {
-    if (availableEntities == null) { return []; }
-
-    const filter = this.autocompleteRef?.nativeElement.value;
-    if (!filter) {
-      this.filteredEntities = availableEntities;
-      return;
-    }
-
-
-    this.filteredEntities = availableEntities.filter(option =>
-      option.Text
-        ? option.Text.toLocaleLowerCase().includes(filter.toLocaleLowerCase())
-        : option.Value.toLocaleLowerCase().includes(filter.toLocaleLowerCase())
-    );
+  filterSelectionList(): void { 
+    // const filter = this.autocompleteRef?.nativeElement.value;
+    this.filter$.next(/*filter*/true);
   }
 
-  optionSelected(event: MatAutocompleteSelectedEvent, allowMultiValue: boolean): void {
-    if (!allowMultiValue && this.selectedEntity) this.removeItem(0);
+  optionSelected(event: MatAutocompleteSelectedEvent, allowMultiValue: boolean, selectedEntity: SelectedEntity): void {
+    if (!allowMultiValue && selectedEntity) this.removeItem(0);
     const selected: string = event.option.value;
     this.pickerStateAdapter.addSelected(selected);
     // TODO: @SDV - This is needed so after choosing option element is not focused (it gets focused by default so if blur is outside of setTimeout it will happen before refocus)
@@ -246,14 +223,5 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   expandDialog() {
     if (this.config.initialDisabled) { return; }
     this.editRoutingService.expand(true, this.config.index, this.config.entityGuid);
-  }
-
-  private fillValue(): void {
-    if (this.autocompleteRef)
-      if (this.selectedEntity && this.selectedEntities.length < 2) {
-        this.autocompleteRef.nativeElement.value = this.selectedEntity.label;
-      } else {
-        this.autocompleteRef.nativeElement.value = '';
-      }
   }
 }
