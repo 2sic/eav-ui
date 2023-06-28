@@ -100,7 +100,6 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
         const allowItemEditButtons = !settings.AllowMultiValue || (settings.AllowMultiValue && this.controlConfig.isPreview);
         const showAddNewEntityButtonInPreview = settings.EnableCreate && settings.EntityType && !(selectedEntities.length > 1);
         const showGoToListDialogButton = settings.AllowMultiValue && this.controlConfig.isPreview;
-        const showAddNewEntityButtonInDialog = !freeTextMode && settings.EnableCreate && settings.EntityType && settings.AllowMultiValue && !this.controlConfig.isPreview;
         const showEmpty = !settings.EnableAddExisting && !(selectedEntities.length > 1);
         const hideDropdown = (!settings.AllowMultiValue && (selectedEntities.length > 1)) || !settings.EnableAddExisting;
         const leavePlaceForButtons = settings.EnableCreate && settings.EntityType && !(selectedEntities.length > 1) && !settings.AllowMultiValue;
@@ -135,7 +134,6 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
           allowItemEditButtons,
           showAddNewEntityButtonInPreview,
           showGoToListDialogButton,
-          showAddNewEntityButtonInDialog,
           showEmpty,
           hideDropdown,
           leavePlaceForButtons,

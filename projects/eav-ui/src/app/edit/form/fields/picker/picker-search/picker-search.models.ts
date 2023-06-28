@@ -31,7 +31,6 @@ export interface PickerSearchViewModel {
   allowItemEditButtons: boolean;
   showAddNewEntityButtonInPreview: boolean;
   showGoToListDialogButton: boolean;
-  showAddNewEntityButtonInDialog: boolean;
   showEmpty: boolean;
   hideDropdown: boolean;
   leavePlaceForButtons: boolean;
