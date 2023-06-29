@@ -1,13 +1,8 @@
-import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { AbstractControl, FormGroup } from '@angular/forms';
-import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
-import { TranslateService } from '@ngx-translate/core';
-import { EntityInfo } from 'projects/edit-types';
-import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { GeneralHelpers } from '../../../../shared/helpers';
-import { EditRoutingService, FieldsSettingsService } from '../../../../shared/services';
-import { GlobalConfigService } from '../../../../shared/store/ngrx-data';
-import { SelectedEntity } from '../../entity/entity-default/entity-default.models';
+import { FieldsSettingsService } from '../../../../shared/services';
 import { PickerSourceAdapter } from '../picker-source-adapter';
 import { PickerStateAdapter } from '../picker-state-adapter';
 import { EntityPickerDialogTemplateVars } from './picker-dialog.models';
@@ -21,8 +16,6 @@ import { BaseSubsinkComponent } from 'projects/eav-ui/src/app/shared/components/
   styleUrls: ['./picker-dialog.component.scss'],
 })
 export class PickerDialogComponent extends BaseSubsinkComponent implements OnInit, OnDestroy, Field {
-  @ViewChild('autocomplete') autocompleteRef?: ElementRef;
-
   @Input() pickerSourceAdapter: PickerSourceAdapter;
   @Input() pickerStateAdapter: PickerStateAdapter;
   @Input() config: FieldConfigSet;
