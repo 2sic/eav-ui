@@ -5,13 +5,19 @@
     [config]="config" 
     [group]="group">
   </app-picker-list>
-  <app-picker-search 
+  <app-picker-search *ngIf="!data.freeTextMode" 
     [pickerSourceAdapter]="pickerSourceAdapter"
     [pickerStateAdapter]="pickerStateAdapter" 
     [config]="config" 
     [group]="group" 
     [controlConfig]="controlConfig">
   </app-picker-search>
+  <app-picker-text *ngIf="data.freeTextMode" 
+    [pickerSourceAdapter]="pickerSourceAdapter"
+    [pickerStateAdapter]="pickerStateAdapter" 
+    [config]="config" 
+    [group]="group">
+  </app-picker-text>
   <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
   <!-- add new entity -->
   <div *ngIf="data.showAddNewEntityButtonInDialog">
