@@ -21,8 +21,10 @@
   <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
   <!-- add new entity -->
   <div *ngIf="data.showAddNewEntityButtonInDialog">
-    <button mat-mini-fab color="accent" [tippy]="'Fields.Entity.New' | translate"
-      [disabled]="data.controlStatus.disabled || data.disableAddNew" (click)="openNewEntityDialog()">
+    <button mat-mini-fab color="accent" 
+      [tippy]="'Fields.Entity.New' | translate"
+      [disabled]="data.controlStatus.disabled || data.disableAddNew" 
+      (click)="openNewEntityDialog()">
       <mat-icon>add</mat-icon>
     </button>
   </div>
