@@ -32,6 +32,7 @@ import { SharedComponentsModule } from '../shared/shared-components.module';
 import { AppAdministrationNavComponent } from './app-administration-nav/app-administration-nav.component';
 import { AppAdministrationRoutingModule } from './app-administration-routing.module';
 import { AppConfigurationComponent } from './app-configuration/app-configuration.component';
+import { SyncConfigurationComponent } from './sync-configuration/sync-configuration.component';
 import { DataActionsComponent } from './data/data-actions/data-actions.component';
 import { DataFieldsComponent } from './data/data-fields/data-fields.component';
 import { DataItemsComponent } from './data/data-items/data-items.component';
@@ -82,6 +83,7 @@ import { WebApiComponent } from './web-api/web-api.component';
     ViewsComponent,
     WebApiComponent,
     AppConfigurationComponent,
+    SyncConfigurationComponent,
     DataItemsComponent,
     DataFieldsComponent,
     DataActionsComponent,

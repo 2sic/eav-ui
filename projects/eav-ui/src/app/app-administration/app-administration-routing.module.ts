@@ -120,7 +120,7 @@ const appAdministrationRoutes: Routes = [
         ],
       },
       {
-        path: 'app', component: EmptyRouteComponent, children: [
+        path: 'app', component: EmptyRouteComponent, data: { title: 'Manage App' }, children: [
           ...GoToMetadata.getRoutes(),
           {
             matcher: edit,
@@ -142,9 +142,6 @@ const appAdministrationRoutes: Routes = [
             ],
           },
           { ...GoToPermissions.route, data: { title: 'App Permissions' } },
-          { path: 'export', component: DialogEntryComponent, data: { dialog: exportAppDialog, title: 'Export App' } },
-          { path: 'export/parts', component: DialogEntryComponent, data: { dialog: exportAppPartsDialog, title: 'Export App Parts' } },
-          { path: 'import/parts', component: DialogEntryComponent, data: { dialog: importAppPartsDialog, title: 'Import App Parts' } },
           {
             path: 'analyze/:part', component: DialogEntryComponent, data: { dialog: analyzeSettingsDialog, title: 'Analyze Settings / Resources' }, children: [
               {
@@ -155,7 +152,14 @@ const appAdministrationRoutes: Routes = [
             ],
           },
         ],
-        data: { title: 'Manage App' },
+      },
+      {
+        path: 'sync', component: EmptyRouteComponent, data: { title: 'Sync' }, children: [
+          ...GoToMetadata.getRoutes(),
+          { path: 'export', component: DialogEntryComponent, data: { dialog: exportAppDialog, title: 'Export App' } },
+          { path: 'export/parts', component: DialogEntryComponent, data: { dialog: exportAppPartsDialog, title: 'Export App Parts' } },
+          { path: 'import/parts', component: DialogEntryComponent, data: { dialog: importAppPartsDialog, title: 'Import App Parts' } },
+        ], 
       },
     ]
   },

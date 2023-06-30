@@ -77,5 +77,14 @@
       <app-app-configuration *matTabContent [dialogSettings]="data.dialogSettings">
       </app-app-configuration>
     </mat-tab>
+
+    <mat-tab>
+      <div *matTabLabel class="mat-tab-label-box" tippy="Imports/Exports">
+        <mat-icon>sync</mat-icon>
+        <span>Sync</span>
+      </div>
+      <app-sync-configuration *matTabContent [dialogSettings]="data.dialogSettings">
+      </app-sync-configuration>
+    </mat-tab>
   </mat-tab-group>
 </div>
