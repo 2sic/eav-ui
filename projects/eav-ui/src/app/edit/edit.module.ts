@@ -107,6 +107,7 @@ import { PickerPillPreviewComponent } from './form/fields/picker/picker-pill-pre
 import { PickerTextComponent } from './form/fields/picker/picker-text/picker-text.component';
 import { PickerDialogComponent } from './form/fields/picker/picker-dialog/picker-dialog.component';
 import { PickerPreviewComponent } from './form/fields/picker/picker-preview/picker-preview.component';
+import { PickerTextToggleComponent } from './form/fields/picker/picker-text-toggle/picker-text-toggle.component';
 
 @NgModule({
     declarations: [
@@ -162,6 +163,7 @@ import { PickerPreviewComponent } from './form/fields/picker/picker-preview/pick
         PickerDialogComponent,
         PickerPreviewComponent,
         PickerTextComponent,
+        PickerTextToggleComponent,
         PickerPillPreviewComponent,
         EntityQueryComponent,
         EntityDefaultComponent,

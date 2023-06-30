@@ -22,7 +22,6 @@ export class PickerTextComponent implements OnInit {
   selectedEntity: SelectedEntity | null = null;
   selectedEntities: SelectedEntity[] = [];
 
-  private subscriptions: Subscription = new Subscription();
   filteredEntities: EntityInfo[] = [];
   templateVars$: Observable<EntityPickerTextTemplateVars>;
 

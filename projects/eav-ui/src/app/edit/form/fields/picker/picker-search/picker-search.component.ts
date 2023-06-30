@@ -103,6 +103,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
         const showEmpty = !settings.EnableAddExisting && !(selectedEntities.length > 1);
         const hideDropdown = (!settings.AllowMultiValue && (selectedEntities.length > 1)) || !settings.EnableAddExisting;
         const leavePlaceForButtons = settings.EnableCreate && settings.EntityType && !(selectedEntities.length > 1) && !settings.AllowMultiValue;
+        // showSelectedItem
         const showEmptyInputInDialog = settings.AllowMultiValue && !this.controlConfig.isPreview;
 
         const viewModel: PickerSearchViewModel = {

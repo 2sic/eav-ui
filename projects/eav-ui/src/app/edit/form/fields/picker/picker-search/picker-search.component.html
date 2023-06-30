@@ -42,21 +42,9 @@
             (click)="removeItem(0)">
             <mat-icon>clear</mat-icon>
           </button>
-          <span matSuffix class="selection-suffix-inline" *ngIf="vm.enableTextEntry">
-            <button mat-icon-button class="active"
-              [tippy]="'Fields.String.Dropdown' | translate"
-              [disabled]="vm.controlStatus.disabled" 
-              appClickStopPropagation>
-              <mat-icon>search</mat-icon>
-            </button>
-            <button mat-icon-button 
-              [tippy]="'Fields.String.Freetext' | translate"
-              [disabled]="vm.controlStatus.disabled" 
-              appClickStopPropagation
-              (click)="toggleFreeText(vm.controlStatus.disabled)">
-              <mat-icon>text_fields</mat-icon>
-            </button>
-          </span>
+          <div *ngIf="vm.enableTextEntry" matSuffix class="selection-suffix-inline">
+            <ng-content select="[freeTextButtons]"></ng-content>
+          </div>
           <mat-label [ngClass]="{ 'mat-error': vm.controlStatus.invalid && vm.controlStatus.touched }">
             {{ vm.label }} {{ vm.required ? '*': '' }}
           </mat-label>
