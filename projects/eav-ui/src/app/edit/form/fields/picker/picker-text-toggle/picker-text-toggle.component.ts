@@ -10,6 +10,7 @@ export class PickerTextToggleComponent implements OnInit {
   @Input() pickerStateAdapter: PickerStateAdapter;
   @Input() controlStatusDisabled: boolean;
   @Input() allowText: boolean;
+  @Input() freeTextMode: boolean;
 
   constructor() { }
 

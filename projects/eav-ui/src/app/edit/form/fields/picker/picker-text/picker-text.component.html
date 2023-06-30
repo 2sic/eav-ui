@@ -5,25 +5,9 @@
         [required]="data.required" 
         [formControlName]="config.fieldName" 
         [placeholder]="data.placeholder">
-        <!-- <div matSuffix class="selection-suffix-inline">
-          <ng-content select="[freeTextButtons2]"></ng-content>
-        </div> -->
-      <span matSuffix class="selection-suffix-inline">
-        <button mat-icon-button 
-          [tippy]="'Fields.String.Dropdown' | translate" 
-          [disabled]="data.controlStatus.disabled"
-          appClickStopPropagation 
-          (click)="toggleFreeText(data.controlStatus.disabled)">
-          <mat-icon>search</mat-icon>
-        </button>
-        <button mat-icon-button 
-          [tippy]="'Fields.String.Freetext' | translate" 
-          [disabled]="data.controlStatus.disabled" 
-          appClickStopPropagation 
-          class="active">
-          <mat-icon>text_fields</mat-icon>
-        </button>
-      </span>
+        <div matSuffix class="selection-suffix-inline">
+          <ng-content select="[freeTextButtons]"></ng-content>
+        </div>
       <mat-label>{{ data.label }}</mat-label>
     </mat-form-field>
   </div>

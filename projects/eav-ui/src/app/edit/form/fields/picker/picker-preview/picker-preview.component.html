@@ -12,7 +12,8 @@
     <app-picker-toggle-text freeTextButtons 
       [pickerStateAdapter]="pickerStateAdapter"
       [controlStatusDisabled]="data.controlStatus.disabled"
-      [allowText]="data.enableTextEntry">
+      [allowText]="data.enableTextEntry"
+      [freeTextMode]="data.freeTextMode">
     </app-picker-toggle-text>
   </app-picker-search>
   <app-picker-text *ngIf="data.freeTextMode"
@@ -20,11 +21,12 @@
     [pickerStateAdapter]="pickerStateAdapter" 
     [config]="config"
     [group]="group">
-    <!-- <app-picker-toggle-text freeTextButtons2 
+    <app-picker-toggle-text freeTextButtons 
       [pickerStateAdapter]="pickerStateAdapter"
       [controlStatusDisabled]="data.controlStatus.disabled" 
-      [allowText]="data.enableTextEntry">
-    </app-picker-toggle-text> -->
+      [allowText]="data.enableTextEntry"
+      [freeTextMode]="data.freeTextMode">
+    </app-picker-toggle-text>
   </app-picker-text>
   <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
 </ng-container>

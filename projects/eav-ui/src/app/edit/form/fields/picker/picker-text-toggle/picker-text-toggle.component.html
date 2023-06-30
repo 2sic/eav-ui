@@ -1,10 +1,18 @@
 <span *ngIf="allowText" matSuffix class="selection-suffix-inline">
-  <button mat-icon-button class="active" [tippy]="'Fields.String.Dropdown' | translate"
-    [disabled]="controlStatusDisabled" appClickStopPropagation>
+  <button mat-icon-button 
+    [ngClass]="freeTextMode ? '' : 'active'" 
+    [tippy]="'Fields.String.Dropdown' | translate"
+    [disabled]="controlStatusDisabled" 
+    appClickStopPropagation 
+    (click)="freeTextMode ? toggleFreeText(controlStatusDisabled) : null">
     <mat-icon>search</mat-icon>
   </button>
-  <button mat-icon-button [tippy]="'Fields.String.Freetext' | translate" [disabled]="controlStatusDisabled"
-    appClickStopPropagation (click)="toggleFreeText(controlStatusDisabled)">
+  <button mat-icon-button 
+    [ngClass]="freeTextMode ? 'active' : ''" 
+    [tippy]="'Fields.String.Freetext' | translate" 
+    [disabled]="controlStatusDisabled"
+    appClickStopPropagation 
+    (click)="freeTextMode ? null : toggleFreeText(controlStatusDisabled)">
     <mat-icon>text_fields</mat-icon>
   </button>
 </span>
