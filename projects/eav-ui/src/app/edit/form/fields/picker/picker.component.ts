@@ -22,7 +22,6 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
   pickerStateAdapter: PickerStateAdapter;
   isStringQuery: boolean;
   isString: boolean;
-  isPreview: boolean;
 
   viewModel$: Observable<PickerViewModel>;
 
@@ -41,7 +40,6 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
   ngOnInit(): void {
     super.ngOnInit();
 
-    this.isPreview = this.controlConfig.isPreview;
     this.refreshOnChildClosed();
   }
 
@@ -57,18 +55,13 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
   }
 
   createTemplateVariables() {
-    this.viewModel$ = combineLatest([
-      this.pickerStateAdapter.shouldPickerListBeShown$,
-      this.pickerStateAdapter.allowMultiValue$,
-      this.pickerStateAdapter.isDialog$,
-      this.pickerStateAdapter.selectedEntities$.pipe(map(selectedEntities => selectedEntities.length), distinctUntilChanged()),
-    ])
-      .pipe(map(([shouldPickerListBeShown, allowMultiValue, isDialog, noSelectedEntities]) => {
+    this.viewModel$ = combineLatest([this.pickerStateAdapter.allowMultiValue$])
+      .pipe(map(([allowMultiValue]) => {
+        // allowMultiValue is used to determine if we even use control with preview and dialog
+        const showPreview = !allowMultiValue || (allowMultiValue && this.controlConfig.isPreview)
+
         const viewModel: PickerViewModel = {
-          shouldPickerListBeShown,
-          allowMultiValue,
-          isDialog,
-          noSelectedEntities,
+          showPreview,
         };
         return viewModel;
       }),

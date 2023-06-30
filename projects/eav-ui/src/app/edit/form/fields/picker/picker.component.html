@@ -3,14 +3,14 @@
   e.g. EntityDefault, EntityContentBlocks, EntityQuery, StringDropdownQuery
 -->
 <ng-container *ngIf="viewModel$ | async as vm">
-  <app-picker-preview *ngIf="!vm.allowMultiValue || (vm.allowMultiValue && isPreview)" 
+  <app-picker-preview *ngIf="vm.showPreview" 
     [pickerSourceAdapter]="pickerSourceAdapter"
     [pickerStateAdapter]="pickerStateAdapter"
     [config]="config" 
     [group]="group" 
     [controlConfig]="controlConfig">
   </app-picker-preview>
-  <app-picker-dialog *ngIf="vm.allowMultiValue && !isPreview" 
+  <app-picker-dialog *ngIf="!vm.showPreview" 
     [pickerSourceAdapter]="pickerSourceAdapter"
     [pickerStateAdapter]="pickerStateAdapter"
     [config]="config" 

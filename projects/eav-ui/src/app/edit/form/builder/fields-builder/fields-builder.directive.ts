@@ -35,7 +35,7 @@ import { HyperlinkDefaultExpandableWrapperComponent } from '../../wrappers/hyper
 import { HyperlinkLibraryExpandableWrapperComponent } from '../../wrappers/hyperlink-library-expandable-wrapper/hyperlink-library-expandable-wrapper.component';
 import { LocalizationWrapperComponent } from '../../wrappers/localization-wrapper/localization-wrapper.component';
 import { PickerExpandableWrapperComponent } from '../../wrappers/picker-expandable-wrapper/picker-expandable-wrapper.component';
-import { FieldConfigSet } from './field-config-set.model';
+import { FieldConfigSet, FieldControlConfig } from './field-config-set.model';
 import { FieldWrapper } from './field-wrapper.model';
 import { Field } from './field.model';
 import { EmptyFieldHelpers } from '../../fields/empty/empty-field-helpers';
@@ -150,7 +150,7 @@ export class FieldsBuilderDirective implements OnInit, OnDestroy {
     }
 
     // generate the real input field component
-    this.generateAndAttachField(componentType, wrapperInfo.contentsRef, fieldConfig);
+    this.generateAndAttachField(componentType, wrapperInfo.contentsRef, fieldConfig, false);
 
     if ((wrapperInfo.wrapperRef.instance as PickerExpandableWrapperComponent).previewComponent) {
       const previewType = this.readComponentType(fieldProps.calculatedInputType.inputType);
@@ -160,11 +160,11 @@ export class FieldsBuilderDirective implements OnInit, OnDestroy {
     // return ref;
   }
 
-  private generateAndAttachField(componentType: Type<any>, targetRef: ViewContainerRef, fieldConfig: FieldConfigSet, isPreview: boolean = false) {
+  private generateAndAttachField(componentType: Type<any>, targetRef: ViewContainerRef, fieldConfig: FieldConfigSet, isPreview: boolean) {
     const factory = this.resolver.resolveComponentFactory<Field>(componentType);
     const realFieldRef = targetRef.createComponent(factory);
     // used for passing data to controls when fields have multiple controls (e.g. field and a preview)
-    const controlConfig = { isPreview };
+    const controlConfig: FieldControlConfig = { isPreview };
 
     Object.assign<Field, Field>(realFieldRef.instance, {
       config: fieldConfig,

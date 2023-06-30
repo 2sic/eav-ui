@@ -50,7 +50,7 @@ export class PickerDialogComponent extends BaseSubsinkComponent implements OnIni
       map(([
         settings, controlStatus, freeTextMode, disableAddNew,
       ]) => {
-        const showAddNewEntityButtonInDialog = !freeTextMode && settings.EnableCreate && settings.EntityType && settings.AllowMultiValue && !this.controlConfig.isPreview;
+        const showAddNewEntityButtonInDialog = !freeTextMode && settings.EnableCreate && settings.EntityType && settings.AllowMultiValue;
 
         const templateVars: EntityPickerDialogTemplateVars = {
           controlStatus,

@@ -1,8 +1,5 @@
 export interface PickerViewModel {
-  shouldPickerListBeShown: boolean;
-  allowMultiValue: boolean;
-  isDialog: boolean;
-  noSelectedEntities: number;
+  showPreview: boolean;
 }
 
 export interface DeleteEntityProps {
