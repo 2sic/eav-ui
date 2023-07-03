@@ -1,7 +1,7 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
-import { FieldsSettingsService } from '../../../../shared/services';
+import { EditRoutingService, FieldsSettingsService } from '../../../../shared/services';
 import { PickerSourceAdapter } from '../picker-source-adapter';
 import { PickerStateAdapter } from '../picker-state-adapter';
 import { EntityPickerPreviewTemplateVars } from './picker-preview.models';
@@ -26,6 +26,7 @@ export class PickerPreviewComponent extends BaseSubsinkComponent implements OnIn
 
   constructor(
     private fieldsSettingsService: FieldsSettingsService,
+    private editRoutingService: EditRoutingService,
   ) {
     super();
    }
@@ -34,25 +35,38 @@ export class PickerPreviewComponent extends BaseSubsinkComponent implements OnIn
     const freeTextMode$ = this.pickerStateAdapter.freeTextMode$;
     const selectedEntities$ = this.pickerStateAdapter.selectedEntities$;
     const controlStatus$ = this.pickerStateAdapter.controlStatus$;
+    const disableAddNew$ = this.pickerStateAdapter.disableAddNew$;
 
     const settings$ = this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).pipe(
       map(settings => ({
+        AllowMultiValue: settings.AllowMultiValue,
         EnableTextEntry: settings.EnableTextEntry,
+        EnableCreate: settings.EnableCreate,
+        EntityType: settings.EntityType,
       })),
       distinctUntilChanged(GeneralHelpers.objectsEqual),
     );
 
     this.templateVars$ = combineLatest([
-      selectedEntities$, freeTextMode$, settings$, controlStatus$
+      selectedEntities$, freeTextMode$, settings$, controlStatus$, disableAddNew$
     ]).pipe(
       map(([
-        selectedEntities, freeTextMode, settings, controlStatus
+        selectedEntities, freeTextMode, settings, controlStatus, disableAddNew
       ]) => {
+        const leavePlaceForButtons = (settings.EntityType && settings.EnableCreate) || settings.AllowMultiValue;
+        const showAddNewEntityButton =  settings.EntityType && settings.EnableCreate;
+        const showGoToListDialogButton = settings.AllowMultiValue;
+
         const templateVars: EntityPickerPreviewTemplateVars = {
           selectedEntities,
           freeTextMode,
           enableTextEntry: settings.EnableTextEntry,
           controlStatus,
+          disableAddNew,
+
+          leavePlaceForButtons,
+          showAddNewEntityButton,
+          showGoToListDialogButton,
         };
 
         return templateVars;
@@ -62,5 +76,14 @@ export class PickerPreviewComponent extends BaseSubsinkComponent implements OnIn
 
   ngOnDestroy(): void {
     super.ngOnDestroy();
+  }
+
+  openNewEntityDialog(): void {
+    this.pickerSourceAdapter.editEntity(null);
+  }
+
+  expandDialog() {
+    if (this.config.initialDisabled) { return; }
+    this.editRoutingService.expand(true, this.config.index, this.config.entityGuid);
   }
 }

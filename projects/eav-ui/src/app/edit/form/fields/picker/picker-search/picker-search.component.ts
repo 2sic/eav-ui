@@ -38,7 +38,6 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     private translate: TranslateService,
     private globalConfigService: GlobalConfigService,
     private fieldsSettingsService: FieldsSettingsService,
-    private editRoutingService: EditRoutingService,
   ) {
     super();
    }
@@ -203,10 +202,6 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     return isSelected;
   }
 
-  openNewEntityDialog(): void {
-    this.pickerSourceAdapter.editEntity(null);
-  }
-
   edit(entityGuid: string, entityId: number): void {
     this.pickerSourceAdapter.editEntity({ entityGuid, entityId });
   }
@@ -217,10 +212,5 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
 
   deleteItem(index: number, entityGuid: string): void {
     this.pickerSourceAdapter.deleteEntity({ index, entityGuid });
-  }
-
-  expandDialog() {
-    if (this.config.initialDisabled) { return; }
-    this.editRoutingService.expand(true, this.config.index, this.config.entityGuid);
   }
 }

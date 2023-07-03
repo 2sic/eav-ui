@@ -1,32 +1,51 @@
 <ng-container *ngIf="templateVars$ | async as data">
-  <app-picker-pill-preview *ngIf="data.selectedEntities.length > 1 && !data.freeTextMode" 
-    [config]="config" 
-    [group]="group">
-  </app-picker-pill-preview>
-  <app-picker-search *ngIf="data.selectedEntities.length < 2 && !data.freeTextMode"
-    [pickerSourceAdapter]="pickerSourceAdapter" 
-    [pickerStateAdapter]="pickerStateAdapter"
-    [config]="config" 
-    [group]="group" 
-    [controlConfig]="controlConfig">
-    <app-picker-toggle-text freeTextButtons 
-      [pickerStateAdapter]="pickerStateAdapter"
-      [controlStatusDisabled]="data.controlStatus.disabled"
-      [allowText]="data.enableTextEntry"
-      [freeTextMode]="data.freeTextMode">
-    </app-picker-toggle-text>
-  </app-picker-search>
-  <app-picker-text *ngIf="data.freeTextMode"
-    [pickerSourceAdapter]="pickerSourceAdapter" 
-    [pickerStateAdapter]="pickerStateAdapter" 
-    [config]="config"
-    [group]="group">
-    <app-picker-toggle-text freeTextButtons 
-      [pickerStateAdapter]="pickerStateAdapter"
-      [controlStatusDisabled]="data.controlStatus.disabled" 
-      [allowText]="data.enableTextEntry"
-      [freeTextMode]="data.freeTextMode">
-    </app-picker-toggle-text>
-  </app-picker-text>
+  <div fxLayout="row" fxLayoutAlign="start end">
+    <div [ngClass]="data.leavePlaceForButtons ? 'ed-field__field-short' : 'ed-field__field'">
+      <app-picker-pill-preview *ngIf="data.selectedEntities.length > 1 && !data.freeTextMode" 
+        [config]="config" 
+        [group]="group">
+      </app-picker-pill-preview>
+      <app-picker-search *ngIf="data.selectedEntities.length < 2 && !data.freeTextMode"
+        [pickerSourceAdapter]="pickerSourceAdapter" 
+        [pickerStateAdapter]="pickerStateAdapter"
+        [config]="config" 
+        [group]="group" 
+        [controlConfig]="controlConfig">
+        <app-picker-toggle-text freeTextButtons 
+          [pickerStateAdapter]="pickerStateAdapter"
+          [controlStatusDisabled]="data.controlStatus.disabled"
+          [allowText]="data.enableTextEntry"
+          [freeTextMode]="data.freeTextMode">
+        </app-picker-toggle-text>
+      </app-picker-search>
+      <app-picker-text *ngIf="data.freeTextMode"
+        [pickerSourceAdapter]="pickerSourceAdapter" 
+        [pickerStateAdapter]="pickerStateAdapter" 
+        [config]="config"
+        [group]="group">
+        <app-picker-toggle-text freeTextButtons 
+          [pickerStateAdapter]="pickerStateAdapter"
+          [controlStatusDisabled]="data.controlStatus.disabled" 
+          [allowText]="data.enableTextEntry"
+          [freeTextMode]="data.freeTextMode">
+        </app-picker-toggle-text>
+      </app-picker-text>
+    </div>
+    <div fxLayoutAlign="end center" [ngClass]="data.showAddNewEntityButton && data.showGoToListDialogButton 
+          ? 'ed-field__create-two-icon' 
+          : data.showAddNewEntityButton || data.showGoToListDialogButton 
+            ? 'ed-field__create-icon' 
+            : 'ed-field__create-icon-hide'">
+      <!-- create new entity to add to this list -->
+      <button mat-icon-button *ngIf="data.showAddNewEntityButton" [tippy]="'Fields.Entity.New' | translate"
+        [disabled]="data.controlStatus.disabled || data.disableAddNew" (click)="openNewEntityDialog()">
+        <mat-icon>add_circle_outline</mat-icon>
+      </button>
+      <button mat-icon-button *ngIf="data.showGoToListDialogButton" [tippy]="'Fields.Entity.OpenMultiselect' | translate"
+        (click)="expandDialog()">
+        <mat-icon>post_add</mat-icon>
+      </button>
+    </div>
+  </div>
   <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
 </ng-container>

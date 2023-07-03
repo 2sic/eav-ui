@@ -6,4 +6,9 @@ export interface EntityPickerPreviewTemplateVars {
   freeTextMode: boolean;
   enableTextEntry: boolean;
   controlStatus: ControlStatus<string | string[]>;
+  disableAddNew: boolean;
+
+  leavePlaceForButtons: boolean;
+  showAddNewEntityButton: boolean;
+  showGoToListDialogButton: boolean;
 }
