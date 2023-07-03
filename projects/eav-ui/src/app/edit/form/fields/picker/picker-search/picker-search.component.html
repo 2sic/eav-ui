@@ -6,9 +6,9 @@
         [placeholder]="getPlaceholder(vm.availableEntities, vm.error)" 
         [matAutocomplete]="auto"
         [disabled]="vm.controlStatus.disabled || !vm.enableAddExisting" 
-        [value]="vm.showEmptyInputInDialog ? '' : vm.selectedEntity?.label"
+        [value]="showSelectedItem ? vm.selectedEntity?.label : ''"
         (focus)="fetchEntities(vm.availableEntities)" 
-        (blur)="markAsTouched(vm.selectedEntity, vm.selectedEntities, vm.showEmptyInputInDialog)"
+        (blur)="markAsTouched(vm.selectedEntity, vm.selectedEntities)"
         (input)="filterSelectionList()" 
         (click)="filterSelectionList()">
       <button mat-icon-button matSuffix class="entity-dropdown-button" disableRipple="true"
@@ -17,7 +17,7 @@
         <mat-icon>arrow_drop_down</mat-icon>
       </button>
       <button mat-icon-button matSuffix
-        *ngIf="vm.selectedEntity && vm.enableEdit && !vm.selectedEntity?.disableEdit && vm.allowItemEditButtons"
+        *ngIf="vm.enableEdit && !vm.selectedEntity?.disableEdit && vm.showItemEditButtons"
         [tippy]="'Fields.Entity.Edit' | translate" 
         [disabled]="config.initialDisabled"
         appClickStopPropagation 
@@ -25,7 +25,7 @@
         <mat-icon>edit</mat-icon>
       </button>
       <button mat-icon-button matSuffix
-        *ngIf="vm.selectedEntity && vm.enableDelete && !vm.selectedEntity?.disableDelete && vm.allowItemEditButtons"
+        *ngIf="vm.enableDelete && !vm.selectedEntity?.disableDelete && vm.showItemEditButtons"
         [tippy]="'Fields.Entity.Delete' | translate" 
         [disabled]="vm.controlStatus.disabled"
         appClickStopPropagation 
@@ -33,7 +33,7 @@
         <mat-icon>delete</mat-icon>
       </button>
       <button mat-icon-button matSuffix 
-        *ngIf="vm.selectedEntity && vm.enableRemove && vm.allowItemEditButtons"
+        *ngIf="vm.enableRemove && vm.showItemEditButtons"
         [tippy]="'Fields.Entity.Remove' | translate" 
         [disabled]="vm.controlStatus.disabled" 
         appClickStopPropagation 

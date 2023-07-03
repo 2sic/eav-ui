@@ -10,7 +10,9 @@
     [pickerStateAdapter]="pickerStateAdapter" 
     [config]="config" 
     [group]="group" 
-    [controlConfig]="controlConfig">
+    [controlConfig]="controlConfig"
+    [showSelectedItem]="false"
+    [showItemEditButtons]="false">
   </app-picker-search>
   <app-picker-text *ngIf="data.freeTextMode" 
     [pickerSourceAdapter]="pickerSourceAdapter"

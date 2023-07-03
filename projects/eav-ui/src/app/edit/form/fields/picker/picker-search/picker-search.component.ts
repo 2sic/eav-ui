@@ -5,7 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { EntityInfo } from 'projects/edit-types';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { GeneralHelpers } from '../../../../shared/helpers';
-import { EditRoutingService, FieldsSettingsService } from '../../../../shared/services';
+import { FieldsSettingsService } from '../../../../shared/services';
 import { GlobalConfigService } from '../../../../shared/store/ngrx-data';
 import { SelectedEntity } from '../../entity/entity-default/entity-default.models';
 import { PickerSourceAdapter } from '../picker-source-adapter';
@@ -28,6 +28,8 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
   @Input() controlConfig: FieldControlConfig;
+  @Input() showSelectedItem: boolean;
+  @Input() showItemEditButtons: boolean;
 
   viewModel$: Observable<PickerSearchViewModel>;
   private control: AbstractControl;
@@ -48,23 +50,18 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     const availableEntities$ = this.pickerSourceAdapter.availableEntities$;
 
     const freeTextMode$ = this.pickerStateAdapter.freeTextMode$;
-    const disableAddNew$ = this.pickerStateAdapter.disableAddNew$;
     const controlStatus$ = this.pickerStateAdapter.controlStatus$;
     const error$ = this.pickerStateAdapter.error$;
     const selectedEntities$ = this.pickerStateAdapter.selectedEntities$;
     const label$ = this.pickerStateAdapter.label$;
-    const placeholder$ = this.pickerStateAdapter.placeholder$;
     const required$ = this.pickerStateAdapter.required$;
     const tooltip$ = this.pickerStateAdapter.tooltip$;
     const information$ = this.pickerStateAdapter.information$;
-    const isDialog$ = this.pickerStateAdapter.isDialog$;
 
     const debugEnabled$ = this.globalConfigService.getDebugEnabled$();
     const settings$ = this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).pipe(
       map(settings => ({
         AllowMultiValue: settings.AllowMultiValue,
-        EnableCreate: settings.EnableCreate,
-        EntityType: settings.EntityType,
         EnableAddExisting: settings.EnableAddExisting,
         EnableTextEntry: settings.EnableTextEntry,
         EnableEdit: settings.EnableEdit,
@@ -74,12 +71,12 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
       distinctUntilChanged(GeneralHelpers.objectsEqual),
     );
     this.viewModel$ = combineLatest([
-      debugEnabled$, settings$, selectedEntities$, availableEntities$, error$, controlStatus$, freeTextMode$,
-      disableAddNew$, label$, placeholder$, required$, tooltip$, information$, isDialog$, this.filter$
+      debugEnabled$, settings$, selectedEntities$, availableEntities$, error$,
+      controlStatus$, freeTextMode$, label$, required$, tooltip$, information$
     ]).pipe(
       map(([
-        debugEnabled, settings, selectedEntities, availableEntities, error, controlStatus, freeTextMode,
-        disableAddNew, label, placeholder, required, tooltip, information, isDialog, filter
+        debugEnabled, settings, selectedEntities, availableEntities, error,
+        controlStatus, freeTextMode, label, required, tooltip, information
       ]) => {
         const div = document.createElement("div");
         div.innerHTML = tooltip;
@@ -96,20 +93,13 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
             : option.Value.toLocaleLowerCase().includes(elemValue.toLocaleLowerCase())
         );
 
-        const allowItemEditButtons = !settings.AllowMultiValue || (settings.AllowMultiValue && this.controlConfig.isPreview);
-        const showAddNewEntityButtonInPreview = settings.EnableCreate && settings.EntityType && allowItemEditButtons;
-        const showGoToListDialogButton = settings.AllowMultiValue && this.controlConfig.isPreview;
+        const showItemEditButtons = selectedEntity && this.showItemEditButtons;
         const showEmpty = !settings.EnableAddExisting && !(selectedEntities.length > 1);
         const hideDropdown = (!settings.AllowMultiValue && (selectedEntities.length > 1)) || !settings.EnableAddExisting;
-        const leavePlaceForButtons = settings.EnableCreate && settings.EntityType && !(selectedEntities.length > 1) && !settings.AllowMultiValue;
-        // showSelectedItem
-        const showEmptyInputInDialog = settings.AllowMultiValue && !this.controlConfig.isPreview;
 
         const viewModel: PickerSearchViewModel = {
           debugEnabled,
           allowMultiValue: settings.AllowMultiValue,
-          enableCreate: settings.EnableCreate,
-          entityType: settings.EntityType,
           enableAddExisting: settings.EnableAddExisting,
           enableTextEntry: settings.EnableTextEntry,
           enableEdit: settings.EnableEdit,
@@ -120,24 +110,17 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
           error,
           controlStatus,
           freeTextMode,
-          disableAddNew,
           label,
-          placeholder,
           required,
           tooltip: cleanTooltip,
           information: cleanInformation,
-          isDialog,
           selectedEntity,
           filteredEntities,
 
           // additional properties for easier readability in the template
-          allowItemEditButtons,
-          showAddNewEntityButtonInPreview,
-          showGoToListDialogButton,
+          showItemEditButtons,
           showEmpty,
           hideDropdown,
-          leavePlaceForButtons,
-          showEmptyInputInDialog,
         };
         return viewModel;
       }),
@@ -148,8 +131,8 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     super.ngOnDestroy();
   }
 
-  markAsTouched(selectedEntity: SelectedEntity, selectedEntities: SelectedEntity[], showEmptyInputInDialog: boolean): void {
-    if (selectedEntity && selectedEntities.length < 2 && !showEmptyInputInDialog)
+  markAsTouched(selectedEntity: SelectedEntity, selectedEntities: SelectedEntity[]): void {
+    if (selectedEntity && selectedEntities.length < 2 && this.showSelectedItem)
       this.autocompleteRef.nativeElement.value = selectedEntity.label;
     GeneralHelpers.markControlTouched(this.control);
   }
@@ -179,8 +162,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   }
 
   filterSelectionList(): void { 
-    // const filter = this.autocompleteRef?.nativeElement.value;
-    this.filter$.next(/*filter*/true);
+    this.filter$.next(true);
   }
 
   optionSelected(event: MatAutocompleteSelectedEvent, allowMultiValue: boolean, selectedEntity: SelectedEntity): void {
