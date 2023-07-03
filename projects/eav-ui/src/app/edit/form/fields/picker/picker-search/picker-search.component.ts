@@ -79,9 +79,9 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
         controlStatus, freeTextMode, label, required, tooltip, information, filter
       ]) => {
         const div = document.createElement("div");
-        div.innerHTML = tooltip;
+        div.innerHTML = tooltip ?? '';
         const cleanTooltip = div.innerText || '';
-        div.innerHTML = information;
+        div.innerHTML = information ?? '';
         const cleanInformation = div.innerText || '';
 
         const selectedEntity = selectedEntities.length > 0 ? selectedEntities[0] : null;
