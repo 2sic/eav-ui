@@ -23,7 +23,7 @@ export interface PickerSearchViewModel {
   filteredEntities: EntityInfo[];
 
   // added for easier readability
-  showItemEditButtons: boolean;
   showEmpty: boolean;
   hideDropdown: boolean;
+  showItemEditButtons: boolean;
 }

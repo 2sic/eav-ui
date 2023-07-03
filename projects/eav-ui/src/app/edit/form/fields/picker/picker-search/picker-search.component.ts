@@ -72,11 +72,11 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     );
     this.viewModel$ = combineLatest([
       debugEnabled$, settings$, selectedEntities$, availableEntities$, error$,
-      controlStatus$, freeTextMode$, label$, required$, tooltip$, information$
+      controlStatus$, freeTextMode$, label$, required$, tooltip$, information$, this.filter$
     ]).pipe(
       map(([
         debugEnabled, settings, selectedEntities, availableEntities, error,
-        controlStatus, freeTextMode, label, required, tooltip, information
+        controlStatus, freeTextMode, label, required, tooltip, information, filter
       ]) => {
         const div = document.createElement("div");
         div.innerHTML = tooltip;
@@ -85,17 +85,16 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
         const cleanInformation = div.innerText || '';
 
         const selectedEntity = selectedEntities.length > 0 ? selectedEntities[0] : null;
-        let filteredEntities: EntityInfo[] = [];
         const elemValue = this.autocompleteRef?.nativeElement.value;
-        filteredEntities = !elemValue ? availableEntities : availableEntities?.filter(option =>
+        const filteredEntities = !elemValue ? availableEntities : availableEntities?.filter(option =>
           option.Text
             ? option.Text.toLocaleLowerCase().includes(elemValue.toLocaleLowerCase())
             : option.Value.toLocaleLowerCase().includes(elemValue.toLocaleLowerCase())
         );
 
-        const showItemEditButtons = selectedEntity && this.showItemEditButtons;
         const showEmpty = !settings.EnableAddExisting && !(selectedEntities.length > 1);
         const hideDropdown = (!settings.AllowMultiValue && (selectedEntities.length > 1)) || !settings.EnableAddExisting;
+        const showItemEditButtons = selectedEntity && this.showItemEditButtons;
 
         const viewModel: PickerSearchViewModel = {
           debugEnabled,
@@ -118,9 +117,9 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
           filteredEntities,
 
           // additional properties for easier readability in the template
-          showItemEditButtons,
           showEmpty,
           hideDropdown,
+          showItemEditButtons
         };
         return viewModel;
       }),
@@ -162,7 +161,8 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   }
 
   filterSelectionList(): void { 
-    this.filter$.next(true);
+    // const filter = this.autocompleteRef?.nativeElement.value;
+    this.filter$.next(/*filter*/true);
   }
 
   optionSelected(event: MatAutocompleteSelectedEvent, allowMultiValue: boolean, selectedEntity: SelectedEntity): void {
