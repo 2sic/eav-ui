@@ -12,8 +12,7 @@
         (input)="filterSelectionList()" 
         (click)="filterSelectionList()">
       <button mat-icon-button matSuffix class="entity-dropdown-button" disableRipple="true"
-        [disabled]="vm.controlStatus.disabled || !vm.enableAddExisting" 
-        *ngIf="!vm.enableTextEntry">
+        [disabled]="vm.controlStatus.disabled || !vm.enableAddExisting">
         <mat-icon>arrow_drop_down</mat-icon>
       </button>
       <button mat-icon-button matSuffix
