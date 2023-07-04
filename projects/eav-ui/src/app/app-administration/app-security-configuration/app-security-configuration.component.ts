@@ -1,7 +1,9 @@
-import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewContainerRef } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ContentItemsService } from '../../content-items/services/content-items.service';
+import { GoToMetadata } from '../../metadata';
+import { GoToPermissions } from '../../permissions/go-to-permissions';
 import { BaseComponent } from '../../shared/components/base-component/base.component';
 import { eavConstants, SystemSettingsScope, SystemSettingsScopes } from '../../shared/constants/eav.constants';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
@@ -9,35 +11,31 @@ import { AppScopes } from '../../shared/models/dialog-context.models';
 import { DialogSettings } from '../../shared/models/dialog-settings.model';
 import { EditForm } from '../../shared/models/edit-form.model';
 import { Context } from '../../shared/services/context';
-import { DialogService } from '../../shared/services/dialog.service';
 import { FeaturesService } from '../../shared/services/features.service';
-import { ContentTypeEdit } from '../models';
-import { AppDialogConfigService, ContentTypesService } from '../services';
+import { AppAdminHelpers } from '../app-admin-helpers';
+import { AppDialogConfigService } from '../services';
 import { AppInternalsService } from '../services/app-internals.service';
-import { AnalyzePart, AnalyzeParts } from '../sub-dialogs/analyze-settings/analyze-settings.models';
 import { Subject, Observable, combineLatest, map } from 'rxjs';
 import { AppInternals } from '../models/app-internals.model';
+import { FeatureNames } from '../../features/feature-names';
+import { FeatureComponentBase } from '../../features/shared/base-feature.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
-  selector: 'app-app-configuration',
-  templateUrl: './app-configuration.component.html',
-  styleUrls: ['./app-configuration.component.scss'],
+  selector: 'app-app-security-configuration',
+  templateUrl: './app-security-configuration.component.html',
+  styleUrls: ['./app-security-configuration.component.scss'],
 })
-export class AppConfigurationComponent extends BaseComponent implements OnInit, OnChanges, OnDestroy {
+export class AppSecurityConfigurationComponent extends BaseComponent implements OnInit, OnChanges, OnDestroy {
   @Input() dialogSettings: DialogSettings;
 
   eavConstants = eavConstants;
-  AnalyzeParts = AnalyzeParts;
-  SystemSettingsScopes = SystemSettingsScopes;
   isGlobal: boolean;
-  isPrimary: boolean;
   isApp: boolean;
 
   // More proper ViewModel
   appSettingsInternal$ = new Subject<AppInternals>();
   data$: Observable<ViewModel>;
-
-  public appStateAdvanced = false;
 
   public features: FeaturesService = new FeaturesService();
 
@@ -47,28 +45,27 @@ export class AppConfigurationComponent extends BaseComponent implements OnInit, 
     private contentItemsService: ContentItemsService,
     private context: Context,
     private snackBar: MatSnackBar,
-    private dialogService: DialogService,
     private appInternalsService: AppInternalsService,
-    private contentTypesService: ContentTypesService,
-    appDialogConfigService: AppDialogConfigService  ) {
+    appDialogConfigService: AppDialogConfigService,
+    private dialog: MatDialog,
+    private viewContainerRef: ViewContainerRef,
+    private changeDetectorRef: ChangeDetectorRef
+  ) {
     super(router, route);
     this.features.loadFromService(appDialogConfigService);
 
     // New with proper ViewModel
     this.data$ = combineLatest([
       this.appSettingsInternal$,
-    ]).pipe(map(([settings]) => {
+      this.features.isEnabled$(FeatureNames.LightSpeed),
+      this.features.isEnabled$(FeatureNames.PermissionsByLanguage),
+    ]).pipe(map(([settings, lightSpeedEnabled, langPermsEnabled]) => {
       const result: ViewModel = {
-        systemSettingsCount: this.isPrimary
-          ? settings.EntityLists.SettingsSystem.filter(i => i.SettingsEntityScope === SystemSettingsScopes.Site).length
-          : settings.EntityLists.SettingsSystem.filter(i => !i.SettingsEntityScope).length,
-        customSettingsCount: settings.EntityLists.AppSettings?.length,
-        customSettingsFieldsCount: settings.FieldAll.AppSettings?.length,
-        systemResourcesCount: this.isPrimary
-          ? settings.EntityLists.ResourcesSystem.filter(i => i.SettingsEntityScope === SystemSettingsScopes.Site).length
-          : settings.EntityLists.ResourcesSystem.filter(i => !i.SettingsEntityScope).length,
-        customResourcesCount: settings.EntityLists.AppResources?.length,
-        customResourcesFieldsCount: settings.FieldAll.AppResources?.length,
+        lightSpeedEnabled,
+        langPermsEnabled,
+        appLightSpeedCount: settings.MetadataList.Items.filter(i => i._Type.Name == eavConstants.appMetadata.LightSpeed.ContentTypeName).length,
+        appConfigurationsCount: settings.EntityLists.ToSxcContentApp.length,
+        appMetadataCount: settings.MetadataList.Items.length,
       }
       return result;
     }));
@@ -84,7 +81,6 @@ export class AppConfigurationComponent extends BaseComponent implements OnInit, 
     if (changes.dialogSettings != null) {
       const appScope = this.dialogSettings.Context.App.SettingsScope;
       this.isGlobal = appScope === AppScopes.Global;
-      this.isPrimary = appScope === AppScopes.Site;
       this.isApp = appScope === AppScopes.App;
     }
   }
@@ -148,22 +144,29 @@ export class AppConfigurationComponent extends BaseComponent implements OnInit, 
     });
   }
 
-  openSiteSettings() {
-    const sitePrimaryApp = this.dialogSettings.Context.Site.PrimaryApp;
-    this.dialogService.openAppAdministration(sitePrimaryApp.ZoneId, sitePrimaryApp.AppId, 'app');
+  openMetadata() {
+    const url = GoToMetadata.getUrlApp(
+      this.context.appId,
+      `Metadata for App: ${this.dialogSettings.Context.App.Name} (${this.context.appId})`,
+    );
+    this.router.navigate([url], { relativeTo: this.route.firstChild });
   }
 
-  openGlobalSettings() {
-    const globalPrimaryApp = this.dialogSettings.Context.System.PrimaryApp;
-    this.dialogService.openAppAdministration(globalPrimaryApp.ZoneId, globalPrimaryApp.AppId, 'app');
+  openLightSpeed() {
+    const form = AppAdminHelpers.getLightSpeedEditParams(this.context.appId);
+    const formUrl = convertFormToUrl(form);
+    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.firstChild });
   }
 
-  config(staticName: string) {
-    this.router.navigate([`fields/${staticName}`], { relativeTo: this.route.firstChild });
+  openPermissions() {
+    this.router.navigate([GoToPermissions.getUrlApp(this.context.appId)], { relativeTo: this.route.firstChild });
   }
 
-  analyze(part: AnalyzePart) {
-    this.router.navigate([`analyze/${part}`], { relativeTo: this.route.firstChild });
+  openLanguagePermissions(enabled: boolean) {
+    if (enabled)
+      this.router.navigate(['language-permissions'], { relativeTo: this.route.firstChild });
+    else
+      FeatureComponentBase.openDialog(this.dialog, FeatureNames.PermissionsByLanguage, this.viewContainerRef, this.changeDetectorRef);
   }
 
   private fetchSettings() {
@@ -173,44 +176,16 @@ export class AppConfigurationComponent extends BaseComponent implements OnInit, 
       this.appSettingsInternal$.next(x);
       });
   }
-
-  fixContentType(staticName: string, action: 'edit' | 'config') {
-    this.contentTypesService.retrieveContentTypes(eavConstants.scopes.configuration.value).subscribe(contentTypes => {
-      const contentTypeExists = contentTypes.some(ct => ct.Name === staticName);
-      if (contentTypeExists) {
-        if (action === 'edit') {
-          this.edit(staticName);
-        } else if (action === 'config') {
-          this.config(staticName);
-        }
-      } else {
-        const newContentType = {
-          StaticName: '',
-          Name: staticName,
-          Description: '',
-          Scope: eavConstants.scopes.configuration.value,
-          ChangeStaticName: false,
-          NewStaticName: '',
-        } as ContentTypeEdit;
-        this.contentTypesService.save(newContentType).subscribe(success => {
-          if (!success) { return; }
-
-          if (action === 'edit') {
-            this.edit(staticName);
-          } else if (action === 'config') {
-            this.config(staticName);
-          }
-        });
-      }
-    });
-  }
 }
 
 class ViewModel {
-  systemSettingsCount: number;
-  customSettingsCount: number;
-  customSettingsFieldsCount: number;
-  systemResourcesCount: number;
-  customResourcesCount: number;
-  customResourcesFieldsCount: number;
+  // Lightspeed
+  lightSpeedEnabled: boolean;
+  appLightSpeedCount: number;
+
+  // Language Permissions
+  langPermsEnabled: boolean;
+
+  appConfigurationsCount: number;
+  appMetadataCount: number;
 }
