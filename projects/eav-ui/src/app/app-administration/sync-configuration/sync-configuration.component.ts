@@ -1,41 +1,21 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
-import { GlobalConfigService } from '../../edit/shared/store/ngrx-data';
 import { BaseComponent } from '../../shared/components/base-component/base.component';
-import { eavConstants, SystemSettingsScopes } from '../../shared/constants/eav.constants';
-import { AppScopes } from '../../shared/models/dialog-context.models';
 import { DialogSettings } from '../../shared/models/dialog-settings.model';
-import { FeaturesService } from '../../shared/services/features.service';
-import { AppDialogConfigService } from '../services';
 import { ExportAppService } from '../services/export-app.service';
 import { ImportAppPartsService } from '../services/import-app-parts.service';
-import { Subject } from 'rxjs';
-import { AppInternals } from '../models/app-internals.model';
 
 @Component({
   selector: 'app-sync-configuration',
   templateUrl: './sync-configuration.component.html',
   styleUrls: ['./sync-configuration.component.scss'],
 })
-export class SyncConfigurationComponent extends BaseComponent implements OnInit, OnChanges, OnDestroy {
+export class SyncConfigurationComponent extends BaseComponent implements OnInit, OnDestroy {
   @Input() dialogSettings: DialogSettings;
 
-  eavConstants = eavConstants;
-  SystemSettingsScopes = SystemSettingsScopes;
-  AppScopes = AppScopes;
-  isGlobal: boolean;
-  isPrimary: boolean;
-  isApp: boolean;
-  debugEnabled$ = this.globalConfigService.getDebugEnabled$();
-
-  // More proper ViewModel
-  appSettingsInternal$ = new Subject<AppInternals>();
-
   public appStateAdvanced = false;
-
-  public features: FeaturesService = new FeaturesService();
 
   constructor(
     protected router: Router,
@@ -43,23 +23,11 @@ export class SyncConfigurationComponent extends BaseComponent implements OnInit,
     private exportAppService: ExportAppService,
     private importAppPartsService: ImportAppPartsService,
     private snackBar: MatSnackBar,
-    private globalConfigService: GlobalConfigService,
-    appDialogConfigService: AppDialogConfigService,
   ) {
     super(router, route);
-    this.features.loadFromService(appDialogConfigService);
   }
 
   ngOnInit() {}
-
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes.dialogSettings != null) {
-      const appScope = this.dialogSettings.Context.App.SettingsScope;
-      this.isGlobal = appScope === AppScopes.Global;
-      this.isPrimary = appScope === AppScopes.Site;
-      this.isApp = appScope === AppScopes.App;
-    }
-  }
 
   ngOnDestroy() {
     this.snackBar.dismiss();
