@@ -1,6 +1,5 @@
 <ng-container *ngIf="data$ | async as data">
 
-  <!-- TODO: @STV - #1 create own component for this-->
   <!-- App Config -->
   <mat-card class="mat-elevation-z2">
     <mat-card-header>
@@ -10,16 +9,27 @@
       </div>
     </mat-card-header>
     <mat-card-content>
-      <!-- TODO: @STV show the most important properties in a table - similar to the Apps-Management where we have the fingeprint etc.
-        All values should allow click-copy just like the fingerprint etc.
-        Will require a call to the backend to get this data - it's the same item we would edit on the edit-button here
-        - Name: [app-name]
-        - Folder: [app-folder]
-        - Version: [app-version]
-        - For: 2sxc [2sxc-version in app-settings], Dnn [dnn version ...], Oqt [oqt version ...]
-        Then remove the comment below
-      -->
-      App name, folder, version and more.
+      <table>
+        <td>
+          <tr><b>Name:</b></tr>
+          <tr><b>Folder:</b></tr>
+          <tr><b>Version:</b></tr>
+          <tr><b>For</b></tr>
+        </td>
+        <td>
+          <tr><span [tippy]="'Click to copy to clipboard'" (click)="copyToClipboard(data.displayName)">{{data.displayName}}</span></tr>
+          <tr><span [tippy]="'Click to copy to clipboard'" (click)="copyToClipboard(data.folder)">{{data.folder}}</span></tr>
+          <tr><span [tippy]="'Click to copy to clipboard'" (click)="copyToClipboard(data.version)">{{data.version}}</span></tr>
+          <tr>
+            <b>2sxc: </b><span [tippy]="'Click to copy to clipboard'" 
+              (click)="copyToClipboard(data.toSxc)"> {{data.toSxc}} </span>
+            <b> DNN: </b><span [tippy]="'Click to copy to clipboard'"
+              (click)="copyToClipboard(data.dnn)"> {{data.dnn}} </span>
+            <b> Oqt: </b><span [tippy]="'Click to copy to clipboard'"
+              (click)="copyToClipboard(data.oqt)"> {{data.oqt}} </span>
+          </tr>
+        </td>
+      </table>
     </mat-card-content>
     <mat-card-actions>
       <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://docs.2sxc.org/basics/app/configuration.html' }"></ng-container>

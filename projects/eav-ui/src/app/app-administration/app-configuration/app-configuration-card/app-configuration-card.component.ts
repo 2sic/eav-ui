@@ -12,6 +12,7 @@ import { Context } from '../../../shared/services/context';
 import { AppInternalsService } from '../../services/app-internals.service';
 import { Subject, Observable, combineLatest, map } from 'rxjs';
 import { AppInternals } from '../../models/app-internals.model';
+import { copyToClipboard } from '../../../shared/helpers/copy-to-clipboard.helper';
 
 @Component({
   selector: 'app-app-configuration-card',
@@ -31,21 +32,28 @@ export class AppConfigurationCardComponent extends BaseComponent implements OnIn
     private contentItemsService: ContentItemsService,
     private context: Context,
     private snackBar: MatSnackBar,
-    private appInternalsService: AppInternalsService  ) {
+    private appInternalsService: AppInternalsService) {
     super(router, route);
 
     // New with proper ViewModel
     this.data$ = combineLatest([
       this.appSettingsInternal$,
-    ]).pipe(map(([settings]) => {
+      this.contentItemsService.getAll(eavConstants.contentTypes.appConfiguration),
+    ]).pipe(map(([settings, contentItems]) => {
+      const contentItem = contentItems[0];
       const result: ViewModel = {
         appConfigurationsCount: settings.EntityLists.ToSxcContentApp.length,
         appMetadataCount: settings.MetadataList.Items.length,
+        displayName: contentItem.DisplayName,
+        folder: contentItem.Folder,
+        version: contentItem.Version,
+        toSxc: contentItem.RequiredVersion ?? '-',
+        dnn: contentItem.RequiredDnnVersion ?? '-',
+        oqt: contentItem.RequiredOqtaneVersion ?? '-',
       }
       return result;
     }));
   }
-
 
   ngOnInit() {
     this.fetchSettings();
@@ -55,6 +63,11 @@ export class AppConfigurationCardComponent extends BaseComponent implements OnIn
   ngOnDestroy() {
     this.snackBar.dismiss();
     super.ngOnDestroy();
+  }
+
+  copyToClipboard(text: string): void {
+    copyToClipboard(text);
+    this.snackBar.open('Copied to clipboard', null, { duration: 2000 });
   }
 
   edit() {
@@ -93,4 +106,10 @@ export class AppConfigurationCardComponent extends BaseComponent implements OnIn
 class ViewModel {
   appConfigurationsCount: number;
   appMetadataCount: number;
+  displayName: string;
+  folder: string;
+  version: string;
+  toSxc: string;
+  dnn: string;
+  oqt: string;
 }
