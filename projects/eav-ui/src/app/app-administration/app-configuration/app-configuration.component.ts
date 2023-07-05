@@ -1,7 +1,9 @@
-import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewContainerRef } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ContentItemsService } from '../../content-items/services/content-items.service';
+import { GlobalConfigService } from '../../edit/shared/store/ngrx-data';
+import { GoToPermissions } from '../../permissions/go-to-permissions';
 import { BaseComponent } from '../../shared/components/base-component/base.component';
 import { eavConstants, SystemSettingsScope, SystemSettingsScopes } from '../../shared/constants/eav.constants';
 import { convertFormToUrl } from '../../shared/helpers/url-prep.helper';
@@ -11,12 +13,17 @@ import { EditForm } from '../../shared/models/edit-form.model';
 import { Context } from '../../shared/services/context';
 import { DialogService } from '../../shared/services/dialog.service';
 import { FeaturesService } from '../../shared/services/features.service';
+import { AppAdminHelpers } from '../app-admin-helpers';
 import { ContentTypeEdit } from '../models';
 import { AppDialogConfigService, ContentTypesService } from '../services';
 import { AppInternalsService } from '../services/app-internals.service';
+import { ImportAppPartsService } from '../services/import-app-parts.service';
 import { AnalyzePart, AnalyzeParts } from '../sub-dialogs/analyze-settings/analyze-settings.models';
 import { Subject, Observable, combineLatest, map } from 'rxjs';
 import { AppInternals } from '../models/app-internals.model';
+import { FeatureNames } from '../../features/feature-names';
+import { FeatureComponentBase } from '../../features/shared/base-feature.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-app-configuration',
@@ -29,9 +36,11 @@ export class AppConfigurationComponent extends BaseComponent implements OnInit, 
   eavConstants = eavConstants;
   AnalyzeParts = AnalyzeParts;
   SystemSettingsScopes = SystemSettingsScopes;
+  AppScopes = AppScopes;
   isGlobal: boolean;
   isPrimary: boolean;
   isApp: boolean;
+  debugEnabled$ = this.globalConfigService.getDebugEnabled$();
 
   // More proper ViewModel
   appSettingsInternal$ = new Subject<AppInternals>();
@@ -46,19 +55,32 @@ export class AppConfigurationComponent extends BaseComponent implements OnInit, 
     protected route: ActivatedRoute,
     private contentItemsService: ContentItemsService,
     private context: Context,
+    private importAppPartsService: ImportAppPartsService,
     private snackBar: MatSnackBar,
     private dialogService: DialogService,
     private appInternalsService: AppInternalsService,
     private contentTypesService: ContentTypesService,
-    appDialogConfigService: AppDialogConfigService  ) {
+    private globalConfigService: GlobalConfigService,
+    appDialogConfigService: AppDialogConfigService,
+    private dialog: MatDialog,
+    private viewContainerRef: ViewContainerRef,
+    private changeDetectorRef: ChangeDetectorRef
+  ) {
     super(router, route);
     this.features.loadFromService(appDialogConfigService);
 
     // New with proper ViewModel
     this.data$ = combineLatest([
       this.appSettingsInternal$,
-    ]).pipe(map(([settings]) => {
+      this.features.isEnabled$(FeatureNames.LightSpeed),
+      this.features.isEnabled$(FeatureNames.ContentSecurityPolicy),
+      this.features.isEnabled$(FeatureNames.PermissionsByLanguage),
+    ]).pipe(map(([settings, lightSpeedEnabled, cspEnabled, langPermsEnabled]) => {
       const result: ViewModel = {
+        lightSpeedEnabled,
+        cspEnabled,
+        langPermsEnabled,
+        appLightSpeedCount: settings.MetadataList.Items.filter(i => i._Type.Name == eavConstants.appMetadata.LightSpeed.ContentTypeName).length,
         systemSettingsCount: this.isPrimary
           ? settings.EntityLists.SettingsSystem.filter(i => i.SettingsEntityScope === SystemSettingsScopes.Site).length
           : settings.EntityLists.SettingsSystem.filter(i => !i.SettingsEntityScope).length,
@@ -148,6 +170,12 @@ export class AppConfigurationComponent extends BaseComponent implements OnInit, 
     });
   }
 
+  openLightSpeed() {
+    const form = AppAdminHelpers.getLightSpeedEditParams(this.context.appId);
+    const formUrl = convertFormToUrl(form);
+    this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route.firstChild });
+  }
+
   openSiteSettings() {
     const sitePrimaryApp = this.dialogSettings.Context.Site.PrimaryApp;
     this.dialogService.openAppAdministration(sitePrimaryApp.ZoneId, sitePrimaryApp.AppId, 'app');
@@ -160,6 +188,17 @@ export class AppConfigurationComponent extends BaseComponent implements OnInit, 
 
   config(staticName: string) {
     this.router.navigate([`fields/${staticName}`], { relativeTo: this.route.firstChild });
+  }
+
+  openPermissions() {
+    this.router.navigate([GoToPermissions.getUrlApp(this.context.appId)], { relativeTo: this.route.firstChild });
+  }
+
+  openLanguagePermissions(enabled: boolean) {
+    if (enabled)
+      this.router.navigate(['language-permissions'], { relativeTo: this.route.firstChild });
+    else
+      FeatureComponentBase.openDialog(this.dialog, FeatureNames.PermissionsByLanguage, this.viewContainerRef, this.changeDetectorRef);
   }
 
   analyze(part: AnalyzePart) {
@@ -207,6 +246,16 @@ export class AppConfigurationComponent extends BaseComponent implements OnInit, 
 }
 
 class ViewModel {
+  // Lightspeed
+  lightSpeedEnabled: boolean;
+  appLightSpeedCount: number;
+
+  // CSP
+  cspEnabled: boolean;
+
+  // Language Permissions
+  langPermsEnabled: boolean;
+
   systemSettingsCount: number;
   customSettingsCount: number;
   customSettingsFieldsCount: number;

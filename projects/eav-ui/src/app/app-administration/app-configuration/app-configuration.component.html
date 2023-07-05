@@ -267,8 +267,94 @@
 
   </div>
 
-  <app-app-security-configuration [dialogSettings]="dialogSettings">
-  </app-app-security-configuration>
+  <div class="cards-box">
+    
+    <app-app-configuration-card [dialogSettings]="dialogSettings">
+    </app-app-configuration-card>
+
+    <!-- LightSpeed -->
+    <mat-card class="mat-elevation-z2">
+      <mat-card-header>
+        <mat-card-title>Performance</mat-card-title>
+        <div class="mat-card-header-icon">
+          <mat-icon>bolt</mat-icon>
+        </div>
+      </mat-card-header>
+      <mat-card-content>
+        LightSpeed Output Cache to speed up page by 50-90%
+
+        <app-feature-text-info [featureNameId]="'LightSpeedOutputCache'" [asInfo]="true"></app-feature-text-info>
+      </mat-card-content>
+      <mat-card-actions>
+        <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://go.2sxc.org/lightspeed' }"></ng-container>
+        <button mat-button (click)="openLightSpeed()" disabled="{{!data.lightSpeedEnabled}}">
+          <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="data.appLightSpeedCount || null"
+            matBadgePosition="below after">bolt</mat-icon>
+          <span>Edit LightSpeed</span>
+        </button>
+      </mat-card-actions>
+    </mat-card>
+
+    <!-- Security / CSP -->
+    <mat-card class="mat-elevation-z2">
+      <mat-card-header>
+        <mat-card-title>Security</mat-card-title>
+        <div class="mat-card-header-icon">
+          <mat-icon>local_police</mat-icon>
+        </div>
+      </mat-card-header>
+      <mat-card-content>
+        ContentSecurityPolicy features in this App - for maximum control.
+
+        <app-feature-text-info [featureNameId]="'ContentSecurityPolicy'" [asInfo]="true"></app-feature-text-info>
+      </mat-card-content>
+      <mat-card-actions>
+        <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://go.2sxc.org/csp' }"></ng-container>
+      </mat-card-actions>
+    </mat-card>
+    
+    <!-- Permissions -->
+    <mat-card class="mat-elevation-z2">
+      <mat-card-header>
+        <mat-card-title>Permissions</mat-card-title>
+        <div class="mat-card-header-icon">
+          <mat-icon>person</mat-icon>
+        </div>
+      </mat-card-header>
+      <mat-card-content>
+        Give access to the entire app (all data). Use with care.
+      </mat-card-content>
+      <mat-card-actions>
+        <div class="actions-row">
+          <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://docs.2sxc.org/basics/app/permissions.html' }"></ng-container>
+          <button mat-button [disabled]="!dialogSettings.Context.Enable.AppPermissions" (click)="openPermissions()">
+            <mat-icon matBadgeColor="accent" matBadgeSize="small" matBadgePosition="below after"
+              [matBadge]="dialogSettings.Context.App.Permissions.Count || null">person</mat-icon>
+            <span>
+              Edit Permissions
+              <ng-container *ngIf="!dialogSettings.Context.Enable.AppPermissions">
+                <ng-container *ngIf="isGlobal">
+                  (not on Global App)
+                </ng-container>
+                <ng-container *ngIf="isApp">
+                  (not on Content)
+                </ng-container>
+              </ng-container>
+            </span>
+          </button>
+        </div>
+        <div class="actions-row">
+          <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://patrons.2sxc.org/features/feat/PermissionsByLanguage' }"></ng-container>
+          <button mat-button (click)="openLanguagePermissions(data.langPermsEnabled)">
+            <mat-icon [matBadgeHidden]="data.langPermsEnabled" matBadgeSize="small" matBadge="💎" matBadgePosition="below after">
+              person
+            </mat-icon>
+            <span>Language Permissions</span>
+          </button>
+        </div>
+      </mat-card-actions>
+    </mat-card>
+  </div>
 
 </ng-container>
 

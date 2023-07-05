@@ -1,0 +1,46 @@
+<ng-container *ngIf="data$ | async as data">
+
+  <!-- TODO: @STV - #1 create own component for this-->
+  <!-- App Config -->
+  <mat-card class="mat-elevation-z2">
+    <mat-card-header>
+      <mat-card-title>Configuration</mat-card-title>
+      <div class="mat-card-header-icon">
+        <mat-icon>redeem</mat-icon>
+      </div>
+    </mat-card-header>
+    <mat-card-content>
+      <!-- TODO: @STV show the most important properties in a table - similar to the Apps-Management where we have the fingeprint etc.
+        All values should allow click-copy just like the fingerprint etc.
+        Will require a call to the backend to get this data - it's the same item we would edit on the edit-button here
+        - Name: [app-name]
+        - Folder: [app-folder]
+        - Version: [app-version]
+        - For: 2sxc [2sxc-version in app-settings], Dnn [dnn version ...], Oqt [oqt version ...]
+        Then remove the comment below
+      -->
+      App name, folder, version and more.
+    </mat-card-content>
+    <mat-card-actions>
+      <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://docs.2sxc.org/basics/app/configuration.html' }"></ng-container>
+      <button mat-button (click)="edit()">
+        <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="data.appConfigurationsCount || null"
+          matBadgePosition="below after">edit</mat-icon>
+        <span>Edit</span>
+      </button>
+      <button mat-button (click)="openMetadata()">
+        <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="data.appMetadataCount || null"
+          matBadgePosition="below after">local_offer</mat-icon>
+        <span>Metadata</span>
+      </button>
+    </mat-card-actions>
+  </mat-card>
+
+</ng-container>
+
+<ng-template #docsLink let-icon let-label let-link="link">
+  <a mat-button href="{{link}}" target="_blank" [tippy]="'online documentation'">
+    <mat-icon>{{ icon ?? "menu_book" }}</mat-icon>
+    <span>{{ label }}</span>
+  </a>
+</ng-template>

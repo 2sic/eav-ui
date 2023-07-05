@@ -73,7 +73,7 @@ import { ViewsComponent } from './views/views.component';
 import { WebApiActionsComponent } from './web-api/web-api-actions/web-api-actions.component';
 import { WebApiTypeComponent } from './web-api/web-api-type/web-api-type.component';
 import { WebApiComponent } from './web-api/web-api.component';
-import { AppSecurityConfigurationComponent } from './app-security-configuration/app-security-configuration.component';
+import { AppConfigurationCardComponent } from './app-configuration/app-configuration-card/app-configuration-card.component';
 
 @NgModule({
   declarations: [
@@ -84,7 +84,7 @@ import { AppSecurityConfigurationComponent } from './app-security-configuration/
     ViewsComponent,
     WebApiComponent,
     AppConfigurationComponent,
-    AppSecurityConfigurationComponent,
+    AppConfigurationCardComponent,
     SyncConfigurationComponent,
     DataItemsComponent,
     DataFieldsComponent,
