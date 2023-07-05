@@ -44,12 +44,12 @@ export class AppConfigurationCardComponent extends BaseComponent implements OnIn
       const result: ViewModel = {
         appConfigurationsCount: settings.EntityLists.ToSxcContentApp.length,
         appMetadataCount: settings.MetadataList.Items.length,
-        displayName: contentItem.DisplayName,
-        folder: contentItem.Folder,
-        version: contentItem.Version,
-        toSxc: contentItem.RequiredVersion ?? '-',
-        dnn: contentItem.RequiredDnnVersion ?? '-',
-        oqt: contentItem.RequiredOqtaneVersion ?? '-',
+        displayName: contentItem?.DisplayName ?? '-',
+        folder: contentItem?.Folder ?? '-',
+        version: contentItem?.Version ?? '-',
+        toSxc: contentItem?.RequiredVersion ?? '-',
+        dnn: contentItem?.RequiredDnnVersion ?? '-',
+        oqt: contentItem?.RequiredOqtaneVersion ?? '-',
       }
       return result;
     }));
