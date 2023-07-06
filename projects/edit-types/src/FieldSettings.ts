@@ -118,6 +118,7 @@ export interface StringDropdownQuery extends String {
   EnableRemove: boolean;
   AllowMultiValue: boolean;
   Separator: string;
+  MoreFields: string;
 }
 
 /**
@@ -187,6 +188,8 @@ export interface Entity extends All {
 
   Information: string;
   Tooltip: string;
+  MoreFields: string;
+  Label: string;
   // 2dm 2023-01-22 #maybeSupportIncludeParentApps
   // IncludeParentApps: boolean;
 }

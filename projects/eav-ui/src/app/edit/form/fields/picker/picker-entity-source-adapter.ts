@@ -118,6 +118,7 @@ export class PickerEntitySourceAdapter extends PickerSourceAdapter {
       )
       : null;
 
+    // @2SDV TODO: Talk with @2DM about this, more data is needed, send settings.moreFields as parameter so objects with more parameters will be returned
     // 2dm 2023-01-22 #maybeSupportIncludeParentApps
     // const includeParentApps = this.settings$.value?.IncludeParentApps == true;
     this.entityService.getAvailableEntities(contentTypeName, entitiesFilter/*, includeParentApps */).subscribe(items => {

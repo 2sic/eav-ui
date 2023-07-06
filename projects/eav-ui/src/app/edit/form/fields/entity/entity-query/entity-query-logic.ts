@@ -16,6 +16,8 @@ export class EntityQueryLogic extends FieldLogicBase {
 
     fixedSettings.Information ??= '';
     fixedSettings.Tooltip ??= '';
+    fixedSettings.MoreFields ??= '';
+    fixedSettings.Label ??= '';
     return fixedSettings;
   }
 }

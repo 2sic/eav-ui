@@ -20,6 +20,8 @@ export class EntityDefaultLogic extends FieldLogicBase {
 
     fixedSettings.Information ??= '';
     fixedSettings.Tooltip ??= '';
+    fixedSettings.MoreFields ??= '';
+    fixedSettings.Label ??= '';
 
     if (tools.eavConfig.overrideEditRestrictions && tools.debug) {
       // tslint:disable-next-line: max-line-length
@@ -30,6 +32,7 @@ export class EntityDefaultLogic extends FieldLogicBase {
       fixedSettings.EnableRemove = true;
       fixedSettings.EnableDelete = true;
     }
+
     return fixedSettings;
   }
 }

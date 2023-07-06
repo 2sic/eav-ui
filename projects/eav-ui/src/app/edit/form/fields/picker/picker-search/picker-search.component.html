@@ -51,12 +51,12 @@
       <mat-option *ngFor="let item of vm.filteredEntities" 
         [value]="item.Value"
         [disabled]="isOptionDisabled(item.Value, vm.selectedEntities)" 
-        [tippy]="vm.tooltip" 
+        [tippy]="item.Tooltip" 
         tippyShowDelay="500" 
-        [tippyDisabled]="vm.tooltip === ''">
+        [tippyDisabled]="!item.Tooltip">
         <div class="dropdown-option">
           <span>{{ item.Text ? item.Text : item.Value }}</span>
-          <mat-icon *ngIf="vm.information !== ''" [tippy]="vm.information">info</mat-icon>
+          <mat-icon *ngIf="item.Information" [tippy]="item.Information">info</mat-icon>
         </div>
       </mat-option>
     </mat-autocomplete>

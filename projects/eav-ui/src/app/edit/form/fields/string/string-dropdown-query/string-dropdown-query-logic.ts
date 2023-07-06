@@ -17,6 +17,7 @@ export class StringDropdownQueryLogic extends FieldLogicBase {
 
     fixedSettings.Information ??= '';
     fixedSettings.Tooltip ??= '';
+    fixedSettings.MoreFields ??= '';
     return fixedSettings;
   }
 }

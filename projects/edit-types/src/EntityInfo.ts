@@ -20,4 +20,31 @@ export interface EntityInfo extends EntityForPicker {
   /** The value to store */
   Value: string;
 
+  /** 
+   * The tooltip that is seen on hover over item in the dropdown.
+   * This property does not come from the server, but must be added by code from the settings.
+   * That's why it has an underscore.
+   */
+  _tooltip?: string;
+
+  /**
+   * The data that is seen on click on information icon on item in the dropdown.
+   * This property does not come from the server, but must be added by code from the settings.
+   * That's why it has an underscore.
+   */
+  _information?: string;
+
+  /**
+   * The data that is seen on click on help icon on item in the dropdown.
+   * This property does not come from the server, but must be added by code from the settings.
+   * That's why it has an underscore.
+   */
+  _helpLink?: string;
+
+  /**
+   * The data that is added to the item in the dropdown through settings more fields.
+   * This property does not come from the server, but must be added by code from the settings.
+   * That's why it has an underscore.
+   */
+  [key: string]: any;
 }

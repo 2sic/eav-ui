@@ -55,8 +55,6 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     const selectedEntities$ = this.pickerStateAdapter.selectedEntities$;
     const label$ = this.pickerStateAdapter.label$;
     const required$ = this.pickerStateAdapter.required$;
-    const tooltip$ = this.pickerStateAdapter.tooltip$;
-    const information$ = this.pickerStateAdapter.information$;
 
     const debugEnabled$ = this.globalConfigService.getDebugEnabled$();
     const settings$ = this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).pipe(
@@ -72,18 +70,12 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     );
     this.viewModel$ = combineLatest([
       debugEnabled$, settings$, selectedEntities$, availableEntities$, error$,
-      controlStatus$, freeTextMode$, label$, required$, tooltip$, information$, this.filter$
+      controlStatus$, freeTextMode$, label$, required$, this.filter$
     ]).pipe(
       map(([
         debugEnabled, settings, selectedEntities, availableEntities, error,
-        controlStatus, freeTextMode, label, required, tooltip, information, filter
+        controlStatus, freeTextMode, label, required, filter
       ]) => {
-        const div = document.createElement("div");
-        div.innerHTML = tooltip ?? '';
-        const cleanTooltip = div.innerText || '';
-        div.innerHTML = information ?? '';
-        const cleanInformation = div.innerText || '';
-
         const selectedEntity = selectedEntities.length > 0 ? selectedEntities[0] : null;
         const elemValue = this.autocompleteRef?.nativeElement.value;
         const filteredEntities = !elemValue ? availableEntities : availableEntities?.filter(option =>
@@ -111,8 +103,6 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
           freeTextMode,
           label,
           required,
-          tooltip: cleanTooltip,
-          information: cleanInformation,
           selectedEntity,
           filteredEntities,
 
@@ -161,8 +151,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   }
 
   filterSelectionList(): void { 
-    // const filter = this.autocompleteRef?.nativeElement.value;
-    this.filter$.next(/*filter*/true);
+    this.filter$.next(true);
   }
 
   optionSelected(event: MatAutocompleteSelectedEvent, allowMultiValue: boolean, selectedEntity: SelectedEntity): void {

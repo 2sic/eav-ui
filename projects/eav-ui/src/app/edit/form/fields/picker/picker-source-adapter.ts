@@ -11,6 +11,7 @@ import { EntityCacheService } from '../../../shared/store/ngrx-data';
 import { convertValueToArray } from './picker.helpers';
 import { DeleteEntityProps } from './picker.models';
 import { FieldConfigSet } from '../../builder/fields-builder/field-config-set.model';
+import { QueryEntity } from '../entity/entity-query/entity-query.models';
 
 export class PickerSourceAdapter {
   constructor(
@@ -158,6 +159,29 @@ export class PickerSourceAdapter {
       console.error('Error in getting Prefill for new entity. Will skip prefill.');
       return null;
     }
+  }
+
+  /** fill additional properties that are marked in settings.MoreFields and replace tooltip and information placeholders */
+  protected fillEntityInfoMoreFields(entity: QueryEntity, entityInfo: EntityInfo): EntityInfo { 
+    const settings = this.settings$.value;
+    const additionalFields = settings.MoreFields?.split(',') || [];
+    let tooltip = this.cleanStringFromWysiwyg(settings.Tooltip);
+    let information = this.cleanStringFromWysiwyg(settings.Information);
+    additionalFields.forEach(field => {
+      entityInfo[field] = entity[field];
+      tooltip = tooltip.replace(`[Item:${field}]`, entity[field]);
+      information = information.replace(`[Item:${field}]`, entity[field]);
+    });
+    entityInfo.Tooltip = tooltip;
+    entityInfo.Information = information;
+    return entityInfo;
+  }
+
+  /** remove HTML tags that come from WYSIWYG */
+  private cleanStringFromWysiwyg(wysiwygString: string): string {
+    const div = document.createElement("div");
+    div.innerHTML = wysiwygString ?? '';
+    return div.innerText || '';
   }
 
   fetchEntities(clearAvailableEntitiesAndOnlyUpdateCache: boolean): void { }

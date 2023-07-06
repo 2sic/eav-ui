@@ -17,8 +17,6 @@ export interface PickerSearchViewModel {
   freeTextMode: boolean;
   label: string;
   required: boolean;
-  tooltip: string;
-  information: string;
   selectedEntity: SelectedEntity;
   filteredEntities: EntityInfo[];
 

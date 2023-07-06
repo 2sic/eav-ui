@@ -162,7 +162,7 @@ export class PickerQuerySourceAdapter extends PickerSourceAdapter {
       Value: entity.Guid,
       Text: entity.Title,
     };
-    return entityInfo;
+    return this.fillEntityInfoMoreFields(entity, entityInfo);
   }
 
   stringQueryEntityMapping(entity: QueryEntity): EntityInfo {
@@ -172,7 +172,7 @@ export class PickerQuerySourceAdapter extends PickerSourceAdapter {
       Value: entity[settings.Value] ? `${entity[settings.Value]}` : entity[settings.Value],
       Text: entity[settings.Label] ? `${entity[settings.Label]}` : entity[settings.Label],
     };
-    return entityInfo;
+    return this.fillEntityInfoMoreFields(entity, entityInfo);
   }
 
   flushAvailableEntities(): void { 
