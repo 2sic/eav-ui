@@ -10,8 +10,14 @@ import { PickerSourceAdapter } from "./picker-source-adapter";
 import { DeleteEntityProps } from "./picker.models";
 import { filterGuids } from "./picker.helpers";
 import { FieldMask } from "../../../shared/helpers";
+import { StringFieldDataSource } from "./string-field-data-source";
+import { EntityFieldDataSource } from "./entity-field-data-source";
+import { FieldDataSourceFactoryService } from "./field-data-source-factory.service";
 
 export class PickerEntitySourceAdapter extends PickerSourceAdapter {
+  private entityFieldDataSource: EntityFieldDataSource;
+  private stringFieldDataSource: StringFieldDataSource;
+
   constructor(
     public disableAddNew$: BehaviorSubject<boolean> = new BehaviorSubject(true),
 
@@ -27,6 +33,7 @@ export class PickerEntitySourceAdapter extends PickerSourceAdapter {
     public eavService: EavService,
     public editRoutingService: EditRoutingService,
     public translate: TranslateService,
+    public fieldDataSourceFactoryService: FieldDataSourceFactoryService,
 
     protected config: FieldConfigSet,
     protected group: FormGroup,
@@ -79,6 +86,9 @@ export class PickerEntitySourceAdapter extends PickerSourceAdapter {
         this.updateAddNew();
       })
     );
+
+    this.entityFieldDataSource = this.fieldDataSourceFactoryService.createEntityFieldDataSource();
+    this.stringFieldDataSource = this.fieldDataSourceFactoryService.createStringFieldDataSource(this.settings$);
   }
 
   onAfterViewInit(): void {
@@ -87,6 +97,8 @@ export class PickerEntitySourceAdapter extends PickerSourceAdapter {
 
   destroy(): void {
     this.contentTypeMask.destroy();
+    this.entityFieldDataSource.destroy();
+    this.stringFieldDataSource.destroy();
 
     super.destroy();
   }
@@ -98,8 +110,11 @@ export class PickerEntitySourceAdapter extends PickerSourceAdapter {
 
   fetchEntities(clearAvailableEntitiesAndOnlyUpdateCache: boolean): void {
     if (this.isString) { 
-      this.settings$.pipe(map(settings => settings._options.map(option => this.stringEntityMapping(option))), distinctUntilChanged())
-        .subscribe(this.availableEntities$);
+      // this.availableEntities$ = this.stringFieldDataSource.data$;
+      // this.settings$.pipe(map(settings => settings._options.map(option => this.stringEntityMapping(option))), distinctUntilChanged())
+      //   .subscribe(this.availableEntities$);
+      this.stringFieldDataSource.fetchStringData();
+      this.stringFieldDataSource.data$.subscribe(this.availableEntities$);
       return;
     }
 
@@ -119,12 +134,17 @@ export class PickerEntitySourceAdapter extends PickerSourceAdapter {
     // @2SDV TODO: Talk with @2DM about this, more data is needed, send settings.moreFields as parameter so objects with more parameters will be returned
     // 2dm 2023-01-22 #maybeSupportIncludeParentApps
     // const includeParentApps = this.settings$.value?.IncludeParentApps == true;
-    this.entityService.getAvailableEntities(contentTypeName, entitiesFilter/*, includeParentApps */).subscribe(items => {
-      this.entityCacheService.loadEntities(items);
-      if (!clearAvailableEntitiesAndOnlyUpdateCache) {
-        this.availableEntities$.next(items);
-      }
-    });
+    // this.entityService.getAvailableEntities(contentTypeName, entitiesFilter/*, includeParentApps */).subscribe(items => {
+    //   this.entityCacheService.loadEntities(items);
+    //   if (!clearAvailableEntitiesAndOnlyUpdateCache) {
+    //     this.availableEntities$.next(items);
+    //   }
+    // });
+    this.entityFieldDataSource.fetchEntityData(contentTypeName, entitiesFilter);
+    if (!clearAvailableEntitiesAndOnlyUpdateCache) {
+      this.entityFieldDataSource.data$.subscribe(this.availableEntities$);
+    }
+    
   }
 
   stringEntityMapping(dropdownOption: DropdownOption): EntityInfo {

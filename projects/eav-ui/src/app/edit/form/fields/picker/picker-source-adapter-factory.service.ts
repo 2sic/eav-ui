@@ -11,6 +11,7 @@ import { FieldSettings } from 'projects/edit-types';
 import { FieldConfigSet } from '../../builder/fields-builder/field-config-set.model';
 import { PickerQuerySourceAdapter } from './picker-query-source-adapter';
 import { PickerEntitySourceAdapter } from './picker-entity-source-adapter';
+import { FieldDataSourceFactoryService } from './field-data-source-factory.service';
 
 @Injectable()
 export class PickerSourceAdapterFactoryService {
@@ -21,6 +22,7 @@ export class PickerSourceAdapterFactoryService {
     private translate: TranslateService,
     private queryService: QueryService,
     private stringQueryCacheService: StringQueryCacheService,
+    private fieldDataSourceFactoryService: FieldDataSourceFactoryService,
     private snackBar: MatSnackBar,
   ) { }
 
@@ -84,6 +86,7 @@ export class PickerSourceAdapterFactoryService {
       this.eavService,
       editRoutingService,
       this.translate,
+      this.fieldDataSourceFactoryService,
       config,
       group,
       this.snackBar,

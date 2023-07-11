@@ -108,6 +108,7 @@ import { PickerTextComponent } from './form/fields/picker/picker-text/picker-tex
 import { PickerDialogComponent } from './form/fields/picker/picker-dialog/picker-dialog.component';
 import { PickerPreviewComponent } from './form/fields/picker/picker-preview/picker-preview.component';
 import { PickerTextToggleComponent } from './form/fields/picker/picker-text-toggle/picker-text-toggle.component';
+import { FieldDataSourceFactoryService } from './form/fields/picker/field-data-source-factory.service';
 
 @NgModule({
     declarations: [
@@ -237,6 +238,7 @@ import { PickerTextToggleComponent } from './form/fields/picker/picker-text-togg
         { provide: MAT_SLIDE_TOGGLE_DEFAULT_OPTIONS, useValue: { hideIcon: true } },
         PickerSourceAdapterFactoryService,
         PickerStateAdapterFactoryService,
+        FieldDataSourceFactoryService,
     ],
 })
 export class EditModule { }
