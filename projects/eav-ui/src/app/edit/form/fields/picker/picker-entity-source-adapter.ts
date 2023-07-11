@@ -99,9 +99,7 @@ export class PickerEntitySourceAdapter extends PickerSourceAdapter {
   fetchEntities(clearAvailableEntitiesAndOnlyUpdateCache: boolean): void {
     if (this.isString) { 
       this.settings$.pipe(map(settings => settings._options.map(option => this.stringEntityMapping(option))), distinctUntilChanged())
-        .subscribe(items => {
-          return this.availableEntities$.next(items);
-        });
+        .subscribe(this.availableEntities$);
       return;
     }
 
