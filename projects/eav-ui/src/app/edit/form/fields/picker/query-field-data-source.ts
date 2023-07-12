@@ -27,7 +27,10 @@ export class QueryFieldDataSource {
     this.subscriptions.unsubscribe();
   }
 
-  fetchQueryData(queryUrl: string, includeGuid: boolean, params: string, entitiesFilter: string[], streamName: string): void {
+  fetchQueryData(includeGuid: boolean, params: string, entitiesFilter: string[]): void {
+    const settings = this.settings$.value;
+    const streamName = settings.StreamName;
+    const queryUrl = settings.Query.includes('/') ? settings.Query : `${settings.Query}/${streamName}`;
     this.subscriptions.add(this.queryService.getAvailableEntities(queryUrl, includeGuid, params, entitiesFilter).subscribe({
       next: (data) => {
         if (!data) {

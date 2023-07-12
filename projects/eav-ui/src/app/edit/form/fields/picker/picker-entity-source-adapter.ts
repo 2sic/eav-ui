@@ -110,9 +110,6 @@ export class PickerEntitySourceAdapter extends PickerSourceAdapter {
 
   fetchEntities(clearAvailableEntitiesAndOnlyUpdateCache: boolean): void {
     if (this.isString) { 
-      // this.availableEntities$ = this.stringFieldDataSource.data$;
-      // this.settings$.pipe(map(settings => settings._options.map(option => this.stringEntityMapping(option))), distinctUntilChanged())
-      //   .subscribe(this.availableEntities$);
       this.stringFieldDataSource.fetchStringData();
       this.stringFieldDataSource.data$.subscribe(this.availableEntities$);
       return;
@@ -131,15 +128,6 @@ export class PickerEntitySourceAdapter extends PickerSourceAdapter {
       )
       : null;
 
-    // @2SDV TODO: Talk with @2DM about this, more data is needed, send settings.moreFields as parameter so objects with more parameters will be returned
-    // 2dm 2023-01-22 #maybeSupportIncludeParentApps
-    // const includeParentApps = this.settings$.value?.IncludeParentApps == true;
-    // this.entityService.getAvailableEntities(contentTypeName, entitiesFilter/*, includeParentApps */).subscribe(items => {
-    //   this.entityCacheService.loadEntities(items);
-    //   if (!clearAvailableEntitiesAndOnlyUpdateCache) {
-    //     this.availableEntities$.next(items);
-    //   }
-    // });
     this.entityFieldDataSource.fetchEntityData(contentTypeName, entitiesFilter);
     if (!clearAvailableEntitiesAndOnlyUpdateCache) {
       this.entityFieldDataSource.data$.subscribe(this.availableEntities$);
