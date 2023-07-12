@@ -75,7 +75,7 @@ export class EntityContentBlockComponent extends PickerComponent implements OnIn
       this.pickerStateAdapter.settings$,
       this.editRoutingService,
       this.group,
-      // (clearAvailableEntitiesAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableEntitiesAndOnlyUpdateCache),
+      // (clearAvailableItemsAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableItemsAndOnlyUpdateCache),
       (props: DeleteEntityProps) => this.pickerStateAdapter.doAfterDelete(props)
     );
 

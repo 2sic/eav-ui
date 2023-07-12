@@ -2,7 +2,7 @@ import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@ang
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { TranslateService } from '@ngx-translate/core';
-import { EntityInfo } from 'projects/edit-types';
+import { WIPDataSourceItem } from 'projects/edit-types';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { FieldsSettingsService } from '../../../../shared/services';
@@ -126,13 +126,13 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     GeneralHelpers.markControlTouched(this.control);
   }
 
-  fetchEntities(availableEntities: EntityInfo[]): void {
+  fetchEntities(availableEntities: WIPDataSourceItem[]): void {
     this.autocompleteRef.nativeElement.value = '';
     if (availableEntities != null) { return; }
     this.pickerSourceAdapter.fetchItems(false);
   }
 
-  getPlaceholder(availableEntities: EntityInfo[], error: string): string {
+  getPlaceholder(availableEntities: WIPDataSourceItem[], error: string): string {
     if (availableEntities == null) {
       return this.translate.instant('Fields.Entity.Loading');
     }

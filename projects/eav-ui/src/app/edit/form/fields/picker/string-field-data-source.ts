@@ -1,8 +1,9 @@
-import { DropdownOption, EntityInfo, FieldSettings } from "projects/edit-types";
-import { BehaviorSubject, Subscription, distinctUntilChanged, map } from "rxjs";
+import { DropdownOption, WIPDataSourceItem, FieldSettings } from "projects/edit-types";
+import { BehaviorSubject, Observable, Subscription, distinctUntilChanged, map } from "rxjs";
+
 
 export class StringFieldDataSource {
-  public data$ = new BehaviorSubject<EntityInfo[]>([]);
+  public data$ = new BehaviorSubject<WIPDataSourceItem[]>([]);
 
   private subscriptions = new Subscription();
 
@@ -14,13 +15,12 @@ export class StringFieldDataSource {
     this.subscriptions.unsubscribe();
   }
 
-  fetchStringData(): void { 
-    this.settings$.pipe(map(settings => settings._options.map(option => this.stringEntityMapping(option))), distinctUntilChanged())
-      .subscribe(this.data$);
+  fetchData(): Observable<WIPDataSourceItem[]> {
+    return this.settings$.pipe(map(settings => settings._options.map(option => this.stringEntityMapping(option))), distinctUntilChanged());
   }
 
-  private stringEntityMapping(dropdownOption: DropdownOption): EntityInfo {
-    const entityInfo: EntityInfo = {
+  private stringEntityMapping(dropdownOption: DropdownOption): WIPDataSourceItem {
+    const entityInfo: WIPDataSourceItem = {
       Value: dropdownOption.value as string,
       Text: dropdownOption.label,
     };

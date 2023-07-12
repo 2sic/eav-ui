@@ -1,4 +1,4 @@
-import { EntityInfo } from 'projects/edit-types';
+import { WIPDataSourceItem } from 'projects/edit-types';
 import { ControlStatus } from '../../../../shared/models';
 import { SelectedEntity } from '../../entity/entity-default/entity-default.models';
 
@@ -11,14 +11,14 @@ export interface PickerSearchViewModel {
   enableDelete: boolean;
   enableRemove: boolean;
   selectedEntities: SelectedEntity[];
-  availableEntities: EntityInfo[];
+  availableEntities: WIPDataSourceItem[];
   error: string;
   controlStatus: ControlStatus<string | string[]>;
   freeTextMode: boolean;
   label: string;
   required: boolean;
   selectedEntity: SelectedEntity;
-  filteredEntities: EntityInfo[];
+  filteredEntities: WIPDataSourceItem[];
 
   // added for easier readability
   showEmpty: boolean;

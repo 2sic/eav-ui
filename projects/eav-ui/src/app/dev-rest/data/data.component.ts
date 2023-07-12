@@ -4,7 +4,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, filter, map, share, switchMap } from 'rxjs';
 import { generateApiCalls } from '..';
-import { EntityInfo } from '../../../../../edit-types';
+import { WIPDataSourceItem } from '../../../../../edit-types';
 import { AppDialogConfigService, ContentTypesService } from '../../app-administration/services';
 import { EntityService } from '../../edit/shared/services';
 import { PermissionsService } from '../../permissions';
@@ -73,7 +73,7 @@ export class DevRestDataComponent extends DevRestBase<DevRestDataViewModel> impl
       map(list => list.length
         ? list[0]
         // we need a dummy in case nothing is found, otherwise the observables stop
-        : { Id: 0, Value: 'no data found', Text: 'no data found' } as EntityInfo),
+        : { Id: 0, Value: 'no data found', Text: 'no data found' } as WIPDataSourceItem),
     );
 
     // Prepare everything for use in the template

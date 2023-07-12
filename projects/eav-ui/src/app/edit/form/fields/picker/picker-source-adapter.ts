@@ -3,7 +3,7 @@ import { AbstractControl, FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core/public_api';
 import { EditForm } from 'projects/eav-ui/src/app/shared/models/edit-form.model';
-import { EntityInfo, FieldSettings } from 'projects/edit-types';
+import { WIPDataSourceItem, FieldSettings } from 'projects/edit-types';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { FieldMask } from '../../../shared/helpers';
 import { EavService, EditRoutingService, EntityService } from '../../../shared/services';
@@ -28,11 +28,11 @@ export class PickerSourceAdapter {
     public snackBar: MatSnackBar,
     public control: AbstractControl,
 
-    // public fetchAvailableEntities: (clearAvailableEntitiesAndOnlyUpdateCache: boolean) => void,
+    // public fetchAvailableEntities: (clearAvailableItemsAndOnlyUpdateCache: boolean) => void,
     public deleteCallback: (props: DeleteEntityProps) => void,
   ) { }
 
-  availableItems$: BehaviorSubject<EntityInfo[]> = new BehaviorSubject<EntityInfo[]>(null);
+  availableItems$: BehaviorSubject<WIPDataSourceItem[]> = new BehaviorSubject<WIPDataSourceItem[]>(null);
 
   contentType: string;
 
@@ -160,5 +160,5 @@ export class PickerSourceAdapter {
     }
   }
 
-  fetchItems(clearAvailableEntitiesAndOnlyUpdateCache: boolean): void { }
+  fetchItems(clearAvailableItemsAndOnlyUpdateCache: boolean): void { }
 }

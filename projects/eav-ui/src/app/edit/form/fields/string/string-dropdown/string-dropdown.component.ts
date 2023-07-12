@@ -85,7 +85,7 @@ export class StringDropdownComponent extends PickerComponent implements OnInit, 
       this.pickerStateAdapter.settings$,
       this.editRoutingService,
       this.group,
-      // (clearAvailableEntitiesAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableEntitiesAndOnlyUpdateCache),
+      // (clearAvailableItemsAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableItemsAndOnlyUpdateCache),
       (props: DeleteEntityProps) => this.pickerStateAdapter.doAfterDelete(props)
     );
 

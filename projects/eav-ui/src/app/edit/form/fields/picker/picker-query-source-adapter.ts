@@ -42,7 +42,7 @@ export class PickerQuerySourceAdapter extends PickerSourceAdapter {
     public snackBar: MatSnackBar,
     public control: AbstractControl,
 
-    // public fetchAvailableEntities: (clearAvailableEntitiesAndOnlyUpdateCache: boolean) => void,
+    // public fetchAvailableEntities: (clearAvailableItemsAndOnlyUpdateCache: boolean) => void,
     public deleteCallback: (props: DeleteEntityProps) => void,
   ) {
     super(
@@ -107,8 +107,8 @@ export class PickerQuerySourceAdapter extends PickerSourceAdapter {
     super.destroy();
   }
 
-  fetchItems(clearAvailableEntitiesAndOnlyUpdateCache: boolean): void {
-    if (clearAvailableEntitiesAndOnlyUpdateCache) {
+  fetchItems(clearAvailableItemsAndOnlyUpdateCache: boolean): void {
+    if (clearAvailableItemsAndOnlyUpdateCache) {
       this.availableItems$.next(null);
     }
 
@@ -120,7 +120,7 @@ export class PickerQuerySourceAdapter extends PickerSourceAdapter {
     }
 
     const params = this.paramsMask.resolve();
-    const entitiesFilter: string[] = clearAvailableEntitiesAndOnlyUpdateCache && !this.isStringQuery
+    const entitiesFilter: string[] = clearAvailableItemsAndOnlyUpdateCache && !this.isStringQuery
       ? filterGuids(
         this.fieldsSettingsService.getContentTypeSettings()._itemTitle,
         this.config.fieldName,
@@ -128,9 +128,9 @@ export class PickerQuerySourceAdapter extends PickerSourceAdapter {
       )
       : null;
 
-    this.queryFieldDataSource.fetchQueryData(true, params, entitiesFilter);
+    this.queryFieldDataSource.fetchData(true, params, entitiesFilter);
     this.queryFieldDataSource.error$.subscribe(this.error$);
-    if (!clearAvailableEntitiesAndOnlyUpdateCache) {
+    if (!clearAvailableItemsAndOnlyUpdateCache) {
       this.queryFieldDataSource.data$.subscribe(this.availableItems$);
     }
 

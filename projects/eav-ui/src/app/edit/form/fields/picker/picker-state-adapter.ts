@@ -1,5 +1,5 @@
 import { TranslateService } from '@ngx-translate/core/public_api';
-import { EntityInfo, FieldSettings } from 'projects/edit-types';
+import { WIPDataSourceItem, FieldSettings } from 'projects/edit-types';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { GeneralHelpers } from '../../../shared/helpers';
 import { ControlStatus } from '../../../shared/models';
@@ -19,7 +19,7 @@ export class PickerStateAdapter {
     public label$: Observable<string>,
     public placeholder$: Observable<string>,
     public required$: Observable<boolean>,
-    public cacheEntities$: Observable<EntityInfo[]>,
+    public cacheItems$: Observable<WIPDataSourceItem[]>,
     public stringQueryCache$: Observable<QueryEntity[]>,
 
     public translate: TranslateService,
@@ -43,7 +43,7 @@ export class PickerStateAdapter {
   init() {
     this.selectedItems$ = combineLatest([
       this.controlStatus$.pipe(map(controlStatus => controlStatus.value), distinctUntilChanged()),
-      this.cacheEntities$,
+      this.cacheItems$,
       this.stringQueryCache$,
       this.settings$.pipe(
         map(settings => ({

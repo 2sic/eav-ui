@@ -1,6 +1,6 @@
 import { AbstractControl } from "@angular/forms";
 import { TranslateService } from "@ngx-translate/core";
-import { FieldSettings, EntityInfo } from "projects/edit-types";
+import { FieldSettings, WIPDataSourceItem } from "projects/edit-types";
 import { BehaviorSubject, Observable } from "rxjs";
 import { ControlStatus } from "../../../shared/models";
 import { QueryEntity } from "../entity/entity-query/entity-query.models";
@@ -14,7 +14,7 @@ export class PickerEntityStateAdapter extends PickerStateAdapter {
     public label$: Observable<string>,
     public placeholder$: Observable<string>,
     public required$: Observable<boolean>,
-    public cacheEntities$: Observable<EntityInfo[]>,
+    public cacheItems$: Observable<WIPDataSourceItem[]>,
     public stringQueryCache$: Observable<QueryEntity[]>,
 
     public translate: TranslateService,
@@ -30,7 +30,7 @@ export class PickerEntityStateAdapter extends PickerStateAdapter {
       label$,
       placeholder$,
       required$,
-      cacheEntities$,
+      cacheItems$,
       stringQueryCache$,
       translate,
       control,
@@ -45,7 +45,7 @@ export class PickerEntityStateAdapter extends PickerStateAdapter {
   destroy(): void {
     super.destroy();
   }
-  
+
   protected createValueArray(): string[] {
     return [...this.control.value];
   }

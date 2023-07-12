@@ -15,7 +15,7 @@ export interface EntityForPicker {
   /** The title to show in the dropdown */
   Text: string;
 }
-export interface EntityInfo extends EntityForPicker {
+export interface WIPDataSourceItem extends EntityForPicker {
 
   /** The value to store */
   Value: string;

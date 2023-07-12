@@ -1,5 +1,5 @@
 import { TranslateService } from '@ngx-translate/core';
-import { EntityInfo } from '../../../../../../../edit-types';
+import { WIPDataSourceItem } from '../../../../../../../edit-types';
 import { guidRegex } from '../../../../shared/constants/guid.constants';
 
 import { SelectedEntity } from '../entity/entity-default/entity-default.models';
@@ -8,7 +8,7 @@ import { QueryEntity } from '../entity/entity-query/entity-query.models';
 export function calculateSelectedEntities(
   fieldValue: string | string[],
   separator: string,
-  entityCache: EntityInfo[],
+  entityCache: WIPDataSourceItem[],
   stringQueryCache: QueryEntity[],
   stringQueryValueField: string,
   stringQueryLabelField: string,

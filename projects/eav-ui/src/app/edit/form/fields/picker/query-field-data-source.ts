@@ -1,4 +1,4 @@
-import { EntityForPicker, EntityInfo, FieldSettings } from "projects/edit-types";
+import { EntityForPicker, WIPDataSourceItem, FieldSettings } from "projects/edit-types";
 import { BehaviorSubject, Subscription } from "rxjs";
 import { EntityCacheService, StringQueryCacheService } from "../../../shared/store/ngrx-data";
 import { QueryService } from "../../../shared/services";
@@ -6,7 +6,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { QueryEntity } from "../entity/entity-query/entity-query.models";
 
 export class QueryFieldDataSource {
-  public data$ = new BehaviorSubject<EntityInfo[]>([]);
+  public data$ = new BehaviorSubject<WIPDataSourceItem[]>([]);
   public error$ = new BehaviorSubject('');
 
   private subscriptions = new Subscription();
@@ -27,7 +27,7 @@ export class QueryFieldDataSource {
     this.subscriptions.unsubscribe();
   }
 
-  fetchQueryData(includeGuid: boolean, params: string, entitiesFilter: string[]): void {
+  fetchData(includeGuid: boolean, params: string, entitiesFilter: string[]): void {
     const settings = this.settings$.value;
     const streamName = settings.StreamName;
     const queryUrl = settings.Query.includes('/') ? settings.Query : `${settings.Query}/${streamName}`;
@@ -41,7 +41,7 @@ export class QueryFieldDataSource {
           this.error$.next(this.translate.instant('Fields.EntityQuery.QueryStreamNotFound') + ' ' + streamName);
           return;
         }
-        const items: EntityInfo[] = data[streamName].map(entity => {
+        const items: WIPDataSourceItem[] = data[streamName].map(entity => {
           return this.isStringQuery ? this.stringQueryEntityMapping(entity) : this.queryEntityMapping(entity)
         });
         if (!this.isStringQuery) {
@@ -61,8 +61,8 @@ export class QueryFieldDataSource {
     }));
   }
 
-  private queryEntityMapping(entity: QueryEntity): EntityInfo {
-    const entityInfo: EntityInfo = {
+  private queryEntityMapping(entity: QueryEntity): WIPDataSourceItem {
+    const entityInfo: WIPDataSourceItem = {
       Id: entity.Id,
       Value: entity.Guid,
       Text: entity.Title,
@@ -70,9 +70,9 @@ export class QueryFieldDataSource {
     return this.fillEntityInfoMoreFields(entity, entityInfo);
   }
 
-  private stringQueryEntityMapping(entity: QueryEntity): EntityInfo {
+  private stringQueryEntityMapping(entity: QueryEntity): WIPDataSourceItem {
     const settings = this.settings$.value;
-    const entityInfo: EntityInfo = {
+    const entityInfo: WIPDataSourceItem = {
       Id: entity.Id,
       Value: entity[settings.Value] ? `${entity[settings.Value]}` : entity[settings.Value],
       Text: entity[settings.Label] ? `${entity[settings.Label]}` : entity[settings.Label],
@@ -88,7 +88,7 @@ export class QueryFieldDataSource {
   }
 
   /** fill additional properties that are marked in settings.MoreFields and replace tooltip and information placeholders */
-  private fillEntityInfoMoreFields(entity: QueryEntity, entityInfo: EntityInfo): EntityInfo {
+  private fillEntityInfoMoreFields(entity: QueryEntity, entityInfo: WIPDataSourceItem): WIPDataSourceItem {
     const settings = this.settings$.value;
     const additionalFields = settings.MoreFields?.split(',') || [];
     let tooltip = this.cleanStringFromWysiwyg(settings.Tooltip);

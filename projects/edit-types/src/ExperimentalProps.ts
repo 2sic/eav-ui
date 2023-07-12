@@ -6,7 +6,7 @@ import { Dropzone } from './Dropzone';
 import { Adam } from './Adam';
 import { PagePickerResult } from './PagePickerResult';
 import { FieldValue } from './FieldValue';
-import { EntityInfo } from './EntityInfo';
+import { WIPDataSourceItem } from './EntityInfo';
 
 export interface ExperimentalProps {
   entityGuid: string;
@@ -23,6 +23,6 @@ export interface ExperimentalProps {
   featureDisabledWarning(featureNameId: string): void;
   getUrlOfId(value: string, callback: (value: string) => void): void;
   getSettings(name: string): any;
-  getEntityCache(guids?: string[]): EntityInfo[];
-  getEntityCache$(guids?: string[]): Observable<EntityInfo[]>;
+  getEntityCache(guids?: string[]): WIPDataSourceItem[];
+  getEntityCache$(guids?: string[]): Observable<WIPDataSourceItem[]>;
 }

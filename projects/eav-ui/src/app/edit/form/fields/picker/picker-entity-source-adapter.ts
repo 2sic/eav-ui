@@ -41,7 +41,7 @@ export class PickerEntitySourceAdapter extends PickerSourceAdapter {
     public snackBar: MatSnackBar,
     public control: AbstractControl,
 
-    // public fetchAvailableEntities: (clearAvailableEntitiesAndOnlyUpdateCache: boolean) => void,
+    // public fetchAvailableEntities: (clearAvailableItemsAndOnlyUpdateCache: boolean) => void,
     public deleteCallback: (props: DeleteEntityProps) => void,
   ) {
     super(
@@ -109,19 +109,18 @@ export class PickerEntitySourceAdapter extends PickerSourceAdapter {
   }
 
   // @2SDV TODO: Split this adapter into two separate adapters for string and entity
-  fetchItems(clearAvailableEntitiesAndOnlyUpdateCache: boolean): void {
+  fetchItems(clearAvailableItemsAndOnlyUpdateCache: boolean): void {
     if (this.isString) {
-      this.stringFieldDataSource.fetchStringData();
-      this.stringFieldDataSource.data$.subscribe(this.availableItems$);
+      this.stringFieldDataSource.fetchData().subscribe(this.availableItems$);
       return;
     }
 
-    if (clearAvailableEntitiesAndOnlyUpdateCache) {
+    if (clearAvailableItemsAndOnlyUpdateCache) {
       this.availableItems$.next(null);
     }
 
     const contentTypeName = this.contentTypeMask.resolve();
-    const entitiesFilter: string[] = (clearAvailableEntitiesAndOnlyUpdateCache || !this.settings$.value.EnableAddExisting)
+    const entitiesFilter: string[] = (clearAvailableItemsAndOnlyUpdateCache || !this.settings$.value.EnableAddExisting)
       ? filterGuids(
         this.fieldsSettingsService.getContentTypeSettings()._itemTitle,
         this.config.fieldName,
@@ -129,8 +128,8 @@ export class PickerEntitySourceAdapter extends PickerSourceAdapter {
       )
       : null;
 
-    this.entityFieldDataSource.fetchEntityData(contentTypeName, entitiesFilter);
-    if (!clearAvailableEntitiesAndOnlyUpdateCache) {
+    this.entityFieldDataSource.fetchData(contentTypeName, entitiesFilter);
+    if (!clearAvailableItemsAndOnlyUpdateCache) {
       this.entityFieldDataSource.data$.subscribe(this.availableItems$);
     }
 
