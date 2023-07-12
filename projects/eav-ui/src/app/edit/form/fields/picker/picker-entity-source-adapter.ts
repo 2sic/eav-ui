@@ -108,6 +108,7 @@ export class PickerEntitySourceAdapter extends PickerSourceAdapter {
     this.disableAddNew$.next(!contentTypeName);
   }
 
+  // @2SDV TODO: Split this adapter into two separate adapters for string and entity
   fetchEntities(clearAvailableEntitiesAndOnlyUpdateCache: boolean): void {
     if (this.isString) { 
       this.stringFieldDataSource.fetchStringData();
@@ -133,13 +134,5 @@ export class PickerEntitySourceAdapter extends PickerSourceAdapter {
       this.entityFieldDataSource.data$.subscribe(this.availableEntities$);
     }
     
-  }
-
-  stringEntityMapping(dropdownOption: DropdownOption): EntityInfo {
-    const entityInfo: EntityInfo = {
-      Value: dropdownOption.value as string,
-      Text: dropdownOption.label,
-    };
-    return entityInfo;
   }
 }
