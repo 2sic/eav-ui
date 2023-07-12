@@ -50,6 +50,7 @@ export class PickerSourceAdapterFactoryService {
       this.eavService,
       editRoutingService,
       this.translate,
+      this.fieldDataSourceFactoryService,
       config,
       group,
       this.snackBar,

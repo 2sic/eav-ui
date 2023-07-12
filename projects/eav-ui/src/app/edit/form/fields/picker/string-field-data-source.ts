@@ -4,14 +4,14 @@ import { BehaviorSubject, Subscription, distinctUntilChanged, map } from "rxjs";
 export class StringFieldDataSource {
   public data$ = new BehaviorSubject<EntityInfo[]>([]);
 
-  private subscription = new Subscription();
+  private subscriptions = new Subscription();
 
   constructor(
     private settings$: BehaviorSubject<FieldSettings>,
   ) { }
 
   destroy(): void {
-    this.subscription.unsubscribe();
+    this.subscriptions.unsubscribe();
   }
 
   fetchStringData(): void { 
