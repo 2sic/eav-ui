@@ -7,13 +7,13 @@
 
   <div cdkDropList
     [cdkDropListDisabled]="!vm.allowMultiValue || vm.controlStatus.disabled" 
-    (cdkDropListDropped)="drop($event, vm.selectedEntities)"
+    (cdkDropListDropped)="drop($event, vm.selectedItems)"
     [ngClass]="{
     'normal-list': !vm.allowMultiValue,
     'dnd-list': vm.allowMultiValue
   }">
     <!-- Normal list usually shows only one item, but can show "empty slot" / "null-item" in debug mode -->
-    <div *ngFor="let item of vm.selectedEntities; trackBy: trackByFn; let index = index" 
+    <div *ngFor="let item of vm.selectedItems; trackBy: trackByFn; let index = index" 
       cdkDrag 
       [ngClass]="{
       'normal-item': !vm.allowMultiValue,

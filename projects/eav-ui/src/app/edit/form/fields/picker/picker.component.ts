@@ -83,7 +83,7 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
     // @2SDV TODO check what it does and add comments
     this.subscription.add(
       this.editRoutingService.childFormClosed().subscribe(() => {
-        this.pickerSourceAdapter.fetchEntities(true);
+        this.pickerSourceAdapter.fetchItems(true);
       })
     );
   }

@@ -29,7 +29,7 @@ export class PickerListComponent implements OnInit {
     const label$ = this.pickerStateAdapter.label$;
     const required$ = this.pickerStateAdapter.required$;
     const controlStatus$ = this.pickerStateAdapter.controlStatus$;
-    const selectedEntities$ = this.pickerStateAdapter.selectedEntities$;
+    const selectedItems$ = this.pickerStateAdapter.selectedItems$;
 
     const settings$ = this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).pipe(
       map(settings => ({
@@ -41,10 +41,10 @@ export class PickerListComponent implements OnInit {
       distinctUntilChanged(GeneralHelpers.objectsEqual),
     );
     this.viewModel$ = combineLatest([
-      settings$, label$, required$, controlStatus$, selectedEntities$
+      settings$, label$, required$, controlStatus$, selectedItems$
     ]).pipe(
       map(([
-        settings, label, required, controlStatus, selectedEntities
+        settings, label, required, controlStatus, selectedItems
       ]) => {
         const viewModel: EntityListViewModel = {
           allowMultiValue: settings.allowMultiValue,
@@ -54,7 +54,7 @@ export class PickerListComponent implements OnInit {
           label,
           required,
           controlStatus,
-          selectedEntities
+          selectedItems
         };
         return viewModel;
       }),

@@ -1,7 +1,7 @@
 import { FormGroup, AbstractControl } from "@angular/forms";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
-import { DropdownOption, EntityInfo, FieldSettings } from "projects/edit-types";
+import { FieldSettings } from "projects/edit-types";
 import { BehaviorSubject, distinctUntilChanged, map } from "rxjs";
 import { EntityService, EavService, EditRoutingService, FieldsSettingsService } from "../../../shared/services";
 import { EntityCacheService } from "../../../shared/store/ngrx-data";
@@ -76,13 +76,13 @@ export class PickerEntitySourceAdapter extends PickerSourceAdapter {
           this.isString ? null : entityType,
           this.group.controls,
           () => {
-            this.availableEntities$.next(null);
+            this.availableItems$.next(null);
             this.updateAddNew();
           },
           null,
           this.eavService.eavConfig,
         );
-        this.availableEntities$.next(null);
+        this.availableItems$.next(null);
         this.updateAddNew();
       })
     );
@@ -109,15 +109,15 @@ export class PickerEntitySourceAdapter extends PickerSourceAdapter {
   }
 
   // @2SDV TODO: Split this adapter into two separate adapters for string and entity
-  fetchEntities(clearAvailableEntitiesAndOnlyUpdateCache: boolean): void {
-    if (this.isString) { 
+  fetchItems(clearAvailableEntitiesAndOnlyUpdateCache: boolean): void {
+    if (this.isString) {
       this.stringFieldDataSource.fetchStringData();
-      this.stringFieldDataSource.data$.subscribe(this.availableEntities$);
+      this.stringFieldDataSource.data$.subscribe(this.availableItems$);
       return;
     }
 
     if (clearAvailableEntitiesAndOnlyUpdateCache) {
-      this.availableEntities$.next(null);
+      this.availableItems$.next(null);
     }
 
     const contentTypeName = this.contentTypeMask.resolve();
@@ -131,8 +131,8 @@ export class PickerEntitySourceAdapter extends PickerSourceAdapter {
 
     this.entityFieldDataSource.fetchEntityData(contentTypeName, entitiesFilter);
     if (!clearAvailableEntitiesAndOnlyUpdateCache) {
-      this.entityFieldDataSource.data$.subscribe(this.availableEntities$);
+      this.entityFieldDataSource.data$.subscribe(this.availableItems$);
     }
-    
+
   }
 }

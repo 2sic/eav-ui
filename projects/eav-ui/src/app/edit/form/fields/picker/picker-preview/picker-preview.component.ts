@@ -29,11 +29,11 @@ export class PickerPreviewComponent extends BaseSubsinkComponent implements OnIn
     private editRoutingService: EditRoutingService,
   ) {
     super();
-   }
+  }
 
   ngOnInit(): void {
     const freeTextMode$ = this.pickerStateAdapter.freeTextMode$;
-    const selectedEntities$ = this.pickerStateAdapter.selectedEntities$;
+    const selectedItems$ = this.pickerStateAdapter.selectedItems$;
     const controlStatus$ = this.pickerStateAdapter.controlStatus$;
     const disableAddNew$ = this.pickerStateAdapter.disableAddNew$;
 
@@ -48,17 +48,17 @@ export class PickerPreviewComponent extends BaseSubsinkComponent implements OnIn
     );
 
     this.templateVars$ = combineLatest([
-      selectedEntities$, freeTextMode$, settings$, controlStatus$, disableAddNew$
+      selectedItems$, freeTextMode$, settings$, controlStatus$, disableAddNew$
     ]).pipe(
       map(([
-        selectedEntities, freeTextMode, settings, controlStatus, disableAddNew
+        selectedItems, freeTextMode, settings, controlStatus, disableAddNew
       ]) => {
         const leavePlaceForButtons = (settings.EntityType && settings.EnableCreate) || settings.AllowMultiValue;
-        const showAddNewEntityButton =  settings.EntityType && settings.EnableCreate;
+        const showAddNewEntityButton = settings.EntityType && settings.EnableCreate;
         const showGoToListDialogButton = settings.AllowMultiValue;
 
         const templateVars: EntityPickerPreviewTemplateVars = {
-          selectedEntities,
+          selectedItems,
           freeTextMode,
           enableTextEntry: settings.EnableTextEntry,
           controlStatus,

@@ -42,17 +42,17 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     private fieldsSettingsService: FieldsSettingsService,
   ) {
     super();
-   }
+  }
 
   ngOnInit(): void {
     this.control = this.group.controls[this.config.fieldName];
 
-    const availableEntities$ = this.pickerSourceAdapter.availableEntities$;
+    const availableEntities$ = this.pickerSourceAdapter.availableItems$;
 
     const freeTextMode$ = this.pickerStateAdapter.freeTextMode$;
     const controlStatus$ = this.pickerStateAdapter.controlStatus$;
     const error$ = this.pickerStateAdapter.error$;
-    const selectedEntities$ = this.pickerStateAdapter.selectedEntities$;
+    const selectedEntities$ = this.pickerStateAdapter.selectedItems$;
     const label$ = this.pickerStateAdapter.label$;
     const required$ = this.pickerStateAdapter.required$;
 
@@ -129,7 +129,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   fetchEntities(availableEntities: EntityInfo[]): void {
     this.autocompleteRef.nativeElement.value = '';
     if (availableEntities != null) { return; }
-    this.pickerSourceAdapter.fetchEntities(false);
+    this.pickerSourceAdapter.fetchItems(false);
   }
 
   getPlaceholder(availableEntities: EntityInfo[], error: string): string {
@@ -150,7 +150,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     this.pickerStateAdapter.toggleFreeTextMode();
   }
 
-  filterSelectionList(): void { 
+  filterSelectionList(): void {
     this.filter$.next(true);
   }
 

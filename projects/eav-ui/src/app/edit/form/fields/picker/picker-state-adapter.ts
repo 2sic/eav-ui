@@ -34,14 +34,14 @@ export class PickerStateAdapter {
   error$: BehaviorSubject<string> = new BehaviorSubject('');
 
   shouldPickerListBeShown$: Observable<boolean>;
-  selectedEntities$: Observable<SelectedEntity[]>;
+  selectedItems$: Observable<SelectedEntity[]>;
   allowMultiValue$: Observable<boolean>;
   tooltip$: Observable<string>;
   information$: Observable<string>;
   isDialog$: Observable<boolean>;
 
   init() {
-    this.selectedEntities$ = combineLatest([
+    this.selectedItems$ = combineLatest([
       this.controlStatus$.pipe(map(controlStatus => controlStatus.value), distinctUntilChanged()),
       this.cacheEntities$,
       this.stringQueryCache$,
@@ -63,11 +63,11 @@ export class PickerStateAdapter {
     this.information$ = this.settings$.pipe(map(settings => settings.Information), distinctUntilChanged());
     this.isDialog$ = this.settings$.pipe(map(settings => settings._isDialog), distinctUntilChanged());
     this.shouldPickerListBeShown$ = combineLatest([
-      this.freeTextMode$, this.isExpanded$, this.allowMultiValue$, this.selectedEntities$
+      this.freeTextMode$, this.isExpanded$, this.allowMultiValue$, this.selectedItems$
     ]).pipe(map(([
-      freeTextMode, isExpanded, allowMultiValue, selectedEntities
+      freeTextMode, isExpanded, allowMultiValue, selectedItems
     ]) => {
-      return !freeTextMode && ((selectedEntities.length > 0 && allowMultiValue) || (selectedEntities.length > 1 && !allowMultiValue)) && (!allowMultiValue || (allowMultiValue && isExpanded));
+      return !freeTextMode && ((selectedItems.length > 0 && allowMultiValue) || (selectedItems.length > 1 && !allowMultiValue)) && (!allowMultiValue || (allowMultiValue && isExpanded));
     }));
   }
 
@@ -115,7 +115,7 @@ export class PickerStateAdapter {
     return [...this.control.value];
   }
 
-  protected createNewValue(valueArray: string[]): string | string[] { 
+  protected createNewValue(valueArray: string[]): string | string[] {
     return typeof this.control.value === 'string'
       ? convertArrayToString(valueArray, this.settings$.value.Separator)
       : valueArray;

@@ -6,7 +6,7 @@ export interface EntityListViewModel {
   enableEdit: boolean;
   enableDelete: boolean;
   enableRemove: boolean;
-  selectedEntities: SelectedEntity[];
+  selectedItems: SelectedEntity[];
   label: string;
   required: boolean;
   controlStatus: ControlStatus<string | string[]>;

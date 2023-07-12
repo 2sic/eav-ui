@@ -28,7 +28,7 @@ export class PickerDialogComponent extends BaseSubsinkComponent implements OnIni
     private fieldsSettingsService: FieldsSettingsService,
   ) {
     super();
-   }
+  }
 
   ngOnInit(): void {
     const freeTextMode$ = this.pickerStateAdapter.freeTextMode$;
@@ -43,7 +43,7 @@ export class PickerDialogComponent extends BaseSubsinkComponent implements OnIni
       })),
       distinctUntilChanged(GeneralHelpers.objectsEqual),
     );
-    
+
     this.templateVars$ = combineLatest([
       settings$, controlStatus$, freeTextMode$, disableAddNew$
     ]).pipe(

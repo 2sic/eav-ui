@@ -75,12 +75,12 @@ export class PickerQuerySourceAdapter extends PickerSourceAdapter {
         this.paramsMask = new FieldMask(
           urlParameters,
           this.group.controls,
-          () => { this.availableEntities$.next(null); },
+          () => { this.availableItems$.next(null); },
           null,
           this.eavService.eavConfig,
         );
 
-        this.availableEntities$.next(null);
+        this.availableItems$.next(null);
       })
     );
 
@@ -107,15 +107,15 @@ export class PickerQuerySourceAdapter extends PickerSourceAdapter {
     super.destroy();
   }
 
-  fetchEntities(clearAvailableEntitiesAndOnlyUpdateCache: boolean): void {
+  fetchItems(clearAvailableEntitiesAndOnlyUpdateCache: boolean): void {
     if (clearAvailableEntitiesAndOnlyUpdateCache) {
-      this.availableEntities$.next(null);
+      this.availableItems$.next(null);
     }
 
     const settings = this.settings$.value;
     if (!settings.Query) {
       alert(`No query defined for ${this.config.fieldName} - can't load entities`);
-      this.availableEntities$.next([]);
+      this.availableItems$.next([]);
       return;
     }
 
@@ -131,12 +131,12 @@ export class PickerQuerySourceAdapter extends PickerSourceAdapter {
     this.queryFieldDataSource.fetchQueryData(true, params, entitiesFilter);
     this.queryFieldDataSource.error$.subscribe(this.error$);
     if (!clearAvailableEntitiesAndOnlyUpdateCache) {
-      this.queryFieldDataSource.data$.subscribe(this.availableEntities$);
+      this.queryFieldDataSource.data$.subscribe(this.availableItems$);
     }
 
   }
 
-  flushAvailableEntities(): void { 
+  flushAvailableEntities(): void {
     if (!this.isStringQuery) {
       this.subscription.add(
         this.settings$.pipe(
@@ -146,7 +146,7 @@ export class PickerQuerySourceAdapter extends PickerSourceAdapter {
           })),
           distinctUntilChanged(GeneralHelpers.objectsEqual),
         ).subscribe(() => {
-          this.availableEntities$.next(null);
+          this.availableItems$.next(null);
         })
       );
     } else {
@@ -158,7 +158,7 @@ export class PickerQuerySourceAdapter extends PickerSourceAdapter {
           })),
           distinctUntilChanged(GeneralHelpers.objectsEqual),
         ).subscribe(() => {
-          this.availableEntities$.next(null);
+          this.availableItems$.next(null);
         })
       );
     }

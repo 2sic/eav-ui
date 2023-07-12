@@ -32,7 +32,7 @@ export class PickerSourceAdapter {
     public deleteCallback: (props: DeleteEntityProps) => void,
   ) { }
 
-  availableEntities$: BehaviorSubject<EntityInfo[]> = new BehaviorSubject<EntityInfo[]>(null);
+  availableItems$: BehaviorSubject<EntityInfo[]> = new BehaviorSubject<EntityInfo[]>(null);
 
   contentType: string;
 
@@ -46,7 +46,7 @@ export class PickerSourceAdapter {
 
   destroy() {
     this.settings$.complete();
-    this.availableEntities$.complete();
+    this.availableItems$.complete();
     this.settings$.complete();
     this.subscription.unsubscribe();
   }
@@ -94,7 +94,7 @@ export class PickerSourceAdapter {
       next: () => {
         this.snackBar.open(this.translate.instant('Message.Deleted'), null, { duration: 2000 });
         this.deleteCallback(props);
-        this.fetchEntities(true);
+        this.fetchItems(true);
       },
       error: (error1: HttpErrorResponse) => {
         this.snackBar.dismiss();
@@ -104,7 +104,7 @@ export class PickerSourceAdapter {
           next: () => {
             this.snackBar.open(this.translate.instant('Message.Deleted'), null, { duration: 2000 });
             this.deleteCallback(props);
-            this.fetchEntities(true);
+            this.fetchItems(true);
           },
           error: (error2: HttpErrorResponse) => {
             this.snackBar.open(this.translate.instant('Message.DeleteError'), null, { duration: 2000 });
@@ -127,7 +127,7 @@ export class PickerSourceAdapter {
 
     const cached = this.entityCacheService.getEntities(guids);
     if (guids.length !== cached.length) {
-      this.fetchEntities(true);
+      this.fetchItems(true);
     }
   }
 
@@ -160,5 +160,5 @@ export class PickerSourceAdapter {
     }
   }
 
-  fetchEntities(clearAvailableEntitiesAndOnlyUpdateCache: boolean): void { }
+  fetchItems(clearAvailableEntitiesAndOnlyUpdateCache: boolean): void { }
 }
