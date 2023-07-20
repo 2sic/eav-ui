@@ -2,7 +2,7 @@ import { GridOptions, ICellRendererParams } from '@ag-grid-community/core';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject, catchError, Observable, of, share, startWith, Subject, switchMap } from 'rxjs';
+import { BehaviorSubject, catchError, combineLatest, map, Observable, of, share, startWith, Subject, switchMap } from 'rxjs';
 import { FeatureNames } from '../../features/feature-names';
 import { BaseComponent } from '../../shared/components/base-component/base.component';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
@@ -38,6 +38,8 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
 
   private refreshApps$ = new Subject<void>();
 
+  viewModel$: Observable<AppsListViewModel>;
+
   constructor(
     protected router: Router,
     protected route: ActivatedRoute,
@@ -62,6 +64,11 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
     this.subscription.add(this.refreshOnChildClosedDeep().subscribe(() => { this.refreshApps$.next(); }));
     this.isAddFromFolderEnabled$ = this.featuresService.isEnabled$(FeatureNames.AppSyncWithSiteFiles);
     this.subscription.add(this.featuresService.isEnabled$(FeatureNames.LightSpeed).subscribe(this.lightspeedEnabled$));
+    this.viewModel$ = combineLatest([this.apps$, this.fabOpen$, this.isAddFromFolderEnabled$]).pipe(
+      map(([apps, fabOpen, isAddFromFolderEnabled]) => {
+        return { apps, fabOpen, isAddFromFolderEnabled};
+      }),
+    );
   }
 
   ngOnDestroy(): void {
@@ -275,4 +282,10 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
     };
     return gridOptions;
   }
+}
+
+interface AppsListViewModel {
+  apps: App[];
+  fabOpen: any;
+  isAddFromFolderEnabled: boolean;
 }

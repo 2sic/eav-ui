@@ -7,7 +7,7 @@ import { EavService, FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { BaseFieldComponent } from '../../base/base-field.component';
 import { StringDefaultLogic } from './string-default-logic';
-import { StringDefaultTemplateVars } from './string-default.models';
+import { StringDefaultViewModel } from './string-default.models';
 
 @Component({
   selector: InputTypeConstants.StringDefault,
@@ -18,7 +18,7 @@ import { StringDefaultTemplateVars } from './string-default.models';
   wrappers: [WrappersConstants.LocalizationWrapper],
 })
 export class StringDefaultComponent extends BaseFieldComponent<string> implements OnInit, OnDestroy {
-  templateVars$: Observable<StringDefaultTemplateVars>;
+  viewModel: Observable<StringDefaultViewModel>;
 
   constructor(eavService: EavService, fieldsSettingsService: FieldsSettingsService) {
     super(eavService, fieldsSettingsService);
@@ -35,7 +35,7 @@ export class StringDefaultComponent extends BaseFieldComponent<string> implement
       distinctUntilChanged(GeneralHelpers.objectsEqual),
     );
 
-    this.templateVars$ = combineLatest([
+    this.viewModel = combineLatest([
       combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
       combineLatest([settings$]),
     ]).pipe(
@@ -43,7 +43,7 @@ export class StringDefaultComponent extends BaseFieldComponent<string> implement
         [controlStatus, label, placeholder, required],
         [settings],
       ]) => {
-        const templateVars: StringDefaultTemplateVars = {
+        const viewModel: StringDefaultViewModel = {
           controlStatus,
           label,
           placeholder,
@@ -51,7 +51,7 @@ export class StringDefaultComponent extends BaseFieldComponent<string> implement
           inputFontFamily: settings.InputFontFamily,
           rowCount: settings.RowCount,
         };
-        return templateVars;
+        return viewModel;
       }),
     );
   }

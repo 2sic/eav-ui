@@ -7,7 +7,7 @@ import { EavService, FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { BaseFieldComponent } from '../../base/base-field.component';
 import { BooleanDefaultLogic } from './boolean-default-logic';
-import { BooleanDefaultTemplateVars } from './boolean-default.models';
+import { BooleanDefaultViewModel } from './boolean-default.models';
 
 @Component({
   selector: InputTypeConstants.BooleanDefault,
@@ -18,7 +18,7 @@ import { BooleanDefaultTemplateVars } from './boolean-default.models';
   wrappers: [WrappersConstants.LocalizationWrapper],
 })
 export class BooleanDefaultComponent extends BaseFieldComponent<boolean> implements OnInit, OnDestroy {
-  templateVars$: Observable<BooleanDefaultTemplateVars>;
+  viewModel$: Observable<BooleanDefaultViewModel>;
 
   constructor(eavService: EavService, fieldsSettingsService: FieldsSettingsService) {
     super(eavService, fieldsSettingsService);
@@ -45,7 +45,7 @@ export class BooleanDefaultComponent extends BaseFieldComponent<boolean> impleme
       distinctUntilChanged(),
     );
 
-    this.templateVars$ = combineLatest([
+    this.viewModel$ = combineLatest([
       combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
       combineLatest([changable$]),
       combineLatest([checked$])
@@ -55,7 +55,7 @@ export class BooleanDefaultComponent extends BaseFieldComponent<boolean> impleme
         [changable],
         [checked],
       ]) => {
-        const templateVars: BooleanDefaultTemplateVars = {
+        const viewModel: BooleanDefaultViewModel = {
           controlStatus,
           label,
           placeholder,
@@ -63,7 +63,7 @@ export class BooleanDefaultComponent extends BaseFieldComponent<boolean> impleme
           changable,
           checked,
         };
-        return templateVars;
+        return viewModel;
       }),
     );
   }

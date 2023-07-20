@@ -1,12 +1,12 @@
 <ng-container *ngIf="!loadError">
-  <ng-container *ngIf="templateVars$ | async as data">
+  <ng-container *ngIf="viewModel$ | async as vm">
 
     <div class="formula-context-box">
       <mat-form-field color="accent">
         <mat-label>Entity</mat-label>
-        <mat-select [ngModel]="data.designer.entityGuid"
+        <mat-select [ngModel]="vm.designer.entityGuid"
           (ngModelChange)="selectedChanged(SelectTargets.Entity, $event)">
-          <mat-option *ngFor="let entityOption of data.entityOptions; trackBy: trackEntityOptions"
+          <mat-option *ngFor="let entityOption of vm.entityOptions; trackBy: trackEntityOptions"
             [value]="entityOption.entityGuid">
             <span [ngClass]="{ 'has-formula': entityOption.hasFormula }">
               {{ entityOption.label }}
@@ -17,9 +17,9 @@
 
       <mat-form-field color="accent">
         <mat-label>Attribute</mat-label>
-        <mat-select [ngModel]="data.designer.fieldName" (ngModelChange)="selectedChanged(SelectTargets.Field, $event)"
-          [disabled]="data.designer.entityGuid == null">
-          <mat-option *ngFor="let fieldOption of data.fieldOptions; trackBy: trackFieldOptions"
+        <mat-select [ngModel]="vm.designer.fieldName" (ngModelChange)="selectedChanged(SelectTargets.Field, $event)"
+          [disabled]="vm.designer.entityGuid == null">
+          <mat-option *ngFor="let fieldOption of vm.fieldOptions; trackBy: trackFieldOptions"
             [value]="fieldOption.fieldName">
             <span [ngClass]="{ 'has-formula': fieldOption.hasFormula }">
               {{ fieldOption.fieldName }}
@@ -30,22 +30,22 @@
 
       <mat-form-field color="accent">
         <mat-label>Target</mat-label>
-        <mat-select *ngIf="!freeTextTarget" [ngModel]="data.designer.target"
+        <mat-select *ngIf="!freeTextTarget" [ngModel]="vm.designer.target"
           (ngModelChange)="selectedChanged(SelectTargets.Target, $event)"
-          [disabled]="data.designer.entityGuid == null || data.designer.fieldName == null">
-          <mat-option *ngFor="let targetOption of data.targetOptions" [value]="targetOption.target">
+          [disabled]="vm.designer.entityGuid == null || vm.designer.fieldName == null">
+          <mat-option *ngFor="let targetOption of vm.targetOptions" [value]="targetOption.target">
             <span [ngClass]="{ 'has-formula': targetOption.hasFormula }">
               {{ targetOption.label }}
             </span>
           </mat-option>
         </mat-select>
-        <input *ngIf="freeTextTarget" matInput [ngModel]="data.designer.target"
+        <input *ngIf="freeTextTarget" matInput [ngModel]="vm.designer.target"
           (ngModelChange)="selectedChanged(SelectTargets.Target, $event)"
-          [disabled]="data.designer.entityGuid == null || data.designer.fieldName == null">
+          [disabled]="vm.designer.entityGuid == null || vm.designer.fieldName == null">
       </mat-form-field>
 
       <button mat-icon-button tippy="FreeText Target"
-        [disabled]="data.designer.entityGuid == null || data.designer.fieldName == null" (click)="toggleFreeText()">
+        [disabled]="vm.designer.entityGuid == null || vm.designer.fieldName == null" (click)="toggleFreeText()">
         <mat-icon>text_fields</mat-icon>
       </button>
 
@@ -58,24 +58,24 @@
 
     <div class="formula-box">
       <div class="formula-field" [ngClass]="{
-        'disabled': !data.designer.editMode || data.designer.entityGuid == null || data.designer.fieldName == null || data.designer.target == null,
+        'disabled': !vm.designer.editMode || vm.designer.entityGuid == null || vm.designer.fieldName == null || vm.designer.target == null,
         'focused': focused
       }">
         <mat-label class="label">Function</mat-label>
 
-        <app-monaco-editor class="editor" [filename]="filename" [value]="data.formula?.source ?? placeholder"
-          [jsTypings]="data.typings" (valueChanged)="formulaChanged($event)" [options]="monacoOptions"
+        <app-monaco-editor class="editor" [filename]="filename" [value]="vm.formula?.source ?? placeholder"
+          [jsTypings]="vm.typings" (valueChanged)="formulaChanged($event)" [options]="monacoOptions"
           (focused)="onFocused()" (blurred)="onBlurred()">
         </app-monaco-editor>
       </div>
 
-      <div class="formula-snippets fancy-scrollbar-light" [ngClass]="{ 'disabled': !data.designer.editMode }">
-        <div class="snippet" *ngFor="let snippet of data.dataSnippets; trackBy: trackSnippets" [title]="snippet.code"
+      <div class="formula-snippets fancy-scrollbar-light" [ngClass]="{ 'disabled': !vm.designer.editMode }">
+        <div class="snippet" *ngFor="let snippet of vm.dataSnippets; trackBy: trackSnippets" [title]="snippet.code"
           (click)="copyToClipboard(snippet.code)">
           {{ snippet.label | snippetLabelSize }}
         </div>
-        <div class="separator" *ngIf="data.dataSnippets?.length && data.contextSnippets?.length"></div>
-        <div class="snippet" *ngFor="let snippet of data.contextSnippets; trackBy: trackSnippets" [title]="snippet.code"
+        <div class="separator" *ngIf="vm.dataSnippets?.length && vm.contextSnippets?.length"></div>
+        <div class="snippet" *ngFor="let snippet of vm.contextSnippets; trackBy: trackSnippets" [title]="snippet.code"
           (click)="copyToClipboard(snippet.code)">
           {{ snippet.label | snippetLabelSize }}
         </div>
@@ -85,13 +85,13 @@
     <div class="formula-footer-box">
       <div class="formula-result-box hide-scrollbar">
         <span class="label">Result:&nbsp;</span>
-        <ng-container *ngIf="data.resultExists">
-          <ng-container *ngIf="!data.resultIsError">
-            <span *ngIf="data.result === undefined && !data.resultIsOnlyPromise" class="result-undefined">undefined</span>
-            <span *ngIf="data.result === undefined && data.resultIsOnlyPromise">promise(🤞🏽)</span>
-            <span *ngIf="data.result !== undefined">{{ data.result | json }}</span>
+        <ng-container *ngIf="vm.resultExists">
+          <ng-container *ngIf="!vm.resultIsError">
+            <span *ngIf="vm.result === undefined && !vm.resultIsOnlyPromise" class="result-undefined">undefined</span>
+            <span *ngIf="vm.result === undefined && vm.resultIsOnlyPromise">promise(🤞🏽)</span>
+            <span *ngIf="vm.result !== undefined">{{ vm.result | json }}</span>
           </ng-container>
-          <span class="result-error" *ngIf="data.resultIsError">
+          <span class="result-error" *ngIf="vm.resultIsError">
             Calculation failed. Please check logs for more info
           </span>
         </ng-container>
@@ -105,7 +105,7 @@
           <mat-icon>more_vert</mat-icon>
         </button>
         <mat-menu #menu="matMenu" class="grid-more-menu">
-          <button mat-menu-item (click)="deleteFormula()" [disabled]="!data.formula?.sourceId">
+          <button mat-menu-item (click)="deleteFormula()" [disabled]="!vm.formula?.sourceId">
             <mat-icon>delete</mat-icon>
             <span>Delete</span>
           </button>
@@ -115,12 +115,12 @@
           </button>
         </mat-menu>
         <button *ngIf="allowSaveFormula" mat-icon-button tippy="Save"
-          [tippyDisabled]="!data.designer.editMode || !data.formula?.source"
-          [disabled]="!data.designer.editMode || !data.formula?.source || data.saving" (click)="save()">
+          [tippyDisabled]="!vm.designer.editMode || !vm.formula?.source"
+          [disabled]="!vm.designer.editMode || !vm.formula?.source || vm.saving" (click)="save()">
           <mat-icon>save</mat-icon>
         </button>
         <button mat-icon-button class="run-button" tippy="Run"
-          [disabled]="!data.designer.editMode || !data.formula?.source" (click)="run()">
+          [disabled]="!vm.designer.editMode || !vm.formula?.source" (click)="run()">
           <mat-icon>play_arrow</mat-icon>
         </button>
       </div>

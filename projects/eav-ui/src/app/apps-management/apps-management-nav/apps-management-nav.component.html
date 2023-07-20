@@ -1,4 +1,4 @@
-<div class="nav-component-wrapper" appToggleDebug>
+<div class="nav-component-wrapper" appToggleDebug *ngIf="viewModel$ | async as vm">
   <div mat-dialog-title>
     <div class="dialog-title-box">
       <div>Manage Zone {{ zoneId }}</div>
@@ -11,15 +11,14 @@
   <router-outlet></router-outlet>
 
   <!-- spm NOTE: we use mat-tab-group because mat-tab-nav-bar doesn't have animations and doesn't look pretty -->
-  <mat-tab-group class="mat-tab-group-max-height" dynamicHeight color="accent"
-    *ngIf="dialogSettings$ | async as dialogSettings" (selectedTabChange)="changeTab($event)"
-    [selectedIndex]="tabIndex$ | async">
+  <mat-tab-group class="mat-tab-group-max-height" dynamicHeight color="accent" (selectedTabChange)="changeTab($event)"
+    [selectedIndex]="vm.tabIndex">
     <mat-tab>
       <div *matTabLabel class="mat-tab-label-box" tippy="System Info">
         <mat-icon>settings</mat-icon>
         <span>System</span>
       </div>
-      <app-system-info *matTabContent [dialogSettings]="dialogSettings"></app-system-info>
+      <app-system-info *matTabContent [dialogSettings]="vm.dialogSettings"></app-system-info>
     </mat-tab>
 
     <mat-tab>

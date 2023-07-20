@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Input } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { DevRestBaseTemplateVars, DevRestDataTemplateVars } from '..';
+import { DevRestBaseViewModel, DevRestDataViewModel } from '..';
 import { copyToClipboard } from '../../shared/helpers/copy-to-clipboard.helper';
 
 @Component({
@@ -10,7 +10,7 @@ import { copyToClipboard } from '../../shared/helpers/copy-to-clipboard.helper';
   styleUrls: ['./dev-rest-urls-and-code.component.scss']
 })
 export class DevRestUrlsAndCodeComponent {
-  @Input() data: DevRestBaseTemplateVars;
+  @Input() data: DevRestBaseViewModel;
   constructor(
     private snackBar: MatSnackBar,
     private http: HttpClient,

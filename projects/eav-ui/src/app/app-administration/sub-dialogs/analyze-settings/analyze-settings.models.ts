@@ -6,7 +6,7 @@ export const AnalyzeParts = {
 } as const;
 export type AnalyzePart = typeof AnalyzeParts[keyof typeof AnalyzeParts];
 
-export interface AnalyzeSettingsTemplateVars {
+export interface AnalyzeSettingsViewModel {
   views: View[];
   selectedView: string;
   stack: SettingsStackItem[];

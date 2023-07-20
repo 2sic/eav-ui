@@ -3,7 +3,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
 import { BaseComponent } from '../shared/components/base-component/base.component';
 import { IdFieldComponent } from '../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../shared/components/id-field/id-field.models';
@@ -34,6 +34,8 @@ export class PermissionsComponent extends BaseComponent implements OnInit, OnDes
     },
   };
 
+  viewModel$: Observable<PermissionsViewModel>;
+
   constructor(
     protected router: Router,
     protected route: ActivatedRoute,
@@ -48,6 +50,9 @@ export class PermissionsComponent extends BaseComponent implements OnInit, OnDes
   ngOnInit() {
     this.fetchPermissions();
     this.subscription.add(this.refreshOnChildClosedShallow().subscribe(() => { this.fetchPermissions(); }));
+    this.viewModel$ = combineLatest([
+      this.permissions$
+    ]).pipe(map(([permissions]) => ({ permissions })));
   }
 
   ngOnDestroy() {
@@ -192,4 +197,8 @@ export class PermissionsComponent extends BaseComponent implements OnInit, OnDes
     };
     return gridOptions;
   }
+}
+
+interface PermissionsViewModel {
+  permissions: Permission[];
 }

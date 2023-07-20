@@ -4,7 +4,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject, forkJoin, of } from 'rxjs';
+import { BehaviorSubject, Observable, combineLatest, forkJoin, map, of } from 'rxjs';
 import { ContentType } from '../app-administration/models/content-type.model';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { GoToMetadata } from '../metadata';
@@ -44,6 +44,9 @@ export class ContentTypeFieldsComponent extends BaseComponent implements OnInit,
   private rowDragSuppressed = false;
   private contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
 
+  viewModel$: Observable<ContentTypeFieldsViewModel>;
+
+
   constructor(
     protected router: Router,
     protected route: ActivatedRoute,
@@ -58,6 +61,11 @@ export class ContentTypeFieldsComponent extends BaseComponent implements OnInit,
   ngOnInit() {
     this.fetchFields();
     this.subscription.add(this.refreshOnChildClosedShallow().subscribe(() => { this.fetchFields(); }));
+    this.viewModel$ = combineLatest([
+      this.contentType$, this.fields$
+    ]).pipe(
+      map(([contentType, fields]) => ({ contentType, fields }))
+    );
   }
 
   ngOnDestroy() {
@@ -377,4 +385,9 @@ export class ContentTypeFieldsComponent extends BaseComponent implements OnInit,
     };
     return gridOptions;
   }
+}
+
+interface ContentTypeFieldsViewModel {
+  contentType: ContentType;
+  fields: Field[];
 }

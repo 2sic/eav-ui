@@ -1,5 +1,5 @@
 import { LogEntry } from '../../../shared/models';
 
-export interface LogsDumpTemplateVars {
+export interface LogsDumpViewModel {
   logs: LogEntry[];
 }

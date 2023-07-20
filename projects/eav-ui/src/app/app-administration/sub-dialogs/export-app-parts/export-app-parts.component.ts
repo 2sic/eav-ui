@@ -22,7 +22,7 @@ export class ExportAppPartsComponent implements OnInit, OnDestroy {
   dropdownInsertValue = dropdownInsertValue;
   private loading$ = new BehaviorSubject(false);
   private isExporting$ = new BehaviorSubject(false);
-  templateVars$ = combineLatest([this.loading$, this.isExporting$]).pipe(
+  viewModel$ = combineLatest([this.loading$, this.isExporting$]).pipe(
     map(([loading, isExporting]) => ({ loading, isExporting })),
   );
 

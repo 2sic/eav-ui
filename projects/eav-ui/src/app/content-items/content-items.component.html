@@ -1,9 +1,9 @@
-<div appToggleDebug class="nav-component-wrapper">
+<div appToggleDebug class="nav-component-wrapper" *ngIf="viewModel$ | async as vm">
   <div mat-dialog-title>
     <div class="dialog-title-box">
       <div>
-        <ng-container *ngIf="contentType$ | async as contentType">
-          {{ contentType.Label || contentType.Name }}
+        <ng-container>
+          {{ vm.contentType.Label || vm.contentType.Name }}
         </ng-container>
         Data
       </div>
@@ -15,12 +15,12 @@
 
   <router-outlet></router-outlet>
 
-  <div *ngIf="(contentType$ | async)?.Properties?.ListInstructions as listInstructions"
+  <div *ngIf="vm.contentType?.Properties?.ListInstructions as listInstructions"
     [innerHTML]="listInstructions | safeHtml">
   </div>
 
   <div class="grid-wrapper">
-    <ag-grid-angular class="ag-theme-material" [rowData]="items$ | async" [gridOptions]="gridOptions"
+    <ag-grid-angular class="ag-theme-material" [rowData]="vm.items" [gridOptions]="gridOptions"
       (gridReady)="onGridReady($event)" appDragAndDrop [allowedFileTypes]="'xml,json'"
       (filesDropped)="filesDropped($event)">
     </ag-grid-angular>
@@ -42,7 +42,7 @@
         <mat-icon>local_offer</mat-icon>
         <span>Create Metadata</span>
       </button>
-      <button mat-button color="accent" tippy="Print filter to console" *ngIf="debugEnabled$ | async"
+      <button mat-button color="accent" tippy="Print filter to console" *ngIf="vm.debugEnabled"
         (click)="debugFilter()">
         <mat-icon>filter_list</mat-icon>
         <span>Filter</span>

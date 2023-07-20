@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { combineLatest, map, Observable } from 'rxjs';
 import { EavService, FormsStateService } from '../../shared/services';
 import { LanguageService, PublishStatusService } from '../../shared/store/ngrx-data';
-import { EditDialogHeaderTemplateVars } from './edit-dialog-header.models';
+import { EditDialogHeaderViewModel } from './edit-dialog-header.models';
 import { PublishStatusDialogComponent } from './publish-status-dialog/publish-status-dialog.component';
 
 @Component({
@@ -15,7 +15,7 @@ export class EditDialogHeaderComponent implements OnInit {
   @Input() disabled: boolean;
   @Output() private closeDialog = new EventEmitter<null>();
 
-  templateVars$: Observable<EditDialogHeaderTemplateVars>;
+  viewModel$: Observable<EditDialogHeaderViewModel>;
 
   constructor(
     private dialog: MatDialog,
@@ -30,15 +30,15 @@ export class EditDialogHeaderComponent implements OnInit {
     const readOnly$ = this.formsStateService.readOnly$;
     const hasLanguages$ = this.languageService.getLanguages$().pipe(map(languages => languages.length > 0));
     const publishMode$ = this.publishStatusService.getPublishMode$(this.eavService.eavConfig.formId);
-    this.templateVars$ = combineLatest([readOnly$, hasLanguages$, publishMode$]).pipe(
+    this.viewModel$ = combineLatest([readOnly$, hasLanguages$, publishMode$]).pipe(
       map(([readOnly, hasLanguages, publishMode]) => {
-        const templateVars: EditDialogHeaderTemplateVars = {
+        const viewModel: EditDialogHeaderViewModel = {
           readOnly: readOnly.isReadOnly,
           readOnlyReason: readOnly.reason,
           hasLanguages,
           publishMode,
         };
-        return templateVars;
+        return viewModel;
       }),
     );
   }

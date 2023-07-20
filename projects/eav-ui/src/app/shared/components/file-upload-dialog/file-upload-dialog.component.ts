@@ -1,7 +1,7 @@
 import { Component, HostBinding, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { BehaviorSubject, Subscription, take } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription, combineLatest, map, take } from 'rxjs';
 import { BaseSubsinkComponent } from '../base-subsink-component/base-subsink.component';
 import { FileUploadDialogData, FileUploadMessageTypes, FileUploadResult } from './file-upload-dialog.models';
 
@@ -17,6 +17,8 @@ export class FileUploadDialogComponent extends BaseSubsinkComponent implements O
   files$ = new BehaviorSubject<File[]>([]);
   result$ = new BehaviorSubject<FileUploadResult>(undefined);
   FileUploadMessageTypes = FileUploadMessageTypes;
+
+  viewModel$: Observable<FileUploadDialogViewModel>;
 
 
   constructor(
@@ -39,6 +41,10 @@ export class FileUploadDialogComponent extends BaseSubsinkComponent implements O
     if (this.dialogData.files != null) {
       this.filesDropped(this.dialogData.files);
     }
+
+    this.viewModel$ = combineLatest([
+      this.uploading$, this.files$, this.result$,
+    ]).pipe(map(([uploading, files, result]) => ({ uploading, files, result })));
   }
 
   ngOnDestroy(): void {
@@ -86,4 +92,10 @@ export class FileUploadDialogComponent extends BaseSubsinkComponent implements O
     }
     this.files$.next(files);
   }
+}
+
+interface FileUploadDialogViewModel {
+  uploading: boolean;
+  files: File[];
+  result: FileUploadResult;
 }

@@ -4,7 +4,7 @@ import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild, ViewContain
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 // tslint:disable-next-line:max-line-length
-import { BehaviorSubject, catchError, filter, forkJoin, map, Observable, of, pairwise, share, startWith, Subject, Subscription, switchMap, tap, timer } from 'rxjs';
+import { BehaviorSubject, catchError, combineLatest, filter, forkJoin, map, Observable, of, pairwise, share, startWith, Subject, Subscription, switchMap, tap, timer } from 'rxjs';
 import { FeatureState } from '../../features/models';
 import { BaseComponent } from '../../shared/components/base-component/base.component';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
@@ -21,6 +21,7 @@ import { FeaturesListEnabledReasonComponent } from './features-list-enabled-reas
 import { FeaturesListEnabledComponent } from './features-list-enabled/features-list-enabled.component';
 import { FeaturesStatusComponent } from './features-status/features-status.component';
 import { FeaturesStatusParams } from './features-status/features-status.models';
+import { viewsUsageDialog } from '../../app-administration/sub-dialogs/views-usage/views-usage-dialog.config';
 
 @Component({
   selector: 'app-license-info',
@@ -30,11 +31,12 @@ import { FeaturesStatusParams } from './features-status/features-status.models';
 export class LicenseInfoComponent extends BaseComponent implements OnInit, OnDestroy {
   @ViewChild(AgGridAngular) private gridRef?: AgGridAngular;
 
-  licenses$: Observable<License[]>;
   disabled$ = new BehaviorSubject(false);
   gridOptions = this.buildGridOptions();
 
   private refreshLicenses$ = new Subject<void>();
+  
+  viewModel$: Observable<LicenseInfoViewModel>;
 
   constructor(
     protected router: Router,
@@ -48,13 +50,17 @@ export class LicenseInfoComponent extends BaseComponent implements OnInit, OnDes
   }
 
   ngOnInit(): void {
-    this.licenses$ = this.refreshLicenses$.pipe(
-      startWith(undefined),
-      switchMap(() => this.featuresConfigService.getLicenses().pipe(catchError(() => of(undefined)))),
-      tap(() => this.disabled$.next(false)),
-      share(),
-    );
     this.subscription.add(this.refreshOnChildClosedDeep().subscribe(() => { this.refreshLicenses$.next(); }));
+    this.viewModel$ = combineLatest([
+      this.refreshLicenses$.pipe(
+        startWith(undefined),
+        switchMap(() => this.featuresConfigService.getLicenses().pipe(catchError(() => of(undefined)))),
+        tap(() => this.disabled$.next(false)),
+        share(),
+      )
+    ]).pipe(
+      map(([licenses]) => ({ licenses })),
+    );
   }
 
   ngOnDestroy(): void {
@@ -201,4 +207,8 @@ export class LicenseInfoComponent extends BaseComponent implements OnInit, OnDes
     };
     return gridOptions;
   }
+}
+
+interface LicenseInfoViewModel {
+  licenses: License[];
 }

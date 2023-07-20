@@ -1,4 +1,4 @@
-export interface SystemInfoTemplateVars {
+export interface SystemInfoViewModel {
   systemInfos: InfoTemplate[];
   siteInfos: InfoTemplate[];
   loading: boolean;

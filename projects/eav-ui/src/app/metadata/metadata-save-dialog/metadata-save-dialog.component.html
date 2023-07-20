@@ -1,4 +1,4 @@
-<ng-container *ngIf="templateVars$ | async as data">
+<ng-container *ngIf="viewModel$ | async as vm">
   <div mat-dialog-title>
     <div class="dialog-title-box">Create Metadata</div>
   </div>
@@ -15,8 +15,8 @@
       <ng-container *ngIf="advancedMode && guidedContentType">
         <mat-form-field appearance="standard" color="accent">
           <mat-label>Scope</mat-label>
-          <mat-select formControlName="scope" [placeholder]="!data.scopeOptions.length ? 'No items found' : ''">
-            <mat-option *ngFor="let scopeOption of data.scopeOptions" [value]="scopeOption.value">
+          <mat-select formControlName="scope" [placeholder]="!vm.scopeOptions.length ? 'No items found' : ''">
+            <mat-option *ngFor="let scopeOption of vm.scopeOptions" [value]="scopeOption.value">
               {{ scopeOption.name }}
             </mat-option>
             <mat-option [value]="dropdownInsertValue">Other...</mat-option>
@@ -32,8 +32,8 @@
       <mat-form-field appearance="standard" color="accent">
         <mat-label>Content Type</mat-label>
         <mat-select *ngIf="guidedContentType" formControlName="contentType" required
-          [placeholder]="!data.contentTypes.length ? 'No items found' : ''">
-          <mat-option *ngFor="let contentType of data.contentTypes" [value]="contentType.StaticName">
+          [placeholder]="!vm.contentTypes.length ? 'No items found' : ''">
+          <mat-option *ngFor="let contentType of vm.contentTypes" [value]="contentType.StaticName">
             {{ contentType.Label }}
           </mat-option>
         </mat-select>

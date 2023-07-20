@@ -2,7 +2,7 @@ import { GridOptions } from '@ag-grid-community/core';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { BehaviorSubject, filter, map, pairwise, startWith, Subscription } from 'rxjs';
+import { BehaviorSubject, combineLatest, filter, map, Observable, pairwise, startWith, Subscription } from 'rxjs';
 import { SiteLanguagePermissions } from '../../../apps-management/models/site-language.model';
 import { ZoneService } from '../../../apps-management/services/zone.service';
 import { GoToPermissions } from '../../../permissions';
@@ -22,6 +22,8 @@ export class LanguagePermissionsComponent extends BaseComponent implements OnIni
   languages$: BehaviorSubject<SiteLanguagePermissions[] | undefined>;
   gridOptions: GridOptions;
 
+  viewModel$: Observable<LanguagePermissionsViewModel>;
+
   constructor(
     protected router: Router,
     protected route: ActivatedRoute,
@@ -37,6 +39,9 @@ export class LanguagePermissionsComponent extends BaseComponent implements OnIni
   ngOnInit(): void {
     this.getLanguages();
     this.subscription.add(this.refreshOnChildClosedShallow().subscribe(() => { this.getLanguages(); }));
+    this.viewModel$ = combineLatest([this.languages$]).pipe(
+      map(([languages]) => ({ languages }))
+    );
   }
 
   ngOnDestroy(): void {
@@ -116,4 +121,8 @@ export class LanguagePermissionsComponent extends BaseComponent implements OnIni
     };
     return gridOptions;
   }
+}
+
+interface LanguagePermissionsViewModel {
+  languages: SiteLanguagePermissions[] | undefined
 }

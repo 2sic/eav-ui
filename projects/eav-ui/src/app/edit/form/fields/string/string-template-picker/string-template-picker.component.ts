@@ -10,7 +10,7 @@ import { EavService, FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { BaseFieldComponent } from '../../base/base-field.component';
 import { templateTypes } from './string-template-picker.constants';
-import { StringTemplatePickerTemplateVars } from './string-template-picker.models';
+import { StringTemplatePickerViewModel } from './string-template-picker.models';
 
 @Component({
   selector: InputTypeConstants.StringTemplatePicker,
@@ -21,7 +21,7 @@ import { StringTemplatePickerTemplateVars } from './string-template-picker.model
   wrappers: [WrappersConstants.LocalizationWrapper],
 })
 export class StringTemplatePickerComponent extends BaseFieldComponent<string> implements OnInit, OnDestroy {
-  templateVars$: Observable<StringTemplatePickerTemplateVars>;
+  viewModel: Observable<StringTemplatePickerViewModel>;
 
   private templateOptions$: BehaviorSubject<string[]>;
   private typeMask: FieldMask;
@@ -57,7 +57,7 @@ export class StringTemplatePickerComponent extends BaseFieldComponent<string> im
     this.setFileConfig(this.typeMask.resolve() || 'Token'); // use token setting as default, till the UI tells us otherwise
     this.onLocationChange(this.locationMask.resolve() || null); // set initial file list
 
-    this.templateVars$ = combineLatest([
+    this.viewModel = combineLatest([
       combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
       combineLatest([this.templateOptions$]),
     ]).pipe(
@@ -65,14 +65,14 @@ export class StringTemplatePickerComponent extends BaseFieldComponent<string> im
         [controlStatus, label, placeholder, required],
         [templateOptions],
       ]) => {
-        const templateVars: StringTemplatePickerTemplateVars = {
+        const viewModel: StringTemplatePickerViewModel = {
           controlStatus,
           label,
           placeholder,
           required,
           templateOptions,
         };
-        return templateVars;
+        return viewModel;
       }),
     );
   }

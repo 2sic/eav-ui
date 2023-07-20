@@ -10,7 +10,7 @@ import { eavConstants } from '../../shared/constants/eav.constants';
 import { Context } from '../../shared/services/context';
 import { DevRestBase } from '../dev-rest-base.component';
 import { generateQueryCalls } from './query-samples';
-import { DevRestQueryTemplateVars } from './query-template-vars';
+import { DevRestQueryViewModel } from './query-template-vars';
 
 const pathToQuery = 'app/{appname}/query/{queryname}';
 
@@ -19,7 +19,7 @@ const pathToQuery = 'app/{appname}/query/{queryname}';
   templateUrl: './query.component.html',
   styleUrls: [/*'./query.component.scss',*/ '../dev-rest-all.scss'],
 })
-export class DevRestQueryComponent extends DevRestBase<DevRestQueryTemplateVars> implements OnDestroy {
+export class DevRestQueryComponent extends DevRestBase<DevRestQueryViewModel> implements OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
   /** Test values for url params */
@@ -63,13 +63,13 @@ export class DevRestQueryComponent extends DevRestBase<DevRestQueryTemplateVars>
     );
 
     // build variables for template
-    this.templateVars$ = combineLatest([
+    this.viewModel$ = combineLatest([
       combineLatest([query$, this.scenario$, this.permissions$]),
       combineLatest([root$, /* itemOfThisType$, */ this.dialogSettings$]),
       combineLatest([this.streamNames$, this.urlParams$])
     ]).pipe(
       map(([[query, scenario, permissions], [root, diag], [streamNames, urlParams]]) => ({
-        ...this.buildBaseTemplateVars(query.Name, query.Guid, diag, permissions, root, scenario),
+        ...this.buildBaseViewModel(query.Name, query.Guid, diag, permissions, root, scenario),
         query,
         apiCalls: generateQueryCalls(dnnContext.$2sxc, scenario, context, root, 0 /* #todoquery */, streamNames, urlParams),
       })),

@@ -1,10 +1,10 @@
-<div class="editor-active-explorer fancy-scrollbar-dark" *ngIf="sorted$ | async as sorted">
+<div class="editor-active-explorer fancy-scrollbar-dark" *ngIf="viewModel$ | async as vm">
 
   <mat-slide-toggle labelPosition="before" color="primary" (change)="toggleDifficulty($event)">
     Show Advanced
   </mat-slide-toggle>
 
-  <ng-container *ngFor="let group of sorted | keyvalue; trackBy: trackGroups">
+  <ng-container *ngFor="let group of vm.sorted | keyvalue; trackBy: trackGroups">
     <div class="collapsible" [tippy]="guiTypes[group.key].UiHint || group.key" tippyShowDelay="750"
       (click)="toggleItem(group.key)">
       <mat-icon>{{ guiTypes[group.key].Icon || guiTypes.Unknown.Icon }}</mat-icon>

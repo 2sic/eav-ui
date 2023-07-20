@@ -2,7 +2,7 @@ import { GridOptions } from '@ag-grid-community/core';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { BehaviorSubject, distinctUntilChanged, filter, from, map, pairwise, startWith, Subscription, take } from 'rxjs';
+import { BehaviorSubject, combineLatest, distinctUntilChanged, filter, from, map, startWith, take } from 'rxjs';
 import { ContentExportService } from '../../content-export/services/content-export.service';
 import { ContentImportDialogData } from '../../content-import/content-import-dialog.config';
 import { GoToDevRest } from '../../dev-rest/go-to-dev-rest';
@@ -39,9 +39,13 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
   contentTypes$ = new BehaviorSubject<ContentType[]>(undefined);
   scope$ = new BehaviorSubject<string>(undefined);
   scopeOptions$ = new BehaviorSubject<ScopeOption[]>([]);
-  debugEnabled$ = this.globalConfigService.getDebugEnabled$();
   gridOptions = this.buildGridOptions();
   dropdownInsertValue = dropdownInsertValue;
+
+  viewModel$ = combineLatest([this.contentTypes$, this.scope$, this.scopeOptions$, this.globalConfigService.getDebugEnabled$()]).pipe(
+    map(([contentTypes, scope, scopeOptions, debugEnabled]) =>
+      ({ contentTypes, scope, scopeOptions, debugEnabled })),
+  );
 
   constructor(
     protected router: Router,

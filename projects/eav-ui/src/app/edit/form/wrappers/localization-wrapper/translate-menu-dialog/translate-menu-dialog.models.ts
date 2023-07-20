@@ -15,7 +15,7 @@ export interface TranslateMenuDialogTemplateLanguage {
   noTranslatableFieldsThatHaveContent?: number;
 }
 
-export interface TranslateMenuDialogTemplateVars {
+export interface TranslateMenuDialogViewModel {
   defaultLanguage: string;
   languages: TranslateMenuDialogTemplateLanguage[];
   translationState: TranslationStateCore;

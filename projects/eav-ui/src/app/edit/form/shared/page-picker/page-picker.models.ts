@@ -20,7 +20,7 @@ export interface PageEntity extends QueryEntity {
   Visible: boolean;
 }
 
-export interface PagePickerTemplateVars {
+export interface PagePickerViewModel {
   filterText: string;
   filteredSearch: PageSearchItem[];
   tree: PageTreeItem[];

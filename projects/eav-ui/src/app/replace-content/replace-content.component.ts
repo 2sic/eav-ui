@@ -10,7 +10,7 @@ import { BaseComponent } from '../shared/components/base-component/base.componen
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 import { EditForm } from '../shared/models/edit-form.model';
 import { ReplaceOption } from './models/replace-option.model';
-import { ReplaceContentTemplateVars } from './replace-content.models';
+import { ReplaceContentViewModel } from './replace-content.models';
 
 @Component({
   selector: 'app-replace-content',
@@ -20,7 +20,7 @@ import { ReplaceContentTemplateVars } from './replace-content.models';
 export class ReplaceContentComponent extends BaseComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
-  templateVars$: Observable<ReplaceContentTemplateVars>;
+  viewModel$: Observable<ReplaceContentViewModel>;
 
   private guid: string;
   private part: string;
@@ -37,7 +37,7 @@ export class ReplaceContentComponent extends BaseComponent implements OnInit, On
     private contentGroupService: ContentGroupService,
 
     private snackBar: MatSnackBar,
-  ) { 
+  ) {
     super(router, route);
   }
 
@@ -55,25 +55,25 @@ export class ReplaceContentComponent extends BaseComponent implements OnInit, On
         options.filter(option => option.label.toLocaleLowerCase().includes(filterText.toLocaleLowerCase())).map(option => option.label)
       ),
     );
-    this.templateVars$ = combineLatest([this.filterText$, filteredOptions$]).pipe(
+    this.viewModel$ = combineLatest([this.filterText$, filteredOptions$]).pipe(
       map(([filterText, filteredOptions]) => {
-        const templateVars: ReplaceContentTemplateVars = {
+        const viewModel: ReplaceContentViewModel = {
           filterText,
           filteredOptions,
           isAddMode: this.add,
           isMatch: filteredOptions.includes(filterText),
         };
-        return templateVars;
+        return viewModel;
       }),
     );
 
     this.fetchConfig(false, null);
-    this.subscription.add(this.refreshOnChildClosedShallow().subscribe(() => { 
+    this.subscription.add(this.refreshOnChildClosedShallow().subscribe(() => {
       const navigation = this.router.getCurrentNavigation();
       const editResult = navigation.extras?.state;
       const cloneId: number = editResult?.[Object.keys(editResult)[0]];
       this.fetchConfig(true, cloneId);
-     }));
+    }));
   }
 
   ngOnDestroy() {

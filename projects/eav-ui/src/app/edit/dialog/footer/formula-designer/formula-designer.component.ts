@@ -17,7 +17,7 @@ import { InputFieldHelpers } from '../../../shared/helpers';
 import { EavService } from '../../../shared/services';
 import { ContentTypeService, ItemService } from '../../../shared/store/ngrx-data';
 // tslint:disable-next-line:max-line-length
-import { DesignerSnippet, EntityOption, FieldOption, FormulaDesignerTemplateVars, SelectOptions, SelectTarget, SelectTargets, TargetOption } from './formula-designer.models';
+import { DesignerSnippet, EntityOption, FieldOption, FormulaDesignerViewModel, SelectOptions, SelectTarget, SelectTargets, TargetOption } from './formula-designer.models';
 import { DesignerState } from '../../../formulas/models/formula-results.models';
 
 @Component({
@@ -49,7 +49,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
   filename = `formula${this.eavService.eavConfig.formId}.js`;
   placeholder = defaultFormulaNow;
   focused = false;
-  templateVars$: Observable<FormulaDesignerTemplateVars>;
+  viewModel$: Observable<FormulaDesignerViewModel>;
 
   constructor(
     private formulaDesignerService: FormulaDesignerService,
@@ -68,7 +68,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
       return;
     }
     this.formulaDesignerService.setDesignerOpen(true);
-    this.buildTemplateVars();
+    this.buildViewModel();
   }
 
   ngOnDestroy(): void {
@@ -249,7 +249,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
     window.open('https://go.2sxc.org/formulas', '_blank');
   }
 
-  private buildTemplateVars(): void {
+  private buildViewModel(): void {
     const oldState = this.formulaDesignerService.getDesignerState();
     if (oldState.entityGuid == null && oldState.fieldName == null && oldState.target == null) {
       const entityGuid = this.formBuilderRefs.first.entityGuid;
@@ -406,7 +406,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
       ),
     );
 
-    this.templateVars$ = combineLatest([
+    this.viewModel$ = combineLatest([
       combineLatest([options$, formula$, dataSnippets$, contextSnippets$, typings$, designerState$]),
       combineLatest([result$, this.saving$, this.isDeleted$]),
     ]).pipe(
@@ -414,7 +414,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
         [options, formula, dataSnippets, contextSnippets, typings, designer],
         [result, saving, isDeleted],
       ]) => {
-        const templateVars: FormulaDesignerTemplateVars = {
+        const viewModel: FormulaDesignerViewModel = {
           entityOptions: options.entityOptions,
           fieldOptions: options.fieldOptions,
           targetOptions: options.targetOptions,
@@ -429,7 +429,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
           resultIsOnlyPromise: result?.isOnlyPromise ?? false,
           saving,
         };
-        return templateVars;
+        return viewModel;
       }),
     );
   }

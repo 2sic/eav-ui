@@ -1,7 +1,7 @@
 import { GridOptions } from '@ag-grid-community/core';
 import { Component, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DevRestBaseTemplateVars } from '..';
+import { DevRestBaseViewModel } from '..';
 import { Permission } from '../../permissions';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
@@ -11,7 +11,7 @@ import { defaultGridOptions } from '../../shared/constants/default-grid-options.
   templateUrl: './tab-permissions.component.html',
 })
 export class DevRestTabPermissionsComponent {
-  @Input() data: DevRestBaseTemplateVars;
+  @Input() data: DevRestBaseViewModel;
 
   gridOptions = this.buildGridOptions();
 

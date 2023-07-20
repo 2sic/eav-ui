@@ -7,7 +7,7 @@ import { EavService, FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { BaseFieldComponent } from '../../base/base-field.component';
 import { StringUrlPathLogic } from './string-url-path-logic';
-import { StringUrlPathTemplateVars } from './string-url-path.models';
+import { StringUrlPathViewModel } from './string-url-path.models';
 
 @Component({
   selector: InputTypeConstants.StringUrlPath,
@@ -18,7 +18,7 @@ import { StringUrlPathTemplateVars } from './string-url-path.models';
   wrappers: [WrappersConstants.LocalizationWrapper],
 })
 export class StringUrlPathComponent extends BaseFieldComponent<string> implements OnInit, OnDestroy {
-  templateVars$: Observable<StringUrlPathTemplateVars>;
+  viewModel$: Observable<StringUrlPathViewModel>;
 
   private fieldMask: FieldMask;
   /** Blocks external update if field was changed manually and doesn't match external updates. WARNING: Doesn't work on language change */
@@ -57,15 +57,15 @@ export class StringUrlPathComponent extends BaseFieldComponent<string> implement
       })
     );
 
-    this.templateVars$ = combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]).pipe(
+    this.viewModel$ = combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]).pipe(
       map(([controlStatus, label, placeholder, required]) => {
-        const templateVars: StringUrlPathTemplateVars = {
+        const viewModel: StringUrlPathViewModel = {
           controlStatus,
           label,
           placeholder,
           required,
         };
-        return templateVars;
+        return viewModel;
       }),
     );
   }

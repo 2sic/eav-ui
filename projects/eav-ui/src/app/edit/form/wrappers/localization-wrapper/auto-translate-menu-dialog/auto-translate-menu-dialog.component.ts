@@ -10,7 +10,7 @@ import { ItemService, LanguageInstanceService, LanguageService } from '../../../
 import { SnackBarWarningDemoComponent } from '../snack-bar-warning-demo/snack-bar-warning-demo.component';
 import { I18nKeys } from '../translate-menu-dialog/translate-menu-dialog.constants';
 import { findI18nKey, getTemplateLanguages, getTemplateLanguagesWithContent } from '../translate-menu-dialog/translate-menu-dialog.helpers';
-import { TranslateMenuDialogData, TranslateMenuDialogTemplateVars } from '../translate-menu-dialog/translate-menu-dialog.models';
+import { TranslateMenuDialogData, TranslateMenuDialogViewModel } from '../translate-menu-dialog/translate-menu-dialog.models';
 import { TranslationStateCore } from '../translate-menu/translate-menu.models';
 import { EditApiKeyPaths } from './../../../../../shared/constants/eav.constants';
 import { ApiKeySpecs } from './../../../../../shared/models/dialog-context.models';
@@ -23,7 +23,7 @@ import { ApiKeySpecs } from './../../../../../shared/models/dialog-context.model
 export class AutoTranslateMenuDialogComponent implements OnInit, OnDestroy {
   TranslationLinks = TranslationLinks;
   I18nKeys = I18nKeys;
-  templateVars$: Observable<TranslateMenuDialogTemplateVars>;
+  viewModel$: Observable<TranslateMenuDialogViewModel>;
 
   private translationState$: BehaviorSubject<TranslationStateCore>;
   private noLanguageRequired: TranslationLink[];
@@ -90,9 +90,9 @@ export class AutoTranslateMenuDialogComponent implements OnInit, OnDestroy {
       }),
     );
 
-    this.templateVars$ = combineLatest([defaultLanguage$, languages$, this.translationState$, isTranslateWithGoogleFeatureEnabled$]).pipe(
+    this.viewModel$ = combineLatest([defaultLanguage$, languages$, this.translationState$, isTranslateWithGoogleFeatureEnabled$]).pipe(
       map(([defaultLanguage, languages, translationState, isTranslateWithGoogleFeatureEnabled]) => {
-        const templateVars: TranslateMenuDialogTemplateVars = {
+        const viewModel: TranslateMenuDialogViewModel = {
           defaultLanguage,
           languages,
           translationState,
@@ -101,7 +101,7 @@ export class AutoTranslateMenuDialogComponent implements OnInit, OnDestroy {
           submitDisabled: translationState.language === '' && !this.noLanguageRequired.includes(translationState.linkType),
           isTranslateWithGoogleFeatureEnabled
         };
-        return templateVars;
+        return viewModel;
       }),
     );
   }

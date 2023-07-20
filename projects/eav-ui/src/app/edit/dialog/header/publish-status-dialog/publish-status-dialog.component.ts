@@ -4,7 +4,7 @@ import { combineLatest, map, Observable } from 'rxjs';
 import { PublishMode, PublishModes } from '../../../shared/models';
 import { EavService } from '../../../shared/services';
 import { PublishStatusService } from '../../../shared/store/ngrx-data';
-import { PublishStatusDialogTemplateVars } from './publish-status-dialog.models';
+import { PublishStatusDialogViewModel } from './publish-status-dialog.models';
 
 @Component({
   selector: 'app-publish-status-dialog',
@@ -13,7 +13,7 @@ import { PublishStatusDialogTemplateVars } from './publish-status-dialog.models'
 })
 export class PublishStatusDialogComponent implements OnInit {
   PublishModes = PublishModes;
-  templateVars$: Observable<PublishStatusDialogTemplateVars>;
+  viewModel$: Observable<PublishStatusDialogViewModel>;
 
   constructor(
     private dialogRef: MatDialogRef<PublishStatusDialogComponent>,
@@ -29,13 +29,13 @@ export class PublishStatusDialogComponent implements OnInit {
 
   ngOnInit() {
     const publishMode$ = this.publishStatusService.getPublishMode$(this.eavService.eavConfig.formId);
-    this.templateVars$ = combineLatest([publishMode$]).pipe(
+    this.viewModel$ = combineLatest([publishMode$]).pipe(
       map(([publishMode]) => {
-        const templateVars: PublishStatusDialogTemplateVars = {
+        const viewModel: PublishStatusDialogViewModel = {
           publishMode,
           options: this.eavService.eavConfig.versioningOptions,
         };
-        return templateVars;
+        return viewModel;
       }),
     );
   }

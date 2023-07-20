@@ -44,7 +44,7 @@ export class AppConfigurationComponent extends BaseComponent implements OnInit, 
 
   // More proper ViewModel
   appSettingsInternal$ = new Subject<AppInternals>();
-  data$: Observable<ViewModel>;
+  viewModel$: Observable<AppConfigurationViewModel>;
 
   public appStateAdvanced = false;
 
@@ -70,13 +70,13 @@ export class AppConfigurationComponent extends BaseComponent implements OnInit, 
     this.features.loadFromService(appDialogConfigService);
 
     // New with proper ViewModel
-    this.data$ = combineLatest([
+    this.viewModel$ = combineLatest([
       this.appSettingsInternal$,
       this.features.isEnabled$(FeatureNames.LightSpeed),
       this.features.isEnabled$(FeatureNames.ContentSecurityPolicy),
       this.features.isEnabled$(FeatureNames.PermissionsByLanguage),
     ]).pipe(map(([settings, lightSpeedEnabled, cspEnabled, langPermsEnabled]) => {
-      const result: ViewModel = {
+      const result: AppConfigurationViewModel = {
         lightSpeedEnabled,
         cspEnabled,
         langPermsEnabled,
@@ -245,7 +245,7 @@ export class AppConfigurationComponent extends BaseComponent implements OnInit, 
   }
 }
 
-class ViewModel {
+class AppConfigurationViewModel {
   // Lightspeed
   lightSpeedEnabled: boolean;
   appLightSpeedCount: number;

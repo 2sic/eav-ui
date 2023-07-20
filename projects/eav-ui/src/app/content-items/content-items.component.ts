@@ -4,7 +4,7 @@ import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } fro
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { BehaviorSubject, filter, map, pairwise, startWith, Subscription, take } from 'rxjs';
+import { BehaviorSubject, combineLatest, filter, map, Observable, pairwise, startWith, Subscription, take } from 'rxjs';
 import { ContentType } from '../app-administration/models/content-type.model';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { ContentExportService } from '../content-export/services/content-export.service';
@@ -49,13 +49,14 @@ import { EntitiesService } from './services/entities.service';
 export class ContentItemsComponent extends BaseComponent implements OnInit, OnDestroy {
   contentType$ = new BehaviorSubject<ContentType>(undefined);
   items$ = new BehaviorSubject<ContentItem[]>(undefined);
-  debugEnabled$ = this.globalConfigService.getDebugEnabled$();
   gridOptions: GridOptions = {
     ...defaultGridOptions,
   };
 
   private gridApi$ = new BehaviorSubject<GridApi>(null);
   private contentTypeStaticName = this.route.snapshot.paramMap.get('contentTypeStaticName');
+
+  viewModel$: Observable<ContentItemsViewModel>;
 
   constructor(
     protected router: Router,
@@ -79,6 +80,12 @@ export class ContentItemsComponent extends BaseComponent implements OnInit, OnDe
     this.fetchItems();
     this.fetchColumns();
     this.subscription.add(this.refreshOnChildClosedShallow().subscribe(() => { this.fetchItems(); }));
+
+    this.viewModel$ = combineLatest([
+      this.contentType$, this.items$, this.globalConfigService.getDebugEnabled$()
+    ]).pipe(
+      map(([contentType, items, debugEnabled]) => ({ contentType, items, debugEnabled }))
+    );
   }
 
   ngOnDestroy() {
@@ -406,4 +413,10 @@ export class ContentItemsComponent extends BaseComponent implements OnInit, OnDe
     if (typeof rawValue !== 'boolean') { return null; }
     return rawValue.toString();
   }
+}
+
+interface ContentItemsViewModel {
+  contentType: ContentType;
+  items: ContentItem[];
+  debugEnabled: boolean;
 }

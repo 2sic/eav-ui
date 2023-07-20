@@ -3,7 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 // tslint:disable-next-line:max-line-length
 import { asyncScheduler, BehaviorSubject, combineLatest, distinctUntilChanged, forkJoin, map, Observable, of, startWith, Subscription, switchMap, tap, throttleTime, timer } from 'rxjs';
-import { CreateFileDialogData, CreateFileDialogResult, CreateFileFormControls, CreateFileFormValues, CreateFileTemplateVars } from '.';
+import { CreateFileDialogData, CreateFileDialogResult, CreateFileFormControls, CreateFileFormValues, CreateFileViewModel } from '.';
 import { PredefinedTemplate } from '../code-editor/models/predefined-template.model';
 import { Preview } from '../code-editor/models/preview.models';
 import { SourceService } from '../code-editor/services/source.service';
@@ -20,7 +20,7 @@ export class CreateFileDialogComponent extends BaseSubsinkComponent implements O
 
   form: FormGroup;
   controls: CreateFileFormControls;
-  templateVars$: Observable<CreateFileTemplateVars>;
+  viewModel$: Observable<CreateFileViewModel>;
 
   private all = 'All' as const;
   private templates$: BehaviorSubject<PredefinedTemplate[]>;
@@ -30,7 +30,7 @@ export class CreateFileDialogComponent extends BaseSubsinkComponent implements O
     @Inject(MAT_DIALOG_DATA) private dialogData: CreateFileDialogData,
     private dialogRef: MatDialogRef<CreateFileDialogComponent>,
     private sourceService: SourceService,
-  ) { 
+  ) {
     super();
   }
 
@@ -40,7 +40,7 @@ export class CreateFileDialogComponent extends BaseSubsinkComponent implements O
 
     this.buildForm();
     this.fetchTemplates();
-    this.buildTemplateVars();
+    this.buildViewModel();
   }
 
   ngOnDestroy(): void {
@@ -136,7 +136,7 @@ export class CreateFileDialogComponent extends BaseSubsinkComponent implements O
     );
   }
 
-  private buildTemplateVars(): void {
+  private buildViewModel(): void {
     const platforms$ = this.templates$.pipe(
       map(templates => {
         const platformsMap: Record<string, string> = {
@@ -215,9 +215,9 @@ export class CreateFileDialogComponent extends BaseSubsinkComponent implements O
         this.loadingPreview$.next(false);
       }),
     );
-    this.templateVars$ = combineLatest([platforms$, purposes$, templates$, preview$, this.loadingPreview$]).pipe(
+    this.viewModel$ = combineLatest([platforms$, purposes$, templates$, preview$, this.loadingPreview$]).pipe(
       map(([platforms, purposes, templates, preview, loadingPreview]) => {
-        const templateVars: CreateFileTemplateVars = {
+        const viewModel: CreateFileViewModel = {
           platforms,
           purposes,
           templates,
@@ -226,7 +226,7 @@ export class CreateFileDialogComponent extends BaseSubsinkComponent implements O
           previewValid: preview?.IsValid ?? false,
           previewError: preview?.Error,
         };
-        return templateVars;
+        return viewModel;
       }),
     );
   }

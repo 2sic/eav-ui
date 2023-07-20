@@ -1,4 +1,4 @@
-<ng-container *ngIf="(templateVars$ | async) as data">
+<ng-container *ngIf="viewModel$ | async as vm">
 
   <div mat-dialog-title>
     <div class="dialog-title-box">Export Content and Templates from this App</div>
@@ -81,10 +81,10 @@
   </div>
 
   <div class="dialog-component-actions">
-    <button mat-raised-button [disabled]="data.loading || data.isExporting" (click)="closeDialog()">
+    <button mat-raised-button [disabled]="vm.loading || vm.isExporting" (click)="closeDialog()">
       Cancel
     </button>
-    <button mat-raised-button color="accent" [disabled]="data.loading || data.isExporting" (click)="exportAppParts()">
+    <button mat-raised-button color="accent" [disabled]="vm.loading || vm.isExporting" (click)="exportAppParts()">
       Export
     </button>
   </div>

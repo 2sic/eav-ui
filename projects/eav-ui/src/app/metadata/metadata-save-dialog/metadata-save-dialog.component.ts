@@ -7,7 +7,7 @@ import { ContentType } from '../../app-administration/models';
 import { ContentTypesService } from '../../app-administration/services';
 import { dropdownInsertValue } from '../../shared/constants/dropdown-insert-value.constant';
 import { eavConstants, ScopeOption } from '../../shared/constants/eav.constants';
-import { MetadataSaveDialogTemplateVars, MetadataSaveFormValues } from './metadata-save-dialog.models';
+import { MetadataSaveDialogViewModel, MetadataSaveFormValues } from './metadata-save-dialog.models';
 
 @Component({
   selector: 'app-metadata-save-dialog',
@@ -19,7 +19,7 @@ export class MetadataSaveDialogComponent implements OnInit, OnDestroy {
 
   form: FormGroup;
   dropdownInsertValue = dropdownInsertValue;
-  templateVars$: Observable<MetadataSaveDialogTemplateVars>;
+  viewModel$: Observable<MetadataSaveDialogViewModel>;
   guidedContentType = true;
   advancedMode = false;
 
@@ -38,13 +38,13 @@ export class MetadataSaveDialogComponent implements OnInit, OnDestroy {
     this.buildForm();
     this.fetchScopes();
 
-    this.templateVars$ = combineLatest([this.contentTypes$, this.scopeOptions$]).pipe(
+    this.viewModel$ = combineLatest([this.contentTypes$, this.scopeOptions$]).pipe(
       map(([contentTypes, scopeOptions]) => {
-        const templateVars: MetadataSaveDialogTemplateVars = {
+        const viewModel: MetadataSaveDialogViewModel = {
           contentTypes,
           scopeOptions,
         };
-        return templateVars;
+        return viewModel;
       }),
     );
   }

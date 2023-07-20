@@ -15,7 +15,7 @@ import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { BaseFieldComponent } from '../../fields/base/base-field.component';
 import { ConnectorHelper } from '../../shared/connector/connector.helper';
 import { ContentExpandAnimation } from './content-expand.animation';
-import { ExpandableWrapperTemplateVars, PreviewHeight } from './expandable-wrapper.models';
+import { ExpandableWrapperViewModel, PreviewHeight } from './expandable-wrapper.models';
 
 @Component({
   selector: WrappersConstants.ExpandableWrapper,
@@ -32,7 +32,7 @@ export class ExpandableWrapperComponent extends BaseFieldComponent<string> imple
   open$: Observable<boolean>;
   adamDisabled$ = new BehaviorSubject(true);
   saveButtonDisabled$ = this.formsStateService.saveButtonDisabled$.pipe(share());
-  templateVars$: Observable<ExpandableWrapperTemplateVars>;
+  viewModel$: Observable<ExpandableWrapperViewModel>;
 
   private connectorCreator: ConnectorHelper;
   private dropzoneDraggingHelper: DropzoneDraggingHelper;
@@ -88,7 +88,7 @@ export class ExpandableWrapperComponent extends BaseFieldComponent<string> imple
       distinctUntilChanged(GeneralHelpers.objectsEqual),
     );
 
-    this.templateVars$ = combineLatest([
+    this.viewModel$ = combineLatest([
       combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
       combineLatest([this.config.focused$, previewHeight$]),
     ]).pipe(
@@ -96,7 +96,7 @@ export class ExpandableWrapperComponent extends BaseFieldComponent<string> imple
         [controlStatus, label, placeholder, required],
         [focused, previewHeight],
       ]) => {
-        const templateVars: ExpandableWrapperTemplateVars = {
+        const viewModel: ExpandableWrapperViewModel = {
           controlStatus,
           label,
           placeholder,
@@ -104,7 +104,7 @@ export class ExpandableWrapperComponent extends BaseFieldComponent<string> imple
           focused,
           previewHeight,
         };
-        return templateVars;
+        return viewModel;
       }),
     );
   }

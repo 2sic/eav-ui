@@ -1,4 +1,4 @@
-export interface EntityTranslateMenuTemplateVars {
+export interface EntityTranslateMenuViewModel {
   readOnly: boolean;
   slotIsEmpty: boolean;
   currentLanguage: string;

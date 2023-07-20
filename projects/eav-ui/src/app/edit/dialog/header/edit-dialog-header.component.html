@@ -1,15 +1,15 @@
-<mat-card *ngIf="templateVars$ | async as data" class="header">
+<mat-card *ngIf="viewModel$ | async as vm" class="header">
   <button mat-icon-button class="header__exit-button" (click)="close()"
     [tippy]="(eavService.eavConfig.isParentDialog ? 'Form.Buttons.Exit.Tip' : 'Form.Buttons.Return.Tip') | translate">
     <mat-icon>{{ eavService.eavConfig.isParentDialog ? 'clear' : 'arrow_back' }}</mat-icon>
   </button>
 
   <div class="header__langs">
-    <app-language-switcher *ngIf="data.hasLanguages" [disabled]="disabled"></app-language-switcher>
+    <app-language-switcher *ngIf="vm.hasLanguages" [disabled]="disabled"></app-language-switcher>
   </div>
 
-  <mat-icon *ngIf="data.readOnly" class="header__hint-icon"
-    [tippy]="('General.ReadOnlyHint.' + data.readOnlyReason) | translate" [tippyDisabled]="!data.readOnlyReason">
+  <mat-icon *ngIf="vm.readOnly" class="header__hint-icon"
+    [tippy]="('General.ReadOnlyHint.' + vm.readOnlyReason) | translate" [tippyDisabled]="!vm.readOnlyReason">
     lock
   </mat-icon>
 
@@ -17,11 +17,11 @@
     file_copy
   </mat-icon>
 
-  <button mat-button class="header__publish-button" [disabled]="data.readOnly" (click)="openPublishStatusDialog()"
-    [tippy]="'PublishStatus.' + data.publishMode + '.Tip' | translate">
+  <button mat-button class="header__publish-button" [disabled]="vm.readOnly" (click)="openPublishStatusDialog()"
+    [tippy]="'PublishStatus.' + vm.publishMode + '.Tip' | translate">
     <span class="header__publish-mode">
       {{ 'PublishStatus.Label' | translate }}
-      <b>{{ 'PublishStatus.' + data.publishMode | translate | uppercase }}</b>
+      <b>{{ 'PublishStatus.' + vm.publishMode | translate | uppercase }}</b>
     </span>
   </button>
 </mat-card>

@@ -1,6 +1,6 @@
 import { LanguageButton } from './language-switcher.helpers';
 
-export interface LanguageSwitcherTemplateVars {
+export interface LanguageSwitcherViewModel {
   currentLanguage: string;
   languageButtons: LanguageButton[];
 }

@@ -2,7 +2,7 @@ import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
 import { appNameError, appNamePattern } from '../constants/app.patterns';
 import { AppsListService } from '../services/apps-list.service';
 
@@ -18,6 +18,8 @@ export class CreateAppComponent implements OnInit, OnDestroy {
   loading$: BehaviorSubject<boolean>;
   appNameError = appNameError;
 
+  viewModel$: Observable<CreateAppViewModel>;
+
   constructor(
     private dialogRef: MatDialogRef<CreateAppComponent>,
     private appsListService: AppsListService,
@@ -28,6 +30,9 @@ export class CreateAppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.viewModel$ = combineLatest([this.loading$]).pipe(
+      map(([loading]) => ({ loading })),
+    );
   }
 
   ngOnDestroy(): void {
@@ -63,4 +68,8 @@ export class CreateAppComponent implements OnInit, OnDestroy {
     });
     return form;
   }
+}
+
+interface CreateAppViewModel {
+  loading: boolean;
 }

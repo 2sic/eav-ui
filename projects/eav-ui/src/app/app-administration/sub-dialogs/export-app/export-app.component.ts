@@ -16,7 +16,7 @@ export class ExportAppComponent implements OnInit, OnDestroy {
   resetAppGuid = false;
   private appInfo$ = new BehaviorSubject<AppInfo>(null);
   private isExporting$ = new BehaviorSubject(false);
-  templateVars$ = combineLatest([this.appInfo$, this.isExporting$]).pipe(
+  viewModel$ = combineLatest([this.appInfo$, this.isExporting$]).pipe(
     map(([appInfo, isExporting]) => ({ appInfo, isExporting })),
   );
 

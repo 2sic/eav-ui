@@ -47,24 +47,24 @@
 </div>
 
 <!-- preview -->
-<div class="c-ew__preview-holder" *ngIf="templateVars$ | async as data">
+<div class="c-ew__preview-holder" *ngIf="viewModel$ | async as vm">
   <mat-label class="c-ew__preview-label c-ew__color--primary" [ngClass]="{
-    'mat-caption' : data.itemsNumber > 0,
-    'mat-empty' : data.itemsNumber === 0,
-    'mat-error' : data.controlStatus.invalid && !config.initialDisabled,
-    'color__primary' : !data.controlStatus.invalid && !config.initialDisabled,
+    'mat-caption' : vm.itemsNumber > 0,
+    'mat-empty' : vm.itemsNumber === 0,
+    'mat-error' : vm.controlStatus.invalid && !config.initialDisabled,
+    'color__primary' : !vm.controlStatus.invalid && !config.initialDisabled,
     'color__label-disabled' : config.initialDisabled
   }">
-    {{ data.label }} {{ data.required ? '*': '' }}
+    {{ vm.label }} {{ vm.required ? '*': '' }}
   </mat-label>
   <div matRipple class="c-ew__preview mat-ripple" [matRippleAnimation]="{ enterDuration: 360 }" (click)="expandDialog()"
     [ngClass]="{
-      'c-ew__preview--invalid': data.controlStatus.invalid,
+      'c-ew__preview--invalid': vm.controlStatus.invalid,
       'c-ew__preview--disabled': config.initialDisabled
     }">
-    <div [ngClass]="data.controlStatus.value ? 'c-ew__preview-container' : 'c-ew__preview-container--empty'">
+    <div [ngClass]="vm.controlStatus.value ? 'c-ew__preview-container' : 'c-ew__preview-container--empty'">
       <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="2px" class="c-ew__preview-content">
-        <ng-container *ngFor="let item of data.items; trackBy: trackByFn">
+        <ng-container *ngFor="let item of vm.items; trackBy: trackByFn">
           <!-- folders -->
           <div fxLayout="row" fxLayoutAlign="start start" *ngIf="item.IsFolder">
             <div class="adam-browse-background-icon">
@@ -80,7 +80,7 @@
               <div class="adam-short-label mat-caption">{{ item.Name }}</div>
             </div>
             <div *ngIf="item.Type === 'image'" class="adam-browse-background-image">
-              <img data-dz-thumbnail="" alt="{{ item.Id }}:{{ item.Name }}" [src]="item.ThumbnailUrl">
+              <img vm-dz-thumbnail="" alt="{{ item.Id }}:{{ item.Name }}" [src]="item.ThumbnailUrl">
             </div>
           </div>
         </ng-container>
@@ -94,11 +94,11 @@
     </div>
     <div class="c__helper-wrapper--right c-ew__preview-hint-text" fxHide fxShow.gt-xs>
       <span>{{
-        data.showAdamSponsor
+        vm.showAdamSponsor
         ? ('Fields.Hyperlink.Default.Sponsor' | translate)
         : ('Fields.Hyperlink.AdamFileManager.Name' | translate)
-        }}     </span>
-        <app-feature-icon-text [featureNameId]="'NoSponsoredByToSic'"></app-feature-icon-text>
+        }} </span>
+      <app-feature-icon-text [featureNameId]="'NoSponsoredByToSic'"></app-feature-icon-text>
     </div>
   </div>
 </div>

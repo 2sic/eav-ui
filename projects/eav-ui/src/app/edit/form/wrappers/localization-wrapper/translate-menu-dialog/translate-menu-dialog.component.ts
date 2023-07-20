@@ -7,7 +7,7 @@ import { ItemService, LanguageInstanceService, LanguageService } from '../../../
 import { TranslationStateCore } from '../translate-menu/translate-menu.models';
 import { I18nKeys } from './translate-menu-dialog.constants';
 import { findI18nKey, getTemplateLanguages } from './translate-menu-dialog.helpers';
-import { TranslateMenuDialogData, TranslateMenuDialogTemplateVars } from './translate-menu-dialog.models';
+import { TranslateMenuDialogData, TranslateMenuDialogViewModel } from './translate-menu-dialog.models';
 
 @Component({
   selector: 'app-translate-menu-dialog',
@@ -17,7 +17,7 @@ import { TranslateMenuDialogData, TranslateMenuDialogTemplateVars } from './tran
 export class TranslateMenuDialogComponent implements OnInit, OnDestroy {
   TranslationLinks = TranslationLinks;
   I18nKeys = I18nKeys;
-  templateVars$: Observable<TranslateMenuDialogTemplateVars>;
+  viewModel$: Observable<TranslateMenuDialogViewModel>;
 
   private translationState$: BehaviorSubject<TranslationStateCore>;
   private noLanguageRequired: TranslationLink[];
@@ -56,9 +56,9 @@ export class TranslateMenuDialogComponent implements OnInit, OnDestroy {
         getTemplateLanguages(this.dialogData.config, currentLanguage, defaultLanguage, languages, attributes, translationState.linkType)),
     );
 
-    this.templateVars$ = combineLatest([defaultLanguage$, languages$, this.translationState$]).pipe(
+    this.viewModel$ = combineLatest([defaultLanguage$, languages$, this.translationState$]).pipe(
       map(([defaultLanguage, languages, translationState]) => {
-        const templateVars: TranslateMenuDialogTemplateVars = {
+        const viewModel: TranslateMenuDialogViewModel = {
           defaultLanguage,
           languages,
           translationState,
@@ -66,7 +66,7 @@ export class TranslateMenuDialogComponent implements OnInit, OnDestroy {
           i18nRoot: `LangMenu.Dialog.${findI18nKey(translationState.linkType)}`,
           submitDisabled: translationState.language === '' && !this.noLanguageRequired.includes(translationState.linkType),
         };
-        return templateVars;
+        return viewModel;
       }),
     );
   }

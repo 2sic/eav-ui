@@ -43,29 +43,29 @@
     </div>
   </div>
 </div>
-<div class="c-ew__preview-holder" *ngIf="templateVars$ | async as data">
+<div class="c-ew__preview-holder" *ngIf="viewModel$ | async as vm">
   <mat-label class="c-ew__preview-label" [ngClass]="{
-    'mat-caption' : data.controlStatus.value,
-    'mat-empty' : !data.controlStatus.value,
-    'mat-error' : data.controlStatus.invalid && (data.controlStatus.touched || data.controlStatus.dirty) && !data.controlStatus.disabled,
-    'color__primary' : !(data.controlStatus.invalid && data.controlStatus.touched) && !data.controlStatus.disabled,
-    'color__label-disabled' : data.controlStatus.disabled,
-    'c-ew__preview-label--focused': data.focused
+    'mat-caption' : vm.controlStatus.value,
+    'mat-empty' : !vm.controlStatus.value,
+    'mat-error' : vm.controlStatus.invalid && (vm.controlStatus.touched || vm.controlStatus.dirty) && !vm.controlStatus.disabled,
+    'color__primary' : !(vm.controlStatus.invalid && vm.controlStatus.touched) && !vm.controlStatus.disabled,
+    'color__label-disabled' : vm.controlStatus.disabled,
+    'c-ew__preview-label--focused': vm.focused
   }">
-    {{ data.label }}
-    {{ data.required ? '*': '' }}
+    {{ vm.label }}
+    {{ vm.required ? '*': '' }}
   </mat-label>
   <div class="c-ew__preview" [ngClass]="{
-    'c-ew__preview--invalid' : data.controlStatus.invalid && (data.controlStatus.touched || data.controlStatus.dirty),
-    'c-ew__preview--disabled': data.controlStatus.disabled,
-    'c-ew__preview--focused': data.focused
+    'c-ew__preview--invalid' : vm.controlStatus.invalid && (vm.controlStatus.touched || vm.controlStatus.dirty),
+    'c-ew__preview--disabled': vm.controlStatus.disabled,
+    'c-ew__preview--focused': vm.focused
   }">
     <div class="c-ew__preview-container">
       <div #previewContainer class="c-ew__preview-content u-hide-scrollbar" [ngClass]="{
-        'c-ew__preview-content--disabled': data.controlStatus.disabled
+        'c-ew__preview-content--disabled': vm.controlStatus.disabled
       }" [ngStyle]="{
-        'min-height': data.previewHeight.minHeight,
-        'max-height': data.previewHeight.maxHeight
+        'min-height': vm.previewHeight.minHeight,
+        'max-height': vm.previewHeight.maxHeight
       }">
       </div>
     </div>

@@ -8,7 +8,7 @@ import { AutoTranslateDisabledWarningDialog } from '../../../wrappers/localizati
 import { AutoTranslateMenuDialogComponent } from '../../../wrappers/localization-wrapper/auto-translate-menu-dialog/auto-translate-menu-dialog.component';
 import { TranslateMenuDialogData } from '../../../wrappers/localization-wrapper/translate-menu-dialog/translate-menu-dialog.models';
 import { FieldConfigSet } from '../../fields-builder/field-config-set.model';
-import { EntityTranslateMenuTemplateVars } from './entity-translate-menu.models';
+import { EntityTranslateMenuViewModel } from './entity-translate-menu.models';
 
 @Component({
   selector: 'app-entity-translate-menu',
@@ -18,7 +18,7 @@ import { EntityTranslateMenuTemplateVars } from './entity-translate-menu.models'
 export class EntityTranslateMenuComponent implements OnInit, OnDestroy {
   @Input() entityGuid: string;
 
-  templateVars$: Observable<EntityTranslateMenuTemplateVars>;
+  viewModel$: Observable<EntityTranslateMenuViewModel>;
   autoTranslatableFields: string[];
   translationState: TranslationState;
   private subscription: Subscription;
@@ -41,15 +41,15 @@ export class EntityTranslateMenuComponent implements OnInit, OnDestroy {
     );
     const currentLanguage$ = this.languageInstanceService.getCurrentLanguage$(this.eavService.eavConfig.formId);
     const defaultLanguage$ = this.languageInstanceService.getDefaultLanguage$(this.eavService.eavConfig.formId);
-    this.templateVars$ = combineLatest([readOnly$, slotIsEmpty$, currentLanguage$, defaultLanguage$]).pipe(
+    this.viewModel$ = combineLatest([readOnly$, slotIsEmpty$, currentLanguage$, defaultLanguage$]).pipe(
       map(([readOnly, slotIsEmpty, currentLanguage, defaultLanguage]) => {
-        const templateVars: EntityTranslateMenuTemplateVars = {
+        const viewModel: EntityTranslateMenuViewModel = {
           readOnly: readOnly.isReadOnly,
           slotIsEmpty,
           currentLanguage,
           defaultLanguage,
         };
-        return templateVars;
+        return viewModel;
       }),
     );
     this.autoTranslatableFields = this.fieldsTranslateService.findAutoTranslatableFields();

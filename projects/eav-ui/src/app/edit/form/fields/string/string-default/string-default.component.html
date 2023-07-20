@@ -1,16 +1,16 @@
-<ng-container *ngIf="templateVars$ | async as data">
+<ng-container *ngIf="viewModel | async as vm">
 
   <mat-form-field [formGroup]="group" appearance="standard" color="accent" [ngClass]="{
-    'textarea-field': data.rowCount > 1
+    'textarea-field': vm.rowCount > 1
   }">
-    <input *ngIf="data.rowCount <= 1" matInput [formControlName]="config.fieldName" [placeholder]="data.placeholder"
-      [required]="data.required" [ngStyle]="{ 'font-family': data.inputFontFamily }">
+    <input *ngIf="vm.rowCount <= 1" matInput [formControlName]="config.fieldName" [placeholder]="vm.placeholder"
+      [required]="vm.required" [ngStyle]="{ 'font-family': vm.inputFontFamily }">
 
-    <textarea *ngIf="data.rowCount > 1" matInput [formControlName]="config.fieldName" [rows]="data.rowCount"
-      [placeholder]="data.placeholder" [required]="data.required" [ngStyle]="{ 'font-family': data.inputFontFamily }">
+    <textarea *ngIf="vm.rowCount > 1" matInput [formControlName]="config.fieldName" [rows]="vm.rowCount"
+      [placeholder]="vm.placeholder" [required]="vm.required" [ngStyle]="{ 'font-family': vm.inputFontFamily }">
     </textarea>
 
-    <mat-label>{{ data.label }}</mat-label>
+    <mat-label>{{ vm.label }}</mat-label>
   </mat-form-field>
 
   <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>

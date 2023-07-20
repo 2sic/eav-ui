@@ -28,7 +28,7 @@ export interface MetadataRecommendation {
   MissingFeature?: string;
 }
 
-export interface MetadataTemplateVars {
+export interface MetadataViewModel {
   metadata: MetadataItem[];
   recommendations: MetadataRecommendation[];
   itemFor?: EavFor;

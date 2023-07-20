@@ -1,12 +1,12 @@
-<div class="grid-wrapper mat-tab-grid-wrapper">
-  <ag-grid-angular class="ag-theme-material" [rowData]="contentTypes$ | async" [gridOptions]="gridOptions"
+<div class="grid-wrapper mat-tab-grid-wrapper" *ngIf="viewModel$ | async as vm">
+  <ag-grid-angular class="ag-theme-material" [rowData]="vm.contentTypes" [gridOptions]="gridOptions"
     appDragAndDrop [allowedFileTypes]="'xml,json'" (filesDropped)="filesDropped($event)">
   </ag-grid-angular>
 
   <div class="grid-more-actions-box">
     <mat-form-field appearance="standard" color="accent" class="scope-dropdown">
-      <mat-select [ngModel]="scope$ | async" name="Scope" (ngModelChange)="changeScope($event)">
-        <mat-option *ngFor="let scopeOption of (scopeOptions$ | async)" [value]="scopeOption.value">
+      <mat-select [ngModel]="vm.scope" name="Scope" (ngModelChange)="changeScope($event)">
+        <mat-option *ngFor="let scopeOption of (vm.scopeOptions)" [value]="scopeOption.value">
           {{ 'Scope: ' + scopeOption.name }}
         </mat-option>
         <mat-option [value]="dropdownInsertValue">Scope: Other...</mat-option>
@@ -18,7 +18,7 @@
       <span>Content Type</span>
     </button>
 
-    <button mat-button color="accent" tippy="Create a ghost content type" *ngIf="debugEnabled$ | async"
+    <button mat-button color="accent" tippy="Create a ghost content type" *ngIf="vm.debugEnabled"
       (click)="createGhost()">
       <mat-icon>share</mat-icon>
       <span>Ghost</span>

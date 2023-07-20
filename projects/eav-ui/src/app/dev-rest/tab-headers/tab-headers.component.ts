@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { DevRestBaseTemplateVars } from '..';
+import { DevRestBaseViewModel } from '..';
 
 @Component({
   selector: 'app-dev-rest-tab-headers',
@@ -7,7 +7,7 @@ import { DevRestBaseTemplateVars } from '..';
 })
 export class DevRestHttpHeadersComponent implements OnInit {
 
-  @Input() data: DevRestBaseTemplateVars;
+  @Input() data: DevRestBaseViewModel;
 
   constructor() { }
 

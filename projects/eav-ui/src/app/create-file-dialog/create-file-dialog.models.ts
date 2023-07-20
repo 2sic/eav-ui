@@ -9,7 +9,7 @@ export interface CreateFileDialogData {
   name?: string;
 }
 
-export interface CreateFileTemplateVars {
+export interface CreateFileViewModel {
   templates: PredefinedTemplate[];
   platforms: string[];
   purposes: string[];

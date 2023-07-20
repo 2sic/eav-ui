@@ -1,13 +1,12 @@
-<div *ngIf="templateVars$ | async as data" class="dropzone"
-  [@adamShowAnimate]="data.adamConfig?.autoLoad ? 'open' : 'closed'">
-  <div *ngIf="data.adamConfig?.autoLoad && data.expanded" [ngClass]="{
-    'adam-scope-site': data.adamConfig.usePortalRoot,
-    'adam-scope-field': !data.adamConfig.usePortalRoot
+<div *ngIf="viewModel$ | async as vm" class="dropzone" [@adamShowAnimate]="vm.adamConfig?.autoLoad ? 'open' : 'closed'">
+  <div *ngIf="vm.adamConfig?.autoLoad && vm.expanded" [ngClass]="{
+    'adam-scope-site': vm.adamConfig.usePortalRoot,
+    'adam-scope-field': !vm.adamConfig.usePortalRoot
   }">
 
     <!-- click to upload -->
     <div
-      *ngIf="!data.disabled && data.adamConfig.allowEdit && !((data.adamConfig.subfolder === '' || data.adamConfig.usePortalRoot && data.adamConfig.subfolder === data.adamConfig.rootSubfolder) && !data.adamConfig.allowAssetsInRoot)"
+      *ngIf="!vm.disabled && vm.adamConfig.allowEdit && !((vm.adamConfig.subfolder === '' || vm.adamConfig.usePortalRoot && vm.adamConfig.subfolder === vm.adamConfig.rootSubfolder) && !vm.adamConfig.allowAssetsInRoot)"
       class="dz-preview dropzone-adam" (click)="openUploadClick($event)"
       [tippy]="'Fields.Hyperlink.AdamFileManager.UploadTip' | translate">
       <div class="dz-image adam-browse-background-icon adam-browse-background">
@@ -15,29 +14,31 @@
         <div class="adam-upload-label">
           {{ 'Fields.Hyperlink.AdamFileManager.UploadLabel' | translate }}
           &nbsp;
-          <mat-icon *ngIf="data.adamConfig.usePortalRoot">public</mat-icon>
-          <mat-icon *ngIf="!data.adamConfig.usePortalRoot" svgIcon="apple-outlined"></mat-icon>
+          <mat-icon *ngIf="vm.adamConfig.usePortalRoot">public</mat-icon>
+          <mat-icon *ngIf="!vm.adamConfig.usePortalRoot" svgIcon="apple-outlined"></mat-icon>
         </div>
       </div>
     </div>
 
     <!-- paste image from clipboard -->
     <div #pasteDiv
-      *ngIf="!data.disabled && data.adamConfig.allowEdit && !((data.adamConfig.subfolder === '' || data.adamConfig.usePortalRoot && data.adamConfig.subfolder === data.adamConfig.rootSubfolder) && !data.adamConfig.allowAssetsInRoot)"
+      *ngIf="!vm.disabled && vm.adamConfig.allowEdit && !((vm.adamConfig.subfolder === '' || vm.adamConfig.usePortalRoot && vm.adamConfig.subfolder === vm.adamConfig.rootSubfolder) && !vm.adamConfig.allowAssetsInRoot)"
       appPasteClipboardImage [config]="config" [elementType]="'element'" class="dz-preview dropzone-adam paste-image"
       [tippy]="'Fields.Hyperlink.AdamFileManager.UploadPasteTip' | translate" (click)="openFeatureInfoDialog()">
       <div class="dz-image adam-browse-background-icon adam-browse-background">
-        <mat-icon class="adam-filter-mat-icon-with-grey-mat-badge" [matBadgeHidden]="data.allowPasteImageFromClipboard" 
+        <mat-icon class="adam-filter-mat-icon-with-grey-mat-badge" [matBadgeHidden]="vm.allowPasteImageFromClipboard"
           matBadgeSize="large" matBadge="💎" matBadgePosition="below after" matBadgeOverlap="true">
           filter
         </mat-icon>
-        <div *ngIf="!pasteDiv.classList.contains('pastable-focus') && data.allowPasteImageFromClipboard" class="adam-upload-label">
+        <div *ngIf="!pasteDiv.classList.contains('pastable-focus') && vm.allowPasteImageFromClipboard"
+          class="adam-upload-label">
           {{ 'Fields.Hyperlink.AdamFileManager.UploadPasteLabel' | translate }}
         </div>
-        <div *ngIf="pasteDiv.classList.contains('pastable-focus') && data.allowPasteImageFromClipboard" class="adam-upload-label">
+        <div *ngIf="pasteDiv.classList.contains('pastable-focus') && vm.allowPasteImageFromClipboard"
+          class="adam-upload-label">
           {{ 'Fields.Hyperlink.AdamFileManager.UploadPasteFocusedLabel' | translate }}
         </div>
-        <div *ngIf="!data.allowPasteImageFromClipboard" class="adam-upload-label">
+        <div *ngIf="!vm.allowPasteImageFromClipboard" class="adam-upload-label">
           {{ 'Fields.Hyperlink.AdamFileManager.UploadPasteLabel' | translate }}
         </div>
       </div>
@@ -45,7 +46,7 @@
 
     <!-- add folder -->
     <div
-      *ngIf="!data.adamConfig.maxDepthReached && !data.disabled && data.adamConfig.allowEdit && !((data.adamConfig.subfolder === '' || data.adamConfig.usePortalRoot && data.adamConfig.subfolder === data.adamConfig.rootSubfolder) && !data.adamConfig.allowAssetsInRoot)"
+      *ngIf="!vm.adamConfig.maxDepthReached && !vm.disabled && vm.adamConfig.allowEdit && !((vm.adamConfig.subfolder === '' || vm.adamConfig.usePortalRoot && vm.adamConfig.subfolder === vm.adamConfig.rootSubfolder) && !vm.adamConfig.allowAssetsInRoot)"
       class="dz-preview" (click)="addFolder()" [tippy]="'Fields.Hyperlink.AdamFileManager.NewFolderTip' | translate">
       <div class="dz-image adam-browse-background-icon adam-browse-background">
         <mat-icon svgIcon="folder-plus"></mat-icon>
@@ -56,7 +57,7 @@
 
     <!-- browse up a folder -->
     <ng-container
-      *ngIf="data.adamConfig.subfolder !== '' || data.adamConfig.usePortalRoot && data.adamConfig.subfolder !== data.adamConfig.rootSubfolder">
+      *ngIf="vm.adamConfig.subfolder !== '' || vm.adamConfig.usePortalRoot && vm.adamConfig.subfolder !== vm.adamConfig.rootSubfolder">
       <div class="dz-preview" (click)="goUp()" [tippy]="'Fields.Hyperlink.AdamFileManager.BackFolderTip' | translate">
         <div class="dz-image adam-browse-background-icon adam-browse-background">
           <mat-icon svgIcon="folder"></mat-icon>
@@ -68,7 +69,7 @@
       </div>
     </ng-container>
 
-    <ng-container *ngFor="let item of data.items; trackBy: trackByFn">
+    <ng-container *ngFor="let item of vm.items; trackBy: trackByFn">
       <!-- folders -->
       <ng-container *ngIf="item.IsFolder">
         <div class="dz-preview" (click)="goIntoFolder(item)">
@@ -77,12 +78,12 @@
             <div class="short-label">{{ item.Name }}</div>
           </div>
           <div class="dz-details file-type-{{ item.Type }}">
-            <mat-icon *ngIf="data.adamConfig.allowEdit" (click)="del(item)" appClickStopPropagation
+            <mat-icon *ngIf="vm.adamConfig.allowEdit" (click)="del(item)" appClickStopPropagation
               class="adam-delete-button" [tippy]="'Fields.Hyperlink.AdamFileManager.Delete' | translate"
-              [ngClass]="{ 'adam-button-disabled': data.disabled }">clear</mat-icon>
-            <mat-icon *ngIf="data.adamConfig.allowEdit" (click)="rename(item)" appClickStopPropagation
+              [ngClass]="{ 'adam-button-disabled': vm.disabled }">clear</mat-icon>
+            <mat-icon *ngIf="vm.adamConfig.allowEdit" (click)="rename(item)" appClickStopPropagation
               class="adam-rename-button" [tippy]="'Fields.Hyperlink.AdamFileManager.Edit' | translate"
-              [ngClass]="{ 'adam-button-disabled': data.disabled }">edit</mat-icon>
+              [ngClass]="{ 'adam-button-disabled': vm.disabled }">edit</mat-icon>
             <div class="adam-full-name-area">
               <div class="adam-full-name" [title]="item.Name">{{ item.Name }}</div>
             </div>
@@ -97,8 +98,8 @@
       <!-- files -->
       <ng-container *ngIf="!item.IsFolder">
         <div class="dz-preview" (click)="select(item)" [ngClass]="{
-          'dz-success': data.value === 'file:' + item.Id,
-          'disable-select': !data.adamConfig.enableSelect
+          'dz-success': vm.value === 'file:' + item.Id,
+          'disable-select': !vm.adamConfig.enableSelect
         }">
           <div *ngIf="item.Type !== 'image'"
             class="dz-image adam-blur adam-browse-background-icon adam-browse-background">
@@ -107,16 +108,16 @@
             <div class="adam-short-label">{{ item.Name }}</div>
           </div>
           <div *ngIf="item.Type === 'image'" class="dz-image adam-browse-background-image">
-            <img data-dz-thumbnail="" [alt]="item.Id + ':' + item.Name" [src]="item.ThumbnailUrl">
+            <img vm-dz-thumbnail="" [alt]="item.Id + ':' + item.Name" [src]="item.ThumbnailUrl">
           </div>
 
           <div class="dz-details file-type-{{ item.Type }}">
-            <mat-icon *ngIf="data.adamConfig.allowEdit" (click)="del(item)" appClickStopPropagation
+            <mat-icon *ngIf="vm.adamConfig.allowEdit" (click)="del(item)" appClickStopPropagation
               class="adam-delete-button" [tippy]="'Fields.Hyperlink.AdamFileManager.Delete' | translate"
-              [ngClass]="{ 'adam-button-disabled': data.disabled }">clear</mat-icon>
-            <mat-icon *ngIf="data.adamConfig.allowEdit" (click)="rename(item)" appClickStopPropagation
+              [ngClass]="{ 'adam-button-disabled': vm.disabled }">clear</mat-icon>
+            <mat-icon *ngIf="vm.adamConfig.allowEdit" (click)="rename(item)" appClickStopPropagation
               class="adam-rename-button" [tippy]="'Fields.Hyperlink.AdamFileManager.Edit' | translate"
-              [ngClass]="{ 'adam-button-disabled': data.disabled }">edit</mat-icon>
+              [ngClass]="{ 'adam-button-disabled': vm.disabled }">edit</mat-icon>
             <div class="adam-full-name-area">
               <div class="adam-full-name" [title]="item.Name">{{ item.Name }}</div>
             </div>

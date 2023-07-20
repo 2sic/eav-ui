@@ -5,7 +5,7 @@ import { GeneralHelpers } from '../../../../../shared/helpers';
 import { FieldsSettingsService } from '../../../../../shared/services';
 import { FieldConfigSet } from '../../../../builder/fields-builder/field-config-set.model';
 import { DeleteEntityProps, SelectedEntity } from '../entity-default.models';
-import { EntityListTemplateVars, ReorderIndexes } from './entity-default-list.models';
+import { EntityListViewModel, ReorderIndexes } from './entity-default-list.models';
 
 @Component({
   selector: 'app-entity-default-list',
@@ -24,7 +24,7 @@ export class EntityDefaultListComponent implements OnInit {
   @Output() private editEntity = new EventEmitter<{ entityGuid: string, entityId: number }>();
   @Output() private deleteEntity = new EventEmitter<DeleteEntityProps>();
 
-  templateVars$: Observable<EntityListTemplateVars>;
+  viewModel$: Observable<EntityListViewModel>;
 
   constructor(private fieldsSettingsService: FieldsSettingsService) { }
 
@@ -35,10 +35,10 @@ export class EntityDefaultListComponent implements OnInit {
         enableEdit: settings.EnableEdit,
         enableDelete: settings.EnableDelete,
         enableRemove: settings.EnableRemove,
-      } as EntityListTemplateVars)),
+      } as EntityListViewModel)),
       distinctUntilChanged(GeneralHelpers.objectsEqual),
     );
-    this.templateVars$ = combineLatest([settings$]).pipe(
+    this.viewModel$ = combineLatest([settings$]).pipe(
       map(([settings]) => {
         // console.log('2dm - check delete', settings);
         return settings;

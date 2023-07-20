@@ -1,5 +1,5 @@
 <mat-divider></mat-divider>
-<div class="hint-box u-border-radius-bottom mat-caption u-shadow-top" *ngIf="templateVars$ | async as data">
+<div class="hint-box u-border-radius-bottom mat-caption u-shadow-top" *ngIf="viewModel$ | async as vm">
   <div class="hint-box__hint">{{ 'Fields.Hyperlink.AdamFileManager.Hint' | translate }}</div>
   <div class="hint-box__sponsor">
     <a href="https://2sxc.org/help?tag=adam" target="_blank" tabindex="-1" class="adam-link"
@@ -7,7 +7,7 @@
       <mat-icon svgIcon="apple-outlined"></mat-icon>
       <span>{{ 'Fields.Hyperlink.AdamFileManager.Name' | translate }}</span>
     </a>
-    <ng-container *ngIf="data.showAdamSponsor">
+    <ng-container *ngIf="vm.showAdamSponsor">
       &nbsp;
       <span>{{ 'Fields.Hyperlink.AdamFileManager.SponsorLine' | translate }}</span>
       &nbsp;

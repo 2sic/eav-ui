@@ -5,7 +5,7 @@ import { GeneralHelpers } from '../../../../shared/helpers';
 import { FieldsSettingsService } from '../../../../shared/services';
 import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
-import { EmptyMessageTemplateVars } from './empty-message.models';
+import { EmptyMessageViewModel } from './empty-message.models';
 import { ItemFieldVisibility } from '../../../../shared/services/item-field-visibility';
 
 @Component({
@@ -17,7 +17,7 @@ import { ItemFieldVisibility } from '../../../../shared/services/item-field-visi
 export class EmptyMessageComponent implements OnInit {
   @Input() config: FieldConfigSet;
 
-  templateVars$: Observable<EmptyMessageTemplateVars>;
+  viewModel: Observable<EmptyMessageViewModel>;
 
   constructor(private fieldsSettingsService: FieldsSettingsService) { }
 
@@ -29,13 +29,13 @@ export class EmptyMessageComponent implements OnInit {
       })),
       distinctUntilChanged(GeneralHelpers.objectsEqual),
     );
-    this.templateVars$ = combineLatest([settings$]).pipe(
+    this.viewModel = combineLatest([settings$]).pipe(
       map(([settings]) => {
-        const templateVars: EmptyMessageTemplateVars = {
+        const viewModel: EmptyMessageViewModel = {
           notes: settings.Notes,
           visible: settings.Visible,
         };
-        return templateVars;
+        return viewModel;
       }),
     );
   }

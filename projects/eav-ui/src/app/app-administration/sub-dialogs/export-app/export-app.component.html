@@ -1,39 +1,39 @@
-<ng-container *ngIf="(templateVars$ | async) as data">
+<ng-container *ngIf="viewModel$ | async as vm">
 
   <div mat-dialog-title>
     <div class="dialog-title-box">Export app</div>
   </div>
 
-  <mat-spinner *ngIf="data.isExporting" mode="indeterminate" diameter="20" color="accent"></mat-spinner>
+  <mat-spinner *ngIf="vm.isExporting" mode="indeterminate" diameter="20" color="accent"></mat-spinner>
 
   <p class="dialog-description">
     Pack the entire app to a <em>zip</em> folder which can be imported again to another site.
     For further help visit <a href="https://2sxc.org/en/help?tag=export-app" target="_blank">2sxc Help</a>.
   </p>
 
-  <div class="dialog-component-content fancy-scrollbar-light" *ngIf="data.appInfo">
+  <div class="dialog-component-content fancy-scrollbar-light" *ngIf="vm.appInfo">
     <p class="app-info__title">Specs</p>
     <ul class="app-info__content">
-      <li>Name: {{ data.appInfo.Name }}</li>
-      <li>Guid: {{ data.appInfo.Guid }}</li>
-      <li>Version: {{ data.appInfo.Version }}</li>
+      <li>Name: {{ vm.appInfo.Name }}</li>
+      <li>Guid: {{ vm.appInfo.Guid }}</li>
+      <li>Version: {{ vm.appInfo.Version }}</li>
     </ul>
 
     <p class="app-info__title">Contains</p>
     <ul class="app-info__content">
-      <li>{{ data.appInfo.EntitiesCount }} entities</li>
-      <li>{{ data.appInfo.LanguagesCount }} languages</li>
+      <li>{{ vm.appInfo.EntitiesCount }} entities</li>
+      <li>{{ vm.appInfo.LanguagesCount }} languages</li>
       <li>
-        {{ data.appInfo.TemplatesCount }} templates (Token: {{ data.appInfo.HasTokenTemplates }}, Razor:
-        {{ data.appInfo.HasRazorTemplates }})
+        {{ vm.appInfo.TemplatesCount }} templates (Token: {{ vm.appInfo.HasTokenTemplates }}, Razor:
+        {{ vm.appInfo.HasRazorTemplates }})
       </li>
-      <li>{{ data.appInfo.TransferableFilesCount }} files to export</li>
-      <li>{{ data.appInfo.FilesCount }} files in the app folder totally</li>
+      <li>{{ vm.appInfo.TransferableFilesCount }} files to export</li>
+      <li>{{ vm.appInfo.FilesCount }} files in the app folder totally</li>
     </ul>
 
     <div class="options-wrapper">
       <div class="option-box">
-        <mat-checkbox [(ngModel)]="includeContentGroups" [disabled]="resetAppGuid || data.isExporting">
+        <mat-checkbox [(ngModel)]="includeContentGroups" [disabled]="resetAppGuid || vm.isExporting">
           <span class="option-box__text">
             Include all content-groups to re-import the app in an exact copy of this site.
             Only select this option when you copy an entire DNN site.
@@ -41,7 +41,7 @@
         </mat-checkbox>
       </div>
       <div class="option-box">
-        <mat-checkbox [(ngModel)]="resetAppGuid" [disabled]="includeContentGroups || data.isExporting">
+        <mat-checkbox [(ngModel)]="resetAppGuid" [disabled]="includeContentGroups || vm.isExporting">
           <span class="option-box__text">
             Reset the app GUID to zero. You only need this option for special tutorial apps,
             and usually must not select it.
@@ -52,10 +52,10 @@
   </div>
 
   <div class="dialog-component-actions">
-    <button mat-raised-button [disabled]="data.isExporting" (click)="closeDialog()">
+    <button mat-raised-button [disabled]="vm.isExporting" (click)="closeDialog()">
       Cancel
     </button>
-    <button mat-raised-button color="accent" [disabled]="data.isExporting" (click)="exportApp()">
+    <button mat-raised-button color="accent" [disabled]="vm.isExporting" (click)="exportApp()">
       Export App
     </button>
   </div>

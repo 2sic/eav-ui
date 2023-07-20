@@ -2,14 +2,14 @@
   <div class="dialog-title-box">{{ contentTypeStaticName ? 'Edit Content Type' : 'New Content Type' }}</div>
 </div>
 
-<ng-container *ngIf="(templateVars$ | async) as data">
+<ng-container *ngIf="viewModel$ | async as vm">
 
-  <form class="dialog-form" *ngIf="data.contentType" #ngForm="ngForm" (ngSubmit)="save()">
+  <form class="dialog-form" *ngIf="vm.contentType" #ngForm="ngForm" (ngSubmit)="save()">
     <div class="dialog-form-content fancy-scrollbar-light">
       <div class="edit-input">
         <mat-form-field appearance="standard" color="accent">
           <mat-label>Name</mat-label>
-          <input matInput type="text" required [pattern]="contentTypeNamePattern" [ngModel]="data.contentType.Name"
+          <input matInput type="text" required [pattern]="contentTypeNamePattern" [ngModel]="vm.contentType.Name"
             (ngModelChange)="changeContentTypeName($event)" name="Name" #name="ngModel">
         </mat-form-field>
         <ng-container *ngIf="name.touched && name.errors">
@@ -17,7 +17,7 @@
           <app-field-hint *ngIf="name.errors.pattern" [isError]="true">{{ contentTypeNameError }}</app-field-hint>
         </ng-container>
       </div>
-      <mat-accordion [@.disabled]="data.disableAnimation">
+      <mat-accordion [@.disabled]="vm.disableAnimation">
         <mat-expansion-panel>
           <mat-expansion-panel-header>
             <mat-panel-title>Advanced</mat-panel-title>
@@ -27,16 +27,16 @@
           <div class="edit-input">
             <mat-form-field appearance="standard" color="accent">
               <mat-label>Scope</mat-label>
-              <mat-select [ngModel]="data.contentType.Scope" name="Scope" (ngModelChange)="changeScope($event)"
-                [disabled]="data.lockScope">
-                <mat-option *ngFor="let scopeOption of data.scopeOptions" [value]="scopeOption.value">
+              <mat-select [ngModel]="vm.contentType.Scope" name="Scope" (ngModelChange)="changeScope($event)"
+                [disabled]="vm.lockScope">
+                <mat-option *ngFor="let scopeOption of vm.scopeOptions" [value]="scopeOption.value">
                   {{ scopeOption.name }}
                 </mat-option>
                 <mat-option [value]="dropdownInsertValue">Other...</mat-option>
               </mat-select>
-              <button mat-icon-button type="button" matSuffix [tippy]="data.lockScope ? 'Unlock' : 'Lock'">
+              <button mat-icon-button type="button" matSuffix [tippy]="vm.lockScope ? 'Unlock' : 'Lock'">
                 <mat-icon appClickStopPropagation (click)="unlockScope()">
-                  {{ data.lockScope ? 'lock' : 'lock_open' }}
+                  {{ vm.lockScope ? 'lock' : 'lock_open' }}
                 </mat-icon>
               </button>
             </mat-form-field>
@@ -49,14 +49,14 @@
           <div class="edit-input">
             <mat-form-field appearance="standard" color="accent">
               <mat-label>Static Name</mat-label>
-              <input matInput type="text" [ngModel]="data.contentType.StaticName" name="StaticName" disabled>
+              <input matInput type="text" [ngModel]="vm.contentType.StaticName" name="StaticName" disabled>
             </mat-form-field>
           </div>
 
-          <div *ngIf="data.contentType.SharedDefId" class="edit-input">
+          <div *ngIf="vm.contentType.SharedDefId" class="edit-input">
             <h3>Shared Content Type (Ghost)</h3>
             <p>Note: this can't be edited in the UI, for now if you really know what you're doing, do it in the DB</p>
-            <p>Uses Type Definition of: {{ data.contentType.SharedDefId }}</p>
+            <p>Uses Type Definition of: {{ vm.contentType.SharedDefId }}</p>
           </div>
         </mat-expansion-panel>
       </mat-accordion>
@@ -64,7 +64,7 @@
 
     <div class="dialog-form-actions">
       <button mat-raised-button type="button" (click)="closeDialog()">Cancel</button>
-      <button mat-raised-button type="submit" color="accent" [disabled]="!ngForm.form.valid || data.loading">
+      <button mat-raised-button type="submit" color="accent" [disabled]="!ngForm.form.valid || vm.loading">
         Save
       </button>
     </div>
