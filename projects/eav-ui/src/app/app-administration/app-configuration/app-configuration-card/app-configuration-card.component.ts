@@ -24,7 +24,7 @@ export class AppConfigurationCardComponent extends BaseComponent implements OnIn
 
   // More proper ViewModel
   appSettingsInternal$ = new Subject<AppInternals>();
-  data$: Observable<ViewModel>;
+  viewModel$: Observable<ViewModel>;
 
   constructor(
     protected router: Router,
@@ -36,7 +36,7 @@ export class AppConfigurationCardComponent extends BaseComponent implements OnIn
     super(router, route);
 
     // New with proper ViewModel
-    this.data$ = combineLatest([
+    this.viewModel$ = combineLatest([
       this.appSettingsInternal$,
       this.contentItemsService.getAll(eavConstants.contentTypes.appConfiguration),
     ]).pipe(map(([settings, contentItems]) => {

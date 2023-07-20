@@ -1,4 +1,4 @@
-<ng-container *ngIf="data$ | async as data">
+<ng-container *ngIf="viewModel$ | async as vm">
 
   <!-- App Config -->
   <mat-card class="mat-elevation-z2">
@@ -17,16 +17,16 @@
           <tr><b>For</b></tr>
         </td>
         <td>
-          <tr><span [tippy]="'Click to copy to clipboard'" (click)="copyToClipboard(data.displayName)">{{data.displayName}}</span></tr>
-          <tr><span [tippy]="'Click to copy to clipboard'" (click)="copyToClipboard(data.folder)">{{data.folder}}</span></tr>
-          <tr><span [tippy]="'Click to copy to clipboard'" (click)="copyToClipboard(data.version)">{{data.version}}</span></tr>
+          <tr><span [tippy]="'Click to copy to clipboard'" (click)="copyToClipboard(vm.displayName)">{{vm.displayName}}</span></tr>
+          <tr><span [tippy]="'Click to copy to clipboard'" (click)="copyToClipboard(vm.folder)">{{vm.folder}}</span></tr>
+          <tr><span [tippy]="'Click to copy to clipboard'" (click)="copyToClipboard(vm.version)">{{vm.version}}</span></tr>
           <tr>
             <b>2sxc: </b><span [tippy]="'Click to copy to clipboard'" 
-              (click)="copyToClipboard(data.toSxc)"> {{data.toSxc}} </span>
+              (click)="copyToClipboard(vm.toSxc)"> {{vm.toSxc}} </span>
             <b> DNN: </b><span [tippy]="'Click to copy to clipboard'"
-              (click)="copyToClipboard(data.dnn)"> {{data.dnn}} </span>
+              (click)="copyToClipboard(vm.dnn)"> {{vm.dnn}} </span>
             <b> Oqt: </b><span [tippy]="'Click to copy to clipboard'"
-              (click)="copyToClipboard(data.oqt)"> {{data.oqt}} </span>
+              (click)="copyToClipboard(vm.oqt)"> {{vm.oqt}} </span>
           </tr>
         </td>
       </table>
@@ -34,12 +34,12 @@
     <mat-card-actions>
       <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://docs.2sxc.org/basics/app/configuration.html' }"></ng-container>
       <button mat-button (click)="edit()">
-        <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="data.appConfigurationsCount || null"
+        <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="vm.appConfigurationsCount || null"
           matBadgePosition="below after">edit</mat-icon>
         <span>Edit</span>
       </button>
       <button mat-button (click)="openMetadata()">
-        <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="data.appMetadataCount || null"
+        <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="vm.appMetadataCount || null"
           matBadgePosition="below after">local_offer</mat-icon>
         <span>Metadata</span>
       </button>
