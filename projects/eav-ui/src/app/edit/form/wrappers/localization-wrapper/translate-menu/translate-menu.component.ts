@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, ViewContainerRef } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { combineLatest, distinctUntilChanged, map, Observable, startWith } from 'rxjs';
 import { TranslationLinks } from '../../../../shared/constants';
@@ -21,7 +21,7 @@ import { TranslateMenuViewModel } from './translate-menu.models';
 })
 export class TranslateMenuComponent implements OnInit {
   @Input() config: FieldConfigSet;
-  @Input() group: FormGroup;
+  @Input() group: UntypedFormGroup;
 
   TranslationLinks = TranslationLinks;
   viewModel$: Observable<TranslateMenuViewModel>;

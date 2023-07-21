@@ -1,5 +1,5 @@
 import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
-import { AbstractControl, FormGroup } from '@angular/forms';
+import { AbstractControl, UntypedFormGroup } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { TranslateService } from '@ngx-translate/core';
 import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
@@ -20,7 +20,7 @@ export class EntityDefaultSearchComponent implements OnInit, OnChanges {
   @ViewChild('autocomplete') autocompleteRef?: ElementRef;
 
   @Input() config: FieldConfigSet;
-  @Input() group: FormGroup;
+  @Input() group: UntypedFormGroup;
   @Input() label: string;
   @Input() placeholder: string;
   @Input() required: boolean;

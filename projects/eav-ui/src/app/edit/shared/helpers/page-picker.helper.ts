@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, ViewContainerRef } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { take } from 'rxjs';
 import { PagePickerResult } from '../../../../../../edit-types';
@@ -10,7 +10,7 @@ import { PagePickerDialogData } from '../../form/shared/page-picker/page-picker.
 export class PagePicker {
   static open(
     config: FieldConfigSet,
-    group: FormGroup,
+    group: UntypedFormGroup,
     dialog: MatDialog,
     viewContainerRef: ViewContainerRef,
     changeDetectorRef: ChangeDetectorRef,
