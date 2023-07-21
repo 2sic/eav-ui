@@ -1,5 +1,5 @@
 import { Directive, Input, OnDestroy, OnInit } from '@angular/core';
-import { AbstractControl, FormGroup } from '@angular/forms';
+import { AbstractControl, UntypedFormGroup } from '@angular/forms';
 import { BaseSubsinkComponent } from 'projects/eav-ui/src/app/shared/components/base-subsink-component/base-subsink.component';
 import { BehaviorSubject, distinctUntilChanged, map, Observable, Subscription } from 'rxjs';
 import { FieldSettings, FieldValue } from '../../../../../../../edit-types';
@@ -12,7 +12,7 @@ import { Field } from '../../builder/fields-builder/field.model';
 // tslint:disable-next-line:directive-class-suffix
 export class BaseFieldComponent<T = FieldValue> extends BaseSubsinkComponent implements Field, OnInit, OnDestroy {
   @Input() config: FieldConfigSet;
-  @Input() group: FormGroup;
+  @Input() group: UntypedFormGroup;
 
   control: AbstractControl;
   controlStatus$: BehaviorSubject<ControlStatus<T>>;

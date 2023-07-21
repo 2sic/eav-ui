@@ -1,5 +1,5 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, Input, NgZone, OnDestroy, ViewChild, ViewContainerRef } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
@@ -19,7 +19,7 @@ export class ConnectorComponent implements AfterViewInit, OnDestroy {
   @ViewChild('customElContainer') private customElContainerRef: ElementRef;
 
   @Input() config: FieldConfigSet;
-  @Input() group: FormGroup;
+  @Input() group: UntypedFormGroup;
 
   private connectorCreator: ConnectorHelper;
 

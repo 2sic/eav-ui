@@ -1,5 +1,5 @@
 import { Component, HostBinding, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { FileLocationFormValues } from '..';
 
@@ -11,13 +11,13 @@ import { FileLocationFormValues } from '..';
 export class FileLocationDialogComponent implements OnInit {
   @HostBinding('className') hostClass = 'dialog-component';
 
-  form: FormGroup;
+  form: UntypedFormGroup;
 
   constructor(private dialogRef: MatDialogRef<FileLocationDialogComponent>) { }
 
   ngOnInit(): void {
-    this.form = new FormGroup({
-      isShared: new FormControl(null, Validators.required),
+    this.form = new UntypedFormGroup({
+      isShared: new UntypedFormControl(null, Validators.required),
     });
   }
 
