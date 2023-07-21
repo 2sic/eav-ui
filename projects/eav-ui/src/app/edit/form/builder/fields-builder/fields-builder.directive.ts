@@ -1,5 +1,5 @@
 import { ComponentFactoryResolver, ComponentRef, Directive, Input, OnDestroy, OnInit, Type, ViewContainerRef } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
 import { FieldMetadataKey, WrappersConstants } from '../../../shared/constants';
@@ -42,7 +42,7 @@ import { EmptyFieldHelpers } from '../../fields/empty/empty-field-helpers';
 
 @Directive({ selector: '[appFieldsBuilder]' })
 export class FieldsBuilderDirective implements OnInit, OnDestroy {
-  @Input() group: FormGroup;
+  @Input() group: UntypedFormGroup;
   private fieldConfigs: FieldConfigSet[] = [];
 
   private components: Record<string, Type<any>> = {

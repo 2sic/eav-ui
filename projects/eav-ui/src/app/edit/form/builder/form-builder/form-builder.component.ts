@@ -1,5 +1,5 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { BaseSubsinkComponent } from 'projects/eav-ui/src/app/shared/components/base-subsink-component/base-subsink.component';
 import { combineLatest, distinctUntilChanged, map, startWith, Subscription } from 'rxjs';
 import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
@@ -20,12 +20,12 @@ import { FormItemFormulaService } from '../../../formulas/form-item-formula.serv
 export class FormBuilderComponent extends BaseSubsinkComponent implements OnInit, OnDestroy {
   @Input() entityGuid: string;
 
-  form: FormGroup;
+  form: UntypedFormGroup;
 
   constructor(
     public fieldsSettingsService: FieldsSettingsService,
     private fieldsTranslateService: FieldsTranslateService,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private eavService: EavService,
     private formsStateService: FormsStateService,
     private itemService: ItemService,
@@ -38,7 +38,7 @@ export class FormBuilderComponent extends BaseSubsinkComponent implements OnInit
     this.fieldsSettingsService.init(this.entityGuid);
     this.fieldsTranslateService.init(this.entityGuid);
 
-    this.form = new FormGroup({});
+    this.form = new UntypedFormGroup({});
     this.subscription.add(
       this.fieldsSettingsService.getFieldsProps$().subscribe(fieldsProps => {
         // 1. create missing controls

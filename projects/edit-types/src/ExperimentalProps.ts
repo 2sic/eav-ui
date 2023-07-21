@@ -1,4 +1,4 @@
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { InputTypeName } from './InputTypeName';
@@ -11,7 +11,7 @@ import { EntityInfo } from './EntityInfo';
 export interface ExperimentalProps {
   entityGuid: string;
   allInputTypeNames: InputTypeName[];
-  formGroup: FormGroup;
+  formGroup: UntypedFormGroup;
   translateService: TranslateService;
   isExpanded$: Observable<boolean>;
   dropzone: Dropzone;
