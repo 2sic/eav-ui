@@ -40,7 +40,7 @@
     "@angular/platform-browser-dynamic": "^14.3.0",
     "@angular/router": "^14.3.0",
     "@ecodev/fab-speed-dial": "^10.0.0",
-    "@material/layout-grid": "^13.0.0",
+    "@material/layout-grid": "^14.0.0",
     "@ngrx/data": "^13.1.0",
     "@ngrx/effects": "^13.1.0",
     "@ngrx/entity": "^13.1.0",
