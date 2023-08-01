@@ -1,5 +1,5 @@
 import { Directive, ElementRef, Input, OnInit } from '@angular/core';
-import { MatInput } from '@angular/material/input';
+import { MatLegacyInput as MatInput } from '@angular/material/legacy-input';
 
 @Directive({ selector: '[appMatInputAutofocus]' })
 export class MatInputAutofocusDirective implements OnInit {

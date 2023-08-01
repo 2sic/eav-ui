@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { HelpPopupComponent } from '..';
 import { HelpPopupData } from '../help-popup/help-popup.models';
 import { Scenario } from '../scenarios';

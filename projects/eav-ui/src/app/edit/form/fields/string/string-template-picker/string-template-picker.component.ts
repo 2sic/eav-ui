@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
 import { SourceService } from '../../../../../code-editor/services/source.service';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
