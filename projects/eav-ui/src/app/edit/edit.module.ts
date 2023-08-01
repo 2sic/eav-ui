@@ -4,7 +4,6 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
@@ -186,7 +185,6 @@ import { MatBadgeModule } from '@angular/material/badge';
         MatDialogModule,
         MatDividerModule,
         MatBadgeModule,
-        FlexLayoutModule,
         FormsModule,
         MatFormFieldModule,
         MatSlideToggleModule,
