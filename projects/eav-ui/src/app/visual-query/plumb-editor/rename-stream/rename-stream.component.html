@@ -15,7 +15,7 @@
     <!-- Simple form -->
     <ng-container *ngIf="!isSource || !pipelineResultExists">
       <!-- Label -->
-      <mat-form-field appearance="standard" color="accent">
+      <mat-form-field color="accent">
         <mat-label>Label</mat-label>
         <input matInput type="text" formControlName="label" required>
       </mat-form-field>
@@ -31,7 +31,7 @@
     <ng-container *ngIf="isSource && pipelineResultExists">
       <!-- Scope -->
       <ng-container *ngIf="advancedMode && guidedLabel">
-        <mat-form-field appearance="standard" color="accent">
+        <mat-form-field color="accent">
           <mat-label>Scope</mat-label>
           <mat-select formControlName="scope" [placeholder]="!scopeOptions.length ? 'No items found' : ''">
             <mat-option *ngFor="let scopeOption of scopeOptions" [value]="scopeOption.value">
@@ -46,7 +46,7 @@
       </ng-container>
 
       <!-- Label -->
-      <mat-form-field appearance="standard" color="accent">
+      <mat-form-field color="accent">
         <mat-label>Label</mat-label>
         <mat-select *ngIf="guidedLabel" formControlName="label" required
           [placeholder]="!labelOptions.length ? 'No items found' : ''">

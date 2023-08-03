@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
-import { MatLegacyTabChangeEvent as MatTabChangeEvent } from '@angular/material/legacy-tabs';
+import { MatDialogRef } from '@angular/material/dialog';
+import { MatTabChangeEvent } from '@angular/material/tabs';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { BehaviorSubject, Observable, combineLatest, filter, map, startWith } from 'rxjs';
 import { DialogSettings } from '../../app-administration/models';

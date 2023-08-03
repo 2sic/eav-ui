@@ -12,7 +12,7 @@
     <div class="dialog-form-content fancy-scrollbar-light">
 
       <!-- Target Type -->
-      <mat-form-field appearance="standard" color="accent">
+      <mat-form-field color="accent">
         <mat-label>Target</mat-label>
 
         <mat-select *ngIf="vm.guidedMode" formControlName="targetType" required>
@@ -43,7 +43,7 @@
       </app-field-hint>
 
       <!-- Key Type -->
-      <mat-form-field appearance="standard" color="accent">
+      <mat-form-field color="accent">
         <mat-label>Key type</mat-label>
 
         <mat-select formControlName="keyType" required>
@@ -59,7 +59,7 @@
       </app-field-hint>
 
       <!-- Content Type for Content Items -->
-      <mat-form-field appearance="standard" color="accent"
+      <mat-form-field color="accent"
         *ngIf="vm.guidedMode && vm.formValues.targetType === eavConstants.metadata.entity.targetType">
         <mat-label>Content Type</mat-label>
 
@@ -72,7 +72,7 @@
       </mat-form-field>
 
       <!-- Scope for Content Types -->
-      <mat-form-field appearance="standard" color="accent"
+      <mat-form-field color="accent"
         *ngIf="vm.guidedMode && (vm.formValues.targetType === eavConstants.metadata.entity.targetType || vm.formValues.targetType === eavConstants.metadata.contentType.targetType)">
         <mat-label>Scope</mat-label>
 
@@ -91,7 +91,7 @@
       </app-field-hint>
 
       <!-- Key -->
-      <mat-form-field appearance="standard" color="accent">
+      <mat-form-field color="accent">
         <mat-label>Key</mat-label>
 
         <ng-container *ngIf="vm.guidedMode; then specialKeyInputs else defaultKeyInput">

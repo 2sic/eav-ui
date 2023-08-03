@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, ElementRef, NgZone, ViewContainerRef } from '@angular/core';
 import { AbstractControl, UntypedFormGroup } from '@angular/forms';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
 import { FeatureComponentBase } from 'projects/eav-ui/src/app/features/shared/base-feature.component';

@@ -1,7 +1,7 @@
 import { GridOptions } from '@ag-grid-community/core';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
 import { BaseComponent } from '../shared/components/base-component/base.component';

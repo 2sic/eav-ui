@@ -1,5 +1,5 @@
 import { Directive, ElementRef, EventEmitter, HostListener, Input, NgZone, OnDestroy, OnInit, Output } from '@angular/core';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { fromEvent, Subscription } from 'rxjs';
 import { BaseSubsinkComponent } from '../components/base-subsink-component/base-subsink.component';
 

@@ -1,5 +1,5 @@
 eco-fab-speed-dial {
-  .mat-mini-fab::before {
+  .mat-mdc-mini-fab::before {
     content: attr(label);
     position: absolute;
     right: 50px;
@@ -19,7 +19,7 @@ eco-fab-speed-dial {
   }
 
   &.fab-opened {
-    .mat-mini-fab::before {
+    .mat-mdc-mini-fab::before {
       display: block;
     }
   }

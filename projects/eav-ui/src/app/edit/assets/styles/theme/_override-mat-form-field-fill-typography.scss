@@ -4,17 +4,18 @@
 .mat-form-field-appearance-standard {
   width: 100%;
   height: calc(86px - 1.4375em);
-
+  /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
   .mat-form-field-wrapper {
     padding-bottom: 0;
   }
-
+  /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
   .mat-form-field-underline {
     bottom: 0;
   }
-
+  /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+  /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
   .mat-form-field-suffix {
-    .mat-icon-button {
+    .mat-mdc-icon-button {
       top: 6px;
       width: 30px !important;
       height: 30px !important;
@@ -23,7 +24,7 @@
 
     .entity-dropdown-button {
       cursor: text;
-
+      /* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.*/
       &.mat-button-disabled {
         cursor: default;
       }
@@ -32,7 +33,7 @@
     .selection-suffix {
       display: flex;
 
-      .mat-icon-button {
+      .mat-mdc-icon-button {
         top: 0;
 
         .mat-icon {
@@ -43,17 +44,18 @@
       .active {
         background-color: $accent-color;
         color: white;
-
+        /* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.*/
         &.mat-button-disabled {
           background-color: $editUI-label-disabled-color;
         }
       }
     }
   }
-
+  /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
+  /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
   .mat-select-arrow-wrapper {
     transform: translateX(-5px) !important;
-
+    /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
     .mat-select-arrow {
       color: $editUI-foreground-color;
     }
@@ -61,6 +63,6 @@
 }
 
 // boolean field
-.mat-slide-toggle {
+.mat-mdc-slide-toggle {
   padding-top: 12px;
 }

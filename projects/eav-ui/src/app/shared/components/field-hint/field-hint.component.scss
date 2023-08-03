@@ -1,16 +1,16 @@
 .hint-box {
   margin-top: 4px;
 
-  .mat-hint,
-  .mat-error {
+  .mat-mdc-form-field-hint,
+  .mat-mdc-form-field-error {
     font-size: 12px;
     display: block;
   }
 
   &__short {
 
-    .mat-hint,
-    .mat-error {
+    .mat-mdc-form-field-hint,
+    .mat-mdc-form-field-error {
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;

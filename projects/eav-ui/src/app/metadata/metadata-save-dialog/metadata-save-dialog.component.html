@@ -13,7 +13,7 @@
 
       <!-- Scope -->
       <ng-container *ngIf="advancedMode && guidedContentType">
-        <mat-form-field appearance="standard" color="accent">
+        <mat-form-field color="accent">
           <mat-label>Scope</mat-label>
           <mat-select formControlName="scope" [placeholder]="!vm.scopeOptions.length ? 'No items found' : ''">
             <mat-option *ngFor="let scopeOption of vm.scopeOptions" [value]="scopeOption.value">
@@ -29,7 +29,7 @@
       </ng-container>
 
       <!-- Content Type of metadata item -->
-      <mat-form-field appearance="standard" color="accent">
+      <mat-form-field color="accent">
         <mat-label>Content Type</mat-label>
         <mat-select *ngIf="guidedContentType" formControlName="contentType" required
           [placeholder]="!vm.contentTypes.length ? 'No items found' : ''">

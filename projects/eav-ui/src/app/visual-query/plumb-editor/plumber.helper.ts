@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, ViewContainerRef } from '@angular/core';
-import { MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { EavWindow } from '../../shared/models/eav-window.model';
 import { DataSource, PipelineDataSource, PipelineModel, PipelineResult, PipelineResultStream, StreamWire, VisualDesignerData } from '../models';

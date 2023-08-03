@@ -1,13 +1,13 @@
 @import "../app/edit/assets/styles/variables";
 
-.mat-simple-snackbar-action {
+.mat-mdc-snack-bar-action {
   color: $primary-color;
 }
 
 .snackbar-error {
   background: $error-color;
 
-  .mat-simple-snack-bar-content {
+  .mat-mdc-snack-bar-label {
     color: white;
   }
 }

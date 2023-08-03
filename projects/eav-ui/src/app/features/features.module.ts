@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FeatureIconTextComponent } from './feature-icon-text/feature-icon-text.component';
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
+import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { SharedComponentsModule } from '../shared/shared-components.module';
 import { TranslateModule } from '@ngx-translate/core';
@@ -11,7 +11,7 @@ import { FeatureInfoDialogComponent } from './feature-info-dialog/feature-info-d
 import { FeatureIconComponent } from './feature-icon/feature-icon.component';
 import { FeatureTextInfoComponent } from './feature-text-info/feature-text-info.component';
 import { FeatureIconIndicatorComponent } from './feature-icon-indicator/feature-icon-indicator.component';
-import { MatLegacyCardModule as MatCardModule } from '@angular/material/legacy-card';
+import { MatCardModule } from '@angular/material/card';
 import { FeatureDetailService } from './services/feature-detail.service';
 
 @NgModule({
