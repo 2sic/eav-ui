@@ -12,7 +12,7 @@
   </p>
 
   <form [formGroup]="form">
-    <mat-form-field appearance="standard" color="accent">
+    <mat-form-field color="accent">
       <mat-label>Inherit App</mat-label>
       <mat-select formControlName="inheritId"
         [placeholder]="vm.inheritableApps === undefined ? 'Loading...' : vm.inheritableApps === null || vm.inheritableApps.length === 0 ? 'No inheritable apps found' : ''">

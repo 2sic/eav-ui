@@ -2,7 +2,7 @@ import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { ChangeDetectorRef, Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output, ViewContainerRef } from '@angular/core';
 import { AbstractControl, UntypedFormGroup } from '@angular/forms';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
 import { FeatureComponentBase } from 'projects/eav-ui/src/app/features/shared/base-feature.component';
 import { BaseSubsinkComponent } from 'projects/eav-ui/src/app/shared/components/base-subsink-component/base-subsink.component';

@@ -1,6 +1,6 @@
 import { GridOptions } from '@ag-grid-community/core';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, filter, from, map, startWith, take } from 'rxjs';
 import { ContentExportService } from '../../content-export/services/content-export.service';

@@ -1,7 +1,7 @@
 <ng-container *ngIf="viewModel | async as vm">
 
   <div class="picker-wrapper">
-    <mat-form-field [formGroup]="group" appearance="standard" color="accent">
+    <mat-form-field [formGroup]="group" color="accent">
       <mat-select [formControlName]="config.fieldName" [required]="vm.required">
         <mat-option value="">{{ 'Fields.TemplatePicker.NotSelected' | translate }}</mat-option>
         <mat-option *ngFor="let file of vm.templateOptions" [value]="file">

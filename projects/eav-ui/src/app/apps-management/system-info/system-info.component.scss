@@ -4,28 +4,28 @@
   padding-top: 40px;
 }
 
-.mat-card {
+.mat-mdc-card {
   width: 400px;
   margin-right: 24px;
   margin-bottom: 24px;
 }
 
-.mat-card-avatar .mat-icon {
+.mat-mdc-card-avatar .mat-icon {
   width: 40px;
   height: 40px;
   font-size: 40px;
 }
 
-.mat-card-title {
+.mat-mdc-card-title {
   font-size: 20px;
   font-weight: 500;
 }
 
-.mat-card-subtitle {
+.mat-mdc-card-subtitle {
   font-size: 14px;
 }
 
-.mat-card-content {
+.mat-mdc-card-content {
   font-size: 14px;
   margin-top: 12px;
 }
@@ -44,7 +44,7 @@
 }
 
 // Make sure icons (before the text) have extra padding
-.mat-button .mat-icon {
+.mat-mdc-button .mat-icon {
   margin-right: 4px; 
 }
 
@@ -73,7 +73,7 @@
 }
 
 .activate-log-form {
-  .mat-form-field {
+  .mat-mdc-form-field {
     height: auto;
   }
 
