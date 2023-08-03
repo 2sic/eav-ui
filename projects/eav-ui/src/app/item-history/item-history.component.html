@@ -11,7 +11,7 @@
   <p class="dialog-description">Check version history for this item and restore the version you need.</p>
 
   <div *ngIf="vm.historyItems?.length > 0" class="compare-box">
-    <mat-form-field appearance="standard" color="accent" class="compare-box__dropdown">
+    <mat-form-field color="accent" class="compare-box__dropdown">
       <mat-select [value]="vm.compareWith" name="Scope" (selectionChange)="compareChange($event.value)">
         <mat-option value="previous">Compare with: Previous</mat-option>
         <mat-option value="live">Compare with: Live</mat-option>

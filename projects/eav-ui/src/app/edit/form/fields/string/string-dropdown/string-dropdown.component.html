@@ -1,7 +1,7 @@
 <!-- This template is used for StringDropdown and NumberDropdown -->
 
 <ng-container *ngIf="viewModel$ | async as vm">
-  <mat-form-field [formGroup]="group" appearance="standard" color="accent">
+  <mat-form-field [formGroup]="group" color="accent">
 
     <mat-select *ngIf="!vm.freeTextMode" [formControlName]="config.fieldName" [required]="vm.required"
       [placeholder]="vm.placeholder">

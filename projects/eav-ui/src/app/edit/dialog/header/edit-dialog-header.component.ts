@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewContainerRef } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { combineLatest, map, Observable } from 'rxjs';
 import { EavService, FormsStateService } from '../../shared/services';
 import { LanguageService, PublishStatusService } from '../../shared/store/ngrx-data';

@@ -1,7 +1,7 @@
 import { AgGridAngular } from '@ag-grid-community/angular';
 import { GridOptions } from '@ag-grid-community/core';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 // tslint:disable-next-line:max-line-length
 import { BehaviorSubject, catchError, combineLatest, filter, forkJoin, map, Observable, of, pairwise, share, startWith, Subject, Subscription, switchMap, tap, timer } from 'rxjs';

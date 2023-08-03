@@ -13,7 +13,7 @@
 
   <div class="dialog-component-content fancy-scrollbar-light">
     <div class="edit-input">
-      <mat-form-field appearance="standard" color="accent">
+      <mat-form-field color="accent">
         <mat-label>Scope</mat-label>
         <mat-select [ngModel]="exportScope" name="Scope" [disabled]="lockScope" (ngModelChange)="changeScope($event)">
           <mat-option *ngFor="let scopeOption of scopeOptions" [value]="scopeOption.value">

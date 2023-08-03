@@ -1,5 +1,5 @@
 // EditUI dialog
-.c-multi-item-dialog .mat-dialog-container {
+.c-multi-item-dialog .mat-mdc-dialog-container {
   padding: 0;
   background-color: $edit-ui-dialog-background-color;
   border-radius: $edit-ui-dialog-border-radius;
@@ -28,6 +28,7 @@ app-collapsible-wrapper {
   }
 
   app-collapsible-wrapper:last-child {
+    /* TODO(mdc-migration): The following rule targets internal classes of card that may no longer apply for the MDC version.*/
     mat-card:last-child {
       margin: 0;
     }

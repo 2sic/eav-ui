@@ -11,7 +11,7 @@
 <form #ngForm="ngForm" class="dialog-form" *ngIf="(loading$ | async) === false">
   <div class="dialog-form-content fancy-scrollbar-light">
     <div>
-      <mat-form-field appearance="standard" color="accent">
+      <mat-form-field color="accent">
         <mat-label>Languages</mat-label>
         <mat-select [(ngModel)]="formValues.language" name="Language">
           <mat-option value="">All</mat-option>

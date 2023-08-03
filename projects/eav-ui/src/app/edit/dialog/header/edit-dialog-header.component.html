@@ -1,4 +1,4 @@
-<mat-card *ngIf="viewModel$ | async as vm" class="header">
+<mat-card appearance="outlined" *ngIf="viewModel$ | async as vm" class="header">
   <button mat-icon-button class="header__exit-button" (click)="close()"
     [tippy]="(eavService.eavConfig.isParentDialog ? 'Form.Buttons.Exit.Tip' : 'Form.Buttons.Return.Tip') | translate">
     <mat-icon>{{ eavService.eavConfig.isParentDialog ? 'clear' : 'arrow_back' }}</mat-icon>

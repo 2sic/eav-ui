@@ -3,22 +3,22 @@
   flex-wrap: wrap;
   padding-top: 40px;
 
-  .mat-card {
+  .mat-mdc-card {
     width: 420px;
     margin: 8px;
     padding-top: 8px;
   }
 
-  .mat-card-header {
+  .mat-mdc-card-header {
     align-items: center;
     justify-content: space-between;
     margin-top: 8px !important;
     margin-bottom: 12px;
-
+    /* TODO(mdc-migration): The following rule targets internal classes of card that may no longer apply for the MDC version. */
     .mat-card-header-text {
       margin: 0;
     }
-
+    /* TODO(mdc-migration): The following rule targets internal classes of card that may no longer apply for the MDC version. */
     .mat-card-header-icon {
       display: flex;
       align-items: center;
@@ -29,18 +29,18 @@
       }
     }
 
-    .mat-card-title {
+    .mat-mdc-card-title {
       font-size: 16px;
       font-weight: bold;
       margin: 0;
     }
   }
 
-  .mat-card-content {
+  .mat-mdc-card-content {
     font-size: 14px;
   }
 
-  .mat-card-actions {
+  .mat-mdc-card-actions {
     .mat-icon {
       margin-right: 4px;
     }
