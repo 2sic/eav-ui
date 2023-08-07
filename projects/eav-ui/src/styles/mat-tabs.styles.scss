@@ -1,45 +1,45 @@
 
-/* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
-/* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
-.mat-tab-group-max-height {
+/* TODO-(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
+/* TODO-(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
+.mat-mdc-tab-group-max-height {
   flex-grow: 1;
-  /* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
-  .mat-tab-body-wrapper {
+  /* TODO-(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
+  .mat-mdc-tab-body-wrapper {
     flex-grow: 1;
   }
-  /* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
-  .mat-tab-body-wrapper,
-  .mat-tab-body-active,
-  .mat-tab-body-active .mat-tab-body-content {
+  /* TODO-(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
+  .mat-mdc-tab-body-wrapper,
+  .mat-mdc-tab-body-active,
+  .mat-mdc-tab-body-active .mat-mdc-tab-body-content {
     overflow: visible !important;
   }
-  /* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
-  .mat-tab-body-content {
+  /* TODO-(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
+  .mat-mdc-tab-body-content {
     @extend .hide-scrollbar;
   }
 }
 
-/* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
-/* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
-.mat-tab-group-fit-height {
+/* TODO-(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
+/* TODO-(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
+.mat-mdc-tab-group-fit-height {
   overflow: hidden;
-  /* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
-  .mat-tab-body-active .mat-tab-body-content {
+  /* TODO-(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
+  .mat-mdc-tab-body-active .mat-mdc-tab-body-content {
     overflow: auto !important;
   }
 }
 
-/* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
-/* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
-.mat-tab-group-fancy-scrollbar {
-  /* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
-  .mat-tab-body-content {
+/* TODO-(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
+/* TODO-(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
+.mat-mdc-tab-group-fancy-scrollbar {
+  /* TODO-(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
+  .mat-mdc-tab-body-content {
     @extend .fancy-scrollbar-light;
   }
 }
 
-/* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
-.mat-tab-label-box {
+/* TODO-(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
+.mat-mdc-tab-label-box {
   display: flex;
   align-items: center;
   justify-content: center;
