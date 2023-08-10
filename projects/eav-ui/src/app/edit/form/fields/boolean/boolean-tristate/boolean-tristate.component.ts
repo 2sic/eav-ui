@@ -29,7 +29,7 @@ export class BooleanTristateComponent extends BaseFieldComponent<boolean | ''> i
     super.ngOnInit();
     this.label$ = this.settings$.pipe(map(settings => settings._label), distinctUntilChanged());
 
-    const changable$: Observable<boolean> = combineLatest([
+    const changeable$: Observable<boolean> = combineLatest([
       this.settings$.pipe(map(settings => settings.TitleTrue), distinctUntilChanged()),
       this.settings$.pipe(map(settings => settings.TitleIndeterminate), distinctUntilChanged()),
       this.settings$.pipe(map(settings => settings.TitleFalse), distinctUntilChanged())
@@ -48,12 +48,12 @@ export class BooleanTristateComponent extends BaseFieldComponent<boolean | ''> i
 
     this.viewModel$ = combineLatest([
       combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
-      combineLatest([changable$]),
+      combineLatest([changeable$]),
       combineLatest([checked$]),
     ]).pipe(
       map(([
         [controlStatus, label, placeholder, required],
-        [changable],
+        [changeable],
         [checked],
       ]) => {
         const viewModel: BooleanTristateViewModel = {
@@ -61,7 +61,7 @@ export class BooleanTristateComponent extends BaseFieldComponent<boolean | ''> i
           label,
           placeholder,
           required,
-          changable,
+          changeable,
           checked,
         };
         return viewModel;

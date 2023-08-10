@@ -1,12 +1,14 @@
 // When true (checked)
-:host ::ng-deep .toggle-true.changable-label-tristate-mat-slide-togle {
+:host ::ng-deep .toggle-true.changeable-label-tristate-mat-slide-toggle {
+
   /* TODO(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version.*/
   .mat-slide-toggle-bar {
     background-color: #7fc3f9;
   }
 }
 
-:host ::ng-deep .toggle-true.changable-label-tristate-mat-slide-togle {
+:host ::ng-deep .toggle-true.changeable-label-tristate-mat-slide-toggle {
+
   /* TODO(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version.*/
   .mat-slide-toggle-thumb {
     background-color: #0088f4;
@@ -14,14 +16,16 @@
 }
 
 // When false (unchecked)
-:host ::ng-deep .toggle-false.changable-label-tristate-mat-slide-togle {
+:host ::ng-deep .toggle-false.changeable-label-tristate-mat-slide-toggle {
+
   /* TODO(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version.*/
   .mat-slide-toggle-bar {
     background-color: #bfe1fc;
   }
 }
 
-:host ::ng-deep .toggle-false.changable-label-tristate-mat-slide-togle {
+:host ::ng-deep .toggle-false.changeable-label-tristate-mat-slide-toggle {
+
   /* TODO(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version.*/
   .mat-slide-toggle-thumb {
     background-color: #7fc3f9;
@@ -29,14 +33,16 @@
 }
 
 // When null (middle)
-:host ::ng-deep .toggle-null.changable-label-tristate-mat-slide-togle {
+:host ::ng-deep .toggle-null.changeable-label-tristate-mat-slide-toggle {
+
   /* TODO(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version.*/
   .mat-slide-toggle-bar {
     background-image: linear-gradient(to right, #7fc3f9, #bfe1fc);
   }
 }
 
-:host ::ng-deep .toggle-null.changable-label-tristate-mat-slide-togle {
+:host ::ng-deep .toggle-null.changeable-label-tristate-mat-slide-toggle {
+
   /* TODO(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version.*/
   .mat-slide-toggle-thumb {
     background-color: #7fc3f9;
@@ -44,6 +50,7 @@
 }
 
 :host ::ng-deep .toggle-null {
+
   /* TODO(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version.*/
   .mat-slide-toggle-thumb-container {
     margin-left: 8px;
