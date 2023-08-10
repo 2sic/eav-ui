@@ -1,10 +1,9 @@
 <div *ngIf="viewModel$ | async as vm" [formGroup]="group">
-  <mat-slide-toggle [disabled]="vm.controlStatus.disabled" [checked]="vm.checked" (change)="updateValue()"
-    [ngClass]="{
+  <mat-slide-toggle [disabled]="vm.controlStatus.disabled" [checked]="vm.checked" (change)="updateValue()" [ngClass]="{
     'toggle-false': vm.checked === false,
     'toggle-true': vm.checked === true,
     'toggle-null': vm.checked === null,
-    'changable-label-tristate-mat-slide-togle': vm.changable
+    'changeable-label-tristate-mat-slide-toggle': vm.changeable
   }">
     {{ vm.label }}
   </mat-slide-toggle>
