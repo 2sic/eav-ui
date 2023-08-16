@@ -1,58 +1,39 @@
 // When true (checked)
-:host ::ng-deep .toggle-true.changeable-label-tristate-mat-slide-toggle {
-
-  /* TODO(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version.*/
-  .mat-slide-toggle-bar {
-    background-color: #7fc3f9;
-  }
+/* TODO-(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version.*/
+:host ::ng-deep .toggle-true.changeable-label-tristate-mat-slide-toggle.mat-mdc-slide-toggle.mat-mdc-slide-toggle-checked:not(.mat-disabled) .mdc-switch__shadow {
+  background-color: #0088f4;
 }
 
-:host ::ng-deep .toggle-true.changeable-label-tristate-mat-slide-toggle {
-
-  /* TODO(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version.*/
-  .mat-slide-toggle-thumb {
-    background-color: #0088f4;
-  }
+/* TODO-(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version.*/
+:host ::ng-deep .toggle-true.changeable-label-tristate-mat-slide-toggle.mat-mdc-slide-toggle.mat-mdc-slide-toggle-checked:not(.mat-disabled) .mdc-switch__track::after {
+  background-color: #7fc3f9 !important;
 }
 
 // When false (unchecked)
-:host ::ng-deep .toggle-false.changeable-label-tristate-mat-slide-toggle {
-
-  /* TODO(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version.*/
-  .mat-slide-toggle-bar {
-    background-color: #bfe1fc;
-  }
+/* TODO-(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version.*/
+:host ::ng-deep .toggle-false.changeable-label-tristate-mat-slide-toggle.mat-mdc-slide-toggle:not(.mat-mdc-slide-toggle-checked):not(.mat-disabled) .mdc-switch__shadow {
+  background-color: #7fc3f9;
 }
 
-:host ::ng-deep .toggle-false.changeable-label-tristate-mat-slide-toggle {
-
-  /* TODO(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version.*/
-  .mat-slide-toggle-thumb {
-    background-color: #7fc3f9;
-  }
+/* TODO-(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version.*/
+:host ::ng-deep .toggle-false.changeable-label-tristate-mat-slide-toggle.mat-mdc-slide-toggle:not(.mat-mdc-slide-toggle-checked):not(.mat-disabled) .mdc-switch__track::before {
+  background-color: #bfe1fc !important;
 }
 
 // When null (middle)
-:host ::ng-deep .toggle-null.changeable-label-tristate-mat-slide-toggle {
-
-  /* TODO(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version.*/
-  .mat-slide-toggle-bar {
-    background-image: linear-gradient(to right, #7fc3f9, #bfe1fc);
-  }
+/* TODO-(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version.*/
+:host ::ng-deep .toggle-null.changeable-label-tristate-mat-slide-toggle.mat-mdc-slide-toggle:not(.mat-mdc-slide-toggle-checked):not(.mat-disabled) .mdc-switch__shadow {
+  background-color: #7fc3f9;
 }
 
-:host ::ng-deep .toggle-null.changeable-label-tristate-mat-slide-toggle {
-
-  /* TODO(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version.*/
-  .mat-slide-toggle-thumb {
-    background-color: #7fc3f9;
-  }
+/* TODO-(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version.*/
+:host ::ng-deep .toggle-null.changeable-label-tristate-mat-slide-toggle.mat-mdc-slide-toggle:not(.mat-mdc-slide-toggle-checked):not(.mat-disabled) .mdc-switch__track::before {
+  background-image: linear-gradient(to right, #7fc3f9, #bfe1fc) !important;
 }
 
-:host ::ng-deep .toggle-null {
+:host ::ng-deep .toggle-null .mdc-switch__handle {
 
-  /* TODO(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version.*/
-  .mat-slide-toggle-thumb-container {
-    margin-left: 8px;
-  }
+  /* TODO-(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version.*/
+  margin-left: 8px;
 }
+
