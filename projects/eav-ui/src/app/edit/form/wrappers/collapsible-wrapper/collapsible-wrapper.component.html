@@ -11,7 +11,7 @@
     </div>
   </div>
 
-  <mat-card-content class="mat-card-content-group-child" [style.display]="(collapsed$ | async) ? 'none' : 'block'">
+  <mat-card-content class="mat-mdc-card-content-group-child" [style.display]="(collapsed$ | async) ? 'none' : 'block'">
     <div class="mdc-layout-grid">
       <div class="mdc-layout-grid__inner">
         <div class="mdc-layout-grid__cell--span-12 mat-body-2" allign="start" *ngIf="notes$ | async as notes">
