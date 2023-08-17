@@ -144,8 +144,8 @@ $max-height: calc(100vh - #{$dialog-margin-top} - #{$dialog-margin-bottom});
         &:last-of-type {
           margin-right: 0;
         }
-        /* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version. */
-        .mat-button-wrapper {
+        /* TODO_(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version. */
+        .mdc-button__label {
           white-space: nowrap;
         }
       }
@@ -176,8 +176,8 @@ $max-height: calc(100vh - #{$dialog-margin-top} - #{$dialog-margin-bottom});
       &:last-of-type {
         margin-right: 0;
       }
-      /* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version. */
-      .mat-button-wrapper {
+      /* TODO_(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version. */
+      .mdc-button__label {
         white-space: nowrap;
       }
     }
