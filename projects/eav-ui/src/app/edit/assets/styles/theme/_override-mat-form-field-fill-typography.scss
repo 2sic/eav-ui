@@ -8,13 +8,15 @@
   .mat-mdc-text-field-wrapper {
     padding-bottom: 0;
   }
-  /* TODO_(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
-  .mdc-line-ripple {
+
+  /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+  .mat-form-field-underline {
     bottom: 0;
   }
+  
   /* TODO_(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
-  /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
-  .mat-mdc-form-field-text-suffix {
+  /* TODO_(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+  .mat-mdc-form-field-text-suffix, .mat-mdc-form-field-icon-suffix {
     .mat-mdc-icon-button {
       top: 6px;
       width: 30px !important;
@@ -24,8 +26,8 @@
 
     .entity-dropdown-button {
       cursor: text;
-      /* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.*/
-      &.mat-button-disabled {
+      /* TODO_(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.*/
+      &.mat-private-button-disabled {
         cursor: default;
       }
     }
@@ -44,19 +46,19 @@
       .active {
         background-color: $accent-color;
         color: white;
-        /* TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.*/
-        &.mat-button-disabled {
+        /* TODO_(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.*/
+        &.mat-private-button-disabled {
           background-color: $editUI-label-disabled-color;
         }
       }
     }
   }
-  /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
-  /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
-  .mat-select-arrow-wrapper {
+  /* TODO-(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
+  /* TODO-(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
+  .mat-mdc-select-arrow-wrapper {
     transform: translateX(-5px) !important;
-    /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
-    .mat-select-arrow {
+    /* TODO-(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
+    .mat-mdc-select-arrow {
       color: $editUI-foreground-color;
     }
   }
