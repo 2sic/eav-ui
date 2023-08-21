@@ -8,8 +8,8 @@
 //  If you specify typography styles for the components you use elsewhere, you should delete this line.
 //  If you don't need the default component typographies but still want the hierarchy styles,
 //  you can delete this line and instead use:
-//    `@include mat.legacy-typography-hierarchy(mat.define-typography-config());`
-@include mat.all-component-typographies();
+@include mat.legacy-typography-hierarchy(mat.define-typography-config());
+// @include mat.all-component-typographies();
 @include mat.core();
 @import '@ag-grid-community/styles/ag-grid.css';
 @import '@ag-grid-community/styles/ag-theme-material.css';
