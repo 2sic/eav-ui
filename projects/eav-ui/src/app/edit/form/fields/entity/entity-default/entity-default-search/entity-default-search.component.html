@@ -10,11 +10,11 @@
             <input matInput #autocomplete [placeholder]="getPlaceholder()" [matAutocomplete]="auto"
               [disabled]="disabled || !vm.enableAddExisting" (focus)="fetchEntities()" (blur)="markAsTouched()"
               (input)="filterSelectionList()" (click)="filterSelectionList()">
-            <button mat-icon-button matSuffix class="entity-dropdown-button" disableRipple="true"
+            <button mat-icon-button matTextSuffix class="entity-dropdown-button" disableRipple="true"
               [disabled]="disabled || !vm.enableAddExisting" *ngIf="!vm.enableTextEntry">
               <mat-icon>arrow_drop_down</mat-icon>
             </button>
-            <div matSuffix class="selection-suffix" *ngIf="vm.enableTextEntry">
+            <div matTextSuffix class="selection-suffix" *ngIf="vm.enableTextEntry">
               <button mat-icon-button [tippy]="'Fields.String.Dropdown' | translate" [disabled]="disabled"
                 class="active">
                 <mat-icon>search</mat-icon>
@@ -58,7 +58,7 @@
   <mat-form-field *ngIf="freeTextMode" [formGroup]="group" color="accent">
     <input matInput [required]="required" [formControlName]="config.fieldName" [placeholder]="placeholder">
 
-    <div matSuffix class="selection-suffix">
+    <div matTextSuffix class="selection-suffix">
       <button mat-icon-button [tippy]="'Fields.String.Dropdown' | translate" [disabled]="disabled"
         appClickStopPropagation (click)="toggleFreeText()">
         <mat-icon>search</mat-icon>

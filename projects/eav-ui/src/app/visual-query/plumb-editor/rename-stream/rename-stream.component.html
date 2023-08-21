@@ -57,7 +57,7 @@
 
         <input matInput type="text" *ngIf="!guidedLabel" formControlName="label" required>
 
-        <div matSuffix class="selection-suffix">
+        <div matTextSuffix class="selection-suffix">
           <button mat-icon-button type="button" [ngClass]="{ 'active': guidedLabel }" tippy="Pick existing value"
             (click)="toggleGuidedLabel(true)">
             <mat-icon>search</mat-icon>

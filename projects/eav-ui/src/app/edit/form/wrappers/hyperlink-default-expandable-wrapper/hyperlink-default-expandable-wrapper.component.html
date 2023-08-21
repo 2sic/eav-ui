@@ -76,7 +76,7 @@
             [placeholder]="vm.placeholder" (change)="setValue($event)" [disabled]="vm.controlStatus.disabled"
             (blur)="markAsTouched()" [value]="vm.controlStatus.value" (keyup)="setValue($event)" appPasteClipboardImage
             [config]="config" [elementType]="'input'">
-          <div matSuffix fxLayoutAlign="center center" *ngIf="vm.buttonAdam || vm.buttonPage">
+          <div matTextSuffix fxLayoutAlign="center center" *ngIf="vm.buttonAdam || vm.buttonPage">
             <div class="c-ew__preview-suffix-text" fxHide fxShow.gt-xs [ngClass]="{
               'c-ew__preview-suffix-text--disabled': vm.controlStatus.disabled
             }">
