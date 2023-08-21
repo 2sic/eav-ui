@@ -2,16 +2,16 @@ import { AgGridAngular } from '@ag-grid-community/angular';
 import { GridOptions } from '@ag-grid-community/core';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 // tslint:disable-next-line:max-line-length
-import { BehaviorSubject, catchError, combineLatest, filter, forkJoin, map, Observable, of, pairwise, share, startWith, Subject, Subscription, switchMap, tap, timer } from 'rxjs';
+import { BehaviorSubject, catchError, combineLatest, forkJoin, map, Observable, of, share, startWith, Subject, switchMap, tap, timer } from 'rxjs';
 import { FeatureState } from '../../features/models';
 import { BaseComponent } from '../../shared/components/base-component/base.component';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
-import { Feature } from '../../features/models/feature.model';
+import { expandFeatureWithUiInfo, Feature, FeatureWithUi } from '../../features/models/feature.model';
 import { License } from '../models/license.model';
 import { FeaturesConfigService } from '../services/features-config.service';
 import { GoToRegistration } from '../sub-dialogs/registration/go-to-registration';
@@ -21,7 +21,6 @@ import { FeaturesListEnabledReasonComponent } from './features-list-enabled-reas
 import { FeaturesListEnabledComponent } from './features-list-enabled/features-list-enabled.component';
 import { FeaturesStatusComponent } from './features-status/features-status.component';
 import { FeaturesStatusParams } from './features-status/features-status.models';
-import { viewsUsageDialog } from '../../app-administration/sub-dialogs/views-usage/views-usage-dialog.config';
 
 @Component({
   selector: 'app-license-info',
@@ -51,15 +50,26 @@ export class LicenseInfoComponent extends BaseComponent implements OnInit, OnDes
 
   ngOnInit(): void {
     this.subscription.add(this.refreshOnChildClosedDeep().subscribe(() => { this.refreshLicenses$.next(); }));
-    this.viewModel$ = combineLatest([
+    this.viewModel$ = //combineLatest([
       this.refreshLicenses$.pipe(
         startWith(undefined),
         switchMap(() => this.featuresConfigService.getLicenses().pipe(catchError(() => of(undefined)))),
         tap(() => this.disabled$.next(false)),
+
+        // Fiddle with the data for development tests
+        map(licenses => {
+          var licTesting = licenses[licenses.length - 2];
+          licTesting.Features[licTesting.Features.length - 1].Expiration = "2023-08-25";
+          return licenses;
+        }),
+
+      // Expand the data to have pre-calculated texts/states
+        map(licenses => licenses.map(l => ({ ...l, Features: l.Features.map(f => expandFeatureWithUiInfo(f)) }))),
         share(),
       )
-    ]).pipe(
-      map(([licenses]) => ({ licenses })),
+    //])
+    .pipe(
+      map((licenses) => ({ licenses })),
     );
   }
 
@@ -105,22 +115,32 @@ export class LicenseInfoComponent extends BaseComponent implements OnInit, OnDes
     });
   }
 
+  // Note: @STV
+  // I think this should serve as a good example of how to use the grid
+  // 1. eg. with cellDefaults and similar initial objects containing most commonly used options here
+  // 2. Also we should probably never add a valueGetter for the simple properties
+  // ...not sure why it's even in here, my guess is copy-paste of code which wasn't understood properly
+  // 3. I think the header-name should always be the first line, then the field
   private buildGridOptions(): GridOptions {
+    const cellDefaults = {
+      cellClass: 'no-outline',
+      sortable: true,
+    };
+    const cellDefaultsTextFilter = {
+      ...cellDefaults,
+      filter: 'agTextColumnFilter',
+    };
     const gridOptions: GridOptions = {
       ...defaultGridOptions,
       columnDefs: [
         {
           headerName: 'ID',
-          field: 'Id',
+          field: 'NameId',
+          ...cellDefaultsTextFilter,
           width: 200,
           headerClass: 'dense',
           cellClass: 'id-action no-padding no-outline'.split(' '),
-          sortable: true,
-          filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const feature: Feature = params.data;
-            return feature.NameId;
-          },
+          // valueGetter: (params) => (params.data as Feature).NameId,
           cellRenderer: IdFieldComponent,
           cellRendererParams: (() => {
             const params: IdFieldParams<Feature> = {
@@ -131,70 +151,49 @@ export class LicenseInfoComponent extends BaseComponent implements OnInit, OnDes
         },
         {
           field: 'Name',
+          ...cellDefaultsTextFilter,
           flex: 3,
           minWidth: 250,
           cellClass: 'primary-action highlight'.split(' '),
-          sortable: true,
-          filter: 'agTextColumnFilter',
           onCellClicked: (params) => {
-            const feature: Feature = params.data;
-            this.showFeatureDetails(feature);
+            this.showFeatureDetails(params.data as Feature);
           },
-          valueGetter: (params) => {
-            const feature: Feature = params.data;
-            return feature.Name;
-          },
+          // valueGetter: (params) => (params.data as Feature).Name,
         },
         {
           field: 'Enabled',
+          ...cellDefaults,
           width: 80,
           headerClass: 'dense',
-          cellClass: 'no-outline',
-          sortable: true,
           filter: BooleanFilterComponent,
           cellRenderer: FeaturesListEnabledComponent,
-          valueGetter: (params) => {
-            const feature: Feature = params.data;
-            return feature.Enabled;
-          },
+          // valueGetter: (params) => (params.data as Feature).Enabled,
         },
         {
-          field: 'EnabledReason',
           headerName: 'Reason',
+          field: 'EnabledReason',
+          ...cellDefaultsTextFilter,
           flex: 1,
           minWidth: 150,
-          cellClass: 'no-outline',
-          sortable: true,
-          filter: 'agTextColumnFilter',
           cellRenderer: FeaturesListEnabledReasonComponent,
-          valueGetter: (params) => {
-            const feature: Feature = params.data;
-            return feature.EnabledReason;
-          },
+          // valueGetter: (params) => (params.data as Feature).EnabledReason,
         },
         {
-          field: 'Expires',
-          width: 100,
-          cellClass: 'no-outline',
-          sortable: true,
-          filter: 'agTextColumnFilter',
-          valueGetter: (params) => {
-            const feature: Feature = params.data;
-            const expires = feature.Expires?.split('T')[0];
-            return expires?.startsWith('9999') ? 'never' : expires;
-          },
+          headerName: 'Expiration',
+          field: 'ExpirationText',
+          ...cellDefaultsTextFilter,
+          width: 120,
+          // valueGetter: (params) => (params.data as FeatureWithUi)?.ExpirationText,
+          tooltipValueGetter: (params) => (params.data as FeatureWithUi)?.Expiration,
         },
         {
-          field: 'Status',
           headerName: '',
+          field: 'EnabledInConfiguration',
           width: 62,
           cellClass: 'secondary-action no-outline no-padding'.split(' '),
           pinned: 'right',
           cellRenderer: FeaturesStatusComponent,
-          valueGetter: (params) => {
-            const feature: Feature = params.data;
-            return feature.EnabledInConfiguration;
-          },
+          // valueGetter: (params) => (params.data as Feature).EnabledInConfiguration,
           cellRendererParams: (() => {
             const params: FeaturesStatusParams = {
               isDisabled: () => this.disabled$.value,
@@ -208,6 +207,7 @@ export class LicenseInfoComponent extends BaseComponent implements OnInit, OnDes
     return gridOptions;
   }
 }
+
 
 interface LicenseInfoViewModel {
   licenses: License[];
