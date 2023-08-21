@@ -134,7 +134,7 @@
             formControlName="key" required>
         </ng-template>
 
-        <div matSuffix class="selection-suffix" *ngIf="vm.guidedMode && vm.guidedKeyExists">
+        <div matTextSuffix class="selection-suffix" *ngIf="vm.guidedMode && vm.guidedKeyExists">
           <button mat-icon-button type="button" [ngClass]="{ 'active': vm.guidedKey }" tippy="Pick existing value"
             (click)="toggleGuidedKey(true)">
             <mat-icon>search</mat-icon>

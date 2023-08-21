@@ -40,7 +40,7 @@
 
         <input matInput type="text" *ngIf="!guidedContentType" formControlName="contentType" required>
 
-        <div matSuffix class="selection-suffix">
+        <div matTextSuffix class="selection-suffix">
           <button mat-icon-button type="button" [ngClass]="{ 'active': guidedContentType }" tippy="Pick existing value"
             (click)="toggleGuidedContentType(true)">
             <mat-icon>search</mat-icon>

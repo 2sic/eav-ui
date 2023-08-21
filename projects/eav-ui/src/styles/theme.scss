@@ -22,8 +22,8 @@ $eav-ui-typography: mat.define-typography-config($font-family: '"Roboto", sans-s
   $headline-5: mat.define-typography-level(96px, 108px, 300),
   $headline-6: mat.define-typography-level(60px, 64px, 300),
   $subtitle-1: mat.define-typography-level(14px, 20px, 500),
-  $body-1: mat.define-typography-level(16px, 20px, 400),
   $subtitle-2: mat.define-typography-level(14px, 20px, 400),
+  $body-1: mat.define-typography-level(16px, 20px, 400),
   $body-2: mat.define-typography-level(16px, 20px, 400),
   $button: mat.define-typography-level(14px, 20px, 500),
   $caption: mat.define-typography-level(12px, 16px, 400));
@@ -35,8 +35,9 @@ $eav-ui-theme: mat.define-light-theme((color: (primary: $eav-ui-primary,
       accent: $eav-ui-accent,
       warn: $eav-ui-warn,
     ),
+    typography: $eav-ui-typography,
     // typography: $eav-ui-typography doesn't seem to work so I'm using old all-component-typographies
   ));
 
 @include mat.all-component-themes($eav-ui-theme);
-@include mat.all-component-typographies($eav-ui-typography);
+// @include mat.all-component-typographies($eav-ui-typography);
