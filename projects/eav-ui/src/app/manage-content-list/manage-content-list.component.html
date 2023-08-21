@@ -1,4 +1,4 @@
-<div mat-dialog-title>
+<div mat-mdc-dialog-title>
   <div class="dialog-title-box">{{'ManageContentList.Title' | translate}}</div>
 </div>
 
@@ -38,16 +38,20 @@
       </div>
       <div>
         <!-- most buttons should only exist if it has a real ID, except for remove - which should also remove null-entries -->
-        <button mat-icon-button [tippy]="'Fields.Entity.AddExistingItem' | translate" appMousedownStopPropagation [disabled]="item.Id === 0" (click)="addFromExisting(item.Index)">
+        <button mat-icon-button [tippy]="'Fields.Entity.AddExistingItem' | translate" appMousedownStopPropagation
+          [disabled]="item.Id === 0" (click)="addFromExisting(item.Index)">
           <mat-icon>playlist_add</mat-icon>
         </button>
-        <button mat-icon-button [tippy]="'Fields.Entity.AddItemBelow' | translate" appMousedownStopPropagation [disabled]="item.Id === 0 || reordered" (click)="addBelow(item.Index)">
+        <button mat-icon-button [tippy]="'Fields.Entity.AddItemBelow' | translate" appMousedownStopPropagation
+          [disabled]="item.Id === 0 || reordered" (click)="addBelow(item.Index)">
           <mat-icon>add</mat-icon>
         </button>
-        <button mat-icon-button [tippy]="'Fields.Entity.Remove' | translate" appMousedownStopPropagation [disabled]="reordered" (click)="remove(item)">
+        <button mat-icon-button [tippy]="'Fields.Entity.Remove' | translate" appMousedownStopPropagation
+          [disabled]="reordered" (click)="remove(item)">
           <mat-icon>remove</mat-icon>
         </button>
-        <button mat-icon-button [tippy]="'Fields.Entity.Edit' | translate" appMousedownStopPropagation [disabled]="item.Id === 0" (click)="editItem(item.Id)">
+        <button mat-icon-button [tippy]="'Fields.Entity.Edit' | translate" appMousedownStopPropagation
+          [disabled]="item.Id === 0" (click)="editItem(item.Id)">
           <mat-icon>edit</mat-icon>
         </button>
       </div>
@@ -58,7 +62,8 @@
 <div class="dialog-component-actions">
   <button mat-raised-button (click)="closeDialog()">{{'General.Buttons.Cancel' | translate}}</button>
   <button mat-raised-button color="accent" (click)="saveList()">{{'General.Buttons.Save' | translate}}</button>
-  <button mat-raised-button color="accent" (click)="saveAndCloseList()" [tippy]="'Form.Buttons.SaveAndClose' | translate">
+  <button mat-raised-button color="accent" (click)="saveAndCloseList()"
+    [tippy]="'Form.Buttons.SaveAndClose' | translate">
     <mat-icon>done</mat-icon>
   </button>
 </div>

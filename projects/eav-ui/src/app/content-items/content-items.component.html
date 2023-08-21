@@ -1,5 +1,5 @@
 <div appToggleDebug class="nav-component-wrapper" *ngIf="viewModel$ | async as vm">
-  <div mat-dialog-title>
+  <div mat-mdc-dialog-title>
     <div class="dialog-title-box">
       <div>
         <ng-container>
@@ -42,8 +42,7 @@
         <mat-icon>local_offer</mat-icon>
         <span>Create Metadata</span>
       </button>
-      <button mat-button color="accent" tippy="Print filter to console" *ngIf="vm.debugEnabled"
-        (click)="debugFilter()">
+      <button mat-button color="accent" tippy="Print filter to console" *ngIf="vm.debugEnabled" (click)="debugFilter()">
         <mat-icon>filter_list</mat-icon>
         <span>Filter</span>
       </button>
