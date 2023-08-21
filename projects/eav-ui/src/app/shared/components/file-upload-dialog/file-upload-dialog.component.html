@@ -1,7 +1,7 @@
-<div appDragAndDrop [allowedFileTypes]="dialogData.allowedFileTypes" (filesDropped)="filesDropped($event)" 
+<div appDragAndDrop [allowedFileTypes]="dialogData.allowedFileTypes" (filesDropped)="filesDropped($event)"
   *ngIf="viewModel$ | async as vm">
 
-  <div mat-dialog-title>
+  <div mat-mdc-dialog-title>
     <div class="dialog-title-box" [innerHtml]="dialogData.title | safeHtml"></div>
   </div>
 

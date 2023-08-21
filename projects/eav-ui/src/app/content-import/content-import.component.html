@@ -1,7 +1,7 @@
 <div class="dialog-form-wrapper" appDragAndDrop [allowedFileTypes]="'xml'" (filesDropped)="filesDropped($event)"
   *ngIf="viewModel$ | async as vm">
 
-  <div mat-dialog-title>
+  <div mat-mdc-dialog-title>
     <div class="dialog-title-box">{{ vm.contentType?.Name }} Import Data</div>
   </div>
 

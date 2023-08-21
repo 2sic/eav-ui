@@ -1,10 +1,10 @@
 <ng-container *ngIf="viewModel$ | async as vm">
-  <div mat-dialog-title>
+  <div mat-mdc-dialog-title>
     <div class="dialog-title-box">Add App from Folder</div>
   </div>
 
   <app-feature-text-info [featureNameId]="'AppSyncWithSiteFiles'"></app-feature-text-info>
-  
+
   <p class="dialog-description">
     Select an app from the apps-folder which has been copied there (or git-cloned) but not installed yet.
   </p>
@@ -14,8 +14,8 @@
   </p>
 
   <div class="grid-wrapper" *ngIf="vm.pendingApps?.length > 0">
-    <ag-grid-angular style="height: 200px; width: auto;" class="ag-theme-material"
-      [rowData]="vm.pendingApps" [gridOptions]="gridOptions">
+    <ag-grid-angular style="height: 200px; width: auto;" class="ag-theme-material" [rowData]="vm.pendingApps"
+      [gridOptions]="gridOptions">
     </ag-grid-angular>
   </div>
 
@@ -23,8 +23,9 @@
     <button type="button" mat-raised-button (click)="closeDialog()">
       Cancel
     </button>
-    <button type="button" mat-raised-button color="accent" [disabled]="pendingApps.length === 0 || installing" (click)="install()">
+    <button type="button" mat-raised-button color="accent" [disabled]="pendingApps.length === 0 || installing"
+      (click)="install()">
       Install
     </button>
-  </div> 
+  </div>
 </ng-container>

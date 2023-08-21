@@ -12,14 +12,14 @@ $max-height: calc(100vh - #{$dialog-margin-top} - #{$dialog-margin-bottom});
     border-radius: 0 !important;
   }
 
-  // .mat-mdc-dialog-title.mdc-dialog__title {
-  //   height: 48px;
-  //   padding: 0px;
-  // }
+  .mat-mdc-dialog-title.mdc-dialog__title {
+    height: 48px;
+    padding: 0px;
+  }
   
-  // .mat-mdc-dialog-surface {
-  //   padding: 24px;
-  // }
+  .mat-mdc-dialog-surface {
+    padding: 24px;
+  }
 }
 
 .no-scrollbar {
