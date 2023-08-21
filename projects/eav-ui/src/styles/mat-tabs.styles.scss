@@ -49,3 +49,29 @@
     margin-right: 8px;
   }
 }
+
+.mat-mdc-tab-header {
+  .mat-mdc-tab-label-container {
+    .mat-mdc-tab-list {
+      .mat-mdc-tab-labels {
+        .mat-mdc-tab {
+          flex-grow: 0;
+          padding: 0px 24px;
+          min-width: 160px;
+
+          .mat-tab-label-box {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+            white-space: nowrap;
+
+            .mat-icon {
+              margin-right: 8px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
