@@ -1,5 +1,5 @@
 <div *ngIf="viewModel$ | async as vm">
-  <div mat-dialog-title>
+  <div mat-mdc-dialog-title>
     <div class="dialog-title-box">
       <div>{{ vm.feature.Name }}</div>
     </div>
@@ -23,7 +23,8 @@
   </div>
 
   <div class="dialog-component-actions">
-    <button *ngIf="vm.feature.Link as link" mat-raised-button class="dialog-component-button" color="accent" (click)="findOutMore(link)">
+    <button *ngIf="vm.feature.Link as link" mat-raised-button class="dialog-component-button" color="accent"
+      (click)="findOutMore(link)">
       <mat-icon>open_in_new</mat-icon>
       {{ "Features.FindOutMore" | translate }}
     </button>
