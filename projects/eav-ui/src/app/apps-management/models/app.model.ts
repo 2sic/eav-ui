@@ -14,6 +14,9 @@ export interface App {
   Name: string;
   Thumbnail: string | null;
   Version: string;
+
+  /** New 16.02 */
+  HasCodeWarnings?: boolean;
 }
 
 export interface LightspeedEntityInfo {

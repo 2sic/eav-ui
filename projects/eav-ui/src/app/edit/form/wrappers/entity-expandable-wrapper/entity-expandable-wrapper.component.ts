@@ -10,7 +10,7 @@ import { BaseFieldComponent } from '../../fields/base/base-field.component';
 import { calculateSelectedEntities } from '../../fields/entity/entity-default/entity-default.helpers';
 import { SelectedEntity } from '../../fields/entity/entity-default/entity-default.models';
 import { ContentExpandAnimation } from '../expandable-wrapper/content-expand.animation';
-import { EntityExpandableTemplateVars } from './entity-expandable-wrapper.models';
+import { EntityExpandableViewModel } from './entity-expandable-wrapper.models';
 
 @Component({
   selector: WrappersConstants.EntityExpandableWrapper,
@@ -23,7 +23,7 @@ export class EntityExpandableWrapperComponent extends BaseFieldComponent<string 
 
   dialogIsOpen$: Observable<boolean>;
   saveButtonDisabled$ = this.formsStateService.saveButtonDisabled$.pipe(share());
-  templateVars$: Observable<EntityExpandableTemplateVars>;
+  viewModel$: Observable<EntityExpandableViewModel>;
 
   constructor(
     eavService: EavService,
@@ -59,7 +59,7 @@ export class EntityExpandableWrapperComponent extends BaseFieldComponent<string 
       ),
     );
 
-    this.templateVars$ = combineLatest([
+    this.viewModel$ = combineLatest([
       combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
       combineLatest([selectedEntities$]),
     ]).pipe(
@@ -67,7 +67,7 @@ export class EntityExpandableWrapperComponent extends BaseFieldComponent<string 
         [controlStatus, label, placeholder, required],
         [selectedEntities],
       ]) => {
-        const templateVars: EntityExpandableTemplateVars = {
+        const viewModel: EntityExpandableViewModel = {
           controlStatus,
           label,
           placeholder,
@@ -75,7 +75,7 @@ export class EntityExpandableWrapperComponent extends BaseFieldComponent<string 
           selectedEntities: selectedEntities?.slice(0, 9) || [],
           entitiesNumber: selectedEntities?.length || 0,
         };
-        return templateVars;
+        return viewModel;
       }),
     );
   }

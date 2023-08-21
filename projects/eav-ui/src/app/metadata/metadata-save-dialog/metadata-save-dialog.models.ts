@@ -5,7 +5,7 @@ export interface MetadataSaveFormValues {
   contentType: string;
 }
 
-export interface MetadataSaveDialogTemplateVars {
+export interface MetadataSaveDialogViewModel {
   contentTypes: ContentType[];
   scopeOptions: ScopeOption[];
 }

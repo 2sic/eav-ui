@@ -1,9 +1,9 @@
-<ng-container *ngIf="templateVars$ | async as data">
+<ng-container *ngIf="viewModel | async as vm">
 
   <mat-form-field [formGroup]="group" appearance="standard" color="accent">
-    <input matInput type="number" [formControlName]="config.fieldName" [required]="data.required"
-      [placeholder]="data.placeholder" [min]="data.min" [max]="data.max">
-    <mat-label>{{ data.label }}</mat-label>
+    <input matInput type="number" [formControlName]="config.fieldName" [required]="vm.required"
+      [placeholder]="vm.placeholder" [min]="vm.min" [max]="vm.max">
+    <mat-label>{{ vm.label }}</mat-label>
   </mat-form-field>
 
   <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>

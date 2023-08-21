@@ -1,4 +1,4 @@
-<div class="nav-component-wrapper" *ngIf="(templateVars$ | async) as data">
+<div class="nav-component-wrapper" *ngIf="viewModel$ | async as vm">
   <div mat-dialog-title>
     <div class="dialog-title-box">
       <div>Analyze {{ part }}</div>
@@ -16,14 +16,14 @@
 
   <mat-form-field appearance="standard" color="accent" class="view-select-box">
     <mat-label>Merge settings / resources of a View</mat-label>
-    <mat-select [ngModel]="data.selectedView" (ngModelChange)="changeView($event)">
+    <mat-select [ngModel]="vm.selectedView" (ngModelChange)="changeView($event)">
       <mat-option [value]="undefined">No view selected - this is how APIs see the data</mat-option>
-      <mat-option *ngFor="let view of data.views" [value]="view.Guid">{{ view.Name }}</mat-option>
+      <mat-option *ngFor="let view of vm.views" [value]="view.Guid">{{ view.Name }}</mat-option>
     </mat-select>
   </mat-form-field>
 
   <div class="grid-wrapper">
-    <ag-grid-angular class="ag-theme-material" [rowData]="data.stack" [gridOptions]="gridOptions">
+    <ag-grid-angular class="ag-theme-material" [rowData]="vm.stack" [gridOptions]="gridOptions">
     </ag-grid-angular>
 
     <div class="grid-more-actions-box"></div>

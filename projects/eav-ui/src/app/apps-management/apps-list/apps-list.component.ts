@@ -2,7 +2,7 @@ import { GridOptions, ICellRendererParams } from '@ag-grid-community/core';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject, catchError, Observable, of, share, startWith, Subject, switchMap } from 'rxjs';
+import { BehaviorSubject, catchError, combineLatest, map, Observable, of, share, startWith, Subject, switchMap } from 'rxjs';
 import { FeatureNames } from '../../features/feature-names';
 import { BaseComponent } from '../../shared/components/base-component/base.component';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
@@ -17,10 +17,12 @@ import { App } from '../models/app.model';
 import { AppsListService } from '../services/apps-list.service';
 import { AppsListActionsComponent } from './apps-list-actions/apps-list-actions.component';
 import { AppsListActionsParams } from './apps-list-actions/apps-list-actions.models';
-import { AppsListShowComponent } from './apps-list-show/apps-list-show.component';
 import { FeatureComponentBase } from '../../features/shared/base-feature.component';
 import { MatDialog } from '@angular/material/dialog';
 import { AppAdminHelpers } from '../../app-administration/app-admin-helpers';
+import { AppListCodeErrorIcons, AppListShowIcons } from './app-list-grid-config';
+import { AgBoolIconRenderer } from '../../shared/ag-grid/apps-list-show/ag-bool-icon-renderer.component';
+import { AgBoolCellIconsParams } from '../../shared/ag-grid/apps-list-show/ag-bool-icon-params';
 
 @Component({
   selector: 'app-apps-list',
@@ -35,6 +37,8 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
   lightspeedEnabled$ = new BehaviorSubject<boolean>(false);
 
   private refreshApps$ = new Subject<void>();
+
+  viewModel$: Observable<AppsListViewModel>;
 
   constructor(
     protected router: Router,
@@ -60,6 +64,11 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
     this.subscription.add(this.refreshOnChildClosedDeep().subscribe(() => { this.refreshApps$.next(); }));
     this.isAddFromFolderEnabled$ = this.featuresService.isEnabled$(FeatureNames.AppSyncWithSiteFiles);
     this.subscription.add(this.featuresService.isEnabled$(FeatureNames.LightSpeed).subscribe(this.lightspeedEnabled$));
+    this.viewModel$ = combineLatest([this.apps$, this.fabOpen$, this.isAddFromFolderEnabled$]).pipe(
+      map(([apps, fabOpen, isAddFromFolderEnabled]) => {
+        return { apps, fabOpen, isAddFromFolderEnabled};
+      }),
+    );
   }
 
   ngOnDestroy(): void {
@@ -126,13 +135,17 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
     });
   }
 
-  private openLightspeed(app: App): void {
+  private openLightSpeed(app: App): void {
     const formUrl = convertFormToUrl(AppAdminHelpers.getLightSpeedEditParams(app.Id));
     this.router.navigate([`${this.context.zoneId}/${app.Id}/edit/${formUrl}`], { relativeTo: this.route.firstChild });
   }
 
   private openApp(app: App): void {
     this.router.navigate([app.Id.toString()], { relativeTo: this.route.firstChild });
+  }
+
+  openLightSpeedFeatInfo() {
+    FeatureComponentBase.openDialog(this.dialog, FeatureNames.LightSpeed, this.viewContainerRef, this.changeDetectorRef);
   }
 
   private buildGridOptions(): GridOptions {
@@ -170,7 +183,8 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
             const app: App = params.data;
             return !app.IsHidden;
           },
-          cellRenderer: AppsListShowComponent,
+          cellRenderer: AgBoolIconRenderer,
+          cellRendererParams: (() => ({ settings: () => AppListShowIcons }))(),
         },
         {
           field: 'Name',
@@ -238,6 +252,17 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
           },
         },
         {
+          field: 'HasCodeWarnings',
+          headerName: 'Code',
+          width: 70,
+          headerClass: 'dense',
+          cellClass: 'icons no-outline'.split(' '),
+          sortable: true,
+          filter: BooleanFilterComponent,
+          cellRenderer: AgBoolIconRenderer,
+          cellRendererParams: (() => ({ settings: (app) => AppListCodeErrorIcons } as AgBoolCellIconsParams<App>))(),
+        },
+        {
           width: 122,
           cellClass: 'secondary-action no-padding'.split(' '),
           pinned: 'right',
@@ -246,9 +271,9 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
             const params: AppsListActionsParams = {
               onDelete: (app) => this.deleteApp(app),
               onFlush: (app) => this.flushApp(app),
-              onOpenLightspeed: (app) => this.openLightspeed(app),
+              onOpenLightspeed: (app) => this.openLightSpeed(app),
               lightspeedEnabled: () => this.lightspeedEnabled$.value,
-              openLightspeedFeatureInfo: () => this.openLightSpeed(),
+              openLightspeedFeatureInfo: () => this.openLightSpeedFeatInfo(),
             };
             return params;
           })(),
@@ -257,8 +282,10 @@ export class AppsListComponent extends BaseComponent implements OnInit, OnDestro
     };
     return gridOptions;
   }
+}
 
-  openLightSpeed() {
-    FeatureComponentBase.openDialog(this.dialog, FeatureNames.LightSpeed, this.viewContainerRef, this.changeDetectorRef);
-  }
+interface AppsListViewModel {
+  apps: App[];
+  fabOpen: any;
+  isAddFromFolderEnabled: boolean;
 }

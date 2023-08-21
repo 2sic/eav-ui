@@ -9,7 +9,7 @@ const defaultFormulaV1 = `${requiredFormulaPrefix}v1 (data, context) {
 
 export const formV2Prefix = 'v2';
 
-const defaultFormulaV2 = `// new formula syntax - see https://r.2sxc.org/formulas
+const defaultFormulaV2 = `// new formula syntax - see https://go.2sxc.org/formulas
 v2((data, context) => {
   return data.value;
 });`;

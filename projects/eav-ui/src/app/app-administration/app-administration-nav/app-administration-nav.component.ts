@@ -35,7 +35,7 @@ export class AppAdministrationNavComponent extends BaseComponent implements OnIn
     }),
     filter(tabIndex => tabIndex >= 0),
   );
-  templateVars$ = combineLatest([this.dialogSettings$, this.tabIndex$]).pipe(
+  viewModel$ = combineLatest([this.dialogSettings$, this.tabIndex$]).pipe(
     map(([dialogSettings, tabIndex]) => ({ dialogSettings, tabIndex })),
   );
 
@@ -76,7 +76,7 @@ export class AppAdministrationNavComponent extends BaseComponent implements OnIn
       UpdateEnvVarsFromDialogSettings(dialogSettings.Context.App);
       this.dialogSettings$.next(dialogSettings);
 
-      let tabs = ['home', 'data', 'queries', 'views', 'web-api', 'app']; // tabs order has to match template
+      let tabs = ['home', 'data', 'queries', 'views', 'web-api', 'app', 'sync']; // tabs order has to match template
       if (!dialogSettings.Context.Enable.Query) {
         tabs = tabs.filter(tab => tab !== 'queries' && tab !== 'web-api');
       }

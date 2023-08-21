@@ -37,7 +37,8 @@ export type ItemIdentifierHeader = ItemIdentifier & ItemIdentifierEditConfig;
 
 export interface ItemIdentifierInbound {
   /** inbound fields, coming from the toolbar */
-  Fields?: string;
+  UiFields?: string;
+  Parameters?: Record<string, unknown>;
 }
 
 export interface ItemIdentifierShared {

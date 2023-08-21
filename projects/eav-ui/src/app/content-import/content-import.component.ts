@@ -29,7 +29,7 @@ export class ContentImportComponent implements OnInit, OnDestroy {
   private viewStateSelected$ = new BehaviorSubject<number>(this.viewStates.default);
   private evaluationResult$ = new BehaviorSubject<EvaluateContentResult>(null);
   private importResult$ = new BehaviorSubject<ImportContentResult>(null);
-  templateVars$ = combineLatest([
+  viewModel$ = combineLatest([
     this.contentType$, this.loading$, this.viewStateSelected$, this.evaluationResult$, this.importResult$,
   ]).pipe(
     map(([contentType, loading, viewStateSelected, evaluationResult, importResult]) =>

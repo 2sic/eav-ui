@@ -1,4 +1,4 @@
-<ng-container *ngIf="{systemInfoSet: systemInfoSet$ | async} as data">
+<ng-container *ngIf="viewModel$ | async as vm">
 
   <div mat-dialog-title>
     <div class="dialog-title-box">Register this System on 2sxc Patrons</div>
@@ -16,19 +16,19 @@
     <p>
       If you want to become a champion and pay a monthly contribution
       to support the open-source development of 2sxc, you will get some
-      <a href="https://r.2sxc.org/bundles" target="_blank">really nice features</a> as well 🚀.
+      <a href="https://go.2sxc.org/bundles" target="_blank">really nice features</a> as well 🚀.
     </p>
     <p>
       Thanks for loving and supporting 2sxc 💖
     </p>
 
     <h2>System Specs</h2>
-    <p *ngIf="data.systemInfoSet">
-      <b>Status:</b> {{ data.systemInfoSet.License.Owner ? "this system is registered to " +
-      data.systemInfoSet.License.Owner : "this system is not yet registered" }}
+    <p *ngIf="vm.systemInfoSet">
+      <b>Status:</b> {{ vm.systemInfoSet.License.Owner ? "this system is registered to " +
+      vm.systemInfoSet.License.Owner : "this system is not yet registered" }}
       <br>
       <b>Fingerprint:</b> <span [tippy]="'Click to copy to clipboard'"
-        (click)="copyToClipboard(data.systemInfoSet.System.Fingerprint)"> {{ data.systemInfoSet.System.Fingerprint
+        (click)="copyToClipboard(vm.systemInfoSet.System.Fingerprint)"> {{ vm.systemInfoSet.System.Fingerprint
         }}</span>
       <br>
       <br>
@@ -50,8 +50,8 @@
           so you can then log in and assign it a name and features you want to activate.
         </p>
         <div class="card-actions">
-          <button mat-button mat-button tippy="Register" *ngIf="data.systemInfoSet"
-            (click)="openLicenseRegistration(data.systemInfoSet)">
+          <button mat-button mat-button tippy="Register" *ngIf="vm.systemInfoSet"
+            (click)="openLicenseRegistration(vm.systemInfoSet)">
             <mat-icon>app_registration</mat-icon>
             <span>Register</span>
           </button>

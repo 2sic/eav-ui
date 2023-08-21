@@ -11,7 +11,7 @@ import { PermissionsService } from '../../permissions';
 import { Context } from '../../shared/services/context';
 import { DevRestBase } from '../dev-rest-base.component';
 import { GoToDevRest } from '../go-to-dev-rest';
-import { DevRestDataTemplateVars } from './data-template-vars';
+import { DevRestDataViewModel } from './data-template-vars';
 
 const pathToContent = 'app/{appname}/data/{typename}';
 
@@ -22,7 +22,7 @@ const pathToContent = 'app/{appname}/data/{typename}';
   // we need preserve whitespace - otherwise spaces are missing in some conditional HTML
   preserveWhitespaces: true,
 })
-export class DevRestDataComponent extends DevRestBase<DevRestDataTemplateVars> implements OnDestroy {
+export class DevRestDataComponent extends DevRestBase<DevRestDataViewModel> implements OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
   constructor(
@@ -78,12 +78,12 @@ export class DevRestDataComponent extends DevRestBase<DevRestDataTemplateVars> i
 
     // Prepare everything for use in the template
     // Note that we need to mix multiple combineLatest, because a combineLatest can only take 6 streams
-    this.templateVars$ = combineLatest([
+    this.viewModel$ = combineLatest([
       combineLatest([contentType$, this.scenario$, this.permissions$]),
       combineLatest([root$, itemOfThisType$, this.dialogSettings$]),
     ]).pipe(
       map(([[contentType, scenario, permissions], [root, item, diag]]) => ({
-        ...this.buildBaseTemplateVars(contentType.Name, contentType.StaticName, diag, permissions, root, scenario),
+        ...this.buildBaseViewModel(contentType.Name, contentType.StaticName, diag, permissions, root, scenario),
         contentType,
         itemId: item.Id,
         itemGuid: item.Value,

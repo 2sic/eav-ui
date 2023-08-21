@@ -1,10 +1,8 @@
-import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectorRef, Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewContainerRef } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ContentItemsService } from '../../content-items/services/content-items.service';
 import { GlobalConfigService } from '../../edit/shared/store/ngrx-data';
-import { GoToMetadata } from '../../metadata';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
 import { BaseComponent } from '../../shared/components/base-component/base.component';
 import { eavConstants, SystemSettingsScope, SystemSettingsScopes } from '../../shared/constants/eav.constants';
@@ -19,10 +17,9 @@ import { AppAdminHelpers } from '../app-admin-helpers';
 import { ContentTypeEdit } from '../models';
 import { AppDialogConfigService, ContentTypesService } from '../services';
 import { AppInternalsService } from '../services/app-internals.service';
-import { ExportAppService } from '../services/export-app.service';
 import { ImportAppPartsService } from '../services/import-app-parts.service';
 import { AnalyzePart, AnalyzeParts } from '../sub-dialogs/analyze-settings/analyze-settings.models';
-import { Subject, Observable, combineLatest, map, tap } from 'rxjs';
+import { Subject, Observable, combineLatest, map } from 'rxjs';
 import { AppInternals } from '../models/app-internals.model';
 import { FeatureNames } from '../../features/feature-names';
 import { FeatureComponentBase } from '../../features/shared/base-feature.component';
@@ -47,7 +44,7 @@ export class AppConfigurationComponent extends BaseComponent implements OnInit, 
 
   // More proper ViewModel
   appSettingsInternal$ = new Subject<AppInternals>();
-  data$: Observable<ViewModel>;
+  viewModel$: Observable<AppConfigurationViewModel>;
 
   public appStateAdvanced = false;
 
@@ -58,7 +55,6 @@ export class AppConfigurationComponent extends BaseComponent implements OnInit, 
     protected route: ActivatedRoute,
     private contentItemsService: ContentItemsService,
     private context: Context,
-    private exportAppService: ExportAppService,
     private importAppPartsService: ImportAppPartsService,
     private snackBar: MatSnackBar,
     private dialogService: DialogService,
@@ -74,13 +70,13 @@ export class AppConfigurationComponent extends BaseComponent implements OnInit, 
     this.features.loadFromService(appDialogConfigService);
 
     // New with proper ViewModel
-    this.data$ = combineLatest([
+    this.viewModel$ = combineLatest([
       this.appSettingsInternal$,
       this.features.isEnabled$(FeatureNames.LightSpeed),
       this.features.isEnabled$(FeatureNames.ContentSecurityPolicy),
       this.features.isEnabled$(FeatureNames.PermissionsByLanguage),
     ]).pipe(map(([settings, lightSpeedEnabled, cspEnabled, langPermsEnabled]) => {
-      const result: ViewModel = {
+      const result: AppConfigurationViewModel = {
         lightSpeedEnabled,
         cspEnabled,
         langPermsEnabled,
@@ -95,8 +91,6 @@ export class AppConfigurationComponent extends BaseComponent implements OnInit, 
           : settings.EntityLists.ResourcesSystem.filter(i => !i.SettingsEntityScope).length,
         customResourcesCount: settings.EntityLists.AppResources?.length,
         customResourcesFieldsCount: settings.FieldAll.AppResources?.length,
-        appConfigurationsCount: settings.EntityLists.ToSxcContentApp.length,
-        appMetadataCount: settings.MetadataList.Items.length,
       }
       return result;
     }));
@@ -176,14 +170,6 @@ export class AppConfigurationComponent extends BaseComponent implements OnInit, 
     });
   }
 
-  openMetadata() {
-    const url = GoToMetadata.getUrlApp(
-      this.context.appId,
-      `Metadata for App: ${this.dialogSettings.Context.App.Name} (${this.context.appId})`,
-    );
-    this.router.navigate([url], { relativeTo: this.route.firstChild });
-  }
-
   openLightSpeed() {
     const form = AppAdminHelpers.getLightSpeedEditParams(this.context.appId);
     const formUrl = convertFormToUrl(form);
@@ -213,47 +199,6 @@ export class AppConfigurationComponent extends BaseComponent implements OnInit, 
       this.router.navigate(['language-permissions'], { relativeTo: this.route.firstChild });
     else
       FeatureComponentBase.openDialog(this.dialog, FeatureNames.PermissionsByLanguage, this.viewContainerRef, this.changeDetectorRef);
-  }
-
-  exportApp() {
-    this.router.navigate([`export`], { relativeTo: this.route.firstChild });
-  }
-
-  exportParts() {
-    this.router.navigate([`export/parts`], { relativeTo: this.route.firstChild });
-  }
-
-  importParts() {
-    this.router.navigate([`import/parts`], { relativeTo: this.route.firstChild });
-  }
-
-  exportAppXml(withFiles: boolean) {
-    this.snackBar.open('Exporting...');
-    this.exportAppService.exportForVersionControl({ includeContentGroups: true, resetAppGuid: false, withFiles }).subscribe({
-      next: result => {
-        this.snackBar.open('Export completed into the \'App_Data\' folder.', null, { duration: 3000 });
-      },
-      error: (error: HttpErrorResponse) => {
-        this.snackBar.open('Export failed. Please check console for more information', null, { duration: 3000 });
-      },
-    });
-  }
-
-  resetApp(withFiles: boolean) {
-    if (!confirm('Are you sure? All changes since last xml export will be lost')) { return; }
-    this.snackBar.open('Resetting...');
-    this.importAppPartsService.resetApp(withFiles).subscribe({
-      next: result => {
-        this.snackBar.open(
-          'Reset worked! Since this is a complex operation, please restart the Website to ensure all caches are correct',
-          null,
-          { duration: 30000 },
-        );
-      },
-      error: (error: HttpErrorResponse) => {
-        this.snackBar.open('Reset failed. Please check console for more information', null, { duration: 3000 });
-      },
-    });
   }
 
   analyze(part: AnalyzePart) {
@@ -300,7 +245,7 @@ export class AppConfigurationComponent extends BaseComponent implements OnInit, 
   }
 }
 
-class ViewModel {
+class AppConfigurationViewModel {
   // Lightspeed
   lightSpeedEnabled: boolean;
   appLightSpeedCount: number;
@@ -317,6 +262,4 @@ class ViewModel {
   systemResourcesCount: number;
   customResourcesCount: number;
   customResourcesFieldsCount: number;
-  appConfigurationsCount: number;
-  appMetadataCount: number;
 }

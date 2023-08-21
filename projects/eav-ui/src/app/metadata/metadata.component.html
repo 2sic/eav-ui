@@ -1,4 +1,4 @@
-<ng-container *ngIf="templateVars$ | async as data">
+<ng-container *ngIf="viewModel$ | async as vm">
   <div class="nav-component-wrapper">
     <div mat-dialog-title>
       <div class="dialog-title-box">
@@ -10,36 +10,36 @@
     </div>
 
     <p class="dialog-description">
-      <ng-container *ngIf="!data.itemFor">This item is not metadata for anything else.</ng-container>
-      <ng-container *ngIf="data.itemFor">
+      <ng-container *ngIf="!vm.itemFor">This item is not metadata for anything else.</ng-container>
+      <ng-container *ngIf="vm.itemFor">
         This item is metadata for:
-        <br>Target: {{ data.itemFor.Target }}
-        <br>TargetType: {{ data.itemFor.TargetType }}
-        <ng-container *ngIf="data.itemFor.Number"><br>Number: {{ data.itemFor.Number }}</ng-container>
-        <ng-container *ngIf="data.itemFor.Guid"><br>Guid: {{ data.itemFor.Guid }}</ng-container>
-        <ng-container *ngIf="data.itemFor.String"><br>String: {{ data.itemFor.String }}</ng-container>
-        <ng-container *ngIf="data.itemFor.Title"><br>Title: {{ data.itemFor.String }}</ng-container>
+        <br>Target: {{ vm.itemFor.Target }}
+        <br>TargetType: {{ vm.itemFor.TargetType }}
+        <ng-container *ngIf="vm.itemFor.Number"><br>Number: {{ vm.itemFor.Number }}</ng-container>
+        <ng-container *ngIf="vm.itemFor.Guid"><br>Guid: {{ vm.itemFor.Guid }}</ng-container>
+        <ng-container *ngIf="vm.itemFor.String"><br>String: {{ vm.itemFor.String }}</ng-container>
+        <ng-container *ngIf="vm.itemFor.Title"><br>Title: {{ vm.itemFor.String }}</ng-container>
       </ng-container>
     </p>
 
     <router-outlet></router-outlet>
 
     <div class="grid-wrapper">
-      <ag-grid-angular class="ag-theme-material" [rowData]="data.metadata" [gridOptions]="gridOptions">
+      <ag-grid-angular class="ag-theme-material" [rowData]="vm.metadata" [gridOptions]="gridOptions">
       </ag-grid-angular>
 
       <div class="grid-more-actions-box"></div>
 
-      <button mat-fab mat-elevation-z24 class="grid-fab" *ngIf="data.recommendations.length === 0"
+      <button mat-fab mat-elevation-z24 class="grid-fab" *ngIf="vm.recommendations.length === 0"
         tippy="Create a new metadata for this item" (click)="createMetadata()">
         <mat-icon>add</mat-icon>
       </button>
 
-      <eco-fab-speed-dial class="grid-fab" [ngClass]="{ 'fab-opened': data.fabOpen }"
-        *ngIf="data.recommendations.length > 0" (openChange)="openChange($event)">
+      <eco-fab-speed-dial class="grid-fab" [ngClass]="{ 'fab-opened': vm.fabOpen }"
+        *ngIf="vm.recommendations.length > 0" (openChange)="openChange($event)">
         <eco-fab-speed-dial-trigger [spin]="true">
           <button mat-fab>
-            <mat-icon class="spin180">{{ data.fabOpen ? 'close' : 'add' }}</mat-icon>
+            <mat-icon class="spin180">{{ vm.fabOpen ? 'close' : 'add' }}</mat-icon>
           </button>
         </eco-fab-speed-dial-trigger>
 
@@ -47,14 +47,12 @@
           <button mat-mini-fab label="Other Content Type" (click)="createMetadata()">
             <mat-icon>search</mat-icon>
           </button>
-          <button mat-mini-fab *ngFor="let recommendation of data.recommendations" [attr.label]="recommendation.Title"
+          <button mat-mini-fab *ngFor="let recommendation of vm.recommendations" [attr.label]="recommendation.Title"
             (click)="createMetadata(recommendation)">
             <div *ngIf="recommendation.Icon; then svgIcon else matIcon"></div>
             <ng-template #svgIcon>
-              <div
-                [innerHTML]="recommendation.Icon | safeHtml"
-                [matBadgeHidden]="recommendation.Enabled" matBadgeColor="accent" matBadgeSize="small" matBadge="💎" matBadgePosition="below after"
-              ></div>
+              <div [innerHTML]="recommendation.Icon | safeHtml" [matBadgeHidden]="recommendation.Enabled"
+                matBadgeColor="accent" matBadgeSize="small" matBadge="💎" matBadgePosition="below after"></div>
             </ng-template>
             <!-- this is for all recommendations which don't have an own icon - they use the standard add-icon -->
             <ng-template #matIcon>

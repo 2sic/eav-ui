@@ -1,3 +1,3 @@
-export interface EditEntryTemplateVars {
+export interface EditEntryViewModel {
   loaded: boolean;
 }

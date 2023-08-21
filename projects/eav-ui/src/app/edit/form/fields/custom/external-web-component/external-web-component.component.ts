@@ -6,7 +6,7 @@ import { EavService, EditRoutingService, FieldsSettingsService, ScriptsLoaderSer
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { BaseFieldComponent } from '../../base/base-field.component';
 import { CustomGpsLogic } from './custom-gps-logic';
-import { ExternalWebComponentTemplateVars } from './external-web-component.models';
+import { ExternalWebComponentViewModel } from './external-web-component.models';
 import { StringWysiwygLogic } from './string-wysiwyg-logic';
 
 @Component({
@@ -16,7 +16,7 @@ import { StringWysiwygLogic } from './string-wysiwyg-logic';
 })
 @FieldMetadata({})
 export class ExternalWebComponentComponent extends BaseFieldComponent<string> implements OnInit, OnDestroy {
-  templateVars$: Observable<ExternalWebComponentTemplateVars>;
+  viewModel: Observable<ExternalWebComponentViewModel>;
 
   private loading$: BehaviorSubject<boolean>;
 
@@ -36,7 +36,7 @@ export class ExternalWebComponentComponent extends BaseFieldComponent<string> im
     this.loading$ = new BehaviorSubject(true);
     const isExpanded$ = this.editRoutingService.isExpanded$(this.config.index, this.config.entityGuid);
 
-    this.templateVars$ = combineLatest([
+    this.viewModel = combineLatest([
       combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
       combineLatest([this.loading$, isExpanded$]),
     ]).pipe(
@@ -44,7 +44,7 @@ export class ExternalWebComponentComponent extends BaseFieldComponent<string> im
         [controlStatus, label, placeholder, required],
         [loading, isExpanded],
       ]) => {
-        const templateVars: ExternalWebComponentTemplateVars = {
+        const viewModel: ExternalWebComponentViewModel = {
           controlStatus,
           label,
           placeholder,
@@ -52,7 +52,7 @@ export class ExternalWebComponentComponent extends BaseFieldComponent<string> im
           loading,
           isExpanded,
         };
-        return templateVars;
+        return viewModel;
       }),
     );
     this.loadAssets();

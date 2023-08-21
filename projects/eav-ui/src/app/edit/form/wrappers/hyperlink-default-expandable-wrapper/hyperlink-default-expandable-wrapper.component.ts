@@ -11,7 +11,7 @@ import { LinkCacheService } from '../../../shared/store/ngrx-data';
 import { FieldWrapper } from '../../builder/fields-builder/field-wrapper.model';
 import { HyperlinkDefaultBaseComponent } from '../../fields/hyperlink/hyperlink-default/hyperlink-default-base.component';
 import { ContentExpandAnimation } from '../expandable-wrapper/content-expand.animation';
-import { HyperlinkDefaultExpandableTemplateVars } from './hyperlink-default-expandable-wrapper.models';
+import { HyperlinkDefaultExpandableViewModel } from './hyperlink-default-expandable-wrapper.models';
 
 @Component({
   selector: WrappersConstants.HyperlinkDefaultExpandableWrapper,
@@ -27,7 +27,7 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
 
   open$: Observable<boolean>;
   saveButtonDisabled$ = this.formsStateService.saveButtonDisabled$.pipe(share());
-  templateVars$: Observable<HyperlinkDefaultExpandableTemplateVars>;
+  viewModel$: Observable<HyperlinkDefaultExpandableViewModel>;
 
   private adamItems$: BehaviorSubject<AdamItem[]>;
   private dropzoneDraggingHelper: DropzoneDraggingHelper;
@@ -89,7 +89,7 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
       distinctUntilChanged(),
     );
 
-    this.templateVars$ = combineLatest([
+    this.viewModel$ = combineLatest([
       combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
       combineLatest([this.preview$, settings$, adamItem$, showAdamSponsor$]),
     ]).pipe(
@@ -97,7 +97,7 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
         [controlStatus, label, placeholder, required],
         [preview, settings, adamItem, showAdamSponsor],
       ]) => {
-        const templateVars: HyperlinkDefaultExpandableTemplateVars = {
+        const viewModel: HyperlinkDefaultExpandableViewModel = {
           controlStatus,
           label,
           placeholder,
@@ -109,7 +109,7 @@ export class HyperlinkDefaultExpandableWrapperComponent extends HyperlinkDefault
           enableImageConfiguration: settings.EnableImageConfiguration,
           showAdamSponsor,
         };
-        return templateVars;
+        return viewModel;
       }),
     );
   }

@@ -25,7 +25,7 @@ export interface MetadataFormValues {
   key: string | number;
 }
 
-export interface MetadataDialogTemplateVars {
+export interface MetadataDialogViewModel {
   guidedMode: boolean;
   unknownTargetType: boolean;
   targetTypeHint?: string;

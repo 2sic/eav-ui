@@ -17,7 +17,7 @@ import { EavService, EditRoutingService, FormsStateService, LoadIconsService } f
 // tslint:disable-next-line:max-line-length
 import { AdamCacheService, ContentTypeItemService, ContentTypeService, EntityCacheService, GlobalConfigService, InputTypeService, ItemService, LanguageInstanceService, LanguageService, LinkCacheService, PublishStatusService, StringQueryCacheService } from '../../shared/store/ngrx-data';
 import { EditEntryComponent } from '../entry/edit-entry.component';
-import { EditDialogMainTemplateVars, SaveEavFormData } from './edit-dialog-main.models';
+import { EditDialogMainViewModel, SaveEavFormData } from './edit-dialog-main.models';
 import { SnackBarSaveErrorsComponent } from './snack-bar-save-errors/snack-bar-save-errors.component';
 import { SaveErrorsSnackBarData } from './snack-bar-save-errors/snack-bar-save-errors.models';
 import { SnackBarUnsavedChangesComponent } from './snack-bar-unsaved-changes/snack-bar-unsaved-changes.component';
@@ -32,7 +32,7 @@ import { UnsavedChangesSnackBarData } from './snack-bar-unsaved-changes/snack-ba
 export class EditDialogMainComponent extends BaseSubsinkComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChildren(FormBuilderComponent) formBuilderRefs: QueryList<FormBuilderComponent>;
 
-  templateVars$: Observable<EditDialogMainTemplateVars>;
+  viewModel$: Observable<EditDialogMainViewModel>;
 
   private viewInitiated$: BehaviorSubject<boolean>;
   private debugInfoIsOpen$: BehaviorSubject<boolean>;
@@ -84,7 +84,7 @@ export class EditDialogMainComponent extends BaseSubsinkComponent implements OnI
         }
       })
     );
-    this.templateVars$ = combineLatest([
+    this.viewModel$ = combineLatest([
       combineLatest([items$, formsValid$, delayForm$, this.viewInitiated$]),
       combineLatest([debugEnabled$, this.debugInfoIsOpen$, hideHeader$, saveButtonDisabled$]),
     ]).pipe(
@@ -92,7 +92,7 @@ export class EditDialogMainComponent extends BaseSubsinkComponent implements OnI
         [items, formsValid, delayForm, viewInitiated],
         [debugEnabled, debugInfoIsOpen, hideHeader, saveButtonDisabled],
       ]) => {
-        const templateVars: EditDialogMainTemplateVars = {
+        const viewModel: EditDialogMainViewModel = {
           items,
           formsValid,
           delayForm,
@@ -102,7 +102,7 @@ export class EditDialogMainComponent extends BaseSubsinkComponent implements OnI
           hideHeader,
           saveButtonDisabled,
         };
-        return templateVars;
+        return viewModel;
       }),
     );
     this.startSubscriptions();

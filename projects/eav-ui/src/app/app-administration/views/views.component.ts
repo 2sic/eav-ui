@@ -3,7 +3,7 @@ import { GridOptions } from '@ag-grid-community/core';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
 import { GoToMetadata } from '../../metadata';
 import { GoToPermissions } from '../../permissions/go-to-permissions';
 import { BaseComponent } from '../../shared/components/base-component/base.component';
@@ -42,6 +42,8 @@ export class ViewsComponent extends BaseComponent implements OnInit, OnDestroy {
   gridOptions = this.buildGridOptions();
 
   private polymorphism: Polymorphism;
+  
+  viewModel$: Observable<ViewsViewModel>;
 
   constructor(
     protected router: Router,
@@ -59,7 +61,10 @@ export class ViewsComponent extends BaseComponent implements OnInit, OnDestroy {
     this.subscription.add(this.refreshOnChildClosedDeep().subscribe(() => { 
       this.fetchTemplates();
       this.fetchPolymorphism();
-     }));
+    }));
+    this.viewModel$ = combineLatest([this.views$, this.polymorphStatus$]).pipe(
+      map(([views, polymorphStatus]) => ({ views, polymorphStatus }))
+    );
   }
 
   ngOnDestroy() {
@@ -405,4 +410,9 @@ export class ViewsComponent extends BaseComponent implements OnInit, OnDestroy {
     };
     return gridOptions;
   }
+}
+
+interface ViewsViewModel {
+  views: View[];
+  polymorphStatus: any;
 }

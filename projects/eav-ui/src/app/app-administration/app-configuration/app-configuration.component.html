@@ -1,4 +1,4 @@
-<ng-container *ngIf="data$ | async as data">
+<ng-container *ngIf="viewModel$ | async as vm">
 
   <div class="alert alert-info scope-info" *ngIf="isGlobal || isPrimary">
     <ng-container *ngIf="isGlobal">
@@ -7,7 +7,7 @@
     <ng-container *ngIf="isPrimary">
       This is the Primary App of this Site. You can also configure sitewide settings and resources here.
     </ng-container>
-    See <a href="http://r.2sxc.org/settings" target="_blank">docs</a>.
+    See <a href="https://go.2sxc.org/settings" target="_blank">docs</a>.
   </div>
 
   <div class="cards-box">
@@ -23,7 +23,7 @@
         <p>
           Settings are things like SQL-connection strings, default "items-to-show" numbers and similar.
           If necessary, settings like a link to an RSS-Feed could be different in each language.
-          <a href="http://r.2sxc.org/settings" target="_blank">docs</a>
+          <a href="https://go.2sxc.org/settings" target="_blank">docs</a>
         </p>
 
         <table class="settings">
@@ -42,19 +42,19 @@
                 <td>
                   <button mat-button (click)="edit(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.App)"
                     tippy="Edit global system settings">
-                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="data.systemSettingsCount || null"
+                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="vm.systemSettingsCount || null"
                       matBadgePosition="below after">edit</mat-icon>
                   </button>
                 </td>
                 <td>
                   <button mat-button (click)="fixContentType(eavConstants.contentTypes.customSettings, 'edit')"
                     tippy="Edit custom global settings">
-                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="data.customSettingsCount || null"
+                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="vm.customSettingsCount || null"
                       matBadgePosition="below after">edit</mat-icon>
                   </button>
                   <button mat-button (click)="fixContentType(eavConstants.contentTypes.customSettings, 'config')"
                     tippy="Configure fields of the custom global settings">
-                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="data.customSettingsFieldsCount || null"
+                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="vm.customSettingsFieldsCount || null"
                       matBadgePosition="below after">dns</mat-icon>
                   </button>
                 </td>
@@ -66,19 +66,19 @@
                 <td>
                   <button mat-button (click)="edit(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.Site)"
                     tippy="Edit site system settings">
-                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="data.systemSettingsCount || null"
+                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="vm.systemSettingsCount || null"
                       matBadgePosition="below after">edit</mat-icon>
                   </button>
                 </td>
                 <td>
                   <button mat-button (click)="fixContentType(eavConstants.contentTypes.customSettings, 'edit')"
                     tippy="Edit custom site settings">
-                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="data.customSettingsCount || null"
+                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="vm.customSettingsCount || null"
                       matBadgePosition="below after">edit</mat-icon>
                   </button>
                   <button mat-button (click)="fixContentType(eavConstants.contentTypes.customSettings, 'config')"
                     tippy="Configure fields of the custom site settings">
-                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="data.customSettingsFieldsCount || null"
+                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="vm.customSettingsFieldsCount || null"
                       matBadgePosition="below after">dns</mat-icon>
                   </button>
                 </td>
@@ -92,18 +92,18 @@
                 <td>
                   <button mat-button (click)="edit(eavConstants.contentTypes.systemSettings, SystemSettingsScopes.App)"
                     tippy="Edit app system settings">
-                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="data.systemSettingsCount || null"
+                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="vm.systemSettingsCount || null"
                       matBadgePosition="below after">edit</mat-icon>
                   </button>
                 </td>
                 <td>
                   <button mat-button (click)="edit(eavConstants.contentTypes.settings)" tippy="Edit custom app settings">
-                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="data.customSettingsCount || null"
+                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="vm.customSettingsCount || null"
                       matBadgePosition="below after">edit</mat-icon>
                   </button>
                   <button mat-button (click)="config(eavConstants.contentTypes.settings)"
                     tippy="Configure fields of the custom app settings">
-                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="data.customSettingsFieldsCount || null"
+                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="vm.customSettingsFieldsCount || null"
                       matBadgePosition="below after">dns</mat-icon>
                   </button>
                 </td>
@@ -117,7 +117,7 @@
 
       <mat-card-actions>
         <div class="actions-row">
-          <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://r.2sxc.org/settings' }"></ng-container>
+          <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://go.2sxc.org/settings' }"></ng-container>
           <button mat-button (click)="analyze(AnalyzeParts.Settings)" tippy="See the result of combining all settings">
             <mat-icon>manage_search</mat-icon>
             <span>Analyze Combined Settings</span>
@@ -138,7 +138,7 @@
         <p>
           Resources are used for labels and things like that in the App.
           They are usually needed to create multi-lingual views and such, and should not be used for App-Settings.
-          <a href="http://r.2sxc.org/settings" target="_blank">docs</a>
+          <a href="https://go.2sxc.org/settings" target="_blank">docs</a>
         </p>
 
         <table class="settings">
@@ -157,19 +157,19 @@
                 <td>
                   <button mat-button (click)="edit(eavConstants.contentTypes.systemResources, SystemSettingsScopes.App)"
                     tippy="Edit global system resources">
-                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="data.systemResourcesCount || null"
+                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="vm.systemResourcesCount || null"
                       matBadgePosition="below after">edit</mat-icon>
                   </button>
                 </td>
                 <td>
                   <button mat-button (click)="fixContentType(eavConstants.contentTypes.customResources, 'edit')"
                     tippy="Edit custom global resources">
-                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="data.customResourcesCount || null"
+                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="vm.customResourcesCount || null"
                       matBadgePosition="below after">edit</mat-icon>
                   </button>
                   <button mat-button (click)="fixContentType(eavConstants.contentTypes.customResources, 'config')"
                     tippy="Configure fields of the custom global resources">
-                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="data.customResourcesFieldsCount || null"
+                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="vm.customResourcesFieldsCount || null"
                       matBadgePosition="below after">dns</mat-icon>
                   </button>
                 </td>
@@ -182,19 +182,19 @@
                 <td>
                   <button mat-button (click)="edit(eavConstants.contentTypes.systemResources, SystemSettingsScopes.Site)"
                     tippy="Edit site system resources">
-                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="data.systemResourcesCount || null"
+                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="vm.systemResourcesCount || null"
                       matBadgePosition="below after">edit</mat-icon>
                   </button>
                 </td>
                 <td>
                   <button mat-button (click)="fixContentType(eavConstants.contentTypes.customResources, 'edit')"
                     tippy="Edit custom site resources">
-                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="data.customResourcesCount || null"
+                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="vm.customResourcesCount || null"
                       matBadgePosition="below after">edit</mat-icon>
                   </button>
                   <button mat-button (click)="fixContentType(eavConstants.contentTypes.customResources, 'config')"
                     tippy="Configure fields of the custom site resources">
-                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="data.customResourcesFieldsCount || null"
+                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="vm.customResourcesFieldsCount || null"
                       matBadgePosition="below after">dns</mat-icon>
                   </button>
                 </td>
@@ -208,19 +208,19 @@
                 <td>
                   <button mat-button (click)="edit(eavConstants.contentTypes.systemResources, SystemSettingsScopes.App)"
                     tippy="Edit app system resources">
-                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="data.systemResourcesCount || null"
+                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="vm.systemResourcesCount || null"
                       matBadgePosition="below after">edit</mat-icon>
                   </button>
                 </td>
                 <td>
                   <button mat-button (click)="edit(eavConstants.contentTypes.resources)"
                     tippy="Edit custom app resources">
-                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="data.customResourcesCount || null"
+                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="vm.customResourcesCount || null"
                       matBadgePosition="below after">edit</mat-icon>
                   </button>
                   <button mat-button (click)="config(eavConstants.contentTypes.resources)"
                     tippy="Configure fields of the custom app resources">
-                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="data.customResourcesFieldsCount || null"
+                    <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="vm.customResourcesFieldsCount || null"
                       matBadgePosition="below after">dns</mat-icon>
                   </button>
                 </td>
@@ -233,7 +233,7 @@
       </mat-card-content>
       <mat-card-actions>
         <div class="actions-row">
-          <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://r.2sxc.org/settings' }"></ng-container>
+          <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://go.2sxc.org/settings' }"></ng-container>
           <button mat-button (click)="analyze(AnalyzeParts.Resources)" tippy="See the result of combining all resources">
             <mat-icon>manage_search</mat-icon>
             <span>Analyze Combined Resources</span>
@@ -268,31 +268,9 @@
   </div>
 
   <div class="cards-box">
-    <!-- App Config -->
-    <mat-card class="mat-elevation-z2">
-      <mat-card-header>
-        <mat-card-title>Configuration</mat-card-title>
-        <div class="mat-card-header-icon">
-          <mat-icon>redeem</mat-icon>
-        </div>
-      </mat-card-header>
-      <mat-card-content>
-        App name, folder, version and more.
-      </mat-card-content>
-      <mat-card-actions>
-        <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://docs.2sxc.org/basics/app/configuration.html' }"></ng-container>
-        <button mat-button (click)="edit(eavConstants.contentTypes.appConfiguration)">
-          <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="data.appConfigurationsCount || null"
-            matBadgePosition="below after">edit</mat-icon>
-          <span>Edit</span>
-        </button>
-        <button mat-button (click)="openMetadata()">
-          <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="data.appMetadataCount || null"
-            matBadgePosition="below after">local_offer</mat-icon>
-          <span>Metadata</span>
-        </button>
-      </mat-card-actions>
-    </mat-card>
+    
+    <app-app-configuration-card [dialogSettings]="dialogSettings">
+    </app-app-configuration-card>
 
     <!-- LightSpeed -->
     <mat-card class="mat-elevation-z2">
@@ -308,9 +286,9 @@
         <app-feature-text-info [featureNameId]="'LightSpeedOutputCache'" [asInfo]="true"></app-feature-text-info>
       </mat-card-content>
       <mat-card-actions>
-        <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://r.2sxc.org/lightspeed' }"></ng-container>
-        <button mat-button (click)="openLightSpeed()" disabled="{{!data.lightSpeedEnabled}}">
-          <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="data.appLightSpeedCount || null"
+        <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://go.2sxc.org/lightspeed' }"></ng-container>
+        <button mat-button (click)="openLightSpeed()" disabled="{{!vm.lightSpeedEnabled}}">
+          <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="vm.appLightSpeedCount || null"
             matBadgePosition="below after">bolt</mat-icon>
           <span>Edit LightSpeed</span>
         </button>
@@ -331,7 +309,7 @@
         <app-feature-text-info [featureNameId]="'ContentSecurityPolicy'" [asInfo]="true"></app-feature-text-info>
       </mat-card-content>
       <mat-card-actions>
-        <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://r.2sxc.org/csp' }"></ng-container>
+        <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://go.2sxc.org/csp' }"></ng-container>
       </mat-card-actions>
     </mat-card>
     
@@ -367,101 +345,13 @@
         </div>
         <div class="actions-row">
           <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://patrons.2sxc.org/features/feat/PermissionsByLanguage' }"></ng-container>
-          <button mat-button (click)="openLanguagePermissions(data.langPermsEnabled)">
-            <mat-icon [matBadgeHidden]="data.langPermsEnabled" matBadgeSize="small" matBadge="💎" matBadgePosition="below after">
+          <button mat-button (click)="openLanguagePermissions(vm.langPermsEnabled)">
+            <mat-icon [matBadgeHidden]="vm.langPermsEnabled" matBadgeSize="small" matBadge="💎" matBadgePosition="below after">
               person
             </mat-icon>
             <span>Language Permissions</span>
           </button>
         </div>
-      </mat-card-actions>
-    </mat-card>
-  </div>
-
-  <div class="cards-box">
-    <mat-card class="mat-elevation-z2">
-      <mat-card-header>
-        <mat-card-title>Export this entire App</mat-card-title>
-        <div class="mat-card-header-icon">
-          <mat-icon>cloud_download</mat-icon>
-        </div>
-      </mat-card-header>
-      <mat-card-content>
-        Create an package (zip) which can be installed in another site.
-      </mat-card-content>
-      <mat-card-actions>
-        <button mat-button (click)="exportApp()">
-          <mat-icon>cloud_download</mat-icon>
-          <span>Export App</span>
-        </button>
-      </mat-card-actions>
-    </mat-card>
-
-    <mat-card class="mat-elevation-z2">
-      <mat-card-header>
-        <mat-card-title>Export or Import parts of this App</mat-card-title>
-        <div class="mat-card-header-icon">
-          <mat-icon>import_export</mat-icon>
-        </div>
-      </mat-card-header>
-      <mat-card-content>
-        Create an xml containing parts of the app, e.g. content and templates.
-        Import parts from such an xml into this app.
-      </mat-card-content>
-      <mat-card-actions>
-        <button mat-button (click)="exportParts()">
-          <mat-icon>cloud_download</mat-icon>
-          <span>Export Parts</span>
-        </button>
-        <button mat-button (click)="importParts()">
-          <mat-icon>cloud_upload</mat-icon>
-          <span>Import Parts</span>
-        </button>
-      </mat-card-actions>
-    </mat-card>
-  </div>
-
-  <div class="cards-box">
-    <mat-card class="mat-elevation-z2">
-      <mat-card-header>
-        <mat-card-title>App-State Versioning</mat-card-title>
-        <mat-slide-toggle [(ngModel)]="appStateAdvanced">{{ appStateAdvanced ? "advanced" : "basic" }}</mat-slide-toggle>
-        <div class="mat-card-header-icon">
-          <mat-icon>history_toggle_off</mat-icon>
-        </div>
-      </mat-card-header>
-      <mat-card-content>
-        You can save / restore the app with data and configuration in <code>.data/app.xml</code>.
-        This file can then also be versioned using git.
-        <div *ngIf="appStateAdvanced">
-          <br>
-          In Advanced mode you can also sync all the site files used by this app.
-          They will be placed in a folder inside <code>App_Data</code> and allow sync/restore with git or another server.
-        </div>
-      </mat-card-content>
-      <app-feature-text-info *ngIf="appStateAdvanced" [featureNameId]="'AppSyncWithSiteFiles'"></app-feature-text-info>
-      <mat-card-actions>
-        <ng-container *ngIf="!appStateAdvanced">
-          <button mat-button (click)="exportAppXml(false)">
-            <mat-icon>more_time</mat-icon>
-            <span>Save state</span>
-          </button>
-          <button mat-button (click)="resetApp(false)">
-            <mat-icon>restore</mat-icon>
-            <span>Restore state</span>
-          </button>
-        </ng-container>
-        <ng-container *ngIf="appStateAdvanced">
-          <button mat-button (click)="exportAppXml(true)">
-            <mat-icon>more_time</mat-icon>
-            <span>Save with Assets</span>
-          </button>
-          <button mat-button (click)="resetApp(true)">
-            <mat-icon>restore</mat-icon>
-            <span>Restore with Assets</span>
-          </button>
-        </ng-container>
-
       </mat-card-actions>
     </mat-card>
   </div>

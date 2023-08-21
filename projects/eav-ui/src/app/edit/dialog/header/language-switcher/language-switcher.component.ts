@@ -5,7 +5,7 @@ import { EavService } from '../../../shared/services';
 import { LanguageInstanceService, LanguageService } from '../../../shared/store/ngrx-data';
 import { CenterSelectedHelper } from './center-selected.helper';
 import { getLanguageButtons } from './language-switcher.helpers';
-import { LanguageSwitcherTemplateVars } from './language-switcher.models';
+import { LanguageSwitcherViewModel } from './language-switcher.models';
 import { MouseScrollHelper } from './mouse-scroll.helper';
 import { ShowShadowsHelper } from './show-shadows.helper';
 
@@ -20,7 +20,7 @@ export class LanguageSwitcherComponent implements OnInit, AfterViewInit, OnDestr
   @ViewChild('rightShadow') private rightShadowRef: ElementRef;
   @Input() disabled: boolean;
 
-  templateVars$: Observable<LanguageSwitcherTemplateVars>;
+  viewModel$: Observable<LanguageSwitcherViewModel>;
 
   private centerSelectedHelper: CenterSelectedHelper;
   private mouseScrollHelper: MouseScrollHelper;
@@ -37,13 +37,13 @@ export class LanguageSwitcherComponent implements OnInit, AfterViewInit, OnDestr
     const currentLanguage$ = this.languageInstanceService.getCurrentLanguage$(this.eavService.eavConfig.formId);
     const languageButtons$ = this.languageService.getLanguages$().pipe(map(langs => getLanguageButtons(langs)));
 
-    this.templateVars$ = combineLatest([currentLanguage$, languageButtons$]).pipe(
+    this.viewModel$ = combineLatest([currentLanguage$, languageButtons$]).pipe(
       map(([currentLanguage, languageButtons]) => {
-        const templateVars: LanguageSwitcherTemplateVars = {
+        const viewModel: LanguageSwitcherViewModel = {
           currentLanguage,
           languageButtons,
         };
-        return templateVars;
+        return viewModel;
       }),
     );
   }

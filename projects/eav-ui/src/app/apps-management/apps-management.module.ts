@@ -20,7 +20,6 @@ import { Context } from '../shared/services/context';
 import { DialogService } from '../shared/services/dialog.service';
 import { SharedComponentsModule } from '../shared/shared-components.module';
 import { AppsListActionsComponent } from './apps-list/apps-list-actions/apps-list-actions.component';
-import { AppsListShowComponent } from './apps-list/apps-list-show/apps-list-show.component';
 import { AppsListComponent } from './apps-list/apps-list.component';
 import { AppsManagementNavComponent } from './apps-management-nav/apps-management-nav.component';
 import { AppsManagementRoutingModule } from './apps-management-routing.module';
@@ -53,7 +52,7 @@ import { FeaturesModule } from '../features/features.module';
     AppNameShowComponent,
     AppsManagementNavComponent,
     AppsListComponent,
-    AppsListShowComponent,
+    // AppsListShowComponent,
     AppsListActionsComponent,
     CheckboxCellComponent,
     FeaturesListEnabledComponent,

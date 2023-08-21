@@ -4,7 +4,8 @@ import { EditForm, ItemAddIdentifier, ItemEditIdentifier, ItemIdentifierInbound,
 
 const PREFILL_PREFIX = 'prefill:';
 const GROUP_PREFIX = 'group:';
-const FIELDS_PREFIX = 'fields:';
+const FIELDS_PREFIX = 'uifields:';
+const PARAM_PREFIX = 'parameters:';
 const ITEM_SEPARATOR = ',';
 const VAL_SEPARATOR = '&';
 const LIST_SEPARATOR = ':';
@@ -23,7 +24,8 @@ export function convertFormToUrl(form: EditForm) {
     const asGroup = item as ItemInListIdentifier;
     const asItem = item as ItemEditIdentifier;
     const asInboundParams = item as ItemIdentifierInbound;
-    const fields = asInboundParams.Fields;
+    const fields = asInboundParams.UiFields;
+    const parameters = asInboundParams.Parameters;
     // Group- or Inner-Item
     if (asGroup.Parent) {
       formUrl += GROUP_PREFIX + toOrderedParams([
@@ -35,6 +37,7 @@ export function convertFormToUrl(form: EditForm) {
       ]);
       formUrl += prefill2UrlParams(asGroup.Prefill);
       formUrl += fields2UrlParams(fields);
+      formUrl += obj2UrlParams(parameters, PARAM_PREFIX);
 
     } else if (asItem.EntityId) {
       // Edit Item
@@ -42,6 +45,7 @@ export function convertFormToUrl(form: EditForm) {
 
       // New: fields
       formUrl += fields2UrlParams(fields);
+      formUrl += obj2UrlParams(parameters, PARAM_PREFIX);
 
       // 2023-05-11 in edit-id mode, prefill isn't supported, but we want the fields
       // I actually think that prefill should be supported, because it can also transport more parameters
@@ -55,6 +59,7 @@ export function convertFormToUrl(form: EditForm) {
       formUrl += getParamForMetadata(addItem);
       formUrl += prefill2UrlParams(addItem.Prefill);
       formUrl += fields2UrlParams(fields);
+      formUrl += obj2UrlParams(parameters, PARAM_PREFIX);
 
       if (addItem.DuplicateEntity) formUrl += `${VAL_SEPARATOR}copy:` + addItem.DuplicateEntity;
     }
@@ -101,11 +106,22 @@ function getParamForOldMetadata(addItem: ItemAddIdentifier) {
 }
 
 function prefill2UrlParams(prefill: Record<string, string>) {
+  return obj2UrlParams(prefill, PREFILL_PREFIX);
+  // let result = '';
+  // if (!prefill) return result;
+  // for (const [key, value] of Object.entries(prefill)) {
+  //   if (value == null) continue;
+  //   result += `${VAL_SEPARATOR}${PREFILL_PREFIX}${key}~${paramEncode(value.toString())}`;
+  // }
+  // return result;
+}
+
+function obj2UrlParams(obj: Record<string, unknown>, prefix: string) {
   let result = '';
-  if (!prefill) return result;
-  for (const [key, value] of Object.entries(prefill)) {
+  if (!obj) return result;
+  for (const [key, value] of Object.entries(obj)) {
     if (value == null) continue;
-    result += `${VAL_SEPARATOR}${PREFILL_PREFIX}${key}~${paramEncode(value.toString())}`;
+    result += `${VAL_SEPARATOR}${prefix}${key}~${paramEncode(value.toString())}`;
   }
   return result;
 }
@@ -119,6 +135,16 @@ function prefillFromUrlParams(url: string, addTo: Record<string, string>): Recor
   result[key] = value;
   return result;
 }
+
+// function objFromUrlParams(url: string, addTo: Record<string, string>, prefix: string): Record<string, string> {
+//   const result = addTo ?? {} as Record<string, string>;
+//   if (url == null) return result;
+//   const prefillParams = url.split(LIST_SEPARATOR);
+//   const key = prefillParams[1].split('~')[0];
+//   const value = paramDecode(prefillParams[1].split('~')[1]);
+//   result[key] = value;
+//   return result;
+// }
 
 function fields2UrlParams(fields: string) {
   return fields ? `${VAL_SEPARATOR}${FIELDS_PREFIX}${paramEncode(fields)}` : '';
@@ -209,9 +235,18 @@ function addParamToItemIdentifier(item: ItemIdentifierShared, part: string) {
     // should later be on the re-added after the round-trip on the Fields property
     item.Prefill = prefillFromUrlParams(part, { fields });
     item.ClientData = { ...item.ClientData, fields };
-  } if (part.startsWith(PREFILL_PREFIX)) {
-    // Add Item Prefill
+    return;
+  }
+  // Add Item Prefill
+  if (part.startsWith(PREFILL_PREFIX)) {
     item.Prefill = prefillFromUrlParams(part, item.Prefill);
+    return;
+  }
+  // Add Item Form
+  if (part.startsWith(PARAM_PREFIX)) {
+    const formParams = prefillFromUrlParams(part, item.ClientData?.parameters);
+    item.ClientData = { ...item.ClientData, parameters: formParams };
+    return;
   }
 }
 

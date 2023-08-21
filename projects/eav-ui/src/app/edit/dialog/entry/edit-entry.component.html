@@ -1,5 +1,5 @@
 <router-outlet></router-outlet>
 
-<ng-container *ngIf="templateVars$ | async as data">
-  <app-edit-dialog-main *ngIf="data.loaded"></app-edit-dialog-main>
+<ng-container *ngIf="viewModel$ | async as vm">
+  <app-edit-dialog-main *ngIf="vm.loaded"></app-edit-dialog-main>
 </ng-container>

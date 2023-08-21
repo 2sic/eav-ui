@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { BehaviorSubject, filter, map, startWith } from 'rxjs';
+import { BehaviorSubject, Observable, combineLatest, filter, map, startWith } from 'rxjs';
 import { DialogSettings } from '../../app-administration/models';
 import { AppDialogConfigService } from '../../app-administration/services';
 import { BaseComponent } from '../../shared/components/base-component/base.component';
@@ -18,12 +18,8 @@ export class AppsManagementNavComponent extends BaseComponent implements OnInit,
   dialogSettings$ = new BehaviorSubject<DialogSettings>(undefined);
 
   private tabs = ['system', 'list', 'languages', 'license']; // tabs order has to match template
-  tabIndex$ = this.router.events.pipe(
-    filter(event => event instanceof NavigationEnd),
-    map(() => this.tabs.indexOf(this.route.snapshot.firstChild.url[0].path)),
-    filter(tabIndex => tabIndex >= 0),
-    startWith(this.tabs.indexOf(this.route.snapshot.firstChild.url[0].path)),
-  );
+
+  viewModel$: Observable<AppsManagementNavViewModel>;
 
   constructor(
     protected router: Router,
@@ -38,6 +34,17 @@ export class AppsManagementNavComponent extends BaseComponent implements OnInit,
   ngOnInit() {
     this.fetchDialogSettings();
     this.subscription.add(this.refreshOnChildClosedDeep().subscribe(() => { this.fetchDialogSettings(); }));
+    this.viewModel$ = combineLatest([
+      this.dialogSettings$,
+      this.router.events.pipe(
+        filter(event => event instanceof NavigationEnd),
+        map(() => this.tabs.indexOf(this.route.snapshot.firstChild.url[0].path)),
+        filter(tabIndex => tabIndex >= 0),
+        startWith(this.tabs.indexOf(this.route.snapshot.firstChild.url[0].path)),
+      )
+    ]).pipe(
+      map(([dialogSettings, tabIndex]) => ({ dialogSettings, tabIndex })),
+    );
   }
 
   ngOnDestroy() {
@@ -59,4 +66,9 @@ export class AppsManagementNavComponent extends BaseComponent implements OnInit,
       this.dialogSettings$.next(dialogSettings);
     });
   }
+}
+
+interface AppsManagementNavViewModel {
+  dialogSettings: DialogSettings;
+  tabIndex: number;
 }

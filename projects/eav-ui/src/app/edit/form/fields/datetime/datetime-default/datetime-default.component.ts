@@ -12,7 +12,7 @@ import { GeneralHelpers } from '../../../../shared/helpers';
 import { EavService, FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { BaseFieldComponent } from '../../base/base-field.component';
-import { DatetimeDefaultTemplateVars } from './datetime-default.models';
+import { DatetimeDefaultViewModel } from './datetime-default.models';
 
 @Component({
   selector: InputTypeConstants.DatetimeDefault,
@@ -25,7 +25,7 @@ import { DatetimeDefaultTemplateVars } from './datetime-default.models';
 export class DatetimeDefaultComponent extends BaseFieldComponent<string> implements OnInit, OnDestroy {
   @ViewChild('picker') private picker?: MatDatepicker<Dayjs> | NgxMatDatetimePicker<Dayjs>;
 
-  templateVars$: Observable<DatetimeDefaultTemplateVars>;
+  viewModel: Observable<DatetimeDefaultViewModel>;
 
   constructor(
     eavService: EavService,
@@ -46,7 +46,7 @@ export class DatetimeDefaultComponent extends BaseFieldComponent<string> impleme
     super.ngOnInit();
     const useTimePicker$ = this.settings$.pipe(map(settings => settings.UseTimePicker), distinctUntilChanged());
 
-    this.templateVars$ = combineLatest([
+    this.viewModel = combineLatest([
       combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
       combineLatest([useTimePicker$]),
     ]).pipe(
@@ -54,14 +54,14 @@ export class DatetimeDefaultComponent extends BaseFieldComponent<string> impleme
         [controlStatus, label, placeholder, required],
         [useTimePicker],
       ]) => {
-        const templateVars: DatetimeDefaultTemplateVars = {
+        const viewModel: DatetimeDefaultViewModel = {
           controlStatus,
           label,
           placeholder,
           required,
           useTimePicker,
         };
-        return templateVars;
+        return viewModel;
       }),
     );
   }

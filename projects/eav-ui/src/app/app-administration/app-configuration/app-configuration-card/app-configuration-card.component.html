@@ -1,0 +1,56 @@
+<ng-container *ngIf="viewModel$ | async as vm">
+
+  <!-- App Config -->
+  <mat-card class="mat-elevation-z2">
+    <mat-card-header>
+      <mat-card-title>Configuration</mat-card-title>
+      <div class="mat-card-header-icon">
+        <mat-icon>redeem</mat-icon>
+      </div>
+    </mat-card-header>
+    <mat-card-content>
+      <table>
+        <td>
+          <tr><b>Name:</b></tr>
+          <tr><b>Folder:</b></tr>
+          <tr><b>Version:</b></tr>
+          <tr><b>For</b></tr>
+        </td>
+        <td>
+          <tr><span [tippy]="'Click to copy to clipboard'" (click)="copyToClipboard(vm.displayName)">{{vm.displayName}}</span></tr>
+          <tr><span [tippy]="'Click to copy to clipboard'" (click)="copyToClipboard(vm.folder)">{{vm.folder}}</span></tr>
+          <tr><span [tippy]="'Click to copy to clipboard'" (click)="copyToClipboard(vm.version)">{{vm.version}}</span></tr>
+          <tr>
+            <b>2sxc: </b><span [tippy]="'Click to copy to clipboard'" 
+              (click)="copyToClipboard(vm.toSxc)"> {{vm.toSxc}} </span>
+            <b> DNN: </b><span [tippy]="'Click to copy to clipboard'"
+              (click)="copyToClipboard(vm.dnn)"> {{vm.dnn}} </span>
+            <b> Oqt: </b><span [tippy]="'Click to copy to clipboard'"
+              (click)="copyToClipboard(vm.oqt)"> {{vm.oqt}} </span>
+          </tr>
+        </td>
+      </table>
+    </mat-card-content>
+    <mat-card-actions>
+      <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://docs.2sxc.org/basics/app/configuration.html' }"></ng-container>
+      <button mat-button (click)="edit()">
+        <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="vm.appConfigurationsCount || null"
+          matBadgePosition="below after">edit</mat-icon>
+        <span>Edit</span>
+      </button>
+      <button mat-button (click)="openMetadata()">
+        <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="vm.appMetadataCount || null"
+          matBadgePosition="below after">local_offer</mat-icon>
+        <span>Metadata</span>
+      </button>
+    </mat-card-actions>
+  </mat-card>
+
+</ng-container>
+
+<ng-template #docsLink let-icon let-label let-link="link">
+  <a mat-button href="{{link}}" target="_blank" [tippy]="'online documentation'">
+    <mat-icon>{{ icon ?? "menu_book" }}</mat-icon>
+    <span>{{ label }}</span>
+  </a>
+</ng-template>

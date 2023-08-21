@@ -1,15 +1,15 @@
-<div class="grid-wrapper mat-tab-grid-wrapper">
-  <ag-grid-angular class="ag-theme-material" [rowData]="apps$ | async" [gridOptions]="gridOptions" appDragAndDrop
+<div class="grid-wrapper mat-tab-grid-wrapper" *ngIf="viewModel$ | async as vm">
+  <ag-grid-angular class="ag-theme-material" [rowData]="vm.apps" [gridOptions]="gridOptions" appDragAndDrop
     [allowedFileTypes]="'zip'" (filesDropped)="importApp($event)">
   </ag-grid-angular>
 
   <div class="grid-more-actions-box"></div>
 
-  <eco-fab-speed-dial class="grid-fab" [ngClass]="{ 'fab-opened': (fabOpen$ | async) }"
+  <eco-fab-speed-dial class="grid-fab" [ngClass]="{ 'fab-opened': vm.fabOpen }"
     (openChange)="openChange($event)">
     <eco-fab-speed-dial-trigger [spin]="true">
       <button mat-fab>
-        <mat-icon class="spin180">{{ (fabOpen$ | async) ? 'close' : 'add' }}</mat-icon>
+        <mat-icon class="spin180">{{ vm.fabOpen ? 'close' : 'add' }}</mat-icon>
       </button>
     </eco-fab-speed-dial-trigger>
 
@@ -21,7 +21,7 @@
         <mat-icon>holiday_village</mat-icon>
       </button>
       <button mat-mini-fab label="Add from folder" (click)="addFromFolder()">
-        <mat-icon [matBadgeHidden]="isAddFromFolderEnabled$ | async" matBadgeColor="accent" matBadgeSize="small" matBadge="💎" matBadgePosition="below after">
+        <mat-icon [matBadgeHidden]="vm.isAddFromFolderEnabled" matBadgeColor="accent" matBadgeSize="small" matBadge="💎" matBadgePosition="below after">
           add
         </mat-icon>
       </button>

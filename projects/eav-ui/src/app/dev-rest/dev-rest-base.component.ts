@@ -3,7 +3,7 @@ import { Component, OnDestroy } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, map, Observable, share, Subscription, switchMap } from 'rxjs';
-import { AllScenarios, DevRestBaseTemplateVars, fireOnStartAndWhenSubDialogCloses, Scenario } from '.';
+import { AllScenarios, DevRestBaseViewModel, fireOnStartAndWhenSubDialogCloses, Scenario } from '.';
 import { DialogSettings } from '../app-administration/models';
 import { AppDialogConfigService } from '../app-administration/services';
 import { Permission, PermissionsService } from '../permissions';
@@ -16,10 +16,10 @@ import { Context } from '../shared/services/context';
   template: ''
 })
 // tslint:disable-next-line:component-class-suffix
-export class DevRestBase<TemplateVarType> extends BaseSubsinkComponent implements OnDestroy {
+export class DevRestBase<ViewModelType> extends BaseSubsinkComponent implements OnDestroy {
 
   /** Template variables for the HTML template */
-  public templateVars$: Observable<TemplateVarType>;
+  public viewModel$: Observable<ViewModelType>;
 
   /** List of scenarios */
   scenarios = AllScenarios;
@@ -77,8 +77,8 @@ export class DevRestBase<TemplateVarType> extends BaseSubsinkComponent implement
       : (scenario.inSameSite ? '' : domainPrefix) + this.dnnContext.$2sxc.http.apiUrl(root);
   }
 
-  buildBaseTemplateVars(name: string, identity: string, diag: DialogSettings, permissions: Permission[], root: string,
-    scenario: Scenario): DevRestBaseTemplateVars {
+  buildBaseViewModel(name: string, identity: string, diag: DialogSettings, permissions: Permission[], root: string,
+    scenario: Scenario): DevRestBaseViewModel {
     return {
       apiCalls: null,
       name,

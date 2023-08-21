@@ -2,7 +2,7 @@ import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
 import { App } from '../models/app.model';
 import { AppsListService } from '../services/apps-list.service';
 
@@ -18,6 +18,8 @@ export class CreateInheritedAppComponent implements OnInit, OnDestroy {
   loading$: BehaviorSubject<boolean>;
   inheritableApps$: BehaviorSubject<App[] | undefined | null>;
 
+  viewModel$: Observable<CreateInheritedAppViewModel>;
+
   constructor(
     private dialogRef: MatDialogRef<CreateInheritedAppComponent>,
     private appsListService: AppsListService,
@@ -26,10 +28,16 @@ export class CreateInheritedAppComponent implements OnInit, OnDestroy {
     this.form = this.buildForm();
     this.loading$ = new BehaviorSubject(false);
     this.inheritableApps$ = new BehaviorSubject<App[]>(undefined);
+    this.viewModel$ = combineLatest([this.loading$, this.inheritableApps$]).pipe(
+      map(([loading, inheritableApps]) => {
+        return { loading, inheritableApps };
+      }),
+    );
   }
 
   ngOnInit(): void {
     this.fetchInheritedApps();
+
   }
 
   ngOnDestroy(): void {
@@ -78,4 +86,9 @@ export class CreateInheritedAppComponent implements OnInit, OnDestroy {
     });
     return form;
   }
+}
+
+interface CreateInheritedAppViewModel { 
+  loading: boolean;
+  inheritableApps: App[] | undefined | null;
 }

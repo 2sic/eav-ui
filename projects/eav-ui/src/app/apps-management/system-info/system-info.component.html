@@ -1,4 +1,4 @@
-<ng-container *ngIf="templateVars$ | async as data">
+<ng-container *ngIf="viewModel$ | async as vm">
   <!-- Platform Info -->
   <mat-card>
     <mat-card-header>
@@ -9,7 +9,7 @@
       <mat-card-subtitle>What you are running</mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
-      <div class="info-row" *ngFor="let info of data.systemInfos">
+      <div class="info-row" *ngFor="let info of vm.systemInfos">
         <div class="info-row__label">{{ info.label }}</div>
         <div class="info-row__value">
           <span [tippy]="info.value" (click)="copyToClipboard(info.value)">{{ info.value }}</span>
@@ -25,7 +25,7 @@
         It will affect the entire Installation.
       </p>
       <div class="card-actions">
-        <ng-container *ngTemplateOutlet="docsLink; context: { link: 'http://r.2sxc.org/settings' }"></ng-container>
+        <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://go.2sxc.org/settings' }"></ng-container>
         <button mat-button (click)="openGlobalSettings()">
           <mat-icon>open_in_new</mat-icon>
           <span>Open Global Settings</span>
@@ -44,7 +44,7 @@
       <mat-card-subtitle>The current Site you're on</mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
-      <div class="info-row" *ngFor="let info of data.siteInfos">
+      <div class="info-row" *ngFor="let info of vm.siteInfos">
         <div class="info-row__label">{{ info.label }}</div>
         <div class="info-row__value">
           <span [tippy]="info.value" (click)="copyToClipboard(info.value)">{{ info.value }}</span>
@@ -64,7 +64,7 @@
         It will affect the entire Site / Portal.
       </p>
       <div class="card-actions">
-        <ng-container *ngTemplateOutlet="docsLink; context: { link: 'http://r.2sxc.org/settings' }"></ng-container>
+        <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://go.2sxc.org/settings' }"></ng-container>
         <button mat-button (click)="openSiteSettings()">
           <mat-icon>open_in_new</mat-icon>
           <span>Open Site Settings</span>
@@ -85,13 +85,13 @@
     <mat-card-content>
       <app-feature-text-info [featureNameId]="'LightSpeedOutputCache'" [asInfo]="true"></app-feature-text-info>
   
-      <div *ngIf="data.lsEnabled">
+      <div *ngIf="vm.lsEnabled">
         LightSpeed is enabled.
         Configure it in each site/app as you need.
       </div>
     </mat-card-content>
     <mat-card-actions>
-      <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://r.2sxc.org/lightspeed' }"></ng-container>
+      <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://go.2sxc.org/lightspeed' }"></ng-container>
     </mat-card-actions>
   </mat-card>
 
@@ -107,13 +107,13 @@
     <mat-card-content>
       <app-feature-text-info [featureNameId]="'ContentSecurityPolicy'" [asInfo]="true"></app-feature-text-info>
   
-      <div *ngIf="data.cspEnabled">
+      <div *ngIf="vm.cspEnabled">
         ContentSecurityPolicy is enabled.
         Configure it in each site/app as you need.
       </div>
     </mat-card-content>
     <mat-card-actions>
-      <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://r.2sxc.org/csp' }"></ng-container>
+      <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://go.2sxc.org/csp' }"></ng-container>
     </mat-card-actions>
   </mat-card>
 
@@ -135,7 +135,7 @@
       </p>
       <mat-card-actions>
       <!-- <div class="card-actions"> -->
-        <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://r.2sxc.org/insights' }"></ng-container>
+        <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://go.2sxc.org/insights' }"></ng-container>
         <button mat-button (click)="openInsights()">
           <mat-icon>open_in_new</mat-icon>
           <span>Open 2sxc Insights</span>
@@ -152,7 +152,7 @@
         <mat-form-field appearance="standard" color="accent">
           <mat-label>Duration in Minutes</mat-label>
           <input matInput type="number" min="0" required [pattern]="positiveWholeNumber" [(ngModel)]="pageLogDuration"
-            name="Duration" #duration="ngModel" [disabled]="data.loading">
+            name="Duration" #duration="ngModel" [disabled]="vm.loading">
         </mat-form-field>
         <ng-container *ngIf="duration.touched && duration.errors">
           <app-field-hint *ngIf="duration.errors.pattern" [isError]="true">
@@ -160,7 +160,7 @@
           </app-field-hint>
         </ng-container>
         <div class="form-actions">
-          <button mat-raised-button type="submit" color="accent" [disabled]="!activateLogForm.valid || data.loading">
+          <button mat-raised-button type="submit" color="accent" [disabled]="!activateLogForm.valid || vm.loading">
             Activate
           </button>
         </div>
@@ -172,13 +172,13 @@
   <mat-card>
     <mat-card-header>
       <div mat-card-avatar>
-        <mat-icon>{{ data.warningIcon }}</mat-icon>
+        <mat-icon>{{ vm.warningIcon }}</mat-icon>
       </div>
       <mat-card-title>Warnings</mat-card-title>
       <mat-card-subtitle>System and Code Warnings</mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
-      <div class="info-row" *ngFor="let info of data.warningInfos">
+      <div class="info-row" *ngFor="let info of vm.warningInfos">
         <div class="info-row__label">{{ info.label }}</div>
         <div class="info-row__value">
           <span [tippy]="info.value" (click)="copyToClipboard(info.value)">{{ info.value }}</span>

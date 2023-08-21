@@ -2,7 +2,7 @@ import { FieldValue } from '../../../../../../../edit-types';
 import { DesignerState } from '../../../formulas/models/formula-results.models';
 import { FormulaCacheItem, FormulaTarget } from '../../../formulas/models/formula.models';
 
-export interface FormulaDesignerTemplateVars {
+export interface FormulaDesignerViewModel {
   entityOptions: EntityOption[];
   fieldOptions: FieldOption[];
   targetOptions: TargetOption[];

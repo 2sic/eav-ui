@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { AllScenarios, DevRestQueryTemplateVars } from '../..';
-import { DevRestDataTemplateVars } from '../data-template-vars';
+import { AllScenarios, DevRestQueryViewModel } from '../..';
+import { DevRestDataViewModel } from '../data-template-vars';
 
 @Component({
   selector: 'app-dev-data-introduction',
@@ -8,7 +8,7 @@ import { DevRestDataTemplateVars } from '../data-template-vars';
 })
 export class DevRestDataIntroductionComponent implements OnInit {
 
-  @Input() data: DevRestDataTemplateVars;
+  @Input() data: DevRestDataViewModel;
 
   /** List of scenarios */
   scenarios = AllScenarios;

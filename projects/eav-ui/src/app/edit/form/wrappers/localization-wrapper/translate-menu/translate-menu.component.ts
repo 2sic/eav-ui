@@ -12,7 +12,7 @@ import { AutoTranslateMenuDialogComponent } from '../auto-translate-menu-dialog/
 import { TranslateMenuDialogComponent } from '../translate-menu-dialog/translate-menu-dialog.component';
 import { TranslateMenuDialogData } from '../translate-menu-dialog/translate-menu-dialog.models';
 import { TranslateMenuHelpers } from './translate-menu.helpers';
-import { TranslateMenuTemplateVars } from './translate-menu.models';
+import { TranslateMenuViewModel } from './translate-menu.models';
 
 @Component({
   selector: 'app-translate-menu',
@@ -24,7 +24,7 @@ export class TranslateMenuComponent implements OnInit {
   @Input() group: FormGroup;
 
   TranslationLinks = TranslationLinks;
-  templateVars$: Observable<TranslateMenuTemplateVars>;
+  viewModel$: Observable<TranslateMenuViewModel>;
 
   constructor(
     private dialog: MatDialog,
@@ -57,11 +57,11 @@ export class TranslateMenuComponent implements OnInit {
       distinctUntilChanged(),
     );
 
-    this.templateVars$ = combineLatest([
+    this.viewModel$ = combineLatest([
       readOnly$, currentLanguage$, defaultLanguage$, translationState$, disableTranslation$, disableAutoTranslation$, disabled$,
     ]).pipe(
       map(([readOnly, currentLanguage, defaultLanguage, translationState, disableTranslation, disableAutoTranslation, disabled]) => {
-        const templateVars: TranslateMenuTemplateVars = {
+        const viewModel: TranslateMenuViewModel = {
           readOnly: readOnly.isReadOnly,
           currentLanguage,
           defaultLanguage,
@@ -71,7 +71,7 @@ export class TranslateMenuComponent implements OnInit {
           disableAutoTranslation,
           disabled,
         };
-        return templateVars;
+        return viewModel;
       }),
     );
   }

@@ -1,4 +1,4 @@
-<ng-container *ngIf="{pendingApps: pendingApps$ | async} as data">
+<ng-container *ngIf="viewModel$ | async as vm">
   <div mat-dialog-title>
     <div class="dialog-title-box">Add App from Folder</div>
   </div>
@@ -9,13 +9,13 @@
     Select an app from the apps-folder which has been copied there (or git-cloned) but not installed yet.
   </p>
 
-  <p class="dialog-description" *ngIf="data.pendingApps?.length == 0">
+  <p class="dialog-description" *ngIf="vm.pendingApps?.length == 0">
     Nothing to show. All apps in the 2sxc folder are already installed.
   </p>
 
-  <div class="grid-wrapper" *ngIf="data.pendingApps?.length > 0">
+  <div class="grid-wrapper" *ngIf="vm.pendingApps?.length > 0">
     <ag-grid-angular style="height: 200px; width: auto;" class="ag-theme-material"
-      [rowData]="data.pendingApps" [gridOptions]="gridOptions">
+      [rowData]="vm.pendingApps" [gridOptions]="gridOptions">
     </ag-grid-angular>
   </div>
 

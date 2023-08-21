@@ -187,7 +187,36 @@ ag-grid-angular {
     display: flex;
     height: 100%;
     align-items: center;
+
+    // 2dm new 16.02
+    a {
+      text-decoration: none;
+    }
   }
+
+  // 2dm new 16.02 2023-06-19 - should replace the weird class like-button
+
+  .icon-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 40px;
+    text-decoration: none;
+    
+    &.clickable {
+      cursor: pointer;
+      &:hover {
+        color: $eav-glow;
+      }
+    }
+
+    // TODO: @SDV - clean up CSS use (low priority) if you don't have other tasks
+    // Problem is that the 'like-button' is used a lot, and I don't think it has anything to do with liking stuff
+    // 1. figure out what other parts of the definition of like-button we should keep
+    // 2. Go around and replace all the like-button classes with cell-icon - test to be sure it looks as expected
+  }
+
 
   .like-button {
     user-select: none;

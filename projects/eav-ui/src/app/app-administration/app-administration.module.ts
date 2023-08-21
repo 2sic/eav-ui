@@ -32,6 +32,7 @@ import { SharedComponentsModule } from '../shared/shared-components.module';
 import { AppAdministrationNavComponent } from './app-administration-nav/app-administration-nav.component';
 import { AppAdministrationRoutingModule } from './app-administration-routing.module';
 import { AppConfigurationComponent } from './app-configuration/app-configuration.component';
+import { SyncConfigurationComponent } from './sync-configuration/sync-configuration.component';
 import { DataActionsComponent } from './data/data-actions/data-actions.component';
 import { DataFieldsComponent } from './data/data-fields/data-fields.component';
 import { DataItemsComponent } from './data/data-items/data-items.component';
@@ -72,6 +73,7 @@ import { ViewsComponent } from './views/views.component';
 import { WebApiActionsComponent } from './web-api/web-api-actions/web-api-actions.component';
 import { WebApiTypeComponent } from './web-api/web-api-type/web-api-type.component';
 import { WebApiComponent } from './web-api/web-api.component';
+import { AppConfigurationCardComponent } from './app-configuration/app-configuration-card/app-configuration-card.component';
 
 @NgModule({
   declarations: [
@@ -82,6 +84,8 @@ import { WebApiComponent } from './web-api/web-api.component';
     ViewsComponent,
     WebApiComponent,
     AppConfigurationComponent,
+    AppConfigurationCardComponent,
+    SyncConfigurationComponent,
     DataItemsComponent,
     DataFieldsComponent,
     DataActionsComponent,

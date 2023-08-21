@@ -1,4 +1,4 @@
-<ng-container *ngIf="templateVars$ | async as data">
+<ng-container *ngIf="viewModel$ | async as vm">
 
   <h3 class="page-picker-title">
     {{ 'Fields.Hyperlink.PagePicker.Title' | translate }}
@@ -7,25 +7,25 @@
   <div class="page-search-box">
     <mat-form-field appearance="standard" color="accent">
       <mat-label>Search</mat-label>
-      <input matInput [ngModel]="data.filterText" (ngModelChange)="setFilter($event)">
+      <input matInput [ngModel]="vm.filterText" (ngModelChange)="setFilter($event)">
     </mat-form-field>
   </div>
 
   <div class="page-tree-box">
-    <ul *ngIf="!data.filterText">
-      <ng-container *ngFor="let page of data.tree">
+    <ul *ngIf="!vm.filterText">
+      <ng-container *ngFor="let page of vm.tree">
         <ng-container *ngTemplateOutlet="pageAndChildren; context: {page: page}"></ng-container>
       </ng-container>
     </ul>
 
-    <ul *ngIf="data.filterText">
-      <li *ngIf="data.filteredSearch.length === 0">
+    <ul *ngIf="vm.filterText">
+      <li *ngIf="vm.filteredSearch.length === 0">
         <div class="page-row">
           <div class="no-toggle"></div>
           <div>No results</div>
         </div>
       </li>
-      <li *ngFor="let page of data.filteredSearch">
+      <li *ngFor="let page of vm.filteredSearch">
         <div class="page-row">
           <div class="no-toggle"></div>
           <div class="page-label" [ngClass]="page.id === selected ? 'selected' : ''" (click)="select(page)">

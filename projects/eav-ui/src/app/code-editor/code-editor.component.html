@@ -1,5 +1,5 @@
 <div class="editor-root" appToggleDebug [ngClass]="{ 'sxc-dark': monacoOptions.theme === '2sxc-dark' }"
-  *ngIf="templateVars$ | async as data">
+  *ngIf="viewModel$ | async as vm">
   <div class="editor-side-toolbar">
     <div class="button" [ngClass]="{ 'active': activeExplorer === Explorers.Templates }" tippy="Templates"
       (click)="toggleExplorer(Explorers.Templates)">
@@ -11,16 +11,16 @@
     </div>
   </div>
 
-  <app-code-templates [hidden]="activeExplorer !== Explorers.Templates" [view]="data.view" [templates]="data.templates"
+  <app-code-templates [hidden]="activeExplorer !== Explorers.Templates" [view]="vm.view" [templates]="vm.templates"
     (openView)="openView($event)" (createTemplate)="createTemplate($event)">
   </app-code-templates>
-  <app-code-snippets [hidden]="activeExplorer !== Explorers.Snippets" [snippets]="data.explorerSnipps"
+  <app-code-snippets [hidden]="activeExplorer !== Explorers.Snippets" [snippets]="vm.explorerSnipps"
     (insertSnippet)="insertSnippet($event)">
   </app-code-snippets>
 
   <div class="editor-group">
-    <div class="tabs-container fancy-scrollbar-dark" *ngIf="data.tabs.length > 0">
-      <div class="tab" *ngFor="let tab of data.tabs" [ngClass]="{
+    <div class="tabs-container fancy-scrollbar-dark" *ngIf="vm.tabs.length > 0">
+      <div class="tab" *ngFor="let tab of vm.tabs" [ngClass]="{
         'active': tab.isActive,
         'modified': tab.isModified,
         'loading': tab.isLoading
@@ -38,13 +38,13 @@
         </div>
       </div>
     </div>
-    <app-monaco-editor *ngIf="data.view" [filename]="data.view.FileName" [value]="data.view.Code"
-      (valueChanged)="codeChanged($event, data.viewKey)" [options]="monacoOptions" [snippets]="data.editorSnipps"
-      [tooltips]="data.tooltips" [autoFocus]="true">
+    <app-monaco-editor *ngIf="vm.view" [filename]="vm.view.FileName" [value]="vm.view.Code"
+      (valueChanged)="codeChanged($event, vm.viewKey)" [options]="monacoOptions" [snippets]="vm.editorSnipps"
+      [tooltips]="vm.tooltips" [autoFocus]="true">
     </app-monaco-editor>
   </div>
 
-  <button mat-fab mat-elevation-z24 tippy="Click to save or CTRL + S" *ngIf="data.activeView" (click)="save()">
+  <button mat-fab mat-elevation-z24 tippy="Click to save or CTRL + S" *ngIf="vm.activeView" (click)="save()">
     <mat-icon>done</mat-icon>
   </button>
 </div>

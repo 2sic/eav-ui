@@ -4,7 +4,7 @@ import { combineLatest, distinctUntilChanged, map, Observable, startWith } from 
 import { ValidationMessagesHelpers } from '../../../shared/helpers';
 import { FieldsSettingsService } from '../../../shared/services';
 import { FieldConfigSet } from '../../builder/fields-builder/field-config-set.model';
-import { FieldHelperTextTemplateVars } from './field-helper-text.models';
+import { FieldHelperTextViewModel } from './field-helper-text.models';
 
 @Component({
   selector: 'app-field-helper-text',
@@ -19,7 +19,7 @@ export class FieldHelperTextComponent implements OnInit {
 
   isFullText = false;
   control: AbstractControl;
-  templateVars$: Observable<FieldHelperTextTemplateVars>;
+  viewModel$: Observable<FieldHelperTextViewModel>;
 
   constructor(private fieldsSettingsService: FieldsSettingsService) { }
 
@@ -38,15 +38,15 @@ export class FieldHelperTextComponent implements OnInit {
     );
     const settings$ = this.fieldsSettingsService.getFieldSettings$(this.config.fieldName);
 
-    this.templateVars$ = combineLatest([invalid$, disabled$, settings$]).pipe(
+    this.viewModel$ = combineLatest([invalid$, disabled$, settings$]).pipe(
       map(([invalid, disabled, settings]) => {
-        const templateVars: FieldHelperTextTemplateVars = {
+        const viewModel: FieldHelperTextViewModel = {
           invalid,
           disabled,
           description: settings.Notes,
           settings,
         };
-        return templateVars;
+        return viewModel;
       }),
     );
   }

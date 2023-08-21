@@ -1,7 +1,7 @@
 import { ControlStatus } from '../../../shared/models';
 
 /** Template vars required in all fields */
-export interface BaseFieldTemplateVars {
+export interface BaseFieldViewModel {
   controlStatus: ControlStatus;
   label: string;
   placeholder: string;

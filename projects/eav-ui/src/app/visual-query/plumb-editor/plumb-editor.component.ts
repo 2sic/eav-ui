@@ -10,7 +10,7 @@ import { PipelineDataSource, PipelineResultStream, VisualDesignerData } from '..
 import { QueryDefinitionService } from '../services/query-definition.service';
 import { VisualQueryService } from '../services/visual-query.service';
 import { calculateTypeInfos } from './plumb-editor.helpers';
-import { PlumbEditorTemplateModel } from './plumb-editor.models';
+import { PlumbEditorViewModel } from './plumb-editor.models';
 import { dataSrcIdPrefix, Plumber } from './plumber.helper';
 
 const jsPlumbUrl = 'https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.14.5/js/jsplumb.min.js';
@@ -26,11 +26,12 @@ export class PlumbEditorComponent extends BaseSubsinkComponent implements OnInit
   @ViewChildren('domDataSource') private domDataSourcesRef: QueryList<ElementRef<HTMLDivElement>>;
 
   dataSrcIdPrefix = dataSrcIdPrefix;
-  templateModel$: Observable<PlumbEditorTemplateModel>;
   hardReset = false;
 
   private plumber: Plumber;
   private scriptLoaded$ = new BehaviorSubject(false);
+
+  viewModel$: Observable<PlumbEditorViewModel>;
 
   constructor(
     private visualQueryService: VisualQueryService,
@@ -40,7 +41,7 @@ export class PlumbEditorComponent extends BaseSubsinkComponent implements OnInit
     private viewContainerRef: ViewContainerRef,
   ) {
     super();
-   }
+  }
 
   ngOnInit() {
     loadScripts([{ test: 'jsPlumb', src: jsPlumbUrl }], () => {
@@ -58,7 +59,7 @@ export class PlumbEditorComponent extends BaseSubsinkComponent implements OnInit
       distinctUntilChanged(GeneralHelpers.objectsEqual),
     );
 
-    this.templateModel$ = combineLatest([
+    this.viewModel$ = combineLatest([
       this.visualQueryService.pipelineModel$,
       this.visualQueryService.dataSources$,
       pipelineDesignerData$,
@@ -72,14 +73,14 @@ export class PlumbEditorComponent extends BaseSubsinkComponent implements OnInit
         this.hardReset = true;
         this.changeDetectorRef.detectChanges();
         this.hardReset = false;
-        const templateModel: PlumbEditorTemplateModel = {
+        const viewModel: PlumbEditorViewModel = {
           pipelineDataSources: pipelineModel.DataSources,
           typeInfos: calculateTypeInfos(pipelineModel.DataSources, dataSources),
           allowEdit: pipelineModel.Pipeline.AllowEdit,
           showDataSourceDetails: pipelineDesignerData.ShowDataSourceDetails ?? false,
           dataSourceConfigs,
         };
-        return templateModel;
+        return viewModel;
       }),
     );
   }

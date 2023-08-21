@@ -1,5 +1,5 @@
 import { EntityInfo } from '../../../../../../../../edit-types';
-import { BaseFieldTemplateVars } from '../../base/base-field-template-vars.model';
+import { BaseFieldViewModel } from '../../base/base-field-template-vars.model';
 
 export interface SelectedEntity {
   entityId: number;
@@ -14,7 +14,7 @@ export interface SelectedEntity {
   _sourceIsQuery: boolean;
 }
 
-export interface EntityTemplateVars extends BaseFieldTemplateVars {
+export interface EntityViewModel extends BaseFieldViewModel {
   freeTextMode: boolean;
   allowMultiValue: boolean;
   selectedEntities: SelectedEntity[];

@@ -1,9 +1,9 @@
-<ng-container *ngIf="templateVars$ | async as data">
+<ng-container *ngIf="viewModel$ | async as vm">
 
   <mat-form-field [formGroup]="group" appearance="standard" color="accent">
-    <input matInput [formControlName]="config.fieldName" (blur)="clean(true)" [placeholder]="data.placeholder"
-      [required]="data.required">
-    <mat-label>{{ data.label }}</mat-label>
+    <input matInput [formControlName]="config.fieldName" (blur)="clean(true)" [placeholder]="vm.placeholder"
+      [required]="vm.required">
+    <mat-label>{{ vm.label }}</mat-label>
   </mat-form-field>
 
   <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>

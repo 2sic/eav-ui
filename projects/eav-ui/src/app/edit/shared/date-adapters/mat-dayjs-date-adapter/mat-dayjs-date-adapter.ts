@@ -353,7 +353,7 @@ export class MatDayjsDateAdapter extends DateAdapter<Dayjs> {
         date.setUTCHours(date.getUTCHours() - date.getTimezoneOffset() / 60);
       }
       // this is necessary because for -(minus) timezones getDate returns date for previous day
-      if (date.toString().includes('-'))
+      if (date.getTimezoneOffset() > 0)
         return dayjs(new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()))).add(1, 'day').utc();
       return dayjs(new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()))).utc();
     }

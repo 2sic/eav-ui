@@ -9,7 +9,7 @@ import { EavService, FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { BaseFieldComponent } from '../../base/base-field.component';
 import { CustomJsonEditorLogic, StringJsonLogic } from './custom-json-editor-logic';
-import { CustomJsonEditorTemplateVars } from './custom-json-editor.models';
+import { CustomJsonEditorViewModel } from './custom-json-editor.models';
 
 @Component({
   selector: InputTypeConstants.CustomJsonEditor,
@@ -20,7 +20,7 @@ import { CustomJsonEditorTemplateVars } from './custom-json-editor.models';
   wrappers: [WrappersConstants.LocalizationWrapper],
 })
 export class CustomJsonEditorComponent extends BaseFieldComponent<string> implements OnInit, OnDestroy {
-  templateVars$: Observable<CustomJsonEditorTemplateVars>;
+  viewModel$: Observable<CustomJsonEditorViewModel>;
   filename: string;
   monacoOptions: Monaco.editor.IStandaloneEditorConstructionOptions = {
     minimap: {
@@ -65,7 +65,7 @@ export class CustomJsonEditorComponent extends BaseFieldComponent<string> implem
       distinctUntilChanged(),
     );
 
-    this.templateVars$ = combineLatest([
+    this.viewModel$ = combineLatest([
       combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$, this.config.focused$]),
       combineLatest([rowCount$, jsonSchema$, jsonComments$]),
     ]).pipe(
@@ -73,7 +73,7 @@ export class CustomJsonEditorComponent extends BaseFieldComponent<string> implem
         [controlStatus, label, placeholder, required, focused],
         [rowCount, jsonSchema, jsonComments],
       ]) => {
-        const templateVars: CustomJsonEditorTemplateVars = {
+        const viewModel: CustomJsonEditorViewModel = {
           controlStatus,
           label,
           placeholder,
@@ -84,7 +84,7 @@ export class CustomJsonEditorComponent extends BaseFieldComponent<string> implem
           jsonSchema,
           jsonComments,
         };
-        return templateVars;
+        return viewModel;
       }),
     );
   }

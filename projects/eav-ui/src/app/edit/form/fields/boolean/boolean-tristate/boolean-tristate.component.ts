@@ -7,7 +7,7 @@ import { EavService, FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { BaseFieldComponent } from '../../base/base-field.component';
 import { BooleanTristateLogic } from './boolean-tristate-logic';
-import { BooleanTristateTemplateVars } from './boolean-tristate.models';
+import { BooleanTristateViewModel } from './boolean-tristate.models';
 
 @Component({
   selector: InputTypeConstants.BooleanTristate,
@@ -18,7 +18,7 @@ import { BooleanTristateTemplateVars } from './boolean-tristate.models';
   wrappers: [WrappersConstants.LocalizationWrapper],
 })
 export class BooleanTristateComponent extends BaseFieldComponent<boolean | ''> implements OnInit, OnDestroy {
-  templateVars$: Observable<BooleanTristateTemplateVars>;
+  viewModel$: Observable<BooleanTristateViewModel>;
 
   constructor(eavService: EavService, fieldsSettingsService: FieldsSettingsService) {
     super(eavService, fieldsSettingsService);
@@ -46,7 +46,7 @@ export class BooleanTristateComponent extends BaseFieldComponent<boolean | ''> i
       distinctUntilChanged(),
     );
 
-    this.templateVars$ = combineLatest([
+    this.viewModel$ = combineLatest([
       combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
       combineLatest([changable$]),
       combineLatest([checked$]),
@@ -56,7 +56,7 @@ export class BooleanTristateComponent extends BaseFieldComponent<boolean | ''> i
         [changable],
         [checked],
       ]) => {
-        const templateVars: BooleanTristateTemplateVars = {
+        const viewModel: BooleanTristateViewModel = {
           controlStatus,
           label,
           placeholder,
@@ -64,7 +64,7 @@ export class BooleanTristateComponent extends BaseFieldComponent<boolean | ''> i
           changable,
           checked,
         };
-        return templateVars;
+        return viewModel;
       }),
     );
   }

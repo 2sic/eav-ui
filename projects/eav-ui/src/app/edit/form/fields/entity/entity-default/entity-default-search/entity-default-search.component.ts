@@ -9,7 +9,7 @@ import { FieldsSettingsService } from '../../../../../shared/services';
 import { GlobalConfigService } from '../../../../../shared/store/ngrx-data';
 import { FieldConfigSet } from '../../../../builder/fields-builder/field-config-set.model';
 import { SelectedEntity } from '../entity-default.models';
-import { EntitySearchTemplateVars } from './entity-default-search.models';
+import { EntitySearchViewModel } from './entity-default-search.models';
 
 @Component({
   selector: 'app-entity-default-search',
@@ -39,7 +39,7 @@ export class EntityDefaultSearchComponent implements OnInit, OnChanges {
   @Output() private editEntity = new EventEmitter<{ entityGuid: string, entityId: number }>();
 
   filteredEntities: EntityInfo[] = [];
-  templateVars$: Observable<EntitySearchTemplateVars>;
+  viewModel: Observable<EntitySearchViewModel>;
   private control: AbstractControl;
 
   constructor(
@@ -62,9 +62,9 @@ export class EntityDefaultSearchComponent implements OnInit, OnChanges {
       })),
       distinctUntilChanged(GeneralHelpers.objectsEqual),
     );
-    this.templateVars$ = combineLatest([debugEnabled$, settings$]).pipe(
+    this.viewModel = combineLatest([debugEnabled$, settings$]).pipe(
       map(([debugEnabled, settings]) => {
-        const templateVars: EntitySearchTemplateVars = {
+        const viewModel: EntitySearchViewModel = {
           debugEnabled,
           allowMultiValue: settings.AllowMultiValue,
           enableCreate: settings.EnableCreate,
@@ -72,7 +72,7 @@ export class EntityDefaultSearchComponent implements OnInit, OnChanges {
           enableAddExisting: settings.EnableAddExisting,
           enableTextEntry: settings.EnableTextEntry,
         };
-        return templateVars;
+        return viewModel;
       }),
     );
   }

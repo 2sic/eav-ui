@@ -15,7 +15,7 @@ export class FeatureTextInfoComponent extends FeatureComponentBase {
   public set asInfo(value: boolean) { this.asInfo$.next(value); }
   asInfo$ = new BehaviorSubject<boolean>(false);
 
-  data$: Observable<viewModel>;
+  viewModel$: Observable<FeatureTextInfoViewModel>;
 
   constructor(
     dialog: MatDialog,
@@ -24,7 +24,7 @@ export class FeatureTextInfoComponent extends FeatureComponentBase {
     changeDetectorRef: ChangeDetectorRef
   ) {
     super(dialog, viewContainerRef, changeDetectorRef , featuresService);
-    this.data$ = combineLatest([this.feature$, this.asInfo$, this.show$]).pipe(map(([feature, asInfo, show]) => 
+    this.viewModel$ = combineLatest([this.feature$, this.asInfo$, this.show$]).pipe(map(([feature, asInfo, show]) => 
       ({
         feature,
         icon: asInfo ? 'info' : 'warning',
@@ -34,7 +34,7 @@ export class FeatureTextInfoComponent extends FeatureComponentBase {
 
 }
 
-interface viewModel {
+interface FeatureTextInfoViewModel {
   feature: FeatureSummary;
   icon: string;
   show: boolean;

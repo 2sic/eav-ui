@@ -12,7 +12,7 @@ import { eavConstants, MetadataKeyType, ScopeOption } from '../../shared/constan
 import { Context } from '../../shared/services/context';
 import { ContentItem } from '../models/content-item.model';
 import { ContentItemsService } from '../services/content-items.service';
-import { MetadataDialogTemplateVars, MetadataFormValues, MetadataInfo, TargetTypeOption } from './create-metadata-dialog.models';
+import { MetadataDialogViewModel, MetadataFormValues, MetadataInfo, TargetTypeOption } from './create-metadata-dialog.models';
 import { metadataKeyValidator } from './metadata-key.validator';
 
 @Component({
@@ -26,7 +26,7 @@ export class CreateMetadataDialogComponent extends BaseSubsinkComponent implemen
   eavConstants = eavConstants;
   dropdownInsertValue = dropdownInsertValue;
   form: FormGroup;
-  templateVars$: Observable<MetadataDialogTemplateVars>;
+  viewModel$: Observable<MetadataDialogViewModel>;
   targetTypeOptions: TargetTypeOption[];
 
   /** Constants from metadata definitions */
@@ -44,7 +44,7 @@ export class CreateMetadataDialogComponent extends BaseSubsinkComponent implemen
     private context: Context,
     private contentItemsService: ContentItemsService,
     private contentTypesService: ContentTypesService,
-  ) { 
+  ) {
     super();
   }
 
@@ -168,7 +168,7 @@ export class CreateMetadataDialogComponent extends BaseSubsinkComponent implemen
       })
     );
 
-    this.templateVars$ = combineLatest([
+    this.viewModel$ = combineLatest([
       combineLatest([this.guidedMode$, this.keyTypeOptions$, this.scopeOptions$, this.contentItems$, this.contentTypes$]),
       combineLatest([formValues$, this.guidedKey$]),
     ]).pipe(
@@ -176,7 +176,7 @@ export class CreateMetadataDialogComponent extends BaseSubsinkComponent implemen
         [guidedMode, keyTypeOptions, scopeOptions, contentItems, contentTypes],
         [formValues, guidedKey],
       ]) => {
-        const templateVars: MetadataDialogTemplateVars = {
+        const viewModel: MetadataDialogViewModel = {
           guidedMode,
           unknownTargetType: !this.targetTypeOptions.some(option => option.targetType === formValues.targetType),
           targetTypeHint: guidedMode && this.targetTypeOptions.find(option => option.targetType === formValues.targetType)?.hint,
@@ -189,7 +189,7 @@ export class CreateMetadataDialogComponent extends BaseSubsinkComponent implemen
           contentItems,
           contentTypes,
         };
-        return templateVars;
+        return viewModel;
       }),
     );
   }

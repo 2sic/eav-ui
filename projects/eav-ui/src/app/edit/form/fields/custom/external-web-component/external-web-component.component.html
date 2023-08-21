@@ -1,4 +1,4 @@
-<ng-container *ngIf="templateVars$ | async as data">
-  <mat-spinner *ngIf="data.loading" color="accent"></mat-spinner>
-  <app-connector [config]="config" [group]="group" *ngIf="!data.loading && data.isExpanded"></app-connector>
+<ng-container *ngIf="viewModel | async as vm">
+  <mat-spinner *ngIf="vm.loading" color="accent"></mat-spinner>
+  <app-connector [config]="config" [group]="group" *ngIf="!vm.loading && vm.isExpanded"></app-connector>
 </ng-container>

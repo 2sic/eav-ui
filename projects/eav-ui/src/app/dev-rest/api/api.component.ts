@@ -9,7 +9,7 @@ import { SourceService } from '../../code-editor/services/source.service';
 import { Context } from '../../shared/services/context';
 import { GoToDevRest } from '../go-to-dev-rest';
 import { generateWebApiCalls } from './api-samples';
-import { DevRestApiTemplateVars } from './api-template-vars';
+import { DevRestApiViewModel } from './api-template-vars';
 
 const pathToApi = 'app/{appname}/api/{controller}/{action}';
 
@@ -18,7 +18,7 @@ const pathToApi = 'app/{appname}/api/{controller}/{action}';
   templateUrl: './api.component.html',
   styleUrls: ['../dev-rest-all.scss', '../header-selector.scss'],
 })
-export class DevRestApiComponent extends DevRestBase<DevRestApiTemplateVars> implements OnDestroy {
+export class DevRestApiComponent extends DevRestBase<DevRestApiViewModel> implements OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
   /** action name to check for */
@@ -69,13 +69,13 @@ export class DevRestApiComponent extends DevRestBase<DevRestApiTemplateVars> imp
       }),
     );
 
-    this.templateVars$ = combineLatest([
+    this.viewModel$ = combineLatest([
       combineLatest([webApi$, apiDetails$, selectedAction$, this.urlParams$, this.scenario$]),
       combineLatest([root$, this.dialogSettings$]),
     ])
       .pipe(
         map(([[webApi, details, selected, urlParams, scenario], [root, /* item, */ diag]]) => ({
-          ...this.buildBaseTemplateVars(webApi.name, webApi.path, diag, null, root, scenario),
+          ...this.buildBaseViewModel(webApi.name, webApi.path, diag, null, root, scenario),
           webApi,
           details,
           selected,

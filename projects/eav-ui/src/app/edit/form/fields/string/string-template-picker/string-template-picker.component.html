@@ -1,17 +1,17 @@
-<ng-container *ngIf="templateVars$ | async as data">
+<ng-container *ngIf="viewModel | async as vm">
 
   <div class="picker-wrapper">
     <mat-form-field [formGroup]="group" appearance="standard" color="accent">
-      <mat-select [formControlName]="config.fieldName" [required]="data.required">
+      <mat-select [formControlName]="config.fieldName" [required]="vm.required">
         <mat-option value="">{{ 'Fields.TemplatePicker.NotSelected' | translate }}</mat-option>
-        <mat-option *ngFor="let file of data.templateOptions" [value]="file">
+        <mat-option *ngFor="let file of vm.templateOptions" [value]="file">
           {{ file }}
         </mat-option>
       </mat-select>
-      <mat-label>{{ data.label }}</mat-label>
+      <mat-label>{{ vm.label }}</mat-label>
     </mat-form-field>
     <button mat-icon-button [tippy]="'Fields.TemplatePicker.NewTemplate' | translate"
-      [disabled]="data.controlStatus.disabled" (click)="createTemplate()">
+      [disabled]="vm.controlStatus.disabled" (click)="createTemplate()">
       <mat-icon>add</mat-icon>
     </button>
   </div>

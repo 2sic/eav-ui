@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { combineLatest, map, Observable } from 'rxjs';
 import { EditInitializerService, LoggingService } from '../../shared/services';
-import { EditEntryTemplateVars } from './edit-entry.models';
+import { EditEntryViewModel } from './edit-entry.models';
 
 @Component({
   selector: 'app-edit-entry',
@@ -10,17 +10,17 @@ import { EditEntryTemplateVars } from './edit-entry.models';
   providers: [LoggingService, EditInitializerService],
 })
 export class EditEntryComponent implements OnInit {
-  templateVars$: Observable<EditEntryTemplateVars>;
+  viewModel$: Observable<EditEntryViewModel>;
 
   constructor(private editInitializerService: EditInitializerService) { }
 
   ngOnInit(): void {
-    this.templateVars$ = combineLatest([this.editInitializerService.loaded$]).pipe(
+    this.viewModel$ = combineLatest([this.editInitializerService.loaded$]).pipe(
       map(([loaded]) => {
-        const templateVars: EditEntryTemplateVars = {
+        const viewModel: EditEntryViewModel = {
           loaded,
         };
-        return templateVars;
+        return viewModel;
       }),
     );
     this.editInitializerService.fetchFormData();

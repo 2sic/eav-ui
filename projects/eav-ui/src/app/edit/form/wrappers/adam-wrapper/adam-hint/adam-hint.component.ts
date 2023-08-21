@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FeatureNames } from 'projects/eav-ui/src/app/features/feature-names';
 import { FeaturesService } from 'projects/eav-ui/src/app/shared/services/features.service';
 import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
-import { AdamHintTemplateVars } from './adam-hint.models';
+import { AdamHintViewModel } from './adam-hint.models';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -12,7 +12,7 @@ import { AdamHintTemplateVars } from './adam-hint.models';
 })
 export class AdamHintComponent implements OnInit {
 
-  templateVars$: Observable<AdamHintTemplateVars>;
+  viewModel$: Observable<AdamHintViewModel>;
 
   constructor(private featuresService: FeaturesService) { }
 
@@ -22,12 +22,12 @@ export class AdamHintComponent implements OnInit {
       distinctUntilChanged(),
     );
 
-    this.templateVars$ = combineLatest([showAdamSponsor$]).pipe(
+    this.viewModel$ = combineLatest([showAdamSponsor$]).pipe(
       map(([showAdamSponsor]) => {
-        const templateVars: AdamHintTemplateVars = {
+        const viewModel: AdamHintViewModel = {
           showAdamSponsor,
         };
-        return templateVars;
+        return viewModel;
       }),
     );
   }

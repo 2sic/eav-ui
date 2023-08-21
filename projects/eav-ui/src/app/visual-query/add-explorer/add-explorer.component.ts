@@ -15,19 +15,22 @@ import { filterAndSortDataSources } from './add-explorer.helpers';
   styleUrls: ['./add-explorer.component.scss'],
 })
 export class AddExplorerComponent implements OnInit, OnDestroy {
-  sorted$: Observable<SortedDataSources>;
   toggledItems: string[] = [];
   guiTypes = guiTypes;
 
   private difficulties = eavConstants.pipelineDesigner.dataSourceDifficulties;
   private difficulty$ = new BehaviorSubject(this.difficulties.default);
 
+  viewModel$: Observable<AddExplorerViewModel>;
+
   constructor(private visualQueryService: VisualQueryService) { }
 
   ngOnInit() {
-    this.sorted$ = combineLatest([this.visualQueryService.dataSources$, this.difficulty$]).pipe(
-      map(([dataSources, difficulty]) => filterAndSortDataSources(dataSources, difficulty)),
-    );
+    this.viewModel$ = combineLatest([
+      combineLatest([this.visualQueryService.dataSources$, this.difficulty$]).pipe(
+        map(([dataSources, difficulty]) => filterAndSortDataSources(dataSources, difficulty)),
+      )
+    ]).pipe(map(([sorted]) => ({ sorted })));
   }
 
   ngOnDestroy() {
@@ -54,4 +57,8 @@ export class AddExplorerComponent implements OnInit, OnDestroy {
   trackDataSources(index: number, dataSource: DataSource) {
     return dataSource.PartAssemblyAndType;
   }
+}
+
+interface AddExplorerViewModel {
+  sorted: SortedDataSources;
 }
