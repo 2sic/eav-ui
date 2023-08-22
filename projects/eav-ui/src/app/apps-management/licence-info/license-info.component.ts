@@ -4,14 +4,14 @@ import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild, ViewContain
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 // tslint:disable-next-line:max-line-length
-import { BehaviorSubject, catchError, combineLatest, forkJoin, map, Observable, of, share, startWith, Subject, switchMap, tap, timer } from 'rxjs';
+import { BehaviorSubject, catchError, forkJoin, map, Observable, of, share, startWith, Subject, switchMap, tap, timer } from 'rxjs';
 import { FeatureState } from '../../features/models';
 import { BaseComponent } from '../../shared/components/base-component/base.component';
 import { BooleanFilterComponent } from '../../shared/components/boolean-filter/boolean-filter.component';
 import { IdFieldComponent } from '../../shared/components/id-field/id-field.component';
 import { IdFieldParams } from '../../shared/components/id-field/id-field.models';
 import { defaultGridOptions } from '../../shared/constants/default-grid-options.constants';
-import { expandFeatureWithUiInfo, Feature, FeatureWithUi } from '../../features/models/feature.model';
+import { Feature } from '../../features/models/feature.model';
 import { License } from '../models/license.model';
 import { FeaturesConfigService } from '../services/features-config.service';
 import { GoToRegistration } from '../sub-dialogs/registration/go-to-registration';
@@ -21,6 +21,7 @@ import { FeaturesListEnabledReasonComponent } from './features-list-enabled-reas
 import { FeaturesListEnabledComponent } from './features-list-enabled/features-list-enabled.component';
 import { FeaturesStatusComponent } from './features-status/features-status.component';
 import { FeaturesStatusParams } from './features-status/features-status.models';
+import { ExpirationExtension } from '../../features/expiration-extension';
 
 @Component({
   selector: 'app-license-info',
@@ -63,8 +64,16 @@ export class LicenseInfoComponent extends BaseComponent implements OnInit, OnDes
           return licenses;
         }),
 
-      // Expand the data to have pre-calculated texts/states
-        map(licenses => licenses.map(l => ({ ...l, Features: l.Features.map(f => expandFeatureWithUiInfo(f)) }))),
+        // Expand the data to have pre-calculated texts/states
+        map(licenses => licenses.map(l => {
+          // const expandedFeatures = l.Features.map(f => ExpirationExtension.expandFeature(f));
+          return ({
+            ...ExpirationExtension.expandLicense(l),
+            Features: l.Features.map(f => ExpirationExtension.expandFeature(f)),
+          });
+        })),
+
+        // Share the resulting stream with all subscribers
         share(),
       )
     //])
@@ -115,7 +124,7 @@ export class LicenseInfoComponent extends BaseComponent implements OnInit, OnDes
     });
   }
 
-  // Note: @STV
+  // Note: @SDV
   // I think this should serve as a good example of how to use the grid
   // 1. eg. with cellDefaults and similar initial objects containing most commonly used options here
   // 2. Also we should probably never add a valueGetter for the simple properties
@@ -130,6 +139,7 @@ export class LicenseInfoComponent extends BaseComponent implements OnInit, OnDes
       ...cellDefaults,
       filter: 'agTextColumnFilter',
     };
+
     const gridOptions: GridOptions = {
       ...defaultGridOptions,
       columnDefs: [
@@ -140,6 +150,14 @@ export class LicenseInfoComponent extends BaseComponent implements OnInit, OnDes
           width: 200,
           headerClass: 'dense',
           cellClass: 'id-action no-padding no-outline'.split(' '),
+          // TODO: @SDV - most of these columns had a valueGetter that was 3 lines long
+          // it was easy to reduce to 1 - but actually it is not needed!
+          // Original - too long
+          // valueGetter: (params) => {
+          //   const feature: Feature = params.data;
+          //   return feature.NameId;
+          // },
+          // Optimized - 1 line - but actually not needed
           // valueGetter: (params) => (params.data as Feature).NameId,
           cellRenderer: IdFieldComponent,
           cellRendererParams: (() => {
@@ -180,11 +198,11 @@ export class LicenseInfoComponent extends BaseComponent implements OnInit, OnDes
         },
         {
           headerName: 'Expiration',
-          field: 'ExpirationText',
+          field: 'ExpMessage',
           ...cellDefaultsTextFilter,
           width: 120,
           // valueGetter: (params) => (params.data as FeatureWithUi)?.ExpirationText,
-          tooltipValueGetter: (params) => (params.data as FeatureWithUi)?.Expiration,
+          tooltipValueGetter: (params) => (params.data as Feature & ExpirationExtension)?.Expiration,
         },
         {
           headerName: '',
@@ -210,5 +228,5 @@ export class LicenseInfoComponent extends BaseComponent implements OnInit, OnDes
 
 
 interface LicenseInfoViewModel {
-  licenses: License[];
+  licenses: (License & ExpirationExtension)[];
 }

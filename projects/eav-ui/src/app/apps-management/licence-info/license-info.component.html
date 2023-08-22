@@ -8,6 +8,7 @@
           <div class="panel-title">
             <span>{{ license.Name }}</span>
             <span class="active-features-count">{{ license | activeFeaturesCount }}</span>
+            <span> {{ license.ExpWarningIcon }}</span>
           </div>
           <div class="panel-description" [ngClass]="{ 'expanded': panel.expanded }">
             {{ license.Description }}
