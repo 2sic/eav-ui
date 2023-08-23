@@ -16,10 +16,7 @@ $max-height: calc(100vh - #{$dialog-margin-top} - #{$dialog-margin-bottom});
     height: 48px;
     padding: 0px;
   }
-  
-  .mat-mdc-dialog-surface {
-    padding: 24px;
-  }
+
 }
 
 .no-scrollbar {
@@ -87,6 +84,15 @@ $max-height: calc(100vh - #{$dialog-margin-top} - #{$dialog-margin-bottom});
   font-size: 29px;
   line-height: 29px;
   font-weight: 400;
+  padding: 24px;
+}
+
+.mat-mdc-tab-group {
+  padding: 0px 24px;
+}
+
+.actions-box, .grid-more-actions-box, .grid-fab.mdc-fab::before {
+  padding-bottom: 24px;
 }
 
 .default-fonts {
