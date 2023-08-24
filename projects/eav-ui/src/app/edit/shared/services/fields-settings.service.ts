@@ -133,7 +133,8 @@ export class FieldsSettingsService implements OnDestroy {
             settingsInitial,
             inputType,
             calculatedInputType,
-            constants
+            constants,
+            currentLanguage: entityReader.currentLanguage,
           };
 
           return constantFieldParts;
@@ -166,7 +167,7 @@ export class FieldsSettingsService implements OnDestroy {
         return allConstFieldParts;
       })
     );
-    
+
     const itemAttributes$ = this.itemService.getItemAttributes$(entityGuid);
     const formReadOnly$ = this.formsStateService.readOnly$;
     const debugEnabled$ = this.globalConfigService.getDebugEnabled$();
@@ -215,8 +216,14 @@ export class FieldsSettingsService implements OnDestroy {
 
             const constantFieldPart = constantFieldParts.find(f => f.constants.fieldName === attribute.Name);
 
-            const latestSettings = this.latestFieldProps[attribute.Name]?.settings
-              ?? { ...constantFieldPart.settingsInitial };
+            // if the currentLanguage changed then we need to flush the settings with initial ones that have updated language
+            let latestSettings: FieldSettings;
+            if (constantFieldPart.currentLanguage == this.latestFieldProps[attribute.Name]?.currentLanguage) {
+              latestSettings = this.latestFieldProps[attribute.Name]?.settings
+                ?? { ...constantFieldPart.settingsInitial };
+            } else {
+              latestSettings = { ...constantFieldPart.settingsInitial };
+            }
 
             // run formulas
             const formulaResult = this.formulaEngine.runAllFormulas(
@@ -245,6 +252,7 @@ export class FieldsSettingsService implements OnDestroy {
               value: valueBefore,
               wrappers,
               formulaValidation: formulaResult.validation,
+              currentLanguage: constantFieldPart.currentLanguage,
             };
           }
           this.latestFieldProps = fieldsProps;

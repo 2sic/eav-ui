@@ -16,6 +16,7 @@ export interface FieldProps {
   value: FieldValue;
   wrappers: string[];
   formulaValidation: FormulaFieldValidation;
+  currentLanguage: string;
 }
 
 export interface FieldConstants {
