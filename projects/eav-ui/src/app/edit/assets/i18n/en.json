@@ -95,7 +95,7 @@
       "PickLanguageIntro": "Only languages with content can be selected.",
       "AutoTranslateAll": {
         "Title": "Auto-Translate all Fields using Google Translate",
-        "Body": "Only fields that are not yet translated will be auto-translated. Note that not all fields will be translated - see <a href='https://2sxc.org/translate' target='_blank'>docs</a>.",
+        "Body": "Only fields that are not yet translated will be auto-translated. Note that not all fields will be translated - see <a href='https://go.2sxc.org/translate' target='_blank'>docs</a>.",
         "NoContent": "no content",
         "AllTranslatableFields": "all translatable fields",
         "Of": "of",

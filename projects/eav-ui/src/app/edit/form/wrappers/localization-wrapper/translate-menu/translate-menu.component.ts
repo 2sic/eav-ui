@@ -93,7 +93,6 @@ export class TranslateMenuComponent implements OnInit {
       this.dialog.open(AutoTranslateDisabledWarningDialog, {
         autoFocus: false,
         data: { isAutoTranslateAll: false },
-        panelClass: 'translate-menu-dialog',
         viewContainerRef: this.viewContainerRef,
         width: '350px',
       });
