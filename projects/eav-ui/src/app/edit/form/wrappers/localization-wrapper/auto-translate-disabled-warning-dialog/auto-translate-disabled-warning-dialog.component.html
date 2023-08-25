@@ -1,15 +1,16 @@
-<div class="dialog-card">
-  <div mat-mdc-dialog-title>
-    <div class="dialog-title-box">
-      <div>{{ 'LangMenu.Dialog.CantAutoTranslate' | translate }}</div>
-      <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
-        <mat-icon>close</mat-icon>
-      </button>
-    </div>
-  </div>
-
-  <p class="dialog-description" *ngIf="dialogData.isAutoTranslateAll">{{'LangMenu.Dialog.NoAutoTranslatableFields' |
-    translate }}</p>
-  <p class="dialog-description" *ngIf="!dialogData.isAutoTranslateAll">
-    {{'LangMenu.Dialog.ThisFieldIsNotAutoTranslatable' | translate }}</p>
-</div>
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>
+      {{ 'LangMenu.Dialog.CantAutoTranslate' | translate }}
+    </mat-card-title>
+    <mat-card-subtitle *ngIf="dialogData.isAutoTranslateAll">
+      {{'LangMenu.Dialog.NoAutoTranslatableFields' | translate }}
+    </mat-card-subtitle>
+    <mat-card-subtitle *ngIf="!dialogData.isAutoTranslateAll">
+      {{'LangMenu.Dialog.ThisFieldIsNotAutoTranslatable' | translate }}
+    </mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-actions align="end">
+    <button mat-button color="accent" (click)="closeDialog()">{{'Features.Close' | translate }}</button>
+  </mat-card-actions>
+</mat-card>
