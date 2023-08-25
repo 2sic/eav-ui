@@ -50,7 +50,6 @@ export class EditDialogHeaderComponent implements OnInit {
   openPublishStatusDialog() {
     this.dialog.open(PublishStatusDialogComponent, {
       autoFocus: false,
-      panelClass: 'c-publish-status-dialog',
       viewContainerRef: this.viewContainerRef,
       width: '350px',
     });
