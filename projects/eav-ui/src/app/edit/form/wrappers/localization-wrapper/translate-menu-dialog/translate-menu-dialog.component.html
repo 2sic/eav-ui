@@ -9,11 +9,11 @@
   </mat-card-header>
   <mat-card-content class="card-content__no-padding">
     <mat-nav-list toggle focus>
-      <mat-list-item lines=2 [ngClass]="{ 'list-item__focus': vm.translationState.linkType === TranslationLinks.DontTranslate }" 
+      <mat-list-item [ngClass]="{ 'list-item__focus': vm.translationState.linkType === TranslationLinks.DontTranslate }" 
         (click)="setLinkType(TranslationLinks.DontTranslate)">
         <mat-icon matListItemIcon color="accent">lock</mat-icon>
         <span matListItemTitle>{{ ('LangMenu.Dialog.' + I18nKeys.NoTranslate + '.Title') | translate : { primary: vm.defaultLanguage } }}</span>
-        <span>{{ ('LangMenu.Dialog.' + I18nKeys.NoTranslate + '.Body') | translate : { primary: vm.defaultLanguage } }}</span>
+        <span matListItemLine>{{ ('LangMenu.Dialog.' + I18nKeys.NoTranslate + '.Body') | translate : { primary: vm.defaultLanguage } }}</span>
       </mat-list-item>
 
       <mat-list-item lines=3 [ngClass]="{ 'list-item__focus': vm.translationState.linkType === TranslationLinks.Translate }"
@@ -30,11 +30,11 @@
         <span>{{ ('LangMenu.Dialog.' + I18nKeys.FromOther + '.Body') | translate : { primary: vm.defaultLanguage } }}</span>
       </mat-list-item>
 
-      <mat-list-item lines=2 [ngClass]="{ 'list-item__focus': vm.translationState.linkType === TranslationLinks.LinkReadOnly }"
+      <mat-list-item [ngClass]="{ 'list-item__focus': vm.translationState.linkType === TranslationLinks.LinkReadOnly }"
         (click)="setLinkType(TranslationLinks.LinkReadOnly)">
         <mat-icon matListItemIcon color="accent">link</mat-icon>
         <span matListItemTitle>{{ ('LangMenu.Dialog.' + I18nKeys.LinkReadOnly + '.Title') | translate : { primary: vm.defaultLanguage } }}</span>
-        <span>{{ ('LangMenu.Dialog.' + I18nKeys.LinkReadOnly + '.Body') | translate : { primary: vm.defaultLanguage } }}</span>
+        <span matListItemLine>{{ ('LangMenu.Dialog.' + I18nKeys.LinkReadOnly + '.Body') | translate : { primary: vm.defaultLanguage } }}</span>
       </mat-list-item>
 
       <mat-list-item lines=3 [ngClass]="{ 'list-item__focus': vm.translationState.linkType === TranslationLinks.LinkReadWrite }"
