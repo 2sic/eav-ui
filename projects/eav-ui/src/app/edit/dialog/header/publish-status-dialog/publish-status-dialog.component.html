@@ -3,27 +3,27 @@
     <mat-card-title>{{ 'PublishStatus.Dialog.Title' | translate }}</mat-card-title>
     <mat-card-subtitle>{{ 'PublishStatus.Dialog.Intro' | translate }}</mat-card-subtitle>
   </mat-card-header>
-  <mat-card-content>
+  <mat-card-content class="card-content__no-padding">
     <mat-nav-list toggle>
-      <mat-list-item (click)="setPublishMode(PublishModes.Show)" [disabled]="vm.options[PublishModes.Show] !== true"
+      <mat-list-item lines="3" (click)="setPublishMode(PublishModes.Show)" [disabled]="vm.options[PublishModes.Show] !== true"
         [ngClass]="{ 'list-item__focus': vm.publishMode === PublishModes.Show }">
         <mat-icon matListItemIcon>visibility</mat-icon>
-        <div matListItemTitle>{{ 'PublishStatus.Dialog.Show.Title' | translate }}</div>
-        <div matListItemLine>{{ 'PublishStatus.Dialog.Show.Body' | translate }}</div>
+        <span matListItemTitle>{{ 'PublishStatus.Dialog.Show.Title' | translate }}</span>
+        <span>{{ 'PublishStatus.Dialog.Show.Body' | translate }}</span>
       </mat-list-item>
       
-      <mat-list-item (click)="setPublishMode(PublishModes.Hide)" [disabled]="vm.options[PublishModes.Hide] !== true"
+      <mat-list-item lines="3" (click)="setPublishMode(PublishModes.Hide)" [disabled]="vm.options[PublishModes.Hide] !== true"
         [ngClass]="{ 'list-item__focus': vm.publishMode === PublishModes.Hide }">
         <mat-icon matListItemIcon>visibility_off</mat-icon>
-        <div matListItemTitle>{{ 'PublishStatus.Dialog.Hide.Title' | translate }}</div>
-        <div matListItemLine>{{ 'PublishStatus.Dialog.Hide.Body' | translate }}</div>
+        <span matListItemTitle>{{ 'PublishStatus.Dialog.Hide.Title' | translate }}</span>
+        <span>{{ 'PublishStatus.Dialog.Hide.Body' | translate }}</span>
       </mat-list-item>
       
-      <mat-list-item (click)="setPublishMode(PublishModes.Branch)" [disabled]="vm.options[PublishModes.Branch] !== true"
+      <mat-list-item lines="3" (click)="setPublishMode(PublishModes.Branch)" [disabled]="vm.options[PublishModes.Branch] !== true"
         [ngClass]="{ 'list-item__focus': vm.publishMode === PublishModes.Branch }">
         <mat-icon matListItemIcon svgIcon="draft-branch"></mat-icon>
-        <div matListItemTitle>{{ 'PublishStatus.Dialog.Branch.Title' | translate }}</div>
-        <div matListItemLine>{{ 'PublishStatus.Dialog.Branch.Body' | translate }}</div>
+        <span matListItemTitle>{{ 'PublishStatus.Dialog.Branch.Title' | translate }}</span>
+        <span>{{ 'PublishStatus.Dialog.Branch.Body' | translate }}</span>
       </mat-list-item>
     </mat-nav-list>
   </mat-card-content>

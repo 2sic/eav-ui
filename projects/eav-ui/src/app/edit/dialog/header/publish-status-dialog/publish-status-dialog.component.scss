@@ -1,6 +1,16 @@
 @import "../../../assets/styles/variables.scss";
 
-.list-item__focus {
-  background: $edit-ui-selected-option;
+.card-content__no-padding {
+  padding: 0px;
+
+  &:last-child {
+    padding-bottom: 16px;
+  }
+
+  .list-item__focus {
+    background: $edit-ui-selected-option;
+  }
 }
+
+
 
