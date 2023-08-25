@@ -81,7 +81,6 @@ export class EntityTranslateMenuComponent implements OnInit, OnDestroy {
       this.dialog.open(AutoTranslateMenuDialogComponent, {
         autoFocus: false,
         data: dialogData,
-        panelClass: 'translate-menu-dialog',
         viewContainerRef: this.viewContainerRef,
         width: '400px',
       });
@@ -89,7 +88,6 @@ export class EntityTranslateMenuComponent implements OnInit, OnDestroy {
       this.dialog.open(AutoTranslateDisabledWarningDialog, {
         autoFocus: false,
         data: { isAutoTranslateAll: true },
-        panelClass: 'translate-menu-dialog',
         viewContainerRef: this.viewContainerRef,
         width: '400px',
       });
