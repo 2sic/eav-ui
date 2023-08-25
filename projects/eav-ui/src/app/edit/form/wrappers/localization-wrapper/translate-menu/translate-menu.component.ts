@@ -114,7 +114,6 @@ export class TranslateMenuComponent implements OnInit {
     this.dialog.open(component, {
       autoFocus: false,
       data: dialogData,
-      panelClass: 'translate-menu-dialog',
       viewContainerRef: this.viewContainerRef,
       width: '400px',
     });
