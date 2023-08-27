@@ -1,0 +1,31 @@
+.eav-cards-box {
+  display: flex;
+  flex-wrap: wrap;
+
+  .eav-card {
+    width: 560px;
+    margin: 8px;
+    padding-top: 8px;
+
+    .eav-card-header {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .eav-card-space-div {
+      height: 100%;
+    }
+  }
+}
+
+.eav-card-header-title-toggle {
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
+  margin-right: 8px;
+
+  .eav-card-header-toggle {
+    margin-left: 8px;
+    margin-top: -10px;
+  }
+}
