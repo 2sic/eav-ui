@@ -47,8 +47,7 @@ export class FeatureComponentBase {
       autoFocus: false,
       data: featureId,
       viewContainerRef: viewContainerRef,
-      // TODO: this looks wrong. I believe we have some way to standardize dialog sizes...
-      width: '600px',
+      width: '400px',
     });
 
     changeDetectorRef.markForCheck();
