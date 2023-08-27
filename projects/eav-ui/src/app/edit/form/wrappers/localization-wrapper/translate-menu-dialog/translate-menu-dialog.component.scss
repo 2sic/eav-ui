@@ -3,15 +3,15 @@
 .translate-menu-dialog-card {
   max-height: 99vh;
   overflow-y: scroll;
-  
-  .card-content__no-padding {
+
+  .eav-card-content__no-padding {
     padding: 0px;
 
     &:last-child {
       padding-bottom: 16px;
     }
 
-    .list-item__focus {
+    .eav-list-item__focus {
       background: $edit-ui-selected-option;
     }
 
