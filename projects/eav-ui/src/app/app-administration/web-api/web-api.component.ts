@@ -54,7 +54,7 @@ export class WebApiComponent implements OnInit, OnDestroy {
       const fileLocationDialogRef = this.dialog.open(FileLocationDialogComponent, {
         autoFocus: false,
         viewContainerRef: this.viewContainerRef,
-        width: '650px',
+        width: '400px',
       });
       fileLocationDialogRef.afterClosed().subscribe((isShared?: boolean) => {
         if (isShared == null) { return; }

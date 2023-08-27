@@ -10,6 +10,7 @@ import { CreateFileDialogComponent, FileLocationDialogComponent } from '.';
 import { SourceService } from '../code-editor/services/source.service';
 import { Context } from '../shared/services/context';
 import { SharedComponentsModule } from '../shared/shared-components.module';
+import { MatCardModule } from '@angular/material/card';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { SharedComponentsModule } from '../shared/shared-components.module';
     MatFormFieldModule,
     MatInputModule,
     MatProgressSpinnerModule,
+    MatCardModule,
   ],
   exports: [
     CreateFileDialogComponent,
