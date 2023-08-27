@@ -1,0 +1,26 @@
+.eav-card {
+  width: 560px;
+  margin: 8px;
+  padding-top: 8px;
+
+  .eav-card-header {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .eav-card-space-div {
+    min-height: 30px;
+  }
+}
+
+.eav-configuration-table {
+  width: 100%;
+
+  td {
+    text-align: left;
+  }
+
+  tbody th {
+    text-align: left;
+  }
+}

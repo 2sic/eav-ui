@@ -1,11 +1,9 @@
 <ng-container>
-  <div class="cards-box">
-    <mat-card class="mat-elevation-z2">
-      <mat-card-header>
+  <div class="eav-cards-box">
+    <mat-card class="eav-card">
+      <mat-card-header class="eav-card-header">
         <mat-card-title>Instructions for Sync or Export/Import</mat-card-title>
-        <div class="mat-card-header-icon">
-          <mat-icon>info</mat-icon>
-        </div>
+        <mat-icon>info</mat-icon>
       </mat-card-header>
       <mat-card-content>
         <p>
@@ -19,18 +17,20 @@
       </mat-card-content>
     </mat-card>
   </div>
-  <div class="cards-box">
-    <mat-card class="mat-elevation-z2">
-      <mat-card-header>
+
+  <div class="eav-cards-box">
+    <mat-card class="eav-card">
+      <mat-card-header class="eav-card-header">
         <mat-card-title>Export this entire App</mat-card-title>
-        <div class="mat-card-header-icon">
-          <mat-icon>cloud_download</mat-icon>
-        </div>
+        <mat-icon>cloud_download</mat-icon>
       </mat-card-header>
       <mat-card-content>
-        Create an package (zip) which can be installed in another site.
+        <p>
+          Create an package (zip) which can be installed in another site.
+        </p>    
       </mat-card-content>
-      <mat-card-actions>
+      <div class="eav-card-space-div"></div>
+      <mat-card-actions align="start">
         <button mat-button (click)="exportApp()">
           <mat-icon>cloud_download</mat-icon>
           <span>Export App</span>
@@ -38,18 +38,19 @@
       </mat-card-actions>
     </mat-card>
 
-    <mat-card class="mat-elevation-z2">
-      <mat-card-header>
+    <mat-card class="eav-card">
+      <mat-card-header class="eav-card-header">
         <mat-card-title>Export or Import parts of this App</mat-card-title>
-        <div class="mat-card-header-icon">
-          <mat-icon>import_export</mat-icon>
-        </div>
+        <mat-icon>import_export</mat-icon>
       </mat-card-header>
       <mat-card-content>
-        Create an xml containing parts of the app, e.g. content and templates.
-        Import parts from such an xml into this app.
+        <p>
+          Create an xml containing parts of the app, e.g. content and templates.
+          Import parts from such an xml into this app.
+        </p>
       </mat-card-content>
-      <mat-card-actions>
+      <div class="eav-card-space-div"></div>
+      <mat-card-actions align="start">
         <button mat-button (click)="exportParts()">
           <mat-icon>cloud_download</mat-icon>
           <span>Export Parts</span>
@@ -62,26 +63,29 @@
     </mat-card>
   </div>
 
-  <div class="cards-box">
-    <mat-card appearance="outlined" class="mat-elevation-z2">
-      <mat-card-header>
-        <mat-card-title>App-State Versioning</mat-card-title>
-        <mat-slide-toggle [(ngModel)]="appStateAdvanced">{{ appStateAdvanced ? "advanced" : "basic" }}</mat-slide-toggle>
-        <div class="mat-card-header-icon">
-          <mat-icon>history_toggle_off</mat-icon>
+  <div class="eav-cards-box">
+    <mat-card class="eav-card">
+      <mat-card-header class="eav-card-header">
+        <div class="eav-card-header-title-toggle">
+          <mat-card-title>App-State Versioning</mat-card-title>
+          <mat-slide-toggle class="eav-card-header-toggle" [(ngModel)]="appStateAdvanced">{{ appStateAdvanced ? "advanced" : "basic" }}</mat-slide-toggle>
         </div>
+        <mat-icon>history_toggle_off</mat-icon>
       </mat-card-header>
       <mat-card-content>
-        You can save / restore the app with data and configuration in <code>.data/app.xml</code>.
-        This file can then also be versioned using git.
-        <div *ngIf="appStateAdvanced">
+        <p>
+          You can save / restore the app with data and configuration in <code>.data/app.xml</code>.
+          This file can then also be versioned using git.
+        </p>
+        <p *ngIf="appStateAdvanced">
           <br>
           In Advanced mode you can also sync all the site files used by this app.
           They will be placed in a folder inside <code>App_Data</code> and allow sync/restore with git or another server.
-        </div>
+        </p>
       </mat-card-content>
       <app-feature-text-info *ngIf="appStateAdvanced" [featureNameId]="'AppSyncWithSiteFiles'"></app-feature-text-info>
-      <mat-card-actions>
+      <div class="eav-card-space-div"></div>
+      <mat-card-actions align="start">
         <ng-container *ngIf="!appStateAdvanced">
           <button mat-button (click)="exportAppXml(false)">
             <mat-icon>more_time</mat-icon>
@@ -102,7 +106,6 @@
             <span>Restore with Assets</span>
           </button>
         </ng-container>
-
       </mat-card-actions>
     </mat-card>
   </div>

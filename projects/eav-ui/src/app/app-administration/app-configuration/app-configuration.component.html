@@ -10,14 +10,12 @@
     See <a href="https://go.2sxc.org/settings" target="_blank">docs</a>.
   </div>
 
-  <div class="cards-box">
+  <div class="eav-cards-box">
     <!-- Settings -->
-    <mat-card class="mat-elevation-z2">
-      <mat-card-header>
+    <mat-card class="eav-card">
+      <mat-card-header class="eav-card-header">
         <mat-card-title>Settings</mat-card-title>
-        <div class="mat-card-header-icon">
-          <mat-icon>settings</mat-icon>
-        </div>
+        <mat-icon>settings</mat-icon>
       </mat-card-header>
       <mat-card-content>
         <p>
@@ -26,7 +24,7 @@
           <a href="https://go.2sxc.org/settings" target="_blank">docs</a>
         </p>
 
-        <table class="settings">
+        <table class="eav-settings-and-resources-table">
           <thead>
             <tr>
               <th></th>
@@ -58,6 +56,7 @@
                       matBadgePosition="below after">dns</mat-icon>
                   </button>
                 </td>
+              </tr>
             </ng-container>
             <!-- Settings for Primary App -->
             <ng-container *ngIf="isPrimary">
@@ -83,7 +82,7 @@
                   </button>
                 </td>
               </tr>
-              <ng-container *ngTemplateOutlet="goToGlobal"></ng-container>
+            <ng-container *ngTemplateOutlet="goToGlobal"></ng-container>
             </ng-container>
             <!-- Settings for App and Content -->
             <ng-container *ngIf="isApp">
@@ -114,25 +113,21 @@
           </tbody>
         </table>
       </mat-card-content>
-
-      <mat-card-actions>
-        <div class="actions-row">
-          <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://go.2sxc.org/settings' }"></ng-container>
-          <button mat-button (click)="analyze(AnalyzeParts.Settings)" tippy="See the result of combining all settings">
-            <mat-icon>manage_search</mat-icon>
-            <span>Analyze Combined Settings</span>
-          </button>
-        </div>
+      <div class="eav-card-space-div"></div>
+      <mat-card-actions align="start">
+        <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://go.2sxc.org/settings' }"></ng-container>
+        <button mat-button (click)="analyze(AnalyzeParts.Settings)" tippy="See the result of combining all settings">
+          <mat-icon>manage_search</mat-icon>
+          <span>Analyze Combined Settings</span>
+        </button>
       </mat-card-actions>
     </mat-card>
 
     <!-- Resources -->
-    <mat-card class="mat-elevation-z2">
-      <mat-card-header>
+    <mat-card class="eav-card">
+      <mat-card-header class="eav-card-header">
         <mat-card-title>Language Resources (i18n)</mat-card-title>
-        <div class="mat-card-header-icon">
-          <mat-icon>translate</mat-icon>
-        </div>
+        <mat-icon>translate</mat-icon>
       </mat-card-header>
       <mat-card-content>
         <p>
@@ -141,7 +136,7 @@
           <a href="https://go.2sxc.org/settings" target="_blank">docs</a>
         </p>
 
-        <table class="settings">
+        <table class="eav-settings-and-resources-table">
           <thead>
             <tr>
               <th></th>
@@ -199,7 +194,7 @@
                   </button>
                 </td>
               </tr>
-              <ng-container *ngTemplateOutlet="goToGlobal"></ng-container>
+            <ng-container *ngTemplateOutlet="goToGlobal"></ng-container>
             </ng-container>
             <!-- Resources for App and Content -->
             <ng-container *ngIf="isApp">
@@ -231,14 +226,13 @@
           </tbody>
         </table>
       </mat-card-content>
-      <mat-card-actions>
-        <div class="actions-row">
-          <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://go.2sxc.org/settings' }"></ng-container>
-          <button mat-button (click)="analyze(AnalyzeParts.Resources)" tippy="See the result of combining all resources">
-            <mat-icon>manage_search</mat-icon>
-            <span>Analyze Combined Resources</span>
-          </button>
-        </div>
+      <div class="eav-card-space-div"></div>
+      <mat-card-actions align="start">
+        <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://go.2sxc.org/settings' }"></ng-container>
+        <button mat-button (click)="analyze(AnalyzeParts.Resources)" tippy="See the result of combining all resources">
+          <mat-icon>manage_search</mat-icon>
+          <span>Analyze Combined Resources</span>
+        </button>
       </mat-card-actions>
     </mat-card>
 
@@ -267,25 +261,25 @@
 
   </div>
 
-  <div class="cards-box">
+  <div class="eav-cards-box">
     
     <app-app-configuration-card [dialogSettings]="dialogSettings">
     </app-app-configuration-card>
 
     <!-- LightSpeed -->
-    <mat-card class="mat-elevation-z2">
-      <mat-card-header>
+    <mat-card class="eav-card">
+      <mat-card-header class="eav-card-header">
         <mat-card-title>Performance</mat-card-title>
-        <div class="mat-card-header-icon">
-          <mat-icon>bolt</mat-icon>
-        </div>
+        <mat-icon>bolt</mat-icon>
       </mat-card-header>
       <mat-card-content>
-        LightSpeed Output Cache to speed up page by 50-90%
-
+        <p>
+          LightSpeed Output Cache to speed up page by 50-90%
+        </p>
         <app-feature-text-info [featureNameId]="'LightSpeedOutputCache'" [asInfo]="true"></app-feature-text-info>
       </mat-card-content>
-      <mat-card-actions>
+      <div class="eav-card-space-div"></div>
+      <mat-card-actions align="start">
         <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://go.2sxc.org/lightspeed' }"></ng-container>
         <button mat-button (click)="openLightSpeed()" disabled="{{!vm.lightSpeedEnabled}}">
           <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="vm.appLightSpeedCount || null"
@@ -296,62 +290,59 @@
     </mat-card>
 
     <!-- Security / CSP -->
-    <mat-card class="mat-elevation-z2">
-      <mat-card-header>
+    <mat-card class="eav-card">
+      <mat-card-header class="eav-card-header">
         <mat-card-title>Security</mat-card-title>
-        <div class="mat-card-header-icon">
-          <mat-icon>local_police</mat-icon>
-        </div>
+        <mat-icon>local_police</mat-icon>
       </mat-card-header>
       <mat-card-content>
-        ContentSecurityPolicy features in this App - for maximum control.
-
+        <p>
+          ContentSecurityPolicy (CSP) features in this App - for maximum control.
+        </p>
         <app-feature-text-info [featureNameId]="'ContentSecurityPolicy'" [asInfo]="true"></app-feature-text-info>
       </mat-card-content>
-      <mat-card-actions>
+      <div class="eav-card-space-div"></div>
+      <mat-card-actions align="start">
         <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://go.2sxc.org/csp' }"></ng-container>
       </mat-card-actions>
     </mat-card>
     
     <!-- Permissions -->
-    <mat-card class="mat-elevation-z2">
-      <mat-card-header>
+    <mat-card class="eav-card">
+      <mat-card-header class="eav-card-header">
         <mat-card-title>Permissions</mat-card-title>
-        <div class="mat-card-header-icon">
-          <mat-icon>person</mat-icon>
-        </div>
+        <mat-icon>person</mat-icon>
       </mat-card-header>
       <mat-card-content>
-        Give access to the entire app (all data). Use with care.
+        <p>
+          Give access to the entire app (all data). Use with care.
+        </p>
       </mat-card-content>
-      <mat-card-actions>
-        <div class="actions-row">
-          <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://docs.2sxc.org/basics/app/permissions.html' }"></ng-container>
-          <button mat-button [disabled]="!dialogSettings.Context.Enable.AppPermissions" (click)="openPermissions()">
-            <mat-icon matBadgeColor="accent" matBadgeSize="small" matBadgePosition="below after"
-              [matBadge]="dialogSettings.Context.App.Permissions.Count || null">person</mat-icon>
-            <span>
-              Edit Permissions
-              <ng-container *ngIf="!dialogSettings.Context.Enable.AppPermissions">
-                <ng-container *ngIf="isGlobal">
-                  (not on Global App)
-                </ng-container>
-                <ng-container *ngIf="isApp">
-                  (not on Content)
-                </ng-container>
+      <div class="eav-card-space-div"></div>
+      <mat-card-actions align="start">
+        <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://docs.2sxc.org/basics/app/permissions.html' }"></ng-container>
+        <button mat-button [disabled]="!dialogSettings.Context.Enable.AppPermissions" (click)="openPermissions()">
+          <mat-icon matBadgeColor="accent" matBadgeSize="small" matBadgePosition="below after"
+            [matBadge]="dialogSettings.Context.App.Permissions.Count || null">person</mat-icon>
+          <span>
+            Edit Permissions
+            <ng-container *ngIf="!dialogSettings.Context.Enable.AppPermissions">
+              <ng-container *ngIf="isGlobal">
+                (not on Global App)
               </ng-container>
-            </span>
-          </button>
-        </div>
-        <div class="actions-row">
-          <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://patrons.2sxc.org/features/feat/PermissionsByLanguage' }"></ng-container>
-          <button mat-button (click)="openLanguagePermissions(vm.langPermsEnabled)">
-            <mat-icon [matBadgeHidden]="vm.langPermsEnabled" matBadgeSize="small" matBadge="💎" matBadgePosition="below after">
-              person
-            </mat-icon>
-            <span>Language Permissions</span>
-          </button>
-        </div>
+              <ng-container *ngIf="isApp">
+                (not on Content)
+              </ng-container>
+            </ng-container>
+          </span>
+        </button>
+        <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://patrons.2sxc.org/features/feat/PermissionsByLanguage' }"></ng-container>
+        <button mat-button (click)="openLanguagePermissions(vm.langPermsEnabled)">
+          <mat-icon [matBadgeHidden]="vm.langPermsEnabled" matBadgeSize="small" matBadge="💎" matBadgePosition="below after">
+            person
+          </mat-icon>
+          <span>Language Permissions</span>
+        </button>
       </mat-card-actions>
     </mat-card>
   </div>
