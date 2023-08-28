@@ -1,204 +1,206 @@
 <ng-container *ngIf="viewModel$ | async as vm">
-  <!-- Platform Info -->
-  <mat-card appearance="outlined">
-    <mat-card-header>
-      <div mat-card-avatar>
-        <mat-icon>settings_applications</mat-icon>
-      </div>
-      <mat-card-title>Platform</mat-card-title>
-      <mat-card-subtitle>What you are running</mat-card-subtitle>
-    </mat-card-header>
-    <mat-card-content>
-      <div class="info-row" *ngFor="let info of vm.systemInfos">
-        <div class="info-row__label">{{ info.label }}</div>
-        <div class="info-row__value">
-          <span [tippy]="info.value" (click)="copyToClipboard(info.value)">{{ info.value }}</span>
-          <ng-container *ngIf="info.link">
-            <a class="info-row__link" [routerLink]="info.link.url">{{ info.link.label }}</a>
-          </ng-container>
+  <div class="eav-cards-box">
+    <!-- Platform Info -->
+    <mat-card class="eav-card">
+      <mat-card-header>
+        <div mat-card-avatar>
+          <mat-icon class="eav-card-header-avatar-icon">settings_applications</mat-icon>
         </div>
-      </div>
-      <div class="card-content-separator"></div>
-      <h4>Global Settings</h4>
-      <p>
-        This includes both pre-defined SystemSettings as well as custom Settings.
-        It will affect the entire Installation.
-      </p>
-      <div class="card-actions">
+        <mat-card-title>Platform</mat-card-title>
+        <mat-card-subtitle>What you are running</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="eav-info-row" *ngFor="let info of vm.systemInfos">
+          <div class="eav-info-row__label">{{ info.label }}:</div>
+          <div class="eav-info-row__value">
+            <span class="eav-info-row__value__span eav-click" [tippy]="info.value" (click)="copyToClipboard(info.value)">{{ info.value }}</span>
+            <ng-container *ngIf="info.link">
+              <a class="eav-info-row__link" [routerLink]="info.link.url">{{ info.link.label }}</a>
+            </ng-container>
+          </div>
+        </div>
+        <h4>Global Settings</h4>
+        <p>
+          This includes both pre-defined SystemSettings as well as custom Settings.
+          It will affect the entire Installation.
+        </p>
+      </mat-card-content>
+      <div class="eav-card-space-div"></div>
+      <mat-card-actions align="start">
         <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://go.2sxc.org/settings' }"></ng-container>
-        <button mat-button (click)="openGlobalSettings()">
-          <mat-icon>open_in_new</mat-icon>
+        <button mat-button class="eav-button__with-icon" (click)="openGlobalSettings()">
+          <mat-icon class="eav-icon">open_in_new</mat-icon>
           <span>Open Global Settings</span>
         </button>
-      </div>
-    </mat-card-content>
-  </mat-card>
-
-  <!-- Site Info -->
-  <mat-card appearance="outlined">
-    <mat-card-header>
-      <div mat-card-avatar>
-        <mat-icon>public</mat-icon>
-      </div>
-      <mat-card-title>This Site</mat-card-title>
-      <mat-card-subtitle>The current Site you're on</mat-card-subtitle>
-    </mat-card-header>
-    <mat-card-content>
-      <div class="info-row" *ngFor="let info of vm.siteInfos">
-        <div class="info-row__label">{{ info.label }}</div>
-        <div class="info-row__value">
-          <span [tippy]="info.value" (click)="copyToClipboard(info.value)">{{ info.value }}</span>
-          <ng-container *ngIf="info.link">
-            <a class="info-row__link" *ngIf="info.link.target === 'angular'" [routerLink]="info.link.url">{{
-              info.link.label
-              }}</a>
-            <a class="info-row__link" *ngIf="info.link.target !== 'angular'" [href]="info.link.url"
-              [target]="info.link.target">{{ info.link.label }}</a>
-          </ng-container>
+      </mat-card-actions>
+    </mat-card>
+    
+    <!-- Site Info -->
+    <mat-card class="eav-card">
+      <mat-card-header>
+        <div mat-card-avatar>
+          <mat-icon class="eav-card-header-avatar-icon">public</mat-icon>
         </div>
-      </div>
-      <div class="card-content-separator"></div>
-      <h4>Site Settings</h4>
-      <p>
-        This includes both pre-defined SystemSettings as well as custom Settings.
-        It will affect the entire Site / Portal.
-      </p>
-      <div class="card-actions">
+        <mat-card-title>This Site</mat-card-title>
+        <mat-card-subtitle>The current Site you're on</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="eav-info-row" *ngFor="let info of vm.siteInfos">
+          <div class="eav-info-row__label">{{ info.label }}:</div>
+          <div class="eav-info-row__value">
+            <span [tippy]="info.value" (click)="copyToClipboard(info.value)">{{ info.value }}</span>
+            <ng-container *ngIf="info.link">
+              <a class="eav-info-row__link" *ngIf="info.link.target === 'angular'" [routerLink]="info.link.url">{{
+                info.link.label
+                }}</a>
+              <a class="eav-info-row__link" *ngIf="info.link.target !== 'angular'" [href]="info.link.url"
+                [target]="info.link.target">{{ info.link.label }}</a>
+            </ng-container>
+          </div>
+        </div>
+        <div class="card-content-separator"></div>
+        <h4>Site Settings</h4>
+        <p>
+          This includes both pre-defined SystemSettings as well as custom Settings.
+          It will affect the entire Site / Portal.
+        </p>
+      </mat-card-content>
+      <div class="eav-card-space-div"></div>
+      <mat-card-actions align="start">
         <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://go.2sxc.org/settings' }"></ng-container>
-        <button mat-button (click)="openSiteSettings()">
-          <mat-icon>open_in_new</mat-icon>
+        <button mat-button class="eav-button__with-icon" (click)="openSiteSettings()">
+          <mat-icon class="eav-icon">open_in_new</mat-icon>
           <span>Open Site Settings</span>
         </button>
-      </div>
-    </mat-card-content>
-  </mat-card>
-
-  <!-- Performance / Lightspeed -->
-  <mat-card appearance="outlined">
-    <mat-card-header>
-      <div mat-card-avatar>
-        <mat-icon>bolt</mat-icon>
-      </div>
-      <mat-card-title>Performance</mat-card-title>
-      <mat-card-subtitle>Performance Enhancements and Caching</mat-card-subtitle>
-    </mat-card-header>
-    <mat-card-content>
-      <app-feature-text-info [featureNameId]="'LightSpeedOutputCache'" [asInfo]="true"></app-feature-text-info>
-  
-      <div *ngIf="vm.lsEnabled">
-        LightSpeed is enabled.
-        Configure it in each site/app as you need.
-      </div>
-    </mat-card-content>
-    <mat-card-actions>
-      <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://go.2sxc.org/lightspeed' }"></ng-container>
-    </mat-card-actions>
-  </mat-card>
-
-  <!-- Security -->
-  <mat-card appearance="outlined">
-    <mat-card-header>
-      <div mat-card-avatar>
-        <mat-icon>local_police</mat-icon>
-      </div>
-      <mat-card-title>Security</mat-card-title>
-      <mat-card-subtitle>System Security Features</mat-card-subtitle>
-    </mat-card-header>
-    <mat-card-content>
-      <app-feature-text-info [featureNameId]="'ContentSecurityPolicy'" [asInfo]="true"></app-feature-text-info>
-  
-      <div *ngIf="vm.cspEnabled">
-        ContentSecurityPolicy is enabled.
-        Configure it in each site/app as you need.
-      </div>
-    </mat-card-content>
-    <mat-card-actions>
-      <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://go.2sxc.org/csp' }"></ng-container>
-    </mat-card-actions>
-  </mat-card>
-
-  <!-- Insights -->
-  <mat-card appearance="outlined">
-    <mat-card-header>
-      <div mat-card-avatar>
-        <mat-icon>speed</mat-icon>
-      </div>
-      <mat-card-title>2sxc Insights</mat-card-title>
-      <mat-card-subtitle>See what's happening under the hood</mat-card-subtitle>
-    </mat-card-header>
-    <mat-card-content>
-      <h4>2sxc Insights for Super Users</h4>
-      <p>
-        This is to access a special section to see what is really in the server memory.
-        It's intended for extensive debugging - see also
-        <a href="https://2sxc.org/en/blog/post/using-2sxc-insights" target="_blank">this blog post</a>.
-      </p>
-      <mat-card-actions>
-      <!-- <div class="card-actions"> -->
-        <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://go.2sxc.org/insights' }"></ng-container>
-        <button mat-button (click)="openInsights()">
-          <mat-icon>open_in_new</mat-icon>
-          <span>Open 2sxc Insights</span>
-        </button>
-      <!-- </div> -->
       </mat-card-actions>
-      <div class="card-content-separator"></div>
-      <h4>Activate Page Level Logging</h4>
-      <form #activateLogForm="ngForm" class="activate-log-form" (ngSubmit)="activatePageLog(activateLogForm)">
-        <div>
-          This will place insights-logs in the HTML of the user output for users with ?debug=true in the url.
-          It can only be activated for short periods of time.
+    </mat-card>
+    
+    <!-- Performance / Lightspeed -->
+    <mat-card class="eav-card">
+      <mat-card-header>
+        <div mat-card-avatar>
+          <mat-icon class="eav-card-header-avatar-icon">bolt</mat-icon>
         </div>
-        <mat-form-field color="accent">
-          <mat-label>Duration in Minutes</mat-label>
-          <input matInput type="number" min="0" required [pattern]="positiveWholeNumber" [(ngModel)]="pageLogDuration"
-            name="Duration" #duration="ngModel" [disabled]="vm.loading">
-        </mat-form-field>
-        <ng-container *ngIf="duration.touched && duration.errors">
-          <app-field-hint *ngIf="duration.errors.pattern" [isError]="true">
-            Only positive whole numbers
-          </app-field-hint>
-        </ng-container>
-        <div class="form-actions">
-          <button mat-raised-button type="submit" color="accent" [disabled]="!activateLogForm.valid || vm.loading">
-            Activate
+        <mat-card-title>Performance</mat-card-title>
+        <mat-card-subtitle>Performance Enhancements and Caching</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <app-feature-text-info [featureNameId]="'LightSpeedOutputCache'" [asInfo]="true"></app-feature-text-info>
+        <div *ngIf="vm.lsEnabled">
+          LightSpeed is enabled.
+          Configure it in each site/app as you need.
+        </div>
+      </mat-card-content>
+      <div class="eav-card-space-div"></div>
+      <mat-card-actions align="start">
+        <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://go.2sxc.org/lightspeed' }"></ng-container>
+      </mat-card-actions>
+    </mat-card>
+    
+    <!-- Security -->
+    <mat-card class="eav-card">
+      <mat-card-header>
+        <div mat-card-avatar>
+          <mat-icon class="eav-card-header-avatar-icon">local_police</mat-icon>
+        </div>
+        <mat-card-title>Security</mat-card-title>
+        <mat-card-subtitle>System Security Features</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <app-feature-text-info [featureNameId]="'ContentSecurityPolicy'" [asInfo]="true"></app-feature-text-info>
+        <div *ngIf="vm.cspEnabled">
+          ContentSecurityPolicy is enabled.
+          Configure it in each site/app as you need.
+        </div>
+      </mat-card-content>
+      <div class="eav-card-space-div"></div>
+      <mat-card-actions align="start">
+        <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://go.2sxc.org/csp' }"></ng-container>
+      </mat-card-actions>
+    </mat-card>
+    
+    <!-- Insights -->
+    <mat-card class="eav-card">
+      <mat-card-header>
+        <div mat-card-avatar>
+          <mat-icon class="eav-card-header-avatar-icon">speed</mat-icon>
+        </div>
+        <mat-card-title>2sxc Insights</mat-card-title>
+        <mat-card-subtitle>See what's happening under the hood</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <h4>2sxc Insights for Super Users</h4>
+        <p>
+          This is to access a special section to see what is really in the server memory.
+          It's intended for extensive debugging - see also
+          <a href="https://2sxc.org/en/blog/post/using-2sxc-insights" target="_blank">this blog post</a>.
+        </p>
+        <div align="start">
+          <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://go.2sxc.org/insights' }"></ng-container>
+          <button mat-button class="eav-button__with-icon" (click)="openInsights()">
+            <mat-icon class="eav-icon">open_in_new</mat-icon>
+            <span>Open 2sxc Insights</span>
           </button>
         </div>
-      </form>
-    </mat-card-content>
-  </mat-card>
-
-  <!-- Warnings -->
-  <mat-card appearance="outlined">
-    <mat-card-header>
-      <div mat-card-avatar>
-        <mat-icon>{{ vm.warningIcon }}</mat-icon>
-      </div>
-      <mat-card-title>Warnings</mat-card-title>
-      <mat-card-subtitle>System and Code Warnings</mat-card-subtitle>
-    </mat-card-header>
-    <mat-card-content>
-      <div class="info-row" *ngFor="let info of vm.warningInfos">
-        <div class="info-row__label">{{ info.label }}</div>
-        <div class="info-row__value">
-          <span [tippy]="info.value" (click)="copyToClipboard(info.value)">{{ info.value }}</span>
-          <ng-container *ngIf="info.link">
-            <a class="info-row__link" *ngIf="info.link.target === 'angular'" [routerLink]="info.link.url">{{
-              info.link.label
-              }}</a>
-            <a class="info-row__link" *ngIf="info.link.target !== 'angular'" [href]="info.link.url"
-              [target]="info.link.target">{{ info.link.label }}</a>
+        <div class="card-content-separator"></div>
+        <h4>Activate Page Level Logging</h4>
+        <form #activateLogForm="ngForm" class="activate-log-form" (ngSubmit)="activatePageLog(activateLogForm)">
+          <div>
+            This will place insights-logs in the HTML of the user output for users with <code>?debug=true</code> in the url.
+            It can only be activated for short periods of time.
+          </div>
+          <mat-form-field color="accent">
+            <mat-label>Duration in Minutes</mat-label>
+            <input matInput type="number" min="0" required [pattern]="positiveWholeNumber" [(ngModel)]="pageLogDuration"
+              name="Duration" #duration="ngModel" [disabled]="vm.loading">
+          </mat-form-field>
+          <ng-container *ngIf="duration.touched && duration.errors">
+            <app-field-hint *ngIf="duration.errors.pattern" [isError]="true">
+              Only positive whole numbers
+            </app-field-hint>
           </ng-container>
+        </form>
+      </mat-card-content>
+      <div class="eav-card-space-div"></div>
+      <mat-card-actions align="end">
+        <button mat-raised-button type="submit" color="accent" [disabled]="!activateLogForm.valid || vm.loading">
+          Activate
+        </button>
+      </mat-card-actions>
+    </mat-card>
+    
+    <!-- Warnings -->
+    <mat-card class="eav-card">
+      <mat-card-header>
+        <div mat-card-avatar>
+          <mat-icon class="eav-card-header-avatar-icon">{{ vm.warningIcon }}</mat-icon>
         </div>
-      </div>
-    </mat-card-content>
-  </mat-card>
+        <mat-card-title>Warnings</mat-card-title>
+        <mat-card-subtitle>System and Code Warnings</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+      <div class="eav-info-row" *ngFor="let info of vm.warningInfos">
+          <div class="eav-info-row__label eav-long">{{ info.label }}:</div>
+          <div class="eav-info-row__value">
+            <span [tippy]="info.value" (click)="copyToClipboard(info.value)">{{ info.value }}</span>
+            <ng-container *ngIf="info.link">
+              <a class="eav-info-row__link" *ngIf="info.link.target === 'angular'" [routerLink]="info.link.url">
+                {{info.link.label}}</a>
+              <a class="eav-info-row__link" *ngIf="info.link.target !== 'angular'" [href]="info.link.url"
+                [target]="info.link.target">{{ info.link.label }}</a>
+            </ng-container>
+          </div>
+        </div>
+      </mat-card-content>
+      <div class="eav-card-space-div"></div>
+    </mat-card>
+  </div>
 </ng-container>
 
 
 <ng-template #docsLink let-icon let-label let-link="link">
-  <a mat-button href="{{link}}" target="_blank" [tippy]="'online documentation'">
-    <mat-icon>{{ icon ?? "menu_book" }}</mat-icon>
+  <a mat-button class="eav-button__with-icon" href="{{link}}" target="_blank" [tippy]="'online documentation'">
+    <mat-icon class="eav-icon">{{ icon ?? "menu_book" }}</mat-icon>
     <span>{{ label }}</span>
   </a>
 </ng-template>

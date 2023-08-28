@@ -1,85 +1,64 @@
-:host {
+.eav-cards-box {
   display: flex;
   flex-wrap: wrap;
-  padding-top: 40px;
-}
 
-.mat-mdc-card {
-  width: 400px;
-  margin-right: 24px;
-  margin-bottom: 24px;
-}
+  .eav-card {
+    width: 560px;
+    margin: 8px;
+    padding-top: 8px;
 
-.mat-mdc-card-avatar .mat-icon {
-  width: 40px;
-  height: 40px;
-  font-size: 40px;
-}
+    // .eav-card-header {
+    //   display: flex;
+    //   justify-content: space-between;
+    // }
 
-.mat-mdc-card-title {
-  font-size: 20px;
-  font-weight: 500;
-}
+    .eav-card-header-avatar-icon {
+      font-size: 40px;
+      height: 40px;
+      width: 40px;
+    }
 
-.mat-mdc-card-subtitle {
-  font-size: 14px;
-}
+    .eav-card-space-div {
+      height: 100%;
+    }
 
-.mat-mdc-card-content {
-  font-size: 14px;
-  margin-top: 12px;
-}
-
-.card-content-separator {
-  height: 8px;
-}
-
-.card-actions {
-  margin-right: -8px;
-  margin-left: -8px;
-
-  .mat-icon {
-    margin-right: 4px;
+    .eav-button {
+      &__with-icon {
+        .eav-icon {
+          font-size: 24px;
+          height: 24px;
+          width: 24px;
+        }
+      }
+    }
   }
 }
 
-// Make sure icons (before the text) have extra padding
-.mat-mdc-button .mat-icon {
-  margin-right: 4px; 
-}
-
-.info-row {
+.eav-info-row {
   display: flex;
-  overflow-wrap: anywhere;
-  margin-top: 4px;
-  margin-bottom: 4px;
 
   &__label {
     flex: 1;
     font-weight: 500;
+
+    &.eav-long {
+      flex: 2;
+    }
   }
 
   &__value {
-    flex: 2;
+    flex: 3;
 
-    span {
+    .eav-click {
       cursor: pointer;
+    }
+
+    &__span {
+      word-break: break-all;
     }
   }
 
   &__link {
     margin-left: 4px;
-  }
-}
-
-.activate-log-form {
-  .mat-mdc-form-field {
-    height: auto;
-  }
-
-  .form-actions {
-    margin-top: 8px;
-    display: flex;
-    justify-content: flex-end;
   }
 }
