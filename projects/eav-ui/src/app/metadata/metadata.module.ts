@@ -23,6 +23,7 @@ import { MetadataRoutingModule } from './metadata-routing.module';
 import { MetadataSaveDialogComponent } from './metadata-save-dialog/metadata-save-dialog.component';
 import { MetadataComponent } from './metadata.component';
 import { MatBadgeModule } from '@angular/material/badge';
+import { MatCardModule } from '@angular/material/card';
 
 @NgModule({
   declarations: [
@@ -49,6 +50,7 @@ import { MatBadgeModule } from '@angular/material/badge';
     MatSlideToggleModule,
     EcoFabSpeedDialModule,
     MatBadgeModule,
+    MatCardModule,
   ],
   providers: [
     Context,
