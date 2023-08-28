@@ -1,37 +1,7 @@
-.eav-cards-box {
-  display: flex;
-  flex-wrap: wrap;
-
-  .eav-card {
-    width: 560px;
-    margin: 8px;
-    padding-top: 8px;
-
-    .eav-card-header {
-      display: flex;
-      justify-content: space-between;
-    }
-
-    .eav-card-space-div {
-      height: 100%;
-    }
-
-    .eav-button {
-      &__with-icon {
-        .eav-icon {
-          font-size: 24px;
-          height: 24px;
-          width: 24px;
-        }
-      }
-    }
-  }
-}
-
 .eav-settings-and-resources-table {
   width: 100%;
 
-  td{
+  td {
     text-align: center;
   }
 
