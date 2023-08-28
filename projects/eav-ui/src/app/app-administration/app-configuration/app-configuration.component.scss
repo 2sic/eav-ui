@@ -18,6 +18,16 @@
   }
 }
 
+.eav-mat-button{
+  &__with-icon {
+    .eav-mat-icon{
+      font-size: 24px;
+      height: 24px;
+      width: 24px;
+    }
+  }
+}
+
 .eav-settings-and-resources-table {
   width: 100%;
 
