@@ -18,8 +18,8 @@
     </form>
   </mat-card-content>
   <mat-card-actions>
-    <button mat-raised-button type="button" (click)="closeDialog()">Cancel</button>
-    <button mat-raised-button type="button" color="accent" [disabled]="!form.valid" (click)="confirm()">
+    <button mat-raised-button class="eav-card-action-button" (click)="closeDialog()">Cancel</button>
+    <button mat-raised-button color="accent" class="eav-card-action-button" [disabled]="!form.valid" (click)="confirm()">
       Confirm
     </button>
   </mat-card-actions>
