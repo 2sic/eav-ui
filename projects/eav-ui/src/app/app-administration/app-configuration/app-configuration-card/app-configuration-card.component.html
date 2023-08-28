@@ -30,22 +30,22 @@
   <div class="eav-card-space-div"></div>
   <mat-card-actions align="start">
     <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://docs.2sxc.org/basics/app/configuration.html' }"></ng-container>
-    <button mat-button class="eav-mat-button__with-icon" (click)="edit()">
+    <button mat-button class="eav-button__with-icon" (click)="edit()">
       <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="vm.appConfigurationsCount || null"
-        matBadgePosition="below after" class="eav-mat-icon">edit</mat-icon>
+        matBadgePosition="below after" class="eav-icon">edit</mat-icon>
       <span>Edit</span>
     </button>
-    <button mat-button class="eav-mat-button__with-icon" (click)="openMetadata()">
+    <button mat-button class="eav-button__with-icon" (click)="openMetadata()">
       <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="vm.appMetadataCount || null"
-        matBadgePosition="below after" class="eav-mat-icon">local_offer</mat-icon>
+        matBadgePosition="below after" class="eav-icon">local_offer</mat-icon>
       <span>Metadata</span>
     </button>
   </mat-card-actions>
 </mat-card>
 
 <ng-template #docsLink let-icon let-label let-link="link">
-  <a mat-button class="eav-mat-button__with-icon" href="{{link}}" target="_blank" [tippy]="'online documentation'">
-    <mat-icon class="eav-mat-icon">{{ icon ?? "menu_book" }}</mat-icon>
+  <a mat-button class="eav-button__with-icon" href="{{link}}" target="_blank" [tippy]="'online documentation'">
+    <mat-icon class="eav-icon">{{ icon ?? "menu_book" }}</mat-icon>
     <span>{{ label }}</span>
   </a>
 </ng-template>

@@ -15,15 +15,15 @@
     .eav-card-space-div {
       height: 100%;
     }
-  }
-}
 
-.eav-mat-button{
-  &__with-icon {
-    .eav-mat-icon{
-      font-size: 24px;
-      height: 24px;
-      width: 24px;
+    .eav-button {
+      &__with-icon {
+        .eav-icon {
+          font-size: 24px;
+          height: 24px;
+          width: 24px;
+        }
+      }
     }
   }
 }
