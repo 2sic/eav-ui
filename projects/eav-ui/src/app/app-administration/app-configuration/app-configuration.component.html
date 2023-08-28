@@ -116,8 +116,8 @@
       <div class="eav-card-space-div"></div>
       <mat-card-actions align="start">
         <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://go.2sxc.org/settings' }"></ng-container>
-        <button mat-button class="eav-mat-button__with-icon" (click)="analyze(AnalyzeParts.Settings)" tippy="See the result of combining all settings">
-          <mat-icon class="eav-mat-icon">manage_search</mat-icon>
+        <button mat-button class="eav-button__with-icon" (click)="analyze(AnalyzeParts.Settings)" tippy="See the result of combining all settings">
+          <mat-icon class="eav-icon">manage_search</mat-icon>
           <span>Analyze Combined Settings</span>
         </button>
       </mat-card-actions>
@@ -229,8 +229,8 @@
       <div class="eav-card-space-div"></div>
       <mat-card-actions align="start">
         <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://go.2sxc.org/settings' }"></ng-container>
-        <button mat-button class="eav-mat-button__with-icon" (click)="analyze(AnalyzeParts.Resources)" tippy="See the result of combining all resources">
-          <mat-icon class="eav-mat-icon">manage_search</mat-icon>
+        <button mat-button class="eav-button__with-icon" (click)="analyze(AnalyzeParts.Resources)" tippy="See the result of combining all resources">
+          <mat-icon class="eav-icon">manage_search</mat-icon>
           <span>Analyze Combined Resources</span>
         </button>
       </mat-card-actions>
@@ -281,9 +281,9 @@
       <div class="eav-card-space-div"></div>
       <mat-card-actions align="start">
         <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://go.2sxc.org/lightspeed' }"></ng-container>
-        <button mat-button  class="eav-mat-button__with-icon" (click)="openLightSpeed()" disabled="{{!vm.lightSpeedEnabled}}">
+        <button mat-button  class="eav-button__with-icon" (click)="openLightSpeed()" disabled="{{!vm.lightSpeedEnabled}}">
           <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="vm.appLightSpeedCount || null"
-            matBadgePosition="below after" class="eav-mat-icon">bolt</mat-icon>
+            matBadgePosition="below after" class="eav-icon">bolt</mat-icon>
           <span>Edit LightSpeed</span>
         </button>
       </mat-card-actions>
@@ -321,9 +321,9 @@
       <div class="eav-card-space-div"></div>
       <mat-card-actions align="start">
         <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://docs.2sxc.org/basics/app/permissions.html' }"></ng-container>
-        <button mat-button class="eav-mat-button__with-icon" [disabled]="!dialogSettings.Context.Enable.AppPermissions" (click)="openPermissions()">
+        <button mat-button class="eav-button__with-icon" [disabled]="!dialogSettings.Context.Enable.AppPermissions" (click)="openPermissions()">
           <mat-icon matBadgeColor="accent" matBadgeSize="small" matBadgePosition="below after"
-            [matBadge]="dialogSettings.Context.App.Permissions.Count || null" class="eav-mat-icon">person</mat-icon>
+            [matBadge]="dialogSettings.Context.App.Permissions.Count || null" class="eav-icon">person</mat-icon>
           <span>
             Edit Permissions
             <ng-container *ngIf="!dialogSettings.Context.Enable.AppPermissions">
@@ -337,9 +337,9 @@
           </span>
         </button>
         <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://patrons.2sxc.org/features/feat/PermissionsByLanguage' }"></ng-container>
-        <button mat-button class="eav-mat-button__with-icon" (click)="openLanguagePermissions(vm.langPermsEnabled)">
+        <button mat-button class="eav-button__with-icon" (click)="openLanguagePermissions(vm.langPermsEnabled)">
           <mat-icon [matBadgeHidden]="vm.langPermsEnabled" matBadgeSize="small" matBadge="💎" matBadgePosition="below after"
-            class="eav-mat-icon">
+            class="eav-icon">
             person
           </mat-icon>
           <span>Language Permissions</span>
@@ -351,8 +351,8 @@
 </ng-container>
 
 <ng-template #docsLink let-icon let-label let-link="link">
-  <a mat-button class="eav-mat-button__with-icon" href="{{link}}" target="_blank" [tippy]="'online documentation'">
-    <mat-icon class="eav-mat-icon">{{ icon ?? "menu_book" }}</mat-icon>
+  <a mat-button class="eav-button__with-icon" href="{{link}}" target="_blank" [tippy]="'online documentation'">
+    <mat-icon class="eav-icon">{{ icon ?? "menu_book" }}</mat-icon>
     <span>{{ label }}</span>
   </a>
 </ng-template>
