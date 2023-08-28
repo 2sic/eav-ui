@@ -31,8 +31,8 @@
       </mat-card-content>
       <div class="eav-card-space-div"></div>
       <mat-card-actions align="start">
-        <button mat-button (click)="exportApp()">
-          <mat-icon>cloud_download</mat-icon>
+        <button mat-button class="eav-button__with-icon" (click)="exportApp()">
+          <mat-icon class="eav-icon">cloud_download</mat-icon>
           <span>Export App</span>
         </button>
       </mat-card-actions>
@@ -51,12 +51,12 @@
       </mat-card-content>
       <div class="eav-card-space-div"></div>
       <mat-card-actions align="start">
-        <button mat-button (click)="exportParts()">
-          <mat-icon>cloud_download</mat-icon>
+        <button mat-button class="eav-button__with-icon" (click)="exportParts()">
+          <mat-icon class="eav-icon">cloud_download</mat-icon>
           <span>Export Parts</span>
         </button>
-        <button mat-button (click)="importParts()">
-          <mat-icon>cloud_upload</mat-icon>
+        <button mat-button class="eav-button__with-icon" (click)="importParts()">
+          <mat-icon class="eav-icon">cloud_upload</mat-icon>
           <span>Import Parts</span>
         </button>
       </mat-card-actions>
@@ -87,22 +87,22 @@
       <div class="eav-card-space-div"></div>
       <mat-card-actions align="start">
         <ng-container *ngIf="!appStateAdvanced">
-          <button mat-button (click)="exportAppXml(false)">
-            <mat-icon>more_time</mat-icon>
+          <button mat-button class="eav-button__with-icon" (click)="exportAppXml(false)">
+            <mat-icon class="eav-icon">more_time</mat-icon>
             <span>Save state</span>
           </button>
-          <button mat-button (click)="resetApp(false)">
-            <mat-icon>restore</mat-icon>
+          <button mat-button class="eav-button__with-icon" (click)="resetApp(false)">
+            <mat-icon class="eav-icon">restore</mat-icon>
             <span>Restore state</span>
           </button>
         </ng-container>
         <ng-container *ngIf="appStateAdvanced">
-          <button mat-button (click)="exportAppXml(true)">
-            <mat-icon>more_time</mat-icon>
+          <button mat-button class="eav-button__with-icon" (click)="exportAppXml(true)">
+            <mat-icon class="eav-icon">more_time</mat-icon>
             <span>Save with Assets</span>
           </button>
-          <button mat-button (click)="resetApp(true)">
-            <mat-icon>restore</mat-icon>
+          <button mat-button class="eav-button__with-icon" (click)="resetApp(true)">
+            <mat-icon class="eav-icon">restore</mat-icon>
             <span>Restore with Assets</span>
           </button>
         </ng-container>
