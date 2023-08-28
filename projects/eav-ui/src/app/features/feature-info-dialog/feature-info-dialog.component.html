@@ -4,15 +4,15 @@
   </mat-card-header>
   <mat-card-content>
     <p [innerHtml]="vm.feature.Description | safeHtml"></p>
-    <div class="eav-feature-info-row">
-      <div class="eav-feature-info-row__label">{{ "Features.Status" | translate }}:</div>
-      <div class="eav-feature-info-row__value">
+    <div class="eav-info-row">
+      <div class="eav-info-row__label">{{ "Features.Status" | translate }}:</div>
+      <div class="eav-info-row__value">
         <span>{{ (vm.feature.Enabled ? "Features.Active" : "Features.NotActive") | translate }}</span>
       </div>
     </div>
-    <div class="eav-feature-info-row" *ngIf="vm.feature.NameId as id">
-      <div class="eav-feature-info-row__label">ID:</div>
-      <div class="eav-feature-info-row__value eav_click">
+    <div class="eav-info-row" *ngIf="vm.feature.NameId as id">
+      <div class="eav-info-row__label">ID:</div>
+      <div class="eav-info-row__value eav_click">
         <span [tippy]="id" (click)="copyToClipboard(id)">{{ id }}</span>
       </div>
     </div>
