@@ -204,7 +204,7 @@ export class MetadataComponent extends BaseComponent implements OnInit, OnDestro
         autoFocus: false,
         data,
         viewContainerRef: this.viewContainerRef,
-        width: '650px',
+        width: '400px',
       });
       confirmationDialogRef.afterClosed().subscribe((isConfirmed: boolean) => {
         if (isConfirmed) {
