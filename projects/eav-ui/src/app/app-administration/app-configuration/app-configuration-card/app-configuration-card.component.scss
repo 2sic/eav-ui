@@ -23,14 +23,31 @@
   }
 }
 
-.eav-configuration-table {
-  width: 100%;
+.eav-info-row {
+  display: flex;
 
-  td {
-    text-align: left;
+  &__label {
+    flex: 1;
+    font-weight: 500;
+
+    &.eav-long {
+      flex: 2;
+    }
   }
 
-  tbody th {
-    text-align: left;
+  &__value {
+    flex: 3;
+
+    .eav-click {
+      cursor: pointer;
+    }
+
+    &__span {
+      word-break: break-all;
+    }
+  }
+
+  &__link {
+    margin-left: 4px;
   }
 }
