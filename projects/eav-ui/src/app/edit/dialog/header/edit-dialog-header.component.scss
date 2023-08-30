@@ -1,6 +1,6 @@
 @import "../../assets/styles/variables.scss";
 
-.header {
+.eav-header {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -17,16 +17,10 @@
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.26);
 
   &__exit-button {
-    // width: 30px;
-    // height: 30px;
-    // flex-shrink: 0;
-    // line-height: 30px;
-
     .mat-icon {
       font-size: 16px;
       width: 16px;
       height: 16px;
-      line-height: 16px !important;
     }
   }
 
