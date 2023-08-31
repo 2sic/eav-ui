@@ -1,100 +1,98 @@
 <ng-container *ngIf="viewModel$ | async as vm">
+  <div class="eav-dialog">
+    <div class="eav-dialog-header">
+      <div class="eav-dialog-header__title">Register this System on 2sxc Patrons</div>
+    </div>
 
-  <div mat-mdc-dialog-title>
-    <div class="dialog-title-box">Register this System on 2sxc Patrons</div>
+    <div class="eav-dialog-content">
+      <h2>Basic Mode: Free Registration with Goodies</h2>
+      <p>
+        You can just register for free to unlock some features.
+        They are mainly enhancements for which we wish to contact you in case of critical security issues.
+      </p>
+      <a [innerHtml]="logo | safeHtml" href="https://patrons.2sxc.org/" target="_blank" style="width: 50%; float: right;"></a>
+      <h2>Hero Mode: Support 2sxc, get Awesome Stuff</h2>
+      <p>
+        If you want to become a champion and pay a monthly contribution
+        to support the open-source development of 2sxc, you will get some
+        <a href="https://go.2sxc.org/bundles" target="_blank">really nice features</a> as well 🚀.
+      </p>
+      <p>
+        Thanks for loving and supporting 2sxc 💖
+      </p>
+      
+      <h2>System Specs</h2>
+      <p *ngIf="vm.systemInfoSet">
+        <b>Status:</b> {{ vm.systemInfoSet.License.Owner ? "this system is registered to " +
+        vm.systemInfoSet.License.Owner : "this system is not yet registered" }}
+        <br>
+        <b>Fingerprint:</b> <span [tippy]="'Click to copy to clipboard'"
+          (click)="copyToClipboard(vm.systemInfoSet.System.Fingerprint)"> {{ vm.systemInfoSet.System.Fingerprint
+          }}</span>
+        <br>
+        <br>
+      </p>
+
+      <div class="eav-registration-cards">
+        <mat-card class="eav-registration-cards__left">
+          <mat-card-header>
+            <div mat-card-avatar>
+              <mat-icon class="eav-card-header-avatar-icon">settings_applications</mat-icon>
+            </div>
+            <mat-card-title>Automatic Registration</mat-card-title>
+            <mat-card-subtitle>The simple way</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <p>
+              This will open 2sxc Patrons and give it the system fingerprint,
+              so you can then log in and assign it a name and features you want to activate.
+            </p>
+          </mat-card-content>
+          <mat-card-actions align="start">
+            <button mat-button class="eav-button__with-icon" tippy="Register" *ngIf="vm.systemInfoSet"
+              (click)="openLicenseRegistration(vm.systemInfoSet)">
+              <mat-icon class="eav-icon">app_registration</mat-icon>
+              <span>Register</span>
+            </button>
+            <button mat-button class="eav-button__with-icon" tippy="Retrieve license" (click)="retrieveLicense()">
+              <mat-icon class="eav-icon">download_for_offline</mat-icon>
+              <span>Retrieve license</span>
+            </button>
+          </mat-card-actions>
+        </mat-card>
+        
+        <mat-card class="eav-registration-cards__right">
+          <mat-card-header>
+            <div mat-card-avatar>
+              <mat-icon class="eav-card-header-avatar-icon">waving_hand</mat-icon>
+            </div>
+            <mat-card-title>Manual Registration</mat-card-title>
+            <mat-card-subtitle>Offline or special scenarios</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <p>
+              For offline or special scenarios you can just go to 2sxc Patrons and copy/paste the fingerprint yourself.
+              <br>
+              Click on the fingerprint above to copy it to your clipboard.
+            </p>
+            <div class="card-actions">
+              <button mat-button class="eav-button__with-icon" tippy="Register" (click)="registerManually()">
+                <mat-icon class="eav-icon">app_registration</mat-icon>
+                <span>Register Manually</span>
+              </button>
+              <button mat-button class="eav-button__with-icon" tippy="Upload license" (click)="openLicenseUpload()">
+                <mat-icon class="eav-icon">cloud_upload</mat-icon>
+                <span>Upload license</span>
+              </button>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+    <mat-dialog-actions align="end">
+      <button mat-raised-button (click)="closeDialog()">
+        Close
+      </button>
+    </mat-dialog-actions>
   </div>
-
-  <div class="dialog-description">
-    <h2>Basic Mode: Free Registration with Goodies</h2>
-    <p>
-      You can just register for free to unlock some features.
-      They are mainly enhancements for which we wish to contact you in case of critical security issues.
-    </p>
-    <a [innerHtml]="logo | safeHtml" href="https://patrons.2sxc.org/" target="_blank"
-      style="width: 50%; float: right;"></a>
-    <h2>Hero Mode: Support 2sxc, get Awesome Stuff</h2>
-    <p>
-      If you want to become a champion and pay a monthly contribution
-      to support the open-source development of 2sxc, you will get some
-      <a href="https://go.2sxc.org/bundles" target="_blank">really nice features</a> as well 🚀.
-    </p>
-    <p>
-      Thanks for loving and supporting 2sxc 💖
-    </p>
-
-    <h2>System Specs</h2>
-    <p *ngIf="vm.systemInfoSet">
-      <b>Status:</b> {{ vm.systemInfoSet.License.Owner ? "this system is registered to " +
-      vm.systemInfoSet.License.Owner : "this system is not yet registered" }}
-      <br>
-      <b>Fingerprint:</b> <span [tippy]="'Click to copy to clipboard'"
-        (click)="copyToClipboard(vm.systemInfoSet.System.Fingerprint)"> {{ vm.systemInfoSet.System.Fingerprint
-        }}</span>
-      <br>
-      <br>
-    </p>
-  </div>
-
-  <div class="mat-cards-div">
-    <mat-card appearance="outlined" class="mat-card-left">
-      <mat-card-header>
-        <div mat-card-avatar>
-          <mat-icon>settings_applications</mat-icon>
-        </div>
-        <mat-card-title>Automatic Registration</mat-card-title>
-        <mat-card-subtitle>The simple way</mat-card-subtitle>
-      </mat-card-header>
-      <mat-card-content>
-        <p>
-          This will open 2sxc Patrons and give it the system fingerprint,
-          so you can then log in and assign it a name and features you want to activate.
-        </p>
-        <div class="card-actions">
-          <button mat-button mat-button tippy="Register" *ngIf="vm.systemInfoSet"
-            (click)="openLicenseRegistration(vm.systemInfoSet)">
-            <mat-icon>app_registration</mat-icon>
-            <span>Register</span>
-          </button>
-          <button mat-button tippy="Retrieve license" (click)="retrieveLicense()">
-            <mat-icon>download_for_offline</mat-icon>
-            <span>Retrieve license</span>
-          </button>
-        </div>
-      </mat-card-content>
-    </mat-card>
-
-    <mat-card appearance="outlined" class="mat-card-right">
-      <mat-card-header>
-        <div mat-card-avatar>
-          <mat-icon>waving_hand</mat-icon>
-        </div>
-        <mat-card-title>Manual Registration</mat-card-title>
-        <mat-card-subtitle>Offline or special scenarios</mat-card-subtitle>
-      </mat-card-header>
-      <mat-card-content>
-        <p>
-          For offline or special scenarios you can just go to 2sxc Patrons and copy/paste the fingerprint yourself.
-          <br>
-          Click on the fingerprint above to copy it to your clipboard.
-        </p>
-        <div class="card-actions">
-          <button mat-button mat-button tippy="Register" (click)="registerManually()">
-            <mat-icon>app_registration</mat-icon>
-            <span>Register Manually</span>
-          </button>
-          <button mat-button tippy="Upload license" (click)="openLicenseUpload()">
-            <mat-icon>cloud_upload</mat-icon>
-            <span>Upload license</span>
-          </button>
-        </div>
-      </mat-card-content>
-    </mat-card>
-  </div>
-
-  <div class="dialog-component-actions">
-    <button mat-raised-button (click)="closeDialog()">
-      Close
-    </button>
-  </div>
-
 </ng-container>
