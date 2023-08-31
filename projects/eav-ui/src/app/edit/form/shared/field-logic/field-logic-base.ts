@@ -31,7 +31,9 @@ export abstract class FieldLogicBase {
     return value === undefined || emptyEntityField;
   }
 
-  /** Update field settings */
+  /** 
+   * Update field settings - typically used on init and in every formula cycle
+   */
   abstract update(settings: FieldSettings, value: FieldValue, tools: FieldLogicTools): FieldSettings;
 
   /**

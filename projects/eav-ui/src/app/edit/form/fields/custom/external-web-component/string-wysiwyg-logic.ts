@@ -1,9 +1,11 @@
 import { FieldSettings, FieldValue, StringWysiwyg } from '../../../../../../../../edit-types';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
+import { EavConfig } from '../../../../shared/models';
 import { FieldLogicBase } from '../../../shared/field-logic/field-logic-base';
 import { FieldLogicTools } from '../../../shared/field-logic/field-logic-tools';
+import { FieldLogicWithValueInit } from '../../../shared/field-logic/field-logic-with-init';
 
-export class StringWysiwygLogic extends FieldLogicBase {
+export class StringWysiwygLogic extends FieldLogicBase implements FieldLogicWithValueInit {
   name = InputTypeConstants.StringWysiwyg;
 
   canAutoTranslate = true;
@@ -31,6 +33,11 @@ export class StringWysiwygLogic extends FieldLogicBase {
 
     return fixedSettings as FieldSettings;
   }
+
+  processValueOnLoad(value: FieldValue, eavConfig: EavConfig): FieldValue {
+    throw new Error('Method not implemented.');
+  }
+
 
   private fixImageUrls(value: FieldValue, tools: FieldLogicTools): FieldValue {
     if (typeof value !== 'string') return value;

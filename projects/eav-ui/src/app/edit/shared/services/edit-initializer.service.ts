@@ -135,12 +135,15 @@ export class EditInitializerService implements OnDestroy {
   }
 
   private initMissingValues(): void {
-    const items = this.itemService.getItems(this.eavService.eavConfig.itemGuids);
+    const eavConfig = this.eavService.eavConfig;
+    const formId = eavConfig.formId;
+    const items = this.itemService.getItems(eavConfig.itemGuids);
     const inputTypes = this.inputTypeService.getInputTypes();
     const languages = this.languageService.getLanguages();
-    const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
+    const defaultLanguage = this.languageInstanceService.getDefaultLanguage(formId);
+    /** force UI to switch to default language, because some values are missing in the default language */
     let switchToDefault = false;
-    const isCreateMode = this.eavService.eavConfig.createMode;
+    const isCreateMode = eavConfig.createMode;
 
     for (const item of items) {
       const contentTypeId = InputFieldHelpers.getContentTypeId(item);
@@ -192,8 +195,8 @@ export class EditInitializerService implements OnDestroy {
             BestValueModes.Strict,
           );
 
-          if (logic.isValueEmpty(defaultLanguageValue, isCreateMode)) {
           // if (InputFieldHelpers.isValueEmpty(defaultLanguageValue, this.eavService)) {
+          if (logic.isValueEmpty(defaultLanguageValue, isCreateMode)) {
             const valUsed = this.itemService.setDefaultValue(item, ctAttribute, inputType, fieldSettings, languages, defaultLanguage);
 
             // 2022-08-15 2dm added this
@@ -211,9 +214,9 @@ export class EditInitializerService implements OnDestroy {
       }
     }
 
-    const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
+    const currentLanguage = this.languageInstanceService.getCurrentLanguage(formId);
     if (switchToDefault && currentLanguage !== defaultLanguage) {
-      this.languageInstanceService.setCurrentLanguage(this.eavService.eavConfig.formId, defaultLanguage);
+      this.languageInstanceService.setCurrentLanguage(formId, defaultLanguage);
       const message = this.translate.instant('Message.SwitchedLanguageToDefault', { language: defaultLanguage });
       this.snackBar.open(message, null, { duration: 5000 });
     }

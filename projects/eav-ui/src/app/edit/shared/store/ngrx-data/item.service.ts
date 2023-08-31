@@ -18,8 +18,8 @@ export class ItemService extends BaseDataService<EavItem> {
     super('Item', serviceElementsFactory);
   }
 
-  loadItems(items1: EavEntityBundleDto[]): void {
-    const items = items1.map(item1 => EavItem.convert(item1));
+  loadItems(dtoItems: EavEntityBundleDto[]): void {
+    const items = dtoItems.map(item => EavItem.convert(item));
     this.upsertManyInCache(items);
   }
 
