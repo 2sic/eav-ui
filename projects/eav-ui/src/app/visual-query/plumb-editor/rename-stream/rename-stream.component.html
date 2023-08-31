@@ -71,11 +71,13 @@
   </div>
   <mat-dialog-actions class="eav-dialog-actions">
     <!-- Extra button for rich form -->
-    <ng-container *ngIf="isSource && pipelineResultExists">
-      <mat-slide-toggle color="accent" [checked]="advancedMode" (change)="toggleAdvancedMode($event)">
-        {{ advancedMode ? 'Advanced' : 'Simple' }}
-      </mat-slide-toggle>
-    </ng-container>
+    <div>
+      <ng-container *ngIf="isSource && pipelineResultExists">
+        <mat-slide-toggle color="accent" [checked]="advancedMode" (change)="toggleAdvancedMode($event)">
+          {{ advancedMode ? 'Advanced' : 'Simple' }}
+        </mat-slide-toggle>
+      </ng-container>
+    </div>
     <div>
       <button mat-raised-button type="button" (click)="closeDialog()">Cancel</button>
       <button mat-raised-button type="button" color="accent" [disabled]="!form.valid" (click)="rename()">
