@@ -1,79 +1,104 @@
-@import '../variables.scss';
+// @import '../variables.scss';
 
-// standard appearance
-.mat-form-field-appearance-fill {
-  width: 100%;
-  height: calc(86px - 1.4375em);
-  /* TODO_(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
-  .mat-mdc-text-field-wrapper, .mat-mdc-form-field-subscript-wrapper {
-    padding-bottom: 0;
-    background-color: white !important;
-  }
+// // standard appearance
+// .mat-form-field-appearance-fill {
+//   width: 100%;
+//   height: calc(86px - 1.4375em);
+//   /* TODO_(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+//   .mat-mdc-text-field-wrapper, .mat-mdc-form-field-subscript-wrapper {
+//     padding-bottom: 0;
+//     background-color: white !important;
+//   }
 
-  .mat-mdc-form-field-flex {
-    padding-top: 12px;
-  }
+//   .mat-mdc-form-field-flex {
+//     padding-top: 12px;
+//   }
 
-  /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
-  // .mdc-line-ripple {
-  //   bottom: 0;
-  // }
+//   /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+//   // .mdc-line-ripple {
+//   //   bottom: 0;
+//   // }
 
-  // .mat-mdc-form-field-subscript-wrapper {
-  //   bottom: 0;
-  // }
+//   // .mat-mdc-form-field-subscript-wrapper {
+//   //   bottom: 0;
+//   // }
   
-  /* TODO_(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
-  /* TODO_(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
-  .mat-mdc-form-field-text-suffix, .mat-mdc-form-field-icon-suffix {
-    .mat-mdc-icon-button {
-      top: 6px;
-      width: 30px !important;
-      height: 30px !important;
-      line-height: 30px;
-    }
+//   /* TODO_(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+//   /* TODO_(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+//   .mat-mdc-form-field-text-suffix, .mat-mdc-form-field-icon-suffix {
+//     .mat-mdc-icon-button {
+//       top: 6px;
+//       width: 30px !important;
+//       height: 30px !important;
+//       line-height: 30px;
+//     }
 
-    .entity-dropdown-button {
-      cursor: text;
-      /* TODO_(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.*/
-      &.mat-private-button-disabled {
-        cursor: default;
-      }
-    }
+//     .entity-dropdown-button {
+//       cursor: text;
+//       /* TODO_(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.*/
+//       &.mat-private-button-disabled {
+//         cursor: default;
+//       }
+//     }
 
-    .selection-suffix {
-      display: flex;
+//     .selection-suffix {
+//       display: flex;
 
-      .mat-mdc-icon-button {
-        top: 0;
+//       .mat-mdc-icon-button {
+//         top: 0;
 
-        .mat-icon {
-          font-size: 18px;
-        }
-      }
+//         .mat-icon {
+//           font-size: 18px;
+//         }
+//       }
 
-      .active {
-        background-color: $accent-color;
-        color: white;
-        /* TODO_(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.*/
-        &.mat-private-button-disabled {
-          background-color: $editUI-label-disabled-color;
-        }
-      }
-    }
+//       .active {
+//         background-color: $accent-color;
+//         color: white;
+//         /* TODO_(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.*/
+//         &.mat-private-button-disabled {
+//           background-color: $editUI-label-disabled-color;
+//         }
+//       }
+//     }
+//   }
+//   /* TODO-(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
+//   /* TODO-(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
+//   .mat-mdc-select-arrow-wrapper {
+//     transform: translateX(-5px) !important;
+//     /* TODO-(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
+//     .mat-mdc-select-arrow {
+//       color: $editUI-foreground-color;
+//     }
+//   }
+// }
+
+// // boolean field
+// .mat-mdc-slide-toggle {
+//   padding-top: 12px;
+// }
+
+.eav-form-field {
+  width: 100%;
+  // height: calc(86px - 1.4375em);
+
+  //used so form-field doesn't have background color
+  .mat-mdc-text-field-wrapper,
+    .mat-mdc-form-field-subscript-wrapper {
+    background-color: transparent !important;
   }
-  /* TODO-(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
-  /* TODO-(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
-  .mat-mdc-select-arrow-wrapper {
-    transform: translateX(-5px) !important;
-    /* TODO-(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
-    .mat-mdc-select-arrow {
-      color: $editUI-foreground-color;
-    }
-  }
-}
 
-// boolean field
-.mat-mdc-slide-toggle {
-  padding-top: 12px;
+  //used so form-field doesn't change background color on hover
+  .mdc-text-field--filled:not(.mdc-text-field--disabled) {
+    background-color: transparent;
+  }
+
+  //used so form-field doesn't change background color on hover
+  .mat-mdc-form-field-focus-overlay {
+    background-color: transparent;
+  }
+
+  .mat-mdc-icon-button {
+    background-color: transparent;
+  }
 }

@@ -4,9 +4,8 @@
       <div
         [ngClass]="(vm.enableCreate && vm.entityType && !selectedEntities.length && !vm.allowMultiValue) ? 'ed-field__field-short' : 'ed-field__field'">
         <div [hidden]="(!vm.allowMultiValue && selectedEntities.length) || !vm.enableAddExisting">
-          <mat-form-field [formGroup]="group" color="accent" [ngClass]="{
-            'mat-form-field-invalid': invalid && touched
-          }">
+          <mat-form-field [formGroup]="group" color="accent" class="eav-form-field" 
+          [ngClass]="{'mat-form-field-invalid': invalid && touched}">
             <input matInput #autocomplete [placeholder]="getPlaceholder()" [matAutocomplete]="auto"
               [disabled]="disabled || !vm.enableAddExisting" (focus)="fetchEntities()" (blur)="markAsTouched()"
               (input)="filterSelectionList()" (click)="filterSelectionList()">
