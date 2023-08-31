@@ -1,35 +1,98 @@
-.mat-cards-div {
+// .mat-cards-div {
+//   display: flex;
+//   flex-direction: row;
+//   justify-content: space-evenly;
+// }
+
+// /* TODO=(mdc-migration): The following rule targets internal classes of card that may no longer apply for the MDC version. */
+// .mat-card-left {
+//   width: 50%;
+//   margin-right: 4px;
+// }
+
+// /* TODO=(mdc-migration): The following rule targets internal classes of card that may no longer apply for the MDC version. */
+// .mat-card-right {
+//   width: 50%;
+//   margin-left: 4px;
+// }
+
+// .mat-mdc-card-title {
+//   font-size: 20px;
+//   font-weight: 500;
+// }
+
+// .mat-mdc-card-subtitle {
+//   font-size: 14px;
+// }
+
+// .mat-mdc-card-content {
+//   font-size: 14px;
+//   margin-top: 12px;
+// }
+
+// button .mat-icon {
+//   margin-right: 4px;
+// }
+
+@import '../../../../styles/variables.scss';
+
+.eav-dialog {
+  .eav-dialog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px;
+
+    &__title {
+      font-size: 29px;
+      line-height: 29px;
+      font-weight: 400;
+    }
+
+    &__subtitle {
+      font-size: 29px;
+      line-height: 29px;
+      font-weight: 400;
+    }
+  }
+
+  .eav-dialog-content {
+    padding: 0 24px 24px 24px;
+  }
+}
+
+.eav-registration-cards {
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
-}
 
-/* TODO=(mdc-migration): The following rule targets internal classes of card that may no longer apply for the MDC version. */
-.mat-card-left {
-  width: 50%;
-  margin-right: 4px;
-}
+  &__left {
+    width: 50%;
+    margin-right: 4px;
+  }
 
-/* TODO=(mdc-migration): The following rule targets internal classes of card that may no longer apply for the MDC version. */
-.mat-card-right {
-  width: 50%;
-  margin-left: 4px;
-}
+  &__right {
+    width: 50%;
+    margin-left: 4px;
+  }
 
-.mat-mdc-card-title {
-  font-size: 20px;
-  font-weight: 500;
-}
+  .eav-card-header-avatar-icon {
+    font-size: $eav-avatar-font-size;
+    height: $eav-avatar-height;
+    width: $eav-avatar-width;
+  }
 
-.mat-mdc-card-subtitle {
-  font-size: 14px;
-}
+  .eav-card-space-div {
+    height: 100%;
+  }
 
-.mat-mdc-card-content {
-  font-size: 14px;
-  margin-top: 12px;
-}
-
-button .mat-icon {
-  margin-right: 4px;
+  .eav-button {
+    &__with-icon {
+      .eav-icon {
+        font-size: $eav-button-icon-font-size;
+        height: $eav-button-icon-height;
+        width: $eav-button-icon-width;
+      }
+    }
+  }
 }
