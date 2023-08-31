@@ -25,6 +25,8 @@ export const InputTypeConstants = {
   StringTemplatePicker: 'string-template-picker',
   StringUrlPath: 'string-url-path',
   StringWysiwyg: 'string-wysiwyg',
+  /** for all situations where we need a fallback; new v16.04 */
+  Unknown: 'unknown',
 } as const;
 
 export type InputTypeConstant = typeof InputTypeConstants[keyof typeof InputTypeConstants];

@@ -10,6 +10,7 @@ import { EavService, FieldsSettingsService, FieldsTranslateService, FormsStateSe
 import { ItemService, LanguageInstanceService } from '../../../shared/store/ngrx-data';
 import { FormulaPromiseHandler } from '../../../formulas/formula-promise-handler';
 import { FormItemFormulaService } from '../../../formulas/form-item-formula.service';
+import { EmptyFieldHelpers } from '../../fields/empty/empty-field-helpers';
 
 @Component({
   selector: 'app-form-builder',
@@ -44,8 +45,9 @@ export class FormBuilderComponent extends BaseSubsinkComponent implements OnInit
         // 1. create missing controls
         for (const [fieldName, fieldProps] of Object.entries(fieldsProps)) {
           const inputType = fieldProps.calculatedInputType.inputType;
-          const empties: string[] = [InputTypeConstants.EmptyDefault, InputTypeConstants.EmptyEnd, InputTypeConstants.EmptyMessage];
-          if (empties.includes(inputType)) { continue; }
+          // const empties: string[] = [InputTypeConstants.EmptyDefault, InputTypeConstants.EmptyEnd, InputTypeConstants.EmptyMessage];
+          // if (empties.includes(inputType)) { continue; }
+          if (EmptyFieldHelpers.isEmptyInputType(inputType)) { continue; }
 
           if (this.form.controls.hasOwnProperty(fieldName)) { continue; }
 

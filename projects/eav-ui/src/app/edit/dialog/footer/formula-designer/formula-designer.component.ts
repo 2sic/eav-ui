@@ -19,6 +19,7 @@ import { ContentTypeService, ItemService } from '../../../shared/store/ngrx-data
 // tslint:disable-next-line:max-line-length
 import { DesignerSnippet, EntityOption, FieldOption, FormulaDesignerViewModel, SelectOptions, SelectTarget, SelectTargets, TargetOption } from './formula-designer.models';
 import { DesignerState } from '../../../formulas/models/formula-results.models';
+import { EmptyFieldHelpers } from '../../../form/fields/empty/empty-field-helpers';
 
 @Component({
   selector: 'app-formula-designer',
@@ -313,7 +314,8 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
           const contentTypeId = InputFieldHelpers.getContentTypeId(item);
           const contentType = this.contentTypeService.getContentType(contentTypeId);
           const attribute = contentType.Attributes.find(a => a.Name === designer.fieldName);
-          if (attribute.InputType === InputTypeConstants.EmptyDefault) {
+          const inputType = attribute.InputType;
+          if (EmptyFieldHelpers.isGroupStart(inputType)) {
             for (const target of ['Field.Settings.Collapsed']) {
               const targetOption: TargetOption = {
                 hasFormula: formulas.some(
@@ -325,7 +327,7 @@ export class FormulaDesignerComponent implements OnInit, OnDestroy {
               targetOptions.push(targetOption);
             }
           }
-          if (attribute.InputType === InputTypeConstants.StringDropdown || attribute.InputType === InputTypeConstants.NumberDropdown) {
+          if (inputType === InputTypeConstants.StringDropdown || inputType === InputTypeConstants.NumberDropdown) {
             for (const target of ['Field.Settings.DropdownValues']) {
               const targetOption: TargetOption = {
                 hasFormula: formulas.some(

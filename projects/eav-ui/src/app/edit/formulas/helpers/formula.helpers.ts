@@ -106,7 +106,7 @@ export class FormulaHelpers {
   static buildFormulaProps(
     formula: FormulaCacheItem,
     entityId: number,
-    inputType: InputType,
+    inputType: string,
     settingsInitial: FieldSettings,
     settingsCurrent: FieldSettings,
     formValues: FormValues,
@@ -137,9 +137,8 @@ export class FormulaHelpers {
         Object.defineProperties(data, {
           default: {
             get(): FieldValue {
-              if (formula.target === FormulaTargets.Value) {
+              if (formula.target === FormulaTargets.Value)
                 return InputFieldHelpers.parseDefaultValue(formula.fieldName, inputType, settingsInitial);
-              }
               if (formula.target.startsWith(SettingsFormulaPrefix)) {
                 const settingName = formula.target.substring(SettingsFormulaPrefix.length);
                 return (settingsInitial as Record<string, any>)[settingName];
