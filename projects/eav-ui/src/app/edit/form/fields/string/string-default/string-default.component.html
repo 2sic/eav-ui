@@ -1,8 +1,6 @@
 <ng-container *ngIf="viewModel | async as vm">
-
-  <mat-form-field [formGroup]="group" color="accent" [ngClass]="{
-    'textarea-field': vm.rowCount > 1
-  }">
+  <mat-form-field [formGroup]="group" color="accent" class="eav-form-field" 
+  [ngClass]="{'textarea-field': vm.rowCount > 1}">
     <input *ngIf="vm.rowCount <= 1" matInput [formControlName]="config.fieldName" [placeholder]="vm.placeholder"
       [required]="vm.required" [ngStyle]="{ 'font-family': vm.inputFontFamily }">
 
@@ -12,7 +10,5 @@
 
     <mat-label>{{ vm.label }}</mat-label>
   </mat-form-field>
-
   <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
-
 </ng-container>

@@ -1,6 +1,6 @@
 <ng-container *ngIf="viewModel$ | async as vm">
 
-  <mat-form-field [formGroup]="group" color="accent">
+  <mat-form-field [formGroup]="group" color="accent" class="eav-form-field">
     <input matInput [formControlName]="config.fieldName" (blur)="clean(true)" [placeholder]="vm.placeholder"
       [required]="vm.required">
     <mat-label>{{ vm.label }}</mat-label>

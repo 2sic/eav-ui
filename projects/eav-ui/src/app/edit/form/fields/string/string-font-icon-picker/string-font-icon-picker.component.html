@@ -1,6 +1,6 @@
 <ng-container *ngIf="viewModel | async as vm">
 
-  <mat-form-field [formGroup]="group" color="accent">
+  <mat-form-field [formGroup]="group" color="accent" class="eav-form-field">
     <div class="icon-option">
       <i *ngIf="vm.controlStatus.value" class="icon-preview {{ vm.previewCss }} {{ vm.controlStatus.value }}"></i>
       <input matInput [formControlName]="config.fieldName" [placeholder]="vm.placeholder" [required]="vm.required"

@@ -1,8 +1,7 @@
 <!-- This template is used for StringDropdown and NumberDropdown -->
 
 <ng-container *ngIf="viewModel$ | async as vm">
-  <mat-form-field [formGroup]="group" color="accent">
-
+  <mat-form-field [formGroup]="group" color="accent" class="eav-form-field">
     <mat-select *ngIf="!vm.freeTextMode" [formControlName]="config.fieldName" [required]="vm.required"
       [placeholder]="vm.placeholder">
       <mat-option *ngFor="let option of vm.dropdownOptions" [value]="option.value">
@@ -22,6 +21,7 @@
         (click)="toggleFreeTextMode(false)">
         <mat-icon>search</mat-icon>
       </button>
+
       <button mat-icon-button [ngClass]="{ 'active': vm.freeTextMode }" [tippy]="'Fields.String.Freetext' | translate"
         [disabled]="vm.controlStatus.disabled" (click)="toggleFreeTextMode(true)">
         <mat-icon>text_fields</mat-icon>
@@ -30,6 +30,5 @@
 
     <mat-label>{{ vm.label }}</mat-label>
   </mat-form-field>
-
   <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
 </ng-container>
