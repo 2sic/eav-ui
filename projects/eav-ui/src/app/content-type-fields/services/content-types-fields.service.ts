@@ -8,6 +8,7 @@ import { Context } from '../../shared/services/context';
 import { Field, FieldInputTypeOption } from '../models/field.model';
 import { InputType } from '../models/input-type.model';
 import { ReservedNames } from '../models/reserved-names.model';
+import { InputTypeStrict } from '../constants/input-type.constants';
 
 export const webApiFieldsRoot = 'admin/field/';
 export const webApiFieldsAll = webApiFieldsRoot + 'all';
@@ -136,7 +137,7 @@ export class ContentTypesFieldsService {
     });
   }
 
-  updateInputType(id: number, staticName: string, inputType: string) {
+  updateInputType(id: number, staticName: string, inputType: InputTypeStrict) {
     return this.http.post<boolean>(this.apiUrl(webApiFieldsRoot + 'InputType'), null, {
       params: { appId: this.context.appId.toString(), attributeId: id.toString(), field: staticName, inputType }
     });

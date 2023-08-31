@@ -1,3 +1,4 @@
+import { InputTypeStrict } from 'projects/eav-ui/src/app/content-type-fields/constants/input-type.constants';
 import { EavEntityDto } from '.';
 
 /**
@@ -5,7 +6,7 @@ import { EavEntityDto } from '.';
  * This is a DTO (Data Transfer Object).
  */
 export interface EavContentTypeAttributesDto {
-  InputType: string;
+  InputType: InputTypeStrict;
   IsTitle: boolean;
   Metadata: EavEntityDto[];
   Name: string;

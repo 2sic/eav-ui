@@ -29,4 +29,4 @@ export const InputTypeConstants = {
   Unknown: 'unknown',
 } as const;
 
-export type InputTypeConstant = typeof InputTypeConstants[keyof typeof InputTypeConstants];
+export type InputTypeStrict = typeof InputTypeConstants[keyof typeof InputTypeConstants];

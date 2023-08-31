@@ -1,5 +1,5 @@
 import { FieldSettings, FieldValue, InputTypeName } from '../../../../../../edit-types';
-import { InputTypeConstants } from '../../../content-type-fields/constants/input-type.constants';
+import { InputTypeStrict, InputTypeConstants } from '../../../content-type-fields/constants/input-type.constants';
 import { InputType } from '../../../content-type-fields/models/input-type.model';
 import { ItemAddIdentifier, ItemIdentifierShared } from '../../../shared/models/edit-form.model';
 import { EmptyFieldHelpers } from '../../form/fields/empty/empty-field-helpers';
@@ -28,7 +28,7 @@ export class InputFieldHelpers {
   static calculateInputType(attribute: EavContentTypeAttribute, inputTypes: InputType[]): CalculatedInputType {
     const inputType = inputTypes.find(i => i.Type === attribute.InputType);
     const calculated: CalculatedInputType = {
-      inputType: attribute.InputType,
+      inputType: attribute.InputType as InputTypeStrict,
       isExternal: inputType ? !!inputType.AngularAssets : false,
     };
     return calculated;
@@ -75,7 +75,7 @@ export class InputFieldHelpers {
   /** Include itemHeader if you need data from prefill, and set onlyPrefill if you only need parsed prefill */
   static parseDefaultValue(
     name: string,
-    inputType: string,
+    inputType: InputTypeStrict,
     settings: FieldSettings,
     itemHeader?: ItemIdentifierShared,
     onlyPrefill?: boolean,
