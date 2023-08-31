@@ -1,8 +1,33 @@
-.edit-input {
-  padding-bottom: 8px;
+// .mat-accordion {
+//   padding-bottom: 8px;
+//   display: block;
+// }
+
+.eav-dialog {
+  .eav-dialog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px;
+
+    &__title {
+      font-size: 29px;
+      line-height: 29px;
+      font-weight: 400;
+    }
+
+    &__subtitle {
+      font-size: 29px;
+      line-height: 29px;
+      font-weight: 400;
+    }
+  }
+
+  .eav-dialog-content {
+    padding: 0 24px 24px 24px;
+  }
 }
 
-.mat-accordion {
+.eav-edit-input {
   padding-bottom: 8px;
-  display: block;
 }
