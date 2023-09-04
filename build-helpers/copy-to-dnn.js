@@ -91,6 +91,8 @@ console.log(chalkSuccess(`Copying files from ${sourcePath} to ${outputPath}`));
 
 // Clear destination folders
 fs.readdir(outputPath, (err, files) => {
+  // Skip if folder doesn't exist (eg first build)
+  if (!files) return;
   files.forEach(file => {
     // delete old files except Default.aspx
     if (file === 'Default.aspx') return;
