@@ -1,43 +1,15 @@
-/** Copies files from dist folder to DNN installation */
+/** Copies files from dist folder to JsTargets and Sources */
 const chalk = require('chalk');
 const chalkError = chalk.red;
 const chalkSuccess = chalk.green;
 const chokidar = require('chokidar');
 const fs = require('fs-extra');
-
-const fixPath = (path, removeStartingSlash = false, removeEndingSlash = false) => {
-  if (!path) return path;
-
-  let clean = path
-    .trim()
-    .replace(/\\/g, '/')
-    .replace(/\/+/g, '/');
-
-  if (removeStartingSlash && clean.startsWith('/')) clean = clean.substring(1);
-  if (removeEndingSlash && clean.endsWith('/')) clean = clean.substring(0, clean.length - 1);
-
-  return clean;
-};
-
-// 2020-08-27 2dm new copy to multiple targets specified in the environment variables
-const dnnRoot = fixPath(process.env.Dev2sxcDnnRoot, false, true);
-if (!dnnRoot) throw `Problem: environment variable 'Dev2sxcDnnRoot' doesn't exist. It should point to the web folder of your dev DNN`;
-const targetDnn = `${dnnRoot}/DesktopModules/ToSIC_SexyContent`;
-
-const devAssets = fixPath(process.env.Dev2sxcAssets, false, true);
-if (!devAssets) throw `Problem: environment variable 'Dev2sxcAssets' doesn't exist. It should point to the assets source folder in your 2sxc environment`;
-const targetAssets = devAssets;
-
-console.log(
-  'Will build to these targets: \n'
-  + `* Dnn:  ${targetDnn}\n`
-  + `* 2sxc: ${targetAssets}\n\n`
-);
+const bc = require('./load-build-config.js');
+const buildConfig = bc.BuildConfig;
 
 const sourcePath = 'dist';
 const sourcePathMain = 'dist/eav-ui';
-const outputPath = `${targetDnn}/dist/ng-edit`;
-const outputAssets = `${targetAssets}/dist/ng-edit`;
+const outputPaths = [...buildConfig.JsTargets, ...buildConfig.Sources].map(t => `${t}/dist/ng-edit`);
 
 const excludeDirs = [
   'out-tsc',
@@ -54,25 +26,20 @@ args.forEach((val, index) => {
 });
 
 const calculatePaths = (path) => {
-  path = fixPath(path);
+  path = bc.fixPath(path);
   const separatorIndex = path.lastIndexOf('/');
 
   const src = path.slice(0, separatorIndex);
   const file = path.slice(separatorIndex + 1);
 
-  const dest = src.startsWith(sourcePathMain)
-    ? `${outputPath}${src.replace(sourcePathMain, '')}`
-    : `${outputPath}${src.replace(sourcePath, '')}`;
-
-  const destAssets = src.startsWith(sourcePathMain)
-    ? `${outputAssets}${src.replace(sourcePathMain, '')}`
-    : `${outputAssets}${src.replace(sourcePath, '')}`;
+  const targets = outputPaths.map(p => src.startsWith(sourcePathMain) 
+    ? `${p}${src.replace(sourcePathMain, '')}` 
+    : `${p}${src.replace(sourcePath, '')}`);
 
   return {
-    src: src,
-    file: file,
-    dest: dest,
-    destAssets: destAssets,
+    src,
+    file,
+    targets
   }
 }
 
@@ -80,28 +47,28 @@ const checkIfExcluded = (paths) => {
   const fullSourcePath = `${paths.src}/${paths.file}`;
   // Checks if folder is excluded from copying
   return excludeDirs.some(excludeDir => {
-    excludeDir = fixPath(excludeDir, true, true);
+    excludeDir = bc.fixPath(excludeDir, true, true);
     const isExcluded = fullSourcePath.startsWith(`${excludeDir}/`) || fullSourcePath.includes(`/${excludeDir}/`);
     // console.log(`Checking if excluded:\nFull: ${fullSourcePath}\nExclude: ${excludeDir}\nExcluded: ${isExcluded}`);
     return isExcluded;
   });
 }
 
-console.log(chalkSuccess(`Copying files from ${sourcePath} to ${outputPath}`));
+console.log(chalkSuccess(`Copying files from ${sourcePath} to ${outputPaths}`));
 
 // Clear destination folders
-fs.readdir(outputPath, (err, files) => {
-  // Skip if folder doesn't exist (eg first build)
-  if (!files) return;
-  files.forEach(file => {
-    // delete old files except Default.aspx
-    if (file === 'Default.aspx') return;
-    fs.removeSync(`${outputPath}/${file}`);
+outputPaths.forEach(target => {
+  fs.readdir(target, (err, files) => {
+    // Skip if folder doesn't exist (eg first build)
+    if (!files) return;
+    files.forEach(file => {
+      // delete old files except Default.aspx
+      if (file === 'Default.aspx') return;
+      fs.removeSync(`${target}/${file}`);
+    });
   });
+  fs.ensureDirSync(target);
 });
-fs.ensureDirSync(outputPath);
-fs.removeSync(outputAssets);
-fs.ensureDirSync(outputAssets);
 
 // Initialize watcher
 const watcher = chokidar.watch([sourcePath, sourcePathMain], {
@@ -117,37 +84,38 @@ watcher
     const isExcluded = checkIfExcluded(paths);
     // console.log(`Add ${paths.src}/${paths.file}\nto ${paths.dest}/${paths.file}\nis excluded: ${isExcluded}`);
     if (isExcluded) return;
-    fs.ensureDirSync(paths.dest);
-    fs.copyFileSync(`${paths.src}/${paths.file}`, `${paths.dest}/${paths.file}`);
-    fs.ensureDirSync(paths.destAssets);
-    fs.copyFileSync(`${paths.src}/${paths.file}`, `${paths.destAssets}/${paths.file}`);
+    paths.targets.forEach(target => {
+      fs.ensureDirSync(target);
+      fs.copyFileSync(`${paths.src}/${paths.file}`, `${target}/${paths.file}`);
+    });
   })
   .on('change', path => {
     const paths = calculatePaths(path);
     const isExcluded = checkIfExcluded(paths);
     // console.log(`Copy ${paths.src}/${paths.file}\nto ${paths.dest}/${paths.file}\nis excluded: ${isExcluded}`);
     if (isExcluded) return;
-    fs.ensureDirSync(paths.dest);
-    fs.copyFileSync(`${paths.src}/${paths.file}`, `${paths.dest}/${paths.file}`);
-    fs.ensureDirSync(paths.destAssets);
-    fs.copyFileSync(`${paths.src}/${paths.file}`, `${paths.destAssets}/${paths.file}`);
+    paths.targets.forEach(target => {
+      fs.ensureDirSync(target);
+      fs.copyFileSync(`${paths.src}/${paths.file}`, `${target}/${paths.file}`);
+    });
   })
   .on('unlink', path => {
     const paths = calculatePaths(path);
     const isExcluded = checkIfExcluded(paths);
     // console.log(`Delete ${paths.src}/${paths.file}\nfrom ${paths.dest}/${paths.file}\nis excluded: ${isExcluded}`);
     if (isExcluded) return;
-    fs.removeSync(`${paths.dest}/${paths.file}`);
-    fs.removeSync(`${paths.destAssets}/${paths.file}`);
+    paths.targets.forEach(target => {
+      fs.removeSync(`${target}/${paths.file}`);
+    }); 
   })
   .on('error', error => {
     console.log(chalkError(`Watcher error: ${error}`));
   })
   .on('ready', () => {
     if (!watchEnabled) {
-      console.log(chalkSuccess(`Files copied from ${sourcePath} to ${outputPath}`));
+      console.log(chalkSuccess(`Files copied from ${sourcePath} to ${outputPaths}`));
       watcher.close();
       return;
     }
-    console.log(chalkSuccess(`Files copied from ${sourcePath} to ${outputPath}. Watching for changes!`));
+    console.log(chalkSuccess(`Files copied from ${sourcePath} to ${outputPaths}. Watching for changes!`));
   });

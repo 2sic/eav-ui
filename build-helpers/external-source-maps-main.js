@@ -8,7 +8,7 @@ exports.default = {
     if (!isProd) { return cfg; }
 
     const sourceMapsDevToolPlugin = cfg.plugins.find(plugin => plugin.hasOwnProperty('sourceMapFilename'));
-    sourceMapsDevToolPlugin.options.publicPath = 'https://sources.2sxc.org/' + pjson.version + '/ng-edit/';
+    sourceMapsDevToolPlugin.options.publicPath = 'https://sources.2sxc.org/' + pjson.version + '/dist/ng-edit/';
 
     return cfg;
   }

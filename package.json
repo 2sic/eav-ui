@@ -49,6 +49,7 @@
     "@ngx-translate/core": "^14.0.0",
     "@ngx-translate/http-loader": "^7.0.0",
     "dayjs": "^1.11.5",
+    "jsonc-parser": "^3.2.0",
     "lodash-es": "^4.17.21",
     "ngx-build-plus": "^13.0.1",
     "ngx-dropzone-wrapper": "^11.0.0",
