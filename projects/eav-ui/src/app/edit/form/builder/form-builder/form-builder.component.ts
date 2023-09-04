@@ -56,8 +56,11 @@ export class FormBuilderComponent extends BaseSubsinkComponent implements OnInit
           if (this.form.controls.hasOwnProperty(fieldName)) { continue; }
 
           if (inputType === InputTypeConstants.StringWysiwyg) {
-            const logic = FieldLogicManager.singleton().get(InputTypeConstants.StringWysiwyg);
-            fieldProps.value = this.cleanStringWysiwygContent(logic as unknown as FieldLogicWithValueInit, fieldName, fieldProps);
+            if (fieldProps.value != '' && fieldProps.value != null && fieldProps.value != undefined) {
+              const logic = FieldLogicManager.singleton().get(InputTypeConstants.StringWysiwyg);
+              const adamItems = this.adamCacheService.getAdamSnapshot(this.entityGuid, fieldName);
+              fieldProps.value = (logic as unknown as FieldLogicWithValueInit).processValueOnLoad(fieldProps.value, adamItems);
+            }
           }
 
           const value = fieldProps.value;
@@ -148,19 +151,5 @@ export class FormBuilderComponent extends BaseSubsinkComponent implements OnInit
       control._warning$.complete();
     });
     super.ngOnDestroy();
-  }
-
-  private cleanStringWysiwygContent(fieldLogic: FieldLogicWithValueInit, fieldName: string, fieldProps: FieldProps): FieldValue {
-    if (fieldProps.value == '' || fieldProps.value == null || fieldProps.value == undefined)
-      return fieldProps.value;
-
-    const adamItems = this.adamCacheService.getAdamSnapshot(this.entityGuid, fieldName);
-    try {
-      const value = fieldLogic.processValueOnLoad(fieldProps.value, adamItems);
-      return value;
-    } catch (error) { 
-      console.error('Error while cleaning wysiwyg content', error);
-      return fieldProps.value;
-    }
   }
 }
