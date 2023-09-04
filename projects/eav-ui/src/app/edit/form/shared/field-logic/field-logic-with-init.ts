@@ -1,6 +1,5 @@
-import { FieldValue } from 'projects/edit-types';
-import { EavConfig } from '../../../shared/models';
+import { AdamItem, FieldValue } from 'projects/edit-types';
 
 export interface FieldLogicWithValueInit {
-  processValueOnLoad(value: FieldValue, eavConfig: EavConfig): FieldValue;
+  processValueOnLoad(value: FieldValue, adamItems: AdamItem[]): FieldValue;
 }

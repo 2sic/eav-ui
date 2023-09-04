@@ -1,6 +1,5 @@
-import { FieldSettings, FieldValue, StringWysiwyg } from '../../../../../../../../edit-types';
+import { AdamItem, FieldSettings, FieldValue, StringWysiwyg } from '../../../../../../../../edit-types';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
-import { EavConfig } from '../../../../shared/models';
 import { FieldLogicBase } from '../../../shared/field-logic/field-logic-base';
 import { FieldLogicTools } from '../../../shared/field-logic/field-logic-tools';
 import { FieldLogicWithValueInit } from '../../../shared/field-logic/field-logic-with-init';
@@ -34,8 +33,22 @@ export class StringWysiwygLogic extends FieldLogicBase implements FieldLogicWith
     return fixedSettings as FieldSettings;
   }
 
-  processValueOnLoad(value: FieldValue, eavConfig: EavConfig): FieldValue {
-    throw new Error('Method not implemented.');
+  /** Checks if dataCmsId is same as file name and if it is switches img src with adam item url */
+  processValueOnLoad(value: FieldValue, adamItems: AdamItem[]): FieldValue {
+    const doc = new DOMParser().parseFromString(value as string, 'text/html');
+    doc.body.querySelectorAll('img').forEach((img) => {
+      const dataCmsid = img.getAttribute('data-cmsid')?.replace('file:', '');
+      const src = img.getAttribute('src');
+      if (dataCmsid && src) {
+        const fileName = src.split('/').pop();
+        if (dataCmsid === fileName) {
+          const adamItem = adamItems.find(x => x.Name === dataCmsid);
+          if (adamItem)
+            img.setAttribute('src', adamItem.Url);
+        }
+      }
+    });
+    return doc.body.innerHTML;
   }
 
 
