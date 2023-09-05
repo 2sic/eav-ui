@@ -149,7 +149,7 @@
             This will place insights-logs in the HTML of the user output for users with <code>?debug=true</code> in the url.
             It can only be activated for short periods of time.
           </div>
-          <mat-form-field color="accent">
+          <mat-form-field color="accent" class="eav-form-field">
             <mat-label>Duration in Minutes</mat-label>
             <input matInput type="number" min="0" required [pattern]="positiveWholeNumber" [(ngModel)]="pageLogDuration"
               name="Duration" #duration="ngModel" [disabled]="vm.loading">
