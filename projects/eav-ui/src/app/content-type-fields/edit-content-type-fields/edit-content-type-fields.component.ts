@@ -9,7 +9,7 @@ import { ContentType } from '../../app-administration/models/content-type.model'
 import { ContentTypesService } from '../../app-administration/services/content-types.service';
 import { BaseSubsinkComponent } from '../../shared/components/base-subsink-component/base-subsink.component';
 import { DataTypeConstants } from '../constants/data-type.constants';
-import { InputTypeConstants } from '../constants/input-type.constants';
+import { InputTypeStrict, InputTypeConstants } from '../constants/input-type.constants';
 import { calculateTypeIcon, calculateTypeLabel } from '../content-type-fields.helpers';
 import { Field, FieldInputTypeOption } from '../models/field.model';
 import { ReservedNames } from '../models/reserved-names.model';
@@ -133,7 +133,7 @@ export class EditContentTypeFieldsComponent extends BaseSubsinkComponent impleme
   }
 
   resetInputType(index: number) {
-    let defaultInputType = this.fields[index].Type.toLocaleLowerCase() + InputTypeConstants.DefaultSuffix;
+    let defaultInputType = this.fields[index].Type.toLocaleLowerCase() + InputTypeConstants.DefaultSuffix as InputTypeStrict;
     const defaultExists = this.filteredInputTypeOptions[index].some(option => option.inputType === defaultInputType);
     if (!defaultExists) {
       defaultInputType = this.filteredInputTypeOptions[index][0].inputType;

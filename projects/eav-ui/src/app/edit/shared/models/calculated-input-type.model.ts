@@ -1,4 +1,6 @@
+import { InputTypeStrict } from '../../../content-type-fields/constants/input-type.constants';
+
 export interface CalculatedInputType {
-  inputType: string;
+  inputType: InputTypeStrict;
   isExternal: boolean;
 }

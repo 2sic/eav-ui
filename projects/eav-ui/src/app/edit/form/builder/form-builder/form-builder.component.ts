@@ -1,15 +1,19 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { BaseSubsinkComponent } from 'projects/eav-ui/src/app/shared/components/base-subsink-component/base-subsink.component';
-import { combineLatest, distinctUntilChanged, map, startWith, Subscription } from 'rxjs';
+import { combineLatest, distinctUntilChanged, map, startWith } from 'rxjs';
 import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
 import { FormulaEngine } from '../../../formulas/formula-engine';
 import { GeneralHelpers, ValidationHelpers } from '../../../shared/helpers';
-import { FormValues, SxcAbstractControl } from '../../../shared/models';
+import { FieldProps, FormValues, SxcAbstractControl } from '../../../shared/models';
 import { EavService, FieldsSettingsService, FieldsTranslateService, FormsStateService } from '../../../shared/services';
-import { ItemService, LanguageInstanceService } from '../../../shared/store/ngrx-data';
+import { AdamCacheService, ItemService, LanguageInstanceService } from '../../../shared/store/ngrx-data';
 import { FormulaPromiseHandler } from '../../../formulas/formula-promise-handler';
 import { FormItemFormulaService } from '../../../formulas/form-item-formula.service';
+import { EmptyFieldHelpers } from '../../fields/empty/empty-field-helpers';
+import { FieldValue } from 'projects/edit-types';
+import { FieldLogicWithValueInit } from '../../shared/field-logic/field-logic-with-init';
+import { FieldLogicManager } from '../../shared/field-logic/field-logic-manager';
 
 @Component({
   selector: 'app-form-builder',
@@ -30,6 +34,7 @@ export class FormBuilderComponent extends BaseSubsinkComponent implements OnInit
     private formsStateService: FormsStateService,
     private itemService: ItemService,
     private languageInstanceService: LanguageInstanceService,
+    private adamCacheService: AdamCacheService,
   ) {
     super();
   }
@@ -44,10 +49,19 @@ export class FormBuilderComponent extends BaseSubsinkComponent implements OnInit
         // 1. create missing controls
         for (const [fieldName, fieldProps] of Object.entries(fieldsProps)) {
           const inputType = fieldProps.calculatedInputType.inputType;
-          const empties: string[] = [InputTypeConstants.EmptyDefault, InputTypeConstants.EmptyEnd, InputTypeConstants.EmptyMessage];
-          if (empties.includes(inputType)) { continue; }
+          // const empties: string[] = [InputTypeConstants.EmptyDefault, InputTypeConstants.EmptyEnd, InputTypeConstants.EmptyMessage];
+          // if (empties.includes(inputType)) { continue; }
+          if (EmptyFieldHelpers.isEmptyInputType(inputType)) { continue; }
 
           if (this.form.controls.hasOwnProperty(fieldName)) { continue; }
+
+          if (inputType === InputTypeConstants.StringWysiwyg) {
+            if (fieldProps.value != '' && fieldProps.value != null && fieldProps.value != undefined) {
+              const logic = FieldLogicManager.singleton().get(InputTypeConstants.StringWysiwyg);
+              const adamItems = this.adamCacheService.getAdamSnapshot(this.entityGuid, fieldName);
+              fieldProps.value = (logic as unknown as FieldLogicWithValueInit).processValueOnLoad(fieldProps.value, adamItems);
+            }
+          }
 
           const value = fieldProps.value;
           const disabled = fieldProps.settings.Disabled || fieldProps.settings.ForcedDisabled;

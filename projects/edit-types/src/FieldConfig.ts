@@ -1,3 +1,4 @@
+import { InputTypeStrict } from 'projects/eav-ui/src/app/content-type-fields/constants/input-type.constants';
 import { FieldSettings } from './FieldSettings';
 
 export interface FieldConfig {
@@ -20,7 +21,7 @@ export interface FieldConfig {
   /**
    * Input type of the field. e.g. string-default, string-dropdown, etc.
    */
-  inputType: string;
+  inputType: InputTypeStrict;
   /**
    * Data type of the field. e.g. String, Hyperlink, Entity, etc.
    */

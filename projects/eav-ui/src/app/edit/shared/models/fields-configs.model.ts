@@ -1,5 +1,6 @@
 import { CalculatedInputType } from '.';
 import { FieldSettings, FieldValue } from '../../../../../../edit-types';
+import { InputTypeStrict } from '../../../content-type-fields/constants/input-type.constants';
 import { TranslationStateCore } from '../../form/wrappers/localization-wrapper/translate-menu/translate-menu.models';
 import { FormulaFieldValidation } from '../../formulas/models/formula.models';
 
@@ -16,6 +17,7 @@ export interface FieldProps {
   value: FieldValue;
   wrappers: string[];
   formulaValidation: FormulaFieldValidation;
+  currentLanguage: string;
 }
 
 export interface FieldConstants {
@@ -27,7 +29,7 @@ export interface FieldConstants {
   fieldName?: string;
   index?: number;
   initialDisabled?: boolean;
-  inputType?: string;
+  inputType?: InputTypeStrict;
   isExternal?: boolean;
   isLastInGroup?: boolean;
   type?: string;

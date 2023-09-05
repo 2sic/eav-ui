@@ -4,8 +4,6 @@ import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject } from 'rxjs';
 import { EavService } from '.';
-import { FieldSettings } from '../../../../../../edit-types';
-import { InputTypeConstants } from '../../../content-type-fields/constants/input-type.constants';
 import { UpdateEnvVarsFromDialogSettings } from '../../../shared/helpers/update-env-vars-from-dialog-settings.helper';
 import { convertUrlToForm } from '../../../shared/helpers/url-prep.helper';
 import { FeaturesService } from '../../../shared/services/features.service';
@@ -19,6 +17,8 @@ import { EavEntity } from '../models/eav/eav-entity';
 // tslint:disable-next-line:max-line-length
 import { AdamCacheService, ContentTypeItemService, ContentTypeService, EntityCacheService, InputTypeService, ItemService, LanguageInstanceService, LanguageService, LinkCacheService, PublishStatusService } from '../store/ngrx-data';
 import { ItemAddIdentifier } from '../../../shared/models/edit-form.model';
+import { EmptyFieldHelpers } from '../../form/fields/empty/empty-field-helpers';
+import { FieldLogicManager } from '../../form/shared/field-logic/field-logic-manager';
 
 @Injectable()
 export class EditInitializerService implements OnDestroy {
@@ -57,7 +57,7 @@ export class EditInitializerService implements OnDestroy {
       UpdateEnvVarsFromDialogSettings(formData.Context.App);
       this.importLoadedData(formData);
       this.keepInitialValues();
-      this.setMissingValues();
+      this.initMissingValues();
 
       this.loaded$.next(true);
     });
@@ -106,43 +106,44 @@ export class EditInitializerService implements OnDestroy {
     this.publishStatusService.setPublishMode(publishMode, formId, this.eavService);
   }
 
+  /**
+   * Preserve initial values for future use in formulas which may need to know the initial value
+   */
   private keepInitialValues(): void {
     const items = this.itemService.getItems(this.eavService.eavConfig.itemGuids);
     const languages = this.languageService.getLanguages().map(language => language.NameId);
     const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
     const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
-    if (!languages.includes(currentLanguage)) {
-      languages.push(currentLanguage);
-    }
-    if (!languages.includes(defaultLanguage)) {
-      languages.push(defaultLanguage);
-    }
+    if (!languages.includes(currentLanguage)) languages.push(currentLanguage);
+    if (!languages.includes(defaultLanguage)) languages.push(defaultLanguage);
 
-    for (const item of items) {
+    for (const item of items)
       for (const language of languages) {
         const formValues: FormValues = {};
-        for (const [fieldName, fieldValues] of Object.entries(item.Entity.Attributes)) {
+        for (const [fieldName, fieldValues] of Object.entries(item.Entity.Attributes))
           formValues[fieldName] = LocalizationHelpers.translate(language, defaultLanguage, fieldValues, null);
-        }
-        this.initialFormValues[this.getInitialValuesKey(item.Entity.Guid, language)] = formValues;
+        this.initialFormValues[this.initialValuesCacheKey(item.Entity.Guid, language)] = formValues;
       }
-    }
   }
 
-  private getInitialValuesKey(entityGuid: string, language: string): string {
+  private initialValuesCacheKey(entityGuid: string, language: string): string {
     return `entityGuid:${entityGuid}:language:${language}`;
   }
 
   getInitialValues(entityGuid: string, language: string): FormValues {
-    return this.initialFormValues[this.getInitialValuesKey(entityGuid, language)];
+    return this.initialFormValues[this.initialValuesCacheKey(entityGuid, language)];
   }
 
-  private setMissingValues(): void {
-    const items = this.itemService.getItems(this.eavService.eavConfig.itemGuids);
+  private initMissingValues(): void {
+    const eavConfig = this.eavService.eavConfig;
+    const formId = eavConfig.formId;
+    const items = this.itemService.getItems(eavConfig.itemGuids);
     const inputTypes = this.inputTypeService.getInputTypes();
     const languages = this.languageService.getLanguages();
-    const defaultLanguage = this.languageInstanceService.getDefaultLanguage(this.eavService.eavConfig.formId);
+    const defaultLanguage = this.languageInstanceService.getDefaultLanguage(formId);
+    /** force UI to switch to default language, because some values are missing in the default language */
     let switchToDefault = false;
+    const isCreateMode = eavConfig.createMode;
 
     for (const item of items) {
       const contentTypeId = InputFieldHelpers.getContentTypeId(item);
@@ -151,8 +152,11 @@ export class EditInitializerService implements OnDestroy {
       for (const ctAttribute of contentType.Attributes) {
         const inputType = inputTypes.find(i => i.Type === ctAttribute.InputType);
         // 'custom-default' doesn't have inputType and 'empty-default' and 'empty-end' and 'empty-message' don't save value
-        const empties: string[] = [InputTypeConstants.EmptyDefault, InputTypeConstants.EmptyEnd, InputTypeConstants.EmptyMessage];
-        if (empties.includes(inputType?.Type)) { continue; }
+        // const empties: string[] = [InputTypeConstants.EmptyDefault, InputTypeConstants.EmptyEnd, InputTypeConstants.EmptyMessage];
+        // if (empties.includes(inputType?.Type)) { continue; }
+        if (EmptyFieldHelpers.isEmptyInputType(inputType?.Type)) { continue; }
+
+        const logic = FieldLogicManager.singleton().getOrUnknown(inputType?.Type);
 
         const attributeValues = item.Entity.Attributes[ctAttribute.Name];
         const fieldSettings = FieldsSettingsHelpers.setDefaultFieldSettings(
@@ -162,7 +166,8 @@ export class EditInitializerService implements OnDestroy {
 
         if (languages.length === 0) {
           const firstValue = LocalizationHelpers.getBestValue(attributeValues, '*', '*', BestValueModes.Default);
-          if (InputFieldHelpers.isValueEmpty(firstValue, this.eavService)) {
+          if (logic.isValueEmpty(firstValue, isCreateMode)) {
+          // if (InputFieldHelpers.isValueEmpty(firstValue, this.eavService)) {
             this.itemService.setDefaultValue(item, ctAttribute, inputType, fieldSettings, languages, defaultLanguage);
           }
         } else {
@@ -190,7 +195,8 @@ export class EditInitializerService implements OnDestroy {
             BestValueModes.Strict,
           );
 
-          if (InputFieldHelpers.isValueEmpty(defaultLanguageValue, this.eavService)) {
+          // if (InputFieldHelpers.isValueEmpty(defaultLanguageValue, this.eavService)) {
+          if (logic.isValueEmpty(defaultLanguageValue, isCreateMode)) {
             const valUsed = this.itemService.setDefaultValue(item, ctAttribute, inputType, fieldSettings, languages, defaultLanguage);
 
             // 2022-08-15 2dm added this
@@ -199,19 +205,18 @@ export class EditInitializerService implements OnDestroy {
             // or test for IsRequired as well
 
             // If the primary language isn't ready, enforce switch-to-default
-            // Skif this for ephemeral fields as they never load with content
+            // Skip this for ephemeral fields as they never load with content
             // Also switch for fields which use null as default (like boolean-tristate) as this kind of "empty" is valid
-            if (valUsed != null && !fieldSettings.IsEphemeral) {
+            if (valUsed != null && !fieldSettings.IsEphemeral)
               switchToDefault = true;
-            }
           }
         }
       }
     }
 
-    const currentLanguage = this.languageInstanceService.getCurrentLanguage(this.eavService.eavConfig.formId);
+    const currentLanguage = this.languageInstanceService.getCurrentLanguage(formId);
     if (switchToDefault && currentLanguage !== defaultLanguage) {
-      this.languageInstanceService.setCurrentLanguage(this.eavService.eavConfig.formId, defaultLanguage);
+      this.languageInstanceService.setCurrentLanguage(formId, defaultLanguage);
       const message = this.translate.instant('Message.SwitchedLanguageToDefault', { language: defaultLanguage });
       this.snackBar.open(message, null, { duration: 5000 });
     }

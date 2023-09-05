@@ -10,6 +10,7 @@ import { webApiFieldsAll } from '../../content-type-fields/services/content-type
 import { MoreSnippet, SetSnippet, SetSnippetLink, Snippet, SnippetsSets, SnippetsSubSubSets } from '../models/snippet.model';
 import { SourceView } from '../models/source-view.model';
 import { Tooltip } from '../models/tooltip.model';
+import { InputTypeStrict } from '../../content-type-fields/constants/input-type.constants';
 
 export const inlineHelp = 'admin/Code/InlineHelp';
 
@@ -288,7 +289,7 @@ export class SnippetsService {
     target: SnippetsSubSubSets,
     prefix: string,
     fieldname: string,
-    inputType: string,
+    inputType: InputTypeStrict,
     snipDefaults: SetSnippet,
     inputTypeSnippets: Record<string, Snippet[]>,
   ): void {

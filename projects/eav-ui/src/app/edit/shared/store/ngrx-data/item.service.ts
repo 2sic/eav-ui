@@ -18,8 +18,8 @@ export class ItemService extends BaseDataService<EavItem> {
     super('Item', serviceElementsFactory);
   }
 
-  loadItems(items1: EavEntityBundleDto[]): void {
-    const items = items1.map(item1 => EavItem.convert(item1));
+  loadItems(dtoItems: EavEntityBundleDto[]): void {
+    const items = dtoItems.map(item => EavItem.convert(item));
     this.upsertManyInCache(items);
   }
 
@@ -262,7 +262,7 @@ export class ItemService extends BaseDataService<EavItem> {
     languages: Language[],
     defaultLanguage: string,
   ): FieldValue {
-    const defaultValue = InputFieldHelpers.parseDefaultValue(ctAttribute.Name, inputType, settings, item.Header);
+    const defaultValue = InputFieldHelpers.parseDefaultValue(ctAttribute.Name, inputType?.Type, settings, item.Header);
 
     const defaultLanguageValue = LocalizationHelpers.getBestValue(
       item.Entity.Attributes[ctAttribute.Name],
@@ -270,19 +270,23 @@ export class ItemService extends BaseDataService<EavItem> {
       defaultLanguage,
       BestValueModes.Strict,
     );
+    // 2023-08-31 2dm simplified; leave comments in till EOY in case I broke something
+    const languageCode = (languages.length === 0 || inputType?.DisableI18n) ? '*' : defaultLanguage;
     if (defaultLanguageValue === undefined) {
-      if (languages.length === 0 || inputType?.DisableI18n) {
-        this.addItemAttributeValue(item.Entity.Guid, ctAttribute.Name, defaultValue, '*', false, ctAttribute.Type);
-      } else {
-        this.addItemAttributeValue(item.Entity.Guid, ctAttribute.Name, defaultValue, defaultLanguage, false, ctAttribute.Type);
-      }
+      this.addItemAttributeValue(item.Entity.Guid, ctAttribute.Name, defaultValue, languageCode, false, ctAttribute.Type);
+      // if (languages.length === 0 || inputType?.DisableI18n) {
+      //   this.addItemAttributeValue(item.Entity.Guid, ctAttribute.Name, defaultValue, '*', false, ctAttribute.Type);
+      // } else {
+      //   this.addItemAttributeValue(item.Entity.Guid, ctAttribute.Name, defaultValue, defaultLanguage, false, ctAttribute.Type);
+      // }
     } else {
       // most likely used only for entity fields because we can never know if they were cleaned out or brand new
-      if (languages.length === 0 || inputType?.DisableI18n) {
-        this.updateItemAttributeValue(item.Entity.Guid, ctAttribute.Name, defaultValue, '*', defaultLanguage, false);
-      } else {
-        this.updateItemAttributeValue(item.Entity.Guid, ctAttribute.Name, defaultValue, defaultLanguage, defaultLanguage, false);
-      }
+      this.updateItemAttributeValue(item.Entity.Guid, ctAttribute.Name, defaultValue, languageCode, defaultLanguage, false);
+      // if (languages.length === 0 || inputType?.DisableI18n) {
+      //   this.updateItemAttributeValue(item.Entity.Guid, ctAttribute.Name, defaultValue, '*', defaultLanguage, false);
+      // } else {
+      //   this.updateItemAttributeValue(item.Entity.Guid, ctAttribute.Name, defaultValue, defaultLanguage, defaultLanguage, false);
+      // }
     }
 
     // return what was used, so it can be checked on form-init

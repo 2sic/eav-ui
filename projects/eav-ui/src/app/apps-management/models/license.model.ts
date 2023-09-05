@@ -8,6 +8,7 @@ export interface License {
   IsEnabled: boolean;
   Name: string;
   Priority: number;
+  Expires: string;
 }
 
 export interface LicenseUploadInfo {

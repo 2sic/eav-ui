@@ -1,3 +1,5 @@
+import { InputTypeStrict } from '../constants/input-type.constants';
+
 export interface InputType {
   AngularAssets?: string;
   Assets?: string;
@@ -8,6 +10,6 @@ export interface InputType {
   IsRecommended?: boolean;
   Label: string;
   ObsoleteMessage?: string;
-  Type: string;
+  Type: InputTypeStrict;
   UseAdam: boolean;
 }

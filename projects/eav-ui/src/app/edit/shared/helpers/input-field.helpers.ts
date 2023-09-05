@@ -1,11 +1,12 @@
 import { FieldSettings, FieldValue, InputTypeName } from '../../../../../../edit-types';
-import { InputTypeConstants } from '../../../content-type-fields/constants/input-type.constants';
+import { InputTypeStrict, InputTypeConstants } from '../../../content-type-fields/constants/input-type.constants';
 import { InputType } from '../../../content-type-fields/models/input-type.model';
 import { ItemAddIdentifier, ItemIdentifierShared } from '../../../shared/models/edit-form.model';
+import { EmptyFieldHelpers } from '../../form/fields/empty/empty-field-helpers';
 import { WrappersConstant, WrappersConstants } from '../constants/wrappers.constants';
 import { CalculatedInputType } from '../models';
 import { EavContentTypeAttribute, EavItem } from '../models/eav';
-import { EavService } from '../services';
+
 
 export class InputFieldHelpers {
 
@@ -27,7 +28,7 @@ export class InputFieldHelpers {
   static calculateInputType(attribute: EavContentTypeAttribute, inputTypes: InputType[]): CalculatedInputType {
     const inputType = inputTypes.find(i => i.Type === attribute.InputType);
     const calculated: CalculatedInputType = {
-      inputType: attribute.InputType,
+      inputType: attribute.InputType as InputTypeStrict,
       isExternal: inputType ? !!inputType.AngularAssets : false,
     };
     return calculated;
@@ -37,10 +38,10 @@ export class InputFieldHelpers {
     const inputType = calculatedInputType.inputType;
     const isExternal = calculatedInputType.isExternal;
 
-    if (inputType === InputTypeConstants.EmptyMessage) { return []; }
+    if (EmptyFieldHelpers.isMessage(inputType)) return [];
 
-    // empty inputtype wrappers
-    if (inputType === InputTypeConstants.EmptyDefault) { return [WrappersConstants.CollapsibleWrapper]; }
+    // empty input type wrappers
+    if (EmptyFieldHelpers.isGroupStart(inputType)) return [WrappersConstants.CollapsibleWrapper];
 
     // default wrappers
     const wrappers: WrappersConstant[] = [WrappersConstants.HiddenWrapper];
@@ -73,25 +74,22 @@ export class InputFieldHelpers {
 
   /** Include itemHeader if you need data from prefill, and set onlyPrefill if you only need parsed prefill */
   static parseDefaultValue(
-    attributeKey: string,
-    inputType: InputType,
+    name: string,
+    inputType: InputTypeStrict,
     settings: FieldSettings,
     itemHeader?: ItemIdentifierShared,
     onlyPrefill?: boolean,
   ): FieldValue {
-    if (onlyPrefill && itemHeader?.Prefill?.[attributeKey] === undefined) { return; }
+    if (onlyPrefill && itemHeader?.Prefill?.[name] === undefined) { return; }
 
     let defaultValue = settings.DefaultValue;
 
-    if (itemHeader?.Prefill?.[attributeKey]) {
-      defaultValue = itemHeader.Prefill[attributeKey];
-    }
+    if (itemHeader?.Prefill?.[name])
+      defaultValue = itemHeader.Prefill[name];
 
-    switch (inputType?.Type) {
+    switch (inputType/*?.Type*/) {
       case InputTypeConstants.BooleanDefault:
-        return defaultValue != null
-          ? defaultValue.toLowerCase() === 'true'
-          : false;
+        return defaultValue?.toLowerCase() === 'true';
       case InputTypeConstants.BooleanTristate:
         return defaultValue != null && defaultValue !== ''
           ? defaultValue.toLowerCase() === 'true'
@@ -126,12 +124,13 @@ export class InputFieldHelpers {
     }
   }
 
-  /**
-   * Entity fields for empty items are prefilled on the backend with []
-   * so I can never know if entity field is brand new, or just emptied out by the user
-   */
-  static isValueEmpty(value: FieldValue, eavService: EavService) {
-    const emptyEntityField = Array.isArray(value) && value.length === 0 && eavService.eavConfig.createMode;
-    return value === undefined || emptyEntityField;
-  }
+  // 2023-08-31 2dm moved to logic...
+  // /**
+  //  * Entity fields for empty items are prefilled on the backend with []
+  //  * so I can never know if entity field is brand new, or just emptied out by the user
+  //  */
+  // static isValueEmpty(value: FieldValue, eavService: EavService) {
+  //   const emptyEntityField = Array.isArray(value) && value.length === 0 && eavService.eavConfig.createMode;
+  //   return value === undefined || emptyEntityField;
+  // }
 }

@@ -133,7 +133,8 @@ export class FieldsSettingsService implements OnDestroy {
             settingsInitial,
             inputType,
             calculatedInputType,
-            constants
+            constants,
+            currentLanguage: entityReader.currentLanguage,
           };
 
           return constantFieldParts;
@@ -144,14 +145,14 @@ export class FieldsSettingsService implements OnDestroy {
           if (this.itemFieldVisibility.hasRules())
             allConstFieldParts.forEach((groupField, index) => {
               // Only work on group-starts
-              if (!EmptyFieldHelpers.isGroupStart(groupField.calculatedInputType)) return;
+              if (!EmptyFieldHelpers.isGroupStart(groupField.calculatedInputType.inputType)) return;
               // Ignore if visible-disabled is already ok
               if (groupField.settingsInitial.VisibleDisabled == false) return;
               // Check if any of the following fields is forced visible - before another group-start/end
               for (let i = index + 1; i < allConstFieldParts.length; i++) {
                 const innerField = allConstFieldParts[i];
                 // Stop checking the current group if we found another group start/end
-                if (EmptyFieldHelpers.isGroup(innerField.calculatedInputType)) return;
+                if (EmptyFieldHelpers.endsPreviousGroup(innerField.calculatedInputType.inputType)) return;
                 if (innerField.settingsInitial.VisibleDisabled == false) {
                   consoleLogAngular('Forced visible', groupField.constants.fieldName, 'because of', innerField.constants.fieldName)
                   groupField.settingsInitial.VisibleDisabled = false;
@@ -166,7 +167,7 @@ export class FieldsSettingsService implements OnDestroy {
         return allConstFieldParts;
       })
     );
-    
+
     const itemAttributes$ = this.itemService.getItemAttributes$(entityGuid);
     const formReadOnly$ = this.formsStateService.readOnly$;
     const debugEnabled$ = this.globalConfigService.getDebugEnabled$();
@@ -215,8 +216,14 @@ export class FieldsSettingsService implements OnDestroy {
 
             const constantFieldPart = constantFieldParts.find(f => f.constants.fieldName === attribute.Name);
 
-            const latestSettings = this.latestFieldProps[attribute.Name]?.settings
-              ?? { ...constantFieldPart.settingsInitial };
+            // if the currentLanguage changed then we need to flush the settings with initial ones that have updated language
+            let latestSettings: FieldSettings;
+            if (constantFieldPart.currentLanguage == this.latestFieldProps[attribute.Name]?.currentLanguage) {
+              latestSettings = this.latestFieldProps[attribute.Name]?.settings
+                ?? { ...constantFieldPart.settingsInitial };
+            } else {
+              latestSettings = { ...constantFieldPart.settingsInitial };
+            }
 
             // run formulas
             const formulaResult = this.formulaEngine.runAllFormulas(
@@ -245,6 +252,7 @@ export class FieldsSettingsService implements OnDestroy {
               value: valueBefore,
               wrappers,
               formulaValidation: formulaResult.validation,
+              currentLanguage: constantFieldPart.currentLanguage,
             };
           }
           this.latestFieldProps = fieldsProps;

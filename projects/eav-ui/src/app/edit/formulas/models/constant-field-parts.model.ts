@@ -9,5 +9,6 @@ export interface ConstantFieldParts {
   settingsInitial: FieldSettings,
   inputType: InputType,
   calculatedInputType: CalculatedInputType,
-  constants: FieldConstants
+  constants: FieldConstants,
+  currentLanguage: string,
 }

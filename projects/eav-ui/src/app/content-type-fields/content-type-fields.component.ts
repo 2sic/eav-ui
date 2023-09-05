@@ -26,6 +26,7 @@ import { ContentTypeFieldsTitleParams } from './content-type-fields-title/conten
 import { ContentTypeFieldsTypeComponent } from './content-type-fields-type/content-type-fields-type.component';
 import { Field } from './models/field.model';
 import { ContentTypesFieldsService } from './services/content-types-fields.service';
+import { EmptyFieldHelpers } from '../edit/form/fields/empty/empty-field-helpers';
 
 @Component({
   selector: 'app-content-type-fields',
@@ -151,24 +152,24 @@ export class ContentTypeFieldsComponent extends BaseComponent implements OnInit,
 
   private nameCellRenderer(params: ICellRendererParams) {
     const currentField: Field = params.data;
-    const empties: string[] = [InputTypeConstants.EmptyDefault, InputTypeConstants.EmptyEnd];
-    if (empties.includes(currentField.InputType)) {
+    const inputType = currentField.InputType;
+    // const empties: string[] = [InputTypeConstants.EmptyDefault, InputTypeConstants.EmptyEnd];
+    // if (empties.includes(currentField.InputType)) {
+    if (EmptyFieldHelpers.endsPreviousGroup(inputType))
       return params.value;
-    }
 
     let isGroupOpen = false;
     for (const field of this.fields$.value) {
-      if (field.InputType === InputTypeConstants.EmptyDefault) {
+      if (EmptyFieldHelpers.isGroupStart(inputType)) {
         isGroupOpen = true;
         continue;
       }
-      if (field.InputType === InputTypeConstants.EmptyEnd) {
+      if (EmptyFieldHelpers.isGroupEnd(inputType)) {
         isGroupOpen = false;
         continue;
       }
-      if (field.StaticName === currentField.StaticName) {
+      if (field.StaticName === currentField.StaticName)
         break;
-      }
     }
 
     return isGroupOpen ? `<span class="is-in-group">${params.value}</span>` : params.value;
@@ -256,8 +257,8 @@ export class ContentTypeFieldsComponent extends BaseComponent implements OnInit,
         const field: Field = params.data;
         const rowClass: string[] = [];
         if (field.EditInfo.ReadOnly) { rowClass.push('disable-row-drag'); }
-        if (field.InputType === InputTypeConstants.EmptyDefault) { rowClass.push('group-start-row'); }
-        if (field.InputType === InputTypeConstants.EmptyEnd) { rowClass.push('group-end-row'); }
+        if (EmptyFieldHelpers.isGroupStart(field.InputType)) { rowClass.push('group-start-row'); }
+        if (EmptyFieldHelpers.isGroupEnd(field.InputType)) { rowClass.push('group-end-row'); }
         return rowClass;
       },
       columnDefs: [

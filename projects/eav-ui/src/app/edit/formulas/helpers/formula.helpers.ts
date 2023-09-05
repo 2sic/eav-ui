@@ -1,5 +1,4 @@
 import { FieldSettings, FieldValue } from '../../../../../../edit-types';
-import { InputType } from '../../../content-type-fields/models/input-type.model';
 import { FeatureSummary } from '../../../features/models';
 import { DesignerSnippet, FieldOption } from '../../dialog/footer/formula-designer/formula-designer.models';
 import { InputFieldHelpers, LocalizationHelpers } from '../../shared/helpers';
@@ -13,6 +12,7 @@ import { formV1Prefix, requiredFormulaPrefix } from '../formula.constants';
 // tslint:disable-next-line: max-line-length
 import { FormulaCacheItem, FormulaFieldValidation, FormulaFunction, FormulaProps, FormulaPropsV1, FormulaTargets, FormulaV1Data, FormulaV1ExperimentalEntity, FormulaVersion, FormulaVersions, SettingsFormulaPrefix } from '../models/formula.models';
 import { ItemIdentifierShared } from '../../../shared/models/edit-form.model';
+import { InputTypeStrict } from '../../../content-type-fields/constants/input-type.constants';
 
 /**
  * Contains methods for building formulas.
@@ -106,7 +106,7 @@ export class FormulaHelpers {
   static buildFormulaProps(
     formula: FormulaCacheItem,
     entityId: number,
-    inputType: InputType,
+    inputType: InputTypeStrict,
     settingsInitial: FieldSettings,
     settingsCurrent: FieldSettings,
     formValues: FormValues,
@@ -137,9 +137,8 @@ export class FormulaHelpers {
         Object.defineProperties(data, {
           default: {
             get(): FieldValue {
-              if (formula.target === FormulaTargets.Value) {
+              if (formula.target === FormulaTargets.Value)
                 return InputFieldHelpers.parseDefaultValue(formula.fieldName, inputType, settingsInitial);
-              }
               if (formula.target.startsWith(SettingsFormulaPrefix)) {
                 const settingName = formula.target.substring(SettingsFormulaPrefix.length);
                 return (settingsInitial as Record<string, any>)[settingName];

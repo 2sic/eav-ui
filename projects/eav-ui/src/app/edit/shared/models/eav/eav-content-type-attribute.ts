@@ -1,8 +1,9 @@
+import { InputTypeStrict } from 'projects/eav-ui/src/app/content-type-fields/constants/input-type.constants';
 import { EavEntity, EavEntityAttributes } from '.';
 import { EavContentTypeAttributesDto } from '../json-format-v1';
 
 export class EavContentTypeAttribute {
-  InputType: string;
+  InputType: InputTypeStrict;
   IsTitle: boolean;
   Metadata: EavEntity[];
   Name: string;

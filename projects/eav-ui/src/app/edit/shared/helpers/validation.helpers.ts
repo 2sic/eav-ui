@@ -1,7 +1,7 @@
 import { AbstractControl, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { FieldSettings } from '../../../../../../edit-types';
-import { InputTypeConstants } from '../../../content-type-fields/constants/input-type.constants';
+import { InputTypeConstants, InputTypeStrict } from '../../../content-type-fields/constants/input-type.constants';
 import { AdamControl } from '../../form/fields/hyperlink/hyperlink-library/hyperlink-library.models';
 import { SxcAbstractControl } from '../models';
 import { FieldsSettingsService } from '../services';
@@ -15,7 +15,7 @@ export class ValidationHelpers {
     return this.ignoreValidators(settings) ? false : settings.Required;
   }
 
-  static getValidators(fieldName: string, inputType: string, fieldsSettingsService: FieldsSettingsService): ValidatorFn[] {
+  static getValidators(fieldName: string, inputType: InputTypeStrict, fieldsSettingsService: FieldsSettingsService): ValidatorFn[] {
     // TODO: merge all validators in a single function? Should be faster
     const validators: ValidatorFn[] = [
       inputType !== InputTypeConstants.HyperlinkLibrary

@@ -198,7 +198,7 @@ export class FormulaEngine implements OnDestroy {
     const formulaProps = FormulaHelpers.buildFormulaProps(
       formula,
       entityId,
-      inputType,
+      inputType?.Type,
       settingsInitial,
       settingsCurrent,
       formValues,

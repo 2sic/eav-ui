@@ -1,6 +1,8 @@
 import { FeatureSecurity, FeatureSummary } from '.';
 
-
+/**
+ * Feature information incl. activation state etc. provided by the server
+ */
 export interface Feature extends FeatureSummary {
   /** Internal GUID of the feature, usually not used */
   Guid: string;
@@ -11,7 +13,7 @@ export interface Feature extends FeatureSummary {
   Enabled: boolean;
   EnabledByDefault: boolean;
   EnabledInConfiguration: boolean | null;
-  Expires: string;
+  Expiration: string;
   License: string;
   LicenseEnabled: boolean;
   /** If this feature is to be shown in API calls for public users */

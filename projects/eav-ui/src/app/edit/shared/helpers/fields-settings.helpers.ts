@@ -1,8 +1,8 @@
 import { LocalizationHelpers } from '.';
 import { FieldSettings } from '../../../../../../edit-types';
-import { InputTypeConstants } from '../../../content-type-fields/constants/input-type.constants';
 import { InputType } from '../../../content-type-fields/models/input-type.model';
 import { ItemIdentifierEditConfig } from '../../../shared/models/edit-form.model';
+import { EmptyFieldHelpers } from '../../form/fields/empty/empty-field-helpers';
 import { FieldLogicManager } from '../../form/shared/field-logic/field-logic-manager';
 import { TranslateMenuHelpers } from '../../form/wrappers/localization-wrapper/translate-menu/translate-menu.helpers';
 import { TranslationStateCore } from '../../form/wrappers/localization-wrapper/translate-menu/translate-menu.models';
@@ -98,13 +98,15 @@ export class FieldsSettingsHelpers {
     const index = contentType.Attributes.indexOf(attribute);
     if (contentType.Attributes[index + 1] == null) { return true; }
 
-    const indexOfFirstEmpty = contentType.Attributes.findIndex(a => a.InputType === InputTypeConstants.EmptyDefault);
+    const indexOfFirstEmpty = contentType.Attributes.findIndex(a => EmptyFieldHelpers.isGroupStart(a.InputType));
     if (index < indexOfFirstEmpty) { return false; }
 
-    if (attribute.InputType === InputTypeConstants.EmptyEnd) { return true; }
+    // if (attribute.InputType === InputTypeConstants.EmptyEnd) { return true; }
+    if (EmptyFieldHelpers.isGroupEnd(attribute.InputType)) return true;
 
-    const empties: string[] = [InputTypeConstants.EmptyDefault, InputTypeConstants.EmptyEnd];
-    if (empties.includes(contentType.Attributes[index + 1].InputType)) { return true; }
+    // const empties: string[] = [InputTypeConstants.EmptyDefault, InputTypeConstants.EmptyEnd];
+    // if (empties.includes(contentType.Attributes[index + 1].InputType)) { return true; }
+    if (EmptyFieldHelpers.endsPreviousGroup(contentType.Attributes[index + 1].InputType)) return true;
 
     return false;
   }
