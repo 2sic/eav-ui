@@ -1,15 +1,35 @@
-.field-label {
+.eav-dialog {
+  .eav-dialog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px;
+
+    &__title {
+      font-size: 29px;
+      line-height: 29px;
+      font-weight: 400;
+    }
+
+    &__subtitle {
+      font-size: 29px;
+      line-height: 29px;
+      font-weight: 400;
+    }
+  }
+
+  .eav-dialog-content {
+    padding: 0 24px 24px 24px;
+  }
+}
+
+.eav-radio-group-label {
   font-size: 18px;
   margin: 24px 0 0;
 }
 
-.mat-mdc-radio-group {
+.eav-radio-group {
   display: flex;
   flex-direction: column;
   margin: 8px 0;
-}
-
-.mat-mdc-radio-button {
-  margin: 5px;
-  font-size: 14px;
 }

@@ -1,64 +1,65 @@
-<div mat-mdc-dialog-title>
-  <div class="dialog-title-box">Export {{ (contentType$ | async)?.Name }}</div>
+<div class="eav-dialog">
+  <div class="eav-dialog-header">
+    <div class="eav-dialog-header__title">Export {{ (contentType$ | async)?.Name }}</div>
+  </div>
+  <form #ngForm="ngForm" *ngIf="(loading$ | async) === false">
+    <div class="eav-dialog-content">
+      <p>
+        This will generate an XML file which you can edit in Excel. If you just want to import new data, use this to
+        export the schema that you can then fill in using Excel. Please visit
+        <a href="https://2sxc.org/help" target="_blank">https://2sxc.org/help</a> for more instructions.
+      </p>
+      <div class="dialog-form-content fancy-scrollbar-light">
+        <div>
+          <mat-form-field color="accent" class="eav-form-field">
+            <mat-label>Languages</mat-label>
+            <mat-select [(ngModel)]="formValues.language" name="Language">
+              <mat-option value="">All</mat-option>
+              <mat-option *ngFor="let lang of languages" [value]="lang.NameId">{{ lang.NameId }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+    
+        <div>
+          <p class="eav-radio-group-label">Export data</p>
+          <mat-radio-group [(ngModel)]="formValues.recordExport" name="RecordExport" class="eav-radio-group">
+            <mat-radio-button value="Blank">No, just export blank data schema (for new data import)
+            </mat-radio-button>
+            <mat-radio-button value="All">Yes, export all content-items</mat-radio-button>
+            <mat-radio-button *ngIf="hasIdList" value="Selection">
+              Export selected {{ itemIds.length }} items
+            </mat-radio-button>
+          </mat-radio-group>
+        </div>
+    
+        <div>
+          <p class="eav-radio-group-label">Value references to other languages</p>
+          <mat-radio-group [(ngModel)]="formValues.languageReferences" name="LanguageReferences"
+            [disabled]="formValues.recordExport === 'Blank'" class="eav-radio-group">
+            <mat-radio-button value="Link">Keep references to other languages (for re-import)
+            </mat-radio-button>
+            <mat-radio-button value="Resolve">Replace references with values</mat-radio-button>
+          </mat-radio-group>
+        </div>
+    
+        <div>
+          <p class="eav-radio-group-label">File / page references</p>
+          <mat-radio-group [(ngModel)]="formValues.resourcesReferences" name="ResourcesReferences"
+            [disabled]="formValues.recordExport === 'Blank'" class="eav-radio-group">
+            <mat-radio-button value="Link">Keep references (for re-import, for example Page:4711)
+            </mat-radio-button>
+            <mat-radio-button value="Resolve">Replace references with real URLs (for example
+              /Portals/0...)
+            </mat-radio-button>
+          </mat-radio-group>
+        </div>
+      </div>
+    </div>
+    <mat-dialog-actions align="end">
+      <button mat-raised-button (click)="closeDialog()">Cancel</button>
+      <button mat-raised-button color="accent" [disabled]="!ngForm.form.valid" (click)="exportContent()">
+        Export Data
+      </button>
+    </mat-dialog-actions>
+  </form>
 </div>
-
-<p class="dialog-description">
-  This will generate an XML file which you can edit in Excel. If you just want to import new data, use this to
-  export the schema that you can then fill in using Excel. Please visit
-  <a href="https://2sxc.org/help" target="_blank">https://2sxc.org/help</a> for more instructions.
-</p>
-
-<form #ngForm="ngForm" class="dialog-form" *ngIf="(loading$ | async) === false">
-  <div class="dialog-form-content fancy-scrollbar-light">
-    <div>
-      <mat-form-field color="accent">
-        <mat-label>Languages</mat-label>
-        <mat-select [(ngModel)]="formValues.language" name="Language">
-          <mat-option value="">All</mat-option>
-          <mat-option *ngFor="let lang of languages" [value]="lang.NameId">{{ lang.NameId }}</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
-
-    <div>
-      <p class="field-label">Export data</p>
-      <mat-radio-group [(ngModel)]="formValues.recordExport" name="RecordExport">
-        <mat-radio-button value="Blank">No, just export blank data schema (for new data import)
-        </mat-radio-button>
-        <mat-radio-button value="All">Yes, export all content-items</mat-radio-button>
-        <mat-radio-button *ngIf="hasIdList" value="Selection">
-          Export selected {{ itemIds.length }} items
-        </mat-radio-button>
-      </mat-radio-group>
-    </div>
-
-    <div>
-      <p class="field-label">Value references to other languages</p>
-      <mat-radio-group [(ngModel)]="formValues.languageReferences" name="LanguageReferences"
-        [disabled]="formValues.recordExport === 'Blank'">
-        <mat-radio-button value="Link">Keep references to other languages (for re-import)
-        </mat-radio-button>
-        <mat-radio-button value="Resolve">Replace references with values</mat-radio-button>
-      </mat-radio-group>
-    </div>
-
-    <div>
-      <p class="field-label">File / page references</p>
-      <mat-radio-group [(ngModel)]="formValues.resourcesReferences" name="ResourcesReferences"
-        [disabled]="formValues.recordExport === 'Blank'">
-        <mat-radio-button value="Link">Keep references (for re-import, for example Page:4711)
-        </mat-radio-button>
-        <mat-radio-button value="Resolve">Replace references with real URLs (for example
-          /Portals/0...)
-        </mat-radio-button>
-      </mat-radio-group>
-    </div>
-  </div>
-
-  <div class="dialog-form-actions">
-    <button mat-raised-button (click)="closeDialog()">Cancel</button>
-    <button mat-raised-button color="accent" [disabled]="!ngForm.form.valid" (click)="exportContent()">
-      Export Data
-    </button>
-  </div>
-</form>
