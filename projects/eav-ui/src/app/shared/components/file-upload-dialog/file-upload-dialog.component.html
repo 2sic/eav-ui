@@ -1,39 +1,36 @@
-<div appDragAndDrop [allowedFileTypes]="dialogData.allowedFileTypes" (filesDropped)="filesDropped($event)"
-  *ngIf="viewModel$ | async as vm">
-
-  <div mat-mdc-dialog-title>
-    <div class="dialog-title-box" [innerHtml]="dialogData.title | safeHtml"></div>
+<div class="eav-dialog" *ngIf="viewModel$ | async as vm" appDragAndDrop 
+  [allowedFileTypes]="dialogData.allowedFileTypes" (filesDropped)="filesDropped($event)">
+  <div class="eav-dialog-header">
+    <div class="eav-dialog-header__title" [innerHtml]="dialogData.title | safeHtml"></div>
   </div>
-
-  <mat-spinner *ngIf="vm.uploading" mode="indeterminate" diameter="20" color="accent"></mat-spinner>
-
-  <p class="dialog-description" [innerHtml]="dialogData.description | safeHtml"></p>
-
-  <div>
-    <button mat-raised-button tippy="Open file browser" [disabled]="vm.uploading" (click)="fileInput.click()">
-      <div *ngIf="!vm.files.length">Select or drop file</div>
-      <div *ngFor="let file of vm.files">{{ file.name }}</div>
-    </button>
-    <input #fileInput type="file" multiple (change)="filesChanged($event)" class="hide" />
-  </div>
-
-  <div class="dialog-component-content fancy-scrollbar-light result-container" *ngIf="vm.result">
-    <div *ngIf="vm.result.Success" class="sxc-message sxc-message-info">
-      Upload succeeded. See the messages below for more information.
+  <div class="eav-dialog-content">
+    <mat-spinner *ngIf="vm.uploading" mode="indeterminate" diameter="20" color="accent"></mat-spinner>
+    <p [innerHtml]="dialogData.description | safeHtml"></p>
+    <div>
+      <button mat-raised-button tippy="Open file browser" [disabled]="vm.uploading" (click)="fileInput.click()">
+        <div *ngIf="!vm.files.length">Select or drop file</div>
+        <div *ngFor="let file of vm.files">{{ file.name }}</div>
+      </button>
+      <input #fileInput type="file" multiple (change)="filesChanged($event)" class="hide" />
     </div>
-    <div *ngIf="!vm.result.Success" class="sxc-message sxc-message-error">
-      Upload failed. See the messages below for more information.
-    </div>
-    <div *ngFor="let message of vm.result.Messages" class="sxc-message" [ngClass]="{
-      'sxc-message-warning': message.MessageType === FileUploadMessageTypes.Warning,
-      'sxc-message-success': message.MessageType === FileUploadMessageTypes.Success,
-      'sxc-message-error': message.MessageType === FileUploadMessageTypes.Error
-    }">
-      {{ message.Text }}
+    
+    <div class="eav-result-container" *ngIf="vm.result">
+      <div *ngIf="vm.result.Success" class="sxc-message sxc-message-info">
+        Upload succeeded. See the messages below for more information.
+      </div>
+      <div *ngIf="!vm.result.Success" class="sxc-message sxc-message-error">
+        Upload failed. See the messages below for more information.
+      </div>
+      <div *ngFor="let message of vm.result.Messages" class="sxc-message" [ngClass]="{
+              'sxc-message-warning': message.MessageType === FileUploadMessageTypes.Warning,
+              'sxc-message-success': message.MessageType === FileUploadMessageTypes.Success,
+              'sxc-message-error': message.MessageType === FileUploadMessageTypes.Error
+            }">
+        {{ message.Text }}
+      </div>
     </div>
   </div>
-
-  <div class="dialog-component-actions">
+  <mat-dialog-actions align="end">
     <ng-container *ngIf="!vm.result?.Success">
       <button mat-raised-button (click)="closeDialog()">Cancel</button>
       <button mat-raised-button color="accent" [disabled]="!vm.files.length || vm.uploading || !!vm.result"
@@ -44,5 +41,5 @@
     <ng-container *ngIf="vm.result?.Success">
       <button mat-raised-button color="accent" (click)="closeDialog(true)">Close</button>
     </ng-container>
-  </div>
+  </mat-dialog-actions>
 </div>
