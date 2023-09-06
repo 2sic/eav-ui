@@ -1,37 +1,33 @@
 <ng-container *ngIf="viewModel$ | async as vm">
-
-  <div mat-mdc-dialog-title>
-    <div class="dialog-title-box">{{ vm.isAddMode ? 'Add Existing Item' : 'Replace Content Item' }}</div>
-  </div>
-
-  <router-outlet></router-outlet>
-
-  <p class="dialog-description">
-    {{
-    vm.isAddMode
-    ? 'Select a content-item to add to this list.'
-    : 'By replacing a content-item you can make other content appear in the slot of the original content.'
-    }}
-  </p>
-
-  <div class="options-box">
-    <mat-form-field color="accent">
-      <mat-label>Choose item</mat-label>
-      <input matInput [matAutocomplete]="auto" [ngModel]="vm.filterText" (ngModelChange)="setFilter($event)">
-      <mat-autocomplete #auto="matAutocomplete" (optionSelected)="select($event)">
-        <cdk-virtual-scroll-viewport itemSize="48" minBufferPx="500" maxBufferPx="1000"
-          [style.height.px]="vm.filteredOptions.length < 6 ? vm.filteredOptions.length * 48 : 240">
-          <mat-option *cdkVirtualFor="let option of vm.filteredOptions" [value]="option">{{ option }}</mat-option>
-        </cdk-virtual-scroll-viewport>
-      </mat-autocomplete>
-    </mat-form-field>
-    <button mat-icon-button class="options-box__copy" tippy="Copy" [disabled]="!vm.isMatch" (click)="copySelected()">
-      <mat-icon>file_copy</mat-icon>
-    </button>
-  </div>
-
-  <div class=" dialog-component-actions">
-    <button mat-raised-button (click)="closeDialog()">Cancel</button>
-    <button mat-raised-button color="accent" [disabled]="!vm.isMatch" (click)="save()">Save</button>
+  <div class="eav-dialog">
+    <div class="eav-dialog-header">
+      <div class="eav-dialog-header__title">{{ vm.isAddMode ? 'Add Existing Item' : 'Replace Content Item' }}</div>
+    </div>
+    <div class="eav-dialog-content">
+      <router-outlet></router-outlet>
+      <p>{{vm.isAddMode
+        ? 'Select a content-item to add to this list.'
+        : 'By replacing a content-item you can make other content appear in the slot of the original content.'}}
+      </p>
+      <div class="eav-options-box">
+        <mat-form-field color="accent" class="eav-form-field">
+          <mat-label>Choose item</mat-label>
+          <input matInput [matAutocomplete]="auto" [ngModel]="vm.filterText" (ngModelChange)="setFilter($event)">
+          <mat-autocomplete #auto="matAutocomplete" (optionSelected)="select($event)">
+            <cdk-virtual-scroll-viewport itemSize="48" minBufferPx="500" maxBufferPx="1000"
+              [style.height.px]="vm.filteredOptions.length < 6 ? vm.filteredOptions.length * 48 : 240">
+              <mat-option *cdkVirtualFor="let option of vm.filteredOptions" [value]="option">{{ option }}</mat-option>
+            </cdk-virtual-scroll-viewport>
+          </mat-autocomplete>
+        </mat-form-field>
+        <button mat-icon-button tippy="Copy" [disabled]="!vm.isMatch" (click)="copySelected()">
+          <mat-icon>file_copy</mat-icon>
+        </button>
+      </div>
+    </div>
+    <mat-dialog-actions align="end">
+      <button mat-raised-button (click)="closeDialog()">Cancel</button>
+      <button mat-raised-button color="accent" [disabled]="!vm.isMatch" (click)="save()">Save</button>
+    </mat-dialog-actions>
   </div>
 </ng-container>
