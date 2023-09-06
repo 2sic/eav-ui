@@ -82,10 +82,15 @@
   width: 100%;
   // height: calc(86px - 1.4375em);
 
+  // .mat-mdc-form-field-infix {
+  //   padding-bottom: 0px !important;
+  // }
+
   //used so form-field doesn't have background color
   .mat-mdc-text-field-wrapper,
     .mat-mdc-form-field-subscript-wrapper {
     background-color: transparent !important;
+    padding-left: 0px;
   }
 
   //used so form-field doesn't change background color on hover
