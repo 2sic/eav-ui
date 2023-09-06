@@ -1,5 +1,6 @@
-.eav-card-action-spacer {
-  width: 100%;
+.eav-card-actions {
+  display: flex;
+  justify-content: space-between;
 }
 
 .eav-card-action-button {
