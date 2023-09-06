@@ -9,7 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatRadioModule } from '@angular/material/radio';
-import { MatSelectModule } from '@angular/material/select';
+import { MAT_SELECT_CONFIG, MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
@@ -63,6 +63,7 @@ import { EntitiesService } from './services/entities.service';
     EntitiesService,
     ContentExportService,
     ContentTypesService,
+    { provide: MAT_SELECT_CONFIG, useValue: { hideSingleSelectionIndicator: true } }
   ],
 })
 export class ContentItemsModule { }

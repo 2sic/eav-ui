@@ -8,7 +8,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatSelectModule } from '@angular/material/select';
+import { MAT_SELECT_CONFIG, MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
@@ -56,6 +56,7 @@ import { ContentTypesFieldsService } from './services/content-types-fields.servi
     Context,
     ContentTypesService,
     ContentTypesFieldsService,
+    { provide: MAT_SELECT_CONFIG, useValue: { hideSingleSelectionIndicator: true } }
   ]
 })
 export class ContentTypeFieldsModule { }
