@@ -9,7 +9,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatSelectModule } from '@angular/material/select';
+import { MAT_SELECT_CONFIG, MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -102,6 +102,7 @@ import { FeaturesModule } from '../features/features.module';
     SxcInsightsService,
     DialogService,
     AppDialogConfigService,
+    { provide: MAT_SELECT_CONFIG, useValue: { hideSingleSelectionIndicator: true } }
   ],
 })
 export class AppsManagementModule { }
