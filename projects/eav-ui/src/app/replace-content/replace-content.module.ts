@@ -8,7 +8,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
+import { MAT_SELECT_CONFIG, MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { ContentGroupService } from '../manage-content-list/services/content-group.service';
 import { Context } from '../shared/services/context';
@@ -38,7 +38,8 @@ import { ReplaceContentComponent } from './replace-content.component';
   providers: [
     Context,
     ContentGroupService,
-    { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { subscriptSizing: 'dynamic' } }
+    { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { subscriptSizing: 'dynamic' } },
+    { provide: MAT_SELECT_CONFIG, useValue: { hideSingleSelectionIndicator: true } }
   ]
 })
 export class ReplaceContentModule { }
