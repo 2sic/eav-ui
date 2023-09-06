@@ -10,7 +10,7 @@
     <form [formGroup]="form">
       <!-- Scope -->
       <ng-container *ngIf="advancedMode && guidedContentType">
-        <mat-form-field color="accent">
+        <mat-form-field color="accent" class="eav-form-field">
           <mat-label>Scope</mat-label>
           <mat-select formControlName="scope" [placeholder]="!vm.scopeOptions.length ? 'No items found' : ''">
             <mat-option *ngFor="let scopeOption of vm.scopeOptions" [value]="scopeOption.value">
@@ -26,7 +26,7 @@
       </ng-container>
   
       <!-- Content Type of metadata item -->
-      <mat-form-field color="accent">
+      <mat-form-field color="accent" class="eav-form-field">
         <mat-label>Content Type</mat-label>
         <mat-select *ngIf="guidedContentType" formControlName="contentType" required
           [placeholder]="!vm.contentTypes.length ? 'No items found' : ''">
@@ -37,7 +37,7 @@
   
         <input matInput type="text" *ngIf="!guidedContentType" formControlName="contentType" required>
   
-        <div matTextSuffix class="selection-suffix">
+        <div matTextSuffix>
           <button mat-icon-button type="button" [ngClass]="{ 'active': guidedContentType }" tippy="Pick existing value"
             (click)="toggleGuidedContentType(true)">
             <mat-icon>search</mat-icon>
@@ -54,14 +54,15 @@
       </app-field-hint>
     </form>
   </mat-card-content>
-  <mat-card-actions align="end">
+  <mat-card-actions class="eav-card-actions">
     <mat-slide-toggle color="accent" [checked]="advancedMode" (change)="toggleAdvancedMode($event)">
       {{ advancedMode ? 'Advanced' : 'Simple' }}
     </mat-slide-toggle>
-    <div class="eav-card-action-spacer"></div>
-    <button mat-raised-button class="eav-card-action-button" (click)="closeDialog()">Cancel</button>
-    <button mat-raised-button color="accent" class="eav-card-action-button" [disabled]="!form.valid" (click)="confirm()">
-      Confirm
-    </button>
+    <div>
+      <button mat-raised-button class="eav-card-action-button" (click)="closeDialog()">Cancel</button>
+      <button mat-raised-button color="accent" class="eav-card-action-button" [disabled]="!form.valid" (click)="confirm()">
+        Confirm
+      </button>
+    </div>
   </mat-card-actions>
 </mat-card>
