@@ -1,4 +1,4 @@
-<div class="eav-dialog">
+<div class="eav-dialog eav-no-scrollbar">
   <div class="eav-dialog-header">
     <div class="eav-dialog-header__title">
       <ng-container *ngIf="editMode === undefined">Fields</ng-container>
@@ -6,7 +6,7 @@
       <ng-container *ngIf="editMode != null">Edit Field</ng-container>
     </div>
   </div>
-  <form #ngForm="ngForm" class="dialog-form" *ngIf="(loading$ | async) === false" (ngSubmit)="save()">
+  <form #ngForm="ngForm" *ngIf="(loading$ | async) === false" (ngSubmit)="save()">
     <div class="eav-dialog-content">
       <div class="eav-row-container" *ngFor="let field of fields; index as i">
         <div class="eav-edit-input">
