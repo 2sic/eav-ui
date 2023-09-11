@@ -32,9 +32,9 @@ $border-radius: 8px;
 }
 
 /* TODO=(mdc-migration): The following rule targets internal classes of card that may no longer apply for the MDC version. */
-.mat-card-content-group-parent {
+.mat-mdc-card-content-group-parent {
   border-radius: $border-radius;
-  padding-bottom: 0;
+  padding: 0;
 
   .description {
     font-size: 14px;
