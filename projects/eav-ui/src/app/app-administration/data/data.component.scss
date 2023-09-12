@@ -1,5 +1,6 @@
 .eav-scope-dropdown {
   margin-top: -14px;
+  width: 200px;
 }
 
 .eav-dialog-actions {
@@ -9,15 +10,14 @@
   .eav-dialog-actions-div {
     display: flex;
     justify-content: flex-start;
+  }
 
-    .eav-button {
-      &__with-icon {
-        width: 70%;
-        .eav-icon {
-          font-size: 24px;
-          height: 24px;
-          width: 24px;
-        }
+  .eav-button {
+    &__with-icon {
+      .eav-icon {
+        font-size: 24px;
+        height: 24px;
+        width: 24px;
       }
     }
   }
