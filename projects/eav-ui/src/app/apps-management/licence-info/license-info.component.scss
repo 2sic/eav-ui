@@ -52,10 +52,20 @@
   }
 }
 
-.actions-box {
-  margin-top: 8px;
+// .actions-box {
+//   margin-top: 8px;
 
-  button .mat-icon {
-    margin-right: 4px;
+//   button .mat-icon {
+//     margin-right: 4px;
+//   }
+// }
+
+.eav-button {
+  &__with-icon {
+    .eav-icon {
+      font-size: 24px;
+      height: 24px;
+      width: 24px;
+    }
   }
 }
