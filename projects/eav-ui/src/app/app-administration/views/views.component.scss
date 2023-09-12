@@ -1,10 +1,37 @@
-.polymorph-logo {
+.eav-dialog-actions {
+  display: flex;
+  justify-content: space-between;
+
+  .eav-dialog-actions-div {
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  .eav-button {
+    &__with-icon {
+      .eav-icon {
+        font-size: 24px;
+        height: 24px;
+        width: 24px;
+      }
+    }
+  }
+}
+
+.eav-polymorph-button {
+  .eav-polymorph-button-span {
+    display: flex;
+    align-items: center;
+  }
+}
+
+.eav-polymorph-logo {
   width: 24px;
   height: 24px;
   margin-right: 4px;
 }
 
-.polymorph-button[disabled] .polymorph-logo {
+.eav-polymorph-button[disabled] .eav-polymorph-logo {
   opacity: 33%;
   filter: grayscale(1);
 }
