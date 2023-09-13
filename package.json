@@ -56,7 +56,7 @@
     "tinymce": "^6.2.0",
     "tippy.js": "^6.3.7",
     "tslib": "^2.3.0",
-    "zone.js": "~0.11.4"
+    "zone.js": "^0.13.3"
   },
   "devDependencies": {
     "@2sic.com/2sxc-load-build-config": "https://gitpkg.now.sh/2sic/2sxc-ui/packages/2sxc-load-build-config?bc0bf98ba6b745ab8efa974e5d15114980fe650d",
