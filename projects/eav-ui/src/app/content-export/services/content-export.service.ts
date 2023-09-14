@@ -1,4 +1,4 @@
-import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
+import { Context as DnnContext } from '@2sic.com/sxc-angular';
 import { Injectable } from '@angular/core';
 import { webApiTypeRoot } from '../../app-administration/services/content-types.service';
 import { webApiEntityRoot } from '../../edit/shared/services';

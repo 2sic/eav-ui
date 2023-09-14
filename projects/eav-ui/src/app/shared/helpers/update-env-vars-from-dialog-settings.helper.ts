@@ -1,4 +1,4 @@
-import { JsInfo } from '@2sic.com/2sxc-typings';
+import { EnvironmentSpecs } from '@2sic.com/2sxc-typings';
 import { DialogContextApp } from '../models/dialog-context.models';
 import { EavWindow } from '../models/eav-window.model';
 
@@ -14,8 +14,8 @@ export function UpdateEnvVarsFromDialogSettings(appContext: DialogContextApp): v
     const includedApiRoot = appContext?.Api;
     if (!includedApiRoot) { return; }
 
-    const old2sxcHeader = (window.$2sxc.env as any).header as JsInfo;
-    const new2sxcHeader = { ...old2sxcHeader, appApi: includedApiRoot } as JsInfo;
+    const old2sxcHeader = (window.$2sxc.env as any).header as EnvironmentSpecs;
+    const new2sxcHeader = { ...old2sxcHeader, appApi: includedApiRoot } as EnvironmentSpecs;
     window.$2sxc.env.load(new2sxcHeader);
   } catch { /* ignore */ }
 }
