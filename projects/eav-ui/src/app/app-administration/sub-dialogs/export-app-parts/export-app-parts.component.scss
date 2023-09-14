@@ -1,12 +1,8 @@
-.edit-input {
+.eav-edit-input {
   padding-bottom: 8px;
 }
 
-.mat-mdc-form-field-hint {
-  font-size: 12px;
-}
-
-.content-info {
+.eav-content-info {
   &__title {
     font-size: 18px;
     font-weight: bold;
@@ -32,7 +28,7 @@
   }
 }
 
-.option-box {
+.eav-option-box {
   margin: 8px 0;
 
   &__text {

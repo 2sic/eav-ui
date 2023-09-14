@@ -1,91 +1,90 @@
 <ng-container *ngIf="viewModel$ | async as vm">
-
-  <div mat-mdc-dialog-title>
-    <div class="dialog-title-box">Export Content and Templates from this App</div>
-  </div>
-
-  <p class="dialog-description">
-    This is an advanced feature to export parts of the app.
-    The export will create an xml file which can be imported into another site or app.
-    To export the entire content of the app (for example when duplicating the entire site), go to the app export.
-    For further help visit <a href="https://2sxc.org/en/help?tag=export" target="_blank">2sxc Help</a>.
-  </p>
-
-  <div class="dialog-component-content fancy-scrollbar-light">
-    <div class="edit-input">
-      <mat-form-field color="accent">
-        <mat-label>Scope</mat-label>
-        <mat-select [ngModel]="exportScope" name="Scope" [disabled]="lockScope" (ngModelChange)="changeScope($event)">
-          <mat-option *ngFor="let scopeOption of scopeOptions" [value]="scopeOption.value">
-            {{ scopeOption.name }}
-          </mat-option>
-          <mat-option [value]="dropdownInsertValue">Other...</mat-option>
-        </mat-select>
-        <button mat-icon-button matTextSuffix [tippy]="lockScope ? 'Unlock' : 'Lock'">
-          <mat-icon appClickStopPropagation (click)="unlockScope()">
-            {{ lockScope ? 'lock' : 'lock_open' }}
-          </mat-icon>
-        </button>
-      </mat-form-field>
-      <app-field-hint>
-        The scope should almost never be changed -
-        <a appClickStopPropagation href="https://2sxc.org/help?tag=scope" target="_blank">see help</a>
-      </app-field-hint>
+  <div class="eav-dialog eav-no-scrollbar">
+    <div class="eav-dialog-header">
+      <div class="eav-dialog-header__title">Export Content and Templates from this App</div>
     </div>
-
-    <div *ngIf="contentInfo">
-      <ul class="content-info__list content-info__base">
-        <p class="content-info__title">Content Types</p>
-        <li class="content-info__item" *ngFor="let contentType of contentInfo.ContentTypes">
-          <div class="option-box">
-            <mat-checkbox [(ngModel)]="contentType._export">
-              <span class="option-box__text">{{ contentType.Name }} ({{ contentType.Id }})</span>
-            </mat-checkbox>
-          </div>
-
-          <ul class="content-info__list" *ngIf="contentType.Templates.length > 0">
-            <p class="content-info__subtitle">Templates</p>
-            <li class="content-info__item" *ngFor="let template of contentType.Templates">
-              <div class="option-box">
-                <mat-checkbox [(ngModel)]="template._export">
-                  <span class="option-box__text">{{ template.Name }} ({{ template.Id }})</span>
-                </mat-checkbox>
-              </div>
-            </li>
-          </ul>
-
-          <ul class="content-info__list" *ngIf="contentType.Entities.length > 0">
-            <p class="content-info__subtitle">Entities</p>
-            <li class="content-info__item" *ngFor="let entity of contentType.Entities">
-              <div class="option-box">
-                <mat-checkbox [(ngModel)]="entity._export">
-                  <span class="option-box__text">{{ entity.Title }} ({{ entity.Id }})</span>
-                </mat-checkbox>
-              </div>
-            </li>
-          </ul>
-        </li>
-      </ul>
-
-      <ul class="content-info__list content-info__base">
-        <p class="content-info__title">Templates Without Content Types</p>
-        <li class="content-info__item" *ngFor="let template of contentInfo.TemplatesWithoutContentTypes">
-          <div class="option-box">
-            <mat-checkbox [(ngModel)]="template._export">
-              <span class="option-box__text">{{ template.Name }} ({{ template.Id }})</span>
-            </mat-checkbox>
-          </div>
-        </li>
-      </ul>
+    <div class="eav-dialog-content">
+      <p>
+        This is an advanced feature to export parts of the app.
+        The export will create an xml file which can be imported into another site or app.
+        To export the entire content of the app (for example when duplicating the entire site), go to the app export.
+        For further help visit <a href="https://2sxc.org/en/help?tag=export" target="_blank">2sxc Help</a>.
+      </p>
+      
+      <div class="eav-edit-input">
+        <mat-form-field color="accent" class="eav-form-field">
+          <mat-label>Scope</mat-label>
+          <mat-select [ngModel]="exportScope" name="Scope" [disabled]="lockScope" (ngModelChange)="changeScope($event)">
+            <mat-option *ngFor="let scopeOption of scopeOptions" [value]="scopeOption.value">
+              {{ scopeOption.name }}
+            </mat-option>
+            <mat-option [value]="dropdownInsertValue">Other...</mat-option>
+          </mat-select>
+          <button mat-icon-button matTextSuffix [tippy]="lockScope ? 'Unlock' : 'Lock'">
+            <mat-icon appClickStopPropagation (click)="unlockScope()">
+              {{ lockScope ? 'lock' : 'lock_open' }}
+            </mat-icon>
+          </button>
+        </mat-form-field>
+        <app-field-hint>
+          The scope should almost never be changed -
+          <a appClickStopPropagation href="https://2sxc.org/help?tag=scope" target="_blank">see help</a>
+        </app-field-hint>
+      </div>
+    
+      <div *ngIf="contentInfo">
+        <ul class="eav-content-info__list eav-content-info__base">
+          <p class="eav-content-info__title">Content Types</p>
+          <li class="eav-content-info__item" *ngFor="let contentType of contentInfo.ContentTypes">
+            <div class="eav-option-box">
+              <mat-checkbox [(ngModel)]="contentType._export">
+                <span class="eav-option-box__text">{{ contentType.Name }} ({{ contentType.Id }})</span>
+              </mat-checkbox>
+            </div>
+    
+            <ul class="eav-content-info__list" *ngIf="contentType.Templates.length > 0">
+              <p class="eav-content-info__subtitle">Templates</p>
+              <li class="eav-content-info__item" *ngFor="let template of contentType.Templates">
+                <div class="eav-option-box">
+                  <mat-checkbox [(ngModel)]="template._export">
+                    <span class="eav-option-box__text">{{ template.Name }} ({{ template.Id }})</span>
+                  </mat-checkbox>
+                </div>
+              </li>
+            </ul>
+    
+            <ul class="eav-content-info__list" *ngIf="contentType.Entities.length > 0">
+              <p class="eav-content-info__subtitle">Entities</p>
+              <li class="eav-content-info__item" *ngFor="let entity of contentType.Entities">
+                <div class="eav-option-box">
+                  <mat-checkbox [(ngModel)]="entity._export">
+                    <span class="eav-option-box__text">{{ entity.Title }} ({{ entity.Id }})</span>
+                  </mat-checkbox>
+                </div>
+              </li>
+            </ul>
+          </li>
+        </ul>
+    
+        <ul class="eav-content-info__list eav-content-info__base">
+          <p class="eav-content-info__title">Templates Without Content Types</p>
+          <li class="eav-content-info__item" *ngFor="let template of contentInfo.TemplatesWithoutContentTypes">
+            <div class="eav-option-box">
+              <mat-checkbox [(ngModel)]="template._export">
+                <span class="eav-option-box__text">{{ template.Name }} ({{ template.Id }})</span>
+              </mat-checkbox>
+            </div>
+          </li>
+        </ul>
+      </div>
     </div>
-  </div>
-
-  <div class="dialog-component-actions">
-    <button mat-raised-button [disabled]="vm.loading || vm.isExporting" (click)="closeDialog()">
-      Cancel
-    </button>
-    <button mat-raised-button color="accent" [disabled]="vm.loading || vm.isExporting" (click)="exportAppParts()">
-      Export
-    </button>
+    <mat-dialog-actions align="end">
+      <button mat-raised-button [disabled]="vm.loading || vm.isExporting" (click)="closeDialog()">
+        Cancel
+      </button>
+      <button mat-raised-button color="accent" [disabled]="vm.loading || vm.isExporting" (click)="exportAppParts()">
+        Export
+      </button>
+    </mat-dialog-actions>
   </div>
 </ng-container>
