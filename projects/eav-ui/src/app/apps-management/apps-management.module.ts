@@ -10,7 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MAT_SELECT_CONFIG, MatSelectModule } from '@angular/material/select';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MAT_SLIDE_TOGGLE_DEFAULT_OPTIONS, MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { EcoFabSpeedDialModule } from '@ecodev/fab-speed-dial';
@@ -102,7 +102,8 @@ import { FeaturesModule } from '../features/features.module';
     SxcInsightsService,
     DialogService,
     AppDialogConfigService,
-    { provide: MAT_SELECT_CONFIG, useValue: { hideSingleSelectionIndicator: true } }
+    { provide: MAT_SELECT_CONFIG, useValue: { hideSingleSelectionIndicator: true } },
+    { provide: MAT_SLIDE_TOGGLE_DEFAULT_OPTIONS, useValue: { hideIcon: true } }
   ],
 })
 export class AppsManagementModule { }

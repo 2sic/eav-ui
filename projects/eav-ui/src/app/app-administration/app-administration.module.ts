@@ -14,7 +14,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatRadioModule } from '@angular/material/radio';
 import { MAT_SELECT_CONFIG, MatSelectModule } from '@angular/material/select';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MAT_SLIDE_TOGGLE_DEFAULT_OPTIONS, MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ZoneService } from '../apps-management/services/zone.service';
@@ -156,7 +156,8 @@ import { AppConfigurationCardComponent } from './app-configuration/app-configura
     ContentTypesFieldsService,
     MetadataService,
     ZoneService,
-    { provide: MAT_SELECT_CONFIG, useValue: { hideSingleSelectionIndicator: true } }
+    { provide: MAT_SELECT_CONFIG, useValue: { hideSingleSelectionIndicator: true } },
+    { provide: MAT_SLIDE_TOGGLE_DEFAULT_OPTIONS, useValue: { hideIcon: true } }
   ],
 })
 export class AppAdministrationModule { }

@@ -7,7 +7,7 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormFieldModule } from '@angular/mat
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MAT_SELECT_CONFIG, MatSelectModule } from '@angular/material/select';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MAT_SLIDE_TOGGLE_DEFAULT_OPTIONS, MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
@@ -48,7 +48,6 @@ import { VisualQueryComponent } from './visual-query.component';
     ReactiveFormsModule,
     MatSelectModule,
     MatInputModule,
-    MatSlideToggleModule,
   ],
   providers: [
     Context,
@@ -56,7 +55,8 @@ import { VisualQueryComponent } from './visual-query.component';
     MetadataService,
     ContentTypesService,
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { subscriptSizing: 'dynamic' } },
-    { provide: MAT_SELECT_CONFIG, useValue: { hideSingleSelectionIndicator: true } }
+    { provide: MAT_SELECT_CONFIG, useValue: { hideSingleSelectionIndicator: true } },
+    { provide: MAT_SLIDE_TOGGLE_DEFAULT_OPTIONS, useValue: { hideIcon: true } }
   ],
 })
 export class VisualQueryModule { }
