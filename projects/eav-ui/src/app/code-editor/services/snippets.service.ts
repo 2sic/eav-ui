@@ -1,4 +1,4 @@
-import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
+import { Context as DnnContext } from '@2sic.com/sxc-angular';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';

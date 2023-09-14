@@ -1,4 +1,4 @@
-import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
+import { Context as DnnContext } from '@2sic.com/sxc-angular';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable, shareReplay, tap } from 'rxjs';
@@ -19,7 +19,7 @@ export class AppDialogConfigService {
     featuresService: FeaturesService,
   ) {
     featuresService.loadFromService(this);
-   }
+  }
 
   private dialogSettings$: Record<number, Observable<DialogSettings>> = {};
 

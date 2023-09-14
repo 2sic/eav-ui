@@ -23,7 +23,7 @@
     "documentation": "npx compodoc -p tsconfig.doc.json --disableRoutesGraph -s"
   },
   "dependencies": {
-    "@2sic.com/dnn-sxc-angular": "^11.1.2",
+    "@2sic.com/sxc-angular": "^14.7.1",
     "@ag-grid-community/angular": "^29.2.0",
     "@ag-grid-community/client-side-row-model": "^29.2.0",
     "@ag-grid-community/styles": "^29.2.0",
@@ -60,7 +60,7 @@
   },
   "devDependencies": {
     "@2sic.com/2sxc-load-build-config": "https://gitpkg.now.sh/2sic/2sxc-ui/packages/2sxc-load-build-config?bc0bf98ba6b745ab8efa974e5d15114980fe650d",
-    "@2sic.com/2sxc-typings": "^11.0.0",
+    "@2sic.com/2sxc-typings": "^14.7.3",
     "@angular-devkit/build-angular": "^16.2.2",
     "@angular/cli": "^16.2.2",
     "@angular/compiler-cli": "^16.2.5",

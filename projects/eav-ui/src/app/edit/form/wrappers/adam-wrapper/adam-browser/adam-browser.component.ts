@@ -1,4 +1,4 @@
-import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
+import { Context as DnnContext } from '@2sic.com/sxc-angular';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { ChangeDetectorRef, Component, EventEmitter, Input, NgZone, OnDestroy, OnInit, Output, ViewContainerRef } from '@angular/core';
 import { AbstractControl, UntypedFormGroup } from '@angular/forms';

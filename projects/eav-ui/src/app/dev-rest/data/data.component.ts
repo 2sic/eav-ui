@@ -1,4 +1,4 @@
-import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
+import { Context as DnnContext } from '@2sic.com/sxc-angular';
 import { Component, HostBinding, OnDestroy } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -35,7 +35,7 @@ export class DevRestDataComponent extends DevRestBase<DevRestDataViewModel> impl
     entityService: EntityService,
     /** Context for this dialog. Used for appId, zoneId, tabId, etc. */
     context: Context,
-    /** dnn-sxc-angular context. Used to resolve urls */
+    /** sxc-angular context. Used to resolve urls */
     dnnContext: DnnContext,
   ) {
     super(appDialogConfigService, context, dialogRef, dnnContext, router, route, permissionsService);

@@ -1,4 +1,4 @@
-import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
+import { Context as DnnContext } from '@2sic.com/sxc-angular';
 import { Component, HostBinding, OnDestroy } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
