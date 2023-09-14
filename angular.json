@@ -38,6 +38,9 @@
               "projects/eav-ui/src/scripts/require.js",
               "projects/eav-ui/src/app/edit/assets/scripts/dropzone-dragging-helper.js",
               "projects/eav-ui/src/app/edit/assets/scripts/clipboard-paste/paste.js"
+            ],
+            "allowedCommonJsDependencies": [
+              "dayjs"
             ]
           },
           "configurations": {

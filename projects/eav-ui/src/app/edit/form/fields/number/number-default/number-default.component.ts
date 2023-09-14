@@ -7,6 +7,7 @@ import { EavService, FieldsSettingsService } from '../../../../shared/services';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { BaseFieldComponent } from '../../base/base-field.component';
 import { NumberDefaultViewModel } from './number-default.models';
+import { NumberDefaultLogic } from './number-default-logic';
 
 @Component({
   selector: InputTypeConstants.NumberDefault,
@@ -21,6 +22,7 @@ export class NumberDefaultComponent extends BaseFieldComponent<number> implement
 
   constructor(eavService: EavService, fieldsSettingsService: FieldsSettingsService) {
     super(eavService, fieldsSettingsService);
+    NumberDefaultLogic.importMe();
   }
 
   ngOnInit() {
