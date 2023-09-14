@@ -1,17 +1,17 @@
-.history-tables {
-  .table-row {
+.eav-history-tables {
+  .eav-table-row {
     border-bottom: 1px solid rgba($editUI-foreground-color, 0.12);
   }
 
-  .row-main__type {
+  .eav-row-main__type {
     color: rgba($editUI-foreground-color, 0.4);
   }
 
-  .history-new {
+  .eav-history-new {
     color: #0d904f;
   }
 
-  .history-deleted {
+  .eav-history-deleted {
     color: map_get($mat-eav-item-dialog-error, 300);
 
     &__value {
@@ -20,7 +20,7 @@
     }
   }
 
-  .history-changed {
+  .eav-history-changed {
     color: map_get($mat-eav-item-dialog-secondary, 500);
   }
 }
