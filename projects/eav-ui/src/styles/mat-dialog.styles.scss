@@ -228,7 +228,7 @@ $max-height: calc(100vh - #{$dialog-margin-top} - #{$dialog-margin-bottom});
   }
 
   .eav-dialog-content {
-    padding: 0 $eav-dialog-padding $eav-dialog-padding $eav-dialog-padding;
+    padding: 0px $eav-dialog-padding $eav-dialog-padding $eav-dialog-padding;
   }
 
   .eav-dialog-actions {
