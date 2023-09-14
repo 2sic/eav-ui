@@ -27,7 +27,7 @@
       [tippy]="'Fields.Hyperlink.AdamFileManager.UploadPasteTip' | translate" (click)="openFeatureInfoDialog()">
       <div class="dz-image adam-browse-background-icon adam-browse-background">
         <mat-icon class="adam-filter-mat-icon-with-grey-mat-badge" [matBadgeHidden]="vm.allowPasteImageFromClipboard"
-          matBadgeSize="large" matBadge="💎" matBadgePosition="below after" matBadgeOverlap="true">
+          matBadgeSize="large" matBadge="💎" matBadgePosition="below after" matBadgeOverlap="true" aria-hidden="false">
           filter
         </mat-icon>
         <div *ngIf="!pasteDiv.classList.contains('pastable-focus') && vm.allowPasteImageFromClipboard"
