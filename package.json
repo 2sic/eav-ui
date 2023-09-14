@@ -60,6 +60,7 @@
     "zone.js": "~0.11.4"
   },
   "devDependencies": {
+    "@2sic.com/2sxc-load-build-config": "https://gitpkg.now.sh/2sic/2sxc-ui/packages/2sxc-load-build-config?develop",
     "@2sic.com/2sxc-typings": "^11.0.0",
     "@angular-devkit/build-angular": "^13.3.3",
     "@angular/cli": "^13.3.3",

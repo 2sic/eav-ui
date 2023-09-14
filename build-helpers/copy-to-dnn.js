@@ -4,7 +4,7 @@ const chalkError = chalk.red;
 const chalkSuccess = chalk.green;
 const chokidar = require('chokidar');
 const fs = require('fs-extra');
-const bc = require('./load-build-config.js');
+const bc = require('@2sic.com/2sxc-load-build-config');
 const buildConfig = bc.BuildConfig;
 
 const sourcePath = 'dist';
