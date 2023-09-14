@@ -1,4 +1,8 @@
 {
+  /* ----- for developers - please read this -----
+   - Do not modify this file, it's a fallback for the build process and should be configured to do nothing
+   - Read https://go.2sxc.org/build for more details
+  */
   "JsTargets": [
     // "C:/Projects/2sxc/2sxc-dnn/Website/DesktopModules/ToSIC_SexyContent",
     // "C:/Projects/2sxc/2sxc/Src/Oqtane/ToSic.Sxc.Oqt.Server/wwwroot/Modules/ToSic.Sxc.Oqtane",
@@ -14,6 +18,7 @@
   */
   "Sources": [
     // "C:/Projects/2sxc/2sxc-sources/_latest"
-  ]
-  // "OqtaneModuleInstallPackages": "A:/2sxc/2sxc/InstallPackages/OqtaneModule"
+  ],
+  // "DnnInstallPackage": "C:/Projects/2sxc/2sxc/InstallPackages/Dnn-Install",
+  // "OqtaneInstallPackage": "C:/Projects/2sxc/2sxc/InstallPackages/OqtaneModule",
 }
