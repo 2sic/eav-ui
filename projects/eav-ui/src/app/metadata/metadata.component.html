@@ -50,7 +50,8 @@
             <div *ngIf="recommendation.Icon; then svgIcon else matIcon"></div>
             <ng-template #svgIcon>
               <div [innerHTML]="recommendation.Icon | safeHtml" [matBadgeHidden]="recommendation.Enabled"
-                matBadgeColor="accent" matBadgeSize="small" matBadge="💎" matBadgePosition="below after"></div>
+                matBadgeColor="accent" matBadgeSize="small" matBadge="💎" matBadgePosition="below after"
+                aria-hidden="false"></div>
             </ng-template>
             <ng-template #matIcon>
               <mat-icon>add</mat-icon>

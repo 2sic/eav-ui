@@ -6,7 +6,7 @@
     <mat-icon *ngIf="app.IsInherited">holiday_village</mat-icon>
   </div>
   <div *ngIf="!lightspeedEnabled" class="like-button disabled" tippy="Lightspeed is disabled" (click)="openLightspeedFeatureInfo()">
-    <mat-icon matBadgeSize="small" matBadge="💎" matBadgePosition="below after">
+    <mat-icon matBadgeSize="small" matBadge="💎" matBadgePosition="below after" aria-hidden="false">
       bolt
     </mat-icon>
   </div>
@@ -14,8 +14,12 @@
   <div *ngIf="lightspeedEnabled" class="like-button {{ appHasLightSpeed ? '' : 'disabled'}}" matRipple
     [tippy]="appHasLightSpeed ? app.Lightspeed.Title : 'App not yet configured for LightSpeed'"
     (click)="openLightspeed()">
-    <mat-icon *ngIf="appLightSpeedEnabled" matBadgeSize="small" matBadge="✅" matBadgePosition="below after">bolt</mat-icon>
-    <mat-icon *ngIf="!appLightSpeedEnabled" matBadgeSize="small" matBadge="⛔" matBadgePosition="below after">bolt</mat-icon>
+    <mat-icon *ngIf="appLightSpeedEnabled" matBadgeSize="small" matBadge="✅" matBadgePosition="below after" aria-hidden="false">
+      bolt
+    </mat-icon>
+    <mat-icon *ngIf="!appLightSpeedEnabled" matBadgeSize="small" matBadge="⛔" matBadgePosition="below after" aria-hidden="false">
+      bolt
+    </mat-icon>
   </div>
   <div class="like-button highlight" matRipple tippy="More" [matMenuTriggerFor]="menu">
     <mat-icon>more_horiz</mat-icon>
