@@ -39,12 +39,12 @@
     <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://docs.2sxc.org/basics/app/configuration.html' }"></ng-container>
     <button mat-button class="eav-button__with-icon" (click)="edit()">
       <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="vm.appConfigurationsCount || null"
-        matBadgePosition="below after" class="eav-icon">edit</mat-icon>
+        matBadgePosition="below after" aria-hidden="false" class="eav-icon">edit</mat-icon>
       <span>Edit</span>
     </button>
     <button mat-button class="eav-button__with-icon" (click)="openMetadata()">
       <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="vm.appMetadataCount || null"
-        matBadgePosition="below after" class="eav-icon">local_offer</mat-icon>
+        matBadgePosition="below after" aria-hidden="false" class="eav-icon">local_offer</mat-icon>
       <span>Metadata</span>
     </button>
   </mat-card-actions>
