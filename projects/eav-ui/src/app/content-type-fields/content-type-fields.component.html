@@ -1,35 +1,29 @@
-<div class="nav-component-wrapper" *ngIf="viewModel$ | async as vm">
-  <div mat-mdc-dialog-title>
-    <div class="dialog-title-box">
-      <div>
-        <ng-container>
-          {{ vm.contentType?.Label || vm.contentType?.Name }}
-        </ng-container>
-        Fields
-      </div>
-      <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
-        <mat-icon>close</mat-icon>
-      </button>
+<div class="eav-dialog nav-component-wrapper" *ngIf="viewModel$ | async as vm">
+  <div class="eav-dialog-header">
+    <div class="eav-dialog-header__title">
+      {{ vm.contentType.Label || vm.contentType.Name }} Fields
+    </div>
+    <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <div class="eav-dialog-content nav-component-wrapper">
+    <router-outlet></router-outlet>
+    <div class="grid-wrapper">
+      <ag-grid-angular class="ag-theme-material" [rowData]="vm.fields" [gridOptions]="gridOptions"
+        (rowDragEnter)="onRowDragEnter($event)" (rowDragEnd)="onRowDragEnd($event)" (rowDragMove)="onRowDragMove($event)"
+        (gridReady)="onGridReady($event)" (sortChanged)="onSortChanged($event)" (filterChanged)="onFilterChanged($event)"
+        [ngClass]="{
+            'grid-sorted': sortApplied,
+            'grid-filtered': filterApplied
+          }">
+      </ag-grid-angular>
     </div>
   </div>
-
-  <router-outlet></router-outlet>
-
-  <div class="grid-wrapper">
-    <ag-grid-angular class="ag-theme-material" [rowData]="vm.fields" [gridOptions]="gridOptions"
-      (rowDragEnter)="onRowDragEnter($event)" (rowDragEnd)="onRowDragEnd($event)" (rowDragMove)="onRowDragMove($event)"
-      (gridReady)="onGridReady($event)" (sortChanged)="onSortChanged($event)" (filterChanged)="onFilterChanged($event)"
-      [ngClass]="{
-        'grid-sorted': sortApplied,
-        'grid-filtered': filterApplied
-      }">
-    </ag-grid-angular>
-
-    <div class="grid-more-actions-box"></div>
-
+  <mat-dialog-actions align="end">
     <button mat-fab mat-elevation-z24 class="grid-fab" tippy="Add fields"
       [disabled]="vm.contentType == null || vm.contentType.EditInfo.ReadOnly" (click)="add()">
       <mat-icon>add</mat-icon>
     </button>
-  </div>
+  </mat-dialog-actions>
 </div>
