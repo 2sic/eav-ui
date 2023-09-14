@@ -1,4 +1,4 @@
-import { ComponentFactoryResolver, ComponentRef, Directive, Input, OnDestroy, OnInit, Type, ViewContainerRef } from '@angular/core';
+import { ComponentRef, Directive, Input, OnDestroy, OnInit, Type, ViewContainerRef } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
@@ -80,7 +80,6 @@ export class FieldsBuilderDirective implements OnInit, OnDestroy {
   };
 
   constructor(
-    private resolver: ComponentFactoryResolver,
     private mainContainerRef: ViewContainerRef,
     private fieldsSettingsService: FieldsSettingsService,
   ) { }
@@ -147,8 +146,7 @@ export class FieldsBuilderDirective implements OnInit, OnDestroy {
       containerRef = this.createWrappers(containerRef, fieldMetadata.wrappers, fieldConfig);
     }
 
-    const factory = this.resolver.resolveComponentFactory<Field>(componentType);
-    const ref = containerRef.createComponent(factory);
+    const ref = containerRef.createComponent(componentType);
 
     Object.assign<Field, Field>(ref.instance, {
       config: fieldConfig,
@@ -167,8 +165,7 @@ export class FieldsBuilderDirective implements OnInit, OnDestroy {
 
   private createWrapper(containerRef: ViewContainerRef, wrapper: string, fieldConfig: FieldConfigSet): ViewContainerRef {
     const componentType = this.readComponentType(wrapper);
-    const componentFactory = this.resolver.resolveComponentFactory<FieldWrapper>(componentType);
-    const ref = containerRef.createComponent(componentFactory);
+    const ref = containerRef.createComponent(componentType);
 
     Object.assign<FieldWrapper, Partial<FieldWrapper>>(ref.instance, {
       config: fieldConfig,
