@@ -8,7 +8,7 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormFieldModule } from '@angular/mat
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MAT_SELECT_CONFIG, MatSelectModule } from '@angular/material/select';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MAT_SLIDE_TOGGLE_DEFAULT_OPTIONS, MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { EcoFabSpeedDialModule } from '@ecodev/fab-speed-dial';
 import { EntitiesService } from '../content-items/services/entities.service';
@@ -57,7 +57,8 @@ import { MatCardModule } from '@angular/material/card';
     MetadataService,
     EntitiesService,
     { provide: MAT_FORM_FIELD_DEFAULT_OPTIONS, useValue: { subscriptSizing: 'dynamic' } },
-    { provide: MAT_SELECT_CONFIG, useValue: { hideSingleSelectionIndicator: true } }
+    { provide: MAT_SELECT_CONFIG, useValue: { hideSingleSelectionIndicator: true } },
+    { provide: MAT_SLIDE_TOGGLE_DEFAULT_OPTIONS, useValue: { hideIcon: true } }
   ],
 })
 export class MetadataModule { }
