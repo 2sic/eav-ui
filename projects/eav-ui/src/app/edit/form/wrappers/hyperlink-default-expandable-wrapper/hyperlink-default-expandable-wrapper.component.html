@@ -69,7 +69,7 @@
     <div class="c-ew__preview-field--short" fxFlex="auto">
       <!-- input -->
       <div class="hyperlink-input-link-wrapper">
-        <mat-form-field color="accent" [ngClass]="{
+        <mat-form-field color="accent" class="eav-form-field" [ngClass]="{
           'mat-form-field-invalid': vm.controlStatus.invalid && vm.controlStatus.touched
         }">
           <input matInput [tippy]="'Fields.Hyperlink.Default.Tooltip' | translate" tippyPlacement="top"
