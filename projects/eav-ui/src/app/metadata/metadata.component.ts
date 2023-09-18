@@ -175,6 +175,8 @@ export class MetadataComponent extends BaseComponent implements OnInit, OnDestro
           if (recommendation.Icon?.startsWith('base64:')) {
             recommendation.Icon = recommendation.Icon.replace('base64:', '');
             recommendation.Icon = window.atob(recommendation.Icon);
+            // used for coloring black icons to white
+            recommendation.Icon = recommendation.Icon.replace('fill="#000000"', 'fill="#ffffff"');
           }
         });
         return metadata;
