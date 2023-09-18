@@ -1,24 +1,24 @@
 // fix for mat-datepicker and ngx-mat-datetime-picker compatibility is found here: https://github.com/h2qutc/angular-material-components/issues/256#issuecomment-1119290906
-::ng-deep ngx-mat-calendar {
-  .mat-calendar-body-cell {
-    position: relative !important;
-  }
-}
+// ::ng-deep ngx-mat-calendar {
+//   .mat-calendar-body-cell {
+//     position: relative !important;
+//   }
+// }
 
-::ng-deep mat-calendar {
-  .mat-calendar-arrow {
-    width: 0;
-    height: 0;
-  }
+// ::ng-deep mat-calendar {
+//   .mat-calendar-arrow {
+//     width: 0;
+//     height: 0;
+//   }
 
-  .mat-calendar-body-cell {
-    position: absolute !important;
-    height: 100%;
-  }
-}
+//   .mat-calendar-body-cell {
+//     position: absolute !important;
+//     height: 100%;
+//   }
+// }
 
-::ng-deep ngx-mat-datetime-content {
-  .mat-calendar-arrow {
-    width: 0;
-  }
-}
+// ::ng-deep ngx-mat-datetime-content {
+//   .mat-calendar-arrow {
+//     width: 0;
+//   }
+// }
