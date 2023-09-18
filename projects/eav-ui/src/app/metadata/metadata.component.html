@@ -33,23 +33,22 @@
         <mat-icon>add</mat-icon>
       </button>
   
-      <eco-fab-speed-dial class="grid-fab" [ngClass]="{ 'fab-opened': vm.fabOpen }" *ngIf="vm.recommendations.length > 0"
+      <eco-fab-speed-dial class="eav-eco-fab-speed-dial" [ngClass]="{ 'fab-opened': vm.fabOpen }" *ngIf="vm.recommendations.length > 0"
         (openChange)="openChange($event)">
         <eco-fab-speed-dial-trigger [spin]="true">
           <button mat-fab>
             <mat-icon class="spin180">{{ vm.fabOpen ? 'close' : 'add' }}</mat-icon>
           </button>
         </eco-fab-speed-dial-trigger>
-  
-        <eco-fab-speed-dial-actions>
-          <button mat-mini-fab label="Other Content Type" (click)="createMetadata()">
+        <eco-fab-speed-dial-actions class="eav-eco-fab-speed-dial-actions">
+          <button mat-mini-fab class="eav-eco-fab-speed-dial-action-button" label="Other Content Type" (click)="createMetadata()">
             <mat-icon>search</mat-icon>
           </button>
-          <button mat-mini-fab *ngFor="let recommendation of vm.recommendations" [attr.label]="recommendation.Title"
+          <button mat-mini-fab class="eav-eco-fab-speed-dial-action-button" *ngFor="let recommendation of vm.recommendations" [attr.label]="recommendation.Title"
             (click)="createMetadata(recommendation)">
             <div *ngIf="recommendation.Icon; then svgIcon else matIcon"></div>
             <ng-template #svgIcon>
-              <div [innerHTML]="recommendation.Icon | safeHtml" [matBadgeHidden]="recommendation.Enabled"
+              <div style="color: white; fill: white;" [innerHTML]="recommendation.Icon | safeHtml" [matBadgeHidden]="recommendation.Enabled"
                 matBadgeColor="accent" matBadgeSize="small" matBadge="💎" matBadgePosition="below after"
                 aria-hidden="false"></div>
             </ng-template>

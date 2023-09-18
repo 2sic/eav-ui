@@ -4,30 +4,29 @@
   </ag-grid-angular>
 
   <mat-dialog-actions align="end">
-    <eco-fab-speed-dial class="grid-fab" [ngClass]="{ 'fab-opened': vm.fabOpen }" (openChange)="openChange($event)">
+    <eco-fab-speed-dial class="eav-eco-fab-speed-dial" [ngClass]="{ 'fab-opened': vm.fabOpen }" (openChange)="openChange($event)">
       <eco-fab-speed-dial-trigger [spin]="true">
         <button mat-fab>
           <mat-icon class="spin180">{{ vm.fabOpen ? 'close' : 'add' }}</mat-icon>
         </button>
       </eco-fab-speed-dial-trigger>
-    
-      <eco-fab-speed-dial-actions>
-        <button mat-mini-fab label="Find more apps" (click)="browseCatalog()">
+      <eco-fab-speed-dial-actions class="eav-eco-fab-speed-dial-actions">
+        <button mat-mini-fab class="eav-eco-fab-speed-dial-action-button" label="Find more apps" (click)="browseCatalog()">
           <mat-icon>search</mat-icon>
         </button>
-        <button mat-mini-fab label="Create inherited app" (click)="createInheritedApp()">
+        <button mat-mini-fab class="eav-eco-fab-speed-dial-action-button" label="Create inherited app" (click)="createInheritedApp()">
           <mat-icon>holiday_village</mat-icon>
         </button>
-        <button mat-mini-fab label="Add from folder" (click)="addFromFolder()">
+        <button mat-mini-fab class="eav-eco-fab-speed-dial-action-button" label="Add from folder" (click)="addFromFolder()">
           <mat-icon [matBadgeHidden]="vm.isAddFromFolderEnabled" matBadgeColor="accent" matBadgeSize="small" matBadge="💎"
             matBadgePosition="below after" aria-hidden="false">
             add
           </mat-icon>
         </button>
-        <button mat-mini-fab label="Import app" (click)="importApp()">
+        <button mat-mini-fab class="eav-eco-fab-speed-dial-action-button" label="Import app" (click)="importApp()">
           <mat-icon>cloud_upload</mat-icon>
         </button>
-        <button mat-mini-fab label="Create app" (click)="createApp()">
+        <button mat-mini-fab class="eav-eco-fab-speed-dial-action-button" label="Create app" (click)="createApp()">
           <mat-icon>add</mat-icon>
         </button>
       </eco-fab-speed-dial-actions>
