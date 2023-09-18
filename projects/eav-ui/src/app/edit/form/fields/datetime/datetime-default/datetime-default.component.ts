@@ -1,4 +1,5 @@
-import { MatDatetimePickerInputEvent, NgxMatDatetimePicker } from '@angular-material-components/datetime-picker';
+import { NgxMatDatetimepicker } from '@angular-material-components/datetime-picker';
+import { NgxMatDatepickerInputEvent } from '@angular-material-components/datetime-picker/lib/datepicker-input-base';
 import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDatepicker, MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { TranslateService } from '@ngx-translate/core';
@@ -23,7 +24,7 @@ import { DatetimeDefaultViewModel } from './datetime-default.models';
   wrappers: [WrappersConstants.LocalizationWrapper],
 })
 export class DatetimeDefaultComponent extends BaseFieldComponent<string> implements OnInit, OnDestroy {
-  @ViewChild('picker') private picker?: MatDatepicker<Dayjs> | NgxMatDatetimePicker<Dayjs>;
+  @ViewChild('picker') private picker?: MatDatepicker<Dayjs> | NgxMatDatetimepicker<Dayjs>;
 
   viewModel: Observable<DatetimeDefaultViewModel>;
 
@@ -70,7 +71,7 @@ export class DatetimeDefaultComponent extends BaseFieldComponent<string> impleme
     super.ngOnDestroy();
   }
 
-  updateValue(event: MatDatepickerInputEvent<Dayjs> | MatDatetimePickerInputEvent<Dayjs>) {
+  updateValue(event: MatDatepickerInputEvent<Dayjs> | NgxMatDatepickerInputEvent<Dayjs>) {
     const newValue = event.value != null ? event.value.toJSON() : null;
     GeneralHelpers.patchControlValue(this.control, newValue);
   }
@@ -78,21 +79,21 @@ export class DatetimeDefaultComponent extends BaseFieldComponent<string> impleme
   pickerOpened(): void {
     dayjs.extend(utc);
 
-    if (!(this.picker instanceof NgxMatDatetimePicker)) { return; }
+    if (!(this.picker instanceof NgxMatDatetimepicker)) { return; }
 
     if (this.ngxMatDayjsDatetimeAdapterOptions?.useUtc) {
       if (this.control.value) {
         // Fixes visual bug where picker dialog shows incorrect time if value is changed with formula but date remains the same.
         // Probably something broken with change detection inside picker.
         // https://github.com/h2qutc/angular-material-components/issues/220
-        this.picker._selected = dayjs.utc(this.control.value);
+        this.picker.select(dayjs.utc(this.control.value));
       } else {
         // Displays current time as UTC if there was no previous value.
         // This means that user initially sees the same time it sees on computer clock,
         // but when value is selected it works like UTC.
         const dateTime = dayjs();
         const dateTimeString = `${dateTime.format('YYYY-MM-DD')}T${dateTime.format('HH:mm:ss.SSS')}Z`;
-        this.picker._selected = dayjs.utc(dateTimeString, 'YYYY-MM-DDTHH:mm:ss.SSSZ');
+        this.picker.select(dayjs.utc(dateTimeString, 'YYYY-MM-DDTHH:mm:ss.SSSZ'));
       }
     }
   }

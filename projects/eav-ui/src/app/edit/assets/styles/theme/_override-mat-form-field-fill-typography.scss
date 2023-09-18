@@ -91,6 +91,7 @@
     .mat-mdc-form-field-subscript-wrapper {
     background-color: transparent !important;
     padding-left: 0px;
+    padding-right: 0px;
   }
 
   //used so form-field doesn't change background color on hover
@@ -106,4 +107,13 @@
   .mat-mdc-icon-button {
     background-color: transparent;
   }
+
+  // .mat-mdc-form-field-text-suffix {
+  //   .c-ew__preview-suffix-icon {
+  //     // padding: 0px;
+  //     height: 30px;
+  //     width: 24px;
+  //     font-size: 24px;
+  //   }
+  // }
 }
