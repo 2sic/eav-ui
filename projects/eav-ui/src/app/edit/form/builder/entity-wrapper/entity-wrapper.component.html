@@ -1,8 +1,8 @@
-<mat-card appearance="outlined" *ngIf="viewModel$ | async as vm" class="mat-card-group-parent shadow-bottom-z-1">
-  <div class="mat-card-header-group-parent" fxLayout="row" fxLayoutAlign="start center">
+<mat-card appearance="outlined" *ngIf="viewModel$ | async as vm" class="eav-card-group-parent shadow-bottom-z-1">
+  <div class="eav-card-header-group-parent" fxLayout="row" fxLayoutAlign="start center">
 
     <div fxFlex="auto" fxLayoutAlign="start center" (click)="toggleCollapse()">
-      <div fxLayoutAlign="start center" class="mat-card-title-group mat-headline-4">
+      <div fxLayoutAlign="start center" class="eav-card-title-group mat-headline-4">
         <mat-icon class="title-arrow">
           {{ collapse ? 'keyboard_arrow_down' : 'keyboard_arrow_up' }}
         </mat-icon>
@@ -12,7 +12,7 @@
       </div>
     </div>
 
-    <button type="button" #noteTrigger mat-icon-button class="note {{ vm.noteProps.triggerClass }}"
+    <button type="button" #noteTrigger mat-icon-button class="eav-note {{ vm.noteProps.triggerClass }}"
       [disabled]="vm.readOnly" [tippy]="vm.noteProps.tooltip | translate"
       [tippyDisabled]="vm.readOnly || !vm.noteProps.tooltip" [disableRipple]="vm.noteProps.itemNotSaved"
       (pointerenter)="vm.noteProps.note ? toggleNote($event) : null"
@@ -22,9 +22,9 @@
     </button>
 
     <ng-template #noteTemplate>
-      <div class="note-wrapper {{ vm.noteProps.noteClass }}" cdkDrag cdkDragRootElement=".cdk-overlay-pane"
+      <div class="eav-note-wrapper {{ vm.noteProps.noteClass }}" cdkDrag cdkDragRootElement=".cdk-overlay-pane"
         cdkDragBoundary="body" (pointerdown)="noteTouched = true">
-        <div class="note-actions" cdkDragHandle>
+        <div class="eav-note-actions" cdkDragHandle>
           <button mat-icon-button appMousedownStopPropagation (click)="editNote(vm.noteProps.note)">
             <mat-icon>edit</mat-icon>
           </button>
@@ -35,7 +35,7 @@
             <mat-icon>close</mat-icon>
           </button>
         </div>
-        <div class="note-content hide-scrollbar" [innerHtml]="vm.noteProps.noteHtml | safeHtml"></div>
+        <div class="eav-note-content eav-hide-scrollbar" [innerHtml]="vm.noteProps.noteHtml | safeHtml"></div>
       </div>
     </ng-template>
 
@@ -58,13 +58,13 @@
     </app-entity-translate-menu>
   </div>
 
-  <mat-card-content class="mat-mdc-card-content-group-parent" [style.display]="collapse ? 'none' : 'block'">
-    <div class="mdc-layout-grid">
-      <div class="mdc-layout-grid__inner">
-        <div class="mdc-layout-grid__cell--span-12 mat-body-2" align="start" *ngIf="vm.editInstructions">
+  <mat-card-content class="eav-card-content-group-parent" [style.display]="collapse ? 'none' : 'block'">
+    <div class="eav-layout-grid">
+      <div class="eav-layout-grid__inner">
+        <div class="eav-layout-grid__cell--span-12 mat-body-2" align="start" *ngIf="vm.editInstructions">
           <div class="description" appChangeAnchorTarget [innerHtml]="vm.editInstructions | safeHtml"></div>
         </div>
-        <div class="mdc-layout-grid__cell--span-12">
+        <div class="eav-layout-grid__cell--span-12">
           <ng-container appFieldsBuilder [group]="group"></ng-container>
         </div>
       </div>

@@ -18,9 +18,9 @@
         value: (dialogIsOpen$ | async) ? 'expanded' : 'closed',
         params: { bottomPixels: calculateBottomPixels() }
       }">
-        <div class="mdc-layout-grid">
-          <div class="mdc-layout-grid__inner">
-            <mat-card appearance="outlined" class="mdc-layout-grid__cell--span-12 u-border-radius shadow-bottom-z-1">
+        <div class="eav-layout-grid">
+          <div class="eav-layout-grid__inner">
+            <mat-card appearance="outlined" class="eav-layout-grid__cell--span-12 u-border-radius shadow-bottom-z-1">
               <ng-container #fieldComponent></ng-container>
             </mat-card>
           </div>

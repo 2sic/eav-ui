@@ -1,7 +1,6 @@
 $border-radius: 8px;
 
-/* TODO=(mdc-migration): The following rule targets internal classes of card that may no longer apply for the MDC version. */
-.mat-card-group-parent {
+.eav-card-group-parent {
   padding: 0;
   margin: 0;
   border-radius: $border-radius;
@@ -11,8 +10,7 @@ $border-radius: 8px;
   }
 }
 
-/* TODO=(mdc-migration): The following rule targets internal classes of card that may no longer apply for the MDC version. */
-.mat-card-header-group-parent {
+.eav-card-header-group-parent {
   padding: 24px 32px;
   border-radius: $border-radius;
   height: 68px;
@@ -31,8 +29,7 @@ $border-radius: 8px;
   }
 }
 
-/* TODO=(mdc-migration): The following rule targets internal classes of card that may no longer apply for the MDC version. */
-.mat-mdc-card-content-group-parent {
+.eav-card-content-group-parent {
   border-radius: $border-radius;
   padding: 0;
 
@@ -40,10 +37,12 @@ $border-radius: 8px;
     font-size: 14px;
     padding-left: 16px;
     padding-right: 16px;
+    margin-top: -14px;
+    margin-bottom: 14px;
   }
 }
 
-.mat-mdc-card-title-group {
+.eav-card-title-group {
   margin: 0;
   cursor: pointer;
   line-height: 20px;
@@ -57,7 +56,7 @@ $border-radius: 8px;
   line-height: 20px !important;
 }
 
-.mdc-layout-grid {
+.eav-layout-grid {
   padding: 16px;
   padding-top: 0;
 }
@@ -75,7 +74,7 @@ $border-radius: 8px;
   justify-content: center;
 }
 
-.note {
+.eav-note {
   &.item-not-saved {
     cursor: default;
   }
@@ -89,7 +88,7 @@ $border-radius: 8px;
   }
 }
 
-.note-wrapper {
+.eav-note-wrapper {
   display: flex;
   flex-direction: column;
   padding: 16px;
@@ -106,12 +105,12 @@ $border-radius: 8px;
   }
 }
 
-.note-content {
+.eav-note-content {
   flex-shrink: 1;
   overflow: auto;
 }
 
-.note-actions {
+.eav-note-actions {
   flex-shrink: 0;
   display: flex;
   align-items: center;
