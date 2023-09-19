@@ -15,9 +15,9 @@
       'debug-info-is-open': vm.debugInfoIsOpen,
       'hide-header-height-fix': vm.hideHeader
     }">
-      <div class="mdc-layout-grid">
-        <div class="mdc-layout-grid__inner">
-          <div class="mdc-layout-grid__cell--span-12" appFormSlide *ngIf="!vm.delayForm">
+      <div class="eav-layout-grid">
+        <div class="eav-layout-grid__inner">
+          <div class="eav-layout-grid__cell--span-12" appFormSlide *ngIf="!vm.delayForm">
             <div *ngFor="let item of vm.items; trackBy: trackByFn">
               <app-form-builder [entityGuid]="item.Entity.Guid"></app-form-builder>
             </div>
