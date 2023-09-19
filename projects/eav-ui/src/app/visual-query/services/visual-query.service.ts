@@ -316,7 +316,7 @@ export class VisualQueryService extends BaseComponent implements OnDestroy {
       backdropClass: 'dialog-backdrop',
       closeOnNavigation: false,
       data: dialogData,
-      panelClass: ['dialog-panel', `dialog-panel-medium`, 'eav-no-scrollbar'],
+      panelClass: ['dialog-panel', `dialog-panel-medium`, 'no-scrollbar'],
       // spm NOTE: position used to force align-items: flex-start; on cdk-global-overlay-wrapper.
       // Real top margin is overwritten in css e.g. dialog-panel-large
       position: { top: '0' },
@@ -334,7 +334,7 @@ export class VisualQueryService extends BaseComponent implements OnDestroy {
       backdropClass: 'dialog-backdrop',
       closeOnNavigation: false,
       data: dialogData,
-      panelClass: ['dialog-panel', `dialog-panel-medium`, 'eav-no-scrollbar'],
+      panelClass: ['dialog-panel', `dialog-panel-medium`, 'no-scrollbar'],
       // spm NOTE: position used to force align-items: flex-start; on cdk-global-overlay-wrapper.
       // Real top margin is overwritten in css e.g. dialog-panel-large
       position: { top: '0' },
