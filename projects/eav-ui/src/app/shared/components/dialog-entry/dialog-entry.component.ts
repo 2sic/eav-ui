@@ -67,7 +67,7 @@ export class DialogEntryComponent implements OnInit, OnDestroy {
       panelClass: [
         'dialog-panel',
         `dialog-panel-${dialogConfig.panelSize}`,
-        dialogConfig.showScrollbar ? 'show-scrollbar' : 'no-scrollbar',
+        dialogConfig.showScrollbar ? 'show-scrollbar' : 'eav-no-scrollbar',
         ...(dialogConfig.panelClass ? dialogConfig.panelClass : []),
       ],
       // spm NOTE: position used to force align-items: flex-start; on cdk-global-overlay-wrapper.
