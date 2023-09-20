@@ -3,12 +3,9 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const webpack = require('webpack');
 const setExternalSourceMaps = require('../../build-helpers/external-source-maps-elements');
-
-// 2020-08-27 2dm changed to have multi-targets
 const multiOutput = require('../../build-helpers/multi-output');
+const buildConfig = require('@2sic.com/2sxc-load-build-config').BuildConfig;
 const distWysiwyg = path.resolve(__dirname, '../../dist/system/field-string-wysiwyg');
-const targetDnnWysiwyg = path.resolve(multiOutput.DnnTargetFolder, './system/field-string-wysiwyg');
-const targetAssetsWysiwyg = path.resolve(multiOutput.AssetsTarget, './system/field-string-wysiwyg');
 
 /** Checks webpack configuration to remove console.log, not node process.env.NODE_ENV used for external source maps */
 let isProduction = false;
@@ -44,8 +41,8 @@ const configuration = {
         },
       ],
     }),
-    multiOutput.createCopyAfterBuildPlugin(distWysiwyg, targetDnnWysiwyg, targetAssetsWysiwyg),
-  ],
+    multiOutput.createCopyAfterBuildPlugin(distWysiwyg, [...buildConfig.Sources, ...buildConfig.JsTargets], './system/field-string-wysiwyg'),
+  ].filter(item => item !== null),
   devtool: 'source-map',
   module: {
     rules: [

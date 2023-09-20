@@ -2,12 +2,9 @@ const path = require('path');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const webpack = require('webpack');
 const setExternalSourceMaps = require('../../build-helpers/external-source-maps-elements');
-
-// 2020-08-27 2dm changed to have multi-targets
 const multiOutput = require('../../build-helpers/multi-output');
+const buildConfig = require('@2sic.com/2sxc-load-build-config').BuildConfig;
 const distPath = path.resolve(__dirname, '../../dist/system/field-custom-gps');
-const targetDnn = path.resolve(multiOutput.DnnTargetFolder, './system/field-custom-gps');
-const targetAssets = path.resolve(multiOutput.AssetsTarget, './system/field-custom-gps');
 
 /** Checks webpack configuration to remove console.log, not node process.env.NODE_ENV used for external source maps */
 let isProduction = false;
@@ -27,8 +24,8 @@ const configuration = {
     new webpack.DefinePlugin({
       '__PRODUCTION__': JSON.stringify(isProduction),
     }),
-    multiOutput.createCopyAfterBuildPlugin(distPath, targetDnn, targetAssets),
-  ],
+    multiOutput.createCopyAfterBuildPlugin(distPath, [...buildConfig.Sources, ...buildConfig.JsTargets], '/system/field-custom-gps'),
+  ].filter(item => item !== null),
   devtool: 'source-map',
   module: {
     rules: [

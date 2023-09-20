@@ -2,7 +2,7 @@
 
 This is part of [2sxc](https://2sxc.org) - an awesome extension for DNN :)
 
-It's built using Angular 13.
+It's built using Angular 14 (Angular 16 WIP).
 
 ## Projects
 
@@ -14,7 +14,11 @@ There are various projects in here, some building with angular `ng build` and ot
 
 ## Building the Main Angular Project
 
-Use the normal `ng` syntax, like `ng build` or `ng build --watch`
+First make sure you run `npm ci`.
+
+To build, use the normal `ng` syntax, like `ng build` or `ng build --watch`
+
+For more guidance on building and deploying to Dnn/Oqtane, see <https://go.2sxc.org/build>
 
 ## Building Webpack projects
 

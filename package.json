@@ -1,7 +1,7 @@
 {
   "name": "eav-ui",
   "// VERSION": "The version number is very important, as it's used for publishing the source maps",
-  "version": "16.04.00",
+  "version": "16.06.00",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -49,6 +49,7 @@
     "@ngx-translate/core": "^14.0.0",
     "@ngx-translate/http-loader": "^7.0.0",
     "dayjs": "^1.11.5",
+    "jsonc-parser": "^3.2.0",
     "lodash-es": "^4.17.21",
     "ngx-build-plus": "^13.0.1",
     "ngx-dropzone-wrapper": "^11.0.0",
@@ -59,6 +60,7 @@
     "zone.js": "~0.11.4"
   },
   "devDependencies": {
+    "@2sic.com/2sxc-load-build-config": "https://gitpkg.now.sh/2sic/2sxc-ui/packages/2sxc-load-build-config?bc0bf98ba6b745ab8efa974e5d15114980fe650d",
     "@2sic.com/2sxc-typings": "^11.0.0",
     "@angular-devkit/build-angular": "^13.3.3",
     "@angular/cli": "^13.3.3",

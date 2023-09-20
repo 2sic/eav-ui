@@ -23,7 +23,7 @@ export class WysiwygConfigurationManager {
   current: WysiwygConfiguration;
 
   public getInitialMode() {
-    return this.fieldSettings._advanced.Mode || DefaultMode;
+    return this.fieldSettings._advanced?.Mode || DefaultMode;
   }
 
   public getSettings(editMode: EditModes.WysiwygEditMode, displayMode: DialogModes.DisplayModes): WysiwygConfiguration {
@@ -32,7 +32,7 @@ export class WysiwygConfigurationManager {
     const fieldSettings = this.fieldSettings;
 
     // 1. Figure out the mode to use. This can be `text`, `rich` or `default`
-    editMode = editMode || this.fieldSettings._advanced.Mode as string;
+    editMode = editMode || this.fieldSettings._advanced?.Mode as string;
 
     // 2. Get the preset for this mode
     const preset = this.getPreset(editMode, displayMode);
