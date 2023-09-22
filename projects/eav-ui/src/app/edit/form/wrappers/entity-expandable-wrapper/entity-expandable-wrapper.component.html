@@ -2,7 +2,7 @@
   <div class="c-ew__backdrop" (click)="closeDialog()"></div>
   <div fxLayout="column" class="c-ew__dialog mat-elevation-z24 u-border-radius">
     <div [ngClass]="{ 'c-ew__dialog-header mat-elevation-z2': dialogIsOpen$ | async }">
-      <mat-card appearance="outlined" class="mat-elevation-z0" fxLayout="row">
+      <mat-card class="mat-elevation-z0" fxLayout="row">
         <button mat-icon-button class="back-arrow" fxLayoutAlign="center center"
           [tippy]="'Form.Buttons.Return.Tip' | translate" (click)="closeDialog()">
           <mat-icon>arrow_back</mat-icon>
@@ -20,7 +20,7 @@
       }">
         <div class="eav-layout-grid">
           <div class="eav-layout-grid__inner">
-            <mat-card appearance="outlined" class="eav-layout-grid__cell--span-12 u-border-radius shadow-bottom-z-1">
+            <mat-card class="eav-card eav-layout-grid__cell--span-12 u-border-radius shadow-bottom-z-1">
               <ng-container #fieldComponent></ng-container>
             </mat-card>
           </div>
