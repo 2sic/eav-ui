@@ -4,8 +4,8 @@
       <div
         [ngClass]="(vm.enableCreate && vm.entityType && !selectedEntities.length && !vm.allowMultiValue) ? 'ed-field__field-short' : 'ed-field__field'">
         <div [hidden]="(!vm.allowMultiValue && selectedEntities.length) || !vm.enableAddExisting">
-          <mat-form-field [formGroup]="group" color="accent" class="eav-form-field" 
-          [ngClass]="{'mat-form-field-invalid': invalid && touched}">
+          <mat-form-field [formGroup]="group" color="accent" class="eav-form-field"
+            [ngClass]="{'mat-form-field-invalid': invalid && touched}">
             <input matInput #autocomplete [placeholder]="getPlaceholder()" [matAutocomplete]="auto"
               [disabled]="disabled || !vm.enableAddExisting" (focus)="fetchEntities()" (blur)="markAsTouched()"
               (input)="filterSelectionList()" (click)="filterSelectionList()">
@@ -13,14 +13,14 @@
               [disabled]="disabled || !vm.enableAddExisting" *ngIf="!vm.enableTextEntry">
               <mat-icon>arrow_drop_down</mat-icon>
             </button>
-            <div matTextSuffix class="selection-suffix" *ngIf="vm.enableTextEntry">
-              <button mat-icon-button [tippy]="'Fields.String.Dropdown' | translate" [disabled]="disabled"
-                class="active">
-                <mat-icon>search</mat-icon>
+            <div matTextSuffix class="eav-selection-suffix" *ngIf="vm.enableTextEntry">
+              <button mat-icon-button class="eav-selection-suffix-button" [tippy]="'Fields.String.Dropdown' | translate"
+                [disabled]="disabled" class="active">
+                <mat-icon class="eav-icon">search</mat-icon>
               </button>
-              <button mat-icon-button [tippy]="'Fields.String.Freetext' | translate" [disabled]="disabled"
-                appClickStopPropagation (click)="toggleFreeText()">
-                <mat-icon>text_fields</mat-icon>
+              <button mat-icon-button class="eav-selection-suffix-button" [tippy]="'Fields.String.Freetext' | translate"
+                [disabled]="disabled" appClickStopPropagation (click)="toggleFreeText()">
+                <mat-icon class="eav-icon">text_fields</mat-icon>
               </button>
             </div>
             <mat-label [ngClass]="{ 'mat-error': invalid && touched }">
@@ -57,7 +57,7 @@
   <mat-form-field *ngIf="freeTextMode" [formGroup]="group" color="accent">
     <input matInput [required]="required" [formControlName]="config.fieldName" [placeholder]="placeholder">
 
-    <div matTextSuffix class="selection-suffix">
+    <div matTextSuffix class="eav-selection-suffix">
       <button mat-icon-button [tippy]="'Fields.String.Dropdown' | translate" [disabled]="disabled"
         appClickStopPropagation (click)="toggleFreeText()">
         <mat-icon>search</mat-icon>

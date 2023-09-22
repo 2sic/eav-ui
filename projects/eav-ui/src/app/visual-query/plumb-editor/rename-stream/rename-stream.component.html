@@ -21,7 +21,7 @@
           This field is required
         </app-field-hint>
       </ng-container>
-  
+
       <!-- Rich form -->
       <ng-container *ngIf="isSource && pipelineResultExists">
         <!-- Scope -->
@@ -39,7 +39,7 @@
             <a href="https://2sxc.org/help?tag=scope" target="_blank" appClickStopPropagation>see help</a>
           </app-field-hint>
         </ng-container>
-  
+
         <!-- Label -->
         <mat-form-field color="accent" class="eav-form-field">
           <mat-label>Label</mat-label>
@@ -49,17 +49,17 @@
               {{ labelOption }}
             </mat-option>
           </mat-select>
-  
+
           <input matInput type="text" *ngIf="!guidedLabel" formControlName="label" required>
-  
-          <div matTextSuffix class="selection-suffix">
-            <button mat-icon-button type="button" [ngClass]="{ 'active': guidedLabel }" tippy="Pick existing value"
+
+          <div matTextSuffix class="eav-selection-suffix">
+            <button mat-icon-button class="eav-selection-suffix-button" type="button" [ngClass]="{ 'active': guidedLabel }" tippy="Pick existing value"
               (click)="toggleGuidedLabel(true)">
-              <mat-icon>search</mat-icon>
+              <mat-icon class="eav-icon">search</mat-icon>
             </button>
-            <button mat-icon-button type="button" [ngClass]="{ 'active': !guidedLabel }" tippy="Manual entry"
+            <button mat-icon-button class="eav-selection-suffix-button" type="button" [ngClass]="{ 'active': !guidedLabel }" tippy="Manual entry"
               (click)="toggleGuidedLabel(false)">
-              <mat-icon>text_fields</mat-icon>
+              <mat-icon class="eav-icon">text_fields</mat-icon>
             </button>
           </div>
         </mat-form-field>
