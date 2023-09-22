@@ -76,7 +76,7 @@
   <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
 
   <!-- add new entity -->
-  <div *ngIf="!freeTextMode && vm.enableCreate && vm.entityType && vm.allowMultiValue">
+  <div *ngIf="!freeTextMode && vm.enableCreate && vm.entityType && vm.allowMultiValue" class="eav-add-new-entity">
     <button mat-mini-fab color="accent" [tippy]="'Fields.Entity.New' | translate" [disabled]="disabled || disableAddNew"
       (click)="openNewEntityDialog()">
       <mat-icon>add</mat-icon>
