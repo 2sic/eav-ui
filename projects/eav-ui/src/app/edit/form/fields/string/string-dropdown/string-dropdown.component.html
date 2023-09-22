@@ -15,16 +15,15 @@
     <input matInput type="number" *ngIf="vm.freeTextMode && type === 'number'" [formControlName]="config.fieldName"
       [required]="vm.required" [placeholder]="vm.placeholder">
 
-    <div matTextSuffix class="selection-suffix" *ngIf="vm.enableTextEntry">
-      <button mat-icon-button [ngClass]="{ 'active': !vm.freeTextMode }"
-        [tippy]="'Fields.String.Dropdown' | translate" [disabled]="vm.controlStatus.disabled"
-        (click)="toggleFreeTextMode(false)">
-        <mat-icon>search</mat-icon>
+    <div matTextSuffix class="eav-selection-suffix" *ngIf="vm.enableTextEntry">
+      <button mat-icon-button class="eav-selection-suffix-button" [ngClass]="{ 'active': !vm.freeTextMode }" [tippy]="'Fields.String.Dropdown' | translate"
+        [disabled]="vm.controlStatus.disabled" (click)="toggleFreeTextMode(false)">
+        <mat-icon class="eav-icon">search</mat-icon>
       </button>
 
-      <button mat-icon-button [ngClass]="{ 'active': vm.freeTextMode }" [tippy]="'Fields.String.Freetext' | translate"
+      <button mat-icon-button class="eav-selection-suffix-button" [ngClass]="{ 'active': vm.freeTextMode }" [tippy]="'Fields.String.Freetext' | translate"
         [disabled]="vm.controlStatus.disabled" (click)="toggleFreeTextMode(true)">
-        <mat-icon>text_fields</mat-icon>
+        <mat-icon class="eav-icon">text_fields</mat-icon>
       </button>
     </div>
 

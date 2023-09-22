@@ -22,7 +22,7 @@
 //   // .mat-mdc-form-field-subscript-wrapper {
 //   //   bottom: 0;
 //   // }
-  
+
 //   /* TODO_(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
 //   /* TODO_(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
 //   .mat-mdc-form-field-text-suffix, .mat-mdc-form-field-icon-suffix {
@@ -31,35 +31,6 @@
 //       width: 30px !important;
 //       height: 30px !important;
 //       line-height: 30px;
-//     }
-
-//     .entity-dropdown-button {
-//       cursor: text;
-//       /* TODO_(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.*/
-//       &.mat-private-button-disabled {
-//         cursor: default;
-//       }
-//     }
-
-//     .selection-suffix {
-//       display: flex;
-
-//       .mat-mdc-icon-button {
-//         top: 0;
-
-//         .mat-icon {
-//           font-size: 18px;
-//         }
-//       }
-
-//       .active {
-//         background-color: $accent-color;
-//         color: white;
-//         /* TODO_(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.*/
-//         &.mat-private-button-disabled {
-//           background-color: $editUI-label-disabled-color;
-//         }
-//       }
 //     }
 //   }
 //   /* TODO-(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version.*/
@@ -88,7 +59,7 @@
 
   //used so form-field doesn't have background color
   .mat-mdc-text-field-wrapper,
-    .mat-mdc-form-field-subscript-wrapper {
+  .mat-mdc-form-field-subscript-wrapper {
     background-color: transparent !important;
     padding-left: 0px;
     padding-right: 0px;
@@ -107,13 +78,33 @@
   .mat-mdc-icon-button {
     background-color: transparent;
   }
+}
 
-  // .mat-mdc-form-field-text-suffix {
-  //   .c-ew__preview-suffix-icon {
-  //     // padding: 0px;
-  //     height: 30px;
-  //     width: 24px;
-  //     font-size: 24px;
-  //   }
-  // }
+.entity-dropdown-button {
+  cursor: text;
+
+  //TODO @SDV check if this or equivalent class exists 
+  &.mat-private-button-disabled {
+    cursor: default;
+  }
+}
+
+.eav-selection-suffix {
+  margin-left: 8px;
+  display: flex;
+
+  .eav-selection-suffix-button {
+    scale: calc(3/4);
+    margin: 0px -4px;
+  }
+
+  .active {
+    background-color: $accent-color;
+    color: white;
+
+    //TODO @SDV check if this or equivalent class exists 
+    &.mat-private-button-disabled {
+      background-color: $editUI-label-disabled-color;
+    }
+  }
 }

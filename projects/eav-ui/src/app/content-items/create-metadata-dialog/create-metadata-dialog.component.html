@@ -12,7 +12,7 @@
         <!-- Target Type -->
         <mat-form-field color="accent" class="eav-form-field">
           <mat-label>Target</mat-label>
-    
+
           <mat-select *ngIf="vm.guidedMode" formControlName="targetType" required>
             <mat-option *ngFor="let option of targetTypeOptions" [value]="option.targetType">
               {{ option.label }}
@@ -21,14 +21,15 @@
               {{ vm.formValues.targetType }}
             </mat-option>
           </mat-select>
-    
+
           <input matInput type="number" min="0" *ngIf="!vm.guidedMode" formControlName="targetType" required>
         </mat-form-field>
-    
+
         <app-field-hint
           *ngIf="form.controls['targetType'].touched && !form.controls['targetType'].invalid && vm.unknownTargetType"
           [isError]="false">
-          Warning: you entered an unknown target type. This may work or may not. Please be sure you know what you're doing
+          Warning: you entered an unknown target type. This may work or may not. Please be sure you know what you're
+          doing
         </app-field-hint>
         <app-field-hint *ngIf="vm.targetTypeHint" [isError]="false">{{ vm.targetTypeHint }}</app-field-hint>
         <app-field-hint *ngIf="form.controls['targetType'].touched && form.controls['targetType'].errors?.required"
@@ -39,28 +40,28 @@
           [isError]="true">
           Must be a whole number
         </app-field-hint>
-    
+
         <!-- Key Type -->
         <mat-form-field color="accent" class="eav-form-field">
           <mat-label>Key type</mat-label>
-    
+
           <mat-select formControlName="keyType" required>
             <mat-option *ngFor="let option of vm.keyTypeOptions" [value]="option">
               {{ option }}
             </mat-option>
           </mat-select>
         </mat-form-field>
-    
+
         <app-field-hint *ngIf="form.controls['keyType'].touched && form.controls['keyType'].errors?.required"
           [isError]="true">
           This field is required
         </app-field-hint>
-    
+
         <!-- Content Type for Content Items -->
         <mat-form-field color="accent" class="eav-form-field"
           *ngIf="vm.guidedMode && vm.formValues.targetType === eavConstants.metadata.entity.targetType">
           <mat-label>Content Type</mat-label>
-    
+
           <mat-select formControlName="contentTypeForContentItems"
             [placeholder]="!vm.contentTypes.length ? 'No items found' : ''">
             <mat-option *ngFor="let contentType of vm.contentTypes" [value]="contentType.StaticName">
@@ -68,12 +69,12 @@
             </mat-option>
           </mat-select>
         </mat-form-field>
-    
+
         <!-- Scope for Content Types -->
         <mat-form-field color="accent" class="eav-form-field"
           *ngIf="vm.guidedMode && (vm.formValues.targetType === eavConstants.metadata.entity.targetType || vm.formValues.targetType === eavConstants.metadata.contentType.targetType)">
           <mat-label>Scope</mat-label>
-    
+
           <mat-select formControlName="scopeForContentTypes"
             [placeholder]="!vm.scopeOptions.length ? 'No items found' : ''">
             <mat-option *ngFor="let scopeOption of vm.scopeOptions" [value]="scopeOption.value">
@@ -82,19 +83,19 @@
             <mat-option [value]="dropdownInsertValue">Other...</mat-option>
           </mat-select>
         </mat-form-field>
-    
+
         <app-field-hint>
           The scope should almost never be changed -
           <a href="https://2sxc.org/help?tag=scope" target="_blank" appClickStopPropagation>see help</a>
         </app-field-hint>
-    
+
         <!-- Key -->
         <mat-form-field color="accent" class="eav-form-field">
           <mat-label>Key</mat-label>
-    
+
           <ng-container *ngIf="vm.guidedMode; then specialKeyInputs else defaultKeyInput">
           </ng-container>
-    
+
           <ng-template #specialKeyInputs>
             <ng-container [ngSwitch]="vm.formValues.targetType">
               <ng-container *ngSwitchCase="eavConstants.metadata.entity.targetType">
@@ -104,10 +105,10 @@
                     {{ item.Title }} ({{ item.Id }})
                   </mat-option>
                 </mat-select>
-    
+
                 <input matInput type="text" *ngIf="!vm.guidedKey" formControlName="key" required>
               </ng-container>
-    
+
               <ng-container *ngSwitchCase="eavConstants.metadata.contentType.targetType">
                 <mat-select *ngIf="vm.guidedKey" formControlName="key" required
                   [placeholder]="!vm.contentTypes.length ? 'No items found' : ''">
@@ -115,35 +116,35 @@
                     {{ contentType.Label }}
                   </mat-option>
                 </mat-select>
-    
+
                 <input matInput type="text" *ngIf="!vm.guidedKey" formControlName="key" required>
               </ng-container>
-    
+
               <ng-container *ngSwitchDefault>
                 <ng-container *ngTemplateOutlet="defaultKeyInput"></ng-container>
               </ng-container>
             </ng-container>
           </ng-template>
-    
+
           <ng-template #defaultKeyInput>
-            <input matInput type="text" *ngIf="vm.formValues.keyType !== eavConstants.keyTypes.number" formControlName="key"
-              required>
+            <input matInput type="text" *ngIf="vm.formValues.keyType !== eavConstants.keyTypes.number"
+              formControlName="key" required>
             <input matInput type="number" *ngIf="vm.formValues.keyType === eavConstants.keyTypes.number"
               formControlName="key" required>
           </ng-template>
-    
-          <div matTextSuffix class="selection-suffix" *ngIf="vm.guidedMode && vm.guidedKeyExists">
-            <button mat-icon-button type="button" [ngClass]="{ 'active': vm.guidedKey }" tippy="Pick existing value"
+
+          <div matTextSuffix class="eav-selection-suffix" *ngIf="vm.guidedMode && vm.guidedKeyExists">
+            <button mat-icon-button class="eav-selection-suffix-button" type="button" [ngClass]="{ 'active': vm.guidedKey }" tippy="Pick existing value"
               (click)="toggleGuidedKey(true)">
-              <mat-icon>search</mat-icon>
+              <mat-icon class="eav-icon">search</mat-icon>
             </button>
-            <button mat-icon-button type="button" [ngClass]="{ 'active': !vm.guidedKey }" tippy="Manual entry"
+            <button mat-icon-button class="eav-selection-suffix-button" type="button" [ngClass]="{ 'active': !vm.guidedKey }" tippy="Manual entry"
               (click)="toggleGuidedKey(false)">
-              <mat-icon>text_fields</mat-icon>
+              <mat-icon class="eav-icon">text_fields</mat-icon>
             </button>
           </div>
         </mat-form-field>
-    
+
         <app-field-hint *ngIf="form.controls['key'].touched && form.controls['key'].errors?.required" [isError]="true">
           This field is required
         </app-field-hint>
@@ -151,7 +152,8 @@
           [isError]="true">
           Must be a whole number
         </app-field-hint>
-        <app-field-hint *ngIf="form.controls['key'].touched && form.controls['key'].errors?.patternGuid" [isError]="true">
+        <app-field-hint *ngIf="form.controls['key'].touched && form.controls['key'].errors?.patternGuid"
+          [isError]="true">
           Must be a valid GUID
         </app-field-hint>
       </form>
