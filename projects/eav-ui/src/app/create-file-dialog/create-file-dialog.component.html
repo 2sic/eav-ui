@@ -11,11 +11,11 @@
     </div>
     <div class="eav-dialog-content">
       <form [formGroup]="form" class="dialog-form">
-        <div class="eav-dialog-form-content fancy-scrollbar-light">
+        <div class="dialog-form-content fancy-scrollbar-light">
       
           <div class="eav-field-container eav-multiple">
             <!-- Platform -->
-            <div class="multiple-field">
+            <div class="eav-multiple-field">
               <mat-form-field color="accent" class="eav-form-field">
                 <mat-label>Platform</mat-label>
                 <mat-select formControlName="platform">
@@ -27,7 +27,7 @@
             </div>
       
             <!-- Purpose -->
-            <div class="multiple-field">
+            <div class="eav-multiple-field">
               <mat-form-field color="accent" class="eav-form-field">
                 <mat-label>Purpose</mat-label>
                 <mat-select formControlName="purpose">
@@ -63,7 +63,7 @@
           </div>
         </div>
       
-        <div class="eav-dialog-form-actions">
+        <div class="dialog-form-actions">
           <ng-container *ngIf="vm.loadingPreview">
             <mat-spinner mode="indeterminate" diameter="20" color="accent"></mat-spinner>
             <div class="spacer"></div>
