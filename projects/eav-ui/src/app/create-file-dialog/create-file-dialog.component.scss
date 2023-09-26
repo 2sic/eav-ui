@@ -1,21 +1,16 @@
 @import "../edit/assets/styles/_variables.scss";
 
-.dialog-title-box {
-  justify-content: flex-start;
-  align-items: baseline;
-  line-height: normal;
+.eav-dialog-title-box {
   white-space: nowrap;
-  overflow-x: auto;
 
-  .file-name {
+  .eav-file-name {
     font-size: 20px;
     margin-left: 8px;
     background-color: lightgrey;
   }
 }
 
-.field-container {
-
+.eav-field-container {
   &:not(:first-of-type) {
     margin-top: 8px;
   }
@@ -23,7 +18,7 @@
   &.multiple {
     display: flex;
 
-    .multiple-field {
+    .eav-multiple-field {
       flex: 1;
 
       &:not(:first-of-type) {
@@ -33,11 +28,11 @@
   }
 }
 
-.dialog-form-content {
+.eav-dialog-form-content {
   flex-shrink: 0;
 }
 
-.dialog-form-actions {
+.eav-dialog-form-actions {
   flex-shrink: 0;
 }
 
@@ -51,10 +46,10 @@ pre {
   }
 }
 
-.preview-label-box {
+.eav-preview-label-box {
   position: relative;
 
-  .preview-label {
+  .eav-preview-label {
     position: absolute;
     top: -20px;
     left: 0px;
@@ -68,7 +63,7 @@ pre {
   }
 }
 
-.preview-error {
+.eav-preview-error {
   margin-bottom: 10px;
   font-size: 14px;
   color: red;
