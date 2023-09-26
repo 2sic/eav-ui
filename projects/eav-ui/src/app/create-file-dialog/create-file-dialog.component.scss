@@ -15,7 +15,7 @@
     margin-top: 8px;
   }
 
-  &.multiple {
+  &.eav-multiple {
     display: flex;
 
     .eav-multiple-field {
@@ -28,11 +28,11 @@
   }
 }
 
-.eav-dialog-form-content {
+.dialog-form-content {
   flex-shrink: 0;
 }
 
-.eav-dialog-form-actions {
+.dialog-form-actions {
   flex-shrink: 0;
 }
 
