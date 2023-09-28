@@ -3,8 +3,16 @@
   </ag-grid-angular>
 
   <mat-dialog-actions align="end">
-    <button mat-fab mat-elevation-z24 class="grid-fab" tippy="Create a new controller" (click)="createController()">
+    <button mat-fab mat-elevation-z24 [matMenuTriggerFor]="menu" class="grid-fab" tippy="Create a new controller" tippyPlacement="left">
       <mat-icon>add</mat-icon>
     </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="createController(false)">
+        <span>App</span>
+      </button>
+      <button mat-menu-item (click)="createController(true)">
+        <span>Shared (global)</span>
+      </button>
+    </mat-menu>
   </mat-dialog-actions>
 </div>

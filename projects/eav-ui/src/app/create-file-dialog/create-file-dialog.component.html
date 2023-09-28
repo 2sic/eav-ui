@@ -1,5 +1,5 @@
 <ng-container *ngIf="viewModel$ | async as vm">
-  <div class="eav-dialog">
+  <div class="eav-dialog eav-no-scrollbar">
     <div class="eav-dialog-header">
       <div class="eav-dialog-header__title eav-dialog-title-box">
         <span>Create</span>
@@ -11,7 +11,7 @@
     </div>
     <div class="eav-dialog-content">
       <form [formGroup]="form" class="dialog-form">
-        <div class="dialog-form-content fancy-scrollbar-light">
+        <div class="dialog-form-content">
       
           <div class="eav-field-container eav-multiple">
             <!-- Platform -->
