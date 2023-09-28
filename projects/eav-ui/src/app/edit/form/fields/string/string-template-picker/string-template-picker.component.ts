@@ -128,6 +128,7 @@ export class StringTemplatePickerComponent extends BaseFieldComponent<string> im
       viewContainerRef: this.viewContainerRef,
       width: '650px',
     });
+    
     dialogRef.afterClosed().subscribe((result?: CreateFileDialogResult) => {
       if (!result) { return; }
 

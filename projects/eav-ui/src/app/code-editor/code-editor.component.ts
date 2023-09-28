@@ -188,19 +188,24 @@ export class CodeEditorComponent extends BaseSubsinkComponent implements OnInit,
   }
 
   createTemplate(params: CreateTemplateParams): void {
-    if (params.isShared == null) {
-      const fileLocationDialogRef = this.dialog.open(FileLocationDialogComponent, {
-        autoFocus: false,
-        viewContainerRef: this.viewContainerRef,
-        width: '650px',
-      });
-      fileLocationDialogRef.afterClosed().subscribe((isShared?: boolean) => {
-        if (isShared == null) { return; }
-        params.isShared = isShared;
-        this.createTemplate(params);
-      });
-      return;
-    }
+    // This FileLocationDialogComponent dialog is currently never going to be opened because it has been replaced by mat-menu
+    // in the code-templates.component.html template. If you want to use the dialog instead of the menu, you need to remove the
+    // mat-menu and replace it with a button that opens the dialog with empty parameters.
+    // Dialog has been replaced by menu because from update to Angular 16 CreateFileDialogComponent wasn't opening anymore if 
+    // FileLocationDialogComponent dialog was used.
+    // if (params.isShared == null) {
+    //   const fileLocationDialogRef = this.dialog.open(FileLocationDialogComponent, {
+    //     autoFocus: false,
+    //     viewContainerRef: this.viewContainerRef,
+    //     width: '650px',
+    //   });
+    //   fileLocationDialogRef.afterClosed().subscribe((isShared?: boolean) => {
+    //     if (isShared == null) { return; }
+    //     params.isShared = isShared;
+    //     this.createTemplate(params);
+    //   });
+    //   return;
+    // }
 
     const createFileDialogData: CreateFileDialogData = {
       folder: params.folder,

@@ -24,6 +24,7 @@ import { DepthPaddingPipe } from './code-templates/depth-padding.pipe';
 import { SortItemsPipe } from './code-templates/order-items.pipe';
 import { SnippetsService } from './services/snippets.service';
 import { SourceService } from './services/source.service';
+import { MatMenuModule } from '@angular/material/menu';
 
 declare const window: EavWindow;
 
@@ -52,6 +53,7 @@ export function translateLoaderFactoryCode(http: HttpClient) {
     MatIconModule,
     MatSnackBarModule,
     MatRippleModule,
+    MatMenuModule,
     TranslateModule.forChild(buildTranslateConfiguration(translateLoaderFactoryCode)),
     MonacoEditorModule,
     MatProgressSpinnerModule,
