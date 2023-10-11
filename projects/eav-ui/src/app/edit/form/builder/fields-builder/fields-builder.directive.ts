@@ -104,10 +104,10 @@ export class FieldsBuilderDirective implements OnInit, OnDestroy {
       this.fieldConfigs.push(fieldConfig);
       const inputType = fieldProps.calculatedInputType.inputType;
 
-      if (EmptyFieldHelpers.isGroupStart(fieldProps.calculatedInputType)) {
+      if (EmptyFieldHelpers.isGroupStart(inputType)) {
         // If we encounter an empty-start (group-start) then create a new container based on the main container
         currentContainer = this.createGroup(this.mainContainerRef, fieldProps, fieldConfig);
-      } else if (EmptyFieldHelpers.isGroupEnd(fieldProps.calculatedInputType)) {
+      } else if (EmptyFieldHelpers.isGroupEnd(inputType)) {
         // If we encounter a group-end, set the main container to be the default one again
         currentContainer = this.mainContainerRef;
       } else {
