@@ -1,6 +1,6 @@
 <ng-container *ngIf="templateVars$ | async as data">
   <div fxLayout="row" fxLayoutAlign="start end">
-    <mat-form-field [formGroup]="group" appearance="standard" color="accent">
+    <mat-form-field [formGroup]="group" class="eav-form-field" color="accent">
       <input matInput 
         [required]="data.required" 
         [formControlName]="config.fieldName" 

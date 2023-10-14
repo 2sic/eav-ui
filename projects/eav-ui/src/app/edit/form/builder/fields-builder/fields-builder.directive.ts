@@ -80,7 +80,6 @@ export class FieldsBuilderDirective implements OnInit, OnDestroy {
   };
 
   constructor(
-    private resolver: ComponentFactoryResolver,
     private mainContainerRef: ViewContainerRef,
     private fieldsSettingsService: FieldsSettingsService,
   ) { }
@@ -161,8 +160,7 @@ export class FieldsBuilderDirective implements OnInit, OnDestroy {
   }
 
   private generateAndAttachField(componentType: Type<any>, targetRef: ViewContainerRef, fieldConfig: FieldConfigSet, isPreview: boolean) {
-    const factory = this.resolver.resolveComponentFactory<Field>(componentType);
-    const realFieldRef = targetRef.createComponent(factory);
+    const realFieldRef = targetRef.createComponent(componentType);
     // used for passing data to controls when fields have multiple controls (e.g. field and a preview)
     const controlConfig: FieldControlConfig = { isPreview };
 
