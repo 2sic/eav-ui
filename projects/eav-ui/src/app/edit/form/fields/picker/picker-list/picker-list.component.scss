@@ -126,10 +126,9 @@
 .item-actions {
   flex-shrink: 0;
 
-  .mat-icon-button {
-    width: 24px;
-    height: 24px;
-    line-height: 24px;
+  .eav-action-button {
+    scale: calc(3/4);
+    margin: 0px -4px;
   }
 }
 

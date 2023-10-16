@@ -33,7 +33,7 @@
       </div>
       <div class="item-actions">
         <!-- Disable edit only if it was disabled in the settings, not if disabled by language change -->
-        <button mat-icon-button 
+        <button mat-icon-button class="eav-action-button"
           *ngIf="vm.enableEdit && !item.disableEdit"
           [tippy]="'Fields.Entity.Edit' | translate" 
           [disabled]="config.initialDisabled" 
@@ -41,7 +41,7 @@
           (click)="edit(item.value, item.entityId)">
           <mat-icon>edit</mat-icon>
         </button>
-        <button mat-icon-button 
+        <button mat-icon-button class="eav-action-button"
           *ngIf="vm.enableDelete && !item.disableDelete"
           [tippy]="'Fields.Entity.Delete' | translate" 
           [disabled]="vm.controlStatus.disabled" 
@@ -49,7 +49,7 @@
           (click)="deleteItem(index, item.value)">
           <mat-icon>delete</mat-icon>
         </button>
-        <button mat-icon-button 
+        <button mat-icon-button class="eav-action-button"
           *ngIf="vm.enableRemove" 
           [tippy]="'Fields.Entity.Remove' | translate"
           [disabled]="vm.controlStatus.disabled" 
