@@ -15,12 +15,12 @@
     }">
     <div [ngClass]="data.entitiesNumber ? 'c-ew__preview-container' : 'c-ew__preview-container--empty'">
       <div fxLayout="row" fxLayoutAlign="start center">
-        <mat-list *ngIf="data.entitiesNumber" fxLayout="row">
-          <mat-list-item role="listitem" *ngFor="let item of data.selectedEntities; trackBy: trackByFn">
+        <mat-list *ngIf="data.entitiesNumber" fxLayout="row" class="eav-list">
+          <mat-list-item role="listitem" *ngFor="let item of data.selectedEntities; trackBy: trackByFn" class="eav-list-item">
             <span mat-line>{{ item.label }}</span>
           </mat-list-item>
         </mat-list>
-        <span *ngIf="data.entitiesNumber > 5" class="more-entities mat-body-1">
+        <span *ngIf="data.entitiesNumber > 5" class="eav-more-entities mat-body-1">
           {{ data.entitiesNumber }}
         </span>
       </div>

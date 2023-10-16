@@ -98,7 +98,7 @@
   }
 }
 
-.more-entities {
+.eav-more-entities {
   padding: 0px 12px;
   margin-left: 10px;
   background: transparent;
@@ -113,14 +113,14 @@
   align-items: center;
 }
 
-.mat-list {
+.eav-list {
   overflow: hidden;
   padding: 0;
   margin-top: 9px;
   flex: 1 1 auto;
 }
 
-.mat-list-item {
+.eav-list-item {
   width: auto !important;
   max-width: 200px;
   flex: 0 1 auto;
@@ -133,4 +133,5 @@
   line-height: 16px;
   white-space: nowrap;
   text-overflow: ellipsis;
+  padding: 0px;
 }
