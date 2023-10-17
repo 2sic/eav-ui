@@ -70,6 +70,22 @@
     background-color: transparent;
   }
 
+  .mat-mdc-form-field-flex {
+    padding-left: 8px;
+
+    .mat-mdc-form-field-infix {
+      min-height: 44px;
+      padding-bottom: 0px !important;
+    }
+
+    .mat-mdc-form-field-icon-prefix,
+    .mat-mdc-form-field-icon-suffix {
+      align-self: baseline;
+    }
+  }
+
+  
+
   .mat-form-field-suffix {
     .mat-icon-button {
       top: 6px;
