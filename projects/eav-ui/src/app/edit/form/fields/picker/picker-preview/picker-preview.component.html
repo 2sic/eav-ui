@@ -39,11 +39,13 @@
             ? 'ed-field__create-icon' 
             : 'ed-field__create-icon-hide'">
       <!-- create new entity to add to this list -->
-      <button mat-icon-button *ngIf="data.showAddNewEntityButton" [tippy]="'Fields.Entity.New' | translate"
+      <button mat-icon-button  class="eav-suffix-button" 
+        *ngIf="data.showAddNewEntityButton" [tippy]="'Fields.Entity.New' | translate"
         [disabled]="data.controlStatus.disabled || data.disableAddNew" (click)="openNewEntityDialog()">
         <mat-icon>add_circle_outline</mat-icon>
       </button>
-      <button mat-icon-button *ngIf="data.showGoToListDialogButton" [tippy]="'Fields.Entity.OpenMultiselect' | translate"
+      <button mat-icon-button class="eav-suffix-button" 
+        *ngIf="data.showGoToListDialogButton" [tippy]="'Fields.Entity.OpenMultiselect' | translate"
         (click)="expandDialog()">
         <mat-icon>post_add</mat-icon>
       </button>

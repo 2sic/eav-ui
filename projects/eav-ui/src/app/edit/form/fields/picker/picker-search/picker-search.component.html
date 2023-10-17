@@ -11,11 +11,11 @@
         (blur)="markAsTouched(vm.selectedEntity, vm.selectedEntities)"
         (input)="filterSelectionList()" 
         (click)="filterSelectionList()">
-      <button mat-icon-button matSuffix class="entity-dropdown-button" disableRipple="true"
+      <button mat-icon-button matSuffix class="entity-dropdown-button eav-suffix-button" disableRipple="true"
         [disabled]="vm.controlStatus.disabled || !vm.enableAddExisting">
         <mat-icon>arrow_drop_down</mat-icon>
       </button>
-      <button mat-icon-button matSuffix
+      <button mat-icon-button matSuffix class="eav-suffix-button"
         *ngIf="vm.enableEdit && !vm.selectedEntity?.disableEdit && vm.showItemEditButtons"
         [tippy]="'Fields.Entity.Edit' | translate" 
         [disabled]="config.initialDisabled"
@@ -23,7 +23,7 @@
         (click)="edit(vm.selectedEntity?.value, vm.selectedEntity?.entityId)">
         <mat-icon>edit</mat-icon>
       </button>
-      <button mat-icon-button matSuffix
+      <button mat-icon-button matSuffix class="eav-suffix-button"
         *ngIf="vm.enableDelete && !vm.selectedEntity?.disableDelete && vm.showItemEditButtons"
         [tippy]="'Fields.Entity.Delete' | translate" 
         [disabled]="vm.controlStatus.disabled"
@@ -31,7 +31,7 @@
         (click)="deleteItem(0, vm.selectedEntity?.value)">
         <mat-icon>delete</mat-icon>
       </button>
-      <button mat-icon-button matSuffix 
+      <button mat-icon-button matSuffix class="eav-suffix-button"
         *ngIf="vm.enableRemove && vm.showItemEditButtons"
         [tippy]="'Fields.Entity.Remove' | translate" 
         [disabled]="vm.controlStatus.disabled" 
