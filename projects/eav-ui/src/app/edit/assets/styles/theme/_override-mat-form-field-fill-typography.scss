@@ -84,7 +84,7 @@
     }
   }
 
-  
+
 
   .mat-form-field-suffix {
     .mat-icon-button {
@@ -107,25 +107,6 @@
 
       .mat-icon-button {
         top: 0;
-
-        .mat-icon {
-          font-size: 18px;
-        }
-      }
-
-      .active {
-        background-color: $accent-color;
-        color: white;
-
-        &.mat-button-disabled {
-          background-color: $editUI-label-disabled-color;
-        }
-      }
-    }
-
-    .selection-suffix-inline {
-      .mat-icon-button {
-        top: 3px;
 
         .mat-icon {
           font-size: 18px;
@@ -172,6 +153,25 @@
 
     //TODO @SDV check if this or equivalent class exists 
     &.mat-private-button-disabled {
+      background-color: $editUI-label-disabled-color;
+    }
+  }
+}
+
+.eav-selection-suffix-inline {
+  .mat-icon-button {
+    top: 3px;
+
+    .mat-icon {
+      font-size: 18px;
+    }
+  }
+
+  .active {
+    background-color: $accent-color;
+    color: white;
+
+    &.mat-button-disabled {
       background-color: $editUI-label-disabled-color;
     }
   }

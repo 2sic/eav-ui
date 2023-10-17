@@ -1,15 +1,11 @@
 <ng-container *ngIf="viewModel$ | async as vm">
   <div [hidden]="vm.hideDropdown">
-    <mat-form-field [formGroup]="group" class="eav-form-field" color="accent" 
+    <mat-form-field [formGroup]="group" class="eav-form-field" color="accent"
       [ngClass]="{ 'mat-form-field-invalid': vm.controlStatus.invalid && vm.controlStatus.touched }">
-      <input id="autocomplete" matInput #autocomplete 
-        [placeholder]="getPlaceholder(vm.availableEntities, vm.error)" 
-        [matAutocomplete]="auto"
-        [disabled]="vm.controlStatus.disabled || !vm.enableAddExisting" 
-        [value]="showSelectedItem ? vm.selectedEntity?.label : ''"
-        (focus)="fetchEntities(vm.availableEntities)" 
-        (blur)="markAsTouched(vm.selectedEntity, vm.selectedEntities)"
-        (input)="filterSelectionList()" 
+      <input id="autocomplete" matInput #autocomplete [placeholder]="getPlaceholder(vm.availableEntities, vm.error)"
+        [matAutocomplete]="auto" [disabled]="vm.controlStatus.disabled || !vm.enableAddExisting"
+        [value]="showSelectedItem ? vm.selectedEntity?.label : ''" (focus)="fetchEntities(vm.availableEntities)"
+        (blur)="markAsTouched(vm.selectedEntity, vm.selectedEntities)" (input)="filterSelectionList()"
         (click)="filterSelectionList()">
       <button mat-icon-button matSuffix class="entity-dropdown-button eav-suffix-button" disableRipple="true"
         [disabled]="vm.controlStatus.disabled || !vm.enableAddExisting">
@@ -17,29 +13,22 @@
       </button>
       <button mat-icon-button matSuffix class="eav-suffix-button"
         *ngIf="vm.enableEdit && !vm.selectedEntity?.disableEdit && vm.showItemEditButtons"
-        [tippy]="'Fields.Entity.Edit' | translate" 
-        [disabled]="config.initialDisabled"
-        appClickStopPropagation 
+        [tippy]="'Fields.Entity.Edit' | translate" [disabled]="config.initialDisabled" appClickStopPropagation
         (click)="edit(vm.selectedEntity?.value, vm.selectedEntity?.entityId)">
         <mat-icon>edit</mat-icon>
       </button>
       <button mat-icon-button matSuffix class="eav-suffix-button"
         *ngIf="vm.enableDelete && !vm.selectedEntity?.disableDelete && vm.showItemEditButtons"
-        [tippy]="'Fields.Entity.Delete' | translate" 
-        [disabled]="vm.controlStatus.disabled"
-        appClickStopPropagation 
+        [tippy]="'Fields.Entity.Delete' | translate" [disabled]="vm.controlStatus.disabled" appClickStopPropagation
         (click)="deleteItem(0, vm.selectedEntity?.value)">
         <mat-icon>delete</mat-icon>
       </button>
-      <button mat-icon-button matSuffix class="eav-suffix-button"
-        *ngIf="vm.enableRemove && vm.showItemEditButtons"
-        [tippy]="'Fields.Entity.Remove' | translate" 
-        [disabled]="vm.controlStatus.disabled" 
-        appClickStopPropagation 
+      <button mat-icon-button matSuffix class="eav-suffix-button" *ngIf="vm.enableRemove && vm.showItemEditButtons"
+        [tippy]="'Fields.Entity.Remove' | translate" [disabled]="vm.controlStatus.disabled" appClickStopPropagation
         (click)="removeItem(0)">
         <mat-icon>clear</mat-icon>
       </button>
-      <span *ngIf="vm.enableTextEntry" matSuffix class="selection-suffix-inline">
+      <span *ngIf="vm.enableTextEntry" matSuffix class="eav-selection-suffix-inline">
         <ng-content select="[freeTextButtons]"></ng-content>
       </span>
       <mat-label [ngClass]="{ 'mat-error': vm.controlStatus.invalid && vm.controlStatus.touched }">
@@ -47,12 +36,10 @@
       </mat-label>
     </mat-form-field>
 
-    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="optionSelected($event, vm.allowMultiValue, vm.selectedEntity)">
-      <mat-option *ngFor="let item of vm.filteredEntities" 
-        [value]="item.Value"
-        [disabled]="isOptionDisabled(item.Value, vm.selectedEntities)" 
-        [tippy]="item.Tooltip" 
-        tippyShowDelay="500" 
+    <mat-autocomplete #auto="matAutocomplete"
+      (optionSelected)="optionSelected($event, vm.allowMultiValue, vm.selectedEntity)">
+      <mat-option *ngFor="let item of vm.filteredEntities" [value]="item.Value"
+        [disabled]="isOptionDisabled(item.Value, vm.selectedEntities)" [tippy]="item.Tooltip" tippyShowDelay="500"
         [tippyDisabled]="!item.Tooltip">
         <div class="dropdown-option">
           <span>{{ item.Text ? item.Text : item.Value }}</span>
