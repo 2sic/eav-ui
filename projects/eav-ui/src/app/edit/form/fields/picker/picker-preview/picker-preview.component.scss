@@ -1,6 +1,6 @@
 .ed-field__create-icon {
   width: 38px;
-  padding-bottom: 4px;
+  margin-left: 4px;
 
   .mat-icon-button {
     width: 30px;
@@ -11,7 +11,7 @@
 
 .ed-field__create-two-icon {
   width: 72px;
-  padding-bottom: 4px;
+  margin-left: 4px;
 
   .mat-icon-button {
     width: 30px;
@@ -34,7 +34,5 @@
 }
 
 .eav-suffix-button {
-  scale: calc(3/4);
-  // margin-left: -4px;
-  // margin-right: -4px;
+  scale: calc(4/5);
 }

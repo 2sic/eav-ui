@@ -1,5 +1,5 @@
 <ng-container *ngIf="templateVars$ | async as data">
-  <div fxLayout="row" fxLayoutAlign="start end">
+  <div fxLayout="row" fxLayoutAlign="start center">
     <div [ngClass]="data.leavePlaceForButtons ? 'ed-field__field-short' : 'ed-field__field'">
       <app-picker-pill-preview *ngIf="data.selectedItems.length > 1 && !data.freeTextMode" 
         [config]="config" 
@@ -33,7 +33,7 @@
         </app-picker-toggle-text>
       </app-picker-text>
     </div>
-    <div fxLayoutAlign="end center" [ngClass]="data.showAddNewEntityButton && data.showGoToListDialogButton 
+    <div fxLayoutAlign="end end" [ngClass]="data.showAddNewEntityButton && data.showGoToListDialogButton 
           ? 'ed-field__create-two-icon' 
           : data.showAddNewEntityButton || data.showGoToListDialogButton 
             ? 'ed-field__create-icon' 
