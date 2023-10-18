@@ -12,6 +12,10 @@
         <div *ngFor="let file of vm.files">{{ file.name }}</div>
       </button>
       <input #fileInput type="file" multiple (change)="filesChanged($event)" class="hide" />
+      <button mat-raised-button *ngIf="uploadType == UploadTypes.App" class="eav-app-catalog-button"
+        tippy="Open app catalog" (click)="showAppCatalog()"><!-- [disabled]="vm.uploading" -->
+        Get recommended Apps from Catalog
+      </button>
     </div>
     
     <div class="eav-result-container" *ngIf="vm.result">

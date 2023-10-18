@@ -18,6 +18,7 @@ export class FileUploadDialogComponent extends BaseSubsinkComponent implements O
   files$ = new BehaviorSubject<File[]>([]);
   result$ = new BehaviorSubject<FileUploadResult>(undefined);
   FileUploadMessageTypes = FileUploadMessageTypes;
+  UploadTypes = UploadTypes;
 
   viewModel$: Observable<FileUploadDialogViewModel>;
 
@@ -85,6 +86,10 @@ export class FileUploadDialogComponent extends BaseSubsinkComponent implements O
         },
       }),
     );
+  }
+
+  showAppCatalog(): void { 
+    
   }
 
   private setFiles(files: File[]): void {
