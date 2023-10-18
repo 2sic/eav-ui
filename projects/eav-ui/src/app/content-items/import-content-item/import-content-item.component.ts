@@ -4,11 +4,11 @@ import { FileUploadDialogData } from '../../shared/components/file-upload-dialog
 import { ContentItemsService } from '../services/content-items.service';
 
 @Component({
-  selector: 'app-content-item-import',
-  templateUrl: './content-item-import.component.html',
-  styleUrls: ['./content-item-import.component.scss'],
+  selector: 'app-import-content-item',
+  templateUrl: './import-content-item.component.html',
+  styleUrls: ['./import-content-item.component.scss'],
 })
-export class ContentItemImportComponent {
+export class ImportContentItemComponent {
 
   constructor(@Inject(MAT_DIALOG_DATA) dialogData: FileUploadDialogData, contentItemsService: ContentItemsService) {
     dialogData.title ??= `Import Single Item`;

@@ -17,7 +17,7 @@ import { ContentExportService } from '../content-export/services/content-export.
 import { SxcGridModule } from '../shared/modules/sxc-grid-module/sxc-grid.module';
 import { Context } from '../shared/services/context';
 import { SharedComponentsModule } from '../shared/shared-components.module';
-import { ContentItemImportComponent } from './content-item-import/content-item-import.component';
+import { ImportContentItemComponent } from './import-content-item/import-content-item.component';
 import { ContentItemsActionsComponent } from './content-items-actions/content-items-actions.component';
 import { ContentItemsEntityComponent } from './content-items-entity/content-items-entity.component';
 import { ContentItemsRoutingModule } from './content-items-routing.module';
@@ -35,7 +35,7 @@ import { EntitiesService } from './services/entities.service';
     ContentItemsStatusComponent,
     ContentItemsActionsComponent,
     ContentItemsEntityComponent,
-    ContentItemImportComponent,
+    ImportContentItemComponent,
     CreateMetadataDialogComponent,
   ],
   imports: [
