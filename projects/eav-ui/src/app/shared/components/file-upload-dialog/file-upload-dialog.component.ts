@@ -1,9 +1,9 @@
-import { Component, HostBinding, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostBinding, Inject, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BehaviorSubject, Observable, Subscription, combineLatest, map, take } from 'rxjs';
 import { BaseSubsinkComponent } from '../base-subsink-component/base-subsink.component';
-import { FileUploadDialogData, FileUploadMessageTypes, FileUploadResult } from './file-upload-dialog.models';
+import { FileUploadDialogData, FileUploadMessageTypes, FileUploadResult, UploadTypes } from './file-upload-dialog.models';
 
 @Component({
   selector: 'app-file-upload-dialog',
@@ -12,6 +12,7 @@ import { FileUploadDialogData, FileUploadMessageTypes, FileUploadResult } from '
 })
 export class FileUploadDialogComponent extends BaseSubsinkComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
+  @Input() uploadType: UploadTypes;
 
   uploading$ = new BehaviorSubject<boolean>(false);
   files$ = new BehaviorSubject<File[]>([]);
