@@ -19,6 +19,7 @@ export class FileUploadDialogComponent extends BaseSubsinkComponent implements O
   result$ = new BehaviorSubject<FileUploadResult>(undefined);
   FileUploadMessageTypes = FileUploadMessageTypes;
   UploadTypes = UploadTypes;
+  showAppCatalog$ = new BehaviorSubject<boolean>(false);
 
   viewModel$: Observable<FileUploadDialogViewModel>;
 
@@ -45,8 +46,8 @@ export class FileUploadDialogComponent extends BaseSubsinkComponent implements O
     }
 
     this.viewModel$ = combineLatest([
-      this.uploading$, this.files$, this.result$,
-    ]).pipe(map(([uploading, files, result]) => ({ uploading, files, result })));
+      this.uploading$, this.files$, this.result$, this.showAppCatalog$,
+    ]).pipe(map(([uploading, files, result, showAppCatalog]) => ({ uploading, files, result, showAppCatalog })));
   }
 
   ngOnDestroy(): void {
@@ -89,7 +90,7 @@ export class FileUploadDialogComponent extends BaseSubsinkComponent implements O
   }
 
   showAppCatalog(): void { 
-    
+    this.showAppCatalog$.next(!this.showAppCatalog$.value);
   }
 
   private setFiles(files: File[]): void {
@@ -104,4 +105,5 @@ interface FileUploadDialogViewModel {
   uploading: boolean;
   files: File[];
   result: FileUploadResult;
+  showAppCatalog: boolean;
 }
