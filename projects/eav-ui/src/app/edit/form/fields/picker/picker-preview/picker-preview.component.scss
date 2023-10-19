@@ -1,35 +1,4 @@
-.ed-field__create-icon {
-  width: 38px;
-  margin-left: 4px;
-
-  .mat-icon-button {
-    width: 30px;
-    height: 30px;
-    line-height: 30px;
-  }
-}
-
-.ed-field__create-two-icon {
-  width: 72px;
-  margin-left: 4px;
-
-  .mat-icon-button {
-    width: 30px;
-    height: 30px;
-    line-height: 30px;
-  }
-}
-
-.ed-field__create-icon-hide {
-  width: 0;
-}
-
-.ed-field__field-short {
-  width: calc(100% - 38px);
-  max-width: calc(100% - 38px);
-}
-
-.ed-field__field {
+.eav-div-around-picker {
   width: 100%;
 }
 

@@ -1,6 +1,6 @@
 <ng-container *ngIf="templateVars$ | async as data">
   <div fxLayout="row" fxLayoutAlign="start center">
-    <div [ngClass]="data.leavePlaceForButtons ? 'ed-field__field-short' : 'ed-field__field'">
+    <div class="eav-div-around-picker">
       <app-picker-pill-preview *ngIf="data.selectedItems.length > 1 && !data.freeTextMode" 
         [config]="config" 
         [group]="group">
@@ -33,11 +33,7 @@
         </app-picker-toggle-text>
       </app-picker-text>
     </div>
-    <div fxLayoutAlign="end end" [ngClass]="data.showAddNewEntityButton && data.showGoToListDialogButton 
-          ? 'ed-field__create-two-icon' 
-          : data.showAddNewEntityButton || data.showGoToListDialogButton 
-            ? 'ed-field__create-icon' 
-            : 'ed-field__create-icon-hide'">
+    <div fxLayoutAlign="end end">
       <!-- create new entity to add to this list -->
       <button mat-icon-button  class="eav-suffix-button" 
         *ngIf="data.showAddNewEntityButton" [tippy]="'Fields.Entity.New' | translate"
