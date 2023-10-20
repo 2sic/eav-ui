@@ -1,7 +1,7 @@
 <div appToggleDebug class="eav-dialog nav-component-wrapper" *ngIf="viewModel$ | async as vm">
   <div class="eav-dialog-header">
     <div class="eav-dialog-header__title">
-      {{ vm.contentType?.Label || vm.contentType?.Name }} Data
+      {{ vm.contentType.Label || vm.contentType.Name }} Data
     </div>
     <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
       <mat-icon>close</mat-icon>
