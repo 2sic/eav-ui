@@ -61,17 +61,7 @@
 
         // box-shadow: 0 2px 5px rgba(0,0,0,0.26);
         .back-arrow {
-          margin-right: 12px;
-          width: 30px;
-          height: 30px;
-          line-height: 30px;
-
-          .mat-icon {
-            font-size: 16px;
-            width: 16px;
-            height: 16px;
-            line-height: 16px;
-          }
+          scale: calc(2/3);
         }
 
         .title {
