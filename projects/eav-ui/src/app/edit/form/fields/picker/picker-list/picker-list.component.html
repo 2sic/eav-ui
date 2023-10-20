@@ -5,7 +5,7 @@
     {{ vm.label }} {{ vm.required ? '*': '' }}
   </mat-label>
 
-  <div cdkDropList
+  <div cdkDropList *ngIf="vm.selectedItems.length > 0"
     [cdkDropListDisabled]="!vm.allowMultiValue || vm.controlStatus.disabled" 
     (cdkDropListDropped)="drop($event, vm.selectedItems)"
     [ngClass]="{
