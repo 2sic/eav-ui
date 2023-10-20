@@ -44,11 +44,12 @@
   }
 }
 
-.dropdown-option {
+.eav-dropdown-option {
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+  width: 100% !important;
 }
 
 .eav-suffix-button {

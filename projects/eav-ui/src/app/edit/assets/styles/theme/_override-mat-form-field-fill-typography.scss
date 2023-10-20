@@ -176,3 +176,9 @@
     }
   }
 }
+
+
+// TODO: @SDV Find out why this works here, but not from picker-search.component.scss
+.eav-picker-option.mat-mdc-option .mdc-list-item__primary-text {
+  width: 100% !important;
+}
