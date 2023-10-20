@@ -22,7 +22,7 @@
   </app-picker-text>
   <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
   <!-- add new entity -->
-  <div *ngIf="data.showAddNewEntityButtonInDialog">
+  <div fxLayout="row" fxLayoutAlign="end center" *ngIf="data.showAddNewEntityButtonInDialog">
     <button mat-mini-fab color="accent" 
       [tippy]="'Fields.Entity.New' | translate"
       [disabled]="data.controlStatus.disabled || data.disableAddNew" 
