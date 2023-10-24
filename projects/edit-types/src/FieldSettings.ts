@@ -255,6 +255,12 @@ export interface Boolean extends All {
   _label: string;
 }
 
+export interface PickerEntity extends Entity {
+  EnableReselect: boolean;
+  // AllowMultiMin: number;
+  // AllowMultiMax: number;
+}
+
 interface InternalSettings {
   _disabledBecauseOfTranslation?: boolean;
   _isDialog?: boolean;
@@ -278,5 +284,6 @@ export interface FieldSettings extends
   StringTemplatePicker,
   StringUrlPath,
   StringWysiwyg,
+  PickerEntity,
   InternalSettings
   { }

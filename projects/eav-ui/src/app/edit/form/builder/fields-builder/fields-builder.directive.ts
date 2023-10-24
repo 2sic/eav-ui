@@ -77,6 +77,11 @@ export class FieldsBuilderDirective implements OnInit, OnDestroy {
     [InputTypeConstants.StringJson]: CustomJsonEditorComponent,
     [InputTypeConstants.StringTemplatePicker]: StringTemplatePickerComponent,
     [InputTypeConstants.StringUrlPath]: StringUrlPathComponent,
+
+    /** WIP pickers */
+    [InputTypeConstants.WIPEntityPicker]: EntityDefaultComponent,
+    [InputTypeConstants.WIPStringPicker]: StringDropdownComponent,
+    [InputTypeConstants.WIPNumberPicker]: NumberDropdownComponent,
   };
 
   constructor(

@@ -39,7 +39,7 @@
     <mat-autocomplete #auto="matAutocomplete"
       (optionSelected)="optionSelected($event, vm.allowMultiValue, vm.selectedEntity)">
       <mat-option *ngFor="let item of vm.filteredEntities" [value]="item.Value" class="eav-picker-option"
-        [disabled]="isOptionDisabled(item.Value, vm.selectedEntities)" [tippy]="item.Tooltip" tippyShowDelay="500"
+        [disabled]="vm.enableReselect ? false : isOptionDisabled(item.Value, vm.selectedEntities)" [tippy]="item.Tooltip" tippyShowDelay="500"
         [tippyDisabled]="!item.Tooltip">
         <div class="eav-dropdown-option">
           <span>{{ item.Text ? item.Text : item.Value }}</span>

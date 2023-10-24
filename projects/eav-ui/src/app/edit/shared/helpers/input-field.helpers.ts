@@ -51,7 +51,11 @@ export class InputFieldHelpers {
       || (inputType === InputTypeConstants.StringDropdownQuery)
       || (inputType === InputTypeConstants.EntityQuery)
       || (inputType === InputTypeConstants.EntityContentBlocks)
-      || (inputType === InputTypeConstants.StringDropdown);
+      || (inputType === InputTypeConstants.StringDropdown)
+      /** WIP pickers */
+      || (inputType === InputTypeConstants.WIPEntityPicker)
+      || (inputType === InputTypeConstants.WIPStringPicker)
+      || (inputType === InputTypeConstants.WIPNumberPicker);
     
     const allowMultiValue = settings.AllowMultiValue ?? false;
 

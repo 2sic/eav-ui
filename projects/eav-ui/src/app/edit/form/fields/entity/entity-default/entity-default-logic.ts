@@ -4,7 +4,8 @@ import { FieldLogicBase } from '../../../shared/field-logic/field-logic-base';
 import { FieldLogicTools } from '../../../shared/field-logic/field-logic-tools';
 
 export class EntityDefaultLogic extends FieldLogicBase {
-  name = InputTypeConstants.EntityDefault;
+  // name = InputTypeConstants.EntityDefault;
+  name = InputTypeConstants.WIPEntityPicker;
 
   update(settings: FieldSettings, value: string[], tools: FieldLogicTools): FieldSettings {
     const fixedSettings: FieldSettings = { ...settings };
@@ -32,6 +33,11 @@ export class EntityDefaultLogic extends FieldLogicBase {
       fixedSettings.EnableRemove = true;
       fixedSettings.EnableDelete = true;
     }
+
+    /** WIP functionalities */
+    fixedSettings.AllowMultiValue ? fixedSettings.EnableReselect ??= false : fixedSettings.EnableReselect = false;
+    // fixedSettings.AllowMultiMin ??= 0;
+    // fixedSettings.AllowMultiMax ??= 0;
 
     return fixedSettings;
   }

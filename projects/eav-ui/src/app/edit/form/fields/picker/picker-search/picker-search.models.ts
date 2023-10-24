@@ -10,6 +10,7 @@ export interface PickerSearchViewModel {
   enableEdit: boolean;
   enableDelete: boolean;
   enableRemove: boolean;
+  enableReselect: boolean;
   selectedEntities: SelectedEntity[];
   availableEntities: WIPDataSourceItem[];
   error: string;

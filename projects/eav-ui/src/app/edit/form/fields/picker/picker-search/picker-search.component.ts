@@ -65,6 +65,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
         EnableEdit: settings.EnableEdit,
         EnableDelete: settings.EnableDelete,
         EnableRemove: settings.EnableRemove,
+        EnableReselect: settings.EnableReselect,
       })),
       distinctUntilChanged(GeneralHelpers.objectsEqual),
     );
@@ -96,6 +97,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
           enableEdit: settings.EnableEdit,
           enableDelete: settings.EnableDelete,
           enableRemove: settings.EnableRemove,
+          enableReselect: settings.EnableReselect,
           selectedEntities,
           availableEntities,
           error,
