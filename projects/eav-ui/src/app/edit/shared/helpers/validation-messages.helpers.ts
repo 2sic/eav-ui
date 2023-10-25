@@ -15,6 +15,12 @@ export class ValidationMessagesHelpers {
     max: (config: FieldConfigSet) => {
       return config ? `ValidationMessage.Max` : `ValidationMessage.NotValid`;
     },
+    minNoItems: (config: FieldConfigSet) => {
+      return config ? `ValidationMessage.MinNoItems` : `ValidationMessage.NotValid`;
+    },
+    maxNoItems: (config: FieldConfigSet) => {
+      return config ? `ValidationMessage.MaxNoItems` : `ValidationMessage.NotValid`;
+    },
     pattern: (config: FieldConfigSet) => {
       return config ? `ValidationMessage.Pattern` : `ValidationMessage.NotValid`;
     },

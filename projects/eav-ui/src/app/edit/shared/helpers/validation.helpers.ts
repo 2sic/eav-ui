@@ -23,8 +23,10 @@ export class ValidationHelpers {
         : this.requiredAdam(fieldName, fieldsSettingsService),
       this.pattern(fieldName, fieldsSettingsService),
       this.decimals(fieldName, fieldsSettingsService),
-      this.max(fieldName, fieldsSettingsService),
       this.min(fieldName, fieldsSettingsService),
+      this.max(fieldName, fieldsSettingsService),
+      this.minNoItems(fieldName, fieldsSettingsService),
+      this.maxNoItems(fieldName, fieldsSettingsService),
       this.formulaValidate(fieldName, fieldsSettingsService),
     ];
     if (inputType === InputTypeConstants.CustomJsonEditor) {
@@ -90,6 +92,17 @@ export class ValidationHelpers {
     };
   }
 
+  private static min(fieldName: string, fieldsSettingsService: FieldsSettingsService): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      this.ensureWarning(control);
+      const settings = fieldsSettingsService.getFieldSettings(fieldName);
+      if (this.ignoreValidators(settings)) { return null; }
+      if (settings.Min == null) { return null; }
+
+      return Validators.min(settings.Min)(control);
+    };
+  }
+
   private static max(fieldName: string, fieldsSettingsService: FieldsSettingsService): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       this.ensureWarning(control);
@@ -101,14 +114,30 @@ export class ValidationHelpers {
     };
   }
 
-  private static min(fieldName: string, fieldsSettingsService: FieldsSettingsService): ValidatorFn {
+  private static minNoItems(fieldName: string, fieldsSettingsService: FieldsSettingsService): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       this.ensureWarning(control);
       const settings = fieldsSettingsService.getFieldSettings(fieldName);
       if (this.ignoreValidators(settings)) { return null; }
-      if (settings.Min == null) { return null; }
+      if (settings.AllowMultiMin == 0 || settings.AllowMultiMin == undefined) { return null; }
 
-      return Validators.min(settings.Min)(control);
+      console.log('SDV minNoItems', control.value.length, settings.AllowMultiMin);
+      const lessThanMin = control.value.length < settings.AllowMultiMin
+
+      return lessThanMin ? { minNoItems: settings.AllowMultiMin } : null;
+    };
+  }
+
+  private static maxNoItems(fieldName: string, fieldsSettingsService: FieldsSettingsService): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      this.ensureWarning(control);
+      const settings = fieldsSettingsService.getFieldSettings(fieldName);
+      if (this.ignoreValidators(settings)) { return null; }
+      if (settings.AllowMultiMax == 0 || settings.AllowMultiMax == undefined) { return null; }
+
+      const moreThanMax = control.value.length > settings.AllowMultiMax
+
+      return moreThanMax ? { maxNoItems: settings.AllowMultiMax } : null;
     };
   }
 

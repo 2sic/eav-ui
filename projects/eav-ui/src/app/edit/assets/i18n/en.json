@@ -139,6 +139,8 @@
     "RequiredShort": "required",
     "Min": "This value should be {{param.Min}} or higher",
     "Max": "This value should be {{param.Max}} or lower",
+    "MinNoItems": "Number of items should be {{param.AllowMultiMin}} or higher",
+    "MaxNoItems": "Number of items should be {{param.AllowMultiMax}} or lower",
     "Pattern": "Please match the requested format",
     "Decimals": "This number can have up to {{param.Decimals}} decimal places",
     "JsonError": "JSON is not valid",

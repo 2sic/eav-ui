@@ -36,8 +36,8 @@ export class EntityDefaultLogic extends FieldLogicBase {
 
     /** WIP functionalities */
     fixedSettings.AllowMultiValue ? fixedSettings.EnableReselect ??= false : fixedSettings.EnableReselect = false;
-    // fixedSettings.AllowMultiMin ??= 0;
-    // fixedSettings.AllowMultiMax ??= 0;
+    fixedSettings.AllowMultiMin ??= 0;
+    fixedSettings.AllowMultiMax ??= 0;
 
     return fixedSettings;
   }

@@ -257,8 +257,8 @@ export interface Boolean extends All {
 
 export interface PickerEntity extends Entity {
   EnableReselect: boolean;
-  // AllowMultiMin: number;
-  // AllowMultiMax: number;
+  AllowMultiMin: number;
+  AllowMultiMax: number;
 }
 
 interface InternalSettings {
