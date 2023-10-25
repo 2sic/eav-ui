@@ -121,7 +121,6 @@ export class ValidationHelpers {
       if (this.ignoreValidators(settings)) { return null; }
       if (settings.AllowMultiMin == 0 || settings.AllowMultiMin == undefined) { return null; }
 
-      console.log('SDV minNoItems', control.value.length, settings.AllowMultiMin);
       const lessThanMin = control.value.length < settings.AllowMultiMin
 
       return lessThanMin ? { minNoItems: settings.AllowMultiMin } : null;
