@@ -4,8 +4,8 @@ import { FieldLogicBase } from '../../../shared/field-logic/field-logic-base';
 import { FieldLogicTools } from '../../../shared/field-logic/field-logic-tools';
 
 export class EntityDefaultLogic extends FieldLogicBase {
-  // name = InputTypeConstants.EntityDefault;
-  name = InputTypeConstants.WIPEntityPicker;
+  name = InputTypeConstants.EntityDefault;
+  // name = InputTypeConstants.WIPEntityPicker;
 
   update(settings: FieldSettings, value: string[], tools: FieldLogicTools): FieldSettings {
     const fixedSettings: FieldSettings = { ...settings };
