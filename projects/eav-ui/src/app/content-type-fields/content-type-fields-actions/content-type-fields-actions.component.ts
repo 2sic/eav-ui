@@ -34,6 +34,10 @@ export class ContentTypeFieldsActionsComponent implements ICellRendererAngularCo
     this.params.onOpenMetadata(this.field);
   }
 
+  share(): void {
+    console.log("This functionality is not implemented yet.");
+  }
+
   rename(): void {
     this.params.onRename(this.field);
   }

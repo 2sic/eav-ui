@@ -368,7 +368,7 @@ export class ContentTypeFieldsComponent extends BaseComponent implements OnInit,
           },
         },
         {
-          width: 122,
+          width: 162,
           cellClass: 'secondary-action no-padding'.split(' '),
           pinned: 'right',
           cellRenderer: ContentTypeFieldsActionsComponent,

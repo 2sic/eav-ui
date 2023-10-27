@@ -1,31 +1,37 @@
 <div class="actions-component">
-  <div class="like-button highlight" matRipple *ngIf="!field.EditInfo.ReadOnly" tippy="Metadata"
+  <div class="eav-grid-action-button highlight" matRipple *ngIf="!field.EditInfo.ReadOnly" tippy="Metadata"
     (click)="openMetadata()">
     <mat-icon [matBadge]="metadataCount" matBadgeColor="accent" matBadgeSize="small" [matBadgeHidden]="!metadataCount"
       matBadgePosition="below after" aria-hidden="false">local_offer</mat-icon>
   </div>
-  <div class="like-button disabled" *ngIf="field.EditInfo.ReadOnly">
+  <div class="eav-grid-action-button disabled" *ngIf="field.EditInfo.ReadOnly">
     <mat-icon [matBadge]="metadataCount" matBadgeColor="accent" matBadgeSize="small" matBadgeDisabled="true"
       [matBadgeHidden]="!metadataCount" matBadgePosition="below after" aria-hidden="false">
       local_offer
     </mat-icon>
   </div>
 
-  <div class="like-button highlight" matRipple tippy="Permissions" *ngIf="!field.EditInfo.ReadOnly && enablePermissions"
-    (click)="openPermissions()">
+  <div class="eav-grid-action-button highlight" matRipple tippy="Share">
+    <mat-icon aria-hidden="false">
+      share
+    </mat-icon>
+  </div>
+
+  <div class="eav-grid-action-button highlight" matRipple tippy="Permissions"
+    *ngIf="!field.EditInfo.ReadOnly && enablePermissions" (click)="openPermissions()">
     <mat-icon [matBadge]="field.Permissions.Count" matBadgeColor="accent" matBadgeSize="small"
       [matBadgeHidden]="!field.Permissions.Count" matBadgePosition="below after" aria-hidden="false">
       person
     </mat-icon>
   </div>
-  <div class="like-button disabled" *ngIf="field.EditInfo.ReadOnly || !enablePermissions">
+  <div class="eav-grid-action-button disabled" *ngIf="field.EditInfo.ReadOnly || !enablePermissions">
     <mat-icon [matBadge]="field.Permissions.Count" matBadgeColor="accent" matBadgeSize="small" matBadgeDisabled="true"
       [matBadgeHidden]="!field.Permissions.Count" matBadgePosition="below after" aria-hidden="false">
       person
     </mat-icon>
   </div>
 
-  <div class="like-button highlight" matRipple tippy="More" [matMenuTriggerFor]="menu">
+  <div class="eav-grid-action-button highlight" matRipple tippy="More" [matMenuTriggerFor]="menu">
     <mat-icon>more_horiz</mat-icon>
   </div>
 </div>
