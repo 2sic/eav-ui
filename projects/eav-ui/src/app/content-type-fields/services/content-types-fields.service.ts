@@ -72,6 +72,7 @@ export class ContentTypesFieldsService {
               md.merged = { ...allMd, ...typeMd, ...inputMd };
             }
           }
+          console.log('2dm - getFields', fields);
           return fields;
         }),
       );

@@ -26,16 +26,45 @@ export class ContentTypeFieldsActionsComponent implements ICellRendererAngularCo
     this.enablePermissions = this.field.InputType === InputTypeConstants.StringWysiwyg || this.field.Type === DataTypeConstants.Hyperlink;
   }
 
+  // #region Sharing Info for better icons #SharedFieldDefinition
+
+  shareText(): string {
+    const clickToConfigure = 'click to configure sharing';
+    const ss = this.field.SysSettings;
+    if (!ss) return clickToConfigure;
+    return ss.Share 
+      ? 'shared enabled as ' + this.field.Guid
+      : ss.InheritMetadataOf
+        ? 'inherits ' + ss.InheritMetadataOf
+        : clickToConfigure;
+  }
+
+  shareIcon(): string {
+    const ss = this.field.SysSettings;
+    if (!ss) return '';
+    return ss.Share 
+      ? 'share'
+      : ss.InheritMetadataOf ? 'adjust' : '';
+  }
+  
+  share(): void {
+    const ss = this.field.SysSettings;
+    if (ss?.InheritMetadataOf)
+      alert('This should open the show-inherit-info dialog TODO: @SDV');
+    else
+      alert('This should open the enable-share / show-share-info dialog TODO: @SDV');
+  }
+
+  // #endregion
+
+  // #region Callback Actions
+
   refresh(params?: any): boolean {
     return true;
   }
 
   openMetadata(): void {
     this.params.onOpenMetadata(this.field);
-  }
-
-  share(): void {
-    console.log("This functionality is not implemented yet.");
   }
 
   rename(): void {
@@ -49,4 +78,6 @@ export class ContentTypeFieldsActionsComponent implements ICellRendererAngularCo
   deleteField(): void {
     this.params.onDelete(this.field);
   }
+
+  // #endregion
 }

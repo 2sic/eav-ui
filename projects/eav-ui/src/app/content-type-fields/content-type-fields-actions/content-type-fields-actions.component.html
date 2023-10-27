@@ -11,9 +11,20 @@
     </mat-icon>
   </div>
 
-  <div class="eav-grid-action-button highlight" matRipple tippy="Share" (click)="share()">
+  <!--
+    TODO: @SDV pls enhance as follows
+    ✅ If share is on or InheritMetadata is on, show various icons (already done)
+    ⬛ If neither is on, it should not show an icon, until mouseover, then it should show the share icon to indicate it can be added
+    ⬛ If the click should add sharing, open a dialog to configure share
+        - if there is no share it should Title "Field Metadata Sharing" show with the question "Do you want to enable sharing to this field?"
+          - if yes, it should call an endpoint on field/share(appId, attributeId, share: true, hide: false) (just add a todo in the code which will call the endpoint)
+        - If Share is already enabled, the Title should be "Field Metadata Sharing" (same) and content "Shared as: [field.Guid]"
+        - If it's in inherit mode, different dialog Title "Field Inherits Metadata", content "Inherits from: [field.SysSettings.InheritMetadataOf]"
+          - there is no endpoint to call here, because inherit is configured on create (separate todo)
+  -->
+  <div class="eav-grid-action-button highlight" matRipple [tippy]="shareText()" (click)="share()">
     <mat-icon aria-hidden="false">
-      share
+      {{ shareIcon() }}
     </mat-icon>
   </div>
 

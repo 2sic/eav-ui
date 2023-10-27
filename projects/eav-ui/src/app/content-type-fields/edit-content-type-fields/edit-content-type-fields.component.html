@@ -64,6 +64,29 @@
         </div>
       </div>
     </div>
+    <!--
+      TODO: @SDV
+      - create a button to the left which is only visible in debug mode!
+        - Label: Add Shared Field (BETA) - put it in i18n
+      - on click, open a dialog
+        - Title: "Add Fields which Inherits Configuration" (i18n)
+        - Content: "Pick original fields which we'll inherit from" (i18n)
+        - The screen should now be split into 2 columns. Both columns should scroll independently
+          - Left column: a list of all content-types/fields can be selected
+            - get from the api fields/GetSharedFields
+            - show a table with these columns
+              - Content Type (from the new Field.ContentType.Name)
+              - Field (Field.Name)
+              - Type (Field.Type)
+            - On click, an entry is added to the table in the right column
+          - Right column: a list of all fields which were selected, and should be added
+            - show a table with these columns
+              - Name (input field - initial value is Field.Name, but editable)
+              - Source (basically [ContentType.Name]/[Field.Name]([Field.Type]))
+              - Remove button
+        - At the end the Cancel / Ok button
+        - When OK is pressed, nothing happens yet
+    -->
     <mat-dialog-actions align="end">
       <button mat-raised-button type="button" (click)="closeDialog()">Cancel</button>
       <button mat-raised-button type="submit" color="accent" [disabled]="!ngForm.form.valid || (saving$ | async)">
