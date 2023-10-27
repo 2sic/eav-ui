@@ -11,7 +11,8 @@ import { ReservedNames } from '../models/reserved-names.model';
 import { InputTypeStrict } from '../constants/input-type.constants';
 
 export const webApiFieldsRoot = 'admin/field/';
-export const webApiFieldsAll = webApiFieldsRoot + 'all';
+export const webApiFieldsAll = 'admin/field/all';
+const webApiFieldsGetShared = 'admin/field/GetSharedFields';
 
 @Injectable()
 export class ContentTypesFieldsService {
