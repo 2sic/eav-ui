@@ -1,0 +1,47 @@
+<div class="eav-dialog eav-no-scrollbar" >
+  <div class="eav-dialog-header">
+    <div class="eav-dialog-header__title" *ngIf="dialogData.SysSettings?.Share">
+      Field Metadata Sharing
+    </div>
+    <div class="eav-dialog-header__title" *ngIf="dialogData.SysSettings?.InheritMetadataOf">
+      Field Inherits Metadata
+    </div>
+    <div class="eav-dialog-header__title" *ngIf="!dialogData.SysSettings?.Share && !dialogData.SysSettings?.InheritMetadataOf">
+      Field Metadata Sharing or Inheriting
+    </div>
+  </div>
+  <div class="eav-dialog-content">
+    <span *ngIf="dialogData.SysSettings?.Share">Shared as: {{dialogData?.Guid}}</span>
+    <span *ngIf="dialogData.SysSettings?.InheritMetadataOf">Inherits from: {{dialogData.SysSettings?.InheritMetadataOf}}</span>
+    <span *ngIf="!dialogData.SysSettings?.Share && !dialogData.SysSettings?.InheritMetadataOf">
+      <button mat-raised-button type="button" (click)="share()">Share</button>
+      <!-- <button mat-raised-button type="button" (click)="inherit()">Inherit</button> -->
+      <mat-card class="eav-card" *ngIf="viewModel$ | async as vm">
+        <mat-card-header class="eav-card-header">
+          <mat-card-title>Shareable fields</mat-card-title>
+          <mat-icon>share</mat-icon>
+        </mat-card-header>
+        <mat-card-content>
+          <mat-card *ngFor="let field of vm.shareableFields" class="eav-field-card" (click)="selectField(field)">
+            <mat-card-content>
+              <div class="eav-info-row">
+                <div class="eav-info-row__label">Content type:</div>
+                <div class="eav-info-row__value"><span>{{ field.ContentType.Name }}</span></div>
+              </div>
+              <div class="eav-info-row">
+                <div class="eav-info-row__label">Name:</div>
+                <div class="eav-info-row__value"><span>{{ field.StaticName }}</span></div>
+              </div>
+              <div class="eav-info-row">
+                <div class="eav-info-row__label">Type:</div>
+                <div class="eav-info-row__value"><span>{{ field.Type }}</span></div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </mat-card-content>
+      </mat-card>
+    </span>
+  </div>
+  <mat-dialog-actions align="end">
+  </mat-dialog-actions>
+</div>

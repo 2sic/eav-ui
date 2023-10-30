@@ -27,6 +27,7 @@ import { ReservedNamesValidatorDirective } from './edit-content-type-fields/rese
 import { ContentTypesFieldsService } from './services/content-types-fields.service';
 import { AddSharingFieldsComponent } from './add-sharing-fields/add-sharing-fields.component';
 import { MatCardModule } from '@angular/material/card';
+import { ShareOrInheritDialogComponent } from './content-type-fields-actions/share-or-inherit-dialog/share-or-inherit-dialog.component';
 
 @NgModule({
   declarations: [
@@ -39,6 +40,7 @@ import { MatCardModule } from '@angular/material/card';
     ContentTypeFieldsSpecialComponent,
     ReservedNamesValidatorDirective,
     AddSharingFieldsComponent,
+    ShareOrInheritDialogComponent,
   ],
   imports: [
     CommonModule,

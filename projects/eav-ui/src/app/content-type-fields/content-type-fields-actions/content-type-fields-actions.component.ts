@@ -5,6 +5,8 @@ import { DataTypeConstants } from '../constants/data-type.constants';
 import { InputTypeConstants } from '../constants/input-type.constants';
 import { Field } from '../models/field.model';
 import { ContentTypeFieldsActionsParams } from './content-type-fields-actions.models';
+import { MatDialog } from '@angular/material/dialog';
+import { ShareOrInheritDialogComponent } from './share-or-inherit-dialog/share-or-inherit-dialog.component';
 
 @Component({
   selector: 'app-content-type-fields-actions',
@@ -17,7 +19,9 @@ export class ContentTypeFieldsActionsComponent implements ICellRendererAngularCo
   enablePermissions: boolean;
   private params: ICellRendererParams & ContentTypeFieldsActionsParams;
 
-  constructor() { }
+  constructor(
+    private dialog: MatDialog,
+  ) { }
 
   agInit(params: ICellRendererParams & ContentTypeFieldsActionsParams): void {
     this.params = params;
@@ -49,10 +53,18 @@ export class ContentTypeFieldsActionsComponent implements ICellRendererAngularCo
   
   share(): void {
     const ss = this.field.SysSettings;
-    if (ss?.InheritMetadataOf)
-      alert('This should open the show-inherit-info dialog TODO: @SDV');
-    else
-      alert('This should open the enable-share / show-share-info dialog TODO: @SDV');
+    // if (ss?.InheritMetadataOf)
+    //   alert('This should open the show-inherit-info dialog TODO: @SDV');
+    // else
+    //   alert('This should open the enable-share / show-share-info dialog TODO: @SDV');
+    const addSharedFieldDialogRef = this.dialog.open(ShareOrInheritDialogComponent, {
+      autoFocus: false,
+      width: '500px',
+      data: this.field,
+    });
+    addSharedFieldDialogRef.afterClosed().subscribe((selectedFields: Field[]) => {
+      console.log('addSharedFieldDialogRef.afterClosed(): ', selectedFields);
+    });
   }
 
   // #endregion
