@@ -1,6 +1,6 @@
 import { Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, catchError, concatMap, filter, forkJoin, map, of, share, Subscription, switchMap, toArray } from 'rxjs';
@@ -15,6 +15,8 @@ import { Field, FieldInputTypeOption } from '../models/field.model';
 import { ReservedNames } from '../models/reserved-names.model';
 import { ContentTypesFieldsService } from '../services/content-types-fields.service';
 import { calculateDataTypes, DataType } from './edit-content-type-fields.helpers';
+import { GlobalConfigService } from '../../edit/shared/store/ngrx-data';
+import { AddSharingFieldsComponent } from '../add-sharing-fields/add-sharing-fields.component';
 
 @Component({
   selector: 'app-edit-content-type-fields',
@@ -38,6 +40,7 @@ export class EditContentTypeFieldsComponent extends BaseSubsinkComponent impleme
   findLabel = calculateTypeLabel;
   loading$ = new BehaviorSubject(true);
   saving$ = new BehaviorSubject(false);
+  debugEnabled$ = this.globalConfigService.getDebugEnabled$();
 
   private contentType: ContentType;
   private inputTypeOptions: FieldInputTypeOption[];
@@ -47,7 +50,9 @@ export class EditContentTypeFieldsComponent extends BaseSubsinkComponent impleme
     private route: ActivatedRoute,
     private contentTypesService: ContentTypesService,
     private contentTypesFieldsService: ContentTypesFieldsService,
+    private globalConfigService: GlobalConfigService,
     private snackBar: MatSnackBar,
+    private dialog: MatDialog,
   ) {
     super();
     this.dialogRef.disableClose = true;
@@ -152,6 +157,16 @@ export class EditContentTypeFieldsComponent extends BaseSubsinkComponent impleme
 
   getInputTypeOption(inputName: string) {
     return this.inputTypeOptions.find(option => option.inputType === inputName);
+  }
+
+  addSharedField() { 
+    const addSharedFieldDialogRef = this.dialog.open(AddSharingFieldsComponent, {
+      autoFocus: false,
+      width: '1000px',
+    });
+    addSharedFieldDialogRef.afterClosed().subscribe((selectedFields: Field[]) => {
+      console.log('addSharedFieldDialogRef.afterClosed(): ', selectedFields);
+    });
   }
 
   save() {

@@ -8,6 +8,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatTableModule } from '@angular/material/table';
 import { MAT_SELECT_CONFIG, MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
@@ -24,6 +25,8 @@ import { ContentTypeFieldsComponent } from './content-type-fields.component';
 import { EditContentTypeFieldsComponent } from './edit-content-type-fields/edit-content-type-fields.component';
 import { ReservedNamesValidatorDirective } from './edit-content-type-fields/reserved-names.directive';
 import { ContentTypesFieldsService } from './services/content-types-fields.service';
+import { AddSharingFieldsComponent } from './add-sharing-fields/add-sharing-fields.component';
+import { MatCardModule } from '@angular/material/card';
 
 @NgModule({
   declarations: [
@@ -35,6 +38,7 @@ import { ContentTypesFieldsService } from './services/content-types-fields.servi
     ContentTypeFieldsTypeComponent,
     ContentTypeFieldsSpecialComponent,
     ReservedNamesValidatorDirective,
+    AddSharingFieldsComponent,
   ],
   imports: [
     CommonModule,
@@ -51,6 +55,8 @@ import { ContentTypesFieldsService } from './services/content-types-fields.servi
     MatSnackBarModule,
     MatMenuModule,
     MatBadgeModule,
+    MatTableModule,
+    MatCardModule,
   ],
   providers: [
     Context,

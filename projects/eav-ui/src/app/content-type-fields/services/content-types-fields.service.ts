@@ -12,7 +12,7 @@ import { InputTypeStrict } from '../constants/input-type.constants';
 
 export const webApiFieldsRoot = 'admin/field/';
 export const webApiFieldsAll = 'admin/field/all';
-const webApiFieldsGetShared = 'admin/field/GetSharedFields';
+export const webApiFieldsGetShared = 'admin/field/GetSharedFields';
 
 @Injectable()
 export class ContentTypesFieldsService {
@@ -74,6 +74,29 @@ export class ContentTypesFieldsService {
             }
           }
           console.log('2dm - getFields', fields);
+          return fields;
+        }),
+      );
+  }
+
+  getShareableFields(/*contentTypeStaticName: string*/) {
+    return this.http
+      .get<Field[]>(this.apiUrl(webApiFieldsGetShared), {
+        params: { appid: this.context.appId.toString() },
+      })
+      .pipe(
+        map(fields => {
+          if (fields) {
+            for (const fld of fields) {
+              if (!fld.Metadata) { continue; }
+              const md = fld.Metadata;
+              const allMd = md.All;
+              const typeMd = md[fld.Type];
+              const inputMd = md[fld.InputType];
+              md.merged = { ...allMd, ...typeMd, ...inputMd };
+            }
+          }
+          console.log('SDV - getShareableFields', fields);
           return fields;
         }),
       );
