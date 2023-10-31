@@ -28,6 +28,7 @@ import { ContentTypesFieldsService } from './services/content-types-fields.servi
 import { AddSharingFieldsComponent } from './add-sharing-fields/add-sharing-fields.component';
 import { MatCardModule } from '@angular/material/card';
 import { ShareOrInheritDialogComponent } from './content-type-fields-actions/share-or-inherit-dialog/share-or-inherit-dialog.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [
@@ -59,6 +60,7 @@ import { ShareOrInheritDialogComponent } from './content-type-fields-actions/sha
     MatBadgeModule,
     MatTableModule,
     MatCardModule,
+    TranslateModule 
   ],
   providers: [
     Context,

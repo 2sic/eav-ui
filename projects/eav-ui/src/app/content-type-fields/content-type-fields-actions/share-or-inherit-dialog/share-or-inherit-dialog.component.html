@@ -1,19 +1,16 @@
 <div class="eav-dialog eav-no-scrollbar" >
   <div class="eav-dialog-header">
-    <div class="eav-dialog-header__title" *ngIf="dialogData.SysSettings?.Share">
-      Field Metadata Sharing
+    <div class="eav-dialog-header__title">
+      {{ title | translate }}
     </div>
-    <div class="eav-dialog-header__title" *ngIf="dialogData.SysSettings?.InheritMetadataOf">
-      Field Inherits Metadata
-    </div>
-    <div class="eav-dialog-header__title" *ngIf="!dialogData.SysSettings?.Share && !dialogData.SysSettings?.InheritMetadataOf">
-      Field Metadata Sharing or Inheriting
-    </div>
+    <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
+      <mat-icon>close</mat-icon>
+    </button>
   </div>
   <div class="eav-dialog-content">
-    <span *ngIf="dialogData.SysSettings?.Share">Shared as: {{dialogData?.Guid}}</span>
-    <span *ngIf="dialogData.SysSettings?.InheritMetadataOf">Inherits from: {{dialogData.SysSettings?.InheritMetadataOf}}</span>
-    <span *ngIf="!dialogData.SysSettings?.Share && !dialogData.SysSettings?.InheritMetadataOf">
+    <span *ngIf="state == sharingOrInheriting.Sharing">{{ message | translate }} {{ dialogData.Guid }}</span>
+    <span *ngIf="state == sharingOrInheriting.Inheriting">{{ message| translate }} {{ dialogData.SysSettings.InheritMetadataOf }}</span>
+    <span *ngIf="state == sharingOrInheriting.None">
       <button mat-raised-button type="button" (click)="share()">Share</button>
       <!-- <button mat-raised-button type="button" (click)="inherit()">Inherit</button> -->
       <mat-card class="eav-card" *ngIf="viewModel$ | async as vm">
@@ -43,5 +40,9 @@
     </span>
   </div>
   <mat-dialog-actions align="end">
+    <!-- <button mat-raised-button type="button" (click)="closeDialog()">Cancel</button>
+    <button mat-raised-button type="submit" color="accent" (click)="save()">
+      Save
+    </button> -->
   </mat-dialog-actions>
 </div>

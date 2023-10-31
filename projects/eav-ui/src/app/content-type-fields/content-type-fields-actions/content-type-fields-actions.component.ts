@@ -52,18 +52,18 @@ export class ContentTypeFieldsActionsComponent implements ICellRendererAngularCo
   }
   
   share(): void {
-    const ss = this.field.SysSettings;
+    // const ss = this.field.SysSettings;
     // if (ss?.InheritMetadataOf)
     //   alert('This should open the show-inherit-info dialog TODO: @SDV');
     // else
     //   alert('This should open the enable-share / show-share-info dialog TODO: @SDV');
-    const addSharedFieldDialogRef = this.dialog.open(ShareOrInheritDialogComponent, {
+    const shareOrInheritDialogRef = this.dialog.open(ShareOrInheritDialogComponent, {
       autoFocus: false,
       width: '500px',
       data: this.field,
     });
-    addSharedFieldDialogRef.afterClosed().subscribe((selectedFields: Field[]) => {
-      console.log('addSharedFieldDialogRef.afterClosed(): ', selectedFields);
+    shareOrInheritDialogRef.afterClosed().subscribe((selectedFields: Field[]) => {
+      console.log('shareOrInheritDialogRef.afterClosed(): ', selectedFields);
     });
   }
 

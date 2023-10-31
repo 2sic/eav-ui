@@ -229,6 +229,13 @@
     "SortLotsOfItems": "Sort the items by dragging and scrolling with mouse wheel as needed.",
     "ConfirmRemove": "This will remove this content-item from this list, but not delete it (so you can add it again later). \nSee 2sxc.org/help for more. \n\nOk to remove?"
   },
+  "SharingOrInheriting": {
+    "TitleNone": "Share or inherit?",
+    "TitleSharing": "Field Metadata Sharing",
+    "TitleInheriting": "Field Inherits Metadata",
+    "MessageSharing": "Shared as:",
+    "MessageInheriting": "Inherits from:"
+  },
   "Extension.TinyMce": {
     "Link.AdamFile": "Link ADAM file (recommended)",
     "Link.AdamFile.Tooltip": "Link using ADAM - just drop files using the Automatic Digital Assets Manager",
