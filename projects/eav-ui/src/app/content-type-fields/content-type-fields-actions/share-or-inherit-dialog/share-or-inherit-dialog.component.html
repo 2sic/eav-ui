@@ -19,7 +19,7 @@
           <mat-icon>share</mat-icon>
         </mat-card-header>
         <mat-card-content>
-          <mat-card *ngFor="let field of vm.shareableFields" class="eav-field-card" (click)="selectField(field)">
+          <mat-card *ngFor="let field of vm.shareableFields" class="eav-field-card">
             <mat-card-content>
               <div class="eav-info-row">
                 <div class="eav-info-row__label">Content type:</div>
@@ -33,16 +33,15 @@
                 <div class="eav-info-row__label">Type:</div>
                 <div class="eav-info-row__value"><span>{{ field.Type }}</span></div>
               </div>
+              <div class="eav-info-row">
+                <button mat-raised-button (click)="inheritField(field)">
+                  Inherit
+                </button>
+              </div>
             </mat-card-content>
           </mat-card>
         </mat-card-content>
       </mat-card>
     </span>
   </div>
-  <mat-dialog-actions align="end">
-    <!-- <button mat-raised-button type="button" (click)="closeDialog()">Cancel</button>
-    <button mat-raised-button type="submit" color="accent" (click)="save()">
-      Save
-    </button> -->
-  </mat-dialog-actions>
 </div>

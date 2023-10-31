@@ -65,7 +65,7 @@ export class ShareOrInheritDialogComponent extends BaseSubsinkComponent implemen
     });
   }
 
-  selectField(field: Field) {
+  inheritField(field: Field) {
     this.contentTypesFieldsService.inherit(this.dialogData.Id, field.Guid).subscribe(() => {
       this.dialogRef.close();
     });
