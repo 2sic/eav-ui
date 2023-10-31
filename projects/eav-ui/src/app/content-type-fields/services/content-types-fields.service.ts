@@ -13,7 +13,6 @@ import { InputTypeStrict } from '../constants/input-type.constants';
 export const webApiFieldsRoot = 'admin/field/';
 export const webApiFieldsAll = 'admin/field/all';
 export const webApiFieldsGetShared = 'admin/field/GetSharedFields';
-export const webApiFields = 'admin/fields/';
 
 @Injectable()
 export class ContentTypesFieldsService {
@@ -104,7 +103,7 @@ export class ContentTypesFieldsService {
   }
 
   share(fieldId: number) {
-    return this.http.post<null>(this.apiUrl(webApiFields + 'Share'), null, {
+    return this.http.post<null>(this.apiUrl(webApiFieldsRoot + 'Share'), null, {
       params: {
         appid: this.context.appId.toString(),
         attributeId: fieldId.toString(),
@@ -114,7 +113,7 @@ export class ContentTypesFieldsService {
   }
 
   inherit(fieldId: number, guid: string) {
-    return this.http.post<null>(this.apiUrl(webApiFields + 'Inherit'), null, {
+    return this.http.post<null>(this.apiUrl(webApiFieldsRoot + 'Inherit'), null, {
       params: {
         appid: this.context.appId.toString(),
         attributeId: fieldId.toString(),
