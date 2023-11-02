@@ -1,30 +1,43 @@
-// .eav-tables-div {
-//   max-width: 960px;
-//   display: flex;
-//   flex-direction: row;
-//   justify-content: space-between;
-
-//   .eav-fields-table-left {
-//     width: 48%;
-//     margin-right: 2px;
-//   }
-
-//   .eav-fields-table-right {
-//     width: 48%;
-//     margin-left: 2px;
-//   }
-// }
-
-// .mat-column {
-//   width: 125px;
-// }
-
-// TODO: @SDV remove these classes when we implement tables
-.eav-card {
-  width: 450px;
-}
-
-.eav-field-card {
+.eav-tables-div {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
   margin-top: 4px;
+  height: 400px;
+  // overflow-y: auto;
+
+  .eav-table-div-left {
+    width: 50%;
+    height: 100%;
+    margin-right: 4px;
+    // padding: 10px;
+    // overflow-y: auto;
+  }
+
+  .eav-table-div-right {
+    width: 50%;
+    height: 100%;
+    margin-left: 4px;
+    // padding: 10px;
+    // overflow-y: auto;
+
+    .eav-form-field {
+      max-width: 150px;
+    }
+  }
+
+  // .eav-fields-table {
+  //   max-height: 200px;
+  //   overflow-y: auto;
+  // }
+
+  // .eav-fields-table {
+  //   position: relative;
+  // }
+
+  // thead {
+  //   position: absolute;
+  //   top: 0;
+  // }
 }
 

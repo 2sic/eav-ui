@@ -1,9 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BaseSubsinkComponent } from '../../shared/components/base-subsink-component/base-subsink.component';
 import { MatDialogRef } from '@angular/material/dialog';
-import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
 import { Field } from '../models/field.model';
 import { ContentTypesFieldsService } from '../services/content-types-fields.service';
+import { MatTableDataSource } from '@angular/material/table';
 
 @Component({
   selector: 'app-add-sharing-fields',
@@ -11,12 +11,11 @@ import { ContentTypesFieldsService } from '../services/content-types-fields.serv
   styleUrls: ['./add-sharing-fields.component.scss']
 })
 export class AddSharingFieldsComponent extends BaseSubsinkComponent implements OnInit, OnDestroy {
-  displayedShareableFieldsColumns: string[] = ['contentType', 'name', 'type'];
+  displayedShareableFieldsColumns: string[] = ['contentType', 'name', 'type', 'share'];
   displayedSelectedFieldsColumns: string[] = ['name', 'source', 'remove'];
 
-  shareableFields$ = new BehaviorSubject<Field[]>(undefined);
-  selectedFields$ = new BehaviorSubject<Field[]>(undefined);
-  viewModel$: Observable<AppSharingFieldsViewModel>;
+  shareableFields = new MatTableDataSource<Field>([]);
+  selectedFields = new MatTableDataSource<Field>([]);
 
   constructor(
     private dialogRef: MatDialogRef<AddSharingFieldsComponent>,
@@ -26,45 +25,46 @@ export class AddSharingFieldsComponent extends BaseSubsinkComponent implements O
    }
 
   ngOnInit() {
-    const shareableFields$ = this.contentTypesFieldsService.getShareableFields();
-    this.viewModel$ = combineLatest([
-      shareableFields$, this.selectedFields$
-    ]).pipe(
-      map(([shareableFields, selectedFields]) => {
-        this.shareableFields$.next(shareableFields);
-        return { shareableFields, selectedFields };
-      })
-    );
+    // TODO: @SDV Try to find a better way to do this
+    this.subscription = this.contentTypesFieldsService.getShareableFields().subscribe(shareableFields => { 
+      this.shareableFields.data = shareableFields;
+
+      // TODO: @SDV remove this after testing
+      // let shareableFields2 = shareableFields;
+      // shareableFields2.push(...shareableFields);
+      // shareableFields2.push(...shareableFields);
+      // shareableFields2.push(...shareableFields);
+      // shareableFields2.push(...shareableFields);
+      // this.shareableFields.data = shareableFields2;
+    });
   }
 
   ngOnDestroy() {
-    this.shareableFields$.complete();
-    this.selectedFields$.complete();
     super.ngOnDestroy();
   }
 
-  //TODO: @SDV look how to improve this
+  // TODO: @SDV Try to find a better way to do this
   selectField(field: Field) { 
-    const selectedFields = this.selectedFields$.getValue() || [];
-    const shareableFields = this.shareableFields$.getValue() || [];
+    const selectedFields = this.selectedFields.data;
+    const shareableFields = this.shareableFields.data;
     selectedFields.push(field);
     shareableFields.splice(shareableFields.indexOf(field), 1);
-    this.selectedFields$.next(selectedFields);
-    this.shareableFields$.next(shareableFields);
+    this.selectedFields.data = selectedFields;
+    this.shareableFields.data = shareableFields;
   }
 
-  //TODO: @SDV look how to improve this
+  // TODO: @SDV Try to find a better way to do this
   removeField(field: Field) {
-    const selectedFields = this.selectedFields$.getValue() || [];
-    const shareableFields = this.shareableFields$.getValue() || [];
+    const shareableFields = this.shareableFields.data;
+    const selectedFields = this.selectedFields.data;
     shareableFields.push(field);
     selectedFields.splice(selectedFields.indexOf(field), 1);
-    this.selectedFields$.next(selectedFields);
-    this.shareableFields$.next(shareableFields);
+    this.shareableFields.data = shareableFields;
+    this.selectedFields.data = selectedFields;
   }
 
   save() {
-    this.dialogRef.close(this.selectedFields$.getValue() || []);
+    this.dialogRef.close(this.selectedFields.data || []);
   }
 
   closeDialog() {

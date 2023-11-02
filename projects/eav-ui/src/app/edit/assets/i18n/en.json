@@ -230,11 +230,14 @@
     "ConfirmRemove": "This will remove this content-item from this list, but not delete it (so you can add it again later). \nSee 2sxc.org/help for more. \n\nOk to remove?"
   },
   "SharingOrInheriting": {
+    "TitleAddFieldsWhichInherit": "Add Fields which Inherits Configuration",
     "TitleNone": "Share or inherit?",
     "TitleSharing": "Field Metadata Sharing",
     "TitleInheriting": "Field Inherits Metadata",
     "MessageSharing": "Shared as:",
-    "MessageInheriting": "Inherits from:"
+    "MessageInheriting": "Inherits from:",
+    "AddSharedField": "Add shared field (BETA)",
+    "PickFieldsToInheritFrom": "Pick original fields which we'll inherit from"
   },
   "Extension.TinyMce": {
     "Link.AdamFile": "Link ADAM file (recommended)",
