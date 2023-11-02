@@ -53,27 +53,12 @@ export class ContentTypeFieldsActionsComponent extends BaseSubsinkComponent impl
         : clickToConfigure;
   }
 
-  shareIcon(): string {
+  shareOrInheritIcon(): string {
     const ss = this.field.SysSettings;
     if (!ss) return '';
     return ss.Share 
       ? 'share'
       : ss.InheritMetadataOf ? 'adjust' : '';
-  }
-  
-  share(): void {
-    const shareOrInheritDialogRef = this.dialog.open(ShareOrInheritDialogComponent, {
-      autoFocus: false,
-      width: '500px',
-      data: this.field,
-    });
-    shareOrInheritDialogRef.afterClosed().subscribe(({state, guid}) => {
-      if (state == SharingOrInheriting.Sharing) {
-        this.subscription = this.contentTypesFieldsService.share(this.field.Id).subscribe();
-      } else if (state == SharingOrInheriting.Inheriting) {
-        this.subscription = this.contentTypesFieldsService.inherit(this.field.Id, guid).subscribe();
-      }
-    });
   }
 
   // #endregion
@@ -98,6 +83,10 @@ export class ContentTypeFieldsActionsComponent extends BaseSubsinkComponent impl
 
   deleteField(): void {
     this.params.onDelete(this.field);
+  }
+
+  shareOrInherit(): void {
+    this.params.onShareOrInherit(this.field);
   }
 
   // #endregion

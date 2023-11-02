@@ -22,9 +22,9 @@
         - If it's in inherit mode, different dialog Title "Field Inherits Metadata", content "Inherits from: [field.SysSettings.InheritMetadataOf]"
           - there is no endpoint to call here, because inherit is configured on create (separate todo)
   -->
-  <div class="eav-grid-action-button highlight" matRipple [tippy]="shareText()" (click)="share()">
+  <div class="eav-grid-action-button highlight" matRipple [tippy]="shareText()" (click)="shareOrInherit()">
     <mat-icon aria-hidden="false">
-      {{ shareIcon() }}
+      {{ shareOrInheritIcon() }}
     </mat-icon>
   </div>
 

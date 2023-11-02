@@ -1,7 +1,7 @@
 // tslint:disable-next-line:max-line-length
 import { ColumnApi, FilterChangedEvent, GridApi, GridOptions, GridReadyEvent, ICellRendererParams, RowClassParams, RowDragEvent, SortChangedEvent } from '@ag-grid-community/core';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, Observable, combineLatest, forkJoin, map, of } from 'rxjs';
@@ -27,6 +27,8 @@ import { ContentTypeFieldsTypeComponent } from './content-type-fields-type/conte
 import { Field } from './models/field.model';
 import { ContentTypesFieldsService } from './services/content-types-fields.service';
 import { EmptyFieldHelpers } from '../edit/form/fields/empty/empty-field-helpers';
+import { ShareOrInheritDialogComponent } from './content-type-fields-actions/share-or-inherit-dialog/share-or-inherit-dialog.component';
+import { SharingOrInheriting } from './content-type-fields-actions/share-or-inherit-dialog/share-or-inherit-dialog-models';
 
 @Component({
   selector: 'app-content-type-fields',
@@ -55,6 +57,7 @@ export class ContentTypeFieldsComponent extends BaseComponent implements OnInit,
     private contentTypesService: ContentTypesService,
     private contentTypesFieldsService: ContentTypesFieldsService,
     private snackBar: MatSnackBar,
+    private dialog: MatDialog,
   ) {
     super(router, route);
    }
@@ -250,6 +253,21 @@ export class ContentTypeFieldsComponent extends BaseComponent implements OnInit,
     this.router.navigate([url], { relativeTo: this.route });
   }
 
+  private shareOrInherit(field: Field) {
+    const shareOrInheritDialogRef = this.dialog.open(ShareOrInheritDialogComponent, {
+      autoFocus: false,
+      width: '500px',
+      data: field,
+    });
+    shareOrInheritDialogRef.afterClosed().subscribe(({ state, guid }) => {
+      if (state == SharingOrInheriting.Sharing) {
+        this.subscription = this.contentTypesFieldsService.share(field.Id).subscribe(() => this.fetchFields());
+      } else if (state == SharingOrInheriting.Inheriting) {
+        this.subscription = this.contentTypesFieldsService.inherit(field.Id, guid).subscribe(() => this.fetchFields());
+      }
+    });
+  }
+
   private buildGridOptions(): GridOptions {
     const gridOptions: GridOptions = {
       ...defaultGridOptions,
@@ -378,6 +396,7 @@ export class ContentTypeFieldsComponent extends BaseComponent implements OnInit,
               onDelete: (field) => this.delete(field),
               onOpenPermissions: (field) => this.openPermissions(field),
               onOpenMetadata: (field) => this.openMetadata(field),
+              onShareOrInherit: (field) => this.shareOrInherit(field),
             };
             return params;
           })(),
