@@ -1,10 +1,10 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { BaseSubsinkComponent } from '../../../shared/components/base-subsink-component/base-subsink.component';
 import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
-import { Field, FieldSysSettings } from '../../models/field.model';
+import { Field } from '../../models/field.model';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ContentTypesFieldsService } from '../../services/content-types-fields.service';
-import { TranslateService } from '@ngx-translate/core';
+import { ShareOrInheritDialogViewModel, SharingOrInheriting } from './share-or-inherit-dialog-models';
 
 @Component({
   selector: 'app-share-or-inherit-dialog',
@@ -12,6 +12,7 @@ import { TranslateService } from '@ngx-translate/core';
   styleUrls: ['./share-or-inherit-dialog.component.scss']
 })
 export class ShareOrInheritDialogComponent extends BaseSubsinkComponent implements OnInit, OnDestroy {
+  displayedShareableFieldsColumns: string[] = ['contentType', 'name', 'type', 'share'];
   title: string;
   message: string;
   state: SharingOrInheriting;
@@ -24,7 +25,6 @@ export class ShareOrInheritDialogComponent extends BaseSubsinkComponent implemen
     @Inject(MAT_DIALOG_DATA) public dialogData: Field,
     private dialogRef: MatDialogRef<ShareOrInheritDialogComponent>,
     private contentTypesFieldsService: ContentTypesFieldsService,
-    private translate: TranslateService,
   ) {
     super();
    }
@@ -60,28 +60,14 @@ export class ShareOrInheritDialogComponent extends BaseSubsinkComponent implemen
   }
 
   share() {
-    this.contentTypesFieldsService.share(this.dialogData.Id).subscribe(() => { 
-      this.dialogRef.close();
-    });
+    this.dialogRef.close({ state: SharingOrInheriting.Sharing, guid: null });
   }
 
   inheritField(field: Field) {
-    this.contentTypesFieldsService.inherit(this.dialogData.Id, field.Guid).subscribe(() => {
-      this.dialogRef.close();
-    });
+    this.dialogRef.close({ state: SharingOrInheriting.Inheriting, guid: field.Guid });
   }
 
   closeDialog() {
-    this.dialogRef.close();
+    this.dialogRef.close({ state: SharingOrInheriting.None, guid: null });
   }
-}
-
-export interface ShareOrInheritDialogViewModel {
-  shareableFields: Field[];
-}
-
-enum SharingOrInheriting {
-  None,
-  Sharing,
-  Inheriting
 }

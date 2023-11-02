@@ -8,40 +8,37 @@
     </button>
   </div>
   <div class="eav-dialog-content">
-    <span *ngIf="state == sharingOrInheriting.Sharing">{{ message | translate }} {{ dialogData.Guid }}</span>
-    <span *ngIf="state == sharingOrInheriting.Inheriting">{{ message| translate }} {{ dialogData.SysSettings.InheritMetadataOf }}</span>
-    <span *ngIf="state == sharingOrInheriting.None">
+    <div *ngIf="state == sharingOrInheriting.Sharing">{{ message | translate }} {{ dialogData.Guid }}</div>
+    <div *ngIf="state == sharingOrInheriting.Inheriting">{{ message| translate }} {{ dialogData.SysSettings.InheritMetadataOf }}</div>
+    <div *ngIf="state == sharingOrInheriting.None && viewModel$ | async as vm">
       <button mat-raised-button type="button" (click)="share()">Share</button>
-      <!-- <button mat-raised-button type="button" (click)="inherit()">Inherit</button> -->
-      <mat-card class="eav-card" *ngIf="viewModel$ | async as vm">
-        <mat-card-header class="eav-card-header">
-          <mat-card-title>Shareable fields</mat-card-title>
-          <mat-icon>share</mat-icon>
-        </mat-card-header>
-        <mat-card-content>
-          <mat-card *ngFor="let field of vm.shareableFields" class="eav-field-card">
-            <mat-card-content>
-              <div class="eav-info-row">
-                <div class="eav-info-row__label">Content type:</div>
-                <div class="eav-info-row__value"><span>{{ field.ContentType.Name }}</span></div>
-              </div>
-              <div class="eav-info-row">
-                <div class="eav-info-row__label">Name:</div>
-                <div class="eav-info-row__value"><span>{{ field.StaticName }}</span></div>
-              </div>
-              <div class="eav-info-row">
-                <div class="eav-info-row__label">Type:</div>
-                <div class="eav-info-row__value"><span>{{ field.Type }}</span></div>
-              </div>
-              <div class="eav-info-row">
-                <button mat-raised-button (click)="inheritField(field)">
-                  Inherit
-                </button>
-              </div>
-            </mat-card-content>
-          </mat-card>
-        </mat-card-content>
-      </mat-card>
-    </span>
+      <div class="eav-table-div">
+        <table mat-table [dataSource]="vm.shareableFields" class="mat-elevation-z8 eav-fields-table">
+          <ng-container matColumnDef="contentType">
+            <th mat-header-cell *matHeaderCellDef> Content Type </th>
+            <td mat-cell *matCellDef="let field"> {{field.ContentType.Name}} </td>
+          </ng-container>
+      
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef> Name </th>
+            <td mat-cell *matCellDef="let field"> {{field.StaticName}} </td>
+          </ng-container>
+      
+          <ng-container matColumnDef="type">
+            <th mat-header-cell *matHeaderCellDef> Type </th>
+            <td mat-cell *matCellDef="let field"> {{field.Type}} </td>
+          </ng-container>
+      
+          <ng-container matColumnDef="share">
+            <th mat-header-cell *matHeaderCellDef> Inherit </th>
+            <td mat-cell *matCellDef="let field"> <button mat-raised-button type="button"
+                (click)="inheritField(field)">Inherit</button> </td>
+          </ng-container>
+      
+          <tr mat-header-row *matHeaderRowDef="displayedShareableFieldsColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedShareableFieldsColumns;"></tr>
+        </table>
+      </div>
+    </div>
   </div>
 </div>
