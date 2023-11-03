@@ -75,7 +75,7 @@
 
     .mat-mdc-form-field-infix {
       min-height: 44px;
-      padding-bottom: 0px !important;
+      // padding-bottom: 0px !important;
     }
 
     .mat-mdc-form-field-icon-prefix,
@@ -182,3 +182,7 @@
 .eav-picker-option.mat-mdc-option .mdc-list-item__primary-text {
   width: 100% !important;
 }
+
+// .mat-mdc-form-field-focus-overlay {
+//   background-color: transparent;
+// }
