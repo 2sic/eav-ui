@@ -57,7 +57,7 @@
   //   padding-bottom: 0px !important;
   // }
 
-  //used so form-field doesn't have background color
+  // Used so form-field doesn't have background color
   .mat-mdc-text-field-wrapper,
   .mat-mdc-form-field-subscript-wrapper {
     background-color: transparent !important;
@@ -65,9 +65,14 @@
     padding-right: 0px;
   }
 
-  //used so form-field doesn't change background color on hover
+  // Used so form-field doesn't have background color on hover and focus
   .mdc-text-field--filled:not(.mdc-text-field--disabled) {
-    background-color: transparent;
+    background-color: transparent !important;
+  }
+
+  // Used so form-field doesn't have background color on hover and focus
+  .mat-mdc-form-field-focus-overlay {
+    background-color: transparent !important;
   }
 
   .mat-mdc-form-field-flex {
@@ -83,8 +88,6 @@
       align-self: baseline;
     }
   }
-
-
 
   .mat-form-field-suffix {
     .mat-icon-button {
