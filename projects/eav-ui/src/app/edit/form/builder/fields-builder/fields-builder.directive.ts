@@ -156,9 +156,9 @@ export class FieldsBuilderDirective implements OnInit, OnDestroy {
     // generate the real input field component
     this.generateAndAttachField(componentType, wrapperInfo.contentsRef, fieldConfig, false);
 
-    if ((wrapperInfo.wrapperRef.instance as PickerExpandableWrapperComponent).previewComponent) {
+    if ((wrapperInfo.wrapperRef?.instance as PickerExpandableWrapperComponent)?.previewComponent) {
       const previewType = this.readComponentType(fieldProps.calculatedInputType.inputType);
-      this.generateAndAttachField(previewType, (wrapperInfo.wrapperRef.instance as PickerExpandableWrapperComponent).previewComponent, fieldConfig, true);
+      this.generateAndAttachField(previewType, (wrapperInfo.wrapperRef?.instance as PickerExpandableWrapperComponent)?.previewComponent, fieldConfig, true);
     }
 
     // return ref;
