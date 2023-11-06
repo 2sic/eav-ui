@@ -22,20 +22,12 @@ export class AddSharingFieldsComponent extends BaseSubsinkComponent implements O
     private contentTypesFieldsService: ContentTypesFieldsService,
   ) {
     super();
-   }
+  }
 
   ngOnInit() {
     // TODO: @SDV Try to find a better way to do this
-    this.subscription = this.contentTypesFieldsService.getShareableFields().subscribe(shareableFields => { 
+    this.subscription = this.contentTypesFieldsService.getShareableFields().subscribe(shareableFields => {
       this.shareableFields.data = shareableFields;
-
-      // TODO: @SDV remove this after testing
-      // let shareableFields2 = shareableFields;
-      // shareableFields2.push(...shareableFields);
-      // shareableFields2.push(...shareableFields);
-      // shareableFields2.push(...shareableFields);
-      // shareableFields2.push(...shareableFields);
-      // this.shareableFields.data = shareableFields2;
     });
   }
 
@@ -44,7 +36,7 @@ export class AddSharingFieldsComponent extends BaseSubsinkComponent implements O
   }
 
   // TODO: @SDV Try to find a better way to do this
-  selectField(field: Field) { 
+  selectField(field: Field) {
     const selectedFields = this.selectedFields.data;
     const shareableFields = this.shareableFields.data;
     selectedFields.push(field);

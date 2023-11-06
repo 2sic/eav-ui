@@ -3,6 +3,7 @@
   flex-direction: row;
   justify-content: space-between;
   margin-top: 4px;
+  padding-top: 4px;
   height: 400px;
   // overflow-y: auto;
 
@@ -10,34 +11,24 @@
     width: 50%;
     height: 100%;
     margin-right: 4px;
-    // padding: 10px;
-    // overflow-y: auto;
+    overflow-y: auto;
+    border: 1px solid rgba(0, 0, 0, 0.1);
   }
 
   .eav-table-div-right {
     width: 50%;
     height: 100%;
     margin-left: 4px;
-    // padding: 10px;
-    // overflow-y: auto;
+    overflow-y: auto;
+    border: 1px solid rgba(0, 0, 0, 0.1);
 
     .eav-form-field {
       max-width: 150px;
     }
   }
-
-  // .eav-fields-table {
-  //   max-height: 200px;
-  //   overflow-y: auto;
-  // }
-
-  // .eav-fields-table {
-  //   position: relative;
-  // }
-
-  // thead {
-  //   position: absolute;
-  //   top: 0;
-  // }
+  
+  .eav-table-cell {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
 }
 
