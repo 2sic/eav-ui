@@ -12,25 +12,25 @@
     <div *ngIf="state == sharingOrInheriting.Inheriting">{{ message| translate }} {{ dialogData.SysSettings.InheritMetadataOf }}</div>
     <div *ngIf="state == sharingOrInheriting.None && viewModel$ | async as vm">
       <button mat-raised-button type="button" (click)="share()">Share</button>
-      <div class="eav-table-div">
+      <mat-card class="eav-table-div">
         <table mat-table [dataSource]="vm.shareableFields" class="mat-elevation-z8 eav-fields-table">
           <ng-container matColumnDef="contentType">
-            <th mat-header-cell *matHeaderCellDef> Content Type </th>
+            <th mat-header-cell *matHeaderCellDef> <b>Content Type</b> </th>
             <td mat-cell *matCellDef="let field"> {{field.ContentType.Name}} </td>
           </ng-container>
       
           <ng-container matColumnDef="name">
-            <th mat-header-cell *matHeaderCellDef> Name </th>
+            <th mat-header-cell *matHeaderCellDef> <b>Name</b> </th>
             <td mat-cell *matCellDef="let field"> {{field.StaticName}} </td>
           </ng-container>
       
           <ng-container matColumnDef="type">
-            <th mat-header-cell *matHeaderCellDef> Type </th>
+            <th mat-header-cell *matHeaderCellDef> <b>Type</b> </th>
             <td mat-cell *matCellDef="let field"> {{field.Type}} </td>
           </ng-container>
       
           <ng-container matColumnDef="share">
-            <th mat-header-cell *matHeaderCellDef> Inherit </th>
+            <th mat-header-cell *matHeaderCellDef> <b>Inherit</b> </th>
             <td mat-cell *matCellDef="let field"> <button mat-raised-button type="button"
                 (click)="inheritField(field)">Inherit</button> </td>
           </ng-container>
@@ -38,7 +38,7 @@
           <tr mat-header-row *matHeaderRowDef="displayedShareableFieldsColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedShareableFieldsColumns;"></tr>
         </table>
-      </div>
+      </mat-card>
     </div>
   </div>
 </div>
