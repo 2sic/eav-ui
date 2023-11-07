@@ -162,7 +162,7 @@ export class EditContentTypeFieldsComponent extends BaseSubsinkComponent impleme
   addSharedField() { 
     const addSharedFieldDialogRef = this.dialog.open(AddSharingFieldsComponent, {
       autoFocus: false,
-      width: '1000px',
+      width: '1600px',
     });
     addSharedFieldDialogRef.afterClosed().subscribe((selectedFields: Field[]) => {
       console.log('addSharedFieldDialogRef.afterClosed(): ', selectedFields);
