@@ -34,9 +34,16 @@ export class EntityPickerLogic extends FieldLogicBase {
     }
 
     /** WIP functionalities */
+    // If AllowMultiValue is false then EnableReselect must be false
     fixedSettings.AllowMultiValue ? fixedSettings.EnableReselect ??= false : fixedSettings.EnableReselect = false;
-    fixedSettings.AllowMultiMin ??= 0;
-    fixedSettings.AllowMultiMax ??= 0;
+    // If AllowMultiValue is false then AllowMultiMin and AllowMultiMax must be 0 so we don't trigger the validation
+    if (fixedSettings.AllowMultiValue) {
+      fixedSettings.AllowMultiMin ??= 0;
+      fixedSettings.AllowMultiMax ??= 0;
+    } else {
+      fixedSettings.AllowMultiMin = 0;
+      fixedSettings.AllowMultiMax = 0;
+    }
 
     return fixedSettings;
   }
