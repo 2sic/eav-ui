@@ -14,7 +14,6 @@ import { defaultGridOptions } from '../shared/constants/default-grid-options.con
 import { eavConstants } from '../shared/constants/eav.constants';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 import { ItemAddIdentifier, EditForm, ItemEditIdentifier } from '../shared/models/edit-form.model';
-import { InputTypeConstants } from './constants/input-type.constants';
 import { ContentTypeFieldsActionsComponent } from './content-type-fields-actions/content-type-fields-actions.component';
 import { ContentTypeFieldsActionsParams } from './content-type-fields-actions/content-type-fields-actions.models';
 import { ContentTypeFieldsInputTypeComponent } from './content-type-fields-input-type/content-type-fields-input-type.component';
@@ -28,7 +27,7 @@ import { Field } from './models/field.model';
 import { ContentTypesFieldsService } from './services/content-types-fields.service';
 import { EmptyFieldHelpers } from '../edit/form/fields/empty/empty-field-helpers';
 import { ShareOrInheritDialogComponent } from './content-type-fields-actions/share-or-inherit-dialog/share-or-inherit-dialog.component';
-import { SharingOrInheriting } from './content-type-fields-actions/share-or-inherit-dialog/share-or-inherit-dialog-models';
+import { SharingOrInheriting, SharingOrInheritingResult } from './content-type-fields-actions/share-or-inherit-dialog/share-or-inherit-dialog-models';
 
 @Component({
   selector: 'app-content-type-fields',
@@ -259,11 +258,13 @@ export class ContentTypeFieldsComponent extends BaseComponent implements OnInit,
       width: '800px',
       data: field,
     });
-    shareOrInheritDialogRef.afterClosed().subscribe(({ state, guid }) => {
-      if (state == SharingOrInheriting.Sharing) {
+    shareOrInheritDialogRef.afterClosed().subscribe((result: SharingOrInheritingResult) => {
+      if(!result) return;
+
+      if (result.state == SharingOrInheriting.Sharing) {
         this.subscription = this.contentTypesFieldsService.share(field.Id).subscribe(() => this.fetchFields());
-      } else if (state == SharingOrInheriting.Inheriting) {
-        this.subscription = this.contentTypesFieldsService.inherit(field.Id, guid).subscribe(() => this.fetchFields());
+      } else if (result.state == SharingOrInheriting.Inheriting) {
+        this.subscription = this.contentTypesFieldsService.inherit(field.Id, result.guid).subscribe(() => this.fetchFields());
       }
     });
   }

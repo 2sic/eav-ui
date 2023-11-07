@@ -9,3 +9,8 @@ export enum SharingOrInheriting {
   Sharing,
   Inheriting
 }
+
+export interface SharingOrInheritingResult { 
+  state: SharingOrInheriting;
+  guid: string;
+}
