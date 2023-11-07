@@ -16,7 +16,7 @@ export class ShareOrInheritDialogComponent extends BaseSubsinkComponent implemen
   title: string;
   message: string;
   state: SharingOrInheriting = SharingOrInheriting.None;
-  initialState: SharingOrInheriting;
+  initialState: SharingOrInheriting = SharingOrInheriting.None;
   sharingOrInheriting = SharingOrInheriting;
   guid: string = null;
   isSaveDisabled: boolean = true;
