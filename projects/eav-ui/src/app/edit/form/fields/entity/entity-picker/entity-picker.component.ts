@@ -44,7 +44,6 @@ export class EntityPickerComponent extends PickerComponent implements OnInit, On
   }
 
   ngOnInit(): void {
-    console.log('SDV EntityPickerComponent ngOnInit');
     super.ngOnInit();
 
     this.createPickerAdapters();
