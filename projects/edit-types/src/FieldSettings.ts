@@ -255,10 +255,13 @@ export interface Boolean extends All {
   _label: string;
 }
 
-export interface PickerEntity extends Entity {
+export interface EntityPicker extends EntityQuery {
   EnableReselect: boolean;
   AllowMultiMin: number;
   AllowMultiMax: number;
+
+  PickerDisplayMode: 'list' | 'tree';
+  PickerDisplayConfiguration: UiPickerModeTree;
 }
 
 interface InternalSettings {
@@ -284,6 +287,81 @@ export interface FieldSettings extends
   StringTemplatePicker,
   StringUrlPath,
   StringWysiwyg,
-  PickerEntity,
+  EntityPicker,
   InternalSettings
-  { }
+{ }
+  
+interface UiPickerModeTree { 
+  Title: string;
+
+  TreeRelationship: 'child-parent' | 'parent-child'; //child-parent or parent-child
+  TreeBranchStream: string;
+  TreeLeavesStream: string;
+  TreeParentIdField: string;
+  TreeChildIdField: string;
+  TreeParentChildRefField: string;
+  TreeChildParentRefField: string;
+
+  TreeShowRoot: boolean;
+  TreeDepthMax: number;
+
+  TreeAllowSelectRoot: boolean;
+  TreeAllowSelectBranch: boolean;
+  TreeAllowSelectLeaves: boolean;
+}
+
+/*
+{
+  "parents": [
+    {
+      "id": 1,
+      "name": "cars",
+      "children": [
+        3,
+        4
+      ]
+    },
+    {
+      "id": 2,
+      "name": "bikes",
+      "children": [
+        5,
+        6
+      ]
+    }
+  ]
+}
+
+{
+  "children": [
+    {
+      "id": 3,
+      "name": "subaru",
+      "parent": [
+        1
+      ]
+    },
+    {
+      "id": 4,
+      "name": "bmw",
+      "parent": [
+        1
+      ]
+    },
+    {
+      "id": 5,
+      "name": "ducati",
+      "parent": [
+        2
+      ]
+    },
+    {
+      "id": 6,
+      "name": "bmw",
+      "parent": [
+        2
+      ]
+    }
+  ]
+}
+*/

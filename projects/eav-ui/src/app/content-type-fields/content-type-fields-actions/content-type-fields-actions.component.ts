@@ -5,10 +5,6 @@ import { DataTypeConstants } from '../constants/data-type.constants';
 import { InputTypeConstants } from '../constants/input-type.constants';
 import { Field } from '../models/field.model';
 import { ContentTypeFieldsActionsParams } from './content-type-fields-actions.models';
-import { MatDialog } from '@angular/material/dialog';
-import { ShareOrInheritDialogComponent } from './share-or-inherit-dialog/share-or-inherit-dialog.component';
-import { SharingOrInheriting } from './share-or-inherit-dialog/share-or-inherit-dialog-models';
-import { ContentTypesFieldsService } from '../services/content-types-fields.service';
 import { BaseSubsinkComponent } from '../../shared/components/base-subsink-component/base-subsink.component';
 
 @Component({

@@ -3,8 +3,8 @@ import { InputTypeConstants } from '../../../../../content-type-fields/constants
 import { FieldLogicBase } from '../../../shared/field-logic/field-logic-base';
 import { FieldLogicTools } from '../../../shared/field-logic/field-logic-tools';
 
-export class EntityDefaultLogic extends FieldLogicBase {
-  name = InputTypeConstants.EntityDefault;
+export class EntityPickerLogic extends FieldLogicBase {
+  name = InputTypeConstants.WIPEntityPicker;
 
   update(settings: FieldSettings, value: string[], tools: FieldLogicTools): FieldSettings {
     const fixedSettings: FieldSettings = { ...settings };
@@ -33,8 +33,13 @@ export class EntityDefaultLogic extends FieldLogicBase {
       fixedSettings.EnableDelete = true;
     }
 
+    /** WIP functionalities */
+    fixedSettings.AllowMultiValue ? fixedSettings.EnableReselect ??= false : fixedSettings.EnableReselect = false;
+    fixedSettings.AllowMultiMin ??= 0;
+    fixedSettings.AllowMultiMax ??= 0;
+
     return fixedSettings;
   }
 }
 
-FieldLogicBase.add(EntityDefaultLogic);
+FieldLogicBase.add(EntityPickerLogic);

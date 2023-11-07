@@ -1,26 +1,24 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
-import { EavService, EditRoutingService, EntityService, FieldsSettingsService } from '../../../../shared/services';
-import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
+import { InputTypeConstants } from 'projects/eav-ui/src/app/content-type-fields/constants/input-type.constants';
 import { PickerComponent } from '../../picker/picker.component';
 import { TranslateService } from '@ngx-translate/core';
+import { EavService, FieldsSettingsService, EntityService, EditRoutingService } from '../../../../shared/services';
 import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
-import { EntityDefaultLogic } from '../../entity/entity-default/entity-default-logic';
 import { PickerEntitySourceAdapter } from '../../picker/picker-entity-source-adapter';
+import { PickerEntityStateAdapter } from '../../picker/picker-entity-state-adapter';
 import { PickerSourceAdapterFactoryService } from '../../picker/picker-source-adapter-factory.service';
 import { PickerStateAdapterFactoryService } from '../../picker/picker-state-adapter-factory.service';
 import { DeleteEntityProps } from '../../picker/picker.models';
-import { PickerStringStateAdapter } from '../../picker/picker-string-state-adapter';
+import { EntityPickerLogic } from './entity-picker-logic';
+import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 
 @Component({
-  selector: InputTypeConstants.StringDropdown,
+  selector: InputTypeConstants.WIPEntityPicker,
   templateUrl: '../../picker/picker.component.html',
   styleUrls: ['../../picker/picker.component.scss'],
 })
-@FieldMetadata({
-  // wrappers: [WrappersConstants.LocalizationWrapper],
-})
-export class StringDropdownComponent extends PickerComponent implements OnInit, OnDestroy {
+@FieldMetadata({})
+export class EntityPickerComponent extends PickerComponent implements OnInit, OnDestroy {
   constructor(
     eavService: EavService,
     fieldsSettingsService: FieldsSettingsService,
@@ -41,11 +39,12 @@ export class StringDropdownComponent extends PickerComponent implements OnInit, 
       entityCacheService,
       stringQueryCacheService,
     );
-    EntityDefaultLogic.importMe();
-    this.isString = true;
+    EntityPickerLogic.importMe();
+    this.isString = false;
   }
 
   ngOnInit(): void {
+    console.log('SDV EntityPickerComponent ngOnInit');
     super.ngOnInit();
 
     this.createPickerAdapters();
@@ -62,7 +61,7 @@ export class StringDropdownComponent extends PickerComponent implements OnInit, 
   }
 
   private createPickerAdapters(): void {
-    this.pickerStateAdapter = this.pickerStateAdapterFactoryService.createPickerStringStateAdapter(
+    this.pickerStateAdapter = this.pickerStateAdapterFactoryService.createPickerEntityStateAdapter(
       this.control,
       this.config,
       this.settings$,
@@ -88,7 +87,7 @@ export class StringDropdownComponent extends PickerComponent implements OnInit, 
       (props: DeleteEntityProps) => this.pickerStateAdapter.doAfterDelete(props)
     );
 
-    this.pickerStateAdapterFactoryService.initString(this.pickerStateAdapter as PickerStringStateAdapter);
+    this.pickerStateAdapterFactoryService.initEntity(this.pickerStateAdapter as PickerEntityStateAdapter);
     this.pickerSourceAdapterFactoryService.initEntity(this.pickerSourceAdapter as PickerEntitySourceAdapter);
   }
 }

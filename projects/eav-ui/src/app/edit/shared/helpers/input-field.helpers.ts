@@ -54,8 +54,8 @@ export class InputFieldHelpers {
       || (inputType === InputTypeConstants.StringDropdown)
       /** WIP pickers */
       || (inputType === InputTypeConstants.WIPEntityPicker)
-      || (inputType === InputTypeConstants.WIPStringPicker)
-      || (inputType === InputTypeConstants.WIPNumberPicker);
+      || (inputType === InputTypeConstants.WIPStringPicker);
+      // || (inputType === InputTypeConstants.WIPNumberPicker);
     
     const allowMultiValue = settings.AllowMultiValue ?? false;
 
@@ -106,12 +106,14 @@ export class InputFieldHelpers {
           : null;
       case InputTypeConstants.NumberDefault:
       case InputTypeConstants.NumberDropdown:
+      case InputTypeConstants.WIPNumberPicker:
         return defaultValue != null && defaultValue !== ''
           ? !isNaN(Number(defaultValue)) ? Number(defaultValue) : null
           : null;
       case InputTypeConstants.EntityDefault:
       case InputTypeConstants.EntityQuery:
       case InputTypeConstants.EntityContentBlocks:
+      case InputTypeConstants.WIPEntityPicker:
         if (defaultValue == null || defaultValue === '') { return []; }
         // string has { } characters, we must switch them to quotes
         if (defaultValue.includes('{')) {

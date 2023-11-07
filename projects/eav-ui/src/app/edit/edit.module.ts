@@ -109,6 +109,7 @@ import { PickerDialogComponent } from './form/fields/picker/picker-dialog/picker
 import { PickerPreviewComponent } from './form/fields/picker/picker-preview/picker-preview.component';
 import { PickerTextToggleComponent } from './form/fields/picker/picker-text-toggle/picker-text-toggle.component';
 import { FieldDataSourceFactoryService } from './form/fields/picker/field-data-source-factory.service';
+import { EntityPickerComponent } from './form/fields/entity/entity-picker/entity-picker.component';
 
 @NgModule({
     declarations: [
@@ -179,6 +180,7 @@ import { FieldDataSourceFactoryService } from './form/fields/picker/field-data-s
         NumberDropdownComponent,
         EmptyMessageComponent,
         SnippetLabelSizePipe,
+        EntityPickerComponent,
     ],
     imports: [
         EditRoutingModule,
