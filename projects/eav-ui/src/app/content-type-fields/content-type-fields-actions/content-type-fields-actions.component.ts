@@ -22,10 +22,7 @@ export class ContentTypeFieldsActionsComponent extends BaseSubsinkComponent impl
   enablePermissions: boolean;
   private params: ICellRendererParams & ContentTypeFieldsActionsParams;
 
-  constructor(
-    private dialog: MatDialog,
-    private contentTypesFieldsService: ContentTypesFieldsService,
-  ) {
+  constructor() {
     super();
   }
   

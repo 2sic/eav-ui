@@ -256,7 +256,7 @@ export class ContentTypeFieldsComponent extends BaseComponent implements OnInit,
   private shareOrInherit(field: Field) {
     const shareOrInheritDialogRef = this.dialog.open(ShareOrInheritDialogComponent, {
       autoFocus: false,
-      width: '500px',
+      width: '800px',
       data: field,
     });
     shareOrInheritDialogRef.afterClosed().subscribe(({ state, guid }) => {

@@ -4,4 +4,19 @@
   max-height: 400px;
   overflow-y: auto;
   border: 1px solid rgba(0, 0, 0, 0.1);
+
+  .eav-selected-row {
+    background-color: rgba(0, 0, 0, 0.15);
+  }
+}
+
+.eav-dialog-actions {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  padding: 8px 0px;
+}
+
+.eav-dialog-action-button {
+  margin-right: 8px;
 }

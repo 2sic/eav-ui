@@ -12,11 +12,14 @@ import { ShareOrInheritDialogViewModel, SharingOrInheriting } from './share-or-i
   styleUrls: ['./share-or-inherit-dialog.component.scss']
 })
 export class ShareOrInheritDialogComponent extends BaseSubsinkComponent implements OnInit, OnDestroy {
-  displayedShareableFieldsColumns: string[] = ['contentType', 'name', 'type', 'share'];
+  displayedShareableFieldsColumns: string[] = ['contentType', 'name', 'type'];
   title: string;
   message: string;
-  state: SharingOrInheriting;
+  state: SharingOrInheriting = SharingOrInheriting.None;
+  initialState: SharingOrInheriting;
   sharingOrInheriting = SharingOrInheriting;
+  guid: string = null;
+  isSaveDisabled: boolean = true;
 
   shareableFields$ = new BehaviorSubject<Field[]>(undefined);
   viewModel$: Observable<ShareOrInheritDialogViewModel>;
@@ -30,12 +33,12 @@ export class ShareOrInheritDialogComponent extends BaseSubsinkComponent implemen
    }
 
   ngOnInit() {
-    this.state = !this.dialogData.SysSettings || (!this.dialogData.SysSettings.Share && !this.dialogData.SysSettings.InheritMetadataOf)
+    this.initialState = !this.dialogData.SysSettings || (!this.dialogData.SysSettings.Share && !this.dialogData.SysSettings.InheritMetadataOf)
       ? SharingOrInheriting.None
       : this.dialogData.SysSettings.Share
         ? SharingOrInheriting.Sharing
         : SharingOrInheriting.Inheriting;
-    if (this.state === SharingOrInheriting.None) {
+    if (this.initialState === SharingOrInheriting.None) {
       this.title = 'SharingOrInheriting.TitleNone';
       const shareableFields$ = this.contentTypesFieldsService.getShareableFields();
       this.viewModel$ = combineLatest([
@@ -46,10 +49,10 @@ export class ShareOrInheritDialogComponent extends BaseSubsinkComponent implemen
           return { shareableFields };
         })
       );
-    } else if (this.state === SharingOrInheriting.Sharing) {
+    } else if (this.initialState === SharingOrInheriting.Sharing) {
       this.title = 'SharingOrInheriting.TitleSharing';
       this.message = 'SharingOrInheriting.MessageSharing';
-    } else if (this.state === SharingOrInheriting.Inheriting) {
+    } else if (this.initialState === SharingOrInheriting.Inheriting) {
       this.title = 'SharingOrInheriting.TitleInheriting';
       this.message = 'SharingOrInheriting.MessageInheriting';
     }
@@ -59,12 +62,25 @@ export class ShareOrInheritDialogComponent extends BaseSubsinkComponent implemen
     super.ngOnDestroy();
   }
 
-  share() {
-    this.dialogRef.close({ state: SharingOrInheriting.Sharing, guid: null });
+  chooseShare() {
+    this.guid = null;
+    this.state = SharingOrInheriting.Sharing;
+    this.isSaveDisabled = false;
+  }
+
+  chooseInherit() {
+    this.guid = null;
+    this.state = SharingOrInheriting.Inheriting;
+    this.isSaveDisabled = true;
   }
 
   inheritField(field: Field) {
-    this.dialogRef.close({ state: SharingOrInheriting.Inheriting, guid: field.Guid });
+    this.guid = field.Guid;
+    this.isSaveDisabled = false;
+  }
+
+  save() {
+    this.dialogRef.close({ state: this.state, guid: this.guid });
   }
 
   closeDialog() {
