@@ -1,21 +1,21 @@
 // When true (checked)
-/* TODO-(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version.*/
 :host ::ng-deep .changeable-label-mat-slide-toggle.mat-mdc-slide-toggle.mat-mdc-slide-toggle-checked:not(.mat-disabled) .mdc-switch__shadow {
   background-color: #0088f4;
 }
 
-/* TODO-(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version.*/
 :host ::ng-deep .changeable-label-mat-slide-toggle.mat-mdc-slide-toggle.mat-mdc-slide-toggle-checked:not(.mat-disabled) .mdc-switch__track::after {
   background-color: #7fc3f9 !important;
 }
 
 // When false (unchecked)
-/* TODO-(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version.*/
 :host ::ng-deep .changeable-label-mat-slide-toggle.mat-mdc-slide-toggle:not(.mat-mdc-slide-toggle-checked):not(.mat-disabled) .mdc-switch__shadow {
   background-color: #7fc3f9;
 }
 
-/* TODO-(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version.*/
 :host ::ng-deep .changeable-label-mat-slide-toggle.mat-mdc-slide-toggle:not(.mat-mdc-slide-toggle-checked):not(.mat-disabled) .mdc-switch__track::before {
   background-color: #bfe1fc !important;
+}
+
+.eav-slide-toggle-label {
+  margin-left: 8px;
 }

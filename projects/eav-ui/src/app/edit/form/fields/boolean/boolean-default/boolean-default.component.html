@@ -1,7 +1,6 @@
 <div *ngIf="viewModel$ | async as vm" [formGroup]="group">
   <mat-slide-toggle [disabled]="vm.controlStatus.disabled" [checked]="vm.checked" (change)="updateValue()"
-    [ngClass]="vm.changeable ? 'changeable-label-mat-slide-toggle' : ''">
-    {{ vm.label }}
-  </mat-slide-toggle>
+    [ngClass]="vm.changeable ? 'changeable-label-mat-slide-toggle' : ''"/>
+  <span class="eav-slide-toggle-label">{{ vm.label }}</span>
   <app-field-helper-text [config]="config" [group]="group" [disableError]="true"></app-field-helper-text>
 </div>

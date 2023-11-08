@@ -4,9 +4,7 @@
     'toggle-true': vm.checked === true,
     'toggle-null': vm.checked === null,
     'changeable-label-tristate-mat-slide-toggle': vm.changeable
-  }">
-    {{ vm.label }}
-  </mat-slide-toggle>
-
+  }"/>
+  <span class="eav-slide-toggle-label">{{ vm.label }}</span>
   <app-field-helper-text [config]="config" [group]="group" [disableError]="true"></app-field-helper-text>
 </div>
