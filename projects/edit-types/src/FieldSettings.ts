@@ -261,7 +261,8 @@ export interface EntityPicker extends EntityQuery {
   AllowMultiMax: number;
 
   PickerDisplayMode: 'list' | 'tree';
-  PickerDisplayConfiguration: UiPickerModeTree;
+  PickerDisplayConfiguration: string[]; //can only be one entity guid
+  PickerTreeConfiguration: UiPickerModeTree;
 }
 
 interface InternalSettings {
@@ -291,7 +292,7 @@ export interface FieldSettings extends
   InternalSettings
 { }
   
-interface UiPickerModeTree { 
+export interface UiPickerModeTree { 
   Title: string;
 
   TreeRelationship: 'child-parent' | 'parent-child'; //child-parent or parent-child
@@ -309,59 +310,3 @@ interface UiPickerModeTree {
   TreeAllowSelectBranch: boolean;
   TreeAllowSelectLeaves: boolean;
 }
-
-/*
-{
-  "parents": [
-    {
-      "id": 1,
-      "name": "cars",
-      "children": [
-        3,
-        4
-      ]
-    },
-    {
-      "id": 2,
-      "name": "bikes",
-      "children": [
-        5,
-        6
-      ]
-    }
-  ]
-}
-
-{
-  "children": [
-    {
-      "id": 3,
-      "name": "subaru",
-      "parent": [
-        1
-      ]
-    },
-    {
-      "id": 4,
-      "name": "bmw",
-      "parent": [
-        1
-      ]
-    },
-    {
-      "id": 5,
-      "name": "ducati",
-      "parent": [
-        2
-      ]
-    },
-    {
-      "id": 6,
-      "name": "bmw",
-      "parent": [
-        2
-      ]
-    }
-  ]
-}
-*/

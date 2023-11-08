@@ -2,7 +2,7 @@ import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@ang
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { TranslateService } from '@ngx-translate/core';
-import { WIPDataSourceItem } from 'projects/edit-types';
+import { UiPickerModeTree, WIPDataSourceItem, WIPDataSourceTreeItem } from 'projects/edit-types';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { FieldsSettingsService } from '../../../../shared/services';
@@ -14,6 +14,8 @@ import { PickerSearchViewModel } from './picker-search.models';
 import { FieldConfigSet, FieldControlConfig } from '../../../builder/fields-builder/field-config-set.model';
 import { Field } from '../../../builder/fields-builder/field.model';
 import { BaseSubsinkComponent } from 'projects/eav-ui/src/app/shared/components/base-subsink-component/base-subsink.component';
+import { FlatTreeControl } from '@angular/cdk/tree';
+import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 
 @Component({
   selector: 'app-picker-search',
@@ -66,6 +68,8 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
         EnableDelete: settings.EnableDelete,
         EnableRemove: settings.EnableRemove,
         EnableReselect: settings.EnableReselect,
+        PickerDisplayMode: settings.PickerDisplayMode,
+        PickerTreeConfiguration: settings.PickerTreeConfiguration,
       })),
       distinctUntilChanged(GeneralHelpers.objectsEqual),
     );
@@ -88,6 +92,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
         const showEmpty = !settings.EnableAddExisting && !(selectedEntities.length > 1);
         const hideDropdown = (!settings.AllowMultiValue && (selectedEntities.length > 1)) || !settings.EnableAddExisting;
         const showItemEditButtons = selectedEntity && this.showItemEditButtons;
+        const isTreeDisplayMode = settings.PickerDisplayMode === 'tree';
 
         const viewModel: PickerSearchViewModel = {
           debugEnabled,
@@ -98,6 +103,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
           enableDelete: settings.EnableDelete,
           enableRemove: settings.EnableRemove,
           enableReselect: settings.EnableReselect,
+          pickerTreeConfiguration: settings.PickerTreeConfiguration,
           selectedEntities,
           availableEntities,
           error,
@@ -111,11 +117,15 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
           // additional properties for easier readability in the template
           showEmpty,
           hideDropdown,
-          showItemEditButtons
+          showItemEditButtons,
+          isTreeDisplayMode,
         };
         return viewModel;
       }),
     );
+
+    const filteredData = TREE_DATA.filter(x => x.parent.length == 0);
+    this.dataSource.data = filteredData;
   }
 
   ngOnDestroy(): void {
@@ -175,6 +185,14 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     return isSelected;
   }
 
+  isOptionUnpickable(item: WIPDataSourceTreeItem, selectedEntities: SelectedEntity[], enableReselect: boolean, pickerTreeConfiguration: UiPickerModeTree): boolean {
+    const isUnpickableBySelection = enableReselect ? false : selectedEntities.some(entity => entity.value === item.Value);
+    const isRootUnpickableByConfiguration = pickerTreeConfiguration?.TreeAllowSelectRoot ? false : item.Children?.length > 0 && item.Parent?.length === 0;
+    const isBranchUnpickableByConfiguration = pickerTreeConfiguration?.TreeAllowSelectBranch ? false : item.Children?.length > 0 && item.Parent?.length > 0;
+    const isLeafUnpickableByConfiguration = pickerTreeConfiguration?.TreeAllowSelectLeaves ? false : item.Children?.length === 0;
+    return isUnpickableBySelection || isRootUnpickableByConfiguration || isBranchUnpickableByConfiguration || isLeafUnpickableByConfiguration;
+  }
+
   edit(entityGuid: string, entityId: number): void {
     this.pickerSourceAdapter.editEntity({ entityGuid, entityId });
   }
@@ -186,4 +204,259 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   deleteItem(index: number, entityGuid: string): void {
     this.pickerSourceAdapter.deleteEntity({ index, entityGuid });
   }
+
+  treeControl = new FlatTreeControl<WIPDataSourceTreeItem>(
+    node => node.Level,
+    node => node.Expandable,
+  );
+
+  treeFlattener: MatTreeFlattener<TreeNode, WIPDataSourceTreeItem> = new MatTreeFlattener(
+    this.transformer,
+    (node) => { return node.Level; },
+    (node) => { return node.Expandable; },
+    (node) => {
+      return node?.children.map(x => {
+        const child = TREE_DATA.find(y => y.Id == x.Id);
+        return child;
+      });
+    },
+  );
+
+  dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
+
+  private transformer(node: TreeNode, Level: number): WIPDataSourceTreeItem {
+    return {
+      Level: Level,
+      Expandable: !!node.children && node.children.length > 0,
+      Value: node.Guid,
+      Text: node.Title,
+      Parent: node.parent,
+      Children: node.children,
+    };
+  }
+
+  hasChild = (_: number, node: WIPDataSourceTreeItem) => node.Expandable;
 }
+
+interface TreeNode {
+  children: IdNode[];
+  parent: IdNode[];
+  name: string;
+  Id: number;
+  Title: string;
+  Guid: string;
+  Modified: string;
+  Created: string;
+}
+
+interface IdNode {
+  Id: number;
+  Title: string;
+}
+
+let TREE_DATA: TreeNode[] = [
+  {
+    children: [
+      {
+        Id: 23578,
+        Title: "bmw 640d"
+      },
+      {
+        Id: 23577,
+        Title: "bmw x6"
+      },
+      {
+        Id: 23576,
+        Title: "mazda miata"
+      },
+      {
+        Id: 23575,
+        Title: "subaru impreza"
+      }
+    ],
+    parent: [
+      {
+        Id: 23574,
+        Title: "vehicles"
+      }
+    ],
+    name: "cars",
+    Id: 23571,
+    Guid: "76410a68-15f1-4d83-9963-a4771428edff",
+    Title: "cars",
+    Modified: "2023-10-26T04:06:37Z",
+    Created: "2023-10-26T04:02:14Z"
+  },
+  {
+    children: [
+      {
+        Id: 23580,
+        Title: "ducati multistrada"
+      },
+      {
+        Id: 23579,
+        Title: "honda cbr650"
+      }
+    ],
+    parent: [
+      {
+        Id: 23574,
+        Title: "vehicles"
+      }
+    ],
+    name: "bikes",
+    Id: 23572,
+    Guid: "13255287-373e-4528-87e0-2f49f33902ea",
+    Title: "bikes",
+    Modified: "2023-10-26T04:06:59Z",
+    Created: "2023-10-26T04:02:20Z"
+  },
+  {
+    children: [
+      {
+        Id: 23581,
+        Title: "apex marine 818"
+      }
+    ],
+    parent: [
+      {
+        Id: 23574,
+        Title: "vehicles"
+      }
+    ],
+    name: "boats",
+    Id: 23573,
+    Guid: "478619bf-e1ee-47bd-9ed5-71d79a813e01",
+    Title: "boats",
+    Modified: "2023-10-26T04:07:12Z",
+    Created: "2023-10-26T04:02:33Z"
+  },
+  {
+    children: [
+      {
+        Id: 23572,
+        Title: "bikes"
+      },
+      {
+        Id: 23573,
+        Title: "boats"
+      },
+      {
+        Id: 23571,
+        Title: "cars"
+      }
+    ],
+    parent: [],
+    name: "vehicles",
+    Id: 23574,
+    Guid: "95017780-7101-45e2-8a67-124482705545",
+    Title: "vehicles",
+    Modified: "2023-10-26T04:03:08Z",
+    Created: "2023-10-26T04:03:08Z"
+  },
+  {
+    children: [],
+    parent: [
+      {
+        Id: 23571,
+        Title: "cars"
+      }
+    ],
+    name: "subaru impreza",
+    Id: 23575,
+    Guid: "d448ef39-9e3b-4f18-a15c-7a67603793c3",
+    Title: "subaru impreza",
+    Modified: "2023-10-26T04:03:36Z",
+    Created: "2023-10-26T04:03:36Z"
+  },
+  {
+    children: [],
+    parent: [
+      {
+        Id: 23571,
+        Title: "cars"
+      }
+    ],
+    name: "mazda miata",
+    Id: 23576,
+    Guid: "fd4f49b9-60f5-43e9-b8e0-3dcc940846e3",
+    Title: "mazda miata",
+    Modified: "2023-10-26T04:03:46Z",
+    Created: "2023-10-26T04:03:46Z"
+  },
+  {
+    children: [],
+    parent: [
+      {
+        Id: 23571,
+        Title: "cars"
+      }
+    ],
+    name: "bmw x6",
+    Id: 23577,
+    Guid: "d536cc96-70ec-43a8-becc-ea92da9a43c1",
+    Title: "bmw x6",
+    Modified: "2023-10-26T04:04:02Z",
+    Created: "2023-10-26T04:04:02Z"
+  },
+  {
+    children: [],
+    parent: [
+      {
+        Id: 23571,
+        Title: "cars"
+      }
+    ],
+    name: "bmw 640d",
+    Id: 23578,
+    Guid: "b5cc9c75-050d-45ac-ba66-65015b2e3b3e",
+    Title: "bmw 640d",
+    Modified: "2023-10-26T04:04:16Z",
+    Created: "2023-10-26T04:04:16Z"
+  },
+  {
+    children: [],
+    parent: [
+      {
+        Id: 23572,
+        Title: "bikes"
+      }
+    ],
+    name: "honda cbr650",
+    Id: 23579,
+    Guid: "82de3883-aaa4-4b0e-a713-8b75a3685807",
+    Title: "honda cbr650",
+    Modified: "2023-10-26T04:04:37Z",
+    Created: "2023-10-26T04:04:37Z"
+  },
+  {
+    children: [],
+    parent: [
+      {
+        Id: 23572,
+        Title: "bikes"
+      }
+    ],
+    name: "ducati multistrada",
+    Id: 23580,
+    Guid: "44cd9147-5962-4644-a330-f1e342879aa7",
+    Title: "ducati multistrada",
+    Modified: "2023-10-26T04:04:52Z",
+    Created: "2023-10-26T04:04:52Z"
+  },
+  {
+    children: [],
+    parent: [
+      {
+        Id: 23573,
+        Title: "boats"
+      }
+    ],
+    name: "apex marine 818",
+    Id: 23581,
+    Guid: "fbd72a52-4d97-4f93-a093-ef273888a902",
+    Title: "apex marine 818",
+    Modified: "2023-10-26T04:06:00Z",
+    Created: "2023-10-26T04:06:00Z"
+  }
+];

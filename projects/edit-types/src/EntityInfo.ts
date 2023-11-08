@@ -48,3 +48,8 @@ export interface WIPDataSourceItem extends EntityForPicker {
    */
   [key: string]: any;
 }
+
+export interface WIPDataSourceTreeItem extends WIPDataSourceItem {
+  Level: number;
+  Expandable: boolean;
+}

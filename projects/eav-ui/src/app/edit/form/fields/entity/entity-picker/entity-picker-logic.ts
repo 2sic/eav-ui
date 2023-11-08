@@ -1,4 +1,4 @@
-import { FieldSettings } from '../../../../../../../../edit-types';
+import { FieldSettings, UiPickerModeTree } from '../../../../../../../../edit-types';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { FieldLogicBase } from '../../../shared/field-logic/field-logic-base';
 import { FieldLogicTools } from '../../../shared/field-logic/field-logic-tools';
@@ -8,6 +8,8 @@ export class EntityPickerLogic extends FieldLogicBase {
 
   update(settings: FieldSettings, value: string[], tools: FieldLogicTools): FieldSettings {
     const fixedSettings: FieldSettings = { ...settings };
+
+    /** Entity Default logic */
     fixedSettings.EntityType ??= '';
     fixedSettings.AllowMultiValue ??= false;
     fixedSettings.EnableEdit ??= true;
@@ -33,6 +35,16 @@ export class EntityPickerLogic extends FieldLogicBase {
       fixedSettings.EnableDelete = true;
     }
 
+    /** Entity Query logic */
+    fixedSettings.Query ??= '';
+    fixedSettings.StreamName ||= 'Default';
+    fixedSettings.UrlParameters ??= '';
+
+    fixedSettings.Information ??= '';
+    fixedSettings.Tooltip ??= '';
+    fixedSettings.MoreFields ??= '';
+    fixedSettings.Label ??= '';
+
     /** WIP functionalities */
     // If AllowMultiValue is false then EnableReselect must be false
     fixedSettings.AllowMultiValue ? fixedSettings.EnableReselect ??= false : fixedSettings.EnableReselect = false;
@@ -43,6 +55,29 @@ export class EntityPickerLogic extends FieldLogicBase {
     } else {
       fixedSettings.AllowMultiMin = 0;
       fixedSettings.AllowMultiMax = 0;
+    }
+
+    fixedSettings.PickerDisplayMode ??= 'list';
+    fixedSettings.PickerDisplayConfiguration ??= [];
+
+    // USE CONTENT TYPE ITEM SERVICE TO GET THE SUBENTITIES
+    if (fixedSettings.PickerDisplayMode === 'tree') {
+      const pickerTreeConfiguration: UiPickerModeTree = {
+        Title: 'Tree Picker Configuration',// nothing to implement
+        TreeRelationship: 'child-parent',
+        TreeBranchStream: 'Default',
+        TreeLeavesStream: 'Default',
+        TreeParentIdField: 'Id',
+        TreeChildIdField: 'Id',
+        TreeParentChildRefField: 'Children',
+        TreeChildParentRefField: 'Parent',
+        TreeShowRoot: true,
+        TreeDepthMax: 10,
+        TreeAllowSelectRoot: true,// implemented
+        TreeAllowSelectBranch: true,// implemented
+        TreeAllowSelectLeaves: true,// implemented
+      };
+      fixedSettings.PickerTreeConfiguration = pickerTreeConfiguration;
     }
 
     return fixedSettings;

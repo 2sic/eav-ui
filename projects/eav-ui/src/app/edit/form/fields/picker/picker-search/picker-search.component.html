@@ -38,15 +38,49 @@
 
     <mat-autocomplete #auto="matAutocomplete"
       (optionSelected)="optionSelected($event, vm.allowMultiValue, vm.selectedEntity)">
-      <mat-option *ngFor="let item of vm.filteredEntities" [value]="item.Value" class="eav-picker-option"
-        [disabled]="vm.enableReselect ? false : isOptionDisabled(item.Value, vm.selectedEntities)" [tippy]="item.Tooltip" tippyShowDelay="500"
-        [tippyDisabled]="!item.Tooltip">
-        <div class="eav-dropdown-option">
-          <span>{{ item.Text ? item.Text : item.Value }}</span>
-          <mat-icon *ngIf="item.Information" [tippy]="item.Information">info</mat-icon>
-        </div>
-      </mat-option>
+      <div *ngIf="!vm.isTreeDisplayMode">
+        <mat-option *ngFor="let item of vm.filteredEntities" [value]="item.Value" class="eav-picker-option"
+          [disabled]="vm.enableReselect ? false : isOptionDisabled(item.Value, vm.selectedEntities)" [tippy]="item.Tooltip"
+          tippyShowDelay="500" [tippyDisabled]="!item.Tooltip">
+          <div class="eav-dropdown-option">
+            <span>{{ item.Text ? item.Text : item.Value }}</span>
+            <mat-icon *ngIf="item.Information" [tippy]="item.Information">info</mat-icon>
+          </div>
+        </mat-option>
+      </div>
+      <mat-tree *ngIf="vm.isTreeDisplayMode" [dataSource]="dataSource" [treeControl]="treeControl">
+        <!-- This is the tree node template for leaf nodes -->
+        <mat-tree-node *matTreeNodeDef="let item;" matTreeNodePadding>
+          <!-- use a disabled button to provide padding for tree leaf -->
+          <button mat-icon-button disabled></button>
+          <mat-option [value]="item.Value" class="eav-picker-option"
+            [disabled]="isOptionUnpickable(item, vm.selectedEntities, vm.enableReselect, vm.pickerTreeConfiguration)"
+            [tippy]="item.Tooltip" tippyShowDelay="500" [tippyDisabled]="!item.Tooltip">
+            <div class="eav-dropdown-option">
+              <span>{{ item.Text ? item.Text : item.Value }}</span>
+              <mat-icon *ngIf="item.Information" [tippy]="item.Information">info</mat-icon>
+            </div>
+          </mat-option>
+        </mat-tree-node>
+        <!-- This is the tree node template for expandable nodes -->
+        <mat-tree-node *matTreeNodeDef="let item;when: hasChild" matTreeNodePadding>
+          <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'Toggle ' + item.name">
+            <mat-icon class="mat-icon-rtl-mirror">
+              {{treeControl.isExpanded(item) ? 'expand_more' : 'chevron_right'}}
+            </mat-icon>
+          </button>
+          <mat-option [value]="item.Value" class="eav-picker-option"
+            [disabled]="isOptionUnpickable(item, vm.selectedEntities, vm.enableReselect, vm.pickerTreeConfiguration)"
+            [tippy]="item.Tooltip" tippyShowDelay="500" [tippyDisabled]="!item.Tooltip">
+            <div class="eav-dropdown-option">
+              <span>{{ item.Text ? item.Text : item.Value }}</span>
+              <mat-icon *ngIf="item.Information" [tippy]="item.Information">info</mat-icon>
+            </div>
+          </mat-option>
+        </mat-tree-node>
+      </mat-tree>
     </mat-autocomplete>
+    
   </div>
   <div *ngIf="vm.showEmpty">
     <mat-form-field class="eav-form-field" color="accent">

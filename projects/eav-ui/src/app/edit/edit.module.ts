@@ -22,6 +22,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MAT_SELECT_CONFIG, MatSelectModule } from '@angular/material/select';
 import { MAT_SLIDE_TOGGLE_DEFAULT_OPTIONS, MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTreeModule } from '@angular/material/tree';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { Dayjs } from 'dayjs';
@@ -204,6 +205,7 @@ import { EntityPickerComponent } from './form/fields/entity/entity-picker/entity
         MatDialogModule,
         MatDividerModule,
         MatBadgeModule,
+        MatTreeModule,
         FormsModule,
         MatFormFieldModule,
         MatSlideToggleModule,

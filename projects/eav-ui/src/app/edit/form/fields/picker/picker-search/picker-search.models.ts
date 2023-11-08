@@ -1,4 +1,4 @@
-import { WIPDataSourceItem } from 'projects/edit-types';
+import { UiPickerModeTree, WIPDataSourceItem } from 'projects/edit-types';
 import { ControlStatus } from '../../../../shared/models';
 import { SelectedEntity } from '../../entity/entity-default/entity-default.models';
 
@@ -11,6 +11,7 @@ export interface PickerSearchViewModel {
   enableDelete: boolean;
   enableRemove: boolean;
   enableReselect: boolean;
+  pickerTreeConfiguration: UiPickerModeTree;
   selectedEntities: SelectedEntity[];
   availableEntities: WIPDataSourceItem[];
   error: string;
@@ -25,4 +26,5 @@ export interface PickerSearchViewModel {
   showEmpty: boolean;
   hideDropdown: boolean;
   showItemEditButtons: boolean;
+  isTreeDisplayMode: boolean;
 }
