@@ -4,6 +4,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { Field } from '../models/field.model';
 import { ContentTypesFieldsService } from '../services/content-types-fields.service';
 import { MatTableDataSource } from '@angular/material/table';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-add-sharing-fields',
@@ -12,14 +13,16 @@ import { MatTableDataSource } from '@angular/material/table';
 })
 export class AddSharingFieldsComponent extends BaseSubsinkComponent implements OnInit, OnDestroy {
   displayedShareableFieldsColumns: string[] = ['contentType', 'name', 'type', 'share'];
-  displayedSelectedFieldsColumns: string[] = ['name', 'source', 'remove'];
+  displayedSelectedFieldsColumns: string[] = ['newName', 'source', 'remove'];
 
   shareableFields = new MatTableDataSource<Field>([]);
-  selectedFields = new MatTableDataSource<Field>([]);
+  selectedFields = new MatTableDataSource<NewNameField>([]);
+
 
   constructor(
     private dialogRef: MatDialogRef<AddSharingFieldsComponent>,
     private contentTypesFieldsService: ContentTypesFieldsService,
+    private snackBar: MatSnackBar,
   ) {
     super();
   }
@@ -38,33 +41,37 @@ export class AddSharingFieldsComponent extends BaseSubsinkComponent implements O
   // TODO: @SDV Try to find a better way to do this
   selectField(field: Field) {
     const selectedFields = this.selectedFields.data;
-    const shareableFields = this.shareableFields.data;
-    selectedFields.push(field);
-    shareableFields.splice(shareableFields.indexOf(field), 1);
+    selectedFields.push({ newName: field.StaticName, field });
     this.selectedFields.data = selectedFields;
-    this.shareableFields.data = shareableFields;
+
   }
 
   // TODO: @SDV Try to find a better way to do this
-  removeField(field: Field) {
-    const shareableFields = this.shareableFields.data;
+  removeField(field: NewNameField) {
     const selectedFields = this.selectedFields.data;
-    shareableFields.push(field);
     selectedFields.splice(selectedFields.indexOf(field), 1);
-    this.shareableFields.data = shareableFields;
     this.selectedFields.data = selectedFields;
   }
 
+  // When API gets created we will need to send the selected fields to the API
   save() {
-    this.dialogRef.close(this.selectedFields.data || []);
+    // this.snackBar.open('Saving...');
+    // this.snackBar.open('Saved', null, { duration: 2000 });
+    console.log("SDV - API not implemented yet", this.selectedFields.data)
+    this.closeDialog();
   }
 
   closeDialog() {
-    this.dialogRef.close([]);
+    this.dialogRef.close();
   }
 }
 
 export interface AppSharingFieldsViewModel {
   shareableFields: Field[];
   selectedFields: Field[];
+}
+
+interface NewNameField {
+  newName: string;
+  field: Field;
 }
