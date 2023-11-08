@@ -42,10 +42,9 @@
     </div>
 
     <div class="parameters" *ngIf="visualDesignerData$ | async as visualDesignerData">
+      <span class="eav-slide-toggle-label">Show DataSource Params</span>
       <mat-slide-toggle color="primary" labelPosition="before" [checked]="visualDesignerData.ShowDataSourceDetails"
-        (change)="showDataSourceDetails($event)">
-        Show DataSource Params
-      </mat-slide-toggle>
+        (change)="showDataSourceDetails($event)"/>
     </div>
 
     <ng-container *ngIf="(warnings$ | async) as warnings">
