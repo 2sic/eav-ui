@@ -62,6 +62,7 @@ export class ContentTypesFieldsService {
         params: { appid: this.context.appId.toString(), staticName: contentTypeStaticName },
       })
       .pipe(
+        // TODO: @SDV - duplicate code is bad
         map(fields => {
           if (fields) {
             for (const fld of fields) {
@@ -79,12 +80,14 @@ export class ContentTypesFieldsService {
       );
   }
 
+  /** Get all possible sharable fields for a new sharing */
   getShareableFields() {
     return this.http
       .get<Field[]>(this.apiUrl(webApiFieldsGetShared), {
         params: { appid: this.context.appId.toString() },
       })
       .pipe(
+        // TODO:  @SDV - duplicate code is bad
         map(fields => {
           if (fields) {
             for (const fld of fields) {
@@ -100,6 +103,19 @@ export class ContentTypesFieldsService {
           return fields;
         }),
       );
+  }
+
+  /**
+   * Get sharable fields which are possible for this attribute.
+   * 
+   * Reason is that eg. a bool-attribute can only receive metadata from a bool attribute, etc.
+   * 
+   * @param attributeId the existing attributeId which will receive the new metadata
+   */
+  getShareableFieldsFor(attributeId: number) {
+    // TODO: @SDV - do the same as in getShareableFields()
+    // but add parameter attributeId to the webapi call
+    // I'll create the backend afterwards
   }
 
   share(fieldId: number) {
