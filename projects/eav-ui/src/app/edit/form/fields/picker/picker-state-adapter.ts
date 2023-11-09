@@ -41,23 +41,6 @@ export class PickerStateAdapter {
   isDialog$: Observable<boolean>;
 
   init() {
-    this.selectedItems$ = combineLatest([
-      this.controlStatus$.pipe(map(controlStatus => controlStatus.value), distinctUntilChanged()),
-      this.cacheItems$,
-      this.stringQueryCache$,
-      this.settings$.pipe(
-        map(settings => ({
-          Separator: settings.Separator,
-          Value: settings.Value,
-          Label: settings.Label,
-        })),
-        distinctUntilChanged(GeneralHelpers.objectsEqual),
-      ),
-    ]).pipe(
-      map(([value, entityCache, stringQueryCache, settings]) =>
-        calculateSelectedEntities(value, settings.Separator, entityCache, stringQueryCache, settings.Value, settings.Label, this.translate)
-      ),
-    );
     this.allowMultiValue$ = this.settings$.pipe(map(settings => settings.AllowMultiValue), distinctUntilChanged());
     this.tooltip$ = this.settings$.pipe(map(settings => settings.Tooltip), distinctUntilChanged());
     this.information$ = this.settings$.pipe(map(settings => settings.Information), distinctUntilChanged());

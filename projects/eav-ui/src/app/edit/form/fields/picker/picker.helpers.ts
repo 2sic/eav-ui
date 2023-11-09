@@ -1,5 +1,5 @@
 import { TranslateService } from '@ngx-translate/core';
-import { WIPDataSourceItem } from '../../../../../../../edit-types';
+import { DropdownOption, WIPDataSourceItem } from '../../../../../../../edit-types';
 import { guidRegex } from '../../../../shared/constants/guid.constants';
 
 import { SelectedEntity } from '../entity/entity-default/entity-default.models';
@@ -45,6 +45,31 @@ export function calculateSelectedEntities(
     return result;
   });
 
+  return selectedEntities;
+}
+
+export function calculateStringSelectedOptions(
+  fieldValue: string | string[],
+  separator: string,
+  options: DropdownOption[],
+): SelectedEntity[] {
+  const currentValueAsArray = typeof fieldValue === 'string' ? convertValueToArray(fieldValue, separator) : fieldValue;
+  const selectedEntities = currentValueAsArray.map(value => {
+    const label = options?.find(o => o.value === value)?.label ?? value
+    const result: SelectedEntity = {
+      // debug info
+      _sourceIsQuery: false,
+      // if it's a free text value or not found, disable edit and delete
+      disableEdit: true,
+      disableDelete: true,
+      // either the real value or null if text-field or not found
+      entityId: null,
+      label,
+      tooltip: `${label} (${value})`,
+      value,
+    };
+    return result;
+  });
   return selectedEntities;
 }
 
