@@ -7,6 +7,8 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BehaviorSubject, catchError, concatMap, filter, of, toArray } from 'rxjs';
 import { ContentType } from '../../app-administration/models';
+import { fieldNameError, fieldNamePattern } from '../../app-administration/constants/field-name.patterns';
+import { ReservedNames } from '../models/reserved-names.model';
 
 @Component({
   selector: 'app-add-sharing-fields',
@@ -19,6 +21,9 @@ export class AddSharingFieldsComponent extends BaseSubsinkComponent implements O
 
   shareableFields = new MatTableDataSource<Field>([]);
   selectedFields = new MatTableDataSource<NewNameField>([]);
+  fieldNamePattern = fieldNamePattern;
+  fieldNameError = fieldNameError;
+  reservedNames: ReservedNames;
 
   saving$ = new BehaviorSubject(false);
 
@@ -35,6 +40,16 @@ export class AddSharingFieldsComponent extends BaseSubsinkComponent implements O
     // TODO: @SDV Try to find a better way to do this
     this.subscription = this.contentTypesFieldsService.getShareableFields().subscribe(shareableFields => {
       this.shareableFields.data = shareableFields;
+    });
+    this.subscription = this.contentTypesFieldsService.getReservedNames().subscribe(reservedNames => { 
+      const existingFields: ReservedNames = {};
+      this.selectedFields.data.forEach(field => {
+        existingFields[field.newName] = 'Field with this name already exists';
+      });
+      this.reservedNames = {
+        ...reservedNames,
+        ...existingFields,
+      };
     });
   }
 

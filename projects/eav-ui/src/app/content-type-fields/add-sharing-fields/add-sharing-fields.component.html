@@ -39,11 +39,18 @@
         <table mat-table [dataSource]="selectedFields" class="eav-fields-table">
           <ng-container matColumnDef="newName">
             <th mat-header-cell *matHeaderCellDef> <b>New Name</b> </th>
-            <td mat-cell *matCellDef="let item" class="eav-table-cell">
+            <td mat-cell *matCellDef="let item; index as i" class="eav-table-cell">
               <mat-form-field class="eav-form-field">
                 <mat-label>New Name</mat-label>
-                <input matInput [(ngModel)]="item.newName">
+                <input matInput [pattern]="fieldNamePattern" [(ngModel)]="item.newName"
+                  [name]="'StaticName' + i" #newName="ngModel" [appReservedNames]="reservedNames">
               </mat-form-field>
+              <ng-container *ngIf="newName.touched && newName.errors">
+                <app-field-hint *ngIf="newName.errors.pattern" [isError]="true">{{ fieldNameError }}</app-field-hint>
+                <app-field-hint *ngIf="newName.errors.reservedNames" [isError]="true">
+                  {{ newName.errors.reservedNames }}
+                </app-field-hint>
+              </ng-container>
             </td>
           </ng-container>
           
