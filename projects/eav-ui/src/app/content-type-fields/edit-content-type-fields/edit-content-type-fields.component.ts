@@ -163,6 +163,7 @@ export class EditContentTypeFieldsComponent extends BaseSubsinkComponent impleme
     this.dialog.open(AddSharingFieldsComponent, {
       autoFocus: false,
       width: '1600px',
+      data: this.contentType,
     });
   }
 

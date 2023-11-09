@@ -64,7 +64,7 @@
     </div>
   <mat-dialog-actions align="end">
     <button mat-raised-button type="button" (click)="closeDialog()">Cancel</button>
-    <button mat-raised-button type="submit" color="accent" [disabled]="selectedFields.data.length == 0" (click)="save()">
+    <button mat-raised-button type="submit" color="accent" [disabled]="selectedFields.data.length == 0 || (saving$ | async)" (click)="save()">
       Save
     </button>
   </mat-dialog-actions>

@@ -1,10 +1,12 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { BaseSubsinkComponent } from '../../shared/components/base-subsink-component/base-subsink.component';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Field } from '../models/field.model';
 import { ContentTypesFieldsService } from '../services/content-types-fields.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { BehaviorSubject, catchError, concatMap, filter, of, toArray } from 'rxjs';
+import { ContentType } from '../../app-administration/models';
 
 @Component({
   selector: 'app-add-sharing-fields',
@@ -18,8 +20,10 @@ export class AddSharingFieldsComponent extends BaseSubsinkComponent implements O
   shareableFields = new MatTableDataSource<Field>([]);
   selectedFields = new MatTableDataSource<NewNameField>([]);
 
+  saving$ = new BehaviorSubject(false);
 
   constructor(
+    @Inject(MAT_DIALOG_DATA) public dialogData: ContentType,
     private dialogRef: MatDialogRef<AddSharingFieldsComponent>,
     private contentTypesFieldsService: ContentTypesFieldsService,
     private snackBar: MatSnackBar,
@@ -35,6 +39,7 @@ export class AddSharingFieldsComponent extends BaseSubsinkComponent implements O
   }
 
   ngOnDestroy() {
+    this.saving$.complete();
     super.ngOnDestroy();
   }
 
@@ -55,10 +60,27 @@ export class AddSharingFieldsComponent extends BaseSubsinkComponent implements O
 
   // When API gets created we will need to send the selected fields to the API
   save() {
-    // this.snackBar.open('Saving...');
-    // this.snackBar.open('Saved', null, { duration: 2000 });
-    console.log("SDV - API not implemented yet", this.selectedFields.data)
+    console.log("SDV - API not implemented yet", this.selectedFields.data);
     this.closeDialog();
+    // this.saving$.next(true);
+    // this.snackBar.open('Saving...');
+    // of(...this.selectedFields.data).pipe(
+    //   filter(inheritField => !!inheritField.newName),
+    //   concatMap(inheritField =>
+    //     // this.contentTypesFieldsService.add(field, this.contentType.Id).pipe(catchError(error => of(null)))
+    //     this.contentTypesFieldsService.addInheritedField(
+    //       this.dialogData.Id,
+    //       inheritField.field.ContentType.Name,
+    //       inheritField.field.Guid,
+    //       inheritField.newName
+    //     ).pipe(catchError(error => of(null)))
+    //   ),
+    //   toArray(),
+    // ).subscribe(responses => {
+    //   this.saving$.next(false);
+    //   this.snackBar.open('Saved', null, { duration: 2000 });
+    //   this.closeDialog();
+    // });
   }
 
   closeDialog() {

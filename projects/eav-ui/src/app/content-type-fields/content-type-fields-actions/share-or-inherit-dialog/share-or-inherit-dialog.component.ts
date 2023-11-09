@@ -40,7 +40,7 @@ export class ShareOrInheritDialogComponent extends BaseSubsinkComponent implemen
         : SharingOrInheriting.Inheriting;
     if (this.initialState === SharingOrInheriting.None) {
       this.title = 'SharingOrInheriting.TitleNone';
-      const shareableFields$ = this.contentTypesFieldsService.getShareableFields();
+      const shareableFields$ = this.contentTypesFieldsService.getShareableFieldsFor(this.dialogData.AttributeId);
       this.viewModel$ = combineLatest([
         shareableFields$
       ]).pipe(

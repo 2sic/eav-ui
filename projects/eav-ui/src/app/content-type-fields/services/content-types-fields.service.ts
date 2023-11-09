@@ -56,6 +56,7 @@ export class ContentTypesFieldsService {
     return this.http.get<ReservedNames>(this.apiUrl(webApiFieldsRoot + 'ReservedNames'));
   }
 
+  /** Get all fields for some content type */
   getFields(contentTypeStaticName: string) {
     return this.http
       .get<Field[]>(this.apiUrl(webApiFieldsAll), {
@@ -82,27 +83,9 @@ export class ContentTypesFieldsService {
 
   /** Get all possible sharable fields for a new sharing */
   getShareableFields() {
-    return this.http
-      .get<Field[]>(this.apiUrl(webApiFieldsGetShared), {
+    return this.http.get<Field[]>(this.apiUrl(webApiFieldsGetShared), {
         params: { appid: this.context.appId.toString() },
-      })
-      .pipe(
-        // TODO:  @SDV - duplicate code is bad
-        map(fields => {
-          if (fields) {
-            for (const fld of fields) {
-              if (!fld.Metadata) { continue; }
-              const md = fld.Metadata;
-              const allMd = md.All;
-              const typeMd = md[fld.Type];
-              const inputMd = md[fld.InputType];
-              md.merged = { ...allMd, ...typeMd, ...inputMd };
-            }
-          }
-          console.log('SDV - getShareableFields', fields);
-          return fields;
-        }),
-      );
+      });
   }
 
   /**
@@ -116,24 +99,32 @@ export class ContentTypesFieldsService {
     // TODO: @SDV - do the same as in getShareableFields()
     // but add parameter attributeId to the webapi call
     // I'll create the backend afterwards
+    return this.http
+      .get<Field[]>(this.apiUrl(webApiFieldsGetShared), {
+        params: { appid: this.context.appId.toString(), attributeId: attributeId.toString() },
+      });
   }
 
-  share(fieldId: number) {
+  addInheritedField(targetContentTypeId: number, sourceContentTypeStaticName: string, sourceFieldGuid: string, newName: string) {
+    console.log("SDV - addInheritedField API not implemented yet", targetContentTypeId, sourceContentTypeStaticName, sourceFieldGuid, newName);
+  }
+
+  share(attributeId: number, share: boolean = true) {
     return this.http.post<null>(this.apiUrl(webApiFieldsRoot + 'Share'), null, {
       params: {
         appid: this.context.appId.toString(),
-        attributeId: fieldId.toString(),
-        share: true,
+        attributeId: attributeId.toString(),
+        share,
       },
     });
   }
 
-  inherit(fieldId: number, guid: string) {
+  inherit(attributeId: number, sourceFieldGuid: string) {
     return this.http.post<null>(this.apiUrl(webApiFieldsRoot + 'Inherit'), null, {
       params: {
         appid: this.context.appId.toString(),
-        attributeId: fieldId.toString(),
-        inheritMetadataOf: guid,
+        attributeId: attributeId.toString(),
+        inheritMetadataOf: sourceFieldGuid,
       },
     });
   }
