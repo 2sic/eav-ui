@@ -210,13 +210,16 @@ export class ContentTypeFieldsComponent extends BaseComponent implements OnInit,
   }
 
   private createItemDefinition(field: Field, metadataType: string): ItemAddIdentifier | ItemEditIdentifier {
+    // The keys could start with an @ but may not, and in some cases we need it, others we don't
     const keyForMdLookup = metadataType.replace('@', '');
-    const keyForNewItem = ('@' + metadataType).replace('@@', '@');
-    const existingMd = field.Metadata[metadataType.replace('@', '')];
+    const newItemTypeName = ('@' + metadataType).replace('@@', '@');
+
+    // Is an item of this type already loaded? Then just edit it, otherwise request new as Metadata
+    const existingMd = field.Metadata[keyForMdLookup];
     return existingMd != null
       ? { EntityId: existingMd.Id } // if defined, return the entity-number to edit
       : {
-        ContentTypeName: keyForNewItem, // otherwise the content type for new-assignment
+        ContentTypeName: newItemTypeName, // otherwise the content type for new-assignment
         For: {
           Target: eavConstants.metadata.attribute.target,
           TargetType: eavConstants.metadata.attribute.targetType,
