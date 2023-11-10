@@ -1,6 +1,8 @@
 <div class="eav-dialog nav-component-wrapper eav-no-scrollbar" appToggleDebug *ngIf="viewModel$ | async as vm">
   <div class="eav-dialog-header">
     <div class="eav-dialog-header__title">
+      <img class="eav-dialog-header__title__image" *ngIf="vm.dialogSettings?.Context.App.Icon" 
+        [src]="vm.dialogSettings?.Context.App.Icon + '?w=40&h=40&mode=crop'"/>
       <ng-container *ngIf="vm.dialogSettings?.Context.App.SettingsScope === AppScopes.Global">
         Global
       </ng-container>
