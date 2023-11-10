@@ -155,8 +155,7 @@ export class ContentTypeFieldsComponent extends BaseComponent implements OnInit,
   private nameCellRenderer(params: ICellRendererParams) {
     const currentField: Field = params.data;
     const inputType = currentField.InputType;
-    // const empties: string[] = [InputTypeConstants.EmptyDefault, InputTypeConstants.EmptyEnd];
-    // if (empties.includes(currentField.InputType)) {
+
     if (EmptyFieldHelpers.endsPreviousGroup(inputType))
       return params.value;
 
@@ -190,22 +189,34 @@ export class ContentTypeFieldsComponent extends BaseComponent implements OnInit,
   }
 
   private editFieldMetadata(field: Field) {
+    // 2023-11-10 @2dm #ConfigTypesFromBackend
+    // https://github.com/2sic/2sxc/issues/3205
+    // Keep old code in till 2024-01 for ref in case something breaks
+    // console.warn('2dm - editFieldMetadata', field);
+    // console.warn('2dm - editFieldMetadata', field.ConfigTypes);
+    // const form: EditForm = {
+    //   items: [
+    //     this.createItemDefinition(field, 'All'),
+    //     this.createItemDefinition(field, field.Type),
+    //     this.createItemDefinition(field, field.InputType),
+    //   ],
+    // };
     const form: EditForm = {
-      items: [
-        this.createItemDefinition(field, 'All'),
-        this.createItemDefinition(field, field.Type),
-        this.createItemDefinition(field, field.InputType),
-      ],
+      items: Object.keys(field.ConfigTypes).map((t) => this.createItemDefinition(field, t))
     };
+    // console.warn('2dm - editFieldMetadata', form, formNew);
     const formUrl = convertFormToUrl(form);
     this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
   }
 
   private createItemDefinition(field: Field, metadataType: string): ItemAddIdentifier | ItemEditIdentifier {
-    return field.Metadata[metadataType] != null
-      ? { EntityId: field.Metadata[metadataType].Id } // if defined, return the entity-number to edit
+    const keyForMdLookup = metadataType.replace('@', '');
+    const keyForNewItem = ('@' + metadataType).replace('@@', '@');
+    const existingMd = field.Metadata[metadataType.replace('@', '')];
+    return existingMd != null
+      ? { EntityId: existingMd.Id } // if defined, return the entity-number to edit
       : {
-        ContentTypeName: '@' + metadataType, // otherwise the content type for new-assignment
+        ContentTypeName: keyForNewItem, // otherwise the content type for new-assignment
         For: {
           Target: eavConstants.metadata.attribute.target,
           TargetType: eavConstants.metadata.attribute.targetType,

@@ -19,13 +19,16 @@ export interface Field {
   StaticName: string;
   Type: string;
 
-  /** new #SharedFieldDefinition */
+  /** new #SharedFieldDefinition v16.08 */
   Guid?: string;
   SysSettings: FieldSysSettings;
   /**
    * This will only be available when calling fields/GetSharedFields
    */
   ContentType?: EavType;
+
+  /** new #ConfigTypesFromBackend v16.08 */
+  ConfigTypes: Record<string, boolean>;
 }
 
 /** #SharedFieldDefinition */
