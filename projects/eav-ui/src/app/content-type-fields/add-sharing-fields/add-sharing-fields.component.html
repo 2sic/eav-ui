@@ -74,7 +74,11 @@
   <mat-dialog-actions align="end">
     <button mat-raised-button type="button" (click)="closeDialog()">Cancel</button>
     <button mat-raised-button type="submit" color="accent" [disabled]="!ngForm.form.valid || selectedFields.data.length == 0 || (saving$ | async)" (click)="save()">
-      Save
+      <div class="eav-button-feature">
+        <span>Save</span>
+        <app-feature-icon-indicator class="eav-button-feature-icon"
+          [featureNameId]="'FieldShareConfigManagement'"></app-feature-icon-indicator>
+      </div>
     </button>
   </mat-dialog-actions>
 </div>

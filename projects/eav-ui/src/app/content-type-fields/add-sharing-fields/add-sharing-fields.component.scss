@@ -36,3 +36,14 @@
   }
 }
 
+.eav-button-feature {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .eav-button-feature-icon {
+    margin-left: 4px;
+    margin-top: 6px;
+  }
+}
+
