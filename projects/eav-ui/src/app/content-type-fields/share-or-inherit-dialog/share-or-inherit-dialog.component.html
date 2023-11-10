@@ -44,10 +44,12 @@
   </div>
   <div class="eav-dialog-actions" *ngIf="initialState == sharingOrInheriting.None">
     <button mat-raised-button type="button" class="eav-dialog-action-button" (click)="closeDialog()">Cancel</button>
-    <button mat-raised-button type="submit" color="accent" class="eav-dialog-action-button" [disabled]="isSaveDisabled"
-      (click)="save()">
-      Save
-      <app-feature-icon-indicator [featureNameId]="'FieldShareConfigManagement'"></app-feature-icon-indicator>
+    <button mat-raised-button type="submit" color="accent" class="eav-dialog-action-button" 
+      [disabled]="isSaveDisabled" (click)="save()">
+      <div class="eav-button-feature">
+        <span>Save</span>
+        <app-feature-icon-indicator class="eav-button-feature-icon" [featureNameId]="'FieldShareConfigManagement'"></app-feature-icon-indicator>
+      </div>
     </button>
   </div>
 </div>

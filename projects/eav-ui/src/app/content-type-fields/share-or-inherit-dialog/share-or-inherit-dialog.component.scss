@@ -19,4 +19,15 @@
 
 .eav-dialog-action-button {
   margin-right: 8px;
+
+  .eav-button-feature {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .eav-button-feature-icon {
+      margin-left: 4px;
+      margin-top: 6px;
+    }
+  }
 }
