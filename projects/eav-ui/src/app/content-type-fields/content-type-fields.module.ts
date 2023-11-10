@@ -29,6 +29,7 @@ import { AddSharingFieldsComponent } from './add-sharing-fields/add-sharing-fiel
 import { MatCardModule } from '@angular/material/card';
 import { ShareOrInheritDialogComponent } from './content-type-fields-actions/share-or-inherit-dialog/share-or-inherit-dialog.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { FeaturesModule } from '../features/features.module';
 
 @NgModule({
   declarations: [
@@ -60,7 +61,8 @@ import { TranslateModule } from '@ngx-translate/core';
     MatBadgeModule,
     MatTableModule,
     MatCardModule,
-    TranslateModule 
+    TranslateModule,
+    FeaturesModule,
   ],
   providers: [
     Context,

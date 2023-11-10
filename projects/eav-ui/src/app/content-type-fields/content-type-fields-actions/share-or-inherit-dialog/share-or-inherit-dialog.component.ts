@@ -1,10 +1,13 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
 import { BaseSubsinkComponent } from '../../../shared/components/base-subsink-component/base-subsink.component';
-import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
+import { BehaviorSubject, Observable, combineLatest, map, take } from 'rxjs';
 import { Field } from '../../models/field.model';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ContentTypesFieldsService } from '../../services/content-types-fields.service';
 import { ShareOrInheritDialogViewModel, SharingOrInheriting } from './share-or-inherit-dialog-models';
+import { FeatureComponentBase } from '../../../features/shared/base-feature.component';
+import { FeaturesService } from '../../../shared/services/features.service';
+import { FeatureNames } from '../../../features/feature-names';
 
 @Component({
   selector: 'app-share-or-inherit-dialog',
@@ -28,6 +31,11 @@ export class ShareOrInheritDialogComponent extends BaseSubsinkComponent implemen
     @Inject(MAT_DIALOG_DATA) public dialogData: Field,
     private dialogRef: MatDialogRef<ShareOrInheritDialogComponent>,
     private contentTypesFieldsService: ContentTypesFieldsService,
+    // All this is just for the feature dialog
+    private featuresService: FeaturesService,
+    private dialog: MatDialog,
+    private viewContainerRef: ViewContainerRef,
+    private changeDetectorRef: ChangeDetectorRef,
   ) {
     super();
    }
@@ -80,7 +88,16 @@ export class ShareOrInheritDialogComponent extends BaseSubsinkComponent implemen
   }
 
   save() {
-    this.dialogRef.close({ state: this.state, guid: this.guid });
+    this.featuresService.isEnabled$(FeatureNames.FieldShareConfigManagement).pipe(
+      take(1),
+    ).subscribe(isEnabled => {
+      if (!isEnabled) {
+        FeatureComponentBase.openDialog(this.dialog, FeatureNames.FieldShareConfigManagement, this.viewContainerRef, this.changeDetectorRef);
+      } else {
+        // TODO: @SDV - WHY does this not have the call to save the data?
+        this.dialogRef.close({ state: this.state, guid: this.guid });
+      }
+    });
   }
 
   closeDialog() {
