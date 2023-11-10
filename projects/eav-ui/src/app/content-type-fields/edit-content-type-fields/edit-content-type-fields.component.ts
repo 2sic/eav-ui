@@ -28,6 +28,7 @@ export class EditContentTypeFieldsComponent extends BaseSubsinkComponent impleme
   @ViewChild('ngForm', { read: NgForm }) private form: NgForm;
 
   fields: Partial<Field>[] = [];
+  existingFields: Field[] = [];
   reservedNames: ReservedNames;
   editMode: 'name' | 'inputType';
   dataTypes: DataType[];
@@ -82,6 +83,7 @@ export class EditContentTypeFieldsComponent extends BaseSubsinkComponent impleme
         this.contentType = contentType;
         this.dataTypes = dataTypes;
         this.inputTypeOptions = inputTypes;
+        this.existingFields = fields;
 
         const existingFields: ReservedNames = {};
         fields.forEach(field => {
@@ -163,7 +165,7 @@ export class EditContentTypeFieldsComponent extends BaseSubsinkComponent impleme
     this.dialog.open(AddSharingFieldsComponent, {
       autoFocus: false,
       width: '1600px',
-      data: this.contentType,
+      data: { contentType: this.contentType, existingFields: this.existingFields }
     });
   }
 

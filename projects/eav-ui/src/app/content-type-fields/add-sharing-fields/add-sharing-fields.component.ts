@@ -28,7 +28,7 @@ export class AddSharingFieldsComponent extends BaseSubsinkComponent implements O
   saving$ = new BehaviorSubject(false);
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public dialogData: ContentType,
+    @Inject(MAT_DIALOG_DATA) public dialogData: { contentType: ContentType, existingFields: Field[] },
     private dialogRef: MatDialogRef<AddSharingFieldsComponent>,
     private contentTypesFieldsService: ContentTypesFieldsService,
     private snackBar: MatSnackBar,
@@ -43,8 +43,8 @@ export class AddSharingFieldsComponent extends BaseSubsinkComponent implements O
     });
     this.subscription = this.contentTypesFieldsService.getReservedNames().subscribe(reservedNames => { 
       const existingFields: ReservedNames = {};
-      this.selectedFields.data.forEach(field => {
-        existingFields[field.newName] = 'Field with this name already exists';
+      this.dialogData.existingFields.forEach(field => {
+        existingFields[field.StaticName] = 'Field with this name already exists';
       });
       this.reservedNames = {
         ...reservedNames,
@@ -84,7 +84,7 @@ export class AddSharingFieldsComponent extends BaseSubsinkComponent implements O
     //   concatMap(inheritField =>
     //     // this.contentTypesFieldsService.add(field, this.contentType.Id).pipe(catchError(error => of(null)))
     //     this.contentTypesFieldsService.addInheritedField(
-    //       this.dialogData.Id,
+    //       this.dialogData.contentType.Id,
     //       inheritField.field.ContentType.Name,
     //       inheritField.field.Guid,
     //       inheritField.newName
