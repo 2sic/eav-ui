@@ -63,7 +63,6 @@ export class ContentTypesFieldsService {
         params: { appid: this.context.appId.toString(), staticName: contentTypeStaticName },
       })
       .pipe(
-        // TODO: @SDV - duplicate code is bad
         map(fields => {
           if (fields) {
             for (const fld of fields) {
@@ -75,7 +74,6 @@ export class ContentTypesFieldsService {
               md.merged = { ...allMd, ...typeMd, ...inputMd };
             }
           }
-          console.log('2dm - getFields', fields);
           return fields;
         }),
       );

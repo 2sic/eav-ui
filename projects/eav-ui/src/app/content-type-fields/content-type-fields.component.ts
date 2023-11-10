@@ -201,10 +201,24 @@ export class ContentTypeFieldsComponent extends BaseComponent implements OnInit,
     //     this.createItemDefinition(field, field.InputType),
     //   ],
     // };
+
+    // If this field is inherited and therefor has no own metadata, show a snackbar and exit
+    if (field.SysSettings?.InheritMetadataOf) {
+      if (!Object.keys(field.ConfigTypes).length) {
+        this.snackBar.open('This field inherits all configuration so there is nothing to edit.', null, { duration: 3000 });
+        return;
+      }
+      this.snackBar.open('This field inherits some configuration. Edit will only show configuration which is not inherited.', null, { duration: 5000 });
+    }
+
+    // if this field is shared/can-be-inherited, show warning so the user is aware of it
+    if (field.SysSettings?.Share)
+      this.snackBar.open('This field is shared, so changing it will affect all other fields inheriting it.', null, { duration: 5000 });
+
     const form: EditForm = {
       items: Object.keys(field.ConfigTypes).map((t) => this.createItemDefinition(field, t))
     };
-    // console.warn('2dm - editFieldMetadata', form, formNew);
+    console.warn('2dm - editFieldMetadata', field.ConfigTypes, form);
     const formUrl = convertFormToUrl(form);
     this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
   }
