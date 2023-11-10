@@ -26,7 +26,7 @@
       <button mat-icon-button matSuffix class="eav-suffix-button" *ngIf="vm.enableRemove && vm.showItemEditButtons"
         [tippy]="'Fields.Entity.Remove' | translate" [disabled]="vm.controlStatus.disabled" appClickStopPropagation
         (click)="removeItem(0)">
-        <mat-icon>clear</mat-icon>
+        <mat-icon>do_not_disturb_on</mat-icon>
       </button>
       <span *ngIf="vm.enableTextEntry" matSuffix class="eav-selection-suffix-inline">
         <ng-content select="[freeTextButtons]"></ng-content>
