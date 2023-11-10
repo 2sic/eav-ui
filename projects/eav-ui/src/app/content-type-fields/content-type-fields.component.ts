@@ -26,8 +26,7 @@ import { ContentTypeFieldsTypeComponent } from './content-type-fields-type/conte
 import { Field } from './models/field.model';
 import { ContentTypesFieldsService } from './services/content-types-fields.service';
 import { EmptyFieldHelpers } from '../edit/form/fields/empty/empty-field-helpers';
-import { ShareOrInheritDialogComponent } from './content-type-fields-actions/share-or-inherit-dialog/share-or-inherit-dialog.component';
-import { SharingOrInheriting, SharingOrInheritingResult } from './content-type-fields-actions/share-or-inherit-dialog/share-or-inherit-dialog-models';
+import { ShareOrInheritDialogComponent } from './share-or-inherit-dialog/share-or-inherit-dialog.component';
 
 @Component({
   selector: 'app-content-type-fields',
@@ -59,7 +58,7 @@ export class ContentTypeFieldsComponent extends BaseComponent implements OnInit,
     private dialog: MatDialog,
   ) {
     super(router, route);
-   }
+  }
 
   ngOnInit() {
     this.fetchFields();
@@ -286,15 +285,7 @@ export class ContentTypeFieldsComponent extends BaseComponent implements OnInit,
       width: '800px',
       data: field,
     });
-    shareOrInheritDialogRef.afterClosed().subscribe((result: SharingOrInheritingResult) => {
-      if(!result) return;
-
-      if (result.state == SharingOrInheriting.Sharing) {
-        this.subscription = this.contentTypesFieldsService.share(field.Id).subscribe(() => this.fetchFields());
-      } else if (result.state == SharingOrInheriting.Inheriting) {
-        this.subscription = this.contentTypesFieldsService.inherit(field.Id, result.guid).subscribe(() => this.fetchFields());
-      }
-    });
+    shareOrInheritDialogRef.afterClosed().subscribe(() => this.fetchFields());
   }
 
   private buildGridOptions(): GridOptions {

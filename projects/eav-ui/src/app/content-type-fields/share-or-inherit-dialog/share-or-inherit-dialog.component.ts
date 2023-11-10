@@ -1,13 +1,13 @@
 import { ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, ViewContainerRef } from '@angular/core';
-import { BaseSubsinkComponent } from '../../../shared/components/base-subsink-component/base-subsink.component';
+import { BaseSubsinkComponent } from '../../shared/components/base-subsink-component/base-subsink.component';
 import { BehaviorSubject, Observable, combineLatest, map, take } from 'rxjs';
-import { Field } from '../../models/field.model';
+import { Field } from '../models/field.model';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { ContentTypesFieldsService } from '../../services/content-types-fields.service';
+import { ContentTypesFieldsService } from '../services/content-types-fields.service';
 import { ShareOrInheritDialogViewModel, SharingOrInheriting } from './share-or-inherit-dialog-models';
-import { FeatureComponentBase } from '../../../features/shared/base-feature.component';
-import { FeaturesService } from '../../../shared/services/features.service';
-import { FeatureNames } from '../../../features/feature-names';
+import { FeatureComponentBase } from '../../features/shared/base-feature.component';
+import { FeaturesService } from '../../shared/services/features.service';
+import { FeatureNames } from '../../features/feature-names';
 
 @Component({
   selector: 'app-share-or-inherit-dialog',
@@ -38,7 +38,7 @@ export class ShareOrInheritDialogComponent extends BaseSubsinkComponent implemen
     private changeDetectorRef: ChangeDetectorRef,
   ) {
     super();
-   }
+  }
 
   ngOnInit() {
     this.initialState = !this.dialogData.SysSettings || (!this.dialogData.SysSettings.Share && !this.dialogData.SysSettings.InheritMetadataOf)
@@ -94,13 +94,18 @@ export class ShareOrInheritDialogComponent extends BaseSubsinkComponent implemen
       if (!isEnabled) {
         FeatureComponentBase.openDialog(this.dialog, FeatureNames.FieldShareConfigManagement, this.viewContainerRef, this.changeDetectorRef);
       } else {
-        // TODO: @SDV - WHY does this not have the call to save the data?
-        this.dialogRef.close({ state: this.state, guid: this.guid });
+        if (this.state == SharingOrInheriting.Sharing) {
+          this.subscription = this.contentTypesFieldsService.share(this.dialogData.Id)
+            .subscribe(() => this.dialogRef.close());
+        } else if (this.state == SharingOrInheriting.Inheriting) {
+          this.subscription = this.contentTypesFieldsService.inherit(this.dialogData.Id, this.guid)
+            .subscribe(() => this.dialogRef.close());
+        }
       }
     });
   }
 
   closeDialog() {
-    this.dialogRef.close({ state: SharingOrInheriting.None, guid: null });
+    this.dialogRef.close();
   }
 }
