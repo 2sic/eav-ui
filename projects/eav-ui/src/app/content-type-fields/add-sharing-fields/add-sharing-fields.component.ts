@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostBinding, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { BaseSubsinkComponent } from '../../shared/components/base-subsink-component/base-subsink.component';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Field } from '../models/field.model';
@@ -9,6 +9,7 @@ import { BehaviorSubject, catchError, concatMap, filter, of, toArray } from 'rxj
 import { ContentType } from '../../app-administration/models';
 import { fieldNameError, fieldNamePattern } from '../../app-administration/constants/field-name.patterns';
 import { ReservedNames } from '../models/reserved-names.model';
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-add-sharing-fields',
@@ -16,6 +17,9 @@ import { ReservedNames } from '../models/reserved-names.model';
   styleUrls: ['./add-sharing-fields.component.scss']
 })
 export class AddSharingFieldsComponent extends BaseSubsinkComponent implements OnInit, OnDestroy {
+  @HostBinding('className') hostClass = 'dialog-component';
+  @ViewChild('ngForm', { read: NgForm }) private form: NgForm;
+  
   displayedShareableFieldsColumns: string[] = ['contentType', 'name', 'type', 'share'];
   displayedSelectedFieldsColumns: string[] = ['newName', 'source', 'remove'];
 
@@ -34,6 +38,16 @@ export class AddSharingFieldsComponent extends BaseSubsinkComponent implements O
     private snackBar: MatSnackBar,
   ) {
     super();
+    this.dialogRef.disableClose = true;
+    this.subscription.add(
+      this.dialogRef.backdropClick().subscribe(() => {
+        if (this.form.dirty || this.selectedFields.data.length > 0) {
+          const confirmed = confirm('You have unsaved changes. Are you sure you want to close this dialog?');
+          if (!confirmed) { return; }
+        }
+        this.closeDialog();
+      })
+    );
   }
 
   ngOnInit() {
