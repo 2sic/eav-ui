@@ -37,7 +37,6 @@ export class AppAdministrationNavComponent extends BaseComponent implements OnIn
   );
   viewModel$ = combineLatest([this.dialogSettings$, this.tabIndex$]).pipe(
     map(([dialogSettings, tabIndex]) => {
-      console.log('SDV dialogSettings', dialogSettings);
       return { dialogSettings, tabIndex };
     }),
   );
