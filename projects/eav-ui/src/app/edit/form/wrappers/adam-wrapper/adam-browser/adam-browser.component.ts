@@ -272,6 +272,7 @@ export class AdamBrowserComponent extends BaseSubsinkComponent implements OnInit
     }
 
     this.adamService.getAll(this.url, adamConfig).subscribe(items => {
+      // console.log('2dm for 2reserve', items);
       this.processFetchedItems(items, adamConfig);
     });
   }
