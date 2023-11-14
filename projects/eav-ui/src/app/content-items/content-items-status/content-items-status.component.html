@@ -3,14 +3,14 @@
     <mat-icon>{{ value.published ? 'visibility' : 'visibility_off' }}</mat-icon>
   </div>
 
-  <div class="eav-grid-action-button highlight" matRipple *ngIf="!readOnly"
+  <div class="eav-grid-action-button highlight" matRipple *ngIf="!disableMetadata"
     [ngClass]="{ 'hide-until-row-hover': !metadataCount && !value.metadata }" [tippy]="metadataTooltip"
     (click)="openMetadata()">
     <mat-icon [matBadge]="metadataCount" matBadgeColor="accent" matBadgeSize="small" [matBadgeHidden]="!metadataCount"
       matBadgePosition="below after" aria-hidden="false">{{ value.metadata ? 'loyalty' : 'local_offer' }}
     </mat-icon>
   </div>
-  <div class="eav-grid-action-button disabled" *ngIf="readOnly && !(!metadataCount && !value.metadata)">
+  <div class="eav-grid-action-button disabled" *ngIf="disableMetadata && !(!metadataCount && !value.metadata)">
     <mat-icon [matBadge]="metadataCount" matBadgeColor="accent" matBadgeSize="small" matBadgeDisabled="true"
       [matBadgeHidden]="!metadataCount" matBadgePosition="below after" aria-hidden="false">{{ value.metadata ? 'loyalty'
       : 'local_offer' }}
