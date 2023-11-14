@@ -12,7 +12,7 @@
 
 <mat-menu #menu="matMenu" class="grid-more-menu">
   <ng-template matMenuContent>
-    <button mat-menu-item [disabled]="item._EditInfo.ReadOnly" (click)="deleteItem()">
+    <button mat-menu-item [disabled]="item._EditInfo.DisableDelete" (click)="deleteItem()">
       <mat-icon>delete</mat-icon>
       <span>Delete</span>
     </button>

@@ -1,10 +1,10 @@
 <div class="actions-component">
-  <div class="eav-grid-action-button highlight" matRipple *ngIf="!field.EditInfo.ReadOnly" tippy="Metadata"
+  <div class="eav-grid-action-button highlight" matRipple *ngIf="!field.EditInfo.DisableMetadata" tippy="Metadata"
     (click)="openMetadata()">
     <mat-icon [matBadge]="metadataCount" matBadgeColor="accent" matBadgeSize="small" [matBadgeHidden]="!metadataCount"
       matBadgePosition="below after" aria-hidden="false">local_offer</mat-icon>
   </div>
-  <div class="eav-grid-action-button disabled" *ngIf="field.EditInfo.ReadOnly">
+  <div class="eav-grid-action-button disabled" *ngIf="field.EditInfo.DisableMetadata">
     <mat-icon [matBadge]="metadataCount" matBadgeColor="accent" matBadgeSize="small" matBadgeDisabled="true"
       [matBadgeHidden]="!metadataCount" matBadgePosition="below after" aria-hidden="false">
       local_offer
@@ -38,13 +38,13 @@
   </div>
 
   <div class="eav-grid-action-button highlight" matRipple tippy="Permissions"
-    *ngIf="!field.EditInfo.ReadOnly && enablePermissions" (click)="openPermissions()">
+    *ngIf="!field.EditInfo.DisableEdit && enablePermissions" (click)="openPermissions()">
     <mat-icon [matBadge]="field.Permissions.Count" matBadgeColor="accent" matBadgeSize="small"
       [matBadgeHidden]="!field.Permissions.Count" matBadgePosition="below after" aria-hidden="false">
       person
     </mat-icon>
   </div>
-  <div class="eav-grid-action-button disabled" *ngIf="field.EditInfo.ReadOnly || !enablePermissions">
+  <div class="eav-grid-action-button disabled" *ngIf="field.EditInfo.DisableEdit || !enablePermissions">
     <mat-icon [matBadge]="field.Permissions.Count" matBadgeColor="accent" matBadgeSize="small" matBadgeDisabled="true"
       [matBadgeHidden]="!field.Permissions.Count" matBadgePosition="below after" aria-hidden="false">
       person
@@ -58,11 +58,11 @@
 
 <mat-menu #menu="matMenu" class="grid-more-menu">
   <ng-template matMenuContent>
-    <button mat-menu-item [disabled]="field.EditInfo.ReadOnly" (click)="rename()">
+    <button mat-menu-item [disabled]="field.EditInfo.DisableRename" (click)="rename()">
       <mat-icon>text_fields</mat-icon>
       <span>Rename</span>
     </button>
-    <button mat-menu-item [disabled]="field.EditInfo.ReadOnly || field.IsTitle" (click)="deleteField()">
+    <button mat-menu-item [disabled]="field.EditInfo.DisableDelete || field.IsTitle" (click)="deleteField()">
       <mat-icon>delete</mat-icon>
       <span>Delete</span>
     </button>

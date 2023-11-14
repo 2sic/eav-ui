@@ -294,7 +294,7 @@ export class ContentTypeFieldsComponent extends BaseComponent implements OnInit,
       getRowClass(params: RowClassParams) {
         const field: Field = params.data;
         const rowClass: string[] = [];
-        if (field.EditInfo.ReadOnly) { rowClass.push('disable-row-drag'); }
+        if (field.EditInfo.DisableSort) { rowClass.push('disable-row-drag'); }
         if (EmptyFieldHelpers.isGroupStart(field.InputType)) { rowClass.push('group-start-row'); }
         if (EmptyFieldHelpers.isGroupEnd(field.InputType)) { rowClass.push('group-end-row'); }
         return rowClass;
@@ -357,7 +357,7 @@ export class ContentTypeFieldsComponent extends BaseComponent implements OnInit,
           width: 160,
           cellClass: (params) => {
             const field: Field = params.data;
-            return `${field.EditInfo.ReadOnly ? 'no-outline no-padding' : 'secondary-action no-padding'}`.split(' ');
+            return `${field.EditInfo.DisableEdit ? 'no-outline no-padding' : 'secondary-action no-padding'}`.split(' ');
           },
           sortable: true,
           filter: 'agTextColumnFilter',
