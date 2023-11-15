@@ -65,7 +65,7 @@ export function calculateDropdownOptions(
   }
 
   const currentValueFound = options.some(o => o.value === currentValue);
-  if (!currentValueFound) {
+  if (!currentValueFound && !currentValue && currentValue !== '') {
     options.push({
       label: currentValue,
       value: currentValue,
