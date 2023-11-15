@@ -17,7 +17,7 @@
       <div fxLayout="row" fxLayoutAlign="start center">
         <mat-list *ngIf="data.entitiesNumber" fxLayout="row" class="eav-list">
           <mat-list-item role="listitem" *ngFor="let item of data.selectedEntities; trackBy: trackByFn" class="eav-list-item">
-            <span mat-line>{{ item.label }}</span>
+            <span mat-line>{{ item.Text }}</span>
           </mat-list-item>
         </mat-list>
         <span *ngIf="data.entitiesNumber > 5" class="eav-more-entities mat-body-1">

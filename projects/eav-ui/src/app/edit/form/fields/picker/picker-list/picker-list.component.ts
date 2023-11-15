@@ -62,7 +62,7 @@ export class PickerListComponent implements OnInit {
   }
 
   trackByFn(index: number, item: SelectedEntity): string {
-    return item.value;
+    return item.Value;
   }
 
   drop(event: CdkDragDrop<SelectedEntity[]>, selectedEntities: SelectedEntity[]): void {

@@ -27,26 +27,26 @@
           [tippyDisabled]="vm.controlStatus.disabled">
           drag_handle
         </mat-icon>
-        <span class="item-title__text" [tippy]="item.tooltip">
-          {{ item.label }}
+        <span class="item-title__text" [tippy]="item._tooltip">
+          {{ item.Text }}
         </span>
       </div>
       <div class="item-actions">
         <!-- Disable edit only if it was disabled in the settings, not if disabled by language change -->
         <button mat-icon-button class="eav-action-button"
-          *ngIf="vm.enableEdit && !item.disableEdit"
+          *ngIf="vm.enableEdit && !item._disableEdit"
           [tippy]="'Fields.Entity.Edit' | translate" 
           [disabled]="config.initialDisabled" 
           appMousedownStopPropagation
-          (click)="edit(item.value, item.entityId)">
+          (click)="edit(item.Value, item.Id)">
           <mat-icon>edit</mat-icon>
         </button>
         <button mat-icon-button class="eav-action-button"
-          *ngIf="vm.enableDelete && !item.disableDelete"
+          *ngIf="vm.enableDelete && !item._disableDelete"
           [tippy]="'Fields.Entity.Delete' | translate" 
           [disabled]="vm.controlStatus.disabled" 
           appMousedownStopPropagation
-          (click)="deleteItem(index, item.value)">
+          (click)="deleteItem(index, item.Value)">
           <mat-icon>delete</mat-icon>
         </button>
         <button mat-icon-button class="eav-action-button"

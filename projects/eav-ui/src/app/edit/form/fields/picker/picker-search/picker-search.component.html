@@ -4,7 +4,7 @@
       [ngClass]="{ 'mat-form-field-invalid': vm.controlStatus.invalid && vm.controlStatus.touched }">
       <input id="autocomplete" matInput #autocomplete [placeholder]="getPlaceholder(vm.availableEntities, vm.error)"
         [matAutocomplete]="auto" [disabled]="vm.controlStatus.disabled || !vm.enableAddExisting"
-        [value]="showSelectedItem ? vm.selectedEntity?.label : ''" (focus)="fetchEntities(vm.availableEntities)"
+        [value]="showSelectedItem ? vm.selectedEntity?.Text : ''" (focus)="fetchEntities(vm.availableEntities)"
         (blur)="markAsTouched(vm.selectedEntity, vm.selectedEntities)" (input)="filterSelectionList()"
         (click)="filterSelectionList()">
       <button mat-icon-button matSuffix class="entity-dropdown-button eav-suffix-button" disableRipple="true"
@@ -12,15 +12,15 @@
         <mat-icon>arrow_drop_down</mat-icon>
       </button>
       <button mat-icon-button matSuffix class="eav-suffix-button"
-        *ngIf="vm.enableEdit && !vm.selectedEntity?.disableEdit && vm.showItemEditButtons"
+        *ngIf="vm.enableEdit && !vm.selectedEntity?._disableEdit && vm.showItemEditButtons"
         [tippy]="'Fields.Entity.Edit' | translate" [disabled]="config.initialDisabled" appClickStopPropagation
-        (click)="edit(vm.selectedEntity?.value, vm.selectedEntity?.entityId)">
+        (click)="edit(vm.selectedEntity?.Value, vm.selectedEntity?.Id)">
         <mat-icon>edit</mat-icon>
       </button>
       <button mat-icon-button matSuffix class="eav-suffix-button"
-        *ngIf="vm.enableDelete && !vm.selectedEntity?.disableDelete && vm.showItemEditButtons"
+        *ngIf="vm.enableDelete && !vm.selectedEntity?._disableDelete && vm.showItemEditButtons"
         [tippy]="'Fields.Entity.Delete' | translate" [disabled]="vm.controlStatus.disabled" appClickStopPropagation
-        (click)="deleteItem(0, vm.selectedEntity?.value)">
+        (click)="deleteItem(0, vm.selectedEntity?.Value)">
         <mat-icon>delete</mat-icon>
       </button>
       <button mat-icon-button matSuffix class="eav-suffix-button" *ngIf="vm.enableRemove && vm.showItemEditButtons"
@@ -48,10 +48,8 @@
           </div>
         </mat-option>
       </div>
-      <mat-tree *ngIf="vm.isTreeDisplayMode" [dataSource]="dataSource" [treeControl]="treeControl">
-        <!-- This is the tree node template for leaf nodes -->
+      <!-- <mat-tree *ngIf="vm.isTreeDisplayMode" [dataSource]="dataSource" [treeControl]="treeControl">
         <mat-tree-node *matTreeNodeDef="let item;" matTreeNodePadding>
-          <!-- use a disabled button to provide padding for tree leaf -->
           <button mat-icon-button disabled></button>
           <mat-option [value]="item.Value" class="eav-picker-option"
             [disabled]="isOptionUnpickable(item, vm.selectedEntities, vm.enableReselect, vm.pickerTreeConfiguration)"
@@ -62,7 +60,6 @@
             </div>
           </mat-option>
         </mat-tree-node>
-        <!-- This is the tree node template for expandable nodes -->
         <mat-tree-node *matTreeNodeDef="let item;when: hasChild" matTreeNodePadding>
           <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'Toggle ' + item.name">
             <mat-icon class="mat-icon-rtl-mirror">
@@ -78,7 +75,7 @@
             </div>
           </mat-option>
         </mat-tree-node>
-      </mat-tree>
+      </mat-tree> -->
     </mat-autocomplete>
     
   </div>

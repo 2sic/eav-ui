@@ -17,7 +17,7 @@ import { SelectedEntity } from '../../entity/entity-default/entity-default.model
 export class PickerPillPreviewComponent extends BaseFieldComponent<string | string[]> implements OnInit, OnDestroy {
 
   templateVars$: Observable<PickerPillPreviewTemplateVars>;
-  
+
   constructor(
     eavService: EavService,
     fieldsSettingsService: FieldsSettingsService,
@@ -27,7 +27,7 @@ export class PickerPillPreviewComponent extends BaseFieldComponent<string | stri
     private stringQueryCache: StringQueryCacheService,
   ) {
     super(eavService, fieldsSettingsService);
-   }
+  }
 
   ngOnInit(): void {
     super.ngOnInit();
@@ -78,7 +78,7 @@ export class PickerPillPreviewComponent extends BaseFieldComponent<string | stri
   }
 
   trackByFn(index: number, item: SelectedEntity) {
-    return item.value;
+    return item.Value;
   }
 
   expandDialog() {

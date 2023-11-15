@@ -34,13 +34,13 @@ export function calculateSelectedEntities(
       // debug info
       _sourceIsQuery: entityFromQuery != null,
       // if it's a free text value or not found, disable edit and delete
-      disableEdit,
-      disableDelete: disableEdit,
+      _disableEdit: disableEdit,
+      _disableDelete: disableEdit,
       // either the real value or null if text-field or not found
-      entityId: entity?.Id,
-      label,
-      tooltip: `${label} (${name})`,
-      value: name,
+      Id: entity?.Id,
+      Text: label,
+      _tooltip: `${label} (${name})`,
+      Value: name,
     };
     return result;
   });
@@ -60,13 +60,13 @@ export function calculateStringSelectedOptions(
       // debug info
       _sourceIsQuery: false,
       // if it's a free text value or not found, disable edit and delete
-      disableEdit: true,
-      disableDelete: true,
+      _disableEdit: true,
+      _disableDelete: true,
       // either the real value or null if text-field or not found
-      entityId: null,
-      label,
-      tooltip: `${label} (${value})`,
-      value,
+      Id: null,
+      Text: label,
+      _tooltip: `${label} (${value})`,
+      Value: value,
     };
     return result;
   });
