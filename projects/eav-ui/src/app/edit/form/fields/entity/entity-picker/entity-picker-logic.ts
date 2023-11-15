@@ -69,8 +69,8 @@ export class EntityPickerLogic extends FieldLogicBase {
         TreeLeavesStream: 'Default',
         TreeParentIdField: 'Id',
         TreeChildIdField: 'Id',
-        TreeParentChildRefField: 'Children',
-        TreeChildParentRefField: 'Parent',
+        TreeParentChildRefField: 'children',
+        TreeChildParentRefField: 'parent',
         TreeShowRoot: true,
         TreeDepthMax: 10,
         TreeAllowSelectRoot: true,// implemented

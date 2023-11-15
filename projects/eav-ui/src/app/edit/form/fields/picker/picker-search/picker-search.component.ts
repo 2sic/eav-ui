@@ -36,6 +36,9 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   viewModel$: Observable<PickerSearchViewModel>;
   private control: AbstractControl;
 
+  private pickerTreeConfiguration: UiPickerModeTree;
+  dataSource: any;
+
   private filter$ = new BehaviorSubject(false);
 
   constructor(
@@ -124,8 +127,13 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
       }),
     );
 
-    const filteredData = TREE_DATA.filter(x => x.parent.length == 0);
-    this.dataSource.data = filteredData;
+    this.subscription.add(settings$.subscribe(settings => {
+      if(!settings.PickerTreeConfiguration) return;
+      this.pickerTreeConfiguration = settings.PickerTreeConfiguration;
+      const filteredData = TREE_DATA.filter(x => x.parent.length == 0);
+      this.dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
+      this.dataSource.data = filteredData;
+    }));
   }
 
   ngOnDestroy(): void {
@@ -211,42 +219,39 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   );
 
   treeFlattener: MatTreeFlattener<TreeNode, WIPDataSourceTreeItem> = new MatTreeFlattener(
-    this.transformer,
+    (node, Level) => {
+      return {
+        Level: Level,
+        Expandable: !!(node as TreeNode)[this.pickerTreeConfiguration?.TreeParentChildRefField] && (node as TreeNode)[this.pickerTreeConfiguration?.TreeParentChildRefField].length > 0,
+        Value: node.Guid,
+        Text: node.Title,
+        Parent: (node as TreeNode)[this.pickerTreeConfiguration?.TreeChildParentRefField],
+        Children: (node as TreeNode)[this.pickerTreeConfiguration?.TreeParentChildRefField],
+      };
+    },
     (node) => { return node.Level; },
     (node) => { return node.Expandable; },
     (node) => {
-      return node?.children.map(x => {
-        const child = TREE_DATA.find(y => y.Id == x.Id);
+      return (node as TreeNode)[this.pickerTreeConfiguration?.TreeParentChildRefField].map((x: any) => {
+        const child = TREE_DATA.find(y => (y as any)[this.pickerTreeConfiguration?.TreeChildIdField] == (x as any)[this.pickerTreeConfiguration?.TreeChildIdField]);
         return child;
       });
     },
   );
 
-  dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
-
-  private transformer(node: TreeNode, Level: number): WIPDataSourceTreeItem {
-    return {
-      Level: Level,
-      Expandable: !!node.children && node.children.length > 0,
-      Value: node.Guid,
-      Text: node.Title,
-      Parent: node.parent,
-      Children: node.children,
-    };
-  }
-
   hasChild = (_: number, node: WIPDataSourceTreeItem) => node.Expandable;
 }
 
 interface TreeNode {
-  children: IdNode[];
-  parent: IdNode[];
-  name: string;
-  Id: number;
-  Title: string;
-  Guid: string;
-  Modified: string;
-  Created: string;
+  // children: IdNode[];
+  // parent: IdNode[];
+  // name: string;
+  // Id: number;
+  // Title: string;
+  // Guid: string;
+  // Modified: string;
+  // Created: string;
+  [key: string]: any;
 }
 
 interface IdNode {
