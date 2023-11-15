@@ -32,6 +32,11 @@
 .tox-textarea {
   color: #000 !important;
   background-color: #fff !important;
+  height: 100% !important; // fixes height of textarea
+}
+
+.tox-textarea-wrap {
+  height: 100% !important; // fixes height of textarea wrap
 }
 
 // removes background color for dialogs
