@@ -3,12 +3,12 @@ import { Component, Input, OnInit } from '@angular/core';
 import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { FieldsSettingsService } from '../../../../shared/services';
-import { SelectedEntity } from '../../entity/entity-default/entity-default.models';
 import { PickerSourceAdapter } from '../picker-source-adapter';
 import { PickerStateAdapter } from '../picker-state-adapter';
 import { EntityListViewModel, ReorderIndexes } from './picker-list.models';
 import { FormGroup } from '@angular/forms';
 import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
+import { WIPDataSourceItem } from 'projects/edit-types';
 
 @Component({
   selector: 'app-picker-list',
@@ -61,11 +61,11 @@ export class PickerListComponent implements OnInit {
     );
   }
 
-  trackByFn(index: number, item: SelectedEntity): string {
+  trackByFn(index: number, item: WIPDataSourceItem): string {
     return item.Value;
   }
 
-  drop(event: CdkDragDrop<SelectedEntity[]>, selectedEntities: SelectedEntity[]): void {
+  drop(event: CdkDragDrop<WIPDataSourceItem[]>, selectedEntities: WIPDataSourceItem[]): void {
     moveItemInArray(selectedEntities, event.previousIndex, event.currentIndex);
     const reorderIndexes: ReorderIndexes = {
       previousIndex: event.previousIndex,

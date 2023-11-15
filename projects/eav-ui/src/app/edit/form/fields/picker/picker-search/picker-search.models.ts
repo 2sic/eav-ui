@@ -1,6 +1,5 @@
 import { UiPickerModeTree, WIPDataSourceItem } from 'projects/edit-types';
 import { ControlStatus } from '../../../../shared/models';
-import { SelectedEntity } from '../../entity/entity-default/entity-default.models';
 
 export interface PickerSearchViewModel {
   debugEnabled: boolean;
@@ -12,14 +11,14 @@ export interface PickerSearchViewModel {
   enableRemove: boolean;
   enableReselect: boolean;
   pickerTreeConfiguration: UiPickerModeTree;
-  selectedEntities: SelectedEntity[];
+  selectedEntities: WIPDataSourceItem[];
   availableEntities: WIPDataSourceItem[];
   error: string;
   controlStatus: ControlStatus<string | string[]>;
   freeTextMode: boolean;
   label: string;
   required: boolean;
-  selectedEntity: SelectedEntity;
+  selectedEntity: WIPDataSourceItem;
   filteredEntities: WIPDataSourceItem[];
 
   // added for easier readability

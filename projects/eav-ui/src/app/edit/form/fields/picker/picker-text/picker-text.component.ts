@@ -2,7 +2,6 @@ import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@
 import { FormGroup } from '@angular/forms';
 import { WIPDataSourceItem } from 'projects/edit-types';
 import { combineLatest, map, Observable, Subscription } from 'rxjs';
-import { SelectedEntity } from '../../entity/entity-default/entity-default.models';
 import { PickerSourceAdapter } from '../picker-source-adapter';
 import { PickerStateAdapter } from '../picker-state-adapter';
 import { EntityPickerTextTemplateVars } from './picker-text.models';
@@ -19,8 +18,8 @@ export class PickerTextComponent implements OnInit {
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
 
-  selectedEntity: SelectedEntity | null = null;
-  selectedEntities: SelectedEntity[] = [];
+  selectedEntity: WIPDataSourceItem | null = null;
+  selectedEntities: WIPDataSourceItem[] = [];
 
   filteredEntities: WIPDataSourceItem[] = [];
   templateVars$: Observable<EntityPickerTextTemplateVars>;

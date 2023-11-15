@@ -2,7 +2,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { DropdownOption, WIPDataSourceItem } from '../../../../../../../edit-types';
 import { guidRegex } from '../../../../shared/constants/guid.constants';
 
-import { SelectedEntity } from '../entity/entity-default/entity-default.models';
 import { QueryEntity } from '../entity/entity-query/entity-query.models';
 
 export function calculateSelectedEntities(
@@ -13,11 +12,11 @@ export function calculateSelectedEntities(
   stringQueryValueField: string,
   stringQueryLabelField: string,
   translate: TranslateService,
-): SelectedEntity[] {
+): WIPDataSourceItem[] {
   // name is either [guid] or simply free-text - convert to array for further processing
   const currentValueAsArray = typeof fieldValue === 'string' ? convertValueToArray(fieldValue, separator) : fieldValue;
 
-  // Convert each value to SelectedEntity so the UI has everything it needs
+  // Convert each value to WIPDataSourceItem so the UI has everything it needs
   const selectedEntities = currentValueAsArray.map(name => {
     const entityFromType = entityCache.find(e => e.Value === name);
     const entityFromQuery = stringQueryCache.find(e => `${e[stringQueryValueField]}` === name);
@@ -30,7 +29,7 @@ export function calculateSelectedEntities(
         ? entityFromQuery?.[stringQueryLabelField] ?? name
         : entityFromType?.Text ?? translate.instant('Fields.Entity.EntityNotFound');
 
-    const result: SelectedEntity = {
+    const result: WIPDataSourceItem = {
       // debug info
       _sourceIsQuery: entityFromQuery != null,
       // if it's a free text value or not found, disable edit and delete
@@ -52,11 +51,11 @@ export function calculateStringSelectedOptions(
   fieldValue: string | string[],
   separator: string,
   options: DropdownOption[],
-): SelectedEntity[] {
+): WIPDataSourceItem[] {
   const currentValueAsArray = typeof fieldValue === 'string' ? convertValueToArray(fieldValue, separator) : fieldValue;
   const selectedEntities = currentValueAsArray.map(value => {
     const label = options?.find(o => o.value === value)?.label ?? value
-    const result: SelectedEntity = {
+    const result: WIPDataSourceItem = {
       // debug info
       _sourceIsQuery: false,
       // if it's a free text value or not found, disable edit and delete

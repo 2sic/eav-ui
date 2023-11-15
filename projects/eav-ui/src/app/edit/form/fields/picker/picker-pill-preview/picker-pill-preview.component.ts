@@ -7,7 +7,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { EavService, FieldsSettingsService, EditRoutingService } from '../../../../shared/services';
 import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
 import { BaseFieldComponent } from '../../base/base-field.component';
-import { SelectedEntity } from '../../entity/entity-default/entity-default.models';
+import { WIPDataSourceItem } from 'projects/edit-types';
 
 @Component({
   selector: 'app-picker-pill-preview',
@@ -77,7 +77,7 @@ export class PickerPillPreviewComponent extends BaseFieldComponent<string | stri
     super.ngOnDestroy();
   }
 
-  trackByFn(index: number, item: SelectedEntity) {
+  trackByFn(index: number, item: WIPDataSourceItem) {
     return item.Value;
   }
 

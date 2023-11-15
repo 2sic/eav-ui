@@ -7,7 +7,6 @@ import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable }
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { FieldsSettingsService } from '../../../../shared/services';
 import { GlobalConfigService } from '../../../../shared/store/ngrx-data';
-import { SelectedEntity } from '../../entity/entity-default/entity-default.models';
 import { PickerSourceAdapter } from '../picker-source-adapter';
 import { PickerStateAdapter } from '../picker-state-adapter';
 import { PickerSearchViewModel } from './picker-search.models';
@@ -140,7 +139,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     super.ngOnDestroy();
   }
 
-  markAsTouched(selectedEntity: SelectedEntity, selectedEntities: SelectedEntity[]): void {
+  markAsTouched(selectedEntity: WIPDataSourceItem, selectedEntities: WIPDataSourceItem[]): void {
     if (selectedEntity && selectedEntities.length < 2 && this.showSelectedItem)
       this.autocompleteRef.nativeElement.value = selectedEntity.Text;
     GeneralHelpers.markControlTouched(this.control);
@@ -174,7 +173,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     this.filter$.next(true);
   }
 
-  optionSelected(event: MatAutocompleteSelectedEvent, allowMultiValue: boolean, selectedEntity: SelectedEntity): void {
+  optionSelected(event: MatAutocompleteSelectedEvent, allowMultiValue: boolean, selectedEntity: WIPDataSourceItem): void {
     if (!allowMultiValue && selectedEntity) this.removeItem(0);
     const selected: string = event.option.value;
     this.pickerStateAdapter.addSelected(selected);
@@ -188,18 +187,18 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     this.pickerStateAdapter.addSelected(null);
   }
 
-  isOptionDisabled(value: string, selectedEntities: SelectedEntity[]): boolean {
+  isOptionDisabled(value: string, selectedEntities: WIPDataSourceItem[]): boolean {
     const isSelected = selectedEntities.some(entity => entity.Value === value);
     return isSelected;
   }
 
-  isOptionUnpickable(item: WIPDataSourceTreeItem, selectedEntities: SelectedEntity[], enableReselect: boolean, pickerTreeConfiguration: UiPickerModeTree): boolean {
-    const isUnpickableBySelection = enableReselect ? false : selectedEntities.some(entity => entity.Value === item.Value);
-    const isRootUnpickableByConfiguration = pickerTreeConfiguration?.TreeAllowSelectRoot ? false : item.Children?.length > 0 && item.Parent?.length === 0;
-    const isBranchUnpickableByConfiguration = pickerTreeConfiguration?.TreeAllowSelectBranch ? false : item.Children?.length > 0 && item.Parent?.length > 0;
-    const isLeafUnpickableByConfiguration = pickerTreeConfiguration?.TreeAllowSelectLeaves ? false : item.Children?.length === 0;
-    return isUnpickableBySelection || isRootUnpickableByConfiguration || isBranchUnpickableByConfiguration || isLeafUnpickableByConfiguration;
-  }
+  // isOptionUnpickable(item: WIPDataSourceTreeItem, selectedEntities: WIPDataSourceItem[], enableReselect: boolean, pickerTreeConfiguration: UiPickerModeTree): boolean {
+  //   const isUnpickableBySelection = enableReselect ? false : selectedEntities.some(entity => entity.Value === item.Value);
+  //   const isRootUnpickableByConfiguration = pickerTreeConfiguration?.TreeAllowSelectRoot ? false : item.Children?.length > 0 && item.Parent?.length === 0;
+  //   const isBranchUnpickableByConfiguration = pickerTreeConfiguration?.TreeAllowSelectBranch ? false : item.Children?.length > 0 && item.Parent?.length > 0;
+  //   const isLeafUnpickableByConfiguration = pickerTreeConfiguration?.TreeAllowSelectLeaves ? false : item.Children?.length === 0;
+  //   return isUnpickableBySelection || isRootUnpickableByConfiguration || isBranchUnpickableByConfiguration || isLeafUnpickableByConfiguration;
+  // }
 
   edit(entityGuid: string, entityId: number): void {
     this.pickerSourceAdapter.editEntity({ entityGuid, entityId });

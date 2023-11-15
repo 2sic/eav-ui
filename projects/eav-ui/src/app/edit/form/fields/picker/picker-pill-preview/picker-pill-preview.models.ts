@@ -1,8 +1,8 @@
+import { WIPDataSourceItem } from "projects/edit-types";
 import { BaseFieldViewModel } from "../../base/base-field-template-vars.model";
-import { SelectedEntity } from "../../entity/entity-default/entity-default.models";
 
 export interface PickerPillPreviewTemplateVars extends BaseFieldViewModel {
-  selectedEntities: SelectedEntity[];
+  selectedEntities: WIPDataSourceItem[];
   entitiesNumber: number;
   isOpen: boolean;
 }

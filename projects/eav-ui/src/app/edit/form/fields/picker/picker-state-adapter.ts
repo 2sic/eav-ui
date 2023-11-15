@@ -3,7 +3,6 @@ import { WIPDataSourceItem, FieldSettings } from 'projects/edit-types';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { GeneralHelpers } from '../../../shared/helpers';
 import { ControlStatus } from '../../../shared/models';
-import { SelectedEntity } from '../entity/entity-default/entity-default.models';
 import { QueryEntity } from '../entity/entity-query/entity-query.models';
 import { ReorderIndexes } from './picker-list/picker-list.models';
 import { calculateSelectedEntities, convertArrayToString, convertValueToArray } from './picker.helpers';
@@ -34,7 +33,7 @@ export class PickerStateAdapter {
   error$: BehaviorSubject<string> = new BehaviorSubject('');
 
   shouldPickerListBeShown$: Observable<boolean>;
-  selectedItems$: Observable<SelectedEntity[]>;
+  selectedItems$: Observable<WIPDataSourceItem[]>;
   allowMultiValue$: Observable<boolean>;
   tooltip$: Observable<string>;
   information$: Observable<string>;
