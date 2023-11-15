@@ -60,10 +60,10 @@ export class AddSharingFieldsComponent extends BaseSubsinkComponent implements O
 
   ngOnInit() {
     // TODO: @SDV Try to find a better way to do this
-    this.subscription = this.contentTypesFieldsService.getShareableFields().subscribe(shareableFields => {
+    this.subscription.add(this.contentTypesFieldsService.getShareableFields().subscribe(shareableFields => {
       this.shareableFields.data = shareableFields;
-    });
-    this.subscription = this.contentTypesFieldsService.getReservedNames().subscribe(reservedNames => { 
+    }));
+    this.subscription.add(this.contentTypesFieldsService.getReservedNames().subscribe(reservedNames => { 
       const existingFields: ReservedNames = {};
       this.dialogData.existingFields.forEach(field => {
         existingFields[field.StaticName] = 'Field with this name already exists';
@@ -72,7 +72,7 @@ export class AddSharingFieldsComponent extends BaseSubsinkComponent implements O
         ...reservedNames,
         ...existingFields,
       };
-    });
+    }));
   }
 
   ngOnDestroy() {

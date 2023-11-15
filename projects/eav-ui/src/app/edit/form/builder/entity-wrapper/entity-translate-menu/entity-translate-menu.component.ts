@@ -54,7 +54,7 @@ export class EntityTranslateMenuComponent implements OnInit, OnDestroy {
     );
     this.autoTranslatableFields = this.fieldsTranslateService.findAutoTranslatableFields();
     if (this.autoTranslatableFields.length > 0)
-      this.subscription = this.fieldsSettingsService.getTranslationState$(this.autoTranslatableFields[0]).subscribe(x => this.translationState = x);
+      this.subscription.add(this.fieldsSettingsService.getTranslationState$(this.autoTranslatableFields[0]).subscribe(x => this.translationState = x));
   }
 
   translateMany() {

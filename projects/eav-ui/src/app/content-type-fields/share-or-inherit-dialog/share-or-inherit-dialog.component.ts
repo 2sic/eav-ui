@@ -95,11 +95,11 @@ export class ShareOrInheritDialogComponent extends BaseSubsinkComponent implemen
         FeatureComponentBase.openDialog(this.dialog, FeatureNames.FieldShareConfigManagement, this.viewContainerRef, this.changeDetectorRef);
       } else {
         if (this.state == SharingOrInheriting.Sharing) {
-          this.subscription = this.contentTypesFieldsService.share(this.dialogData.Id)
-            .subscribe(() => this.dialogRef.close());
+          this.subscription.add(this.contentTypesFieldsService.share(this.dialogData.Id)
+            .subscribe(() => this.dialogRef.close()));
         } else if (this.state == SharingOrInheriting.Inheriting) {
-          this.subscription = this.contentTypesFieldsService.inherit(this.dialogData.Id, this.guid)
-            .subscribe(() => this.dialogRef.close());
+          this.subscription.add(this.contentTypesFieldsService.inherit(this.dialogData.Id, this.guid)
+            .subscribe(() => this.dialogRef.close()));
         }
       }
     });
