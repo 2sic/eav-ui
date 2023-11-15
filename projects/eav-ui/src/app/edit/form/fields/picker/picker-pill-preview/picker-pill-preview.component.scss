@@ -31,7 +31,7 @@
 .c-ew {
   &__preview {
     position: relative;
-    min-height: 36px;
+    // min-height: 36px;
     $label-top: 16px;
     cursor: pointer;
 
@@ -43,7 +43,7 @@
 
     &-holder {
       position: relative;
-      margin-top: calc(#{$label-top} + 12px);
+      margin-top: calc(#{$label-top});
     }
 
     &-label {
@@ -116,7 +116,7 @@
 .eav-list {
   overflow: hidden;
   padding: 0;
-  margin-top: 9px;
+  // margin-top: 9px;
   flex: 1 1 auto;
 }
 
