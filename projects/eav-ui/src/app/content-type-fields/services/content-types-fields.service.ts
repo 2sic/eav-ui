@@ -104,7 +104,15 @@ export class ContentTypesFieldsService {
   }
 
   addInheritedField(targetContentTypeId: number, sourceContentTypeStaticName: string, sourceFieldGuid: string, newName: string) {
-    console.log("SDV - addInheritedField API not implemented yet", targetContentTypeId, sourceContentTypeStaticName, sourceFieldGuid, newName);
+    return this.http.post<number>(this.apiUrl(webApiFieldsRoot + 'AddInheritedField'), null, {
+      params: {
+        AppId: this.context.appId.toString(),
+        ContentTypeId: targetContentTypeId.toString(),
+        SourceType: sourceContentTypeStaticName,
+        SourceField: sourceFieldGuid,
+        name: newName,
+      }
+    });
   }
 
   share(attributeId: number, share: boolean = true) {

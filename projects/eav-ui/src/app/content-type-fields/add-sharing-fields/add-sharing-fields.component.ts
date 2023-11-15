@@ -5,7 +5,7 @@ import { Field } from '../models/field.model';
 import { ContentTypesFieldsService } from '../services/content-types-fields.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { BehaviorSubject, catchError, concatMap, filter, of, take, toArray } from 'rxjs';
+import { BehaviorSubject, catchError, concatMap, filter, of, take, toArray, pipe } from 'rxjs';
 import { ContentType } from '../../app-administration/models';
 import { fieldNameError, fieldNamePattern } from '../../app-administration/constants/field-name.patterns';
 import { ReservedNames } from '../models/reserved-names.model';
@@ -103,27 +103,24 @@ export class AddSharingFieldsComponent extends BaseSubsinkComponent implements O
       if (!isEnabled) {
         FeatureComponentBase.openDialog(this.dialog, FeatureNames.FieldShareConfigManagement, this.viewContainerRef, this.changeDetectorRef);
       } else {
-        console.log("SDV - API not implemented yet", this.selectedFields.data);
-        this.closeDialog();
-        // this.saving$.next(true);
-        // this.snackBar.open('Saving...');
-        // of(...this.selectedFields.data).pipe(
-        //   filter(inheritField => !!inheritField.newName),
-        //   concatMap(inheritField =>
-        //     // this.contentTypesFieldsService.add(field, this.contentType.Id).pipe(catchError(error => of(null)))
-        //     this.contentTypesFieldsService.addInheritedField(
-        //       this.dialogData.contentType.Id,
-        //       inheritField.field.ContentType.Name,
-        //       inheritField.field.Guid,
-        //       inheritField.newName
-        //     ).pipe(catchError(error => of(null)))
-        //   ),
-        //   toArray(),
-        // ).subscribe(responses => {
-        //   this.saving$.next(false);
-        //   this.snackBar.open('Saved', null, { duration: 2000 });
-        //   this.closeDialog();
-        // });
+        this.saving$.next(true);
+        this.snackBar.open('Saving...');
+        of(...this.selectedFields.data).pipe(
+          filter(inheritField => !!inheritField.newName),
+          concatMap(inheritField =>
+            this.contentTypesFieldsService.addInheritedField(
+              this.dialogData.contentType.Id,
+              inheritField.field.ContentType.Id,
+              inheritField.field.Guid,
+              inheritField.newName
+            ).pipe(catchError(error => of(null)))
+          ),
+          toArray(),
+        ).subscribe(responses => {
+          this.saving$.next(false);
+          this.snackBar.open('Saved', null, { duration: 2000 });
+          this.closeDialog();
+        });
        }
     });
   }
