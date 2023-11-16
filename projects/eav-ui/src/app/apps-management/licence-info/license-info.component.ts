@@ -58,11 +58,13 @@ export class LicenseInfoComponent extends BaseComponent implements OnInit, OnDes
         tap(() => this.disabled$.next(false)),
 
         // Fiddle with the data for development tests
-        map(licenses => {
-          var licTesting = licenses[licenses.length - 2];
-          licTesting.Features[licTesting.Features.length - 1].Expiration = "2023-08-25";
-          return licenses;
-        }),
+        // 2023-11-16 2dm disabled - causes trouble in production
+        // @STV - do you still need this? or is this a forgotten debug code?
+        // map(licenses => {
+        //   var licTesting = licenses[licenses.length - 2];
+        //   licTesting.Features[licTesting.Features.length - 1].Expiration = "2023-08-25";
+        //   return licenses;
+        // }),
 
         // Expand the data to have pre-calculated texts/states
         map(licenses => licenses.map(l => {
