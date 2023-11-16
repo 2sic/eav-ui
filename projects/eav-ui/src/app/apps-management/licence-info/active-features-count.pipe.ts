@@ -5,6 +5,6 @@ import { License } from '../models/license.model';
 export class ActiveFeaturesCountPipe implements PipeTransform {
 
   transform(license: License) {
-    return `${license.Features.filter(f => f.Enabled).length}/${license.Features.length}`;
+    return `${license.Features.filter(f => f.IsEnabled).length}/${license.Features.length}`;
   }
 }

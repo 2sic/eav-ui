@@ -7,7 +7,7 @@
     <div class="eav-info-row">
       <div class="eav-info-row__label">{{ "Features.Status" | translate }}:</div>
       <div class="eav-info-row__value">
-        <span>{{ (vm.feature.Enabled ? "Features.Active" : "Features.NotActive") | translate }}</span>
+        <span>{{ (vm.feature.IsEnabled ? "Features.Active" : "Features.NotActive") | translate }}</span>
       </div>
     </div>
     <div class="eav-info-row" *ngIf="vm.feature.NameId as id">

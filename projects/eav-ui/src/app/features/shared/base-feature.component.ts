@@ -33,7 +33,7 @@ export class FeatureComponentBase {
     ));
     this.show$ = combineLatest([this.feature$, this.showIf$]).pipe(
       // tap(data => console.log('2dm - show$', data)),
-      map(([feat,showIf]) => showIf == (feat?.Enabled ?? false))
+      map(([feat,showIf]) => showIf == (feat?.IsEnabled ?? false))
     );
   }
 

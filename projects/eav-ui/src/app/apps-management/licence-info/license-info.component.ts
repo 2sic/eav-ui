@@ -181,7 +181,8 @@ export class LicenseInfoComponent extends BaseComponent implements OnInit, OnDes
           // valueGetter: (params) => (params.data as Feature).Name,
         },
         {
-          field: 'Enabled',
+          field: 'IsEnabled',
+          headerName: 'Enabled',
           ...cellDefaults,
           width: 80,
           headerClass: 'dense',
@@ -215,9 +216,10 @@ export class LicenseInfoComponent extends BaseComponent implements OnInit, OnDes
           cellRenderer: FeaturesStatusComponent,
           // valueGetter: (params) => (params.data as Feature).EnabledInConfiguration,
           cellRendererParams: (() => {
-            const params: FeaturesStatusParams = {
-              isDisabled: () => this.disabled$.value,
+            const params: FeaturesStatusParams & IdFieldParams<Feature> = {
+              isDisabled: (feature) => !feature.IsConfigurable || this.disabled$.value,
               onToggle: (feature, enabled) => this.toggleFeature(feature, enabled),
+              tooltipGetter: (feature: Feature) => feature.IsConfigurable ? "Toggle off | default | on" : "This feature can't be configured",
             };
             return params;
           }),
