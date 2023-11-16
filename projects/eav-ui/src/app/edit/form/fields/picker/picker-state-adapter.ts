@@ -90,17 +90,17 @@ export class PickerStateAdapter {
     }
   }
 
-  protected createValueArray(): string[] {
-    if (typeof this.control.value === 'string') {
-      return convertValueToArray(this.control.value, this.settings$.value.Separator);
-    }
-    return [...this.control.value];
-  }
-
   protected createNewValue(valueArray: string[]): string | string[] {
     return typeof this.control.value === 'string'
       ? convertArrayToString(valueArray, this.settings$.value.Separator)
       : valueArray;
+  }
+
+  createValueArray(): string[] {
+    if (typeof this.control.value === 'string') {
+      return convertValueToArray(this.control.value, this.settings$.value.Separator);
+    }
+    return [...this.control.value];
   }
 
   doAfterDelete(props: DeleteEntityProps) {

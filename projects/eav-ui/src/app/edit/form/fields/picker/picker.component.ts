@@ -73,14 +73,16 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
   }
 
   private refreshOnChildClosed(): void {
-    // @2SDV TODO check what it does and add comments
+    // this is used when new entity is created in child form it automatically adds it to the picker as selected item
     this.subscription.add(
       this.editRoutingService.childFormResult(this.config.index, this.config.entityGuid).subscribe(result => {
+        // @2SDV TODO check why this triggers twice
         const newItemGuid = Object.keys(result)[0];
-        this.pickerStateAdapter.updateValue('add', newItemGuid);
+        if(!this.pickerStateAdapter.createValueArray().includes(newItemGuid))
+          this.pickerStateAdapter.addSelected(newItemGuid);
       })
     );
-    // @2SDV TODO check what it does and add comments
+    // this is used when new entity is created/changed in child form it automatically fetched again
     this.subscription.add(
       this.editRoutingService.childFormClosed().subscribe(() => {
         this.pickerSourceAdapter.fetchItems(false);
