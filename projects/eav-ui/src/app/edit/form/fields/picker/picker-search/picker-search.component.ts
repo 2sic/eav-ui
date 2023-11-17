@@ -35,6 +35,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   viewModel$: Observable<PickerSearchViewModel>;
   private control: AbstractControl;
 
+  /** Needed later for tree implementation testing */
   // private pickerTreeConfiguration: UiPickerModeTree;
   // dataSource: any;
 
@@ -126,6 +127,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
       }),
     );
 
+    /** Needed later for tree implementation testing */
     // this.subscription.add(settings$.subscribe(settings => {
     //   if (!settings.PickerTreeConfiguration) return;
     //   this.pickerTreeConfiguration = settings.PickerTreeConfiguration;
@@ -192,6 +194,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     return isSelected;
   }
 
+  /** Needed later for tree implementation testing */
   // isOptionUnpickable(item: WIPDataSourceTreeItem, selectedEntities: WIPDataSourceItem[], enableReselect: boolean, pickerTreeConfiguration: UiPickerModeTree): boolean {
   //   const isUnpickableBySelection = enableReselect ? false : selectedEntities.some(entity => entity.Value === item.Value);
   //   const isRootUnpickableByConfiguration = pickerTreeConfiguration?.TreeAllowSelectRoot ? false : item.Children?.length > 0 && item.Parent?.length === 0;
@@ -212,6 +215,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     this.pickerSourceAdapter.deleteEntity({ index, entityGuid });
   }
 
+  /** Needed later for tree implementation testing */
   // treeControl = new FlatTreeControl<WIPDataSourceTreeItem>(
   //   node => node.Level,
   //   node => node.Expandable,
@@ -241,6 +245,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   // hasChild = (_: number, node: WIPDataSourceTreeItem) => node.Expandable;
 }
 
+/** Needed later for tree implementation testing */
 // interface TreeNode {
 //   // children: IdNode[];
 //   // parent: IdNode[];
