@@ -3,7 +3,7 @@ import { AbstractControl, FormGroup } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { TranslateService } from '@ngx-translate/core';
 import { UiPickerModeTree, WIPDataSourceItem, WIPDataSourceTreeItem } from 'projects/edit-types';
-import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
+import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, take } from 'rxjs';
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { FieldsSettingsService } from '../../../../shared/services';
 import { GlobalConfigService } from '../../../../shared/store/ngrx-data';
@@ -139,6 +139,21 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
 
   ngOnDestroy(): void {
     super.ngOnDestroy();
+  }
+
+  /** @SDV This is a workaround, not a fixed solution */
+  ngAfterViewInit(): void { 
+    this.pickerStateAdapter.selectedItems$.pipe(take(1)).subscribe(selectedItems => { 
+      if (selectedItems != null && selectedItems != undefined && selectedItems.length > 0) {
+        this.removeItem(0);
+        const selected: string = selectedItems[0]?.Value;
+        this.pickerStateAdapter.addSelected(selected);
+        // TODO: @SDV - This is needed so after choosing option element is not focused (it gets focused by default so if blur is outside of setTimeout it will happen before refocus)
+        setTimeout(() => {
+          this.autocompleteRef.nativeElement.blur();
+        });
+      }
+    });
   }
 
   markAsTouched(selectedEntity: WIPDataSourceItem, selectedEntities: WIPDataSourceItem[]): void {
