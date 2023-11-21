@@ -39,6 +39,8 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   // private pickerTreeConfiguration: UiPickerModeTree;
   // dataSource: any;
 
+  private availableEntities$ = new BehaviorSubject<WIPDataSourceItem[]>(null);
+
   private filter$ = new BehaviorSubject(false);
 
   constructor(
@@ -52,7 +54,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   ngOnInit(): void {
     this.control = this.group.controls[this.config.fieldName];
 
-    const availableEntities$ = this.pickerSourceAdapter.availableItems$;
+    this.availableEntities$ = this.pickerSourceAdapter.availableItems$;
 
     const freeTextMode$ = this.pickerStateAdapter.freeTextMode$;
     const controlStatus$ = this.pickerStateAdapter.controlStatus$;
@@ -77,7 +79,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
       distinctUntilChanged(GeneralHelpers.objectsEqual),
     );
     this.viewModel$ = combineLatest([
-      debugEnabled$, settings$, selectedEntities$, availableEntities$, error$,
+      debugEnabled$, settings$, selectedEntities$, this.availableEntities$, error$,
       controlStatus$, freeTextMode$, label$, required$, this.filter$
     ]).pipe(
       map(([
@@ -155,6 +157,10 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
       }
     });
   }
+  
+  displayFn(value: string): string {
+    return value ? this.availableEntities$.value.find(ae => ae.Value == value).Text : '';
+  }
 
   markAsTouched(selectedEntity: WIPDataSourceItem, selectedEntities: WIPDataSourceItem[]): void {
     if (selectedEntity && selectedEntities.length < 2 && this.showSelectedItem)
@@ -164,15 +170,15 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
 
   fetchEntities(availableEntities: WIPDataSourceItem[]): void {
     this.autocompleteRef.nativeElement.value = '';
-    if (availableEntities != null) { return; }
+    if (availableEntities != null && availableEntities.length > 1) { return; }
     this.pickerSourceAdapter.fetchItems(false);
   }
 
   getPlaceholder(availableEntities: WIPDataSourceItem[], error: string): string {
-    if (availableEntities == null) {
+    if (availableEntities == null || availableEntities.length <= 1) {
       return this.translate.instant('Fields.Entity.Loading');
     }
-    if (availableEntities.length > 0) {
+    if (availableEntities.length > 1) {
       return this.translate.instant('Fields.Entity.Search');
     }
     if (error) {

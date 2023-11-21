@@ -89,6 +89,11 @@ export class PickerEntitySourceAdapter extends PickerSourceAdapter {
 
     this.entityFieldDataSource = this.fieldDataSourceFactoryService.createEntityFieldDataSource();
     this.stringFieldDataSource = this.fieldDataSourceFactoryService.createStringFieldDataSource(this.settings$);
+
+    this.subscription.add(
+      this.isString ? this.stringFieldDataSource.data$.subscribe(this.availableItems$) :
+      this.entityFieldDataSource.data$.subscribe(this.availableItems$)
+    );
   }
 
   onAfterViewInit(): void {
@@ -111,7 +116,9 @@ export class PickerEntitySourceAdapter extends PickerSourceAdapter {
   // @2SDV TODO: Split this adapter into two separate adapters for string and entity
   fetchItems(clearAvailableItemsAndOnlyUpdateCache: boolean): void {
     if (this.isString) {
-      this.stringFieldDataSource.fetchData().subscribe(this.availableItems$);
+      // this.stringFieldDataSource.fetchData().subscribe(this.availableItems$);
+      this.stringFieldDataSource.getAll();
+      this.subscription.add(this.stringFieldDataSource.data$.subscribe(this.availableItems$));
       return;
     }
 
@@ -120,6 +127,8 @@ export class PickerEntitySourceAdapter extends PickerSourceAdapter {
     }
 
     const contentTypeName = this.contentTypeMask.resolve();
+    this.entityFieldDataSource.contentType(contentTypeName);
+
     const entitiesFilter: string[] = (clearAvailableItemsAndOnlyUpdateCache || !this.settings$.value.EnableAddExisting)
       ? filterGuids(
         this.fieldsSettingsService.getContentTypeSettings()._itemTitle,
@@ -127,11 +136,13 @@ export class PickerEntitySourceAdapter extends PickerSourceAdapter {
         (this.control.value as string[]).filter(guid => !!guid),
       )
       : null;
+    this.entityFieldDataSource.entityGuids(entitiesFilter);
 
-    this.entityFieldDataSource.fetchData(contentTypeName, entitiesFilter);
+    this.entityFieldDataSource.getAll();
     if (!clearAvailableItemsAndOnlyUpdateCache) {
-      this.entityFieldDataSource.data$.subscribe(this.availableItems$);
+      this.subscription.add(this.entityFieldDataSource.data$.subscribe((items) => {
+        this.availableItems$.next(items);
+      }));
     }
-
   }
 }

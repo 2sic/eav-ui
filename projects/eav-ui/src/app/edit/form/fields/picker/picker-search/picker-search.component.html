@@ -36,7 +36,7 @@
       </mat-label>
     </mat-form-field>
 
-    <mat-autocomplete #auto="matAutocomplete"
+    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn.bind(this)"
       (optionSelected)="optionSelected($event, vm.allowMultiValue, vm.selectedEntity)">
       <div *ngIf="!vm.isTreeDisplayMode">
         <mat-option *ngFor="let item of vm.filteredEntities" [value]="item.Value" class="eav-picker-option"

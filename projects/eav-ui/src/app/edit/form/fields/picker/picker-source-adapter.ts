@@ -33,6 +33,7 @@ export class PickerSourceAdapter {
   ) { }
 
   availableItems$: BehaviorSubject<WIPDataSourceItem[]> = new BehaviorSubject<WIPDataSourceItem[]>(null);
+  // availableItems$: Observable<WIPDataSourceItem[]>;
 
   contentType: string;
 
