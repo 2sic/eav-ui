@@ -23,8 +23,6 @@ export class PickerEntitySourceAdapter extends PickerSourceAdapter {
 
     public fieldsSettingsService: FieldsSettingsService,
 
-    public isString: boolean,
-
     // Below this is needed for base class
     public settings$: BehaviorSubject<FieldSettings> = new BehaviorSubject(null),
 
@@ -73,7 +71,7 @@ export class PickerEntitySourceAdapter extends PickerSourceAdapter {
       ).subscribe(entityType => {
         this.contentTypeMask?.destroy();
         this.contentTypeMask = new FieldMask(
-          this.isString ? null : entityType,
+          entityType,
           this.group.controls,
           () => {
             this.availableItems$.next(null);
@@ -88,10 +86,8 @@ export class PickerEntitySourceAdapter extends PickerSourceAdapter {
     );
 
     this.entityFieldDataSource = this.fieldDataSourceFactoryService.createEntityFieldDataSource();
-    this.stringFieldDataSource = this.fieldDataSourceFactoryService.createStringFieldDataSource(this.settings$);
 
     this.subscription.add(
-      this.isString ? this.stringFieldDataSource.data$.subscribe(this.availableItems$) :
       this.entityFieldDataSource.data$.subscribe(this.availableItems$)
     );
   }
@@ -103,7 +99,6 @@ export class PickerEntitySourceAdapter extends PickerSourceAdapter {
   destroy(): void {
     this.contentTypeMask.destroy();
     this.entityFieldDataSource.destroy();
-    this.stringFieldDataSource.destroy();
 
     super.destroy();
   }
@@ -115,13 +110,6 @@ export class PickerEntitySourceAdapter extends PickerSourceAdapter {
 
   // @2SDV TODO: Split this adapter into two separate adapters for string and entity
   fetchItems(clearAvailableItemsAndOnlyUpdateCache: boolean): void {
-    if (this.isString) {
-      // this.stringFieldDataSource.fetchData().subscribe(this.availableItems$);
-      this.stringFieldDataSource.getAll();
-      this.subscription.add(this.stringFieldDataSource.data$.subscribe(this.availableItems$));
-      return;
-    }
-
     if (clearAvailableItemsAndOnlyUpdateCache) {
       this.availableItems$.next(null);
     }

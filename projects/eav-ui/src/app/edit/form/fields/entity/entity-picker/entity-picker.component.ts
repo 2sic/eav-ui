@@ -40,7 +40,6 @@ export class EntityPickerComponent extends PickerComponent implements OnInit, On
       stringQueryCacheService,
     );
     EntityPickerLogic.importMe();
-    this.isString = false;
   }
 
   ngOnInit(): void {
@@ -75,7 +74,6 @@ export class EntityPickerComponent extends PickerComponent implements OnInit, On
     this.pickerSourceAdapter = this.pickerSourceAdapterFactoryService.createPickerEntitySourceAdapter(
       this.pickerStateAdapter.disableAddNew$,
       this.fieldsSettingsService,
-      this.isString,
 
       this.pickerStateAdapter.control,
       this.config,

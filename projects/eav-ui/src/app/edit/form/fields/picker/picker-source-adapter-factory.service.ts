@@ -12,6 +12,7 @@ import { FieldConfigSet } from '../../builder/fields-builder/field-config-set.mo
 import { PickerQuerySourceAdapter } from './picker-query-source-adapter';
 import { PickerEntitySourceAdapter } from './picker-entity-source-adapter';
 import { FieldDataSourceFactoryService } from './field-data-source-factory.service';
+import { PickerStringSourceAdapter } from './picker-string-source-adapter';
 
 @Injectable()
 export class PickerSourceAdapterFactoryService {
@@ -68,7 +69,6 @@ export class PickerSourceAdapterFactoryService {
   createPickerEntitySourceAdapter(
     disableAddNew$: BehaviorSubject<boolean>,
     fieldsSettingsService: FieldsSettingsService,
-    isString: boolean,
     control: AbstractControl,
     config: FieldConfigSet,
     settings$: BehaviorSubject<FieldSettings>,
@@ -79,7 +79,6 @@ export class PickerSourceAdapterFactoryService {
     const pickerEntitySourceAdapter = new PickerEntitySourceAdapter(
       disableAddNew$,
       fieldsSettingsService,
-      isString,
 
       settings$,
       this.entityCacheService,
@@ -100,6 +99,41 @@ export class PickerSourceAdapterFactoryService {
 
   initEntity(pickerEntitySourceAdapter: PickerEntitySourceAdapter): void {
     pickerEntitySourceAdapter.init();
+  }
+
+  createPickerStringSourceAdapter(
+    disableAddNew$: BehaviorSubject<boolean>,
+    fieldsSettingsService: FieldsSettingsService,
+    control: AbstractControl,
+    config: FieldConfigSet,
+    settings$: BehaviorSubject<FieldSettings>,
+    editRoutingService: EditRoutingService,
+    group: FormGroup,
+    deleteCallback: (props: DeleteEntityProps) => void,
+  ): PickerStringSourceAdapter {
+    const pickerStringSourceAdapter = new PickerStringSourceAdapter(
+      disableAddNew$,
+      fieldsSettingsService,
+
+      settings$,
+      this.entityCacheService,
+      this.entityService,
+      this.eavService,
+      editRoutingService,
+      this.translate,
+      this.fieldDataSourceFactoryService,
+      config,
+      group,
+      this.snackBar,
+      control,
+      deleteCallback,
+    );
+
+    return pickerStringSourceAdapter;
+  }
+
+  initString(pickerStringSourceAdapter: PickerStringSourceAdapter): void {
+    pickerStringSourceAdapter.init();
   }
 
   createPickerSourceAdapter(

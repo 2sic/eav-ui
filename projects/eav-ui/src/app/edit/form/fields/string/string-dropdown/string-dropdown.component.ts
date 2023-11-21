@@ -11,6 +11,7 @@ import { PickerSourceAdapterFactoryService } from '../../picker/picker-source-ad
 import { PickerStateAdapterFactoryService } from '../../picker/picker-state-adapter-factory.service';
 import { DeleteEntityProps } from '../../picker/picker.models';
 import { PickerStringStateAdapter } from '../../picker/picker-string-state-adapter';
+import { PickerStringSourceAdapter } from '../../picker/picker-string-source-adapter';
 
 @Component({
   selector: InputTypeConstants.StringDropdown,
@@ -42,7 +43,6 @@ export class StringDropdownComponent extends PickerComponent implements OnInit, 
       stringQueryCacheService,
     );
     EntityDefaultLogic.importMe();
-    this.isString = true;
   }
 
   ngOnInit(): void {
@@ -74,10 +74,9 @@ export class StringDropdownComponent extends PickerComponent implements OnInit, 
       () => this.focusOnSearchComponent,
     );
 
-    this.pickerSourceAdapter = this.pickerSourceAdapterFactoryService.createPickerEntitySourceAdapter(
+    this.pickerSourceAdapter = this.pickerSourceAdapterFactoryService.createPickerStringSourceAdapter(
       this.pickerStateAdapter.disableAddNew$,
       this.fieldsSettingsService,
-      this.isString,
 
       this.pickerStateAdapter.control,
       this.config,
@@ -89,6 +88,6 @@ export class StringDropdownComponent extends PickerComponent implements OnInit, 
     );
 
     this.pickerStateAdapterFactoryService.initString(this.pickerStateAdapter as PickerStringStateAdapter);
-    this.pickerSourceAdapterFactoryService.initEntity(this.pickerSourceAdapter as PickerEntitySourceAdapter);
+    this.pickerSourceAdapterFactoryService.initString(this.pickerSourceAdapter as PickerStringSourceAdapter);
   }
 }
