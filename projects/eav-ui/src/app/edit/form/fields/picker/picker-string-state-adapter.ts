@@ -58,10 +58,6 @@ export class PickerStringStateAdapter extends PickerStateAdapter {
     super.destroy();
   }
 
-  createValueArray(): string[] {
-    return convertValueToArray(this.control.value, this.settings$.value.Separator);
-  }
-
   protected createNewValue(valueArray: string[]): string | string[] {
     return convertArrayToString(valueArray, this.settings$.value.Separator);
   }

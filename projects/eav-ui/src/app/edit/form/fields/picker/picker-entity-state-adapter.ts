@@ -65,10 +65,6 @@ export class PickerEntityStateAdapter extends PickerStateAdapter {
     super.destroy();
   }
 
-  createValueArray(): string[] {
-    return [...this.control.value];
-  }
-
   protected createNewValue(valueArray: string[]): string | string[] {
     return valueArray;
   }
