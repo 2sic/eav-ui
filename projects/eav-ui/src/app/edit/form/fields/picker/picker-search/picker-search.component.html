@@ -2,7 +2,7 @@
   <div [hidden]="vm.hideDropdown">
     <mat-form-field [formGroup]="group" class="eav-form-field" color="accent"
       [ngClass]="{ 'mat-form-field-invalid': vm.controlStatus.invalid && vm.controlStatus.touched }">
-      <input id="autocomplete" matInput #autocomplete [placeholder]="getPlaceholder(vm.availableEntities, vm.error)"
+      <input matInput #autocomplete [placeholder]="getPlaceholder(vm.availableEntities, vm.error)"
         [matAutocomplete]="auto" [disabled]="vm.controlStatus.disabled || !vm.enableAddExisting"
         [value]="showSelectedItem ? vm.selectedEntity?.Text : ''" (focus)="fetchEntities(vm.availableEntities)"
         (blur)="markAsTouched(vm.selectedEntity, vm.selectedEntities)" (input)="filterSelectionList()"
