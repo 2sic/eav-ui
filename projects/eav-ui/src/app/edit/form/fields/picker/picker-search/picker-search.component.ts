@@ -40,6 +40,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   // dataSource: any;
 
   private availableEntities$ = new BehaviorSubject<WIPDataSourceItem[]>(null);
+  private didFetchEntities$ = new BehaviorSubject(false);
 
   private filter$ = new BehaviorSubject(false);
 
@@ -169,9 +170,12 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   }
 
   fetchEntities(availableEntities: WIPDataSourceItem[]): void {
+    console.log('SDV fetchEntities', availableEntities);
     this.autocompleteRef.nativeElement.value = '';
-    if (availableEntities != null && availableEntities.length > 1) { return; }
+    // TODO @SDV - This is a workaround, not a fixed solution
+    if (/*availableEntities != null && availableEntities.length > 1*/this.didFetchEntities$.value) { return; }
     this.pickerSourceAdapter.fetchItems(false);
+    this.didFetchEntities$.next(true);
   }
 
   getPlaceholder(availableEntities: WIPDataSourceItem[], error: string): string {
