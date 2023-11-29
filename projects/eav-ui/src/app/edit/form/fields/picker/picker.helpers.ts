@@ -13,6 +13,29 @@ export function calculateSelectedEntities(
   stringQueryLabelField: string,
   translate: TranslateService,
 ): WIPDataSourceItem[] {
+  if (Array.isArray(fieldValue)) { 
+    if (typeof fieldValue[0] === 'string' && fieldValue[0].length === 1) {
+      // console.error('SDV calculateSelectedEntities: fieldValue[0].length === 1');
+      const guid = fieldValue.length === 36 ? fieldValue[35] : fieldValue.join('');
+      const selectedEntities = entityCache.filter(entity => entity.Value === guid)
+        .map(entity => { 
+          const result: WIPDataSourceItem = {
+            // debug info
+            _sourceIsQuery: false,
+            // if it's a free text value or not found, disable edit and delete
+            _disableEdit: false,
+            _disableDelete: false,
+            // either the real value or null if text-field or not found
+            Id: entity.Id,
+            Text: entity.Text,
+            _tooltip: `${entity.Text} (${entity.Value})`,
+            Value: entity.Value,
+          };
+          return result;
+        });
+      return selectedEntities;
+    }
+  }
   // name is either [guid] or simply free-text - convert to array for further processing
   const currentValueAsArray = typeof fieldValue === 'string' ? convertValueToArray(fieldValue, separator) : fieldValue;
 
@@ -43,7 +66,7 @@ export function calculateSelectedEntities(
     };
     return result;
   });
-
+  
   return selectedEntities;
 }
 
@@ -53,6 +76,7 @@ export function calculateStringSelectedOptions(
   options: DropdownOption[],
 ): WIPDataSourceItem[] {
   const currentValueAsArray = typeof fieldValue === 'string' ? convertValueToArray(fieldValue, separator) : fieldValue;
+
   const selectedEntities = currentValueAsArray.map(value => {
     const label = options?.find(o => o.value === value)?.label ?? value
     const result: WIPDataSourceItem = {
@@ -69,6 +93,7 @@ export function calculateStringSelectedOptions(
     };
     return result;
   });
+
   return selectedEntities;
 }
 

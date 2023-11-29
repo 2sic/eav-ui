@@ -18,9 +18,15 @@ export class EntityFieldDataSource {
     private entityService: EntityService,
     private entityCacheService: EntityCacheService,
   ) {
-    this.data$ = combineLatest([this.contentTypeName$, this.entityGuids$, this.getAll$, this.loaded$])
-      .pipe(map(([contentTypeName, entityGuids, getAll, loaded]) => {
-        const data = entityGuids == null ? this.entityCacheService.getEntities() : this.entityCacheService.getEntities(entityGuids);
+    this.data$ = combineLatest([
+      this.contentTypeName$,
+      this.entityGuids$,
+      this.getAll$,
+      this.loaded$,
+      this.entityCacheService.getEntities$()
+    ])
+      .pipe(map(([contentTypeName, entityGuids, getAll, loaded, entities]) => {
+        const data = entityGuids == null ? entities : entities.filter(entity => entityGuids.includes(entity.guid));
         if (!getAll || loaded) {
           return data;
         } else if (getAll && !loaded) {
@@ -38,7 +44,7 @@ export class EntityFieldDataSource {
     this.getAll$.next(true);
   }
 
-  contentType(contentTypeName: string,): void {
+  contentType(contentTypeName: string): void {
     this.contentTypeName$.next(contentTypeName);
   }
 

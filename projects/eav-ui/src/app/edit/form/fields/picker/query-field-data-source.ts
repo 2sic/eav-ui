@@ -1,13 +1,20 @@
 import { EntityForPicker, WIPDataSourceItem, FieldSettings } from "projects/edit-types";
-import { BehaviorSubject, Subscription } from "rxjs";
+import { BehaviorSubject, Observable, Subscription, combineLatest, map } from "rxjs";
 import { EntityCacheService, StringQueryCacheService } from "../../../shared/store/ngrx-data";
 import { QueryService } from "../../../shared/services";
 import { TranslateService } from "@ngx-translate/core";
 import { QueryEntity } from "../entity/entity-query/entity-query.models";
 
 export class QueryFieldDataSource {
-  public data$ = new BehaviorSubject<WIPDataSourceItem[]>([]);
+  public data$: Observable<WIPDataSourceItem[]>;
   public error$ = new BehaviorSubject('');
+
+  public includeGuid$ = new BehaviorSubject<boolean>(true);
+  public params$ = new BehaviorSubject<string>(null);
+  public entityGuids$ = new BehaviorSubject<string[]>(null);
+
+  private getAll$ = new BehaviorSubject<boolean>(false);
+  private loaded$ = new BehaviorSubject<boolean>(false);
 
   private subscriptions = new Subscription();
 
@@ -21,10 +28,47 @@ export class QueryFieldDataSource {
     private entityGuid: string,
     private fieldName: string,
     private appId: string,
-  ) { }
+  ) {
+    this.data$ = combineLatest([
+      this.includeGuid$,
+      this.params$,
+      this.entityGuids$,
+      this.getAll$,
+      this.loaded$,
+      this.entityCacheService.getEntities$(),
+      this.stringQueryCacheService.getEntities$(this.entityGuid, this.fieldName)
+    ])
+      .pipe(map(([includeGuid, params, entityGuids, getAll, loaded, entityQuery, stringQuery]) => {
+        const data = this.isStringQuery ?
+          stringQuery.map(entity => this.stringQueryEntityMapping(entity))
+          : entityQuery;
+        if (!getAll || loaded) {
+          return data;
+        } else if (getAll && !loaded) {
+          this.fetchData(includeGuid, params, entityGuids);
+          return data;
+        }
+      }));
+   }
 
   destroy(): void {
     this.subscriptions.unsubscribe();
+  }
+
+  getAll(): void {
+    this.getAll$.next(true);
+  }
+
+  includeGuid(includeGuid: boolean): void {
+    this.includeGuid$.next(includeGuid);
+  }
+
+  contentType(params: string): void {
+    this.params$.next(params);
+  }
+
+  entityGuids(entityGuids: string[]): void {
+    this.entityGuids$.next(entityGuids);
   }
 
   fetchData(includeGuid: boolean, params: string, entitiesFilter: string[]): void {
@@ -52,7 +96,7 @@ export class QueryFieldDataSource {
           const entities = this.setDisableEdit(data[streamName]);
           this.stringQueryCacheService.loadEntities(this.entityGuid, this.fieldName, entities);
         }
-        this.data$.next(items);
+        this.loaded$.next(true);
       },
       error: (error) => {
         console.error(error);

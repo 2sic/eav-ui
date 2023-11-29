@@ -40,7 +40,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   // dataSource: any;
 
   private availableEntities$ = new BehaviorSubject<WIPDataSourceItem[]>(null);
-  private didFetchEntities$ = new BehaviorSubject(false);
+  private selectedEntity$ = new BehaviorSubject<WIPDataSourceItem>(null);
 
   private filter$ = new BehaviorSubject(false);
 
@@ -88,17 +88,19 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
         controlStatus, freeTextMode, label, required, filter
       ]) => {
         const selectedEntity = selectedEntities.length > 0 ? selectedEntities[0] : null;
+        this.selectedEntity$.next(selectedEntity);
+
+        const showEmpty = !settings.EnableAddExisting && !(selectedEntities.length > 1);
+        const hideDropdown = (!settings.AllowMultiValue && (selectedEntities.length > 1)) || !settings.EnableAddExisting;
+        const showItemEditButtons = selectedEntity && this.showItemEditButtons;
+        const isTreeDisplayMode = settings.PickerDisplayMode === 'tree';
+
         const elemValue = this.autocompleteRef?.nativeElement.value;
         const filteredEntities = !elemValue ? availableEntities : availableEntities?.filter(option =>
           option.Text
             ? option.Text.toLocaleLowerCase().includes(elemValue.toLocaleLowerCase())
             : option.Value.toLocaleLowerCase().includes(elemValue.toLocaleLowerCase())
         );
-
-        const showEmpty = !settings.EnableAddExisting && !(selectedEntities.length > 1);
-        const hideDropdown = (!settings.AllowMultiValue && (selectedEntities.length > 1)) || !settings.EnableAddExisting;
-        const showItemEditButtons = selectedEntity && this.showItemEditButtons;
-        const isTreeDisplayMode = settings.PickerDisplayMode === 'tree';
 
         const viewModel: PickerSearchViewModel = {
           debugEnabled,
@@ -144,23 +146,38 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     super.ngOnDestroy();
   }
 
-  /** @SDV This is a workaround, not a fixed solution */
-  ngAfterViewInit(): void { 
-    this.pickerStateAdapter.selectedItems$.pipe(take(1)).subscribe(selectedItems => { 
-      if (selectedItems != null && selectedItems != undefined && selectedItems.length > 0) {
-        this.removeItem(0);
-        const selected: string = selectedItems[0]?.Value;
-        this.pickerStateAdapter.addSelected(selected);
-        // TODO: @SDV - This is needed so after choosing option element is not focused (it gets focused by default so if blur is outside of setTimeout it will happen before refocus)
-        setTimeout(() => {
-          this.autocompleteRef.nativeElement.blur();
-        });
+
+  displayFn(value: string | string[] | WIPDataSourceItem): string {
+    let returnValue = '';
+    if (value) {
+      if (typeof value === 'string')
+        returnValue = this.availableEntities$.value?.find(ae => ae.Value == value)?.Text;
+      else if (Array.isArray(value)) {
+        if (typeof value[0] === 'string') {
+          if (value.length == 35) {
+            const guid = value.join('');
+            returnValue = this.availableEntities$.value?.find(ae => ae.Value == guid)?.Text;
+          } else if (value.length == 36) {
+            const guid = value[value.length - 1];
+            returnValue = this.availableEntities$.value?.find(ae => ae.Value == guid)?.Text;
+          } else {
+            returnValue = this.availableEntities$.value?.find(ae => ae.Value == value[0])?.Text;
+          }
+        } else {
+          returnValue = (value[0] as WIPDataSourceItem)?.Text;
+        }
       }
-    });
-  }
-  
-  displayFn(value: string): string {
-    return value ? this.availableEntities$.value.find(ae => ae.Value == value).Text : '';
+      else
+        returnValue = (value as WIPDataSourceItem)?.Text;
+    }
+    if (!returnValue) {
+      if (this.selectedEntity$.value?.Value == value) {
+        returnValue = this.selectedEntity$.value.Text;
+      } else {
+        returnValue = value as string;
+      }
+    }
+    return returnValue;
   }
 
   markAsTouched(selectedEntity: WIPDataSourceItem, selectedEntities: WIPDataSourceItem[]): void {
@@ -169,13 +186,9 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     GeneralHelpers.markControlTouched(this.control);
   }
 
-  fetchEntities(availableEntities: WIPDataSourceItem[]): void {
-    console.log('SDV fetchEntities', availableEntities);
+  fetchEntities(): void {
     this.autocompleteRef.nativeElement.value = '';
-    // TODO @SDV - This is a workaround, not a fixed solution
-    if (/*availableEntities != null && availableEntities.length > 1*/this.didFetchEntities$.value) { return; }
     this.pickerSourceAdapter.fetchItems(false);
-    this.didFetchEntities$.next(true);
   }
 
   getPlaceholder(availableEntities: WIPDataSourceItem[], error: string): string {

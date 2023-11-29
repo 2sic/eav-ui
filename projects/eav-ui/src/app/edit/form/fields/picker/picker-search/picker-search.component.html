@@ -4,7 +4,7 @@
       [ngClass]="{ 'mat-form-field-invalid': vm.controlStatus.invalid && vm.controlStatus.touched }">
       <input matInput #autocomplete [placeholder]="getPlaceholder(vm.availableEntities, vm.error)"
         [matAutocomplete]="auto" [disabled]="vm.controlStatus.disabled || !vm.enableAddExisting"
-        [value]="showSelectedItem ? vm.selectedEntity?.Text : ''" (focus)="fetchEntities(vm.availableEntities)"
+        [formControlName]="config.fieldName" (focus)="fetchEntities()"
         (blur)="markAsTouched(vm.selectedEntity, vm.selectedEntities)" (input)="filterSelectionList()"
         (click)="filterSelectionList()">
       <button mat-icon-button matSuffix class="entity-dropdown-button eav-suffix-button" disableRipple="true"

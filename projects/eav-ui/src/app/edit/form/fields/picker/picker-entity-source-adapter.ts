@@ -16,7 +16,6 @@ import { FieldDataSourceFactoryService } from "./field-data-source-factory.servi
 
 export class PickerEntitySourceAdapter extends PickerSourceAdapter {
   private entityFieldDataSource: EntityFieldDataSource;
-  private stringFieldDataSource: StringFieldDataSource;
 
   constructor(
     public disableAddNew$: BehaviorSubject<boolean> = new BehaviorSubject(true),
