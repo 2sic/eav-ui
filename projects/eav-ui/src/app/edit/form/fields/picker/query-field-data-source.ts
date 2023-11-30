@@ -10,11 +10,12 @@ export class QueryFieldDataSource {
   public error$ = new BehaviorSubject('');
 
   public includeGuid$ = new BehaviorSubject<boolean>(true);
-  public params$ = new BehaviorSubject<string>(null);
+  public params$ = new BehaviorSubject<string>('');
   public entityGuids$ = new BehaviorSubject<string[]>(null);
 
   private getAll$ = new BehaviorSubject<boolean>(false);
-  private loaded$ = new BehaviorSubject<boolean>(false);
+  // private loaded$ = new BehaviorSubject<boolean>(false);
+  private loading$ = new BehaviorSubject<boolean>(null);
 
   private subscriptions = new Subscription();
 
@@ -34,24 +35,41 @@ export class QueryFieldDataSource {
       this.params$,
       this.entityGuids$,
       this.getAll$,
-      this.loaded$,
+      this.loading$,
       this.entityCacheService.getEntities$(),
       this.stringQueryCacheService.getEntities$(this.entityGuid, this.fieldName)
     ])
-      .pipe(map(([includeGuid, params, entityGuids, getAll, loaded, entityQuery, stringQuery]) => {
+      .pipe(map(([includeGuid, params, entityGuids, getAll, loading, entityQuery, stringQuery]) => {
+        // const data = this.isStringQuery ?
+        //   stringQuery.map(entity => this.stringQueryEntityMapping(entity))
+        //   : entityQuery;
+        // if (!getAll || loaded) {
+        //   return data;
+        // } else if (getAll && !loaded) {
+        //   console.log('SDV queryFieldDataSource2', includeGuid, params, entityGuids);
+        //   this.fetchData(includeGuid, params, entityGuids);
+        //   return data;
+        // }
         const data = this.isStringQuery ?
           stringQuery.map(entity => this.stringQueryEntityMapping(entity))
           : entityQuery;
-        if (!getAll || loaded) {
-          return data;
-        } else if (getAll && !loaded) {
+        if (getAll && loading == null) {
           this.fetchData(includeGuid, params, entityGuids);
           return data;
         }
+        return data;
       }));
    }
 
   destroy(): void {
+    this.error$.complete();
+    this.includeGuid$.complete();
+    this.params$.complete();
+    this.entityGuids$.complete();
+    this.getAll$.complete();
+    // this.loaded$.complete();
+    this.loading$.complete();
+
     this.subscriptions.unsubscribe();
   }
 
@@ -75,6 +93,8 @@ export class QueryFieldDataSource {
     const settings = this.settings$.value;
     const streamName = settings.StreamName;
     const queryUrl = settings.Query.includes('/') ? settings.Query : `${settings.Query}/${streamName}`;
+    this.loading$.next(true);
+
     this.subscriptions.add(this.queryService.getAvailableEntities(queryUrl, includeGuid, params, entitiesFilter).subscribe({
       next: (data) => {
         if (!data) {
@@ -96,7 +116,8 @@ export class QueryFieldDataSource {
           const entities = this.setDisableEdit(data[streamName]);
           this.stringQueryCacheService.loadEntities(this.entityGuid, this.fieldName, entities);
         }
-        this.loaded$.next(true);
+        // this.loaded$.next(true);
+        this.loading$.next(false);
       },
       error: (error) => {
         console.error(error);

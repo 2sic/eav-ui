@@ -138,7 +138,6 @@ export class PickerQuerySourceAdapter extends PickerSourceAdapter {
         this.availableItems$.next(items);
       }));
     }
-
   }
 
   flushAvailableEntities(): void {

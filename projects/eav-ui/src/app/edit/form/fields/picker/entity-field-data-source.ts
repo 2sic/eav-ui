@@ -10,7 +10,8 @@ export class EntityFieldDataSource {
   public entityGuids$ = new BehaviorSubject<string[]>(null);
 
   private getAll$ = new BehaviorSubject<boolean>(false);
-  private loaded$ = new BehaviorSubject<boolean>(false);
+  // private loaded$ = new BehaviorSubject<boolean>(false);
+  private loading$ = new BehaviorSubject<boolean>(null);
 
   private subscriptions = new Subscription();
 
@@ -22,21 +23,33 @@ export class EntityFieldDataSource {
       this.contentTypeName$,
       this.entityGuids$,
       this.getAll$,
-      this.loaded$,
+      this.loading$,
       this.entityCacheService.getEntities$()
     ])
-      .pipe(map(([contentTypeName, entityGuids, getAll, loaded, entities]) => {
+      .pipe(map(([contentTypeName, entityGuids, getAll, loading, entities]) => {
+      //   const data = entityGuids == null ? entities : entities.filter(entity => entityGuids.includes(entity.guid));
+      //   if (!getAll || loaded) {
+      //     return data;
+      //   } else if (getAll && !loaded) {
+      //     this.fetchData(contentTypeName, entityGuids);
+      //     return data;
+      //   }
         const data = entityGuids == null ? entities : entities.filter(entity => entityGuids.includes(entity.guid));
-        if (!getAll || loaded) {
-          return data;
-        } else if (getAll && !loaded) {
+        if (getAll && loading == null) {
           this.fetchData(contentTypeName, entityGuids);
           return data;
         }
+        return data;
        }));
    }
 
   destroy(): void {
+    this.contentTypeName$.complete();
+    this.entityGuids$.complete();
+    this.getAll$.complete();
+    // this.loaded$.complete();
+    this.loading$.complete();
+
     this.subscriptions.unsubscribe();
   }
 
@@ -56,9 +69,11 @@ export class EntityFieldDataSource {
   // 2dm 2023-01-22 #maybeSupportIncludeParentApps
   // const includeParentApps = this.settings$.value?.IncludeParentApps == true;
   private fetchData(contentTypeName: string, entitiesFilter: string[]): void {
+    this.loading$.next(true);
     this.subscriptions.add(this.entityService.getAvailableEntities(contentTypeName, entitiesFilter/*, includeParentApps */).subscribe(items => {
       this.entityCacheService.loadEntities(items);
-      this.loaded$.next(true);
+      // this.loaded$.next(true);
+      this.loading$.next(false);
     }));
   }
 }
