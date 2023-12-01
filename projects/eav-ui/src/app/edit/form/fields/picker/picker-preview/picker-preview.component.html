@@ -1,7 +1,9 @@
 <ng-container *ngIf="templateVars$ | async as data">
   <div fxLayout="row" fxLayoutAlign="start center">
     <div class="eav-div-around-picker">
-      <app-picker-pill-preview *ngIf="data.selectedItems.length > 1 && !data.freeTextMode" 
+      <app-picker-pill-preview *ngIf="data.selectedItems.length > 1 && !data.freeTextMode"
+        [pickerSourceAdapter]="pickerSourceAdapter"
+        [pickerStateAdapter]="pickerStateAdapter"
         [config]="config" 
         [group]="group">
       </app-picker-pill-preview>

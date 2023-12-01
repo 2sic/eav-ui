@@ -1,13 +1,11 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Observable, combineLatest, distinctUntilChanged, map } from 'rxjs';
-import { PickerPillPreviewTemplateVars } from './picker-pill-preview.models';
-import { GeneralHelpers } from '../../../../shared/helpers';
-import { calculateSelectedEntities } from '../picker.helpers';
-import { TranslateService } from '@ngx-translate/core';
+import { PickerPillPreviewViewModel } from './picker-pill-preview.models';
 import { EavService, FieldsSettingsService, EditRoutingService } from '../../../../shared/services';
-import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
 import { BaseFieldComponent } from '../../base/base-field.component';
 import { WIPDataSourceItem } from 'projects/edit-types';
+import { PickerSourceAdapter } from '../adapters/picker-source-adapter';
+import { PickerStateAdapter } from '../adapters/picker-state-adapter';
 
 @Component({
   selector: 'app-picker-pill-preview',
@@ -15,16 +13,15 @@ import { WIPDataSourceItem } from 'projects/edit-types';
   styleUrls: ['./picker-pill-preview.component.scss'],
 })
 export class PickerPillPreviewComponent extends BaseFieldComponent<string | string[]> implements OnInit, OnDestroy {
+  @Input() pickerSourceAdapter: PickerSourceAdapter;
+  @Input() pickerStateAdapter: PickerStateAdapter;
 
-  templateVars$: Observable<PickerPillPreviewTemplateVars>;
+  templateVars$: Observable<PickerPillPreviewViewModel>;
 
   constructor(
     eavService: EavService,
     fieldsSettingsService: FieldsSettingsService,
-    private translate: TranslateService,
     private editRoutingService: EditRoutingService,
-    private entityCacheService: EntityCacheService,
-    private stringQueryCache: StringQueryCacheService,
   ) {
     super(eavService, fieldsSettingsService);
   }
@@ -32,34 +29,22 @@ export class PickerPillPreviewComponent extends BaseFieldComponent<string | stri
   ngOnInit(): void {
     super.ngOnInit();
 
+    const controlStatus$ = this.pickerStateAdapter.controlStatus$;
+    const label$ = this.pickerStateAdapter.label$;
+    const placeholder$ = this.pickerStateAdapter.placeholder$;
+    const required$ = this.pickerStateAdapter.required$;
     const isOpen$ = this.settings$.pipe(map(settings => settings._isDialog), distinctUntilChanged());
-    const selectedEntities$ = combineLatest([
-      this.controlStatus$.pipe(map(controlStatus => controlStatus.value), distinctUntilChanged()),
-      this.entityCacheService.getEntities$(),
-      this.stringQueryCache.getEntities$(this.config.entityGuid, this.config.fieldName),
-      this.settings$.pipe(
-        map(settings => ({
-          Separator: settings.Separator,
-          Value: settings.Value,
-          Label: settings.Label,
-        })),
-        distinctUntilChanged(GeneralHelpers.objectsEqual),
-      ),
-    ]).pipe(
-      map(([value, entityCache, stringQueryCache, settings]) =>
-        calculateSelectedEntities(value, settings.Separator, entityCache, stringQueryCache, settings.Value, settings.Label, this.translate)
-      ),
-    );
+    const selectedEntities$ = this.pickerStateAdapter.selectedItems$;
 
     this.templateVars$ = combineLatest([
-      combineLatest([this.controlStatus$, this.label$, this.placeholder$, this.required$]),
+      combineLatest([controlStatus$, label$, placeholder$, required$]),
       combineLatest([selectedEntities$, isOpen$]),
     ]).pipe(
       map(([
         [controlStatus, label, placeholder, required],
         [selectedEntities, isOpen],
       ]) => {
-        const templateVars: PickerPillPreviewTemplateVars = {
+        const templateVars: PickerPillPreviewViewModel = {
           controlStatus,
           label,
           placeholder,
