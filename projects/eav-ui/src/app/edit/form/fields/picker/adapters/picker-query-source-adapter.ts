@@ -128,7 +128,7 @@ export class PickerQuerySourceAdapter extends PickerSourceAdapter {
       )
       : null;
     this.queryFieldDataSource.includeGuid(true);
-    this.queryFieldDataSource.contentType(params);
+    this.queryFieldDataSource.params(params);
     this.queryFieldDataSource.entityGuids(entitiesFilter);
 
     this.queryFieldDataSource.getAll();

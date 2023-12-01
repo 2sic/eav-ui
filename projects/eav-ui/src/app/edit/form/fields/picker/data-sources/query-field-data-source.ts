@@ -69,7 +69,7 @@ export class QueryFieldDataSource {
     this.includeGuid$.next(includeGuid);
   }
 
-  contentType(params: string): void {
+  params(params: string): void {
     this.params$.next(params);
   }
 
@@ -155,8 +155,8 @@ export class QueryFieldDataSource {
       tooltip = tooltip.replace(`[Item:${field}]`, entity[field]);
       information = information.replace(`[Item:${field}]`, entity[field]);
     });
-    entityInfo.Tooltip = tooltip;
-    entityInfo.Information = information;
+    entityInfo._tooltip = tooltip;
+    entityInfo._information = information;
     return entityInfo;
   }
 
