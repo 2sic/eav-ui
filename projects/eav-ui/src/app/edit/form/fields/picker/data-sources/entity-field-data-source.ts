@@ -1,7 +1,8 @@
 import { WIPDataSourceItem } from "projects/edit-types";
-import { BehaviorSubject, Observable, Subscription, combineLatest, filter, map } from "rxjs";
+import { BehaviorSubject, Observable, Subscription, combineLatest, distinctUntilChanged, filter, map } from "rxjs";
 import { EntityService } from "../../../../shared/services";
 import { EntityCacheService } from "../../../../shared/store/ngrx-data";
+import { GeneralHelpers } from "../../../../shared/helpers";
 
 export class EntityFieldDataSource {
   public data$: Observable<WIPDataSourceItem[]>;
@@ -10,7 +11,6 @@ export class EntityFieldDataSource {
   public entityGuids$ = new BehaviorSubject<string[]>(null);
 
   private getAll$ = new BehaviorSubject<boolean>(false);
-  // private loaded$ = new BehaviorSubject<boolean>(false);
   private loading$ = new BehaviorSubject<boolean>(null);
 
   private subscriptions = new Subscription();
@@ -27,27 +27,20 @@ export class EntityFieldDataSource {
       this.entityCacheService.getEntities$()
     ])
       .pipe(map(([contentTypeName, entityGuids, getAll, loading, entities]) => {
-        //   const data = entityGuids == null ? entities : entities.filter(entity => entityGuids.includes(entity.guid));
-        //   if (!getAll || loaded) {
-        //     return data;
-        //   } else if (getAll && !loaded) {
-        //     this.fetchData(contentTypeName, entityGuids);
-        //     return data;
-        //   }
-        const data = entityGuids == null ? entities : entities.filter(entity => entityGuids.includes(entity.guid));
+        const data = entities;
         if (getAll && loading == null) {
           this.fetchData(contentTypeName, entityGuids);
           return data;
         }
         return data;
-      }));
+      })//, distinctUntilChanged(GeneralHelpers.objectsEqual)
+      );
   }
 
   destroy(): void {
     this.contentTypeName$.complete();
     this.entityGuids$.complete();
     this.getAll$.complete();
-    // this.loaded$.complete();
     this.loading$.complete();
 
     this.subscriptions.unsubscribe();

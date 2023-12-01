@@ -14,7 +14,6 @@ export class QueryFieldDataSource {
   public entityGuids$ = new BehaviorSubject<string[]>(null);
 
   private getAll$ = new BehaviorSubject<boolean>(false);
-  // private loaded$ = new BehaviorSubject<boolean>(false);
   private loading$ = new BehaviorSubject<boolean>(null);
 
   private subscriptions = new Subscription();
@@ -40,16 +39,6 @@ export class QueryFieldDataSource {
       this.stringQueryCacheService.getEntities$(this.entityGuid, this.fieldName)
     ])
       .pipe(map(([includeGuid, params, entityGuids, getAll, loading, entityQuery, stringQuery]) => {
-        // const data = this.isStringQuery ?
-        //   stringQuery.map(entity => this.stringQueryEntityMapping(entity))
-        //   : entityQuery;
-        // if (!getAll || loaded) {
-        //   return data;
-        // } else if (getAll && !loaded) {
-        //   console.log('SDV queryFieldDataSource2', includeGuid, params, entityGuids);
-        //   this.fetchData(includeGuid, params, entityGuids);
-        //   return data;
-        // }
         const data = this.isStringQuery ?
           stringQuery.map(entity => this.stringQueryEntityMapping(entity))
           : entityQuery;
@@ -67,7 +56,6 @@ export class QueryFieldDataSource {
     this.params$.complete();
     this.entityGuids$.complete();
     this.getAll$.complete();
-    // this.loaded$.complete();
     this.loading$.complete();
 
     this.subscriptions.unsubscribe();
@@ -147,7 +135,11 @@ export class QueryFieldDataSource {
 
   private setDisableEdit<T extends EntityForPicker>(queryEntities: T[]): T[] {
     if (queryEntities)
-      queryEntities.forEach(e => e._disableEdit = e.AppId != null && e.AppId.toString() !== this.appId);
+      queryEntities.forEach(e => {
+        const disable = e.AppId != null && e.AppId.toString() !== this.appId;
+        e._disableEdit = disable;
+        e._disableDelete = disable;
+      });
     // console.log('2dm queryEntities', queryEntities, this.eavService.eavConfig.appId);
     return queryEntities;
   }

@@ -10,6 +10,7 @@ import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set
 import { AbstractControl } from '@angular/forms';
 import { PickerStringStateAdapter } from '../adapters/picker-string-state-adapter';
 import { PickerEntityStateAdapter } from '../adapters/picker-entity-state-adapter';
+import { FieldDataSourceFactoryService } from './field-data-source-factory.service';
 
 @Injectable()
 export class PickerStateAdapterFactoryService {
@@ -17,6 +18,7 @@ export class PickerStateAdapterFactoryService {
     private entityCacheService: EntityCacheService,
     private stringQueryCacheService: StringQueryCacheService,
     private translateService: TranslateService,
+    private fieldDataSourceFactoryService: FieldDataSourceFactoryService,
   ) { }
 
   createPickerEntityStateAdapter(
@@ -39,6 +41,7 @@ export class PickerStateAdapterFactoryService {
       required$,
       this.entityCacheService.getEntities$(),
       this.stringQueryCacheService.getEntities$(config.entityGuid, config.fieldName),
+      this.fieldDataSourceFactoryService,
       this.translateService,
       control,
       focusOnSearchComponent,
