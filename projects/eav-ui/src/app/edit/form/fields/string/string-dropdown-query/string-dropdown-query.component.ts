@@ -5,12 +5,12 @@ import { EavService, EditRoutingService, EntityService, FieldsSettingsService } 
 import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { EntityQueryComponent } from '../../entity/entity-query/entity-query.component';
-import { PickerSourceAdapterFactoryService } from '../../picker/picker-source-adapter-factory.service';
-import { PickerStateAdapterFactoryService } from '../../picker/picker-state-adapter-factory.service';
+import { PickerSourceAdapterFactoryService } from '../../picker/factories/picker-source-adapter-factory.service';
+import { PickerStateAdapterFactoryService } from '../../picker/factories/picker-state-adapter-factory.service';
 import { StringDropdownQueryLogic } from './string-dropdown-query-logic';
 import { DeleteEntityProps } from '../../picker/picker.models';
-import { PickerStringStateAdapter } from '../../picker/picker-string-state-adapter';
-import { PickerQuerySourceAdapter } from '../../picker/picker-query-source-adapter';
+import { PickerStringStateAdapter } from '../../picker/adapters/picker-string-state-adapter';
+import { PickerQuerySourceAdapter } from '../../picker/adapters/picker-query-source-adapter';
 
 @Component({
   selector: InputTypeConstants.StringDropdownQuery,

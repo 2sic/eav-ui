@@ -2,17 +2,17 @@ import { Injectable } from '@angular/core';
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
-import { EavService, EditRoutingService, EntityService, FieldsSettingsService, QueryService } from '../../../shared/services';
-import { EntityCacheService, StringQueryCacheService } from '../../../shared/store/ngrx-data';
-import { PickerSourceAdapter } from './picker-source-adapter';
-import { DeleteEntityProps } from './picker.models';
+import { EavService, EditRoutingService, EntityService, FieldsSettingsService, QueryService } from '../../../../shared/services';
+import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
+import { PickerSourceAdapter } from '../adapters/picker-source-adapter';
+import { DeleteEntityProps } from '../picker.models';
 import { BehaviorSubject } from 'rxjs';
 import { FieldSettings } from 'projects/edit-types';
-import { FieldConfigSet } from '../../builder/fields-builder/field-config-set.model';
-import { PickerQuerySourceAdapter } from './picker-query-source-adapter';
-import { PickerEntitySourceAdapter } from './picker-entity-source-adapter';
+import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
+import { PickerQuerySourceAdapter } from '../adapters/picker-query-source-adapter';
+import { PickerEntitySourceAdapter } from '../adapters/picker-entity-source-adapter';
 import { FieldDataSourceFactoryService } from './field-data-source-factory.service';
-import { PickerStringSourceAdapter } from './picker-string-source-adapter';
+import { PickerStringSourceAdapter } from '../adapters/picker-string-source-adapter';
 
 @Injectable()
 export class PickerSourceAdapterFactoryService {

@@ -1,9 +1,9 @@
 import { EntityForPicker, WIPDataSourceItem, FieldSettings } from "projects/edit-types";
 import { BehaviorSubject, Observable, Subscription, combineLatest, map } from "rxjs";
-import { EntityCacheService, StringQueryCacheService } from "../../../shared/store/ngrx-data";
-import { QueryService } from "../../../shared/services";
+import { EntityCacheService, StringQueryCacheService } from "../../../../shared/store/ngrx-data";
+import { QueryService } from "../../../../shared/services";
 import { TranslateService } from "@ngx-translate/core";
-import { QueryEntity } from "../entity/entity-query/entity-query.models";
+import { QueryEntity } from "../../entity/entity-query/entity-query.models";
 
 export class QueryFieldDataSource {
   public data$: Observable<WIPDataSourceItem[]>;
@@ -59,7 +59,7 @@ export class QueryFieldDataSource {
         }
         return data;
       }));
-   }
+  }
 
   destroy(): void {
     this.error$.complete();

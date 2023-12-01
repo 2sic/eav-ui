@@ -4,13 +4,13 @@ import { InputTypeConstants } from '../../../../../content-type-fields/constants
 import { EavService, EditRoutingService, EntityService, FieldsSettingsService } from '../../../../shared/services';
 import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
-import { PickerSourceAdapterFactoryService } from '../../picker/picker-source-adapter-factory.service';
-import { PickerStateAdapterFactoryService } from '../../picker/picker-state-adapter-factory.service';
+import { PickerSourceAdapterFactoryService } from '../../picker/factories/picker-source-adapter-factory.service';
+import { PickerStateAdapterFactoryService } from '../../picker/factories/picker-state-adapter-factory.service';
 import { PickerComponent } from '../../picker/picker.component';
 import { EntityDefaultLogic } from './entity-default-logic';
 import { DeleteEntityProps } from '../../picker/picker.models';
-import { PickerEntitySourceAdapter } from '../../picker/picker-entity-source-adapter';
-import { PickerEntityStateAdapter } from '../../picker/picker-entity-state-adapter';
+import { PickerEntitySourceAdapter } from '../../picker/adapters/picker-entity-source-adapter';
+import { PickerEntityStateAdapter } from '../../picker/adapters/picker-entity-state-adapter';
 
 @Component({
   selector: InputTypeConstants.EntityDefault,

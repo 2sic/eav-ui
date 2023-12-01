@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { ControlStatus } from '../../../shared/models';
-import { EditRoutingService } from '../../../shared/services';
-import { EntityCacheService, StringQueryCacheService } from '../../../shared/store/ngrx-data';
-import { PickerStateAdapter } from './picker-state-adapter';
+import { ControlStatus } from '../../../../shared/models';
+import { EditRoutingService } from '../../../../shared/services';
+import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
+import { PickerStateAdapter } from '../adapters/picker-state-adapter';
 import { FieldSettings } from 'projects/edit-types';
-import { FieldConfigSet } from '../../builder/fields-builder/field-config-set.model';
+import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
 import { AbstractControl } from '@angular/forms';
-import { PickerStringStateAdapter } from './picker-string-state-adapter';
-import { PickerEntityStateAdapter } from './picker-entity-state-adapter';
+import { PickerStringStateAdapter } from '../adapters/picker-string-state-adapter';
+import { PickerEntityStateAdapter } from '../adapters/picker-entity-state-adapter';
 
 @Injectable()
 export class PickerStateAdapterFactoryService {

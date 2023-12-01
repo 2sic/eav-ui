@@ -4,8 +4,8 @@ import { InputTypeConstants } from '../../../../../content-type-fields/constants
 import { EavService, EditRoutingService, EntityService, FieldsSettingsService } from '../../../../shared/services';
 import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
-import { PickerSourceAdapterFactoryService } from '../../picker/picker-source-adapter-factory.service';
-import { PickerStateAdapterFactoryService } from '../../picker/picker-state-adapter-factory.service';
+import { PickerSourceAdapterFactoryService } from '../../picker/factories/picker-source-adapter-factory.service';
+import { PickerStateAdapterFactoryService } from '../../picker/factories/picker-state-adapter-factory.service';
 import { PickerComponent } from '../../picker/picker.component';
 import { EntityContentBlocksLogic } from './entity-content-blocks-logic';
 import { DeleteEntityProps } from '../../picker/picker.models';

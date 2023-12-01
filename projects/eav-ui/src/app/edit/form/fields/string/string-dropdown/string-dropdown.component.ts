@@ -6,12 +6,11 @@ import { PickerComponent } from '../../picker/picker.component';
 import { TranslateService } from '@ngx-translate/core';
 import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
 import { EntityDefaultLogic } from '../../entity/entity-default/entity-default-logic';
-import { PickerEntitySourceAdapter } from '../../picker/picker-entity-source-adapter';
-import { PickerSourceAdapterFactoryService } from '../../picker/picker-source-adapter-factory.service';
-import { PickerStateAdapterFactoryService } from '../../picker/picker-state-adapter-factory.service';
+import { PickerSourceAdapterFactoryService } from '../../picker/factories/picker-source-adapter-factory.service';
+import { PickerStateAdapterFactoryService } from '../../picker/factories/picker-state-adapter-factory.service';
 import { DeleteEntityProps } from '../../picker/picker.models';
-import { PickerStringStateAdapter } from '../../picker/picker-string-state-adapter';
-import { PickerStringSourceAdapter } from '../../picker/picker-string-source-adapter';
+import { PickerStringStateAdapter } from '../../picker/adapters/picker-string-state-adapter';
+import { PickerStringSourceAdapter } from '../../picker/adapters/picker-string-source-adapter';
 
 @Component({
   selector: InputTypeConstants.StringDropdown,

@@ -3,16 +3,15 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
 import { FieldSettings } from "projects/edit-types";
 import { BehaviorSubject, distinctUntilChanged, map } from "rxjs";
-import { EntityService, EavService, EditRoutingService, FieldsSettingsService } from "../../../shared/services";
-import { EntityCacheService } from "../../../shared/store/ngrx-data";
-import { FieldConfigSet } from "../../builder/fields-builder/field-config-set.model";
+import { EntityService, EavService, EditRoutingService, FieldsSettingsService } from "../../../../shared/services";
+import { EntityCacheService } from "../../../../shared/store/ngrx-data";
+import { FieldConfigSet } from "../../../builder/fields-builder/field-config-set.model";
 import { PickerSourceAdapter } from "./picker-source-adapter";
-import { DeleteEntityProps } from "./picker.models";
-import { filterGuids } from "./picker.helpers";
-import { FieldMask } from "../../../shared/helpers";
-import { StringFieldDataSource } from "./string-field-data-source";
-import { EntityFieldDataSource } from "./entity-field-data-source";
-import { FieldDataSourceFactoryService } from "./field-data-source-factory.service";
+import { DeleteEntityProps } from "../picker.models";
+import { filterGuids } from "../picker.helpers";
+import { FieldMask } from "../../../../shared/helpers";
+import { EntityFieldDataSource } from "../data-sources/entity-field-data-source";
+import { FieldDataSourceFactoryService } from "../factories/field-data-source-factory.service";
 
 export class PickerEntitySourceAdapter extends PickerSourceAdapter {
   private entityFieldDataSource: EntityFieldDataSource;

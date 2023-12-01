@@ -5,8 +5,8 @@ import { EavService, EditRoutingService, EntityService, FieldsSettingsService } 
 import { EntityCacheService, StringQueryCacheService } from '../../../shared/store/ngrx-data';
 import { BaseFieldComponent } from '../base/base-field.component';
 import { PickerSearchComponent } from './picker-search/picker-search.component';
-import { PickerSourceAdapter } from './picker-source-adapter';
-import { PickerStateAdapter } from './picker-state-adapter';
+import { PickerSourceAdapter } from './adapters/picker-source-adapter';
+import { PickerStateAdapter } from './adapters/picker-state-adapter';
 import { PickerViewModel } from './picker.models';
 
 @Component({
@@ -65,7 +65,7 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
         };
         return viewModel;
       }),
-    );
+      );
   }
 
   focusOnSearchComponent(): void {
@@ -78,7 +78,7 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
       this.editRoutingService.childFormResult(this.config.index, this.config.entityGuid).subscribe(result => {
         // @2SDV TODO check why this triggers twice
         const newItemGuid = Object.keys(result)[0];
-        if(!this.pickerStateAdapter.createValueArray().includes(newItemGuid))
+        if (!this.pickerStateAdapter.createValueArray().includes(newItemGuid))
           this.pickerStateAdapter.addSelected(newItemGuid);
       })
     );

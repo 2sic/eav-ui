@@ -1,12 +1,12 @@
 import { TranslateService } from '@ngx-translate/core/public_api';
 import { WIPDataSourceItem, FieldSettings } from 'projects/edit-types';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
-import { GeneralHelpers } from '../../../shared/helpers';
-import { ControlStatus } from '../../../shared/models';
-import { QueryEntity } from '../entity/entity-query/entity-query.models';
-import { ReorderIndexes } from './picker-list/picker-list.models';
-import { calculateSelectedEntities, convertArrayToString, convertValueToArray } from './picker.helpers';
-import { DeleteEntityProps } from './picker.models';
+import { GeneralHelpers } from '../../../../shared/helpers';
+import { ControlStatus } from '../../../../shared/models';
+import { QueryEntity } from '../../entity/entity-query/entity-query.models';
+import { ReorderIndexes } from '../picker-list/picker-list.models';
+import { convertArrayToString, convertValueToArray } from '../picker.helpers';
+import { DeleteEntityProps } from '../picker.models';
 import { AbstractControl } from '@angular/forms';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 
@@ -81,7 +81,7 @@ export class PickerStateAdapter {
 
     console.log('SDV updateValue valueArray', valueArray, this.settings$.value.EnableReselect == false);
     // TODO: @SDV workaround for duplicate values, will need fixing to work with enableReselect
-    if (valueArray.length == 2 && valueArray[0] == valueArray[1]) { 
+    if (valueArray.length == 2 && valueArray[0] == valueArray[1]) {
       valueArray = valueArray.splice(1, 1);
     }
     const newValue = this.createNewValue(valueArray);

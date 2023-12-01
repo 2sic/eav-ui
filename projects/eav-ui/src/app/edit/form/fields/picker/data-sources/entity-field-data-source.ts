@@ -1,7 +1,7 @@
 import { WIPDataSourceItem } from "projects/edit-types";
 import { BehaviorSubject, Observable, Subscription, combineLatest, filter, map } from "rxjs";
-import { EntityService } from "../../../shared/services";
-import { EntityCacheService } from "../../../shared/store/ngrx-data";
+import { EntityService } from "../../../../shared/services";
+import { EntityCacheService } from "../../../../shared/store/ngrx-data";
 
 export class EntityFieldDataSource {
   public data$: Observable<WIPDataSourceItem[]>;
@@ -27,21 +27,21 @@ export class EntityFieldDataSource {
       this.entityCacheService.getEntities$()
     ])
       .pipe(map(([contentTypeName, entityGuids, getAll, loading, entities]) => {
-      //   const data = entityGuids == null ? entities : entities.filter(entity => entityGuids.includes(entity.guid));
-      //   if (!getAll || loaded) {
-      //     return data;
-      //   } else if (getAll && !loaded) {
-      //     this.fetchData(contentTypeName, entityGuids);
-      //     return data;
-      //   }
+        //   const data = entityGuids == null ? entities : entities.filter(entity => entityGuids.includes(entity.guid));
+        //   if (!getAll || loaded) {
+        //     return data;
+        //   } else if (getAll && !loaded) {
+        //     this.fetchData(contentTypeName, entityGuids);
+        //     return data;
+        //   }
         const data = entityGuids == null ? entities : entities.filter(entity => entityGuids.includes(entity.guid));
         if (getAll && loading == null) {
           this.fetchData(contentTypeName, entityGuids);
           return data;
         }
         return data;
-       }));
-   }
+      }));
+  }
 
   destroy(): void {
     this.contentTypeName$.complete();

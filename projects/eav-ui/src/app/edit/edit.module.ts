@@ -72,8 +72,8 @@ import { NumberDefaultComponent } from './form/fields/number/number-default/numb
 import { NumberDropdownComponent } from './form/fields/number/number-dropdown/number-dropdown.component';
 import { PickerListComponent } from './form/fields/picker/picker-list/picker-list.component';
 import { PickerSearchComponent } from './form/fields/picker/picker-search/picker-search.component';
-import { PickerSourceAdapterFactoryService } from './form/fields/picker/picker-source-adapter-factory.service';
-import { PickerStateAdapterFactoryService } from './form/fields/picker/picker-state-adapter-factory.service';
+import { PickerSourceAdapterFactoryService } from './form/fields/picker/factories/picker-source-adapter-factory.service';
+import { PickerStateAdapterFactoryService } from './form/fields/picker/factories/picker-state-adapter-factory.service';
 import { PickerComponent } from './form/fields/picker/picker.component';
 import { StringDefaultComponent } from './form/fields/string/string-default/string-default.component';
 import { StringDropdownQueryComponent } from './form/fields/string/string-dropdown-query/string-dropdown-query.component';
@@ -109,7 +109,7 @@ import { PickerTextComponent } from './form/fields/picker/picker-text/picker-tex
 import { PickerDialogComponent } from './form/fields/picker/picker-dialog/picker-dialog.component';
 import { PickerPreviewComponent } from './form/fields/picker/picker-preview/picker-preview.component';
 import { PickerTextToggleComponent } from './form/fields/picker/picker-text-toggle/picker-text-toggle.component';
-import { FieldDataSourceFactoryService } from './form/fields/picker/field-data-source-factory.service';
+import { FieldDataSourceFactoryService } from './form/fields/picker/factories/field-data-source-factory.service';
 import { EntityPickerComponent } from './form/fields/entity/entity-picker/entity-picker.component';
 
 @NgModule({

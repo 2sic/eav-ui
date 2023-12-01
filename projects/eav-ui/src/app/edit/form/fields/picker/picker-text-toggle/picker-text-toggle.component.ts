@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { PickerStateAdapter } from '../picker-state-adapter';
+import { PickerStateAdapter } from '../adapters/picker-state-adapter';
 
 @Component({
   selector: 'app-picker-toggle-text',

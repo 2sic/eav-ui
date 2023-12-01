@@ -5,12 +5,12 @@ import { TranslateService } from '@ngx-translate/core/public_api';
 import { EditForm } from 'projects/eav-ui/src/app/shared/models/edit-form.model';
 import { WIPDataSourceItem, FieldSettings } from 'projects/edit-types';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { FieldMask } from '../../../shared/helpers';
-import { EavService, EditRoutingService, EntityService } from '../../../shared/services';
-import { EntityCacheService } from '../../../shared/store/ngrx-data';
-import { convertValueToArray } from './picker.helpers';
-import { DeleteEntityProps } from './picker.models';
-import { FieldConfigSet } from '../../builder/fields-builder/field-config-set.model';
+import { FieldMask } from '../../../../shared/helpers';
+import { EavService, EditRoutingService, EntityService } from '../../../../shared/services';
+import { EntityCacheService } from '../../../../shared/store/ngrx-data';
+import { convertValueToArray } from '../picker.helpers';
+import { DeleteEntityProps } from '../picker.models';
+import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
 
 export class PickerSourceAdapter {
   constructor(
