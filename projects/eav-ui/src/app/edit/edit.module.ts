@@ -104,7 +104,7 @@ import { PickerExpandableWrapperComponent } from './form/wrappers/picker-expanda
 import { MatDayjsDateAdapter, MatDayjsDateModule, MatDayjsModule, MAT_DAYJS_DATE_ADAPTER_OPTIONS, NgxMatDayjsDatetimeAdapter, NgxMatDayjsDatetimeModule, NgxMatDayjsModule, NGX_MAT_DAYJS_DATETIME_ADAPTER_OPTIONS } from './shared/date-adapters/date-adapter-api';
 import { ChangeAnchorTargetDirective, PasteClipboardImageDirective } from './shared/directives';
 import { AdamService, EavService, EntityService, LoadIconsService, QueryService, ScriptsLoaderService } from './shared/services';
-import { PickerPillPreviewComponent } from './form/fields/picker/picker-pill-preview/picker-pill-preview.component';
+import { PickerPillsComponent } from './form/fields/picker/picker-pills/picker-pills.component';
 import { PickerTextComponent } from './form/fields/picker/picker-text/picker-text.component';
 import { PickerDialogComponent } from './form/fields/picker/picker-dialog/picker-dialog.component';
 import { PickerPreviewComponent } from './form/fields/picker/picker-preview/picker-preview.component';
@@ -167,7 +167,7 @@ import { EntityPickerComponent } from './form/fields/entity/entity-picker/entity
         PickerPreviewComponent,
         PickerTextComponent,
         PickerTextToggleComponent,
-        PickerPillPreviewComponent,
+        PickerPillsComponent,
         EntityQueryComponent,
         EntityDefaultComponent,
         HyperlinkDefaultExpandableWrapperComponent,

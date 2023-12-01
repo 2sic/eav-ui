@@ -1,6 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Observable, combineLatest, distinctUntilChanged, map } from 'rxjs';
-import { PickerPillPreviewViewModel } from './picker-pill-preview.models';
+import { PickerPillsViewModel } from './picker-pills.models';
 import { EavService, FieldsSettingsService, EditRoutingService } from '../../../../shared/services';
 import { BaseFieldComponent } from '../../base/base-field.component';
 import { WIPDataSourceItem } from 'projects/edit-types';
@@ -8,15 +8,15 @@ import { PickerSourceAdapter } from '../adapters/picker-source-adapter';
 import { PickerStateAdapter } from '../adapters/picker-state-adapter';
 
 @Component({
-  selector: 'app-picker-pill-preview',
-  templateUrl: './picker-pill-preview.component.html',
-  styleUrls: ['./picker-pill-preview.component.scss'],
+  selector: 'app-picker-pills',
+  templateUrl: './picker-pills.component.html',
+  styleUrls: ['./picker-pills.component.scss'],
 })
-export class PickerPillPreviewComponent extends BaseFieldComponent<string | string[]> implements OnInit, OnDestroy {
+export class PickerPillsComponent extends BaseFieldComponent<string | string[]> implements OnInit, OnDestroy {
   @Input() pickerSourceAdapter: PickerSourceAdapter;
   @Input() pickerStateAdapter: PickerStateAdapter;
 
-  templateVars$: Observable<PickerPillPreviewViewModel>;
+  viewModel$: Observable<PickerPillsViewModel>;
 
   constructor(
     eavService: EavService,
@@ -36,7 +36,7 @@ export class PickerPillPreviewComponent extends BaseFieldComponent<string | stri
     const isOpen$ = this.settings$.pipe(map(settings => settings._isDialog), distinctUntilChanged());
     const selectedEntities$ = this.pickerStateAdapter.selectedItems$;
 
-    this.templateVars$ = combineLatest([
+    this.viewModel$ = combineLatest([
       combineLatest([controlStatus$, label$, placeholder$, required$]),
       combineLatest([selectedEntities$, isOpen$]),
     ]).pipe(
@@ -44,7 +44,7 @@ export class PickerPillPreviewComponent extends BaseFieldComponent<string | stri
         [controlStatus, label, placeholder, required],
         [selectedEntities, isOpen],
       ]) => {
-        const templateVars: PickerPillPreviewViewModel = {
+        const templateVars: PickerPillsViewModel = {
           controlStatus,
           label,
           placeholder,
