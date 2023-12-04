@@ -106,7 +106,6 @@ export class PickerEntitySourceAdapter extends PickerSourceAdapter {
     this.disableAddNew$.next(!contentTypeName);
   }
 
-  // @2SDV TODO: Split this adapter into two separate adapters for string and entity
   fetchItems(clearAvailableItemsAndOnlyUpdateCache: boolean): void {
     if (clearAvailableItemsAndOnlyUpdateCache) {
       this.availableItems$.next(null);
