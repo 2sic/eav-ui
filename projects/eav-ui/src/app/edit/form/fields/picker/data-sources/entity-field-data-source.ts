@@ -24,13 +24,12 @@ export class EntityFieldDataSource {
       this.entityCacheService.getEntities$(),
     ])
       .pipe(map(([contentTypeName, entityGuids, getAll, loading, entities]) => {
-          const data = entities;
-          if (getAll && loading == null) {
-            this.fetchData(contentTypeName, entityGuids);
-            return data;
-          }
-          return data;
-        }), distinctUntilChanged()
+        const data = entities;
+        if (getAll && loading == null) {
+          this.fetchData(contentTypeName, entityGuids);
+        }
+        return data;
+      }), distinctUntilChanged()
       );
   }
 

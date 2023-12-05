@@ -42,7 +42,6 @@ export class QueryFieldDataSource {
             : entityQuery;
           if (getAll && loading == null) {
             this.fetchData(includeGuid, params, entityGuids);
-            return data;
           }
           return data;
         }), distinctUntilChanged()
@@ -81,7 +80,7 @@ export class QueryFieldDataSource {
     const streamName = settings.StreamName;
     const queryUrl = settings.Query.includes('/') ? settings.Query : `${settings.Query}/${streamName}`;
     this.loading$.next(true);
-
+    // console.log('SDV queryUrl', settings.Query);
     this.subscriptions.add(this.queryService.getAvailableEntities(queryUrl, includeGuid, params, entitiesFilter).subscribe({
       next: (data) => {
         if (!data) {
@@ -95,6 +94,7 @@ export class QueryFieldDataSource {
         const items: WIPDataSourceItem[] = data[streamName].map(entity => {
           return this.isStringQuery ? this.stringQueryEntityMapping(entity) : this.queryEntityMapping(entity)
         });
+        // console.log('SDV items', items);
         if (!this.isStringQuery) {
           const entities = this.setDisableEdit(items);
           this.entityCacheService.loadEntities(entities);
