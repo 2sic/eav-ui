@@ -13,31 +13,25 @@ import { DeleteEntityProps } from '../picker.models';
 import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
 
 export class PickerSourceAdapter {
+  public availableItems$: BehaviorSubject<WIPDataSourceItem[]> = new BehaviorSubject<WIPDataSourceItem[]>(null);
+  public contentType: string;
+
+  protected subscription = new Subscription();
+
   constructor(
     public settings$: BehaviorSubject<FieldSettings> = new BehaviorSubject(null),
-
     public entityCacheService: EntityCacheService,
     public entityService: EntityService,
     public eavService: EavService,
     public editRoutingService: EditRoutingService,
     public translate: TranslateService,
-
     protected config: FieldConfigSet,
     protected group: FormGroup,
-
     public snackBar: MatSnackBar,
     public control: AbstractControl,
-
     // public fetchAvailableEntities: (clearAvailableItemsAndOnlyUpdateCache: boolean) => void,
     public deleteCallback: (props: DeleteEntityProps) => void,
   ) { }
-
-  availableItems$: BehaviorSubject<WIPDataSourceItem[]> = new BehaviorSubject<WIPDataSourceItem[]>(null);
-  // availableItems$: Observable<WIPDataSourceItem[]>;
-
-  contentType: string;
-
-  protected subscription = new Subscription();
 
   init() { }
 

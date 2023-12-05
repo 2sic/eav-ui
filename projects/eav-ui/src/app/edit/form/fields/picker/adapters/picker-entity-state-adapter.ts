@@ -1,7 +1,7 @@
 import { AbstractControl } from "@angular/forms";
 import { TranslateService } from "@ngx-translate/core";
 import { FieldSettings, WIPDataSourceItem } from "projects/edit-types";
-import { BehaviorSubject, Observable, combineLatest, distinctUntilChanged, map, tap } from "rxjs";
+import { BehaviorSubject, Observable, combineLatest, distinctUntilChanged, map } from "rxjs";
 import { ControlStatus } from "../../../../shared/models";
 import { QueryEntity } from "../../entity/entity-query/entity-query.models";
 import { PickerStateAdapter } from "./picker-state-adapter";
@@ -23,11 +23,8 @@ export class PickerEntityStateAdapter extends PickerStateAdapter {
     public cacheItems$: Observable<WIPDataSourceItem[]>,
     public stringQueryCache$: Observable<QueryEntity[]>,
     public fieldDataSourceFactoryService: FieldDataSourceFactoryService,
-
     public translate: TranslateService,
-
     public control: AbstractControl,
-
     focusOnSearchComponent: () => void,
   ) {
     super(

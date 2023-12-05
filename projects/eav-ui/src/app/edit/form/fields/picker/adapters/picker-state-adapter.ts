@@ -11,6 +11,18 @@ import { AbstractControl } from '@angular/forms';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 
 export class PickerStateAdapter {
+  public disableAddNew$: BehaviorSubject<boolean> = new BehaviorSubject(true);
+  public freeTextMode$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  public error$: BehaviorSubject<string> = new BehaviorSubject('');
+
+  public shouldPickerListBeShown$: Observable<boolean>;
+  public selectedItems$: Observable<WIPDataSourceItem[]>;
+  public allowMultiValue$: Observable<boolean>;
+  public tooltip$: Observable<string>;
+  public information$: Observable<string>;
+  public isDialog$: Observable<boolean>;
+
+
   constructor(
     public settings$: BehaviorSubject<FieldSettings> = new BehaviorSubject(null),
     public controlStatus$: BehaviorSubject<ControlStatus<string | string[]>>,
@@ -20,24 +32,10 @@ export class PickerStateAdapter {
     public required$: Observable<boolean>,
     public cacheItems$: Observable<WIPDataSourceItem[]>,
     public stringQueryCache$: Observable<QueryEntity[]>,
-
     public translate: TranslateService,
-
     public control: AbstractControl,
-
     private focusOnSearchComponent: () => void,
   ) { }
-
-  disableAddNew$: BehaviorSubject<boolean> = new BehaviorSubject(true);
-  freeTextMode$: BehaviorSubject<boolean> = new BehaviorSubject(false);
-  error$: BehaviorSubject<string> = new BehaviorSubject('');
-
-  shouldPickerListBeShown$: Observable<boolean>;
-  selectedItems$: Observable<WIPDataSourceItem[]>;
-  allowMultiValue$: Observable<boolean>;
-  tooltip$: Observable<string>;
-  information$: Observable<string>;
-  isDialog$: Observable<boolean>;
 
   init() {
     this.allowMultiValue$ = this.settings$.pipe(map(settings => settings.AllowMultiValue), distinctUntilChanged());

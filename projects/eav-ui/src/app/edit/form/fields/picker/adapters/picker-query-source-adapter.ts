@@ -16,6 +16,7 @@ import { QueryFieldDataSource } from "../data-sources/query-field-data-source";
 
 export class PickerQuerySourceAdapter extends PickerSourceAdapter {
   private queryFieldDataSource: QueryFieldDataSource;
+  private paramsMask: FieldMask;
 
   constructor(
     public error$: BehaviorSubject<string> = new BehaviorSubject(''),
@@ -60,8 +61,6 @@ export class PickerQuerySourceAdapter extends PickerSourceAdapter {
       deleteCallback,
     );
   }
-
-  paramsMask: FieldMask;
 
   init(): void {
     super.init();

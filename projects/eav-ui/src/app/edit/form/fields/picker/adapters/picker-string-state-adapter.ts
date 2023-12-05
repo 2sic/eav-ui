@@ -5,7 +5,7 @@ import { BehaviorSubject, Observable, combineLatest, distinctUntilChanged, map }
 import { ControlStatus } from "../../../../shared/models";
 import { QueryEntity } from "../../entity/entity-query/entity-query.models";
 import { PickerStateAdapter } from "./picker-state-adapter";
-import { calculateStringSelectedOptions, convertArrayToString, convertValueToArray } from "../picker.helpers";
+import { calculateStringSelectedOptions, convertArrayToString } from "../picker.helpers";
 
 export class PickerStringStateAdapter extends PickerStateAdapter {
   constructor(
@@ -17,11 +17,8 @@ export class PickerStringStateAdapter extends PickerStateAdapter {
     public required$: Observable<boolean>,
     public cacheItems$: Observable<WIPDataSourceItem[]>,
     public stringQueryCache$: Observable<QueryEntity[]>,
-
     public translate: TranslateService,
-
     public control: AbstractControl,
-
     focusOnSearchComponent: () => void,
   ) {
     super(

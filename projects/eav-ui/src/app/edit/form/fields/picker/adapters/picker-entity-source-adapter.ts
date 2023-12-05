@@ -15,28 +15,24 @@ import { FieldDataSourceFactoryService } from "../factories/field-data-source-fa
 
 export class PickerEntitySourceAdapter extends PickerSourceAdapter {
   private entityFieldDataSource: EntityFieldDataSource;
+  private contentTypeMask: FieldMask;
 
   constructor(
     public disableAddNew$: BehaviorSubject<boolean> = new BehaviorSubject(true),
-
     public fieldsSettingsService: FieldsSettingsService,
 
     // Below this is needed for base class
     public settings$: BehaviorSubject<FieldSettings> = new BehaviorSubject(null),
-
     public entityCacheService: EntityCacheService,
     public entityService: EntityService,
     public eavService: EavService,
     public editRoutingService: EditRoutingService,
     public translate: TranslateService,
     public fieldDataSourceFactoryService: FieldDataSourceFactoryService,
-
     protected config: FieldConfigSet,
     protected group: FormGroup,
-
     public snackBar: MatSnackBar,
     public control: AbstractControl,
-
     // public fetchAvailableEntities: (clearAvailableItemsAndOnlyUpdateCache: boolean) => void,
     public deleteCallback: (props: DeleteEntityProps) => void,
   ) {
@@ -55,8 +51,6 @@ export class PickerEntitySourceAdapter extends PickerSourceAdapter {
       deleteCallback,
     );
   }
-
-  contentTypeMask: FieldMask;
 
   init(): void {
     super.init();

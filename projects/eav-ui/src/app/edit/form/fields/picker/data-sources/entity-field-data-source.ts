@@ -1,18 +1,15 @@
 import { WIPDataSourceItem } from "projects/edit-types";
-import { BehaviorSubject, Observable, Subscription, combineLatest, distinctUntilChanged, filter, map } from "rxjs";
+import { BehaviorSubject, Observable, Subscription, combineLatest, map } from "rxjs";
 import { EntityService } from "../../../../shared/services";
 import { EntityCacheService } from "../../../../shared/store/ngrx-data";
-import { GeneralHelpers } from "../../../../shared/helpers";
 
 export class EntityFieldDataSource {
   public data$: Observable<WIPDataSourceItem[]>;
 
-  public contentTypeName$ = new BehaviorSubject<string>(null);
-  public entityGuids$ = new BehaviorSubject<string[]>(null);
-
+  private contentTypeName$ = new BehaviorSubject<string>(null);
+  private entityGuids$ = new BehaviorSubject<string[]>(null);
   private getAll$ = new BehaviorSubject<boolean>(false);
   private loading$ = new BehaviorSubject<boolean>(null);
-
   private subscriptions = new Subscription();
 
   constructor(

@@ -6,7 +6,6 @@ export class StringFieldDataSource {
   public data$: Observable<WIPDataSourceItem[]>;
 
   private getAll$ = new BehaviorSubject<boolean>(false);
-
   private subscriptions = new Subscription();
 
   constructor(

@@ -9,13 +9,11 @@ export class QueryFieldDataSource {
   public data$: Observable<WIPDataSourceItem[]>;
   public error$ = new BehaviorSubject('');
 
-  public includeGuid$ = new BehaviorSubject<boolean>(true);
-  public params$ = new BehaviorSubject<string>('');
-  public entityGuids$ = new BehaviorSubject<string[]>(null);
-
+  private includeGuid$ = new BehaviorSubject<boolean>(true);
+  private params$ = new BehaviorSubject<string>('');
+  private entityGuids$ = new BehaviorSubject<string[]>(null);
   private getAll$ = new BehaviorSubject<boolean>(false);
   private loading$ = new BehaviorSubject<boolean>(null);
-
   private subscriptions = new Subscription();
 
   constructor(
