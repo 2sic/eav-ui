@@ -1,5 +1,5 @@
 import { WIPDataSourceItem } from "projects/edit-types";
-import { BehaviorSubject, Observable, Subscription, combineLatest, map } from "rxjs";
+import { BehaviorSubject, Observable, Subscription, combineLatest, distinctUntilChanged, map } from "rxjs";
 import { EntityService } from "../../../../shared/services";
 import { EntityCacheService } from "../../../../shared/store/ngrx-data";
 
@@ -17,20 +17,20 @@ export class EntityFieldDataSource {
     private entityCacheService: EntityCacheService,
   ) {
     this.data$ = combineLatest([
-      this.contentTypeName$,
-      this.entityGuids$,
-      this.getAll$,
-      this.loading$,
-      this.entityCacheService.getEntities$()
+      this.contentTypeName$.pipe(distinctUntilChanged()),
+      this.entityGuids$.pipe(distinctUntilChanged()),
+      this.getAll$.pipe(distinctUntilChanged()),
+      this.loading$.pipe(distinctUntilChanged()),
+      this.entityCacheService.getEntities$(),
     ])
       .pipe(map(([contentTypeName, entityGuids, getAll, loading, entities]) => {
-        const data = entities;
-        if (getAll && loading == null) {
-          this.fetchData(contentTypeName, entityGuids);
+          const data = entities;
+          if (getAll && loading == null) {
+            this.fetchData(contentTypeName, entityGuids);
+            return data;
+          }
           return data;
-        }
-        return data;
-      })//, distinctUntilChanged(GeneralHelpers.objectsEqual)
+        }), distinctUntilChanged()
       );
   }
 

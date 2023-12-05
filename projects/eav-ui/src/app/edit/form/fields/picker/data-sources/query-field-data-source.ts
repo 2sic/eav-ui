@@ -1,5 +1,5 @@
 import { EntityForPicker, WIPDataSourceItem, FieldSettings } from "projects/edit-types";
-import { BehaviorSubject, Observable, Subscription, combineLatest, map } from "rxjs";
+import { BehaviorSubject, Observable, Subscription, combineLatest, distinctUntilChanged, map } from "rxjs";
 import { EntityCacheService, StringQueryCacheService } from "../../../../shared/store/ngrx-data";
 import { QueryService } from "../../../../shared/services";
 import { TranslateService } from "@ngx-translate/core";
@@ -28,24 +28,25 @@ export class QueryFieldDataSource {
     private appId: string,
   ) {
     this.data$ = combineLatest([
-      this.includeGuid$,
-      this.params$,
-      this.entityGuids$,
-      this.getAll$,
-      this.loading$,
+      this.includeGuid$.pipe(distinctUntilChanged()),
+      this.params$.pipe(distinctUntilChanged()),
+      this.entityGuids$.pipe(distinctUntilChanged()),
+      this.getAll$.pipe(distinctUntilChanged()),
+      this.loading$.pipe(distinctUntilChanged()),
       this.entityCacheService.getEntities$(),
-      this.stringQueryCacheService.getEntities$(this.entityGuid, this.fieldName)
+      this.stringQueryCacheService.getEntities$(this.entityGuid, this.fieldName),
     ])
       .pipe(map(([includeGuid, params, entityGuids, getAll, loading, entityQuery, stringQuery]) => {
-        const data = this.isStringQuery ?
-          stringQuery.map(entity => this.stringQueryEntityMapping(entity))
-          : entityQuery;
-        if (getAll && loading == null) {
-          this.fetchData(includeGuid, params, entityGuids);
+          const data = this.isStringQuery ?
+            stringQuery.map(entity => this.stringQueryEntityMapping(entity))
+            : entityQuery;
+          if (getAll && loading == null) {
+            this.fetchData(includeGuid, params, entityGuids);
+            return data;
+          }
           return data;
-        }
-        return data;
-      }));
+        }), distinctUntilChanged()
+      );
   }
 
   destroy(): void {

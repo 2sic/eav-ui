@@ -13,7 +13,10 @@ export class StringFieldDataSource {
   ) {
     // this isn't needed to be done like this but it's done like this to be consistent with the other data sources
     const preloaded = this.settings$.pipe(map(settings => settings._options.map(option => this.stringEntityMapping(option))), distinctUntilChanged());
-    this.data$ = combineLatest([this.getAll$, preloaded]).pipe(map(([fullData, preloaded]) => fullData ? preloaded : preloaded));
+    this.data$ = combineLatest([
+      this.getAll$.pipe(distinctUntilChanged()),
+      preloaded,
+    ]).pipe(map(([fullData, preloaded]) => fullData ? preloaded : preloaded), distinctUntilChanged());
   }
 
   destroy(): void {
