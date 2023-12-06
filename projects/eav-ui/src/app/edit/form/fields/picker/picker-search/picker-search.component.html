@@ -2,25 +2,25 @@
   <div [hidden]="vm.hideDropdown">
     <mat-form-field [formGroup]="group" class="eav-form-field" color="accent"
       [ngClass]="{ 'mat-form-field-invalid': vm.controlStatus.invalid && vm.controlStatus.touched }">
-      <input matInput #autocomplete [placeholder]="getPlaceholder(vm.availableEntities, vm.error)"
+      <input matInput #autocomplete [placeholder]="getPlaceholder(vm.availableItems, vm.error)"
         [matAutocomplete]="auto" [disabled]="vm.controlStatus.disabled || !vm.enableAddExisting"
-        [value]="showSelectedItem ? vm.selectedEntity?.Text : ''" (focus)="fetchEntities()"
-        (blur)="markAsTouched(vm.selectedEntity, vm.selectedEntities)" (input)="filterSelectionList()"
+        [value]="showSelectedItem ? vm.selectedItem?.Text : ''" (focus)="fetchEntities()"
+        (blur)="markAsTouched(vm.selectedItem, vm.selectedItems)" (input)="filterSelectionList()"
         (click)="filterSelectionList()">
       <button mat-icon-button matSuffix class="entity-dropdown-button eav-suffix-button" disableRipple="true"
         [disabled]="vm.controlStatus.disabled || !vm.enableAddExisting">
         <mat-icon>arrow_drop_down</mat-icon>
       </button>
       <button mat-icon-button matSuffix class="eav-suffix-button"
-        *ngIf="vm.enableEdit && !vm.selectedEntity?._disableEdit && vm.showItemEditButtons"
+        *ngIf="vm.enableEdit && !vm.selectedItem?._disableEdit && vm.showItemEditButtons"
         [tippy]="'Fields.Entity.Edit' | translate" [disabled]="config.initialDisabled" appClickStopPropagation
-        (click)="edit(vm.selectedEntity?.Value, vm.selectedEntity?.Id)">
+        (click)="edit(vm.selectedItem?.Value, vm.selectedItem?.Id)">
         <mat-icon>edit</mat-icon>
       </button>
       <button mat-icon-button matSuffix class="eav-suffix-button"
-        *ngIf="vm.enableDelete && !vm.selectedEntity?._disableDelete && vm.showItemEditButtons"
+        *ngIf="vm.enableDelete && !vm.selectedItem?._disableDelete && vm.showItemEditButtons"
         [tippy]="'Fields.Entity.Delete' | translate" [disabled]="vm.controlStatus.disabled" appClickStopPropagation
-        (click)="deleteItem(0, vm.selectedEntity?.Value)">
+        (click)="deleteItem(0, vm.selectedItem?.Value)">
         <mat-icon>delete</mat-icon>
       </button>
       <button mat-icon-button matSuffix class="eav-suffix-button" *ngIf="vm.enableRemove && vm.showItemEditButtons"
@@ -37,10 +37,10 @@
     </mat-form-field>
 
     <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn.bind(this)"
-      (optionSelected)="optionSelected($event, vm.allowMultiValue, vm.selectedEntity)">
+      (optionSelected)="optionSelected($event, vm.allowMultiValue, vm.selectedItem)">
       <div *ngIf="!vm.isTreeDisplayMode">
-        <mat-option *ngFor="let item of vm.filteredEntities" [value]="item.Value" class="eav-picker-option"
-          [disabled]="vm.enableReselect ? false : isOptionDisabled(item.Value, vm.selectedEntities)" [tippy]="item.Tooltip"
+        <mat-option *ngFor="let item of vm.filteredItems" [value]="item.Value" class="eav-picker-option"
+          [disabled]="vm.enableReselect ? false : isOptionDisabled(item.Value, vm.selectedItems)" [tippy]="item.Tooltip"
           tippyShowDelay="500" [tippyDisabled]="!item.Tooltip">
           <div class="eav-dropdown-option">
             <span>{{ item.Text ? item.Text : item.Value }}</span>

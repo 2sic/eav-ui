@@ -3,7 +3,7 @@ import { AbstractControl, FormGroup } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { TranslateService } from '@ngx-translate/core';
 import { UiPickerModeTree, WIPDataSourceItem, WIPDataSourceTreeItem } from 'projects/edit-types';
-import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, take } from 'rxjs';
+import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, take, tap } from 'rxjs';
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { FieldsSettingsService } from '../../../../shared/services';
 import { GlobalConfigService } from '../../../../shared/store/ngrx-data';
@@ -15,6 +15,7 @@ import { Field } from '../../../builder/fields-builder/field.model';
 import { BaseSubsinkComponent } from 'projects/eav-ui/src/app/shared/components/base-subsink-component/base-subsink.component';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
+import { createUIModel } from '../picker.helpers';
 
 @Component({
   selector: 'app-picker-search',
@@ -39,8 +40,9 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   // private pickerTreeConfiguration: UiPickerModeTree;
   // dataSource: any;
 
-  private availableEntities$ = new BehaviorSubject<WIPDataSourceItem[]>(null);
-  private selectedEntity$ = new BehaviorSubject<WIPDataSourceItem>(null);
+  private availableItems$ = new BehaviorSubject<WIPDataSourceItem[]>(null);
+  private selectedItems$ = new Observable<WIPDataSourceItem[]>;
+  private selectedItem$ = new BehaviorSubject<WIPDataSourceItem>(null);
 
   private filter$ = new BehaviorSubject(false);
 
@@ -55,12 +57,11 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   ngOnInit(): void {
     this.control = this.group.controls[this.config.fieldName];
 
-    this.availableEntities$ = this.pickerSourceAdapter.availableItems$;
+    this.availableItems$ = this.pickerSourceAdapter.availableItems$;
 
     const freeTextMode$ = this.pickerStateAdapter.freeTextMode$;
     const controlStatus$ = this.pickerStateAdapter.controlStatus$;
     const error$ = this.pickerStateAdapter.error$;
-    const selectedEntities$ = this.pickerStateAdapter.selectedItems$;
     const label$ = this.pickerStateAdapter.label$;
     const required$ = this.pickerStateAdapter.required$;
 
@@ -79,24 +80,33 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
       })),
       distinctUntilChanged(GeneralHelpers.objectsEqual),
     );
+    this.selectedItems$ = combineLatest([
+      this.pickerStateAdapter.selectedItems$.pipe(distinctUntilChanged(GeneralHelpers.arraysEqual)),
+      this.pickerSourceAdapter.pickerDataSource.data$.pipe(distinctUntilChanged(GeneralHelpers.arraysEqual)),
+      this.pickerSourceAdapter.contentType$.pipe(distinctUntilChanged()),
+    ]).pipe(//tap(([selectedItems, data, contentType]) => console.log('SDV SEARCH')),
+      map(([selectedItems, data, contentType]) =>
+        createUIModel(selectedItems, data, this.pickerSourceAdapter.pickerDataSource, contentType, this.translate)
+      ), distinctUntilChanged(GeneralHelpers.arraysEqual)
+    );
     this.viewModel$ = combineLatest([
-      debugEnabled$, settings$, selectedEntities$, this.availableEntities$, error$,
+      debugEnabled$, settings$, this.selectedItems$, this.availableItems$, error$,
       controlStatus$, freeTextMode$, label$, required$, this.filter$
     ]).pipe(
       map(([
-        debugEnabled, settings, selectedEntities, availableEntities, error,
+        debugEnabled, settings, selectedItems, availableItems, error,
         controlStatus, freeTextMode, label, required, filter
       ]) => {
-        const selectedEntity = selectedEntities.length > 0 ? selectedEntities[0] : null;
-        this.selectedEntity$.next(selectedEntity);
+        const selectedItem = selectedItems.length > 0 ? selectedItems[0] : null;
+        this.selectedItem$.next(selectedItem);
 
-        const showEmpty = !settings.EnableAddExisting && !(selectedEntities.length > 1);
-        const hideDropdown = (!settings.AllowMultiValue && (selectedEntities.length > 1)) || !settings.EnableAddExisting;
-        const showItemEditButtons = selectedEntity && this.showItemEditButtons;
+        const showEmpty = !settings.EnableAddExisting && !(selectedItems.length > 1);
+        const hideDropdown = (!settings.AllowMultiValue && (selectedItems.length > 1)) || !settings.EnableAddExisting;
+        const showItemEditButtons = selectedItem && this.showItemEditButtons;
         const isTreeDisplayMode = settings.PickerDisplayMode === 'tree';
 
         const elemValue = this.autocompleteRef?.nativeElement.value;
-        const filteredEntities = !elemValue ? availableEntities : availableEntities?.filter(option =>
+        const filteredItems = !elemValue ? availableItems : availableItems?.filter(option =>
           option.Text
             ? option.Text.toLocaleLowerCase().includes(elemValue.toLocaleLowerCase())
             : option.Value.toLocaleLowerCase().includes(elemValue.toLocaleLowerCase())
@@ -112,15 +122,15 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
           enableRemove: settings.EnableRemove,
           enableReselect: settings.EnableReselect,
           pickerTreeConfiguration: settings.PickerTreeConfiguration,
-          selectedEntities,
-          availableEntities,
+          selectedItems,
+          availableItems,
           error,
           controlStatus,
           freeTextMode,
           label,
           required,
-          selectedEntity,
-          filteredEntities,
+          selectedItem,
+          filteredItems,
 
           // additional properties for easier readability in the template
           showEmpty,
@@ -146,9 +156,12 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     super.ngOnDestroy();
   }
 
-  /** @SDV This is a workaround, not a fixed solution */
+  /** @SDV This is a workaround, not a fixed solution
+   * Take a look at as usecase when its not the same text as the one in the list
+   * etc. Model - Model (string)
+   */
   ngAfterViewInit(): void {
-    this.pickerStateAdapter.selectedItems$.pipe(take(1)).subscribe(selectedItems => {
+    this.selectedItems$.pipe(take(1)).subscribe(selectedItems => {
       if (selectedItems != null && selectedItems != undefined && selectedItems.length > 0) {
         this.removeItem(0);
         const selected: string = selectedItems[0]?.Value;
@@ -161,21 +174,22 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     });
   }
 
+  // TODO: @SDV - Simplify this
   displayFn(value: string | string[] | WIPDataSourceItem): string {
     let returnValue = '';
     if (value) {
       if (typeof value === 'string')
-        returnValue = this.availableEntities$.value?.find(ae => ae.Value == value)?.Text;
+        returnValue = this.availableItems$.value?.find(ae => ae.Value == value)?.Text;
       else if (Array.isArray(value)) {
         if (typeof value[0] === 'string') {
           if (value.length == 35) {
             const guid = value.join('');
-            returnValue = this.availableEntities$.value?.find(ae => ae.Value == guid)?.Text;
+            returnValue = this.availableItems$.value?.find(ae => ae.Value == guid)?.Text;
           } else if (value.length == 36) {
             const guid = value[value.length - 1];
-            returnValue = this.availableEntities$.value?.find(ae => ae.Value == guid)?.Text;
+            returnValue = this.availableItems$.value?.find(ae => ae.Value == guid)?.Text;
           } else {
-            returnValue = this.availableEntities$.value?.find(ae => ae.Value == value[0])?.Text;
+            returnValue = this.availableItems$.value?.find(ae => ae.Value == value[0])?.Text;
           }
         } else {
           returnValue = (value[0] as WIPDataSourceItem)?.Text;
@@ -185,8 +199,8 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
         returnValue = (value as WIPDataSourceItem)?.Text;
     }
     if (!returnValue) {
-      if (this.selectedEntity$.value?.Value == value) {
-        returnValue = this.selectedEntity$.value.Text;
+      if (this.selectedItem$.value?.Value == value) {
+        returnValue = this.selectedItem$.value.Text;
       } else {
         returnValue = value as string;
       }

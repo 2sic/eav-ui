@@ -1,7 +1,7 @@
 import { WIPDataSourceItem } from 'projects/edit-types';
 import { ControlStatus } from '../../../../shared/models';
 
-export interface EntityPickerPreviewTemplateVars {
+export interface EntityPickerPreviewViewModel {
   selectedItems: WIPDataSourceItem[];
   freeTextMode: boolean;
   enableTextEntry: boolean;

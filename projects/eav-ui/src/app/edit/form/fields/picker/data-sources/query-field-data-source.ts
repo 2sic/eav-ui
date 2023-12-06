@@ -1,9 +1,10 @@
 import { EntityForPicker, WIPDataSourceItem, FieldSettings } from "projects/edit-types";
-import { BehaviorSubject, Observable, Subscription, combineLatest, distinctUntilChanged, map } from "rxjs";
+import { BehaviorSubject, Observable, Subscription, combineLatest, distinctUntilChanged, filter, map, startWith, tap } from "rxjs";
 import { EntityCacheService, StringQueryCacheService } from "../../../../shared/store/ngrx-data";
 import { QueryService } from "../../../../shared/services";
 import { TranslateService } from "@ngx-translate/core";
 import { QueryEntity } from "../../entity/entity-query/entity-query.models";
+import { GeneralHelpers } from "../../../../shared/helpers";
 
 export class QueryFieldDataSource {
   public data$: Observable<WIPDataSourceItem[]>;
@@ -13,7 +14,9 @@ export class QueryFieldDataSource {
   private params$ = new BehaviorSubject<string>('');
   private entityGuids$ = new BehaviorSubject<string[]>(null);
   private getAll$ = new BehaviorSubject<boolean>(false);
-  private loading$ = new BehaviorSubject<boolean>(null);
+  private prefetch$ = new BehaviorSubject<boolean>(false);
+  private loading$ = new BehaviorSubject<boolean>(false);
+  private trigger$ = new BehaviorSubject<boolean[]>([false, false]);
   private subscriptions = new Subscription();
 
   constructor(
@@ -27,24 +30,51 @@ export class QueryFieldDataSource {
     private fieldName: string,
     private appId: string,
   ) {
+    this.subscriptions.add(
+      combineLatest([
+        this.getAll$.pipe(
+          // distinctUntilChanged(),
+          filter(getAll => !!getAll), // trigger only on truthy values
+          startWith(false),
+          // tap(value => console.log('SDV query getAll$', value))
+        ),
+        this.prefetch$.pipe(
+          // distinctUntilChanged(),
+          filter(prefetch => !!prefetch), // trigger only on truthy values
+          startWith(false),
+          // tap(value => console.log('SDV query prefetch$', value))
+        ),
+      ]).pipe(
+        // tap(([getAll, prefetch]) => console.log('SDV query trigger', getAll, prefetch)),
+        map(([getAll, prefetch]) => [getAll, prefetch])
+      ).subscribe(this.trigger$)
+    );
+
     this.data$ = combineLatest([
-      this.includeGuid$.pipe(distinctUntilChanged()),
-      this.params$.pipe(distinctUntilChanged()),
-      this.entityGuids$.pipe(distinctUntilChanged()),
-      this.getAll$.pipe(distinctUntilChanged()),
-      this.loading$.pipe(distinctUntilChanged()),
-      this.entityCacheService.getEntities$(),
-      this.stringQueryCacheService.getEntities$(this.entityGuid, this.fieldName),
+      this.trigger$.pipe(
+        // distinctUntilChanged(GeneralHelpers.arraysEqual), // only if we don't want to trigger on every getAll
+        // tap(() => console.log('SDV query trigger$'))
+      ),
+      this.entityCacheService.getEntities$().pipe(
+        distinctUntilChanged(GeneralHelpers.arraysEqual),
+        // tap(() => console.log('SDV query entityCache$'))
+      ),
+      this.stringQueryCacheService.getEntities$(this.entityGuid, this.fieldName).pipe(
+        distinctUntilChanged(GeneralHelpers.arraysEqual),
+        // tap(() => console.log('SDV query stringQueryCache$'))
+      ),
     ])
-      .pipe(map(([includeGuid, params, entityGuids, getAll, loading, entityQuery, stringQuery]) => {
-          const data = this.isStringQuery ?
-            stringQuery.map(entity => this.stringQueryEntityMapping(entity))
-            : entityQuery;
-          if (getAll && loading == null) {
-            this.fetchData(includeGuid, params, entityGuids);
-          }
-          return data;
-        }), distinctUntilChanged()
+      .pipe(map(([trigger, entityQuery, stringQuery]) => {
+        const data = this.isStringQuery ?
+          stringQuery.map(entity => this.stringQueryEntityMapping(entity))
+          : entityQuery;
+        if (trigger[0] && this.loading$.value === false) {
+          this.fetchData(this.includeGuid$.value, this.params$.value, []);
+        } else if (trigger[1] && this.loading$.value === false) {
+          this.fetchData(this.includeGuid$.value, this.params$.value, this.entityGuids$.value);
+        }
+        return data;
+      })//, distinctUntilChanged(GeneralHelpers.arraysEqual)
       );
   }
 
@@ -57,6 +87,12 @@ export class QueryFieldDataSource {
     this.loading$.complete();
 
     this.subscriptions.unsubscribe();
+  }
+
+  prefetch(contentType?: string, entityGuids?: string[]): void {
+    this.params(contentType);
+    this.entityGuids(entityGuids);
+    this.prefetch$.next(true);
   }
 
   getAll(): void {
@@ -80,7 +116,6 @@ export class QueryFieldDataSource {
     const streamName = settings.StreamName;
     const queryUrl = settings.Query.includes('/') ? settings.Query : `${settings.Query}/${streamName}`;
     this.loading$.next(true);
-    // console.log('SDV queryUrl', settings.Query);
     this.subscriptions.add(this.queryService.getAvailableEntities(queryUrl, includeGuid, params, entitiesFilter).subscribe({
       next: (data) => {
         if (!data) {
@@ -94,7 +129,6 @@ export class QueryFieldDataSource {
         const items: WIPDataSourceItem[] = data[streamName].map(entity => {
           return this.isStringQuery ? this.stringQueryEntityMapping(entity) : this.queryEntityMapping(entity)
         });
-        // console.log('SDV items', items);
         if (!this.isStringQuery) {
           const entities = this.setDisableEdit(items);
           this.entityCacheService.loadEntities(entities);
@@ -103,12 +137,18 @@ export class QueryFieldDataSource {
           const entities = this.setDisableEdit(data[streamName]);
           this.stringQueryCacheService.loadEntities(this.entityGuid, this.fieldName, entities);
         }
-        // this.loaded$.next(true);
         this.loading$.next(false);
+        this.trigger$.next([false, false]);
+        this.getAll$.next(false);
+        this.prefetch$.next(false);
       },
       error: (error) => {
         console.error(error);
         console.error(`${this.translate.instant('Fields.EntityQuery.QueryError')} - ${error.data}`);
+        this.loading$.next(false);
+        this.trigger$.next([false, false]);
+        this.getAll$.next(false);
+        this.prefetch$.next(false);
       }
     }));
   }

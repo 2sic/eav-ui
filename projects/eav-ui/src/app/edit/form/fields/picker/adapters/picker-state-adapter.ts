@@ -5,7 +5,7 @@ import { GeneralHelpers } from '../../../../shared/helpers';
 import { ControlStatus } from '../../../../shared/models';
 import { QueryEntity } from '../../entity/entity-query/entity-query.models';
 import { ReorderIndexes } from '../picker-list/picker-list.models';
-import { convertArrayToString, convertValueToArray } from '../picker.helpers';
+import { convertArrayToString, convertValueToArray, equalizeSelectedItems } from '../picker.helpers';
 import { DeleteEntityProps } from '../picker.models';
 import { AbstractControl } from '@angular/forms';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
@@ -38,6 +38,19 @@ export class PickerStateAdapter {
   ) { }
 
   init() {
+    this.selectedItems$ = combineLatest([
+      this.controlStatus$.pipe(map(controlStatus => controlStatus.value), distinctUntilChanged()),
+      this.settings$.pipe(
+        map(settings => ({
+          Separator: settings.Separator,
+        })),
+        distinctUntilChanged(GeneralHelpers.objectsEqual),
+      ),
+    ]).pipe(
+      map(([value, settings]) =>
+        equalizeSelectedItems(value, settings.Separator)
+      ),
+    );
     this.allowMultiValue$ = this.settings$.pipe(map(settings => settings.AllowMultiValue), distinctUntilChanged());
     this.tooltip$ = this.settings$.pipe(map(settings => settings.Tooltip), distinctUntilChanged());
     this.information$ = this.settings$.pipe(map(settings => settings.Information), distinctUntilChanged());

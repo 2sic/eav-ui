@@ -11,15 +11,15 @@ export interface PickerSearchViewModel {
   enableRemove: boolean;
   enableReselect: boolean;
   pickerTreeConfiguration: UiPickerModeTree;
-  selectedEntities: WIPDataSourceItem[];
-  availableEntities: WIPDataSourceItem[];
+  selectedItems: WIPDataSourceItem[];
+  availableItems: WIPDataSourceItem[];
   error: string;
   controlStatus: ControlStatus<string | string[]>;
   freeTextMode: boolean;
   label: string;
   required: boolean;
-  selectedEntity: WIPDataSourceItem;
-  filteredEntities: WIPDataSourceItem[];
+  selectedItem: WIPDataSourceItem;
+  filteredItems: WIPDataSourceItem[];
 
   // added for easier readability
   showEmpty: boolean;

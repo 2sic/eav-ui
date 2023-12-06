@@ -1,13 +1,13 @@
-<ng-container *ngIf="templateVars$ | async as data">
+<ng-container *ngIf="viewModel$ | async as vm">
   <div fxLayout="row" fxLayoutAlign="start center">
     <div class="eav-div-around-picker">
-      <app-picker-pills *ngIf="data.selectedItems.length > 1 && !data.freeTextMode"
+      <app-picker-pills *ngIf="vm.selectedItems.length > 1 && !vm.freeTextMode"
         [pickerSourceAdapter]="pickerSourceAdapter"
         [pickerStateAdapter]="pickerStateAdapter"
         [config]="config" 
         [group]="group">
       </app-picker-pills>
-      <app-picker-search *ngIf="data.selectedItems.length < 2 && !data.freeTextMode"
+      <app-picker-search *ngIf="vm.selectedItems.length < 2 && !vm.freeTextMode"
         [pickerSourceAdapter]="pickerSourceAdapter" 
         [pickerStateAdapter]="pickerStateAdapter"
         [config]="config" 
@@ -17,33 +17,33 @@
         [showItemEditButtons]="true">
         <app-picker-toggle-text freeTextButtons 
           [pickerStateAdapter]="pickerStateAdapter"
-          [controlStatusDisabled]="data.controlStatus.disabled"
-          [allowText]="data.enableTextEntry"
-          [freeTextMode]="data.freeTextMode">
+          [controlStatusDisabled]="vm.controlStatus.disabled"
+          [allowText]="vm.enableTextEntry"
+          [freeTextMode]="vm.freeTextMode">
         </app-picker-toggle-text>
       </app-picker-search>
-      <app-picker-text *ngIf="data.freeTextMode"
+      <app-picker-text *ngIf="vm.freeTextMode"
         [pickerSourceAdapter]="pickerSourceAdapter" 
         [pickerStateAdapter]="pickerStateAdapter" 
         [config]="config"
         [group]="group">
         <app-picker-toggle-text freeTextButtons 
           [pickerStateAdapter]="pickerStateAdapter"
-          [controlStatusDisabled]="data.controlStatus.disabled" 
-          [allowText]="data.enableTextEntry"
-          [freeTextMode]="data.freeTextMode">
+          [controlStatusDisabled]="vm.controlStatus.disabled" 
+          [allowText]="vm.enableTextEntry"
+          [freeTextMode]="vm.freeTextMode">
         </app-picker-toggle-text>
       </app-picker-text>
     </div>
     <div fxLayoutAlign="end end">
       <!-- create new entity to add to this list -->
       <button mat-icon-button  class="eav-suffix-button" 
-        *ngIf="data.showAddNewEntityButton" [tippy]="'Fields.Entity.New' | translate"
-        [disabled]="data.controlStatus.disabled || data.disableAddNew" (click)="openNewEntityDialog()">
+        *ngIf="vm.showAddNewEntityButton" [tippy]="'Fields.Entity.New' | translate"
+        [disabled]="vm.controlStatus.disabled || vm.disableAddNew" (click)="openNewEntityDialog()">
         <mat-icon>add_circle_outline</mat-icon>
       </button>
       <button mat-icon-button class="eav-suffix-button" 
-        *ngIf="data.showGoToListDialogButton" [tippy]="'Fields.Entity.OpenMultiselect' | translate"
+        *ngIf="vm.showGoToListDialogButton" [tippy]="'Fields.Entity.OpenMultiselect' | translate"
         (click)="expandDialog()">
         <mat-icon>post_add</mat-icon>
       </button>

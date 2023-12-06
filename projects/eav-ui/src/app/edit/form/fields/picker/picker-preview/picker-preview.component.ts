@@ -4,7 +4,7 @@ import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { EditRoutingService, FieldsSettingsService } from '../../../../shared/services';
 import { PickerSourceAdapter } from '../adapters/picker-source-adapter';
 import { PickerStateAdapter } from '../adapters/picker-state-adapter';
-import { EntityPickerPreviewTemplateVars } from './picker-preview.models';
+import { EntityPickerPreviewViewModel } from './picker-preview.models';
 import { FieldConfigSet, FieldControlConfig } from '../../../builder/fields-builder/field-config-set.model';
 import { Field } from '../../../builder/fields-builder/field.model';
 import { BaseSubsinkComponent } from 'projects/eav-ui/src/app/shared/components/base-subsink-component/base-subsink.component';
@@ -22,7 +22,7 @@ export class PickerPreviewComponent extends BaseSubsinkComponent implements OnIn
   @Input() group: FormGroup;
   @Input() controlConfig: FieldControlConfig;
 
-  templateVars$: Observable<EntityPickerPreviewTemplateVars>;
+  viewModel$: Observable<EntityPickerPreviewViewModel>;
 
   constructor(
     private fieldsSettingsService: FieldsSettingsService,
@@ -47,7 +47,7 @@ export class PickerPreviewComponent extends BaseSubsinkComponent implements OnIn
       distinctUntilChanged(GeneralHelpers.objectsEqual),
     );
 
-    this.templateVars$ = combineLatest([
+    this. viewModel$ = combineLatest([
       selectedItems$, freeTextMode$, settings$, controlStatus$, disableAddNew$
     ]).pipe(
       map(([
@@ -57,7 +57,7 @@ export class PickerPreviewComponent extends BaseSubsinkComponent implements OnIn
         const showAddNewEntityButton = settings.EntityType && settings.EnableCreate;
         const showGoToListDialogButton = settings.AllowMultiValue;
 
-        const templateVars: EntityPickerPreviewTemplateVars = {
+        const viewModel: EntityPickerPreviewViewModel = {
           selectedItems,
           freeTextMode,
           enableTextEntry: settings.EnableTextEntry,
@@ -69,7 +69,7 @@ export class PickerPreviewComponent extends BaseSubsinkComponent implements OnIn
           showGoToListDialogButton,
         };
 
-        return templateVars;
+        return viewModel;
       }),
     );
   }

@@ -11,10 +11,15 @@ import { EntityCacheService } from '../../../../shared/store/ngrx-data';
 import { convertValueToArray } from '../picker.helpers';
 import { DeleteEntityProps } from '../picker.models';
 import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
+import { EntityFieldDataSource } from '../data-sources/entity-field-data-source';
+import { QueryFieldDataSource } from '../data-sources/query-field-data-source';
+import { StringFieldDataSource } from '../data-sources/string-field-data-source';
 
 export class PickerSourceAdapter {
   public availableItems$: BehaviorSubject<WIPDataSourceItem[]> = new BehaviorSubject<WIPDataSourceItem[]>(null);
-  public contentType: string;
+  public pickerDataSource: EntityFieldDataSource | StringFieldDataSource | QueryFieldDataSource;
+  public contentType$ = new BehaviorSubject<string>('');
+  public contentType: string = null;
 
   protected subscription = new Subscription();
 

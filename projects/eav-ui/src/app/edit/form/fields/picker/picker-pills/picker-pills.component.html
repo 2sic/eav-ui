@@ -1,7 +1,7 @@
 <div *ngIf="viewModel$ | async as vm" class="c-ew__preview-holder">
   <mat-label class="c-ew__preview-label" [ngClass]="{
-    'mat-caption' : vm.entitiesNumber,
-    'mat-empty' : !vm.entitiesNumber,
+    'mat-caption' : vm.itemsNumber,
+    'mat-empty' : !vm.itemsNumber,
     'mat-error' : vm.controlStatus.invalid && vm.controlStatus.touched && !config.initialDisabled,
     'color__primary' : !(vm.controlStatus.invalid && vm.controlStatus.touched) && !config.initialDisabled,
     'color__label-disabled' : config.initialDisabled
@@ -13,15 +13,15 @@
       'c-ew__preview--invalid' : vm.controlStatus.invalid && vm.controlStatus.touched,
       'c-ew__preview--disabled': config.initialDisabled
     }">
-    <div [ngClass]="vm.entitiesNumber ? 'c-ew__preview-container' : 'c-ew__preview-container--empty'">
+    <div [ngClass]="vm.itemsNumber ? 'c-ew__preview-container' : 'c-ew__preview-container--empty'">
       <div fxLayout="row" fxLayoutAlign="start center">
-        <mat-list *ngIf="vm.entitiesNumber" fxLayout="row" class="eav-list">
-          <mat-list-item role="listitem" *ngFor="let item of vm.selectedEntities; trackBy: trackByFn" class="eav-list-item">
+        <mat-list *ngIf="vm.itemsNumber" fxLayout="row" class="eav-list">
+          <mat-list-item role="listitem" *ngFor="let item of vm.selectedItems; trackBy: trackByFn" class="eav-list-item">
             <span mat-line>{{ item.Text }}</span>
           </mat-list-item>
         </mat-list>
-        <span *ngIf="vm.entitiesNumber > 5" class="eav-more-entities mat-body-1">
-          {{ vm.entitiesNumber }}
+        <span *ngIf="vm.itemsNumber > 5" class="eav-more-entities mat-body-1">
+          {{ vm.itemsNumber }}
         </span>
       </div>
     </div>

@@ -1,67 +1,71 @@
 import { TranslateService } from '@ngx-translate/core';
-import { DropdownOption, Entity, WIPDataSourceItem } from '../../../../../../../edit-types';
+import { WIPDataSourceItem } from '../../../../../../../edit-types';
 import { guidRegex } from '../../../../shared/constants/guid.constants';
 
 import { EntityFieldDataSource } from './data-sources/entity-field-data-source';
+import { QueryFieldDataSource } from './data-sources/query-field-data-source';
+import { StringFieldDataSource } from './data-sources/string-field-data-source';
 
-export function calculateSelectedEntities(
-  fieldValue: string | string[],
+export function createUIModel(
+  selectedItems: WIPDataSourceItem[],
   data: WIPDataSourceItem[],
-  separator: string,
+  pickerDataSource: EntityFieldDataSource | QueryFieldDataSource | StringFieldDataSource,
   contentType: string,
   translate: TranslateService,
-  entityDataSource: EntityFieldDataSource,
 ): WIPDataSourceItem[] {
-  // name is either [guid] or simply free-text - convert to array for further processing
-  const currentValueAsArray = typeof fieldValue === 'string' ? convertValueToArray(fieldValue, separator) : fieldValue;
-
-  // Convert each value to WIPDataSourceItem so the UI has everything it needs
-  const selectedEntities = currentValueAsArray.map(name => {
-    const entity = data.find(e => e.Value === name);
-    const disableEdit = entity?._disableEdit === true || (entity == null); // compensate for null/undefined
-    const disableDelete = entity?._disableDelete === true || (entity == null); // compensate for null/undefined
-    const text = entity?.Text ?? translate.instant('Fields.Entity.EntityNotFound');
-    
-    if (!entity) {
-      entityDataSource.contentType(contentType);
-      entityDataSource.entityGuids([name]);
-      entityDataSource.getAll();
-    }
-
-    const result: WIPDataSourceItem = {
-      // if it's a free text value or not found, disable edit and delete
-      _disableEdit: disableEdit,
-      _disableDelete: disableDelete,
-      // either the real value or null if text-field or not found
-      Id: entity?.Id,
-      Text: text,
-      _tooltip: `${text} (${name})`,
-      Value: name,
-    };
-
-    return result;
-  });
+  let missingData: string[] = [];
   
+  // @SDV maybe there is a more elegant way to do this
+  const selectedEntities = selectedItems.map(item => { 
+    const entity = data.find(e => e.Value === item.Value);
+    if (!entity) {
+      missingData.push(item.Value);
+      return item;
+    } else {
+      const text = entity?.Text ?? translate.instant('Fields.Entity.EntityNotFound');
+      const disableEdit = entity._disableEdit === true;
+      const disableDelete = entity._disableDelete === true;
+      const tooltip = entity._tooltip ?? `${text} (${entity.Value})`;
+      const information = entity._information ?? '';
+
+      const result: WIPDataSourceItem = {
+        // if it's a free text value or not found, disable edit and delete
+        _disableEdit: disableEdit,
+        _disableDelete: disableDelete,
+        // either the real value or null if text-field or not found
+        Id: entity?.Id,
+        Text: text,
+        _tooltip: tooltip,
+        _information: information,
+        Value: entity.Value,
+      };
+
+      return result;
+    }
+  });
+
+  if (missingData.length > 0) {
+    pickerDataSource.prefetch(contentType, missingData);
+  }
+
   return selectedEntities;
 }
 
-export function calculateStringSelectedOptions(
+export function equalizeSelectedItems(
   fieldValue: string | string[],
   separator: string,
-  options: DropdownOption[],
 ): WIPDataSourceItem[] {
   const currentValueAsArray = typeof fieldValue === 'string' ? convertValueToArray(fieldValue, separator) : fieldValue;
 
   const selectedEntities = currentValueAsArray.map(value => {
-    const label = options?.find(o => o.value === value)?.label ?? value
     const result: WIPDataSourceItem = {
       // if it's a free text value or not found, disable edit and delete
       _disableEdit: true,
       _disableDelete: true,
       // either the real value or null if text-field or not found
       Id: null,
-      Text: label,
-      _tooltip: `${label} (${value})`,
+      Text: value,
+      _tooltip: `${value}`,
       Value: value,
     };
     return result;

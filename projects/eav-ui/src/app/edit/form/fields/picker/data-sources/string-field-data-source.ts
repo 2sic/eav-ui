@@ -16,7 +16,7 @@ export class StringFieldDataSource {
     this.data$ = combineLatest([
       this.getAll$.pipe(distinctUntilChanged()),
       preloaded,
-    ]).pipe(map(([fullData, preloaded]) => fullData ? preloaded : preloaded), distinctUntilChanged());
+    ]).pipe(map(([fullData, preloaded]) => fullData ? preloaded : preloaded)/*, distinctUntilChanged(GeneralHelpers.arraysEqual)*/);
   }
 
   destroy(): void {
@@ -25,6 +25,10 @@ export class StringFieldDataSource {
 
   getAll(): void {
     this.getAll$.next(true);
+  }
+
+  prefetch(contentType?: string, entityGuids?: string[]): void {
+    // we have data already so there isn't anything to be prefetched
   }
 
   private stringEntityMapping(dropdownOption: DropdownOption): WIPDataSourceItem {

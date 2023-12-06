@@ -1,6 +1,6 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, Input, OnInit } from '@angular/core';
-import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
+import { combineLatest, distinctUntilChanged, map, Observable, tap } from 'rxjs';
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { FieldsSettingsService } from '../../../../shared/services';
 import { PickerSourceAdapter } from '../adapters/picker-source-adapter';
@@ -9,6 +9,8 @@ import { EntityListViewModel, ReorderIndexes } from './picker-list.models';
 import { FormGroup } from '@angular/forms';
 import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
 import { WIPDataSourceItem } from 'projects/edit-types';
+import { createUIModel } from '../picker.helpers';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-picker-list',
@@ -23,14 +25,25 @@ export class PickerListComponent implements OnInit {
 
   viewModel$: Observable<EntityListViewModel>;
 
-  constructor(private fieldsSettingsService: FieldsSettingsService) { }
+  constructor(
+    private fieldsSettingsService: FieldsSettingsService,
+    private translate: TranslateService,
+  ) { }
 
   ngOnInit(): void {
     const label$ = this.pickerStateAdapter.label$;
     const required$ = this.pickerStateAdapter.required$;
     const controlStatus$ = this.pickerStateAdapter.controlStatus$;
-    const selectedItems$ = this.pickerStateAdapter.selectedItems$;
-
+    const selectedItems$ = combineLatest([
+      this.pickerStateAdapter.selectedItems$.pipe(distinctUntilChanged(GeneralHelpers.arraysEqual)),
+      this.pickerSourceAdapter.pickerDataSource.data$.pipe(distinctUntilChanged(GeneralHelpers.arraysEqual)),
+      this.pickerSourceAdapter.contentType$.pipe(distinctUntilChanged()),
+    ]).pipe(//tap(([selectedItems, data, contentType]) => console.log('SDV LIST')),
+      map(([selectedItems, data, contentType]) =>
+        createUIModel(selectedItems, data, this.pickerSourceAdapter.pickerDataSource, contentType, this.translate)
+      ), distinctUntilChanged(GeneralHelpers.arraysEqual)
+    );
+    
     const settings$ = this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).pipe(
       map(settings => ({
         allowMultiValue: settings.AllowMultiValue,

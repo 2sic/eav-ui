@@ -14,7 +14,6 @@ import { EntityFieldDataSource } from "../data-sources/entity-field-data-source"
 import { FieldDataSourceFactoryService } from "../factories/field-data-source-factory.service";
 
 export class PickerEntitySourceAdapter extends PickerSourceAdapter {
-  private entityFieldDataSource: EntityFieldDataSource;
   private contentTypeMask: FieldMask;
 
   constructor(
@@ -77,20 +76,21 @@ export class PickerEntitySourceAdapter extends PickerSourceAdapter {
       })
     );
 
-    this.entityFieldDataSource = this.fieldDataSourceFactoryService.createEntityFieldDataSource();
+    this.pickerDataSource = this.fieldDataSourceFactoryService.createEntityFieldDataSource();
 
     this.subscription.add(
-      this.entityFieldDataSource.data$.subscribe(this.availableItems$)
+      this.pickerDataSource.data$.subscribe(this.availableItems$)
     );
   }
 
   onAfterViewInit(): void {
     this.contentType = this.contentTypeMask.resolve();
+    this.contentType$.next(this.contentType);
   }
 
   destroy(): void {
     this.contentTypeMask.destroy();
-    this.entityFieldDataSource.destroy();
+    this.pickerDataSource.destroy();
 
     super.destroy();
   }
@@ -106,7 +106,7 @@ export class PickerEntitySourceAdapter extends PickerSourceAdapter {
     }
 
     const contentTypeName = this.contentTypeMask.resolve();
-    this.entityFieldDataSource.contentType(contentTypeName);
+    (this.pickerDataSource as EntityFieldDataSource).contentType(contentTypeName);
 
     const entitiesFilter: string[] = (clearAvailableItemsAndOnlyUpdateCache || !this.settings$.value.EnableAddExisting)
       ? filterGuids(
@@ -115,11 +115,11 @@ export class PickerEntitySourceAdapter extends PickerSourceAdapter {
         (this.control.value as string[]).filter(guid => !!guid),
       )
       : null;
-    this.entityFieldDataSource.entityGuids(entitiesFilter);
+    (this.pickerDataSource as EntityFieldDataSource).entityGuids(entitiesFilter);
 
-    this.entityFieldDataSource.getAll();
+    this.pickerDataSource.getAll();
     if (!clearAvailableItemsAndOnlyUpdateCache) {
-      this.subscription.add(this.entityFieldDataSource.data$.subscribe((items) => {
+      this.subscription.add(this.pickerDataSource.data$.subscribe((items) => {
         this.availableItems$.next(items);
       }));
     }

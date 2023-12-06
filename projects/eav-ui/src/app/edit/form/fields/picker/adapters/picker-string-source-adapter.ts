@@ -12,8 +12,6 @@ import { StringFieldDataSource } from "../data-sources/string-field-data-source"
 import { FieldDataSourceFactoryService } from "../factories/field-data-source-factory.service";
 
 export class PickerStringSourceAdapter extends PickerSourceAdapter {
-  private stringFieldDataSource: StringFieldDataSource;
-
   constructor(
     public disableAddNew$: BehaviorSubject<boolean> = new BehaviorSubject(true),
     public fieldsSettingsService: FieldsSettingsService,
@@ -52,20 +50,20 @@ export class PickerStringSourceAdapter extends PickerSourceAdapter {
   init(): void {
     super.init();
 
-    this.stringFieldDataSource = this.fieldDataSourceFactoryService.createStringFieldDataSource(this.settings$);
+    this.pickerDataSource = this.fieldDataSourceFactoryService.createStringFieldDataSource(this.settings$);
     this.subscription.add(
-      this.stringFieldDataSource.data$.subscribe(this.availableItems$)
+      this.pickerDataSource.data$.subscribe(this.availableItems$)
     );
   }
 
   destroy(): void {
-    this.stringFieldDataSource.destroy();
+    this.pickerDataSource.destroy();
 
     super.destroy();
   }
 
   fetchItems(): void {
-    this.stringFieldDataSource.getAll();
-    this.subscription.add(this.stringFieldDataSource.data$.subscribe(this.availableItems$));
+    this.pickerDataSource.getAll();
+    this.subscription.add(this.pickerDataSource.data$.subscribe(this.availableItems$));
   }
 }

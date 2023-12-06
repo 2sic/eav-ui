@@ -15,7 +15,6 @@ import { FieldDataSourceFactoryService } from "../factories/field-data-source-fa
 import { QueryFieldDataSource } from "../data-sources/query-field-data-source";
 
 export class PickerQuerySourceAdapter extends PickerSourceAdapter {
-  private queryFieldDataSource: QueryFieldDataSource;
   private paramsMask: FieldMask;
 
   constructor(
@@ -83,7 +82,7 @@ export class PickerQuerySourceAdapter extends PickerSourceAdapter {
       })
     );
 
-    this.queryFieldDataSource = this.fieldDataSourceFactoryService.createQueryFieldDataSource(
+    this.pickerDataSource = this.fieldDataSourceFactoryService.createQueryFieldDataSource(
       this.settings$,
       this.isStringQuery,
       this.config.entityGuid,
@@ -97,12 +96,13 @@ export class PickerQuerySourceAdapter extends PickerSourceAdapter {
   onAfterViewInit(): void {
     super.onAfterViewInit();
     this.contentType = this.paramsMask.resolve();
+    this.contentType$.next(this.contentType);
   }
 
   destroy(): void {
     this.paramsMask?.destroy();
     this.error$.complete();
-    this.queryFieldDataSource.destroy();
+    this.pickerDataSource.destroy();
     super.destroy();
   }
 
@@ -126,14 +126,14 @@ export class PickerQuerySourceAdapter extends PickerSourceAdapter {
         (this.control.value as string[]).filter(guid => !!guid),
       )
       : null;
-    this.queryFieldDataSource.includeGuid(true);
-    this.queryFieldDataSource.params(params);
-    this.queryFieldDataSource.entityGuids(entitiesFilter);
+    (this.pickerDataSource as QueryFieldDataSource).includeGuid(true);
+    (this.pickerDataSource as QueryFieldDataSource).params(params);
+    (this.pickerDataSource as QueryFieldDataSource).entityGuids(entitiesFilter);
 
-    this.queryFieldDataSource.getAll();
-    this.queryFieldDataSource.error$.subscribe(this.error$);
+    this.pickerDataSource.getAll();
+    (this.pickerDataSource as QueryFieldDataSource).error$.subscribe(this.error$);
     if (!clearAvailableItemsAndOnlyUpdateCache) {
-      this.subscription.add(this.queryFieldDataSource.data$.subscribe((items) => {
+      this.subscription.add(this.pickerDataSource.data$.subscribe((items) => {
         this.availableItems$.next(items);
       }));
     }
