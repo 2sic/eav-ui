@@ -46,8 +46,7 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
     super.ngOnInit();
 
     this.createPickerAdapters();
-
-    this.createTemplateVariables();
+    this.createViewModel();
   }
 
   ngAfterViewInit(): void {

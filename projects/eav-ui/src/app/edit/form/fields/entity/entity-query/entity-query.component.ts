@@ -48,7 +48,7 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
     super.ngOnInit();
     if (!this.isStringQuery) {
       this.createPickerAdapters();
-      this.createTemplateVariables();
+      this.createViewModel();
     }
   }
 

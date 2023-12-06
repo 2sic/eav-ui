@@ -50,7 +50,7 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
     super.ngOnInit();
     if (this.isStringQuery) {
       this.createPickerAdapters();
-      this.createTemplateVariables();
+      this.createViewModel();
     }
   }
 

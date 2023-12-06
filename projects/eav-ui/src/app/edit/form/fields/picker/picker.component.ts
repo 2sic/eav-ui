@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
+import { combineLatest, map, Observable } from 'rxjs';
 import { EavService, EditRoutingService, EntityService, FieldsSettingsService } from '../../../shared/services';
 import { EntityCacheService, StringQueryCacheService } from '../../../shared/store/ngrx-data';
 import { BaseFieldComponent } from '../base/base-field.component';
@@ -54,17 +54,16 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
     super.ngOnDestroy();
   }
 
-  createTemplateVariables() {
+  createViewModel() {
     this.viewModel$ = combineLatest([this.pickerStateAdapter.allowMultiValue$])
       .pipe(map(([allowMultiValue]) => {
-        // allowMultiValue is used to determine if we even use control with preview and dialog
-        const showPreview = !allowMultiValue || (allowMultiValue && this.controlConfig.isPreview)
-
-        const viewModel: PickerViewModel = {
-          showPreview,
-        };
-        return viewModel;
-      }),
+          // allowMultiValue is used to determine if we even use control with preview and dialog
+          const showPreview = !allowMultiValue || (allowMultiValue && this.controlConfig.isPreview)
+          const viewModel: PickerViewModel = {
+            showPreview,
+          };
+          return viewModel;
+        }),
       );
   }
 
