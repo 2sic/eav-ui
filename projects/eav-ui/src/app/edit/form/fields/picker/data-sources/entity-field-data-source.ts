@@ -3,22 +3,24 @@ import { BehaviorSubject, Observable, Subscription, combineLatest, distinctUntil
 import { EntityService } from "../../../../shared/services";
 import { EntityCacheService } from "../../../../shared/store/ngrx-data";
 import { GeneralHelpers } from "../../../../shared/helpers";
+import { DataSourceBase } from './data-source-base';
 
-export class EntityFieldDataSource {
-  public data$: Observable<WIPDataSourceItem[]>;
+export class EntityFieldDataSource extends DataSourceBase {
+  // public data$: Observable<WIPDataSourceItem[]>;
+  // private getAll$ = new BehaviorSubject<boolean>(false);
+  // private subscriptions = new Subscription();
 
   private contentTypeName$ = new BehaviorSubject<string>('');
   private entityGuids$ = new BehaviorSubject<string[]>(null);
-  private getAll$ = new BehaviorSubject<boolean>(false);
   private prefetch$ = new BehaviorSubject<boolean>(false);
   private loading$ = new BehaviorSubject<boolean>(false);
   private trigger$ = new BehaviorSubject<boolean[]>([false, false]);
-  private subscriptions = new Subscription();
 
   constructor(
     private entityService: EntityService,
     private entityCacheService: EntityCacheService,
   ) {
+    super();
     this.subscriptions.add(
       combineLatest([
         this.getAll$.pipe(
@@ -77,9 +79,9 @@ export class EntityFieldDataSource {
     this.prefetch$.next(true);
   }
 
-  getAll(): void {
-    this.getAll$.next(true);
-  }
+  // getAll(): void {
+  //   this.getAll$.next(true);
+  // }
 
   contentType(contentTypeName: string): void {
     this.contentTypeName$.next(contentTypeName);

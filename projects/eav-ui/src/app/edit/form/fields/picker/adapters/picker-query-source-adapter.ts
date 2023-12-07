@@ -126,14 +126,15 @@ export class PickerQuerySourceAdapter extends PickerSourceAdapter {
         (this.control.value as string[]).filter(guid => !!guid),
       )
       : null;
-    (this.pickerDataSource as QueryFieldDataSource).includeGuid(true);
-    (this.pickerDataSource as QueryFieldDataSource).params(params);
-    (this.pickerDataSource as QueryFieldDataSource).entityGuids(entitiesFilter);
+    const queryDS = this.pickerDataSource as QueryFieldDataSource;
+    queryDS.includeGuid(true);
+    queryDS.params(params);
+    queryDS.entityGuids(entitiesFilter);
 
-    this.pickerDataSource.getAll();
-    (this.pickerDataSource as QueryFieldDataSource).error$.subscribe(this.error$);
+    queryDS.getAll();
+    queryDS.error$.subscribe(this.error$);
     if (!clearAvailableItemsAndOnlyUpdateCache) {
-      this.subscription.add(this.pickerDataSource.data$.subscribe((items) => {
+      this.subscription.add(queryDS.data$.subscribe((items) => {
         this.availableItems$.next(items);
       }));
     }

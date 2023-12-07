@@ -5,19 +5,20 @@ import { QueryService } from "../../../../shared/services";
 import { TranslateService } from "@ngx-translate/core";
 import { QueryEntity } from "../../entity/entity-query/entity-query.models";
 import { GeneralHelpers } from "../../../../shared/helpers";
+import { DataSourceBase } from './data-source-base';
 
-export class QueryFieldDataSource {
-  public data$: Observable<WIPDataSourceItem[]>;
+export class QueryFieldDataSource extends DataSourceBase {
+  // public data$: Observable<WIPDataSourceItem[]>;
+  // private getAll$ = new BehaviorSubject<boolean>(false);
+  // private subscriptions = new Subscription();
   public error$ = new BehaviorSubject('');
 
   private includeGuid$ = new BehaviorSubject<boolean>(true);
   private params$ = new BehaviorSubject<string>('');
   private entityGuids$ = new BehaviorSubject<string[]>(null);
-  private getAll$ = new BehaviorSubject<boolean>(false);
   private prefetch$ = new BehaviorSubject<boolean>(false);
   private loading$ = new BehaviorSubject<boolean>(false);
   private trigger$ = new BehaviorSubject<boolean[]>([false, false]);
-  private subscriptions = new Subscription();
 
   constructor(
     private queryService: QueryService,
@@ -30,6 +31,7 @@ export class QueryFieldDataSource {
     private fieldName: string,
     private appId: string,
   ) {
+    super();
     this.subscriptions.add(
       combineLatest([
         this.getAll$.pipe(
@@ -95,9 +97,9 @@ export class QueryFieldDataSource {
     this.prefetch$.next(true);
   }
 
-  getAll(): void {
-    this.getAll$.next(true);
-  }
+  // getAll(): void {
+  //   this.getAll$.next(true);
+  // }
 
   includeGuid(includeGuid: boolean): void {
     this.includeGuid$.next(includeGuid);
