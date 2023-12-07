@@ -15,7 +15,18 @@ import { EntityFieldDataSource } from '../data-sources/entity-field-data-source'
 import { QueryFieldDataSource } from '../data-sources/query-field-data-source';
 import { StringFieldDataSource } from '../data-sources/string-field-data-source';
 
-export class PickerSourceAdapter {
+// later remove "I" and then put into own file
+export interface IPickerSourceAdapter {
+
+}
+
+// TODO: @SDV
+// - rename to PickerSourceAdapterBase - should become abstract
+// - extract entity commands into a PickerSourceEntityAdapterBase - should also be abstract
+// - make sure the BlockPicker uses the EntitySourceAdapter
+// - string-source should inherit from this, but Entity/Query should inherit from PickerSourceEntityAdapterBase
+// - move property `pickerDataSource` to be `dataSource` - make it private or public and NOT on the base class - and strictly typed
+export class PickerSourceAdapter implements IPickerSourceAdapter {
   public availableItems$: BehaviorSubject<WIPDataSourceItem[]> = new BehaviorSubject<WIPDataSourceItem[]>(null);
   public pickerDataSource: EntityFieldDataSource | StringFieldDataSource | QueryFieldDataSource;
   public contentType$ = new BehaviorSubject<string>('');
