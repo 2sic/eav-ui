@@ -59,7 +59,7 @@ export class StringDropdownComponent extends PickerComponent implements OnInit, 
   }
 
   private createPickerAdapters(): void {
-    this.pickerStateAdapter = this.stateFactory.createPickerStringStateAdapter(
+    const state = this.stateFactory.createPickerStringStateAdapter(
       this.control,
       this.config,
       this.settings$,
@@ -71,24 +71,24 @@ export class StringDropdownComponent extends PickerComponent implements OnInit, 
       () => this.focusOnSearchComponent,
     );
 
-    this.pickerSourceAdapter = this.sourceFactory.createPickerStringSourceAdapter(
-      this.pickerStateAdapter.disableAddNew$,
+    const source = this.sourceFactory.createPickerStringSourceAdapter(
+      state.disableAddNew$,
       this.fieldsSettingsService,
 
-      this.pickerStateAdapter.control,
+      state.control,
       this.config,
-      this.pickerStateAdapter.settings$,
+      state.settings$,
       this.editRoutingService,
       this.group,
       // (clearAvailableItemsAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableItemsAndOnlyUpdateCache),
-      (props: DeleteEntityProps) => this.pickerStateAdapter.doAfterDelete(props)
+      (props: DeleteEntityProps) => state.doAfterDelete(props)
     );
 
-    this.pickerStateAdapter.init();
-    this.pickerSourceAdapter.init();
+    state.init();
+    source.init();
     this.pickerData = new PickerData(
-      this.pickerSourceAdapter,
-      this.pickerStateAdapter,
+      state,
+      source,
     );
   }
 }

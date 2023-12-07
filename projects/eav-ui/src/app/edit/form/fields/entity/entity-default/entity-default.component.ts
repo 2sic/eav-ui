@@ -57,7 +57,7 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
   }
 
   private createPickerAdapters(): void {
-    this.pickerStateAdapter = this.stateFactory.createPickerEntityStateAdapter(
+    const state = this.stateFactory.createPickerEntityStateAdapter(
       this.control,
       this.config,
       this.settings$,
@@ -69,24 +69,24 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
       () => this.focusOnSearchComponent,
     );
 
-    this.pickerSourceAdapter = this.sourceFactory.createPickerEntitySourceAdapter(
-      this.pickerStateAdapter.disableAddNew$,
+    const source = this.sourceFactory.createPickerEntitySourceAdapter(
+      state.disableAddNew$,
       this.fieldsSettingsService,
 
-      this.pickerStateAdapter.control,
+      state.control,
       this.config,
-      this.pickerStateAdapter.settings$,
+      state.settings$,
       this.editRoutingService,
       this.group,
       // (clearAvailableItemsAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableItemsAndOnlyUpdateCache),
-      (props: DeleteEntityProps) => this.pickerStateAdapter.doAfterDelete(props)
+      (props: DeleteEntityProps) => state.doAfterDelete(props)
     );
 
-    this.pickerStateAdapter.init();
-    this.pickerSourceAdapter.init();
+    state.init();
+    source.init();
     this.pickerData = new PickerData(
-      this.pickerSourceAdapter,
-      this.pickerStateAdapter,
+      state,
+      source,
     );
   }
 }

@@ -3,7 +3,7 @@ import { PickerStateAdapter } from "./adapters/picker-state-adapter";
 
 export class PickerData {
   constructor(
-    public source: PickerSourceAdapter,
     public state: PickerStateAdapter,
+    public source: PickerSourceAdapter,
   ) { }
 }

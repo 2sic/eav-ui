@@ -5,10 +5,8 @@ import { EavService, EditRoutingService, EntityService, FieldsSettingsService } 
 import { EntityCacheService, StringQueryCacheService } from '../../../shared/store/ngrx-data';
 import { BaseFieldComponent } from '../base/base-field.component';
 import { PickerSearchComponent } from './picker-search/picker-search.component';
-import { PickerStateAdapter } from './adapters/picker-state-adapter';
 import { PickerViewModel } from './picker.models';
 import { PickerData } from './picker-data';
-import { PickerSourceAdapter } from './adapters/picker-source-adapter';
 
 @Component({
   // selector: InputTypeConstants.EntityDefault,
@@ -19,8 +17,6 @@ import { PickerSourceAdapter } from './adapters/picker-source-adapter';
 export class PickerComponent extends BaseFieldComponent<string | string[]> implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(PickerSearchComponent) protected entitySearchComponent: PickerSearchComponent;
 
-  pickerSourceAdapter: PickerSourceAdapter;
-  pickerStateAdapter: PickerStateAdapter;
   pickerData: PickerData;
   isStringQuery: boolean;
   isString: boolean;
@@ -46,18 +42,18 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
   }
 
   ngAfterViewInit(): void {
-    this.pickerSourceAdapter.onAfterViewInit();
+    this.pickerData.source.onAfterViewInit();
   }
 
   ngOnDestroy(): void {
-    this.pickerSourceAdapter.destroy();
-    this.pickerStateAdapter.destroy();
+    this.pickerData.source.destroy();
+    this.pickerData.state.destroy();
 
     super.ngOnDestroy();
   }
 
   createViewModel() {
-    this.viewModel$ = combineLatest([this.pickerStateAdapter.allowMultiValue$])
+    this.viewModel$ = combineLatest([this.pickerData.state.allowMultiValue$])
       .pipe(map(([allowMultiValue]) => {
         // allowMultiValue is used to determine if we even use control with preview and dialog
         const showPreview = !allowMultiValue || (allowMultiValue && this.controlConfig.isPreview)
@@ -79,14 +75,14 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
       this.editRoutingService.childFormResult(this.config.index, this.config.entityGuid).subscribe(result => {
         // @2SDV TODO check why this triggers twice
         const newItemGuid = Object.keys(result)[0];
-        if (!this.pickerStateAdapter.createValueArray().includes(newItemGuid))
-          this.pickerStateAdapter.addSelected(newItemGuid);
+        if (!this.pickerData.state.createValueArray().includes(newItemGuid))
+          this.pickerData.state.addSelected(newItemGuid);
       })
     );
     // this is used when new entity is created/changed in child form it automatically fetched again
     this.subscription.add(
       this.editRoutingService.childFormClosed().subscribe(() => {
-        this.pickerSourceAdapter.fetchItems(false);
+        this.pickerData.source.fetchItems(false);
       })
     );
   }
