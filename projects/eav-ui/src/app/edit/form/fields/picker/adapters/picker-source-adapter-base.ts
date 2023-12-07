@@ -1,4 +1,4 @@
-import { WIPDataSourceItem } from 'projects/edit-types';
+import { PickerItem } from 'projects/edit-types';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { DeleteEntityProps } from '../picker.models';
 import { PickerSourceAdapter } from './picker-source-adapter';
@@ -12,7 +12,7 @@ import { PickerSourceAdapter } from './picker-source-adapter';
 // DONE - string-source should inherit from this, but Entity/Query should inherit from PickerSourceEntityAdapterBase
 // - move property `pickerDataSource` to be `dataSource` - make it private or public and NOT on the base class - and strictly typed
 export abstract class PickerSourceAdapterBase implements PickerSourceAdapter {
-  public availableItems$ = new BehaviorSubject<WIPDataSourceItem[]>(null);
+  public availableItems$ = new BehaviorSubject<PickerItem[]>(null);
   public parameters$ = new BehaviorSubject<string>('');
   public contentType: string = null;
 
@@ -31,7 +31,7 @@ export abstract class PickerSourceAdapterBase implements PickerSourceAdapter {
     this.subscriptions.unsubscribe();
   }
 
-  getDataFromSource(): Observable<WIPDataSourceItem[]> { return null; }
+  getDataFromSource(): Observable<PickerItem[]> { return null; }
 
   abstract prefetch(contentType: string, missingData: string[]): void;
 

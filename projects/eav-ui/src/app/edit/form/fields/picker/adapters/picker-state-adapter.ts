@@ -1,5 +1,5 @@
 import { TranslateService } from '@ngx-translate/core/public_api';
-import { WIPDataSourceItem, FieldSettings } from 'projects/edit-types';
+import { PickerItem, FieldSettings } from 'projects/edit-types';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { ControlStatus } from '../../../../shared/models';
@@ -16,7 +16,7 @@ export class PickerStateAdapter {
   public error$: BehaviorSubject<string> = new BehaviorSubject('');
 
   public shouldPickerListBeShown$: Observable<boolean>;
-  public selectedItems$: Observable<WIPDataSourceItem[]>;
+  public selectedItems$: Observable<PickerItem[]>;
   public allowMultiValue$: Observable<boolean>;
   public tooltip$: Observable<string>;
   public information$: Observable<string>;
@@ -30,7 +30,7 @@ export class PickerStateAdapter {
     public label$: Observable<string>,
     public placeholder$: Observable<string>,
     public required$: Observable<boolean>,
-    public cacheItems$: Observable<WIPDataSourceItem[]>,
+    public cacheItems$: Observable<PickerItem[]>,
     public stringQueryCache$: Observable<QueryEntity[]>,
     public translate: TranslateService,
     public control: AbstractControl,

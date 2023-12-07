@@ -1,7 +1,7 @@
 import { FormGroup, AbstractControl } from "@angular/forms";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
-import { FieldSettings, WIPDataSourceItem } from "projects/edit-types";
+import { FieldSettings, PickerItem } from "projects/edit-types";
 import { BehaviorSubject, Observable } from "rxjs";
 import { EntityService, EavService, EditRoutingService, FieldsSettingsService } from "../../../../shared/services";
 import { EntityCacheService } from "../../../../shared/store/ngrx-data";
@@ -53,7 +53,7 @@ export class PickerStringSourceAdapter extends PickerSourceAdapterBase {
     super.destroy();
   }
 
-  getDataFromSource(): Observable<WIPDataSourceItem[]> {
+  getDataFromSource(): Observable<PickerItem[]> {
     return this.stringFieldDataSource.data$;
   }
 
@@ -69,7 +69,7 @@ export class PickerStringSourceAdapter extends PickerSourceAdapterBase {
   deleteItem(props: DeleteEntityProps): void {
     throw new Error("Method not implemented.");
   }
-  
+
   editItem(editParams: { entityGuid: string; entityId: number; }): void {
     throw new Error("Method not implemented.");
   }

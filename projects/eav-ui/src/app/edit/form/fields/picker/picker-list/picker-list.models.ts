@@ -1,4 +1,4 @@
-import { WIPDataSourceItem } from 'projects/edit-types';
+import { PickerItem } from 'projects/edit-types';
 import { ControlStatus } from '../../../../shared/models/control-status.model';
 
 export interface EntityListViewModel {
@@ -6,7 +6,7 @@ export interface EntityListViewModel {
   enableEdit: boolean;
   enableDelete: boolean;
   enableRemove: boolean;
-  selectedItems: WIPDataSourceItem[];
+  selectedItems: PickerItem[];
   label: string;
   required: boolean;
   controlStatus: ControlStatus<string | string[]>;

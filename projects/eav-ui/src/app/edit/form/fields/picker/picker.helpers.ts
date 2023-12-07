@@ -1,18 +1,17 @@
 import { TranslateService } from '@ngx-translate/core';
-import { WIPDataSourceItem } from '../../../../../../../edit-types';
+import { PickerItem } from '../../../../../../../edit-types';
 import { guidRegex } from '../../../../shared/constants/guid.constants';
 
 export function createUIModel(
-  selectedItems: WIPDataSourceItem[],
-  data: WIPDataSourceItem[],
+  selectedItems: PickerItem[],
+  data: PickerItem[],
   parameters: string,
   prefetch: (parameters: string, missingData: string[]) => void,
   translate: TranslateService,
-): WIPDataSourceItem[] {
+): PickerItem[] {
   let missingData: string[] = [];
-  
-  // @SDV maybe there is a more elegant way to do this
-  const selectedEntities = selectedItems.map(item => { 
+
+  const selectedEntities = selectedItems.map(item => {
     const entity = data.find(e => e.Value === item.Value);
     if (!entity) {
       missingData.push(item.Value);
@@ -24,7 +23,7 @@ export function createUIModel(
       const tooltip = entity._tooltip ?? `${text} (${entity.Value})`;
       const information = entity._information ?? '';
 
-      const result: WIPDataSourceItem = {
+      const result: PickerItem = {
         // if it's a free text value or not found, disable edit and delete
         _disableEdit: disableEdit,
         _disableDelete: disableDelete,
@@ -50,11 +49,11 @@ export function createUIModel(
 export function equalizeSelectedItems(
   fieldValue: string | string[],
   separator: string,
-): WIPDataSourceItem[] {
+): PickerItem[] {
   const currentValueAsArray = typeof fieldValue === 'string' ? convertValueToArray(fieldValue, separator) : fieldValue;
 
   const selectedEntities = currentValueAsArray.map(value => {
-    const result: WIPDataSourceItem = {
+    const result: PickerItem = {
       // if it's a free text value or not found, disable edit and delete
       _disableEdit: true,
       _disableDelete: true,

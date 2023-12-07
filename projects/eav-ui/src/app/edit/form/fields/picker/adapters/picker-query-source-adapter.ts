@@ -1,7 +1,7 @@
 import { FormGroup, AbstractControl } from "@angular/forms";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
-import { FieldSettings, WIPDataSourceItem } from "projects/edit-types";
+import { FieldSettings, PickerItem } from "projects/edit-types";
 import { BehaviorSubject, Observable, distinctUntilChanged, map } from "rxjs";
 import { EntityService, EavService, EditRoutingService, FieldsSettingsService, QueryService } from "../../../../shared/services";
 import { EntityCacheService, StringQueryCacheService } from "../../../../shared/store/ngrx-data";
@@ -107,7 +107,7 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
     super.destroy();
   }
 
-  getDataFromSource(): Observable<WIPDataSourceItem[]> {
+  getDataFromSource(): Observable<PickerItem[]> {
     return this.queryFieldDataSource.data$;
   }
 

@@ -1,22 +1,22 @@
 import { Injectable } from '@angular/core';
 import { EntityCollectionServiceElementsFactory } from '@ngrx/data';
 import { distinctUntilChanged, map, Observable } from 'rxjs';
-import { WIPDataSourceItem } from '../../../../../../../edit-types';
+import { PickerItem } from '../../../../../../../edit-types';
 import { GeneralHelpers } from '../../helpers';
 import { BaseDataService } from './base-data.service';
 
 @Injectable({ providedIn: 'root' })
-export class EntityCacheService extends BaseDataService<WIPDataSourceItem> {
+export class EntityCacheService extends BaseDataService<PickerItem> {
   constructor(serviceElementsFactory: EntityCollectionServiceElementsFactory) {
     super('EntityCache', serviceElementsFactory);
   }
 
-  loadEntities(entities: WIPDataSourceItem[]): void {
+  loadEntities(entities: PickerItem[]): void {
     if (entities == null) { return; }
     this.upsertManyInCache(entities);
   }
 
-  getEntities$(guids?: string[]): Observable<WIPDataSourceItem[]> {
+  getEntities$(guids?: string[]): Observable<PickerItem[]> {
     if (guids == null) {
       return this.cache$.asObservable();
     }
@@ -27,7 +27,7 @@ export class EntityCacheService extends BaseDataService<WIPDataSourceItem> {
     );
   }
 
-  getEntities(guids?: string[]): WIPDataSourceItem[] {
+  getEntities(guids?: string[]): PickerItem[] {
     if (guids == null) {
       return this.cache$.value;
     }
@@ -35,7 +35,7 @@ export class EntityCacheService extends BaseDataService<WIPDataSourceItem> {
     return this.cache$.value.filter(entity => guids.includes(entity.Value));
   }
 
-  getEntity(guid: string): WIPDataSourceItem {
+  getEntity(guid: string): PickerItem {
     return this.cache$.value.find(entity => entity.Value === guid);
   }
 }

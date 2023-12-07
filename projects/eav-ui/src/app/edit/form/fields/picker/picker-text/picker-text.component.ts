@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { WIPDataSourceItem } from 'projects/edit-types';
+import { PickerItem } from 'projects/edit-types';
 import { combineLatest, map, Observable } from 'rxjs';
 import { EntityPickerTextTemplateVars } from './picker-text.models';
 import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
@@ -16,10 +16,10 @@ export class PickerTextComponent implements OnInit {
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
 
-  selectedEntity: WIPDataSourceItem | null = null;
-  selectedEntities: WIPDataSourceItem[] = [];
+  selectedEntity: PickerItem | null = null;
+  selectedEntities: PickerItem[] = [];
 
-  filteredEntities: WIPDataSourceItem[] = [];
+  filteredEntities: PickerItem[] = [];
   templateVars$: Observable<EntityPickerTextTemplateVars>;
 
   constructor() { }

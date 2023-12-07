@@ -3,7 +3,7 @@ import { Observable, combineLatest, distinctUntilChanged, map } from 'rxjs';
 import { PickerPillsViewModel } from './picker-pills.models';
 import { EavService, FieldsSettingsService, EditRoutingService } from '../../../../shared/services';
 import { BaseFieldComponent } from '../../base/base-field.component';
-import { WIPDataSourceItem } from 'projects/edit-types';
+import { PickerItem } from 'projects/edit-types';
 import { TranslateService } from '@ngx-translate/core';
 import { createUIModel } from '../picker.helpers';
 import { GeneralHelpers } from '../../../../shared/helpers';
@@ -77,7 +77,7 @@ export class PickerPillsComponent extends BaseFieldComponent<string | string[]> 
     super.ngOnDestroy();
   }
 
-  trackByFn(index: number, item: WIPDataSourceItem) {
+  trackByFn(index: number, item: PickerItem) {
     return item.Value;
   }
 

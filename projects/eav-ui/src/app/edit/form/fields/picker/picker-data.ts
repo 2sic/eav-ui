@@ -1,13 +1,13 @@
 import { Observable, combineLatest, distinctUntilChanged, map } from 'rxjs';
 import { PickerSourceAdapter } from "./adapters/picker-source-adapter";
 import { PickerStateAdapter } from "./adapters/picker-state-adapter";
-import { WIPDataSourceItem } from 'projects/edit-types';
+import { PickerItem } from 'projects/edit-types';
 import { GeneralHelpers } from '../../../shared/helpers/general.helpers';
 import { createUIModel } from './picker.helpers';
 import { TranslateService } from '@ngx-translate/core';
 
 export class PickerData {
-  public selected$ = new Observable<WIPDataSourceItem[]>;
+  public selected$ = new Observable<PickerItem[]>;
   constructor(
     public state: PickerStateAdapter,
     public source: PickerSourceAdapter,

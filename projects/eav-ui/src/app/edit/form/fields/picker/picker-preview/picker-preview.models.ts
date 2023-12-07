@@ -1,8 +1,8 @@
-import { WIPDataSourceItem } from 'projects/edit-types';
+import { PickerItem } from 'projects/edit-types';
 import { ControlStatus } from '../../../../shared/models';
 
 export interface EntityPickerPreviewViewModel {
-  selectedItems: WIPDataSourceItem[];
+  selectedItems: PickerItem[];
   freeTextMode: boolean;
   enableTextEntry: boolean;
   controlStatus: ControlStatus<string | string[]>;

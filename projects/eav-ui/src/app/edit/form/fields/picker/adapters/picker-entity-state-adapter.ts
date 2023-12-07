@@ -1,6 +1,6 @@
 import { AbstractControl } from "@angular/forms";
 import { TranslateService } from "@ngx-translate/core";
-import { FieldSettings, WIPDataSourceItem } from "projects/edit-types";
+import { FieldSettings, PickerItem } from "projects/edit-types";
 import { BehaviorSubject, Observable } from "rxjs";
 import { ControlStatus } from "../../../../shared/models";
 import { QueryEntity } from "../../entity/entity-query/entity-query.models";
@@ -15,7 +15,7 @@ export class PickerEntityStateAdapter extends PickerStateAdapter {
     public label$: Observable<string>,
     public placeholder$: Observable<string>,
     public required$: Observable<boolean>,
-    public cacheItems$: Observable<WIPDataSourceItem[]>,
+    public cacheItems$: Observable<PickerItem[]>,
     public stringQueryCache$: Observable<QueryEntity[]>,
     public fieldDataSourceFactoryService: FieldDataSourceFactoryService,
     public translate: TranslateService,

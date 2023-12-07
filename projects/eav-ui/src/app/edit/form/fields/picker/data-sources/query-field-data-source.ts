@@ -1,4 +1,4 @@
-import { EntityForPicker, WIPDataSourceItem, FieldSettings } from "projects/edit-types";
+import { EntityForPicker, PickerItem, FieldSettings } from "projects/edit-types";
 import { BehaviorSubject, Observable, Subscription, combineLatest, distinctUntilChanged, filter, map, startWith, tap } from "rxjs";
 import { EntityCacheService, StringQueryCacheService } from "../../../../shared/store/ngrx-data";
 import { QueryService } from "../../../../shared/services";
@@ -128,7 +128,7 @@ export class QueryFieldDataSource extends DataSourceBase {
           this.error$.next(this.translate.instant('Fields.EntityQuery.QueryStreamNotFound') + ' ' + streamName);
           return;
         }
-        const items: WIPDataSourceItem[] = data[streamName].map(entity => {
+        const items: PickerItem[] = data[streamName].map(entity => {
           return this.isStringQuery ? this.stringQueryEntityMapping(entity) : this.queryEntityMapping(entity)
         });
         if (!this.isStringQuery) {
@@ -155,8 +155,8 @@ export class QueryFieldDataSource extends DataSourceBase {
     }));
   }
 
-  private queryEntityMapping(entity: QueryEntity): WIPDataSourceItem {
-    const entityInfo: WIPDataSourceItem = {
+  private queryEntityMapping(entity: QueryEntity): PickerItem {
+    const entityInfo: PickerItem = {
       Id: entity.Id,
       Value: entity.Guid,
       Text: entity.Title,
@@ -164,9 +164,9 @@ export class QueryFieldDataSource extends DataSourceBase {
     return this.fillEntityInfoMoreFields(entity, entityInfo);
   }
 
-  private stringQueryEntityMapping(entity: QueryEntity): WIPDataSourceItem {
+  private stringQueryEntityMapping(entity: QueryEntity): PickerItem {
     const settings = this.settings$.value;
-    const entityInfo: WIPDataSourceItem = {
+    const entityInfo: PickerItem = {
       Id: entity.Id,
       Value: entity[settings.Value] ? `${entity[settings.Value]}` : entity[settings.Value],
       Text: entity[settings.Label] ? `${entity[settings.Label]}` : entity[settings.Label],
@@ -186,7 +186,7 @@ export class QueryFieldDataSource extends DataSourceBase {
   }
 
   /** fill additional properties that are marked in settings.MoreFields and replace tooltip and information placeholders */
-  private fillEntityInfoMoreFields(entity: QueryEntity, entityInfo: WIPDataSourceItem): WIPDataSourceItem {
+  private fillEntityInfoMoreFields(entity: QueryEntity, entityInfo: PickerItem): PickerItem {
     const settings = this.settings$.value;
     const additionalFields = settings.MoreFields?.split(',') || [];
     let tooltip = this.cleanStringFromWysiwyg(settings.Tooltip);

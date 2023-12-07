@@ -1,4 +1,4 @@
-import { AdamItem, WIPDataSourceItem } from '../../../../../../edit-types';
+import { AdamItem, PickerItem } from '../../../../../../edit-types';
 import { DialogContext } from '../../../app-administration/models';
 import { InputType } from '../../../content-type-fields/models/input-type.model';
 import { Feature } from '../../../features/models/feature.model';
@@ -51,7 +51,7 @@ export interface EditDialogMainViewModel {
 
 export interface Prefetch {
   Adam: PrefetchAdams;
-  Entities: WIPDataSourceItem[];
+  Entities: PickerItem[];
   Links: PrefetchLinks;
 
   /** NgRx store helper */

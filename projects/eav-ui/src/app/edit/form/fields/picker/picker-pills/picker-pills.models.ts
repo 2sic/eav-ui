@@ -1,8 +1,8 @@
-import { WIPDataSourceItem } from "projects/edit-types";
+import { PickerItem } from "projects/edit-types";
 import { BaseFieldViewModel } from "../../base/base-field-template-vars.model";
 
 export interface PickerPillsViewModel extends BaseFieldViewModel {
-  selectedItems: WIPDataSourceItem[];
+  selectedItems: PickerItem[];
   itemsNumber: number;
   isOpen: boolean;
 }

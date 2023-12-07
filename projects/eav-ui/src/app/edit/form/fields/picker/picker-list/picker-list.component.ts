@@ -6,7 +6,7 @@ import { FieldsSettingsService } from '../../../../shared/services';
 import { EntityListViewModel, ReorderIndexes } from './picker-list.models';
 import { FormGroup } from '@angular/forms';
 import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
-import { WIPDataSourceItem } from 'projects/edit-types';
+import { PickerItem } from 'projects/edit-types';
 import { createUIModel } from '../picker.helpers';
 import { TranslateService } from '@ngx-translate/core';
 import { PickerData } from '../picker-data';
@@ -78,11 +78,11 @@ export class PickerListComponent implements OnInit {
     );
   }
 
-  trackByFn(index: number, item: WIPDataSourceItem): string {
+  trackByFn(index: number, item: PickerItem): string {
     return item.Value;
   }
 
-  drop(event: CdkDragDrop<WIPDataSourceItem[]>, selectedEntities: WIPDataSourceItem[]): void {
+  drop(event: CdkDragDrop<PickerItem[]>, selectedEntities: PickerItem[]): void {
     moveItemInArray(selectedEntities, event.previousIndex, event.currentIndex);
     const reorderIndexes: ReorderIndexes = {
       previousIndex: event.previousIndex,

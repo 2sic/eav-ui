@@ -23,8 +23,7 @@ export interface EntityForPicker {
   Text: string;
 }
 
-// TODO: @SDV - rename this to PickerItem
-export interface WIPDataSourceItem extends EntityForPicker {
+export interface PickerItem extends EntityForPicker {
 
   /** The value to store */
   Value: string;
@@ -58,8 +57,7 @@ export interface WIPDataSourceItem extends EntityForPicker {
   [key: string]: any;
 }
 
-// TODO: @SDV - rename this to PickerTreeItem
-export interface WIPDataSourceTreeItem extends WIPDataSourceItem {
+export interface PickerTreeItem extends PickerItem {
   Level: number;
   Expandable: boolean;
 }

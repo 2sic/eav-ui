@@ -2,7 +2,7 @@ import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@ang
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { TranslateService } from '@ngx-translate/core';
-import { WIPDataSourceItem } from 'projects/edit-types';
+import { PickerItem } from 'projects/edit-types';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, take } from 'rxjs';
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { FieldsSettingsService } from '../../../../shared/services';
@@ -36,9 +36,9 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   // private pickerTreeConfiguration: UiPickerModeTree;
   // dataSource: any;
 
-  private availableItems$ = new BehaviorSubject<WIPDataSourceItem[]>(null);
-  private selectedItems$ = new Observable<WIPDataSourceItem[]>;
-  private selectedItem$ = new BehaviorSubject<WIPDataSourceItem>(null);
+  private availableItems$ = new BehaviorSubject<PickerItem[]>(null);
+  private selectedItems$ = new Observable<PickerItem[]>;
+  private selectedItem$ = new BehaviorSubject<PickerItem>(null);
 
   private filter$ = new BehaviorSubject(false);
 
@@ -176,7 +176,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   }
 
   // TODO: @SDV - Simplify this
-  displayFn(value: string | string[] | WIPDataSourceItem): string {
+  displayFn(value: string | string[] | PickerItem): string {
     let returnValue = '';
     if (value) {
       if (typeof value === 'string')
@@ -193,11 +193,11 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
             returnValue = this.availableItems$.value?.find(ae => ae.Value == value[0])?.Text;
           }
         } else {
-          returnValue = (value[0] as WIPDataSourceItem)?.Text;
+          returnValue = (value[0] as PickerItem)?.Text;
         }
       }
       else
-        returnValue = (value as WIPDataSourceItem)?.Text;
+        returnValue = (value as PickerItem)?.Text;
     }
     if (!returnValue) {
       if (this.selectedItem$.value?.Value == value) {
@@ -209,7 +209,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     return returnValue;
   }
 
-  markAsTouched(selectedEntity: WIPDataSourceItem, selectedEntities: WIPDataSourceItem[]): void {
+  markAsTouched(selectedEntity: PickerItem, selectedEntities: PickerItem[]): void {
     if (selectedEntity && selectedEntities.length < 2 && this.showSelectedItem)
       this.autocompleteRef.nativeElement.value = selectedEntity.Text;
     GeneralHelpers.markControlTouched(this.control);
@@ -220,7 +220,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     this.pickerData.source.fetchItems(false);
   }
 
-  getPlaceholder(availableEntities: WIPDataSourceItem[], error: string): string {
+  getPlaceholder(availableEntities: PickerItem[], error: string): string {
     if (availableEntities == null || availableEntities.length <= 1) {
       return this.translate.instant('Fields.Entity.Loading');
     }
@@ -242,7 +242,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     this.filter$.next(true);
   }
 
-  optionSelected(event: MatAutocompleteSelectedEvent, allowMultiValue: boolean, selectedEntity: WIPDataSourceItem): void {
+  optionSelected(event: MatAutocompleteSelectedEvent, allowMultiValue: boolean, selectedEntity: PickerItem): void {
     if (!allowMultiValue && selectedEntity) this.removeItem(0);
     const selected: string = event.option.value;
     this.pickerData.state.addSelected(selected);
@@ -256,7 +256,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     this.pickerData.state.addSelected(null);
   }
 
-  isOptionDisabled(value: string, selectedEntities: WIPDataSourceItem[]): boolean {
+  isOptionDisabled(value: string, selectedEntities: PickerItem[]): boolean {
     const isSelected = selectedEntities.some(entity => entity.Value === value);
     return isSelected;
   }

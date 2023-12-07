@@ -1,4 +1,4 @@
-import { DropdownOption, WIPDataSourceItem, FieldSettings } from "projects/edit-types";
+import { DropdownOption, PickerItem, FieldSettings } from "projects/edit-types";
 import { BehaviorSubject, Observable, Subscription, combineLatest, distinctUntilChanged, map } from "rxjs";
 import { DataSourceBase } from './data-source-base';
 
@@ -33,8 +33,8 @@ export class StringFieldDataSource extends DataSourceBase {
     // we have data already so there isn't anything to be prefetched
   }
 
-  private stringEntityMapping(dropdownOption: DropdownOption): WIPDataSourceItem {
-    const entityInfo: WIPDataSourceItem = {
+  private stringEntityMapping(dropdownOption: DropdownOption): PickerItem {
+    const entityInfo: PickerItem = {
       Value: dropdownOption.value as string,
       Text: dropdownOption.label,
     };

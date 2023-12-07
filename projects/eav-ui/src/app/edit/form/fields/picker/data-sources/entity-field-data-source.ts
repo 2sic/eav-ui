@@ -1,4 +1,4 @@
-import { WIPDataSourceItem } from "projects/edit-types";
+import { PickerItem } from "projects/edit-types";
 import { BehaviorSubject, Observable, Subscription, combineLatest, distinctUntilChanged, filter, map, startWith, tap } from "rxjs";
 import { EntityService } from "../../../../shared/services";
 import { EntityCacheService } from "../../../../shared/store/ngrx-data";
@@ -53,14 +53,14 @@ export class EntityFieldDataSource extends DataSourceBase {
       ),
     ])
       .pipe(map(([trigger, entities]) => {
-          const data = entities;
-          if (trigger[0] && this.loading$.value === false) { 
-            this.fetchData(this.contentTypeName$.value, []);
-          } else if (trigger[1] && this.loading$.value === false) {
-            this.fetchData(this.contentTypeName$.value, this.entityGuids$.value);
-          }
-          return data;
-        })//, distinctUntilChanged(GeneralHelpers.arraysEqual)
+        const data = entities;
+        if (trigger[0] && this.loading$.value === false) {
+          this.fetchData(this.contentTypeName$.value, []);
+        } else if (trigger[1] && this.loading$.value === false) {
+          this.fetchData(this.contentTypeName$.value, this.entityGuids$.value);
+        }
+        return data;
+      })//, distinctUntilChanged(GeneralHelpers.arraysEqual)
       );
   }
 
