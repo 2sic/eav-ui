@@ -6,12 +6,11 @@ import { BehaviorSubject } from "rxjs";
 import { EntityService, EavService, EditRoutingService, FieldsSettingsService } from "../../../../shared/services";
 import { EntityCacheService } from "../../../../shared/store/ngrx-data";
 import { FieldConfigSet } from "../../../builder/fields-builder/field-config-set.model";
-import { PickerSourceAdapter } from "./picker-source-adapter";
+import { PickerSourceAdapterBase } from "./picker-source-adapter-base";
 import { DeleteEntityProps } from "../picker.models";
-import { StringFieldDataSource } from "../data-sources/string-field-data-source";
 import { FieldDataSourceFactoryService } from "../factories/field-data-source-factory.service";
 
-export class PickerStringSourceAdapter extends PickerSourceAdapter {
+export class PickerStringSourceAdapter extends PickerSourceAdapterBase {
   constructor(
     public disableAddNew$: BehaviorSubject<boolean> = new BehaviorSubject(true),
     public fieldsSettingsService: FieldsSettingsService,
@@ -32,17 +31,6 @@ export class PickerStringSourceAdapter extends PickerSourceAdapter {
     public deleteCallback: (props: DeleteEntityProps) => void,
   ) {
     super(
-      settings$,
-      entityCacheService,
-      entityService,
-      eavService,
-      editRoutingService,
-      translate,
-      config,
-      group,
-      snackBar,
-      control,
-      // fetchAvailableEntities,
       deleteCallback,
     );
   }

@@ -9,6 +9,7 @@ import { PickerStateAdapterFactoryService } from '../../picker/factories/picker-
 import { PickerComponent } from '../../picker/picker.component';
 import { EntityContentBlocksLogic } from './entity-content-blocks-logic';
 import { DeleteEntityProps } from '../../picker/picker.models';
+import { PickerEntitySourceAdapter } from '../../picker/adapters/picker-entity-source-adapter';
 
 @Component({
   selector: InputTypeConstants.EntityContentBlocks,
@@ -68,7 +69,10 @@ export class EntityContentBlockComponent extends PickerComponent implements OnIn
       () => this.focusOnSearchComponent,
     );
 
-    this.pickerSourceAdapter = this.pickerSourceAdapterFactoryService.createPickerSourceAdapter(
+    this.pickerSourceAdapter = this.pickerSourceAdapterFactoryService.createPickerEntitySourceAdapter(
+      this.pickerStateAdapter.disableAddNew$,
+      this.fieldsSettingsService,
+
       this.pickerStateAdapter.control,
       this.config,
       this.pickerStateAdapter.settings$,
@@ -79,6 +83,6 @@ export class EntityContentBlockComponent extends PickerComponent implements OnIn
     );
 
     this.pickerStateAdapterFactoryService.init(this.pickerStateAdapter);
-    this.pickerSourceAdapterFactoryService.init(this.pickerSourceAdapter);
+    this.pickerSourceAdapterFactoryService.initEntity(this.pickerSourceAdapter as PickerEntitySourceAdapter);
   }
 }

@@ -2,7 +2,7 @@ import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@
 import { FormGroup } from '@angular/forms';
 import { WIPDataSourceItem } from 'projects/edit-types';
 import { combineLatest, map, Observable, Subscription } from 'rxjs';
-import { PickerSourceAdapter } from '../adapters/picker-source-adapter';
+import { PickerSourceAdapterBase } from '../adapters/picker-source-adapter-base';
 import { PickerStateAdapter } from '../adapters/picker-state-adapter';
 import { EntityPickerTextTemplateVars } from './picker-text.models';
 import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
@@ -13,7 +13,7 @@ import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set
   styleUrls: ['./picker-text.component.scss'],
 })
 export class PickerTextComponent implements OnInit {
-  @Input() pickerSourceAdapter: PickerSourceAdapter;
+  @Input() pickerSourceAdapter: PickerSourceAdapterBase;
   @Input() pickerStateAdapter: PickerStateAdapter;
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;

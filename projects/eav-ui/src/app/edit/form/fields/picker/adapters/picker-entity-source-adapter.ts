@@ -6,14 +6,14 @@ import { BehaviorSubject, distinctUntilChanged, map } from "rxjs";
 import { EntityService, EavService, EditRoutingService, FieldsSettingsService } from "../../../../shared/services";
 import { EntityCacheService } from "../../../../shared/store/ngrx-data";
 import { FieldConfigSet } from "../../../builder/fields-builder/field-config-set.model";
-import { PickerSourceAdapter } from "./picker-source-adapter";
 import { DeleteEntityProps } from "../picker.models";
 import { filterGuids } from "../picker.helpers";
 import { FieldMask } from "../../../../shared/helpers";
 import { EntityFieldDataSource } from "../data-sources/entity-field-data-source";
 import { FieldDataSourceFactoryService } from "../factories/field-data-source-factory.service";
+import { PickerSourceEntityAdapterBase } from "./picker-source-entity-adapter-base";
 
-export class PickerEntitySourceAdapter extends PickerSourceAdapter {
+export class PickerEntitySourceAdapter extends PickerSourceEntityAdapterBase {
   private contentTypeMask: FieldMask;
 
   constructor(

@@ -7,7 +7,7 @@ import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, 
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { FieldsSettingsService } from '../../../../shared/services';
 import { GlobalConfigService } from '../../../../shared/store/ngrx-data';
-import { PickerSourceAdapter } from '../adapters/picker-source-adapter';
+import { PickerSourceAdapterBase } from '../adapters/picker-source-adapter-base';
 import { PickerStateAdapter } from '../adapters/picker-state-adapter';
 import { PickerSearchViewModel } from './picker-search.models';
 import { FieldConfigSet, FieldControlConfig } from '../../../builder/fields-builder/field-config-set.model';
@@ -25,7 +25,7 @@ import { createUIModel } from '../picker.helpers';
 export class PickerSearchComponent extends BaseSubsinkComponent implements OnInit, OnDestroy, Field {
   @ViewChild('autocomplete') autocompleteRef?: ElementRef;
 
-  @Input() pickerSourceAdapter: PickerSourceAdapter;
+  @Input() pickerSourceAdapter: PickerSourceAdapterBase;
   @Input() pickerStateAdapter: PickerStateAdapter;
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;

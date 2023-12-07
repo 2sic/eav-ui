@@ -4,7 +4,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { EavService, EditRoutingService, EntityService, FieldsSettingsService, QueryService } from '../../../../shared/services';
 import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
-import { PickerSourceAdapter } from '../adapters/picker-source-adapter';
 import { DeleteEntityProps } from '../picker.models';
 import { BehaviorSubject } from 'rxjs';
 import { FieldSettings } from 'projects/edit-types';
@@ -134,34 +133,5 @@ export class PickerSourceAdapterFactoryService {
 
   initString(pickerStringSourceAdapter: PickerStringSourceAdapter): void {
     pickerStringSourceAdapter.init();
-  }
-
-  createPickerSourceAdapter(
-    control: AbstractControl,
-    config: FieldConfigSet,
-    settings$: BehaviorSubject<FieldSettings>,
-    editRoutingService: EditRoutingService,
-    group: FormGroup,
-    deleteCallback: (props: DeleteEntityProps) => void,
-  ): PickerSourceAdapter {
-    const pickerSourceAdapter = new PickerSourceAdapter(
-      settings$,
-      this.entityCacheService,
-      this.entityService,
-      this.eavService,
-      editRoutingService,
-      this.translate,
-      config,
-      group,
-      this.snackBar,
-      control,
-      deleteCallback,
-    );
-
-    return pickerSourceAdapter;
-  }
-
-  init(pickerSourceAdapter: PickerSourceAdapter): void {
-    pickerSourceAdapter.init();
   }
 }

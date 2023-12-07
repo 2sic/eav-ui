@@ -5,7 +5,7 @@ import { EavService, EditRoutingService, EntityService, FieldsSettingsService } 
 import { EntityCacheService, StringQueryCacheService } from '../../../shared/store/ngrx-data';
 import { BaseFieldComponent } from '../base/base-field.component';
 import { PickerSearchComponent } from './picker-search/picker-search.component';
-import { PickerSourceAdapter } from './adapters/picker-source-adapter';
+import { PickerSourceAdapterBase } from './adapters/picker-source-adapter-base';
 import { PickerStateAdapter } from './adapters/picker-state-adapter';
 import { PickerViewModel } from './picker.models';
 
@@ -18,7 +18,7 @@ import { PickerViewModel } from './picker.models';
 export class PickerComponent extends BaseFieldComponent<string | string[]> implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(PickerSearchComponent) protected entitySearchComponent: PickerSearchComponent;
 
-  pickerSourceAdapter: PickerSourceAdapter;
+  pickerSourceAdapter: PickerSourceAdapterBase;
   pickerStateAdapter: PickerStateAdapter;
   isStringQuery: boolean;
   isString: boolean;
@@ -57,13 +57,13 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
   createViewModel() {
     this.viewModel$ = combineLatest([this.pickerStateAdapter.allowMultiValue$])
       .pipe(map(([allowMultiValue]) => {
-          // allowMultiValue is used to determine if we even use control with preview and dialog
-          const showPreview = !allowMultiValue || (allowMultiValue && this.controlConfig.isPreview)
-          const viewModel: PickerViewModel = {
-            showPreview,
-          };
-          return viewModel;
-        }),
+        // allowMultiValue is used to determine if we even use control with preview and dialog
+        const showPreview = !allowMultiValue || (allowMultiValue && this.controlConfig.isPreview)
+        const viewModel: PickerViewModel = {
+          showPreview,
+        };
+        return viewModel;
+      }),
       );
   }
 

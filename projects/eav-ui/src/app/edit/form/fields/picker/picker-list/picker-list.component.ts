@@ -3,7 +3,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { combineLatest, distinctUntilChanged, map, Observable, tap } from 'rxjs';
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { FieldsSettingsService } from '../../../../shared/services';
-import { PickerSourceAdapter } from '../adapters/picker-source-adapter';
+import { PickerSourceAdapterBase } from '../adapters/picker-source-adapter-base';
 import { PickerStateAdapter } from '../adapters/picker-state-adapter';
 import { EntityListViewModel, ReorderIndexes } from './picker-list.models';
 import { FormGroup } from '@angular/forms';
@@ -18,7 +18,7 @@ import { TranslateService } from '@ngx-translate/core';
   styleUrls: ['./picker-list.component.scss'],
 })
 export class PickerListComponent implements OnInit {
-  @Input() pickerSourceAdapter: PickerSourceAdapter;
+  @Input() pickerSourceAdapter: PickerSourceAdapterBase;
   @Input() pickerStateAdapter: PickerStateAdapter;
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
@@ -43,7 +43,7 @@ export class PickerListComponent implements OnInit {
         createUIModel(selectedItems, data, this.pickerSourceAdapter.pickerDataSource, contentType, this.translate)
       ), distinctUntilChanged(GeneralHelpers.arraysEqual)
     );
-    
+
     const settings$ = this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).pipe(
       map(settings => ({
         allowMultiValue: settings.AllowMultiValue,

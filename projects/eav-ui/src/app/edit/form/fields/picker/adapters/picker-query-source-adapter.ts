@@ -6,15 +6,15 @@ import { BehaviorSubject, distinctUntilChanged, map } from "rxjs";
 import { EntityService, EavService, EditRoutingService, FieldsSettingsService, QueryService } from "../../../../shared/services";
 import { EntityCacheService, StringQueryCacheService } from "../../../../shared/store/ngrx-data";
 import { FieldConfigSet } from "../../../builder/fields-builder/field-config-set.model";
-import { PickerSourceAdapter } from "./picker-source-adapter";
 import { DeleteEntityProps } from "../picker.models";
 import { filterGuids } from "../picker.helpers";
 import { FieldMask } from "../../../../shared/helpers/field-mask.helper";
 import { GeneralHelpers } from "../../../../shared/helpers";
 import { FieldDataSourceFactoryService } from "../factories/field-data-source-factory.service";
 import { QueryFieldDataSource } from "../data-sources/query-field-data-source";
+import { PickerSourceEntityAdapterBase } from "./picker-source-entity-adapter-base";
 
-export class PickerQuerySourceAdapter extends PickerSourceAdapter {
+export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
   private paramsMask: FieldMask;
 
   constructor(
@@ -94,7 +94,7 @@ export class PickerQuerySourceAdapter extends PickerSourceAdapter {
   }
 
   onAfterViewInit(): void {
-    super.onAfterViewInit();
+    // super.onAfterViewInit();
     this.contentType = this.paramsMask.resolve();
     this.contentType$.next(this.contentType);
   }

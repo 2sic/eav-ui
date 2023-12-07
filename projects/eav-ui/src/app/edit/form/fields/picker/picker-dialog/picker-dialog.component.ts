@@ -3,7 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { FieldsSettingsService } from '../../../../shared/services';
-import { PickerSourceAdapter } from '../adapters/picker-source-adapter';
+import { PickerSourceAdapterBase } from '../adapters/picker-source-adapter-base';
 import { PickerStateAdapter } from '../adapters/picker-state-adapter';
 import { EntityPickerDialogTemplateVars } from './picker-dialog.models';
 import { FieldConfigSet, FieldControlConfig } from '../../../builder/fields-builder/field-config-set.model';
@@ -16,7 +16,7 @@ import { BaseSubsinkComponent } from 'projects/eav-ui/src/app/shared/components/
   styleUrls: ['./picker-dialog.component.scss'],
 })
 export class PickerDialogComponent extends BaseSubsinkComponent implements OnInit, OnDestroy, Field {
-  @Input() pickerSourceAdapter: PickerSourceAdapter;
+  @Input() pickerSourceAdapter: PickerSourceAdapterBase;
   @Input() pickerStateAdapter: PickerStateAdapter;
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;

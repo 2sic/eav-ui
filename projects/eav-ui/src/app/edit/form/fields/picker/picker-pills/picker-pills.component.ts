@@ -4,7 +4,7 @@ import { PickerPillsViewModel } from './picker-pills.models';
 import { EavService, FieldsSettingsService, EditRoutingService } from '../../../../shared/services';
 import { BaseFieldComponent } from '../../base/base-field.component';
 import { WIPDataSourceItem } from 'projects/edit-types';
-import { PickerSourceAdapter } from '../adapters/picker-source-adapter';
+import { PickerSourceAdapterBase } from '../adapters/picker-source-adapter-base';
 import { PickerStateAdapter } from '../adapters/picker-state-adapter';
 import { TranslateService } from '@ngx-translate/core';
 import { createUIModel } from '../picker.helpers';
@@ -16,7 +16,7 @@ import { GeneralHelpers } from '../../../../shared/helpers';
   styleUrls: ['./picker-pills.component.scss'],
 })
 export class PickerPillsComponent extends BaseFieldComponent<string | string[]> implements OnInit, OnDestroy {
-  @Input() pickerSourceAdapter: PickerSourceAdapter;
+  @Input() pickerSourceAdapter: PickerSourceAdapterBase;
   @Input() pickerStateAdapter: PickerStateAdapter;
 
   viewModel$: Observable<PickerPillsViewModel>;

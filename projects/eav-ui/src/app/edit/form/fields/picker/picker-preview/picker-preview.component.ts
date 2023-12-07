@@ -2,7 +2,7 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { EditRoutingService, FieldsSettingsService } from '../../../../shared/services';
-import { PickerSourceAdapter } from '../adapters/picker-source-adapter';
+import { PickerSourceAdapterBase } from '../adapters/picker-source-adapter-base';
 import { PickerStateAdapter } from '../adapters/picker-state-adapter';
 import { EntityPickerPreviewViewModel } from './picker-preview.models';
 import { FieldConfigSet, FieldControlConfig } from '../../../builder/fields-builder/field-config-set.model';
@@ -16,7 +16,7 @@ import { GeneralHelpers } from '../../../../shared/helpers';
   styleUrls: ['./picker-preview.component.scss'],
 })
 export class PickerPreviewComponent extends BaseSubsinkComponent implements OnInit, OnDestroy, Field {
-  @Input() pickerSourceAdapter: PickerSourceAdapter;
+  @Input() pickerSourceAdapter: PickerSourceAdapterBase;
   @Input() pickerStateAdapter: PickerStateAdapter;
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
@@ -47,7 +47,7 @@ export class PickerPreviewComponent extends BaseSubsinkComponent implements OnIn
       distinctUntilChanged(GeneralHelpers.objectsEqual),
     );
 
-    this. viewModel$ = combineLatest([
+    this.viewModel$ = combineLatest([
       selectedItems$, freeTextMode$, settings$, controlStatus$, disableAddNew$
     ]).pipe(
       map(([
