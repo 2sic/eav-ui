@@ -22,6 +22,8 @@ export interface EntityForPicker {
   /** The title to show in the dropdown */
   Text: string;
 }
+
+// TODO: @SDV - rename this to PickerItem
 export interface WIPDataSourceItem extends EntityForPicker {
 
   /** The value to store */
@@ -56,6 +58,7 @@ export interface WIPDataSourceItem extends EntityForPicker {
   [key: string]: any;
 }
 
+// TODO: @SDV - rename this to PickerTreeItem
 export interface WIPDataSourceTreeItem extends WIPDataSourceItem {
   Level: number;
   Expandable: boolean;
