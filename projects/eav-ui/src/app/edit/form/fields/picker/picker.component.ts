@@ -5,9 +5,10 @@ import { EavService, EditRoutingService, EntityService, FieldsSettingsService } 
 import { EntityCacheService, StringQueryCacheService } from '../../../shared/store/ngrx-data';
 import { BaseFieldComponent } from '../base/base-field.component';
 import { PickerSearchComponent } from './picker-search/picker-search.component';
-import { PickerSourceAdapterBase } from './adapters/picker-source-adapter-base';
 import { PickerStateAdapter } from './adapters/picker-state-adapter';
 import { PickerViewModel } from './picker.models';
+import { PickerData } from './picker-data';
+import { PickerSourceAdapter } from './adapters/picker-source-adapter';
 
 @Component({
   // selector: InputTypeConstants.EntityDefault,
@@ -18,8 +19,9 @@ import { PickerViewModel } from './picker.models';
 export class PickerComponent extends BaseFieldComponent<string | string[]> implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(PickerSearchComponent) protected entitySearchComponent: PickerSearchComponent;
 
-  pickerSourceAdapter: PickerSourceAdapterBase;
+  pickerSourceAdapter: PickerSourceAdapter;
   pickerStateAdapter: PickerStateAdapter;
+  pickerData: PickerData;
   isStringQuery: boolean;
   isString: boolean;
 

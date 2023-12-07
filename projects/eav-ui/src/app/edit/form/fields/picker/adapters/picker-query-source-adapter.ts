@@ -1,8 +1,8 @@
 import { FormGroup, AbstractControl } from "@angular/forms";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
-import { FieldSettings } from "projects/edit-types";
-import { BehaviorSubject, distinctUntilChanged, map } from "rxjs";
+import { FieldSettings, WIPDataSourceItem } from "projects/edit-types";
+import { BehaviorSubject, Observable, distinctUntilChanged, map } from "rxjs";
 import { EntityService, EavService, EditRoutingService, FieldsSettingsService, QueryService } from "../../../../shared/services";
 import { EntityCacheService, StringQueryCacheService } from "../../../../shared/store/ngrx-data";
 import { FieldConfigSet } from "../../../builder/fields-builder/field-config-set.model";
@@ -16,6 +16,7 @@ import { PickerSourceEntityAdapterBase } from "./picker-source-entity-adapter-ba
 
 export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
   private paramsMask: FieldMask;
+  private queryFieldDataSource: QueryFieldDataSource;
 
   constructor(
     public error$: BehaviorSubject<string> = new BehaviorSubject(''),
@@ -64,7 +65,7 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
   init(): void {
     super.init();
 
-    this.subscription.add(
+    this.subscriptions.add(
       this.settings$.pipe(
         map(settings => settings.UrlParameters),
         distinctUntilChanged(),
@@ -82,7 +83,7 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
       })
     );
 
-    this.pickerDataSource = this.fieldDataSourceFactoryService.createQueryFieldDataSource(
+    this.queryFieldDataSource = this.fieldDataSourceFactoryService.createQueryFieldDataSource(
       this.settings$,
       this.isStringQuery,
       this.config.entityGuid,
@@ -96,14 +97,22 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
   onAfterViewInit(): void {
     // super.onAfterViewInit();
     this.contentType = this.paramsMask.resolve();
-    this.contentType$.next(this.contentType);
+    this.parameters$.next(this.contentType);
   }
 
   destroy(): void {
     this.paramsMask?.destroy();
     this.error$.complete();
-    this.pickerDataSource.destroy();
+    this.queryFieldDataSource.destroy();
     super.destroy();
+  }
+
+  getDataFromSource(): Observable<WIPDataSourceItem[]> {
+    return this.queryFieldDataSource.data$;
+  }
+
+  prefetch(contentType: string, missingData: string[]): void {
+    this.queryFieldDataSource.prefetch(contentType, missingData);
   }
 
   fetchItems(clearAvailableItemsAndOnlyUpdateCache: boolean): void {
@@ -126,15 +135,14 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
         (this.control.value as string[]).filter(guid => !!guid),
       )
       : null;
-    const queryDS = this.pickerDataSource as QueryFieldDataSource;
-    queryDS.includeGuid(true);
-    queryDS.params(params);
-    queryDS.entityGuids(entitiesFilter);
+    this.queryFieldDataSource.includeGuid(true);
+    this.queryFieldDataSource.params(params);
+    this.queryFieldDataSource.entityGuids(entitiesFilter);
 
-    queryDS.getAll();
-    queryDS.error$.subscribe(this.error$);
+    this.queryFieldDataSource.getAll();
+    this.queryFieldDataSource.error$.subscribe(this.error$);
     if (!clearAvailableItemsAndOnlyUpdateCache) {
-      this.subscription.add(queryDS.data$.subscribe((items) => {
+      this.subscriptions.add(this.queryFieldDataSource.data$.subscribe((items) => {
         this.availableItems$.next(items);
       }));
     }
@@ -142,7 +150,7 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
 
   flushAvailableEntities(): void {
     if (!this.isStringQuery) {
-      this.subscription.add(
+      this.subscriptions.add(
         this.settings$.pipe(
           map(settings => ({
             Query: settings.Query,
@@ -154,7 +162,7 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
         })
       );
     } else {
-      this.subscription.add(
+      this.subscriptions.add(
         this.settings$.pipe(
           map(settings => ({
             Value: settings.Value,

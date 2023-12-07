@@ -2,20 +2,17 @@ import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@ang
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { TranslateService } from '@ngx-translate/core';
-import { UiPickerModeTree, WIPDataSourceItem, WIPDataSourceTreeItem } from 'projects/edit-types';
-import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, take, tap } from 'rxjs';
+import { WIPDataSourceItem } from 'projects/edit-types';
+import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, take } from 'rxjs';
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { FieldsSettingsService } from '../../../../shared/services';
 import { GlobalConfigService } from '../../../../shared/store/ngrx-data';
-import { PickerSourceAdapterBase } from '../adapters/picker-source-adapter-base';
-import { PickerStateAdapter } from '../adapters/picker-state-adapter';
 import { PickerSearchViewModel } from './picker-search.models';
 import { FieldConfigSet, FieldControlConfig } from '../../../builder/fields-builder/field-config-set.model';
 import { Field } from '../../../builder/fields-builder/field.model';
 import { BaseSubsinkComponent } from 'projects/eav-ui/src/app/shared/components/base-subsink-component/base-subsink.component';
-import { FlatTreeControl } from '@angular/cdk/tree';
-import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { createUIModel } from '../picker.helpers';
+import { PickerData } from '../picker-data';
 
 @Component({
   selector: 'app-picker-search',
@@ -25,8 +22,7 @@ import { createUIModel } from '../picker.helpers';
 export class PickerSearchComponent extends BaseSubsinkComponent implements OnInit, OnDestroy, Field {
   @ViewChild('autocomplete') autocompleteRef?: ElementRef;
 
-  @Input() pickerSourceAdapter: PickerSourceAdapterBase;
-  @Input() pickerStateAdapter: PickerStateAdapter;
+  @Input() pickerData: PickerData;
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
   @Input() controlConfig: FieldControlConfig;
@@ -55,15 +51,17 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   }
 
   ngOnInit(): void {
+    const state = this.pickerData.state;
+    const source = this.pickerData.source;
     this.control = this.group.controls[this.config.fieldName];
 
-    this.availableItems$ = this.pickerSourceAdapter.availableItems$;
+    this.availableItems$ = source.availableItems$;
 
-    const freeTextMode$ = this.pickerStateAdapter.freeTextMode$;
-    const controlStatus$ = this.pickerStateAdapter.controlStatus$;
-    const error$ = this.pickerStateAdapter.error$;
-    const label$ = this.pickerStateAdapter.label$;
-    const required$ = this.pickerStateAdapter.required$;
+    const freeTextMode$ = state.freeTextMode$;
+    const controlStatus$ = state.controlStatus$;
+    const error$ = state.error$;
+    const label$ = state.label$;
+    const required$ = state.required$;
 
     const debugEnabled$ = this.globalConfigService.getDebugEnabled$();
     const settings$ = this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).pipe(
@@ -80,13 +78,16 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
       })),
       distinctUntilChanged(GeneralHelpers.objectsEqual),
     );
+    // @SDV move most of this code to picker.helpers - NOT YET
     this.selectedItems$ = combineLatest([
-      this.pickerStateAdapter.selectedItems$.pipe(distinctUntilChanged(GeneralHelpers.arraysEqual)),
-      this.pickerSourceAdapter.pickerDataSource.data$.pipe(distinctUntilChanged(GeneralHelpers.arraysEqual)),
-      this.pickerSourceAdapter.contentType$.pipe(distinctUntilChanged()),
+      state.selectedItems$.pipe(distinctUntilChanged(GeneralHelpers.arraysEqual)),
+      source.getDataFromSource().pipe(distinctUntilChanged(GeneralHelpers.arraysEqual)),
+      source.parameters$.pipe(distinctUntilChanged()),
     ]).pipe(//tap(([selectedItems, data, contentType]) => console.log('SDV SEARCH')),
-      map(([selectedItems, data, contentType]) =>
-        createUIModel(selectedItems, data, this.pickerSourceAdapter.pickerDataSource, contentType, this.translate)
+      map(([selectedItems, data, parameters]) =>
+        createUIModel(selectedItems, data, parameters,
+          (parameters, missingData) => source.prefetch(parameters, missingData),
+          this.translate)
       ), distinctUntilChanged(GeneralHelpers.arraysEqual)
     );
     this.viewModel$ = combineLatest([
@@ -165,7 +166,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
       if (selectedItems != null && selectedItems != undefined && selectedItems.length > 0) {
         this.removeItem(0);
         const selected: string = selectedItems[0]?.Value;
-        this.pickerStateAdapter.addSelected(selected);
+        this.pickerData.state.addSelected(selected);
         // TODO: @SDV - This is needed so after choosing option element is not focused (it gets focused by default so if blur is outside of setTimeout it will happen before refocus)
         setTimeout(() => {
           this.autocompleteRef.nativeElement.blur();
@@ -216,7 +217,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
 
   fetchEntities(): void {
     this.autocompleteRef.nativeElement.value = '';
-    this.pickerSourceAdapter.fetchItems(false);
+    this.pickerData.source.fetchItems(false);
   }
 
   getPlaceholder(availableEntities: WIPDataSourceItem[], error: string): string {
@@ -234,7 +235,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
 
   toggleFreeText(disabled: boolean): void {
     if (disabled) { return; }
-    this.pickerStateAdapter.toggleFreeTextMode();
+    this.pickerData.state.toggleFreeTextMode();
   }
 
   filterSelectionList(): void {
@@ -244,7 +245,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   optionSelected(event: MatAutocompleteSelectedEvent, allowMultiValue: boolean, selectedEntity: WIPDataSourceItem): void {
     if (!allowMultiValue && selectedEntity) this.removeItem(0);
     const selected: string = event.option.value;
-    this.pickerStateAdapter.addSelected(selected);
+    this.pickerData.state.addSelected(selected);
     // TODO: @SDV - This is needed so after choosing option element is not focused (it gets focused by default so if blur is outside of setTimeout it will happen before refocus)
     setTimeout(() => {
       this.autocompleteRef.nativeElement.blur();
@@ -252,7 +253,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   }
 
   insertNull(): void {
-    this.pickerStateAdapter.addSelected(null);
+    this.pickerData.state.addSelected(null);
   }
 
   isOptionDisabled(value: string, selectedEntities: WIPDataSourceItem[]): boolean {
@@ -270,15 +271,15 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   // }
 
   edit(entityGuid: string, entityId: number): void {
-    this.pickerSourceAdapter.editEntity({ entityGuid, entityId });
+    this.pickerData.source.editItem({ entityGuid, entityId });
   }
 
   removeItem(index: number): void {
-    this.pickerStateAdapter.removeSelected(index);
+    this.pickerData.state.removeSelected(index);
   }
 
   deleteItem(index: number, entityGuid: string): void {
-    this.pickerSourceAdapter.deleteEntity({ index, entityGuid });
+    this.pickerData.source.deleteItem({ index, entityGuid });
   }
 
   /** Needed later for tree implementation testing */

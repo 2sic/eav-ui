@@ -12,7 +12,7 @@ import { EntityService, EavService, EditRoutingService } from "../../../../share
 import { EntityCacheService } from "../../../../shared/store/ngrx-data";
 import { FieldConfigSet } from "../../../builder/fields-builder/field-config-set.model";
 
-export class PickerSourceEntityAdapterBase extends PickerSourceAdapterBase {
+export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterBase {
   constructor(
     public settings$: BehaviorSubject<FieldSettings> = new BehaviorSubject(null),
     public entityCacheService: EntityCacheService,
@@ -32,7 +32,7 @@ export class PickerSourceEntityAdapterBase extends PickerSourceAdapterBase {
   }
 
   init() { }
-  
+
   destroy(): void {
     this.settings$.complete();
 
@@ -43,7 +43,7 @@ export class PickerSourceEntityAdapterBase extends PickerSourceAdapterBase {
   // not even sure if the guid would still be needed, as I assume the entityId
   // should always be available.
   // Must test all use cases and then probably simplify again.
-  editEntity(editParams: { entityGuid: string, entityId: number }): void {
+  editItem(editParams: { entityGuid: string, entityId: number }): void {
     let form: EditForm;
     if (editParams?.entityGuid == null) {
       const contentTypeName = this.contentType;
@@ -66,7 +66,7 @@ export class PickerSourceEntityAdapterBase extends PickerSourceAdapterBase {
     this.editRoutingService.open(this.config.index, this.config.entityGuid, form);
   }
 
-  deleteEntity(props: DeleteEntityProps): void {
+  deleteItem(props: DeleteEntityProps): void {
     const entity = this.entityCacheService.getEntity(props.entityGuid);
     const id = entity.Id;
     const title = entity.Text;

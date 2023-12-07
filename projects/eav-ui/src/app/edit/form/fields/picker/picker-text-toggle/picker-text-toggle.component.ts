@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { PickerStateAdapter } from '../adapters/picker-state-adapter';
+import { PickerData } from '../picker-data';
 
 @Component({
   selector: 'app-picker-toggle-text',
@@ -7,7 +7,7 @@ import { PickerStateAdapter } from '../adapters/picker-state-adapter';
   styleUrls: ['./picker-text-toggle.component.scss'],
 })
 export class PickerTextToggleComponent implements OnInit {
-  @Input() pickerStateAdapter: PickerStateAdapter;
+  @Input() pickerData: PickerData;
   @Input() controlStatusDisabled: boolean;
   @Input() allowText: boolean;
   @Input() freeTextMode: boolean;
@@ -18,6 +18,6 @@ export class PickerTextToggleComponent implements OnInit {
 
   toggleFreeText(disabled: boolean): void {
     if (disabled) { return; }
-    this.pickerStateAdapter.toggleFreeTextMode();
+    this.pickerData.state.toggleFreeTextMode();
   }
 }

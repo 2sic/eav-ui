@@ -1,16 +1,19 @@
 import { FormGroup, AbstractControl } from "@angular/forms";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
-import { FieldSettings } from "projects/edit-types";
-import { BehaviorSubject } from "rxjs";
+import { FieldSettings, WIPDataSourceItem } from "projects/edit-types";
+import { BehaviorSubject, Observable } from "rxjs";
 import { EntityService, EavService, EditRoutingService, FieldsSettingsService } from "../../../../shared/services";
 import { EntityCacheService } from "../../../../shared/store/ngrx-data";
 import { FieldConfigSet } from "../../../builder/fields-builder/field-config-set.model";
 import { PickerSourceAdapterBase } from "./picker-source-adapter-base";
 import { DeleteEntityProps } from "../picker.models";
 import { FieldDataSourceFactoryService } from "../factories/field-data-source-factory.service";
+import { StringFieldDataSource } from "../data-sources/string-field-data-source";
 
 export class PickerStringSourceAdapter extends PickerSourceAdapterBase {
+  private stringFieldDataSource: StringFieldDataSource;
+
   constructor(
     public disableAddNew$: BehaviorSubject<boolean> = new BehaviorSubject(true),
     public fieldsSettingsService: FieldsSettingsService,
@@ -38,20 +41,36 @@ export class PickerStringSourceAdapter extends PickerSourceAdapterBase {
   init(): void {
     super.init();
 
-    this.pickerDataSource = this.fieldDataSourceFactoryService.createStringFieldDataSource(this.settings$);
-    this.subscription.add(
-      this.pickerDataSource.data$.subscribe(this.availableItems$)
+    this.stringFieldDataSource = this.fieldDataSourceFactoryService.createStringFieldDataSource(this.settings$);
+    this.subscriptions.add(
+      this.stringFieldDataSource.data$.subscribe(this.availableItems$)
     );
   }
 
   destroy(): void {
-    this.pickerDataSource.destroy();
+    this.stringFieldDataSource.destroy();
 
     super.destroy();
   }
 
+  getDataFromSource(): Observable<WIPDataSourceItem[]> {
+    return this.stringFieldDataSource.data$;
+  }
+
+  prefetch(contentType: string, missingData: string[]): void {
+    this.stringFieldDataSource.prefetch(contentType, missingData);
+  }
+
   fetchItems(): void {
-    this.pickerDataSource.getAll();
-    this.subscription.add(this.pickerDataSource.data$.subscribe(this.availableItems$));
+    this.stringFieldDataSource.getAll();
+    this.subscriptions.add(this.stringFieldDataSource.data$.subscribe(this.availableItems$));
+  }
+
+  deleteItem(props: DeleteEntityProps): void {
+    throw new Error("Method not implemented.");
+  }
+  
+  editItem(editParams: { entityGuid: string; entityId: number; }): void {
+    throw new Error("Method not implemented.");
   }
 }

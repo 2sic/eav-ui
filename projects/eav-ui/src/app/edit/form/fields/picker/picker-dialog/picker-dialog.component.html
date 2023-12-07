@@ -1,13 +1,11 @@
 <ng-container *ngIf="templateVars$ | async as data">
   <app-picker-list 
-    [pickerSourceAdapter]="pickerSourceAdapter"
-    [pickerStateAdapter]="pickerStateAdapter" 
+    [pickerData]="pickerData"
     [config]="config" 
     [group]="group">
   </app-picker-list>
   <app-picker-search *ngIf="!data.freeTextMode" 
-    [pickerSourceAdapter]="pickerSourceAdapter"
-    [pickerStateAdapter]="pickerStateAdapter" 
+    [pickerData]="pickerData"
     [config]="config" 
     [group]="group" 
     [controlConfig]="controlConfig"
@@ -15,8 +13,7 @@
     [showItemEditButtons]="false">
   </app-picker-search>
   <app-picker-text *ngIf="data.freeTextMode" 
-    [pickerSourceAdapter]="pickerSourceAdapter"
-    [pickerStateAdapter]="pickerStateAdapter" 
+    [pickerData]="pickerData"
     [config]="config" 
     [group]="group">
   </app-picker-text>

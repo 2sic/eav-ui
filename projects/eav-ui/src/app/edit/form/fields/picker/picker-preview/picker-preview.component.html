@@ -2,33 +2,30 @@
   <div fxLayout="row" fxLayoutAlign="start center">
     <div class="eav-div-around-picker">
       <app-picker-pills *ngIf="vm.selectedItems.length > 1 && !vm.freeTextMode"
-        [pickerSourceAdapter]="pickerSourceAdapter"
-        [pickerStateAdapter]="pickerStateAdapter"
+        [pickerData]="pickerData"
         [config]="config" 
         [group]="group">
       </app-picker-pills>
       <app-picker-search *ngIf="vm.selectedItems.length < 2 && !vm.freeTextMode"
-        [pickerSourceAdapter]="pickerSourceAdapter" 
-        [pickerStateAdapter]="pickerStateAdapter"
+        [pickerData]="pickerData"
         [config]="config" 
         [group]="group" 
         [controlConfig]="controlConfig"
         [showSelectedItem]="true"
         [showItemEditButtons]="true">
         <app-picker-toggle-text freeTextButtons 
-          [pickerStateAdapter]="pickerStateAdapter"
+          [pickerData]="pickerData"
           [controlStatusDisabled]="vm.controlStatus.disabled"
           [allowText]="vm.enableTextEntry"
           [freeTextMode]="vm.freeTextMode">
         </app-picker-toggle-text>
       </app-picker-search>
       <app-picker-text *ngIf="vm.freeTextMode"
-        [pickerSourceAdapter]="pickerSourceAdapter" 
-        [pickerStateAdapter]="pickerStateAdapter" 
+        [pickerData]="pickerData"
         [config]="config"
         [group]="group">
         <app-picker-toggle-text freeTextButtons 
-          [pickerStateAdapter]="pickerStateAdapter"
+          [pickerData]="pickerData"
           [controlStatusDisabled]="vm.controlStatus.disabled" 
           [allowText]="vm.enableTextEntry"
           [freeTextMode]="vm.freeTextMode">

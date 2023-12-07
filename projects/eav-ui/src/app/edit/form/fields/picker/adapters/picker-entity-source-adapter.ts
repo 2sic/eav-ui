@@ -1,8 +1,8 @@
 import { FormGroup, AbstractControl } from "@angular/forms";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
-import { FieldSettings } from "projects/edit-types";
-import { BehaviorSubject, distinctUntilChanged, map } from "rxjs";
+import { FieldSettings, WIPDataSourceItem } from "projects/edit-types";
+import { BehaviorSubject, Observable, distinctUntilChanged, map } from "rxjs";
 import { EntityService, EavService, EditRoutingService, FieldsSettingsService } from "../../../../shared/services";
 import { EntityCacheService } from "../../../../shared/store/ngrx-data";
 import { FieldConfigSet } from "../../../builder/fields-builder/field-config-set.model";
@@ -15,6 +15,7 @@ import { PickerSourceEntityAdapterBase } from "./picker-source-entity-adapter-ba
 
 export class PickerEntitySourceAdapter extends PickerSourceEntityAdapterBase {
   private contentTypeMask: FieldMask;
+  private entityFieldDataSource: EntityFieldDataSource;
 
   constructor(
     public disableAddNew$: BehaviorSubject<boolean> = new BehaviorSubject(true),
@@ -55,7 +56,7 @@ export class PickerEntitySourceAdapter extends PickerSourceEntityAdapterBase {
     super.init();
 
     // Update/Build Content-Type Mask which is used for loading the data/new etc.
-    this.subscription.add(
+    this.subscriptions.add(
       this.settings$.pipe(
         map(settings => settings.EntityType),
         distinctUntilChanged(),
@@ -76,21 +77,29 @@ export class PickerEntitySourceAdapter extends PickerSourceEntityAdapterBase {
       })
     );
 
-    this.pickerDataSource = this.fieldDataSourceFactoryService.createEntityFieldDataSource();
+    this.entityFieldDataSource = this.fieldDataSourceFactoryService.createEntityFieldDataSource();
 
-    this.subscription.add(
-      this.pickerDataSource.data$.subscribe(this.availableItems$)
+    this.subscriptions.add(
+      this.entityFieldDataSource.data$.subscribe(this.availableItems$)
     );
   }
 
   onAfterViewInit(): void {
     this.contentType = this.contentTypeMask.resolve();
-    this.contentType$.next(this.contentType);
+    this.parameters$.next(this.contentType);
+  }
+
+  getDataFromSource(): Observable<WIPDataSourceItem[]> {
+    return this.entityFieldDataSource.data$;
+  }
+
+  prefetch(contentType: string, missingData: string[]): void {
+    this.entityFieldDataSource.prefetch(contentType, missingData);
   }
 
   destroy(): void {
     this.contentTypeMask.destroy();
-    this.pickerDataSource.destroy();
+    this.entityFieldDataSource.destroy();
 
     super.destroy();
   }
@@ -106,7 +115,7 @@ export class PickerEntitySourceAdapter extends PickerSourceEntityAdapterBase {
     }
 
     const contentTypeName = this.contentTypeMask.resolve();
-    (this.pickerDataSource as EntityFieldDataSource).contentType(contentTypeName);
+    this.entityFieldDataSource.contentType(contentTypeName);
 
     const entitiesFilter: string[] = (clearAvailableItemsAndOnlyUpdateCache || !this.settings$.value.EnableAddExisting)
       ? filterGuids(
@@ -115,11 +124,11 @@ export class PickerEntitySourceAdapter extends PickerSourceEntityAdapterBase {
         (this.control.value as string[]).filter(guid => !!guid),
       )
       : null;
-    (this.pickerDataSource as EntityFieldDataSource).entityGuids(entitiesFilter);
+    this.entityFieldDataSource.entityGuids(entitiesFilter);
 
-    this.pickerDataSource.getAll();
+    this.entityFieldDataSource.getAll();
     if (!clearAvailableItemsAndOnlyUpdateCache) {
-      this.subscription.add(this.pickerDataSource.data$.subscribe((items) => {
+      this.subscriptions.add(this.entityFieldDataSource.data$.subscribe((items) => {
         this.availableItems$.next(items);
       }));
     }

@@ -9,8 +9,7 @@ import { EntityDefaultLogic } from '../../entity/entity-default/entity-default-l
 import { PickerSourceAdapterFactoryService } from '../../picker/factories/picker-source-adapter-factory.service';
 import { PickerStateAdapterFactoryService } from '../../picker/factories/picker-state-adapter-factory.service';
 import { DeleteEntityProps } from '../../picker/picker.models';
-import { PickerStringStateAdapter } from '../../picker/adapters/picker-string-state-adapter';
-import { PickerStringSourceAdapter } from '../../picker/adapters/picker-string-source-adapter';
+import { PickerData } from '../../picker/picker-data';
 
 @Component({
   selector: InputTypeConstants.StringDropdown,
@@ -29,8 +28,8 @@ export class StringDropdownComponent extends PickerComponent implements OnInit, 
     editRoutingService: EditRoutingService,
     entityCacheService: EntityCacheService,
     stringQueryCacheService: StringQueryCacheService,
-    private pickerSourceAdapterFactoryService: PickerSourceAdapterFactoryService,
-    private pickerStateAdapterFactoryService: PickerStateAdapterFactoryService,
+    private sourceFactory: PickerSourceAdapterFactoryService,
+    private stateFactory: PickerStateAdapterFactoryService,
   ) {
     super(
       eavService,
@@ -60,7 +59,7 @@ export class StringDropdownComponent extends PickerComponent implements OnInit, 
   }
 
   private createPickerAdapters(): void {
-    this.pickerStateAdapter = this.pickerStateAdapterFactoryService.createPickerStringStateAdapter(
+    this.pickerStateAdapter = this.stateFactory.createPickerStringStateAdapter(
       this.control,
       this.config,
       this.settings$,
@@ -72,7 +71,7 @@ export class StringDropdownComponent extends PickerComponent implements OnInit, 
       () => this.focusOnSearchComponent,
     );
 
-    this.pickerSourceAdapter = this.pickerSourceAdapterFactoryService.createPickerStringSourceAdapter(
+    this.pickerSourceAdapter = this.sourceFactory.createPickerStringSourceAdapter(
       this.pickerStateAdapter.disableAddNew$,
       this.fieldsSettingsService,
 
@@ -85,7 +84,11 @@ export class StringDropdownComponent extends PickerComponent implements OnInit, 
       (props: DeleteEntityProps) => this.pickerStateAdapter.doAfterDelete(props)
     );
 
-    this.pickerStateAdapterFactoryService.initString(this.pickerStateAdapter as PickerStringStateAdapter);
-    this.pickerSourceAdapterFactoryService.initString(this.pickerSourceAdapter as PickerStringSourceAdapter);
+    this.pickerStateAdapter.init();
+    this.pickerSourceAdapter.init();
+    this.pickerData = new PickerData(
+      this.pickerSourceAdapter,
+      this.pickerStateAdapter,
+    );
   }
 }

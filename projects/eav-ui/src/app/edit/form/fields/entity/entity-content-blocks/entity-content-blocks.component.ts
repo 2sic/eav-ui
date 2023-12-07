@@ -9,7 +9,7 @@ import { PickerStateAdapterFactoryService } from '../../picker/factories/picker-
 import { PickerComponent } from '../../picker/picker.component';
 import { EntityContentBlocksLogic } from './entity-content-blocks-logic';
 import { DeleteEntityProps } from '../../picker/picker.models';
-import { PickerEntitySourceAdapter } from '../../picker/adapters/picker-entity-source-adapter';
+import { PickerData } from '../../picker/picker-data';
 
 @Component({
   selector: InputTypeConstants.EntityContentBlocks,
@@ -27,8 +27,8 @@ export class EntityContentBlockComponent extends PickerComponent implements OnIn
     editRoutingService: EditRoutingService,
     entityCacheService: EntityCacheService,
     stringQueryCacheService: StringQueryCacheService,
-    private pickerSourceAdapterFactoryService: PickerSourceAdapterFactoryService,
-    private pickerStateAdapterFactoryService: PickerStateAdapterFactoryService,
+    private sourceFactory: PickerSourceAdapterFactoryService,
+    private stateFactory: PickerStateAdapterFactoryService,
   ) {
     super(
       eavService,
@@ -57,7 +57,7 @@ export class EntityContentBlockComponent extends PickerComponent implements OnIn
   }
 
   private createPickerAdapters(): void {
-    this.pickerStateAdapter = this.pickerStateAdapterFactoryService.createPickerStateAdapter(
+    this.pickerStateAdapter = this.stateFactory.createPickerStateAdapter(
       this.control,
       this.config,
       this.settings$,
@@ -69,7 +69,7 @@ export class EntityContentBlockComponent extends PickerComponent implements OnIn
       () => this.focusOnSearchComponent,
     );
 
-    this.pickerSourceAdapter = this.pickerSourceAdapterFactoryService.createPickerEntitySourceAdapter(
+    this.pickerSourceAdapter = this.sourceFactory.createPickerEntitySourceAdapter(
       this.pickerStateAdapter.disableAddNew$,
       this.fieldsSettingsService,
 
@@ -82,7 +82,11 @@ export class EntityContentBlockComponent extends PickerComponent implements OnIn
       (props: DeleteEntityProps) => this.pickerStateAdapter.doAfterDelete(props)
     );
 
-    this.pickerStateAdapterFactoryService.init(this.pickerStateAdapter);
-    this.pickerSourceAdapterFactoryService.initEntity(this.pickerSourceAdapter as PickerEntitySourceAdapter);
+    this.pickerStateAdapter.init();
+    this.pickerSourceAdapter.init();
+    this.pickerData = new PickerData(
+      this.pickerSourceAdapter,
+      this.pickerStateAdapter,
+    );
   }
 }

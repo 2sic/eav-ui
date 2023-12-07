@@ -2,15 +2,11 @@ import { TranslateService } from '@ngx-translate/core';
 import { WIPDataSourceItem } from '../../../../../../../edit-types';
 import { guidRegex } from '../../../../shared/constants/guid.constants';
 
-import { EntityFieldDataSource } from './data-sources/entity-field-data-source';
-import { QueryFieldDataSource } from './data-sources/query-field-data-source';
-import { StringFieldDataSource } from './data-sources/string-field-data-source';
-
 export function createUIModel(
   selectedItems: WIPDataSourceItem[],
   data: WIPDataSourceItem[],
-  pickerDataSource: EntityFieldDataSource | QueryFieldDataSource | StringFieldDataSource,
-  contentType: string,
+  parameters: string,
+  prefetch: (parameters: string, missingData: string[]) => void,
   translate: TranslateService,
 ): WIPDataSourceItem[] {
   let missingData: string[] = [];
@@ -45,7 +41,7 @@ export function createUIModel(
   });
 
   if (missingData.length > 0) {
-    pickerDataSource.prefetch(contentType, missingData);
+    prefetch(parameters, missingData);
   }
 
   return selectedEntities;

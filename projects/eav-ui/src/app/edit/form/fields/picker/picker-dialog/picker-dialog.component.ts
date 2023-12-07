@@ -3,12 +3,11 @@ import { FormGroup } from '@angular/forms';
 import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { FieldsSettingsService } from '../../../../shared/services';
-import { PickerSourceAdapterBase } from '../adapters/picker-source-adapter-base';
-import { PickerStateAdapter } from '../adapters/picker-state-adapter';
 import { EntityPickerDialogTemplateVars } from './picker-dialog.models';
 import { FieldConfigSet, FieldControlConfig } from '../../../builder/fields-builder/field-config-set.model';
 import { Field } from '../../../builder/fields-builder/field.model';
 import { BaseSubsinkComponent } from 'projects/eav-ui/src/app/shared/components/base-subsink-component/base-subsink.component';
+import { PickerData } from '../picker-data';
 
 @Component({
   selector: 'app-picker-dialog',
@@ -16,8 +15,7 @@ import { BaseSubsinkComponent } from 'projects/eav-ui/src/app/shared/components/
   styleUrls: ['./picker-dialog.component.scss'],
 })
 export class PickerDialogComponent extends BaseSubsinkComponent implements OnInit, OnDestroy, Field {
-  @Input() pickerSourceAdapter: PickerSourceAdapterBase;
-  @Input() pickerStateAdapter: PickerStateAdapter;
+  @Input() pickerData: PickerData;
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
   @Input() controlConfig: FieldControlConfig;
@@ -31,9 +29,12 @@ export class PickerDialogComponent extends BaseSubsinkComponent implements OnIni
   }
 
   ngOnInit(): void {
-    const freeTextMode$ = this.pickerStateAdapter.freeTextMode$;
-    const disableAddNew$ = this.pickerStateAdapter.disableAddNew$;
-    const controlStatus$ = this.pickerStateAdapter.controlStatus$;
+    const state = this.pickerData.state;
+    const source = this.pickerData.source;
+
+    const freeTextMode$ = state.freeTextMode$;
+    const disableAddNew$ = state.disableAddNew$;
+    const controlStatus$ = state.controlStatus$;
 
     const settings$ = this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).pipe(
       map(settings => ({
@@ -71,6 +72,6 @@ export class PickerDialogComponent extends BaseSubsinkComponent implements OnIni
   }
 
   openNewEntityDialog(): void {
-    this.pickerSourceAdapter.editEntity(null);
+    this.pickerData.source.editItem(null);
   }
 }

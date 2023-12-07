@@ -2,13 +2,12 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { EditRoutingService, FieldsSettingsService } from '../../../../shared/services';
-import { PickerSourceAdapterBase } from '../adapters/picker-source-adapter-base';
-import { PickerStateAdapter } from '../adapters/picker-state-adapter';
 import { EntityPickerPreviewViewModel } from './picker-preview.models';
 import { FieldConfigSet, FieldControlConfig } from '../../../builder/fields-builder/field-config-set.model';
 import { Field } from '../../../builder/fields-builder/field.model';
 import { BaseSubsinkComponent } from 'projects/eav-ui/src/app/shared/components/base-subsink-component/base-subsink.component';
 import { GeneralHelpers } from '../../../../shared/helpers';
+import { PickerData } from '../picker-data';
 
 @Component({
   selector: 'app-picker-preview',
@@ -16,8 +15,7 @@ import { GeneralHelpers } from '../../../../shared/helpers';
   styleUrls: ['./picker-preview.component.scss'],
 })
 export class PickerPreviewComponent extends BaseSubsinkComponent implements OnInit, OnDestroy, Field {
-  @Input() pickerSourceAdapter: PickerSourceAdapterBase;
-  @Input() pickerStateAdapter: PickerStateAdapter;
+  @Input() pickerData: PickerData;
   @Input() config: FieldConfigSet;
   @Input() group: FormGroup;
   @Input() controlConfig: FieldControlConfig;
@@ -32,10 +30,11 @@ export class PickerPreviewComponent extends BaseSubsinkComponent implements OnIn
   }
 
   ngOnInit(): void {
-    const freeTextMode$ = this.pickerStateAdapter.freeTextMode$;
-    const selectedItems$ = this.pickerStateAdapter.selectedItems$;
-    const controlStatus$ = this.pickerStateAdapter.controlStatus$;
-    const disableAddNew$ = this.pickerStateAdapter.disableAddNew$;
+    const state = this.pickerData.state;
+    const freeTextMode$ = state.freeTextMode$;
+    const selectedItems$ = state.selectedItems$;
+    const controlStatus$ = state.controlStatus$;
+    const disableAddNew$ = state.disableAddNew$;
 
     const settings$ = this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).pipe(
       map(settings => ({
@@ -79,7 +78,7 @@ export class PickerPreviewComponent extends BaseSubsinkComponent implements OnIn
   }
 
   openNewEntityDialog(): void {
-    this.pickerSourceAdapter.editEntity(null);
+    this.pickerData.source.editItem(null);
   }
 
   expandDialog() {

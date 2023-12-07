@@ -4,15 +4,13 @@
 -->
 <ng-container *ngIf="viewModel$ | async as vm">
   <app-picker-preview *ngIf="vm.showPreview" 
-    [pickerSourceAdapter]="pickerSourceAdapter"
-    [pickerStateAdapter]="pickerStateAdapter"
+    [pickerData]="pickerData"
     [config]="config" 
     [group]="group" 
     [controlConfig]="controlConfig">
   </app-picker-preview>
   <app-picker-dialog *ngIf="!vm.showPreview" 
-    [pickerSourceAdapter]="pickerSourceAdapter"
-    [pickerStateAdapter]="pickerStateAdapter"
+    [pickerData]="pickerData"
     [config]="config" 
     [group]="group" 
     [controlConfig]="controlConfig">

@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
-import { EavService, EditRoutingService, EntityService, FieldsSettingsService, QueryService } from '../../../../shared/services';
+import { EavService, EditRoutingService, EntityService, FieldsSettingsService } from '../../../../shared/services';
 import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { PickerSourceAdapterFactoryService } from '../../picker/factories/picker-source-adapter-factory.service';
@@ -9,8 +9,7 @@ import { PickerStateAdapterFactoryService } from '../../picker/factories/picker-
 import { PickerComponent } from '../../picker/picker.component';
 import { EntityQueryLogic } from './entity-query-logic';
 import { DeleteEntityProps } from '../../picker/picker.models';
-import { PickerQuerySourceAdapter } from '../../picker/adapters/picker-query-source-adapter';
-import { PickerEntityStateAdapter } from '../../picker/adapters/picker-entity-state-adapter';
+import { PickerData } from '../../picker/picker-data';
 
 @Component({
   selector: InputTypeConstants.EntityQuery,
@@ -28,8 +27,8 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
     editRoutingService: EditRoutingService,
     entityCacheService: EntityCacheService,
     stringQueryCacheService: StringQueryCacheService,
-    protected pickerSourceAdapterFactoryService: PickerSourceAdapterFactoryService,
-    protected pickerStateAdapterFactoryService: PickerStateAdapterFactoryService,
+    protected sourceFactory: PickerSourceAdapterFactoryService,
+    protected stateFactory: PickerStateAdapterFactoryService,
   ) {
     super(
       eavService,
@@ -62,7 +61,7 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
   }
 
   protected createPickerAdapters(): void {
-    this.pickerStateAdapter = this.pickerStateAdapterFactoryService.createPickerEntityStateAdapter(
+    this.pickerStateAdapter = this.stateFactory.createPickerEntityStateAdapter(
       this.control,
       this.config,
       this.settings$,
@@ -74,7 +73,7 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
       () => this.focusOnSearchComponent,
     );
 
-    this.pickerSourceAdapter = this.pickerSourceAdapterFactoryService.createPickerQuerySourceAdapter(
+    this.pickerSourceAdapter = this.sourceFactory.createPickerQuerySourceAdapter(
       this.pickerStateAdapter.error$,
       this.fieldsSettingsService,
       this.isStringQuery,
@@ -88,7 +87,11 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
       (props: DeleteEntityProps) => this.pickerStateAdapter.doAfterDelete(props)
     );
 
-    this.pickerStateAdapterFactoryService.initEntity(this.pickerStateAdapter as PickerEntityStateAdapter);
-    this.pickerSourceAdapterFactoryService.initQuery(this.pickerSourceAdapter as PickerQuerySourceAdapter);
+    this.pickerStateAdapter.init();
+    this.pickerSourceAdapter.init();
+    this.pickerData = new PickerData(
+      this.pickerSourceAdapter,
+      this.pickerStateAdapter,
+    );
   }
 }
