@@ -5,7 +5,7 @@
       <input matInput #autocomplete [placeholder]="getPlaceholder(vm.availableItems, vm.error)"
         [matAutocomplete]="auto" [disabled]="vm.controlStatus.disabled || !vm.enableAddExisting"
         [value]="showSelectedItem ? vm.selectedItem?.Text : ''" (focus)="fetchEntities()"
-        (blur)="markAsTouched(vm.selectedItem, vm.selectedItems)" (input)="filterSelectionList()"
+        (blur)="markAsTouched()" (input)="filterSelectionList()"
         (click)="filterSelectionList()">
       <button mat-icon-button matSuffix class="entity-dropdown-button eav-suffix-button" disableRipple="true"
         [disabled]="vm.controlStatus.disabled || !vm.enableAddExisting">
@@ -37,7 +37,8 @@
     </mat-form-field>
 
     <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn.bind(this)"
-      (optionSelected)="optionSelected($event, vm.allowMultiValue, vm.selectedItem)">
+      (optionSelected)="optionSelected($event, vm.allowMultiValue, vm.selectedItem)"
+      (closed)="onClosed(vm.selectedItems, vm.selectedItem)" (opened)="onOpened()">
       <div *ngIf="!vm.isTreeDisplayMode">
         <mat-option *ngFor="let item of vm.filteredItems" [value]="item.Value" class="eav-picker-option"
           [disabled]="vm.enableReselect ? false : isOptionDisabled(item.Value, vm.selectedItems)" [tippy]="item.Tooltip"

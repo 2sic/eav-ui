@@ -3,7 +3,7 @@ import { AbstractControl, FormGroup } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { TranslateService } from '@ngx-translate/core';
 import { PickerItem } from 'projects/edit-types';
-import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, take } from 'rxjs';
+import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, take, tap } from 'rxjs';
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { FieldsSettingsService } from '../../../../shared/services';
 import { GlobalConfigService } from '../../../../shared/store/ngrx-data';
@@ -38,6 +38,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   private availableItems$ = new BehaviorSubject<PickerItem[]>(null);
   private selectedItems$ = new Observable<PickerItem[]>;
   private selectedItem$ = new BehaviorSubject<PickerItem>(null);
+  private newValue: string = null;
 
   private filter$ = new BehaviorSubject(false);
 
@@ -55,7 +56,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     this.control = this.group.controls[this.config.fieldName];
 
     this.availableItems$ = source.availableItems$;
-    this.selectedItems$ = this.pickerData.selectedItems$;
+    this.selectedItems$ = this.pickerData.selectedItems$;//.pipe(tap(si => console.log("SDV selected items", si[0])));
 
     const freeTextMode$ = state.freeTextMode$;
     const controlStatus$ = state.controlStatus$;
@@ -88,6 +89,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
       ]) => {
         const selectedItem = selectedItems.length > 0 ? selectedItems[0] : null;
         this.selectedItem$.next(selectedItem);
+        // console.log("SDV selected item", selectedItem);
 
         const showEmpty = !settings.EnableAddExisting && !(selectedItems.length > 1);
         const hideDropdown = (!settings.AllowMultiValue && (selectedItems.length > 1)) || !settings.EnableAddExisting;
@@ -145,24 +147,6 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     super.ngOnDestroy();
   }
 
-  /** @SDV This is a workaround, not a fixed solution
-   * Take a look at as usecase when its not the same text as the one in the list
-   * etc. Model - Model (string)
-   */
-  ngAfterViewInit(): void {
-    this.selectedItems$.pipe(take(1)).subscribe(selectedItems => {
-      if (selectedItems != null && selectedItems != undefined && selectedItems.length > 0) {
-        this.removeItem(0);
-        const selected: string = selectedItems[0]?.Value;
-        this.pickerData.state.addSelected(selected);
-        // TODO: @SDV - This is needed so after choosing option element is not focused (it gets focused by default so if blur is outside of setTimeout it will happen before refocus)
-        setTimeout(() => {
-          this.autocompleteRef.nativeElement.blur();
-        });
-      }
-    });
-  }
-
   // TODO: @SDV - Simplify this
   displayFn(value: string | string[] | PickerItem): string {
     let returnValue = '';
@@ -197,15 +181,42 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     return returnValue;
   }
 
-  markAsTouched(selectedEntity: PickerItem, selectedEntities: PickerItem[]): void {
-    if (selectedEntity && selectedEntities.length < 2 && this.showSelectedItem)
-      this.autocompleteRef.nativeElement.value = selectedEntity.Text;
+  markAsTouched(): void {
     GeneralHelpers.markControlTouched(this.control);
   }
 
   fetchEntities(): void {
-    this.autocompleteRef.nativeElement.value = '';
     this.pickerData.source.fetchItems(false);
+  }
+
+  filterSelectionList(): void {
+    this.filter$.next(true);
+  }
+
+  onOpened(): void {
+    this.autocompleteRef.nativeElement.value = '';
+  }
+
+  onClosed(selectedItems: PickerItem[], selectedItem: PickerItem): void { 
+    if (this.showSelectedItem) {
+      // @SDV - improve this
+      if (this.newValue && this.newValue != selectedItem.Value) {} //this.autocompleteRef.nativeElement.value = this.availableItems$.value?.find(ae => ae.Value == this.newValue)?.Text;
+      else if (selectedItem && selectedItems.length < 2) this.autocompleteRef.nativeElement.value = selectedItem.Text;
+    } else {
+      // @SDV - improve this
+      this.autocompleteRef.nativeElement.value = '';
+    }
+  }
+
+  optionSelected(event: MatAutocompleteSelectedEvent, allowMultiValue: boolean, selectedEntity: PickerItem): void {
+    this.newValue = event.option.value;
+    if (!allowMultiValue && selectedEntity) this.removeItem(0);
+    const selected: string = event.option.value;
+    this.pickerData.state.addSelected(selected);
+    // TODO: @SDV - This is needed so after choosing option element is not focused (it gets focused by default so if blur is outside of setTimeout it will happen before refocus)
+    setTimeout(() => {
+      this.autocompleteRef.nativeElement.blur();
+    });
   }
 
   getPlaceholder(availableEntities: PickerItem[], error: string): string {
@@ -224,20 +235,6 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   toggleFreeText(disabled: boolean): void {
     if (disabled) { return; }
     this.pickerData.state.toggleFreeTextMode();
-  }
-
-  filterSelectionList(): void {
-    this.filter$.next(true);
-  }
-
-  optionSelected(event: MatAutocompleteSelectedEvent, allowMultiValue: boolean, selectedEntity: PickerItem): void {
-    if (!allowMultiValue && selectedEntity) this.removeItem(0);
-    const selected: string = event.option.value;
-    this.pickerData.state.addSelected(selected);
-    // TODO: @SDV - This is needed so after choosing option element is not focused (it gets focused by default so if blur is outside of setTimeout it will happen before refocus)
-    setTimeout(() => {
-      this.autocompleteRef.nativeElement.blur();
-    });
   }
 
   insertNull(): void {
