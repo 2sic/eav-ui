@@ -1,5 +1,14 @@
 <ng-container *ngIf="viewModel | async as vm">
 
+  <!-- HACK -->
+  <mat-form-field *ngIf="visible"
+    style="position: absolute; top: -10000px; left: -10000px; visibility: hidden;">
+    <input matInput [matDatepicker]="hiddenPicker">
+    <mat-datepicker-toggle matIconSuffix [for]="hiddenPicker"></mat-datepicker-toggle>
+    <mat-datepicker #hiddenPicker></mat-datepicker>
+  </mat-form-field>
+  <!-- /HACK -->
+
   <mat-form-field [formGroup]="group" color="accent" class="eav-form-field" *ngIf="!vm.useTimePicker">
     <input matInput [disabled]="vm.controlStatus.disabled" [matDatepicker]="picker" [placeholder]="vm.placeholder"
       [required]="vm.required" [value]="vm.controlStatus.value" (dateChange)="updateValue($event)">

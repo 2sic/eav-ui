@@ -26,6 +26,16 @@ import { DatetimeDefaultViewModel } from './datetime-default.models';
 export class DatetimeDefaultComponent extends BaseFieldComponent<string> implements OnInit, OnDestroy {
   @ViewChild('picker') private picker?: MatDatepicker<Dayjs> | NgxMatDatetimepicker<Dayjs>;
 
+  /** THIS IS A HACK 
+   * With Angular Material versions 16.2.X and next NgxMatDatetimepicker doesn't load CSS styles correctly 
+   * so we created a hidden picker to force load the styles.
+   * https://github.com/h2qutc/angular-material-components/issues/372#issuecomment-1819690056
+   * https://github.com/h2qutc/angular-material-components/issues/348#issuecomment-1842649500
+   * also possibly related with this issue -> https://github.com/h2qutc/angular-material-components/issues/356
+   */
+  @ViewChild('hiddenPicker') private readonly hiddenPicker: MatDatepicker<null>;
+  visible = true;
+
   viewModel: Observable<DatetimeDefaultViewModel>;
 
   constructor(
@@ -54,7 +64,7 @@ export class DatetimeDefaultComponent extends BaseFieldComponent<string> impleme
       map(([
         [controlStatus, label, placeholder, required],
         [useTimePicker],
-      ]) => {
+      ]) => {     
         const viewModel: DatetimeDefaultViewModel = {
           controlStatus,
           label,
@@ -65,6 +75,17 @@ export class DatetimeDefaultComponent extends BaseFieldComponent<string> impleme
         return viewModel;
       }),
     );
+  }
+  
+  /** HACK
+   * Force load CSS styles for NgxMatDatetimepicker.
+   */
+  ngAfterViewInit(): void {
+    if (this.hiddenPicker !== undefined) {
+      this.hiddenPicker.open();
+      this.hiddenPicker.close();
+      this.visible = false;
+    }
   }
 
   ngOnDestroy() {
