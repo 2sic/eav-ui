@@ -94,6 +94,7 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
     this.pickerData = new PickerData(
       state,
       source,
+      this.translate,
     );
   }
 }

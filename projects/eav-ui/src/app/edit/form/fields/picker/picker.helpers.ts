@@ -1,50 +1,5 @@
-import { TranslateService } from '@ngx-translate/core';
 import { PickerItem } from '../../../../../../../edit-types';
 import { guidRegex } from '../../../../shared/constants/guid.constants';
-
-export function createUIModel(
-  selectedItems: PickerItem[],
-  data: PickerItem[],
-  parameters: string,
-  prefetch: (parameters: string, missingData: string[]) => void,
-  translate: TranslateService,
-): PickerItem[] {
-  let missingData: string[] = [];
-
-  const selectedEntities = selectedItems.map(item => {
-    const entity = data.find(e => e.Value === item.Value);
-    if (!entity) {
-      missingData.push(item.Value);
-      return item;
-    } else {
-      const text = entity?.Text ?? translate.instant('Fields.Entity.EntityNotFound');
-      const disableEdit = entity._disableEdit === true;
-      const disableDelete = entity._disableDelete === true;
-      const tooltip = entity._tooltip ?? `${text} (${entity.Value})`;
-      const information = entity._information ?? '';
-
-      const result: PickerItem = {
-        // if it's a free text value or not found, disable edit and delete
-        _disableEdit: disableEdit,
-        _disableDelete: disableDelete,
-        // either the real value or null if text-field or not found
-        Id: entity?.Id,
-        Text: text,
-        _tooltip: tooltip,
-        _information: information,
-        Value: entity.Value,
-      };
-
-      return result;
-    }
-  });
-
-  if (missingData.length > 0) {
-    prefetch(parameters, missingData);
-  }
-
-  return selectedEntities;
-}
 
 export function equalizeSelectedItems(
   fieldValue: string | string[],

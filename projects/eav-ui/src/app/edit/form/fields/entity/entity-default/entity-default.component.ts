@@ -87,6 +87,7 @@ export class EntityDefaultComponent extends PickerComponent implements OnInit, O
     this.pickerData = new PickerData(
       state,
       source,
+      this.translate,
     );
   }
 }

@@ -89,6 +89,7 @@ export class StringDropdownComponent extends PickerComponent implements OnInit, 
     this.pickerData = new PickerData(
       state,
       source,
+      this.translate,
     );
   }
 }

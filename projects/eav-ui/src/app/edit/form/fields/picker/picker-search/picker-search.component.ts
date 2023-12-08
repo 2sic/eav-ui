@@ -11,7 +11,6 @@ import { PickerSearchViewModel } from './picker-search.models';
 import { FieldConfigSet, FieldControlConfig } from '../../../builder/fields-builder/field-config-set.model';
 import { Field } from '../../../builder/fields-builder/field.model';
 import { BaseSubsinkComponent } from 'projects/eav-ui/src/app/shared/components/base-subsink-component/base-subsink.component';
-import { createUIModel } from '../picker.helpers';
 import { PickerData } from '../picker-data';
 
 @Component({
@@ -56,6 +55,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     this.control = this.group.controls[this.config.fieldName];
 
     this.availableItems$ = source.availableItems$;
+    this.selectedItems$ = this.pickerData.selectedItems$;
 
     const freeTextMode$ = state.freeTextMode$;
     const controlStatus$ = state.controlStatus$;
@@ -77,18 +77,6 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
         PickerTreeConfiguration: settings.PickerTreeConfiguration,
       })),
       distinctUntilChanged(GeneralHelpers.objectsEqual),
-    );
-    // @SDV move most of this code to picker.helpers - NOT YET
-    this.selectedItems$ = combineLatest([
-      state.selectedItems$.pipe(distinctUntilChanged(GeneralHelpers.arraysEqual)),
-      source.getDataFromSource().pipe(distinctUntilChanged(GeneralHelpers.arraysEqual)),
-      source.parameters$.pipe(distinctUntilChanged()),
-    ]).pipe(//tap(([selectedItems, data, contentType]) => console.log('SDV SEARCH')),
-      map(([selectedItems, data, parameters]) =>
-        createUIModel(selectedItems, data, parameters,
-          (parameters, missingData) => source.prefetch(parameters, missingData),
-          this.translate)
-      ), distinctUntilChanged(GeneralHelpers.arraysEqual)
     );
     this.viewModel$ = combineLatest([
       debugEnabled$, settings$, this.selectedItems$, this.availableItems$, error$,

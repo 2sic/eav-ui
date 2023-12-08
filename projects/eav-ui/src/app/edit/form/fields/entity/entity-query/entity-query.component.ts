@@ -92,6 +92,7 @@ export class EntityQueryComponent extends PickerComponent implements OnInit, OnD
     this.pickerData = new PickerData(
       state,
       source,
+      this.translate,
     );
   }
 }

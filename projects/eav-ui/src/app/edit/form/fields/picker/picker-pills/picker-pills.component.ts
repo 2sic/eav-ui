@@ -5,8 +5,6 @@ import { EavService, FieldsSettingsService, EditRoutingService } from '../../../
 import { BaseFieldComponent } from '../../base/base-field.component';
 import { PickerItem } from 'projects/edit-types';
 import { TranslateService } from '@ngx-translate/core';
-import { createUIModel } from '../picker.helpers';
-import { GeneralHelpers } from '../../../../shared/helpers';
 import { PickerData } from '../picker-data';
 
 @Component({
@@ -38,18 +36,7 @@ export class PickerPillsComponent extends BaseFieldComponent<string | string[]> 
     const placeholder$ = state.placeholder$;
     const required$ = state.required$;
     const isOpen$ = this.settings$.pipe(map(settings => settings._isDialog), distinctUntilChanged());
-    // @SDV move most of this code to picker.helpers - NOT YET
-    const selectedItems$ = combineLatest([
-      state.selectedItems$.pipe(distinctUntilChanged(GeneralHelpers.arraysEqual)),
-      source.getDataFromSource().pipe(distinctUntilChanged(GeneralHelpers.arraysEqual)),
-      source.parameters$.pipe(distinctUntilChanged()),
-    ]).pipe(//tap(([selectedItems, data, contentType]) => console.log('SDV SEARCH')),
-      map(([selectedItems, data, parameters]) =>
-        createUIModel(selectedItems, data, parameters,
-          (parameters, missingData) => source.prefetch(parameters, missingData),
-          this.translate)
-      ), distinctUntilChanged(GeneralHelpers.arraysEqual)
-    );
+    const selectedItems$ = this.pickerData.selectedItems$;
 
     this.viewModel$ = combineLatest([
       combineLatest([controlStatus$, label$, placeholder$, required$]),

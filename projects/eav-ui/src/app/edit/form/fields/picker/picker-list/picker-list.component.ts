@@ -7,7 +7,6 @@ import { EntityListViewModel, ReorderIndexes } from './picker-list.models';
 import { FormGroup } from '@angular/forms';
 import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
 import { PickerItem } from 'projects/edit-types';
-import { createUIModel } from '../picker.helpers';
 import { TranslateService } from '@ngx-translate/core';
 import { PickerData } from '../picker-data';
 
@@ -35,18 +34,7 @@ export class PickerListComponent implements OnInit {
     const label$ = state.label$;
     const required$ = state.required$;
     const controlStatus$ = state.controlStatus$;
-    // @SDV move most of this code to picker.helpers - NOT YET
-    const selectedItems$ = combineLatest([
-      state.selectedItems$.pipe(distinctUntilChanged(GeneralHelpers.arraysEqual)),
-      source.getDataFromSource().pipe(distinctUntilChanged(GeneralHelpers.arraysEqual)),
-      source.parameters$.pipe(distinctUntilChanged()),
-    ]).pipe(//tap(([selectedItems, data, contentType]) => console.log('SDV SEARCH')),
-      map(([selectedItems, data, parameters]) =>
-        createUIModel(selectedItems, data, parameters,
-          (parameters, missingData) => source.prefetch(parameters, missingData),
-          this.translate)
-      ), distinctUntilChanged(GeneralHelpers.arraysEqual)
-    );
+    const selectedItems$ = this.pickerData.selectedItems$;
 
     const settings$ = this.fieldsSettingsService.getFieldSettings$(this.config.fieldName).pipe(
       map(settings => ({

@@ -87,6 +87,7 @@ export class EntityContentBlockComponent extends PickerComponent implements OnIn
     this.pickerData = new PickerData(
       state,
       source,
+      this.translate,
     );
   }
 }
