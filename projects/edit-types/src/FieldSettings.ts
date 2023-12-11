@@ -260,6 +260,9 @@ export interface EntityPicker extends EntityQuery {
   AllowMultiMin: number;
   AllowMultiMax: number;
 
+  DataSources: string[];
+  UiPickerSourceQuery: UiPickerSourceQuery;
+
   PickerDisplayMode: 'list' | 'tree';
   PickerDisplayConfiguration: string[]; //can only be one entity guid
   PickerTreeConfiguration: UiPickerModeTree;
@@ -292,6 +295,17 @@ export interface FieldSettings extends
   InternalSettings
 { }
   
+export interface UiPickerSourceQuery {
+  Title: string;
+  Query: string;
+  QueryParameters: string;
+  StreamName: string;
+  Value: string;
+  Label: string;
+  CreateTypes: string;
+  MoreFields: string;
+}
+
 export interface UiPickerModeTree { 
   Title: string;
 

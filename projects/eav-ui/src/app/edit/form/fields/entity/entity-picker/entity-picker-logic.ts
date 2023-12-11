@@ -35,6 +35,40 @@ export class EntityPickerLogic extends FieldLogicBase {
       fixedSettings.EnableDelete = true;
     }
 
+    // const dataSources = tools.contentTypeItemService.getContentTypeItems(fixedSettings.DataSources);
+    // console.log('SDV dataSources', dataSources);
+
+    // if (dataSources.length > 0) {
+    //   dataSources.forEach((dataSource) => { 
+    //     // TODO: @SDV - Add all this datasource types into enum
+    //     if (dataSource.Type.Name === 'UiPickerSourceQuery') {
+    //       const attributes = dataSource.Attributes;
+          
+    //       const uiPickerSourceQuery = {
+    //         Title: attributes['Title'].Values[0].Value,
+    //         Query: attributes['Query'].Values[0].Value,
+    //         QueryParameters: attributes['QueryParameters'].Values[0].Value,
+    //         StreamName: attributes['StreamName'].Values[0].Value,
+    //         Value: attributes['Value'].Values[0].Value,
+    //         Label: attributes['Label'].Values[0].Value,
+    //         CreateTypes: attributes['CreateTypes'].Values[0].Value,
+    //         MoreFields: attributes['MoreFields'].Values[0].Value,
+    //       }
+    //       fixedSettings.UiPickerSourceQuery = uiPickerSourceQuery;
+    //     } else if (dataSource.Type.Name === 'UiPickerSourceEntity') {
+
+    //     } else if (dataSource.Type.Name === 'UiPickerSourceCustomList') {
+
+    //     } else if (dataSource.Type.Name === 'UiPickerModeTree') {
+
+    //     }
+    //   });
+    // }
+
+
+
+
+
     /** Entity Query logic */
     fixedSettings.Query ??= '';
     fixedSettings.StreamName ||= 'Default';
