@@ -18,7 +18,7 @@ export class StringDropdownLogic extends FieldLogicBase {
     fixedSettings.EnableEdit ??= false;
     fixedSettings.EnableCreate ??= false;
     fixedSettings.EnableAddExisting ??= true;
-    fixedSettings.EnableRemove ??= false;
+    fixedSettings.EnableRemove ??= true;
     fixedSettings.EnableDelete ??= false;
     return fixedSettings;
   }
