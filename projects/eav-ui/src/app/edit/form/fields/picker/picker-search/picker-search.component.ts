@@ -200,7 +200,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   onClosed(selectedItems: PickerItem[], selectedItem: PickerItem): void { 
     if (this.showSelectedItem) {
       // @SDV - improve this
-      if (this.newValue && this.newValue != selectedItem.Value) {} //this.autocompleteRef.nativeElement.value = this.availableItems$.value?.find(ae => ae.Value == this.newValue)?.Text;
+      if (this.newValue && this.newValue != selectedItem?.Value) {} //this.autocompleteRef.nativeElement.value = this.availableItems$.value?.find(ae => ae.Value == this.newValue)?.Text;
       else if (selectedItem && selectedItems.length < 2) this.autocompleteRef.nativeElement.value = selectedItem.Text;
     } else {
       // @SDV - improve this
@@ -213,7 +213,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     if (!allowMultiValue && selectedEntity) this.removeItem(0);
     const selected: string = event.option.value;
     this.pickerData.state.addSelected(selected);
-    // TODO: @SDV - This is needed so after choosing option element is not focused (it gets focused by default so if blur is outside of setTimeout it will happen before refocus)
+    // @SDV - This is needed so after choosing option element is not focused (it gets focused by default so if blur is outside of setTimeout it will happen before refocus)
     setTimeout(() => {
       this.autocompleteRef.nativeElement.blur();
     });
