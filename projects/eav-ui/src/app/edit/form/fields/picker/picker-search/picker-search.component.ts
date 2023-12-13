@@ -89,7 +89,6 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
       ]) => {
         const selectedItem = selectedItems.length > 0 ? selectedItems[0] : null;
         this.selectedItem$.next(selectedItem);
-        // console.log("SDV selected item", selectedItem);
 
         const showEmpty = !settings.EnableAddExisting && !(selectedItems.length > 1);
         const hideDropdown = (!settings.AllowMultiValue && (selectedItems.length > 1)) || !settings.EnableAddExisting;
@@ -150,20 +149,12 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   // TODO: @SDV - Simplify this
   displayFn(value: string | string[] | PickerItem): string {
     let returnValue = '';
-    if (value) {
-      if (typeof value === 'string')
+    if (value != null || value != undefined) {
+      if (typeof value === 'string') {
         returnValue = this.availableItems$.value?.find(ae => ae.Value == value)?.Text;
-      else if (Array.isArray(value)) {
+      } else if (Array.isArray(value)) {
         if (typeof value[0] === 'string') {
-          if (value.length == 35) {
-            const guid = value.join('');
-            returnValue = this.availableItems$.value?.find(ae => ae.Value == guid)?.Text;
-          } else if (value.length == 36) {
-            const guid = value[value.length - 1];
-            returnValue = this.availableItems$.value?.find(ae => ae.Value == guid)?.Text;
-          } else {
-            returnValue = this.availableItems$.value?.find(ae => ae.Value == value[0])?.Text;
-          }
+          returnValue = this.availableItems$.value?.find(ae => ae.Value == value[0])?.Text;
         } else {
           returnValue = (value[0] as PickerItem)?.Text;
         }

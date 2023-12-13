@@ -26,7 +26,8 @@ export function equalizeSelectedItems(
 
 /** Convert string value in string array if a value is type string */
 export function convertValueToArray(value: string | string[], separator: string): string[] {
-  if (!value) { return []; }
+  if (value == "")  return [""]; 
+  else if (!value)  return []; 
 
   if (Array.isArray(value)) { return value; }
 
