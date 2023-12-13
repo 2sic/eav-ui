@@ -5,4 +5,5 @@ export interface PickerPillsViewModel extends BaseFieldViewModel {
   selectedItems: PickerItem[];
   itemsNumber: number;
   isOpen: boolean;
+  enableTextEntry: boolean;
 }

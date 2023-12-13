@@ -5,6 +5,12 @@
         [pickerData]="pickerData"
         [config]="config" 
         [group]="group">
+        <app-picker-toggle-text freeTextButtons 
+          [pickerData]="pickerData" 
+          [controlStatusDisabled]="vm.controlStatus.disabled"
+          [allowText]="vm.enableTextEntry" 
+          [freeTextMode]="vm.freeTextMode">
+        </app-picker-toggle-text>
       </app-picker-pills>
       <app-picker-search *ngIf="vm.selectedItems.length < 2 && !vm.freeTextMode"
         [pickerData]="pickerData"

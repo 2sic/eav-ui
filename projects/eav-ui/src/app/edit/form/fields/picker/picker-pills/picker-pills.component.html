@@ -20,8 +20,11 @@
             <span mat-line>{{ item.Text }}</span>
           </mat-list-item>
         </mat-list>
-        <span *ngIf="vm.itemsNumber > 5" class="eav-more-entities mat-body-1">
+        <span *ngIf="vm.itemsNumber > 5" class="eav-more-entities" [ngClass]="{'eav-more-entities-margin-right': vm.enableTextEntry}">
           {{ vm.itemsNumber }}
+        </span>
+        <span *ngIf="vm.enableTextEntry" matSuffix class="eav-selection-suffix-inline">
+          <ng-content select="[freeTextButtons]"></ng-content>
         </span>
       </div>
     </div>

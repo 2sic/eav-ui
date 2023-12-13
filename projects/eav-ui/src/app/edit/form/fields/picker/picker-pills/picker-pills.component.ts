@@ -37,14 +37,15 @@ export class PickerPillsComponent extends BaseFieldComponent<string | string[]> 
     const required$ = state.required$;
     const isOpen$ = this.settings$.pipe(map(settings => settings._isDialog), distinctUntilChanged());
     const selectedItems$ = this.pickerData.selectedItems$;
+    const settings$ = state.settings$;
 
     this.viewModel$ = combineLatest([
       combineLatest([controlStatus$, label$, placeholder$, required$]),
-      combineLatest([selectedItems$, isOpen$]),
+      combineLatest([selectedItems$, isOpen$, settings$]),
     ]).pipe(
       map(([
         [controlStatus, label, placeholder, required],
-        [selectedItems, isOpen],
+        [selectedItems, isOpen, settings],
       ]) => {
         const templateVars: PickerPillsViewModel = {
           controlStatus,
@@ -54,6 +55,7 @@ export class PickerPillsComponent extends BaseFieldComponent<string | string[]> 
           selectedItems: selectedItems?.slice(0, 9) || [],
           itemsNumber: selectedItems?.length || 0,
           isOpen,
+          enableTextEntry: settings.EnableTextEntry,
         };
         return templateVars;
       }),
