@@ -18,12 +18,12 @@ This is an internal documentation which helps us keep track of all the features,
     1. `EnableCreate`
     1. `EnableAddExisting`
     1. `EnableRemove`
-    1. `EnableDelete` TODO:
+    1. `EnableDelete`
     1. `EnableTextEntry`
     1. GroupMultiSelect
     1. `AllowMultiValue`
     1. `EnableReselect` NEW!
-    1. `Separator`
+    1. `Separator` - special, should default to `\n` in this new mode, to avoid many issues later on in data handling TODO:
     1. `AllowMultiMin` NEW!
     1. `AllowMultiMax` NEW!
     1. GroupDisplay
@@ -64,6 +64,32 @@ This is an internal documentation which helps us keep track of all the features,
 
 ## Data Source Configurations TODO:
 
+1. `UiPickerSourceCustomList`
+    1. `Title` - just for description
+    1. `Values` - the list of items, multi-line string, `key` or `key:value` with optional `\` escaping for special characters
+
+1. `UiPickerSourceEntity`
+    1. `Title` - just for description
+    1. `MoreFields` - additional fields to retrieve TODO:
+    1. `ContentTypeNames` - dropdown query, content-types; multi-select
+
+1. `UiPickerSourceQuery`
+    1. `Title` - just for description
+    1. `Query` - the query to use
+    1. GroupMore
+    1. `StreamName`
+    1. `Value` - the value field - may rename to `ValueField` TODO:
+    1. `Label` - the label field - may rename to `LabelField` TODO:
+    1. `MoreFields` - additional fields to retrieve
+    1. GroupAdvanced
+    1. `QueryParameters` - additional URL parameters, uses **FieldMask**
+    1. `CreateTypes` - the content-types to create if create is enabled, since the query could not guess this
+
+## Experimental @All - will be reconsidered
+
+1. `Information`
+1. `Tooltip`
+1. `HelpLink`
 
 
 ## Old Configurations before the Picker
@@ -81,7 +107,7 @@ This is documented so we don't forget any old features when testing.
         1. `DropdownValuesFormat` is a helper to choose if it's `key:value` or `value:key`
         1. `EnableTextEntry` Allow text entry
         1. `AllowMultiSelect` Allow multiple selection
-        1. `Separator` separation character if multiple selection
+        1. `Separator` separation character if multiple selection - default is `,`
     1. Formulas TODO:
     1. UI features such as `required` etc. TODO:
 1. String-Query
