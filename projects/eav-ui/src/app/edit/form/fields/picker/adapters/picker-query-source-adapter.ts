@@ -113,8 +113,8 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
     return this.queryFieldDataSource.data$;
   }
 
-  prefetch(contentType: string, missingData: string[]): void {
-    this.queryFieldDataSource.prefetch(contentType, missingData);
+  prefetch(parameters: string, missingData: string[]): void {
+    this.queryFieldDataSource.prefetch(parameters, missingData);
   }
 
   fetchItems(clearAvailableItemsAndOnlyUpdateCache: boolean): void {

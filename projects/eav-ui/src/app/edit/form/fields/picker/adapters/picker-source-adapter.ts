@@ -10,7 +10,7 @@ export interface PickerSourceAdapter {
   onAfterViewInit(): void;
   destroy(): void;
   getDataFromSource(): Observable<PickerItem[]>;
-  prefetch(contentType: string, missingData: string[]): void;
+  prefetch(parameters: string, missingData: string[]): void;
   deleteItem(props: DeleteEntityProps): void;
   editItem(editParams: { entityGuid: string, entityId: number }): void;
   fetchItems(clearAvailableItemsAndOnlyUpdateCache: boolean): void;

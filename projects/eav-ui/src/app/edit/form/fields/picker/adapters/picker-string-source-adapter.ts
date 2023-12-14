@@ -57,8 +57,8 @@ export class PickerStringSourceAdapter extends PickerSourceAdapterBase {
     return this.stringFieldDataSource.data$;
   }
 
-  prefetch(contentType: string, missingData: string[]): void {
-    this.stringFieldDataSource.prefetch(contentType, missingData);
+  prefetch(parameters: string, missingData: string[]): void {
+    this.stringFieldDataSource.prefetch(parameters, missingData);
   }
 
   fetchItems(): void {

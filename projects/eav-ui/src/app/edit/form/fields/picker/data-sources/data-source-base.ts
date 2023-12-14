@@ -6,8 +6,6 @@ export class DataSourceBase {
   protected getAll$ = new BehaviorSubject<boolean>(false);
   protected subscriptions = new Subscription();
 
-
-
   getAll(): void {
     this.getAll$.next(true);
   }

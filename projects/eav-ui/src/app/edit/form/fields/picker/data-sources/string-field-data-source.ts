@@ -4,11 +4,6 @@ import { DataSourceBase } from './data-source-base';
 
 
 export class StringFieldDataSource extends DataSourceBase {
-  // public data$: Observable<WIPDataSourceItem[]>;
-  // private getAll$ = new BehaviorSubject<boolean>(false);
-  // private subscriptions = new Subscription();
-
-
   constructor(
     private settings$: BehaviorSubject<FieldSettings>,
   ) {
@@ -24,10 +19,6 @@ export class StringFieldDataSource extends DataSourceBase {
   destroy(): void {
     this.subscriptions.unsubscribe();
   }
-
-  // getAll(): void {
-  //   this.getAll$.next(true);
-  // }
 
   prefetch(contentType?: string, entityGuids?: string[]): void {
     // we have data already so there isn't anything to be prefetched

@@ -32,7 +32,7 @@ export abstract class PickerSourceAdapterBase implements PickerSourceAdapter {
 
   getDataFromSource(): Observable<PickerItem[]> { return null; }
 
-  abstract prefetch(contentType: string, missingData: string[]): void;
+  abstract prefetch(contentTypeOrParameters: string, missingData: string[]): void;
 
   abstract deleteItem(props: DeleteEntityProps): void;
 
