@@ -159,7 +159,7 @@
       "QueryNoItems": "Nijedna pronađena stavka",
       "QueryError": "Greška: Greška se dogodila za vrijeme izvršavanja upita. Pogledajte u konzolu za više podataka.",
       "QueryStreamNotFound": "Greška: Upit nije vratio tok podataka s nazivom",
-      "QueryNotDefined": "Greška u konfiguraciji. Upit nije definiran."
+      "QueryNotDefined": "Greška: nemoguće pokrenuti upit jer nije definiran"
     },
     "Hyperlink": {
       "Default": {
