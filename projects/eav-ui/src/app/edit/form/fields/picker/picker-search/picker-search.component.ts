@@ -211,10 +211,10 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   }
 
   getPlaceholder(availableEntities: PickerItem[], error: string): string {
-    if (availableEntities == null || availableEntities.length <= 1) {
+    if (availableEntities == null || availableEntities.length === 0) {
       return this.translate.instant('Fields.Entity.Loading');
     }
-    if (availableEntities.length > 1) {
+    if (availableEntities.length > 0) {
       return this.translate.instant('Fields.Entity.Search');
     }
     if (error) {

@@ -41,7 +41,7 @@
       (closed)="onClosed(vm.selectedItems, vm.selectedItem)" (opened)="onOpened()">
       <div *ngIf="!vm.isTreeDisplayMode">
         <mat-option *ngFor="let item of vm.filteredItems" [value]="item.Value" class="eav-picker-option"
-          [disabled]="vm.enableReselect ? false : isOptionDisabled(item.Value, vm.selectedItems)" [tippy]="item.Tooltip"
+          [disabled]="item._disableSelect ? true : vm.enableReselect ? false : isOptionDisabled(item.Value, vm.selectedItems)" [tippy]="item.Tooltip"
           tippyShowDelay="500" [tippyDisabled]="!item.Tooltip">
           <div class="eav-dropdown-option">
             <span>{{ item.Text ? item.Text : item.Value }}</span>

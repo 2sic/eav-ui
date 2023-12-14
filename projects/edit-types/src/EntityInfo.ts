@@ -13,6 +13,14 @@ export interface EntityForPicker {
    */
   _disableDelete?: boolean;
 
+  /**
+   * Prevent select of this item for whatever reason, v16
+   * It was originally added so "no query" message will be shown in the dropdown.
+   * This property does not come from the server, but must be added by code.
+   * That's why it has an underscore.
+   */
+  _disableSelect?: boolean;
+
   /** New in v15, sometimes included to indicate if it's from the current app */
   AppId?: number;
 

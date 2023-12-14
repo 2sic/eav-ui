@@ -156,9 +156,10 @@
       "Search": "Search"
     },
     "EntityQuery": {
-      "QueryNoItems": "No items found",
-      "QueryError": "Error: An error occurred while executing the query. See the console for more information.",
-      "QueryStreamNotFound": "Error: The query did not return a stream named"
+      "QueryNoItems": "Nijedna pronađena stavka",
+      "QueryError": "Greška: Greška se dogodila za vrijeme izvršavanja upita. Pogledajte u konzolu za više podataka.",
+      "QueryStreamNotFound": "Greška: Upit nije vratio tok podataka s nazivom",
+      "QueryNotDefined": "Greška u konfiguraciji. Upit nije definiran."
     },
     "Hyperlink": {
       "Default": {

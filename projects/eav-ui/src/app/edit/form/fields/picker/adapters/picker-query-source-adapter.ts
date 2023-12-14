@@ -122,8 +122,14 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
 
     const settings = this.settings$.value;
     if (!settings.Query) {
-      alert(`No query defined for ${this.config.fieldName} - can't load entities`);
-      this.availableItems$.next([]);
+      const errorItem: PickerItem = {
+          Text: this.translate.instant('Fields.EntityQuery.QueryNotDefined'),
+          Value: null,
+          _disableSelect: true,
+          _disableDelete: true,
+          _disableEdit: true,
+        };
+      this.availableItems$.next([errorItem]);
       return;
     }
 
