@@ -5,7 +5,6 @@ import { DeleteEntityProps } from "../picker.models";
 export interface PickerSourceAdapter {
   availableItems$: BehaviorSubject<PickerItem[]>;
   parameters$: BehaviorSubject<string>;
-  contentType: string;
 
   init(): void;
   onAfterViewInit(): void;

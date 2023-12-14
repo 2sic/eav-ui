@@ -13,6 +13,7 @@ import { EntityCacheService } from "../../../../shared/store/ngrx-data";
 import { FieldConfigSet } from "../../../builder/fields-builder/field-config-set.model";
 
 export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterBase {
+  protected contentType: string;
   constructor(
     public settings$: BehaviorSubject<FieldSettings> = new BehaviorSubject(null),
     public entityCacheService: EntityCacheService,

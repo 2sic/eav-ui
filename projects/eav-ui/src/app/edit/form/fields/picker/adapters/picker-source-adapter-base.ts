@@ -14,7 +14,6 @@ import { PickerSourceAdapter } from './picker-source-adapter';
 export abstract class PickerSourceAdapterBase implements PickerSourceAdapter {
   public availableItems$ = new BehaviorSubject<PickerItem[]>(null);
   public parameters$ = new BehaviorSubject<string>('');
-  public contentType: string = null;
 
   protected subscriptions = new Subscription();
 
