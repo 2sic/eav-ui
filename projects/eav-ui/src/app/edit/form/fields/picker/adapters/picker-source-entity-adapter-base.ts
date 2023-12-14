@@ -3,7 +3,7 @@ import { EditForm } from "projects/eav-ui/src/app/shared/models/edit-form.model"
 import { DeleteEntityProps } from "../picker.models";
 import { PickerSourceAdapterBase } from "./picker-source-adapter-base";
 import { FieldMask } from "../../../../shared/helpers";
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject, distinctUntilChanged, map } from "rxjs";
 import { FormGroup, AbstractControl } from "@angular/forms";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
@@ -14,7 +14,9 @@ import { FieldConfigSet } from "../../../builder/fields-builder/field-config-set
 
 export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterBase {
   protected contentType: string;
+  protected contentTypeMask: FieldMask;
   constructor(
+    public disableAddNew$: BehaviorSubject<boolean> = new BehaviorSubject(true),
     public settings$: BehaviorSubject<FieldSettings> = new BehaviorSubject(null),
     public entityCacheService: EntityCacheService,
     public entityService: EntityService,
@@ -32,12 +34,39 @@ export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterB
     );
   }
 
-  init() { }
+  init() {
+    // Update/Build Content-Type Mask which is used for loading the data/new etc.
+    this.subscriptions.add(
+      this.settings$.pipe(
+        map(settings => settings.EntityType),
+        distinctUntilChanged(),
+      ).subscribe(entityType => {
+        this.contentTypeMask?.destroy();
+        this.contentTypeMask = new FieldMask(
+          entityType,
+          this.group.controls,
+          () => {
+            this.availableItems$.next(null);
+            this.updateAddNew();
+          },
+          null,
+          this.eavService.eavConfig,
+        );
+        this.availableItems$.next(null);
+        this.updateAddNew();
+      })
+    );
+  }
 
   destroy(): void {
     this.settings$.complete();
 
     super.destroy();
+  }
+
+  updateAddNew(): void {
+    const contentTypeName = this.contentTypeMask.resolve();
+    this.disableAddNew$.next(!contentTypeName);
   }
 
   // Note: 2dm 2023-01-24 added entityId as parameter #maybeRemoveGuidOnEditEntity

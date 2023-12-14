@@ -20,6 +20,7 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
 
   constructor(
     public error$: BehaviorSubject<string> = new BehaviorSubject(''),
+    public disableAddNew$: BehaviorSubject<boolean> = new BehaviorSubject(true),
 
     public fieldsSettingsService: FieldsSettingsService,
     public queryService: QueryService,
@@ -47,6 +48,7 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
     public deleteCallback: (props: DeleteEntityProps) => void,
   ) {
     super(
+      disableAddNew$,
       settings$,
       entityCacheService,
       entityService,

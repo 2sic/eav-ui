@@ -14,7 +14,6 @@ import { FieldDataSourceFactoryService } from "../factories/field-data-source-fa
 import { PickerSourceEntityAdapterBase } from "./picker-source-entity-adapter-base";
 
 export class PickerEntitySourceAdapter extends PickerSourceEntityAdapterBase {
-  private contentTypeMask: FieldMask;
   private entityFieldDataSource: EntityFieldDataSource;
 
   constructor(
@@ -37,6 +36,7 @@ export class PickerEntitySourceAdapter extends PickerSourceEntityAdapterBase {
     public deleteCallback: (props: DeleteEntityProps) => void,
   ) {
     super(
+      disableAddNew$,
       settings$,
       entityCacheService,
       entityService,
@@ -54,28 +54,6 @@ export class PickerEntitySourceAdapter extends PickerSourceEntityAdapterBase {
 
   init(): void {
     super.init();
-
-    // Update/Build Content-Type Mask which is used for loading the data/new etc.
-    this.subscriptions.add(
-      this.settings$.pipe(
-        map(settings => settings.EntityType),
-        distinctUntilChanged(),
-      ).subscribe(entityType => {
-        this.contentTypeMask?.destroy();
-        this.contentTypeMask = new FieldMask(
-          entityType,
-          this.group.controls,
-          () => {
-            this.availableItems$.next(null);
-            this.updateAddNew();
-          },
-          null,
-          this.eavService.eavConfig,
-        );
-        this.availableItems$.next(null);
-        this.updateAddNew();
-      })
-    );
 
     this.entityFieldDataSource = this.fieldDataSourceFactoryService.createEntityFieldDataSource();
 
@@ -102,11 +80,6 @@ export class PickerEntitySourceAdapter extends PickerSourceEntityAdapterBase {
     this.entityFieldDataSource.destroy();
 
     super.destroy();
-  }
-
-  updateAddNew(): void {
-    const contentTypeName = this.contentTypeMask.resolve();
-    this.disableAddNew$.next(!contentTypeName);
   }
 
   fetchItems(clearAvailableItemsAndOnlyUpdateCache: boolean): void {

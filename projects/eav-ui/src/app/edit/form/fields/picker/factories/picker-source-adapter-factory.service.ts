@@ -28,6 +28,7 @@ export class PickerSourceAdapterFactoryService {
 
   createPickerQuerySourceAdapter(
     error$: BehaviorSubject<string>,
+    disableAddNew$: BehaviorSubject<boolean>,
     fieldsSettingsService: FieldsSettingsService,
     isStringQuery: boolean,
     control: AbstractControl,
@@ -39,6 +40,7 @@ export class PickerSourceAdapterFactoryService {
   ): PickerQuerySourceAdapter {
     const pickerQuerySourceAdapter = new PickerQuerySourceAdapter(
       error$,
+      disableAddNew$,
       fieldsSettingsService,
       this.queryService,
       this.stringQueryCacheService,

@@ -77,6 +77,7 @@ export class StringDropdownQueryComponent extends EntityQueryComponent implement
 
     const source = this.sourceFactory.createPickerQuerySourceAdapter(
       state.error$,
+      state.disableAddNew$,
       this.fieldsSettingsService,
       this.isStringQuery,
 
