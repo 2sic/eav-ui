@@ -7,7 +7,6 @@ import { EntityListViewModel, ReorderIndexes } from './picker-list.models';
 import { FormGroup } from '@angular/forms';
 import { FieldConfigSet } from '../../../builder/fields-builder/field-config-set.model';
 import { PickerItem } from 'projects/edit-types';
-import { TranslateService } from '@ngx-translate/core';
 import { PickerData } from '../picker-data';
 
 @Component({
@@ -24,7 +23,6 @@ export class PickerListComponent implements OnInit {
 
   constructor(
     private fieldsSettingsService: FieldsSettingsService,
-    private translate: TranslateService,
   ) { }
 
   ngOnInit(): void {

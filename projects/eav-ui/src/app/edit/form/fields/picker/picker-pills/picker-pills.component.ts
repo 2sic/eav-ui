@@ -4,7 +4,6 @@ import { PickerPillsViewModel } from './picker-pills.models';
 import { EavService, FieldsSettingsService, EditRoutingService } from '../../../../shared/services';
 import { BaseFieldComponent } from '../../base/base-field.component';
 import { PickerItem } from 'projects/edit-types';
-import { TranslateService } from '@ngx-translate/core';
 import { PickerData } from '../picker-data';
 
 @Component({
@@ -21,7 +20,6 @@ export class PickerPillsComponent extends BaseFieldComponent<string | string[]> 
     eavService: EavService,
     fieldsSettingsService: FieldsSettingsService,
     private editRoutingService: EditRoutingService,
-    private translate: TranslateService,
   ) {
     super(eavService, fieldsSettingsService);
   }
@@ -52,7 +50,7 @@ export class PickerPillsComponent extends BaseFieldComponent<string | string[]> 
           label,
           placeholder,
           required,
-          selectedItems: selectedItems?.slice(0, 9) || [],
+          selectedItems: selectedItems?.slice(0, 5) || [],
           itemsNumber: selectedItems?.length || 0,
           isOpen,
           enableTextEntry: settings.EnableTextEntry,
