@@ -3,7 +3,7 @@ import { BehaviorSubject, Observable, combineLatest, distinctUntilChanged, filte
 import { EntityService } from "../../../../shared/services";
 import { EntityCacheService } from "../../../../shared/store/ngrx-data";
 import { GeneralHelpers } from "../../../../shared/helpers";
-import { DataSourceBase, trigger } from './data-source-base';
+import { DataSourceBase } from './data-source-base';
 
 export class EntityFieldDataSource extends DataSourceBase {
   private contentTypeName$ = new BehaviorSubject<string>('');
