@@ -90,7 +90,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "eav-ui:build"
+            "buildTarget": "eav-ui:build"
           }
         },
         "test": {
