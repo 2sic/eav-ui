@@ -8,17 +8,16 @@ import { GeneralHelpers } from "../../../../shared/helpers";
 import { DataSourceBase } from './data-source-base';
 
 export class QueryFieldDataSource extends DataSourceBase {
-  // public data$: Observable<WIPDataSourceItem[]>;
-  // private getAll$ = new BehaviorSubject<boolean>(false);
-  // private subscriptions = new Subscription();
   public error$ = new BehaviorSubject('');
 
   private includeGuid$ = new BehaviorSubject<boolean>(true);
   private params$ = new BehaviorSubject<string>('');
   private entityGuids$ = new BehaviorSubject<string[]>(null);
-  private prefetch$ = new BehaviorSubject<boolean>(false);
+  private prefetchOrAdd$ = new BehaviorSubject<boolean>(false);
   private loading$ = new BehaviorSubject<boolean>(false);
   private trigger$ = new BehaviorSubject<boolean[]>([false, false]);
+  private queryEntities$ = new BehaviorSubject<PickerItem[]>([]);
+  private stringQueryEntities$ = new BehaviorSubject<QueryEntity[]>([]);
 
   constructor(
     private queryService: QueryService,
@@ -40,7 +39,7 @@ export class QueryFieldDataSource extends DataSourceBase {
           startWith(false),
           // tap(value => console.log('SDV query getAll$', value))
         ),
-        this.prefetch$.pipe(
+        this.prefetchOrAdd$.pipe(
           // distinctUntilChanged(),
           filter(prefetch => !!prefetch), // trigger only on truthy values
           startWith(false),
@@ -54,14 +53,22 @@ export class QueryFieldDataSource extends DataSourceBase {
 
     this.data$ = combineLatest([
       this.trigger$.pipe(
-        // distinctUntilChanged(GeneralHelpers.arraysEqual), // only if we don't want to trigger on every getAll
+        distinctUntilChanged(GeneralHelpers.arraysEqual), // only if we don't want to trigger on every getAll
         // tap(() => console.log('SDV query trigger$'))
       ),
-      this.entityCacheService.getEntities$().pipe(
+      // this.entityCacheService.getEntities$().pipe(
+      //   distinctUntilChanged(GeneralHelpers.arraysEqual),
+      //   // tap(() => console.log('SDV query entityCache$'))
+      // ),
+      this.queryEntities$.pipe(
         distinctUntilChanged(GeneralHelpers.arraysEqual),
         // tap(() => console.log('SDV query entityCache$'))
       ),
-      this.stringQueryCacheService.getEntities$(this.entityGuid, this.fieldName).pipe(
+      // this.stringQueryCacheService.getEntities$(this.entityGuid, this.fieldName).pipe(
+      //   distinctUntilChanged(GeneralHelpers.arraysEqual),
+      //   // tap(() => console.log('SDV query stringQueryCache$'))
+      // ),
+      this.stringQueryEntities$.pipe(
         distinctUntilChanged(GeneralHelpers.arraysEqual),
         // tap(() => console.log('SDV query stringQueryCache$'))
       ),
@@ -87,19 +94,17 @@ export class QueryFieldDataSource extends DataSourceBase {
     this.entityGuids$.complete();
     this.getAll$.complete();
     this.loading$.complete();
+    this.queryEntities$.complete();
+    this.stringQueryEntities$.complete();
 
     this.subscriptions.unsubscribe();
   }
 
-  prefetch(contentType?: string, entityGuids?: string[]): void {
+  prefetchOrAdd(contentType?: string, entityGuids?: string[]): void {
     this.params(contentType);
     this.entityGuids(entityGuids);
-    this.prefetch$.next(true);
+    this.prefetchOrAdd$.next(true);
   }
-
-  // getAll(): void {
-  //   this.getAll$.next(true);
-  // }
 
   includeGuid(includeGuid: boolean): void {
     this.includeGuid$.next(includeGuid);
@@ -134,15 +139,17 @@ export class QueryFieldDataSource extends DataSourceBase {
         if (!this.isStringQuery) {
           const entities = this.setDisableEdit(items);
           this.entityCacheService.loadEntities(entities);
+          this.queryEntities$.next(entities);
         } else {
           // If the data belongs to another app, mark it as not editable
           const entities = this.setDisableEdit(data[streamName]);
           this.stringQueryCacheService.loadEntities(this.entityGuid, this.fieldName, entities);
+          this.stringQueryEntities$.next(entities);
         }
         this.loading$.next(false);
         this.trigger$.next([false, false]);
         this.getAll$.next(false);
-        this.prefetch$.next(false);
+        this.prefetchOrAdd$.next(false);
       },
       error: (error) => {
         console.error(error);
@@ -150,7 +157,7 @@ export class QueryFieldDataSource extends DataSourceBase {
         this.loading$.next(false);
         this.trigger$.next([false, false]);
         this.getAll$.next(false);
-        this.prefetch$.next(false);
+        this.prefetchOrAdd$.next(false);
       }
     }));
   }

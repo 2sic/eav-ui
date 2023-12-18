@@ -1,67 +1,54 @@
 import { PickerItem } from "projects/edit-types";
-import { BehaviorSubject, Observable, Subscription, combineLatest, distinctUntilChanged, filter, map, startWith, tap } from "rxjs";
+import { BehaviorSubject, Observable, combineLatest, distinctUntilChanged, filter, map, mergeMap, shareReplay, startWith } from "rxjs";
 import { EntityService } from "../../../../shared/services";
 import { EntityCacheService } from "../../../../shared/store/ngrx-data";
 import { GeneralHelpers } from "../../../../shared/helpers";
-import { DataSourceBase } from './data-source-base';
+import { DataSourceBase, trigger } from './data-source-base';
 
 export class EntityFieldDataSource extends DataSourceBase {
-  // public data$: Observable<WIPDataSourceItem[]>;
-  // private getAll$ = new BehaviorSubject<boolean>(false);
-  // private subscriptions = new Subscription();
-
   private contentTypeName$ = new BehaviorSubject<string>('');
-  private entityGuids$ = new BehaviorSubject<string[]>(null);
-  private prefetch$ = new BehaviorSubject<boolean>(false);
+  private entityGuids$ = new BehaviorSubject<string[]>([]);
   private loading$ = new BehaviorSubject<boolean>(false);
-  private trigger$ = new BehaviorSubject<boolean[]>([false, false]);
+
+  private all$ = new Observable<PickerItem[]>();
+  private overrides$ = new Observable<PickerItem[]>();
 
   constructor(
     private entityService: EntityService,
     private entityCacheService: EntityCacheService,
   ) {
     super();
-    this.subscriptions.add(
-      combineLatest([
-        this.getAll$.pipe(
-          // distinctUntilChanged(),
-          filter(getAll => !!getAll), // trigger only on truthy values
-          startWith(false),
-          // tap(value => console.log('SDV entity getAll$', value))
-        ),
-        this.prefetch$.pipe(
-          // distinctUntilChanged(),
-          filter(prefetch => !!prefetch), // trigger only on truthy values
-          startWith(false),
-          // tap(value => console.log('SDV entity prefetch$', value))
-        ),
-      ]).pipe(
-        // tap(([getAll, prefetch]) => console.log('SDV entity trigger', getAll, prefetch)),
-        map(([getAll, prefetch]) => [getAll, prefetch])
-      ).subscribe(this.trigger$)
+    this.all$ = this.getAll$.pipe(
+      distinctUntilChanged(),
+      filter(getAll => !!getAll),
+      // @SDV check if this is the right operator
+      mergeMap(() => this.entityService.getAvailableEntities(this.contentTypeName$.value, [])),
+      startWith([] as PickerItem[]),
+      shareReplay(1),
     );
 
+    this.overrides$ = this.entityGuids$.pipe(
+      distinctUntilChanged(GeneralHelpers.arraysEqual),
+      filter(entityGuids => entityGuids?.length > 0),
+      mergeMap(entityGuids => this.entityService.getAvailableEntities(this.contentTypeName$.value, entityGuids)),
+      startWith([] as PickerItem[]),
+      shareReplay(1),
+    );
 
     this.data$ = combineLatest([
-      this.trigger$.pipe(
-        // distinctUntilChanged(GeneralHelpers.arraysEqual), // only if we don't want to trigger on every getAll
-        // tap((value) => console.log('SDV entity trigger$', value))
-      ),
-      this.entityCacheService.getEntities$().pipe(
-        distinctUntilChanged(GeneralHelpers.arraysEqual),
-        // tap(() => console.log('SDV entity getEntity$'))
-      ),
-    ])
-      .pipe(map(([trigger, entities]) => {
-        const data = entities;
-        if (trigger[0] && this.loading$.value === false) {
-          this.fetchData(this.contentTypeName$.value, []);
-        } else if (trigger[1] && this.loading$.value === false) {
-          this.fetchData(this.contentTypeName$.value, this.entityGuids$.value);
-        }
+      this.all$,
+      this.overrides$,
+      // this.entityCacheService.getEntities$(),
+    ]).pipe(
+      map(([all, overrides/*, cache*/]) => {
+        // create dictionary of all and overrides
+        // const data = [...all, ...overrides/*, ...cache*/];// filter this list to have only unique items
+        // const data = [...all, ...overrides].filter((item, index, self) => self.findIndex(i => i.Value === item.Value) === index);
+        const data = [...new Map([...all, ...overrides].map(item => [item.Value, item])).values()]; // this one will always take overrides item over all item
         return data;
-      })//, distinctUntilChanged(GeneralHelpers.arraysEqual)
-      );
+      }),
+      shareReplay(1),
+    );
   }
 
   destroy(): void {
@@ -73,15 +60,10 @@ export class EntityFieldDataSource extends DataSourceBase {
     this.subscriptions.unsubscribe();
   }
 
-  prefetch(contentType?: string, entityGuids?: string[]): void {
+  prefetchOrAdd(contentType?: string, entityGuids?: string[]): void {
     this.contentType(contentType);
     this.entityGuids(entityGuids);
-    this.prefetch$.next(true);
   }
-
-  // getAll(): void {
-  //   this.getAll$.next(true);
-  // }
 
   contentType(contentTypeName: string): void {
     this.contentTypeName$.next(contentTypeName);
@@ -89,19 +71,5 @@ export class EntityFieldDataSource extends DataSourceBase {
 
   entityGuids(entityGuids: string[]): void {
     this.entityGuids$.next(entityGuids);
-  }
-
-  // @2SDV TODO: Talk with @2DM about this, more data is needed, send settings.moreFields as parameter so objects with more parameters will be returned
-  // 2dm 2023-01-22 #maybeSupportIncludeParentApps
-  // const includeParentApps = this.settings$.value?.IncludeParentApps == true;
-  private fetchData(contentTypeName: string, entitiesFilter: string[]): void {
-    this.loading$.next(true);
-    this.subscriptions.add(this.entityService.getAvailableEntities(contentTypeName, entitiesFilter/*, includeParentApps */).subscribe(items => {
-      this.entityCacheService.loadEntities(items);
-      this.loading$.next(false);
-      this.trigger$.next([false, false]);
-      this.prefetch$.next(false);
-      this.getAll$.next(false);
-    }));
   }
 }

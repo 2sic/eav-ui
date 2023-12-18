@@ -113,8 +113,9 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
     return this.queryFieldDataSource.data$;
   }
 
-  prefetch(parameters: string, missingData: string[]): void {
-    this.queryFieldDataSource.prefetch(parameters, missingData);
+  prefetchOrAdd(missingData: string[], parameters?: string): void {
+    const params = parameters ?? this.contentType;
+    this.queryFieldDataSource.prefetchOrAdd(params, missingData);
   }
 
   fetchItems(clearAvailableItemsAndOnlyUpdateCache: boolean): void {
@@ -125,12 +126,12 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
     const settings = this.settings$.value;
     if (!settings.Query) {
       const errorItem: PickerItem = {
-          Text: this.translate.instant('Fields.EntityQuery.QueryNotDefined'),
-          Value: null,
-          _disableSelect: true,
-          _disableDelete: true,
-          _disableEdit: true,
-        };
+        Text: this.translate.instant('Fields.EntityQuery.QueryNotDefined'),
+        Value: null,
+        _disableSelect: true,
+        _disableDelete: true,
+        _disableEdit: true,
+      };
       this.availableItems$.next([errorItem]);
       return;
     }

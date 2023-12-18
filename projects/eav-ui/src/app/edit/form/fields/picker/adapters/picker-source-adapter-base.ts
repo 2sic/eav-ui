@@ -3,17 +3,10 @@ import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { DeleteEntityProps } from '../picker.models';
 import { PickerSourceAdapter } from './picker-source-adapter';
 
-// TODO: @SDV
-// DONE - rename to PickerSourceAdapterBase 
-// - should become abstract
-// DONE - extract entity commands into a PickerSourceEntityAdapterBase 
-// - should also be abstract
-// DONE - make sure the EntityContentBlocks uses the EntitySourceAdapter
-// DONE - string-source should inherit from this, but Entity/Query should inherit from PickerSourceEntityAdapterBase
-// - move property `pickerDataSource` to be `dataSource` - make it private or public and NOT on the base class - and strictly typed
 export abstract class PickerSourceAdapterBase implements PickerSourceAdapter {
   public availableItems$ = new BehaviorSubject<PickerItem[]>(null);
   public parameters$ = new BehaviorSubject<string>('');
+  public editEntityGuid$ = new BehaviorSubject<string>(null);
 
   protected subscriptions = new Subscription();
 
@@ -27,12 +20,14 @@ export abstract class PickerSourceAdapterBase implements PickerSourceAdapter {
 
   destroy() {
     this.availableItems$.complete();
+    this.parameters$.complete();
+    this.editEntityGuid$.complete();
     this.subscriptions.unsubscribe();
   }
 
   getDataFromSource(): Observable<PickerItem[]> { return null; }
 
-  abstract prefetch(contentTypeOrParameters: string, missingData: string[]): void;
+  abstract prefetchOrAdd(missingData: string[]): void;
 
   abstract deleteItem(props: DeleteEntityProps): void;
 

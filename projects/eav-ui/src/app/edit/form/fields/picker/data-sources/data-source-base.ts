@@ -9,5 +9,9 @@ export class DataSourceBase {
   getAll(): void {
     this.getAll$.next(true);
   }
+}
 
+export interface trigger {
+  getAll: boolean;
+  prefetchOrAdd: boolean;
 }

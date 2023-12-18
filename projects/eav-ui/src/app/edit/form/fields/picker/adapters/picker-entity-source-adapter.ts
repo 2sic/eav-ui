@@ -71,8 +71,9 @@ export class PickerEntitySourceAdapter extends PickerSourceEntityAdapterBase {
     return this.entityFieldDataSource.data$;
   }
 
-  prefetch(contentType: string, missingData: string[]): void {
-    this.entityFieldDataSource.prefetch(contentType, missingData);
+  prefetchOrAdd(missingData: string[], contentType?: string): void {
+    const contentTypeName = contentType ?? this.contentType;
+    this.entityFieldDataSource.prefetchOrAdd(contentTypeName, missingData);
   }
 
   destroy(): void {
@@ -96,7 +97,7 @@ export class PickerEntitySourceAdapter extends PickerSourceEntityAdapterBase {
         this.config.fieldName,
         (this.control.value as string[]).filter(guid => !!guid),
       )
-      : null;
+      : [];
     this.entityFieldDataSource.entityGuids(entitiesFilter);
 
     this.entityFieldDataSource.getAll();

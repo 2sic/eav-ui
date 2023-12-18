@@ -75,14 +75,18 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
       this.editRoutingService.childFormResult(this.config.index, this.config.entityGuid).subscribe(result => {
         // @2SDV TODO check why this triggers twice
         const newItemGuid = Object.keys(result)[0];
-        if (!this.pickerData.state.createValueArray().includes(newItemGuid))
+        if (!this.pickerData.state.createValueArray().includes(newItemGuid)) {
           this.pickerData.state.addSelected(newItemGuid);
+          this.pickerData.source.prefetchOrAdd([newItemGuid], null);
+        }
       })
     );
     // this is used when new entity is created/changed in child form it automatically fetched again
     this.subscription.add(
       this.editRoutingService.childFormClosed().subscribe(() => {
-        this.pickerData.source.fetchItems(false);
+        if (this.pickerData.source.editEntityGuid$.value)
+          this.pickerData.source.prefetchOrAdd([this.pickerData.source.editEntityGuid$.value], null);
+        // this.pickerData.source.fetchItems(false);
       })
     );
   }

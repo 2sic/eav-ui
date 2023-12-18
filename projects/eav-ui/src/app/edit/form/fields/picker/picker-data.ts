@@ -19,7 +19,7 @@ export class PickerData {
     ]).pipe(
       map(([selectedItems, data, parameters]) =>
         this.createUIModel(selectedItems, data, parameters,
-          (parameters, missingData) => source.prefetch(parameters, missingData),
+          (missingData, parameters) => source.prefetchOrAdd(missingData, parameters),
           this.translate)
       ),
       distinctUntilChanged(GeneralHelpers.arraysEqual),
@@ -33,7 +33,7 @@ export class PickerData {
     selectedItems: PickerItem[],
     data: PickerItem[],
     parameters: string,
-    prefetch: (parameters: string, missingData: string[]) => void,
+    prefetch: (missingData: string[], parameters: string) => void,
     translate: TranslateService,
   ): PickerItem[] {
     let missingData: string[] = [];
@@ -66,7 +66,7 @@ export class PickerData {
     });
 
     if (missingData.length > 0) {
-      prefetch(parameters, missingData);
+      prefetch(missingData, parameters);
     }
 
     return selectedEntities;

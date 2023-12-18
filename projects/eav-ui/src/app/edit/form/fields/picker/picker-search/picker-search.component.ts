@@ -146,7 +146,6 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     super.ngOnDestroy();
   }
 
-  // TODO: @SDV - Simplify this
   displayFn(value: string | string[] | PickerItem): string {
     let returnValue = '';
     if (value != null || value != undefined) {

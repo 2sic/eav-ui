@@ -1,5 +1,5 @@
 import { DropdownOption, PickerItem, FieldSettings } from "projects/edit-types";
-import { BehaviorSubject, Observable, Subscription, combineLatest, distinctUntilChanged, map } from "rxjs";
+import { BehaviorSubject, combineLatest, distinctUntilChanged, map } from "rxjs";
 import { DataSourceBase } from './data-source-base';
 
 
@@ -20,7 +20,7 @@ export class StringFieldDataSource extends DataSourceBase {
     this.subscriptions.unsubscribe();
   }
 
-  prefetch(contentType?: string, entityGuids?: string[]): void {
+  prefetchOrAdd(contentType?: string, entityGuids?: string[]): void {
     // we have data already so there isn't anything to be prefetched
   }
 

@@ -13,8 +13,8 @@ import { EntityCacheService } from "../../../../shared/store/ngrx-data";
 import { FieldConfigSet } from "../../../builder/fields-builder/field-config-set.model";
 
 export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterBase {
-  protected contentType: string;
   protected contentTypeMask: FieldMask;
+  protected contentType: string;
   constructor(
     public disableAddNew$: BehaviorSubject<boolean> = new BehaviorSubject(true),
     public settings$: BehaviorSubject<FieldSettings> = new BehaviorSubject(null),
@@ -74,6 +74,8 @@ export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterB
   // should always be available.
   // Must test all use cases and then probably simplify again.
   editItem(editParams: { entityGuid: string, entityId: number }): void {
+    if(editParams)
+      this.editEntityGuid$.next(editParams.entityGuid);
     let form: EditForm;
     if (editParams?.entityGuid == null) {
       const contentTypeName = this.contentType;
