@@ -102,63 +102,75 @@ export class QueryFieldDataSource extends DataSourceBase {
   }
 
   transformData(data: QueryStreams): PickerItem[] { 
-    // if (!data) {
-    //   this.error$.next(this.translate.instant('Fields.EntityQuery.QueryError'));
-    //   return [];
-    // }
-    // if (!data[this.streamName]) {
-    //   this.error$.next(this.translate.instant('Fields.EntityQuery.QueryStreamNotFound') + ' ' + this.streamName);
-    //   return [];
-    // }
+    if (!data) {
+      const errorItem: PickerItem = {
+        Text: this.translate.instant('Fields.EntityQuery.QueryError'),
+        Value: null,
+        _disableSelect: true,
+        _disableDelete: true,
+        _disableEdit: true,
+      };
+      return [errorItem];
+    }
+    if (!data[this.streamName]) {
+      const errorItem: PickerItem = {
+        Text: this.translate.instant('Fields.EntityQuery.QueryStreamNotFound') + ' ' + this.streamName,
+        Value: null,
+        _disableSelect: true,
+        _disableDelete: true,
+        _disableEdit: true,
+      };
+      return [errorItem];
+    }
     const items: PickerItem[] = data[this.streamName].map(entity => {
       return this.isStringQuery ? this.stringQueryEntityMapping(entity) : this.queryEntityMapping(entity)
     });
     return this.setDisableEdit(items);
   }
 
-  fetchData(includeGuid: boolean, params: string, entitiesFilter: string[]): void {
-    const settings = this.settings$.value;
-    const streamName = settings.StreamName;
-    const queryUrl = settings.Query.includes('/') ? settings.Query : `${settings.Query}/${streamName}`;
-    this.loading$.next(true);
-    this.subscriptions.add(this.queryService.getAvailableEntities(queryUrl, includeGuid, params, entitiesFilter).subscribe({
-      next: (data) => {
-        if (!data) {
-          this.error$.next(this.translate.instant('Fields.EntityQuery.QueryError'));
-          return;
-        }
-        if (!data[streamName]) {
-          this.error$.next(this.translate.instant('Fields.EntityQuery.QueryStreamNotFound') + ' ' + streamName);
-          return;
-        }
-        const items: PickerItem[] = data[streamName].map(entity => {
-          return this.isStringQuery ? this.stringQueryEntityMapping(entity) : this.queryEntityMapping(entity)
-        });
-        if (!this.isStringQuery) {
-          const entities = this.setDisableEdit(items);
-          this.entityCacheService.loadEntities(entities);
-          this.queryEntities$.next(entities);
-        } else {
-          // If the data belongs to another app, mark it as not editable
-          const entities = this.setDisableEdit(data[streamName]);
-          this.stringQueryCacheService.loadEntities(this.entityGuid, this.fieldName, entities);
-          this.stringQueryEntities$.next(entities);
-        }
-        this.loading$.next(false);
-        this.trigger$.next([false, false]);
-        this.getAll$.next(false);
-        this.prefetchOrAdd$.next(false);
-      },
-      error: (error) => {
-        console.error(error);
-        console.error(`${this.translate.instant('Fields.EntityQuery.QueryError')} - ${error.data}`);
-        this.loading$.next(false);
-        this.trigger$.next([false, false]);
-        this.getAll$.next(false);
-        this.prefetchOrAdd$.next(false);
-      }
-    }));
-  }
+  // fetchData(includeGuid: boolean, params: string, entitiesFilter: string[]): void {
+  //   const settings = this.settings$.value;
+  //   const streamName = settings.StreamName;
+  //   const queryUrl = settings.Query.includes('/') ? settings.Query : `${settings.Query}/${streamName}`;
+  //   this.loading$.next(true);
+  //   this.subscriptions.add(this.queryService.getAvailableEntities(queryUrl, includeGuid, params, entitiesFilter).subscribe({
+  //     next: (data) => {
+  //       if (!data) {
+  //         this.error$.next(this.translate.instant('Fields.EntityQuery.QueryError'));
+  //         return;
+  //       }
+  //       if (!data[streamName]) {
+  //         this.error$.next(this.translate.instant('Fields.EntityQuery.QueryStreamNotFound') + ' ' + streamName);
+  //         return;
+  //       }
+  //       const items: PickerItem[] = data[streamName].map(entity => {
+  //         return this.isStringQuery ? this.stringQueryEntityMapping(entity) : this.queryEntityMapping(entity)
+  //       });
+  //       if (!this.isStringQuery) {
+  //         const entities = this.setDisableEdit(items);
+  //         this.entityCacheService.loadEntities(entities);
+  //         this.queryEntities$.next(entities);
+  //       } else {
+  //         // If the data belongs to another app, mark it as not editable
+  //         const entities = this.setDisableEdit(data[streamName]);
+  //         this.stringQueryCacheService.loadEntities(this.entityGuid, this.fieldName, entities);
+  //         this.stringQueryEntities$.next(entities);
+  //       }
+  //       this.loading$.next(false);
+  //       this.trigger$.next([false, false]);
+  //       this.getAll$.next(false);
+  //       this.prefetchOrAdd$.next(false);
+  //     },
+  //     error: (error) => {
+  //       console.error(error);
+  //       console.error(`${this.translate.instant('Fields.EntityQuery.QueryError')} - ${error.data}`);
+  //       this.loading$.next(false);
+  //       this.trigger$.next([false, false]);
+  //       this.getAll$.next(false);
+  //       this.prefetchOrAdd$.next(false);
+  //     }
+  //   }));
+  // }
 
   private queryEntityMapping(entity: QueryEntity): PickerItem {
     const entityInfo: PickerItem = {

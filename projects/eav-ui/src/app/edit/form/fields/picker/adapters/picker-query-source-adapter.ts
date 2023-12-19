@@ -152,6 +152,15 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
     if (!clearAvailableItemsAndOnlyUpdateCache) {
       this.subscriptions.add(this.queryFieldDataSource.data$.subscribe((items) => {
         this.availableItems$.next(items);
+      }, (error) => { 
+        const errorItem: PickerItem = {
+          Text: this.translate.instant('Fields.EntityQuery.QueryError') + "-" + error.data,
+          Value: null,
+          _disableSelect: true,
+          _disableDelete: true,
+          _disableEdit: true,
+        };
+        this.availableItems$.next([errorItem]);
       }));
     }
   }
