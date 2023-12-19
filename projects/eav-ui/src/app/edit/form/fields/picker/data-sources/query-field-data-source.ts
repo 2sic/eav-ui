@@ -8,19 +8,16 @@ import { GeneralHelpers } from "../../../../shared/helpers";
 import { DataSourceBase } from './data-source-base';
 
 export class QueryFieldDataSource extends DataSourceBase {
-  public error$ = new BehaviorSubject('');
-
-  private includeGuid$ = new BehaviorSubject<boolean>(true);
   private params$ = new BehaviorSubject<string>('');
-  private entityGuids$ = new BehaviorSubject<string[]>(null);
-  private prefetchOrAdd$ = new BehaviorSubject<boolean>(false);
+  private entityGuids$ = new BehaviorSubject<string[]>([]);
+  private prefetchEntityGuids$ = new BehaviorSubject<string[]>([]);
   private loading$ = new BehaviorSubject<boolean>(false);
-  private trigger$ = new BehaviorSubject<boolean[]>([false, false]);
   private queryEntities$ = new BehaviorSubject<PickerItem[]>([]);
   private stringQueryEntities$ = new BehaviorSubject<QueryEntity[]>([]);
 
   private all$ = new Observable<PickerItem[]>();
   private overrides$ = new Observable<PickerItem[]>();
+  private prefetch$ = new Observable<PickerItem[]>();
 
   private streamName: string;
 
@@ -40,20 +37,62 @@ export class QueryFieldDataSource extends DataSourceBase {
     const settings = this.settings$.value;
     this.streamName = settings.StreamName;
     const queryUrl = settings.Query.includes('/') ? settings.Query : `${settings.Query}/${this.streamName}`;
-    this.all$ = this.getAll$.pipe(
-      distinctUntilChanged(),
-      filter(getAll => !!getAll),
-      // @SDV check if this is the right operator
-      mergeMap(() => this.queryService.getAvailableEntities(queryUrl, true, this.params$.value, [])),
+
+    const params$ = this.params$.pipe(distinctUntilChanged(), shareReplay(1));
+
+    this.all$ = combineLatest([
+      params$,
+      this.getAll$.pipe(distinctUntilChanged(), filter(getAll => !!getAll)),
+    ]).pipe(
+      mergeMap(([params, _]) => this.queryService.getAvailableEntities(queryUrl, true, params, [])),
       map(data => this.transformData(data)),
       startWith([] as PickerItem[]),
       shareReplay(1),
     );
 
-    this.overrides$ = this.entityGuids$.pipe(
-      distinctUntilChanged(GeneralHelpers.arraysEqual),
+    this.prefetch$ = this.prefetchEntityGuids$.pipe(
+      distinctUntilChanged(),
       filter(entityGuids => entityGuids?.length > 0),
-      mergeMap(entityGuids => this.queryService.getAvailableEntities(queryUrl, true, this.params$.value, entityGuids)),
+      mergeMap(entityGuids => {
+        if (this.isStringQuery) {
+          return this.stringQueryCacheService.getEntities$(this.entityGuid, this.fieldName);
+        } else {
+          return this.entityCacheService.getEntities$(entityGuids);
+        }
+      }),
+      map(entities => {
+        if (this.isStringQuery) {
+          return entities.map(entity => this.stringQueryEntityMapping(entity as QueryEntity)) as PickerItem[];
+        } else {
+          return entities as PickerItem[];
+        }
+      }),
+      startWith([] as PickerItem[]),
+      shareReplay(1),
+    );
+
+    let missingInPrefetch$ = combineLatest([
+      this.prefetch$,
+      this.prefetchEntityGuids$,
+    ]).pipe(
+      // return guids from prefetchEntityGuids that are not in prefetch
+      map(([prefetch, prefetchEntityGuids]) => prefetchEntityGuids.filter(guid => !prefetch.find(item => item.Value === guid))),
+    );
+
+    let combinedGuids$ = combineLatest([
+      missingInPrefetch$,
+      this.entityGuids$,
+    ]).pipe(
+      map(([missingInPrefetch, entityGuids]) => [...missingInPrefetch, ...entityGuids].filter(GeneralHelpers.distinct)),
+      filter(guids => guids?.length > 0),
+      distinctUntilChanged(GeneralHelpers.arraysEqual),
+    );
+
+    this.overrides$ = combineLatest([
+      params$,
+      combinedGuids$
+    ]).pipe(
+      mergeMap(([params, guids]) => this.queryService.getAvailableEntities(queryUrl, true, params, guids)),
       map(data => this.transformData(data)),
       startWith([] as PickerItem[]),
       shareReplay(1),
@@ -62,13 +101,11 @@ export class QueryFieldDataSource extends DataSourceBase {
     this.data$ = combineLatest([
       this.all$,
       this.overrides$,
-      // this.entityCacheService.getEntities$(),
+      this.prefetch$,
     ]).pipe(
-      map(([all, overrides/*, cache*/]) => {
-        // create dictionary of all and overrides
-        // const data = [...all, ...overrides/*, ...cache*/];// filter this list to have only unique items
-        // const data = [...all, ...overrides].filter((item, index, self) => self.findIndex(i => i.Value === item.Value) === index);
-        const data = [...new Map([...all, ...overrides].map(item => [item.Value, item])).values()]; // this one will always take overrides item over all item
+      map(([all, overrides, prefetch]) => {
+        // data always takes the last unique value in the array (should be most recent)
+        const data = [...new Map([...prefetch, ...all, ...overrides].map(item => [item.Value, item])).values()];
         return data;
       }),
       shareReplay(1),
@@ -76,7 +113,6 @@ export class QueryFieldDataSource extends DataSourceBase {
   }
 
   destroy(): void {
-    this.error$.complete();
     this.params$.complete();
     this.entityGuids$.complete();
     this.getAll$.complete();
@@ -87,10 +123,14 @@ export class QueryFieldDataSource extends DataSourceBase {
     this.subscriptions.unsubscribe();
   }
 
-  prefetchOrAdd(contentType?: string, entityGuids?: string[]): void {
+  add(contentType?: string, entityGuids?: string[]): void {
     this.params(contentType);
     this.entityGuids(entityGuids);
-    this.prefetchOrAdd$.next(true);
+  }
+
+  prefetch(contentType?: string, entityGuids?: string[]): void {
+    this.params(contentType);
+    this.prefetchEntityGuids(entityGuids);
   }
 
   params(params: string): void {
@@ -99,6 +139,11 @@ export class QueryFieldDataSource extends DataSourceBase {
 
   entityGuids(entityGuids: string[]): void {
     this.entityGuids$.next(entityGuids);
+  }
+
+  prefetchEntityGuids(entityGuids: string[]): void {
+    const guids = entityGuids.filter(GeneralHelpers.distinct);
+    this.prefetchEntityGuids$.next(guids);
   }
 
   transformData(data: QueryStreams): PickerItem[] { 
@@ -127,50 +172,6 @@ export class QueryFieldDataSource extends DataSourceBase {
     });
     return this.setDisableEdit(items);
   }
-
-  // fetchData(includeGuid: boolean, params: string, entitiesFilter: string[]): void {
-  //   const settings = this.settings$.value;
-  //   const streamName = settings.StreamName;
-  //   const queryUrl = settings.Query.includes('/') ? settings.Query : `${settings.Query}/${streamName}`;
-  //   this.loading$.next(true);
-  //   this.subscriptions.add(this.queryService.getAvailableEntities(queryUrl, includeGuid, params, entitiesFilter).subscribe({
-  //     next: (data) => {
-  //       if (!data) {
-  //         this.error$.next(this.translate.instant('Fields.EntityQuery.QueryError'));
-  //         return;
-  //       }
-  //       if (!data[streamName]) {
-  //         this.error$.next(this.translate.instant('Fields.EntityQuery.QueryStreamNotFound') + ' ' + streamName);
-  //         return;
-  //       }
-  //       const items: PickerItem[] = data[streamName].map(entity => {
-  //         return this.isStringQuery ? this.stringQueryEntityMapping(entity) : this.queryEntityMapping(entity)
-  //       });
-  //       if (!this.isStringQuery) {
-  //         const entities = this.setDisableEdit(items);
-  //         this.entityCacheService.loadEntities(entities);
-  //         this.queryEntities$.next(entities);
-  //       } else {
-  //         // If the data belongs to another app, mark it as not editable
-  //         const entities = this.setDisableEdit(data[streamName]);
-  //         this.stringQueryCacheService.loadEntities(this.entityGuid, this.fieldName, entities);
-  //         this.stringQueryEntities$.next(entities);
-  //       }
-  //       this.loading$.next(false);
-  //       this.trigger$.next([false, false]);
-  //       this.getAll$.next(false);
-  //       this.prefetchOrAdd$.next(false);
-  //     },
-  //     error: (error) => {
-  //       console.error(error);
-  //       console.error(`${this.translate.instant('Fields.EntityQuery.QueryError')} - ${error.data}`);
-  //       this.loading$.next(false);
-  //       this.trigger$.next([false, false]);
-  //       this.getAll$.next(false);
-  //       this.prefetchOrAdd$.next(false);
-  //     }
-  //   }));
-  // }
 
   private queryEntityMapping(entity: QueryEntity): PickerItem {
     const entityInfo: PickerItem = {

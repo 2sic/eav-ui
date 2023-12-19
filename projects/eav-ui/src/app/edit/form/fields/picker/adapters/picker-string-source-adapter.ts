@@ -57,9 +57,12 @@ export class PickerStringSourceAdapter extends PickerSourceAdapterBase {
     return this.stringFieldDataSource.data$;
   }
 
-  // TODO @SDV: Maybe just don't even call data source methods from here
-  prefetchOrAdd(missingData: string[], parameters?: string): void {
-    this.stringFieldDataSource.prefetchOrAdd(null, missingData);
+  setPrefetchData(missingData: string[]): void {
+    // should never be needed as we have synchronously all data in settings
+  }
+
+  setOverrideData(missingData: string[]): void {
+    // should never be needed as we can't add new data
   }
 
   fetchItems(): void {

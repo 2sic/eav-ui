@@ -77,7 +77,7 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
         const newItemGuid = Object.keys(result)[0];
         if (!this.pickerData.state.createValueArray().includes(newItemGuid)) {
           this.pickerData.state.addSelected(newItemGuid);
-          this.pickerData.source.prefetchOrAdd([newItemGuid], null);
+          this.pickerData.source.setOverrideData([newItemGuid]);
         }
       })
     );
@@ -85,8 +85,7 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
     this.subscription.add(
       this.editRoutingService.childFormClosed().subscribe(() => {
         if (this.pickerData.source.editEntityGuid$.value)
-          this.pickerData.source.prefetchOrAdd([this.pickerData.source.editEntityGuid$.value], null);
-        // this.pickerData.source.fetchItems(false);
+          this.pickerData.source.setOverrideData([this.pickerData.source.editEntityGuid$.value]);
       })
     );
   }

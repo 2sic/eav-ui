@@ -99,7 +99,7 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
   onAfterViewInit(): void {
     // super.onAfterViewInit();
     this.contentType = this.paramsMask.resolve();
-    this.parameters$.next(this.contentType);
+    this.queryFieldDataSource.params(this.contentType); 
   }
 
   destroy(): void {
@@ -113,9 +113,12 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
     return this.queryFieldDataSource.data$;
   }
 
-  prefetchOrAdd(missingData: string[], parameters?: string): void {
-    const params = parameters ?? this.contentType;
-    this.queryFieldDataSource.prefetchOrAdd(params, missingData);
+  setPrefetchData(missingData: string[]): void {
+    this.queryFieldDataSource.prefetchEntityGuids(missingData);
+  }
+
+  setOverrideData(missingData: string[]): void {
+    this.queryFieldDataSource.entityGuids(missingData);
   }
 
   fetchItems(clearAvailableItemsAndOnlyUpdateCache: boolean): void {
@@ -148,11 +151,10 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
     this.queryFieldDataSource.entityGuids(entitiesFilter);
 
     this.queryFieldDataSource.getAll();
-    this.queryFieldDataSource.error$.subscribe(this.error$);
     if (!clearAvailableItemsAndOnlyUpdateCache) {
       this.subscriptions.add(this.queryFieldDataSource.data$.subscribe((items) => {
         this.availableItems$.next(items);
-      }, (error) => { 
+      }, (error) => {
         const errorItem: PickerItem = {
           Text: this.translate.instant('Fields.EntityQuery.QueryError') + "-" + error.data,
           Value: null,

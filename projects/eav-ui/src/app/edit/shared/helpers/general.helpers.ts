@@ -100,4 +100,9 @@ export class GeneralHelpers {
       return JSON.parse(input);
     } catch { }
   }
+
+  /** used as .filter(distinct), filters array to only have distinct values */
+  static distinct<T>(value: T, index: number, array: T[]): boolean {
+    return array.indexOf(value) === index;
+  }
 }

@@ -1,4 +1,4 @@
-import { Observable, combineLatest, distinctUntilChanged, map, shareReplay, tap } from 'rxjs';
+import { Observable, combineLatest, distinctUntilChanged, map, shareReplay, take, tap } from 'rxjs';
 import { PickerSourceAdapter } from "./adapters/picker-source-adapter";
 import { PickerStateAdapter } from "./adapters/picker-state-adapter";
 import { PickerItem } from 'projects/edit-types';
@@ -12,18 +12,18 @@ export class PickerData {
     public source: PickerSourceAdapter,
     private translate: TranslateService,
   ) {
+    state.selectedItems$.pipe(take(1)).subscribe(items => {
+      source.setPrefetchData(items.map(item => item.Value));
+    });
+
     this.selectedItems$ = combineLatest([
       state.selectedItems$.pipe(distinctUntilChanged(GeneralHelpers.arraysEqual)),
       source.getDataFromSource().pipe(distinctUntilChanged(GeneralHelpers.arraysEqual)),
-      source.parameters$.pipe(distinctUntilChanged()),
     ]).pipe(
-      map(([selectedItems, data, parameters]) =>
-        this.createUIModel(selectedItems, data, parameters,
-          (missingData, parameters) => source.prefetchOrAdd(missingData, parameters),
-          this.translate)
+      map(([selectedItems, data]) =>
+        this.createUIModel(selectedItems, data, this.translate)
       ),
       distinctUntilChanged(GeneralHelpers.arraysEqual),
-      // tap((x) => console.log('SDV PICKER DATA', x)),
       // @SDV test this a bit further
       shareReplay(1),
     );
@@ -32,15 +32,11 @@ export class PickerData {
   private createUIModel(
     selectedItems: PickerItem[],
     data: PickerItem[],
-    parameters: string,
-    prefetch: (missingData: string[], parameters: string) => void,
     translate: TranslateService,
   ): PickerItem[] {
-    let missingData: string[] = [];
     const selectedEntities = selectedItems.map(item => {
       const entity = data.find(e => e.Value === item.Value);
       if (!entity) {
-        missingData.push(item.Value);
         return item;
       } else {
         const text = entity?.Text ?? translate.instant('Fields.Entity.EntityNotFound');
@@ -64,10 +60,6 @@ export class PickerData {
         return result;
       }
     });
-
-    if (missingData.length > 0) {
-      prefetch(missingData, parameters);
-    }
 
     return selectedEntities;
   }

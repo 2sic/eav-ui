@@ -5,7 +5,6 @@ import { PickerSourceAdapter } from './picker-source-adapter';
 
 export abstract class PickerSourceAdapterBase implements PickerSourceAdapter {
   public availableItems$ = new BehaviorSubject<PickerItem[]>(null);
-  public parameters$ = new BehaviorSubject<string>('');
   public editEntityGuid$ = new BehaviorSubject<string>(null);
 
   protected subscriptions = new Subscription();
@@ -20,14 +19,15 @@ export abstract class PickerSourceAdapterBase implements PickerSourceAdapter {
 
   destroy() {
     this.availableItems$.complete();
-    this.parameters$.complete();
     this.editEntityGuid$.complete();
     this.subscriptions.unsubscribe();
   }
 
   getDataFromSource(): Observable<PickerItem[]> { return null; }
 
-  abstract prefetchOrAdd(missingData: string[]): void;
+  abstract setPrefetchData(missingData: string[]): void;
+
+  abstract setOverrideData(missingData: string[]): void;
 
   abstract deleteItem(props: DeleteEntityProps): void;
 

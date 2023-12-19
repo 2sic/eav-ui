@@ -64,16 +64,19 @@ export class PickerEntitySourceAdapter extends PickerSourceEntityAdapterBase {
 
   onAfterViewInit(): void {
     this.contentType = this.contentTypeMask.resolve();
-    this.parameters$.next(this.contentType);
+    this.entityFieldDataSource.contentType(this.contentType);
   }
 
   getDataFromSource(): Observable<PickerItem[]> {
     return this.entityFieldDataSource.data$;
   }
 
-  prefetchOrAdd(missingData: string[], contentType?: string): void {
-    const contentTypeName = contentType ?? this.contentType;
-    this.entityFieldDataSource.prefetchOrAdd(contentTypeName, missingData);
+  setPrefetchData(missingData: string[]): void {
+    this.entityFieldDataSource.prefetchEntityGuids(missingData);
+  }
+
+  setOverrideData(missingData: string[]): void {
+    this.entityFieldDataSource.entityGuids(missingData);
   }
 
   destroy(): void {

@@ -20,10 +20,6 @@ export class StringFieldDataSource extends DataSourceBase {
     this.subscriptions.unsubscribe();
   }
 
-  prefetchOrAdd(contentType?: string, entityGuids?: string[]): void {
-    // we have data already so there isn't anything to be prefetched
-  }
-
   private stringEntityMapping(dropdownOption: DropdownOption): PickerItem {
     const entityInfo: PickerItem = {
       Value: dropdownOption.value as string,
