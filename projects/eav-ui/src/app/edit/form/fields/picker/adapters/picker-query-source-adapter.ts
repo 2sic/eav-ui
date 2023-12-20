@@ -2,7 +2,7 @@ import { FormGroup, AbstractControl } from "@angular/forms";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
 import { FieldSettings, PickerItem } from "projects/edit-types";
-import { BehaviorSubject, Observable, distinctUntilChanged, map } from "rxjs";
+import { BehaviorSubject, Observable, combineLatest, distinctUntilChanged, map } from "rxjs";
 import { EntityService, EavService, EditRoutingService, FieldsSettingsService, QueryService } from "../../../../shared/services";
 import { EntityCacheService, StringQueryCacheService } from "../../../../shared/store/ngrx-data";
 import { FieldConfigSet } from "../../../builder/fields-builder/field-config-set.model";
@@ -99,7 +99,7 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
   onAfterViewInit(): void {
     // super.onAfterViewInit();
     this.contentType = this.paramsMask.resolve();
-    this.queryFieldDataSource.params(this.contentType); 
+    this.queryFieldDataSource.params(this.contentType);
   }
 
   destroy(): void {
@@ -152,17 +152,31 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
 
     this.queryFieldDataSource.getAll();
     if (!clearAvailableItemsAndOnlyUpdateCache) {
-      this.subscriptions.add(this.queryFieldDataSource.data$.subscribe((items) => {
-        this.availableItems$.next(items);
-      }, (error) => {
-        const errorItem: PickerItem = {
-          Text: this.translate.instant('Fields.EntityQuery.QueryError') + "-" + error.data,
-          Value: null,
-          _disableSelect: true,
-          _disableDelete: true,
-          _disableEdit: true,
-        };
-        this.availableItems$.next([errorItem]);
+      this.subscriptions.add(combineLatest([
+        this.queryFieldDataSource.data$,
+        this.queryFieldDataSource.loading$,
+      ]).subscribe({
+        next: ([items, loading]) => {
+          if (loading) {
+            this.availableItems$.next([{
+              Text: this.translate.instant('Fields.Entity.Loading'),
+              Value: null,
+              _disableSelect: true,
+              _disableDelete: true,
+              _disableEdit: true,
+            }, ...items]);
+          } else {
+            this.availableItems$.next(items);
+          }
+        }, error: (error) => {
+          this.availableItems$.next([{
+            Text: this.translate.instant('Fields.EntityQuery.QueryError') + "-" + error.data,
+            Value: null,
+            _disableSelect: true,
+            _disableDelete: true,
+            _disableEdit: true,
+          }]);
+        }
       }));
     }
   }

@@ -2,13 +2,12 @@ import { FormGroup, AbstractControl } from "@angular/forms";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { TranslateService } from "@ngx-translate/core";
 import { FieldSettings, PickerItem } from "projects/edit-types";
-import { BehaviorSubject, Observable, distinctUntilChanged, map } from "rxjs";
+import { BehaviorSubject, Observable, combineLatest } from "rxjs";
 import { EntityService, EavService, EditRoutingService, FieldsSettingsService } from "../../../../shared/services";
 import { EntityCacheService } from "../../../../shared/store/ngrx-data";
 import { FieldConfigSet } from "../../../builder/fields-builder/field-config-set.model";
 import { DeleteEntityProps } from "../picker.models";
 import { filterGuids } from "../picker.helpers";
-import { FieldMask } from "../../../../shared/helpers";
 import { EntityFieldDataSource } from "../data-sources/entity-field-data-source";
 import { FieldDataSourceFactoryService } from "../factories/field-data-source-factory.service";
 import { PickerSourceEntityAdapterBase } from "./picker-source-entity-adapter-base";
@@ -105,8 +104,21 @@ export class PickerEntitySourceAdapter extends PickerSourceEntityAdapterBase {
 
     this.entityFieldDataSource.getAll();
     if (!clearAvailableItemsAndOnlyUpdateCache) {
-      this.subscriptions.add(this.entityFieldDataSource.data$.subscribe((items) => {
-        this.availableItems$.next(items);
+      this.subscriptions.add(combineLatest([
+        this.entityFieldDataSource.data$,
+        this.entityFieldDataSource.loading$,
+      ]).subscribe(([items, loading]) => {
+        if (loading) {
+          this.availableItems$.next([{
+            Text: this.translate.instant('Fields.Entity.Loading'),
+            Value: null,
+            _disableSelect: true,
+            _disableDelete: true,
+            _disableEdit: true,
+          }, ...items]);
+        } else {
+          this.availableItems$.next(items);
+        }
       }));
     }
   }

@@ -1,5 +1,5 @@
 import { DropdownOption, PickerItem, FieldSettings } from "projects/edit-types";
-import { BehaviorSubject, combineLatest, distinctUntilChanged, map } from "rxjs";
+import { BehaviorSubject, combineLatest, distinctUntilChanged, map, of } from "rxjs";
 import { DataSourceBase } from './data-source-base';
 
 
@@ -8,12 +8,13 @@ export class StringFieldDataSource extends DataSourceBase {
     private settings$: BehaviorSubject<FieldSettings>,
   ) {
     super();
-    // this isn't needed to be done like this but it's done like this to be consistent with the other data sources
+    this.loading$ = of(false);
+
     const preloaded = this.settings$.pipe(map(settings => settings._options.map(option => this.stringEntityMapping(option))), distinctUntilChanged());
     this.data$ = combineLatest([
       this.getAll$.pipe(distinctUntilChanged()),
       preloaded,
-    ]).pipe(map(([fullData, preloaded]) => fullData ? preloaded : preloaded)/*, distinctUntilChanged(GeneralHelpers.arraysEqual)*/);
+    ]).pipe(map(([_, preloaded]) => preloaded));
   }
 
   destroy(): void {
