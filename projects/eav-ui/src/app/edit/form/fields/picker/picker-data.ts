@@ -24,7 +24,6 @@ export class PickerData {
         this.createUIModel(selectedItems, data, this.translate)
       ),
       distinctUntilChanged(GeneralHelpers.arraysEqual),
-      // @SDV test this a bit further
       shareReplay(1),
     );
   }
@@ -39,28 +38,33 @@ export class PickerData {
       if (!entity) {
         return item;
       } else {
-        const text = entity?.Text ?? translate.instant('Fields.Entity.EntityNotFound');
-        const disableEdit = entity._disableEdit === true;
-        const disableDelete = entity._disableDelete === true;
-        const tooltip = entity._tooltip ?? `${text} (${entity.Value})`;
-        const information = entity._information ?? '';
-
-        const result: PickerItem = {
-          // if it's a free text value or not found, disable edit and delete
-          _disableEdit: disableEdit,
-          _disableDelete: disableDelete,
-          // either the real value or null if text-field or not found
-          Id: entity?.Id,
-          Text: text,
-          _tooltip: tooltip,
-          _information: information,
-          Value: entity.Value,
-        };
-
-        return result;
+        const text = entity.Text ?? translate.instant('Fields.Entity.EntityNotFound');
+        return this.createPickerItem(
+          entity.Id,
+          entity.Value,
+          text,
+          entity._tooltip ?? `${text} (${entity.Value})`,
+          entity._information ?? '',
+          entity._disableEdit === true,
+          entity._disableDelete === true,
+          false,
+        );
       }
     });
 
     return selectedEntities;
+  }
+
+  private createPickerItem(id: number, value: string, text: string, tooltip: string, information: string, disableEdit: boolean, disableDelete: boolean, disableSelect: boolean,): PickerItem { 
+    return {
+      Id: id,
+      Value: value,
+      Text: text,
+      _tooltip: tooltip,
+      _information: information,
+      _disableEdit: disableEdit,
+      _disableDelete: disableDelete,
+      _disableSelect: disableSelect,
+    } as PickerItem;
   }
 }
