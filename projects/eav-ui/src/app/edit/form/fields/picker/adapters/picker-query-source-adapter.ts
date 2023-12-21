@@ -79,6 +79,7 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
           () => { this.availableItems$.next(null); },
           null,
           this.eavService.eavConfig,
+          this.config,
         );
 
         this.availableItems$.next(null);

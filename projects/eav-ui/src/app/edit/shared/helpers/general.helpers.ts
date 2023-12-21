@@ -105,4 +105,9 @@ export class GeneralHelpers {
   static distinct<T>(value: T, index: number, array: T[]): boolean {
     return array.indexOf(value) === index;
   }
+
+  /** used for query parameters */
+  static lowercaseInsideSquareBrackets(value: string) {
+    return value.replace(/\[([^\]]+)\]/g, (match, group) => `[${group.toLowerCase()}]`);
+  }
 }

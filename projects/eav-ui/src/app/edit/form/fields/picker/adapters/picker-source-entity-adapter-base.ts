@@ -51,6 +51,7 @@ export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterB
           },
           null,
           this.eavService.eavConfig,
+          this.config,
         );
         this.availableItems$.next(null);
         this.updateAddNew();
