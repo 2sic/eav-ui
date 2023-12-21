@@ -26,8 +26,9 @@ export function equalizeSelectedItems(
 
 /** Convert string value in string array if a value is type string */
 export function convertValueToArray(value: string | string[], separator: string): string[] {
-  if (value == "")  return [""]; 
-  else if (!value)  return []; 
+  // this is for a usecase where the value is an empty string etc. label:value/value:label selection in string dropdown field configuration
+  if (value == "") return [""];
+  else if (!value) return []; 
 
   if (Array.isArray(value)) { return value; }
 
