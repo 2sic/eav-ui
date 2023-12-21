@@ -1,11 +1,12 @@
-import { PickerItem } from '../../../../../../../edit-types';
+import { DropdownOption, PickerItem } from '../../../../../../../edit-types';
 import { guidRegex } from '../../../../shared/constants/guid.constants';
 
 export function equalizeSelectedItems(
   fieldValue: string | string[],
   separator: string,
+  Options: DropdownOption[] // Options are used only for legacy usecase's where the value is an empty string
 ): PickerItem[] {
-  const currentValueAsArray = typeof fieldValue === 'string' ? convertValueToArray(fieldValue, separator) : fieldValue;
+  const currentValueAsArray = typeof fieldValue === 'string' ? convertValueToArray(fieldValue, separator, Options) : fieldValue;
 
   const selectedEntities = currentValueAsArray.map(value => {
     const result: PickerItem = {
@@ -25,9 +26,10 @@ export function equalizeSelectedItems(
 }
 
 /** Convert string value in string array if a value is type string */
-export function convertValueToArray(value: string | string[], separator: string): string[] {
+export function convertValueToArray(value: string | string[], separator: string, Options?: DropdownOption[]): string[] {
   // this is for a usecase where the value is an empty string etc. label:value/value:label selection in string dropdown field configuration
-  if (value == "") return [""];
+  if (value == "" && Options?.some(o => o.value == "")) return [""];
+  if (value == "") return [];
   else if (!value) return []; 
 
   if (Array.isArray(value)) { return value; }

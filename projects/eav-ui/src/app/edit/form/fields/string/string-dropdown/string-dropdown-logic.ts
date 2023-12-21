@@ -11,7 +11,7 @@ export class StringDropdownLogic extends FieldLogicBase {
     const fixedSettings: FieldSettings = { ...settings };
     fixedSettings.EnableTextEntry ??= false;
     fixedSettings.DropdownValues ??= '';
-    fixedSettings.DropdownValuesFormat ??= '';
+    fixedSettings.DropdownValuesFormat ??= '';// maybe we should change this to 'value-label' in the future
     fixedSettings._options = calculateDropdownOptions(value, this.type, fixedSettings.DropdownValuesFormat, fixedSettings.DropdownValues);
     fixedSettings.EntityType ??= '';
     fixedSettings.AllowMultiValue ??= false;

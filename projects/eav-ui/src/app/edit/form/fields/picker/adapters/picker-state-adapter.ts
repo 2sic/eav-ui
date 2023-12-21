@@ -43,12 +43,13 @@ export class PickerStateAdapter {
       this.settings$.pipe(
         map(settings => ({
           Separator: settings.Separator,
+          Options: settings._options,
         })),
         distinctUntilChanged(GeneralHelpers.objectsEqual),
       ),
     ]).pipe(
       map(([value, settings]) =>
-        equalizeSelectedItems(value, settings.Separator)
+        equalizeSelectedItems(value, settings.Separator, settings.Options)
       ),
     );
     this.allowMultiValue$ = this.settings$.pipe(map(settings => settings.AllowMultiValue), distinctUntilChanged());
