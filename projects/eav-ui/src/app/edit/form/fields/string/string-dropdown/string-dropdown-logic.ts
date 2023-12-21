@@ -18,7 +18,7 @@ export class StringDropdownLogic extends FieldLogicBase {
     fixedSettings.EnableEdit ??= false;
     fixedSettings.EnableCreate ??= false;
     fixedSettings.EnableAddExisting ??= true;
-    fixedSettings.EnableRemove ??= true;
+    fixedSettings.EnableRemove ??= fixedSettings.AllowMultiValue; //if multi-value is allowed, then we can remove, if not we can't
     fixedSettings.EnableDelete ??= false;
     return fixedSettings;
   }
