@@ -33,5 +33,5 @@ export abstract class PickerSourceAdapterBase implements PickerSourceAdapter {
 
   abstract editItem(editParams: { entityGuid: string, entityId: number }): void;
 
-  abstract fetchItems(clearAvailableItemsAndOnlyUpdateCache: boolean): void;
+  abstract fetchItems(): void;
 }

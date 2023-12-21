@@ -15,6 +15,7 @@ import { FieldConfigSet } from "../../../builder/fields-builder/field-config-set
 export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterBase {
   protected contentTypeMask: FieldMask;
   protected contentType: string;
+  protected deletedItemGuids$ = new BehaviorSubject<string[]>([]);
   constructor(
     public disableAddNew$: BehaviorSubject<boolean> = new BehaviorSubject(true),
     public settings$: BehaviorSubject<FieldSettings> = new BehaviorSubject(null),
@@ -65,6 +66,10 @@ export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterB
     super.destroy();
   }
 
+  onAfterViewInit(): void {
+    this.contentType = this.contentTypeMask.resolve();
+  }
+
   updateAddNew(): void {
     const contentTypeName = this.contentTypeMask.resolve();
     this.disableAddNew$.next(!contentTypeName);
@@ -75,7 +80,7 @@ export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterB
   // should always be available.
   // Must test all use cases and then probably simplify again.
   editItem(editParams: { entityGuid: string, entityId: number }): void {
-    if(editParams)
+    if (editParams)
       this.editEntityGuid$.next(editParams.entityGuid);
     let form: EditForm;
     if (editParams?.entityGuid == null) {
@@ -85,7 +90,7 @@ export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterB
         items: [{ ContentTypeName: contentTypeName, Prefill: prefill }],
       };
     } else {
-      const entity = this.entityCacheService.getEntity(editParams.entityGuid);
+      const entity = this.availableItems$.value.find(item => item.Value === editParams.entityGuid);
       if (entity != null) {
         form = {
           items: [{ EntityId: entity.Id }],
@@ -100,7 +105,7 @@ export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterB
   }
 
   deleteItem(props: DeleteEntityProps): void {
-    const entity = this.entityCacheService.getEntity(props.entityGuid);
+    const entity = this.availableItems$.value.find(item => item.Value === props.entityGuid);
     const id = entity.Id;
     const title = entity.Text;
     const contentType = this.contentType;
@@ -114,8 +119,8 @@ export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterB
     this.entityService.delete(contentType, id, false, parentId, parentField).subscribe({
       next: () => {
         this.snackBar.open(this.translate.instant('Message.Deleted'), null, { duration: 2000 });
-        this.deleteCallback(props);
-        this.fetchItems(true);
+        this.deleteCallback(props); // removes value from selected values
+        this.deletedItemGuids$.next([...this.deletedItemGuids$.value, props.entityGuid]);
       },
       error: (error1: HttpErrorResponse) => {
         this.snackBar.dismiss();
@@ -124,8 +129,8 @@ export abstract class PickerSourceEntityAdapterBase extends PickerSourceAdapterB
         this.entityService.delete(contentType, id, true, parentId, parentField).subscribe({
           next: () => {
             this.snackBar.open(this.translate.instant('Message.Deleted'), null, { duration: 2000 });
-            this.deleteCallback(props);
-            this.fetchItems(true);
+            this.deleteCallback(props); // removes value from selected values
+            this.deletedItemGuids$.next([...this.deletedItemGuids$.value, props.entityGuid]);
           },
           error: (error2: HttpErrorResponse) => {
             this.snackBar.open(this.translate.instant('Message.DeleteError'), null, { duration: 2000 });

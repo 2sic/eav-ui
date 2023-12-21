@@ -7,7 +7,6 @@ import { EntityService, EavService, EditRoutingService, FieldsSettingsService, Q
 import { EntityCacheService, StringQueryCacheService } from "../../../../shared/store/ngrx-data";
 import { FieldConfigSet } from "../../../builder/fields-builder/field-config-set.model";
 import { DeleteEntityProps } from "../picker.models";
-import { filterGuids } from "../picker.helpers";
 import { FieldMask } from "../../../../shared/helpers/field-mask.helper";
 import { GeneralHelpers } from "../../../../shared/helpers";
 import { FieldDataSourceFactoryService } from "../factories/field-data-source-factory.service";
@@ -95,12 +94,40 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
     );
 
     this.flushAvailableEntities();
+
+    this.subscriptions.add(combineLatest([
+      this.queryFieldDataSource.data$,
+      this.queryFieldDataSource.loading$,
+      this.deletedItemGuids$,
+    ]).subscribe({
+      next: ([data, loading, deleted]) => {
+        const items = data.filter(item => !deleted.some(guid => guid === item.Value));
+        if (loading) {
+          this.availableItems$.next([{
+            Text: this.translate.instant('Fields.Entity.Loading'),
+            Value: null,
+            _disableSelect: true,
+            _disableDelete: true,
+            _disableEdit: true,
+          }, ...items]);
+        } else {
+          this.availableItems$.next(items);
+        }
+      }, error: (error) => {
+        this.availableItems$.next([{
+          Text: this.translate.instant('Fields.EntityQuery.QueryError') + "-" + error.data,
+          Value: null,
+          _disableSelect: true,
+          _disableDelete: true,
+          _disableEdit: true,
+        }]);
+      }
+    }));
   }
 
   onAfterViewInit(): void {
-    // super.onAfterViewInit();
-    this.contentType = this.paramsMask.resolve();
-    this.queryFieldDataSource.params(this.contentType);
+    super.onAfterViewInit();
+    this.queryFieldDataSource.params(this.paramsMask.resolve());
   }
 
   destroy(): void {
@@ -122,11 +149,7 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
     this.queryFieldDataSource.entityGuids(missingData);
   }
 
-  fetchItems(clearAvailableItemsAndOnlyUpdateCache: boolean): void {
-    if (clearAvailableItemsAndOnlyUpdateCache) {
-      this.availableItems$.next(null);
-    }
-
+  fetchItems(): void {
     const settings = this.settings$.value;
     if (!settings.Query) {
       const errorItem: PickerItem = {
@@ -140,46 +163,7 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
       return;
     }
 
-    const params = this.paramsMask.resolve();
-    const entitiesFilter: string[] = clearAvailableItemsAndOnlyUpdateCache && !this.isStringQuery
-      ? filterGuids(
-        this.fieldsSettingsService.getContentTypeSettings()._itemTitle,
-        this.config.fieldName,
-        (this.control.value as string[]).filter(guid => !!guid),
-      )
-      : [];
-    this.queryFieldDataSource.params(params);
-    this.queryFieldDataSource.entityGuids(entitiesFilter);
-
     this.queryFieldDataSource.getAll();
-    if (!clearAvailableItemsAndOnlyUpdateCache) {
-      this.subscriptions.add(combineLatest([
-        this.queryFieldDataSource.data$,
-        this.queryFieldDataSource.loading$,
-      ]).subscribe({
-        next: ([items, loading]) => {
-          if (loading) {
-            this.availableItems$.next([{
-              Text: this.translate.instant('Fields.Entity.Loading'),
-              Value: null,
-              _disableSelect: true,
-              _disableDelete: true,
-              _disableEdit: true,
-            }, ...items]);
-          } else {
-            this.availableItems$.next(items);
-          }
-        }, error: (error) => {
-          this.availableItems$.next([{
-            Text: this.translate.instant('Fields.EntityQuery.QueryError') + "-" + error.data,
-            Value: null,
-            _disableSelect: true,
-            _disableDelete: true,
-            _disableEdit: true,
-          }]);
-        }
-      }));
-    }
   }
 
   flushAvailableEntities(): void {

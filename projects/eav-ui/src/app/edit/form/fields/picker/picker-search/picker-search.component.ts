@@ -176,7 +176,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   }
 
   fetchEntities(): void {
-    this.pickerData.source.fetchItems(false);
+    this.pickerData.source.fetchItems();
   }
 
   filterSelectionList(): void {

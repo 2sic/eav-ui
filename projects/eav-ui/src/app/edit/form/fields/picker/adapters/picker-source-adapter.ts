@@ -14,5 +14,5 @@ export interface PickerSourceAdapter {
   setOverrideData(missingData: string[]): void;
   deleteItem(props: DeleteEntityProps): void;
   editItem(editParams: { entityGuid: string, entityId: number }): void;
-  fetchItems(clearAvailableItemsAndOnlyUpdateCache: boolean): void;
+  fetchItems(): void;
 }
