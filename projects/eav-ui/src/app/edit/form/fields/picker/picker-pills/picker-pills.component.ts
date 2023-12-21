@@ -50,7 +50,7 @@ export class PickerPillsComponent extends BaseFieldComponent<string | string[]> 
           label,
           placeholder,
           required,
-          selectedItems: selectedItems?.slice(0, 5) || [],
+          selectedItems: selectedItems?.slice(0, 3) || [],
           itemsNumber: selectedItems?.length || 0,
           isOpen,
           enableTextEntry: settings.EnableTextEntry,
