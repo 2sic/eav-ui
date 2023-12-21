@@ -127,7 +127,7 @@ export class FieldsSettingsService implements OnDestroy {
           mergeRaw.InputType = attribute.InputType;
           mergeRaw.VisibleDisabled = this.itemFieldVisibility.isVisibleDisabled(attribute.Name);
           const settingsInitial = FieldsSettingsHelpers.setDefaultFieldSettings(mergeRaw);
-          consoleLogAngular('merged', JSON.parse(JSON.stringify(settingsInitial)));
+          // consoleLogAngular('merged', JSON.parse(JSON.stringify(settingsInitial)));
           const logic = FieldLogicManager.singleton().get(attribute.InputType);
           const constantFieldParts: ConstantFieldParts = {
             logic,
