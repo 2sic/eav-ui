@@ -44,7 +44,7 @@ export class EntityFieldDataSource extends DataSourceBase {
     let combinedGuids$ = combineLatest([missingInPrefetch$, this.entityGuids$]).pipe(
       map(([missingInPrefetch, entityGuids]) => [...missingInPrefetch, ...entityGuids].filter(GeneralHelpers.distinct)),
       filter(guids => guids?.length > 0),
-      distinctUntilChanged(GeneralHelpers.arraysEqual),
+      // distinctUntilChanged(GeneralHelpers.arraysEqual),
     );
 
     const overrides$ = combineLatest([typeName$, combinedGuids$]).pipe(
