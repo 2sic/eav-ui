@@ -27,7 +27,6 @@ export class PickerListComponent implements OnInit {
 
   ngOnInit(): void {
     const state = this.pickerData.state;
-    const source = this.pickerData.source;
 
     const label$ = state.label$;
     const required$ = state.required$;

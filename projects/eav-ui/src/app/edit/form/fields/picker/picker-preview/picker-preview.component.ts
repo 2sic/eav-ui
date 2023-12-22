@@ -31,8 +31,8 @@ export class PickerPreviewComponent extends BaseSubsinkComponent implements OnIn
 
   ngOnInit(): void {
     const state = this.pickerData.state;
+    const selectedItems$ = this.pickerData.selectedItems$;
     const freeTextMode$ = state.freeTextMode$;
-    const selectedItems$ = state.selectedItems$;
     const controlStatus$ = state.controlStatus$;
     const disableAddNew$ = state.disableAddNew$;
 
