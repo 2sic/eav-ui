@@ -91,10 +91,6 @@ export class PickerStateAdapter {
         break;
     }
 
-    // TODO: @SDV workaround for duplicate values, will need fixing to work with enableReselect
-    if (valueArray.length == 2 && valueArray[0] == valueArray[1]) {
-      valueArray = valueArray.splice(1, 1);
-    }
     const newValue = this.createNewValue(valueArray);
     GeneralHelpers.patchControlValue(this.control, newValue);
 
