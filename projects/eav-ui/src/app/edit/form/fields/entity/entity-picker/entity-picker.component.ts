@@ -10,6 +10,8 @@ import { DeleteEntityProps } from '../../picker/picker.models';
 import { EntityPickerLogic } from './entity-picker-logic';
 import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
 import { PickerData } from '../../picker/picker-data';
+import { PickerQuerySourceAdapter } from '../../picker/adapters/picker-query-source-adapter';
+import { PickerEntitySourceAdapter } from '../../picker/adapters/picker-entity-source-adapter';
 
 @Component({
   selector: InputTypeConstants.WIPEntityPicker,
@@ -57,6 +59,8 @@ export class EntityPickerComponent extends PickerComponent implements OnInit, On
   }
 
   private createPickerAdapters(): void {
+    let source: PickerQuerySourceAdapter | PickerEntitySourceAdapter;
+
     const state = this.stateFactory.createPickerEntityStateAdapter(
       this.control,
       this.config,
@@ -69,18 +73,35 @@ export class EntityPickerComponent extends PickerComponent implements OnInit, On
       () => this.focusOnSearchComponent,
     );
 
-    const source = this.sourceFactory.createPickerEntitySourceAdapter(
-      state.disableAddNew$,
-      this.fieldsSettingsService,
+    if (this.settings$.value.DataSourceType === 'UiPickerSourceEntity') {
+      source = this.sourceFactory.createPickerEntitySourceAdapter(
+        state.disableAddNew$,
+        this.fieldsSettingsService,
 
-      state.control,
-      this.config,
-      state.settings$,
-      this.editRoutingService,
-      this.group,
-      // (clearAvailableItemsAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableItemsAndOnlyUpdateCache),
-      (props: DeleteEntityProps) => state.doAfterDelete(props)
-    );
+        state.control,
+        this.config,
+        state.settings$,
+        this.editRoutingService,
+        this.group,
+        // (clearAvailableItemsAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableItemsAndOnlyUpdateCache),
+        (props: DeleteEntityProps) => state.doAfterDelete(props)
+      );
+    }else if (this.settings$.value.DataSourceType === 'UiPickerSourceQuery') {
+      source = this.sourceFactory.createPickerQuerySourceAdapter(
+        state.error$,
+        state.disableAddNew$,
+        this.fieldsSettingsService,
+        false,
+
+        state.control,
+        this.config,
+        state.settings$,
+        this.editRoutingService,
+        this.group,
+        // (clearAvailableItemsAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableItemsAndOnlyUpdateCache),
+        (props: DeleteEntityProps) => state.doAfterDelete(props)
+      );
+    }
 
     state.init();
     source.init();

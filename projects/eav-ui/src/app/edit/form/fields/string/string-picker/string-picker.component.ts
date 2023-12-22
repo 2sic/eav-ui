@@ -94,7 +94,7 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
         state.error$,
         state.disableAddNew$,
         this.fieldsSettingsService,
-        this.isStringQuery,
+        true,
 
         state.control,
         this.config,

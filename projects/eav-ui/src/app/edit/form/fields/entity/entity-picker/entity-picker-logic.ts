@@ -7,84 +7,69 @@ export class EntityPickerLogic extends FieldLogicBase {
   name = InputTypeConstants.WIPEntityPicker;
 
   update(settings: FieldSettings, value: string[], tools: FieldLogicTools): FieldSettings {
-    const fixedSettings: FieldSettings = { ...settings };
+    const fs: FieldSettings = { ...settings };
 
     /** Entity Default logic */
-    fixedSettings.EntityType ??= '';
-    fixedSettings.AllowMultiValue ??= false;
-    fixedSettings.EnableEdit ??= true;
-    fixedSettings.EnableCreate ??= true;
-    fixedSettings.EnableAddExisting ??= true;
-    fixedSettings.EnableRemove ??= true;
-    fixedSettings.EnableDelete ??= false;
+    fs.EntityType ??= '';
+    fs.AllowMultiValue ??= false;
+    fs.EnableEdit ??= true;
+    fs.EnableCreate ??= true;
+    fs.EnableAddExisting ??= true;
+    fs.EnableRemove ??= true;
+    fs.EnableDelete ??= false;
     // 2dm 2023-01-22 #maybeSupportIncludeParentApps
     // fixedSettings.IncludeParentApps ??= false;
 
-    fixedSettings.Information ??= '';
-    fixedSettings.Tooltip ??= '';
-    fixedSettings.MoreFields ??= '';
-    fixedSettings.Label ??= '';
+    fs.Information ??= '';
+    fs.Tooltip ??= '';
+    fs.MoreFields ??= '';
+    fs.Label ??= '';
 
     if (tools.eavConfig.overrideEditRestrictions && tools.debug) {
       // tslint:disable-next-line: max-line-length
       console.log('SystemAdmin + Debug: Overriding edit restrictions for field \'' + settings.Name + '\' (EntityType: \'' + settings.EntityType + '\').');
-      fixedSettings.EnableEdit = true;
-      fixedSettings.EnableCreate = true;
-      fixedSettings.EnableAddExisting = true;
-      fixedSettings.EnableRemove = true;
-      fixedSettings.EnableDelete = true;
+      fs.EnableEdit = true;
+      fs.EnableCreate = true;
+      fs.EnableAddExisting = true;
+      fs.EnableRemove = true;
+      fs.EnableDelete = true;
     }
 
-    // const dataSources = tools.contentTypeItemService.getContentTypeItems(fixedSettings.DataSources);
-    // console.log('SDV dataSources', dataSources);
+    const dataSources = tools.contentTypeItemService.getContentTypeItems(fs.DataSources);
+    const dsAttributes = dataSources[0]?.Attributes;
 
-    // if (dataSources.length > 0) {
-    //   dataSources.forEach((dataSource) => { 
-    //     // TODO: @SDV - Add all this datasource types into enum
-    //     if (dataSource.Type.Name === 'UiPickerSourceQuery') {
-    //       const attributes = dataSource.Attributes;
-          
-    //       const uiPickerSourceQuery = {
-    //         Title: attributes['Title'].Values[0].Value,
-    //         Query: attributes['Query'].Values[0].Value,
-    //         QueryParameters: attributes['QueryParameters'].Values[0].Value,
-    //         StreamName: attributes['StreamName'].Values[0].Value,
-    //         Value: attributes['Value'].Values[0].Value,
-    //         Label: attributes['Label'].Values[0].Value,
-    //         CreateTypes: attributes['CreateTypes'].Values[0].Value,
-    //         MoreFields: attributes['MoreFields'].Values[0].Value,
-    //       }
-    //       fixedSettings.UiPickerSourceQuery = uiPickerSourceQuery;
-    //     } else if (dataSource.Type.Name === 'UiPickerSourceEntity') {
+    console.log('SDV StringPickerLogic dataSources', dataSources);
 
-    //     } else if (dataSource.Type.Name === 'UiPickerSourceCustomList') {
+    /** Query datasource */
+    if (dataSources[0].Type.Name === 'UiPickerSourceQuery') {
+      fs.DataSourceType = 'UiPickerSourceQuery';
 
-    //     } else if (dataSource.Type.Name === 'UiPickerModeTree') {
+      fs.Query = dsAttributes['Query'].Values[0].Value ?? '';
+      fs.StreamName = dsAttributes['StreamName'].Values[0].Value ?? 'Default';
+      fs.UrlParameters = dsAttributes['QueryParameters'].Values[0].Value ?? '';
 
-    //     }
-    //   });
-    // }
+      fs.Value = dsAttributes['Value'].Values[0].Value ?? '';
+      fs.Label = dsAttributes['Label'].Values[0].Value ?? '';
+      fs.EntityType = dsAttributes['CreateTypes'].Values[0].Value ?? '';
+    }
 
-    /** Entity Query logic */
-    fixedSettings.Query ??= '';
-    fixedSettings.StreamName ||= 'Default';
-    fixedSettings.UrlParameters ??= '';
+    /** Entity datasource */
+    if (dataSources[0].Type.Name === 'UiPickerSourceEntity') {
+      fs.DataSourceType = 'UiPickerSourceEntity';
 
-    fixedSettings.Information ??= '';
-    fixedSettings.Tooltip ??= '';
-    fixedSettings.MoreFields ??= '';
-    fixedSettings.Label ??= '';
+      fs.EntityType = dsAttributes['ContentTypeNames'].Values[0].Value ?? '';
+    }
 
     /** WIP functionalities */
     // If AllowMultiValue is false then EnableReselect must be false
-    fixedSettings.AllowMultiValue ? fixedSettings.EnableReselect ??= false : fixedSettings.EnableReselect = false;
+    fs.AllowMultiValue ? fs.EnableReselect ??= false : fs.EnableReselect = false;
     // If AllowMultiValue is false then AllowMultiMin and AllowMultiMax must be 0 so we don't trigger the validation
-    if (fixedSettings.AllowMultiValue) {
-      fixedSettings.AllowMultiMin ??= 0;
-      fixedSettings.AllowMultiMax ??= 0;
+    if (fs.AllowMultiValue) {
+      fs.AllowMultiMin ??= 0;
+      fs.AllowMultiMax ??= 0;
     } else {
-      fixedSettings.AllowMultiMin = 0;
-      fixedSettings.AllowMultiMax = 0;
+      fs.AllowMultiMin = 0;
+      fs.AllowMultiMax = 0;
     }
 
     // fixedSettings.PickerDisplayMode ??= 'list';
@@ -110,7 +95,7 @@ export class EntityPickerLogic extends FieldLogicBase {
     //   fixedSettings.PickerTreeConfiguration = pickerTreeConfiguration;
     // }
 
-    return fixedSettings;
+    return fs;
   }
 }
 
