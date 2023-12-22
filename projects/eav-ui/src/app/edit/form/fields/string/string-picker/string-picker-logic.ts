@@ -59,6 +59,13 @@ export class StringPickerLogic extends FieldLogicBase {
       fs.Label = dsAttributes['Label'].Values[0].Value ?? '';
       fs.EntityType = dsAttributes['CreateTypes'].Values[0].Value ?? '';
     }
+
+    /** Entity datasource */
+    if (dataSources[0].Type.Name === 'UiPickerSourceEntity') {
+      fs.DataSourceType = 'UiPickerSourceEntity';
+
+      fs.EntityType = dsAttributes['ContentTypeNames'].Values[0].Value ?? '';
+    }
     
     /** WIP functionalities */
     // If AllowMultiValue is false then EnableReselect must be false

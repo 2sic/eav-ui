@@ -12,6 +12,7 @@ import { PickerStateAdapterFactoryService } from '../../picker/factories/picker-
 import { StringPickerLogic } from './string-picker-logic';
 import { PickerStringSourceAdapter } from '../../picker/adapters/picker-string-source-adapter';
 import { PickerQuerySourceAdapter } from '../../picker/adapters/picker-query-source-adapter';
+import { PickerEntitySourceAdapter } from '../../picker/adapters/picker-entity-source-adapter';
 
 @Component({
   selector: InputTypeConstants.WIPStringPicker,
@@ -61,7 +62,7 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
   }
 
   private createPickerAdapters(): void {
-    let source: PickerStringSourceAdapter | PickerQuerySourceAdapter;
+    let source: PickerStringSourceAdapter | PickerQuerySourceAdapter | PickerEntitySourceAdapter;
 
     const state = this.stateFactory.createPickerStringStateAdapter(
       this.control,
@@ -94,6 +95,19 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
         state.disableAddNew$,
         this.fieldsSettingsService,
         this.isStringQuery,
+
+        state.control,
+        this.config,
+        state.settings$,
+        this.editRoutingService,
+        this.group,
+        // (clearAvailableItemsAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableItemsAndOnlyUpdateCache),
+        (props: DeleteEntityProps) => state.doAfterDelete(props)
+      );
+    } else if (this.settings$.value.DataSourceType === 'UiPickerSourceEntity') { 
+      source = this.sourceFactory.createPickerEntitySourceAdapter(
+        state.disableAddNew$,
+        this.fieldsSettingsService,
 
         state.control,
         this.config,
