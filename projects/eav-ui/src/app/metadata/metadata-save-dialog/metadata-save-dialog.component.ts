@@ -1,5 +1,5 @@
 import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable, startWith } from 'rxjs';
@@ -17,7 +17,7 @@ import { MetadataSaveDialogViewModel, MetadataSaveFormValues } from './metadata-
 export class MetadataSaveDialogComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
-  form: FormGroup;
+  form: UntypedFormGroup;
   dropdownInsertValue = dropdownInsertValue;
   viewModel$: Observable<MetadataSaveDialogViewModel>;
   guidedContentType = true;
@@ -72,9 +72,9 @@ export class MetadataSaveDialogComponent implements OnInit, OnDestroy {
   }
 
   private buildForm(): void {
-    this.form = new FormGroup({});
-    this.form.addControl('contentType', new FormControl(null, [Validators.required]));
-    this.form.addControl('scope', new FormControl(eavConstants.scopes.default.value));
+    this.form = new UntypedFormGroup({});
+    this.form.addControl('contentType', new UntypedFormControl(null, [Validators.required]));
+    this.form.addControl('scope', new UntypedFormControl(eavConstants.scopes.default.value));
 
     this.form.controls.scope.valueChanges.pipe(
       startWith(this.form.controls.scope.value),

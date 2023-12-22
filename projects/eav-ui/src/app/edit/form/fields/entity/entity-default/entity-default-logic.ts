@@ -18,14 +18,21 @@ export class EntityDefaultLogic extends FieldLogicBase {
     // 2dm 2023-01-22 #maybeSupportIncludeParentApps
     // fixedSettings.IncludeParentApps ??= false;
 
+    fixedSettings.Information ??= '';
+    fixedSettings.Tooltip ??= '';
+    fixedSettings.MoreFields ??= '';
+    fixedSettings.Label ??= '';
+
     if (tools.eavConfig.overrideEditRestrictions && tools.debug) {
-      console.log("SystemAdmin + Debug: Overriding edit restrictions for field '" + settings.Name + "' (EntityType: '" + settings.EntityType + "').");
+      // tslint:disable-next-line: max-line-length
+      console.log('SystemAdmin + Debug: Overriding edit restrictions for field \'' + settings.Name + '\' (EntityType: \'' + settings.EntityType + '\').');
       fixedSettings.EnableEdit = true;
       fixedSettings.EnableCreate = true;
       fixedSettings.EnableAddExisting = true;
       fixedSettings.EnableRemove = true;
       fixedSettings.EnableDelete = true;
     }
+
     return fixedSettings;
   }
 }

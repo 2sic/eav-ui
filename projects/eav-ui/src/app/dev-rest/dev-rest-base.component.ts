@@ -1,4 +1,4 @@
-import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
+import { Context as DnnContext } from '@2sic.com/sxc-angular';
 import { Component, OnDestroy } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -36,7 +36,7 @@ export class DevRestBase<ViewModelType> extends BaseSubsinkComponent implements 
     /** Context for this dialog. Used for appId, zoneId, tabId, etc. */
     private context: Context,
     private dialogRef: MatDialogRef<any>,
-    /** dnn-sxc-angular context. Used to resolve urls */
+    /** sxc-angular context. Used to resolve urls */
     private dnnContext: DnnContext,
     protected router: Router,
     protected route: ActivatedRoute,

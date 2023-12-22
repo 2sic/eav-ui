@@ -1,41 +1,48 @@
 <div class="actions-component">
-  <div class="like-button highlight" matRipple *ngIf="!contentType.EditInfo.ReadOnly || contentType.Properties"
-    tippy="Description and more" (click)="createOrEditMetadata()">
+  <div class="eav-grid-action-button highlight" matRipple
+    *ngIf="!contentType.EditInfo.DisableEdit || contentType.Properties" tippy="Description and more"
+    (click)="createOrEditMetadata()">
     <mat-icon>edit</mat-icon>
   </div>
-  <div class="like-button disabled" *ngIf="contentType.EditInfo.ReadOnly && !contentType.Properties">
+  <div class="eav-grid-action-button disabled" *ngIf="contentType.EditInfo.DisableEdit && !contentType.Properties">
     <mat-icon>edit</mat-icon>
   </div>
 
-  <div class="like-button highlight" matRipple *ngIf="!contentType.EditInfo.ReadOnly" tippy="Metadata"
+  <div class="eav-grid-action-button highlight" matRipple *ngIf="!contentType.EditInfo.DisableMetadata" tippy="Metadata"
     (click)="openMetadata()">
     <mat-icon [matBadge]="contentType.Metadata.length" matBadgePosition="below after" matBadgeColor="accent"
-      matBadgeSize="small" [matBadgeHidden]="!contentType.Metadata.length">local_offer</mat-icon>
+      matBadgeSize="small" [matBadgeHidden]="!contentType.Metadata.length" aria-hidden="false">
+      local_offer
+    </mat-icon>
   </div>
-  <div class="like-button disabled" *ngIf="contentType.EditInfo.ReadOnly">
+  <div class="eav-grid-action-button disabled" *ngIf="contentType.EditInfo.DisableMetadata">
     <mat-icon [matBadge]="contentType.Metadata.length" matBadgePosition="below after" matBadgeColor="accent"
-      matBadgeSize="small" matBadgeDisabled="true" [matBadgeHidden]="!contentType.Metadata.length">local_offer
+      matBadgeSize="small" matBadgeDisabled="true" [matBadgeHidden]="!contentType.Metadata.length" aria-hidden="false">
+      local_offer
     </mat-icon>
   </div>
 
-  <div class="like-button highlight" matRipple *ngIf="!contentType.EditInfo.ReadOnly && enablePermissions"
+  <div class="eav-grid-action-button highlight" matRipple *ngIf="!contentType.EditInfo.DisableEdit && enablePermissions"
     tippy="Permissions" (click)="openPermissions()">
     <mat-icon [matBadge]="contentType.Permissions.Count" matBadgePosition="below after" matBadgeColor="accent"
-      matBadgeSize="small" [matBadgeHidden]="!contentType.Permissions.Count">person</mat-icon>
+      matBadgeSize="small" [matBadgeHidden]="!contentType.Permissions.Count" aria-hidden="false">
+      person</mat-icon>
   </div>
-  <div class="like-button disabled" *ngIf="contentType.EditInfo.ReadOnly || !enablePermissions">
+  <div class="eav-grid-action-button disabled" *ngIf="contentType.EditInfo.DisableEdit || !enablePermissions">
     <mat-icon [matBadge]="contentType.Permissions.Count" matBadgePosition="below after" matBadgeColor="accent"
-      matBadgeSize="small" matBadgeDisabled="true" [matBadgeHidden]="!contentType.Permissions.Count">person</mat-icon>
+      matBadgeSize="small" matBadgeDisabled="true" [matBadgeHidden]="!contentType.Permissions.Count"
+      aria-hidden="false">
+      person</mat-icon>
   </div>
 
-  <div class="like-button highlight" matRipple tippy="More" [matMenuTriggerFor]="menu">
+  <div class="eav-grid-action-button highlight" matRipple tippy="More" [matMenuTriggerFor]="menu">
     <mat-icon>more_horiz</mat-icon>
   </div>
 </div>
 
 <mat-menu #menu="matMenu" class="grid-more-menu">
   <ng-template matMenuContent>
-    <button mat-menu-item [disabled]="contentType.EditInfo.ReadOnly" (click)="editContentType()">
+    <button mat-menu-item [disabled]="contentType.EditInfo.DisableRename" (click)="editContentType()">
       <mat-icon>settings</mat-icon>
       <span>Rename</span>
     </button>
@@ -55,7 +62,7 @@
       <mat-icon>cloud_upload</mat-icon>
       <span>Import data</span>
     </button>
-    <button mat-menu-item [disabled]="contentType.EditInfo.ReadOnly" (click)="deleteContentType()">
+    <button mat-menu-item [disabled]="contentType.EditInfo.DisableDelete" (click)="deleteContentType()">
       <mat-icon>delete</mat-icon>
       <span>Delete</span>
     </button>

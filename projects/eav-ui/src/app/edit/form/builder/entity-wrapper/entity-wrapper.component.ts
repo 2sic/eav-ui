@@ -1,5 +1,5 @@
 import { AfterViewChecked, Component, ElementRef, Input, OnDestroy, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { MatDialog, MatDialogRef, MatDialogState } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
@@ -26,7 +26,7 @@ export class EntityWrapperComponent extends BaseSubsinkComponent implements OnIn
   @ViewChild('noteTemplate') private noteTemplateRef?: TemplateRef<undefined>;
 
   @Input() entityGuid: string;
-  @Input() group: FormGroup;
+  @Input() group: UntypedFormGroup;
 
   collapse = false;
   noteTouched: boolean = false;

@@ -6,6 +6,7 @@ import { AdamControl } from '../../form/fields/hyperlink/hyperlink-library/hyper
 import { SxcAbstractControl } from '../models';
 import { FieldsSettingsService } from '../services';
 import { ItemFieldVisibility } from '../services/item-field-visibility';
+import { convertValueToArray } from '../../form/fields/picker/picker.helpers';
 
 /** Validators here are copied from https://github.com/angular/angular/blob/master/packages/forms/src/validators.ts */
 export class ValidationHelpers {
@@ -23,8 +24,10 @@ export class ValidationHelpers {
         : this.requiredAdam(fieldName, fieldsSettingsService),
       this.pattern(fieldName, fieldsSettingsService),
       this.decimals(fieldName, fieldsSettingsService),
-      this.max(fieldName, fieldsSettingsService),
       this.min(fieldName, fieldsSettingsService),
+      this.max(fieldName, fieldsSettingsService),
+      this.minNoItems(fieldName, fieldsSettingsService),
+      this.maxNoItems(fieldName, fieldsSettingsService),
       this.formulaValidate(fieldName, fieldsSettingsService),
     ];
     if (inputType === InputTypeConstants.CustomJsonEditor) {
@@ -90,6 +93,17 @@ export class ValidationHelpers {
     };
   }
 
+  private static min(fieldName: string, fieldsSettingsService: FieldsSettingsService): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      this.ensureWarning(control);
+      const settings = fieldsSettingsService.getFieldSettings(fieldName);
+      if (this.ignoreValidators(settings)) { return null; }
+      if (settings.Min == null) { return null; }
+
+      return Validators.min(settings.Min)(control);
+    };
+  }
+
   private static max(fieldName: string, fieldsSettingsService: FieldsSettingsService): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       this.ensureWarning(control);
@@ -101,14 +115,33 @@ export class ValidationHelpers {
     };
   }
 
-  private static min(fieldName: string, fieldsSettingsService: FieldsSettingsService): ValidatorFn {
+  private static minNoItems(fieldName: string, fieldsSettingsService: FieldsSettingsService): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       this.ensureWarning(control);
       const settings = fieldsSettingsService.getFieldSettings(fieldName);
       if (this.ignoreValidators(settings)) { return null; }
-      if (settings.Min == null) { return null; }
+      if (settings.AllowMultiMin == 0 || settings.AllowMultiMin == undefined) { return null; }
 
-      return Validators.min(settings.Min)(control);
+      const lessThanMin = (Array.isArray(control.value)
+        ? control.value.length
+        : convertValueToArray(control.value, settings.Separator, settings._options).length)
+        < settings.AllowMultiMin
+      return lessThanMin ? { minNoItems: settings.AllowMultiMin } : null;
+    };
+  }
+
+  private static maxNoItems(fieldName: string, fieldsSettingsService: FieldsSettingsService): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      this.ensureWarning(control);
+      const settings = fieldsSettingsService.getFieldSettings(fieldName);
+      if (this.ignoreValidators(settings)) { return null; }
+      if (settings.AllowMultiMax == 0 || settings.AllowMultiMax == undefined) { return null; }
+
+      const moreThanMax = (Array.isArray(control.value)
+        ? control.value.length
+        : convertValueToArray(control.value, settings.Separator, settings._options).length)
+        > settings.AllowMultiMax
+      return moreThanMax ? { maxNoItems: settings.AllowMultiMax } : null;
     };
   }
 

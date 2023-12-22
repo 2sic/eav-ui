@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FileUploadDialogData } from '../../../shared/components/file-upload-dialog';
+import { FileUploadDialogData, UploadTypes } from '../../../shared/components/file-upload-dialog';
 import { ImportAppPartsService } from '../../services/import-app-parts.service';
 
 @Component({
@@ -9,6 +9,8 @@ import { ImportAppPartsService } from '../../services/import-app-parts.service';
   styleUrls: ['./import-app-parts.component.scss'],
 })
 export class ImportAppPartsComponent {
+
+  uploadType = UploadTypes.AppPart;
 
   constructor(@Inject(MAT_DIALOG_DATA) dialogData: FileUploadDialogData, importAppPartsService: ImportAppPartsService) {
     dialogData.title ??= `Import Content and Templates into this App`;

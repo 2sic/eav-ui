@@ -2,7 +2,7 @@ import { AgGridAngular } from '@ag-grid-community/angular';
 import { GridOptions } from '@ag-grid-community/core';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 // tslint:disable-next-line:max-line-length
 import { BehaviorSubject, catchError, forkJoin, map, Observable, of, share, startWith, Subject, switchMap, tap, timer } from 'rxjs';
 import { FeatureState } from '../../features/models';
@@ -58,11 +58,13 @@ export class LicenseInfoComponent extends BaseComponent implements OnInit, OnDes
         tap(() => this.disabled$.next(false)),
 
         // Fiddle with the data for development tests
-        map(licenses => {
-          var licTesting = licenses[licenses.length - 2];
-          licTesting.Features[licTesting.Features.length - 1].Expiration = "2023-08-25";
-          return licenses;
-        }),
+        // 2023-11-16 2dm disabled - causes trouble in production
+        // @STV - do you still need this? or is this a forgotten debug code?
+        // map(licenses => {
+        //   var licTesting = licenses[licenses.length - 2];
+        //   licTesting.Features[licTesting.Features.length - 1].Expiration = "2023-08-25";
+        //   return licenses;
+        // }),
 
         // Expand the data to have pre-calculated texts/states
         map(licenses => licenses.map(l => {
@@ -179,7 +181,8 @@ export class LicenseInfoComponent extends BaseComponent implements OnInit, OnDes
           // valueGetter: (params) => (params.data as Feature).Name,
         },
         {
-          field: 'Enabled',
+          field: 'IsEnabled',
+          headerName: 'Enabled',
           ...cellDefaults,
           width: 80,
           headerClass: 'dense',
@@ -213,9 +216,10 @@ export class LicenseInfoComponent extends BaseComponent implements OnInit, OnDes
           cellRenderer: FeaturesStatusComponent,
           // valueGetter: (params) => (params.data as Feature).EnabledInConfiguration,
           cellRendererParams: (() => {
-            const params: FeaturesStatusParams = {
-              isDisabled: () => this.disabled$.value,
+            const params: FeaturesStatusParams & IdFieldParams<Feature> = {
+              isDisabled: (feature) => !feature.IsConfigurable || this.disabled$.value,
               onToggle: (feature, enabled) => this.toggleFeature(feature, enabled),
+              tooltipGetter: (feature: Feature) => feature.IsConfigurable ? "Toggle off | default | on" : "This feature can't be configured",
             };
             return params;
           }),

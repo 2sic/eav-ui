@@ -1,38 +1,37 @@
 <ng-container *ngIf="viewModel$ | async as vm">
-  <div mat-dialog-title>
-    <div class="dialog-title-box">Create inherited App</div>
-  </div>
-
-  <router-outlet></router-outlet>
-
-  <p class="dialog-description">
-    Create an App which inherits everything (data, views, queries) from a global App. Only Apps which were specifically
-    marked for this will be listed here, and these apps must already have been loaded into Cache. If you don't see the
-    App you expect, make sure that has happened.
-  </p>
-
-  <form [formGroup]="form">
-    <mat-form-field appearance="standard" color="accent">
-      <mat-label>Inherit App</mat-label>
-      <mat-select formControlName="inheritId"
-        [placeholder]="vm.inheritableApps === undefined ? 'Loading...' : vm.inheritableApps === null || vm.inheritableApps.length === 0 ? 'No inheritable apps found' : ''">
-        <mat-option *ngFor="let app of vm.inheritableApps" [value]="app.Id">
-          {{ app.Name }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-    <app-field-hint *ngIf="form.controls.inheritId.touched && form.controls.inheritId.errors?.required"
-      [isError]="true">
-      Required
-    </app-field-hint>
-  </form>
-
-  <div class="dialog-component-actions">
-    <button type="button" mat-raised-button [disabled]="vm.loading" (click)="closeDialog()">
-      Cancel
-    </button>
-    <button type="button" mat-raised-button color="accent" [disabled]="vm.loading || !form.valid" (click)="create()">
-      Create
-    </button>
+  <div class="eav-dialog">
+    <div class="eav-dialog-header">
+      <div class="eav-dialog-header__title">Create inherited App</div>
+    </div>
+    <div class="eav-dialog-content">
+      <router-outlet></router-outlet>
+      <p>
+        Create an App which inherits everything (data, views, queries) from a global App. Only Apps which were specifically
+        marked for this will be listed here, and these apps must already have been loaded into Cache. If you don't see the
+        App you expect, make sure that has happened.
+      </p>
+      <form [formGroup]="form">
+        <mat-form-field color="accent" class="eav-form-field">
+          <mat-label>Inherit App</mat-label>
+          <mat-select formControlName="inheritId"
+            [placeholder]="vm.inheritableApps === undefined ? 'Loading...' : vm.inheritableApps === null || vm.inheritableApps.length === 0 ? 'No inheritable apps found' : ''">
+            <mat-option *ngFor="let app of vm.inheritableApps" [value]="app.Id">
+              {{ app.Name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <app-field-hint *ngIf="form.controls.inheritId.touched && form.controls.inheritId.errors?.required" [isError]="true">
+          Required
+        </app-field-hint>
+      </form>
+    </div>
+    <mat-dialog-actions align="end">
+      <button type="button" mat-raised-button [disabled]="vm.loading" (click)="closeDialog()">
+        Cancel
+      </button>
+      <button type="button" mat-raised-button color="accent" [disabled]="vm.loading || !form.valid" (click)="create()">
+        Create
+      </button>
+    </mat-dialog-actions>
   </div>
 </ng-container>

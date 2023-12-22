@@ -1,7 +1,8 @@
-<mat-card class="mat-card-group-child shadow-bottom-z-1" [ngClass]="{ 'force-hide': (visible$ | async) === false }">
-  <div fxLayout="row" fxLayoutAlign="start center" class="mat-card-header-group-child">
+<mat-card appearance="raised" class="eav-card-group-child shadow-bottom-z-1"
+  [ngClass]="{ 'force-hide': (visible$ | async) === false }">
+  <div fxLayout="row" fxLayoutAlign="start center" class="eav-card-header-group-child">
     <div fxFlex="auto" fxLayoutAlign="start center" (click)="toggleCollapse()">
-      <div fxLayoutAlign="start center" class="mat-card-title-group mat-body-1">
+      <div fxLayoutAlign="start center" class="eav-card-title-group mat-body-2">
         <mat-icon class="title-arrow">{{ (collapsed$ | async) ? 'keyboard_arrow_down' : 'keyboard_arrow_up' }}
         </mat-icon>
         <span class="title">
@@ -11,13 +12,13 @@
     </div>
   </div>
 
-  <mat-card-content class="mat-card-content-group-child" [style.display]="(collapsed$ | async) ? 'none' : 'block'">
-    <div class="mdc-layout-grid">
-      <div class="mdc-layout-grid__inner">
-        <div class="mdc-layout-grid__cell--span-12 mat-body-1" allign="start" *ngIf="notes$ | async as notes">
+  <mat-card-content class="eav-card-content-group-child" [style.display]="(collapsed$ | async) ? 'none' : 'block'">
+    <div class="eav-layout-grid">
+      <div class="eav-layout-grid__inner">
+        <div class="eav-layout-grid__cell--span-12 mat-body-2" allign="start" *ngIf="notes$ | async as notes">
           <div class="description" appChangeAnchorTarget [innerHtml]="notes | safeHtml"></div>
         </div>
-        <div class="mdc-layout-grid__cell--span-12">
+        <div class="eav-layout-grid__cell--span-12">
           <ng-container #fieldComponent></ng-container>
         </div>
       </div>

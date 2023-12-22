@@ -25,6 +25,12 @@ export const InputTypeConstants = {
   StringTemplatePicker: 'string-template-picker',
   StringUrlPath: 'string-url-path',
   StringWysiwyg: 'string-wysiwyg',
+
+  /** WIP pickers */
+  WIPEntityPicker: 'entity-picker',
+  WIPStringPicker: 'string-picker',
+  WIPNumberPicker: 'number-picker',
+  
   /** for all situations where we need a fallback; new v16.04 */
   Unknown: 'unknown',
 } as const;

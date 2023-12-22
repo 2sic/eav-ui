@@ -4,7 +4,9 @@
   configured.
   <button mat-icon-button tippy="Open permissions" (click)="openPermissions()">
     <mat-icon [matBadge]="data.permissions.length" matBadgeColor="accent" matBadgeSize="small"
-      *ngIf="data.permissions.length" matBadgePosition="below after">person</mat-icon>
+      *ngIf="data.permissions.length" matBadgePosition="below after" aria-hidden="false">
+      person
+    </mat-icon>
     <mat-icon *ngIf="!data.permissions.length">person</mat-icon>
   </button>
 </p>

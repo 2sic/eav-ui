@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { edit, refreshEdit } from '../edit/edit.matcher';
 import { GoToMetadata } from '../metadata';
 import { DialogEntryComponent } from '../shared/components/dialog-entry/dialog-entry.component';
-import { contentItemImportDialog } from './content-item-import/content-item-import-dialog.config';
+import { importContentItemDialog } from './import-content-item/import-content-item-dialog.config';
 import { contentItemsDialog } from './content-items-dialog.config';
 
 const routes: Routes = [
@@ -18,7 +18,7 @@ const routes: Routes = [
         path: 'export/:contentTypeStaticName/:selectedIds',
         loadChildren: () => import('../content-export/content-export.module').then(m => m.ContentExportModule)
       },
-      { path: 'import', component: DialogEntryComponent, data: { dialog: contentItemImportDialog } },
+      { path: 'import', component: DialogEntryComponent, data: { dialog: importContentItemDialog } },
       {
         path: ':contentTypeStaticName/import',
         loadChildren: () => import('../content-import/content-import.module').then(m => m.ContentImportModule),

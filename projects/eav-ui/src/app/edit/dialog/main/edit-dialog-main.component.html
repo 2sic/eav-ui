@@ -1,4 +1,5 @@
-<div *ngIf="viewModel$ | async as vm" style="position: relative" mat-dialog-container appToggleDebug>
+<!-- TODO_(mdc-migration) -->
+<div *ngIf="viewModel$ | async as vm" style="position: relative" mat-dialog__container appToggleDebug>
 
   <div mat-dialog-actions class="form-header-container" [ngClass]="{ 'u-display-none': vm.hideHeader }">
     <app-edit-dialog-header class="multi-item-edit-form-header" [disabled]="!vm.formsValid"
@@ -8,14 +9,15 @@
 
   <div style="position: relative">
     <!-- cdkScrollable is required when using matAutocomplete with scrollable element that is not body. Fixes matAutocomplete not following input  -->
-    <div mat-dialog-content cdkScrollable class="u-hide-scrollbar" [ngClass]="{
+    <!-- TODO_(mdc-migration) -->
+    <div mat-mdc-dialog-content cdkScrollable class="eav-dialog-content u-hide-scrollbar" [ngClass]="{
       'debug-enabled': vm.debugEnabled,
       'debug-info-is-open': vm.debugInfoIsOpen,
       'hide-header-height-fix': vm.hideHeader
     }">
-      <div class="mdc-layout-grid">
-        <div class="mdc-layout-grid__inner">
-          <div class="mdc-layout-grid__cell--span-12" appFormSlide *ngIf="!vm.delayForm">
+      <div class="eav-layout-grid">
+        <div class="eav-layout-grid__inner">
+          <div class="eav-layout-grid__cell--span-12" appFormSlide *ngIf="!vm.delayForm">
             <div *ngFor="let item of vm.items; trackBy: trackByFn">
               <app-form-builder [entityGuid]="item.Entity.Guid"></app-form-builder>
             </div>

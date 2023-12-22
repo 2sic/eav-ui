@@ -1,5 +1,5 @@
 import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
@@ -14,7 +14,7 @@ import { AppsListService } from '../services/apps-list.service';
 export class CreateAppComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
-  form: FormGroup;
+  form: UntypedFormGroup;
   loading$: BehaviorSubject<boolean>;
   appNameError = appNameError;
 
@@ -62,9 +62,9 @@ export class CreateAppComponent implements OnInit, OnDestroy {
     });
   }
 
-  private buildForm(): FormGroup {
-    const form = new FormGroup({
-      name: new FormControl(null, [Validators.required, Validators.pattern(appNamePattern)]),
+  private buildForm(): UntypedFormGroup {
+    const form = new UntypedFormGroup({
+      name: new UntypedFormControl(null, [Validators.required, Validators.pattern(appNamePattern)]),
     });
     return form;
   }

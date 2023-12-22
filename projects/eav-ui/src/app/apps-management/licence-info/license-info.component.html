@@ -25,11 +25,9 @@
   </mat-expansion-panel>
 </mat-accordion>
 
-<div class="spacer"></div>
-
-<div class="actions-box">
-  <button mat-button tippy="Registration" (click)="openRegistration()">
-    <mat-icon>app_registration</mat-icon>
+<mat-dialog-actions align="start">
+  <button mat-button class="eav-button__with-icon" tippy="Registration" (click)="openRegistration()">
+    <mat-icon class="eav-icon">app_registration</mat-icon>
     <span>Registration</span>
   </button>
-</div>
+</mat-dialog-actions>

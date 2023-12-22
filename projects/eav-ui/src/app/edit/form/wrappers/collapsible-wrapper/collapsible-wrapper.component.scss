@@ -1,12 +1,16 @@
 $border-radius: 8px;
 
-.mat-card-group-child {
+.eav-card-content-group-child {
+  padding: 0px;
+}
+
+.eav-card-group-child {
   padding: 0;
   margin: 0 0 8px 0;
   border-radius: $border-radius;
 }
 
-.mat-card-header-group-child {
+.eav-card-header-group-child {
   padding: 20px 32px;
   border-radius: $border-radius;
 
@@ -20,15 +24,17 @@ $border-radius: 8px;
   }
 }
 
-.mat-card-content {
+.mat-mdc-card-content {
   .description {
     font-size: 14px;
     padding-left: 16px;
     padding-right: 16px;
+    margin-top: -14px;
+    margin-bottom: 14px;
   }
 }
 
-.mat-card-title-group {
+.eav-card-title-group {
   margin: 0;
   cursor: pointer;
   line-height: 20px;
@@ -42,7 +48,7 @@ $border-radius: 8px;
   line-height: 20px !important;
 }
 
-.mdc-layout-grid {
+.eav-layout-grid {
   padding: 16px;
   padding-top: 0;
 }

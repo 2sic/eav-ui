@@ -1,109 +1,109 @@
 <ng-container *ngIf="viewModel$ | async as vm">
-  <div mat-dialog-title>
-    <div class="dialog-title-box">
-      <div>Using REST with API <code>{{ vm.webApi?.name }}</code></div>
+  <div class="eav-dialog eav-no-scrollbar">
+    <div class="eav-dialog-header">
+      <div class="eav-dialog-header__title">Using REST with API <code>{{ vm.webApi?.name }}</code></div>
       <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
         <mat-icon>close</mat-icon>
       </button>
     </div>
+    <div class="eav-dialog-content">
+      <router-outlet></router-outlet>
+      
+      <!-- Template below this line -->
+      
+      <div style="display: flex; flex-wrap: wrap;">
+        <app-selector-with-help style="display: block; max-width: 100%;" label="Choose Scenario" [items]="scenarios"
+          [value]="vm.scenario.key" (valueChange)="changeScenario($event)">
+        </app-selector-with-help>
+      
+        <mat-form-field color="accent" class="eav-form-field" style="width: 360px; max-width: calc(100% - 40px);">
+          <mat-label>Select an Action on the Controller</mat-label>
+          <mat-select [value]="vm.selected?.name" (selectionChange)="updateAction($event.value)">
+            <mat-option *ngFor="let action of vm.details.actions" [value]="action.name">
+              {{ action.name }} ({{ action.verbs.join(', ') }})
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      
+      <!-- now the tabs -->
+      
+      <mat-tab-group dynamicHeight color="accent" class="eav-tab-group">
+      
+        <!-- Introduction -->
+        <mat-tab>
+          <div *matTabLabel class="mat-tab-label-box" tippy="Introduction">
+            <mat-icon>emoji_objects</mat-icon>
+            <span>Introduction</span>
+          </div>
+      
+          <app-dev-api-introduction [data]="vm"></app-dev-api-introduction>
+      
+          <app-dev-rest-tab-introduction [data]="vm"></app-dev-rest-tab-introduction>
+        </mat-tab>
+      
+        <!-- Absolute / Virtual URLs -->
+        <mat-tab>
+          <div *matTabLabel class="mat-tab-label-box"
+            [tippy]="(vm.scenario.useVirtual ? 'Virtual ' : 'Absolute ') + 'REST URLs'">
+            <!-- <mat-icon>code</mat-icon> -->
+            <mat-icon svgIcon="code-curly"></mat-icon>
+            <span>Call {{ vm.scenario.useVirtual ? 'Virtual' : 'Absolute' }} REST URLs</span>
+          </div>
+      
+          <app-dev-rest-tab-examples-intro [data]="vm"></app-dev-rest-tab-examples-intro>
+      
+          <!-- Show Params of this Action -->
+          <app-dev-rest-api-action-params [data]="vm.selected"></app-dev-rest-api-action-params>
+      
+          <mat-accordion multi class="rest-urls-accordion">
+            <mat-expansion-panel>
+      
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  <div>Specify Additional Test Parameters (Url / POST)</div>
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+      
+              <mat-panel-description style="display: block;">
+                <div class="form-with-textarea">
+                  <mat-form-field color="accent">
+                    <mat-label>Additional Url Parameters</mat-label>
+                    <input matInput placeholder="?id=27" [value]="urlParams$.value" (input)="updateParams($event)">
+                  </mat-form-field>
+                  <mat-form-field color="accent">
+                    <mat-label>Post body</mat-label>
+                    <textarea matInput [rows]="10" placeholder="Placeholder" [value]="urlParams$.value"
+                      (input)="updateParams($event)">
+                      </textarea>
+                  </mat-form-field>
+                </div>
+              </mat-panel-description>
+            </mat-expansion-panel>
+          </mat-accordion>
+      
+          <!-- REST Tab showing the urls and code snippets -->
+          <app-dev-rest-urls-and-code [data]="vm"></app-dev-rest-urls-and-code>
+        </mat-tab>
+      
+        <!-- Permissions explained -->
+        <mat-tab>
+          <div *matTabLabel class="mat-tab-label-box" tippy="Permissions">
+            <mat-icon>person</mat-icon>
+            <span>Permissions </span>
+          </div>
+          <app-dev-api-permissions [data]="vm"></app-dev-api-permissions>
+        </mat-tab>
+      
+        <!-- HTTP Headers Explained -->
+        <mat-tab>
+          <div *matTabLabel class="mat-tab-label-box" tippy="HTTP headers and auto">
+            <mat-icon>perm_device_information</mat-icon>
+            <span>HTTP headers & &nbsp;<code>/auto/</code></span>
+          </div>
+          <app-dev-rest-tab-headers [data]="vm"></app-dev-rest-tab-headers>
+        </mat-tab>
+      </mat-tab-group>
+    </div>
   </div>
-
-  <router-outlet></router-outlet>
-
-  <!-- Template below this line -->
-
-  <div style="display: flex; flex-wrap: wrap;">
-    <app-selector-with-help style="display: block; max-width: 100%;" label="Choose Scenario" [items]="scenarios"
-      [value]="vm.scenario.key" (valueChange)="changeScenario($event)">
-    </app-selector-with-help>
-
-    <mat-form-field color="accent" style="width: 360px; max-width: calc(100% - 40px);">
-      <mat-label>Select an Action on the Controller</mat-label>
-      <mat-select [value]="vm.selected?.name" (selectionChange)="updateAction($event.value)">
-        <mat-option *ngFor="let action of vm.details.actions" [value]="action.name">
-          {{ action.name }} ({{ action.verbs.join(', ') }})
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-  </div>
-
-  <!-- now the tabs -->
-
-  <mat-tab-group dynamicHeight color="accent"
-    class="mat-tab-group-fit-height mat-tab-group-fancy-scrollbar default-fonts">
-
-    <!-- Introduction -->
-    <mat-tab>
-      <div *matTabLabel class="mat-tab-label-box" tippy="Introduction">
-        <mat-icon>emoji_objects</mat-icon>
-        <span>Introduction</span>
-      </div>
-
-      <app-dev-api-introduction [data]="vm"></app-dev-api-introduction>
-
-      <app-dev-rest-tab-introduction [data]="vm"></app-dev-rest-tab-introduction>
-    </mat-tab>
-
-    <!-- Absolute / Virtual URLs -->
-    <mat-tab>
-      <div *matTabLabel class="mat-tab-label-box"
-        [tippy]="(vm.scenario.useVirtual ? 'Virtual ' : 'Absolute ') + 'REST URLs'">
-        <!-- <mat-icon>code</mat-icon> -->
-        <mat-icon svgIcon="code-curly"></mat-icon>
-        <span>Call {{ vm.scenario.useVirtual ? 'Virtual' : 'Absolute' }} REST URLs</span>
-      </div>
-
-      <app-dev-rest-tab-examples-intro [data]="vm"></app-dev-rest-tab-examples-intro>
-
-      <!-- Show Params of this Action -->
-      <app-dev-rest-api-action-params [data]="vm.selected"></app-dev-rest-api-action-params>
-
-      <mat-accordion multi class="rest-urls-accordion">
-        <mat-expansion-panel>
-
-          <mat-expansion-panel-header>
-            <mat-panel-title>
-              <div>Specify Additional Test Parameters (Url / POST)</div>
-            </mat-panel-title>
-          </mat-expansion-panel-header>
-
-          <mat-panel-description style="display: block;">
-            <div class="form-with-textarea">
-              <mat-form-field appearance="standard" color="accent">
-                <mat-label>Additional Url Parameters</mat-label>
-                <input matInput placeholder="?id=27" [value]="urlParams$.value" (input)="updateParams($event)">
-              </mat-form-field>
-              <mat-form-field appearance="standard" color="accent">
-                <mat-label>Post body</mat-label>
-                <textarea matInput [rows]="10" placeholder="Placeholder" [value]="urlParams$.value"
-                  (input)="updateParams($event)">
-                </textarea>
-              </mat-form-field>
-            </div>
-          </mat-panel-description>
-        </mat-expansion-panel>
-      </mat-accordion>
-
-      <!-- REST Tab showing the urls and code snippets -->
-      <app-dev-rest-urls-and-code [data]="vm"></app-dev-rest-urls-and-code>
-    </mat-tab>
-
-    <!-- Permissions explained -->
-    <mat-tab>
-      <div *matTabLabel class="mat-tab-label-box" tippy="Permissions">
-        <mat-icon>person</mat-icon>
-        <span>Permissions </span>
-      </div>
-      <app-dev-api-permissions [data]="vm"></app-dev-api-permissions>
-    </mat-tab>
-
-    <!-- HTTP Headers Explained -->
-    <mat-tab>
-      <div *matTabLabel class="mat-tab-label-box" tippy="HTTP headers and auto">
-        <mat-icon>perm_device_information</mat-icon>
-        <span>HTTP headers & &nbsp;<code>/auto/</code></span>
-      </div>
-      <app-dev-rest-tab-headers [data]="vm"></app-dev-rest-tab-headers>
-    </mat-tab>
-  </mat-tab-group>
 </ng-container>

@@ -1,29 +1,37 @@
 <div class="actions-component">
-  <div class="like-button highlight" matRipple tippy="Edit" (click)="params.do(actions.Edit, item)">
+  <div class="eav-grid-action-button highlight" matRipple tippy="Edit" (click)="params.do(actions.Edit, item)">
     <mat-icon>edit</mat-icon>
   </div>
 
-  <div class="like-button highlight" matRipple *ngIf="!item._EditInfo.ReadOnly" tippy="Metadata"
+  <div class="eav-grid-action-button highlight" matRipple *ngIf="!item._EditInfo.DisableMetadata" tippy="Metadata"
     (click)="params.do(actions.Metadata, item)">
     <mat-icon [matBadge]="item.Metadata?.length" matBadgeColor="accent" matBadgeSize="small"
-      [matBadgeHidden]="!item.Metadata?.length" matBadgePosition="below after">local_offer</mat-icon>
+      [matBadgeHidden]="!item.Metadata?.length" matBadgePosition="below after" aria-hidden="false">
+      local_offer
+    </mat-icon>
   </div>
-  <div class="like-button disabled" *ngIf="item._EditInfo.ReadOnly">
+  <div class="eav-grid-action-button disabled" *ngIf="item._EditInfo.DisableMetadata">
     <mat-icon [matBadge]="item.Metadata?.length" matBadgeColor="accent" matBadgeSize="small" matBadgeDisabled="true"
-      [matBadgeHidden]="!item.Metadata?.length" matBadgePosition="below after">local_offer</mat-icon>
+      [matBadgeHidden]="!item.Metadata?.length" matBadgePosition="below after" aria-hidden="false">
+      local_offer
+    </mat-icon>
   </div>
 
-  <div class="like-button highlight" matRipple *ngIf="!item._EditInfo.ReadOnly && enablePermissions" tippy="Permissions"
-    (click)="params.do(actions.Permissions, item)">
+  <div class="eav-grid-action-button highlight" matRipple *ngIf="!item._EditInfo.DisableEdit && enablePermissions"
+    tippy="Permissions" (click)="params.do(actions.Permissions, item)">
     <mat-icon [matBadge]="item._Permissions.Count" matBadgeColor="accent" matBadgeSize="small"
-      [matBadgeHidden]="!item._Permissions.Count" matBadgePosition="below after">person</mat-icon>
+      [matBadgeHidden]="!item._Permissions.Count" matBadgePosition="below after" aria-hidden="false">
+      person
+    </mat-icon>
   </div>
-  <div class="like-button disabled" *ngIf="item._EditInfo.ReadOnly || !enablePermissions">
+  <div class="eav-grid-action-button disabled" *ngIf="item._EditInfo.DisableEdit || !enablePermissions">
     <mat-icon [matBadge]="item._Permissions.Count" matBadgeColor="accent" matBadgeSize="small" matBadgeDisabled="true"
-      [matBadgeHidden]="!item._Permissions.Count" matBadgePosition="below after">person</mat-icon>
+      [matBadgeHidden]="!item._Permissions.Count" matBadgePosition="below after" aria-hidden="false">
+      person
+    </mat-icon>
   </div>
 
-  <div class="like-button highlight" matRipple tippy="More" [matMenuTriggerFor]="menu">
+  <div class="eav-grid-action-button highlight" matRipple tippy="More" [matMenuTriggerFor]="menu">
     <mat-icon>more_horiz</mat-icon>
   </div>
 </div>
@@ -42,7 +50,7 @@
       <mat-icon>cloud_download</mat-icon>
       <span>Export</span>
     </button>
-    <button mat-menu-item [disabled]="item._EditInfo.ReadOnly" (click)="params.do(actions.Delete, item)">
+    <button mat-menu-item [disabled]="item._EditInfo.DisableDelete" (click)="params.do(actions.Delete, item)">
       <mat-icon>delete</mat-icon>
       <span>Delete</span>
     </button>

@@ -143,7 +143,8 @@
     "EntityQuery": {
       "QueryNoItems": "Keine Elemente gefunden",
       "QueryError": "Fehler: Die Abfrage konnte nicht ausgeführt werden. In der Konsole findest du genauere Details.",
-      "QueryStreamNotFound": "Fehler: Die Abfrage enthielt keinen Stream mit dem Namen"
+      "QueryStreamNotFound": "Fehler: Die Abfrage enthielt keinen Stream mit dem Namen",
+      "QueryNotDefined": "Fehler: kann Daten nicht laden, Query ist nicht konfiguriert"
     },
     "Hyperlink": {
       "Default": {

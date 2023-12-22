@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { AbstractControl, FormGroup } from '@angular/forms';
+import { AbstractControl, UntypedFormGroup } from '@angular/forms';
 import { combineLatest, distinctUntilChanged, map, Observable, startWith } from 'rxjs';
 import { ValidationMessagesHelpers } from '../../../shared/helpers';
 import { FieldsSettingsService } from '../../../shared/services';
@@ -13,7 +13,7 @@ import { FieldHelperTextViewModel } from './field-helper-text.models';
 })
 export class FieldHelperTextComponent implements OnInit {
   @Input() config: FieldConfigSet;
-  @Input() group: FormGroup;
+  @Input() group: UntypedFormGroup;
   @Input() disableError = false;
   @Input() hyperlinkDefaultWrapperFix = false;
 

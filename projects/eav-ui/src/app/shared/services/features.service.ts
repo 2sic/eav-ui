@@ -35,6 +35,6 @@ export class FeaturesService {
   }
 
   isEnabled$(nameId: string) {
-    return this.get$(nameId).pipe(map(f => f?.Enabled ?? false));
+    return this.get$(nameId).pipe(map(f => f?.IsEnabled ?? false));
   }
 }

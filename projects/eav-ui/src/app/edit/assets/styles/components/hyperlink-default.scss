@@ -1,12 +1,7 @@
 // hyperlink-default overrides
 .c-hyperlink-default-field-preview {
-  .mat-form-field-outline {
-
-    .mat-form-field-outline-start,
-    .mat-form-field-outline-gap,
-    .mat-form-field-outline-end {
-      background-color: white;
-    }
+  .mat-mdc-text-field-wrapper {
+    background-color: white;
   }
 }
 
@@ -16,7 +11,7 @@
 
 .hyperlink-floating {
   position: absolute;
-  top: 35px;
+  top: 23px;
   pointer-events: none;
   display: flex;
 

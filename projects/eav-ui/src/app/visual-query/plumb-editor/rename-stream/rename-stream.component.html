@@ -1,90 +1,88 @@
-<div mat-dialog-title>
-  <div class="dialog-title-box">
-    <div>Rename stream</div>
+<div class="eav-dialog">
+  <div class="eav-dialog-header">
+    <div class="eav-dialog-header__title">Rename stream</div>
     <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
       <mat-icon>close</mat-icon>
     </button>
   </div>
-</div>
-
-<!-- <p class="dialog-description"></p> -->
-
-<form [formGroup]="form" class="dialog-form">
-  <div class="dialog-form-content fancy-scrollbar-light">
-
-    <!-- Simple form -->
-    <ng-container *ngIf="!isSource || !pipelineResultExists">
-      <!-- Label -->
-      <mat-form-field appearance="standard" color="accent">
-        <mat-label>Label</mat-label>
-        <input matInput type="text" formControlName="label" required>
-      </mat-form-field>
-      <app-field-hint *ngIf="isSource && !pipelineResultExists">
-        You will get suggestions for out-streams after you run query
-      </app-field-hint>
-      <app-field-hint *ngIf="controls.label.touched && controls.label.errors?.required" [isError]="true">
-        This field is required
-      </app-field-hint>
-    </ng-container>
-
-    <!-- Rich form -->
-    <ng-container *ngIf="isSource && pipelineResultExists">
-      <!-- Scope -->
-      <ng-container *ngIf="advancedMode && guidedLabel">
-        <mat-form-field appearance="standard" color="accent">
-          <mat-label>Scope</mat-label>
-          <mat-select formControlName="scope" [placeholder]="!scopeOptions.length ? 'No items found' : ''">
-            <mat-option *ngFor="let scopeOption of scopeOptions" [value]="scopeOption.value">
-              {{ scopeOption.name }}
-            </mat-option>
-          </mat-select>
+  <div class="eav-dialog-content">
+    <form [formGroup]="form">
+      <!-- Simple form -->
+      <ng-container *ngIf="!isSource || !pipelineResultExists">
+        <!-- Label -->
+        <mat-form-field color="accent" class="eav-form-field">
+          <mat-label>Label</mat-label>
+          <input matInput type="text" formControlName="label" required>
         </mat-form-field>
-        <app-field-hint>
-          The scope should almost never be changed -
-          <a href="https://2sxc.org/help?tag=scope" target="_blank" appClickStopPropagation>see help</a>
+        <app-field-hint *ngIf="isSource && !pipelineResultExists">
+          You will get suggestions for out-streams after you run query
+        </app-field-hint>
+        <app-field-hint *ngIf="controls.label.touched && controls.label.errors?.required" [isError]="true">
+          This field is required
         </app-field-hint>
       </ng-container>
 
-      <!-- Label -->
-      <mat-form-field appearance="standard" color="accent">
-        <mat-label>Label</mat-label>
-        <mat-select *ngIf="guidedLabel" formControlName="label" required
-          [placeholder]="!labelOptions.length ? 'No items found' : ''">
-          <mat-option *ngFor="let labelOption of labelOptions" [value]="labelOption">
-            {{ labelOption }}
-          </mat-option>
-        </mat-select>
+      <!-- Rich form -->
+      <ng-container *ngIf="isSource && pipelineResultExists">
+        <!-- Scope -->
+        <ng-container *ngIf="advancedMode && guidedLabel">
+          <mat-form-field color="accent" class="eav-form-field">
+            <mat-label>Scope</mat-label>
+            <mat-select formControlName="scope" [placeholder]="!scopeOptions.length ? 'No items found' : ''">
+              <mat-option *ngFor="let scopeOption of scopeOptions" [value]="scopeOption.value">
+                {{ scopeOption.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <app-field-hint>
+            The scope should almost never be changed -
+            <a href="https://2sxc.org/help?tag=scope" target="_blank" appClickStopPropagation>see help</a>
+          </app-field-hint>
+        </ng-container>
 
-        <input matInput type="text" *ngIf="!guidedLabel" formControlName="label" required>
+        <!-- Label -->
+        <mat-form-field color="accent" class="eav-form-field">
+          <mat-label>Label</mat-label>
+          <mat-select *ngIf="guidedLabel" formControlName="label" required
+            [placeholder]="!labelOptions.length ? 'No items found' : ''">
+            <mat-option *ngFor="let labelOption of labelOptions" [value]="labelOption">
+              {{ labelOption }}
+            </mat-option>
+          </mat-select>
 
-        <div matSuffix class="selection-suffix">
-          <button mat-icon-button type="button" [ngClass]="{ 'active': guidedLabel }" tippy="Pick existing value"
-            (click)="toggleGuidedLabel(true)">
-            <mat-icon>search</mat-icon>
-          </button>
-          <button mat-icon-button type="button" [ngClass]="{ 'active': !guidedLabel }" tippy="Manual entry"
-            (click)="toggleGuidedLabel(false)">
-            <mat-icon>text_fields</mat-icon>
-          </button>
-        </div>
-      </mat-form-field>
-      <app-field-hint *ngIf="controls.label.touched && controls.label.errors?.required" [isError]="true">
-        This field is required
-      </app-field-hint>
-    </ng-container>
+          <input matInput type="text" *ngIf="!guidedLabel" formControlName="label" required>
+
+          <div matTextSuffix class="eav-selection-suffix">
+            <button mat-icon-button class="eav-selection-suffix-button" type="button" [ngClass]="{ 'active': guidedLabel }" tippy="Pick existing value"
+              (click)="toggleGuidedLabel(true)">
+              <mat-icon class="eav-icon">search</mat-icon>
+            </button>
+            <button mat-icon-button class="eav-selection-suffix-button" type="button" [ngClass]="{ 'active': !guidedLabel }" tippy="Manual entry"
+              (click)="toggleGuidedLabel(false)">
+              <mat-icon class="eav-icon">text_fields</mat-icon>
+            </button>
+          </div>
+        </mat-form-field>
+        <app-field-hint *ngIf="controls.label.touched && controls.label.errors?.required" [isError]="true">
+          This field is required
+        </app-field-hint>
+      </ng-container>
+    </form>
   </div>
-
-  <div class="dialog-form-actions">
+  <mat-dialog-actions class="eav-dialog-actions">
     <!-- Extra button for rich form -->
-    <ng-container *ngIf="isSource && pipelineResultExists">
-      <mat-slide-toggle color="accent" [checked]="advancedMode" (change)="toggleAdvancedMode($event)">
-        {{ advancedMode ? 'Advanced' : 'Simple' }}
-      </mat-slide-toggle>
-      <div class="spacer"></div>
-    </ng-container>
-    <button mat-raised-button type="button" (click)="closeDialog()">Cancel</button>
-    <button mat-raised-button type="button" color="accent" [disabled]="!form.valid" (click)="rename()">
-      Rename
-    </button>
-  </div>
-</form>
+    <div>
+      <ng-container *ngIf="isSource && pipelineResultExists">
+        <mat-slide-toggle color="accent" [checked]="advancedMode" (change)="toggleAdvancedMode($event)">
+          {{ advancedMode ? 'Advanced' : 'Simple' }}
+        </mat-slide-toggle>
+      </ng-container>
+    </div>
+    <div>
+      <button mat-raised-button type="button" (click)="closeDialog()">Cancel</button>
+      <button mat-raised-button type="button" color="accent" [disabled]="!form.valid" (click)="rename()">
+        Rename
+      </button>
+    </div>
+  </mat-dialog-actions>
+</div>

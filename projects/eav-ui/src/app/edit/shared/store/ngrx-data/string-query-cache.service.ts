@@ -28,6 +28,10 @@ export class StringQueryCacheService extends BaseDataService<StringQueryCacheIte
     );
   }
 
+  getEntities(entityGuid: string, fieldName: string): QueryEntity[] {
+    return this.cache$.value.find(item => item.selector === this.buildSelector(entityGuid, fieldName))?.entities ?? [];
+  }
+
   private buildSelector(entityGuid: string, fieldName: string): string {
     return `${entityGuid}|${fieldName}`;
   }

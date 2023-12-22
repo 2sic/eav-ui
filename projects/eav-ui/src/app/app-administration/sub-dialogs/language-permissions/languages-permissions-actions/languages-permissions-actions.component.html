@@ -1,6 +1,8 @@
 <div class="actions-component">
-  <div class="like-button highlight" matRipple tippy="Permissions" (click)="openPermissions()">
+  <div class="eav-grid-action-button highlight" matRipple tippy="Permissions" (click)="openPermissions()">
     <mat-icon [matBadge]="language.Permissions.Count" matBadgeColor="accent" matBadgeSize="small"
-      [matBadgeHidden]="!language.Permissions.Count" matBadgePosition="below after">person</mat-icon>
+      [matBadgeHidden]="!language.Permissions.Count" matBadgePosition="below after" aria-hidden="false">
+      person
+    </mat-icon>
   </div>
 </div>

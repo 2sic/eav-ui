@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FileUploadDialogData } from '../../../shared/components/file-upload-dialog';
+import { FileUploadDialogData, UploadTypes } from '../../../shared/components/file-upload-dialog';
 import { ContentTypesService } from '../../services/content-types.service';
 
 @Component({
@@ -9,6 +9,8 @@ import { ContentTypesService } from '../../services/content-types.service';
   styleUrls: ['./import-content-type.component.scss'],
 })
 export class ImportContentTypeComponent {
+
+  uploadType = UploadTypes.ContentType;
 
   constructor(@Inject(MAT_DIALOG_DATA) dialogData: FileUploadDialogData, contentTypesService: ContentTypesService) {
     dialogData.title ??= `Import Content Type`;

@@ -11,4 +11,5 @@ export const FeatureNames = {
   LightSpeed: 'LightSpeedOutputCache',
   ContentSecurityPolicy: 'ContentSecurityPolicy',
   PermissionsByLanguage: 'PermissionsByLanguage',
+  FieldShareConfigManagement: 'FieldShareConfigManagement',
 };

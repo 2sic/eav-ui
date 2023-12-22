@@ -1,5 +1,10 @@
-.description {
-  font-size: 14px;
+.eav-tab-group {
+  padding: 0px;
+}
+
+.eav-tab-description {
+  display: flex;
+  align-items: baseline;
 }
 
 pre {
@@ -24,3 +29,5 @@ th {
 td {
   vertical-align: baseline;
 }
+
+

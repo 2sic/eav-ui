@@ -1,13 +1,13 @@
 <div class="input-component no-click" *ngIf="totalResults <= 1">
   <div>{{ totalResults }}</div>
-  <div class="like-button disabled">
+  <div class="eav-grid-action-button disabled">
     <mat-icon>search</mat-icon>
   </div>
 </div>
 
 <div matRipple class="input-component highlight" tippy="Open details" *ngIf="totalResults > 1" (click)="openDetails()">
   <div class="text">{{ totalResults }}</div>
-  <div class="like-button">
+  <div class="eav-grid-action-button">
     <mat-icon>search</mat-icon>
   </div>
 </div>

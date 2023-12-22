@@ -1,0 +1,55 @@
+<div class="eav-dialog eav-no-scrollbar">
+  <div class="eav-dialog-header">
+    <div class="eav-dialog-header__title">
+      {{ title | translate }}
+    </div>
+    <button mat-icon-button tippy="Close dialog" *ngIf="initialState != sharingOrInheriting.None"
+      (click)="closeDialog()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <div class="eav-dialog-content">
+    <div *ngIf="initialState == sharingOrInheriting.Sharing">{{ message | translate }} {{ dialogData.Guid }}</div>
+    <div *ngIf="initialState == sharingOrInheriting.Inheriting">{{ message| translate }} {{
+      dialogData.SysSettings.InheritMetadataOf }}</div>
+    <div *ngIf="initialState == sharingOrInheriting.None">
+      <button mat-raised-button type="button" *ngIf="state == sharingOrInheriting.None" class="eav-dialog-action-button"
+        (click)="chooseShare()">Share</button>
+      <button mat-raised-button type="button" *ngIf="state == sharingOrInheriting.None"
+        (click)="chooseInherit()">Inherit</button>
+      <span *ngIf="state == sharingOrInheriting.Sharing">This will share the field definition</span>
+      <mat-card class="eav-table-div" *ngIf="state == sharingOrInheriting.Inheriting && viewModel$ | async as vm">
+        <table mat-table [dataSource]="vm.shareableFields" class="mat-elevation-z8 eav-fields-table">
+          <ng-container matColumnDef="contentType">
+            <th mat-header-cell *matHeaderCellDef> <b>Content Type</b> </th>
+            <td mat-cell *matCellDef="let field"> {{field.ContentType.Name}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef> <b>Name</b> </th>
+            <td mat-cell *matCellDef="let field"> {{field.StaticName}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="type">
+            <th mat-header-cell *matHeaderCellDef> <b>Type</b> </th>
+            <td mat-cell *matCellDef="let field"> {{field.Type}} </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedShareableFieldsColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedShareableFieldsColumns;"
+            [ngClass]="{'eav-selected-row': guid === row.Guid}" (click)="inheritField(row)"></tr>
+        </table>
+      </mat-card>
+    </div>
+  </div>
+  <div class="eav-dialog-actions" *ngIf="initialState == sharingOrInheriting.None">
+    <button mat-raised-button type="button" class="eav-dialog-action-button" (click)="closeDialog()">Cancel</button>
+    <button mat-raised-button type="submit" color="accent" class="eav-dialog-action-button" 
+      [disabled]="isSaveDisabled" (click)="save()">
+      <div class="eav-button-feature">
+        <span>Save</span>
+        <app-feature-icon-indicator class="eav-button-feature-icon" [featureNameId]="'FieldShareConfigManagement'"></app-feature-icon-indicator>
+      </div>
+    </button>
+  </div>
+</div>

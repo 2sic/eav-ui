@@ -1,32 +1,31 @@
-<div class="dialog-form-wrapper" appDragAndDrop [allowedFileTypes]="'xml'" (filesDropped)="filesDropped($event)"
-  *ngIf="viewModel$ | async as vm">
-
-  <div mat-dialog-title>
-    <div class="dialog-title-box">{{ vm.contentType?.Name }} Import Data</div>
+<div class="eav-dialog" *ngIf="viewModel$ | async as vm" appDragAndDrop 
+  [allowedFileTypes]="'xml'" (filesDropped)="filesDropped($event)">
+  <div class="eav-dialog-header">
+    <div class="eav-dialog-header__title">{{ vm.contentType?.Name }} Import Data</div>
   </div>
-
-  <p class="dialog-description">
-    This will import content-items into 2sxc. It requires that you already defined the content-type before you try
-    importing, and that you created the import-file using the template provided by the Export. Please visit
-    <a href="https://2sxc.org/help" target="_blank">https://2sxc.org/help</a> for more instructions.
-  </p>
-
+  <div class="eav-dialog-description">
+    <p>
+      This will import content-items into 2sxc. It requires that you already defined the content-type before you try
+      importing, and that you created the import-file using the template provided by the Export. Please visit
+      <a href="https://2sxc.org/help" target="_blank">https://2sxc.org/help</a> for more instructions.
+    </p>
+  </div>
   <ng-container *ngIf="formValues != null">
     <ng-container [ngSwitch]="vm.viewStateSelected">
-
+  
       <!-- FORM -->
-      <form #ngForm="ngForm" class="dialog-form" *ngSwitchCase="1">
-        <div class="dialog-form-content fancy-scrollbar-light">
+      <form #ngForm="ngForm" *ngSwitchCase="1">
+        <div class="eav-dialog-content">
           <div>
             <button mat-raised-button tippy="Open file browser" (click)="fileInput.click()">
               <span>{{ formValues.file ? formValues.file.name : 'Select or drop file' }}</span>
             </button>
             <input #fileInput type="file" (change)="fileChange($event)" class="hide" />
           </div>
-
+  
           <div>
-            <p class="field-label">References to pages / files</p>
-            <mat-radio-group [(ngModel)]="formValues.resourcesReferences" name="ResourcesReferences">
+            <p class="eav-radio-group-label">References to pages / files</p>
+            <mat-radio-group class="eav-radio-group" [(ngModel)]="formValues.resourcesReferences" name="ResourcesReferences">
               <mat-radio-button value="Keep">
                 Import links as written in the file (for example /Portals/...)
               </mat-radio-button>
@@ -35,10 +34,10 @@
               </mat-radio-button>
             </mat-radio-group>
           </div>
-
+  
           <div>
-            <p class="field-label">Clear all other entities</p>
-            <mat-radio-group [(ngModel)]="formValues.clearEntities" name="ClearEntities">
+            <p class="eav-radio-group-label">Clear all other entities</p>
+            <mat-radio-group class="eav-radio-group" [(ngModel)]="formValues.clearEntities" name="ClearEntities">
               <mat-radio-button value="None">
                 Keep all entities not found in import
               </mat-radio-button>
@@ -47,52 +46,54 @@
               </mat-radio-button>
             </mat-radio-group>
           </div>
-
-          <p class="hint">Remember to backup your DNN first!</p>
+  
+          <p class="eav-hint">Remember to backup your DNN first!</p>
         </div>
-
-        <div class="dialog-form-actions">
+  
+        <mat-dialog-actions align="end">
           <button mat-raised-button (click)="closeDialog()">Cancel</button>
           <button mat-raised-button color="accent" [disabled]="!formValues.file || !formValues.file.name"
             (click)="evaluateContent()">
             Preview Import
           </button>
-        </div>
+        </mat-dialog-actions>
       </form>
       <!-- END FORM -->
-
+  
       <!-- WAITING -->
-      <p *ngSwitchCase="0" class="progress-message">Please wait while processing...</p>
+      <div class="eav-dialog-content" *ngSwitchCase="0">
+        <p>Please wait while processing...</p>
+      </div>
       <!-- END WAITING -->
-
+  
       <!-- EVALUATION RESULT -->
       <ng-container *ngSwitchCase="2">
         <ng-container *ngIf="vm.evaluationResult">
           <!-- DETAILS / STATISTICS -->
-          <div *ngIf="vm.evaluationResult.Success" class="dialog-component-content fancy-scrollbar-light">
-            <p class="evaluation__title">Try to import file '{{ formValues.file.name }}'</p>
-            <p class="evaluation__title">File contains:</p>
-            <ul class="evaluation__content">
+          <div *ngIf="vm.evaluationResult.Success" class="eav-dialog-content">
+            <p class="eav-evaluation__title">Try to import file '{{ formValues.file.name }}'</p>
+            <p class="eav-evaluation__title">File contains:</p>
+            <ul class="eav-evaluation__content">
               <li>{{ vm.evaluationResult.Detail.DocumentElementsCount }} content-items (records/entities)</li>
               <li>{{ vm.evaluationResult.Detail.LanguagesInDocumentCount }} languages</li>
               <li>{{ vm.evaluationResult.Detail.AttributeNamesInDocument.length }} columns:
                 {{ vm.evaluationResult.Detail.AttributeNamesInDocument.join(', ') }}</li>
             </ul>
-            <p class="evaluation__title">If you press Import, it will:</p>
-            <ul class="evaluation__content">
+            <p class="eav-evaluation__title">If you press Import, it will:</p>
+            <ul class="eav-evaluation__content">
               <li>Create {{ vm.evaluationResult.Detail.AmountOfEntitiesCreated }} content-items</li>
               <li>Update {{ vm.evaluationResult.Detail.AmountOfEntitiesUpdated }} content-items</li>
               <li>Delete {{ vm.evaluationResult.Detail.AmountOfEntitiesDeleted }} content-items</li>
               <li>Ignore {{ vm.evaluationResult.Detail.AttributeNamesNotImported.length }} columns:
                 {{ vm.evaluationResult.Detail.AttributeNamesNotImported.join(', ') }}</li>
             </ul>
-            <p class="hint">Note: The import validates much data and may take several minutes.</p>
+            <p class="eav-hint">Note: The import validates much data and may take several minutes.</p>
           </div>
           <!-- END DETAILS / STATISTICS -->
           <!-- ERRORS -->
-          <div *ngIf="!vm.evaluationResult.Success" class="dialog-component-content fancy-scrollbar-light">
-            <p class="evaluation__title">Try to import file '{{ formValues.file.name }}'</p>
-            <ul class="evaluation__content">
+          <div *ngIf="!vm.evaluationResult.Success" class="eav-dialog-content">
+            <p class="eav-evaluation__title">Try to import file '{{ formValues.file.name }}'</p>
+            <ul class="eav-evaluation__content">
               <li *ngFor="let error of vm.evaluationResult.Errors">
                 <div>{{ errors[error.ErrorCode] }}</div>
                 <div *ngIf="error.ErrorDetail"><i>Details: {{ error.ErrorDetail }}</i></div>
@@ -102,27 +103,26 @@
             </ul>
           </div>
           <!-- END ERRORS -->
-          <div class="dialog-component-actions">
+          <mat-dialog-actions align="end">
             <button mat-raised-button (click)="back()">Back</button>
-            <button mat-raised-button color="accent" [disabled]="!vm.evaluationResult.Success"
-              (click)="importContent()">
+            <button mat-raised-button color="accent" [disabled]="!vm.evaluationResult.Success" (click)="importContent()">
               Import
             </button>
-          </div>
+          </mat-dialog-actions>
         </ng-container>
       </ng-container>
       <!-- END EVALUATION RESULT -->
-
+  
       <!-- IMPORT RESULT -->
-      <div *ngSwitchCase="3">
-        <div *ngIf="vm.importResult" class="progress-message">
+      <ng-container *ngSwitchCase="3">
+        <div *ngIf="vm.importResult" class="eav-dialog-content">
           <p *ngIf="vm.importResult.Success">Import done.</p>
           <p *ngIf="!vm.importResult.Success">Import failed.</p>
         </div>
-        <div class="dialog-component-actions">
+        <mat-dialog-actions align="end">
           <button mat-raised-button color="accent" (click)="closeDialog()">Close</button>
-        </div>
-      </div>
+        </mat-dialog-actions>
+      </ng-container>
       <!-- END IMPORT RESULT -->
     </ng-container>
   </ng-container>

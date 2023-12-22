@@ -1,8 +1,10 @@
 <div class="editor-active-explorer fancy-scrollbar-dark" *ngIf="viewModel$ | async as vm">
 
-  <mat-slide-toggle labelPosition="before" color="primary" (change)="toggleDifficulty($event)">
-    Show Advanced
-  </mat-slide-toggle>
+  <div class="eav-show-advanced">
+    <span class="eav-slide-toggle-label">Show Advanced</span>
+    <mat-slide-toggle color="primary" (change)="toggleDifficulty($event)" />
+  </div>
+  
 
   <ng-container *ngFor="let group of vm.sorted | keyvalue; trackBy: trackGroups">
     <div class="collapsible" [tippy]="guiTypes[group.key].UiHint || group.key" tippyShowDelay="750"

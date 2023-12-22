@@ -2,10 +2,9 @@
   <ng-container *ngIf="viewModel$ | async as vm">
 
     <div class="formula-context-box">
-      <mat-form-field color="accent">
+      <mat-form-field color="accent" class="eav-form-field">
         <mat-label>Entity</mat-label>
-        <mat-select [ngModel]="vm.designer.entityGuid"
-          (ngModelChange)="selectedChanged(SelectTargets.Entity, $event)">
+        <mat-select [ngModel]="vm.designer.entityGuid" (ngModelChange)="selectedChanged(SelectTargets.Entity, $event)">
           <mat-option *ngFor="let entityOption of vm.entityOptions; trackBy: trackEntityOptions"
             [value]="entityOption.entityGuid">
             <span [ngClass]="{ 'has-formula': entityOption.hasFormula }">
@@ -15,7 +14,7 @@
         </mat-select>
       </mat-form-field>
 
-      <mat-form-field color="accent">
+      <mat-form-field color="accent" class="eav-form-field">
         <mat-label>Attribute</mat-label>
         <mat-select [ngModel]="vm.designer.fieldName" (ngModelChange)="selectedChanged(SelectTargets.Field, $event)"
           [disabled]="vm.designer.entityGuid == null">
@@ -28,7 +27,7 @@
         </mat-select>
       </mat-form-field>
 
-      <mat-form-field color="accent">
+      <mat-form-field color="accent" class="eav-form-field">
         <mat-label>Target</mat-label>
         <mat-select *ngIf="!freeTextTarget" [ngModel]="vm.designer.target"
           (ngModelChange)="selectedChanged(SelectTargets.Target, $event)"
@@ -44,14 +43,14 @@
           [disabled]="vm.designer.entityGuid == null || vm.designer.fieldName == null">
       </mat-form-field>
 
-      <button mat-icon-button tippy="FreeText Target"
+      <button mat-icon-button tippy="FreeText Target" class="eav-formula-button"
         [disabled]="vm.designer.entityGuid == null || vm.designer.fieldName == null" (click)="toggleFreeText()">
         <mat-icon>text_fields</mat-icon>
       </button>
 
       <div class="spacer"></div>
 
-      <button mat-icon-button tippy="Help" (click)="openFormulasHelp()">
+      <button mat-icon-button tippy="Help" class="eav-formula-button" (click)="openFormulasHelp()">
         <mat-icon>help</mat-icon>
       </button>
     </div>
@@ -98,14 +97,15 @@
       </div>
 
       <div class="formula-actions-box">
-        <button mat-icon-button tippy="Edit" (click)="toggleEdit()">
+        <button mat-icon-button tippy="Edit" class="eav-formula-action-button" (click)="toggleEdit()">
           <mat-icon>edit</mat-icon>
         </button>
-        <button mat-icon-button tippy="Menu" [matMenuTriggerFor]="menu">
+        <button mat-icon-button tippy="Menu" class="eav-formula-action-button" [matMenuTriggerFor]="menu">
           <mat-icon>more_vert</mat-icon>
         </button>
-        <mat-menu #menu="matMenu" class="grid-more-menu">
-          <button mat-menu-item (click)="deleteFormula()" [disabled]="!vm.formula?.sourceId">
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="deleteFormula()"
+            [disabled]="!vm.formula?.sourceId">
             <mat-icon>delete</mat-icon>
             <span>Delete</span>
           </button>
@@ -114,12 +114,12 @@
             <span>Reset</span>
           </button>
         </mat-menu>
-        <button *ngIf="allowSaveFormula" mat-icon-button tippy="Save"
+        <button *ngIf="allowSaveFormula" mat-icon-button tippy="Save" class="eav-formula-action-button"
           [tippyDisabled]="!vm.designer.editMode || !vm.formula?.source"
           [disabled]="!vm.designer.editMode || !vm.formula?.source || vm.saving" (click)="save()">
           <mat-icon>save</mat-icon>
         </button>
-        <button mat-icon-button class="run-button" tippy="Run"
+        <button mat-icon-button class="eav-formula-action-button" tippy="Run"
           [disabled]="!vm.designer.editMode || !vm.formula?.source" (click)="run()">
           <mat-icon>play_arrow</mat-icon>
         </button>

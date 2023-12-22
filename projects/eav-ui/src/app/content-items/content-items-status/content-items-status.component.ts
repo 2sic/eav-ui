@@ -12,7 +12,7 @@ import { ContentItemsStatusParams } from './content-items-status.models';
 })
 export class ContentItemsStatusComponent implements ICellRendererAngularComp {
   value: PubMeta;
-  readOnly: boolean;
+  disableMetadata: boolean;
   metadataCount: number;
   metadataTooltip: string;
 
@@ -23,7 +23,7 @@ export class ContentItemsStatusComponent implements ICellRendererAngularComp {
     this.value = params.value;
     this.params = params;
     this.item = params.data;
-    this.readOnly = this.item._EditInfo.ReadOnly;
+    this.disableMetadata = this.item._EditInfo.DisableMetadata;
 
     this.metadataCount = this.item.Metadata?.length ?? 0;
 

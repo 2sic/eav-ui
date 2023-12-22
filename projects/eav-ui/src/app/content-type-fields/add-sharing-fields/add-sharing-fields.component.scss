@@ -1,0 +1,49 @@
+.eav-tables-div {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-top: 4px;
+  padding-top: 4px;
+  height: 400px;
+  // overflow-y: auto;
+
+  .eav-table-div-left {
+    width: 50%;
+    height: 100%;
+    margin-right: 4px;
+    overflow-y: auto;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .eav-table-div-right {
+    width: 50%;
+    height: 100%;
+    margin-left: 4px;
+    overflow-y: auto;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+
+    .eav-form-field {
+      max-width: 150px;
+    }
+  }
+  
+  .eav-table-cell {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .mat-column-source {
+    min-width: 150px;
+  }
+}
+
+.eav-button-feature {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .eav-button-feature-icon {
+    margin-left: 4px;
+    margin-top: 6px;
+  }
+}
+

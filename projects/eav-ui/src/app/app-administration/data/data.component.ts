@@ -349,7 +349,7 @@ export class DataComponent extends BaseComponent implements OnInit, OnDestroy {
           filter: 'agTextColumnFilter',
           cellClass: (params) => {
             const contentType: ContentType = params.data;
-            return `${contentType.EditInfo.ReadOnly ? 'no-outline' : 'primary-action highlight'}`.split(' ');
+            return `${contentType.EditInfo.DisableEdit ? 'no-outline' : 'primary-action highlight'}`.split(' ');
           },
           valueGetter: (params) => {
             const contentType: ContentType = params.data;

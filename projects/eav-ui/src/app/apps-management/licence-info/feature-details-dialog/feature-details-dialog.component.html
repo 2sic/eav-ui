@@ -1,40 +1,36 @@
-<div mat-dialog-title>
-  <div class="dialog-title-box">
-    <div>{{ dialogData.feature.Name }}</div>
-  </div>
-</div>
-
-<p class="dialog-description" [innerHtml]="dialogData.feature.Description | safeHtml"></p>
-
-<div class="info-box">
-  <div class="info-row" *ngIf="dialogData.feature.NameId as id">
-    <div class="info-row__label">ID</div>
-    <div class="info-row__value click">
-      <span [tippy]="id" (click)="copyToClipboard(id)">{{ id }}</span>
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>{{ dialogData.feature.Name }}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <p [innerHtml]="dialogData.feature.Description | safeHtml"></p>
+    <div class="eav-info-row" *ngIf="dialogData.feature.NameId as id">
+      <div class="eav-info-row__label">ID:</div>
+      <div class="eav-info-row__value">
+        <span [tippy]="id" (click)="copyToClipboard(id)">{{ id }}</span>
+      </div>
     </div>
-  </div>
-  <div class="info-row" *ngIf="dialogData.feature.Guid as guid">
-    <div class="info-row__label">GUID</div>
-    <div class="info-row__value click">
-      <span [tippy]="guid" (click)="copyToClipboard(guid)">{{ guid }}</span>
+    <div class="eav-info-row" *ngIf="dialogData.feature.Guid as guid">
+      <div class="eav-info-row__label">GUID:</div>
+      <div class="eav-info-row__value eav_click">
+        <span [tippy]="guid" (click)="copyToClipboard(guid)">{{ guid }}</span>
+      </div>
     </div>
-  </div>
-  <div class="info-row"
-    *ngIf="(dialogData.feature.Security.Impact + ': ' + dialogData.feature.Security.Message) as security">
-    <div class="info-row__label">Security Rating</div>
-    <div class="info-row__value">
-      <span>{{ security }}</span>
+    <div class="eav-info-row" *ngIf="(dialogData.feature.Security.Impact + ': ' + dialogData.feature.Security.Message) as security">
+      <div class="eav-info-row__label">Security Rating:</div>
+      <div class="eav-info-row__value">
+        <span>{{ security }}</span>
+      </div>
     </div>
-  </div>
-</div>
-
-<div class="dialog-component-actions">
-  <button *ngIf="dialogData.feature.Link as link" mat-raised-button class="dialog-component-button" color="accent"
-    (click)="findOutMore(link)">
-    <mat-icon>open_in_new</mat-icon>
-    Find out more
-  </button>
-  <button mat-raised-button class="dialog-component-button" (click)="closeDialog()">
-    Close
-  </button>
-</div>
+  </mat-card-content>
+  <mat-card-actions align="end">
+    <button *ngIf="dialogData.feature.Link as link" mat-raised-button class="eav-card-action-button" color="accent"
+      (click)="findOutMore(link)">
+      <mat-icon>open_in_new</mat-icon>
+      Find out more
+    </button>
+    <button mat-raised-button class="eav-card-action-button" (click)="closeDialog()">
+      Close
+    </button>
+  </mat-card-actions>
+</mat-card>

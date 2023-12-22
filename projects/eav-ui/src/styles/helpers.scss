@@ -1,3 +1,13 @@
+.eav-hide-scrollbar {
+  -ms-overflow-style: none !important; // IE 10+
+  overflow: scroll !important;
+  scrollbar-width: none !important;
+
+  &::-webkit-scrollbar {
+    display: none !important; // Safari and Chrome
+  }
+}
+
 .hide-scrollbar {
   -ms-overflow-style: none !important; // IE 10+
   overflow: -moz-scrollbars-none !important; // Firefox
@@ -32,7 +42,7 @@
   color: purple;
 }
 
-.mat-button.icon .mat-icon {
+.mat-mdc-button.icon .mat-icon {
   margin-right: 8px;
 }
 

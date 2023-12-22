@@ -1,55 +1,58 @@
-<mat-card *ngIf="viewModel$ | async as vm" class="translate-menu-dialog-card u-hide-scrollbar">
-
-  <div class="mat-card__header">
-    <div class="mat-card__title">
+<mat-card *ngIf="viewModel$ | async as vm" class="auto-translate-menu-dialog-card u-hide-scrollbar">
+  <mat-card-header>
+    <mat-card-title>
       {{ 'LangMenu.Dialog.AutoTranslateAll.Title' | translate }}
-    </div>
+    </mat-card-title>
     <app-feature-text-info [featureNameId]="'EditUiTranslateWithGoogle'"></app-feature-text-info>
-    <div class="mat-card__description" [innerHTML]="'LangMenu.Dialog.AutoTranslateAll.Body' | translate | safeHtml">
-    </div>
-  </div>
-
-  <mat-action-list>
-    <button mat-list-item *ngFor="let language of vm.languages" (click)="setLanguage(language.key)"
-      [disabled]="language.disabled || !vm.isTranslateWithGoogleFeatureEnabled" [ngClass]="{
-      'mat-list-item-focus': vm.translationState.language === language.key,
-      'mat-list-item--disabled': language.disabled || !vm.isTranslateWithGoogleFeatureEnabled
-    }">
-      <mat-icon matListIcon color="accent">language</mat-icon>
-      {{ language.key }}
-      <div *ngIf="dialogData.isTranslateMany">
-        <p *ngIf="language.noTranslatableFields == 0">
-          &nbsp;({{"LangMenu.Dialog.AutoTranslateAll.NoContent" | translate}})
-        </p>
-        <div *ngIf="language.noTranslatableFields != 0">
-          <div *ngIf="language.noTranslatableFields == dialogData.translatableFields.length">
-            <div *ngIf="dialogData.translatableFields.length - language.noTranslatableFieldsThatHaveContent == 0">
-              &nbsp;({{"LangMenu.Dialog.AutoTranslateAll.AllTranslatableFields" | translate}})
-            </div>
-            <div *ngIf="dialogData.translatableFields.length - language.noTranslatableFieldsThatHaveContent != 0">
-              &nbsp;({{"LangMenu.Dialog.AutoTranslateAll.AllTranslatableFields" | translate}},
-              {{dialogData.translatableFields.length - language.noTranslatableFieldsThatHaveContent}}
-              {{"LangMenu.Dialog.AutoTranslateAll.Empty" | translate}})
-            </div>
-          </div>
-          <div *ngIf="language.noTranslatableFields != dialogData.translatableFields.length">
-            <div *ngIf="dialogData.translatableFields.length - language.noTranslatableFieldsThatHaveContent == 0">
-              &nbsp;({{language.noTranslatableFields}} {{"LangMenu.Dialog.AutoTranslateAll.Of" | translate}}
-              {{dialogData.translatableFields.length}} {{"LangMenu.Dialog.AutoTranslateAll.TranslatableFields" |
+    <mat-card-subtitle [innerHTML]="'LangMenu.Dialog.AutoTranslateAll.Body' | translate | safeHtml">
+    </mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content class="eav-card-content__no-padding">
+    <mat-action-list>
+      <mat-list-item *ngFor="let language of vm.languages" (click)="setLanguage(language.key)"
+        [disabled]="language.disabled || !vm.isTranslateWithGoogleFeatureEnabled" [ngClass]="{
+          'eav-list-item__focus': vm.translationState.language === language.key,
+          'list-item__disabled': language.disabled || !vm.isTranslateWithGoogleFeatureEnabled
+        }">
+        <mat-icon matListItemIcon [ngClass]="{ 'list-item-icon__disabled': language.disabled }">language</mat-icon>
+        <span matListItemTitle>{{ language.key }}
+          <span *ngIf="dialogData.isTranslateMany">
+            <span *ngIf="language.noTranslatableFields == 0">({{"LangMenu.Dialog.AutoTranslateAll.NoContent" |
               translate}})
-            </div>
-            <div *ngIf="dialogData.translatableFields.length - language.noTranslatableFieldsThatHaveContent != 0">
-              &nbsp;({{language.noTranslatableFields}} {{"LangMenu.Dialog.AutoTranslateAll.Of" | translate}}
-              {{dialogData.translatableFields.length}} {{"LangMenu.Dialog.AutoTranslateAll.TranslatableFields" |
-              translate}}
-              , {{dialogData.translatableFields.length - language.noTranslatableFieldsThatHaveContent}}
-              {{"LangMenu.Dialog.AutoTranslateAll.Empty" | translate}})
-            </div>
-          </div>
-        </div>
-      </div>
-    </button>
-  </mat-action-list>
-  <mat-dialog-actions>
-  </mat-dialog-actions>
+            </span>
+            <span *ngIf="language.noTranslatableFields != 0">
+              <span *ngIf="language.noTranslatableFields == dialogData.translatableFields.length">
+                <span
+                  *ngIf="dialogData.translatableFields.length - language.noTranslatableFieldsThatHaveContent == 0">({{"LangMenu.Dialog.AutoTranslateAll.AllTranslatableFields"
+                  | translate}})
+                </span>
+                <span
+                  *ngIf="dialogData.translatableFields.length - language.noTranslatableFieldsThatHaveContent != 0">({{"LangMenu.Dialog.AutoTranslateAll.AllTranslatableFields"
+                  | translate}},
+                  {{dialogData.translatableFields.length - language.noTranslatableFieldsThatHaveContent}}
+                  {{"LangMenu.Dialog.AutoTranslateAll.Empty" | translate}})
+                </span>
+              </span>
+              <span *ngIf="language.noTranslatableFields != dialogData.translatableFields.length">
+                <span
+                  *ngIf="dialogData.translatableFields.length - language.noTranslatableFieldsThatHaveContent == 0">({{language.noTranslatableFields}}
+                  {{"LangMenu.Dialog.AutoTranslateAll.Of" | translate}}
+                  {{dialogData.translatableFields.length}} {{"LangMenu.Dialog.AutoTranslateAll.TranslatableFields" |
+                  translate}})
+                </span>
+                <span
+                  *ngIf="dialogData.translatableFields.length - language.noTranslatableFieldsThatHaveContent != 0">({{language.noTranslatableFields}}
+                  {{"LangMenu.Dialog.AutoTranslateAll.Of" | translate}}
+                  {{dialogData.translatableFields.length}} {{"LangMenu.Dialog.AutoTranslateAll.TranslatableFields" |
+                  translate}}
+                  , {{dialogData.translatableFields.length - language.noTranslatableFieldsThatHaveContent}}
+                  {{"LangMenu.Dialog.AutoTranslateAll.Empty" | translate}})
+                </span>
+              </span>
+            </span>
+          </span>
+        </span>
+      </mat-list-item>
+    </mat-action-list>
+  </mat-card-content>
 </mat-card>

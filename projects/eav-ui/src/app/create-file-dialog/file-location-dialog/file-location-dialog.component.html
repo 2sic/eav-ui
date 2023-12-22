@@ -1,27 +1,26 @@
-<div mat-dialog-title>
-  <div class="dialog-title-box">New file location</div>
-</div>
-
-<form [formGroup]="form" class="dialog-form">
-  <div class="dialog-form-content fancy-scrollbar-light">
-
-    <!-- Shared -->
-    <mat-form-field appearance="standard" color="accent">
-      <mat-label>Location</mat-label>
-      <mat-select formControlName="isShared">
-        <mat-option [value]="false">App</mat-option>
-        <mat-option [value]="true">Shared (global)</mat-option>
-      </mat-select>
-    </mat-form-field>
-    <app-field-hint *ngIf="form.controls.isShared.touched && form.controls.isShared.errors?.required" [isError]="true">
-      This field is required
-    </app-field-hint>
-
-    <div class="dialog-form-actions">
-      <button mat-raised-button type="button" (click)="closeDialog()">Cancel</button>
-      <button mat-raised-button type="button" color="accent" [disabled]="!form.valid" (click)="confirm()">
-        Confirm
-      </button>
-    </div>
-  </div>
-</form>
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>New file location</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <form [formGroup]="form">
+      <!-- Shared -->
+      <mat-form-field color="accent" class="eav-form-field">
+        <mat-label>Location</mat-label>
+        <mat-select formControlName="isShared">
+          <mat-option [value]="false">App</mat-option>
+          <mat-option [value]="true">Shared (global)</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <app-field-hint *ngIf="form.controls.isShared.touched && form.controls.isShared.errors?.required" [isError]="true">
+        This field is required
+      </app-field-hint>
+    </form>
+  </mat-card-content>
+  <mat-card-actions align="end">
+    <button mat-raised-button class="eav-card-action-button" (click)="closeDialog()">Cancel</button>
+    <button mat-raised-button color="accent" class="eav-card-action-button" [disabled]="!form.valid" (click)="confirm()">
+      Confirm
+    </button>
+  </mat-card-actions>
+</mat-card>

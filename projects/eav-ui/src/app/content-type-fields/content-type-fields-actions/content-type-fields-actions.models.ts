@@ -5,4 +5,5 @@ export interface ContentTypeFieldsActionsParams {
   onDelete(field: Field): void;
   onOpenPermissions(field: Field): void;
   onOpenMetadata(field: Field): void;
+  onShareOrInherit(field: Field): void;
 }

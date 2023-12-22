@@ -185,7 +185,7 @@ export class QueriesComponent extends BaseComponent implements OnInit, OnDestroy
           filter: 'agTextColumnFilter',
           cellClass: (params) => {
             const query: Query = params.data;
-            return `${query._EditInfo.ReadOnly ? 'no-outline' : 'primary-action highlight'}`.split(' ');
+            return `${query._EditInfo.DisableEdit ? 'no-outline' : 'primary-action highlight'}`.split(' ');
           },
           onCellClicked: (params) => {
             const query: Query = params.data;

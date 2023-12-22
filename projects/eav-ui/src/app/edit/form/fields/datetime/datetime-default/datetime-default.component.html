@@ -1,19 +1,28 @@
 <ng-container *ngIf="viewModel | async as vm">
 
-  <mat-form-field [formGroup]="group" appearance="standard" color="accent" *ngIf="!vm.useTimePicker">
+  <!-- HACK -->
+  <mat-form-field *ngIf="visible"
+    style="position: absolute; top: -10000px; left: -10000px; visibility: hidden;">
+    <input matInput [matDatepicker]="hiddenPicker">
+    <mat-datepicker-toggle matIconSuffix [for]="hiddenPicker"></mat-datepicker-toggle>
+    <mat-datepicker #hiddenPicker></mat-datepicker>
+  </mat-form-field>
+  <!-- /HACK -->
+
+  <mat-form-field [formGroup]="group" color="accent" class="eav-form-field" *ngIf="!vm.useTimePicker">
     <input matInput [disabled]="vm.controlStatus.disabled" [matDatepicker]="picker" [placeholder]="vm.placeholder"
       [required]="vm.required" [value]="vm.controlStatus.value" (dateChange)="updateValue($event)">
-    <mat-datepicker-toggle matSuffix [for]="picker" [tippy]="'Fields.DateTime.Open' | translate">
+    <mat-datepicker-toggle matTextSuffix [for]="picker" [tippy]="'Fields.DateTime.Open' | translate">
     </mat-datepicker-toggle>
     <mat-datepicker #picker></mat-datepicker>
     <mat-label>{{ vm.label }}</mat-label>
   </mat-form-field>
 
-  <mat-form-field [formGroup]="group" appearance="standard" color="accent" *ngIf="vm.useTimePicker">
+  <mat-form-field [formGroup]="group" color="accent" class="eav-form-field" *ngIf="vm.useTimePicker">
     <input matInput [disabled]="vm.controlStatus.disabled" [ngxMatDatetimePicker]="picker"
       [placeholder]="vm.placeholder" [required]="vm.required" [value]="vm.controlStatus.value"
       (dateChange)="updateValue($event)">
-    <mat-datepicker-toggle matSuffix [for]="$any(picker)" [tippy]="'Fields.DateTime.Open' | translate">
+    <mat-datepicker-toggle matTextSuffix [for]="$any(picker)" [tippy]="'Fields.DateTime.Open' | translate">
     </mat-datepicker-toggle>
     <ngx-mat-datetime-picker #picker (opened)="pickerOpened()"></ngx-mat-datetime-picker>
     <mat-label>{{ vm.label }}</mat-label>

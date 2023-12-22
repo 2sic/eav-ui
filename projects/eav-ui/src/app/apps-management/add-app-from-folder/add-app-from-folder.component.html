@@ -1,30 +1,30 @@
 <ng-container *ngIf="viewModel$ | async as vm">
-  <div mat-dialog-title>
-    <div class="dialog-title-box">Add App from Folder</div>
+  <div class="eav-dialog">
+    <div class="eav-dialog-header">
+      <div class="eav-dialog-header__title">Add App from Folder</div>
+    </div>
+    <div class="eav-dialog-content">
+      <app-feature-text-info [featureNameId]="'AppSyncWithSiteFiles'"></app-feature-text-info>
+      <p>
+        Select an app from the apps-folder which has been copied there (or git-cloned) but not installed yet.
+      </p>
+      <p *ngIf="vm.pendingApps?.length == 0">
+        Nothing to show. All apps in the 2sxc folder are already installed.
+      </p>
+      <div *ngIf="vm.pendingApps?.length > 0">
+        <ag-grid-angular class="ag-theme-material eav-grid" [rowData]="vm.pendingApps"
+          [gridOptions]="gridOptions">
+        </ag-grid-angular>
+      </div>
+    </div>
+    <mat-dialog-actions align="end">
+      <button type="button" mat-raised-button (click)="closeDialog()">
+        Cancel
+      </button>
+      <button type="button" mat-raised-button color="accent" [disabled]="pendingApps.length === 0 || installing"
+        (click)="install()">
+        Install
+      </button>
+    </mat-dialog-actions>
   </div>
-
-  <app-feature-text-info [featureNameId]="'AppSyncWithSiteFiles'"></app-feature-text-info>
-  
-  <p class="dialog-description">
-    Select an app from the apps-folder which has been copied there (or git-cloned) but not installed yet.
-  </p>
-
-  <p class="dialog-description" *ngIf="vm.pendingApps?.length == 0">
-    Nothing to show. All apps in the 2sxc folder are already installed.
-  </p>
-
-  <div class="grid-wrapper" *ngIf="vm.pendingApps?.length > 0">
-    <ag-grid-angular style="height: 200px; width: auto;" class="ag-theme-material"
-      [rowData]="vm.pendingApps" [gridOptions]="gridOptions">
-    </ag-grid-angular>
-  </div>
-
-  <div class="dialog-component-actions">
-    <button type="button" mat-raised-button (click)="closeDialog()">
-      Cancel
-    </button>
-    <button type="button" mat-raised-button color="accent" [disabled]="pendingApps.length === 0 || installing" (click)="install()">
-      Install
-    </button>
-  </div> 
 </ng-container>

@@ -1,10 +1,10 @@
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { FieldConfigSet } from '../../builder/fields-builder/field-config-set.model';
 import { QueryEntity } from '../../fields/entity/entity-query/entity-query.models';
 
 export interface PagePickerDialogData {
   config: FieldConfigSet;
-  group: FormGroup;
+  group: UntypedFormGroup;
 }
 
 export interface PageEntity extends QueryEntity {

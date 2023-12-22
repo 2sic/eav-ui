@@ -7,8 +7,8 @@ export interface AdamItem {
 
   Created: string;
 
-  /** The ID of the file system */
-  Id: number;
+  /** The ID of the file system - normally a number; but in special platforms can be a string */
+  Id: number | string;
 
   IsFolder: boolean;
   Metadata?: AdamItemMetadata[];

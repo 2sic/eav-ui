@@ -3,14 +3,26 @@
 .translate-menu-dialog-card {
   max-height: 99vh;
   overflow-y: scroll;
-}
 
-.mat-list-item-focus {
-  background: $edit-ui-selected-option;
-}
+  .eav-card-content__no-padding {
+    padding: 0px;
 
-.mat-list-item--disabled {
-  cursor: default;
-  color: $editUI-label-disabled-color;
-  background: $primary-color;
+    &:last-child {
+      padding-bottom: 16px;
+    }
+
+    .eav-list-item__focus {
+      background: $edit-ui-selected-option;
+    }
+
+    .list-item__disabled {
+      cursor: default;
+      color: $editUI-label-disabled-color;
+      background: $primary-color;
+
+      .list-item-icon__disabled {
+        color: $editUI-label-disabled-color;
+      }
+    }
+  }
 }

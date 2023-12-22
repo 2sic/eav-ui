@@ -58,7 +58,7 @@ export class FormulaSettingsHelper {
 
     // update settings with respective FieldLogics
     const fixed = fieldLogic?.update(settingsCurrent, valueBefore, logicTools) ?? settingsCurrent;
-    consoleLogAngular('fixed', JSON.parse(JSON.stringify(fixed)));
+    // consoleLogAngular('fixed', JSON.parse(JSON.stringify(fixed)));
 
     return fixed;
   }

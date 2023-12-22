@@ -38,8 +38,16 @@
   </div>
 
   <div class="create-button-wrapper">
-    <button mat-icon-button tippy="Create file" (click)="addFile()">
+    <button mat-icon-button [matMenuTriggerFor]="menu" tippy="Create file" tippyPlacement="left">
       <mat-icon>add</mat-icon>
     </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item  (click)="addFile('', false)">
+        <span>App</span>
+      </button>
+      <button mat-menu-item  (click)="addFile('', true)">
+        <span>Shared (global)</span>
+      </button>
+    </mat-menu>
   </div>
 </div>

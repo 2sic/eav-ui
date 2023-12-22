@@ -1,0 +1,53 @@
+<div [ngClass]="(dialogIsOpen$ | async) ? 'c-ew__container' : 'u-display-none'">
+  <div class="c-ew__backdrop" (click)="closeDialog()"></div>
+  <div fxLayout="column" class="c-ew__dialog mat-elevation-z24 u-border-radius">
+    <div [ngClass]="{ 'c-ew__dialog-header mat-elevation-z2': dialogIsOpen$ | async }">
+      <mat-card class="mat-elevation-z0" fxLayout="row">
+        <button mat-icon-button class="back-arrow" fxLayoutAlign="center center"
+          [tippy]="'Form.Buttons.Return.Tip' | translate" (click)="closeDialog()">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        <span fxLayoutAlign="center center" class="title mat-headline-4">{{ label$ | async }}</span>
+      </mat-card>
+    </div>
+    <div>
+      <div [@itemShrinkAnimation]="(dialogIsOpen$ | async) ? 'closed' : 'open'">
+      </div>
+      <!-- cdkScrollable is required when using matAutocomplete with scrollable element that is not body. Fixes matAutocomplete not following input  -->
+      <div class="c-ew__dialog-content u-add-scrollbar u-hide-scrollbar" cdkScrollable [@contentExpandAnimation]="{
+        value: (dialogIsOpen$ | async) ? 'expanded' : 'closed',
+        params: { bottomPixels: calculateBottomPixels() }
+      }">
+        <div class="eav-layout-grid">
+          <div class="eav-layout-grid__inner">
+            <mat-card class="eav-card eav-layout-grid__cell--span-12 u-border-radius shadow-bottom-z-1">
+              <ng-container #fieldComponent></ng-container>
+            </mat-card>
+          </div>
+        </div>
+      </div>
+      <extended-fab-speed-dial>
+        <ng-template extendedFabSpeedDialTriggerContent>
+          <button extended-fab-speed-dial-trigger matRipple (click)="closeDialog()">
+            <mat-icon>done</mat-icon>
+            <span>{{ 'Form.Buttons.Return.Tip' | translate }}</span>
+          </button>
+        </ng-template>
+        <ng-template extendedFabSpeedDialActionsContent>
+          <button extended-fab-speed-dial-action matRipple [disabled]="saveButtonDisabled$ | async"
+            (click)="saveAll(false)">
+            <span>{{ 'Form.Buttons.Save' | translate }}</span>
+            <mat-icon>save</mat-icon>
+          </button>
+          <button extended-fab-speed-dial-action matRipple [disabled]="saveButtonDisabled$ | async"
+            (click)="saveAll(true)">
+            <span>{{ 'Form.Buttons.SaveAndClose' | translate }}</span>
+            <mat-icon>done_all</mat-icon>
+          </button>
+        </ng-template>
+      </extended-fab-speed-dial>
+    </div>
+  </div>
+</div>
+<ng-container #previewComponent></ng-container>
+

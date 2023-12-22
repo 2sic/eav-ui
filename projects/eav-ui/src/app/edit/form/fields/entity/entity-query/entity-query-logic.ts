@@ -13,6 +13,12 @@ export class EntityQueryLogic extends FieldLogicBase {
     fixedSettings.Query ??= '';
     fixedSettings.StreamName ||= 'Default';
     fixedSettings.UrlParameters ??= '';
+
+    fixedSettings.Information ??= '';
+    fixedSettings.Tooltip ??= '';
+    fixedSettings.MoreFields ??= '';
+    fixedSettings.Label ??= '';
+
     return fixedSettings;
   }
 }

@@ -1,19 +1,17 @@
-<div mat-dialog-title>
-  <div class="dialog-title-box">
-    <div>Stream Error Results</div>
+<div class="eav-dialog">
+  <div class="eav-dialog-header">
+    <div class="eav-dialog-header__title">Stream Error Results</div>
     <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
       <mat-icon>close</mat-icon>
     </button>
   </div>
-</div>
-
-<br />
-
-<pre>{{ errorData | json }}</pre>
-
-<div>
-  <button mat-button tippy="Open 2sxc Insights" (click)="openInsights()">
-    <mat-icon>speed</mat-icon>
-    <span>Insights</span>
-  </button>
+  <div class="eav-dialog-content">
+    <pre>{{ errorData | json }}</pre>
+  </div>
+  <mat-dialog-actions align="end">
+    <button mat-button class="eav-button__with-icon" tippy="Open 2sxc Insights" (click)="openInsights()">
+      <mat-icon class="eav-icon">speed</mat-icon>
+      <span>Insights</span>
+    </button>
+  </mat-dialog-actions>
 </div>

@@ -211,7 +211,7 @@ export class FormulaHelpers {
             debug: debugEnabled,
             features: {
               isEnabled(name: string): boolean {
-                return features.find(f => f.NameId === name)?.Enabled ?? false;
+                return features.find(f => f.NameId === name)?.IsEnabled ?? false;
               },
             },
             form: {

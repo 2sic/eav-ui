@@ -1,6 +1,8 @@
 import { AbstractControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { EavConfig } from '../models';
+import { FieldConfigSet } from '../../form/builder/fields-builder/field-config-set.model';
+import { GeneralHelpers } from './general.helpers';
 
 /**
  * Create a new FieldMask instance and access result with resolve
@@ -22,11 +24,12 @@ export class FieldMask {
   private subscriptions: Subscription[] = [];
 
   constructor(
-    mask: string,
+    mask: string | null,
     model: Record<string, AbstractControl>,
     private changeEvent: (newValue: string) => void,
     overloadPreCleanValues: (key: string, value: string) => string,
     private eavConfig?: EavConfig,
+    private config?: FieldConfigSet,
   ) {
     this.mask = mask;
     this.model = model;
@@ -45,14 +48,21 @@ export class FieldMask {
   /** Resolves a mask to the final value */
   resolve(): string {
     let value = this.mask;
-    if (this.eavConfig != null && value != null) {
-      value = value.replace('[App:AppId]', this.eavConfig.appId);
-      value = value.replace('[App:ZoneId]', this.eavConfig.zoneId);
+    value = GeneralHelpers.lowercaseInsideSquareBrackets(value);
+    if (value != null) {
+      if (this.eavConfig != null) {
+        value = value.replace('[app:appid]', this.eavConfig.appId);
+        value = value.replace('[app:zoneid]', this.eavConfig.zoneId);
+      }
+      if (this.config != null && this.config != undefined) {
+        value = value.replace('[guid]', this.config.entityGuid);
+        value = value.replace('[id]', this.config.entityId.toString());
+      }
     }
     this.fields.forEach((e, i) => {
       const replaceValue = this.model.hasOwnProperty(e) && this.model[e] && this.model[e].value ? this.model[e].value : '';
       const cleaned = this.preClean(e, replaceValue);
-      value = value.replace('[' + e + ']', cleaned);
+      value = value.replace('[' + e.toLowerCase() + ']', cleaned);
     });
 
     return value;

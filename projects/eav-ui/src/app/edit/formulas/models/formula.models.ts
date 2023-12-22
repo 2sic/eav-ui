@@ -1,4 +1,4 @@
-import { SxcInstance } from '@2sic.com/2sxc-typings';
+import { Sxc } from '@2sic.com/2sxc-typings';
 import { BehaviorSubject } from 'rxjs';
 import { FieldSettings, FieldValue } from '../../../../../../edit-types';
 import { FormValues } from '../../shared/models';
@@ -14,7 +14,7 @@ export interface FormulaCacheItemShared {
   user: FormulaV1CtxUser;
   /** App which stays the same across cycles, new cached in 14.07.05 */
   app: FormulaV1CtxApp;
-  sxc: SxcInstance;
+  sxc: Sxc;
 }
 
 export interface FormulaCacheItem extends FormulaCacheItemShared {
@@ -95,7 +95,7 @@ export interface FormulaV1Context {
   debug: boolean;
   features: FormulaV1CtxFeatures;
   form: FormulaV1CtxForm;
-  sxc: SxcInstance;
+  sxc: Sxc;
   target: FormulaV1CtxTarget;
   user: FormulaV1CtxUser;
 }
