@@ -46,8 +46,7 @@ export class PickerComponent extends BaseFieldComponent<string | string[]> imple
   }
 
   ngOnDestroy(): void {
-    this.pickerData.source.destroy();
-    this.pickerData.state.destroy();
+    this.pickerData.destroy();
 
     super.ngOnDestroy();
   }

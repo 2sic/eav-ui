@@ -1,4 +1,4 @@
-import { Observable, combineLatest, distinctUntilChanged, map, shareReplay, take, tap } from 'rxjs';
+import { Observable, Subscription, combineLatest, distinctUntilChanged, map, shareReplay, take, tap } from 'rxjs';
 import { PickerSourceAdapter } from "./adapters/picker-source-adapter";
 import { PickerStateAdapter } from "./adapters/picker-state-adapter";
 import { PickerItem } from 'projects/edit-types';
@@ -7,14 +7,17 @@ import { TranslateService } from '@ngx-translate/core';
 
 export class PickerData {
   public selectedItems$ = new Observable<PickerItem[]>;
+  private subscriptions = new Subscription();
   constructor(
     public state: PickerStateAdapter,
     public source: PickerSourceAdapter,
     private translate: TranslateService,
   ) {
-    state.selectedItems$.pipe(take(1)).subscribe(items => {
+    // TODO: @SDV include this take(1) and remove this.subscriptions after fixing an issue of why 
+    // labels don't show on on picker list (or picker search if we added new items in picker list...)
+    this.subscriptions.add(state.selectedItems$/*.pipe(take(1))*/.subscribe(items => {
       source.setPrefetchData(items.map(item => item.Value));
-    });
+    }));
 
     this.selectedItems$ = combineLatest([
       state.selectedItems$.pipe(distinctUntilChanged(GeneralHelpers.arraysEqual)),
@@ -26,6 +29,12 @@ export class PickerData {
       distinctUntilChanged(GeneralHelpers.arraysEqual),
       shareReplay(1),
     );
+  }
+
+  destroy() {
+    this.subscriptions.unsubscribe();
+    this.source.destroy();
+    this.state.destroy();
   }
 
   private createUIModel(
