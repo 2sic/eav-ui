@@ -7,7 +7,7 @@
         [matAutocomplete]="auto">
     </div>
 
-    <mat-autocomplete #auto="matAutocomplete">
+    <mat-autocomplete #auto="matAutocomplete" [hideSingleSelectionIndicator]="true">
       <cdk-virtual-scroll-viewport itemSize="48" minBufferPx="500" maxBufferPx="1000"
         [style.height.px]="vm.filteredIcons.length < 6 ? vm.filteredIcons.length * 48 : 240">
         <mat-option *cdkVirtualFor="let icon of vm.filteredIcons" [value]="icon.class">
