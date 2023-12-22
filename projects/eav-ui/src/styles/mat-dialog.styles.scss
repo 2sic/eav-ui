@@ -1,3 +1,5 @@
+@import "variables.scss";
+
 $dialog-margin-top: 24px;
 $dialog-margin-bottom: 24px;
 $dialog-margin-side: 24px;
@@ -7,20 +9,26 @@ $dialog-width-medium: 95vw;
 $dialog-width-small: 40vw;
 $max-height: calc(100vh - #{$dialog-margin-top} - #{$dialog-margin-bottom});
 
-.mat-dialog-container {
+.mat-mdc-dialog-container {
   @media (max-width: 600px) {
     border-radius: 0 !important;
   }
+
+  .mat-mdc-dialog-title.mdc-dialog__title {
+    height: 48px;
+    padding: 0px;
+  }
+
 }
 
 .no-scrollbar {
-  .mat-dialog-container {
+  .mat-mdc-dialog-container {
     @extend .hide-scrollbar;
   }
 }
 
 .note-dialog {
-  .mat-dialog-container {
+  .mat-mdc-dialog-container {
     padding: 0;
     box-shadow: 0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%) !important;
   }
@@ -78,6 +86,15 @@ $max-height: calc(100vh - #{$dialog-margin-top} - #{$dialog-margin-bottom});
   font-size: 29px;
   line-height: 29px;
   font-weight: 400;
+  padding: 24px;
+}
+
+// .mat-mdc-tab-group {
+//   padding: 0px 24px;
+// }
+
+.actions-box, .grid-more-actions-box, .grid-fab.mdc-fab::before {
+  padding-bottom: 24px;
 }
 
 .default-fonts {
@@ -97,7 +114,7 @@ $max-height: calc(100vh - #{$dialog-margin-top} - #{$dialog-margin-bottom});
 }
 
 .dialog-component {
-  max-height: calc(#{$max-height} - 48px);
+  max-height: calc(#{$max-height} - 24px);
   display: flex;
   flex-direction: column;
 
@@ -136,7 +153,7 @@ $max-height: calc(100vh - #{$dialog-margin-top} - #{$dialog-margin-bottom});
       align-items: center;
       justify-content: flex-end;
 
-      .mat-button-base {
+      .mat-mdc-button-base {
         margin-right: 8px;
         overflow: auto;
         @extend .hide-scrollbar;
@@ -144,8 +161,8 @@ $max-height: calc(100vh - #{$dialog-margin-top} - #{$dialog-margin-bottom});
         &:last-of-type {
           margin-right: 0;
         }
-
-        .mat-button-wrapper {
+        /* TODO_(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version. */
+        .mdc-button__label {
           white-space: nowrap;
         }
       }
@@ -168,7 +185,7 @@ $max-height: calc(100vh - #{$dialog-margin-top} - #{$dialog-margin-bottom});
     margin-bottom: -$dialog-margin-bottom;
     justify-content: flex-end;
 
-    .mat-button-base {
+    .mat-mdc-button-base {
       margin-right: 8px;
       overflow: auto;
       @extend .hide-scrollbar;
@@ -176,10 +193,70 @@ $max-height: calc(100vh - #{$dialog-margin-top} - #{$dialog-margin-bottom});
       &:last-of-type {
         margin-right: 0;
       }
-
-      .mat-button-wrapper {
+      /* TODO_(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version. */
+      .mdc-button__label {
         white-space: nowrap;
       }
     }
   }
+}
+
+/*----------------------------------------------------------------------NEW STYLES--------------------------------------------------------------------*/
+
+.eav-dialog {
+  .eav-dialog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: $eav-dialog-padding $eav-dialog-padding $eav-header-padding-bottom $eav-dialog-padding;
+
+    &__title {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      font-size: $eav-dialog-title-font-size;
+      line-height: $eav-dialog-title-line-height;
+      font-weight: $eav-dialog-title-font-weight;
+
+      &__image {
+        width: 40px;
+        height: 40px;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        border-radius: 16px 0;
+        margin-right: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        user-select: none;
+        text-shadow: none;
+      }
+    }
+
+    &__subtitle {
+      font-size: $eav-dialog-subtitle-font-size;
+      line-height: $eav-dialog-subtitle-line-height;
+      font-weight: $eav-dialog-subtitle-font-weight;
+    }
+  }
+
+  .eav-dialog-description, .eav-dialog-tab-content {
+    padding: 0px $eav-dialog-padding;
+  }
+
+  .eav-dialog-content {
+    padding: 0px $eav-dialog-padding $eav-dialog-padding $eav-dialog-padding;
+  }
+
+  .eav-dialog-actions {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .eav-raised-button-icon {
+    margin: 0px !important;
+  }
+}
+
+.eav-no-scrollbar {
+  @extend .eav-hide-scrollbar;
 }

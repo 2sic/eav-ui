@@ -1,4 +1,4 @@
-import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
+import { Context as DnnContext } from '@2sic.com/sxc-angular';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
@@ -11,7 +11,8 @@ import { ReservedNames } from '../models/reserved-names.model';
 import { InputTypeStrict } from '../constants/input-type.constants';
 
 export const webApiFieldsRoot = 'admin/field/';
-export const webApiFieldsAll = webApiFieldsRoot + 'all';
+export const webApiFieldsAll = 'admin/field/all';
+export const webApiFieldsGetShared = 'admin/field/GetSharedFields';
 
 @Injectable()
 export class ContentTypesFieldsService {
@@ -55,6 +56,7 @@ export class ContentTypesFieldsService {
     return this.http.get<ReservedNames>(this.apiUrl(webApiFieldsRoot + 'ReservedNames'));
   }
 
+  /** Get all fields for some content type */
   getFields(contentTypeStaticName: string) {
     return this.http
       .get<Field[]>(this.apiUrl(webApiFieldsAll), {
@@ -75,6 +77,62 @@ export class ContentTypesFieldsService {
           return fields;
         }),
       );
+  }
+
+  /** Get all possible sharable fields for a new sharing */
+  getShareableFields() {
+    return this.http.get<Field[]>(this.apiUrl(webApiFieldsGetShared), {
+        params: { appid: this.context.appId.toString() },
+      });
+  }
+
+  /**
+   * Get sharable fields which are possible for this attribute.
+   * 
+   * Reason is that eg. a bool-attribute can only receive metadata from a bool attribute, etc.
+   * 
+   * @param attributeId the existing attributeId which will receive the new metadata
+   */
+  getShareableFieldsFor(attributeId: number) {
+    // TODO: @SDV - do the same as in getShareableFields()
+    // but add parameter attributeId to the webapi call
+    // I'll create the backend afterwards
+    return this.http
+      .get<Field[]>(this.apiUrl(webApiFieldsGetShared), {
+        params: { appid: this.context.appId.toString(), attributeId: attributeId.toString() },
+      });
+  }
+
+  addInheritedField(targetContentTypeId: number, sourceContentTypeStaticName: string, sourceFieldGuid: string, newName: string) {
+    return this.http.post<number>(this.apiUrl(webApiFieldsRoot + 'AddInheritedField'), null, {
+      params: {
+        AppId: this.context.appId.toString(),
+        ContentTypeId: targetContentTypeId.toString(),
+        SourceType: sourceContentTypeStaticName,
+        SourceField: sourceFieldGuid,
+        name: newName,
+      }
+    });
+  }
+
+  share(attributeId: number, share: boolean = true) {
+    return this.http.post<null>(this.apiUrl(webApiFieldsRoot + 'Share'), null, {
+      params: {
+        appid: this.context.appId.toString(),
+        attributeId: attributeId.toString(),
+        share,
+      },
+    });
+  }
+
+  inherit(attributeId: number, sourceFieldGuid: string) {
+    return this.http.post<null>(this.apiUrl(webApiFieldsRoot + 'Inherit'), null, {
+      params: {
+        appid: this.context.appId.toString(),
+        attributeId: attributeId.toString(),
+        inheritMetadataOf: sourceFieldGuid,
+      },
+    });
   }
 
   reOrder(idArray: number[], contentType: ContentType) {

@@ -2,8 +2,9 @@
 
 .u-hide-scrollbar {
   -ms-overflow-style: none; // IE 10+
-  overflow: -moz-scrollbars-none; // Firefox
-  scrollbar-width: none;
+  // overflow: -moz-scrollbars-none; // Firefox
+  overflow: scroll !important;
+  scrollbar-width: none !important;
 
   &::-webkit-scrollbar {
     display: none; // Safari and Chrome

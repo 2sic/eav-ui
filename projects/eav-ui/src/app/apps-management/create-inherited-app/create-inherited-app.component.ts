@@ -1,5 +1,5 @@
 import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BehaviorSubject, Observable, combineLatest, map } from 'rxjs';
@@ -14,7 +14,7 @@ import { AppsListService } from '../services/apps-list.service';
 export class CreateInheritedAppComponent implements OnInit, OnDestroy {
   @HostBinding('className') hostClass = 'dialog-component';
 
-  form: FormGroup;
+  form: UntypedFormGroup;
   loading$: BehaviorSubject<boolean>;
   inheritableApps$: BehaviorSubject<App[] | undefined | null>;
 
@@ -80,9 +80,9 @@ export class CreateInheritedAppComponent implements OnInit, OnDestroy {
     });
   }
 
-  private buildForm(): FormGroup {
-    const form = new FormGroup({
-      inheritId: new FormControl(null, [Validators.required]),
+  private buildForm(): UntypedFormGroup {
+    const form = new UntypedFormGroup({
+      inheritId: new UntypedFormControl(null, [Validators.required]),
     });
     return form;
   }

@@ -118,6 +118,7 @@ export interface StringDropdownQuery extends String {
   EnableRemove: boolean;
   AllowMultiValue: boolean;
   Separator: string;
+  MoreFields: string;
 }
 
 /**
@@ -185,6 +186,10 @@ export interface Entity extends All {
    */
   Prefill: string;
 
+  Information: string;
+  Tooltip: string;
+  MoreFields: string;
+  Label: string;
   // 2dm 2023-01-22 #maybeSupportIncludeParentApps
   // IncludeParentApps: boolean;
 }
@@ -250,8 +255,39 @@ export interface Boolean extends All {
   _label: string;
 }
 
+export interface EntityPicker extends EntityQuery {
+  EnableReselect: boolean;
+  AllowMultiMin: number;
+  AllowMultiMax: number;
+
+  DataSources: string[];
+  UiPickerSourceQuery: UiPickerSourceQuery;
+
+  PickerDisplayMode: 'list' | 'tree';
+  PickerDisplayConfiguration: string[]; //can only be one entity guid
+  PickerTreeConfiguration: UiPickerModeTree;
+
+  DataSourceType: 'UiPickerSourceCustomList' | 'UiPickerSourceQuery' | 'UiPickerSourceEntity';
+}
+
+export interface StringPicker extends StringDropdown {
+  EnableReselect: boolean;
+  AllowMultiMin: number;
+  AllowMultiMax: number;
+
+  DataSources: string[];
+  UiPickerSourceQuery: UiPickerSourceQuery;
+
+  PickerDisplayMode: 'list' | 'tree';
+  PickerDisplayConfiguration: string[]; //can only be one entity guid
+  PickerTreeConfiguration: UiPickerModeTree;
+
+  DataSourceType: 'UiPickerSourceCustomList' | 'UiPickerSourceQuery' | 'UiPickerSourceEntity';
+}
+
 interface InternalSettings {
   _disabledBecauseOfTranslation?: boolean;
+  _isDialog?: boolean;
 }
 
 export interface FieldSettings extends
@@ -272,5 +308,44 @@ export interface FieldSettings extends
   StringTemplatePicker,
   StringUrlPath,
   StringWysiwyg,
+  EntityPicker,
+  StringPicker,
   InternalSettings
-  { }
+{ }
+
+export interface UiPickerSourceCustomList extends DataSource {
+  Values: string;
+}
+  
+export interface UiPickerSourceQuery extends DataSource {
+  Query: string;
+  QueryParameters: string;
+  StreamName: string;
+  Value: string;
+  Label: string;
+  CreateTypes: string;
+  MoreFields: string;
+}
+
+export interface UiPickerModeTree extends DataSource { 
+  TreeRelationship: 'child-parent' | 'parent-child'; //child-parent or parent-child
+  TreeBranchStream: string;
+  TreeLeavesStream: string;
+  TreeParentIdField: string;
+  TreeChildIdField: string;
+  TreeParentChildRefField: string;
+  TreeChildParentRefField: string;
+
+  TreeShowRoot: boolean;
+  TreeDepthMax: number;
+
+  TreeAllowSelectRoot: boolean;
+  TreeAllowSelectBranch: boolean;
+  TreeAllowSelectLeaves: boolean;
+}
+
+interface DataSource {
+  Title: string;
+
+  DataSourceType: 'UiPickerSourceCustomList' | 'UiPickerSourceQuery' | 'UiPickerSourceEntity';// will need to become enum array a bit later
+}

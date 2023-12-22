@@ -1,6 +1,6 @@
 import { EntityMetadataMap } from '@ngrx/data';
 import { Feature } from 'projects/eav-ui/src/app/features/models/feature.model';
-import { EntityInfo } from '../../../../../../../edit-types';
+import { PickerItem } from '../../../../../../../edit-types';
 import { InputType } from '../../../../content-type-fields/models/input-type.model';
 import { Prefetch } from '../../../dialog/main/edit-dialog-main.models';
 import { AdamSnapshot, Language, LanguageInstance, LinkCache, PublishStatus, StringQueryCacheItem } from '../../models';
@@ -95,7 +95,7 @@ export function prefetchSelectId(entity: Prefetch): string {
   return entity?._guid;
 }
 
-export function entityCacheSelectId(entity: EntityInfo): number {
+export function entityCacheSelectId(entity: PickerItem): number {
   return entity?.Id;
 }
 

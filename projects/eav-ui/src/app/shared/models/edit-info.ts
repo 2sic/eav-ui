@@ -4,4 +4,10 @@ export interface EditInfo {
   ReadOnly: boolean;
   /** An optional, additional message to show to the user for better understanding */
   ReadOnlyMessage?: string;
+  DisableSort?: boolean;
+  DisableDelete?: boolean;
+  DisableRename?: boolean;
+  DisableMetadata?: boolean;
+  DisableEdit?: boolean;
+  EnableInherit?: boolean;
 }

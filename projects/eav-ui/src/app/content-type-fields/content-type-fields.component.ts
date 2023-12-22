@@ -1,7 +1,7 @@
 // tslint:disable-next-line:max-line-length
 import { ColumnApi, FilterChangedEvent, GridApi, GridOptions, GridReadyEvent, ICellRendererParams, RowClassParams, RowDragEvent, SortChangedEvent } from '@ag-grid-community/core';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, Observable, combineLatest, forkJoin, map, of } from 'rxjs';
@@ -14,7 +14,6 @@ import { defaultGridOptions } from '../shared/constants/default-grid-options.con
 import { eavConstants } from '../shared/constants/eav.constants';
 import { convertFormToUrl } from '../shared/helpers/url-prep.helper';
 import { ItemAddIdentifier, EditForm, ItemEditIdentifier } from '../shared/models/edit-form.model';
-import { InputTypeConstants } from './constants/input-type.constants';
 import { ContentTypeFieldsActionsComponent } from './content-type-fields-actions/content-type-fields-actions.component';
 import { ContentTypeFieldsActionsParams } from './content-type-fields-actions/content-type-fields-actions.models';
 import { ContentTypeFieldsInputTypeComponent } from './content-type-fields-input-type/content-type-fields-input-type.component';
@@ -27,6 +26,7 @@ import { ContentTypeFieldsTypeComponent } from './content-type-fields-type/conte
 import { Field } from './models/field.model';
 import { ContentTypesFieldsService } from './services/content-types-fields.service';
 import { EmptyFieldHelpers } from '../edit/form/fields/empty/empty-field-helpers';
+import { ShareOrInheritDialogComponent } from './share-or-inherit-dialog/share-or-inherit-dialog.component';
 
 @Component({
   selector: 'app-content-type-fields',
@@ -55,9 +55,10 @@ export class ContentTypeFieldsComponent extends BaseComponent implements OnInit,
     private contentTypesService: ContentTypesService,
     private contentTypesFieldsService: ContentTypesFieldsService,
     private snackBar: MatSnackBar,
+    private dialog: MatDialog,
   ) {
     super(router, route);
-   }
+  }
 
   ngOnInit() {
     this.fetchFields();
@@ -153,8 +154,7 @@ export class ContentTypeFieldsComponent extends BaseComponent implements OnInit,
   private nameCellRenderer(params: ICellRendererParams) {
     const currentField: Field = params.data;
     const inputType = currentField.InputType;
-    // const empties: string[] = [InputTypeConstants.EmptyDefault, InputTypeConstants.EmptyEnd];
-    // if (empties.includes(currentField.InputType)) {
+
     if (EmptyFieldHelpers.endsPreviousGroup(inputType))
       return params.value;
 
@@ -188,22 +188,51 @@ export class ContentTypeFieldsComponent extends BaseComponent implements OnInit,
   }
 
   private editFieldMetadata(field: Field) {
+    // 2023-11-10 @2dm #ConfigTypesFromBackend
+    // https://github.com/2sic/2sxc/issues/3205
+    // Keep old code in till 2024-01 for ref in case something breaks
+    // console.warn('2dm - editFieldMetadata', field);
+    // console.warn('2dm - editFieldMetadata', field.ConfigTypes);
+    // const form: EditForm = {
+    //   items: [
+    //     this.createItemDefinition(field, 'All'),
+    //     this.createItemDefinition(field, field.Type),
+    //     this.createItemDefinition(field, field.InputType),
+    //   ],
+    // };
+
+    // If this field is inherited and therefor has no own metadata, show a snackbar and exit
+    if (field.SysSettings?.InheritMetadataOf) {
+      if (!Object.keys(field.ConfigTypes).length) {
+        this.snackBar.open('This field inherits all configuration so there is nothing to edit.', null, { duration: 3000 });
+        return;
+      }
+      this.snackBar.open('This field inherits some configuration. Edit will only show configuration which is not inherited.', null, { duration: 5000 });
+    }
+
+    // if this field is shared/can-be-inherited, show warning so the user is aware of it
+    if (field.SysSettings?.Share)
+      this.snackBar.open('This field is shared, so changing it will affect all other fields inheriting it.', null, { duration: 5000 });
+
     const form: EditForm = {
-      items: [
-        this.createItemDefinition(field, 'All'),
-        this.createItemDefinition(field, field.Type),
-        this.createItemDefinition(field, field.InputType),
-      ],
+      items: Object.keys(field.ConfigTypes).map((t) => this.createItemDefinition(field, t))
     };
+    console.warn('2dm - editFieldMetadata', field.ConfigTypes, form);
     const formUrl = convertFormToUrl(form);
     this.router.navigate([`edit/${formUrl}`], { relativeTo: this.route });
   }
 
   private createItemDefinition(field: Field, metadataType: string): ItemAddIdentifier | ItemEditIdentifier {
-    return field.Metadata[metadataType] != null
-      ? { EntityId: field.Metadata[metadataType].Id } // if defined, return the entity-number to edit
+    // The keys could start with an @ but may not, and in some cases we need it, others we don't
+    const keyForMdLookup = metadataType.replace('@', '');
+    const newItemTypeName = ('@' + metadataType).replace('@@', '@');
+
+    // Is an item of this type already loaded? Then just edit it, otherwise request new as Metadata
+    const existingMd = field.Metadata[keyForMdLookup];
+    return existingMd != null
+      ? { EntityId: existingMd.Id } // if defined, return the entity-number to edit
       : {
-        ContentTypeName: '@' + metadataType, // otherwise the content type for new-assignment
+        ContentTypeName: newItemTypeName, // otherwise the content type for new-assignment
         For: {
           Target: eavConstants.metadata.attribute.target,
           TargetType: eavConstants.metadata.attribute.targetType,
@@ -250,13 +279,22 @@ export class ContentTypeFieldsComponent extends BaseComponent implements OnInit,
     this.router.navigate([url], { relativeTo: this.route });
   }
 
+  private shareOrInherit(field: Field) {
+    const shareOrInheritDialogRef = this.dialog.open(ShareOrInheritDialogComponent, {
+      autoFocus: false,
+      width: '800px',
+      data: field,
+    });
+    shareOrInheritDialogRef.afterClosed().subscribe(() => this.fetchFields());
+  }
+
   private buildGridOptions(): GridOptions {
     const gridOptions: GridOptions = {
       ...defaultGridOptions,
       getRowClass(params: RowClassParams) {
         const field: Field = params.data;
         const rowClass: string[] = [];
-        if (field.EditInfo.ReadOnly) { rowClass.push('disable-row-drag'); }
+        if (field.EditInfo.DisableSort) { rowClass.push('disable-row-drag'); }
         if (EmptyFieldHelpers.isGroupStart(field.InputType)) { rowClass.push('group-start-row'); }
         if (EmptyFieldHelpers.isGroupEnd(field.InputType)) { rowClass.push('group-end-row'); }
         return rowClass;
@@ -319,7 +357,7 @@ export class ContentTypeFieldsComponent extends BaseComponent implements OnInit,
           width: 160,
           cellClass: (params) => {
             const field: Field = params.data;
-            return `${field.EditInfo.ReadOnly ? 'no-outline no-padding' : 'secondary-action no-padding'}`.split(' ');
+            return `${field.EditInfo.DisableEdit ? 'no-outline no-padding' : 'secondary-action no-padding'}`.split(' ');
           },
           sortable: true,
           filter: 'agTextColumnFilter',
@@ -368,7 +406,7 @@ export class ContentTypeFieldsComponent extends BaseComponent implements OnInit,
           },
         },
         {
-          width: 122,
+          width: 162,
           cellClass: 'secondary-action no-padding'.split(' '),
           pinned: 'right',
           cellRenderer: ContentTypeFieldsActionsComponent,
@@ -378,6 +416,7 @@ export class ContentTypeFieldsComponent extends BaseComponent implements OnInit,
               onDelete: (field) => this.delete(field),
               onOpenPermissions: (field) => this.openPermissions(field),
               onOpenMetadata: (field) => this.openMetadata(field),
+              onShareOrInherit: (field) => this.shareOrInherit(field),
             };
             return params;
           })(),

@@ -1,9 +1,9 @@
-import { SxcRoot } from '@2sic.com/2sxc-typings';
+import { SxcGlobal } from '@2sic.com/2sxc-typings';
 import { ApiCall, CodeSample, hint$2sxc, Scenario, warningExternal, warningSimpleSampleOnly } from '..';
 import { Context } from '../../shared/services/context';
 // tslint:disable: curly
 
-export function generateWebApiCalls($2sxc: SxcRoot, scenario: Scenario, context: Context, root: string,
+export function generateWebApiCalls($2sxc: SxcGlobal, scenario: Scenario, context: Context, root: string,
   urlParams: string, verbs: string[]) {
   const virtual = root[0] !== '/' && !root.startsWith('http');
 

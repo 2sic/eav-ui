@@ -1,4 +1,4 @@
-import { Context as DnnContext, DnnAppComponent } from '@2sic.com/dnn-sxc-angular';
+import { Context as DnnContext, SxcAppComponent } from '@2sic.com/sxc-angular';
 import { ChangeDetectionStrategy, Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
@@ -15,7 +15,7 @@ import { Context } from './shared/services/context';
   styleUrls: ['./app.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AppComponent extends DnnAppComponent implements OnInit, OnDestroy {
+export class AppComponent extends SxcAppComponent implements OnInit, OnDestroy {
   private subscription = new Subscription();
 
   constructor(

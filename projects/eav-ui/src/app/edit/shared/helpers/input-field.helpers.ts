@@ -46,17 +46,23 @@ export class InputFieldHelpers {
     // default wrappers
     const wrappers: WrappersConstant[] = [WrappersConstants.HiddenWrapper];
 
-    // entity-default wrappers
-    const isEntityType = (inputType === InputTypeConstants.EntityDefault)
+    // entity-default/string-dropdown wrappers
+    const isEntityOrStringDropdownType = (inputType === InputTypeConstants.EntityDefault)
       || (inputType === InputTypeConstants.StringDropdownQuery)
       || (inputType === InputTypeConstants.EntityQuery)
-      || (inputType === InputTypeConstants.EntityContentBlocks);
+      || (inputType === InputTypeConstants.EntityContentBlocks)
+      || (inputType === InputTypeConstants.StringDropdown)
+      /** WIP pickers */
+      || (inputType === InputTypeConstants.WIPEntityPicker)
+      || (inputType === InputTypeConstants.WIPStringPicker);
+      // || (inputType === InputTypeConstants.WIPNumberPicker);
+    
+    const allowMultiValue = settings.AllowMultiValue ?? false;
 
-    if (isEntityType) {
+    if (isEntityOrStringDropdownType) {
       wrappers.push(WrappersConstants.LocalizationWrapper);
-      const allowMultiValue = settings.AllowMultiValue ?? false;
       if (allowMultiValue || inputType === InputTypeConstants.EntityContentBlocks) {
-        wrappers.push(WrappersConstants.EntityExpandableWrapper);
+        wrappers.push(WrappersConstants.PickerExpandableWrapper);
       }
     }
 
@@ -100,12 +106,14 @@ export class InputFieldHelpers {
           : null;
       case InputTypeConstants.NumberDefault:
       case InputTypeConstants.NumberDropdown:
+      case InputTypeConstants.WIPNumberPicker:
         return defaultValue != null && defaultValue !== ''
           ? !isNaN(Number(defaultValue)) ? Number(defaultValue) : null
           : null;
       case InputTypeConstants.EntityDefault:
       case InputTypeConstants.EntityQuery:
       case InputTypeConstants.EntityContentBlocks:
+      case InputTypeConstants.WIPEntityPicker:
         if (defaultValue == null || defaultValue === '') { return []; }
         // string has { } characters, we must switch them to quotes
         if (defaultValue.includes('{')) {

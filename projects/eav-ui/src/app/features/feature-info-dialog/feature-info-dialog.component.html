@@ -1,35 +1,30 @@
-<div *ngIf="viewModel$ | async as vm">
-  <div mat-dialog-title>
-    <div class="dialog-title-box">
-      <div>{{ vm.feature.Name }}</div>
-    </div>
-  </div>
-
-  <p class="dialog-description" [innerHtml]="vm.feature.Description | safeHtml"></p>
-
-  <div class="info-box">
-    <div class="info-row">
-      <div class="info-row__label">{{ "Features.Status" | translate }}</div>
-      <div class="info-row__value">
-        <span>{{ (vm.feature.Enabled ? "Features.Active" : "Features.NotActive") | translate }}</span>
+<mat-card *ngIf="viewModel$ | async as vm">
+  <mat-card-header>
+    <mat-card-title>{{ vm.feature.Name }}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <p [innerHtml]="vm.feature.Description | safeHtml"></p>
+    <div class="eav-info-row">
+      <div class="eav-info-row__label">{{ "Features.Status" | translate }}:</div>
+      <div class="eav-info-row__value">
+        <span>{{ (vm.feature.IsEnabled ? "Features.Active" : "Features.NotActive") | translate }}</span>
       </div>
     </div>
-    <div class="info-row" *ngIf="vm.feature.NameId as id">
-      <div class="info-row__label">ID</div>
-      <div class="info-row__value click">
+    <div class="eav-info-row" *ngIf="vm.feature.NameId as id">
+      <div class="eav-info-row__label">ID:</div>
+      <div class="eav-info-row__value eav_click">
         <span [tippy]="id" (click)="copyToClipboard(id)">{{ id }}</span>
       </div>
     </div>
-  </div>
-
-  <div class="dialog-component-actions">
-    <button *ngIf="vm.feature.Link as link" mat-raised-button class="dialog-component-button" color="accent" (click)="findOutMore(link)">
+  </mat-card-content>
+  <mat-card-actions align="end">
+    <button *ngIf="vm.feature.Link as link" mat-raised-button color="accent"
+      class="eav-card-action-button" (click)="findOutMore(link)">
       <mat-icon>open_in_new</mat-icon>
       {{ "Features.FindOutMore" | translate }}
     </button>
-    <button mat-raised-button class="dialog-component-button" (click)="closeDialog()">
+    <button mat-raised-button class="eav-card-action-button" (click)="closeDialog()">
       {{ "Features.Close" | translate }}
     </button>
-  </div>
-
-</div>
+  </mat-card-actions>
+</mat-card>

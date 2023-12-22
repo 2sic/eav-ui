@@ -18,6 +18,9 @@ export interface DialogContextApp {
   SettingsScope: AppScope;
   Url: string;
   SharedUrl: string;
+
+  /** New app icon */
+  Icon: string;
 }
 
 export interface ApiKeySpecs {

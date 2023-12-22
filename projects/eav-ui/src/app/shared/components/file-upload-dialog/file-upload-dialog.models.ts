@@ -26,3 +26,14 @@ export const FileUploadMessageTypes = {
 } as const;
 
 export type FileUploadMessageType = typeof FileUploadMessageTypes[keyof typeof FileUploadMessageTypes];
+
+export const UploadTypes = {
+  App: 0,
+  AppPart: 1,
+  ContentType: 2,
+  ContentItem: 3,
+  Query: 4,
+  View: 5,
+} as const;
+
+export type UploadTypes = typeof UploadTypes[keyof typeof UploadTypes];

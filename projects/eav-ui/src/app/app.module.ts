@@ -1,4 +1,4 @@
-import { DnnInterceptor } from '@2sic.com/dnn-sxc-angular';
+import { SxcHttpInterceptorProvider } from '@2sic.com/sxc-angular';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { APP_INITIALIZER, Injector, NgModule } from '@angular/core';
@@ -39,7 +39,7 @@ import { Context } from './shared/services/context';
   providers: [
     { provide: APP_INITIALIZER, useFactory: paramsInitFactory, deps: [Injector], multi: true },
     { provide: LocationStrategy, useClass: HashLocationStrategy },
-    DnnInterceptor,
+    SxcHttpInterceptorProvider,
     { provide: HTTP_INTERCEPTORS, useClass: SetHeadersInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: HandleErrorsInterceptor, multi: true },
     Context,

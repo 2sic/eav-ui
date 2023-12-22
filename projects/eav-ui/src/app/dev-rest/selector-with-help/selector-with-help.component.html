@@ -1,5 +1,5 @@
 <div class="selector">
-  <mat-form-field color="accent" class="selector__dropdown">
+  <mat-form-field color="accent" class="eav-form-field selector__dropdown">
     <mat-label>{{ label }}</mat-label>
     <mat-select [value]="value" (selectionChange)="selectionChange($event.value)">
       <mat-option *ngFor="let item of items" [value]="item.key">{{ item.name }}</mat-option>

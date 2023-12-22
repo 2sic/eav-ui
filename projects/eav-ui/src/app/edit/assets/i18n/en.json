@@ -95,7 +95,7 @@
       "PickLanguageIntro": "Only languages with content can be selected.",
       "AutoTranslateAll": {
         "Title": "Auto-Translate all Fields using Google Translate",
-        "Body": "Only fields that are not yet translated will be auto-translated. Note that not all fields will be translated - see <a href='https://2sxc.org/translate' target='_blank'>docs</a>.",
+        "Body": "Only fields that are not yet translated will be auto-translated. Note that not all fields will be translated - see <a href='https://go.2sxc.org/translate' target='_blank'>docs</a>.",
         "NoContent": "no content",
         "AllTranslatableFields": "all translatable fields",
         "Of": "of",
@@ -139,6 +139,8 @@
     "RequiredShort": "required",
     "Min": "This value should be {{param.Min}} or higher",
     "Max": "This value should be {{param.Max}} or lower",
+    "MinNoItems": "Number of items should be {{param.AllowMultiMin}} or higher",
+    "MaxNoItems": "Number of items should be {{param.AllowMultiMax}} or lower",
     "Pattern": "Please match the requested format",
     "Decimals": "This number can have up to {{param.Decimals}} decimal places",
     "JsonError": "JSON is not valid",
@@ -158,12 +160,14 @@
       "Loading": "Loading...",
       "Search": "Search",
       "AddItemBelow": "Add item below",
-      "AddExistingItem": "Add existing item"
+      "AddExistingItem": "Add existing item",
+      "OpenMultiselect": "Open multiselect"
     },
     "EntityQuery": {
       "QueryNoItems": "No items found",
       "QueryError": "Error: An error occurred while executing the query. See the console for more information.",
-      "QueryStreamNotFound": "Error: The query did not return a stream named"
+      "QueryStreamNotFound": "Error: The query did not return a stream named",
+      "QueryNotDefined": "Error: can't load data, query is not configured"
     },
     "Hyperlink": {
       "Default": {
@@ -225,6 +229,16 @@
     "SortItems": "Sort the items by dragging as needed.",
     "SortLotsOfItems": "Sort the items by dragging and scrolling with mouse wheel as needed.",
     "ConfirmRemove": "This will remove this content-item from this list, but not delete it (so you can add it again later). \nSee 2sxc.org/help for more. \n\nOk to remove?"
+  },
+  "SharingOrInheriting": {
+    "TitleAddFieldsWhichInherit": "Add Fields which Inherits Configuration",
+    "TitleNone": "Share or inherit?",
+    "TitleSharing": "Field Metadata Sharing",
+    "TitleInheriting": "Field Inherits Metadata",
+    "MessageSharing": "Shared as:",
+    "MessageInheriting": "Inherits from:",
+    "AddSharedField": "Add shared field (BETA)",
+    "PickFieldsToInheritFrom": "Pick original fields which we'll inherit from"
   },
   "Extension.TinyMce": {
     "Link.AdamFile": "Link ADAM file (recommended)",

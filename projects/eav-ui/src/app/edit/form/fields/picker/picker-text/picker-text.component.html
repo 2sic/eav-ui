@@ -1,0 +1,11 @@
+<ng-container *ngIf="templateVars$ | async as data">
+  <div fxLayout="row" fxLayoutAlign="start end">
+    <mat-form-field [formGroup]="group" class="eav-form-field" color="accent">
+      <input matInput [required]="data.required" [formControlName]="config.fieldName" [placeholder]="data.placeholder">
+      <div matSuffix class="eav-selection-suffix-inline">
+        <ng-content select="[freeTextButtons]"></ng-content>
+      </div>
+      <mat-label>{{ data.label }}</mat-label>
+    </mat-form-field>
+  </div>
+</ng-container>

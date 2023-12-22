@@ -1,4 +1,4 @@
-import { AbstractControl, FormGroup } from '@angular/forms';
+import { AbstractControl, UntypedFormGroup } from '@angular/forms';
 import { GeneralHelpers } from '.';
 import { FieldConfigSet } from '../../form/builder/fields-builder/field-config-set.model';
 import { SxcAbstractControl } from '../models';
@@ -14,6 +14,12 @@ export class ValidationMessagesHelpers {
     },
     max: (config: FieldConfigSet) => {
       return config ? `ValidationMessage.Max` : `ValidationMessage.NotValid`;
+    },
+    minNoItems: (config: FieldConfigSet) => {
+      return config ? `ValidationMessage.MinNoItems` : `ValidationMessage.NotValid`;
+    },
+    maxNoItems: (config: FieldConfigSet) => {
+      return config ? `ValidationMessage.MaxNoItems` : `ValidationMessage.NotValid`;
     },
     pattern: (config: FieldConfigSet) => {
       return config ? `ValidationMessage.Pattern` : `ValidationMessage.NotValid`;
@@ -35,7 +41,7 @@ export class ValidationMessagesHelpers {
   };
 
   /** Marks controls as touched to show errors beneath controls and collects error messages */
-  static validateForm(form: FormGroup): Record<string, string> {
+  static validateForm(form: UntypedFormGroup): Record<string, string> {
     const errors: Record<string, string> = {};
     for (const [controlKey, control] of Object.entries(form.controls)) {
       GeneralHelpers.markControlTouched(control);

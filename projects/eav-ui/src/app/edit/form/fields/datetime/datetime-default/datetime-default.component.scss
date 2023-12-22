@@ -1,24 +1,9 @@
-// fix for mat-datepicker and ngx-mat-datetime-picker compatibility is found here: https://github.com/h2qutc/angular-material-components/issues/256#issuecomment-1119290906
-::ng-deep ngx-mat-calendar {
-  .mat-calendar-body-cell {
-    position: relative !important;
-  }
-}
-
-::ng-deep mat-calendar {
-  .mat-calendar-arrow {
-    width: 0;
-    height: 0;
-  }
-
-  .mat-calendar-body-cell {
-    position: absolute !important;
-    height: 100%;
-  }
-}
-
-::ng-deep ngx-mat-datetime-content {
-  .mat-calendar-arrow {
-    width: 0;
-  }
+// This CSS rule is just a hack for the ngx-mat-datepicker-content component so it shows background
+// This should be removed once the component is fixed and version 17.x.x is released
+::ng-deep ngx-mat-datepicker-content {
+  box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
+  display: block;
+  border-radius: 4px;
+  background-color: var(--mat-datepicker-calendar-container-background-color);
+  color: var(--mat-datepicker-calendar-container-text-color);
 }

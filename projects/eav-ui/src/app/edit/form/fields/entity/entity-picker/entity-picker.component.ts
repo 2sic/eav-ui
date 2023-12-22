@@ -1,0 +1,114 @@
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { InputTypeConstants } from 'projects/eav-ui/src/app/content-type-fields/constants/input-type.constants';
+import { PickerComponent } from '../../picker/picker.component';
+import { TranslateService } from '@ngx-translate/core';
+import { EavService, FieldsSettingsService, EntityService, EditRoutingService } from '../../../../shared/services';
+import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
+import { PickerSourceAdapterFactoryService } from '../../picker/factories/picker-source-adapter-factory.service';
+import { PickerStateAdapterFactoryService } from '../../picker/factories/picker-state-adapter-factory.service';
+import { DeleteEntityProps } from '../../picker/picker.models';
+import { EntityPickerLogic } from './entity-picker-logic';
+import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.decorator';
+import { PickerData } from '../../picker/picker-data';
+import { PickerQuerySourceAdapter } from '../../picker/adapters/picker-query-source-adapter';
+import { PickerEntitySourceAdapter } from '../../picker/adapters/picker-entity-source-adapter';
+
+@Component({
+  selector: InputTypeConstants.WIPEntityPicker,
+  templateUrl: '../../picker/picker.component.html',
+  styleUrls: ['../../picker/picker.component.scss'],
+})
+@FieldMetadata({})
+export class EntityPickerComponent extends PickerComponent implements OnInit, OnDestroy {
+  constructor(
+    eavService: EavService,
+    fieldsSettingsService: FieldsSettingsService,
+    entityService: EntityService,
+    translate: TranslateService,
+    editRoutingService: EditRoutingService,
+    entityCacheService: EntityCacheService,
+    stringQueryCacheService: StringQueryCacheService,
+    private sourceFactory: PickerSourceAdapterFactoryService,
+    private stateFactory: PickerStateAdapterFactoryService,
+  ) {
+    super(
+      eavService,
+      fieldsSettingsService,
+      entityService,
+      translate,
+      editRoutingService,
+      entityCacheService,
+      stringQueryCacheService,
+    );
+    EntityPickerLogic.importMe();
+  }
+
+  ngOnInit(): void {
+    super.ngOnInit();
+
+    this.createPickerAdapters();
+    this.createViewModel();
+  }
+
+  ngAfterViewInit(): void {
+    super.ngAfterViewInit();
+  }
+
+  ngOnDestroy(): void {
+    super.ngOnDestroy();
+  }
+
+  private createPickerAdapters(): void {
+    let source: PickerQuerySourceAdapter | PickerEntitySourceAdapter;
+
+    const state = this.stateFactory.createPickerEntityStateAdapter(
+      this.control,
+      this.config,
+      this.settings$,
+      this.editRoutingService,
+      this.controlStatus$,
+      this.label$,
+      this.placeholder$,
+      this.required$,
+      () => this.focusOnSearchComponent,
+    );
+
+    if (this.settings$.value.DataSourceType === 'UiPickerSourceEntity') {
+      source = this.sourceFactory.createPickerEntitySourceAdapter(
+        state.disableAddNew$,
+        this.fieldsSettingsService,
+
+        state.control,
+        this.config,
+        state.settings$,
+        this.editRoutingService,
+        this.group,
+        // (clearAvailableItemsAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableItemsAndOnlyUpdateCache),
+        (props: DeleteEntityProps) => state.doAfterDelete(props)
+      );
+    }else if (this.settings$.value.DataSourceType === 'UiPickerSourceQuery') {
+      source = this.sourceFactory.createPickerQuerySourceAdapter(
+        state.error$,
+        state.disableAddNew$,
+        this.fieldsSettingsService,
+        false,
+
+        state.control,
+        this.config,
+        state.settings$,
+        this.editRoutingService,
+        this.group,
+        // (clearAvailableItemsAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableItemsAndOnlyUpdateCache),
+        (props: DeleteEntityProps) => state.doAfterDelete(props)
+      );
+    }
+
+    state.init();
+    source.init();
+    this.pickerData = new PickerData(
+      state,
+      source,
+      this.translate,
+    );
+  }
+}

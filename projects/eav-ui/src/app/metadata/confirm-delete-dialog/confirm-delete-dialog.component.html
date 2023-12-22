@@ -1,12 +1,10 @@
-<div mat-dialog-title>
-  <div class="dialog-title-box">Delete {{ dialogData.entityTitle }} ({{ dialogData.entityId }})?</div>
-</div>
-
-<div class="dialog-component-content fancy-scrollbar-light" *ngIf="dialogData.message"
-  [innerHtml]="dialogData.message | safeHtml">
-</div>
-
-<div class="dialog-component-actions">
-  <button mat-raised-button (click)="closeDialog()">Cancel</button>
-  <button mat-raised-button (click)="closeDialog(true)">Delete</button>
-</div>
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Delete {{ dialogData.entityTitle }} ({{ dialogData.entityId }})?</mat-card-title>
+    <mat-card-subtitle *ngIf="dialogData.message" [innerHtml]="dialogData.message | safeHtml"></mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-actions align="end">
+    <button mat-raised-button class="eav-card-action-button" (click)="closeDialog()">Cancel</button>
+    <button mat-raised-button class="eav-card-action-button" (click)="closeDialog(true)">Delete</button>
+  </mat-card-actions>
+</mat-card>

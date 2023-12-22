@@ -1,0 +1,12 @@
+<span *ngIf="allowText" matSuffix class="eav-selection-suffix-inline">
+  <button mat-icon-button class="eav-suffix-button" [ngClass]="freeTextMode ? '' : 'active'"
+    [tippy]="'Fields.String.Dropdown' | translate" [disabled]="controlStatusDisabled" appClickStopPropagation
+    (click)="freeTextMode ? toggleFreeText(controlStatusDisabled) : null">
+    <mat-icon>search</mat-icon>
+  </button>
+  <button mat-icon-button class="eav-suffix-button" [ngClass]="freeTextMode ? 'active' : ''"
+    [tippy]="'Fields.String.Freetext' | translate" [disabled]="controlStatusDisabled" appClickStopPropagation
+    (click)="freeTextMode ? null : toggleFreeText(controlStatusDisabled)">
+    <mat-icon>text_fields</mat-icon>
+  </button>
+</span>

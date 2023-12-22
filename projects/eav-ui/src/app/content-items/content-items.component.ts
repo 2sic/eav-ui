@@ -4,7 +4,7 @@ import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewContainerRef } fro
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { BehaviorSubject, combineLatest, filter, map, Observable, pairwise, startWith, Subscription, take } from 'rxjs';
+import { BehaviorSubject, combineLatest, filter, map, Observable, pairwise, startWith, Subject, Subscription, take } from 'rxjs';
 import { ContentType } from '../app-administration/models/content-type.model';
 import { ContentTypesService } from '../app-administration/services/content-types.service';
 import { ContentExportService } from '../content-export/services/content-export.service';
@@ -47,7 +47,7 @@ import { EntitiesService } from './services/entities.service';
   styleUrls: ['./content-items.component.scss'],
 })
 export class ContentItemsComponent extends BaseComponent implements OnInit, OnDestroy {
-  contentType$ = new BehaviorSubject<ContentType>(undefined);
+  contentType$ = new Subject<ContentType>();
   items$ = new BehaviorSubject<ContentItem[]>(undefined);
   gridOptions: GridOptions = {
     ...defaultGridOptions,

@@ -1,10 +1,10 @@
-import { Context as DnnContext } from '@2sic.com/dnn-sxc-angular';
+import { Context as DnnContext } from '@2sic.com/sxc-angular';
 import { Component, HostBinding, OnDestroy } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, filter, map, share, switchMap } from 'rxjs';
 import { generateApiCalls } from '..';
-import { EntityInfo } from '../../../../../edit-types';
+import { PickerItem } from '../../../../../edit-types';
 import { AppDialogConfigService, ContentTypesService } from '../../app-administration/services';
 import { EntityService } from '../../edit/shared/services';
 import { PermissionsService } from '../../permissions';
@@ -35,7 +35,7 @@ export class DevRestDataComponent extends DevRestBase<DevRestDataViewModel> impl
     entityService: EntityService,
     /** Context for this dialog. Used for appId, zoneId, tabId, etc. */
     context: Context,
-    /** dnn-sxc-angular context. Used to resolve urls */
+    /** sxc-angular context. Used to resolve urls */
     dnnContext: DnnContext,
   ) {
     super(appDialogConfigService, context, dialogRef, dnnContext, router, route, permissionsService);
@@ -73,7 +73,7 @@ export class DevRestDataComponent extends DevRestBase<DevRestDataViewModel> impl
       map(list => list.length
         ? list[0]
         // we need a dummy in case nothing is found, otherwise the observables stop
-        : { Id: 0, Value: 'no data found', Text: 'no data found' } as EntityInfo),
+        : { Id: 0, Value: 'no data found', Text: 'no data found' } as PickerItem),
     );
 
     // Prepare everything for use in the template

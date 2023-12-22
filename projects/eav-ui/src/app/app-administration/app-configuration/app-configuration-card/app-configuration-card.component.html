@@ -1,56 +1,58 @@
-<ng-container *ngIf="viewModel$ | async as vm">
-
-  <!-- App Config -->
-  <mat-card class="mat-elevation-z2">
-    <mat-card-header>
-      <mat-card-title>Configuration</mat-card-title>
-      <div class="mat-card-header-icon">
-        <mat-icon>redeem</mat-icon>
+<!-- App Config -->
+<mat-card *ngIf="viewModel$ | async as vm" class="eav-card">
+  <mat-card-header class="eav-card-header">
+    <mat-card-title>Configuration</mat-card-title>
+    <mat-icon>redeem</mat-icon>
+  </mat-card-header>
+  <mat-card-content>
+    <p>
+      <div class="eav-info-row">
+        <div class="eav-info-row__label">Name:</div>
+        <div class="eav-info-row__value">
+          <span [tippy]="'Click to copy to clipboard'" (click)="copyToClipboard(vm.displayName)">{{vm.displayName}}</span>
+        </div>
       </div>
-    </mat-card-header>
-    <mat-card-content>
-      <table>
-        <td>
-          <tr><b>Name:</b></tr>
-          <tr><b>Folder:</b></tr>
-          <tr><b>Version:</b></tr>
-          <tr><b>For</b></tr>
-        </td>
-        <td>
-          <tr><span [tippy]="'Click to copy to clipboard'" (click)="copyToClipboard(vm.displayName)">{{vm.displayName}}</span></tr>
-          <tr><span [tippy]="'Click to copy to clipboard'" (click)="copyToClipboard(vm.folder)">{{vm.folder}}</span></tr>
-          <tr><span [tippy]="'Click to copy to clipboard'" (click)="copyToClipboard(vm.version)">{{vm.version}}</span></tr>
-          <tr>
-            <b>2sxc: </b><span [tippy]="'Click to copy to clipboard'" 
-              (click)="copyToClipboard(vm.toSxc)"> {{vm.toSxc}} </span>
-            <b> DNN: </b><span [tippy]="'Click to copy to clipboard'"
-              (click)="copyToClipboard(vm.dnn)"> {{vm.dnn}} </span>
-            <b> Oqt: </b><span [tippy]="'Click to copy to clipboard'"
-              (click)="copyToClipboard(vm.oqt)"> {{vm.oqt}} </span>
-          </tr>
-        </td>
-      </table>
-    </mat-card-content>
-    <mat-card-actions>
-      <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://docs.2sxc.org/basics/app/configuration.html' }"></ng-container>
-      <button mat-button (click)="edit()">
-        <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="vm.appConfigurationsCount || null"
-          matBadgePosition="below after">edit</mat-icon>
-        <span>Edit</span>
-      </button>
-      <button mat-button (click)="openMetadata()">
-        <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="vm.appMetadataCount || null"
-          matBadgePosition="below after">local_offer</mat-icon>
-        <span>Metadata</span>
-      </button>
-    </mat-card-actions>
-  </mat-card>
-
-</ng-container>
+      <div class="eav-info-row">
+        <div class="eav-info-row__label">Folder:</div>
+        <div class="eav-info-row__value">
+          <span [tippy]="'Click to copy to clipboard'" (click)="copyToClipboard(vm.folder)">{{vm.folder}}</span>
+        </div>
+      </div>
+      <div class="eav-info-row">
+        <div class="eav-info-row__label">Version:</div>
+        <div class="eav-info-row__value">
+          <span [tippy]="'Click to copy to clipboard'" (click)="copyToClipboard(vm.version)">{{vm.version}}</span>
+        </div>
+      </div>
+      <div class="eav-info-row">
+        <div class="eav-info-row__label">For</div>
+        <div class="eav-info-row__value">
+          <b>2sxc: </b><span [tippy]="'Click to copy to clipboard'" (click)="copyToClipboard(vm.toSxc)"> {{vm.toSxc}} </span>
+          <b> DNN: </b><span [tippy]="'Click to copy to clipboard'" (click)="copyToClipboard(vm.dnn)"> {{vm.dnn}} </span>
+          <b> Oqt: </b><span [tippy]="'Click to copy to clipboard'" (click)="copyToClipboard(vm.oqt)"> {{vm.oqt}} </span>
+        </div>
+      </div>
+    <!-- </p> -->
+  </mat-card-content>
+  <div class="eav-card-space-div"></div>
+  <mat-card-actions align="start">
+    <ng-container *ngTemplateOutlet="docsLink; context: { link: 'https://docs.2sxc.org/basics/app/configuration.html' }"></ng-container>
+    <button mat-button class="eav-button__with-icon" (click)="edit()">
+      <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="vm.appConfigurationsCount || null"
+        matBadgePosition="below after" aria-hidden="false" class="eav-icon">edit</mat-icon>
+      <span>Edit</span>
+    </button>
+    <button mat-button class="eav-button__with-icon" (click)="openMetadata()">
+      <mat-icon matBadgeColor="accent" matBadgeSize="small" [matBadge]="vm.appMetadataCount || null"
+        matBadgePosition="below after" aria-hidden="false" class="eav-icon">local_offer</mat-icon>
+      <span>Metadata</span>
+    </button>
+  </mat-card-actions>
+</mat-card>
 
 <ng-template #docsLink let-icon let-label let-link="link">
-  <a mat-button href="{{link}}" target="_blank" [tippy]="'online documentation'">
-    <mat-icon>{{ icon ?? "menu_book" }}</mat-icon>
+  <a mat-button class="eav-button__with-icon" href="{{link}}" target="_blank" [tippy]="'online documentation'">
+    <mat-icon class="eav-icon">{{ icon ?? "menu_book" }}</mat-icon>
     <span>{{ label }}</span>
   </a>
 </ng-template>

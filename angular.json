@@ -4,7 +4,8 @@
   "cli": {
     "cache": {
       "enabled": false
-    }
+    },
+    "analytics": "8eab5b1f-e496-4664-acd2-dcacfac1bab5"
   },
   "newProjectRoot": "projects",
   "projects": {
@@ -89,7 +90,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "eav-ui:build"
+            "buildTarget": "eav-ui:build"
           }
         },
         "test": {
@@ -111,6 +112,5 @@
         }
       }
     }
-  },
-  "defaultProject": "eav-ui"
+  }
 }

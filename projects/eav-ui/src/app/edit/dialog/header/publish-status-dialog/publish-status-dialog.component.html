@@ -1,31 +1,33 @@
 <mat-card *ngIf="viewModel$ | async as vm">
-  <div class="mat-card__header">
-    <div class="mat-card__title">{{ 'PublishStatus.Dialog.Title' | translate }}</div>
-    <div class="mat-card__description">{{ 'PublishStatus.Dialog.Intro' | translate }}</div>
-  </div>
+  <mat-card-header>
+    <mat-card-title>{{ 'PublishStatus.Dialog.Title' | translate }}</mat-card-title>
+    <mat-card-subtitle>{{ 'PublishStatus.Dialog.Intro' | translate }}</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content class="eav-card-content__no-padding">
+    <mat-nav-list toggle>
+      <mat-list-item lines="3" (click)="setPublishMode(PublishModes.Show)"
+        [disabled]="vm.options[PublishModes.Show] !== true"
+        [ngClass]="{ 'eav-list-item__focus': vm.publishMode === PublishModes.Show }">
+        <mat-icon matListItemIcon>visibility</mat-icon>
+        <span matListItemTitle>{{ 'PublishStatus.Dialog.Show.Title' | translate }}</span>
+        <span>{{ 'PublishStatus.Dialog.Show.Body' | translate }}</span>
+      </mat-list-item>
 
-  <mat-nav-list toggle>
+      <mat-list-item lines="3" (click)="setPublishMode(PublishModes.Hide)"
+        [disabled]="vm.options[PublishModes.Hide] !== true"
+        [ngClass]="{ 'eav-list-item__focus': vm.publishMode === PublishModes.Hide }">
+        <mat-icon matListItemIcon>visibility_off</mat-icon>
+        <span matListItemTitle>{{ 'PublishStatus.Dialog.Hide.Title' | translate }}</span>
+        <span>{{ 'PublishStatus.Dialog.Hide.Body' | translate }}</span>
+      </mat-list-item>
 
-    <mat-list-item (click)="setPublishMode(PublishModes.Show)" [disabled]="vm.options[PublishModes.Show] !== true"
-      [ngClass]="{ 'mat-list-item-focus': vm.publishMode === PublishModes.Show }">
-      <mat-icon matListIcon>visibility</mat-icon>
-      <div matLine class="mat-list-item__title">{{ 'PublishStatus.Dialog.Show.Title' | translate }}</div>
-      <div matLine class="mat-list-item__body">{{ 'PublishStatus.Dialog.Show.Body' | translate }}</div>
-    </mat-list-item>
-
-    <mat-list-item (click)="setPublishMode(PublishModes.Hide)" [disabled]="vm.options[PublishModes.Hide] !== true"
-      [ngClass]="{ 'mat-list-item-focus': vm.publishMode === PublishModes.Hide }">
-      <mat-icon matListIcon>visibility_off</mat-icon>
-      <div matLine class="mat-list-item__title">{{ 'PublishStatus.Dialog.Hide.Title' | translate }}</div>
-      <div matLine class="mat-list-item__body">{{ 'PublishStatus.Dialog.Hide.Body' | translate }}</div>
-    </mat-list-item>
-
-    <mat-list-item (click)="setPublishMode(PublishModes.Branch)" [disabled]="vm.options[PublishModes.Branch] !== true"
-      [ngClass]="{ 'mat-list-item-focus': vm.publishMode === PublishModes.Branch }">
-      <mat-icon matListIcon svgIcon="draft-branch"></mat-icon>
-      <div matLine class="mat-list-item__title">{{ 'PublishStatus.Dialog.Branch.Title' | translate }}</div>
-      <div matLine class="mat-list-item__body">{{ 'PublishStatus.Dialog.Branch.Body' | translate }}</div>
-    </mat-list-item>
-
-  </mat-nav-list>
+      <mat-list-item lines="3" (click)="setPublishMode(PublishModes.Branch)"
+        [disabled]="vm.options[PublishModes.Branch] !== true"
+        [ngClass]="{ 'eav-list-item__focus': vm.publishMode === PublishModes.Branch }">
+        <mat-icon matListItemIcon svgIcon="draft-branch"></mat-icon>
+        <span matListItemTitle>{{ 'PublishStatus.Dialog.Branch.Title' | translate }}</span>
+        <span>{{ 'PublishStatus.Dialog.Branch.Body' | translate }}</span>
+      </mat-list-item>
+    </mat-nav-list>
+  </mat-card-content>
 </mat-card>

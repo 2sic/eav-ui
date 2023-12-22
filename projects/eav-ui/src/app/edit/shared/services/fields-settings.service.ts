@@ -11,7 +11,7 @@ import { EntityReader, FieldsSettingsHelpers, GeneralHelpers, InputFieldHelpers 
 // tslint:disable-next-line:max-line-length
 import { ContentTypeSettings, FieldConstants, FieldsProps, FormValues, TranslationState } from '../models';
 // tslint:disable-next-line:max-line-length
-import { ContentTypeService, GlobalConfigService, InputTypeService, ItemService, LanguageInstanceService } from '../store/ngrx-data';
+import { ContentTypeItemService, ContentTypeService, GlobalConfigService, InputTypeService, ItemService, LanguageInstanceService } from '../store/ngrx-data';
 import { FormsStateService } from './forms-state.service';
 import { ConstantFieldParts } from '../../formulas/models/constant-field-parts.model';
 import { FormulaPromiseResult } from '../../formulas/models/formula-promise-result.model';
@@ -37,6 +37,7 @@ export class FieldsSettingsService implements OnDestroy {
 
   constructor(
     private contentTypeService: ContentTypeService,
+    private contentTypeItemService: ContentTypeItemService,
     private languageInstanceService: LanguageInstanceService,
     private eavService: EavService,
     private itemService: ItemService,
@@ -126,7 +127,7 @@ export class FieldsSettingsService implements OnDestroy {
           mergeRaw.InputType = attribute.InputType;
           mergeRaw.VisibleDisabled = this.itemFieldVisibility.isVisibleDisabled(attribute.Name);
           const settingsInitial = FieldsSettingsHelpers.setDefaultFieldSettings(mergeRaw);
-          consoleLogAngular('merged', JSON.parse(JSON.stringify(settingsInitial)));
+          // consoleLogAngular('merged', JSON.parse(JSON.stringify(settingsInitial)));
           const logic = FieldLogicManager.singleton().get(attribute.InputType);
           const constantFieldParts: ConstantFieldParts = {
             logic,
@@ -191,6 +192,7 @@ export class FieldsSettingsService implements OnDestroy {
             eavConfig: this.eavService.eavConfig,
             entityReader,
             debug: debugEnabled,
+            contentTypeItemService: this.contentTypeItemService,
           };
 
           if (Object.keys(this.latestFieldProps).length) {
@@ -345,5 +347,11 @@ export class FieldsSettingsService implements OnDestroy {
    */
   retriggerFormulas(): void {
     this.forceRefreshSettings$.next();
+  }
+
+  updateSetting(fieldName: string, update: Partial<FieldSettings>): void {
+    const props = this.latestFieldProps[fieldName];
+    const newSettings = { ...props.settings, ...update };
+    this.fieldsProps$.next({ ...this.latestFieldProps, [fieldName]: { ...props, settings: newSettings } });
   }
 }

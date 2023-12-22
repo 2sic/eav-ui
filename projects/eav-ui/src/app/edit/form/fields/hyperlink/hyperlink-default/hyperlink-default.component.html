@@ -46,12 +46,12 @@
     </mat-menu>
 
     <!-- content -->
-    <div class="mdc-layout-grid">
-      <div class="mdc-layout-grid__inner">
-        <mat-card class="mdc-layout-grid__cell--span-12 hyperlink-card shadow-bottom-z-1">
+    <div class="eav-layout-grid">
+      <div class="eav-layout-grid__inner">
+        <mat-card class="eav-card eav-layout-grid__cell--span-12 hyperlink-card shadow-bottom-z-1">
           <div class="hyperlink-input-link-wrapper">
             <!-- input -->
-            <mat-form-field [formGroup]="group" appearance="standard" color="accent">
+            <mat-form-field [formGroup]="group" color="accent" class="eav-form-field">
               <input matInput [formControlName]="config.fieldName"
                 [tippy]="'Fields.Hyperlink.Default.Tooltip' | translate" tippyPlacement="top"
                 [placeholder]="vm.placeholder" [required]="vm.required" appPasteClipboardImage [config]="config"

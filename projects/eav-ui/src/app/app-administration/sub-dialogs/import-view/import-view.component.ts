@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FileUploadDialogData } from '../../../shared/components/file-upload-dialog';
+import { FileUploadDialogData, UploadTypes } from '../../../shared/components/file-upload-dialog';
 import { ViewsService } from '../../services/views.service';
 
 @Component({
@@ -9,6 +9,8 @@ import { ViewsService } from '../../services/views.service';
   styleUrls: ['./import-view.component.scss'],
 })
 export class ImportViewComponent {
+
+  uploadType = UploadTypes.View;
 
   constructor(@Inject(MAT_DIALOG_DATA) dialogData: FileUploadDialogData, viewsService: ViewsService) {
     dialogData.title ??= `Import View`;

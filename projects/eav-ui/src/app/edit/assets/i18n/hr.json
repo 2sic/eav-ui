@@ -54,12 +54,16 @@
     "AutoTranslate": "Automatski prevedi",
     "NoTranslate": "Ne prevodi",
     "NoTranslateAll": "Ne prevodi sve",
-    "Link": "Link to other language",
-    "UseDefault": "auto (default)",
-    "InAllLanguages": "in all languages",
-    "MissingDefaultLangValue": "please create value in the default language {{languages}} before translating",
-    "In": "in {{languages}}",
-    "From": "from {{languages}}",
+    "Link": "Poveži sa drugim jezikom",
+    "UseDefault": "auto (standardno)",
+    "InAllLanguages": "u svim jezicima",
+    "MissingDefaultLangValue": "stvorite vrijednost u standardnom jeziku {{languages}} prije prevođenja",
+    "In": "u {{languages}}",
+    "From": "od {{languages}}",
+    "SnackBar": {
+      "Title": "⚠️ Upozorenje: Koristite testni račun",
+      "Body": "Koristite demo Google Account za prevođenje. Ovo može prestati raditi u bilo kojem trenutku. <br><strong>Morate</strong> se prijaviti sa svojim API ključem. Besplatno je za 500'000 riječi svaki mijesec. Pogledajte <a href='https://go.2sxc.org/translate-api-key' target='_blank'>dokumentaciju</a>."
+    },
     "Dialog": {
       "Title": "Translate {{name}}",
       "Intro": "You can do many things when translating, like linking languages together.",
@@ -89,7 +93,7 @@
       "PickLanguageIntro": "Only languages with content can be selected.",
       "AutoTranslateAll": {
         "Title": "Automatski prijevod svih polja koristeći Google Translate",
-        "Body": "Samo polja koja nisu već prevedena će biti automatski prevedena. Neće sva polja biti prevedena, pogledajte <a href='https://2sxc.org/translate' target='_blank'>dokument</a>.",
+        "Body": "Samo polja koja nisu već prevedena će biti automatski prevedena. Neće sva polja biti prevedena, pogledajte <a href='https://go.2sxc.org/translate' target='_blank'>dokument</a>.",
         "NoContent": "nema sadržaja",
         "AllTranslatableFields": "sva prevodiva polja",
         "Of": "od",
@@ -130,6 +134,8 @@
     "RequiredShort": "required",
     "Min": "This value should be {{param.Min}} or higher",
     "Max": "This value should be {{param.Max}} or lower",
+    "MinNoItems": "Broj odabranih stavki bi trebao biti {{param.AllowMultiMin}} ili viši",
+    "MaxNoItems": "Broj odabranih stavki bi trebao biti {{param.AllowMultiMax}} ili niži",
     "Pattern": "Please match the requested format",
     "Decimals": "This number can have up to {{param.Decimals}} decimal places",
     "JsonError": "JSON is not valid",
@@ -150,9 +156,10 @@
       "Search": "Search"
     },
     "EntityQuery": {
-      "QueryNoItems": "No items found",
-      "QueryError": "Error: An error occurred while executing the query. See the console for more information.",
-      "QueryStreamNotFound": "Error: The query did not return a stream named"
+      "QueryNoItems": "Nijedna pronađena stavka",
+      "QueryError": "Greška: Greška se dogodila za vrijeme izvršavanja upita. Pogledajte u konzolu za više podataka.",
+      "QueryStreamNotFound": "Greška: Upit nije vratio tok podataka s nazivom",
+      "QueryNotDefined": "Greška: nemoguće pokrenuti upit jer nije definiran"
     },
     "Hyperlink": {
       "Default": {

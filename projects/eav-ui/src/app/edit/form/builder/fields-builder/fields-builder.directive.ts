@@ -1,5 +1,5 @@
-import { ComponentFactoryResolver, ComponentRef, Directive, Input, OnDestroy, OnInit, Type, ViewContainerRef } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { ComponentRef, Directive, Input, OnDestroy, OnInit, Type, ViewContainerRef } from '@angular/core';
+import { UntypedFormGroup } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { InputTypeConstants } from '../../../../content-type-fields/constants/input-type.constants';
 import { FieldMetadataKey, WrappersConstants } from '../../../shared/constants';
@@ -29,27 +29,29 @@ import { StringUrlPathComponent } from '../../fields/string/string-url-path/stri
 import { AdamWrapperComponent } from '../../wrappers/adam-wrapper/adam-wrapper.component';
 import { CollapsibleWrapperComponent } from '../../wrappers/collapsible-wrapper/collapsible-wrapper.component';
 import { DropzoneWrapperComponent } from '../../wrappers/dropzone-wrapper/dropzone-wrapper.component';
-import { EntityExpandableWrapperComponent } from '../../wrappers/entity-expandable-wrapper/entity-expandable-wrapper.component';
 import { ExpandableWrapperComponent } from '../../wrappers/expandable-wrapper/expandable-wrapper.component';
 import { HiddenWrapperComponent } from '../../wrappers/hidden-wrapper/hidden-wrapper.component';
 import { HyperlinkDefaultExpandableWrapperComponent } from '../../wrappers/hyperlink-default-expandable-wrapper/hyperlink-default-expandable-wrapper.component';
 import { HyperlinkLibraryExpandableWrapperComponent } from '../../wrappers/hyperlink-library-expandable-wrapper/hyperlink-library-expandable-wrapper.component';
 import { LocalizationWrapperComponent } from '../../wrappers/localization-wrapper/localization-wrapper.component';
-import { FieldConfigSet } from './field-config-set.model';
+import { PickerExpandableWrapperComponent } from '../../wrappers/picker-expandable-wrapper/picker-expandable-wrapper.component';
+import { FieldConfigSet, FieldControlConfig } from './field-config-set.model';
 import { FieldWrapper } from './field-wrapper.model';
 import { Field } from './field.model';
 import { EmptyFieldHelpers } from '../../fields/empty/empty-field-helpers';
+import { EntityPickerComponent } from '../../fields/entity/entity-picker/entity-picker.component';
+import { StringPickerComponent } from '../../fields/string/string-picker/string-picker.component';
 
 @Directive({ selector: '[appFieldsBuilder]' })
 export class FieldsBuilderDirective implements OnInit, OnDestroy {
-  @Input() group: FormGroup;
+  @Input() group: UntypedFormGroup;
   private fieldConfigs: FieldConfigSet[] = [];
 
   private components: Record<string, Type<any>> = {
     [WrappersConstants.AdamWrapper]: AdamWrapperComponent,
     [WrappersConstants.CollapsibleWrapper]: CollapsibleWrapperComponent,
     [WrappersConstants.DropzoneWrapper]: DropzoneWrapperComponent,
-    [WrappersConstants.EntityExpandableWrapper]: EntityExpandableWrapperComponent,
+    [WrappersConstants.PickerExpandableWrapper]: PickerExpandableWrapperComponent,
     [WrappersConstants.ExpandableWrapper]: ExpandableWrapperComponent,
     [WrappersConstants.HiddenWrapper]: HiddenWrapperComponent,
     [WrappersConstants.HyperlinkDefaultExpandableWrapper]: HyperlinkDefaultExpandableWrapperComponent,
@@ -77,10 +79,14 @@ export class FieldsBuilderDirective implements OnInit, OnDestroy {
     [InputTypeConstants.StringJson]: CustomJsonEditorComponent,
     [InputTypeConstants.StringTemplatePicker]: StringTemplatePickerComponent,
     [InputTypeConstants.StringUrlPath]: StringUrlPathComponent,
+
+    /** WIP pickers */
+    [InputTypeConstants.WIPEntityPicker]: EntityPickerComponent,
+    [InputTypeConstants.WIPStringPicker]: StringPickerComponent,
+    [InputTypeConstants.WIPNumberPicker]: NumberDropdownComponent,
   };
 
   constructor(
-    private resolver: ComponentFactoryResolver,
     private mainContainerRef: ViewContainerRef,
     private fieldsSettingsService: FieldsSettingsService,
   ) { }
@@ -124,15 +130,17 @@ export class FieldsBuilderDirective implements OnInit, OnDestroy {
   }
 
   private createGroup(containerRef: ViewContainerRef, fieldProps: FieldProps, fieldConfig: FieldConfigSet): ViewContainerRef {
+    let wrapperInfo = new WrapperInfo(null, containerRef);
     if (fieldProps.wrappers) {
-      containerRef = this.createWrappers(containerRef, fieldProps.wrappers, fieldConfig);
+      wrapperInfo = this.createWrappers(wrapperInfo.contentsRef, fieldProps.wrappers, fieldConfig);
     }
-    return containerRef;
+    return wrapperInfo.contentsRef;
   }
 
-  private createComponent(containerRef: ViewContainerRef, fieldProps: FieldProps, fieldConfig: FieldConfigSet): ComponentRef<Field> {
+  private createComponent(containerRef: ViewContainerRef, fieldProps: FieldProps, fieldConfig: FieldConfigSet) {
+    let wrapperInfo = new WrapperInfo(null, containerRef);
     if (fieldProps.wrappers) {
-      containerRef = this.createWrappers(containerRef, fieldProps.wrappers, fieldConfig);
+      wrapperInfo = this.createWrappers(wrapperInfo.contentsRef, fieldProps.wrappers, fieldConfig);
     }
 
     const componentType = fieldProps.calculatedInputType.isExternal
@@ -144,38 +152,52 @@ export class FieldsBuilderDirective implements OnInit, OnDestroy {
     if (fieldMetadata == null) { return; }
 
     if (fieldMetadata.wrappers) {
-      containerRef = this.createWrappers(containerRef, fieldMetadata.wrappers, fieldConfig);
+      wrapperInfo = this.createWrappers(wrapperInfo.contentsRef, fieldMetadata.wrappers, fieldConfig);
     }
 
-    const factory = this.resolver.resolveComponentFactory<Field>(componentType);
-    const ref = containerRef.createComponent(factory);
+    // generate the real input field component
+    this.generateAndAttachField(componentType, wrapperInfo.contentsRef, fieldConfig, false);
 
-    Object.assign<Field, Field>(ref.instance, {
+    if ((wrapperInfo.wrapperRef?.instance as PickerExpandableWrapperComponent)?.previewComponent) {
+      const previewType = this.readComponentType(fieldProps.calculatedInputType.inputType);
+      this.generateAndAttachField(previewType, (wrapperInfo.wrapperRef?.instance as PickerExpandableWrapperComponent)?.previewComponent, fieldConfig, true);
+    }
+
+    // return ref;
+  }
+
+  private generateAndAttachField(componentType: Type<any>, targetRef: ViewContainerRef, fieldConfig: FieldConfigSet, isPreview: boolean) {
+    const realFieldRef = targetRef.createComponent(componentType);
+    // used for passing data to controls when fields have multiple controls (e.g. field and a preview)
+    const controlConfig: FieldControlConfig = { isPreview };
+
+    Object.assign<Field, Field>(realFieldRef.instance, {
       config: fieldConfig,
+      controlConfig,
       group: this.group,
     });
 
-    return ref;
+    // return realFieldRef;
   }
 
-  private createWrappers(containerRef: ViewContainerRef, wrappers: string[], fieldConfig: FieldConfigSet): ViewContainerRef {
+  private createWrappers(containerRef: ViewContainerRef, wrappers: string[], fieldConfig: FieldConfigSet): WrapperInfo {
+    let wrapperInfo = new WrapperInfo(null, containerRef);
     for (const wrapper of wrappers) {
-      containerRef = this.createWrapper(containerRef, wrapper, fieldConfig);
+      wrapperInfo = this.createWrapper(wrapperInfo.contentsRef, wrapper, fieldConfig);
     }
-    return containerRef;
+    return wrapperInfo;
   }
 
-  private createWrapper(containerRef: ViewContainerRef, wrapper: string, fieldConfig: FieldConfigSet): ViewContainerRef {
+  private createWrapper(containerRef: ViewContainerRef, wrapper: string, fieldConfig: FieldConfigSet): WrapperInfo {
     const componentType = this.readComponentType(wrapper);
-    const componentFactory = this.resolver.resolveComponentFactory<FieldWrapper>(componentType);
-    const ref = containerRef.createComponent(componentFactory);
+    const ref = containerRef.createComponent(componentType);
 
     Object.assign<FieldWrapper, Partial<FieldWrapper>>(ref.instance, {
       config: fieldConfig,
       group: this.group,
     });
 
-    return ref.instance.fieldComponent;
+    return new WrapperInfo(ref, ref.instance.fieldComponent);
   }
 
   private readComponentType(selector: string): Type<any> {
@@ -186,4 +208,11 @@ export class FieldsBuilderDirective implements OnInit, OnDestroy {
     }
     return componentType;
   }
+}
+
+class WrapperInfo {
+  constructor(
+    public wrapperRef: ComponentRef<FieldWrapper>,
+    public contentsRef: ViewContainerRef,
+  ) {}
 }

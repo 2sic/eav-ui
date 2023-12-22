@@ -1,4 +1,5 @@
 import { PermissionsCount } from '../../app-administration/models/permissions-count.model';
+import { EavType } from '../../edit/shared/models/eav/eav-type';
 import { EditInfo } from '../../shared/models/edit-info';
 import { InputTypeStrict } from '../constants/input-type.constants';
 import { InputType } from './input-type.model';
@@ -17,6 +18,27 @@ export interface Field {
   SortOrder: number;
   StaticName: string;
   Type: string;
+
+  /** new #SharedFieldDefinition v16.08 */
+  Guid?: string;
+  SysSettings: FieldSysSettings;
+  /**
+   * This will only be available when calling fields/GetSharedFields
+   */
+  ContentType?: EavType;
+
+  /** new #ConfigTypesFromBackend v16.08 */
+  ConfigTypes: Record<string, boolean>;
+}
+
+/** #SharedFieldDefinition */
+export interface FieldSysSettings {
+  /** Determines if this field is shared / available for others */
+  Share: boolean;
+
+  /** WIP, don't use yet */
+  Inherit?: string;
+  InheritMetadataOf?: string;
 }
 
 export interface FieldMetadata {
