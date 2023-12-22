@@ -1,10 +1,10 @@
-<ng-container *ngIf="templateVars$ | async as data">
+<ng-container *ngIf="viewModel$ | async as vm">
   <app-picker-list 
     [pickerData]="pickerData"
     [config]="config" 
     [group]="group">
   </app-picker-list>
-  <app-picker-search *ngIf="!data.freeTextMode" 
+  <app-picker-search *ngIf="!vm.freeTextMode" 
     [pickerData]="pickerData"
     [config]="config" 
     [group]="group" 
@@ -12,17 +12,17 @@
     [showSelectedItem]="false"
     [showItemEditButtons]="false">
   </app-picker-search>
-  <app-picker-text *ngIf="data.freeTextMode" 
+  <app-picker-text *ngIf="vm.freeTextMode" 
     [pickerData]="pickerData"
     [config]="config" 
     [group]="group">
   </app-picker-text>
   <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
   <!-- add new entity -->
-  <div fxLayout="row" fxLayoutAlign="end center" *ngIf="data.showAddNewEntityButtonInDialog">
+  <div fxLayout="row" fxLayoutAlign="end center" *ngIf="vm.showAddNewEntityButtonInDialog">
     <button mat-mini-fab color="accent" 
       [tippy]="'Fields.Entity.New' | translate"
-      [disabled]="data.controlStatus.disabled || data.disableAddNew" 
+      [disabled]="vm.controlStatus.disabled || vm.disableAddNew" 
       (click)="openNewEntityDialog()">
       <mat-icon>add</mat-icon>
     </button>

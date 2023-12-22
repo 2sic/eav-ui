@@ -56,7 +56,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     this.control = this.group.controls[this.config.fieldName];
 
     this.availableItems$ = source.availableItems$;
-    this.selectedItems$ = this.pickerData.selectedItems$;//.pipe(tap(si => console.log("SDV selected items", si[0])));
+    this.selectedItems$ = this.pickerData.selectedItems$;
 
     const freeTextMode$ = state.freeTextMode$;
     const controlStatus$ = state.controlStatus$;

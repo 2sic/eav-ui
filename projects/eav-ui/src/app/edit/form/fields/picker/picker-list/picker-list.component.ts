@@ -57,7 +57,7 @@ export class PickerListComponent implements OnInit {
           label,
           required,
           controlStatus,
-          selectedItems
+          selectedItems,
         };
         return viewModel;
       }),

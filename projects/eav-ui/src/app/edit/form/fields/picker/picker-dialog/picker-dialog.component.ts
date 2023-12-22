@@ -3,7 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { FieldsSettingsService } from '../../../../shared/services';
-import { EntityPickerDialogTemplateVars } from './picker-dialog.models';
+import { EntityPickerDialogViewModel } from './picker-dialog.models';
 import { FieldConfigSet, FieldControlConfig } from '../../../builder/fields-builder/field-config-set.model';
 import { Field } from '../../../builder/fields-builder/field.model';
 import { BaseSubsinkComponent } from 'projects/eav-ui/src/app/shared/components/base-subsink-component/base-subsink.component';
@@ -20,7 +20,7 @@ export class PickerDialogComponent extends BaseSubsinkComponent implements OnIni
   @Input() group: FormGroup;
   @Input() controlConfig: FieldControlConfig;
 
-  templateVars$: Observable<EntityPickerDialogTemplateVars>;
+  viewModel$: Observable<EntityPickerDialogViewModel>;
 
   constructor(
     private fieldsSettingsService: FieldsSettingsService,
@@ -45,7 +45,7 @@ export class PickerDialogComponent extends BaseSubsinkComponent implements OnIni
       distinctUntilChanged(GeneralHelpers.objectsEqual),
     );
 
-    this.templateVars$ = combineLatest([
+    this.viewModel$ = combineLatest([
       settings$, controlStatus$, freeTextMode$, disableAddNew$
     ]).pipe(
       map(([
@@ -53,7 +53,7 @@ export class PickerDialogComponent extends BaseSubsinkComponent implements OnIni
       ]) => {
         const showAddNewEntityButtonInDialog = !freeTextMode && settings.EnableCreate && settings.EntityType && settings.AllowMultiValue;
 
-        const templateVars: EntityPickerDialogTemplateVars = {
+        const viewModel: EntityPickerDialogViewModel = {
           controlStatus,
           freeTextMode,
           disableAddNew,
@@ -62,7 +62,7 @@ export class PickerDialogComponent extends BaseSubsinkComponent implements OnIni
           showAddNewEntityButtonInDialog,
         };
 
-        return templateVars;
+        return viewModel;
       }),
     );
   }

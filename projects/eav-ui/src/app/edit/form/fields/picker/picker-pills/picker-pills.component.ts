@@ -45,7 +45,7 @@ export class PickerPillsComponent extends BaseFieldComponent<string | string[]> 
         [controlStatus, label, placeholder, required],
         [selectedItems, isOpen, settings],
       ]) => {
-        const templateVars: PickerPillsViewModel = {
+        const viewModel: PickerPillsViewModel = {
           controlStatus,
           label,
           placeholder,
@@ -55,7 +55,7 @@ export class PickerPillsComponent extends BaseFieldComponent<string | string[]> 
           isOpen,
           enableTextEntry: settings.EnableTextEntry,
         };
-        return templateVars;
+        return viewModel;
       }),
     );
   }
