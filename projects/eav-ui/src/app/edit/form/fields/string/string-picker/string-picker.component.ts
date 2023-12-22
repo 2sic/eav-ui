@@ -5,12 +5,13 @@ import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.de
 import { PickerComponent } from '../../picker/picker.component';
 import { TranslateService } from '@ngx-translate/core';
 import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
-import { EntityDefaultLogic } from '../../entity/entity-default/entity-default-logic';
 import { DeleteEntityProps } from '../../picker/picker.models';
 import { PickerData } from '../../picker/picker-data';
 import { PickerSourceAdapterFactoryService } from '../../picker/factories/picker-source-adapter-factory.service';
 import { PickerStateAdapterFactoryService } from '../../picker/factories/picker-state-adapter-factory.service';
 import { StringPickerLogic } from './string-picker-logic';
+import { PickerStringSourceAdapter } from '../../picker/adapters/picker-string-source-adapter';
+import { PickerQuerySourceAdapter } from '../../picker/adapters/picker-query-source-adapter';
 
 @Component({
   selector: InputTypeConstants.WIPStringPicker,
@@ -60,6 +61,8 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
   }
 
   private createPickerAdapters(): void {
+    let source: PickerStringSourceAdapter | PickerQuerySourceAdapter;
+
     const state = this.stateFactory.createPickerStringStateAdapter(
       this.control,
       this.config,
@@ -72,19 +75,36 @@ export class StringPickerComponent extends PickerComponent implements OnInit, On
       () => this.focusOnSearchComponent,
     );
 
-    const source = this.sourceFactory.createPickerStringSourceAdapter(
-      state.disableAddNew$,
-      this.fieldsSettingsService,
+    if (this.settings$.value.DataSourceType === 'UiPickerSourceCustomList') {
+      source = this.sourceFactory.createPickerStringSourceAdapter(
+        state.disableAddNew$,
+        this.fieldsSettingsService,
 
-      state.control,
-      this.config,
-      state.settings$,
-      this.editRoutingService,
-      this.group,
-      // (clearAvailableItemsAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableItemsAndOnlyUpdateCache),
-      (props: DeleteEntityProps) => state.doAfterDelete(props)
-    );
+        state.control,
+        this.config,
+        state.settings$,
+        this.editRoutingService,
+        this.group,
+        // (clearAvailableItemsAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableItemsAndOnlyUpdateCache),
+        (props: DeleteEntityProps) => state.doAfterDelete(props)
+      );
+    } else if (this.settings$.value.DataSourceType === 'UiPickerSourceQuery') {
+      source = this.sourceFactory.createPickerQuerySourceAdapter(
+        state.error$,
+        state.disableAddNew$,
+        this.fieldsSettingsService,
+        this.isStringQuery,
 
+        state.control,
+        this.config,
+        state.settings$,
+        this.editRoutingService,
+        this.group,
+        // (clearAvailableItemsAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableItemsAndOnlyUpdateCache),
+        (props: DeleteEntityProps) => state.doAfterDelete(props)
+      );
+    }
+    
     state.init();
     source.init();
     this.pickerData = new PickerData(

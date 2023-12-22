@@ -266,6 +266,8 @@ export interface EntityPicker extends EntityQuery {
   PickerDisplayMode: 'list' | 'tree';
   PickerDisplayConfiguration: string[]; //can only be one entity guid
   PickerTreeConfiguration: UiPickerModeTree;
+
+  DataSourceType: 'UiPickerSourceCustomList' | 'UiPickerSourceQuery' | 'UiPickerSourceEntity';
 }
 
 export interface StringPicker extends StringDropdown {
@@ -279,6 +281,8 @@ export interface StringPicker extends StringDropdown {
   PickerDisplayMode: 'list' | 'tree';
   PickerDisplayConfiguration: string[]; //can only be one entity guid
   PickerTreeConfiguration: UiPickerModeTree;
+
+  DataSourceType: 'UiPickerSourceCustomList' | 'UiPickerSourceQuery' | 'UiPickerSourceEntity';
 }
 
 interface InternalSettings {
@@ -342,4 +346,6 @@ export interface UiPickerModeTree extends DataSource {
 
 interface DataSource {
   Title: string;
+
+  DataSourceType: 'UiPickerSourceCustomList' | 'UiPickerSourceQuery' | 'UiPickerSourceEntity';// will need to become enum array a bit later
 }

@@ -6,7 +6,6 @@ import { calculateDropdownOptions } from './string-picker.helpers';
 
 export class StringPickerLogic extends FieldLogicBase {
   name: InputTypeStrict = InputTypeConstants.WIPStringPicker;
-  type: 'string' | 'number' = 'string';
 
   update(settings: FieldSettings, value: string, tools: FieldLogicTools): FieldSettings {
     const fs: FieldSettings = { ...settings };
@@ -31,13 +30,35 @@ export class StringPickerLogic extends FieldLogicBase {
     fs.EnableAddExisting ??= true;
     fs.EnableRemove ??= fs.AllowMultiValue; //if multi-value is allowed, then we can remove, if not we can't
     fs.EnableDelete ??= false;
+    fs.EnableTextEntry ??= false;
+    fs.Separator ??= '\\n';
 
     const dataSources = tools.contentTypeItemService.getContentTypeItems(fs.DataSources);
+    const dsAttributes = dataSources[0]?.Attributes;
+    
+    console.log('SDV StringPickerLogic dataSources', dataSources);
 
-    fs.DropdownValuesFormat ??= 'value-label';
-    fs.DropdownValues = dataSources[0]?.Attributes['Values'].Values[0].Value;
-    fs._options = calculateDropdownOptions(value, this.type, fs.DropdownValuesFormat, fs.DropdownValues);
-    fs.Separator ??= '\\n';
+    /** Dropdown datasource */
+    if (dataSources[0].Type.Name === 'UiPickerSourceCustomList') {
+      fs.DataSourceType = 'UiPickerSourceCustomList';
+
+      fs.DropdownValuesFormat ??= 'value-label'; //currently not defined nowhere in the config
+      fs.DropdownValues = dsAttributes['Values'].Values[0].Value ?? '';
+      fs._options = calculateDropdownOptions(value, 'string', fs.DropdownValuesFormat, fs.DropdownValues) ?? [];
+    }
+
+    /** Query datasource */
+    if (dataSources[0].Type.Name === 'UiPickerSourceQuery') { 
+      fs.DataSourceType = 'UiPickerSourceQuery';
+
+      fs.Query = dsAttributes['Query'].Values[0].Value ?? '';
+      fs.StreamName = dsAttributes['StreamName'].Values[0].Value ?? 'Default';
+      fs.UrlParameters = dsAttributes['QueryParameters'].Values[0].Value ?? '';
+
+      fs.Value = dsAttributes['Value'].Values[0].Value ?? '';
+      fs.Label = dsAttributes['Label'].Values[0].Value ?? '';
+      fs.EntityType = dsAttributes['CreateTypes'].Values[0].Value ?? '';
+    }
     
     /** WIP functionalities */
     // If AllowMultiValue is false then EnableReselect must be false
@@ -51,7 +72,7 @@ export class StringPickerLogic extends FieldLogicBase {
       fs.AllowMultiMax = 0;
     }
 
-    console.log('SDV StringPickerLogic', fs);
+    // console.log('SDV StringPickerLogic', fs);
 
     return fs;
   }
