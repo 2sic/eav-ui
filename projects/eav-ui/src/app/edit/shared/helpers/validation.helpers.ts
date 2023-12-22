@@ -6,6 +6,7 @@ import { AdamControl } from '../../form/fields/hyperlink/hyperlink-library/hyper
 import { SxcAbstractControl } from '../models';
 import { FieldsSettingsService } from '../services';
 import { ItemFieldVisibility } from '../services/item-field-visibility';
+import { convertValueToArray } from '../../form/fields/picker/picker.helpers';
 
 /** Validators here are copied from https://github.com/angular/angular/blob/master/packages/forms/src/validators.ts */
 export class ValidationHelpers {
@@ -121,8 +122,10 @@ export class ValidationHelpers {
       if (this.ignoreValidators(settings)) { return null; }
       if (settings.AllowMultiMin == 0 || settings.AllowMultiMin == undefined) { return null; }
 
-      const lessThanMin = control.value.length < settings.AllowMultiMin
-
+      const lessThanMin = (Array.isArray(control.value)
+        ? control.value.length
+        : convertValueToArray(control.value, settings.Separator, settings._options).length)
+        < settings.AllowMultiMin
       return lessThanMin ? { minNoItems: settings.AllowMultiMin } : null;
     };
   }
@@ -134,8 +137,10 @@ export class ValidationHelpers {
       if (this.ignoreValidators(settings)) { return null; }
       if (settings.AllowMultiMax == 0 || settings.AllowMultiMax == undefined) { return null; }
 
-      const moreThanMax = control.value.length > settings.AllowMultiMax
-
+      const moreThanMax = (Array.isArray(control.value)
+        ? control.value.length
+        : convertValueToArray(control.value, settings.Separator, settings._options).length)
+        > settings.AllowMultiMax
       return moreThanMax ? { maxNoItems: settings.AllowMultiMax } : null;
     };
   }
