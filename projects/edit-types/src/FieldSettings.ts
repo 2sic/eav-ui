@@ -268,6 +268,19 @@ export interface EntityPicker extends EntityQuery {
   PickerTreeConfiguration: UiPickerModeTree;
 }
 
+export interface StringPicker extends StringDropdown {
+  EnableReselect: boolean;
+  AllowMultiMin: number;
+  AllowMultiMax: number;
+
+  DataSources: string[];
+  UiPickerSourceQuery: UiPickerSourceQuery;
+
+  PickerDisplayMode: 'list' | 'tree';
+  PickerDisplayConfiguration: string[]; //can only be one entity guid
+  PickerTreeConfiguration: UiPickerModeTree;
+}
+
 interface InternalSettings {
   _disabledBecauseOfTranslation?: boolean;
   _isDialog?: boolean;
@@ -292,11 +305,15 @@ export interface FieldSettings extends
   StringUrlPath,
   StringWysiwyg,
   EntityPicker,
+  StringPicker,
   InternalSettings
 { }
+
+export interface UiPickerSourceCustomList extends DataSource {
+  Values: string;
+}
   
-export interface UiPickerSourceQuery {
-  Title: string;
+export interface UiPickerSourceQuery extends DataSource {
   Query: string;
   QueryParameters: string;
   StreamName: string;
@@ -306,9 +323,7 @@ export interface UiPickerSourceQuery {
   MoreFields: string;
 }
 
-export interface UiPickerModeTree { 
-  Title: string;
-
+export interface UiPickerModeTree extends DataSource { 
   TreeRelationship: 'child-parent' | 'parent-child'; //child-parent or parent-child
   TreeBranchStream: string;
   TreeLeavesStream: string;
@@ -323,4 +338,8 @@ export interface UiPickerModeTree {
   TreeAllowSelectRoot: boolean;
   TreeAllowSelectBranch: boolean;
   TreeAllowSelectLeaves: boolean;
+}
+
+interface DataSource {
+  Title: string;
 }

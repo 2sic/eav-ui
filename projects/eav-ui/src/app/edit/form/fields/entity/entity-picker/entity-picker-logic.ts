@@ -65,10 +65,6 @@ export class EntityPickerLogic extends FieldLogicBase {
     //   });
     // }
 
-
-
-
-
     /** Entity Query logic */
     fixedSettings.Query ??= '';
     fixedSettings.StreamName ||= 'Default';
@@ -91,28 +87,28 @@ export class EntityPickerLogic extends FieldLogicBase {
       fixedSettings.AllowMultiMax = 0;
     }
 
-    fixedSettings.PickerDisplayMode ??= 'list';
-    fixedSettings.PickerDisplayConfiguration ??= [];
+    // fixedSettings.PickerDisplayMode ??= 'list';
+    // fixedSettings.PickerDisplayConfiguration ??= [];
 
     // USE CONTENT TYPE ITEM SERVICE TO GET THE SUBENTITIES
-    if (fixedSettings.PickerDisplayMode === 'tree') {
-      const pickerTreeConfiguration: UiPickerModeTree = {
-        Title: 'Tree Picker Configuration',// nothing to implement
-        TreeRelationship: 'child-parent',
-        TreeBranchStream: 'Default',
-        TreeLeavesStream: 'Default',
-        TreeParentIdField: 'Id',
-        TreeChildIdField: 'Id',
-        TreeParentChildRefField: 'children',
-        TreeChildParentRefField: 'parent',
-        TreeShowRoot: true,
-        TreeDepthMax: 10,
-        TreeAllowSelectRoot: true,// implemented
-        TreeAllowSelectBranch: true,// implemented
-        TreeAllowSelectLeaves: true,// implemented
-      };
-      fixedSettings.PickerTreeConfiguration = pickerTreeConfiguration;
-    }
+    // if (fixedSettings.PickerDisplayMode === 'tree') {
+    //   const pickerTreeConfiguration: UiPickerModeTree = {
+    //     Title: 'Tree Picker Configuration',// nothing to implement
+    //     TreeRelationship: 'child-parent',
+    //     TreeBranchStream: 'Default',
+    //     TreeLeavesStream: 'Default',
+    //     TreeParentIdField: 'Id',
+    //     TreeChildIdField: 'Id',
+    //     TreeParentChildRefField: 'children',
+    //     TreeChildParentRefField: 'parent',
+    //     TreeShowRoot: true,
+    //     TreeDepthMax: 10,
+    //     TreeAllowSelectRoot: true,// implemented
+    //     TreeAllowSelectBranch: true,// implemented
+    //     TreeAllowSelectLeaves: true,// implemented
+    //   };
+    //   fixedSettings.PickerTreeConfiguration = pickerTreeConfiguration;
+    // }
 
     return fixedSettings;
   }

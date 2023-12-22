@@ -1,7 +1,7 @@
 import { FieldSettings } from '../../../../../../../../edit-types';
 import { InputTypeStrict, InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { FieldLogicBase } from '../../../shared/field-logic/field-logic-base';
-import { calculateDropdownOptions } from './string-dropdown.helpers';
+import { calculateDropdownOptions } from '../string-picker/string-picker.helpers';
 
 export class StringDropdownLogic extends FieldLogicBase {
   name: InputTypeStrict = InputTypeConstants.StringDropdown;

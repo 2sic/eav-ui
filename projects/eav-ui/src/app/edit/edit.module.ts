@@ -111,6 +111,7 @@ import { PickerPreviewComponent } from './form/fields/picker/picker-preview/pick
 import { PickerTextToggleComponent } from './form/fields/picker/picker-text-toggle/picker-text-toggle.component';
 import { FieldDataSourceFactoryService } from './form/fields/picker/factories/field-data-source-factory.service';
 import { EntityPickerComponent } from './form/fields/entity/entity-picker/entity-picker.component';
+import { StringPickerComponent } from './form/fields/string/string-picker/string-picker.component';
 
 @NgModule({
     declarations: [
@@ -182,6 +183,7 @@ import { EntityPickerComponent } from './form/fields/entity/entity-picker/entity
         EmptyMessageComponent,
         SnippetLabelSizePipe,
         EntityPickerComponent,
+        StringPickerComponent,
     ],
     imports: [
         EditRoutingModule,

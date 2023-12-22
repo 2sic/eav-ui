@@ -40,6 +40,7 @@ import { FieldWrapper } from './field-wrapper.model';
 import { Field } from './field.model';
 import { EmptyFieldHelpers } from '../../fields/empty/empty-field-helpers';
 import { EntityPickerComponent } from '../../fields/entity/entity-picker/entity-picker.component';
+import { StringPickerComponent } from '../../fields/string/string-picker/string-picker.component';
 
 @Directive({ selector: '[appFieldsBuilder]' })
 export class FieldsBuilderDirective implements OnInit, OnDestroy {
@@ -81,7 +82,7 @@ export class FieldsBuilderDirective implements OnInit, OnDestroy {
 
     /** WIP pickers */
     [InputTypeConstants.WIPEntityPicker]: EntityPickerComponent,
-    [InputTypeConstants.WIPStringPicker]: StringDropdownComponent,
+    [InputTypeConstants.WIPStringPicker]: StringPickerComponent,
     [InputTypeConstants.WIPNumberPicker]: NumberDropdownComponent,
   };
 
