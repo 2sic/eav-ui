@@ -2,6 +2,7 @@ import { FieldSettings, UiPickerModeTree } from '../../../../../../../../edit-ty
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { FieldLogicBase } from '../../../shared/field-logic/field-logic-base';
 import { FieldLogicTools } from '../../../shared/field-logic/field-logic-tools';
+import { PickerSources } from '../../picker/constants/picker-source.constants';
 
 export class EntityPickerLogic extends FieldLogicBase {
   name = InputTypeConstants.WIPEntityPicker;
@@ -41,8 +42,8 @@ export class EntityPickerLogic extends FieldLogicBase {
     console.log('SDV StringPickerLogic dataSources', dataSources);
 
     /** Query datasource */
-    if (dataSources[0].Type.Name === 'UiPickerSourceQuery') {
-      fs.DataSourceType = 'UiPickerSourceQuery';
+    if (dataSources[0].Type.Name === PickerSources.UiPickerSourceQuery) {
+      fs.DataSourceType = PickerSources.UiPickerSourceQuery;
 
       fs.Query = dsAttributes['Query'].Values[0].Value ?? '';
       fs.StreamName = dsAttributes['StreamName'].Values[0].Value ?? 'Default';
@@ -54,8 +55,8 @@ export class EntityPickerLogic extends FieldLogicBase {
     }
 
     /** Entity datasource */
-    if (dataSources[0].Type.Name === 'UiPickerSourceEntity') {
-      fs.DataSourceType = 'UiPickerSourceEntity';
+    if (dataSources[0].Type.Name === PickerSources.UiPickerSourceEntity) {
+      fs.DataSourceType = PickerSources.UiPickerSourceEntity;
 
       fs.EntityType = dsAttributes['ContentTypeNames'].Values[0].Value ?? '';
     }

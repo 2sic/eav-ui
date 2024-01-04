@@ -2,6 +2,7 @@ import { FieldSettings } from '../../../../../../../../edit-types';
 import { InputTypeStrict, InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { FieldLogicBase } from '../../../shared/field-logic/field-logic-base';
 import { FieldLogicTools } from '../../../shared/field-logic/field-logic-tools';
+import { PickerSources } from '../../picker/constants/picker-source.constants';
 import { calculateDropdownOptions } from './string-picker.helpers';
 
 export class StringPickerLogic extends FieldLogicBase {
@@ -39,8 +40,8 @@ export class StringPickerLogic extends FieldLogicBase {
     console.log('SDV StringPickerLogic dataSources', dataSources);
 
     /** Dropdown datasource */
-    if (dataSources[0].Type.Name === 'UiPickerSourceCustomList') {
-      fs.DataSourceType = 'UiPickerSourceCustomList';
+    if (dataSources[0].Type.Name === PickerSources.UiPickerSourceCustomList) {
+      fs.DataSourceType = PickerSources.UiPickerSourceCustomList;
 
       fs.DropdownValuesFormat ??= 'value-label'; //currently not defined nowhere in the config
       fs.DropdownValues = dsAttributes['Values'].Values[0].Value ?? '';
@@ -48,8 +49,8 @@ export class StringPickerLogic extends FieldLogicBase {
     }
 
     /** Query datasource */
-    if (dataSources[0].Type.Name === 'UiPickerSourceQuery') { 
-      fs.DataSourceType = 'UiPickerSourceQuery';
+    if (dataSources[0].Type.Name === PickerSources.UiPickerSourceQuery) { 
+      fs.DataSourceType = PickerSources.UiPickerSourceQuery;
 
       fs.Query = dsAttributes['Query'].Values[0].Value ?? '';
       fs.StreamName = dsAttributes['StreamName'].Values[0].Value ?? 'Default';
@@ -61,8 +62,8 @@ export class StringPickerLogic extends FieldLogicBase {
     }
 
     /** Entity datasource */
-    if (dataSources[0].Type.Name === 'UiPickerSourceEntity') {
-      fs.DataSourceType = 'UiPickerSourceEntity';
+    if (dataSources[0].Type.Name === PickerSources.UiPickerSourceEntity) {
+      fs.DataSourceType = PickerSources.UiPickerSourceEntity;
 
       fs.EntityType = dsAttributes['ContentTypeNames'].Values[0].Value ?? '';
     }
