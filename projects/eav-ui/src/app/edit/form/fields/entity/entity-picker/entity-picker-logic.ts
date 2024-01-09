@@ -1,5 +1,6 @@
-import { FieldSettings, UiPickerModeTree } from '../../../../../../../../edit-types';
+import { FieldSettings } from '../../../../../../../../edit-types';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
+import { EavAttributesDto } from '../../../../shared/models/json-format-v1';
 import { FieldLogicBase } from '../../../shared/field-logic/field-logic-base';
 import { FieldLogicTools } from '../../../shared/field-logic/field-logic-tools';
 import { PickerSources } from '../../picker/constants/picker-source.constants';
@@ -37,9 +38,8 @@ export class EntityPickerLogic extends FieldLogicBase {
     }
 
     const dataSources = tools.contentTypeItemService.getContentTypeItems(fs.DataSources);
-    const dsAttributes = dataSources[0]?.Attributes;
-
-    console.log('SDV StringPickerLogic dataSources', dataSources);
+    const dsAttributes = EavAttributesDto.attributesToDto(dataSources[0]?.Attributes);
+    // const dsAttributes = dataSources[0]?.Attributes;
 
     /** Query datasource */
     if (dataSources[0].Type.Name === PickerSources.UiPickerSourceQuery) {

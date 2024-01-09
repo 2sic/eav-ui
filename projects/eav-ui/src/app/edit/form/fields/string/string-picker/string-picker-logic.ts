@@ -36,8 +36,6 @@ export class StringPickerLogic extends FieldLogicBase {
 
     const dataSources = tools.contentTypeItemService.getContentTypeItems(fs.DataSources);
     const dsAttributes = dataSources[0]?.Attributes;
-    
-    console.log('SDV StringPickerLogic dataSources', dataSources);
 
     /** Dropdown datasource */
     if (dataSources[0].Type.Name === PickerSources.UiPickerSourceCustomList) {
