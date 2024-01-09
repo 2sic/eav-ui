@@ -1,9 +1,9 @@
-import { FieldSettings } from '../../../../../../../../edit-types';
+import { FieldSettings, UiPickerModeTree } from '../../../../../../../../edit-types';
 import { InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { EavAttributesDto } from '../../../../shared/models/json-format-v1';
 import { FieldLogicBase } from '../../../shared/field-logic/field-logic-base';
 import { FieldLogicTools } from '../../../shared/field-logic/field-logic-tools';
-import { PickerSources } from '../../picker/constants/picker-source.constants';
+import { PickerConfigModels } from '../../picker/constants/picker-config-model.constants';
 
 export class EntityPickerLogic extends FieldLogicBase {
   name = InputTypeConstants.WIPEntityPicker;
@@ -42,8 +42,8 @@ export class EntityPickerLogic extends FieldLogicBase {
     // const dsAttributes = dataSources[0]?.Attributes;
 
     /** Query datasource */
-    if (dataSources[0].Type.Name === PickerSources.UiPickerSourceQuery) {
-      fs.DataSourceType = PickerSources.UiPickerSourceQuery;
+    if (dataSources[0].Type.Name === PickerConfigModels.UiPickerSourceQuery) {
+      fs.DataSourceType = PickerConfigModels.UiPickerSourceQuery;
 
       fs.Query = dsAttributes['Query'].Values[0].Value ?? '';
       fs.StreamName = dsAttributes['StreamName'].Values[0].Value ?? 'Default';
@@ -55,8 +55,8 @@ export class EntityPickerLogic extends FieldLogicBase {
     }
 
     /** Entity datasource */
-    if (dataSources[0].Type.Name === PickerSources.UiPickerSourceEntity) {
-      fs.DataSourceType = PickerSources.UiPickerSourceEntity;
+    if (dataSources[0].Type.Name === PickerConfigModels.UiPickerSourceEntity) {
+      fs.DataSourceType = PickerConfigModels.UiPickerSourceEntity;
 
       fs.EntityType = dsAttributes['ContentTypeNames'].Values[0].Value ?? '';
     }
@@ -73,28 +73,28 @@ export class EntityPickerLogic extends FieldLogicBase {
       fs.AllowMultiMax = 0;
     }
 
-    // fixedSettings.PickerDisplayMode ??= 'list';
-    // fixedSettings.PickerDisplayConfiguration ??= [];
+    fs.PickerDisplayMode ??= 'list';
+    fs.PickerDisplayConfiguration ??= [];
 
-    // USE CONTENT TYPE ITEM SERVICE TO GET THE SUBENTITIES
-    // if (fixedSettings.PickerDisplayMode === 'tree') {
-    //   const pickerTreeConfiguration: UiPickerModeTree = {
-    //     Title: 'Tree Picker Configuration',// nothing to implement
-    //     TreeRelationship: 'child-parent',
-    //     TreeBranchStream: 'Default',
-    //     TreeLeavesStream: 'Default',
-    //     TreeParentIdField: 'Id',
-    //     TreeChildIdField: 'Id',
-    //     TreeParentChildRefField: 'children',
-    //     TreeChildParentRefField: 'parent',
-    //     TreeShowRoot: true,
-    //     TreeDepthMax: 10,
-    //     TreeAllowSelectRoot: true,// implemented
-    //     TreeAllowSelectBranch: true,// implemented
-    //     TreeAllowSelectLeaves: true,// implemented
-    //   };
-    //   fixedSettings.PickerTreeConfiguration = pickerTreeConfiguration;
-    // }
+    if (fs.PickerDisplayMode === 'tree') {
+      const pickerTreeConfiguration: UiPickerModeTree = {
+        Title: 'Tree Picker Configuration',// nothing to implement
+        ConfigModel: 'UiPickerModeTree',// nothing to implement
+        TreeRelationship: 'child-parent',
+        TreeBranchStream: 'Default',
+        TreeLeavesStream: 'Default',
+        TreeParentIdField: 'Id',
+        TreeChildIdField: 'Id',
+        TreeParentChildRefField: 'children',
+        TreeChildParentRefField: 'parent',
+        TreeShowRoot: true,
+        TreeDepthMax: 10,
+        TreeAllowSelectRoot: true,// implemented
+        TreeAllowSelectBranch: true,// implemented
+        TreeAllowSelectLeaves: true,// implemented
+      };
+      fs.PickerTreeConfiguration = pickerTreeConfiguration;
+    }
 
     return fs;
   }
