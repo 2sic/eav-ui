@@ -49,12 +49,11 @@
           </div>
         </mat-option>
       </div>
-      <!-- /** Needed later for tree implementation testing */ -->
-      <!-- <mat-tree *ngIf="vm.isTreeDisplayMode" [dataSource]="dataSource" [treeControl]="treeControl">
+      <mat-tree *ngIf="vm.isTreeDisplayMode" [dataSource]="dataSource" [treeControl]="treeControl">
         <mat-tree-node *matTreeNodeDef="let item;" matTreeNodePadding>
           <button mat-icon-button disabled></button>
           <mat-option [value]="item.Value" class="eav-picker-option"
-            [disabled]="isOptionUnpickable(item, vm.selectedEntities, vm.enableReselect, vm.pickerTreeConfiguration)"
+            [disabled]="isOptionUnpickable(item, vm.selectedItems, vm.enableReselect, vm.pickerTreeConfiguration)"
             [tippy]="item.Tooltip" tippyShowDelay="500" [tippyDisabled]="!item.Tooltip">
             <div class="eav-dropdown-option">
               <span>{{ item.Text ? item.Text : item.Value }}</span>
@@ -69,7 +68,7 @@
             </mat-icon>
           </button>
           <mat-option [value]="item.Value" class="eav-picker-option"
-            [disabled]="isOptionUnpickable(item, vm.selectedEntities, vm.enableReselect, vm.pickerTreeConfiguration)"
+            [disabled]="isOptionUnpickable(item, vm.selectedItems, vm.enableReselect, vm.pickerTreeConfiguration)"
             [tippy]="item.Tooltip" tippyShowDelay="500" [tippyDisabled]="!item.Tooltip">
             <div class="eav-dropdown-option">
               <span>{{ item.Text ? item.Text : item.Value }}</span>
@@ -77,7 +76,7 @@
             </div>
           </mat-option>
         </mat-tree-node>
-      </mat-tree> -->
+      </mat-tree>
     </mat-autocomplete>
 
   </div>
