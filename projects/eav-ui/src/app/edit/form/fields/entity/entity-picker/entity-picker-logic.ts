@@ -38,8 +38,8 @@ export class EntityPickerLogic extends FieldLogicBase {
     }
 
     const dataSources = tools.contentTypeItemService.getContentTypeItems(fs.DataSources);
-    const dsAttributes = EavAttributesDto.attributesToDto(dataSources[0]?.Attributes);
-    // const dsAttributes = dataSources[0]?.Attributes;
+    // const dsAttributes = EavAttributesDto.attributesToDto(dataSources[0]?.Attributes);
+    const dsAttributes = dataSources[0]?.Attributes;
 
     /** Query datasource */
     if (dataSources[0].Type.Name === PickerConfigModels.UiPickerSourceQuery) {
