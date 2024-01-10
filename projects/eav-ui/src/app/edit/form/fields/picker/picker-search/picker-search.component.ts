@@ -34,7 +34,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   private control: AbstractControl;
 
   private pickerTreeConfiguration: UiPickerModeTree;
-  dataSource: MatTreeFlatDataSource<TreeNode, PickerTreeItem, PickerTreeItem>;
+  dataSource: MatTreeFlatDataSource<TreeItem, PickerTreeItem, PickerTreeItem>;
 
   private availableItems$ = new BehaviorSubject<PickerItem[]>(null);
   private selectedItems$ = new Observable<PickerItem[]>;
@@ -251,42 +251,42 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
 
   /** Needed later for tree implementation testing */
   treeControl = new FlatTreeControl<PickerTreeItem>(
-    node => node.Level,
-    node => node.Expandable,
+    item => item.Level,
+    item => item.Expandable,
   );
 
-  treeFlattener: MatTreeFlattener<TreeNode, PickerTreeItem> = new MatTreeFlattener(
-    (node, Level) => {
+  treeFlattener: MatTreeFlattener<TreeItem, PickerTreeItem> = new MatTreeFlattener(
+    (item, Level) => {
       return {
         Level: Level,
-        // Expandable: !!(node as TreeNode)[this.pickerTreeConfiguration?.TreeParentChildRefField] && (node as TreeNode)[this.pickerTreeConfiguration?.TreeParentChildRefField].length > 0,
+        // Expandable: !!(item as TreeItem)[this.pickerTreeConfiguration?.TreeParentChildRefField] && (item as TreeItem)[this.pickerTreeConfiguration?.TreeParentChildRefField].length > 0,
         Expandable: this.availableItems$.value.filter(x => {
           if (x[this.pickerTreeConfiguration?.TreeChildParentRefField] != undefined)
-            return x[this.pickerTreeConfiguration?.TreeChildParentRefField][0]?.Id == node.Id;//check if this Id is something variable
+            return x[this.pickerTreeConfiguration?.TreeChildParentRefField][0]?.Id == item.Id;//check if this Id is something variable
         }).length > 0,
-        Value: node.Value,
-        Text: node.Text,
-        Parent: (node as TreeNode)[this.pickerTreeConfiguration?.TreeChildParentRefField],
-        Children: (node as TreeNode)[this.pickerTreeConfiguration?.TreeParentChildRefField],
+        Value: item.Value,
+        Text: item.Text,
+        Parent: (item as TreeItem)[this.pickerTreeConfiguration?.TreeChildParentRefField],
+        Children: (item as TreeItem)[this.pickerTreeConfiguration?.TreeParentChildRefField],
       };
     },
-    (node) => { return node.Level; },
-    (node) => { return node.Expandable; },
-    (node) => {
-      // return (node as TreeNode)[this.pickerTreeConfiguration?.TreeParentChildRefField].map((x: any) => {
+    (item) => { return item.Level; },
+    (item) => { return item.Expandable; },
+    (item) => {
+      // return (item as TreeItem)[this.pickerTreeConfiguration?.TreeParentChildRefField].map((x: any) => {
       //   const child = this.availableItems$.value.find(y => (y as any)[this.pickerTreeConfiguration?.TreeChildIdField] == (x as any)[this.pickerTreeConfiguration?.TreeChildIdField]);
       //   return child;
       // });
       return this.availableItems$.value.filter(x => {
         if (x[this.pickerTreeConfiguration?.TreeChildParentRefField] != undefined)
-          return x[this.pickerTreeConfiguration?.TreeChildParentRefField][0]?.Id == node.Id;//check if this Id is something variable
+          return x[this.pickerTreeConfiguration?.TreeChildParentRefField][0]?.Id == item.Id;//check if this Id is something variable
        });
     },
   );
 
-  hasChild = (_: number, node: PickerTreeItem) => node.Expandable;
+  hasChild = (_: number, item: PickerTreeItem) => item.Expandable;
 }
 
-interface TreeNode {
+interface TreeItem {
   [key: string]: any;
 }
