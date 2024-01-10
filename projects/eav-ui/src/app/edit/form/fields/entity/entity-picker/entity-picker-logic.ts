@@ -24,7 +24,6 @@ export class EntityPickerLogic extends FieldLogicBase {
 
     fs.Information ??= '';
     fs.Tooltip ??= '';
-    fs.MoreFields ??= '';
     fs.Label ??= '';
 
     if (tools.eavConfig.overrideEditRestrictions && tools.debug) {
@@ -52,6 +51,8 @@ export class EntityPickerLogic extends FieldLogicBase {
       fs.Value = dsAttributes['Value'].Values[0].Value ?? '';
       fs.Label = dsAttributes['Label'].Values[0].Value ?? '';
       fs.EntityType = dsAttributes['CreateTypes'].Values[0].Value ?? '';
+
+      fs.MoreFields = dsAttributes['MoreFields'].Values[0].Value ?? '';
     }
 
     /** Entity datasource */
@@ -85,8 +86,8 @@ export class EntityPickerLogic extends FieldLogicBase {
         TreeLeavesStream: 'Default',
         TreeParentIdField: 'Id',
         TreeChildIdField: 'Id',
-        TreeParentChildRefField: 'children',
-        TreeChildParentRefField: 'parent',
+        TreeParentChildRefField: 'Children',
+        TreeChildParentRefField: 'Parent',
         TreeShowRoot: true,
         TreeDepthMax: 10,
         TreeAllowSelectRoot: true,// implemented
