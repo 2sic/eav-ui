@@ -38,7 +38,7 @@ export class StringPickerLogic extends FieldLogicBase {
     const dsAttributes = dataSources[0]?.Attributes;
 
     /** Dropdown datasource */
-    if (dataSources[0].Type.Name === PickerConfigModels.UiPickerSourceCustomList) {
+    if (dataSources[0]?.Type.Name === PickerConfigModels.UiPickerSourceCustomList) {
       fs.DataSourceType = PickerConfigModels.UiPickerSourceCustomList;
 
       fs.DropdownValuesFormat ??= 'value-label'; //currently not defined nowhere in the config
@@ -47,7 +47,7 @@ export class StringPickerLogic extends FieldLogicBase {
     }
 
     /** Query datasource */
-    if (dataSources[0].Type.Name === PickerConfigModels.UiPickerSourceQuery) {
+    if (dataSources[0]?.Type.Name === PickerConfigModels.UiPickerSourceQuery) {
       fs.DataSourceType = PickerConfigModels.UiPickerSourceQuery;
 
       fs.Query = dsAttributes['Query'].Values[0].Value ?? '';
@@ -60,7 +60,7 @@ export class StringPickerLogic extends FieldLogicBase {
     }
 
     /** Entity datasource */
-    if (dataSources[0].Type.Name === PickerConfigModels.UiPickerSourceEntity) {
+    if (dataSources[0]?.Type.Name === PickerConfigModels.UiPickerSourceEntity) {
       fs.DataSourceType = PickerConfigModels.UiPickerSourceEntity;
 
       fs.EntityType = dsAttributes['ContentTypeNames'].Values[0].Value ?? '';
