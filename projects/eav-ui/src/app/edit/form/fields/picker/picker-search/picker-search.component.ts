@@ -106,10 +106,8 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
 
         if (isTreeDisplayMode/*settings.PickerTreeConfiguration*/) {
           this.pickerTreeConfiguration = settings.PickerTreeConfiguration;
-          // console.log("SDV availableItems", availableItems);
           const filteredData = availableItems.filter(x => x[this.pickerTreeConfiguration?.TreeChildParentRefField]?.length == 0);
           this.dataSource.data = filteredData;
-          console.log("SDV this.dataSource.data", this.dataSource.data);
         }
 
         const viewModel: PickerSearchViewModel = {
@@ -141,15 +139,6 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
         return viewModel;
       }),
     );
-
-    /** Needed later for tree implementation testing */
-    // this.subscription.add(settings$.subscribe(settings => {
-    //   if (!settings.PickerTreeConfiguration) return;
-    //   this.pickerTreeConfiguration = settings.PickerTreeConfiguration;
-    //   const filteredData = this.availableItems$.value.filter(x => x.parent.length == 0);
-    //   this.dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
-    //   this.dataSource.data = filteredData;
-    // }));
   }
 
   ngOnDestroy(): void {
@@ -173,7 +162,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     }
     if (!returnValue) {
       if (this.selectedItem$.value?.Value == value) {
-        returnValue = this.selectedItem$.value.Text;
+        returnValue = this.selectedItem$.value?.Text;
       } else {
         returnValue = value as string;
       }
@@ -275,7 +264,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
           if (x[this.pickerTreeConfiguration?.TreeChildParentRefField] != undefined)
             return x[this.pickerTreeConfiguration?.TreeChildParentRefField][0]?.Id == node.Id;//check if this Id is something variable
         }).length > 0,
-        Value: node.Guid,
+        Value: node.Value,
         Text: node.Text,
         Parent: (node as TreeNode)[this.pickerTreeConfiguration?.TreeChildParentRefField],
         Children: (node as TreeNode)[this.pickerTreeConfiguration?.TreeParentChildRefField],
@@ -298,15 +287,6 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   hasChild = (_: number, node: PickerTreeItem) => node.Expandable;
 }
 
-/** Needed later for tree implementation testing */
 interface TreeNode {
-  // children: IdNode[];
-  // parent: IdNode[];
-  // name: string;
-  // Id: number;
-  // Title: string;
-  // Guid: string;
-  // Modified: string;
-  // Created: string;
   [key: string]: any;
 }
