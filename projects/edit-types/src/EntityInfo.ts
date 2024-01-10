@@ -69,3 +69,7 @@ export interface PickerTreeItem extends PickerItem {
   Level: number;
   Expandable: boolean;
 }
+
+export interface TreeItem {
+  [key: string]: any;
+}

@@ -2,7 +2,7 @@ import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@ang
 import { AbstractControl, FormGroup } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { TranslateService } from '@ngx-translate/core';
-import { PickerItem, PickerTreeItem, UiPickerModeTree } from 'projects/edit-types';
+import { PickerItem, PickerTreeItem, TreeItem, UiPickerModeTree } from 'projects/edit-types';
 import { BehaviorSubject, combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import { GeneralHelpers } from '../../../../shared/helpers';
 import { FieldsSettingsService } from '../../../../shared/services';
@@ -285,8 +285,4 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
   );
 
   hasChild = (_: number, item: PickerTreeItem) => item.Expandable;
-}
-
-interface TreeItem {
-  [key: string]: any;
 }
