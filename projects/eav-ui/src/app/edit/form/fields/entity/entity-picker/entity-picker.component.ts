@@ -12,6 +12,7 @@ import { FieldMetadata } from '../../../builder/fields-builder/field-metadata.de
 import { PickerData } from '../../picker/picker-data';
 import { PickerQuerySourceAdapter } from '../../picker/adapters/picker-query-source-adapter';
 import { PickerEntitySourceAdapter } from '../../picker/adapters/picker-entity-source-adapter';
+import { PickerConfigModels } from '../../picker/constants/picker-config-model.constants';
 
 @Component({
   selector: InputTypeConstants.WIPEntityPicker,
@@ -73,7 +74,7 @@ export class EntityPickerComponent extends PickerComponent implements OnInit, On
       () => this.focusOnSearchComponent,
     );
 
-    if (this.settings$.value.DataSourceType === 'UiPickerSourceEntity') {
+    if (this.settings$.value.DataSourceType === PickerConfigModels.UiPickerSourceEntity) {
       source = this.sourceFactory.createPickerEntitySourceAdapter(
         state.disableAddNew$,
         this.fieldsSettingsService,
@@ -86,7 +87,7 @@ export class EntityPickerComponent extends PickerComponent implements OnInit, On
         // (clearAvailableItemsAndOnlyUpdateCache: boolean) => this.fetchEntities(clearAvailableItemsAndOnlyUpdateCache),
         (props: DeleteEntityProps) => state.doAfterDelete(props)
       );
-    }else if (this.settings$.value.DataSourceType === 'UiPickerSourceQuery') {
+    } else if (this.settings$.value.DataSourceType === PickerConfigModels.UiPickerSourceQuery) {
       source = this.sourceFactory.createPickerQuerySourceAdapter(
         state.error$,
         state.disableAddNew$,
