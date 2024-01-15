@@ -259,11 +259,12 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     (item, Level) => {
       return {
         Level: Level,
-        // Expandable: !!(item as TreeItem)[this.pickerTreeConfiguration?.TreeParentChildRefField] && (item as TreeItem)[this.pickerTreeConfiguration?.TreeParentChildRefField].length > 0,
-        Expandable: this.availableItems$.value.filter(x => {
-          if (x[this.pickerTreeConfiguration?.TreeChildParentRefField] != undefined)
-            return x[this.pickerTreeConfiguration?.TreeChildParentRefField][0]?.Id == item.Id;//check if this Id is something variable
-        }).length > 0,
+        Expandable: (this.pickerTreeConfiguration?.TreeRelationship == 'parent-child') ? //check for two streams type also
+          !!(item as TreeItem)[this.pickerTreeConfiguration?.TreeParentChildRefField] && (item as TreeItem)[this.pickerTreeConfiguration?.TreeParentChildRefField].length > 0 :
+          this.availableItems$.value.filter(x => {
+            if (x[this.pickerTreeConfiguration?.TreeChildParentRefField] != undefined)
+              return x[this.pickerTreeConfiguration?.TreeChildParentRefField][0]?.Id == item.Id;//check if this Id is something variable
+            }).length > 0,
         Value: item.Value,
         Text: item.Text,
         Parent: (item as TreeItem)[this.pickerTreeConfiguration?.TreeChildParentRefField],
@@ -273,14 +274,17 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     (item) => { return item.Level; },
     (item) => { return item.Expandable; },
     (item) => {
-      // return (item as TreeItem)[this.pickerTreeConfiguration?.TreeParentChildRefField].map((x: any) => {
-      //   const child = this.availableItems$.value.find(y => (y as any)[this.pickerTreeConfiguration?.TreeChildIdField] == (x as any)[this.pickerTreeConfiguration?.TreeChildIdField]);
-      //   return child;
-      // });
-      return this.availableItems$.value.filter(x => {
-        if (x[this.pickerTreeConfiguration?.TreeChildParentRefField] != undefined)
-          return x[this.pickerTreeConfiguration?.TreeChildParentRefField][0]?.Id == item.Id;//check if this Id is something variable
-       });
+      if (this.pickerTreeConfiguration?.TreeRelationship == 'parent-child') {
+        return this.availableItems$.value.filter(x => {
+          if (x[this.pickerTreeConfiguration?.TreeChildParentRefField] != undefined)
+            return x[this.pickerTreeConfiguration?.TreeChildParentRefField][0]?.Id == item.Id;//check if this Id is something variable
+        });
+      } else if (this.pickerTreeConfiguration?.TreeRelationship == 'child-parent') {
+        return (item as TreeItem)[this.pickerTreeConfiguration?.TreeParentChildRefField].map((x: any) => {
+          const child = this.availableItems$.value.find(y => (y as any)[this.pickerTreeConfiguration?.TreeChildIdField] == (x as any)[this.pickerTreeConfiguration?.TreeChildIdField]);
+          return child;
+        });
+      }
     },
   );
 

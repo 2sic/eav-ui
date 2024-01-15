@@ -81,7 +81,7 @@ export class EntityPickerLogic extends FieldLogicBase {
       const pickerTreeConfiguration: UiPickerModeTree = {
         Title: 'Tree Picker Configuration',// nothing to implement
         ConfigModel: 'UiPickerModeTree',// nothing to implement
-        TreeRelationship: 'child-parent',
+        TreeRelationship: 'parent-child',
         TreeBranchStream: 'Default',
         TreeLeavesStream: 'Default',
         TreeParentIdField: 'Id',
