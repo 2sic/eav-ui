@@ -1,4 +1,4 @@
-import { FieldSettings, UiPickerModeTree } from '../../../../../../../../edit-types';
+import { FieldSettings, UiPickerModeTree, UiPickerSourceCustomList, UiPickerSourceEntity, UiPickerSourceQuery } from '../../../../../../../../edit-types';
 import { InputTypeStrict, InputTypeConstants } from '../../../../../content-type-fields/constants/input-type.constants';
 import { EavEntity } from '../../../../shared/models/eav';
 import { FieldLogicBase } from '../../../shared/field-logic/field-logic-base';
@@ -40,37 +40,38 @@ export class StringPickerLogic extends FieldLogicBase {
     if (fs.DataSources?.length > 0)
       dataSources = tools.contentTypeItemService.getContentTypeItems(fs.DataSources);
 
-    const dsAttributes = dataSources[0]?.Attributes;
-
     /** Dropdown datasource */
     if (dataSources[0]?.Type.Name === PickerConfigModels.UiPickerSourceCustomList) {
       fs.DataSourceType = PickerConfigModels.UiPickerSourceCustomList;
+      const uiPickerSourceCustomList = tools.entityReader.flatten(dataSources[0]) as UiPickerSourceCustomList;
 
       fs.DropdownValuesFormat ??= 'value-label'; //currently not defined nowhere in the config
-      fs.DropdownValues = dsAttributes['Values'].Values[0].Value ?? '';
+      fs.DropdownValues = uiPickerSourceCustomList.Values ?? '';
       fs._options = calculateDropdownOptions(value, 'string', fs.DropdownValuesFormat, fs.DropdownValues) ?? [];
     }
 
     /** Query datasource */
     if (dataSources[0]?.Type.Name === PickerConfigModels.UiPickerSourceQuery) {
       fs.DataSourceType = PickerConfigModels.UiPickerSourceQuery;
+      const uiPickerSourceQuery = tools.entityReader.flatten(dataSources[0]) as UiPickerSourceQuery;
 
-      fs.Query = dsAttributes['Query'].Values[0].Value ?? '';
-      fs.StreamName = dsAttributes['StreamName'].Values[0].Value ?? 'Default';
-      fs.UrlParameters = dsAttributes['QueryParameters'].Values[0].Value ?? '';
+      fs.Query = uiPickerSourceQuery.Query ?? '';
+      fs.StreamName = uiPickerSourceQuery.StreamName ?? 'Default';
+      fs.UrlParameters = uiPickerSourceQuery.QueryParameters ?? '';
 
-      fs.Value = dsAttributes['Value'].Values[0].Value ?? '';
-      fs.Label = dsAttributes['Label'].Values[0].Value ?? '';
-      fs.EntityType = dsAttributes['CreateTypes'].Values[0].Value ?? '';
+      fs.Value = uiPickerSourceQuery.Value ?? '';
+      fs.Label = uiPickerSourceQuery.Label ?? '';
+      fs.EntityType = uiPickerSourceQuery.CreateTypes ?? '';
 
-      fs.MoreFields = dsAttributes['MoreFields'].Values[0].Value ?? '';
+      fs.MoreFields = uiPickerSourceQuery.MoreFields ?? '';
     }
 
     /** Entity datasource */
     if (dataSources[0]?.Type.Name === PickerConfigModels.UiPickerSourceEntity) {
       fs.DataSourceType = PickerConfigModels.UiPickerSourceEntity;
+      const uiPickerSourceEntity = tools.entityReader.flatten(dataSources[0]) as UiPickerSourceEntity;
 
-      fs.EntityType = dsAttributes['ContentTypeNames'].Values[0].Value ?? '';
+      fs.EntityType = uiPickerSourceEntity.ContentTypeNames ?? '';
     }
 
     /** WIP functionalities */
