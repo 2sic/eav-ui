@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { EntityService, QueryService } from '../../../../shared/services';
+import { QueryService } from '../../../../shared/services';
 import { EntityCacheService, StringQueryCacheService } from '../../../../shared/store/ngrx-data';
 import { BehaviorSubject } from 'rxjs';
 import { FieldSettings } from 'projects/edit-types';
@@ -13,14 +13,13 @@ export class FieldDataSourceFactoryService {
   constructor(
     private entityCacheService: EntityCacheService,
     private stringQueryCacheService: StringQueryCacheService,
-    private entityService: EntityService,
     private queryService: QueryService,
     private translate: TranslateService,
   ) { }
 
   createEntityFieldDataSource(): EntityFieldDataSource {
     return new EntityFieldDataSource(
-      this.entityService,
+      this.queryService,
       this.entityCacheService,
     );
   }

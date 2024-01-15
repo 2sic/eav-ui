@@ -1,15 +1,16 @@
 import { PickerItem } from "projects/edit-types";
-import { BehaviorSubject, Observable, Subject, combineLatest, distinctUntilChanged, filter, map, mergeMap, shareReplay, startWith, tap } from "rxjs";
-import { EntityService } from "../../../../shared/services";
+import { Subject, combineLatest, distinctUntilChanged, filter, map, mergeMap, shareReplay, startWith } from "rxjs";
 import { EntityCacheService } from "../../../../shared/store/ngrx-data";
 import { GeneralHelpers } from "../../../../shared/helpers";
 import { DataSourceBase } from './data-source-base';
+import { QueryService } from "../../../../shared/services";
+import { QueryEntity } from "../../entity/entity-query/entity-query.models";
 
 export class EntityFieldDataSource extends DataSourceBase {
   private contentTypeName$ = new Subject<string>();
 
   constructor(
-    private entityService: EntityService,
+    private queryService: QueryService,
     private entityCacheService: EntityCacheService,
   ) {
     super();
@@ -20,8 +21,13 @@ export class EntityFieldDataSource extends DataSourceBase {
       typeName$,
       this.getAll$.pipe(distinctUntilChanged(), filter(getAll => !!getAll)),
     ]).pipe(
-      mergeMap(([typeName, _]) => this.entityService.getAvailableEntities(typeName, []).pipe(
-        map(data => { return { data, loading: false }; }),
+      mergeMap(([typeName, _]) => this.queryService.getEntities([typeName], []).pipe(
+        map(data => {
+          const items: PickerItem[] = data["Default"].map(entity => {
+            return this.queryEntityMapping(entity)
+          });
+          return { data: items, loading: false };
+        }),
         startWith({ data: [] as PickerItem[], loading: true })
       )),
       startWith({ data: [] as PickerItem[], loading: false }),
@@ -48,8 +54,13 @@ export class EntityFieldDataSource extends DataSourceBase {
     );
 
     const overrides$ = combineLatest([typeName$, combinedGuids$]).pipe(
-      mergeMap(([typeName, guids]) => this.entityService.getAvailableEntities(typeName, guids).pipe(
-        map(data => { return { data, loading: false }; }),
+      mergeMap(([typeName, guids]) => queryService.getEntities([typeName], guids).pipe(
+        map(data => {
+          const items: PickerItem[] = data["Default"].map(entity => {
+            return this.queryEntityMapping(entity)
+          });
+          return { data: items, loading: false };
+        }),
         startWith({ data: [] as PickerItem[], loading: true })
       )),
       startWith({ data: [] as PickerItem[], loading: false }),
@@ -79,4 +90,40 @@ export class EntityFieldDataSource extends DataSourceBase {
   contentType(contentTypeName: string): void {
     this.contentTypeName$.next(contentTypeName);
   }
+
+  entityGuids(entityGuids: string[]): void {
+    this.entityGuids$.next(entityGuids);
+  }
+
+  private queryEntityMapping(entity: QueryEntity): PickerItem {
+    const entityInfo: PickerItem = {
+      Id: entity.Id,
+      Value: entity.Guid,
+      Text: entity.Title,
+    };
+    return this.fillEntityInfoMoreFields(entity, entityInfo);
+  }
+
+  /** fill additional properties that are marked in settings.MoreFields and replace tooltip and information placeholders */
+  private fillEntityInfoMoreFields(entity: QueryEntity, entityInfo: PickerItem): PickerItem {
+    // const settings = this.settings$.value;
+    // const additionalFields = settings.MoreFields?.split(',') || [];
+    // let tooltip = this.cleanStringFromWysiwyg(settings.Tooltip);
+    // let information = this.cleanStringFromWysiwyg(settings.Information);
+    // additionalFields.forEach(field => {
+    //   entityInfo[field] = entity[field];
+    //   tooltip = tooltip.replace(`[Item:${field}]`, entity[field]);
+    //   information = information.replace(`[Item:${field}]`, entity[field]);
+    // });
+    // entityInfo._tooltip = tooltip;
+    // entityInfo._information = information;
+    return entityInfo;
+  }
+
+  /** remove HTML tags that come from WYSIWYG */
+  // private cleanStringFromWysiwyg(wysiwygString: string): string {
+  //   const div = document.createElement("div");
+  //   div.innerHTML = wysiwygString ?? '';
+  //   return div.innerText || '';
+  // }
 }
