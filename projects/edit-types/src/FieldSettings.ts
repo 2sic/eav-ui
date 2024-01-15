@@ -328,7 +328,7 @@ export interface UiPickerSourceQuery extends ConfigModel {
 
 export interface UiPickerModeTree extends ConfigModel {
   TreeRelationship: 'child-parent' | 'parent-child'; //child-parent or parent-child
-  TreeBranchStream: string;
+  TreeBranchesStream: string;
   TreeLeavesStream: string;
   TreeParentIdField: string;
   TreeChildIdField: string;
@@ -340,7 +340,7 @@ export interface UiPickerModeTree extends ConfigModel {
 
   TreeAllowSelectRoot: boolean;
   TreeAllowSelectBranch: boolean;
-  TreeAllowSelectLeaves: boolean;
+  TreeAllowSelectLeaf: boolean;
 }
 
 interface ConfigModel {

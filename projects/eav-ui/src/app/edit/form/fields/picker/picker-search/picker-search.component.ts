@@ -235,7 +235,7 @@ export class PickerSearchComponent extends BaseSubsinkComponent implements OnIni
     const isUnpickableBySelection = enableReselect ? false : selectedEntities.some(entity => entity.Value === item.Value);
     const isRootUnpickableByConfiguration = pickerTreeConfiguration?.TreeAllowSelectRoot ? false : item.Children?.length > 0 && item.Parent?.length === 0;
     const isBranchUnpickableByConfiguration = pickerTreeConfiguration?.TreeAllowSelectBranch ? false : item.Children?.length > 0 && item.Parent?.length > 0;
-    const isLeafUnpickableByConfiguration = pickerTreeConfiguration?.TreeAllowSelectLeaves ? false : item.Children?.length === 0;
+    const isLeafUnpickableByConfiguration = pickerTreeConfiguration?.TreeAllowSelectLeaf ? false : item.Children?.length === 0;
     return isUnpickableBySelection || isRootUnpickableByConfiguration || isBranchUnpickableByConfiguration || isLeafUnpickableByConfiguration;
   }
 
