@@ -86,27 +86,29 @@ export class StringPickerLogic extends FieldLogicBase {
       fs.AllowMultiMax = 0;
     }
 
+    fs.PickerDisplayMode ??= 'list';
+    fs.PickerDisplayConfiguration ??= [];
+
     if (fs.PickerDisplayConfiguration?.length > 0)
       pickerDisplayConfigurations = tools.contentTypeItemService.getContentTypeItems(fs.PickerDisplayConfiguration);
 
-    const pdcAttributes = pickerDisplayConfigurations[0]?.Attributes;
-
     if (pickerDisplayConfigurations[0]?.Type.Name === PickerConfigModels.UiPickerModeTree) {
+      const uiPickerModeTree = tools.entityReader.flatten(pickerDisplayConfigurations[0]) as UiPickerModeTree;
       const pickerTreeConfiguration: UiPickerModeTree = {
-        Title: pdcAttributes['Title'].Values[0].Value ?? '',
+        Title: uiPickerModeTree.Title ?? '',
         ConfigModel: PickerConfigModels.UiPickerModeTree,
-        TreeRelationship: pdcAttributes['TreeRelationship'].Values[0].Value ?? 'parent-child',
-        TreeBranchesStream: pdcAttributes['TreeBranchesStream'].Values[0].Value ?? 'Default',
-        TreeLeavesStream: pdcAttributes['TreeLeavesStream'].Values[0].Value ?? 'Default',
-        TreeParentIdField: pdcAttributes['TreeParentIdField'].Values[0].Value ?? 'Id',
-        TreeChildIdField: pdcAttributes['TreeChildIdField'].Values[0].Value ?? 'Id',
-        TreeParentChildRefField: pdcAttributes['TreeParentChildRefField'].Values[0].Value ?? 'Children',
-        TreeChildParentRefField: pdcAttributes['TreeChildParentRefField'].Values[0].Value ?? 'Parent',
-        TreeShowRoot: pdcAttributes['TreeShowRoot'].Values[0].Value ?? true,
-        TreeDepthMax: pdcAttributes['TreeDepthMax'].Values[0].Value ?? 10,
-        TreeAllowSelectRoot: pdcAttributes['TreeAllowSelectRoot'].Values[0].Value ?? true,
-        TreeAllowSelectBranch: pdcAttributes['TreeAllowSelectBranch'].Values[0].Value ?? true,
-        TreeAllowSelectLeaf: pdcAttributes['TreeAllowSelectLeaf'].Values[0].Value ?? true,
+        TreeRelationship: uiPickerModeTree.TreeRelationship ?? 'parent-child',
+        TreeBranchesStream: uiPickerModeTree.TreeBranchesStream ?? 'Default',
+        TreeLeavesStream: uiPickerModeTree.TreeLeavesStream ?? 'Default',
+        TreeParentIdField: uiPickerModeTree.TreeParentIdField ?? 'Id',
+        TreeChildIdField: uiPickerModeTree.TreeChildIdField ?? 'Id',
+        TreeParentChildRefField: uiPickerModeTree.TreeParentChildRefField ?? 'Children',
+        TreeChildParentRefField: uiPickerModeTree.TreeChildParentRefField ?? 'Parent',
+        TreeShowRoot: uiPickerModeTree.TreeShowRoot ?? true,
+        TreeDepthMax: uiPickerModeTree.TreeDepthMax ?? 10,
+        TreeAllowSelectRoot: uiPickerModeTree.TreeAllowSelectRoot ?? true,
+        TreeAllowSelectBranch: uiPickerModeTree.TreeAllowSelectBranch ?? true,
+        TreeAllowSelectLeaf: uiPickerModeTree.TreeAllowSelectLeaf ?? true,
       };
       fs.PickerTreeConfiguration = pickerTreeConfiguration;
     }
