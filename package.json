@@ -8,19 +8,19 @@
     "url": "https://github.com/2sic/eav-ui.git"
   },
   "scripts": {
-    "pre-build": "node ./build-helpers/clear-dist && node ./build-helpers/build-languages",
-    "dev-languages": "node ./build-helpers/build-languages",
-    "copy-to-dnn": "node ./build-helpers/copy-to-dnn",
-    "copy-to-dnn-watch": "node ./build-helpers/copy-to-dnn --watch",
-    "dev-main": "ng build --configuration development --watch",
-    "prod-main": "ng build --configuration production --plugin ~./build-helpers/external-source-maps-main.js",
-    "wysiwyg": "webpack --env parts=wysiwyg --watch",
-    "gps": "webpack --env parts=gps --watch",
-    "all": "npm run pre-build && webpack --env parts=all && ng build --configuration development && npm run copy-to-dnn",
-    "all-watch": "npm run pre-build && concurrently \"webpack --env parts=all --watch\" npm:dev-main npm:copy-to-dnn-watch",
-    "prod-all": "npm run pre-build && webpack --env parts=all --mode=production && npm run prod-main && npm run copy-to-dnn",
     "release": "set NODE_ENV=production && npm run prod-all",
-    "documentation": "npx compodoc -p tsconfig.doc.json --disableRoutesGraph -s"
+    "dev-all": "npm run build-prepare && webpack --env parts=all && ng build --configuration development && npm run deploy",
+    "dev-all-watch": "npm run build-prepare && concurrently \"webpack --env parts=all --watch\" npm:dev-main npm:deploy-watch",
+    "dev-main": "ng build --configuration development --watch",
+    "dev-gps": "webpack --env parts=gps --watch",
+    "dev-wysiwyg": "webpack --env parts=wysiwyg --watch",
+    "deploy": "node ./build-helpers/copy-to-dnn",
+    "deploy-watch": "node ./build-helpers/copy-to-dnn --watch",
+    "prod-all": "npm run build-prepare && webpack --env parts=all --mode=production && npm run prod-main && npm run deploy",
+    "prod-main": "ng build --configuration production --plugin ~./build-helpers/external-source-maps-main.js",
+    "build-prepare": "node ./build-helpers/clear-dist && node ./build-helpers/build-languages",
+    "build-languages": "node ./build-helpers/build-languages",
+    "docs-prepare": "npx compodoc -p tsconfig.doc.json --disableRoutesGraph -s"
   },
   "dependencies": {
     "@2sic.com/sxc-angular": "^14.7.1",
