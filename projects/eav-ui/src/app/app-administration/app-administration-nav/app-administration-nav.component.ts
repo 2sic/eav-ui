@@ -116,6 +116,8 @@ export class AppAdministrationNavComponent
   }
 
   changeUrl(path: string) {
+    if(this.currentRoute === path) return;
+    console.error(path)
     this.currentRoute = path;
     if (path === 'data') path = `data/${eavConstants.scopes.default.value}`;
     this.router.navigate([path], { relativeTo: this.route });
@@ -124,6 +126,7 @@ export class AppAdministrationNavComponent
   private fetchDialogSettings() {
     this.appDialogConfigService.getShared$().subscribe((dialogSettings) => {
       UpdateEnvVarsFromDialogSettings(dialogSettings.Context.App);
+      console.log(dialogSettings)
       this.dialogSettings$.next(dialogSettings);
 
       if (!dialogSettings.Context.Enable.Query)
