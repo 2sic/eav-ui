@@ -1,53 +1,57 @@
-<div class="eav-dialog nav-component-wrapper eav-no-scrollbar" appToggleDebug *ngIf="viewModel$ | async as vm">
-  <div class="eav-dialog-header">
-    <div class="eav-dialog-header__title">
-      <img class="eav-dialog-header__title__image" *ngIf="vm.dialogSettings?.Context.App.Icon"
-        [src]="vm.dialogSettings?.Context.App.Icon + '?w=40&h=40&mode=crop'"/>
-      <ng-container *ngIf="vm.dialogSettings?.Context.App.SettingsScope === AppScopes.Global">
-        Global
-      </ng-container>
-      <ng-container *ngIf="vm.dialogSettings?.Context.App.SettingsScope !== AppScopes.Global">
-        {{ vm.dialogSettings?.Context.App.Name }}
-      </ng-container>
-      Admin
-    </div>
-    <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
-      <mat-icon>close</mat-icon>
-    </button>
-  </div>
-  <div class="eav-dialog-tab-content nav-component-wrapper">
-    <router-outlet></router-outlet>
-  <!-- TOOD:: New SideNav -->
-    <ng-container >
+    <ng-container appToggleDebug *ngIf="viewModel$ | async as vm">
       <mat-sidenav-container>
-        <mat-sidenav>
-          <!-- <a class="logo-wrapper" routerLink="/">
-            <div><img src="./assets/img/logo.png" alt="Logo" /></div>
-            <h2>XX</h2>
-          </a> -->
+        <mat-sidenav  #sidenav [mode]="smallScreen.matches ? 'over' : 'side'" [opened]="sideNavOpened">
+          <div>
+            <div class="mat-mdc-tab-label-box" tippy="App Info">
+              <mat-icon>info</mat-icon>
+              <span>Info</span>
+            </div>
+            <app-getting-started *matTabContent [gettingStartedUrl]="vm.dialogSettings.Context.App.GettingStartedUrl">
+            </app-getting-started>
+          </div>
 
-          <!-- Component with all menu Items and Child Items from navigationItem-mockup -->
-          <!-- <app-app-menu-list-item *ngFor="let item of sideNavItems$ | async" [item]="item"></app-app-menu-list-item> -->
         </mat-sidenav>
 
         <mat-sidenav-content>
-          <!-- Toolbar -->
           <mat-toolbar>
-            <button>
-              <mat-icon>menu</mat-icon>
-            </button>
-            <img class="eav-dialog-header__title__image" *ngIf="vm.dialogSettings?.Context.App.Icon"
-            [src]="vm.dialogSettings?.Context.App.Icon + '?w=40&h=40&mode=crop'"/>
+            <div class="toolbar-container">
+              <button (click)="sidenav.opened = !sidenav.opened" mat-icon-button>
+                <mat-icon>menu</mat-icon>
+              </button>
+
+                <div class="headeline-toolbar">
+                  <div>
+                    <img class="eav-dialog-header__title__image" *ngIf="vm.dialogSettings?.Context.App.Icon"
+                    [src]="vm.dialogSettings?.Context.App.Icon + '?w=40&h=40&mode=crop'" />
+                  </div>
+                    <div>
+                      <ng-container *ngIf="vm.dialogSettings?.Context.App.SettingsScope === AppScopes.Global">
+                        Global
+                      </ng-container>
+
+                    <ng-container *ngIf="vm.dialogSettings?.Context.App.SettingsScope !== AppScopes.Global">
+                      {{ vm.dialogSettings?.Context.App.Name }}
+                    </ng-container>
+                    Admin
+                  </div>
+                </div>
+                <div>
+                  <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
+                    <mat-icon>close</mat-icon>
+                  </button>
+                </div>
+              </div>
+
+
           </mat-toolbar>
-          <!-- Content components -->
             <router-outlet></router-outlet>
         </mat-sidenav-content>
       </mat-sidenav-container>
     </ng-container>
 
-
-
-
+    <!-- <div class="eav-dialog nav-component-wrapper eav-no-scrollbar" appToggleDebug *ngIf="viewModel$ | async as vm">
+    <div class="eav-dialog-tab-content nav-component-wrapper">
+      <router-outlet></router-outlet>
     <mat-tab-group class="mat-mdc-tab-group-max-height" dynamicHeight color="accent"
       *ngIf="vm.dialogSettings && vm.tabIndex != null" (selectedTabChange)="changeTab($event)"
       [selectedIndex]="vm.tabIndex">
@@ -117,4 +121,4 @@
       </mat-tab>
     </mat-tab-group>
   </div>
-</div>
+</div> -->

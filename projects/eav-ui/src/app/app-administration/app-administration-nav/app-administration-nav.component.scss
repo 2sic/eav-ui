@@ -1,0 +1,70 @@
+mat-sidenav-container {
+  height: 100vh;
+
+  // Sidenave
+  mat-sidenav {
+    width: 195px;
+    border-right: 1px solid rgba(0, 0, 0, 0.1);
+
+    .logo-wrapper {
+      padding-left: 25px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      color: black;
+
+      h2 {
+        margin: 0;
+      }
+
+      img {
+        width: 40px;
+        height: 40px;
+        object-fit: cover;
+        margin-right: 12px;
+      }
+    }
+  }
+
+  // Toolbar
+  mat-toolbar {
+    background-color: white;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+
+    .toolbar-container{
+      display: flex;
+
+      .headeline-toolbar{
+        display: flex;
+        align-items: center;
+      }
+
+    }
+
+
+    .toolbar-spacer {
+      flex: 1 1 auto;
+    }
+
+    a {
+      transition: all 225ms ease-in-out;
+
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.1);
+      }
+    }
+  }
+}
+
+// Content
+.container-content {
+  padding: 15px 25px;
+}
+
+.breadcrumb {
+  margin-bottom: 24px;
+}

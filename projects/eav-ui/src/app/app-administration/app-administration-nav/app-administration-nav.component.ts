@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
@@ -9,6 +9,8 @@ import { UpdateEnvVarsFromDialogSettings } from '../../shared/helpers/update-env
 import { AppScopes } from '../../shared/models/dialog-context.models';
 import { DialogSettings } from '../../shared/models/dialog-settings.model';
 import { AppDialogConfigService } from '../services/app-dialog-config.service';
+import { MatSidenav } from '@angular/material/sidenav';
+import { MediaMatcher } from '@angular/cdk/layout';
 
 @Component({
   selector: 'app-app-administration-nav',
@@ -17,6 +19,7 @@ import { AppDialogConfigService } from '../services/app-dialog-config.service';
 })
 export class AppAdministrationNavComponent extends BaseComponent implements OnInit, OnDestroy {
   AppScopes = AppScopes;
+
 
   private dialogSettings$ = new BehaviorSubject<DialogSettings>(undefined);
   private tabs$ = new BehaviorSubject<string[]>(undefined);
@@ -41,18 +44,31 @@ export class AppAdministrationNavComponent extends BaseComponent implements OnIn
     }),
   );
 
+
+  smallScreen: MediaQueryList = this.media.matchMedia('(max-width: 1000px)');
+  @ViewChild('sidenav') sidenav!: MatSidenav;
+  sideNavOpened = !this.smallScreen.matches;
+
+
   constructor(
     protected router: Router,
     protected route: ActivatedRoute,
     private dialogRef: MatDialogRef<AppAdministrationNavComponent>,
     private appDialogConfigService: AppDialogConfigService,
-  ) { 
+    private media: MediaMatcher,
+  ) {
     super(router, route);
   }
 
   ngOnInit() {
     this.fetchDialogSettings();
     this.subscription.add(this.refreshOnChildClosedDeep().subscribe(() => { this.fetchDialogSettings(); }));
+
+    this.smallScreen.addEventListener(
+      'change',
+      (c) => (this.sidenav.opened = !c.matches)
+    );
+
   }
 
   ngOnDestroy() {
