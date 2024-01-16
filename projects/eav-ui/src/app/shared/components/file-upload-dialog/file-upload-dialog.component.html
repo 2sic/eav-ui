@@ -1,52 +1,73 @@
-<div class="eav-dialog" *ngIf="viewModel$ | async as vm" appDragAndDrop 
-  [allowedFileTypes]="dialogData.allowedFileTypes" (filesDropped)="filesDropped($event)">
-  <div class="eav-dialog-header">
-    <div class="eav-dialog-header__title" [innerHtml]="dialogData.title | safeHtml"></div>
-  </div>
-  <div class="eav-dialog-content">
-    <mat-spinner *ngIf="vm.uploading" mode="indeterminate" diameter="20" color="accent"></mat-spinner>
-    <p [innerHtml]="dialogData.description | safeHtml"></p>
-    <div>
-      <button mat-raised-button tippy="Open file browser" [disabled]="vm.uploading" (click)="fileInput.click()">
-        <div *ngIf="!vm.files.length">Select or drop file</div>
-        <div *ngFor="let file of vm.files">{{ file.name }}</div>
-      </button>
-      <input #fileInput type="file" multiple (change)="filesChanged($event)" class="hide" />
-      <button mat-raised-button *ngIf="uploadType == UploadTypes.App" class="eav-app-catalog-button"
-        tippy="Open app catalog" (click)="showAppCatalog()"><!-- [disabled]="vm.uploading" -->
-        Get recommended Apps from Catalog
-      </button>
+@if (viewModel$ | async; as vm) {
+  <div class="eav-dialog" appDragAndDrop
+    [allowedFileTypes]="dialogData.allowedFileTypes" (filesDropped)="filesDropped($event)">
+    <div class="eav-dialog-header">
+      <div class="eav-dialog-header__title" [innerHtml]="dialogData.title | safeHtml"></div>
     </div>
-    
-    <div class="eav-result-container" *ngIf="vm.result">
-      <div *ngIf="vm.result.Success" class="sxc-message sxc-message-info">
-        Upload succeeded. See the messages below for more information.
+    <div class="eav-dialog-content">
+      @if (vm.uploading) {
+        <mat-spinner mode="indeterminate" diameter="20" color="accent"></mat-spinner>
+      }
+      <p [innerHtml]="dialogData.description | safeHtml"></p>
+      <div>
+        <button mat-raised-button tippy="Open file browser" [disabled]="vm.uploading" (click)="fileInput.click()">
+          @if (!vm.files.length) {
+            <div>Select or drop file</div>
+          }
+          @for (file of vm.files; track file) {
+            <div>{{ file.name }}</div>
+          }
+        </button>
+        <input #fileInput type="file" multiple (change)="filesChanged($event)" class="hide" />
+        @if (uploadType == UploadTypes.App) {
+          <button mat-raised-button class="eav-app-catalog-button"
+            tippy="Open app catalog" (click)="showAppCatalog()"><!-- [disabled]="vm.uploading" -->
+            Get recommended Apps from Catalog
+          </button>
+        }
       </div>
-      <div *ngIf="!vm.result.Success" class="sxc-message sxc-message-error">
-        Upload failed. See the messages below for more information.
-      </div>
-      <div *ngFor="let message of vm.result.Messages" class="sxc-message" [ngClass]="{
+      @if (vm.result) {
+        <div class="eav-result-container">
+          @if (vm.result.Success) {
+            <div class="sxc-message sxc-message-info">
+              Upload succeeded. See the messages below for more information.
+            </div>
+          }
+          @if (!vm.result.Success) {
+            <div class="sxc-message sxc-message-error">
+              Upload failed. See the messages below for more information.
+            </div>
+          }
+          @for (message of vm.result.Messages; track message) {
+            <div class="sxc-message" [ngClass]="{
               'sxc-message-warning': message.MessageType === FileUploadMessageTypes.Warning,
               'sxc-message-success': message.MessageType === FileUploadMessageTypes.Success,
               'sxc-message-error': message.MessageType === FileUploadMessageTypes.Error
-            }">
-        {{ message.Text }}
-      </div>
+              }">
+              {{ message.Text }}
+            </div>
+          }
+        </div>
+      }
+      @if (uploadType == UploadTypes.App && vm.showAppCatalog) {
+        <iframe #installerWindow class="eav-app-catalog-iframe"
+          src="//gettingstarted.2sxc.org/router.aspx?Platform=Dnn&amp;SysVersion=9.6.1&amp;SxcVersion=16.07.01&amp;destination=autoconfigureapp&amp;ModuleId=1197&amp;SiteId=16&amp;ZoneID=17&amp;DefaultLanguage=en-us&amp;CurrentLanguage=en-us&amp;SysGuid=DB92DBFC-0C60-4101-93C6-803C2FE244B6&amp;AppId=&amp;fp=c2b7fabe7d51a0a0f6484d72bc119c8bf2d14b8ad29b30696a9148f9845a766c">
+        </iframe>
+      }
     </div>
-    <iframe *ngIf="uploadType == UploadTypes.App && vm.showAppCatalog" #installerWindow class="eav-app-catalog-iframe" 
-      src="//gettingstarted.2sxc.org/router.aspx?Platform=Dnn&amp;SysVersion=9.6.1&amp;SxcVersion=16.07.01&amp;destination=autoconfigureapp&amp;ModuleId=1197&amp;SiteId=16&amp;ZoneID=17&amp;DefaultLanguage=en-us&amp;CurrentLanguage=en-us&amp;SysGuid=DB92DBFC-0C60-4101-93C6-803C2FE244B6&amp;AppId=&amp;fp=c2b7fabe7d51a0a0f6484d72bc119c8bf2d14b8ad29b30696a9148f9845a766c">
-    </iframe>
+    @if (!vm.showAppCatalog) {
+      <mat-dialog-actions align="end">
+        @if (!vm.result?.Success) {
+          <button mat-raised-button (click)="closeDialog()">Cancel</button>
+          <button mat-raised-button color="accent" [disabled]="!vm.files.length || vm.uploading || !!vm.result"
+            (click)="upload()">
+            Upload
+          </button>
+        }
+        @if (vm.result?.Success) {
+          <button mat-raised-button color="accent" (click)="closeDialog(true)">Close</button>
+        }
+      </mat-dialog-actions>
+    }
   </div>
-  <mat-dialog-actions align="end" *ngIf="!vm.showAppCatalog">
-    <ng-container *ngIf="!vm.result?.Success">
-      <button mat-raised-button (click)="closeDialog()">Cancel</button>
-      <button mat-raised-button color="accent" [disabled]="!vm.files.length || vm.uploading || !!vm.result"
-        (click)="upload()">
-        Upload
-      </button>
-    </ng-container>
-    <ng-container *ngIf="vm.result?.Success">
-      <button mat-raised-button color="accent" (click)="closeDialog(true)">Close</button>
-    </ng-container>
-  </mat-dialog-actions>
-</div>
+}

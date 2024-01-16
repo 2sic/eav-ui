@@ -15,9 +15,11 @@
   <mat-card-content class="eav-card-content-group-child" [style.display]="(collapsed$ | async) ? 'none' : 'block'">
     <div class="eav-layout-grid">
       <div class="eav-layout-grid__inner">
-        <div class="eav-layout-grid__cell--span-12 mat-body-2" allign="start" *ngIf="notes$ | async as notes">
-          <div class="description" appChangeAnchorTarget [innerHtml]="notes | safeHtml"></div>
-        </div>
+        @if (notes$ | async; as notes) {
+          <div class="eav-layout-grid__cell--span-12 mat-body-2" allign="start">
+            <div class="description" appChangeAnchorTarget [innerHtml]="notes | safeHtml"></div>
+          </div>
+        }
         <div class="eav-layout-grid__cell--span-12">
           <ng-container #fieldComponent></ng-container>
         </div>

@@ -1,5 +1,7 @@
 <router-outlet></router-outlet>
 
-<ng-container *ngIf="viewModel$ | async as vm">
-  <app-edit-dialog-main *ngIf="vm.loaded"></app-edit-dialog-main>
-</ng-container>
+@if (viewModel$ | async; as vm) {
+  @if (vm.loaded) {
+    <app-edit-dialog-main></app-edit-dialog-main>
+  }
+}

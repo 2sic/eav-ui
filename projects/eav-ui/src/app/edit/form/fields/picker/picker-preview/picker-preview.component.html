@@ -1,56 +1,66 @@
-<ng-container *ngIf="viewModel$ | async as vm">
+@if (viewModel$ | async; as vm) {
   <div fxLayout="row" fxLayoutAlign="start center">
     <div class="eav-div-around-picker">
-      <app-picker-pills *ngIf="vm.selectedItems.length > 1 && !vm.freeTextMode"
-        [pickerData]="pickerData"
-        [config]="config" 
-        [group]="group">
-        <app-picker-toggle-text freeTextButtons 
-          [pickerData]="pickerData" 
-          [controlStatusDisabled]="vm.controlStatus.disabled"
-          [allowText]="vm.enableTextEntry" 
-          [freeTextMode]="vm.freeTextMode">
-        </app-picker-toggle-text>
-      </app-picker-pills>
-      <app-picker-search *ngIf="vm.selectedItems.length < 2 && !vm.freeTextMode"
-        [pickerData]="pickerData"
-        [config]="config" 
-        [group]="group" 
-        [controlConfig]="controlConfig"
-        [showSelectedItem]="true"
-        [showItemEditButtons]="true">
-        <app-picker-toggle-text freeTextButtons 
+      @if (vm.selectedItems.length > 1 && !vm.freeTextMode) {
+        <app-picker-pills
           [pickerData]="pickerData"
-          [controlStatusDisabled]="vm.controlStatus.disabled"
-          [allowText]="vm.enableTextEntry"
-          [freeTextMode]="vm.freeTextMode">
-        </app-picker-toggle-text>
-      </app-picker-search>
-      <app-picker-text *ngIf="vm.freeTextMode"
-        [pickerData]="pickerData"
-        [config]="config"
-        [group]="group">
-        <app-picker-toggle-text freeTextButtons 
+          [config]="config"
+          [group]="group">
+          <app-picker-toggle-text freeTextButtons
+            [pickerData]="pickerData"
+            [controlStatusDisabled]="vm.controlStatus.disabled"
+            [allowText]="vm.enableTextEntry"
+            [freeTextMode]="vm.freeTextMode">
+          </app-picker-toggle-text>
+        </app-picker-pills>
+      }
+      @if (vm.selectedItems.length < 2 && !vm.freeTextMode) {
+        <app-picker-search
           [pickerData]="pickerData"
-          [controlStatusDisabled]="vm.controlStatus.disabled" 
-          [allowText]="vm.enableTextEntry"
-          [freeTextMode]="vm.freeTextMode">
-        </app-picker-toggle-text>
-      </app-picker-text>
+          [config]="config"
+          [group]="group"
+          [controlConfig]="controlConfig"
+          [showSelectedItem]="true"
+          [showItemEditButtons]="true">
+          <app-picker-toggle-text freeTextButtons
+            [pickerData]="pickerData"
+            [controlStatusDisabled]="vm.controlStatus.disabled"
+            [allowText]="vm.enableTextEntry"
+            [freeTextMode]="vm.freeTextMode">
+          </app-picker-toggle-text>
+        </app-picker-search>
+      }
+      @if (vm.freeTextMode) {
+        <app-picker-text
+          [pickerData]="pickerData"
+          [config]="config"
+          [group]="group">
+          <app-picker-toggle-text freeTextButtons
+            [pickerData]="pickerData"
+            [controlStatusDisabled]="vm.controlStatus.disabled"
+            [allowText]="vm.enableTextEntry"
+            [freeTextMode]="vm.freeTextMode">
+          </app-picker-toggle-text>
+        </app-picker-text>
+      }
     </div>
     <div fxLayoutAlign="end end">
       <!-- create new entity to add to this list -->
-      <button mat-icon-button  class="eav-suffix-button" 
-        *ngIf="vm.showAddNewEntityButton" [tippy]="'Fields.Entity.New' | translate"
-        [disabled]="vm.controlStatus.disabled || vm.disableAddNew" (click)="openNewEntityDialog()">
-        <mat-icon>add_circle_outline</mat-icon>
-      </button>
-      <button mat-icon-button class="eav-suffix-button" 
-        *ngIf="vm.showGoToListDialogButton" [tippy]="'Fields.Entity.OpenMultiselect' | translate"
-        (click)="expandDialog()">
-        <mat-icon>post_add</mat-icon>
-      </button>
+      @if (vm.showAddNewEntityButton) {
+        <button mat-icon-button  class="eav-suffix-button"
+          [tippy]="'Fields.Entity.New' | translate"
+          [disabled]="vm.controlStatus.disabled || vm.disableAddNew" (click)="openNewEntityDialog()">
+          <mat-icon>add_circle_outline</mat-icon>
+        </button>
+      }
+      @if (vm.showGoToListDialogButton) {
+        <button mat-icon-button class="eav-suffix-button"
+          [tippy]="'Fields.Entity.OpenMultiselect' | translate"
+          (click)="expandDialog()">
+          <mat-icon>post_add</mat-icon>
+        </button>
+      }
     </div>
   </div>
   <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
-</ng-container>
+}

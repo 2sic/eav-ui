@@ -1,39 +1,51 @@
 <div class="actions-component">
-  <div class="eav-grid-action-button highlight" matRipple
-    *ngIf="!contentType.EditInfo.DisableEdit || contentType.Properties" tippy="Description and more"
-    (click)="createOrEditMetadata()">
-    <mat-icon>edit</mat-icon>
-  </div>
-  <div class="eav-grid-action-button disabled" *ngIf="contentType.EditInfo.DisableEdit && !contentType.Properties">
-    <mat-icon>edit</mat-icon>
-  </div>
+  @if (!contentType.EditInfo.DisableEdit || contentType.Properties) {
+    <div class="eav-grid-action-button highlight" matRipple
+      tippy="Description and more"
+      (click)="createOrEditMetadata()">
+      <mat-icon>edit</mat-icon>
+    </div>
+  }
+  @if (contentType.EditInfo.DisableEdit && !contentType.Properties) {
+    <div class="eav-grid-action-button disabled">
+      <mat-icon>edit</mat-icon>
+    </div>
+  }
 
-  <div class="eav-grid-action-button highlight" matRipple *ngIf="!contentType.EditInfo.DisableMetadata" tippy="Metadata"
-    (click)="openMetadata()">
-    <mat-icon [matBadge]="contentType.Metadata.length" matBadgePosition="below after" matBadgeColor="accent"
-      matBadgeSize="small" [matBadgeHidden]="!contentType.Metadata.length" aria-hidden="false">
-      local_offer
-    </mat-icon>
-  </div>
-  <div class="eav-grid-action-button disabled" *ngIf="contentType.EditInfo.DisableMetadata">
-    <mat-icon [matBadge]="contentType.Metadata.length" matBadgePosition="below after" matBadgeColor="accent"
-      matBadgeSize="small" matBadgeDisabled="true" [matBadgeHidden]="!contentType.Metadata.length" aria-hidden="false">
-      local_offer
-    </mat-icon>
-  </div>
+  @if (!contentType.EditInfo.DisableMetadata) {
+    <div class="eav-grid-action-button highlight" matRipple tippy="Metadata"
+      (click)="openMetadata()">
+      <mat-icon [matBadge]="contentType.Metadata.length" matBadgePosition="below after" matBadgeColor="accent"
+        matBadgeSize="small" [matBadgeHidden]="!contentType.Metadata.length" aria-hidden="false">
+        local_offer
+      </mat-icon>
+    </div>
+  }
+  @if (contentType.EditInfo.DisableMetadata) {
+    <div class="eav-grid-action-button disabled">
+      <mat-icon [matBadge]="contentType.Metadata.length" matBadgePosition="below after" matBadgeColor="accent"
+        matBadgeSize="small" matBadgeDisabled="true" [matBadgeHidden]="!contentType.Metadata.length" aria-hidden="false">
+        local_offer
+      </mat-icon>
+    </div>
+  }
 
-  <div class="eav-grid-action-button highlight" matRipple *ngIf="!contentType.EditInfo.DisableEdit && enablePermissions"
-    tippy="Permissions" (click)="openPermissions()">
-    <mat-icon [matBadge]="contentType.Permissions.Count" matBadgePosition="below after" matBadgeColor="accent"
-      matBadgeSize="small" [matBadgeHidden]="!contentType.Permissions.Count" aria-hidden="false">
+  @if (!contentType.EditInfo.DisableEdit && enablePermissions) {
+    <div class="eav-grid-action-button highlight" matRipple
+      tippy="Permissions" (click)="openPermissions()">
+      <mat-icon [matBadge]="contentType.Permissions.Count" matBadgePosition="below after" matBadgeColor="accent"
+        matBadgeSize="small" [matBadgeHidden]="!contentType.Permissions.Count" aria-hidden="false">
       person</mat-icon>
-  </div>
-  <div class="eav-grid-action-button disabled" *ngIf="contentType.EditInfo.DisableEdit || !enablePermissions">
-    <mat-icon [matBadge]="contentType.Permissions.Count" matBadgePosition="below after" matBadgeColor="accent"
-      matBadgeSize="small" matBadgeDisabled="true" [matBadgeHidden]="!contentType.Permissions.Count"
-      aria-hidden="false">
+    </div>
+  }
+  @if (contentType.EditInfo.DisableEdit || !enablePermissions) {
+    <div class="eav-grid-action-button disabled">
+      <mat-icon [matBadge]="contentType.Permissions.Count" matBadgePosition="below after" matBadgeColor="accent"
+        matBadgeSize="small" matBadgeDisabled="true" [matBadgeHidden]="!contentType.Permissions.Count"
+        aria-hidden="false">
       person</mat-icon>
-  </div>
+    </div>
+  }
 
   <div class="eav-grid-action-button highlight" matRipple tippy="More" [matMenuTriggerFor]="menu">
     <mat-icon>more_horiz</mat-icon>

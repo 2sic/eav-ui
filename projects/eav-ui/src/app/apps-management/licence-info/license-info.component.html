@@ -1,29 +1,32 @@
-<mat-accordion multi *ngIf="viewModel$ | async as vm">
-  <mat-expansion-panel #panel *ngFor="let license of vm.licenses | licensesOrder; trackBy: trackLicenses">
-    <mat-expansion-panel-header>
-      <mat-panel-title>
-        <mat-icon class="panel-icon" [tippy]="license.IsEnabled ? 'License is active' : 'License is not active'">{{
-          license.IsEnabled ? 'check_circle_outline' : 'cancel' }}</mat-icon>
-        <div>
-          <div class="panel-title">
-            <span>{{ license.Name }}</span>
-            <span class="active-features-count">{{ license | activeFeaturesCount }}</span>
-            <span> {{ license.ExpWarningIcon }}</span>
-          </div>
-          <div class="panel-description" [ngClass]="{ 'expanded': panel.expanded }">
-            {{ license.Description }}
-          </div>
-        </div>
-      </mat-panel-title>
-    </mat-expansion-panel-header>
-
-    <ng-container *ngIf="panel.expanded">
-      <ag-grid-angular class="ag-theme-material" [rowData]="license.Features" [gridOptions]="gridOptions"
-        appAgGridHeight [itemsCount]="license.Features?.length">
-      </ag-grid-angular>
-    </ng-container>
-  </mat-expansion-panel>
-</mat-accordion>
+@if (viewModel$ | async; as vm) {
+  <mat-accordion multi>
+    @for (license of vm.licenses | licensesOrder; track trackLicenses($index, license)) {
+      <mat-expansion-panel #panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <mat-icon class="panel-icon" [tippy]="license.IsEnabled ? 'License is active' : 'License is not active'">{{
+            license.IsEnabled ? 'check_circle_outline' : 'cancel' }}</mat-icon>
+            <div>
+              <div class="panel-title">
+                <span>{{ license.Name }}</span>
+                <span class="active-features-count">{{ license | activeFeaturesCount }}</span>
+                <span> {{ license.ExpWarningIcon }}</span>
+              </div>
+              <div class="panel-description" [ngClass]="{ 'expanded': panel.expanded }">
+                {{ license.Description }}
+              </div>
+            </div>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        @if (panel.expanded) {
+          <ag-grid-angular class="ag-theme-material" [rowData]="license.Features" [gridOptions]="gridOptions"
+            appAgGridHeight [itemsCount]="license.Features?.length">
+          </ag-grid-angular>
+        }
+      </mat-expansion-panel>
+    }
+  </mat-accordion>
+}
 
 <mat-dialog-actions align="start">
   <button mat-button class="eav-button__with-icon" tippy="Registration" (click)="openRegistration()">

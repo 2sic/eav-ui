@@ -1,4 +1,4 @@
-<ng-container *ngIf="viewModel$ | async as vm">
+@if (viewModel$ | async; as vm) {
   <div class="eav-dialog">
     <div class="eav-dialog-header">
       <div class="eav-dialog-header__title">Create inherited App</div>
@@ -15,14 +15,18 @@
           <mat-label>Inherit App</mat-label>
           <mat-select formControlName="inheritId"
             [placeholder]="vm.inheritableApps === undefined ? 'Loading...' : vm.inheritableApps === null || vm.inheritableApps.length === 0 ? 'No inheritable apps found' : ''">
-            <mat-option *ngFor="let app of vm.inheritableApps" [value]="app.Id">
-              {{ app.Name }}
-            </mat-option>
+            @for (app of vm.inheritableApps; track app) {
+              <mat-option [value]="app.Id">
+                {{ app.Name }}
+              </mat-option>
+            }
           </mat-select>
         </mat-form-field>
-        <app-field-hint *ngIf="form.controls.inheritId.touched && form.controls.inheritId.errors?.required" [isError]="true">
-          Required
-        </app-field-hint>
+        @if (form.controls.inheritId.touched && form.controls.inheritId.errors?.required) {
+          <app-field-hint [isError]="true">
+            Required
+          </app-field-hint>
+        }
       </form>
     </div>
     <mat-dialog-actions align="end">
@@ -34,4 +38,4 @@
       </button>
     </mat-dialog-actions>
   </div>
-</ng-container>
+}

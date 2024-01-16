@@ -1,32 +1,34 @@
-<div class="grid-wrapper mat-tab-grid-wrapper" *ngIf="viewModel$ | async as vm">
-  <ag-grid-angular class="ag-theme-material" [rowData]="vm.contentTypes" [gridOptions]="gridOptions"
-    appDragAndDrop [allowedFileTypes]="'xml,json'" (filesDropped)="filesDropped($event)">
-  </ag-grid-angular>
-
-  <mat-dialog-actions class="eav-dialog-actions">
-    <div class="eav-dialog-actions-div">
-      <mat-form-field color="accent" class="eav-form-field eav-scope-dropdown">
-        <mat-select [ngModel]="vm.scope" name="Scope" (ngModelChange)="changeScope($event)">
-          <mat-option *ngFor="let scopeOption of (vm.scopeOptions)" [value]="scopeOption.value">
-            {{ 'Scope: ' + scopeOption.name }}
-          </mat-option>
-          <mat-option [value]="dropdownInsertValue">Scope: Other...</mat-option>
-        </mat-select>
-      </mat-form-field>
-      
-      <button mat-button class="eav-button__with-icon" tippy="Import content type" (click)="importType()">
-        <mat-icon class="eav-icon">cloud_upload</mat-icon>
-        <span>Content Type</span>
+@if (viewModel$ | async; as vm) {
+  <div class="grid-wrapper mat-tab-grid-wrapper">
+    <ag-grid-angular class="ag-theme-material" [rowData]="vm.contentTypes" [gridOptions]="gridOptions"
+      appDragAndDrop [allowedFileTypes]="'xml,json'" (filesDropped)="filesDropped($event)">
+    </ag-grid-angular>
+    <mat-dialog-actions class="eav-dialog-actions">
+      <div class="eav-dialog-actions-div">
+        <mat-form-field color="accent" class="eav-form-field eav-scope-dropdown">
+          <mat-select [ngModel]="vm.scope" name="Scope" (ngModelChange)="changeScope($event)">
+            @for (scopeOption of (vm.scopeOptions); track scopeOption) {
+              <mat-option [value]="scopeOption.value">
+                {{ 'Scope: ' + scopeOption.name }}
+              </mat-option>
+            }
+            <mat-option [value]="dropdownInsertValue">Scope: Other...</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <button mat-button class="eav-button__with-icon" tippy="Import content type" (click)="importType()">
+          <mat-icon class="eav-icon">cloud_upload</mat-icon>
+          <span>Content Type</span>
+        </button>
+        @if (vm.debugEnabled) {
+          <button mat-button class="eav-button__with-icon" color="accent" tippy="Create a ghost content type" (click)="createGhost()">
+            <mat-icon class="eav-icon">share</mat-icon>
+            <span>Ghost</span>
+          </button>
+        }
+      </div>
+      <button mat-fab mat-elevation-z24 class="grid-fab" tippy="Create a new content type" (click)="editContentType(null)">
+        <mat-icon>add</mat-icon>
       </button>
-      
-      <button mat-button class="eav-button__with-icon" color="accent" tippy="Create a ghost content type" *ngIf="vm.debugEnabled" (click)="createGhost()">
-        <mat-icon class="eav-icon">share</mat-icon>
-        <span>Ghost</span>
-      </button>
-    </div>
-    
-    <button mat-fab mat-elevation-z24 class="grid-fab" tippy="Create a new content type" (click)="editContentType(null)">
-      <mat-icon>add</mat-icon>
-    </button>
-  </mat-dialog-actions>
-</div>
+    </mat-dialog-actions>
+  </div>
+}

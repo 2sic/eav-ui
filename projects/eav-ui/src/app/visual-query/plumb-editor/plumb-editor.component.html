@@ -1,76 +1,75 @@
-<div #domRoot id="pipeline-root" *ngIf="(viewModel$ | async) as vm">
+@if ((viewModel$ | async); as vm) {
+<div #domRoot id="pipeline-root">
   <!-- do not use trackBy, jsPlumb drag stops working properly after delete -->
-  <ng-container *ngIf="!hardReset">
-    <div #domDataSource *ngFor="let dataSource of vm.pipelineDataSources"
-      [id]="dataSrcIdPrefix + dataSource.EntityGuid" class="dataSource" [ngStyle]="{
-        'top': dataSource.VisualDesignerData.Top + 'px',
-        'left': dataSource.VisualDesignerData.Left + 'px',
-        'min-width': dataSource.VisualDesignerData.Width ? dataSource.VisualDesignerData.Width + 'px' : null
-      }" [ngClass]="{
-        'show-details': vm.showDataSourceDetails && vm.dataSourceConfigs[dataSource.EntityId]?.length
-      }">
-
-      <div class="actions left">
-        <mat-icon class="type-info" [title]="vm.typeInfos[dataSource.EntityGuid].UiHint">
-          {{ vm.typeInfos[dataSource.EntityGuid].Icon }}
-        </mat-icon>
-
-        <mat-icon class="configure" title="Configure data source" appMousedownStopPropagation
-          *ngIf="vm.allowEdit && vm.typeInfos[dataSource.EntityGuid].EnableConfig"
-          (click)="configureDataSource(dataSource)">
-          settings
-        </mat-icon>
-
-        <mat-icon class="help" title="Help for this data source" appMousedownStopPropagation
-          *ngIf="vm.typeInfos[dataSource.EntityGuid].HelpLink"
-          (click)="openHelp(vm.typeInfos[dataSource.EntityGuid].HelpLink)">
-          help_outline
-        </mat-icon>
-      </div>
-
-      <div class="actions right">
-        <mat-icon class="delete" title="Delete" appMousedownStopPropagation
-          *ngIf="vm.allowEdit && !isOutDataSource(dataSource)" (click)="remove(dataSource)">
-          delete
-        </mat-icon>
-      </div>
-
-      <div class="name" title="Click to edit name" appMousedownStopPropagation
-        (click)="vm.allowEdit && editName(dataSource)">
-        <span>{{ dataSource.Name || '(no name)' }}</span>
-        <mat-icon class="show-hover-inline">edit</mat-icon>
-      </div>
-      <br>
-
-      <div class="description" title="Click to edit description" appMousedownStopPropagation
-        (click)="vm.allowEdit && editDescription(dataSource)">
-        <span>{{ dataSource.Description }}</span>
-        <mat-icon class="show-hover-inline">edit</mat-icon>
-      </div>
-      <br>
-
-      <ng-container
-        *ngIf="vm.showDataSourceDetails && vm.dataSourceConfigs[dataSource.EntityId]?.length">
-        <hr style="margin: 0">
-        <table class="configs">
-          <tr class="config" *ngFor="let config of vm.dataSourceConfigs[dataSource.EntityId]">
-            <td class="config-name" [title]="config.name">{{ config.name }}</td>
-            <td class="config-value" [title]="config.value">{{ config.value }}</td>
-          </tr>
-        </table>
-      </ng-container>
-
-      <div class="typename" [title]="dataSource.PartAssemblyAndType">
-        Type: {{ getTypeName(dataSource.PartAssemblyAndType) }}
-      </div>
-
-      <div class="add-endpoint sourceEndpoint dynamic" title="Drag a new Out-Connection"
-        *ngIf="vm.allowEdit && vm.typeInfos[dataSource.EntityGuid].DynamicOut">
-      </div>
-
-      <div class="many-in targetEndpoint dynamic" title="This data source supports multiple In-Connections"
-        *ngIf="vm.allowEdit && vm.typeInfos[dataSource.EntityGuid].DynamicIn">
-      </div>
+  @if (!hardReset) {
+  @for (dataSource of vm.pipelineDataSources; track dataSource) {
+  <div #domDataSource [id]="dataSrcIdPrefix + dataSource.EntityGuid" class="dataSource" [ngStyle]="{
+          'top': dataSource.VisualDesignerData.Top + 'px',
+          'left': dataSource.VisualDesignerData.Left + 'px',
+          'min-width': dataSource.VisualDesignerData.Width ? dataSource.VisualDesignerData.Width + 'px' : null
+          }" [ngClass]="{
+          'show-details': vm.showDataSourceDetails && vm.dataSourceConfigs[dataSource.EntityId]?.length
+          }">
+    <div class="actions left">
+      <mat-icon class="type-info" [title]="vm.typeInfos[dataSource.EntityGuid].UiHint">
+        {{ vm.typeInfos[dataSource.EntityGuid].Icon }}
+      </mat-icon>
+      @if (vm.allowEdit && vm.typeInfos[dataSource.EntityGuid].EnableConfig) {
+      <mat-icon class="configure" title="Configure data source" appMousedownStopPropagation
+        (click)="configureDataSource(dataSource)">
+        settings
+      </mat-icon>
+      }
+      @if (vm.typeInfos[dataSource.EntityGuid].HelpLink) {
+      <mat-icon class="help" title="Help for this data source" appMousedownStopPropagation
+        (click)="openHelp(vm.typeInfos[dataSource.EntityGuid].HelpLink)">
+        help_outline
+      </mat-icon>
+      }
     </div>
-  </ng-container>
+    <div class="actions right">
+      @if (vm.allowEdit && !isOutDataSource(dataSource)) {
+      <mat-icon class="delete" title="Delete" appMousedownStopPropagation (click)="remove(dataSource)">
+        delete
+      </mat-icon>
+      }
+    </div>
+    <div class="name" title="Click to edit name" appMousedownStopPropagation
+      (click)="vm.allowEdit && editName(dataSource)">
+      <span>{{ dataSource.Name || '(no name)' }}</span>
+      <mat-icon class="show-hover-inline">edit</mat-icon>
+    </div>
+    <br>
+    <div class="description" title="Click to edit description" appMousedownStopPropagation
+      (click)="vm.allowEdit && editDescription(dataSource)">
+      <span>{{ dataSource.Description }}</span>
+      <mat-icon class="show-hover-inline">edit</mat-icon>
+    </div>
+    <br>
+    @if (vm.showDataSourceDetails && vm.dataSourceConfigs[dataSource.EntityId]?.length) {
+    <hr style="margin: 0">
+    <table class="configs">
+      @for (config of vm.dataSourceConfigs[dataSource.EntityId]; track config) {
+      <tr class="config">
+        <td class="config-name" [title]="config.name">{{ config.name }}</td>
+        <td class="config-value" [title]="config.value">{{ config.value }}</td>
+      </tr>
+      }
+    </table>
+    }
+    <div class="typename" [title]="dataSource.PartAssemblyAndType">
+      Type: {{ getTypeName(dataSource.PartAssemblyAndType) }}
+    </div>
+    @if (vm.allowEdit && vm.typeInfos[dataSource.EntityGuid].DynamicOut) {
+    <div class="add-endpoint sourceEndpoint dynamic" title="Drag a new Out-Connection">
+    </div>
+    }
+    @if (vm.allowEdit && vm.typeInfos[dataSource.EntityGuid].DynamicIn) {
+    <div class="many-in targetEndpoint dynamic" title="This data source supports multiple In-Connections">
+    </div>
+    }
+  </div>
+  }
+  }
 </div>
+}

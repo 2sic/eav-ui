@@ -1,77 +1,84 @@
-<ng-container *ngIf="viewModel$ | async as vm">
+@if (viewModel$ | async; as vm) {
   <div class="eav-dialog">
     <div class="eav-dialog-header">
       <div class="eav-dialog-header__title">{{ contentTypeStaticName ? 'Edit Content Type' : 'New Content Type' }}</div>
     </div>
-    <form *ngIf="vm.contentType" #ngForm="ngForm" (ngSubmit)="save()">
-      <div class="eav-dialog-content">
-        <div>
-          <div class="eav-edit-input">
-            <mat-form-field color="accent" class="eav-form-field">
-              <mat-label>Name</mat-label>
-              <input matInput type="text" required [pattern]="contentTypeNamePattern" [ngModel]="vm.contentType.Name"
-                (ngModelChange)="changeContentTypeName($event)" name="Name" #name="ngModel">
-            </mat-form-field>
-            <ng-container *ngIf="name.touched && name.errors">
-              <app-field-hint *ngIf="name.errors.required" [isError]="true">This field is required</app-field-hint>
-              <app-field-hint *ngIf="name.errors.pattern" [isError]="true">{{ contentTypeNameError }}</app-field-hint>
-            </ng-container>
-          </div>
-          <mat-accordion [@.disabled]="vm.disableAnimation">
-            <mat-expansion-panel>
-              <mat-expansion-panel-header>
-                <mat-panel-title>Advanced</mat-panel-title>
-                <mat-panel-description></mat-panel-description>
-              </mat-expansion-panel-header>
-
-              <div class="eav-edit-input">
-                <div class="eav-form-and-button">
-                  <mat-form-field color="accent" class="eav-form-field">
-                    <mat-label>Scope</mat-label>
-                    <mat-select [ngModel]="vm.contentType.Scope" name="Scope" (ngModelChange)="changeScope($event)"
-                      [disabled]="vm.lockScope">
-                      <mat-option *ngFor="let scopeOption of vm.scopeOptions" [value]="scopeOption.value">
-                        {{ scopeOption.name }}
-                      </mat-option>
-                      <mat-option [value]="dropdownInsertValue">Other...</mat-option>
-                    </mat-select>
-                  </mat-form-field>
-                  <button mat-icon-button type="button" matTextSuffix [tippy]="vm.lockScope ? 'Unlock' : 'Lock'"
-                    class="eav-scope-button" (click)="unlockScope()">
-                    <mat-icon>
-                      {{ vm.lockScope ? 'lock' : 'lock_open' }}
-                    </mat-icon>
-                  </button>
+    @if (vm.contentType) {
+      <form #ngForm="ngForm" (ngSubmit)="save()">
+        <div class="eav-dialog-content">
+          <div>
+            <div class="eav-edit-input">
+              <mat-form-field color="accent" class="eav-form-field">
+                <mat-label>Name</mat-label>
+                <input matInput type="text" required [pattern]="contentTypeNamePattern" [ngModel]="vm.contentType.Name"
+                  (ngModelChange)="changeContentTypeName($event)" name="Name" #name="ngModel">
+              </mat-form-field>
+              @if (name.touched && name.errors) {
+                @if (name.errors.required) {
+                  <app-field-hint [isError]="true">This field is required</app-field-hint>
+                }
+                @if (name.errors.pattern) {
+                  <app-field-hint [isError]="true">{{ contentTypeNameError }}</app-field-hint>
+                }
+              }
+            </div>
+            <mat-accordion [@.disabled]="vm.disableAnimation">
+              <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                  <mat-panel-title>Advanced</mat-panel-title>
+                  <mat-panel-description></mat-panel-description>
+                </mat-expansion-panel-header>
+                <div class="eav-edit-input">
+                  <div class="eav-form-and-button">
+                    <mat-form-field color="accent" class="eav-form-field">
+                      <mat-label>Scope</mat-label>
+                      <mat-select [ngModel]="vm.contentType.Scope" name="Scope" (ngModelChange)="changeScope($event)"
+                        [disabled]="vm.lockScope">
+                        @for (scopeOption of vm.scopeOptions; track scopeOption) {
+                          <mat-option [value]="scopeOption.value">
+                            {{ scopeOption.name }}
+                          </mat-option>
+                        }
+                        <mat-option [value]="dropdownInsertValue">Other...</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                    <button mat-icon-button type="button" matTextSuffix [tippy]="vm.lockScope ? 'Unlock' : 'Lock'"
+                      class="eav-scope-button" (click)="unlockScope()">
+                      <mat-icon>
+                        {{ vm.lockScope ? 'lock' : 'lock_open' }}
+                      </mat-icon>
+                    </button>
+                  </div>
+                  <app-field-hint>
+                    The scope should almost never be changed -
+                    <a href="https://2sxc.org/help?tag=scope" target="_blank" appClickStopPropagation>see help</a>
+                  </app-field-hint>
                 </div>
-                <app-field-hint>
-                  The scope should almost never be changed -
-                  <a href="https://2sxc.org/help?tag=scope" target="_blank" appClickStopPropagation>see help</a>
-                </app-field-hint>
-              </div>
-
-              <div class="eav-edit-input">
-                <mat-form-field color="accent" class="eav-form-field">
-                  <mat-label>Static Name</mat-label>
-                  <input matInput type="text" [ngModel]="vm.contentType.StaticName" name="StaticName" disabled>
-                </mat-form-field>
-              </div>
-
-              <div *ngIf="vm.contentType.SharedDefId" class="eav-edit-input">
-                <h3>Shared Content Type (Ghost)</h3>
-                <p>Note: this can't be edited in the UI, for now if you really know what you're doing, do it in the DB
-                </p>
-                <p>Uses Type Definition of: {{ vm.contentType.SharedDefId }}</p>
-              </div>
-            </mat-expansion-panel>
-          </mat-accordion>
+                <div class="eav-edit-input">
+                  <mat-form-field color="accent" class="eav-form-field">
+                    <mat-label>Static Name</mat-label>
+                    <input matInput type="text" [ngModel]="vm.contentType.StaticName" name="StaticName" disabled>
+                  </mat-form-field>
+                </div>
+                @if (vm.contentType.SharedDefId) {
+                  <div class="eav-edit-input">
+                    <h3>Shared Content Type (Ghost)</h3>
+                    <p>Note: this can't be edited in the UI, for now if you really know what you're doing, do it in the DB
+                    </p>
+                    <p>Uses Type Definition of: {{ vm.contentType.SharedDefId }}</p>
+                  </div>
+                }
+              </mat-expansion-panel>
+            </mat-accordion>
+          </div>
         </div>
-      </div>
-      <mat-dialog-actions align="end">
-        <button mat-raised-button type="button" (click)="closeDialog()">Cancel</button>
-        <button mat-raised-button type="submit" color="accent" [disabled]="!ngForm.form.valid || vm.loading">
-          Save
-        </button>
-      </mat-dialog-actions>
-    </form>
+        <mat-dialog-actions align="end">
+          <button mat-raised-button type="button" (click)="closeDialog()">Cancel</button>
+          <button mat-raised-button type="submit" color="accent" [disabled]="!ngForm.form.valid || vm.loading">
+            Save
+          </button>
+        </mat-dialog-actions>
+      </form>
+    }
   </div>
-</ng-container>
+}

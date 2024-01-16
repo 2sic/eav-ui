@@ -1,47 +1,54 @@
 <!-- TODO_(mdc-migration) -->
-<div *ngIf="viewModel$ | async as vm" style="position: relative" mat-dialog__container appToggleDebug>
-
-  <div mat-dialog-actions class="form-header-container" [ngClass]="{ 'u-display-none': vm.hideHeader }">
-    <app-edit-dialog-header class="multi-item-edit-form-header" [disabled]="!vm.formsValid"
-      (closeDialog)="closeDialog()">
-    </app-edit-dialog-header>
-  </div>
-
-  <div style="position: relative">
-    <!-- cdkScrollable is required when using matAutocomplete with scrollable element that is not body. Fixes matAutocomplete not following input  -->
-    <!-- TODO_(mdc-migration) -->
-    <div mat-mdc-dialog-content cdkScrollable class="eav-dialog-content u-hide-scrollbar" [ngClass]="{
-      'debug-enabled': vm.debugEnabled,
-      'debug-info-is-open': vm.debugInfoIsOpen,
-      'hide-header-height-fix': vm.hideHeader
-    }">
-      <div class="eav-layout-grid">
-        <div class="eav-layout-grid__inner">
-          <div class="eav-layout-grid__cell--span-12" appFormSlide *ngIf="!vm.delayForm">
-            <div *ngFor="let item of vm.items; trackBy: trackByFn">
-              <app-form-builder [entityGuid]="item.Entity.Guid"></app-form-builder>
-            </div>
+@if (viewModel$ | async; as vm) {
+  <div style="position: relative" mat-dialog__container appToggleDebug>
+    <div mat-dialog-actions class="form-header-container" [ngClass]="{ 'u-display-none': vm.hideHeader }">
+      <app-edit-dialog-header class="multi-item-edit-form-header" [disabled]="!vm.formsValid"
+        (closeDialog)="closeDialog()">
+      </app-edit-dialog-header>
+    </div>
+    <div style="position: relative">
+      <!-- cdkScrollable is required when using matAutocomplete with scrollable element that is not body. Fixes matAutocomplete not following input  -->
+      <!-- TODO_(mdc-migration) -->
+      <div mat-mdc-dialog-content cdkScrollable class="eav-dialog-content u-hide-scrollbar" [ngClass]="{
+        'debug-enabled': vm.debugEnabled,
+        'debug-info-is-open': vm.debugInfoIsOpen,
+        'hide-header-height-fix': vm.hideHeader
+        }">
+        <div class="eav-layout-grid">
+          <div class="eav-layout-grid__inner">
+            @if (!vm.delayForm) {
+              <div class="eav-layout-grid__cell--span-12" appFormSlide>
+                @for (item of vm.items; track trackByFn($index, item)) {
+                  <div>
+                    <app-form-builder [entityGuid]="item.Entity.Guid"></app-form-builder>
+                  </div>
+                }
+              </div>
+            }
           </div>
         </div>
       </div>
+      @if (vm.viewInitiated) {
+        <extended-fab-speed-dial [disabled]="vm.saveButtonDisabled">
+          <ng-template extendedFabSpeedDialTriggerContent>
+            <button extended-fab-speed-dial-trigger matRipple [disabled]="vm.saveButtonDisabled" (click)="saveAll(true)">
+              <mat-icon (click)="vm.saveButtonDisabled && saveAll(false)">done</mat-icon>
+              <span>{{ 'Form.Buttons.SaveAndClose' | translate }}</span>
+            </button>
+          </ng-template>
+          <ng-template extendedFabSpeedDialActionsContent>
+            <button extended-fab-speed-dial-action matRipple [disabled]="vm.saveButtonDisabled" (click)="saveAll(false)">
+              <span>{{ 'Form.Buttons.Save' | translate }}</span>
+              <mat-icon>save</mat-icon>
+            </button>
+          </ng-template>
+        </extended-fab-speed-dial>
+      }
     </div>
-    <extended-fab-speed-dial [disabled]="vm.saveButtonDisabled" *ngIf="vm.viewInitiated">
-      <ng-template extendedFabSpeedDialTriggerContent>
-        <button extended-fab-speed-dial-trigger matRipple [disabled]="vm.saveButtonDisabled" (click)="saveAll(true)">
-          <mat-icon (click)="vm.saveButtonDisabled && saveAll(false)">done</mat-icon>
-          <span>{{ 'Form.Buttons.SaveAndClose' | translate }}</span>
-        </button>
-      </ng-template>
-      <ng-template extendedFabSpeedDialActionsContent>
-        <button extended-fab-speed-dial-action matRipple [disabled]="vm.saveButtonDisabled" (click)="saveAll(false)">
-          <span>{{ 'Form.Buttons.Save' | translate }}</span>
-          <mat-icon>save</mat-icon>
-        </button>
-      </ng-template>
-    </extended-fab-speed-dial>
+    @if (vm.debugEnabled) {
+      <app-edit-dialog-footer mat-dialog-actions [formBuilderRefs]="formBuilderRefs"
+        (debugInfoOpened)="debugInfoOpened($event)">
+      </app-edit-dialog-footer>
+    }
   </div>
-
-  <app-edit-dialog-footer mat-dialog-actions *ngIf="vm.debugEnabled" [formBuilderRefs]="formBuilderRefs"
-    (debugInfoOpened)="debugInfoOpened($event)">
-  </app-edit-dialog-footer>
-</div>
+}

@@ -1,4 +1,4 @@
-<ng-container *ngIf="viewModel$ | async as vm">
+@if (viewModel$ | async; as vm) {
   <div class="eav-dialog eav-no-scrollbar">
     <div class="eav-dialog-header">
       <div class="eav-dialog-header__title eav-dialog-title-box">
@@ -6,86 +6,89 @@
         <span class="eav-file-name">{{
           controls.finalName.value
           || (controls.folder.value ? controls.folder.value.trim() + '/' : '')
-          }}</span>
+        }}</span>
       </div>
     </div>
     <div class="eav-dialog-content">
       <form [formGroup]="form" class="dialog-form">
         <div class="dialog-form-content">
-      
           <div class="eav-field-container eav-multiple">
             <!-- Platform -->
             <div class="eav-multiple-field">
               <mat-form-field color="accent" class="eav-form-field">
                 <mat-label>Platform</mat-label>
                 <mat-select formControlName="platform">
-                  <mat-option *ngFor="let platform of vm.platforms" [value]="platform">
-                    {{ platform }}
-                  </mat-option>
+                  @for (platform of vm.platforms; track platform) {
+                    <mat-option [value]="platform">
+                      {{ platform }}
+                    </mat-option>
+                  }
                 </mat-select>
               </mat-form-field>
             </div>
-      
             <!-- Purpose -->
             <div class="eav-multiple-field">
               <mat-form-field color="accent" class="eav-form-field">
                 <mat-label>Purpose</mat-label>
                 <mat-select formControlName="purpose">
-                  <mat-option *ngFor="let purpose of vm.purposes" [value]="purpose">
-                    {{ purpose }}
-                  </mat-option>
+                  @for (purpose of vm.purposes; track purpose) {
+                    <mat-option [value]="purpose">
+                      {{ purpose }}
+                    </mat-option>
+                  }
                 </mat-select>
               </mat-form-field>
             </div>
           </div>
-      
           <!-- Template -->
           <div class="eav-field-container">
             <mat-form-field color="accent" class="eav-form-field">
               <mat-label>Template</mat-label>
               <mat-select formControlName="templateKey">
-                <mat-option *ngFor="let template of vm.templates" [value]="template.Key">
-                  {{ template.Name }}
-                </mat-option>
+                @for (template of vm.templates; track template) {
+                  <mat-option [value]="template.Key">
+                    {{ template.Name }}
+                  </mat-option>
+                }
               </mat-select>
             </mat-form-field>
           </div>
-      
           <!-- Name -->
           <div class="eav-field-container">
             <mat-form-field color="accent" class="eav-form-field">
               <mat-label>Name</mat-label>
               <input matInput type="text" formControlName="name" required appMatInputAutofocus autofocusSelectValue="true">
             </mat-form-field>
-            <app-field-hint *ngIf="controls.name.touched && controls.name.errors?.required" [isError]="true">
-              This field is required
-            </app-field-hint>
+            @if (controls.name.touched && controls.name.errors?.required) {
+              <app-field-hint [isError]="true">
+                This field is required
+              </app-field-hint>
+            }
           </div>
         </div>
-      
         <div class="dialog-form-actions">
-          <ng-container *ngIf="vm.loadingPreview">
+          @if (vm.loadingPreview) {
             <mat-spinner mode="indeterminate" diameter="20" color="accent"></mat-spinner>
             <div class="spacer"></div>
-          </ng-container>
+          }
           <button mat-raised-button type="button" (click)="closeDialog()">Cancel</button>
           <button mat-raised-button type="button" color="accent"
             [disabled]="!form.valid || vm.loadingPreview || !vm.previewValid" (click)="confirm()">
             Create
           </button>
         </div>
-      
-        <ng-container *ngIf="vm.preview">
+        @if (vm.preview) {
           <div class="eav-preview-label-box">
             <label class="eav-preview-label" [ngClass]="{ 'disabled': vm.loadingPreview }">Preview</label>
           </div>
           <pre class="fancy-scrollbar-light" [ngClass]="{ 'disabled': vm.loadingPreview }">{{ vm.preview }}</pre>
-        </ng-container>
-      
-        <div class="eav-preview-error" *ngIf="!vm.loadingPreview && vm.previewError">
-          {{ vm.previewError }}
-        </div>
+        }
+        @if (!vm.loadingPreview && vm.previewError) {
+          <div class="eav-preview-error">
+            {{ vm.previewError }}
+          </div>
+        }
       </form>
     </div>
   </div>
-</ng-container>
+}

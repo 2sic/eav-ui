@@ -1,9 +1,13 @@
 <div class="actions-component">
-  <div class="eav-grid-action-button highlight" matRipple *ngIf="!field.EditInfo.ReadOnly" tippy="Use as title field"
-    (click)="setTitle()">
-    <mat-icon>{{ isTitle ? 'star' : 'star_outline' }}</mat-icon>
-  </div>
-  <div class="eav-grid-action-button disabled" *ngIf="field.EditInfo.ReadOnly">
-    <mat-icon>{{ isTitle ? 'star' : 'star_outline' }}</mat-icon>
-  </div>
+  @if (!field.EditInfo.ReadOnly) {
+    <div class="eav-grid-action-button highlight" matRipple tippy="Use as title field"
+      (click)="setTitle()">
+      <mat-icon>{{ isTitle ? 'star' : 'star_outline' }}</mat-icon>
+    </div>
+  }
+  @if (field.EditInfo.ReadOnly) {
+    <div class="eav-grid-action-button disabled">
+      <mat-icon>{{ isTitle ? 'star' : 'star_outline' }}</mat-icon>
+    </div>
+  }
 </div>

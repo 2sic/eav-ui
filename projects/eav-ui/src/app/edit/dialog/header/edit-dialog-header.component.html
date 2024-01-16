@@ -1,27 +1,31 @@
-<mat-card *ngIf="viewModel$ | async as vm" class="eav-header">
-  <button mat-icon-button class="eav-exit-button" (click)="close()"
-    [tippy]="(eavService.eavConfig.isParentDialog ? 'Form.Buttons.Exit.Tip' : 'Form.Buttons.Return.Tip') | translate">
-    <mat-icon class="eav-icon">{{ eavService.eavConfig.isParentDialog ? 'clear' : 'arrow_back' }}</mat-icon>
-  </button>
-
-  <div class="eav-languages">
-    <app-language-switcher *ngIf="vm.hasLanguages" [disabled]="disabled"></app-language-switcher>
-  </div>
-
-  <mat-icon *ngIf="vm.readOnly" class="eav-hint-icon"
-    [tippy]="('General.ReadOnlyHint.' + vm.readOnlyReason) | translate" [tippyDisabled]="!vm.readOnlyReason">
-    lock
-  </mat-icon>
-
-  <mat-icon *ngIf="eavService.eavConfig.isCopy" class="eav-hint-icon" [tippy]="'General.CopyHint' | translate">
-    file_copy
-  </mat-icon>
-
-  <button mat-button class="eav-publish-button" [disabled]="vm.readOnly" (click)="openPublishStatusDialog()"
-    [tippy]="'PublishStatus.' + vm.publishMode + '.Tip' | translate">
-    <span class="eav-publish-mode">
-      {{ 'PublishStatus.Label' | translate }}
-      <b>{{ 'PublishStatus.' + vm.publishMode | translate | uppercase }}</b>
-    </span>
-  </button>
-</mat-card>
+@if (viewModel$ | async; as vm) {
+  <mat-card class="eav-header">
+    <button mat-icon-button class="eav-exit-button" (click)="close()"
+      [tippy]="(eavService.eavConfig.isParentDialog ? 'Form.Buttons.Exit.Tip' : 'Form.Buttons.Return.Tip') | translate">
+      <mat-icon class="eav-icon">{{ eavService.eavConfig.isParentDialog ? 'clear' : 'arrow_back' }}</mat-icon>
+    </button>
+    <div class="eav-languages">
+      @if (vm.hasLanguages) {
+        <app-language-switcher [disabled]="disabled"></app-language-switcher>
+      }
+    </div>
+    @if (vm.readOnly) {
+      <mat-icon class="eav-hint-icon"
+        [tippy]="('General.ReadOnlyHint.' + vm.readOnlyReason) | translate" [tippyDisabled]="!vm.readOnlyReason">
+        lock
+      </mat-icon>
+    }
+    @if (eavService.eavConfig.isCopy) {
+      <mat-icon class="eav-hint-icon" [tippy]="'General.CopyHint' | translate">
+        file_copy
+      </mat-icon>
+    }
+    <button mat-button class="eav-publish-button" [disabled]="vm.readOnly" (click)="openPublishStatusDialog()"
+      [tippy]="'PublishStatus.' + vm.publishMode + '.Tip' | translate">
+      <span class="eav-publish-mode">
+        {{ 'PublishStatus.Label' | translate }}
+        <b>{{ 'PublishStatus.' + vm.publishMode | translate | uppercase }}</b>
+      </span>
+    </button>
+  </mat-card>
+}

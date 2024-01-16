@@ -1,12 +1,13 @@
-<ng-container *ngIf="viewModel | async as vm">
-
+@if (viewModel | async; as vm) {
   <div class="picker-wrapper">
     <mat-form-field [formGroup]="group" color="accent" class="eav-form-field">
       <mat-select [formControlName]="config.fieldName" [required]="vm.required">
         <mat-option value="">{{ 'Fields.TemplatePicker.NotSelected' | translate }}</mat-option>
-        <mat-option *ngFor="let file of vm.templateOptions" [value]="file">
-          {{ file }}
-        </mat-option>
+        @for (file of vm.templateOptions; track file) {
+          <mat-option [value]="file">
+            {{ file }}
+          </mat-option>
+        }
       </mat-select>
       <mat-label>{{ vm.label }}</mat-label>
     </mat-form-field>
@@ -15,7 +16,5 @@
       <mat-icon>add</mat-icon>
     </button>
   </div>
-
   <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
-
-</ng-container>
+}

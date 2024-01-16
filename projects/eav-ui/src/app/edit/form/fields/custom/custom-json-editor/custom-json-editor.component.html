@@ -1,20 +1,17 @@
-<ng-container *ngIf="viewModel$ | async as vm">
-
+@if (viewModel$ | async; as vm) {
   <div class="json-field" [ngClass]="{
     'disabled': vm.controlStatus.disabled,
     'focused': vm.focused,
     'error': vm.controlStatus.touched && vm.controlStatus.invalid
-  }">
+    }">
     <mat-label class="label">{{ vm.label }} {{ vm.required ? '*' : '' }}</mat-label>
-
     <app-monaco-editor class="editor" [ngStyle]="{ 'height': vm.editorHeight }" [filename]="filename"
       [value]="vm.controlStatus.value" (valueChanged)="codeChanged($event)" [options]="monacoOptions"
       [jsonSchema]="vm.jsonSchema" [jsonComments]="vm.jsonComments" (focused)="onFocused()" (blurred)="onBlurred()">
     </app-monaco-editor>
-
-    <input class="placeholder" *ngIf="!vm.controlStatus.value && vm.placeholder" [placeholder]="vm.placeholder">
+    @if (!vm.controlStatus.value && vm.placeholder) {
+      <input class="placeholder" [placeholder]="vm.placeholder">
+    }
   </div>
-
   <app-field-helper-text [config]="config" [group]="group"></app-field-helper-text>
-
-</ng-container>
+}

@@ -12,9 +12,11 @@
           <mat-option [value]="true">Shared (global)</mat-option>
         </mat-select>
       </mat-form-field>
-      <app-field-hint *ngIf="form.controls.isShared.touched && form.controls.isShared.errors?.required" [isError]="true">
-        This field is required
-      </app-field-hint>
+      @if (form.controls.isShared.touched && form.controls.isShared.errors?.required) {
+        <app-field-hint [isError]="true">
+          This field is required
+        </app-field-hint>
+      }
     </form>
   </mat-card-content>
   <mat-card-actions align="end">

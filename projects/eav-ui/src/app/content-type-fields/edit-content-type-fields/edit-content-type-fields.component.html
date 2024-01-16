@@ -1,72 +1,89 @@
 <div class="eav-dialog eav-no-scrollbar" appToggleDebug>
   <div class="eav-dialog-header">
     <div class="eav-dialog-header__title">
-      <ng-container *ngIf="editMode === undefined">Fields</ng-container>
-      <ng-container *ngIf="editMode === null">Add Fields</ng-container>
-      <ng-container *ngIf="editMode != null">Edit Field</ng-container>
+      @if (editMode === undefined) {
+        Fields
+      }
+      @if (editMode === null) {
+        Add Fields
+      }
+      @if (editMode != null) {
+        Edit Field
+      }
     </div>
   </div>
-  <form #ngForm="ngForm" *ngIf="(loading$ | async) === false" (ngSubmit)="save()">
-    <div class="eav-dialog-content">
-      <div class="eav-row-container" *ngFor="let field of fields; index as i">
-        <div class="eav-edit-input">
-          <mat-form-field color="accent" class="eav-form-field">
-            <mat-label>Name</mat-label>
-            <input matInput [pattern]="fieldNamePattern" [appReservedNames]="reservedNames" [(ngModel)]="field.StaticName"
-              [name]="'StaticName' + i" #staticName="ngModel" [disabled]="editMode === 'inputType'">
-          </mat-form-field>
-          <ng-container *ngIf="staticName.touched && staticName.errors">
-            <app-field-hint *ngIf="staticName.errors.pattern" [isError]="true">{{ fieldNameError }}</app-field-hint>
-            <app-field-hint *ngIf="staticName.errors.reservedNames" [isError]="true">
-              {{ staticName.errors.reservedNames }}
-            </app-field-hint>
-          </ng-container>
+  @if ((loading$ | async) === false) {
+    <form #ngForm="ngForm" (ngSubmit)="save()">
+      <div class="eav-dialog-content">
+        @for (field of fields; track field; let i = $index) {
+          <div class="eav-row-container">
+            <div class="eav-edit-input">
+              <mat-form-field color="accent" class="eav-form-field">
+                <mat-label>Name</mat-label>
+                <input matInput [pattern]="fieldNamePattern" [appReservedNames]="reservedNames" [(ngModel)]="field.StaticName"
+                  [name]="'StaticName' + i" #staticName="ngModel" [disabled]="editMode === 'inputType'">
+                </mat-form-field>
+                @if (staticName.touched && staticName.errors) {
+                  @if (staticName.errors.pattern) {
+                    <app-field-hint [isError]="true">{{ fieldNameError }}</app-field-hint>
+                  }
+                  @if (staticName.errors.reservedNames) {
+                    <app-field-hint [isError]="true">
+                      {{ staticName.errors.reservedNames }}
+                    </app-field-hint>
+                  }
+                }
+              </div>
+              <div class="eav-edit-input">
+                <mat-form-field color="accent" class="eav-form-field">
+                  <mat-label>Data Type</mat-label>
+                  <mat-select (selectionChange)="filterInputTypeOptions(i); resetInputType(i); calculateHints(i)"
+                    [(ngModel)]="field.Type" [name]="'Type' + i" [disabled]="editMode != null">
+                    <mat-select-trigger>
+                      <mat-icon class="eav-type-icon">{{ findIcon(field.Type) }}</mat-icon>
+                      <span>{{ findLabel(field.Type) }}</span>
+                    </mat-select-trigger>
+                    @for (dataType of dataTypes; track dataType) {
+                      <mat-option [value]="dataType.name">
+                        <mat-icon class="eav-type-icon">{{ dataType.icon }}</mat-icon>
+                        <span>{{ dataType.label }}</span>
+                      </mat-option>
+                    }
+                  </mat-select>
+                </mat-form-field>
+                <app-field-hint>{{ dataTypeHints[i] }}</app-field-hint>
+              </div>
+              <div class="eav-edit-input">
+                <mat-form-field color="accent" class="eav-form-field">
+                  <mat-label>Input Type</mat-label>
+                  <mat-select (selectionChange)="calculateHints(i)" [(ngModel)]="field.InputType" [name]="'InputType' + i"
+                    [disabled]="editMode === 'name'">
+                    <mat-select-trigger>
+                      <span>{{ getInputTypeOption(field.InputType)?.label }}</span>
+                      <mat-icon class="eav-input-icon">{{ getInputTypeOption(field.InputType)?.icon }}</mat-icon>
+                    </mat-select-trigger>
+                    @for (option of filteredInputTypeOptions[i]; track option) {
+                      <mat-option [value]="option.inputType"
+                        [ngClass]="{ 'eav-input-obsolete': option.isObsolete }">
+                        <!-- div is needed here because <mat-option> by default puts mat-icon on the first place if it exists -->
+                        <div>
+                          <span>{{ option.label }}</span>
+                          @if (option.icon) {
+                            <mat-icon class="eav-input-icon">{{ option.icon }}</mat-icon>
+                          }
+                        </div>
+                      </mat-option>
+                    }
+                  </mat-select>
+                </mat-form-field>
+                <app-field-hint>{{ inputTypeHints[i] }}</app-field-hint>
+              </div>
+            </div>
+          }
         </div>
-  
-        <div class="eav-edit-input">
-          <mat-form-field color="accent" class="eav-form-field">
-            <mat-label>Data Type</mat-label>
-            <mat-select (selectionChange)="filterInputTypeOptions(i); resetInputType(i); calculateHints(i)"
-              [(ngModel)]="field.Type" [name]="'Type' + i" [disabled]="editMode != null">
-              <mat-select-trigger>
-                <mat-icon class="eav-type-icon">{{ findIcon(field.Type) }}</mat-icon>
-                <span>{{ findLabel(field.Type) }}</span>
-              </mat-select-trigger>
-              <mat-option *ngFor="let dataType of dataTypes" [value]="dataType.name">
-                <mat-icon class="eav-type-icon">{{ dataType.icon }}</mat-icon>
-                <span>{{ dataType.label }}</span>
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-          <app-field-hint>{{ dataTypeHints[i] }}</app-field-hint>
-        </div>
-  
-        <div class="eav-edit-input">
-          <mat-form-field color="accent" class="eav-form-field">
-            <mat-label>Input Type</mat-label>
-            <mat-select (selectionChange)="calculateHints(i)" [(ngModel)]="field.InputType" [name]="'InputType' + i"
-              [disabled]="editMode === 'name'">
-              <mat-select-trigger>
-                <span>{{ getInputTypeOption(field.InputType)?.label }}</span>
-                <mat-icon class="eav-input-icon">{{ getInputTypeOption(field.InputType)?.icon }}</mat-icon>
-              </mat-select-trigger>
-              <mat-option *ngFor="let option of filteredInputTypeOptions[i]" [value]="option.inputType"
-                [ngClass]="{ 'eav-input-obsolete': option.isObsolete }">
-                <!-- div is needed here because <mat-option> by default puts mat-icon on the first place if it exists -->
-                <div>
-                  <span>{{ option.label }}</span>
-                  <mat-icon class="eav-input-icon" *ngIf="option.icon">{{ option.icon }}</mat-icon>
-                </div>
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-          <app-field-hint>{{ inputTypeHints[i] }}</app-field-hint>
-        </div>
-      </div>
-    </div>
-    <!--
-      TODO: @SDV
-      - create a button to the left which is only visible in debug mode!
+        <!--
+        TODO: @SDV
+        - create a button to the left which is only visible in debug mode!
         - Label: Add Shared Field (BETA) - put it in i18n
       - on click, open a dialog
         - Title: "Add Fields which Inherits Configuration" (i18n)
@@ -86,15 +103,18 @@
               - Remove button
         - At the end the Cancel / Ok button
         - When OK is pressed, nothing happens yet
-    -->
-    <mat-dialog-actions>
-      <button mat-raised-button *ngIf="(debugEnabled$ | async)" type="button" (click)="addSharedField()">{{ "SharingOrInheriting.AddSharedField" | translate }}</button>
-      <div class="spacer"></div>
-      <button mat-raised-button type="button" (click)="closeDialog()">Cancel</button>
-      <button mat-raised-button type="submit" color="accent" [disabled]="!ngForm.form.valid || (saving$ | async)">
-        Save
-      </button>
-    </mat-dialog-actions>
-  </form>
-</div>
+        -->
+        <mat-dialog-actions>
+          @if ((debugEnabled$ | async)) {
+            <button mat-raised-button type="button" (click)="addSharedField()">{{ "SharingOrInheriting.AddSharedField" | translate }}</button>
+          }
+          <div class="spacer"></div>
+          <button mat-raised-button type="button" (click)="closeDialog()">Cancel</button>
+          <button mat-raised-button type="submit" color="accent" [disabled]="!ngForm.form.valid || (saving$ | async)">
+            Save
+          </button>
+        </mat-dialog-actions>
+      </form>
+    }
+  </div>
 
