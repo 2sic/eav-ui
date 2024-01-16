@@ -55,6 +55,7 @@
     "rxjs": "^7.5.0",
     "tinymce": "^6.2.0",
     "tippy.js": "^6.3.7",
+    "xng-breadcrumb": "^9.0.0",
     "tslib": "^2.3.0",
     "zone.js": "^0.14.2"
   },

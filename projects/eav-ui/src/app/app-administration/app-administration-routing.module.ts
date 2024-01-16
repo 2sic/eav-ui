@@ -23,7 +23,7 @@ const appAdministrationRoutes: Routes = [
   {
     path: '', component: DialogEntryComponent, data: { dialog: appAdministrationDialog }, children: [
       { path: '', redirectTo: 'home', pathMatch: 'full' },
-      { path: 'home', component: EmptyRouteComponent, data: { title: 'App Home' } },
+      { path: 'home', component: EmptyRouteComponent, data: { title: 'App Home', breadcrumb: 'Info', } },
       {
         path: 'data/:scope', component: EmptyRouteComponent, children: [
           {
@@ -72,7 +72,7 @@ const appAdministrationRoutes: Routes = [
           },
           GoToPermissions.route,
         ],
-        data: { title: 'App Data' },
+        data: { title: 'App Data', breadcrumb: "Data" },
       },
       {
         path: 'queries', component: EmptyRouteComponent, children: [
@@ -90,7 +90,7 @@ const appAdministrationRoutes: Routes = [
           { ...GoToPermissions.route, data: { title: 'Query Permissions' } },
           GoToDevRest.route,
         ],
-        data: { title: 'App Queries' },
+        data: { title: 'App Queries' , breadcrumb: "Queries" },
       },
       {
         path: 'views', component: EmptyRouteComponent, children: [
@@ -112,15 +112,15 @@ const appAdministrationRoutes: Routes = [
           { ...GoToPermissions.route, data: { title: 'View Permissions' } },
           ...GoToMetadata.getRoutes(),
         ],
-        data: { title: 'App Views' },
+        data: { title: 'App Views', breadcrumb: "Views" },
       },
       {
-        path: 'web-api', component: EmptyRouteComponent, data: { title: 'App WebApi' }, children: [
+        path: 'web-api', component: EmptyRouteComponent, data: { title: 'App WebApi', breadcrumb: "WebApi"  }, children: [
           GoToDevRest.route,
         ],
       },
       {
-        path: 'app', component: EmptyRouteComponent, data: { title: 'Manage App' }, children: [
+        path: 'app', component: EmptyRouteComponent, data: { title: 'Manage App', breadcrumb: "Manage App" }, children: [
           ...GoToMetadata.getRoutes(),
           {
             matcher: edit,
@@ -154,12 +154,12 @@ const appAdministrationRoutes: Routes = [
         ],
       },
       {
-        path: 'sync', component: EmptyRouteComponent, data: { title: 'Sync' }, children: [
+        path: 'sync', component: EmptyRouteComponent, data: { title: 'Sync', breadcrumb:"Sync" }, children: [
           ...GoToMetadata.getRoutes(),
           { path: 'export', component: DialogEntryComponent, data: { dialog: exportAppDialog, title: 'Export App' } },
           { path: 'export/parts', component: DialogEntryComponent, data: { dialog: exportAppPartsDialog, title: 'Export App Parts' } },
           { path: 'import/parts', component: DialogEntryComponent, data: { dialog: importAppPartsDialog, title: 'Import App Parts' } },
-        ], 
+        ],
       },
     ]
   },
