@@ -39,8 +39,8 @@ export class AppAdministrationNavComponent
   ]).pipe(
     map(([tabs, path]) => {
       if (tabs == null) return;
-      this.changeUrl(path);
       const index = tabs.indexOf(path);
+      this.changeUrl(index);
       return index;
     }),
     filter((index) => index >= 0)
@@ -115,7 +115,10 @@ export class AppAdministrationNavComponent
     this.dialogRef.close();
   }
 
-  changeUrl(path: string) {
+  changeUrl(index: number) {
+    console.error(index)
+    let path = this.path$.value[index];
+    console.error(path)
     if(this.currentRoute === path) return;
     console.error(path)
     this.currentRoute = path;

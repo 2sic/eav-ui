@@ -42,8 +42,8 @@
 
 
     <mat-sidenav #sidenav [mode]="smallScreen.matches ? 'over' : 'side'" [opened]="sideNavOpened">
-      <div *ngFor="let item of navItems">
-        <a (click)="changeUrl(item.path)" [routerLink]="item.path" routerLinkActive="active" matRipple
+      <div *ngFor="let item of navItems; let i = index">
+        <a (click)="changeUrl(i)" [routerLink]="item.path" routerLinkActive="active" matRipple
           class="app-menu-container" [tippy]="item.tippy">
           <mat-icon>{{ item.icon }}</mat-icon>
           <div class="link-text">{{ item.name }}</div>
