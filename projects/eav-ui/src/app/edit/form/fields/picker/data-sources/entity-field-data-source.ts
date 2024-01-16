@@ -117,6 +117,9 @@ export class EntityFieldDataSource extends DataSourceBase {
     // });
     // entityInfo._tooltip = tooltip;
     // entityInfo._information = information;
+    Object.keys(entity).forEach(key => { //TODO: @SDV check for Value and Text keys
+      entityInfo[key] = entity[key];
+    });
     return entityInfo;
   }
 
