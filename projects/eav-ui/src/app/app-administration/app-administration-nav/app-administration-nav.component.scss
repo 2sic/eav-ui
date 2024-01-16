@@ -76,8 +76,9 @@ mat-sidenav-container {
 
 // Content
 .container-content {
-  padding: 15px 25px;
-  height: calc(100% - 64px -24px - 20px);
+  // padding: 15px 25px;
+  height: calc(100% - 64px);
+
 }
 
 
