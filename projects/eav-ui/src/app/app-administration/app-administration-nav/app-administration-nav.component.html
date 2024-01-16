@@ -1,72 +1,80 @@
-    <ng-container appToggleDebug *ngIf="viewModel$ | async as vm">
-      <mat-sidenav-container>
-        <mat-sidenav  #sidenav [mode]="smallScreen.matches ? 'over' : 'side'" [opened]="sideNavOpened">
-
-          <div *ngFor="let item of navItems">
-          <a (click)="changeUrl(item.path)"  [routerLink]="item.path" routerLinkActive="active"
-              matRipple class="app-menu-container" [tippy]="item.tippy">
-            <mat-icon>{{ item.icon }}</mat-icon>
-            <div class="link-text">{{ item.name }}</div>
-            <!-- <mat-icon *ngIf="item.child" [ngClass]="{ closed: !isOpenMenu, open: isOpenMenu, 'ml-auto': true }"> expand_more </mat-icon> -->
-          </a>
-              </div>
-        </mat-sidenav>
-
-        <mat-sidenav-content>
-          <mat-toolbar>
-            <div class="toolbar-container">
-
-              <div class="headeline-toolbar">
-                <div>
-                  <img (click)="sidenav.opened = !sidenav.opened" *ngIf="vm.dialogSettings?.Context.App.Icon" [src]="vm.dialogSettings?.Context.App.Icon + '?w=40&h=40&mode=crop'" />
-                </div>
-                <div>
-                  <ng-container *ngIf="vm.dialogSettings?.Context.App.SettingsScope === AppScopes.Global">
-                    Global
-                  </ng-container>
-                  <ng-container *ngIf="vm.dialogSettings?.Context.App.SettingsScope !== AppScopes.Global">
-                    {{ vm.dialogSettings?.Context.App.Name }}
-                  </ng-container>
-                  Admin
-                </div>
-              </div>
-            </div>
-              <span class="toolbar-spacer"></span>
-
-                <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
-                  <mat-icon>close</mat-icon>
-                </button>
-
-          </mat-toolbar>
-
-          <div class="container-content">
-
-
-            <app-getting-started *ngIf="currentRoute === 'home'" [gettingStartedUrl]="vm.dialogSettings.Context.App.GettingStartedUrl">
-            </app-getting-started>
-
-            <app-data *ngIf="currentRoute === 'data'" [enablePermissions]="vm.dialogSettings.Context.Enable.AppPermissions"></app-data>
-
-            <app-queries *ngIf="currentRoute === 'queries'" [enablePermissions]="vm.dialogSettings.Context.Enable.AppPermissions">
-            </app-queries>
-
-            <app-views *ngIf="currentRoute === 'views'" [enableCode]="vm.dialogSettings.Context.Enable.CodeEditor"
-            [enablePermissions]="vm.dialogSettings.Context.Enable.AppPermissions"
-            [appIsGlobal]="vm.dialogSettings.Context.App.IsShared"
-            [appIsInherited]="vm.dialogSettings.Context.App.IsInherited">
-          </app-views>
-
-          <app-web-api *ngIf="currentRoute === 'web-api'" [enableCode]="vm.dialogSettings.Context.Enable.CodeEditor">
-          </app-web-api>
-
-          <app-app-configuration *ngIf="currentRoute === 'app'" [dialogSettings]="vm.dialogSettings">
-          </app-app-configuration>
-
-          <app-sync-configuration *ngIf="currentRoute === 'sync'" [dialogSettings]="vm.dialogSettings">
-          </app-sync-configuration>
-
+<ng-container appToggleDebug *ngIf="viewModel$ | async as vm">
+  <mat-toolbar>
+    <div class="toolbar-container">
+      <div class="headeline-toolbar">
+        <div>
+          <img (click)="sidenav.opened = !sidenav.opened" *ngIf="vm.dialogSettings?.Context.App.Icon"
+            [src]="vm.dialogSettings?.Context.App.Icon + '?w=40&h=40&mode=crop'" />
         </div>
+        <div>
+          <ng-container *ngIf="
+              vm.dialogSettings?.Context.App.SettingsScope === AppScopes.Global
+            ">
+            Global
+          </ng-container>
+          <ng-container *ngIf="
+              vm.dialogSettings?.Context.App.SettingsScope !== AppScopes.Global
+            ">
+            {{ vm.dialogSettings?.Context.App.Name }}
+          </ng-container>
+          Admin
+        </div>
+      </div>
+    </div>
+    <span class="toolbar-spacer"></span>
+    <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-toolbar>
+  <mat-sidenav-container>
 
-        </mat-sidenav-content>
-      </mat-sidenav-container>
-    </ng-container>
+
+
+    <mat-sidenav #sidenav [mode]="smallScreen.matches ? 'over' : 'side'" [opened]="sideNavOpened">
+
+      <div (click)="!sidenav.opened" class="arrow-back-btn">
+        <mat-icon *ngIf="sidenav.opened">arrow_back</mat-icon>
+      </div>
+
+
+      <div *ngFor="let item of navItems">
+        <a (click)="changeUrl(item.path)" [routerLink]="item.path" routerLinkActive="active" matRipple
+          class="app-menu-container" [tippy]="item.tippy">
+          <mat-icon>{{ item.icon }}</mat-icon>
+          <div class="link-text">{{ item.name }}</div>
+        </a>
+
+      </div>
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+      <div class="container-content">
+        <app-getting-started *ngIf="currentRoute === 'home'"
+          [gettingStartedUrl]="vm.dialogSettings.Context.App.GettingStartedUrl">
+        </app-getting-started>
+
+        <app-data *ngIf="currentRoute === 'data'"
+          [enablePermissions]="vm.dialogSettings.Context.Enable.AppPermissions"></app-data>
+
+        <app-queries *ngIf="currentRoute === 'queries'"
+          [enablePermissions]="vm.dialogSettings.Context.Enable.AppPermissions">
+        </app-queries>
+
+        <app-views *ngIf="currentRoute === 'views'" [enableCode]="vm.dialogSettings.Context.Enable.CodeEditor"
+          [enablePermissions]="vm.dialogSettings.Context.Enable.AppPermissions"
+          [appIsGlobal]="vm.dialogSettings.Context.App.IsShared"
+          [appIsInherited]="vm.dialogSettings.Context.App.IsInherited">
+        </app-views>
+
+        <app-web-api *ngIf="currentRoute === 'web-api'" [enableCode]="vm.dialogSettings.Context.Enable.CodeEditor">
+        </app-web-api>
+
+        <app-app-configuration *ngIf="currentRoute === 'app'" [dialogSettings]="vm.dialogSettings">
+        </app-app-configuration>
+
+        <app-sync-configuration *ngIf="currentRoute === 'sync'" [dialogSettings]="vm.dialogSettings">
+        </app-sync-configuration>
+      </div>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</ng-container>
