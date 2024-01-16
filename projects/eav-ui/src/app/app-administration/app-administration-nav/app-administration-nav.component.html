@@ -1,7 +1,7 @@
 <div class="eav-dialog nav-component-wrapper eav-no-scrollbar" appToggleDebug *ngIf="viewModel$ | async as vm">
   <div class="eav-dialog-header">
     <div class="eav-dialog-header__title">
-      <img class="eav-dialog-header__title__image" *ngIf="vm.dialogSettings?.Context.App.Icon" 
+      <img class="eav-dialog-header__title__image" *ngIf="vm.dialogSettings?.Context.App.Icon"
         [src]="vm.dialogSettings?.Context.App.Icon + '?w=40&h=40&mode=crop'"/>
       <ng-container *ngIf="vm.dialogSettings?.Context.App.SettingsScope === AppScopes.Global">
         Global
@@ -17,8 +17,37 @@
   </div>
   <div class="eav-dialog-tab-content nav-component-wrapper">
     <router-outlet></router-outlet>
-    
-    <!-- spm NOTE: we use mat-tab-group because mat-tab-nav-bar doesn't have animations and doesn't look pretty -->
+  <!-- TOOD:: New SideNav -->
+    <ng-container >
+      <mat-sidenav-container>
+        <mat-sidenav>
+          <!-- <a class="logo-wrapper" routerLink="/">
+            <div><img src="./assets/img/logo.png" alt="Logo" /></div>
+            <h2>XX</h2>
+          </a> -->
+
+          <!-- Component with all menu Items and Child Items from navigationItem-mockup -->
+          <!-- <app-app-menu-list-item *ngFor="let item of sideNavItems$ | async" [item]="item"></app-app-menu-list-item> -->
+        </mat-sidenav>
+
+        <mat-sidenav-content>
+          <!-- Toolbar -->
+          <mat-toolbar>
+            <button>
+              <mat-icon>menu</mat-icon>
+            </button>
+            <img class="eav-dialog-header__title__image" *ngIf="vm.dialogSettings?.Context.App.Icon"
+            [src]="vm.dialogSettings?.Context.App.Icon + '?w=40&h=40&mode=crop'"/>
+          </mat-toolbar>
+          <!-- Content components -->
+            <router-outlet></router-outlet>
+        </mat-sidenav-content>
+      </mat-sidenav-container>
+    </ng-container>
+
+
+
+
     <mat-tab-group class="mat-mdc-tab-group-max-height" dynamicHeight color="accent"
       *ngIf="vm.dialogSettings && vm.tabIndex != null" (selectedTabChange)="changeTab($event)"
       [selectedIndex]="vm.tabIndex">
@@ -30,7 +59,7 @@
         <app-getting-started *matTabContent [gettingStartedUrl]="vm.dialogSettings.Context.App.GettingStartedUrl">
         </app-getting-started>
       </mat-tab>
-    
+
       <mat-tab>
         <div *matTabLabel class="mat-mdc-tab-label-box" tippy="Data / Content">
           <mat-icon>menu</mat-icon>
@@ -38,7 +67,7 @@
         </div>
         <app-data *matTabContent [enablePermissions]="vm.dialogSettings.Context.Enable.AppPermissions"></app-data>
       </mat-tab>
-    
+
       <mat-tab *ngIf="vm.dialogSettings.Context.Enable.Query">
         <div *matTabLabel class="mat-mdc-tab-label-box" tippy="Queries / Visual Query Designer">
           <mat-icon>filter_list</mat-icon>
@@ -47,7 +76,7 @@
         <app-queries *matTabContent [enablePermissions]="vm.dialogSettings.Context.Enable.AppPermissions">
         </app-queries>
       </mat-tab>
-    
+
       <mat-tab>
         <div *matTabLabel class="mat-mdc-tab-label-box" tippy="Views / Templates">
           <mat-icon>layers</mat-icon>
@@ -59,7 +88,7 @@
           [appIsInherited]="vm.dialogSettings.Context.App.IsInherited">
         </app-views>
       </mat-tab>
-    
+
       <mat-tab *ngIf="vm.dialogSettings.Context.Enable.Query">
         <div *matTabLabel class="mat-mdc-tab-label-box" tippy="WebApi">
           <mat-icon>offline_bolt</mat-icon>
@@ -68,7 +97,7 @@
         <app-web-api *matTabContent [enableCode]="vm.dialogSettings.Context.Enable.CodeEditor">
         </app-web-api>
       </mat-tab>
-    
+
       <mat-tab>
         <div *matTabLabel class="mat-mdc-tab-label-box" tippy="App Settings">
           <mat-icon>settings_applications</mat-icon>
@@ -77,7 +106,7 @@
         <app-app-configuration *matTabContent [dialogSettings]="vm.dialogSettings">
         </app-app-configuration>
       </mat-tab>
-    
+
       <mat-tab>
         <div *matTabLabel class="mat-mdc-tab-label-box" tippy="App Export / Import">
           <mat-icon>sync</mat-icon>
