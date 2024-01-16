@@ -17,10 +17,13 @@ export class FieldDataSourceFactoryService {
     private translate: TranslateService,
   ) { }
 
-  createEntityFieldDataSource(): EntityFieldDataSource {
+  createEntityFieldDataSource(
+    settings$: BehaviorSubject<FieldSettings>
+  ): EntityFieldDataSource {
     return new EntityFieldDataSource(
       this.queryService,
       this.entityCacheService,
+      settings$,
     );
   }
 

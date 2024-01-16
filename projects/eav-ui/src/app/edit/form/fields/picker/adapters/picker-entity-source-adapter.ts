@@ -53,7 +53,7 @@ export class PickerEntitySourceAdapter extends PickerSourceEntityAdapterBase {
   init(): void {
     super.init();
 
-    this.entityFieldDataSource = this.fieldDataSourceFactoryService.createEntityFieldDataSource();
+    this.entityFieldDataSource = this.fieldDataSourceFactoryService.createEntityFieldDataSource(this.settings$);
 
     this.subscriptions.add(combineLatest([
       this.entityFieldDataSource.data$,

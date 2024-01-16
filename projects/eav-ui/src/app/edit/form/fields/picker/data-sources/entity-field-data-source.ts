@@ -1,5 +1,5 @@
-import { PickerItem } from "projects/edit-types";
-import { Subject, combineLatest, distinctUntilChanged, filter, map, mergeMap, shareReplay, startWith } from "rxjs";
+import { FieldSettings, PickerItem } from "projects/edit-types";
+import { BehaviorSubject, Subject, combineLatest, distinctUntilChanged, filter, map, mergeMap, shareReplay, startWith } from "rxjs";
 import { EntityCacheService } from "../../../../shared/store/ngrx-data";
 import { GeneralHelpers } from "../../../../shared/helpers";
 import { DataSourceBase } from './data-source-base';
@@ -12,6 +12,7 @@ export class EntityFieldDataSource extends DataSourceBase {
   constructor(
     private queryService: QueryService,
     private entityCacheService: EntityCacheService,
+    private settings$: BehaviorSubject<FieldSettings>,
   ) {
     super();
 
@@ -104,29 +105,22 @@ export class EntityFieldDataSource extends DataSourceBase {
     return this.fillEntityInfoMoreFields(entity, entityInfo);
   }
 
-  /** fill additional properties that are marked in settings.MoreFields and replace tooltip and information placeholders */
+  /** fill additional properties */
   private fillEntityInfoMoreFields(entity: QueryEntity, entityInfo: PickerItem): PickerItem {
-    // const settings = this.settings$.value;
-    // const additionalFields = settings.MoreFields?.split(',') || [];
-    // let tooltip = this.cleanStringFromWysiwyg(settings.Tooltip);
-    // let information = this.cleanStringFromWysiwyg(settings.Information);
-    // additionalFields.forEach(field => {
-    //   entityInfo[field] = entity[field];
-    //   tooltip = tooltip.replace(`[Item:${field}]`, entity[field]);
-    //   information = information.replace(`[Item:${field}]`, entity[field]);
-    // });
-    // entityInfo._tooltip = tooltip;
-    // entityInfo._information = information;
-    Object.keys(entity).forEach(key => { //TODO: @SDV check for Value and Text keys
-      entityInfo[key] = entity[key];
+    const settings = this.settings$.value;
+    let tooltip = this.cleanStringFromWysiwyg(settings.Tooltip);
+    let information = this.cleanStringFromWysiwyg(settings.Information);
+    Object.keys(entity).forEach(key => { 
+      //this is because we use Value and Text as properties in PickerItem
+      if(key !== 'Value' && key !== 'Text')
+        entityInfo["_"+key] = entity[key];
+      else
+        entityInfo[key] = entity[key];
+      tooltip = tooltip.replace(`[Item:${key}]`, entity[key]);
+      information = information.replace(`[Item:${key}]`, entity[key]);
     });
+    entityInfo._tooltip = tooltip;
+    entityInfo._information = information;
     return entityInfo;
   }
-
-  /** remove HTML tags that come from WYSIWYG */
-  // private cleanStringFromWysiwyg(wysiwygString: string): string {
-  //   const div = document.createElement("div");
-  //   div.innerHTML = wysiwygString ?? '';
-  //   return div.innerText || '';
-  // }
 }

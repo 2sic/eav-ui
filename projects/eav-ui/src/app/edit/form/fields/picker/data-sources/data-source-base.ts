@@ -30,4 +30,11 @@ export class DataSourceBase {
     const guids = entityGuids.filter(GeneralHelpers.distinct);
     this.prefetchEntityGuids$.next(guids);
   }
+
+  /** remove HTML tags that come from WYSIWYG */
+  protected cleanStringFromWysiwyg(wysiwygString: string): string {
+    const div = document.createElement("div");
+    div.innerHTML = wysiwygString ?? '';
+    return div.innerText || '';
+  }
 }
