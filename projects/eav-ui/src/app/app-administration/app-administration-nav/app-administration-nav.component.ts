@@ -1,6 +1,5 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { MatTabChangeEvent } from '@angular/material/tabs';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, filter, map, startWith } from 'rxjs';
 import { BaseComponent } from '../../shared/components/base-component/base.component';
@@ -11,7 +10,12 @@ import { DialogSettings } from '../../shared/models/dialog-settings.model';
 import { AppDialogConfigService } from '../services/app-dialog-config.service';
 import { MatSidenav } from '@angular/material/sidenav';
 import { MediaMatcher } from '@angular/cdk/layout';
-
+interface NavItem {
+  name: string;
+  path: string;
+  icon: string;
+  tippy: string;
+}
 @Component({
   selector: 'app-app-administration-nav',
   templateUrl: './app-administration-nav.component.html',
@@ -24,9 +28,9 @@ export class AppAdministrationNavComponent
   AppScopes = AppScopes;
 
   private dialogSettings$ = new BehaviorSubject<DialogSettings>(undefined);
-  private tabs$ = new BehaviorSubject<string[]>(undefined);
-  private tabIndex$ = combineLatest([
-    this.tabs$,
+  private path$ = new BehaviorSubject<string[]>(undefined);
+  private pathIndex$ = combineLatest([
+    this.path$,
     this.router.events.pipe(
       filter((event) => event instanceof NavigationEnd),
       map(() => this.route.snapshot.firstChild.url[0].path),
@@ -35,27 +39,24 @@ export class AppAdministrationNavComponent
   ]).pipe(
     map(([tabs, path]) => {
       if (tabs == null) return;
-      console.error('tabs', path);
       this.changeUrl(path);
-      const tabIndex = tabs.indexOf(path);
-      return tabIndex;
+      const index = tabs.indexOf(path);
+      return index;
     }),
-    filter((tabIndex) => tabIndex >= 0)
+    filter((index) => index >= 0)
   );
-  viewModel$ = combineLatest([this.dialogSettings$, this.tabIndex$]).pipe(
-    map(([dialogSettings, tabIndex]) => {
-      return { dialogSettings, tabIndex };
+  viewModel$ = combineLatest([this.dialogSettings$, this.pathIndex$]).pipe(
+    map(([dialogSettings, pathIndex]) => {
+      return { dialogSettings, pathIndex };
     })
   );
 
   smallScreen: MediaQueryList = this.media.matchMedia('(max-width: 1000px)');
   @ViewChild('sidenav') sidenav!: MatSidenav;
   sideNavOpened = !this.smallScreen.matches;
-
   currentRoute: string;
-  isOpenMenu = false;
 
-  navItems = [
+  navItems: NavItem[] = [
     { name: 'Info', path: 'home', icon: 'info', tippy: 'App Info' },
     { name: 'Data', path: 'data', icon: 'menu', tippy: 'Data / Content' },
     {
@@ -102,27 +103,11 @@ export class AppAdministrationNavComponent
       'change',
       (c) => (this.sidenav.opened = !c.matches)
     );
-
-    // this.router.events.subscribe((event: object) => {
-    //   if (
-    //     event instanceof NavigationEnd &&
-    //     this.navItems?.some((child) => {
-    //       return (
-    //         Array.isArray(child.path) &&
-    //         child.path.includes(event.urlAfterRedirects.split('/')[1])
-    //       );
-    //     })
-    //   ) {
-    //     console.error('cxx' );
-    //     this.changeUrl(event.urlAfterRedirects.split('/')[1]);
-    //     // this.isOpenMenu = true;
-    //   }
-    // });
   }
 
   ngOnDestroy() {
     this.dialogSettings$.complete();
-    this.tabs$.complete();
+    this.path$.complete();
     super.ngOnDestroy();
   }
 
@@ -130,34 +115,23 @@ export class AppAdministrationNavComponent
     this.dialogRef.close();
   }
 
-  changeTab(event: MatTabChangeEvent) {
-    let path = this.tabs$.value[event.index];
-    if (path === 'data') {
-      path = `data/${eavConstants.scopes.default.value}`;
-    }
-    this.router.navigate([path], { relativeTo: this.route });
-  }
-
   changeUrl(path: string) {
     this.currentRoute = path;
-    if (path === 'data')
-      path = `data/${eavConstants.scopes.default.value}`;
+    if (path === 'data') path = `data/${eavConstants.scopes.default.value}`;
     this.router.navigate([path], { relativeTo: this.route });
   }
 
   private fetchDialogSettings() {
-    this.appDialogConfigService
-      .getShared$() /*.getDialogSettings()*/
-      .subscribe((dialogSettings) => {
-        UpdateEnvVarsFromDialogSettings(dialogSettings.Context.App);
-        this.dialogSettings$.next(dialogSettings);
+    this.appDialogConfigService.getShared$().subscribe((dialogSettings) => {
+      UpdateEnvVarsFromDialogSettings(dialogSettings.Context.App);
+      this.dialogSettings$.next(dialogSettings);
 
-        if (!dialogSettings.Context.Enable.Query)
-          this.navItems = this.navItems.filter(
-            (item) => item.name !== 'Queries' && item.name !== 'Web API'
-          );
+      if (!dialogSettings.Context.Enable.Query)
+        this.navItems = this.navItems.filter(
+          (item) => item.name !== 'Queries' && item.name !== 'Web API'
+        );
 
-        this.tabs$.next(this.navItems.map((item) => item.path));
-      });
+      this.path$.next(this.navItems.map((item) => item.path));
+    });
   }
 }

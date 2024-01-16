@@ -3,28 +3,8 @@ mat-sidenav-container {
 
   // Sidenave
   mat-sidenav {
-    width: 150px;
+    width: 295px;
     border-right: 1px solid rgba(0, 0, 0, 0.1);
-
-    .logo-wrapper {
-      padding-left: 25px;
-      height: 64px;
-      display: flex;
-      align-items: center;
-      text-decoration: none;
-      color: black;
-
-      h2 {
-        margin: 0;
-      }
-
-      img {
-        width: 40px;
-        height: 40px;
-        object-fit: cover;
-        margin-right: 12px;
-      }
-    }
   }
 
   // Toolbar
@@ -42,7 +22,6 @@ mat-sidenav-container {
       .menu-btn{
         margin-right: 8px;
       }
-
 
       .headeline-toolbar {
         display: flex;
@@ -66,7 +45,6 @@ mat-sidenav-container {
 
       a {
         transition: all 225ms ease-in-out;
-
         &:hover {
           background-color: rgba(0, 0, 0, 0.1);
         }
@@ -74,11 +52,8 @@ mat-sidenav-container {
   }
 }
 
-// Content
 .container-content {
-  // padding: 15px 25px;
   height: calc(100% - 64px);
-
 }
 
 
