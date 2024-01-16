@@ -59,8 +59,6 @@ export interface PickerItem extends EntityForPicker {
 
   /**
    * The data that is added to the item in the dropdown through settings more fields.
-   * This property does not come from the server, but must be added by code from the settings.
-   * That's why it has an underscore.
    */
   [key: string]: any;
 }
