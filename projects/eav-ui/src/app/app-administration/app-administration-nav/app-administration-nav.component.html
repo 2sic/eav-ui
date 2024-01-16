@@ -15,33 +15,33 @@
         <mat-sidenav-content>
           <mat-toolbar>
             <div class="toolbar-container">
-              <button (click)="sidenav.opened = !sidenav.opened" mat-icon-button>
+              <button class="menu-btn" (click)="sidenav.opened = !sidenav.opened" mat-icon-button>
                 <mat-icon>menu</mat-icon>
               </button>
 
-                <div class="headeline-toolbar">
-                  <div>
-                    <img class="eav-dialog-header__title__image" *ngIf="vm.dialogSettings?.Context.App.Icon"
-                    [src]="vm.dialogSettings?.Context.App.Icon + '?w=40&h=40&mode=crop'" />
-                  </div>
-                    <div>
-                      <ng-container *ngIf="vm.dialogSettings?.Context.App.SettingsScope === AppScopes.Global">
-                        Global
-                      </ng-container>
-
-                    <ng-container *ngIf="vm.dialogSettings?.Context.App.SettingsScope !== AppScopes.Global">
-                      {{ vm.dialogSettings?.Context.App.Name }}
-                    </ng-container>
-                    Admin
-                  </div>
+              <div class="headeline-toolbar">
+                <div>
+                  <img *ngIf="vm.dialogSettings?.Context.App.Icon" [src]="vm.dialogSettings?.Context.App.Icon + '?w=40&h=40&mode=crop'" />
                 </div>
                 <div>
-                  <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
-                    <mat-icon>close</mat-icon>
-                  </button>
+                  <ng-container *ngIf="vm.dialogSettings?.Context.App.SettingsScope === AppScopes.Global">
+                    Global
+                  </ng-container>
+                  <ng-container *ngIf="vm.dialogSettings?.Context.App.SettingsScope !== AppScopes.Global">
+                    {{ vm.dialogSettings?.Context.App.Name }}
+                  </ng-container>
+                  Admin
                 </div>
               </div>
+            </div>
 
+              <span class="toolbar-spacer"></span>
+
+              <div class="close-button-container">
+                <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
+                  <mat-icon>close</mat-icon>
+                </button>
+              </div>
 
           </mat-toolbar>
             <router-outlet></router-outlet>

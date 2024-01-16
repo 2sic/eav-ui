@@ -35,27 +35,46 @@ mat-sidenav-container {
     top: 0;
     z-index: 10;
 
-    .toolbar-container{
+    .toolbar-container {
       display: flex;
+      align-items: center;
 
-      .headeline-toolbar{
+      .menu-btn{
+        margin-right: 8px;
+      }
+
+
+      .headeline-toolbar {
         display: flex;
         align-items: center;
+
+        img {
+          width: 40px;
+          height: 40px;
+          border: 1px solid rgba(0, 0, 0, 0.2);
+          border-radius: 16px 0;
+          margin-right: 8px;
+          user-select: none;
+          text-shadow: none;
+        }
       }
 
-    }
-
-
-    .toolbar-spacer {
-      flex: 1 1 auto;
-    }
-
-    a {
-      transition: all 225ms ease-in-out;
-
-      &:hover {
-        background-color: rgba(0, 0, 0, 0.1);
+      .toolbar-spacer {
+        flex: 1 1 auto;
       }
+
+      a {
+        transition: all 225ms ease-in-out;
+
+        &:hover {
+          background-color: rgba(0, 0, 0, 0.1);
+        }
+      }
+    }
+
+    .close-button-container {
+      display: flex;
+      justify-content: flex-end;
     }
   }
 }
