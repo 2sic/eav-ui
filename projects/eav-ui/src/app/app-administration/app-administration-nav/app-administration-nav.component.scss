@@ -3,7 +3,7 @@ mat-sidenav-container {
 
   // Sidenave
   mat-sidenav {
-    width: 195px;
+    width: 150px;
     border-right: 1px solid rgba(0, 0, 0, 0.1);
 
     .logo-wrapper {
@@ -58,6 +58,7 @@ mat-sidenav-container {
           text-shadow: none;
         }
       }
+    }
 
       .toolbar-spacer {
         flex: 1 1 auto;
@@ -70,12 +71,6 @@ mat-sidenav-container {
           background-color: rgba(0, 0, 0, 0.1);
         }
       }
-    }
-
-    .close-button-container {
-      display: flex;
-      justify-content: flex-end;
-    }
   }
 }
 
@@ -84,6 +79,43 @@ mat-sidenav-container {
   padding: 15px 25px;
 }
 
-.breadcrumb {
-  margin-bottom: 24px;
+
+// Links
+.paddingLink a {
+  padding-left: 20px;
+}
+
+.active {
+  background-color: rgba(128, 128, 128, 0.1);
+}
+
+.app-menu-container {
+  padding: 15px 25px;
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: black;
+  transition: all 225ms ease-in-out;
+
+  &:hover {
+    background-color: rgba(128, 128, 128, 0.2);
+  }
+
+  .link-text {
+    font-size: 18px;
+    font-weight: 500;
+    margin-left: 25px;
+  }
+
+  .mat-icon {
+    transition: all 225ms ease-in-out;
+
+    &.ml-auto {
+      margin-left: auto;
+    }
+  }
+
+  .open {
+    transform: rotate(180deg);
+  }
 }

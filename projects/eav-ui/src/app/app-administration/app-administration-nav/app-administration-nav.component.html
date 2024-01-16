@@ -1,14 +1,23 @@
     <ng-container appToggleDebug *ngIf="viewModel$ | async as vm">
       <mat-sidenav-container>
         <mat-sidenav  #sidenav [mode]="smallScreen.matches ? 'over' : 'side'" [opened]="sideNavOpened">
-          <div>
-            <div class="mat-mdc-tab-label-box" tippy="App Info">
-              <mat-icon>info</mat-icon>
-              <span>Info</span>
-            </div>
-            <app-getting-started *matTabContent [gettingStartedUrl]="vm.dialogSettings.Context.App.GettingStartedUrl">
-            </app-getting-started>
-          </div>
+
+          <a (click)="changeUrl(0)"  matRipple class="app-menu-container" tippy="App Info">
+            <mat-icon>info</mat-icon>
+            <div class="link-text">Info</div>
+          </a>
+
+          <a (click)="changeUrl(1)"  matRipple class="app-menu-container" tippy="Data / Content">
+            <mat-icon>menu</mat-icon>
+            <div class="link-text">Data</div>
+          </a>
+
+          <a (click)="changeUrl(2)"  matRipple class="app-menu-container" tippy="Data / Content">
+            <mat-icon>filter_list</mat-icon>
+            <div class="link-text">Queries</div>
+          </a>
+
+
 
         </mat-sidenav>
 
@@ -34,17 +43,23 @@
                 </div>
               </div>
             </div>
-
               <span class="toolbar-spacer"></span>
 
-              <div class="close-button-container">
                 <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
                   <mat-icon>close</mat-icon>
                 </button>
-              </div>
 
           </mat-toolbar>
             <router-outlet></router-outlet>
+
+            <app-getting-started *ngIf="currentRoute === 'home' " [gettingStartedUrl]="vm.dialogSettings.Context.App.GettingStartedUrl">
+            </app-getting-started>
+
+            <app-data *ngIf="currentRoute === 'data' " [enablePermissions]="vm.dialogSettings.Context.Enable.AppPermissions"></app-data>
+
+            <app-queries *ngIf="currentRoute === 'queries' " [enablePermissions]="vm.dialogSettings.Context.Enable.AppPermissions">
+            </app-queries>
+
         </mat-sidenav-content>
       </mat-sidenav-container>
     </ng-container>

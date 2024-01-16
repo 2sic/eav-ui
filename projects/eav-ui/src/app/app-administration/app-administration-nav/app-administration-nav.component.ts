@@ -44,11 +44,21 @@ export class AppAdministrationNavComponent extends BaseComponent implements OnIn
     }),
   );
 
-
   smallScreen: MediaQueryList = this.media.matchMedia('(max-width: 1000px)');
   @ViewChild('sidenav') sidenav!: MatSidenav;
   sideNavOpened = !this.smallScreen.matches;
 
+  currentRoute: string;
+
+  navItems = [
+    { name: 'Info', path: 'home', icon: 'info' },
+    { name: 'Data', path: 'data' , icon: 'menu' },
+    { name: 'Queries', path: 'queries', icon: 'filter_list' },
+    { name: 'Views', path: 'views', icon: 'layers' },
+    { name: 'Web API', path: 'web-api', icon: 'offline_bolt' },
+    { name: 'App', path: 'app', icon: 'settings_applications' },
+    { name: 'Sync', path: 'sync', icon: 'sync' },
+  ];
 
   constructor(
     protected router: Router,
@@ -68,7 +78,6 @@ export class AppAdministrationNavComponent extends BaseComponent implements OnIn
       'change',
       (c) => (this.sidenav.opened = !c.matches)
     );
-
   }
 
   ngOnDestroy() {
@@ -89,16 +98,25 @@ export class AppAdministrationNavComponent extends BaseComponent implements OnIn
     this.router.navigate([path], { relativeTo: this.route });
   }
 
+  changeUrl(index: number) {
+    let path = this.tabs$.value[index];
+    this.currentRoute = path;
+    console.error(path);
+    if (path === 'data') {
+      path = `data/${eavConstants.scopes.default.value}`;
+    }
+    this.router.navigate([path], { relativeTo: this.route });
+  }
+
   private fetchDialogSettings() {
     this.appDialogConfigService.getShared$()/*.getDialogSettings()*/.subscribe(dialogSettings => {
       UpdateEnvVarsFromDialogSettings(dialogSettings.Context.App);
       this.dialogSettings$.next(dialogSettings);
 
-      let tabs = ['home', 'data', 'queries', 'views', 'web-api', 'app', 'sync']; // tabs order has to match template
-      if (!dialogSettings.Context.Enable.Query) {
-        tabs = tabs.filter(tab => tab !== 'queries' && tab !== 'web-api');
-      }
-      this.tabs$.next(tabs);
+      if (!dialogSettings.Context.Enable.Query)
+        this.navItems = this.navItems.filter(item => item.name !== 'Queries' && item.name !== 'Web API');
+
+      this.tabs$.next(this.navItems.map(item => item.path));
     });
   }
 }
