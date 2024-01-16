@@ -39,8 +39,6 @@
   </mat-toolbar>
   <mat-sidenav-container>
 
-
-
     <mat-sidenav #sidenav [mode]="smallScreen.matches ? 'over' : 'side'" [opened]="sideNavOpened">
       <div *ngFor="let item of navItems; let i = index">
         <a (click)="changeUrl(i)" [routerLink]="item.path" routerLinkActive="active" matRipple
@@ -49,10 +47,9 @@
           <div class="link-text">{{ item.name }}</div>
         </a>
 
-
       </div>
       <div class="sideNav-info">
-        <p>Click on 2sxc Logo to show or hide the Sidenav</p>
+        <p>use App logo to show/hide menu</p>
       </div>
     </mat-sidenav>
 
@@ -64,8 +61,9 @@
           [gettingStartedUrl]="vm.dialogSettings.Context.App.GettingStartedUrl">
         </app-getting-started>
 
-        <app-data *ngIf="currentRoute === 'data'"
-          [enablePermissions]="vm.dialogSettings.Context.Enable.AppPermissions"></app-data>
+        <app-data *ngIf="vm.path === 'data'"
+          [enablePermissions]="vm.dialogSettings.Context.Enable.AppPermissions">
+        </app-data>
 
         <app-queries *ngIf="currentRoute === 'queries'"
           [enablePermissions]="vm.dialogSettings.Context.Enable.AppPermissions">
