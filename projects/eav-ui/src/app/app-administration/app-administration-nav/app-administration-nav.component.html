@@ -1,36 +1,36 @@
 <ng-container appToggleDebug *ngIf="viewModel$ | async as vm">
   <mat-toolbar>
     <div class="toolbar-container">
-        <div>
-          <img (click)="sidenav.opened = !sidenav.opened" *ngIf="vm.dialogSettings?.Context.App.Icon"
-            [src]="vm.dialogSettings?.Context.App.Icon + '?w=40&h=40&mode=crop'" />
-        </div>
-        <div>
-          <ng-container *ngIf="
+      <div>
+        <img (click)="sidenav.opened = !sidenav.opened" *ngIf="vm.dialogSettings?.Context.App.Icon"
+          [src]="vm.dialogSettings?.Context.App.Icon + '?w=40&h=40&mode=crop'" />
+      </div>
+      <div>
+        <ng-container *ngIf="
               vm.dialogSettings?.Context.App.SettingsScope === AppScopes.Global
             ">
-            Global
-          </ng-container>
-          <ng-container *ngIf="
+          Global
+        </ng-container>
+        <ng-container *ngIf="
               vm.dialogSettings?.Context.App.SettingsScope !== AppScopes.Global
             ">
-            {{ vm.dialogSettings?.Context.App.Name }}
-          </ng-container>
-          <span class="toolbar-admin">
-            Admin
-          </span>
-        </div>
-
-    <div>
-      <xng-breadcrumb [separator]="emptyTemplate">
-        <ng-container *xngBreadcrumbItem="let breadcrumb; let info = info; let last = last">
-          <ng-container *ngIf="info === 'home' && last">Home</ng-container>
-          <ng-container *ngIf="last">{{ breadcrumb }}</ng-container>
+          {{ vm.dialogSettings?.Context.App.Name }}
         </ng-container>
-      </xng-breadcrumb>
-      <ng-template #emptyTemplate></ng-template>
+        <span class="toolbar-admin">
+          Admin
+        </span>
+      </div>
+
+      <div>
+        <xng-breadcrumb [separator]="emptyTemplate">
+          <ng-container *xngBreadcrumbItem="let breadcrumb; let info = info; let last = last">
+            <ng-container *ngIf="info === 'home' && last">Home</ng-container>
+            <ng-container *ngIf="last">{{ breadcrumb }}</ng-container>
+          </ng-container>
+        </xng-breadcrumb>
+        <ng-template #emptyTemplate></ng-template>
+      </div>
     </div>
-  </div>
 
     <span class="toolbar-spacer"></span>
     <button mat-icon-button tippy="Close dialog" (click)="closeDialog()">
@@ -42,11 +42,6 @@
 
 
     <mat-sidenav #sidenav [mode]="smallScreen.matches ? 'over' : 'side'" [opened]="sideNavOpened">
-
-      <button mat-mini-fab (click)="sidenav.opened = !sidenav.opened" class="arrow-back-btn">
-        <mat-icon *ngIf="sidenav.opened">arrow_back</mat-icon>
-      </button>
-
       <div *ngFor="let item of navItems">
         <a (click)="changeUrl(item.path)" [routerLink]="item.path" routerLinkActive="active" matRipple
           class="app-menu-container" [tippy]="item.tippy">
@@ -54,10 +49,16 @@
           <div class="link-text">{{ item.name }}</div>
         </a>
 
+
+      </div>
+      <div class="sideNav-info">
+        <p>Click on 2sxc Logo to show or hide the Sidenav</p>
       </div>
     </mat-sidenav>
 
     <mat-sidenav-content>
+      <router-outlet></router-outlet>
+
       <div class="container-content">
         <app-getting-started *ngIf="currentRoute === 'home'"
           [gettingStartedUrl]="vm.dialogSettings.Context.App.GettingStartedUrl">

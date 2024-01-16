@@ -17,7 +17,9 @@ mat-toolbar {
       height: 40px;
       border: 1px solid rgba(0, 0, 0, 0.2);
       border-radius: 16px 0;
-      margin-right: 8px;
+      margin-right: 16px;
+      padding-top: -6px;
+      // padding-bottom: -6px;
       user-select: none;
       text-shadow: none;
       cursor: pointer;
@@ -43,6 +45,11 @@ mat-sidenav-container {
   mat-sidenav {
     width: 295px;
     border-right: 1px solid rgba(0, 0, 0, 0.1);
+    .sideNav-info{
+      position: absolute;
+      bottom: 0px;
+      text-align: center;
+    }
   }
 }
 
@@ -86,19 +93,9 @@ mat-sidenav-container {
   }
 }
 
-.arrow-back-btn {
-  position: absolute;
-  right: 10px;
-  top: 12px;
-  z-index: 10;
-  cursor: pointer;
-}
+
 
 ::ng-deep {
-  .mdc-fab--mini {
-    width: 30px !important;
-    height: 30px !important;
-  }
   .xng-breadcrumb-separator {
     margin-left: 0 !important;
     margin-right: 0 !important;
