@@ -2,23 +2,14 @@
       <mat-sidenav-container>
         <mat-sidenav  #sidenav [mode]="smallScreen.matches ? 'over' : 'side'" [opened]="sideNavOpened">
 
-          <a (click)="changeUrl(0)"  matRipple class="app-menu-container" tippy="App Info">
-            <mat-icon>info</mat-icon>
-            <div class="link-text">Info</div>
+          <div *ngFor="let item of navItems">
+          <a  (click)="changeUrl(item.path)" [routerLink]="item.path" routerLinkActive="active"
+              matRipple class="app-menu-container" [tippy]="item.tippy">
+            <mat-icon>{{ item.icon }}</mat-icon>
+            <div class="link-text">{{ item.name }}</div>
+            <!-- <mat-icon *ngIf="item.child" [ngClass]="{ closed: !isOpenMenu, open: isOpenMenu, 'ml-auto': true }"> expand_more </mat-icon> -->
           </a>
-
-          <a (click)="changeUrl(1)"  matRipple class="app-menu-container" tippy="Data / Content">
-            <mat-icon>menu</mat-icon>
-            <div class="link-text">Data</div>
-          </a>
-
-          <a (click)="changeUrl(2)"  matRipple class="app-menu-container" tippy="Data / Content">
-            <mat-icon>filter_list</mat-icon>
-            <div class="link-text">Queries</div>
-          </a>
-
-
-
+              </div>
         </mat-sidenav>
 
         <mat-sidenav-content>
@@ -52,13 +43,28 @@
           </mat-toolbar>
             <router-outlet></router-outlet>
 
-            <app-getting-started *ngIf="currentRoute === 'home' " [gettingStartedUrl]="vm.dialogSettings.Context.App.GettingStartedUrl">
+            <app-getting-started *ngIf="currentRoute === 'home'" [gettingStartedUrl]="vm.dialogSettings.Context.App.GettingStartedUrl">
             </app-getting-started>
 
-            <app-data *ngIf="currentRoute === 'data' " [enablePermissions]="vm.dialogSettings.Context.Enable.AppPermissions"></app-data>
+            <app-data *ngIf="currentRoute === 'data'" [enablePermissions]="vm.dialogSettings.Context.Enable.AppPermissions"></app-data>
 
-            <app-queries *ngIf="currentRoute === 'queries' " [enablePermissions]="vm.dialogSettings.Context.Enable.AppPermissions">
+            <app-queries *ngIf="currentRoute === 'queries'" [enablePermissions]="vm.dialogSettings.Context.Enable.AppPermissions">
             </app-queries>
+
+            <app-views *ngIf="currentRoute === 'views'" [enableCode]="vm.dialogSettings.Context.Enable.CodeEditor"
+            [enablePermissions]="vm.dialogSettings.Context.Enable.AppPermissions"
+            [appIsGlobal]="vm.dialogSettings.Context.App.IsShared"
+            [appIsInherited]="vm.dialogSettings.Context.App.IsInherited">
+          </app-views>
+
+          <app-web-api *ngIf="currentRoute === 'web-api'" [enableCode]="vm.dialogSettings.Context.Enable.CodeEditor">
+          </app-web-api>
+
+          <app-app-configuration *ngIf="currentRoute === 'app'" [dialogSettings]="vm.dialogSettings">
+          </app-app-configuration>
+
+          <app-sync-configuration *ngIf="currentRoute === 'sync'" [dialogSettings]="vm.dialogSettings">
+          </app-sync-configuration>
 
         </mat-sidenav-content>
       </mat-sidenav-container>

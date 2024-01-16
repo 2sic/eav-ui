@@ -11,6 +11,7 @@ import { DialogSettings } from '../../shared/models/dialog-settings.model';
 import { AppDialogConfigService } from '../services/app-dialog-config.service';
 import { MatSidenav } from '@angular/material/sidenav';
 import { MediaMatcher } from '@angular/cdk/layout';
+import tippy from 'tippy.js';
 
 @Component({
   selector: 'app-app-administration-nav',
@@ -51,13 +52,13 @@ export class AppAdministrationNavComponent extends BaseComponent implements OnIn
   currentRoute: string;
 
   navItems = [
-    { name: 'Info', path: 'home', icon: 'info' },
-    { name: 'Data', path: 'data' , icon: 'menu' },
-    { name: 'Queries', path: 'queries', icon: 'filter_list' },
-    { name: 'Views', path: 'views', icon: 'layers' },
-    { name: 'Web API', path: 'web-api', icon: 'offline_bolt' },
-    { name: 'App', path: 'app', icon: 'settings_applications' },
-    { name: 'Sync', path: 'sync', icon: 'sync' },
+    { name: 'Info', path: 'home', icon: 'info', tippy: 'App Info' },
+    { name: 'Data', path: 'data' , icon: 'menu', tippy: 'Data / Content'  },
+    { name: 'Queries', path: 'queries', icon: 'filter_list', tippy: 'Queries / Visual Query Designer'  },
+    { name: 'Views', path: 'views', icon: 'layers', tippy: 'Views / Templates'  },
+    { name: 'Web API', path: 'web-api', icon: 'offline_bolt', tippy: 'WebApi'  },
+    { name: 'App', path: 'app', icon: 'settings_applications', tippy: 'App Settings'  },
+    { name: 'Sync', path: 'sync', icon: 'sync', tippy: 'App Export / Import' },
   ];
 
   constructor(
@@ -98,8 +99,8 @@ export class AppAdministrationNavComponent extends BaseComponent implements OnIn
     this.router.navigate([path], { relativeTo: this.route });
   }
 
-  changeUrl(index: number) {
-    let path = this.tabs$.value[index];
+  changeUrl(path: string) {
+    // let path = this.tabs$.value[index];
     this.currentRoute = path;
     console.error(path);
     if (path === 'data') {
