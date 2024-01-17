@@ -127,7 +127,6 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
 
   onAfterViewInit(): void {
     super.onAfterViewInit();
-    this.queryFieldDataSource.params(this.paramsMask.resolve());
   }
 
   destroy(): void {
@@ -150,6 +149,7 @@ export class PickerQuerySourceAdapter extends PickerSourceEntityAdapterBase {
   }
 
   fetchItems(): void {
+    this.queryFieldDataSource.params(this.paramsMask.resolve());
     const settings = this.settings$.value;
     if (!settings.Query) {
       const errorItem: PickerItem = {
