@@ -1,5 +1,5 @@
 import { EntityForPicker, PickerItem, FieldSettings } from "projects/edit-types";
-import { BehaviorSubject, Subject, combineLatest, distinctUntilChanged, filter, map, mergeMap, shareReplay, startWith } from "rxjs";
+import { BehaviorSubject, Subject, combineLatest, distinctUntilChanged, filter, map, mergeMap, shareReplay, startWith, tap } from "rxjs";
 import { EntityCacheService, StringQueryCacheService } from "../../../../shared/store/ngrx-data";
 import { QueryService } from "../../../../shared/services";
 import { TranslateService } from "@ngx-translate/core";
@@ -25,7 +25,7 @@ export class QueryFieldDataSource extends DataSourceBase {
 
     const settings = this.settings$.value;
     const streamName = settings.StreamName;
-    const queryUrl = settings.Query.includes('/') ? settings.Query : `${settings.Query}/${streamName}`;
+    const queryUrl = settings.Query.includes('/') ? settings.Query : `${settings.Query}/${streamName}`;//?fields=fieldName,...
 
     const params$ = this.params$.pipe(distinctUntilChanged(), shareReplay(1));
 
