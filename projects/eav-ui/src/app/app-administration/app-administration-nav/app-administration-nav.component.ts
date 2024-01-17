@@ -1,7 +1,13 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { BehaviorSubject, combineLatest, filter, map, startWith, tap } from 'rxjs';
+import {
+  BehaviorSubject,
+  combineLatest,
+  filter,
+  map,
+  startWith,
+} from 'rxjs';
 import { BaseComponent } from '../../shared/components/base-component/base.component';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { UpdateEnvVarsFromDialogSettings } from '../../shared/helpers/update-env-vars-from-dialog-settings.helper';
@@ -44,7 +50,6 @@ const navItems: NavItem[] = [
   { name: 'Sync', path: 'sync', icon: 'sync', tippy: 'App Export / Import' },
 ];
 
-
 @Component({
   selector: 'app-app-administration-nav',
   templateUrl: './app-administration-nav.component.html',
@@ -57,36 +62,27 @@ export class AppAdministrationNavComponent
   AppScopes = AppScopes;
 
   private dialogSettings$ = new BehaviorSubject<DialogSettings>(undefined);
-  private path$ = new BehaviorSubject<string[]>(undefined);
-  private pathIndex$ = combineLatest([
-    this.path$,
+  private pathsArray$ = new BehaviorSubject<string[]>(undefined);
+  private currentPath$ = combineLatest([
+    this.pathsArray$,
     this.router.events.pipe(
       filter((event) => event instanceof NavigationEnd),
       map(() => this.route.snapshot.firstChild.url[0].path),
       startWith(this.route.snapshot.firstChild.url[0].path)
     ),
   ]).pipe(
-    tap(([paths, currentPath]) => {
-      console.log('2dm paths', paths, currentPath);
-    }),
-    map(([tabs, path]) => {
-      if (tabs == null) return;
-      console.warn(path)
-      const index = tabs.indexOf(path);
-      console.log('2dm index/path', index, path);
-      return { index, path };
-    }),
-    // note: PathInfo can be undefined if the path$ is not loaded yet from settings
-    filter((pathInfo) => pathInfo?.index >= 0)
+    map(([paths, currentPath]) => {
+      if (paths == null) return;
+      return currentPath;
+    })
   );
 
   // Generate View Model
-  viewModel$ = combineLatest([this.dialogSettings$, this.pathIndex$]).pipe(
-    map(([dialogSettings, pathInfo]) => {
+  viewModel$ = combineLatest([this.dialogSettings$, this.currentPath$]).pipe(
+    map(([dialogSettings, currentPath]) => {
       return {
         dialogSettings,
-        pathIndex: pathInfo.index,
-        path: pathInfo.path,
+        currentPath,
       };
     })
   );
@@ -94,7 +90,6 @@ export class AppAdministrationNavComponent
   smallScreen: MediaQueryList = this.media.matchMedia('(max-width: 1000px)');
   @ViewChild('sidenav') sidenav!: MatSidenav;
   sideNavOpened = !this.smallScreen.matches;
-  currentRoute: string;
 
   /** Navigation menu buttons - prefilled; may be modified after settings are loaded */
   navItems = navItems;
@@ -121,15 +116,11 @@ export class AppAdministrationNavComponent
       'change',
       (c) => (this.sidenav.opened = !c.matches)
     );
-
-    this.viewModel$.subscribe((viewModel) => {
-      console.warn("viewMo",viewModel)
-    })
   }
 
   ngOnDestroy() {
     this.dialogSettings$.complete();
-    this.path$.complete();
+    this.pathsArray$.complete();
     super.ngOnDestroy();
   }
 
@@ -137,13 +128,7 @@ export class AppAdministrationNavComponent
     this.dialogRef.close();
   }
 
-  changeUrl(index: number) {
-    console.warn(index)
-    let path = this.path$.value[index];
-    console.warn(path)
-    if(this.currentRoute === path) return;
-    console.warn(path)
-    this.currentRoute = path;
+  changeUrl(path: string) {
     if (path === 'data') path = `data/${eavConstants.scopes.default.value}`;
     this.router.navigate([path], { relativeTo: this.route });
   }
@@ -151,7 +136,7 @@ export class AppAdministrationNavComponent
   private fetchDialogSettings() {
     this.appDialogConfigService.getShared$().subscribe((dialogSettings) => {
       UpdateEnvVarsFromDialogSettings(dialogSettings.Context.App);
-      console.log(dialogSettings)
+      console.log(dialogSettings);
       this.dialogSettings$.next(dialogSettings);
 
       if (!dialogSettings.Context.Enable.Query)
@@ -159,7 +144,7 @@ export class AppAdministrationNavComponent
           (item) => item.name !== 'Queries' && item.name !== 'Web API'
         );
 
-      this.path$.next(this.navItems.map((item) => item.path));
+      this.pathsArray$.next(this.navItems.map((item) => item.path));
     });
   }
 }

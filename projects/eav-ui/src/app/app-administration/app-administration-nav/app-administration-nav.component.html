@@ -40,8 +40,8 @@
   <mat-sidenav-container>
 
     <mat-sidenav #sidenav [mode]="smallScreen.matches ? 'over' : 'side'" [opened]="sideNavOpened">
-      <div *ngFor="let item of navItems; let i = index">
-        <a (click)="changeUrl(i)" [routerLink]="item.path" routerLinkActive="active" matRipple
+      <div *ngFor="let item of navItems">
+        <a (click)="changeUrl(item.path)" [routerLink]="item.path" routerLinkActive="active" matRipple
           class="app-menu-container" [tippy]="item.tippy">
           <mat-icon>{{ item.icon }}</mat-icon>
           <div class="link-text">{{ item.name }}</div>
@@ -57,31 +57,31 @@
       <router-outlet></router-outlet>
 
       <div class="container-content">
-        <app-getting-started *ngIf="currentRoute === 'home'"
+        <app-getting-started *ngIf="vm.currentPath === 'home'"
           [gettingStartedUrl]="vm.dialogSettings.Context.App.GettingStartedUrl">
         </app-getting-started>
 
-        <app-data *ngIf="vm.path === 'data'"
+        <app-data *ngIf="vm.currentPath === 'data'"
           [enablePermissions]="vm.dialogSettings.Context.Enable.AppPermissions">
         </app-data>
 
-        <app-queries *ngIf="currentRoute === 'queries'"
+        <app-queries *ngIf="vm.currentPath === 'queries'"
           [enablePermissions]="vm.dialogSettings.Context.Enable.AppPermissions">
         </app-queries>
 
-        <app-views *ngIf="currentRoute === 'views'" [enableCode]="vm.dialogSettings.Context.Enable.CodeEditor"
+        <app-views *ngIf="vm.currentPath === 'views'" [enableCode]="vm.dialogSettings.Context.Enable.CodeEditor"
           [enablePermissions]="vm.dialogSettings.Context.Enable.AppPermissions"
           [appIsGlobal]="vm.dialogSettings.Context.App.IsShared"
           [appIsInherited]="vm.dialogSettings.Context.App.IsInherited">
         </app-views>
 
-        <app-web-api *ngIf="currentRoute === 'web-api'" [enableCode]="vm.dialogSettings.Context.Enable.CodeEditor">
+        <app-web-api *ngIf="vm.currentPath === 'web-api'" [enableCode]="vm.dialogSettings.Context.Enable.CodeEditor">
         </app-web-api>
 
-        <app-app-configuration *ngIf="currentRoute === 'app'" [dialogSettings]="vm.dialogSettings">
+        <app-app-configuration *ngIf="vm.currentPath === 'app'" [dialogSettings]="vm.dialogSettings">
         </app-app-configuration>
 
-        <app-sync-configuration *ngIf="currentRoute === 'sync'" [dialogSettings]="vm.dialogSettings">
+        <app-sync-configuration *ngIf="vm.currentPath === 'sync'" [dialogSettings]="vm.dialogSettings">
         </app-sync-configuration>
       </div>
     </mat-sidenav-content>
