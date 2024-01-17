@@ -10,7 +10,7 @@ mat-toolbar {
     display: flex;
     align-items: center;
     .menu-container {
-      margin-right: 8px;
+      margin-right: 16px;
     }
     img {
       width: 40px;
@@ -53,16 +53,16 @@ mat-sidenav-container {
 }
 
 // Links in the sidenav
-.paddingLink a {
-  padding-left: 20px;
-}
+// .paddingLink a {
+//   padding-left: 16px;
+// }
 
 .active {
   background-color: rgba(128, 128, 128, 0.1);
 }
 
 .app-menu-container {
-  padding: 15px 25px;
+  padding: 16px 32px;
   display: flex;
   align-items: center;
   text-decoration: none;
