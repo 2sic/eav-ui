@@ -1,13 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import {
-  BehaviorSubject,
-  combineLatest,
-  filter,
-  map,
-  startWith,
-} from 'rxjs';
+import { BehaviorSubject, combineLatest, filter, map, startWith } from 'rxjs';
 import { BaseComponent } from '../../shared/components/base-component/base.component';
 import { eavConstants } from '../../shared/constants/eav.constants';
 import { UpdateEnvVarsFromDialogSettings } from '../../shared/helpers/update-env-vars-from-dialog-settings.helper';
@@ -136,7 +130,6 @@ export class AppAdministrationNavComponent
   private fetchDialogSettings() {
     this.appDialogConfigService.getShared$().subscribe((dialogSettings) => {
       UpdateEnvVarsFromDialogSettings(dialogSettings.Context.App);
-      console.log(dialogSettings);
       this.dialogSettings$.next(dialogSettings);
 
       if (!dialogSettings.Context.Enable.Query)

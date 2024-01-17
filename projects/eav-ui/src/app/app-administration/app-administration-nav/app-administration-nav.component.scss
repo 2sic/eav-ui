@@ -30,13 +30,6 @@ mat-toolbar {
   .toolbar-spacer {
     flex: 1 1 auto;
   }
-
-  a {
-    transition: all 225ms ease-in-out;
-    &:hover {
-      background-color: rgba(0, 0, 0, 0.1);
-    }
-  }
 }
 
 mat-sidenav-container {
@@ -46,8 +39,7 @@ mat-sidenav-container {
   mat-sidenav {
     width: 295px;
     border-right: 1px solid rgba(0, 0, 0, 0.1);
-    .sideNav-info{
-
+    .sideNav-bottom-info {
       position: absolute;
       bottom: 0px;
       text-align: center;
@@ -87,17 +79,7 @@ mat-sidenav-container {
     font-weight: 500;
     margin-left: 25px;
   }
-
-  .mat-icon {
-    transition: all 225ms ease-in-out;
-
-    &.ml-auto {
-      margin-left: auto;
-    }
-  }
 }
-
-
 
 ::ng-deep {
   .xng-breadcrumb-separator {
