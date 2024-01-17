@@ -9,10 +9,9 @@ mat-toolbar {
   .toolbar-container {
     display: flex;
     align-items: center;
-    .toolbar-admin {
-      margin-right: 4px;
+    .menu-container {
+      margin-right: 8px;
     }
-
     img {
       width: 40px;
       height: 40px;

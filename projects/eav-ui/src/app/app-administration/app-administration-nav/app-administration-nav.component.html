@@ -5,6 +5,8 @@
     @if (vm.dialogSettings?.Context.App.Icon) {
     <img (click)="sidenav.opened = !sidenav.opened"
       [src]="vm.dialogSettings?.Context.App.Icon + '?w=40&h=40&mode=crop'" />
+    } @else {
+      <mat-icon class="menu-container" (click)="sidenav.opened = !sidenav.opened">menu</mat-icon>
     }
     <!-- App Name -->
     <div>
@@ -14,7 +16,7 @@
       @if (vm.dialogSettings?.Context.App.SettingsScope !== AppScopes.Global) {
       {{ vm.dialogSettings?.Context.App.Name }}
       }
-      <span class="toolbar-admin">
+      <span>
         Admin
       </span>
     </div>
@@ -22,7 +24,8 @@
     <xng-breadcrumb [separator]="emptyTemplate">
       <ng-container *xngBreadcrumbItem="let breadcrumb; let info = info; let last = last">
         @if (last) {
-        {{ breadcrumb }}
+          <mat-icon class="breadcrumb-icon">chevron_right</mat-icon>
+       {{ breadcrumb }}
         }
       </ng-container>
     </xng-breadcrumb>
