@@ -4,6 +4,7 @@ mat-toolbar {
   position: sticky;
   top: 0;
   z-index: 10;
+  flex: 1 0 74px;
 
   .toolbar-container {
     display: flex;
@@ -18,11 +19,11 @@ mat-toolbar {
       border: 1px solid rgba(0, 0, 0, 0.2);
       border-radius: 16px 0;
       margin-right: 16px;
-      padding-top: -6px;
-      // padding-bottom: -6px;
       user-select: none;
       text-shadow: none;
       cursor: pointer;
+      display: flex;
+      align-items: center;
     }
   }
 
@@ -46,9 +47,12 @@ mat-sidenav-container {
     width: 295px;
     border-right: 1px solid rgba(0, 0, 0, 0.1);
     .sideNav-info{
+
       position: absolute;
       bottom: 0px;
       text-align: center;
+      width: 100%;
+      font-size: 12px;
     }
   }
 }
